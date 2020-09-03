@@ -1,0 +1,677 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level DUT Information Report for IP_Core_SS_Switch_and_PWM
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Code Interface Report for IP_Core_SS_Switch_and_PWM
+</font>
+<h3>
+Input ports
+</h3>
+<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<b>Port Name</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Datatype</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Bits</b>
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+clk
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+reset
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+clk_enable
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:193')" name="code2model" class="code2model">
+PWM_en_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:194')" name="code2model" class="code2model">
+Mode_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+ufix2
+</td>
+<td align="center" valign="top" style="border-style: none">
+2
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:195')" name="code2model" class="code2model">
+PWM_f_carrier_kHz_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint8
+</td>
+<td align="center" valign="top" style="border-style: none">
+8
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:502')" name="code2model" class="code2model">
+PWM_T_carrier_us_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint8
+</td>
+<td align="center" valign="top" style="border-style: none">
+8
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:196')" name="code2model" class="code2model">
+PWM_min_pulse_wiidth_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint8
+</td>
+<td align="center" valign="top" style="border-style: none">
+8
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:197')" name="code2model" class="code2model">
+m_u1_norm
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix14_En12
+</td>
+<td align="center" valign="top" style="border-style: none">
+14
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:198')" name="code2model" class="code2model">
+m_u2_norm
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix14_En12
+</td>
+<td align="center" valign="top" style="border-style: none">
+14
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:199')" name="code2model" class="code2model">
+m_u3_norm
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix14_En12
+</td>
+<td align="center" valign="top" style="border-style: none">
+14
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:201')" name="code2model" class="code2model">
+m_u1_norm_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix14_En12
+</td>
+<td align="center" valign="top" style="border-style: none">
+14
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:203')" name="code2model" class="code2model">
+m_u2_norm_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix14_En12
+</td>
+<td align="center" valign="top" style="border-style: none">
+14
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:205')" name="code2model" class="code2model">
+m_u3_norm_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix14_En12
+</td>
+<td align="center" valign="top" style="border-style: none">
+14
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:200')" name="code2model" class="code2model">
+SS0_IN_External
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:202')" name="code2model" class="code2model">
+SS1_IN_External
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:204')" name="code2model" class="code2model">
+SS2_IN_External
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:206')" name="code2model" class="code2model">
+SS3_IN_External
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:207')" name="code2model" class="code2model">
+SS4_IN_External
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:208')" name="code2model" class="code2model">
+SS5_IN_External
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+
+</table>
+<h3>
+Output ports
+</h3>
+<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<b>Port Name</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Datatype</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Bits</b>
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+ce_out
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:209')" name="code2model" class="code2model">
+SS0_OUT
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:210')" name="code2model" class="code2model">
+SS1_OUT
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:211')" name="code2model" class="code2model">
+SS2_OUT
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:212')" name="code2model" class="code2model">
+SS3_OUT
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:213')" name="code2model" class="code2model">
+SS4_OUT
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:214')" name="code2model" class="code2model">
+SS5_OUT
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:215')" name="code2model" class="code2model">
+PWM_en_rd_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:216')" name="code2model" class="code2model">
+PWM_f_carrier_kHz_rd_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint8
+</td>
+<td align="center" valign="top" style="border-style: none">
+8
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:501')" name="code2model" class="code2model">
+PWM_T_carrier_us_rd_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint8
+</td>
+<td align="center" valign="top" style="border-style: none">
+8
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:217')" name="code2model" class="code2model">
+PWM_min_pulse_width_rd_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint8
+</td>
+<td align="center" valign="top" style="border-style: none">
+8
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:218')" name="code2model" class="code2model">
+PWM_enb_out
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:220')" name="code2model" class="code2model">
+Mode_rd_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+ufix2
+</td>
+<td align="center" valign="top" style="border-style: none">
+2
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:512')" name="code2model" class="code2model">
+Period_Center
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+
+</table>
+
+</body>
+
+</html>

@@ -1,0 +1,1 @@
+-wto "c61dd9f9ea1843e48523ef6c270c8d63" --debug "typical" --relax --mt "2" -L "axi_infrastructure_v1_1_0" -L "smartconnect_v1_0" -L "axi_protocol_checker_v2_0_1" -L "xil_defaultlib" -L "axi_vip_v1_1_1" -L "xilinx_vip" -L "unisims_ver" -L "unimacro_ver" -L "secureip" -L "xpm" --snapshot "tb_axi2tcm_behav" "xil_defaultlib.tb_axi2tcm" "xil_defaultlib.glbl" -log "elaborate.log" 

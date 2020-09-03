@@ -1,0 +1,1 @@
+-wto "4204c00851684237844e27880d1ef2b2" --incr --debug "typical" --relax --mt "2" -L "xil_defaultlib" -L "secureip" --snapshot "AXI2TCM_v1_0_behav" "xil_defaultlib.AXI2TCM_v1_0" -log "elaborate.log" 

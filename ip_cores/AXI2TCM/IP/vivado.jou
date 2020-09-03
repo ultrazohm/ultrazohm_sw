@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Wed Jan 22 22:16:00 2020
+# Process ID: 8656
+# Current directory: C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo_V2/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/IP
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent4680 C:\XilinxEyke\MPSOC\Zynq_Ultra_Repo_V2\AA_IP_Repository\IPCores_xczu9EG\AXI2TCM\IP\edit_AXI2TCM_v1_0.xpr
+# Log file: C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo_V2/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/IP/vivado.log
+# Journal file: C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo_V2/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/IP\vivado.jou
+#-----------------------------------------------------------
+start_gui

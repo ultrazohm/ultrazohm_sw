@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<Index Version="1" Minor="0">
+	<Repository value="c:/XilinxEyke/MPSOC/Zynq_Ultra_Repo_V2/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM">
+	</Repository>
+	<IP>
+		<VLNV value="TUM:user:AXI2TCM:1.1">
+		</VLNV>
+		<DisplayName value="AXI2TCM">
+		</DisplayName>
+		<Description value="AXI interface to R5-TCM">
+		</Description>
+		<CoreRevision value="69">
+		</CoreRevision>
+		<ComponentPath value="IP/AXI2TCM_1.0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynq">
+				<Part status="Beta" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Pre-Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="AXI_Peripheral">
+			</Taxonomy>
+		</Taxonomies>
+		<LockPrevVersions value="false">
+		</LockPrevVersions>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:module_ref:AXI2TCM_v1_0:1.0">
+		</VLNV>
+		<DisplayName value="AXI2TCM_v1_0_v1_0">
+		</DisplayName>
+		<Description value="xilinx.com:module_ref:AXI2TCM_v1_0:1.0">
+		</Description>
+		<ManuallyDisabled value="true">
+		</ManuallyDisabled>
+		<CoreRevision value="1">
+		</CoreRevision>
+		<ComponentPath value="Simulation/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/mref/AXI2TCM_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/UserIP">
+			</Taxonomy>
+		</Taxonomies>
+		<AutoFamilySupport value="Level_1">
+		</AutoFamilySupport>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+		<DesignToolContexts>
+			<DesignTool value="IPI">
+			</DesignTool>
+		</DesignToolContexts>
+	</IP>
+	<IPInst>
+		<VLNV value="xilinx.com:ipcache:280bb35b8e6220fd:0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.cache/ip/2017.4/280bb35b8e6220fd/280bb35b8e6220fd.xci">
+		</XMLFile>
+		<CoreVLNV value="TUM:user:AXI2TCM:1.1">
+		</CoreVLNV>
+		<CoreRevision value="52">
+		</CoreRevision>
+		<InstID value="280bb35b8e6220fd">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:ipcache:675f144866954815:0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.cache/ip/2017.4/675f144866954815/675f144866954815.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:axi_vip:1.1">
+		</CoreVLNV>
+		<CoreRevision value="1">
+		</CoreRevision>
+		<InstID value="675f144866954815">
+		</InstID>
+	</IPInst>
+</Index>
+

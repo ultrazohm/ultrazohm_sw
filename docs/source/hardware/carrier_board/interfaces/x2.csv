@@ -1,0 +1,13 @@
+Pin X2, Name, Specification
+1, X1-10 (F),
+2, CPLD_TDI1,
+3, CPLD_TDO1,
+4, CPLD_TDI2,
+5, CPLD_TDO3,
+6, CPLD_TDI3,
+7, CPLD_TDO3,
+8, CPLD_TDI4,
+9, CPLD_TDO4,
+10, CPLD_TDI5,
+11, CPLD_TDO5,
+12, X1-8 (D),

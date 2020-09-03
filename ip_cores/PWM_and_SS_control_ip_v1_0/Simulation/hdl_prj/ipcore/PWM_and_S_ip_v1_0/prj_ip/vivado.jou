@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:55:39 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Wed Oct  3 23:20:50 2018
+# Process ID: 7228
+# Current directory: C:/Users/BHK/Desktop/ELSYS/Modell/BHK/IP_Core_SS_Switch_and_PWM/hdl_prj/ipcore/PWM_and_S_ip_v1_0/prj_ip
+# Command line: vivado.exe -mode batch -source vivado_ip_package.tcl
+# Log file: C:/Users/BHK/Desktop/ELSYS/Modell/BHK/IP_Core_SS_Switch_and_PWM/hdl_prj/ipcore/PWM_and_S_ip_v1_0/prj_ip/vivado.log
+# Journal file: C:/Users/BHK/Desktop/ELSYS/Modell/BHK/IP_Core_SS_Switch_and_PWM/hdl_prj/ipcore/PWM_and_S_ip_v1_0/prj_ip\vivado.jou
+#-----------------------------------------------------------
+source vivado_ip_package.tcl

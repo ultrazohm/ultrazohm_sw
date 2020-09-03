@@ -1,0 +1,56 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:55:39 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Mon Nov 12 08:18:02 2018
+# Process ID: 13820
+# Current directory: C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent12556 C:\XilinxEyke\MPSOC\007_AXI_TCM\AXI2TCM_sim\AXI2TCM_sim.xpr
+# Log file: C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/vivado.log
+# Journal file: C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.xpr
+update_compile_order -fileset sources_1
+open_bd_design {C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/bd/design_1/design_1.bd}
+report_ip_status -name ip_status 
+upgrade_ip -vlnv TUM:user:AXI2TCM:1.1 [get_ips  design_1_AXI2TCM_0_0] -log ip_upgrade.log
+export_ip_user_files -of_objects [get_ips design_1_AXI2TCM_0_0] -no_script -sync -force -quiet
+import_files -norecurse {C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd}
+update_compile_order -fileset sources_1
+create_bd_cell -type module -reference AXI2TCM_v1_0 AXI2TCM_v1_0_0
+set_property location {1 158 265} [get_bd_cells AXI2TCM_v1_0_0]
+connect_bd_net [get_bd_ports DATA_IN] [get_bd_pins AXI2TCM_v1_0_0/DATA_IN]
+connect_bd_net [get_bd_ports m00_axi_init_axi_txn] [get_bd_pins AXI2TCM_v1_0_0/init_axi_txn]
+connect_bd_net [get_bd_ports aclk] [get_bd_pins AXI2TCM_v1_0_0/m00_axi_aclk]
+connect_bd_net [get_bd_ports aresetn] [get_bd_pins AXI2TCM_v1_0_0/m00_axi_aresetn]
+delete_bd_objs [get_bd_intf_nets AXI2TCM_0_M00_AXI]
+connect_bd_intf_net [get_bd_intf_pins axi_vip_0/S_AXI] [get_bd_intf_pins AXI2TCM_v1_0_0/m00_axi]
+save_bd_design
+generate_target Simulation [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/bd/design_1/design_1.bd]
+update_compile_order -fileset sources_1
+undo
+undo
+undo
+undo
+undo
+undo
+undo
+undo
+save_bd_design
+generate_target Simulation [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/bd/design_1/design_1.bd]
+export_ip_user_files -of_objects [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/bd/design_1/design_1.bd] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/bd/design_1/design_1.bd] -directory C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.ip_user_files/sim_scripts -ip_user_files_dir C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.ip_user_files -ipstatic_source_dir C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.cache/compile_simlib/modelsim} {questa=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.cache/compile_simlib/questa} {riviera=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.cache/compile_simlib/riviera} {activehdl=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+launch_simulation
+open_wave_config C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/tb_axi2tcm_behav.wcfg
+source tb_axi2tcm.tcl
+update_compile_order -fileset sources_1
+open_bd_design {C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/bd/design_1/design_1.bd}
+export_ip_user_files -of_objects  [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/imports/hdl/AXI2TCM_v1_0.vhd] -no_script -reset -force -quiet
+remove_files  C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/imports/hdl/AXI2TCM_v1_0.vhd
+file delete -force C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/imports/hdl/AXI2TCM_v1_0.vhd
+export_ip_user_files -of_objects  [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/imports/hdl/AXI2TCM_v1_0_M00_AXI.vhd] -no_script -reset -force -quiet
+remove_files  C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/imports/hdl/AXI2TCM_v1_0_M00_AXI.vhd
+file delete -force C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/imports/hdl/AXI2TCM_v1_0_M00_AXI.vhd
+save_project_as AXI2TCM_sim_VHDL C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL -force
+close_sim

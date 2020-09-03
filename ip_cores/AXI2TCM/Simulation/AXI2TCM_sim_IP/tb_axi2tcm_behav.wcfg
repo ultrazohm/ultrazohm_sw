@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_axi2tcm_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="axi_vip_pkg" />
+            <top_module name="glbl" />
+            <top_module name="tb_axi2tcm" />
+            <top_module name="xil_common_vip_pkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="502500001fs"></ZoomEndTime>
+      <Cursor1Time time="123500000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="171"></NameColumnWidth>
+      <ValueColumnWidth column_width="99"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="36" />
+   <wvobject fp_name="/tb_axi2tcm/aclk" type="logic">
+      <obj_property name="ElementShortName">aclk</obj_property>
+      <obj_property name="ObjectShortName">aclk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/aresetn" type="logic">
+      <obj_property name="ElementShortName">aresetn</obj_property>
+      <obj_property name="ObjectShortName">aresetn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/INIT_AXI_TXN" type="logic">
+      <obj_property name="ElementShortName">INIT_AXI_TXN</obj_property>
+      <obj_property name="ObjectShortName">INIT_AXI_TXN</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/TXN_DONE" type="logic">
+      <obj_property name="ElementShortName">TXN_DONE</obj_property>
+      <obj_property name="ObjectShortName">TXN_DONE</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/DATA_IN" type="array">
+      <obj_property name="ElementShortName">DATA_IN[143:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA_IN[143:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/DATA" type="array">
+      <obj_property name="ElementShortName">DATA[159:0]</obj_property>
+      <obj_property name="ObjectShortName">DATA[159:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/write_done_0" type="logic">
+      <obj_property name="ElementShortName">write_done_0</obj_property>
+      <obj_property name="ObjectShortName">write_done_0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/wnext" type="logic">
+      <obj_property name="ElementShortName">wnext</obj_property>
+      <obj_property name="ObjectShortName">wnext</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/axi_wlast" type="logic">
+      <obj_property name="ElementShortName">axi_wlast</obj_property>
+      <obj_property name="ObjectShortName">axi_wlast</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/write_index" type="array">
+      <obj_property name="ElementShortName">write_index[5:0]</obj_property>
+      <obj_property name="ObjectShortName">write_index[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/writes_done" type="logic">
+      <obj_property name="ElementShortName">writes_done</obj_property>
+      <obj_property name="ObjectShortName">writes_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/rnext" type="logic">
+      <obj_property name="ElementShortName">rnext</obj_property>
+      <obj_property name="ObjectShortName">rnext</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/reads_done" type="logic">
+      <obj_property name="ElementShortName">reads_done</obj_property>
+      <obj_property name="ObjectShortName">reads_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/compare_done" type="logic">
+      <obj_property name="ElementShortName">compare_done</obj_property>
+      <obj_property name="ObjectShortName">compare_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/start_single_burst_write" type="logic">
+      <obj_property name="ElementShortName">start_single_burst_write</obj_property>
+      <obj_property name="ObjectShortName">start_single_burst_write</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/start_single_burst_read" type="logic">
+      <obj_property name="ElementShortName">start_single_burst_read</obj_property>
+      <obj_property name="ObjectShortName">start_single_burst_read</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/C_TRANSACTIONS_NUM" type="other">
+      <obj_property name="ElementShortName">C_TRANSACTIONS_NUM</obj_property>
+      <obj_property name="ObjectShortName">C_TRANSACTIONS_NUM</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_AWADDR" type="array">
+      <obj_property name="ElementShortName">M_AXI_AWADDR[31:0]</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_AWADDR[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_AWREADY" type="logic">
+      <obj_property name="ElementShortName">M_AXI_AWREADY</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_AWREADY</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_AWVALID" type="logic">
+      <obj_property name="ElementShortName">M_AXI_AWVALID</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_AWVALID</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_WDATA" type="array">
+      <obj_property name="ElementShortName">M_AXI_WDATA[31:0]</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_WDATA[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_WLAST" type="logic">
+      <obj_property name="ElementShortName">M_AXI_WLAST</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_WLAST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_WVALID" type="logic">
+      <obj_property name="ElementShortName">M_AXI_WVALID</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_WVALID</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_WREADY" type="logic">
+      <obj_property name="ElementShortName">M_AXI_WREADY</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_WREADY</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_BVALID" type="logic">
+      <obj_property name="ElementShortName">M_AXI_BVALID</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_BVALID</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_BREADY" type="logic">
+      <obj_property name="ElementShortName">M_AXI_BREADY</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_BREADY</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_ARADDR" type="array">
+      <obj_property name="ElementShortName">M_AXI_ARADDR[31:0]</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_ARADDR[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_ARVALID" type="logic">
+      <obj_property name="ElementShortName">M_AXI_ARVALID</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_ARVALID</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_ARREADY" type="logic">
+      <obj_property name="ElementShortName">M_AXI_ARREADY</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_ARREADY</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_RDATA" type="array">
+      <obj_property name="ElementShortName">M_AXI_RDATA[31:0]</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_RDATA[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/expected_rdata" type="array">
+      <obj_property name="ElementShortName">expected_rdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">expected_rdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/read_index" type="array">
+      <obj_property name="ElementShortName">read_index[5:0]</obj_property>
+      <obj_property name="ObjectShortName">read_index[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_RLAST" type="logic">
+      <obj_property name="ElementShortName">M_AXI_RLAST</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_RLAST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_RVALID" type="logic">
+      <obj_property name="ElementShortName">M_AXI_RVALID</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_RVALID</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/M_AXI_RREADY" type="logic">
+      <obj_property name="ElementShortName">M_AXI_RREADY</obj_property>
+      <obj_property name="ObjectShortName">M_AXI_RREADY</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axi2tcm/DUT/design_1_i/AXI2TCM_0/U0/AXI2TCM_v1_0_M00_AXI_inst/ERROR" type="logic">
+      <obj_property name="ElementShortName">ERROR</obj_property>
+      <obj_property name="ObjectShortName">ERROR</obj_property>
+   </wvobject>
+</wave_config>

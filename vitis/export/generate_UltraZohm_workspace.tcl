@@ -1,0 +1,242 @@
+####################################################
+#
+# generate_UltraZohm_workspace.tcl
+#
+# Copyright (C) 2020 IltraZohm Community, All rights reserved.
+#
+# Created on: 06.02.2020
+#     Author: Eyke Liegmann (EL)
+# 	Modified: Wendel Sebastian (SW)
+#
+# execute in XSCT console in Vitis workspace
+#	cd [getws] 
+#	source {../export/generate_UltraZohm_workspace.tcl}
+#
+# XSCT Programming Reference UG1416 
+# https://www.xilinx.com/html_docs/xilinx2019_2/vitis_doc/Chunk464819247.html?hl=xsct#ngg1569240078633
+####################################################
+
+
+proc app_clean {{name *}} {
+  set tmplist [app list]
+  set index 0
+  foreach element $tmplist {
+	if {$index>2} {
+	  if {[string match $name $element]} {
+		app clean $element
+		puts "clean -name $element "
+	  } else {
+		puts "skip $element"
+	  }
+	} else {
+	  puts "$element"
+	}
+	incr index
+  }
+}
+
+proc app_build {{name *}} {
+  set tmplist [app list]
+  set index 0
+  foreach element $tmplist {
+	if {$index>2} {
+	  if {[string match $name $element]} {
+	  
+		if {[catch {
+		  app build $element
+		} result]} { puts "Error:(TE) build $element failed: $result."}
+
+		puts "build $element "
+	  } else {
+		puts "skip $element"
+	  }
+	} else {
+	  puts "$element"
+	}
+	incr index
+  }
+}
+
+
+proc vitis_main {} {
+
+set WS_PATH [getws]
+cd $WS_PATH
+cd ..
+set FOLDER_PATH [pwd]
+
+puts "Info:(UltraZohm) create Platform Project"
+#create platform 
+platform create -name UltraZohm -hw $FOLDER_PATH/vivado_exported_xsa/zusys_wrapper.xsa -no-boot-bsp
+#platform config -remove-boot-bsp
+
+
+set PLATFORM_NAME [platform active]
+
+
+#Domain FreeRTOS A53_0
+####################################################
+puts "Info:(UltraZohm) create FreeRTOS_domain"
+#add freertos domain
+domain create -name FreeRTOS_domain -os freertos10_xilinx -proc psu_cortexa53_0
+
+puts "Info:(UltraZohm) change FreeRTOS BSP settings"
+#add liIP lib to BSP
+bsp setlib -name lwip211
+
+# get list of configurable parameters for lwip lib
+#bsp listparams -lib lwip211
+bsp config api_mode SOCKET_API
+platform write 
+bsp config dhcp_does_arp_check true
+platform write 
+bsp config lwip_dhcp true
+platform write 
+
+puts "Info:(UltraZohm) regenerate FreeRTOS BSP"
+#regenerate board support package
+bsp regenerate
+
+
+#Domain Baremetal R5_0
+#####################################################
+puts "Info:(UltraZohm) create Baremetal_domain"
+#create Baremetal domain
+domain create -name Baremetal_domain -os standalone -proc psu_cortexr5_0 
+#save changes
+platform write 
+
+
+#Domain FSBL (Standalone) A53_0
+####################################################
+puts "Info:(UltraZohm) create FSBL_domain"
+#add FSBL domain
+domain create -name FSBL_domain -os standalone -proc psu_cortexa53_0
+
+puts "Info:(UltraZohm) change FSBL BSP settings"
+#add xilffs lib to BSP
+bsp setlib -name xilffs
+#add xilpm lib to BSP
+bsp setlib -name xilpm
+#add xilsecure lib to BSP
+bsp setlib -name xilsecure
+
+# get list of configurable parameters for xilffs lib
+#bsp listparams -lib xilffs
+bsp config zynqmp_fsbl_bsp true
+platform write 
+
+puts "Info:(UltraZohm) regenerate FSBL BSP"
+#regenerate board support package
+bsp regenerate
+
+
+#Regenerate platform
+#####################################################
+puts "Info:(UltraZohm) generate Platform project"
+platform generate
+
+
+#Application Baremetal R5_0
+#####################################################
+puts "Info:(UltraZohm) create Baremetal Application"
+# application 
+app create -name Baremetal -template {Empty Application} -platform $PLATFORM_NAME -domain Baremetal_domain
+
+puts "Info:(UltraZohm) import Baremetal Application sources"
+#import sources to baremetal project
+# first the c-files are linked
+# then the linker script is copied to the folder with a hard copy due to compilation errors otherwise - note that the sequence (first link the file, then copy the linker script is importent due to -soft-link deleting the linker script otherwise
+importsources -name Baremetal -path $FOLDER_PATH/export/Baremetal -soft-link
+importsources -name Baremetal -path $FOLDER_PATH/export/Baremetal/lscript.ld -linker-script 
+#add math library to linker option
+#app config -name Baremetal -add  linker-misc {-lm}
+
+
+#Application FreeRTOS A53_0
+####################################################
+puts "Info:(UltraZohm) create FreeRTOS Application"
+#create freertos app based on {FreeRTOS lwIP Echo Server}
+#app create -name FreeRTOS -template {FreeRTOS lwIP Echo Server} -platform $PLATFORM_NAME -domain FreeRTOS_domain
+app create -name FreeRTOS -template {Empty Application} -platform $PLATFORM_NAME -domain FreeRTOS_domain
+
+#delete existing files from FreeRTOS lwIP Echo Server template
+#rm -r $WS_PATH/FreeRTOS/src/*
+
+puts "Info:(UltraZohm) import FreeRTOS Application sources"
+#import sources to freertos project
+set filename_export [file join [pwd] export]
+puts "Path to export:"
+puts stdout $filename_export
+
+set filename_FreeRTOS [file join $filename_export FreeRTOS]
+puts "Path to FreeRTOS:"
+puts stdout $filename_FreeRTOS
+
+set filename_FSBL [file join $filename_export FSBL]
+puts "Path to FSBL:"
+puts stdout $filename_FSBL
+importsources -name FreeRTOS -path $filename_FreeRTOS -soft-link
+importsources -name FreeRTOS -path $filename_FreeRTOS/lscript.ld -linker-script
+
+#Application FSBL (Standalone) A53_0
+####################################################
+puts "Info:(UltraZohm) create FSBL Application"
+#create standalone app based on {Zynq MP FSBL}
+app create -name FSBL -template {Zynq MP FSBL} -platform $PLATFORM_NAME -domain FSBL_domain
+#app create -name FSBL -template {Empty Application} -platform $PLATFORM_NAME -domain FSBL_domain
+
+puts "Info:(UltraZohm) import FSBL Application sources"
+#import sources to FSBL project
+importsources -name FSBL -path $filename_FSBL -soft-link
+importsources -name FSBL -path $filename_FSBL/lscript.ld -linker-script
+
+puts "Info:(UltraZohm) add standard FSBL.elf"
+platform config -remove-boot-bsp
+platform config -fsbl-elf $FOLDER_PATH/export/FSBL.elf 
+platform write 
+platform generate 
+
+#Clean all
+####################################################
+puts "Info:(UltraZohm) clean all application projects"
+app_clean
+puts "Info:(UltraZohm) build all application projects"
+app_build
+#
+# copy debug files
+set filename_workspace [file join $FOLDER_PATH workspace]
+set filename_meta [file join $filename_workspace .metadata]
+set filename_plugins [file join $filename_meta .plugins]
+set filename_eclipse [file join $filename_plugins org.eclipse.debug.core]
+set filename_launches [file join $filename_eclipse .launches]
+puts "Path to launches:"
+puts stdout $filename_launches
+
+file mkdir $filename_launches
+set filename_export [file join [pwd] export]
+set DebugBaremetal [file join $filename_export DebugBaremetal.launch]
+set DebugAll [file join $filename_export Debug_FreeRTOS_Baremetal_FPGA.launch]
+#     file copy ?-force? ?--? source ?source ...? targetDir
+file copy -force -- $DebugBaremetal $filename_launches
+file copy -force -- $DebugAll $filename_launches
+puts "========================================"
+puts "debug files copied"
+puts "========================================"
+puts "Info:(UltraZohm) generate_UltraZohm_workspace.tcl script finished successfully"
+}
+
+vitis_main
+
+## useful
+## change active domain 
+
+# domain list 
+# domain active []
+
+##list of all os 
+
+#repo -os 
+
+
+

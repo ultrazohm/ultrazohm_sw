@@ -1,0 +1,14 @@
+SLStudio.Utils.RemoveHighlighting(get_param('Transformation_V11', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_Transformation_V11', 'handle'));
+annotate_port('gm_Transformation_V11/Trans_123_dq_fix_V11/dq_transformation', 0, 1, '');
+annotate_port('Transformation_V11/Trans_123_dq_fix_V11/dq_transformation', 0, 1, '');
+annotate_port('gm_Transformation_V11/Trans_123_dq_fix_V11/Constant', 0, 1, '');
+annotate_port('Transformation_V11/Trans_123_dq_fix_V11/Constant', 0, 1, '');
+annotate_port('gm_Transformation_V11/Trans_123_dq_fix_V11/Constant1', 0, 1, '');
+annotate_port('Transformation_V11/Trans_123_dq_fix_V11/Constant1', 0, 1, '');
+annotate_port('gm_Transformation_V11/Trans_123_dq_fix_V11/in_1_pipe', 0, 1, '');
+annotate_port('gm_Transformation_V11/Trans_123_dq_fix_V11/Gain2', 0, 1, '');
+annotate_port('gm_Transformation_V11/Trans_123_dq_fix_V11/Gain2_outbuff_out_pipe', 1, 1, '');
+annotate_port('gm_Transformation_V11/Trans_123_dq_fix_V11/dq_transformation/dq_transformation', 1, 1, '');
+annotate_port('gm_Transformation_V11/Trans_123_dq_fix_V11/dq_transformation/dq_transformation', 1, 1, '');
+annotate_port('Transformation_V11/Trans_123_dq_fix_V11/dq_transformation', 1, 1, '');

@@ -1,0 +1,21 @@
+Pin X6, Name, Specification
+1, 3V3_PER, 3.3 V - 0.0 A (??)
+2, GND, GND
+3, DIG_05_Ch5, 1.8 V (connection to CPLD of D5)
+4, DIG_03_Ch5, 1.8 V (connection to CPLD of D5)
+5, DIG_01_Ch5, 1.8 V (connection to CPLD of D5)
+6, DIG_29_Ch5, 1.8 V (connection to CPLD of D5)
+7, DIG_27_Ch5, 1.8 V (connection to CPLD of D5)
+8, DIG_25_Ch5, 1.8 V (connection to CPLD of D5)
+9, GND, GND
+10, 3V3_PER, 3.3 V - 0.0 A (??)
+11, 3V3_PER, 3.3 V - 0.0 A (??)
+12, GND, GND
+13, DIG_06_Ch5, 1.8 V (connection to CPLD of D5)
+14, DIG_04_Ch5, 1.8 V (connection to CPLD of D5)
+15, DIG_02_Ch5, 1.8 V (connection to CPLD of D5)
+16, DIG_30_Ch5, 1.8 V (connection to CPLD of D5)
+17, DIG_28_Ch5, 1.8 V (connection to CPLD of D5)
+18, DIG_26_Ch5, 1.8 V (connection to CPLD of D5)
+19, GND, GND
+20, 3V3_PER, 3.3 V - 0.0 A (??)

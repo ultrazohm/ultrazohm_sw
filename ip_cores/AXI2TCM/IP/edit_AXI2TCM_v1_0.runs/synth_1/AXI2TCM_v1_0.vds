@@ -1,0 +1,390 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:55:39 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Fri Nov  9 15:22:42 2018
+# Process ID: 8932
+# Current directory: C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/edit_AXI2TCM_v1_0.runs/synth_1
+# Command line: vivado.exe -log AXI2TCM_v1_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source AXI2TCM_v1_0.tcl
+# Log file: C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/edit_AXI2TCM_v1_0.runs/synth_1/AXI2TCM_v1_0.vds
+# Journal file: C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/edit_AXI2TCM_v1_0.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source AXI2TCM_v1_0.tcl -notrace
+Command: synth_design -top AXI2TCM_v1_0 -part xczu9eg-ffvb1156-2-e
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xczu9eg'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xczu9eg'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 840 
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 389.082 ; gain = 98.797
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'AXI2TCM_v1_0' [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd:85]
+	Parameter C_M00_NUMBER_of_ADCs bound to: 2 - type: integer 
+	Parameter C_M00_AXI_TARGET_SLAVE_BASE_ADDR bound to: 32'b11111111111000000000000000000000 
+	Parameter C_M00_AXI_ID_WIDTH bound to: 1 - type: integer 
+	Parameter C_M00_AXI_ADDR_WIDTH bound to: 32 - type: integer 
+	Parameter C_M00_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M00_AXI_AWUSER_WIDTH bound to: 0 - type: integer 
+	Parameter C_M00_AXI_ARUSER_WIDTH bound to: 0 - type: integer 
+	Parameter C_M00_AXI_WUSER_WIDTH bound to: 0 - type: integer 
+	Parameter C_M00_AXI_RUSER_WIDTH bound to: 0 - type: integer 
+	Parameter C_M00_AXI_BUSER_WIDTH bound to: 0 - type: integer 
+WARNING: [Synth 8-506] null port 'm00_axi_awuser' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd:49]
+WARNING: [Synth 8-506] null port 'm00_axi_wuser' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd:55]
+WARNING: [Synth 8-506] null port 'm00_axi_buser' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd:60]
+WARNING: [Synth 8-506] null port 'm00_axi_aruser' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd:72]
+WARNING: [Synth 8-506] null port 'm00_axi_ruser' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd:79]
+	Parameter C_M_NUMBER_of_ADCs bound to: 2 - type: integer 
+	Parameter C_M_TARGET_SLAVE_BASE_ADDR bound to: -2097152 - type: integer 
+	Parameter C_M_AXI_ID_WIDTH bound to: 1 - type: integer 
+	Parameter C_M_AXI_ADDR_WIDTH bound to: 32 - type: integer 
+	Parameter C_M_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M_AXI_AWUSER_WIDTH bound to: 0 - type: integer 
+	Parameter C_M_AXI_ARUSER_WIDTH bound to: 0 - type: integer 
+	Parameter C_M_AXI_WUSER_WIDTH bound to: 0 - type: integer 
+	Parameter C_M_AXI_RUSER_WIDTH bound to: 0 - type: integer 
+	Parameter C_M_AXI_BUSER_WIDTH bound to: 0 - type: integer 
+WARNING: [Synth 8-506] null port 'M_AXI_AWUSER' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd:121]
+WARNING: [Synth 8-506] null port 'M_AXI_WUSER' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd:127]
+WARNING: [Synth 8-506] null port 'M_AXI_BUSER' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd:132]
+WARNING: [Synth 8-506] null port 'M_AXI_ARUSER' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd:144]
+WARNING: [Synth 8-506] null port 'M_AXI_RUSER' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd:151]
+INFO: [Synth 8-3491] module 'AXI2TCM_v1_0_M00_AXI' declared at 'C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:5' bound to instance 'AXI2TCM_v1_0_M00_AXI_inst' of component 'AXI2TCM_v1_0_M00_AXI' [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd:160]
+INFO: [Synth 8-638] synthesizing module 'AXI2TCM_v1_0_M00_AXI' [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:162]
+	Parameter C_M_NUMBER_of_ADCs bound to: 2 - type: integer 
+	Parameter C_M_TARGET_SLAVE_BASE_ADDR bound to: -2097152 - type: integer 
+	Parameter C_M_AXI_ID_WIDTH bound to: 1 - type: integer 
+	Parameter C_M_AXI_ADDR_WIDTH bound to: 32 - type: integer 
+	Parameter C_M_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M_AXI_AWUSER_WIDTH bound to: 0 - type: integer 
+	Parameter C_M_AXI_ARUSER_WIDTH bound to: 0 - type: integer 
+	Parameter C_M_AXI_WUSER_WIDTH bound to: 0 - type: integer 
+	Parameter C_M_AXI_RUSER_WIDTH bound to: 0 - type: integer 
+	Parameter C_M_AXI_BUSER_WIDTH bound to: 0 - type: integer 
+WARNING: [Synth 8-506] null port 'M_AXI_AWUSER' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:75]
+WARNING: [Synth 8-506] null port 'M_AXI_WUSER' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:91]
+WARNING: [Synth 8-506] null port 'M_AXI_BUSER' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:103]
+WARNING: [Synth 8-506] null port 'M_AXI_ARUSER' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:135]
+WARNING: [Synth 8-506] null port 'M_AXI_RUSER' ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:152]
+WARNING: [Synth 8-3919] null assignment ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:297]
+WARNING: [Synth 8-3919] null assignment ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:304]
+WARNING: [Synth 8-3919] null assignment ignored [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:322]
+WARNING: [Synth 8-5825] expecting unsigned expression [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:459]
+INFO: [Synth 8-226] default block is never used [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:778]
+INFO: [Synth 8-256] done synthesizing module 'AXI2TCM_v1_0_M00_AXI' (1#1) [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:162]
+INFO: [Synth 8-256] done synthesizing module 'AXI2TCM_v1_0' (2#1) [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd:85]
+WARNING: [Synth 8-3331] design AXI2TCM_v1_0_M00_AXI has unconnected port M_AXI_BID[0]
+WARNING: [Synth 8-3331] design AXI2TCM_v1_0_M00_AXI has unconnected port M_AXI_BRESP[0]
+WARNING: [Synth 8-3331] design AXI2TCM_v1_0_M00_AXI has unconnected port M_AXI_RID[0]
+WARNING: [Synth 8-3331] design AXI2TCM_v1_0_M00_AXI has unconnected port M_AXI_RRESP[0]
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 440.613 ; gain = 150.328
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 440.613 ; gain = 150.328
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xczu9eg-ffvb1156-2-e
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 440.613 ; gain = 150.328
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xczu9eg-ffvb1156-2-e
+WARNING: [Synth 8-6014] Unused sequential element axi_awaddr_reg was removed.  [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:285]
+WARNING: [Synth 8-6014] Unused sequential element axi_araddr_reg was removed.  [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:310]
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 440.613 ; gain = 150.328
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 2     
+	   2 Input      2 Bit       Adders := 2     
+	   2 Input      1 Bit       Adders := 2     
++---Registers : 
+	               32 Bit    Registers := 3     
+	                2 Bit    Registers := 3     
+	                1 Bit    Registers := 20    
++---Muxes : 
+	   4 Input     32 Bit        Muxes := 2     
+	   2 Input     32 Bit        Muxes := 2     
+	   6 Input      2 Bit        Muxes := 1     
+	   4 Input      1 Bit        Muxes := 5     
+	   2 Input      1 Bit        Muxes := 8     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module AXI2TCM_v1_0_M00_AXI 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 2     
+	   2 Input      2 Bit       Adders := 2     
+	   2 Input      1 Bit       Adders := 2     
++---Registers : 
+	               32 Bit    Registers := 3     
+	                2 Bit    Registers := 3     
+	                1 Bit    Registers := 20    
++---Muxes : 
+	   4 Input     32 Bit        Muxes := 2     
+	   2 Input     32 Bit        Muxes := 2     
+	   6 Input      2 Bit        Muxes := 1     
+	   4 Input      1 Bit        Muxes := 5     
+	   2 Input      1 Bit        Muxes := 8     
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 2520 (col length:168)
+BRAMs: 1824 (col length: RAMB18 168 RAMB36 84)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-6014] Unused sequential element AXI2TCM_v1_0_M00_AXI_inst/DATA_reg was removed.  [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:500]
+WARNING: [Synth 8-6014] Unused sequential element AXI2TCM_v1_0_M00_AXI_inst/axi_awaddr_reg was removed.  [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:285]
+WARNING: [Synth 8-6014] Unused sequential element AXI2TCM_v1_0_M00_AXI_inst/axi_araddr_reg was removed.  [C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd:310]
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awid[0] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awlen[7] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awlen[6] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awlen[5] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awlen[4] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awlen[3] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awlen[2] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awlen[1] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awlen[0] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awsize[2] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awsize[1] driven by constant 1
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awsize[0] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awburst[1] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awburst[0] driven by constant 1
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awlock driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awcache[3] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awcache[2] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awcache[1] driven by constant 1
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awcache[0] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awprot[2] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awprot[1] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awprot[0] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awqos[3] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awqos[2] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awqos[1] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_awqos[0] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_wstrb[3] driven by constant 1
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_wstrb[2] driven by constant 1
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_wstrb[1] driven by constant 1
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_wstrb[0] driven by constant 1
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arid[0] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arlen[7] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arlen[6] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arlen[5] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arlen[4] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arlen[3] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arlen[2] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arlen[1] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arlen[0] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arsize[2] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arsize[1] driven by constant 1
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arsize[0] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arburst[1] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arburst[0] driven by constant 1
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arlock driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arcache[3] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arcache[2] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arcache[1] driven by constant 1
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arcache[0] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arprot[2] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arprot[1] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arprot[0] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arqos[3] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arqos[2] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arqos[1] driven by constant 0
+WARNING: [Synth 8-3917] design AXI2TCM_v1_0 has port m00_axi_arqos[0] driven by constant 0
+WARNING: [Synth 8-3331] design AXI2TCM_v1_0 has unconnected port m00_axi_bid[0]
+WARNING: [Synth 8-3331] design AXI2TCM_v1_0 has unconnected port m00_axi_bresp[0]
+WARNING: [Synth 8-3331] design AXI2TCM_v1_0 has unconnected port m00_axi_rid[0]
+WARNING: [Synth 8-3331] design AXI2TCM_v1_0 has unconnected port m00_axi_rresp[0]
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_12/\AXI2TCM_v1_0_M00_AXI_inst/axi_araddr_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_12/\AXI2TCM_v1_0_M00_AXI_inst/axi_araddr_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_10/\AXI2TCM_v1_0_M00_AXI_inst/axi_awaddr_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (i_10/\AXI2TCM_v1_0_M00_AXI_inst/axi_awaddr_reg[1] )
+WARNING: [Synth 8-3332] Sequential element (AXI2TCM_v1_0_M00_AXI_inst/axi_awaddr_reg[0]) is unused and will be removed from module AXI2TCM_v1_0.
+WARNING: [Synth 8-3332] Sequential element (AXI2TCM_v1_0_M00_AXI_inst/axi_awaddr_reg[1]) is unused and will be removed from module AXI2TCM_v1_0.
+WARNING: [Synth 8-3332] Sequential element (AXI2TCM_v1_0_M00_AXI_inst/write_index_reg[1]) is unused and will be removed from module AXI2TCM_v1_0.
+WARNING: [Synth 8-3332] Sequential element (AXI2TCM_v1_0_M00_AXI_inst/write_index_reg[0]) is unused and will be removed from module AXI2TCM_v1_0.
+WARNING: [Synth 8-3332] Sequential element (AXI2TCM_v1_0_M00_AXI_inst/axi_araddr_reg[0]) is unused and will be removed from module AXI2TCM_v1_0.
+WARNING: [Synth 8-3332] Sequential element (AXI2TCM_v1_0_M00_AXI_inst/axi_araddr_reg[1]) is unused and will be removed from module AXI2TCM_v1_0.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 1141.340 ; gain = 851.055
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 1141.340 ; gain = 851.055
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-3332] Sequential element (AXI2TCM_v1_0_M00_AXI_inst/read_index_reg[1]) is unused and will be removed from module AXI2TCM_v1_0.
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 1142.430 ; gain = 852.145
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 1142.430 ; gain = 852.145
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 1142.430 ; gain = 852.145
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 1142.430 ; gain = 852.145
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 1142.430 ; gain = 852.145
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 1142.430 ; gain = 852.145
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 1142.430 ; gain = 852.145
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |BUFG   |     1|
+|2     |CARRY8 |    14|
+|3     |LUT1   |    25|
+|4     |LUT2   |     6|
+|5     |LUT3   |     8|
+|6     |LUT4   |     6|
+|7     |LUT5   |     2|
+|8     |LUT6   |    19|
+|9     |FDRE   |   147|
+|10    |IBUF   |    75|
+|11    |OBUF   |   161|
++------+-------+------+
+
+Report Instance Areas: 
++------+----------------------------+---------------------+------+
+|      |Instance                    |Module               |Cells |
++------+----------------------------+---------------------+------+
+|1     |top                         |                     |   464|
+|2     |  AXI2TCM_v1_0_M00_AXI_inst |AXI2TCM_v1_0_M00_AXI |   227|
++------+----------------------------+---------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 1142.430 ; gain = 852.145
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 95 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 1142.430 ; gain = 852.145
+Synthesis Optimization Complete : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 1142.430 ; gain = 852.145
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Netlist 29-17] Analyzing 90 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 76 instances were transformed.
+  BUFG => BUFGCE: 1 instances
+  IBUF => IBUF (IBUFCTRL, INBUF): 75 instances
+
+INFO: [Common 17-83] Releasing license: Synthesis
+19 Infos, 95 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:25 ; elapsed = 00:00:26 . Memory (MB): peak = 1249.371 ; gain = 971.852
+INFO: [Common 17-1381] The checkpoint 'C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/edit_AXI2TCM_v1_0.runs/synth_1/AXI2TCM_v1_0.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file AXI2TCM_v1_0_utilization_synth.rpt -pb AXI2TCM_v1_0_utilization_synth.pb
+report_utilization: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.175 . Memory (MB): peak = 1249.371 ; gain = 0.000
+INFO: [Common 17-206] Exiting Vivado at Fri Nov  9 15:23:14 2018...

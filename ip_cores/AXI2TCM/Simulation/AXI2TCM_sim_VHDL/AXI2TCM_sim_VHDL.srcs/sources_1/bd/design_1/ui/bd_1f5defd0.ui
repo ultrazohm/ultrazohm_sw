@@ -1,0 +1,25 @@
+{
+   ExpandedHierarchyInLayout: "",
+   guistr: "# # String gsaved with Nlview 6.6.11  2017-06-12 bk=1.3860 VDI=40 GEI=35 GUI=JA:1.6
+#  -string -flagsOSRD
+preplace port write_done_0 -pg 1 -y 20 -defaultsOSRD
+preplace port m00_axi_init_axi_txn -pg 1 -y 90 -defaultsOSRD
+preplace port axi_error_0 -pg 1 -y 180 -defaultsOSRD
+preplace port aclk -pg 1 -y 110 -defaultsOSRD
+preplace port axi_txn_done_0 -pg 1 -y 160 -defaultsOSRD
+preplace port aresetn -pg 1 -y 130 -defaultsOSRD
+preplace portBus DATA_IN -pg 1 -y 70 -defaultsOSRD
+preplace inst AXI2TCM -pg 1 -lvl 1 -y 100 -defaultsOSRD
+preplace inst axi_vip_0 -pg 1 -lvl 2 -y 90 -defaultsOSRD
+preplace netloc AXI2TCM_v1_0_0_m00_axi 1 1 1 N
+preplace netloc AXI2TCM_v1_0_0_axi_error 1 1 2 390J 180 NJ
+preplace netloc AXI2TCM_v1_0_0_write_done 1 1 2 390J 20 NJ
+preplace netloc aresetn_0_1 1 0 2 20 180 380
+preplace netloc AXI2TCM_v1_0_0_axi_txn_done 1 1 2 370J 160 NJ
+preplace netloc DATA_IN_1 1 0 1 NJ
+preplace netloc aclk_0_1 1 0 2 20 20 370
+preplace netloc m00_axi_init_axi_txn_1 1 0 1 NJ
+levelinfo -pg 1 0 200 500 610 -top 0 -bot 200
+",
+}
+0

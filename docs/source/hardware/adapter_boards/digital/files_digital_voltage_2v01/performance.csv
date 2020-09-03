@@ -1,0 +1,6 @@
+Assembly variant, t\ :sub:`prop`\ r.e. (ns), t\ :sub:`prop`\ f.e. (ns), t\ :sub:`rise`\ (ns), t\ :sub:`fall`\ (ns)
+3.3V to 5V, 2, 5 , 12, 11
+3.3V to 15V with 5V level shifter, 168, 142, 21, 15
+3.3V to 15V without 5V level shifter, 164, 144, 21, 15
+3.3V to RS422, 10, 10, 12, 12
+RS422 to 3.3V, 10, 18, 12, 13

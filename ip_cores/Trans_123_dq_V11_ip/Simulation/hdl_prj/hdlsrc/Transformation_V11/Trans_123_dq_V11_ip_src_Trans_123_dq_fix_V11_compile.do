@@ -1,0 +1,4 @@
+vlib work
+vcom  Trans_123_dq_V11_ip_src_Trans_123_dq_fix_V11_pkg.vhd
+vcom  Trans_123_dq_V11_ip_src_dq_transformation.vhd
+vcom  Trans_123_dq_V11_ip_src_Trans_123_dq_fix_V11.vhd

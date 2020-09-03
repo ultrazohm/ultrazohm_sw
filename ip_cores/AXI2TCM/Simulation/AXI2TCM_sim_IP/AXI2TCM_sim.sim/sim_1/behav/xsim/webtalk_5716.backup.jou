@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Webtalk v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:55:39 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Tue Nov 13 14:43:26 2018
+# Process ID: 5716
+# Current directory: C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.sim/sim_1/behav/xsim
+# Command line: wbtcv.exe -mode batch -source C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.sim/sim_1/behav/xsim/xsim.dir/tb_axi2tcm_behav/webtalk/xsim_webtalk.tcl -notrace
+# Log file: C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.sim/sim_1/behav/xsim/webtalk.log
+# Journal file: C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.sim/sim_1/behav/xsim\webtalk.jou
+#-----------------------------------------------------------
+source C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.sim/sim_1/behav/xsim/xsim.dir/tb_axi2tcm_behav/webtalk/xsim_webtalk.tcl -notrace

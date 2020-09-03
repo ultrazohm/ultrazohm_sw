@@ -1,0 +1,7 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd" \
+"../../../../AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd" \
+
+# Do not sort compile order
+nosort

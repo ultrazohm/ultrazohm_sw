@@ -1,0 +1,51 @@
+/** customization css file **/
+
+/* include the base RTD theme */
+@import 'theme.css';
+
+.wy-nav-content {
+	width= 100%;
+	max-width: 1200px;
+}
+
+.bg-red {
+	background-color: lightcoral
+}
+
+.bg-green {
+	background-color: lightgreen
+}
+
+.bg-purple {
+	background-color: plum
+}
+
+.bg-gray {
+	background-color: lightgray
+}
+
+.bg-pink {
+	background-color: hotpink
+}
+
+.bg-seagreen {
+	background-color: seagreen
+}
+
+.bg-yellow {
+	background-color: yellow
+}
+
+.bg-bisque {
+	background-color: bisque
+}
+
+.bg-brown {
+	background-color: burlywood
+}
+
+svg {
+    width: 100%;
+		max-width: 1200px;
+		height: auto;
+}

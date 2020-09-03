@@ -1,0 +1,105 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:55:39 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Mon Nov 12 08:27:02 2018
+# Process ID: 2472
+# Current directory: C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent9864 C:\XilinxEyke\MPSOC\007_AXI_TCM\AXI2TCM_sim_VHDL\AXI2TCM_sim_VHDL.xpr
+# Log file: C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/vivado.log
+# Journal file: C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.xpr
+update_compile_order -fileset sources_1
+import_files -norecurse {C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0.vhd C:/XilinxEyke/MPSOC/007_AXI_TCM/ip_repo/AXI2TCM_1.0/hdl/AXI2TCM_v1_0_M00_AXI.vhd}
+update_compile_order -fileset sources_1
+open_bd_design {C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd}
+create_bd_cell -type module -reference AXI2TCM_v1_0 AXI2TCM_v1_0_0
+set_property -dict [list CONFIG.C_M00_NUMBER_of_ADCs {9}] [get_bd_cells AXI2TCM_v1_0_0]
+delete_bd_objs [get_bd_intf_nets AXI2TCM_0_M00_AXI] [get_bd_nets DATA_IN_1] [get_bd_nets AXI2TCM_0_write_done] [get_bd_nets m00_axi_init_axi_txn_0_1] [get_bd_nets AXI2TCM_0_axi_txn_done] [get_bd_nets AXI2TCM_0_axi_error] [get_bd_cells AXI2TCM_0]
+set_property location {1 195 23} [get_bd_cells AXI2TCM_v1_0_0]
+connect_bd_intf_net [get_bd_intf_pins AXI2TCM_v1_0_0/m00_axi] [get_bd_intf_pins axi_vip_0/S_AXI]
+connect_bd_net [get_bd_ports DATA_IN] [get_bd_pins AXI2TCM_v1_0_0/DATA_IN]
+connect_bd_net [get_bd_ports m00_axi_init_axi_txn] [get_bd_pins AXI2TCM_v1_0_0/init_axi_txn]
+connect_bd_net [get_bd_ports aclk] [get_bd_pins AXI2TCM_v1_0_0/m00_axi_aclk]
+connect_bd_net [get_bd_ports aresetn] [get_bd_pins AXI2TCM_v1_0_0/m00_axi_aresetn]
+connect_bd_net [get_bd_ports write_done_0] [get_bd_pins AXI2TCM_v1_0_0/write_done]
+connect_bd_net [get_bd_ports axi_txn_done_0] [get_bd_pins AXI2TCM_v1_0_0/axi_txn_done]
+connect_bd_net [get_bd_ports axi_error_0] [get_bd_pins AXI2TCM_v1_0_0/axi_error]
+set_property name AXI2TCM [get_bd_cells AXI2TCM_v1_0_0]
+save_bd_design
+update_compile_order -fileset sources_1
+open_bd_design {C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd}
+generate_target Simulation [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd]
+export_ip_user_files -of_objects [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd] -directory C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files/sim_scripts -ip_user_files_dir C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files -ipstatic_source_dir C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/modelsim} {questa=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/questa} {riviera=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/riviera} {activehdl=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+launch_simulation
+open_bd_design {C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd}
+assign_bd_address
+save_bd_design
+generate_target Simulation [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd]
+export_ip_user_files -of_objects [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd] -directory C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files/sim_scripts -ip_user_files_dir C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files -ipstatic_source_dir C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/modelsim} {questa=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/questa} {riviera=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/riviera} {activehdl=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+launch_simulation
+open_bd_design {C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd}
+regenerate_bd_layout
+validate_bd_design -force
+save_bd_design
+generate_target Simulation [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd]
+export_ip_user_files -of_objects [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd] -directory C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files/sim_scripts -ip_user_files_dir C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files -ipstatic_source_dir C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/modelsim} {questa=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/questa} {riviera=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/riviera} {activehdl=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+launch_simulation
+startgroup
+set_property -dict [list CONFIG.C_M00_AXI_AWUSER_WIDTH {1} CONFIG.C_M00_AXI_ARUSER_WIDTH {1} CONFIG.C_M00_AXI_WUSER_WIDTH {1} CONFIG.C_M00_AXI_RUSER_WIDTH {1} CONFIG.C_M00_AXI_BUSER_WIDTH {1}] [get_bd_cells AXI2TCM]
+endgroup
+startgroup
+set_property -dict [list CONFIG.C_M00_AXI_AWUSER_WIDTH {0} CONFIG.C_M00_AXI_ARUSER_WIDTH {0} CONFIG.C_M00_AXI_WUSER_WIDTH {0} CONFIG.C_M00_AXI_RUSER_WIDTH {0} CONFIG.C_M00_AXI_BUSER_WIDTH {0}] [get_bd_cells AXI2TCM]
+endgroup
+startgroup
+set_property -dict [list CONFIG.RUSER_WIDTH.VALUE_SRC USER CONFIG.AWUSER_WIDTH.VALUE_SRC USER CONFIG.ARUSER_WIDTH.VALUE_SRC USER CONFIG.WUSER_WIDTH.VALUE_SRC USER CONFIG.BUSER_WIDTH.VALUE_SRC USER] [get_bd_cells axi_vip_0]
+set_property -dict [list CONFIG.AWUSER_WIDTH {0} CONFIG.ARUSER_WIDTH {0} CONFIG.RUSER_WIDTH {0} CONFIG.WUSER_WIDTH {0} CONFIG.BUSER_WIDTH {0}] [get_bd_cells axi_vip_0]
+endgroup
+save_bd_design
+generate_target Simulation [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd]
+export_ip_user_files -of_objects [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd] -directory C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files/sim_scripts -ip_user_files_dir C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files -ipstatic_source_dir C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/modelsim} {questa=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/questa} {riviera=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/riviera} {activehdl=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+launch_simulation
+startgroup
+set_property -dict [list CONFIG.AWUSER_WIDTH.VALUE_SRC USER] [get_bd_cells axi_vip_0]
+set_property -dict [list CONFIG.AWUSER_WIDTH {0}] [get_bd_cells axi_vip_0]
+endgroup
+startgroup
+set_property -dict [list CONFIG.RUSER_WIDTH.VALUE_SRC USER CONFIG.BUSER_WIDTH.VALUE_SRC USER CONFIG.ARUSER_WIDTH.VALUE_SRC USER CONFIG.WUSER_WIDTH.VALUE_SRC USER] [get_bd_cells axi_vip_0]
+set_property -dict [list CONFIG.ARUSER_WIDTH {0} CONFIG.RUSER_WIDTH {0} CONFIG.WUSER_WIDTH {0} CONFIG.BUSER_WIDTH {0}] [get_bd_cells axi_vip_0]
+endgroup
+startgroup
+endgroup
+save_bd_design
+generate_target Simulation [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd]
+export_ip_user_files -of_objects [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd] -directory C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files/sim_scripts -ip_user_files_dir C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files -ipstatic_source_dir C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/modelsim} {questa=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/questa} {riviera=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/riviera} {activehdl=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+launch_simulation
+startgroup
+set_property -dict [list CONFIG.C_M00_AXI_AWUSER_WIDTH {1} CONFIG.C_M00_AXI_ARUSER_WIDTH {1} CONFIG.C_M00_AXI_WUSER_WIDTH {1} CONFIG.C_M00_AXI_RUSER_WIDTH {1} CONFIG.C_M00_AXI_BUSER_WIDTH {1}] [get_bd_cells AXI2TCM]
+endgroup
+save_bd_design
+generate_target Simulation [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd]
+export_ip_user_files -of_objects [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd] -directory C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files/sim_scripts -ip_user_files_dir C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files -ipstatic_source_dir C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/modelsim} {questa=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/questa} {riviera=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/riviera} {activehdl=C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+launch_simulation
+source tb_axi2tcm.tcl
+restart
+run 500 ns
+restart
+run 500 ns
+save_wave_config {C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/tb_axi2tcm_behav.wcfg}
+add_files -fileset sim_1 -norecurse C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/tb_axi2tcm_behav.wcfg
+set_property xsim.view {C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/tb_axi2tcm_behav.wcfg C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/tb_axi2tcm_behav.wcfg} [get_filesets sim_1]
+open_bd_design {C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd}
+restart
+open_bd_design {C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/AXI2TCM_sim_VHDL.srcs/sources_1/bd/design_1/design_1.bd}
+export_ip_user_files -of_objects  [get_files C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/tb_axi2tcm_behav.wcfg] -no_script -reset -force -quiet
+remove_files  -fileset sim_1 C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/tb_axi2tcm_behav.wcfg
+save_wave_config {C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim_VHDL/tb_axi2tcm_behav.wcfg}
+close_sim

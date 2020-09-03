@@ -1,0 +1,26 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:55:39 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Tue Nov 13 14:41:55 2018
+# Process ID: 8040
+# Current directory: C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent7260 C:\XilinxEyke\MPSOC\Zynq_Ultra_Repo\AA_IP_Repository\IPCores_xczu9EG\AXI2TCM\Simulation\AXI2TCM_sim_IP\AXI2TCM_sim.xpr
+# Log file: C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/vivado.log
+# Journal file: C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.xpr
+update_compile_order -fileset sources_1
+open_bd_design {C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.srcs/sources_1/bd/design_1/design_1.bd}
+report_ip_status -name ip_status 
+upgrade_ip -vlnv TUM:user:AXI2TCM:1.1 [get_ips  design_1_AXI2TCM_0_0] -log ip_upgrade.log
+export_ip_user_files -of_objects [get_ips design_1_AXI2TCM_0_0] -no_script -sync -force -quiet
+report_ip_status -name ip_status 
+generate_target Simulation [get_files C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.srcs/sources_1/bd/design_1/design_1.bd]
+export_ip_user_files -of_objects [get_files C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.srcs/sources_1/bd/design_1/design_1.bd] -no_script -sync -force -quiet
+export_simulation -of_objects [get_files C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.srcs/sources_1/bd/design_1/design_1.bd] -directory C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.ip_user_files/sim_scripts -ip_user_files_dir C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.ip_user_files -ipstatic_source_dir C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.ip_user_files/ipstatic -lib_map_path [list {modelsim=C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.cache/compile_simlib/modelsim} {questa=C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.cache/compile_simlib/questa} {riviera=C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.cache/compile_simlib/riviera} {activehdl=C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/AXI2TCM_sim.cache/compile_simlib/activehdl}] -use_ip_compiled_libs -force -quiet
+launch_simulation
+open_wave_config C:/XilinxEyke/MPSOC/Zynq_Ultra_Repo/AA_IP_Repository/IPCores_xczu9EG/AXI2TCM/Simulation/AXI2TCM_sim_IP/tb_axi2tcm_behav.wcfg
+source tb_axi2tcm.tcl
+close_sim

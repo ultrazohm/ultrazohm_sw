@@ -1,0 +1,10 @@
+
+
+OPTION psf_version = 2.1;
+
+BEGIN DRIVER InterLock_Module
+	OPTION supported_peripherals = (InterLock_Module);
+	OPTION copyfiles = all;
+	OPTION VERSION = 1.0;
+	OPTION NAME = InterLock_Module;
+END DRIVER

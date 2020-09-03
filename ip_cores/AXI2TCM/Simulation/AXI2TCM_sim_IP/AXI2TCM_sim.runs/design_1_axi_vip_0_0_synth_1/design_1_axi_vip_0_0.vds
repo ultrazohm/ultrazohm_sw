@@ -1,0 +1,373 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:55:39 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Thu Nov  8 16:46:03 2018
+# Process ID: 8564
+# Current directory: C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.runs/design_1_axi_vip_0_0_synth_1
+# Command line: vivado.exe -log design_1_axi_vip_0_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source design_1_axi_vip_0_0.tcl
+# Log file: C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.runs/design_1_axi_vip_0_0_synth_1/design_1_axi_vip_0_0.vds
+# Journal file: C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.runs/design_1_axi_vip_0_0_synth_1\vivado.jou
+#-----------------------------------------------------------
+source design_1_axi_vip_0_0.tcl -notrace
+Command: synth_design -top design_1_axi_vip_0_0 -part xczu9eg-ffvb1156-2-e -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xczu9eg'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xczu9eg'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 9420 
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 715.480 ; gain = 0.000
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'design_1_axi_vip_0_0' [c:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/bd/design_1/ip/design_1_axi_vip_0_0/synth/design_1_axi_vip_0_0.sv:58]
+INFO: [Synth 8-638] synthesizing module 'axi_vip_v1_1_1_top' [c:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/bd/design_1/ipshared/a16a/hdl/axi_vip_v1_1_vlsyn_rfs.sv:61]
+	Parameter C_AXI_PROTOCOL bound to: 0 - type: integer 
+	Parameter C_AXI_INTERFACE_MODE bound to: 2 - type: integer 
+	Parameter C_AXI_ADDR_WIDTH bound to: 32 - type: integer 
+	Parameter C_AXI_WDATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_AXI_RDATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_AXI_WID_WIDTH bound to: 1 - type: integer 
+	Parameter C_AXI_RID_WIDTH bound to: 1 - type: integer 
+	Parameter C_AXI_AWUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_AXI_ARUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_AXI_WUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_AXI_RUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_AXI_BUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_AXI_SUPPORTS_NARROW bound to: 0 - type: integer 
+	Parameter C_AXI_HAS_BURST bound to: 1 - type: integer 
+	Parameter C_AXI_HAS_LOCK bound to: 1 - type: integer 
+	Parameter C_AXI_HAS_CACHE bound to: 1 - type: integer 
+	Parameter C_AXI_HAS_REGION bound to: 0 - type: integer 
+	Parameter C_AXI_HAS_PROT bound to: 1 - type: integer 
+	Parameter C_AXI_HAS_QOS bound to: 1 - type: integer 
+	Parameter C_AXI_HAS_WSTRB bound to: 1 - type: integer 
+	Parameter C_AXI_HAS_BRESP bound to: 1 - type: integer 
+	Parameter C_AXI_HAS_RRESP bound to: 1 - type: integer 
+	Parameter C_AXI_HAS_ARESETN bound to: 1 - type: integer 
+INFO: [Synth 8-256] done synthesizing module 'axi_vip_v1_1_1_top' (1#1) [c:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/bd/design_1/ipshared/a16a/hdl/axi_vip_v1_1_vlsyn_rfs.sv:61]
+INFO: [Synth 8-256] done synthesizing module 'design_1_axi_vip_0_0' (2#1) [c:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/bd/design_1/ip/design_1_axi_vip_0_0/synth/design_1_axi_vip_0_0.sv:58]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port aclk
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port aclken
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port aresetn
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awid[0]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[31]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[30]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[29]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[28]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[27]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[26]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[25]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[24]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[23]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[22]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[21]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[20]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[19]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[18]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[17]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[16]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[15]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[14]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[13]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[12]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[11]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[10]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[9]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[8]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[7]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[6]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[5]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[4]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[3]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[2]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[1]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awaddr[0]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awlen[7]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awlen[6]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awlen[5]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awlen[4]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awlen[3]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awlen[2]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awlen[1]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awlen[0]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awsize[2]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awsize[1]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awsize[0]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awburst[1]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awburst[0]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awlock[0]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awcache[3]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awcache[2]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awcache[1]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awcache[0]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awprot[2]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awprot[1]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awprot[0]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awregion[3]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awregion[2]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awregion[1]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awregion[0]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awqos[3]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awqos[2]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awqos[1]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awqos[0]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awuser[0]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_awvalid
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wid[0]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[31]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[30]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[29]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[28]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[27]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[26]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[25]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[24]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[23]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[22]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[21]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[20]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[19]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[18]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[17]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[16]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[15]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[14]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[13]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[12]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[11]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[10]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[9]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[8]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[7]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[6]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[5]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[4]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[3]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[2]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[1]
+WARNING: [Synth 8-3331] design axi_vip_v1_1_1_top has unconnected port s_axi_wdata[0]
+INFO: [Common 17-14] Message 'Synth 8-3331' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 715.480 ; gain = 0.000
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 715.480 ; gain = 0.000
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xczu9eg-ffvb1156-2-e
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+WARNING: [Designutils 20-1758] instance inst wraps a black box. Constraint reading is skipped for elaborated designs in this case. Skipping constraint file 'c:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/bd/design_1/ip/design_1_axi_vip_0_0/design_1_axi_vip_0_0_ooc.xdc'.
+Parsing XDC File [C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.runs/design_1_axi_vip_0_0_synth_1/dont_touch.xdc]
+Finished Parsing XDC File [C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.runs/design_1_axi_vip_0_0_synth_1/dont_touch.xdc]
+Completed Processing XDC Constraints
+
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.011 . Memory (MB): peak = 1238.656 ; gain = 0.000
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:35 ; elapsed = 00:00:37 . Memory (MB): peak = 1238.656 ; gain = 523.176
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xczu9eg-ffvb1156-2-e
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:35 ; elapsed = 00:00:37 . Memory (MB): peak = 1238.656 ; gain = 523.176
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+Applied set_property DONT_TOUCH = true for inst. (constraint file  C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.runs/design_1_axi_vip_0_0_synth_1/dont_touch.xdc, line 9).
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:35 ; elapsed = 00:00:37 . Memory (MB): peak = 1238.656 ; gain = 523.176
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:35 ; elapsed = 00:00:37 . Memory (MB): peak = 1238.656 ; gain = 523.176
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 2520 (col length:168)
+BRAMs: 1824 (col length: RAMB18 168 RAMB36 84)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:36 ; elapsed = 00:00:38 . Memory (MB): peak = 1238.656 ; gain = 523.176
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:12 ; elapsed = 00:01:15 . Memory (MB): peak = 2103.625 ; gain = 1388.145
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:01:12 ; elapsed = 00:01:15 . Memory (MB): peak = 2103.625 ; gain = 1388.145
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:01:12 ; elapsed = 00:01:15 . Memory (MB): peak = 2113.148 ; gain = 1397.668
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:01:14 ; elapsed = 00:01:17 . Memory (MB): peak = 2113.148 ; gain = 1397.668
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:14 ; elapsed = 00:01:17 . Memory (MB): peak = 2113.148 ; gain = 1397.668
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:14 ; elapsed = 00:01:17 . Memory (MB): peak = 2113.148 ; gain = 1397.668
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:14 ; elapsed = 00:01:17 . Memory (MB): peak = 2113.148 ; gain = 1397.668
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:14 ; elapsed = 00:01:17 . Memory (MB): peak = 2113.148 ; gain = 1397.668
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:14 ; elapsed = 00:01:17 . Memory (MB): peak = 2113.148 ; gain = 1397.668
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++-+-----+------+
+| |Cell |Count |
++-+-----+------+
++-+-----+------+
+
+Report Instance Areas: 
++------+---------+-------------------+------+
+|      |Instance |Module             |Cells |
++------+---------+-------------------+------+
+|1     |top      |                   |     0|
+|2     |  inst   |axi_vip_v1_1_1_top |     0|
++------+---------+-------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:14 ; elapsed = 00:01:17 . Memory (MB): peak = 2113.148 ; gain = 1397.668
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 219 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:46 ; elapsed = 00:00:55 . Memory (MB): peak = 2113.148 ; gain = 874.492
+Synthesis Optimization Complete : Time (s): cpu = 00:01:14 ; elapsed = 00:01:18 . Memory (MB): peak = 2113.148 ; gain = 1397.668
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+INFO: [Common 17-83] Releasing license: Synthesis
+14 Infos, 101 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:01:18 ; elapsed = 00:01:22 . Memory (MB): peak = 2155.566 ; gain = 1440.086
+INFO: [Common 17-1381] The checkpoint 'C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.runs/design_1_axi_vip_0_0_synth_1/design_1_axi_vip_0_0.dcp' has been generated.
+INFO: [Coretcl 2-1482] Added synthesis output to IP cache for IP c:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.srcs/sources_1/bd/design_1/ip/design_1_axi_vip_0_0/design_1_axi_vip_0_0.xci
+INFO: [Common 17-1381] The checkpoint 'C:/XilinxEyke/MPSOC/007_AXI_TCM/AXI2TCM_sim/AXI2TCM_sim.runs/design_1_axi_vip_0_0_synth_1/design_1_axi_vip_0_0.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file design_1_axi_vip_0_0_utilization_synth.rpt -pb design_1_axi_vip_0_0_utilization_synth.pb
+report_utilization: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.250 . Memory (MB): peak = 2155.973 ; gain = 0.000
+INFO: [Common 17-206] Exiting Vivado at Thu Nov  8 16:47:45 2018...

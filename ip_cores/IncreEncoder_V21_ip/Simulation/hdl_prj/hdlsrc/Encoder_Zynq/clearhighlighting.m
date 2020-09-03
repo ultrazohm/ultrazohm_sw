@@ -1,0 +1,16 @@
+SLStudio.Utils.RemoveHighlighting(get_param('Encoder_Zynq', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_Encoder_Zynq', 'handle'));
+annotate_port('gm_Encoder_Zynq/IncreEncoder_V21/Subsystem', 0, 1, '');
+annotate_port('gm_Encoder_Zynq/IncreEncoder_V21/omega_by_measure_time', 0, 2, '');
+annotate_port('gm_Encoder_Zynq/IncreEncoder_V21/out_0_pipe', 1, 1, '');
+annotate_port('gm_Encoder_Zynq/IncreEncoder_V21/Divide', 1, 1, '');
+annotate_port('Encoder_Zynq/IncreEncoder_V21/Divide', 1, 1, '');
+annotate_port('gm_Encoder_Zynq/IncreEncoder_V21/Mul_Direction', 0, 1, '');
+annotate_port('gm_Encoder_Zynq/IncreEncoder_V21/Subsystem/Add', 0, 1, '');
+annotate_port('gm_Encoder_Zynq/IncreEncoder_V21/Subsystem/Add', 1, 1, '');
+annotate_port('Encoder_Zynq/IncreEncoder_V21/Subsystem/Add', 1, 1, '');
+annotate_port('gm_Encoder_Zynq/IncreEncoder_V21/Subsystem/Ask1', 0, 1, '');
+annotate_port('gm_Encoder_Zynq/IncreEncoder_V21/Subsystem/Product', 0, 1, '');
+annotate_port('gm_Encoder_Zynq/IncreEncoder_V21/Subsystem/NewSpeed', 0, 1, '');
+annotate_port('gm_Encoder_Zynq/IncreEncoder_V21/omega_by_measure_time/count_old1', 0, 1, '');
+annotate_port('gm_Encoder_Zynq/IncreEncoder_V21/omega_by_measure_time/ProtectToUseOmegaIfThetaJump1', 0, 1, '');

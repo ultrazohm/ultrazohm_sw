@@ -1,12 +1,13 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x14CB950FF06909F7",
+      "boundary_crc": "0xB5AFFE9EA45A508C",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2020.1.1"
+      "tool_version": "2020.1.1",
+      "validated": "true"
     },
     "design_tree": {
       "IncreEncoder_ip_0": "",
@@ -174,7 +175,17 @@
       },
       "Dig_24_Ch1": {
         "type": "intr",
-        "direction": "O"
+        "direction": "O",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          },
+          "SENSITIVITY": {
+            "value": "LEVEL_HIGH",
+            "value_src": "const_prop"
+          }
+        }
       },
       "Dig_13_Ch5": {
         "direction": "I"
@@ -187,15 +198,45 @@
       },
       "Dig_01_Ch1": {
         "type": "intr",
-        "direction": "O"
+        "direction": "O",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          },
+          "SENSITIVITY": {
+            "value": "LEVEL_HIGH",
+            "value_src": "default"
+          }
+        }
       },
       "Dig_02_Ch1": {
         "type": "intr",
-        "direction": "O"
+        "direction": "O",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          },
+          "SENSITIVITY": {
+            "value": "LEVEL_HIGH",
+            "value_src": "default"
+          }
+        }
       },
       "Dig_03_Ch1": {
         "type": "intr",
-        "direction": "O"
+        "direction": "O",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          },
+          "SENSITIVITY": {
+            "value": "LEVEL_HIGH",
+            "value_src": "default"
+          }
+        }
       },
       "ADC_ConvStart": {
         "direction": "O",
@@ -249,8 +290,14 @@
       },
       "Dig_Ch2": {
         "direction": "O",
-        "left": "25",
-        "right": "0"
+        "left": "11",
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "12",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "A2_IN": {
         "direction": "I",
@@ -304,15 +351,45 @@
       },
       "Dig_04_Ch1": {
         "type": "intr",
-        "direction": "O"
+        "direction": "O",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          },
+          "SENSITIVITY": {
+            "value": "LEVEL_HIGH",
+            "value_src": "default"
+          }
+        }
       },
       "Dig_05_Ch1": {
         "type": "intr",
-        "direction": "O"
+        "direction": "O",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          },
+          "SENSITIVITY": {
+            "value": "LEVEL_HIGH",
+            "value_src": "default"
+          }
+        }
       },
       "Dig_06_Ch1": {
         "type": "intr",
-        "direction": "O"
+        "direction": "O",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          },
+          "SENSITIVITY": {
+            "value": "LEVEL_HIGH",
+            "value_src": "default"
+          }
+        }
       },
       "Dig_27_Ch3": {
         "direction": "O",
@@ -1228,7 +1305,17 @@
             "ports": {
               "clk": {
                 "type": "clk",
-                "direction": "I"
+                "direction": "I",
+                "parameters": {
+                  "CLK_DOMAIN": {
+                    "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                    "value_src": "default_prop"
+                  },
+                  "FREQ_HZ": {
+                    "value": "99999985",
+                    "value_src": "user_prop"
+                  }
+                }
               },
               "delay_cycles": {
                 "direction": "I",
@@ -1236,7 +1323,17 @@
                 "right": "0"
               },
               "a_in": {
-                "direction": "I"
+                "direction": "I",
+                "parameters": {
+                  "PortWidth": {
+                    "value": "1",
+                    "value_src": "default_prop"
+                  },
+                  "SENSITIVITY": {
+                    "value": "LEVEL_HIGH",
+                    "value_src": "const_prop"
+                  }
+                }
               },
               "a_out": {
                 "direction": "O"
@@ -1827,7 +1924,17 @@
             "ports": {
               "clk": {
                 "type": "clk",
-                "direction": "I"
+                "direction": "I",
+                "parameters": {
+                  "CLK_DOMAIN": {
+                    "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                    "value_src": "default_prop"
+                  },
+                  "FREQ_HZ": {
+                    "value": "99999985",
+                    "value_src": "user_prop"
+                  }
+                }
               },
               "delay_cycles": {
                 "direction": "I",
@@ -1835,7 +1942,17 @@
                 "right": "0"
               },
               "a_in": {
-                "direction": "I"
+                "direction": "I",
+                "parameters": {
+                  "PortWidth": {
+                    "value": "1",
+                    "value_src": "default_prop"
+                  },
+                  "SENSITIVITY": {
+                    "value": "LEVEL_HIGH",
+                    "value_src": "const_prop"
+                  }
+                }
               },
               "a_out": {
                 "direction": "O"
@@ -2451,7 +2568,17 @@
             "ports": {
               "clk": {
                 "type": "clk",
-                "direction": "I"
+                "direction": "I",
+                "parameters": {
+                  "CLK_DOMAIN": {
+                    "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                    "value_src": "default_prop"
+                  },
+                  "FREQ_HZ": {
+                    "value": "99999985",
+                    "value_src": "user_prop"
+                  }
+                }
               },
               "delay_cycles": {
                 "direction": "I",
@@ -2459,7 +2586,17 @@
                 "right": "0"
               },
               "a_in": {
-                "direction": "I"
+                "direction": "I",
+                "parameters": {
+                  "PortWidth": {
+                    "value": "1",
+                    "value_src": "default_prop"
+                  },
+                  "SENSITIVITY": {
+                    "value": "LEVEL_HIGH",
+                    "value_src": "const_prop"
+                  }
+                }
               },
               "a_out": {
                 "direction": "O"
@@ -6429,7 +6566,17 @@
             "ports": {
               "clock": {
                 "type": "clk",
-                "direction": "I"
+                "direction": "I",
+                "parameters": {
+                  "CLK_DOMAIN": {
+                    "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                    "value_src": "default_prop"
+                  },
+                  "FREQ_HZ": {
+                    "value": "99999985",
+                    "value_src": "user_prop"
+                  }
+                }
               },
               "enable": {
                 "direction": "I"
@@ -6437,7 +6584,13 @@
               "switching_signals": {
                 "direction": "I",
                 "left": "5",
-                "right": "0"
+                "right": "0",
+                "parameters": {
+                  "PortWidth": {
+                    "value": "6",
+                    "value_src": "ip_prop"
+                  }
+                }
               },
               "deadtime": {
                 "direction": "I",

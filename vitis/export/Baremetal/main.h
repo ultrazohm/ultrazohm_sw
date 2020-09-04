@@ -74,13 +74,13 @@
 #define LED_user 	LED_4
 
 // Switches on frontpanel
-#define SW_1 EXT_GPIO_7
-#define SW_2 EXT_GPIO_6
+#define SW_1 EXT_GPIO_6
+#define SW_2 EXT_GPIO_7
 #define SW_3 EXT_GPIO_5
 
 #define SW_system  SW_1
 #define SW_control SW_2
-#define SW_stop   SW_3
+#define SW_stop    SW_3
 
 
 //ADC define
@@ -815,6 +815,9 @@ typedef struct _debugVariables_ {
 //	Xfloat32 oc[3];
 	Xuint32  timeStampCounter;
 	uint16_t isrCyclesFor10Millisec;
+	Xint32 sw1;
+	Xint32 sw2;
+	Xint32 sw3;
 } debugVariables;
 
 

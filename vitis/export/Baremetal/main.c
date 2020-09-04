@@ -107,6 +107,11 @@ int main (void){
 	while (1){
 
 
+		// test loop to read push buttons
+		Global_Data.dv.sw1=ReadPin_PS_GPIO(SW_system);
+		Global_Data.dv.sw2=ReadPin_PS_GPIO(SW_control);
+		Global_Data.dv.sw3=ReadPin_PS_GPIO(SW_stop);
+
 		//ToDo: //Add here more possible errors?!
 		if((Global_Data.ew.maximumContinuousCurrentExceeded == valueTrue)||(Global_Data.ew.maximumShortTermCurrentReached == valueTrue)||(Global_Data.ew.dcLinkOvervoltageOccured == valueTrue)||(Global_Data.ew.pwmFrequencyError == valueTrue)){
 			WritePin_PS_GPIO(LED_error,valueTrue); //Write a GPIO for LED_3
@@ -212,9 +217,9 @@ int turnPowerElectronicsOn(DS_Data* data){
 //==============================================================================================================================================================
 int ControllerOff(DS_Data* data){
 
-	Xil_Out32(Control_iq_soll_REG, (Xint32)(0)); // -> 2^11 = 2048 -> Die 11 Bit Nachkommastellen verschieben, Vorzeichen ist schon bei Vorgabe dabei	// Input to the IP-Core
+	//Xil_Out32(Control_iq_soll_REG, (Xint32)(0)); // -> 2^11 = 2048 -> Die 11 Bit Nachkommastellen verschieben, Vorzeichen ist schon bei Vorgabe dabei	// Input to the IP-Core
 	//Xil_Out16(Control_n_soll_REG, (Xint16)(fn_soll * 8.0f)); 	// -> 2^3 = 8 -> Die 3 Bit Nachkommastellen verschieben, Vorzeichen ist schon bei Vorgabe dabei	// Input to the IP-Core
-	Xil_Out32(Control_Enable_REG, (Xint32)(Global_Data.cw.enableControl));	//Switch the control off
+	//Xil_Out32(Control_Enable_REG, (Xint32)(Global_Data.cw.enableControl));	//Switch the control off
 	WritePin_PS_GPIO(LED_running,valueFalse); //Write a GPIO for LED_2
 	return (0);
 }
@@ -222,7 +227,7 @@ int ControllerOff(DS_Data* data){
 //==============================================================================================================================================================
 int ControllerOn(DS_Data* data){
 
-	Xil_Out32(Control_Enable_REG, (Xint32)(Global_Data.cw.enableControl));	//Switch the control on
+	//Xil_Out32(Control_Enable_REG, (Xint32)(Global_Data.cw.enableControl));	//Switch the control on
 	WritePin_PS_GPIO(LED_running,valueTrue); //Write a GPIO for LED_2
 	return (0);
 }

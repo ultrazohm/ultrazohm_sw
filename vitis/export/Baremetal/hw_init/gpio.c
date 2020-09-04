@@ -117,7 +117,7 @@ return status;
 int ReadPin_PS_GPIO(uint32_t gpio_MIO_number){
 
 	//int status = XST_SUCCESS;
-	int value=0;
+	Xint32 value=0;
 	//Write the data of the pins separately
 	value=XGpioPs_ReadPin(&Gpio_inst, gpio_MIO_number); // for date: 0 or 1
 

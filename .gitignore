@@ -1,3 +1,6 @@
 #ignore everything inside workspace folder except the txt file
 /vitis/workspace/*
 !/vitis/workspace/create_Vitis_workspace_here.txt
+vivado/zusys/zusys.bxml
+
+vivado/zusys/zusys_ooc.xdc

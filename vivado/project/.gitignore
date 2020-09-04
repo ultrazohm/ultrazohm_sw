@@ -14,6 +14,7 @@
 !/*.srcs/sources*/bd/*/*.bd
 
 /*
+!/zusys*
 !*.xpr
 !.gitignore
 

@@ -2,7 +2,7 @@
 *
 * main.c
 *
-* Copyright (C) 2019 Institute ELSYS, TH Nürnberg, All rights reserved.
+* Copyright (C) 2019 Institute ELSYS, TH NÃ¼rnberg, All rights reserved.
 *
 *  Created on: 	22.08.2018
 *      Author: 	Wendel Sebastian (SW)
@@ -35,7 +35,7 @@
 #include "defines.h"
 
 Xboolean VarTest = 0;
-Xboolean LED_4 = 0;
+
 
 
 XGpio Gpio_OUT;		/* GPIO Device driver instance for the real GPIOs */
@@ -132,31 +132,6 @@ void network_thread(void *p)
 		xil_printf(" Init GPIO \n\r"); //GPIO interface
 		Initialize_PS_GPIO(XPAR_PSU_GPIO_0_BASEADDR, XPAR_PSU_GPIO_0_DEVICE_ID); //GPIO 0 interface
 
-		//Subsequently i specify each Pin separately, in order to avoid to activate an not used Pin
-		//The Pin number is the MIO number (see Vivado)
-//		SetDirection_PS_GPIO(13,OUTPUT_PIN); //Configure GPIO
-		SetDirection_PS_GPIO(30,OUTPUT_PIN); //Configure GPIO
-		SetDirection_PS_GPIO(31,OUTPUT_PIN); //Configure GPIO
-//		SetDirection_PS_GPIO(33,OUTPUT_PIN); //Configure GPIO
-//		SetDirection_PS_GPIO(34,OUTPUT_PIN); //Configure GPIO
-//		SetDirection_PS_GPIO(39,OUTPUT_PIN); //Configure GPIO
-		SetDirection_PS_GPIO(40,OUTPUT_PIN); //Configure GPIO
-		SetDirection_PS_GPIO(44,OUTPUT_PIN); //Configure GPIO
-		SetDirection_PS_GPIO(45,OUTPUT_PIN); //Configure GPIO
-
-
-		//Enbale the specified Pins on the Bank separately
-		//The Pin number is the MIO number (see Vivado)
-//		Enable_PS_GPIO(13,ENABLE_PIN); //Enable the GPIO
-		Enable_PS_GPIO(30,ENABLE_PIN); //Enable the GPIO
-		Enable_PS_GPIO(31,ENABLE_PIN); //Enable the GPIO
-//		Enable_PS_GPIO(33,ENABLE_PIN); //Enable the GPIO
-//		Enable_PS_GPIO(34,ENABLE_PIN); //Enable the GPIO
-//		Enable_PS_GPIO(39,ENABLE_PIN); //Enable the GPIO
-		Enable_PS_GPIO(40,ENABLE_PIN); //Enable the GPIO
-		Enable_PS_GPIO(44,ENABLE_PIN); //Enable the GPIO
-		Enable_PS_GPIO(45,ENABLE_PIN); //Enable the GPIO
-
 	#endif
 
     struct netif *netif;
@@ -227,15 +202,6 @@ void network_thread(void *p)
       	if(i_LifeCheck_networkThreat > 2500){
       		i_LifeCheck_networkThreat =0;
       	}
-		//WritePin_PS_GPIO(13,LED_1); //Write a GPIO
-		WritePin_PS_GPIO(30,VarTest); //Write a GPIO
-		WritePin_PS_GPIO(31,VarTest); //Write a GPIO
-		//WritePin_PS_GPIO(33,LED_2); //Write a GPIO
-		//WritePin_PS_GPIO(34,LED_3); //Write a GPIO
-		//WritePin_PS_GPIO(39,LED_4); //Write a GPIO
-		WritePin_PS_GPIO(40,VarTest); //Write a GPIO
-		WritePin_PS_GPIO(44,VarTest); //Write a GPIO
-		WritePin_PS_GPIO(45,VarTest); //Write a GPIO
 
 		#if CAN_ACTIVE==1
 			if( ! hal_can_is_rx_empty() ){

@@ -2,7 +2,7 @@
 *
 * gpio.c
 *
-* Copyright (C) 2018 Institute ELSYS, TH Nürnberg,   All rights reserved.
+* Copyright (C) 2018 Institute ELSYS, TH NÃ¼rnberg,   All rights reserved.
 *
 *  Created on: 22.08.2018
 *      Author: Wendel Sebastian (SW)
@@ -31,9 +31,7 @@ int Initialize_GPIO( ){
 	SetDirection_PS_GPIO(LED_ready,OUTPUT_PIN); //Configure GPIO
 	SetDirection_PS_GPIO(LED_running,OUTPUT_PIN); //Configure GPIO
 	SetDirection_PS_GPIO(LED_error,OUTPUT_PIN); //Configure GPIO
-	SetDirection_PS_GPIO(LED_4,OUTPUT_PIN); //Configure GPIO
-	SetDirection_PS_GPIO(LED_5,OUTPUT_PIN); //Configure GPIO
-	SetDirection_PS_GPIO(LED_6,OUTPUT_PIN); //Configure GPIO
+	SetDirection_PS_GPIO(LED_1_frontpanel,OUTPUT_PIN); //Configure GPIO
 
 
 	//Enbale the specified Pins on the Bank separately
@@ -41,9 +39,7 @@ int Initialize_GPIO( ){
 	Enable_PS_GPIO(LED_ready,ENABLE_PIN); //Enable the GPIO
 	Enable_PS_GPIO(LED_running,ENABLE_PIN); //Enable the GPIO
 	Enable_PS_GPIO(LED_error,ENABLE_PIN); //Enable the GPIO
-	Enable_PS_GPIO(LED_4,ENABLE_PIN); //Enable the GPIO
-	Enable_PS_GPIO(LED_5,ENABLE_PIN); //Enable the GPIO
-	Enable_PS_GPIO(LED_6,ENABLE_PIN); //Enable the GPIO
+	Enable_PS_GPIO(LED_1_frontpanel,ENABLE_PIN); //Enable the GPIO
 
 return status;
 }
@@ -106,4 +102,17 @@ int WritePin_PS_GPIO(uint32_t gpio_MIO_number, uint32_t data){
 	XGpioPs_WritePin(&Gpio_inst, gpio_MIO_number, data); // for date: 0 or 1
 
 return status;
+}
+
+//----------------------------------------------------
+// Write a Pin from the processor GPIOs
+//----------------------------------------------------
+int ReadPin_PS_GPIO(uint32_t gpio_MIO_number){
+
+	//int status = XST_SUCCESS;
+	int value=0;
+	//Write the data of the pins separately
+	value=XGpioPs_ReadPin(&Gpio_inst, gpio_MIO_number); // for date: 0 or 1
+
+return value;
 }

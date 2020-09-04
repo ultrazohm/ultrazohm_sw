@@ -101,6 +101,7 @@ int main (void){
 	WritePin_PS_GPIO(LED_ready	,valueFalse); //Write a GPIO for LED_1
 	WritePin_PS_GPIO(LED_running,valueFalse); //Write a GPIO for LED_2
 	WritePin_PS_GPIO(LED_error	,valueFalse); //Write a GPIO for LED_3
+	WritePin_PS_GPIO(LED_1_frontpanel,valueFalse); //Write a GPIO for LED_4
 
 	// Infinite loop
 	while (1){
@@ -211,9 +212,9 @@ int turnPowerElectronicsOn(DS_Data* data){
 //==============================================================================================================================================================
 int ControllerOff(DS_Data* data){
 
-	//Xil_Out32(Control_iq_soll_REG, (Xint32)(0)); // -> 2^11 = 2048 -> Die 11 Bit Nachkommastellen verschieben, Vorzeichen ist schon bei Vorgabe dabei	// Input to the IP-Core
+	Xil_Out32(Control_iq_soll_REG, (Xint32)(0)); // -> 2^11 = 2048 -> Die 11 Bit Nachkommastellen verschieben, Vorzeichen ist schon bei Vorgabe dabei	// Input to the IP-Core
 	//Xil_Out16(Control_n_soll_REG, (Xint16)(fn_soll * 8.0f)); 	// -> 2^3 = 8 -> Die 3 Bit Nachkommastellen verschieben, Vorzeichen ist schon bei Vorgabe dabei	// Input to the IP-Core
-	//Xil_Out32(Control_Enable_REG, (Xint32)(Global_Data.cw.enableControl));	//Switch the control off
+	Xil_Out32(Control_Enable_REG, (Xint32)(Global_Data.cw.enableControl));	//Switch the control off
 	WritePin_PS_GPIO(LED_running,valueFalse); //Write a GPIO for LED_2
 	return (0);
 }
@@ -221,7 +222,7 @@ int ControllerOff(DS_Data* data){
 //==============================================================================================================================================================
 int ControllerOn(DS_Data* data){
 
-	//Xil_Out32(Control_Enable_REG, (Xint32)(Global_Data.cw.enableControl));	//Switch the control on
+	Xil_Out32(Control_Enable_REG, (Xint32)(Global_Data.cw.enableControl));	//Switch the control on
 	WritePin_PS_GPIO(LED_running,valueTrue); //Write a GPIO for LED_2
 	return (0);
 }
@@ -454,6 +455,5 @@ int InitializeDataStructure(DS_Data* data){
 
 	return (0);
 }
-
 
 

@@ -1,0 +1,4 @@
+#ignore everything inside this folder but the board file and vhdl file
+*/
+!*bd
+!/hdl*

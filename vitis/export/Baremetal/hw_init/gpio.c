@@ -28,18 +28,25 @@ int Initialize_GPIO( ){
 
 	//Subsequently i specify each Pin separately, in order to avoid to activate an not used Pin
 	//The Pin number is the MIO number (see Vivado)
+	//sets direction of LED to output
 	SetDirection_PS_GPIO(LED_ready,OUTPUT_PIN); //Configure GPIO
 	SetDirection_PS_GPIO(LED_running,OUTPUT_PIN); //Configure GPIO
 	SetDirection_PS_GPIO(LED_error,OUTPUT_PIN); //Configure GPIO
-	SetDirection_PS_GPIO(LED_1_frontpanel,OUTPUT_PIN); //Configure GPIO
-
+	SetDirection_PS_GPIO(LED_user,OUTPUT_PIN); //Configure GPIO
+	// sets direction of switches to input
+	SetDirection_PS_GPIO(SW_system,INPUT_PIN); //Configure GPIO
+	SetDirection_PS_GPIO(SW_control,INPUT_PIN); //Configure GPIO
+	SetDirection_PS_GPIO(SW_stop,INPUT_PIN); //Configure GPIO
 
 	//Enbale the specified Pins on the Bank separately
 	//The Pin number is the MIO number (see Vivado)
 	Enable_PS_GPIO(LED_ready,ENABLE_PIN); //Enable the GPIO
 	Enable_PS_GPIO(LED_running,ENABLE_PIN); //Enable the GPIO
 	Enable_PS_GPIO(LED_error,ENABLE_PIN); //Enable the GPIO
-	Enable_PS_GPIO(LED_1_frontpanel,ENABLE_PIN); //Enable the GPIO
+	Enable_PS_GPIO(LED_user,ENABLE_PIN); //Enable the GPIO
+	Enable_PS_GPIO(SW_system,ENABLE_PIN); //Enable the GPIO
+	Enable_PS_GPIO(SW_control,ENABLE_PIN); //Enable the GPIO
+	Enable_PS_GPIO(SW_stop,ENABLE_PIN); //Enable the GPIO
 
 return status;
 }
@@ -105,7 +112,7 @@ return status;
 }
 
 //----------------------------------------------------
-// Write a Pin from the processor GPIOs
+// Read a Pin from the processor GPIOs
 //----------------------------------------------------
 int ReadPin_PS_GPIO(uint32_t gpio_MIO_number){
 

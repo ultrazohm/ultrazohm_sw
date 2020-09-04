@@ -97,11 +97,11 @@ int main (void){
 	// Turn on AXI2TCM communication
 	AXI2TCM_on();
 
-	//Initial state of all front panel LEDs
-	WritePin_PS_GPIO(LED_ready	,valueFalse); //Write a GPIO for LED_1
-	WritePin_PS_GPIO(LED_running,valueFalse); //Write a GPIO for LED_2
-	WritePin_PS_GPIO(LED_error	,valueFalse); //Write a GPIO for LED_3
-	WritePin_PS_GPIO(LED_1_frontpanel,valueFalse); //Write a GPIO for LED_4
+	//Initial state of all front panel LEDs is off
+	WritePin_PS_GPIO(LED_1,valueFalse); //Write a GPIO for LED_1
+	WritePin_PS_GPIO(LED_2,valueFalse); //Write a GPIO for LED_2
+	WritePin_PS_GPIO(LED_3,valueFalse); //Write a GPIO for LED_3
+	WritePin_PS_GPIO(LED_4,valueFalse); //Write a GPIO for LED_4
 
 	// Infinite loop
 	while (1){

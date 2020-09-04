@@ -74,13 +74,13 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/Analog_Out_Hub.vhd">
+      <File Path="$PPRDIR/../ip_cores/ADC_Module_LVDS_LTC2311_V2_ip/Analog_hub/Analog_Out_Hub.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/Analog_In_Hub.vhd">
+      <File Path="$PPRDIR/../ip_cores/ADC_Module_LVDS_LTC2311_V2_ip/Analog_hub/Analog_In_Hub.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

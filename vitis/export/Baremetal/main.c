@@ -107,10 +107,23 @@ int main (void){
 	while (1){
 
 
-		// test loop to read push buttons
+		// poll the buttons
 		Global_Data.dv.sw1=ReadPin_PS_GPIO(SW_system);
 		Global_Data.dv.sw2=ReadPin_PS_GPIO(SW_control);
 		Global_Data.dv.sw3=ReadPin_PS_GPIO(SW_stop);
+		// Set the system enable flag to false if SW1 is pressed
+		if (Global_Data.dv.sw1==valueTrue){
+			Global_Data.cw.enableSystem=flagDisabled;
+		}
+		// Set the control enable flag to false if SW2 is pressed
+		if (Global_Data.dv.sw2==flagEnabled){
+			Global_Data.cw.enableControl=flagDisabled;
+		}
+		// Set the control enable and system enable flag to false if SW3 is pressed
+		if (Global_Data.dv.sw3==valueFalse){
+			Global_Data.cw.enableControl=flagDisabled;
+			Global_Data.cw.enableSystem=flagDisabled;
+		}
 
 		//ToDo: //Add here more possible errors?!
 		if((Global_Data.ew.maximumContinuousCurrentExceeded == valueTrue)||(Global_Data.ew.maximumShortTermCurrentReached == valueTrue)||(Global_Data.ew.dcLinkOvervoltageOccured == valueTrue)||(Global_Data.ew.pwmFrequencyError == valueTrue)){

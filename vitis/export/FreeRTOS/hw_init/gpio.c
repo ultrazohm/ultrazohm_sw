@@ -2,7 +2,7 @@
 *
 * gpio.c
 *
-* Copyright (C) 2018 Institute ELSYS, TH Nürnberg,   All rights reserved.
+* Copyright (C) 2018 Institute ELSYS, TH NÃ¼rnberg,   All rights reserved.
 *
 *  Created on: 22.08.2018
 *      Author: Wendel Sebastian (SW)
@@ -12,13 +12,6 @@
 #include "xgpiops.h"
 #include "../include/gpio.h"
 #include "../defines.h"
-
-
-Xuint32	Pin30;
-Xuint32	Pin31;
-Xuint32	Pin44;
-Xuint32	Pin45;
-Xuint32	Pin40;
 
 // Initialize the  GPIO structure
 static XGpioPs Gpio_inst;											/* GPIO Device driver instance for the real GPIOs */
@@ -66,12 +59,6 @@ int Enable_PS_GPIO(uint32_t gpio_MIO_number, uint32_t PinSetting){
 	//Enable the specified pin separately
 	XGpioPs_SetOutputEnablePin(&Gpio_inst, gpio_MIO_number, PinSetting); //0 for Off, 1 for On
 
-	Pin30 = XGpioPs_GetOutputEnablePin(&Gpio_inst,30);
-	Pin31 = XGpioPs_GetOutputEnablePin(&Gpio_inst,31);
-	Pin44 = XGpioPs_GetOutputEnablePin(&Gpio_inst,44);
-	Pin45 = XGpioPs_GetOutputEnablePin(&Gpio_inst,45);
-	Pin40 = XGpioPs_GetOutputEnablePin(&Gpio_inst,40);
-
 return status;
 }
 
@@ -89,4 +76,3 @@ int WritePin_PS_GPIO(uint32_t gpio_MIO_number, uint32_t data){
 
 return status;
 }
-

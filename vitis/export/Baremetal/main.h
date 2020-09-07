@@ -46,18 +46,42 @@
 
 #define GPIO_CHANNEL 						1								/* GPIO port for GPIOs */
 
-#define LED_1								13				// Front Panel ready
-#define LED_2								33				// Front Panel running
-#define LED_3								34				// Front Panel error
-#define LED_4								39				// Front Panel LED1
-#define LED_5								40 				// Front Panel LED2
-#define LED_6								53				// Front Panel LED3 not assigned at the moment
 
+// Defines that map the number of the MIO PIN of the PS to the signal name of the signal on the carrier board (X13)
+#define PS_DIG_GPIO_01	30
+#define PS_DIG_GPIO_02	31
+#define PS_ANL_GPIO_01	44
+#define PS_ANL_GPIO_02	45
+#define EXT_GPIO_1 		13
+#define EXT_GPIO_2 		33
+#define EXT_GPIO_3 		34
+#define EXT_GPIO_4 		39
+#define EXT_GPIO_5 		40
+#define EXT_GPIO_6 		52
+#define EXT_GPIO_7 		53
+#define EXT_GPIO_8 		55
 
-// rename LEDs like on the front panel
-#define LED_ready							LED_1
-#define LED_running							LED_2
-#define LED_error							LED_3
+// LED on carrier board and frontpanel
+#define LED_1								EXT_GPIO_1
+#define LED_2								EXT_GPIO_2
+#define LED_3								EXT_GPIO_3
+#define LED_4								EXT_GPIO_4
+
+// Names of LED on frontpanel
+#define LED_ready 	LED_1
+#define LED_running LED_2
+#define LED_error 	LED_3
+#define LED_user 	LED_4
+
+// Switches on frontpanel
+#define SW_1 EXT_GPIO_6
+#define SW_2 EXT_GPIO_7
+#define SW_3 EXT_GPIO_5
+
+#define SW_system  SW_1
+#define SW_control SW_2
+#define SW_stop    SW_3
+
 
 //ADC define
 #define TX_BUFFER_SIZE						1
@@ -159,7 +183,7 @@ typedef struct
 	float theta_elec;
 	float theta_mech;
 	float theta_offset; //in rad/s
-} ParkTrans_struct; //für Gleichgrößen von der Parktransformation (dq)
+} ParkTrans_struct; //fÃ¼r GleichgrÃ¶ÃŸen von der Parktransformation (dq)
 
 typedef struct
 {
@@ -213,7 +237,7 @@ typedef enum {
 }  hallEvent;
 
 typedef enum {
-  scheme_zpm = 0,		// p=Halbbruecke auf Plus, m=Halbbrücke auf Minus, z=Halbbrücke in HighZ-Zustand
+  scheme_zpm = 0,		// p=Halbbruecke auf Plus, m=HalbbrÃ¼cke auf Minus, z=HalbbrÃ¼cke in HighZ-Zustand
   scheme_mpz,
   scheme_mzp,
   scheme_zmp,
@@ -225,7 +249,7 @@ typedef enum {
 } commutationScheme;
 
 typedef enum {
-   scheme_zpz= 0,		// p=Halbbruecke auf Plus, z=Halbbrücke auf Minus (z=zero in diesem Fall?)
+   scheme_zpz= 0,		// p=Halbbruecke auf Plus, z=HalbbrÃ¼cke auf Minus (z=zero in diesem Fall?)
    scheme_zpp,
    scheme_zzp,
    scheme_pzp,
@@ -234,7 +258,7 @@ typedef enum {
   initStateCommutationScheme180, //!< Initialization state
   clearedStateCommutationScheme180,
   errorStateCommutationScheme180
-} commutationScheme180; //SW: Standart für 180° Kommutierung wie es in Tabelle von Tobi Roth gefordert ist
+} commutationScheme180; //SW: Standart fÃ¼r 180Â° Kommutierung wie es in Tabelle von Tobi Roth gefordert ist
 
 typedef enum {
 	flagDisabled = 0,
@@ -285,9 +309,9 @@ typedef enum
   incrementalEncoder,			//
   sensorless,
   forcedAngle,					// ok
-  //sinCosEncoder,				// ### nicht mehr benötigt
-  //pwmPositionSensor,			// ### nicht mehr benötigt
-  //spiPositionSensor,			// ### nicht mehr benötigt
+  //sinCosEncoder,				// ### nicht mehr benÃ¶tigt
+  //pwmPositionSensor,			// ### nicht mehr benÃ¶tigt
+  //spiPositionSensor,			// ### nicht mehr benÃ¶tigt
   hallSensors180Degree			//
 } rotorAngleEstimationMethod;
 
@@ -791,6 +815,9 @@ typedef struct _debugVariables_ {
 //	Xfloat32 oc[3];
 	Xuint32  timeStampCounter;
 	uint16_t isrCyclesFor10Millisec;
+	Xint32 sw1;
+	Xint32 sw2;
+	Xint32 sw3;
 } debugVariables;
 
 

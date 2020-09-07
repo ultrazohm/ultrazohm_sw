@@ -2,7 +2,7 @@
 #
 # update_platform.tcl
 #
-# Copyright (C) 2020 IltraZohm Community, All rights reserved.
+# Copyright (C) 2020 UltraZohm Community, All rights reserved.
 #
 # Created on: 21.02.2020
 #     Author: Eyke Liegmann (EL)
@@ -12,7 +12,7 @@
 #	source {../export/update_platform.tcl}
 #
 # XSCT Programming Reference
-# https://www.xilinx.com/html_docs/xilinx2019_2/vitis_doc/Chunk1452562736.html#ojx1543754625826
+# https://www.xilinx.com/html_docs/xilinx2019_2/vitis_doc/
 ####################################################
 
 

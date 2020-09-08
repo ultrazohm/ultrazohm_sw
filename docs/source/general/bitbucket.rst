@@ -40,6 +40,6 @@ The reviewers will be notified and after the pull request is accepted, the featu
 
 .. image:: ./images_bitbucket/pull_request2.png
 
-The proposed changes can be discussed in the pull request and after the pull request ist approved one of the maintainer can merge the changes.
+The proposed changes can be discussed in the pull request and after the pull request is approved by a maintainer, the changes can be merged by the maintainer.
 
 .. image:: ./images_bitbucket/pull_request4.png

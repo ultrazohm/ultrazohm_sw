@@ -88,10 +88,11 @@ void PWM_SS_SetCarrierFrequency_Period(float PWM_freq, float PWM_period){
 }
 
 void PWM_SS_SetMinimumPulseWidth(float PWM_min_pulse_width){
+	LIMIT(PWM_min_pulse_width, 0, 1);
 	// Set PWM minimum pulse width in percent, range is between 0-1
 	Xint32 PWM_min_pulse_width_fp = (Xint32) (ldexpf(PWM_min_pulse_width,Q12)); 	//data register for Inport PWM_min_pulse_wiidth_AXI
 
-	// Wrote register
+	// Write register
 	Xil_Out32(PWM_SS_Con_min_pulse_REG, (Xint32)PWM_min_pulse_width_fp);
 }
 

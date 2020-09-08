@@ -16,9 +16,19 @@
 #include "../main.h"
 #include "../IP_cores/PWM_SS_3L_ip_addr.h"
 
+//==============================================================================================================================================================
+// Methods for three-level PWM IP core
+void PWM_3L_Initialize(DS_Data* data);	// Init for the PWM modulation IP-Block
+void PWM_3L_SetDutyCycle(float duty_A, float duty_B, float duty_C);
+void PWM_3L_SetStatus(Xint32 PWM_en);
+void PWM_3L_SetMode(int PWM_mode);
+void PWM_3L_SetCarrierFrequency(float PWM_freq);
+void PWM_3L_SetMinimumPulseWidth(float PWM_min_pulse_width);
+void PWM_3L_SetTriState(int TriState_A, int TriState_B, int TriState_C);
 
-// PWM Module base addresses
-#define PWM_3L_base_adr					XPAR_GATES_3L_PWM_SS_3L_IP_0_BASEADDR
+//==============================================================================================================================================================
+// registers of three-level PWM module
+#define PWM_3L_base_adr					XPAR_GATES_3L_PWM_SS_3L_IP_0_BASEADDR // PWM Module base addresses
 #define PWM_3L_reg_reset				PWM_3L_base_adr + IPCore_Reset_PWM_SS_3L_ip
 #define PWM_3L_reg_enable				PWM_3L_base_adr + PWM_en_AXI_Data_PWM_SS_3L_ip
 #define PWM_3L_reg_mode					PWM_3L_base_adr + Mode_AXI_Data_PWM_SS_3L_ip
@@ -32,7 +42,5 @@
 #define PWM_3L_reg_TriStateC			PWM_3L_base_adr + TriState_HB3_AXI_Data_PWM_SS_3L_ip
 
 
-void PWM_3L_Initialize();	// Init for the PWM modulation IP-Block
-void PWM_3L_SetDutyCycle(float duty_A, float duty_B, float duty_C);
 
 #endif /* PWM_H_ */

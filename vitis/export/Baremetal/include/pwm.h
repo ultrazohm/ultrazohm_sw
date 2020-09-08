@@ -14,6 +14,7 @@
 
 #include "../main.h"
 #include "../defines.h"
+#include "../IP_Cores/PWM_and_SS_control_V3_ip_addr.h"		//Include from Simulink IP-Blocks for PWM and SS control
 
 //==============================================================================================================================================================
 // Methods for two-level PWM IP core
@@ -26,7 +27,7 @@ void PWM_SS_SetMinimumPulseWidth(float PWM_min_pulse_width);
 void PWM_SS_SetTriState(int TriState_A, int TriState_B, int TriState_C);
 
 //==============================================================================================================================================================
-//IP-Block for the PWM with DutyCycle
+//IP-Block for the 2-level PWM with DutyCycle
 #define PWM_BASE_ADDR					XPAR_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR
 #define PWM_SS_Con_Enable_REG			PWM_BASE_ADDR + PWM_en_AXI_Data_PWM_and_SS_control_V3_ip                //data register for Inport PWM_en_AXI
 #define PWM_SS_Con_Mode_REG				PWM_BASE_ADDR + Mode_AXI_Data_PWM_and_SS_control_V3_ip                  //data register for Inport Mode_AXI

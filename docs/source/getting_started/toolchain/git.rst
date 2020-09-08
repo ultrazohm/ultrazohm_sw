@@ -8,7 +8,7 @@ To use the system clone the repository with the user name of Bitbucket ``Bitbuck
 
 ::
 
-  git clone https://BitbucketUsername@bitbucket.org/ultrazohm/ultrazohm_sw_v19_2.git
+  git clone https://BitbucketUsername@bitbucket.org/ultrazohm/ultrazohm_sw.git
 
 Check out the ``master`` branch with the relevant version (newest is recommended!).
 Use the export script to create a workspace which is not git versioned and use the system.

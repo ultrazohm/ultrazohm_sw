@@ -4,16 +4,16 @@ Bitbucket
 
 Bitbucket is a cloud hosting service on which the remote repository of the UltraZohm is hosted <https://bitbucket.org>.
 The repository is private at the moment, therefore one has to be registered at Bitbucket and request access to the repository at one of the admins.
-Please use a descriptive username and work related mail address.
+Please use a descriptive username and work-related mail address.
 
-Issues and pull request are done with Bitbucket.
+Issues and pull requests are done with Bitbucket.
 
 Issues
 ******
-The Bitbucket **issue tracker** (<https://bitbucket.org/ultrazohm/ultrazohm_sw_v19_2/issues>) is used to keep track of all issues with the UultraZohm.
+The Bitbucket **issue tracker** (<https://bitbucket.org/ultrazohm/ultrazohm_sw/issues>) is used to keep track of all issues with the UltraZohm.
 **Issues** are bugs or problems with the system / the source code of the system and should be reported.
 
-In the ``ultrazohm_sw_v19_2`` repository you can click on issues to get to all open issues.
+In the ``ultrazohm_sw`` repository you can click on issues to get to all open issues.
 .. image:: ./images_bitbucket/issues.png
 
 To report an issue click on ``Create issue``
@@ -29,7 +29,7 @@ Pull Request
 ************
 
 After you finished a feature and you want to include your changes in the main repository you have to create a pull request in Bitbucket.
-A pull request is a application to merge your changes from your feature branch to ``develop``.
+A pull request is an application to merge your changes from your feature branch to ``develop``.
 
 .. image:: ./images_bitbucket/create_pull_request.png
 

@@ -18,8 +18,6 @@
 //Includes from Simulink
 #include "IP_Cores/IncreEncoder_ip_addr.h"				//Include from Simulink IP-Blocks for the incremental encoder
 #include "IP_Cores/Trans_123_dq_V11_ip_addr.h"			//Include from Simulink IP-Blocks for the 123-to-dq transformation
-//#include "IP_Cores/ADC_Counter_V4_addr.h"				//Include from Simulink IP-Blocks for a counter
-#include "IP_Cores/PWM_and_SS_control_V3_ip_addr.h"		//Include from Simulink IP-Blocks for PWM and SS control
 #include "IP_Cores/ADC_Module_LVDS_v2_ip_addr.h"		//Include from hand coded IP-Blocks for ADCs
 
 
@@ -27,68 +25,10 @@
 
 //==============================================================================================================================================================
 // useful macros
-#define SIGN(x) (((x)>=0) ? (1) : (-1)) 	// Sign of variable i
-#define MAX(x, y) (((x) < (y)) ? (y) : (x)) // Max of x or y
-#define MIN(x, y) (((x) > (y)) ? (y) : (x)) // Min of x or y
-#define LIMIT(x,low,high) ((x) >(high)?(high):((x)<(low)?(low):(x))) // limit x to low<x<high
-
-//==============================================================================================================================================================
-//IP-Block for the ADCs
-//#define ADC_CORE1_BASE_ADDR					XPAR_ADCS_ADC_MODULE_LVDS_A1_B_BASEADDR
-//#define ADC_ConversionFactor_1_REG			ADC_CORE1_BASE_ADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip  //write date register for Outport Conversion factor for ADC 1
-//#define ADC_OffsetFactor_1_REG				ADC_CORE1_BASE_ADDR + Offset_Factor_1_ADC_Module_LVDS_V2_ip	//write date register for Outport Offset factor for ADC 1
-//#define ADC_RAW_Value_1_REG					ADC_CORE1_BASE_ADDR + RAW_Value_1_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 1
-//#define ADC_RAW_Value_2_REG					ADC_CORE1_BASE_ADDR + RAW_Value_2_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 2
-//#define ADC_RAW_Value_3_REG					ADC_CORE1_BASE_ADDR + RAW_Value_3_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 3
-//#define ADC_RAW_Value_4_REG					ADC_CORE1_BASE_ADDR + RAW_Value_4_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 4
-
-//#define ADC_CORE2_BASE_ADDR					XPAR_ADCS_ADC_MODULE_LVDS_A1_A_BASEADDR
-//#define ADC_ConversionFactor_2_REG			ADC_CORE2_BASE_ADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip  //write date register for Outport Conversion factor for ADC 1
-//#define ADC_OffsetFactor_2_REG				ADC_CORE2_BASE_ADDR + Offset_Factor_1_ADC_Module_LVDS_V2_ip	//write date register for Outport Offset factor for ADC 1
-//#define ADC_RAW_Value_5_REG					ADC_CORE2_BASE_ADDR + RAW_Value_1_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 5
-//#define ADC_RAW_Value_6_REG					ADC_CORE2_BASE_ADDR + RAW_Value_2_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 6
-//#define ADC_RAW_Value_7_REG					ADC_CORE2_BASE_ADDR + RAW_Value_3_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 7
-//#define ADC_RAW_Value_8_REG					ADC_CORE2_BASE_ADDR + RAW_Value_4_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 8
-
-//==============================================================================================================================================================
-//AXI2TCM Block
-// AXI2TCM Registers
-#define R5_0_BTCM_SPLIT_REG	0x20000
-
-// ADC Card Slot A1
-#define ADC_A1_ChA1_REG		R5_0_BTCM_SPLIT_REG + 0x00
-#define ADC_A1_ChA2_REG		R5_0_BTCM_SPLIT_REG + 0x02
-#define ADC_A1_ChA3_REG		R5_0_BTCM_SPLIT_REG + 0x04
-#define ADC_A1_ChA4_REG		R5_0_BTCM_SPLIT_REG + 0x06
-
-#define ADC_A1_ChB5_REG		R5_0_BTCM_SPLIT_REG + 0x08
-#define ADC_A1_ChB6_REG		R5_0_BTCM_SPLIT_REG + 0x0A
-#define ADC_A1_ChB7_REG		R5_0_BTCM_SPLIT_REG + 0x0C
-#define ADC_A1_ChB8_REG		R5_0_BTCM_SPLIT_REG + 0x0E
-
-// ADC Card Slot A2
-#define ADC_A2_ChA1_REG		R5_0_BTCM_SPLIT_REG + 0x10
-#define ADC_A2_ChA2_REG		R5_0_BTCM_SPLIT_REG + 0x12
-#define ADC_A2_ChA3_REG		R5_0_BTCM_SPLIT_REG + 0x14
-#define ADC_A2_ChA4_REG		R5_0_BTCM_SPLIT_REG + 0x16
-
-#define ADC_A2_ChB5_REG		R5_0_BTCM_SPLIT_REG + 0x18
-#define ADC_A2_ChB6_REG		R5_0_BTCM_SPLIT_REG + 0x1A
-#define ADC_A2_ChB7_REG		R5_0_BTCM_SPLIT_REG + 0x1C
-#define ADC_A2_ChB8_REG		R5_0_BTCM_SPLIT_REG + 0x1E
-
-// ADC Card Slot A3
-#define ADC_A3_ChA1_REG		R5_0_BTCM_SPLIT_REG + 0x20
-#define ADC_A3_ChA2_REG		R5_0_BTCM_SPLIT_REG + 0x22
-#define ADC_A3_ChA3_REG		R5_0_BTCM_SPLIT_REG + 0x24
-#define ADC_A3_ChA4_REG		R5_0_BTCM_SPLIT_REG + 0x26
-
-#define ADC_A3_ChB5_REG		R5_0_BTCM_SPLIT_REG + 0x28
-#define ADC_A3_ChB6_REG		R5_0_BTCM_SPLIT_REG + 0x2A
-#define ADC_A3_ChB7_REG		R5_0_BTCM_SPLIT_REG + 0x2C
-#define ADC_A3_ChB8_REG		R5_0_BTCM_SPLIT_REG + 0x2E
-
-
+#define SIGN(x) 	(((x)>=0) ? (1) : (-1)) 	// Sign of variable i
+#define MAX(x, y) 	(((x) < (y)) ? (y) : (x)) // Max of x or y
+#define MIN(x, y) 	(((x) > (y)) ? (y) : (x)) // Min of x or y
+#define LIMIT(x,low,high) ((x)>(high)?(high):((x)<(low)?(low):(x))) // limit x to low<x<high
 
 //==============================================================================================================================================================
 #define INCR_ENCODER_BASE_ADDR			XPAR_INCREENCODER_IP_0_BASEADDR
@@ -105,18 +45,6 @@
 #define OverSamplingFactorREG 			INCR_ENCODER_BASE_ADDR + OverSamplFactor_AXI4_Data_IncreEncoder_ip
 
 //==============================================================================================================================================================
-//IP-Block for the DMA-interface of the ADC
-//	#define DMA_Data_ADC_REG   				XPAR_AXI_DMA_BASEADDR
-
-//==============================================================================================================================================================
-//IP-Block for the DMA-interface of the Control
-//	#define DMA_Data_CONTROL_REG   			XPAR_AXI_DMA1_BASEADDR
-
-//==============================================================================================================================================================
-//IP-Block for the ADC-Counter
-//	#define ADCCounter_EndValue_REG			XPAR_ADC_COUNTER_V4_0_BASEADDR + CounterValue_AXI4_Data_ADC_Counter_V4
-
-//==============================================================================================================================================================
 //IP-Block for the 123-dq-Transformation
 #define Trans_123_dq_theta_offset_REG 	XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + theta_offset_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
 #define Trans_123_dq_idCurrent_REG 		XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + id_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
@@ -124,22 +52,6 @@
 #define Trans_123_dq_i1Current_REG		XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + i1_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
 #define Trans_123_dq_i3Current_REG 		XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + i3_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
 
-/*
-//==============================================================================================================================================================
-//IP-Block for the ADC-Converter
-//	#define ADCCon_Temp_REG 				XPAR_DUT_V6_IP_0_BASEADDR + Temp_AXI4_Data_DUT_V6_ip  //data register for port i_soll
-//	#define ADCCon_VccInt_REG 				XPAR_DUT_V6_IP_0_BASEADDR + VccInt_AXI4_Data_DUT_V6_ip   //data register for port n_ist
-//	#define ADCCon_i_Ph1_REG 				XPAR_DUT_V6_IP_0_BASEADDR + i_Ph1_AXI4_Data_DUT_V6_ip  //data register for port ia_ist
-//	#define ADCCon_i_Ph2_REG 				XPAR_DUT_V6_IP_0_BASEADDR + i_Ph2_AXI4_Data_DUT_V6_ip  //data register for port ia_ist
-//	#define ADCCon_i_Ph3_REG 				XPAR_DUT_V6_IP_0_BASEADDR + i_Ph3_AXI4_Data_DUT_V6_ip  //data register for port ia_ist
-//	#define ADCCon_Vaux0_REG 				XPAR_DUT_V6_IP_0_BASEADDR + Vaux0_AXI4_Data_DUT_V6_ip //data register for port Enable
-//	#define ADCCon_Vaux8_REG 				XPAR_DUT_V6_IP_0_BASEADDR + Vaux8_AXI4_Data_DUT_V6_ip    //data register for torque of load M_L
-//	#define ADCCon_RAW_CURRENT_REG 			XPAR_DUT_V6_IP_0_BASEADDR + RAW_CURRENT_AXI4_Data_DUT_V6_ip    //data register for torque of load M_L
-//	#define ADCCon_VpVn_REG 				XPAR_DUT_V6_IP_0_BASEADDR + V_VpVn_AXI4_Data_DUT_V6_ip    //data register for torque of load M_L
-//	#define ADCCon_Vaux0_REG 				XPAR_DUT_V6_IP_0_BASEADDR + Vaux0_AXI4_Data_DUT_V6_ip    //data register for torque of load M_L
-//	#define ADCCon_Vaux8_REG 				XPAR_DUT_V6_IP_0_BASEADDR + Vaux8_AXI4_Data_DUT_V6_ip    //data register for torque of load M_L
-//	#define ADCCon_Offset_REG 				XPAR_DUT_V6_IP_0_BASEADDR + OFFSET_I_AXI4_Data_DUT_V6_ip    //data register for torque of load M_L
- */
 
 //==============================================================================================================================================================
 //IP-Block for the Interrupt Prescaler of the control-timer Period = ( 2^32-1 � Reset Value + 2) * Axi-Clk Period
@@ -175,10 +87,10 @@
 
 
 // Parameter definitions
-#define INTERRUPT_ID_SCUG 					XPAR_SCUGIC_0_DEVICE_ID			/* SCUGIC device that Interrupt is connected to */
-#define INTERRUPT_ID_IPI 					XPAR_XIPIPSU_0_DEVICE_ID			/* IPI device that Interrupt is connected to */
-#define GPIO_out_ID							XPAR_AXI_GPIO_2_DEVICE_ID 			/* GPIO device that GPIO is connected to output*/
-#define ADC_ID								XPAR_PS7_XADC_0_DEVICE_ID			/* Device that ADC is connected to*/
+#define INTERRUPT_ID_SCUG 				XPAR_SCUGIC_0_DEVICE_ID			/* SCUGIC device that Interrupt is connected to */
+#define INTERRUPT_ID_IPI 				XPAR_XIPIPSU_0_DEVICE_ID		/* IPI device that Interrupt is connected to */
+#define GPIO_out_ID						XPAR_AXI_GPIO_2_DEVICE_ID 		/* GPIO device that GPIO is connected to output*/
+#define ADC_ID							XPAR_PS7_XADC_0_DEVICE_ID		/* Device that ADC is connected to*/
 
 
 //==============================================================================================================================================================

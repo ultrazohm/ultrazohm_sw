@@ -22,6 +22,8 @@
 #include "include/pwm.h"
 #include "include/javascope.h"
 #include "include/control.h"
+#include "include/pwm_3L_driver.h"
+
 
 //Initialize the global variables
 Xint16 i_LifeCheck;
@@ -62,7 +64,8 @@ int main (void){
 	Initialize_TRANS_123_DQ_CONVERSION(&Global_Data);
 
     //Initialize PWM and switch signal control
-    Initialize_PWM_SS_Control(&Global_Data);
+	PWM_SS_Initialize(&Global_Data); 	// two-level modulator
+    PWM_3L_Initialize();				// three-level modulator
 
 	// Initialize Timer in order to Trigger the ISRs
 	Initialize_Timer();
@@ -87,8 +90,7 @@ int main (void){
 
 	//Output to the Terminal over UART to the COM-Port. Use e.g. "Tera Term" to listen with baud-rate 115200
 	xil_printf("\r\n\r\n");
-	xil_printf("Embedded Motor Control ELSYS\r\n");
-	xil_printf("MPC control by Sebastian Wendel\r\n");
+	xil_printf("Welcome to the UltraZohm\r\n");
 	xil_printf("----------------------------------------\r\n");
 
 	//Set the current value in the ADC as offset/default value
@@ -106,7 +108,6 @@ int main (void){
 	// Infinite loop
 	while (1){
 
-
 		// poll the buttons
 		Global_Data.dv.sw1=ReadPin_PS_GPIO(SW_system);
 		Global_Data.dv.sw2=ReadPin_PS_GPIO(SW_control);
@@ -116,14 +117,16 @@ int main (void){
 			Global_Data.cw.enableSystem=flagDisabled;
 		}
 		// Set the control enable flag to false if SW2 is pressed
-		if (Global_Data.dv.sw2==flagEnabled){
+		if (Global_Data.dv.sw2==valueTrue){
 			Global_Data.cw.enableControl=flagDisabled;
 		}
+#ifndef UltraZohmV2 // in CarrierBoard_v2 there are no buttons, therefore always SW_stop is always zero/false
 		// Set the control enable and system enable flag to false if SW3 is pressed
 		if (Global_Data.dv.sw3==valueFalse){
 			Global_Data.cw.enableControl=flagDisabled;
 			Global_Data.cw.enableSystem=flagDisabled;
 		}
+#endif
 
 		//ToDo: //Add here more possible errors?!
 		if((Global_Data.ew.maximumContinuousCurrentExceeded == valueTrue)||(Global_Data.ew.maximumShortTermCurrentReached == valueTrue)||(Global_Data.ew.dcLinkOvervoltageOccured == valueTrue)||(Global_Data.ew.pwmFrequencyError == valueTrue)){
@@ -150,30 +153,27 @@ int main (void){
 			switch(Global_Data.cw.ControlMethod){
 				case DirectTorqueControl:
 					Configure_DTC_Control(&Global_Data);
-					Initialize_PWM_SS_Control(&Global_Data);
+					PWM_SS_Initialize(&Global_Data);
 					xil_printf("DTC is active\n");
 					break;
 				case fieldOrientedControl:
 					Configure_FOC_Control(&Global_Data);
-					Initialize_PWM_SS_Control(&Global_Data);
+					PWM_SS_Initialize(&Global_Data);
 					xil_printf("FOC is active\n");
 					break;
 				case ModelPredictiveControl:
-					//SW: If i initialize here "to much", the processor stops. Maybe because the ISR is blocked? I think, maybe because i overload the AXI by to many writing?!
-			//		Initialize_FPGAController(&Global_Data);	//Initialize FCS-MPC again (e.g. after the parameter ID was done)
-			//		Initialize_ARMController(&Global_Data);		//Initialize CCS-MPC again (e.g. after the parameter ID was done)
 					Configure_MPC_Control(&Global_Data);
-					Initialize_PWM_SS_Control(&Global_Data);
-				//	xil_printf("MPC is active\n");
+					PWM_SS_Initialize(&Global_Data);
+					xil_printf("MPC is active\n");
 					break;
 				case sixStepCommutation:
 					//toDO not used at the moment
-					Initialize_PWM_SS_Control(&Global_Data);
+					PWM_SS_Initialize(&Global_Data);
 					xil_printf("Six-Step commutation is active\n");
 					break;
 				case halfBridgeControl:
 					Configure_HalfBridge_Control(&Global_Data);
-					Initialize_PWM_SS_Control(&Global_Data);
+					PWM_SS_Initialize(&Global_Data);
 					xil_printf("Half Bridge control is active\n");
 					break;
 				default:
@@ -230,9 +230,6 @@ int turnPowerElectronicsOn(DS_Data* data){
 //==============================================================================================================================================================
 int ControllerOff(DS_Data* data){
 
-	//Xil_Out32(Control_iq_soll_REG, (Xint32)(0)); // -> 2^11 = 2048 -> Die 11 Bit Nachkommastellen verschieben, Vorzeichen ist schon bei Vorgabe dabei	// Input to the IP-Core
-	//Xil_Out16(Control_n_soll_REG, (Xint16)(fn_soll * 8.0f)); 	// -> 2^3 = 8 -> Die 3 Bit Nachkommastellen verschieben, Vorzeichen ist schon bei Vorgabe dabei	// Input to the IP-Core
-	//Xil_Out32(Control_Enable_REG, (Xint32)(Global_Data.cw.enableControl));	//Switch the control off
 	WritePin_PS_GPIO(LED_running,valueFalse); //Write a GPIO for LED_2
 	return (0);
 }
@@ -240,7 +237,6 @@ int ControllerOff(DS_Data* data){
 //==============================================================================================================================================================
 int ControllerOn(DS_Data* data){
 
-	//Xil_Out32(Control_Enable_REG, (Xint32)(Global_Data.cw.enableControl));	//Switch the control on
 	WritePin_PS_GPIO(LED_running,valueTrue); //Write a GPIO for LED_2
 	return (0);
 }
@@ -285,9 +281,7 @@ int ErrorReset(DS_Data* data){
 
 //==============================================================================================================================================================
 int ADC_Set_Offset(){
-
 	XGpio_DiscreteSet(&Gpio_OUT,GPIO_CHANNEL, 4);// 4 = 0b0100 Enable the ADC module to set an offset value. Call this function only at the beginning once
-
 	return (0);
 }
 
@@ -300,16 +294,7 @@ int AXI2TCM_on(){
 //==============================================================================================================================================================
 int plotData(DS_Data* data){
 
-	//SW: Der "Direct" Eingang des Simulink-Blocks hat 32 Bit, daher hier der Aufruf "Xil_Out32"
-//	Xil_Out32(PERIOD_Prescaler, In0);	// Input to the IP-Core
-	//XGpio_DiscreteWrite(&GpioPWM,STEPPER_CHANNEL , 6);  // -++-
-	//delayy();
-//	XGpio_DiscreteWrite(&GpioPWM,STEPPER_CHANNEL , 0); // ----
-
-	//Output ADC values
-//	printf("Temperature: %f \r\n", fTemperatur);
-	//printf("Strom zur Uebergabe neg: %d \r\n", Xil_In16(Control_iq_soll_REG) );
-	printf("Sollstrom in float: %f \r\n", data->rasv.referenceCurrent_iq );
+	printf("Reference current in float: %f \r\n", data->rasv.referenceCurrent_iq );
 
 	printf("ADC I_a: %f \r\n", data->av.I_U);
 	printf("ADC I_b: %f \r\n", data->av.I_V);
@@ -321,6 +306,8 @@ int plotData(DS_Data* data){
 	printf("theta_mech: %f \r\n", data->av.theta_mech);
 //	printf("Direction ( 1= positiv and 0 = negativ): %d \r\n", u8Direction);
 	printf("Actual DutyCycle: %d \r\n", (Xint16)(data->rasv.sixStepCommutationDutyCycle*100.0));
+
+	bPlotData	= valueFalse; // print only once
 
 	return 0;
 }
@@ -342,7 +329,6 @@ void delayy(){
 
 //==============================================================================================================================================================
 int InitializeDataStructure(DS_Data* data){
-
 
 	data->av.U_ZK = 24.0; 								//[V] DC-Link voltage
 
@@ -377,7 +363,7 @@ int InitializeDataStructure(DS_Data* data){
 	data->mrp.ADCConversionFactorVdc =0.0;
 	data->mrp.ADCConversionFactorTrq =0.0;
 	data->mrp.ADCConversionFactorTmp =0.0;
-	data->mrp.ADCconvFactorReadback =0.0;
+	data->mrp.ADCconvFactorReadback  =0.0;
 
 	//Initialize Automatic Current Reference Control Inputs
 	data->pID.bEnableAutoCurrentControl=valueFalse;

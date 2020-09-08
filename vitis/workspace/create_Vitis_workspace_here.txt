@@ -1,9 +1,0 @@
-this is the folder to create the new vitis workspace
-it is not tracked by git!
-
-open Vitis
-create workspace here 
-open XSCT Console and type:
-
-cd [getws]
-source {../export/generate_UltraZohm_workspace.tcl}

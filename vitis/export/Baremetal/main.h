@@ -170,8 +170,8 @@
 
 // ========== JavaScope-Ethernet =========================================================================
 //Defines for JavaScope (4 or 2 channels)
-#define chJavaScope						4
-//#define chJavaScope						2
+#define chJavaScope			4
+//#define chJavaScope		2
 
 // ========== Structures =========================================================================
 typedef struct

@@ -146,7 +146,7 @@ app create -name Baremetal -template {Empty Application} -platform $PLATFORM_NAM
 puts "Info:(UltraZohm) import Baremetal Application sources"
 #import sources to baremetal project
 # first the c-files are linked
-# then the linker script is copied to the folder with a hard copy due to compilation errors otherwise - note that the sequence (first link the file, then copy the linker script is importent due to -soft-link deleting the linker script otherwise
+# then the linker script is copied to the folder with a hard copy due to compilation errors otherwise - note that the sequence (first link the file, then copy the linker script is important due to -soft-link deleting the linker script otherwise
 importsources -name Baremetal -path $FOLDER_PATH/export/Baremetal -soft-link
 importsources -name Baremetal -path $FOLDER_PATH/export/Baremetal/lscript.ld -linker-script 
 #add math library to linker option

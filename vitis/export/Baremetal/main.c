@@ -113,11 +113,11 @@ int main (void){
 		Global_Data.dv.sw3=ReadPin_PS_GPIO(SW_stop);
 		// Set the system enable flag to false if SW1 is pressed
 		if (Global_Data.dv.sw1==valueTrue){
-			Global_Data.cw.enableSystem=flagDisabled;
+			Global_Data.cw.enableSystem=flagEnabled;
 		}
 		// Set the control enable flag to false if SW2 is pressed
 		if (Global_Data.dv.sw2==flagEnabled){
-			Global_Data.cw.enableControl=flagDisabled;
+			Global_Data.cw.enableControl=flagEnabled;
 		}
 		// Set the control enable and system enable flag to false if SW3 is pressed
 		if (Global_Data.dv.sw3==valueFalse){

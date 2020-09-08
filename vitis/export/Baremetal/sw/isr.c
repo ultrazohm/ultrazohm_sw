@@ -16,12 +16,8 @@
 #include "../include/ipc_ARM.h"
 #include <math.h>
 #include <xtmrctr.h> //library for timing measurement
-
-//CODEGEN Simulink
-//#include "../include/blac_drive/PI_BLAC_n_Bueh_V6_codegen.h" //SW 07.02.2018 PI for speed
-//#include "../include/blac_drive/CCS_Speed_o_V7_codegen.h" //SW 08.05.2018 CCS for speed
 #include "../include/javascope.h"
-
+#include "../include/pwm.h"
 
 //General variables
 Xfloat32 	time_ISR_max=0;
@@ -32,7 +28,6 @@ Xint32 		i_count_1s = 0; // count up by 1 every 1s
 
 //Initialize the variables for the ADC measurement
 u32 		XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
-Xfloat32 	XADC_BufMessOnce[100]; //Test ADC
 Xint32 		ADC_RAW_Sum_1 = 0.0;
 Xint32 		ADC_RAW_Sum_2 = 0.0;
 Xint32 		ADC_RAW_Sum_3 = 0.0;
@@ -160,7 +155,7 @@ void TMR_Con_Intr_Handler(void *data)
 
 				// should be same value but faster to read from TCM,
 				// different naming convention used, this one here maps directly to the naming on the front panel
-				ADC_raw_A1 = Xil_In16(TCM_ADC_A1_REG); 		//Read TCM
+			/*	ADC_raw_A1 = Xil_In16(TCM_ADC_A1_REG); 		//Read TCM
 				ADC_raw_A2 = Xil_In16(TCM_ADC_A2_REG); 		//Read TCM
 				ADC_raw_A3 = Xil_In16(TCM_ADC_A3_REG); 		//Read TCM
 				ADC_raw_A4 = Xil_In16(TCM_ADC_A4_REG); 		//Read TCM
@@ -168,7 +163,7 @@ void TMR_Con_Intr_Handler(void *data)
 				ADC_raw_B6 = Xil_In16(TCM_ADC_B6_REG); 		//Read TCM
 				ADC_raw_B7 = Xil_In16(TCM_ADC_B7_REG); 		//Read TCM
 				ADC_raw_B8 = Xil_In16(TCM_ADC_B8_REG); 		//Read TCM
-
+*/
 				i_id = Xil_In32(Trans_123_dq_idCurrent_REG); //Read AXI-register
 				i_iq = Xil_In32(Trans_123_dq_iqCurrent_REG); //Read AXI-register
 				i_i1 = Xil_In32(Trans_123_dq_i1Current_REG); //Read AXI-register
@@ -181,10 +176,6 @@ void TMR_Con_Intr_Handler(void *data)
 	}
 	//End: Read out ADCs ---------------------------------------------------------------------------------------
 
-	if ((Global_Data.cw.enableControl == flagEnabled) && (Global_Data.av.I_U > Global_Data.rasv.referenceCurrent_iq) && MessOnce < 99){
-	    XADC_BufMessOnce[MessOnce] = Global_Data.av.I_U;
-		MessOnce ++;
-	}
 
 	//Error detection
 	if(Global_Data.cw.enableControl == flagEnabled){
@@ -237,35 +228,30 @@ void TMR_Con_Intr_Handler(void *data)
 	i_theta_e  = Xil_In32(Encoder_theta_e_REG);  //Read AXI-register
 	Global_Data.av.theta_elec  = (Xfloat32)(ldexpf(i_theta_e, Q20toF));  // Shift 20 Bit for fixed-point
 
-	//Update control values with 16 bit
-	//Xil_Out32(Control_n_ist_REG, (Xint32)(ldexpf(Global_Data.av.mechanicalRotorSpeed,Q3))); 	// Shift 3 Bit for fixed-point // Input to the IP-Core
-
-	//End: Read out speed and theta ---------------------------------------------------------------------------------------
-
-	//Start: Call the speed control ---------------------------------------------------------------------------------------
-
-	//Y_Stell_Orig = step_user_CCS_Speed_o_V7(&Global_Data); //Aufruf CCS-MPC-Regler mit rw = 10000
-
-	//End: Call the speed control ---------------------------------------------------------------------------------------
 
 	//Start: Write the references for the FPGA ---------------------------------------------------------------------------------------
-	if (Global_Data.cw.ControlReference == SpeedControl){
-		//Set the reference current
-		//Xil_Out32(Control_iq_soll_REG, (Xint32)(ldexpf(Global_Data.rasv.currentControlAngle,Q11))); 		// Shift 11 Bit for fixed-point //Sign is already included // Input to the IP-Core
-	}else if(Global_Data.cw.ControlReference == CurrentControl){
-		//Xil_Out32(Control_iq_soll_REG, (Xint32)(ldexpf(Global_Data.rasv.referenceCurrent_iq,Q11))); 		// Shift 11 Bit for fixed-point //Sign is already included // Input to the IP-Core
-	}else if(Global_Data.cw.ControlReference == TorqueControl){
-			//Not used at the moment
+	if (Global_Data.cw.ControlReference == SpeedControl)
+	{
+		// add your speed controller here
+	}
+	else if(Global_Data.cw.ControlReference == CurrentControl)
+	{
+		// add your current controller here
+	}
+	else if(Global_Data.cw.ControlReference == TorqueControl)
+	{
+		// add your torque controller here
 	}
 
-	// PWM enable is set to 0 and disable the PWM Module
-	Xil_Out32(PWM_SS_Con_Enable_REG, (Xint32) Global_Data.cw.enableControl);	// Input to the IP-Core
+	// PWM status is set to 0 and disable the PWM Module
+	PWM_SS_SetStatus(Global_Data.cw.enableControl);
 	// Reference m u1-u3  ->  Valid value range for the duty cycle: 0-1
-	Xil_Out32(PWM_SS_Con_m_u1_norm_REG, (Xint32) (ldexpf(Global_Data.rasv.halfBridge1DutyCycle,Q12))); 		// Shift 12 Bit for fixed-point  //data register for Input m_u1_norm_AXI
-	Xil_Out32(PWM_SS_Con_m_u2_norm_REG, (Xint32) (ldexpf(Global_Data.rasv.halfBridge2DutyCycle,Q12))); 		// Shift 12 Bit for fixed-point  //data register for Input m_u2_norm_AXI
-	Xil_Out32(PWM_SS_Con_m_u3_norm_REG, (Xint32) (ldexpf(Global_Data.rasv.halfBridge3DutyCycle,Q12))); 		// Shift 12 Bit for fixed-point  //data register for Input m_u3_norm_AXI
+	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+						Global_Data.rasv.halfBridge2DutyCycle,
+						Global_Data.rasv.halfBridge3DutyCycle);
 
 	//End: Write the references for the FPGA ---------------------------------------------------------------------------------------
+
 
 	// Start JavaScope---------------------------------------------------------------------------------------
 	 //In order to avoid unnecessary memory access, call only if something has changed!
@@ -344,6 +330,7 @@ void TMR_Con_Intr_Handler(void *data)
 	js_slowDataArray[JSSD_FLOAT_d_est].f		= Global_Data.pID.Offline_TwoMassSystemDamping;
 	js_slowDataArray[JSSD_FLOAT_c_0].f			= Global_Data.pID.Offline_TwoMassSystem_c_0;
 	js_slowDataArray[JSSD_FLOAT_MapCounter].f	= Global_Data.pID.map_counter;
+
 	if(Global_Data.pID.map_counter<401){ //400 = comes from 20x20 Raster of the flux maps
 		js_slowDataArray[JSSD_FLOAT_psidMap].f	= Global_Data.pID.FluxMap_d[(Xuint16)(Global_Data.pID.map_counter)];
 		js_slowDataArray[JSSD_FLOAT_psiqMap].f	= Global_Data.pID.FluxMap_q[(Xuint16)(Global_Data.pID.map_counter)];

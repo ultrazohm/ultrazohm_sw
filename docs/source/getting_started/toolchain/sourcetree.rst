@@ -40,7 +40,7 @@ If you do not know what a SSH Key is, click ``Nein`` (No), you do not need it.
 .. image:: ./images_git/sourcetree_ssh.png
 
 After that the installation is complete and you can open Sourcetree and you should be loged in and you see your remote repositorys.
-If you are in the UltraZohm team you will see the ``ultrazohm_sw_v19_2`` repository.
+If you are in the UltraZohm team you will see the ``ultrazohm_sw`` repository.
 .. image:: ./images_git/sourcetree_offen.png
 
 Click on ``clone`` to download the software to your local hard drive.
@@ -51,7 +51,7 @@ The dialog to clone the repository is opend and you can add the local path. It i
 
 ::
 
-  C:\UltraZohm\ultrazohm_sw_v19_2
+  C:\UltraZohm\ultrazohm_sw
 
 .. image:: ./images_git/sourcetree_clone2.png
 
@@ -81,7 +81,7 @@ Sourcetree known issues
 Sourcetree git-flow
 *******************
 
-We use the git-flow workflow as a branching model for the ``ultrazohm_sw_v19_2`` repository <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>.
+We use the git-flow workflow as a branching model for the ``ultrazohm_sw`` repository <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>.
 Git-flow is integrated in Sourcetree and straigth forward for users.
 
 To use git-flow for the first time click the git-flow icon in sourcetree.

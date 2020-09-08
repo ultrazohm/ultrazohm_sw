@@ -8,17 +8,17 @@ Setup
 The restructured Text is a markup language. A good workflow to write ReST docs (under Windows) can be achieved with the following steps:
 
 1. Install the latest Python Version via the Microsoft Store
-	1. Make sure, that Python is installed as admin (right clicking on the python.exe), because it may cause problems.
+	1. Make sure, that Python is installed as admin (right click on the python.exe), because it may cause problems.
 	2. Therefore, install it under **C:\\Program Files\\Python**
 
 2. Install pip, the Python package manager
 	1. `Download <https://bootstrap.pypa.io/get-pip.py>`_ the get-pip.py file
 	2. Copy the download file to **C:\\Program Files\\Python\\Scripts**
-	3. Execute the script by double clicking on it (as admin if its not working)
+	3. Execute the script by double click on it (as admin if its not working)
 
 3. Install sphinx
-	1. Open the windows power shell (as admin per rigth clicking)
-	2. Check the Python version and wheter access is possible by typing **python --version**
+	1. Open the windows power shell (as admin by a right click)
+	2. Check the Python version and if access is possible by typing **python --version**
 	3. For the setup of the environment type change to the root directory of the documentation (e.g. **cd C:\\Users\\...**). Check if the requirements.txt is in the directory (**ls**) and type **pip install -r requirements.txt**
 	4. There will probably be a warning that the files are not in the PATH variable. Add the files to the PATH variable by following `this guide <https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/>`_ .
 
@@ -27,7 +27,7 @@ The restructured Text is a markup language. A good workflow to write ReST docs (
 
 5. For ReST syntax highlighting follow the instructions of `this project <https://github.com/steenhulthin/reStructuredText_NPP>`_
 
-6. For quick preview of the docs you wrote perform the following steps in Notepad++:
+6. For a quick preview of the docs you wrote perform the following steps in Notepad++:
 	1. Hit F5
 	2. Select the **make.bat** file
 	3. The command must have the following format: **\\path\\to\\make.bat html**
@@ -48,7 +48,7 @@ The project starts with the toplevel **index.rst**. Here the **toctree(s)** for 
 (e.g. subject Hardware -> Directory hardware etc.). Images must be placed in subdirectories named after the document they are related to (e.g. document **carrier_board.rst**
 image directory = **images_carrier_board**)
 
-Naming convention: All files lower case and snake case (= snake_case) ecxept README.rst
+Naming convention: All files lower case and snake case (= snake_case) except README.rst
 
 Writing the docs
 ----------------
@@ -84,7 +84,7 @@ Please note that there are only two cases in which a raster graphic is acceptabl
 Including searchable images as vector graphics
 ----------------------------------------------
 
-Every image that does not fit the criteria photograph or based on screenshot has to be included as a searchable vector graphic.
+Every image that does not fit the criteria photograph or based on a screenshot has to be included as a searchable vector graphic.
 This can be done by the following code, using .svg is advised:
 
 .. code-block:: RST
@@ -110,4 +110,4 @@ Git Workflow
 ------------
 
 We use the same git-flow based workflow as in the UltraZohm main repository which means create feature branches and merge them to develop by creating a pull request.
-Do not work on master, do not work on develop.
+Do not work on the main-branch, do not work on the develop-branch.

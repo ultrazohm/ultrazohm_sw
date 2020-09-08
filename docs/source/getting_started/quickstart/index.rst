@@ -12,7 +12,7 @@ Git clone the following repositorys with your username ``BitbucketUsername``:
 	git clone https://BitbucketUsername@bitbucket.org/ultrazohm/ultrazohm_sw.git
 
 
-There should exist a directory in the following structure. Please note that a lot of relative paths of the project are case sensitive (e.g. AA_IP_Repository has to use capital letters).
+There should exist a directory in the following structure.
 
 ::
 

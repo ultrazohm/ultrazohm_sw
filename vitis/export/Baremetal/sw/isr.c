@@ -18,6 +18,7 @@
 #include <xtmrctr.h> //library for timing measurement
 #include "../include/javascope.h"
 #include "../include/pwm.h"
+#include "../include/adc.h"
 
 //General variables
 Xfloat32 	time_ISR_max=0;
@@ -139,40 +140,15 @@ void TMR_Con_Intr_Handler(void *data)
 				initADCdone = valueTrue;
 				Global_Data.cw.ControlReference = CurrentControl; //default
 				Global_Data.cw.ControlMethod = fieldOrientedControl; //default
-
+				ADC_Clear_Offset();
 			}
-	}else{ // if (initADCdone== valueTrue) --> Init done, standard mode
-				//Read the ADC-Register
+	}else{
 
-				//ADC_RAW_Value_1 = Xil_In32(ADC_RAW_Value_1_REG); //Read AXI-register
-				//ADC_RAW_Value_2 = Xil_In32(ADC_RAW_Value_2_REG); //Read AXI-register
-				//ADC_RAW_Value_3 = Xil_In32(ADC_RAW_Value_3_REG); //Read AXI-register
-				//ADC_RAW_Value_4 = Xil_In32(ADC_RAW_Value_4_REG); //Read AXI-register
-				//ADC_RAW_Value_5 = Xil_In32(ADC_RAW_Value_5_REG); //Read AXI-register
-				//ADC_RAW_Value_6 = Xil_In32(ADC_RAW_Value_6_REG); //Read AXI-register
-				//ADC_RAW_Value_7 = Xil_In32(ADC_RAW_Value_7_REG); //Read AXI-register
-				//ADC_RAW_Value_8 = Xil_In32(ADC_RAW_Value_8_REG); //Read AXI-register
+		//ADC_readCardA1(&Global_Data);
+		//ADC_readCardA2(&Global_Data);
+		//ADC_readCardA3(&Global_Data);
+		ADC_readCardALL(&Global_Data);
 
-				// should be same value but faster to read from TCM,
-				// different naming convention used, this one here maps directly to the naming on the front panel
-			/*	ADC_raw_A1 = Xil_In16(TCM_ADC_A1_REG); 		//Read TCM
-				ADC_raw_A2 = Xil_In16(TCM_ADC_A2_REG); 		//Read TCM
-				ADC_raw_A3 = Xil_In16(TCM_ADC_A3_REG); 		//Read TCM
-				ADC_raw_A4 = Xil_In16(TCM_ADC_A4_REG); 		//Read TCM
-				ADC_raw_B5 = Xil_In16(TCM_ADC_B5_REG); 		//Read TCM
-				ADC_raw_B6 = Xil_In16(TCM_ADC_B6_REG); 		//Read TCM
-				ADC_raw_B7 = Xil_In16(TCM_ADC_B7_REG); 		//Read TCM
-				ADC_raw_B8 = Xil_In16(TCM_ADC_B8_REG); 		//Read TCM
-*/
-				i_id = Xil_In32(Trans_123_dq_idCurrent_REG); //Read AXI-register
-				i_iq = Xil_In32(Trans_123_dq_iqCurrent_REG); //Read AXI-register
-				i_i1 = Xil_In32(Trans_123_dq_i1Current_REG); //Read AXI-register
-				i_i3 = Xil_In32(Trans_123_dq_i3Current_REG); //Read AXI-register
-
-				Global_Data.av.I_d =  (Xfloat32)(ldexpf(i_id, Q11toF));	// Shift the 11 fractional bits
-				Global_Data.av.I_q =  (Xfloat32)(ldexpf(i_iq, Q11toF));	// Shift the 11 fractional bits
-				Global_Data.av.I_U =  (Xfloat32)(ldexpf(i_i1, Q11toF));	// Shift the 11 fractional bits
-				Global_Data.av.I_W =  (Xfloat32)(ldexpf(i_i3, Q11toF));	// Shift the 11 fractional bits
 	}
 	//End: Read out ADCs ---------------------------------------------------------------------------------------
 
@@ -249,7 +225,10 @@ void TMR_Con_Intr_Handler(void *data)
 	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 						Global_Data.rasv.halfBridge2DutyCycle,
 						Global_Data.rasv.halfBridge3DutyCycle);
-
+	// Set for three-level modulator
+	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+						Global_Data.rasv.halfBridge2DutyCycle,
+						Global_Data.rasv.halfBridge3DutyCycle);
 	//End: Write the references for the FPGA ---------------------------------------------------------------------------------------
 
 

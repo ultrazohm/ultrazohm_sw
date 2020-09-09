@@ -477,6 +477,47 @@ typedef struct _motorRelatedParameters_ {
 	Xfloat32 ViscousFriction;			// Viscous Frictioncoefficient in Nms
 } motorRelatedParameters;		// = 32 x 4bytes ohne mtpaTable, mit mtpaTable (2 x 16 x 4bytes) --> gesamt 64 x 4bytes
 
+// union allows to access the values as array and individual variables
+// see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
+typedef union _ConversionFactors_ {
+	struct{
+		Xfloat32 ADC_A1;
+		Xfloat32 ADC_A2;
+		Xfloat32 ADC_A3;
+		Xfloat32 ADC_A4;
+		Xfloat32 ADC_B5;
+		Xfloat32 ADC_B6;
+		Xfloat32 ADC_B7;
+		Xfloat32 ADC_B8;
+		};
+	float ADC_array[8];
+} ConversionFactors;
+
+typedef union _Measurements_ {
+	struct{
+		Xfloat32 ADC_A1;
+		Xfloat32 ADC_A2;
+		Xfloat32 ADC_A3;
+		Xfloat32 ADC_A4;
+		Xfloat32 ADC_B5;
+		Xfloat32 ADC_B6;
+		Xfloat32 ADC_B7;
+		Xfloat32 ADC_B8;
+		};
+	float ADC_array[8];
+} Measurements;
+
+typedef struct _ADCcard_ {
+	ConversionFactors 	cf;
+	Measurements		me;
+} ADCcard;
+
+typedef struct _AnalogAdapters_ {
+	ADCcard A1;
+	ADCcard A2;
+	ADCcard A3;
+} AnalogAdapters;
+
 typedef struct _actualValues_ {
 	Xfloat32 I_L1; 		// Grid side current in A
 	Xfloat32 I_L2; 		// Grid side current in A
@@ -833,6 +874,7 @@ typedef struct _DS_Data_ {
 	parameterIdentificationVars pID;
 	controllerVars ctrl;
 	debugVariables dv;
+	AnalogAdapters aa;
 } DS_Data;
 
 
@@ -850,6 +892,7 @@ int ErrorHandling(DS_Data* data);
 int ErrorReset(DS_Data* data);
 int ControllerOn(DS_Data* data);
 int ADC_Set_Offset(void);
+int ADC_Clear_Offset(void);
 int InitializeDataStructure(DS_Data* data);
 
 

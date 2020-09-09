@@ -2,7 +2,7 @@
 #
 # generate_UltraZohm_workspace.tcl
 #
-# Copyright (C) 2020 IltraZohm Community, All rights reserved.
+# Copyright (C) 2020 UltraZohm Community, All rights reserved.
 #
 # Created on: 06.02.2020
 #     Author: Eyke Liegmann (EL)
@@ -13,7 +13,7 @@
 #	source {../export/generate_UltraZohm_workspace.tcl}
 #
 # XSCT Programming Reference UG1416 
-# https://www.xilinx.com/html_docs/xilinx2019_2/vitis_doc/Chunk464819247.html?hl=xsct#ngg1569240078633
+# https://www.xilinx.com/html_docs/xilinx2019_2/vitis_doc/
 ####################################################
 
 
@@ -195,15 +195,18 @@ puts "Info:(UltraZohm) add standard FSBL.elf"
 platform config -remove-boot-bsp
 platform config -fsbl-elf $FOLDER_PATH/export/FSBL.elf 
 platform write 
-platform generate 
 
 #Clean all
 ####################################################
-puts "Info:(UltraZohm) clean all application projects"
+puts "Info:(UltraZohm) clean platform and all application projects"
+platform clean
 app_clean
-puts "Info:(UltraZohm) build all application projects"
+puts "Info:(UltraZohm) build platform and all application projects"
+platform generate 
 app_build
-#
+
+
+puts "========================================"
 # copy debug files
 set filename_workspace [file join $FOLDER_PATH workspace]
 set filename_meta [file join $filename_workspace .metadata]

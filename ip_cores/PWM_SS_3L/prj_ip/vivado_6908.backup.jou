@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Mon Apr  6 09:24:00 2020
+# Process ID: 6908
+# Current directory: C:/Users/ga92wum/git/05_Qifan_Testbench/IP_cores/PWM_and_SS_control_3L_V2_ip_v1_3/simulation/hdl_prj/ipcore/PWM_SS_3L_ip_v1_4/prj_ip
+# Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
+# Log file: C:/Users/ga92wum/git/05_Qifan_Testbench/IP_cores/PWM_and_SS_control_3L_V2_ip_v1_3/simulation/hdl_prj/ipcore/PWM_SS_3L_ip_v1_4/prj_ip/vivado.log
+# Journal file: C:/Users/ga92wum/git/05_Qifan_Testbench/IP_cores/PWM_and_SS_control_3L_V2_ip_v1_3/simulation/hdl_prj/ipcore/PWM_SS_3L_ip_v1_4/prj_ip\vivado.jou
+#-----------------------------------------------------------
+source vivado_ip_package.tcl -notrace

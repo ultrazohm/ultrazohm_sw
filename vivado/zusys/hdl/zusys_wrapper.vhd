@@ -1,8 +1,8 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
---Tool Version: Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
---Date        : Fri Sep  4 11:44:52 2020
---Host        : TS-WS running 64-bit Ubuntu 20.04.1 LTS
+--Tool Version: Vivado v.2020.1.1 (win64) Build 2960000 Wed Aug  5 22:57:20 MDT 2020
+--Date        : Fri Sep  4 16:43:57 2020
+--Host        : TUEIEAL-TM01 running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
 --Purpose     : IP block netlist
@@ -64,7 +64,7 @@ entity zusys_wrapper is
     Dig_30_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_30_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_30_Ch4 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_Ch2 : out STD_LOGIC_VECTOR ( 25 downto 0 );
+    Dig_Ch2 : out STD_LOGIC_VECTOR ( 11 downto 0 );
     Dig_Ch3 : out STD_LOGIC_VECTOR ( 25 downto 0 );
     Dig_Ch4 : out STD_LOGIC_VECTOR ( 25 downto 0 );
     Reserve : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -115,7 +115,7 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_27_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_29_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_30_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_Ch2 : out STD_LOGIC_VECTOR ( 25 downto 0 );
+    Dig_Ch2 : out STD_LOGIC_VECTOR ( 11 downto 0 );
     A2_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
     A2_OUT : out STD_LOGIC_VECTOR ( 3 downto 0 );
     A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
@@ -191,7 +191,7 @@ zusys_i: component zusys
       Dig_30_Ch2(0) => Dig_30_Ch2(0),
       Dig_30_Ch3(0) => Dig_30_Ch3(0),
       Dig_30_Ch4(0) => Dig_30_Ch4(0),
-      Dig_Ch2(25 downto 0) => Dig_Ch2(25 downto 0),
+      Dig_Ch2(11 downto 0) => Dig_Ch2(11 downto 0),
       Dig_Ch3(25 downto 0) => Dig_Ch3(25 downto 0),
       Dig_Ch4(25 downto 0) => Dig_Ch4(25 downto 0),
       Reserve(0) => Reserve(0),

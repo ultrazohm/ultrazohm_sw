@@ -137,7 +137,7 @@ Slots D1 to D4 can be used without limitations
 See also
 """"""""
 
-* `CPLD software git <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/>`_
+* `CPLD software git <https://bitbucket.org/ultrazohm/cpld_lattice/>`_
 * :ref:`label_cpld_programming`
 
 Appendix

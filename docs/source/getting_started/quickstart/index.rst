@@ -7,21 +7,19 @@ Git clone the following repositorys with your username ``BitbucketUsername``:
 
 ::
 
-	git clone https://BitbucketUsername@bitbucket.org/ultrazohm/aa_ip_repository.git
 	git clone https://BitbucketUsername@bitbucket.org/ultrazohm/cpld_lattice.git
 	git clone https://BitbucketUsername@bitbucket.org/ultrazohm/javascope_standalone.git
-	git clone https://BitbucketUsername@bitbucket.org/ultrazohm/ultrazohm_sw_v19_2.git
+	git clone https://BitbucketUsername@bitbucket.org/ultrazohm/ultrazohm_sw.git
 
 
-There should exist a directory in the following structure. Please note that a lot of relative paths of the project are case sensitive (e.g. AA_IP_Repository has to use capital letters).
+There should exist a directory in the following structure.
 
 ::
 
   ./ultrazohm/
-		AA_IP_Repository
 		cpld_lattice
 		javascope_standalone
-		ultrazohm_sw_v19_2
+		ultrazohm_sw
 
 ..	toctree::
 	:maxdepth: 2

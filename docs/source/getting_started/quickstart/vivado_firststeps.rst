@@ -1,9 +1,6 @@
-======================
+====================
 Vivado - First Steps
-======================
-
-The **UltraZohm_SW_V19_2** project and the **AA_IP_Repository** must be always in the same folder direction!
-
+====================
 
 Check the constraints
 ---------------------

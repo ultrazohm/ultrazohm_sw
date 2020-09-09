@@ -3,7 +3,7 @@ First steps with the UltraZohm
 ==============================
 
 Aim of the tutorial
-***************
+*******************
 
 In this tutorial, the GUI (Javascope) is used to visualize the life check variable of the R5 of the UltraZohm. Furthermore, a sine wave calculation is added to the interrupt service routine (isr.c) of the R5. The Javascope is used to visualize the sine wave.
 
@@ -35,7 +35,7 @@ The UltraZohm has to be connected to a PC by Ethernet and USB (JTAG-Programmer).
 .. image:: ./img/physical_setup.jpg
 
 Visualize the life check
-**********************
+************************
 
 The ISR's life check variable (f_ISRLifeCheck) has to be written to the Javascope struct js_ptr_arr to display it in the Javascope GUI. The following line achieves this.
 
@@ -44,4 +44,4 @@ The ISR's life check variable (f_ISRLifeCheck) has to be written to the Javascop
     js_ptr_arr[JSO_Sawtooth1] = &f_ISRLifeCheck;
 
 
-.. image:: ./img/1_after_build.jpg
+.. image:: ./img/1_after_build.png

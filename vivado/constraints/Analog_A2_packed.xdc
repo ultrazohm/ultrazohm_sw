@@ -75,4 +75,4 @@ set_property PACKAGE_PIN AJ6 [get_ports A2_IN[15] ]
 ## input standards
 set_property IOSTANDARD LVDS [get_ports A2_OUT]
 set_property IOSTANDARD LVDS [get_ports A2_IN]
-set_property DIFF_TERM_ADV = TERM_100 [get_ports A2_IN]
+set_property DIFF_TERM_ADV TERM_100 [get_ports A2_IN]

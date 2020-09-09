@@ -77,4 +77,4 @@ set_property PACKAGE_PIN AB5 [get_ports 	 A1_IN[15]]
 ## input standards
 set_property IOSTANDARD LVDS [get_ports A1_OUT]
 set_property IOSTANDARD LVDS [get_ports A1_IN]
-set_property DIFF_TERM_ADV = TERM_100 [get_ports A1_IN]
+set_property DIFF_TERM_ADV TERM_100 [get_ports A1_IN]

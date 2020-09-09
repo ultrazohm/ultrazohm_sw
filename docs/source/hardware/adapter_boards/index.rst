@@ -13,8 +13,8 @@ Create your own extension boards
 
 The UltraZohm Project is a work in progress project and you can contribute on it.
 If you feel that a hardware component is missing feel free to fork the template project
-for a `Digital Adapter Card <https://bitbucket.org/ultrazohm/ultrazohm_digital_template/src/master/>`_
-or for an `Analog Adapter Card <https://bitbucket.org/ultrazohm/ultrazohm_analog_template/src/master/>`_
+for a `Digital Adapter Card <https://bitbucket.org/ultrazohm/ultrazohm_digital_template/>`_
+or for an `Analog Adapter Card <https://bitbucket.org/ultrazohm/ultrazohm_analog_template/>`_
 
 Guidelines
 ----------

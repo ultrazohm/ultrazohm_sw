@@ -3,7 +3,7 @@ Contribution Workflow
 =====================
 
 The git-workflow of the UltraZohm follows the git-flow model (<https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow> <https://danielkummer.github.io/git-flow-cheatsheet/index.html>).
-Why? Because it is an easy to follow set of rules for branching.
+Why? Because it is a easy to follow set of rules for branching.
 In addition to the git-flow model, pull requests are used for all merges to the ``main`` and ``develop`` branches (<https://www.atlassian.com/en/git/tutorials/making-a-pull-request>).
 It is not permitted (and not possible) to merge to the ``main`` or ``develop`` branch without a pull request.
 
@@ -61,13 +61,8 @@ The naming convention for the branches is as following:
 Version number
 **************
 
-<<<<<<< HEAD
 The version number is the **tag** of the commits of the ``main`` branch.
 Depending on how much the code changed, it is either a revision (only bug fixes were made and no new features are added), a new sub-version (at least one new feature is added) or a new major version (multiple new features, big changes).
-=======
-The version numbers is the **tag** of the commits of the ``main`` branch.
-Depending on how much the code changed it is either a revision (only bug fixes were made and no new features are added), a new sub-version (at least one new feature is added) or a new major version (multiple new features, big changes).
->>>>>>> update_docs_2020
 
 ::
 

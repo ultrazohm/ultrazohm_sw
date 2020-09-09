@@ -31,7 +31,7 @@
 #define LIMIT(x,low,high) ((x)>(high)?(high):((x)<(low)?(low):(x))) // limit x to low<x<high
 
 //==============================================================================================================================================================
-#define INCR_ENCODER_BASE_ADDR			XPAR_INCREENCODER_IP_0_BASEADDR
+#define INCR_ENCODER_BASE_ADDR			XPAR_INCREENCODER_V24_IP_0_BASEADDR
 #define EncoderPI2_Inc_elek_REG   		INCR_ENCODER_BASE_ADDR + PI2_Inc_AXI4_Data_IncreEncoder_ip
 #define EncoderPI2_Inc_mech_REG   		INCR_ENCODER_BASE_ADDR + Inc_PerTurn_mech_2PI_AXI4_Data_IncreEncoder_ip
 #define EncoderIncsPerTurn_mech_REG  	INCR_ENCODER_BASE_ADDR + IncPerTurn_mech_AXI4_Data_IncreEncoder_ip
@@ -58,11 +58,11 @@
 
 //==============================================================================================================================================================
 //IP-Block for the 123-dq-Transformation
-#define Trans_123_dq_theta_offset_REG 	XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + theta_offset_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
-#define Trans_123_dq_idCurrent_REG 		XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + id_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
-#define Trans_123_dq_iqCurrent_REG 		XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + iq_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
-#define Trans_123_dq_i1Current_REG		XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + i1_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
-#define Trans_123_dq_i3Current_REG 		XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + i3_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
+#define Trans_123_dq_theta_offset_REG 	XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + theta_offset_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
+#define Trans_123_dq_idCurrent_REG 		XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + id_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
+#define Trans_123_dq_iqCurrent_REG 		XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + iq_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
+#define Trans_123_dq_i1Current_REG		XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + i1_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
+#define Trans_123_dq_i3Current_REG 		XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + i3_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
 
 
 //==============================================================================================================================================================
@@ -73,7 +73,7 @@
 //Reality: 10 kHz -> 100 us -> 100us - 0,9 us (interrupt handling) = 99,1 us -> 99,1 us/10 ns = 9910(dec) -> 0x26B6 -> 0xFFFFFFFF - 0x26B6 = 0xFFFFD949  !!!
 #define Con_TIMER_DEVICE_ID				XPAR_TRIGGER_F_CC_DEVICE_ID //XPAR_TMRCTR_1_DEVICE_ID
 //	#define INTC_Con_TIMER_INTERRUPT_ID 	XPAR_FABRIC_CONTROL_TIMER_INTERRUPT_INTR //SW: The Interrupt number of Bitstream generation was different (Wrong) in the xparameters avter Vvado version 2017, therefore i write directly down the used interrupt number (here 31)
-#define INTC_Con_TIMER_INTERRUPT_ID 	XPAR_FABRIC_TRIGGER_F_CC_INTERRUPT_INTR 			//SW: The "Core0_nIRQ" Interrupt has the number "31" in Vivado inside of "ZQNQ7 Processing System"
+#define INTC_Con_TIMER_INTERRUPT_ID 	121U //XPAR_FABRIC_TRIGGER_F_CC_INTERRUPT_INTR 			//SW: The "Core0_nIRQ" Interrupt has the number "31" in Vivado inside of "ZQNQ7 Processing System"
 #define TMR_Con_LOAD					0xFFFFD949 	// Target: 10 kHz -> 100 us -> 100us - 0,9 us (interrupt handling) = 99,1 us -> 99,1 us/10 ns = 9910(dec) -> 0x26B6 -> 0xFFFFFFFF - 0x26B6 = 0xFFFFD949  !!!
 //	#define TMR_Con_LOAD					0xFFFFFC71 	// Target: 100 kHz -> 10 us -> 10us - 0,9 us (interrupt handling) = 9,1 us -> 9,1 us/10 ns = 910 (dec) -> 0x38E -> 0xFFFFFFFF - 0x38E = 0xFFFFFC71  !!!
 //	#define TMR_Con_LOAD					0xFFFFFE8F 	// Target: 500 kHz -> 2 us -> 2us - 1,2 us (interrupt handling) = 0,8 us -> 0,8 us/10 ns = 80 (dec) -> 0x50 -> 0xFFFFFFFF - 0x50 = 0xFFFFFFAF  !!!

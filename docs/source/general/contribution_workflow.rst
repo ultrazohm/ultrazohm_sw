@@ -61,8 +61,13 @@ The naming convention for the branches is as following:
 Version number
 **************
 
+<<<<<<< HEAD
 The version number is the **tag** of the commits of the ``main`` branch.
 Depending on how much the code changed, it is either a revision (only bug fixes were made and no new features are added), a new sub-version (at least one new feature is added) or a new major version (multiple new features, big changes).
+=======
+The version numbers is the **tag** of the commits of the ``main`` branch.
+Depending on how much the code changed it is either a revision (only bug fixes were made and no new features are added), a new sub-version (at least one new feature is added) or a new major version (multiple new features, big changes).
+>>>>>>> update_docs_2020
 
 ::
 

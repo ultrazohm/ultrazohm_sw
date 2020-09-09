@@ -7,7 +7,7 @@ Xilinx Toolchain
 .. image:: ./images_installation/vitis_website1.png
 
 2. Choose Name, Adresse, E-Mail, etc.
-3. File Xilinx_Unified_2019.2_1106_2127_Win64.exe run. Click Next
+3. File Xilinx_Unified_2020.1_0602_1208_Win64.exe run. Click Next
 4. Select Download and Install Now and sign in with your Xilinx user account. Click Next
 
 .. image:: ./images_installation/vitis_website2.png

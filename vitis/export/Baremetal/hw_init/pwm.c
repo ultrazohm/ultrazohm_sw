@@ -59,6 +59,7 @@ void PWM_SS_SetDutyCycle(float duty_A, float duty_B, float duty_C){
 }
 
 
+
 void PWM_SS_SetStatus(Xint32 PWM_en){
 	// to disable the PWM Module set 0
 	// to enable  the PWM Module set 1

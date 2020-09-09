@@ -16,7 +16,7 @@
 //----------------------------------------------------
 // INITIALIZE & SET THE ENCODER
 //----------------------------------------------------
-int Initialize_Encoder(DS_Data* data){
+int Encoder_Incremental_Initialize(DS_Data* data){
 
 	int Status = 0;
 

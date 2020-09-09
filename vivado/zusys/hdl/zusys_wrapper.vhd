@@ -1,8 +1,8 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
---Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
---Date        : Tue Sep  8 19:01:52 2020
---Host        : Wendel-PC running 64-bit major release  (build 9200)
+--Tool Version: Vivado v.2020.1.1 (win64) Build 2960000 Wed Aug  5 22:57:20 MDT 2020
+--Date        : Tue Sep  8 21:53:23 2020
+--Host        : TUEIEAL-TM01 running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
 --Purpose     : IP block netlist
@@ -45,7 +45,7 @@ entity zusys_wrapper is
     Dig_22_Ch5 : in STD_LOGIC;
     Dig_23_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_23_Ch5 : in STD_LOGIC;
-    Dig_24_Ch1 : out STD_LOGIC;
+    Dig_24_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_24_Ch5 : in STD_LOGIC;
     Dig_25_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_27_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -98,7 +98,7 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_28_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_27_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_30_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_24_Ch1 : out STD_LOGIC;
+    Dig_24_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_13_Ch5 : in STD_LOGIC;
     Dig_14_Ch5 : in STD_LOGIC;
     Dig_12_Ch5 : in STD_LOGIC;
@@ -172,7 +172,7 @@ zusys_i: component zusys
       Dig_22_Ch5 => Dig_22_Ch5,
       Dig_23_Ch1(0) => Dig_23_Ch1(0),
       Dig_23_Ch5 => Dig_23_Ch5,
-      Dig_24_Ch1 => Dig_24_Ch1,
+      Dig_24_Ch1(0) => Dig_24_Ch1(0),
       Dig_24_Ch5 => Dig_24_Ch5,
       Dig_25_Ch1(0) => Dig_25_Ch1(0),
       Dig_27_Ch1(0) => Dig_27_Ch1(0),

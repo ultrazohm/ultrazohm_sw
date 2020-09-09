@@ -58,10 +58,11 @@ int main (void){
 	Initialize_GPIO();
 
 	// Initialize ADCs
-	Initialize_ADC_CONVERSION();
+	// Conversion Factor of 10, because the full input range of the ADC is +-5V = 10V range
+	ADC_WriteConversionFactor(10);
 
 	// Initialize Park-Transformation 123 to dq
-	Initialize_TRANS_123_DQ_CONVERSION(&Global_Data);
+	DQTransformation_Initialize(&Global_Data);
 
     //Initialize PWM and switch signal control
 	PWM_SS_Initialize(&Global_Data); 	// two-level modulator
@@ -73,8 +74,8 @@ int main (void){
 	// Initialize Timer in order to Trigger the ADC conversion
 	Initialize_Trigger_ADC_Conversion();
 
-	// Initialize the encoder
-	Initialize_Encoder(&Global_Data);
+	// Initialize the incremental encoder
+	Encoder_Incremental_Initialize(&Global_Data);
 
 	// Initialize the FPGA control algorithm
 	Initialize_FPGAController(&Global_Data);
@@ -286,6 +287,11 @@ int ADC_Set_Offset(){
 }
 
 //==============================================================================================================================================================
+int ADC_Clear_Offset(){
+	XGpio_DiscreteClear(&Gpio_OUT,GPIO_CHANNEL, 4);// 4 = 0b0100 Release the offset, otherwise converted output remains 0
+	return (0);
+}
+//==============================================================================================================================================================
 int AXI2TCM_on(){
 	XGpio_DiscreteSet(&Gpio_OUT,GPIO_CHANNEL, 0b10000);// bit 5 : 16 = 0b10000 Enables the AXI2TCM module to write measurements directly to the TCM
 	return(0);
@@ -456,6 +462,36 @@ int InitializeDataStructure(DS_Data* data){
 	//Initialize the modified reference values
 	data->rasv.ModifiedReferenceCurrent_id = 0.0;
 	data->rasv.ModifiedReferenceCurrent_iq = 0.0;
+
+	//Initialize ADC conversion factors
+	// Conversion Factor of 10, because the full input range of the ADC is +-5V = 10V range
+	data->aa.A1.cf.ADC_A1 = 10;
+	data->aa.A1.cf.ADC_A2 = 10;
+	data->aa.A1.cf.ADC_A3 = 10;
+	data->aa.A1.cf.ADC_A4 = 10;
+	data->aa.A1.cf.ADC_B5 = 10;
+	data->aa.A1.cf.ADC_B6 = 10;
+	data->aa.A1.cf.ADC_B7 = 10;
+	data->aa.A1.cf.ADC_B8 = 10;
+	
+	data->aa.A2.cf.ADC_A1 = 10;
+	data->aa.A2.cf.ADC_A2 = 10;
+	data->aa.A2.cf.ADC_A3 = 10;
+	data->aa.A2.cf.ADC_A4 = 10;
+	data->aa.A2.cf.ADC_B5 = 10;
+	data->aa.A2.cf.ADC_B6 = 10;
+	data->aa.A2.cf.ADC_B7 = 10;
+	data->aa.A2.cf.ADC_B8 = 10;
+	
+	data->aa.A3.cf.ADC_A1 = 10;
+	data->aa.A3.cf.ADC_A2 = 10;
+	data->aa.A3.cf.ADC_A3 = 10;
+	data->aa.A3.cf.ADC_A4 = 10;
+	data->aa.A3.cf.ADC_B5 = 10;
+	data->aa.A3.cf.ADC_B6 = 10;
+	data->aa.A3.cf.ADC_B7 = 10;
+	data->aa.A3.cf.ADC_B8 = 10;
+
 
 	return (0);
 }

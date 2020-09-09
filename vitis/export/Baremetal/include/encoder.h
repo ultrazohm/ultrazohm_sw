@@ -14,6 +14,6 @@
 
 #include "../main.h"
 
-int Initialize_Encoder(DS_Data* data);											// Init Encoder
+int Encoder_Incremental_Initialize(DS_Data* data);											// Init Encoder
 
 #endif /* ENCODER_H_ */

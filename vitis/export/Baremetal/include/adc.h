@@ -13,10 +13,17 @@
 #define ADC_H_
 
 #include "../main.h"
+#include "../IP_Cores/ADC_Module_LVDS_v2_ip_addr.h"
 
+void ADC_readCardA1(DS_Data* data);
+void ADC_readCardA2(DS_Data* data);
+void ADC_readCardA3(DS_Data* data);
 
-int Initialize_ADC_CONVERSION(void);						// Init for the ADC-conversion IP-Block
-int Initialize_TRANS_123_DQ_CONVERSION(DS_Data* data);		// Init Park-transformation 123 to dq
+void ADC_readCardALL(DS_Data* data);
+
+void ADC_WriteConversionFactor(int ADC_ConversionFactor);	// Init for the ADC-conversion IP-Block
+
+void DQTransformation_Initialize(DS_Data* data);		// Init Park-transformation 123 to dq
 
 //==============================================================================================================================================================
 // AXI2TCM Registers
@@ -54,5 +61,14 @@ int Initialize_TRANS_123_DQ_CONVERSION(DS_Data* data);		// Init Park-transformat
 #define ADC_A3_ChB6_REG		(R5_0_BTCM_SPLIT_REG + 0x2A)
 #define ADC_A3_ChB7_REG		(R5_0_BTCM_SPLIT_REG + 0x2C)
 #define ADC_A3_ChB8_REG		(R5_0_BTCM_SPLIT_REG + 0x2E)
+
+#define ADC_ChA1	0
+#define ADC_ChA2	1
+#define ADC_ChA3	2
+#define ADC_ChA4	3
+#define ADC_ChB5	4
+#define ADC_ChB6	5
+#define ADC_ChB7	6
+#define ADC_ChB8	7
 
 #endif /* ADC_H_ */

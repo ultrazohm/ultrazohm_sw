@@ -83,13 +83,8 @@ Sourcetree git-flow
 *******************
 
 We use the git-flow workflow as a branching model for the ``ultrazohm_sw`` repository <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>.
-<<<<<<< HEAD
 Git-flow is integrated in Sourcetree and straightforward for users.
-
 To use git-flow for the first time click the git-flow icon in Sourcetree.
-=======
-Git-flow is integrated in Sourcetree and straigth forward for users.
->>>>>>> update_docs_2020
 
 .. image:: ./images_git/gitflow1.png
 

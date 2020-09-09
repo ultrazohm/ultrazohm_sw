@@ -17,7 +17,6 @@
 
 //Includes from Simulink
 #include "IP_Cores/IncreEncoder_ip_addr.h"				//Include from Simulink IP-Blocks for the incremental encoder
-#include "IP_Cores/FCS_SPMSM_Np1_i_V46_ip_addr.h"		//Include from Simulink IP-Blocks for the motor control
 #include "IP_Cores/Trans_123_dq_V11_ip_addr.h"			//Include from Simulink IP-Blocks for the 123-to-dq transformation
 //#include "IP_Cores/ADC_Counter_V4_addr.h"				//Include from Simulink IP-Blocks for a counter
 #include "IP_Cores/PWM_and_SS_control_V3_ip_addr.h"		//Include from Simulink IP-Blocks for PWM and SS control
@@ -104,35 +103,6 @@
 //==============================================================================================================================================================
 //IP-Block for the ADC-Counter
 //	#define ADCCounter_EndValue_REG			XPAR_ADC_COUNTER_V4_0_BASEADDR + CounterValue_AXI4_Data_ADC_Counter_V4
-
-//==============================================================================================================================================================
-//IP-Block for the control
-//#define Control_STROBE_REG 			XPAR_FCS_BLAC_DGL_1_I_V12_IP_0_BASEADDR + IPCore_Strobe_2_Punkt_Regler_ipcore_V3
-//#define Control_STROBE_REG 			XPAR_FCS_BLAC_DGL_1_I_V12_IP_0_BASEADDR + IPCore_Strobe_2_Punkt_Regler_ipcore_V3
-//#define Control_iq_soll_REG 			XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + i_soll_AXI_Data_FCS_SPMSM_Np1_i_V46_ip  //data register for port iq_soll
-//	#define Control_n_soll_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + n_soll_AXI4_Data_DC_PI_in_V46_fix_ipcore  //data register for port n_soll
-//#define Control_n_ist_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + n_ist_AXI_Data_FCS_SPMSM_Np1_i_V46_ip   //data register for port n_ist
-//#define Control_q_fiq_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + q_fiq_AXI_Data_FCS_SPMSM_Np1_i_V46_ip  //data register for port q_fiq_
-//#define Control_q_fid_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + q_fid_AXI_Data_FCS_SPMSM_Np1_i_V46_ip //data register for port q_fid
-//#define Control_Enable_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Enable_Control_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-//#define Control_Duty_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + idx_Data_5_Punkt_Regler_ipcore_V7_9    //data register for port Out2
-#define Control_M_L_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + M_L_AXI_Data_FCS_SPMSM_Np1_i_V46_ip    //data register for torque of load M_L
-#define Control_u_dc_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + u_dc_AXI_Data_FCS_SPMSM_Np1_i_V46_ip  //data register for port u_dc
-#define Control_M_Reib_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + M_Reib_AXI_Data_FCS_SPMSM_Np1_i_V46_ip    //data register for port M_Reib
-//#define Control_Simulation_REG 			XPAR_FCS_BLAC_DGL_1_I_BUEH12_V7_17_IP_0_BASEADDR + Simulation_AXI_Data_FCS_BLAC_DGL_1_i_Bueh12_V7_17_ip
-#define Control_I_max_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Imax_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_I_min_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Imin_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_R_ph_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Rph_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_Scal_T_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Scal_t_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_Scal_nq_REG 			XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Scal_nq_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_Scal_nd_REG 			XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Scal_nd_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-
-#define Control_I_max_Out_REG 			XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Imax_out_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_I_min_Out_REG 			XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Imin_out_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_R_ph_Out_REG 			XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Rph_out_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_Scal_Out_T_REG 			XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Scal_t_out_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_Scal_Out_nq_REG 		XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Scal_nq_out_AXI1_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_Scal_Out_nd_REG 		XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Scal_nd_out_AXI2_Data_FCS_SPMSM_Np1_i_V46_ip
 
 //==============================================================================================================================================================
 //IP-Block for the 123-dq-Transformation

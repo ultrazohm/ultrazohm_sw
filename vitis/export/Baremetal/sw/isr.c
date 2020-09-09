@@ -18,6 +18,7 @@
 #include <xtmrctr.h> //library for timing measurement
 #include "../include/javascope.h"
 #include "../include/pwm.h"
+#include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
 
 //General variables

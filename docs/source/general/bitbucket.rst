@@ -35,7 +35,7 @@ A pull request is an application to merge your changes from your feature branch 
 
 In the *Create a pull request* plane you can choose which branches should be merged. Choose your feature branch on the left side and ``develop`` on the right.
 Give the merge request a useful title and describe what the changes do. The commit messages are automatically added.
-Next you assign reviewers with at least one maintainer and **click close feature after the pull request is merged**.
+Next, assign reviewers with at least one maintainer and **click close feature after the pull request is merged**.
 The reviewers will be notified and after the pull request is accepted, the feature branch will be deleted from the remote repository!
 
 .. image:: ./images_bitbucket/pull_request2.png

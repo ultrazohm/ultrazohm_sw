@@ -58,11 +58,11 @@ The naming convention for the branches is as following:
 
   Please do not use your sandbox branch for the development of features!
 
-Version numbers
-***************
+Version number
+**************
 
-The version numbers is the **tag** of the commits of the ``main`` branch.
-Depending on how much the code changed it is either a revision (only bug fixes were made and no new features are added), a new sub-version (at least one new feature is added) or a new major version (multiple new features, big changes).
+The version number is the **tag** of the commits of the ``main`` branch.
+Depending on how much the code changed, it is either a revision (only bug fixes were made and no new features are added), a new sub-version (at least one new feature is added) or a new major version (multiple new features, big changes).
 
 ::
 

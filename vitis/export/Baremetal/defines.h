@@ -45,6 +45,18 @@
 #define OverSamplingFactorREG 			INCR_ENCODER_BASE_ADDR + OverSamplFactor_AXI4_Data_IncreEncoder_ip
 
 //==============================================================================================================================================================
+//IP-Block for the DMA-interface of the ADC
+//	#define DMA_Data_ADC_REG   				XPAR_AXI_DMA_BASEADDR
+
+//==============================================================================================================================================================
+//IP-Block for the DMA-interface of the Control
+//	#define DMA_Data_CONTROL_REG   			XPAR_AXI_DMA1_BASEADDR
+
+//==============================================================================================================================================================
+//IP-Block for the ADC-Counter
+//	#define ADCCounter_EndValue_REG			XPAR_ADC_COUNTER_V4_0_BASEADDR + CounterValue_AXI4_Data_ADC_Counter_V4
+
+//==============================================================================================================================================================
 //IP-Block for the 123-dq-Transformation
 #define Trans_123_dq_theta_offset_REG 	XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + theta_offset_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
 #define Trans_123_dq_idCurrent_REG 		XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + id_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset

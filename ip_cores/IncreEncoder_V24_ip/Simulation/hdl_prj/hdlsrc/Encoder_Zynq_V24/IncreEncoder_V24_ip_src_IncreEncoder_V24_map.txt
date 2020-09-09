@@ -1,0 +1,12 @@
+ --> IncreEncoder_V24_ip_src_IncreEncoder_V24_pkg
+Encoder_Zynq_V24/IncreEncoder_V24/Check_Direction --> IncreEncoder_V24_ip_src_Check_Direction
+Encoder_Zynq_V24/IncreEncoder_V24/Counter --> IncreEncoder_V24_ip_src_Counter
+Encoder_Zynq_V24/IncreEncoder_V24/Counter_position --> IncreEncoder_V24_ip_src_Counter_position
+Encoder_Zynq_V24/IncreEncoder_V24/Counter_theta_ele --> IncreEncoder_V24_ip_src_Counter_theta_ele
+Encoder_Zynq_V24/IncreEncoder_V24/omega_by_count_lines --> IncreEncoder_V24_ip_src_omega_by_count_lines
+Encoder_Zynq_V24/IncreEncoder_V24/omega_by_measure_time/Count --> IncreEncoder_V24_ip_src_Count
+Encoder_Zynq_V24/IncreEncoder_V24/omega_by_measure_time --> IncreEncoder_V24_ip_src_omega_by_measure_time
+Encoder_Zynq_V24/IncreEncoder_V24/HDL Reciprocal/HDL Reciprocal_core --> IncreEncoder_V24_ip_src_HDL_Reciprocal_core
+Encoder_Zynq_V24/IncreEncoder_V24/HDL Reciprocal --> IncreEncoder_V24_ip_src_HDL_Reciprocal
+IncreEncoder_V24_tc --> IncreEncoder_V24_ip_src_IncreEncoder_V24_tc
+Encoder_Zynq_V24/IncreEncoder_V24 --> IncreEncoder_V24_ip_src_IncreEncoder_V24

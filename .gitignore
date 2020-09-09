@@ -2,5 +2,5 @@
 /vitis/workspace/*
 !/vitis/workspace/create_Vitis_workspace_here.txt
 vivado/zusys/zusys.bxml
-
+.vscode
 vivado/zusys/zusys_ooc.xdc

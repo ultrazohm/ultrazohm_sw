@@ -6,8 +6,8 @@ System Overview
 * Block diagram of the system
 
 
-Docucmentation
-==============
+Documentation
+=============
 
 .. mermaid::
 

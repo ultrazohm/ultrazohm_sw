@@ -20,6 +20,7 @@
 #include "../include/pwm.h"
 #include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
+#include "../include/encoder.h"
 
 //General variables
 Xfloat32 	time_ISR_max=0;
@@ -31,34 +32,9 @@ Xint32 		i_count_1s = 0; // count up by 1 every 1s
 //Initialize the variables for the ADC measurement
 u32 		XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
 Xint32 		ADC_RAW_Sum_1 = 0.0;
-Xint32 		ADC_RAW_Sum_2 = 0.0;
-Xint32 		ADC_RAW_Sum_3 = 0.0;
 Xfloat32 	ADC_RAW_Offset_1 = 0.0;
-Xfloat32 	ADC_RAW_Offset_2 = 0.0;
-Xfloat32 	ADC_RAW_Offset_3 = 0.0;
-Xfloat32 	fTemperatur =0;
 Xint16 		i_CountADCinit =0, MessOnce=0, CountCurrentError =0;
 boolean     initADCdone = valueFalse;
-
-//Initialize the variables for the current control
-Xfloat32 	fCurrent_A_Buf[CURRENT_BUF_SIZE] = {0,0,0,0,0,0};
-Xint32	 	i_id=0, i_iq=0, i_i1=0,i_i2=0, i_i3=0, i_speed =0, i_theta_e =0;
-Xint32 		ADC_RAW_Value_1 =0,ADC_RAW_Value_2 =0,ADC_RAW_Value_3 =0,ADC_RAW_Value_4 =0,ADC_RAW_Value_5 =0,ADC_RAW_Value_6 =0,ADC_RAW_Value_7 =0,ADC_RAW_Value_8 =0;
-Xint16		ADC_raw_A1,ADC_raw_A2,ADC_raw_A3,ADC_raw_A4, ADC_raw_B5,ADC_raw_B6,ADC_raw_B7,ADC_raw_B8;
-
-//Initialize the variables for the speed encoder
-Xfloat32 	fSpeed_rpm_Buf[SPEED_BUF_SIZE] = {0,0};
-Xfloat32 	fSpeed_rpm_BufSum =0;
-u8 			u8Speed_Buf_Inc =0;
-Xfloat32 	fSpeed_rpm = 0.0;
-Xfloat32 	fSpeed_rpm_Mean = 0;
-Xfloat32 	Y_Stell_Orig = 0.0;
-u8 			u8Direction = 1;
-
-Xuint16 	iActualTemp = 0;
-Xuint16 	iActual_i_Ph1 = 0;
-Xuint16 	iActual_i_Ph2 = 0;
-Xuint16 	iActual_i_Ph3 = 0;
 
 // Initialize the  GPIO structure
 extern XGpioPs Gpio_IN;											/* GPIO Device driver instance for the real GPIOs */
@@ -123,28 +99,22 @@ void TMR_Con_Intr_Handler(void *data)
 	//Start: Read out ADCs ---------------------------------------------------------------------------------------
 	if (initADCdone == valueFalse) { // init not done, determine ADC offset
 		if (i_CountADCinit < 1000){
-				//Read the ADC-Register and sum up over 1000 measurements
-				//ADC_RAW_Sum_1 += Xil_In32(ADC_RAW_Value_1_REG); //Read AXI-register
-				//ADC_RAW_Sum_2 += Xil_In32(ADC_RAW_Value_2_REG); //Read AXI-register
-				//ADC_RAW_Sum_3 += Xil_In32(ADC_RAW_Value_3_REG); //Read AXI-register
-
-				i_CountADCinit++;
+			//ToDo: Read the ADC-Register and sum up over 1000 measurements, e.g. like
+			//ADC_RAW_Sum_1 += Xil_In32(ADC_RAW_Value_1_REG); //Read AXI-register
+			i_CountADCinit++;
 		}else{
-				// calculate average value in order to use as offset subsequently
-				ADC_RAW_Offset_1 = (Xfloat32)ADC_RAW_Sum_1 / (Xfloat32)i_CountADCinit;
-				ADC_RAW_Offset_2 = (Xfloat32)ADC_RAW_Sum_2 / (Xfloat32)i_CountADCinit;
-				ADC_RAW_Offset_3 = (Xfloat32)ADC_RAW_Sum_3 / (Xfloat32)i_CountADCinit;
+			//ToDo: calculate average value in order to use as offset subsequently, e.g. like
+			//ADC_RAW_Offset_1 = (Xfloat32)ADC_RAW_Sum_1 / (Xfloat32)i_CountADCinit;
 
-				//Write down the offset factor for the ADC. This offset is only used, if in Vivado the "ADC Set User Offset 1" check box is active!
-				//Xil_Out32(ADC_OffsetFactor_1_REG, (Xint32)(32768+ADC_RAW_Offset_1)); //32768 = 2^15 = ADC middle
-				//toDO write for each ADC channel an own offset down.
-				initADCdone = valueTrue;
-				Global_Data.cw.ControlReference = CurrentControl; //default
-				Global_Data.cw.ControlMethod = fieldOrientedControl; //default
-				ADC_Clear_Offset();
-			}
+			//toDO write for each ADC channel an own offset down.
+			initADCdone = valueTrue;
+			Global_Data.cw.ControlReference = CurrentControl; //default
+			Global_Data.cw.ControlMethod = fieldOrientedControl; //default
+			ADC_Clear_Offset();
+		}
 	}else{
 
+		// Choose here which ADC card to read
 		//ADC_readCardA1(&Global_Data);
 		//ADC_readCardA2(&Global_Data);
 		//ADC_readCardA3(&Global_Data);
@@ -174,37 +144,8 @@ void TMR_Con_Intr_Handler(void *data)
 		}
 	}
 
-	//Start: Read out speed and theta angle ---------------------------------------------------------------------------------------
-
-	//Read the speed encoder (own IP-Block)
-	i_speed = Xil_In32(Encoder_rps_REG); //Read AXI-register
-	//toDO: The 0.5 are from the Division in the IncreEncoder IP Core for the speed due to the used HDL division function!
-	fSpeed_rpm = 0.5* 9.5492966 * (Xfloat32)(ldexpf(i_speed, Q11toF));  // Shift 11 Bit for fixed-point //(60/(2*pi)) = 9.5493 Conversion Omega to rpm (Compare Simulink)
-
-	fSpeed_rpm_Mean -= fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //subtract the old value for the averaging
-	fSpeed_rpm_Buf[u8Speed_Buf_Inc] = fSpeed_rpm;		//restore the new value for the averaging
-	fSpeed_rpm_Mean += fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //add the new value for the averaging
-
-	u8Speed_Buf_Inc +=1; //Count up for the averaging
-	if (u8Speed_Buf_Inc >= SPEED_BUF_SIZE){ //Safe calculation for array overflow
-		u8Speed_Buf_Inc = 0;
-	}
-
-	//Speed over buffer
-	Global_Data.av.mechanicalRotorSpeed = fSpeed_rpm_Mean * SPEED_BUF_SIZE_INVERS; //Calculate mean value for the speed
-
-	//Define direction
-	u8Direction = Xil_In8(Encoder_direction_REG); // 1 = right and 255 = left
-	if (u8Direction > 200){//Turn left
-		Global_Data.av.mechanicalRotorSpeed = Global_Data.av.mechanicalRotorSpeed* -1.0;
-	}else{//Turn right
-		Global_Data.av.mechanicalRotorSpeed = Global_Data.av.mechanicalRotorSpeed* 1.0;
-	}
-
-	Global_Data.av.theta_mech  = (Xfloat32)(ldexpf(Xil_In32(Encoder_theta_m_REG), Q20toF));  // Shift 11 Bit for fixed-point
-	i_theta_e  = Xil_In32(Encoder_theta_e_REG);  //Read AXI-register
-	Global_Data.av.theta_elec  = (Xfloat32)(ldexpf(i_theta_e, Q20toF));  // Shift 20 Bit for fixed-point
-
+	//Read out speed and theta angle ---------------------------------------------------------------------------------------
+	Encoder_UpdateSpeedPosition(&Global_Data);
 
 	//Start: Write the references for the FPGA ---------------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)

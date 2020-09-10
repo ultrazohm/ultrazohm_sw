@@ -99,6 +99,8 @@
 #define MAXIMUM_LENGTH_MTPA_TABLE 16
 
 //Fractional Bit defines
+#define   Q32         32
+#define   Q31         31
 #define   Q30         30
 #define   Q29         29
 #define   Q28         28

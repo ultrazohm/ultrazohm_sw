@@ -5,14 +5,11 @@ UltraZohm Setup
 ..	toctree::
 	:maxdepth: 2
 
-	vivado_firststeps
-	vitis_import_projectTCL
-	cpld_programming
-
 Requirements
 ************
 
 - Installed Xilinx Toolchain (Vivado and Vitis)
+- Installed Java 
 - Vivado License
 - Installed git
 - Bitbucket Account
@@ -197,8 +194,28 @@ Generate the Vitis workspace
 .. image:: ./img_vitis_import/6_sucess.png
 
 
+Physical Setup of the UltraZohm
+-------------------------------
+
+- Connect the UltraZohm to the grid
+- Connect the Ethernet to your PC
+- Connect the USB (JTAG) to your PC
+- Plug an external Stop into the front plane
+- Turn on the UltraZohm
+- All four LED are turned on
+
+.. TODO: [UZ-9] Add pictures for the physical setup of the ultrazohm 
+
+.. image:: ./img_physical/physical_setup.png
+
 Debug
 -----
+
+- Click on the red-marked windows to see the design view in Vivado
+- Click the arrow next to the debug-icon and choose ``Debug Configurations``
+- Choose ``Debug_FreeRTOS_Baremetal_FPGA``
+- Click on ``Debug``
+- After the first debug run, it is sufficient to click the debug-icon
 
 .. image:: ./img_debug/1_vitis_show_design.png
 
@@ -206,3 +223,18 @@ Debug
 
 .. image:: ./img_debug/3_start_debug.png
 
+
+Javascope
+*********
+
+- Setup the network settings of the Ethernet adapter which is connected to the UltraZohm
+- See :ref:`gui`
+- Start the Javascope
+
+::
+
+   IP: 192.168.1.1
+   Subnet-Mask: 255.255.255.0
+   Gateway: 192.168.1.233
+
+.. image:: https://images2.imgbox.com/99/98/KSNpOtWT_o.gif

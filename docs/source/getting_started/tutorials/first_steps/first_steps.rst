@@ -56,7 +56,7 @@ Start the Javscope, connect it to the UltraZohm, click on ``Run/Stop`` to start 
 Visualize sine wave
 *******************
 
-The next step is to add a sine wave and display it on the javascope. In the ``isr.c`` of the R5 already exists the variable ``test_js_sinewave1``, which we can use. Furthermore, a software counter ``i_count_1ms`` is available in the ``isr.c``. We add the following code:
+The next step is to add a sine wave and display it on the Javascope. In the ``isr.c`` of the R5 already exists the variable ``test_js_sinewave1``, which we can use. Furthermore, a software counter ``i_count_1ms`` is available in the ``isr.c``. We add the following code:
 
 .. code-block:: c
 

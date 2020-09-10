@@ -43,7 +43,8 @@ entity extend_interrupt is
     port(
             clock :         in STD_LOGIC;
             interrupt_in :  in STD_LOGIC;
-            interrupt_out: out STD_LOGIC  := '0'
+            interrupt_out: out STD_LOGIC  := '0';
+            interrupt_active_counter_out: out STD_LOGIC_VECTOR (7 downto 0)
     );
 end extend_interrupt;
 
@@ -57,10 +58,10 @@ begin
             constant count_stop : integer := 60;
         begin 
             if rising_edge(clock) then
-                if (interrupt_in='1' AND interrupt_active_counter=0) then
+                if (interrupt_in = '1' AND interrupt_active_counter = 0) then
                     interrupt_active_counter :=1;
                 elsif (interrupt_in = '0') then
-                    interrupt_active_counter :=0 ;
+                 --   interrupt_active_counter :=0 ;
                 else
                     -- ?
                 end if;
@@ -70,7 +71,9 @@ begin
                     interrupt_active_counter := interrupt_active_counter + 1;
                 else
                     interrupt_out <= '0';
-                end if;        
+                    interrupt_active_counter := 0;
+                end if;     
+                interrupt_active_counter_out <=  std_logic_vector(to_unsigned(interrupt_active_counter, interrupt_active_counter_out'length));
              end if;
         end process interrupt_hold;
 

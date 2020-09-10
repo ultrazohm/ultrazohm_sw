@@ -1,8 +1,13 @@
 .. _label_cpld_programming:
 
-=====================
-Programming the CPLDs
-=====================
+====
+CPLD
+====
+
+..	toctree::
+	:maxdepth: 2
+	:caption: CPLD
+
 
 **Motivation**
 

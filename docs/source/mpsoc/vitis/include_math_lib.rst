@@ -1,8 +1,10 @@
+.. _math_h_prob:
+
 ======================
 Include math.h lib 
 ======================
 
-If the compiler throws an error when using functions from math.h, wou will have to tell the compiler to link the standard math library.
+If the compiler throws an error when using functions from math.h, you will have to tell the compiler to link the standard math library.
 
 Open the project properties 
 

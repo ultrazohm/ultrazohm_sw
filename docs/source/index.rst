@@ -30,6 +30,7 @@ Documentation of the UltraZohm
     mpsoc/vivado/index
     mpsoc/ip_cores/index
     mpsoc/vitis/index
+    mpsoc/CPLD/index
 
 .. toctree::
    :maxdepth: 2

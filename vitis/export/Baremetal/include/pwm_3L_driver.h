@@ -14,7 +14,7 @@
 
 #include "../defines.h"
 #include "../main.h"
-#include "../IP_cores/PWM_SS_3L_ip_addr.h"
+#include "../IP_Cores/PWM_SS_3L_ip_addr.h"
 
 //==============================================================================================================================================================
 // Methods for three-level PWM IP core

@@ -23,7 +23,7 @@ signal interrupt_in : std_logic := '0';
 signal interrupt_out : std_logic;
 
  -- Clock period definitions
-constant clk_period : time := 20 ns;
+constant clk_period : time := 10 ns;
 
 BEGIN
 

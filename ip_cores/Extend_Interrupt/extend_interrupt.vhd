@@ -35,11 +35,6 @@ use ieee.numeric_std.all;
 --type dutycycle_array is array(0 to 5) of integer range 0 to 4095;
 
 entity extend_interrupt is
---generic 
---(	    
---    pwm_mode: STD_LOGIC :='0' 					--pwm_mode_type := normal =0, direct_mode =1	     --PWM mode
---  --  max_dutycycle:				integer range 0 to 16383 :=1000	--Maximum allowed value for the duty cycle: 1000 => 20 kHz ctrl frequency, 2000 => 10 kHz ctrl frequency)
---);
     port(
             clock :         in STD_LOGIC;
             interrupt_in :  in STD_LOGIC;
@@ -53,17 +48,13 @@ architecture Behavioral of extend_interrupt is
 
 begin
 
-    interrupt_hold: process(clock) -- give out a short interrupt pulse to trigger ADCs
+    interrupt_hold: process(clock) -- give out a longer interrupt pulse to trigger ISRs
             variable interrupt_active_counter : integer range 0 to 127 :=0;
             constant count_stop : integer := 60;
         begin 
             if rising_edge(clock) then
                 if (interrupt_in = '1' AND interrupt_active_counter = 0) then
                     interrupt_active_counter :=1;
-                elsif (interrupt_in = '0') then
-                 --   interrupt_active_counter :=0 ;
-                else
-                    -- ?
                 end if;
                 
                 if(interrupt_active_counter> 0 and interrupt_active_counter < count_stop) then

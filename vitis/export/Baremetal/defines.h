@@ -21,7 +21,7 @@
 #include "IP_Cores/ADC_Module_LVDS_v2_ip_addr.h"		//Include from hand coded IP-Blocks for ADCs
 
 
-#define UltraZohmV2
+//#define UltraZohmV2
 
 //==============================================================================================================================================================
 // useful macros
@@ -73,7 +73,7 @@
 //Reality: 10 kHz -> 100 us -> 100us - 0,9 us (interrupt handling) = 99,1 us -> 99,1 us/10 ns = 9910(dec) -> 0x26B6 -> 0xFFFFFFFF - 0x26B6 = 0xFFFFD949  !!!
 #define Con_TIMER_DEVICE_ID				XPAR_TRIGGER_F_CC_DEVICE_ID //XPAR_TMRCTR_1_DEVICE_ID
 //	#define INTC_Con_TIMER_INTERRUPT_ID 	XPAR_FABRIC_CONTROL_TIMER_INTERRUPT_INTR //SW: The Interrupt number of Bitstream generation was different (Wrong) in the xparameters avter Vvado version 2017, therefore i write directly down the used interrupt number (here 31)
-#define INTC_Con_TIMER_INTERRUPT_ID 	121U //XPAR_FABRIC_TRIGGER_F_CC_INTERRUPT_INTR 			//SW: The "Core0_nIRQ" Interrupt has the number "31" in Vivado inside of "ZQNQ7 Processing System"
+#define INTC_Con_TIMER_INTERRUPT_ID 	123U //XPAR_FABRIC_TRIGGER_F_CC_INTERRUPT_INTR 			//SW: The "Core0_nIRQ" Interrupt has the number "31" in Vivado inside of "ZQNQ7 Processing System"
 #define TMR_Con_LOAD					0xFFFFD949 	// Target: 10 kHz -> 100 us -> 100us - 0,9 us (interrupt handling) = 99,1 us -> 99,1 us/10 ns = 9910(dec) -> 0x26B6 -> 0xFFFFFFFF - 0x26B6 = 0xFFFFD949  !!!
 //	#define TMR_Con_LOAD					0xFFFFFC71 	// Target: 100 kHz -> 10 us -> 10us - 0,9 us (interrupt handling) = 9,1 us -> 9,1 us/10 ns = 910 (dec) -> 0x38E -> 0xFFFFFFFF - 0x38E = 0xFFFFFC71  !!!
 //	#define TMR_Con_LOAD					0xFFFFFE8F 	// Target: 500 kHz -> 2 us -> 2us - 1,2 us (interrupt handling) = 0,8 us -> 0,8 us/10 ns = 80 (dec) -> 0x50 -> 0xFFFFFFFF - 0x50 = 0xFFFFFFAF  !!!

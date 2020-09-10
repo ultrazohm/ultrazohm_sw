@@ -195,7 +195,7 @@ Generate the Vitis workspace
 
 
 Physical Setup of the UltraZohm
--------------------------------
+*******************************
 
 - Connect the UltraZohm to the grid
 - Connect the Ethernet to your PC
@@ -209,13 +209,14 @@ Physical Setup of the UltraZohm
 .. image:: ./img_physical/physical_setup.png
 
 Debug
------
+*****
 
 - Click on the red-marked windows to see the design view in Vivado
 - Click the arrow next to the debug-icon and choose ``Debug Configurations``
 - Choose ``Debug_FreeRTOS_Baremetal_FPGA``
 - Click on ``Debug``
 - After the first debug run, it is sufficient to click the debug-icon
+- Start all processors (click on the play-button)
 
 .. image:: ./img_debug/1_vitis_show_design.png
 

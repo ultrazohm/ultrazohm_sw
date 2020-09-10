@@ -118,7 +118,7 @@ int main (void){
 			Global_Data.cw.enableSystem=flagEnabled;
 		}
 		// Set the control enable flag to false if SW2 is pressed
-		if (Global_Data.dv.sw2==flagEnabled){
+		if (Global_Data.dv.sw2==valueTrue){
 			Global_Data.cw.enableControl=flagEnabled;
 		}
 #ifndef UltraZohmV2 // in CarrierBoard_v2 there are no buttons, therefore always SW_stop is always zero/false

@@ -12,7 +12,7 @@ Xilinx Toolchain
 
 .. image:: ./images_installation/vitis_website2.png
 
-5. Agree to all license agreements, terms and conditions. Click Next
+5. Agree to all license agreements, terms, and conditions. Click Next
 
 .. image:: ./images_installation/vitis_website3.png
 

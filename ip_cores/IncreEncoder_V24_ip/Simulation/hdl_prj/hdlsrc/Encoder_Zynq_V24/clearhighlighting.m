@@ -1,0 +1,10 @@
+SLStudio.Utils.RemoveHighlighting(get_param('Encoder_Zynq_V24', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_Encoder_Zynq_V24', 'handle'));
+annotate_port('gm_Encoder_Zynq_V24/IncreEncoder_V24/out_0_pipe', 1, 1, '');
+annotate_port('gm_Encoder_Zynq_V24/IncreEncoder_V24/hold3', 0, 1, '');
+annotate_port('gm_Encoder_Zynq_V24/IncreEncoder_V24/HDL Reciprocal', 1, 1, '');
+annotate_port('Encoder_Zynq_V24/IncreEncoder_V24/HDL Reciprocal', 1, 1, '');
+annotate_port('gm_Encoder_Zynq_V24/IncreEncoder_V24/Div_i1', 0, 1, '');
+annotate_port('gm_Encoder_Zynq_V24/IncreEncoder_V24/omega_by_measure_time/Count/Count', 1, 1, '');
+annotate_port('gm_Encoder_Zynq_V24/IncreEncoder_V24/omega_by_measure_time/Count/Count', 1, 1, '');
+annotate_port('Encoder_Zynq_V24/IncreEncoder_V24/omega_by_measure_time/Count', 1, 1, '');

@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:55:39 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Sat Jun 13 11:16:32 2020
+# Process ID: 17044
+# Current directory: C:/Zynq/AA_IP_Repository/IPCores_Zynq_xa7z020/IncreEncoder_V24_ip/Simulation/hdl_prj/ipcore/IncreEncoder_V24_ip_v24_0/prj_ip
+# Command line: vivado.exe -mode batch -source vivado_ip_package.tcl
+# Log file: C:/Zynq/AA_IP_Repository/IPCores_Zynq_xa7z020/IncreEncoder_V24_ip/Simulation/hdl_prj/ipcore/IncreEncoder_V24_ip_v24_0/prj_ip/vivado.log
+# Journal file: C:/Zynq/AA_IP_Repository/IPCores_Zynq_xa7z020/IncreEncoder_V24_ip/Simulation/hdl_prj/ipcore/IncreEncoder_V24_ip_v24_0/prj_ip\vivado.jou
+#-----------------------------------------------------------
+source vivado_ip_package.tcl

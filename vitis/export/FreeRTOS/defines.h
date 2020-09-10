@@ -14,23 +14,6 @@
 
 #include "xparameters.h"
 
-//Includes from Simulink
-#include "IP_Cores/IncreEncoder_V22_ipcore_addr.h"				//Include from Simulink IP-Blocks for the incremental encoder
-
-//==============================================================================================================================================================
-	#define EncoderPI2_Inc_elek_REG   		XPAR_INCREENCODER_V22_IPCORE_0_BASEADDR + PI2_Inc_AXI4_Data_IncreEncoder_V22_ipcore
-	#define EncoderPI2_Inc_mech_REG   		XPAR_INCREENCODER_V22_IPCORE_0_BASEADDR + Inc_PerTurn_mech_2PI_AXI4_Data_IncreEncoder_V22_ipcore
-	#define EncoderIncsPerTurn_mech_REG  	XPAR_INCREENCODER_V22_IPCORE_0_BASEADDR + IncPerTurn_mech_AXI4_Data_IncreEncoder_V22_ipcore
-	#define EncoderIncsPerTurn_elek_REG  	XPAR_INCREENCODER_V22_IPCORE_0_BASEADDR + IncrementePerTurn_elek_AXI4_Data_IncreEncoder_V22_ipcore
-	#define Encoder_Time_REG  				XPAR_INCREENCODER_V22_IPCORE_0_BASEADDR + Timer_FPGA_ms_AXI4_Data_IncreEncoder_V22_ipcore
-	#define Encoder_rps_REG  				XPAR_INCREENCODER_V22_IPCORE_0_BASEADDR + omega_AXI4_Data_IncreEncoder_V22_ipcore
-	#define Encoder_theta_m_REG  			XPAR_INCREENCODER_V22_IPCORE_0_BASEADDR + theta_mech_AXI4_Data_IncreEncoder_V22_ipcore
-	#define Encoder_theta_e_REG  			XPAR_INCREENCODER_V22_IPCORE_0_BASEADDR + theta_el_AXI4_Data_IncreEncoder_V22_ipcore
-	#define Encoder_direction_REG  			XPAR_INCREENCODER_V22_IPCORE_0_BASEADDR + direction_AXI4_Data_IncreEncoder_V22_ipcore
-	#define OverSamplingFactorInverseREG  	XPAR_INCREENCODER_V22_IPCORE_0_BASEADDR + OverSamplFactorInv_AXI4_Data_IncreEncoder_V22_ipcore
-	#define OverSamplingFactorREG 			XPAR_INCREENCODER_V22_IPCORE_0_BASEADDR + OverSamplFactor_AXI4_Data_IncreEncoder_V22_ipcore
-
-
 //==============================================================================================================================================================
 //IP-Block for the Interrupt Prescaler of the control-timer Period = ( 2^32-1 – Reset Value + 2) * Axi-Clk Period
 //Für Timing Umso näher der Wert an an 0xFFFFFFFF ist, desto schneller der 32-Bit Counter ( 0xFFFFFD28 = 10us bei 100MHz Prozessortakt)

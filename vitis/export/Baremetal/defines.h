@@ -17,70 +17,21 @@
 
 //Includes from Simulink
 #include "IP_Cores/IncreEncoder_ip_addr.h"				//Include from Simulink IP-Blocks for the incremental encoder
-#include "IP_Cores/FCS_SPMSM_Np1_i_V46_ip_addr.h"		//Include from Simulink IP-Blocks for the motor control
 #include "IP_Cores/Trans_123_dq_V11_ip_addr.h"			//Include from Simulink IP-Blocks for the 123-to-dq transformation
-//#include "IP_Cores/ADC_Counter_V4_addr.h"				//Include from Simulink IP-Blocks for a counter
-#include "IP_Cores/PWM_and_SS_control_V3_ip_addr.h"		//Include from Simulink IP-Blocks for PWM and SS control
 #include "IP_Cores/ADC_Module_LVDS_v2_ip_addr.h"		//Include from hand coded IP-Blocks for ADCs
 
 
-//==============================================================================================================================================================
-//IP-Block for the ADCs
-//#define ADC_CORE1_BASE_ADDR					XPAR_ADCS_ADC_MODULE_LVDS_A1_B_BASEADDR
-//#define ADC_ConversionFactor_1_REG			ADC_CORE1_BASE_ADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip  //write date register for Outport Conversion factor for ADC 1
-//#define ADC_OffsetFactor_1_REG				ADC_CORE1_BASE_ADDR + Offset_Factor_1_ADC_Module_LVDS_V2_ip	//write date register for Outport Offset factor for ADC 1
-//#define ADC_RAW_Value_1_REG					ADC_CORE1_BASE_ADDR + RAW_Value_1_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 1
-//#define ADC_RAW_Value_2_REG					ADC_CORE1_BASE_ADDR + RAW_Value_2_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 2
-//#define ADC_RAW_Value_3_REG					ADC_CORE1_BASE_ADDR + RAW_Value_3_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 3
-//#define ADC_RAW_Value_4_REG					ADC_CORE1_BASE_ADDR + RAW_Value_4_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 4
-
-//#define ADC_CORE2_BASE_ADDR					XPAR_ADCS_ADC_MODULE_LVDS_A1_A_BASEADDR
-//#define ADC_ConversionFactor_2_REG			ADC_CORE2_BASE_ADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip  //write date register for Outport Conversion factor for ADC 1
-//#define ADC_OffsetFactor_2_REG				ADC_CORE2_BASE_ADDR + Offset_Factor_1_ADC_Module_LVDS_V2_ip	//write date register for Outport Offset factor for ADC 1
-//#define ADC_RAW_Value_5_REG					ADC_CORE2_BASE_ADDR + RAW_Value_1_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 5
-//#define ADC_RAW_Value_6_REG					ADC_CORE2_BASE_ADDR + RAW_Value_2_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 6
-//#define ADC_RAW_Value_7_REG					ADC_CORE2_BASE_ADDR + RAW_Value_3_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 7
-//#define ADC_RAW_Value_8_REG					ADC_CORE2_BASE_ADDR + RAW_Value_4_ADC_Module_LVDS_V2_ip	//read data register for Inport RAW value of ADC 8
+//#define UltraZohmV2
 
 //==============================================================================================================================================================
-//AXI2TCM Block
-// AXI2TCM Registers
-#define R5_0_BTCM_SPLIT_REG	0x20000
-
-#define TCM_ADC_A1_REG		R5_0_BTCM_SPLIT_REG + 0x00
-#define TCM_ADC_A2_REG		R5_0_BTCM_SPLIT_REG + 0x02
-#define TCM_ADC_A3_REG		R5_0_BTCM_SPLIT_REG + 0x04
-#define TCM_ADC_A4_REG		R5_0_BTCM_SPLIT_REG + 0x06
-
-#define TCM_ADC_B5_REG		R5_0_BTCM_SPLIT_REG + 0x08
-#define TCM_ADC_B6_REG		R5_0_BTCM_SPLIT_REG + 0x0A
-#define TCM_ADC_B7_REG		R5_0_BTCM_SPLIT_REG + 0x0C
-#define TCM_ADC_B8_REG		R5_0_BTCM_SPLIT_REG + 0x0E
-
+// useful macros
+#define SIGN(x) 	(((x)>=0) ? (1) : (-1)) 	// Sign of variable i
+#define MAX(x, y) 	(((x) < (y)) ? (y) : (x)) // Max of x or y
+#define MIN(x, y) 	(((x) > (y)) ? (y) : (x)) // Min of x or y
+#define LIMIT(x,low,high) ((x)>(high)?(high):((x)<(low)?(low):(x))) // limit x to low<x<high
 
 //==============================================================================================================================================================
-//IP-Block for the PWM with DutyCycle
-#define PWM_BASE_ADDR					XPAR_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR
-#define PWM_SS_Con_Enable_REG			PWM_BASE_ADDR + PWM_en_AXI_Data_PWM_and_SS_control_V3_ip                //data register for Inport PWM_en_AXI
-#define PWM_SS_Con_Mode_REG				PWM_BASE_ADDR + Mode_AXI_Data_PWM_and_SS_control_V3_ip                  //data register for Inport Mode_AXI
-#define PWM_SS_Con_Scal_f_car_REG		PWM_BASE_ADDR + Scal_f_carrier_AXI_Data_PWM_and_SS_control_V3_ip        //data register for Inport PWM_f_carrier_kHz_AXI
-#define PWM_SS_Con_Scal_T_car_REG		PWM_BASE_ADDR + Scal_T_carrier_AXI_Data_PWM_and_SS_control_V3_ip        //data register for Inport PWM_T_carrier_us_AXI
-#define PWM_SS_Con_min_pulse_REG		PWM_BASE_ADDR + PWM_min_pulse_width_AXI_Data_PWM_and_SS_control_V3_ip   //data register for Inport PWM_min_pulse_width_AXI
-#define PWM_SS_Con_m_u1_norm_REG		PWM_BASE_ADDR + m_u1_norm_AXI_Data_PWM_and_SS_control_V3_ip             //data register for Inport m_u1_norm_AXI
-#define PWM_SS_Con_m_u2_norm_REG		PWM_BASE_ADDR + m_u2_norm_AXI_Data_PWM_and_SS_control_V3_ip             //data register for Inport m_u2_norm_AXI
-#define PWM_SS_Con_m_u3_norm_REG		PWM_BASE_ADDR + m_u3_norm_AXI_Data_PWM_and_SS_control_V3_ip             //data register for Inport m_u3_norm_AXI
-#define PWM_SS_Con_Enable_Rd_REG		PWM_BASE_ADDR + PWM_en_rd_AXI_Data_PWM_and_SS_control_V3_ip             //data register for Outport PWM_en_rd_AXI
-#define PWM_SS_Con_f_car_kHz_Rd_REG		PWM_BASE_ADDR + PWM_f_carrier_kHz_rd_AXI_Data_PWM_and_SS_control_V3_ip  //data register for Outport PWM_f_carrier_kHz_rd_AXI
-#define PWM_SS_Con_T_car_us_Rd_REG		PWM_BASE_ADDR + PWM_T_carrier_us_rd_AXI_Data_PWM_and_SS_control_V3_ip   //data register for Outport PWM_T_carrier_us_rd_AXI
-#define PWM_SS_Con_min_pulse_Rd_REG		PWM_BASE_ADDR + PWM_min_pulse_width_rd_AXI_Data_PWM_and_SS_control_V3_ip//data register for Outport PWM_min_pulse_width_rd_AXI
-#define PWM_SS_Con_Mode_Rd_REG			PWM_BASE_ADDR + Mode_rd_AXI_Data_PWM_and_SS_control_V3_ip               //data register for Outport Mode_rd_AXI
-#define PWM_SS_Con_TriState_HB1_REG		PWM_BASE_ADDR + TriState_HB1_AXI_Data_PWM_and_SS_control_V3_ip          //data register for Inport TriState_HB1_AXI
-#define PWM_SS_Con_TriState_HB2_REG		PWM_BASE_ADDR + TriState_HB2_AXI_Data_PWM_and_SS_control_V3_ip          //data register for Inport TriState_HB2_AXI
-#define PWM_SS_Con_TriState_HB3_REG		PWM_BASE_ADDR + TriState_HB3_AXI_Data_PWM_and_SS_control_V3_ip          //data register for Inport TriState_HB3_AXI
-
-
-//==============================================================================================================================================================
-#define INCR_ENCODER_BASE_ADDR			XPAR_INCREENCODER_IP_0_BASEADDR
+#define INCR_ENCODER_BASE_ADDR			XPAR_INCREENCODER_V24_IP_0_BASEADDR
 #define EncoderPI2_Inc_elek_REG   		INCR_ENCODER_BASE_ADDR + PI2_Inc_AXI4_Data_IncreEncoder_ip
 #define EncoderPI2_Inc_mech_REG   		INCR_ENCODER_BASE_ADDR + Inc_PerTurn_mech_2PI_AXI4_Data_IncreEncoder_ip
 #define EncoderIncsPerTurn_mech_REG  	INCR_ENCODER_BASE_ADDR + IncPerTurn_mech_AXI4_Data_IncreEncoder_ip
@@ -94,70 +45,13 @@
 #define OverSamplingFactorREG 			INCR_ENCODER_BASE_ADDR + OverSamplFactor_AXI4_Data_IncreEncoder_ip
 
 //==============================================================================================================================================================
-//IP-Block for the DMA-interface of the ADC
-//	#define DMA_Data_ADC_REG   				XPAR_AXI_DMA_BASEADDR
-
-//==============================================================================================================================================================
-//IP-Block for the DMA-interface of the Control
-//	#define DMA_Data_CONTROL_REG   			XPAR_AXI_DMA1_BASEADDR
-
-//==============================================================================================================================================================
-//IP-Block for the ADC-Counter
-//	#define ADCCounter_EndValue_REG			XPAR_ADC_COUNTER_V4_0_BASEADDR + CounterValue_AXI4_Data_ADC_Counter_V4
-
-//==============================================================================================================================================================
-//IP-Block for the control
-//#define Control_STROBE_REG 			XPAR_FCS_BLAC_DGL_1_I_V12_IP_0_BASEADDR + IPCore_Strobe_2_Punkt_Regler_ipcore_V3
-//#define Control_STROBE_REG 			XPAR_FCS_BLAC_DGL_1_I_V12_IP_0_BASEADDR + IPCore_Strobe_2_Punkt_Regler_ipcore_V3
-//#define Control_iq_soll_REG 			XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + i_soll_AXI_Data_FCS_SPMSM_Np1_i_V46_ip  //data register for port iq_soll
-//	#define Control_n_soll_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + n_soll_AXI4_Data_DC_PI_in_V46_fix_ipcore  //data register for port n_soll
-//#define Control_n_ist_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + n_ist_AXI_Data_FCS_SPMSM_Np1_i_V46_ip   //data register for port n_ist
-//#define Control_q_fiq_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + q_fiq_AXI_Data_FCS_SPMSM_Np1_i_V46_ip  //data register for port q_fiq_
-//#define Control_q_fid_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + q_fid_AXI_Data_FCS_SPMSM_Np1_i_V46_ip //data register for port q_fid
-//#define Control_Enable_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Enable_Control_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-//#define Control_Duty_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + idx_Data_5_Punkt_Regler_ipcore_V7_9    //data register for port Out2
-#define Control_M_L_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + M_L_AXI_Data_FCS_SPMSM_Np1_i_V46_ip    //data register for torque of load M_L
-#define Control_u_dc_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + u_dc_AXI_Data_FCS_SPMSM_Np1_i_V46_ip  //data register for port u_dc
-#define Control_M_Reib_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + M_Reib_AXI_Data_FCS_SPMSM_Np1_i_V46_ip    //data register for port M_Reib
-//#define Control_Simulation_REG 			XPAR_FCS_BLAC_DGL_1_I_BUEH12_V7_17_IP_0_BASEADDR + Simulation_AXI_Data_FCS_BLAC_DGL_1_i_Bueh12_V7_17_ip
-#define Control_I_max_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Imax_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_I_min_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Imin_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_R_ph_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Rph_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_Scal_T_REG 				XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Scal_t_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_Scal_nq_REG 			XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Scal_nq_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_Scal_nd_REG 			XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Scal_nd_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-
-#define Control_I_max_Out_REG 			XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Imax_out_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_I_min_Out_REG 			XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Imin_out_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_R_ph_Out_REG 			XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Rph_out_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_Scal_Out_T_REG 			XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Scal_t_out_AXI_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_Scal_Out_nq_REG 		XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Scal_nq_out_AXI1_Data_FCS_SPMSM_Np1_i_V46_ip
-#define Control_Scal_Out_nd_REG 		XPAR_FCS_SPMSM_NP1_I_V46_IP_0_BASEADDR + Scal_nd_out_AXI2_Data_FCS_SPMSM_Np1_i_V46_ip
-
-//==============================================================================================================================================================
 //IP-Block for the 123-dq-Transformation
-#define Trans_123_dq_theta_offset_REG 	XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + theta_offset_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
-#define Trans_123_dq_idCurrent_REG 		XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + id_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
-#define Trans_123_dq_iqCurrent_REG 		XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + iq_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
-#define Trans_123_dq_i1Current_REG		XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + i1_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
-#define Trans_123_dq_i3Current_REG 		XPAR_TRANS_123_DQ_V11_IP_1_BASEADDR + i3_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
+#define Trans_123_dq_theta_offset_REG 	XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + theta_offset_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
+#define Trans_123_dq_idCurrent_REG 		XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + id_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
+#define Trans_123_dq_iqCurrent_REG 		XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + iq_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
+#define Trans_123_dq_i1Current_REG		XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + i1_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
+#define Trans_123_dq_i3Current_REG 		XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + i3_AXI_Data_Trans_123_dq_V11_ip  //data register for theta_offset
 
-/*
-//==============================================================================================================================================================
-//IP-Block for the ADC-Converter
-//	#define ADCCon_Temp_REG 				XPAR_DUT_V6_IP_0_BASEADDR + Temp_AXI4_Data_DUT_V6_ip  //data register for port i_soll
-//	#define ADCCon_VccInt_REG 				XPAR_DUT_V6_IP_0_BASEADDR + VccInt_AXI4_Data_DUT_V6_ip   //data register for port n_ist
-//	#define ADCCon_i_Ph1_REG 				XPAR_DUT_V6_IP_0_BASEADDR + i_Ph1_AXI4_Data_DUT_V6_ip  //data register for port ia_ist
-//	#define ADCCon_i_Ph2_REG 				XPAR_DUT_V6_IP_0_BASEADDR + i_Ph2_AXI4_Data_DUT_V6_ip  //data register for port ia_ist
-//	#define ADCCon_i_Ph3_REG 				XPAR_DUT_V6_IP_0_BASEADDR + i_Ph3_AXI4_Data_DUT_V6_ip  //data register for port ia_ist
-//	#define ADCCon_Vaux0_REG 				XPAR_DUT_V6_IP_0_BASEADDR + Vaux0_AXI4_Data_DUT_V6_ip //data register for port Enable
-//	#define ADCCon_Vaux8_REG 				XPAR_DUT_V6_IP_0_BASEADDR + Vaux8_AXI4_Data_DUT_V6_ip    //data register for torque of load M_L
-//	#define ADCCon_RAW_CURRENT_REG 			XPAR_DUT_V6_IP_0_BASEADDR + RAW_CURRENT_AXI4_Data_DUT_V6_ip    //data register for torque of load M_L
-//	#define ADCCon_VpVn_REG 				XPAR_DUT_V6_IP_0_BASEADDR + V_VpVn_AXI4_Data_DUT_V6_ip    //data register for torque of load M_L
-//	#define ADCCon_Vaux0_REG 				XPAR_DUT_V6_IP_0_BASEADDR + Vaux0_AXI4_Data_DUT_V6_ip    //data register for torque of load M_L
-//	#define ADCCon_Vaux8_REG 				XPAR_DUT_V6_IP_0_BASEADDR + Vaux8_AXI4_Data_DUT_V6_ip    //data register for torque of load M_L
-//	#define ADCCon_Offset_REG 				XPAR_DUT_V6_IP_0_BASEADDR + OFFSET_I_AXI4_Data_DUT_V6_ip    //data register for torque of load M_L
- */
 
 //==============================================================================================================================================================
 //IP-Block for the Interrupt Prescaler of the control-timer Period = ( 2^32-1 � Reset Value + 2) * Axi-Clk Period
@@ -167,7 +61,7 @@
 //Reality: 10 kHz -> 100 us -> 100us - 0,9 us (interrupt handling) = 99,1 us -> 99,1 us/10 ns = 9910(dec) -> 0x26B6 -> 0xFFFFFFFF - 0x26B6 = 0xFFFFD949  !!!
 #define Con_TIMER_DEVICE_ID				XPAR_TRIGGER_F_CC_DEVICE_ID //XPAR_TMRCTR_1_DEVICE_ID
 //	#define INTC_Con_TIMER_INTERRUPT_ID 	XPAR_FABRIC_CONTROL_TIMER_INTERRUPT_INTR //SW: The Interrupt number of Bitstream generation was different (Wrong) in the xparameters avter Vvado version 2017, therefore i write directly down the used interrupt number (here 31)
-#define INTC_Con_TIMER_INTERRUPT_ID 	XPAR_FABRIC_TRIGGER_F_CC_INTERRUPT_INTR 			//SW: The "Core0_nIRQ" Interrupt has the number "31" in Vivado inside of "ZQNQ7 Processing System"
+#define INTC_Con_TIMER_INTERRUPT_ID 	123U //XPAR_FABRIC_TRIGGER_F_CC_INTERRUPT_INTR 			//SW: The "Core0_nIRQ" Interrupt has the number "31" in Vivado inside of "ZQNQ7 Processing System"
 #define TMR_Con_LOAD					0xFFFFD949 	// Target: 10 kHz -> 100 us -> 100us - 0,9 us (interrupt handling) = 99,1 us -> 99,1 us/10 ns = 9910(dec) -> 0x26B6 -> 0xFFFFFFFF - 0x26B6 = 0xFFFFD949  !!!
 //	#define TMR_Con_LOAD					0xFFFFFC71 	// Target: 100 kHz -> 10 us -> 10us - 0,9 us (interrupt handling) = 9,1 us -> 9,1 us/10 ns = 910 (dec) -> 0x38E -> 0xFFFFFFFF - 0x38E = 0xFFFFFC71  !!!
 //	#define TMR_Con_LOAD					0xFFFFFE8F 	// Target: 500 kHz -> 2 us -> 2us - 1,2 us (interrupt handling) = 0,8 us -> 0,8 us/10 ns = 80 (dec) -> 0x50 -> 0xFFFFFFFF - 0x50 = 0xFFFFFFAF  !!!
@@ -193,10 +87,10 @@
 
 
 // Parameter definitions
-#define INTERRUPT_ID_SCUG 					XPAR_SCUGIC_0_DEVICE_ID			/* SCUGIC device that Interrupt is connected to */
-#define INTERRUPT_ID_IPI 					XPAR_XIPIPSU_0_DEVICE_ID			/* IPI device that Interrupt is connected to */
-#define GPIO_out_ID							XPAR_AXI_GPIO_2_DEVICE_ID 			/* GPIO device that GPIO is connected to output*/
-#define ADC_ID								XPAR_PS7_XADC_0_DEVICE_ID			/* Device that ADC is connected to*/
+#define INTERRUPT_ID_SCUG 				XPAR_SCUGIC_0_DEVICE_ID			/* SCUGIC device that Interrupt is connected to */
+#define INTERRUPT_ID_IPI 				XPAR_XIPIPSU_0_DEVICE_ID		/* IPI device that Interrupt is connected to */
+#define GPIO_out_ID						XPAR_AXI_GPIO_2_DEVICE_ID 		/* GPIO device that GPIO is connected to output*/
+#define ADC_ID							XPAR_PS7_XADC_0_DEVICE_ID		/* Device that ADC is connected to*/
 
 
 //==============================================================================================================================================================

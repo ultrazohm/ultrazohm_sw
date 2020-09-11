@@ -2,25 +2,26 @@
 Gate Signals
 ============
 
-.. Aim of the tutorial
-.. *******************
+Aim of the tutorial
+*******************
 
-.. In this tutorial, the Virtual Input Output (VIO) IP-Core is used to light up LEDs on the optical adapter board.
+In this tutorial, the digital voltage adapter board is used to generate a PWM signal at D3.
+You can use a scope to measure the gate Signal.
+In the video, an RC-circuit is used as a low-pass.
 
-.. After this tutorial, you can:
+After this tutorial, you can:
 
-.. - Connect to the programmed FPGA with Vivado
-.. - Use the VIO
-.. - Test the optical adapter board
+ - Use the PWM-module
+ - Test the optical adapter board
 
-.. Requirements
-.. ************
+Requirements
+************
 
-.. The following tutorial requires:
+The following tutorial requires:
 
-.. - Complete UltraZohm Toolchain (Vivado, Vitis, ultrazohm_sw repository)
-.. - UltraZohm connected to your PC by Ethernet and USB (JTAG)
-.. - Optical adapter card in slot D3 (:ref:`dig_optical`)
+- Complete UltraZohm Toolchain (Vivado, Vitis, ultrazohm_sw repository)
+- UltraZohm connected to your PC by USB (JTAG)
+- Digital voltage card in slot D1 (:ref:`digitalVoltage`)
 
 
 .. UltraZohm Setup
@@ -30,7 +31,7 @@ Gate Signals
 
 .. .. image:: ./img/vio_physical_setup.png
 
-.. VIO usage
-.. *********
+Gate signal usage
+*****************
 
 Video link: <https://youtu.be/MR4tYshIp9o>

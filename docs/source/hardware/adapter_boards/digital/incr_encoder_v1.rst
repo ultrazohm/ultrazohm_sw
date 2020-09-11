@@ -1,3 +1,5 @@
+.. _dig_incEncoder:
+
 ==========================
 Digital IncrEncoder 1vXX
 ==========================

@@ -1,3 +1,5 @@
+.. _digitalVoltage:
+
 =======================
 Digital Voltage 3U 2v01
 =======================

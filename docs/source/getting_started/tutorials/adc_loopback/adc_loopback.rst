@@ -2,26 +2,31 @@
 ADC Loopback
 ============
 
-.. Aim of the tutorial
-.. *******************
+Aim of the tutorial
+*******************
 
-.. In this tutorial, the Virtual Input Output (VIO) IP-Core is used to light up LEDs on the optical adapter board.
+In this tutorial, the digital voltage adapter board is used to generate a PWM signal at D3.
+You can use a scope to measure the gate Signal.
+In the video, an RC-circuit is used as a low-pass.
+Furthermore, this signal is looped back to the ADC of the UltraZohm and read out.
 
-.. After this tutorial, you can:
 
-.. - Connect to the programmed FPGA with Vivado
-.. - Use the VIO
-.. - Test the optical adapter board
+After this tutorial, you can:
 
-.. Requirements
-.. ************
+ - Use the PWM-module
+ - Test the optical adapter board
+ - Use the ADC adapter card
+ - read out ADC
 
-.. The following tutorial requires:
+Requirements
+************
 
-.. - Complete UltraZohm Toolchain (Vivado, Vitis, ultrazohm_sw repository)
-.. - UltraZohm connected to your PC by Ethernet and USB (JTAG)
-.. - Optical adapter card in slot D3 (:ref:`dig_optical`)
+The following tutorial requires:
 
+- Complete UltraZohm Toolchain (Vivado, Vitis, ultrazohm_sw repository)
+- UltraZohm connected to your PC by USB (JTAG)
+- Digital voltage card in slot D1 (:ref:`digitalVoltage`)
+- Analog adapter card ADC :ref:`analog_tcl` in slot D1 (:ref:`digitalVoltage`)
 
 .. UltraZohm Setup
 .. ***************
@@ -30,7 +35,7 @@ ADC Loopback
 
 .. .. image:: ./img/vio_physical_setup.png
 
-.. VIO usage
-.. *********
+ADC usage
+*********
 
 Video link: <https://youtu.be/omQ-nHE6q4w>

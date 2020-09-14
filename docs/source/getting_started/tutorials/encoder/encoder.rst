@@ -32,4 +32,4 @@ The following tutorial requires:
 Read out Encoder
 ****************
 
-Video link: <https://youtu.be/n5EbyrPFRE0>
+Video link: <https://youtu.be/jtIzec7ymQA>

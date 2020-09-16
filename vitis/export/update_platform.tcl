@@ -73,12 +73,12 @@ puts "Info:(UltraZohm) Chose active platform"
 platform active $PLATFORM_NAME
 
 ####################################################
-#puts "Info:(UltraZohm) Import new xsa hardware file from $XSA_FOLDER"
-#if {[catch {set xsafiles [glob -join -dir ${XSA_FOLDER} *.xsa]} ]} {puts "Error:(UltraZohm) update of ${PLATFORM_NAME} failed: .xsa does not exist in ${XSA_FOLDER}."}
+puts "Info:(UltraZohm) Import new xsa hardware file from $XSA_FOLDER"
+if {[catch {set xsafiles [glob -join -dir ${XSA_FOLDER} *.xsa]} ]} {puts "Error:(UltraZohm) update of ${PLATFORM_NAME} failed: .xsa does not exist in ${XSA_FOLDER}."}
 #
-#set xsafile [lindex $xsafiles 0]
-#puts "WARNING (UltraZohm): Make sure there is only one xsa file in ${XSA_FOLDER} "
-#platform config -updatehw $xsafile
+set xsafile [lindex $xsafiles 0]
+puts "WARNING (UltraZohm): Make sure there is only one xsa file in ${XSA_FOLDER} "
+platform config -updatehw $xsafile
 
 ####################################################
 puts "Info:(UltraZohm) Regenerate FreeRTOS_domain BSP"

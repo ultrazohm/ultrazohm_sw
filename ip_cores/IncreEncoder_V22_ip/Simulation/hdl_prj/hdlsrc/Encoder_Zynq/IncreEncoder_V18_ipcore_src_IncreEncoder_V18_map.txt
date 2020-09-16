@@ -1,7 +1,0 @@
- --> IncreEncoder_V18_ipcore_src_IncreEncoder_V18_pkg
-Encoder_Zynq/IncreEncoder_V18/Check_Direction --> IncreEncoder_V18_ipcore_src_Check_Direction
-Encoder_Zynq/IncreEncoder_V18/Counter_speed --> IncreEncoder_V18_ipcore_src_Counter_speed
-Encoder_Zynq/IncreEncoder_V18/Counter_theta --> IncreEncoder_V18_ipcore_src_Counter_theta
-Encoder_Zynq/IncreEncoder_V18/Counter_theta_ele --> IncreEncoder_V18_ipcore_src_Counter_theta_ele
-Encoder_Zynq/IncreEncoder_V18/n_aus_theta --> IncreEncoder_V18_ipcore_src_n_aus_theta
-Encoder_Zynq/IncreEncoder_V18 --> IncreEncoder_V18_ipcore_src_IncreEncoder_V18

@@ -1,8 +1,0 @@
-vlib work
-vcom  IncreEncoder_V19_ipcore_src_IncreEncoder_V19_pkg.vhd
-vcom  IncreEncoder_V19_ipcore_src_Check_Direction.vhd
-vcom  IncreEncoder_V19_ipcore_src_Counter_speed.vhd
-vcom  IncreEncoder_V19_ipcore_src_Counter_theta.vhd
-vcom  IncreEncoder_V19_ipcore_src_Counter_theta_ele.vhd
-vcom  IncreEncoder_V19_ipcore_src_n_aus_theta.vhd
-vcom  IncreEncoder_V19_ipcore_src_IncreEncoder_V19.vhd

@@ -13,9 +13,45 @@
 #define ISR_H_
 
 #include "../main.h"
+//Defines for the Interrupt fixed by hand from Vivado Block Design. 
+//signals are concatenated in this order forming an 8 bit interrupt vector. 
+// Shared Peripheral Interrupts: PL->PS
+#define Interrupt_2L_max_min		XPS_FPGA0_INT_ID
+#define Interrupt_2L_min			XPS_FPGA1_INT_ID
+#define Interrupt_2L_max			XPS_FPGA2_INT_ID
+#define Interrupt_3L_start_center	XPS_FPGA3_INT_ID
+#define Interrupt_3L_start			XPS_FPGA4_INT_ID
+#define Interrupt_3L_center			XPS_FPGA5_INT_ID
+#define Interrupt_timer_fcc			XPAR_FABRIC_TRIGGER_F_CC_INTERRUPT_INTR
 
-//Variables for ISR-time measurement
-Xuint32 time_ISR_total, time_ISR_start, time_ISR_end;
+//chose here which of the above interrupt trigger you want to use:
+// 0 for Interrupt_2L_max_min		
+// 1 for Interrupt_2L_min			
+// 2 for Interrupt_2L_max			
+// 3 for Interrupt_3L_start_center	
+// 4 for Interrupt_3L_start			
+// 5 for Interrupt_3L_center		
+// 6 for Interrupt_timer_fcc		
+#define Interrupt_ISR_source_user_choice		0
+
+#if Interrupt_ISR_source_user_choice == 0
+	#define Interrupt_ISR_ID	Interrupt_2L_max_min
+#elif Interrupt_ISR_source_user_choice == 1
+	#define Interrupt_ISR_ID	Interrupt_2L_min
+#elif Interrupt_ISR_source_user_choice == 2
+	#define Interrupt_ISR_ID	Interrupt_2L_max
+#elif Interrupt_ISR_source_user_choice == 3
+	#define Interrupt_ISR_ID	Interrupt_3L_start_center
+#elif Interrupt_ISR_source_user_choice == 4
+	#define Interrupt_ISR_ID	Interrupt_3L_start
+#elif Interrupt_ISR_source_user_choice == 5
+	#define Interrupt_ISR_ID	Interrupt_3L_center
+#elif Interrupt_ISR_source_user_choice == 6
+	#define Interrupt_ISR_ID	Interrupt_timer_fcc
+#else
+	#warning no ISR interrupt ID defined
+#endif 
+
 
 //static int Initialize_Interrupts(u16 DeviceId, XTmrCtr *Tmr_Control_InstancePtr);		//Init Hardware for ISR
 //static int InterruptSystemSetup(XScuGic *XScuGicInstancePtr);				// Init InterruptHandler for ISR

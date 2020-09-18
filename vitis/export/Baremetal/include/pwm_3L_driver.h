@@ -16,6 +16,9 @@
 #include "../main.h"
 #include "../IP_Cores/PWM_SS_3L_ip_addr.h"
 
+#define PWM_3L_ENABLE 	1
+#define PWM_3L_DISABLE 	0
+
 //==============================================================================================================================================================
 // Methods for three-level PWM IP core
 void PWM_3L_Initialize(DS_Data* data);	// Init for the PWM modulation IP-Block

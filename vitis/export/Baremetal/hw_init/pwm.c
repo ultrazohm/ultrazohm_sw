@@ -19,13 +19,16 @@ int PWM_SS_Initialize(DS_Data* data){
 	int Status = 0;
 
 	// PWM enable is set to 0 and disable the PWM Module
-	PWM_SS_SetStatus(data->cw.enableControl);
+	//PWM_SS_SetStatus(data->cw.enableControl);
+	// Always enable PWM module to get interrupts
+	PWM_SS_SetStatus(PWM_ENABLE);
 
 	// Mode is set to 0, which is the Mode for switch signals from the PWM module with reference from AXI
 	PWM_SS_SetMode(data->cw.switchingMode);   // Input to the IP-Core
 
 	// PWM carrier signal frequency is set to e.g. 100 kHz
-	PWM_SS_SetCarrierFrequency_Period(data->ctrl.pwmFrequency, data->ctrl.pwmPeriod);
+	// PWM_SS_SetCarrierFrequency_Period(freq in Hz, period in us)
+	PWM_SS_SetCarrierFrequency(data->ctrl.pwmFrequency);
 
 	// PWM minimum pulse width is set between 0-1
 	PWM_SS_SetMinimumPulseWidth(data->rasv.pwmMinPulseWidth);
@@ -73,15 +76,17 @@ void PWM_SS_SetMode(int PWM_mode){
 	Xil_Out32(PWM_SS_Con_Mode_REG, (Xint32)PWM_mode);  //data register for Inport Mode_AXI
 }
 
-void PWM_SS_SetCarrierFrequency_Period(float PWM_freq, float PWM_period){
-	// Set carrier frequency of the modulator
-	Xfloat32 PWM_Scal_f_carrier = (PWM_freq/(FPGA_100MHz*0.5));     		//data register for Inport PWM_f_carrier_kHz_AXI
+void PWM_SS_SetCarrierFrequency(float PWM_freq_Hz){
+	Xfloat32 PWM_Scal_f_carrier = (PWM_freq_Hz/(FPGA_100MHz*0.5));     		//data register for Inport PWM_f_carrier_kHz_AXI
 
 	// PWM carrier signal frequency is set, e.g. 100 kHz
 	Xil_Out32(PWM_SS_Con_Scal_f_car_REG, (Xint32)(ldexpf(PWM_Scal_f_carrier,Q26))); 		//shift 26 Bits
 
+	// calculate PWM period in microseconds
+	Xfloat32 PWM_period_us = 1.0f/(PWM_freq_Hz)*1e6;
+
 	// Set carrier signal period time (T_carrier = 1/PWM_period)
-	Xfloat32 PWM_Scal_T_carrier = (PWM_period*((FPGA_100MHz/1000000.0)*0.5));	//data register for Inport PWM_T_carrier_us_AXI (The factor 1000000 comes from the unit [us])
+	Xfloat32 PWM_Scal_T_carrier = (PWM_period_us*((FPGA_100MHz*1e-6)*0.5)); 	//data register for Inport PWM_T_carrier_us_AXI (The factor 1e-6 comes from the unit [us])
 
 	// PWM carrier signal Period is set to 1/PWM_freq, e.g. 10 us
 	Xil_Out32(PWM_SS_Con_Scal_T_car_REG, (Xint32)PWM_Scal_T_carrier);

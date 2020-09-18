@@ -17,7 +17,8 @@
 void PWM_3L_Initialize(DS_Data* data){
 
 	// PWM enable is set to 0 and disable the PWM Module
-	PWM_3L_SetStatus(data->cw.enableControl);
+	// Always enable PWM module to get interrupts
+	PWM_3L_SetStatus(PWM_3L_ENABLE);
 
 	// Mode is set to 0, which is the Mode for switch signals from the PWM module with reference from AXI
 	//0 = PWM with modulation amplitude via AXI

@@ -21,13 +21,19 @@
 #include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
 #include "../include/encoder.h"
+#include "../IP_Cores/mux_axi_ip_addr.h"
+#include "xtime_l.h"
 
-//General variables
-Xfloat32 	time_ISR_max=0;
+//Timing measurement variables
+//Variables for ISR-time measurement
+Xuint32 	time_ISR_total, time_ISR_start, time_ISR_end;
+Xfloat32 	time_ISR_total_us, time_ISR_max_us = 0;
 Xint32 		i_ISRLifeCheck = 0;
 Xfloat32 	f_ISRLifeCheck = 0;
 Xint32 		i_count_1ms = 0; // count up by 1 every 1ms
 Xint32 		i_count_1s = 0; // count up by 1 every 1s
+Xfloat32 	isr_period_us;
+XTime 		tPrev, tNow = 0; // XTime is u64 which will not overflow in a life time
 
 //Initialize the variables for the ADC measurement
 u32 		XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
@@ -37,8 +43,8 @@ Xint16 		i_CountADCinit =0, MessOnce=0, CountCurrentError =0;
 boolean     initADCdone = valueFalse;
 
 // Initialize the  GPIO structure
-extern XGpioPs Gpio_IN;											/* GPIO Device driver instance for the real GPIOs */
-extern XGpioPs Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
+extern XGpioPs Gpio_IN;		/* GPIO Device driver instance for the real GPIOs */
+extern XGpioPs Gpio_OUT;	/* GPIO Device driver instance for the real GPIOs */
 
 //Initialize the Interrupt structure
 XScuGic INTCInst;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -48,11 +54,10 @@ XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible 
 XTmrCtr TMR_Con_Inst;
 
 //Variables for JavaScope
-extern Oszi_to_ARM_Data_shared_struct ControlData; //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare; //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
+extern Oszi_to_ARM_Data_shared_struct ControlData; //Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
+extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare; //Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
 Xfloat32 test_js_sinewave1=0.0, test_javaScope_freqHz=1.0, argument=0.0, sin1amp=100.0, sin2amp=80.0, sawfak=0.2;
 Xfloat32 test_js_sinewave2=0.0, test_js_sawtooth1=0.0, test_js_sawtooth2=0.0;
-Xuint32 cnt_200us=0, chscope=4;
 
 //Global variable structure
 extern DS_Data Global_Data;
@@ -82,6 +87,7 @@ void TMR_Con_Intr_Handler(void *data)
 	MeasureTime();	//measure the time for the JavaScope
 
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
+	// todo: write seperate function to toggle front panel LEDs
 	if(Global_Data.cw.enableSystem){
 		if((i_count_1ms % 200)>100){
 			WritePin_PS_GPIO(LED_ready,valueTrue); //Write a GPIO for LED_1
@@ -161,8 +167,6 @@ void TMR_Con_Intr_Handler(void *data)
 		// add your torque controller here
 	}
 
-	// PWM status is set to 0 and disable the PWM Module
-	PWM_SS_SetStatus(Global_Data.cw.enableControl);
 	// Reference m u1-u3  ->  Valid value range for the duty cycle: 0-1
 	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 						Global_Data.rasv.halfBridge2DutyCycle,
@@ -175,6 +179,7 @@ void TMR_Con_Intr_Handler(void *data)
 
 
 	// Start JavaScope---------------------------------------------------------------------------------------
+	// todo: write seperate function for JavaScope !
 	 //In order to avoid unnecessary memory access, call only if something has changed!
 	if((ControlDataShadowBare.id != ControlData.id)||(ControlDataShadowBare.value != ControlData.value)){
 		//Safe the current control data into a shadow register
@@ -186,6 +191,7 @@ void TMR_Con_Intr_Handler(void *data)
 	}
 
 	f_ISRLifeCheck = ((Xfloat32)i_ISRLifeCheck)*0.1; //for representation, keep the value between 0-1000
+	//test_js_sinewave1 = 10.0 * sinf( PI2 * 1.00 * (i_count_1ms*0.001) ); //add a sine wave and display it on the Javascope
 
 	// Store every observable signal into the Pointer-Array.
 	// With the JavaScope, 4 signals can be displayed simultaneously (data stream at 200us time intervals).
@@ -209,13 +215,14 @@ void TMR_Con_Intr_Handler(void *data)
 	js_ptr_arr[JSO_Rs_mOhm]		= &Global_Data.pID.Online_Rs;
 	js_ptr_arr[JSO_PsiPM_mVs]	= &Global_Data.pID.Online_Psi_PM;
 	js_ptr_arr[JSO_Sawtooth1] 	= &f_ISRLifeCheck;
+	js_ptr_arr[JSO_SineWave1]   = &test_js_sinewave1;                 // add by Qing
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another (one every 0,5 ms).
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	js_slowDataArray[JSSD_INT_SecondsSinceSystemStart].i = i_count_1s;
 	js_slowDataArray[JSSD_FLOAT_uSecPerIsr].f 	= ((Xfloat32)time_ISR_total*10.0e-03); //AXI-Ticks* @100MHz AXI-Clock [us]
-	js_slowDataArray[JSSD_FLOAT_Sine].f 		= time_ISR_max; //10.0 * sin(PI2 * 0.05 * ((Xfloat32)0.0002));	// 0.05 Hz => T=20sec
+	js_slowDataArray[JSSD_FLOAT_Sine].f 		= time_ISR_max_us; //10.0 * sin(PI2 * 0.05 * ((Xfloat32)0.0002));	// 0.05 Hz => T=20sec
 	js_slowDataArray[JSSD_FLOAT_FreqReadback].f = Global_Data.rasv.referenceFrequency;
 	js_slowDataArray[JSSD_INT_Milliseconds].i 	= (Xint32)i_count_1ms;
 	js_slowDataArray[JSSD_FLOAT_ADCconvFactorReadback].f = Global_Data.mrp.ADCconvFactorReadback;
@@ -282,11 +289,13 @@ void TMR_Con_Intr_Handler(void *data)
 
 	//Read the timer value at the end of the ISR in order to measure the ISR-time
 	time_ISR_end = XTmrCtr_GetValue(&TMR_Con_Inst,0);
+
 	//Calculate the required ISR-time
 	time_ISR_total = time_ISR_end - time_ISR_start;
+	time_ISR_total_us = time_ISR_total * 1e-2 ; //PL clock-Ticks* @100MHz Clock [us]
 
-	if(((Xfloat32)time_ISR_total*10.0e-03)>time_ISR_max){
-			time_ISR_max=((Xfloat32)time_ISR_total*10.0e-03);
+	if(time_ISR_total_us > time_ISR_max_us){
+		time_ISR_max_us = (time_ISR_total_us);
 	}
 	//Show end of control-ISR
 	//XGpio_DiscreteWrite(&Gpio_OUT,GPIO_CHANNEL , 0b0000);  // ----
@@ -297,21 +306,34 @@ void TMR_Con_Intr_Handler(void *data)
 // Measure the time for the JavaScope
 //----------------------------------------------------
 int MeasureTime(){
+	// save previous read
+	tPrev = tNow;
+	// read clock counter of R5 processor, which starts at 0 after reset/starting the processor
+	XTime_GetTime(&tNow);
 
 	//measure with 1ms cycle
-	if ((i_ISRLifeCheck % 10) == 1){
-		i_count_1ms= i_count_1ms +1;
-		if(i_count_1ms >= 2073600000) //Reset after 24 days
-			i_count_1ms = 0;
-	}
+	i_count_1ms = tNow/((COUNTS_PER_SECOND) * 1e-3);
 
 	//measure with 1s cycle
-	if ((i_ISRLifeCheck  == 1000) == 1){
-		i_count_1s = i_count_1s +1;
-		if(i_count_1s >= 2073600) //Reset after 24 days
-			i_count_1s = 0;
+	i_count_1s = (int) (i_count_1ms*1e-3);
+
+	// calculate ISR period, the time between two calls of this function
+	float const counts_per_us = (COUNTS_PER_SECOND) * 1e-6; // DO NOT USE COUNTS_PER_USECOND, this macro has a large rounding error!
+	XTime isr_period_counts = (tNow - tPrev);
+	isr_period_us = isr_period_counts / counts_per_us;
+
+	if (isr_period_counts < 0){
+		//todo catch overflow
+
 	}
-return 0;
+
+	/* for reference how to measure time
+	float up_time_us = 1.0 * (tNow) / (COUNTS_PER_USECOND);
+	float up_time_ms = 1.0 * (tNow) / (COUNTS_PER_USECOND*1000);
+	float up_time_s  = up_time_ms * 1e-3;
+	 */
+
+	return 0;
 }
 
 //==============================================================================================================================================================
@@ -350,6 +372,12 @@ int Initialize_ISR(){
 			xil_printf("RPU: Error: IPI initialization failed\r\n");
 			return XST_FAILURE;
 		}
+
+
+	// Initialize mux_axi to use correct interrupt for triggering the ADCs
+	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + IPCore_Enable_mux_axi_ip, 1); // enable IP core
+	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
+
 return Status;
 }
 
@@ -404,11 +432,11 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Tmr_Con_InstancePtr
 
 	// Make the connection between the IntId of the interrupt source and the
 	// associated handler that is to run when the interrupt is recognized.
-		status = XScuGic_Connect(IntcInstPtr,
-								INTC_Con_TIMER_INTERRUPT_ID,
+	status = XScuGic_Connect(IntcInstPtr,
+								Interrupt_ISR_ID,
 								(Xil_ExceptionHandler)TMR_Con_Intr_Handler,
 								(void *)Tmr_Con_InstancePtr);
-		if(status != XST_SUCCESS) return XST_FAILURE;
+	if(status != XST_SUCCESS) return XST_FAILURE;
 
 	// Connect ADC conversion interrupt to handler
 //		status = XScuGic_Connect(&INTCInst,
@@ -419,7 +447,7 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Tmr_Con_InstancePtr
 
 
 	// Enable GPIO and timer interrupts in the controller
-	XScuGic_Enable(IntcInstPtr, INTC_Con_TIMER_INTERRUPT_ID);
+	XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
 	XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
 //	XScuGic_Enable(&INTCInst, INTC_ADC_Conv_INTERRUPT_ID);
 

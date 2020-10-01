@@ -2,7 +2,7 @@
  *
  * encoder.c
  *
- * Copyright (C) 2018 Institute ELSYS, TH Nürnberg, All rights reserved.
+ * Copyright (C) 2018 Institute ELSYS, TH Nï¿½rnberg, All rights reserved.
  *
  *  Created on: 21.08.2016
  *      Author: Sebastian Wendel (SW)
@@ -80,5 +80,7 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 
 	// Get electrical angle theta
 	Xint32 i_theta_e  = Xil_In32(Encoder_theta_e_REG);  //Read AXI-register
+	//Xint32 i_theta_mech  = Xil_In32(Encoder_theta_e_REG);  //Read AXI-register
 	data->av.theta_elec  = (Xfloat32)(ldexpf(i_theta_e, Q20toF));  // Shift 20 Bit for fixed-point
+	//data->av.theta_mech = (Xfloat32)(ldexpf(i_theta_mech, Q20toF));  // Shift 20 Bit for fixed-point
 }

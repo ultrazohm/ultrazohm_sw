@@ -23,6 +23,29 @@
 #include "../include/encoder.h"
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
+#include "../codegen/codegen.h"
+
+typedef struct _DATA_controller_{
+	Xfloat32 nSoll;
+	Xfloat32 id_soll;
+	Xfloat32 iq_soll;
+	Xfloat32 iq_soll_fb;
+	Xfloat32 id_ist;
+	Xfloat32 iq_ist;
+	Xfloat32 ud_soll;
+	Xfloat32 uq_soll;
+	Xfloat32 K_p_d;
+	Xfloat32 K_i_d;
+	Xfloat32 K_p_q;
+	Xfloat32 K_i_q;
+	Xfloat32 K_p_n;
+	Xfloat32 K_i_n;
+	Xfloat32 theta_without_offset;
+	Xfloat32 mechanicalRotorSpeed_omega;
+	Xfloat32 theta_elc_feedback;
+} DATA_controller;
+
+DATA_controller controller;
 
 //Timing measurement variables
 //Variables for ISR-time measurement
@@ -56,8 +79,9 @@ XTmrCtr TMR_Con_Inst;
 //Variables for JavaScope
 extern Oszi_to_ARM_Data_shared_struct ControlData; //Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
 extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare; //Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-Xfloat32 test_js_sinewave1=0.0, test_javaScope_freqHz=1.0, argument=0.0, sin1amp=100.0, sin2amp=80.0, sawfak=0.2;
+Xfloat32 test_js_sinewave1=0.0, test_javaScope_freqHz=1.0, argument=0.0, sin1amp=0.5, sin2amp=80.0, sawfak=0.2;
 Xfloat32 test_js_sinewave2=0.0, test_js_sawtooth1=0.0, test_js_sawtooth2=0.0;
+Xfloat32 test_js_sinewave3=0.0;
 
 //Global variable structure
 extern DS_Data Global_Data;
@@ -125,6 +149,9 @@ void TMR_Con_Intr_Handler(void *data)
 		//ADC_readCardA2(&Global_Data);
 		//ADC_readCardA3(&Global_Data);
 		ADC_readCardALL(&Global_Data);
+		Global_Data.av.I_U=Global_Data.aa.A1.me.ADC_B8*9.5969; // LEM gain according to data sheet is 104.2 mV/A --> 1/0.1042 is 9.59
+		Global_Data.av.I_V=Global_Data.aa.A1.me.ADC_B7*9.5969;
+		Global_Data.av.I_W=Global_Data.aa.A1.me.ADC_B5*9.5969;
 
 	}
 	//End: Read out ADCs ---------------------------------------------------------------------------------------
@@ -167,6 +194,49 @@ void TMR_Con_Intr_Handler(void *data)
 		// add your torque controller here
 	}
 
+
+
+
+	if(Global_Data.cw.enableControl == flagEnabled){
+
+		RT_MODEL_foc_ts_T *const foc_ts_M = foc_ts_MPtr;
+		foc_ts_U_d_u_dc=Global_Data.av.U_ZK;
+		foc_ts_U_d_nSoll=controller.nSoll;
+		foc_ts_U_i_d_soll=controller.id_soll;
+		foc_ts_U_i_q_soll=controller.iq_soll;
+		controller.mechanicalRotorSpeed_omega=0.1047*(Global_Data.av.mechanicalRotorSpeed); // 1/60*2*pi rpm to omega
+		foc_ts_U_d_omega_mech=controller.mechanicalRotorSpeed_omega;
+		controller.theta_without_offset=Global_Data.av.theta_elec-Global_Data.mrp.incrementalEncoderOffset;
+		foc_ts_U_d_theta_mech=controller.theta_without_offset;
+		foc_ts_U_d_i_a=Global_Data.av.I_U;
+		foc_ts_U_d_i_b=Global_Data.av.I_V;
+		foc_ts_U_d_i_c=Global_Data.av.I_W;
+		foc_ts_U_d_K_p_d=controller.K_p_d;
+		foc_ts_U_d_K_i_d=controller.K_i_d;
+		foc_ts_U_d_K_p_q=controller.K_p_q;
+		foc_ts_U_d_K_i_q=controller.K_i_d;
+		foc_ts_U_d_K_p_n=controller.K_p_n;
+		foc_ts_U_d_K_i_n=controller.K_i_n;
+		  foc_ts_step(foc_ts_M, foc_ts_U_d_u_dc, foc_ts_U_d_nSoll, foc_ts_U_d_omega_mech,
+		              foc_ts_U_d_theta_mech, foc_ts_U_d_i_a, foc_ts_U_d_i_b,
+		              foc_ts_U_d_i_c, foc_ts_U_d_K_p_d, foc_ts_U_d_K_i_d,
+		              foc_ts_U_d_K_p_q, foc_ts_U_d_K_i_q, foc_ts_U_d_K_p_n,
+		              foc_ts_U_d_K_i_n, foc_ts_U_i_d_soll, &foc_ts_Y_d_u_1_nom,
+		              &foc_ts_Y_d_u_2_nom, &foc_ts_Y_d_u_3_nom, &foc_ts_Y_d_u_d,
+		              &foc_ts_Y_d_u_q, &foc_ts_Y_iqSollFB, &foc_ts_Y_id_ist,
+		              &foc_ts_Y_iq_ist, &foc_ts_Y_theta_mech_out);
+		Global_Data.rasv.halfBridge1DutyCycle=foc_ts_Y_d_u_1_nom;
+		Global_Data.rasv.halfBridge2DutyCycle=foc_ts_Y_d_u_2_nom;
+		Global_Data.rasv.halfBridge3DutyCycle=foc_ts_Y_d_u_3_nom;
+		controller.id_ist=foc_ts_Y_id_ist;
+		controller.iq_ist=foc_ts_Y_iq_ist;
+		controller.ud_soll=foc_ts_Y_d_u_d;
+controller.uq_soll=foc_ts_Y_d_u_q;
+controller.iq_soll_fb=foc_ts_Y_theta_mech_out;
+		//foc_ts_Y_d_u_d;
+		//foc_ts_Y_d_u_q;
+		//foc_ts_Y_iqSollFB;
+	}
 	// Reference m u1-u3  ->  Valid value range for the duty cycle: 0-1
 	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 						Global_Data.rasv.halfBridge2DutyCycle,
@@ -191,7 +261,9 @@ void TMR_Con_Intr_Handler(void *data)
 	}
 
 	f_ISRLifeCheck = ((Xfloat32)i_ISRLifeCheck)*0.1; //for representation, keep the value between 0-1000
-	//test_js_sinewave1 = 10.0 * sinf( PI2 * 1.00 * (i_count_1ms*0.001) ); //add a sine wave and display it on the Javascope
+	test_js_sinewave1 =0.5+  (sin1amp * sin( PI2 * test_javaScope_freqHz * (i_count_1ms*0.001) )); //add a sine wave and display it on the Javascope
+	test_js_sinewave2 =0.5+ (sin1amp * sin( PI2 * test_javaScope_freqHz* (i_count_1ms*0.001) + 1.33*PI));
+	test_js_sinewave3 =0.5+ (sin1amp * sin( PI2 * test_javaScope_freqHz * (i_count_1ms*0.001) + 0.66*PI));
 
 	// Store every observable signal into the Pointer-Array.
 	// With the JavaScope, 4 signals can be displayed simultaneously (data stream at 200us time intervals).
@@ -214,9 +286,10 @@ void TMR_Con_Intr_Handler(void *data)
 	js_ptr_arr[JSO_Lq_mH]		= &Global_Data.pID.Online_Lq;
 	js_ptr_arr[JSO_Rs_mOhm]		= &Global_Data.pID.Online_Rs;
 	js_ptr_arr[JSO_PsiPM_mVs]	= &Global_Data.pID.Online_Psi_PM;
-	js_ptr_arr[JSO_Sawtooth1] 	= &f_ISRLifeCheck;
-	js_ptr_arr[JSO_SineWave1]   = &test_js_sinewave1;                 // add by Qing
-
+	js_ptr_arr[JSO_Sawtooth1] 	= &controller.theta_elc_feedback;
+	js_ptr_arr[JSO_SineWave1]   = &controller.theta_without_offset;
+	js_ptr_arr[JSO_SineWave2]   = &controller.iq_soll_fb;   // add by Qing
+	
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another (one every 0,5 ms).
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
@@ -378,6 +451,20 @@ int Initialize_ISR(){
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + IPCore_Enable_mux_axi_ip, 1); // enable IP core
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
 
+	// init control
+	RT_MODEL_foc_ts_T *const foc_ts_M = foc_ts_MPtr;
+	  foc_ts_initialize(foc_ts_M, &foc_ts_U_d_u_dc, &foc_ts_U_d_nSoll,
+	                    &foc_ts_U_d_omega_mech, &foc_ts_U_d_theta_mech,
+	                    &foc_ts_U_d_i_a, &foc_ts_U_d_i_b, &foc_ts_U_d_i_c,
+	                    &foc_ts_U_d_K_p_d, &foc_ts_U_d_K_i_d, &foc_ts_U_d_K_p_q,
+	                    &foc_ts_U_d_K_i_q, &foc_ts_U_d_K_p_n, &foc_ts_U_d_K_i_n,
+	                    &foc_ts_U_i_d_soll, &foc_ts_U_i_q_soll, &foc_ts_Y_d_u_1_nom,
+	                    &foc_ts_Y_d_u_2_nom, &foc_ts_Y_d_u_3_nom, &foc_ts_Y_d_u_d,
+	                    &foc_ts_Y_d_u_q, &foc_ts_Y_iqSollFB, &foc_ts_Y_id_ist,
+	                    &foc_ts_Y_iq_ist, &foc_ts_Y_theta_mech_out);
+
+	 InitializeController(&controller);
+
 return Status;
 }
 
@@ -494,3 +581,24 @@ u32 Rpu_IpiInit(u16 DeviceId)
 	xil_printf("RPU: RPU_IpiInit: Done\r\n");
 	return XST_SUCCESS;
 }
+
+int InitializeController(DATA_controller* data){
+	data->nSoll=0.0;
+	data->K_p_d=35.0;
+	data->K_i_d=0.0;
+	data->K_p_q=35.0;
+	data->K_i_q=0.0;
+	data->K_p_n=0.07;
+	data->K_i_n=0.0;
+    data->id_soll=0.0;
+    data->iq_soll=0.0;
+    data->id_ist=0.0;
+    data->iq_ist=0.0;
+    data->ud_soll=0.0;
+    data->uq_soll=0.0;
+    data->iq_soll_fb=0.0;
+    data->theta_without_offset=0.0;
+    data->mechanicalRotorSpeed_omega=0.0;
+	data->theta_elc_feedback;
+return (0);
+};

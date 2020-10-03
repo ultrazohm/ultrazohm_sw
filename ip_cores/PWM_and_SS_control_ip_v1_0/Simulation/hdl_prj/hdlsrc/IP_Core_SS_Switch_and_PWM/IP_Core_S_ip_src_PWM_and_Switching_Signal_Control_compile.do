@@ -1,8 +1,0 @@
-vlib work
-vcom  IP_Core_S_ip_src_LimitPulseWidth.vhd
-vcom  IP_Core_S_ip_src_LimitPulseWidth1.vhd
-vcom  IP_Core_S_ip_src_LimitPulseWidth2.vhd
-vcom  IP_Core_S_ip_src_Counter_Ctrl.vhd
-vcom  IP_Core_S_ip_src_GenPWM.vhd
-vcom  IP_Core_S_ip_src_VSI_Control_Signal_Switch.vhd
-vcom  IP_Core_S_ip_src_PWM_and_Switching_Signal_Control.vhd

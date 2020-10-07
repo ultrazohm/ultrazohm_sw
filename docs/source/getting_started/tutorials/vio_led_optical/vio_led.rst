@@ -33,6 +33,6 @@ The UltraZohm has to be connected to a PC by Ethernet and USB (JTAG-Programmer) 
 VIO usage
 *********
 
-Video link: <https://youtu.be/n5EbyrPFRE0>
+.. youtube:: jtIzec7ymQA
 
 .. image:: https://images2.imgbox.com/d3/5a/JaM3wGSv_o.gif

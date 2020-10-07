@@ -38,4 +38,4 @@ The following tutorial requires:
 ADC usage
 *********
 
-Video link: <https://youtu.be/omQ-nHE6q4w>
+.. youtube:: omQ-nHE6q4w

@@ -34,4 +34,4 @@ The following tutorial requires:
 Gate signal usage
 *****************
 
-Video link: <https://youtu.be/MR4tYshIp9o>
+.. youtube:: MR4tYshIp9o

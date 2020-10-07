@@ -35,4 +35,4 @@ pipelines:
             USER: $secret_server_user_name
             SERVER: ultrazohm.com
             REMOTE_PATH: $secret_folder_path
-            LOCAL_PATH: docs/build
+            LOCAL_PATH: build

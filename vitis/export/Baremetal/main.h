@@ -477,6 +477,7 @@ typedef struct _motorRelatedParameters_ {
 	Xfloat32 BreakawayTorque;			//Breakawaytorque in Nm
 	Xfloat32 CoulombFriction;			//Coulombfriction in Nm
 	Xfloat32 ViscousFriction;			// Viscous Frictioncoefficient in Nms
+	Xfloat32 IncEncoderLPF_freq;		// corner frequency of low pass filter for incremental encoder readings
 } motorRelatedParameters;		// = 32 x 4bytes ohne mtpaTable, mit mtpaTable (2 x 16 x 4bytes) --> gesamt 64 x 4bytes
 
 // union allows to access the values as array and individual variables
@@ -538,6 +539,7 @@ typedef struct _actualValues_ {
 	Xfloat32 Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	Xfloat32 Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	Xfloat32 mechanicalRotorSpeed; 		// in rpm
+	Xfloat32 mechanicalRotorSpeed_filtered; // in rpm
 	Xfloat32 mechanicalPosition; 		// in m
 	Xfloat32 mechanicalTorque; 			// in Nm
 	Xfloat32 mechanicalTorqueSensitive; // in Nm
@@ -570,6 +572,8 @@ typedef struct _referenceAndSetValues_ {
 	Xfloat32 ModifiedReferenceCurrent_iq;   //The manipulated reference current in the q-axis, e.g. by the online ID
 	Xint32   TriState[3];
 	Xfloat32 pwmMinPulseWidth;				//Minimal Duty Cycle which is allowed. e.g. if the Duty Cycle wants to switch only for, lets say 100ns, we should avoid switching at all.
+	Xfloat32 open_loop_sin_amplitude;
+	Xfloat32 open_loop_sin_frequency;
 } referenceAndSetValues;
 
 typedef struct _communicationStateVariables_ {
@@ -861,6 +865,7 @@ typedef struct _debugVariables_ {
 	Xint32 sw1;
 	Xint32 sw2;
 	Xint32 sw3;
+	int ADC_scope_display;
 } debugVariables;
 
 

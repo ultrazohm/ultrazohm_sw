@@ -96,3 +96,6 @@ rst_prolog = """
 .. role:: bg-bisque
 .. role:: bg-brown
 """
+
+# enables numbered figures
+numfig = True

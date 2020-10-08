@@ -25,6 +25,8 @@ You can name somebody to the issue who will be notified. Click ``Create issue`` 
 
 .. image:: ./images_bitbucket/issue4.png
 
+.. _bitbucket_pull_request:
+
 Pull Request
 ************
 

@@ -10,7 +10,7 @@
 ******************************************************************************/
 
 #include "../include/encoder.h"
-#include "../defines.h"
+
 
 
 //----------------------------------------------------
@@ -81,4 +81,11 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 	// Get electrical angle theta
 	Xint32 i_theta_e  = Xil_In32(Encoder_theta_e_REG);  //Read AXI-register
 	data->av.theta_elec  = (Xfloat32)(ldexpf(i_theta_e, Q20toF));  // Shift 20 Bit for fixed-point
+
+	// low-pass filter of mechanical speed
+	static float speed_lpf_mem_in = 0.0f;
+	static float speed_lpf_mem_out = 0.0f;
+	data->av.mechanicalRotorSpeed_filtered = LPF1(	data->av.mechanicalRotorSpeed, &speed_lpf_mem_in, &speed_lpf_mem_out,
+													data->ctrl.pwmFrequency, data->mrp.IncEncoderLPF_freq);
+
 }

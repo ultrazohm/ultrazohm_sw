@@ -121,5 +121,5 @@ void PWM_3L_SetDutyCycle_open_loop_sin(DS_Data* data){
 	duty_cycle_b = sin_amplitude * sinf(angle + 2*PI/3);
 	duty_cycle_c = sin_amplitude * sinf(angle + 4*PI/3);
 
-	PWM_SS_SetDutyCycle(duty_cycle_a, duty_cycle_b, duty_cycle_c);
+	PWM_3L_SetDutyCycle(duty_cycle_a, duty_cycle_b, duty_cycle_c);
 }

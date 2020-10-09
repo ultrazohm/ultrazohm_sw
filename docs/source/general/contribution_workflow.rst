@@ -2,7 +2,7 @@
 Contribution Workflow
 =====================
 
-The UltraZohm community uses the git-flow branching model since it is easy to apply. (`Atlassian <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>`_, `Gitflow cheat sheet <https://danielkummer.github.io/git-flow-cheatsheet/index.html>`_).
+The UltraZohm community uses the git-flow branching model since it is easy to apply (more info: `Atlassian <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>`_, `Gitflow cheat sheet <https://danielkummer.github.io/git-flow-cheatsheet/index.html>`_).
 In addition to the git-flow model, :ref:`bitbucket_pull_request` are used for all merges.
 See  the `Atlassian tutorial <https://www.atlassian.com/en/git/tutorials/making-a-pull-request>`_ for additional information.
 It is not possible to merge into the ``main`` or ``develop`` branches without a pull request.
@@ -10,8 +10,7 @@ It is not possible to merge into the ``main`` or ``develop`` branches without a 
 UltraZohm Workflow
 ------------------
 
-Git-flow is supported by the git extension <https://github.com/nvie/gitflow/wiki/Command-Line-Arguments> as well as the GUI clients Sourcetree and GitKraken.
-The critical part is the set of rules for creating branches and how to merge.
+Git-flow is supported by the `gitflow extension <https://github.com/nvie/gitflow/wiki/Command-Line-Arguments>`_ as well as the GUI clients Sourcetree and GitKraken.
 
 .. _gitflow_picture:
 
@@ -19,7 +18,7 @@ The critical part is the set of rules for creating branches and how to merge.
 
   Visualization of git-flow.
 
-Figure :numref:`gitflow_picture` shows the gitflow.
+:numref:`gitflow_picture` shows the gitflow.
 The following branches are used:
 
   * ``main``
@@ -68,13 +67,23 @@ Branch names
 
 The naming convention for the branches is as follows:
 
- * ``hotfix/branchname``  is a hotfix branch and ``branchname`` refers to the bug - e.g. ``hotfix/pwmtriger`` if there is a bug with the PWM trigger
- * ``release/branchname`` is a release branch with ``branchname`` referring to what the release is about - e.g. ``release/adc_ip_core`` if there is an update to the ADC IP core
- * ``feature/featurename`` is a feature branch with ``featurename`` referring to what feature is developed - e.g. ``feature/oversampling`` if the feature is about oversampling
+  * ``feature/featurename``
 
-.. note::
+    * Branch of type ``feature``
+    * ``featurename`` describes what feature is implemented
+    * Example: ``feature/pwm_module``
 
-  Please do not use your sandbox branch for the development of features!
+  * ``hotfix/hotfixname`` 
+  
+    * Branch of type ``hotfix``
+    * ``hotfixname`` refers to the bug which the contribution fixes
+    * Example: ``hotfix/fix_pwm_counter_overflow``
+  
+  * ``release/releasename_v000``
+
+    * Branch of type ``release``
+    * ``releasename`` should describe what features are released
+    * Contains the version number that will be the new tag for the ``main`` branch
 
 Version number
 **************

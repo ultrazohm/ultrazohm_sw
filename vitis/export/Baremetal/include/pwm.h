@@ -28,7 +28,7 @@ void PWM_SS_SetMode(int PWM_mode);
 void PWM_SS_SetCarrierFrequency(float PWM_freq_Hz);
 void PWM_SS_SetMinimumPulseWidth(float PWM_min_pulse_width);
 void PWM_SS_SetTriState(int TriState_A, int TriState_B, int TriState_C);
-void PWM_SS_SetDutyCycle_open_loop_sin(DS_Data* data);
+void PWM_SS_Calculate_DutyCycle_open_loop_sin(DS_Data* data);
 
 //==============================================================================================================================================================
 //IP-Block for the 2-level PWM with DutyCycle

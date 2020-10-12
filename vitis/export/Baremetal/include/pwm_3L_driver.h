@@ -28,7 +28,7 @@ void PWM_3L_SetMode(int PWM_mode);
 void PWM_3L_SetCarrierFrequency(float PWM_freq);
 void PWM_3L_SetMinimumPulseWidth(float PWM_min_pulse_width);
 void PWM_3L_SetTriState(int TriState_A, int TriState_B, int TriState_C);
-void PWM_3L_SetDutyCycle_open_loop_sin(DS_Data* data);
+void PWM_3L_Calculate_DutyCycle_open_loop_sin(DS_Data* data);
 
 //==============================================================================================================================================================
 // registers of three-level PWM module

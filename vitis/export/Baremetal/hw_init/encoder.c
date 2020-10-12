@@ -86,6 +86,6 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 	static float speed_lpf_mem_in = 0.0f;
 	static float speed_lpf_mem_out = 0.0f;
 	data->av.mechanicalRotorSpeed_filtered = LPF1(	data->av.mechanicalRotorSpeed, &speed_lpf_mem_in, &speed_lpf_mem_out,
-													data->ctrl.pwmFrequency, data->mrp.IncEncoderLPF_freq);
+													data->ctrl.samplingFrequency, data->mrp.IncEncoderLPF_freq);
 
 }

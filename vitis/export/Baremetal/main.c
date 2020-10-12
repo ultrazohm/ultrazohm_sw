@@ -83,7 +83,7 @@ int main (void){
 	Initialize_ARMController(&Global_Data);
 
    	//Initialize the Soft-Oscilloscope ("JavaScope")
-	Initialize_JavaScope();
+	JavaScope_initalize();
 
 	// Initialize the Interrupts
 	Initialize_ISR();
@@ -491,13 +491,19 @@ int InitializeDataStructure(DS_Data* data){
 	data->aa.A3.cf.ADC_B7 = 10;
 	data->aa.A3.cf.ADC_B8 = 10;
 
-	// initalize PWM
-	data->ctrl.pwmFrequency = 10e3;		// PWM carrier frequency
+	// initalize PWM parameters
+	data->ctrl.pwmFrequency 	 = 10e3;		// PWM carrier frequency
+	data->ctrl.pwmPeriod 		 = 1 / data->ctrl.pwmFrequency;
+
+	data->ctrl.samplingFrequency = data->ctrl.pwmFrequency * Interrupt_ISR_freq_factor;
+	data->ctrl.samplingPeriod 	 = 1 / data->ctrl.samplingFrequency;
+
 	data->cw.switchingMode = 0; 		// PWM modulation
 	data->rasv.pwmMinPulseWidth = 0.01;	// PWM minimum on time in %
 	data->rasv.halfBridge1DutyCycle = 0.0;
 	data->rasv.halfBridge2DutyCycle = 0.0;
 	data->rasv.halfBridge3DutyCycle = 0.0;
+
 
 
 	return (0);

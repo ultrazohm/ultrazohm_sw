@@ -35,8 +35,8 @@
 // xil_printf is a smaller, optimised printf */
 
 // ========== Definitions =========================================================================
-#define PI 3.141592653589
-#define PI2 6.2832
+#define PI 	M_PI
+#define PI2 (2*M_PI)
 
 #define OUTPUT_PIN							1 								//This Pin is an Output
 #define INPUT_PIN							0 								//This Pin is an Input
@@ -810,12 +810,13 @@ typedef struct _controllerVars_ {
 	halfBridgeControlVars hbc;
 	modelPredictiveControlVars mpc;
 	Xfloat32 pwmFrequency;
-	Xfloat32 samplingTime;
+	Xfloat32 pwmPeriod;
+	Xfloat32 samplingPeriod;
+	Xfloat32 samplingFrequency;
 	Xfloat32 dcLinkVoltage;
 	Xfloat32 terminalCurrents[3];
 	Xfloat32 terminalVoltages[3];
 	boolean  ctrlObjectReinitRequest;
-	Xfloat32 pwmPeriod;
 	Xfloat32 FullScaleCurrent_IQ_A;	// PL 19.12.2017 Welchem float-Wert entspricht der Full-Scale-IQ Faktor? = USER_IQ_FULL_SCALE_CURRENT_A aus user.h
 	Xfloat32 OneOverFullScaleCurrent_IQ_A; // PL 19.12.2017 1 / (USER_IQ_FULL_SCALE_CURRENT_A) aus user.h
 	Xfloat32 FullScaleVoltage_IQ_V;	// PL 19.12.2017 Welchem float-Wert entspricht der Full-Scale-IQ Faktor? = USER_IQ_FULL_SCALE_VOLTAGE_V aus user.h
@@ -823,43 +824,10 @@ typedef struct _controllerVars_ {
 
 typedef struct _debugVariables_ {
 	Xuint32  counter;
-//	Xfloat32 SSC_SystemVs;
-//	Xfloat32 SSC_SystemT1;
-//	Xfloat32 SSC_SystemTSigma;
-//	Xfloat32 SSC_ControllerVr;
-//	Xfloat32 SSC_ControllerTn;
-//	Xfloat32 SC_System_Tsigma;
-//	Xfloat32 SC_System_VsDivByT1;
-//	Xfloat32 SC_ControllerTn;
-//	Xfloat32 SC_Controller_Vr;
 	Xfloat32 finalReferenceCurrent;
-//	Xfloat32 iq_Var;
-//	Xfloat32 finalDutyCycle;
 	Xfloat32 controlError;
-//	Xfloat32 errorSum;
-//	Xfloat32 controlSignal;
 	Xfloat32 referenceSpeedLimited;
 	Xfloat32 positionWithPhaseAdvance;
-	//Xuint32 eCapCountAdcIsr;
-	/*rotorSector commutationSector;
-	uint16_t numberOfHallEvents;
-	Xfloat3215 speedPu;
-	Xint32 sectorDifference;
-	Xint32 controllerSamplingTimesCounter;
-	Xint32 controllerSamplingTimesBetweenHallEvents;
-	rotorSector previousRotorSector;
-	Xfloat32 lastMeasuredRotorAngle;
-	Xfloat32 rotorSectorsTravelled;
-	Xfloat32 rotorAngleElectric;
-	hallEvent latestHallEvent;
-	Xint32 hallEventSectorDifference;
-	Xint32 speedPuInteger;
-	Xint32 product;
-	Xint32 divBySix;
-	Xint32 shiftBy16;*/
-//	Xfloat32 terminalCurrent1IQ;
-//	Xfloat32 terminalCurrent1;
-//	Xfloat32 oc[3];
 	Xuint32  timeStampCounter;
 	uint16_t isrCyclesFor10Millisec;
 	Xint32 sw1;

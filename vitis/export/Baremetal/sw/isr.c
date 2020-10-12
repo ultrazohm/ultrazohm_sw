@@ -32,7 +32,7 @@ Xint32 		i_ISRLifeCheck = 0;
 Xfloat32 	f_ISRLifeCheck = 0;
 Xint32 		i_count_1ms = 0; // count up by 1 every 1ms
 Xint32 		i_count_1s = 0; // count up by 1 every 1s
-Xfloat32 	isr_period_us;
+Xfloat32 	isr_period_us_meausred;
 XTime 		tPrev, tNow = 0; // XTime is u64 which will not overflow in a life time
 
 //Initialize the variables for the ADC measurement
@@ -56,8 +56,7 @@ XTmrCtr TMR_Con_Inst;
 //Variables for JavaScope
 extern Oszi_to_ARM_Data_shared_struct ControlData; //Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
 extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare; //Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-Xfloat32 test_js_sinewave1=0.0, test_javaScope_freqHz=1.0, argument=0.0, sin1amp=100.0, sin2amp=80.0, sawfak=0.2;
-Xfloat32 test_js_sinewave2=0.0, test_js_sawtooth1=0.0, test_js_sawtooth2=0.0;
+Xfloat32 sin1amp=100.0;
 
 //Global variable structure
 extern DS_Data Global_Data;
@@ -83,6 +82,7 @@ void TMR_Con_Intr_Handler(void *data)
 	if(i_ISRLifeCheck > 10000){
 		i_ISRLifeCheck = 1; //If the value is 10001, than set to 1 in order to avoid value-overflow
 	}
+	f_ISRLifeCheck = ((Xfloat32)i_ISRLifeCheck)*0.1; //for representation, keep the value between 0-1000
 
 	MeasureTime();	//measure the time for the JavaScope
 
@@ -167,125 +167,26 @@ void TMR_Con_Intr_Handler(void *data)
 		// add your torque controller here
 	}
 
-	// Reference m u1-u3  ->  Valid value range for the duty cycle: 0-1
+
+	// generate open-loop sinusoidal duty-cycle, amplitude and frequency are set in the Global_Data struct
+	// both function write the variable Global_Data.rasv.halfBridge1DutyCycle -> only comment 2L or 3L!
+	// PWM_SS_Calculate_DutyCycle_open_loop_sin(&Global_Data);
+	// PWM_3L_Calculate_DutyCycle_open_loop_sin(&Global_Data);
+
+	// Set duty cycles for two-level modulator
 	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 						Global_Data.rasv.halfBridge2DutyCycle,
 						Global_Data.rasv.halfBridge3DutyCycle);
-	// Set for three-level modulator
+
+	// Set duty cycles for three-level modulator
 	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 						Global_Data.rasv.halfBridge2DutyCycle,
 						Global_Data.rasv.halfBridge3DutyCycle);
 	//End: Write the references for the FPGA ---------------------------------------------------------------------------------------
 
 
-	// Start JavaScope---------------------------------------------------------------------------------------
-	// todo: write seperate function for JavaScope !
-	 //In order to avoid unnecessary memory access, call only if something has changed!
-	if((ControlDataShadowBare.id != ControlData.id)||(ControlDataShadowBare.value != ControlData.value)){
-		//Safe the current control data into a shadow register
-		ControlDataShadowBare.id = ControlData.id;
-		ControlDataShadowBare.value = ControlData.value;
-		ControlDataShadowBare.digInputs = ControlData.digInputs;
-		//Read the control values from JavaScope
-		ipc_Control_func(ControlDataShadowBare.id, ControlDataShadowBare.value, &Global_Data); //check always in while(1) if there are new control values
-	}
-
-	f_ISRLifeCheck = ((Xfloat32)i_ISRLifeCheck)*0.1; //for representation, keep the value between 0-1000
-	//test_js_sinewave1 = 10.0 * sinf( PI2 * 1.00 * (i_count_1ms*0.001) ); //add a sine wave and display it on the Javascope
-
-	// Store every observable signal into the Pointer-Array.
-	// With the JavaScope, 4 signals can be displayed simultaneously (data stream at 200us time intervals).
-	// Changing between the observable signals is possible at runtime in the JavaScope.
-	js_ptr_arr[JSO_Speed_rpm]	= &Global_Data.av.mechanicalRotorSpeed;
-	js_ptr_arr[JSO_ia] 			= &Global_Data.av.I_U;
-	js_ptr_arr[JSO_ib] 			= &Global_Data.av.I_V;
-	js_ptr_arr[JSO_ic] 			= &Global_Data.av.I_W;
-	js_ptr_arr[JSO_ua] 			= &Global_Data.av.U_U;
-	js_ptr_arr[JSO_ub] 			= &Global_Data.av.U_V;
-	js_ptr_arr[JSO_uc] 			= &Global_Data.av.U_W;
-	js_ptr_arr[JSO_iq] 			= &Global_Data.av.I_q;
-	js_ptr_arr[JSO_id] 			= &Global_Data.av.I_d;
-	js_ptr_arr[JSO_Theta_el] 	= &Global_Data.av.theta_elec;
-	js_ptr_arr[JSO_theta_mech] 	= &Global_Data.av.theta_mech;
-	js_ptr_arr[JSO_Wtemp]		= &Global_Data.pID.WindingTemp;
-	js_ptr_arr[JSO_ud]			= &Global_Data.av.U_d;
-	js_ptr_arr[JSO_uq]			= &Global_Data.av.U_q;
-	js_ptr_arr[JSO_Ld_mH]		= &Global_Data.pID.Online_Ld;
-	js_ptr_arr[JSO_Lq_mH]		= &Global_Data.pID.Online_Lq;
-	js_ptr_arr[JSO_Rs_mOhm]		= &Global_Data.pID.Online_Rs;
-	js_ptr_arr[JSO_PsiPM_mVs]	= &Global_Data.pID.Online_Psi_PM;
-	js_ptr_arr[JSO_Sawtooth1] 	= &f_ISRLifeCheck;
-	js_ptr_arr[JSO_SineWave1]   = &test_js_sinewave1;                 // add by Qing
-
-	// Store slow / not-time-critical signals into the SlowData-Array.
-	// Will be transferred one after another (one every 0,5 ms).
-	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
-	js_slowDataArray[JSSD_INT_SecondsSinceSystemStart].i = i_count_1s;
-	js_slowDataArray[JSSD_FLOAT_uSecPerIsr].f 	= ((Xfloat32)time_ISR_total*10.0e-03); //AXI-Ticks* @100MHz AXI-Clock [us]
-	js_slowDataArray[JSSD_FLOAT_Sine].f 		= time_ISR_max_us; //10.0 * sin(PI2 * 0.05 * ((Xfloat32)0.0002));	// 0.05 Hz => T=20sec
-	js_slowDataArray[JSSD_FLOAT_FreqReadback].f = Global_Data.rasv.referenceFrequency;
-	js_slowDataArray[JSSD_INT_Milliseconds].i 	= (Xint32)i_count_1ms;
-	js_slowDataArray[JSSD_FLOAT_ADCconvFactorReadback].f = Global_Data.mrp.ADCconvFactorReadback;
-	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline].f= Global_Data.pID.Offline_Psi_PM;
-	js_slowDataArray[JSSD_FLOAT_Lq_Offline].f 	= Global_Data.pID.Offline_Lq;
-	js_slowDataArray[JSSD_FLOAT_Ld_Offline].f 	= Global_Data.pID.Offline_Ld;
-	js_slowDataArray[JSSD_FLOAT_Rs_Offline].f 	= Global_Data.pID.Offline_Rs;
-	js_slowDataArray[JSSD_INT_polePairs].i 		= (Xint32)Global_Data.mrp.motorPolePairNumber;
-	js_slowDataArray[JSSD_FLOAT_J].f 			= Global_Data.pID.Offline_motorRotorInertia;
-	js_slowDataArray[JSSD_INT_activeState].i 	= Global_Data.pID.activeState;
-	js_slowDataArray[JSSD_FLOAT_J].f 			= Global_Data.pID.Offline_motorRotorInertia;
-	js_slowDataArray[JSSD_FLOAT_u_d].f 			= Global_Data.av.U_d;
-	js_slowDataArray[JSSD_FLOAT_u_q].f 			= Global_Data.av.U_q;
-	js_slowDataArray[JSSD_FLOAT_i_d].f 			= Global_Data.av.I_d; //Global_Data.pID.ParameterID_I_d;	//
-	js_slowDataArray[JSSD_FLOAT_i_q].f 			= Global_Data.av.I_q; //Global_Data.pID.ParameterID_I_q;	//
-	js_slowDataArray[JSSD_FLOAT_speed].f 		= Global_Data.av.mechanicalRotorSpeed;
-	js_slowDataArray[JSSD_FLOAT_torque].f 		= 1.5*Global_Data.mrp.motorPolePairNumber*(Global_Data.pID.Offline_Psi_PM*Global_Data.pID.ParameterID_I_q+(Global_Data.pID.Offline_Ld-Global_Data.pID.Offline_Lq)*Global_Data.pID.ParameterID_I_d*Global_Data.pID.ParameterID_I_q);
-	js_slowDataArray[JSSD_FLOAT_encoderOffset].f= Global_Data.mrp.incrementalEncoderOffset;
-	js_slowDataArray[JSSD_FLOAT_u_d_ref].f 		= Global_Data.pID.Offline_ud_ref;
-	js_slowDataArray[JSSD_FLOAT_u_q_ref].f 		= Global_Data.pID.Offline_uq_ref;
-	js_slowDataArray[JSSD_FLOAT_ArrayCounter].f = Global_Data.pID.array_counter;
-	js_slowDataArray[JSSD_FLOAT_measArray].f 	= Global_Data.pID.Online_MessArray_Element; //OHMrichterMotorControl_Y_measArray1[(Xuint16)(Global_Data.pID.array_counter)];
-	js_slowDataArray[JSSD_FLOAT_i_est].f		= Global_Data.pID.Online_i_est_Element; //OHMrichterMotorControl_Y_i_est[(Xuint16)(Global_Data.pID.array_counter)];
-	js_slowDataArray[JSSD_FLOAT_ArrayControl].f = Global_Data.pID.array_counter;
-	js_slowDataArray[JSSD_FLOAT_Stribtorque].f 	= Global_Data.pID.Offline_BreakawayTorque;
-	js_slowDataArray[JSSD_FLOAT_Coulombtorque].f= Global_Data.pID.Offline_CoulombFriction;
-	js_slowDataArray[JSSD_FLOAT_Viscotorque].f 	= Global_Data.pID.Offline_ViscousFriction;
-	js_slowDataArray[JSSD_FLOAT_Rs].f 			= Global_Data.mrp.motorStatorResistance;
-	js_slowDataArray[JSSD_FLOAT_PsiPM].f 		= Global_Data.mrp.motorFluxConstant;
-	js_slowDataArray[JSSD_FLOAT_TrainInertia].f = Global_Data.pID.Offline_totalRotorInertia;//OHMrichterMotorControl_Y_ViscoTorqueLoad;
-	js_slowDataArray[JSSD_FLOAT_LoadInertia].f 	= Global_Data.pID.Offline_loadRotorInertia;
-	js_slowDataArray[JSSD_FLOAT_c_est].f		= Global_Data.pID.Offline_TwoMassSystemStiffness;
-	js_slowDataArray[JSSD_FLOAT_d_est].f		= Global_Data.pID.Offline_TwoMassSystemDamping;
-	js_slowDataArray[JSSD_FLOAT_c_0].f			= Global_Data.pID.Offline_TwoMassSystem_c_0;
-	js_slowDataArray[JSSD_FLOAT_MapCounter].f	= Global_Data.pID.map_counter;
-
-	if(Global_Data.pID.map_counter<401){ //400 = comes from 20x20 Raster of the flux maps
-		js_slowDataArray[JSSD_FLOAT_psidMap].f	= Global_Data.pID.FluxMap_d[(Xuint16)(Global_Data.pID.map_counter)];
-		js_slowDataArray[JSSD_FLOAT_psiqMap].f	= Global_Data.pID.FluxMap_q[(Xuint16)(Global_Data.pID.map_counter)];
-		js_slowDataArray[JSSD_FLOAT_idMap].f	= Global_Data.pID.InvFluxMap_d[(Xuint16)(Global_Data.pID.map_counter)];
-		js_slowDataArray[JSSD_FLOAT_iqMap].f	= Global_Data.pID.InvFluxMap_q[(Xuint16)(Global_Data.pID.map_counter)];
-		js_slowDataArray[JSSD_FLOAT_FluxTemp].f	= Global_Data.pID.FluxTemp[(Xuint16)(Global_Data.pID.map_counter/2)];
-	}
-	js_slowDataArray[JSSD_FLOAT_psi_array].f	= Global_Data.pID.psi_array[(Xuint16)(Global_Data.pID.map_counter)];
-	js_slowDataArray[JSSD_FLOAT_MapControl].f	= Global_Data.pID.map_counter;
-	js_slowDataArray[JSSD_FLOAT_I_rated].f		= Global_Data.mrp.motorNominalCurrent;
-	js_slowDataArray[JSSD_FLOAT_Wtemp].f		= Global_Data.pID.WindingTemp;
-	js_slowDataArray[JSSD_FLOAT_FluxTempConst].f= Global_Data.pID.FluxTempConst;
-	js_slowDataArray[JSSD_FLOAT_FluxTempError].f= Global_Data.pID.FluxTempError;
-	js_slowDataArray[JSSD_FLOAT_Ld_Online].f	= Global_Data.pID.Online_Ld;
-	js_slowDataArray[JSSD_FLOAT_Lq_Online].f	= Global_Data.pID.Online_Lq;
-	js_slowDataArray[JSSD_FLOAT_PsiPM_Online].f	= Global_Data.pID.Online_Psi_PM;
-	js_slowDataArray[JSSD_FLOAT_Rs_Online].f	= Global_Data.pID.Online_Rs;
-	js_slowDataArray[JSSD_FLOAT_n_FluxPoints].f	= Global_Data.pID.n_FluxPoints;
-	js_slowDataArray[JSSD_FLOAT_Ld].f 			= Global_Data.mrp.motorDirectInductance;
-	js_slowDataArray[JSSD_FLOAT_Lq].f 			= Global_Data.mrp.motorQuadratureInductance;
-	js_slowDataArray[JSSD_FLOAT_totalRotorInertia].f 	= Global_Data.mrp.totalRotorInertia;
-
-	if (chJavaScope==4)
-		js_fetchData4CH();
-	else if (chJavaScope==2)
-		js_fetchData2CH();
-	// End JavaScope---------------------------------------------------------------------------------------
+	// Update JavaScope
+	JavaScope_update(&Global_Data);
 
 	//Read the timer value at the end of the ISR in order to measure the ISR-time
 	time_ISR_end = XTmrCtr_GetValue(&TMR_Con_Inst,0);
@@ -306,6 +207,8 @@ void TMR_Con_Intr_Handler(void *data)
 // Measure the time for the JavaScope
 //----------------------------------------------------
 int MeasureTime(){
+	static unsigned int time_overflow_counter = 0 ;
+
 	// save previous read
 	tPrev = tNow;
 	// read clock counter of R5 processor, which starts at 0 after reset/starting the processor
@@ -315,16 +218,18 @@ int MeasureTime(){
 	i_count_1ms = tNow/((COUNTS_PER_SECOND) * 1e-3);
 
 	//measure with 1s cycle
-	i_count_1s = (int) (i_count_1ms*1e-3);
+	//todo: double-check this line!
+	const unsigned int unsigned_int_max_number = ~(unsigned int)0;
+	i_count_1s = (int) (i_count_1ms*1e-3) + time_overflow_counter * (unsigned_int_max_number/COUNTS_PER_SECOND); //   9.16minutes = 549.7559 seconds = (2^32-1)/COUNTS_PER_SECOND
 
 	// calculate ISR period, the time between two calls of this function
 	float const counts_per_us = (COUNTS_PER_SECOND) * 1e-6; // DO NOT USE COUNTS_PER_USECOND, this macro has a large rounding error!
 	XTime isr_period_counts = (tNow - tPrev);
-	isr_period_us = isr_period_counts / counts_per_us;
+	isr_period_us_meausred = isr_period_counts / counts_per_us;
 
 	if (isr_period_counts < 0){
-		//todo catch overflow
-
+		//catch overflow after 9.16 minutes when tNow (32bit) starts from 0 again
+		time_overflow_counter++;
 	}
 
 	/* for reference how to measure time

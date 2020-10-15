@@ -149,9 +149,9 @@ void TMR_Con_Intr_Handler(void *data)
 		//ADC_readCardA2(&Global_Data);
 		//ADC_readCardA3(&Global_Data);
 		ADC_readCardALL(&Global_Data);
-		Global_Data.av.I_U=Global_Data.aa.A1.me.ADC_B8*9.5969; // LEM gain according to data sheet is 104.2 mV/A --> 1/0.1042 is 9.59
-		Global_Data.av.I_V=Global_Data.aa.A1.me.ADC_B7*9.5969;
-		Global_Data.av.I_W=Global_Data.aa.A1.me.ADC_B5*9.5969;
+		Global_Data.av.I_U=Global_Data.aa.A3.me.ADC_B8*9.5969; // LEM gain according to data sheet is 104.2 mV/A --> 1/0.1042 is 9.59
+		Global_Data.av.I_V=Global_Data.aa.A3.me.ADC_B7*9.5969;
+		Global_Data.av.I_W=Global_Data.aa.A3.me.ADC_B5*9.5969;
 
 	}
 	//End: Read out ADCs ---------------------------------------------------------------------------------------
@@ -584,9 +584,9 @@ u32 Rpu_IpiInit(u16 DeviceId)
 
 int InitializeController(DATA_controller* data){
 	data->nSoll=0.0;
-	data->K_p_d=35.0;
+	data->K_p_d=5.0;
 	data->K_i_d=0.0;
-	data->K_p_q=35.0;
+	data->K_p_q=5.0;
 	data->K_i_q=0.0;
 	data->K_p_n=0.07;
 	data->K_i_n=0.0;

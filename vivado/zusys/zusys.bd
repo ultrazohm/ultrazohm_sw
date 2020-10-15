@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x13F7BA38E5088F92",
+      "boundary_crc": "0x6CD47CBC7F5F90D7",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -62,9 +62,10 @@
         "Analog_Out_Hub_0": "",
         "Analog_In_Hub_0": "",
         "Activate_Oversampling": "",
-        "ila_ADC1": ""
+        "ila_ADC1": "",
+        "xlconcat_0": "",
+        "xlconcat_1": ""
       },
-      "Only1ADCclock": "",
       "ADC_A1": {
         "Current_Valid_0": "",
         "ADC_Block_B": "",
@@ -100,7 +101,7 @@
       "IncreEncoder_V24_ip_0": "",
       "Trans_123_dq_V12_ip_0": "",
       "Interrupt": {
-        "Mux_interrupts": "",
+        "Concat_interrupts": "",
         "Trigger_f_cc": "",
         "ila_0": "",
         "mux_axi_ip_0": ""
@@ -246,11 +247,6 @@
         "left": "15",
         "right": "0"
       },
-      "A3_OUT": {
-        "direction": "O",
-        "left": "1",
-        "right": "0"
-      },
       "A1_IN": {
         "direction": "I",
         "left": "15",
@@ -332,6 +328,28 @@
         "parameters": {
           "PortWidth": {
             "value": "6",
+            "value_src": "ip_prop"
+          }
+        }
+      },
+      "A3_OUT_CNV": {
+        "direction": "O",
+        "left": "1",
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "2",
+            "value_src": "ip_prop"
+          }
+        }
+      },
+      "A3_OUT_CLK": {
+        "direction": "O",
+        "left": "1",
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "2",
             "value_src": "ip_prop"
           }
         }
@@ -634,7 +652,7 @@
           },
           "extend_interrupt_1": {
             "vlnv": "xilinx.com:module_ref:extend_interrupt:1.0",
-            "xci_name": "zusys_extend_interrupt_1_0",
+            "xci_name": "zusys_extend_interrupt_0_1",
             "reference_info": {
               "ref_type": "hdl",
               "ref_name": "extend_interrupt",
@@ -665,7 +683,7 @@
           },
           "extend_interrupt_2": {
             "vlnv": "xilinx.com:module_ref:extend_interrupt:1.0",
-            "xci_name": "zusys_extend_interrupt_2_0",
+            "xci_name": "zusys_extend_interrupt_0_2",
             "reference_info": {
               "ref_type": "hdl",
               "ref_name": "extend_interrupt",
@@ -1816,9 +1834,6 @@
             "type": "clk",
             "direction": "I"
           },
-          "ADC_CS1": {
-            "direction": "O"
-          },
           "ADC_end_cnv": {
             "direction": "O"
           },
@@ -1832,9 +1847,6 @@
             "type": "rst",
             "direction": "I"
           },
-          "ADC_CS2": {
-            "direction": "O"
-          },
           "ADC_values_raw": {
             "direction": "O",
             "left": "127",
@@ -1843,6 +1855,16 @@
           "A_IN": {
             "direction": "I",
             "left": "15",
+            "right": "0"
+          },
+          "A_OUT_CLK": {
+            "direction": "O",
+            "left": "1",
+            "right": "0"
+          },
+          "A_OUT_CNV": {
+            "direction": "O",
+            "left": "1",
             "right": "0"
           },
           "A_OUT": {
@@ -2131,19 +2153,27 @@
                 "value": "18"
               }
             }
+          },
+          "xlconcat_0": {
+            "vlnv": "xilinx.com:ip:xlconcat:2.1",
+            "xci_name": "zusys_xlconcat_0_3"
+          },
+          "xlconcat_1": {
+            "vlnv": "xilinx.com:ip:xlconcat:2.1",
+            "xci_name": "zusys_xlconcat_1_1"
           }
         },
         "interface_nets": {
-          "ps8_0_axi_periph_M00_AXI": {
-            "interface_ports": [
-              "s00_axi",
-              "ADC_Block_B/s00_axi"
-            ]
-          },
           "Conn1": {
             "interface_ports": [
               "s00_axi1",
               "ADC_Block_A/s00_axi"
+            ]
+          },
+          "ps8_0_axi_periph_M00_AXI": {
+            "interface_ports": [
+              "s00_axi",
+              "ADC_Block_B/s00_axi"
             ]
           }
         },
@@ -2223,8 +2253,8 @@
           "ADC_Module_LVDS_v2_0_0_SS_N_spi": {
             "ports": [
               "ADC_Block_B/SS_N_spi",
-              "ADC_CS1",
-              "ila_ADC1/probe6"
+              "ila_ADC1/probe6",
+              "xlconcat_1/In1"
             ]
           },
           "ADC_Module_LVDS_v2_0_0_ADC_end_cnv": {
@@ -2265,7 +2295,7 @@
           "ADC_Module_LVDS_v2_0_1_SS_N_spi": {
             "ports": [
               "ADC_Block_A/SS_N_spi",
-              "ADC_CS2"
+              "xlconcat_1/In0"
             ]
           },
           "ADC_A1_data_raw": {
@@ -2372,31 +2402,15 @@
           "ADC_Module_LVDS_A1_A_SCLK_spi_1_P": {
             "ports": [
               "ADC_Block_A/SCLK_spi_1_P",
-              "Analog_Out_Hub_0/CLK_A_P"
+              "Analog_Out_Hub_0/CLK_A_P",
+              "xlconcat_0/In0"
             ]
           },
           "ADC_Module_LVDS_A1_A_SCLK_spi_1_N": {
             "ports": [
               "ADC_Block_A/SCLK_spi_1_N",
-              "Analog_Out_Hub_0/CLK_A_N"
-            ]
-          },
-          "ADC_Module_LVDS_A1_B_SCLK_spi_1_P": {
-            "ports": [
-              "ADC_Block_B/SCLK_spi_1_P",
-              "Analog_Out_Hub_0/CLK_B_P"
-            ]
-          },
-          "ADC_Module_LVDS_A1_B_SCLK_spi_1_N": {
-            "ports": [
-              "ADC_Block_B/SCLK_spi_1_N",
-              "Analog_Out_Hub_0/CLK_B_N"
-            ]
-          },
-          "Analog_Out_Hub_0_A_OUT": {
-            "ports": [
-              "Analog_Out_Hub_0/A_OUT",
-              "A_OUT"
+              "Analog_Out_Hub_0/CLK_A_N",
+              "xlconcat_0/In1"
             ]
           },
           "s00_axi_aresetn_1": {
@@ -2407,21 +2421,36 @@
               "ADC_Block_A/reset_n",
               "ADC_Block_A/s00_axi_aresetn"
             ]
-          }
-        }
-      },
-      "Only1ADCclock": {
-        "vlnv": "xilinx.com:ip:xlslice:1.0",
-        "xci_name": "zusys_Only1ADCclock_0",
-        "parameters": {
-          "DIN_FROM": {
-            "value": "1"
           },
-          "DIN_WIDTH": {
-            "value": "4"
+          "xlconcat_0_dout": {
+            "ports": [
+              "xlconcat_0/dout",
+              "A_OUT_CLK"
+            ]
           },
-          "DOUT_WIDTH": {
-            "value": "2"
+          "Analog_Out_Hub_0_A_OUT": {
+            "ports": [
+              "Analog_Out_Hub_0/A_OUT",
+              "A_OUT"
+            ]
+          },
+          "xlconcat_1_dout": {
+            "ports": [
+              "xlconcat_1/dout",
+              "A_OUT_CNV"
+            ]
+          },
+          "ADC_Block_B_SCLK_spi_1_P": {
+            "ports": [
+              "ADC_Block_B/SCLK_spi_1_P",
+              "Analog_Out_Hub_0/CLK_B_P"
+            ]
+          },
+          "ADC_Block_B_SCLK_spi_1_N": {
+            "ports": [
+              "ADC_Block_B/SCLK_spi_1_N",
+              "Analog_Out_Hub_0/CLK_B_N"
+            ]
           }
         }
       },
@@ -6804,7 +6833,7 @@
           },
           "extend_interrupt_0": {
             "vlnv": "xilinx.com:module_ref:extend_interrupt:1.0",
-            "xci_name": "zusys_extend_interrupt_0_1",
+            "xci_name": "zusys_extend_interrupt_0_3",
             "reference_info": {
               "ref_type": "hdl",
               "ref_name": "extend_interrupt",
@@ -6835,7 +6864,7 @@
           },
           "extend_interrupt_1": {
             "vlnv": "xilinx.com:module_ref:extend_interrupt:1.0",
-            "xci_name": "zusys_extend_interrupt_1_1",
+            "xci_name": "zusys_extend_interrupt_1_3",
             "reference_info": {
               "ref_type": "hdl",
               "ref_name": "extend_interrupt",
@@ -6866,7 +6895,7 @@
           },
           "extend_interrupt_2": {
             "vlnv": "xilinx.com:module_ref:extend_interrupt:1.0",
-            "xci_name": "zusys_extend_interrupt_2_1",
+            "xci_name": "zusys_extend_interrupt_1_1",
             "reference_info": {
               "ref_type": "hdl",
               "ref_name": "extend_interrupt",
@@ -7243,7 +7272,7 @@
           }
         },
         "components": {
-          "Mux_interrupts": {
+          "Concat_interrupts": {
             "vlnv": "xilinx.com:ip:xlconcat:2.1",
             "xci_name": "zusys_Mux_interrupts_0",
             "parameters": {
@@ -7284,7 +7313,7 @@
           },
           "mux_axi_ip_0": {
             "vlnv": "mwn.de:ip:mux_axi_ip:1.1",
-            "xci_name": "zusys_mux_axi_ip_0_0"
+            "xci_name": "zusys_mux_axi_ip_0_2"
           }
         },
         "interface_nets": {
@@ -7305,7 +7334,7 @@
           "Trigger_f_cc_interrupt": {
             "ports": [
               "Trigger_f_cc/interrupt",
-              "Mux_interrupts/In6",
+              "Concat_interrupts/In6",
               "ila_0/probe6"
             ]
           },
@@ -7313,47 +7342,47 @@
             "ports": [
               "Interrupt0",
               "ila_0/probe0",
-              "Mux_interrupts/In0"
+              "Concat_interrupts/In0"
             ]
           },
           "Gates_Carrier_triangular_min1": {
             "ports": [
               "Interrupt1",
               "ila_0/probe1",
-              "Mux_interrupts/In1"
+              "Concat_interrupts/In1"
             ]
           },
           "Gates_Carrier_triangular_max1": {
             "ports": [
               "Interrupt2",
               "ila_0/probe2",
-              "Mux_interrupts/In2"
+              "Concat_interrupts/In2"
             ]
           },
           "Gates_3L_Interrupt_Start_Center": {
             "ports": [
               "Interrupt3",
               "ila_0/probe3",
-              "Mux_interrupts/In3"
+              "Concat_interrupts/In3"
             ]
           },
           "Gates_3L_Interrupt_Start": {
             "ports": [
               "Interrupt4",
               "ila_0/probe4",
-              "Mux_interrupts/In4"
+              "Concat_interrupts/In4"
             ]
           },
           "Gates_3L_Interrupt_Center": {
             "ports": [
               "Interrupt5",
               "ila_0/probe5",
-              "Mux_interrupts/In5"
+              "Concat_interrupts/In5"
             ]
           },
           "xlconcat_0_dout": {
             "ports": [
-              "Mux_interrupts/dout",
+              "Concat_interrupts/dout",
               "Interrupt_vector",
               "mux_axi_ip_0/interrupts_in"
             ]
@@ -7392,16 +7421,16 @@
       }
     },
     "interface_nets": {
+      "smartconnect_0_M14_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M14_AXI",
+          "Interrupt/AXI4_Lite"
+        ]
+      },
       "smartconnect_0_M02_AXI": {
         "interface_ports": [
           "smartconnect_0/M02_AXI",
           "ADC_A2/s00_axi1"
-        ]
-      },
-      "smartconnect_0_M08_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M08_AXI",
-          "Gates/AXI4_Lite"
         ]
       },
       "smartconnect_0_M07_AXI": {
@@ -7422,16 +7451,46 @@
           "Interrupt/S_AXI"
         ]
       },
+      "smartconnect_0_M03_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M03_AXI",
+          "ADC_A2/s00_axi"
+        ]
+      },
+      "AXI2TCM_0_M00_AXI": {
+        "interface_ports": [
+          "zynq_ultra_ps_e_0/S_AXI_LPD",
+          "DataMover/M00_AXI"
+        ]
+      },
       "smartconnect_0_M10_AXI": {
         "interface_ports": [
           "smartconnect_0/M10_AXI",
           "Trans_123_dq_V12_ip_0/AXI4_Lite"
         ]
       },
+      "smartconnect_0_M05_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M05_AXI",
+          "ADC_A3/s00_axi"
+        ]
+      },
       "smartconnect_0_M13_AXI": {
         "interface_ports": [
           "smartconnect_0/M13_AXI",
           "Gates/AXI4_Lite1"
+        ]
+      },
+      "smartconnect_0_M00_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M00_AXI",
+          "ADC_A1/s00_axi1"
+        ]
+      },
+      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
+        "interface_ports": [
+          "smartconnect_0/S00_AXI",
+          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
         ]
       },
       "smartconnect_0_M01_AXI": {
@@ -7446,22 +7505,10 @@
           "Gates_3L/AXI4_Lite"
         ]
       },
-      "smartconnect_0_M03_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M03_AXI",
-          "ADC_A2/s00_axi"
-        ]
-      },
       "smartconnect_0_M04_AXI": {
         "interface_ports": [
           "smartconnect_0/M04_AXI",
           "ADC_A3/s00_axi1"
-        ]
-      },
-      "smartconnect_0_M00_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M00_AXI",
-          "ADC_A1/s00_axi1"
         ]
       },
       "smartconnect_0_M06_AXI": {
@@ -7470,28 +7517,10 @@
           "axi_gpio_2/S_AXI"
         ]
       },
-      "AXI2TCM_0_M00_AXI": {
+      "smartconnect_0_M08_AXI": {
         "interface_ports": [
-          "zynq_ultra_ps_e_0/S_AXI_LPD",
-          "DataMover/M00_AXI"
-        ]
-      },
-      "smartconnect_0_M05_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M05_AXI",
-          "ADC_A3/s00_axi"
-        ]
-      },
-      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
-        "interface_ports": [
-          "smartconnect_0/S00_AXI",
-          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
-        ]
-      },
-      "smartconnect_0_M14_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M14_AXI",
-          "Interrupt/AXI4_Lite"
+          "smartconnect_0/M08_AXI",
+          "Gates/AXI4_Lite"
         ]
       }
     },
@@ -7708,18 +7737,6 @@
           "ADC_A3/A_IN"
         ]
       },
-      "ADC_A3_A_OUT": {
-        "ports": [
-          "ADC_A3/A_OUT",
-          "Only1ADCclock/Din"
-        ]
-      },
-      "xlslice_0_Dout": {
-        "ports": [
-          "Only1ADCclock/Dout",
-          "A3_OUT"
-        ]
-      },
       "ADC_A2_1": {
         "ports": [
           "ADC_A2/ADC_values_raw",
@@ -7865,6 +7882,18 @@
           "zynq_ultra_ps_e_0/saxi_lpd_aclk",
           "Gates_3L/AXI4_Lite_ACLK",
           "Interrupt/clk"
+        ]
+      },
+      "ADC_A3_A_OUT_CNV": {
+        "ports": [
+          "ADC_A3/A_OUT_CNV",
+          "A3_OUT_CNV"
+        ]
+      },
+      "ADC_A3_A_OUT_CLK": {
+        "ports": [
+          "ADC_A3/A_OUT_CLK",
+          "A3_OUT_CLK"
         ]
       }
     },

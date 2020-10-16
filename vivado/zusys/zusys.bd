@@ -497,7 +497,7 @@
             "xci_name": "zusys_ila_GateSignal_0",
             "parameters": {
               "C_DATA_DEPTH": {
-                "value": "2048"
+                "value": "4096"
               },
               "C_ENABLE_ILA_AXI_MON": {
                 "value": "false"
@@ -6523,6 +6523,9 @@
             "vlnv": "xilinx.com:ip:ila:6.2",
             "xci_name": "zusys_ila_0_1",
             "parameters": {
+              "C_DATA_DEPTH": {
+                "value": "8192"
+              },
               "C_ENABLE_ILA_AXI_MON": {
                 "value": "false"
               },

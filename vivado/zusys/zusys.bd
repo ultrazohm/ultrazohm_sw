@@ -44,8 +44,6 @@
         "ADC_Block_B": "",
         "ADC_Block_A": "",
         "concat_ADCs_raw": "",
-        "adc_delay": "",
-        "delay_trigger_0": "",
         "Analog_Out_Hub_0": "",
         "Analog_In_Hub_0": "",
         "Activate_Oversampling": "",
@@ -58,8 +56,6 @@
         "ADC_Block_B": "",
         "ADC_Block_A": "",
         "concat_ADCs_raw": "",
-        "adc_delay": "",
-        "delay_trigger_0": "",
         "Analog_Out_Hub_0": "",
         "Analog_In_Hub_0": "",
         "Activate_Oversampling": "",
@@ -72,8 +68,6 @@
         "ADC_Block_B": "",
         "ADC_Block_A": "",
         "concat_ADCs_raw": "",
-        "adc_delay": "",
-        "delay_trigger_0": "",
         "Analog_Out_Hub_0": "",
         "Analog_In_Hub_0": "",
         "Activate_Oversampling": "",
@@ -105,7 +99,9 @@
         "Concat_interrupts": "",
         "Trigger_f_cc": "",
         "ila_0": "",
-        "mux_axi_ip_0": ""
+        "mux_axi_ip_0": "",
+        "adc_delay": "",
+        "delay_trigger_0": ""
       }
     },
     "ports": {
@@ -1278,44 +1274,6 @@
               }
             }
           },
-          "adc_delay": {
-            "vlnv": "xilinx.com:ip:vio:3.0",
-            "xci_name": "zusys_adc_delay_0",
-            "parameters": {
-              "C_NUM_PROBE_IN": {
-                "value": "0"
-              },
-              "C_PROBE_OUT0_WIDTH": {
-                "value": "11"
-              }
-            }
-          },
-          "delay_trigger_0": {
-            "vlnv": "xilinx.com:module_ref:delay_trigger:1.0",
-            "xci_name": "zusys_delay_trigger_0_0",
-            "reference_info": {
-              "ref_type": "hdl",
-              "ref_name": "delay_trigger",
-              "boundary_crc": "0x0"
-            },
-            "ports": {
-              "clk": {
-                "type": "clk",
-                "direction": "I"
-              },
-              "delay_cycles": {
-                "direction": "I",
-                "left": "10",
-                "right": "0"
-              },
-              "a_in": {
-                "direction": "I"
-              },
-              "a_out": {
-                "direction": "O"
-              }
-            }
-          },
           "Analog_Out_Hub_0": {
             "vlnv": "xilinx.com:module_ref:Analog_Out_Hub:1.0",
             "xci_name": "zusys_Analog_Out_Hub_0_0",
@@ -1558,8 +1516,6 @@
               "ADC_Block_B/s00_axi_aclk",
               "ADC_Block_A/clk",
               "ADC_Block_A/s00_axi_aclk",
-              "adc_delay/clk",
-              "delay_trigger_0/clk",
               "ila_ADC1/clk"
             ]
           },
@@ -1588,14 +1544,6 @@
             "ports": [
               "ADC_Block_B/ADC_converted_3",
               "ila_ADC1/probe10"
-            ]
-          },
-          "trigger_adc_delayed": {
-            "ports": [
-              "delay_trigger_0/a_out",
-              "ADC_Block_B/Trigger_cnv",
-              "ADC_Block_A/Trigger_cnv",
-              "ila_ADC1/probe13"
             ]
           },
           "xlslice_Set_ADC_Offset_Dout": {
@@ -1671,17 +1619,13 @@
               "ADC_values_raw"
             ]
           },
-          "vio_0_probe_out0": {
-            "ports": [
-              "adc_delay/probe_out0",
-              "delay_trigger_0/delay_cycles"
-            ]
-          },
           "ADC_trigger_conversion": {
             "ports": [
               "ADC_trigger_conversion",
-              "delay_trigger_0/a_in",
-              "ila_ADC1/probe21"
+              "ila_ADC1/probe21",
+              "ADC_Block_B/Trigger_cnv",
+              "ADC_Block_A/Trigger_cnv",
+              "ila_ADC1/probe13"
             ]
           },
           "A_IN_1": {
@@ -1902,44 +1846,6 @@
             "parameters": {
               "NUM_PORTS": {
                 "value": "8"
-              }
-            }
-          },
-          "adc_delay": {
-            "vlnv": "xilinx.com:ip:vio:3.0",
-            "xci_name": "zusys_adc_delay_1",
-            "parameters": {
-              "C_NUM_PROBE_IN": {
-                "value": "0"
-              },
-              "C_PROBE_OUT0_WIDTH": {
-                "value": "11"
-              }
-            }
-          },
-          "delay_trigger_0": {
-            "vlnv": "xilinx.com:module_ref:delay_trigger:1.0",
-            "xci_name": "zusys_delay_trigger_0_1",
-            "reference_info": {
-              "ref_type": "hdl",
-              "ref_name": "delay_trigger",
-              "boundary_crc": "0x0"
-            },
-            "ports": {
-              "clk": {
-                "type": "clk",
-                "direction": "I"
-              },
-              "delay_cycles": {
-                "direction": "I",
-                "left": "10",
-                "right": "0"
-              },
-              "a_in": {
-                "direction": "I"
-              },
-              "a_out": {
-                "direction": "O"
               }
             }
           },
@@ -2185,8 +2091,6 @@
               "ADC_Block_B/s00_axi_aclk",
               "ADC_Block_A/clk",
               "ADC_Block_A/s00_axi_aclk",
-              "adc_delay/clk",
-              "delay_trigger_0/clk",
               "ila_ADC1/clk"
             ]
           },
@@ -2214,14 +2118,6 @@
             "ports": [
               "ADC_Block_B/ADC_converted_3",
               "ila_ADC1/probe10"
-            ]
-          },
-          "trigger_adc_delayed": {
-            "ports": [
-              "delay_trigger_0/a_out",
-              "ADC_Block_B/Trigger_cnv",
-              "ADC_Block_A/Trigger_cnv",
-              "ila_ADC1/probe13"
             ]
           },
           "xlslice_Set_ADC_Offset_Dout": {
@@ -2296,17 +2192,13 @@
               "ADC_values_raw"
             ]
           },
-          "vio_0_probe_out0": {
-            "ports": [
-              "adc_delay/probe_out0",
-              "delay_trigger_0/delay_cycles"
-            ]
-          },
           "ADC_trigger_conversion": {
             "ports": [
               "ADC_trigger_conversion",
-              "delay_trigger_0/a_in",
-              "ila_ADC1/probe21"
+              "ila_ADC1/probe21",
+              "ADC_Block_B/Trigger_cnv",
+              "ADC_Block_A/Trigger_cnv",
+              "ila_ADC1/probe13"
             ]
           },
           "A_IN_1": {
@@ -2538,44 +2430,6 @@
             "parameters": {
               "NUM_PORTS": {
                 "value": "8"
-              }
-            }
-          },
-          "adc_delay": {
-            "vlnv": "xilinx.com:ip:vio:3.0",
-            "xci_name": "zusys_adc_delay_2",
-            "parameters": {
-              "C_NUM_PROBE_IN": {
-                "value": "0"
-              },
-              "C_PROBE_OUT0_WIDTH": {
-                "value": "11"
-              }
-            }
-          },
-          "delay_trigger_0": {
-            "vlnv": "xilinx.com:module_ref:delay_trigger:1.0",
-            "xci_name": "zusys_delay_trigger_0_2",
-            "reference_info": {
-              "ref_type": "hdl",
-              "ref_name": "delay_trigger",
-              "boundary_crc": "0x0"
-            },
-            "ports": {
-              "clk": {
-                "type": "clk",
-                "direction": "I"
-              },
-              "delay_cycles": {
-                "direction": "I",
-                "left": "10",
-                "right": "0"
-              },
-              "a_in": {
-                "direction": "I"
-              },
-              "a_out": {
-                "direction": "O"
               }
             }
           },
@@ -2814,8 +2668,6 @@
               "ADC_Block_B/s00_axi_aclk",
               "ADC_Block_A/clk",
               "ADC_Block_A/s00_axi_aclk",
-              "adc_delay/clk",
-              "delay_trigger_0/clk",
               "ila_ADC1/clk"
             ]
           },
@@ -2845,14 +2697,6 @@
               "ADC_Block_B/ADC_converted_3",
               "ila_ADC1/probe10",
               "ADC_converted_3"
-            ]
-          },
-          "trigger_adc_delayed": {
-            "ports": [
-              "delay_trigger_0/a_out",
-              "ADC_Block_B/Trigger_cnv",
-              "ADC_Block_A/Trigger_cnv",
-              "ila_ADC1/probe13"
             ]
           },
           "xlslice_Set_ADC_Offset_Dout": {
@@ -2927,17 +2771,13 @@
               "ADC_values_raw"
             ]
           },
-          "vio_0_probe_out0": {
-            "ports": [
-              "adc_delay/probe_out0",
-              "delay_trigger_0/delay_cycles"
-            ]
-          },
           "ADC_trigger_conversion": {
             "ports": [
               "ADC_trigger_conversion",
-              "delay_trigger_0/a_in",
-              "ila_ADC1/probe21"
+              "ila_ADC1/probe21",
+              "ADC_Block_B/Trigger_cnv",
+              "ADC_Block_A/Trigger_cnv",
+              "ila_ADC1/probe13"
             ]
           },
           "A_IN_1": {
@@ -7145,7 +6985,7 @@
             "type": "rst",
             "direction": "I"
           },
-          "interrupt_out": {
+          "trigger_converesions": {
             "direction": "O"
           }
         },
@@ -7185,13 +7025,51 @@
                 "value": "Native"
               },
               "C_NUM_OF_PROBES": {
-                "value": "9"
+                "value": "10"
               }
             }
           },
           "mux_axi_ip_0": {
             "vlnv": "mwn.de:ip:mux_axi_ip:1.1",
             "xci_name": "zusys_mux_axi_ip_0_0"
+          },
+          "adc_delay": {
+            "vlnv": "xilinx.com:ip:vio:3.0",
+            "xci_name": "zusys_adc_delay_3",
+            "parameters": {
+              "C_NUM_PROBE_IN": {
+                "value": "0"
+              },
+              "C_PROBE_OUT0_WIDTH": {
+                "value": "11"
+              }
+            }
+          },
+          "delay_trigger_0": {
+            "vlnv": "xilinx.com:module_ref:delay_trigger:1.0",
+            "xci_name": "zusys_delay_trigger_0_3",
+            "reference_info": {
+              "ref_type": "hdl",
+              "ref_name": "delay_trigger",
+              "boundary_crc": "0x0"
+            },
+            "ports": {
+              "clk": {
+                "type": "clk",
+                "direction": "I"
+              },
+              "delay_cycles": {
+                "direction": "I",
+                "left": "10",
+                "right": "0"
+              },
+              "a_in": {
+                "direction": "I"
+              },
+              "a_out": {
+                "direction": "O"
+              }
+            }
           }
         },
         "interface_nets": {
@@ -7271,7 +7149,9 @@
               "ila_0/clk",
               "Trigger_f_cc/s_axi_aclk",
               "mux_axi_ip_0/AXI4_Lite_ACLK",
-              "mux_axi_ip_0/IPCORE_CLK"
+              "mux_axi_ip_0/IPCORE_CLK",
+              "delay_trigger_0/clk",
+              "adc_delay/clk"
             ]
           },
           "proc_sys_reset_1_peripheral_aresetn": {
@@ -7285,14 +7165,27 @@
           "Interrupt_muxed": {
             "ports": [
               "mux_axi_ip_0/interrupt_out",
-              "interrupt_out",
-              "ila_0/probe7"
+              "ila_0/probe7",
+              "delay_trigger_0/a_in"
             ]
           },
           "mux_axi_ip_0_select_out": {
             "ports": [
               "mux_axi_ip_0/select_out",
               "ila_0/probe8"
+            ]
+          },
+          "delay_trigger_0_a_out": {
+            "ports": [
+              "delay_trigger_0/a_out",
+              "trigger_converesions",
+              "ila_0/probe9"
+            ]
+          },
+          "adc_delay_probe_out0": {
+            "ports": [
+              "adc_delay/probe_out0",
+              "delay_trigger_0/delay_cycles"
             ]
           }
         }
@@ -7486,7 +7379,7 @@
       },
       "Interrupt_muxed": {
         "ports": [
-          "Interrupt/interrupt_out",
+          "Interrupt/trigger_converesions",
           "ADC_A2/ADC_trigger_conversion",
           "ADC_A3/ADC_trigger_conversion",
           "ADC_A1/ADC_trigger_conversion",

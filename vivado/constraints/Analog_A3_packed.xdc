@@ -9,15 +9,15 @@
 ## output clock pins
 
 #Analog_01
-set_property PACKAGE_PIN AB8 [get_ports 	A3_OUT[0]		]
+set_property PACKAGE_PIN AB8 [get_ports 	A3_OUT_CLK[0]		]
 #ANL_01_P_Ch3 = B65_L12_P
-set_property PACKAGE_PIN AC8 [get_ports 	A3_OUT[1]		]
+set_property PACKAGE_PIN AC8 [get_ports 	A3_OUT_CLK[1]		]
 #ANL_01_N_Ch3 = B65_L12_N
 
 #Analog_02
-set_property PACKAGE_PIN AJ2 [get_ports 	A3_OUT[2]		]
+set_property PACKAGE_PIN AJ2 [get_ports 	A3_OUT_CNV[0]		]
 #ANL_02_P_Ch3 = B64_L21_P
-set_property PACKAGE_PIN AK2 [get_ports 	A3_OUT[3]		]
+set_property PACKAGE_PIN AK2 [get_ports 	A3_OUT_CNV[1]		]
 #ANL_02_N_Ch3 = B64_L21_N
 
 ###############################################
@@ -76,6 +76,7 @@ set_property PACKAGE_PIN AD7 [get_ports 	A3_IN[16]		]
 ############################################
 
 ## input standards
-set_property IOSTANDARD LVDS [get_ports A3_OUT]
+set_property IOSTANDARD LVDS [get_ports A3_OUT_CLK]
+set_property IOSTANDARD LVCMOS18 [get_ports A3_OUT_CNV]
 set_property IOSTANDARD LVDS [get_ports A3_IN]
 set_property DIFF_TERM_ADV TERM_100 [get_ports A3_IN]

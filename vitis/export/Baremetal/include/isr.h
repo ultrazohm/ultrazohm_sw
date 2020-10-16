@@ -32,34 +32,36 @@
 // 4 for Interrupt_3L_start			
 // 5 for Interrupt_3L_center		
 // 6 for Interrupt_timer_fcc		
-#define Interrupt_ISR_source_user_choice		0
+#define Interrupt_ISR_source_user_choice		3
 
 #if Interrupt_ISR_source_user_choice == 0
-	#define Interrupt_ISR_ID	Interrupt_2L_max_min
+	#define Interrupt_ISR_ID			Interrupt_2L_max_min
+	#define Interrupt_ISR_freq_factor	2
 #elif Interrupt_ISR_source_user_choice == 1
-	#define Interrupt_ISR_ID	Interrupt_2L_min
+	#define Interrupt_ISR_ID			Interrupt_2L_min
+	#define Interrupt_ISR_freq_factor	1
 #elif Interrupt_ISR_source_user_choice == 2
-	#define Interrupt_ISR_ID	Interrupt_2L_max
+	#define Interrupt_ISR_ID			Interrupt_2L_max
+	#define Interrupt_ISR_freq_factor	1
 #elif Interrupt_ISR_source_user_choice == 3
-	#define Interrupt_ISR_ID	Interrupt_3L_start_center
+	#define Interrupt_ISR_ID			Interrupt_3L_start_center
+	#define Interrupt_ISR_freq_factor 	2
 #elif Interrupt_ISR_source_user_choice == 4
-	#define Interrupt_ISR_ID	Interrupt_3L_start
+	#define Interrupt_ISR_ID			Interrupt_3L_start
+	#define Interrupt_ISR_freq_factor	1
 #elif Interrupt_ISR_source_user_choice == 5
-	#define Interrupt_ISR_ID	Interrupt_3L_center
+	#define Interrupt_ISR_ID			Interrupt_3L_center
+	#define Interrupt_ISR_freq_factor	1
 #elif Interrupt_ISR_source_user_choice == 6
-	#define Interrupt_ISR_ID	Interrupt_timer_fcc
+	#define Interrupt_ISR_ID			Interrupt_timer_fcc
+	#define Interrupt_ISR_freq_factor	1
 #else
 	#warning no ISR interrupt ID defined
 #endif 
 
 
-//static int Initialize_Interrupts(u16 DeviceId, XTmrCtr *Tmr_Control_InstancePtr);		//Init Hardware for ISR
-//static int InterruptSystemSetup(XScuGic *XScuGicInstancePtr);				// Init InterruptHandler for ISR
-//static void Conv_ADC_Intr_Handler(void *baseaddr_p);						// ISR after ADC conversion
-//static void TMR_Con_Intr_Handler(void *baseaddr_p);						// ISR von Timer-Control
 void TMR_Con_Intr_Handler(void *baseaddr_p);								// ISR von Timer-Control
 void Transfer_ipc_Intr_Handler(void *baseaddr_p);							// ISR von Timer-Control
-
 
 int MeasureTime(void);														// Function for time measurement
 int Initialize_Timer(void);													// Init Timer for ISRs

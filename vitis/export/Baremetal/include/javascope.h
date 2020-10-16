@@ -13,6 +13,8 @@
 #define INCLUDE_JAVASCOPE_H_
 
 
+#include "ipc_ARM.h"
+
 extern float zerovalue;
 
 // Do not change the first (zero) and last (end) entries.
@@ -124,7 +126,8 @@ extern float *js_ptr[4];	// channel ptr
 extern union SlowData js_slowDataArray[JSSD_ENDMARKER];
 
 
-int Initialize_JavaScope(void);
+int JavaScope_initalize(void);
+void JavaScope_update(DS_Data* data);
 
 //void js_fetchData(float data1, float data2, float data3, float data4);
 void js_fetchData4CH();

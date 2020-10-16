@@ -35,8 +35,8 @@
 // xil_printf is a smaller, optimised printf */
 
 // ========== Definitions =========================================================================
-#define PI 3.141592653589
-#define PI2 6.2832
+#define PI 	M_PI
+#define PI2 (2*M_PI)
 
 #define OUTPUT_PIN							1 								//This Pin is an Output
 #define INPUT_PIN							0 								//This Pin is an Input
@@ -477,6 +477,7 @@ typedef struct _motorRelatedParameters_ {
 	Xfloat32 BreakawayTorque;			//Breakawaytorque in Nm
 	Xfloat32 CoulombFriction;			//Coulombfriction in Nm
 	Xfloat32 ViscousFriction;			// Viscous Frictioncoefficient in Nms
+	Xfloat32 IncEncoderLPF_freq;		// corner frequency of low pass filter for incremental encoder readings
 } motorRelatedParameters;		// = 32 x 4bytes ohne mtpaTable, mit mtpaTable (2 x 16 x 4bytes) --> gesamt 64 x 4bytes
 
 // union allows to access the values as array and individual variables
@@ -538,6 +539,7 @@ typedef struct _actualValues_ {
 	Xfloat32 Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	Xfloat32 Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	Xfloat32 mechanicalRotorSpeed; 		// in rpm
+	Xfloat32 mechanicalRotorSpeed_filtered; // in rpm
 	Xfloat32 mechanicalPosition; 		// in m
 	Xfloat32 mechanicalTorque; 			// in Nm
 	Xfloat32 mechanicalTorqueSensitive; // in Nm
@@ -570,6 +572,8 @@ typedef struct _referenceAndSetValues_ {
 	Xfloat32 ModifiedReferenceCurrent_iq;   //The manipulated reference current in the q-axis, e.g. by the online ID
 	Xint32   TriState[3];
 	Xfloat32 pwmMinPulseWidth;				//Minimal Duty Cycle which is allowed. e.g. if the Duty Cycle wants to switch only for, lets say 100ns, we should avoid switching at all.
+	Xfloat32 open_loop_sin_amplitude;
+	Xfloat32 open_loop_sin_frequency;
 } referenceAndSetValues;
 
 typedef struct _communicationStateVariables_ {
@@ -806,12 +810,13 @@ typedef struct _controllerVars_ {
 	halfBridgeControlVars hbc;
 	modelPredictiveControlVars mpc;
 	Xfloat32 pwmFrequency;
-	Xfloat32 samplingTime;
+	Xfloat32 pwmPeriod;
+	Xfloat32 samplingPeriod;
+	Xfloat32 samplingFrequency;
 	Xfloat32 dcLinkVoltage;
 	Xfloat32 terminalCurrents[3];
 	Xfloat32 terminalVoltages[3];
 	boolean  ctrlObjectReinitRequest;
-	Xfloat32 pwmPeriod;
 	Xfloat32 FullScaleCurrent_IQ_A;	// PL 19.12.2017 Welchem float-Wert entspricht der Full-Scale-IQ Faktor? = USER_IQ_FULL_SCALE_CURRENT_A aus user.h
 	Xfloat32 OneOverFullScaleCurrent_IQ_A; // PL 19.12.2017 1 / (USER_IQ_FULL_SCALE_CURRENT_A) aus user.h
 	Xfloat32 FullScaleVoltage_IQ_V;	// PL 19.12.2017 Welchem float-Wert entspricht der Full-Scale-IQ Faktor? = USER_IQ_FULL_SCALE_VOLTAGE_V aus user.h
@@ -819,48 +824,16 @@ typedef struct _controllerVars_ {
 
 typedef struct _debugVariables_ {
 	Xuint32  counter;
-//	Xfloat32 SSC_SystemVs;
-//	Xfloat32 SSC_SystemT1;
-//	Xfloat32 SSC_SystemTSigma;
-//	Xfloat32 SSC_ControllerVr;
-//	Xfloat32 SSC_ControllerTn;
-//	Xfloat32 SC_System_Tsigma;
-//	Xfloat32 SC_System_VsDivByT1;
-//	Xfloat32 SC_ControllerTn;
-//	Xfloat32 SC_Controller_Vr;
 	Xfloat32 finalReferenceCurrent;
-//	Xfloat32 iq_Var;
-//	Xfloat32 finalDutyCycle;
 	Xfloat32 controlError;
-//	Xfloat32 errorSum;
-//	Xfloat32 controlSignal;
 	Xfloat32 referenceSpeedLimited;
 	Xfloat32 positionWithPhaseAdvance;
-	//Xuint32 eCapCountAdcIsr;
-	/*rotorSector commutationSector;
-	uint16_t numberOfHallEvents;
-	Xfloat3215 speedPu;
-	Xint32 sectorDifference;
-	Xint32 controllerSamplingTimesCounter;
-	Xint32 controllerSamplingTimesBetweenHallEvents;
-	rotorSector previousRotorSector;
-	Xfloat32 lastMeasuredRotorAngle;
-	Xfloat32 rotorSectorsTravelled;
-	Xfloat32 rotorAngleElectric;
-	hallEvent latestHallEvent;
-	Xint32 hallEventSectorDifference;
-	Xint32 speedPuInteger;
-	Xint32 product;
-	Xint32 divBySix;
-	Xint32 shiftBy16;*/
-//	Xfloat32 terminalCurrent1IQ;
-//	Xfloat32 terminalCurrent1;
-//	Xfloat32 oc[3];
 	Xuint32  timeStampCounter;
 	uint16_t isrCyclesFor10Millisec;
 	Xint32 sw1;
 	Xint32 sw2;
 	Xint32 sw3;
+	int ADC_scope_display;
 } debugVariables;
 
 

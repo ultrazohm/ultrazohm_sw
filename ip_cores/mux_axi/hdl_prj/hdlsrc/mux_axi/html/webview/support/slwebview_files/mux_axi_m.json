@@ -1,0 +1,367 @@
+[
+ {
+  "sid":"mux_axi:7",
+  "className":"Simulink.SubSystem",
+  "icon":"mux_axi_71",
+  "name":"mux_axi",
+  "label":"mux_axi",
+  "parent":"mux_axi",
+  "inspector":{
+   "params":[
+    "ShowPortLabels",
+    "Permissions",
+    "TreatAsAtomicUnit",
+    "TreatAsGroupedWhenPropagatingVariantConditions",
+    "RTWSystemCode",
+    "ReferencedSubsystem",
+    "AllowZeroVariantControls",
+    "AutoFrameSizeCalculation",
+    "BlockChoice",
+    "CompiledActiveChoiceBlock",
+    "CompiledActiveChoiceControl",
+    "ErrorFcn",
+    "ExecutionDomainType",
+    "FunctionInterfaceSpec",
+    "FunctionWithSeparateData",
+    "GeneratePreprocessorConditionals",
+    "IsSubsystemVirtual",
+    "LabelModeActiveChoice",
+    "Latency",
+    "MemberBlocks",
+    "MinAlgLoopOccurrences",
+    "PartitionName",
+    "PermitHierarchicalResolution",
+    "PropExecContextOutsideSubsystem",
+    "PropagateVariantConditions",
+    "RTWFcnName",
+    "RTWFcnNameOpts",
+    "RTWFileName",
+    "RTWFileNameOpts",
+    "RTWMemSecDataConstants",
+    "RTWMemSecDataInternal",
+    "RTWMemSecDataParameters",
+    "RTWMemSecFuncExecute",
+    "RTWMemSecFuncInitTerm",
+    "ScheduleAs",
+    "SetExecutionDomain",
+    "SystemSampleTime",
+    "TemplateBlock",
+    "Variant",
+    "VariantControl",
+    "VariantControlMode"
+   ],
+   "values":[
+    "FromPortIcon",
+    "ReadWrite",
+    "on",
+    "on",
+    "Auto",
+    "",
+    "off",
+    "off",
+    "",
+    "",
+    "",
+    "",
+    "Deduce",
+    "void_void",
+    "off",
+    "off",
+    "off",
+    "",
+    "0",
+    "",
+    "off",
+    "",
+    "All",
+    "off",
+    "off",
+    "",
+    "Auto",
+    "",
+    "Auto",
+    "Inherit from model",
+    "Inherit from model",
+    "Inherit from model",
+    "Inherit from model",
+    "Inherit from model",
+    "Sample time",
+    "off",
+    "-1",
+    "",
+    "off",
+    "",
+    "Expression"
+   ],
+   "tabs":[
+    "Main",
+    "Code Generation",
+    "Subsystem Reference",
+    "-Other"
+   ],
+   "tabs_idx":[
+    0,
+    4,
+    5,
+    6
+   ]
+  },
+  "viewer":{
+   "jshandler":"webview/handlers/ElementHandler"
+  },
+  "obj_viewer":[
+  ],
+  "finder":{
+   "blocktype":"SubSystem",
+   "masktype":""
+  }
+ },
+ {
+  "sid":"mux_axi:43",
+  "className":"Bit Slice",
+  "icon":"mux_axi_72",
+  "name":"Bit Slice",
+  "label":"Bit Slice",
+  "parent":"mux_axi:7",
+  "inspector":{
+   "params":[
+    "lidx",
+    "ridx"
+   ],
+   "values":[
+    "7",
+    "7"
+   ],
+   "tabs":[
+   ],
+   "tabs_idx":[
+   ]
+  },
+  "viewer":{
+   "jshandler":"webview/handlers/ElementHandler"
+  },
+  "obj_viewer":[
+  ],
+  "finder":{
+   "blocktype":"SubSystem",
+   "masktype":"Bit Slice"
+  }
+ },
+ {
+  "sid":"mux_axi:48",
+  "className":"Bit Slice",
+  "icon":"mux_axi_72",
+  "name":"Bit Slice1",
+  "label":"Bit Slice1",
+  "parent":"mux_axi:7",
+  "inspector":{
+   "params":[
+    "lidx",
+    "ridx"
+   ],
+   "values":[
+    "6",
+    "6"
+   ],
+   "tabs":[
+   ],
+   "tabs_idx":[
+   ]
+  },
+  "viewer":{
+   "jshandler":"webview/handlers/ElementHandler"
+  },
+  "obj_viewer":[
+  ],
+  "finder":{
+   "blocktype":"SubSystem",
+   "masktype":"Bit Slice"
+  }
+ },
+ {
+  "sid":"mux_axi:49",
+  "className":"Bit Slice",
+  "icon":"mux_axi_72",
+  "name":"Bit Slice2",
+  "label":"Bit Slice2",
+  "parent":"mux_axi:7",
+  "inspector":{
+   "params":[
+    "lidx",
+    "ridx"
+   ],
+   "values":[
+    "5",
+    "5"
+   ],
+   "tabs":[
+   ],
+   "tabs_idx":[
+   ]
+  },
+  "viewer":{
+   "jshandler":"webview/handlers/ElementHandler"
+  },
+  "obj_viewer":[
+  ],
+  "finder":{
+   "blocktype":"SubSystem",
+   "masktype":"Bit Slice"
+  }
+ },
+ {
+  "sid":"mux_axi:50",
+  "className":"Bit Slice",
+  "icon":"mux_axi_72",
+  "name":"Bit Slice3",
+  "label":"Bit Slice3",
+  "parent":"mux_axi:7",
+  "inspector":{
+   "params":[
+    "lidx",
+    "ridx"
+   ],
+   "values":[
+    "4",
+    "4"
+   ],
+   "tabs":[
+   ],
+   "tabs_idx":[
+   ]
+  },
+  "viewer":{
+   "jshandler":"webview/handlers/ElementHandler"
+  },
+  "obj_viewer":[
+  ],
+  "finder":{
+   "blocktype":"SubSystem",
+   "masktype":"Bit Slice"
+  }
+ },
+ {
+  "sid":"mux_axi:51",
+  "className":"Bit Slice",
+  "icon":"mux_axi_72",
+  "name":"Bit Slice4",
+  "label":"Bit Slice4",
+  "parent":"mux_axi:7",
+  "inspector":{
+   "params":[
+    "lidx",
+    "ridx"
+   ],
+   "values":[
+    "3",
+    "3"
+   ],
+   "tabs":[
+   ],
+   "tabs_idx":[
+   ]
+  },
+  "viewer":{
+   "jshandler":"webview/handlers/ElementHandler"
+  },
+  "obj_viewer":[
+  ],
+  "finder":{
+   "blocktype":"SubSystem",
+   "masktype":"Bit Slice"
+  }
+ },
+ {
+  "sid":"mux_axi:52",
+  "className":"Bit Slice",
+  "icon":"mux_axi_72",
+  "name":"Bit Slice5",
+  "label":"Bit Slice5",
+  "parent":"mux_axi:7",
+  "inspector":{
+   "params":[
+    "lidx",
+    "ridx"
+   ],
+   "values":[
+    "0",
+    "0"
+   ],
+   "tabs":[
+   ],
+   "tabs_idx":[
+   ]
+  },
+  "viewer":{
+   "jshandler":"webview/handlers/ElementHandler"
+  },
+  "obj_viewer":[
+  ],
+  "finder":{
+   "blocktype":"SubSystem",
+   "masktype":"Bit Slice"
+  }
+ },
+ {
+  "sid":"mux_axi:53",
+  "className":"Bit Slice",
+  "icon":"mux_axi_72",
+  "name":"Bit Slice6",
+  "label":"Bit Slice6",
+  "parent":"mux_axi:7",
+  "inspector":{
+   "params":[
+    "lidx",
+    "ridx"
+   ],
+   "values":[
+    "1",
+    "1"
+   ],
+   "tabs":[
+   ],
+   "tabs_idx":[
+   ]
+  },
+  "viewer":{
+   "jshandler":"webview/handlers/ElementHandler"
+  },
+  "obj_viewer":[
+  ],
+  "finder":{
+   "blocktype":"SubSystem",
+   "masktype":"Bit Slice"
+  }
+ },
+ {
+  "sid":"mux_axi:54",
+  "className":"Bit Slice",
+  "icon":"mux_axi_72",
+  "name":"Bit Slice7",
+  "label":"Bit Slice7",
+  "parent":"mux_axi:7",
+  "inspector":{
+   "params":[
+    "lidx",
+    "ridx"
+   ],
+   "values":[
+    "2",
+    "2"
+   ],
+   "tabs":[
+   ],
+   "tabs_idx":[
+   ]
+  },
+  "viewer":{
+   "jshandler":"webview/handlers/ElementHandler"
+  },
+  "obj_viewer":[
+  ],
+  "finder":{
+   "blocktype":"SubSystem",
+   "masktype":"Bit Slice"
+  }
+ }
+]

@@ -1,0 +1,13 @@
+open_system('gm_mux_axi');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'blue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_mux_axi/mux_axi/Bit Slice', 'user1');
+annotate_port('gm_mux_axi/mux_axi/Bit Slice', 0, 1, 'cp : 0 ns');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'blue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_mux_axi/mux_axi/Multiport Switch', 'user1');
+annotate_port('gm_mux_axi/mux_axi/Multiport Switch', 0, 1, 'cp : 1.775 ns');

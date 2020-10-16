@@ -43,7 +43,6 @@ ARM_to_Oszi_Data_shared_struct OsziData; //Data from A9_0 to A9_1 (from BareMeta
 Oszi_to_ARM_Data_shared_struct ControlData; //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
 Oszi_to_ARM_Data_shared_struct ControlDataShadowBare; //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
 
-
 int main (void){
 
 	int status;
@@ -491,6 +490,14 @@ int InitializeDataStructure(DS_Data* data){
 	data->aa.A3.cf.ADC_B6 = 10;
 	data->aa.A3.cf.ADC_B7 = 10;
 	data->aa.A3.cf.ADC_B8 = 10;
+
+	// initalize PWM
+	data->ctrl.pwmFrequency = 10e3;		// PWM carrier frequency
+	data->cw.switchingMode = 0; 		// PWM modulation
+	data->rasv.pwmMinPulseWidth = 0.01;	// PWM minimum on time in %
+	data->rasv.halfBridge1DutyCycle = 0.0;
+	data->rasv.halfBridge2DutyCycle = 0.0;
+	data->rasv.halfBridge3DutyCycle = 0.0;
 
 
 	return (0);

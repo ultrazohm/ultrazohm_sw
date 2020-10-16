@@ -59,8 +59,7 @@ int Configure_FOC_Control(DS_Data* data){
     data->rasv.halfBridge1DutyCycle = 0.0;
     data->rasv.halfBridge2DutyCycle = 0.0;
     data->rasv.halfBridge3DutyCycle = 0.0;
-    data->ctrl.pwmFrequency = 100000; 	//[Hz]
-    data->ctrl.pwmPeriod = 10;			//[us]
+    //data->ctrl.pwmFrequency = 100000; 	//[Hz]
     data->rasv.TriState[0]=0;
     data->rasv.TriState[1]=0;
     data->rasv.TriState[2]=0;
@@ -84,8 +83,7 @@ int Configure_MPC_Control(DS_Data* data){
     data->rasv.halfBridge1DutyCycle = 0.0;
     data->rasv.halfBridge2DutyCycle = 0.0;
     data->rasv.halfBridge3DutyCycle = 0.0;
-    data->ctrl.pwmFrequency = 100000; 	//[Hz]
-    data->ctrl.pwmPeriod = 10;			//[us]
+    //data->ctrl.pwmFrequency = 100000; 	//[Hz]
     data->rasv.TriState[0]=0;
     data->rasv.TriState[1]=0;
     data->rasv.TriState[2]=0;

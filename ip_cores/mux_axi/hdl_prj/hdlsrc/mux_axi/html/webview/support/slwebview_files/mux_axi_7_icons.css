@@ -1,0 +1,11 @@
+.mux_axi_70,
+.mux_axi_71,
+.mux_axi_72,
+.mux_axi_73,
+.mux_axi_74 { background-image: url('mux_axi_7_icons.png'); width: 16px; height: 16px; }
+
+.mux_axi_70 { background-position: -0px; }
+.mux_axi_71 { background-position: -16px; }
+.mux_axi_72 { background-position: -32px; }
+.mux_axi_73 { background-position: -48px; }
+.mux_axi_74 { background-position: -64px; }

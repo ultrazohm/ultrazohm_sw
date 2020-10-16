@@ -33,6 +33,7 @@ release = '0.0.1'
 extensions = [
     'sphinx_rtd_theme',
     'sphinxcontrib.mermaid',
+    'sphinxcontrib.yt',
 ]
 
 

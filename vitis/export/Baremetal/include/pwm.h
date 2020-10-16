@@ -16,13 +16,16 @@
 #include "../defines.h"
 #include "../IP_Cores/PWM_and_SS_control_V3_ip_addr.h"		//Include from Simulink IP-Blocks for PWM and SS control
 
+#define PWM_ENABLE 		1
+#define PWM_DISABLE 	0
+
 //==============================================================================================================================================================
 // Methods for two-level PWM IP core
 int  PWM_SS_Initialize(DS_Data* data);	// Init for the PWM modulation IP-Block
 void PWM_SS_SetDutyCycle(float duty_A, float duty_B, float duty_C); // method to set duty cycle
 void PWM_SS_SetStatus(Xint32 PWM_en);
 void PWM_SS_SetMode(int PWM_mode);
-void PWM_SS_SetCarrierFrequency_Period(float PWM_freq, float PWM_period);
+void PWM_SS_SetCarrierFrequency(float PWM_freq_Hz);
 void PWM_SS_SetMinimumPulseWidth(float PWM_min_pulse_width);
 void PWM_SS_SetTriState(int TriState_A, int TriState_B, int TriState_C);
 

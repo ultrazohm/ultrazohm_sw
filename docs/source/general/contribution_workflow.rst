@@ -2,72 +2,109 @@
 Contribution Workflow
 =====================
 
-The git-workflow of the UltraZohm follows the git-flow model (<https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow> <https://danielkummer.github.io/git-flow-cheatsheet/index.html>).
-Why? Because it is a easy to follow set of rules for branching.
-In addition to the git-flow model, pull requests are used for all merges to the ``main`` and ``develop`` branches (<https://www.atlassian.com/en/git/tutorials/making-a-pull-request>).
-It is not permitted (and not possible) to merge to the ``main`` or ``develop`` branch without a pull request.
+The UltraZohm community uses the git-flow branching model since it is easy to apply (more info: `Atlassian <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>`_, `Gitflow cheat sheet <https://danielkummer.github.io/git-flow-cheatsheet/index.html>`_).
+In addition to the git-flow model, :ref:`bitbucket_pull_request` are used for all merges.
+See  the `Atlassian tutorial <https://www.atlassian.com/en/git/tutorials/making-a-pull-request>`_ for additional information.
+It is not possible to merge into the ``main`` or ``develop`` branches without a pull request.
 
 UltraZohm Workflow
 ------------------
 
-The UltraZohm workflow is based on the git-flow workflow.
-Git-flow is a popular branching model and supported by the git extension <https://github.com/nvie/gitflow/wiki/Command-Line-Arguments> as well as the GUI clients Sourcetree and GitKraken.
+Git-flow is supported by the `gitflow extension <https://github.com/nvie/gitflow/wiki/Command-Line-Arguments>`_ as well as the GUI clients Sourcetree and GitKraken.
 
-However, the git-flow tools are not needed, the important part is the set of rules for when to create which branch and how to merge it.
+.. _gitflow_picture:
+
+.. figure:: uz_gitflow.svg
+
+  Visualization of git-flow.
+
+:numref:`gitflow_picture` shows the gitflow.
+The following branches are used:
+
+  * ``main``
+
+    * Exists forever
+    * Stable Version
+    * Version **tag** after each merge
+
+  * ``develop``
+
+    * Exists forever
+    * Current development version
+    * Pull request to merge to ``main``
+    * Increment the second number of the version tag by one
+
+  * ``feature``
+
+    * Created by contributors to implement features
+    * Pull request to merge into develop
+    * Deleted after pull request is accepted
+
+  * ``hotfix``
+
+    * Created by maintainers to fix **bugs** in ``main``
+    * Pull request to merge to ``main``
+    * Increment the last number of the version tag by one
+    * Pull request to merge to ``develop``
+    * Deleted after both pull requests are accepted
+
+  * ``release``
+
+    * Created by maintainers for major releases
+    * Created by maintainers if merge conflicts occur in pull request from ``develop`` to ``main``
+    * Resolve merge conflicts 
+    * Pull request to merge to ``main``
+    * Increment the first number of the version tag by one
+    * Pull request to merge to ``develop``
+    * Deleted after both pull requests are accepted
+
+.. warning::
+
+  It is impossible to merge anything without a pull request into ``main`` or develop, nor is it possible to push changes to these branches!
+
+Branch names
+************
+
+The naming convention for the branches is as follows:
+
+  * ``feature/featurename``
+
+    * Branch of type ``feature``
+    * ``featurename`` describes what feature is implemented
+    * Example: ``feature/pwm_module``
+
+  * ``hotfix/hotfixname`` 
+  
+    * Branch of type ``hotfix``
+    * ``hotfixname`` refers to the bug which the contribution fixes
+    * Example: ``hotfix/fix_pwm_counter_overflow``
+  
+  * ``release/releasename_v000``
+
+    * Branch of type ``release``
+    * ``releasename`` should describe what features are released
+    * Contains the version number that will be the new tag for the ``main`` branch
+
+Version number
+**************
+
+The version number is the **tag** of the commits of the ``main`` branch.
+Depending on how much the code changed, it is either a revision (only bug fixes were made and no new features are added), a new sub-version (at least one new feature is added), or a new major version (multiple new features, big changes).
+
+::
+
+  v3.1.7
+   │ │ │
+   │ │ └───────── Revision: bug fixes, no new features (merged a hotfix)
+   │ └─────────── Minor release, at least one new feature
+   └───────────── Major release
+
+Additional information
+**********************
+
 Relevant resources for git-flow can be found here:
 
   * <https://nvie.com/posts/a-successful-git-branching-model/>
   * <https://danielkummer.github.io/git-flow-cheatsheet/index.html>
   * <https://m.infos.seibert-media.net/Productivity/Git-Workflows+-+Der+Gitflow-Workflow.html> (German)
   * <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>
-
-.. image:: https://m.infos.seibert-media.net/resources/images/a5ec2c8628f19e0e6de758825b2cd25a-1:1541409413000-Gitflow-Workflow-4.png
-
-The figure above shows the complete UultraZohm workflow.
-The repository consists of the following branches:
-
-1. ``main``: permanent existing branch with the stable version of the software. Each commit has a ``tag`` (see version numbers)
-2. ``develop``: permanent existing branch with the current version of the software. Feature branches start from ``develop`` and are merged to develop (by pull requests). release branches start from develop
-3. ``hotfix``: if a bug is found in the code it is fixed in a hotfix branch. Hotfix branches start from ``main`` and are merged to ``main`` and ``develop`` (by a pull request!). The revision number is incremented and and a new **tag** is created for ``main``. After the merge the branch is deleted.
-4. ``release``: for a new release (minor or major) a release branch is created by the admins in which testing is done. ``release`` is merged to ``main`` and ``develop`` by a pull request and the revision number is created and a new **tag** is created for ``main``. After the merge, the branch is deleted.
-5. ``feature``: new functionalities are developed in ``feature`` branches and merged to ``develop`` by a pull request. After the merge, the branch is deleted.
-
-Hotfix branches should be linked to a Bitbucket issue <https://bitbucket.org/ultrazohm/ultrazohm_sw_v19_2/issues?status=new&status=open>.
-
-.. note::
-  For normal use of the system: only feature branches are relevant!
-  Do not worry about the git-flow too much and ask in the forum if there are questions.
-
-.. note::
-  If you find a bug, create an issue!
-
-.. warning::
-
-  It is not possible and not allowed to merge anything to ``main`` or to push directly to ``main``!
-
-Branch names
-************
-
-The naming convention for the branches is as following:
-
- * ``hotfix/branchname``  is a hotfix branch and ``branchname`` refers to the bug - e.g. ``hotfix/pwmtriger`` if there is a bug with the PWM trigger
- * ``release/branchname`` is a release branch with ``branchname`` referring to what the release is about - e.g. ``release/adc_ip_core`` if there is an update to the adc ip core
- * ``feature/featurename`` is a feature branch with ``featurename`` referring to what feature is developed - e.g. ``feature/oversampling`` if the feature is about oversampling
-
-.. note::
-
-  Please do not use your sandbox branch for the development of features!
-
-Version number
-**************
-
-The version number is the **tag** of the commits of the ``main`` branch.
-Depending on how much the code changed, it is either a revision (only bug fixes were made and no new features are added), a new sub-version (at least one new feature is added) or a new major version (multiple new features, big changes).
-
-::
-
-  3.1.7
-  │ │ │
-  │ │ └───────── Revision: bug fixes, no new features (merged a hotfix)
-  │ └─────────── Minor release, at least one new feature
-  └───────────── Major release

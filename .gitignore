@@ -4,3 +4,4 @@
 vivado/zusys/zusys.bxml
 .vscode
 vivado/zusys/zusys_ooc.xdc
+ip_cores/*/simulation/slprj/*

@@ -108,3 +108,27 @@ void PWM_SS_SetTriState(int TriState_A, int TriState_B, int TriState_C){
 	Xil_Out32(PWM_SS_Con_TriState_HB2_REG, (Xint32)TriState_B);
 	Xil_Out32(PWM_SS_Con_TriState_HB3_REG, (Xint32)TriState_C);
 }
+
+
+void PWM_SS_Calculate_DutyCycle_open_loop_sin(DS_Data* data){
+
+	//Variables
+	static long sample =0;
+	float interrupt_freq = 	data->ctrl.samplingFrequency;
+	float sin_amplitude = 	data->rasv.open_loop_sin_amplitude * 0.5; // modulation index
+	float sin_frequency = 	data->rasv.open_loop_sin_frequency;
+
+	//Go back to 1st sample if end of sinewave is reached
+	if(sample >= interrupt_freq/sin_frequency - 1)
+		sample = 0;
+
+	//Calculate angle and increase sample
+	float angle = 2.0*PI*sin_frequency/interrupt_freq*((float)(sample));
+	//angle += phase; // add phase shift
+	sample++;
+
+	// write duty cycles to Global_Data struct, in ISR these values are written down to the FPGA registers
+	data->rasv.halfBridge1DutyCycle = 0.5 + sin_amplitude * sinf(angle);
+	data->rasv.halfBridge2DutyCycle = 0.5 + sin_amplitude * sinf(angle + 2*PI/3);
+	data->rasv.halfBridge3DutyCycle = 0.5 + sin_amplitude * sinf(angle + 4*PI/3);
+}

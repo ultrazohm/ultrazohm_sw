@@ -14,6 +14,8 @@
 
 #include "../main.h"
 #include "../IP_Cores/IncreEncoder_V24_ip_addr.h"
+#include "../defines.h"
+#include "../include/control_toolbox.h"
 
 int Encoder_Incremental_Initialize(DS_Data* data);   // Init Encoder
 void Encoder_UpdateSpeedPosition(DS_Data* data);	// update speed and position in global data struct

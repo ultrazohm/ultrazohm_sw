@@ -15,6 +15,17 @@
 #include "../main.h"
 #include "../IP_Cores/ADC_Module_LVDS_v2_ip_addr.h"
 
+typedef union _ADCread_union_ {
+	struct{
+		Xint16 ADC1;
+		Xint16 ADC2;
+		Xint16 ADC3;
+		Xint16 ADC4;
+		};
+	u64 ADC_Block_64bit;
+} ADCread_union;
+
+
 void ADC_readCardA1(DS_Data* data);
 void ADC_readCardA2(DS_Data* data);
 void ADC_readCardA3(DS_Data* data);

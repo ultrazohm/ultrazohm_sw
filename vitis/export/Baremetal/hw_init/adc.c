@@ -12,6 +12,7 @@
 #include "../defines.h"
 
 void ADC_readCardA1(DS_Data* data){
+
 	// read all 8 ADC values from Analog Adapter card slot A1
 	Xint16 ADC1 = Xil_In16(ADC_A1_ChA1_REG);
 	Xint16 ADC2 = Xil_In16(ADC_A1_ChA2_REG);
@@ -57,7 +58,25 @@ void ADC_readCardA2(DS_Data* data){
 	data->aa.A2.me.ADC_array[7] =  ldexpf((float)ADC8, -16)* data->aa.A2.cf.ADC_B8;
 };
 void ADC_readCardA3(DS_Data* data){
-		// read all 8 ADC values from Analog Adapter card slot A1
+	ADCread_union ReadBlockA;
+	ADCread_union ReadBlockB;
+
+	ReadBlockA.ADC_Block_64bit = Xil_In64(ADC_A3_ChA1_REG);
+	ReadBlockB.ADC_Block_64bit = Xil_In64(ADC_A3_ChB5_REG);
+
+	data->aa.A3.me.ADC_array[0] =  ldexpf((float)ReadBlockA.ADC1, -16)* data->aa.A3.cf.ADC_A1;
+	data->aa.A3.me.ADC_array[1] =  ldexpf((float)ReadBlockA.ADC2, -16)* data->aa.A3.cf.ADC_A2;
+	data->aa.A3.me.ADC_array[2] =  ldexpf((float)ReadBlockA.ADC3, -16)* data->aa.A3.cf.ADC_A3;
+	data->aa.A3.me.ADC_array[3] =  ldexpf((float)ReadBlockA.ADC4, -16)* data->aa.A3.cf.ADC_A4;
+
+	data->aa.A3.me.ADC_array[4] =  ldexpf((float)ReadBlockB.ADC1, -16)* data->aa.A3.cf.ADC_B5;
+	data->aa.A3.me.ADC_array[5] =  ldexpf((float)ReadBlockB.ADC2, -16)* data->aa.A3.cf.ADC_B6;
+	data->aa.A3.me.ADC_array[6] =  ldexpf((float)ReadBlockB.ADC3, -16)* data->aa.A3.cf.ADC_B7;
+	data->aa.A3.me.ADC_array[7] =  ldexpf((float)ReadBlockB.ADC4, -16)* data->aa.A3.cf.ADC_B8;
+
+	/*
+	Naive implementation reading one 16 bit register after the other
+	// read all 8 ADC values from Analog Adapter card slot A1
 	Xint16 ADC1 = Xil_In16(ADC_A3_ChA1_REG);
 	Xint16 ADC2 = Xil_In16(ADC_A3_ChA2_REG);
 	Xint16 ADC3 = Xil_In16(ADC_A3_ChA3_REG);
@@ -77,6 +96,8 @@ void ADC_readCardA3(DS_Data* data){
 	data->aa.A3.me.ADC_array[5] =  ldexpf((float)ADC6, -16)* data->aa.A3.cf.ADC_B6;
 	data->aa.A3.me.ADC_array[6] =  ldexpf((float)ADC7, -16)* data->aa.A3.cf.ADC_B7;
 	data->aa.A3.me.ADC_array[7] =  ldexpf((float)ADC8, -16)* data->aa.A3.cf.ADC_B8;
+
+	*/
 };
 
 void ADC_readCardALL(DS_Data* data){

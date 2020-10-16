@@ -76,7 +76,7 @@ set_property PACKAGE_PIN AD7 [get_ports 	A3_IN[16]		]
 ############################################
 
 ## input standards
-set_property IOSTANDARD LVDS [get_ports A3_OUT_CLK]
-set_property IOSTANDARD LVCMOS18 [get_ports A3_OUT_CNV]
-set_property IOSTANDARD LVDS [get_ports A3_IN]
+set_property IOSTANDARD LVDS        [get_ports A3_OUT_CLK]
+set_property IOSTANDARD LVCMOS18    [get_ports A3_OUT_CNV]
+set_property IOSTANDARD LVDS        [get_ports A3_IN]
 set_property DIFF_TERM_ADV TERM_100 [get_ports A3_IN]

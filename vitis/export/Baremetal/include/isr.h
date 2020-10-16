@@ -2,7 +2,7 @@
  *
  * isr.h
  *
- * Copyright (C) 2018 Institute ELSYS, TH Nürnberg, All rights reserved.
+ * Copyright (C) 2018 Institute ELSYS, TH Nï¿½rnberg, All rights reserved.
  *
  *  Created on: 21.08.2016
  *      Author: Sebastian Wendel (SW)
@@ -32,7 +32,7 @@
 // 4 for Interrupt_3L_start			
 // 5 for Interrupt_3L_center		
 // 6 for Interrupt_timer_fcc		
-#define Interrupt_ISR_source_user_choice		3
+#define Interrupt_ISR_source_user_choice		1
 
 #if Interrupt_ISR_source_user_choice == 0
 	#define Interrupt_ISR_ID			Interrupt_2L_max_min

@@ -729,10 +729,10 @@
           }
         },
         "interface_nets": {
-          "Conn1": {
+          "ps8_0_axi_periph_M06_AXI": {
             "interface_ports": [
-              "AXI4_Lite1",
-              "Counter_f_sw_V2_ip_0/AXI4_Lite"
+              "S00_AXI",
+              "InterLock_Module_0/S00_AXI"
             ]
           },
           "AXI4_Lite_1": {
@@ -741,10 +741,10 @@
               "PWM_and_SS_control_V_0/AXI4_Lite"
             ]
           },
-          "ps8_0_axi_periph_M06_AXI": {
+          "Conn1": {
             "interface_ports": [
-              "S00_AXI",
-              "InterLock_Module_0/S00_AXI"
+              "AXI4_Lite1",
+              "Counter_f_sw_V2_ip_0/AXI4_Lite"
             ]
           }
         },
@@ -1508,11 +1508,11 @@
           },
           "xlconcat_0": {
             "vlnv": "xilinx.com:ip:xlconcat:2.1",
-            "xci_name": "zusys_xlconcat_0_4"
+            "xci_name": "zusys_xlconcat_0_2"
           },
           "xlconcat_1": {
             "vlnv": "xilinx.com:ip:xlconcat:2.1",
-            "xci_name": "zusys_xlconcat_0_5"
+            "xci_name": "zusys_xlconcat_1_0"
           }
         },
         "interface_nets": {
@@ -2083,11 +2083,11 @@
           },
           "xlconcat_0": {
             "vlnv": "xilinx.com:ip:xlconcat:2.1",
-            "xci_name": "zusys_xlconcat_0_2"
+            "xci_name": "zusys_xlconcat_0_3"
           },
           "xlconcat_1": {
             "vlnv": "xilinx.com:ip:xlconcat:2.1",
-            "xci_name": "zusys_xlconcat_1_0"
+            "xci_name": "zusys_xlconcat_1_1"
           }
         },
         "interface_nets": {
@@ -2667,16 +2667,16 @@
           }
         },
         "interface_nets": {
-          "Conn1": {
-            "interface_ports": [
-              "s00_axi1",
-              "ADC_Block_A/s00_axi"
-            ]
-          },
           "ps8_0_axi_periph_M00_AXI": {
             "interface_ports": [
               "s00_axi",
               "ADC_Block_B/s00_axi"
+            ]
+          },
+          "Conn1": {
+            "interface_ports": [
+              "s00_axi1",
+              "ADC_Block_A/s00_axi"
             ]
           }
         },
@@ -6597,7 +6597,7 @@
           },
           "xlconcat_0": {
             "vlnv": "xilinx.com:ip:xlconcat:2.1",
-            "xci_name": "zusys_xlconcat_0_3",
+            "xci_name": "zusys_xlconcat_0_4",
             "parameters": {
               "NUM_PORTS": {
                 "value": "12"
@@ -7165,7 +7165,7 @@
           },
           "adc_delay": {
             "vlnv": "xilinx.com:ip:vio:3.0",
-            "xci_name": "zusys_adc_delay_3",
+            "xci_name": "zusys_adc_delay_0",
             "parameters": {
               "C_NUM_PROBE_IN": {
                 "value": "0"
@@ -7177,7 +7177,7 @@
           },
           "delay_trigger_0": {
             "vlnv": "xilinx.com:module_ref:delay_trigger:1.0",
-            "xci_name": "zusys_delay_trigger_0_3",
+            "xci_name": "zusys_delay_trigger_0_0",
             "reference_info": {
               "ref_type": "hdl",
               "ref_name": "delay_trigger",
@@ -7332,6 +7332,12 @@
       }
     },
     "interface_nets": {
+      "smartconnect_0_M08_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M08_AXI",
+          "Gates/AXI4_Lite"
+        ]
+      },
       "smartconnect_0_M06_AXI": {
         "interface_ports": [
           "smartconnect_0/M06_AXI",
@@ -7426,12 +7432,6 @@
         "interface_ports": [
           "smartconnect_0/M14_AXI",
           "Interrupt/AXI4_Lite"
-        ]
-      },
-      "smartconnect_0_M08_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M08_AXI",
-          "Gates/AXI4_Lite"
         ]
       }
     },

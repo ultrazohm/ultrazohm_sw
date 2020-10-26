@@ -85,6 +85,7 @@ X6E features 30 IOs of which 12 (DIG_01 to DIG_06 and DIG_25 to DIG_30) are rout
   :widths: 50 50 50 50 50
   :header-rows: 1
 
+Note that, on **D5** the pins 1-6 and and 25-30 are not routed between FPGA and CPLD, instead are accessible on X3. 
 
 X7: CAN
 -------

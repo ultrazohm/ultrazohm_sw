@@ -29,7 +29,7 @@ extern "C" {
 #include "xtmrctr.h"									//Include of the Timer-Blocks
 #include "math.h"										//Include for math operations
 #include <stdio.h>
-
+#include "xiicps.h"
 
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024
@@ -141,6 +141,36 @@ void lwip_init();
 	void can_send_2(void); 		//CAN interface: Test function for CAN
 	void hal_can_debug_print_frame(can_frame_t *can_frame_p); //CAN interface: Test function for CAN
 #endif
+
+
+// I2C
+	/************************** Constant Definitions ******************************/
+
+	/*
+	 * The following constants map to the XPAR parameters created in the
+	 * xparameters.h file. They are defined here such that a user can easily
+	 * change all the needed parameters in one place.
+	 */
+	#define IIC_DEVICE_ID		XPAR_XIICPS_1_DEVICE_ID
+
+	/*
+	 * The slave address to send to and receive from.
+	 */
+	#define IIC_SLAVE_ADDR		0x55
+	#define IIC_SCLK_RATE		100000
+
+	/*
+	 * The following constant controls the length of the buffers to be sent
+	 * and received with the IIC.
+	 */
+	#define TEST_BUFFER_SIZE	132
+
+XIicPs Iic;		/**< Instance of the IIC Device */
+u8 SendBuffer[TEST_BUFFER_SIZE];    /**< Buffer for Transmitting Data */
+u8 RecvBuffer[TEST_BUFFER_SIZE];    /**< Buffer for Receiving Data */
+
+int IicPsMasterPolledExample(u16 DeviceId);
+
 
 #ifdef __cplusplus
 }

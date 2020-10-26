@@ -97,6 +97,22 @@ int main()
 	sys_thread_new("main_thrd", (void(*)(void*))main_thread, 0,
 	                THREAD_STACKSIZE,
 	                DEFAULT_THREAD_PRIO);
+
+	// i2c start
+	int I2C_Status;
+
+	I2C_Status = IicPsMasterPolledExample(XPAR_PSU_I2C_1_DEVICE_ID);
+	if (I2C_Status != XST_SUCCESS) {
+		xil_printf("IIC Master Polled Example Test Failed\r\n");
+		return XST_FAILURE;
+	}
+
+	xil_printf("Successfully ran IIC Master Polled Example Test\r\n");
+	return XST_SUCCESS;
+
+
+	// i2c end
+
 	vTaskStartScheduler();
 
 	while(1){
@@ -402,3 +418,101 @@ void can_send_2(void)
 
 	hal_can_send_frame_blocking(&can_frame_tx);
 }
+
+/*****************************************************************************/
+/**
+*
+* This function sends data and expects to receive data from slave as modular
+* of 64.
+*
+* This function uses interrupt-driven mode of the device.
+*
+* @param	DeviceId is the Device ID of the IicPs Device and is the
+*		XPAR_<IICPS_instance>_DEVICE_ID value from xparameters.h
+*
+* @return	XST_SUCCESS if successful, otherwise XST_FAILURE.
+*
+* @note		None.
+*
+*******************************************************************************/
+int IicPsMasterPolledExample(u16 DeviceId)
+{
+	int Status;
+	XIicPs_Config *Config;
+	int Index;
+
+	/*
+	 * Initialize the IIC driver so that it's ready to use
+	 * Look up the configuration in the config table,
+	 * then initialize it.
+	 */
+	Config = XIicPs_LookupConfig(DeviceId);
+	if (NULL == Config) {
+		return XST_FAILURE;
+	}
+
+	Status = XIicPs_CfgInitialize(&Iic, Config, Config->BaseAddress);
+	if (Status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+	/*
+	 * Perform a self-test to ensure that the hardware was built correctly.
+	 */
+	Status = XIicPs_SelfTest(&Iic);
+	if (Status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+	/*
+	 * Set the IIC serial clock rate.
+	 */
+	XIicPs_SetSClk(&Iic, IIC_SCLK_RATE);
+
+	/*
+	 * Initialize the send buffer bytes with a pattern to send and the
+	 * the receive buffer bytes to zero to allow the receive data to be
+	 * verified.
+	 */
+	for (Index = 0; Index < TEST_BUFFER_SIZE; Index++) {
+		SendBuffer[Index] = (Index % TEST_BUFFER_SIZE);
+		RecvBuffer[Index] = 0;
+	}
+
+	/*
+	 * Send the buffer using the IIC and ignore the number of bytes sent
+	 * as the return value since we are using it in interrupt mode.
+	 */
+	Status = XIicPs_MasterSendPolled(&Iic, SendBuffer,
+			 TEST_BUFFER_SIZE, IIC_SLAVE_ADDR);
+	if (Status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+	/*
+	 * Wait until bus is idle to start another transfer.
+	 */
+	while (XIicPs_BusIsBusy(&Iic)) {
+		/* NOP */
+	}
+
+	Status = XIicPs_MasterRecvPolled(&Iic, RecvBuffer,
+			  TEST_BUFFER_SIZE, IIC_SLAVE_ADDR);
+	if (Status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+	/*
+	 * Verify received data is correct.
+	 */
+	 for(Index = 0; Index < TEST_BUFFER_SIZE; Index ++) {
+
+		/* Aardvark as slave can only set 64 bytes for output */
+		if (RecvBuffer[Index] != Index % 64) {
+			return XST_FAILURE;
+		}
+	}
+
+	return XST_SUCCESS;
+}
+

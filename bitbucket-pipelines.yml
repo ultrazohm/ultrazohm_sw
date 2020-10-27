@@ -8,6 +8,7 @@ image: python:3.7.3
 pipelines:
   #branches:
   #  develop:
+  default:
     - step:
         caches:
           - pip
@@ -17,7 +18,7 @@ pipelines:
           - make html SPHINXOPTS="-W --keep-going -n"
           - cd build
           - ls
-    main:
+   main:
     - step:
        name: Deploy to Contabo Server
        deployment: contabo

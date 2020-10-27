@@ -170,13 +170,13 @@ Generate the Vitis workspace
 - Open Vitis or launch Vitis from Vivado (``Tools -> Launch Vitis IDE``)
 - Choose the workspace
 - Path: ``~/ultrazohm/ultrazohm_sw/vitis/workspace``
-- Open the XSCT Console in Vitis: ``Windows -> Show view... -> CSXT Console``
+- Open the XSCT Console in Vitis: ``Windows -> Show view... -> XSCT Console``
 - Type the following commands
 
 ::
 
    cd [getws]
-   source {../../tcl_scripts/generate_UltraZohm_workspace.tcl}
+   source {../../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl}
 
 - The script runs for several minutes
 - The script displays `generate_UltraZohm_workspace.tcl script finished...`

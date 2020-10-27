@@ -10,7 +10,7 @@
 #
 # execute in XSCT console in Vitis workspace
 #	cd [getws] 
-#	source {../export/generate_UltraZohm_workspace.tcl}
+#	source {../../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl}
 #
 # XSCT Programming Reference UG1416 
 # https://www.xilinx.com/html_docs/xilinx2019_2/vitis_doc/

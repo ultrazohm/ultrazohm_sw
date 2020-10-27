@@ -6,8 +6,8 @@
 image: python:3.7.3
 
 pipelines:
-  branches:
-    develop:
+  #branches:
+  #  develop:
     - step:
         caches:
           - pip

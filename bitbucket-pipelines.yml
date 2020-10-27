@@ -8,34 +8,35 @@ image: python:3.7.3
 pipelines:
   #branches:
   #  develop:
-  default:
+   default:
     - step:
-        caches:
-          - pip
-        script: # Modify the commands below to build your repository.
-          - cd docs
-          - pip install -r requirements.txt
-          - make html SPHINXOPTS="-W --keep-going -n"
-          - cd build
-          - ls
-   main:
-    - step:
-       name: Deploy to Contabo Server
-       deployment: contabo
        caches:
-          - pip
-       # trigger: manual  # Uncomment to make this a manual deployment.
-       script:
-        - ls
+        - pip
+       script: # Modify the commands below to build your repository.
         - cd docs
-        - ls
         - pip install -r requirements.txt
         - make html SPHINXOPTS="-W --keep-going -n"
+        - cd build
         - ls
-        - echo "Deploying to test environment"
-        - pipe: atlassian/rsync-deploy:0.4.3
-          variables:
-            USER: $secret_server_user_name
-            SERVER: ultrazohm.com
-            REMOTE_PATH: $secret_folder_path
-            LOCAL_PATH: build
+   branches:
+     main:
+      - step:
+         name: Deploy to Contabo Server
+         deployment: contabo
+         caches:
+          - pip
+# trigger: manual  # Uncomment to make this a manual deployment.
+         script:
+          - ls
+          - cd docs
+          - ls
+          - pip install -r requirements.txt
+          - make html SPHINXOPTS="-W --keep-going -n"
+          - ls
+          - echo "Deploying to test environment"
+          - pipe: atlassian/rsync-deploy:0.4.3
+            variables:
+                 USER: $secret_server_user_name
+                 SERVER: ultrazohm.com
+                 REMOTE_PATH: $secret_folder_path
+                 LOCAL_PATH: build

@@ -1,3 +1,3 @@
 setws ../vitis/workspace
 cd [getws]
-source {../export/generate_UltraZohm_workspace.tcl}
+source {../../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl}

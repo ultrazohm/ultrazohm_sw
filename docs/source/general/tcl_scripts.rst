@@ -3,13 +3,39 @@ Tcl Scripts
 ===========
 
 Xilinx uses Tcl to control vivado and vitis by script.
-See Xilinx `UG835 <https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_1/ug835-vivado-tcl-commands.pdf>`_ and `UG1416 <https://www.xilinx.com/html_docs/xilinx2020_1/vitis_doc/upu1569395223804.html>`_ for reference.
+See Xilinx `UG835 <https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_1/ug835-vivado-tcl-commands.pdf>`_, `UG1416 <https://www.xilinx.com/html_docs/xilinx2020_1/vitis_doc/upu1569395223804.html>`_ and `UG1400 <https://www.xilinx.com/support/documentation/sw_manuals/xilinx2019_2/ug1400-vitis-embedded.pdf>`_ for reference.
 All Tcl scripts of the UltraZohm Community are located in the ``ultrazohm_sw`` repository in the folder ``tcl_scripts``.
 The three different kinds of Tcl scripts are differentiated by prefix:
 
     * ci\_ marks scripts that are used for continuous integration
     * vivado\_ marks scripts for Vivado
     * vitis\_ marks scripts for Vitis
+
+The Vivado scripts can be called from Vivado tcl console (``Window -> Tcl console`` in Vivado) or choose a Tcl script (``Tools -> Run Tcl script...``) as well as the command line in batch mode on linux:
+
+::
+
+  vivado -nolog -nojournal -mode batch -source $NAME.tcl
+
+The ``settings64.sh`` might need to be executed if vivado is not on path after a boot of the system.
+The path depends on your install location (e.g. ``/opt/`` instead of ``/tools/``).
+
+::
+
+  source /tools/Xilinx/Vivado/2020.1/settings64.sh
+
+The Vitis scripts can be called from the XSCT console from Vitis (see ref:`vitis_gen_workspace_tcl`) or from the command line:
+
+::
+
+  xsct $NAME.tcl
+
+The ``settings64.sh`` might need to be executed if Vitis is not on path after a boot of the system.
+The path depends on your install location (e.g. ``/opt/`` instead of ``/tools/``).
+
+::
+
+  source /tools/Xilinx/Vivado/2020.1/settings64.sh
 
 ci\_
 ****
@@ -63,6 +89,8 @@ Usage:
 
    cd [getws]
    source {../../tcl_scripts/vitis_update_platform.tcl}
+
+.. _vitis_gen_workspace_tcl:
 
 vitis_generate_UltraZohm_workspace.tcl
 --------------------------------------

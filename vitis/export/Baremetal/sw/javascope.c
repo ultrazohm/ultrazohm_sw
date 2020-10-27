@@ -59,9 +59,9 @@ extern XScuGic INTCInst;  	//Interrupt handler -> only instance one -> responsib
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 // external global variables from isr.c
-extern float i_count_1ms, i_count_1s;
+extern Xint32 i_count_1ms, i_count_1s;
 extern float f_ISRLifeCheck;
-extern float time_ISR_max_us, time_ISR_total;
+extern float time_ISR_max_us, time_ISR_total, time_ISR_total_us;
 
 Xint16 values[20];
 union SlowData js_slowDataArray[JSSD_ENDMARKER];
@@ -263,7 +263,7 @@ void JavaScope_update(DS_Data* data){
 	// Will be transferred one after another (one every 0,5 ms).
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	js_slowDataArray[JSSD_INT_SecondsSinceSystemStart].i = i_count_1s;
-	js_slowDataArray[JSSD_FLOAT_uSecPerIsr].f 	= ((Xfloat32)time_ISR_total*10.0e-03); //AXI-Ticks* @100MHz AXI-Clock [us]
+	js_slowDataArray[JSSD_FLOAT_uSecPerIsr].f 	= (Xfloat32)time_ISR_total_us;
 	js_slowDataArray[JSSD_FLOAT_Sine].f 		= time_ISR_max_us; //10.0 * sin(PI2 * 0.05 * ((Xfloat32)0.0002));	// 0.05 Hz => T=20sec
 	js_slowDataArray[JSSD_FLOAT_FreqReadback].f = data->rasv.referenceFrequency;
 	js_slowDataArray[JSSD_INT_Milliseconds].i 	= (Xint32)i_count_1ms;

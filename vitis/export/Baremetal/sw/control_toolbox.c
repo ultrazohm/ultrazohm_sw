@@ -1,7 +1,7 @@
 //toolbox.c
 //Toolbox for transformations, integrators, PI controllers, filters etc.
 
-#include "..\include\control_toolbox.h"
+#include "../include/control_toolbox.h"
 
 //Sinewave generator
 //amplitude:			Amplitude of the output sinewave

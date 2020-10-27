@@ -176,7 +176,7 @@ Generate the Vitis workspace
 ::
 
    cd [getws]
-   source {../export/generate_UltraZohm_workspace.tcl}
+   source {../../tcl_scripts/generate_UltraZohm_workspace.tcl}
 
 - The script runs for several minutes
 - The script displays `generate_UltraZohm_workspace.tcl script finished...`

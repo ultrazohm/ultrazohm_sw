@@ -224,7 +224,6 @@ int MeasureTime(){
 	i_count_1ms = tNow/((COUNTS_PER_SECOND) * 1e-3);
 
 	//measure with 1s cycle
-	//todo: double-check this line!
 	const unsigned int unsigned_int_max_number = ~(unsigned int)0;
 	i_count_1s = (int) (i_count_1ms*1e-3) + time_overflow_counter * (unsigned_int_max_number/COUNTS_PER_SECOND); //   9.16minutes = 549.7559 seconds = (2^32-1)/COUNTS_PER_SECOND
 

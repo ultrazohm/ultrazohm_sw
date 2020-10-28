@@ -6,35 +6,44 @@
 image: python:3.7.3
 
 pipelines:
-  branches:
-    develop:
+  #branches:
+  #  develop:
+   default:
     - step:
-        caches:
-          - pip
-        script: # Modify the commands below to build your repository.
-          - cd docs
-          - pip install -r requirements.txt
-          - make html SPHINXOPTS="-W --keep-going -n"
-          - cd build
-          - ls
-    main:
-    - step:
-       name: Deploy to Contabo Server
-       deployment: contabo
        caches:
-          - pip
-       # trigger: manual  # Uncomment to make this a manual deployment.
-       script:
-        - ls
+        - pip
+       script: # Modify the commands below to build your repository.
         - cd docs
-        - ls
         - pip install -r requirements.txt
         - make html SPHINXOPTS="-W --keep-going -n"
+        - cd build
         - ls
-        - echo "Deploying to test environment"
-        - pipe: atlassian/rsync-deploy:0.4.3
-          variables:
-            USER: $secret_server_user_name
-            SERVER: ultrazohm.com
-            REMOTE_PATH: $secret_folder_path
-            LOCAL_PATH: build
+   branches:
+     main:
+      - step:
+         name: Deploy to Contabo Server
+         deployment: contabo
+         caches:
+          - pip
+# trigger: manual  # Uncomment to make this a manual deployment.
+         script:
+          - ls
+          - cd docs
+          - ls
+          - pip install -r requirements.txt
+          - make html SPHINXOPTS="-W --keep-going -n"
+          - ls
+          - echo "Deploying to test environment"
+          - pipe: atlassian/rsync-deploy:0.4.3
+            variables:
+                 USER: $ls_user
+                 SERVER: $hostname
+                 REMOTE_PATH: $docs_path
+                 LOCAL_PATH: ./build/html/
+                 # The --chmod causes the following
+                 # Directories: owner: rwx, group: r-x, other: r-x
+                 # Files: owner: rw-, group: r--, other: ---
+                 # +X: All files, the owner already had execution right on gets executable
+                 # for everybody and directories get accessable
+                 EXTRA_ARGS: '-a --delete --chmod=D0755,F0640,+X'
+                 SSH_PORT: '22'

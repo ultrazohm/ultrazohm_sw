@@ -32,7 +32,7 @@ Xint32 		i_ISRLifeCheck = 0;
 Xfloat32 	f_ISRLifeCheck = 0;
 Xint32 		i_count_1ms = 0; // count up by 1 every 1ms
 Xint32 		i_count_1s = 0; // count up by 1 every 1s
-Xfloat32 	isr_period_us_meausred;
+Xfloat32 	isr_period_us_measured;
 XTime 		tPrev, tNow = 0; // XTime is u64 which will not overflow in a life time
 unsigned int time_overflow_counter = 0;
 
@@ -230,7 +230,7 @@ int MeasureTime(){
 	// calculate ISR period, the time between two calls of this function
 	float const counts_per_us = (COUNTS_PER_SECOND) * 1e-6; // DO NOT USE COUNTS_PER_USECOND, this macro has a large rounding error!
 	XTime isr_period_counts = (tNow - tPrev);
-	isr_period_us_meausred = isr_period_counts / counts_per_us;
+	isr_period_us_measured = isr_period_counts / counts_per_us;
 
 	/* for reference how to measure time
 	float up_time_us = 1.0 * (tNow) / (COUNTS_PER_USECOND);

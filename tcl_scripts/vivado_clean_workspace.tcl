@@ -34,3 +34,4 @@ set script_path [ file dirname [ file normalize [ info script ] ] ]
 cd $script_path
 exec git status
 exec git reset --hard
+exec git clean -fd

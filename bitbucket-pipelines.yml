@@ -36,7 +36,14 @@ pipelines:
           - echo "Deploying to test environment"
           - pipe: atlassian/rsync-deploy:0.4.3
             variables:
-                 USER: $secret_server_user_name
-                 SERVER: ultrazohm.com
-                 REMOTE_PATH: $secret_folder_path
-                 LOCAL_PATH: build
+                 USER: $ls_user
+                 SERVER: $hostname
+                 REMOTE_PATH: $docs_path
+                 LOCAL_PATH: ./build/html/
+                 # The --chmod causes the following
+                 # Directories: owner: rwx, group: r-x, other: r-x
+                 # Files: owner: rw-, group: r--, other: ---
+                 # +X: All files, the owner already had execution right on gets executable
+                 # for everybody and directories get accessable
+                 EXTRA_ARGS: '-a --delete --chmod=D0755,F0640,+X'
+                 SSH_PORT: '22'

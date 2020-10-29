@@ -32,8 +32,9 @@ Xint32 		i_ISRLifeCheck = 0;
 Xfloat32 	f_ISRLifeCheck = 0;
 Xint32 		i_count_1ms = 0; // count up by 1 every 1ms
 Xint32 		i_count_1s = 0; // count up by 1 every 1s
-Xfloat32 	isr_period_us_meausred;
+Xfloat32 	isr_period_us_measured;
 XTime 		tPrev, tNow = 0; // XTime is u64 which will not overflow in a life time
+unsigned int time_overflow_counter = 0;
 
 //Initialize the variables for the ADC measurement
 u32 		XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
@@ -207,30 +208,29 @@ void TMR_Con_Intr_Handler(void *data)
 // Measure the time for the JavaScope
 //----------------------------------------------------
 int MeasureTime(){
-	static unsigned int time_overflow_counter = 0 ;
+	// static unsigned int time_overflow_counter = 0 ; // made global
 
 	// save previous read
 	tPrev = tNow;
 	// read clock counter of R5 processor, which starts at 0 after reset/starting the processor
 	XTime_GetTime(&tNow);
 
+	//catch overflow after 9.16 minutes when tNow (32bit) starts from 0 again
+	if (tNow < tPrev){
+		time_overflow_counter++;
+	}
+
 	//measure with 1ms cycle
 	i_count_1ms = tNow/((COUNTS_PER_SECOND) * 1e-3);
 
 	//measure with 1s cycle
-	//todo: double-check this line!
 	const unsigned int unsigned_int_max_number = ~(unsigned int)0;
 	i_count_1s = (int) (i_count_1ms*1e-3) + time_overflow_counter * (unsigned_int_max_number/COUNTS_PER_SECOND); //   9.16minutes = 549.7559 seconds = (2^32-1)/COUNTS_PER_SECOND
 
 	// calculate ISR period, the time between two calls of this function
 	float const counts_per_us = (COUNTS_PER_SECOND) * 1e-6; // DO NOT USE COUNTS_PER_USECOND, this macro has a large rounding error!
 	XTime isr_period_counts = (tNow - tPrev);
-	isr_period_us_meausred = isr_period_counts / counts_per_us;
-
-	if (isr_period_counts < 0){
-		//catch overflow after 9.16 minutes when tNow (32bit) starts from 0 again
-		time_overflow_counter++;
-	}
+	isr_period_us_measured = isr_period_counts / counts_per_us;
 
 	/* for reference how to measure time
 	float up_time_us = 1.0 * (tNow) / (COUNTS_PER_USECOND);

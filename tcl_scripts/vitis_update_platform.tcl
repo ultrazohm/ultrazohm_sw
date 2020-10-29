@@ -58,7 +58,7 @@ proc app_build {{name *}} {
 
 
 proc vitis_main {} {
-#exec taskkill /IM "rdi_xsct.exe" /F
+
 set WS_PATH [getws]
 cd $WS_PATH
 cd ..

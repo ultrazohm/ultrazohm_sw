@@ -64,15 +64,16 @@ set WS_PATH [getws]
 cd $WS_PATH
 cd ..
 set FOLDER_PATH [pwd]
+cd $WS_PATH
 
+set PLATFORM_NAME 	UltraZohm
+set XSA_FOLDER 		$FOLDER_PATH/vivado_exported_xsa
+
+####################################################
 puts "Info:(UltraZohm) create Platform Project"
+puts "using XSA from: {$XSA_FOLDER/zusys_wrapper.xsa}"
 #create platform 
-platform create -name UltraZohm -hw $FOLDER_PATH/vivado_exported_xsa/zusys_wrapper.xsa -no-boot-bsp
-#platform config -remove-boot-bsp
-
-
-set PLATFORM_NAME [platform active]
-
+platform create -name $PLATFORM_NAME -hw $XSA_FOLDER/zusys_wrapper.xsa -no-boot-bsp
 
 #Domain FreeRTOS A53_0
 ####################################################

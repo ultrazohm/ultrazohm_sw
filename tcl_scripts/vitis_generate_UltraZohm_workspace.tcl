@@ -74,9 +74,14 @@ puts stdout $EXPORT_FOLDER
 
 ####################################################
 puts "Info:(UltraZohm) create Platform Project"
-puts "using XSA from: {$XSA_FOLDER/zusys_wrapper.xsa}"
+if {[catch {set XSA_FILES [glob -join -dir ${XSA_FOLDER} *.xsa]} ]} {puts "Error:(UltraZohm) update of ${PLATFORM_NAME} failed: .xsa does not exist in ${XSA_FOLDER}."}
+#
+set XSA_FILE [lindex $XSA_FILES 0]
+puts "WARNING (UltraZohm): Make sure there is only one xsa file in ${XSA_FOLDER} "
+puts "using {$XSA_FILE}"
+
 #create platform 
-platform create -name $PLATFORM_NAME -hw $XSA_FOLDER/zusys_wrapper.xsa -no-boot-bsp
+platform create -name $PLATFORM_NAME -hw $XSA_FILE -no-boot-bsp
 
 #Domain FreeRTOS A53_0
 ####################################################
@@ -226,16 +231,17 @@ puts "========================================"
 puts "Info:(UltraZohm) generate_UltraZohm_workspace.tcl script finished successfully"
 }
 
+
 vitis_main
 
-## useful
-## change active domain 
 
+
+## useful
+# change active domain 
 # domain list 
 # domain active []
 
 ##list of all os 
-
 #repo -os 
 
 

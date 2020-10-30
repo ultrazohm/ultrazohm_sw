@@ -91,10 +91,10 @@ puts "Info:(UltraZohm) Regenerate Baremetal_domain BSP"
 domain active Baremetal_domain
 bsp regenerate
 
-####################################################
-puts "Info:(UltraZohm) Regenerate FSBL_domain BSP"
-domain active FSBL_domain
-bsp regenerate
+#####################################################
+#puts "Info:(UltraZohm) Regenerate FSBL_domain BSP"
+#domain active FSBL_domain
+#bsp regenerate
 
 #####################################################
 puts "Info:(UltraZohm) generate Platform project"

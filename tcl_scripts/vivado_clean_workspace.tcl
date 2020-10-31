@@ -1,5 +1,9 @@
 # get the absolute path to the vivado_clean_workspace.tcl script
+# This script deletes all temporary files of vivado which are not source controlled by git!
+# Run in Vivado Tcl console:
 # source {vivado_clean_workspace.tcl}
+# Run from CLI
+# vivado -mode batch -source vivado_clean_workspace.tcl
 set script_path [ file dirname [ file normalize [ info script ] ] ]
 cd $script_path
 cd ..

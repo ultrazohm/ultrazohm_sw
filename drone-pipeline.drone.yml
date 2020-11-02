@@ -52,7 +52,7 @@ steps:
    - ip link show
    - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
    - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -source tcl_scripts/ci_vivado_generate_bitstream.tcl
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -source tcl_scripts/vivado_export_xsa.tcl
+   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -source tcl_scripts/ci_vivado_export_xsa.tcl
    when:
      branch:
      - main

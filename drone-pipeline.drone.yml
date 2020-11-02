@@ -1,0 +1,77 @@
+# This is a sample build configuration for Python.
+# Check our guides at https://confluence.atlassian.com/x/x4UWN for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+kind: pipeline
+name: default
+
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+ - name: Vitis generate Workspace
+   image: vivado:2020.1
+   commands:
+   - echo $0
+   #https://discourse.drone.io/t/shell-used-for-commands/117/3
+   #- apt install -y libgtk-3-dev
+   #- Xvfb :1
+   #- export DISPLAY=1
+   - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
+   #- sh sh_wrapper.sh
+   #- apt install -y default-jre
+   - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_generate_workspace.tcl
+
+ - name: Vivado check license
+   image: vivado:2020.1
+   #privileged: true
+   #userns: host
+   commands:
+   - ip link show
+   - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
+   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_license.tcl
+   #- /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -source tcl_scripts/generate_bitstream.tcl
+   #when:
+   #  branch:
+   #  - master
+   #  - main
+   #  - develop
+   
+   
+ - name: Vivado open project
+   image: vivado:2020.1
+   commands:
+   - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
+   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_open_project.tcl
+#   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -source tcl_scripts/generate_bitstream.tcl
+
+ - name: Vivado check syntax
+   image: vivado:2020.1
+   commands:
+   - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
+   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_syntax.tcl
+
+ - name: Vivado validate board design
+   image: vivado:2020.1
+   commands:
+   - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
+  # - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_validate_bd_design.tcl
+
+ - name: Vitis update platform
+   image: vivado:2020.1
+   commands:
+   - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
+   - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_update_platform.tcl
+
+ - name: Vitis build project
+   image: vivado:2020.1
+   commands:
+   - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
+   - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_build_project.tcl
+
+
+
+

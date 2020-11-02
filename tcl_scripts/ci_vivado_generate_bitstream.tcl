@@ -1,4 +1,4 @@
-open_project ../vivado/project/ultrazohm.xpr
+open_project vivado/project/ultrazohm.xpr
  
 set run_name impl_1
 set cpu_count 4

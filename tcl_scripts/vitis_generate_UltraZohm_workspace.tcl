@@ -194,11 +194,11 @@ importsources -name FreeRTOS -path $filename_FreeRTOS/lscript.ld -linker-script
 ##import sources to FSBL project
 #importsources -name FSBL -path $filename_FSBL -soft-link
 #importsources -name FSBL -path $filename_FSBL/lscript.ld -linker-script
-#
-#puts "Info:(UltraZohm) add standard FSBL.elf"
-#platform config -remove-boot-bsp
-#platform config -fsbl-elf $FOLDER_PATH/export/FSBL.elf 
-#platform write 
+
+puts "Info:(UltraZohm) add standard FSBL.elf"
+platform config -remove-boot-bsp
+platform config -fsbl-elf $FOLDER_PATH/export/FSBL.elf 
+platform write 
 
 #Clean all
 ####################################################

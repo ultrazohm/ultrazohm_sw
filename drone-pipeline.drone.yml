@@ -27,7 +27,7 @@ steps:
 
  - name: Vivado check license
    image: vivado:2020.1
-   #privileged: true
+   ##privileged: true
    #userns: host
    commands:
    - ip link show

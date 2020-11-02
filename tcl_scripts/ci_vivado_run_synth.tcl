@@ -1,4 +1,4 @@
-open_proj ../vivado/project/ultrazohm.xpr
+open_proj vivado/project/ultrazohm.xpr
  
 set run_name synth_1
 set cpu_count 1

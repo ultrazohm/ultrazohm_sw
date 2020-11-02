@@ -1,7 +1,7 @@
 # Build all projects
 # call on CLI
 # xsct ci_build_project.tcl
-setws ../vitis/workspace
+setws vitis/workspace
 cd [getws]
 set RPU_NAME Baremetal
 set APU_NAME FreeRTOS

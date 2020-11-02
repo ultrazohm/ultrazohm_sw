@@ -22,6 +22,7 @@ Documentation of the UltraZohm
     general/project_structure
     general/bitbucket
     general/contribution_workflow
+    general/tcl_scripts
 
 .. toctree::
     :maxdepth: 2

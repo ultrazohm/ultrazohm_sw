@@ -9,7 +9,7 @@
 #
 # execute in XSCT console in Vitis workspace
 #	cd [getws] 
-#	source {../export/update_platform.tcl}
+#	source {../../tcl_scripts/vitis_update_platform.tcl}
 #
 # XSCT Programming Reference
 # https://www.xilinx.com/html_docs/xilinx2019_2/vitis_doc/
@@ -58,7 +58,7 @@ proc app_build {{name *}} {
 
 
 proc vitis_main {} {
-#exec taskkill /IM "rdi_xsct.exe" /F
+
 set WS_PATH [getws]
 cd $WS_PATH
 cd ..
@@ -73,16 +73,17 @@ puts "Info:(UltraZohm) Chose active platform"
 platform active $PLATFORM_NAME
 
 ####################################################
-puts "Info:(UltraZohm) Import new xsa hardware file from $XSA_FOLDER"
-if {[catch {set xsafiles [glob -join -dir ${XSA_FOLDER} *.xsa]} ]} {puts "Error:(UltraZohm) update of ${PLATFORM_NAME} failed: .xsa does not exist in ${XSA_FOLDER}."}
+puts "Info:(UltraZohm) Import new xsa hardware file from:"
+puts "$XSA_FOLDER"
+if {[catch {set XSA_FILES [glob -join -dir ${XSA_FOLDER} *.xsa]} ]} {puts "Error:(UltraZohm) update of ${PLATFORM_NAME} failed: .xsa does not exist in ${XSA_FOLDER}."}
 #
-set xsafile [lindex $xsafiles 0]
+set XSA_FILE [lindex $XSA_FILES 0]
 puts "WARNING (UltraZohm): Make sure there is only one xsa file in ${XSA_FOLDER} "
-platform config -updatehw $xsafile
+puts "using {$XSA_FILE}"
+platform config -updatehw $XSA_FILE
 
 ####################################################
 puts "Info:(UltraZohm) Regenerate FreeRTOS_domain BSP"
-# hier tritt der fehler auf! idee: update xsa von hand, restart vitis und excute tcl
 domain active FreeRTOS_domain
 bsp regenerate
 
@@ -91,16 +92,15 @@ puts "Info:(UltraZohm) Regenerate Baremetal_domain BSP"
 domain active Baremetal_domain
 bsp regenerate
 
-####################################################
-puts "Info:(UltraZohm) Regenerate FSBL_domain BSP"
-domain active FSBL_domain
-bsp regenerate
+#####################################################
+#puts "Info:(UltraZohm) Regenerate FSBL_domain BSP"
+#domain active FSBL_domain
+#bsp regenerate
 
 #####################################################
 puts "Info:(UltraZohm) generate Platform project"
 platform generate
 
-#Clean all
 ####################################################
 #puts "Info:(UltraZohm) clean all application projects"
 #app_clean
@@ -110,16 +110,3 @@ app_build
 }
 
 vitis_main
-
-## useful
-## change active domain 
-
-# domain list 
-# domain active []
-
-##list of all os 
-
-#repo -os 
-
-
-

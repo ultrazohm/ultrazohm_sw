@@ -65,23 +65,9 @@ steps:
    - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
    - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_generate_workspace.tcl
 
-# clean & build of the vitis project
- - name: Vitis build project after generate workspace
-   image: vivado:2020.1
-   commands:
-   - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
-   - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_build_project.tcl
-
 # Update the platform just to test the update script (does not update the platform since it did not change)
  - name: Vitis update platform
    image: vivado:2020.1
    commands:
    - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
    - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_update_platform.tcl
-
-# clean & build of the vitis project
- - name: Vitis build project after update platform
-   image: vivado:2020.1
-   commands:
-   - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
-   - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_build_project.tcl

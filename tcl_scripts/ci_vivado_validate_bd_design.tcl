@@ -1,6 +1,6 @@
-open_project ../vivado/project/ultrazohm.xpr
+open_project vivado/project/ultrazohm.xpr
 
-open_bd_design ../vivado/zusys/zusys.bd
+open_bd_design vivado/zusys/zusys.bd
 set return_msg [validate_bd_design]
 set error_flag 0
  

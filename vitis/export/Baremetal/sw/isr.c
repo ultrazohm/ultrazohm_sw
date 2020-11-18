@@ -65,10 +65,10 @@ extern DS_Data Global_Data;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
-// - called by the hardware timer
+// - triggered from PL
 // - start of the control period
 //----------------------------------------------------
-void TMR_Con_Intr_Handler(void *data)
+void ISR_Control(void *data)
 {
 	//Show start of control-ISR by toggling a pin
 	//XGpio_DiscreteWrite(&Gpio_OUT,GPIO_CHANNEL , 0b0010);  // --+-
@@ -303,7 +303,7 @@ int Initialize_Timer(){
 	// SETUP THE TIMER for Control
 	Status = XTmrCtr_Initialize(&TMR_Con_Inst, Con_TIMER_DEVICE_ID);
 	if(Status != XST_SUCCESS) return XST_FAILURE;
-	XTmrCtr_SetHandler(&TMR_Con_Inst, TMR_Con_Intr_Handler, &TMR_Con_Inst);
+	//XTmrCtr_SetHandler(&TMR_Con_Inst, ISR_Control, &TMR_Con_Inst);
 	XTmrCtr_SetOptions(&TMR_Con_Inst, 0, XTC_INT_MODE_OPTION | XTC_AUTO_RELOAD_OPTION);
 	XTmrCtr_SetResetValue(&TMR_Con_Inst, 0, TMR_Con_LOAD);
 	XTmrCtr_Start(&TMR_Con_Inst,0);
@@ -341,7 +341,7 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Tmr_Con_InstancePtr
 	// b11 	Rising edge sensitive
 	// XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
 	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
-	//XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high
+	//XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
 
 	// Make the connection between the IntId of the interrupt source and the
 	// associated handler that is to run when the interrupt is recognized.

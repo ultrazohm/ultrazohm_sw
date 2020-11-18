@@ -232,12 +232,6 @@ int MeasureTime(){
 	XTime isr_period_counts = (tNow - tPrev);
 	isr_period_us_measured = isr_period_counts / counts_per_us;
 
-	/* for reference how to measure time
-	float up_time_us = 1.0 * (tNow) / (COUNTS_PER_USECOND);
-	float up_time_ms = 1.0 * (tNow) / (COUNTS_PER_USECOND*1000);
-	float up_time_s  = up_time_ms * 1e-3;
-	 */
-
 	return 0;
 }
 

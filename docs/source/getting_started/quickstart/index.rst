@@ -2,8 +2,8 @@
 UltraZohm Setup
 ===============
 
-..	toctree::
-	:maxdepth: 2
+.. toctree::
+   :maxdepth: 2
 
 Requirements
 ************
@@ -37,19 +37,19 @@ Clone the UltraZohm Repositories
 
 ::
 
-	git clone https://$BitbucketUsername@bitbucket.org/ultrazohm/cpld_lattice.git
-	git clone https://$BitbucketUsername@bitbucket.org/ultrazohm/javascope_standalone.git
-	git clone https://$BitbucketUsername@bitbucket.org/ultrazohm/ultrazohm_sw.git
+   git clone https://$BitbucketUsername@bitbucket.org/ultrazohm/cpld_lattice.git
+   git clone https://$BitbucketUsername@bitbucket.org/ultrazohm/javascope_standalone.git
+   git clone https://$BitbucketUsername@bitbucket.org/ultrazohm/ultrazohm_sw.git
 
 
-After executing the ``git clone`` commands the following directory structure exists.
+After executing the ``git clone`` commands, the following directory structure exists.
 
 ::
 
   ./ultrazohm/
-		cpld_lattice
-		javascope_standalone
-		ultrazohm_sw
+      cpld_lattice
+      javascope_standalone
+      ultrazohm_sw
 
 
 .. image:: ./img_setup/1_folder_setup_gitclone.png
@@ -96,7 +96,7 @@ Generate Bitstream
 - Click ``Yes`` to launch synthesis and implementation
 - Choose the number of CPU-Jobs which are used by Vivado
 - Launch the run by clicking ``Ok``
-- The bitstream is generated, this takes **20 to 60 minutes** depending on your PC!
+- The bitstream is generated. This takes **20 to 60 minutes**, depending on your PC!
 - Open the implemented design after the bitstream generation is completed
 
 .. note::
@@ -153,10 +153,10 @@ Export Bitstream tcl-script
 
 A TCL script can be added to the Vivado icons to automate the process of exporting the bitstream since it is a common task.
 
-- ``Tools -> Custom Commands -> Costpmize Commands``
-- Click on the `plus` and ender a name, e.g., export_xsa
+- ``Tools -> Custom Commands -> Customize Commands``
+- Click on the `plus` and enter a name, e.g., export_xsa
 - Click on ``Source Tcl file``
-- Path: ``~/ultrazohm/ultrazohm_sw/vitis/export/vivado_export_xsa.tcl``
+- Path: ``~/ultrazohm/ultrazohm_sw/tcl_scripts/vivado_export_xsa.tcl``
 - Click ok
 
 .. image:: https://images2.imgbox.com/20/97/ltbV6vKQ_o.gif
@@ -202,7 +202,7 @@ Physical Setup of the UltraZohm
 - Connect the USB (JTAG) to your PC
 - Plug an external Stop into the front plane
 - Turn on the UltraZohm
-- All four LED are turned on
+- All four LEDs are turned on
 
 .. TODO: [UZ-9] Add pictures for the physical setup of the ultrazohm 
 
@@ -216,7 +216,7 @@ Debug
 - Choose ``Debug_FreeRTOS_Baremetal_FPGA``
 - Click on ``Debug``
 - After the first debug run, it is sufficient to click the debug-icon
-- Start all processors (click on the play-button)
+- Start all processors (click on the play button)
 
 .. image:: ./img_debug/1_vitis_show_design.png
 
@@ -228,7 +228,7 @@ Debug
 Javascope
 *********
 
-- Setup the network settings of the Ethernet adapter which is connected to the UltraZohm
+- Setup the network settings of the Ethernet adapter, which is connected to the UltraZohm
 - See :ref:`gui`
 - Start the Javascope
 

@@ -11,14 +11,14 @@ The UltraZohm-Project uses two different build pipelines to test the builds of t
 Bitbucket pipeline (docs)
 -------------------------
 
-  * ``bitbucket-pipelines.yml`` configures the bitbucket pipeline
-  * Pipeline steps to build the sphinx documentation on every *push* to the repository (all branches)
+  * ``bitbucket-pipelines.yml`` configures the Bitbucket pipeline
+  * Pipeline steps to build the sphinx documentation on **every** *push* to the repository (for all branches)
   * Pipeline steps to deploy the documentation to the UltraZohm-Server (docs.ultrazohm.com) after every merged pull request on *main*
-  * Pipeline reports success or failure to bitbucket repository (green / red besides branch)
+  * Pipeline reports success or failure to Bitbucket repository (green / red symbol next to branch in Bitbucket)
 
 
 .. mermaid::
-  :caption: Setup of the bitbucket build pipeline.
+  :caption: Setup of the Bitbucket build pipeline.
   :align: center
 
   graph LR
@@ -39,7 +39,7 @@ The build pipeline:
     * The ``build`` folder after ``make html`` is copied to the web server
     * Done with rsync deploy pipe 
     * Variables for username, password and server path are stored as secret repository variables
-    * Only accessible for admins: ``repository settings -> repository variables`` in bitbucket (``ultrazohm_sw`` repository)
+    * Only accessible for admins: ``repository settings -> repository variables`` in Bitbucket (``ultrazohm_sw`` repository)
 
 .. literalinclude:: ../../../bitbucket-pipelines.yml
     :linenos:
@@ -48,15 +48,15 @@ The build pipeline:
 Drone pipeline (Software)
 -------------------------
 
-* Uses `Drone <drone.io>`_
+* Uses `Drone <www.drone.io>`_
 * Drone has a Server and a Runner
-* Drone Server is the bridge between Bitbucket, User and Runner (`ci.ultrazohm.com <ci.ultrazohm.com>`_)
-* Runner (Docker runner, see `Drone docs <https://docs.drone.io/runner/docker/overview/>`_)polls the server and executes the build pipeline
+* Drone Server is the bridge between Bitbucket, User and Runner (`ci.ultrazohm.com <www.ci.ultrazohm.com>`_)
+* Runner (Docker runner, see `Drone docs <https://docs.drone.io/runner/docker/overview/>`_) polls the server and executes the build pipeline
 * Server and Runner are used as Docker container on the UltraZohm Server
-* Setup in Bitbucket **exactly** as in the `drone docs <https://docs.drone.io/server/provider/bitbucket-cloud/>`
-* Permissions in the OAuth settings of the bitbucket repository must match the drone docs!
+* Setup in Bitbucket **exactly** as in the `drone docs for Bitbucket <https://docs.drone.io/server/provider/bitbucket-cloud/>`_
+* Permissions in the OAuth settings of the Bitbucket repository must match the drone docs
 * ``drone/Docker-compose.yml`` in `uz_server_main <https://bitbucket.org/ultrazohm/uz_server_main/src/master/>`_ repository (only visible to admins) sets up Drone
-* Changes in the docker-compose file are transferred to the UltraZohm automatically by using a rsync pipeline
+* Changes in the docker-compose file are automatically transferred to the UltraZohm by using a rsync pipeline
 * ``ssh`` to UltraZohm-Server, `cd` to ``/drone`` and use ``docker-compose up -d`` to restart the Drone Server and Runner after changes in the repository
 
 How-to:

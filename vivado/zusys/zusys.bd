@@ -6,7 +6,7 @@
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2020.1",
+      "tool_version": "2020.1.1",
       "validated": "true"
     },
     "design_tree": {
@@ -27,10 +27,7 @@
         "util_vector_logic_0": "",
         "Counter_f_sw_V2_ip_0": "",
         "xlconcat_0": "",
-        "vio_Gates_2L": "",
-        "extend_interrupt_0": "",
-        "extend_interrupt_1": "",
-        "extend_interrupt_2": ""
+        "vio_Gates_2L": ""
       },
       "DataMover": {
         "util_vector_logic_0": "",
@@ -89,10 +86,7 @@
         "Interrupt_Start_Center": "",
         "ila_0": "",
         "Set_Deadtime_3L": "",
-        "vio_Gates_3L": "",
-        "extend_interrupt_0": "",
-        "extend_interrupt_1": "",
-        "extend_interrupt_2": ""
+        "vio_Gates_3L": ""
       },
       "IncreEncoder_V24_ip_0": "",
       "Trans_123_dq_V12_ip_0": "",
@@ -102,7 +96,8 @@
         "ila_0": "",
         "mux_axi_ip_0": "",
         "adc_delay": "",
-        "delay_trigger_0": ""
+        "delay_trigger_0": "",
+        "vio_interrupt": ""
       }
     },
     "ports": {
@@ -633,112 +628,19 @@
                 "value": "6"
               }
             }
-          },
-          "extend_interrupt_0": {
-            "vlnv": "xilinx.com:module_ref:extend_interrupt:1.0",
-            "xci_name": "zusys_extend_interrupt_0_0",
-            "reference_info": {
-              "ref_type": "hdl",
-              "ref_name": "extend_interrupt",
-              "boundary_crc": "0x0"
-            },
-            "ports": {
-              "clock": {
-                "type": "clk",
-                "direction": "I",
-                "parameters": {
-                  "CLK_DOMAIN": {
-                    "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
-                    "value_src": "default_prop"
-                  },
-                  "FREQ_HZ": {
-                    "value": "99999985",
-                    "value_src": "user_prop"
-                  }
-                }
-              },
-              "interrupt_in": {
-                "direction": "I"
-              },
-              "interrupt_out": {
-                "direction": "O"
-              }
-            }
-          },
-          "extend_interrupt_1": {
-            "vlnv": "xilinx.com:module_ref:extend_interrupt:1.0",
-            "xci_name": "zusys_extend_interrupt_1_0",
-            "reference_info": {
-              "ref_type": "hdl",
-              "ref_name": "extend_interrupt",
-              "boundary_crc": "0x0"
-            },
-            "ports": {
-              "clock": {
-                "type": "clk",
-                "direction": "I",
-                "parameters": {
-                  "CLK_DOMAIN": {
-                    "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
-                    "value_src": "default_prop"
-                  },
-                  "FREQ_HZ": {
-                    "value": "99999985",
-                    "value_src": "user_prop"
-                  }
-                }
-              },
-              "interrupt_in": {
-                "direction": "I"
-              },
-              "interrupt_out": {
-                "direction": "O"
-              }
-            }
-          },
-          "extend_interrupt_2": {
-            "vlnv": "xilinx.com:module_ref:extend_interrupt:1.0",
-            "xci_name": "zusys_extend_interrupt_2_0",
-            "reference_info": {
-              "ref_type": "hdl",
-              "ref_name": "extend_interrupt",
-              "boundary_crc": "0x0"
-            },
-            "ports": {
-              "clock": {
-                "type": "clk",
-                "direction": "I",
-                "parameters": {
-                  "CLK_DOMAIN": {
-                    "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
-                    "value_src": "default_prop"
-                  },
-                  "FREQ_HZ": {
-                    "value": "99999985",
-                    "value_src": "user_prop"
-                  }
-                }
-              },
-              "interrupt_in": {
-                "direction": "I"
-              },
-              "interrupt_out": {
-                "direction": "O"
-              }
-            }
           }
         },
         "interface_nets": {
-          "ps8_0_axi_periph_M06_AXI": {
-            "interface_ports": [
-              "S00_AXI",
-              "InterLock_Module_0/S00_AXI"
-            ]
-          },
           "AXI4_Lite_1": {
             "interface_ports": [
               "AXI4_Lite",
               "PWM_and_SS_control_V_0/AXI4_Lite"
+            ]
+          },
+          "ps8_0_axi_periph_M06_AXI": {
+            "interface_ports": [
+              "S00_AXI",
+              "InterLock_Module_0/S00_AXI"
             ]
           },
           "Conn1": {
@@ -834,10 +736,7 @@
               "ila_GateSignal/clk",
               "Counter_f_sw_V2_ip_0/AXI4_Lite_ACLK",
               "Counter_f_sw_V2_ip_0/IPCORE_CLK",
-              "vio_Gates_2L/clk",
-              "extend_interrupt_0/clock",
-              "extend_interrupt_1/clock",
-              "extend_interrupt_2/clock"
+              "vio_Gates_2L/clk"
             ]
           },
           "FCS_SPMSM_Np1_i_V46_ip_0_ss_0": {
@@ -934,14 +833,16 @@
             "ports": [
               "PWM_and_SS_control_V_0/Triangular_Max",
               "util_vector_logic_0/Op1",
-              "extend_interrupt_1/interrupt_in"
+              "Carrier_triangular_max",
+              "ila_GateSignal/probe21"
             ]
           },
           "PWM_and_SS_control_V_0_Triangular_Min": {
             "ports": [
               "PWM_and_SS_control_V_0/Triangular_Min",
               "util_vector_logic_0/Op2",
-              "extend_interrupt_2/interrupt_in"
+              "Carrier_triangular_min",
+              "ila_GateSignal/probe22"
             ]
           },
           "AXI4_Lite_ARESETN_1": {
@@ -953,43 +854,23 @@
               "Counter_f_sw_V2_ip_0/IPCORE_RESETN"
             ]
           },
-          "carrier_triangular_max_min": {
-            "ports": [
-              "util_vector_logic_0/Res",
-              "extend_interrupt_0/interrupt_in"
-            ]
-          },
           "xlconcat_0_dout": {
             "ports": [
               "xlconcat_0/dout",
               "Gate_Signals_2L"
             ]
           },
-          "carrier_triangular_max_min_ext": {
-            "ports": [
-              "extend_interrupt_0/interrupt_out",
-              "Carrier_triangular_max_min",
-              "ila_GateSignal/probe13"
-            ]
-          },
-          "Carrier_triangular_min_ext": {
-            "ports": [
-              "extend_interrupt_2/interrupt_out",
-              "Carrier_triangular_min",
-              "ila_GateSignal/probe22"
-            ]
-          },
-          "Carrier_triangular_max_ext": {
-            "ports": [
-              "extend_interrupt_1/interrupt_out",
-              "Carrier_triangular_max",
-              "ila_GateSignal/probe21"
-            ]
-          },
           "Counter_f_sw_V2_ip_0_switchNumb": {
             "ports": [
               "Counter_f_sw_V2_ip_0/switchNumb",
               "ila_GateSignal/probe23"
+            ]
+          },
+          "util_vector_logic_0_Res": {
+            "ports": [
+              "util_vector_logic_0/Res",
+              "Carrier_triangular_max_min",
+              "ila_GateSignal/probe13"
             ]
           }
         }
@@ -4529,7 +4410,7 @@
             "value": "1"
           },
           "PSU__ACT_DDR_FREQ_MHZ": {
-            "value": "1199.999756"
+            "value": "1200.000000"
           },
           "PSU__AUX_REF_CLK__FREQMHZ": {
             "value": "33.333"
@@ -4556,7 +4437,7 @@
             "value": "MIO 24 .. 25"
           },
           "PSU__CRF_APB__ACPU_CTRL__ACT_FREQMHZ": {
-            "value": "1049.999878"
+            "value": "1050.000000"
           },
           "PSU__CRF_APB__ACPU_CTRL__FREQMHZ": {
             "value": "1200"
@@ -4673,7 +4554,7 @@
             "value": "1"
           },
           "PSU__CRF_APB__DBG_FPD_CTRL__ACT_FREQMHZ": {
-            "value": "249.999954"
+            "value": "250.000000"
           },
           "PSU__CRF_APB__DBG_FPD_CTRL__FREQMHZ": {
             "value": "250"
@@ -4691,7 +4572,7 @@
             "value": "IOPLL"
           },
           "PSU__CRF_APB__DBG_TSTMP_CTRL__ACT_FREQMHZ": {
-            "value": "249.999954"
+            "value": "250.000000"
           },
           "PSU__CRF_APB__DBG_TSTMP_CTRL__FREQMHZ": {
             "value": "250"
@@ -4700,7 +4581,7 @@
             "value": "IOPLL"
           },
           "PSU__CRF_APB__DDR_CTRL__ACT_FREQMHZ": {
-            "value": "599.999878"
+            "value": "600.000000"
           },
           "PSU__CRF_APB__DDR_CTRL__FREQMHZ": {
             "value": "1200"
@@ -4709,7 +4590,7 @@
             "value": "DPLL"
           },
           "PSU__CRF_APB__DPDMA_REF_CTRL__ACT_FREQMHZ": {
-            "value": "599.999878"
+            "value": "600.000000"
           },
           "PSU__CRF_APB__DPDMA_REF_CTRL__FREQMHZ": {
             "value": "600"
@@ -4751,7 +4632,7 @@
             "value": "VPLL"
           },
           "PSU__CRF_APB__GDMA_REF_CTRL__ACT_FREQMHZ": {
-            "value": "599.999878"
+            "value": "600.000000"
           },
           "PSU__CRF_APB__GDMA_REF_CTRL__FREQMHZ": {
             "value": "600"
@@ -4760,7 +4641,7 @@
             "value": "DPLL"
           },
           "PSU__CRF_APB__GPU_REF_CTRL__ACT_FREQMHZ": {
-            "value": "599.999878"
+            "value": "600.000000"
           },
           "PSU__CRF_APB__GPU_REF_CTRL__FREQMHZ": {
             "value": "600"
@@ -4790,7 +4671,7 @@
             "value": "250"
           },
           "PSU__CRF_APB__TOPSW_LSBUS_CTRL__ACT_FREQMHZ": {
-            "value": "99.999985"
+            "value": "100.000000"
           },
           "PSU__CRF_APB__TOPSW_LSBUS_CTRL__FREQMHZ": {
             "value": "100"
@@ -4799,7 +4680,7 @@
             "value": "IOPLL"
           },
           "PSU__CRF_APB__TOPSW_MAIN_CTRL__ACT_FREQMHZ": {
-            "value": "524.999939"
+            "value": "525.000000"
           },
           "PSU__CRF_APB__TOPSW_MAIN_CTRL__FREQMHZ": {
             "value": "533.333"
@@ -4814,7 +4695,7 @@
             "value": "PSS_REF_CLK"
           },
           "PSU__CRL_APB__ADMA_REF_CTRL__ACT_FREQMHZ": {
-            "value": "499.999908"
+            "value": "500.000000"
           },
           "PSU__CRL_APB__ADMA_REF_CTRL__FREQMHZ": {
             "value": "500"
@@ -4835,7 +4716,7 @@
             "value": "0"
           },
           "PSU__CRL_APB__AMS_REF_CTRL__ACT_FREQMHZ": {
-            "value": "49.999992"
+            "value": "50.000000"
           },
           "PSU__CRL_APB__AMS_REF_CTRL__FREQMHZ": {
             "value": "50"
@@ -4844,7 +4725,7 @@
             "value": "IOPLL"
           },
           "PSU__CRL_APB__CAN0_REF_CTRL__ACT_FREQMHZ": {
-            "value": "99.999985"
+            "value": "100.000000"
           },
           "PSU__CRL_APB__CAN0_REF_CTRL__FREQMHZ": {
             "value": "100"
@@ -4853,7 +4734,7 @@
             "value": "IOPLL"
           },
           "PSU__CRL_APB__CAN1_REF_CTRL__ACT_FREQMHZ": {
-            "value": "99.999985"
+            "value": "100.000000"
           },
           "PSU__CRL_APB__CAN1_REF_CTRL__FREQMHZ": {
             "value": "100"
@@ -4862,7 +4743,7 @@
             "value": "IOPLL"
           },
           "PSU__CRL_APB__CPU_R5_CTRL__ACT_FREQMHZ": {
-            "value": "499.999908"
+            "value": "500.000000"
           },
           "PSU__CRL_APB__CPU_R5_CTRL__FREQMHZ": {
             "value": "500"
@@ -4880,7 +4761,7 @@
             "value": "SysOsc"
           },
           "PSU__CRL_APB__DBG_LPD_CTRL__ACT_FREQMHZ": {
-            "value": "249.999954"
+            "value": "250.000000"
           },
           "PSU__CRL_APB__DBG_LPD_CTRL__FREQMHZ": {
             "value": "250"
@@ -4901,7 +4782,7 @@
             "value": "RPLL"
           },
           "PSU__CRL_APB__DLL_REF_CTRL__ACT_FREQMHZ": {
-            "value": "1499.999756"
+            "value": "1500.000000"
           },
           "PSU__CRL_APB__DLL_REF_CTRL__FREQMHZ": {
             "value": "1500"
@@ -4937,7 +4818,7 @@
             "value": "IOPLL"
           },
           "PSU__CRL_APB__GEM3_REF_CTRL__ACT_FREQMHZ": {
-            "value": "124.999977"
+            "value": "125.000000"
           },
           "PSU__CRL_APB__GEM3_REF_CTRL__FREQMHZ": {
             "value": "125"
@@ -4946,7 +4827,7 @@
             "value": "IOPLL"
           },
           "PSU__CRL_APB__GEM_TSU_REF_CTRL__ACT_FREQMHZ": {
-            "value": "249.999954"
+            "value": "250.000000"
           },
           "PSU__CRL_APB__GEM_TSU_REF_CTRL__FREQMHZ": {
             "value": "250"
@@ -4955,7 +4836,7 @@
             "value": "IOPLL"
           },
           "PSU__CRL_APB__I2C0_REF_CTRL__ACT_FREQMHZ": {
-            "value": "99.999985"
+            "value": "100.000000"
           },
           "PSU__CRL_APB__I2C0_REF_CTRL__FREQMHZ": {
             "value": "100"
@@ -4964,7 +4845,7 @@
             "value": "IOPLL"
           },
           "PSU__CRL_APB__I2C1_REF_CTRL__ACT_FREQMHZ": {
-            "value": "99.999985"
+            "value": "100.000000"
           },
           "PSU__CRL_APB__I2C1_REF_CTRL__FREQMHZ": {
             "value": "100"
@@ -4979,7 +4860,7 @@
             "value": "PSS_REF_CLK"
           },
           "PSU__CRL_APB__IOU_SWITCH_CTRL__ACT_FREQMHZ": {
-            "value": "266.666626"
+            "value": "266.666656"
           },
           "PSU__CRL_APB__IOU_SWITCH_CTRL__FREQMHZ": {
             "value": "267"
@@ -4988,7 +4869,7 @@
             "value": "RPLL"
           },
           "PSU__CRL_APB__LPD_LSBUS_CTRL__ACT_FREQMHZ": {
-            "value": "99.999985"
+            "value": "100.000000"
           },
           "PSU__CRL_APB__LPD_LSBUS_CTRL__FREQMHZ": {
             "value": "100"
@@ -4997,7 +4878,7 @@
             "value": "IOPLL"
           },
           "PSU__CRL_APB__LPD_SWITCH_CTRL__ACT_FREQMHZ": {
-            "value": "499.999908"
+            "value": "500.000000"
           },
           "PSU__CRL_APB__LPD_SWITCH_CTRL__FREQMHZ": {
             "value": "500"
@@ -5027,7 +4908,7 @@
             "value": "IOPLL"
           },
           "PSU__CRL_APB__PCAP_CTRL__ACT_FREQMHZ": {
-            "value": "187.499969"
+            "value": "187.500000"
           },
           "PSU__CRL_APB__PCAP_CTRL__FREQMHZ": {
             "value": "200"
@@ -5036,7 +4917,7 @@
             "value": "IOPLL"
           },
           "PSU__CRL_APB__PL0_REF_CTRL__ACT_FREQMHZ": {
-            "value": "99.999985"
+            "value": "100.000000"
           },
           "PSU__CRL_APB__PL0_REF_CTRL__FREQMHZ": {
             "value": "100"
@@ -5054,7 +4935,7 @@
             "value": "49.999992"
           },
           "PSU__CRL_APB__QSPI_REF_CTRL__ACT_FREQMHZ": {
-            "value": "299.999939"
+            "value": "300.000000"
           },
           "PSU__CRL_APB__QSPI_REF_CTRL__FREQMHZ": {
             "value": "300"
@@ -5078,7 +4959,7 @@
             "value": "RPLL"
           },
           "PSU__CRL_APB__SDIO1_REF_CTRL__ACT_FREQMHZ": {
-            "value": "199.999969"
+            "value": "200.000000"
           },
           "PSU__CRL_APB__SDIO1_REF_CTRL__FREQMHZ": {
             "value": "200"
@@ -5087,7 +4968,7 @@
             "value": "RPLL"
           },
           "PSU__CRL_APB__SPI0_REF_CTRL__ACT_FREQMHZ": {
-            "value": "199.999969"
+            "value": "200.000000"
           },
           "PSU__CRL_APB__SPI0_REF_CTRL__FREQMHZ": {
             "value": "200"
@@ -5096,7 +4977,7 @@
             "value": "RPLL"
           },
           "PSU__CRL_APB__SPI1_REF_CTRL__ACT_FREQMHZ": {
-            "value": "199.999969"
+            "value": "200.000000"
           },
           "PSU__CRL_APB__SPI1_REF_CTRL__FREQMHZ": {
             "value": "200"
@@ -5105,7 +4986,7 @@
             "value": "RPLL"
           },
           "PSU__CRL_APB__TIMESTAMP_REF_CTRL__ACT_FREQMHZ": {
-            "value": "33.333328"
+            "value": "33.333332"
           },
           "PSU__CRL_APB__TIMESTAMP_REF_CTRL__FREQMHZ": {
             "value": "100"
@@ -5114,7 +4995,7 @@
             "value": "PSS_REF_CLK"
           },
           "PSU__CRL_APB__UART0_REF_CTRL__ACT_FREQMHZ": {
-            "value": "99.999985"
+            "value": "100.000000"
           },
           "PSU__CRL_APB__UART0_REF_CTRL__FREQMHZ": {
             "value": "100"
@@ -5123,7 +5004,7 @@
             "value": "IOPLL"
           },
           "PSU__CRL_APB__UART1_REF_CTRL__ACT_FREQMHZ": {
-            "value": "99.999985"
+            "value": "100.000000"
           },
           "PSU__CRL_APB__UART1_REF_CTRL__FREQMHZ": {
             "value": "100"
@@ -6011,7 +5892,7 @@
             "value": "33.333"
           },
           "PSU__PSS_REF_CLK__FREQMHZ": {
-            "value": "33.33333"
+            "value": "33.333333"
           },
           "PSU__QSPI_COHERENCY": {
             "value": "0"
@@ -6515,7 +6396,7 @@
                     "value_src": "default_prop"
                   },
                   "FREQ_HZ": {
-                    "value": "99999985",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   }
                 }
@@ -6678,99 +6559,6 @@
                 "value": "1"
               }
             }
-          },
-          "extend_interrupt_0": {
-            "vlnv": "xilinx.com:module_ref:extend_interrupt:1.0",
-            "xci_name": "zusys_extend_interrupt_0_1",
-            "reference_info": {
-              "ref_type": "hdl",
-              "ref_name": "extend_interrupt",
-              "boundary_crc": "0x0"
-            },
-            "ports": {
-              "clock": {
-                "type": "clk",
-                "direction": "I",
-                "parameters": {
-                  "CLK_DOMAIN": {
-                    "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
-                    "value_src": "default_prop"
-                  },
-                  "FREQ_HZ": {
-                    "value": "99999985",
-                    "value_src": "user_prop"
-                  }
-                }
-              },
-              "interrupt_in": {
-                "direction": "I"
-              },
-              "interrupt_out": {
-                "direction": "O"
-              }
-            }
-          },
-          "extend_interrupt_1": {
-            "vlnv": "xilinx.com:module_ref:extend_interrupt:1.0",
-            "xci_name": "zusys_extend_interrupt_1_1",
-            "reference_info": {
-              "ref_type": "hdl",
-              "ref_name": "extend_interrupt",
-              "boundary_crc": "0x0"
-            },
-            "ports": {
-              "clock": {
-                "type": "clk",
-                "direction": "I",
-                "parameters": {
-                  "CLK_DOMAIN": {
-                    "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
-                    "value_src": "default_prop"
-                  },
-                  "FREQ_HZ": {
-                    "value": "99999985",
-                    "value_src": "user_prop"
-                  }
-                }
-              },
-              "interrupt_in": {
-                "direction": "I"
-              },
-              "interrupt_out": {
-                "direction": "O"
-              }
-            }
-          },
-          "extend_interrupt_2": {
-            "vlnv": "xilinx.com:module_ref:extend_interrupt:1.0",
-            "xci_name": "zusys_extend_interrupt_2_1",
-            "reference_info": {
-              "ref_type": "hdl",
-              "ref_name": "extend_interrupt",
-              "boundary_crc": "0x0"
-            },
-            "ports": {
-              "clock": {
-                "type": "clk",
-                "direction": "I",
-                "parameters": {
-                  "CLK_DOMAIN": {
-                    "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
-                    "value_src": "default_prop"
-                  },
-                  "FREQ_HZ": {
-                    "value": "99999985",
-                    "value_src": "user_prop"
-                  }
-                }
-              },
-              "interrupt_in": {
-                "direction": "I"
-              },
-              "interrupt_out": {
-                "direction": "O"
-              }
-            }
           }
         },
         "interface_nets": {
@@ -6790,10 +6578,7 @@
               "top_npc_state_machine_0/clock",
               "ila_0/clk",
               "Set_Deadtime_3L/clk",
-              "vio_Gates_3L/clk",
-              "extend_interrupt_0/clock",
-              "extend_interrupt_1/clock",
-              "extend_interrupt_2/clock"
+              "vio_Gates_3L/clk"
             ]
           },
           "proc_sys_reset_1_peripheral_aresetn": {
@@ -6945,17 +6730,17 @@
           "PWM_SS_3L_ip_0_Period_Center": {
             "ports": [
               "PWM_SS_3L_ip_0/Period_Center",
-              "Interrupt_Start_Center/Op1",
               "ila_0/probe20",
-              "extend_interrupt_2/interrupt_in"
+              "Interrupt_Center",
+              "Interrupt_Start_Center/Op1"
             ]
           },
           "PWM_SS_3L_ip_0_Period_Start": {
             "ports": [
               "PWM_SS_3L_ip_0/Period_Start",
-              "Interrupt_Start_Center/Op2",
               "ila_0/probe21",
-              "extend_interrupt_1/interrupt_in"
+              "Interrupt_Start",
+              "Interrupt_Start_Center/Op2"
             ]
           },
           "Enable_Gates_1": {
@@ -6966,7 +6751,7 @@
           },
           "Interrupt_Start_Center_Res": {
             "ports": [
-              "extend_interrupt_0/interrupt_out",
+              "Interrupt_Start_Center/Res",
               "ila_0/probe12",
               "Interrupt_Start_Center"
             ]
@@ -7030,24 +6815,6 @@
             "ports": [
               "vio_Gates_3L/probe_out8",
               "PWM_SS_3L_ip_0/SSc2_IN_External"
-            ]
-          },
-          "Interrupt_Start_Center_Res1": {
-            "ports": [
-              "Interrupt_Start_Center/Res",
-              "extend_interrupt_0/interrupt_in"
-            ]
-          },
-          "extend_interrupt_1_interrupt_out": {
-            "ports": [
-              "extend_interrupt_1/interrupt_out",
-              "Interrupt_Start"
-            ]
-          },
-          "extend_interrupt_2_interrupt_out": {
-            "ports": [
-              "extend_interrupt_2/interrupt_out",
-              "Interrupt_Center"
             ]
           }
         }
@@ -7193,7 +6960,7 @@
                     "value_src": "default_prop"
                   },
                   "FREQ_HZ": {
-                    "value": "99999985",
+                    "value": "100000000",
                     "value_src": "user_prop"
                   }
                 }
@@ -7210,19 +6977,28 @@
                 "direction": "O"
               }
             }
+          },
+          "vio_interrupt": {
+            "vlnv": "xilinx.com:ip:vio:3.0",
+            "xci_name": "zusys_vio_0_0",
+            "parameters": {
+              "C_NUM_PROBE_IN": {
+                "value": "0"
+              }
+            }
           }
         },
         "interface_nets": {
-          "AXI4_Lite_1": {
-            "interface_ports": [
-              "AXI4_Lite",
-              "mux_axi_ip_0/AXI4_Lite"
-            ]
-          },
           "smartconnect_0_M11_AXI": {
             "interface_ports": [
               "S_AXI",
               "Trigger_f_cc/S_AXI"
+            ]
+          },
+          "AXI4_Lite_1": {
+            "interface_ports": [
+              "AXI4_Lite",
+              "mux_axi_ip_0/AXI4_Lite"
             ]
           }
         },
@@ -7291,7 +7067,8 @@
               "mux_axi_ip_0/AXI4_Lite_ACLK",
               "mux_axi_ip_0/IPCORE_CLK",
               "delay_trigger_0/clk",
-              "adc_delay/clk"
+              "adc_delay/clk",
+              "vio_interrupt/clk"
             ]
           },
           "proc_sys_reset_1_peripheral_aresetn": {
@@ -7327,63 +7104,21 @@
               "adc_delay/probe_out0",
               "delay_trigger_0/delay_cycles"
             ]
+          },
+          "vio_0_probe_out0": {
+            "ports": [
+              "vio_interrupt/probe_out0",
+              "Concat_interrupts/In7"
+            ]
           }
         }
       }
     },
     "interface_nets": {
-      "smartconnect_0_M08_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M08_AXI",
-          "Gates/AXI4_Lite"
-        ]
-      },
-      "smartconnect_0_M06_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M06_AXI",
-          "axi_gpio_2/S_AXI"
-        ]
-      },
-      "smartconnect_0_M04_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M04_AXI",
-          "ADC_A3/s00_axi1"
-        ]
-      },
       "smartconnect_0_M12_AXI": {
         "interface_ports": [
           "smartconnect_0/M12_AXI",
           "Gates_3L/AXI4_Lite"
-        ]
-      },
-      "smartconnect_0_M01_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M01_AXI",
-          "ADC_A1/s00_axi"
-        ]
-      },
-      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
-        "interface_ports": [
-          "smartconnect_0/S00_AXI",
-          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
-        ]
-      },
-      "smartconnect_0_M00_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M00_AXI",
-          "ADC_A1/s00_axi1"
-        ]
-      },
-      "smartconnect_0_M13_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M13_AXI",
-          "Gates/AXI4_Lite1"
-        ]
-      },
-      "smartconnect_0_M05_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M05_AXI",
-          "ADC_A3/s00_axi"
         ]
       },
       "smartconnect_0_M10_AXI": {
@@ -7398,28 +7133,10 @@
           "DataMover/M00_AXI"
         ]
       },
-      "smartconnect_0_M03_AXI": {
+      "smartconnect_0_M04_AXI": {
         "interface_ports": [
-          "smartconnect_0/M03_AXI",
-          "ADC_A2/s00_axi"
-        ]
-      },
-      "smartconnect_0_M11_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M11_AXI",
-          "Interrupt/S_AXI"
-        ]
-      },
-      "smartconnect_0_M09_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M09_AXI",
-          "IncreEncoder_V24_ip_0/AXI4_Lite"
-        ]
-      },
-      "smartconnect_0_M07_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M07_AXI",
-          "Gates/S00_AXI"
+          "smartconnect_0/M04_AXI",
+          "ADC_A3/s00_axi1"
         ]
       },
       "smartconnect_0_M02_AXI": {
@@ -7428,10 +7145,76 @@
           "ADC_A2/s00_axi1"
         ]
       },
+      "smartconnect_0_M08_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M08_AXI",
+          "Gates/AXI4_Lite"
+        ]
+      },
+      "smartconnect_0_M01_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M01_AXI",
+          "ADC_A1/s00_axi"
+        ]
+      },
       "smartconnect_0_M14_AXI": {
         "interface_ports": [
           "smartconnect_0/M14_AXI",
           "Interrupt/AXI4_Lite"
+        ]
+      },
+      "smartconnect_0_M13_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M13_AXI",
+          "Gates/AXI4_Lite1"
+        ]
+      },
+      "smartconnect_0_M09_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M09_AXI",
+          "IncreEncoder_V24_ip_0/AXI4_Lite"
+        ]
+      },
+      "smartconnect_0_M03_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M03_AXI",
+          "ADC_A2/s00_axi"
+        ]
+      },
+      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
+        "interface_ports": [
+          "smartconnect_0/S00_AXI",
+          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
+        ]
+      },
+      "smartconnect_0_M06_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M06_AXI",
+          "axi_gpio_2/S_AXI"
+        ]
+      },
+      "smartconnect_0_M05_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M05_AXI",
+          "ADC_A3/s00_axi"
+        ]
+      },
+      "smartconnect_0_M11_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M11_AXI",
+          "Interrupt/S_AXI"
+        ]
+      },
+      "smartconnect_0_M00_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M00_AXI",
+          "ADC_A1/s00_axi1"
+        ]
+      },
+      "smartconnect_0_M07_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M07_AXI",
+          "Gates/S00_AXI"
         ]
       }
     },
@@ -7464,7 +7247,6 @@
         "ports": [
           "clk_wiz_0/clk_50MHz",
           "proc_sys_reset_50MHz/slowest_sync_clk",
-          "ila_Encoder/probe5",
           "smartconnect_0/aclk2",
           "IncreEncoder_V24_ip_0/IPCORE_CLK",
           "IncreEncoder_V24_ip_0/AXI4_Lite_ACLK",
@@ -7523,7 +7305,8 @@
           "ADC_A2/ADC_trigger_conversion",
           "ADC_A3/ADC_trigger_conversion",
           "ADC_A1/ADC_trigger_conversion",
-          "IncreEncoder_V24_ip_0/PeriodEnd"
+          "IncreEncoder_V24_ip_0/PeriodEnd",
+          "ila_Encoder/probe5"
         ]
       },
       "proc_sys_reset_50MHz_peripheral_aresetn": {

@@ -65,10 +65,10 @@ extern DS_Data Global_Data;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
-// - called by the hardware timer
+// - triggered from PL
 // - start of the control period
 //----------------------------------------------------
-void TMR_Con_Intr_Handler(void *data)
+void ISR_Control(void *data)
 {
 	//Show start of control-ISR by toggling a pin
 	//XGpio_DiscreteWrite(&Gpio_OUT,GPIO_CHANNEL , 0b0010);  // --+-
@@ -232,12 +232,6 @@ int MeasureTime(){
 	XTime isr_period_counts = (tNow - tPrev);
 	isr_period_us_measured = isr_period_counts / counts_per_us;
 
-	/* for reference how to measure time
-	float up_time_us = 1.0 * (tNow) / (COUNTS_PER_USECOND);
-	float up_time_ms = 1.0 * (tNow) / (COUNTS_PER_USECOND*1000);
-	float up_time_s  = up_time_ms * 1e-3;
-	 */
-
 	return 0;
 }
 
@@ -303,7 +297,7 @@ int Initialize_Timer(){
 	// SETUP THE TIMER for Control
 	Status = XTmrCtr_Initialize(&TMR_Con_Inst, Con_TIMER_DEVICE_ID);
 	if(Status != XST_SUCCESS) return XST_FAILURE;
-	XTmrCtr_SetHandler(&TMR_Con_Inst, TMR_Con_Intr_Handler, &TMR_Con_Inst);
+	//XTmrCtr_SetHandler(&TMR_Con_Inst, ISR_Control, &TMR_Con_Inst);
 	XTmrCtr_SetOptions(&TMR_Con_Inst, 0, XTC_INT_MODE_OPTION | XTC_AUTO_RELOAD_OPTION);
 	XTmrCtr_SetResetValue(&TMR_Con_Inst, 0, TMR_Con_LOAD);
 	XTmrCtr_Start(&TMR_Con_Inst,0);
@@ -333,14 +327,22 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Tmr_Con_InstancePtr
 	// Connect the interrupt controller interrupt handler to the hardware interrupt handling logic in the processor
 	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,(Xil_ExceptionHandler)XScuGic_InterruptHandler,IntcInstPtr);
 
-	if(status != XST_SUCCESS) return XST_FAILURE;
+	/* Enable interrupts in the processor */
+	Xil_ExceptionEnable();	//Enable interrupts in the ARM
+
+	// setting interrupt trigger sensitivity
+	// b01	Active HIGH level sensitive
+	// b11 	Rising edge sensitive
+	// XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
+	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
+	//XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
 
 	// Make the connection between the IntId of the interrupt source and the
 	// associated handler that is to run when the interrupt is recognized.
 	status = XScuGic_Connect(IntcInstPtr,
 								Interrupt_ISR_ID,
-								(Xil_ExceptionHandler)TMR_Con_Intr_Handler,
-								(void *)Tmr_Con_InstancePtr);
+								(Xil_ExceptionHandler)ISR_Control,
+								(void *)IntcInstPtr);
 	if(status != XST_SUCCESS) return XST_FAILURE;
 
 	// Connect ADC conversion interrupt to handler
@@ -350,14 +352,11 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Tmr_Con_InstancePtr
 //								(void *)Conv_ADC_InstancePtr);
 //		if(status != XST_SUCCESS) return XST_FAILURE;
 
-
 	// Enable GPIO and timer interrupts in the controller
 	XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
 	XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
 //	XScuGic_Enable(&INTCInst, INTC_ADC_Conv_INTERRUPT_ID);
 
-	/* Enable interrupts in the processor */
-	Xil_ExceptionEnable();	//Enable interrupts in the ARM
 
 	xil_printf("RPU: Rpu_GicInit: Done\r\n");
 	return XST_SUCCESS;

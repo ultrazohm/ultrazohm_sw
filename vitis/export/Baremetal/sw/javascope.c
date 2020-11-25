@@ -61,7 +61,7 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 // external global variables from isr.c
 extern Xint32 i_count_1ms, i_count_1s;
 extern float f_ISRLifeCheck;
-extern float time_ISR_max_us, time_ISR_total, time_ISR_total_us;
+extern float time_ISR_max_us, time_ISR_total, time_ISR_total_us, isr_period_us_measured;
 
 Xint16 values[20];
 union SlowData js_slowDataArray[JSSD_ENDMARKER];
@@ -257,7 +257,8 @@ void JavaScope_update(DS_Data* data){
 	js_ptr_arr[JSO_Rs_mOhm]		= &data->pID.Online_Rs;
 	js_ptr_arr[JSO_PsiPM_mVs]	= &data->pID.Online_Psi_PM;
 	js_ptr_arr[JSO_Sawtooth1] 	= &f_ISRLifeCheck;
-	js_ptr_arr[JSO_SineWave1]   = &test_js_sinewave1;
+	js_ptr_arr[JSO_SineWave1]   = &time_ISR_total_us;
+	js_ptr_arr[JSO_SineWave2]   = &isr_period_us_measured;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another (one every 0,5 ms).

@@ -44,6 +44,8 @@ steps:
      branch:
      - main
      - develop
+     ref:
+     - refs/tags/vivado*
 
 # Generates the bitstream, only on main or develop branch since the step takes ~1.5h, exports the xsa
  - name: Vivado generate bitstream

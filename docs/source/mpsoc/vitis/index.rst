@@ -9,5 +9,6 @@ Vitis
 	create_project
 	export
 	include_math_lib
+	interrupts
 	gcc_optimization
 	known_issues

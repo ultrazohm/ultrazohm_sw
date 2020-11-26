@@ -23,6 +23,7 @@ Documentation of the UltraZohm
     general/bitbucket
     general/contribution_workflow
     general/tcl_scripts
+    general/ci_pipeline
 
 .. toctree::
     :maxdepth: 2

@@ -22,7 +22,7 @@
 #define Interrupt_3L_start_center	XPS_FPGA3_INT_ID
 #define Interrupt_3L_start			XPS_FPGA4_INT_ID
 #define Interrupt_3L_center			XPS_FPGA5_INT_ID
-#define Interrupt_timer_fcc			XPAR_FABRIC_TRIGGER_F_CC_INTERRUPT_INTR
+#define Interrupt_timer_fcc			XPAR_FABRIC_INTERRUPT_TRIGGER_F_CC_INTERRUPT_INTR
 
 //chose here which of the above interrupt trigger you want to use:
 // 0 for Interrupt_2L_max_min		
@@ -32,7 +32,7 @@
 // 4 for Interrupt_3L_start			
 // 5 for Interrupt_3L_center		
 // 6 for Interrupt_timer_fcc		
-#define Interrupt_ISR_source_user_choice		1
+#define Interrupt_ISR_source_user_choice		3
 
 #if Interrupt_ISR_source_user_choice == 0
 	#define Interrupt_ISR_ID			Interrupt_2L_max_min
@@ -59,8 +59,9 @@
 	#warning no ISR interrupt ID defined
 #endif 
 
+#define Control_ISR_clear_pending_interrupt_reg		(XPAR_PSU_RCPU_GIC_DIST_BASEADDR + (XSCUGIC_EN_DIS_OFFSET_CALC(XSCUGIC_PENDING_CLR_OFFSET, Interrupt_ISR_ID)) )
 
-void TMR_Con_Intr_Handler(void *baseaddr_p);								// ISR von Timer-Control
+void ISR_Control(void *baseaddr_p);								// ISR von Timer-Control
 void Transfer_ipc_Intr_Handler(void *baseaddr_p);							// ISR von Timer-Control
 
 int MeasureTime(void);														// Function for time measurement

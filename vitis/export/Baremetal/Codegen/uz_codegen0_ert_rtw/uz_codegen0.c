@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 1.14
+ * Model version                  : 1.19
  * Simulink Coder version         : 9.4 (R2020b) 29-Jul-2020
- * C/C++ source code generated on : Fri Nov 27 17:50:00 2020
+ * C/C++ source code generated on : Fri Nov 27 18:10:59 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -30,13 +30,14 @@ void uz_codegen0_step(RT_MODEL *const rtM, ExtU *rtU, ExtY *rtY)
   /* Sum: '<S1>/Sum' incorporates:
    *  Inport: '<Root>/Sum1'
    *  Inport: '<Root>/Sum2'
+   *  Inport: '<Root>/Sum4'
    */
-  rtb_Sum = rtU->Sum1 + rtU->Sum2;
+  rtb_Sum = (rtU->Sum1 + rtU->Sum2) + rtU->Sum4;
 
   /* Outport: '<Root>/SumOut' incorporates:
    *  Gain: '<S1>/Gain'
    */
-  rtY->SumOut = 2.0F * rtb_Sum;
+  rtY->SumOut = 5.0F * rtb_Sum;
 
   /* DiscreteIntegrator: '<S1>/Discrete-Time Integrator' incorporates:
    *  Inport: '<Root>/reset_integrator'
@@ -69,6 +70,11 @@ void uz_codegen0_step(RT_MODEL *const rtM, ExtU *rtU, ExtY *rtY)
    */
   rtY->sineOut = sinf(6.28318548F * rtDW->DiscreteTimeIntegrator1_DSTATE) * 0.5F
     + 0.5F;
+
+  /* Outport: '<Root>/SumOut1' incorporates:
+   *  Inport: '<Root>/Sum1'
+   */
+  rtY->SumOut1 = rtU->Sum1;
 
   /* Update for DiscreteIntegrator: '<S1>/Discrete-Time Integrator' incorporates:
    *  Inport: '<Root>/reset_integrator'

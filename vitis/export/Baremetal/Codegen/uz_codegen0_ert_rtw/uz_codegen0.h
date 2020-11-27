@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 1.14
+ * Model version                  : 1.19
  * Simulink Coder version         : 9.4 (R2020b) 29-Jul-2020
- * C/C++ source code generated on : Fri Nov 27 17:50:00 2020
+ * C/C++ source code generated on : Fri Nov 27 18:10:59 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -57,6 +57,7 @@ typedef struct {
   real32_T Sum2;                       /* '<Root>/Sum2' */
   real32_T reset_integrator;           /* '<Root>/reset_integrator' */
   real32_T time;                       /* '<Root>/time' */
+  real32_T Sum4;                       /* '<Root>/Sum4' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */
@@ -64,6 +65,7 @@ typedef struct {
   real32_T SumOut;                     /* '<Root>/SumOut' */
   real32_T integrator;                 /* '<Root>/integrator' */
   real32_T sineOut;                    /* '<Root>/sineOut' */
+  real32_T SumOut1;                    /* '<Root>/SumOut1' */
 } ExtY;
 
 /* Real-time Model Data Structure */

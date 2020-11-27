@@ -180,8 +180,9 @@ void ISR_Control(void *data)
 
 
 	// Execute codegen model
-	  uz_codegen0_step(rtM, &rtU, &rtY);
-
+	rtU.time=0.001*i_count_1ms;
+	uz_codegen0_step(rtM, &rtU, &rtY);
+	Global_Data.rasv.halfBridge1DutyCycle=rtY.sineOut;
 	// generate open-loop sinusoidal duty-cycle, amplitude and frequency are set in the Global_Data struct
 	// both function write the variable Global_Data.rasv.halfBridge1DutyCycle -> only comment 2L or 3L!
 	// PWM_SS_Calculate_DutyCycle_open_loop_sin(&Global_Data);

@@ -7,20 +7,21 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 1.8
+ * Model version                  : 1.14
  * Simulink Coder version         : 9.4 (R2020b) 29-Jul-2020
- * C/C++ source code generated on : Fri Nov 27 16:36:02 2020
+ * C/C++ source code generated on : Fri Nov 27 17:50:00 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (11), Warning (1), Error (0)
+ * Validation result: Passed (9), Warning (1), Errors (2)
  */
 
 #ifndef RTW_HEADER_uz_codegen0_h_
 #define RTW_HEADER_uz_codegen0_h_
+#include <math.h>
 #include <string.h>
 #ifndef uz_codegen0_COMMON_INCLUDES_
 #define uz_codegen0_COMMON_INCLUDES_
@@ -46,18 +47,23 @@ typedef struct tag_RTM RT_MODEL;
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
   real32_T DiscreteTimeIntegrator_DSTATE;/* '<S1>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S1>/Discrete-Time Integrator1' */
+  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S1>/Discrete-Time Integrator' */
 } DW;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  real32_T In1;                        /* '<Root>/In1' */
-  real32_T In2;                        /* '<Root>/In2' */
+  real32_T Sum1;                       /* '<Root>/Sum1' */
+  real32_T Sum2;                       /* '<Root>/Sum2' */
+  real32_T reset_integrator;           /* '<Root>/reset_integrator' */
+  real32_T time;                       /* '<Root>/time' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  real32_T Out1;                       /* '<Root>/Out1' */
-  real32_T Out2;                       /* '<Root>/Out2' */
+  real32_T SumOut;                     /* '<Root>/SumOut' */
+  real32_T integrator;                 /* '<Root>/integrator' */
+  real32_T sineOut;                    /* '<Root>/sineOut' */
 } ExtY;
 
 /* Real-time Model Data Structure */

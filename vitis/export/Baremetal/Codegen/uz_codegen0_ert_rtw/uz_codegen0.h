@@ -7,20 +7,21 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 1.6
+ * Model version                  : 1.8
  * Simulink Coder version         : 9.4 (R2020b) 29-Jul-2020
- * C/C++ source code generated on : Fri Nov 27 16:03:44 2020
+ * C/C++ source code generated on : Fri Nov 27 16:36:02 2020
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: All passed
+ * Validation result: Passed (11), Warning (1), Error (0)
  */
 
 #ifndef RTW_HEADER_uz_codegen0_h_
 #define RTW_HEADER_uz_codegen0_h_
+#include <string.h>
 #ifndef uz_codegen0_COMMON_INCLUDES_
 #define uz_codegen0_COMMON_INCLUDES_
 #include "rtwtypes.h"
@@ -29,10 +30,23 @@
 /* Model Code Variants */
 
 /* Macros for accessing real-time model data structure */
+#ifndef rtmGetRootDWork
+#define rtmGetRootDWork(rtm)           ((rtm)->dwork)
+#endif
+
+#ifndef rtmSetRootDWork
+#define rtmSetRootDWork(rtm, val)      ((rtm)->dwork = (val))
+#endif
+
 #define uz_codegen0_M                  (rtM)
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM RT_MODEL;
+
+/* Block signals and states (default storage) for system '<Root>' */
+typedef struct {
+  real32_T DiscreteTimeIntegrator_DSTATE;/* '<S1>/Discrete-Time Integrator' */
+} DW;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
@@ -43,15 +57,16 @@ typedef struct {
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
   real32_T Out1;                       /* '<Root>/Out1' */
+  real32_T Out2;                       /* '<Root>/Out2' */
 } ExtY;
 
 /* Real-time Model Data Structure */
 struct tag_RTM {
-  char_T rt_unused;
+  DW *dwork;
 };
 
 /* Model entry point functions */
-extern void uz_codegen0_initialize(RT_MODEL *const rtM);
+extern void uz_codegen0_initialize(RT_MODEL *const rtM, ExtU *rtU, ExtY *rtY);
 extern void uz_codegen0_step(RT_MODEL *const rtM, ExtU *rtU, ExtY *rtY);
 
 /*-

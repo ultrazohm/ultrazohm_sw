@@ -410,7 +410,7 @@ u32 Rpu_IpiInit(u16 DeviceId)
 
 	// Init code gen model
 	RT_MODEL *const rtM = rtMPtr;
-	uz_codegen0_initialize(rtM);
+	uz_codegen0_initialize(rtM, &rtU, &rtY);
 
 	xil_printf("RPU: RPU_IpiInit: Done\r\n");
 	return XST_SUCCESS;

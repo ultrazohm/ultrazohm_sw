@@ -1,6 +1,6 @@
-=======================
+========
 Overview
-=======================
+========
 
 .. image:: pictures/carrier_board_top_pic.jpg
    :width: 800
@@ -20,7 +20,7 @@ Overview
    :width: 800
 
 Useful things to buy
-----------------------------
+--------------------
 
 * `USB Hub with Ethernet Adapter <https://www.amazon.de/gp/product/B073PVB9MM/>`_
 * `Cable USB Mini B <https://www.amazon.de/AmazonBasics-IFRI-Stecker-Mini-B-Stecker-Schwarz/dp/B00NH13S44>`_
@@ -32,12 +32,20 @@ Useful things to buy
 
 
 Downloads
-----------------------------
-**Carrier Board 2v00**
+---------
+
+Carrier Board 2v00
+******************
+
 :download:`Schematic 2v00 <altium_output/SCH_UltraZOhm_CarrierBoard_2v00.pdf>`
+
 :download:`Assembly Drawing 2v00 <altium_output/ASM_UltraZOhm_CarrierBoard_2v00.pdf>`
 
-**Carrier Board 3v00**
+Carrier Board 3v00
+******************
+
 :download:`Schematic 3v00 <altium_output/SCH_UltraZOhm_CarrierBoard_3v00.pdf>`
+
 :download:`Assembly Drawing 3v00 <altium_output/ASM_UltraZOhm_CarrierBoard_3v00.pdf>`
+
 :download:`Draftsman 3v00 <altium_output/DFT_UltraZOhm_CarrierBoard_3v00.pdf>`

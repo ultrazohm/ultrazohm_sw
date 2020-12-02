@@ -121,7 +121,7 @@ SW3 - Power Mode Second Part
      - EN_LPD
      - EN_PL
      - EN_FPD
-   * - Power Enabled
+   * - Power Enabledc
      - ``OFF``
      - ``OFF``
      - ``OFF``
@@ -139,24 +139,10 @@ Default adjustments for the UltraZohm
 .. image:: switches_jumpers/switches1.jpg
 
 
-Known issues
-------------------------
-
-.. warning::
-   * Power Mode Dip Switches: EN_GT is disabled, because of a bug in the layout for "EN_GT_L". Anyway, this is for FireFly and not necessary so far.
-
-.. warning::
-   * PUDC_B: This issue is only necessary for the carrier board version ``1v5``!
-   * Do not Place R19 at all on the carrier board. Keep the pin open (floating Pin).
-   * The Trenz Module has an internal Pull-Up to 1V8. (Pin J2-127).
-   * Pull-up during configuration (pulled-up to PL_1V8).
-   * `This issue is also described herein. <https://wiki.trenz-electronic.de/display/PD/TE0808+TRM>`_
-
-
 See also
+* `Xilinx UG1085 TRM for Zynq UltraScale + - Section on boot mode <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G13.371926>`_
 """""""""""""""
-* `Xilinx boot mode section <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf>`_
-* `Trenz Dip Switch Wiki in Table 9 <https://wiki.trenz-electronic.de/display/PD/TE0808+TRM>`_
+* `Trenz Wiki Boot Mode Selection in Table 9 <https://wiki.trenz-electronic.de/display/PD/TE0808+TRM#TE0808TRM-BootProcess>`_
 
 
 Checked by

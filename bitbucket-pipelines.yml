@@ -12,9 +12,9 @@ pipelines:
     - step:
        script: # Modify the commands below to build your repository.
         - cd docs
-        - pip3 install -update pip3
-        - pip3 install -r requirements.txt
-        - pip3 list
+        - pip install --update pip
+        - pip install -r requirements.txt
+        - pip list
         - make html SPHINXOPTS="-W --keep-going -n"
         - cd build
         - ls
@@ -25,10 +25,11 @@ pipelines:
          deployment: contabo
 # trigger: manual  # Uncomment to make this a manual deployment.
          script:
+          - pip install --update pip
           - ls
           - cd docs
           - ls
-          - pip3 install -r requirements.txt
+          - pip install -r requirements.txt
           - make html SPHINXOPTS="-W --keep-going -n"
           - ls
           - echo "Deploying to test environment"

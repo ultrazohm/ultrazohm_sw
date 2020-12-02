@@ -12,6 +12,7 @@ pipelines:
     - step:
        script: # Modify the commands below to build your repository.
         - cd docs
+        - pip3 install -update pip3
         - pip3 install -r requirements.txt
         - pip3 list
         - make html SPHINXOPTS="-W --keep-going -n"

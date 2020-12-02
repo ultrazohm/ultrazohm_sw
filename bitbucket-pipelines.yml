@@ -10,12 +10,10 @@ pipelines:
   #  develop:
    default:
     - step:
-       caches:
-        - pip
        script: # Modify the commands below to build your repository.
         - cd docs
-        - pip install -r requirements.txt
-        - pip list
+        - pip3 install -r requirements.txt
+        - pip3 list
         - make html SPHINXOPTS="-W --keep-going -n"
         - cd build
         - ls
@@ -24,14 +22,12 @@ pipelines:
       - step:
          name: Deploy to Contabo Server
          deployment: contabo
-         caches:
-          - pip
 # trigger: manual  # Uncomment to make this a manual deployment.
          script:
           - ls
           - cd docs
           - ls
-          - pip install -r requirements.txt
+          - pip3 install -r requirements.txt
           - make html SPHINXOPTS="-W --keep-going -n"
           - ls
           - echo "Deploying to test environment"

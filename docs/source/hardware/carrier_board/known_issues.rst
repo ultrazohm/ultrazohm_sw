@@ -29,7 +29,38 @@ This issues is present in version ``1v5`` to ``3v0`` and is resolved in ``4v0``.
 For further technical details, see `Carrier Board Issue 46 <https://bitbucket.org/ultrazohm/ultrazohm_carrierboard/issues/46/remove-mr-manual-reset-pin-from-jtag>`_
 
 
+Bend pins in adapter card connectors X5 and X6
+-----------------------------------------------------
+**Problem description**
 
+It can happen that the pins on the edge connector sockets X5 and X6 (where the adapter cards are plugged in) are bend downwards, as shown below. 
+
+.. image:: pictures/bend_pins.jpg
+   :height: 600
+
+We noticed that this can happen for **two** reason: 
+
+1. The mating specified alignment is violated. This can easily happen if the adapter cards are plugged in without using the alignment rails.
+
+.. image:: pictures/bend_pins_alignment.png
+   :width: 600
+
+2. The adapter card does not have a chamfer. The edge connector should have an angled finish. Below shows an example, left without chamfer, right with proper chamfer. 
+
+.. image:: pictures/bend_pins_PCB_chamfer.jpg
+   :height: 400
+
+**Remedy**
+
+1. Use the alignment rails in the housing when plugging in adapter cards. Do not plug in any cards when the carrier board is not in the housing. 
+2. When ordering PCBs for adapter cards, make sure the option "chamfer" is checked, any angle between 30° and 45° works. The PCB thickness should be 1.6mm. With JLCPCB, we had issues that they forgot to add the chamfer even though this was specified in the order. In this case, complain and you will get a replacement or refund. 
+3. From carrier board version ``4v0`` and onwards we change to the (pin-compatible) HTEC8 connector. This connector protects the pins from bending and no chamfer is needed. The only drawback is that these connectors do not have the board lock option (yet). 
+
+.. image:: pictures/bend_pins_HTEC8.png
+   :width: 600
+
+This issues is present in version ``1v5`` to ``3v0`` and is resolved in ``4v0``. 
+For further technical details, see `Carrier Board Issue 17 <https://bitbucket.org/ultrazohm/ultrazohm_carrierboard/issues/17/pins-on-the-analog-and-digital-connectors>`_
 
 
 

@@ -1,6 +1,6 @@
-=======================
+========
 Overview
-=======================
+========
 
 .. image:: pictures/carrier_board_top_pic.jpg
    :width: 800
@@ -20,18 +20,32 @@ Overview
    :width: 800
 
 Useful things to buy
-----------------------------
+--------------------
 
-* `USB Hub with Ethernet Adapter <https://www.amazon.de/Techole-Aluminium-Netzwerkadapter-Chromebook-Ultrabooks/dp/B0792S3SMB/>`_
-* `Cable USB Mini B <https://www.amazon.de/dp/B00P0GI68M/ref=twister_B081LCQ2LM?_encoding=UTF8&psc=1>`_
+* `USB Hub with Ethernet Adapter <https://www.amazon.de/gp/product/B073PVB9MM/>`_
+* `Cable USB Mini B <https://www.amazon.de/AmazonBasics-IFRI-Stecker-Mini-B-Stecker-Schwarz/dp/B00NH13S44>`_
 * `Short LAN cables <https://www.amazon.de/Cat-7-Netzwerkkabel-1m-Ethernetkabel-Patchkabel/dp/B01MZHGZ5Y/>`_
 * `Replaceable fuse **F1** on Carrier Board <https://de.rs-online.com/web/p/nicht-rueckstellende-sicherungen-smd/1740681/>`_
-* `Fuse at the rubber connector <https://de.rs-online.com/web/p/feinsicherungen/5371004/>`_
+* `Fuse in 230V mains connector <https://de.rs-online.com/web/p/feinsicherungen/5371004/>`_
 * `Soldered Fuse on Adapter Cards <https://de.rs-online.com/web/p/rueckstellende-sicherungen-smd/1740837/>`_
 
 
 
-See also
-"""""""""""""""
-* :download:`Schematic Version 2v00 <pictures/SCH_UltraZOhm_CarrierBoard_2v00.pdf>`
-* :download:`Assembly Drawing Version 2v00 <pictures/ASM_UltraZOhm_CarrierBoard_2v00.pdf>`
+Downloads
+---------
+
+Carrier Board 2v00
+******************
+
+:download:`Schematic 2v00 <altium_output/SCH_UltraZOhm_CarrierBoard_2v00.pdf>`
+
+:download:`Assembly Drawing 2v00 <altium_output/ASM_UltraZOhm_CarrierBoard_2v00.pdf>`
+
+Carrier Board 3v00
+******************
+
+:download:`Schematic 3v00 <altium_output/SCH_UltraZOhm_CarrierBoard_3v00.pdf>`
+
+:download:`Assembly Drawing 3v00 <altium_output/ASM_UltraZOhm_CarrierBoard_3v00.pdf>`
+
+:download:`Draftsman 3v00 <altium_output/DFT_UltraZOhm_CarrierBoard_3v00.pdf>`

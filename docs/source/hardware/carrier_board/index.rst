@@ -10,3 +10,4 @@ Carrier Board
 	switches_jumpers
 	interfaces
 	arm_pins
+	known_issues

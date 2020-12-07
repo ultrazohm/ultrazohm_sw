@@ -4,10 +4,6 @@
 Analog LTC2311-16 3vXX
 =======================
 
-.. image:: LTC2311_16_v3/LTC2311_16_v3_PCB.jpg
-
-Functionality
--------------
 * Measurement of 8 differential signals
 * Sampling rate of up to 5 MSPS
 * Resolution of 16 bit
@@ -16,6 +12,35 @@ Functionality
 * ADCs can be triggered in groups of 4.
 * Usage of up to three cards possible
 
+.. image:: LTC2311_16_v3/LTC2311_16_v3_PCB.jpg
+
+Pinout
+---------------
+The pinout of the RJ45 ethernet plug is **NOT** intuitive, as shown below. 
+
+.. image:: LTC2311_16_v3/RJ45_pinout.png
+   :width: 700
+
+Therefore, we provide a breakout board for the RJ45 cable that matches the ADC card. **P** resembles the positive analog input, **N** the negative.
+
+.. image:: LTC2311_16_v3/adc_breakout_PN.png
+   :width: 400
+
+The pairs of the RJ45 ethernet connector map to the ADCs as follows:
+
+=========      ==========================    ==========================    
+Connected                         Pin on RJ45                            
+---------      -------------------------------------------------------- 
+ ADC              :math:`V_\mathrm{in,p}`       :math:`V_\mathrm{in,n}`       
+=========      ==========================    ==========================    
+ADC 1           7                                8                        
+ADC 2           4                                5                          
+ADC 3           3                                3                          
+ADC 4           1                                2                          
+=========      ==========================    ==========================     
+
+Diagramms
+-------------
 **Block diagram**
 
 .. image:: LTC2311_16_v3/block_diagram.jpg
@@ -58,12 +83,20 @@ Filters
 .. math:: 
    :math:`f_\mathrm{DiffOp,-3dB} = \frac{1}{2\pi R_f C_f} \approx \, 3 \mathrm{MHz}` \,\, .
 
-.. image:: LTC2311_16_v3/op_amp.JPG
+.. image:: LTC2311_16_v3/op_amp_schematic.jpg
    :width: 800
 
 The resulting transfer function of the signal conditioning stage, i.e. from the RJ45 input connectors to the :math:`V_\mathrm{ADC,in}` (including the buffer and filter stages up to the point where the signal enters the ADC), is measured with the Bode100. The resulting bode plot is depicted below. 
 
-.. image:: LTC2311_16_v3/Bode_152kHzOutput_LT6203_cropped.jpg
+.. image:: LTC2311_16_v3/Bode_152kHzOutput_LT6203.jpg
+
+
+Measurement accuracy
+------------------------------
+The signal conditioning stage of the adapter card is validated with a 6 1/2 digit multimeter yielding the following results. This suggests that a measurement error below 2mV can be expected over the full input range.
+
+.. image:: LTC2311_16_v3/measurement_accuracy.png
+
 
 Before first use
 ----------------------------
@@ -90,7 +123,7 @@ Before first use
 .. note :: You can also use the LTSpice simulation t0 find the correct gains and filter values for your setup. The simulation files are attached at the end of this document. 
 
 
-Variants
+Measurement modes
 ----------------------------
 There are four ways to measure an analog signal with this adapter card
 
@@ -134,27 +167,18 @@ Note that in this case only 15 bits of the 16-bit ADC are used, because the gain
 
 3. Single-ended measurement with reference to ground potential
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 The negative input In_N is set to ground which is preferably transferred over the same cable as the measurement singal In_P 
-Now the best setup depends on the range of the positive input In_P.
-
-* If In_P is between 0.1V and 4.9V, then you only have to change the feedback resistors.
-* If In_P is between -4.9 to +4.9V, it is recommended to remove the voltage follower U_7,9,10,11 respectively. This might lead to a undesired loading of the sensor network. It is recommended to simulate the behavior in LTSpice first. The simulation file is provided at the end.
 
 .. image:: LTC2311_16_v2/single_ended_to_GND.png
    :width: 350
 
-
-This might load your sensor and is not recommended for measuring current signals with the shunt resistor.
-
-In all cases, you should change the feedback resistors from 1k to 10k to get a more linear behavior, see attached excel sheet. This means all the following 32 resistors (if this is relevant for all 8 channels): R_17,20,23,25,29,30,32,34,40,43,50,52,45,54,49,37
-
-
 4. Current signal using the shunt resistor R22, R42
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-A resistor can be placed between In_P and In_N to terminate a current signal and turn it into a voltage signal that can be measured with this circuit. In this case the voltage follower is absolutely necessary to avoid an undesired current flow into the differential amplifier. 
-Besides that it behaves like a single-ended measurement. Depending on the potential of In_N, you can refer to the suggestions in point 2 and 3. It is recommended to use the reference voltage of the sensor as negative input.
+A resistor (package 1206) can be placed between In_P and In_N to terminate a current signal and turn it into a voltage signal that can be measured with this circuit. In this case the voltage follower is absolutely necessary to avoid an undesired current flow into the differential amplifier. 
+When sizing the resistor, keep in mind that there are two times 100R in series with the input (e.g. R65 and R66). These should be replaced with 0R. 
 
+.. image:: LTC2311_16_v3/current_mode.jpg
+   :width: 600
 
 Known issues
 -----------------------
@@ -163,7 +187,9 @@ Known issues
 .. image:: LTC2311_16_v3/ADC_jumper_wire_foto.jpg
    :height: 400
 
-* The formula to calculate the cut-off frequency printed on the back of the PCBs has a typo. The correct formula is:
+* The formula to calculate the cut-off frequency printed on the back of the PCBs has a typo. The correct formula is stated above, in the sub-section Filters. 
+
+
 
 
 Compatibility 

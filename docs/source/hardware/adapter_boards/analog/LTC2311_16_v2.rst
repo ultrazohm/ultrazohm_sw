@@ -1,4 +1,4 @@
-.. _analog_tcl:
+.. _analog_ltc_v2:
 
 =======================
 Analog LTC2311-16 2vXX

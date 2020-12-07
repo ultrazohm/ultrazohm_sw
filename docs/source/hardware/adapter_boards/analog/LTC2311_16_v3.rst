@@ -46,33 +46,49 @@ light blue              Buck converter for +5V
 purple                  Buffer for CNV signal coming from the FPGA
 ================        ===========================================================================
 
-Before first use
-----------------------------
-.. note:: 
-   For all types of measurements it is recommended to adjust the gains of the differential operational amplifier (orange) to :math:`{\pm 5}` V to utilize the full input range of the ADC. Initially the gain is set to :math:`g=\frac{R_{2}}{R_{1}} = \frac{10k\Omega}{10k\Omega} = 1`. 
-   
-   **Use high precision resistor to set the gains**, i.e. 0.1% or better. 
+Filters
+--------------------------
+1. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter (red) is formed by the capacitors :math:`C_\mathrm{Diff}` and :math:`C_\mathrm{CM}`. They create a first order low-pass filter with the series resistors :math:`{R_3}` with 
 
-   The crossover frequency :math:`f_\mathrm{cross}` of the anti-aliasing filter (red) can be adjusted by the capacitors  :math:`{C_1 \mathrm{and} C_2}`. They create a first order low-pass filter with the series resistors :math:`{R_3}` with :math:`f_\mathrm{cross}=\frac{1}{2\pi R_3 (C_1+C_2} = \frac{1}{1\,\mathrm{k}\Omega \cdot 56\,\mathrm{pF}} = 1.8\, \mathrm{MHz}`. 
-   
-   Use the LTSpice simulation the find the correct gains for your setup, it is attached at the end of this document. 
+.. math:: 
+   f_\mathrm{aliasing,-3dB}=\frac{1}{2 \pi R_0 (2 C_\mathrm{Diff} + C_\mathrm{CM} ) } = \frac{1}{2\pi\ 24.9\,\Omega \cdot (2\cdot16\,\mathrm{nF}  + 12\,\mathrm{nF}) } = 145\, \mathrm{kHz} \,\,.
 
-   The assembled values are
+2. Additionally, :math:`C_\mathrm{f}` and :math:`R_\mathrm{f}` form an active first-order low-pass filter, with 
 
-
-=================    =======================
-:math:`{R_1}`        :math:`{10k\Omega}`      
-:math:`{R_2}`        :math:`{10k\Omega}`  
-:math:`{R_3}`        :math:`{24.9\Omega}`  
-:math:`{C_1}`        :math:`{12nF}`  
-:math:`{C_2}`        :math:`{16nF}`  
-=================    =======================
+.. math:: 
+   :math:`f_\mathrm{DiffOp,-3dB} = \frac{1}{2\pi R_f C_f} \approx \, 3 \mathrm{MHz}` \,\, .
 
 .. image:: LTC2311_16_v3/op_amp.JPG
-   :width: 300
+   :width: 800
 
-.. image::  LTC2311_16_v2/bode_plot.png
-   
+The resulting transfer function of the signal conditioning stage, i.e. from the RJ45 input connectors to the :math:`V_\mathrm{ADC,in}` (including the buffer and filter stages up to the point where the signal enters the ADC), is measured with the Bode100. The resulting bode plot is depicted below. 
+
+.. image:: LTC2311_16_v3/Bode_152kHzOutput_LT6203_cropped.jpg
+
+Before first use
+----------------------------
+1. For all types of measurements it is recommended to adjust the gains of the differential operational amplifier (orange) to utilize the full input range of the ADC, i.e. :math:`{\pm 5}` V. Initially the gain is set to
+
+.. math:: 
+
+   g=\frac{R_f}{R_g} = \frac{10\,\mathrm{k\Omega}}{10\,\mathrm{k\Omega}} = 1 \,\,. 
+
+.. note :: **Use high precision resistor to set the gains**, i.e. 0.1% or better. 
+
+
+**The pre-assembled values are**
+
+==========================       =====================================
+:math:`{R_f}`                    :math:`{10\,\mathrm{k\Omega}}`
+:math:`{R_g}`                    :math:`{10\,\mathrm{k\Omega}}`
+:math:`{C_f}`                    :math:`{56\,\mathrm{pF}}` 
+:math:`{R_0}`                    :math:`{24.9\,\mathrm{\Omega}}` 
+:math:`{C_\mathrm{CM}}`          :math:`{12\,\mathrm{nF}}` 
+:math:`{C_\mathrm{Diff}}`        :math:`{16\,\mathrm{nF}}` 
+==========================       =====================================
+
+.. note :: You can also use the LTSpice simulation t0 find the correct gains and filter values for your setup. The simulation files are attached at the end of this document. 
+
 
 Variants
 ----------------------------
@@ -86,6 +102,8 @@ There are four ways to measure an analog signal with this adapter card
 .. image::  LTC2311_16_v3/measurement_variants.png
    :width: 250
 
+In all cases the input range is **+-5V**.
+
 1. Fully differential measurement
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 In_P and In_N are fully differential signals, meaning they inverted signals with a common-mode offset of 2.5V e.g. 
@@ -97,8 +115,6 @@ In_P and In_N are fully differential signals, meaning they inverted signals with
 .. image:: LTC2311_16_v2/differential_signal.png
    :width: 500
 
-In this case the input signal can be connected directly to the input pins of the ADC card. The input range is **+-5V**, with an filter crossover frequency of 3MHz.
-
 This will yield the highest signal to noise ratio (SNR) even when using longer cables. For longer cables it is recommended to use a differential line driver on the sensing board of this form:
 
 .. image:: LTC2311_16_v2/differential_signal_over_cable.png
@@ -108,10 +124,9 @@ This will yield the highest signal to noise ratio (SNR) even when using longer c
 2. Single-ended measurement with reference to an offset voltage
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 The negative input In_N is set to a fixed offset voltage, e.g. 2.5V which is often provided by the current sensor. The positive input may vary between 0V to 5V. 
+Note that in this case only 15 bits of the 16-bit ADC are used, because the gain of the differential OpAmp is Initially set to 1. To overcome this, adjust the gains as described before.
 
-With the standard configuration, only 15-bits of the 16bit ADC are used, because the gain of the differential OpAmp is :math:`{R_{17}}/{R_{20}} = 1k\Omega/1k\Omega = 1`. To overcome this, R17 and R29 (see figure on the right) can be adjusted to get the desired gain to use the full input range of +-5V of the ADC.
-
-Both voltages should be transferred over the same twisted-pair cable as the positive input In_P, to get the same common mode noise on both lines, which is then canceled out by the differential amplifier. 
+.. Note :: Both voltages should be transferred over the same twisted-pair cable as the positive input In_P, to get the same common mode noise on both lines, which is then rejected by the differential amplifier. 
 
 .. image:: LTC2311_16_v2/single_ended_to_Vcm.png
    :width: 350
@@ -159,7 +174,7 @@ See also
 """""""""""""""
 * :download:`Schematic 3v03 <LTC2311_16_v3/SCH_ADC_LTC2311_16_3v03.pdf>`
 * :download:`Assembly Drawing 3v03 <LTC2311_16_v3/ASM_ADC_LTC2311_16_3v03.pdf>`
-* :download:`LTSpice simulation 3v03 <LTC2311_16_v3/ADC_LT2311_16_sim.asc>`
+* :download:`LTSpice simulation <LTC2311_16_v3/UZ_ADC_LTC2311-16_3v3_LTSpice.zip>`
 * `Data sheet ADC LTC2311-16 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_
 * See also IP Cores->ADC LTC2311
 

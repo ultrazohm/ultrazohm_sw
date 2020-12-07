@@ -18,7 +18,7 @@ Pinout
 ---------------
 The pinout of the RJ45 ethernet plug is **NOT** intuitive, as shown below. 
 
-.. image:: LTC2311_16_v3/RJ45_pinout.png
+.. image:: LTC2311_16_v3/rj45_pinout.png
    :width: 700
 
 Therefore, we provide a breakout board for the RJ45 cable that matches the ADC card. **P** resembles the positive analog input, **N** the negative.
@@ -177,7 +177,7 @@ The negative input In_N is set to ground which is preferably transferred over th
 A resistor (package 1206) can be placed between In_P and In_N to terminate a current signal and turn it into a voltage signal that can be measured with this circuit. In this case the voltage follower is absolutely necessary to avoid an undesired current flow into the differential amplifier. 
 When sizing the resistor, keep in mind that there are two times 100R in series with the input (e.g. R65 and R66). These should be replaced with 0R. 
 
-.. image:: LTC2311_16_v3/current_mode.jpg
+.. image:: LTC2311_16_v3/current_mode_measurement.jpg
    :width: 600
 
 Known issues

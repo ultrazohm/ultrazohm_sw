@@ -81,7 +81,7 @@ Filters
 2. Additionally, :math:`C_\mathrm{f}` and :math:`R_\mathrm{f}` form an active first-order low-pass filter, with 
 
 .. math:: 
-   :math:`f_\mathrm{DiffOp,-3dB} = \frac{1}{2\pi R_f C_f} \approx \, 3 \mathrm{MHz}` \,\, .
+   `f_\mathrm{DiffOp,-3dB} = \frac{1}{2\pi R_f C_f} \approx \, 3 \mathrm{MHz}` \,\, .
 
 .. image:: LTC2311_16_v3/op_amp_schematic.jpg
    :width: 800

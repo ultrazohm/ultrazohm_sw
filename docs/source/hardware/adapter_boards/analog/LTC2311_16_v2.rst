@@ -1,4 +1,4 @@
-.. _analog_ltc_v2:
+.. _Analog_LTC2311_16_v2:
 
 =======================
 Analog LTC2311-16 2vXX
@@ -96,32 +96,27 @@ In all cases, you should change the feedback resistors from 1k to 10k to get a m
 A resistor can be placed between In_P and In_N to terminate a current signal and turn it into a voltage signal that can be measured with this circuit. In this case the voltage follower is absolutely necessary to avoid an undesired current flow into the differential amplifier. 
 Besides that it behaves like a single-ended measurement. Depending on the potential of In_N, you can refer to the suggestions in point 2 and 3. It is recommended to use the reference voltage of the sensor as negative input.
 
-
-
-
-
-
 Known issues
 -----------------------
+
 .. warning::
    * single-ended measurements referenced to ground 
    * only one ADC card can be used at the moment due to problems with the trigger
 
 Compatibility 
 ----------------------
+
 * Slots A1 to A3 can be used without limitations
  
 
 See also
 """""""""""""""
+
 * :download:`Schematic 2v03 <LTC2311_16_v2/SCH_LTC2311_16_2v03.pdf>`
 * :download:`Assembly Drawing 2v03 <LTC2311_16_v2/ASM_LTC2311_16_2v03.pdf>`
 * :download:`LTSpice simulation 2v03 <LTC2311_16_v2/ADC_LT2311_16_sim.asc>`
 * :download:`Measurements of Variants and their linearity 2v03 <LTC2311_16_v2/ADC_LTC2311_16_v2_Testing.xlsx>`
-
-
-
-* IP Core ADC
+* IP Core ADC :ref:`ipCore_LTC23`
 
 Designed by 
 """""""""""""""

@@ -1,4 +1,4 @@
-.. _analog_tcl:
+.. _Analog_LTC2311_16_v3:
 
 =======================
 Analog LTC2311-16 3vXX
@@ -25,7 +25,12 @@ The pinout of the RJ45 ethernet plug is **NOT** intuitive, as shown in :numref:`
 
    Pinout of the ADC ethernet port.
 
-Therefore, we provide a breakout board for the RJ45 cable that matches the ADC card. **P** is the positive analog input, **N** the negative.
+.. note::
+
+   Note that :numref:`rj45pinout` shows an ethernet cable according to **T568B**!
+
+
+We provide a breakout board for the RJ45 cable that matches the ADC card. **P** is the positive analog input, **N** the negative.
 
 .. image:: LTC2311_16_v3/adc_breakout_PN.png
    :width: 400
@@ -206,7 +211,7 @@ See also
 * :download:`Assembly Drawing 3v03 <LTC2311_16_v3/ASM_ADC_LTC2311_16_3v03.pdf>`
 * :download:`LTSpice simulation <LTC2311_16_v3/UZ_ADC_LTC2311-16_3v3_LTSpice.zip>`
 * `Data sheet ADC LTC2311-16 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_
-* See also IP Cores->ADC LTC2311
+* See IP-Core :ref:`ipCore_LTC23`
 
 Designed by 
 """""""""""""""

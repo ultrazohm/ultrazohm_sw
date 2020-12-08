@@ -13,11 +13,11 @@ Adapter Cards
 .. image:: adapter_cards.png
 	:width: 800
 
-Create your own extension boards
-================================
+Create your own adapter cards
+=============================
 
-The UltraZohm Project is a work in progress project and you can contribute on it.
-If you feel that a hardware component is missing feel free to fork the template project
+The UltraZohm project is work in progress project and you are welcome to contribute!
+To create a adapter card fork one of the following template repositories:
 for a `Digital Adapter Card <https://bitbucket.org/ultrazohm/ultrazohm_digital_template/>`_
 or for an `Analog Adapter Card <https://bitbucket.org/ultrazohm/ultrazohm_analog_template/>`_
 

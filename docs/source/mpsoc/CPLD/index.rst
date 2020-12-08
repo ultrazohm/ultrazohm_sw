@@ -52,7 +52,7 @@ Step-by-step
 .. image:: cpld_programming/diamond_programmer_settings.png
    :width: 500
 
-7. Plug in the USB cable and turn on power on the UltraZohm. The Programmer on X1 should light up.
+7. Plug in the USB cable and turn on the power of the UltraZohm. The Programmer on X1 should light up.
 
 8. Click on "Program", after successful programming it should look like this:
 

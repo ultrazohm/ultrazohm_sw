@@ -15,7 +15,7 @@ Analog LTC2311-16 3vXX
 .. image:: LTC2311_16_v3/LTC2311_16_v3_PCB.jpg
 
 Pinout
----------------
+------
 The pinout of the RJ45 ethernet plug is **NOT** intuitive, as shown in :numref:`rj45pinout`. 
 
 .. _rj45pinout:
@@ -48,8 +48,9 @@ ADC 3           3                                3
 ADC 4           1                                2                          
 =========      ==========================    ==========================     
 
-Diagramms
--------------
+DDiagrams
+---------
+
 **Block diagram**
 
 .. image:: LTC2311_16_v3/block_diagram.jpg
@@ -81,7 +82,7 @@ purple                  Buffer for CNV signal coming from the FPGA
 ================        ===========================================================================
 
 Filters
---------------------------
+-------
 1. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter (red) is formed by the capacitors :math:`C_\mathrm{Diff}` and :math:`C_\mathrm{CM}`. They create a first order low-pass filter with the series resistors :math:`{R_3}` with 
 
 .. math:: 
@@ -90,7 +91,7 @@ Filters
 2. Additionally, :math:`C_\mathrm{f}` and :math:`R_\mathrm{f}` form an active first-order low-pass filter, with 
 
 .. math:: 
-   `f_\mathrm{DiffOp,-3dB} = \frac{1}{2\pi R_f C_f} \approx \, 3 \mathrm{MHz}` \,\, .
+   f_\mathrm{DiffOp,-3dB} = \frac{1}{2\pi R_f C_f} \approx \, 3 \mathrm{MHz}
 
 .. image:: LTC2311_16_v3/op_amp_schematic.jpg
    :width: 800
@@ -101,21 +102,22 @@ The resulting transfer function of the signal conditioning stage, i.e., from the
 
 
 Measurement accuracy
-------------------------------
+--------------------
 The signal conditioning stage of the adapter card is validated with a 6 1/2 digit multimeter yielding the following results. This suggests that a measurement error below 2mV can be expected over the full input range.
 
 .. image:: LTC2311_16_v3/measurement_accuracy.png
 
 
 Before first use
-----------------------------
+----------------
 1. For all types of measurements, it is recommended to adjust the gains of the differential operational amplifier (orange) to utilize the full input range of the ADC, i.e., :math:`{\pm 5}` V. Initially, the gain is set to
 
 .. math:: 
 
    g=\frac{R_f}{R_g} = \frac{10\,\mathrm{k\Omega}}{10\,\mathrm{k\Omega}} = 1 \,\,. 
 
-.. note :: **Use a high precision resistor to set the gains**, i.e., 0.1% or better. 
+.. note ::
+   **Use a high precision resistor to set the gains**, i.e., 0.1% or better. 
 
 
 **The pre-assembled values are**
@@ -129,11 +131,12 @@ Before first use
 :math:`{C_\mathrm{Diff}}`        :math:`{16\,\mathrm{nF}}` 
 ==========================       =====================================
 
-.. note :: You can also use the LTSpice simulation t0 find the correct gains and filter values for your setup. The simulation files are attached at the end of this document. 
+.. note :: 
+   You can also use the LTSpice simulation t0 find the correct gains and filter values for your setup. The simulation files are attached at the end of this document. 
 
 
 Measurement modes
-----------------------------
+-----------------
 There are four ways to measure an analog signal with this adapter card
 
 * Fully differential
@@ -141,60 +144,74 @@ There are four ways to measure an analog signal with this adapter card
 * Single-ended with reference to ground potential (unipolar)
 * Current signal with a shunt resistor 
 
-.. image::  LTC2311_16_v3/measurement_variants.png
+.. figure::  LTC2311_16_v3/measurement_variants.png
    :width: 250
+
+   Different input voltage forms for measurement [LTC2311_datasheet]_
 
 In all cases, the input range is **+-5V**.
 
 1. Fully differential measurement
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""
 In_P and In_N are fully differential signals, meaning they inverted signals with a common-mode offset of 2.5V e.g. 
 
 * For 0V input voltage, both In_P and In_N are 2.5V
 * For +1V input voltage, In_P is 3V and In_N is 2V
 * For -3V input voltage, In_P is 1V and In_N is 3V 
 
-.. image:: LTC2311_16_v2/differential_signal.png
+.. figure:: LTC2311_16_v2/differential_signal.png
    :width: 500
+
+   Fully differential measurement input [LTC2311_datasheet]_
 
 This will yield the highest signal to noise ratio (SNR) even when using longer cables. For longer cables, it is recommended to use a differential line driver on the sensing board of this form:
 
-.. image:: LTC2311_16_v2/differential_signal_over_cable.png
+.. figure:: LTC2311_16_v2/differential_signal_over_cable.png
    :width: 500
+
+   Signal termination with differential signal over cable [LTC2311_datasheet]_
 
 
 2. Single-ended measurement with reference to an offset voltage
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 The negative input In_N is set to a fixed offset voltage, e.g. 2.5V which is often provided by the current sensor. The positive input may vary between 0V to 5V. 
 Note that in this case, only 15 bits of the 16-bit ADC are used because the gain of the differential OpAmp is initially set to 1. To overcome this, adjust the gains as described before.
 
-.. Note :: Both voltages should be transferred over the same twisted-pair cable as the positive input In_P, to get the same common-mode noise on both lines, which is then rejected by the differential amplifier. 
+.. note ::
+   Both voltages should be transferred over the same twisted-pair cable as the positive input In_P, to get the same common-mode noise on both lines, which is then rejected by the differential amplifier. 
 
-.. image:: LTC2311_16_v2/single_ended_to_Vcm.png
+.. figure:: LTC2311_16_v2/single_ended_to_Vcm.png
    :width: 350
 
+   Single-ended with offset voltage [LTC2311_datasheet]_
 
 3. Single-ended measurement with reference to ground potential
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 The negative input In_N is set to ground which is preferably transferred over the same cable as the measurement singal In_P 
 
-.. image:: LTC2311_16_v2/single_ended_to_GND.png
+.. figure:: LTC2311_16_v2/single_ended_to_GND.png
    :width: 350
 
+   Usage of the ADC in single ended mode [LTC2311_datasheet]_
+
 4. Current signal using the shunt resistor R22, R42
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""
 A resistor (package 1206) can be placed between In_P and In_N to terminate a current signal and turn it into a voltage signal that can be measured with this circuit. In this case the voltage follower is absolutely necessary to avoid an undesired current flow into the differential amplifier. 
 When sizing the resistor, keep in mind that there are two times 100R in series with the input (e.g., R65 and R66). These should be replaced with 0R. 
 
-.. image:: LTC2311_16_v3/current_mode_measurement.jpg
+.. figure:: LTC2311_16_v3/current_mode_measurement.jpg
    :width: 600
 
+   Assembly of R22 and R42 as shunt resistor for current based sensors
+
 Known issues
------------------------
+------------
 * The buffer ICs (U5, U12) have the wrong supply voltage. 3V3 instead of 1V8 was connected. These ICs are used to buffer the CNV pin for the ADC due to their high fanout. This was fixed by not placing L7 (disconnects 3V3) and adding a bodge wire for supplying the IC with 2V5 from OVCC.
 
-.. image:: LTC2311_16_v3/ADC_jumper_wire_foto.jpg
+.. figure:: LTC2311_16_v3/ADC_jumper_wire_foto.jpg
    :height: 400
+
+   Manual patch for the buffer IC as used in all v3 boards
 
 * The formula to calculate the cut-off frequency printed on the back of the PCBs has a typo. The correct formula is stated above, in the sub-section Filters. 
 
@@ -202,11 +219,11 @@ Known issues
 
 
 Compatibility 
-----------------------
+-------------
 * Slots A1 to A3 can be used without limitations
 
 See also
-"""""""""""""""
+""""""""
 * :download:`Schematic 3v03 <LTC2311_16_v3/SCH_ADC_LTC2311_16_3v03.pdf>`
 * :download:`Assembly Drawing 3v03 <LTC2311_16_v3/ASM_ADC_LTC2311_16_3v03.pdf>`
 * :download:`LTSpice simulation <LTC2311_16_v3/UZ_ADC_LTC2311-16_3v3_LTSpice.zip>`
@@ -214,6 +231,9 @@ See also
 * See IP-Core :ref:`ipCore_LTC23`
 
 Designed by 
-"""""""""""""""
+"""""""""""
 Simon Lukas (TUM), Eyke Liegmann (TUM) in 09/2020
 
+.. rubric:: Sources
+
+.. [LTC2311_datasheet] `Data sheet ADC LTC2311-16 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_

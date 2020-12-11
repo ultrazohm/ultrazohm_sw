@@ -1,0 +1,12 @@
+
+{ 
+    crc :  9219624673689905772  , 
+    ccp_crc :  0  , 
+    cmdline : " -wto 3926c8d95e8f4e66b6091227338eef6c --incr --debug typical --relax --mt 8 -L xil_defaultlib -L secureip --snapshot ADC_TOP_behav xil_defaultlib.ADC_TOP" , 
+    buildDate : "May 27 2020" , 
+    buildTime : "19:59:15" , 
+    linkCmd : "/usr/bin/gcc -Wa,-W  -O -fPIC  -m64  -Wl,--no-as-needed  -Wl,--unresolved-symbols=ignore-all  -o \"xsim.dir/ADC_TOP_behav/xsimk\"   \"xsim.dir/ADC_TOP_behav/obj/xsim_0.lnx64.o\" \"xsim.dir/ADC_TOP_behav/obj/xsim_1.lnx64.o\" -L\"/opt/Xilinx/Vivado/2020.1/lib/lnx64.o\" -lrdi_simulator_kernel   -lrdi_simbridge_kernel" , 
+    aggregate_nets : 
+    [ 
+    ] 
+} 

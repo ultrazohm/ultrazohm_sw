@@ -51,7 +51,7 @@ entity ADC_Module_v2_0 is
 		-- Users to add ports here
 		clk             : in std_logic;
 		reset_n         : in std_logic;
-        Trigger_cnv     : in std_logic; --SW: Wenn Pin auf 1 geht, wird neue Wandlung angestoßen, ansonsten muss er immer auf Low (0) bleiben!
+        Trigger_cnv     : in std_logic; --SW: Wenn Pin auf 1 geht, wird neue Wandlung angestoï¿½en, ansonsten muss er immer auf Low (0) bleiben!
   		SCLK_spi_P	    : out std_logic_vector(Number_of_ADCs-1 downto 0);
   		SCLK_spi_N	    : out std_logic_vector(Number_of_ADCs-1 downto 0);
 		SS_N_spi        : out std_logic;

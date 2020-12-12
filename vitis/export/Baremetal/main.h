@@ -196,7 +196,7 @@ typedef struct
 	Xuint16 schiebereg_ausgaenge;
 	Xuint32 slowDataContent;
 	Xuint16 slowDataID;
-	Xuint16 val[20];
+//	Xuint16 val[20];
 } ARM_to_Oszi_Data_shared_struct;
 
 typedef struct

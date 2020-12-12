@@ -60,8 +60,6 @@ void Transfer_ipc_Intr_Handler(void *data)
 	//u32 RespBuf[3] = {IPI_HEADER, XST_SUCCESS};
 	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0,0,XST_SUCCESS};
 
-//	XGpio_DiscreteSet(&Gpio_OUT,GPIO_CHANNEL, 8);//Stop to the ADC module to set an offset value    0b0100);  	// "Enable_Gate" On //Consider, this is a inverse signal AND "Acknowledge" the set of ADC offset value.
-
 	// Check if the IPI is from the expected source i-> here we expect from R5_0
 	RegVal = XIpiPsu_GetInterruptStatus(&INTCInst_IPI); //OLD: RegVal = Xil_In32(0xFF310010U);
 	if((RegVal & (u32)XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK) == 0U) {//Check if received source is equal to expected source (R5_0)
@@ -93,15 +91,11 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	if (cnt_javascope < 5)
 	{
-		OsziData.val[cnt_javascope] = (Xuint16)IpiBuf[0];
-		OsziData.val[5+cnt_javascope] = (Xuint16)IpiBuf[1];
-		OsziData.val[10+cnt_javascope] = (Xuint16)IpiBuf[2];
-		OsziData.val[15+cnt_javascope] = (Xuint16)IpiBuf[3];
+		OsziData.val[cnt_javascope] 	= (Xfloat32)IpiBuf[0];
+		OsziData.val[5+cnt_javascope] 	= (Xfloat32)IpiBuf[1];
+		OsziData.val[10+cnt_javascope] 	= (Xfloat32)IpiBuf[2];
+		OsziData.val[15+cnt_javascope] 	= (Xfloat32)IpiBuf[3];
 	}
-
-	//XGpio_DiscreteClear(&Gpio_OUT,GPIO_CHANNEL, 8);//Stop to the ADC module to set an offset value    0b0100);  	// "Enable_Gate" On //Consider, this is a inverse signal AND "Acknowledge" the set of ADC offset value.
-
-
 
 	cnt_javascope++;
 
@@ -121,11 +115,12 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	//Allow the Ethernet connection to transfer the next TCP packet, because the new valid data are available!
 	NextPacketArrived =1;
+	// EL: NextPacketArrived synchronizes this ISR with the ethernet task
+	// probably better add a fifo queue here: https://www.freertos.org/Embedded-RTOS-Queues.html
+
 
 	cnt_javascope = 0;
 	}
-
-	//XGpio_DiscreteClear(&Gpio_OUT,GPIO_CHANNEL, 8);//Stop to the ADC module to set an offset value    0b0100);  	// "Enable_Gate" On //Consider, this is a inverse signal AND "Acknowledge" the set of ADC offset value.
 
 	//IPCCtoMFlagAcknowledge(IPC_FLAG3);
 }

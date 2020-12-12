@@ -66,26 +66,26 @@ void process_request_thread(void *p)
 
     for(foo=0; foo<NETWORK_SEND_FIELD_SIZE; foo++){
      	nwsend.slowDataContent[foo] = 0;
-     	nwsend.val_01_uint16[foo] = 0;
- 		nwsend.val_02_uint16[foo] = 0;
- 		nwsend.val_03_uint16[foo] = 0;
- 		nwsend.val_04_uint16[foo]  = 0;
- 		nwsend.val_05_uint16[foo]  = 0;
- 		nwsend.val_06_uint16[foo]  = 0;
- 		nwsend.val_07_uint16[foo] = 0;
- 		nwsend.val_08_uint16[foo] = 0;
- 		nwsend.val_09_uint16[foo] = 0;
- 		nwsend.val_10_uint16[foo] = 0;
- 		nwsend.val_11_uint16[foo]  = 0;
- 		nwsend.val_12_uint16[foo]  = 0;
- 		nwsend.val_13_uint16[foo]  = 0;
- 		nwsend.val_14_uint16[foo] = 0;
- 		nwsend.val_15_uint16[foo] = 0;
- 		nwsend.val_16_uint16[foo] = 0;
- 		nwsend.val_17_uint16[foo] = 0;
- 		nwsend.val_18_uint16[foo] = 0;
- 		nwsend.val_19_uint16[foo] = 0;
- 		nwsend.val_20_uint16[foo] = 0;
+     	nwsend.val_01[foo] = 0;
+ 		nwsend.val_02[foo] = 0;
+ 		nwsend.val_03[foo] = 0;
+ 		nwsend.val_04[foo]  = 0;
+ 		nwsend.val_05[foo]  = 0;
+ 		nwsend.val_06[foo]  = 0;
+ 		nwsend.val_07[foo] = 0;
+ 		nwsend.val_08[foo] = 0;
+ 		nwsend.val_09[foo] = 0;
+ 		nwsend.val_10[foo] = 0;
+ 		nwsend.val_11[foo]  = 0;
+ 		nwsend.val_12[foo]  = 0;
+ 		nwsend.val_13[foo]  = 0;
+ 		nwsend.val_14[foo] = 0;
+ 		nwsend.val_15[foo] = 0;
+ 		nwsend.val_16[foo] = 0;
+ 		nwsend.val_17[foo] = 0;
+ 		nwsend.val_18[foo] = 0;
+ 		nwsend.val_19[foo] = 0;
+ 		nwsend.val_20[foo] = 0;
  		nwsend.slowDataID[foo] = 0;
      }
 
@@ -124,26 +124,26 @@ void process_request_thread(void *p)
 	  		NextPacketArrived =0;
 
 			nwsend.slowDataContent[i] 	= OsziData.slowDataContent;	// Clock_getTicks() - zeitnull;
-			nwsend.val_01_uint16[i] 	= OsziData.val[0];
-			nwsend.val_02_uint16[i] 	= OsziData.val[1];
-			nwsend.val_03_uint16[i] 	= OsziData.val[2];
-			nwsend.val_04_uint16[i]  	= OsziData.val[3];
-			nwsend.val_05_uint16[i]  	= OsziData.val[4];
-			nwsend.val_06_uint16[i]  	= OsziData.val[5];
-			nwsend.val_07_uint16[i] 	= OsziData.val[6];
-			nwsend.val_08_uint16[i] 	= OsziData.val[7];
-			nwsend.val_09_uint16[i] 	= OsziData.val[8];
-			nwsend.val_10_uint16[i] 	= OsziData.val[9];
-			nwsend.val_11_uint16[i]  	= OsziData.val[10];
-			nwsend.val_12_uint16[i]  	= OsziData.val[11];
-			nwsend.val_13_uint16[i]  	= OsziData.val[12];
-			nwsend.val_14_uint16[i] 	= OsziData.val[13];
-			nwsend.val_15_uint16[i] 	= OsziData.val[14];
-			nwsend.val_16_uint16[i] 	= OsziData.val[15];
-			nwsend.val_17_uint16[i] 	= OsziData.val[16];
-			nwsend.val_18_uint16[i] 	= OsziData.val[17];
-			nwsend.val_19_uint16[i] 	= OsziData.val[18];
-			nwsend.val_20_uint16[i] 	= OsziData.val[19];
+			nwsend.val_01[i] 	= OsziData.val[0];
+			nwsend.val_02[i] 	= OsziData.val[1];
+			nwsend.val_03[i] 	= OsziData.val[2];
+			nwsend.val_04[i]  	= OsziData.val[3];
+			nwsend.val_05[i]  	= OsziData.val[4];
+			nwsend.val_06[i]  	= OsziData.val[5];
+			nwsend.val_07[i] 	= OsziData.val[6];
+			nwsend.val_08[i] 	= OsziData.val[7];
+			nwsend.val_09[i] 	= OsziData.val[8];
+			nwsend.val_10[i] 	= OsziData.val[9];
+			nwsend.val_11[i]  	= OsziData.val[10];
+			nwsend.val_12[i]  	= OsziData.val[11];
+			nwsend.val_13[i]  	= OsziData.val[12];
+			nwsend.val_14[i] 	= OsziData.val[13];
+			nwsend.val_15[i] 	= OsziData.val[14];
+			nwsend.val_16[i] 	= OsziData.val[15];
+			nwsend.val_17[i] 	= OsziData.val[16];
+			nwsend.val_18[i] 	= OsziData.val[17];
+			nwsend.val_19[i] 	= OsziData.val[18];
+			nwsend.val_20[i] 	= OsziData.val[19];
 			nwsend.slowDataID[i] 		= OsziData.slowDataID;
 	    }
 		nwsend.status = OsziData.status_BareToRTOS;
@@ -154,6 +154,7 @@ void process_request_thread(void *p)
 		}
 
 		// write the data -> handle request /
+		// EL: here the data is sent
 		if ((nwrote = write(clientfd, &nwsend, sizeof(nwsend))) < 0) {
 			xil_printf("%s: ERROR responding to client echo request. received = %d, written = %d\r\n",
 					__FUNCTION__, nread, nwrote);

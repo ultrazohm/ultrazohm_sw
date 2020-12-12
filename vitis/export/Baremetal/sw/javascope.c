@@ -63,7 +63,7 @@ extern Xint32 i_count_1ms, i_count_1s;
 extern float f_ISRLifeCheck;
 extern float time_ISR_max_us, time_ISR_total, time_ISR_total_us, isr_period_us_measured;
 
-Xint16 values[20];
+//Xint16 values[20];
 union SlowData js_slowDataArray[JSSD_ENDMARKER];
 
 int JavaScope_initalize()
@@ -102,7 +102,7 @@ void js_fetchData4CH()
 	Xint32 status;
 	u32 MsgPtr[IPI_R5toA53_MSG_LEN] = {0};
 	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0};
-
+/* 	EL: old int16 way with myIQfactor doing the fixed point conversion
 	Xint16 data1_int = (Xint16)( myIQfactor[js_factor1] * *js_ptr[0]);
 	Xint16 data2_int = (Xint16)( myIQfactor[js_factor2] * *js_ptr[1]);
 	Xint16 data3_int = (Xint16)( myIQfactor[js_factor3] * *js_ptr[2]);
@@ -112,11 +112,18 @@ void js_fetchData4CH()
 	values[1] = (Xint16) data2_int;
 	values[2] = (Xint16) data3_int;
 	values[3] = (Xint16) data4_int;
-
 	MsgPtr[0] = values[0];
 	MsgPtr[1] = values[1];
 	MsgPtr[2] = values[2];
 	MsgPtr[3] = values[3];
+	*/
+	//EL: write values that will be transfered into MsgPtr array
+	//MsgPtr contains values, js_ptr contains pointers to values
+	memcpy(&(MsgPtr[0]), js_ptr[0], sizeof(u32));
+	memcpy(&(MsgPtr[1]), js_ptr[1], sizeof(u32));
+	memcpy(&(MsgPtr[2]), js_ptr[2], sizeof(u32));
+	memcpy(&(MsgPtr[3]), js_ptr[3], sizeof(u32));
+
 	memcpy(&(MsgPtr[4]), &(js_slowDataArray[cnt_slowData]), sizeof(Xint32));		// copy without automatic float -> int conversion
 	MsgPtr[5] = cnt_slowData;
 	MsgPtr[6] = OsziData.status_BareToRTOS;
@@ -136,18 +143,8 @@ void js_fetchData4CH()
 		i_fetchDataLifeCheck =0;
 	}
 
-
-		//Start: send interrupt/message to the other processor with the FreeRTOS----------------------------
-//		if(OsziData.SampledDataReadDone == 0){ 	// error
-//			OsziData.SampledDataError = 1;		// notify FreeRTOS and BareMetal that the transfer (write->read) was not possible in time
-//		}else{									// all ok
-//			OsziData.SampledDataReadDone = 0; 	// Reset the ReadDone-flag
-//			OsziData.SampledDataWriteDone = 1;	// notify FreeRTOS that new data is available/written
-//		}
-
 		//SW: Write message for interrupt to APU
 		status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, MsgPtr, IPI_R5toA53_MSG_LEN, XIPIPSU_BUF_TYPE_MSG);
-
 
 		//SW: Send an interrupt to APU
 		status = XIpiPsu_TriggerIpi(&INTCInst_IPI,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
@@ -162,64 +159,8 @@ void js_fetchData4CH()
 		ControlData.id = (Xuint16)RespBuf[0];
 		ControlData.value = (Xuint16)RespBuf[1];
 		ControlData.digInputs = (Xuint16)RespBuf[2];
-//		XGpio_DiscreteClear(&Gpio_OUT,GPIO_CHANNEL, 8);//Stop to the ADC module to set an offset value    0b0100);  	// "Enable_Gate" On //Consider, this is a inverse signal AND "Acknowledge" the set of ADC offset value.
-
 
 		//End: send interrupt/message to the other processor with the FreeRTOS----------------------------
-}
-
-void js_fetchData2CH()
-{
-	//static Xint16 values[20];
-	Xint32 status;
-
-	Xint16 data1_int = (Xint16)( myIQfactor[js_factor1] * *js_ptr[0]);
-	Xint16 data2_int = (Xint16)( myIQfactor[js_factor2] * *js_ptr[1]);
-
-	if (cnt_javascope < 10)
-	{
-		values[cnt_javascope] = (Xint16) data1_int;
-		values[10+cnt_javascope] = (Xint16) data2_int;
-	}
-
-	cnt_javascope++;
-
-	if (cnt_javascope >= 10)
-	{
-		int j=0;
-
-		if(TransferSendAllowed){
-			for (j=0; j<20; j++)
-			{
-				OsziData.val[j] = values[j];
-			}
-
-			memcpy(&(OsziData.slowDataContent), &(js_slowDataArray[cnt_slowData]), sizeof(Xint32));		// copy without automatic float -> int conversion
-			OsziData.slowDataID = cnt_slowData;
-			cnt_slowData++;
-			if (cnt_slowData >= JSSD_ENDMARKER)
-				cnt_slowData = 0;
-		}
-		cnt_javascope = 0;
-
-		i_fetchDataLifeCheck++; //LiveCheck
-		if(i_fetchDataLifeCheck > 100000){
-			i_fetchDataLifeCheck =0;
-			TransferSendAllowed = 1; //Only allow reading from memory after a specific time (e.g. 100ms) in order to avoid memory-access errors during power-on of the two processors
-			//xil_printf("var_mess new period\r\n");
-		}
-
-		//Start: send interrupt/message to the other processor with the FreeRTOS----------------------------
-//		if(OsziData.SampledDataReadDone == 0){ 	// error
-//			OsziData.SampledDataError = 1;		// notify FreeRTOS and BareMetal that the transfer (write->read) was not possible in time
-//		}else{									// all ok
-//			OsziData.SampledDataReadDone = 0; 	// Reset the ReadDone-flag
-//			OsziData.SampledDataWriteDone = 1;	// notify FreeRTOS that new data is available/written
-//		}
-		//Software-generated interrupt (SGI) with the interrupt-number = "INTC_IPC_Shared_INTERRUPT_ID" and the target-processor is cpu1 = "XSCUGIC_SPI_CPU0_MASK" -> cpu0 do not see/recognize this interrupt
-		status = XScuGic_SoftwareIntr(&INTCInst, INTC_IPC_Shared_INTERRUPT_ID, XSCUGIC_SPI_CPU1_MASK);
-		//End: send interrupt/message to the other processor with the FreeRTOS----------------------------
-	}
 }
 
 void JavaScope_update(DS_Data* data){
@@ -232,8 +173,6 @@ void JavaScope_update(DS_Data* data){
 		//Read the control values from JavaScope
 		ipc_Control_func(ControlDataShadowBare.id, ControlDataShadowBare.value, data); //check always in while(1) if there are new control values
 	}
-
-	float test_js_sinewave1 = 10.0 * sinf( PI2 * 1.00 * (i_count_1ms*0.001) ); //add a sine wave and display it on the Javascope
 
 	// Store every observable signal into the Pointer-Array.
 	// With the JavaScope, 4 signals can be displayed simultaneously (data stream at 200us time intervals).
@@ -324,10 +263,8 @@ void JavaScope_update(DS_Data* data){
 	js_slowDataArray[JSSD_FLOAT_Lq].f 			= data->mrp.motorQuadratureInductance;
 	js_slowDataArray[JSSD_FLOAT_totalRotorInertia].f 	= data->mrp.totalRotorInertia;
 
-	if (chJavaScope==4)
-		js_fetchData4CH();
-	else if (chJavaScope==2)
-		js_fetchData2CH();
+	js_fetchData4CH();
+
 	// End JavaScope---------------------------------------------------------------------------------------
 
 }

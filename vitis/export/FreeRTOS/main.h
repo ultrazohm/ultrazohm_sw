@@ -38,7 +38,7 @@ extern "C" {
 #define TCPPACKETSIZE 1460 //Maximum TCPPaketSize -> Default: 1460 -> Jumbo-Frames would enable a TCPPACKETSIZE of 8960
 #define TCPPORT 1000	   //Random chosen, but equivalent to the Concerto-OHMrichter
 #define NUMTCPWORKERS 3
-#define NETWORK_SEND_FIELD_SIZE 30 //Default: 15
+#define NETWORK_SEND_FIELD_SIZE 15 //EL //before: 30 //Default: 15
 //The IP-address, SubNet address-and StandartGateway-address are set in the main-thread in the main.c
 
 // ========== Definitions =========================================================================
@@ -55,8 +55,8 @@ extern "C" {
 #define GPIO_CHANNEL 						1								/* GPIO port for GPIOs */
 
 // ========== Structures =========================================================================
-
-typedef struct		/* status + time + 21 elemente (16bit) */
+/*
+typedef struct		// status + time + 21 elemente (16bit)
 {
 	u32_t status;
 	u32_t slowDataContent[NETWORK_SEND_FIELD_SIZE];
@@ -82,6 +82,35 @@ typedef struct		/* status + time + 21 elemente (16bit) */
     u16_t val_20_uint16[NETWORK_SEND_FIELD_SIZE];
     u16_t slowDataID[NETWORK_SEND_FIELD_SIZE];
 } NetworkSendStruct;
+*/
+
+typedef struct		// status + time + 20 elemente (32bit) + 16 bit
+{
+	u32_t status;
+	u32_t slowDataContent[NETWORK_SEND_FIELD_SIZE];
+	Xfloat32 val_01[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_02[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_03[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_04[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_05[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_06[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_07[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_08[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_09[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_10[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_11[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_12[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_13[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_14[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_15[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_16[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_17[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_18[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_19[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_20[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 slowDataID[NETWORK_SEND_FIELD_SIZE];
+} NetworkSendStruct;
+
 
 typedef struct
 {
@@ -92,7 +121,7 @@ typedef struct
 	u16_t schiebereg_ausgaenge;
 	u32_t slowDataContent;
 	u16_t slowDataID;
-	u16_t val[20];
+	Xfloat32 val[20]; // EL: changed from uint16 to float
 } ARM_to_Oszi_Data_shared_struct;
 
 typedef struct

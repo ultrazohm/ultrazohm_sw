@@ -55,73 +55,73 @@ void print_echo_app_header()
 void process_request_thread(void *p)
 {
 	int clientfd = (int)p;
-//	int RECV_BUF_SIZE = 2048;
-//	char recv_buf[RECV_BUF_SIZE];
+	//	int RECV_BUF_SIZE = 2048;
+	//	char recv_buf[RECV_BUF_SIZE];
 	int nread, nwrote;
-    char *buffer;
+	char *buffer;
 
-    int foo;
+	int foo;
 
-    nwsend.status = 0x00;
+	nwsend.status = 0x00;
 
-    for(foo=0; foo<NETWORK_SEND_FIELD_SIZE; foo++){
-     	nwsend.slowDataContent[foo] = 0;
-     	nwsend.val_01[foo] = 0;
- 		nwsend.val_02[foo] = 0;
- 		nwsend.val_03[foo] = 0;
- 		nwsend.val_04[foo]  = 0;
- 		nwsend.val_05[foo]  = 0;
- 		nwsend.val_06[foo]  = 0;
- 		nwsend.val_07[foo] = 0;
- 		nwsend.val_08[foo] = 0;
- 		nwsend.val_09[foo] = 0;
- 		nwsend.val_10[foo] = 0;
- 		nwsend.val_11[foo]  = 0;
- 		nwsend.val_12[foo]  = 0;
- 		nwsend.val_13[foo]  = 0;
- 		nwsend.val_14[foo] = 0;
- 		nwsend.val_15[foo] = 0;
- 		nwsend.val_16[foo] = 0;
- 		nwsend.val_17[foo] = 0;
- 		nwsend.val_18[foo] = 0;
- 		nwsend.val_19[foo] = 0;
- 		nwsend.val_20[foo] = 0;
- 		nwsend.slowDataID[foo] = 0;
-     }
+	for(foo=0; foo<NETWORK_SEND_FIELD_SIZE; foo++){
+		nwsend.slowDataContent[foo] = 0;
+		nwsend.val_01[foo] = 0;
+		nwsend.val_02[foo] = 0;
+		nwsend.val_03[foo] = 0;
+		nwsend.val_04[foo]  = 0;
+		nwsend.val_05[foo]  = 0;
+		nwsend.val_06[foo]  = 0;
+		nwsend.val_07[foo] = 0;
+		nwsend.val_08[foo] = 0;
+		nwsend.val_09[foo] = 0;
+		nwsend.val_10[foo] = 0;
+		nwsend.val_11[foo]  = 0;
+		nwsend.val_12[foo]  = 0;
+		nwsend.val_13[foo]  = 0;
+		nwsend.val_14[foo] = 0;
+		nwsend.val_15[foo] = 0;
+		nwsend.val_16[foo] = 0;
+		nwsend.val_17[foo] = 0;
+		nwsend.val_18[foo] = 0;
+		nwsend.val_19[foo] = 0;
+		nwsend.val_20[foo] = 0;
+		nwsend.slowDataID[foo] = 0;
+	}
 
-     xil_printf("tcpWorker: start clientfd = 0x%x\n", clientfd);
+	xil_printf("tcpWorker: start clientfd = 0x%x\n", clientfd);
 
 	while (1) {
 
 		u32_t command=0;
 		u8_t i=0;
 
-	  	for (i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
-	    		// Is there any new data available?
-	    		//Semaphore_pend(semaphore_send, BIOS_WAIT_FOREVER);
-//	  			xSemaphoreTake(xSemaphore_IPC,portMAX_DELAY ); //wait forever -> really big number (1000000000)
-//				if (OsziData.SampledDataWriteDone == 1){	// notify FreeRTOS that new data is available
-//					Transfer_ipc(); //Read out data from BareMetal into shadow register
-//				}
-	  	 //   xSemaphoreTake(xSemaphore_IPC, (TickType_t) 0);
-	        // Block waiting for the semaphore to become available.
-//	        if( xSemaphoreTake( xSemaphore_IPC, LONG_TIME ) == pdTRUE )
-//	        {
-	            // It is time to execute.
+		for (i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
+			// Is there any new data available?
+			//Semaphore_pend(semaphore_send, BIOS_WAIT_FOREVER);
+			//	  			xSemaphoreTake(xSemaphore_IPC,portMAX_DELAY ); //wait forever -> really big number (1000000000)
+			//				if (OsziData.SampledDataWriteDone == 1){	// notify FreeRTOS that new data is available
+			//					Transfer_ipc(); //Read out data from BareMetal into shadow register
+			//				}
+			//   xSemaphoreTake(xSemaphore_IPC, (TickType_t) 0);
+			// Block waiting for the semaphore to become available.
+			//	        if( xSemaphoreTake( xSemaphore_IPC, LONG_TIME ) == pdTRUE )
+			//	        {
+			// It is time to execute.
 
-	            // ...
-	            // We have finished our task.  Return to the top of the loop where
-	            // we will block on the semaphore until it is time to execute
-	            // again.  Note when using the semaphore for synchronisation with an
-				// ISR in this manner there is no need to 'give' the semaphore back.
-//	        }
+			// ...
+			// We have finished our task.  Return to the top of the loop where
+			// we will block on the semaphore until it is time to execute
+			// again.  Note when using the semaphore for synchronisation with an
+			// ISR in this manner there is no need to 'give' the semaphore back.
+			//	        }
 
-//Tesyt for Ethernet
-//NextPacketArrived =1;
-	  		while(NextPacketArrived ==0){
-	  			asm(" nop");
-	  		}
-	  		NextPacketArrived =0;
+			//Tesyt for Ethernet
+			//NextPacketArrived =1;
+			while(NextPacketArrived ==0){
+				asm(" nop");
+			}
+			NextPacketArrived =0;
 
 			nwsend.slowDataContent[i] 	= OsziData.slowDataContent;	// Clock_getTicks() - zeitnull;
 			nwsend.val_01[i] 	= OsziData.val[0];
@@ -145,7 +145,7 @@ void process_request_thread(void *p)
 			nwsend.val_19[i] 	= OsziData.val[18];
 			nwsend.val_20[i] 	= OsziData.val[19];
 			nwsend.slowDataID[i] 		= OsziData.slowDataID;
-	    }
+		}
 		nwsend.status = OsziData.status_BareToRTOS;
 
 		i_LifeCheck_process_Ethernet++;
@@ -157,43 +157,43 @@ void process_request_thread(void *p)
 		// EL: here the data is sent
 		if ((nwrote = write(clientfd, &nwsend, sizeof(nwsend))) < 0) {
 			xil_printf("%s: ERROR responding to client echo request. received = %d, written = %d\r\n",
-					__FUNCTION__, nread, nwrote);
+			__FUNCTION__, nread, nwrote);
 			xil_printf("Closing socket %d\r\n", clientfd);
 			break;
 		}
-    	asm(" nop");
+		asm(" nop");
 
-    	// read a max of RECV_BUF_SIZE bytes from socket /
-        if (nwrote > 0){
-        	//nwrote = read(clientfd, (char *)buffer, TCPPACKETSIZE);
-    		// read a max of RECV_BUF_SIZE bytes from socket /
-    		if ((nread = read(clientfd, (char *)recv_buf, TCPPACKETSIZE)) < 0) {
-    			xil_printf("%s: error reading from socket %d, closing socket\r\n", __FUNCTION__, clientfd);
-    			break;
-    		}
-        	//asm(" nop");
-        	if (nread == 4){
-        		command = *((u32_t*)recv_buf); // cast 4 bytes to Uint32
-        		if (command != 0)
-        		{
-        			// UInt16 temp = ipc_mtoc->counter;
-//        			if(TransferSendAllowed ==1)	{
-          			ControlData.id = (u16_t)command; 			// Erste 2 Bytes: Commands in Form von Flags/Nummern
-        			ControlData.value = (s16_t)(command >> 16);	// Letzte 2 Bytes: Zahlenwert Uebergabe
-        			//TODO: //IPCMtoCFlagSet(IPC_FLAG3);
-//        			}
-        		}
-        	}
+		// read a max of RECV_BUF_SIZE bytes from socket /
+		if (nwrote > 0){
+			//nwrote = read(clientfd, (char *)buffer, TCPPACKETSIZE);
+			// read a max of RECV_BUF_SIZE bytes from socket /
+			if ((nread = read(clientfd, (char *)recv_buf, TCPPACKETSIZE)) < 0) {
+				xil_printf("%s: error reading from socket %d, closing socket\r\n", __FUNCTION__, clientfd);
+				break;
+			}
+			//asm(" nop");
+			if (nread == 4){
+				command = *((u32_t*)recv_buf); // cast 4 bytes to Uint32
+				if (command != 0)
+				{
+					// UInt16 temp = ipc_mtoc->counter;
+					//        			if(TransferSendAllowed ==1)	{
+					ControlData.id = (u16_t)command; 			// Erste 2 Bytes: Commands in Form von Flags/Nummern
+					ControlData.value = (s16_t)(command >> 16);	// Letzte 2 Bytes: Zahlenwert Uebergabe
+					//TODO: //IPCMtoCFlagSet(IPC_FLAG3);
+					//        			}
+				}
+			}
 
-    		// break if client closed connection /
-    		if (nread <= 0){
-    			close(clientfd);
-    			break;
-    		}
-        }else{
-            close(clientfd);
-            // flag = FALSE;
-        }
+			// break if client closed connection /
+			if (nread <= 0){
+				close(clientfd);
+				break;
+			}
+		}else{
+			close(clientfd);
+			// flag = FALSE;
+		}
 	}
 
 	// close connection

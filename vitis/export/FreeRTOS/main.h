@@ -8,7 +8,7 @@
 *      Author: Wendel Sebastian (SW)
 *
 ******************************************************************************/
-
+#pragma once
 #ifdef __cplusplus
 extern "C" {
 #endif

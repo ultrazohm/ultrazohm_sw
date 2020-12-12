@@ -33,15 +33,14 @@
 //Includes from own files
 #include "main.h"
 #include "defines.h"
+#include "include/isr.h"
+#include "include/gpio_axi.h"
+#include "include/gpio.h"
 
 Xboolean VarTest = 0;
 
-
-
 XGpio Gpio_OUT;		/* GPIO Device driver instance for the real GPIOs */
 
-//ARM_to_Oszi_Data_shared_struct OsziData __attribute__((section(".sharedRAM_Oszidata"))); //Data from A9_0 to A9_1 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
-//Oszi_to_ARM_Data_shared_struct ControlData __attribute__((section(".sharedRAM_Controldata"))); //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
 ARM_to_Oszi_Data_shared_struct OsziData; //Data from A9_0 to A9_1 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
 Oszi_to_ARM_Data_shared_struct ControlData; //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
 

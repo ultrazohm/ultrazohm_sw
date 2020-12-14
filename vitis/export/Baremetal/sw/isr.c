@@ -257,13 +257,6 @@ int Initialize_ISR(){
 
 	int Status = 0;
 
-	// Initialize interrupt controller for the GIC
-	Status = Rpu_GicInit(&INTCInst, INTERRUPT_ID_SCUG, &TMR_Con_Inst);
-		if(Status != XST_SUCCESS) {
-			xil_printf("RPU: Error: GIC initialization failed\r\n");
-			return XST_FAILURE;
-		}
-
 	// Initialize interrupt controller for the IPI -> Initialize RPU IPI
 	Status = Rpu_IpiInit(INTERRUPT_ID_IPI);
 		if(Status != XST_SUCCESS) {
@@ -271,6 +264,12 @@ int Initialize_ISR(){
 			return XST_FAILURE;
 		}
 
+	// Initialize interrupt controller for the GIC
+	Status = Rpu_GicInit(&INTCInst, INTERRUPT_ID_SCUG, &TMR_Con_Inst);
+		if(Status != XST_SUCCESS) {
+			xil_printf("RPU: Error: GIC initialization failed\r\n");
+			return XST_FAILURE;
+		}
 
 	// Initialize mux_axi to use correct interrupt for triggering the ADCs
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + IPCore_Enable_mux_axi_ip, 1); // enable IP core
@@ -386,13 +385,7 @@ u32 Rpu_IpiInit(u16 DeviceId)
 			return XST_FAILURE;
 		}
 
-	// Enable IPI from RPU_0 to APU_0
-	//	Xil_Out32(0xFF310018U, 0xF0000U);
-	//Explanation: 0xFF310018U = XPAR_PSU_IPI_1_BASE_ADDRESS + XIPIPSU_IER_OFFSET
-	//Explanation: 0xF0000U =  XPAR_PSU_IPI_3_BIT_MASK +XPAR_PSU_IPI_4_BIT_MASK + XPAR_PSU_IPI_5_BIT_MASK + XPAR_PSU_IPI_6_BIT_MASK
-	//Explanation: 0xF0000U =  0x00010000U + 0x00020000U + 0x00040000U + 0x00080000U = Enable all IPI to the PMU
 	XIpiPsu_InterruptEnable(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
-	//XIpiPsu_InterruptEnable(&INTCInst_IPI, 0x00000301U); //Enable all interrupts with "0x00000301U"
 
 	xil_printf("RPU: RPU_IpiInit: Done\r\n");
 	return XST_SUCCESS;

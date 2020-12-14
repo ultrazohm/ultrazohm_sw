@@ -23,7 +23,6 @@ static XGpioPs Gpio_inst;											/* GPIO Device driver instance for the real 
 int Initialize_GPIO( ){
 
 	int status;
-	xil_printf(" Init GPIO \n\r"); //GPIO interface
 	Initialize_PS_GPIO(XPAR_PSU_GPIO_0_BASEADDR, XPAR_PSU_GPIO_0_DEVICE_ID); //GPIO 0 interface
 
 	//Subsequently i specify each Pin separately, in order to avoid to activate an not used Pin
@@ -47,6 +46,8 @@ int Initialize_GPIO( ){
 	Enable_PS_GPIO(SW_system,ENABLE_PIN); //Enable the GPIO
 	Enable_PS_GPIO(SW_control,ENABLE_PIN); //Enable the GPIO
 	Enable_PS_GPIO(SW_stop,ENABLE_PIN); //Enable the GPIO
+
+	xil_printf("RPU: GPIOs initialized \n\r"); //GPIO interface
 
 return status;
 }

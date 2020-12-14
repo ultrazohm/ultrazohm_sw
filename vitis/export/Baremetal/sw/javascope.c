@@ -120,7 +120,7 @@ void js_fetchData4CH()
 	memcpy(&(MsgPtr[4]), &(js_slowDataArray[cnt_slowData]), sizeof(Xint32));		// copy without automatic float -> int conversion
 	MsgPtr[5] = cnt_slowData;
 	MsgPtr[6] = OsziData.status_BareToRTOS;
-//	MsgPtr[7] = free 32bit channel
+	MsgPtr[7] = 0;//free 32bit channel
 
 
 	cnt_javascope++;
@@ -137,23 +137,26 @@ void js_fetchData4CH()
 		i_fetchDataLifeCheck =0;
 	}
 
-		//SW: Write message for interrupt to APU
-		status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, MsgPtr, IPI_R5toA53_MSG_LEN, XIPIPSU_BUF_TYPE_MSG);
+	//SW: Write message for interrupt to APU
+	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, MsgPtr, IPI_R5toA53_MSG_LEN, XIPIPSU_BUF_TYPE_MSG);
 
-		//SW: Send an interrupt to APU
-		status = XIpiPsu_TriggerIpi(&INTCInst_IPI,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
-		if(status != (u32)XST_SUCCESS) {
-			xil_printf("RPU: IPI Trigger failed\r\n");
-		}
+	//SW: Send an interrupt to APU
+	status = XIpiPsu_TriggerIpi(&INTCInst_IPI,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
+	if(status != (u32)XST_SUCCESS) {
+		xil_printf("RPU: IPI Trigger failed\r\n");
+	}
 
-		//SW: Afterwards an acknowledge and a message from the APU can be read/checked, but we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
-		status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, RespBuf,IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_RESP);
+	//SW: Afterwards an acknowledge and a message from the APU can be read/checked, but we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
+	status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, RespBuf,IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_RESP);
+	if(status != (u32)XST_SUCCESS) {
+		xil_printf("RPU: IPI reading from A53 failed\r\n");
+	}
 
-		ControlData.id 			= (Xuint16)RespBuf[0];
-		ControlData.value 		= (Xuint16)RespBuf[1];
-		ControlData.digInputs 	= (Xuint16)RespBuf[2];
+	ControlData.id 			= (Xuint16)RespBuf[0];
+	ControlData.value 		= (Xuint16)RespBuf[1];
+	ControlData.digInputs 	= (Xuint16)RespBuf[2];
 
-		//End: send interrupt/message to the other processor with the FreeRTOS----------------------------
+	//End: send interrupt/message to the other processor with the FreeRTOS----------------------------
 }
 
 void JavaScope_update(DS_Data* data){

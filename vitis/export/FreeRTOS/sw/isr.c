@@ -169,6 +169,9 @@ int Initialize_ISR(){
 			xil_printf("APU: Error: Queue creation failed\r\n");
 			return XST_FAILURE;
 		}
+
+	//xil_printf("APU: Queue successfully created\r\n");
+
 	return Status;
 }
 

@@ -28,7 +28,7 @@
 #include "include/can.h"
 
 //Includes for processor GPIOs
-#define GPIO_ACTIVE 1 // (1 = GPIO is active)  and (0 = GPIO is inactive)
+#define GPIO_ACTIVE 0 // (1 = GPIO is active)  and (0 = GPIO is inactive)
 
 //Includes from own files
 #include "main.h"
@@ -127,11 +127,11 @@ void network_thread(void *p)
 	Initialize_ISR();
 
 	// Initialize the GPIOs which are connected over FPGA pins
-	Initialize_AXI_GPIO();
+//	Initialize_AXI_GPIO();
 
 	// Initialize the GPIOs which are connected over processor pins (MIO pins)
 	#if GPIO_ACTIVE==1
-		xil_printf(" Init GPIO \n\r"); //GPIO interface
+		xil_printf("A53: Init GPIO \n\r"); //GPIO interface
 		Initialize_PS_GPIO(XPAR_PSU_GPIO_0_BASEADDR, XPAR_PSU_GPIO_0_DEVICE_ID); //GPIO 0 interface
 
 	#endif

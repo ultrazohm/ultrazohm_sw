@@ -35,17 +35,13 @@ extern Oszi_to_ARM_Data_shared_struct ControlData;
 QueueHandle_t OsziData_queue;
 
 extern A53_Data Global_Data_A53;
-extern XGpio Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
 
-Xint16  i_LifeCheck_Transfer_ipc, NextPacketArrived=0,cnt_javascope=0,Test_javascope=0;
+Xint16  i_LifeCheck_Transfer_ipc, cnt_javascope=0;
 
 //Initialize the Interrupt structure
 XScuGic INTCipc;	//Interrupt for IPC
 XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 XScuGic_Config *IntcConfig;
-BaseType_t xHigherPriorityTaskWoken;
-
-u32 RegVal;
 
 /**
  * Apu_IpiHandler() - Interrupt handler for IPI
@@ -58,6 +54,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 	int status;
 	u32 IpiBuf[IPI_R5toA53_MSG_LEN] = {0U};
 	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0,0,XST_SUCCESS};
+	u32 RegVal;
+	BaseType_t xHigherPriorityTaskWoken;
 
 	// Check if the IPI is from the expected source i-> here we expect from R5_0
 	RegVal = XIpiPsu_GetInterruptStatus(&INTCInst_IPI);
@@ -194,12 +192,12 @@ u32 Apu_GicInit(XScuGic *IntcInstPtr, u32 IntId, Xil_ExceptionHandler Handler, v
 
 	// Make the connection between the IntId of the interrupt source and the
 	// associated handler that is to run when the interrupt is recognized.
-	(void)XScuGic_Connect(IntcInstPtr, IntId, Handler, PeriphInstPtr);
+	Status = XScuGic_Connect(IntcInstPtr, IntId, Handler, PeriphInstPtr);
 
 	XScuGic_Enable(IntcInstPtr, IntId);
 
 	//xil_printf("APU: Apu_GicInit: Done\r\n");
-	return XST_SUCCESS;
+	return Status;
 }
 
 

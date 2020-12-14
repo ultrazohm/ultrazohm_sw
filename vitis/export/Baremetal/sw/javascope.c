@@ -26,7 +26,6 @@ extern Oszi_to_ARM_Data_shared_struct ControlData;
 extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
 
 Xuint32 cnt_javascope=0, cnt_slowData=0;
-extern XGpioPs Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
 
 Xuint16 js_factor1 = 0, js_factor2 = 0, js_factor3 = 0, js_factor4 = 0;
 

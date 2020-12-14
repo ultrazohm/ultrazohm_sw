@@ -28,13 +28,10 @@ extern Oszi_to_ARM_Data_shared_struct ControlData;
 
 extern QueueHandle_t OsziData_queue;
 
-extern XGpio Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
-
 NetworkSendStruct nwsend;
 
 Xint16 i_LifeCheck_process_Ethernet =0, TransferSendAllowed=0;
 char recv_buf[2048];
-extern Xint16  NextPacketArrived;
 
 //==============================================================================================================================================================
 void print_echo_app_header()

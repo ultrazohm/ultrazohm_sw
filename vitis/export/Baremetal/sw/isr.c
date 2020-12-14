@@ -44,8 +44,7 @@ Xint16 		i_CountADCinit =0, MessOnce=0, CountCurrentError =0;
 boolean     initADCdone = valueFalse;
 
 // Initialize the  GPIO structure
-extern XGpioPs Gpio_IN;		/* GPIO Device driver instance for the real GPIOs */
-extern XGpioPs Gpio_OUT;	/* GPIO Device driver instance for the real GPIOs */
+extern XGpio Gpio_OUT;	/* GPIO Device driver instance for the real GPIOs */
 
 //Initialize the Interrupt structure
 XScuGic INTCInst;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -71,7 +70,6 @@ extern DS_Data Global_Data;
 void ISR_Control(void *data)
 {
 	//Show start of control-ISR by toggling a pin
-	//XGpio_DiscreteWrite(&Gpio_OUT,GPIO_CHANNEL , 0b0010);  // --+-
 	//if you have a device, which may produce several interrupts one after another, the first thing you should do here, is to disable interrupts!
 	// Enable and acknowledge the timer
 	XTmrCtr_Reset(&TMR_Con_Inst,0);

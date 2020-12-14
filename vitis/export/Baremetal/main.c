@@ -37,11 +37,13 @@ DS_Data Global_Data;
 
 extern XGpioPs Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
 
-//ARM_to_Oszi_Data_shared_struct OsziData __attribute__((section(".sharedRAM_Oszidata"))); //Data from A9_0 to A9_1 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
-//Oszi_to_ARM_Data_shared_struct ControlData __attribute__((section(".sharedRAM_Controldata"))); //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-ARM_to_Oszi_Data_shared_struct OsziData; //Data from A9_0 to A9_1 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
-Oszi_to_ARM_Data_shared_struct ControlData; //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-Oszi_to_ARM_Data_shared_struct ControlDataShadowBare; //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
+//Data from R5_0 to A53_0 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
+ARM_to_Oszi_Data_shared_struct OsziData;
+
+//Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
+Oszi_to_ARM_Data_shared_struct ControlData;
+Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
+
 
 int main (void){
 
@@ -83,7 +85,7 @@ int main (void){
 	Initialize_ARMController(&Global_Data);
 
    	//Initialize the Soft-Oscilloscope ("JavaScope")
-	JavaScope_initalize();
+	JavaScope_initalize(&Global_Data);
 
 	// Initialize the Interrupts
 	Initialize_ISR();

@@ -14,32 +14,16 @@
 #include "../include/javascope.h"
 
 float myIQfactor[15] = {1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.0, 1024.0, 2048.0, 4096.0, 8192.0, 16384.0};
-// Int16 Datentyp geht von −32.768 bis 32.767
-// Wertebereiche mit myIQfactor:
-// 0  :  −32768 bis 32767				Auflösung 1.0
-// 1  :  −16384 bis 16383.5				Auflösung 0.5
-// 2  :  −8192  bis 8191.75				Auflösung 0.25
-// 3  :  −4096  bis 4095.875			Auflösung 0.125
-// 4  :  −2048  bis 2047.9375			Auflösung 0.0625
-// 5  :  −1024  bis 1023.96875			Auflösung 0.03125
-// 6  :  −512   bis 511.984375			Auflösung 0.015625
-// 7  :  −256   bis 255.9921875			Auflösung 0.0078125
-// 8  :  −128   bis 127.99609375  		Auflösung 0.00390625
-// 9  :  −64    bis 63.998046875		Auflösung 0.001953125
-// 10 :  −32    bis 31.999023437		Auflösung 0.000976563
-// 11 :  −16    bis 15.999511719		Auflösung 0.000488281
-// 12 :  −8     bis 7.999755859			Auflösung 0.000244141
-// 13 :  −4     bis 3.999877930			Auflösung 0.000122070
-// 14 :  −2 	bis 1.999938965			Auflösung 0.000061035
 
+// IPI Messaging System R5 <-> A53
 #define IPI_HEADER			0x1E0000 /* 1E - Target Module ID */
 #define IPI_R5toA53_MSG_LEN		8U //27U
 #define IPI_A53toR5_MSG_LEN		3U
 
 //Variables for JavaScope
-extern ARM_to_Oszi_Data_shared_struct OsziData;//Data from R5_0 to A53_0  (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
-extern Oszi_to_ARM_Data_shared_struct ControlData; //Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare; //Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
+extern ARM_to_Oszi_Data_shared_struct OsziData;
+extern Oszi_to_ARM_Data_shared_struct ControlData;
+extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
 
 Xuint32 cnt_javascope=0, cnt_slowData=0;
 extern XGpioPs Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
@@ -50,8 +34,6 @@ Xuint16 js_factor1 = 0, js_factor2 = 0, js_factor3 = 0, js_factor4 = 0;
 Xfloat32 *js_ptr_arr[JSO_ENDMARKER];
 Xfloat32 *js_ptr[4];	// channel ptr
 Xfloat32 zerovalue = 0.0;
-
-Xint16  TransferSendAllowed = 1;
 Xint32  i_fetchDataLifeCheck=0;
 
 //Initialize the Interrupt structure
@@ -62,11 +44,11 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 extern Xint32 i_count_1ms, i_count_1s;
 extern float f_ISRLifeCheck;
 extern float time_ISR_max_us, time_ISR_total, time_ISR_total_us, isr_period_us_measured;
-
+extern int i_ISRLifeCheck;
 //Xint16 values[20];
 union SlowData js_slowDataArray[JSSD_ENDMARKER];
 
-int JavaScope_initalize()
+int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
 	//Initialize all variables with zero
@@ -92,7 +74,32 @@ int JavaScope_initalize()
 	ControlData.id =0;
 	ControlData.value =0;
 
-	//Do not initialize the shared-RAM, because during power-on, read/write occurs problems! Therefore, allow read/write only a specific time (e.g. 1000 cycles of 100us)
+	// Store every observable signal into the Pointer-Array.
+	// With the JavaScope, 4 signals can be displayed simultaneously
+	// Changing between the observable signals is possible at runtime in the JavaScope.
+	// the addresses in Global_Data do not change during runtime, this can be done in the init
+	js_ptr_arr[JSO_Speed_rpm]	= &data->av.mechanicalRotorSpeed;
+	js_ptr_arr[JSO_ia] 			= &data->av.I_U;
+	js_ptr_arr[JSO_ib] 			= &data->av.I_V;
+	js_ptr_arr[JSO_ic] 			= &data->av.I_W;
+	js_ptr_arr[JSO_ua] 			= &data->av.U_U;
+	js_ptr_arr[JSO_ub] 			= &data->av.U_V;
+	js_ptr_arr[JSO_uc] 			= &data->av.U_W;
+	js_ptr_arr[JSO_iq] 			= &data->av.I_q;
+	js_ptr_arr[JSO_id] 			= &data->av.I_d;
+	js_ptr_arr[JSO_Theta_el] 	= &data->av.theta_elec;
+	js_ptr_arr[JSO_theta_mech] 	= &data->av.theta_mech;
+	js_ptr_arr[JSO_Wtemp]		= &data->pID.WindingTemp;
+	js_ptr_arr[JSO_ud]			= &data->av.U_d;
+	js_ptr_arr[JSO_uq]			= &data->av.U_q;
+	js_ptr_arr[JSO_Ld_mH]		= &data->pID.Online_Ld;
+	js_ptr_arr[JSO_Lq_mH]		= &data->pID.Online_Lq;
+	js_ptr_arr[JSO_Rs_mOhm]		= &data->pID.Online_Rs;
+	js_ptr_arr[JSO_PsiPM_mVs]	= &data->pID.Online_Psi_PM;
+	js_ptr_arr[JSO_Sawtooth1] 	= &time_ISR_total_us;
+	js_ptr_arr[JSO_SineWave1]   = &f_ISRLifeCheck;
+	js_ptr_arr[JSO_SineWave2]   = &isr_period_us_measured;
+
 	return Status;
 }
 
@@ -102,21 +109,7 @@ void js_fetchData4CH()
 	Xint32 status;
 	u32 MsgPtr[IPI_R5toA53_MSG_LEN] = {0};
 	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0};
-/* 	EL: old int16 way with myIQfactor doing the fixed point conversion
-	Xint16 data1_int = (Xint16)( myIQfactor[js_factor1] * *js_ptr[0]);
-	Xint16 data2_int = (Xint16)( myIQfactor[js_factor2] * *js_ptr[1]);
-	Xint16 data3_int = (Xint16)( myIQfactor[js_factor3] * *js_ptr[2]);
-	Xint16 data4_int = (Xint16)( myIQfactor[js_factor4] * *js_ptr[3]);
 
-	values[0] = (Xint16) data1_int;
-	values[1] = (Xint16) data2_int;
-	values[2] = (Xint16) data3_int;
-	values[3] = (Xint16) data4_int;
-	MsgPtr[0] = values[0];
-	MsgPtr[1] = values[1];
-	MsgPtr[2] = values[2];
-	MsgPtr[3] = values[3];
-	*/
 	//EL: write values that will be transfered into MsgPtr array
 	//MsgPtr contains values, js_ptr contains pointers to values
 	memcpy(&(MsgPtr[0]), js_ptr[0], sizeof(u32));
@@ -127,7 +120,8 @@ void js_fetchData4CH()
 	memcpy(&(MsgPtr[4]), &(js_slowDataArray[cnt_slowData]), sizeof(Xint32));		// copy without automatic float -> int conversion
 	MsgPtr[5] = cnt_slowData;
 	MsgPtr[6] = OsziData.status_BareToRTOS;
-	MsgPtr[7] = OsziData.schiebereg_ausgaenge;
+//	MsgPtr[7] = free 32bit channel
+
 
 	cnt_javascope++;
 	if (cnt_javascope >= 5) //Send a new SlowData only every 5th cycle
@@ -153,12 +147,11 @@ void js_fetchData4CH()
 		}
 
 		//SW: Afterwards an acknowledge and a message from the APU can be read/checked, but we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
-		//status = XIpiPsu_PollForAck(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, (~0));
 		status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, RespBuf,IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_RESP);
 
-		ControlData.id = (Xuint16)RespBuf[0];
-		ControlData.value = (Xuint16)RespBuf[1];
-		ControlData.digInputs = (Xuint16)RespBuf[2];
+		ControlData.id 			= (Xuint16)RespBuf[0];
+		ControlData.value 		= (Xuint16)RespBuf[1];
+		ControlData.digInputs 	= (Xuint16)RespBuf[2];
 
 		//End: send interrupt/message to the other processor with the FreeRTOS----------------------------
 }
@@ -173,31 +166,6 @@ void JavaScope_update(DS_Data* data){
 		//Read the control values from JavaScope
 		ipc_Control_func(ControlDataShadowBare.id, ControlDataShadowBare.value, data); //check always in while(1) if there are new control values
 	}
-
-	// Store every observable signal into the Pointer-Array.
-	// With the JavaScope, 4 signals can be displayed simultaneously (data stream at 200us time intervals).
-	// Changing between the observable signals is possible at runtime in the JavaScope.
-	js_ptr_arr[JSO_Speed_rpm]	= &data->av.mechanicalRotorSpeed;
-	js_ptr_arr[JSO_ia] 			= &data->av.I_U;
-	js_ptr_arr[JSO_ib] 			= &data->av.I_V;
-	js_ptr_arr[JSO_ic] 			= &data->av.I_W;
-	js_ptr_arr[JSO_ua] 			= &data->av.U_U;
-	js_ptr_arr[JSO_ub] 			= &data->av.U_V;
-	js_ptr_arr[JSO_uc] 			= &data->av.U_W;
-	js_ptr_arr[JSO_iq] 			= &data->av.I_q;
-	js_ptr_arr[JSO_id] 			= &data->av.I_d;
-	js_ptr_arr[JSO_Theta_el] 	= &data->av.theta_elec;
-	js_ptr_arr[JSO_theta_mech] 	= &data->av.theta_mech;
-	js_ptr_arr[JSO_Wtemp]		= &data->pID.WindingTemp;
-	js_ptr_arr[JSO_ud]			= &data->av.U_d;
-	js_ptr_arr[JSO_uq]			= &data->av.U_q;
-	js_ptr_arr[JSO_Ld_mH]		= &data->pID.Online_Ld;
-	js_ptr_arr[JSO_Lq_mH]		= &data->pID.Online_Lq;
-	js_ptr_arr[JSO_Rs_mOhm]		= &data->pID.Online_Rs;
-	js_ptr_arr[JSO_PsiPM_mVs]	= &data->pID.Online_Psi_PM;
-	js_ptr_arr[JSO_Sawtooth1] 	= &f_ISRLifeCheck;
-	js_ptr_arr[JSO_SineWave1]   = &time_ISR_total_us;
-	js_ptr_arr[JSO_SineWave2]   = &isr_period_us_measured;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another (one every 0,5 ms).

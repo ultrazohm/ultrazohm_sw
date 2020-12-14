@@ -126,7 +126,7 @@ extern float *js_ptr[4];	// channel ptr
 extern union SlowData js_slowDataArray[JSSD_ENDMARKER];
 
 
-int JavaScope_initalize(void);
+int JavaScope_initalize(DS_Data* data);
 void JavaScope_update(DS_Data* data);
 
 void js_fetchData4CH();

@@ -80,7 +80,7 @@ void ISR_Control(void *data)
 	time_ISR_start = XTmrCtr_GetValue(&TMR_Con_Inst,0);
 
 	i_ISRLifeCheck++; //LiveCheck
-	if(i_ISRLifeCheck > 10000){
+	if(i_ISRLifeCheck > 1000){
 		i_ISRLifeCheck = 1; //If the value is 10001, than set to 1 in order to avoid value-overflow
 	}
 	f_ISRLifeCheck = ((Xfloat32)i_ISRLifeCheck)*0.1; //for representation, keep the value between 0-1000
@@ -199,8 +199,7 @@ void ISR_Control(void *data)
 	if(time_ISR_total_us > time_ISR_max_us){
 		time_ISR_max_us = (time_ISR_total_us);
 	}
-	//Show end of control-ISR
-	//XGpio_DiscreteWrite(&Gpio_OUT,GPIO_CHANNEL , 0b0000);  // ----
+
 }
 
 //==============================================================================================================================================================

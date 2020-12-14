@@ -37,12 +37,15 @@
 #include "include/gpio_axi.h"
 #include "include/gpio.h"
 
-Xboolean VarTest = 0;
 
 XGpio Gpio_OUT;		/* GPIO Device driver instance for the real GPIOs */
 
-ARM_to_Oszi_Data_shared_struct OsziData; //Data from A9_0 to A9_1 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
-Oszi_to_ARM_Data_shared_struct ControlData; //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
+//Data from R5_0 to A53_0 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
+ARM_to_Oszi_Data_shared_struct OsziData;
+ARM_to_Oszi_Data_shared_struct OsziData_Shadow;
+
+//Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
+Oszi_to_ARM_Data_shared_struct ControlData;
 
 Xint16 i_LifeCheck, i_LifeCheck_mainThreat, i_LifeCheck_networkThreat, i_LifeCheck_IPC_Threat, i_LifeCheck_canThreat;
 

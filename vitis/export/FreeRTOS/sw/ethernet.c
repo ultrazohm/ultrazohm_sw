@@ -23,9 +23,11 @@
 
 #define LONG_TIME 0xffff
 
-extern ARM_to_Oszi_Data_shared_struct OsziData; //Data from A9_0 to A9_1 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
-extern Oszi_to_ARM_Data_shared_struct ControlData; //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-//extern SemaphoreHandle_t xSemaphore_IPC;
+extern ARM_to_Oszi_Data_shared_struct OsziData_Shadow;
+extern Oszi_to_ARM_Data_shared_struct ControlData;
+
+extern QueueHandle_t OsziData_queue;
+
 extern XGpio Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
 
 NetworkSendStruct nwsend;
@@ -55,11 +57,7 @@ void print_echo_app_header()
 void process_request_thread(void *p)
 {
 	int clientfd = (int)p;
-	//	int RECV_BUF_SIZE = 2048;
-	//	char recv_buf[RECV_BUF_SIZE];
 	int nread, nwrote;
-	char *buffer;
-
 	int foo;
 
 	nwsend.status = 0x00;
@@ -69,16 +67,16 @@ void process_request_thread(void *p)
 		nwsend.val_01[foo] = 0;
 		nwsend.val_02[foo] = 0;
 		nwsend.val_03[foo] = 0;
-		nwsend.val_04[foo]  = 0;
-		nwsend.val_05[foo]  = 0;
-		nwsend.val_06[foo]  = 0;
+		nwsend.val_04[foo] = 0;
+		nwsend.val_05[foo] = 0;
+		nwsend.val_06[foo] = 0;
 		nwsend.val_07[foo] = 0;
 		nwsend.val_08[foo] = 0;
 		nwsend.val_09[foo] = 0;
 		nwsend.val_10[foo] = 0;
-		nwsend.val_11[foo]  = 0;
-		nwsend.val_12[foo]  = 0;
-		nwsend.val_13[foo]  = 0;
+		nwsend.val_11[foo] = 0;
+		nwsend.val_12[foo] = 0;
+		nwsend.val_13[foo] = 0;
 		nwsend.val_14[foo] = 0;
 		nwsend.val_15[foo] = 0;
 		nwsend.val_16[foo] = 0;
@@ -96,57 +94,36 @@ void process_request_thread(void *p)
 		u32_t command=0;
 		u8_t i=0;
 
+
 		for (i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
-			// Is there any new data available?
-			//Semaphore_pend(semaphore_send, BIOS_WAIT_FOREVER);
-			//	  			xSemaphoreTake(xSemaphore_IPC,portMAX_DELAY ); //wait forever -> really big number (1000000000)
-			//				if (OsziData.SampledDataWriteDone == 1){	// notify FreeRTOS that new data is available
-			//					Transfer_ipc(); //Read out data from BareMetal into shadow register
-			//				}
-			//   xSemaphoreTake(xSemaphore_IPC, (TickType_t) 0);
-			// Block waiting for the semaphore to become available.
-			//	        if( xSemaphoreTake( xSemaphore_IPC, LONG_TIME ) == pdTRUE )
-			//	        {
-			// It is time to execute.
 
-			// ...
-			// We have finished our task.  Return to the top of the loop where
-			// we will block on the semaphore until it is time to execute
-			// again.  Note when using the semaphore for synchronisation with an
-			// ISR in this manner there is no need to 'give' the semaphore back.
-			//	        }
-
-			//Tesyt for Ethernet
-			//NextPacketArrived =1;
-			while(NextPacketArrived ==0){
-				asm(" nop");
-			}
-			NextPacketArrived =0;
-
-			nwsend.slowDataContent[i] 	= OsziData.slowDataContent;	// Clock_getTicks() - zeitnull;
-			nwsend.val_01[i] 	= OsziData.val[0];
-			nwsend.val_02[i] 	= OsziData.val[1];
-			nwsend.val_03[i] 	= OsziData.val[2];
-			nwsend.val_04[i]  	= OsziData.val[3];
-			nwsend.val_05[i]  	= OsziData.val[4];
-			nwsend.val_06[i]  	= OsziData.val[5];
-			nwsend.val_07[i] 	= OsziData.val[6];
-			nwsend.val_08[i] 	= OsziData.val[7];
-			nwsend.val_09[i] 	= OsziData.val[8];
-			nwsend.val_10[i] 	= OsziData.val[9];
-			nwsend.val_11[i]  	= OsziData.val[10];
-			nwsend.val_12[i]  	= OsziData.val[11];
-			nwsend.val_13[i]  	= OsziData.val[12];
-			nwsend.val_14[i] 	= OsziData.val[13];
-			nwsend.val_15[i] 	= OsziData.val[14];
-			nwsend.val_16[i] 	= OsziData.val[15];
-			nwsend.val_17[i] 	= OsziData.val[16];
-			nwsend.val_18[i] 	= OsziData.val[17];
-			nwsend.val_19[i] 	= OsziData.val[18];
-			nwsend.val_20[i] 	= OsziData.val[19];
-			nwsend.slowDataID[i] 		= OsziData.slowDataID;
+				xQueueReceive(OsziData_queue,&OsziData_Shadow,100);
+				nwsend.val_01[i] 	= OsziData_Shadow.val[0];
+				nwsend.val_02[i] 	= OsziData_Shadow.val[1];
+				nwsend.val_03[i] 	= OsziData_Shadow.val[2];
+				nwsend.val_04[i]  	= OsziData_Shadow.val[3];
+				nwsend.val_05[i]  	= OsziData_Shadow.val[4];
+				nwsend.val_06[i]  	= OsziData_Shadow.val[5];
+				nwsend.val_07[i] 	= OsziData_Shadow.val[6];
+				nwsend.val_08[i] 	= OsziData_Shadow.val[7];
+				nwsend.val_09[i] 	= OsziData_Shadow.val[8];
+				nwsend.val_10[i] 	= OsziData_Shadow.val[9];
+				nwsend.val_11[i]  	= OsziData_Shadow.val[10];
+				nwsend.val_12[i]  	= OsziData_Shadow.val[11];
+				nwsend.val_13[i]  	= OsziData_Shadow.val[12];
+				nwsend.val_14[i] 	= OsziData_Shadow.val[13];
+				nwsend.val_15[i] 	= OsziData_Shadow.val[14];
+				nwsend.val_16[i] 	= OsziData_Shadow.val[15];
+				nwsend.val_17[i] 	= OsziData_Shadow.val[16];
+				nwsend.val_18[i] 	= OsziData_Shadow.val[17];
+				nwsend.val_19[i] 	= OsziData_Shadow.val[18];
+				nwsend.val_20[i] 	= OsziData_Shadow.val[19];
+				nwsend.slowDataContent[i] 	= OsziData_Shadow.slowDataContent;
+				nwsend.slowDataID[i] 		= OsziData_Shadow.slowDataID;
 		}
-		nwsend.status = OsziData.status_BareToRTOS;
+		nwsend.status = OsziData_Shadow.status_BareToRTOS;
+
+		// At this point, Ethernet Package is full and ready to be sent
 
 		i_LifeCheck_process_Ethernet++;
 		if(i_LifeCheck_process_Ethernet > 2500){
@@ -154,7 +131,7 @@ void process_request_thread(void *p)
 		}
 
 		// write the data -> handle request /
-		// EL: here the data is sent
+		// The data is sent here
 		if ((nwrote = write(clientfd, &nwsend, sizeof(nwsend))) < 0) {
 			xil_printf("%s: ERROR responding to client echo request. received = %d, written = %d\r\n",
 			__FUNCTION__, nread, nwrote);
@@ -165,7 +142,6 @@ void process_request_thread(void *p)
 
 		// read a max of RECV_BUF_SIZE bytes from socket /
 		if (nwrote > 0){
-			//nwrote = read(clientfd, (char *)buffer, TCPPACKETSIZE);
 			// read a max of RECV_BUF_SIZE bytes from socket /
 			if ((nread = read(clientfd, (char *)recv_buf, TCPPACKETSIZE)) < 0) {
 				xil_printf("%s: error reading from socket %d, closing socket\r\n", __FUNCTION__, clientfd);
@@ -176,12 +152,8 @@ void process_request_thread(void *p)
 				command = *((u32_t*)recv_buf); // cast 4 bytes to Uint32
 				if (command != 0)
 				{
-					// UInt16 temp = ipc_mtoc->counter;
-					//        			if(TransferSendAllowed ==1)	{
 					ControlData.id = (u16_t)command; 			// Erste 2 Bytes: Commands in Form von Flags/Nummern
 					ControlData.value = (s16_t)(command >> 16);	// Letzte 2 Bytes: Zahlenwert Uebergabe
-					//TODO: //IPCMtoCFlagSet(IPC_FLAG3);
-					//        			}
 				}
 			}
 
@@ -192,7 +164,6 @@ void process_request_thread(void *p)
 			}
 		}else{
 			close(clientfd);
-			// flag = FALSE;
 		}
 	}
 

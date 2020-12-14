@@ -30,7 +30,6 @@ extern "C" {
 #include "math.h"										//Include for math operations
 #include <stdio.h>
 
-
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024
 
@@ -118,7 +117,7 @@ typedef struct
 	_Bool SampledDataWriteDone;
 	_Bool SampledDataReadDone;
 	_Bool SampledDataError;
-	u16_t schiebereg_ausgaenge;
+//	u16_t schiebereg_ausgaenge;
 	u32_t slowDataContent;
 	u16_t slowDataID;
 	Xfloat32 val[20]; // EL: changed from uint16 to float

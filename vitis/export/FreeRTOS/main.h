@@ -17,15 +17,11 @@ extern "C" {
 #include "lwip/sockets.h"
 
 #include "xparameters.h"								//SW: Include for the implemented IP-Blocks from the PL
-#include "xgpiops.h"
-#include "xgpio.h"
 #include "xstatus.h"
 #include "xil_printf.h"
 #include "xscugic.h"									//Include for Interrupt handler (necessary for all interrupts)
 #include "xipipsu.h"									//Include for Interrupt handler (necessary for all IPI interrupts)
 #include "xbasic_types.h" 								//Include for Datatypes
-//#include "xadcps.h"									//Include of ADC-Block
-//#include "xsysmon.h"									//Include of ADC-Block
 #include "xtmrctr.h"									//Include of the Timer-Blocks
 #include "math.h"										//Include for math operations
 #include <stdio.h>
@@ -54,34 +50,6 @@ extern "C" {
 #define GPIO_CHANNEL 						1								/* GPIO port for GPIOs */
 
 // ========== Structures =========================================================================
-/*
-typedef struct		// status + time + 21 elemente (16bit)
-{
-	u32_t status;
-	u32_t slowDataContent[NETWORK_SEND_FIELD_SIZE];
-	u16_t val_01_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_02_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_03_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_04_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_05_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_06_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_07_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_08_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_09_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_10_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_11_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_12_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_13_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_14_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_15_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_16_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_17_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_18_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_19_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_20_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t slowDataID[NETWORK_SEND_FIELD_SIZE];
-} NetworkSendStruct;
-*/
 
 typedef struct		// status + time + 20 elemente (32bit) + 16 bit
 {
@@ -117,7 +85,6 @@ typedef struct
 	_Bool SampledDataWriteDone;
 	_Bool SampledDataReadDone;
 	_Bool SampledDataError;
-//	u16_t schiebereg_ausgaenge;
 	u32_t slowDataContent;
 	u16_t slowDataID;
 	Xfloat32 val[20]; // EL: changed from uint16 to float

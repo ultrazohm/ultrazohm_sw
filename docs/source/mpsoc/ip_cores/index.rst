@@ -12,3 +12,4 @@ IP Cores
 	adc_LTC2311
 	incre_encoder
 	interlock
+	interlock_deadtime/interlock_deadtime_doc

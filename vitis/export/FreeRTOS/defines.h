@@ -14,8 +14,6 @@
 
 #include "xparameters.h"
 
-#define OSZIDATA_RING_SIZE 5
-
 //==============================================================================================================================================================
 //IP-Block for the Interrupt Prescaler of the control-timer Period = ( 2^32-1 – Reset Value + 2) * Axi-Clk Period
 //Für Timing Umso näher der Wert an an 0xFFFFFFFF ist, desto schneller der 32-Bit Counter ( 0xFFFFFD28 = 10us bei 100MHz Prozessortakt)

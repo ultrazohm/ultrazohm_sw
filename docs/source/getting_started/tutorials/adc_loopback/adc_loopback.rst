@@ -26,8 +26,8 @@ The following tutorial requires:
 - Complete UltraZohm Toolchain (Vivado, Vitis, ultrazohm_sw repository)
 - UltraZohm connected to your PC by USB (JTAG)
 - Digital voltage card in slot D1 (:ref:`digitalVoltage`)
-- Analog adapter card ADC :ref:`analog_tcl` in slot A1
-- If analog adapter card is used in A2 or A3, change the variables accordingly
+- Analog adapter card ADC :ref:`ipCore_LTC23` in slot A1
+- If the analog adapter card is used in A2 or A3, change the variables accordingly
 
 .. UltraZohm Setup
 .. ***************

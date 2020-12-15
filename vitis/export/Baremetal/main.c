@@ -44,10 +44,20 @@ ARM_to_Oszi_Data_shared_struct OsziData;
 Oszi_to_ARM_Data_shared_struct ControlData;
 Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
 
+static void uz_assertCallback(const char8 *file, s32 line) {
+	extern XScuGic INTCInst;
+	xil_printf("\r\nAssertion in file %s on line %d\r\n", file, line);
+	WritePin_PS_GPIO(LED_1,valueFalse); //Write a GPIO for LED_1
+	WritePin_PS_GPIO(LED_2,valueFalse); //Write a GPIO for LED_2
+	WritePin_PS_GPIO(LED_3,valueTrue); //Write a GPIO for LED_3
+	WritePin_PS_GPIO(LED_4,valueFalse); //Write a GPIO for LED_4
+	XScuGic_Disable(&INTCInst, Interrupt_ISR_ID);
+}
 
 int main (void){
 
 	int status;
+	Xil_AssertSetCallback((Xil_AssertCallback) uz_assertCallback);
 
 	//Output to the Terminal over UART to the COM-Port. Use e.g. "Tera Term" to listen with baud-rate 115200
 	xil_printf("\r\n\r\n");

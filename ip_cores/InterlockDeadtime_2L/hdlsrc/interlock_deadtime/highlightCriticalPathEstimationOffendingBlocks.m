@@ -1,0 +1,10 @@
+open_system('interlock_deadtime');
+open_system('gm_interlock_deadtime');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_interlock_deadtime/interlock_deadtime/DeadtimeModule_instance1/Detect Fall Nonpositive2', 'user2');
+annotate_port('gm_interlock_deadtime/interlock_deadtime/DeadtimeModule_instance1/Detect Fall Nonpositive2', 1, 1, 'Block not characterized');
+hilite_system('interlock_deadtime/interlock_deadtime/DeadtimeModule/Detect Fall Nonpositive2', 'user2');
+annotate_port('interlock_deadtime/interlock_deadtime/DeadtimeModule/Detect Fall Nonpositive2', 1, 1, 'Block not characterized');

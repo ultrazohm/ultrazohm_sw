@@ -1,0 +1,512 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level DUT Information Report for interlock_deadtime
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Code Interface Report for interlock_deadtime
+</font>
+<h3>
+Input ports
+</h3>
+<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<b>Port Name</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Datatype</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Bits</b>
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+clk
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+reset_x
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+clk_enable
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:8')" name="code2model" class="code2model">
+S0
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:47')" name="code2model" class="code2model">
+S1
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:48')" name="code2model" class="code2model">
+S2
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:49')" name="code2model" class="code2model">
+S3
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:50')" name="code2model" class="code2model">
+S4
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:51')" name="code2model" class="code2model">
+S5
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:666')" name="code2model" class="code2model">
+AXI_DelayCycles
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+ufix10
+</td>
+<td align="center" valign="top" style="border-style: none">
+10
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:728')" name="code2model" class="code2model">
+AXI_EnableOutput
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:767')" name="code2model" class="code2model">
+AXI_InverseBotSwitch
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+
+</table>
+<h3>
+Output ports
+</h3>
+<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<b>Port Name</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Datatype</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Bits</b>
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+ce_out
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:10')" name="code2model" class="code2model">
+s0_out
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:52')" name="code2model" class="code2model">
+s1_out
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:53')" name="code2model" class="code2model">
+s2_out
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:54')" name="code2model" class="code2model">
+s3_out
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:55')" name="code2model" class="code2model">
+s4_out
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:56')" name="code2model" class="code2model">
+s5_out
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:1408')" name="code2model" class="code2model">
+AXI_fb_enable
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:1425')" name="code2model" class="code2model">
+AXI_fb_DelayCycles
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+ufix10
+</td>
+<td align="center" valign="top" style="border-style: none">
+10
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:1426')" name="code2model" class="code2model">
+AXI_fb_InverseBotSwitch
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('interlock_deadtime:1494')" name="code2model" class="code2model">
+enableFB
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+
+</table>
+
+</body>
+
+</html>

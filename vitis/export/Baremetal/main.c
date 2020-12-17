@@ -18,8 +18,6 @@
 int i_LifeCheck;
 
 _Bool bPlotData	= false;
-
-
 _Bool bNewControlMethodAvailable = false;
 
 DS_Data Global_Data;
@@ -70,7 +68,7 @@ int main (void){
 	ADC_WriteConversionFactor(10);
 
 	// Initialize Park-Transformation 123 to dq
-	//DQTransformation_Initialize(&Global_Data);
+	DQTransformation_Initialize(&Global_Data);
 
     //Initialize PWM and switch signal control
 	PWM_SS_Initialize(&Global_Data); 	// two-level modulator
@@ -479,5 +477,3 @@ int InitializeDataStructure(DS_Data* data){
 
 	return (0);
 }
-
-

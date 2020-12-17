@@ -15,21 +15,10 @@
 
 //Includes from own files
 #include "main.h"
-#include "defines.h"
-#include "include/isr.h"
-#include "include/adc.h"
-#include "include/encoder.h"
-#include "include/gpio.h"
-#include "include/gpio_axi.h"
-#include "include/pwm.h"
-#include "include/javascope.h"
-#include "include/control.h"
-#include "include/pwm_3L_driver.h"
-#include "Codegen/uz_codegen.h"
 
 //Initialize the global variables
 int i_LifeCheck;
-_Bool bSetDuty 	= false;
+
 _Bool bPlotData	= false;
 _Bool bInit 	= false;
 

@@ -16,9 +16,11 @@
 #ifndef main_H_
 #define main_H_
 
+// stdlib
+#include <math.h>										//Include for math operations
+#include <stdbool.h>
 
-/* Include Files */
-#include "xparameters.h"								//Include for the implemented IP-Blocks from the PL
+// Xilinx library functions
 #include "xgpiops.h"
 #include "xstatus.h"
 #include "xil_printf.h"
@@ -26,10 +28,20 @@
 #include "xipipsu.h"									//Include for Interrupt handler (necessary for all IPI interrupts)
 #include "xil_types.h" 								//Include for Datatypes
 #include "xtmrctr.h"									//Include of the Timer-Blocks
-#include "globalData.h"
 
-#include <math.h>										//Include for math operations
-#include <stdbool.h>
+// UltraZohm includes
+#include "globalData.h"
+#include "defines.h"
+#include "include/isr.h"
+#include "include/adc.h"
+#include "include/encoder.h"
+#include "include/gpio.h"
+#include "include/gpio_axi.h"
+#include "include/pwm.h"
+#include "include/javascope.h"
+#include "include/control.h"
+#include "include/pwm_3L_driver.h"
+
 
 /* Definitions */
 #define LED_DELAY 10000000							/* Software delay length */

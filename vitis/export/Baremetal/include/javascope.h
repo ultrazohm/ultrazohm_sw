@@ -5,7 +5,7 @@
  * Copyright (C) 2019 UltraZohm Community, All rights reserved.
  *
  *  Created on: 21.08.2018
- *      Author: Sebastian Wendel (SW) & Philipp Löhdefink (PL)
+ *      Author: Sebastian Wendel (SW) & Philipp Lï¿½hdefink (PL)
  *
 ******************************************************************************/
 
@@ -115,8 +115,8 @@ enum JS_SlowData {
 
 
 union SlowData {
-   Xint32 i;
-   Xfloat32 f;
+   int i;
+   float f;
 };
 
 

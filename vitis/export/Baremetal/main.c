@@ -20,7 +20,7 @@
 int i_LifeCheck;
 
 _Bool bPlotData	= false;
-_Bool bInit 	= false;
+
 
 _Bool bNewControlMethodAvailable = false;
 
@@ -47,6 +47,8 @@ static void uz_assertCallback(const char8 *file, s32 line) {
 
 int main (void){
 
+	int status=XST_SUCCESS;
+	_Bool bInit 	= false;
 	int status;
 	Xil_AssertSetCallback((Xil_AssertCallback) uz_assertCallback);
 
@@ -136,7 +138,7 @@ int main (void){
 			if(Global_Data.cw.enableSystem == false){
 				turnPowerElectronicsOff(&Global_Data); //Switch power converter off
 			}else if((Global_Data.cw.enableSystem == true) && bInit == false){ //Call this function only once. If there was an error, "enableSystem " must be reseted!
-				turnPowerElectronicsOn(&Global_Data); //Switch power converter on
+				bInit=turnPowerElectronicsOn(&Global_Data); //Switch power converter on
 			}
 
 			if(Global_Data.cw.enableControl == true){
@@ -197,8 +199,6 @@ int main (void){
 
 //==============================================================================================================================================================
 int turnPowerElectronicsOff(DS_Data* data){
-
-	bInit = false;
 	data->rasv.referenceCurrent_iq = 0; // in A
 	data->rasv.referenceCurrent_id = 0; // in A
 	data->rasv.ModifiedReferenceCurrent_iq = 0; // in A
@@ -218,8 +218,7 @@ int turnPowerElectronicsOn(DS_Data* data){
 
 	asm(" nop"); //Wait some ticks, otherwise, the second GPIO write will not be updated
 	XGpio_DiscreteClear(&Gpio_OUT,GPIO_CHANNEL, 4);//Stop to the ADC module to set an offset value    0b0100);  	// "Enable_Gate" On //Consider, this is a inverse signal AND "Acknowledge" the set of ADC offset value.
-bInit = true;
-	return (0);
+	return (true);
 }
 
 //==============================================================================================================================================================

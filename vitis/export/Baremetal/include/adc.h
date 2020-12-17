@@ -45,8 +45,6 @@ void ADC_readCardALL(DS_Data* data);
 
 void ADC_WriteConversionFactor(int ADC_ConversionFactor);	// Init for the ADC-conversion IP-Block
 
-void DQTransformation_Initialize(DS_Data* data);		// Init Park-transformation 123 to dq
-
 //==============================================================================================================================================================
 // AXI2TCM Registers
 #define R5_0_BTCM_SPLIT_REG	0x20000

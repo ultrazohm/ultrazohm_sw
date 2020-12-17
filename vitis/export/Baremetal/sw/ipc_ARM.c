@@ -23,24 +23,24 @@
 #define SCOPE_OFFSET_bits 0x00
 #define MOTORCONTROL_OFFSET_bits 1000
 
-Xint16 	i_ISR_IPC_LifeCheck=0;
-Xuint32 ADCconvFactor_Hbytes = 0;
-Xuint32 ADCconvFactor_Lbytes = 0;
-Xuint16 ADCconvFactorReadRequest	= 0;
-Xfloat32 ADCconvFactorReadback = 0.0;
+uint16_t 	i_ISR_IPC_LifeCheck=0;
+uint32_t ADCconvFactor_Hbytes = 0;
+uint32_t ADCconvFactor_Lbytes = 0;
+uint16_t ADCconvFactorReadRequest	= 0;
+float ADCconvFactorReadback = 0.0;
 
 extern float sin1amp;
-extern Xboolean bNewControlMethodAvailable;
+extern _Bool bNewControlMethodAvailable;
 
 
-extern Xuint16 js_factor1, js_factor2, js_factor3, js_factor4;	// javascope
+extern uint16_t js_factor1, js_factor2, js_factor3, js_factor4;	// javascope
 
 
 
 extern ARM_to_Oszi_Data_shared_struct OsziData;
 
 
-void ipc_Control_func(Xuint16 msgId, Xint16 value, DS_Data* data)
+void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 {
 
 	if ( msgId != 0)
@@ -52,8 +52,8 @@ void ipc_Control_func(Xuint16 msgId, Xint16 value, DS_Data* data)
 		}
 		else if (msgId == 2) // Stop
 		{
-			data->cw.enableSystem = flagDisabled;
-			data->cw.enableControl = flagDisabled;
+			data->cw.enableSystem = false;
+			data->cw.enableControl = false;
 		}
 		else if (msgId == 16) // Reference frequency
 		{
@@ -74,10 +74,10 @@ void ipc_Control_func(Xuint16 msgId, Xint16 value, DS_Data* data)
 		}
 		else if (msgId == 112) // reset all Errors
 		{
-			data->er.dcLinkOvervoltageOccured = valueTrue;
-			data->er.maximumContinuousCurrentExceeded = valueTrue;
-			data->er.maximumShortTermCurrentReached = valueTrue;
-			data->er.pwmFrequencyError = valueTrue;
+			data->er.dcLinkOvervoltageOccured = true;
+			data->er.maximumContinuousCurrentExceeded = true;
+			data->er.maximumShortTermCurrentReached = true;
+			data->er.pwmFrequencyError = true;
 
 		}
 		else if (msgId == 200) // SEND_PREC_CH1_bits
@@ -127,49 +127,32 @@ void ipc_Control_func(Xuint16 msgId, Xint16 value, DS_Data* data)
 		}
 		else if (msgId == 0x01+MOTORCONTROL_OFFSET_bits) // ConverterEnable
 		{
-			data->cw.enableSystem = flagEnabled;
+			data->cw.enableSystem = true;
 		}
 		else if (msgId == 0x02+MOTORCONTROL_OFFSET_bits) // ConverterDisable
 		{
-			data->cw.enableSystem = flagDisabled;
+			data->cw.enableSystem = false;
 		}
 		else if (msgId == 0x03+MOTORCONTROL_OFFSET_bits) // ControlEnable
 		{
-			data->cw.enableControl = flagEnabled;
+			data->cw.enableControl = true;
 		}
 		else if (msgId == 0x04+MOTORCONTROL_OFFSET_bits) // ControlDisable
 		{
-			data->cw.enableControl = flagDisabled;
+			data->cw.enableControl = false;
 		}
 		else if (msgId == 0x041+MOTORCONTROL_OFFSET_bits) // ResetError
 		{
-			data->er.communicationTimeoutOccured = flagEnabled;
-			data->er.dcLinkOvervoltageOccured = flagEnabled;
-			data->er.maximumContinuousCurrentExceeded = flagEnabled;
-			data->er.maximumShortTermCurrentReached = flagEnabled;
-			data->er.pwmFrequencyError = flagEnabled;
+			data->er.communicationTimeoutOccured = true;
+			data->er.dcLinkOvervoltageOccured = true;
+			data->er.maximumContinuousCurrentExceeded = true;
+			data->er.maximumShortTermCurrentReached = true;
+			data->er.pwmFrequencyError = true;
 		}
-//		else if (msgId == 1263) // Reference DutyCycle in 0-100% (1000 + 0x107 = 1263)
-//		{
-//			data->rasv.sixStepCommutationDutyCycle = (Xfloat32)value;
-//		}
-//		else if (msgId == 1265) // Reference speed in rpm (1000 + 0x109 = 1265)
-//		{
-//			data->rasv.referenceSpeed = (Xfloat32)value;
-//		}
 		else if (msgId == 0x110+MOTORCONTROL_OFFSET_bits) // referenceTorque (1000 + 0x110 = 1272)
 		{
-			data->rasv.referenceTorque = (Xfloat32)value * 0.001; //mNm
+			data->rasv.referenceTorque = (float)value * 0.001; //mNm
 		}
-//		else if (msgId == 1273) // referenceCurrent_id (1000 + 0x111 = 1273)
-//		{
-//			data->rasv.referenceCurrent_id = (Xfloat32)(value * 0.001); //mA
-//		}
-//		else if (msgId == 1274) // referenceCurrent_iq (1000 + 0x112 = 1274)
-//		{
-//			data->rasv.referenceCurrent_iq = (Xfloat32)(value * 0.001); //mA
-//		}
-		//SETUP MEASUREMENTS
 		else if (msgId == 0x300+MOTORCONTROL_OFFSET_bits)
 			data->cw.rotorAngleEstimationMode= (rotorAngleEstimationMethod)value;
 		else if (msgId == 0x320+MOTORCONTROL_OFFSET_bits){ //digital hall
@@ -181,11 +164,11 @@ void ipc_Control_func(Xuint16 msgId, Xint16 value, DS_Data* data)
 			}
 		}
 		else if (msgId == 0x340+MOTORCONTROL_OFFSET_bits)
-			data->mrp.incrementalEncoderResolution = (Xfloat32)value;
+			data->mrp.incrementalEncoderResolution = (float)value;
 		else if (msgId == 0x341+MOTORCONTROL_OFFSET_bits)
-			data->mrp.motorMaximumSpeed= (Xfloat32)value;
+			data->mrp.motorMaximumSpeed= (float)value;
 		else if (msgId == 0x342+MOTORCONTROL_OFFSET_bits)
-			data->mrp.incrementalEncoderOffset= (Xfloat32)value;
+			data->mrp.incrementalEncoderOffset= (float)value;
 
 		//ADC
 		else if (msgId == 0x350+MOTORCONTROL_OFFSET_bits)
@@ -258,16 +241,16 @@ void ipc_Control_func(Xuint16 msgId, Xint16 value, DS_Data* data)
 
 		//CONTROL METHOD
 		else if (msgId == 0x400+ MOTORCONTROL_OFFSET_bits) // CONTROL_METHOD (1000 + 0x400 = 2024)
-			if((data->cw.enableSystem == flagDisabled)&&(data->cw.enableControl == flagDisabled)){ //Only allow a new control method, if the system is in a stable status
+			if((data->cw.enableSystem == false)&&(data->cw.enableControl == false)){ //Only allow a new control method, if the system is in a stable status
 				data->cw.ControlMethod =  (currentControlMethod)value;
-				bNewControlMethodAvailable = valueTrue;  //Activate the Flag in order to initialize the IP Cores and functions after a new control method arrives, only once!
+				bNewControlMethodAvailable = true;  //Activate the Flag in order to initialize the IP Cores and functions after a new control method arrives, only once!
 			}else{
 				//do nothing, keep the old control method
 			}
 
 		//CONTROL REFERENCE METHOD
 		else if (msgId == 0x401+ MOTORCONTROL_OFFSET_bits) // CONTROL_REFERENCE (1000 + 0x401 = 2025)
-			if((data->cw.enableControl == flagDisabled)){ //Only allow a new control method, if the control is not running currently
+			if((data->cw.enableControl == false)){ //Only allow a new control method, if the control is not running currently
 				data->cw.ControlReference= (ControlReference)value;
 			}else{
 				//do nothing, keep the old control method
@@ -275,31 +258,31 @@ void ipc_Control_func(Xuint16 msgId, Xint16 value, DS_Data* data)
 
 		//FOC CONTROL
 		else if (msgId == 0x402 + MOTORCONTROL_OFFSET_bits)
-			data->ctrl.foc.cc.Kp_id = (Xfloat32)value * 0.001;
+			data->ctrl.foc.cc.Kp_id = (float)value * 0.001;
 		else if (msgId == 0x403 + MOTORCONTROL_OFFSET_bits)
-			data->ctrl.foc.cc.Tn_id = (Xfloat32)value * 0.0001;
+			data->ctrl.foc.cc.Tn_id = (float)value * 0.0001;
 		else if (msgId == 0x404 + MOTORCONTROL_OFFSET_bits)
-			data->ctrl.foc.cc.Kp_iq = (Xfloat32)value * 0.001;
+			data->ctrl.foc.cc.Kp_iq = (float)value * 0.001;
 		else if (msgId == 0x405 + MOTORCONTROL_OFFSET_bits)
-			data->ctrl.foc.cc.Tn_iq = (Xfloat32)value * 0.0001;
+			data->ctrl.foc.cc.Tn_iq = (float)value * 0.0001;
 		else if (msgId == 0x406 + MOTORCONTROL_OFFSET_bits)
-			data->ctrl.foc.sc.Kp = (Xfloat32)value * 0.001;
+			data->ctrl.foc.sc.Kp = (float)value * 0.001;
 		else if (msgId == 0x407 + MOTORCONTROL_OFFSET_bits)
-			data->ctrl.foc.sc.Tn = (Xfloat32)value * 0.0001;
+			data->ctrl.foc.sc.Tn = (float)value * 0.0001;
 		else if (msgId == 0x408 + MOTORCONTROL_OFFSET_bits)
-			data->ctrl.foc.cc.FOCFeedForward = (boolean)value;
+			data->ctrl.foc.cc.FOCFeedForward = (_Bool)value;
 
 		//MPC CONTROL
 		else if (msgId == 0x421 + MOTORCONTROL_OFFSET_bits)
-			data->ctrl.mpc.fcs.lambda_dU = (Xfloat32)value * 0.001;
+			data->ctrl.mpc.fcs.lambda_dU = (float)value * 0.001;
 		else if (msgId == 0x422 + MOTORCONTROL_OFFSET_bits)
-			data->ctrl.mpc.fcs.lambda_2 = (Xfloat32)value * 0.001;
+			data->ctrl.mpc.fcs.lambda_2 = (float)value * 0.001;
 		else if (msgId == 0x423 + MOTORCONTROL_OFFSET_bits)
-			data->ctrl.mpc.fcs.lambda_3 = (Xfloat32)value * 0.001;
+			data->ctrl.mpc.fcs.lambda_3 = (float)value * 0.001;
 		else if (msgId == 0x424 + MOTORCONTROL_OFFSET_bits)
-			data->ctrl.mpc.fcs.lambda_4 = (Xfloat32)value * 0.001;
+			data->ctrl.mpc.fcs.lambda_4 = (float)value * 0.001;
 		else if (msgId == 0x425 + MOTORCONTROL_OFFSET_bits)
-			data->ctrl.mpc.fcs.bEnableVSP2CC = (Xboolean)value;
+			data->ctrl.mpc.fcs.bEnableVSP2CC = (_Bool)value;
 
 		//online Rs measuring and temp calculation
 		else if (msgId == 0x510 + MOTORCONTROL_OFFSET_bits)
@@ -310,18 +293,18 @@ void ipc_Control_func(Xuint16 msgId, Xint16 value, DS_Data* data)
 		//Hoerner Offline ID
 		//ACCEPT
 		else if (msgId == 5 + MOTORCONTROL_OFFSET_bits)
-			data->pID.accept = valueTrue;
+			data->pID.accept = true;
 		//RESET
 		else if (msgId == 6 + MOTORCONTROL_OFFSET_bits)
-			data->pID.reset_Offl = valueTrue;
+			data->pID.reset_Offl = true;
 		//MOTOR_ID
 		else if (msgId == 0x101 + MOTORCONTROL_OFFSET_bits)
 			data->pID.MotorID = (MotorID_Method)value;
 		else if (msgId == 0x102 + MOTORCONTROL_OFFSET_bits)
-			data->cw.enableParameterID = (Xboolean)value;
+			data->cw.enableParameterID = (_Bool)value;
 		//IDENTLQ
 		else if (msgId == 0x103 + MOTORCONTROL_OFFSET_bits)
-			data->pID.identLq = (Xuint16)value;
+			data->pID.identLq = (uint16_t)value;
 		//I_D_SAMPLETIMEISR
 		else if (msgId == 0x105 + MOTORCONTROL_OFFSET_bits)
 			data->pID.sampleTimeISR = value * 0.000001;
@@ -435,9 +418,9 @@ void ipc_Control_func(Xuint16 msgId, Xint16 value, DS_Data* data)
 
 		//Gebhardt Online ID
 		else if (msgId == 0x650+MOTORCONTROL_OFFSET_bits)
-			data->pID.bEnableOnlineID = valueTrue;
+			data->pID.bEnableOnlineID = true;
 		else if (msgId == 0x651+MOTORCONTROL_OFFSET_bits)
-			data->pID.bCalcPsi = valueTrue;
+			data->pID.bCalcPsi = true;
 		else if (msgId == 0x652+MOTORCONTROL_OFFSET_bits)
 			data->pID.ResetOnline = 1;
 		else if (msgId == 0x653+MOTORCONTROL_OFFSET_bits){
@@ -457,26 +440,26 @@ void ipc_Control_func(Xuint16 msgId, Xint16 value, DS_Data* data)
 		else if (msgId == 0x657+MOTORCONTROL_OFFSET_bits)
 			data->mrp.motorStatorResistance = value*0.001;
 		else if (msgId == 0x658+MOTORCONTROL_OFFSET_bits)
-			data->pID.bEnableAutoCurrentControl = valueTrue;
+			data->pID.bEnableAutoCurrentControl = true;
 		else if (msgId == 0x659+MOTORCONTROL_OFFSET_bits)
-			data->pID.bEnableOnlineID = valueFalse;
+			data->pID.bEnableOnlineID = false;
 		else if (msgId == 0x660+MOTORCONTROL_OFFSET_bits)
-			data->pID.bEnableAutoCurrentControl = valueFalse;
+			data->pID.bEnableAutoCurrentControl = false;
 		else if (msgId == 0x661+MOTORCONTROL_OFFSET_bits)
-			data->pID.AdmitParamsFlag = valueTrue;
+			data->pID.AdmitParamsFlag = true;
 		else if (msgId == 0x662+MOTORCONTROL_OFFSET_bits)
-			data->pID.AdmitMechParamsFlag = valueTrue;
+			data->pID.AdmitMechParamsFlag = true;
 
 	}
 
 	/* Bit 0 - ui16_drv_enable */
-		if (data->cw.enableSystem == flagEnabled) {
+		if (data->cw.enableSystem == true) {
 			OsziData.status_BareToRTOS |= 1 << 0;
 		} else {
 			OsziData.status_BareToRTOS &= ~(1 << 0);
 		}
 		/* Bit 1 - PIR_ENABLE */
-		if (data->cw.enableControl == flagEnabled) {
+		if (data->cw.enableControl == true) {
 			OsziData.status_BareToRTOS |= 1 << 1;
 		} else {
 			OsziData.status_BareToRTOS &= ~(1 << 1);
@@ -507,7 +490,7 @@ void ipc_Control_func(Xuint16 msgId, Xint16 value, DS_Data* data)
 		}
 		/* Bit 6 - IDorNOT */
 		//if (data->pID.MotorID == 1) {
-		if (data->cw.enableParameterID == flagEnabled) {
+		if (data->cw.enableParameterID == true) {
 			OsziData.status_BareToRTOS |= 1 << 6;
 		} else {
 			OsziData.status_BareToRTOS &= ~(1 << 6);

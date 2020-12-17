@@ -15,8 +15,10 @@
 
 //toolbox.c
 //Toolbox for transformations, integrators, PI controllers, filters etc.
+#ifndef CONTROL_TOOLBOX
+#define CONTROL_TOOLBOX
 
-#include "../include/control_toolbox.h"
+#include "../controlToolbox/control_toolbox.h"
 
 //Sinewave generator
 //amplitude:			Amplitude of the output sinewave
@@ -286,3 +288,4 @@ float HPF1(float input,float* in_mem,float* out_mem, float Fs, float Fc)
 	return output;
 }
 
+#endif

@@ -16,14 +16,6 @@
 #ifndef DEFINES_H_
 #define DEFINES_H_
 
-#include "xparameters.h"
-
-//Includes from Simulink
-#include "IP_Cores/IncreEncoder_V24_ip_addr.h"			//Include from Simulink IP-Blocks for the incremental encoder
-#include "IP_Cores/Trans_123_dq_V12_ip_addr.h"			//Include from Simulink IP-Blocks for the 123-to-dq transformation
-#include "IP_Cores/ADC_Module_LVDS_v2_ip_addr.h"		//Include from hand coded IP-Blocks for ADCs
-
-
 //#define UltraZohmV2
 
 //==============================================================================================================================================================
@@ -32,14 +24,6 @@
 #define MAX(x, y) 	(((x) < (y)) ? (y) : (x)) // Max of x or y
 #define MIN(x, y) 	(((x) > (y)) ? (y) : (x)) // Min of x or y
 #define LIMIT(x,low,high) ((x)>(high)?(high):((x)<(low)?(low):(x))) // limit x to low<x<high
-
-//==============================================================================================================================================================
-//IP-Block for the 123-dq-Transformation
-#define Trans_123_dq_theta_offset_REG 	XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + theta_offset_AXI_Data_Trans_123_dq_V12_ip  //data register for theta_offset
-#define Trans_123_dq_idCurrent_REG 		XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + id_AXI_Data_Trans_123_dq_V12_ip  //data register for theta_offset
-#define Trans_123_dq_iqCurrent_REG 		XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + iq_AXI_Data_Trans_123_dq_V12_ip  //data register for theta_offset
-#define Trans_123_dq_i1Current_REG		XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + i1_AXI_Data_Trans_123_dq_V12_ip  //data register for theta_offset
-#define Trans_123_dq_i3Current_REG 		XPAR_TRANS_123_DQ_V12_IP_0_BASEADDR + i3_AXI_Data_Trans_123_dq_V12_ip  //data register for theta_offset
 
 //==============================================================================================================================================================
 //IP-Block for the Interrupt Prescaler of the control-timer Period = ( 2^32-1 � Reset Value + 2) * Axi-Clk Period
@@ -73,11 +57,76 @@
 #define INTERRUPT_ID_IPI 				XPAR_XIPIPSU_0_DEVICE_ID		/* IPI device that Interrupt is connected to */
 #define GPIO_out_ID						XPAR_AXI_GPIO_2_DEVICE_ID 		/* GPIO device that GPIO is connected to output*/
 
+//Frequencies in the system
+#define FPGA_100MHz		100000000.0f		//Clock frequency
+#define FPGA_50MHz		50000000.0f			//Clock frequency
+#define FPGA_20MHz		20000000.0f			//Clock frequency
+#define FPGA_10MHz		10000000.0f			//Clock frequency
 
-//==============================================================================================================================================================
-//Defines for ADC
-#define XAdcPs_RawToVoltage2(AdcData) \
-		((((float)(AdcData))* (1.0f))/65536.0f)
-//2^16 (because of 16 Bit resolution) -> 65536.0f
+//Fractional Bit defines
+#define   Q32         32
+#define   Q31         31
+#define   Q30         30
+#define   Q29         29
+#define   Q28         28
+#define   Q27         27
+#define   Q26         26
+#define   Q25         25
+#define   Q24         24
+#define   Q23         23
+#define   Q22         22
+#define   Q21         21
+#define   Q20         20
+#define   Q19         19
+#define   Q18         18
+#define   Q17         17
+#define   Q16         16
+#define   Q15         15
+#define   Q14         14
+#define   Q13         13
+#define   Q12         12
+#define   Q11         11
+#define   Q10         10
+#define   Q9          9
+#define   Q8          8
+#define   Q7          7
+#define   Q6          6
+#define   Q5          5
+#define   Q4          4
+#define   Q3          3
+#define   Q2          2
+#define   Q1          1
+
+//Inverse fractional Bit defines
+#define   Q30toF		-Q30
+#define   Q29toF		-Q29
+#define   Q28toF		-Q28
+#define   Q27toF		-Q27
+#define   Q26toF		-Q26
+#define   Q25toF		-Q25
+#define   Q24toF		-Q24
+#define   Q23toF		-Q23
+#define   Q22toF		-Q22
+#define   Q21toF		-Q21
+#define   Q20toF		-Q20
+#define   Q19toF		-Q19
+#define   Q18toF		-Q18
+#define   Q17toF		-Q17
+#define   Q16toF		-Q16
+#define   Q15toF		-Q15
+#define   Q14toF		-Q14
+#define   Q13toF		-Q13
+#define   Q12toF		-Q12
+#define   Q11toF		-Q11
+#define   Q10toF		-Q10
+#define   Q09toF		-Q9
+#define   Q08toF		-Q8
+#define   Q07toF		-Q7
+#define   Q06toF		-Q6
+#define   Q05toF		-Q5
+#define   Q04toF		-Q4
+#define   Q03toF		-Q3
+#define   Q02toF		-Q2
+#define   Q01toF		-Q1
 
 #endif /* DEFINES_H_ */

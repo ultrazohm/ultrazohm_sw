@@ -28,12 +28,12 @@
 #include "Codegen/uz_codegen.h"
 
 //Initialize the global variables
-Xint16 i_LifeCheck;
-Xboolean bSetDuty 	= valueFalse;
-Xboolean bPlotData	= valueFalse;
-Xboolean bInit 		= valueFalse;
+int i_LifeCheck;
+_Bool bSetDuty 	= false;
+_Bool bPlotData	= false;
+_Bool bInit 	= false;
 
-Xboolean bNewControlMethodAvailable = valueFalse;
+_Bool bNewControlMethodAvailable = false;
 
 DS_Data Global_Data;
 extern XGpio Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
@@ -80,7 +80,7 @@ int main (void){
 	ADC_WriteConversionFactor(10);
 
 	// Initialize Park-Transformation 123 to dq
-	DQTransformation_Initialize(&Global_Data);
+	//DQTransformation_Initialize(&Global_Data);
 
     //Initialize PWM and switch signal control
 	PWM_SS_Initialize(&Global_Data); 	// two-level modulator
@@ -88,9 +88,6 @@ int main (void){
 
 	// Initialize Timer in order to Trigger the ISRs
 	Initialize_Timer();
-
-	// Initialize Timer in order to Trigger the ADC conversion
-	Initialize_Trigger_ADC_Conversion();
 
 	// Initialize the incremental encoder
 	Encoder_Incremental_Initialize(&Global_Data);
@@ -105,10 +102,10 @@ int main (void){
 	JavaScope_initalize(&Global_Data);
 
 	//Initial state of all front panel LEDs is off
-	WritePin_PS_GPIO(LED_1,valueFalse); //Write a GPIO for LED_1
-	WritePin_PS_GPIO(LED_2,valueFalse); //Write a GPIO for LED_2
-	WritePin_PS_GPIO(LED_3,valueFalse); //Write a GPIO for LED_3
-	WritePin_PS_GPIO(LED_4,valueFalse); //Write a GPIO for LED_4
+	WritePin_PS_GPIO(LED_1,false); //Write a GPIO for LED_1
+	WritePin_PS_GPIO(LED_2,false); //Write a GPIO for LED_2
+	WritePin_PS_GPIO(LED_3,false); //Write a GPIO for LED_3
+	WritePin_PS_GPIO(LED_4,false); //Write a GPIO for LED_4
 
 	// Initialize the Interrupts
 	Initialize_ISR();
@@ -127,36 +124,33 @@ int main (void){
 		Global_Data.dv.sw2=ReadPin_PS_GPIO(SW_control);
 		Global_Data.dv.sw3=ReadPin_PS_GPIO(SW_stop);
 		// Set the system enable flag to false if SW1 is pressed
-		if (Global_Data.dv.sw1==valueTrue){
-			Global_Data.cw.enableSystem=flagEnabled;
+		if (Global_Data.dv.sw1==true){
+			Global_Data.cw.enableSystem=true;
 		}
 		// Set the control enable flag to false if SW2 is pressed
-		if (Global_Data.dv.sw2==valueTrue){
-			Global_Data.cw.enableControl=flagEnabled;
-
+		if (Global_Data.dv.sw2==true){
+			Global_Data.cw.enableControl=true;
 		}
 #ifndef UltraZohmV2 // in CarrierBoard_v2 there are no buttons, therefore always SW_stop is always zero/false
 		// Set the control enable and system enable flag to false if SW3 is pressed
-		if (Global_Data.dv.sw3==valueFalse){
-			Global_Data.cw.enableControl=flagDisabled;
-			Global_Data.cw.enableSystem=flagDisabled;
+		if (Global_Data.dv.sw3==false){
+			Global_Data.cw.enableControl=false;
+			Global_Data.cw.enableSystem=false;
 		}
 #endif
-
-		//ToDo: //Add here more possible errors?!
-		if((Global_Data.ew.maximumContinuousCurrentExceeded == valueTrue)||(Global_Data.ew.maximumShortTermCurrentReached == valueTrue)||(Global_Data.ew.dcLinkOvervoltageOccured == valueTrue)||(Global_Data.ew.pwmFrequencyError == valueTrue)){
-			WritePin_PS_GPIO(LED_error,valueTrue); //Write a GPIO for LED_3
+		if((Global_Data.ew.maximumContinuousCurrentExceeded == true)||(Global_Data.ew.maximumShortTermCurrentReached == true)||(Global_Data.ew.dcLinkOvervoltageOccured == true)||(Global_Data.ew.pwmFrequencyError == true)){
+			WritePin_PS_GPIO(LED_error,true); //Write a GPIO for LED_3
 			ErrorHandling(&Global_Data);
 			ErrorReset(&Global_Data);	//If any error is active -> check if an error-reset is received
 		}else{//no errors
 			//Check the control values
-			if(Global_Data.cw.enableSystem == flagDisabled){
+			if(Global_Data.cw.enableSystem == false){
 				turnPowerElectronicsOff(&Global_Data); //Switch power converter off
-			}else if((Global_Data.cw.enableSystem == flagEnabled) && bInit == valueFalse){ //Call this function only once. If there was an error, "enableSystem " must be reseted!
+			}else if((Global_Data.cw.enableSystem == true) && bInit == false){ //Call this function only once. If there was an error, "enableSystem " must be reseted!
 				turnPowerElectronicsOn(&Global_Data); //Switch power converter on
 			}
 
-			if(Global_Data.cw.enableControl == flagEnabled){
+			if(Global_Data.cw.enableControl == true){
 				ControllerOn(&Global_Data); //Switch controller on
 			}else{
 				ControllerOff(&Global_Data); //Switch controller off
@@ -164,7 +158,7 @@ int main (void){
 		}
 
 		//Change the operation mode only if the system is in a safe state
-		if((Global_Data.cw.enableSystem == flagDisabled)&&(Global_Data.cw.enableControl == flagDisabled)&&(bNewControlMethodAvailable == valueTrue)){
+		if((Global_Data.cw.enableSystem == false)&&(Global_Data.cw.enableControl == false)&&(bNewControlMethodAvailable == true)){
 			switch(Global_Data.cw.ControlMethod){
 				case DirectTorqueControl:
 					Configure_DTC_Control(&Global_Data);
@@ -195,7 +189,7 @@ int main (void){
 					xil_printf("No valid control method is active\n");
 					break;
 			}
-			bNewControlMethodAvailable = valueFalse; //Reset the Flag in order to initialize the IP Cores and functions after a new control method arrives, only once!
+			bNewControlMethodAvailable = false; //Reset the Flag in order to initialize the IP Cores and functions after a new control method arrives, only once!
 		}
 
 
@@ -215,18 +209,16 @@ int main (void){
 //==============================================================================================================================================================
 int turnPowerElectronicsOff(DS_Data* data){
 
-	bInit = valueFalse;
+	bInit = false;
 	data->rasv.referenceCurrent_iq = 0; // in A
 	data->rasv.referenceCurrent_id = 0; // in A
 	data->rasv.ModifiedReferenceCurrent_iq = 0; // in A
 	data->rasv.ModifiedReferenceCurrent_id = 0; // in A
 	data->rasv.referenceSpeed = 0; // in rpm
-	data->cw.enableControl = flagDisabled; 		//Switch controller off
+	data->cw.enableControl = false; 		//Switch controller off
 
 	//Disable power electronics
 	XGpio_DiscreteClear(&Gpio_OUT,GPIO_CHANNEL, 3);//Switch power electronics off = 0b0001 = "Disable_Inverter" //Switch Gate connection off = 0b0010 = "Disable_Gate"
-	//	asm(" nop"); //Wait some ticks, otherwise, the second GPIO write will not be updated
-	//	XGpio_DiscreteSet(&Gpio_OUT,GPIO_CHANNEL, 0b0010);//Switch Gate connection and power electronics off // "Disable_Gate" = Consider, this is a inverse signal //"Disable_Inverter"
 	return (0);
 }
 
@@ -237,22 +229,21 @@ int turnPowerElectronicsOn(DS_Data* data){
 
 	asm(" nop"); //Wait some ticks, otherwise, the second GPIO write will not be updated
 	XGpio_DiscreteClear(&Gpio_OUT,GPIO_CHANNEL, 4);//Stop to the ADC module to set an offset value    0b0100);  	// "Enable_Gate" On //Consider, this is a inverse signal AND "Acknowledge" the set of ADC offset value.
-	//	XGpio_DiscreteSet(&Gpio_OUT,GPIO_CHANNEL, 0x0b0001);//Switch power electronics on  // "Enable_Gate" On = Consider, this is a inverse signal // "Enable_Inverter" On
-	bInit = valueTrue;
+bInit = true;
 	return (0);
 }
 
 //==============================================================================================================================================================
 int ControllerOff(DS_Data* data){
 
-	WritePin_PS_GPIO(LED_running,valueFalse); //Write a GPIO for LED_2
+	WritePin_PS_GPIO(LED_running,false); //Write a GPIO for LED_2
 	return (0);
 }
 
 //==============================================================================================================================================================
 int ControllerOn(DS_Data* data){
 
-	WritePin_PS_GPIO(LED_running,valueTrue); //Write a GPIO for LED_2
+	WritePin_PS_GPIO(LED_running,true); //Write a GPIO for LED_2
 	return (0);
 }
 
@@ -262,34 +253,34 @@ int ErrorHandling(DS_Data* data){
 	ControllerOff(data); 					//Switch controller off
 	data->rasv.referenceCurrent_iq = 0; 	// in A
 	data->rasv.referenceSpeed = 0; 			// in rpm
-	data->cw.enableControl = flagDisabled;	//Switch controller off
+	data->cw.enableControl = false;	//Switch controller off
 
 	turnPowerElectronicsOff(data); 			// Switch power electronics off
-	data->cw.enableSystem = flagDisabled;	// Switch power electronics off
+	data->cw.enableSystem = false;	// Switch power electronics off
 	return (0);
 }
 
 //==============================================================================================================================================================
 int ErrorReset(DS_Data* data){
 
-	if(data->er.dcLinkOvervoltageOccured == valueTrue){
-		data->ew.dcLinkOvervoltageOccured = valueFalse;  	//Reset over-voltage
-		data->er.dcLinkOvervoltageOccured = valueFalse;	//Reset flag
+	if(data->er.dcLinkOvervoltageOccured == true){
+		data->ew.dcLinkOvervoltageOccured = false;  	//Reset over-voltage
+		data->er.dcLinkOvervoltageOccured = false;	//Reset flag
 	}
-	if(data->er.maximumContinuousCurrentExceeded == valueTrue){
-		data->ew.maximumContinuousCurrentExceeded  = valueFalse;  //Reset Continuous Current Exceeded
-		data->er.maximumContinuousCurrentExceeded = valueFalse;	//Reset flag
+	if(data->er.maximumContinuousCurrentExceeded == true){
+		data->ew.maximumContinuousCurrentExceeded  = false;  //Reset Continuous Current Exceeded
+		data->er.maximumContinuousCurrentExceeded = false;	//Reset flag
 	}
-	if(data->er.maximumShortTermCurrentReached == valueTrue){
-		data->ew.maximumShortTermCurrentReached = valueFalse;  	//Reset maximum Short-Term Current Reached
-		data->er.maximumShortTermCurrentReached = valueFalse;		//Reset flag
+	if(data->er.maximumShortTermCurrentReached == true){
+		data->ew.maximumShortTermCurrentReached = false;  	//Reset maximum Short-Term Current Reached
+		data->er.maximumShortTermCurrentReached = false;		//Reset flag
 	}
-	if(data->er.pwmFrequencyError == valueTrue){
-		data->ew.pwmFrequencyError = valueFalse;  //Reset pwm Frequency Error
-		data->er.pwmFrequencyError = valueFalse;	//Reset flag
+	if(data->er.pwmFrequencyError == true){
+		data->ew.pwmFrequencyError = false;  //Reset pwm Frequency Error
+		data->er.pwmFrequencyError = false;	//Reset flag
 	}
 
-	WritePin_PS_GPIO(LED_error,valueFalse); //Write a GPIO for LED_3
+	WritePin_PS_GPIO(LED_error,false); //Write a GPIO for LED_3
 
 	return (0);
 }
@@ -314,38 +305,22 @@ int AXI2TCM_on(){
 //==============================================================================================================================================================
 int plotData(DS_Data* data){
 
-	printf("Reference current in float: %f \r\n", data->rasv.referenceCurrent_iq );
+	xil_printf("Reference current in float: %f \r\n", data->rasv.referenceCurrent_iq );
 
-	printf("ADC I_a: %f \r\n", data->av.I_U);
-	printf("ADC I_b: %f \r\n", data->av.I_V);
-	printf("ADC I_c: %f \r\n", data->av.I_W);
+	xil_printf("ADC I_a: %f \r\n", data->av.I_U);
+	xil_printf("ADC I_b: %f \r\n", data->av.I_V);
+	xil_printf("ADC I_c: %f \r\n", data->av.I_W);
 
 	//Output encoder values
-	printf("Speed in rpm: %f \r\n", data->av.mechanicalRotorSpeed);
-	printf("theta_el: %f \r\n", data->av.theta_elec);
-	printf("theta_mech: %f \r\n", data->av.theta_mech);
-//	printf("Direction ( 1= positiv and 0 = negativ): %d \r\n", u8Direction);
-	printf("Actual DutyCycle: %d \r\n", (Xint16)(data->rasv.sixStepCommutationDutyCycle*100.0));
+	xil_printf("Speed in rpm: %f \r\n", data->av.mechanicalRotorSpeed);
+	xil_printf("theta_el: %f \r\n", data->av.theta_elec);
+	xil_printf("theta_mech: %f \r\n", data->av.theta_mech);
+	xil_printf("Actual DutyCycle: %d \r\n", (int16_t)(data->rasv.sixStepCommutationDutyCycle*100.0));
 
-	bPlotData	= valueFalse; // print only once
+	bPlotData	= false; // print only once
 
 	return 0;
 }
-
-
-//==============================================================================================================================================================
-//----------------------------------------------------
-// Software delay
-//----------------------------------------------------
-void delayy(){
-	int i ;
-	int x;
-	int delayTime=10000;
-	for (i=0;i<delayTime;i++){
-		x=x+0; // Idle Loop
-	}
-}
-
 
 //==============================================================================================================================================================
 int InitializeDataStructure(DS_Data* data){
@@ -368,11 +343,11 @@ int InitializeDataStructure(DS_Data* data){
 	Initialize_MotorRelatedParameters(data);
 
 	//MPC
-	data->ctrl.mpc.fcs.bEnableVSP2CC 	= valueFalse;
+	data->ctrl.mpc.fcs.bEnableVSP2CC 	= false;
 	data->ctrl.mpc.fcs.lambda_dU 		= 0;
 
 	//FOC
-	data->ctrl.foc.cc.FOCFeedForward =valueFalse;
+	data->ctrl.foc.cc.FOCFeedForward =false;
 	data->ctrl.foc.sc.referenceSpeedRamped =0.0;
 	data->ctrl.foc.numberValidValuesInMTPA =0;
 
@@ -386,18 +361,17 @@ int InitializeDataStructure(DS_Data* data){
 	data->mrp.ADCconvFactorReadback  =0.0;
 
 	//Initialize Automatic Current Reference Control Inputs
-	data->pID.bEnableAutoCurrentControl=valueFalse;
+	data->pID.bEnableAutoCurrentControl=false;
 	data->pID.d_current_steps		= 10; // Between 3 -10 is a good range
 	data->pID.q_current_steps		= 10; // Between 3 -10 is a good range
 	data->pID.max_res_ref_current	= 12.0; // Depends on the required range of the identified flux map and the possible range of the current sensor
 	//Initialize Automatic Current Reference Control Outputs
-	data->pID.bRefAutomaticControlled= valueFalse;
+	data->pID.bRefAutomaticControlled= false;
 
 	//Initialize Offline ID Stateflow Inputs
 	data->pID.MotorID				= 1;
-//	data->pID.controlType			= 1;
-	data->pID.accept				= valueFalse;
-	data->pID.reset_Offl			= valueFalse;
+	data->pID.accept				= false;
+	data->pID.reset_Offl			= false;
 	data->pID.sampleTimeISR			= 0.0001;
 	data->pID.dutyCyc				= 0.05;
 	data->pID.n_ref_measurement		= 200;
@@ -433,7 +407,7 @@ int InitializeDataStructure(DS_Data* data){
 	data->pID.Temp_ref				= 20.0;
 
 	//Online ID Stateflow Inputs
-	data->pID.bEnableOnlineID=valueFalse;
+	data->pID.bEnableOnlineID=false;
 	data->pID.DevSpeed			= 0.1;// 10% of actual Value
 	data->pID.DevCurrent		= 0.2;//20% of actual Value
 	data->pID.AverageTransParams= 1;
@@ -445,22 +419,22 @@ int InitializeDataStructure(DS_Data* data){
 	data->pID.offsetLock		= 1;
 	data->pID.array_counter 	= 0;
 	data->pID.controlArrCounter	= 0;
-	data->pID.AdmitParamsFlag	= valueFalse;
-	data->pID.AdmitMechParamsFlag= valueFalse;
+	data->pID.AdmitParamsFlag	= false;
+	data->pID.AdmitMechParamsFlag= false;
 
 	// Initialize Online ID Stateflow Outputs
-	data->pID.bOnlineIDenabled		= valueFalse;
+	data->pID.bOnlineIDenabled		= false;
 	data->pID.map_counter 			= 0;
 	data->pID.ControlMapCounter		= 0;
 
 	//Initialize the error states
-	data->ew.communicationTimeoutOccured = valueFalse;
-	data->ew.dcLinkOvervoltageOccured = valueFalse;
+	data->ew.communicationTimeoutOccured = false;
+	data->ew.dcLinkOvervoltageOccured = false;
 	data->ew.errorCodeXilinx = 0;
-	data->ew.maximumContinuousCurrentExceeded = valueFalse;
-	data->ew.maximumShortTermCurrentReached = valueFalse;
-	data->ew.mtpaTableError = valueFalse;
-	data->ew.pwmFrequencyError = valueFalse;
+	data->ew.maximumContinuousCurrentExceeded = false;
+	data->ew.maximumShortTermCurrentReached = false;
+	data->ew.mtpaTableError = false;
+	data->ew.pwmFrequencyError = false;
 	data->rasv.currentControlAngle = 0.0;
 	data->rasv.halfBridge1DutyCycle = 0.0;
 	data->rasv.halfBridge2DutyCycle = 0.0;
@@ -515,11 +489,6 @@ int InitializeDataStructure(DS_Data* data){
 
 	data->cw.switchingMode = 0; 		// PWM modulation
 	data->rasv.pwmMinPulseWidth = 0.01;	// PWM minimum on time in %
-	data->rasv.halfBridge1DutyCycle = 0.0;
-	data->rasv.halfBridge2DutyCycle = 0.0;
-	data->rasv.halfBridge3DutyCycle = 0.0;
-
-
 
 	return (0);
 }

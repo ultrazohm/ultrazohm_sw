@@ -16,15 +16,22 @@
 #ifndef ADC_H_
 #define ADC_H_
 
-#include "../main.h"
+#include <stdint.h>
+#include <math.h>
+
+#include "xparameters.h"
+#include "xil_types.h"
+#include "xil_io.h"
+
+#include "../globalData.h"
 #include "../IP_Cores/ADC_Module_LVDS_v2_ip_addr.h"
 
 typedef union _ADCread_union_ {
 	struct{
-		Xint16 ADC1;
-		Xint16 ADC2;
-		Xint16 ADC3;
-		Xint16 ADC4;
+		int16_t ADC1;
+		int16_t ADC2;
+		int16_t ADC3;
+		int16_t ADC4;
 		};
 	u64 ADC_Block_64bit;
 } ADCread_union;

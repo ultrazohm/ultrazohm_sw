@@ -15,7 +15,8 @@
 
 //Includes from own files
 #include "main.h"
-
+#include "uz/uz_GPIO/uz_gpio.h"
+#include "uz/uz_LED/uz_LED.h"
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -63,8 +64,25 @@ int main (void){
 	Initialize_AXI_GPIO();
 
 	// Initialize pushbuttons and GPIO
-	Initialize_GPIO();
+	//Initialize_GPIO();
 
+	XGpioPs Gpio_inst;
+	XGpioPs_Config gpio_config;
+	gpio_config.BaseAddr = XPAR_PSU_GPIO_0_BASEADDR; // e.g.: XPAR_PSU_GPIO_0_BASEADDR;
+	gpio_config.DeviceId = XPAR_PSU_GPIO_0_DEVICE_ID; // e.g.: XPAR_PSU_GPIO_0_DEVICE_ID;
+	status = XGpioPs_CfgInitialize(&Gpio_inst, &gpio_config, gpio_config.BaseAddr);
+
+	uz_gpio LEDReady;
+	uz_gpio_init(&LEDReady,&Gpio_inst,LED_ready,OUTPUT_PIN);
+	LEDReady.SetEnableOutput(&LEDReady,ENABLE_PIN);
+	LEDReady.WritePin(&LEDReady,false);
+	int i=0;
+	LEDReady.WritePin(&LEDReady,true);
+	uz_StatusLed ready;
+	uz_led_init(&ready, &LEDReady);
+	ready.turnOff(&ready);
+	i=10;
+	ready.turnOn(&ready);
 	// Initialize ADCs
 	// Conversion Factor of 10, because the full input range of the ADC is +-5V = 10V range
 	ADC_WriteConversionFactor(10);

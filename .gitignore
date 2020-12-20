@@ -34,3 +34,5 @@ vitis/export/Baremetal/Codegen/slprj/
 vitis/export/Baremetal/Codegen/uz_codegen0_ert_rtw/html/
 
 vitis/Sandbox/build/
+
+vitis/Sandbox/uz_LED/build/

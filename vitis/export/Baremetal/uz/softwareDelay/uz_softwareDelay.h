@@ -2,8 +2,9 @@
 #define HELPER_H
 
 #include <stdbool.h>
-#include "xil_assert.h"
 #include <limits.h>
+
+#include "../uz_HAL.h"
 
 void uz_SoftwareDelay(int delay);
 

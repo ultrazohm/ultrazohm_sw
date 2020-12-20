@@ -46,6 +46,7 @@ int main (void){
 
 	int status=XST_SUCCESS;
 	_Bool bInit 	= false;
+	uz_assert(TARGET_ULTRAZOHM);
 	int status;
 	Xil_AssertSetCallback((Xil_AssertCallback) uz_assertCallback);
 

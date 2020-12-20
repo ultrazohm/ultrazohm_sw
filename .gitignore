@@ -6,6 +6,8 @@ vivado/zusys/zusys.bxml
 vivado/zusys/zusys_ooc.xdc
 ip_cores/*/simulation/slprj/*
 
+vitis/Sandbox/uz_circularBuffer/build/
+
 vitis/export/Baremetal/slprj/
 
 vitis/export/Baremetal/Codegen/uz_codegen0_ert_rtw/buildInfo.mat

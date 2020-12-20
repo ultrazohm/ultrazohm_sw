@@ -18,7 +18,7 @@
 #ifndef CONTROL_TOOLBOX
 #define CONTROL_TOOLBOX
 
-#include "../controlToolbox/control_toolbox.h"
+#include "control_toolbox.h"
 
 //Sinewave generator
 //amplitude:			Amplitude of the output sinewave

@@ -43,6 +43,7 @@
 #include "include/pwm_3L_driver.h"
 #include "IP_Cores/Trans_123_dq/dqTransform.h"
 
+#include "uz/uz_HAL.h"
 
 /* Definitions */
 #define LED_DELAY 10000000							/* Software delay length */

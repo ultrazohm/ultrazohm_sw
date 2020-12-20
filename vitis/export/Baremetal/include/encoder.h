@@ -21,7 +21,7 @@
 #include "xil_types.h"
 #include "xil_io.h"
 #include <math.h>
-#include "../CommonFunctions/controlToolbox/control_toolbox.h"
+#include "../uz/controlToolbox/control_toolbox.h"
 #include "../IP_Cores/IncreEncoder_V24_ip_addr.h"
 #include "../defines.h"
 #include "../globalData.h"

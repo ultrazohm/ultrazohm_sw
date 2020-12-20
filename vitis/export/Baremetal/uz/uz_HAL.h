@@ -1,8 +1,9 @@
 #ifndef UZ_HAL_H
 #define UZ_HAL_H
 
-#define TARGET_ULTRAZOHM 0
-#define TARGET_SANDBOX 1
+// Set Target before including the HAL
+#define TARGET_ULTRAZOHM 1
+#define TARGET_SANDBOX 0
 
 #if (TARGET_ULTRAZOHM == TARGET_SANDBOX)
 #error Set TargetUltraZohm or Target Sandbox to one.

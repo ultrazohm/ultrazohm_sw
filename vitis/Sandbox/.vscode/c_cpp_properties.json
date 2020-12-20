@@ -1,0 +1,10 @@
+{
+	"configurations": [
+    {
+      "name": "Linux",
+      "includePath": ["../export/Baremetal/uz/"],
+    }
+  ],
+  "version": 4
+}
+

@@ -8,7 +8,14 @@
 #include "../uz_LED/uz_LED.h"
 #include "../../main.h"
 
-void uz_led_facade_init();
+typedef struct{
+	uz_gpio LedReady;
+	uz_gpio LedError;
+	uz_gpio LedRunning;
+	uz_gpio LedUser;
+}uz_facadeCfg;
+
+void uz_led_facade_init(uz_facadeCfg cfg);
 
 void uz_SetLedReadyOn();
 void uz_SetLedReadyOff();

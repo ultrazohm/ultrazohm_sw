@@ -33,6 +33,8 @@ Step-by-step
 .. image:: cpld_programming/Programmer_CPLD_position.jpg
    :width: 500
 
+.. _cpldjumper:
+
 4. Have all jumpers on the Carrier Board plugged on to X2 to create the daisy chain.
 
 .. image:: cpld_programming/jumper_chain.png

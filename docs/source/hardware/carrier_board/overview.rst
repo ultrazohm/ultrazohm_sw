@@ -5,14 +5,14 @@ Overview
 .. image:: pictures/carrier_board_top_pic.jpg
    :width: 800
 
-* Zynq UltraScale+ MPSoC module (aquamarine)
-* power supply (purple)
-* Ethernet (red)
-* typical communication interfaces (orange)
-* SD card (pink)
-* JTAG for the CPLDs X1 (yellow)
-* the three analog sockets (A1-A3) 
-* five digital sockets (D1-D5)
+* Zynq UltraScale+ MPSoC module (cyan)
+* Power Supply (purple)
+* Gigabit Ethernet (red)
+* Communication Interfaces (isolated SPI, 2x isolated CAN, I2C, SPI, UART) (orange)
+* SD Card (pink)
+* JTAG for CPLDs (yellow)
+* Analog Sockets (A1-A3) 
+* Digital Sockets (D1-D5)
 
 .. image:: pictures/carrier_board_top_3D.jpg
    :width: 800

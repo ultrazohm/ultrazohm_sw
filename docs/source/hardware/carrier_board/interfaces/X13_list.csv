@@ -1,17 +1,16 @@
-PS,X13 Pin Number,X13 Name,Carrier Board LED,Front Panel,Function
-,1,3V3,,NC,3V3
-,2,GND,,Ready_GND,GND
-PS_GPIO1,3,EXT_GPIO1,LED1,Ready_VCC,Output
-PS_GPIO2,4,EXT_GPIO2,LED2,Running_VCC,Output
-,5,GND,,Running_GND,GND
-PS_GPIO5,6,EXT_GPIO5,,NC,Input
-PS_GPIO6,7,EXT_GPIO6,,NC,Input
-,8,GND,,NC,GND
-,9,3V3,,NC,3V3
-,10,GND,,Error_GND,GND
-PS_GPIO3,11,EXT_GPIO3,LED3,Error_VCC,Output
-PS_GPIO4,12,EXT_GPIO4,LED4,LED1_VCC,Output
-,13,GND,,LED1_GND,GND
-PS_GPIO7,14,EXT_GPIO7,,NC,Input
-PS_GPIO8,15,EXT_GPIO8,,NC,Input
-,16,GND,,NC,GND
+Pin on X13, Signal, non-isolated Signal, Carrier Board LED, Front Panel, Function, Direction, Specification
+1 + 9,3V3_isoGPIO, , , n.c., isolated power supply, output, 3.3 V / 100 mA
+2, GND_isoGPIO, , ,Ready_GND, Ground, ,
+3, EXT_GPIO1, PS_GPIO1, LED1, Ready_VCC, , output, 3.3 V / 20 mA
+4, EXT_GPIO2, PS_GPIO2, LED2, Running_VCC, , output, 3.3 V / 20 mA
+5, GND_isoGPIO, , , Running_GND, Ground, ,
+6, EXT_GPIO5, PS_GPIO5, , n.c., , input, 3.3 V / 20 mA
+7, EXT_GPIO6, PS_GPIO6, , n.c., , input, 3.3 V / 20 mA
+8, GND_isoGPIO, , , n.c., Ground, ,
+10, GND_isoGPIO, , , Error_GND, Ground,
+11, EXT_GPIO3, PS_GPIO3, LED3, Error_VCC, , output, 3.3 V / 20 mA
+12, EXT_GPIO4, PS_GPIO4, LED4, LED1_VCC, , output, 3.3 V / 20 mA
+13, GND_isoGPIO, , ,LED1_GND, Ground, ,
+14, EXT_GPIO7, PS_GPIO7, , n.c., , input, 3.3 V / 20 mA
+15, EXT_GPIO8, PS_GPIO8, , n.c., , input, 3.3 V / 20 mA
+16, GND_isoGPIO, , , n.c., Ground, ,

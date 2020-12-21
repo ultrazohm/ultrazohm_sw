@@ -1,13 +1,11 @@
-Pin X10, Name, Specification
-1, 3V3_PER, 3.3 V - 0.0 A (??)
-2, GND, GND
-3, EXT_SPI0_MOSI, MISO of SPI0
-4, EXT_SPI0_SCLK, SCLK of SPI0
-5, EXT_UART1_RX, RX of UART1
-6, EXT_I2C1_SCL, SCL of I2C1
-7, 3V3_PER, 3.3 V - 0.0 A (??)
-8, GND, GND
-9, EXT_SPI0_MISO, MISO of SPI0
-10, EXT_SPI0_CS, CS of SPI0
-11, EXT_UART1_TX, TX of UART1
-12, EXT_I2C1_SDA, SDA of I2C1
+Pin on X10, Signal, Function, Direction, Specification
+1 + 7, 3V3_PER, power supply, output, 3.3 V / 150 mA
+2 + 8, GND, Ground, ,
+3, EXT_SPI0_MOSI, SPI master out slave in, output, 3.3 V / 10 mA
+4, EXT_SPI0_SCLK, SPI clock, output, 3.3 V / 10 mA
+5, EXT_UART1_RX, UART receive, input, 3.3 V / 10 mA
+6, EXT_I2C1_SCL, I2C serial clock, bi-directional, 3.3 V / 10 mA
+9, EXT_SPI0_MISO, SPI master in slave out, input, 3.3 V / 10 mA
+10, EXT_SPI0_CS, SPI chip select, output, 3.3 V / 10 mA
+11, EXT_UART1_TX, UART transmit, output, 3.3 V / 10 mA
+12, EXT_I2C1_SDA, I2C serial data, bi-directional, 3.3 V / 10 mA

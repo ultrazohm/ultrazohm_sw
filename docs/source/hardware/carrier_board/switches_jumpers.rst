@@ -121,7 +121,7 @@ SW3 - Power Mode Second Part
      - EN_LPD
      - EN_PL
      - EN_FPD
-   * - Power Enabledc
+   * - Power Enabled
      - ``OFF``
      - ``OFF``
      - ``OFF``

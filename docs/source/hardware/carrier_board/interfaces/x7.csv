@@ -1,5 +1,5 @@
-Pin X7, Name, Specification
-1, 5V_isoCAN, Isolated 5.0V voltage supply 0.0 A (??)
-2, CAN_H,
-3, CAN_L,
-4, GND_isoCAN, Isolated GND
+Pin on X7, Signal, Function, Direction, Specification
+1, 5V_isoCAN, isolated power supply, output, 5 V / 100 mA
+2, CAN_H, can high, bi-directional,
+3, CAN_L, can low, bi-directional,
+4, GND_isoCAN, isolated ground,

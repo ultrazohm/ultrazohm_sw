@@ -2,10 +2,10 @@
 
 static void uz_gpio_SetDirection(struct uz_gpio_ *self, int Direction);
 static int uz_gpio_GetDirection(struct uz_gpio_ *self);
-static void uz_gpio_SetEnableOutput(struct uz_gpio_ *self, int EnableOutput);
-static int uz_gpio_GetEnableOutput(struct uz_gpio_ *self);
-static void uz_gpio_WritePin(struct uz_gpio_ *self, int value);
-static int uz_gpio_ReadPin(struct uz_gpio_ *self);
+static void uz_gpio_SetEnableOutput(struct uz_gpio_ *self, _Bool EnableOutput);
+static _Bool uz_gpio_GetEnableOutput(struct uz_gpio_ *self);
+static void uz_gpio_WritePin(struct uz_gpio_ *self, _Bool value);
+static _Bool uz_gpio_ReadPin(struct uz_gpio_ *self);
 
 void uz_gpio_init(uz_gpio *self, XGpioPs *Xgpio_instance, int PinNumber, int Direction){
 	uz_assertNotNull(self);
@@ -36,30 +36,30 @@ static void uz_gpio_SetDirection(struct uz_gpio_ *self, int Direction){
 static int uz_gpio_GetDirection(struct uz_gpio_ *self){
 	uz_assertNotNull(self);
 	uz_assert(self->isReady);
-	return XGpioPs_GetDirectionPin(self->hw, (uint32_t)self->PinNumber);
+	return ((_Bool)XGpioPs_GetDirectionPin(self->hw, (uint32_t)self->PinNumber));
 }
 
-static void uz_gpio_SetEnableOutput(struct uz_gpio_ *self, int EnableOutput){
+static void uz_gpio_SetEnableOutput(struct uz_gpio_ *self, _Bool EnableOutput){
 	uz_assertNotNull(self);
 	uz_assert(self->isReady);
 	XGpioPs_SetOutputEnablePin(self->hw, (uint32_t)self->PinNumber, (uint32_t)EnableOutput);
 }
 
-static int uz_gpio_GetEnableOutput(struct uz_gpio_ *self){
+static _Bool uz_gpio_GetEnableOutput(struct uz_gpio_ *self){
 	uz_assertNotNull(self);
 	uz_assert(self->isReady);
-	return XGpioPs_GetOutputEnablePin(self->hw, (uint32_t)self->PinNumber);
+	return ((_Bool)XGpioPs_GetOutputEnablePin(self->hw, (uint32_t)self->PinNumber));
 }
 
-static void uz_gpio_WritePin(struct uz_gpio_ *self, int value){
+static void uz_gpio_WritePin(struct uz_gpio_ *self, _Bool value){
 	uz_assertNotNull(self);
 	uz_assert(self->isReady);
 	uz_assert(self->GetEnableOutput);
 	XGpioPs_WritePin(self->hw, (uint32_t)self->PinNumber, (uint32_t)value);
 }
 
-static int uz_gpio_ReadPin(struct uz_gpio_ *self){
+static _Bool uz_gpio_ReadPin(struct uz_gpio_ *self){
 	uz_assertNotNull(self);
 	uz_assert(self->isReady);
-	return XGpioPs_ReadPin(self->hw, (uint32_t)self->PinNumber);
+	return (XGpioPs_ReadPin(self->hw, (uint32_t)self->PinNumber));
 }

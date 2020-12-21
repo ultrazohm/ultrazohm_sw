@@ -46,8 +46,8 @@
 #include "uz/uz_HAL.h"
 
 #include "uz/uz_led_facade/uz_LED_facade.h"
-#include "uz/uz_GPIO_mediator/uz_gpio_mediator.h"
-#include "uz/uz_GPIO_mediator/uz_MioGpioMapping.h"
+#include "uz/uz_MioGpio_mediator/uz_MioGpio_mediator.h"
+#include "uz/uz_MioGpio_mediator/uz_MioGpioMapping.h"
 /* Definitions */
 #define LED_DELAY 10000000							/* Software delay length */
 

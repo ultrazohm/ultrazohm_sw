@@ -6,7 +6,6 @@
 #include "../uz_HAL.h"
 #include "../uz_GPIO/uz_gpio.h"
 #include "../uz_LED/uz_LED.h"
-#include "../../main.h"
 
 typedef struct{
 	uz_gpio LedReady;

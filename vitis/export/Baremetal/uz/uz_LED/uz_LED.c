@@ -14,11 +14,11 @@ void uz_led_init(uz_StatusLed *self, uz_gpio *hw){
 static void uz_led_turnOn(uz_StatusLed *self){
 	uz_assertNotNull(self);
 	uz_assert(self->isReady);
-	self->hw->WritePin(self->hw,1);
+	self->hw->WritePin(self->hw,true);
 };
 
 static void uz_led_turnOff(uz_StatusLed *self){
 	uz_assertNotNull(self);
 	uz_assert(self->isReady);
-	self->hw->WritePin(self->hw,0);
+	self->hw->WritePin(self->hw,false);
 };

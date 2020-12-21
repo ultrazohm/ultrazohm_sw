@@ -45,7 +45,7 @@
 
 #include "uz/uz_HAL.h"
 
-#include "uz/uz_led_facade/uz_LED_facade.h"
+#include "uz/uz_LED/uz_LED_facade.h"
 #include "uz/uz_MioGpio_mediator/uz_MioGpio_mediator.h"
 #include "uz/uz_MioGpio_mediator/uz_MioGpioMapping.h"
 /* Definitions */

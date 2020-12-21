@@ -45,6 +45,8 @@
 
 #include "uz/uz_HAL.h"
 
+#include "uz/uz_led_facade/uz_LED_facade.h"
+
 /* Definitions */
 #define LED_DELAY 10000000							/* Software delay length */
 

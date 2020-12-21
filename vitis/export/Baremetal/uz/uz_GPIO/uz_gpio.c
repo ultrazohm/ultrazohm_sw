@@ -54,6 +54,7 @@ static int uz_gpio_GetEnableOutput(struct uz_gpio_ *self){
 static void uz_gpio_WritePin(struct uz_gpio_ *self, int value){
 	uz_assertNotNull(self);
 	uz_assert(self->isReady);
+	uz_assert(self->GetEnableOutput);
 	XGpioPs_WritePin(self->hw, (uint32_t)self->PinNumber, (uint32_t)value);
 }
 

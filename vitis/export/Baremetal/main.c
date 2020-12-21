@@ -15,8 +15,7 @@
 
 //Includes from own files
 #include "main.h"
-#include "uz/uz_GPIO/uz_gpio.h"
-#include "uz/uz_LED/uz_LED.h"
+
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -65,24 +64,18 @@ int main (void){
 
 	// Initialize pushbuttons and GPIO
 	//Initialize_GPIO();
+	uz_led_facade_init();
 
-	XGpioPs Gpio_inst;
-	XGpioPs_Config gpio_config;
-	gpio_config.BaseAddr = XPAR_PSU_GPIO_0_BASEADDR; // e.g.: XPAR_PSU_GPIO_0_BASEADDR;
-	gpio_config.DeviceId = XPAR_PSU_GPIO_0_DEVICE_ID; // e.g.: XPAR_PSU_GPIO_0_DEVICE_ID;
-	status = XGpioPs_CfgInitialize(&Gpio_inst, &gpio_config, gpio_config.BaseAddr);
-
-	uz_gpio LEDReady;
-	uz_gpio_init(&LEDReady,&Gpio_inst,LED_ready,OUTPUT_PIN);
-	LEDReady.SetEnableOutput(&LEDReady,ENABLE_PIN);
-	LEDReady.WritePin(&LEDReady,false);
-	int i=0;
-	LEDReady.WritePin(&LEDReady,true);
-	uz_StatusLed ready;
-	uz_led_init(&ready, &LEDReady);
-	ready.turnOff(&ready);
-	i=10;
-	ready.turnOn(&ready);
+	uz_SetLedReadyOff();
+	uz_SetLedRunningOff();
+	uz_SetLedUserOff();
+	uz_SetLedErrorOff();
+	int i=10;
+	uz_SetLedReadyOn();
+	uz_SetLedRunningOn();
+	uz_SetLedUserOn();
+	uz_SetLedErrorOn();
+	i=100;
 	// Initialize ADCs
 	// Conversion Factor of 10, because the full input range of the ADC is +-5V = 10V range
 	ADC_WriteConversionFactor(10);
@@ -210,7 +203,7 @@ int main (void){
 			i_LifeCheck =0;
 		}
 	}
-	return status;
+	return (status);
 }
 
 
@@ -324,7 +317,7 @@ int plotData(DS_Data* data){
 
 	bPlotData	= false; // print only once
 
-	return 0;
+	return (0);
 }
 
 //==============================================================================================================================================================

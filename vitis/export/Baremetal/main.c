@@ -64,7 +64,7 @@ int main (void){
 
 	// Initialize pushbuttons and GPIO
 	//Initialize_GPIO();
-	uz_led_facade_init();
+	uz_mio_gpio_init();
 
 	uz_SetLedReadyOff();
 	uz_SetLedRunningOff();

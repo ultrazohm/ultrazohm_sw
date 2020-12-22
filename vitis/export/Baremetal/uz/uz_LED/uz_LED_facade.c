@@ -2,11 +2,11 @@
 
 static uz_StatusLed LedReady, LedRunning, LedError, LedUser;
 
-void uz_led_facade_init(uz_facadeCfg cfg){
-	uz_led_init(&LedReady,&cfg.LedReady);
-	uz_led_init(&LedRunning,&cfg.LedRunning);
-	uz_led_init(&LedError,&cfg.LedError);
-	uz_led_init(&LedUser,&cfg.LedUser);
+void uz_led_facade_init(uz_LedfacadeCfg cfg){
+	uz_led_init(&LedReady,cfg.LedReady);
+	uz_led_init(&LedRunning,cfg.LedRunning);
+	uz_led_init(&LedError,cfg.LedError);
+	uz_led_init(&LedUser,cfg.LedUser);
 };
 
 void uz_SetLedReadyOn(){

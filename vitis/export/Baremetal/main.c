@@ -66,16 +66,38 @@ int main (void){
 	//Initialize_GPIO();
 	uz_mio_gpio_init();
 
+	uz_SetLedReadyOn();
+	uz_SetLedRunningOn();
+	uz_SetLedErrorOn();
+	uz_SetLedUserOn();
+
 	uz_SetLedReadyOff();
 	uz_SetLedRunningOff();
-	uz_SetLedUserOff();
 	uz_SetLedErrorOff();
-	int i=10;
-	uz_SetLedReadyOn();
+	uz_SetLedUserOff();
+	while (1){
+		if (uz_GetPushButtonEnableSystem() ){
+			uz_SetLedReadyOn();
+		}else{
+			uz_SetLedReadyOff();
+		};
+		if (uz_GetPushButtonEnableControl() ){
+			uz_SetLedRunningOn();
+		}else{
+			uz_SetLedRunningOff();
+		};
+		if (!uz_GetPushButtonStop() ){
+			uz_SetLedErrorOn();
+		}else{
+			uz_SetLedErrorOff();
+		};
+
+	};
+
 	uz_SetLedRunningOn();
 	uz_SetLedUserOn();
 	uz_SetLedErrorOn();
-	i=100;
+	int i=100;
 	// Initialize ADCs
 	// Conversion Factor of 10, because the full input range of the ADC is +-5V = 10V range
 	ADC_WriteConversionFactor(10);

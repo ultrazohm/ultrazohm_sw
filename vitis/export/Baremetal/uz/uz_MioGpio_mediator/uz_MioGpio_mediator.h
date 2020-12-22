@@ -7,6 +7,9 @@
 #include "../uz_LED/uz_LED.h"
 #include "../uz_LED/uz_LED_facade.h"
 
+#include "../uz_PushButton/uz_PushButton.h"
+#include "../uz_PushButton/uz_PushButton_facade.h"
+
 #include "xgpiops.h"
 #include "../uz_MioGpio_mediator/uz_MioGpioMapping.h"
 

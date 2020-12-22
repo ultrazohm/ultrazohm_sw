@@ -10,14 +10,14 @@ typedef struct uz_gpio_{
 	_Bool isReady;
 	int PinNumber;
 	int Direction;
-	void (*SetDirection)(struct uz_gpio_ *self, int Direction);
-	int (*GetDirection)(struct uz_gpio_ *self);
-	void (*SetEnableOutput)(struct uz_gpio_ *self, _Bool EnableOutput);
-	_Bool (*GetEnableOutput)(struct uz_gpio_ *self);
-	void (*WritePin) (struct uz_gpio_ *self, _Bool value);
-	_Bool (*ReadPin) (struct uz_gpio_ *self);
+	void (*SetDirection)(struct uz_gpio_ *self, uint32_t Direction);
+	uint32_t (*GetDirection)(struct uz_gpio_ *self);
+	void (*SetEnableOutput)(struct uz_gpio_ *self, uint32_t EnableOutput);
+	uint32_t (*GetEnableOutput)(struct uz_gpio_ *self);
+	void (*WritePin) (struct uz_gpio_ *self, uint32_t value);
+	uint32_t (*ReadPin) (struct uz_gpio_ *self);
 }uz_gpio;
 
-void uz_gpio_init(uz_gpio *self, XGpioPs *Xgpio_instance, int PinNumber, int Direction);
+void uz_gpio_init(uz_gpio *self, XGpioPs *Xgpio_instance, uint32_t PinNumber, uint32_t Direction);
 
 #endif

@@ -49,10 +49,9 @@ The SoM feedbacks with a "power good" signal *PG_Module* to enable the power sup
 		participant 1V8_PER
 		participant SoM
 		VIN->>+3V3_MOD: Stage 1
-		VIN->>+3V3_PER: Stage 1
-		VIN->>+5V_PER: Stage 1
+		3V3_MOD->>+3V3_PER: Stage 2
+		3V3_PER->>+5V_PER: Stage 3
 		3V3_MOD->>+SoM: Stage 2
 		SoM->>+1V8_MOD: PG_Module
 		SoM->>+1V8_PER: PG_Module
-		1V8_MOD->>+SoM: Stage 3
-		1V8_PER->>+SoM: Stage 3
+		1V8_MOD->>+SoM: Stage 4

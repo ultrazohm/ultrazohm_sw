@@ -27,7 +27,7 @@ X2: CPLD-Jumper
 ---------------
 
 Pin header connector to set jumper for individual programmaing of the CPLDs.
-If you would like to program all five CPLDs at once, you have to link them together as a daisy chain: set jumper to 1-2, 3-4, 5-6, 7-8, 9-10, 11-12. (see :ref:`cpldjumper`)
+If you would like to program all five CPLDs at once, you have to link them together as a daisy chain: set jumper to 1-2, 3-4, 5-6, 7-8, 9-10, 11-12. (see :ref:`label_cpld_programming`)
 
 .. csv-table:: X2: CPLD programming jumper
   :file: interfaces/x2.csv

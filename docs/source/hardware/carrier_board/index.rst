@@ -1,14 +1,15 @@
-=============
+==================
 Carrier Board
-=============
+==================
 
 
 ..	toctree::
 	:maxdepth: 2
 
 	overview
-	power_distribution
 	switches_jumpers
-	interfaces
-	arm_pins
+	carrier_board_2v00/index
+	carrier_board_3v00/index
 	known_issues
+
+

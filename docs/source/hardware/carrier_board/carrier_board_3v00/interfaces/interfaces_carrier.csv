@@ -1,0 +1,27 @@
+Name, Function
+J1, SoM
+J2, SoM
+J3, SoM
+J4, SoM
+X1, CPLD JTAG
+X3, Interface to CPLD of X6E
+X4, Ethernet
+X5A, Analog adapter card A1
+X5B, Analog adapter card A2
+X5C, Analog adapter card A3
+X6A, Digital adapter card D1
+X6B, Digital adapter card D2
+X6C, Digital adapter card D3
+X6D, Digital adapter card D4
+X6E, Digital adapter card D5 with fewer FPGA pins
+X7A, CAN1
+X7A, CAN2
+X8, MPSoC JTAG
+X9, (PS JTAG - not assembled)
+X10, PS SPI - UART - I2C
+X11, (USB - not assembled)
+X12, SPI
+X13, PS GPIO
+X14, Power in (24 V)
+X15, Power out (24 V)
+X16, SD-Card

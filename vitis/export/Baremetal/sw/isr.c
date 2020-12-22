@@ -97,15 +97,15 @@ void ISR_Control(void *data)
 	// todo: write seperate function to toggle front panel LEDs
 	if(Global_Data.cw.enableSystem){
 		if((i_count_1ms % 200)>100){
-			WritePin_PS_GPIO(LED_ready,true); //Write a GPIO for LED_1
+			uz_SetLedReadyOn();
 		}else{
-			WritePin_PS_GPIO(LED_ready,false); //Write a GPIO for LED_1
+			uz_SetLedReadyOff();
 		}
 	}else{
 		if(i_count_1s % 2){
-			WritePin_PS_GPIO(LED_ready,true); //Write a GPIO for LED_1
+			uz_SetLedReadyOn();
 		}else{
-			WritePin_PS_GPIO(LED_ready,false); //Write a GPIO for LED_1
+			uz_SetLedReadyOff();
 		}
 	}
 

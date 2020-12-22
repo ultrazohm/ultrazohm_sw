@@ -5,16 +5,16 @@
 
 #include "../uz_HAL.h"
 #include "../uz_GPIO/uz_gpio.h"
-#include "../uz_LED/uz_LED.h"
+#include "uz_LED.h"
 
 typedef struct{
-	uz_gpio LedReady;
-	uz_gpio LedError;
-	uz_gpio LedRunning;
-	uz_gpio LedUser;
-}uz_facadeCfg;
+	uz_gpio *LedReady;
+	uz_gpio *LedError;
+	uz_gpio *LedRunning;
+	uz_gpio *LedUser;
+}uz_LedfacadeCfg;
 
-void uz_led_facade_init(uz_facadeCfg cfg);
+void uz_led_facade_init(uz_LedfacadeCfg cfg);
 
 void uz_SetLedReadyOn();
 void uz_SetLedReadyOff();

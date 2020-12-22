@@ -78,17 +78,17 @@
 // FUNCTIONS
 //----------------------------------------------------
 
-int plotData(DS_Data* data);
-int turnPowerElectronicsOff(DS_Data* data);
+void plotData(DS_Data* data);
+void turnPowerElectronicsOff(DS_Data* data);
 int turnPowerElectronicsOn(DS_Data* data);
-int AXI2TCM_on(void);
-int ControllerOff(DS_Data* data);
-int ErrorHandling(DS_Data* data);
-int ErrorReset(DS_Data* data);
-int ControllerOn(DS_Data* data);
-int ADC_Set_Offset(void);
-int ADC_Clear_Offset(void);
-int InitializeDataStructure(DS_Data* data);
+void AXI2TCM_on(void);
+void ControllerOff(DS_Data* data);
+void ErrorHandling(DS_Data* data);
+void ErrorReset(DS_Data* data);
+void ControllerOn(DS_Data* data);
+void ADC_Set_Offset(void);
+void ADC_Clear_Offset(void);
+void InitializeDataStructure(DS_Data* data);
 
 
 #endif /* main_H_ */

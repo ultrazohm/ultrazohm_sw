@@ -66,38 +66,6 @@ int main (void){
 	//Initialize_GPIO();
 	uz_mio_gpio_init();
 
-	uz_SetLedReadyOn();
-	uz_SetLedRunningOn();
-	uz_SetLedErrorOn();
-	uz_SetLedUserOn();
-
-	uz_SetLedReadyOff();
-	uz_SetLedRunningOff();
-	uz_SetLedErrorOff();
-	uz_SetLedUserOff();
-	while (1){
-		if (uz_GetPushButtonEnableSystem() ){
-			uz_SetLedReadyOn();
-		}else{
-			uz_SetLedReadyOff();
-		};
-		if (uz_GetPushButtonEnableControl() ){
-			uz_SetLedRunningOn();
-		}else{
-			uz_SetLedRunningOff();
-		};
-		if (!uz_GetPushButtonStop() ){
-			uz_SetLedErrorOn();
-		}else{
-			uz_SetLedErrorOff();
-		};
-
-	};
-
-	uz_SetLedRunningOn();
-	uz_SetLedUserOn();
-	uz_SetLedErrorOn();
-	int i=100;
 	// Initialize ADCs
 	// Conversion Factor of 10, because the full input range of the ADC is +-5V = 10V range
 	ADC_WriteConversionFactor(10);
@@ -143,9 +111,9 @@ int main (void){
 	while (1){
 
 		// poll the buttons
-		Global_Data.dv.sw1=ReadPin_PS_GPIO(SW_system);
-		Global_Data.dv.sw2=ReadPin_PS_GPIO(SW_control);
-		Global_Data.dv.sw3=ReadPin_PS_GPIO(SW_stop);
+		Global_Data.dv.sw1=uz_GetPushButtonEnableSystem();
+		Global_Data.dv.sw2=uz_GetPushButtonEnableControl();
+		Global_Data.dv.sw3=uz_GetPushButtonStop();
 		// Set the system enable flag to false if SW1 is pressed
 		if (Global_Data.dv.sw1==true){
 			Global_Data.cw.enableSystem=true;
@@ -162,7 +130,7 @@ int main (void){
 		}
 #endif
 		if((Global_Data.ew.maximumContinuousCurrentExceeded == true)||(Global_Data.ew.maximumShortTermCurrentReached == true)||(Global_Data.ew.dcLinkOvervoltageOccured == true)||(Global_Data.ew.pwmFrequencyError == true)){
-			WritePin_PS_GPIO(LED_error,true); //Write a GPIO for LED_3
+			uz_SetLedErrorOn();
 			ErrorHandling(&Global_Data);
 			ErrorReset(&Global_Data);	//If any error is active -> check if an error-reset is received
 		}else{//no errors
@@ -230,7 +198,7 @@ int main (void){
 
 
 //==============================================================================================================================================================
-int turnPowerElectronicsOff(DS_Data* data){
+void turnPowerElectronicsOff(DS_Data* data){
 	data->rasv.referenceCurrent_iq = 0; // in A
 	data->rasv.referenceCurrent_id = 0; // in A
 	data->rasv.ModifiedReferenceCurrent_iq = 0; // in A
@@ -240,7 +208,6 @@ int turnPowerElectronicsOff(DS_Data* data){
 
 	//Disable power electronics
 	XGpio_DiscreteClear(&Gpio_OUT,GPIO_CHANNEL, 3);//Switch power electronics off = 0b0001 = "Disable_Inverter" //Switch Gate connection off = 0b0010 = "Disable_Gate"
-	return (0);
 }
 
 //==============================================================================================================================================================
@@ -254,21 +221,17 @@ int turnPowerElectronicsOn(DS_Data* data){
 }
 
 //==============================================================================================================================================================
-int ControllerOff(DS_Data* data){
-
-	WritePin_PS_GPIO(LED_running,false); //Write a GPIO for LED_2
-	return (0);
+void ControllerOff(DS_Data* data){
+	uz_SetLedRunningOff();
 }
 
 //==============================================================================================================================================================
-int ControllerOn(DS_Data* data){
-
-	WritePin_PS_GPIO(LED_running,true); //Write a GPIO for LED_2
-	return (0);
+void ControllerOn(DS_Data* data){
+	uz_SetLedRunningOn();
 }
 
 //==============================================================================================================================================================
-int ErrorHandling(DS_Data* data){
+void ErrorHandling(DS_Data* data){
 
 	ControllerOff(data); 					//Switch controller off
 	data->rasv.referenceCurrent_iq = 0; 	// in A
@@ -277,11 +240,10 @@ int ErrorHandling(DS_Data* data){
 
 	turnPowerElectronicsOff(data); 			// Switch power electronics off
 	data->cw.enableSystem = false;	// Switch power electronics off
-	return (0);
 }
 
 //==============================================================================================================================================================
-int ErrorReset(DS_Data* data){
+void ErrorReset(DS_Data* data){
 
 	if(data->er.dcLinkOvervoltageOccured == true){
 		data->ew.dcLinkOvervoltageOccured = false;  	//Reset over-voltage
@@ -302,28 +264,24 @@ int ErrorReset(DS_Data* data){
 
 	WritePin_PS_GPIO(LED_error,false); //Write a GPIO for LED_3
 
-	return (0);
 }
 
 //==============================================================================================================================================================
-int ADC_Set_Offset(){
+void ADC_Set_Offset(){
 	XGpio_DiscreteSet(&Gpio_OUT,GPIO_CHANNEL, 4);// 4 = 0b0100 Enable the ADC module to set an offset value. Call this function only at the beginning once
-	return (0);
 }
 
 //==============================================================================================================================================================
-int ADC_Clear_Offset(){
+void ADC_Clear_Offset(){
 	XGpio_DiscreteClear(&Gpio_OUT,GPIO_CHANNEL, 4);// 4 = 0b0100 Release the offset, otherwise converted output remains 0
-	return (0);
 }
 //==============================================================================================================================================================
-int AXI2TCM_on(){
+void AXI2TCM_on(){
 	XGpio_DiscreteSet(&Gpio_OUT,GPIO_CHANNEL, 0b10000);// bit 5 : 16 = 0b10000 Enables the AXI2TCM module to write measurements directly to the TCM
-	return(0);
 }
 
 //==============================================================================================================================================================
-int plotData(DS_Data* data){
+void plotData(DS_Data* data){
 
 	xil_printf("Reference current in float: %f \r\n", data->rasv.referenceCurrent_iq );
 
@@ -338,12 +296,10 @@ int plotData(DS_Data* data){
 	xil_printf("Actual DutyCycle: %d \r\n", (int16_t)(data->rasv.sixStepCommutationDutyCycle*100.0));
 
 	bPlotData	= false; // print only once
-
-	return (0);
 }
 
 //==============================================================================================================================================================
-int InitializeDataStructure(DS_Data* data){
+void InitializeDataStructure(DS_Data* data){
 
 	data->av.U_ZK = 24.0; 								//[V] DC-Link voltage
 
@@ -509,6 +465,4 @@ int InitializeDataStructure(DS_Data* data){
 
 	data->cw.switchingMode = 0; 		// PWM modulation
 	data->rasv.pwmMinPulseWidth = 0.01;	// PWM minimum on time in %
-
-	return (0);
 }

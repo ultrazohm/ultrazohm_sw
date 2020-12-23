@@ -27,3 +27,98 @@ Video
 *****
 
 .. youtube:: dxAlD-VzE0c
+
+
+Write the docs
+==============
+
+See `write the docs <https://www.writethedocs.org/guide/>`_ as a great resource on how to write documentation.
+
+Style
+*****
+
+Do:
+
+* Keep it simple
+* Use simple language
+* Describe the current state
+* Focus on the interface
+* Provide examples on how to use the module, software, PCB, ...
+* Provide additional information in a dedicated section
+* Have a download section with schematics, additional information, ...
+* Use one line per sentece for cleaner git diffs
+
+Don't:
+
+* Write long and complicated sentences
+* Add unnecessary chatter
+* Chatter about what might change in the future (exception: roadmap)
+* Mix interface with rational
+* Mix implementation details and user interface
+* Have random download links in text blocks
+* Have random line breaks in the text
+
+Common functions
+****************
+
+Use the following examples for reference on how to write the docs.
+Basics:
+
+Code block
+^^^^^^^^^^
+
+.. code-block:: rst
+
+    .. code-block:: c
+
+        void function(int argv);
+
+.. code-block:: c
+
+   void function(int argv);
+
+
+Figures
+^^^^^^^
+
+.. code-block:: rst
+
+     .. _labelName:
+
+     .. figure:: figure.svg
+
+       Caption.
+
+Refernce:
+
+.. code-block:: rst
+
+    Reference ::numref:`labelName`.
+
+Links
+^^^^^
+
+.. code-block:: rst
+
+    `UltraZohm <ultrazohm.com>`_ 
+
+Mermaid
+^^^^^^^
+
+You can and should use `mermaid <https://mermaid-js.github.io/mermaid/#/>`_ to create figures.
+Mermaid figures are directly inserted into the docs and **searchable**!
+
+.. code-block:: rst
+
+    .. mermaid::
+
+      graph TD
+      A[Text]
+      A --> B[More text]
+
+
+.. mermaid::
+
+  graph TD
+  A[Text]
+  A --> B[More text]

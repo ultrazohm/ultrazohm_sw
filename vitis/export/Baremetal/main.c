@@ -52,9 +52,9 @@ int main (void){
 	Xil_AssertSetCallback((Xil_AssertCallback) uz_assertCallback);
 
 	//Output to the Terminal over UART to the COM-Port. Use e.g. "Tera Term" to listen with baud-rate 115200
-	xil_printf("\r\n\r\n");
-	xil_printf("Welcome to the UltraZohm\r\n");
-	xil_printf("----------------------------------------\r\n");
+	uz_printf("\r\n\r\n");
+	uz_printf("Welcome to the UltraZohm\r\n");
+	uz_printf("----------------------------------------\r\n");
 
 	// Initialize the global "Global_Data" structure -> the values can be overwritten afterwards from the Java-GUI -> this must be the first INIT-function, because it is required subsequently!
 	InitializeDataStructure(&Global_Data);
@@ -148,30 +148,30 @@ int main (void){
 				case DirectTorqueControl:
 					Configure_DTC_Control(&Global_Data);
 					PWM_SS_Initialize(&Global_Data);
-					xil_printf("DTC is active\n");
+					uz_printf("DTC is active\n");
 					break;
 				case fieldOrientedControl:
 					Configure_FOC_Control(&Global_Data);
 					PWM_SS_Initialize(&Global_Data);
-					xil_printf("FOC is active\n");
+					uz_printf("FOC is active\n");
 					break;
 				case ModelPredictiveControl:
 					Configure_MPC_Control(&Global_Data);
 					PWM_SS_Initialize(&Global_Data);
-					xil_printf("MPC is active\n");
+					uz_printf("MPC is active\n");
 					break;
 				case sixStepCommutation:
 					//toDO not used at the moment
 					PWM_SS_Initialize(&Global_Data);
-					xil_printf("Six-Step commutation is active\n");
+					uz_printf("Six-Step commutation is active\n");
 					break;
 				case halfBridgeControl:
 					Configure_HalfBridge_Control(&Global_Data);
 					PWM_SS_Initialize(&Global_Data);
-					xil_printf("Half Bridge control is active\n");
+					uz_printf("Half Bridge control is active\n");
 					break;
 				default:
-					xil_printf("No valid control method is active\n");
+					uz_printf("No valid control method is active\n");
 					break;
 			}
 			bNewControlMethodAvailable = false; //Reset the Flag in order to initialize the IP Cores and functions after a new control method arrives, only once!
@@ -276,17 +276,17 @@ void AXI2TCM_on(){
 //==============================================================================================================================================================
 void plotData(DS_Data* data){
 
-	xil_printf("Reference current in float: %f \r\n", data->rasv.referenceCurrent_iq );
+	uz_printf("Reference current in float: %f \r\n", data->rasv.referenceCurrent_iq );
 
-	xil_printf("ADC I_a: %f \r\n", data->av.I_U);
-	xil_printf("ADC I_b: %f \r\n", data->av.I_V);
-	xil_printf("ADC I_c: %f \r\n", data->av.I_W);
+	uz_printf("ADC I_a: %f \r\n", data->av.I_U);
+	uz_printf("ADC I_b: %f \r\n", data->av.I_V);
+	uz_printf("ADC I_c: %f \r\n", data->av.I_W);
 
 	//Output encoder values
-	xil_printf("Speed in rpm: %f \r\n", data->av.mechanicalRotorSpeed);
-	xil_printf("theta_el: %f \r\n", data->av.theta_elec);
-	xil_printf("theta_mech: %f \r\n", data->av.theta_mech);
-	xil_printf("Actual DutyCycle: %d \r\n", (int16_t)(data->rasv.sixStepCommutationDutyCycle*100.0));
+	uz_printf("Speed in rpm: %f \r\n", data->av.mechanicalRotorSpeed);
+	uz_printf("theta_el: %f \r\n", data->av.theta_elec);
+	uz_printf("theta_mech: %f \r\n", data->av.theta_mech);
+	uz_printf("Actual DutyCycle: %d \r\n", (int16_t)(data->rasv.sixStepCommutationDutyCycle*100.0));
 
 	bPlotData	= false; // print only once
 }

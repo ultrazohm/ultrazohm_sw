@@ -2,17 +2,14 @@
 How to docs
 ===========
 
-Toolchain
-*********
+To build and edit the documentation you need:
 
-.. _python_install1:
+* Python
+* Pip
+* Install the ``requirements.txt`` in /docs
+* Build the docmentation by invoking ``make html``
 
-.. figure:: img/python_01_path.png
+Video
+=====
 
-  Mark the checkbox for **path** and install recommended. 
-
-.. _python_install2:
-
-.. figure:: img/python_02.png
-
-  Mark the checkbox for **path** and install recommended. 
+.. youtube:: dxAlD-VzE0c

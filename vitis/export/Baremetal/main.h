@@ -35,7 +35,6 @@
 #include "include/isr.h"
 #include "include/adc.h"
 #include "include/encoder.h"
-#include "include/gpio.h"
 #include "include/gpio_axi.h"
 #include "include/pwm.h"
 #include "include/javascope.h"

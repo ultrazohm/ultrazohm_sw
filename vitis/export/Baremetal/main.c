@@ -92,12 +92,6 @@ int main (void){
    	//Initialize the Soft-Oscilloscope ("JavaScope")
 	JavaScope_initalize(&Global_Data);
 
-	//Initial state of all front panel LEDs is off
-	WritePin_PS_GPIO(LED_1,false); //Write a GPIO for LED_1
-	WritePin_PS_GPIO(LED_2,false); //Write a GPIO for LED_2
-	WritePin_PS_GPIO(LED_3,false); //Write a GPIO for LED_3
-	WritePin_PS_GPIO(LED_4,false); //Write a GPIO for LED_4
-
 	// Initialize the Interrupts
 	Initialize_ISR();
 
@@ -261,8 +255,7 @@ void ErrorReset(DS_Data* data){
 		data->ew.pwmFrequencyError = false;  //Reset pwm Frequency Error
 		data->er.pwmFrequencyError = false;	//Reset flag
 	}
-
-	WritePin_PS_GPIO(LED_error,false); //Write a GPIO for LED_3
+	uz_SetLedErrorOff();
 
 }
 

@@ -13,4 +13,3 @@ In this section tutorials on how to use the system are gathered.
 	encoder/encoder
 	gate_signals/gate_signals
 	adc_loopback/adc_loopback
-	howToDocs/howToDocs

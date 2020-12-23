@@ -49,9 +49,6 @@ float 	ADC_RAW_Offset_1 = 0.0;
 int 		i_CountADCinit =0, MessOnce=0, CountCurrentError =0;
 _Bool     initADCdone = false;
 
-// Initialize the  GPIO structure
-extern XGpio Gpio_OUT;	/* GPIO Device driver instance for the real GPIOs */
-
 //Initialize the Interrupt structure
 XScuGic INTCInst;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -59,9 +56,6 @@ XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible 
 //Initialize the Timer structure
 XTmrCtr TMR_Con_Inst;
 
-//Variables for JavaScope
-extern Oszi_to_ARM_Data_shared_struct ControlData; //Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare; //Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
 float sin1amp=100.0;
 
 //Global variable structure

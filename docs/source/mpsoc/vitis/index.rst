@@ -11,5 +11,6 @@ Vitis
 	include_math_lib
 	interrupts
 	gcc_optimization
+	hardwareAbstractionLayer/hardwareAbstractionLayer
 	known_issues
 	ErrorHandling

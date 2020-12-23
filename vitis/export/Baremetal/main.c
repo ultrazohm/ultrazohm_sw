@@ -62,9 +62,7 @@ int main (void){
 	// Initialize the GPIOs which are connected over FPGA pins
 	Initialize_AXI_GPIO();
 
-	// Initialize pushbuttons and GPIO
-	//Initialize_GPIO();
-	uz_mio_gpio_init();
+	uz_mio_gpio_init(); // Initialize pushbuttons and GPIO
 
 	// Initialize ADCs
 	// Conversion Factor of 10, because the full input range of the ADC is +-5V = 10V range

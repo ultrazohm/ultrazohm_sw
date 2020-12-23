@@ -122,3 +122,16 @@ Mermaid figures are directly inserted into the docs and **searchable**!
   graph TD
   A[Text]
   A --> B[More text]
+
+
+Tables
+^^^^^^
+
+For most information, using a csv table is preferred:
+
+.. code-block:: rst
+
+    .. csv-table:: table
+    :file: path_to_table/table.csv
+    :widths: 50 50 50
+    :header-rows: 1

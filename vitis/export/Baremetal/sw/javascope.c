@@ -40,7 +40,6 @@ float zerovalue = 0.0;
 uint32_t  i_fetchDataLifeCheck=0;
 
 //Initialize the Interrupt structure
-extern XScuGic INTCInst;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts!
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 // external global variables from isr.c

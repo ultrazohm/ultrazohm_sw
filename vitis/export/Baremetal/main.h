@@ -49,8 +49,6 @@
 
 #include "uz/uz_MioGpio_mediator/uz_MioGpio_mediator.h"
 #include "uz/uz_MioGpio_mediator/uz_MioGpioMapping.h"
-/* Definitions */
-#define LED_DELAY 10000000							/* Software delay length */
 
 //ADC define
 #define TX_BUFFER_SIZE						1
@@ -58,15 +56,6 @@
 //Defines for averaging the current from the ADC
 #define  CURRENT_BUF_SIZE 					6
 #define  CURRENT_BUF_SIZE_INVERS 			1/CURRENT_BUF_SIZE
-
-//ADC define
-#define XAdcPL_RAWToCurrent_6A			0.0036747685 //Faktor 12 Bit vergleiche Excel: "Auslegung Stromsensoren LEM"
-
-//Frequencies in the system
-#define FPGA_100MHz		100000000.0f		//Clock frequency
-#define FPGA_50MHz		50000000.0f			//Clock frequency
-#define FPGA_20MHz		20000000.0f			//Clock frequency
-#define FPGA_10MHz		10000000.0f			//Clock frequency
 
 // ========== JavaScope-Ethernet =========================================================================
 //Defines for JavaScope (4 or 2 channels)

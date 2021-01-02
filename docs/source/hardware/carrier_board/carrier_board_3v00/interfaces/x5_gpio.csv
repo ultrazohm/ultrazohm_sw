@@ -1,0 +1,4 @@
+Pin on X5, Signal, Function, Direction, Specification
+55, PL_ANL_GPIO_01, general purpose I/O from FPGA, input/output, 3.3 V / 10 mA
+56, PS_ANL_GPIO_01, general purpose I/O from processing system, input/output, 3.3 V / 10 mA
+59, PS_ANL_GPIO_02, general purpose I/O from processing system, input/output, 3.3 V / 10 mA

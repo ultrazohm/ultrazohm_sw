@@ -1,0 +1,5 @@
+Pin on X6, Signal, Function, Direction, Specification
+83, CPLD_DigIn_01, general purpose input from CPLD, input, 3.3 V / 8 mA
+84, CPLD_DigOut_01, general purpose output from CPLD, output, 3.3 V / 8 mA
+85, CPLD_DigIn_02, general purpose input from CPLD, input, 3.3 V / 8 mA
+86, CPLD_DigOut_02, general purpose output from CPLD, output, 3.3 V / 8 mA

@@ -1,0 +1,13 @@
+Pin on X2, Signal, Function, Direction
+1, CPLD TDI, TDI connection from programmer, output
+2, CPLD_TDI1, TDI from CPLD 1, input
+3, CPLD_TDO1, TDO from CPLD 1, output
+4, CPLD_TDI2, TDI from CPLD 2, input
+5, CPLD_TDO2, TDO from CPLD 2, output
+6, CPLD_TDI3, TDI from CPLD 3, input
+7, CPLD_TDO3, TDO from CPLD 3, output
+8, CPLD_TDI4, TDI from CPLD 4, input
+9, CPLD_TDO4, TDO from CPLD 4, output
+10, CPLD_TDI5, TDI from CPLD 5, input
+11, CPLD_TDO5, TDO from CPLD 5, output
+12, CPLD TDO, TDO connection to programmer, input

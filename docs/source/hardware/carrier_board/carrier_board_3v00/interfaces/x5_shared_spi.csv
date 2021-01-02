@@ -1,0 +1,4 @@
+Pin on X5, Signal, Function, Direction, Specification
+47, SPI_shared_MOSI, master out slave in, output, 3.3 V / 12 mA
+48, SPI_shared_CLK, clock, output, 3.3 V / 12 mA
+53, SPI_shared_CS, chip select, output, 3.3 V / 12 mA

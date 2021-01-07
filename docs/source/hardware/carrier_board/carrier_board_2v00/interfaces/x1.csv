@@ -1,0 +1,13 @@
+Pin on X1, Signal, Function, Direction
+1, GND, Ground,
+2, GND, Ground,
+3, A, not connected,
+4, C, CPLD TCK (clock line), input
+5, 3.3 V, connected with 3V3_PER, output
+6, VIO, connected with 3V3_PER, output
+7, B, not connected,
+8, D, CPLD TDO (serial data out), output
+9, E, not connected,
+10, F, CPLD TDI (serial data in), input
+11, G, not connected,
+12, H, CPLD TMS (mode select), input

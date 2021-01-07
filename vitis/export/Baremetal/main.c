@@ -35,17 +35,24 @@ Xboolean bNewControlMethodAvailable = valueFalse;
 
 DS_Data Global_Data;
 
-extern XGpioPs Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
+extern XGpio Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
 
-//ARM_to_Oszi_Data_shared_struct OsziData __attribute__((section(".sharedRAM_Oszidata"))); //Data from A9_0 to A9_1 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
-//Oszi_to_ARM_Data_shared_struct ControlData __attribute__((section(".sharedRAM_Controldata"))); //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-ARM_to_Oszi_Data_shared_struct OsziData; //Data from A9_0 to A9_1 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
-Oszi_to_ARM_Data_shared_struct ControlData; //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-Oszi_to_ARM_Data_shared_struct ControlDataShadowBare; //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
+//Data from R5_0 to A53_0 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
+ARM_to_Oszi_Data_shared_struct OsziData;
+
+//Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
+Oszi_to_ARM_Data_shared_struct ControlData;
+Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
+
 
 int main (void){
 
 	int status;
+
+	//Output to the Terminal over UART to the COM-Port. Use e.g. "Tera Term" to listen with baud-rate 115200
+	xil_printf("\r\n\r\n");
+	xil_printf("Welcome to the UltraZohm\r\n");
+	xil_printf("----------------------------------------\r\n");
 
 	// Initialize the global "Global_Data" structure -> the values can be overwritten afterwards from the Java-GUI -> this must be the first INIT-function, because it is required subsequently!
 	InitializeDataStructure(&Global_Data);
@@ -83,27 +90,22 @@ int main (void){
 	Initialize_ARMController(&Global_Data);
 
    	//Initialize the Soft-Oscilloscope ("JavaScope")
-	JavaScope_initalize();
-
-	// Initialize the Interrupts
-	Initialize_ISR();
-
-	//Output to the Terminal over UART to the COM-Port. Use e.g. "Tera Term" to listen with baud-rate 115200
-	xil_printf("\r\n\r\n");
-	xil_printf("Welcome to the UltraZohm\r\n");
-	xil_printf("----------------------------------------\r\n");
-
-	//Set the current value in the ADC as offset/default value
-	ADC_Set_Offset();
-
-	// Turn on AXI2TCM communication
-	AXI2TCM_on();
+	JavaScope_initalize(&Global_Data);
 
 	//Initial state of all front panel LEDs is off
 	WritePin_PS_GPIO(LED_1,valueFalse); //Write a GPIO for LED_1
 	WritePin_PS_GPIO(LED_2,valueFalse); //Write a GPIO for LED_2
 	WritePin_PS_GPIO(LED_3,valueFalse); //Write a GPIO for LED_3
 	WritePin_PS_GPIO(LED_4,valueFalse); //Write a GPIO for LED_4
+
+	// Initialize the Interrupts
+	Initialize_ISR();
+
+	//Set the current value in the ADC as offset/default value
+	ADC_Set_Offset();
+
+	// Turn on AXI2TCM communication
+	AXI2TCM_on();
 
 	// Infinite loop
 	while (1){

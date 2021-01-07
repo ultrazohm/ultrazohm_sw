@@ -1,0 +1,3 @@
+Pin on X5, Signal, Function, Direction, Specification
+79, PILOT_OUT, pilot line out, output, 3.3 V / hi-Z
+80, PILOT_IN, pilot line in, input, 3.3 V / hi-Z

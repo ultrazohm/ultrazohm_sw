@@ -121,7 +121,7 @@ SW3 - Power Mode Second Part
      - EN_LPD
      - EN_PL
      - EN_FPD
-   * - Power Enabledc
+   * - Power Enabled
      - ``OFF``
      - ``OFF``
      - ``OFF``
@@ -136,17 +136,12 @@ SW3 - Power Mode Second Part
 Default adjustments for the UltraZohm
 -------------------------------------
 
-.. image:: switches_jumpers/switches1.jpg
+.. image:: pictures/switches1.jpg
 
 
-See also
+See also:
+
 * `Xilinx UG1085 TRM for Zynq UltraScale + - Section on boot mode <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G13.371926>`_
-"""""""""""""""
 * `Trenz Wiki Boot Mode Selection in Table 9 <https://wiki.trenz-electronic.de/display/PD/TE0808+TRM#TE0808TRM-BootProcess>`_
 
-
-Checked by
-""""""""""
-
-Sebastian Wendel (THN) in 02/2020
 

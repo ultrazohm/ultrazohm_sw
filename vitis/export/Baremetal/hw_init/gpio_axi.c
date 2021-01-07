@@ -10,14 +10,11 @@
 ******************************************************************************/
 
 #include "../include/gpio_axi.h"
+#include "xgpio.h"
 #include "../defines.h"
 
-
 // Initialize the  GPIO structure
-//XGpio Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
-
-// Initialize the  GPIO structure
-XGpioPs Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
+XGpio Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
 
 //----------------------------------------------------
 // INITIALIZE & SET DIRECTIONS OF GPIOs that are instanced on the FPGA

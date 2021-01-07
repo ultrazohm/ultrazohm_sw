@@ -27,23 +27,17 @@
 #define CAN_ACTIVE 0 // (1 = CAN is active)  and (0 = CAN is inactive)
 #include "include/can.h"
 
-//Includes for processor GPIOs
-#define GPIO_ACTIVE 1 // (1 = GPIO is active)  and (0 = GPIO is inactive)
-
 //Includes from own files
 #include "main.h"
 #include "defines.h"
+#include "include/isr.h"
 
-Xboolean VarTest = 0;
+//Data from R5_0 to A53_0 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
+ARM_to_Oszi_Data_shared_struct OsziData;
+ARM_to_Oszi_Data_shared_struct OsziData_Shadow;
 
-
-
-XGpio Gpio_OUT;		/* GPIO Device driver instance for the real GPIOs */
-
-//ARM_to_Oszi_Data_shared_struct OsziData __attribute__((section(".sharedRAM_Oszidata"))); //Data from A9_0 to A9_1 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
-//Oszi_to_ARM_Data_shared_struct ControlData __attribute__((section(".sharedRAM_Controldata"))); //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-ARM_to_Oszi_Data_shared_struct OsziData; //Data from A9_0 to A9_1 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
-Oszi_to_ARM_Data_shared_struct ControlData; //Data from A9_1 to A9_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
+//Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
+Oszi_to_ARM_Data_shared_struct ControlData;
 
 Xint16 i_LifeCheck, i_LifeCheck_mainThreat, i_LifeCheck_networkThreat, i_LifeCheck_IPC_Threat, i_LifeCheck_canThreat;
 
@@ -123,16 +117,6 @@ void network_thread(void *p)
 {
 	// Initialize the Interrupts
 	Initialize_ISR();
-
-	// Initialize the GPIOs which are connected over FPGA pins
-	Initialize_AXI_GPIO();
-
-	// Initialize the GPIOs which are connected over processor pins (MIO pins)
-	#if GPIO_ACTIVE==1
-		xil_printf(" Init GPIO \n\r"); //GPIO interface
-		Initialize_PS_GPIO(XPAR_PSU_GPIO_0_BASEADDR, XPAR_PSU_GPIO_0_DEVICE_ID); //GPIO 0 interface
-
-	#endif
 
     struct netif *netif;
     /* the mac address of the board. this should be unique per board */

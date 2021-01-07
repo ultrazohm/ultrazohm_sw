@@ -13,6 +13,7 @@
 #define ISR_H_
 
 #include "../main.h"
+#include "xgpio.h"
 //Defines for the Interrupt fixed by hand from Vivado Block Design. 
 //signals are concatenated in this order forming an 8 bit interrupt vector. 
 // Shared Peripheral Interrupts: PL->PS

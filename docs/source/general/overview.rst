@@ -7,14 +7,23 @@ System Overview
 * The UltraZohm is work in progress
 * Funded by `BMBF-Project KI-Power <https://www.elektronikforschung.de/projekte/ki-power>`_
 
+.. _UltraZohmFront:
+
+.. figure:: front_lowres.png
+   :width: 400px
+   :align: center
+
+   Front of the UltraZohm.
+
 Requirements of the UltraZohm
 *****************************
 
 Development goals
 -----------------
 
-Computation power
- The usage of more complex control algorithms based on model predictive control and/or artificial intelligence as well as the increased useage of wide-band gap power electronics require a real-time computation unit with sufficient computational power.
+Computational power
+ The usage of more complex control algorithms based on model predictive control and/or artificial intelligence as well as the increased useage of wide-band gap power electronics require a real-time computation unit with
+ sufficient computational power.
  This computational power is be provided by the UltraZohm.
  A heterogenous SoC is used due to the diverse requirements of different applications and control algorithms.
  The UltraZohm project uses the `Xilinx Zynq UltraScale+ MPSoC <https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html>`_ on a SoM by `Trenz Electronics <https://shop.trenz-electronic.de/de/Produkte/Trenz-Electronic/TE08XX-Zynq-UltraScale/TE0808-Zynq-UltraScale/>`_.
@@ -28,8 +37,16 @@ Hard real-time
 Modularity
  The UltraZohm is modular in terms of software and hardware.
  The system can be used with different devices within the UltraScale MPSoC family.
- Adaptercards are used as a flexible interface for analoge and digital signals such as ADC's and gate signals for power electronics.
+ Adapter cards are used as a flexible interface for analoge and digital signals such as ADC's and gate signals for power electronics.
  Software modularity is achieved by using encapsulated design patterns combined with IP-Cores on the FPGA.
+
+Usability
+ We aim to create a system with a high usability.
+ The UltraZohm is **novice friendly** since there are a lot of different tutorials, existing IP-Cores and adapter cards that are used by the community.
+ Therefore, a new user does not have to start from scratch.
+ The UltraZohm is **expert friendly** since there are **no black boxes** in the system.
+ Due to project being open source, every user can investigate every line of code, every IP-Core and the complete signal chain in the schematics.
+ Furthermore, **everybody** is encouraged to :ref:`contribute <contribution>` to the UltraZohm and improve the system!
 
 Requirements
 ------------

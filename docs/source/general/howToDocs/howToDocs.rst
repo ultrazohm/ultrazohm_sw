@@ -27,8 +27,13 @@ To build and edit the documentation you need to:
 Video
 *****
 
+This video shows how to install python, the requirements and build the documentation.
+
 .. youtube:: dxAlD-VzE0c
 
+This video shows how to change something in the documentation, add a new page, commit the changes and create a pull request in bitbucket.
+
+.. youtube:: pcG1XMzVDc8
 
 Write the docs
 ==============

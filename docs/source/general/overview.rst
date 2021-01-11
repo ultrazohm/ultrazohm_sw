@@ -55,7 +55,7 @@ The following requirements are derived from the development goals of the UltraZo
 
 .. csv-table:: table
     :file: requirements.csv
-    :widths: 10 10 10 10 10
+    :widths: 10 10 10 10
     :header-rows: 1
 
 

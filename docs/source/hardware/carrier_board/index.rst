@@ -1,6 +1,6 @@
-=============
+==================
 Carrier Board
-=============
+==================
 
 
 ..	toctree::
@@ -8,6 +8,8 @@ Carrier Board
 
 	overview
 	switches_jumpers
-	interfaces
-	arm_pins
+	carrier_board_2v00/index
+	carrier_board_3v00/index
 	known_issues
+
+

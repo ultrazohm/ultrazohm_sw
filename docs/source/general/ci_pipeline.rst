@@ -7,6 +7,7 @@ The UltraZohm-Project uses two different build pipelines to test the builds of t
     * Bitbucket test & deploy pipeline for docs
     * Drone test pipeline for Vivado and Vitis
 
+.. _CI bitbucketPipeline:
 
 Bitbucket pipeline (docs)
 -------------------------

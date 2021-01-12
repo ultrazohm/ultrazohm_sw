@@ -1,0 +1,13 @@
+Pin on X8, Signal, Function, Direction, Specification
+1, GND, Ground, ,
+2, GND, Ground, ,
+3, PS_UART0_TX, UART transmit, output, xx V / xx mA
+4, TCK, JTAG clock, input, xx V / xx mA
+5, 3V3_PER, power supply of programmer (not assembled by default), output, 3.3V / 100 mA
+6, PS_1V8, power supply of processing system, output, 1.8 V / xx mA
+7, PS_UART0_RX, UART receive, input, xx V / xx mA
+8, TDO, JTAG data out, output, xx V / xx mA
+9, not connected, , ,
+10, TDI, JTAG data in, input, xx V / xx mA
+11, MR, , , xx V / xx mA
+12, TMS, JTAG mode select, input, xx V / xx mA

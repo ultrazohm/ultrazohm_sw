@@ -1,5 +1,0 @@
-Pin X7, Name, Specification
-1, 5V_isoCAN, Isolated 5.0V voltage supply 0.0 A (??)
-2, CAN_H,
-3, CAN_L,
-4, GND_isoCAN, Isolated GND

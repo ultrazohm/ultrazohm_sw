@@ -3,11 +3,14 @@ How to docs
 ===========
 
 The documentation for the UltraZohm uses `sphinx <https://www.sphinx-doc.org>`_.
-Sphinx uses reStructuredText as a markup language.
-Useful links for more information:
+Sphinx creates the documentation pages in html based on text files.
+These text files use `reStructuredText <https://rest-sphinx-memo.readthedocs.io/en/latest/ReST.html>`_ (RST) as a markup language.
+Sphinx takes the different RST files and builds them to the docs page.
+The documentation is hosted on a web server, the build and deployment is handled by a :ref:`build pipeline <CI bitbucketPipeline>`.
 
-* `reStructuredText <https://rest-sphinx-memo.readthedocs.io/en/latest/ReST.html>`_
-* `Example usage from Anaconda <https://docs.anaconda.com/restructuredtext/detailed/>`_ 
+.. note :: The online version on docs.ultrazohm.com is always the documentation for the **main** branch.
+           If you build the documentation locally, you build the documentation for the specific branch!
+           Building the documentation locally is also useful for writing the documentation and getting a preview of the changes.
 
 Install
 =======
@@ -21,18 +24,23 @@ To build and edit the documentation you need to:
 * You can open the docs in ``/docs/build/html/index.html``
 * You can edit the documentation by using a text editor of your choice
 
-.. note :: The online version on docs.ultrazohm.com is always the documentation for the **main** branch. If you build the documentation locally, you build the documentation for the specific branch!
-
 Video
 *****
 
+This video shows how to install python, the requirements and build the documentation.
+
 .. youtube:: dxAlD-VzE0c
 
+This video shows how to change something in the documentation, add a new page, commit the changes and create a pull request in bitbucket.
+
+.. youtube:: pcG1XMzVDc8
 
 Write the docs
 ==============
 
 See `write the docs <https://www.writethedocs.org/guide/>`_ as a great resource on how to write documentation.
+A good cheatsheet is located here: * `Example usage from Anaconda <https://docs.anaconda.com/restructuredtext/detailed/>`_ 
+
 
 Style
 *****

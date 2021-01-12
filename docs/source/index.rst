@@ -25,6 +25,8 @@ Documentation of the UltraZohm
     general/tcl_scripts
     general/ci_pipeline
     general/howToDocs/howToDocs
+    general/altium_db_lib/altium_DB_lib
+    general/useCases/useCases
 
 .. toctree::
     :maxdepth: 2

@@ -1,0 +1,57 @@
+Cell name,Value,Explanation,Must be filled
+PartID,Automatically added,,
+Created On,Automatically added,,
+Comment,Value,,
+ComponentLink1Description,datasheet,Homepage/ Datasheet,x
+ComponentLink1URL,https://www.mouser.de/datasheet/2/281/c03e-516224.pdf,URL Link to homepage or datasheet,x
+ComponentLink2Description,,"See ""ComponentLink1Description""",
+ComponentLink2URL,,"See ""ComponentLink1URL""",
+ComponentLink3Description,,"See ""ComponentLink1Description""",
+ComponentLink3URL,,"See ""ComponentLink1URL""",
+ComponentLink4Description,,"See ""ComponentLink1Description""",
+ComponentLink4URL,,"See ""ComponentLink1URL""",
+ComponentLink5Description,,"See ""ComponentLink1Description""",
+ComponentLink5URL,,"See ""ComponentLink1URL""",
+ComponentLink6Description,,"See ""ComponentLink1Description""",
+ComponentLink6URL,,"See ""ComponentLink1URL""",
+Component Type,,Type of the component,x
+Description,,A descritption make the usage of the component easier to the designer,x
+Device Package,603,0603/ 0805…,
+Footprint Path,footprints/Capacitor - Chip/PCB - CAPACITOR - CHIP - CAPC_0603.PCBLIB,Path were the footprint is saved,x
+Footprint Path 2,,"See ""Footprint Path""",
+Footprint Path 3,,"See ""Footprint Path""",
+Footprint Ref,C_0603,Name in the Altium Library,x
+Footprint Ref 2,,"See ""Footprint Ref""",
+Footprint Ref 3,,"See ""Footprint Ref""",
+Last Updated,Automatically added,Last Updated,
+Manufacturer,muRata,Manufacturer,x
+Manufacturer Part Number,GCJ188R71H103KA01D,Manufacturer Part Number,x
+Minimum Order,,Minimum Order,
+Mounting Type,SMD,SMD/ THT,
+Operating Temperature,-55 - 125°C,Operating Temperature,
+Series,GCJ,Series,
+Supplier 1,Mouser,Supplier,x
+Supplier Part Number 1,81-GCJ188R71H103KA1D,Supplier part number,x
+Supplier 2,,Supplier,
+Supplier Part Number 2,,Supplier part number,
+Supplier 3,,Supplier,
+Supplier Part Number 3,,Supplier part number,
+Supplier 4,,Supplier,
+Supplier Part Number 4,,Supplier part number,
+Supplier 5,,Supplier,
+Supplier Part Number 5,,Supplier part number,
+Supplier 6,,Supplier,
+Supplier Part Number 6,,Supplier part number,
+Library Path,symbols/Passives/SCH - PASSIVES - CAPACITOR.SCHLIB,Path were the schematic symbol is saved,x
+Library Ref,Capacitor,Name in Altium schematic library,x
+Type,Capacitor,Type,x
+Tolerance,10%,Tolerance,
+Voltage Rating,50 VDC,Voltage Rating,
+Value,0.01 µF,Value,x
+Created from,MGremer,Designer,
+Verified by,,Verfikator,
+Live Cycle Status,1,1: new design,x
+,,2: verified,
+,,3: in use,
+JLC CPL,,JLC CPL component description for ordering and commissioning the PCB by JLC,
+Stock number,Labor SMD Container,Were the component is stored,

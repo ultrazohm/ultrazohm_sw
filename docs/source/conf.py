@@ -18,8 +18,8 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'UltraZohm'
-copyright = '2020, Thilo Wendt, Sebastian Wendel, Tobias Schindler'
-author = 'Thilo Wendt, Sebastian Wendel, Tobias Schindler'
+copyright = ''
+author = 'UltraZohm community'
 
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'

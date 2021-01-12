@@ -9,7 +9,7 @@
  *
  * Model version                  : 1.22
  * Simulink Coder version         : 9.4 (R2020b) 29-Jul-2020
- * C/C++ source code generated on : Wed Dec 16 15:14:56 2020
+ * C/C++ source code generated on : Tue Jan 12 13:23:04 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -31,15 +31,6 @@
 /* Model Code Variants */
 
 /* Macros for accessing real-time model data structure */
-#ifndef rtmGetRootDWork
-#define rtmGetRootDWork(rtm)           ((rtm)->dwork)
-#endif
-
-#ifndef rtmSetRootDWork
-#define rtmSetRootDWork(rtm, val)      ((rtm)->dwork = (val))
-#endif
-
-#define uz_codegen0_M                  (rtM)
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM RT_MODEL;
@@ -70,12 +61,14 @@ typedef struct {
 
 /* Real-time Model Data Structure */
 struct tag_RTM {
+  ExtU *inputs;
+  ExtY *outputs;
   DW *dwork;
 };
 
 /* Model entry point functions */
-extern void uz_codegen0_initialize(RT_MODEL *const rtM, ExtU *rtU, ExtY *rtY);
-extern void uz_codegen0_step(RT_MODEL *const rtM, ExtU *rtU, ExtY *rtY);
+extern void uz_codegen0_initialize(RT_MODEL *const rtM);
+extern void uz_codegen0_step(RT_MODEL *const rtM);
 
 /*-
  * The generated code includes comments that allow you to trace directly

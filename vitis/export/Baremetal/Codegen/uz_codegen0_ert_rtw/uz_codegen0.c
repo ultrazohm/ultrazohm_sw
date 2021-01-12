@@ -9,7 +9,7 @@
  *
  * Model version                  : 1.22
  * Simulink Coder version         : 9.4 (R2020b) 29-Jul-2020
- * C/C++ source code generated on : Wed Dec 16 15:14:56 2020
+ * C/C++ source code generated on : Tue Jan 12 13:23:04 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -22,9 +22,11 @@
 #include "uz_codegen0.h"
 
 /* Model step function */
-void uz_codegen0_step(RT_MODEL *const rtM, ExtU *rtU, ExtY *rtY)
+void uz_codegen0_step(RT_MODEL *const rtM)
 {
   DW *rtDW = rtM->dwork;
+  ExtU *rtU = (ExtU *) rtM->inputs;
+  ExtY *rtY = (ExtY *) rtM->outputs;
   real32_T rtb_Sum;
 
   /* Sum: '<S1>/Sum' incorporates:
@@ -116,9 +118,11 @@ void uz_codegen0_step(RT_MODEL *const rtM, ExtU *rtU, ExtY *rtY)
 }
 
 /* Model initialize function */
-void uz_codegen0_initialize(RT_MODEL *const rtM, ExtU *rtU, ExtY *rtY)
+void uz_codegen0_initialize(RT_MODEL *const rtM)
 {
   DW *rtDW = rtM->dwork;
+  ExtU *rtU = (ExtU *) rtM->inputs;
+  ExtY *rtY = (ExtY *) rtM->outputs;
 
   /* Registration code */
 

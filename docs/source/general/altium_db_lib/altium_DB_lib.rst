@@ -36,80 +36,90 @@ Server access setup
 .. _20_ODBC_sources_1:
 
    .. figure:: img/20_ODBC_sources_1.png
-   
-        OBDC - open App.
+      :width: 300px
+
+      OBDC - open App.
 
 2. ``Add`` a new User-DSN
 
 .. _21_ODBC_sources_2:
 
    .. figure:: img/21_ODBC_sources_2.png
-   
-        OBDC - add user-DSN.
+      :width: 300px
+
+      OBDC - add user-DSN.
 
 3. Select the MariaDB ODBC 3.1 Driver
 
 .. _22_ODBC_sources_3:
 
    .. figure:: img/22_ODBC_sources_3.png
-   
-        OBDC - select MariaDB.
+      :width: 300px
+
+      OBDC - select MariaDB.
 
 4. Create a new data source to MariaDB
 
 .. _23_ODBC_sources_4:
 
    .. figure:: img/23_ODBC_sources_4.png
-   
-        OBDC - create new data source.
+      :width: 300px
+
+      OBDC - create new data source.
 
 5. Connect it to the ultrazohm server
 
 .. _24_ODBC_sources_5:
 
    .. figure:: img/24_ODBC_sources_5.png
-   
-        OBDC - connection to ultrazohm server.
+      :width: 300px
+
+      OBDC - connection to ultrazohm server.
 
 6. Do nothing and press ``Next >``
 
 .. _25_ODBC_sources_6:
 
    .. figure:: img/25_ODBC_sources_6.png
-   
-        OBDC - skip.
+      :width: 300px
+
+      OBDC - skip.
 
 7. Do nothing and press ``Next >``
 
 .. _26_ODBC_sources_7:
 
    .. figure:: img/26_ODBC_sources_7.png
-   
-        OBDC - skip.
+      :width: 300px
+
+      OBDC - skip.
 
 8. Force to use TLS and go back for three times ``< Previous``
 
 .. _27_ODBC_sources_8:
 
    .. figure:: img/27_ODBC_sources_8.png
-   
-        OBDC - use TLS.
+      :width: 300px
+
+      OBDC - use TLS.
 
 9. Select the database "altium_library" and ``Test DSN``
 
 .. _28_ODBC_sources_9:
 
    .. figure:: img/28_ODBC_sources_9.png
-   
-        OBDC - select "altium_library".
+      :width: 300px
+
+      OBDC - select "altium_library".
 
 10. Finish the settings by pressing three times ``OK``
 
 .. _29_ODBC_sources_10:
 
    .. figure:: img/29_ODBC_sources_10.png
-   
-        OBDC - finish settings.
+      :width: 300px
+
+      OBDC - finish settings.
 
 
 Integration in Altium
@@ -121,8 +131,9 @@ Integration in Altium
 .. _30_Elsys_mariadb_lib:
 
    .. figure:: img/30_Elsys_mariadb_lib.png
-   
-        Altium - component libraries.
+      :width: 300px
+
+      Altium - component libraries.
 
 3. Click on the three horizontal lines and select the point ``File-based library Preferences``
 4. Select the register Installed
@@ -130,8 +141,9 @@ Integration in Altium
 .. _31_File_based_lib:
 
    .. figure:: img/31_File_based_lib.png
-   
-        Altium - installed libraries.
+      :width: 300px
+
+      Altium - installed libraries.
 
 5. Select ``Install…`` and navigate to the point where the BitBucket folder is cloned on the computer. Select the file "elsys_maria_db_lib.DbLib"
 6. ``Close`` this window
@@ -140,8 +152,9 @@ Integration in Altium
 .. _32_Elsys_mariadb_lib_example:
 
    .. figure:: img/32_Elsys_mariadb_lib_example.png
-   
-        Altium - different component tables.
+      :width: 300px
+
+      Altium - different component tables.
 
 8. Now you can use all already existing components from the databased library
 
@@ -160,24 +173,27 @@ To be able to add a new component to the database (MariaDB) as easily as possibl
 .. _35_DBeaver_1:
 
    .. figure:: img/35_DBeaver_1.png
-   
-        DBeaver - select mariaDB.
+      :width: 300px
+
+      DBeaver - select mariaDB.
 
 4. Connect it to the ultrazohm server
 
 .. _36_DBeaver_2:
 
    .. figure:: img/36_DBeaver_2.png
-   
-        DBeaver - general settings.
+      :width: 300px
+
+      DBeaver - general settings.
 
 5. Download the MariaDB driver, which is recommended
 
 .. _37_DBeaver_3:
 
    .. figure:: img/37_DBeaver_3.png
-   
-        DBeaver - driver settings - 1.
+      :width: 300px
+
+      DBeaver - driver settings - 1.
 
 6. These settings must be selected automatically after the download of MariaDB. 
 Before clicking ``Finish`` the settings of SSL must be done.
@@ -185,16 +201,18 @@ Before clicking ``Finish`` the settings of SSL must be done.
 .. _38_DBeaver_4:
 
    .. figure:: img/38_DBeaver_4.png
-   
-        DBeaver - driver settings - 2.
+      :width: 300px
+
+      DBeaver - driver settings - 2.
 
 7. Select use SSL and do not verify server certificate
 
 .. _39_DBeaver_5:
 
    .. figure:: img/39_DBeaver_5.png
-   
-        DBeaver - SSL settings.
+      :width: 300px
+
+      DBeaver - SSL settings.
 
 8. Now the connection to the ultrazohm MariaDB should be possible.
 
@@ -205,8 +223,9 @@ Before clicking ``Finish`` the settings of SSL must be done.
 .. _40_DBeaver_altium_lib:
 
    .. figure:: img/40_DBeaver_altium_lib.png
-   
-        DBeaver - table structure.
+      :width: 300px
+
+      DBeaver - table structure.
 
 **This step completes the one time setup.**
 
@@ -227,8 +246,9 @@ are each available separately (not in integrated libs or libraries with multiple
 .. _41_Explorer_SCH:
 
    .. figure:: img/41_Explorer_SCH.png
-   
-        Explorer - symbols.
+      :width: 300px
+
+      Explorer - symbols.
 		
 2. Regarding the name of the component: **SCH - Folder - Description.SCHLIB**
 
@@ -237,8 +257,9 @@ are each available separately (not in integrated libs or libraries with multiple
 .. _42_Explorer_PCB:
 
    .. figure:: img/42_Explorer_PCB.png
-   
-        Explorer - footprints.
+      :width: 300px
+
+      Explorer - footprints.
 		
 4. Regarding the name of the footprint: **PCB - Folder - Description.PCBLIB**
 
@@ -249,16 +270,18 @@ are each available separately (not in integrated libs or libraries with multiple
 .. _43_DBeaver_table:
 
    .. figure:: img/43_DBeaver_table.png
-   
-        DBeaver - choose the suitable table.
+      :width: 300px
+
+      DBeaver - choose the suitable table.
 
 7. A new register on the right side with the table will appear
 
 .. _44_DBeaver_Properteries:
 
    .. figure:: img/44_DBeaver_Properteries.png
-   
-        DBeaver - Editor will open on the right side.
+      :width: 300px
+
+      DBeaver - Editor will open on the right side.
 
 8. Mostly the "Properties" register will open at first. Change to the "Data" register. 
 An overview of all already added components will be shown there. (In this case no component is still existing in the table.)
@@ -266,8 +289,9 @@ An overview of all already added components will be shown there. (In this case n
 .. _45_DBeaver_Data:
 
    .. figure:: img/45_DBeaver_Data.png
-   
-        DBeaver - change to tab "data".
+      :width: 300px
+
+      DBeaver - change to tab "data".
 
 9. Press the ``add`` button and a new row highlighted in green while appear.
 
@@ -280,8 +304,9 @@ An overview of all already added components will be shown there. (In this case n
 .. _46_DBeaver_Data_Error:
 
    .. figure:: img/46_DBeaver_Data_Error.png
-   
-        DBeaver - error message.
+      :width: 300px
+
+      DBeaver - error message.
 
 Press ``OK`` and fill out the missing cell (in this example "ComponentLink1Description")
 
@@ -299,20 +324,23 @@ The table cells, which are here described in detail is from "Capacitors - SMD" t
 .. _47_Altium_Parameter1:
 
    .. figure:: img/47_Altium_Parameter1.png
-   
-        Altium - component information - 1.
+      :width: 300px
+
+      Altium - component information - 1.
 
 .. _48_Altium_Parameter2:
 
    .. figure:: img/48_Altium_Parameter2.png
-   
-        Altium - component information - 2.
+      :width: 300px
+
+      Altium - component information - 2.
 
 .. _49_Altium_Parameter3:
 
    .. figure:: img/49_Altium_Parameter3.png
-   
-        Altium - component information - 3.
+      :width: 300px
+
+      Altium - component information - 3.
 
 14. The component can now be used in the schematic by ``drag and drop`` or by selecting via right click ``place ...``
 15. If the added component is not visibile in the library, refresh via ``F5`` again
@@ -321,8 +349,9 @@ The table cells, which are here described in detail is from "Capacitors - SMD" t
 .. _50_Altium_database_include:
 
    .. figure:: img/50_Altium_database_include.png
-   
-        Altium - elsys_mariadb_lib.DbLib File.
+      :width: 300px
+
+      Altium - elsys_mariadb_lib.DbLib File.
 
 17. At the end of the adding process of a component don´t forget to commit and to push the new components for other users in BitBucket. 
 

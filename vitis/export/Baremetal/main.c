@@ -23,7 +23,7 @@
 #include "include/javascope.h"
 #include "include/control.h"
 #include "include/pwm_3L_driver.h"
-
+#include "Codegen/uz_codegen.h"
 
 //Initialize the global variables
 Xint16 i_LifeCheck;
@@ -92,6 +92,8 @@ int main (void){
    	//Initialize the Soft-Oscilloscope ("JavaScope")
 	JavaScope_initalize(&Global_Data);
 
+	// Init code gen model
+	uz_codegen_init();
 	//Initial state of all front panel LEDs is off
 	WritePin_PS_GPIO(LED_1,valueFalse); //Write a GPIO for LED_1
 	WritePin_PS_GPIO(LED_2,valueFalse); //Write a GPIO for LED_2

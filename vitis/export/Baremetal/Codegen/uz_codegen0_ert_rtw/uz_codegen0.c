@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 1.22
+ * Model version                  : 1.24
  * Simulink Coder version         : 9.4 (R2020b) 29-Jul-2020
- * C/C++ source code generated on : Tue Jan 12 13:23:04 2021
+ * C/C++ source code generated on : Thu Jan 14 12:30:51 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -77,6 +77,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/Sum1'
    */
   rtY->SumOut1 = rtU->Sum1;
+
+  /* Outport: '<Root>/timeFeedback' incorporates:
+   *  Inport: '<Root>/time'
+   */
+  rtY->timeFeedback = rtU->time;
 
   /* Update for DiscreteIntegrator: '<S1>/Discrete-Time Integrator' incorporates:
    *  Inport: '<Root>/reset_integrator'

@@ -34,6 +34,7 @@ Xfloat32 	time_ISR_total_us, time_ISR_max_us = 0;
 Xint32 		i_ISRLifeCheck = 0;
 Xfloat32 	f_ISRLifeCheck = 0;
 Xint32 		i_count_1ms = 0; // count up by 1 every 1ms
+float globalTime=0;
 Xint32 		i_count_1s = 0; // count up by 1 every 1s
 Xfloat32 	isr_period_us_measured;
 XTime 		tPrev, tNow = 0; // XTime is u64 which will not overflow in a life time
@@ -64,13 +65,12 @@ Xfloat32 sin1amp=100.0;
 //Global variable structure
 extern DS_Data Global_Data;
 
+
+#include "../Codegen/uz_codegen.h"
+extern RT_MODEL *const rtMPtr; /* Real-time model */
+
 // Variables for codegen
 
-static RT_MODEL rtM_;
-static RT_MODEL *const rtMPtr = &rtM_; /* Real-time model */
-static DW rtDW;                        /* Observable states */
-static ExtU rtU;                       /* External inputs */
-static ExtY rtY;                       /* External outputs */
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -177,11 +177,17 @@ void ISR_Control(void *data)
 	}
 
 
-	// Execute codegen model
-	RT_MODEL *const rtM = rtMPtr;
-	rtU.time=0.001*i_count_1ms;
-	uz_codegen0_step(rtM);
-	Global_Data.rasv.halfBridge1DutyCycle=rtY.sineOut;
+//	// Execute codegen model
+	globalTime=0.001*i_count_1ms;
+	uz_codegen_updateValues(globalTime);
+	uz_codegen_step();
+//	RT_MODEL *const rtM = rtMPtr;
+
+//	//rtU.time=0.001*i_count_1ms;
+//	uz_codegen0_step(rtM);
+//	uz_codegen_step();
+	//uz_codegen0_step(rtM, &rtU, &rtY);
+	//Global_Data.rasv.halfBridge1DutyCycle=rtM->outputs->sineOut;
 	// generate open-loop sinusoidal duty-cycle, amplitude and frequency are set in the Global_Data struct
 	// both function write the variable Global_Data.rasv.halfBridge1DutyCycle -> only comment 2L or 3L!
 	// PWM_SS_Calculate_DutyCycle_open_loop_sin(&Global_Data);
@@ -400,9 +406,7 @@ u32 Rpu_IpiInit(u16 DeviceId)
 
 	XIpiPsu_InterruptEnable(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
 
-	// Init code gen model
-	RT_MODEL *const rtM = rtMPtr;
-	uz_codegen0_initialize(rtM);
+
 
 	xil_printf("RPU: RPU_IpiInit: Done\r\n");
 	return XST_SUCCESS;

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 1.24
+ * Model version                  : 1.26
  * Simulink Coder version         : 9.4 (R2020b) 29-Jul-2020
- * C/C++ source code generated on : Thu Jan 14 12:30:51 2021
+ * C/C++ source code generated on : Thu Jan 14 15:55:30 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -31,6 +31,31 @@
 /* Model Code Variants */
 
 /* Macros for accessing real-time model data structure */
+#ifndef rtmGetRootDWork
+#define rtmGetRootDWork(rtm)           ((rtm)->dwork)
+#endif
+
+#ifndef rtmSetRootDWork
+#define rtmSetRootDWork(rtm, val)      ((rtm)->dwork = (val))
+#endif
+
+#ifndef rtmGetU
+#define rtmGetU(rtm)                   ((rtm)->inputs)
+#endif
+
+#ifndef rtmSetU
+#define rtmSetU(rtm, val)              ((rtm)->inputs = (val))
+#endif
+
+#ifndef rtmGetY
+#define rtmGetY(rtm)                   ((rtm)->outputs)
+#endif
+
+#ifndef rtmSetY
+#define rtmSetY(rtm, val)              ((rtm)->outputs = (val))
+#endif
+
+#define uz_codegen0_M                  (rtM)
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM RT_MODEL;
@@ -41,6 +66,14 @@ typedef struct {
   real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S1>/Discrete-Time Integrator1' */
   int8_T DiscreteTimeIntegrator_PrevRese;/* '<S1>/Discrete-Time Integrator' */
 } DW;
+
+/* Constant parameters (default storage) */
+typedef struct {
+  /* Expression: A
+   * Referenced by: '<S1>/Constant1'
+   */
+  real_T Constant1_Value[100];
+} ConstP;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
@@ -58,6 +91,7 @@ typedef struct {
   real32_T sineOut;                    /* '<Root>/sineOut' */
   real32_T SumOut1;                    /* '<Root>/SumOut1' */
   real32_T timeFeedback;               /* '<Root>/timeFeedback' */
+  real_T matrixOut[100];               /* '<Root>/matrixOut' */
 } ExtY;
 
 /* Real-time Model Data Structure */
@@ -66,6 +100,9 @@ struct tag_RTM {
   ExtY *outputs;
   DW *dwork;
 };
+
+/* Constant parameters (default storage) */
+extern const ConstP rtConstP;
 
 /* Model entry point functions */
 extern void uz_codegen0_initialize(RT_MODEL *const rtM);

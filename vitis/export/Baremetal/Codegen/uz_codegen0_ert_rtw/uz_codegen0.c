@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 1.24
+ * Model version                  : 1.26
  * Simulink Coder version         : 9.4 (R2020b) 29-Jul-2020
- * C/C++ source code generated on : Thu Jan 14 12:30:51 2021
+ * C/C++ source code generated on : Thu Jan 14 15:55:30 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -27,7 +27,10 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   DW *rtDW = rtM->dwork;
   ExtU *rtU = (ExtU *) rtM->inputs;
   ExtY *rtY = (ExtY *) rtM->outputs;
+  real_T rtb_Product1;
+  int32_T i;
   real32_T rtb_Sum;
+  real32_T rtb_Sum3;
 
   /* Sum: '<S1>/Sum' incorporates:
    *  Inport: '<Root>/Sum1'
@@ -35,11 +38,6 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/Sum4'
    */
   rtb_Sum = (rtU->Sum1 + rtU->Sum2) + rtU->Sum4;
-
-  /* Outport: '<Root>/SumOut' incorporates:
-   *  Gain: '<S1>/Gain'
-   */
-  rtY->SumOut = 5.0F * rtb_Sum;
 
   /* DiscreteIntegrator: '<S1>/Discrete-Time Integrator' incorporates:
    *  Inport: '<Root>/reset_integrator'
@@ -57,21 +55,39 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     }
   }
 
+  /* Sum: '<S1>/Sum3' incorporates:
+   *  Constant: '<S1>/Constant'
+   *  DiscreteIntegrator: '<S1>/Discrete-Time Integrator1'
+   *  Gain: '<S1>/Gain1'
+   *  Gain: '<S1>/Gain2'
+   *  Trigonometry: '<S1>/Trigonometric Function'
+   */
+  rtb_Sum3 = sinf(6.28318548F * rtDW->DiscreteTimeIntegrator1_DSTATE) * 0.5F +
+    0.5F;
+  for (i = 0; i < 100; i++) {
+    /* Product: '<S1>/Product1' incorporates:
+     *  Constant: '<S1>/Constant1'
+     */
+    rtb_Product1 = rtConstP.Constant1_Value[i] * rtb_Sum3;
+
+    /* Outport: '<Root>/matrixOut' incorporates:
+     *  Product: '<S1>/Product'
+     */
+    rtY->matrixOut[i] = rtb_Product1 * rtb_Product1;
+  }
+
+  /* Outport: '<Root>/sineOut' */
+  rtY->sineOut = rtb_Sum3;
+
   /* Outport: '<Root>/integrator' incorporates:
    *  DiscreteIntegrator: '<S1>/Discrete-Time Integrator'
    */
   rtY->integrator = rtDW->DiscreteTimeIntegrator_DSTATE;
 
-  /* Outport: '<Root>/sineOut' incorporates:
-   *  Constant: '<S1>/Constant'
-   *  DiscreteIntegrator: '<S1>/Discrete-Time Integrator1'
-   *  Gain: '<S1>/Gain1'
-   *  Gain: '<S1>/Gain2'
-   *  Sum: '<S1>/Sum3'
-   *  Trigonometry: '<S1>/Trigonometric Function'
+  /* Outport: '<Root>/SumOut' incorporates:
+   *  Gain: '<S1>/Gain'
    */
-  rtY->sineOut = sinf(6.28318548F * rtDW->DiscreteTimeIntegrator1_DSTATE) * 0.5F
-    + 0.5F;
+  rtY->SumOut = 5.0F * rtb_Sum;
 
   /* Outport: '<Root>/SumOut1' incorporates:
    *  Inport: '<Root>/Sum1'
@@ -111,15 +127,6 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/time'
    */
   rtDW->DiscreteTimeIntegrator1_DSTATE += 0.0001F * rtU->time;
-  if (rtDW->DiscreteTimeIntegrator1_DSTATE >= 500.0F) {
-    rtDW->DiscreteTimeIntegrator1_DSTATE = 500.0F;
-  } else {
-    if (rtDW->DiscreteTimeIntegrator1_DSTATE <= -100.0F) {
-      rtDW->DiscreteTimeIntegrator1_DSTATE = -100.0F;
-    }
-  }
-
-  /* End of Update for DiscreteIntegrator: '<S1>/Discrete-Time Integrator1' */
 }
 
 /* Model initialize function */

@@ -35,6 +35,7 @@ Xint32 		i_ISRLifeCheck = 0;
 Xfloat32 	f_ISRLifeCheck = 0;
 Xint32 		i_count_1ms = 0; // count up by 1 every 1ms
 float globalTime=0;
+float timeFeedback_=0;
 Xint32 		i_count_1s = 0; // count up by 1 every 1s
 Xfloat32 	isr_period_us_measured;
 XTime 		tPrev, tNow = 0; // XTime is u64 which will not overflow in a life time
@@ -67,8 +68,8 @@ extern DS_Data Global_Data;
 
 
 #include "../Codegen/uz_codegen.h"
-extern RT_MODEL *const rtMPtr; /* Real-time model */
-
+extern uz_codegenStruct codegenInstance;
+extern uz_codegenStruct codegenInstance2;
 // Variables for codegen
 
 //==============================================================================================================================================================
@@ -178,9 +179,12 @@ void ISR_Control(void *data)
 
 
 //	// Execute codegen model
-	globalTime=0.001*i_count_1ms;
-	uz_codegen_updateValues(globalTime);
-	uz_codegen_step();
+	codegenInstance.input.time=0.001*i_count_1ms;
+	codegenInstance2.input.time=0.002*i_count_1ms;
+	//uz_codegen_updateValues(codegenInstance);
+	uz_codegen_step(&codegenInstance);
+	uz_codegen_step(&codegenInstance2);
+	timeFeedback_=codegenInstance.output.timeFeedback;
 //	RT_MODEL *const rtM = rtMPtr;
 
 //	//rtU.time=0.001*i_count_1ms;

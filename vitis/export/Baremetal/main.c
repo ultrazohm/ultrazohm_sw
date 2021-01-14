@@ -34,7 +34,8 @@ Xboolean bInit 		= valueFalse;
 Xboolean bNewControlMethodAvailable = valueFalse;
 
 DS_Data Global_Data;
-
+uz_codegenStruct codegenInstance;
+uz_codegenStruct codegenInstance2;
 extern XGpio Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
 
 //Data from R5_0 to A53_0 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
@@ -93,7 +94,8 @@ int main (void){
 	JavaScope_initalize(&Global_Data);
 
 	// Init code gen model
-	uz_codegen_init();
+	uz_codegen_init(&codegenInstance);
+	uz_codegen_init(&codegenInstance2);
 	//Initial state of all front panel LEDs is off
 	WritePin_PS_GPIO(LED_1,valueFalse); //Write a GPIO for LED_1
 	WritePin_PS_GPIO(LED_2,valueFalse); //Write a GPIO for LED_2

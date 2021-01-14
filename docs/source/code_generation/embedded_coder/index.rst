@@ -81,3 +81,22 @@ In Vitis:
 - ``codegenInstance.output`` holds all output values and can be set directly
 
 Define multiple instances as globals inside ``main.c`` (e.g. codegenInstance2) and call ``uz_codegen_init`` and ``uz_codegen_step`` with the respective instance to use multiple independent instances of the generated code.
+
+
+Code generation settings
+************************
+
+In Simulink configuration.
+All parameters that are not mentioned here are not changed from the Simulink standard settings.
+
+Code Generation
+ - System target file: ert.tlc
+ - Language: C
+ - Build process: Generate code only (checked)
+ - Build process: Package code and artifacts (not checked)
+ - Toolchain: Automatically locate an installed toolchain
+
+Optimization
+ - Remove root level I/O zero initialization unchecked to ensure everything is there and to have a way to reset
+ - Remove internal data zero initialization unchecked to ensure everything is there and to have a way to reset
+ - 

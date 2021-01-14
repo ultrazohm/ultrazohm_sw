@@ -6,7 +6,7 @@ typedef struct{
 	DW rtDW;                        /* Observable states */
 	RT_MODEL modelData;
 	RT_MODEL *PtrToModelData;
-}uz_codegenStruct;
+}uz_codegen;
 
-void uz_codegen_init(uz_codegenStruct *self);
-void uz_codegen_step(uz_codegenStruct *self);
+void uz_codegen_init(uz_codegen *self);
+void uz_codegen_step(uz_codegen *self);

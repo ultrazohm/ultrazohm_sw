@@ -68,9 +68,6 @@ extern DS_Data Global_Data;
 
 
 #include "../Codegen/uz_codegen.h"
-extern uz_codegenStruct codegenInstance;
-extern uz_codegenStruct codegenInstance2;
-// Variables for codegen
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -177,23 +174,6 @@ void ISR_Control(void *data)
 		// add your torque controller here
 	}
 
-
-//	// Execute codegen model
-	codegenInstance.input.time=0.001*i_count_1ms;
-	codegenInstance2.input.time=0.002*i_count_1ms;
-	//uz_codegen_updateValues(codegenInstance);
-	uz_codegen_step(&codegenInstance);
-	uz_codegen_step(&codegenInstance2);
-	timeFeedback_=codegenInstance.output.timeFeedback;
-//	RT_MODEL *const rtM = rtMPtr;
-
-//	//rtU.time=0.001*i_count_1ms;
-//	uz_codegen0_step(rtM);
-//	uz_codegen_step();
-	//uz_codegen0_step(rtM, &rtU, &rtY);
-	//Global_Data.rasv.halfBridge1DutyCycle=rtM->outputs->sineOut;
-	// generate open-loop sinusoidal duty-cycle, amplitude and frequency are set in the Global_Data struct
-	// both function write the variable Global_Data.rasv.halfBridge1DutyCycle -> only comment 2L or 3L!
 	// PWM_SS_Calculate_DutyCycle_open_loop_sin(&Global_Data);
 	// PWM_3L_Calculate_DutyCycle_open_loop_sin(&Global_Data);
 

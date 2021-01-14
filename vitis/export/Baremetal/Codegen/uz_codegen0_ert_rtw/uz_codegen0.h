@@ -7,22 +7,21 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 1.26
+ * Model version                  : 1.28
  * Simulink Coder version         : 9.4 (R2020b) 29-Jul-2020
- * C/C++ source code generated on : Thu Jan 14 15:55:30 2021
+ * C/C++ source code generated on : Thu Jan 14 18:26:20 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (11), Warning (1), Error (0)
+ * Validation result: All passed
  */
 
 #ifndef RTW_HEADER_uz_codegen0_h_
 #define RTW_HEADER_uz_codegen0_h_
 #include <math.h>
-#include <string.h>
 #ifndef uz_codegen0_COMMON_INCLUDES_
 #define uz_codegen0_COMMON_INCLUDES_
 #include "rtwtypes.h"
@@ -67,14 +66,6 @@ typedef struct {
   int8_T DiscreteTimeIntegrator_PrevRese;/* '<S1>/Discrete-Time Integrator' */
 } DW;
 
-/* Constant parameters (default storage) */
-typedef struct {
-  /* Expression: A
-   * Referenced by: '<S1>/Constant1'
-   */
-  real_T Constant1_Value[100];
-} ConstP;
-
 /* External inputs (root inport signals with default storage) */
 typedef struct {
   real32_T Sum1;                       /* '<Root>/Sum1' */
@@ -91,7 +82,6 @@ typedef struct {
   real32_T sineOut;                    /* '<Root>/sineOut' */
   real32_T SumOut1;                    /* '<Root>/SumOut1' */
   real32_T timeFeedback;               /* '<Root>/timeFeedback' */
-  real_T matrixOut[100];               /* '<Root>/matrixOut' */
 } ExtY;
 
 /* Real-time Model Data Structure */
@@ -101,12 +91,17 @@ struct tag_RTM {
   DW *dwork;
 };
 
-/* Constant parameters (default storage) */
-extern const ConstP rtConstP;
-
 /* Model entry point functions */
 extern void uz_codegen0_initialize(RT_MODEL *const rtM);
 extern void uz_codegen0_step(RT_MODEL *const rtM);
+
+/*-
+ * These blocks were eliminated from the model due to optimizations:
+ *
+ * Block '<S1>/Constant1' : Unused code path elimination
+ * Block '<S1>/Product' : Unused code path elimination
+ * Block '<S1>/Product1' : Unused code path elimination
+ */
 
 /*-
  * The generated code includes comments that allow you to trace directly

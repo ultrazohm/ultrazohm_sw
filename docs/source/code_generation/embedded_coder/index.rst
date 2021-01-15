@@ -22,14 +22,14 @@ The API of ``uz_codegen`` has two functions:
     ultrazohm_sw/
     └── vitis/
         ├── export/
-	    |   └── Baremetal/
-	    |        └── Codegen/
-		|		     ├── uz_codegen.c
-		|		     ├── uz_codegen.c
-		|		     └── uz_codegen0_ert_rtw/
+        |   └── Baremetal/
+        |        └── Codegen/
+        |            ├── uz_codegen.c
+        |            ├── uz_codegen.c
+        |            └── uz_codegen0_ert_rtw/
         └── SimulinkCodegen
-			├── uz_generateSimulinkModel.m
-			├── uz_setCodegenPaths.m
+            ├── uz_generateSimulinkModel.m
+            ├── uz_setCodegenPaths.m
             └── uz_codegen.slx
 
 .. note:: Code generation with Simulink creates a lot of auxillary files when generating code (``slprj`` folder, ``codeInfo.mat``, ..). Please do not add them to git.
@@ -69,8 +69,8 @@ The input and output variables are directly accessible.
 .. code-block:: c
 
     float timeFeedback;
-	codegenInstance.input.time=time;
-	uz_codegen_step(&codegenInstance);
+    codegenInstance.input.time=time;
+    uz_codegen_step(&codegenInstance);
     timeFeedback=codegenInstance.output.timeFeedback;
 
 

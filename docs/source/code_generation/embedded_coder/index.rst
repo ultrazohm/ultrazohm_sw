@@ -3,21 +3,6 @@ Embedded-Coder (C-Code)
 =======================
 
 
-..	toctree::
-		:maxdepth: 2
-		:hidden:
-		:caption: Embedded-Coder (C-Code)
-
-		definitions
-
-
-Useful information from Matlab regarding the Embedded coder:
-
-- `Deploy Generated Standalone Executable Programs To Target Hardware <https://de.mathworks.com/help/ecoder/ug/standalone-programs-no-operating-system.html>`_
-- `Use the Real-Time Model Data Structure <https://de.mathworks.com/help/ecoder/ug/use-the-real-time-model-data-structure.html>`_
-- `How Generated Code Stores Internal Signal, State, and Parameter Data <https://de.mathworks.com/help/ecoder/ug/how-generated-code-stores-internal-signal-state-and-parameter-data.html>`_
-- `How Generated Code Exchanges Data with an Environment <https://de.mathworks.com/help/ecoder/ug/how-generated-code-exchanges-data-with-an-environment.html>`_
-- `Standard Data Structures in the Generated Code <https://de.mathworks.com/help/ecoder/ug/default-representation-of-global-data-in-generated-code.html>`_
 
 How to use
 ----------
@@ -81,7 +66,17 @@ In Vitis:
 - ``codegenInstance.output`` holds all output values and can be set directly
 
 Define multiple instances as globals inside ``main.c`` (e.g. codegenInstance2) and call ``uz_codegen_init`` and ``uz_codegen_step`` with the respective instance to use multiple independent instances of the generated code.
+The input and output variables are directly accessible.
 
+.. code-block:: c
+
+    float timeFeedback;
+	codegenInstance.input.time=time;
+	uz_codegen_step(&codegenInstance);
+    timeFeedback=codegenInstance.output.timeFeedback;
+
+
+.. warning:: The direct access of the variables is not recommended and not good coding practice. The approach above is simply shown to get over the first configuration barrier of the Embedded Coder. The user is expected to fit the configuration and coding practices to their application using the information below.
 
 Code generation settings
 ************************
@@ -100,3 +95,9 @@ Optimization
  - Remove root level I/O zero initialization unchecked to ensure everything is there and to have a way to reset
  - Remove internal data zero initialization unchecked to ensure everything is there and to have a way to reset
  - 
+
+
+
+
+More Information
+----------------

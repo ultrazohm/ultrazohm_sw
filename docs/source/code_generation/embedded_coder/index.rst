@@ -2,6 +2,17 @@
 Embedded-Coder (C-Code)
 =======================
 
+The `Matlab/Simulink Embedded coder <https://de.mathworks.com/products/embedded-coder.html>`_ generates C-Code from Simulink models.
+This page describes an easy way to get started with the Embedded coder on the UltraZohm.
+Use the example model ``uz_codegen.slx`` as a template for own models
+It has the recommended coding settings configured.
+Note the following key concepts and see the comprehensive `documentation of the embedded coder <https://de.mathworks.com/help/ecoder/>`_:
+
+- Every discrete-time is synchronous to the highest discrete-time in the generated model
+- independent of which sample rate is set in Simulink, each call to the step function is one discrete time step
+- Slower sample rates within the model are generated relative to the number of times the step function is called
+- Use ``single`` data type in Matlab/Simulink, which is a 32-bit float
+
 How to use
 ----------
 
@@ -11,11 +22,11 @@ The API of ``uz_codegen`` has two functions:
 
 ``uz_codegen_init(uz_codegen *self)``
  Initialization function for the codegen struct.
- Has to be passed a pointer to an variable of type ``uz_codegen``.
+ Has to be passed a pointer to a variable of type ``uz_codegen``.
 
 ``uz_codegen_step(uz_codegen *self)``
- Steps the model one time, i.e. all calculations inside the Simulink model are executed once.
- Has to be passed a pointer to an variable of type ``uz_codegen``.
+ steps the model one time, i.e., all calculations inside the Simulink model are executed once.
+ Has to be passed a pointer to a variable of type ``uz_codegen``.
 
 ::
 
@@ -32,34 +43,33 @@ The API of ``uz_codegen`` has two functions:
             ├── uz_setCodegenPaths.m
             └── uz_codegen.slx
 
-.. note:: Code generation with Simulink creates a lot of auxillary files when generating code (``slprj`` folder, ``codeInfo.mat``, ..). Please do not add them to git.
+.. note:: Code generation with Simulink creates a lot of auxiliary files when generating code (``slprj`` folder, ``codeInfo.mat``, ..). Please do not add them to git.
 
 First usage
 -----------
 
-- Open Matlab
-- Set your Matlab path to ``ultrazohm_sw/vitis/SimulinkCodegen``
-- Open ``uz_codegen.slx`` with Matlab/Simulink.
-- The Simulink model calls ``uz_setCodegenPaths.m`` (defined as preLoadFcn callback)
-- ``uz_setCodegenPaths.m`` sets the appropriate paths for the code generation on the UltraZohm
-- Right click on the subsystem ``uz_codegen``
-- Click ``C/C++ Code -> Build This System``
-- *Code Generation Advisor* will open
-- Check for warnings and errors
-- ``Build code for Subsystem:uz_codegen`` opens
-- Click *Build*
-- Code is generated and usable in Vitis
-- Alternative: execute the script ``uz_generateSimulinkModel.m`` which executes all of the above steps
-
-- Open Vitis
-- The code is generated in ``ultrazohm_sw/vitis/export/Baremetal/Codegen/uz_codegen0_ert_rtw``
-- Code is not called by the standard vitis project
-- Define ``uz_codegen codegenInstance`` as a global variable in ``main.c`` of the Baremetal project
-- Call the init function (``uz_codegen_init(&codegenInstance)``) inside the main
-- Add ``extern uz_codegen codegenInstance`` to ``Baremtal/sw/isr.c`` to use the global inside the ISR
-- Call ``uz_codegen_step(&codegenInstance)`` inside the ISR to execute the generated code
-- ``codegenInstance.input`` holds all input values and can be set directly
-- ``codegenInstance.output`` holds all output values and can be set directly
+1. Open Matlab
+2. Set your Matlab path to ``ultrazohm_sw/vitis/SimulinkCodegen``
+3. Open ``uz_codegen.slx`` with Matlab/Simulink.
+4. The Simulink model calls ``uz_setCodegenPaths.m`` (defined as preLoadFcn callback)
+5. ``uz_setCodegenPaths.m`` sets the appropriate paths for the code generation on the UltraZohm
+6. Right-click on the subsystem ``uz_codegen``
+7. Click ``C/C++ Code -> Build This System``
+8. *Code Generation Advisor* will open
+9. Check for warnings and errors
+10. ``Build code for Subsystem:uz_codegen`` opens
+11. Click *Build*
+12. Code is generated and usable in Vitis
+13. Alternative: execute the script ``uz_generateSimulinkModel.m`` which executes all of the above steps
+14. Open Vitis
+15. The code is generated in ``ultrazohm_sw/vitis/export/Baremetal/Codegen/uz_codegen0_ert_rtw``
+16. Code is not called by the standard Vitis project
+17. Define ``uz_codegen codegenInstance`` as a global variable in ``main.c`` of the Baremetal project
+18. Call the init function (``uz_codegen_init(&codegenInstance)``) inside the main
+19. Add ``extern uz_codegen codegenInstance`` to ``Baremtal/sw/isr.c`` to use the global inside the ISR
+20. Call ``uz_codegen_step(&codegenInstance)`` inside the ISR to execute the generated code
+21. ``codegenInstance.input`` holds all input values and can be set directly
+22. ``codegenInstance.output`` holds all output values and can be set directly
 
 Define multiple instances as globals inside ``main.c`` (e.g. codegenInstance2) and call ``uz_codegen_init`` and ``uz_codegen_step`` with the respective instance to use multiple independent instances of the generated code.
 The input and output variables are directly accessible.
@@ -74,11 +84,15 @@ The input and output variables are directly accessible.
 
 .. warning:: The direct access of the variables is not recommended and not good coding practice. The approach above is simply shown to get over the first configuration barrier of the Embedded Coder. The user is expected to fit the configuration and coding practices to their application using the information below.
 
+.. youtube:: nso-PzwHHRQ
+
+
+
 Code generation settings
 ************************
 
-In Simulink configuration.
-All parameters that are not mentioned here are not changed from the Simulink standard settings.
+All Simulink configuration parameters that are not mentioned below are set to the Simulink standard settings.
+These settings are present if a new Simulink model from the Embedded Coder templates is created.
 
 Code Generation
  - System target file: ert.tlc
@@ -101,9 +115,9 @@ More Information
 - `How Generated Code Exchanges Data with an Environment <https://de.mathworks.com/help/ecoder/ug/how-generated-code-exchanges-data-with-an-environment.html>`_
 - `Standard Data Structures in the Generated Code <https://de.mathworks.com/help/ecoder/ug/default-representation-of-global-data-in-generated-code.html>`_
 
-..	toctree::
-		:maxdepth: 2
-		:hidden:
-		:caption: Embedded-Coder (C-Code)
+.. toctree::
+    :maxdepth: 2
+    :hidden:
+    :caption: Embedded-Coder (C-Code)
 
-		definitions
+    definitions

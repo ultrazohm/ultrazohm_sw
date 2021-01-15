@@ -37,8 +37,7 @@ The API of ``uz_codegen`` has two functions:
 First usage
 -----------
 
-In Matlab:
-
+- Open Matlab
 - Set your Matlab path to ``ultrazohm_sw/vitis/SimulinkCodegen``
 - Open ``uz_codegen.slx`` with Matlab/Simulink.
 - The Simulink model calls ``uz_setCodegenPaths.m`` (defined as preLoadFcn callback)
@@ -52,8 +51,7 @@ In Matlab:
 - Code is generated and usable in Vitis
 - Alternative: execute the script ``uz_generateSimulinkModel.m`` which executes all of the above steps
 
-In Vitis:
-
+- Open Vitis
 - The code is generated in ``ultrazohm_sw/vitis/export/Baremetal/Codegen/uz_codegen0_ert_rtw``
 - Code is not called by the standard vitis project
 - Define ``uz_codegen codegenInstance`` as a global variable in ``main.c`` of the Baremetal project

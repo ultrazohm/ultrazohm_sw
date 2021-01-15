@@ -25,7 +25,7 @@
 #include "xtime_l.h"
 
 // Include for code-gen
-#include "../Codegen/uz_codegen0_ert_rtw/uz_codegen0.h"
+#include "../Codegen/uz_codegen.h"
 
 //Timing measurement variables
 //Variables for ISR-time measurement
@@ -67,7 +67,6 @@ Xfloat32 sin1amp=100.0;
 extern DS_Data Global_Data;
 
 
-#include "../Codegen/uz_codegen.h"
 
 //==============================================================================================================================================================
 //----------------------------------------------------

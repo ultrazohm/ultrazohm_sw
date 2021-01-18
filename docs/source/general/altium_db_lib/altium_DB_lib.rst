@@ -11,6 +11,22 @@ The following tools will be needed:
 * Altium
 * DBeaver
 
+Videos of setup
+===============
+
+How to install Altium:
+
+.. youtube:: SS1pZKD2n0Y
+
+How to install the Altium library:
+
+.. youtube:: 0VST-4g3nWA
+
+How to install DBweaver:
+
+.. youtube:: DaSXdXeiYR4
+
+
 BitBucket access setup
 ======================
 
@@ -31,6 +47,7 @@ BitBucket access setup
 
 Server access setup
 ===================
+
 1. ``Open`` the ODBC-Datasource App (64-Bit)
 
 .. _20_ODBC_sources_1:
@@ -160,6 +177,7 @@ Integration in Altium
 
 Installation and setup of a front end (DBeaver)
 ===============================================
+
 To be able to add a new component to the database (MariaDB) as easily as possible, it is comfortable to use a graphical front end.
 
 1. Download the Dbeaver software to work with the MariaDB on the UltraZohm server https://dbeaver.io/download/ 
@@ -231,6 +249,7 @@ Before clicking ``Finish`` the settings of SSL must be done.
 
 Add a new component to the databased library
 ********************************************
+
 To make the process of adding a component more visible, it will be described by adding a SMD capacitor.
 
 .. note :: The target of this database system is that schematic and footprints of generic components should only exist one time.

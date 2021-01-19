@@ -21,6 +21,7 @@ pipelines:
     - step:
        script:
         - git fetch --all
+        - git branch -r
         - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
         - git push --all mirrorOrigin
    branches:

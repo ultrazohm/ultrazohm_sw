@@ -20,8 +20,8 @@ pipelines:
         - ls
     - step:
        script:
-        - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
         - git fetch --all
+        - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
         - git push --all mirrorOrigin
    branches:
      main:

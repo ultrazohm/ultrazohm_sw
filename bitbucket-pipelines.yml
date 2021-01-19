@@ -16,10 +16,13 @@ pipelines:
         - pip install -r requirements.txt
         - pip list
         - make html SPHINXOPTS="-W --keep-going -n"
-        - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
-        - git push --all mirrorOrigin
         - cd build
         - ls
+    - step:
+       script:
+        - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
+        - git fetch --all
+        - git push --all mirrorOrigin
    branches:
      main:
       - step:

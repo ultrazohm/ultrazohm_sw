@@ -20,11 +20,6 @@ pipelines:
         - ls
     - step:
        script:
-        - git fetch --all
-        - git branch -r
-        - git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-        - git config --get remote.origin.fetch
-        - git branch -r
         - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
         - git push --all mirrorOrigin
    branches:

@@ -17,7 +17,7 @@ pipelines:
         - pip list
         - make html SPHINXOPTS="-W --keep-going -n"
         - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
-        - git push mirrorOrigin --tags refs/remotes/origin/*:refs/heads/*
+        - git push -all mirrorOrigin --tags refs/remotes/origin/*:refs/heads/*
         - cd build
         - ls
    branches:

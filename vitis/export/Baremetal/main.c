@@ -21,7 +21,7 @@ int i_LifeCheck;
 
 _Bool bPlotData	= false;
 _Bool bNewControlMethodAvailable = false;
-
+_Bool bInit 	= false;
 DS_Data Global_Data;
 extern XGpio Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
 
@@ -35,20 +35,17 @@ Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
 static void uz_assertCallback(const char8 *file, s32 line) {
 	extern XScuGic INTCInst;
 	xil_printf("\r\nAssertion in file %s on line %d\r\n", file, line);
-	WritePin_PS_GPIO(LED_1,valueFalse); //Write a GPIO for LED_1
-	WritePin_PS_GPIO(LED_2,valueFalse); //Write a GPIO for LED_2
-	WritePin_PS_GPIO(LED_3,valueTrue); //Write a GPIO for LED_3
-	WritePin_PS_GPIO(LED_4,valueFalse); //Write a GPIO for LED_4
+	uz_SetLedErrorOn();
+	uz_SetLedReadyOff();
+	uz_SetLedRunningOff();
 	ErrorHandling(&Global_Data);
 	XScuGic_Disable(&INTCInst, Interrupt_ISR_ID);
 }
 
 int main (void){
 
-	int status=XST_SUCCESS;
-	_Bool bInit 	= false;
+	int status=UZ_SUCCESS;
 	uz_assert(TARGET_ULTRAZOHM);
-	int status;
 	Xil_AssertSetCallback((Xil_AssertCallback) uz_assertCallback);
 
 	//Output to the Terminal over UART to the COM-Port. Use e.g. "Tera Term" to listen with baud-rate 115200
@@ -190,7 +187,9 @@ int main (void){
 
 
 //==============================================================================================================================================================
-void turnPowerElectronicsOff(DS_Data* data){
+int turnPowerElectronicsOff(DS_Data* data){
+	bInit = false;
+
 	data->rasv.referenceCurrent_iq = 0; // in A
 	data->rasv.referenceCurrent_id = 0; // in A
 	data->rasv.ModifiedReferenceCurrent_iq = 0; // in A
@@ -200,6 +199,7 @@ void turnPowerElectronicsOff(DS_Data* data){
 
 	//Disable power electronics
 	XGpio_DiscreteClear(&Gpio_OUT,GPIO_CHANNEL, 3);//Switch power electronics off = 0b0001 = "Disable_Inverter" //Switch Gate connection off = 0b0010 = "Disable_Gate"
+	return(0);
 }
 
 //==============================================================================================================================================================
@@ -209,7 +209,8 @@ int turnPowerElectronicsOn(DS_Data* data){
 
 	asm(" nop"); //Wait some ticks, otherwise, the second GPIO write will not be updated
 	XGpio_DiscreteClear(&Gpio_OUT,GPIO_CHANNEL, 4);//Stop to the ADC module to set an offset value    0b0100);  	// "Enable_Gate" On //Consider, this is a inverse signal AND "Acknowledge" the set of ADC offset value.
-	return (true);
+	bInit=true;
+	return (0);
 }
 
 //==============================================================================================================================================================

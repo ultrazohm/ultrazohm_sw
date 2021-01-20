@@ -67,7 +67,7 @@
 //----------------------------------------------------
 
 void plotData(DS_Data* data);
-void turnPowerElectronicsOff(DS_Data* data);
+int turnPowerElectronicsOff(DS_Data* data);
 int turnPowerElectronicsOn(DS_Data* data);
 void AXI2TCM_on(void);
 void ControllerOff(DS_Data* data);

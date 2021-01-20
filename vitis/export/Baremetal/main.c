@@ -35,9 +35,9 @@ Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
 static void uz_assertCallback(const char8 *file, s32 line) {
 	extern XScuGic INTCInst;
 	xil_printf("\r\nAssertion in file %s on line %d\r\n", file, line);
-	uz_SetLedErrorOn();
-	uz_SetLedReadyOff();
-	uz_SetLedRunningOff();
+	uz_led_SetLedErrorOn();
+	uz_led_SetLedReadyOff();
+	uz_led_SetLedRunningOff();
 	ErrorHandling(&Global_Data);
 	XScuGic_Disable(&INTCInst, Interrupt_ISR_ID);
 }
@@ -119,7 +119,7 @@ int main (void){
 		}
 #endif
 		if((Global_Data.ew.maximumContinuousCurrentExceeded == true)||(Global_Data.ew.maximumShortTermCurrentReached == true)||(Global_Data.ew.dcLinkOvervoltageOccured == true)||(Global_Data.ew.pwmFrequencyError == true)){
-			uz_SetLedErrorOn();
+			uz_led_SetLedErrorOn();
 			ErrorHandling(&Global_Data);
 			ErrorReset(&Global_Data);	//If any error is active -> check if an error-reset is received
 		}else{//no errors
@@ -215,12 +215,12 @@ int turnPowerElectronicsOn(DS_Data* data){
 
 //==============================================================================================================================================================
 void ControllerOff(DS_Data* data){
-	uz_SetLedRunningOff();
+	uz_led_SetLedRunningOff();
 }
 
 //==============================================================================================================================================================
 void ControllerOn(DS_Data* data){
-	uz_SetLedRunningOn();
+	uz_led_SetLedRunningOn();
 }
 
 //==============================================================================================================================================================
@@ -254,7 +254,7 @@ void ErrorReset(DS_Data* data){
 		data->ew.pwmFrequencyError = false;  //Reset pwm Frequency Error
 		data->er.pwmFrequencyError = false;	//Reset flag
 	}
-	uz_SetLedErrorOff();
+	uz_led_SetLedErrorOff();
 
 }
 

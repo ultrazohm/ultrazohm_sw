@@ -304,15 +304,15 @@ u32 Rpu_IpiInit(u16 DeviceId)
 static void toggleLEDdependingOnReadyOrRunning(uint32_t i_count_1ms, uint32_t i_count_1s){
 	if(Global_Data.cw.enableSystem){
 	if((i_count_1ms % 200)>100){
-		uz_SetLedReadyOn();
+		uz_led_SetLedReadyOn();
 	}else{
-		uz_SetLedReadyOff();
+		uz_led_SetLedReadyOff();
 	}
 }else{
 	if(i_count_1s % 2){
-		uz_SetLedReadyOn();
+		uz_led_SetLedReadyOn();
 	}else{
-		uz_SetLedReadyOff();
+		uz_led_SetLedReadyOff();
 	}
 }
 };

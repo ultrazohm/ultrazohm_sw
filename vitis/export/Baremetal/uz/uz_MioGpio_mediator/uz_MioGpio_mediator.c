@@ -79,8 +79,8 @@ static void InitializeAllStatusLEDs(){
 };
 
 static void TurnAllLEDOff(){
-	uz_SetLedReadyOff();
-	uz_SetLedRunningOff();
-	uz_SetLedUserOff();
-	uz_SetLedErrorOff();
+	uz_led_SetLedReadyOff();
+	uz_led_SetLedRunningOff();
+	uz_led_SetLedUserOff();
+	uz_led_SetLedErrorOff();
 };

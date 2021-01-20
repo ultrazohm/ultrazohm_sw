@@ -16,16 +16,16 @@ typedef struct{
 
 void uz_led_facade_init(uz_LedfacadeCfg cfg);
 
-void uz_SetLedReadyOn();
-void uz_SetLedReadyOff();
+void uz_led_SetLedReadyOn();
+void uz_led_SetLedReadyOff();
 
-void uz_SetLedRunningOn();
-void uz_SetLedRunningOff();
+void uz_led_SetLedRunningOn();
+void uz_led_SetLedRunningOff();
 
-void uz_SetLedErrorOn();
-void uz_SetLedErrorOff();
+void uz_led_SetLedErrorOn();
+void uz_led_SetLedErrorOff();
 
-void uz_SetLedUserOn();
-void uz_SetLedUserOff();
+void uz_led_SetLedUserOn();
+void uz_led_SetLedUserOff();
 
 #endif

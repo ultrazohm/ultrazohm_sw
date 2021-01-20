@@ -9,33 +9,33 @@ void uz_led_facade_init(uz_LedfacadeCfg cfg){
 	uz_led_init(&LedUser,cfg.LedUser);
 };
 
-void uz_SetLedReadyOn(){
+void uz_led_SetLedReadyOn(){
 	LedReady.turnOn(&LedReady);
 };
 
-void uz_SetLedReadyOff(){
+void uz_led_SetLedReadyOff(){
 	LedReady.turnOff(&LedReady);
 };
 
-void uz_SetLedRunningOn(){
+void uz_led_SetLedRunningOn(){
 	LedRunning.turnOn(&LedRunning);
 };
 
-void uz_SetLedRunningOff(){
+void uz_led_SetLedRunningOff(){
 	LedRunning.turnOff(&LedRunning);
 };
 
-void uz_SetLedErrorOn(){
+void uz_led_SetLedErrorOn(){
 	LedError.turnOn(&LedError);
 };
-void uz_SetLedErrorOff(){
+void uz_led_SetLedErrorOff(){
 	LedError.turnOff(&LedError);
 };
 
-void uz_SetLedUserOn(){
+void uz_led_SetLedUserOn(){
 	LedUser.turnOn(&LedUser);
 };
 
-void uz_SetLedUserOff(){
+void uz_led_SetLedUserOff(){
 	LedUser.turnOff(&LedUser);
 };

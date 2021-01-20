@@ -34,8 +34,6 @@ Xfloat32 	time_ISR_total_us, time_ISR_max_us = 0;
 Xint32 		i_ISRLifeCheck = 0;
 Xfloat32 	f_ISRLifeCheck = 0;
 Xint32 		i_count_1ms = 0; // count up by 1 every 1ms
-float globalTime=0;
-float timeFeedback_=0;
 Xint32 		i_count_1s = 0; // count up by 1 every 1s
 Xfloat32 	isr_period_us_measured;
 XTime 		tPrev, tNow = 0; // XTime is u64 which will not overflow in a life time

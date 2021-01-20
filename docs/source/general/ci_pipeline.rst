@@ -4,18 +4,28 @@ Continuous Integration
 
 The UltraZohm-Project uses two different build pipelines to test the builds of the UltraZohm software as well as the documentation (docs).
 
-    * Bitbucket test & deploy pipeline for docs
-    * Drone test pipeline for Vivado and Vitis
+* The Bitbucket pipeline tests & deploys the docs
+  
+  * Tests the build of the sphinx docs
+  * Deploys the docs of the main branch to docs.ultrazohm.com
+  * Mirrors the branch to https://github.com/ultrazohm/ultrazohm_sw
+
+* The Drone test pipeline builds UltraZohm Vivado and Vitis Project
+
+  * Builds bitstream in Vivado (only main & develop branch)
+  * Exports the bitstream
+  * Generates the Vitis workspace
+  * Builds the software
 
 .. _CI bitbucketPipeline:
 
 Bitbucket pipeline (docs)
 -------------------------
 
-  * ``bitbucket-pipelines.yml`` configures the Bitbucket pipeline
-  * Pipeline steps to build the sphinx documentation on **every** *push* to the repository (for all branches)
-  * Pipeline steps to deploy the documentation to the UltraZohm-Server (docs.ultrazohm.com) after every merged pull request on *main*
-  * Pipeline reports success or failure to Bitbucket repository (green / red symbol next to branch in Bitbucket)
+* ``bitbucket-pipelines.yml`` configures the Bitbucket pipeline
+* Pipeline steps to build the sphinx documentation on **every** *push* to the repository (for all branches)
+* Pipeline steps to deploy the documentation to the UltraZohm-Server (docs.ultrazohm.com) after every merged pull request on *main*
+* Pipeline reports success or failure to Bitbucket repository (green / red symbol next to branch in Bitbucket)
 
 
 .. mermaid::
@@ -32,18 +42,27 @@ Bitbucket pipeline (docs)
 
 The build pipeline:
 
-  * Pull the docker image with python
-  * Installs the requirements for the build of the sphinx documentation
-  * Builds the docs and treats all warnings as errors but keeps building to investigate the logs if the build fails
-  * If the pipeline is triggered from ``main``
+* Pulls the docker image with python
+* Installs the requirements for the build of the sphinx documentation
+* Builds the docs and treats all warnings as errors but keeps building to investigate the logs if the build fails
+* If the pipeline is triggered from ``main``:
 
-    * The ``build`` folder after ``make html`` is copied to the web server
-    * Done with rsync deploy pipe 
-    * Variables for username, password and server path are stored as secret repository variables
-    * Only accessible for admins: ``repository settings -> repository variables`` in Bitbucket (``ultrazohm_sw`` repository)
+  * The ``build`` folder after ``make html`` is copied to the web server
+  * Done with rsync deploy pipe 
+  * Variables for username, password and server path are stored as secret repository variables
+  * Only accessible for admins: ``repository settings -> repository variables`` in Bitbucket (``ultrazohm_sw`` repository)
 
 .. literalinclude:: ../../../bitbucket-pipelines.yml
     :linenos:
+
+Bitbucket pipeline (GitHub-Mirror)
+**********************************
+
+* Adds Github repository as remote repo
+* Pushes current branch to https://github.com/ultrazohm/ultrazohm_sw
+* A special UltraZohm Github Account (Login information in Keepass) pushes to the Github repository
+* The account uses the Bitbucket pipeline SSH key (``ultrazohm_sw -> Repository settings --> SSH keys``, only visible to admins) to push to Github
+* Github.com is added to ``Known hosts`` in ``ultrazohm_sw -> Repository settings --> SSH keys``
 
 
 Drone pipeline (Software)

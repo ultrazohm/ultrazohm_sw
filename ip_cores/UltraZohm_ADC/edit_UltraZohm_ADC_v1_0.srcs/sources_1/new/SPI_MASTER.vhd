@@ -17,7 +17,6 @@
 -- Additional Comments:
 -- 
 ----------------------------------------------------------------------------------
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 library work;
@@ -53,13 +52,78 @@ entity SPI_MASTER is
     );
 end SPI_MASTER;
 
-architecture RTL of SPI_MASTER is
+architecture Behavioral of SPI_MASTER is
 
     signal S_DEL_COUNT    : integer range 0 to maximum(PRE_DELAY, POST_DELAY);
     signal S_DEL_CLK      : integer range 0 to CLK_DIV;
     signal S_BIT_COUNT    : integer range 0 to DATA_WIDTH;
+    
+    -- State definition for the FSM
+    type state_type is (IDLE,PRE_WAIT,SHIFT_OUT,SAMPLE,POST_WAIT);
+    signal curstate, nxtstate : state_type := IDLE;
+    attribute fsm_encoding : string;
+    attribute fsm_encoding of curstate, nxtstate : signal is "auto";
+    attribute fsm_safe_state : string;
+    attribute fsm_safe_state of curstate, nxtstate : signal is "power_on_state";
 
 begin
 
+    output_state_mem: process(CLK)
+        begin
+            if (reset_n = '0') then
+                curstate <= IDLE;
+            elsif rising_edge(CLK) then
+                curstate <= nxtstate;
+                case nxtstate is
+                    when IDLE =>
+                
+                    when PRE_WAIT =>
+                    
+                    when SHIFT_OUT =>
+                    
+                    when SAMPLE =>
+                    
+                    when POST_WAIT =>
+                    
+                    when others => nxtstate <= IDLE;
+                    report "Undecoded State" severity note;
+                end case;
+            end if;
+    end process output_state_mem;
+    
+    transition: process(curstate, ENABLE, CPHA, S_DEL_COUNT, S_DEL_CLK, S_BIT_COUNT)
+        begin
+            case curstate is
+                when IDLE =>
+                    if (ENABLE = '1') then nxtstate <= PRE_WAIT;
+                    else                   nxtstate <= IDLE;
+                    end if;
+                
+                when PRE_WAIT =>
+                    if    ((S_DEL_COUNT <= 0) and (CPHA = '1')) then nxtstate <= SHIFT_OUT;
+                    elsif ((S_DEL_COUNT <= 0) and (CPHA = '0')) then nxtstate <= SAMPLE;
+                    else                                             nxtstate <= PRE_WAIT;
+                    end if;
+                
+                when SHIFT_OUT =>
+                    if  (S_DEL_CLK <= 0) then nxtstate <= SAMPLE;
+                    else                      nxtstate <= SHIFT_OUT;
+                    end if;
+                
+                when SAMPLE =>
+                    if    ((S_DEL_CLK <= 0) and (S_BIT_COUNT > 0)) then nxtstate <= SHIFT_OUT;
+                    elsif (S_BIT_COUNT <= 0)                       then nxtstate <= POST_WAIT;
+                    else                                                nxtstate <= SAMPLE;
+                    end if;
+                
+                when POST_WAIT =>
+                    if (S_DEL_COUNT <= 0) then nxtstate <= IDLE;
+                    else                       nxtstate <= POST_WAIT;
+                    end if;
+                
+                when others => nxtstate <= IDLE;
+                report "Undecoded State" severity note;
+            end case;
+    end process transition;
 
-end RTL;
+end Behavioral;

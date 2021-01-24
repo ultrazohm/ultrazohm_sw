@@ -1,12 +1,8 @@
-<h1 align="center">UltraZohm</h1>
-<p align="center">
-  A powerful real-time computation platform for research, development, and rapid-control prototyping of power electronics and drive systems.
-</p>
-<a href="https://ultrazohm.com">
-  <img align="center" src="https://docs.ultrazohm.com/_images/front_lowres.png" alt="UltraZohmImage">
-</a>
-
 # UltraZohm
+*A powerful real-time computation platform for research, development, and rapid-control prototyping of power electronics and drive systems.*
+
+![UltraZohmIMage](https://docs.ultrazohm.com/_images/front_lowres.png)
+
 
 The UltraZohm is a powerful real-time computation platform for research, development, and rapid-control prototyping of power electronics and drive systems.
 Development is driven from researchers for researches to accelerate research by establishing a common control platform.

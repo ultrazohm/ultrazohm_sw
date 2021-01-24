@@ -1,9 +1,3 @@
-/*
- * File Name:         hdl_prj\ipcore\PWM_SS_3L_ip_v1_4\include\PWM_SS_3L_ip_addr.h
- * Description:       C Header File
- * Created:           2020-04-06 17:35:20
-*/
-
 #ifndef PWM_SS_3L_IP_H_
 #define PWM_SS_3L_IP_H_
 

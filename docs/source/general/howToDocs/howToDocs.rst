@@ -2,7 +2,7 @@
 How to docs
 ===========
 
-The documentation for the UltraZohm uses `sphinx <https://www.sphinx-doc.org>`_.
+The documentation for the UltraZohm uses `<https://www.sphinx-doc.org>`_.
 Sphinx creates the documentation pages in html based on text files.
 These text files use `reStructuredText <https://rest-sphinx-memo.readthedocs.io/en/latest/ReST.html>`_ (RST) as a markup language.
 Sphinx takes the different RST files and builds them to the docs page.
@@ -23,6 +23,10 @@ To build and edit the documentation you need to:
 * Build the documentation by invoking ``make html``
 * You can open the docs in ``/docs/build/html/index.html``
 * You can edit the documentation by using a text editor of your choice
+
+.. tip:: We have added `sphinx-autobuild <https://github.com/executablebooks/sphinx-autobuild>`_ to the makefile. Therefore, you can use ``make livehtml`` instead of ``make html`` which opens a new browser that synchronizes live with changes that you make locally.
+
+.. tip:: Sometimes you might need to clean the output with ``make clean`` or clean build with ``make clean html``
 
 Video
 *****
@@ -143,3 +147,27 @@ For most information, using a csv table is preferred:
     :file: path_to_table/table.csv
     :widths: 50 50 50
     :header-rows: 1
+
+Technical details
+=================
+
+The UltraZohm project uses the following extensions to sphinx.
+All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
+
+`sphinx <https://www.sphinx-doc.org/en/master/>`_
+ Sphinx-doc is the base software to generate the documentation.
+
+`sphinx_rtd_theme <https://github.com/readthedocs/sphinx_rtd_theme>`_
+ The theme of the documentation
+
+`sphinxcontrib-mermaid <https://github.com/mgaitan/sphinxcontrib-mermaid>`_
+ Enables to embed `Mermaid <https://mermaid-js.github.io/mermaid/#/>`_ graphs.
+
+`sphinxcontrib.yt <https://github.com/divi255/sphinxcontrib.youtube>`_
+ Simple embedding of youtube videos.
+
+`six <https://github.com/benjaminp/six>`_
+ Provides compatibility between Python 2 and 3, required by some packages.
+
+`sphinx-autobuild <https://github.com/executablebooks/sphinx-autobuild>`_
+ Enable autobuild and reload after changes for local development with ``make livehtml``

@@ -7,7 +7,7 @@ Documentation of the UltraZohm
 ==============================
 
 .. image:: https://docs.ultrazohm.com/_images/front_lowres.png
-  :width: 400
+  :width: 500
   :align: center
 
 The UltraZohm is a powerful real-time computation platform for research, development, and rapid-control prototyping of power electronics and drive systems.
@@ -20,15 +20,14 @@ Having a common platform enables the active research community to focus on publi
 - **Modularity**: Extend the platform with your own hardware (adapter cards), IP-Cores and software components.
 - **Usability**: Novice friendly with tutorials and existing codebase. Expert friendly with access *to the last bit*.
 - **Community**: Connect to other researchers working on the same platform and solve infrastructure problems only once!
-- **Documentation**: Comprehensive and ever-growing documentation for the Ultrazohm on [docs.ultrazohm.com](docs.ultrazohm.com).
-- **Funded**: Project development is funded by the [BMBF with the research grant KI-Power](https://elektronikforschung.de/projekte/ki-power).
+- **Documentation**: Comprehensive and ever-growing documentation for the Ultrazohm on `docs.ultrazohm.com <https://docs.ultrazohm.com/>`_.
+- **Funded**: Project development is funded by the `BMBF with the research grant KI-Power <https://elektronikforschung.de/projekte/ki-power>`_.
 
 Getting-started
 ---------------
 
 - How to get an UltraZohm? Please shoot us a Mail at info@ultrazohm.com
-- More information on [ultrazohm.com](ultrazohm.com)
-- Check the [docs](https://docs.ultrazohm.com/) 
+- More information on `ultrazohm.com <https://ultrazohm.com/>`_
 
 Research
 --------

@@ -24,9 +24,14 @@ To build and edit the documentation you need to:
 * You can open the docs in ``/docs/build/html/index.html``
 * You can edit the documentation by using a text editor of your choice
 
+.. tip:: Sometimes you might need to clean the output with ``make clean`` or clean build with ``make clean html``
+
 .. tip:: We have added `sphinx-autobuild <https://github.com/executablebooks/sphinx-autobuild>`_ to the makefile. Therefore, you can use ``make livehtml`` instead of ``make html`` which opens a new browser that synchronizes live with changes that you make locally.
 
-.. tip:: Sometimes you might need to clean the output with ``make clean`` or clean build with ``make clean html``
+.. image:: https://images2.imgbox.com/ed/32/B0uTI8EZ_o.gif
+  :width: 500
+  :align: center
+  :alt: Alternative text
 
 Video
 *****

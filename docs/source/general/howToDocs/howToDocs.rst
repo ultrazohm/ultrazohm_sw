@@ -33,6 +33,9 @@ To build and edit the documentation you need to:
   :align: center
   :alt: Alternative text
 
+
+.. note:: If ``make html`` or ``make livehtml`` do not work due to missing package errors, run ``pip install -r requirements.txt`` again. If this does not solve the problem please open an `issue <https://bitbucket.org/ultrazohm/ultrazohm_sw/issues>`_.
+
 Video
 *****
 

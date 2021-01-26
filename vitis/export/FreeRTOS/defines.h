@@ -1,12 +1,16 @@
 /******************************************************************************
-*
-* defines.h
-*
-* Copyright (C) 2018 Institute ELSYS, TH Nürnberg,   All rights reserved.
-*
-*  Created on: 22.08.2018
-*      Author: Wendel Sebastian (SW)
-*
+* Copyright 2021 Sebastian Wendel, Eyke Liegmann
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
 #ifndef DEFINES_H_
@@ -15,8 +19,8 @@
 #include "xparameters.h"
 
 //==============================================================================================================================================================
-//IP-Block for the Interrupt Prescaler of the control-timer Period = ( 2^32-1 – Reset Value + 2) * Axi-Clk Period
-//Für Timing Umso näher der Wert an an 0xFFFFFFFF ist, desto schneller der 32-Bit Counter ( 0xFFFFFD28 = 10us bei 100MHz Prozessortakt)
+//IP-Block for the Interrupt Prescaler of the control-timer Period = ( 2^32-1 ï¿½ Reset Value + 2) * Axi-Clk Period
+//Fï¿½r Timing Umso nï¿½her der Wert an an 0xFFFFFFFF ist, desto schneller der 32-Bit Counter ( 0xFFFFFD28 = 10us bei 100MHz Prozessortakt)
 //It is a 32-Bit Counter -> 2^32 = 0xFFFFFFFF, where in our case the counter is set to count down. AXI-Clock is 100MHz (=10 ns)
 //Theory: 100us/10ns = 10000(dec) = 2710(hex) -> 0xFFFFFFFF - 0x2710 = 0xFFFFD8EF
 //Reality: 10 kHz -> 100 us -> 100us - 0,9 us (interrupt handling) = 99,1 us -> 99,1 us/10 ns = 9910(dec) -> 0x26B6 -> 0xFFFFFFFF - 0x26B6 = 0xFFFFD949  !!!

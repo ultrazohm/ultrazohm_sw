@@ -1,9 +1,3 @@
-/*
- * File Name:         hdl_prj\ipcore\Counter_f_sw_V2_ip_v1_0\include\Counter_f_sw_V2_ip_addr.h
- * Description:       C Header File
- * Created:           2020-04-27 19:16:02
-*/
-
 #ifndef COUNTER_F_SW_V2_IP_H_
 #define COUNTER_F_SW_V2_IP_H_
 

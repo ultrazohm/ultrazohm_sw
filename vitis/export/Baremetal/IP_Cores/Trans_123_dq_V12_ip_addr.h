@@ -1,9 +1,3 @@
-/*
- * File Name:         hdl_prj\ipcore\Trans_123_dq_V12_ip_v1_0\include\Trans_123_dq_V12_ip_addr.h
- * Description:       C Header File
- * Created:           2020-06-08 19:55:04
-*/
-
 #ifndef TRANS_123_DQ_V12_IP_H_
 #define TRANS_123_DQ_V12_IP_H_
 

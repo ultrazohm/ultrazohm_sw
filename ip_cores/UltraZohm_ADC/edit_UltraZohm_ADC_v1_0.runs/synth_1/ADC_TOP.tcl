@@ -70,6 +70,10 @@ proc create_report { reportName command } {
   }
 }
 OPTRACE "synth_1" START { ROLLUP_AUTO }
+set_param power.BramSDPPropagationFix 1
+set_param power.enableUnconnectedCarry8PinPower 1
+set_param power.enableCarry8RouteBelPower 1
+set_param power.enableLutRouteBelPower 1
 OPTRACE "Creating in-memory project" START { }
 create_project -in_memory -part xczu9eg-ffvc900-1-e
 
@@ -84,6 +88,7 @@ set_property ip_output_repo /home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZoh
 set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
+read_vhdl -vhdl2008 -library xil_defaultlib /home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/SPI_MASTER.vhd
 read_vhdl -library xil_defaultlib /home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/ADC_TOP.vhd
 OPTRACE "Adding files" END { }
 # Mark all dcp files as not used in implementation to prevent them from being

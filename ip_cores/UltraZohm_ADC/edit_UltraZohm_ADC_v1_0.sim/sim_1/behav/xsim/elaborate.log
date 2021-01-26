@@ -1,7 +1,15 @@
 Vivado Simulator 2020.1
 Copyright 1986-1999, 2001-2020 Xilinx, Inc. All Rights Reserved.
-Running: /opt/Xilinx/Vivado/2020.1/bin/unwrapped/lnx64.o/xelab -wto 3926c8d95e8f4e66b6091227338eef6c --incr --debug typical --relax --mt 8 -L xil_defaultlib -L secureip --snapshot ADC_TOP_behav xil_defaultlib.ADC_TOP -log elaborate.log 
+Running: /opt/Xilinx/Vivado/2020.1/bin/unwrapped/lnx64.o/xelab -wto 3926c8d95e8f4e66b6091227338eef6c --incr --debug typical --relax --mt 8 -L xil_defaultlib -L secureip --snapshot ADC_TESTBENCH_behav xil_defaultlib.ADC_TESTBENCH -log elaborate.log 
 Using 8 slave threads.
 Starting static elaboration
 Completed static elaboration
-INFO: [XSIM 43-4323] No Change in HDL. Linking previously generated obj files to create kernel
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package std.standard
+Compiling package std.textio
+Compiling package ieee.std_logic_1164
+Compiling architecture behavioral of entity xil_defaultlib.SPI_MASTER [\SPI_MASTER(channels=2,clk_div=2...]
+Compiling architecture behavioral of entity xil_defaultlib.adc_testbench
+Built simulation snapshot ADC_TESTBENCH_behav

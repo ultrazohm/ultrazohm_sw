@@ -1,0 +1,15 @@
+# compile vhdl design source files
+vhdl2008 xil_defaultlib  \
+"../../../../edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/SPI_MASTER.vhd" \
+
+vhdl xil_defaultlib  \
+"../../../../edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/ADC_TOP.vhd" \
+
+vhdl2008 xil_defaultlib  \
+"../../../../edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/ULTRAZOHM_ADC_PKG.vhd" \
+
+vhdl xil_defaultlib  \
+"../../../../edit_UltraZohm_ADC_v1_0.srcs/sim_1/new/ADC_TESTBENCH.vhd" \
+
+# Do not sort compile order
+nosort

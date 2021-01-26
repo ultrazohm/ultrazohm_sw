@@ -1,2 +1,4 @@
 Vivado Simulator 2020.1
 Time resolution is 1 ps
+Error: Simulation ended
+Time: 1480 ns  Iteration: 0  Process: /ADC_TESTBENCH/stimulus  File: /home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sim_1/new/ADC_TESTBENCH.vhd

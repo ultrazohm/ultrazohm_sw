@@ -2,4 +2,7 @@
 2020.1
 May 27 2020
 19:59:15
-/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/ADC_TOP.vhd,1606817054,vhdl,,,,adc_top,,,,,,,,
+/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sim_1/new/ADC_TESTBENCH.vhd,1611688033,vhdl,,,,adc_testbench;conf_adc,,,,,,,,
+/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/ADC_TOP.vhd,1611341755,vhdl,,,,adc_top,,,,,,,,
+/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/SPI_MASTER.vhd,1611681758,vhdl2008,/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sim_1/new/ADC_TESTBENCH.vhd,,,spi_master,,,,,,,,
+/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/ULTRAZOHM_ADC_PKG.vhd,1608203882,vhdl2008,,,,ultrazohm_adc_pkg,,,,,,,,

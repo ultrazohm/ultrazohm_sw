@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
-| Date         : Thu Dec 10 22:27:34 2020
+| Date         : Fri Jan 22 19:57:14 2021
 | Host         : ws-wendt running 64-bit Ubuntu 20.04.1 LTS
 | Command      : report_utilization -file ADC_TOP_utilization_synth.rpt -pb ADC_TOP_utilization_synth.pb
 | Design       : ADC_TOP
@@ -31,13 +31,13 @@ Table of Contents
 +-------------------------+------+-------+-----------+-------+
 |        Site Type        | Used | Fixed | Available | Util% |
 +-------------------------+------+-------+-----------+-------+
-| CLB LUTs*               |    8 |     0 |    274080 | <0.01 |
-|   LUT as Logic          |    8 |     0 |    274080 | <0.01 |
+| CLB LUTs*               |    1 |     0 |    274080 | <0.01 |
+|   LUT as Logic          |    1 |     0 |    274080 | <0.01 |
 |   LUT as Memory         |    0 |     0 |    144000 |  0.00 |
-| CLB Registers           |    8 |     0 |    548160 | <0.01 |
-|   Register as Flip Flop |    8 |     0 |    548160 | <0.01 |
+| CLB Registers           |    2 |     0 |    548160 | <0.01 |
+|   Register as Flip Flop |    2 |     0 |    548160 | <0.01 |
 |   Register as Latch     |    0 |     0 |    548160 |  0.00 |
-| CARRY8                  |    1 |     0 |     34260 | <0.01 |
+| CARRY8                  |    0 |     0 |     34260 |  0.00 |
 | F7 Muxes                |    0 |     0 |    137040 |  0.00 |
 | F8 Muxes                |    0 |     0 |     68520 |  0.00 |
 | F9 Muxes                |    0 |     0 |     34260 |  0.00 |
@@ -60,7 +60,7 @@ Table of Contents
 | 0     |          Yes |           - |          Set |
 | 0     |          Yes |           - |        Reset |
 | 0     |          Yes |         Set |            - |
-| 8     |          Yes |       Reset |            - |
+| 2     |          Yes |       Reset |            - |
 +-------+--------------+-------------+--------------+
 
 
@@ -93,7 +93,7 @@ Table of Contents
 +------------+------+-------+-----------+-------+
 |  Site Type | Used | Fixed | Available | Util% |
 +------------+------+-------+-----------+-------+
-| Bonded IOB |   25 |     0 |       204 | 12.25 |
+| Bonded IOB |   23 |     0 |       204 | 11.27 |
 +------------+------+-------+-----------+-------+
 
 
@@ -152,12 +152,11 @@ Table of Contents
 +----------+------+---------------------+
 | Ref Name | Used | Functional Category |
 +----------+------+---------------------+
-| INBUF    |   17 |                 I/O |
-| IBUFCTRL |   17 |              Others |
-| OBUF     |    8 |                 I/O |
-| LUT2     |    8 |                 CLB |
-| FDRE     |    8 |            Register |
-| CARRY8   |    1 |                 CLB |
+| OBUF     |   19 |                 I/O |
+| INBUF    |    4 |                 I/O |
+| IBUFCTRL |    4 |              Others |
+| FDRE     |    2 |            Register |
+| LUT3     |    1 |                 CLB |
 | BUFGCE   |    1 |               Clock |
 +----------+------+---------------------+
 

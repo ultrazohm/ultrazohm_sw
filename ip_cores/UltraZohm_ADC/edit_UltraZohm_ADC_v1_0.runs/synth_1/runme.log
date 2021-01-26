@@ -15,19 +15,36 @@ Attempting to get a license for feature 'Synthesis' and/or device 'xczu9eg'
 INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xczu9eg'
 INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
 INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
-INFO: [Synth 8-7075] Helper process launched with PID 73965
+INFO: [Synth 8-7075] Helper process launched with PID 44702
 ---------------------------------------------------------------------------------
-Starting Synthesize : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 2125.613 ; gain = 0.000 ; free physical = 8098 ; free virtual = 25338
+Starting Synthesize : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 2125.625 ; gain = 0.000 ; free physical = 847 ; free virtual = 22843
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-638] synthesizing module 'ADC_TOP' [/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/ADC_TOP.vhd:53]
-	Parameter HAS_MOSI bound to: 1 - type: bool 
-	Parameter BITS bound to: 16 - type: integer 
-INFO: [Synth 8-256] done synthesizing module 'ADC_TOP' (1#1) [/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/ADC_TOP.vhd:53]
+INFO: [Synth 8-638] synthesizing module 'ADC_TOP' [/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/ADC_TOP.vhd:61]
+	Parameter DATA_WIDTH bound to: 16 - type: integer 
+	Parameter CHANNELS bound to: 1 - type: integer 
+	Parameter PRE_DELAY bound to: 0 - type: integer 
+	Parameter POST_DELAY bound to: 0 - type: integer 
+	Parameter CLK_DIV bound to: 1 - type: integer 
+	Parameter DATA_WIDTH bound to: 16 - type: integer 
+	Parameter CHANNELS bound to: 1 - type: integer 
+	Parameter PRE_DELAY bound to: 0 - type: integer 
+	Parameter POST_DELAY bound to: 0 - type: integer 
+	Parameter CLK_DIV bound to: 0 - type: integer 
+INFO: [Synth 8-3491] module 'SPI_MASTER' declared at '/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/SPI_MASTER.vhd:32' bound to instance 'spi' of component 'SPI_MASTER' [/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/ADC_TOP.vhd:89]
+INFO: [Synth 8-638] synthesizing module 'SPI_MASTER' [/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/SPI_MASTER.vhd:57]
+	Parameter DATA_WIDTH bound to: 16 - type: integer 
+	Parameter CHANNELS bound to: 1 - type: integer 
+	Parameter PRE_DELAY bound to: 0 - type: integer 
+	Parameter POST_DELAY bound to: 0 - type: integer 
+	Parameter CLK_DIV bound to: 0 - type: integer 
+WARNING: [Synth 8-614] signal 'RESET_N' is read in the process but is not in the sensitivity list [/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/SPI_MASTER.vhd:78]
+INFO: [Synth 8-256] done synthesizing module 'SPI_MASTER' (1#1) [/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/SPI_MASTER.vhd:57]
+INFO: [Synth 8-256] done synthesizing module 'ADC_TOP' (2#1) [/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/ADC_TOP.vhd:61]
 ---------------------------------------------------------------------------------
-Finished Synthesize : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 2125.613 ; gain = 0.000 ; free physical = 8175 ; free virtual = 25415
+Finished Synthesize : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 2125.625 ; gain = 0.000 ; free physical = 940 ; free virtual = 22937
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 2125.613 ; gain = 0.000 ; free physical = 8171 ; free virtual = 25412
+Finished Constraint Validation : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 2125.625 ; gain = 0.000 ; free physical = 937 ; free virtual = 22933
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
@@ -36,10 +53,10 @@ Loading part: xczu9eg-ffvc900-1-e
 INFO: [Synth 8-6742] Reading net delay rules and data
 INFO: [Device 21-403] Loading part xczu9eg-ffvc900-1-e
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 2133.617 ; gain = 8.004 ; free physical = 8169 ; free virtual = 25410
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 2133.629 ; gain = 8.004 ; free physical = 935 ; free virtual = 22931
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 2133.617 ; gain = 8.004 ; free physical = 8169 ; free virtual = 25409
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 2133.629 ; gain = 8.004 ; free physical = 927 ; free virtual = 22924
 ---------------------------------------------------------------------------------
 No constraint files found.
 ---------------------------------------------------------------------------------
@@ -47,9 +64,20 @@ Start RTL Component Statistics
 ---------------------------------------------------------------------------------
 Detailed RTL Component Info : 
 +---Adders : 
-	   2 Input    8 Bit       Adders := 1     
+	   2 Input    5 Bit       Adders := 1     
 +---Registers : 
-	                8 Bit    Registers := 1     
+	               16 Bit    Registers := 2     
+	                6 Bit    Registers := 1     
+	                3 Bit    Registers := 1     
+	                1 Bit    Registers := 4     
++---Muxes : 
+	   6 Input    6 Bit        Muxes := 1     
+	   2 Input    3 Bit        Muxes := 1     
+	   6 Input    3 Bit        Muxes := 1     
+	   2 Input    2 Bit        Muxes := 1     
+	   3 Input    2 Bit        Muxes := 1     
+	   6 Input    1 Bit        Muxes := 8     
+	   2 Input    1 Bit        Muxes := 8     
 ---------------------------------------------------------------------------------
 Finished RTL Component Statistics 
 ---------------------------------------------------------------------------------
@@ -66,21 +94,24 @@ No constraint files found.
 ---------------------------------------------------------------------------------
 Start Cross Boundary and Area Optimization
 ---------------------------------------------------------------------------------
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin nxtstate_reg[1] with 1st driver pin 'spii_2/spi/i_0/O' [/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/SPI_MASTER.vhd:148]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin nxtstate_reg[1] with 2nd driver pin 'GND' [/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/SPI_MASTER.vhd:148]
+CRITICAL WARNING: [Synth 8-6858] multi-driven net nxtstate_reg[1] is connected to at least one constant driver which has been preserved, other driver is ignored [/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.srcs/sources_1/new/SPI_MASTER.vhd:148]
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:14 ; elapsed = 00:00:21 . Memory (MB): peak = 2727.469 ; gain = 601.855 ; free physical = 7478 ; free virtual = 24721
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:14 ; elapsed = 00:00:21 . Memory (MB): peak = 2737.387 ; gain = 611.762 ; free physical = 432 ; free virtual = 22238
 ---------------------------------------------------------------------------------
 No constraint files found.
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:00:14 ; elapsed = 00:00:22 . Memory (MB): peak = 2727.469 ; gain = 601.855 ; free physical = 7477 ; free virtual = 24720
+Finished Timing Optimization : Time (s): cpu = 00:00:14 ; elapsed = 00:00:21 . Memory (MB): peak = 2737.387 ; gain = 611.762 ; free physical = 431 ; free virtual = 22237
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Technology Mapping
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:00:14 ; elapsed = 00:00:22 . Memory (MB): peak = 2727.469 ; gain = 601.855 ; free physical = 7478 ; free virtual = 24721
+Finished Technology Mapping : Time (s): cpu = 00:00:14 ; elapsed = 00:00:21 . Memory (MB): peak = 2737.387 ; gain = 611.762 ; free physical = 431 ; free virtual = 22237
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -98,37 +129,37 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2727.469 ; gain = 601.855 ; free physical = 7478 ; free virtual = 24720
+Finished IO Insertion : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2737.387 ; gain = 611.762 ; free physical = 431 ; free virtual = 22237
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2727.469 ; gain = 601.855 ; free physical = 7478 ; free virtual = 24720
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2737.387 ; gain = 611.762 ; free physical = 431 ; free virtual = 22237
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2727.469 ; gain = 601.855 ; free physical = 7478 ; free virtual = 24720
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2737.387 ; gain = 611.762 ; free physical = 431 ; free virtual = 22237
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2727.469 ; gain = 601.855 ; free physical = 7478 ; free virtual = 24720
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2737.387 ; gain = 611.762 ; free physical = 431 ; free virtual = 22237
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2727.469 ; gain = 601.855 ; free physical = 7478 ; free virtual = 24720
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2737.387 ; gain = 611.762 ; free physical = 431 ; free virtual = 22237
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2727.469 ; gain = 601.855 ; free physical = 7478 ; free virtual = 24720
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2737.387 ; gain = 611.762 ; free physical = 431 ; free virtual = 22237
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -141,45 +172,45 @@ Report BlackBoxes:
 +-+--------------+----------+
 
 Report Cell Usage: 
-+------+-------+------+
-|      |Cell   |Count |
-+------+-------+------+
-|1     |BUFG   |     1|
-|2     |CARRY8 |     1|
-|3     |LUT2   |     8|
-|4     |FDRE   |     8|
-|5     |IBUF   |    17|
-|6     |OBUF   |     8|
-+------+-------+------+
++------+-----+------+
+|      |Cell |Count |
++------+-----+------+
+|1     |BUFG |     1|
+|2     |LUT3 |     1|
+|3     |FDRE |     2|
+|4     |IBUF |     4|
+|5     |OBUF |    19|
++------+-----+------+
 
 Report Instance Areas: 
-+------+---------+-------+------+
-|      |Instance |Module |Cells |
-+------+---------+-------+------+
-|1     |top      |       |    43|
-+------+---------+-------+------+
++------+---------+-----------+------+
+|      |Instance |Module     |Cells |
++------+---------+-----------+------+
+|1     |top      |           |    27|
+|2     |  spi    |SPI_MASTER |     3|
++------+---------+-----------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2727.469 ; gain = 601.855 ; free physical = 7478 ; free virtual = 24720
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2737.387 ; gain = 611.762 ; free physical = 431 ; free virtual = 22237
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 0 critical warnings and 0 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2727.469 ; gain = 601.855 ; free physical = 7479 ; free virtual = 24722
-Synthesis Optimization Complete : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2727.477 ; gain = 601.855 ; free physical = 7479 ; free virtual = 24722
+Synthesis finished with 0 errors, 3 critical warnings and 1 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2737.387 ; gain = 611.762 ; free physical = 433 ; free virtual = 22239
+Synthesis Optimization Complete : Time (s): cpu = 00:00:16 ; elapsed = 00:00:24 . Memory (MB): peak = 2737.395 ; gain = 611.762 ; free physical = 433 ; free virtual = 22239
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2727.477 ; gain = 0.000 ; free physical = 7549 ; free virtual = 24791
-INFO: [Netlist 29-17] Analyzing 19 Unisim elements for replacement
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2737.395 ; gain = 0.000 ; free physical = 504 ; free virtual = 22310
+INFO: [Netlist 29-17] Analyzing 5 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2727.477 ; gain = 0.000 ; free physical = 7467 ; free virtual = 24709
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2737.395 ; gain = 0.000 ; free physical = 422 ; free virtual = 22228
 INFO: [Project 1-111] Unisim Transformation Summary:
-  A total of 18 instances were transformed.
+  A total of 5 instances were transformed.
   BUFG => BUFGCE: 1 instance 
-  IBUF => IBUF (IBUFCTRL, INBUF): 17 instances
+  IBUF => IBUF (IBUFCTRL, INBUF): 4 instances
 
 INFO: [Common 17-83] Releasing license: Synthesis
-15 Infos, 0 Warnings, 0 Critical Warnings and 0 Errors encountered.
+18 Infos, 1 Warnings, 3 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:00:23 ; elapsed = 00:00:29 . Memory (MB): peak = 2727.477 ; gain = 609.867 ; free physical = 7602 ; free virtual = 24844
+synth_design: Time (s): cpu = 00:00:23 ; elapsed = 00:00:28 . Memory (MB): peak = 2737.395 ; gain = 619.773 ; free physical = 565 ; free virtual = 22371
 INFO: [Common 17-1381] The checkpoint '/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/UltraZohm_ADC/edit_UltraZohm_ADC_v1_0.runs/synth_1/ADC_TOP.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file ADC_TOP_utilization_synth.rpt -pb ADC_TOP_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Thu Dec 10 22:27:34 2020...
+INFO: [Common 17-206] Exiting Vivado at Fri Jan 22 19:57:14 2021...

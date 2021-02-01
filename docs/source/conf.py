@@ -34,11 +34,18 @@ extensions = [
     'sphinx_rtd_theme',
     'sphinxcontrib.mermaid',
     'sphinxcontrib.yt',
+    'sphinx_issues',
 ]
 
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+
+# Paths for sphinx_issues
+
+issues_uri = "https://bitbucket.org/ultrazohm/ultrazohm_sw/issues/{issue}"
+issues_pr_uri = "https://bitbucket.org/ultrazohm/ultrazohm_sw/pull-requests/{pr}"
+issues_commit_uri = "https://bitbucket.org/ultrazohm/ultrazohm_sw/commits/{commit}"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

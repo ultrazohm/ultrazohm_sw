@@ -25,7 +25,7 @@
 #include "include/javascope.h"
 #include "include/control.h"
 #include "include/pwm_3L_driver.h"
-
+#include "Codegen/uz_codegen.h"
 
 //Initialize the global variables
 Xint16 i_LifeCheck;
@@ -36,7 +36,6 @@ Xboolean bInit 		= valueFalse;
 Xboolean bNewControlMethodAvailable = valueFalse;
 
 DS_Data Global_Data;
-
 extern XGpio Gpio_OUT;											/* GPIO Device driver instance for the real GPIOs */
 
 //Data from R5_0 to A53_0 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)

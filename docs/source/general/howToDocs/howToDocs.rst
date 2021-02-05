@@ -179,3 +179,7 @@ All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
 
 `sphinx-autobuild <https://github.com/executablebooks/sphinx-autobuild>`_
  Enable autobuild and reload after changes for local development with ``make livehtml``
+ 
+`sphinx-issues <https://github.com/sloria/sphinx-issues>`_
+ Link to issues and pull requests with ``:issue:`51``` and ``:pr:`5```, e.g., issue :issue:`5`
+ 

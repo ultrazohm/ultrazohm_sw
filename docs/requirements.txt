@@ -4,3 +4,4 @@ sphinxcontrib-mermaid
 sphinxcontrib.yt
 six
 sphinx-autobuild
+sphinx-issues

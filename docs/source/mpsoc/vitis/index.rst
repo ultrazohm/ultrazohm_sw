@@ -12,3 +12,4 @@ Vitis
 	interrupts
 	gcc_optimization
 	known_issues
+	ErrorHandling

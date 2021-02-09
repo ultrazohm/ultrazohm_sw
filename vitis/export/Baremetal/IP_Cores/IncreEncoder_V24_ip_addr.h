@@ -1,9 +1,3 @@
-/*
- * File Name:         hdl_prj\ipcore\IncreEncoder_V24_ip_v24_0\include\IncreEncoder_V24_ip_addr.h
- * Description:       C Header File
- * Created:           2020-06-12 20:16:55
-*/
-
 #ifndef INCREENCODER_V24_IP_H_
 #define INCREENCODER_V24_IP_H_
 

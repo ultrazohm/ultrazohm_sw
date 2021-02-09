@@ -1,13 +1,16 @@
 /******************************************************************************
-*
-* isr.c
-*
-* Copyright (C) 2019 UltraZohm Community, All rights reserved.
-*
-*  Created on: 22.08.2018
-*      Author: Wendel Sebastian (SW)
-* Description: Zynq UltraScale+
-*
+* Copyright 2021 Eyke Liegmann, Tobias Schindler, Sebastian Wendel
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
 #include "../include/isr.h"
@@ -23,6 +26,9 @@
 #include "../include/encoder.h"
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
+
+// Include for code-gen
+#include "../Codegen/uz_codegen.h"
 
 //Timing measurement variables
 //Variables for ISR-time measurement
@@ -60,6 +66,8 @@ Xfloat32 sin1amp=100.0;
 
 //Global variable structure
 extern DS_Data Global_Data;
+
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -166,9 +174,6 @@ void ISR_Control(void *data)
 		// add your torque controller here
 	}
 
-
-	// generate open-loop sinusoidal duty-cycle, amplitude and frequency are set in the Global_Data struct
-	// both function write the variable Global_Data.rasv.halfBridge1DutyCycle -> only comment 2L or 3L!
 	// PWM_SS_Calculate_DutyCycle_open_loop_sin(&Global_Data);
 	// PWM_3L_Calculate_DutyCycle_open_loop_sin(&Global_Data);
 
@@ -384,6 +389,8 @@ u32 Rpu_IpiInit(u16 DeviceId)
 		}
 
 	XIpiPsu_InterruptEnable(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
+
+
 
 	xil_printf("RPU: RPU_IpiInit: Done\r\n");
 	return XST_SUCCESS;

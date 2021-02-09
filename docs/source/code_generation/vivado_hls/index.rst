@@ -2,6 +2,7 @@
 Vivado HLS (HDL)
 ================
 
+**Placeholder**
 
 ..	toctree::
 		:maxdepth: 2

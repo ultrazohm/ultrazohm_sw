@@ -1,12 +1,16 @@
 /******************************************************************************
+* Copyright 2021 Sebastian Wendel, Eyke Liegmann, Tobias Schindler
 *
-* gpio.c
-*
-* Copyright (C) 2018 Institute ELSYS, TH Nürnberg,   All rights reserved.
-*
-*  Created on: 22.08.2018
-*      Author: Wendel Sebastian (SW)
-*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
 #include "../include/gpio_axi.h"
@@ -48,9 +52,9 @@ int Initialize_AXI_GPIO(void){
 		Status = XGpio_Initialize(&Gpio_OUT, GPIO_out_ID);
 					if(Status != XST_SUCCESS) return XST_FAILURE;
 		// Set all four  GPIO to output
-		//XGpio_SetDataDirection(&Gpio_OUT, GPIO_CHANNEL,0xF0); //SW: DIe ersten vier sind AUsgänge (=0) und die letzten 4 sind Eingänge (=F)
-		// Set all  GPIO to output -> Geht das überhaupt?
-		XGpio_SetDataDirection(&Gpio_OUT, GPIO_CHANNEL,0x00); //SW: DIe ersten acht sind AUsgänge (=0) Eingänge sind (1)
+		//XGpio_SetDataDirection(&Gpio_OUT, GPIO_CHANNEL,0xF0); //SW: DIe ersten vier sind AUsgï¿½nge (=0) und die letzten 4 sind Eingï¿½nge (=F)
+		// Set all  GPIO to output -> Geht das ï¿½berhaupt?
+		XGpio_SetDataDirection(&Gpio_OUT, GPIO_CHANNEL,0x00); //SW: DIe ersten acht sind AUsgï¿½nge (=0) Eingï¿½nge sind (1)
 
 return Status;
 }

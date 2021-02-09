@@ -3,13 +3,29 @@ How to use Altium DB
 ====================
 
 To use the database driven library for Altium, a few settings have to be made once.
-In the following chapters a guideline how to install and set the parameter is given.
+In the following chapters, a guideline on how to install and set the parameter is given.
 The following tools will be needed:
 
 * BitBucket
 * ODBC Data Sources (64-Bit)
 * Altium
 * DBeaver
+
+Videos of setup
+===============
+
+How to install Altium:
+
+.. youtube:: SS1pZKD2n0Y
+
+How to install the Altium library:
+
+.. youtube:: 0VST-4g3nWA
+
+How to install DBweaver:
+
+.. youtube:: DaSXdXeiYR4
+
 
 BitBucket access setup
 ======================
@@ -24,13 +40,14 @@ BitBucket access setup
 
 2. Clone the repository on your local hard disk
 
-3. Create a new feature branch, to work with the system
+3. Create a new feature branch to work with the system
 
 4. If a new component was added, don´t forget to commit and push the new component to BitBucket by pull request!
 
 
 Server access setup
 ===================
+
 1. ``Open`` the ODBC-Datasource App (64-Bit)
 
 .. _20_ODBC_sources_1:
@@ -65,7 +82,7 @@ Server access setup
    .. figure:: img/23_ODBC_sources_4.png
       :width: 300px
 
-      OBDC - create new data source.
+      OBDC - create a new data source.
 
 5. Connect it to the ultrazohm server
 
@@ -126,7 +143,7 @@ Integration in Altium
 =====================
 
 1. Open a schematic document in Altium
-2. Choose the point ``place`` --> ``part``; a menue on the left or right side will open with the already installed library preferences called "components"
+2. Choose the point ``place`` --> ``part``; a menu on the left or right side will open with the already installed library preferences called "components"
 
 .. _30_Elsys_mariadb_lib:
 
@@ -147,7 +164,7 @@ Integration in Altium
 
 5. Select ``Install…`` and navigate to the point where the BitBucket folder is cloned on the computer. Select the file "elsys_maria_db_lib.DbLib"
 6. ``Close`` this window
-7. After installing the DBLib - File you can choose between the different integrated component tables
+7. After installing the DBLib - File, you can choose between the different integrated component tables
 
 .. _32_Elsys_mariadb_lib_example:
 
@@ -160,13 +177,14 @@ Integration in Altium
 
 Installation and setup of a front end (DBeaver)
 ===============================================
-To be able to add a new component to the database (MariaDB) as easily as possible, it is compfortable to use a graphical front end.
+
+To be able to add a new component to the database (MariaDB) as easily as possible, it is comfortable to use a graphical front end.
 
 1. Download the Dbeaver software to work with the MariaDB on the UltraZohm server https://dbeaver.io/download/ 
 
-.. note :: There are more software tools, that allow for adding and editing information in a database, but in the institute ELSYS we use DBeaver.
+.. note :: There are more software tools that allow for adding and editing information in a database, but DBeaver is recommended to keep the tooling consistent in the UltraZohm community.
 
-2. To setup the connection to the MariaDB on the UltraZohm Server the following steps (shown in the screenshots below) must be full filled one time.
+2. To set up the connection to the MariaDB on the UltraZohm Server, the following steps (shown in the screenshots below) must be fully filled one time.
 
 3. Select MariaDB
 
@@ -205,7 +223,7 @@ Before clicking ``Finish`` the settings of SSL must be done.
 
       DBeaver - driver settings - 2.
 
-7. Select use SSL and do not verify server certificate
+7. Select use SSL and do not verify the server certificate
 
 .. _39_DBeaver_5:
 
@@ -214,7 +232,7 @@ Before clicking ``Finish`` the settings of SSL must be done.
 
       DBeaver - SSL settings.
 
-8. Now the connection to the ultrazohm MariaDB should be possible.
+8. Now, the connection to the ultrazohm MariaDB should be possible.
 
 9. If the connection failled, control the settings and reconnect via right click on the ``altium_library`` --> ``Invalidate/ Reconnect``
 
@@ -227,20 +245,21 @@ Before clicking ``Finish`` the settings of SSL must be done.
 
       DBeaver - table structure.
 
-**This step completes the one time setup.**
+**This step completes the one-time setup.**
 
 Add a new component to the databased library
 ********************************************
+
 To make the process of adding a component more visible, it will be described by adding a SMD capacitor.
 
-.. note :: The target of this databased system is that schematic and footprints of generic components should only exist one time.
-           This means, that schematics and footprints symbols of generic components only have to be in the Bitbucket folder system once, even if resistors have different values.
-           Only if the component has a different geometry a new schematic and/or footprint must be added.
+.. note :: The target of this database system is that schematic and footprints of generic components should only exist one time.
+           This means that schematics and footprints symbols of generic components only have to be in the Bitbucket folder system once, even if resistors have different values.
+           Only if the component has a different geometry, a new schematic and/or footprint must be added.
            And be careful when you create new schematics and footprints that the pins and the naming of the pins are equal (very important by connectors and ics).
 
 
 1. Check if the schematic symbol already exists as a symbol in the BitBucket system. Therefore, open the folder of the cloned BitBucket repository.
-If the schematic does not exist, copy the schematic symbol in the suitable folder of the schematics ``...\alitum_libraries\symbols\...`` (at this point it is assumed, that missing schematics or footprints
+If the schematic does not exist, copy the schematic symbol in the suitable folder of the schematics ``...\alitum_libraries\symbols\...`` (at this point, it is assumed that missing schematics or footprints
 are each available separately (not in integrated libs or libraries with multiple parts)).
 
 .. _41_Explorer_SCH:
@@ -265,14 +284,14 @@ are each available separately (not in integrated libs or libraries with multiple
 
 5. Change to the DBeaver tool
 
-6. Choose the suitable table, where the component should be added
+6. Choose a suitable table where the component should be added
 
 .. _43_DBeaver_table:
 
    .. figure:: img/43_DBeaver_table.png
       :width: 300px
 
-      DBeaver - choose the suitable table.
+      DBeaver - choose a suitable table.
 
 7. A new register on the right side with the table will appear
 
@@ -283,8 +302,8 @@ are each available separately (not in integrated libs or libraries with multiple
 
       DBeaver - Editor will open on the right side.
 
-8. Mostly the "Properties" register will open at first. Change to the "Data" register. 
-An overview of all already added components will be shown there. (In this case no component is still existing in the table.)
+8. Mostly, the "Properties" register will open at first. Change to the "Data" register. 
+An overview of all already added components will be shown there. (In this case, no component is still existing in the table.)
 
 .. _45_DBeaver_Data:
 
@@ -293,13 +312,13 @@ An overview of all already added components will be shown there. (In this case n
 
       DBeaver - change to tab "data".
 
-9. Press the ``add`` button and a new row highlighted in green while appear.
+9. Press the ``add`` button, and a new row highlighted in green appears.
 
 10. By clicking on a respective cell, the cell can be filled with content.
 
 11. To switch between the view of all components and the comfortable editing mode for one component --> ``press tab``.
 
-12. If all necessary cells are filled with information, save the components with the ``save`` button (under the current table on the left side or by pressing ``Ctrl + S``). Some cells are forseen with a clause that they must be be filled before saving is allowed (to help the user not to forget information, which are neccessary). If something is forgotten the following message will occur.
+12. If all necessary cells are filled with information, save the components with the ``save`` button (under the current table on the left side or by pressing ``Ctrl + S``). Some cells have a clause that they must be filled before saving is allowed (to help the user not to forget information, which is necessary). If something is forgotten, the following message will occur.
 
 .. _46_DBeaver_Data_Error:
 
@@ -308,9 +327,8 @@ An overview of all already added components will be shown there. (In this case n
 
       DBeaver - error message.
 
-Press ``OK`` and fill out the missing cell (in this example "ComponentLink1Description")
-
-The table cells, which are here described in detail is from "Capacitors - SMD" table as an example
+Press ``OK`` and fill out the missing cell (in this example, "ComponentLink1Description").
+The table cells, which are here described in detail is from "Capacitors - SMD" table as an example.
 
 
 .. csv-table:: Capacitors - SMD
@@ -319,7 +337,7 @@ The table cells, which are here described in detail is from "Capacitors - SMD" t
   :header-rows: 1
 
 
-13. If the component is saved in DBeaver refresh the view in Altium via ``F5`` --> choose ``place`` --> ``part`` and select the library, where the component was added --> the new component is shown with all the inserted database information
+13. If the component is saved in DBeaver, refresh the view in Altium via ``F5`` --> choose ``place`` --> ``part`` and select the library, where the component was added --> the new component is shown with all the inserted database information
 
 .. _47_Altium_Parameter1:
 
@@ -342,8 +360,8 @@ The table cells, which are here described in detail is from "Capacitors - SMD" t
 
       Altium - component information - 3.
 
-14. The component can now be used in the schematic by ``drag and drop`` or by selecting via right click ``place ...``
-15. If the added component is not visibile in the library, refresh via ``F5`` again
+14. The component can now be used in the schematic by ``drag and drop`` or by selecting via right-click ``place ...``
+15. If the added component is not visible in the library, refresh via ``F5`` again
 16. If a new table was added in the database, open the elsys_mariadb_lib.DbLib File (also included in the BitBucket folder)
 
 .. _50_Altium_database_include:
@@ -353,7 +371,7 @@ The table cells, which are here described in detail is from "Capacitors - SMD" t
 
       Altium - elsys_mariadb_lib.DbLib File.
 
-17. At the end of the adding process of a component don´t forget to commit and to push the new components for other users in BitBucket. 
+17. At the end of the adding process of a component, don´t forget to commit and to push the new components for other users in BitBucket. 
 
 
 

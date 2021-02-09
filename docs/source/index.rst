@@ -26,6 +26,7 @@ Documentation of the UltraZohm
     general/ci_pipeline
     general/howToDocs/howToDocs
     general/altium_db_lib/altium_DB_lib
+    general/altium_db_lib/altium_schematic_footprint
 
 .. toctree::
     :maxdepth: 2

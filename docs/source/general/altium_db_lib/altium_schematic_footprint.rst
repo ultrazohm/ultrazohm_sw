@@ -1,11 +1,9 @@
-=============================================================================
-How to get schematics and footprints in the suitable format for the Altium DB
-=============================================================================
+=================================
+Altium: schematics and footprints
+=================================
 
-When creating a schematic in Altium, there are many different ways to place components and use their footprints
-for the layout.
-In the following, 4 different ways will be presented, how to create the appropriate schematic and footprint format
-for the Altium DB Library used in the institut ELSYS:
+When creating a schematic in Altium, there are many different ways to place components and use their footprints for the layout.
+In the following, 4 different ways will be presented, how to create the appropriate schematic and footprint format for the Altium DB Library used in the UltraZohm project:
 
 * Components are available with single schematic and single footprint lib from the manufacturer
 * Components are included in other schematic and footprint libraries with other components
@@ -14,14 +12,14 @@ for the Altium DB Library used in the institut ELSYS:
 
 Components are available with single schematic and single footprint lib from the manufacturer
 =============================================================================================
-If both the schematic as well as the footprint are available from the manufacturer for Altium as a single 
-component, this is the easiest way and you can start immediately with the instruction: How to use Altium DB.
-But if the desired component is combined in a library with several other components, see the following section...
+
+If both the schematic as well as the footprint are available from the manufacturer for Altium as a single  component, this is the easiest way and you can start immediately with the instruction: How to use Altium DB.
+But if the desired component is combined in a library with several other components, see the following section.
 
 Components are included in other schematic and footprint libraries with other components
 ========================================================================================
-If a component is in a library with several other components, this component must be separated from the other 
-components in the schematic symbol library as well as in the footprint library.
+
+If a component is in a library with several other components, this component must be separated from the other components in the schematic symbol library as well as in the footprint library.
 Using the CarrierBoard library as an example, a possible way is described:
 
 
@@ -34,8 +32,7 @@ Using the CarrierBoard library as an example, a possible way is described:
 
       Altium - Open schematic lib.
 
-2. Use the Altium Library Splitter Wizard
-``Tools`` --> ``Library Splitter Wizard``
+2. Use the Altium Library Splitter Wizard ``Tools`` --> ``Library Splitter Wizard``
 
 .. _101_Use_Lib_Splitter:
 
@@ -80,8 +77,7 @@ Using the CarrierBoard library as an example, a possible way is described:
 
       Altium - Next.
 
-7. Select the Output Directory (Therefore it might be suitable to create one folder for the schematic 
-symbols and one for the footprints.)
+7. Select the Output Directory (Therefore, it might be suitable to create one folder for the schematic symbols and one for the footprints.)
 
 .. _106_Lib_Splitter_6:
 
@@ -144,8 +140,7 @@ symbols and one for the footprints.)
 
       Altium - Footprints are separated.
 
-Now all components are separated from each other and it is possible to proceed with the instructions of 
-How to use Altium DB.
+Now all components are separated from each other and it is possible to proceed with the instructions of How to use Altium DB.
 
 
 Components are included in an integrated library
@@ -169,8 +164,7 @@ Components are included in an integrated library
 
       Altium - All included libs are visible.
 
-3. If more than one schematic and one footprint lib exist in the integrated library, choose the necessary
-footprint library and press ``File`` -> ``Save as``.
+3. If more than one schematic and one footprint lib exist in the integrated library, choose the necessary footprint library and press ``File`` -> ``Save as``.
 
 .. _122_Save_as_footprint:
 
@@ -197,15 +191,13 @@ footprint library and press ``File`` -> ``Save as``.
 
       Altium - Schematic and footprint lib are available.
 
-Now it can be continued with the instuction: Components are included in other schematic and footprint libraries 
-with other components.
+Now it can be continued with the instuction: Components are included in other schematic and footprint libraries with other components.
 
 
 Components are available as an ECAD MODEL
 =========================================
-Sometimes, there are no symbols or footprints directly from the manufacturer available. Then you can use 
-the component search engine (https://componentsearchengine.com/logPartRequest.php), where you can access a large number of already 
-existing components or request new models for Altium. 
+Sometimes, there are no symbols or footprints directly from the manufacturer available.
+Then you can use  the component search engine (https://componentsearchengine.com/logPartRequest.php), where you can access a large number of already existing components or request new models for Altium. 
 
 To enter these components into the database, proceed as follows:
 
@@ -245,10 +237,9 @@ To enter these components into the database, proceed as follows:
 
       Altium - Extract.
 
-5. Open Altium and a schematic file before the Altium Loader will be opened by selecting ``File``
---> ``Symbols Footprints 3D Models``
-(If this tab does not exist, the necessary plug in is missing. Therefore read and install the Altium Library 
-Loader https://www.samacsys.com/altium-designer-library-instructions/)
+5. Open Altium and a schematic file before the Altium Loader will be opened by selecting ``File`` --> ``Symbols Footprints 3D Models``
+(If this tab does not exist, the necessary plug in is missing.
+Therefore read and install the Altium Library Loader https://www.samacsys.com/altium-designer-library-instructions/)
 
 .. _134_Open_ECAD:
 
@@ -293,9 +284,5 @@ Loader https://www.samacsys.com/altium-designer-library-instructions/)
 
       Altium - SamacSys.
 
-At this point, the SamacSys lib can be reused or the respective symbols with the corresponding footprint
-can be stored in a temporary lib. Afterwards you have to continue with the instructions:
-Components are included in other schematic and footprint libraries with other components
-
-
-
+At this point, the SamacSys lib can be reused or the respective symbols with the corresponding footprint can be stored in a temporary lib. Afterwards you have to continue with the instructions:
+Components are included in other schematic and footprint libraries with other components.

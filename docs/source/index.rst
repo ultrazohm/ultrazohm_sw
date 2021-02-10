@@ -72,6 +72,7 @@ Syllabus
     general/howToDocs/howToDocs
     general/altium_db_lib/altium_DB_lib
     general/useCases/useCases
+    general/altium_db_lib/altium_schematic_footprint
     general/altium_db_lib/altium
     general/altium_db_lib/altium_Layer_Stack
     general/altium_db_lib/altium_Rules

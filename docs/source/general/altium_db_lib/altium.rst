@@ -177,7 +177,7 @@ and select the suitable template
 
       Altium - Validate/ Execute/ Close.
 
-27. Every component should have a designator
+27. Every component should have a designator. Most important thing is to be consistent within one project. See `Wikipedia <https://en.wikipedia.org/wiki/Reference_designator>`_ for an example list. 
 
 .. _150_Annotate_Schematic_6:
 

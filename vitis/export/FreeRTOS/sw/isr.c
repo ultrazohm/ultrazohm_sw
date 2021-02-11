@@ -37,6 +37,7 @@ extern ARM_to_Oszi_Data_shared_struct OsziData;
 extern Oszi_to_ARM_Data_shared_struct ControlData;
 
 QueueHandle_t OsziData_queue;
+int OSZI_QUEUE_FULL = 0;
 
 extern A53_Data Global_Data_A53;
 
@@ -108,7 +109,11 @@ void Transfer_ipc_Intr_Handler(void *data)
 		cnt_javascope = 0;
 
 		// append OsziData to queue
-		xQueueSendToBackFromISR(OsziData_queue, &OsziData, &xHigherPriorityTaskWoken);
+		if ( errQUEUE_FULL == xQueueSendToBackFromISR(OsziData_queue, &OsziData, &xHigherPriorityTaskWoken)  )
+		{
+			OSZI_QUEUE_FULL++;
+			// xil_printf("OsziData_queue is full\r\n");
+		}
 
 		// force context switch after ISR finishes -> switching to ethernet task
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
@@ -165,7 +170,7 @@ int Initialize_ISR(){
 		}
 
 	// create queue with queue_elements elements of of type ARM_to_Oszi_Data_shared_struct
-	const int queue_elements = 20; // arbitrary number, could be optimized.
+	const int queue_elements = 100; // arbitrary number, could be optimized.
 	OsziData_queue = xQueueCreate( queue_elements, sizeof(ARM_to_Oszi_Data_shared_struct) );
 		if (OsziData_queue == NULL){
 			xil_printf("APU: Error: Queue creation failed\r\n");

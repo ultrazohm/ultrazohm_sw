@@ -18,7 +18,7 @@
 #	source {../../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl}
 #
 # XSCT Programming Reference UG1416 
-# https://www.xilinx.com/html_docs/xilinx2019_2/vitis_doc/
+# https://www.xilinx.com/html_docs/xilinx2020_1/vitis_doc/
 ###########################################################################
 
 
@@ -106,6 +106,9 @@ bsp config dhcp_does_arp_check true
 platform write 
 bsp config lwip_dhcp true
 platform write 
+# increase heap size of freertos, to fix javascope glitches
+bsp config total_heap_size  1048576
+platform write 
 
 puts "Info:(UltraZohm) regenerate FreeRTOS BSP"
 #regenerate board support package
@@ -183,6 +186,9 @@ puts stdout $filename_FreeRTOS
 importsources -name FreeRTOS -path $filename_FreeRTOS -soft-link
 importsources -name FreeRTOS -path $filename_FreeRTOS/lscript.ld -linker-script
 
+# set optimization level 
+app config -name FreeRTOS -set compiler-optimization {Optimize most (-O3)}
+app config -name Baremetal -set compiler-optimization {Optimize more (-O2)}
 
 ##Application FSBL (Standalone) A53_0
 #####################################################

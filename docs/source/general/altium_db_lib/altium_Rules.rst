@@ -2,9 +2,7 @@
 Altium: Rules
 ===================================
 
-Rules are very important for maintaining safety distances.
-The rules can derive from the requirements regarding voltage and current to the PCB and the requirement, 
-which are given from the PCB manufacturer
+Rules are very important for maintaining safety distances.The rules can derive from the requirements regarding voltage and current to the PCB and the requirement, which are given from the PCB manufacturer
 
 1. The rule and constraint editor can be opened (only in a PCB document " .PcbDoc") ``Design`` --> ``Rules`` (DR)
 
@@ -15,11 +13,9 @@ which are given from the PCB manufacturer
 
       Altium - Design Rules Editor.
 
-2. In this editor many changes and definitions e.g. regarding clearance, routing width, planes, 
-polygons can be made.
+2. In this editor many changes and definitions e.g. regarding clearance, routing width, planes, polygons can be made.
 
-3. Every rule has a priority, which can be change by choosing the main point like "clearance" (shown in the 
-picture above) + Priorities (on the under edge of this column)
+3. Every rule has a priority, which can be change by choosing the main point like "clearance" (shown in the picture above) + Priorities (on the under edge of this column)
 
 .. _161_Rule_Priorities:
 
@@ -28,8 +24,7 @@ picture above) + Priorities (on the under edge of this column)
 
       Altium - Rules Priorities.
 
-4. In this window you can increase or decrease the priority of the rules regarding the clearance. 
-Every rule needs an exclusive name, which could not be used twice in any rule.
+4. In this window you can increase or decrease the priority of the rules regarding the clearance. Every rule needs an exclusive name, which could not be used twice in any rule.
 
 5. The rules can be defined separated for each layer with the help of defining nets 
 (Net Classes are selected by the drop down menu --> PowerNet_15V).
@@ -50,8 +45,7 @@ But these nets must be defined in the schematic by making a net label.
 
       Altium - Net label.
 
-6. Furthermore, there is the option to use the "Custom Queries", where you are able to define 
-dependencies by clauses etc.
+6. Furthermore, there is the option to use the "Custom Queries", where you are able to define dependencies by clauses etc.
 
 .. _164_Rules:
 
@@ -66,8 +60,7 @@ These settings must be given by the application and must be individually set bef
 Differential signals
 ====================
 
-Differential signals exist of two signals. Often it is necessary, that these signals have a specific 
-impedance to be robust against malfunctions.
+Differential signals exist of two signals. Often it is necessary, that these signals have a specific impedance to be robust against malfunctions.
 
 To design suitable parameters for differential signals the open source tool "Saturn PCB Toolkit" is good to use.
 
@@ -76,9 +69,7 @@ To design suitable parameters for differential signals the open source tool "Sat
 Tool Saturn
 ===========
 
-With the help of this tool it is possible to define a target impedance (in that case 120 Ohm) and calculate the 
-necessary conductor width and conductor spacing. The conductor height is given by the height of the layer on which 
-the conductor should be lay outed.
+With the help of this tool it is possible to define a target impedance (in that case 120 Ohm) and calculate the necessary conductor width and conductor spacing. The conductor height is given by the height of the layer on which the conductor should be lay outed.
 
 .. _165_Tool_Saturn:
 
@@ -92,8 +83,7 @@ the conductor should be lay outed.
 Altium Rules
 ============
 
-If the calculated impedance correspond approximately with the target impedance the values for the 
-conductor width and the conductor spacing can be set in the Altium Rules
+If the calculated impedance correspond approximately with the target impedance the values for the conductor width and the conductor spacing can be set in the Altium Rules
 
 .. _166_Altium_Rules:
 

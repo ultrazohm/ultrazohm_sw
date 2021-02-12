@@ -4,8 +4,7 @@ Altium: Layer Stack Manager
 
 The layer stack manager defines the structure and the width of the different layers.
 
-If the PCB should correspond to "standard" layer stack structure the best way would be to use the described 
-and given layer stack recommendations of the PCB manufacturer.
+If the PCB should correspond to "standard" layer stack structure the best way would be to use the described and given layer stack recommendations of the PCB manufacturer.
 
 In the following the layer stack for the manufacturer MultiCB is used:
 
@@ -21,8 +20,7 @@ https://www.multi-circuit-boards.eu/leiterplatten-design-hilfe/lagenaufbau/stand
 To configure this information in Altium
 ========================================
 
-1. Open the layer stack manager (only possible if you select a PCB Dokument ".PcbDoc") by 
-clicking ``Design`` --> ``Layer Stack Manager``
+1. Open the layer stack manager (only possible if you select a PCB Dokument ".PcbDoc") by clicking ``Design`` --> ``Layer Stack Manager``
 
 .. _154_Layer_Stack:
 
@@ -35,8 +33,7 @@ clicking ``Design`` --> ``Layer Stack Manager``
 
 3. Add/ Change the necessary thickness to given ones
 
-4. With the ``Tools`` --> ``Layerstack Visualizer`` a 3D picture of the layer stack is given, 
-additionally, shown with the defined via types
+4. With the ``Tools`` --> ``Layerstack Visualizer`` a 3D picture of the layer stack is given, additionally, shown with the defined via types
 
 .. _155_Layer_Stack_3D:
 
@@ -51,13 +48,9 @@ additionally, shown with the defined via types
 Defining Via Types
 ==================
 
-Different via types are possible to use. As well as by the layer stack the possibility of using different 
-vias types is depending on the PCB manufacturer. Because of that, the kind and size of vias that should be used 
-in the project must be checked with the capabilities of the manufacturer. 
-As general rule use only through-hole vias that drill from top to bottom, everything else is more expensive. 
+Different via types are possible to use. As well as by the layer stack the possibility of using different vias types is depending on the PCB manufacturer. Because of that, the kind and size of vias that should be used in the project must be checked with the capabilities of the manufacturer. As general rule use only through-hole vias that drill from top to bottom, everything else is more expensive. 
 
-1. Open the layer stack manager (only possible if you select a PCB Document ".PcbDoc") by 
-clicking ``Design`` --> ``Layer Stack Manager``
+1. Open the layer stack manager (only possible if you select a PCB Document ".PcbDoc") by clicking ``Design`` --> ``Layer Stack Manager``
 
 2. Choose the register "Via types" (Below the layer stack table)
 

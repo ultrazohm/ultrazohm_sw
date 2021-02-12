@@ -77,6 +77,7 @@ Syllabus
     general/altium_db_lib/altium_Layer_Stack
     general/altium_db_lib/altium_Rules
     general/altium_db_lib/altium_Structure
+    general/altium_db_lib/altium_Practical
 
 .. toctree::
     :maxdepth: 2

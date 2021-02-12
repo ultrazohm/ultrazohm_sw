@@ -15,8 +15,7 @@ Altium: Create a new Altium Project
 
 3. Give a describing name for the project
 
-4. Choose a location for saving the project (often it is suitable 
-to save the project in a folder with BitBucket reference)
+4. Choose a location for saving the project (often it is suitable to save the project in a folder with BitBucket reference)
 
 5. Click ``Create``
 
@@ -43,16 +42,11 @@ to save the project in a folder with BitBucket reference)
 
 New schematic sheet was added.
 
-9. In general the symbol * marks that this sheet/ project is not saved. This can be done be clicking 
-``File`` --> ``save`` or ``save all``
+9. In general the symbol * marks that this sheet/ project is not saved. This can be done be clicking ``File`` --> ``save`` or ``save all``
 
-10. If you develop the PCB for the ELSYS institute the template A4_CoBo_THN should be used. It is also part 
-of the BitBucket content and can be found under the following path (for working with BitBucket and 
-Libraries look at the instruction for Altium DB Lib)
-…\pcb_libraries\templates\schematics\A4_CoBo_THN
+10. If you develop the PCB for the ELSYS institute the template A4_CoBo_THN should be used. It is also part of the BitBucket content and can be found under the following path (for working with BitBucket and Libraries look at the instruction for Altium DB Lib) …\pcb_libraries\templates\schematics\A4_CoBo_THN
 
-11. To use the template in the schematic open the schematic 
-click ``Design`` --> ``Templates`` --> ``Project Templates`` --> ``Choose a File``
+11. To use the template in the schematic open the schematic click ``Design`` --> ``Templates`` --> ``Project Templates`` --> ``Choose a File``
 
 .. _143_Template_0:
 
@@ -186,8 +180,7 @@ and select the suitable template
 
       Altium - Designator D1.
 
-28. If you placed some components on the schematic sheet(s) and annotated them compile the project
-right mouse click on the project --> ``Compile PCB Project Guide.PrjPcb``
+28. If you placed some components on the schematic sheet(s) and annotated them compile the project right mouse click on the project --> ``Compile PCB Project Guide.PrjPcb``
 
 .. _150_Compile_Project:
 
@@ -215,8 +208,7 @@ Right mouse click --> ``Add new to project`` --> ``PCB``
 
 Right mouse click --> ``Save as``
 
-31. Import Components from the schematic to the PCB 
-Design --> ``Import Changes from Guide.PrjPcb`` (short cut: di)
+31. Import Components from the schematic to the PCB Design --> ``Import Changes from Guide.PrjPcb`` (short cut: di)
 
 .. _150_PCB.png:
 
@@ -225,9 +217,7 @@ Design --> ``Import Changes from Guide.PrjPcb`` (short cut: di)
 
       Altium - Import components from schematic.
 
-Be careful not to use ``Update Changes from Guide.PrjPcb``. In this case you update the schematic with 
-no content of the PCB.
-All components included in the schematic sheets are placed on the right edge of the PCB.
+Be careful not to use ``Update Changes from Guide.PrjPcb``. In this case you update the schematic with no content of the PCB. All components included in the schematic sheets are placed on the right edge of the PCB.
 
 By pressing the numbers ``1``, ``2`` and ``3`` you can select between the following views
 
@@ -237,8 +227,7 @@ By pressing the numbers ``1``, ``2`` and ``3`` you can select between the follow
 
 ``3`` = 3D view
 
-Often it is helpful to define null- point on the left corner because then the x and y dimension is 
-without any offset
+Often it is helpful to define null- point on the left corner because then the x and y dimension is without any offset
 
 To do this:
 

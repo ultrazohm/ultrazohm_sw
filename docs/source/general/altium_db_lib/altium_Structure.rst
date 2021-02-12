@@ -5,8 +5,7 @@ Altium: Possible Structure of schematics
 Sheet Hierarchie
 ================
 
-To ensure a better structure and clarity within the individual schematics often a sheet hierarchie is used. 
-This hierarchie could be designed differently depend on the aim. 
+To ensure a better structure and clarity within the individual schematics often a sheet hierarchie is used. This hierarchie could be designed differently depend on the aim. 
 
 One possible structure is shown below:
 
@@ -33,8 +32,7 @@ One possible structure is shown below:
 
       Altium - Hierarchical example of a project structure.
 
-The Top Sheet includes and connects the interfaces of the sheets below and gives a good 
-overview of the general signal flow.
+The Top Sheet includes and connects the interfaces of the sheets below and gives a good overview of the general signal flow.
 
 .. _171_Top_Sheet:
 
@@ -43,25 +41,19 @@ overview of the general signal flow.
 
       Altium - Example of a Top Sheet.
 
-The hierarchie can be designed as deep as the developer it defines, it must not end at the Middle Sheet 
-(shown above). 
+The hierarchie can be designed as deep as the developer it defines, it must not end at the Middle Sheet (shown above). 
 
-To define this hierarchie, it is important that you add your necessary schematic sheets one a top sheet. 
-On the top sheet there is often no information about the different components. 
-Only information are included about the different schematic sheets, which should be connected.
+To define this hierarchie, it is important that you add your necessary schematic sheets one a top sheet. On the top sheet there is often no information about the different components. Only information are included about the different schematic sheets, which should be connected.
 
 1. For placing a sheet entry for a schematic sheet, select ``Place`` --> ``Sheet symbol``
 
-2. Add a designator letter or word (This designator is added behind the main designator, which is annotated 
-in the schematic sheet)
+2. Add a designator letter or word (This designator is added behind the main designator, which is annotated in the schematic sheet)
 
 3. Add the name of the schematic sheet, which should be symbolized.
 
 4. If you want you can change the color of the boxes, but not necessary.
 
-5. Place in-/ and output- ports by selecting ``Place`` --> ``Port`` (for default this port is 
-defined as an IO Port. If it is only a port in one direction define whether it is an input or an output. 
-This might be helpful by compiling the project.)
+5. Place in-/ and output- ports by selecting ``Place`` --> ``Port`` (for default this port is defined as an IO Port. If it is only a port in one direction define whether it is an input or an output. This might be helpful by compiling the project.)
 
 .. _172_Properties:
 
@@ -74,11 +66,7 @@ This might be helpful by compiling the project.)
 Signals
 =======
 
-In Altium there are different forms of interfaces possible between schematic sheets (individual signals,
-ports, harness). 
-Individual signals can be defined as an input or an output.
-To use signals in a top sheet, it is important to define them in the schematic sheet as signals, 
-which are connected to a port. 
+In Altium there are different forms of interfaces possible between schematic sheets (individual signals,ports, harness). Individual signals can be defined as an input or an output.To use signals in a top sheet, it is important to define them in the schematic sheet as signals, which are connected to a port. 
 
 Output Signal at a schematic sheet. To place a port select ``Place``--> ``Port``.
 
@@ -103,9 +91,7 @@ Output definition of the port of a sheet entry (Top Sheet)
 Busses
 ======
 
-Bus signals contain many individual signals, which are summarized to one bus system. With the help of busses 
-the visible clearness is often higher than without. But handling with bus systems is some times a little 
-bit difficult and depends on the installed version of Altium.
+Bus signals contain many individual signals, which are summarized to one bus system. With the help of busses the visible clearness is often higher than without. But handling with bus systems is some times a little bit difficult and depends on the installed version of Altium.
 
 Because of that reason only the link to the documentation of Altium busses is here given.
 https://www.altium.com/documentation/altium-designer/sch-obj-busbus-ad
@@ -114,8 +100,7 @@ https://www.altium.com/documentation/altium-designer/sch-obj-busbus-ad
 Harness
 =======
 
-A harness is a container to group different kinds of signals and can summarize signals and bus signals. 
-A harness is characterized by its defined type.
+A harness is a container to group different kinds of signals and can summarize signals and bus signals. A harness is characterized by its defined type.
 
 1. To create a harness connector select ``Place`` --> ``Harness`` --> ``Harness connector``
 
@@ -134,12 +119,10 @@ A harness is characterized by its defined type.
 
 5. Harness types must also be connect to ports for using them in a global context like Top Sheets etc.
 
-6. Therefore place common ports. By connecting the common port (often colored in yellow) to a harness, 
-the port will switch the color to blue and the function
+6. Therefore place common ports. By connecting the common port (often colored in yellow) to a harness, the port will switch the color to blue and the function
 
 
-!!!! One important notice: it is not possible with the Altium version 19 to combine harness function with 
-repeat function blocks
+!!!! One important notice: it is not possible with the Altium version 19 to combine harness function with repeat function blocks
 
 Support information from Altium regarding this question:
 

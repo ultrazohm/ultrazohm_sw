@@ -40,7 +40,7 @@ Refer to the [docs](https://docs.ultrazohm.com/) for the documentation of the Ul
 
 ## Contributing
 
-The UltraZohm open source project is maintained by employees of the project coordinator of [KI-Power](https://elektronikforschung.de/projekte/ki-power) [Technische Hochschule NÅrnberg](https://www.th-nuernberg.de/einrichtungen-gesamt/in-institute/institut-fuer-leistungselektronische-systeme-elsys/).
+The UltraZohm open source project is maintained by employees of the project coordinator of [KI-Power](https://elektronikforschung.de/projekte/ki-power) [Technische Hochschule Nuremberg](https://www.th-nuernberg.de/einrichtungen-gesamt/in-institute/institut-fuer-leistungselektronische-systeme-elsys/).
 Currently, only people associated with the project partners of KI-Power and people with access to an UltraZohm in their lab can contribute to this repository.
 If you are interested in joining the UltraZohm community, get in touch with us by E-Mail (info@ultrazohm.com).
 We are working on streamlining the contribution process since we aim to welcome contributions of all kinds.

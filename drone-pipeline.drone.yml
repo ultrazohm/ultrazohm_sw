@@ -80,7 +80,7 @@ steps:
    - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
    - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_build_r5.tcl
   
-    - name: Vitis build A53
+ - name: Vitis build A53
    image: vivado:2020.1
    commands:
    - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh

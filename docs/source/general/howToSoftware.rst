@@ -62,7 +62,6 @@ functions
 - Function Arguments
     - Zero > One > two > three
     - Use structs for more than two function arguments (e.g., config struct)
-  
 
 Error handling
 **************
@@ -81,20 +80,12 @@ Comments
 - **Never** comment something that a function does to another function in another file! This just means you have to restructure the code!
 - **do not comment out code, delete it**
 - *But I want to have it for future reference* - that is what git and the docs are for
-- 
 
 Prefixing
 *********
 
 - We use ``uz_`` as a prefix for our functions such that there are no name conflicts with user code
 - There are no real classes or namespaces in ``C``, thus this is our solution for this problem
-
-
-.. [#CleanCode] Clean Code, A Handbook of Agile Software Craftsmanship, Robert C Martin, 2009
-.. [#TDD] Test-Driven Development for Embedded C, James W. Grenning, 2011
-.. [#MakingEmbedded] Making Embedded Systems, Elecia White, 2011
-
-
 
 SOLID Design
 ------------
@@ -111,18 +102,27 @@ Applied to C
 ************
 
 Single-instance module
- Encapsulates a object if only one object of the type is present in the system
-
- Example interface from [#TDD]_ (p. 194)
+ Encapsulates a object if only one object of the type is present in the system.
+ This means all initialization is done inside the module function, there is no initialization in code and nothing is passed to init except for configuration if necessary.
+ Example interface from [#TDD]_ (p. 194):
 
  .. code-block:: c
 
- void module_init(void)
- void module_TurnOn(void);
- void module_TurnOff(void);
- void module_SetDeadTime(float DeadTime);
- float module_GetDeadTime();
- 
+    void module_init(void)
+    void module_TurnOn(void);
+    void module_TurnOff(void);
+    void module_SetDeadTime(float DeadTime);
+    float module_GetDeadTime();
 
 Multiple-instance module
  Encapsulates a module and lets you create multiple instances of the module / object
+ **Ongoing discussion regarding how to bets use multiple instance modules**
+
+ Sources
+ -------
+
+
+.. [#CleanCode] Clean Code, A Handbook of Agile Software Craftsmanship, Robert C Martin, 2009
+.. [#TDD] Test-Driven Development for Embedded C, James W. Grenning, 2011
+.. [#MakingEmbedded] Making Embedded Systems, Elecia White, 2011
+

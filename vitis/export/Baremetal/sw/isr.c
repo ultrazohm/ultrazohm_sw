@@ -39,7 +39,7 @@ float 	f_ISRLifeCheck = 0;
 uint32_t 		i_count_1ms = 0; // count up by 1 every 1ms
 uint32_t 		i_count_1s = 0; // count up by 1 every 1s
 float 	isr_period_us_measured;
-XTime 		tPrev, tNow = 0; // XTime is u64 which will not overflow in a life time
+XTime 		tPrev, tNow = 0;
 unsigned int time_overflow_counter = 0;
 
 //Initialize the variables for the ADC measurement

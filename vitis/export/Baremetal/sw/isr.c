@@ -32,14 +32,25 @@
 
 //Timing measurement variables
 //Variables for ISR-time measurement
+typedef struct _globalTiming_ {
+	unsigned long uptime_micro_seconds; 	// total uptime in micro seconds - us
+	unsigned long interrupts_counter ;
+	unsigned int uptime_seconds ; 		// total uptime in seconds
+	unsigned int tick_counter_overflow;
+	float isr_period_us;
+	float isr_execution_time_us;
+	float isr_execution_time_maximum_us;
+
+} globalTimingR5;
+
+globalTimingR5 timingR5 = {0,0,0,0,0,0,0};
+
 uint32_t 	time_ISR_total, time_ISR_start, time_ISR_end;
 float 	time_ISR_total_us, time_ISR_max_us = 0;
 uint32_t 		i_ISRLifeCheck = 0;
-float 	f_ISRLifeCheck = 0;
 uint32_t 		i_count_1ms = 0; // count up by 1 every 1ms
 uint32_t 		i_count_1s = 0; // count up by 1 every 1s
 float 	isr_period_us_measured;
-XTime 		tPrev, tNow = 0;
 unsigned int time_overflow_counter = 0;
 
 //Initialize the variables for the ADC measurement
@@ -81,12 +92,6 @@ void ISR_Control(void *data)
 	XTmrCtr_Reset(&TMR_Con_Inst,0);
 	//Read the timer value at the beginning of the ISR in order to measure the ISR-time
 	time_ISR_start = XTmrCtr_GetValue(&TMR_Con_Inst,0);
-
-	i_ISRLifeCheck++; //LiveCheck
-	if(i_ISRLifeCheck > 1000){
-		i_ISRLifeCheck = 1; //If the value is 10001, than set to 1 in order to avoid value-overflow
-	}
-	f_ISRLifeCheck = ((float)i_ISRLifeCheck)*0.1; //for representation, keep the value between 0-1000
 
 	MeasureTimeForJavascope();	//measure the time for the JavaScope
 	toggleLEDdependingOnReadyOrRunning(i_count_1ms,i_count_1s); // Toggle the System-Ready LED in order to show a Life-Check on the front panel
@@ -134,6 +139,13 @@ void ISR_Control(void *data)
 // Measure the time for the JavaScope
 //----------------------------------------------------
 static void MeasureTimeForJavascope(){
+
+	timingR5.interrupts_counter++;
+	i_ISRLifeCheck = timingR5.interrupts_counter % 1000;
+
+	XTime tPrev;
+	XTime static tNow = 0;
+
 	// save previous read
 	tPrev = tNow;
 	// read clock counter of R5 processor, which starts at 0 after reset/starting the processor
@@ -141,7 +153,7 @@ static void MeasureTimeForJavascope(){
 
 	//catch overflow after 9.16 minutes when tNow (32bit) starts from 0 again
 	if (tNow < tPrev){
-		time_overflow_counter++;
+		timingR5.tick_counter_overflow++;
 	}
 
 	//measure with 1ms cycle

@@ -32,25 +32,22 @@
 
 //Timing measurement variables
 //Variables for ISR-time measurement
-Xuint32 	time_ISR_total, time_ISR_start, time_ISR_end;
-Xfloat32 	time_ISR_total_us, time_ISR_max_us = 0;
-Xint32 		i_ISRLifeCheck = 0;
-Xfloat32 	f_ISRLifeCheck = 0;
-Xint32 		i_count_1ms = 0; // count up by 1 every 1ms
-Xint32 		i_count_1s = 0; // count up by 1 every 1s
-Xfloat32 	isr_period_us_measured;
-XTime 		tPrev, tNow = 0; // XTime is u64 which will not overflow in a life time
+uint32_t 	time_ISR_total, time_ISR_start, time_ISR_end;
+float 	time_ISR_total_us, time_ISR_max_us = 0;
+uint32_t 		i_ISRLifeCheck = 0;
+float 	f_ISRLifeCheck = 0;
+uint32_t 		i_count_1ms = 0; // count up by 1 every 1ms
+uint32_t 		i_count_1s = 0; // count up by 1 every 1s
+float 	isr_period_us_measured;
+XTime 		tPrev, tNow = 0;
 unsigned int time_overflow_counter = 0;
 
 //Initialize the variables for the ADC measurement
 u32 		XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
-Xint32 		ADC_RAW_Sum_1 = 0.0;
-Xfloat32 	ADC_RAW_Offset_1 = 0.0;
-Xint16 		i_CountADCinit =0, MessOnce=0, CountCurrentError =0;
-boolean     initADCdone = valueFalse;
-
-// Initialize the  GPIO structure
-extern XGpio Gpio_OUT;	/* GPIO Device driver instance for the real GPIOs */
+uint32_t 		ADC_RAW_Sum_1 = 0.0;
+float 	ADC_RAW_Offset_1 = 0.0;
+int 		i_CountADCinit =0, MessOnce=0, CountCurrentError =0;
+_Bool     initADCdone = false;
 
 //Initialize the Interrupt structure
 XScuGic INTCInst;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -59,10 +56,7 @@ XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible 
 //Initialize the Timer structure
 XTmrCtr TMR_Con_Inst;
 
-//Variables for JavaScope
-extern Oszi_to_ARM_Data_shared_struct ControlData; //Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare; //Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-Xfloat32 sin1amp=100.0;
+float sin1amp=100.0;
 
 //Global variable structure
 extern DS_Data Global_Data;
@@ -75,13 +69,16 @@ extern DS_Data Global_Data;
 // - triggered from PL
 // - start of the control period
 //----------------------------------------------------
+static void toggleLEDdependingOnReadyOrRunning(uint32_t i_count_1ms, uint32_t i_count_1s);
+static void MeasureTimeForJavascope();
+static void ReadAllADC();
+static void CheckForErrors();
+static void CalculateTimeISRtookToExecute();
+
 void ISR_Control(void *data)
 {
-	//Show start of control-ISR by toggling a pin
-	//if you have a device, which may produce several interrupts one after another, the first thing you should do here, is to disable interrupts!
 	// Enable and acknowledge the timer
 	XTmrCtr_Reset(&TMR_Con_Inst,0);
-
 	//Read the timer value at the beginning of the ISR in order to measure the ISR-time
 	time_ISR_start = XTmrCtr_GetValue(&TMR_Con_Inst,0);
 
@@ -89,76 +86,14 @@ void ISR_Control(void *data)
 	if(i_ISRLifeCheck > 1000){
 		i_ISRLifeCheck = 1; //If the value is 10001, than set to 1 in order to avoid value-overflow
 	}
-	f_ISRLifeCheck = ((Xfloat32)i_ISRLifeCheck)*0.1; //for representation, keep the value between 0-1000
+	f_ISRLifeCheck = ((float)i_ISRLifeCheck)*0.1; //for representation, keep the value between 0-1000
 
-	MeasureTime();	//measure the time for the JavaScope
+	MeasureTimeForJavascope();	//measure the time for the JavaScope
+	toggleLEDdependingOnReadyOrRunning(i_count_1ms,i_count_1s); // Toggle the System-Ready LED in order to show a Life-Check on the front panel
 
-	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
-	// todo: write seperate function to toggle front panel LEDs
-	if(Global_Data.cw.enableSystem){
-		if((i_count_1ms % 200)>100){
-			WritePin_PS_GPIO(LED_ready,valueTrue); //Write a GPIO for LED_1
-		}else{
-			WritePin_PS_GPIO(LED_ready,valueFalse); //Write a GPIO for LED_1
-		}
-	}else{
-		if(i_count_1s % 2){
-			WritePin_PS_GPIO(LED_ready,valueTrue); //Write a GPIO for LED_1
-		}else{
-			WritePin_PS_GPIO(LED_ready,valueFalse); //Write a GPIO for LED_1
-		}
-	}
-
-	//Start: Read out ADCs ---------------------------------------------------------------------------------------
-	if (initADCdone == valueFalse) { // init not done, determine ADC offset
-		if (i_CountADCinit < 1000){
-			//ToDo: Read the ADC-Register and sum up over 1000 measurements, e.g. like
-			//ADC_RAW_Sum_1 += Xil_In32(ADC_RAW_Value_1_REG); //Read AXI-register
-			i_CountADCinit++;
-		}else{
-			//ToDo: calculate average value in order to use as offset subsequently, e.g. like
-			//ADC_RAW_Offset_1 = (Xfloat32)ADC_RAW_Sum_1 / (Xfloat32)i_CountADCinit;
-
-			//toDO write for each ADC channel an own offset down.
-			initADCdone = valueTrue;
-			Global_Data.cw.ControlReference = CurrentControl; //default
-			Global_Data.cw.ControlMethod = fieldOrientedControl; //default
-			ADC_Clear_Offset();
-		}
-	}else{
-
-		// Choose here which ADC card to read
-		//ADC_readCardA1(&Global_Data);
-		//ADC_readCardA2(&Global_Data);
-		//ADC_readCardA3(&Global_Data);
-		ADC_readCardALL(&Global_Data);
-
-	}
-	//End: Read out ADCs ---------------------------------------------------------------------------------------
-
-
-	//Error detection
-	if(Global_Data.cw.enableControl == flagEnabled){
-		//Detect continuous current-limit ---------------------------------------------------------------------------------------
-		if ((Global_Data.av.I_U > Global_Data.mrp.motorMaximumCurrentContinuousOperation) || (Global_Data.av.I_V > Global_Data.mrp.motorMaximumCurrentContinuousOperation) || (Global_Data.av.I_W > Global_Data.mrp.motorMaximumCurrentContinuousOperation)){
-			CountCurrentError++;
-			if(CountCurrentError > 10){ //Only if the error is available for at least 10 cycles
-		 // if(CountCurrentError > 20000){ //Only if the error is available for at least 2 seconds @100us ISR-cycle
-				Global_Data.ew.maximumContinuousCurrentExceeded = valueTrue; //Current error detected -> errors are handled in the main.c
-			}
-		}else{
-			CountCurrentError =0; //Reset Error Counter
-		}
-
-		//Detect short-time current-limit ---------------------------------------------------------------------------------------
-		if ((Global_Data.av.I_U > Global_Data.mrp.motorMaximumCurrentShortTimeOperation) || (Global_Data.av.I_V > Global_Data.mrp.motorMaximumCurrentShortTimeOperation) || (Global_Data.av.I_W > Global_Data.mrp.motorMaximumCurrentShortTimeOperation)){
-			ErrorHandling(&Global_Data);
-			Global_Data.ew.maximumShortTermCurrentReached = valueTrue; //Current error detected -> errors are handled directly herein
-		}
-	}
-
-	//Read out speed and theta angle ---------------------------------------------------------------------------------------
-	Encoder_UpdateSpeedPosition(&Global_Data);
+	ReadAllADC();
+	CheckForErrors();
+	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
 
 	//Start: Write the references for the FPGA ---------------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)
@@ -174,20 +109,15 @@ void ISR_Control(void *data)
 		// add your torque controller here
 	}
 
-	// PWM_SS_Calculate_DutyCycle_open_loop_sin(&Global_Data);
-	// PWM_3L_Calculate_DutyCycle_open_loop_sin(&Global_Data);
-
 	// Set duty cycles for two-level modulator
 	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-						Global_Data.rasv.halfBridge2DutyCycle,
-						Global_Data.rasv.halfBridge3DutyCycle);
+					Global_Data.rasv.halfBridge2DutyCycle,
+					Global_Data.rasv.halfBridge3DutyCycle);
 
 	// Set duty cycles for three-level modulator
 	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-						Global_Data.rasv.halfBridge2DutyCycle,
-						Global_Data.rasv.halfBridge3DutyCycle);
-	//End: Write the references for the FPGA ---------------------------------------------------------------------------------------
-
+					Global_Data.rasv.halfBridge2DutyCycle,
+					Global_Data.rasv.halfBridge3DutyCycle);
 
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
@@ -196,22 +126,14 @@ void ISR_Control(void *data)
 	time_ISR_end = XTmrCtr_GetValue(&TMR_Con_Inst,0);
 
 	//Calculate the required ISR-time
-	time_ISR_total = time_ISR_end - time_ISR_start;
-	time_ISR_total_us = time_ISR_total * 1e-2 ; //PL clock-Ticks* @100MHz Clock [us]
-
-	if(time_ISR_total_us > time_ISR_max_us){
-		time_ISR_max_us = (time_ISR_total_us);
-	}
-
+	CalculateTimeISRtookToExecute();
 }
 
 //==============================================================================================================================================================
 //----------------------------------------------------
 // Measure the time for the JavaScope
 //----------------------------------------------------
-int MeasureTime(){
-	// static unsigned int time_overflow_counter = 0 ; // made global
-
+static void MeasureTimeForJavascope(){
 	// save previous read
 	tPrev = tNow;
 	// read clock counter of R5 processor, which starts at 0 after reset/starting the processor
@@ -233,23 +155,6 @@ int MeasureTime(){
 	float const counts_per_us = (COUNTS_PER_SECOND) * 1e-6; // DO NOT USE COUNTS_PER_USECOND, this macro has a large rounding error!
 	XTime isr_period_counts = (tNow - tPrev);
 	isr_period_us_measured = isr_period_counts / counts_per_us;
-
-	return 0;
-}
-
-//==============================================================================================================================================================
-//----------------------------------------------------
-// INITIALIZE ADC-COUNTER TIMER IN ORDER TO TRIGGER THE ADC CONVERSION
-// - If connected to 10MHz clock, a count value of 25 starts an ADC conversion every 2,5us (= 400 kHz)
-//----------------------------------------------------
-int Initialize_Trigger_ADC_Conversion(){
-
-	int Status = 0;
-
-	//Write down the Counter End-Value in order to start a ADC conversion
-//	Xil_Out32(ADCCounter_EndValue_REG, (Xint32)25); //Original = 100
-
-return Status;
 }
 
 //==============================================================================================================================================================
@@ -395,3 +300,70 @@ u32 Rpu_IpiInit(u16 DeviceId)
 	xil_printf("RPU: RPU_IpiInit: Done\r\n");
 	return XST_SUCCESS;
 }
+
+static void toggleLEDdependingOnReadyOrRunning(uint32_t i_count_1ms, uint32_t i_count_1s){
+	if(Global_Data.cw.enableSystem){
+	if((i_count_1ms % 200)>100){
+		uz_led_SetLedReadyOn();
+	}else{
+		uz_led_SetLedReadyOff();
+	}
+}else{
+	if(i_count_1s % 2){
+		uz_led_SetLedReadyOn();
+	}else{
+		uz_led_SetLedReadyOff();
+	}
+}
+};
+
+static void ReadAllADC(){
+	if (initADCdone == false) { // init not done, determine ADC offset
+		if (i_CountADCinit < 1000){
+			i_CountADCinit++;
+		}else{
+			//ToDo: calculate average value in order to use as offset subsequently, e.g. like
+			//ADC_RAW_Offset_1 = (float)ADC_RAW_Sum_1 / (float)i_CountADCinit;
+
+			//toDO write for each ADC channel an own offset down.
+			initADCdone = true;
+			Global_Data.cw.ControlReference = CurrentControl; //default
+			Global_Data.cw.ControlMethod = fieldOrientedControl; //default
+			ADC_Clear_Offset();
+		}
+	}else{
+		ADC_readCardALL(&Global_Data);
+	}
+};
+
+static void CheckForErrors(){
+	//Error detection
+	if(Global_Data.cw.enableControl == true){
+		//Detect continuous current-limit ---------------------------------------------------------------------------------------
+		if ((Global_Data.av.I_U > Global_Data.mrp.motorMaximumCurrentContinuousOperation) || (Global_Data.av.I_V > Global_Data.mrp.motorMaximumCurrentContinuousOperation) || (Global_Data.av.I_W > Global_Data.mrp.motorMaximumCurrentContinuousOperation)){
+			CountCurrentError++;
+			if(CountCurrentError > 10){ //Only if the error is available for at least 10 cycles
+		 // if(CountCurrentError > 20000){ //Only if the error is available for at least 2 seconds @100us ISR-cycle
+				Global_Data.ew.maximumContinuousCurrentExceeded = true; //Current error detected -> errors are handled in the main.c
+			}
+		}else{
+			CountCurrentError =0; //Reset Error Counter
+		}
+
+		//Detect short-time current-limit ---------------------------------------------------------------------------------------
+		if ((Global_Data.av.I_U > Global_Data.mrp.motorMaximumCurrentShortTimeOperation) || (Global_Data.av.I_V > Global_Data.mrp.motorMaximumCurrentShortTimeOperation) || (Global_Data.av.I_W > Global_Data.mrp.motorMaximumCurrentShortTimeOperation)){
+			ErrorHandling(&Global_Data);
+			Global_Data.ew.maximumShortTermCurrentReached = true; //Current error detected -> errors are handled directly herein
+		}
+	}
+};
+
+
+static void CalculateTimeISRtookToExecute(){
+	time_ISR_total = time_ISR_end - time_ISR_start;
+	time_ISR_total_us = time_ISR_total * 1e-2 ; //PL clock-Ticks* @100MHz Clock [us]
+
+	if(time_ISR_total_us > time_ISR_max_us){
+		time_ISR_max_us = (time_ISR_total_us);
+	}
+};

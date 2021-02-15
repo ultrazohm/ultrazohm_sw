@@ -18,6 +18,7 @@
 
 #include "../main.h"
 #include "xgpio.h"
+#include <stdbool.h>
 //Defines for the Interrupt fixed by hand from Vivado Block Design. 
 //signals are concatenated in this order forming an 8 bit interrupt vector. 
 // Shared Peripheral Interrupts: PL->PS
@@ -71,7 +72,6 @@ void Transfer_ipc_Intr_Handler(void *baseaddr_p);							// ISR von Timer-Control
 
 int MeasureTime(void);														// Function for time measurement
 int Initialize_Timer(void);													// Init Timer for ISRs
-int Initialize_Trigger_ADC_Conversion (void);								// Init Timer for current control
 int Initialize_FPGAController(DS_Data* data);								// Init FPGA Control algorithm
 int Initialize_ARMController(DS_Data* data);								// Init ARM Control algorithm
 int Initialize_ISR(void);

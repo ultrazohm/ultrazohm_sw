@@ -29,22 +29,21 @@ extern ARM_to_Oszi_Data_shared_struct OsziData;
 extern Oszi_to_ARM_Data_shared_struct ControlData;
 extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
 
-Xuint32 cnt_javascope=0, cnt_slowData=0;
+uint32_t cnt_javascope=0, cnt_slowData=0;
 
-Xuint16 js_factor1 = 0, js_factor2 = 0, js_factor3 = 0, js_factor4 = 0;
+uint16_t js_factor1 = 0, js_factor2 = 0, js_factor3 = 0, js_factor4 = 0;
 
 // Channel-pointer and pointer array
-Xfloat32 *js_ptr_arr[JSO_ENDMARKER];
-Xfloat32 *js_ptr[4];	// channel ptr
-Xfloat32 zerovalue = 0.0;
-Xint32  i_fetchDataLifeCheck=0;
+float *js_ptr_arr[JSO_ENDMARKER];
+float *js_ptr[4];	// channel ptr
+float zerovalue = 0.0;
+uint32_t  i_fetchDataLifeCheck=0;
 
 //Initialize the Interrupt structure
-extern XScuGic INTCInst;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts!
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 // external global variables from isr.c
-extern Xint32 i_count_1ms, i_count_1s;
+extern uint32_t i_count_1ms, i_count_1s;
 extern float f_ISRLifeCheck;
 extern float time_ISR_max_us, time_ISR_total, time_ISR_total_us, isr_period_us_measured;
 extern int i_ISRLifeCheck;
@@ -69,7 +68,7 @@ int JavaScope_initalize(DS_Data* data)
 
 	for (j=0; j<JSSD_ENDMARKER; j++)
 	{
-		js_slowDataArray[j].i = (Xuint32) zerovalue;
+		js_slowDataArray[j].i = (uint32_t) zerovalue;
 	}
 
 	//Initialize the RAM with zeros
@@ -109,7 +108,7 @@ int JavaScope_initalize(DS_Data* data)
 
 void js_fetchData4CH()
 {
-	Xint32 status;
+	int status;
 	u32 MsgPtr[IPI_R5toA53_MSG_LEN] = {0};
 	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0};
 
@@ -120,7 +119,7 @@ void js_fetchData4CH()
 	memcpy(&(MsgPtr[2]), js_ptr[2], sizeof(u32));
 	memcpy(&(MsgPtr[3]), js_ptr[3], sizeof(u32));
 
-	memcpy(&(MsgPtr[4]), &(js_slowDataArray[cnt_slowData]), sizeof(Xint32));		// copy without automatic float -> int conversion
+	memcpy(&(MsgPtr[4]), &(js_slowDataArray[cnt_slowData]), sizeof(u32));		// copy without automatic float -> int conversion
 	MsgPtr[5] = cnt_slowData;
 	MsgPtr[6] = OsziData.status_BareToRTOS;
 	MsgPtr[7] = 0;//free 32bit channel
@@ -155,9 +154,9 @@ void js_fetchData4CH()
 		xil_printf("RPU: IPI reading from A53 failed\r\n");
 	}
 
-	ControlData.id 			= (Xuint16)RespBuf[0];
-	ControlData.value 		= (Xuint16)RespBuf[1];
-	ControlData.digInputs 	= (Xuint16)RespBuf[2];
+	ControlData.id 			= (uint16_t)RespBuf[0];
+	ControlData.value 		= (uint16_t)RespBuf[1];
+	ControlData.digInputs 	= (uint16_t)RespBuf[2];
 
 	//End: send interrupt/message to the other processor with the FreeRTOS----------------------------
 }
@@ -177,16 +176,16 @@ void JavaScope_update(DS_Data* data){
 	// Will be transferred one after another (one every 0,5 ms).
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	js_slowDataArray[JSSD_INT_SecondsSinceSystemStart].i = i_count_1s;
-	js_slowDataArray[JSSD_FLOAT_uSecPerIsr].f 	= (Xfloat32)time_ISR_total_us;
-	js_slowDataArray[JSSD_FLOAT_Sine].f 		= time_ISR_max_us; //10.0 * sin(PI2 * 0.05 * ((Xfloat32)0.0002));	// 0.05 Hz => T=20sec
+	js_slowDataArray[JSSD_FLOAT_uSecPerIsr].f 	= (float)time_ISR_total_us;
+	js_slowDataArray[JSSD_FLOAT_Sine].f 		= time_ISR_max_us; //10.0 * sin(PI2 * 0.05 * ((float)0.0002));	// 0.05 Hz => T=20sec
 	js_slowDataArray[JSSD_FLOAT_FreqReadback].f = data->rasv.referenceFrequency;
-	js_slowDataArray[JSSD_INT_Milliseconds].i 	= (Xint32)i_count_1ms;
+	js_slowDataArray[JSSD_INT_Milliseconds].i 	= (int)i_count_1ms;
 	js_slowDataArray[JSSD_FLOAT_ADCconvFactorReadback].f = data->mrp.ADCconvFactorReadback;
 	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline].f= data->pID.Offline_Psi_PM;
 	js_slowDataArray[JSSD_FLOAT_Lq_Offline].f 	= data->pID.Offline_Lq;
 	js_slowDataArray[JSSD_FLOAT_Ld_Offline].f 	= data->pID.Offline_Ld;
 	js_slowDataArray[JSSD_FLOAT_Rs_Offline].f 	= data->pID.Offline_Rs;
-	js_slowDataArray[JSSD_INT_polePairs].i 		= (Xint32)data->mrp.motorPolePairNumber;
+	js_slowDataArray[JSSD_INT_polePairs].i 		= (int)data->mrp.motorPolePairNumber;
 	js_slowDataArray[JSSD_FLOAT_J].f 			= data->pID.Offline_motorRotorInertia;
 	js_slowDataArray[JSSD_INT_activeState].i 	= data->pID.activeState;
 	js_slowDataArray[JSSD_FLOAT_J].f 			= data->pID.Offline_motorRotorInertia;
@@ -216,13 +215,13 @@ void JavaScope_update(DS_Data* data){
 	js_slowDataArray[JSSD_FLOAT_MapCounter].f	= data->pID.map_counter;
 
 	if(data->pID.map_counter<401){ //400 = comes from 20x20 Raster of the flux maps
-		js_slowDataArray[JSSD_FLOAT_psidMap].f	= data->pID.FluxMap_d[(Xuint16)(data->pID.map_counter)];
-		js_slowDataArray[JSSD_FLOAT_psiqMap].f	= data->pID.FluxMap_q[(Xuint16)(data->pID.map_counter)];
-		js_slowDataArray[JSSD_FLOAT_idMap].f	= data->pID.InvFluxMap_d[(Xuint16)(data->pID.map_counter)];
-		js_slowDataArray[JSSD_FLOAT_iqMap].f	= data->pID.InvFluxMap_q[(Xuint16)(data->pID.map_counter)];
-		js_slowDataArray[JSSD_FLOAT_FluxTemp].f	= data->pID.FluxTemp[(Xuint16)(data->pID.map_counter/2)];
+		js_slowDataArray[JSSD_FLOAT_psidMap].f	= data->pID.FluxMap_d[(uint16_t)(data->pID.map_counter)];
+		js_slowDataArray[JSSD_FLOAT_psiqMap].f	= data->pID.FluxMap_q[(uint16_t)(data->pID.map_counter)];
+		js_slowDataArray[JSSD_FLOAT_idMap].f	= data->pID.InvFluxMap_d[(uint16_t)(data->pID.map_counter)];
+		js_slowDataArray[JSSD_FLOAT_iqMap].f	= data->pID.InvFluxMap_q[(uint16_t)(data->pID.map_counter)];
+		js_slowDataArray[JSSD_FLOAT_FluxTemp].f	= data->pID.FluxTemp[(uint16_t)(data->pID.map_counter/2)];
 	}
-	js_slowDataArray[JSSD_FLOAT_psi_array].f	= data->pID.psi_array[(Xuint16)(data->pID.map_counter)];
+	js_slowDataArray[JSSD_FLOAT_psi_array].f	= data->pID.psi_array[(uint16_t)(data->pID.map_counter)];
 	js_slowDataArray[JSSD_FLOAT_MapControl].f	= data->pID.map_counter;
 	js_slowDataArray[JSSD_FLOAT_I_rated].f		= data->mrp.motorNominalCurrent;
 	js_slowDataArray[JSSD_FLOAT_Wtemp].f		= data->pID.WindingTemp;

@@ -66,6 +66,8 @@ steps:
    commands:
    - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
    - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_generate_workspace.tcl
+   - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_checkIfBaremetalElfExists.tcl
+   - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_checkifFreeRTOSElfExists.tcl
 
 # Update the platform just to test the update script (does not update the platform since it did not change)
  - name: Vitis update platform

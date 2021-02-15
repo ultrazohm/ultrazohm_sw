@@ -60,7 +60,7 @@ int main (void){
 
 	int status;
 	Xil_AssertSetCallback((Xil_AssertCallback) uz_assertCallback);
-
+This procudes an error
 	//Output to the Terminal over UART to the COM-Port. Use e.g. "Tera Term" to listen with baud-rate 115200
 	xil_printf("\r\n\r\n");
 	xil_printf("Welcome to the UltraZohm\r\n");

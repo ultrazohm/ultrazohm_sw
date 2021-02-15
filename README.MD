@@ -8,7 +8,7 @@ Development is driven by researchers for researches to accelerate research by es
 Having a common platform enables the active research community to focus on publication and results, while the platform development is a shared effort. 
 
 - **High Computational power**: Four ARM A53, two ARM R5, and a large FPGA provided by a Xilinx Zynq UltraScale+ MPSoC.
-**Hard real-time**: Designed to meet modern control systems' timing requirements for power electronics.
+- **Hard real-time**: Designed to meet modern control systems' timing requirements for power electronics.
 - **Open Source**: Platform with no black-boxes and no barriers for your research. Adapt to your needs and use as you like.
 - **Modularity**: Extend the platform with your own hardware (adapter cards), IP-Cores and software components.
 - **Usability**: Novice friendly with tutorials and existing codebase. Expert friendly with access *to the last bit*.
@@ -40,7 +40,7 @@ Refer to the [docs](https://docs.ultrazohm.com/) for the documentation of the Ul
 
 ## Contributing
 
-The UltraZohm open source project is maintained by employees of the project coordinator of [KI-Power](https://elektronikforschung.de/projekte/ki-power) [Technische Hochschule N√ºrnberg](https://www.th-nuernberg.de/einrichtungen-gesamt/in-institute/institut-fuer-leistungselektronische-systeme-elsys/).
+The UltraZohm open source project is maintained by employees of the project coordinator of [KI-Power](https://elektronikforschung.de/projekte/ki-power) [Technische Hochschule NÅrnberg](https://www.th-nuernberg.de/einrichtungen-gesamt/in-institute/institut-fuer-leistungselektronische-systeme-elsys/).
 Currently, only people associated with the project partners of KI-Power and people with access to an UltraZohm in their lab can contribute to this repository.
 If you are interested in joining the UltraZohm community, get in touch with us by E-Mail (info@ultrazohm.com).
 We are working on streamlining the contribution process since we aim to welcome contributions of all kinds.

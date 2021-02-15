@@ -170,7 +170,7 @@ int Initialize_ISR(){
 		}
 
 	// create queue with queue_elements elements of of type ARM_to_Oszi_Data_shared_struct
-	const int queue_elements = 100; // arbitrary number, could be optimized.
+	const int queue_elements = 1000; // arbitrary number, could be optimized.
 	OsziData_queue = xQueueCreate( queue_elements, sizeof(ARM_to_Oszi_Data_shared_struct) );
 		if (OsziData_queue == NULL){
 			xil_printf("APU: Error: Queue creation failed\r\n");

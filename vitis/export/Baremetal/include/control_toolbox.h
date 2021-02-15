@@ -24,16 +24,16 @@
 //sample:				Pointer to sample no.
 //int_freq:				Interrupt frequency (i. e. frequency of the control algorithm)
 //return value:			Sine output
-float sinewave(float amplitude, float frequency, float phase, long* sample, float int_freq);
+float sinewave(const float amplitude, const float frequency, const float phase, long *const sample, const float int_freq);
 
 //Blockwave generator
-float blockwave(float amp_p, float amp_n, float frequency, float phase, long* sample, float int_freq);
+float blockwave(const float amp_p, const float amp_n, const float frequency, const float phase, long *const sample, const float int_freq);
 
 //Periodic Ramp generator
-float rampwave(float amp_p, float amp_n, float frequency, float phase, long* sample, float int_freq);
+float rampwave(const float amp_p, const float amp_n, const float frequency, const float phase, long *const sample, const float int_freq);
 
 //Pulse generator
-float pulse(float amplitude, float duty, float frequency, float phase, long* sample, float int_freq);
+float pulse(const float amplitude, const float duty, const float frequency, const float phase, long *const sample, const float int_freq);
 
 //Clarke transformation (abc to alpha beta)
 //alpha:					Alpha "phase" after Clarke transformation
@@ -41,14 +41,14 @@ float pulse(float amplitude, float duty, float frequency, float phase, long* sam
 //a:						Phase a before Clarke transformation
 //b:						Phase b before Clarke transformation
 //c:						Phase c before Clarke transformation
-void Clarke(float* alpha, float* beta, float a, float b, float c);
+void Clarke(float *const alpha, float *const beta, const float a, const float b, const float c);
 
 //Clarke transformation (abc to alpha beta) for a balanced system (a + b + c = 0)
 //alpha:					Alpha "phase" after Clarke transformation
 //beta:						Beta "phase" after Clarke transformation
 //a:						Phase a before Clarke transformation
 //b:						Phase b before Clarke transformation
-void Clarke_balanced(float* alpha, float* beta, float a, float b);
+void Clarke_balanced(float *const alpha, float *const beta, const float a, const float b);
 
 //Inverse Clarke transformation (alpha beta to abc)
 //alpha:					Alpha "phase" before inverse Clarke transformation
@@ -56,7 +56,7 @@ void Clarke_balanced(float* alpha, float* beta, float a, float b);
 //a:						Phase a after inverse Clarke transformation
 //b:						Phase b after inverse Clarke transformation
 //c:						Phase c after inverse Clarke transformation
-void Clarke_inv(float alpha, float beta, float* a, float* b, float* c);
+void Clarke_inv(const float alpha, const float beta, float *const a, float *const b, float *const c);
 
 //Park transformation (alpha beta to dq)
 //alpha:					Alpha "phase" before Park transformation
@@ -64,7 +64,7 @@ void Clarke_inv(float alpha, float beta, float* a, float* b, float* c);
 //d:						d "phase" after Park transformation
 //q:						q "phase" after Park transformation
 //phi:						Flux angle for Park transformation (0...2*pi)
-void Park(float alpha, float beta, float* d, float* q, float phi);
+void Park(const float alpha, const float beta, float *const d, float *const q, const float phi);
 
 //Inverse Park transformation (dq to alpha beta)
 //alpha:					Alpha "phase" before inverse Park transformation
@@ -72,7 +72,7 @@ void Park(float alpha, float beta, float* d, float* q, float phi);
 //d:						d "phase" after inverse Park transformation
 //q:						q "phase" after inverse Park transformation
 //phi:						Flux angle for inverse Park transformation (0...2*pi)
-void Park_inv(float* alpha, float* beta, float d, float q, float phi);
+void Park_inv(float *const alpha, float *const beta, const float d, const float q, const float phi);
 
 //PI controller with anti windup and output limitation
 //error:			Control error (reference - actual value)
@@ -82,10 +82,10 @@ void Park_inv(float* alpha, float* beta, float d, float q, float phi);
 //Ki:				Integral gain of the controller
 //output_limit:		Output limit for the controller (if in output saturation then anti-windup for integral part)
 //return value:		PI controller output
-float PI_Controller(float error, float* error_sum, int* anti_windup, float Kp, float Ki, float output_limit, float TSampling);
+float PI_Controller(const float error, float *const error_sum, int *const anti_windup, const float Kp, const float Ki, const float output_limit, const float TSampling);
 
 //Get magnitude and angle of a 2D vector
-void karth_polar(float *magn, float *angle, float x, float y);
+void karth_polar(float *const magn, float *const angle, const float x, const float y);
 
 /* 1st order Low Pass Filter */
 //input:			signal that you want to be filtered
@@ -94,7 +94,7 @@ void karth_polar(float *magn, float *angle, float x, float y);
 //Fs:				sampling frequency of the low-pass filter
 //Fc:				crossover frequency of the low-pass filter
 //return value:		filtered signal
-float LPF1(float input,float* in_mem,float* out_mem, float Fs,float Fc);
+float LPF1(const float input, float *const in_mem, float *const out_mem, const float Fs, const float Fc);
 
 /* 1st order High Pass Filter */
 //input:			signal that you want to be filtered
@@ -103,5 +103,5 @@ float LPF1(float input,float* in_mem,float* out_mem, float Fs,float Fc);
 //Fs:				sampling frequency of the low-pass filter
 //Fc:				crossover frequency of the low-pass filter
 //return value:		filtered signal
-float HPF1(float input,float* in_mem,float* out_mem, float Fs,float Fc);
+float HPF1(const float input, float *const in_mem, float *const out_mem, const float Fs, const float Fc);
 

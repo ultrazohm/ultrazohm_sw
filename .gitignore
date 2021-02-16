@@ -3,8 +3,11 @@
 !/vitis/workspace/create_Vitis_workspace_here.txt
 vivado/zusys/zusys.bxml
 .vscode
+!/vitis/Sandbox/.vscode
 vivado/zusys/zusys_ooc.xdc
 ip_cores/*/simulation/slprj/*
+
+vitis/Sandbox/uz_circularBuffer/build/
 
 vitis/export/Baremetal/slprj/
 
@@ -29,3 +32,7 @@ vitis/export/Baremetal/Codegen/uz_codegen0_ert_rtw/uz_codegen0.mk
 vitis/export/Baremetal/Codegen/slprj/
 
 vitis/export/Baremetal/Codegen/uz_codegen0_ert_rtw/html/
+
+vitis/Sandbox/build/
+
+vitis/Sandbox/uz_LED/build/

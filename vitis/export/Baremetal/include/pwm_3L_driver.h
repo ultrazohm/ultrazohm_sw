@@ -16,8 +16,14 @@
 #ifndef PWM_3L_H_
 #define PWM_3L_H_
 
+#include <stdint.h>
+#include <math.h>
+
+#include "xil_io.h"
+#include "xparameters.h"
+
+#include "../globalData.h"
 #include "../defines.h"
-#include "../main.h"
 #include "../IP_Cores/PWM_SS_3L_ip_addr.h"
 
 #define PWM_3L_ENABLE 	1
@@ -27,11 +33,11 @@
 // Methods for three-level PWM IP core
 void PWM_3L_Initialize(DS_Data* data);	// Init for the PWM modulation IP-Block
 void PWM_3L_SetDutyCycle(float duty_A, float duty_B, float duty_C);
-void PWM_3L_SetStatus(Xint32 PWM_en);
-void PWM_3L_SetMode(int PWM_mode);
+void PWM_3L_SetStatus(int32_t PWM_en);
+void PWM_3L_SetMode(int32_t PWM_mode);
 void PWM_3L_SetCarrierFrequency(float PWM_freq);
 void PWM_3L_SetMinimumPulseWidth(float PWM_min_pulse_width);
-void PWM_3L_SetTriState(int TriState_A, int TriState_B, int TriState_C);
+void PWM_3L_SetTriState(int32_t TriState_A, int32_t TriState_B, int32_t TriState_C);
 void PWM_3L_Calculate_DutyCycle_open_loop_sin(DS_Data* data);
 
 //==============================================================================================================================================================

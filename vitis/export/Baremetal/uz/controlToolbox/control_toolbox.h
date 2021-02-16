@@ -33,7 +33,7 @@ float blockwave(const float amp_p, const float amp_n, const float frequency, con
 float rampwave(const float amp_p, const float amp_n, const float frequency, const float phase, long *const sample, const float int_freq);
 
 //Pulse generator
-float pulse(const float amplitude, const float duty, const float frequency, const float phase, long *const sample, const float int_freq);
+float pulse(const float amplitude, float duty, const float frequency, const float phase, long *const sample, const float int_freq);
 
 //Clarke transformation (abc to alpha beta)
 //alpha:					Alpha "phase" after Clarke transformation

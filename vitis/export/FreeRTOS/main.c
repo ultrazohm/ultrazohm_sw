@@ -16,7 +16,6 @@
 #include <stdio.h>
 #include "xparameters.h"
 #include "netif/xadapter.h"
-#include "include/platform_config.h"
 #include "xil_printf.h"
 
 //Includes for Ethernet

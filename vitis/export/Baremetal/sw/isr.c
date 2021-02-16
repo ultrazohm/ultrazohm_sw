@@ -33,9 +33,11 @@
 //Timing measurement variables
 //Variables for ISR-time measurement
 typedef struct _globalTiming_ {
-	unsigned long uptime_micro_seconds; 	// total uptime in micro seconds - us
-	unsigned long interrupts_counter ;
-	unsigned int uptime_seconds ; 		// total uptime in seconds
+	unsigned long long uptime_micro_seconds; 	// total uptime in micro seconds - us
+	unsigned long long interrupt_counter;
+	unsigned int uptime_minutes; 		// total uptime in minutes
+	unsigned int uptime_milli_seconds; 	// total uptime in milli seconds
+	unsigned int uptime_seconds; 		// total uptime in seconds
 	unsigned int tick_counter_overflow;
 	float isr_period_us;
 	float isr_execution_time_us;
@@ -81,7 +83,7 @@ extern DS_Data Global_Data;
 // - start of the control period
 //----------------------------------------------------
 static void toggleLEDdependingOnReadyOrRunning(uint32_t i_count_1ms, uint32_t i_count_1s);
-static void MeasureTimeForJavascope();
+static void MeasureTimeForJavascope(globalTimingR5* time);
 static void ReadAllADC();
 static void CheckForErrors();
 static void CalculateTimeISRtookToExecute();
@@ -90,11 +92,14 @@ void ISR_Control(void *data)
 {
 	// Enable and acknowledge the timer
 	XTmrCtr_Reset(&TMR_Con_Inst,0);
-	//Read the timer value at the beginning of the ISR in order to measure the ISR-time
+	// Read the timer value at the beginning of the ISR in order to measure the ISR-time
+	// Is the timer not simply zero due to the reset above?
 	time_ISR_start = XTmrCtr_GetValue(&TMR_Con_Inst,0);
 
-	MeasureTimeForJavascope();	//measure the time for the JavaScope
-	toggleLEDdependingOnReadyOrRunning(i_count_1ms,i_count_1s); // Toggle the System-Ready LED in order to show a Life-Check on the front panel
+	//measure the time for the JavaScope
+	MeasureTimeForJavascope(&timingR5);
+	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
+	toggleLEDdependingOnReadyOrRunning(i_count_1ms,i_count_1s);
 
 	ReadAllADC();
 	CheckForErrors();
@@ -138,10 +143,10 @@ void ISR_Control(void *data)
 //----------------------------------------------------
 // Measure the time for the JavaScope
 //----------------------------------------------------
-static void MeasureTimeForJavascope(){
+static void MeasureTimeForJavascope(globalTimingR5* time){
 
-	timingR5.interrupts_counter++;
-	i_ISRLifeCheck = timingR5.interrupts_counter % 1000;
+	// DO NOT USE COUNTS_PER_USECOND, this macro has a large rounding error!
+	float const counts_per_us = (COUNTS_PER_SECOND) * 1e-6;
 
 	XTime tPrev;
 	XTime static tNow = 0;
@@ -151,22 +156,27 @@ static void MeasureTimeForJavascope(){
 	// read clock counter of R5 processor, which starts at 0 after reset/starting the processor
 	XTime_GetTime(&tNow);
 
+	// calculate ISR period, the time between two calls of this function
+	XTime isr_period_counts = (tNow - tPrev);
+	isr_period_us_measured = isr_period_counts / counts_per_us;
+
 	//catch overflow after 9.16 minutes when tNow (32bit) starts from 0 again
 	if (tNow < tPrev){
-		timingR5.tick_counter_overflow++;
+		time->tick_counter_overflow++;
 	}
 
 	//measure with 1ms cycle
-	i_count_1ms = tNow/((COUNTS_PER_SECOND) * 1e-3);
+	time->uptime_milli_seconds = tNow/((COUNTS_PER_SECOND) * 1e-3);
 
 	//measure with 1s cycle
 	const unsigned int unsigned_int_max_number = ~(unsigned int)0;
 	i_count_1s = (int) (i_count_1ms*1e-3) + time_overflow_counter * (unsigned_int_max_number/COUNTS_PER_SECOND); //   9.16minutes = 549.7559 seconds = (2^32-1)/COUNTS_PER_SECOND
 
-	// calculate ISR period, the time between two calls of this function
-	float const counts_per_us = (COUNTS_PER_SECOND) * 1e-6; // DO NOT USE COUNTS_PER_USECOND, this macro has a large rounding error!
-	XTime isr_period_counts = (tNow - tPrev);
-	isr_period_us_measured = isr_period_counts / counts_per_us;
+	// counting interrupts since booting
+	time->interrupt_counter++;
+	i_ISRLifeCheck = time->interrupt_counter % 1000; //to be deleted?
+
+
 }
 
 //==============================================================================================================================================================

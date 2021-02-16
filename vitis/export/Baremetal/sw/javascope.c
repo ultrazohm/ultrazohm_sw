@@ -99,7 +99,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_Rs_mOhm]		= &data->pID.Online_Rs;
 	js_ptr_arr[JSO_PsiPM_mVs]	= &data->pID.Online_Psi_PM;
 	js_ptr_arr[JSO_Sawtooth1] 	= &time_ISR_total_us;
-	js_ptr_arr[JSO_SineWave1]   = &f_ISRLifeCheck;
+	js_ptr_arr[JSO_SineWave1]   = &i_ISRLifeCheck;
 	js_ptr_arr[JSO_SineWave2]   = &isr_period_us_measured;
 
 	return Status;

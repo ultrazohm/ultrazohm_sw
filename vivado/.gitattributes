@@ -1,3 +1,4 @@
 *.bd binary
 *.xpr binary
 zusys_wrapper.vhd binary
+DebugProbes.ltx binary

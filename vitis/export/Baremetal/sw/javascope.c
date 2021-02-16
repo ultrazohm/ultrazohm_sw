@@ -42,11 +42,9 @@ uint32_t  i_fetchDataLifeCheck=0;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
-// external global variables from isr.c
-extern uint32_t i_count_1ms, i_count_1s;
-extern float f_ISRLifeCheck;
-extern float time_ISR_max_us, time_ISR_total, time_ISR_total_us, isr_period_us_measured;
-extern int i_ISRLifeCheck;
+// external timing
+globalTiming_str timingR5;
+
 //Xint16 values[20];
 union SlowData js_slowDataArray[JSSD_ENDMARKER];
 
@@ -75,7 +73,7 @@ int JavaScope_initalize(DS_Data* data)
 	ControlData.digInputs =0;
 	ControlData.id =0;
 	ControlData.value =0;
-
+	float lifecheck = timingR5.interrupt_counter %1000;
 	// Store every observable signal into the Pointer-Array.
 	// With the JavaScope, 4 signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
@@ -98,9 +96,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_Lq_mH]		= &data->pID.Online_Lq;
 	js_ptr_arr[JSO_Rs_mOhm]		= &data->pID.Online_Rs;
 	js_ptr_arr[JSO_PsiPM_mVs]	= &data->pID.Online_Psi_PM;
-	js_ptr_arr[JSO_Sawtooth1] 	= &time_ISR_total_us;
-	js_ptr_arr[JSO_SineWave1]   = &i_ISRLifeCheck;
-	js_ptr_arr[JSO_SineWave2]   = &isr_period_us_measured;
+	js_ptr_arr[JSO_Sawtooth1] 	= &timingR5.isr_execution_time_us;
+	js_ptr_arr[JSO_SineWave1]   = &lifecheck;
+	js_ptr_arr[JSO_SineWave2]   = &timingR5.isr_period_us;
 
 	return Status;
 }
@@ -175,11 +173,11 @@ void JavaScope_update(DS_Data* data){
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another (one every 0,5 ms).
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
-	js_slowDataArray[JSSD_INT_SecondsSinceSystemStart].i = i_count_1s;
-	js_slowDataArray[JSSD_FLOAT_uSecPerIsr].f 	= (float)time_ISR_total_us;
-	js_slowDataArray[JSSD_FLOAT_Sine].f 		= time_ISR_max_us; //10.0 * sin(PI2 * 0.05 * ((float)0.0002));	// 0.05 Hz => T=20sec
-	js_slowDataArray[JSSD_FLOAT_FreqReadback].f = data->rasv.referenceFrequency;
-	js_slowDataArray[JSSD_INT_Milliseconds].i 	= (int)i_count_1ms;
+	js_slowDataArray[JSSD_INT_SecondsSinceSystemStart].i 	= timingR5.uptime_sec;
+	js_slowDataArray[JSSD_FLOAT_uSecPerIsr].f 			 	= timingR5.isr_execution_time_us;
+	js_slowDataArray[JSSD_FLOAT_Sine].f 					= timingR5.isr_period_us;
+	js_slowDataArray[JSSD_FLOAT_FreqReadback].f 			= data->rasv.referenceFrequency;
+	js_slowDataArray[JSSD_INT_Milliseconds].i 				= timingR5.uptime_ms;
 	js_slowDataArray[JSSD_FLOAT_ADCconvFactorReadback].f = data->mrp.ADCconvFactorReadback;
 	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline].f= data->pID.Offline_Psi_PM;
 	js_slowDataArray[JSSD_FLOAT_Lq_Offline].f 	= data->pID.Offline_Lq;

@@ -91,7 +91,7 @@ float rampwave(const float amp_p, const float amp_n, const float frequency, cons
 }
 
 //Pulse generator
-float pulse(const float amplitude, const float duty, const float frequency, const float phase, long *const sample, const float int_freq)
+float pulse(const float amplitude, float duty, const float frequency, const float phase, long *const sample, const float int_freq)
 {
 	float sample_offset = phase/(2.0*M_PI*frequency)*int_freq;
 

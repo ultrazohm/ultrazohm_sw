@@ -19,7 +19,6 @@
 #include <stdint.h>
 #include <math.h>
 
-#include "xparameters.h"
 #include "xil_types.h"
 #include "xil_io.h"
 

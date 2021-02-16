@@ -1,8 +1,9 @@
 ===================================
-Altium: Rules
+Design Rules
 ===================================
 
-Rules are very important for maintaining safety distances.The rules can derive from the requirements regarding voltage and current to the PCB and the requirement, which are given from the PCB manufacturer
+Rules are very important for maintaining safety distances.
+The rules can derive from the requirements regarding voltage and current to the PCB and the requirement, which are given from the PCB manufacturer
 
 1. The rule and constraint editor can be opened (only in a PCB document " .PcbDoc") ``Design`` --> ``Rules`` (DR)
 
@@ -24,7 +25,8 @@ Rules are very important for maintaining safety distances.The rules can derive f
 
       Altium - Rules Priorities.
 
-4. In this window you can increase or decrease the priority of the rules regarding the clearance. Every rule needs an exclusive name, which could not be used twice in any rule.
+4. In this window you can increase or decrease the priority of the rules regarding the clearance.
+Every rule needs an exclusive name, which could not be used twice in any rule.
 
 5. The rules can be defined separated for each layer with the help of defining nets 
 (Net Classes are selected by the drop down menu --> PowerNet_15V).
@@ -60,7 +62,8 @@ These settings must be given by the application and must be individually set bef
 Differential signals
 ====================
 
-Differential signals exist of two signals. Often it is necessary, that these signals have a specific impedance to be robust against malfunctions.
+Differential signals exist of two signals.
+Often it is necessary, that these signals have a specific impedance to be robust against malfunctions.
 
 To design suitable parameters for differential signals the open source tool "Saturn PCB Toolkit" is good to use.
 
@@ -69,7 +72,8 @@ To design suitable parameters for differential signals the open source tool "Sat
 Tool Saturn
 ===========
 
-With the help of this tool it is possible to define a target impedance (in that case 120 Ohm) and calculate the necessary conductor width and conductor spacing. The conductor height is given by the height of the layer on which the conductor should be lay outed.
+With the help of this tool it is possible to define a target impedance (in that case 120 Ohm) and calculate the necessary conductor width and conductor spacing.
+The conductor height is given by the height of the layer on which the conductor should be lay outed.
 
 .. _165_Tool_Saturn:
 
@@ -77,8 +81,6 @@ With the help of this tool it is possible to define a target impedance (in that 
       :width: 300px
 
       Saturn - PCB tool kit.
-
-
 
 Altium Rules
 ============

@@ -1,5 +1,5 @@
 ===================================
-Altium: Practical Tips and Tricks
+Practical Tips and Tricks
 ===================================
 
 This page is intended to save many important and useful tips for working with Altium.
@@ -7,7 +7,8 @@ This page is intended to save many important and useful tips for working with Al
 Short Cuts
 ==========
 
-Using shortcuts in Altium makes working much more user-friendly. To find out the shortcut key combinations, Altium has provided hints in each menu guide.
+Using shortcuts in Altium makes working much more user-friendly.
+To find out the shortcut key combinations, Altium has provided hints in each menu guide.
 
 This is illustrated by the placement of a component in the schematic sheet.
 
@@ -39,7 +40,7 @@ Schematic short cuts
 
 - Annotate schematic --> ``t`` ``a``
 
-- `Smart paste <https://www.altium.com/documentation/altium-designer/sch-dlg-smartpasteformsmart-paste-ad>_ --> ``Shift`` ``Ctrl`` ``v``
+- `Smart paste <https://www.altium.com/documentation/altium-designer/sch-dlg-smartpasteformsmart-paste-ad>`_ --> ``Shift`` ``Ctrl`` ``v``
 
 
 PCB short cuts
@@ -47,7 +48,7 @@ PCB short cuts
 
 - Place Via --> ``p`` ``v``
 
-- if a via should be placed --> select the correct layer by stepping through the layers --> ``+``or ``-`` (only possible with separate number pad on the keyboard)
+- if a via should be placed --> select the correct layer by stepping through the layers --> ``+`` or ``-`` (only possible with separate number pad on the keyboard)
 
 - Switch layers --> ``Ctrl`` + ``Mouser wheel scroll``
 
@@ -93,4 +94,5 @@ Useful links
 
 - Altium documentation: https://www.altium.com/documentation/altium-designer/exploring-altium-designer?version=18.1
 
-Note: The current Altium version can be selected from the drop-down menu.
+
+.. note :: The current Altium version can be selected from the drop-down menu.

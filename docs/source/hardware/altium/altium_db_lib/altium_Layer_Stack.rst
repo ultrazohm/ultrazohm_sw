@@ -1,5 +1,8 @@
+
+.. _LayerStackManager:
+
 ===================================
-Altium: Layer Stack Manager
+Layer Stack Manager
 ===================================
 
 The layer stack manager defines the structure and the width of the different layers.
@@ -48,7 +51,10 @@ To configure this information in Altium
 Defining Via Types
 ==================
 
-Different via types are possible to use. As well as by the layer stack the possibility of using different vias types is depending on the PCB manufacturer. Because of that, the kind and size of vias that should be used in the project must be checked with the capabilities of the manufacturer. As general rule use only through-hole vias that drill from top to bottom, everything else is more expensive. 
+Different via types are possible to use.
+As well as by the layer stack the possibility of using different vias types is depending on the PCB manufacturer.
+Because of that, the kind and size of vias that should be used in the project must be checked with the capabilities of the manufacturer.
+As general rule use only through-hole vias that drill from top to bottom, everything else is more expensive. 
 
 1. Open the layer stack manager (only possible if you select a PCB Document ".PcbDoc") by clicking ``Design`` --> ``Layer Stack Manager``
 

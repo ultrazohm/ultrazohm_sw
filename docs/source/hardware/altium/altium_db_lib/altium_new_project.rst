@@ -1,5 +1,5 @@
 ===================================
-Altium: Create a new Altium Project
+Create a new Altium Project
 ===================================
 
 1. Open Altium
@@ -42,9 +42,11 @@ Altium: Create a new Altium Project
 
 New schematic sheet was added.
 
-9. In general the symbol * marks that this sheet/ project is not saved. This can be done be clicking ``File`` --> ``save`` or ``save all``
+9. In general the symbol * marks that this sheet/ project is not saved.
+This can be done be clicking ``File`` --> ``save`` or ``save all``
 
-10. If you develop the PCB for the ELSYS institute the template A4_CoBo_THN should be used. It is also part of the BitBucket content and can be found under the following path (for working with BitBucket and Libraries look at the instruction for Altium DB Lib) …\pcb_libraries\templates\schematics\A4_CoBo_THN
+10. If you develop the PCB for the ELSYS institute the template A4_CoBo_THN should be used.
+It is also part of the BitBucket content and can be found under the following path (for working with BitBucket and Libraries look at the instruction for Altium DB Lib) …\pcb_libraries\templates\schematics\A4_CoBo_THN
 
 11. To use the template in the schematic open the schematic click ``Design`` --> ``Templates`` --> ``Project Templates`` --> ``Choose a File``
 
@@ -171,7 +173,9 @@ and select the suitable template
 
       Altium - Validate/ Execute/ Close.
 
-27. Every component should have a designator. Most important thing is to be consistent within one project. See `Wikipedia <https://en.wikipedia.org/wiki/Reference_designator>`_ for an example list. 
+27. Every component should have a designator.
+Most important thing is to be consistent within one project.
+See `Wikipedia <https://en.wikipedia.org/wiki/Reference_designator>`_ for an example list. 
 
 .. _150_Annotate_Schematic_6:
 
@@ -217,7 +221,9 @@ Right mouse click --> ``Save as``
 
       Altium - Import components from schematic.
 
-Be careful not to use ``Update Changes from Guide.PrjPcb``. In this case you update the schematic with no content of the PCB. All components included in the schematic sheets are placed on the right edge of the PCB.
+Be careful not to use ``Update Changes from Guide.PrjPcb``.
+In this case you update the schematic with no content of the PCB.
+All components included in the schematic sheets are placed on the right edge of the PCB.
 
 By pressing the numbers ``1``, ``2`` and ``3`` you can select between the following views
 
@@ -227,7 +233,7 @@ By pressing the numbers ``1``, ``2`` and ``3`` you can select between the follow
 
 ``3`` = 3D view
 
-Often it is helpful to define null- point on the left corner because then the x and y dimension is without any offset
+Often it is helpful to define the null- point on the left corner because then the x and y dimension is without any offset
 
 To do this:
 
@@ -261,5 +267,5 @@ To do this:
       Altium - Move the board in the corner.
 
 4. Go back to the layout view (``2``) and start with the configuration of the layer stack
---> have a look at the chapter Layer Stack Manager
+--> have a look at the chapter :ref:`LayerStackManager`
 

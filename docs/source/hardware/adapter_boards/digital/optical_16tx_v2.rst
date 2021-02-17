@@ -16,8 +16,12 @@ Functionality
 
 Before first use
 ----------------------------
-* Solder optical transmitters (Broadcom HFBR-1521Z)
-  
+Solder in up to 16 transmitters and 3 receivers. 
+Solder the components on the **top site first**, shorten the pin length and afterwards solder the transceivers on the bottom side. 
+
+* optical transmitters: **Broadcom HFBR-1521Z**
+* optical receiver: **Broadcom HFBR-2521Z**
+
 .. image:: optical_16tx_v2/optical_16tx_v2_transmitter.jpg
    :height: 500
             
@@ -29,9 +33,8 @@ Before first use
 .. image:: optical_16tx_v2/optical_16tx_v2_pulldown_schematic.jpg
    :width: 500
            
+* Solder resistors (R14, R19) on the bottom side to connect optical receivers 
 * Program CPLDs with firmware, see :ref:`label_cpld_programming` for details
-* Solder optical receiver (optional)
-* Solder resistors to connect optical receivers (optional)
 
 Known issues
 -----------------------

@@ -70,7 +70,6 @@
 void ISR_Control(void *baseaddr_p);								// ISR von Timer-Control
 void Transfer_ipc_Intr_Handler(void *baseaddr_p);							// ISR von Timer-Control
 
-int MeasureTime(void);														// Function for time measurement
 int Initialize_Timer(void);													// Init Timer for ISRs
 int Initialize_FPGAController(DS_Data* data);								// Init FPGA Control algorithm
 int Initialize_ARMController(DS_Data* data);								// Init ARM Control algorithm
@@ -78,18 +77,5 @@ int Initialize_ISR(void);
 int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Tmr_Control_InstancePtr);	//Init Hardware for ISR
 u32 Rpu_IpiInit(u16 DeviceId);	//Init Hardware for IPI-ISR
 
-//Timing measurement variables
-//Variables for ISR-time measurement
-typedef struct _globalTiming_ {
-	float isr_period_us;					// measured period of interrupt in micro seconds
-	float isr_execution_time_us;			// measured execution time of interrupt service routine (isr)
-	uint64_t 		interrupt_counter;	// counting interrupts since start up
-	uint64_t		uptime_us; 			// total uptime in micro seconds (us)
-	unsigned int 	uptime_ms; 			// total uptime in milli seconds (ms)
-	unsigned int 	uptime_sec; 		// total uptime in seconds (sec)
-	unsigned int	uptime_min; 		// total uptime in minutes (min)
-	uint64_t		timestamp_ISR_start;
-	uint64_t		timestamp_ISR_end;
-} globalTiming_str;
 
 #endif /* ISR_H_ */

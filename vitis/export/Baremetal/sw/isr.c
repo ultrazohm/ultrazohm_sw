@@ -18,7 +18,7 @@
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include <math.h>
-#include <xtmrctr.h> //library for timing measurement
+#include <xtmrctr.h>
 #include "../include/javascope.h"
 #include "../include/pwm.h"
 #include "../include/pwm_3L_driver.h"
@@ -29,10 +29,6 @@
 
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
-
-// initialize entries of global timing struct
-globalTiming_str timingR5 = {0,0,0,0,0,0,0,0,0};
-
 
 
 //Initialize the variables for the ADC measurement
@@ -48,7 +44,6 @@ XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible 
 
 //Initialize the Timer structure
 XTmrCtr Timer_Interrupt;
-XTmrCtr Timer_Uptime;
 
 float sin1amp=100.0;
 
@@ -64,8 +59,6 @@ extern DS_Data Global_Data;
 // - start of the control period
 //----------------------------------------------------
 static void toggleLEDdependingOnReadyOrRunning(uint32_t i_count_1ms, uint32_t i_count_1s);
-static void Measure_SystemTime(globalTiming_str* time);
-uint64_t Timer_GetValue_u64(XTmrCtr * InstancePtr);
 static void ReadAllADC();
 static void CheckForErrors();
 
@@ -73,8 +66,7 @@ void ISR_Control(void *data)
 {
 	timingR5.timestamp_ISR_start = Timer_GetValue_u64(&Timer_Uptime);
 
-	//measure the uptime of the system
-	Measure_SystemTime(&timingR5);
+
 
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
 	toggleLEDdependingOnReadyOrRunning(timingR5.uptime_ms,timingR5.uptime_sec);
@@ -117,59 +109,7 @@ void ISR_Control(void *data)
 }
 
 //==============================================================================================================================================================
-//----------------------------------------------------
-// Measure the time for the JavaScope
-//----------------------------------------------------
-static void Measure_SystemTime(globalTiming_str* time){
 
-	uint64_t const Uptime_timer_counts_per_us = XPAR_TIMER_UPTIME_64BIT_CLOCK_FREQ_HZ * 1e-6; // for 100 MHz->10ns; 10ns * 100 = 1us
-	uint64_t static previous_timestamp_ISR_start = 0;
-
-	// measure uptime
-	time->uptime_us 	= time->timestamp_ISR_start / Uptime_timer_counts_per_us;
-	time->uptime_ms 	= time->uptime_us * 1e-3;
-	time->uptime_sec	= time->uptime_ms * 1e-3;
-	time->uptime_min 	= time->uptime_ms * 1e-3 / 60;
-
-	// count number of interrupts
-	time->interrupt_counter++;
-
-	// calculate ISR execution time of previous control cycle
-	int timestamp_diff_isr_exec	 	= time->timestamp_ISR_end - previous_timestamp_ISR_start;
-	time->isr_execution_time_us 	= (float)timestamp_diff_isr_exec / Uptime_timer_counts_per_us; //PL clock-Ticks* @100MHz Clock [us]
-
-	// calculate ISR period
-	int timestamp_diff_isr_period	= time->timestamp_ISR_start - previous_timestamp_ISR_start;
-	time->isr_period_us 			= (float)timestamp_diff_isr_period / Uptime_timer_counts_per_us; //PL clock-Ticks* @100MHz Clock [us]
-
-	// store previous timestamp at ISR start to calculate the ISR execution time in the next cycle
-	previous_timestamp_ISR_start = time->timestamp_ISR_start;
-}
-
-uint64_t Timer_GetValue_u64(XTmrCtr * InstancePtr){
-
-	// same as executing these two, but faster
-	//XTmrCtr_GetValue(InstancePtr, 0);
-	//XTmrCtr_GetValue(InstancePtr, 1);
-
-	Xil_AssertNonvoid(InstancePtr != NULL);
-	Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-
-	// read upper 32 bits
-	uint32_t reg_upper = XTmrCtr_ReadReg(InstancePtr->BaseAddress, 1, XTC_TCR_OFFSET);
-	// read lower 32 bits
-	uint32_t reg_lower = XTmrCtr_ReadReg(InstancePtr->BaseAddress, 0, XTC_TCR_OFFSET);
-	// read upper 32 bits
-	uint32_t reg_upper_check = XTmrCtr_ReadReg(InstancePtr->BaseAddress, 1, XTC_TCR_OFFSET);
-
-	if(reg_upper != reg_upper_check) // check if 1 bit has flipped while reading, as described in PG079: Ch. 3 "capture mode"
-		reg_lower = XTmrCtr_ReadReg(InstancePtr->BaseAddress, 0, XTC_TCR_OFFSET);
-
-	// combine both to one unsigned int with 64bits
-	uint64_t timestamp = (uint64_t) reg_upper << 32 | reg_lower;
-
-	return timestamp;
-};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -223,23 +163,7 @@ int Initialize_Timer(){
 	XTmrCtr_Reset(&Timer_Interrupt, 0);
 	XTmrCtr_Start(&Timer_Interrupt,0);
 
-
-	// SETUP THE TIMER 2 for global uptime
-	Status = XTmrCtr_Initialize(&Timer_Uptime, XPAR_TIMER_UPTIME_64BIT_DEVICE_ID);
-	if(Status != XST_SUCCESS) return XST_FAILURE;
-	XTmrCtr_Stop(&Timer_Uptime, 0);
-	XTmrCtr_Stop(&Timer_Uptime, 1);
-
-	XTmrCtr_SetResetValue(&Timer_Uptime, 0, 0);
-	XTmrCtr_SetResetValue(&Timer_Uptime, 1, 0);
-
-	XTmrCtr_Reset(&Timer_Uptime, 0);
-	XTmrCtr_Reset(&Timer_Uptime, 1);
-
-	XTmrCtr_SetOptions(&Timer_Uptime, 0, XTC_CASCADE_MODE_OPTION);
-	XTmrCtr_Start(&Timer_Uptime,0);
-
-return Status;
+	return Status;
 }
 
 //==============================================================================================================================================================

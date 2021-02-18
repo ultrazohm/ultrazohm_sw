@@ -6,6 +6,7 @@
 void uz_SystemTime_init();
 void uz_SystemTime_update();
 void uz_SystemTime_ReadTimer();
+void uz_SystemTime_StopStopwatch();
 
 // Getter functions
 float uz_SystemTime_GetIsrPeriodInUs();

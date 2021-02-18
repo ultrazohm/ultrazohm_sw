@@ -1,5 +1,8 @@
+
+.. _SchematicAndFootprints:
+
 =================================
-Altium: schematics and footprints
+Schematics and Footprints
 =================================
 
 When creating a schematic in Altium, there are many different ways to place components and use their footprints for the layout.
@@ -10,11 +13,17 @@ In the following, 4 different ways will be presented, how to create the appropri
 * Components are included in an integrated library
 * Components are available as an ECAD MODEL
 
+
+.. _SingleFootprint:
+
 Components are available with single schematic and single footprint lib from the manufacturer
 =============================================================================================
 
-If both the schematic as well as the footprint are available from the manufacturer for Altium as a single  component, this is the easiest way and you can start immediately with the instruction: How to use Altium DB.
-But if the desired component is combined in a library with several other components, see the following section.
+If both the schematic as well as the footprint are available from the manufacturer for Altium as a single  component, this is the easiest way and you can start immediately with the instruction:
+:ref:`AltiumDB` .
+But if the desired component is combined in a library with several other components, see the following sections.
+
+.. _IncludedInOtherSchematicFootprints:
 
 Components are included in other schematic and footprint libraries with other components
 ========================================================================================
@@ -140,8 +149,9 @@ Using the CarrierBoard library as an example, a possible way is described:
 
       Altium - Footprints are separated.
 
-Now all components are separated from each other and it is possible to proceed with the instructions of How to use Altium DB.
+Now all components are separated from each other and it is possible to proceed with the instructions of :ref:`AltiumDB` .
 
+.. _IntegratedLibrary:
 
 Components are included in an integrated library
 ================================================
@@ -191,8 +201,9 @@ Components are included in an integrated library
 
       Altium - Schematic and footprint lib are available.
 
-Now it can be continued with the instuction: Components are included in other schematic and footprint libraries with other components.
+Now it can be continued with the instuction: :ref:`IncludedInOtherSchematicFootprints`.
 
+.. _ECADModel:
 
 Components are available as an ECAD MODEL
 =========================================
@@ -284,5 +295,5 @@ Therefore read and install the Altium Library Loader https://www.samacsys.com/al
 
       Altium - SamacSys.
 
-At this point, the SamacSys lib can be reused or the respective symbols with the corresponding footprint can be stored in a temporary lib. Afterwards you have to continue with the instructions:
-Components are included in other schematic and footprint libraries with other components.
+At this point, the SamacSys lib can be reused or the respective symbols with the corresponding footprint can be stored in a temporary lib.
+Afterwards you have to continue with the instructions: :ref:`IncludedInOtherSchematicFootprints`

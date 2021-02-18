@@ -70,9 +70,7 @@ Syllabus
     general/tcl_scripts
     general/ci_pipeline
     general/howToDocs/howToDocs
-    general/altium_db_lib/altium_DB_lib
     general/useCases/useCases
-    general/altium_db_lib/altium_schematic_footprint
 
 .. toctree::
     :maxdepth: 2
@@ -103,6 +101,7 @@ Syllabus
 
    hardware/carrier_board/index
    hardware/adapter_boards/index
+   hardware/altium/altium
 
 Indices and tables
 ==================

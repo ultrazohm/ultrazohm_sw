@@ -16,7 +16,15 @@ typedef struct _globalTiming_ {
 } globalTiming_str;
 
 // local variables
-static globalTiming_str timingR5 = {0,0,0,0,0,0,0,0,0};
+static globalTiming_str timingR5 = {.isr_period_us=0,
+									.isr_execution_time_us=0,
+									.interrupt_counter=0,
+									.uptime_us=0,
+									.uptime_ms=0,
+									.uptime_sec=0,
+									.uptime_min=0,
+									.timestamp_ISR_start=0,
+									.timestamp_ISR_end=0};
 static XTmrCtr Timer_Uptime;
 
 
@@ -50,24 +58,24 @@ void uz_SystemTime_update()
 	uint64_t static previous_timestamp_ISR_start = 0;
 
 	// measure uptime
-	time->uptime_us 	= time->timestamp_ISR_start / Uptime_timer_counts_per_us;
-	time->uptime_ms 	= time->uptime_us * 1e-3;
-	time->uptime_sec	= time->uptime_ms * 1e-3;
-	time->uptime_min 	= time->uptime_ms * 1e-3 / 60;
+	timingR5.uptime_us 	= timingR5.timestamp_ISR_start / Uptime_timer_counts_per_us;
+	timingR5.uptime_ms 	= timingR5.uptime_us * 1e-3;
+	timingR5.uptime_sec	= timingR5.uptime_ms * 1e-3;
+	timingR5.uptime_min 	= timingR5.uptime_ms * 1e-3 / 60;
 
 	// count number of interrupts
-	time->interrupt_counter++;
+	timingR5.interrupt_counter++;
 
 	// calculate ISR execution time of previous control cycle
-	int timestamp_diff_isr_exec	 	= time->timestamp_ISR_end - previous_timestamp_ISR_start;
-	time->isr_execution_time_us 	= (float)timestamp_diff_isr_exec / Uptime_timer_counts_per_us; //PL clock-Ticks* @100MHz Clock [us]
+	int timestamp_diff_isr_exec	 	= timingR5.timestamp_ISR_end - previous_timestamp_ISR_start;
+	timingR5.isr_execution_time_us 	= (float)timestamp_diff_isr_exec / Uptime_timer_counts_per_us; //PL clock-Ticks* @100MHz Clock [us]
 
 	// calculate ISR period
-	int timestamp_diff_isr_period	= time->timestamp_ISR_start - previous_timestamp_ISR_start;
-	time->isr_period_us 			= (float)timestamp_diff_isr_period / Uptime_timer_counts_per_us; //PL clock-Ticks* @100MHz Clock [us]
+	int timestamp_diff_isr_period	= timingR5.timestamp_ISR_start - previous_timestamp_ISR_start;
+	timingR5.isr_period_us 			= (float)timestamp_diff_isr_period / Uptime_timer_counts_per_us; //PL clock-Ticks* @100MHz Clock [us]
 
 	// store previous timestamp at ISR start to calculate the ISR execution time in the next cycle
-	previous_timestamp_ISR_start = time->timestamp_ISR_start;
+	previous_timestamp_ISR_start = timingR5.timestamp_ISR_start;
 }
 
 static uint64_t Timer_GetValue_u64(XTmrCtr * InstancePtr){
@@ -90,3 +98,43 @@ static uint64_t Timer_GetValue_u64(XTmrCtr * InstancePtr){
 
 	return timestamp;
 };
+
+void uz_SystemTime_ReadTimer(){
+	timingR5.timestamp_ISR_start = Timer_GetValue_u64(&Timer_Uptime);
+}
+
+void uz_SystemTime_StopStopwatch(){
+	timingR5.timestamp_ISR_end = Timer_GetValue_u64(&Timer_Uptime);
+}
+
+float uz_SystemTime_GetStopwatchTimeInUs(){
+	return (timingR5.isr_execution_time_us);
+}
+
+unsigned int uz_SystemTime_GetUptimeInMs(){
+	return (timingR5.uptime_ms);
+}
+unsigned int uz_SystemTime_GetUptimeInSec(){
+	return (timingR5.uptime_sec);
+}
+
+uint64_t uz_SystemTime_GetUptimeInUs(){
+	return (timingR5.uptime_us);
+}
+
+unsigned int uz_SystemTime_GetUptimeInMin(){
+	return (timingR5.uptime_min);
+}
+
+float uz_SystemTime_GetIsrExectionTimeInUs(){
+	return (timingR5.isr_execution_time_us);
+}
+
+float uz_SystemTime_GetIsrPeriodInUs(){
+	return (timingR5.isr_period_us);
+}
+
+uint64_t uz_SystemTime_GetInterruptCounter(){
+	return (timingR5.interrupt_counter);
+}
+

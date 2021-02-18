@@ -26,6 +26,7 @@
 #include "../include/encoder.h"
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
+#include "../uz/uz_SystemTime/uz_SystemTime.h"
 
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
@@ -64,12 +65,12 @@ static void CheckForErrors();
 
 void ISR_Control(void *data)
 {
-	timingR5.timestamp_ISR_start = Timer_GetValue_u64(&Timer_Uptime);
-
+	uz_SystemTime_ReadTimer();
+	uz_SystemTime_update();
 
 
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
-	toggleLEDdependingOnReadyOrRunning(timingR5.uptime_ms,timingR5.uptime_sec);
+	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
 
 	ReadAllADC();
 	CheckForErrors();
@@ -105,7 +106,7 @@ void ISR_Control(void *data)
 
 	// Read the timer value at the very end of the ISR to minimize measurement error
 	// This has to be the last function executed in the ISR!
-	timingR5.timestamp_ISR_end = Timer_GetValue_u64(&Timer_Uptime);
+	uz_SystemTime_StopStopwatch();
 }
 
 //==============================================================================================================================================================

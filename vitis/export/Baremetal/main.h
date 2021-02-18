@@ -50,6 +50,8 @@
 #include "uz/uz_MioGpio_mediator/uz_MioGpio_mediator.h"
 #include "uz/uz_MioGpio_mediator/uz_MioGpioMapping.h"
 
+#include "uz/uz_SystemTime/uz_SystemTime.h"
+
 //ADC define
 #define TX_BUFFER_SIZE						1
 #define RX_BUFFER_SIZE  					64

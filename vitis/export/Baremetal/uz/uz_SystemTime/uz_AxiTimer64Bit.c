@@ -32,7 +32,7 @@ uint64_t uz_AxiTimer64Bit_ReadValue64Bit(){
 		reg_lower = XTmrCtr_ReadReg(&Timer_Uptime.BaseAddress, 0, XTC_TCR_OFFSET);
 
 	// combine both to one unsigned int with 64bits
-	uint64_t timestamp = (uint64_t) reg_upper << 32 | reg_lower;
+	uint64_t timestamp = (uint64_t) reg_upper_check << 32 | reg_lower;
 
 	return timestamp;
 }

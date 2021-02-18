@@ -22,14 +22,14 @@ void uz_AxiTimer64Bit_init(){
 
 uint64_t uz_AxiTimer64Bit_ReadValue64Bit(){
 	// read upper 32 bits
-	uint32_t reg_upper = XTmrCtr_ReadReg(&Timer_Uptime.BaseAddress, 1, XTC_TCR_OFFSET);
+	uint32_t reg_upper = XTmrCtr_ReadReg(Timer_Uptime.BaseAddress, 1, XTC_TCR_OFFSET);
 	// read lower 32 bits
-	uint32_t reg_lower = XTmrCtr_ReadReg(&Timer_Uptime.BaseAddress, 0, XTC_TCR_OFFSET);
+	uint32_t reg_lower = XTmrCtr_ReadReg(Timer_Uptime.BaseAddress, 0, XTC_TCR_OFFSET);
 	// read upper 32 bits
-	uint32_t reg_upper_check = XTmrCtr_ReadReg(&Timer_Uptime.BaseAddress, 1, XTC_TCR_OFFSET);
+	uint32_t reg_upper_check = XTmrCtr_ReadReg(Timer_Uptime.BaseAddress, 1, XTC_TCR_OFFSET);
 
 	if(reg_upper != reg_upper_check) // check if 1 bit has flipped while reading, as described in PG079: Ch. 3 "capture mode"
-		reg_lower = XTmrCtr_ReadReg(&Timer_Uptime.BaseAddress, 0, XTC_TCR_OFFSET);
+		reg_lower = XTmrCtr_ReadReg(Timer_Uptime.BaseAddress, 0, XTC_TCR_OFFSET);
 
 	// combine both to one unsigned int with 64bits
 	uint64_t timestamp = (uint64_t) reg_upper_check << 32 | reg_lower;

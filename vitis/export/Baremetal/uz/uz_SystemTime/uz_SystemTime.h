@@ -1,7 +1,7 @@
 #pragma once
 
-#include <xtmrctr.h>
-#include "xparameters.h"
+#include <stdint.h>
+#include "uz_AxiTimer64Bit.h"
 
 void uz_SystemTime_init();
 void uz_SystemTime_update();

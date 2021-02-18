@@ -1,8 +1,5 @@
 #include "uz_SystemTime.h"
 
-// private functions
-static uint64_t Timer_GetValue_u64(XTmrCtr * InstancePtr);
-
 typedef struct{
 	float isr_period_us;					// measured period of interrupt in micro seconds
 	float isr_execution_time_us;			// measured execution time of interrupt service routine (isr)
@@ -16,7 +13,6 @@ typedef struct{
 } uz_SystemTime;
 
 // private variables
-static XTmrCtr Timer_Uptime;
 static uz_SystemTime timingR5 = {.isr_period_us=0,
 									.isr_execution_time_us=0,
 									.interrupt_counter=0,
@@ -29,23 +25,7 @@ static uz_SystemTime timingR5 = {.isr_period_us=0,
 
 
 void uz_SystemTime_init(){
-
-	// SETUP THE TIMER for global uptime
-	XTmrCtr_Initialize(&Timer_Uptime, XPAR_TIMER_UPTIME_64BIT_DEVICE_ID);
-	// stop timer
-	XTmrCtr_Stop(&Timer_Uptime, 0);
-	XTmrCtr_Stop(&Timer_Uptime, 1);
-	// set reset value of timer to 0
-	XTmrCtr_SetResetValue(&Timer_Uptime, 0, 0);
-	XTmrCtr_SetResetValue(&Timer_Uptime, 1, 0);
-	// reset timer
-	XTmrCtr_Reset(&Timer_Uptime, 0);
-	XTmrCtr_Reset(&Timer_Uptime, 1);
-	// set cascade mode
-	XTmrCtr_SetOptions(&Timer_Uptime, 0, XTC_CASCADE_MODE_OPTION);
-	// start timer
-	XTmrCtr_Start(&Timer_Uptime,0);
-
+	uz_AxiTimer64Bit_init();
 }
 
 //----------------------------------------------------
@@ -54,7 +34,7 @@ void uz_SystemTime_init(){
 void uz_SystemTime_update()
 {
 
-	uint64_t const Uptime_timer_counts_per_us = XPAR_TIMER_UPTIME_64BIT_CLOCK_FREQ_HZ * 1e-6; // for 100 MHz->10ns; 10ns * 100 = 1us
+	uint64_t const Uptime_timer_counts_per_us = UZ_AXI_TIMER_CLOCK_FREQ * 1e-6; // for 100 MHz->10ns; 10ns * 100 = 1us
 	uint64_t static previous_timestamp_ISR_start = 0;
 
 	// measure uptime
@@ -78,33 +58,12 @@ void uz_SystemTime_update()
 	previous_timestamp_ISR_start = timingR5.timestamp_ISR_start;
 }
 
-static uint64_t Timer_GetValue_u64(XTmrCtr * InstancePtr){
-
-	Xil_AssertNonvoid(InstancePtr != NULL);
-	Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-
-	// read upper 32 bits
-	uint32_t reg_upper = XTmrCtr_ReadReg(InstancePtr->BaseAddress, 1, XTC_TCR_OFFSET);
-	// read lower 32 bits
-	uint32_t reg_lower = XTmrCtr_ReadReg(InstancePtr->BaseAddress, 0, XTC_TCR_OFFSET);
-	// read upper 32 bits
-	uint32_t reg_upper_check = XTmrCtr_ReadReg(InstancePtr->BaseAddress, 1, XTC_TCR_OFFSET);
-
-	if(reg_upper != reg_upper_check) // check if 1 bit has flipped while reading, as described in PG079: Ch. 3 "capture mode"
-		reg_lower = XTmrCtr_ReadReg(InstancePtr->BaseAddress, 0, XTC_TCR_OFFSET);
-
-	// combine both to one unsigned int with 64bits
-	uint64_t timestamp = (uint64_t) reg_upper << 32 | reg_lower;
-
-	return timestamp;
-};
-
 void uz_SystemTime_ReadTimer(){
-	timingR5.timestamp_ISR_start = Timer_GetValue_u64(&Timer_Uptime);
+	timingR5.timestamp_ISR_start = uz_AxiTimer64Bit_ReadValue64Bit();
 }
 
 void uz_SystemTime_StopStopwatch(){
-	timingR5.timestamp_ISR_end = Timer_GetValue_u64(&Timer_Uptime);
+	timingR5.timestamp_ISR_end = uz_AxiTimer64Bit_ReadValue64Bit();
 }
 
 float uz_SystemTime_GetIsrExectionTimeInUs(){

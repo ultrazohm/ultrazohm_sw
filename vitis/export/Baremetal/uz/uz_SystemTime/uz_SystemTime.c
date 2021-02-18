@@ -1,9 +1,9 @@
 #include "uz_SystemTime.h"
 
-// local functions
+// private functions
 static uint64_t Timer_GetValue_u64(XTmrCtr * InstancePtr);
 
-typedef struct _globalTiming_ {
+typedef struct{
 	float isr_period_us;					// measured period of interrupt in micro seconds
 	float isr_execution_time_us;			// measured execution time of interrupt service routine (isr)
 	uint64_t 		interrupt_counter;	// counting interrupts since start up
@@ -13,10 +13,11 @@ typedef struct _globalTiming_ {
 	unsigned int	uptime_min; 		// total uptime in minutes (min)
 	uint64_t		timestamp_ISR_start;
 	uint64_t		timestamp_ISR_end;
-} globalTiming_str;
+} uz_SystemTime;
 
-// local variables
-static globalTiming_str timingR5 = {.isr_period_us=0,
+// private variables
+static XTmrCtr Timer_Uptime;
+static uz_SystemTime timingR5 = {.isr_period_us=0,
 									.isr_execution_time_us=0,
 									.interrupt_counter=0,
 									.uptime_us=0,
@@ -25,7 +26,6 @@ static globalTiming_str timingR5 = {.isr_period_us=0,
 									.uptime_min=0,
 									.timestamp_ISR_start=0,
 									.timestamp_ISR_end=0};
-static XTmrCtr Timer_Uptime;
 
 
 void uz_SystemTime_init(){
@@ -107,7 +107,7 @@ void uz_SystemTime_StopStopwatch(){
 	timingR5.timestamp_ISR_end = Timer_GetValue_u64(&Timer_Uptime);
 }
 
-float uz_SystemTime_GetStopwatchTimeInUs(){
+float uz_SystemTime_GetIsrExectionTimeInUs(){
 	return (timingR5.isr_execution_time_us);
 }
 
@@ -124,10 +124,6 @@ uint64_t uz_SystemTime_GetUptimeInUs(){
 
 unsigned int uz_SystemTime_GetUptimeInMin(){
 	return (timingR5.uptime_min);
-}
-
-float uz_SystemTime_GetIsrExectionTimeInUs(){
-	return (timingR5.isr_execution_time_us);
 }
 
 float uz_SystemTime_GetIsrPeriodInUs(){

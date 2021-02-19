@@ -66,9 +66,6 @@ static void CheckForErrors();
 void ISR_Control(void *data)
 {
 	uz_SystemTime_ISR_Tic();
-	uz_SystemTime_update();
-
-
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
 	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
 

@@ -1,5 +1,7 @@
 #include "uz_SystemTime.h"
 
+static void uz_SystemTime_update();
+
 typedef struct{
 	float isr_period_us;					// measured period of interrupt in micro seconds
 	float isr_execution_time_us;			// measured execution time of interrupt service routine (isr)
@@ -31,7 +33,7 @@ void uz_SystemTime_init(){
 //----------------------------------------------------
 // Measure system time
 //----------------------------------------------------
-void uz_SystemTime_update()
+static void uz_SystemTime_update()
 {
 
 	uint64_t const Uptime_timer_counts_per_us = UZ_AXI_TIMER_CLOCK_FREQ * 1e-6; // for 100 MHz->10ns; 10ns * 100 = 1us
@@ -60,6 +62,7 @@ void uz_SystemTime_update()
 
 void uz_SystemTime_ISR_Tic(){
 	timingR5.timestamp_ISR_start = uz_AxiTimer64Bit_ReadValue64Bit();
+	uz_SystemTime_update();
 }
 
 void uz_SystemTime_ISR_Toc(){

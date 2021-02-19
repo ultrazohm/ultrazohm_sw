@@ -4,7 +4,6 @@
 #include "uz_AxiTimer64Bit.h"
 
 void uz_SystemTime_init();
-void uz_SystemTime_update();
 void uz_SystemTime_ISR_Tic(); // start the stopwatch
 void uz_SystemTime_ISR_Toc(); // stop the stopwatch
 

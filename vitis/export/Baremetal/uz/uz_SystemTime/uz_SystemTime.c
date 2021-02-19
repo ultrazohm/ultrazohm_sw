@@ -38,10 +38,10 @@ void uz_SystemTime_update()
 	uint64_t static previous_timestamp_ISR_start = 0;
 
 	// measure uptime
-	timingR5.uptime_us 	= timingR5.timestamp_ISR_start / Uptime_timer_counts_per_us;
-	timingR5.uptime_ms 	= timingR5.uptime_us * 1e-3;
-	timingR5.uptime_sec	= timingR5.uptime_ms * 1e-3;
-	timingR5.uptime_min 	= timingR5.uptime_ms * 1e-3 / 60;
+	timingR5.uptime_us  = timingR5.timestamp_ISR_start / Uptime_timer_counts_per_us;
+	timingR5.uptime_ms  = timingR5.uptime_us * 1e-3;
+	timingR5.uptime_sec = timingR5.uptime_ms * 1e-3;
+	timingR5.uptime_min = timingR5.uptime_ms * 1e-3 / 60;
 
 	// count number of interrupts
 	timingR5.interrupt_counter++;
@@ -58,11 +58,11 @@ void uz_SystemTime_update()
 	previous_timestamp_ISR_start = timingR5.timestamp_ISR_start;
 }
 
-void uz_SystemTime_ReadTimer(){
+void uz_SystemTime_ISR_Tic(){
 	timingR5.timestamp_ISR_start = uz_AxiTimer64Bit_ReadValue64Bit();
 }
 
-void uz_SystemTime_StopStopwatch(){
+void uz_SystemTime_ISR_Toc(){
 	timingR5.timestamp_ISR_end = uz_AxiTimer64Bit_ReadValue64Bit();
 }
 

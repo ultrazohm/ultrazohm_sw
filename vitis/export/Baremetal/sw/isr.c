@@ -65,7 +65,7 @@ static void CheckForErrors();
 
 void ISR_Control(void *data)
 {
-	uz_SystemTime_ReadTimer();
+	uz_SystemTime_ISR_Tic();
 	uz_SystemTime_update();
 
 
@@ -106,7 +106,7 @@ void ISR_Control(void *data)
 
 	// Read the timer value at the very end of the ISR to minimize measurement error
 	// This has to be the last function executed in the ISR!
-	uz_SystemTime_StopStopwatch();
+	uz_SystemTime_ISR_Toc();
 }
 
 //==============================================================================================================================================================

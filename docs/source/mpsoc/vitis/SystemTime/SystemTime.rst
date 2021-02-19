@@ -30,7 +30,7 @@ Usage
 Example
 -------
 
-The variable ``uptimeInMs`` holds the uptime in milliseconds at the start of ``ISR_Control`` and is equal to ``uptimeInMs_afterToc``.
+The variable ``uptimeInMs`` holds the uptime in milliseconds at the start of ``ISR_Control``.
 The variable ``IsrExectionTimeInUs`` holds the execution time of the ISR, which will be about 100 microseconds + some time for reading the timer.
 
 .. code-block:: c
@@ -41,8 +41,10 @@ The variable ``IsrExectionTimeInUs`` holds the execution time of the ISR, which 
       float uptimeInMs=uz_SystemTime_GetUptimeInMs();
       usleep(100); // Do nothing for 100 microseconds
       uz_SystemTime_ISR_Toc();
-      float uptimeInMs_afterToc=uz_SystemTime_GetUptimeInMs();
-      float IsrExectionTimeInUs=uz_SystemTime_GetIsrExectionTimeInUs();
+    }
+
+    int main (void){
+    float IsrExectionTimeInUs=uz_SystemTime_GetIsrExectionTimeInUs();
     }
 
 

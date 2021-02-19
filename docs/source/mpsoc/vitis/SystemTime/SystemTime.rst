@@ -5,7 +5,7 @@ System Time R5
 The ``uz_SystemTime`` can be used to read the total uptime of the UltraZohm and the number of executed ISR routines on the R5 processor.
 See ``uz/uz_SystemTime/uz_SystemTime.h`` for API.
 
-- Counter with 64-bit at 100 MHZ for the uptime of the system.
+- Counter with 64-bit at 100 MHz for the uptime of the system.
 - Uses Xilinx `AXI Timer v2.0 <https://www.xilinx.com/support/documentation/ip_documentation/axi_timer/v2_0/pg079-axi-timer.pdf>`_
 - 64 Bit Mode enabled
 - Timer will overflow in >5000 years after system boot
@@ -41,8 +41,6 @@ The variable ``IsrExectionTimeInUs`` holds the execution time of the ISR, which 
       float uptimeInMs=uz_SystemTime_GetUptimeInMs();
       usleep(100); // Do nothing for 100 microseconds
       uz_SystemTime_ISR_Toc();
-      float uptimeInMs_afterToc=uz_SystemTime_GetUptimeInMs();
-      float IsrExectionTimeInUs=uz_SystemTime_GetIsrExectionTimeInUs();
     }
 
 

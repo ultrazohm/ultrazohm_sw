@@ -12,6 +12,8 @@ typedef struct{
 	unsigned int	uptime_min; 		// total uptime in minutes (min)
 	uint64_t		timestamp_ISR_start;
 	uint64_t		timestamp_ISR_end;
+	_Bool TicTocLock;
+	_Bool IsReady;
 } uz_SystemTime;
 
 // private variables
@@ -23,11 +25,14 @@ static uz_SystemTime timingR5 = {.isr_period_us=0,
 									.uptime_sec=0,
 									.uptime_min=0,
 									.timestamp_ISR_start=0,
-									.timestamp_ISR_end=0};
+									.timestamp_ISR_end=0,
+									.TicTocLock=false,
+									.IsReady=false};
 
 
 void uz_SystemTime_init(){
 	uz_AxiTimer64Bit_init();
+	timingR5.IsReady=true;
 }
 
 //----------------------------------------------------
@@ -61,38 +66,50 @@ static void uz_SystemTime_update()
 }
 
 void uz_SystemTime_ISR_Tic(){
+	uz_assert(timingR5.IsReady);
 	timingR5.timestamp_ISR_start = uz_AxiTimer64Bit_ReadValue64Bit();
 	uz_SystemTime_update();
+	timingR5.TicTocLock=true;
 }
 
 void uz_SystemTime_ISR_Toc(){
+	uz_assert(timingR5.IsReady);
+	uz_assert(timingR5.TicTocLock);
+	timingR5.TicTocLock=false;
 	timingR5.timestamp_ISR_end = uz_AxiTimer64Bit_ReadValue64Bit();
 }
 
 float uz_SystemTime_GetIsrExectionTimeInUs(){
+	uz_assert(timingR5.IsReady);
 	return (timingR5.isr_execution_time_us);
 }
 
 unsigned int uz_SystemTime_GetUptimeInMs(){
+	uz_assert(timingR5.IsReady);
 	return (timingR5.uptime_ms);
 }
 unsigned int uz_SystemTime_GetUptimeInSec(){
+	uz_assert(timingR5.IsReady);
 	return (timingR5.uptime_sec);
 }
 
 uint64_t uz_SystemTime_GetUptimeInUs(){
+	uz_assert(timingR5.IsReady);
 	return (timingR5.uptime_us);
 }
 
 unsigned int uz_SystemTime_GetUptimeInMin(){
+	uz_assert(timingR5.IsReady);
 	return (timingR5.uptime_min);
 }
 
 float uz_SystemTime_GetIsrPeriodInUs(){
+	uz_assert(timingR5.IsReady);
 	return (timingR5.isr_period_us);
 }
 
 uint64_t uz_SystemTime_GetInterruptCounter(){
+	uz_assert(timingR5.IsReady);
 	return (timingR5.interrupt_counter);
 }
 

@@ -17,7 +17,7 @@ void uz_AxiTimer64Bit_init(){
 	// set cascade mode
 	XTmrCtr_SetOptions(&Timer_Uptime, 0, XTC_CASCADE_MODE_OPTION);
 	// start timer
-	XTmrCtr_Start(&Timer_Uptime,0);;
+	XTmrCtr_Start(&Timer_Uptime,0);
 }
 
 uint64_t uz_AxiTimer64Bit_ReadValue64Bit(){

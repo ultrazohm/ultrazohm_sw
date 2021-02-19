@@ -1,7 +1,9 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "uz_AxiTimer64Bit.h"
+#include "../uz_HAL.h"
 
 void uz_SystemTime_init();
 void uz_SystemTime_ISR_Tic(); // start the stopwatch

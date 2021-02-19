@@ -14,3 +14,4 @@ Vitis
 	hardwareAbstractionLayer/hardwareAbstractionLayer
 	known_issues
 	ErrorHandling
+	SystemTime/SystemTime

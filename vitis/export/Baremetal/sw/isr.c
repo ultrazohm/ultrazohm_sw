@@ -18,7 +18,7 @@
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include <math.h>
-#include <xtmrctr.h> //library for timing measurement
+#include <xtmrctr.h>
 #include "../include/javascope.h"
 #include "../include/pwm.h"
 #include "../include/pwm_3L_driver.h"
@@ -26,21 +26,11 @@
 #include "../include/encoder.h"
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
+#include "../uz/uz_SystemTime/uz_SystemTime.h"
 
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
 
-//Timing measurement variables
-//Variables for ISR-time measurement
-uint32_t 	time_ISR_total, time_ISR_start, time_ISR_end;
-float 	time_ISR_total_us, time_ISR_max_us = 0;
-uint32_t 		i_ISRLifeCheck = 0;
-float 	f_ISRLifeCheck = 0;
-uint32_t 		i_count_1ms = 0; // count up by 1 every 1ms
-uint32_t 		i_count_1s = 0; // count up by 1 every 1s
-float 	isr_period_us_measured;
-XTime 		tPrev, tNow = 0;
-unsigned int time_overflow_counter = 0;
 
 //Initialize the variables for the ADC measurement
 u32 		XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
@@ -50,11 +40,11 @@ int 		i_CountADCinit =0, MessOnce=0, CountCurrentError =0;
 _Bool     initADCdone = false;
 
 //Initialize the Interrupt structure
-XScuGic INTCInst;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
+XScuGic INTCInst;  		//Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 //Initialize the Timer structure
-XTmrCtr TMR_Con_Inst;
+XTmrCtr Timer_Interrupt;
 
 float sin1amp=100.0;
 
@@ -70,32 +60,20 @@ extern DS_Data Global_Data;
 // - start of the control period
 //----------------------------------------------------
 static void toggleLEDdependingOnReadyOrRunning(uint32_t i_count_1ms, uint32_t i_count_1s);
-static void MeasureTimeForJavascope();
 static void ReadAllADC();
 static void CheckForErrors();
-static void CalculateTimeISRtookToExecute();
 
 void ISR_Control(void *data)
 {
-	// Enable and acknowledge the timer
-	XTmrCtr_Reset(&TMR_Con_Inst,0);
-	//Read the timer value at the beginning of the ISR in order to measure the ISR-time
-	time_ISR_start = XTmrCtr_GetValue(&TMR_Con_Inst,0);
-
-	i_ISRLifeCheck++; //LiveCheck
-	if(i_ISRLifeCheck > 1000){
-		i_ISRLifeCheck = 1; //If the value is 10001, than set to 1 in order to avoid value-overflow
-	}
-	f_ISRLifeCheck = ((float)i_ISRLifeCheck)*0.1; //for representation, keep the value between 0-1000
-
-	MeasureTimeForJavascope();	//measure the time for the JavaScope
-	toggleLEDdependingOnReadyOrRunning(i_count_1ms,i_count_1s); // Toggle the System-Ready LED in order to show a Life-Check on the front panel
+	uz_SystemTime_ISR_Tic();
+	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
+	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
 
 	ReadAllADC();
 	CheckForErrors();
 	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
 
-	//Start: Write the references for the FPGA ---------------------------------------------------------------------------------------
+	//Start: Control algorithm -------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)
 	{
 		// add your speed controller here
@@ -108,6 +86,7 @@ void ISR_Control(void *data)
 	{
 		// add your torque controller here
 	}
+	//End: Control algorithm -------------------------------------------------------------------------------
 
 	// Set duty cycles for two-level modulator
 	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
@@ -122,40 +101,13 @@ void ISR_Control(void *data)
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
 
-	//Read the timer value at the end of the ISR in order to measure the ISR-time
-	time_ISR_end = XTmrCtr_GetValue(&TMR_Con_Inst,0);
-
-	//Calculate the required ISR-time
-	CalculateTimeISRtookToExecute();
+	// Read the timer value at the very end of the ISR to minimize measurement error
+	// This has to be the last function executed in the ISR!
+	uz_SystemTime_ISR_Toc();
 }
 
 //==============================================================================================================================================================
-//----------------------------------------------------
-// Measure the time for the JavaScope
-//----------------------------------------------------
-static void MeasureTimeForJavascope(){
-	// save previous read
-	tPrev = tNow;
-	// read clock counter of R5 processor, which starts at 0 after reset/starting the processor
-	XTime_GetTime(&tNow);
 
-	//catch overflow after 9.16 minutes when tNow (32bit) starts from 0 again
-	if (tNow < tPrev){
-		time_overflow_counter++;
-	}
-
-	//measure with 1ms cycle
-	i_count_1ms = tNow/((COUNTS_PER_SECOND) * 1e-3);
-
-	//measure with 1s cycle
-	const unsigned int unsigned_int_max_number = ~(unsigned int)0;
-	i_count_1s = (int) (i_count_1ms*1e-3) + time_overflow_counter * (unsigned_int_max_number/COUNTS_PER_SECOND); //   9.16minutes = 549.7559 seconds = (2^32-1)/COUNTS_PER_SECOND
-
-	// calculate ISR period, the time between two calls of this function
-	float const counts_per_us = (COUNTS_PER_SECOND) * 1e-6; // DO NOT USE COUNTS_PER_USECOND, this macro has a large rounding error!
-	XTime isr_period_counts = (tNow - tPrev);
-	isr_period_us_measured = isr_period_counts / counts_per_us;
-}
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -173,7 +125,7 @@ int Initialize_ISR(){
 		}
 
 	// Initialize interrupt controller for the GIC
-	Status = Rpu_GicInit(&INTCInst, INTERRUPT_ID_SCUG, &TMR_Con_Inst);
+	Status = Rpu_GicInit(&INTCInst, INTERRUPT_ID_SCUG, &Timer_Interrupt);
 		if(Status != XST_SUCCESS) {
 			xil_printf("RPU: Error: GIC initialization failed\r\n");
 			return XST_FAILURE;
@@ -189,9 +141,9 @@ return Status;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INITIALIZE AXI-TIMER FOR ISRs
-// - "TMR_Con_LOAD" sets the counter-end-value in order to set the ISR-frequency f_c
+// - "TIMER_LOAD_VALUE" sets the counter-end-value in order to set the ISR-frequency f_c
 // - "Con_TIMER_DEVICE_ID" uses the Device-ID of the used timer in Vivado
-// - "TMR_Con_Inst" is the used timer structure instance
+// - "Timer_Interrupt" is the used timer structure instance
 // - "XTC_INT_MODE_OPTION" activates the Interrupt function
 // - "XTC_AUTO_RELOAD_OPTION" activates an automatic reload of the timer
 // - By default, the counter counts up
@@ -200,15 +152,16 @@ int Initialize_Timer(){
 
 	int Status;
 
-	// SETUP THE TIMER for Control
-	Status = XTmrCtr_Initialize(&TMR_Con_Inst, Con_TIMER_DEVICE_ID);
+	// SETUP THE TIMER 1 for Interrupts
+	Status = XTmrCtr_Initialize(&Timer_Interrupt, XPAR_INTERRUPT_TRIGGER_F_CC_DEVICE_ID);
 	if(Status != XST_SUCCESS) return XST_FAILURE;
-	//XTmrCtr_SetHandler(&TMR_Con_Inst, ISR_Control, &TMR_Con_Inst);
-	XTmrCtr_SetOptions(&TMR_Con_Inst, 0, XTC_INT_MODE_OPTION | XTC_AUTO_RELOAD_OPTION);
-	XTmrCtr_SetResetValue(&TMR_Con_Inst, 0, TMR_Con_LOAD);
-	XTmrCtr_Start(&TMR_Con_Inst,0);
+	//XTmrCtr_SetHandler(&Timer_Interrupt, ISR_Control, &Timer_Interrupt);
+	XTmrCtr_SetOptions(&Timer_Interrupt, 0, XTC_INT_MODE_OPTION | XTC_AUTO_RELOAD_OPTION);
+	XTmrCtr_SetResetValue(&Timer_Interrupt, 0, TIMER_LOAD_VALUE);
+	XTmrCtr_Reset(&Timer_Interrupt, 0);
+	XTmrCtr_Start(&Timer_Interrupt,0);
 
-return Status;
+	return Status;
 }
 
 //==============================================================================================================================================================
@@ -220,7 +173,7 @@ return Status;
 // @Handler			Associated handler for the Interrupt ID
 // @PeriphInstPtr	Connected interrupt's Peripheral instance pointer
 //----------------------------------------------------
-int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Tmr_Con_InstancePtr)
+int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_InstancePtr)
 {
 	XScuGic_Config *IntcConfig;
 	int status;
@@ -301,15 +254,15 @@ u32 Rpu_IpiInit(u16 DeviceId)
 	return XST_SUCCESS;
 }
 
-static void toggleLEDdependingOnReadyOrRunning(uint32_t i_count_1ms, uint32_t i_count_1s){
+static void toggleLEDdependingOnReadyOrRunning(uint32_t uptime_ms, uint32_t uptime_sec){
 	if(Global_Data.cw.enableSystem){
-	if((i_count_1ms % 200)>100){
+	if((uptime_ms % 200)>100){
 		uz_led_SetLedReadyOn();
 	}else{
 		uz_led_SetLedReadyOff();
 	}
 }else{
-	if(i_count_1s % 2){
+	if(uptime_sec % 2){
 		uz_led_SetLedReadyOn();
 	}else{
 		uz_led_SetLedReadyOff();
@@ -359,11 +312,3 @@ static void CheckForErrors(){
 };
 
 
-static void CalculateTimeISRtookToExecute(){
-	time_ISR_total = time_ISR_end - time_ISR_start;
-	time_ISR_total_us = time_ISR_total * 1e-2 ; //PL clock-Ticks* @100MHz Clock [us]
-
-	if(time_ISR_total_us > time_ISR_max_us){
-		time_ISR_max_us = (time_ISR_total_us);
-	}
-};

@@ -80,7 +80,7 @@ Syllabus
 
     mpsoc/vivado/index
     mpsoc/ip_cores/index
-    mpsoc/vitis/index
+    mpsoc/vitis/vitis
     mpsoc/CPLD/index
 
 .. toctree::

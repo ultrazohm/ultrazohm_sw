@@ -128,7 +128,7 @@ steps:
      branch:
      - main
 
- - name: Push binary
+ - name: Push Changelog
    image: alpine/git
    environment:
      pass:

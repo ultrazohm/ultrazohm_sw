@@ -631,10 +631,10 @@
           }
         },
         "interface_nets": {
-          "ps8_0_axi_periph_M06_AXI": {
+          "Conn1": {
             "interface_ports": [
-              "S00_AXI",
-              "InterLock_Module_0/S00_AXI"
+              "AXI4_Lite1",
+              "Counter_f_sw_V2_ip_0/AXI4_Lite"
             ]
           },
           "AXI4_Lite_1": {
@@ -643,10 +643,10 @@
               "PWM_and_SS_control_V_0/AXI4_Lite"
             ]
           },
-          "Conn1": {
+          "ps8_0_axi_periph_M06_AXI": {
             "interface_ports": [
-              "AXI4_Lite1",
-              "Counter_f_sw_V2_ip_0/AXI4_Lite"
+              "S00_AXI",
+              "InterLock_Module_0/S00_AXI"
             ]
           }
         },
@@ -2548,16 +2548,16 @@
           }
         },
         "interface_nets": {
-          "ps8_0_axi_periph_M00_AXI": {
-            "interface_ports": [
-              "s00_axi",
-              "ADC_Block_B/s00_axi"
-            ]
-          },
           "Conn1": {
             "interface_ports": [
               "s00_axi1",
               "ADC_Block_A/s00_axi"
+            ]
+          },
+          "ps8_0_axi_periph_M00_AXI": {
+            "interface_ports": [
+              "s00_axi",
+              "ADC_Block_B/s00_axi"
             ]
           }
         },
@@ -6980,7 +6980,7 @@
           },
           "vio_interrupt": {
             "vlnv": "xilinx.com:ip:vio:3.0",
-            "xci_name": "zusys_vio_interrupt_1",
+            "xci_name": "zusys_vio_interrupt_0",
             "parameters": {
               "C_NUM_PROBE_IN": {
                 "value": "0"
@@ -7115,6 +7115,12 @@
       }
     },
     "interface_nets": {
+      "smartconnect_0_M06_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M06_AXI",
+          "axi_gpio_2/S_AXI"
+        ]
+      },
       "smartconnect_0_M14_AXI": {
         "interface_ports": [
           "smartconnect_0/M14_AXI",
@@ -7209,12 +7215,6 @@
         "interface_ports": [
           "smartconnect_0/M05_AXI",
           "ADC_A3/s00_axi"
-        ]
-      },
-      "smartconnect_0_M06_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M06_AXI",
-          "axi_gpio_2/S_AXI"
         ]
       }
     },

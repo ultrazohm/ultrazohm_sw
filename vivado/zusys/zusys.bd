@@ -6,7 +6,7 @@
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2020.1.1",
+      "tool_version": "2020.1",
       "validated": "true"
     },
     "design_tree": {
@@ -638,16 +638,16 @@
               "Counter_f_sw_V2_ip_0/AXI4_Lite"
             ]
           },
-          "ps8_0_axi_periph_M06_AXI": {
-            "interface_ports": [
-              "S00_AXI",
-              "InterLock_Module_0/S00_AXI"
-            ]
-          },
           "AXI4_Lite_1": {
             "interface_ports": [
               "AXI4_Lite",
               "PWM_and_SS_control_V_0/AXI4_Lite"
+            ]
+          },
+          "ps8_0_axi_periph_M06_AXI": {
+            "interface_ports": [
+              "S00_AXI",
+              "InterLock_Module_0/S00_AXI"
             ]
           }
         },
@@ -2549,16 +2549,16 @@
           }
         },
         "interface_nets": {
-          "ps8_0_axi_periph_M00_AXI": {
-            "interface_ports": [
-              "s00_axi",
-              "ADC_Block_B/s00_axi"
-            ]
-          },
           "Conn1": {
             "interface_ports": [
               "s00_axi1",
               "ADC_Block_A/s00_axi"
+            ]
+          },
+          "ps8_0_axi_periph_M00_AXI": {
+            "interface_ports": [
+              "s00_axi",
+              "ADC_Block_B/s00_axi"
             ]
           }
         },
@@ -7007,7 +7007,7 @@
           },
           "vio_interrupt": {
             "vlnv": "xilinx.com:ip:vio:3.0",
-            "xci_name": "zusys_vio_interrupt_1",
+            "xci_name": "zusys_vio_interrupt_0",
             "parameters": {
               "C_NUM_PROBE_IN": {
                 "value": "0"
@@ -7142,7 +7142,7 @@
       },
       "timer_uptime_64bit": {
         "vlnv": "xilinx.com:ip:axi_timer:2.0",
-        "xci_name": "zusys_axi_timer_0_0",
+        "xci_name": "zusys_timer_uptime_64bit_0",
         "parameters": {
           "mode_64bit": {
             "value": "1"
@@ -7151,6 +7151,12 @@
       }
     },
     "interface_nets": {
+      "smartconnect_0_M11_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M11_AXI",
+          "Interrupt/S_AXI"
+        ]
+      },
       "smartconnect_0_M02_AXI": {
         "interface_ports": [
           "smartconnect_0/M02_AXI",
@@ -7245,12 +7251,6 @@
         "interface_ports": [
           "smartconnect_0/M09_AXI",
           "IncreEncoder_V24_ip_0/AXI4_Lite"
-        ]
-      },
-      "smartconnect_0_M11_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M11_AXI",
-          "Interrupt/S_AXI"
         ]
       },
       "smartconnect_0_M15_AXI": {

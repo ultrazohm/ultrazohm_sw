@@ -13,11 +13,8 @@
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
-//#include <stdio.h>
 #include "xparameters.h"
 #include "netif/xadapter.h"
-//#include "xil_printf.h"
-//#include "xipipsu.c"
 
 #if LWIP_DHCP==1
 #include "lwip/dhcp.h"
@@ -26,19 +23,22 @@
 #include "../include/isr.h"
 #include "../defines.h"
 
-//#include "../main.h"
 #include <math.h>
 
 #define IPI_HEADER			0x1E0000 /* 1E - Target Module ID */
-#define IPI_R5toA53_MSG_LEN		8U //27U
+#define IPI_R5toA53_MSG_LEN		8U
 #define IPI_A53toR5_MSG_LEN		3U
 
 extern ARM_to_Oszi_Data_shared_struct OsziData;
 extern Oszi_to_ARM_Data_shared_struct ControlData;
 
-QueueHandle_t OsziData_queue;
-
 extern A53_Data Global_Data_A53;
+
+// Oszi Data Queue parameters
+QueueHandle_t OsziData_queue;
+int OSZI_QUEUE_FULL = 0;
+const int OSZI_QUEUE_SIZE_ELEMENTS = 1000; 		// could be optimized, empirical minimum is ~400, otherwise data might be lost
+const int OSZI_QUEUE_RECEIVE_TICKS_WAIT = 100;  // 1 tick = 100ms, wait (almost) indefinitely
 
 Xint16  i_LifeCheck_Transfer_ipc, cnt_javascope=0;
 
@@ -108,7 +108,12 @@ void Transfer_ipc_Intr_Handler(void *data)
 		cnt_javascope = 0;
 
 		// append OsziData to queue
-		xQueueSendToBackFromISR(OsziData_queue, &OsziData, &xHigherPriorityTaskWoken);
+		if ( errQUEUE_FULL == xQueueSendToBackFromISR(OsziData_queue, &OsziData, &xHigherPriorityTaskWoken)  )
+		{
+			// count how many packages are lost due to a full queue
+			// if JavaScope is not connected, this keep counting up
+			OSZI_QUEUE_FULL++;
+		}
 
 		// force context switch after ISR finishes -> switching to ethernet task
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
@@ -165,8 +170,7 @@ int Initialize_ISR(){
 		}
 
 	// create queue with queue_elements elements of of type ARM_to_Oszi_Data_shared_struct
-	const int queue_elements = 20; // arbitrary number, could be optimized.
-	OsziData_queue = xQueueCreate( queue_elements, sizeof(ARM_to_Oszi_Data_shared_struct) );
+	OsziData_queue = xQueueCreate( OSZI_QUEUE_SIZE_ELEMENTS, sizeof(ARM_to_Oszi_Data_shared_struct) );
 		if (OsziData_queue == NULL){
 			xil_printf("APU: Error: Queue creation failed\r\n");
 			return XST_FAILURE;

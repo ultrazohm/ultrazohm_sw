@@ -13,6 +13,8 @@ The UltraZohm-Project uses two different build pipelines to test the builds of t
 * The Drone test pipeline builds UltraZohm Vivado and Vitis Project
 
   * Builds bitstream in Vivado (only main & develop branch)
+  * Commits the vivado binarys (.xsa) to the repository and pushes the change (only on main)
+  * Creates a new tag and a changelog, commits them to the repository and pushes the changes to bitbucket (only on main)
   * Exports the bitstream
   * Generates the Vitis workspace
   * Builds the software
@@ -67,6 +69,9 @@ Bitbucket pipeline (GitHub-Mirror)
 
 Drone pipeline (Software)
 -------------------------
+
+* Drone pipeline builds 
+
 
 * Uses `Drone <www.drone.io>`_
 * Drone has a Server and a Runner
@@ -175,3 +180,19 @@ Furthermore, some configuration is specific to the UltraZohm-Server.
       frontend:
         external:
           name: frontend
+
+Push back to repository
+***********************
+
+The drone pipeline pushes back to the ``ultrazohm_sw`` repository if a commit is made to main (through a pull request).
+The pipeline:
+
+- commits all binarys to the repo
+- Creates a tag using `autotag <https://github.com/pantheon-systems/autotag>`_
+- Settings for the tag: `conventional commits <https://www.conventionalcommits.org/en/v1.0.0/#examples>`_
+- Pushes back to main using ``https``
+- Creates ``CHANGELOG.md`` by using `auto-changelog <https://github.com/cookpete/auto-changelog>`_
+- Commits the changelog
+- Pushes back to main using ``https``
+- The tag is on the commit of the binarys, the CHANLOG.md is one commit after the tag
+- Commit message is fixed and starts with [skip ci] to prevent infinite CI loop

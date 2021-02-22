@@ -16,7 +16,14 @@
 #ifndef PWM_H_
 #define PWM_H_
 
-#include "../main.h"
+//#include "../main.h"
+#include <stdint.h>
+#include <math.h>
+
+#include "xparameters.h"
+#include "xil_io.h"
+
+#include "../globalData.h"
 #include "../defines.h"
 #include "../IP_Cores/PWM_and_SS_control_V3_ip_addr.h"		//Include from Simulink IP-Blocks for PWM and SS control
 
@@ -27,7 +34,7 @@
 // Methods for two-level PWM IP core
 int  PWM_SS_Initialize(DS_Data* data);	// Init for the PWM modulation IP-Block
 void PWM_SS_SetDutyCycle(float duty_A, float duty_B, float duty_C); // method to set duty cycle
-void PWM_SS_SetStatus(Xint32 PWM_en);
+void PWM_SS_SetStatus(int PWM_en);
 void PWM_SS_SetMode(int PWM_mode);
 void PWM_SS_SetCarrierFrequency(float PWM_freq_Hz);
 void PWM_SS_SetMinimumPulseWidth(float PWM_min_pulse_width);

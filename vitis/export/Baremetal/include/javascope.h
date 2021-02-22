@@ -18,6 +18,7 @@
 
 
 #include "ipc_ARM.h"
+#include "../uz/uz_SystemTime/uz_SystemTime.h"
 
 extern float zerovalue;
 
@@ -119,8 +120,8 @@ enum JS_SlowData {
 
 
 union SlowData {
-   Xint32 i;
-   Xfloat32 f;
+   int i;
+   float f;
 };
 
 

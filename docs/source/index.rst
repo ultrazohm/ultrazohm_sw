@@ -70,7 +70,6 @@ Syllabus
     general/tcl_scripts
     general/ci_pipeline
     general/howToDocs/howToDocs
-    general/altium_db_lib/altium_DB_lib
     general/useCases/useCases
 
 .. toctree::
@@ -79,7 +78,7 @@ Syllabus
 
     mpsoc/vivado/index
     mpsoc/ip_cores/index
-    mpsoc/vitis/index
+    mpsoc/vitis/vitis
     mpsoc/CPLD/index
 
 .. toctree::
@@ -102,6 +101,7 @@ Syllabus
 
    hardware/carrier_board/index
    hardware/adapter_boards/index
+   hardware/altium/altium
 
 Indices and tables
 ==================

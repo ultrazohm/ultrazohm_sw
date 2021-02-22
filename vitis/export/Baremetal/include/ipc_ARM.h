@@ -16,8 +16,9 @@
 #ifndef IPC_H_
 #define IPC_H_
 
-#include "../main.h"
+#include <stdint.h>
+#include "../globalData.h"
 
-void ipc_Control_func(Xuint16 msgId, Xint16 value, DS_Data* data);
+void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data);
 
 #endif /* IPC_H_ */

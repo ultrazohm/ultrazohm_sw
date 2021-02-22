@@ -45,6 +45,10 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 //Xint16 values[20];
 union SlowData js_slowDataArray[JSSD_ENDMARKER];
 
+static float lifecheck;
+static float ISRExecutionTime;
+static float isr_period_us;
+
 int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
@@ -71,9 +75,6 @@ int JavaScope_initalize(DS_Data* data)
 	ControlData.id =0;
 	ControlData.value =0;
 
-	float lifecheck =  uz_SystemTime_GetInterruptCounter() % 1000;
-	float ISRExecutionTime=uz_SystemTime_GetIsrExectionTimeInUs();
-	float isr_period_us=uz_SystemTime_GetIsrPeriodInUs();
 	// Store every observable signal into the Pointer-Array.
 	// With the JavaScope, 4 signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
@@ -109,7 +110,10 @@ void js_fetchData4CH()
 	int status;
 	u32 MsgPtr[IPI_R5toA53_MSG_LEN] = {0};
 	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0};
-
+	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
+	lifecheck =  uz_SystemTime_GetInterruptCounter() % 1000;
+	ISRExecutionTime=uz_SystemTime_GetIsrExectionTimeInUs();
+	isr_period_us=uz_SystemTime_GetIsrPeriodInUs();
 	//EL: write values that will be transfered into MsgPtr array
 	//MsgPtr contains values, js_ptr contains pointers to values
 	memcpy(&(MsgPtr[0]), js_ptr[0], sizeof(u32));

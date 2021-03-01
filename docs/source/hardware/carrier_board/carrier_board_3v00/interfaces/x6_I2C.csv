@@ -1,0 +1,3 @@
+Pin on X6, Signal, Function, Direction, Specification
+89, I2C0_SCL, I2C bus from processing system, bi-directional, 3.3 V / 10 mA
+90, I2C0_SDA, I2C bus from processing system, bi-directional, 3.3 V / 10 mA

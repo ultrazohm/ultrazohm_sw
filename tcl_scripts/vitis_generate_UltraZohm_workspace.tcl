@@ -1,20 +1,25 @@
-####################################################
+###########################################################################
+# Copyright 2021 Eyke Liegmann, Tobias Schindler
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and limitations under the License.
 #
-# generate_UltraZohm_workspace.tcl
-#
-# Copyright (C) 2020 UltraZohm Community, All rights reserved.
-#
-# Created on: 06.02.2020
-#     Author: Eyke Liegmann (EL)
-# 	Modified: Wendel Sebastian (SW)
 #
 # execute in XSCT console in Vitis workspace
 #	cd [getws] 
 #	source {../../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl}
 #
 # XSCT Programming Reference UG1416 
-# https://www.xilinx.com/html_docs/xilinx2019_2/vitis_doc/
-####################################################
+# https://www.xilinx.com/html_docs/xilinx2020_1/vitis_doc/
+###########################################################################
 
 
 proc app_clean {{name *}} {
@@ -101,6 +106,9 @@ bsp config dhcp_does_arp_check true
 platform write 
 bsp config lwip_dhcp true
 platform write 
+# increase heap size of freertos, to fix javascope glitches
+bsp config total_heap_size  1048576
+platform write 
 
 puts "Info:(UltraZohm) regenerate FreeRTOS BSP"
 #regenerate board support package
@@ -178,6 +186,9 @@ puts stdout $filename_FreeRTOS
 importsources -name FreeRTOS -path $filename_FreeRTOS -soft-link
 importsources -name FreeRTOS -path $filename_FreeRTOS/lscript.ld -linker-script
 
+# set optimization level 
+app config -name FreeRTOS -set compiler-optimization {Optimize most (-O3)}
+app config -name Baremetal -set compiler-optimization {Optimize more (-O2)}
 
 ##Application FSBL (Standalone) A53_0
 #####################################################

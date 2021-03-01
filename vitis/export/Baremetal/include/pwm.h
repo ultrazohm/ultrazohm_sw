@@ -1,18 +1,29 @@
 /******************************************************************************
- *
- * pwm.h
- *
- * Copyright (C) 2018 Institute ELSYS, TH Nürnberg, All rights reserved.
- *
- *  Created on: 12.11.2018
- *      Author: Sebastian Wendel (SW)
- *
+* Copyright 2021 Eyke Liegmann, Tobias Schindler, Sebastian Wendel, Philipp LÃ¶hdefink
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
 #ifndef PWM_H_
 #define PWM_H_
 
-#include "../main.h"
+//#include "../main.h"
+#include <stdint.h>
+#include <math.h>
+
+#include "xparameters.h"
+#include "xil_io.h"
+
+#include "../globalData.h"
 #include "../defines.h"
 #include "../IP_Cores/PWM_and_SS_control_V3_ip_addr.h"		//Include from Simulink IP-Blocks for PWM and SS control
 
@@ -23,7 +34,7 @@
 // Methods for two-level PWM IP core
 int  PWM_SS_Initialize(DS_Data* data);	// Init for the PWM modulation IP-Block
 void PWM_SS_SetDutyCycle(float duty_A, float duty_B, float duty_C); // method to set duty cycle
-void PWM_SS_SetStatus(Xint32 PWM_en);
+void PWM_SS_SetStatus(int PWM_en);
 void PWM_SS_SetMode(int PWM_mode);
 void PWM_SS_SetCarrierFrequency(float PWM_freq_Hz);
 void PWM_SS_SetMinimumPulseWidth(float PWM_min_pulse_width);

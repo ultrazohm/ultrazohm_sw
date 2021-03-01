@@ -1,0 +1,3 @@
+Pin on X6, Signal, Function, Direction, Specification
+99, PILOT_OUT, pilot line out, output, 3.3 V / hi-Z
+100, PILOT_IN, pilot line in, input, 3.3 V / hi-Z

@@ -2,6 +2,7 @@
 HDL-Coder (HDL)
 ===============
 
+**Placeholder**
 
 ..	toctree::
 		:maxdepth: 2

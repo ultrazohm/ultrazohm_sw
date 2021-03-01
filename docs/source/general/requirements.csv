@@ -1,0 +1,18 @@
+Category,Name,Requirement,Documentation
+Real-time,MPC-Control,FCS-MPC with N=3 calculation time below 5us,
+Real-time,FOC control of PMSM,State of the art FOC,
+Real-time,MPC-Control in lab,FCS-MPC with N=3 is evaluated with a demonstrator,
+Adapter card,Slow ADC (up to 125 kSPS),Up to 100 parallel measurements,
+Adapter card,Fast ADC (up to 5 MPSP),Up to 24 parallel measurements,:ref:`Analog_LTC2311_16_v3`
+Adapter card,Digital interface for control signals of inverter,3V3/5V/15V, :ref:`digitalVoltage`
+Adapter card,Optical interface card,18 channels, :ref:`dig_optical`
+Adapter card,Encoder Card,Common encoder interfaces (Resolver Incremental), :ref:`dig_incEncoder`
+AI,Neural network on FPGA,Common neural networks in reinforcement learning can be computed on the FPGA with calculation time below 10us,
+AI,Control of PMSM by reinforcement learning controller,Usage of DQN to control PMSM,
+Usability,C-Code generation toolchain and documentation ,Easy usage of Embedded-Coder for targeting R5,
+Usability,HDL-Code generation toolchain and documentation,Easy usage of HDL-Coder for targeting R5,
+Safety,Safe platform,Provide hardware to allow certification,
+Safety,Basic safety functions for safe operation of the system,,
+Safety,Functions to protect the system from damage,,
+Community,Training of young researchers and students,,
+Community,Building a research community around the UltraZohm,,

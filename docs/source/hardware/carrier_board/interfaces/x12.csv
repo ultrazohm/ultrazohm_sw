@@ -1,7 +1,0 @@
-Pin X12, Name, Specification
-1, 3V3_isoSPO, 3.3 V - 0.0 A (??)
-2, isoSPI_MOSI_3V3, MOSI of SPI1
-3, isoSPI_MISO_3V3, MISO of SPI1
-4, GND_isoSPI, Isolated GND for SPI1
-5, isoSPI_SCLK_3V3, SCLK of SPI1
-6, isoSPI_CS_3V3, CS of SPI1

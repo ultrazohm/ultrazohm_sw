@@ -6,4 +6,4 @@ Analog Adapters
 	:maxdepth: 2
    
 	LTC2311_16_v2
-	
+	LTC2311_16_v3

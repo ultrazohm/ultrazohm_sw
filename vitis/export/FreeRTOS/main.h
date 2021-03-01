@@ -1,14 +1,19 @@
 /******************************************************************************
-*
-* main.h
-*
-* Copyright (C) 2018 Institute ELSYS, TH Nürnberg, All rights reserved.
-*
-*  Created on: 22.08.2018
-*      Author: Wendel Sebastian (SW)
-*
+* Copyright 2021 Sebastian Wendel, Eyke Liegmann
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
+#pragma once
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -17,19 +22,14 @@ extern "C" {
 #include "lwip/sockets.h"
 
 #include "xparameters.h"								//SW: Include for the implemented IP-Blocks from the PL
-#include "xgpiops.h"
-#include "xgpio.h"
 #include "xstatus.h"
 #include "xil_printf.h"
 #include "xscugic.h"									//Include for Interrupt handler (necessary for all interrupts)
 #include "xipipsu.h"									//Include for Interrupt handler (necessary for all IPI interrupts)
 #include "xbasic_types.h" 								//Include for Datatypes
-//#include "xadcps.h"									//Include of ADC-Block
-//#include "xsysmon.h"									//Include of ADC-Block
 #include "xtmrctr.h"									//Include of the Timer-Blocks
 #include "math.h"										//Include for math operations
 #include <stdio.h>
-
 
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024
@@ -38,7 +38,7 @@ extern "C" {
 #define TCPPACKETSIZE 1460 //Maximum TCPPaketSize -> Default: 1460 -> Jumbo-Frames would enable a TCPPACKETSIZE of 8960
 #define TCPPORT 1000	   //Random chosen, but equivalent to the Concerto-OHMrichter
 #define NUMTCPWORKERS 3
-#define NETWORK_SEND_FIELD_SIZE 30 //Default: 15
+#define NETWORK_SEND_FIELD_SIZE 15 //EL //before: 30
 //The IP-address, SubNet address-and StandartGateway-address are set in the main-thread in the main.c
 
 // ========== Definitions =========================================================================
@@ -56,32 +56,33 @@ extern "C" {
 
 // ========== Structures =========================================================================
 
-typedef struct		/* status + time + 21 elemente (16bit) */
+typedef struct		// status + time + 20 elemente (32bit) + 16 bit
 {
 	u32_t status;
 	u32_t slowDataContent[NETWORK_SEND_FIELD_SIZE];
-	u16_t val_01_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_02_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_03_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_04_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_05_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_06_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_07_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_08_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_09_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_10_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_11_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_12_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_13_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_14_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_15_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_16_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_17_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_18_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_19_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t val_20_uint16[NETWORK_SEND_FIELD_SIZE];
-    u16_t slowDataID[NETWORK_SEND_FIELD_SIZE];
+	Xfloat32 val_01[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_02[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_03[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_04[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_05[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_06[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_07[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_08[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_09[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_10[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_11[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_12[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_13[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_14[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_15[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_16[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_17[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_18[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_19[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 val_20[NETWORK_SEND_FIELD_SIZE];
+    Xfloat32 slowDataID[NETWORK_SEND_FIELD_SIZE];
 } NetworkSendStruct;
+
 
 typedef struct
 {
@@ -89,10 +90,9 @@ typedef struct
 	_Bool SampledDataWriteDone;
 	_Bool SampledDataReadDone;
 	_Bool SampledDataError;
-	u16_t schiebereg_ausgaenge;
 	u32_t slowDataContent;
 	u16_t slowDataID;
-	u16_t val[20];
+	Xfloat32 val[20]; // EL: changed from uint16 to float
 } ARM_to_Oszi_Data_shared_struct;
 
 typedef struct

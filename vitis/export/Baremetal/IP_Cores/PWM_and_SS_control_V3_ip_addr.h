@@ -1,9 +1,3 @@
-/*
- * File Name:         hdl_prj\ipcore\PWM_and_SS_control_V3_ip_v1_0\include\PWM_and_SS_control_V3_ip_addr.h
- * Description:       C Header File
- * Created:           2020-02-07 14:12:01
-*/
-
 #ifndef PWM_AND_SS_CONTROL_V3_IP_H_
 #define PWM_AND_SS_CONTROL_V3_IP_H_
 

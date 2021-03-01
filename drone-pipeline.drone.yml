@@ -66,6 +66,18 @@ steps:
    commands:
    - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
    - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_generate_workspace.tcl
+ 
+ - name: Baremetal build successful
+   image: vivado:2020.1
+   commands:
+   - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
+   - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_checkIfBaremetalElfExists.tcl
+   
+ - name: FreeRTOS build successful
+   image: vivado:2020.1
+   commands:
+   - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
+   - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_checkifFreeRTOSElfExists.tcl
 
 # Update the platform just to test the update script (does not update the platform since it did not change)
  - name: Vitis update platform
@@ -73,3 +85,78 @@ steps:
    commands:
    - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
    - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_update_platform.tcl
+
+ - name: Push binary
+   image: alpine/git
+   environment:
+     pass:
+       from_secret: password
+     user:
+       from_secret: username
+   commands:
+   - git status
+   - git commit -a -m "[skip ci] Commit Vivado binarys from DroneCI"
+   - git status
+   - git push --tags --set-upstream https://$user:$pass@bitbucket.org/ultrazohm/ultrazohm_sw.git main 
+   when:
+     branch:
+     - main
+
+ - name: Install autotag
+   image: curlimages/curl
+   user: root
+   volumes:
+   - name: m2
+     path: /root/.m2
+   commands:
+   - curl -sL https://git.io/autotag-install | sh -s -- -b /root/.m2/
+   when:
+     branch:
+     - main
+
+ - name: Autotag
+   image: alpine/git
+   user: root
+   volumes:
+   - name: m2
+     path: /root/.m2
+   commands:
+   - ls
+   - git status
+   - git tag
+   - git fetch --all --tags
+   - git tag
+   - /root/.m2/autotag --scheme=conventional -b=main
+   - git tag
+   when:
+     branch:
+     - main
+
+ - name: Create changelog
+   image: node
+   commands:
+   - npm install -g auto-changelog
+   - auto-changelog
+   when:
+     branch:
+     - main
+
+ - name: Push Changelog
+   image: alpine/git
+   environment:
+     pass:
+       from_secret: password
+     user:
+       from_secret: username
+   commands:
+   - git status
+   - git commit -a -m "[skip ci] Commit changelog and tag from DroneCI"
+   - git status
+   - git push --tags --set-upstream https://$user:$pass@bitbucket.org/ultrazohm/ultrazohm_sw.git main 
+   when:
+     branch:
+     - main
+
+volumes:
+- name: m2
+  temp: {}

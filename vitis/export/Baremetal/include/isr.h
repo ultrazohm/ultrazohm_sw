@@ -1,18 +1,24 @@
 /******************************************************************************
- *
- * isr.h
- *
- * Copyright (C) 2018 Institute ELSYS, TH N�rnberg, All rights reserved.
- *
- *  Created on: 21.08.2016
- *      Author: Sebastian Wendel (SW)
- *
+* Copyright 2021 Eyke Liegmann, Tobias Schindler, Sebastian Wendel, Philipp Löhdefink
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
 #ifndef ISR_H_
 #define ISR_H_
 
 #include "../main.h"
+#include "xgpio.h"
+#include <stdbool.h>
 //Defines for the Interrupt fixed by hand from Vivado Block Design. 
 //signals are concatenated in this order forming an 8 bit interrupt vector. 
 // Shared Peripheral Interrupts: PL->PS
@@ -64,15 +70,12 @@
 void ISR_Control(void *baseaddr_p);								// ISR von Timer-Control
 void Transfer_ipc_Intr_Handler(void *baseaddr_p);							// ISR von Timer-Control
 
-int MeasureTime(void);														// Function for time measurement
 int Initialize_Timer(void);													// Init Timer for ISRs
-int Initialize_Trigger_ADC_Conversion (void);								// Init Timer for current control
 int Initialize_FPGAController(DS_Data* data);								// Init FPGA Control algorithm
 int Initialize_ARMController(DS_Data* data);								// Init ARM Control algorithm
 int Initialize_ISR(void);
 int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Tmr_Control_InstancePtr);	//Init Hardware for ISR
 u32 Rpu_IpiInit(u16 DeviceId);	//Init Hardware for IPI-ISR
-
 
 
 #endif /* ISR_H_ */

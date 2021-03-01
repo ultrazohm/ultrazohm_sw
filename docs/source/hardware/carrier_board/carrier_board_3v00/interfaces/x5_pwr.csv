@@ -1,0 +1,4 @@
+Pin on X5, Name, Specification
+5 + 6, VIN, 24 V / 400 mA
+9 + 10, 5V_PER, 5 V / 500 mA
+13 + 14, 3V3_PER, 3.3 V / 300 mA

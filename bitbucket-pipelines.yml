@@ -10,6 +10,7 @@ pipelines:
   #  develop:
    default:
     - step:
+       name: docs
        script: # Modify the commands below to build your repository.
         - cd docs
         - python -m pip install -U pip
@@ -18,12 +19,16 @@ pipelines:
         - make html SPHINXOPTS="-W --keep-going -n"
         - cd build
         - ls
+    - step:
+       name: Github-Mirror
+       script:
+        - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
+        - git push --all mirrorOrigin
    branches:
      main:
       - step:
          name: Deploy to Contabo Server
          deployment: contabo
-# trigger: manual  # Uncomment to make this a manual deployment.
          script:
           - python -m pip install -U pip
           - ls

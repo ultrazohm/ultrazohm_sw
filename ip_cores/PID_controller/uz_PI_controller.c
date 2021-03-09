@@ -1,13 +1,13 @@
 /******************************************************************************
 * Copyright Contributors to the UltraZohm project.
 * Copyright 2021 Dennnis Hufnagel, Tobias Schindler
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,8 @@
 ******************************************************************************/
 #include "uz_piController.h"
 #include "default_uz_global_configuration.h"
+
+//********* should I declare the max instance macro here or get it through axi stream and remove global configurations.***********/
 #if UZ_PI_CONTROLLER_MAX_INSTANCES > 0U  // executes the code only if the condition is true   0u- 0 unsigned
 
 
@@ -38,11 +40,16 @@ static uz_PI_Controller instances_PI_Controller[UZ_PI_CONTROLLER_MAX_INSTANCES] 
 static uz_PI_Controller* uz_PI_Controller_allocation(void);  // Function declaration - return type,function name, parameters
 
 static uz_PI_Controller* uz_PI_Controller_allocation(void) {  // Function Definition    // Memory allocation
-	        //uz_assert(instances_counter_PI_Controller < UZ_PI_CONTROLLER_MAX_INSTANCES);
+	//uz_assert(instances_counter_PI_Controller < UZ_PI_CONTROLLER_MAX_INSTANCES);
+	//do{
+		//if(instances_counter_PI_Controller < UZ_PI_CONTROLLER_MAX_INSTANCES)
+		//	{
 			uz_PI_Controller* self = &instances_PI_Controller[instances_counter_PI_Controller];
 			//uz_assert(self->is_ready == false);
 			instances_counter_PI_Controller++;
 			self->is_ready = true;
+		//	}
+	  // }while(0)
 	return (self);
 }
 
@@ -73,6 +80,16 @@ bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float 
 }
 
 float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, float actualValue, bool ext_clamping) {
+	/*#pragma HLS INTERFACE ap_none port = referenceValue
+    #pragma HLS INTERFACE ap_none port = actualValue
+	#pragma HLS INTERFACE ap_none port = ext_clamping*/
+
+
+	#pragma HLS INTERFACE s_axilite port=referenceValue    bundle = param
+	#pragma HLS INTERFACE s_axilite port=actualValue       bundle = param
+	#pragma HLS INTERFACE s_axilite port=ext_clamping      bundle = param
+	#pragma HLS INTERFACE s_axilite port=self              bundle = param
+
 	//uz_assert_not_NULL(self);
 	//uz_assert(self->is_ready);
 	float error = referenceValue - actualValue;
@@ -80,14 +97,15 @@ float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, floa
 	float preIntegrator = error * self->config.Ki;
 	float P_sum = error * self->config.Kp;
 	float output_before_saturation = old_I_sum + P_sum;
-	//self->internal_clamping = uz_PI_Controller_Clamping_Circuit(preIntegrator, output_before_saturation, self->config.upper_limit, self->config.lower_limit);
-	bool clamping_active  = false;//(ext_clamping == true) || (self->internal_clamping == true); // clamping is active if internal clamping or external clamping is true
+	#pragma HLS INTERFACE ap_none port = output_before_saturation
+	self->internal_clamping = uz_PI_Controller_Clamping_Circuit(preIntegrator, output_before_saturation, self->config.upper_limit, self->config.lower_limit);
+	bool clamping_active  = (ext_clamping == true) || (self->internal_clamping == true); // clamping is active if internal clamping or external clamping is true
 	if ( clamping_active ) {
 		self->I_sum += 0.0f;
 	} else {
 		self->I_sum += preIntegrator * self->config.samplingTime_sec;
 	}
-	//float output = uz_signals_saturation(output_before_saturation, self->config.upper_limit, self->config.lower_limit);
+	float output = uz_signals_saturation(output_before_saturation, self->config.upper_limit, self->config.lower_limit);
 	return (output_before_saturation);
 }
 

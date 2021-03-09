@@ -1,0 +1,12 @@
+
+****** Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2020.1 (64-bit)
+  **** SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
+  **** IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source C:/Xilinx/Vitis/2020.1/scripts/vitis_hls/hls.tcl -notrace
+INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/vitis_hls.exe'
+INFO: [HLS 200-10] For user 'ponpr' on host 'laptop-snn4vphh' (Windows NT_amd64 version 6.2) on Sat Jan 01 23:02:32 +0100 2022
+INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores'
+ERROR [AP-1] Could not read script 'script.tcl'.
+INFO: [Common 17-206] Exiting vitis_hls at Sat Jan  1 23:02:32 2022...

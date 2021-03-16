@@ -22,7 +22,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx leaf cells in this code.
@@ -31,17 +31,18 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity SPI_MASTER is
     generic(
-        DATA_WIDTH  : integer := 16;    -- Number of bits per SPI frame
-        CHANNELS    : integer := 1;     -- Number of slaves that are controlled with the same SS_N and SCLK
-        PRE_DELAY   : integer := 0;     -- Number of system clock cycles between last SCLK cycle and SS_N -> high
-        POST_DELAY  : integer := 0;     -- Number of system clock cycles between SS_N -> low and first SCLK cycle
-        CLK_DIV     : integer := 0      -- Number of system clock cycles per half SCLK cycle. Highest SCLK is sys_clk/2
+        DATA_WIDTH      : natural := 16;    -- Number of bits per SPI frame
+        CHANNELS        : natural := 1;     -- Number of slaves that are controlled with the same SS_N and SCLK
+        
+        -- SPI configuration register
+        DELAY_WIDTH     : natural := 8;     -- Bit width of the vector that contains pre and post delay
+                                            -- a.k.a. delay from SS_N -> low to first SCLK cycle and last before SS_N -> high
+        CLK_DIV_WIDTH   : natural := 16     -- Bit width of the vector that contains pre and post clock devider
     );
     port (
         CLK         : in std_logic;
         RESET_N     : in std_logic;
-        -- This solution does not work see ug901 page 184 version 2020.1
-        --RX_DATA     : out std_logic_vector_array(CHANNELS - 1 downto 0)(DATA_WIDTH - 1 downto 0);
+        -- SPI ports
         RX_DATA     : out std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0);
         CPHA        : in std_logic;
         CPOL        : in std_logic;
@@ -49,15 +50,22 @@ entity SPI_MASTER is
         MISO        : in std_logic_vector(CHANNELS - 1 downto 0);
         SS_OUT_N    : out std_logic;
         SS_IN_N     : in std_logic;
+        -- Control Ports
         BUSY        : out std_logic;
-        ENABLE      : in std_logic
+        ENABLE      : in std_logic;
+        PRE_DELAY   : in unsigned (DELAY_WIDTH - 1 downto 0);
+        POST_DELAY  : in unsigned (DELAY_WIDTH - 1 downto 0);
+        CLK_DIV     : in unsigned (CLK_DIV_WIDTH - 1 downto 0)
     );
 end SPI_MASTER;
 
 architecture Behavioral of SPI_MASTER is
-
-    signal S_DEL_COUNT     : integer range -1 to maximum(PRE_DELAY, POST_DELAY);
-    signal S_DEL_CLK       : integer range -1 to CLK_DIV;
+    
+    signal S_PRE_DELAY     : unsigned (DELAY_WIDTH - 1 downto 0);
+    signal S_POST_DELAY    : unsigned (DELAY_WIDTH - 1 downto 0);
+    signal S_CLK_DIV       : unsigned (CLK_DIV_WIDTH - 1 downto 0);
+    signal S_DEL_COUNT     : integer range -1 to (2 ** CLK_DIV_WIDTH);
+    signal S_DEL_CLK       : integer range -1 to (2 ** DELAY_WIDTH);
     signal S_BIT_COUNT     : integer range -1 to DATA_WIDTH;
     -- The bits from the SPI slave are clocked into the S_RX_BUFFER 
     signal S_RX_BUFFER     : std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0);
@@ -87,6 +95,10 @@ begin
                     when IDLE =>
                         S_SCLK <= CPOL;
                         BUSY <= '0';
+                        -- latch in SPI config
+                        S_PRE_DELAY <= PRE_DELAY;
+                        S_POST_DELAY <= POST_DELAY;
+                        S_CLK_DIV <= CLK_DIV;
                         -- pull SS high at least for one clock cycle
                         if(curstate = POST_WAIT) then
                             SS_OUT_N <= '1';
@@ -99,7 +111,7 @@ begin
                         if (curstate = IDLE) then
                             BUSY <= '1';
                             S_SCLK <= CPOL;
-                            S_DEL_COUNT <= PRE_DELAY;
+                            S_DEL_COUNT <= TO_INTEGER(S_PRE_DELAY);
                             S_BIT_COUNT <= (DATA_WIDTH);
                             SS_OUT_N <= '0';
                         else
@@ -111,11 +123,11 @@ begin
                         -- Transition from PRE_WAIT to SHIFT_OUT
                         if (curstate = PRE_WAIT) then
                             S_SCLK <= not(CPOL);
-                            S_DEL_CLK <= CLK_DIV;
+                            S_DEL_CLK <= TO_INTEGER(S_CLK_DIV);
                         -- Transition from SAMPLE to SHIFT_OUT
                         elsif (curstate = SAMPLE) then
                             S_SCLK <= not(S_SCLK);
-                            S_DEL_CLK <= CLK_DIV;
+                            S_DEL_CLK <= TO_INTEGER(CLK_DIV);
                         -- Stay in SHIFT_OUT    
                         else
                             S_DEL_CLK <= (S_DEL_CLK - 1);
@@ -123,7 +135,7 @@ begin
                     
                     when SAMPLE =>
                         if(curstate = PRE_WAIT) or (curstate = SHIFT_OUT) then
-                            S_DEL_CLK <= CLK_DIV;
+                            S_DEL_CLK <= TO_INTEGER(CLK_DIV);
                             S_BIT_COUNT <= (S_BIT_COUNT - 1);
                             shift_in: for i in (CHANNELS - 1) downto 0 loop
                                 S_RX_BUFFER( ((i * DATA_WIDTH) + DATA_WIDTH - 1) downto (i * DATA_WIDTH)) <=
@@ -144,7 +156,7 @@ begin
                     when POST_WAIT =>
                         if (curstate = SAMPLE) then
                             BUSY <= '0';
-                            S_DEL_COUNT <= POST_DELAY;
+                            S_DEL_COUNT <= TO_INTEGER(POST_DELAY);
                             S_RX_OUT_BUFFER <= S_RX_BUFFER;
                         else
                             S_DEL_COUNT <= (S_DEL_COUNT - 1);

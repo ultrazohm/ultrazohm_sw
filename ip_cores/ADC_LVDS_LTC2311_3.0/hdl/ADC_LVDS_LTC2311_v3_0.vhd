@@ -5,7 +5,11 @@ use ieee.numeric_std.all;
 entity ADC_LVDS_LTC2311_v3_0 is
 	generic (
 		-- Users to add parameters here
-
+		SPI_WIDTH             : integer   := 16;
+		CHANNELS_PER_MASTER   : integer   := 4;
+		SPI_MASTER            : integer   := 2;
+		SI_WIDTH              : integer   := 18;
+	            
 		-- User parameters ends
 		-- Do not modify the parameters beyond this line
 
@@ -16,6 +20,20 @@ entity ADC_LVDS_LTC2311_v3_0 is
 	);
 	port (
 		-- Users to add ports here
+		ADC_RAW          : out std_logic_vector(SPI_WIDTH * CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
+	    ADC_CONVERTED    : out std_logic_vector(SI_WIDTH * CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
+	    
+	    -- SPI ports
+	    SCLK_P           : out std_logic_vector(SPI_MASTER - 1 downto 0);
+	    SCLK_N           : out std_logic_vector(SPI_MASTER - 1 downto 0);
+	    MISO_P           : out std_logic_vector(CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
+	    MISO_N           : out std_logic_vector(CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
+	    SS_N             : out std_logic_vector(SPI_MASTER - 1 downto 0);
+	    
+	    -- Control ports
+	    TRIGGER_CNV      : in std_logic;
+	    ADC_FINISH       : out std_logic_vector(SPI_MASTER - 1 downto 0);
+	    SI_FINISH        : out std_logic_vector(SPI_MASTER - 1 downto 0);
 
 		-- User ports ends
 		-- Do not modify the ports beyond this line

@@ -43,7 +43,7 @@ constant CLOCK_PERIOD : TIME := 10 ns;
 constant TEST_DATA_WIDTH : integer := 16;
 constant TEST_CHANNELS : integer := 2;
 constant TEST_DELAY : integer := 0;
-constant TEST_CLK_DIV : integer := 2;
+constant TEST_CLK_DIV : integer := 0;
 signal S_RESET_N, S_CPHA, S_CPOL, S_SCLK, S_SS_OUT_N, S_SS_IN_N, S_BUSY, S_ENABLE : std_logic := '0';
 signal S_CLK : std_logic := '0';
 signal S_RX_DATA : std_logic_vector((TEST_CHANNELS * TEST_DATA_WIDTH) - 1 downto 0) := (others => '0');

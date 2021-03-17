@@ -266,7 +266,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>dd0f7cd8</spirit:value>
+            <spirit:value>971b7d77</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -282,7 +282,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>7cca5bd1</spirit:value>
+            <spirit:value>957e91c8</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -676,6 +676,12 @@
         <spirit:userFileType>CHECKSUM_94c76190</spirit:userFileType>
         <spirit:logicalName>xil_defaultlib</spirit:logicalName>
       </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/MULT_ADD.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>CHECKSUM_0013a327</spirit:userFileType>
+        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
+      </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_vhdlbehavioralsimulation_view_fileset</spirit:name>
@@ -783,7 +789,7 @@
       </xilinx:taxonomies>
       <xilinx:displayName>ADC_LVDS_LTC2311_v3.0</xilinx:displayName>
       <xilinx:coreRevision>2</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-03-10T20:53:19Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2021-03-17T15:36:45Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@5d02aadb_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LVDS_LTC2311_3.0</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@15de9b1a_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LVDS_LTC2311_3.0</xilinx:tag>
@@ -829,13 +835,19 @@
         <xilinx:tag xilinx:name="ui.data.coregen.dd@633d700f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LVDS_LTC2311_3.0</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@252a8ca3_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LVDS_LTC2311_3.0</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@59b78a42_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LVDS_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@744db684_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LVDS_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5493bfcd_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LVDS_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@a2b2b34_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LVDS_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3741b9fb_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LVDS_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2cdfd7bc_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LVDS_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1abdf1ba_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LVDS_LTC2311_3.0</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="b1c5cd83"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="ed1368d5"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="1b514e95"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="28e24f92"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="da2aade7"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="6992ea72"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="bea4618f"/>

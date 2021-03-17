@@ -1,6 +1,7 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
+-- Company: Institut ELSYS
+-- Engineer: Thilo Wendt
+-- E-Mail: wendtth65566@th-nuernberg.de
 -- 
 -- Create Date: 12/10/2020 05:07:38 PM
 -- Design Name: 
@@ -100,38 +101,44 @@ begin
                         S_POST_DELAY <= POST_DELAY;
                         S_CLK_DIV <= CLK_DIV;
                         -- pull SS high at least for one clock cycle
-                        if(curstate = POST_WAIT) then
+                        case curstate is
+                        when POST_WAIT =>
                             SS_OUT_N <= '1';
-                        else
+                        
+                        when others =>
                             SS_OUT_N <= SS_IN_N;
-                        end if;
+                        end case;
                 
                     when PRE_WAIT =>
                         -- Transition from IDLE to PRE_WAIT
-                        if (curstate = IDLE) then
+                        case curstate is
+                        when IDLE =>
                             BUSY <= '1';
                             S_SCLK <= CPOL;
                             S_DEL_COUNT <= TO_INTEGER(S_PRE_DELAY);
                             S_BIT_COUNT <= (DATA_WIDTH);
                             SS_OUT_N <= '0';
-                        else
-                        -- Stay in PRE_WAIT
+                        when others =>
                             S_DEL_COUNT <= (S_DEL_COUNT - 1);
-                        end if;
+                        end case;
                     
                     when SHIFT_OUT =>
                         -- Transition from PRE_WAIT to SHIFT_OUT
-                        if (curstate = PRE_WAIT) then
+                        
+                        case curstate is
+                        when PRE_WAIT =>
                             S_SCLK <= not(CPOL);
                             S_DEL_CLK <= TO_INTEGER(S_CLK_DIV);
+                            
                         -- Transition from SAMPLE to SHIFT_OUT
-                        elsif (curstate = SAMPLE) then
+                        when SAMPLE =>
                             S_SCLK <= not(S_SCLK);
                             S_DEL_CLK <= TO_INTEGER(CLK_DIV);
-                        -- Stay in SHIFT_OUT    
-                        else
+                            
+                        -- Stay in SHIFT_OUT 
+                        when others =>
                             S_DEL_CLK <= (S_DEL_CLK - 1);
-                        end if;
+                        end case;
                     
                     when SAMPLE =>
                         if(curstate = PRE_WAIT) or (curstate = SHIFT_OUT) then
@@ -154,13 +161,14 @@ begin
                         end if;
                     
                     when POST_WAIT =>
-                        if (curstate = SAMPLE) then
+                        case curstate is
+                        when SAMPLE =>
                             BUSY <= '0';
                             S_DEL_COUNT <= TO_INTEGER(POST_DELAY);
                             S_RX_OUT_BUFFER <= S_RX_BUFFER;
-                        else
+                        when others =>
                             S_DEL_COUNT <= (S_DEL_COUNT - 1);
-                        end if;
+                        end case;
                     
                     when others => curstate <= IDLE;
                     report "Undecoded State" severity note;

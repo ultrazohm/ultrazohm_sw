@@ -17,6 +17,9 @@ The header is located in ``ultrazohm_sw/vitis/export/Baremetal/uz/uz_HAL.h``.
 
 .. note :: The UltraZohm offers 32 bit and 64 bit processors, thus the HAL enables portable code between R5 and A53
 
+.. warning:: ``uz_printf`` maps to ``xil_printf`` on the UltraZohm and ``xil_printf`` does not support everything that ``printf`` from ``<stdio.h>`` does, e.g., you can not print floats with ``%f``
+
+
 HAL Functions
 =============
 

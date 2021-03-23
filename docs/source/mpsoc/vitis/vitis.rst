@@ -8,7 +8,7 @@ Vitis
 
 	howToSoftware
 	hardwareAbstractionLayer/hardwareAbstractionLayer
-	ErrorHandling
+	assertions
 	SystemTime/SystemTime
 	interrupts
 	gcc_optimization

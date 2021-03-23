@@ -1,6 +1,24 @@
-======================
+============
 Known issues 
-======================
+============
+
+How to debug the UltraZohm
+**************************
+
+Following are some steps one can take to debug if there are problems with the UltraZohm (see :issue:`78`).
+
+- Powercycle everyhting
+- Delete temporary files of Vivado (i.e., everything in ``/vivado/project`` except ``ultrazohm.xpr``)
+- Delete the Vitis workspace folder and rebuild the workspace with the generate workspace tcl
+- Check the output of the Vitis Terminal in debug mode
+- Check if you can ping the UltraZohm if the Javascope does not work
+- Clone the repo to a new folder and test if this works
+- Create an issue if you find a problem
+- Ask for help in the forum / slack
+
+
+Known issues
+************
 
 Wrong path after a Vivado/Vitis project is imported from GIT or another computer
 --------------------------------------------------------------------------------

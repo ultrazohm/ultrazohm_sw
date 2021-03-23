@@ -4,6 +4,8 @@
 Include math.h lib 
 ======================
 
+.. note:: In the standard UltraZohm software, the generate workspace .tcl script should take care of this!
+
 If the compiler throws an error when using functions from math.h, you will have to tell the compiler to link the standard math library.
 
 Open the project properties 

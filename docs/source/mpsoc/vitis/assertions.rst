@@ -6,25 +6,25 @@ Assertions
 
 The UltraZohm uses assertions to handle errors.
 
-.. note:: The UltraZohm error handling follows the concept to fail loudly.
+.. warning:: The UltraZohm error handling follows the concept to fail loudly.
 
 How to use
 ----------
 
 Use assertions to guarantee that the conditions and limits of a function are met at runtime.
-Use ``Xil_AssertVoid()`` or ``Xil_assertNonvoid()`` from ``xil_assert.h``.
+Use ``uz_assert()`` or ``uz_assertNotNull()`` from the :ref:`HAL`.
 
 Example code:
 
 .. code :: c
 
-    #include "xil_assert.h"
+    #include "uz/HAL.h"
     #define LIMIT 10
 
     function void fnc(int *foo, int bar){
-        Xil_AssertVoid(foo != NULL);
-        Xil_Assertvoid(bar < LIMIT);
-        // do domesthing 
+        uz_assertNotNull(foo);
+        uz_assert(bar < LIMIT);
+        // do something 
     };
 
 

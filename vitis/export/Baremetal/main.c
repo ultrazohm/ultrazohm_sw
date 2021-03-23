@@ -45,7 +45,7 @@ static void uz_assertCallback(const char8 *file, s32 line) {
 int main (void){
 
 	int status=UZ_SUCCESS;
-	uz_assert(TARGET_ULTRAZOHM);
+
 	Xil_AssertSetCallback((Xil_AssertCallback) uz_assertCallback);
 
 	//Output to the Terminal over UART to the COM-Port. Use e.g. "Tera Term" to listen with baud-rate 115200

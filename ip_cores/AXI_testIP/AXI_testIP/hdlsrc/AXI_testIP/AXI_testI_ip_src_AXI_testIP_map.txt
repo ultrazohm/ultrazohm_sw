@@ -1,0 +1,4 @@
+ --> AXI_testI_ip_src_AXI_testIP_pkg
+AXI_testIP/AXI_testIP/nfp_mul_single --> AXI_testI_ip_src_nfp_mul_single
+AXI_testIP/AXI_testIP/nfp_add_single --> AXI_testI_ip_src_nfp_add_single
+AXI_testIP/AXI_testIP --> AXI_testI_ip_src_AXI_testIP

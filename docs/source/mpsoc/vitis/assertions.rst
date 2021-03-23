@@ -1,8 +1,8 @@
 .. _assertions:
 
-==============
+==========
 Assertions
-==============
+==========
 
 The UltraZohm uses assertions to handle errors.
 

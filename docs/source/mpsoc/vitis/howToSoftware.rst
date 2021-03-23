@@ -2,10 +2,16 @@
 Software Development Guidlines
 ==============================
 
-- Following is the attempt to distill some key concepts of [#CleanCode]_, [#MakingEmbedded] and [#TDD] and apply them to the UltraZohm for guidence on how to write code for it
-- Read the books for the reasoning and **way** more good information about programming!
+- Following is the attempt to distill some key concepts of [#CleanCode]_, [#MakingEmbedded]_ and [#TDD]_ and apply them to the UltraZohm for guidence on how to write code for it
+- Read the books for the reasoning and more good information about programming!
 - Watch the videos of uncle bob:
+  
     - https://www.youtube.com/watch?v=7EmboKQH8lM&ab_channel=UnityCoin
+  
+- Take this as a general goal of how we try to make the software
+- Feedback is more than welcome in issue :issue:`96`!
+- Use the :ref:`HAL`
+- Use :ref:`assertions`
 
 General Rules
 -------------
@@ -50,7 +56,7 @@ General Rules
 - **No premature optimization!**
     - If you think about optimization of the framework code of the UltraZohm, it is probably premature optimization
 
-functions
+Functions
 *********
 
 - Functions should be small
@@ -113,6 +119,8 @@ Single-instance module
     void module_TurnOff(void);
     void module_SetDeadTime(float DeadTime);
     float module_GetDeadTime();
+
+
 
 Multiple-instance module
  Encapsulates a module and lets you create multiple instances of the module / object

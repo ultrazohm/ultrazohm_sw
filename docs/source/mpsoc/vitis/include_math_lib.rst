@@ -1,8 +1,8 @@
 .. _math_h_prob:
 
-======================
-Include math.h lib 
-======================
+==================
+Include math.h lib
+==================
 
 .. note:: In the standard UltraZohm software, the generate workspace .tcl script should take care of this!
 

@@ -46,7 +46,7 @@ General Rules
 
 - **Object oriented programming in C**
     - Object orientation is a property of code, not of the language
-    - Use object orientatied programming
+    - Use object orientated programming
     - Critical idea: data hiding
     - I.e., hide the data in private variables
     - Use interfaces
@@ -96,7 +96,7 @@ Prefixing
 SOLID Design
 ------------
 
-`Five Deisgn priciples from Bob Martin <https://en.wikipedia.org/wiki/SOLID>`_: [#TDD]_ (S.189)
+`Five Deisgn priciples from Bob Martin <https://en.wikipedia.org/wiki/SOLID>`_: [#TDD]_ (p.189)
 
 - **S**: Single Responsibility Principle
 - **O**: Open Closed Principle
@@ -105,29 +105,93 @@ SOLID Design
 - **D**: Dependency Inversion Principle
 
 Applied to C
-************
+------------
 
 Single-instance module
- Encapsulates a object if only one object of the type is present in the system.
- This means all initialization is done inside the module function, there is no initialization in code and nothing is passed to init except for configuration if necessary.
- Example interface from [#TDD]_ (p. 194):
+**********************
 
- .. code-block:: c
+Encapsulates a object if only one object of the type can be present in the system.
+This only applies to software modules that are hard-locked to specific hardware and does **not** apply to IP-Core drivers!
+This means all initialization is done inside the module function, there is no initialization in code and nothing is passed to init except for configuration if necessary.
 
-    void module_init(void)
-    void module_TurnOn(void);
-    void module_TurnOff(void);
-    void module_SetDeadTime(float DeadTime);
-    float module_GetDeadTime();
+See the implementation of :ref:`systemTimeR5` for a reference implementation of a single-instance module.
 
+Example interface from [#TDD]_ (p. 194):
 
+.. code-block:: c
+
+   void module_init(void)
+   void module_TurnOn(void);
+   void module_TurnOff(void);
+   void module_SetDeadTime(float DeadTime);
+   float module_GetDeadTime();
 
 Multiple-instance module
- Encapsulates a module and lets you create multiple instances of the module / object
- **Ongoing discussion regarding how to bets use multiple instance modules**
+************************
 
- Sources
- -------
+Encapsulates a module and lets you create multiple instances of the module / object, e.g., IP-core drivers.
+
+In a header ``uz_MyIp.h``:
+
+.. code-block:: c
+
+   #include <stdint.h>
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include "hardwareAdr.h"
+   #include "../../uz/uz_HAL.h"
+   
+   typedef struct uz_MyIp uz_MyIp;
+   typedef uz_MyIp* uz_MyIp_handle;
+   
+   uz_MyIp_handle uz_MyIp_init(uint32_t baseAddr);
+   void uz_MyIp_setVariable(uz_MyIp_handle self,int variable);
+   int uz_MyIp_getVariable(uz_MyIp_handle self);
+
+
+In ``uz_MyIp.c``:
+
+.. code-block:: c
+
+   #include "uz_MyIp.h"
+      
+   struct uz_MyIp{
+     uint32_t baseAddr;
+     int variable; 
+   };
+   
+   uz_MyIp_handle uz_MyIp_init(uint32_t baseAddr){
+     uz_assertNotNull(baseAddr);
+     uz_MyIp_handle self=malloc(sizeof(uz_MyIp));
+     uz_assertNotNull(self);
+     self->baseAddr=baseAddr;
+     return self;
+    }
+   
+    void uz_MyIp_setVariable(uz_MyIp_handle self,int variable){
+      uz_assertNotNull(self);
+      self->variable=variable;
+    }
+   
+    int uz_MyIp_getVariable(uz_MyIp_handle self){
+      uz_assertNotNull(self);
+      return (self->variable);
+    };
+
+Usage:
+
+.. code-block:: C
+
+   uz_MyIp_handle MyIp=uz_MyIp_init(baseAddr);
+   int var=10;
+   uz_MyIp_setVariable(MyIp,var);
+   int readback=0;
+   readback=uz_MyIp_getVariable(MyIp);
+
+See ``vitis/Sandbox/MyIp`` for an example implementation.
+
+Sources
+-------
 
 
 .. [#CleanCode] Clean Code, A Handbook of Agile Software Craftsmanship, Robert C Martin, 2009

@@ -16,6 +16,8 @@
 #include "../main.h"
 #include "../defines.h"
 #include "../include/javascope.h"
+#include "../IP_Cores/SimScapeExample/uz_simExpl.h"
+#include "../IP_Cores/SimScapeExample/uz_simExpl_testbench.h"
 
 float myIQfactor[15] = {1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.0, 1024.0, 2048.0, 4096.0, 8192.0, 16384.0};
 
@@ -48,6 +50,7 @@ union SlowData js_slowDataArray[JSSD_ENDMARKER];
 static float lifecheck;
 static float ISRExecutionTime;
 static float isr_period_us;
+extern uz_simExpl_handle simscapeHDLInstance;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -97,10 +100,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_Lq_mH]		= &data->pID.Online_Lq;
 	js_ptr_arr[JSO_Rs_mOhm]		= &data->pID.Online_Rs;
 	js_ptr_arr[JSO_PsiPM_mVs]	= &data->pID.Online_Psi_PM;
-	js_ptr_arr[JSO_Sawtooth1] 	= &ISRExecutionTime;
-	js_ptr_arr[JSO_SineWave1]   = &lifecheck;
-	js_ptr_arr[JSO_SineWave2]   = &isr_period_us;
-
+	js_ptr_arr[JSO_Sawtooth1] 	= &simscapeHDLInstance->IR;
+	js_ptr_arr[JSO_SineWave1]   = &simscapeHDLInstance->Iout;
+	js_ptr_arr[JSO_SineWave2]   = &simscapeHDLInstance->Vdiode;
 	return Status;
 }
 

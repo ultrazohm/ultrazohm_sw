@@ -51,7 +51,7 @@
 #include "uz/uz_MioGpio_mediator/uz_MioGpioMapping.h"
 
 #include "uz/uz_SystemTime/uz_SystemTime.h"
-
+#include "IP_Cores/SimScapeExample/uz_simExpl_testbench.h"
 //ADC define
 #define TX_BUFFER_SIZE						1
 #define RX_BUFFER_SIZE  					64
@@ -79,6 +79,5 @@ void ControllerOn(DS_Data* data);
 void ADC_Set_Offset(void);
 void ADC_Clear_Offset(void);
 void InitializeDataStructure(DS_Data* data);
-
 
 #endif /* main_H_ */

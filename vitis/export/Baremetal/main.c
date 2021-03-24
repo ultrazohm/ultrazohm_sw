@@ -45,7 +45,7 @@ static void uz_assertCallback(const char8 *file, s32 line) {
 int main (void){
 
 	int status=UZ_SUCCESS;
-	uz_assert(TARGET_ULTRAZOHM);
+
 	Xil_AssertSetCallback((Xil_AssertCallback) uz_assertCallback);
 
 	//Output to the Terminal over UART to the COM-Port. Use e.g. "Tera Term" to listen with baud-rate 115200
@@ -75,6 +75,7 @@ int main (void){
 	// Initialize Timer in order to Trigger the ISRs
 	Initialize_Timer();
 	uz_SystemTime_init();
+	uz_simExpl_testbench_init();
 	// Initialize the incremental encoder
 	Encoder_Incremental_Initialize(&Global_Data);
 
@@ -86,6 +87,8 @@ int main (void){
 
    	//Initialize the Soft-Oscilloscope ("JavaScope")
 	JavaScope_initalize(&Global_Data);
+
+
 
 	// Initialize the Interrupts
 	Initialize_ISR();

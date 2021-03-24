@@ -27,7 +27,7 @@
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
-#include "../IP_Cores/SimScapeExample/uz_simExpl_testbench.h"
+
 
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
@@ -50,8 +50,6 @@ XTmrCtr Timer_Interrupt;
 float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
-
-
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -97,8 +95,8 @@ void ISR_Control(void *data)
 	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
-	//float sine=10*sinf(M_PI_2*uz_SystemTime_)
-	uz_simExpl_stepTestbench();
+
+
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
 

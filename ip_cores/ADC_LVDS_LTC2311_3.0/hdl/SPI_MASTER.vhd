@@ -54,17 +54,17 @@ entity SPI_MASTER is
         -- Control Ports
         BUSY        : out std_logic;
         ENABLE      : in std_logic;
-        PRE_DELAY   : in unsigned (DELAY_WIDTH - 1 downto 0);
-        POST_DELAY  : in unsigned (DELAY_WIDTH - 1 downto 0);
-        CLK_DIV     : in unsigned (CLK_DIV_WIDTH - 1 downto 0)
+        PRE_DELAY   : in std_logic_vector(DELAY_WIDTH - 1 downto 0);
+        POST_DELAY  : in std_logic_vector(DELAY_WIDTH - 1 downto 0);
+        CLK_DIV     : in std_logic_vector(CLK_DIV_WIDTH - 1 downto 0)
     );
 end SPI_MASTER;
 
 architecture Behavioral of SPI_MASTER is
     
-    signal S_PRE_DELAY     : unsigned (DELAY_WIDTH - 1 downto 0);
-    signal S_POST_DELAY    : unsigned (DELAY_WIDTH - 1 downto 0);
-    signal S_CLK_DIV       : unsigned (CLK_DIV_WIDTH - 1 downto 0);
+    signal S_PRE_DELAY     : std_logic_vector(DELAY_WIDTH - 1 downto 0);
+    signal S_POST_DELAY    : std_logic_vector(DELAY_WIDTH - 1 downto 0);
+    signal S_CLK_DIV       : std_logic_vector(CLK_DIV_WIDTH - 1 downto 0);
     signal S_DEL_COUNT     : integer range -1 to (2 ** CLK_DIV_WIDTH);
     signal S_DEL_CLK       : integer range -1 to (2 ** DELAY_WIDTH);
     signal S_BIT_COUNT     : integer range -1 to DATA_WIDTH;
@@ -87,9 +87,10 @@ begin
 
     output_state_mem: process(CLK)
         begin
+            if rising_edge(CLK) then
             if (reset_n = '0') then
                 curstate <= IDLE;
-            elsif rising_edge(CLK) then
+            else
                 curstate <= nxtstate;
                 case nxtstate is
                     -- Transition to IDLE
@@ -115,7 +116,7 @@ begin
                         when IDLE =>
                             BUSY <= '1';
                             S_SCLK <= CPOL;
-                            S_DEL_COUNT <= TO_INTEGER(S_PRE_DELAY);
+                            S_DEL_COUNT <= TO_INTEGER(unsigned(S_PRE_DELAY));
                             S_BIT_COUNT <= (DATA_WIDTH);
                             SS_OUT_N <= '0';
                         when others =>
@@ -128,12 +129,12 @@ begin
                         case curstate is
                         when PRE_WAIT =>
                             S_SCLK <= not(CPOL);
-                            S_DEL_CLK <= TO_INTEGER(S_CLK_DIV);
+                            S_DEL_CLK <= TO_INTEGER(unsigned(S_CLK_DIV));
                             
                         -- Transition from SAMPLE to SHIFT_OUT
                         when SAMPLE =>
                             S_SCLK <= not(S_SCLK);
-                            S_DEL_CLK <= TO_INTEGER(CLK_DIV);
+                            S_DEL_CLK <= TO_INTEGER(unsigned(CLK_DIV));
                             
                         -- Stay in SHIFT_OUT 
                         when others =>
@@ -142,7 +143,7 @@ begin
                     
                     when SAMPLE =>
                         if(curstate = PRE_WAIT) or (curstate = SHIFT_OUT) then
-                            S_DEL_CLK <= TO_INTEGER(CLK_DIV);
+                            S_DEL_CLK <= TO_INTEGER(unsigned(CLK_DIV));
                             S_BIT_COUNT <= (S_BIT_COUNT - 1);
                             shift_in: for i in (CHANNELS - 1) downto 0 loop
                                 S_RX_BUFFER( ((i * DATA_WIDTH) + DATA_WIDTH - 1) downto (i * DATA_WIDTH)) <=
@@ -164,7 +165,7 @@ begin
                         case curstate is
                         when SAMPLE =>
                             BUSY <= '0';
-                            S_DEL_COUNT <= TO_INTEGER(POST_DELAY);
+                            S_DEL_COUNT <= TO_INTEGER(unsigned(POST_DELAY));
                             S_RX_OUT_BUFFER <= S_RX_BUFFER;
                         when others =>
                             S_DEL_COUNT <= (S_DEL_COUNT - 1);
@@ -173,6 +174,7 @@ begin
                     when others => curstate <= IDLE;
                     report "Undecoded State" severity note;
                 end case;
+            end if;
             end if;
     end process output_state_mem;
     

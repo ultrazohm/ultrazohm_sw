@@ -47,7 +47,7 @@ port(
     AIN    : in  std_logic_vector(AWIDTH - 1 downto 0);  -- first operand
     BIN    : in  std_logic_vector(BWIDTH - 1 downto 0);  -- factor
     DIN    : in  std_logic_vector(DWIDTH - 1 downto 0);  -- second operand
-    POUT   : out std_logic_vector(AWIDTH + DWIDTH downto 0) 
+    POUT   : out std_logic_vector(AWIDTH + BWIDTH downto 0) 
     );
     
     attribute use_dsp : string;

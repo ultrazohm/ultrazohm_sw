@@ -93,7 +93,7 @@ architecture Behavioral of ADC_CONTROLLER is
     -- multiplication pipeline
     signal S_CHANNEL_COUNTER    : integer range -1 to CHANNELS;
     signal S_CONV_COUNTER       : integer range -1 to CHANNELS + 1;
-    signal S_RESULT_COUNTER     : integer range -1 to CHANNELS + 2;
+    signal S_RESULT_COUNTER     : integer range -1 to CHANNELS + 5;
     
     -- single channel signals (inputs for the multiplier)
     signal S_RAW_VALUE_S_C  : std_logic_vector(DATA_WIDTH - 1 downto 0);
@@ -173,6 +173,8 @@ begin
             if rising_edge(CLK) then
             if (reset_n = '0') then
                 curstate <= IDLE;
+                S_CONVERSION <= (others => '0');
+                S_OFFSET     <= (others => '0');
             else
                 curstate <= nxtstate;
                 case nxtstate is
@@ -183,6 +185,10 @@ begin
                             SI_VALID <= '1';
                             S_CE_CONVERSION <= '0';
                             BUSY <= '0';
+                            
+                            -- transfer last value to output vector
+                            SI_VALUE( ((S_RESULT_COUNTER + 1) * (RES_MSB - RES_LSB + 1)) - 1 downto (S_RESULT_COUNTER) * (RES_MSB - RES_LSB + 1)) 
+                            <= S_RESULT_S_C(RES_MSB downto RES_LSB);
                         when others =>
                             -- set conversion value for the selected channels
                             if (SET_CONVERSION = '1') then
@@ -220,7 +226,7 @@ begin
                             -- preparation for multiplication
                             S_CHANNEL_COUNTER <= CHANNELS;
                             S_CONV_COUNTER    <= CHANNELS + 1;
-                            S_RESULT_COUNTER  <= CHANNELS + 2;
+                            S_RESULT_COUNTER  <= CHANNELS + 3;
                             
                         when others =>
                             if(S_SPI_BUSY = '1') then
@@ -244,18 +250,22 @@ begin
                         end if;
                         
                         -- second clock cycle: conversion factor to the multiplier
-                        if ( (S_CONV_COUNTER > 0) and (S_CONV_COUNTER <= CHANNELS) ) then
+                        if (S_CONV_COUNTER > 0) and (S_CONV_COUNTER <= CHANNELS) then
                             S_CONVERSION_S_C <= S_CONVERSION( (S_CONV_COUNTER * CONVERSION_WIDTH) - 1 downto (S_CONV_COUNTER - 1) * CONVERSION_WIDTH );
-                            S_CONV_COUNTER <= S_CONV_COUNTER - 1;
-                        else
+                        end if;
+                        
+                        if (S_CONV_COUNTER > 0) then
                             S_CONV_COUNTER <= S_CONV_COUNTER - 1;
                         end if;
                         
+                        
+                        
                         -- third clock cycle: read the result to the appropriate slice of the result vector
-                        if ( (S_RESULT_COUNTER > 0) and (S_RESULT_COUNTER <= CHANNELS) ) then
-                            SI_VALUE( (S_RESULT_COUNTER * (RES_MSB - RES_LSB + 1)) - 1 downto (S_RESULT_COUNTER - 1) * (RES_MSB - RES_LSB + 1)) <= S_RESULT_S_C(RES_MSB downto RES_LSB);
-                            S_RESULT_COUNTER <= S_RESULT_COUNTER - 1;
-                        else
+                        if (S_RESULT_COUNTER > 0) and (S_RESULT_COUNTER < CHANNELS) then
+                            SI_VALUE( ((S_RESULT_COUNTER + 1) * (RES_MSB - RES_LSB + 1)) - 1 downto (S_RESULT_COUNTER) * (RES_MSB - RES_LSB + 1)) <= S_RESULT_S_C(RES_MSB downto RES_LSB);
+                        end if;
+                        
+                        if (S_RESULT_COUNTER > 0) then
                             S_RESULT_COUNTER <= S_RESULT_COUNTER - 1;
                         end if;
                         

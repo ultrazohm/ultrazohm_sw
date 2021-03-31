@@ -45,15 +45,18 @@ constant TEST_OFFSET_WIDTH          : natural := 16;
 constant TEST_CONVERSION_WIDTH      : natural := 18;
 constant TEST_DELAY_WIDTH           : natural := 8;
 constant TEST_CLK_DIV_WIDTH         : natural := 16;
-constant TEST_RES_MSB               : natural := 23;
-constant TEST_RES_LSB               : natural := 6;
+constant TEST_RES_MSB               : natural := 34;
+constant TEST_RES_LSB               : natural := 0;
 constant TEST_CLK_DIV               : integer := 0;
-constant TEST_DELAY                 : integer := 1;
+constant TEST_DELAY                 : integer := 0;
 
 -- values
-constant RAW_VALUE      : integer := 150;
-constant OFFSET         : integer := 150;
-constant CONVERSION     : integer := 10;
+constant RAW_VALUE      : integer := 200;
+constant OFFSET_0       : integer := 150;
+constant CONVERSION_0   : integer := 10;
+
+constant OFFSET_1       : integer := 120;
+constant CONVERSION_1   : integer := 5;
 
 signal S_RX_DATA        : std_logic_vector((TEST_CHANNELS * TEST_DATA_WIDTH) - 1 downto 0) := (others => '0');
 signal S_RESULT         : std_logic_vector((TEST_CHANNELS * (TEST_RES_MSB - TEST_RES_LSB + 1)) - 1 downto 0);
@@ -69,7 +72,8 @@ signal S_PRE_DELAY, S_POST_DELAY        : std_logic_vector(TEST_DELAY_WIDTH - 1 
 
 -- control signals
 signal S_SET_CONVERSION, S_SET_OFFSET, S_ENABLE, S_READ_DONE, S_SI_VALID, S_RAW_VALID : std_logic := '0';
-signal S_CLK, S_RESET_N : std_logic := '0';
+signal S_RESET_N : std_logic := '0';
+signal S_CLK     : std_logic := '1';
 signal S_CHANNEL_SELECT : std_logic_vector(31 downto 0);
 
 -- SPI slave simulation
@@ -196,11 +200,50 @@ stimulus : process begin
     S_PRE_DELAY <= std_logic_vector(to_unsigned(TEST_DELAY, S_PRE_DELAY'length));
     S_POST_DELAY <= std_logic_vector(to_unsigned(TEST_DELAY, S_POST_DELAY'length));
     S_CLK_DIV <= std_logic_vector(to_unsigned(TEST_CLK_DIV, S_CLK_DIV'length));
+    
     -- init test tx vector
     S_TX_DATA <= std_logic_vector(to_unsigned(RAW_VALUE, S_TX_DATA'length));
-    wait for 100 ns;
+    
+    wait for 2 * CLOCK_PERIOD;
     S_RESET_N <= '1';
     wait for CLOCK_PERIOD;
+    
+    -- set offset and conversion for channel 0
+    S_CHANNEL_SELECT <= (0 => '1', others => '0');
+    S_OFF_CONV <= std_logic_vector(to_signed(OFFSET_0, S_OFF_CONV'length));
+    S_SET_OFFSET <= '1';
+    wait until S_READ_DONE = '1';
+    
+    S_SET_OFFSET <= '0';
+    
+    wait for CLOCK_PERIOD;
+    
+    S_OFF_CONV <= std_logic_vector(to_signed(CONVERSION_0, S_OFF_CONV'length));
+    S_SET_CONVERSION <= '1';
+    wait until S_READ_DONE = '1';
+    
+    S_SET_CONVERSION <= '0';
+    
+    wait for CLOCK_PERIOD;
+    
+    -- set offset and conversion for channel 1
+    S_CHANNEL_SELECT <= (1 => '1', others => '0');
+    S_OFF_CONV <= std_logic_vector(to_signed(OFFSET_1, S_OFF_CONV'length));
+    S_SET_OFFSET <= '1';
+    wait until S_READ_DONE = '1';
+    
+    S_SET_OFFSET <= '0';
+    
+    wait for CLOCK_PERIOD;
+    
+    S_OFF_CONV <= std_logic_vector(to_signed(CONVERSION_1, S_OFF_CONV'length));
+    S_SET_CONVERSION <= '1';
+    wait until S_READ_DONE = '1';
+    
+    S_SET_CONVERSION <= '0';
+    
+    wait for CLOCK_PERIOD;
+    
     -- test if SS_N signal can be controlled manually
     S_SS_IN_N <= '0';
     wait for CLOCK_PERIOD * 2;

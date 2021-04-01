@@ -48,6 +48,7 @@ entity SPI_MASTER is
         CPHA        : in std_logic;
         CPOL        : in std_logic;
         SCLK        : out std_logic;
+        SCLK_IN     : in std_logic;
         MISO        : in std_logic_vector(CHANNELS - 1 downto 0);
         SS_OUT_N    : out std_logic;
         SS_IN_N     : in std_logic;
@@ -108,6 +109,7 @@ begin
                         
                         when others =>
                             SS_OUT_N <= SS_IN_N;
+                            SCLK <= SCLK_IN;
                         end case;
                 
                     when PRE_WAIT =>

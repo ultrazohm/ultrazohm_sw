@@ -54,6 +54,7 @@ entity ADC_CONTROLLER is
         CPHA        : in std_logic;
         CPOL        : in std_logic;
         SCLK        : out std_logic;
+        SCLK_IN     : in std_logic;
         MISO        : in std_logic_vector(CHANNELS - 1 downto 0);
         SS_OUT_N    : out std_logic;
         SS_IN_N     : in std_logic;
@@ -136,6 +137,7 @@ architecture Behavioral of ADC_CONTROLLER is
         CPHA        : in std_logic;
         CPOL        : in std_logic;
         SCLK        : out std_logic;
+        SCLK_IN     : in std_logic;
         MISO        : in std_logic_vector(CHANNELS - 1 downto 0);
         SS_OUT_N    : out std_logic;
         SS_IN_N     : in std_logic;
@@ -323,6 +325,7 @@ begin
         CPHA        => CPHA,
         CPOL        => CPOL,
         SCLK        => SCLK,
+        SCLK_IN     => SCLK_IN,
         MISO        => MISO,
         SS_OUT_N    => SS_OUT_N,
         SS_IN_N     => SS_IN_N,

@@ -64,7 +64,7 @@ signal S_OFFSET         : std_logic_vector(TEST_OFFSET_WIDTH - 1 downto 0);
 signal S_CONVERSION     : std_logic_vector(TEST_CONVERSION_WIDTH - 1 downto 0);
 signal S_OFF_CONV       : std_logic_vector(31 downto 0);
 
-signal S_CPHA, S_CPOL, S_SCLK, S_SS_OUT_N, S_SS_IN_N, S_BUSY : std_logic := '0';
+signal S_CPHA, S_CPOL, S_SCLK, S_SCLK_IN, S_SS_OUT_N, S_SS_IN_N, S_BUSY : std_logic := '0';
 
 signal S_MISO                           : std_logic_vector(TEST_CHANNELS - 1 downto 0) := (others => '0');
 signal S_CLK_DIV                        : std_logic_vector(TEST_CLK_DIV_WIDTH - 1 downto 0);
@@ -111,6 +111,7 @@ component ADC_CONTROLLER is
         CPHA        : in std_logic;
         CPOL        : in std_logic;
         SCLK        : out std_logic;
+        SCLK_IN     : in std_logic;
         MISO        : in std_logic_vector(CHANNELS - 1 downto 0);
         SS_OUT_N    : out std_logic;
         SS_IN_N     : in std_logic;
@@ -165,6 +166,7 @@ dut: ADC_CONTROLLER
         CPHA                => S_CPHA,
         CPOL                => S_CPOL,
         SCLK                => S_SCLK,
+        SCLK_IN             => S_SCLK_IN,
         MISO                => S_MISO,
         SS_OUT_N            => S_SS_OUT_N,
         SS_IN_N             => S_SS_IN_N,

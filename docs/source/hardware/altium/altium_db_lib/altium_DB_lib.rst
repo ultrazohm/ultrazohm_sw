@@ -1,8 +1,8 @@
 .. _AltiumDB:
 
-====================
-Altium DB
-====================
+============================
+UltraZohm components library
+============================
 Before starting with the description and instructions on how to use the database system in Altium, a brief overview of the different tools is given.
 
 .. _200_Overview_DB_system:
@@ -55,7 +55,7 @@ Bitbucket access setup
 
 .. _1_Bitbucket:
 
-   .. figure:: img/1_Bitbucket.png
+   .. figure:: img/1_BitBucket.png
    
         Bitbucket - altium_libraries.
 
@@ -212,8 +212,8 @@ Integration in Altium
 
 8. Now you can use all already existing components from the databased library
 
-Installation and setup of a front end (DBeaver)
-===============================================
+Setup of the database client
+============================
 
 If new components are required the developer will need write access to the Bitbucket repository and to the database on the UltraZohm server.
 A dedicated user called ``altium_developer`` is available on the database system for this purpose. He has write access to the whole library database.
@@ -285,10 +285,13 @@ As a graphical database client DBeaver is recommended.
 
 .. _AddANewComponentToTheDatabasedLibrary:
 
-Add a new component to the databased library
-********************************************
+Addition of a new component
+===========================
 
-In the following chapter the procedure to add a new component is illustrated by adding an SMD capacitor.
+In the following chapter the procedure to add a new component is illustrated by adding an SMD capacitor. The following chapter only explains the addition
+of the component to the repository and the database. **Furthermore, the developer who adds the component has to make sure that the fooprint follows**
+**the mapping of the mechanical layers.** See :ref:`mech_layers` for further information. If the component does not follow this mapping the pull request will
+not be accepted. 
 
 .. note :: The goal of this database system is that schematic and footprints of generic components only exist once.
            This means that schematics and footprints symbols of generic components only have to be in the Bitbucket repository once, even if there are multiple physical components available (e.g. different manufacturers and values).
@@ -425,8 +428,8 @@ The table cells, which are here described in detail is from "Capacitors - SMD" t
 
 .. _AddANewTableToTheDatabasedLibrary:
 
-Add a new table to the databased library
-****************************************
+Addition of a new table
+=======================
 
 .. warning :: This option must only be chosen after talking to your supervisor and must be announced in a pull request. 
 			  When adding a new table, the ``.DbLib`` file, which implements the connection from Altium to the database, must be changed and all users need to update the file in order to get access to the new table.

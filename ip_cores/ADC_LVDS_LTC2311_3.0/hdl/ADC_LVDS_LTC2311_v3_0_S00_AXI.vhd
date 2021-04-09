@@ -16,7 +16,15 @@ entity ADC_LVDS_LTC2311_v3_0_S00_AXI is
 	);
 	port (
 		-- Users to add ports here
-
+        P_ADC_CR	                 : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_SPI_CR	             : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_SPI_CFGR	             : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_MASTER_CHANNEL	     : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_CHANNEL	             : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_MASTER_FINISH	         : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_MASTER_SI_FINISH	     : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_MASTER_BUSY	         : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_CONV_VALUE	         : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -541,7 +549,17 @@ begin
 
 
 	-- Add user logic here
-
+    
+    P_ADC_CR	                 <= ADC_CR;
+    P_ADC_SPI_CR	             <= ADC_SPI_CR;
+    P_ADC_SPI_CFGR	             <= ADC_SPI_CFGR;
+    P_ADC_MASTER_CHANNEL	     <= ADC_MASTER_CHANNEL;
+    P_ADC_CHANNEL	             <= ADC_CHANNEL;
+    P_ADC_MASTER_FINISH	         <= ADC_MASTER_FINISH; 
+    P_ADC_MASTER_SI_FINISH	     <= ADC_MASTER_SI_FINISH;  
+    P_ADC_MASTER_BUSY	         <= ADC_MASTER_BUSY; 
+    P_ADC_CONV_VALUE	         <= ADC_CONV_VALUE;
+    
 	-- User logic ends
 
 end arch_imp;

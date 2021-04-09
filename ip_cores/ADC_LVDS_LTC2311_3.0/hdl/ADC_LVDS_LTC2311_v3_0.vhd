@@ -5,7 +5,13 @@ use ieee.numeric_std.all;
 entity ADC_LVDS_LTC2311_v3_0 is
 	generic (
 		-- Users to add parameters here
-
+        DATA_WIDTH          : natural := 16;    -- Number of bits per SPI frame
+        CHANNELS_PER_MASTER : natural := 4;     -- Number of slaves that are controlled with the same SS_N and SCLK
+        SPI_MASTER          : natural := 2;     -- Number of independent SPI Masters
+        OFFSET_WIDTH        : natural := 16;    -- Bit width of the offset value
+        CONVERSION_WIDTH    : natural := 18;    -- Bit width of the conversion factor
+        RES_LSB             : natural := 6;     -- LSB in the result vector of the multiplactor output
+        RES_MSB             : natural := 23;    -- MSB in the result vector of the multiplactor output
 		-- User parameters ends
 		-- Do not modify the parameters beyond this line
 
@@ -16,7 +22,17 @@ entity ADC_LVDS_LTC2311_v3_0 is
 	);
 	port (
 		-- Users to add ports here
-
+        RAW_VALUE       : out std_logic_vector(DATA_WIDTH * CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
+        RAW_VALID       : out std_logic_vector(SPI_MASTER - 1 downto 0);
+        SI_VALUE        : out std_logic_vector((SPI_MASTER * CHANNELS_PER_MASTER * (RES_MSB - RES_LSB + 1) ) - 1  downto 0);
+        SI_VALID        : out std_logic_vector(SPI_MASTER - 1 downto 0);
+        TRIGGER_CNV     : in std_logic_vector(SPI_MASTER - 1 downto 0);
+        
+        -- SPI ports
+        SCLK            : out std_logic_vector(2 * SPI_MASTER - 1 downto 0);
+        MISO            : in std_logic_vector(2 * CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
+        SS_N            : out std_logic_vector(SPI_MASTER - 1 downto 0);
+        
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -48,13 +64,24 @@ end ADC_LVDS_LTC2311_v3_0;
 
 architecture arch_imp of ADC_LVDS_LTC2311_v3_0 is
 
-	-- component declaration
+	-- component declaration AXI4 Lite interface
 	component ADC_LVDS_LTC2311_v3_0_S00_AXI is
 		generic (
 		C_S_AXI_DATA_WIDTH	: integer	:= 32;
 		C_S_AXI_ADDR_WIDTH	: integer	:= 6
 		);
 		port (
+		-- registers
+		P_ADC_CR	                 : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_SPI_CR	             : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_SPI_CFGR	             : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_MASTER_CHANNEL	     : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_CHANNEL	             : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_MASTER_FINISH	         : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_MASTER_SI_FINISH	     : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_MASTER_BUSY	         : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_CONV_VALUE	         : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        -- communication
 		S_AXI_ACLK	: in std_logic;
 		S_AXI_ARESETN	: in std_logic;
 		S_AXI_AWADDR	: in std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
@@ -78,6 +105,74 @@ architecture arch_imp of ADC_LVDS_LTC2311_v3_0 is
 		S_AXI_RREADY	: in std_logic
 		);
 	end component ADC_LVDS_LTC2311_v3_0_S00_AXI;
+	
+	-- user components
+	
+	component OBUFDS
+        port (
+            I: in std_logic;
+            O: out std_logic;
+            OB: out std_logic
+        );
+    end component;
+    
+    component IBUFDS
+        port (
+            O: out std_logic;
+            I: in std_logic;
+            IB: in std_logic
+        );
+    end component;
+    
+    component ADC_CONTROLLER is
+        generic(
+            DATA_WIDTH          : natural := 16;    -- Number of bits per SPI frame
+            CHANNELS            : natural := 1;     -- Number of slaves that are controlled with the same SS_N and SCLK
+            OFFSET_WIDTH        : natural := 16;    -- Bit width of the offset value
+            CONVERSION_WIDTH    : natural := 18;    -- Bit width of the conversion factor
+            RES_LSB             : natural := 6;     -- LSB in the result vector of the multiplactor output
+            RES_MSB             : natural := 23;    -- MSB in the result vector of the multiplactor output
+            
+            -- SPI
+            DELAY_WIDTH         : natural := 8;     -- Bit width of the vector that contains pre and post delay
+                                                    -- a.k.a. delay from SS_N -> low to first SCLK cycle and last before SS_N -> high
+            CLK_DIV_WIDTH       : natural := 16     -- Bit width of the vector that contains pre and post clock devider
+        );
+        port (
+            CLK         : in std_logic;
+            RESET_N     : in std_logic;
+            
+            -- SPI ports
+            CPHA        : in std_logic;
+            CPOL        : in std_logic;
+            SCLK        : out std_logic;
+            SCLK_IN     : in std_logic;
+            MISO        : in std_logic_vector(CHANNELS - 1 downto 0);
+            SS_OUT_N    : out std_logic;
+            SS_IN_N     : in std_logic;
+            ENABLE      : in std_logic;
+            
+            -- SPI config ports
+            PRE_DELAY   : in std_logic_vector(DELAY_WIDTH - 1 downto 0);
+            POST_DELAY  : in std_logic_vector(DELAY_WIDTH - 1 downto 0);
+            CLK_DIV     : in std_logic_vector(CLK_DIV_WIDTH - 1 downto 0);
+            
+            -- Control Ports
+            SET_CONVERSION  : in std_logic;
+            SET_OFFSET      : in std_logic;
+            READ_DONE       : out std_logic;
+            SI_VALID        : out std_logic;
+            RAW_VALID       : out std_logic;
+            BUSY            : out std_logic;
+            
+            -- Value Ports
+            VALUE_OFF_CONV  : in std_logic_vector(31 downto 0);           -- input for conversion or offset value
+            CHANNEL_SELECT  : in std_logic_vector(31 downto 0); -- selection which channels shall be updated with conversion factor or offset
+            SI_VALUE        : out std_logic_vector((CHANNELS * (RES_MSB - RES_LSB + 1)) - 1 downto 0);
+            RAW_VALUE       : out std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0)
+            
+        );
+    end component ADC_CONTROLLER;
 
 begin
 
@@ -112,7 +207,7 @@ ADC_LVDS_LTC2311_v3_0_S00_AXI_inst : ADC_LVDS_LTC2311_v3_0_S00_AXI
 	);
 
 	-- Add user logic here
-
+	
 	-- User logic ends
 
 end arch_imp;

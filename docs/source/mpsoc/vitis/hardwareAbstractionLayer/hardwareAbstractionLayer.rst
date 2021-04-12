@@ -1,3 +1,5 @@
+.. _HAL:
+
 ==========================
 Hardware Abstraction Layer
 ==========================
@@ -12,7 +14,8 @@ Furthermore, HAL defines functions to read and write values from and to the PL v
 * Include the header in your software and use it.
 * Use the standard libs such as ``<stdint>`` or ``<limits.h>`` instead of platform specific libraries.
 * Use ``int`` or ``float`` for variables
-* Do not use ``unsinged int`` to prevent negative values (use ``assert >0`` instead)
+* Do not use ``unsinged int`` to prevent negative values
+* Use ``assert >0`` to make sure a variable is positive instead
 * Do use fixed length unsigned variables for hardware adresses (e.g. base adresses of IP-cores)
 * Only use fixed length variables (e.g., ``int32_t``) for function that write to hardware registers
 * Do not use platform specific data types
@@ -30,17 +33,17 @@ The HAL provides the following functions:
 Define                      Functionality
 =========================== ====================================================
 uz_assert                   Statement that has to be true
-uz_assertNotNull            Assert that the statement is not NULL (e.g. pointer)
+uz_assert_not_NULL          Assert that the statement is not NULL (e.g. pointer)
 uz_printf                   Printf to standard i/o, call like printf
-uz_readFloatFromAxi         Read ``float`` from a hardware register by AXI
-uz_writeFloatToAxi          Write ``float`` from a hardware register by AXI
-uz_writeUnsingedInt32ToAxi  Write ``uint32_t`` from a hardware register by AXI
-uz_readUnsingedInt32FromAxi Read ``uint32_t`` from a hardware register by AXI
-uz_writeInt32ToAxi          Write ``int32_t`` from a hardware register by AXI
-uz_readInt32FromAxi          Read ``int32_t`` from a hardware register by AXI
-uz_writeBoolToAxi           Write ``_Bool`` from a hardware register by AXI
-uz_sfixedToFloat            Converts signed fixed point to ``float``
-uz_FloatToSfixed            Converts ``float`` to signed fixed point
+uz_axi_read_float           Read ``float`` from a hardware register by AXI
+uz_axi_write_float          Write ``float`` from a hardware register by AXI
+uz_axi_write_uint32         Write ``uint32_t`` from a hardware register by AXI
+uz_axi_read_uint32          Read ``uint32_t`` from a hardware register by AXI
+uz_axi_write_int32          Write ``int32_t`` from a hardware register by AXI
+uz_axi_read_int32           Read ``int32_t`` from a hardware register by AXI
+uz_axi_write_bool           Write ``_Bool`` from a hardware register by AXI
+uz_convert_sfixed_to_float  Converts signed fixed point to ``float``
+uz_convert_float_to_sfixed  Converts ``float`` to signed fixed point
 =========================== ====================================================
 
 

@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "uz_AXI_testIP_hwAddr.h"
-#include "../../uz/uz_HAL.h"
+#include "/home/ts/Dokumente/ultrazohm_testbench/ultrazohm_sw/vitis/export/Baremetal/uz/uz_HAL.h"
 
 typedef struct uz_AXI_testIP_hw uz_AXI_testIP_hw;
 typedef uz_AXI_testIP_hw* uz_AXI_testIP_hw_handle;

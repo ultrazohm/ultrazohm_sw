@@ -1,29 +1,29 @@
 .. _assertions:
 
-==============
+==========
 Assertions
-==============
+==========
 
 The UltraZohm uses assertions to handle errors.
 
-.. note:: The UltraZohm error handling follows the concept to fail loudly.
+.. note:: The UltraZohm error handling follows the concept to fail loudly. Thus, the UltraZohm stops operation and enters an error state if any assertion fails.
 
 How to use
 ----------
 
 Use assertions to guarantee that the conditions and limits of a function are met at runtime.
-Use ``Xil_AssertVoid()`` or ``Xil_assertNonvoid()`` from ``xil_assert.h``.
+Use ``uz_assert()`` or ``uz_assert_not_NULL()`` from ``uz_HAL.h``.
 
 Example code:
 
 .. code :: c
 
-    #include "xil_assert.h"
+    #include "uz_HAL.h"
     #define LIMIT 10
 
     function void fnc(int *foo, int bar){
-        Xil_AssertVoid(foo != NULL);
-        Xil_Assertvoid(bar < LIMIT);
+        uz_assert_not_NULL(foo);
+        uz_assert(bar < LIMIT);
         // do domesthing 
     };
 
@@ -39,6 +39,7 @@ If the assertion fails, the following message is printed to the serial console t
 Assertion callback
 ------------------
 
+The assertion uz_assert maps to Xil_AssertVoid in the :ref:`HAL` on the UltraZohm or to makros of ``<assert.h>`` in the sandbox.
 The assertion callback tells the UltraZohm to execute the function ``uz_assertCallback`` if an assertion fires:
 
 .. code :: c
@@ -51,4 +52,5 @@ Use the Vitis Serial Terminal to display the messages.
 After that, the system is kept in an infinite error loop.
 To reset the error, you have to reboot.
 Note that there is no error handling / exceptions since assertions are used to prevent wrong function calls which have to be fixed in the source code.
-Common examples are the passing of ``NULL`` pointers or passing wrong arguments to init function (e.g. wrong base address, violation of min/max values). 
+Common examples are the passing of ``NULL`` pointers or passing wrong arguments to init function (e.g., wrong base address, violation of min/max values). 
+Furthermore, assertions communicate the intend of the developer to other on which conditions have to be met to use the function.

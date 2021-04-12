@@ -13,7 +13,7 @@
 #define uz_assert Xil_AssertVoid
 // Common to assert some pointer is not Null
 // Map to platform specific assert macro
-#define uz_assertNotNull(Expression) \
+#define uz_assert_not_NULL(Expression) \
 {                              \
     uz_assert(Expression!=NULL);        \
 }

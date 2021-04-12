@@ -10,7 +10,10 @@
 % To view changes after modifying the workflow, run the following command:
 % >> hWC.export('DUT','AXI_testIP/AXI_testIP');
 %--------------------------------------------------------------------------
-
+clc
+clear
+pa=which('hdlworkflow.m'); %gets the current (absolute) Path of this script
+pa_to_proj=regexprep(pa,'hdlworkflow.m','');
 %% Load the Model
 load_system('AXI_testIP');
 

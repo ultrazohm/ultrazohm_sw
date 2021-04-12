@@ -1,0 +1,13 @@
+Port Name, Port Type, Data Type, Target Platform Interfaces
+A_int32, Input, int32, AXI
+B_int32, Input, int32, AXI
+C_int32, Output, int32, AXI
+A_uint32, Input, uint32, AXI
+B_uint32, Input, uint32, AXI
+C_uint32, Output, uint32, AXI
+A_float, Input Vector (4), float, AXI
+B_float, Input Vector (4), float, AXI
+C_float, Output Vector (4), float, AXI
+A_fx_1_16_5, Input, signed 16 bit fixed point 5 bit fraction, AXI
+B_fx_1_16_5, Input, signed 16 bit fixed point 5 bit fraction, AXI
+C_fx_1_16_5, Output, signed 16 bit fixed point 5 bit fraction, AXI

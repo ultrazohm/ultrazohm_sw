@@ -22,6 +22,9 @@ entity ADC_LVDS_LTC2311_v3_0 is
 	);
 	port (
 		-- Users to add ports here
+		CLK             : in std_logic;
+        RESET_N         : in std_logic;
+		
         RAW_VALUE       : out std_logic_vector(DATA_WIDTH * CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
         RAW_VALID       : out std_logic_vector(SPI_MASTER - 1 downto 0);
         SI_VALUE        : out std_logic_vector((SPI_MASTER * CHANNELS_PER_MASTER * (RES_MSB - RES_LSB + 1) ) - 1  downto 0);
@@ -29,8 +32,8 @@ entity ADC_LVDS_LTC2311_v3_0 is
         TRIGGER_CNV     : in std_logic_vector(SPI_MASTER - 1 downto 0);
         
         -- SPI ports
-        SCLK            : out std_logic_vector(2 * SPI_MASTER - 1 downto 0);
-        MISO            : in std_logic_vector(2 * CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
+        SCLK            : out std_logic_vector(SPI_MASTER - 1 downto 0);
+        MISO            : in std_logic_vector(CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
         SS_N            : out std_logic_vector(SPI_MASTER - 1 downto 0);
         
 		-- User ports ends
@@ -63,11 +66,29 @@ entity ADC_LVDS_LTC2311_v3_0 is
 end ADC_LVDS_LTC2311_v3_0;
 
 architecture arch_imp of ADC_LVDS_LTC2311_v3_0 is
+    -- constant declarations
+    constant C_DELAY_WIDTH      : natural := 8;
+    constant C_CLK_DIV_WIDTH    : natural := 16;
+    constant C_C_S_AXI_DATA_WIDTH   : integer := 32;
+    
+    -- signal declarations
+    
+    -- SPI signals
+    signal S_CPHA, S_CPOL, S_SCLK_IN, S_SS_IN_N   : std_logic;
+    signal S_PRE_DELAY, S_POST_DELAY              : std_logic_vector(C_DELAY_WIDTH - 1 downto 0);
+    signal S_CLK_DIV                              : std_logic_vector(C_CLK_DIV_WIDTH - 1 downto 0);
+    signal S_ADC_SPI_CFGR                         : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    
+    -- control signals
+    signal S_ENABLE, S_SET_CONVERSION, S_SET_OFFSET, S_BUSY : std_logic_vector(SPI_MASTER - 1 downto 0);
+    
+    -- value signals
+    signal S_ADC_CONV_VALUE, S_ADC_CHANNEL : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
 
 	-- component declaration AXI4 Lite interface
 	component ADC_LVDS_LTC2311_v3_0_S00_AXI is
 		generic (
-		C_S_AXI_DATA_WIDTH	: integer	:= 32;
+		C_S_AXI_DATA_WIDTH	: integer	:= C_C_S_AXI_DATA_WIDTH;
 		C_S_AXI_ADDR_WIDTH	: integer	:= 6
 		);
 		port (
@@ -107,22 +128,6 @@ architecture arch_imp of ADC_LVDS_LTC2311_v3_0 is
 	end component ADC_LVDS_LTC2311_v3_0_S00_AXI;
 	
 	-- user components
-	
-	component OBUFDS
-        port (
-            I: in std_logic;
-            O: out std_logic;
-            OB: out std_logic
-        );
-    end component;
-    
-    component IBUFDS
-        port (
-            O: out std_logic;
-            I: in std_logic;
-            IB: in std_logic
-        );
-    end component;
     
     component ADC_CONTROLLER is
         generic(
@@ -176,6 +181,24 @@ architecture arch_imp of ADC_LVDS_LTC2311_v3_0 is
 
 begin
 
+    -- Add user logic here
+    
+    -- concurrent signal assignements
+    S_CLK_DIV     <= S_ADC_SPI_CFGR(C_CLK_DIV_WIDTH - 1 downto 0);
+    S_PRE_DELAY   <= S_ADC_SPI_CFGR(C_CLK_DIV_WIDTH + C_DELAY_WIDTH - 1 downto C_CLK_DIV_WIDTH);
+    S_POST_DELAY  <= S_ADC_SPI_CFGR(C_CLK_DIV_WIDTH + 2 * C_DELAY_WIDTH - 1 downto C_CLK_DIV_WIDTH + C_DELAY_WIDTH);
+    
+    
+    -- sequential logic
+	
+	control: process(CLK)
+	begin
+	   
+	end process control;
+	
+	
+	-- User logic ends
+
 -- Instantiation of Axi Bus Interface S00_AXI
 ADC_LVDS_LTC2311_v3_0_S00_AXI_inst : ADC_LVDS_LTC2311_v3_0_S00_AXI
 	generic map (
@@ -205,9 +228,57 @@ ADC_LVDS_LTC2311_v3_0_S00_AXI_inst : ADC_LVDS_LTC2311_v3_0_S00_AXI
 		S_AXI_RVALID	=> s00_axi_rvalid,
 		S_AXI_RREADY	=> s00_axi_rready
 	);
-
-	-- Add user logic here
 	
-	-- User logic ends
+	-- instantiation of the ADC channels
+	
+	GEN_ADC_CONT: for i in 0 to SPI_MASTER - 1 generate
+	   inst_adc: ADC_CONTROLLER
+	   generic map(
+	        DATA_WIDTH          => DATA_WIDTH,              -- Number of bits per SPI frame
+            CHANNELS            => CHANNELS_PER_MASTER,     -- Number of slaves that are controlled with the same SS_N and SCLK
+            OFFSET_WIDTH        => OFFSET_WIDTH,            -- Bit width of the offset value
+            CONVERSION_WIDTH    => CONVERSION_WIDTH,        -- Bit width of the conversion factor
+            RES_LSB             => RES_LSB,                 -- LSB in the result vector of the multiplactor output
+            RES_MSB             => RES_MSB,                 -- MSB in the result vector of the multiplactor output
+            
+            -- SPI
+            DELAY_WIDTH         => C_DELAY_WIDTH,     -- Bit width of the vector that contains pre and post delay
+                                          -- a.k.a. delay from SS_N -> low to first SCLK cycle and last before SS_N -> high
+            CLK_DIV_WIDTH       => C_CLK_DIV_WIDTH     -- Bit width of the vector that contains pre and post clock devider
+	   )
+	   
+	   port map(
+	        CLK         => CLK,
+            RESET_N     => RESET_N,
+            
+            -- SPI ports
+            CPHA        => S_CPHA,
+            CPOL        => S_CPOL,
+            SCLK        => SCLK(i),
+            SCLK_IN     => S_SCLK_IN,
+            MISO        => MISO((i + 1) * CHANNELS_PER_MASTER - 1 downto i * CHANNELS_PER_MASTER),
+            SS_OUT_N    => SS_N(i),
+            SS_IN_N     => S_SS_IN_N,
+            ENABLE      => S_ENABLE(i),
+            
+            -- SPI config ports
+            PRE_DELAY   => S_PRE_DELAY,
+            POST_DELAY  => S_POST_DELAY,
+            CLK_DIV     => S_CLK_DIV,
+            
+            -- Control Ports
+            SET_CONVERSION  => S_SET_CONVERSION(i),
+            SET_OFFSET      => S_SET_OFFSET(i),
+            SI_VALID        => SI_VALID(i),
+            RAW_VALID       => RAW_VALID(i),
+            BUSY            => S_BUSY(i),
+            
+            -- Value Ports
+            VALUE_OFF_CONV  => S_ADC_CONV_VALUE,           -- input for conversion or offset value
+            CHANNEL_SELECT  => S_ADC_CHANNEL, -- selection which channels shall be updated with conversion factor or offset
+            SI_VALUE        => SI_VALUE( (i + 1) * (RES_MSB - RES_LSB + 1) - 1 downto i * (RES_MSB - RES_LSB + 1)),
+            RAW_VALUE       => RAW_VALUE( (i + 1) * DATA_WIDTH - 1 downto i * DATA_WIDTH)
+	   );
+	end generate GEN_ADC_CONT;
 
 end arch_imp;

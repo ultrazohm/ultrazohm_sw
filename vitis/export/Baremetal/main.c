@@ -34,7 +34,7 @@ Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
 
 static void uz_assertCallback(const char8 *file, s32 line) {
 	extern XScuGic INTCInst;
-	xil_printf("\r\nAssertion in file %s on line %d\r\n", file, line);
+	uz_printf("\r\nAssertion in file %s on line %d\r\n", file, line);
 	uz_led_SetLedErrorOn();
 	uz_led_SetLedReadyOff();
 	uz_led_SetLedRunningOff();

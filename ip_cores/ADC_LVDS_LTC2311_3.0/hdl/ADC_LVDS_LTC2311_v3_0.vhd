@@ -22,8 +22,6 @@ entity ADC_LVDS_LTC2311_v3_0 is
 	);
 	port (
 		-- Users to add ports here
-		CLK             : in std_logic;
-        RESET_N         : in std_logic;
 		
         RAW_VALUE       : out std_logic_vector(DATA_WIDTH * CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
         RAW_VALID       : out std_logic_vector(SPI_MASTER - 1 downto 0);
@@ -70,20 +68,50 @@ architecture arch_imp of ADC_LVDS_LTC2311_v3_0 is
     constant C_DELAY_WIDTH      : natural := 8;
     constant C_CLK_DIV_WIDTH    : natural := 16;
     constant C_C_S_AXI_DATA_WIDTH   : integer := 32;
+    constant STD_ZERO           : std_logic_vector(SPI_MASTER - 1 downto 0) := (others => '0');
+    
+    -- bit positions in the config register
+    -- ADC_CR
+    constant C_MODE               : natural := 0;
+    constant C_TRIGGER            : natural := 1;
+    constant C_SW_RESET           : natural := 2;
+    constant C_CONV_VALUE_VALID   : natural := 3;
+    constant C_OFF_CONV           : natural := 4;
+    
+    -- ADC_SPI_CR
+    constant C_SPI_SS_N           : natural := 0;
+    constant C_SPI_SS_N_STATUS    : natural := 1;
+    constant C_SPI_SCLK           : natural := 2;
+    constant C_SPI_SCLK_STATUS    : natural := 3;
+    constant C_SPI_CONTROL        : natural := 4;
+    constant C_SPI_CPOL           : natural := 5;
+    constant C_SPI_CPHA           : natural := 6;
     
     -- signal declarations
     
     -- SPI signals
-    signal S_CPHA, S_CPOL, S_SCLK_IN, S_SS_IN_N   : std_logic;
+    signal S_CPHA, S_CPOL         : std_logic;
+    signal S_SCLK_IN, S_SS_IN_N   : std_logic_vector(SPI_MASTER - 1 downto 0);
     signal S_PRE_DELAY, S_POST_DELAY              : std_logic_vector(C_DELAY_WIDTH - 1 downto 0);
     signal S_CLK_DIV                              : std_logic_vector(C_CLK_DIV_WIDTH - 1 downto 0);
-    signal S_ADC_SPI_CFGR                         : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
     
     -- control signals
-    signal S_ENABLE, S_SET_CONVERSION, S_SET_OFFSET, S_BUSY : std_logic_vector(SPI_MASTER - 1 downto 0);
+    signal S_ENABLE, S_SET_CONVERSION, S_SET_OFFSET : std_logic_vector(SPI_MASTER - 1 downto 0);
+    signal S_RESET_N, S_CLK : std_logic;
     
-    -- value signals
-    signal S_ADC_CONV_VALUE, S_ADC_CHANNEL : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    -- AXI values
+    
+    signal S_ADC_CR	                : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    signal S_ADC_CR_IN              : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    signal S_ADC_SPI_CR	            : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    signal S_ADC_SPI_CR_IN          : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    signal S_ADC_SPI_CFGR           : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    signal S_ADC_MASTER_CHANNEL     : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    signal S_ADC_CHANNEL            : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    signal S_ADC_MASTER_FINISH	    : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    signal S_ADC_MASTER_SI_FINISH	: std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    signal S_ADC_MASTER_BUSY	    : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    signal S_ADC_CONV_VALUE         : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
 
 	-- component declaration AXI4 Lite interface
 	component ADC_LVDS_LTC2311_v3_0_S00_AXI is
@@ -94,13 +122,15 @@ architecture arch_imp of ADC_LVDS_LTC2311_v3_0 is
 		port (
 		-- registers
 		P_ADC_CR	                 : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_CR_IN	                 : in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         P_ADC_SPI_CR	             : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_SPI_CR_IN	             : in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         P_ADC_SPI_CFGR	             : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         P_ADC_MASTER_CHANNEL	     : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         P_ADC_CHANNEL	             : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-        P_ADC_MASTER_FINISH	         : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-        P_ADC_MASTER_SI_FINISH	     : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-        P_ADC_MASTER_BUSY	         : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_MASTER_FINISH	         : in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_MASTER_SI_FINISH	     : in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_MASTER_BUSY	         : in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         P_ADC_CONV_VALUE	         : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         -- communication
 		S_AXI_ACLK	: in std_logic;
@@ -187,13 +217,98 @@ begin
     S_CLK_DIV     <= S_ADC_SPI_CFGR(C_CLK_DIV_WIDTH - 1 downto 0);
     S_PRE_DELAY   <= S_ADC_SPI_CFGR(C_CLK_DIV_WIDTH + C_DELAY_WIDTH - 1 downto C_CLK_DIV_WIDTH);
     S_POST_DELAY  <= S_ADC_SPI_CFGR(C_CLK_DIV_WIDTH + 2 * C_DELAY_WIDTH - 1 downto C_CLK_DIV_WIDTH + C_DELAY_WIDTH);
+    SI_VALID      <= S_ADC_MASTER_SI_FINISH(SPI_MASTER - 1 downto 0);
+    RAW_VALID     <= S_ADC_MASTER_FINISH(SPI_MASTER - 1 downto 0);
+    S_CPHA        <= S_ADC_SPI_CR(C_SPI_CPOL);
+    S_CPOL        <= S_ADC_SPI_CR(C_SPI_CPHA);
     
+    S_RESET_N     <= s00_axi_aresetn or S_ADC_CR(C_SW_RESET);
+    
+    -- Clock for AXI interface are the global signals for the whole IP core 
+    S_CLK         <= s00_axi_aclk;
     
     -- sequential logic
 	
-	control: process(CLK)
+	control: process(S_CLK)
+	variable V_IS_BUSY : boolean := false;
 	begin
+        if rising_edge(S_CLK) then
+        
+           S_ADC_CR_IN(C_CONV_VALUE_VALID) <= '1';
+           S_ADC_CR_IN(C_TRIGGER) <= '1';
+           
+           if (S_RESET_N = '1') then
+               
+               -- TODO: reset all signals
+               
+               
+           elsif (S_ADC_CR(C_CONV_VALUE_VALID) = '1') then
+               
+               -- check if one of the selected masters is busy
+               for i in SPI_MASTER - 1 downto 0 loop
+                   if(S_ADC_MASTER_CHANNEL(i) = '1') and (S_ADC_MASTER_BUSY(i) = '1') then
+                       V_IS_BUSY := true;
+                   end if;
+               end loop;
+               
+               -- if non of the masters is busy update offset or conversion value
+               if (V_IS_BUSY = false) then
+                   -- reset the update request
+                   S_ADC_CR_IN(C_CONV_VALUE_VALID) <= '0';
+                   
+                   -- update the values
+                   for i in SPI_MASTER - 1 downto 0 loop
+                       if(S_ADC_MASTER_CHANNEL(i) = '1') then
+                            if (S_ADC_CR(C_OFF_CONV) = '1') then
+                                S_SET_CONVERSION(i) <= '1';
+                                S_SET_OFFSET(i)     <= '0';
+                            else
+                                S_SET_OFFSET(i)     <= '1';
+                                S_SET_CONVERSION(i) <= '0';
+                            end if;
+                       end if;
+                   end loop; 
+               end if;
+           
+           -- Trigger by hardware port
+           elsif (TRIGGER_CNV /= STD_ZERO) then
+               S_ENABLE <= TRIGGER_CNV;
+           
+           -- Continuos mode
+           elsif (S_ADC_CR(C_MODE) = '1') then
+               S_ENABLE <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
+           
+           -- Triggered by AXI register
+           elsif (S_ADC_CR(C_TRIGGER) = '1') then
+               S_ENABLE <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
+               S_ADC_CR_IN(C_TRIGGER) <= '0';
+           
+           elsif (S_ADC_CR(C_TRIGGER) = '0') or (S_ADC_CR(C_MODE) = '0') or (TRIGGER_CNV = STD_ZERO) then
+               S_ENABLE <= (others => '0');
+           
+           -- manual SPI control
+           elsif (S_ADC_SPI_CR(C_SPI_CONTROL) = '1') then
 	   
+                for i in SPI_MASTER - 1 downto 0 loop
+                    if(S_ADC_MASTER_CHANNEL(i) = '1') and (S_ADC_MASTER_BUSY(i) = '1') then
+                        V_IS_BUSY := true;
+                    end if;
+                end loop;
+                
+                if (V_IS_BUSY = false) then
+                    for i in SPI_MASTER - 1 downto 0 loop
+                        if(S_ADC_MASTER_CHANNEL(i) = '1') then
+                            S_SCLK_IN(i)                       <= S_ADC_SPI_CR(C_SPI_SCLK);
+                            S_ADC_SPI_CR_IN(C_SPI_SCLK_STATUS) <= S_ADC_SPI_CR(C_SPI_SCLK);
+                            
+                            S_SS_IN_N(i)                       <= S_ADC_SPI_CR(C_SPI_SS_N);
+                            S_ADC_SPI_CR_IN(C_SPI_SS_N_STATUS) <= S_ADC_SPI_CR(C_SPI_SS_N);
+                        end if;
+                    end loop;
+                end if;
+           end if;
+           
+        end if;
 	end process control;
 	
 	
@@ -206,8 +321,21 @@ ADC_LVDS_LTC2311_v3_0_S00_AXI_inst : ADC_LVDS_LTC2311_v3_0_S00_AXI
 		C_S_AXI_ADDR_WIDTH	=> C_S00_AXI_ADDR_WIDTH
 	)
 	port map (
+	    -- AXI registers
+	    P_ADC_CR	                 => S_ADC_CR,
+	    P_ADC_CR_IN	                 => S_ADC_CR_IN,
+        P_ADC_SPI_CR	             => S_ADC_SPI_CR,
+        P_ADC_SPI_CR_IN	             => S_ADC_SPI_CR_IN,
+        P_ADC_SPI_CFGR	             => S_ADC_SPI_CFGR,
+        P_ADC_MASTER_CHANNEL	     => S_ADC_MASTER_CHANNEL,
+        P_ADC_CHANNEL	             => S_ADC_CHANNEL,
+        P_ADC_MASTER_FINISH	         => S_ADC_MASTER_FINISH,
+        P_ADC_MASTER_SI_FINISH	     => S_ADC_MASTER_SI_FINISH,
+        P_ADC_MASTER_BUSY	         => S_ADC_MASTER_BUSY,
+        P_ADC_CONV_VALUE	         => S_ADC_CONV_VALUE,
+	    -- AXI Ports
 		S_AXI_ACLK	=> s00_axi_aclk,
-		S_AXI_ARESETN	=> s00_axi_aresetn,
+		S_AXI_ARESETN	=> S_RESET_N,
 		S_AXI_AWADDR	=> s00_axi_awaddr,
 		S_AXI_AWPROT	=> s00_axi_awprot,
 		S_AXI_AWVALID	=> s00_axi_awvalid,
@@ -248,17 +376,17 @@ ADC_LVDS_LTC2311_v3_0_S00_AXI_inst : ADC_LVDS_LTC2311_v3_0_S00_AXI
 	   )
 	   
 	   port map(
-	        CLK         => CLK,
-            RESET_N     => RESET_N,
+	        CLK         => S_CLK,
+            RESET_N     => S_RESET_N,
             
             -- SPI ports
             CPHA        => S_CPHA,
             CPOL        => S_CPOL,
             SCLK        => SCLK(i),
-            SCLK_IN     => S_SCLK_IN,
+            SCLK_IN     => S_SCLK_IN(i),
             MISO        => MISO((i + 1) * CHANNELS_PER_MASTER - 1 downto i * CHANNELS_PER_MASTER),
             SS_OUT_N    => SS_N(i),
-            SS_IN_N     => S_SS_IN_N,
+            SS_IN_N     => S_SS_IN_N(i),
             ENABLE      => S_ENABLE(i),
             
             -- SPI config ports
@@ -269,9 +397,9 @@ ADC_LVDS_LTC2311_v3_0_S00_AXI_inst : ADC_LVDS_LTC2311_v3_0_S00_AXI
             -- Control Ports
             SET_CONVERSION  => S_SET_CONVERSION(i),
             SET_OFFSET      => S_SET_OFFSET(i),
-            SI_VALID        => SI_VALID(i),
-            RAW_VALID       => RAW_VALID(i),
-            BUSY            => S_BUSY(i),
+            SI_VALID        => S_ADC_MASTER_SI_FINISH(i),
+            RAW_VALID       => S_ADC_MASTER_FINISH(i),
+            BUSY            => S_ADC_MASTER_BUSY(i),
             
             -- Value Ports
             VALUE_OFF_CONV  => S_ADC_CONV_VALUE,           -- input for conversion or offset value

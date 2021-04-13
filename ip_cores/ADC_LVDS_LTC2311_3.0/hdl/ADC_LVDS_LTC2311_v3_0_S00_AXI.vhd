@@ -15,15 +15,17 @@ entity ADC_LVDS_LTC2311_v3_0_S00_AXI is
 		C_S_AXI_ADDR_WIDTH	: integer	:= 6
 	);
 	port (
-		-- Users to add ports here
+		-- Users to add ports here	
         P_ADC_CR	                 : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_CR_IN	                 : in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         P_ADC_SPI_CR	             : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_SPI_CR_IN	             : in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         P_ADC_SPI_CFGR	             : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         P_ADC_MASTER_CHANNEL	     : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         P_ADC_CHANNEL	             : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-        P_ADC_MASTER_FINISH	         : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-        P_ADC_MASTER_SI_FINISH	     : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-        P_ADC_MASTER_BUSY	         : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_MASTER_FINISH	         : in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_MASTER_SI_FINISH	     : in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_MASTER_BUSY	         : in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         P_ADC_CONV_VALUE	         : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 		-- User ports ends
 		-- Do not modify the ports beyond this line
@@ -92,6 +94,16 @@ entity ADC_LVDS_LTC2311_v3_0_S00_AXI is
 end ADC_LVDS_LTC2311_v3_0_S00_AXI;
 
 architecture arch_imp of ADC_LVDS_LTC2311_v3_0_S00_AXI is
+
+    -- bit positions in the config register
+    -- ADC_CR
+    constant C_TRIGGER            : natural := 1;
+    constant C_SW_RESET           : natural := 2;
+    constant C_CONV_VALUE_VALID   : natural := 3;
+    
+    -- ADC_SPI_CR
+    constant C_SPI_SS_N_STATUS    : natural := 1;
+    constant C_SPI_SCLK_STATUS    : natural := 3;
 
 	-- AXI4LITE signals
 	signal axi_awaddr	: std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
@@ -239,9 +251,9 @@ begin
 	      ADC_SPI_CFGR <= (others => '0');
 	      ADC_MASTER_CHANNEL <= (others => '0');
 	      ADC_CHANNEL <= (others => '0');
-	      ADC_MASTER_FINISH <= (others => '0');
-	      ADC_MASTER_SI_FINISH <= (others => '0');
-	      ADC_MASTER_BUSY <= (others => '0');
+--	      ADC_MASTER_FINISH <= (others => '0');
+--	      ADC_MASTER_SI_FINISH <= (others => '0');
+--	      ADC_MASTER_BUSY <= (others => '0');
 	      ADC_CONV_VALUE <= (others => '0');
 	      slv_reg9 <= (others => '0');
 	      slv_reg10 <= (others => '0');
@@ -294,30 +306,32 @@ begin
 	                ADC_CHANNEL(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
 	              end if;
 	            end loop;
-	          when b"0101" =>
-	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
-	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
-	                -- Respective byte enables are asserted as per write strobes                   
-	                -- slave registor 5
-	                ADC_MASTER_FINISH(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
-	              end if;
-	            end loop;
-	          when b"0110" =>
-	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
-	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
-	                -- Respective byte enables are asserted as per write strobes                   
-	                -- slave registor 6
-	                ADC_MASTER_SI_FINISH(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
-	              end if;
-	            end loop;
-	          when b"0111" =>
-	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
-	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
-	                -- Respective byte enables are asserted as per write strobes                   
-	                -- slave registor 7
-	                ADC_MASTER_BUSY(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
-	              end if;
-	            end loop;
+	            
+	          -- These registers are read only
+--	          when b"0101" =>
+--	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
+--	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
+--	                -- Respective byte enables are asserted as per write strobes                   
+--	                -- slave registor 5
+--	                ADC_MASTER_FINISH(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
+--	              end if;
+--	            end loop;
+--	          when b"0110" =>
+--	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
+--	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
+--	                -- Respective byte enables are asserted as per write strobes                   
+--	                -- slave registor 6
+--	                ADC_MASTER_SI_FINISH(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
+--	              end if;
+--	            end loop;
+--	          when b"0111" =>
+--	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
+--	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
+--	                -- Respective byte enables are asserted as per write strobes                   
+--	                -- slave registor 7
+--	                ADC_MASTER_BUSY(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
+--	              end if;
+--	            end loop;
 	          when b"1000" =>
 	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
 	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
@@ -388,9 +402,9 @@ begin
 	            ADC_SPI_CFGR <= ADC_SPI_CFGR;
 	            ADC_MASTER_CHANNEL <= ADC_MASTER_CHANNEL;
 	            ADC_CHANNEL <= ADC_CHANNEL;
-	            ADC_MASTER_FINISH <= ADC_MASTER_FINISH;
-	            ADC_MASTER_SI_FINISH <= ADC_MASTER_SI_FINISH;
-	            ADC_MASTER_BUSY <= ADC_MASTER_BUSY;
+--	            ADC_MASTER_FINISH <= ADC_MASTER_FINISH;
+--	            ADC_MASTER_SI_FINISH <= ADC_MASTER_SI_FINISH;
+--	            ADC_MASTER_BUSY <= ADC_MASTER_BUSY;
 	            ADC_CONV_VALUE <= ADC_CONV_VALUE;
 	            slv_reg9 <= slv_reg9;
 	            slv_reg10 <= slv_reg10;
@@ -401,6 +415,21 @@ begin
 	            slv_reg15 <= slv_reg15;
 	        end case;
 	      end if;
+	    end if;
+	    
+	    -- USER CODE: set control signals
+	    if S_AXI_ARESETN = '1' then
+	       if (P_ADC_CR_IN(C_TRIGGER) = '0') and ADC_CR(C_TRIGGER) = '1' then
+	           ADC_CR(C_TRIGGER) <= '0';
+	       end if;
+	       
+	       if (P_ADC_CR_IN(C_CONV_VALUE_VALID) = '0') and ADC_CR(C_CONV_VALUE_VALID) = '1' then
+	           ADC_CR(C_CONV_VALUE_VALID) <= '0';
+	       end if;
+	       
+	       ADC_SPI_CR(C_SPI_SS_N_STATUS) <= P_ADC_SPI_CR_IN(C_SPI_SS_N_STATUS);
+	       ADC_SPI_CR(C_SPI_SCLK_STATUS) <= P_ADC_SPI_CR_IN(C_SPI_SCLK_STATUS);
+	       
 	    end if;
 	  end if;                   
 	end process; 
@@ -554,12 +583,25 @@ begin
     P_ADC_SPI_CR	             <= ADC_SPI_CR;
     P_ADC_SPI_CFGR	             <= ADC_SPI_CFGR;
     P_ADC_MASTER_CHANNEL	     <= ADC_MASTER_CHANNEL;
-    P_ADC_CHANNEL	             <= ADC_CHANNEL;
-    P_ADC_MASTER_FINISH	         <= ADC_MASTER_FINISH; 
-    P_ADC_MASTER_SI_FINISH	     <= ADC_MASTER_SI_FINISH;  
-    P_ADC_MASTER_BUSY	         <= ADC_MASTER_BUSY; 
+    P_ADC_CHANNEL	             <= ADC_CHANNEL; 
     P_ADC_CONV_VALUE	         <= ADC_CONV_VALUE;
     
+    -- read only registers
+    
+    process (S_AXI_ACLK) is
+    begin
+        if (rising_edge(S_AXI_ACLK)) then
+            if S_AXI_ARESETN = '0' then
+                ADC_MASTER_FINISH <= (others => '0');
+                ADC_MASTER_SI_FINISH <= (others => '0');
+                ADC_MASTER_BUSY <= (others => '0');
+	        else
+                ADC_MASTER_FINISH	         <= P_ADC_MASTER_FINISH; 
+                ADC_MASTER_SI_FINISH	     <= P_ADC_MASTER_SI_FINISH;  
+                ADC_MASTER_BUSY	             <= P_ADC_MASTER_BUSY;
+            end if;
+        end if;
+    end process;
 	-- User logic ends
 
 end arch_imp;

@@ -90,7 +90,16 @@ begin
         begin
             if rising_edge(CLK) then
             if (reset_n = '0') then
-                curstate <= IDLE;
+                curstate            <= IDLE;
+                S_DEL_COUNT         <= 0;
+                S_DEL_CLK           <= 0;
+                S_BIT_COUNT         <= 0;
+                S_RX_OUT_BUFFER     <= (others => '0');
+                S_RX_BUFFER         <= (others => '0');
+                S_PRE_DELAY         <= (others => '0');
+                S_POST_DELAY        <= (others => '0');
+                S_CLK_DIV           <= (others => '0');
+                S_SCLK              <= CPOL;
             else
                 curstate <= nxtstate;
                 case nxtstate is
@@ -109,7 +118,7 @@ begin
                         
                         when others =>
                             SS_OUT_N <= SS_IN_N;
-                            SCLK <= SCLK_IN;
+                            S_SCLK <= SCLK_IN;
                         end case;
                 
                     when PRE_WAIT =>

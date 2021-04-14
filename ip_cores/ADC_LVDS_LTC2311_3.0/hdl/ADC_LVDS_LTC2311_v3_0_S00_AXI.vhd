@@ -104,6 +104,12 @@ architecture arch_imp of ADC_LVDS_LTC2311_v3_0_S00_AXI is
     -- ADC_SPI_CR
     constant C_SPI_SS_N_STATUS    : natural := 1;
     constant C_SPI_SCLK_STATUS    : natural := 3;
+    constant C_SPI_CPOL           : natural := 5;
+    constant C_SPI_CPHA           : natural := 6;
+    
+    -- reset values
+    constant C_RESET_CPOL         : std_logic := '1';
+    constant C_RESET_CPHA         : std_logic := '0';
 
 	-- AXI4LITE signals
 	signal axi_awaddr	: std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
@@ -247,7 +253,7 @@ begin
 	  if rising_edge(S_AXI_ACLK) then 
 	    if S_AXI_ARESETN = '0' then
 	      ADC_CR <= (others => '0');
-	      ADC_SPI_CR <= (others => '0');
+	      ADC_SPI_CR <= (C_SPI_CPHA => C_RESET_CPHA, C_SPI_CPOL => C_RESET_CPOL, others => '0');
 	      ADC_SPI_CFGR <= (others => '0');
 	      ADC_MASTER_CHANNEL <= (others => '0');
 	      ADC_CHANNEL <= (others => '0');

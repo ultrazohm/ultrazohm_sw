@@ -41,13 +41,14 @@ generic(
     DWIDTH : natural := 26
     ); 
 port(  
-    CLK    : in  std_logic;
-    SUBADD : in  std_logic;
-    ENABLE : in  std_logic;
-    AIN    : in  std_logic_vector(AWIDTH - 1 downto 0);  -- first operand
-    BIN    : in  std_logic_vector(BWIDTH - 1 downto 0);  -- factor
-    DIN    : in  std_logic_vector(DWIDTH - 1 downto 0);  -- second operand
-    POUT   : out std_logic_vector(AWIDTH + BWIDTH downto 0) 
+    CLK     : in  std_logic;
+    RESET_N : in std_logic;
+    SUBADD  : in  std_logic;
+    ENABLE  : in  std_logic;
+    AIN     : in  std_logic_vector(AWIDTH - 1 downto 0);  -- first operand
+    BIN     : in  std_logic_vector(BWIDTH - 1 downto 0);  -- factor
+    DIN     : in  std_logic_vector(DWIDTH - 1 downto 0);  -- second operand
+    POUT    : out std_logic_vector(AWIDTH + BWIDTH downto 0) 
     );
     
     attribute use_dsp : string;
@@ -58,7 +59,7 @@ architecture Behavioral of MULT_ADD is
     signal S_B          : signed(BWIDTH - 1 downto 0);
     signal S_D          : signed(DWIDTH - 1 downto 0);
     signal S_ADD        : signed(AWIDTH downto 0);
-    signal S_MULT, S_P  : signed(AWIDTH + BWIDTH downto 0);
+    signal S_MULT       : signed(AWIDTH + BWIDTH downto 0);
     
     -- make sure a DSP block is used instead of slice logic
     attribute use_dsp of Behavioral : architecture is "yes";
@@ -71,7 +72,13 @@ begin
     multadd: process(clk) 
     begin  
     if rising_edge(clk) then
-        if (ENABLE = '1') then
+        if (RESET_N = '0') then
+            S_A     <= (others => '0');
+            S_B     <= (others => '0');
+            S_D     <= (others => '0');
+            S_ADD   <= (others => '0');
+            S_MULT  <= (others => '0');
+        elsif (ENABLE = '1') then
            S_A <= signed(AIN);
            S_B <= signed(BIN);   
            S_D <= signed(DIN);   

@@ -233,14 +233,20 @@ begin
 	variable V_IS_BUSY : boolean := false;
 	begin
         if rising_edge(S_CLK) then
-        
+            
+           -- set default values. If conditions below are true the signals overwritten
            S_ADC_CR_IN(C_CONV_VALUE_VALID) <= '1';
            S_ADC_CR_IN(C_TRIGGER) <= '1';
+           S_SET_CONVERSION <= (others => '0');
+           S_SET_OFFSET <= (others => '0');
            
            if (S_RESET_N = '1') then
                
-               -- TODO: reset all signals
-               
+               S_ENABLE <= (others => '0');
+               S_SET_CONVERSION <= (others => '0');
+               S_SET_OFFSET <= (others => '0');
+               S_ADC_CR_IN <= (C_CONV_VALUE_VALID => '1', C_TRIGGER => '1', others => '0');
+               S_ADC_SPI_CR_IN <= (others => '0');
                
            elsif (S_ADC_CR(C_CONV_VALUE_VALID) = '1') then
                
@@ -404,8 +410,8 @@ ADC_LVDS_LTC2311_v3_0_S00_AXI_inst : ADC_LVDS_LTC2311_v3_0_S00_AXI
             -- Value Ports
             VALUE_OFF_CONV  => S_ADC_CONV_VALUE,           -- input for conversion or offset value
             CHANNEL_SELECT  => S_ADC_CHANNEL, -- selection which channels shall be updated with conversion factor or offset
-            SI_VALUE        => SI_VALUE( (i + 1) * (RES_MSB - RES_LSB + 1) - 1 downto i * (RES_MSB - RES_LSB + 1)),
-            RAW_VALUE       => RAW_VALUE( (i + 1) * DATA_WIDTH - 1 downto i * DATA_WIDTH)
+            SI_VALUE        => SI_VALUE( (i + 1) * CHANNELS_PER_MASTER * (RES_MSB - RES_LSB + 1) - 1 downto i * CHANNELS_PER_MASTER * (RES_MSB - RES_LSB + 1)),
+            RAW_VALUE       => RAW_VALUE( (i + 1) * CHANNELS_PER_MASTER * DATA_WIDTH - 1 downto i * CHANNELS_PER_MASTER * DATA_WIDTH)
 	   );
 	end generate GEN_ADC_CONT;
 

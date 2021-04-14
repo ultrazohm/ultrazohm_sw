@@ -92,9 +92,9 @@ architecture Behavioral of ADC_CONTROLLER is
     signal S_CE_CONVERSION  : std_logic;
     
     -- multiplication pipeline
-    signal S_CHANNEL_COUNTER    : integer range -1 to CHANNELS;
-    signal S_CONV_COUNTER       : integer range -1 to CHANNELS + 1;
-    signal S_RESULT_COUNTER     : integer range -1 to CHANNELS + 5;
+    signal S_CHANNEL_COUNTER    : integer range 0 to CHANNELS;
+    signal S_CONV_COUNTER       : integer range 0 to CHANNELS + 1;
+    signal S_RESULT_COUNTER     : integer range 0 to CHANNELS + 3;
     
     -- single channel signals (inputs for the multiplier)
     signal S_RAW_VALUE_S_C  : std_logic_vector(DATA_WIDTH - 1 downto 0);
@@ -157,13 +157,14 @@ architecture Behavioral of ADC_CONTROLLER is
         DWIDTH : natural := 26
         ); 
     port(  
-        CLK    : in  std_logic;
-        SUBADD : in  std_logic;
-        ENABLE : in  std_logic;
-        AIN    : in  std_logic_vector(AWIDTH - 1 downto 0);  -- first operand
-        BIN    : in  std_logic_vector(BWIDTH - 1 downto 0);  -- factor
-        DIN    : in  std_logic_vector(DWIDTH - 1 downto 0);  -- second operand
-        POUT   : out std_logic_vector(AWIDTH + BWIDTH downto 0) 
+        CLK     : in  std_logic;
+        RESET_N : in  std_logic;
+        SUBADD  : in  std_logic;
+        ENABLE  : in  std_logic;
+        AIN     : in  std_logic_vector(AWIDTH - 1 downto 0);  -- first operand
+        BIN     : in  std_logic_vector(BWIDTH - 1 downto 0);  -- factor
+        DIN     : in  std_logic_vector(DWIDTH - 1 downto 0);  -- second operand
+        POUT    : out std_logic_vector(AWIDTH + BWIDTH downto 0) 
         );
     end component MULT_ADD;
     
@@ -175,8 +176,20 @@ begin
             if rising_edge(CLK) then
             if (reset_n = '0') then
                 curstate <= IDLE;
-                S_CONVERSION <= (others => '0');
-                S_OFFSET     <= (others => '0');
+                S_CONVERSION    <= (others => '0');
+                S_OFFSET        <= (others => '0');
+                S_CE_CONVERSION <= '0';
+                
+                S_RAW_VALUE_S_C  <= (others => '0');
+                S_CONVERSION_S_C <= (others => '0');
+                S_OFFSET_S_C     <= (others => '0');
+                
+                S_CHANNEL_COUNTER <= 0;
+                S_CONV_COUNTER    <= 0;
+                S_RESULT_COUNTER  <= 0;
+                
+                S_SPI_ENABLE     <= '0';
+                S_SPI_BUSY_PIPE  <= (others => '0');
             else
                 curstate <= nxtstate;
                 case nxtstate is
@@ -260,9 +273,9 @@ begin
                             S_CONV_COUNTER <= S_CONV_COUNTER - 1;
                         end if;
                         
+                        -- AFTER the third clock cycle the result is available. It is sampled on the fourth edge
                         
-                        
-                        -- third clock cycle: read the result to the appropriate slice of the result vector
+                        -- fourth clock cycle: read the result to the appropriate slice of the result vector
                         if (S_RESULT_COUNTER > 0) and (S_RESULT_COUNTER < CHANNELS) then
                             SI_VALUE( ((S_RESULT_COUNTER + 1) * (RES_MSB - RES_LSB + 1)) - 1 downto (S_RESULT_COUNTER) * (RES_MSB - RES_LSB + 1)) <= S_RESULT_S_C(RES_MSB downto RES_LSB);
                         end if;
@@ -346,6 +359,7 @@ begin
         )
      port map (  
         CLK         => CLK,
+        RESET_N     => RESET_N,
         SUBADD      => '0',
         ENABLE      => S_CE_CONVERSION,
         AIN         => S_RAW_VALUE_S_C,     -- first operand

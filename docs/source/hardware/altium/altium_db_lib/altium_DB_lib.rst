@@ -188,7 +188,7 @@ Integration in Altium
 
 3. Click on the three horizontal lines and select the point ``File-based library Preferences``
 
-4. Select the register Installed. While not necessary it is strongly recommended to remove all not required libraries at this point (e.g. the standard "Miscellanious Devices" library from Altium)
+4. Select the register Installed. While not necessary, it is strongly recommended to remove all not required libraries at this point (e.g. the standard "Miscellanious Devices" library from Altium)
 
 .. _31_File_based_lib:
 

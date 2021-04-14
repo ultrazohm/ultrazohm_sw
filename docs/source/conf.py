@@ -83,7 +83,7 @@ html_context = {
     "bitbucket_user": "ultrazohm", # Username
     "bitbucket_repo": "ultrazohm_sw", # Repo name
     "bitbucket_version": "main", # Version
-    "conf_py_path": "/source/", # Path in the checkout to the docs root
+    "conf_py_path": "/docs/source/", # Path in the checkout to the docs root
 }
 
 

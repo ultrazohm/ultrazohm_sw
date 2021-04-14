@@ -10,7 +10,7 @@ Symbols and Footprints
 When creating a schematic in Altium, there are many different ways to place components and use their footprints for the layout. In a project for the UltraZohm the UltraZohm component library is used exclusively.
 If the required components are not available in the current library status they must be added. Newly added components must fulfill the following requirements:
 
-1. A ``.SchLib`` or ``.PcbLib`` file must contain only a signel symbol or footprint. If this requirement is not fulfilled it is impossible to resolve merge conflicts when people are working on the library
+1. A ``.SchLib`` or ``.PcbLib`` file must contain only a single symbol or footprint. If this requirement is not fulfilled it is impossible to resolve merge conflicts when people are working on the library
 2. The footprint must follow the mapping of the mechanical layers. This is vital in order to generate high quality documentation and production output. The requirements can be found under :ref:`mech_layers` 
 3. If the manufacturer supplies a 3D model of the component it must be included to the footprint.
 

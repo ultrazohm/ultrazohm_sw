@@ -19,4 +19,4 @@ Git Bash
 
 If you are comfortable with git bash / CLI tool you can use it without the GUI client.
 
-.. image:: ./images_git/gitclone.bmp
+.. image:: ./images_git/gitclone.png

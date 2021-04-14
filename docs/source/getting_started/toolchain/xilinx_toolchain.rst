@@ -12,6 +12,10 @@ Xilinx Toolchain
 
 .. image:: ./images_installation/vitis_website2_2020.png
 
+If the User Authentication in the installer results in an error, eventhough the Xilinx account is valid, an alternative installer without the need to sign in can be downloaded.
+   
+.. image:: ./images_installation/vitis_website2_5_2020.png
+
 5. Agree to all license agreements, terms, and conditions. Click Next
 
 .. image:: ./images_installation/vitis_website3_2020.png

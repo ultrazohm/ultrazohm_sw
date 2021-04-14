@@ -1,36 +1,41 @@
 
 .. _SchematicAndFootprints:
 
-=================================
-Schematics and Footprints
-=================================
+======================
+Symbols and Footprints
+======================
 
-When creating a schematic in Altium, there are many different ways to place components and use their footprints for the layout.
+
+
+When creating a schematic in Altium, there are many different ways to place components and use their footprints for the layout. In a project for the UltraZohm the UltraZohm component library is used exclusively.
+If the required components are not available in the current library status they must be added. Newly added components must fulfill the following requirements:
+
+1. A ``.SchLib`` or ``.PcbLib`` file must contain only a single symbol or footprint. If this requirement is not fulfilled it is impossible to resolve merge conflicts when people are working on the library
+2. The footprint must follow the mapping of the mechanical layers. This is vital in order to generate high quality documentation and production output. The requirements can be found under :ref:`mech_layers` 
+3. If the manufacturer supplies a 3D model of the component it must be included to the footprint.
+
+If the user detects a footprint that does not follow the requirements mentioned above he is strongly encouraged to update the component or to open an issue and assign it to the maintainer (i.e. creator) of the component.
+
+Extraction of footprints and symbols
+====================================
+
 In the following, 4 different ways will be presented, how to create the appropriate schematic and footprint format for the Altium DB Library used in the UltraZohm project:
-
-* Components are available with single schematic and single footprint lib from the manufacturer
-* Components are included in other schematic and footprint libraries with other components
-* Components are included in an integrated library
-* Components are available as an ECAD MODEL
-
 
 .. _SingleFootprint:
 
-Components are available with single schematic and single footprint lib from the manufacturer
-=============================================================================================
+Separate files for symbol and footprint
+***************************************
 
-If both the schematic as well as the footprint are available from the manufacturer for Altium as a single  component, this is the easiest way and you can start immediately with the instruction:
-:ref:`AltiumDB` .
-But if the desired component is combined in a library with several other components, see the following sections.
+If both the schematic as well as the footprint are available from the manufacturer for Altium in separate files and if these files **only contain one symbol or footprint** you can start directly by integrating these components into the library.
+Please be aware that you will have to adjust the mechanical layers in the footprint. See :ref:`AltiumDB` for further instructions. If the desired component is combined in a library with several other components, see the following sections.
 
 .. _IncludedInOtherSchematicFootprints:
 
-Components are included in other schematic and footprint libraries with other components
-========================================================================================
+More than one symbol or fooprint in one file
+********************************************
 
-If a component is in a library with several other components, this component must be separated from the other components in the schematic symbol library as well as in the footprint library.
-Using the CarrierBoard library as an example, a possible way is described:
-
+If a component is in a library file (``.SchLib`` or ``.PcbLib``) with several other components this component must be separated from the other components in the schematic symbol library as well as in the footprint library.
+Altium provides the ``Library Splitter Wizard`` for this purpose so no manual extraction is required.
 
 1. Open the existing schematic library in Altium
 
@@ -154,7 +159,7 @@ Now all components are separated from each other and it is possible to proceed w
 .. _IntegratedLibrary:
 
 Components are included in an integrated library
-================================================
+************************************************
 
 1. Open the integrated library in Altium and choose ``Extract Sources``
 
@@ -206,7 +211,7 @@ Now it can be continued with the instuction: :ref:`IncludedInOtherSchematicFootp
 .. _ECADModel:
 
 Components are available as an ECAD MODEL
-=========================================
+*****************************************
 Sometimes, there are no symbols or footprints directly from the manufacturer available.
 Then you can use  the component search engine (https://componentsearchengine.com/logPartRequest.php), where you can access a large number of already existing components or request new models for Altium. 
 
@@ -297,3 +302,90 @@ Therefore read and install the Altium Library Loader https://www.samacsys.com/al
 
 At this point, the SamacSys lib can be reused or the respective symbols with the corresponding footprint can be stored in a temporary lib.
 Afterwards you have to continue with the instructions: :ref:`IncludedInOtherSchematicFootprints`
+
+
+.. _mech_layers:
+
+Mapping of the mechanical layers
+================================
+
+When creating a component several layers types can be defined. Besides the standard layers like Top and Bottom copper overlay etc. mechanical layers can be defined.
+These layers carry information for the generated documentation output. In order to be able to reuse a certain output job to generate the documentation and production output
+the mechanical layers must follow a uniform mapping. The mapping is distinguished in two different categories:
+
+1. `Component Layer Pairs <https://www.altium.com/documentation/altium-designer/working-with-mechanical-layers-ad?version=19.1#!component-layer-pairs>`_: These layers exist symetrically on top and bottom
+2. `Other mechanical layers <https://www.altium.com/documentation/altium-designer/working-with-mechanical-layers-ad?version=19.1#!mechanical-layers>`_: These layers only exist once
+
+
+:numref:`table_mech_layer_pairs` shows the mapping of the component layer pairs to the functions. Even if Altium can handle the numbering of the layers automatically when assigning component layer pairs
+in the UltraZohm library only components that follow this layer mapping are accepted. The mapping of the additional mechanical layers from :numref:`table_other_mech_layers` must be considered especially
+in the PCB design when putting certain meta information in the layout.
+
+
+.. _table_mech_layer_pairs:
+.. csv-table:: Mapping of the mechanical layer pairs
+	:file: mech_layer_pairs.csv
+	:widths: 10 40
+	:header-rows: 1
+
+
+.. _table_other_mech_layers:
+.. csv-table:: Mapping of the other mechanical layers
+	:file: other_mech_layer.csv
+	:widths: 10 40
+	:header-rows: 1
+
+
+Unfortunately, the footprints that can be optained from the manufacturer usually do not follow the mapping from the table above.
+:numref:`mech_layers_base_case` shows a typical mechanical layer stackup when a component is freshly downloaded from the manufacturer homepage.
+
+	.. _mech_layers_base_case:	
+	.. figure:: img/mech_layers/base_case.png
+		:width: 500px
+		:alt: Typical layer stack in AD before editing
+	   
+		Typical layer stack in AD before editing
+
+
+In order to adapt those componennts to the required mapping the following steps are necessary:
+
+#. Create all required mechanical layer pairs. You do not need to create all layer pairs defined in :numref:`table_mech_layer_pairs`
+	
+	* ``Right-click`` in the layer area
+	* Select ``Add component layer pair`` and fill out the dialog with the mapping from :numref:`table_mech_layer_pairs`
+	
+	.. figure:: img/mech_layers/add_component_layer.png
+		:width: 500px
+		:alt: Dialog to add a component layer pair
+		
+		Dialog to add a component layer pair
+		
+#. Move the objects from the previous layer to the new layer. Example: Moving the 3D body from layer M1 to M3
+
+	Hide all layers except M1
+	
+	.. figure:: img/mech_layers/m1.png
+		:width: 500px
+		:alt: Dialog to add a component layer pair
+		
+		Dialog to add a component layer pair
+	
+	Select everything on M1 (Ctrl-A) and move selected objects to M3 in the propertiers panel.
+	
+	.. figure:: img/mech_layers/m1_move.png
+		:width: 500px
+		:alt: Dialog to add a component layer pair
+		
+		Dialog to add a component layer pair
+	
+	Delete M1
+	
+	.. figure:: img/mech_layers/m1_delete.png
+		:width: 500px
+		:alt: Dialog to add a component layer pair
+		
+		Dialog to add a component layer pair
+		
+#. Repeat step 1 and 2 for all objects that are on the wrong layer
+
+

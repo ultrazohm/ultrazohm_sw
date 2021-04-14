@@ -44,7 +44,7 @@ Supplier 6,,Supplier,
 Supplier Part Number 6,,Supplier part number,
 Library Path,symbols/Passives/SCH - PASSIVES - CAPACITOR.SCHLIB,Path were the schematic symbol is saved,x
 Library Ref,Capacitor,Name in Altium schematic library,x
-Type,Capacitor,Type,x
+Type,Standard,Altium component types see `the Altium manual <https://www.altium.com/documentation/altium-designer/sch-prop-partpart-properties-ad#!part-properties>`_,x
 Tolerance,10%,Tolerance,
 Voltage Rating,50 VDC,Voltage Rating,
 Value,0.01 µF,Value,x
@@ -53,5 +53,5 @@ Verified by,,Verfikator,
 Live Cycle Status,1,1: new design,x
 ,,2: verified,
 ,,3: in use,
-JLC CPL,,JLC CPL component description for ordering and commissioning the PCB by JLC,
-Stock number,Labor SMD Container,Were the component is stored,
+LCSC Part Number,,LCSC Part Number component description for ordering and assembly at JLC PCB,
+Stock number,Labor SMD Container,Stock number of the ELSYS component stock,

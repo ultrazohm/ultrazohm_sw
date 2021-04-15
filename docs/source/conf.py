@@ -18,7 +18,7 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'UltraZohm'
-copyright = ''
+copyright = 'UltraZohm community'
 author = 'UltraZohm community'
 
 # The full version, including alpha/beta/rc tags
@@ -81,9 +81,9 @@ html_theme_options = {
 html_context = {
     "display_bitbucket": True, # Integrate Bitbucket
     "bitbucket_user": "ultrazohm", # Username
-    "bitbucket_repo": "sphinx_doku_ultrazohm", # Repo name
-    "bitbucket_version": "master", # Version
-    "conf_py_path": "/source/", # Path in the checkout to the docs root
+    "bitbucket_repo": "ultrazohm_sw", # Repo name
+    "bitbucket_version": "main", # Version
+    "conf_py_path": "/docs/source/", # Path in the checkout to the docs root
 }
 
 

@@ -58,9 +58,9 @@ The concept of the HAL is shown in the following:
 .. code-block:: c
 
     #define uz_assert Xil_AssertVoid
-    #define uz_assertNotNull(Expression) \
-    {                              \
-    uz_assert(Expression!=NULL);        \
+    #define uz_assertNotNull(Expression) 
+    {                              
+       uz_assert(Expression!=NULL);
     }
     #define uz_printf xil_printf
     #define uz_Write32BitToRegister Xil_Out32

@@ -2,11 +2,9 @@
 Software Development Guidlines
 ==============================
 
-- Following is the attempt to distill some key concepts of [#CleanCode]_, [#MakingEmbedded]_ and [#TDD]_ and apply them to the UltraZohm for guidence on how to write code for it
+- Following is the attempt to distill some key concepts of [#CleanCode]_, [#MakingEmbedded]_ and [#TDD]_ and apply them to the UltraZohm for guidance on how to write code for it
 - Read the books for the reasoning and more good information about programming!
-- Watch the videos of uncle bob:
-  
-    - https://www.youtube.com/watch?v=7EmboKQH8lM&ab_channel=UnityCoin
+- Watch the videos of Uncle Bob: https://www.youtube.com/watch?v=7EmboKQH8lM&ab_channel=UnityCoin
   
 - Take this as a general goal of how we try to make the software
 - Feedback is more than welcome in issue :issue:`96`!
@@ -17,11 +15,12 @@ General Rules
 -------------
 
 - Write clean code [#CleanCode]_ (p. 2 ff)
+
     - elegant & efficient
     - logic should be straightforward
     - minimal dependencies
     - ease of maintenance
-    - Clean code does **one** thing well
+    - clean code does **one** thing well
     - simple and direct
     - reads like well-written prose
     - can be read and enhanced by a developer other than its original author
@@ -29,24 +28,26 @@ General Rules
     - clear and minimal API
     - Looks like it was written by someone who cares
     - contains no duplication
-    - *you know you are working on clean code when each routine you read turns out to be pretty much what you expect* (priciple of least suprises)
+    - *you know you are working on clean code when each routine you read turns out to be pretty much what you expect* (principle of least surprises)
 - Do not make a mess
-- Use intention revealing names
-    - Example: ``int elapsed_time_in_days``
-- Use pronouncable, searchable names [#CleanCode]_ (p.21)
+- Use intention revealing names, e.g., ``int elapsed_time_in_days``
+- Use pronounceable, searchable names [#CleanCode]_ (p.21)
   
-- No encoding or hungarian notation [#CleanCode]_ (p. 23)
+- No encoding or Hungarian notation [#CleanCode]_ (p. 23), i.e., prefixing the variable name by its data type
+
     - Only exception are AXI-Ports in Simulink for HDL-Generation! (prefix these with ``axi_``)
 
-- Classes (objects) have non or noun phrase names (``Customer``, ``WikiPage``) (p. 25)
-- Method (function) have verb or ver phrases (they *do** things, e.g., ``get_adc_value``)
+- Classes (objects) have noun or noun phrase names (``Customer``, ``WikiPage``) (p. 25)
+- Method (function) have verb or verb phrases (they *do** things, e.g., ``get_adc_value``)
 
 - Encapsulate modules [#MakingEmbedded]_ (p. 16)
+
    - Only expose relevant information though the interface (API)
    - Interface hides implementation details!
    - Objects are self-contained
 
 - Object oriented programming in C
+
     - Object orientation is a property of code, not of the language
     - Use object orientated programming
     - Critical idea: data hiding
@@ -56,6 +57,7 @@ General Rules
     - Abstract the hardware
 
 - No premature optimization!
+
     - If you think about optimization of the framework code of the UltraZohm, it is probably premature optimization
     - The compiler is better at optimization as a developer
 
@@ -63,12 +65,13 @@ Functions
 *********
 
 - Functions should be small
-- Shoudl be smaller then that
+- Should be smaller then that
 - do **one** thing
 - One level of abstraction per function
 - Descriptive names, the function name tells you what it does
 - Do not be afraid to make a name long
 - Function Arguments
+
     - Zero > One > two > three
     - Use structs for more than two function arguments (e.g., config struct)
 
@@ -123,7 +126,7 @@ Example interface from [#TDD]_ (p. 194):
 
 .. code-block:: c
 
-   void module_init(void)
+   void module_init(void);
    void module_TurnOn(void);
    void module_TurnOff(void);
    void module_SetDeadTime(float DeadTime);
@@ -198,13 +201,13 @@ Coding rules
 
 .. csv-table:: table
     :file: codingRules.csv
-    :widths: 3 50 50
+    :widths: 3 50 50 30
     :header-rows: 1
 
 Sources
 -------
 
 .. [#CleanCode] Clean Code, A Handbook of Agile Software Craftsmanship, Robert C Martin, 2009
-.. [#TDD] Test-Driven Development for Embedded C, James W. Grenning, 2011
 .. [#MakingEmbedded] Making Embedded Systems, Elecia White, 2011
+.. [#TDD] Test-Driven Development for Embedded C, James W. Grenning, 2011
 

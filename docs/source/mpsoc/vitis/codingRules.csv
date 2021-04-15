@@ -1,35 +1,35 @@
-Number, Rule, Comment
-0, Write boring working code instead of cleaver buggy code that can not be maintained, 
-1, Compile at least with warnings ``-Wall`` and ``-Wextra`` (see `gcc warnings  <https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html>`_
+Number, Rule, Example, Comment
+0, Write boring code that works; instead of cleaver buggy code that can not be maintained, , 
+1, Compile at least with warnings ``-Wall`` and ``-Wextra`` (see `gcc warnings  <https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html>`_ )
 2, The number of acceptable warnings is zero
 3, Do not comment out code and check it in
-4, No unused code; variables; ``typedef``
-5, No unused marcros
-6, No function like macros; use ``static inline`` instead (see `gcc inline <https://gcc.gnu.org/onlinedocs/gcc/Inline.html>`_
+4, No unused code; variables; ``typedef`` , ,EL does not understand
+5, No unused macros
+6, No function like macros; use ``static inline`` instead (see `gcc inline <https://gcc.gnu.org/onlinedocs/gcc/Inline.html>`_ )
 7, A MACRO is always all captial letters
-8, Use typedef only for structs
-9, No typdef of pointers (e.g. ``typedef object *objectPtr``), Not sure about this; TDD and TI use it
-10, No octal constants
-11, Add a suffix to typed constants (10U; 1.5f)
-12, Use defined width types from ``<stdint.h>``
-13, Function prototype for functions without arguments need ``void`` as parameter (``void foo(void)``)
-14, Use ``static`` for all functions that are only used in their translation unit (the .c file), `gcc inlines these functions if they are only called once with -O1 <https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html>`_
+8, Use typedef only for structs, 
+9, No typdef of pointers, no ``typedef object *objectPtr`` , Not sure about this; TDD and TI use it; EL: see example above :)
+10, No octal constants, no ``int i = 0042;``
+11, Add a suffix to typed constants, ``10U;`` ``1.5f;``
+12, Use defined width types from ``<stdint.h>``, ``int8_t; uint32_t``
+13, Function prototype for functions without arguments need ``void`` as parameter, ``void foo(void)``
+14, Use ``static`` for all functions that are only used in their translation unit (the .c file), ,`gcc inlines these functions if they are only called once with -O1 <https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html>`_
 15, No ``union``
-16, Always initialize everything at declaration (``int myVar=0``)
+16, Always initialize everything at declaration, ``int myVar=0;``
 17, Do not typecast
-18, Initialize variables when they are first used (``for(int i=0;i<LIM;i++)``)
+18, Initialize variables when they are first used, ``for(int i=0;i<LIM;i++)``
 19, Use ``NULL`` to check for null pointers
 20, No use of the comma operator
 21, Do not compare for equality with ``float``
 22, No ``goto``
 23, Use ``bool`` from <stdbool.h>
-24, Only one exit at the end of a function (no multiple ``return``)
-25, Swich statments have a ``default`` case
+24, Only one exit at the end of a function, no multiple ``return``
+25, Switch statments have a ``default`` case
 26, No recursion
 27, Declare all functions with a function prototype
 28, No pointer arithmetic
-29, Avoid ``pointer pointer`? (``**``)
-30, No ``pointer pointer pointer`` (``***``)
+29, Avoid ``pointer pointer``, no ``**``
+30, No ``pointer pointer pointer``, no ``***``
 31, No pointer to automatic storage objects
-32, No dynamic memory allocation (malloc and friends)
-33, Use `float` versions of math functions when using ``float`` (e.g. ``sinf()``)
+32, No dynamic memory allocation, no ``malloc`` and friends
+33, Use `float` versions of math functions when using ``float``, ``sinf()``

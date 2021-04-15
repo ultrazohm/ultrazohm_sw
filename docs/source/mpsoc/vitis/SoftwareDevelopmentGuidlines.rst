@@ -64,15 +64,13 @@ General Rules
 Functions
 *********
 
-- Functions should be small
-- Should be smaller then that
+- Functions should be small, even smaller than that.
 - do **one** thing
 - One level of abstraction per function
 - Descriptive names, the function name tells you what it does
 - Do not be afraid to make a name long
-- Function Arguments
+- Function arguments: less is more
 
-    - Zero > One > two > three
     - Use structs for more than two function arguments (e.g., config struct)
 
 Error handling

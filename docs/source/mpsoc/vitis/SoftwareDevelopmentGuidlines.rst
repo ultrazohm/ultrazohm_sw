@@ -32,29 +32,32 @@ General Rules
     - *you know you are working on clean code when each routine you read turns out to be pretty much what you expect* (priciple of least suprises)
 - Do not make a mess
 - Use intention revealing names
-    - Example: ``int elapsedTimeInDays``
+    - Example: ``int elapsed_time_in_days``
 - Use pronouncable, searchable names [#CleanCode]_ (p.21)
+  
 - No encoding or hungarian notation [#CleanCode]_ (p. 23)
     - Only exception are AXI-Ports in Simulink for HDL-Generation! (prefix these with ``axi_``)
+
 - Classes (objects) have non or noun phrase names (``Customer``, ``WikiPage``) (p. 25)
-- Method (function) have verb or ver phrases (they *do** thinkgs, e.g., ``getAdcValue``)
+- Method (function) have verb or ver phrases (they *do** things, e.g., ``get_adc_value``)
 
 - Encapsulate modules [#MakingEmbedded]_ (p. 16)
    - Only expose relevant information though the interface (API)
    - Interface hides implementation details!
    - Objects are self-contained
 
-- **Object oriented programming in C**
+- Object oriented programming in C
     - Object orientation is a property of code, not of the language
     - Use object orientated programming
     - Critical idea: data hiding
-    - I.e., hide the data in private variables
+    - Hide the data in private variables
     - Use interfaces
-    - Use structures / pointers to structures to pass it arround as an object
+    - Use structures / pointers to structures to pass it around as an object
     - Abstract the hardware
 
-- **No premature optimization!**
+- No premature optimization!
     - If you think about optimization of the framework code of the UltraZohm, it is probably premature optimization
+    - The compiler is better at optimization as a developer
 
 Functions
 *********
@@ -73,7 +76,7 @@ Error handling
 **************
 
 - Error handling is *one thing*
-- Fail loudly with assertions
+- Fail loudly with ref:`assertions`
 
 Comments
 ********
@@ -190,9 +193,16 @@ Usage:
 
 See ``vitis/Sandbox/MyIp`` for an example implementation.
 
+Coding rules
+------------
+
+.. csv-table:: table
+    :file: codingRules.csv
+    :widths: 3 50 50
+    :header-rows: 1
+
 Sources
 -------
-
 
 .. [#CleanCode] Clean Code, A Handbook of Agile Software Craftsmanship, Robert C Martin, 2009
 .. [#TDD] Test-Driven Development for Embedded C, James W. Grenning, 2011

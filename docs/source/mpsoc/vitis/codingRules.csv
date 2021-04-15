@@ -1,14 +1,14 @@
 Number, Rule, Example, Comment
-0, Write boring code that works; instead of cleaver buggy code that can not be maintained, , 
+0, Write boring code that works; instead of clever buggy code that can not be maintained, , 
 1, Compile at least with warnings ``-Wall`` and ``-Wextra`` (see `gcc warnings  <https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html>`_ )
 2, The number of acceptable warnings is zero
 3, Do not comment out code and check it in
-4, No unused code; variables; ``typedef`` , ,EL does not understand
+4, No unused code; variables; ``typedef`` , 
 5, No unused macros
 6, No function like macros; use ``static inline`` instead (see `gcc inline <https://gcc.gnu.org/onlinedocs/gcc/Inline.html>`_ )
 7, A MACRO is always all captial letters
 8, Use typedef only for structs, 
-9, No typdef of pointers, no ``typedef object *objectPtr`` , Not sure about this; TDD and TI use it; EL: see example above :)
+9, No typdef of pointers, no ``typedef object *objectPtr`` , Not sure about this; TDD and TI use it; EL: please keep them
 10, No octal constants, no ``int i = 0042;``
 11, Add a suffix to typed constants, ``10U;`` ``1.5f;``
 12, Use defined width types from ``<stdint.h>``, ``int8_t; uint32_t``

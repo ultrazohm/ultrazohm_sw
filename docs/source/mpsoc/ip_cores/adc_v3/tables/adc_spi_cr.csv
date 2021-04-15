@@ -1,0 +1,8 @@
+Bit(s),Name,Default Value,Access,True ('1'),False ('0')
+0,SPI_SS_N,0,Read/Write,Set the SS_N signal to high,Set the SS_N signal to low
+1,SPI_SS_N_STATUS,0,Read/Write,The SS_N signal is high,The SS_N signal is low
+2,SPI_SCLK,0,Read/Write,Set the SCLK signal to high,Set the SCLK signal to low
+3,SPI_SCLK_STATUS,0,Read/Write,The SCLK signal is high,The SCLK signal is low
+4,SPI_CONTROL,0,Read/Write,Enable manual control of the SPI. ``SPI_SS_N_STATUS`` and ``SPI_SCLK_STATUS`` are only valid when ``SPI_CONTROL`` is true and the selected channels are not busy., Disable manual control of the SPI
+5,SPI_CPOL,1,Read/Write,IDLE state of the SCLK signal is logic high, IDLE signal of the SCLK signal is logic low
+6,SPI_CPHA,0,Read/Write,Sample on the second edge of SCLK, Sample on the first edge of SCLK

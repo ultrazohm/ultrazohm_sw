@@ -2,6 +2,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library work;
+use work.ADC_LTC2311_PKG.all;
+
 entity ADC_LVDS_LTC2311_v3_0_S00_AXI is
 	generic (
 		-- Users to add parameters here
@@ -94,22 +97,6 @@ entity ADC_LVDS_LTC2311_v3_0_S00_AXI is
 end ADC_LVDS_LTC2311_v3_0_S00_AXI;
 
 architecture arch_imp of ADC_LVDS_LTC2311_v3_0_S00_AXI is
-
-    -- bit positions in the config register
-    -- ADC_CR
-    constant C_TRIGGER            : natural := 1;
-    constant C_SW_RESET           : natural := 2;
-    constant C_CONV_VALUE_VALID   : natural := 3;
-    
-    -- ADC_SPI_CR
-    constant C_SPI_SS_N_STATUS    : natural := 1;
-    constant C_SPI_SCLK_STATUS    : natural := 3;
-    constant C_SPI_CPOL           : natural := 5;
-    constant C_SPI_CPHA           : natural := 6;
-    
-    -- reset values
-    constant C_RESET_CPOL         : std_logic := '1';
-    constant C_RESET_CPHA         : std_logic := '0';
 
 	-- AXI4LITE signals
 	signal axi_awaddr	: std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);

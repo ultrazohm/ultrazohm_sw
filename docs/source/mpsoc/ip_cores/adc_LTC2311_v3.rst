@@ -20,9 +20,9 @@ Features
 --------
 
 
-- Up to 32 independent SPI Masters with each up to 32 synchronous
-  channels. In total up to 1024 individual ADCs are theoretically
-  possible.
+- Up to 32 independent Serial Peripheral Interface (SPI) Masters with
+  each up to 32 synchronous channels. In total up to 1024 individual
+  ADCs are theoretically possible.
 - Pipelined addition with an offset value and subsequent
   multiplication with a conversion factor with the following features:
 
@@ -46,8 +46,8 @@ Features
 
 - CPHA CPOL and SCLK frequency of the SPI interface are configurable
   by software
-- Read only Serial Peripheral Interface (SPI). Only a
-  **unidirectional** communication from the ADC to FPGA is possible.
+- Read only SPI. Only a **unidirectional** communication from the ADC
+  to FPGA is possible.
 - Single ended output of the core interface. In order to interact with
   the analog adapter board which is connected via LVDS a differential
   buffer needs to be placed at the output of the IP core. The core
@@ -56,6 +56,9 @@ Features
 
 Functional Description
 ----------------------
+
+Architecture
+************
 
 The IP core is hierarchically subdivided into five components:
 
@@ -68,8 +71,161 @@ The IP core is hierarchically subdivided into five components:
       channels
     - 1 x ``MULT_ADD``
 
+Timing
+******
+
 Configuration Registers
 -----------------------
+
+Control Register
+****************
+
+Software control register of the IP core.
+
+.. _table_adc_cr:
+.. csv-table:: ADC_CR
+  :file: ./adc_v3/tables/adc_cr.csv
+  :widths: 5 10 5 10 40 40
+  :header-rows: 1
+
+SPI Control Register
+********************
+
+The SPI interfaces can be controlled manually with this register in
+order to use sleep and nap modes of the ADC. The signal ``SS_N`` and
+``SCLK`` only can be controlled manually if the selected master
+channels are not busy. Check :ref:`table_adc_master_busy` as a status
+indicator.
+
+Furthermore, the clock polarity and the sample phase are set with this
+register. This setting applies globally to all SPI masters
+instantiated.
+
+.. _table_adc_spi_cr:
+.. csv-table:: ADC_SPI_CR
+  :file: ./adc_v3/tables/adc_spi_cr.csv
+  :widths: 5 10 5 10 40 40
+  :header-rows: 1
+
+SPI Configuration Register
+**************************
+
+Setting for
+
+- DCNVSCKL (a.k.a PRE_DELAY)
+- DSCKLCNVH (a.k.a POST_DELAY)
+- Number of system clock cycles per half SCLK cycle - 1 (a.k.a
+  CLK_DIV)
+
+See figure 21 in `the datasheet of the LTC2311
+<https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_
+for illustration.
+
+The values given indicate the number of system clock cycles for the
+time described.
+
+.. _table_adc_spi_cfgr:
+.. csv-table:: ADC_SPI_CFGR
+  :file: ./adc_v3/tables/adc_spi_cfgr.csv
+  :widths: 10 10 5 10 40 30
+  :header-rows: 1
+
+Master Channel selection
+************************
+
+Encoding: :ref:`One-Hot <adc_one_hot>`
+
+This register is used for two different functions:
+
+1. Update of the offset and conversion factor. In order to specify
+   which individual ADC channels shall be updated, the SPI master
+   channel as well as the ADC which is controlled by the selected SPI
+   master channel must be selected. The individual channel selection
+   is done in :ref:`table_adc_channel`
+2. Channel selection for software trigger: When setting the software
+   trigger bit in the :ref:`table_adc_cr` all channels selected in
+   :ref:`table_adc_master_channel` are triggered by software. When
+   using hardware trigger the content of this register is ignored.
+
+.. _table_adc_master_channel:
+.. csv-table:: ADC_MASTER_CHANNEL
+  :file: ./adc_v3/tables/adc_master_channel.csv
+  :widths: 7 25 3 10 30 30
+  :header-rows: 1
+
+ADC Channel selection
+*********************
+
+Encoding: :ref:`One-Hot <adc_one_hot>`
+
+When updating the offset and conversion factor select the channel on
+the SPI masters selected in :ref:`table_adc_master_channel` that shall
+be updated.
+
+.. _table_adc_channel:
+.. csv-table:: ADC_CHANNEL
+  :file: ./adc_v3/tables/adc_channel.csv
+  :widths: 7 25 3 10 30 30
+  :header-rows: 1
+
+Transmission ended register
+***************************
+
+Encoding: :ref:`One-Hot <adc_one_hot>`
+
+This register indicates that an SPI master unit finished with the
+transmission of the raw value from the SPI master i.e. the value on
+the hardware port ``RAW_VALUE`` is valid for the indicated channels.
+
+.. _table_adc_master_finish:
+.. csv-table:: ADC_MASTER_FINISH
+  :file: ./adc_v3/tables/adc_master_finish.csv
+  :widths: 7 25 3 10 30 30
+  :header-rows: 1
+
+Addition and Multiplication ended register
+******************************************
+
+Encoding: :ref:`One-Hot <adc_one_hot>`
+
+This register indicates that an SPI master unit finished with the
+addition and the multiplication of the raw value  i.e. the value on
+the hardware port ``SI_VALUE`` is valid for the indicated channels.
+
+.. _table_adc_si_finish:
+.. csv-table:: ADC_MASTER_SI_FINISH
+  :file: ./adc_v3/tables/adc_master_si_finish.csv
+  :widths: 7 25 3 10 30 305 10 5 10 40 40
+  :header-rows: 1
+
+Status indicator
+****************
+
+Encoding: :ref:`One-Hot <adc_one_hot>`
+
+The indicated master channels are currently busy i.e. a transmission
+or a multiplication is ongoing.
+
+.. _table_adc_master_busy:
+.. csv-table:: ADC_MASTER_BUSY
+  :file: ./adc_v3/tables/adc_master_busy.csv
+  :widths: 7 25 3 10 30 30
+  :header-rows: 1
+
+Offset and conversion
+*********************
+
+Encoding: signed two's complement
+
+The value for the offset and the conversion factor is given in this
+register. The distinction between the offset and the conversion factor
+is done in :ref:`table_adc_cr`.
+
+.. _table_adc_off_conv:
+.. csv-table:: ADC_CONV_VALUE
+  :file: ./adc_v3/tables/adc_conv_value.csv
+  :widths: 10 10 5 10 30 30
+  :header-rows: 1
 
 I/O Signals
 -----------
@@ -78,10 +234,25 @@ Configuration procedure
 -----------------------
 
 
+Terminology
+-----------
+
+.. _adc_one_hot:
+
+One-Hot Encoding
+****************
+
+One-Hot encoding means that every bit in a register controls a channel
+of the IP core. This channel can be either an SPI master instance with
+a DSP48 block or a channel (a.k.a. individual ADC) of that instance
+which is synchronously controlled with the other channels assigned to
+the SPI master instance. This distinction is done in the description
+of the individual register.
 
 
 Designed by
 -----------
 
-`Thilo Wendt <mailto:mail@thilo-wendt.de>`_, Institut ELSYS @
-Technische Hochschule Nürnberg, 04/2021
+`Thilo Wendt <mailto:business@thilo-wendt.de>`_, `Institut ELSYS
+<https://www.th-nuernberg.de/einrichtungen-gesamt/in-institute/institut-fuer-leistungselektronische-systeme-elsys/>`_
+@ `Technische Hochschule Nürnberg <https://www.th-nuernberg.de>`_, 04/2021

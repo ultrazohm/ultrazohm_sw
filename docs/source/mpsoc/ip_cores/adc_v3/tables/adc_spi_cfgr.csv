@@ -1,0 +1,4 @@
+Bit(s),Name,Default Value,Access,Description,Encoding
+0 - 15,CLK_DIV,0,Read/Write,Number of system clock cycles per half SCLK period - 1, Unsigned integer (binary)
+16 - 23,PRE_WAIT,0,Read/Write,Number of system clock cycles between the falling edge of SS_N and first SCLK edge - 1. a.k.a DCNVSCKL,Unsigned integer (binary)
+24 - 31,POST_WAIT,0,Read/Write,Number of system clock cycles between the last rising edge of SCLK and the rising edge of SS_N - 1. a.k.a DSCKLCNVH,Unsigned integer (binary)

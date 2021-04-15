@@ -2,6 +2,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library work;
+use work.ADC_LTC2311_PKG.all;
+
 entity ADC_LVDS_LTC2311_v3_0 is
 	generic (
 		-- Users to add parameters here
@@ -64,29 +67,8 @@ entity ADC_LVDS_LTC2311_v3_0 is
 end ADC_LVDS_LTC2311_v3_0;
 
 architecture arch_imp of ADC_LVDS_LTC2311_v3_0 is
-    -- constant declarations
-    constant C_DELAY_WIDTH      : natural := 8;
-    constant C_CLK_DIV_WIDTH    : natural := 16;
-    constant C_C_S_AXI_DATA_WIDTH   : integer := 32;
+    
     constant STD_ZERO           : std_logic_vector(SPI_MASTER - 1 downto 0) := (others => '0');
-    
-    -- bit positions in the config register
-    -- ADC_CR
-    constant C_MODE               : natural := 0;
-    constant C_TRIGGER            : natural := 1;
-    constant C_SW_RESET           : natural := 2;
-    constant C_CONV_VALUE_VALID   : natural := 3;
-    constant C_OFF_CONV           : natural := 4;
-    
-    -- ADC_SPI_CR
-    constant C_SPI_SS_N           : natural := 0;
-    constant C_SPI_SS_N_STATUS    : natural := 1;
-    constant C_SPI_SCLK           : natural := 2;
-    constant C_SPI_SCLK_STATUS    : natural := 3;
-    constant C_SPI_CONTROL        : natural := 4;
-    constant C_SPI_CPOL           : natural := 5;
-    constant C_SPI_CPHA           : natural := 6;
-    
     -- signal declarations
     
     -- SPI signals
@@ -207,8 +189,24 @@ architecture arch_imp of ADC_LVDS_LTC2311_v3_0 is
             RAW_VALUE       : out std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0)
             
         );
+        
     end component ADC_CONTROLLER;
-
+        
+    function IS_BUSY (
+        BUSY_VECTOR         : in std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+        SELECTION_VECTOR    : in std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0)
+    ) return boolean is
+        variable V_IS_BUSY : boolean;
+    begin
+        V_IS_BUSY := false;
+        for i in SPI_MASTER - 1 downto 0 loop
+           if(SELECTION_VECTOR(i) = '1') and (BUSY_VECTOR(i) = '1') then
+               V_IS_BUSY := true;
+           end if;
+       end loop;
+       
+       return V_IS_BUSY;
+    end function;
 begin
 
     -- Add user logic here
@@ -250,15 +248,8 @@ begin
                
            elsif (S_ADC_CR(C_CONV_VALUE_VALID) = '1') then
                
-               -- check if one of the selected masters is busy
-               for i in SPI_MASTER - 1 downto 0 loop
-                   if(S_ADC_MASTER_CHANNEL(i) = '1') and (S_ADC_MASTER_BUSY(i) = '1') then
-                       V_IS_BUSY := true;
-                   end if;
-               end loop;
-               
                -- if non of the masters is busy update offset or conversion value
-               if (V_IS_BUSY = false) then
+               if (IS_BUSY(S_ADC_MASTER_BUSY, S_ADC_MASTER_CHANNEL) = false) then
                    -- reset the update request
                    S_ADC_CR_IN(C_CONV_VALUE_VALID) <= '0';
                    
@@ -286,22 +277,19 @@ begin
            
            -- Triggered by AXI register
            elsif (S_ADC_CR(C_TRIGGER) = '1') then
-               S_ENABLE <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
-               S_ADC_CR_IN(C_TRIGGER) <= '0';
+           
+               if (IS_BUSY(S_ADC_MASTER_BUSY, S_ADC_MASTER_CHANNEL) = false) then
+                    S_ENABLE <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
+                    S_ADC_CR_IN(C_TRIGGER) <= '0';
+               end if;
            
            elsif (S_ADC_CR(C_TRIGGER) = '0') or (S_ADC_CR(C_MODE) = '0') or (TRIGGER_CNV = STD_ZERO) then
                S_ENABLE <= (others => '0');
            
            -- manual SPI control
            elsif (S_ADC_SPI_CR(C_SPI_CONTROL) = '1') then
-	   
-                for i in SPI_MASTER - 1 downto 0 loop
-                    if(S_ADC_MASTER_CHANNEL(i) = '1') and (S_ADC_MASTER_BUSY(i) = '1') then
-                        V_IS_BUSY := true;
-                    end if;
-                end loop;
                 
-                if (V_IS_BUSY = false) then
+                if (IS_BUSY(S_ADC_MASTER_BUSY, S_ADC_MASTER_CHANNEL) = false) then
                     for i in SPI_MASTER - 1 downto 0 loop
                         if(S_ADC_MASTER_CHANNEL(i) = '1') then
                             S_SCLK_IN(i)                       <= S_ADC_SPI_CR(C_SPI_SCLK);

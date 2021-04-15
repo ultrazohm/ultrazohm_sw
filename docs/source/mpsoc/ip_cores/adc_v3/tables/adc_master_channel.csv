@@ -1,0 +1,2 @@
+Bit(s),Name,Default Value,Access,True ('1'),False ('0')
+0 - 31,ADC_MST_0 - ADC_MST_31,0,Read/Write,The master is selected for the specified operation,The master is not selected for the specified operation

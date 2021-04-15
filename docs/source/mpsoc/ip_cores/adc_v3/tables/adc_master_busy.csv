@@ -1,0 +1,2 @@
+Bit(s),Name,Default Value,Access,True ('1'),False ('0')
+0 - 31,ADC_MST_0 - ADC_MST_31,0,Read only,The specified master channel is busy,The specified master channel is not busy

@@ -2,14 +2,13 @@
 Software Development Guidlines
 ==============================
 
-- Following is the attempt to distill some key concepts of [#CleanCode]_, [#MakingEmbedded]_ and [#TDD]_ and apply them to the UltraZohm for guidance on how to write code for it
+- The guidlines are based on concepts of [#CleanCode]_, [#MakingEmbedded]_, and [#TDD]_ and adapted to the UltraZohm
 - Read the books for the reasoning and more good information about programming!
-- Watch the videos of Uncle Bob: https://www.youtube.com/watch?v=7EmboKQH8lM&ab_channel=UnityCoin
+- Watch the videos of Robert Martin: https://www.youtube.com/watch?v=7EmboKQH8lM&ab_channel=UnityCoin
   
-- Take this as a general goal of how we try to make the software
-- Feedback is more than welcome in issue :issue:`96`!
+- Feedback is gathered in issue :issue:`96`!
 - Use the :ref:`HAL`
-- Use :ref:`assertions`
+
 
 General Rules
 -------------
@@ -77,7 +76,7 @@ Error handling
 **************
 
 - Error handling is *one thing*
-- Fail loudly with ref:`assertions`
+- Fail loudly with :ref:`assertions`
 
 Comments
 ********
@@ -208,4 +207,10 @@ Sources
 .. [#CleanCode] Clean Code, A Handbook of Agile Software Craftsmanship, Robert C Martin, 2009
 .. [#MakingEmbedded] Making Embedded Systems, Elecia White, 2011
 .. [#TDD] Test-Driven Development for Embedded C, James W. Grenning, 2011
+.. [#ModernC] `Modern C, Jens Gusted <https://gforge.inria.fr/frs/download.php/latestfile/5298/ModernC.pdf>`_
+.. [#misra] Guidelines for the Use of the C Language in Critical Systems, ISBN 978-1-906400-10-1 (paperback), ISBN 978-1-906400-11-8 (PDF), March 2013.
+.. [#cert] `SEI CERT C Coding Standard <https://wiki.sei.cmu.edu/confluence/display/c/3+Recommendations>`_
+.. [#linuxCodingStyle] `Linux kernel coding style <https://www.kernel.org/doc/html/v4.14/process/coding-style.html>`_
+.. [#TheCProgrammingLanguage] The C Programming Language, Kernighan, Ritchie, 2000
+
 

@@ -30,6 +30,8 @@
 #define Interrupt_3L_center			XPS_FPGA5_INT_ID
 #define Interrupt_timer_fcc			XPAR_FABRIC_INTERRUPT_TRIGGER_F_CC_INTERRUPT_INTR
 
+#define IntrTmr_DeviceID			XPAR_INTERRUPT_TRIGGER_F_CC_DEVICE_ID
+
 //chose here which of the above interrupt trigger you want to use:
 // 0 for Interrupt_2L_max_min		
 // 1 for Interrupt_2L_min			
@@ -67,7 +69,7 @@
 
 #define Control_ISR_clear_pending_interrupt_reg		(XPAR_PSU_RCPU_GIC_DIST_BASEADDR + (XSCUGIC_EN_DIS_OFFSET_CALC(XSCUGIC_PENDING_CLR_OFFSET, Interrupt_ISR_ID)) )
 
-void ISR_Control(void *baseaddr_p);								// ISR von Timer-Control
+void ISR_Control(void *CallBackRef, u8 TmrCtrNumber);								// ISR von Timer-Control
 void Transfer_ipc_Intr_Handler(void *baseaddr_p);							// ISR von Timer-Control
 
 int Initialize_Timer(void);													// Init Timer for ISRs

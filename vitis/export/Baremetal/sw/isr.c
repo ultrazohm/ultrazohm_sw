@@ -33,11 +33,11 @@
 
 
 //Initialize the variables for the ADC measurement
-u32 		XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
+u32 			XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
 uint32_t 		ADC_RAW_Sum_1 = 0.0;
-float 	ADC_RAW_Offset_1 = 0.0;
-int 		i_CountADCinit =0, MessOnce=0, CountCurrentError =0;
-_Bool     initADCdone = false;
+float 			ADC_RAW_Offset_1 = 0.0;
+int 			i_CountADCinit =0, MessOnce=0, CountCurrentError =0;
+_Bool     		initADCdone = false;
 
 //Initialize the Interrupt structure
 XScuGic INTCInst;  		//Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -63,7 +63,7 @@ static void toggleLEDdependingOnReadyOrRunning(uint32_t i_count_1ms, uint32_t i_
 static void ReadAllADC();
 static void CheckForErrors();
 
-void ISR_Control(void *data)
+void ISR_Control(void *CallBackRef, u8 TmrCtrNumber)
 {
 	uz_SystemTime_ISR_Tic();
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
@@ -153,13 +153,12 @@ int Initialize_Timer(){
 	int Status;
 
 	// SETUP THE TIMER 1 for Interrupts
-	Status = XTmrCtr_Initialize(&Timer_Interrupt, XPAR_INTERRUPT_TRIGGER_F_CC_DEVICE_ID);
+	Status = XTmrCtr_Initialize(&Timer_Interrupt, IntrTmr_DeviceID);
 	if(Status != XST_SUCCESS) return XST_FAILURE;
-	//XTmrCtr_SetHandler(&Timer_Interrupt, ISR_Control, &Timer_Interrupt);
-	XTmrCtr_SetOptions(&Timer_Interrupt, 0, XTC_INT_MODE_OPTION | XTC_AUTO_RELOAD_OPTION);
-	XTmrCtr_SetResetValue(&Timer_Interrupt, 0, TIMER_LOAD_VALUE);
-	XTmrCtr_Reset(&Timer_Interrupt, 0);
-	XTmrCtr_Start(&Timer_Interrupt,0);
+	XTmrCtr_SetHandler(&Timer_Interrupt, ISR_Control, &Timer_Interrupt);
+	XTmrCtr_SetOptions(&Timer_Interrupt, IntrTmr_DeviceID, XTC_INT_MODE_OPTION | XTC_AUTO_RELOAD_OPTION);
+	XTmrCtr_SetResetValue(&Timer_Interrupt, IntrTmr_DeviceID, TIMER_LOAD_VALUE);
+	XTmrCtr_Start(&Timer_Interrupt,IntrTmr_DeviceID);
 
 	return Status;
 }
@@ -177,6 +176,11 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 {
 	XScuGic_Config *IntcConfig;
 	int status;
+
+	// SETUP THE TIMER 1 for Interrupts
+	status = XTmrCtr_Initialize(&Timer_Interrupt, IntrTmr_DeviceID);
+	if(status != XST_SUCCESS) return XST_FAILURE;
+	XTmrCtr_SetHandler(&Timer_Interrupt, ISR_Control, &Timer_Interrupt);
 
 	// Interrupt controller initialization
 	IntcConfig = XScuGic_LookupConfig(DeviceId);
@@ -198,12 +202,18 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 
 	// Make the connection between the IntId of the interrupt source and the
 	// associated handler that is to run when the interrupt is recognized.
+#if Interrupt_ISR_source_user_choice == 6
+	status = XScuGic_Connect(IntcInstPtr,
+								Interrupt_ISR_ID,
+								(Xil_InterruptHandler)XTmrCtr_InterruptHandler,
+								&Timer_Interrupt);
+#else
 	status = XScuGic_Connect(IntcInstPtr,
 								Interrupt_ISR_ID,
 								(Xil_ExceptionHandler)ISR_Control,
 								(void *)IntcInstPtr);
 	if(status != XST_SUCCESS) return XST_FAILURE;
-
+#endif
 	// Connect ADC conversion interrupt to handler
 //		status = XScuGic_Connect(&INTCInst,
 //								INTC_ADC_Conv_INTERRUPT_ID,
@@ -216,6 +226,9 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
 //	XScuGic_Enable(&INTCInst, INTC_ADC_Conv_INTERRUPT_ID);
 
+	XTmrCtr_SetOptions(&Timer_Interrupt, IntrTmr_DeviceID, XTC_INT_MODE_OPTION | XTC_AUTO_RELOAD_OPTION);
+	XTmrCtr_SetResetValue(&Timer_Interrupt, IntrTmr_DeviceID, TIMER_LOAD_VALUE);
+	XTmrCtr_Start(&Timer_Interrupt,IntrTmr_DeviceID);
 
 	xil_printf("RPU: Rpu_GicInit: Done\r\n");
 	return XST_SUCCESS;

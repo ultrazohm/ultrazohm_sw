@@ -73,7 +73,7 @@ int main (void){
     PWM_3L_Initialize(&Global_Data);	// three-level modulator
 
 	// Initialize Timer in order to Trigger the ISRs
-	Initialize_Timer();
+//	Initialize_Timer();
 	uz_SystemTime_init();
 	// Initialize the incremental encoder
 	Encoder_Incremental_Initialize(&Global_Data);

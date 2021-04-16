@@ -41,7 +41,7 @@ General Rules
 
 - Encapsulate modules [#MakingEmbedded]_ (p. 16)
 
-   - Only expose relevant information though the interface (API)
+   - Only expose relevant information through the interface (API)
    - Interface hides implementation details!
    - Objects are self-contained
 

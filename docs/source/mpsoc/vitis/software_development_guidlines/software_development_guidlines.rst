@@ -307,8 +307,8 @@ Coding rules
 ------------
 
 .. csv-table:: table
-    :file: codingRules.csv
-    :widths: 3 50 50 30
+    :file: coding_rules.csv
+    :widths: 1 50 50 50
     :header-rows: 1
 
 Sources

@@ -6,7 +6,7 @@ Vitis
 	:maxdepth: 2
 	:caption: Vitis
 
-	SoftwareDevelopmentGuidlines
+	software_development_guidlines/software_development_guidlines
 	hardwareAbstractionLayer/hardwareAbstractionLayer
 	assertions
 	SystemTime/SystemTime

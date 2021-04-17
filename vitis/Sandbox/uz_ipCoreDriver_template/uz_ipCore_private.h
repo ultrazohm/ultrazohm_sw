@@ -2,6 +2,6 @@
 #include <stdint.h>
 
 struct uz_ipCore{
-  uint32_t baseAddr;
+  const uint32_t base_address;
   int variable; 
 };

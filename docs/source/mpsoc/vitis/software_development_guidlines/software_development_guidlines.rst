@@ -1,9 +1,10 @@
+.. _software_development_guidlines:
+
 ===============================
 Software Development Guidelines
 ===============================
 
 The software development guidelines for the UltraZohm consists of:
-
 
 1. :ref:`codingGuidelines` on how to develop software
 2. :ref:`codingStyle` describes how to format the code visually
@@ -74,8 +75,9 @@ Names
 - Write code to be readable by other humans
 - Use intention revealing names, e.g., ``int pwm_frequency_kHz``
 - Use pronounceable, searchable names [#CleanCode]_ (p.21) (e.g., not ``tmrctr`` for timerCounter)
-- Encode physical units into variables and functions (``int time_s``, ``uz_systemTime_getUptime_us``)
-- Append units with ``_unit`` (``float id_A``, ``float pwmFrequency_kHz``)
+- Encode physical units into variables and functions (``int time_in_seconds``, ``uz_systemTime_get_uptime_us``)
+- Favor longer names to prevent misunderstandings (e.g., ``_min`` could be interpreted as minutes or minimum)
+- Append units with ``_unit`` (``float id_A``, ``float pwm_frequency_kHz``)
 - No encoding or Hungarian notation (prefixing the variable name by its data type) [#CleanCode]_ (p. 23)
 
   - Only exception are AXI-Ports in Simulink for HDL-Generation! (prefix these with ``axi_``)
@@ -92,10 +94,10 @@ Interface function names
 
   - Prefix interface functions with ``uz_`` to prevent name conflicts (lower case)
   - Name of the module in lower camel case (``uz_moduleName``)
-  - Name of the function in lower camel case(``uz_moduleName_setDutyCycle``)
-  - (Optional) Group multiple, similar functions with additional underscore
+  - Name of the function with underscores, group with in lower camel case where appropriate (``uz_moduleName_set_dutyCycle``)
+  - Group multiple, similar functions with additional underscore
   
-    - Example: ``uz_systemTime_getUptime_seconds``, ``uz_systemTime_getUptime_us``, ``uz_systemTime_getUptime_minutes``
+    - Example: ``uz_systemTime_get_uptime_seconds``, ``uz_systemTime_get_uptime_us``, ``uz_systemTime_get_uptime_minutes``
 
 Functions
 *********
@@ -131,7 +133,15 @@ Comments
 Coding style
 ------------
 
-- Import UltraZohm settings for Vitis
+- Coding style is K&R except:
+
+  - Opening braces of functions are in the same line (``int myFunction(int x) {``)
+  - All control statements have braces (if, else, ..) [#misra]_ 
+
+- Indentation is a tab with size 8 [#linuxCodingStyle]_
+- Use Vitis autoformat function (``ctrl`` + ``shift`` + ``f``) to conform with coding style
+- To use the UltraZohm coding style import the UltraZohm Vitis settings:
+- In Vitis follow these steps:
     1. ``Window``
     2. ``Preferences``
     3. ``Import`` (bottom left) 
@@ -144,9 +154,6 @@ Coding style
     10. ``Preferences``
     11. ``Additional`` -> ``General`` -> ``Appearance``
     12. Choose a ``Theme`` to adjust color palette
-
-- Use Vitis autoformat function (``ctrl`` + ``shift`` + ``f``) to conform with coding style
-
 
 .. _exampleImplementation:
 
@@ -162,79 +169,137 @@ This means all initialization is done inside the module function, there is no in
 
 See the implementation of :ref:`systemTimeR5` for a reference implementation of a single-instance module.
 
-Example interface from [#TDD]_ (p. 194):
+Example interface for a LED [#TDD]_ (p. 194):
 
 .. code-block:: c
+  :linenos:
+  :caption: Single-instance module
 
-   void module_init(void);
-   void module_TurnOn(void);
-   void module_TurnOff(void);
-   void module_SetDeadTime(float DeadTime);
-   float module_GetDeadTime();
+   void uz_led_init(void);
+   void uz_led_turn_on(void);
+   void uz_led_turn_off(void);
+   void uz_led_set_toggle_frequency_Hz(float blink_frequency_in_Hz);
+   float uz_led_get_toggle_frequency_Hz(void);
 
 Multiple-instance module
 ************************
 
-Encapsulates a module and lets you create multiple instances of the module / object, e.g., IP-core drivers.
+Encapsulates a module of which multiple instances can be used.
+This is the default for IP-core drivers.
+A full example implementation is located at ``ultrazohm_sw/vitis/Sandbox/uz_ipCoreDriver_template``.
 
-In a header ``uz_MyIp.h``:
+- The ``allocateAndInit`` function is used to get a handle (pointer) to an instance of the IP-core
+- To allocate multiple instances a specific allocator function has to be called individually
+- Use meaningful names for allocator functions instead of ``_instance1``
+- Pass the handle to the interface to use the specific instance (e.g., line 10)
 
 .. code-block:: c
+   :linenos:
+   :caption: Example main for multiple-instance module (``uz_ipCoreDriver_testbench.c.c``)
 
+    #include <stdio.h>
+    #include <assert.h>
+    #include "uz_ipCore.h"
+    #include "uz_ipCore_staticAllocator.h"
+    
+    int main(){
+        uz_ipCore_handle ipCore_handle_instance1=uz_ipCore_allocateAndInit_instance1();
+        uz_ipCore_handle ipCore_handle_instance2=uz_ipCore_allocateAndInit_instance2();
+        int var=10;
+        uz_ipCore_set_variable(ipCore_handle_instance1,var);
+        uz_ipCore_set_variable(ipCore_handle_instance2,var*2);
+        int readback=uz_ipCore_get_variable(ipCore_handle_instance1);
+        int readback2=uz_ipCore_get_variable(ipCore_handle_instance2);
+        assert(readback==var);
+        assert(readback2==var*2);
+    }
+
+- All instances of the module are declared as a static variable in the static allocator (:ref:`static-allocator`)
+- The ipCore header as well as the ``_private`` header are included in the allocator
+- The ``_private`` header holds the struct definition (see :ref:`private-header`).
+- The inclusion of the private header in the allocator is required since the compiler needs to know the size of the object.
+- The initialization of the object is done using designators
+- This enables the usage of the ``const`` qualifier for configuration parameters that do not change at runtime (e.g., base address of IP-Core)
+
+.. code-block:: c
+   :linenos:
+   :name: static-allocator
+   :caption: Static allocator of IP-Core driver (``uz_ipCore_staticAllocator.c``)
+
+   #include "uz_ipCore_staticAllocator.h"
+   
+   static uz_ipCore ipCore_instance1={
+     .base_address=0,
+     .variable=0
+   };
+   
+   static uz_ipCore ipCore_instance2={
+     .base_address=1,
+     .variable=0
+   };
+   
+   uz_ipCore_handle uz_ipCore_allocateAndInit_instance1(void){
+     return (uz_ipCore_init(&ipCore_instance1) );
+   }
+   
+   uz_ipCore_handle uz_ipCore_allocateAndInit_instance2(void){
+     return (uz_ipCore_init(&ipCore_instance2) );
+   }
+
+.. code-block:: c
+   :linenos:
+   :name: private-header
+   :caption: Private header for struct definition (``uz_ipCore_private.h``)
+
+   #pragma once
+   #include <stdint.h>
+   
+   struct uz_ipCore{
+     const uint32_t base_address;
+     int variable; 
+   };
+
+.. code-block:: c
+   :linenos:
+   :name: example-implementation
+   :caption: Implementation of the IP-Core driver (``uz_ipCore.c``)
+
+   #include "uz_ipCore.h"
+   #include "uz_ipCore_private.h"
+   
+   uz_ipCore_handle uz_ipCore_init(uz_ipCore_handle self){
+     uz_assert_not_NULL(self);
+     return self;
+   }
+   
+    void uz_ipCore_set_variable(uz_ipCore_handle self,int variable){
+    uz_assert_not_NULL(self);
+      self->variable=variable;
+   }
+   
+   int uz_ipCore_get_variable(uz_ipCore_handle self){
+        uz_assert_not_NULL(self);
+        return (self->variable);
+   }
+
+.. code-block:: c
+   :linenos:
+   :name: example-header
+   :caption: Header of the IP-core driver (``uz_ipCore.h``)
+
+   #pragma once
    #include <stdint.h>
    #include <stdio.h>
    #include <stdlib.h>
-   #include "hardwareAdr.h"
-   #include "../../uz/uz_HAL.h"
    
-   typedef struct uz_myIp uz_myIp;
-   typedef uz_myIp* uz_myIp_handle;
+   typedef struct uz_ipCore uz_ipCore;
+   typedef uz_ipCore *const uz_ipCore_handle; // *const to indicate that the handle will never point to another instance of the ipCore
    
-   uz_myIp_handle uz_MyIp_init(uint32_t baseAddr);
-   void uz_myIp_setVariable(uz_MyIp_handle self,int variable);
-   int uz_myIp_getVariable(uz_MyIp_handle self);
+   uz_ipCore_handle uz_ipCore_init(uz_ipCore_handle self);
+   void uz_ipCore_set_variable(uz_ipCore_handle self,int variable);
+   int uz_ipCore_get_variable(uz_ipCore_handle self);
 
 
-In ``uz_MyIp.c``:
-
-.. code-block:: c
-
-   #include "uz_MyIp.h"
-      
-   struct uz_MyIp{
-     uint32_t baseAddr;
-     int variable; 
-   };
-   
-   uz_MyIp_handle uz_MyIp_init(uint32_t baseAddr){
-     uz_assertNotNull(baseAddr);
-     uz_MyIp_handle self=malloc(sizeof(uz_MyIp));
-     uz_assertNotNull(self);
-     self->baseAddr=baseAddr;
-     return self;
-    }
-   
-    void uz_MyIp_setVariable(uz_MyIp_handle self,int variable){
-      uz_assertNotNull(self);
-      self->variable=variable;
-    }
-   
-    int uz_MyIp_getVariable(uz_MyIp_handle self){
-      uz_assertNotNull(self);
-      return (self->variable);
-    };
-
-Usage:
-
-.. code-block:: C
-
-   uz_MyIp_handle MyIp=uz_MyIp_init(baseAddr);
-   int var=10;
-   uz_MyIp_setVariable(MyIp,var);
-   int readback=0;
-   readback=uz_MyIp_getVariable(MyIp);
-
-See ``vitis/Sandbox/MyIp`` for an example implementation.
 
 .. _codingRules:
 

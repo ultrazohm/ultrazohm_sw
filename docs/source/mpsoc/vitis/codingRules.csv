@@ -1,5 +1,5 @@
 Number, Rule, Example, Comment
-0, Write boring code that works; instead of clever buggy code that can not be maintained, , 
+0, Write boring code that works instead of clever buggy code that can not be maintained, , 
 1, Compile at least with warnings ``-Wall`` and ``-Wextra`` (see `gcc warnings  <https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html>`_ )
 2, The number of acceptable warnings is zero
 3, Do not comment out code and check it in

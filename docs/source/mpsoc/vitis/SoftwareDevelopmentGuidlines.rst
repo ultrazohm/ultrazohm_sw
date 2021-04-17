@@ -1,76 +1,113 @@
-==============================
-Software Development Guidlines
-==============================
+===============================
+Software Development Guidelines
+===============================
 
-- The guidlines are based on concepts of [#CleanCode]_, [#MakingEmbedded]_, and [#TDD]_ and adapted to the UltraZohm
-- Read the books for the reasoning and more good information about programming!
-- Watch the videos of Robert Martin: https://www.youtube.com/watch?v=7EmboKQH8lM&ab_channel=UnityCoin
-  
-- Feedback is gathered in issue :issue:`96`!
-- Use the :ref:`HAL`
+The software development guidelines for the UltraZohm consists of:
 
 
-General Rules
--------------
+1. :ref:`codingGuidelines` on how to develop software
+2. :ref:`codingStyle` describes how to format the code visually
+3. :ref:`exampleImplementation` for common code modules
+4. :ref:`codingRules` to follow when writing code
 
-- Write clean code [#CleanCode]_ (p. 2 ff)
+The guidelines are based on concepts described by:
 
-    - elegant & efficient
-    - logic should be straightforward
-    - minimal dependencies
-    - ease of maintenance
-    - clean code does **one** thing well
-    - simple and direct
-    - reads like well-written prose
-    - can be read and enhanced by a developer other than its original author
-    - has meaningful names
-    - clear and minimal API
-    - Looks like it was written by someone who cares
-    - contains no duplication
-    - *you know you are working on clean code when each routine you read turns out to be pretty much what you expect* (principle of least surprises)
+  - Clean Code [#CleanCode]_
+  - Making Embedded Systems [#MakingEmbedded]_
+  - Test-Driveen Development for Embedded C [#TDD]_
+  - `Video series on Clean Code <https://www.youtube.com/watch?v=7EmboKQH8lM&ab_channel=UnityCoin>`_ by the author
+  - Modern C [#ModernC]_
+  - MISRA guidlines [#misra]_
+  - `Linux kernel coding style <https://www.kernel.org/doc/html/v4.14/process/coding-style.html>`_ [#linuxCodingStyle]_
+  - The C Programming Language [#TheCProgrammingLanguage]_
+
+- Working through the sources is strongly recommended
+- Feedback & questions regarding software guidelines are gathered in issue :issue:`96`
+
+
+.. _codingGuidelines:
+
+Guidelines
+----------
+
+- Write clean code [#CleanCode]_ (p. 2 ff):
+
+  - Elegant & efficient
+  - Logic should be straightforward
+  - Minimal dependencies
+  - Ease of maintenance
+  - Clean code does one thing well
+  - Simple and direct
+  - Reads like well-written prose
+  - Can be read and enhanced by a developer other than its original author
+  - Has meaningful names
+  - Clear and minimal API
+  - Looks like it was written by someone who cares
+  - Contains no duplication
+  - *You know you are working on clean code when each routine you read turns out to be pretty much what you expect* (principle of least surprises)
+
 - Do not make a mess
-- Use intention revealing names, e.g., ``int elapsed_time_in_days``
-- Use pronounceable, searchable names [#CleanCode]_ (p.21)
-  
-- No encoding or Hungarian notation [#CleanCode]_ (p. 23), i.e., prefixing the variable name by its data type
-
-    - Only exception are AXI-Ports in Simulink for HDL-Generation! (prefix these with ``axi_``)
-
-- Classes (objects) have noun or noun phrase names (``Customer``, ``WikiPage``) (p. 25)
-- Method (function) have verb or verb phrases (they *do** things, e.g., ``get_adc_value``)
-
 - Encapsulate modules [#MakingEmbedded]_ (p. 16)
 
-   - Only expose relevant information through the interface (API)
-   - Interface hides implementation details!
-   - Objects are self-contained
+  - Only expose relevant information through the interface (API)
+  - Interface hides implementation details!
+  - Objects are self-contained
 
 - Object oriented programming in C
 
-    - Object orientation is a property of code, not of the language
-    - Use object orientated programming
-    - Critical idea: data hiding
-    - Hide the data in private variables
-    - Use interfaces
-    - Use structures / pointers to structures to pass it around as an object
-    - Abstract the hardware
+  - Object orientation is a property of code, not of the language
+  - Use object orientated programming
+  - Critical idea: data hiding
+  - Hide the data in private variables
+  - Use interfaces
+  - Use structures / pointers to structures to pass it around as an object
+  - Abstract the hardware
 
 - No premature optimization!
 
-    - If you think about optimization of the framework code of the UltraZohm, it is probably premature optimization
-    - The compiler is better at optimization as a developer
+  - If you think about optimization of the framework code of the UltraZohm, it is probably premature optimization
+  - The compiler is better at optimization than a developer
+
+Names
+*****
+
+- Write code to be readable by other humans
+- Use intention revealing names, e.g., ``int pwm_frequency_kHz``
+- Use pronounceable, searchable names [#CleanCode]_ (p.21) (e.g., not ``tmrctr`` for timerCounter)
+- Encode physical units into variables and functions (``int time_s``, ``uz_systemTime_getUptime_us``)
+- Append units with ``_unit`` (``float id_A``, ``float pwmFrequency_kHz``)
+- No encoding or Hungarian notation (prefixing the variable name by its data type) [#CleanCode]_ (p. 23)
+
+  - Only exception are AXI-Ports in Simulink for HDL-Generation! (prefix these with ``axi_``)
+
+- Classes (objects) have noun or noun phrase names (``uz_pwmModule``) [#CleanCode]_ (p. 25)
+- Method (functions) have verb or verb phrases (they *do* things, e.g., ``uz_pwmModule_setDutyCycle(uint32_t dutyCycle)``)
+- Naming convention:
+
+  - Group composites with camel case (*ThisIsCamelCase*)
+  - Encode relationships with underscore (e.g., a method of an object)
+  - Everything is lower case except the capital latter in camel case and ``#defines`` which are in capital letters
+
+Interface function names
+
+  - Prefix interface functions with ``uz_`` to prevent name conflicts (lower case)
+  - Name of the module in lower camel case (``uz_moduleName``)
+  - Name of the function in lower camel case(``uz_moduleName_setDutyCycle``)
+  - (Optional) Group multiple, similar functions with additional underscore
+  
+    - Example: ``uz_systemTime_getUptime_seconds``, ``uz_systemTime_getUptime_us``, ``uz_systemTime_getUptime_minutes``
 
 Functions
 *********
 
 - Functions should be small, even smaller than that.
-- do **one** thing
+- Do one thing
+- One thing means one cannot extract any meaningful function from the existing function
 - One level of abstraction per function
 - Descriptive names, the function name tells you what it does
 - Do not be afraid to make a name long
-- Function arguments: less is more
-
-    - Use structs for more than two function arguments (e.g., config struct)
+- Function arguments: less is better
+- Use structs for more than two function arguments (e.g., config struct)
 
 Error handling
 **************
@@ -83,32 +120,38 @@ Comments
 
 - Comments lie
 - Why? Code changes and comments get outdated
-- comment only why code does things (intend), not how
-- do not comment bad code, rewrite it
+- Comment only why code does things (intend), not how
+- Do not comment bad code, rewrite it
 - Explain yourself in code with small functions with meaningful names!
-- **Never** comment something that a function does to another function in another file! This just means you have to restructure the code!
-- **do not comment out code, delete it**
+- Do not comment out code, delete it
 - *But I want to have it for future reference* - that is what git and the docs are for
 
-Prefixing
-*********
+.. _codingStyle:
 
-- We use ``uz_`` as a prefix for our functions such that there are no name conflicts with user code
-- There are no real classes or namespaces in ``C``, thus this is our solution for this problem
-
-SOLID Design
+Coding style
 ------------
 
-`Five Deisgn priciples from Bob Martin <https://en.wikipedia.org/wiki/SOLID>`_: [#TDD]_ (p.189)
+- Import UltraZohm settings for Vitis
+    1. ``Window``
+    2. ``Preferences``
+    3. ``Import`` (bottom left) 
+    4. ``Browse``
+    5. ``ultrazohm_sw/vitis/ultrazohm_vitis_settings.epf``
+    6. ``Finish``
+    7. Restart Vitis
+    8. (Optional): Change theme (Light/Dark)
+    9. ``Window``
+    10. ``Preferences``
+    11. ``Additional`` -> ``General`` -> ``Appearance``
+    12. Choose a ``Theme`` to adjust color palette
 
-- **S**: Single Responsibility Principle
-- **O**: Open Closed Principle
-- **L**: Liskov Substituion Principle
-- **I**: Interface Segregation Principle
-- **D**: Dependency Inversion Principle
+- Use Vitis autoformat function (``ctrl`` + ``shift`` + ``f``) to conform with coding style
 
-Applied to C
-------------
+
+.. _exampleImplementation:
+
+Example Implementations
+-----------------------
 
 Single-instance module
 **********************
@@ -144,12 +187,12 @@ In a header ``uz_MyIp.h``:
    #include "hardwareAdr.h"
    #include "../../uz/uz_HAL.h"
    
-   typedef struct uz_MyIp uz_MyIp;
-   typedef uz_MyIp* uz_MyIp_handle;
+   typedef struct uz_myIp uz_myIp;
+   typedef uz_myIp* uz_myIp_handle;
    
-   uz_MyIp_handle uz_MyIp_init(uint32_t baseAddr);
-   void uz_MyIp_setVariable(uz_MyIp_handle self,int variable);
-   int uz_MyIp_getVariable(uz_MyIp_handle self);
+   uz_myIp_handle uz_MyIp_init(uint32_t baseAddr);
+   void uz_myIp_setVariable(uz_MyIp_handle self,int variable);
+   int uz_myIp_getVariable(uz_MyIp_handle self);
 
 
 In ``uz_MyIp.c``:
@@ -192,6 +235,8 @@ Usage:
    readback=uz_MyIp_getVariable(MyIp);
 
 See ``vitis/Sandbox/MyIp`` for an example implementation.
+
+.. _codingRules:
 
 Coding rules
 ------------

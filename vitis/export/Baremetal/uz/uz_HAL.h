@@ -10,7 +10,7 @@
 
 // The uz_assert macro abstracts the assert method of the platform
 // For UltraZohm, use xil_assert.h with Xil_AssertVoid(Expression)
-#define uz_assert Xil_AssertVoid
+#define uz_assert Xil_AssertNonvoid
 // Common to assert some pointer is not Null
 // Map to platform specific assert macro
 #define uz_assert_not_NULL(Expression) \

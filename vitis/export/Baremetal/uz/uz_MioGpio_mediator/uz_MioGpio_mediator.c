@@ -57,16 +57,16 @@ static void InitializeAllPushButtons(){
 };
 
 static void enableAllMioWithLEDsAttached(){
-	MIO_LedReady.SetEnableOutput(&MIO_LedReady,true);
-	MIO_LedRunning.SetEnableOutput(&MIO_LedRunning,true);
-	MIO_LedError.SetEnableOutput(&MIO_LedError,true);
-	MIO_LedUser.SetEnableOutput(&MIO_LedUser,true);
+	MIO_LedReady.set_enable_output(&MIO_LedReady,true);
+	MIO_LedRunning.set_enable_output(&MIO_LedRunning,true);
+	MIO_LedError.set_enable_output(&MIO_LedError,true);
+	MIO_LedUser.set_enable_output(&MIO_LedUser,true);
 };
 
 static void enableAllMioWithButonsAttached(){
-	MIO_SWError.SetEnableOutput(&MIO_SWError,1);
-	MIO_SWSystem.SetEnableOutput(&MIO_SWSystem,1);
-	MIO_SWControl.SetEnableOutput(&MIO_SWControl,1);
+	MIO_SWError.set_enable_output(&MIO_SWError,1);
+	MIO_SWSystem.set_enable_output(&MIO_SWSystem,1);
+	MIO_SWControl.set_enable_output(&MIO_SWControl,1);
 };
 
 static void InitializeAllStatusLEDs(){
@@ -79,8 +79,8 @@ static void InitializeAllStatusLEDs(){
 };
 
 static void TurnAllLEDOff(){
-	uz_led_SetLedReadyOff();
-	uz_led_SetLedRunningOff();
-	uz_led_SetLedUserOff();
-	uz_led_SetLedErrorOff();
+	uz_led_set_readyLED_off();
+	uz_led_set_runningLED_off();
+	uz_led_set_userLED_off();
+	uz_led_set_errorLED_off();
 };

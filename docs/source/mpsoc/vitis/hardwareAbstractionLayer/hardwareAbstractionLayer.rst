@@ -44,6 +44,8 @@ uz_axi_read_int32           Read ``int32_t`` from a hardware register by AXI
 uz_axi_write_bool           Write ``_Bool`` from a hardware register by AXI
 uz_convert_sfixed_to_float  Converts signed fixed point to ``float``
 uz_convert_float_to_sfixed  Converts ``float`` to signed fixed point
+uz_sleep_seconds            Do nothing for X seconds
+uz_sleep_useconds           Do nothing for X microseconds
 =========================== ====================================================
 
 

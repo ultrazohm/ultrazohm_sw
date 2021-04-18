@@ -1,41 +1,42 @@
 #include "uz_LED_facade.h"
 
-static uz_StatusLed LedReady, LedRunning, LedError, LedUser;
+static uz_statusLED readyLED, runningLED, errorLED, userLED;
 
-void uz_led_facade_init(uz_LedfacadeCfg cfg){
-	uz_led_init(&LedReady,cfg.LedReady);
-	uz_led_init(&LedRunning,cfg.LedRunning);
-	uz_led_init(&LedError,cfg.LedError);
-	uz_led_init(&LedUser,cfg.LedUser);
-};
+void uz_led_facade_init(uz_LedfacadeCfg cfg) {
+	uz_led_init(&readyLED, cfg.LedReady);
+	uz_led_init(&runningLED, cfg.LedRunning);
+	uz_led_init(&errorLED, cfg.LedError);
+	uz_led_init(&userLED, cfg.LedUser);
+}
 
-void uz_led_SetLedReadyOn(){
-	LedReady.turnOn(&LedReady);
-};
+void uz_led_set_readyLED_on() {
+	readyLED.turn_on(&readyLED);
+}
 
-void uz_led_SetLedReadyOff(){
-	LedReady.turnOff(&LedReady);
-};
+void uz_led_set_readyLED_off() {
+	readyLED.turn_off(&readyLED);
+}
 
-void uz_led_SetLedRunningOn(){
-	LedRunning.turnOn(&LedRunning);
-};
+void uz_led_set_runningLED_on() {
+	runningLED.turn_on(&runningLED);
+}
 
-void uz_led_SetLedRunningOff(){
-	LedRunning.turnOff(&LedRunning);
-};
+void uz_led_set_runningLED_off() {
+	runningLED.turn_off(&runningLED);
+}
 
-void uz_led_SetLedErrorOn(){
-	LedError.turnOn(&LedError);
-};
-void uz_led_SetLedErrorOff(){
-	LedError.turnOff(&LedError);
-};
+void uz_led_set_errorLED_on() {
+	errorLED.turn_on(&errorLED);
+}
 
-void uz_led_SetLedUserOn(){
-	LedUser.turnOn(&LedUser);
-};
+void uz_led_set_errorLED_off() {
+	errorLED.turn_off(&errorLED);
+}
 
-void uz_led_SetLedUserOff(){
-	LedUser.turnOff(&LedUser);
-};
+void uz_led_set_userLED_on() {
+	userLED.turn_on(&userLED);
+}
+
+void uz_led_set_userLED_off() {
+	userLED.turn_off(&userLED);
+}

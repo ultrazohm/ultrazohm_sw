@@ -256,15 +256,15 @@ u32 Rpu_IpiInit(u16 DeviceId)
 static void toggleLEDdependingOnReadyOrRunning(uint32_t uptime_ms, uint32_t uptime_sec){
 	if(Global_Data.cw.enableSystem){
 	if((uptime_ms % 200)>100){
-		uz_led_SetLedReadyOn();
+		uz_led_set_readyLED_on();
 	}else{
-		uz_led_SetLedReadyOff();
+		uz_led_set_readyLED_off();
 	}
 }else{
 	if(uptime_sec % 2){
-		uz_led_SetLedReadyOn();
+		uz_led_set_readyLED_on();
 	}else{
-		uz_led_SetLedReadyOff();
+		uz_led_set_readyLED_off();
 	}
 }
 };

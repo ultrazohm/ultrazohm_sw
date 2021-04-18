@@ -1,0 +1,12 @@
+SLStudio.Utils.RemoveHighlighting(get_param('uz_axi_testIP', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_axi_testIP', 'handle'));
+annotate_port('gm_uz_axi_testIP/uz_axi_testIP/Delay2', 0, 1, '');
+annotate_port('gm_uz_axi_testIP/uz_axi_testIP/transpose', 1, 1, '');
+annotate_port('gm_uz_axi_testIP/uz_axi_testIP/Product', 0, 1, '');
+annotate_port('gm_uz_axi_testIP/uz_axi_testIP/Reshape', 1, 1, '');
+annotate_port('uz_axi_testIP/uz_axi_testIP/Reshape', 1, 1, '');
+annotate_port('gm_uz_axi_testIP/uz_axi_testIP/Reshape1', 1, 1, '');
+annotate_port('uz_axi_testIP/uz_axi_testIP/Reshape1', 1, 1, '');
+annotate_port('gm_uz_axi_testIP/uz_axi_testIP/Reshape2', 1, 1, '');
+annotate_port('uz_axi_testIP/uz_axi_testIP/Reshape2', 1, 1, '');
+annotate_port('gm_uz_axi_testIP/uz_axi_testIP/delayMatch', 1, 1, '');

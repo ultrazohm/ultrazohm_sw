@@ -1,9 +1,9 @@
 
 .. _LayerStackManager:
 
-===================================
-Layer Stack Manager
-===================================
+=======================
+PCB Layer Stack Manager
+=======================
 
 The layer stack manager defines the structure and the width of the different layers.
 
@@ -64,8 +64,9 @@ As general rule use only through-hole vias that drill from top to bottom, everyt
 
 .. _156_Via_Types:
 
-   .. figure:: img/156_Via_Types.png
-      :width: 300px
+	.. figure:: img/156_Via_Types.png
+		:width: 300px
+	  
 
       Altium - Via Types.
 

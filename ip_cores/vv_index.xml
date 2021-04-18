@@ -409,17 +409,175 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="user.org:ip:AXI_testI_ip:1.0">
+		</VLNV>
+		<DisplayName value="AXI_testI_ip">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4.jpg">
+		</ProductGuide>
+		<CoreRevision value="2104181318">
+		</CoreRevision>
+		<ComponentPath value="AXI_testIP/uz_axi_testIP/ipcore/AXI_testI_ip_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="aartix7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="akintex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="artix7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="artix7l">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="aspartan7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="azynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintex7l">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qartix7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qkintex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qkintex7l">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qvirtex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qzynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="spartan7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus58g">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<LockPrevVersions value="false">
+		</LockPrevVersions>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="user.org:ip:uz_axi_testIP:1.0">
+		</VLNV>
+		<DisplayName value="uz_axi_testIP">
+		</DisplayName>
+		<Description value="Module to make InterLock times (Deadtime)">
+		</Description>
+		<CoreRevision value="3">
+		</CoreRevision>
+		<ComponentPath value="Interlock_Module_V2_ip/Interlock_Module_2.0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynq">
+				<Part status="Pre-Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Beta" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="AXI_Peripheral">
+			</Taxonomy>
+		</Taxonomies>
+		<UpgradesFrom>
+			<Upgrade value="xilinx.com:user:InterLock_Module:1.0">
+			</Upgrade>
+			<Upgrade value="ELSYS:ADC_Lib:InterLock_Module:1.0">
+			</Upgrade>
+			<Upgrade value="ELSYS:ADC_Lib:InterLock_Module:2.0">
+			</Upgrade>
+		</UpgradesFrom>
+		<LockPrevVersions value="false">
+		</LockPrevVersions>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="user.org:ip:simscapeHDL_example:1.0">
 		</VLNV>
 		<DisplayName value="simscapeHDL_example">
 		</DisplayName>
 		<Description value="HDL Coder generated IP">
 		</Description>
-		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		<ProductGuide value="doc/doc_arch_axi4.jpg">
 		</ProductGuide>
-		<CoreRevision value="2103181825">
+		<CoreRevision value="2104181321">
 		</CoreRevision>
-		<ComponentPath value="simscapeHDL_example_v1_0/ipcore/component.xml">
+		<ComponentPath value="AXI_testIP/uz_axi_testIP/ipcore/uz_axi_testIP_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="aartix7">

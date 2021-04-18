@@ -1,9 +1,9 @@
 .. _AltiumDB:
 
-====================
-Altium DB
-====================
-Before starting with the description and instructions on how to use the database system in Altium, a brief overview of the different tools will be given.
+============================
+UltraZohm components library
+============================
+Before starting with the description and instructions on how to use the database system in Altium, a brief overview of the different tools is given.
 
 .. _200_Overview_DB_system:
 
@@ -12,33 +12,28 @@ Before starting with the description and instructions on how to use the database
 
       Overview of the databased system for Altium.
 
-The entire system is located in a total of three different places. 
-Once on the BitBucket server in the altium_library repository.
-Here are all schematic symbols and footprints of the individual components, as well as the DbLib file that is needed to connect to the database on the Ultrazohm server.
-The second system is the server of the Ultrazohm. 
-Here is a MariaDB system running, in which all relevant component information are stored.
-The third system is the local PC, which gets access to the database via the user DbLib file by including it in Altium.
-If you only want to use components that are in the database, this access is sufficient. 
-But if it is necessary to add components, then a write access to the MariaDB must be used.
-For this purpose, the graphical front end "Dbeaver" is recommended, with its help it is easy to add new components, modify existing ones or delete them.
+The library system splits up in three different locations:
 
+1. The `altium_libraries repository <https://bitbucket.org/ultrazohm/altium_libraries/src/master/>`_. All schematic symbols and PCB footprints of the individual components as well as the DbLib file that is required to connect to the database on the Ultrazohm server is located in this repository
+2. The UltraZohm server: All component parameters like Manufacturer Part Numbers etc. are managed by a MariaDB database on the server. In order to edit database records a separate database client (e.g. `DBeaver <https://dbeaver.io/>`_) is recommended.
+3. User's PC: The PC of the PCB developer gets access to the locations 1 and 2 and the developer is able to place the components. In case he has write access he can also edit and add components.
 
 In the following, the individual tools and necessary installation steps are discussed.
 
-.. note :: All usernames and passwords are to be obtained from the Ultrazohm responsible people.
+.. note :: All usernames and passwords can be optained from the UltraZohm core developer team. Please write an E-Mail to `info@ultrazohm.com <mailto:info@ultrazohm>`_
 
 
-To use the database driven library for Altium, a few settings have to be made once.
-In the following chapters, a guideline on how to install and set the parameter is given.
-The following tools will be needed:
+In order to use the database driven library for Altium, a few settings need to be made initially.
+In the following chapters are a guideline on how to install and set the parameter is given.
+The following tools are required:
 
-* BitBucket
+* Bitbucket
 * ODBC Data Sources (64-Bit)
 * Altium
 * DBeaver
 
-Videos of setup
-===============
+Videos of the setup
+===================
 
 How to install Altium:
 
@@ -53,29 +48,35 @@ How to install DBweaver:
 .. youtube:: DaSXdXeiYR4
 
 
-BitBucket access setup
+Bitbucket access setup
 ======================
 
-1. To work with the databased library system in Altium, it is necessary to get access to the BitBucket system of the UltraZohm, especially to the folder "altium_libraries"
+1. To work with the databased library system in Altium, it is necessary to get access to the Bitbucket system of the UltraZohm, especially to the `altium_libraries repository <https://bitbucket.org/ultrazohm/altium_libraries/src/master/>`_
 
-.. _1_BitBucket:
+.. _1_Bitbucket:
 
    .. figure:: img/1_BitBucket.png
    
-        BitBucket - altium_libraries.
+        Bitbucket - altium_libraries.
 
-2. Clone the repository on your local hard disk
+2. Clone the repository on your local computer
 
-3. Create a new feature branch to work with the system
+3. If you intent to add new compnents, create a new feature branch. Follow the naming convention feature/<meaningfull name>. If the git shell interface is used the command is ``git checkout -b feature/<branch_name>``
 
-4. If a new component was added, don´t forget to commit and push the new component to BitBucket by pull request!
+4. If a new component was added, commit and push the new component to Bitbucket
+
+5. When component editing is finished open a pull request on Bitbucket. The components will be reviewed and merged into the master branch.
 
 .. _ServerAccessSetup:
 
 Server access setup
 ===================
 
-1. ``Open`` the ODBC-Datasource App (64-Bit)
+Altium needs to get access to the database system on the UltraZohm server. The interface to the database is an ODBC database driver.
+
+1. If not done yet download and install the `MariaDB ODBC 3.1 Driver <https://downloads.mariadb.org/connector-odbc/>`_
+
+2. ``Open`` the ODBC-Datasource App (64-Bit)
 
 .. _20_ODBC_sources_1:
 
@@ -84,7 +85,7 @@ Server access setup
 
       OBDC - open App.
 
-2. ``Add`` a new User-DSN
+3. ``Add`` a new User-DSN
 
 .. _21_ODBC_sources_2:
 
@@ -93,7 +94,7 @@ Server access setup
 
       OBDC - add user-DSN.
 
-3. Select the MariaDB ODBC 3.1 Driver
+4. Select the MariaDB ODBC 3.1 Driver
 
 .. _22_ODBC_sources_3:
 
@@ -102,10 +103,8 @@ Server access setup
 
       OBDC - select MariaDB.
 
-If MariaDB ODBC 3.1 Driver could not be selected, install the driver by downloading the MariaDB ODBC 3.1 from the homepage:
-https://downloads.mariadb.org/connector-odbc/.
 
-4. Create a new data source to MariaDB
+5. Create a new data source to MariaDB
 
 .. _23_ODBC_sources_4:
 
@@ -114,7 +113,7 @@ https://downloads.mariadb.org/connector-odbc/.
 
       OBDC - create a new data source.
 
-5. Connect it to the ultrazohm server
+6. Connect it to the ultrazohm server
 
 .. _24_ODBC_sources_5:
 
@@ -123,10 +122,10 @@ https://downloads.mariadb.org/connector-odbc/.
 
       OBDC - connection to ultrazohm server.
 
-.. note :: At this point, user access is used with read-only rights, since the database is never modified from within Altium, and changes are made specifically via DBeaver (see :ref:`IntegrationInAltium`).
+.. note :: The ODBC connection is read only because no changes on the database will be made from Altium directly. A separate database client e.g. DBeaver is used to edit the database (see :ref:`IntegrationInAltium`).
 
 
-6. Do nothing and press ``Next >``
+7. Do nothing and press ``Next >``
 
 .. _25_ODBC_sources_6:
 
@@ -135,7 +134,7 @@ https://downloads.mariadb.org/connector-odbc/.
 
       OBDC - skip.
 
-7. Do nothing and press ``Next >``
+8. Do nothing and press ``Next >``
 
 .. _26_ODBC_sources_7:
 
@@ -144,7 +143,7 @@ https://downloads.mariadb.org/connector-odbc/.
 
       OBDC - skip.
 
-8. Force to use TLS and go back for three times ``< Previous``
+9. Force to use TLS and go back for three times ``< Previous``
 
 .. _27_ODBC_sources_8:
 
@@ -153,7 +152,7 @@ https://downloads.mariadb.org/connector-odbc/.
 
       OBDC - use TLS.
 
-9. Select the database "altium_library" and ``Test DSN``
+10. Select the database "altium_library" and ``Test DSN``
 
 .. _28_ODBC_sources_9:
 
@@ -162,7 +161,7 @@ https://downloads.mariadb.org/connector-odbc/.
 
       OBDC - select "altium_library".
 
-10. Finish the settings by pressing three times ``OK``
+11. Finish the settings by pressing three times ``OK``
 
 .. _29_ODBC_sources_10:
 
@@ -189,7 +188,7 @@ Integration in Altium
 
 3. Click on the three horizontal lines and select the point ``File-based library Preferences``
 
-4. Select the register Installed
+4. Select the register Installed. While not necessary, it is strongly recommended to remove all not required libraries at this point (e.g. the standard "Miscellanious Devices" library from Altium)
 
 .. _31_File_based_lib:
 
@@ -198,7 +197,7 @@ Integration in Altium
 
       Altium - installed libraries.
 
-5. Select ``Install…`` and navigate to the point where the BitBucket folder is cloned on the computer. Select the file "user.DbLib"
+5. Select ``Install…`` and navigate to the path where the Bitbucket repository is cloned on the computer. Select the file "user.DbLib"
 
 6. ``Close`` this window
 
@@ -213,20 +212,16 @@ Integration in Altium
 
 8. Now you can use all already existing components from the databased library
 
-Installation and setup of a front end (DBeaver)
-===============================================
+Setup of the database client
+============================
 
-For the next steps it is important to have not only read permissions for MariaDB, but also write permissions.
-Therefore, the same procedure, described in chapter :ref:`ServerAccessSetup`, for the altium_developer must be done.
-For this purpose the developer access in Altium must now be used.
+If new components are required the developer will need write access to the Bitbucket repository and to the database on the UltraZohm server.
+A dedicated user called ``altium_developer`` is available on the database system for this purpose. He has write access to the whole library database.
+As a graphical database client DBeaver is recommended.
 
-To be able to add a new component to the database (MariaDB) as easily as possible, it is comfortable to use a graphical front end.
+1. `Download the Dbeaver software <https://dbeaver.io/download/>`_ to work with the MariaDB on the UltraZohm server  
 
-1. Download the Dbeaver software to work with the MariaDB on the UltraZohm server https://dbeaver.io/download/ 
-
-.. note :: There are more software tools that allow for adding and editing information in a database, but DBeaver is recommended to keep the tooling consistent in the UltraZohm community.
-
-2. To set up the connection to the MariaDB on the UltraZohm Server, the following steps (shown in the screenshots below) must be fully filled one time.
+2. Open DBeaver
 
 3. Select MariaDB
 
@@ -256,7 +251,6 @@ To be able to add a new component to the database (MariaDB) as easily as possibl
       DBeaver - driver settings - 1.
 
 6. These settings must be selected automatically after the download of MariaDB. 
-Before clicking ``Finish`` the settings of SSL must be done.
 
 .. _38_DBeaver_4:
 
@@ -265,7 +259,7 @@ Before clicking ``Finish`` the settings of SSL must be done.
 
       DBeaver - driver settings - 2.
 
-7. Select use SSL and do not verify the server certificate
+7. Select ``use SSL`` and uncheck ``Verify server certificate`` in the SSL tab
 
 .. _39_DBeaver_5:
 
@@ -274,9 +268,9 @@ Before clicking ``Finish`` the settings of SSL must be done.
 
       DBeaver - SSL settings.
 
-8. Now, the connection to the ultrazohm MariaDB should be possible.
+8. Click ``Finish``. At this time, you are able to connect to the database
 
-9. If the connection failled, control the settings and reconnect via right click on the ``altium_library`` --> ``Invalidate/ Reconnect``
+9. If the connection failed, control the settings and reconnect via right click on the ``altium_library`` --> ``Invalidate/ Reconnect``
 
 10. If the connection was successful, the following table structure must be visible
 
@@ -287,24 +281,26 @@ Before clicking ``Finish`` the settings of SSL must be done.
 
       DBeaver - table structure.
 
-**This step completes the one-time setup.**
+**This step completes the initial setup.**
 
 .. _AddANewComponentToTheDatabasedLibrary:
 
-Add a new component to the databased library
-********************************************
+Addition of a new component
+===========================
 
-To make the process of adding a component more visible, it will be described by adding a SMD capacitor.
+In the following chapter the procedure to add a new component is illustrated by adding an SMD capacitor. The following chapter only explains the addition
+of the component to the repository and the database. **Furthermore, the developer who adds the component has to make sure that the fooprint follows**
+**the mapping of the mechanical layers.** See :ref:`mech_layers` for further information. If the component does not follow this mapping the pull request will
+not be accepted. 
 
-.. note :: The target of this database system is that schematic and footprints of generic components should only exist one time.
-           This means that schematics and footprints symbols of generic components only have to be in the Bitbucket folder system once, even if resistors have different values.
-           Only if the component has a different geometry, a new schematic and/or footprint must be added.
-           And be careful when you create new schematics and footprints that the pins and the naming of the pins are equal (very important by connectors and ics).
-           (If you are unsure, you should use the footprint and the symbol of the manufacturer instead of using an already existing footprint.)
+.. note :: The goal of this database system is that schematic and footprints of generic components only exist once.
+           This means that schematics and footprints symbols of generic components only have to be in the Bitbucket repository once, even if there are multiple physical components available (e.g. different manufacturers and values).
+           Only if the component has a different geometry or pinout, a new schematic and/or footprint must be added.
+           The number of pins on the symbol must match the number of pins on the footprints. The mapping of the pins is done with the pin numbering (pin 1 of the symbol is mapped to pin 1 of the footprint and so on).
+           In case of doubt the symbol and the footprint supplied by the manufacturer must be used instead of using an existing footprint.
 
 
-1. Check if the schematic symbol already exists as a symbol in the BitBucket system. Therefore, open the folder of the cloned BitBucket repository.
-If the schematic does not exist, copy the schematic symbol in the suitable folder of the schematics ``...\alitum_libraries\symbols\...`` (at this point, it is assumed that missing schematics or footprints are each available separately (not in integrated libs or libraries with multiple parts)). To get single schematic symbols and footprints from different starting points see chapter :ref:`SchematicAndFootprints`.
+1. Check if the schematic symbol already exists as a symbol in the Bitbucket system. The schematic symbols are located under ``alitum_libraries\symbols`` If the schematic does not exist, copy the schematic symbol in the suitable directory under ``alitum_libraries\symbols``. It is vital that the ``.SchLib`` file **only contains one symbol**. See :ref:`SchematicAndFootprints` on how to extract the symbol from different sources.
 
 .. _41_Explorer_SCH:
 
@@ -313,12 +309,11 @@ If the schematic does not exist, copy the schematic symbol in the suitable folde
 
       Explorer - symbols.
 
-2. Regarding the name of the component: **SCH - Folder - Description.SCHLIB**
+2. Follow the naming convention for the ``.SchLib`` file **SCH - <directory> - <description>.SCHLIB**
 
 .. note :: The extension of the file is written in capital letters.
 
-3. Check if the footprint symbol already exists in the BitBucket system.
-If not, copy the footprint in the suitable folder of the footprints ``...\alitum_libraries\footprints\...``
+3. Check if the footprint symbol already exists in the Bitbucket system. If the component does not exist copy the footprint in the suitable folder of the footprints ``\alitum_libraries\footprints``. It is vital that the ``.PcbLib`` file **only contains one symbol**. See :ref:`SchematicAndFootprints` on how to extract the symbol from different sources.
 
 .. _42_Explorer_PCB:
 
@@ -327,14 +322,18 @@ If not, copy the footprint in the suitable folder of the footprints ``...\alitum
 
       Explorer - footprints.
 
-4. Regarding the name of the footprint: **PCB - Folder - Description.PCBLIB**
+4. Follow the naming convention for the ``.PcbLib`` file **SCH - <directory> - <description>.PCBLIB**
+
 
 .. note :: The extension of the file is written in capital letters.
 
-5. Change to the DBeaver tool
+5. Switch to the DBeaver tool
 
-6. Choose a suitable table where the component should be added. 
-If no table is suitable go on with the instruction given in section :ref:`AddANewTableToTheDatabasedLibrary`.
+6. Choose a suitable table where the component should be added. If no table is suitable go on with the instruction given in section :ref:`AddANewTableToTheDatabasedLibrary`.
+
+.. warning :: This option must only be chosen after talking to your supervisor and must be announced in a pull request. 
+			  When adding a new table, the ``.DbLib`` file, which implements the connection from Altium to the database, must be changed and all users need to update the file in order to get access to the new table.
+			  In case of doubt put the component in an existing table. The current amount of tables should be sufficient to fulfill the requirements.
 
 .. _43_DBeaver_table:
 
@@ -352,25 +351,23 @@ If no table is suitable go on with the instruction given in section :ref:`AddANe
 
       DBeaver - Editor will open on the right side.
 
-8. Mostly, the "Properties" register will open at first. Change to the "Data" register. 
-An overview of all already added components will be shown there. (In this case, no component is still existing in the table.)
+8. Switch to the "Data" register. An overview of all already added components will be shown there.
 
 .. _45_DBeaver_Data:
 
    .. figure:: img/45_DBeaver_Data.png
       :width: 300px
 
-      DBeaver - change to tab "data".
+      DBeaver - change to tab "data". In this case, no component is still existing in the table.
 
-9. Press the ``add`` button, and a new row highlighted in green appears.
+9. Press the ``add`` button and a new row highlighted in green appears.
 
-10. By clicking on a respective cell, the cell can be filled with content.
+10. Double click on a cell to enter content.
 
 11. To switch between the view of all components and the comfortable editing mode for one component --> ``press tab``.
 
 12. If all necessary cells are filled with information, save the components with the ``save`` button (under the current table on the left side or by pressing ``Ctrl + S``).
-Some cells have a clause that they must be filled before saving is allowed (to help the user not to forget information, which is necessary).
-If something is forgotten, the following message will occur.
+Some cells are constraint to be ``NOT NULL``. These cells must be filled before saving is allowed. If those cells are not filled the following message will occur.
 
 .. _46_DBeaver_Data_Error:
 
@@ -389,7 +386,7 @@ The table cells, which are here described in detail is from "Capacitors - SMD" t
   :header-rows: 1
 
 
-13. If the component is saved in DBeaver, refresh the view in Altium via ``F5`` --> choose ``place`` --> ``part`` and select the library, where the component was added --> the new component is shown with all the inserted database information
+13. If the component is saved in DBeaver, refresh the view in Altium via ``F5`` --> choose ``place`` --> ``part`` and select the library where the component has been added --> the new component is shown with all the inserted database information
 
 .. _47_Altium_Parameter1:
 
@@ -416,25 +413,29 @@ The table cells, which are here described in detail is from "Capacitors - SMD" t
 
 15. If the added component is not visible in the library, refresh via ``F5`` again
 
-16. If a new table was added in the database, open the elsys_mariadb_lib.DbLib File (also included in the BitBucket folder)
+16. If a new table was added in the database, open the user.DbLib File (also included in the Bitbucket folder)
 
 .. _50_Altium_database_include:
 
    .. figure:: img/50_Altium_database_include.png
       :width: 300px
 
-      Altium - elsys_mariadb_lib.DbLib File.
+      Altium - user.DbLib File.
 
-17. At the end of the adding process of a component, don´t forget to commit and to push the new components for other users in BitBucket.
+17. At the end of the adding process of a component commit and to push the new components for other users in Bitbucket and open a pull request to the master branch.
 
 
 
 .. _AddANewTableToTheDatabasedLibrary:
 
-Add a new table to the databased library
-****************************************
+Addition of a new table
+=======================
 
-If a component is to be added for which no table exists yet, a new table must be created as follows:
+.. warning :: This option must only be chosen after talking to your supervisor and must be announced in a pull request. 
+			  When adding a new table, the ``.DbLib`` file, which implements the connection from Altium to the database, must be changed and all users need to update the file in order to get access to the new table.
+			  In case of doubt put the component in an existing table. The current amount of tables should be sufficient to fulfill the requirements.
+
+If the component you intend to add does not fit in the existing tables a new table must be created. In the following this procedure is described:
 
 1. Open the SQL Editor in DBeaver
 
@@ -445,14 +446,14 @@ If a component is to be added for which no table exists yet, a new table must be
 
       DBeaver - Open the SQL Editor in DBeaver.
 
-2. On the BitBucket system the sql File "create_tables.sql" is available
+2. On the Bitbucket system the sql File "create_tables.sql" is available
 
 .. _191_Create_File:
 
    .. figure:: img/191_Create_File.png
       :width: 300px
 
-      BitBucket folder - Open the sql File "create_tables.sql".
+      Bitbucket folder - Open the sql File "create_tables.sql".
 
 In this file you can find the syntax for creating a new table.
 
@@ -502,5 +503,5 @@ Therefore, open the "user.DbLib" file in Altium.
 
       Altium - Change database field.
 
-10. Save the new settings in the "user.DbLib" file and commit it to the BitBucket system for all the other users.
+10. Save the new settings in the "user.DbLib" file and commit it to the Bitbucket system for all the other users.
 

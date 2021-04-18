@@ -12,4 +12,4 @@ IP Cores
 	adc_LTC2311
 	incre_encoder
 	interlock
-	AXI_testIP/AXI_testIP
+	axi_testIP/axi_testIP

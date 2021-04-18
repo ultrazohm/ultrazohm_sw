@@ -13,6 +13,6 @@
 #include "xgpiops.h"
 #include "../uz_MioGpio_mediator/uz_MioGpioMapping.h"
 
-void uz_mio_gpio_init();
+void uz_frontplane_button_and_led_init();
 
 #endif

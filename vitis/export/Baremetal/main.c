@@ -74,7 +74,7 @@ int main(void) {
 
 	// Initialize the ARM control algorithm
 	Initialize_ARMController(&Global_Data);
-	uz_axiTestIP_testbench();
+
 	//Initialize the Soft-Oscilloscope ("JavaScope")
 	JavaScope_initalize(&Global_Data);
 

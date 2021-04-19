@@ -12,18 +12,36 @@ uz_axiTestIP_handle uz_axiTestIP_init(uz_axiTestIP_handle self) {
 
 void uz_axiTestIP_set_A_int32(uz_axiTestIP_handle self, int32_t A) {
 	uz_assert_not_NULL(self);
-	self->A = A;
-	uz_axi_write_int32(self->base_address + A_int32_Data_uz_axi_testIP, self->A);
+	self->A_int32_t = A;
+	uz_axi_write_int32(self->base_address + A_int32_Data_uz_axi_testIP, self->A_int32_t);
 }
 
 void uz_axiTestIP_set_B_int32(uz_axiTestIP_handle self, int32_t B) {
 	uz_assert_not_NULL(self);
-	self->B = B;
-	uz_axi_write_int32(self->base_address + B_int32_Data_uz_axi_testIP, self->B);
+	self->B_int32_t  = B;
+	uz_axi_write_int32(self->base_address + B_int32_Data_uz_axi_testIP, self->B_int32_t);
 }
 
 int32_t uz_axiTestIP_get_C_int32(uz_axiTestIP_handle self) {
 	uz_assert_not_NULL(self);
-	self->C = uz_axi_read_int32(self->base_address + C_int32_Data_uz_axi_testIP);
-	return (self->C);
+	self->C_int32_t  = uz_axi_read_int32(self->base_address + C_int32_Data_uz_axi_testIP);
+	return (self->C_int32_t);
+}
+
+void uz_axiTestIP_set_A_float(uz_axiTestIP_handle self, float A) {
+	uz_assert_not_NULL(self);
+	self->A_float = A;
+	uz_axi_write_int32(self->base_address + A_int32_Data_uz_axi_testIP, self->A_float);
+}
+
+void uz_axiTestIP_set_B_float(uz_axiTestIP_handle self, float B) {
+	uz_assert_not_NULL(self);
+	self->B_float  = B;
+	uz_axi_write_int32(self->base_address + B_int32_Data_uz_axi_testIP, self->B_float);
+}
+
+float uz_axiTestIP_get_C_float(uz_axiTestIP_handle self) {
+	uz_assert_not_NULL(self);
+	self->C_float  = uz_axi_read_int32(self->base_address + C_int32_Data_uz_axi_testIP);
+	return (self->C_float );
 }

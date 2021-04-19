@@ -1,0 +1,9 @@
+ --> uz_simscapeExample_src_HDL_Subsystem_pkg
+gmStateSpaceHDL_HalfWaveRectifier_HDL/Simscape_system/HDL Subsystem/HDL Algorithm/Mode Selection/State Mode Vector To Index/Subsystem2 --> uz_simscapeExample_src_Subsystem1
+gmStateSpaceHDL_HalfWaveRectifier_HDL/Simscape_system/HDL Subsystem/HDL Algorithm/Mode Selection/State Mode Vector To Index/Subsystem1 --> uz_simscapeExample_src_Subsystem1_block
+dot_product_1/nfp_mul_single --> uz_simscapeExample_src_nfp_mul_single
+dot_product_1 --> uz_simscapeExample_src_dot_product_1
+gmStateSpaceHDL_HalfWaveRectifier_HDL/Simscape_system/HDL Subsystem/nfp_relop_single --> uz_simscapeExample_src_nfp_relop_single
+gmStateSpaceHDL_HalfWaveRectifier_HDL/Simscape_system/HDL Subsystem/nfp_add_single --> uz_simscapeExample_src_nfp_add_single
+HDL Subsystem_tc --> uz_simscapeExample_src_HDL_Subsystem_tc
+gmStateSpaceHDL_HalfWaveRectifier_HDL/Simscape_system/HDL Subsystem --> uz_simscapeExample_src_HDL_Subsystem

@@ -195,7 +195,7 @@ the hardware port ``SI_VALUE`` is valid for the indicated channels.
 .. _table_adc_si_finish:
 .. csv-table:: ADC_MASTER_SI_FINISH
   :file: ./adc_v3/tables/adc_master_si_finish.csv
-  :widths: 7 25 3 10 30 305 10 5 10 40 40
+  :widths: 7 25 3 10 30 30
   :header-rows: 1
 
 Status indicator
@@ -227,8 +227,41 @@ is done in :ref:`table_adc_cr`.
   :widths: 10 10 5 10 30 30
   :header-rows: 1
 
+
+Design Parameters
+-----------------
+
+.. _table_adc_generics:
+.. csv-table:: Generics
+  :file: ./adc_v3/tables/generics.csv
+  :widths: 10 30 5 5 30
+  :header-rows: 1
+
 I/O Signals
 -----------
+
+Clock and Reset
+***************
+
+The IP core is globally clocked with the signal ``s00_axi_aclk``. The
+global reset signal apart from the software reset is
+``s00_axi_aresetn``. The reset is synchronous and low activ. Keep this
+signal high for normal operation.
+
+AXI Signals
+***********
+
+All signals with the prefix ``s00_axi`` belong to the AXI4 Lite
+interface. See the Xilinx AXI signal description for details.
+
+Other I/O Signals
+*****************
+
+.. _table_adc_io_interface:
+.. csv-table:: I/O Interface
+  :file: ./adc_v3/tables/io_signals.csv
+  :widths: 10 5 40 5 30
+  :header-rows: 1
 
 Configuration procedure
 -----------------------

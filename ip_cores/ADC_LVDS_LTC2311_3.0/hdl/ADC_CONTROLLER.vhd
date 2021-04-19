@@ -68,7 +68,6 @@ entity ADC_CONTROLLER is
         -- Control Ports
         SET_CONVERSION  : in std_logic;
         SET_OFFSET      : in std_logic;
-        READ_DONE       : out std_logic;
         SI_VALID        : out std_logic;
         RAW_VALID       : out std_logic;
         BUSY            : out std_logic;
@@ -190,6 +189,15 @@ begin
                 
                 S_SPI_ENABLE     <= '0';
                 S_SPI_BUSY_PIPE  <= (others => '0');
+                
+                RAW_VALUE        <= (others => '0');
+                SI_VALUE         <= (others => '0');
+                SI_VALID         <= '0';
+                RAW_VALID        <= '0';
+                SCLK             <= '0';
+                SS_OUT_N         <= '1';
+                BUSY             <= '0';
+                
             else
                 curstate <= nxtstate;
                 case nxtstate is
@@ -213,7 +221,6 @@ begin
                                         <= VALUE_OFF_CONV(CONVERSION_WIDTH - 1 downto 0);
                                     end if;
                                 end loop set_conv;
-                                READ_DONE <= '1';
                             
                             -- set offset value for the selected channels
                             elsif (SET_OFFSET = '1') then
@@ -223,10 +230,6 @@ begin
                                         <= VALUE_OFF_CONV(OFFSET_WIDTH - 1 downto 0);
                                     end if;
                                 end loop set_off;
-                                READ_DONE <= '1';
-                                
-                            else
-                                READ_DONE <= '0';
                             end if;
                         end case;
                     

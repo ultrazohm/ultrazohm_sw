@@ -1,0 +1,9 @@
+Port Name,Direction,Port Definition,Reset State,Description
+RAW_VALUE,O,std_logic_vector(DATA_WIDTH * CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0),'0',Raw value outputed by the ADC
+SI_VALUE,O,std_logic_vector((SPI_MASTER * CHANNELS_PER_MASTER * (RES_MSB - RES_LSB + 1) ) - 1  downto 0),'0',Converted Value = (RAW_VALUE + OFFSET) * CONVERSION
+RAW_VALID,O,std_logic_vector(SPI_MASTER - 1 downto 0),'0',The value on port RAW_VALUE is valid. High activ
+SI_VALID,O,std_logic_vector(SPI_MASTER - 1 downto 0),'0',The value on port SI_VALUE is valid. High activ
+TRIGGER_CNV,I,std_logic_vector(SPI_MASTER - 1 downto 0),--,Hardware trigger input to trigger a conversion
+SCLK,O,std_logic_vector(SPI_MASTER - 1 downto 0),'0',SCLK signal for each individual SPI master
+SS_N,O,std_logic_vector(SPI_MASTER - 1 downto 0),'0',SS_N signal for each individual SPI master
+MISO,I,std_logic_vector(CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0),--,Data input for each individual ADC

@@ -1,0 +1,8 @@
+Parameter Name,Allowable Values,Default Values,VHDL Type,Description
+DATA_WIDTH,1 - 27,16,``natural``,Data output width of the connected SPI slave (i.e. ADC)
+CHANNELS_PER_MASTER,1 - 32,4,``natural``,Number of SPI slaves that are controlled synchronously by one SPI master
+SPI_MASTER,1 - 32,2,``natural``,Number of independent SPI masters
+OFFSET_WIDTH,1 - ``DATA_WIDTH``,16,``natural``,Bit width of the offset value which is added to the raw value
+CONVERSION_WIDTH,1 - 18,18,``natural``,Bit width of the conversion value the sum of the offset and the raw value is multiplied with
+RES_LSB,0 - ``OFFSET_WIDTH`` + ``CONVERSION_WIDTH`` - 1,6,``natural``,LSB of the result vector of the DSP48 block which is connected to the IP core ``SI_VALUE`` output
+RES_LSB,0 - ``OFFSET_WIDTH`` + ``CONVERSION_WIDTH`` - 1,23,``natural``,MSB of the result vector of the DSP48 block which is connected to the IP core ``SI_VALUE`` output

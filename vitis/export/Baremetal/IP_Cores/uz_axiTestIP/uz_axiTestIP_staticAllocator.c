@@ -1,4 +1,4 @@
-#define UZ_AXITESTIP_USE_TESTBENCH 1
+#define UZ_AXITESTIP_USE_TESTBENCH 0
 #if UZ_AXITESTIP_USE_TESTBENCH
 
 #include "uz_axiTestIP_staticAllocator.h"

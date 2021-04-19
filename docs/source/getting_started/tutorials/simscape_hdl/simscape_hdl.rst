@@ -54,60 +54,78 @@ Software
 
 1. Open Vitis
 2. Generate Workspace 
-3. The software driver for the IP-core is located in ``Vitis->Baremetal->src/IP_Cores/SimScapeExample/uz_simExpl.h``
-4. User code for the model is located at ``Vitis->Baremetal->src/IP_Cores/SimScapeExample/uz_simExpl_testbench.h``
+3. The software driver for the IP-core is located in ``Vitis/export/Baremetal/IP_Cores/uz_simscapeExample/``
+4. Add the following code to ``main.c`` (of R5) before ``JavaScope_initalize`` is called, e.g., directly before ``uz_SystemTime_init``
+
+.. code-block:: c
+   :lineno-start: 42
+   :emphasize-lines: 1,2,15
+   :caption: Snippet of ``main.c`` with initialization of the simscape IP-Core
+
+   #include "IP_Cores/uz_simscapeExample/uz_simscapeExample_staticAllocator.h"
+   uz_simscapeExample_handle sim_halfWaveRectifier;
+
+   int main(void) {
+       int status = UZ_SUCCESS;
+       Xil_AssertSetCallback((Xil_AssertCallback) uz_assertCallback);
+       uz_printf("\r\n\r\n");
+       uz_printf("Welcome to the UltraZohm\r\n");
+       uz_printf("----------------------------------------\r\n");
+       // Initialize the global "Global_Data" structure -> the values can be overwritten afterwards from the Java-GUI -> this must     be    he first INIT-function, because it is required subsequently!
+       InitializeDataStructure(&Global_Data);
+       Initialize_AXI_GPIO(); 	// Initialize the GPIOs which are connected over FPGA pins
+       uz_frontplane_button_and_led_init();
+       ADC_WriteConversionFactor(10); 	// Conversion Factor of 10, because the full input range of the ADC is +-5V = 10V range
+       sim_halfWaveRectifier = uz_simscapeExample_staticAllocator();
+       // Initialize Park-Transformation 123 to dq
+       DQTransformation_Initialize(&Global_Data);
+
+
+
 5. Add the following code to ``isr.c``
+
 
 Top of file include:
 
 .. code-block:: c
 
-   #include "IP_Cores/SimScapeExample/uz_simExpl_testbench.h"
+    #include "../IP_Cores/uz_simscapeExample/uz_simscapeExample.h"
+    extern uz_simscapeExample_handle sim_halfWaveRectifier;
 
 In function ISR_Control before ``JavaScope_update()`` function call
 
 .. code-block:: c
 
-   uz_simExpl_stepTestbench();
+  uz_simscapeExample_step_model_once(sim_halfWaveRectifier);
 
-6. Add the following code to ``main.h``
 
-.. code-block:: c
-
-   #include "IP_Cores/SimScapeExample/uz_simExpl_testbench.h"
-
-7. Add the following code to ``main.c`` before ``JavaScope_initalize`` is called, e.g., directly after ``uz_SystemTime_init``
-
-.. code-block:: c
-
-   uz_simExpl_testbench_init();
-
-8. Add the following code to ``javascope.c``
+6. Add the following code to ``javascope.c``
 
 Top of file include & declaration:
 
 .. code-block:: c
 
-   #include "IP_Cores/SimScapeExample/uz_simExpl_testbench.h"
-   extern uz_simExpl_handle simscapeHDLInstance;
+  #include "../IP_Cores/uz_simscapeExample/uz_simscapeExample_private.h"
+  extern uz_simscapeExample_handle sim_halfWaveRectifier;
 
 Assign the GUI variables ``Sawtooth1``, ``SineWave1``, and ``SineWave2`` to the output variables of the IP-Core:
 
 .. code-block:: c
 
-   js_ptr_arr[JSO_Sawtooth1]   = &simscapeHDLInstance->IR;
-   js_ptr_arr[JSO_SineWave1]   = &simscapeHDLInstance->Iout;
-   js_ptr_arr[JSO_SineWave2]   = &simscapeHDLInstance->Vdiode;
+    js_ptr_arr[JSO_Sawtooth1] = &sim_halfWaveRectifier->Vin;
+    js_ptr_arr[JSO_SineWave1] = &sim_halfWaveRectifier->IR;
+    js_ptr_arr[JSO_SineWave2] = &sim_halfWaveRectifier->Vdiode;
 
+7. Set ``#define UZ_SIMSCAPEEXAMPLE_USE_IP 1`` in ``IP_Cores/uz_simscapeExample/uz_simscapeExample_staticAllocator.h``
+8. Build the project
 9. Power on the UltraZohm, flash the program
-10. Add ``SimscapeInput`` to expressions of R5
-11. Adjust the input signal for the IP-Core by changing the ``amplitude`` and ``frequency`` of the sine wave
-12. Open Javascope, the output signals can be watched and logged to file
+10. Add ``hardware_multiplication`` to expressions of R5
+11. Open Javascope, the output signals can be watched and logged to file
 
 Video
 ^^^^^
 
-.. youtube:: r4CqsMyW1vo
+.. youtube:: BoiBu5_XFnY
 
 More information
 ----------------

@@ -1,4 +1,4 @@
-#define UZ_AXITESTIP_USE_TESTBENCH 0
+#define UZ_AXITESTIP_USE_TESTBENCH 1
 #if UZ_AXITESTIP_USE_TESTBENCH
 
 #include "uz_axiTestIP_staticAllocator.h"
@@ -27,6 +27,19 @@ void uz_axiTestIP_testbench() {
 	} else {
 		uz_printf("Hardware and Software multiplication is not equal\n Hardware: \n Software \n", C_readback, C);
 	}
+
+	float Af=10.5;
+	float Bf=9.5;
+	float Cf=Af*Bf;
+	uz_axiTestIP_set_A_float(hardware_multiplication, Af);
+	uz_axiTestIP_set_B_float(hardware_multiplication, Bf);
+	int Cf_readback = uz_axiTestIP_get_C_float(hardware_multiplication);
+	if (Cf == Cf_readback) {
+		uz_printf("Hardware and software multiplication are the same");
+	} else {
+		uz_printf("Hardware and Software multiplication is not equal");
+	}
+
 	while (1) {
 		// infinite loop
 	}

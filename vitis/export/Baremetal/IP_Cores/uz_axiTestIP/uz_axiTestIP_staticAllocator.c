@@ -21,7 +21,7 @@ void uz_axiTestIP_testbench() {
 	uz_axiTestIP_handle hardware_multiplication = uz_axiTestIP_staticAllocator();
 	uz_axiTestIP_set_A_int32(hardware_multiplication, A);
 	uz_axiTestIP_set_B_int32(hardware_multiplication, B);
-	int C_readback = uz_axiTestIP_get_C_int32(hardware_multiplication);
+	int32_t C_readback = uz_axiTestIP_get_C_int32(hardware_multiplication);
 	if (C == C_readback) {
 		uz_printf("%i times %i = %i\n", A, B, C_readback);
 	} else {
@@ -33,7 +33,7 @@ void uz_axiTestIP_testbench() {
 	float Cf=Af*Bf;
 	uz_axiTestIP_set_A_float(hardware_multiplication, Af);
 	uz_axiTestIP_set_B_float(hardware_multiplication, Bf);
-	int Cf_readback = uz_axiTestIP_get_C_float(hardware_multiplication);
+	float Cf_readback = uz_axiTestIP_get_C_float(hardware_multiplication);
 	if (Cf == Cf_readback) {
 		uz_printf("Hardware and software multiplication are the same");
 	} else {

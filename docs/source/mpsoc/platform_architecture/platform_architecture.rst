@@ -45,6 +45,18 @@ IP-Core drivers are a special and highly relevant case since the flexible usage 
 Refer to :ref:`software_development_guidlines` for an example implementation.
 
 
+.. mermaid::
+
+  sequenceDiagram
+  framework->>+driver: C=driver_multiply(int A, int B)
+  driver->>+driver_hw: write_portA(uint32_t base_address, int value)
+  driver->>+driver_hw: write_portB(uint32_t base_address, int value)
+  driver_hw->>+IP_Core: uz_axi_write_int32(uint32_t address, int value)
+  driver_hw->>+IP_Core: uz_axi_write_int32(uint32_t address, int value)
+  driver->>+driver_hw: read_portC(uint32_t base_address, int value)
+  driver_hw->>+IP_Core: uz_axi_read_int32(uint32_t address, int value)
+  driver-->>+framework: return (C)
+
 
 APU
 ---

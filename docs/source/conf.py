@@ -62,17 +62,10 @@ exclude_patterns = [
 #
 html_theme = 'sphinx_rtd_theme'
 
-# The RTD theme is included in custom.css
-html_style = 'css/custom.css'
-
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
-
-html_css_files = [
-    '_static/css/custom.css',
-]
+# html_static_path = ['_static']
 
 html_theme_options = {
     'prev_next_buttons_location': 'both',
@@ -86,6 +79,7 @@ html_context = {
     "conf_py_path": "/docs/source/", # Path in the checkout to the docs root
 }
 
+html_favicon = 'favicon.png'
 
 # -- RST settings ------------------------------------------------------------
 

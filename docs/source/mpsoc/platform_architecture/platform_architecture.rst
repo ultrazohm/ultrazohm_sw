@@ -9,7 +9,7 @@ The MPSoC features the following processing blocks (GPU omitted):
 
 - Programmable Logic (PL): FPGA with IP-Cores
 - Application processing unit (APU): four ARM A53 processors
-- Real time processing unit (RPU): two ARM R5 processors
+- Real-time processing unit (RPU): two ARM R5 processors
 
 .. _platform_processors_overview:
 
@@ -23,9 +23,9 @@ The MPSoC features the following processing blocks (GPU omitted):
 RPU
 ---
 
-The RPU is in split-mode and only one R5 core is used.
-The user can either use only one R5 core, use the second R5 core for user-applications or activate lock-step operation.
-One unused core in the framework ensures that users can use lock-step mode for safety critical applications without changes to the base firmware.
+The RPU is in split mode, and only one R5 core is used.
+The user can either use only one R5 core, use the second R5 core for user applications or activate lock-step operation.
+One unused core in the framework ensures that users can use lock-step mode for safety-critical applications without changes to the base firmware.
 
 - See :issue:`67` for an example on how to use the second R5 core for user-code
 
@@ -58,7 +58,7 @@ Multiple Processors (Roadmap)
 There are two ways to use multiple processors on the Zynq Ultrascale:
 
 - Use Linux on all cores (*symmetrical* multiprocessing)
-- Use a Hypervisor to partion the processing units (*supervised Asymmetric Multi Processing (AMP)*)
+- Use a Hypervisor to partition the processing units (*supervised Asymmetric Multi-Processing (AMP)*)
 
 Note that *unsupervised AMP*, e.g., using one A53 core with FreeRTOS and one A53 core with Baremetal or using multiple A53 cores with FreeRTOS/Baremetal without a Hypervisor, is not supported for the UltraScale [#ug1228]_ (p. 19).
 XEN Hypervisor is recommended by Xilinx [#ug1228]_ (p. 67).

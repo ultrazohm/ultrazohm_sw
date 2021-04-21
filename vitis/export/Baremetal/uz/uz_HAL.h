@@ -72,5 +72,6 @@ static inline int32_t uz_convert_float_to_sfixed(float data, int number_of_fract
 	return ((int32_t) ldexpf(data, number_of_fractional_bits));
 }
 
+
 #endif // Endif of guard
 

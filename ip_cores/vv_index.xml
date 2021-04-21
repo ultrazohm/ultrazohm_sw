@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Index Version="1" Minor="0">
-	<Repository value="/home/ts/Dokumente/ultrazohm_testbench/ultrazohm_sw/ip_cores">
+	<Repository value="/home/ts/Dokumente/ultrazohm_testbench/ultrazohm_test/ultrazohm_sw/ip_cores">
 	</Repository>
 	<IP>
 		<VLNV value="mwn.de:ip:mux_axi_ip:1.1">
@@ -409,17 +409,17 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="user.org:ip:AXI_testI_ip:1.0">
+		<VLNV value="user.org:ip:uz_axi_testIP:1.0">
 		</VLNV>
-		<DisplayName value="AXI_testI_ip">
+		<DisplayName value="uz_axi_testIP">
 		</DisplayName>
 		<Description value="HDL Coder generated IP">
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4.jpg">
 		</ProductGuide>
-		<CoreRevision value="2104181318">
+		<CoreRevision value="2104181321">
 		</CoreRevision>
-		<ComponentPath value="AXI_testIP/uz_axi_testIP/ipcore/AXI_testI_ip_v1_0/component.xml">
+		<ComponentPath value="AXI_testIP/uz_axi_testIP/ipcore/uz_axi_testIP_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="aartix7">
@@ -527,17 +527,17 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="user.org:ip:uz_axi_testIP:1.0">
+		<VLNV value="user.org:ip:uz_simscapeExample:1.0">
 		</VLNV>
-		<DisplayName value="uz_axi_testIP">
+		<DisplayName value="uz_simscapeExample">
 		</DisplayName>
 		<Description value="HDL Coder generated IP">
 		</Description>
-		<ProductGuide value="doc/doc_arch_axi4.jpg">
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2104181321">
+		<CoreRevision value="2104191133">
 		</CoreRevision>
-		<ComponentPath value="AXI_testIP/uz_axi_testIP/ipcore/uz_axi_testIP_v1_0/component.xml">
+		<ComponentPath value="simscapeHDL_example_v1_0/ipcore/uz_simscapeExample_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="aartix7">

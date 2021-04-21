@@ -36,7 +36,7 @@ The API of ``uz_codegen`` has two functions:
         |   └── Baremetal/
         |        └── Codegen/
         |            ├── uz_codegen.c
-        |            ├── uz_codegen.c
+        |            ├── uz_codegen.h
         |            └── uz_codegen0_ert_rtw/
         └── SimulinkCodegen
             ├── uz_generateSimulinkModel.m

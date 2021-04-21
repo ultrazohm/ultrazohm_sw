@@ -84,6 +84,56 @@ Common functions
 Use the following examples for reference on how to write the docs.
 Basics:
 
+Structure
+^^^^^^^^^
+
+The structure of ``.rst`` files is based on indentation with spaces.
+These indentations are a vital part of .rst and do **not** solely exist for visual alignment. 
+
+.. note:: Spaces are recommended for indentation, but tabs may also be used. For tabs, refer to :ref:`notepad`.
+
+**Example**
+
+.. code-block:: rst
+    
+    This is a top-level paragraph.
+
+        This paragraph belongs to a first-level block quote. *Indentation is 4 spaces form the previous.*
+
+            This paragraph belongs to a second-level block quote. *Indentation is 4 spaces form the first-level, or 8 form the top-level.*
+
+    Another top-level paragraph.
+
+        This paragraph belongs to a second-level block quote.
+
+    This paragraph belongs to a first-level block quote.  The
+    second-level block quote above is inside this first-level
+    block quote.
+    
+    * Level 1
+    
+        * Level 2
+   
+**This translates to the following:**
+
+This is a top-level paragraph.
+
+    This paragraph belongs to a first-level block quote. *Indentation is 4 spaces form the previous.* 
+
+        This paragraph belongs to a second-level block quote. *Indentation is 4 spaces form the first-level, or 8 form the top-level.*
+
+Another top-level paragraph.
+
+        This paragraph belongs to a second-level block quote.
+
+    This paragraph belongs to a first-level block quote.  The
+    second-level block quote above is inside this first-level
+    block quote.
+    
+* Level 1
+    
+    * Level 2
+   
 Code block
 ^^^^^^^^^^
 
@@ -181,5 +231,40 @@ All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
  Enable autobuild and reload after changes for local development with ``make livehtml``
  
 `sphinx-issues <https://github.com/sloria/sphinx-issues>`_
- Link to issues and pull requests with ``:issue:`51``` and ``:pr:`5```, e.g., issue :issue:`5`
+ Link to issues and pull requests with ``:issue:`51``` and ``:pr:`5```, e.g., issue :issue:`5``
  
+Known Issues
+============
+
+.. _notepad:
+
+Compatibility issue with Notepad++ and .rst files 
+*************************************************
+
+
+* If u edit ``.rst`` files in the UltraZohm documentation an issue whilst using the tabulator key in Notepad++ can occur.
+
+  - If you align the command with the tabulator key in Notepad++, everything looks as its suppposed to.
+
+  .. image:: ./img/Notepad_tabulator.png
+
+  - However, if u open the saved file with the tabulator alignment in the normal windows editor, the following is visible.
+
+  .. image:: ./img/Editor_tabulator.png
+
+  - This wrong alignment via Notepad++ leads to the following error whilst executing **make html**. You can see the the missalignment highlighted in green.
+
+  .. image:: ./img/CMD_tabulator.png
+  
+  
+
+* To fix this issue you can do the following:
+
+  1. In Notepad++ go to **Settings** → **Settings** → **Language**
+  2. On the right sight, check the box **Replace by space** (Durch Leerzeichen ersetzen) and set the **Tab size** to i.e. 4. 
+     4 spaces is the standard indentation size for different levels. 
+
+  .. image:: ./img/Notepad_fix.png
+  
+Next issue
+**********

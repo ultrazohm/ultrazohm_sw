@@ -28,6 +28,7 @@
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 
+
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
 
@@ -46,12 +47,9 @@ XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible 
 //Initialize the Timer structure
 XTmrCtr Timer_Interrupt;
 
-float sin1amp=100.0;
-
+float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
-
-
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -97,6 +95,7 @@ void ISR_Control(void *data)
 	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
+
 
 	// Update JavaScope
 	JavaScope_update(&Global_Data);

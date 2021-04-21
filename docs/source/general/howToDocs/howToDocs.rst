@@ -87,8 +87,8 @@ Basics:
 Structure
 ^^^^^^^^^
 
-The structure of .rst is done via indentation with spaces. These indentations are a vital part of .rst and do **not** solely exist for visual alignment. 
-
+The structure of ``.rst`` files is based on indentation with spaces.
+These indentations are a vital part of .rst and do **not** solely exist for visual alignment. 
 
 .. note:: Spaces are recommended for indentation, but tabs may also be used. For tabs, refer to :ref:`notepad`.
 
@@ -239,7 +239,7 @@ Known Issues
 .. _notepad:
 
 Compatibility issue with Notepad++ and .rst files 
-***************************************************
+*************************************************
 
 
 * If u edit ``.rst`` files in the UltraZohm documentation an issue whilst using the tabulator key in Notepad++ can occur.

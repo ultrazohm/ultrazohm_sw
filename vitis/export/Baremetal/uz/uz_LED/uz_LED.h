@@ -7,12 +7,12 @@
 #include "../uz_GPIO/uz_gpio.h"
 
 typedef struct uz_Statusled_{
-	_Bool isReady;
+	_Bool is_ready;
 	uz_gpio *hw;
-	void (*turnOn) (struct uz_Statusled_ *self);
-	void (*turnOff) (struct uz_Statusled_ *self);
-}uz_StatusLed;
+	void (*turn_on) (struct uz_Statusled_ *self);
+	void (*turn_off) (struct uz_Statusled_ *self);
+}uz_statusLED;
 
-void uz_led_init(uz_StatusLed *self, uz_gpio *hw);
+void uz_led_init(uz_statusLED *self, uz_gpio *hw);
 
 #endif

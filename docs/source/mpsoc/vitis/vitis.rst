@@ -6,12 +6,14 @@ Vitis
 	:maxdepth: 2
 	:caption: Vitis
 
-	create_project
-	export
-	include_math_lib
+	software_development_guidlines/software_development_guidlines
+	hardwareAbstractionLayer/hardwareAbstractionLayer
+	assertions
+	SystemTime/SystemTime
 	interrupts
 	gcc_optimization
-	hardwareAbstractionLayer/hardwareAbstractionLayer
+	create_project
+	include_math_lib
 	known_issues
-	ErrorHandling
-	SystemTime/SystemTime
+
+

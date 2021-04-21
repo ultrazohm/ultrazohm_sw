@@ -1,65 +1,62 @@
 #include "uz_gpio.h"
 
-static void uz_gpio_SetDirection(struct uz_gpio_ *self, uint32_t Direction);
-static uint32_t uz_gpio_GetDirection(struct uz_gpio_ *self);
-static void uz_gpio_SetEnableOutput(struct uz_gpio_ *self, uint32_t EnableOutput);
-static uint32_t uz_gpio_GetEnableOutput(struct uz_gpio_ *self);
-static void uz_gpio_WritePin(struct uz_gpio_ *self, uint32_t value);
-static uint32_t uz_gpio_ReadPin(struct uz_gpio_ *self);
+static void uz_gpio_set_direction(struct uz_gpio_ *self, uint32_t Direction);
+static uint32_t uz_gpio_get_direction(struct uz_gpio_ *self);
+static void uz_gpio_set_enable_output(struct uz_gpio_ *self, uint32_t EnableOutput);
+static uint32_t uz_gpio_get_enable_output(struct uz_gpio_ *self);
+static void uz_gpio_write_pin(struct uz_gpio_ *self, uint32_t value);
+static uint32_t uz_gpio_read_pin(struct uz_gpio_ *self);
 
-void uz_gpio_init(uz_gpio *self, XGpioPs *Xgpio_instance, uint32_t PinNumber, uint32_t Direction){
-	uz_assertNotNull(self);
-	uz_assertNotNull(Xgpio_instance);
+void uz_gpio_init(uz_gpio *self, XGpioPs *Xgpio_instance, uint32_t pin_number, uint32_t direction) {
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(Xgpio_instance);
 	uz_assert(Xgpio_instance->IsReady);
-
-	self->hw=Xgpio_instance;
-	self->PinNumber=PinNumber;
-	self->Direction=Direction;
-	self->isReady=true;
-
-	self->SetDirection=&uz_gpio_SetDirection;
-	self->GetDirection=&uz_gpio_GetDirection;
-	self->SetEnableOutput=&uz_gpio_SetEnableOutput;
-	self->GetEnableOutput=&uz_gpio_GetEnableOutput;
-	self->WritePin=&uz_gpio_WritePin;
-	self->ReadPin=&uz_gpio_ReadPin;
-	self->SetDirection(self,self->Direction);
+	self->hw = Xgpio_instance;
+	self->pin_number = pin_number;
+	self->direction = direction;
+	self->is_ready = true;
+	self->set_direction = &uz_gpio_set_direction;
+	self->get_direction = &uz_gpio_get_direction;
+	self->set_enable_output = &uz_gpio_set_enable_output;
+	self->get_enable_output = &uz_gpio_get_enable_output;
+	self->write_pin = &uz_gpio_write_pin;
+	self->read_pin = &uz_gpio_read_pin;
+	self->set_direction(self, self->direction);
 }
 
-
-static void uz_gpio_SetDirection(struct uz_gpio_ *self, uint32_t Direction){
-	uz_assertNotNull(self);
-	uz_assert(self->isReady);
-	XGpioPs_SetDirectionPin(self->hw, (uint32_t)self->PinNumber, (uint32_t)self->Direction);
+static void uz_gpio_set_direction(struct uz_gpio_ *self, uint32_t Direction) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	XGpioPs_SetDirectionPin(self->hw, (uint32_t) self->pin_number, (uint32_t) self->direction);
 }
 
-static uint32_t uz_gpio_GetDirection(struct uz_gpio_ *self){
-	uz_assertNotNull(self);
-	uz_assert(self->isReady);
-	return ((uint32_t)XGpioPs_GetDirectionPin(self->hw, (uint32_t)self->PinNumber));
+static uint32_t uz_gpio_get_direction(struct uz_gpio_ *self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return ((uint32_t) XGpioPs_GetDirectionPin(self->hw, (uint32_t) self->pin_number));
 }
 
-static void uz_gpio_SetEnableOutput(struct uz_gpio_ *self, uint32_t EnableOutput){
-	uz_assertNotNull(self);
-	uz_assert(self->isReady);
-	XGpioPs_SetOutputEnablePin(self->hw, (uint32_t)self->PinNumber, (uint32_t)EnableOutput);
+static void uz_gpio_set_enable_output(struct uz_gpio_ *self, uint32_t EnableOutput) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	XGpioPs_SetOutputEnablePin(self->hw, (uint32_t) self->pin_number, (uint32_t) EnableOutput);
 }
 
-static uint32_t uz_gpio_GetEnableOutput(struct uz_gpio_ *self){
-	uz_assertNotNull(self);
-	uz_assert(self->isReady);
-	return ((uint32_t)XGpioPs_GetOutputEnablePin(self->hw, (uint32_t)self->PinNumber));
+static uint32_t uz_gpio_get_enable_output(struct uz_gpio_ *self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return ((uint32_t) XGpioPs_GetOutputEnablePin(self->hw, (uint32_t) self->pin_number));
 }
 
-static void uz_gpio_WritePin(struct uz_gpio_ *self, uint32_t value){
-	uz_assertNotNull(self);
-	uz_assert(self->isReady);
-	uz_assert(self->GetEnableOutput);
-	XGpioPs_WritePin(self->hw, (uint32_t)self->PinNumber, (uint32_t)value);
+static void uz_gpio_write_pin(struct uz_gpio_ *self, uint32_t value) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(self->get_enable_output);
+	XGpioPs_WritePin(self->hw, (uint32_t) self->pin_number, (uint32_t) value);
 }
 
-static uint32_t uz_gpio_ReadPin(struct uz_gpio_ *self){
-	uz_assertNotNull(self);
-	uz_assert(self->isReady);
-	return (XGpioPs_ReadPin(self->hw, (uint32_t)self->PinNumber));
+static uint32_t uz_gpio_read_pin(struct uz_gpio_ *self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return (XGpioPs_ReadPin(self->hw, (uint32_t) self->pin_number));
 }

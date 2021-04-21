@@ -1,7 +1,7 @@
 #define UZ_AXITESTIP_USE_TESTBENCH 0
 #if UZ_AXITESTIP_USE_TESTBENCH
 
-#include "uz_axiTestIP_staticAllocator.h"
+#include "uz_axiTestIP.h"
 #include "uz_axiTestIP_private.h"
 #include "uz_axiTestIP_hwAddresses.h"
 #include "xparameters.h"

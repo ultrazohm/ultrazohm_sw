@@ -86,6 +86,7 @@ html_context = {
     "conf_py_path": "/docs/source/", # Path in the checkout to the docs root
 }
 
+html_favicon = 'favicon.png'
 
 # -- RST settings ------------------------------------------------------------
 

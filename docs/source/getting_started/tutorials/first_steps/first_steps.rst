@@ -5,7 +5,9 @@ First steps with the UltraZohm
 Aim of the tutorial
 *******************
 
-In this tutorial, the :ref:`GUI` (Javascope) is used to visualize the life check variable of the R5 of the UltraZohm. Furthermore, a sine wave calculation is added to the interrupt service routine (isr.c) of the R5. The Javascope is used to visualize the sine wave.
+In this tutorial, the :ref:`GUI` (Javascope) is used to visualize the life check variable of the R5 of the UltraZohm.
+Furthermore, a sine wave calculation is added to the interrupt service routine (isr.c) of the R5.
+The Javascope is used to visualize the sine wave.
 
 After this tutorial, you can:
 
@@ -52,11 +54,13 @@ Change the variables around, so that the life check will be written to ``js_ptr_
     js_ptr_arr[JSO_SineWave2]   = &isr_period_us;
 
 Program the UltraZohm and start the debug session (debug-icon).
-Start all PS-cores and add ``lifecheck`` to the expressions. Click on refresh (green rectangle in the picture below) to refresh the current values of the expressions. 
+Start all PS-cores and add ``lifecheck`` to the expressions.
+Click on refresh (green rectangle in the picture below) to refresh the current values of the expressions. 
 
 .. image:: ./img/1_after_build.png
 
-Start the Javscope, connect it to the UltraZohm, click on ``Run/Stop`` to start the Javascope, and choose ``Sawtooth1`` for channel 1. You might have to change the scale (``setScale CH1``).
+Start the Javscope, connect it to the UltraZohm, click on ``Run/Stop`` to start the Javascope, and choose ``Sawtooth1`` for channel 1.
+You might have to change the scale (``setScale CH1``).
 
 .. image:: ./img/3_javascope_lifecheck_sawtooth.png
 
@@ -64,7 +68,8 @@ Start the Javscope, connect it to the UltraZohm, click on ``Run/Stop`` to start 
 Visualize sine wave
 *******************
 
-The next step is to add a sine wave and display it on the Javascope. In the ``javascope.c`` of the R5 the struct ``js_ptr_arr[JSO_SineWave1]`` already exists, which we can use.  
+The next step is to add a sine wave and display it on the Javascope.
+In the ``javascope.c`` of the R5 the struct ``js_ptr_arr[JSO_SineWave1]`` already exists, which we can use.  
 
 Declare a new variable ``test_js_sinewave1``.
 
@@ -82,9 +87,9 @@ Add the following code to the ``JavaScope_update()`` function in the ``javascope
 
 .. code-block:: c
 
-   test_js_sinewave1 = 10.0 * sin(2 * M_PI * uz_SystemTime_GetUptimeInMs()*0.001);
+   test_js_sinewave1 = 10.0 * sin(2.0 * M_PI * uz_SystemTime_GetUptimeInMs()*0.001);
    
-Build the code. If there are problems with the math.h, refer to :ref:`math_h_prob`.
+Build the code.
 Next, start a debug session, start the UltraZohm and the Javascope. You should see the SineWave if the channel ``SineWave1`` is selected.
 
 .. image:: ./img/7_sine_wave.png

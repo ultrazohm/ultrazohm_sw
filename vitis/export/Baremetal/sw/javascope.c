@@ -17,6 +17,7 @@
 #include "../defines.h"
 #include "../include/javascope.h"
 
+
 float myIQfactor[15] = {1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.0, 1024.0, 2048.0, 4096.0, 8192.0, 16384.0};
 
 // IPI Messaging System R5 <-> A53
@@ -48,6 +49,7 @@ union SlowData js_slowDataArray[JSSD_ENDMARKER];
 static float lifecheck;
 static float ISRExecutionTime;
 static float isr_period_us;
+
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -100,7 +102,6 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_Sawtooth1] 	= &ISRExecutionTime;
 	js_ptr_arr[JSO_SineWave1]   = &lifecheck;
 	js_ptr_arr[JSO_SineWave2]   = &isr_period_us;
-
 	return Status;
 }
 

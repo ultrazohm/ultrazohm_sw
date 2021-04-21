@@ -80,5 +80,4 @@ void ADC_Set_Offset(void);
 void ADC_Clear_Offset(void);
 void InitializeDataStructure(DS_Data* data);
 
-
 #endif /* main_H_ */

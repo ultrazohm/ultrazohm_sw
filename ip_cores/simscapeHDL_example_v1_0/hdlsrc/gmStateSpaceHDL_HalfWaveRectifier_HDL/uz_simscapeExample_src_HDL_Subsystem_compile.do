@@ -1,0 +1,11 @@
+vlib work
+vmap -c
+vcom  uz_simscapeExample_src_HDL_Subsystem_pkg.vhd
+vcom  uz_simscapeExample_src_Subsystem1.vhd
+vcom  uz_simscapeExample_src_Subsystem1_block.vhd
+vcom  uz_simscapeExample_src_nfp_mul_single.vhd
+vcom  uz_simscapeExample_src_dot_product_1.vhd
+vcom  uz_simscapeExample_src_nfp_relop_single.vhd
+vcom  uz_simscapeExample_src_nfp_add_single.vhd
+vcom  uz_simscapeExample_src_HDL_Subsystem_tc.vhd
+vcom  uz_simscapeExample_src_HDL_Subsystem.vhd

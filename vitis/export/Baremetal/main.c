@@ -78,6 +78,8 @@ int main(void) {
 	//Initialize the Soft-Oscilloscope ("JavaScope")
 	JavaScope_initalize(&Global_Data);
 
+
+
 	// Initialize the Interrupts
 	Initialize_ISR();
 

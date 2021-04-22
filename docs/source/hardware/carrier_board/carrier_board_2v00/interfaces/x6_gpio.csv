@@ -1,0 +1,3 @@
+Pin on X6, Signal, Function, Direction, Specification
+77, PS_DIG_GPIO_01, general purpose I/O from processing system, input/output, 3.3 V / 10 mA
+78, PS_DIG_GPIO_02, general purpose I/O from processing system, input/output, 3.3 V / 10 mA

@@ -1,0 +1,7 @@
+Pin on X12, Signal, Function, Direction, Specification
+1, 3V3_isoSPO, isolated power supply, output, 3.3 V / 100 mA
+2, isoSPI_MOSI_3V3, isolated SPI master out slave in, output, 3.3 V / 20 mA
+3, isoSPI_MISO_3V3, isolated SPI master in slave out, input, 3.3 V / 20 mA
+4, GND_isoSPI, isolated SPI ground, ,
+5, isoSPI_SCLK_3V3, isolated SPI clock, output, 3.3 V / 20 mA
+6, isoSPI_CS_3V3, isolated SPI chip select, output, 3.3 V / 20 mA

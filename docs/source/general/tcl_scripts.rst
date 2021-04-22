@@ -65,7 +65,7 @@ A TCL script can be added to the Vivado icons to automate the process of exporti
 - ``Tools -> Custom Commands -> Customize Commands``
 - Click on the `plus` and ender a name, e.g., export_xsa
 - Click on ``Source Tcl file``
-- Path: ``~/ultrazohm/ultrazohm_sw/vitis/export/vivado_export_xsa.tcl``
+- Path: ``~/ultrazohm/ultrazohm_sw/tcl_scripts/vivado_export_xsa.tcl``
 - Click ok
 
 .. image:: https://images2.imgbox.com/20/97/ltbV6vKQ_o.gif

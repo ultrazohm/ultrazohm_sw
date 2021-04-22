@@ -18,8 +18,8 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'UltraZohm'
-copyright = '2020, Thilo Wendt, Sebastian Wendel, Tobias Schindler'
-author = 'Thilo Wendt, Sebastian Wendel, Tobias Schindler'
+copyright = 'UltraZohm community'
+author = 'UltraZohm community'
 
 # The full version, including alpha/beta/rc tags
 release = '0.0.1'
@@ -34,11 +34,18 @@ extensions = [
     'sphinx_rtd_theme',
     'sphinxcontrib.mermaid',
     'sphinxcontrib.yt',
+    'sphinx_issues',
 ]
 
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+
+# Paths for sphinx_issues
+
+issues_uri = "https://bitbucket.org/ultrazohm/ultrazohm_sw/issues/{issue}"
+issues_pr_uri = "https://bitbucket.org/ultrazohm/ultrazohm_sw/pull-requests/{pr}"
+issues_commit_uri = "https://bitbucket.org/ultrazohm/ultrazohm_sw/commits/{commit}"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -74,11 +81,12 @@ html_theme_options = {
 html_context = {
     "display_bitbucket": True, # Integrate Bitbucket
     "bitbucket_user": "ultrazohm", # Username
-    "bitbucket_repo": "sphinx_doku_ultrazohm", # Repo name
-    "bitbucket_version": "master", # Version
-    "conf_py_path": "/source/", # Path in the checkout to the docs root
+    "bitbucket_repo": "ultrazohm_sw", # Repo name
+    "bitbucket_version": "main", # Version
+    "conf_py_path": "/docs/source/", # Path in the checkout to the docs root
 }
 
+html_favicon = 'favicon.png'
 
 # -- RST settings ------------------------------------------------------------
 

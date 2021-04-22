@@ -1,0 +1,15 @@
+Pin on X3, Signal, Function, Direction, Specification
+1 + 10 + 11 + 20, 3V3_PER, power supply, output, 3.3 V / 150 mA
+2 + 9 + 12 + 19, GND, Ground,
+3, DIG_05_Ch5, digital I/O, input, 1.8 V / 8 mA
+4, DIG_03_Ch5, digital I/O, input, 1.8 V / 8 mA
+5, DIG_01_Ch5, digital I/O, input, 1.8 V / 8 mA
+6, DIG_29_Ch5, digital I/O, input, 1.8 V / 8 mA
+7, DIG_27_Ch5, digital I/O, input, 1.8 V / 8 mA
+8, DIG_25_Ch5, digital I/O, input, 1.8 V / 8 mA
+13, DIG_06_Ch5, digital I/O, input, 1.8 V / 8 mA
+14, DIG_04_Ch5, digital I/O, input, 1.8 V / 8 mA
+15, DIG_02_Ch5, digital I/O, input, 1.8 V / 8 mA
+16, DIG_30_Ch5, digital I/O, input, 1.8 V / 8 mA
+17, DIG_28_Ch5, digital I/O, input, 1.8 V / 8 mA
+18, DIG_26_Ch5, digital I/O, input, 1.8 V / 8 mA

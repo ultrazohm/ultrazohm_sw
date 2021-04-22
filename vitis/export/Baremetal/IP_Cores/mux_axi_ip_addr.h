@@ -1,9 +1,3 @@
-/*
- * File Name:         hdl_prj\ipcore\mux_axi_ip_v1_0\include\mux_axi_ip_addr.h
- * Description:       C Header File
- * Created:           2020-09-16 18:09:13
-*/
-
 #ifndef MUX_AXI_IP_H_
 #define MUX_AXI_IP_H_
 

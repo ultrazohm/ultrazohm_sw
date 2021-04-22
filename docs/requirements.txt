@@ -3,3 +3,5 @@ sphinx_rtd_theme
 sphinxcontrib-mermaid
 sphinxcontrib.yt
 six
+sphinx-autobuild
+sphinx-issues

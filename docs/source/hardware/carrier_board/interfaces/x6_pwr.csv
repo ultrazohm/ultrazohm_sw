@@ -1,7 +1,0 @@
-Pin X6, Name, Specification
-5, VIN, 24 V - 0.4 A (sum of 5 + 6) (??)
-6, VIN, 24 V - 0.4 A (sum of 5 + 6) (??)
-9, 5V_PER, 5 V - 0.0 A (??)
-10, 5V_PER, 5 V - 0.0 A (??)
-13, 3V3_PER, 3.3 V - 0.0 A (??)
-14, 3V3_PER, 3.3 V - 0.0 A (??)

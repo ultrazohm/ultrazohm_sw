@@ -1,0 +1,14 @@
+Name, Interface, Pin on X5, Bank, Type, Specification
+
+A1, X5A, 1-9, Bank 64, High Performance (HP), 1.8 V / 12 mA LVDS
+A1, X5A, 10, Bank 65, High Performance (HP), 1.8 V / 12 mA LVDS
+A2, X5B, 1-8, Bank 64, High Performance (HP), 1.8 V / 12 mA LVDS
+A2, X5B, 9, Bank 65, High Performance (HP), 1.8 V / 12 mA LVDS
+A2, X5B, 10, Bank 64, High Performance (HP), 1.8 V / 12 mA LVDS
+A3, X5C, 1, Bank 65, High Performance (HP), 1.8 V / 12 mA LVDS
+A3, X5C, 2-3, Bank 65, High Performance (HP), 1.8 V / 12 mA LVDS
+A3, X5C, 4, Bank 65, High Performance (HP), 1.8 V / 12 mA LVDS
+A3, X5C, 5, Bank 64, High Performance (HP), 1.8 V / 12 mA LVDS
+A3, X5C, 6, Bank 65, High Performance (HP), 1.8 V / 12 mA LVDS
+A3, X5C, 7-8, Bank 64, High Performance (HP), 1.8 V / 12 mA LVDS
+A3, X5C, 9-10, Bank 65, High Performance (HP), 1.8 V / 12 mA LVDS

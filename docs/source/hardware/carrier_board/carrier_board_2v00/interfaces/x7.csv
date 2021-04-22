@@ -1,0 +1,5 @@
+Pin on X7, Signal, Function, Direction, Specification
+1, 5V_isoCAN, isolated power supply, output, 5 V / 100 mA
+2, CAN_H, can high, bi-directional,
+3, CAN_L, can low, bi-directional,
+4, GND_isoCAN, isolated ground,

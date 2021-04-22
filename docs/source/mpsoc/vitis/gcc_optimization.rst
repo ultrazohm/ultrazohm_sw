@@ -2,7 +2,9 @@
 Optimization Levels of the Compiler 
 =========================================
 
-* You can tell the compiler to use different levels of optimization. 
+* You can tell the compiler to use different levels of optimization.
+* UltraZohm default for R5 is -O2
+* UltraZohm default for A53 is -O3
 * For debugging it is recommended to use the None -O0 option.   
 * `Introduction to optimization levels <https://www.linuxtopia.org/online_books/an_introduction_to_gcc/gccintro_49.html>`_
 

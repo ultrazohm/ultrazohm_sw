@@ -1,12 +1,16 @@
 /******************************************************************************
-*
-* ethernet.c
-*
-* Copyright (C) 2018 Institute ELSYS, TH Nürnberg, All rights reserved.
-*
-*  Created on: 22.08.2018
-*      Author: Wendel Sebastian (SW)
-*
+* Copyright 2021 Sebastian Wendel, Eyke Liegmann
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
 #include <stdio.h>
@@ -21,12 +25,11 @@
 
 #include "../main.h"
 
-#define LONG_TIME 0xffff
-
 extern ARM_to_Oszi_Data_shared_struct OsziData_Shadow;
 extern Oszi_to_ARM_Data_shared_struct ControlData;
 
 extern QueueHandle_t OsziData_queue;
+extern const int OSZI_QUEUE_RECEIVE_TICKS_WAIT;
 
 NetworkSendStruct nwsend;
 
@@ -37,9 +40,8 @@ char recv_buf[2048];
 void print_echo_app_header()
 {
     xil_printf("%20s %6d %s\r\n", "echo server",
-    					TCPPORT,
-                        "$ telnet <board_ip> 1000");
-
+    			TCPPORT,
+				"$ telnet <board_ip> 1000");
 }
 
 //==============================================================================================================================================================
@@ -91,37 +93,40 @@ void process_request_thread(void *p)
 		u32_t command=0;
 		u8_t i=0;
 
-
 		for (i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
 
-				xQueueReceive(OsziData_queue,&OsziData_Shadow,100);
-				nwsend.val_01[i] 	= OsziData_Shadow.val[0];
-				nwsend.val_02[i] 	= OsziData_Shadow.val[1];
-				nwsend.val_03[i] 	= OsziData_Shadow.val[2];
-				nwsend.val_04[i]  	= OsziData_Shadow.val[3];
-				nwsend.val_05[i]  	= OsziData_Shadow.val[4];
-				nwsend.val_06[i]  	= OsziData_Shadow.val[5];
-				nwsend.val_07[i] 	= OsziData_Shadow.val[6];
-				nwsend.val_08[i] 	= OsziData_Shadow.val[7];
-				nwsend.val_09[i] 	= OsziData_Shadow.val[8];
-				nwsend.val_10[i] 	= OsziData_Shadow.val[9];
-				nwsend.val_11[i]  	= OsziData_Shadow.val[10];
-				nwsend.val_12[i]  	= OsziData_Shadow.val[11];
-				nwsend.val_13[i]  	= OsziData_Shadow.val[12];
-				nwsend.val_14[i] 	= OsziData_Shadow.val[13];
-				nwsend.val_15[i] 	= OsziData_Shadow.val[14];
-				nwsend.val_16[i] 	= OsziData_Shadow.val[15];
-				nwsend.val_17[i] 	= OsziData_Shadow.val[16];
-				nwsend.val_18[i] 	= OsziData_Shadow.val[17];
-				nwsend.val_19[i] 	= OsziData_Shadow.val[18];
-				nwsend.val_20[i] 	= OsziData_Shadow.val[19];
-				nwsend.slowDataContent[i] 	= OsziData_Shadow.slowDataContent;
-				nwsend.slowDataID[i] 		= OsziData_Shadow.slowDataID;
+			// Take one element from queue
+			// xQueueReceive( QueueHandle_t,  *pvBuffer, xTicksToWait)
+			// The maximum amount of time the task should block waiting for an item to receive should the queue be empty at the time of the call.
+			xQueueReceive(OsziData_queue,&OsziData_Shadow, OSZI_QUEUE_RECEIVE_TICKS_WAIT);
+
+			nwsend.val_01[i] 	= OsziData_Shadow.val[0];
+			nwsend.val_02[i] 	= OsziData_Shadow.val[1];
+			nwsend.val_03[i] 	= OsziData_Shadow.val[2];
+			nwsend.val_04[i]  	= OsziData_Shadow.val[3];
+			nwsend.val_05[i]  	= OsziData_Shadow.val[4];
+			nwsend.val_06[i]  	= OsziData_Shadow.val[5];
+			nwsend.val_07[i] 	= OsziData_Shadow.val[6];
+			nwsend.val_08[i] 	= OsziData_Shadow.val[7];
+			nwsend.val_09[i] 	= OsziData_Shadow.val[8];
+			nwsend.val_10[i] 	= OsziData_Shadow.val[9];
+			nwsend.val_11[i]  	= OsziData_Shadow.val[10];
+			nwsend.val_12[i]  	= OsziData_Shadow.val[11];
+			nwsend.val_13[i]  	= OsziData_Shadow.val[12];
+			nwsend.val_14[i] 	= OsziData_Shadow.val[13];
+			nwsend.val_15[i] 	= OsziData_Shadow.val[14];
+			nwsend.val_16[i] 	= OsziData_Shadow.val[15];
+			nwsend.val_17[i] 	= OsziData_Shadow.val[16];
+			nwsend.val_18[i] 	= OsziData_Shadow.val[17];
+			nwsend.val_19[i] 	= OsziData_Shadow.val[18];
+			nwsend.val_20[i] 	= OsziData_Shadow.val[19];
+			nwsend.slowDataContent[i] 	= OsziData_Shadow.slowDataContent;
+			nwsend.slowDataID[i] 		= OsziData_Shadow.slowDataID;
 		}
+
 		nwsend.status = OsziData_Shadow.status_BareToRTOS;
 
 		// At this point, Ethernet Package is full and ready to be sent
-
 		i_LifeCheck_process_Ethernet++;
 		if(i_LifeCheck_process_Ethernet > 2500){
 			i_LifeCheck_process_Ethernet =0;

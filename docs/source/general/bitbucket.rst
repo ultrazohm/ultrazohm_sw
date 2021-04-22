@@ -14,6 +14,7 @@ The Bitbucket **issue tracker** (<https://bitbucket.org/ultrazohm/ultrazohm_sw/i
 **Issues** are bugs or problems with the system / the source code of the system and should be reported.
 
 In the ``ultrazohm_sw`` repository you can click on issues to get to all open issues.
+
 .. image:: ./images_bitbucket/issues.png
 
 To report an issue click on ``Create issue``

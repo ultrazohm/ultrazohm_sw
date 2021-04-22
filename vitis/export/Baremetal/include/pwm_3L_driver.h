@@ -1,19 +1,29 @@
 /******************************************************************************
-*
-* pwm_3L_driver.h
-*
-* Copyright (C) 2020 UltraZohm Community, All rights reserved.
-*
-*  Created on: 19.03.2020
-*      Author: Eyke Liegmann (EL)
-*
+* Copyright 2021 Eyke Liegmann
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
 #ifndef PWM_3L_H_
 #define PWM_3L_H_
 
+#include <stdint.h>
+#include <math.h>
+
+#include "xil_io.h"
+#include "xparameters.h"
+
+#include "../globalData.h"
 #include "../defines.h"
-#include "../main.h"
 #include "../IP_Cores/PWM_SS_3L_ip_addr.h"
 
 #define PWM_3L_ENABLE 	1
@@ -23,11 +33,11 @@
 // Methods for three-level PWM IP core
 void PWM_3L_Initialize(DS_Data* data);	// Init for the PWM modulation IP-Block
 void PWM_3L_SetDutyCycle(float duty_A, float duty_B, float duty_C);
-void PWM_3L_SetStatus(Xint32 PWM_en);
-void PWM_3L_SetMode(int PWM_mode);
+void PWM_3L_SetStatus(int32_t PWM_en);
+void PWM_3L_SetMode(int32_t PWM_mode);
 void PWM_3L_SetCarrierFrequency(float PWM_freq);
 void PWM_3L_SetMinimumPulseWidth(float PWM_min_pulse_width);
-void PWM_3L_SetTriState(int TriState_A, int TriState_B, int TriState_C);
+void PWM_3L_SetTriState(int32_t TriState_A, int32_t TriState_B, int32_t TriState_C);
 void PWM_3L_Calculate_DutyCycle_open_loop_sin(DS_Data* data);
 
 //==============================================================================================================================================================

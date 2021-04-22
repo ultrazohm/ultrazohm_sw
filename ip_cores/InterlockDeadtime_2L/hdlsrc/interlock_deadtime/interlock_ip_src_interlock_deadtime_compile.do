@@ -1,7 +1,0 @@
-vlib work
-vcom  interlock_ip_src_InverseBotSwitchModule.vhd
-vcom  interlock_ip_src_InterlockModule.vhd
-vcom  interlock_ip_src_Detect_Fall_Nonpositive2.vhd
-vcom  interlock_ip_src_DeadtimeModule.vhd
-vcom  interlock_ip_src_EnableOutputModule.vhd
-vcom  interlock_ip_src_interlock_deadtime.vhd

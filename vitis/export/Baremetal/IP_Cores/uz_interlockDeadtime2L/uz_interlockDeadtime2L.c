@@ -32,6 +32,7 @@ bool uz_interlockDeadtime2L_get_enable_output(uz_interlockDeadtime2L_handle self
 void uz_interlockDeadtime2L_set_deadtime_us(uz_interlockDeadtime2L_handle self, float deadtime_in_microseconds) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
+	uz_assert(uz_interlockDeadtime2L_get_enable_output(self) == false);
 	uz_assert(deadtime_in_microseconds <= self->deadtime_us);
 	self->deadtime_us = deadtime_in_microseconds;
 	int deadtime_in_cycles = calculate_delay_cycles_from_microseconds(self->clock_frequency_MHz, self->deadtime_us);

@@ -1,31 +1,22 @@
 #include "uz_wavegen.h"
 
-
-
-//amplitude: 		Amplitude of the output sine wave
-//frequency:		Frequency of the output sine wave
-float uz_wavegen_sine(int amplitude, int frequency) {
-	//Variables
+float uz_wavegen_sine(int amplitude, int frequency_Hz) {
 	float angle = 0.0;
 
-	angle = 2.0 * M_PI * frequency * uz_SystemTime_GetIsrPeriodInUs() * 0.000001 * uz_SystemTime_GetInterruptCounter();
+	angle = 2.0 * M_PI * uz_SystemTime_GetInterruptCounter() * frequency_Hz / uz_SystemTime_GetIsrFrequencyInHz();
 
 	return (amplitude * sin(angle));
 }
 
-//amplitude: 		Amplitude of the output sawtooth wave
-//frequency:		Frequency of the output sawtooth wave
-float uz_wavegen_sawtooth(int amplitude, int frequency) {
-	//Variables
-	float sawtooth = 0.0;
-	static float counter = 0.0;
+float uz_wavegen_sawtooth(int amplitude, int frequency_Hz) {
 
-	if (counter > (1 / (uz_SystemTime_GetIsrPeriodInUs() * 0.000001)) / frequency)
-		counter = 0;
+	static unsigned int sample = 0.0;
 
-	sawtooth = amplitude * (counter * frequency * uz_SystemTime_GetIsrPeriodInUs() * 0.000001);
+	if (sample > uz_SystemTime_GetIsrFrequencyInHz() / frequency_Hz - 1) {
+		sample = 0;
+	}
 
-	counter += 1;
+	sample += 1U;
 
-	return (sawtooth);
+	return (amplitude * sample * frequency_Hz / uz_SystemTime_GetIsrFrequencyInHz());
 }

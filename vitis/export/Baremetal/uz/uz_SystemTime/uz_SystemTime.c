@@ -17,19 +17,8 @@ typedef struct {
 } uz_SystemTime;
 
 // private variables
-static uz_SystemTime timingR5 =
-                	{ .isr_period_us = 0,
-	                                .isr_execution_time_us = 0,
-	                                .interrupt_counter = 0,
-	                                .uptime_us = 0,
-	                                .uptime_ms = 0,
-	                                .uptime_sec = 0,
-	                                .uptime_min = 0,
-	                                .timestamp_ISR_start = 0,
-	                                .timestamp_ISR_end = 0,
-	                                .TicTocLock = false,
-	                                .IsReady = false
-	                };
+static uz_SystemTime timingR5 = { .isr_period_us = 0, .isr_execution_time_us = 0, .interrupt_counter = 0, .uptime_us = 0, .uptime_ms = 0, .uptime_sec = 0, .uptime_min = 0, .timestamp_ISR_start = 0,
+                .timestamp_ISR_end = 0, .TicTocLock = false, .IsReady = false };
 
 void uz_SystemTime_init() {
 	uz_AxiTimer64Bit_init();
@@ -106,6 +95,11 @@ unsigned int uz_SystemTime_GetUptimeInMin() {
 float uz_SystemTime_GetIsrPeriodInUs() {
 	uz_assert(timingR5.IsReady);
 	return (timingR5.isr_period_us);
+}
+
+float uz_SystemTime_GetIsrFrequencyInHz() {
+	uz_assert(timingR5.IsReady);
+	return (1 / (timingR5.isr_period_us / 1000000));
 }
 
 uint64_t uz_SystemTime_GetInterruptCounter() {

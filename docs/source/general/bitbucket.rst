@@ -30,7 +30,7 @@ If the issue does not exist, report a new issue by clicking on ``Create issue``.
 
 - **Create a new issue for each topic**. In this way, the issues structure the technical discussion that often follows afterwards and it is easier to keep track of what is left to do for the assignee.
 - Enter a **descriptive title** that describes the issue in a few words. 
-- In the Description add more **details on the observed behavior, how to reproduce the problem**, and explain the steps you have taken so far to resolve the issue.
+- In the Description add more **details on the observed behavior, how to reproduce the problem**, and explain the steps you have taken so far to resolve the issue. Add screenshots and cross-references to other issues or sources wherever needed.
 - You can assign the issue to yourself or somebody else, who will be notified automatically. When creating new issue, it **might be better not to assign the issue to someone** without talking to them beforehand. Otherwise, this might be perceived like telling them what they have to do - no one likes that. If in doubt, rather not assign the issue and instead tag the relevant people in the description.
 - **Tag the relevant people** in the issue description by using ``@person`` otherwise they might miss the issue, if they do not check the issue tracker regularly.
 - Take advantage of the issue features by modifying **kind and priority** to indicate its urgency and your intend (bug report vs. suggestion for an enhancement).

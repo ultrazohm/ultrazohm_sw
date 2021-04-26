@@ -12,7 +12,7 @@ Nr, Rule, Example, Comment
 12, Switch statments have a ``default`` case,,
 13, Declare all functions with a function prototype,,
 14, Function prototype for functions without arguments need ``void`` as parameter, ``void foo(void)``, The function declaration ``void foo()`` allows to pass a variable number of arguments without a compiler warning
-15, Use typedef only for ``struct``; ``enum`` and pointers to ``structs``, ``typedef uz_myIp *uz_MyIp_handle;``,
+15, Use typedef only for ``struct`` and ``enum``, ``typedef struct uz_myIp uz_myIp;``,
 16, Use defined width types from ``<stdint.h>``, ``int32_t; uint32_t``, Only use fixed width integers if they are required; for example for hardware mapped registers. Data width below 32-bit is not useful in most cases
 17, Use ``static`` for all functions that are only used in their translation unit (the .c file), ``static float private_function_foo(float x);``, Behaves as "private function" (only usable in the translation unit) and `gcc inlines these functions if they are only called once with -O1 <https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html>`_
 18, Use ``bool`` from <stdbool.h>,, "Useful for hardware/ip-cores that are off or on,  enable signals, valid/reay signals"

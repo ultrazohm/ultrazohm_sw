@@ -14,7 +14,15 @@
 	},
 
 	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": ["ms-vscode.cpptools", "eamodio.gitlens", "james-yu.latex-workshop", "ms-vsliveshare.vsliveshare","lextudio.restructuredtext", "streetsidesoftware.code-spell-checker"],
+	"extensions": [
+		"ms-vscode.cpptools",
+		"eamodio.gitlens",
+		"james-yu.latex-workshop",
+		"ms-vsliveshare.vsliveshare",
+		"lextudio.restructuredtext",
+		"streetsidesoftware.code-spell-checker",
+		"numaru.vscode-ceedling-test-adapter"
+	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],

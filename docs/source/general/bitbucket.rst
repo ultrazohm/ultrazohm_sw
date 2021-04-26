@@ -28,9 +28,15 @@ If the issue does not exist, report a new issue by clicking on ``Create issue``.
 
 **Some comments on how to use the issues**
 
-- **Create a new issue for each topic**. In this way, the issues structure the technical discussion that often follows afterwards and it is easier to keep track of what is left to do for the assignee.
-- Enter a **descriptive title** that describes the issue in a few words. 
-- In the Description add more **details on the observed behavior, how to reproduce the problem**, and explain the steps you have taken so far to resolve the issue.
+- **Create a new issue for each topic**. In this way, the issues will structure the technical discussion that often follows afterwards. Furthermore it's easier to keep track of what is left to do for the assignee.
+- Enter a **descriptive** and **compact title**. 
+- In the description add **further details**.
+
+   - Further specify the observed behavior.
+   - Steps on how to reproduce the issue.
+   - Steps that have been taken so far to resolve the issue.
+   - Add screenshots and cross-references to other issues or sources wherever needed.
+   
 - You can assign the issue to yourself or somebody else, who will be notified automatically. When creating new issue, it **might be better not to assign the issue to someone** without talking to them beforehand. Otherwise, this might be perceived like telling them what they have to do - no one likes that. If in doubt, rather not assign the issue and instead tag the relevant people in the description.
 - **Tag the relevant people** in the issue description by using ``@person`` otherwise they might miss the issue, if they do not check the issue tracker regularly.
 - Take advantage of the issue features by modifying **kind and priority** to indicate its urgency and your intend (bug report vs. suggestion for an enhancement).
@@ -39,7 +45,7 @@ If the issue does not exist, report a new issue by clicking on ``Create issue``.
 
 .. image:: ./images_bitbucket/issue4.png
 
-- Once the issue has been created, **discuss everything inside this issue**. This helps to document the development progress and on-boarding others, when you ask them for help or review later on. When discussing with someone in person or on the phone, write the outcome of the discussion in the issue.
+- Once the issue has been created, **discuss everything inside this issue**. This helps to document the development progress and on-boarding other users, when you ask them for help or review later on. If you discuss with someone in person or on the phone, write the outcome of this discussion in the issue.
 - **Do not hesitate to close the issue**, once you think it has been resolved. If it turns out it has not been resolved, they can simply be re-opened again. Generally though, this should be done by the assignee or the reporter.
 
 .. _bitbucket_pull_request:

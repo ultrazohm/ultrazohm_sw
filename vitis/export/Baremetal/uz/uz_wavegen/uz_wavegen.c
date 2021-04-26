@@ -10,13 +10,9 @@ float uz_wavegen_sine(int amplitude, int frequency_Hz) {
 
 float uz_wavegen_sawtooth(int amplitude, int frequency_Hz) {
 
-	static unsigned int sample = 0.0;
+	float sample = 0.0;
 
-	if (sample > uz_SystemTime_GetIsrFrequencyInHz() / frequency_Hz - 1) {
-		sample = 0;
-	}
+	sample = fmodf(uz_SystemTime_GetInterruptCounter(), (uz_SystemTime_GetIsrFrequencyInHz() / frequency_Hz));
 
-	sample += 1U;
-
-	return (amplitude * sample * frequency_Hz / uz_SystemTime_GetIsrFrequencyInHz());
+	return (sample * amplitude / (uz_SystemTime_GetIsrFrequencyInHz() / frequency_Hz));
 }

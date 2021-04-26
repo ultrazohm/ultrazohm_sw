@@ -76,7 +76,8 @@ Syllabus
     :maxdepth: 2
     :caption: MPSoC Platform
 
-    mpsoc/vivado/index
+    mpsoc/platform_architecture/platform_architecture
+    mpsoc/vivado/vivado
     mpsoc/ip_cores/index
     mpsoc/vitis/vitis
     mpsoc/CPLD/index

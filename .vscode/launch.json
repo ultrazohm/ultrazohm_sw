@@ -12,7 +12,7 @@
             "name": "Ceedling Test Explorer Debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/vitis/Sandbox/YourNewProjectName/build/test/out/${command:ceedlingExplorer.debugTestExecutable}",
+            "program": "${workspaceFolder}/vitis/software/Baremetal/build/test/out/${command:ceedlingExplorer.debugTestExecutable}",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

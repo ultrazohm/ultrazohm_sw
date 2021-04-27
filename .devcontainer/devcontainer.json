@@ -12,7 +12,7 @@
 	"settings": { 
 		"terminal.integrated.shell.linux": "/bin/bash",
 		"ceedlingExplorer.debugConfiguration": "Ceedling Test Explorer Debug",
-		"ceedlingExplorer.projectPath": "vitis/Sandbox/YourNewProjectName/"
+		"ceedlingExplorer.projectPath": "vitis/software/Baremetal/"
 	},
 
 	// Add the IDs of extensions you want installed when the container is created.

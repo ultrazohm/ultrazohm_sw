@@ -15,5 +15,6 @@ Vitis
 	create_project
 	include_math_lib
 	known_issues
+	unit_tests/unit_tests
 
 

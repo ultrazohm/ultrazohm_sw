@@ -7,3 +7,4 @@ Carrier Board Rev04
 	:maxdepth: 2
 
 	overview
+	power_distribution

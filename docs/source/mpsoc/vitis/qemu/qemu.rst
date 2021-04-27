@@ -5,6 +5,8 @@ Xilinx Quick Emulator (QEMU)
 How to use QEMU for baremetal application
 *****************************************
 
+This guide adapts the `Standalone Application Debug using System Debugger on QEMU <https://www.xilinx.com/html_docs/xilinx2019_2/vitis_doc/Chunk979461284.html?hl=qemu>`_ guide.
+
 1. Launch Vitis IDE
 2. Open the UltraZohm workspace: ``~/ultrazohm/ultrazohm_sw/vitis/workspace``
 3. Select **Run > Debug Configurations**
@@ -33,29 +35,24 @@ How to use QEMU for baremetal application
 Further information to setup the QEMU emulation for vitis 2020.1
 ****************************************************************
 
+Documentation using QEMU with the Vitis IDE is sparse. The following links mostly reference the old SKD environment. 
+
 
 1. `Xilinx Quick Emulator User Guide QEMU (v2020.1) <https://www.xilinx.com/support/documentation/sw_manuals/xilinx2020_1/ug1169-xilinx-qemu.pdf>`_ . To use this system emulation model you must be familiar with:
     
-    * Device architecture
-    * GNU debugger (GDB) for debugging QEMU remotely
-    * Generation of guest software application using **Xilinx® PetaLinux** and Software DevelopmentKit (SDK) tools
-    * Device trees
+    * Uses **Xilinx® PetaLinux** and Software DevelopmentKit (SDK) tools
 
-2. `SDK: Standalone Application Debug using System Debugger on QEMU <https://www.xilinx.com/html_docs/xilinx2018_2/SDK_Doc/SDK_tasks/sdk_t_qemu_debugging_system_debugger.html>`_ 
-
-    * Only refers to the old SDK and not the new Vitis IDE
-    * Repl
     
-3. `Introduction to QEMU <https://www.xilinx.com/video/soc/introduction-to-qemu.html>`_
+2. `Introduction to QEMU <https://www.xilinx.com/video/soc/introduction-to-qemu.html>`_
     
     * Short explanation how QEMU works and for what you can use it
     * No information how to set up/start the emulator
     
     
-4. `Running an RPU Application using QEMU <https://www.xilinx.com/video/soc/running-an-rpu-application-using-qemu.html>`_ 
+3. `Running an RPU Application using QEMU <https://www.xilinx.com/video/soc/running-an-rpu-application-using-qemu.html>`_ 
     
     * Old video, still uses the SDK instead of the Vitis IDE
-    * Similiar to point 3
+    * Outdated workflow
 
 	
 	

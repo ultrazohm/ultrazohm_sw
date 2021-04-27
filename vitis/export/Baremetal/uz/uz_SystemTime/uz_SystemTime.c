@@ -107,3 +107,8 @@ uint64_t uz_SystemTime_GetInterruptCounter() {
 	return (timingR5.interrupt_counter);
 }
 
+float uz_SystemTime_GetGlobalTime() {
+	uint64_t timestamp = uz_AxiTimer64Bit_ReadValue64Bit();
+	float current_global_time = timestamp * (1 / UZ_AXI_TIMER_CLOCK_FREQ);
+	return (current_global_time);
+}

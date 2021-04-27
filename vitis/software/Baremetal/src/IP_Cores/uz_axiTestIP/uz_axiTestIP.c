@@ -28,7 +28,7 @@ int32_t uz_axiTestIP_get_C_int32(uz_axiTestIP_handle self) {
 	return (self->C_int32_t);
 }
 
-void uz_axiTestIP_set_A_float(uz_axiTestIP_handle self, float A) {
+void uz_axiTestIP_set_A_float(uz_axiTestIP_handle self, float A){
 	uz_assert_not_NULL(self);
 	self->A_float = A;
 	uz_axi_write_float(self->base_address + A_float_Data_uz_axi_testIP, self->A_float);
@@ -37,7 +37,7 @@ void uz_axiTestIP_set_A_float(uz_axiTestIP_handle self, float A) {
 	uz_axi_write_bool(self->base_address + A_float_Strobe_uz_axi_testIP, false);
 }
 
-void uz_axiTestIP_set_B_float(uz_axiTestIP_handle self, float B) {
+void uz_axiTestIP_set_B_float(uz_axiTestIP_handle self, float B){
 	uz_assert_not_NULL(self);
 	self->B_float  = B;
 	uz_axi_write_float(self->base_address + B_float_Data_uz_axi_testIP, self->B_float);

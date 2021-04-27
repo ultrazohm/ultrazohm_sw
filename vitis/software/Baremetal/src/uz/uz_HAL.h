@@ -35,6 +35,11 @@
     uz_assert(Expression!=NULL);        \
 }
 
+#define uz_assert_not_zero(Expression) \
+{                              \
+    uz_assert(Expression!=0);        \
+}
+
 #define uz_assert_false(Expression) \
 {                              \
     uz_assert(Expression==false);        \

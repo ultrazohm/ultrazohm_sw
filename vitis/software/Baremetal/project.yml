@@ -92,6 +92,12 @@
   :test: []
   :release: []
 
+# :module_generator:
+#   :boilerplates:
+#     :tst: '/* This is Boilerplate code that is added to the _test file. */'
+#     :src: '/* This is Boilerplate code that is added to the .c file. */'
+#     :inc: '/* This is Boilerplate code that is added to the .h file. */'
+
 :plugins:
   :load_paths:
     - "#{Ceedling.load_path}"

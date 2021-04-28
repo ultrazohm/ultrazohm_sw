@@ -33,11 +33,11 @@ Creates a continous sine wave.
      - \+ float 
      - Hz
 
-Call the function with the following:
+Function call:
 
 .. code-block:: c
 
-    output = uz_wavegen_sine(amplitude, frequency_Hz);
+    ... = uz_wavegen_sine(amplitude, frequency_Hz);
 
 Sawtooth wave
 ^^^^^^^^^^^^^
@@ -61,11 +61,11 @@ Creates a continous sawtooth wave.
      - \+ float 
      - Hz
 
-Call the function with the following:
+Function call:
 
 .. code-block:: c
 
-    output = uz_wavegen_sawtooth(amplitude, frequency_Hz);
+    ... = uz_wavegen_sawtooth(amplitude, frequency_Hz);
     
 Pulse wave
 ^^^^^^^^^^^^^
@@ -92,11 +92,65 @@ Creates a continous pulse wave. Required input arguments are combined into a str
      - float 0.0 -> 1.0
      -
   
-Call the function with the following:
+Function call:
 
 .. code-block:: c
 
     wavegen_pulse_settings name = {amplitude, frequency_Hz, DutyCycle};
-    output = uz_wavegen_sawtooth(name);
+    ... = uz_wavegen_sawtooth(name);
 
+Square wave
+^^^^^^^^^^^^^
 
+.. image:: square.png
+    :scale: 20
+    
+Creates a continous square wave.
+
+.. list-table:: Required input arguments
+   :widths: 25 25 25
+   :header-rows: 1
+
+   * - argument
+     - value
+     - unit
+   * - amplitude
+     - +/- float
+     - 
+   * - frequency
+     - \+ float 
+     - Hz
+
+Function call:
+
+.. code-block:: c
+
+    ... = uz_wavegen_square(amplitude, frequency_Hz);
+
+Triangle wave
+^^^^^^^^^^^^^
+
+.. image:: triangle.png
+    :scale: 20
+    
+Creates a continous triangle wave.
+
+.. list-table:: Required input arguments
+   :widths: 25 25 25
+   :header-rows: 1
+
+   * - argument
+     - value
+     - unit
+   * - amplitude
+     - +/- float
+     - 
+   * - frequency
+     - \+ float 
+     - Hz
+
+Function call:
+
+.. code-block:: c
+
+    ... = uz_wavegen_triangle(amplitude, frequency_Hz);

@@ -131,7 +131,43 @@ Note that the function ``uz_axi_write_int32`` expects a call with the sum of bas
 
 .. warning:: The unit test for IP-core drivers *only* test if the software works as intended, dedicated testing for the actual hardware of the IP-core is assumed here! The example above tests if the software driver reads and writes the correct registers but the function of the IP-core itself (the multiplication) is not tested by this unit test. 
 
+
+Testing assertions
+==================
+
+:ref:`assertions` are used in the UltraZohm project to protect form programming errors such as calling functions with arguments that are out of range or passing ``NULL`` pointers.
+
+- Include the test macros for the assertions in the test file (``#include "test_assert_with_exception.h``)
+- Use the test macro ``TEST_ASSERT_FAIL_ASSERT`` to test if a assert fails.
+- Use the test macro ``TEST_ASSERT_PASS_ASSERT`` to test if a assert passes.
+- Both function calls should cause an assert fo fail due to calling it with a ``NULL`` pointer and an pointer to an uninitialized instance (``is_ready`` is ``false`` in the second call). Example:
+
+.. code-block:: c
+
+   TEST_ASSERT_FAIL_ASSERT(uz_axiTestIP2_multiply(NULL, a,b));
+   uz_axiTestIP2 test_instance2={
+       .base_address=TEST_BASE_ADDRESS  
+   };
+   uz_axiTestIP2* testptr=&test_instance2;
+   TEST_ASSERT_FAIL_ASSERT(uz_axiTestIP2_multiply(testptr, a,b));
+
+Implementation details
+----------------------
+
+To test if assertions we use the following approach as described ``here <http://www.electronvector.com/blog/unit-testing-with-asserts>``_:
+
+- Use ``CException <https://github.com/ThrowTheSwitch/CException>``_ while testing (``  :use_exceptions: TRUE`` in Ceedling ``project.yml``
+- Defined ``uz_assert`` in the following way in ``uz_HAL.h`` for testing.
+
+.. code-block:: c
+
+   #include "CException.h"
+   #define uz_assert(condition) if (!(condition)) Throw(0)
+
+This means a failing assertions throws an exception instead of triggering a *real* assert.
+The test macros ``TEST_ASSERT_FAIL_ASSERT`` and ``TEST_ASSERT_PASS_ASSERT`` catch the thrown exception and print a error message if the test fails.
+
 Sources
--------
+=======
 
 .. [#TDD] Test-Driven Development for Embedded C, James W. Grenning, 2011

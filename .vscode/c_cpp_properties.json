@@ -5,6 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**"
             ],
+            "forcedInclude": ["${workspaceFolder}/vitis/software/Baremetal/src/uz/uz_HAL.h","${workspaceFolder}/vitis/software/Baremetal/src/uz/uz_AXI.h"],
             "defines": ["TEST"], // This define is used to enable intellisense in ceedling test files!
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "gnu17",

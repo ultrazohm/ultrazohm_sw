@@ -20,8 +20,8 @@
 #endif
 #ifdef TEST
 #include <stdio.h>
-#include <assert.h>
-#define uz_assert assert
+#include "CException.h"
+#define uz_assert(condition) if (!(condition)) Throw(0)
 #define uz_printf printf
 #define uz_sleep_seconds sleep
 #define uz_sleep_useconds usleep

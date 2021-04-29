@@ -20,6 +20,15 @@ pipelines:
         - cd build
         - ls
     - step:
+       name: Ceedling unit tests
+       script:
+        - apt-get -y install build-essential
+        - apt-get -y install gdb
+        - apt-get -y install ruby
+        - gem install ceedling
+        - cd vitis/software/Baremetal
+        - ceedling test:all
+    - step:
        name: Github-Mirror
        script:
         - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git

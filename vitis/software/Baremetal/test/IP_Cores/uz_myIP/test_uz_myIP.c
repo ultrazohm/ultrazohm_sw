@@ -44,7 +44,7 @@ void test_uz_myIP_no_multiplication_before_initialization_and_no_NULL_pointer_pa
     uz_myIP_hw_write_B_Ignore();
     uz_myIP_hw_read_C_IgnoreAndReturn(a*b);
     TEST_ASSERT_FAIL_ASSERT(int32_t c=uz_myIP_multiply( &test_instance_no_init,a,b));
-    TEST_ASSERT_PASS_ASSERT(int32_t c=uz_myIP_multiply( NULL,a,b));
+    TEST_ASSERT_FAIL_ASSERT(int32_t c=uz_myIP_multiply( NULL,a,b));
 }
 
  void test_uz_myIP_test_ip_frq_not_zero(void){

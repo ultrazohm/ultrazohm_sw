@@ -22,6 +22,7 @@ pipelines:
     - step:
        name: Ceedling unit tests
        script:
+        - apt-get update
         - apt-get -y install build-essential
         - apt-get -y install gdb
         - apt-get -y install ruby

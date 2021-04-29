@@ -19,10 +19,9 @@ float uz_wavegen_sine_with_offset(float amplitude, float frequency_Hz, float off
 
 float uz_wavegen_sawtooth(float amplitude, float frequency_Hz) {
 	uz_assert(frequency_Hz > 0.0);
-	float counter = uz_SystemTime_GetInterruptCounter();
-	float frequency_adjusted = uz_SystemTime_GetIsrFrequencyInHz() / frequency_Hz;
-	float sample = fmodf(counter, frequency_adjusted);
-	return (sample * amplitude / frequency_adjusted);
+	float t = uz_SystemTime_GetGlobalTimeInSec();
+	float sample = fmodf(t, frequency_Hz);
+	return (sample * amplitude);
 }
 
 float uz_wavegen_sawtooth_with_offset(float amplitude, float frequency_Hz, float offset) {
@@ -93,4 +92,12 @@ float uz_wavegen_saturation(float signal, float upper_limit, float lower_limit) 
 		signal = lower_limit;
 	}
 	return (signal);
+}
+
+float uz_wavegen_chirp(uz_wavegen* self) {
+	uz_assert(self->is_ready);
+	float t = uz_SystemTime_GetGlobalTimeInSec();
+	self->time_integrator_s += 0.0001 * t;
+	return (self->amplitude * sinf(2.0 * M_PI * self->frequency_Hz * self->time_integrator_s));
+
 }

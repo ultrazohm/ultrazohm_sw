@@ -333,6 +333,18 @@ typedef struct _AnalogAdapters_ {
 	ADCcard A3;
 } AnalogAdapters;
 
+typedef struct _UZ_D_Gan_Inverter_ {
+	int PWMFreqTicks;
+	int PWMhightimeTicks;
+	int PWMlowtimeTicks;
+	float PWMdutyCycPerCent;
+	float H1_GaN_ChipTempDegreesCelsius;
+} UZ_D_Gan_Inverter;
+
+typedef struct _DigitalAdapters_ {
+	UZ_D_Gan_Inverter D4;
+} DigitalAdapters;
+
 typedef struct _actualValues_ {
 	float I_L1; 		// Grid side current in A
 	float I_L2; 		// Grid side current in A
@@ -661,6 +673,7 @@ typedef struct _DS_Data_ {
 	controllerVars ctrl;
 	debugVariables dv;
 	AnalogAdapters aa;
+	DigitalAdapters da;
 } DS_Data;
 
 #endif

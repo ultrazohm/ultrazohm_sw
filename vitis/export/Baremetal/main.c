@@ -16,6 +16,10 @@
 //Includes from own files
 #include "main.h"
 
+#include "IP_Cores/uz_d_gan_inverter/uz_d_gan_inverter_hw.h"
+#include "IP_Cores/uz_d_gan_inverter/uz_d_gan_inverter.h"
+#include "IP_Cores/uz_d_gan_inverter/uz_d_gan_inverter_staticAllocator.h"
+
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -78,7 +82,8 @@ int main(void) {
 	//Initialize the Soft-Oscilloscope ("JavaScope")
 	JavaScope_initalize(&Global_Data);
 
-
+	//Initialize UZ_D_GaN_Inverter
+	uz_d_gan_inverter_handle uz_d_gan_inverter_instance1=uz_d_gan_inverter_allocateAndInit_instance1();
 
 	// Initialize the Interrupts
 	Initialize_ISR();
@@ -91,6 +96,14 @@ int main(void) {
 
 	// Infinite loop
 	while (1) {
+
+
+		//Get Data From UZ_D_GaN_Inverter
+		Global_Data.da.D4.PWMFreqTicks = uz_d_gan_inverter_get_PWMFreqTicks(uz_d_gan_inverter_instance1);
+		Global_Data.da.D4.PWMhightimeTicks = uz_d_gan_inverter_get_PWMhightimeTicks(uz_d_gan_inverter_instance1);
+		Global_Data.da.D4.PWMlowtimeTicks = uz_d_gan_inverter_get_PWMlowtimeTicks(uz_d_gan_inverter_instance1);
+		Global_Data.da.D4.PWMdutyCycPerCent = uz_d_gan_inverter_get_PWMdutyCycPerCent(uz_d_gan_inverter_instance1);
+		Global_Data.da.D4.H1_GaN_ChipTempDegreesCelsius = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(uz_d_gan_inverter_instance1);
 
 		// poll the buttons
 		Global_Data.dv.sw1 = uz_GetPushButtonEnableSystem();

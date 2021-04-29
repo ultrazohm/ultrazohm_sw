@@ -18,4 +18,4 @@ uint64_t uz_SystemTime_GetUptimeInUs();
 unsigned int uz_SystemTime_GetUptimeInMs();
 unsigned int uz_SystemTime_GetUptimeInSec();
 unsigned int uz_SystemTime_GetUptimeInMin();
-float uz_SystemTime_GetGlobalTime();
+float uz_SystemTime_GetGlobalTimeInSec();

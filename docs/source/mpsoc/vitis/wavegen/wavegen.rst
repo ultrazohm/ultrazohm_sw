@@ -154,3 +154,35 @@ Function call:
 .. code-block:: c
 
     ... = uz_wavegen_triangle(amplitude, frequency_Hz);
+    
+Saturation function
+^^^^^^^^^^^^^^^^^^^
+
+.. image:: saturation.png
+    :scale: 20
+
+Limits an input signal to the upper and lower saturation values. Doesn't generate a waveform by itself. Required input arguments are combined into a struct.
+
+.. list-table:: Required input arguments
+   :widths: 25 25 25
+   :header-rows: 1
+
+   * - argument
+     - value
+     - unit
+   * - input signal
+     - +/- float
+     - 
+   * - upper limit
+     - +/- float 
+     - 
+   * - lower limit
+     - +/- float 
+     -
+
+Function call:
+
+.. code-block:: c
+
+    wavegen_saturation_settings name = {input_signal, upper_limit, lower_limit};
+    ... = uz_wavegen_saturation(**name**);

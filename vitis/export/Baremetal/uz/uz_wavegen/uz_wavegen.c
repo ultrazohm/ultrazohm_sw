@@ -62,12 +62,21 @@ float uz_wavegen_triangle(float amplitude, float frequency_Hz) {
 	sample = fmodf(uz_SystemTime_GetInterruptCounter(), (uz_SystemTime_GetIsrFrequencyInHz() / frequency_Hz));
 
 	if (sample > (uz_SystemTime_GetIsrFrequencyInHz() / frequency_Hz) * 0.5f) {
-		triangle_wave = 2 * amplitude + sample * amplitude * -2.0f / (uz_SystemTime_GetIsrFrequencyInHz() / frequency_Hz);
+		triangle_wave = 2.0f * amplitude + -2.0f * sample * amplitude / (uz_SystemTime_GetIsrFrequencyInHz() / frequency_Hz);
 	} else {
-		triangle_wave = 2 * sample * amplitude / (uz_SystemTime_GetIsrFrequencyInHz() / frequency_Hz);
+		triangle_wave = 2.0f * sample * amplitude / (uz_SystemTime_GetIsrFrequencyInHz() / frequency_Hz);
 	}
 
 	return (triangle_wave);
 }
 
+float uz_wavegen_saturation(wavegen_saturation_settings saturation) {
 
+	if (saturation.input_signal > saturation.upper_limit) {
+		saturation.input_signal = saturation.upper_limit;
+	} else if (saturation.input_signal < saturation.lower_limit) {
+		saturation.input_signal = saturation.lower_limit;
+	}
+
+	return (saturation.input_signal);
+}

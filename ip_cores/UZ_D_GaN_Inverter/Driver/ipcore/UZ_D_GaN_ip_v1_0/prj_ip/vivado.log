@@ -2,19 +2,19 @@
 # Vivado v2020.1.1 (64-bit)
 # SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
 # IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
-# Start of session at: Tue Apr 27 21:22:22 2021
-# Process ID: 25520
-# Current directory: C:/Users/Michael Hoerner/Documents/MATLAB/UltraZohm/UZ_D_GaN_Inverter/hdl_prj/ipcore/UZ_D_GaN_ip_v1_0/prj_ip
+# Start of session at: Thu Apr 29 17:24:51 2021
+# Process ID: 1556
+# Current directory: C:/GIT/UltraZohm/ultrazohm_sw/ip_cores/UZ_D_GaN_Inverter/Driver/hdl_prj/ipcore/UZ_D_GaN_ip_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
-# Log file: C:/Users/Michael Hoerner/Documents/MATLAB/UltraZohm/UZ_D_GaN_Inverter/hdl_prj/ipcore/UZ_D_GaN_ip_v1_0/prj_ip/vivado.log
-# Journal file: C:/Users/Michael Hoerner/Documents/MATLAB/UltraZohm/UZ_D_GaN_Inverter/hdl_prj/ipcore/UZ_D_GaN_ip_v1_0/prj_ip\vivado.jou
+# Log file: C:/GIT/UltraZohm/ultrazohm_sw/ip_cores/UZ_D_GaN_Inverter/Driver/hdl_prj/ipcore/UZ_D_GaN_ip_v1_0/prj_ip/vivado.log
+# Journal file: C:/GIT/UltraZohm/ultrazohm_sw/ip_cores/UZ_D_GaN_Inverter/Driver/hdl_prj/ipcore/UZ_D_GaN_ip_v1_0/prj_ip\vivado.jou
 #-----------------------------------------------------------
 source vivado_ip_package.tcl -notrace
 INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter.
-Current project path is 'C:/Users/Michael Hoerner/Documents/MATLAB/UltraZohm/UZ_D_GaN_Inverter/hdl_prj/ipcore/UZ_D_GaN_ip_v1_0/prj_ip'
+Current project path is 'C:/GIT/UltraZohm/ultrazohm_sw/ip_cores/UZ_D_GaN_Inverter/Driver/hdl_prj/ipcore/UZ_D_GaN_ip_v1_0/prj_ip'
 INFO: [IP_Flow 19-234] Refreshing IP repositories
-INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/Michael Hoerner/Documents/MATLAB/UltraZohm/UZ_D_GaN_Inverter/hdl_prj/ipcore'.
-WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/Users/Michael Hoerner/Documents/MATLAB/UltraZohm/UZ_D_GaN_Inverter/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/Users/Michael Hoerner/Documents/MATLAB/UltraZohm/UZ_D_GaN_Inverter/hdl_prj/ipcore/UZ_D_GaN_ip_v1_0/prj_ip'.)
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/ultrazohm_sw/ip_cores/UZ_D_GaN_Inverter/Driver/hdl_prj/ipcore'.
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/GIT/UltraZohm/ultrazohm_sw/ip_cores/UZ_D_GaN_Inverter/Driver/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/GIT/UltraZohm/ultrazohm_sw/ip_cores/UZ_D_GaN_Inverter/Driver/hdl_prj/ipcore/UZ_D_GaN_ip_v1_0/prj_ip'.)
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
 INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_Lite' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
 INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_Lite_ARESETN' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
@@ -55,4 +55,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_ip_axi_lite.vhd" alread
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_ip_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_ip.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_ip.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Tue Apr 27 21:22:37 2021...
+INFO: [Common 17-206] Exiting Vivado at Thu Apr 29 17:25:02 2021...

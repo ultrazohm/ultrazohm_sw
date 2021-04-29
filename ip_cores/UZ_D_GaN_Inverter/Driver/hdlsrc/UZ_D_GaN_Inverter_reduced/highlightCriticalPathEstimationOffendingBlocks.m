@@ -1,0 +1,18 @@
+open_system('UZ_D_GaN_Inverter_reduced');
+open_system('gm_UZ_D_GaN_Inverter_reduced');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Fall Nonpositive', 'user2');
+annotate_port('gm_UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Fall Nonpositive', 1, 1, 'Block not characterized');
+hilite_system('UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Fall Nonpositive', 'user2');
+annotate_port('UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Fall Nonpositive', 1, 1, 'Block not characterized');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Rise Positive', 'user2');
+annotate_port('gm_UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Rise Positive', 1, 1, 'Block not characterized');
+hilite_system('UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Rise Positive', 'user2');
+annotate_port('UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Rise Positive', 1, 1, 'Block not characterized');

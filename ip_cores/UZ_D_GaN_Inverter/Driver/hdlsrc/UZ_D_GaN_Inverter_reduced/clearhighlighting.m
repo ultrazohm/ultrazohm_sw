@@ -1,0 +1,14 @@
+SLStudio.Utils.RemoveHighlighting(get_param('UZ_D_GaN_Inverter_reduced', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_UZ_D_GaN_Inverter_reduced', 'handle'));
+annotate_port('gm_UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection', 0, 4, '');
+annotate_port('gm_UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Fall Nonpositive', 0, 1, '');
+annotate_port('gm_UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Fall Nonpositive', 1, 1, '');
+annotate_port('UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Fall Nonpositive', 1, 1, '');
+annotate_port('gm_UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Rise Positive', 1, 1, '');
+annotate_port('UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Rise Positive', 1, 1, '');
+annotate_port('gm_UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Gain', 0, 1, '');
+annotate_port('gm_UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Compare To Constant', 0, 1, '');
+annotate_port('gm_UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Product', 0, 1, '');
+annotate_port('gm_UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Switch1', 0, 1, '');
+annotate_port('gm_UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Fall Nonpositive/FixPt Relational Operator', 0, 1, '');
+annotate_port('gm_UZ_D_GaN_Inverter_reduced/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Fall Nonpositive/Nonpositive', 0, 1, '');

@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2020.1.1 (64-bit)
+# SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
+# IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+# Start of session at: Tue Apr 27 21:06:30 2021
+# Process ID: 23292
+# Current directory: C:/Users/Michael Hoerner/Documents/MATLAB/UltraZohm/UZ_D_GaN_Inverter/hdl_prj/ipcore/UZ_D_GaN_ip_v1_0/prj_ip
+# Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
+# Log file: C:/Users/Michael Hoerner/Documents/MATLAB/UltraZohm/UZ_D_GaN_Inverter/hdl_prj/ipcore/UZ_D_GaN_ip_v1_0/prj_ip/vivado.log
+# Journal file: C:/Users/Michael Hoerner/Documents/MATLAB/UltraZohm/UZ_D_GaN_Inverter/hdl_prj/ipcore/UZ_D_GaN_ip_v1_0/prj_ip\vivado.jou
+#-----------------------------------------------------------
+source vivado_ip_package.tcl -notrace

@@ -1,0 +1,6 @@
+ --> PWMdutyFreqDetection_src_HDL_DUT_pkg
+PWMdutyFreqDetection/HDL_DUT/Detect Fall Nonpositive --> PWMdutyFreqDetection_src_Detect_Fall_Nonpositive
+PWMdutyFreqDetection/HDL_DUT/Detect Rise Positive --> PWMdutyFreqDetection_src_Detect_Rise_Positive
+PWMdutyFreqDetection/HDL_DUT/HDL Reciprocal/HDL Reciprocal_core --> PWMdutyFreqDetection_src_HDL_Reciprocal_core
+PWMdutyFreqDetection/HDL_DUT/HDL Reciprocal --> PWMdutyFreqDetection_src_HDL_Reciprocal
+PWMdutyFreqDetection/HDL_DUT --> PWMdutyFreqDetection_src_HDL_DUT

@@ -154,9 +154,10 @@ Testing assertions
 Implementation details
 ----------------------
 
-To test if assertions we use the following approach as described ``here <http://www.electronvector.com/blog/unit-testing-with-asserts>``_:
+To test if assertions we use the following approach:
 
-- Use ``CException <https://github.com/ThrowTheSwitch/CException>``_ while testing (``  :use_exceptions: TRUE`` in Ceedling ``project.yml``
+- http://www.electronvector.com/blog/unit-testing-with-asserts
+- Use ``CException <https://github.com/ThrowTheSwitch/CException>``_ while testing (``:use_exceptions: TRUE`` in Ceedling ``project.yml``)
 - Defined ``uz_assert`` in the following way in ``uz_HAL.h`` for testing.
 
 .. code-block:: c

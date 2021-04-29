@@ -137,7 +137,7 @@ Write the test for this behavior:
        TEST_ASSERT_FAIL_ASSERT(uz_myIP_hw_write_A(0,a))
    }
 
-10. Run the tests, they fail with the following message because we expected that an :ref:`assertion` fires in ``uz_myIP_hw_write_A`` to prevent calling the function with base address ``0``:
+10. Run the tests, they fail with the following message because we expected that an :ref:`assertions` fires in ``uz_myIP_hw_write_A`` to prevent calling the function with base address ``0``:
 
 ::
 
@@ -240,7 +240,7 @@ Write the test for this behavior:
 
    int32_t uz_myIP_hw_read_C(uint32_t base_address){
    return (uz_axi_read_int32(base_address+C_int32_Data_uz_axi_testIP));
-}
+   }
 
 22. Run the tests, they will pass now.
 23. Add a test for the missing assert:

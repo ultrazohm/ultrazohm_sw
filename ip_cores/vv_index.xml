@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Index Version="1" Minor="0">
-	<Repository value="c:/GIT/UltraZohm/ultrazohm_sw/ip_cores">
+	<Repository value="c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores">
 	</Repository>
 	<IP>
 		<VLNV value="Wendel_ELSYS:AA_IP_Repository:ADC_Module_LVDS_v2_0:2.0">
@@ -1493,17 +1493,17 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:ip:UZ_D_GaN_ip:1.0">
+		<VLNV value="xilinx.com:ip:UZ_D_GaN_Inverter:1.0">
 		</VLNV>
-		<DisplayName value="UZ_D_GaN_ip">
+		<DisplayName value="UZ_D_GaN_Inverter">
 		</DisplayName>
 		<Description value="HDL Coder generated IP">
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_Pipeline_Register.jpg">
 		</ProductGuide>
-		<CoreRevision value="2104272122">
+		<CoreRevision value="2105010024">
 		</CoreRevision>
-		<ComponentPath value="UZ_D_GaN_Inverter/Driver/ipcore/UZ_D_GaN_ip_v1_0/component.xml">
+		<ComponentPath value="UZ_D_GaN_Inverter/Driver/ipcore/UZ_D_GaN_Inverter_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="azynq">
@@ -1595,6 +1595,58 @@
 			<SubcoreVLNV value="xilinx.com:ip:xlconcat:2.1">
 			</SubcoreVLNV>
 		</SubcoreVLNVs>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:user:slicer:1.0">
+		</VLNV>
+		<DisplayName value="UZ_D_GaN_slicer_v1_0">
+		</DisplayName>
+		<Description value="UZ_D_GaN_slicer_v1_0">
+		</Description>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<ComponentPath value="UZ_D_GaN_Inverter/Slicer/IP/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="azynq">
+				<Part status="Beta" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexu">
+				<Part status="Beta" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qzynq">
+				<Part status="Beta" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Beta" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Beta" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Beta" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/UserIP">
+			</Taxonomy>
+		</Taxonomies>
+		<SubcoreVLNVs>
+			<SubcoreVLNV value="xilinx.com:ip:xlslice:1.0">
+			</SubcoreVLNV>
+		</SubcoreVLNVs>
+		<VendorDisplayName value="th-nuernberg">
+		</VendorDisplayName>
 	</IP>
 	<BUSDEF>
 		<VLNV value="th-nuernberg.de:user:UZ_D_GaN_Inverter:1.0">
@@ -1800,6 +1852,314 @@
 		<Description value="">
 		</Description>
 		<XMLFile value="UZ_D_GaN_Inverter/Mapping/UZ_D_GaN_Inverter_Mapping.srcs/sources_1/bd/UZ_D_GaN_Inverter_Mapping/ip/UZ_D_GaN_Inverter_Mapping_xlslice_1_3/UZ_D_GaN_Inverter_Mapping_xlslice_1_3.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_0_0/slicer_xlslice_0_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_0_1/slicer_xlslice_0_1.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_0_2/slicer_xlslice_0_2.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_10_1/slicer_xlslice_10_1.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_11_1/slicer_xlslice_11_1.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_18_0/slicer_xlslice_18_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_18_1/slicer_xlslice_18_1.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_19_0/slicer_xlslice_19_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_1_0/slicer_xlslice_1_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_1_1/slicer_xlslice_1_1.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_20_0/slicer_xlslice_20_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_2_0/slicer_xlslice_2_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_2_1/slicer_xlslice_2_1.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_2_2/slicer_xlslice_2_2.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_3_0/slicer_xlslice_3_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_4_0/slicer_xlslice_4_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_4_1/slicer_xlslice_4_1.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_5_0/slicer_xlslice_5_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_6_1/slicer_xlslice_6_1.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_7_0/slicer_xlslice_7_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_8_1/slicer_xlslice_8_1.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Slicer/Slicer.srcs/sources_1/bd/slicer/ip/slicer_xlslice_9_1/slicer_xlslice_9_1.xci">
 		</XMLFile>
 		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
 		</CoreVLNV>

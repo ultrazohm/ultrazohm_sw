@@ -16,9 +16,9 @@
 //Includes from own files
 #include "main.h"
 
-#include "IP_Cores/uz_d_gan_inverter/uz_d_gan_inverter_hw.h"
-#include "IP_Cores/uz_d_gan_inverter/uz_d_gan_inverter.h"
-#include "IP_Cores/uz_d_gan_inverter/uz_d_gan_inverter_staticAllocator.h"
+#include "IP_Cores/PWMdutyFreqDetection/uz_d_gan_inverter_hw.h"
+#include "IP_Cores/PWMdutyFreqDetection/uz_d_gan_inverter.h"
+#include "IP_Cores/PWMdutyFreqDetection/uz_d_gan_inverter_staticAllocator.h"
 
 //Initialize the global variables
 int i_LifeCheck;

@@ -7,7 +7,9 @@ struct uz_wavegen {
 	bool is_ready;
 	float time_integrator_s;
 	float amplitude;
-	float frequency_Hz;
+	float start_frequency_Hz;
+	float end_frequency_Hz;
+	float duration;
 };
 
 float uz_wavegen_sine(float amplitude, float frequency_Hz);

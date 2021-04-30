@@ -24,7 +24,7 @@ float uz_wavegen_sawtooth(float amplitude, float frequency_Hz) {
 	return (sample * amplitude * frequency_Hz);
 }
 
-float uz_wavegen_sawtooth_with_offset(float amplitude, float frequency_Hz) {
+float uz_wavegen_sawtooth_with_offset(float amplitude, float frequency_Hz, float offset) {
 	uz_assert(frequency_Hz > 0.0f);
 	float t = uz_SystemTime_GetGlobalTimeInSec();
 	float sample = fmodf(t, 1 / frequency_Hz);
@@ -80,6 +80,7 @@ float uz_wavegen_triangle_with_offset(float amplitude, float frequency_Hz, float
 }
 
 float uz_wavegen_saturation(float signal, float upper_limit, float lower_limit) {
+	uz_assert(upper_limit > lower_limit)
 	if (signal > upper_limit) {
 		signal = upper_limit;
 	} else if (signal < lower_limit) {
@@ -91,7 +92,8 @@ float uz_wavegen_saturation(float signal, float upper_limit, float lower_limit) 
 float uz_wavegen_chirp(uz_wavegen* self) {
 	uz_assert(self->is_ready);
 	float t = uz_SystemTime_GetGlobalTimeInSec();
+	float chirp_rate = (self->end_frequency_Hz - self->start_frequency_Hz) / self->duration;
 	self->time_integrator_s += 0.0001 * t;
-	return (self->amplitude * sinf(2.0 * M_PI * self->frequency_Hz * self->time_integrator_s));
-//start, endfrequenz. In der init-funktion den aktuellen zweitwert speichern und dann nur noch das neue zeit-delta übergeben
+	return (self->amplitude * sinf(2.0 * M_PI * chirp_rate * self->time_integrator_s));
+
 }

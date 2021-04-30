@@ -38,6 +38,37 @@ Function call:
 .. code-block:: c
 
     ... = uz_wavegen_sine(amplitude, frequency_Hz);
+    
+Sine wave with offset
+^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: sine_offset.png
+    :scale: 20
+   
+Creates a continous sine wave with an adjustable offset. 
+
+.. list-table:: Required input arguments
+   :widths: 25 25 25
+   :header-rows: 1
+
+   * - argument
+     - value
+     - unit
+   * - amplitude
+     - +/- float
+     - 
+   * - frequency
+     - \+ float 
+     - Hz
+   * - offset
+     - +/- float
+     -
+
+Function call:
+
+.. code-block:: c
+
+    ... = uz_wavegen_sine_with_offset(amplitude, frequency_Hz, offset);   
 
 Sawtooth wave
 ^^^^^^^^^^^^^
@@ -67,13 +98,44 @@ Function call:
 
     ... = uz_wavegen_sawtooth(amplitude, frequency_Hz);
     
+Sawtooth wave with offset
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: sawtooth_offset.png
+    :scale: 20
+    
+Creates a continous sawtooth wave with an adjustable offset.
+
+.. list-table:: Required input arguments
+   :widths: 25 25 25
+   :header-rows: 1
+
+   * - argument
+     - value
+     - unit
+   * - amplitude
+     - +/- float
+     - 
+   * - frequency
+     - \+ float 
+     - Hz
+   * - offset
+     - +/- float
+     -
+
+Function call:
+
+.. code-block:: c
+
+    ... = uz_wavegen_sawtooth_with_offset(amplitude, frequency_Hz, offset);
+    
 Pulse wave
 ^^^^^^^^^^^^^
 
 .. image:: pulse.png
     :scale: 20
     
-Creates a continous pulse wave. Required input arguments are combined into a struct.
+Creates a continous pulse wave.
 
 .. list-table:: Required input arguments
    :widths: 25 25 25
@@ -96,8 +158,7 @@ Function call:
 
 .. code-block:: c
 
-    wavegen_pulse_settings name = {amplitude, frequency_Hz, DutyCycle};
-    ... = uz_wavegen_sawtooth(name);
+    ... = uz_wavegen_pulse(amplitude, frequency_Hz, duty_cycle);
 
 Square wave
 ^^^^^^^^^^^^^
@@ -155,13 +216,44 @@ Function call:
 
     ... = uz_wavegen_triangle(amplitude, frequency_Hz);
     
+Triangle wave with offset
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: triangle_offset.png
+    :scale: 20
+    
+Creates a continous triangle wave with an adjustable offset.
+
+.. list-table:: Required input arguments
+   :widths: 25 25 25
+   :header-rows: 1
+
+   * - argument
+     - value
+     - unit
+   * - amplitude
+     - +/- float
+     - 
+   * - frequency
+     - \+ float 
+     - Hz
+   * - offset
+     - +/- offset
+     - 
+
+Function call:
+
+.. code-block:: c
+
+    ... = uz_wavegen_triangle(amplitude, frequency_Hz, offset);
+
 Saturation function
 ^^^^^^^^^^^^^^^^^^^
 
 .. image:: saturation.png
     :scale: 20
 
-Limits an input signal to the upper and lower saturation values. Doesn't generate a waveform by itself. Required input arguments are combined into a struct.
+Limits an input signal to the upper and lower saturation values, similiar to how the saturation block in matlab functions. Doesn't generate a waveform by itself.
 
 .. list-table:: Required input arguments
    :widths: 25 25 25
@@ -184,5 +276,4 @@ Function call:
 
 .. code-block:: c
 
-    wavegen_saturation_settings name = {input_signal, upper_limit, lower_limit};
-    ... = uz_wavegen_saturation(**name**);
+    ... = uz_wavegen_saturation(input, upper_limit, lower_limit);

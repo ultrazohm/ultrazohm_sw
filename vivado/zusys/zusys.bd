@@ -638,16 +638,16 @@
               "Counter_f_sw_V2_ip_0/AXI4_Lite"
             ]
           },
-          "ps8_0_axi_periph_M06_AXI": {
-            "interface_ports": [
-              "S00_AXI",
-              "InterLock_Module_0/S00_AXI"
-            ]
-          },
           "AXI4_Lite_1": {
             "interface_ports": [
               "AXI4_Lite",
               "PWM_and_SS_control_V_0/AXI4_Lite"
+            ]
+          },
+          "ps8_0_axi_periph_M06_AXI": {
+            "interface_ports": [
+              "S00_AXI",
+              "InterLock_Module_0/S00_AXI"
             ]
           }
         },
@@ -2549,16 +2549,16 @@
           }
         },
         "interface_nets": {
-          "ps8_0_axi_periph_M00_AXI": {
-            "interface_ports": [
-              "s00_axi",
-              "ADC_Block_B/s00_axi"
-            ]
-          },
           "Conn1": {
             "interface_ports": [
               "s00_axi1",
               "ADC_Block_A/s00_axi"
+            ]
+          },
+          "ps8_0_axi_periph_M00_AXI": {
+            "interface_ports": [
+              "s00_axi",
+              "ADC_Block_B/s00_axi"
             ]
           }
         },
@@ -7151,6 +7151,12 @@
       }
     },
     "interface_nets": {
+      "smartconnect_0_M00_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M00_AXI",
+          "ADC_A1/s00_axi1"
+        ]
+      },
       "smartconnect_0_M06_AXI": {
         "interface_ports": [
           "smartconnect_0/M06_AXI",
@@ -7245,12 +7251,6 @@
         "interface_ports": [
           "smartconnect_0/S00_AXI",
           "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
-        ]
-      },
-      "smartconnect_0_M00_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M00_AXI",
-          "ADC_A1/s00_axi1"
         ]
       },
       "smartconnect_0_M15_AXI": {

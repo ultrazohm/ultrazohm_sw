@@ -23,7 +23,10 @@
 		"ms-vsliveshare.vsliveshare",
 		"lextudio.restructuredtext",
 		"streetsidesoftware.code-spell-checker",
-		"numaru.vscode-ceedling-test-adapter"
+		"numaru.vscode-ceedling-test-adapter",
+		"dracula-theme.theme-dracula",
+		"pkief.material-icon-theme",
+		"zhuangtongfa.material-theme"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

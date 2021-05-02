@@ -7,6 +7,7 @@ Tutorial: Create a IP-core driver
 This tutorial creates an software driver for the :ref:`AXI_testIP`.
 Only a part of the functionality of :ref:`AXI_testIP` is implemented here, i.e., the multiplication of two integer values on the PL.
 The driver takes two integer values as input, writes them to the PL and reads the result.
+The implementation is done in way that implements the driver and the :ref:`unit_tests` in parallel. 
 
 .. note:: This example is purely for understanding how to write the driver, using the PL for simple integer multiplication is much slower than just doing it on the PS.
 
@@ -517,6 +518,25 @@ Implement the actual function of the driver.
     return (uz_myIP_hw_read_C(self->base_address));
    }
 
-.. warning:: While we tested our functions with a lot of different error cases and made sure they behave as expected we omitted the fact that the multiplication can overflow. This is especially tricky in this case since the multiplication is implemented in hardware, thus the rules for C do not apply to it. There are two ways to handle it: implement the hardware multiplication in a way that saturates on overflow or check if the multiplication will overflow before writing to the PL. The way :ref:`AXI_testIP` is implemented will *wrap* on overflow, i.e., 2147483647*2 will be read as a negative value. Keep this concept in mind for real IP-Cores that you implement. Additionally, prevent the software driver to write values that are out of range to the IP-Core, e.g., if the register only uses 10 bit. Note that the AXI transaction always is 32-bit.
+21. We now have a working and fully tested driver for our IP-Core! 
 
+.. warning:: While we tested our functions with a lot of different error cases and made sure they behave as expected we omitted the fact that the multiplication can overflow. This is especially tricky in this case since the multiplication is implemented in hardware, thus the rules for C do not apply to it. There are two ways to handle this: implement the hardware multiplication in a way that saturates on overflow or check if the multiplication will overflow before writing to the PL. The way :ref:`AXI_testIP` is implemented will *wrap* on overflow, i.e., 2147483647*2 will be  a negative value. Keep this concept in mind for real IP-Cores that you implement. Additionally, prevent the software driver to write values that are out of range to the IP-Core, e.g., if the register only uses 10 bit. Note that the AXI data width is always 32-bit.
 
+Static allocator
+================
+
+To summarize what we have so far:
+
+- Software driver that read and writes all relevant hardware registers of our IP-Core (``uz_myIP_hw``)
+- This driver consists only of pure functions and serves as an abstraction layer for the hardware registers and offsets
+- Unit tests that ensure that ``uz_myIP_hw`` works
+- Software driver for the functionality of the IP-Core, i.e., multiply two values with the interface located in ``uz_myIP.h``
+- The interface of the driver ``uz_myIP.h`` uses a struct that holds variables for the specific instance of the IP-Core (e.g., base address)
+
+To use the driver, we have to pass a pointer to a struct of type ``uz_myIP`` as the first argument to the interface.
+Since ``uz_myIP`` does only contains the forward declaration of the struct (``typedef struct uz_myIP uz_myIP``), we have to include ``uz_myIP_private.h`` in a translation unit that initializes and allocates the struct.
+As the name **private** suggests, this header must not be included in any other file but the static allocator of the IP-Core.
+The static allocator is not actually part of the IP-Core driver.
+However, we create it in the same folder.
+
+1. Create ``uz_myIP_staticAllocator.h`` and ``uz_myIP_staticAllocator.c`` in the IP-Core folder of myIP

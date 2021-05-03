@@ -10,7 +10,9 @@ struct uz_wavegen {
 	float start_frequency_Hz;
 	float end_frequency_Hz;
 	float duration_Sec;
-	float start_delay_Sec;
+	float initial_delay_Sec;
+	float initial_global_time_Sec;
+	float transition_angle;
 };
 
 float uz_wavegen_sine(float amplitude, float frequency_Hz);

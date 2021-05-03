@@ -656,3 +656,7 @@ Integration in Vitis
 7. Run the UltraZohm, the success message should be printed to the Vitis Serial Terminal.
 
 
+Video
+=====
+
+.. youtube::  dbbIwcfGKk8

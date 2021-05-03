@@ -1,8 +1,8 @@
-.. _tutorial_create_ipcore_driver:
+.. _how_to_create_ipcore_driver:
 
-=================================
-Tutorial: Create a IP-core driver
-=================================
+==============================
+How to create a IP-core driver
+==============================
 
 This tutorial creates an software driver for the :ref:`AXI_testIP`.
 Only a part of the functionality of :ref:`AXI_testIP` is implemented here, i.e., the multiplication of two integer values on the PL.
@@ -540,3 +540,122 @@ The static allocator is not actually part of the IP-Core driver.
 However, we create it in the same folder.
 
 1. Create ``uz_myIP_staticAllocator.h`` and ``uz_myIP_staticAllocator.c`` in the IP-Core folder of myIP
+
+
+.. code-block:: c
+   :linenos:
+   :caption: ``uz_myIP_staticAllocator.c``
+
+   #include "uz_myIP.h"
+   #include "uz_myIP_private.h"
+   #include "xparameters.h"
+   
+   static uz_myIP uz_myIP_instance1={
+       .base_address=XPAR_UZ_AXI_TESTIP_0_BASEADDR,
+       .ip_clk_frequency_Hz=100000000U
+   };
+   
+   uz_myIP* uz_myIP_allocate_instance_one(void){
+       return (uz_myIP_init(&uz_myIP_instance1));
+   }
+
+.. code-block:: c
+   :linenos:
+   :caption: ``uz_myIP_staticAllocator.h``
+
+   #pragma once
+   #include "uz_myIP.h"
+   
+   uz_myIP* uz_myIP_allocate_instance_one(void);
+   
+2. Add the following line to ``software/Baremetal/tests/support/xparameters.h``. Since ``uz_myIP_staticAllocator.c`` depends on the base address, which is located in the BSP file (``xparameters.h``). The test should not depend on the BSP, thus the file in the test folder is used for the tests instead of the real ``xparameters.h`` file.
+
+.. code-block:: c
+   :linenos:
+
+   #define XPAR_UZ_AXI_TESTIP_0_BASEADDR 0xffff000f // random number for base address testing
+
+3. Add a test for the staic allocator. Note that we have to include ``xparameters.h`` (i.e., the file in the support folder, not from the BSP) and we mock the ``_hw`` functions.
+
+.. code-block:: c
+   :linenos:
+   :caption: ``test_uz_myIP_staticAllocator.c``
+
+   #ifdef TEST
+
+   #include "unity.h"
+   #include "uz_myIP.h"
+   #include "mock_uz_myIP_hw.h"
+   #include "uz_myIP_staticAllocator.h"
+   #include "xparameters.h"
+   
+   void setUp(void)
+   {
+   }
+   
+   void tearDown(void)
+   {
+   }
+   
+   void test_uz_myIP_staticAllocator_return_pointer_to_instance_and_multiply_a_times_b(void)
+   {
+       uz_myIP* test_instance = uz_myIP_allocate_instance_one();
+       int a=10;
+       uz_myIP_hw_write_A_Expect(XPAR_UZ_AXI_TESTIP_0_BASEADDR,a);
+       int b=-10;
+       uz_myIP_hw_write_B_Expect(XPAR_UZ_AXI_TESTIP_0_BASEADDR,b);
+       uz_myIP_hw_read_C_ExpectAndReturn(XPAR_UZ_AXI_TESTIP_0_BASEADDR,-100);
+       int c=uz_myIP_multiply(test_instance,a,b);
+       TEST_ASSERT_EQUAL_INT32(a*b,c);
+   }
+   
+   #endif // TEST
+
+
+Integration in Vitis
+====================
+
+1. Open Vitis
+2. (if not already done) Run the tcl script to generate the workspace
+3. Navigate to the Baremetal code
+4. Create the file ``uz_myIP_testebench.h`` in the ``sw`` folder
+
+.. code-block:: c
+   :linenos:
+
+   #pragma once
+
+   void uz_myIP_testbench(void);
+
+4. Create the file ``uz_myIP_testebench.c`` in the ``sw`` folder. Note how the code is basically the same as the test ``test_uz_myIP_staticAllocator_return_pointer_to_instance_and_multiply_a_times_b`` without the assertions.
+
+.. code-block:: c
+   :linenos:
+
+   #include "uz_myIP_testbench.h"
+   #include "../uz/uz_HAL.h"
+   #include "../IP_Cores/uz_myIP/uz_myIP.h"
+   #include "../IP_Cores/uz_myIP/uz_myIP_staticAllocator.h"
+   
+   void uz_myIP_testbench(void){
+       uz_myIP* test_instance = uz_myIP_allocate_instance_one();
+       int a=10;
+       int b=-10;
+       int c=uz_myIP_multiply(test_instance,a,b);
+       uz_printf("Hardware multiply: %i, Software multiply: %i\n", c, a*b);
+       if (c==a*b){
+       	uz_printf("Success: hardware and software multiply are equal! \n");
+       }else{
+       	uz_printf("Fail: hardware and software multiply are NOT equal! \n");
+       }
+   
+       while(1){
+       	// do nothing and loop forever
+       }
+   }
+
+5. In ``main.c`` (Baremetal) include ``#include "sw/uz_myIP_testbench.h"`` and call ``uz_myIP_testbench();`` before the ISR is initialized!
+6. Add the connected serial port to the Vitis Serial Terminal
+7. Run the UltraZohm, the success message should be printed to the Vitis Serial Terminal.
+
+

@@ -14,7 +14,7 @@ void tearDown(void)
 {
 }
 
-void test_uz_myIP_staticAllocator_return_pointer_to_instance(void)
+void test_uz_myIP_staticAllocator_return_pointer_to_instance_and_multiply_a_times_b(void)
 {
     uz_myIP* test_instance = uz_myIP_allocate_instance_one();
     int a=10;

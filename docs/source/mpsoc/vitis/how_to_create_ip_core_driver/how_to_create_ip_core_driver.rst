@@ -86,13 +86,12 @@ Write the test for this behavior:
        int a=-10;
        // Test passes if uz_axi_write_int32 is called once with these arguments
        uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+A_int32_Data_uz_axi_testIP,a); 
-       uz_axi_write_int32
        uz_myIP_hw_write_A(TEST_BASE_ADDRESS,a);
    }
 
-2. Run the tests (type ``ceedling test:all`` in terminal)
-3. Tests fail with a warning that ``uz_myIP_hw_write_to_A`` has an implicit declaration
-4. Declare the required functions to read and write from the IP-core in ``uz_myIP_hw.h``
+1. Run the tests (type ``ceedling test:all`` in terminal)
+2. Tests fail with a warning that ``uz_myIP_hw_write_to_A`` has an implicit declaration
+3. Declare the required functions to read and write from the IP-core in ``uz_myIP_hw.h``
 
 .. code-block:: c
    :linenos:
@@ -377,23 +376,23 @@ Implement the actual function of the driver.
        uz_assert_not_NULL(self);
    }
 
-9. Add another test that passes the right pointer to the init function and makes sure the right pointer is returned. Note that we use a local version of the struct for the init tests to prevent the tests from interfering with each other.
+9. Add another test that passes the right pointer to the init function and makes sure the right pointer is returned. Note that we reset the ``is_ready`` flag to ``false`` in the ``setup`` function (called before every test) to prevent the tests from interfering with each other.
 
 .. code-block:: c
    :linenos:
 
-   void test_uz_myIP_test_right_pointer_returned_form_init(void){
-   uz_myIP test_instance={
-   .base_address=TEST_BASE_ADDRESS,
-   .ip_clk_frequency_Hz=TEST_IP_CORE_FRQ
-   };
-   
-   uz_myIP* test_ptr=uz_myIP_init(&test_instance);
-   TEST_ASSERT_EQUAL_PTR(test_ptr,&test_instance);
+   void setUp(void)
+   {
+    instance.is_ready=false;
    }
 
-10. Run the test, it will fail since the pointer are not equal.
-11. Return the right pointer from ``uz_myIP_init``:
+   void test_uz_myIP_test_right_pointer_returned_form_init(void){   
+   uz_myIP* test_ptr=uz_myIP_init(&instance);
+   TEST_ASSERT_EQUAL_PTR(test_ptr,&instance);
+   }
+
+10.  Run the test, it will fail since the pointer are not equal.
+11.  Return the right pointer from ``uz_myIP_init``:
 
 .. code-block:: c
    :linenos:
@@ -409,14 +408,9 @@ Implement the actual function of the driver.
    :linenos:
 
    void test_uz_myIP_test_double_init(void){
-   uz_myIP test_instance={
-      .base_address=TEST_BASE_ADDRESS,
-      .ip_clk_frequency_Hz=TEST_IP_CORE_FRQ
-   };
-   
-   uz_myIP* test_ptr=uz_myIP_init(&test_instance);
-   TEST_ASSERT_EQUAL_PTR(test_ptr,&test_instance);
-   TEST_ASSERT_FAIL_ASSERT(test_ptr=uz_myIP_init(&test_instance));
+   uz_myIP* test_ptr=uz_myIP_init(&instance);
+   TEST_ASSERT_EQUAL_PTR(test_ptr,&instance);
+   TEST_ASSERT_FAIL_ASSERT(test_ptr=uz_myIP_init(&instance));
    }
 
 13. Include ``uz_myIP_private``, set ``is_ready`` to true in the initialization, and add an assert in ``uz_myIP.c`` to pass the test:
@@ -426,12 +420,15 @@ Implement the actual function of the driver.
 
    #include "uz_myIP.h"
    #include "../../uz/uz_HAL.h"
-
-    uz_myIP* uz_myIP_init(uz_myIP* self){
-    uz_assert_not_NULL(self);
-    uz_assert_false(self->is_ready);
-    return (self);
-    }
+   #include "uz_myIP_private.h"
+   
+   uz_myIP *uz_myIP_init(uz_myIP *self)
+   {
+       uz_assert_not_NULL(self);
+       uz_assert_false(self->is_ready);
+       self->is_ready=true;
+       return (self);
+   }
 
 14. Test to prevent calling init without initialization of the base address:
 
@@ -446,18 +443,18 @@ Implement the actual function of the driver.
    TEST_ASSERT_FAIL_ASSERT(uz_myIP* test_ptr=uz_myIP_init(&test_instance));
    }
 
-15. Test fails, add ``    uz_assert_not_zero(self->base_address);``
+15. Test fails, add ``uz_assert_not_zero(self->base_address);`` to ``uz_myIP_init``
 16. Repeat for ``ip_clk_frequency_Hz``. Add ``assert_not_zero(self->ip_clk_frequency_Hz`` to ``uz_myIP_init`` and the following test:
 
 .. code-block:: c
    :linenos:
 
-   void test_uz_myIP_test_base_address_not_zero(void){
-   uz_myIP test_instance={
-      .ip_clk_frequency_Hz=TEST_IP_CORE_FRQ
-   };
+   void test_uz_myIP_test_ip_core_frq_not_zero(void)
+   {
+       uz_myIP test_instance = {
+           .base_address = TEST_BASE_ADDRESS};
    
-   TEST_ASSERT_FAIL_ASSERT(uz_myIP* test_ptr=uz_myIP_init(&test_instance));
+       TEST_ASSERT_FAIL_ASSERT(uz_myIP *test_ptr = uz_myIP_init(&test_instance));
    }
 
 17. Add a test for the multiplication :math:`C=A \cdot B`:

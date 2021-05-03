@@ -19,6 +19,18 @@ Prerequisites
 - Install `remote container extension <https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers>`_
 - Clone the ``ultrazohm_sw`` repository
 
+Podman instead of Docker
+------------------------
+
+Using remote container with Docker might lead to unwanted problems with file permissions on Linux and Docker runs as root by default.
+`Podman <https://github.com/containers/podman>`_ can be used as a rootless alternative to Docker.
+
+- `Podman installation <https://podman.io/getting-started/installation>`_
+- `VS Code documentation to use podman instead of Docker <https://code.visualstudio.com/docs/remote/containers>`_
+- To use, install Podman and write ``podman`` in the VS Code Setting ``Remote -> Container -> Docker Path``
+
+.. note:: It might be possible to use Podman with WSL2 on Windows, yet this is not tested. See https://www.redhat.com/sysadmin/podman-windows-wsl2 
+
 Usage
 *****
 

@@ -92,8 +92,8 @@ float uz_wavegen_saturation(float signal, float upper_limit, float lower_limit) 
 float uz_wavegen_chirp(uz_wavegen* self) {
 	uz_assert(self->is_ready);
 	float t = uz_SystemTime_GetGlobalTimeInSec();
-	float chirp_rate = (self->end_frequency_Hz - self->start_frequency_Hz) / self->duration;
-	self->time_integrator_s += 0.0001 * t;
-	return (self->amplitude * sinf(2.0 * M_PI * chirp_rate * self->time_integrator_s));
+	float chirp_rate = (self->end_frequency_Hz - self->start_frequency_Hz) / self->duration_Sec;
+	self->time_integrator_Sec += 0.0001 * t;
+	return (self->amplitude * sinf(2.0 * M_PI * chirp_rate * self->time_integrator_Sec));
 
 }

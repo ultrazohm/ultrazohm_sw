@@ -27,8 +27,12 @@ This guide adapts the `Standalone Application Debug using System Debugger on QEM
 8. Don't change any other settings
 9. Click **Apply** and then **run**
 10. Click **Start Emulator and Run**
-11. The **emulation console** should open. If it doesn't, go to **Window > Show view > Xilinx > Emulation Console**
-12. To stop the Emulator, go to **Xilinx > Start/Stop Emulator**
+11. View after the emulation and debug have started.
+
+.. image:: Debug_view_launch.png
+
+12. The **emulation console** should open. If it doesn't, go to **Window > Show view > Xilinx > Emulation Console**
+13. To stop the Emulator, go to **Xilinx > Start/Stop Emulator**
 
  
 

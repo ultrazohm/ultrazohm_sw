@@ -71,6 +71,7 @@ Syllabus
     general/ci_pipeline
     general/howToDocs/howToDocs
     general/useCases/useCases
+    general/vscode_remote_container/vscode_remote_container
 
 .. toctree::
     :maxdepth: 2

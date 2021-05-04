@@ -89,12 +89,6 @@ float uz_wavegen_saturation(float signal, float upper_limit, float lower_limit) 
 	return (signal);
 }
 
-struct uz_wavegen* uz_wavegen_chirp_init(float amplitude, float initial_frequency_Hz, float finish_frequency_Hz, float chirp_duration_Sec, float start_delay_Sec) {
-	uz_wavegen chirp_settings = { .is_ready = true, .time_integrator_Sec = 0.0f, .amplitude = 0.0f, .start_frequency_Hz = initial_frequency_Hz, .end_frequency_Hz = finish_frequency_Hz,
-	                .duration_Sec = chirp_duration_Sec, .initial_delay_Sec = start_delay_Sec, .initial_global_time_Sec = uz_SystemTime_GetGlobalTimeInSec() };
-	return (chirp_settings);
-}
-
 float uz_wavegen_chirp(uz_wavegen* self) {
 	uz_assert(self->is_ready);
 	uz_assert(self->start_frequency_Hz > 0);

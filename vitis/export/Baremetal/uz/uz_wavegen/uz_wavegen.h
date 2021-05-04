@@ -5,7 +5,7 @@ typedef struct uz_wavegen uz_wavegen;
 
 struct uz_wavegen {
 	bool is_ready;
-	float time_integrator_Sec;
+	float elapsed_time_since_start;
 	float amplitude;
 	float start_frequency_Hz;
 	float end_frequency_Hz;

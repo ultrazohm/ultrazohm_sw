@@ -4,8 +4,8 @@
 #include "uz_ipCore_staticAllocator.h"
 
 int main(){
-    uz_ipCore_handle ipCore_handle_instance1=uz_ipCore_allocateAndInit_instance1();
-    uz_ipCore_handle ipCore_handle_instance2=uz_ipCore_allocateAndInit_instance2();
+    uz_ipCore* ipCore_handle_instance1=uz_ipCore_allocateAndInit_instance1();
+    uz_ipCore* ipCore_handle_instance2=uz_ipCore_allocateAndInit_instance2();
     int var=10;
     uz_ipCore_set_variable(ipCore_handle_instance1,var);
     uz_ipCore_set_variable(ipCore_handle_instance2,var*2);

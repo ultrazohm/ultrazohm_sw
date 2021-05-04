@@ -15,7 +15,7 @@
 
 //Includes from own files
 #include "main.h"
-
+#include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -58,7 +58,8 @@ int main(void) {
 
 	// Initialize Park-Transformation 123 to dq
 	DQTransformation_Initialize(&Global_Data);
-
+	uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
+	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
 	//Initialize PWM and switch signal control
 	PWM_SS_Initialize(&Global_Data); 	// two-level modulator
 	PWM_3L_Initialize(&Global_Data);	// three-level modulator
@@ -77,8 +78,6 @@ int main(void) {
 
 	//Initialize the Soft-Oscilloscope ("JavaScope")
 	JavaScope_initalize(&Global_Data);
-
-
 
 	// Initialize the Interrupts
 	Initialize_ISR();

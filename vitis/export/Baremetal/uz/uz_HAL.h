@@ -53,13 +53,22 @@ static inline int32_t uz_axi_read_int32(uintptr_t Addr) {
 }
 
 static inline void uz_axi_write_bool(uintptr_t Addr, _Bool enable) {
-
 	if (enable == true) {
 		uz_axi_write_uint32(Addr, (uint32_t) 0x00000001);
 	}
 	if (enable == false) {
 		uz_axi_write_uint32(Addr, (uint32_t) 0x00000000);
 	}
+}
+
+static inline _Bool uz_axi_read_bool(uintptr_t Addr) {
+	uint32_t tmp = uz_axi_read_uint32(Addr);
+	uz_assert( (tmp ==0x00000000) || (tmp==0x00000001) );
+	bool return_value = false;
+	if (tmp == 0x00000001) {
+		return_value = true;
+	}
+	return (return_value);
 }
 
 static inline float uz_convert_sfixed_to_float(int32_t data, int number_of_fractional_bits) {
@@ -71,7 +80,6 @@ static inline int32_t uz_convert_float_to_sfixed(float data, int number_of_fract
 	uz_assert(number_of_fractional_bits>=0);
 	return ((int32_t) ldexpf(data, number_of_fractional_bits));
 }
-
 
 #endif // Endif of guard
 

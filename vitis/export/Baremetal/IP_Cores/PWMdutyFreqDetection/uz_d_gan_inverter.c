@@ -3,7 +3,7 @@
 #include "../../uz/uz_HAL.h"
 #include "uz_d_gan_inverter.h"
 
-float uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(uz_d_gan_inverter_handle self){
+float uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(uz_d_gan_inverter_handle self, float dutyCycPerCent){
 	uz_assert_not_NULL(self);
-	return (self->PWMdutyCycPerCent*1.6234+20.13);
+	return (dutyCycPerCent*1.6234+20.13);
 }

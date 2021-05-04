@@ -7,10 +7,14 @@ typedef struct uz_d_gan_inverter uz_d_gan_inverter;
 typedef uz_d_gan_inverter *uz_d_gan_inverter_handle;
 
 uz_d_gan_inverter_handle uz_d_gan_inverter_init(uz_d_gan_inverter_handle self);
-int uz_d_gan_inverter_get_PWMFreqTicks(uz_d_gan_inverter_handle self);
-int uz_d_gan_inverter_get_PWMhightimeTicks(uz_d_gan_inverter_handle self);
-int uz_d_gan_inverter_get_PWMlowtimeTicks(uz_d_gan_inverter_handle self);
-float uz_d_gan_inverter_get_PWMdutyCycPerCent(uz_d_gan_inverter_handle self);
+int uz_d_gan_inverter_get_PWMFreqTicks_H1(uz_d_gan_inverter_handle self);
+int uz_d_gan_inverter_get_PWMhightimeTicks_H1(uz_d_gan_inverter_handle self);
+int uz_d_gan_inverter_get_PWMlowtimeTicks_H1(uz_d_gan_inverter_handle self);
+float uz_d_gan_inverter_get_PWMdutyCycPerCent_H1(uz_d_gan_inverter_handle self);
+int uz_d_gan_inverter_get_PWMFreqTicks_L1(uz_d_gan_inverter_handle self);
+int uz_d_gan_inverter_get_PWMhightimeTicks_L1(uz_d_gan_inverter_handle self);
+int uz_d_gan_inverter_get_PWMlowtimeTicks_L1(uz_d_gan_inverter_handle self);
+float uz_d_gan_inverter_get_PWMdutyCycPerCent_L1(uz_d_gan_inverter_handle self);
 int uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_handle self);
 int uz_d_gan_inverter_get_OC_GaN_L1(uz_d_gan_inverter_handle self);
 int uz_d_gan_inverter_get_OC_GaN_H2(uz_d_gan_inverter_handle self);

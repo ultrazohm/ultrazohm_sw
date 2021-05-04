@@ -3,10 +3,14 @@
 
 static uz_d_gan_inverter d_gan_inverter_instance1={
   .base_address=XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR,
-  .PWMFreqTicks=0,
-  .PWMhightimeTicks=0,
-  .PWMlowtimeTicks=0,
-  .PWMdutyCycPerCent=0,
+  .PWMFreqTicks_H1=0,
+  .PWMhightimeTicks_H1=0,
+  .PWMlowtimeTicks_H1=0,
+  .PWMdutyCycPerCent_H1=0,
+  .PWMFreqTicks_L1=0,
+  .PWMhightimeTicks_L1=0,
+  .PWMlowtimeTicks_L1=0,
+  .PWMdutyCycPerCent_L1=0,
   .OC_GaN_H1=0,
   .OC_GaN_L1=0,
   .OC_GaN_H2=0,

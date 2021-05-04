@@ -9,32 +9,59 @@ uz_d_gan_inverter_handle uz_d_gan_inverter_init(uz_d_gan_inverter_handle self){
 	return self;
 }
 
-int uz_d_gan_inverter_get_PWMFreqTicks(uz_d_gan_inverter_handle self){
+int uz_d_gan_inverter_get_PWMFreqTicks_H1(uz_d_gan_inverter_handle self){
 	uz_assert_not_NULL(self);
-	self->PWMFreqTicks = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_1_freq_Data_UZ_D_GaN_Inverter);
-	return(self->PWMFreqTicks);
+	self->PWMFreqTicks_H1 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_1_freq_Data_UZ_D_GaN_Inverter);
+	return(self->PWMFreqTicks_H1);
 }
 
-int uz_d_gan_inverter_get_PWMhightimeTicks(uz_d_gan_inverter_handle self){
+int uz_d_gan_inverter_get_PWMhightimeTicks_H1(uz_d_gan_inverter_handle self){
 	uz_assert_not_NULL(self);
-	self->PWMhightimeTicks = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_1_hightime_Data_UZ_D_GaN_Inverter);
-	return(self->PWMhightimeTicks);
+	self->PWMhightimeTicks_H1 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_1_hightime_Data_UZ_D_GaN_Inverter);
+	return(self->PWMhightimeTicks_H1);
 }
 
-int uz_d_gan_inverter_get_PWMlowtimeTicks(uz_d_gan_inverter_handle self){
+int uz_d_gan_inverter_get_PWMlowtimeTicks_H1(uz_d_gan_inverter_handle self){
 	uz_assert_not_NULL(self);
-	self->PWMlowtimeTicks = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_1_lowtime_Data_UZ_D_GaN_Inverter);
-	return(self->PWMlowtimeTicks);
+	self->PWMlowtimeTicks_H1 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_1_lowtime_Data_UZ_D_GaN_Inverter);
+	return(self->PWMlowtimeTicks_H1);
 }
 
-float uz_d_gan_inverter_get_PWMdutyCycPerCent(uz_d_gan_inverter_handle self){
+float uz_d_gan_inverter_get_PWMdutyCycPerCent_H1(uz_d_gan_inverter_handle self){
 	int32_t axi_read_temp;
 
 	uz_assert_not_NULL(self);
 	axi_read_temp = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_1_dutycyc_Data_UZ_D_GaN_Inverter);
-	self->PWMdutyCycPerCent = (uz_convert_sfixed_to_float(axi_read_temp,24));
-	return(self->PWMdutyCycPerCent);
+	self->PWMdutyCycPerCent_H1 = (uz_convert_sfixed_to_float(axi_read_temp,24));
+	return(self->PWMdutyCycPerCent_H1);
 }
+
+int uz_d_gan_inverter_get_PWMFreqTicks_L1(uz_d_gan_inverter_handle self){
+	uz_assert_not_NULL(self);
+	self->PWMFreqTicks_L1 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_2_freq_Data_UZ_D_GaN_Inverter);
+	return(self->PWMFreqTicks_L1);
+}
+
+int uz_d_gan_inverter_get_PWMhightimeTicks_L1(uz_d_gan_inverter_handle self){
+	uz_assert_not_NULL(self);
+	self->PWMhightimeTicks_L1 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_2_hightime_Data_UZ_D_GaN_Inverter);
+	return(self->PWMhightimeTicks_L1);
+}
+
+int uz_d_gan_inverter_get_PWMlowtimeTicks_L1(uz_d_gan_inverter_handle self){
+	uz_assert_not_NULL(self);
+	self->PWMlowtimeTicks_L1 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_2_lowtime_Data_UZ_D_GaN_Inverter);
+	return(self->PWMlowtimeTicks_L1);
+}
+
+//float uz_d_gan_inverter_get_PWMdutyCycPerCent_L1(uz_d_gan_inverter_handle self){
+//	int32_t axi_read_temp;
+//
+//	uz_assert_not_NULL(self);
+//	axi_read_temp = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_2_dutycyc_Data_UZ_D_GaN_Inverter);
+//	self->PWMdutyCycPerCent_L1 = (uz_convert_sfixed_to_float(axi_read_temp,24));
+//	return(self->PWMdutyCycPerCent_L1);
+//}
 
 int uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_handle self) {
 	uz_assert_not_NULL(self);

@@ -140,11 +140,16 @@ int main(void) {
 				uz_d_gan_inverter_set_PWM_EN(uz_d_gan_inverter_instance1, 1);
 
 				//Get Data From UZ_D_GaN_Inverter
-				Global_Data.da.D4.PWMFreqTicks = uz_d_gan_inverter_get_PWMFreqTicks(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.PWMhightimeTicks = uz_d_gan_inverter_get_PWMhightimeTicks(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.PWMlowtimeTicks = uz_d_gan_inverter_get_PWMlowtimeTicks(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.PWMdutyCycPerCent = uz_d_gan_inverter_get_PWMdutyCycPerCent(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.H1_GaN_ChipTempDegreesCelsius = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMFreqTicks_H1 = uz_d_gan_inverter_get_PWMFreqTicks_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMhightimeTicks_H1 = uz_d_gan_inverter_get_PWMhightimeTicks_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMlowtimeTicks_H1 = uz_d_gan_inverter_get_PWMlowtimeTicks_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMdutyCycPerCent_H1 = uz_d_gan_inverter_get_PWMdutyCycPerCent_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.H1_GaN_ChipTempDegreesCelsius_H1 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(uz_d_gan_inverter_instance1, uz_d_gan_inverter_instance1->PWMdutyCycPerCent_H1);
+				Global_Data.da.D4.PWMFreqTicks_L1 = uz_d_gan_inverter_get_PWMFreqTicks_L1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMhightimeTicks_L1 = uz_d_gan_inverter_get_PWMhightimeTicks_L1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMlowtimeTicks_L1 = uz_d_gan_inverter_get_PWMlowtimeTicks_L1(uz_d_gan_inverter_instance1);
+//				Global_Data.da.D4.PWMdutyCycPerCent_L1 = uz_d_gan_inverter_get_PWMdutyCycPerCent_L1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.H1_GaN_ChipTempDegreesCelsius_L1 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(uz_d_gan_inverter_instance1, uz_d_gan_inverter_instance1->PWMdutyCycPerCent_L1);
 				Global_Data.da.D4.OC_GaN_H1 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
 				Global_Data.da.D4.OC_GaN_L1 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
 				Global_Data.da.D4.OC_GaN_H2 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);

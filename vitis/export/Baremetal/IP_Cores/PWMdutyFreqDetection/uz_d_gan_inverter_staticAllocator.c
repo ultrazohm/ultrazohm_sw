@@ -2,11 +2,28 @@
 #include "xparameters.h"
 
 static uz_d_gan_inverter d_gan_inverter_instance1={
-  .base_address=XPAR_PWMDUTYFREQDETECTION_0_BASEADDR,
+  .base_address=XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR,
   .PWMFreqTicks=0,
   .PWMhightimeTicks=0,
   .PWMlowtimeTicks=0,
-  .PWMdutyCycPerCent=0
+  .PWMdutyCycPerCent=0,
+  .OC_GaN_H1=0,
+  .OC_GaN_L1=0,
+  .OC_GaN_H2=0,
+  .OC_GaN_L2=0,
+  .OC_GaN_H3=0,
+  .OC_GaN_L3=0,
+  .FAULT_GaN_H1=0,
+  .FAULT_GaN_L1=0,
+  .FAULT_GaN_H2=0,
+  .FAULT_GaN_L2=0,
+  .FAULT_GaN_H3=0,
+  .FAULT_GaN_L3=0,
+  .I_DIAG=0,
+  .I1_DIAG=0,
+  .I2_DIAG=0,
+  .I3_DIAG=0,
+  .PWM_EN=0
 };
 
 uz_d_gan_inverter_handle uz_d_gan_inverter_allocateAndInit_instance1(void){

@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>ea1f1630</spirit:value>
+            <spirit:value>ee2db792</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>ea1f1630</spirit:value>
+            <spirit:value>ee2db792</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -990,10 +990,6 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/UZ_D_GaN_Inverter_src_PWMdutycycFreqDetection.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1004,7 +1000,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/UZ_D_GaN_Inverter.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_c91681e1</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_db5c229a</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1055,11 +1051,6 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/UZ_D_GaN_Inverter_src_PWMdutycycFreqDetection.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
@@ -1087,10 +1078,6 @@
     <spirit:fileSet>
       <spirit:name>xilinx_productguide_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>doc/doc_arch_axi4_Pipeline_Register.jpg</spirit:name>
-        <spirit:userFileType>image</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>doc/doc_arch_axi4_lite.jpg</spirit:name>
         <spirit:userFileType>image</spirit:userFileType>
       </spirit:file>
@@ -1099,7 +1086,7 @@
         <spirit:userFileType>image</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>doc/UZ_D_GaN_Inverter_ip_core_report.html</spirit:name>
+        <spirit:name>doc/UZ_D_GaN_Inverter_reduced_ip_core_report.html</spirit:name>
         <spirit:userFileType>html</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -1134,14 +1121,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>UZ_D_GaN_Inverter</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2105010024</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-04-30T22:24:49Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2105031647</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-05-03T14:48:07Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="37780e12"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="ee8e8f78"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="41cb0ec2"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="994ef33d"/>
     </xilinx:packagingInfo>

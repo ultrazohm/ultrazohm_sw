@@ -1,7 +1,7 @@
  --> UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter_pkg
-UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Fall Nonpositive --> UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive
-UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/Detect Rise Positive --> UZ_D_GaN_Inverter_src_Detect_Rise_Positive
-UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/HDL Reciprocal/HDL Reciprocal_core --> UZ_D_GaN_Inverter_src_HDL_Reciprocal_core
-UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/HDL Reciprocal --> UZ_D_GaN_Inverter_src_HDL_Reciprocal
-UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection --> UZ_D_GaN_Inverter_src_PWMdutycycFreqDetection
+UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/For Each Subsystem/Detect Rise Positive --> UZ_D_GaN_Inverter_src_Detect_Rise_Positive
+UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/For Each Subsystem/Detect Fall Nonpositive --> UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive
+UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/For Each Subsystem/HDL Reciprocal/HDL Reciprocal_core --> UZ_D_GaN_Inverter_src_HDL_Reciprocal_core
+UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/For Each Subsystem/HDL Reciprocal --> UZ_D_GaN_Inverter_src_HDL_Reciprocal
+UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/For Each Subsystem --> UZ_D_GaN_Inverter_src_For_Each_Subsystem
 UZ_D_GaN_Inverter/UZ_D_GaN_Inverter --> UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter

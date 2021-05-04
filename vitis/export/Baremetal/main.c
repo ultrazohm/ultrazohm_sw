@@ -98,12 +98,12 @@ int main(void) {
 	while (1) {
 
 
-		//Get Data From UZ_D_GaN_Inverter
-		Global_Data.da.D4.PWMFreqTicks = uz_d_gan_inverter_get_PWMFreqTicks(uz_d_gan_inverter_instance1);
-		Global_Data.da.D4.PWMhightimeTicks = uz_d_gan_inverter_get_PWMhightimeTicks(uz_d_gan_inverter_instance1);
-		Global_Data.da.D4.PWMlowtimeTicks = uz_d_gan_inverter_get_PWMlowtimeTicks(uz_d_gan_inverter_instance1);
-		Global_Data.da.D4.PWMdutyCycPerCent = uz_d_gan_inverter_get_PWMdutyCycPerCent(uz_d_gan_inverter_instance1);
-		Global_Data.da.D4.H1_GaN_ChipTempDegreesCelsius = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(uz_d_gan_inverter_instance1);
+//		//Get Data From UZ_D_GaN_Inverter
+//		Global_Data.da.D4.PWMFreqTicks = uz_d_gan_inverter_get_PWMFreqTicks(uz_d_gan_inverter_instance1);
+//		Global_Data.da.D4.PWMhightimeTicks = uz_d_gan_inverter_get_PWMhightimeTicks(uz_d_gan_inverter_instance1);
+//		Global_Data.da.D4.PWMlowtimeTicks = uz_d_gan_inverter_get_PWMlowtimeTicks(uz_d_gan_inverter_instance1);
+//		Global_Data.da.D4.PWMdutyCycPerCent = uz_d_gan_inverter_get_PWMdutyCycPerCent(uz_d_gan_inverter_instance1);
+//		Global_Data.da.D4.H1_GaN_ChipTempDegreesCelsius = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(uz_d_gan_inverter_instance1);
 
 		// poll the buttons
 		Global_Data.dv.sw1 = uz_GetPushButtonEnableSystem();
@@ -133,8 +133,34 @@ int main(void) {
 		                //Check the control values
 			if (Global_Data.cw.enableSystem == false) {
 				turnPowerElectronicsOff(&Global_Data); //Switch power converter off
+				uz_d_gan_inverter_set_PWM_EN(uz_d_gan_inverter_instance1, 0);
 			} else if ((Global_Data.cw.enableSystem == true) && bInit == false) { //Call this function only once. If there was an error, "enableSystem " must be reseted!
 				bInit = turnPowerElectronicsOn(&Global_Data); //Switch power converter on
+				//Set Data To UZ_D_GaN_Inverter
+				uz_d_gan_inverter_set_PWM_EN(uz_d_gan_inverter_instance1, 1);
+
+				//Get Data From UZ_D_GaN_Inverter
+				Global_Data.da.D4.PWMFreqTicks = uz_d_gan_inverter_get_PWMFreqTicks(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMhightimeTicks = uz_d_gan_inverter_get_PWMhightimeTicks(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMlowtimeTicks = uz_d_gan_inverter_get_PWMlowtimeTicks(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMdutyCycPerCent = uz_d_gan_inverter_get_PWMdutyCycPerCent(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.H1_GaN_ChipTempDegreesCelsius = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.OC_GaN_H1 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.OC_GaN_L1 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.OC_GaN_H2 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.OC_GaN_L2 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.OC_GaN_H3 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.OC_GaN_L3 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.FAULT_GaN_H1 = uz_d_gan_inverter_get_FAULT_GaN_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.FAULT_GaN_L1 = uz_d_gan_inverter_get_FAULT_GaN_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.FAULT_GaN_H2 = uz_d_gan_inverter_get_FAULT_GaN_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.FAULT_GaN_L2 = uz_d_gan_inverter_get_FAULT_GaN_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.FAULT_GaN_H3 = uz_d_gan_inverter_get_FAULT_GaN_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.FAULT_GaN_L3 = uz_d_gan_inverter_get_FAULT_GaN_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.I_DIAG = uz_d_gan_inverter_get_I_DIAG(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.I1_DIAG = uz_d_gan_inverter_get_I1_DIAG(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.I2_DIAG = uz_d_gan_inverter_get_I2_DIAG(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.I3_DIAG = uz_d_gan_inverter_get_I3_DIAG(uz_d_gan_inverter_instance1);
 			}
 
 			if (Global_Data.cw.enableControl == true) {

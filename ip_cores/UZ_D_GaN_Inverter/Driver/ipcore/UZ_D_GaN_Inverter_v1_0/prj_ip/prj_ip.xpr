@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/UZ_D_GaN_Inverter/Driver/hdl_prj/ipcore/UZ_D_GaN_Inverter_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="8f204a149370470ea76905b1e155e4a7"/>
+    <Option Name="Id" Val="19e45186d8c1464f8f37136d5f60d21a"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -116,12 +116,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_PWMdutycycFreqDetection.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

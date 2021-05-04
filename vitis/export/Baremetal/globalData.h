@@ -334,11 +334,27 @@ typedef struct _AnalogAdapters_ {
 } AnalogAdapters;
 
 typedef struct _UZ_D_Gan_Inverter_ {
-	int PWMFreqTicks;
-	int PWMhightimeTicks;
-	int PWMlowtimeTicks;
+	uint32_t PWMFreqTicks;
+	uint32_t PWMhightimeTicks;
+	uint32_t PWMlowtimeTicks;
 	float PWMdutyCycPerCent;
 	float H1_GaN_ChipTempDegreesCelsius;
+	uint32_t OC_GaN_H1;
+	uint32_t OC_GaN_L1;
+	uint32_t OC_GaN_H2;
+	uint32_t OC_GaN_L2;
+	uint32_t OC_GaN_H3;
+	uint32_t OC_GaN_L3;
+	uint32_t FAULT_GaN_H1;
+	uint32_t FAULT_GaN_L1;
+	uint32_t FAULT_GaN_H2;
+	uint32_t FAULT_GaN_L2;
+	uint32_t FAULT_GaN_H3;
+	uint32_t FAULT_GaN_L3;
+	uint32_t I_DIAG;
+	uint32_t I1_DIAG;
+	uint32_t I2_DIAG;
+	uint32_t I3_DIAG;
 } UZ_D_Gan_Inverter;
 
 typedef struct _DigitalAdapters_ {

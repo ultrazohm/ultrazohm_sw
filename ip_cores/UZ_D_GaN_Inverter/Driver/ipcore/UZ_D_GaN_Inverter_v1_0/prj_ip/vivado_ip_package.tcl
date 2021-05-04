@@ -7,7 +7,6 @@ add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive.
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal_core.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal.vhd}
-add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_PWMdutycycFreqDetection.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_reset_sync.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_dut.vhd}
@@ -34,7 +33,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2105010024 [ipx::current_core]
+set_property core_revision 2105031647 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -57,10 +56,6 @@ ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal.vhd} [ipx::get_file
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_PWMdutycycFreqDetection.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_PWMdutycycFreqDetection.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_PWMdutycycFreqDetection.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_PWMdutycycFreqDetection.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -173,14 +168,12 @@ set_property value {ACTIVE_LOW} [ipx::get_bus_parameters POLARITY -of_objects [i
 
 # Add report files
 ipx::add_file_group -type {product_guide} {} [ipx::current_core]
-ipx::add_file {doc/doc_arch_axi4_Pipeline_Register.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
-set_property type {{image}} [ipx::get_files {doc/doc_arch_axi4_Pipeline_Register.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 ipx::add_file {doc/doc_arch_axi4_lite.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
 set_property type {{image}} [ipx::get_files {doc/doc_arch_axi4_lite.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 ipx::add_file {doc/free_running.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
 set_property type {{image}} [ipx::get_files {doc/free_running.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
-ipx::add_file {doc/UZ_D_GaN_Inverter_ip_core_report.html} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
-set_property type {{html}} [ipx::get_files {doc/UZ_D_GaN_Inverter_ip_core_report.html} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
+ipx::add_file {doc/UZ_D_GaN_Inverter_reduced_ip_core_report.html} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
+set_property type {{html}} [ipx::get_files {doc/UZ_D_GaN_Inverter_reduced_ip_core_report.html} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 
 # Add C files
 ipx::add_file_group -type {misc} {} [ipx::current_core]

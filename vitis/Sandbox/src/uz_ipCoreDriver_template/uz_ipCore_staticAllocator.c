@@ -10,10 +10,10 @@ static uz_ipCore ipCore_instance2={
   .variable=0
 };
 
-uz_ipCore_handle uz_ipCore_allocateAndInit_instance1(void){
+uz_ipCore* uz_ipCore_allocateAndInit_instance1(void){
   return (uz_ipCore_init(&ipCore_instance1) );
 }
 
-uz_ipCore_handle uz_ipCore_allocateAndInit_instance2(void){
+uz_ipCore* uz_ipCore_allocateAndInit_instance2(void){
   return (uz_ipCore_init(&ipCore_instance2) );
 }

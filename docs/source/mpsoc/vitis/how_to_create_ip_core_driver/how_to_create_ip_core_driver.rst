@@ -13,6 +13,12 @@ The implementation is done in way that implements the driver and the :ref:`unit_
 
 .. tip:: Somethimes, Ceedling fails to build and unclear errors are present. Try to use ``ceedling clean`` to delete temporary files of ceedling or commenting out the last test, , running `ceedling clean``, running all tests again and comment the last test in again.
 
+Video
+=====
+
+.. youtube::  dbbIwcfGKk8
+
+
 Setup
 =====
 
@@ -654,9 +660,3 @@ Integration in Vitis
 5. In ``main.c`` (Baremetal) include ``#include "sw/uz_myIP_testbench.h"`` and call ``uz_myIP_testbench();`` before the ISR is initialized!
 6. Add the connected serial port to the Vitis Serial Terminal
 7. Run the UltraZohm, the success message should be printed to the Vitis Serial Terminal.
-
-
-Video
-=====
-
-.. youtube::  dbbIwcfGKk8

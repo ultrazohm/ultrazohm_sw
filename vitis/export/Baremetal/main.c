@@ -148,7 +148,7 @@ int main(void) {
 				Global_Data.da.D4.PWMFreqTicks_L1 = uz_d_gan_inverter_get_PWMFreqTicks_L1(uz_d_gan_inverter_instance1);
 				Global_Data.da.D4.PWMhightimeTicks_L1 = uz_d_gan_inverter_get_PWMhightimeTicks_L1(uz_d_gan_inverter_instance1);
 				Global_Data.da.D4.PWMlowtimeTicks_L1 = uz_d_gan_inverter_get_PWMlowtimeTicks_L1(uz_d_gan_inverter_instance1);
-//				Global_Data.da.D4.PWMdutyCycPerCent_L1 = uz_d_gan_inverter_get_PWMdutyCycPerCent_L1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMdutyCycPerCent_L1 = uz_d_gan_inverter_get_PWMdutyCycPerCent_L1(uz_d_gan_inverter_instance1);
 				Global_Data.da.D4.H1_GaN_ChipTempDegreesCelsius_L1 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(uz_d_gan_inverter_instance1, uz_d_gan_inverter_instance1->PWMdutyCycPerCent_L1);
 				Global_Data.da.D4.OC_GaN_H1 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
 				Global_Data.da.D4.OC_GaN_L1 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);

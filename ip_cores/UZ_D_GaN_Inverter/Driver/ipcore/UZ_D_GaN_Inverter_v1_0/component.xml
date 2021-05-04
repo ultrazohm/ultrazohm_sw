@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>aa50a26b</spirit:value>
+            <spirit:value>2513fd83</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>aa50a26b</spirit:value>
+            <spirit:value>2513fd83</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -998,6 +998,14 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1_core.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1008,7 +1016,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/UZ_D_GaN_Inverter.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_de6ffef3</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_a46478f5</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1065,6 +1073,16 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1_core.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1139,14 +1157,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>UZ_D_GaN_Inverter</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2105041029</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-05-04T08:29:35Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2105041341</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-05-04T11:42:42Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="a934dde7"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="c2602e20"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="41cb0ec2"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="994ef33d"/>
     </xilinx:packagingInfo>

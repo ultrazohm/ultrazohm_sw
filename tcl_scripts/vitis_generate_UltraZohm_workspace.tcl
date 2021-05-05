@@ -73,7 +73,7 @@ cd $WS_PATH
 
 set PLATFORM_NAME 	UltraZohm
 set XSA_FOLDER 		$FOLDER_PATH/vivado_exported_xsa
-set EXPORT_FOLDER [file join $FOLDER_PATH export]
+set EXPORT_FOLDER [file join $FOLDER_PATH software]
 puts "Path to exports to be imported:"
 puts stdout $EXPORT_FOLDER
 
@@ -163,8 +163,8 @@ puts "Info:(UltraZohm) import Baremetal Application sources"
 #import sources to baremetal project
 # first the c-files are linked
 # then the linker script is copied to the folder with a hard copy due to compilation errors otherwise - note that the sequence (first link the file, then copy the linker script is important due to -soft-link deleting the linker script otherwise
-importsources -name Baremetal -path $FOLDER_PATH/export/Baremetal -soft-link
-importsources -name Baremetal -path $FOLDER_PATH/export/Baremetal/lscript.ld -linker-script 
+importsources -name Baremetal -path $FOLDER_PATH/software/Baremetal/src -soft-link
+importsources -name Baremetal -path $FOLDER_PATH/software/Baremetal/src/lscript.ld -linker-script 
 #add math library to linker option
 app config -name Baremetal -add  libraries m
 
@@ -208,7 +208,7 @@ app config -name Baremetal -set compiler-optimization {Optimize more (-O2)}
 
 puts "Info:(UltraZohm) add standard FSBL.elf"
 platform config -remove-boot-bsp
-platform config -fsbl-elf $FOLDER_PATH/export/FSBL.elf 
+platform config -fsbl-elf $FOLDER_PATH/software/FSBL.elf 
 platform write 
 
 #Clean all

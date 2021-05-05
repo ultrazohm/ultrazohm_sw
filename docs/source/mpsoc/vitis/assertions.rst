@@ -33,7 +33,7 @@ If the assertion fails, the following message is printed to the serial console t
 
 .. code :: c
 
-    Assertion in file /home/ts/Dokumente/ultrazohm_testbench/ultrazohm_sw/vitis/export/Baremetal/main.c on line 135
+    Assertion in file /home/ts/Dokumente/ultrazohm_testbench/ultrazohm_sw/vitis/software/Baremetal/src/main.c on line 135
 
 
 Assertion callback

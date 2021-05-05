@@ -54,7 +54,7 @@ Software
 
 1. Open Vitis
 2. Generate Workspace 
-3. The software driver for the IP-core is located in ``Vitis/export/Baremetal/IP_Cores/uz_simscapeExample/``
+3. The software driver for the IP-core is located in ``Vitis/software/Baremetal/src/IP_Cores/uz_simscapeExample/``
 4. Add the following code to ``main.c`` (of R5) before ``JavaScope_initalize`` is called, e.g., directly before ``uz_SystemTime_init``
 
 .. code-block:: c

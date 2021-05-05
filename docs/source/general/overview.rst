@@ -79,10 +79,9 @@ The online version (docs.ultrazohm.com) is always the documentation of the curre
     │   ├── vitis_generate_UltraZohm_workspace.tcl
     │   └── vitis_update_platform.tcl
     ├── vitis/
-    |   ├── export/
-    │   ├── vivado_exported_xsa
-    |   |   └── zusys_wrapper.xsa
-    │   └── vitis_update_platform.tcl
+    |   ├── software/
+    │   └── vivado_exported_xsa
+    |      └── zusys_wrapper.xsa
     └── vivado/
         └── project/
             └── ultrazohm.xpr

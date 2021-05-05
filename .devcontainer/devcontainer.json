@@ -12,7 +12,7 @@
 	"settings": { 
 		"terminal.integrated.shell.linux": "/bin/bash",
 		"ceedlingExplorer.debugConfiguration": "Ceedling Test Explorer Debug",
-		"ceedlingExplorer.projectPath": "vitis/Sandbox/YourNewProjectName/"
+		"ceedlingExplorer.projectPath": "vitis/software/Baremetal/"
 	},
 
 	// Add the IDs of extensions you want installed when the container is created.
@@ -26,7 +26,9 @@
 		"numaru.vscode-ceedling-test-adapter",
 		"dracula-theme.theme-dracula",
 		"pkief.material-icon-theme",
-		"zhuangtongfa.material-theme"
+		"zhuangtongfa.material-theme",
+		"jeff-hykin.better-cpp-syntax",
+		"atlassian.atlascode"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

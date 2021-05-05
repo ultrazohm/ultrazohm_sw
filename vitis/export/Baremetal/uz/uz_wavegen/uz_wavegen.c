@@ -88,31 +88,3 @@ float uz_wavegen_saturation(float signal, float upper_limit, float lower_limit) 
 	}
 	return (signal);
 }
-
-float uz_wavegen_chirp(uz_wavegen* self) {
-	uz_assert(self->is_ready);
-	uz_assert(self->start_frequency_Hz > 0);
-	uz_assert(self->end_frequency_Hz > 0);
-	uz_assert(self->end_frequency_Hz > self->start_frequency_Hz);
-	uz_assert(self->initial_delay_Sec >= 0);
-	uz_assert(self->duration_Sec > 0);
-	float delay_Sec = self->initial_delay_Sec - self->elapsed_time_since_start;
-	float system_time_Sec = uz_SystemTime_GetGlobalTimeInSec();
-	float t_Sec = self->elapsed_time_since_start - self->initial_delay_Sec;
-	float chirp_rate = (self->end_frequency_Hz - self->start_frequency_Hz) / self->duration_Sec;
-	float chirp_output = 0.0f;
-
-	if (delay_Sec > 0) {
-		chirp_output = 0.0f;
-	} else {
-		if (t_Sec <= self->duration_Sec) {
-			self->transition_angle = 2.0 * M_PI * (chirp_rate / 2 * t_Sec * t_Sec + t_Sec * self->start_frequency_Hz);
-			chirp_output = self->amplitude * sinf(self->transition_angle);
-		} else {
-			chirp_output = self->amplitude * sinf(self->transition_angle + 2.0 * M_PI * t_Sec * self->end_frequency_Hz);
-		}
-	}
-	self->elapsed_time_since_start = system_time_Sec - self->initial_global_time_Sec;
-	return (chirp_output);
-
-}

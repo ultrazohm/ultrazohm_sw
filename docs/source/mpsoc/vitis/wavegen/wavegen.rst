@@ -284,7 +284,8 @@ Chirp function
 .. image:: chirp.png
     :scale: 10
 
-Creates a configurable chirp function. The parameters for configuration are the amplitude, the start and end frequency, the duration for the chirp and a delay for the start of the chirp wave. For the input argmuents a struct is needed.
+Creates a configurable chirp function. The parameters for configuration are the amplitude, the start and end frequency, the duration for the chirp and a delay for the start of the chirp wave.
+After the duration of the chirp wave, the function ``uz_wavegen_chirp()`` will return a continous sinus with the ``end_frequency_Hz``. For the input argmuents a struct is needed.
 
 .. list-table:: Required input arguments
    :widths: 25 25 25
@@ -293,9 +294,6 @@ Creates a configurable chirp function. The parameters for configuration are the 
    * - argument
      - value
      - unit
-   * - is_ready
-     - true/false
-     - 
    * - amplitude
      - +/- float 
      - 
@@ -312,3 +310,14 @@ Creates a configurable chirp function. The parameters for configuration are the 
      - 0 -> \+ float
      - seconds
   
+Function call:
+
+.. code-block:: c
+
+  uz_wavegen_config *config* = {.amplitude= ..., .start_frequency_Hz = ..., .end_frequency_Hz = ..., .duration_Sec = ..., .initial_delay_Sec = ...};
+  uz_wavegen* *name* = uz_wavegen_chirp_init(*config*);
+  float *output* = uz_wavegen_chirp(*name*);
+
+The \*highlighted\* words are the variable name, which can be freely chosen. 
+
+The function ``uz_wavegen_chirp_reset()`` can be used, to reset the chirp. A subsequent call of ``uz_wavegen_chirp()`` will start the chirp function from t=0 again.

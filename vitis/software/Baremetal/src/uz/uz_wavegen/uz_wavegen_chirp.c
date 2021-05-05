@@ -31,7 +31,7 @@ uz_wavegen* uz_wavegen_chirp_init(struct uz_wavegen_config config) {
 	return (self);
 }
 
-void uz_wavegen_chirp_rest(uz_wavegen* self) {
+void uz_wavegen_chirp_reset(uz_wavegen* self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready == true);
 	self->initial_global_time_Sec = uz_SystemTime_GetGlobalTimeInSec();

@@ -25,3 +25,4 @@ float uz_wavegen_saturation(float signal, float upper_limit, float lower_limit);
 // Wave generation with state
 uz_wavegen* uz_wavegen_chirp_init(struct uz_wavegen_config config);
 float uz_wavegen_chirp(uz_wavegen* self);
+void uz_wavegen_chirp_reset(uz_wavegen* self);

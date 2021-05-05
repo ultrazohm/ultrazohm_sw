@@ -9,9 +9,9 @@ Unit tests make sure that the code works as expected.
 Unit tests are short and focused on a specific software module, e.g., testing one translation unit (``.c file``).
 They state how the software ought to behave and tests if it does.
 These tests are run on the local developer machine instead of a UltraZohm.
-Unit tests do not test the complete system and verified that it works (that is system & integration test) but makes sure that individual modules work, i.e., all the small things.
+Unit tests do not test the complete system and verified that it works (that is, system & integration test) but makes sure that individual modules work, i.e., all the small things.
 
-.. note:: Using the Ceedling and unit tests for the UltraZohm requires that usage of :ref:`vscode_remote_container`. The remote container handles the installation of all required tools as well as path's such that no setup is required!
+.. note:: Using the Ceedling and unit tests for the UltraZohm requires that usage of :ref:`vscode_remote_container`. The remote container handles the installation of all required tools and paths such that no setup is required!
 
 We use the four-phase test pattern [#TDD]_ (p. 25):
 
@@ -135,18 +135,18 @@ Note that the function ``uz_axi_write_int32`` expects a call with the sum of bas
 
 .. note:: These tests rely on the usage of the HAL functions and HAL AXi read/write functions.
 
-.. warning:: The unit test for IP-core drivers *only* test if the software works as intended, dedicated testing for the actual hardware of the IP-core is assumed here! The example above tests if the software driver reads and writes the correct registers but the function of the IP-core itself (the multiplication) is not tested by this unit test. 
+.. warning:: The unit test for IP-core drivers *only* tests if the software works as intended. Dedicated testing for the actual hardware of the IP-core is assumed here! The example above tests if the software driver reads and writes the correct registers, but this unit test does not test the function of the IP-core (the multiplication). 
 
 
 Testing assertions
 ------------------
 
-:ref:`assertions` are used in the UltraZohm project to protect form programming errors such as calling functions with arguments that are out of range or passing ``NULL`` pointers.
+:ref:`assertions` are used in the UltraZohm project to protect from programming errors such as calling functions with arguments that are out of range or passing ``NULL`` pointers.
 
 - Include the test macros for the assertions in the test file (``#include "test_assert_with_exception.h``)
-- Use the test macro ``TEST_ASSERT_FAIL_ASSERT`` to test if a assert fails.
-- Use the test macro ``TEST_ASSERT_PASS_ASSERT`` to test if a assert passes.
-- Both function calls should cause an assert fo fail due to calling it with a ``NULL`` pointer and an pointer to an uninitialized instance (``is_ready`` is ``false`` in the second call). Example:
+- Use the test macro ``TEST_ASSERT_FAIL_ASSERT`` to test if an assert fails.
+- Use the test macro ``TEST_ASSERT_PASS_ASSERT`` to test if an assert passes.
+- Both function calls should cause an assert fo fail due to calling it with a ``NULL`` pointer and a pointer to an uninitialized instance (``is_ready`` is ``false`` in the second call). Example:
 
 .. code-block:: c
 
@@ -160,7 +160,7 @@ Testing assertions
 Implementation details
 ----------------------
 
-To test if assertions we use the following approach:
+To test if assertions are triggered, we use the following approach:
 
 - http://www.electronvector.com/blog/unit-testing-with-asserts
 - Use ``CException <https://github.com/ThrowTheSwitch/CException>``_ while testing (``:use_exceptions: TRUE`` in Ceedling ``project.yml``)
@@ -171,8 +171,8 @@ To test if assertions we use the following approach:
    #include "CException.h"
    #define uz_assert(condition) if (!(condition)) Throw(0)
 
-This means a failing assertions throws an exception instead of triggering a *real* assert.
-The test macros ``TEST_ASSERT_FAIL_ASSERT`` and ``TEST_ASSERT_PASS_ASSERT`` catch the thrown exception and print a error message if the test fails.
+This means a failing assertion throws an exception instead of triggering a *real* assertion.
+The test macros ``TEST_ASSERT_FAIL_ASSERT`` and ``TEST_ASSERT_PASS_ASSERT`` catch the thrown exception and print an error message if the test fails.
 
 Sources
 =======

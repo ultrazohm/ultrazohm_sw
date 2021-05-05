@@ -4,14 +4,14 @@
 How to create a IP-core driver
 ==============================
 
-This tutorial creates an software driver for the :ref:`AXI_testIP`.
+This tutorial creates a software driver for the :ref:`AXI_testIP`.
 Only a part of the functionality of :ref:`AXI_testIP` is implemented here, i.e., the multiplication of two integer values on the PL.
-The driver takes two integer values as input, writes them to the PL and reads the result.
-The implementation is done in way that implements the driver and the :ref:`unit_tests` in parallel. 
+The driver takes two integer values as input, writes them to the PL, and reads the result.
+The implementation is done in a way that implements the driver and the :ref:`unit_tests` in parallel. 
 
-.. note:: This example is purely for understanding how to write the driver, using the PL for simple integer multiplication is much slower than just doing it on the PS.
+.. note:: This example is purely for understanding how to write the driver. Using the PL for simple integer multiplication is much slower than just doing it on the PS.
 
-.. tip:: Somethimes, Ceedling fails to build and unclear errors are present. Try to use ``ceedling clean`` to delete temporary files of ceedling or commenting out the last test, , running `ceedling clean``, running all tests again and comment the last test in again.
+.. tip:: Sometimes, Ceedling fails to build, and unclear errors are present. Try to use ``ceedling clean`` to delete temporary files of Ceedling or commenting out the last test, running `ceedling clean``, running all tests again, and comment in the last test again.
 
 Video
 =====
@@ -23,8 +23,8 @@ Setup
 =====
 
 1. Open VS Code with :ref:`vscode_remote_container`
-2. Open new terminal (``Terminal -> New Terminal``)
-3. Change directory of the terminal by typing:
+2. Open a new terminal (``Terminal -> New Terminal``)
+3. Change the directory of the terminal by typing:
   
 ::
 
@@ -58,7 +58,7 @@ Setup
 
 11. Rename the existing test ``test_uz_myIP_hw_NeedToImplement`` to ``test_uz_myIP_hw_write_to_A``
 12. Run the tests by typing ``ceedling test:all`` in the terminal
-13. The tests pass but a message a ignore message is printed
+13. The tests pass, but a message a ignore message is printed
 
 ::
 
@@ -69,7 +69,7 @@ Setup
     Test: test_uz_myIP_hw_write_to_A
     At line (21): "Need to Implement uz_myIP_hw"
 
-14. This means that the test build, but no test is implemented for the new IP-Core.
+14. This means that the test builds, but no test is implemented for the new IP-Core.
 
 Software module for hardware registers
 ======================================
@@ -77,7 +77,7 @@ Software module for hardware registers
 To multiply two variables :math:`C=A \cdot B` of type ``int32_t``, the driver has to write :math:`A` and :math:`B` from the PS to the PL by AXI in the correct registers and read back the result :math:`C` from the PL to the PS.
 In this section, we write a software module (``uz_myIP_hw``) that only deals with writing and reading the hardware registers of the IP-Core such that software modules can use the module without having to know the hardware addresses.
 See :ref:`AXI_testIP` for the available hardware registers of the IP-Core.
-The address of the registers are listed in ``uz_myIP_hwAddresses.h``.
+The addresses of the registers are listed in ``uz_myIP_hwAddresses.h``.
 Read/write operations on AXI are done by using the :ref:`HAL`.
 Therefore, we expect that the driver first has to call the function ``uz_axi_write_int32`` with the register address of :math:`A` and an integer as arguments.
 Write the test for this behavior:
@@ -111,7 +111,7 @@ Write the test for this behavior:
    int32_t uz_myIP_hw_read_C(uint32_t base_address);
    #endif // UZ_MYIP_HW_H
 
-5. Run the tests, they will fail due to undefined references to ``uz_myIP_hw_write_A``
+5. Run the tests. They will fail due to undefined references to ``uz_myIP_hw_write_A``
 6. Implement the write function in ``uz_myIP_hw.c``
 
 .. code-block:: c
@@ -126,9 +126,9 @@ Write the test for this behavior:
        uz_axi_write_int32(base_address+A_int32_Data_uz_axi_testIP,A);    
    }
 
-7. Run the tests, they will pass
-8. Currently, we only test the *good* case in which everything works as expected. However, we need to protect agains some basic errors.
-9. Add a test that protect agains calling the write function without a valid base address:
+7. Run the tests. They will pass
+8. Currently, we only test the *good* case in which everything works as expected. However, we need to protect against some basic errors.
+9. Add a test that protects against calling the write function without a valid base address:
 
 .. code-block:: c
    :linenos:
@@ -169,11 +169,11 @@ Write the test for this behavior:
        uz_axi_write_int32(base_address+A_int32_Data_uz_axi_testIP,A);    
    }
 
-12. Run the tests, they pass. Note that this assert only prevents calling the function with ``base_address == 0``, e.g., if the variable was automatically initialized by a struct initializer. The function still can be called with a *wrong* base address!
+12. Run the tests. They pass. Note that this assertion only prevents calling the function with ``base_address == 0``, e.g., if a struct initializer automatically initialized the variable. The function still can be called with a *wrong* base address!
 
 13. We can now write :math:`A` to the IP-Core and have a test that ensures that we write to the correct addresses. Next step: do the same for :math:`B`:
 
-.. warning:: It is tempting to copy & paste everything here - be careful to get all addresses, function, and variable names right!
+.. warning:: It is tempting to copy & paste everything here - be careful to get all addresses, functions, and variable names right!
 
 14. Write a test that checks that ``uz_myIP_hw_write_B`` writes to the correct address and a test that prevents calls with ``base_address == 0``:
 
@@ -199,7 +199,7 @@ Write the test for this behavior:
    uz_axi_write_int32(base_address+B_int32_Data_uz_axi_testIP,B);    
    }
 
-16. Run the test, it passes. We already implemented the assert for the base address in this case, make sure to add the test for this:
+16. Run the test. It passes. We already implemented the assert for the base address in this case. Make sure to add the test for this:
 
 .. code-block:: c
    :linenos:
@@ -248,7 +248,7 @@ Write the test for this behavior:
    return (uz_axi_read_int32(base_address+C_int32_Data_uz_axi_testIP));
    }
 
-22. Run the tests, they will pass now.
+22. Run the tests. They will pass now.
 23. Add a test for the missing assert:
 
 .. code-block:: c
@@ -275,7 +275,7 @@ Write the test for this behavior:
    return (uz_axi_read_int32(base_address+C_int32_Data_uz_axi_testIP));
    }
 
-26. Run the tests, all test will pass!
+26. Run the tests. All tests will pass!
 
 Software module for hardware multiplication
 ===========================================
@@ -307,7 +307,7 @@ Implement the actual function of the driver.
    
    #endif // UZ_MYIP_H
 
-3. Create the file ``uz_myIP_private.h`` in ``src/IP_Cores/uz_myIP/``. Every IP-Core driver should have a private struct with at least these three variables. Notice that all members of the struct ``test_instance`` that are not listed in the initializer are set to zero by default. Thats the main reason for the usage of ``uz_assert_not_zero`` in ``uz_myIP_hw.c``.
+3. Create the file ``uz_myIP_private.h`` in ``src/IP_Cores/uz_myIP/``. Every IP-Core driver should have a private struct with at least these three variables. Notice that all members of the struct ``test_instance`` that are not listed in the initializer are set to zero by default. That is the main reason for the usage of ``uz_assert_not_zero`` in ``uz_myIP_hw.c``.
 
 .. code-block:: c
    :linenos:
@@ -346,7 +346,7 @@ Implement the actual function of the driver.
     .ip_clk_frequency_Hz=TEST_IP_CORE_FRQ
    };
 
-4. Run the tests, all tests pass but uz_myIP_test is ignored.
+4. Run the tests, all tests pass, but uz_myIP_test is ignored.
 5. Create a first test that makes sure ``uz_myIP_init`` can not be called with a NULL-pointer:
 
 .. code-block:: c
@@ -357,11 +357,11 @@ Implement the actual function of the driver.
        TEST_ASSERT_FAIL_ASSERT(uz_myIP_init(NULL));
    }
 
-6. Run the tests, they do not compile since ``uz_myIP_init`` is not implemented. Add an implementation that makes the test compile:
+6. Run the tests. They do not compile since ``uz_myIP_init`` is not implemented. Add an implementation that makes the test compile:
 
 .. code-block:: c
    :linenos:
-   :caption: ``uz_myIP.c`` that is sufficent to compile
+   :caption: ``uz_myIP.c`` that is sufficient to compile
 
    #include "uz_myIP.h"
 
@@ -523,14 +523,14 @@ Implement the actual function of the driver.
 
 21. We now have a working and fully tested driver for our IP-Core! 
 
-.. warning:: While we tested our functions with a lot of different error cases and made sure they behave as expected we omitted the fact that the multiplication can overflow. This is especially tricky in this case since the multiplication is implemented in hardware, thus the rules for C do not apply to it. There are two ways to handle this: implement the hardware multiplication in a way that saturates on overflow or check if the multiplication will overflow before writing to the PL. The way :ref:`AXI_testIP` is implemented will *wrap* on overflow, i.e., 2147483647*2 will be  a negative value. Keep this concept in mind for real IP-Cores that you implement. Additionally, prevent the software driver to write values that are out of range to the IP-Core, e.g., if the register only uses 10 bit. Note that the AXI data width is always 32-bit.
+.. warning:: While we tested our functions with a lot of different error cases and made sure they behave as expected, we omitted the fact that the multiplication can overflow. This is especially tricky in this case since the multiplication is implemented in hardware. Thus the rules for C do not apply to it. There are two ways to handle this: implement the hardware multiplication to saturate on overflow or check if the multiplication will overflow before writing to the PL. The way :ref:`AXI_testIP` is implemented will *wrap* on overflow, i.e., 2147483647*2 will be a negative value. Keep this concept in mind for real IP-Cores that you implement. Additionally, prevent the software driver from writing values that are out of range to the IP-Core, e.g., if the register only uses 10 bit. Note that the AXI data width is always 32-bit.
 
 Static allocator
 ================
 
 To summarize what we have so far:
 
-- Software driver that read and writes all relevant hardware registers of our IP-Core (``uz_myIP_hw``)
+- Software driver that reads and writes all relevant hardware registers of our IP-Core (``uz_myIP_hw``)
 - This driver consists only of pure functions and serves as an abstraction layer for the hardware registers and offsets
 - Unit tests that ensure that ``uz_myIP_hw`` works
 - Software driver for the functionality of the IP-Core, i.e., multiply two values with the interface located in ``uz_myIP.h``
@@ -571,14 +571,14 @@ However, we create it in the same folder.
    
    uz_myIP* uz_myIP_allocate_instance_one(void);
    
-2. Add the following line to ``software/Baremetal/tests/support/xparameters.h``. Since ``uz_myIP_staticAllocator.c`` depends on the base address, which is located in the BSP file (``xparameters.h``). The test should not depend on the BSP, thus the file in the test folder is used for the tests instead of the real ``xparameters.h`` file.
+2. Add the following line to ``software/Baremetal/tests/support/xparameters.h``. Since ``uz_myIP_staticAllocator.c`` depends on the base address, which is located in the BSP file (``xparameters.h``). The test should not depend on the BSP. Thus the file in the test folder is used for the tests instead of the real ``xparameters.h`` file.
 
 .. code-block:: c
    :linenos:
 
    #define XPAR_UZ_AXI_TESTIP_0_BASEADDR 0xffff000f // random number for base address testing
 
-3. Add a test for the staic allocator. Note that we have to include ``xparameters.h`` (i.e., the file in the support folder, not from the BSP) and we mock the ``_hw`` functions.
+3. Add a test for the static allocator. Note that we have to include ``xparameters.h`` (i.e., the file in the support folder, not from the BSP), and we mock the ``_hw`` functions.
 
 .. code-block:: c
    :linenos:
@@ -647,16 +647,16 @@ Integration in Vitis
        int c=uz_myIP_multiply(test_instance,a,b);
        uz_printf("Hardware multiply: %i, Software multiply: %i\n", c, a*b);
        if (c==a*b){
-       	uz_printf("Success: hardware and software multiply are equal! \n");
+         uz_printf("Success: hardware and software multiply are equal! \n");
        }else{
-       	uz_printf("Fail: hardware and software multiply are NOT equal! \n");
+         uz_printf("Fail: hardware and software multiply are NOT equal! \n");
        }
    
        while(1){
-       	// do nothing and loop forever
+         // do nothing and loop forever
        }
    }
 
 5. In ``main.c`` (Baremetal) include ``#include "sw/uz_myIP_testbench.h"`` and call ``uz_myIP_testbench();`` before the ISR is initialized!
 6. Add the connected serial port to the Vitis Serial Terminal
-7. Run the UltraZohm, the success message should be printed to the Vitis Serial Terminal.
+7. Run the UltraZohm. The success message should be printed to the Vitis Serial Terminal.

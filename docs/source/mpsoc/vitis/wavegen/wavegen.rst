@@ -321,3 +321,28 @@ Function call:
 The \*highlighted\* words are the variable name, which can be freely chosen. 
 
 The function ``uz_wavegen_chirp_reset()`` can be used, to reset the chirp. A subsequent call of ``uz_wavegen_chirp()`` will start the chirp function from t=0 again.
+
+White noise function
+^^^^^^^^^^^^^^^^^^^^
+
+.. image:: white_noise.png
+    :scale: 20
+    
+Creates a continous white noise function. The standard amplitude is 1.
+
+.. list-table:: Required input arguments
+   :widths: 25 25 25
+   :header-rows: 1
+
+   * - argument
+     - value
+     - unit
+   * - amplitude
+     - +/- float 
+     - 
+ 
+Function call:
+
+.. code-block:: c
+
+    ... = uz_wavegen_white_noise(amplitude);

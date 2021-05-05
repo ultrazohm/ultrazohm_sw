@@ -95,6 +95,7 @@ float uz_wavegen_chirp(uz_wavegen* self) {
 	uz_assert(self->end_frequency_Hz > 0);
 	uz_assert(self->end_frequency_Hz > self->start_frequency_Hz);
 	uz_assert(self->initial_delay_Sec >= 0);
+	uz_assert(self->duration_Sec > 0);
 	float delay_Sec = self->initial_delay_Sec - self->elapsed_time_since_start;
 	float system_time_Sec = uz_SystemTime_GetGlobalTimeInSec();
 	float t_Sec = self->elapsed_time_since_start - self->initial_delay_Sec;

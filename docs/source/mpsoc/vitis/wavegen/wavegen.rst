@@ -4,7 +4,7 @@
 Waveform Generator
 ==================
 
-The ``uz_wavegen`` can be used to create standard waveform, which, for example, can be displayed in the :ref:`JavaScope`.
+The ``uz_wavegen`` functions can be used to create standard waveform, which, for example, can be displayed in the :ref:`JavaScope`.
 
 
 Avaivable waveforms
@@ -277,3 +277,38 @@ Function call:
 .. code-block:: c
 
     ... = uz_wavegen_saturation(input, upper_limit, lower_limit);
+    
+Chirp function
+^^^^^^^^^^^^^^
+
+.. image:: chirp.png
+    :scale: 10
+
+Creates a configurable chirp function. The parameters for configuration are the amplitude, the start and end frequency, the duration for the chirp and a delay for the start of the chirp wave. For the input argmuents a struct is needed.
+
+.. list-table:: Required input arguments
+   :widths: 25 25 25
+   :header-rows: 1
+
+   * - argument
+     - value
+     - unit
+   * - is_ready
+     - true/false
+     - 
+   * - amplitude
+     - +/- float 
+     - 
+   * - start_frequency_Hz
+     - \+ float 
+     - Hz
+   * - end_frequency_Hz
+     - \+ float 
+     - Hz
+   * - duration
+     - \+ float
+     - seconds
+   * - delay
+     - 0 -> \+ float
+     - seconds
+  

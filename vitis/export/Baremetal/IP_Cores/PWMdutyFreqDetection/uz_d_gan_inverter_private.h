@@ -11,6 +11,14 @@ struct uz_d_gan_inverter{
   uint32_t PWMhightimeTicks_L1;
   uint32_t PWMlowtimeTicks_L1;
   float PWMdutyCycPerCent_L1;
+  uint32_t PWMFreqTicks_H2;
+  uint32_t PWMhightimeTicks_H2;
+  uint32_t PWMlowtimeTicks_H2;
+  float PWMdutyCycPerCent_H2;
+  uint32_t PWMFreqTicks_L2;
+  uint32_t PWMhightimeTicks_L2;
+  uint32_t PWMlowtimeTicks_L2;
+  float PWMdutyCycPerCent_L2;
   uint32_t OC_GaN_H1;
   uint32_t OC_GaN_L1;
   uint32_t OC_GaN_H2;

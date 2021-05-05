@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/UZ_D_GaN_Inverter/Driver/hdl_prj/ipcore/UZ_D_GaN_Inverter_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="119edfdfcdac48399b7de4f4d7ee5b94"/>
+    <Option Name="Id" Val="14dd311e49ac46f3ae16680fca3b1d0b"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -140,6 +140,54 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive2.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive2.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2_core.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive3.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive3.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3_core.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

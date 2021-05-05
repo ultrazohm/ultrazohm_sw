@@ -5,12 +5,20 @@ set_property ip_repo_paths {../../} [current_fileset]
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter_pkg.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive1.vhd}
+add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive2.vhd}
+add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive3.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive1.vhd}
+add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive2.vhd}
+add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive3.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal_core.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1_core.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1.vhd}
+add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2_core.vhd}
+add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2.vhd}
+add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3_core.vhd}
+add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_reset_sync.vhd}
 add_files -norecurse {../hdl/vhdl/UZ_D_GaN_Inverter_dut.vhd}
@@ -37,7 +45,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2105041341 [ipx::current_core]
+set_property core_revision 2105050830 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -52,6 +60,14 @@ ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive1.vhd} [ipx
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive3.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive3.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -60,6 +76,14 @@ ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive1.vhd} [ipx::g
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive3.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive3.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal_core.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal_core.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal_core.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -76,6 +100,22 @@ ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1.vhd} [ipx::get_fil
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2_core.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2_core.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2_core.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2_core.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3_core.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3_core.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3_core.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3_core.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

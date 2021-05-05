@@ -114,7 +114,7 @@ References
 ----------
 * :download:`Schematic 18Tx            <optical_14tx4rx_v3/SCH_Digital_Optical_18Tx_3v01.pdf>`
 * :download:`Assembly Drawing 18Tx     <optical_14tx4rx_v3/ASM_Digital_Optical_18Tx_3v01.pdf>`
-* :download:`Schematic 14Tx4Rx         <optical_14tx4rx_v3/SCH_Digital_optical_14tx4rx_3v01.pdf>`
+* :download:`Schematic 14Tx4Rx         <optical_14tx4rx_v3/SCH_Digital_Optical_14Tx4Rx_3v01.pdf>`
 * :download:`Assembly Drawing 14Tx4Rx  <optical_14tx4rx_v3/ASM_Digital_Optical_14Tx4Rx_3v01.pdf>`
 * :ref:`label_cpld_programming`
 

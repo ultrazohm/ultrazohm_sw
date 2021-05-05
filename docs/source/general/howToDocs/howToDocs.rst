@@ -237,6 +237,23 @@ All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
 `sphinx-copybutton <https://github.com/executablebooks/sphinx-copybutton>`_
   Adds a button the code blocks that copy the content of the block.
  
+`sphinxcontrib-tikz <https://github.com/sphinx-contrib/tikz>`_
+  Adds the possibility to write tikz pictures in the documentation.
+  Example:
+
+::
+
+   .. tikz:: An Example TikZ Directive with Caption
+     :align: left
+   
+     \draw[thick,rounded corners=8pt]
+     (0,0)--(0,2)--(1,3.25)--(2,2)--(2,0)--(0,2)--(2,2)--(0,0)--(2,0);
+
+.. tikz:: An Example TikZ Directive with Caption
+  :align: left
+
+  \draw[thick,rounded corners=8pt]
+  (0,0)--(0,2)--(1,3.25)--(2,2)--(2,0)--(0,2)--(2,2)--(0,0)--(2,0);
 
 Known Issues
 ============

@@ -12,14 +12,14 @@ Functionality
 -------------
 * Transmits up to 14 optical signals, e.g. gate signals. 
 * Receives up to 4 optical signals, e.g. error signals. 
-* LEDs on PCB signaling the state of the Transmitter/Receiver
+* LEDs on PCB signaling the state of the transmitter/receiver
 
 Logic table
 -----------
 The underlying logic is that 
 
-* logic HIGH = LED/Transmitter/Receiver ON
-* logic LOW = LED/Transmitter/Receiver OFF
+* Logic HIGH = LED/Transmitter/Receiver ON
+* Logic LOW = LED/Transmitter/Receiver OFF
 
 Transmitter Logic 
 """"""""""""""""""
@@ -59,11 +59,11 @@ Receiver Logic
      - Node RxTx
      - Signal
      - LED D2
-   * - NO Light
+   * - Light OFF
      - HIGH
      - LOW
      - OFF
-   * - RED Light
+   * - Light ON
      - LOW
      - HIGH
      - ON
@@ -74,6 +74,9 @@ Solder in up to 14 transmitters and 4 receivers.
 
 * optical transmitters: **Broadcom HFBR-1521Z**
 * optical receiver: **Broadcom HFBR-2521Z**
+
+.. note::
+     Note that transmitters and receivers with even numbers are on the top side, starting to count from 0, to match with Vivado vector logic. While the uneven numbers are on the bottom side.
 
 1. Click the optical transmitter and receiver together before soldering them
 #. Solder the transmitter/receivers on the top side of the PCB first
@@ -98,7 +101,7 @@ No known issues
 
 Compatibility 
 -------------
-* Only compatible with **CarrierBoard Rev04 and later**, since the edge-connector has no chamfer (angle)
+* Only compatible with **CarrierBoard Rev04 and later**, since the edge-connector has no chamfer (angle). 
 * Slots D1 to D4 can be used without limitations, if CPLD is programmed correctly
 
 

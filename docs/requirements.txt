@@ -5,4 +5,4 @@ sphinxcontrib.yt
 six
 sphinx-autobuild
 sphinx-issues
-sphinx_copybutton
+sphinx-copybutton

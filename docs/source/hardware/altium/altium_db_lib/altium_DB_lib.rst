@@ -43,7 +43,7 @@ How to install the Altium library:
 
 .. youtube:: 0VST-4g3nWA
 
-How to install DBweaver:
+How to install DBeaver:
 
 .. youtube:: DaSXdXeiYR4
 
@@ -104,7 +104,7 @@ Altium needs to get access to the database system on the UltraZohm server. The i
       OBDC - select MariaDB.
 
 
-5. Create a new data source to MariaDB
+5. Create a new data source to MariaDB. Use the predefined user "altium_user" and contact your supervisor for the access data.
 
 .. _23_ODBC_sources_4:
 
@@ -322,7 +322,7 @@ not be accepted.
 
       Explorer - footprints.
 
-4. Follow the naming convention for the ``.PcbLib`` file **SCH - <directory> - <description>.PCBLIB**
+4. Follow the naming convention for the ``.PcbLib`` file **PCB - <directory> - <description>.PCBLIB**
 
 
 .. note :: The extension of the file is written in capital letters.

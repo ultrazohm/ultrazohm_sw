@@ -35,6 +35,7 @@ extensions = [
     'sphinxcontrib.mermaid',
     'sphinxcontrib.yt',
     'sphinx_issues',
+    'sphinx_copybutton',
 ]
 
 

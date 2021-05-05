@@ -57,6 +57,12 @@ The build pipeline:
 .. literalinclude:: ../../../bitbucket-pipelines.yml
     :linenos:
 
+Unit tets (Ceedling)
+********************
+
+* All unit tests (see :ref:`unit_tests` are run in the Bitbucket pipeline.
+* If one test fails, the pipeline fails.
+
 Bitbucket pipeline (GitHub-Mirror)
 **********************************
 

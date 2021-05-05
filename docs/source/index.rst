@@ -71,12 +71,14 @@ Syllabus
     general/ci_pipeline
     general/howToDocs/howToDocs
     general/useCases/useCases
+    general/vscode_remote_container/vscode_remote_container
 
 .. toctree::
     :maxdepth: 2
     :caption: MPSoC Platform
 
-    mpsoc/vivado/index
+    mpsoc/platform_architecture/platform_architecture
+    mpsoc/vivado/vivado
     mpsoc/ip_cores/index
     mpsoc/vitis/vitis
     mpsoc/CPLD/index

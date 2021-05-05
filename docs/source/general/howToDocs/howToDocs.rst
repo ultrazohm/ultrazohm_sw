@@ -233,6 +233,11 @@ All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
 `sphinx-issues <https://github.com/sloria/sphinx-issues>`_
  Link to issues and pull requests with ``:issue:`51``` and ``:pr:`5```, e.g., issue :issue:`5``
  
+
+`sphinx-copybutton <https://github.com/executablebooks/sphinx-copybutton>`_
+  Adds a button the code blocks that copy the content of the block.
+ 
+
 Known Issues
 ============
 

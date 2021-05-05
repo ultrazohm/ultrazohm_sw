@@ -21,6 +21,7 @@ float uz_wavegen_square(float amplitude, float frequency_Hz);
 float uz_wavegen_triangle(float amplitude, float frequency_Hz);
 float uz_wavegen_triangle_with_offset(float amplitude, float frequency_Hz, float offset);
 float uz_wavegen_saturation(float signal, float upper_limit, float lower_limit);
+float uz_wavegen_white_noise(float amplitude);
 
 // Wave generation with state
 uz_wavegen* uz_wavegen_chirp_init(struct uz_wavegen_config config);

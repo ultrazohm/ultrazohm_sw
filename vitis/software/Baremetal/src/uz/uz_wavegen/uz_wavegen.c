@@ -1,5 +1,6 @@
 #include "uz_wavegen.h"
 #include <math.h>
+#include <stdlib.h>
 #include "../uz_HAL.h"
 #include "../uz_SystemTime/uz_SystemTime.h"
 
@@ -87,4 +88,9 @@ float uz_wavegen_saturation(float signal, float upper_limit, float lower_limit) 
 		signal = lower_limit;
 	}
 	return (signal);
+}
+
+float uz_wavegen_white_noise(float amplitude) {
+
+	return (amplitude * ((float) rand() / RAND_MAX * 2.0f - 1.0f));
 }

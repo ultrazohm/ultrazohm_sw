@@ -13,3 +13,4 @@ IP Cores
 	incre_encoder
 	interlock
 	axi_testIP/axi_testIP
+	uz_interlockDeadtime2L/uz_interlockDeadtime2L

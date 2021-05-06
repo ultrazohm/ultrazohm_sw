@@ -6,8 +6,8 @@
 
 float uz_wavegen_sine(float amplitude, float frequency_Hz) {
 	uz_assert(frequency_Hz > 0.0f);
-	float t = uz_SystemTime_GetGlobalTimeInSec();
-	float angle = 2.0f * M_PI * t * frequency_Hz;
+	float t_Sec = uz_SystemTime_GetGlobalTimeInSec();
+	float angle = 2.0f * M_PI * t_Sec * frequency_Hz;
 	return (amplitude * sinf(angle));
 }
 

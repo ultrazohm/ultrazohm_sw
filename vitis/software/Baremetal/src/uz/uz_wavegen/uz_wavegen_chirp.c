@@ -4,7 +4,7 @@
 #include "../uz_SystemTime/uz_SystemTime.h"
 #define max_wavegen_instances 2
 
-struct uz_wavegen {
+struct uz_wavegen_chirp {
 	bool is_ready;
 	bool read_system_time;
 	float elapsed_time_since_start;

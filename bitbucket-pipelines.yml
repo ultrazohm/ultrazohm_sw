@@ -31,7 +31,7 @@ pipelines:
         - ceedling test:all
     - step:
        name: Github-Mirror
-       image: alpine/git
+       image: alpine/git-lfs
        script:
         - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
         - git push --all mirrorOrigin

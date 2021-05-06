@@ -17,6 +17,7 @@ typedef struct uz_wavegen_three_phase uz_wavegen_three_phase_sin;
 struct uz_wavegen_three_phase_config {
 	float amplitude;
 	float frequency_Hz;
+	float offset;
 };
 
 float uz_wavegen_sine(float amplitude, float frequency_Hz);

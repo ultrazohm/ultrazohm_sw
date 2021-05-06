@@ -32,7 +32,7 @@ void uz_wavegen_three_phase(uz_wavegen_three_phase_sin* self) {
 	uz_assert(self->is_ready);
 	float t_Sec = uz_SystemTime_GetGlobalTimeInSec();
 	float angle = 2.0f * M_PI * t_Sec * self->config.frequency_Hz;
-	self->phase_U = self->config.amplitude * sinf(angle);
-	self->phase_V = self->config.amplitude * sinf(angle + 2.0f * M_PI / 3.0f);
-	self->phase_W = self->config.amplitude * sinf(angle + 4.0f * M_PI / 3.0f);
+	self->phase_U = self->config.amplitude * sinf(angle) + self->config.offset;
+	self->phase_V = self->config.amplitude * sinf(angle + 2.0f * M_PI / 3.0f) + self->config.offset;
+	self->phase_W = self->config.amplitude * sinf(angle + 4.0f * M_PI / 3.0f) + self->config.offset;
 }

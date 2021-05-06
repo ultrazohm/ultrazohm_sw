@@ -277,50 +277,6 @@ Function call:
 .. code-block:: c
 
     ... = uz_wavegen_saturation(input, upper_limit, lower_limit);
-    
-Chirp function
-^^^^^^^^^^^^^^
-
-.. image:: chirp.png
-    :scale: 10
-
-Creates a configurable chirp function. The parameters for configuration are the amplitude, the start and end frequency, the duration for the chirp and a delay for the start of the chirp wave.
-After the duration of the chirp wave, the function ``uz_wavegen_chirp()`` will return a continous sinus with the ``end_frequency_Hz``. For the input argmuents a struct is needed.
-
-.. list-table:: Required input arguments
-   :widths: 25 25 25
-   :header-rows: 1
-
-   * - argument
-     - value
-     - unit
-   * - amplitude
-     - +/- float 
-     - 
-   * - start_frequency_Hz
-     - \+ float 
-     - Hz
-   * - end_frequency_Hz
-     - \+ float 
-     - Hz
-   * - duration
-     - \+ float
-     - seconds
-   * - delay
-     - 0 -> \+ float
-     - seconds
-  
-Function call:
-
-.. code-block:: c
-
-  uz_wavegen_config *config* = {.amplitude= ..., .start_frequency_Hz = ..., .end_frequency_Hz = ..., .duration_Sec = ..., .initial_delay_Sec = ...};
-  uz_wavegen* *name* = uz_wavegen_chirp_init(*config*);
-  float *output* = uz_wavegen_chirp(*name*);
-
-The \*highlighted\* words are the variable name, which can be freely chosen. 
-
-The function ``uz_wavegen_chirp_reset()`` can be used, to reset the chirp. A subsequent call of ``uz_wavegen_chirp()`` will start the chirp function from t=0 again.
 
 White noise function
 ^^^^^^^^^^^^^^^^^^^^
@@ -346,3 +302,100 @@ Function call:
 .. code-block:: c
 
     ... = uz_wavegen_white_noise(amplitude);
+
+Chirp function
+^^^^^^^^^^^^^^
+
+.. image:: chirp.png
+    :scale: 10
+
+Creates a configurable chirp function. The parameters for configuration are the amplitude, the start and end frequency, the duration for the chirp and a delay for the start of the chirp wave.
+After the duration of the chirp wave, the function ``uz_wavegen_chirp()`` will return a continous sinus with the ``end_frequency_Hz``. For the input arguments a struct is required.
+
+.. list-table:: Required input arguments
+   :widths: 25 25 25
+   :header-rows: 1
+
+   * - argument
+     - value
+     - unit
+   * - amplitude
+     - +/- float 
+     - 
+   * - start_frequency_Hz
+     - \+ float 
+     - Hz
+   * - end_frequency_Hz
+     - \+ float 
+     - Hz
+   * - duration
+     - \+ float
+     - seconds
+   * - delay
+     - 0 -> \+ float
+     - seconds
+  
+Initialize the function with:
+
+.. code-block:: c
+
+    struct uz_wavegen_config *config* = {.amplitude= ..., .start_frequency_Hz = ..., .end_frequency_Hz = ..., .duration_Sec = ..., .initial_delay_Sec = ...};
+    uz_wavegen* *name* = uz_wavegen_chirp_init(*config*);
+
+Function call:
+
+.. code-block:: c
+
+    float *output* = uz_wavegen_chirp(*name*);
+
+The \*highlighted\* words are the variable names, which can be freely chosen. 
+
+The function ``uz_wavegen_chirp_reset()`` can be used, to reset the chirp. A subsequent call of ``uz_wavegen_chirp()`` will start the chirp function from t=0 again.
+
+Three phase sine function
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: three_phase_sine.png
+    :scale: 20
+
+Creates a continous sine wave with free phases. For the input arguments a struct is required.
+
+.. list-table:: Required input arguments
+   :widths: 25 25 25
+   :header-rows: 1
+
+   * - argument
+     - value
+     - unit
+   * - amplitude
+     - +/- float
+     - 
+   * - frequency
+     - \+ float 
+     - Hz
+   * - offset
+     - +/- float
+     -
+
+Initialize the function with:
+
+.. code-block:: c
+
+    struct uz_wavegen_three_phase_config *name* = {.amplitude = ..., .frequency_Hz= ..., .offset = ...};
+    uz_wavegen_three_phase_sin* *output* = uz_wavegen_three_phase_init(*name*);
+
+Function call:
+
+.. code-block:: c
+
+    uz_wavegen_three_phase(container);
+
+The output for the three phases is stored in the \*output*\  struct. Access them with:
+
+.. code-block:: c
+
+    ... = *output*->phase_U;
+    ... = *output*->phase_V;
+    ... = *output*->phase_W;
+
+The \*highlighted\* words are the variable names, which can be freely chosen. 

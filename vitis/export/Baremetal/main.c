@@ -155,27 +155,24 @@ int main(void) {
 				Global_Data.da.D4.PWMlowtimeTicks_H2 = uz_d_gan_inverter_get_PWMlowtimeTicks_H2(uz_d_gan_inverter_instance1);
 				Global_Data.da.D4.PWMdutyCycPerCent_H2 = uz_d_gan_inverter_get_PWMdutyCycPerCent_H2(uz_d_gan_inverter_instance1);
 				Global_Data.da.D4.GaN_ChipTempDegreesCelsius_H2 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(uz_d_gan_inverter_instance1, uz_d_gan_inverter_instance1->PWMdutyCycPerCent_H2);
-				Global_Data.da.D4.PWMFreqTicks_L1 = uz_d_gan_inverter_get_PWMFreqTicks_L1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMFreqTicks_L2 = uz_d_gan_inverter_get_PWMFreqTicks_L2(uz_d_gan_inverter_instance1);
 				Global_Data.da.D4.PWMhightimeTicks_L2 = uz_d_gan_inverter_get_PWMhightimeTicks_L2(uz_d_gan_inverter_instance1);
 				Global_Data.da.D4.PWMlowtimeTicks_L2 = uz_d_gan_inverter_get_PWMlowtimeTicks_L2(uz_d_gan_inverter_instance1);
 				Global_Data.da.D4.PWMdutyCycPerCent_L2 = uz_d_gan_inverter_get_PWMdutyCycPerCent_L2(uz_d_gan_inverter_instance1);
 				Global_Data.da.D4.GaN_ChipTempDegreesCelsius_L2 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(uz_d_gan_inverter_instance1, uz_d_gan_inverter_instance1->PWMdutyCycPerCent_L2);
-				Global_Data.da.D4.OC_GaN_H1 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.OC_GaN_L1 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.OC_GaN_H2 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.OC_GaN_L2 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.OC_GaN_H3 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.OC_GaN_L3 = uz_d_gan_inverter_get_OC_GaN_H1(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.FAULT_GaN_H1 = uz_d_gan_inverter_get_FAULT_GaN_H1(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.FAULT_GaN_L1 = uz_d_gan_inverter_get_FAULT_GaN_H1(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.FAULT_GaN_H2 = uz_d_gan_inverter_get_FAULT_GaN_H1(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.FAULT_GaN_L2 = uz_d_gan_inverter_get_FAULT_GaN_H1(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.FAULT_GaN_H3 = uz_d_gan_inverter_get_FAULT_GaN_H1(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.FAULT_GaN_L3 = uz_d_gan_inverter_get_FAULT_GaN_H1(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMFreqTicks_H3 = uz_d_gan_inverter_get_PWMFreqTicks_H3(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMhightimeTicks_H3 = uz_d_gan_inverter_get_PWMhightimeTicks_H3(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMlowtimeTicks_H3 = uz_d_gan_inverter_get_PWMlowtimeTicks_H3(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMdutyCycPerCent_H3 = uz_d_gan_inverter_get_PWMdutyCycPerCent_H3(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.GaN_ChipTempDegreesCelsius_H3 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(uz_d_gan_inverter_instance1, uz_d_gan_inverter_instance1->PWMdutyCycPerCent_H3);
+				Global_Data.da.D4.PWMFreqTicks_L3 = uz_d_gan_inverter_get_PWMFreqTicks_L3(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMhightimeTicks_L3 = uz_d_gan_inverter_get_PWMhightimeTicks_L3(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMlowtimeTicks_L3 = uz_d_gan_inverter_get_PWMlowtimeTicks_L3(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.PWMdutyCycPerCent_L3 = uz_d_gan_inverter_get_PWMdutyCycPerCent_L3(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.GaN_ChipTempDegreesCelsius_L3 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(uz_d_gan_inverter_instance1, uz_d_gan_inverter_instance1->PWMdutyCycPerCent_L3);
+				Global_Data.da.D4.OC_GaN_H1 = uz_d_gan_inverter_get_OC_GaN(uz_d_gan_inverter_instance1);
+				Global_Data.da.D4.FAULT_GaN_H1 = uz_d_gan_inverter_get_FAULT_GaN(uz_d_gan_inverter_instance1);
 				Global_Data.da.D4.I_DIAG = uz_d_gan_inverter_get_I_DIAG(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.I1_DIAG = uz_d_gan_inverter_get_I1_DIAG(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.I2_DIAG = uz_d_gan_inverter_get_I2_DIAG(uz_d_gan_inverter_instance1);
-				Global_Data.da.D4.I3_DIAG = uz_d_gan_inverter_get_I3_DIAG(uz_d_gan_inverter_instance1);
 			}
 
 			if (Global_Data.cw.enableControl == true) {

@@ -354,6 +354,16 @@ typedef struct _UZ_D_Gan_Inverter_ {
 	uint32_t PWMlowtimeTicks_L2;
 	float PWMdutyCycPerCent_L2;
 	float GaN_ChipTempDegreesCelsius_L2;
+	uint32_t PWMFreqTicks_H3;
+	uint32_t PWMhightimeTicks_H3;
+	uint32_t PWMlowtimeTicks_H3;
+	float PWMdutyCycPerCent_H3;
+	float GaN_ChipTempDegreesCelsius_H3;
+	uint32_t PWMFreqTicks_L3;
+	uint32_t PWMhightimeTicks_L3;
+	uint32_t PWMlowtimeTicks_L3;
+	float PWMdutyCycPerCent_L3;
+	float GaN_ChipTempDegreesCelsius_L3;
 	uint32_t OC_GaN_H1;
 	uint32_t OC_GaN_L1;
 	uint32_t OC_GaN_H2;

@@ -195,16 +195,15 @@ A full example implementation is located at ``ultrazohm_sw/vitis/Sandbox/uz_ipCo
 
 .. code-block:: c
    :linenos:
-   :caption: Example main for multiple-instance module (``uz_ipCoreDriver_testbench.c.c``)
+   :caption: Example main for multiple-instance module (``uz_ipCoreDriver_testbench.c``)
 
     #include <stdio.h>
-    #include <assert.h>
     #include "uz_ipCore.h"
     #include "uz_ipCore_staticAllocator.h"
     
     int main(){
-        uz_ipCore_handle ipCore_handle_instance1=uz_ipCore_allocateAndInit_instance1();
-        uz_ipCore_handle ipCore_handle_instance2=uz_ipCore_allocateAndInit_instance2();
+        uz_ipCore* ipCore_handle_instance1=uz_ipCore_allocateAndInit_instance1();
+        uz_ipCore* ipCore_handle_instance2=uz_ipCore_allocateAndInit_instance2();
         int var=10;
         uz_ipCore_set_variable(ipCore_handle_instance1,var);
         uz_ipCore_set_variable(ipCore_handle_instance2,var*2);
@@ -238,11 +237,11 @@ A full example implementation is located at ``ultrazohm_sw/vitis/Sandbox/uz_ipCo
      .variable=0
    };
    
-   uz_ipCore_handle uz_ipCore_allocateAndInit_instance1(void){
+   uz_ipCore* uz_ipCore_allocateAndInit_instance1(void){
      return (uz_ipCore_init(&ipCore_instance1) );
    }
    
-   uz_ipCore_handle uz_ipCore_allocateAndInit_instance2(void){
+   uz_ipCore* uz_ipCore_allocateAndInit_instance2(void){
      return (uz_ipCore_init(&ipCore_instance2) );
    }
 
@@ -253,9 +252,12 @@ A full example implementation is located at ``ultrazohm_sw/vitis/Sandbox/uz_ipCo
 
    #pragma once
    #include <stdint.h>
-   
+   #include <stdbool.h>
+
    struct uz_ipCore{
      const uint32_t base_address;
+     const uint32_t ip_clk_frequency_Hz;
+     bool is_ready;
      int variable; 
    };
 
@@ -266,20 +268,25 @@ A full example implementation is located at ``ultrazohm_sw/vitis/Sandbox/uz_ipCo
 
    #include "uz_ipCore.h"
    #include "uz_ipCore_private.h"
+   #include "../../uz/uz_HAL.h"
    
-   uz_ipCore_handle uz_ipCore_init(uz_ipCore_handle self){
-     uz_assert_not_NULL(self);
-     return self;
+   uz_ipCore* uz_ipCore_init(uz_ipCore_handle self){
+     uz_assert_not_NULL(self); // prevent calls with NULL-pointer
+     uz_assert(!self->is_ready); // prevent double initialization
+     self->is_ready=true; // module is ready for usage with other functions
+     return (self);
    }
    
     void uz_ipCore_set_variable(uz_ipCore_handle self,int variable){
-    uz_assert_not_NULL(self);
+      uz_assert_not_NULL(self);
+      uz_assert(self->is_ready);
       self->variable=variable;
    }
    
    int uz_ipCore_get_variable(uz_ipCore_handle self){
-        uz_assert_not_NULL(self);
-        return (self->variable);
+      uz_assert_not_NULL(self);
+      uz_assert(self->is_ready);
+      return (self->variable);
    }
 
 .. code-block:: c
@@ -293,11 +300,10 @@ A full example implementation is located at ``ultrazohm_sw/vitis/Sandbox/uz_ipCo
    #include <stdlib.h>
    
    typedef struct uz_ipCore uz_ipCore;
-   typedef uz_ipCore *const uz_ipCore_handle; // *const to indicate that the handle will never point to another instance of the ipCore
    
-   uz_ipCore_handle uz_ipCore_init(uz_ipCore_handle self);
-   void uz_ipCore_set_variable(uz_ipCore_handle self,int variable);
-   int uz_ipCore_get_variable(uz_ipCore_handle self);
+   uz_ipCore* uz_ipCore_init(uz_ipCore* self);
+   void uz_ipCore_set_variable(uz_ipCore* self,int variable);
+   int uz_ipCore_get_variable(uz_ipCore* self);
 
 
 

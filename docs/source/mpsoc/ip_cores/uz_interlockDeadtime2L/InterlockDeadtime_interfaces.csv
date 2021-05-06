@@ -1,0 +1,20 @@
+Port Name,      	    Port Type,	Data Type,	Target Platform Interfaces
+S0,	                    Inport (TOP),	    boolean,	External Port		
+S1,	                    Inport (BOT),	    boolean,	External Port		
+S2,	                    Inport (TOP),	    boolean,	External Port		
+S3,	                    Inport (BOT),	    boolean,    External Port		
+S4,	                    Inport (TOP),	    boolean,	External Port		
+S5,	                    Inport (BOT),	    boolean,	External Port		
+s0_out,	                Outport,	boolean,	External Port		
+s1_out,	                Outport,	boolean,	External Port		
+s2_out,	                Outport,	boolean,	External Port		
+s3_out,	                Outport,	boolean,	External Port		
+s4_out,	                Outport,	boolean,	External Port		
+s5_out,	                Outport,	boolean,	External Port
+enableFB,	            Outport,	boolean,	External Port	
+axi_fb_InverseBotSwitch, Outport, boolean, 0x100
+axi_fb_DelayCycles,      Outport, fi(0;10;0) , 0x104
+axi_fb_enable,           Outport,boolean , 0x108
+axi_InverseBotSwitch,    Inport, boolean , 0x10C
+axi_EnableOutput,        Inport, boolean , 0x110
+axi_DelayCycles,         Inport, fi(0;0;0) , 0x114

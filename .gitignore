@@ -2,7 +2,7 @@
 /vitis/workspace/*
 !/vitis/workspace/create_Vitis_workspace_here.txt
 vivado/zusys/zusys.bxml
-.vscode
+
 !/vitis/Sandbox/.vscode
 vivado/zusys/zusys_ooc.xdc
 ip_cores/*/simulation/slprj/*
@@ -38,3 +38,4 @@ vitis/Sandbox/build/
 vitis/Sandbox/uz_LED/build/
 
 vitis/Sandbox/uz_MyIp/uz_MyIp_testbench
+.vscode/settings.json

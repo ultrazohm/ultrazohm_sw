@@ -1,4 +1,6 @@
 #include "uz_SystemTime.h"
+#include "uz_AxiTimer64Bit.h"
+#include "../uz_HAL.h"
 
 static void uz_SystemTime_update();
 

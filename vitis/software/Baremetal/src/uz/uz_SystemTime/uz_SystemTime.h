@@ -1,9 +1,8 @@
-#pragma once
+#ifndef UZ_SYSTEMTIME_H_
+#define UZ_SYSTEMTIME_H_
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "uz_AxiTimer64Bit.h"
-#include "../uz_HAL.h"
 
 void uz_SystemTime_init();
 void uz_SystemTime_ISR_Tic(); // start the stopwatch
@@ -19,3 +18,5 @@ unsigned int uz_SystemTime_GetUptimeInMs();
 unsigned int uz_SystemTime_GetUptimeInSec();
 unsigned int uz_SystemTime_GetUptimeInMin();
 float uz_SystemTime_GetGlobalTimeInSec();
+
+#endif

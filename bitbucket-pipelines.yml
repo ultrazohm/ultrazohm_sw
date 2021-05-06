@@ -4,6 +4,8 @@
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
 image: python:3
+clone:
+  lfs: true
 
 pipelines:
   #branches:
@@ -33,7 +35,7 @@ pipelines:
        name: Github-Mirror
        image: alpine/git
        script:
-        - apk add git-lfs
+        
         - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
         - git push --all mirrorOrigin
    branches:

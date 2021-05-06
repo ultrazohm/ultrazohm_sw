@@ -97,11 +97,6 @@ float uz_SystemTime_GetIsrPeriodInUs() {
 	return (timingR5.isr_period_us);
 }
 
-float uz_SystemTime_GetIsrFrequencyInHz() {
-	uz_assert(timingR5.IsReady);
-	return (1 / (timingR5.isr_period_us / 1000000));
-}
-
 uint64_t uz_SystemTime_GetInterruptCounter() {
 	uz_assert(timingR5.IsReady);
 	return (timingR5.interrupt_counter);

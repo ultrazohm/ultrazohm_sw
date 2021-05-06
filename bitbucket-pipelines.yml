@@ -33,7 +33,7 @@ pipelines:
        name: Github-Mirror
        image: alpine/git
        script:
-        - apk git-lfs
+        - apk add git-lfs
         - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
         - git push --all mirrorOrigin
    branches:

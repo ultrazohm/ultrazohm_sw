@@ -5,15 +5,16 @@
 #include <math.h>
 #include "mock_uz_SystemTime.h"
 #include "test_assert_with_exception.h"
+#include "../uz_wavegen/uz_wavegen_chirp.c"
 
 void test_uz_wavegen_sine_negative_input_frequency(void){
     float a=-10;
-    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_sine(0,a));
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_sine(1,a));
 }
 
 void test_uz_wavegen_sine_zero_input_frequency(void){
     float a=0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_sine(0,a));
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_sine(1,a));
 }
 
 void test_uz_wavegen_sine_zero_input_amplitude(void){
@@ -106,6 +107,11 @@ void test_uz_wavegen_pulse_too_high_DutyCycle(void){
     TEST_ASSERT_FAIL_ASSERT(uz_wavegen_pulse(1,10,2.0));
 }
 
+
+void test_uz_wavegen_pulse_zero_input_amplitude(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_pulse(0,5,0.5));
+}
+
 void test_uz_wavegen_pulse_output(void){
     float amplitude = 8.0f;
     float frequency_Hz = 10.0f;
@@ -179,6 +185,83 @@ void test_uz_wavegen_saturation_output(void){
 void test_uz_wavegen_white_noise_zero_amplitude(void){
     TEST_ASSERT_FAIL_ASSERT(uz_wavegen_white_noise(0));
 }
+
+struct uz_wavegen_chirp_config config = {
+        .amplitude = 0.0f,
+        .start_frequency_Hz = 1.0f,
+        .end_frequency_Hz = 10.0f,
+        .duration_Sec = 10.0f,
+        .initial_delay_Sec = 0.0f
+};
+
+void test_uz_wavegen_chirp_init_max_instances(void){
+    uz_SystemTime_GetGlobalTimeInSec_ExpectAndReturn(0.05);
+    struct uz_wavegen_chirp_config config = {
+        .amplitude = 5.0f,
+        .start_frequency_Hz = 1.0f,
+        .end_frequency_Hz = 10.0f,
+        .duration_Sec = 10.0f,
+        .initial_delay_Sec = 0.0f
+    };
+    struct uz_wavegen_chirp_config config2 = config;
+    struct uz_wavegen_chirp_config config3 = config;
+    TEST_ASSERT_PASS_ASSERT(uz_wavegen_chirp_init(config));
+    uz_SystemTime_GetGlobalTimeInSec_ExpectAndReturn(0.06);
+    TEST_ASSERT_PASS_ASSERT(uz_wavegen_chirp_init(config2));
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config3));
+}
+
+void test_uz_wavegen_chirp_init_zero_amplitude(void){ 
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
+    config.amplitude = 1.0f;
+}
+
+void test_uz_wavegen_chirp_init_negative_start_frequency(void){ 
+    config.start_frequency_Hz = -10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
+}
+
+void test_uz_wavegen_chirp_init_zero_start_frequency(void){ 
+    config.start_frequency_Hz = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
+    config.start_frequency_Hz = 10.0f;
+}
+
+void test_uz_wavegen_chirp_init_negative_end_frequency(void){ 
+    config.end_frequency_Hz = -10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
+}
+
+void test_uz_wavegen_chirp_init_zero_end_frequency(void){ 
+    config.end_frequency_Hz = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
+}
+
+void test_uz_wavegen_chirp_init_end_smaller_than_start_frequency(void){ 
+    config.end_frequency_Hz = 5.0f;
+    config.start_frequency_Hz = 10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
+    config.start_frequency_Hz = 2.0f;
+    config.end_frequency_Hz = 10.0f;
+}
+
+void test_uz_wavegen_chirp_init_negative_delay(void){ 
+    config.initial_delay_Sec = -1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
+    config.initial_delay_Sec = 1.0f;
+}
+
+void test_uz_wavegen_chirp_init_negative_duration(void){ 
+    config.duration_Sec = -1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
+}
+
+void test_uz_wavegen_chirp_init_zero_duration(void){ 
+    config.duration_Sec = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
+    config.duration_Sec = 1.0f;
+}
+
 
 
 #endif // TEST

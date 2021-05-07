@@ -3,7 +3,7 @@
 
 typedef struct uz_wavegen_chirp uz_wavegen;
 
-struct uz_wavegen_config {
+struct uz_wavegen_chirp_config {
 	float amplitude;
 	float start_frequency_Hz;
 	float end_frequency_Hz;
@@ -33,7 +33,7 @@ float uz_wavegen_white_noise(float amplitude);
 
 
 // Wave generation with state
-uz_wavegen* uz_wavegen_chirp_init(struct uz_wavegen_config config);
+uz_wavegen* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config);
 float uz_wavegen_chirp(uz_wavegen* self);
 void uz_wavegen_chirp_reset(uz_wavegen* self);
 

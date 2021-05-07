@@ -10,12 +10,12 @@ struct uz_wavegen_chirp {
 	float elapsed_time_since_start;
 	float initial_global_time_Sec;
 	float transition_angle;
-	struct uz_wavegen_config config;
+	struct uz_wavegen_chirp_config config;
 };
 static size_t counter = 0;
 static uz_wavegen instances[max_wavegen_instances] = { 0 };
 
-uz_wavegen* uz_wavegen_chirp_init(struct uz_wavegen_config config) {
+uz_wavegen* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config) {
 	uz_assert(counter < max_wavegen_instances);
 	uz_wavegen* self = &instances[counter];
 	uz_assert(self->is_ready == false);

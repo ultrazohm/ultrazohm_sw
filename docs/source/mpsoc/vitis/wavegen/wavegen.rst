@@ -253,7 +253,7 @@ Saturation function
 .. image:: saturation.png
     :scale: 20
 
-Limits an input signal to the upper and lower saturation values, similiar to how the saturation block in matlab functions. Doesn't generate a waveform by itself.
+Limits an input signal to the upper and lower saturation values, similar to how the saturation block in matlab functions. Doesn't generate a waveform by itself.
 
 .. list-table:: Required input arguments
    :widths: 25 25 25
@@ -284,7 +284,7 @@ White noise function
 .. image:: white_noise.png
     :scale: 20
     
-Creates a continous white noise function. The standard amplitude is 1.
+Creates a continous white noise function. With the argument **amplitude** one can input the max value of the white noise wave.
 
 .. list-table:: Required input arguments
    :widths: 25 25 25
@@ -339,7 +339,7 @@ Initialize the function with:
 
 .. code-block:: c
 
-    struct uz_wavegen_config *config* = {.amplitude= ..., .start_frequency_Hz = ..., .end_frequency_Hz = ..., .duration_Sec = ..., .initial_delay_Sec = ...};
+    struct uz_wavegen_chirp_config *config* = {.amplitude= ..., .start_frequency_Hz = ..., .end_frequency_Hz = ..., .duration_Sec = ..., .initial_delay_Sec = ...};
     uz_wavegen* *name* = uz_wavegen_chirp_init(*config*);
 
 Function call:

@@ -1,3 +1,4 @@
+
 image:
   file: .devcontainer/Dockerfile
 
@@ -10,3 +11,12 @@ ports:
 tasks:
   - name: Docs dependencies
     init: pip install -r docs/requirements.txt
+vscode:
+  extensions:
+    - eamodio.gitlens
+    - james-yu.latex-workshop
+    - lextudio.restructuredtext
+    - streetsidesoftware.code-spell-checker
+    - dracula-theme.theme-dracula
+    - pkief.material-icon-theme
+    - atlassian.atlascode

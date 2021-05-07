@@ -103,9 +103,9 @@
       "PWMdutyFreqDetection_0": "",
       "UZ_D_GaN_Inverter": {
         "UZ_D_GaN_Inverter_Ma_0": "",
-        "slicer_0": "",
         "UZ_D_GaN_Inverter_0": ""
-      }
+      },
+      "xlslice_0": ""
     },
     "interface_ports": {
       "D4": {
@@ -605,10 +605,10 @@
           }
         },
         "interface_nets": {
-          "Conn1": {
+          "ps8_0_axi_periph_M06_AXI": {
             "interface_ports": [
-              "AXI4_Lite1",
-              "Counter_f_sw_V2_ip_0/AXI4_Lite"
+              "S00_AXI",
+              "InterLock_Module_0/S00_AXI"
             ]
           },
           "AXI4_Lite_1": {
@@ -617,10 +617,10 @@
               "PWM_and_SS_control_V_0/AXI4_Lite"
             ]
           },
-          "ps8_0_axi_periph_M06_AXI": {
+          "Conn1": {
             "interface_ports": [
-              "S00_AXI",
-              "InterLock_Module_0/S00_AXI"
+              "AXI4_Lite1",
+              "Counter_f_sw_V2_ip_0/AXI4_Lite"
             ]
           }
         },
@@ -7041,16 +7041,16 @@
           }
         },
         "interface_nets": {
-          "AXI4_Lite_1": {
-            "interface_ports": [
-              "AXI4_Lite",
-              "mux_axi_ip_0/AXI4_Lite"
-            ]
-          },
           "smartconnect_0_M11_AXI": {
             "interface_ports": [
               "S_AXI",
               "Trigger_f_cc/S_AXI"
+            ]
+          },
+          "AXI4_Lite_1": {
+            "interface_ports": [
+              "AXI4_Lite",
+              "mux_axi_ip_0/AXI4_Lite"
             ]
           }
         },
@@ -7195,11 +7195,6 @@
             "left": "5",
             "right": "0"
           },
-          "GaN_H1_Temp": {
-            "direction": "O",
-            "left": "0",
-            "right": "0"
-          },
           "IPCORE_CLK": {
             "type": "clk",
             "direction": "I"
@@ -7214,65 +7209,30 @@
             "vlnv": "xilinx.com:user:UZ_D_GaN_Inverter_Mapping:1.0",
             "xci_name": "zusys_UZ_D_GaN_Inverter_Ma_0_0"
           },
-          "slicer_0": {
-            "vlnv": "xilinx.com:user:slicer:1.0",
-            "xci_name": "zusys_slicer_0_0"
-          },
           "UZ_D_GaN_Inverter_0": {
             "vlnv": "xilinx.com:ip:UZ_D_GaN_Inverter:1.0",
-            "xci_name": "zusys_UZ_D_GaN_Inverter_0_9"
+            "xci_name": "zusys_UZ_D_GaN_Inverter_0_10"
           }
         },
         "interface_nets": {
-          "AXI4_Lite_1": {
-            "interface_ports": [
-              "AXI4_Lite",
-              "UZ_D_GaN_Inverter_0/AXI4_Lite"
-            ]
-          },
           "Conn1": {
             "interface_ports": [
               "D4",
               "UZ_D_GaN_Inverter_Ma_0/UZ_D_GaN_Inverter_Interface"
             ]
+          },
+          "AXI4_Lite_1": {
+            "interface_ports": [
+              "AXI4_Lite",
+              "UZ_D_GaN_Inverter_0/AXI4_Lite"
+            ]
           }
         },
         "nets": {
-          "UZ_D_GaN_Inverter_Ma_0_GaN_Temp": {
-            "ports": [
-              "UZ_D_GaN_Inverter_Ma_0/GaN_Temp",
-              "slicer_0/GaN_Temp"
-            ]
-          },
           "Gates_1": {
             "ports": [
               "Gates",
               "UZ_D_GaN_Inverter_Ma_0/Gates"
-            ]
-          },
-          "UZ_D_GaN_Inverter_Ma_0_GaN_OC": {
-            "ports": [
-              "UZ_D_GaN_Inverter_Ma_0/GaN_OC",
-              "slicer_0/GaN_OC"
-            ]
-          },
-          "UZ_D_GaN_Inverter_Ma_0_GaN_FAULT": {
-            "ports": [
-              "UZ_D_GaN_Inverter_Ma_0/GaN_FAULT",
-              "slicer_0/GaN_FAULT"
-            ]
-          },
-          "UZ_D_GaN_Inverter_Ma_0_I_DIAG": {
-            "ports": [
-              "UZ_D_GaN_Inverter_Ma_0/I_DIAG",
-              "slicer_0/I_SENSE_DIAG"
-            ]
-          },
-          "slicer_0_GaN_H1_Temp": {
-            "ports": [
-              "slicer_0/GaN_H1_Temp",
-              "GaN_H1_Temp",
-              "UZ_D_GaN_Inverter_0/GaN_Temp1"
             ]
           },
           "UZ_D_GaN_Inverter_0_PWM_EN": {
@@ -7295,176 +7255,47 @@
               "UZ_D_GaN_Inverter_0/AXI4_Lite_ACLK"
             ]
           },
-          "slicer_0_GaN_H1_FAULT": {
+          "UZ_D_GaN_Inverter_Ma_0_GaN_FAULT": {
             "ports": [
-              "slicer_0/GaN_H1_FAULT",
-              "UZ_D_GaN_Inverter_0/GaN_FAULT_H1"
+              "UZ_D_GaN_Inverter_Ma_0/GaN_FAULT",
+              "UZ_D_GaN_Inverter_0/GaN_FAULT"
             ]
           },
-          "slicer_0_GaN_H1_OC": {
+          "UZ_D_GaN_Inverter_Ma_0_GaN_OC": {
             "ports": [
-              "slicer_0/GaN_H1_OC",
-              "UZ_D_GaN_Inverter_0/GaN_OC_H1"
+              "UZ_D_GaN_Inverter_Ma_0/GaN_OC",
+              "UZ_D_GaN_Inverter_0/GaN_OC"
             ]
           },
-          "slicer_0_GaN_H2_FAULT": {
+          "UZ_D_GaN_Inverter_Ma_0_GaN_Temp": {
             "ports": [
-              "slicer_0/GaN_H2_FAULT",
-              "UZ_D_GaN_Inverter_0/GaN_FAULT_H2"
+              "UZ_D_GaN_Inverter_Ma_0/GaN_Temp",
+              "UZ_D_GaN_Inverter_0/GaN_Temp"
             ]
           },
-          "slicer_0_GaN_H2_OC": {
+          "UZ_D_GaN_Inverter_Ma_0_I_DIAG": {
             "ports": [
-              "slicer_0/GaN_H2_OC",
-              "UZ_D_GaN_Inverter_0/GaN_OC_H2"
-            ]
-          },
-          "slicer_0_GaN_H2_Temp": {
-            "ports": [
-              "slicer_0/GaN_H2_Temp",
-              "UZ_D_GaN_Inverter_0/GaN_Temp3"
-            ]
-          },
-          "slicer_0_GaN_H3_FAULT": {
-            "ports": [
-              "slicer_0/GaN_H3_FAULT",
-              "UZ_D_GaN_Inverter_0/GaN_FAULT_H3"
-            ]
-          },
-          "slicer_0_GaN_H3_OC": {
-            "ports": [
-              "slicer_0/GaN_H3_OC",
-              "UZ_D_GaN_Inverter_0/GaN_OC_H3"
-            ]
-          },
-          "slicer_0_GaN_H3_Temp": {
-            "ports": [
-              "slicer_0/GaN_H3_Temp",
-              "UZ_D_GaN_Inverter_0/GaN_Temp5"
-            ]
-          },
-          "slicer_0_GaN_L1_FAULT": {
-            "ports": [
-              "slicer_0/GaN_L1_FAULT",
-              "UZ_D_GaN_Inverter_0/GaN_FAULT_L1"
-            ]
-          },
-          "slicer_0_GaN_L1_OC": {
-            "ports": [
-              "slicer_0/GaN_L1_OC",
-              "UZ_D_GaN_Inverter_0/GaN_OC_L1"
-            ]
-          },
-          "slicer_0_GaN_L1_Temp": {
-            "ports": [
-              "slicer_0/GaN_L1_Temp",
-              "UZ_D_GaN_Inverter_0/GaN_Temp2"
-            ]
-          },
-          "slicer_0_GaN_L2_FAULT": {
-            "ports": [
-              "slicer_0/GaN_L2_FAULT",
-              "UZ_D_GaN_Inverter_0/GaN_FAULT_L2"
-            ]
-          },
-          "slicer_0_GaN_L2_OC": {
-            "ports": [
-              "slicer_0/GaN_L2_OC",
-              "UZ_D_GaN_Inverter_0/GaN_OC_L2"
-            ]
-          },
-          "slicer_0_GaN_L2_Temp": {
-            "ports": [
-              "slicer_0/GaN_L2_Temp",
-              "UZ_D_GaN_Inverter_0/GaN_Temp4"
-            ]
-          },
-          "slicer_0_GaN_L3_FAULT": {
-            "ports": [
-              "slicer_0/GaN_L3_FAULT",
-              "UZ_D_GaN_Inverter_0/GaN_FAULT_L3"
-            ]
-          },
-          "slicer_0_GaN_L3_OC": {
-            "ports": [
-              "slicer_0/GaN_L3_OC",
-              "UZ_D_GaN_Inverter_0/GaN_OC_L3"
-            ]
-          },
-          "slicer_0_GaN_L3_Temp": {
-            "ports": [
-              "slicer_0/GaN_L3_Temp",
-              "UZ_D_GaN_Inverter_0/GaN_Temp6"
-            ]
-          },
-          "slicer_0_I1_DIAG": {
-            "ports": [
-              "slicer_0/I1_DIAG",
-              "UZ_D_GaN_Inverter_0/I1_DIAG"
-            ]
-          },
-          "slicer_0_I2_DIAG": {
-            "ports": [
-              "slicer_0/I2_DIAG",
-              "UZ_D_GaN_Inverter_0/I2_DIAG"
-            ]
-          },
-          "slicer_0_I3_DIAG": {
-            "ports": [
-              "slicer_0/I3_DIAG",
-              "UZ_D_GaN_Inverter_0/I3_DIAG"
-            ]
-          },
-          "slicer_0_I_DIAG": {
-            "ports": [
-              "slicer_0/I_DIAG",
+              "UZ_D_GaN_Inverter_Ma_0/I_DIAG",
               "UZ_D_GaN_Inverter_0/I_DIAG"
             ]
+          }
+        }
+      },
+      "xlslice_0": {
+        "vlnv": "xilinx.com:ip:xlslice:1.0",
+        "xci_name": "zusys_xlslice_0_0",
+        "parameters": {
+          "DIN_WIDTH": {
+            "value": "6"
           }
         }
       }
     },
     "interface_nets": {
-      "UZ_D_GaN_Inverter_D4": {
-        "interface_ports": [
-          "D4",
-          "UZ_D_GaN_Inverter/D4"
-        ]
-      },
-      "smartconnect_0_M07_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M07_AXI",
-          "Gates/S00_AXI"
-        ]
-      },
-      "smartconnect_0_M03_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M03_AXI",
-          "ADC_A2/s00_axi"
-        ]
-      },
-      "smartconnect_0_M00_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M00_AXI",
-          "ADC_A1/s00_axi1"
-        ]
-      },
-      "smartconnect_0_M06_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M06_AXI",
-          "axi_gpio_2/S_AXI"
-        ]
-      },
       "smartconnect_0_M10_AXI": {
         "interface_ports": [
           "smartconnect_0/M10_AXI",
           "Trans_123_dq_V12_ip_0/AXI4_Lite"
-        ]
-      },
-      "smartconnect_0_M04_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M04_AXI",
-          "ADC_A3/s00_axi1"
         ]
       },
       "smartconnect_0_M12_AXI": {
@@ -7473,40 +7304,10 @@
           "Gates_3L/AXI4_Lite"
         ]
       },
-      "smartconnect_0_M14_AXI": {
+      "smartconnect_0_M16_AXI": {
         "interface_ports": [
-          "smartconnect_0/M14_AXI",
-          "Interrupt/AXI4_Lite"
-        ]
-      },
-      "smartconnect_0_M17_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M17_AXI",
-          "UZ_D_GaN_Inverter/AXI4_Lite"
-        ]
-      },
-      "smartconnect_0_M02_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M02_AXI",
-          "ADC_A2/s00_axi1"
-        ]
-      },
-      "smartconnect_0_M08_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M08_AXI",
-          "Gates/AXI4_Lite"
-        ]
-      },
-      "smartconnect_0_M05_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M05_AXI",
-          "ADC_A3/s00_axi"
-        ]
-      },
-      "smartconnect_0_M13_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M13_AXI",
-          "Gates/AXI4_Lite1"
+          "PWMdutyFreqDetection_0/AXI4_Lite",
+          "smartconnect_0/M16_AXI"
         ]
       },
       "smartconnect_0_M15_AXI": {
@@ -7515,22 +7316,22 @@
           "timer_uptime_64bit/S_AXI"
         ]
       },
-      "smartconnect_0_M09_AXI": {
+      "smartconnect_0_M17_AXI": {
         "interface_ports": [
-          "smartconnect_0/M09_AXI",
-          "IncreEncoder_V24_ip_0/AXI4_Lite"
+          "smartconnect_0/M17_AXI",
+          "UZ_D_GaN_Inverter/AXI4_Lite"
         ]
       },
-      "AXI2TCM_0_M00_AXI": {
+      "smartconnect_0_M04_AXI": {
         "interface_ports": [
-          "zynq_ultra_ps_e_0/S_AXI_LPD",
-          "DataMover/M00_AXI"
+          "smartconnect_0/M04_AXI",
+          "ADC_A3/s00_axi1"
         ]
       },
-      "smartconnect_0_M16_AXI": {
+      "smartconnect_0_M00_AXI": {
         "interface_ports": [
-          "PWMdutyFreqDetection_0/AXI4_Lite",
-          "smartconnect_0/M16_AXI"
+          "smartconnect_0/M00_AXI",
+          "ADC_A1/s00_axi1"
         ]
       },
       "smartconnect_0_M11_AXI": {
@@ -7539,16 +7340,82 @@
           "Interrupt/S_AXI"
         ]
       },
-      "smartconnect_0_M01_AXI": {
+      "smartconnect_0_M14_AXI": {
         "interface_ports": [
-          "smartconnect_0/M01_AXI",
-          "ADC_A1/s00_axi"
+          "smartconnect_0/M14_AXI",
+          "Interrupt/AXI4_Lite"
+        ]
+      },
+      "smartconnect_0_M07_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M07_AXI",
+          "Gates/S00_AXI"
+        ]
+      },
+      "smartconnect_0_M02_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M02_AXI",
+          "ADC_A2/s00_axi1"
+        ]
+      },
+      "AXI2TCM_0_M00_AXI": {
+        "interface_ports": [
+          "zynq_ultra_ps_e_0/S_AXI_LPD",
+          "DataMover/M00_AXI"
+        ]
+      },
+      "smartconnect_0_M08_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M08_AXI",
+          "Gates/AXI4_Lite"
+        ]
+      },
+      "smartconnect_0_M06_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M06_AXI",
+          "axi_gpio_2/S_AXI"
+        ]
+      },
+      "smartconnect_0_M13_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M13_AXI",
+          "Gates/AXI4_Lite1"
+        ]
+      },
+      "smartconnect_0_M09_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M09_AXI",
+          "IncreEncoder_V24_ip_0/AXI4_Lite"
         ]
       },
       "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
         "interface_ports": [
           "smartconnect_0/S00_AXI",
           "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
+        ]
+      },
+      "smartconnect_0_M03_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M03_AXI",
+          "ADC_A2/s00_axi"
+        ]
+      },
+      "UZ_D_GaN_Inverter_D4": {
+        "interface_ports": [
+          "D4",
+          "UZ_D_GaN_Inverter/D4"
+        ]
+      },
+      "smartconnect_0_M05_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M05_AXI",
+          "ADC_A3/s00_axi"
+        ]
+      },
+      "smartconnect_0_M01_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M01_AXI",
+          "ADC_A1/s00_axi"
         ]
       }
     },
@@ -7840,7 +7707,8 @@
         "ports": [
           "Gates/Gate_Signals_2L",
           "D1_OUT",
-          "UZ_D_GaN_Inverter/Gates"
+          "UZ_D_GaN_Inverter/Gates",
+          "xlslice_0/Din"
         ]
       },
       "ADC_A1_ADC_converted_3": {
@@ -7934,9 +7802,9 @@
           "A2_OUT_CNV"
         ]
       },
-      "UZ_D_GaN_Inverter_GaN_H1_Temp": {
+      "xlslice_0_Dout": {
         "ports": [
-          "UZ_D_GaN_Inverter/GaN_H1_Temp",
+          "xlslice_0/Dout",
           "PWMdutyFreqDetection_0/PWMin"
         ]
       }

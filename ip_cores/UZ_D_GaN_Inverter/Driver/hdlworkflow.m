@@ -1,8 +1,8 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.9 (R2020b) at 21:23:17 on 27/04/2021
+% Generated with MATLAB 9.9 (R2020b) at 11:45:47 on 07/05/2021
 % This script was generated using the following parameter values:
-%     Filename  : 'C:\Users\Michael Hoerner\Documents\MATLAB\UltraZohm\UZ_D_GaN_Inverter\hdlworkflow.m'
+%     Filename  : 'C:\ZynqUltra\60_Software\ultrazohm_sw\ip_cores\UZ_D_GaN_Inverter\Driver\hdlworkflow.m'
 %     Overwrite : true
 %     Comments  : true
 %     Headers   : true
@@ -11,7 +11,7 @@
 % >> hWC.export('DUT','UZ_D_GaN_Inverter/UZ_D_GaN_Inverter');
 %--------------------------------------------------------------------------
 
-% hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath','C:/Xilinx/Vivado/2020.1/bin')
+hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath','C:/Xilinx/Vivado/2020.1/bin')
 
 %% Load the Model
 load_system('UZ_D_GaN_Inverter');
@@ -23,6 +23,7 @@ load_system('UZ_D_GaN_Inverter');
 %% Set Model 'UZ_D_GaN_Inverter' HDL parameters
 hdlset_param('UZ_D_GaN_Inverter', 'BalanceDelays', 'off');
 hdlset_param('UZ_D_GaN_Inverter', 'CriticalPathEstimation', 'on');
+hdlset_param('UZ_D_GaN_Inverter', 'GenerateHDLTestBench', 'off');
 hdlset_param('UZ_D_GaN_Inverter', 'HDLSubsystem', 'UZ_D_GaN_Inverter/UZ_D_GaN_Inverter');
 hdlset_param('UZ_D_GaN_Inverter', 'OptimizationReport', 'on');
 hdlset_param('UZ_D_GaN_Inverter', 'ResetType', 'Synchronous');
@@ -33,288 +34,45 @@ hdlset_param('UZ_D_GaN_Inverter', 'SynthesisToolDeviceName', 'xczu9eg-ffvc900-1-
 hdlset_param('UZ_D_GaN_Inverter', 'SynthesisToolPackageName', '');
 hdlset_param('UZ_D_GaN_Inverter', 'SynthesisToolSpeedValue', '');
 hdlset_param('UZ_D_GaN_Inverter', 'TargetDirectory', 'hdl_prj\hdlsrc');
+hdlset_param('UZ_D_GaN_Inverter', 'TargetFrequency', 100);
 hdlset_param('UZ_D_GaN_Inverter', 'TargetPlatform', 'Generic Xilinx Platform');
 hdlset_param('UZ_D_GaN_Inverter', 'Traceability', 'on');
 hdlset_param('UZ_D_GaN_Inverter', 'Workflow', 'IP Core Generation');
 
 % Set SubSystem HDL parameters
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter', 'AdaptivePipelining', 'off');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter', 'BalanceDelays', 'off');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter', 'ClockRatePipelining', 'off');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter', 'FlattenHierarchy', 'off');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter', 'IPCoreName', 'UZ_D_GaN_Inverter');
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_Temp1', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_Temp1', 'IOInterfaceMapping', '');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_Temp', 'IOInterface', 'External Port');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_Temp', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_Temp2', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_Temp2', 'IOInterfaceMapping', '');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_FAULT', 'IOInterface', 'External Port');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_FAULT', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_Temp3', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_Temp3', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_Temp4', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_Temp4', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_Temp5', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_Temp5', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_Temp6', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_Temp6', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_FAULT_H1', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_FAULT_H1', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_FAULT_L1', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_FAULT_L1', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_FAULT_H2', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_FAULT_H2', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_FAULT_L2', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_FAULT_L2', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_FAULT_H3', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_FAULT_H3', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_FAULT_L3', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_FAULT_L3', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_OC_H1', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_OC_H1', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_OC_L1', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_OC_L1', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_OC_H2', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_OC_H2', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_OC_L2', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_OC_L2', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_OC_H3', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_OC_H3', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_OC_L3', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_OC_L3', 'IOInterfaceMapping', '');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_OC', 'IOInterface', 'External Port');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/GaN_OC', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/I_DIAG', 'IOInterface', 'External Port');
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/I_DIAG', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/I1_DIAG', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/I1_DIAG', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/I2_DIAG', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/I2_DIAG', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/I3_DIAG', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/I3_DIAG', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_PWM_Enable', 'IOInterface', 'AXI4-Lite');
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_PWM_Enable', 'IOInterfaceMapping', 'x"1A0"');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_PWM_Enable', 'IOInterfaceOptions', {'RegisterInitialValue','0'});
 
-% Set SubSystem HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection', 'AdaptivePipelining', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection', 'BalanceDelays', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection', 'ClockRatePipelining', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection', 'FlattenHierarchy', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection', 'IPCoreName', 'PWMdutyFreqDetection');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection', 'ProcessorFPGASynchronization', 'Free running');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/PWMin', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/PWMin', 'IOInterfaceMapping', '');
-
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/HDL Reciprocal', 'Architecture', 'ReciprocalNewtonSingleRate');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection/HDL Reciprocal', 'Architecture', 'ReciprocalNewtonSingleRate');
 
 % Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/AXI_freq', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/AXI_freq', 'IOInterfaceMapping', 'x"100"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/AXI_hightime', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/AXI_hightime', 'IOInterfaceMapping', 'x"104"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/AXI_lowtime', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/AXI_lowtime', 'IOInterfaceMapping', 'x"108"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/AXI_dutycyc', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection/AXI_dutycyc', 'IOInterfaceMapping', 'x"10C"');
-
-% Set SubSystem HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1', 'AdaptivePipelining', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1', 'BalanceDelays', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1', 'ClockRatePipelining', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1', 'FlattenHierarchy', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1', 'IPCoreName', 'PWMdutyFreqDetection');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1', 'ProcessorFPGASynchronization', 'Free running');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1/PWMin', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1/PWMin', 'IOInterfaceMapping', '');
-
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1/HDL Reciprocal', 'Architecture', 'ReciprocalNewtonSingleRate');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1/AXI_freq', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1/AXI_freq', 'IOInterfaceMapping', 'x"100"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1/AXI_hightime', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1/AXI_hightime', 'IOInterfaceMapping', 'x"104"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1/AXI_lowtime', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1/AXI_lowtime', 'IOInterfaceMapping', 'x"108"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1/AXI_dutycyc', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection1/AXI_dutycyc', 'IOInterfaceMapping', 'x"10C"');
-
-% Set SubSystem HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2', 'AdaptivePipelining', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2', 'BalanceDelays', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2', 'ClockRatePipelining', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2', 'FlattenHierarchy', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2', 'IPCoreName', 'PWMdutyFreqDetection');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2', 'ProcessorFPGASynchronization', 'Free running');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2/PWMin', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2/PWMin', 'IOInterfaceMapping', '');
-
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2/HDL Reciprocal', 'Architecture', 'ReciprocalNewtonSingleRate');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2/AXI_freq', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2/AXI_freq', 'IOInterfaceMapping', 'x"100"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2/AXI_hightime', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2/AXI_hightime', 'IOInterfaceMapping', 'x"104"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2/AXI_lowtime', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2/AXI_lowtime', 'IOInterfaceMapping', 'x"108"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2/AXI_dutycyc', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection2/AXI_dutycyc', 'IOInterfaceMapping', 'x"10C"');
-
-% Set SubSystem HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3', 'AdaptivePipelining', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3', 'BalanceDelays', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3', 'ClockRatePipelining', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3', 'FlattenHierarchy', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3', 'IPCoreName', 'PWMdutyFreqDetection');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3', 'ProcessorFPGASynchronization', 'Free running');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3/PWMin', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3/PWMin', 'IOInterfaceMapping', '');
-
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3/HDL Reciprocal', 'Architecture', 'ReciprocalNewtonSingleRate');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3/AXI_freq', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3/AXI_freq', 'IOInterfaceMapping', 'x"100"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3/AXI_hightime', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3/AXI_hightime', 'IOInterfaceMapping', 'x"104"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3/AXI_lowtime', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3/AXI_lowtime', 'IOInterfaceMapping', 'x"108"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3/AXI_dutycyc', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection3/AXI_dutycyc', 'IOInterfaceMapping', 'x"10C"');
-
-% Set SubSystem HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4', 'AdaptivePipelining', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4', 'BalanceDelays', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4', 'ClockRatePipelining', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4', 'FlattenHierarchy', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4', 'IPCoreName', 'PWMdutyFreqDetection');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4', 'ProcessorFPGASynchronization', 'Free running');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4/PWMin', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4/PWMin', 'IOInterfaceMapping', '');
-
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4/HDL Reciprocal', 'Architecture', 'ReciprocalNewtonSingleRate');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4/AXI_freq', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4/AXI_freq', 'IOInterfaceMapping', 'x"100"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4/AXI_hightime', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4/AXI_hightime', 'IOInterfaceMapping', 'x"104"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4/AXI_lowtime', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4/AXI_lowtime', 'IOInterfaceMapping', 'x"108"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4/AXI_dutycyc', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection4/AXI_dutycyc', 'IOInterfaceMapping', 'x"10C"');
-
-% Set SubSystem HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5', 'AdaptivePipelining', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5', 'BalanceDelays', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5', 'ClockRatePipelining', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5', 'FlattenHierarchy', 'off');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5', 'IPCoreName', 'PWMdutyFreqDetection');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5', 'ProcessorFPGASynchronization', 'Free running');
-
-% Set Inport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5/PWMin', 'IOInterface', 'External Port');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5/PWMin', 'IOInterfaceMapping', '');
-
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5/HDL Reciprocal', 'Architecture', 'ReciprocalNewtonSingleRate');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5/AXI_freq', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5/AXI_freq', 'IOInterfaceMapping', 'x"100"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5/AXI_hightime', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5/AXI_hightime', 'IOInterfaceMapping', 'x"104"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5/AXI_lowtime', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5/AXI_lowtime', 'IOInterfaceMapping', 'x"108"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5/AXI_dutycyc', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutycycFreqDetection5/AXI_dutycyc', 'IOInterfaceMapping', 'x"10C"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_1_freq', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_1_freq', 'IOInterfaceMapping', 'x"100"');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_1_period', 'IOInterface', 'AXI4-Lite');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_1_period', 'IOInterfaceMapping', 'x"100"');
 
 % Set Outport HDL parameters
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_1_hightime', 'IOInterface', 'AXI4-Lite');
@@ -329,8 +87,8 @@ hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_1_dutycyc', 'IOIn
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_1_dutycyc', 'IOInterfaceMapping', 'x"10C"');
 
 % Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_2_freq', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_2_freq', 'IOInterfaceMapping', 'x"110"');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_2_period', 'IOInterface', 'AXI4-Lite');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_2_period', 'IOInterfaceMapping', 'x"110"');
 
 % Set Outport HDL parameters
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_2_hightime', 'IOInterface', 'AXI4-Lite');
@@ -345,8 +103,8 @@ hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_2_dutycyc', 'IOIn
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_2_dutycyc', 'IOInterfaceMapping', 'x"11C"');
 
 % Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_3_freq', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_3_freq', 'IOInterfaceMapping', 'x"120"');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_3_period', 'IOInterface', 'AXI4-Lite');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_3_period', 'IOInterfaceMapping', 'x"120"');
 
 % Set Outport HDL parameters
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_3_hightime', 'IOInterface', 'AXI4-Lite');
@@ -361,8 +119,8 @@ hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_3_dutycyc', 'IOIn
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_3_dutycyc', 'IOInterfaceMapping', 'x"12C"');
 
 % Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_4_freq', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_4_freq', 'IOInterfaceMapping', 'x"130"');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_4_period', 'IOInterface', 'AXI4-Lite');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_4_period', 'IOInterfaceMapping', 'x"130"');
 
 % Set Outport HDL parameters
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_4_hightime', 'IOInterface', 'AXI4-Lite');
@@ -377,8 +135,8 @@ hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_4_dutycyc', 'IOIn
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_4_dutycyc', 'IOInterfaceMapping', 'x"13C"');
 
 % Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_5_freq', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_5_freq', 'IOInterfaceMapping', 'x"140"');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_5_period', 'IOInterface', 'AXI4-Lite');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_5_period', 'IOInterfaceMapping', 'x"140"');
 
 % Set Outport HDL parameters
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_5_hightime', 'IOInterface', 'AXI4-Lite');
@@ -393,8 +151,8 @@ hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_5_dutycyc', 'IOIn
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_5_dutycyc', 'IOInterfaceMapping', 'x"14C"');
 
 % Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_6_freq', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_6_freq', 'IOInterfaceMapping', 'x"150"');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_6_period', 'IOInterface', 'AXI4-Lite');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_6_period', 'IOInterfaceMapping', 'x"150"');
 
 % Set Outport HDL parameters
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_6_hightime', 'IOInterface', 'AXI4-Lite');
@@ -409,68 +167,16 @@ hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_6_dutycyc', 'IOIn
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_Gan_Temp_6_dutycyc', 'IOInterfaceMapping', 'x"15C"');
 
 % Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_FAULT_H1', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_FAULT_H1', 'IOInterfaceMapping', 'x"160"');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_FAULT', 'IOInterface', 'AXI4-Lite');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_FAULT', 'IOInterfaceMapping', 'x"160"');
 
 % Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_FAULT_L1', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_FAULT_L1', 'IOInterfaceMapping', 'x"164"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_FAULT_H2', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_FAULT_H2', 'IOInterfaceMapping', 'x"168"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_FAULT_L2', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_FAULT_L2', 'IOInterfaceMapping', 'x"16C"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_FAULT_H3', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_FAULT_H3', 'IOInterfaceMapping', 'x"170"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_FAULT_L3', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_FAULT_L3', 'IOInterfaceMapping', 'x"174"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_OC_H1', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_OC_H1', 'IOInterfaceMapping', 'x"178"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_OC_L1', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_OC_L1', 'IOInterfaceMapping', 'x"17C"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_OC_H2', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_OC_H2', 'IOInterfaceMapping', 'x"180"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_OC_L2', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_OC_L2', 'IOInterfaceMapping', 'x"184"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_OC_H3', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_OC_H3', 'IOInterfaceMapping', 'x"188"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_OC_L3', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_OC_L3', 'IOInterfaceMapping', 'x"18C"');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_OC', 'IOInterface', 'AXI4-Lite');
+hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_GaN_OC', 'IOInterfaceMapping', 'x"178"');
 
 % Set Outport HDL parameters
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_I_DIAG', 'IOInterface', 'AXI4-Lite');
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_I_DIAG', 'IOInterfaceMapping', 'x"190"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_I1_DIAG', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_I1_DIAG', 'IOInterfaceMapping', 'x"194"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_I2_DIAG', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_I2_DIAG', 'IOInterfaceMapping', 'x"198"');
-
-% Set Outport HDL parameters
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_I3_DIAG', 'IOInterface', 'AXI4-Lite');
-hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/AXI_I3_DIAG', 'IOInterfaceMapping', 'x"19C"');
 
 % Set Outport HDL parameters
 hdlset_param('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWM_EN', 'IOInterface', 'External Port');

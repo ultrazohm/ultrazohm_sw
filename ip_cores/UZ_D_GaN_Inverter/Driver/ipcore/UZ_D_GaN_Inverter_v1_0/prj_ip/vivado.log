@@ -2,8 +2,8 @@
 # Vivado v2020.1.1 (64-bit)
 # SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
 # IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
-# Start of session at: Thu May  6 13:32:14 2021
-# Process ID: 18748
+# Start of session at: Fri May  7 11:45:00 2021
+# Process ID: 16500
 # Current directory: C:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/UZ_D_GaN_Inverter/Driver/hdl_prj/ipcore/UZ_D_GaN_Inverter_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: C:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/UZ_D_GaN_Inverter/Driver/hdl_prj/ipcore/UZ_D_GaN_Inverter_v1_0/prj_ip/vivado.log
@@ -31,54 +31,16 @@ INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
 INFO: [IP_Flow 19-2187] The Product Guide file is missing.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter_pkg.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter_pkg.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive2.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive2.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive3.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive3.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive4.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive5.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive5.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive2.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive2.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive3.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive3.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive4.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive5.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive5.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal_core.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal_core.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1_core.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1_core.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2_core.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2_core.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal2.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3_core.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3_core.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal3.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal4_core.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal4_core.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal4.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal5_core.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal5_core.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal5.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal5.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_reset_sync.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -93,4 +55,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_axi_lite.vhd" 
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/UZ_D_GaN_Inverter.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Thu May  6 13:32:30 2021...
+INFO: [Common 17-206] Exiting Vivado at Fri May  7 11:45:14 2021...

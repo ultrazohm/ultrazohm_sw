@@ -1501,7 +1501,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2105061332">
+		<CoreRevision value="2105071144">
 		</CoreRevision>
 		<ComponentPath value="UZ_D_GaN_Inverter/Driver/ipcore/UZ_D_GaN_Inverter_v1_0/component.xml">
 		</ComponentPath>

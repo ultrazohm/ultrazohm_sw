@@ -11,7 +11,7 @@ uz_d_gan_inverter_handle uz_d_gan_inverter_init(uz_d_gan_inverter_handle self){
 
 int uz_d_gan_inverter_get_PWMFreqTicks_H1(uz_d_gan_inverter_handle self){
 	uz_assert_not_NULL(self);
-	self->PWMFreqTicks_H1 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_1_freq_Data_UZ_D_GaN_Inverter);
+	self->PWMFreqTicks_H1 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_1_period_Data_UZ_D_GaN_Inverter);
 	return(self->PWMFreqTicks_H1);
 }
 
@@ -38,7 +38,7 @@ float uz_d_gan_inverter_get_PWMdutyCycPerCent_H1(uz_d_gan_inverter_handle self){
 
 int uz_d_gan_inverter_get_PWMFreqTicks_L1(uz_d_gan_inverter_handle self){
 	uz_assert_not_NULL(self);
-	self->PWMFreqTicks_L1 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_2_freq_Data_UZ_D_GaN_Inverter);
+	self->PWMFreqTicks_L1 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_2_period_Data_UZ_D_GaN_Inverter);
 	return(self->PWMFreqTicks_L1);
 }
 
@@ -65,7 +65,7 @@ float uz_d_gan_inverter_get_PWMdutyCycPerCent_L1(uz_d_gan_inverter_handle self){
 
 int uz_d_gan_inverter_get_PWMFreqTicks_H2(uz_d_gan_inverter_handle self){
 	uz_assert_not_NULL(self);
-	self->PWMFreqTicks_H2 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_3_freq_Data_UZ_D_GaN_Inverter);
+	self->PWMFreqTicks_H2 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_3_period_Data_UZ_D_GaN_Inverter);
 	return(self->PWMFreqTicks_H2);
 }
 
@@ -92,7 +92,7 @@ float uz_d_gan_inverter_get_PWMdutyCycPerCent_H2(uz_d_gan_inverter_handle self){
 
 int uz_d_gan_inverter_get_PWMFreqTicks_L2(uz_d_gan_inverter_handle self){
 	uz_assert_not_NULL(self);
-	self->PWMFreqTicks_L2 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_4_freq_Data_UZ_D_GaN_Inverter);
+	self->PWMFreqTicks_L2 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_4_period_Data_UZ_D_GaN_Inverter);
 	return(self->PWMFreqTicks_L2);
 }
 
@@ -119,7 +119,7 @@ float uz_d_gan_inverter_get_PWMdutyCycPerCent_L2(uz_d_gan_inverter_handle self){
 
 int uz_d_gan_inverter_get_PWMFreqTicks_H3(uz_d_gan_inverter_handle self){
 	uz_assert_not_NULL(self);
-	self->PWMFreqTicks_H3 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_5_freq_Data_UZ_D_GaN_Inverter);
+	self->PWMFreqTicks_H3 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_5_period_Data_UZ_D_GaN_Inverter);
 	return(self->PWMFreqTicks_H3);
 }
 
@@ -146,7 +146,7 @@ float uz_d_gan_inverter_get_PWMdutyCycPerCent_H3(uz_d_gan_inverter_handle self){
 
 int uz_d_gan_inverter_get_PWMFreqTicks_L3(uz_d_gan_inverter_handle self){
 	uz_assert_not_NULL(self);
-	self->PWMFreqTicks_L3 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_6_freq_Data_UZ_D_GaN_Inverter);
+	self->PWMFreqTicks_L3 = uz_axi_read_uint32(self->base_address + AXI_Gan_Temp_6_period_Data_UZ_D_GaN_Inverter);
 	return(self->PWMFreqTicks_L3);
 }
 

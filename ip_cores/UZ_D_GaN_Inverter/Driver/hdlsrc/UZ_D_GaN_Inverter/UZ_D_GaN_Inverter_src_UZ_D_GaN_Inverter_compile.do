@@ -4,5 +4,5 @@ vcom  UZ_D_GaN_Inverter_src_Detect_Rise_Positive.vhd
 vcom  UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive.vhd
 vcom  UZ_D_GaN_Inverter_src_HDL_Reciprocal_core.vhd
 vcom  UZ_D_GaN_Inverter_src_HDL_Reciprocal.vhd
-vcom  UZ_D_GaN_Inverter_src_For_Each_Subsystem.vhd
+vcom  UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd
 vcom  UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd

@@ -23,6 +23,10 @@ To build and edit the documentation on your native system you need to:
 #. Install pip (included in current python versions)
 #. Install everything in the ``requirements.txt`` in ``/docs`` by invoking ``pip install -r requirements.txt`` in a command shell inside ``/docs``
 #. Install everything required for the extension ``sphinxcontrib.tikz``. `Follow their install guide <https://github.com/sphinx-contrib/tikz>`_!
+  
+   * As image processing ``suite`` you have to install **Ghostscript**
+   * Assuming standard installation path the include path for **Ghostscript** is: ``C:\Program Files\gs\gs9.54.0\bin``  
+  
 #. Build the documentation by invoking ``make html``
 #. You can open the docs in ``/docs/build/html/index.html``
 #. You can edit the documentation by using a text editor of your choice

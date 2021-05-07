@@ -22,6 +22,7 @@ uz_wavegen* uz_wavegen_chirp_init(struct uz_wavegen_config config) {
 	counter += 1;
 	self->is_ready = true;
 	self->read_system_time = true;
+	uz_assert(config.amplitude != 0.0f);
 	uz_assert(config.start_frequency_Hz > 0);
 	uz_assert(config.end_frequency_Hz > 0);
 	uz_assert(config.end_frequency_Hz > config.start_frequency_Hz);

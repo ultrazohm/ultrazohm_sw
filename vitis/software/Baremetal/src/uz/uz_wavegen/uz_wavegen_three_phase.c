@@ -23,6 +23,7 @@ uz_wavegen_three_phase_sin* uz_wavegen_three_phase_init(struct uz_wavegen_three_
 	counter += 1;
 	self->is_ready = true;
 	uz_assert(config.frequency_Hz > 0);
+	uz_assert(config.amplitude != 0.0f);
 	self->config = config;
 	return (self);
 }

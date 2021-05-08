@@ -14,12 +14,7 @@ pipelines:
     - step:
        name: docs
        script: # Modify the commands below to build your repository.
-        - apt-get -y install --no-install-recommends texlive \
-                                                  texlive-lang-german \
-                                                  texlive-latex-extra \
-                                                  texlive-pictures \
-                                                  texlive-science \
-                                                  ghostscript
+        - apt-get -y install --no-install-recommends texlive
         - cd docs
         - python -m pip install -U pip
         - pip install -r requirements.txt

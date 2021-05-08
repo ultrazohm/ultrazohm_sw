@@ -1,5 +1,6 @@
 build/
 source/_build
+doxygen_output/
 .vscode/
 *.raw
 *.plt

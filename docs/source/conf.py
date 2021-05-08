@@ -30,14 +30,17 @@ release = '0.0.1'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+
 extensions = [
     'sphinx_rtd_theme',
     'sphinxcontrib.mermaid',
     'sphinxcontrib.yt',
     'sphinx_issues',
     'sphinx_copybutton',
+    'breathe'
 ]
-
+breathe_projects = { "doxygen_baremetal_r5": "../doxygen_output/xml" }
+breathe_default_project = "doxygen_baremetal_r5"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

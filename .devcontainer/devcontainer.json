@@ -28,7 +28,8 @@
 		"pkief.material-icon-theme",
 		"zhuangtongfa.material-theme",
 		"jeff-hykin.better-cpp-syntax",
-		"atlassian.atlascode"
+		"atlassian.atlascode",
+		"cschlosser.doxdocgen"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

@@ -36,8 +36,9 @@ extensions = [
     'sphinxcontrib.yt',
     'sphinx_issues',
     'sphinx_copybutton',
+    'sphinxcontrib.tikz',
 ]
-
+tikz_proc_suite='GhostScript'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

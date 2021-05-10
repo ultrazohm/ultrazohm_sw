@@ -186,82 +186,108 @@ void test_uz_wavegen_white_noise_zero_amplitude(void){
     TEST_ASSERT_FAIL_ASSERT(uz_wavegen_white_noise(0));
 }
 
-struct uz_wavegen_chirp_config config = {
-        .amplitude = 0.0f,
+struct uz_wavegen_chirp_config config_chirp = {
+        .amplitude = 2.0f,
         .start_frequency_Hz = 1.0f,
         .end_frequency_Hz = 10.0f,
         .duration_Sec = 10.0f,
         .initial_delay_Sec = 0.0f
 };
 
-void test_uz_wavegen_chirp_init_max_instances(void){
+
+void test_uz_wavegen_chirp_init_max_instances(void){    
+    struct uz_wavegen_chirp_config config2 = config_chirp;
+    struct uz_wavegen_chirp_config config3 = config_chirp;
     uz_SystemTime_GetGlobalTimeInSec_ExpectAndReturn(0.05);
-    struct uz_wavegen_chirp_config config = {
-        .amplitude = 5.0f,
-        .start_frequency_Hz = 1.0f,
-        .end_frequency_Hz = 10.0f,
-        .duration_Sec = 10.0f,
-        .initial_delay_Sec = 0.0f
-    };
-    struct uz_wavegen_chirp_config config2 = config;
-    struct uz_wavegen_chirp_config config3 = config;
-    TEST_ASSERT_PASS_ASSERT(uz_wavegen_chirp_init(config));
+    TEST_ASSERT_PASS_ASSERT(uz_wavegen_chirp_init(config_chirp));
     uz_SystemTime_GetGlobalTimeInSec_ExpectAndReturn(0.06);
     TEST_ASSERT_PASS_ASSERT(uz_wavegen_chirp_init(config2));
     TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config3));
 }
 
 void test_uz_wavegen_chirp_init_zero_amplitude(void){ 
-    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
-    config.amplitude = 1.0f;
+    config_chirp.amplitude = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config_chirp));
+    config_chirp.amplitude = 1.0f;
 }
 
 void test_uz_wavegen_chirp_init_negative_start_frequency(void){ 
-    config.start_frequency_Hz = -10.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
+    config_chirp.start_frequency_Hz = -10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config_chirp));
 }
 
 void test_uz_wavegen_chirp_init_zero_start_frequency(void){ 
-    config.start_frequency_Hz = 0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
-    config.start_frequency_Hz = 10.0f;
+    config_chirp.start_frequency_Hz = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config_chirp));
+    config_chirp.start_frequency_Hz = 10.0f;
 }
 
 void test_uz_wavegen_chirp_init_negative_end_frequency(void){ 
-    config.end_frequency_Hz = -10.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
+    config_chirp.end_frequency_Hz = -10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config_chirp));
 }
 
 void test_uz_wavegen_chirp_init_zero_end_frequency(void){ 
-    config.end_frequency_Hz = 0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
+    config_chirp.end_frequency_Hz = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config_chirp));
 }
 
 void test_uz_wavegen_chirp_init_end_smaller_than_start_frequency(void){ 
-    config.end_frequency_Hz = 5.0f;
-    config.start_frequency_Hz = 10.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
-    config.start_frequency_Hz = 2.0f;
-    config.end_frequency_Hz = 10.0f;
+    config_chirp.end_frequency_Hz = 5.0f;
+    config_chirp.start_frequency_Hz = 10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config_chirp));
+    config_chirp.start_frequency_Hz = 2.0f;
+    config_chirp.end_frequency_Hz = 10.0f;
 }
 
 void test_uz_wavegen_chirp_init_negative_delay(void){ 
-    config.initial_delay_Sec = -1.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
-    config.initial_delay_Sec = 1.0f;
+    config_chirp.initial_delay_Sec = -1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config_chirp));
+    config_chirp.initial_delay_Sec = 1.0f;
 }
 
 void test_uz_wavegen_chirp_init_negative_duration(void){ 
-    config.duration_Sec = -1.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
+    config_chirp.duration_Sec = -1.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config_chirp));
 }
 
 void test_uz_wavegen_chirp_init_zero_duration(void){ 
-    config.duration_Sec = 0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config));
-    config.duration_Sec = 1.0f;
+    config_chirp.duration_Sec = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_init(config_chirp));
+    config_chirp.duration_Sec = 1.0f;
 }
 
+void test_uz_wavegen_chirp_reset_NULL(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_reset(NULL));
+}
 
+void test_uz_wavegen_chirp_reset_Is_Ready(void){
+    struct uz_wavegen_chirp container = {
+        .is_ready = false,
+        .read_system_time = true,
+        .elapsed_time_since_start = 0.0f,
+        .initial_global_time_Sec = 10.0f,
+        .transition_angle = 0.0f,
+        .config = config_chirp
+    };
+    uz_wavegen* chirp_container = &container;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp_reset(chirp_container));
+}
 
+void test_uz_wavegen_chirp_NULL(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp(NULL));
+}
+
+void test_uz_wavegen_chirp_Is_Ready(void){
+    struct uz_wavegen_chirp container = {
+        .is_ready = false,
+        .read_system_time = true,
+        .elapsed_time_since_start = 0.0f,
+        .initial_global_time_Sec = 10.0f,
+        .transition_angle = 0.0f,
+        .config = config_chirp
+    };
+    uz_wavegen* chirp_container = &container;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp(chirp_container));
+}
 #endif // TEST

@@ -36,9 +36,9 @@ Known issues
 -----------------------
 none
 
-Compatibility (TODO)
+Compatibility 
 ----------------------
-* TODO
+* The first version is compatible with slots D1-D4. The next revision is intended to be used in slot D5. 
 
 Pinout
 ----------------------
@@ -55,7 +55,7 @@ Resolver
 .. image:: encoder_v1/3D_View_Connectors_Resolver.png
    :height: 300
 
-The resolver interface is equipped with AD2S1210 from Analog Devices. It features excitation signal generation, 10-/12-/14-/16-bit resolution ADC, SPI or parallel interface (currently only SPI is supported), incremental encoder emulation and simple configuration by pullup/pulldown choices.
+The resolver interface is equipped with AD2S1210 from Analog Devices. It features excitation signal generation, 10-/12-/14-/16-bit resolution ADC, SPI or parallel interface (currently only SPI is supported), incremental encoder emulation and simple configuration by pull-up/pull-down choices.
 The devices works in one of three modes selectable by hardware inputs A0 and A1. In position mode, the corresponding data can be obtained directly by toggling the clock line without sending register adresses first. The same applies for velocity mode. Those two are also called normal modes. In the third mode, the configuration mode, allows for further access on the devices registers and configuration. In this mode it is possible to change the excitation frequency or also read back position and velocity data. Only in this mode the ADC resolution can be changed, ignoring the external resistor configuration.
 
 .. figure:: encoder_v1/Position_Plot.png
@@ -85,12 +85,12 @@ Digital Hall
 """""""""""""""""""""""""""
 
 .. image:: encoder_v1/3D_View_Connectors_Digital_Hall.png
-   :height: 300
+   :width: 1000
 
 Digital inputs provide connectivity for hall sensors. The inputs are called Hallx and QEPx but work identically. In standard configuration the interface works with differential signal pairs. In the first stage a differential to single ended converter provides a logic level signal with 5V level. A level shifter then sets the signals to 3.3V levels.
 
 .. image:: encoder_v1/Digital_Hall_Schematic.png
-   :height: 300
+   :width: 1000
 
 In case the signals are single ended the differential to single ended converter can be bypassed with jumper resistors. If the logic level of those signals is 3.3V already the level shifter can be bypassed as well.
 
@@ -98,12 +98,12 @@ Absolute Encoder
 """""""""""""""""""""""""""
 
 .. image:: encoder_v1/3D_View_Connectors_Absolute_Encoder.png
-   :height: 300
+   :width: 1000
 
 Fully integrated absolute encoders with industrial standard interfaces like SSI can be connected to the absolute encoder interface of the board. On Hardware level this board provides two RS485 transceivers. Their direction is controlled by specific control lines and they can be used either as serial data, serial clock or other functions, depending on the encoder interface. The 5V level control and data lines to the transceivers are routed to a level shifter and then to the IO-connector.
 
 .. image:: encoder_v1/Absolute_Encoder_Schematic.png
-   :height: 300
+   :width: 1000
 
 Placement options provide usage with different interface specifications.
 
@@ -119,7 +119,7 @@ The analog hall interface is based on the UltraZohm analog board. It is equipped
    :height: 300
 
 
-See also (TODO)
+References
 """""""""""""""
 * :download:`Schematic 1v00 <incr_encoder_v1/SCH_UltraZohm_Digital_Incremental_Encoder_1v0.pdf>`
 * :ref:`label_cpld_programming`

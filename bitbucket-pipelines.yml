@@ -39,6 +39,31 @@ pipelines:
    branches:
      develop:
         - step:
+           name: docs
+           script: # Modify the commands below to build your repository.
+            - apt-get update && apt-get -y install --no-install-recommends texlive
+            - apt-get -y install --no-install-recommends texlive-latex-extra
+            - apt-get -y install --no-install-recommends texlive-pictures
+            - apt-get -y install --no-install-recommends texlive-science
+            - apt-get -y install --no-install-recommends ghostscript
+            - cd docs
+            - python -m pip install -U pip
+            - pip install -r requirements.txt
+            - pip list
+            - make html SPHINXOPTS="-W --keep-going -n"
+            - cd build
+            - ls
+        - step:
+           name: Ceedling unit tests
+           script:
+            - apt-get update
+            - apt-get -y install build-essential
+            - apt-get -y install gdb
+            - apt-get -y install ruby
+            - gem install ceedling
+            - cd vitis/software/Baremetal
+            - ceedling test:all
+        - step:
            name: Github-Mirror
            image: alpine/git
            script:

@@ -12,7 +12,7 @@ struct uz_wavegen_chirp_config {
 
 };
 
-typedef struct uz_wavegen_three_phase uz_wavegen_three_phase_sin;
+typedef struct uz_wavegen_three_phase uz_wavegen_three_phase_sine;
 
 struct uz_wavegen_three_phase_config {
 	float amplitude;
@@ -37,6 +37,6 @@ uz_wavegen* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config);
 float uz_wavegen_chirp(uz_wavegen* self);
 void uz_wavegen_chirp_reset(uz_wavegen* self);
 
-uz_wavegen_three_phase_sin* uz_wavegen_three_phase_init(struct uz_wavegen_three_phase_config config);
-void uz_wavegen_three_phase(uz_wavegen_three_phase_sin* self);
+uz_wavegen_three_phase_sine* uz_wavegen_three_phase_init(struct uz_wavegen_three_phase_config config);
+void uz_wavegen_three_phase(uz_wavegen_three_phase_sine* self);
 

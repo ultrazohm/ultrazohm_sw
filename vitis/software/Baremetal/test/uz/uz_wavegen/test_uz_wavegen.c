@@ -6,6 +6,7 @@
 #include "mock_uz_SystemTime.h"
 #include "test_assert_with_exception.h"
 #include "../uz_wavegen/uz_wavegen_chirp.c"
+#include "../uz_wavegen/uz_wavegen_three_phase.c"
 
 void test_uz_wavegen_sine_negative_input_frequency(void){
     float a=-10;
@@ -289,5 +290,52 @@ void test_uz_wavegen_chirp_Is_Ready(void){
     };
     uz_wavegen* chirp_container = &container;
     TEST_ASSERT_FAIL_ASSERT(uz_wavegen_chirp(chirp_container));
+}
+
+struct uz_wavegen_three_phase_config config_three = {
+        .amplitude = 2.0f,
+        .frequency_Hz = 1.0f,
+        .offset = 1.0f
+};
+
+void test_uz_wavegen_three_phase_init_max_instances(void){    
+    struct uz_wavegen_three_phase_config config2 = config_three;
+    struct uz_wavegen_three_phase_config config3 = config_three;
+    TEST_ASSERT_PASS_ASSERT(uz_wavegen_three_phase_init(config_three));
+    TEST_ASSERT_PASS_ASSERT(uz_wavegen_three_phase_init(config2));
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_three_phase_init(config3));
+}
+
+void test_uz_wavegen_three_phase_init_zero_amplitude(void){ 
+    config_three.amplitude = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_three_phase_init(config_three));
+    config_three.amplitude = 1.0f;
+}
+
+void test_uz_wavegen_three_phase_init_negative_start_frequency(void){ 
+    config_three.frequency_Hz = -10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_three_phase_init(config_three));
+}
+
+void test_uz_wavegen_three_phase_init_zero_start_frequency(void){ 
+    config_three.frequency_Hz = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_three_phase_init(config_three));
+    config_three.frequency_Hz = 10.0f;
+}
+
+void test_uz_wavegen_three_phase_NULL(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_three_phase(NULL));
+}
+
+void test_uz_wavegen_three_phase_Is_Ready(void){
+    uz_wavegen_three_phase_sine container = {
+        .is_ready = false,
+        .phase_U = 0.0f,
+        .phase_V = 0.0f,
+        .phase_W = 0.0f,
+        .config = config_three
+    };
+    uz_wavegen_three_phase_sine* three_phase_container = &container;
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_three_phase(three_phase_container));
 }
 #endif // TEST

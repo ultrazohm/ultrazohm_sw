@@ -2,7 +2,7 @@
 #include <math.h>
 #include "../uz_HAL.h"
 #include "../uz_SystemTime/uz_SystemTime.h"
-#define max_wavegen_instances 2
+#define max_wavegen_chirp_instances 2
 
 struct uz_wavegen_chirp {
 	bool is_ready;
@@ -12,14 +12,14 @@ struct uz_wavegen_chirp {
 	float transition_angle;
 	struct uz_wavegen_chirp_config config;
 };
-static size_t counter = 0;
-static uz_wavegen instances[max_wavegen_instances] = { 0 };
+static size_t counter_chirp = 0;
+static uz_wavegen instances_chirp[max_wavegen_chirp_instances] = { 0 };
 
 uz_wavegen* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config) {
-	uz_assert(counter < max_wavegen_instances);
-	uz_wavegen* self = &instances[counter];
+	uz_assert(counter_chirp < max_wavegen_chirp_instances);
+	uz_wavegen* self = &instances_chirp[counter_chirp];
 	uz_assert(self->is_ready == false);
-	counter += 1;
+	counter_chirp += 1;
 	self->is_ready = true;
 	self->read_system_time = true;
 	uz_assert(config.amplitude != 0.0f);

@@ -94,6 +94,7 @@ steps:
      user:
        from_secret: username
    commands:
+   - apk add git-lfs
    - git status
    - git commit -a -m "[skip ci] Commit Vivado binarys from DroneCI"
    - git status
@@ -121,6 +122,7 @@ steps:
    - name: m2
      path: /root/.m2
    commands:
+   - apk add git-lfs
    - ls
    - git status
    - git tag
@@ -149,6 +151,7 @@ steps:
      user:
        from_secret: username
    commands:
+   - apk add git-lfs
    - git status
    - git commit -a -m "[skip ci] Commit changelog and tag from DroneCI"
    - git status

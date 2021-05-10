@@ -15,14 +15,21 @@ The documentation is hosted on a web server, the build and deployment is handled
 Install
 =======
 
-To build and edit the documentation you need to:
+.. tip:: Use the :ref:`vscode_remote_container` to handle all installations for you instead of installing all dependencies on your machine and keeping them up to date.
 
-* Install latest python version
-* Install pip (included in current python versions)
-* Install everything in the ``requirements.txt`` in ``/docs`` by invoking ``pip install -r requirements.txt`` in a command shell inside ``/docs``
-* Build the documentation by invoking ``make html``
-* You can open the docs in ``/docs/build/html/index.html``
-* You can edit the documentation by using a text editor of your choice
+To build and edit the documentation on your native system you need to:
+
+#. Install latest python version
+#. Install pip (included in current python versions)
+#. Install everything in the ``requirements.txt`` in ``/docs`` by invoking ``pip install -r requirements.txt`` in a command shell inside ``/docs``
+#. Install everything required for the extension ``sphinxcontrib.tikz``. `Follow their install guide <https://github.com/sphinx-contrib/tikz>`_!
+  
+   * As image processing ``suite`` you have to install **Ghostscript**
+   * Assuming standard installation path the include path for **Ghostscript** is: ``C:\Program Files\gs\gs9.54.0\bin``  
+  
+#. Build the documentation by invoking ``make html``
+#. You can open the docs in ``/docs/build/html/index.html``
+#. You can edit the documentation by using a text editor of your choice
 
 .. tip:: Sometimes you might need to clean the output with ``make clean`` or clean build with ``make clean html``
 
@@ -40,6 +47,7 @@ Video
 *****
 
 This video shows how to install python, the requirements and build the documentation.
+Please note that the installation steps for ``sphinxcontrib.tikz`` (i.e., Ghostscript and Latex) is not shown in the video since the installation steps depend on your OS.
 
 .. youtube:: dxAlD-VzE0c
 
@@ -237,6 +245,23 @@ All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
 `sphinx-copybutton <https://github.com/executablebooks/sphinx-copybutton>`_
   Adds a button the code blocks that copy the content of the block.
  
+`sphinxcontrib-tikz <https://github.com/sphinx-contrib/tikz>`_
+  Adds the possibility to write tikz pictures in the documentation.
+  Example:
+
+::
+
+   .. tikz:: An Example TikZ Directive with Caption
+     :align: left
+   
+     \draw[thick,rounded corners=8pt]
+     (0,0)--(0,2)--(1,3.25)--(2,2)--(2,0)--(0,2)--(2,2)--(0,0)--(2,0);
+
+.. tikz:: An Example TikZ Directive with Caption
+  :align: left
+
+  \draw[thick,rounded corners=8pt]
+  (0,0)--(0,2)--(1,3.25)--(2,2)--(2,0)--(0,2)--(2,2)--(0,0)--(2,0);
 
 Known Issues
 ============
@@ -249,7 +274,7 @@ Compatibility issue with Notepad++ and .rst files
 
 * If u edit ``.rst`` files in the UltraZohm documentation an issue whilst using the tabulator key in Notepad++ can occur.
 
-  - If you align the command with the tabulator key in Notepad++, everything looks as its suppposed to.
+  - If you align the command with the tabulator key in Notepad++, everything looks as its supposed to.
 
   .. image:: ./img/Notepad_tabulator.png
 
@@ -257,7 +282,7 @@ Compatibility issue with Notepad++ and .rst files
 
   .. image:: ./img/Editor_tabulator.png
 
-  - This wrong alignment via Notepad++ leads to the following error whilst executing **make html**. You can see the the missalignment highlighted in green.
+  - This wrong alignment via Notepad++ leads to the following error whilst executing **make html**. You can see the the misalignment highlighted in green.
 
   .. image:: ./img/CMD_tabulator.png
   

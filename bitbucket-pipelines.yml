@@ -4,6 +4,8 @@
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
 image: python:3
+clone:
+  lfs: true
 
 pipelines:
   #branches:
@@ -12,6 +14,11 @@ pipelines:
     - step:
        name: docs
        script: # Modify the commands below to build your repository.
+        - apt-get update && apt-get -y install --no-install-recommends texlive
+        - apt-get -y install --no-install-recommends texlive-latex-extra
+        - apt-get -y install --no-install-recommends texlive-pictures
+        - apt-get -y install --no-install-recommends texlive-science
+        - apt-get -y install --no-install-recommends ghostscript
         - cd docs
         - python -m pip install -U pip
         - pip install -r requirements.txt
@@ -29,12 +36,40 @@ pipelines:
         - gem install ceedling
         - cd vitis/software/Baremetal
         - ceedling test:all
-    - step:
-       name: Github-Mirror
-       script:
-        - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
-        - git push --all mirrorOrigin
    branches:
+     develop:
+        - step:
+           name: docs
+           script: # Modify the commands below to build your repository.
+            - apt-get update && apt-get -y install --no-install-recommends texlive
+            - apt-get -y install --no-install-recommends texlive-latex-extra
+            - apt-get -y install --no-install-recommends texlive-pictures
+            - apt-get -y install --no-install-recommends texlive-science
+            - apt-get -y install --no-install-recommends ghostscript
+            - cd docs
+            - python -m pip install -U pip
+            - pip install -r requirements.txt
+            - pip list
+            - make html SPHINXOPTS="-W --keep-going -n"
+            - cd build
+            - ls
+        - step:
+           name: Ceedling unit tests
+           script:
+            - apt-get update
+            - apt-get -y install build-essential
+            - apt-get -y install gdb
+            - apt-get -y install ruby
+            - gem install ceedling
+            - cd vitis/software/Baremetal
+            - ceedling test:all
+        - step:
+           name: Github-Mirror
+           image: alpine/git
+           script:
+            - apk add git-lfs
+            - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
+            - git push --all mirrorOrigin
      main:
       - step:
          name: Deploy to Contabo Server
@@ -61,3 +96,10 @@ pipelines:
                  # for everybody and directories get accessable
                  EXTRA_ARGS: '-a --delete --chmod=D0755,F0640,+X'
                  SSH_PORT: '22'
+      - step:
+         name: Github-Mirror
+         image: alpine/git
+         script:
+          - apk add git-lfs
+          - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
+          - git push --all mirrorOrigin

@@ -7230,6 +7230,18 @@
       }
     },
     "interface_nets": {
+      "smartconnect_0_M01_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M01_AXI",
+          "ADC_A1/s00_axi"
+        ]
+      },
+      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
+        "interface_ports": [
+          "smartconnect_0/S00_AXI",
+          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
+        ]
+      },
       "smartconnect_1_M00_AXI": {
         "interface_ports": [
           "smartconnect_1/M00_AXI",
@@ -7318,18 +7330,6 @@
         "interface_ports": [
           "smartconnect_0/M07_AXI",
           "Gates/S00_AXI"
-        ]
-      },
-      "smartconnect_0_M01_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M01_AXI",
-          "ADC_A1/s00_axi"
-        ]
-      },
-      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
-        "interface_ports": [
-          "smartconnect_0/S00_AXI",
-          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
         ]
       },
       "smartconnect_0_M15_AXI": {

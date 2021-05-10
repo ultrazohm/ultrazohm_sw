@@ -7,15 +7,17 @@ Waveform Generator
 The ``uz_wavegen`` functions can be used to create standard waveform, which, for example, can be displayed in the :ref:`JavaScope`.
 
 
-Avaivable waveforms
+Available waveforms
 *******************
-
 
 Sine wave
 ^^^^^^^^^
 
-.. image:: sine_wave.png
-    :scale: 20
+.. tikz:: sine wave
+  :align: left
+
+  \draw [densely dotted] (0,0)  -- +(6,0);
+  \draw plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{0.5*sin(deg(\x*pi))});
    
 Creates a continous sine wave. 
 
@@ -41,10 +43,13 @@ Function call:
     
 Sine wave with offset
 ^^^^^^^^^^^^^^^^^^^^^
+ 
+.. tikz:: sine wave with offset
+  :align: left
 
-.. image:: sine_offset.png
-    :scale: 20
-   
+  \draw [densely dotted] (0,0)  -- +(6,0);
+  \draw plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{0.25+0.5*sin(deg(\x*pi))});
+
 Creates a continous sine wave with an adjustable offset. 
 
 .. list-table:: Required input arguments
@@ -73,9 +78,12 @@ Function call:
 Sawtooth wave
 ^^^^^^^^^^^^^
 
-.. image:: sawtooth.png
-    :scale: 20
-    
+.. tikz:: sawtooth wave
+  :align: left
+
+  \draw [densely dotted] (0,0)  -- +(6,0);
+  \draw (0,0) foreach \x in {1,2,3} {-- ++(2,1) -- ++(0,-1) };
+
 Creates a continous sawtooth wave.
 
 .. list-table:: Required input arguments
@@ -101,9 +109,12 @@ Function call:
 Sawtooth wave with offset
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: sawtooth_offset.png
-    :scale: 20
-    
+.. tikz:: sawtooth wave with offset
+  :align: left
+
+  \draw [densely dotted] (0,0.25)  -- +(6,0);
+  \draw (0,0) foreach \x in {1,2,3} {-- ++(2,1) -- ++(0,-1) };
+
 Creates a continous sawtooth wave with an adjustable offset.
 
 .. list-table:: Required input arguments
@@ -132,9 +143,12 @@ Function call:
 Pulse wave
 ^^^^^^^^^^^^^
 
-.. image:: pulse.png
-    :scale: 20
-    
+.. tikz:: pulse wave
+  :align: left
+
+  \draw [densely dotted] (0,0)  -- +(6,0);
+  \draw (0,0) foreach \x in {1,2,3} {-- ++(0,1) -- ++(1,0) -- ++(0,-1) -- ++(1,0)};
+
 Creates a continous pulse wave.
 
 .. list-table:: Required input arguments
@@ -162,10 +176,13 @@ Function call:
 
 Square wave
 ^^^^^^^^^^^^^
+ 
+.. tikz:: square wave
+  :align: left
 
-.. image:: square.png
-    :scale: 20
-    
+  \draw [densely dotted] (0,0)  -- +(6,0);
+  \draw (0,0) foreach \x in {1,2,3} {-- ++(0,1) -- ++(1,0) -- ++(0,-2) -- ++(1,0)-- ++(0,1)};
+
 Creates a continous square wave.
 
 .. list-table:: Required input arguments
@@ -191,9 +208,12 @@ Function call:
 Triangle wave
 ^^^^^^^^^^^^^
 
-.. image:: triangle.png
-    :scale: 20
-    
+.. tikz:: triangle wave
+  :align: left
+
+  \draw [densely dotted] (0,0)  -- +(6,0);
+  \draw (0,0) foreach \x in {1,2,3} {-- ++(1,1) -- ++(1,-1) };
+
 Creates a continous triangle wave.
 
 .. list-table:: Required input arguments
@@ -219,9 +239,12 @@ Function call:
 Triangle wave with offset
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: triangle_offset.png
-    :scale: 20
-    
+.. tikz:: triangle wave with offset
+  :align: left
+
+  \draw [densely dotted] (0,0.25)  -- +(6,0);
+  \draw (0,0) foreach \x in {1,2,3} {-- ++(1,1) -- ++(1,-1) };
+
 Creates a continous triangle wave with an adjustable offset.
 
 .. list-table:: Required input arguments
@@ -250,8 +273,15 @@ Function call:
 Saturation function
 ^^^^^^^^^^^^^^^^^^^
 
-.. image:: saturation.png
-    :scale: 20
+.. tikz:: saturation wave
+  :align: left
+
+  \draw [densely dotted] (0,0)  -- +(6,0);
+  \draw (0,0) foreach \x in {1,2,3} {-- ++(1,1) -- ++(1,-1) };
+  \draw[color=blue] (0,0.25) foreach \x in {1,2,3} {-- ++(0.25,0) -- ++(0.5,0.5) -- ++(0.5,0) -- ++(0.5,-0.5)-- ++(0.25,0) };
+  \node[below,color=blue,font=\footnotesize] at (3.8,0){output};
+  \draw[->] (2.75,-0.3) -- (3.2,-0.3);
+  \node[below,color=black,font=\footnotesize] at (2.2,0){input};
 
 Limits an input signal to the upper and lower saturation values, similar to how the saturation block in matlab functions. Doesn't generate a waveform by itself.
 
@@ -280,10 +310,13 @@ Function call:
 
 White noise function
 ^^^^^^^^^^^^^^^^^^^^
+  
+.. tikz:: white noise wave
+  :align: left
 
-.. image:: white_noise.png
-    :scale: 20
-    
+  \draw [densely dotted] (0,0)  -- +(6,0);
+  \draw plot[domain=0:6,variable=\x,samples=200,smooth] (\x,{rand});
+
 Creates a continous white noise function. With the argument **amplitude** one can input the max value of the white noise wave.
 
 .. list-table:: Required input arguments
@@ -306,8 +339,20 @@ Function call:
 Chirp function
 ^^^^^^^^^^^^^^
 
-.. image:: chirp.png
-    :scale: 10
+.. tikz:: chirp wave
+  :align: left
+
+  \draw [densely dotted] (0,0)  -- +(6,0);
+  \draw plot[domain=0:5,variable=\x,samples=200,smooth] (\x+1,{sin(deg(\x^2*pi))});
+  \draw(0,0)--(1,0);
+  \draw[|-|](0,0.5)--(1,0.5);
+  \node[font=\footnotesize] at (0.5,1){delay};
+  \draw[->](1.75,1.7)--(1.75,1.2);
+  \node[font=\footnotesize] at (1.75,2){start frequency};
+  \draw[->](5.75,1.7)--(5.75,1.2);
+  \node[font=\footnotesize] at (5.1,2){end frequency};
+  \draw[|-|](1,-2)--(5.75,-2);
+  \node[font=\footnotesize] at (3.3,-2.5){duration};
 
 Creates a configurable chirp function. The parameters for configuration are the amplitude, the start and end frequency, the duration for the chirp and a delay for the start of the chirp wave.
 After the duration of the chirp wave, the function ``uz_wavegen_chirp()`` will return a continous sinus with the ``end_frequency_Hz``. For the input arguments a struct is required.
@@ -339,7 +384,12 @@ Initialize the function with:
 
 .. code-block:: c
 
-    struct uz_wavegen_chirp_config *config* = {.amplitude= ..., .start_frequency_Hz = ..., .end_frequency_Hz = ..., .duration_Sec = ..., .initial_delay_Sec = ...};
+    struct uz_wavegen_chirp_config *config* = {
+    .amplitude= ...,
+    .start_frequency_Hz = ...,
+    .end_frequency_Hz = ...,
+    .duration_Sec = ...,
+    .initial_delay_Sec = ...};
     uz_wavegen* *name* = uz_wavegen_chirp_init(*config*);
 
 Function call:
@@ -355,8 +405,13 @@ The function ``uz_wavegen_chirp_reset()`` can be used, to reset the chirp. A sub
 Three phase sine function
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: three_phase_sine.png
-    :scale: 20
+.. tikz:: three phase sine wave
+  :align: left
+
+  \draw [densely dotted] (0,0)  -- +(6,0);
+  \draw plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{sin(deg(\x*pi))});
+  \draw[color=blue] plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{sin(120+deg(\x*pi))});
+  \draw[color=orange] plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{sin(240+deg(\x*pi))});
 
 Creates a continous sine wave with free phases. For the input arguments a struct is required.
 
@@ -381,14 +436,18 @@ Initialize the function with:
 
 .. code-block:: c
 
-    struct uz_wavegen_three_phase_config *name* = {.amplitude = ..., .frequency_Hz= ..., .offset = ...};
-    uz_wavegen_three_phase_sin* *output* = uz_wavegen_three_phase_init(*name*);
+    struct uz_wavegen_three_phase_config *name* = {
+    .amplitude = ...,
+    .frequency_Hz= ...,
+    .offset = ...};
+
+    uz_wavegen_three_phase_sine* *output* = uz_wavegen_three_phase_init(*name*);
 
 Function call:
 
 .. code-block:: c
 
-    uz_wavegen_three_phase(container);
+    uz_wavegen_three_phase(*output*);
 
 The output for the three phases is stored in the \*output*\  struct. Access them with:
 

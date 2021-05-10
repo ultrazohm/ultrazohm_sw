@@ -15,6 +15,7 @@ entity ADC_LVDS_LTC2311_v3_0 is
         CONVERSION_WIDTH    : natural := 18;    -- Bit width of the conversion factor
         RES_LSB             : natural := 6;     -- LSB in the result vector of the multiplactor output
         RES_MSB             : natural := 23;    -- MSB in the result vector of the multiplactor output
+        DIFFERENTIAL        : boolean := true;
 		-- User parameters ends
 		-- Do not modify the parameters beyond this line
 

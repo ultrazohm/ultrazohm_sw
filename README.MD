@@ -1,3 +1,5 @@
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://bitbucket.org/ultrazohm/ultrazohm_sw)
+
 # UltraZohm
 *A powerful real-time computation platform for research, development, and rapid-control prototyping of power electronics and drive systems.*
 

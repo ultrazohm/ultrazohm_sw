@@ -54,6 +54,8 @@ The dialog to clone the repository is opened and you can add the local path. It 
 
   C:\UltraZohm\ultrazohm_sw
 
+Under Advanced Options (Erweiterte Optionen) checkout the **main** branch.
+
 .. image:: ./images_git/sourcetree_clone2.png
 
 This will take some time, after the clone is complete, Sourcetree and the repository is ready to use.
@@ -88,11 +90,11 @@ To use git-flow for the first time click the git-flow icon in Sourcetree.
 
 .. image:: ./images_git/gitflow1.png
 
-A window pops up which asks you ti initialize the repository for git-flow. Just click ok.
+A window pops up which asks you to initialize the repository for git-flow. Just click ok.
 
 .. warning::
 
-  do not change the default settings!
+  Change **master** to **main**. Do not change the other default settings!
 
 .. image:: ./images_git/gitflow2.png
 
@@ -117,7 +119,7 @@ Naming:
 .. image:: ./images_git/gitflow5.png
 
 The feature branch is now created on your local machine and you can start working.
-If you want to push the new branch to the remote repository just lick push.
+If you want to push the new branch to the remote repository just click push.
 
 .. image:: ./images_git/gitflow6.png
 

@@ -22,9 +22,8 @@ Development goals
 -----------------
 
 Computational power
- The usage of more complex control algorithms based on model predictive control and/or artificial intelligence as well as the increased useage of wide-band gap power electronics require a real-time computation unit with
- sufficient computational power.
- This computational power is be provided by the UltraZohm.
+ The use of more complex control algorithms based on model predictive control and/or artificial intelligence, as well as the increased use of wide-band gap power electronics, require a real-time computing unit with sufficient processing power.
+ The necessary processing power is provided by the UltraZohm.
  A heterogenous SoC is used due to the diverse requirements of different applications and control algorithms.
  The UltraZohm project uses the `Xilinx Zynq UltraScale+ MPSoC <https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html>`_ on a SoM by `Trenz Electronics <https://shop.trenz-electronic.de/de/Produkte/Trenz-Electronic/TE08XX-Zynq-UltraScale/TE0808-Zynq-UltraScale/>`_.
 
@@ -63,7 +62,7 @@ Overview of the project
 ***********************
 
 The UltraZohm project is hosted on a bitbucket `repository <https://bitbucket.org/ultrazohm/ultrazohm_sw>`_.
-The repository is structured in the following way, which some important files highlighted.
+The repository is structured in the following way, with some important files highlighted.
 The source of this documentation is located in ``ultrazohm_sw/docs/source/``.
 The online version (docs.ultrazohm.com) is always the documentation of the current state of the ``main`` branch.
 
@@ -80,10 +79,9 @@ The online version (docs.ultrazohm.com) is always the documentation of the curre
     │   ├── vitis_generate_UltraZohm_workspace.tcl
     │   └── vitis_update_platform.tcl
     ├── vitis/
-    |   ├── export/
-    │   ├── vivado_exported_xsa
-    |   |   └── zusys_wrapper.xsa
-    │   └── vitis_update_platform.tcl
+    |   ├── software/
+    │   └── vivado_exported_xsa
+    |      └── zusys_wrapper.xsa
     └── vivado/
         └── project/
             └── ultrazohm.xpr

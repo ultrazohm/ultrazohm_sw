@@ -1,7 +1,9 @@
-sphinx
+sphinx==3.5.4
 sphinx_rtd_theme
-sphinxcontrib-mermaid==0.6.0
+sphinxcontrib-mermaid
 sphinxcontrib.yt
 six
 sphinx-autobuild
 sphinx-issues
+sphinx-copybutton
+sphinxcontrib-tikz

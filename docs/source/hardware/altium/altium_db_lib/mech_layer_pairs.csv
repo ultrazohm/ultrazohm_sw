@@ -1,0 +1,19 @@
+Layer, Function
+M3, 3D Body Top
+M4, 3D Body Bottom
+M5, Assembly Drawing Top: Component outline
+M6, Assembly Drawing Bottom: Component outline
+M7, Courtyard Top
+M8, Courtyard Bottom
+M9, Designator Top
+M10, Designator Bottom
+M11, Component Center Top
+M12, Component Center Bottom
+M13, Value Top
+M14, Value Bottom
+M15, Hard Gold Plating (e.g. edge connectors) Top. Use the predefined layer pair here.
+M16, Hard Gold Plating (e.g. edge connectors) Bottom. Use the predefined layer pair here.
+M17, Soft Gold (ENIG) Top. No predefined layer pair. Just create two additional mechanical layers.
+M18, Soft Gold (ENIG) Bottom. No predefined layer pair. Just create two additional mechanical layers.
+M19, Dimensions Top
+M20, Dimensions Bottom

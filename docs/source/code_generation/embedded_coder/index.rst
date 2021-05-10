@@ -32,11 +32,11 @@ The API of ``uz_codegen`` has two functions:
 
     ultrazohm_sw/
     └── vitis/
-        ├── export/
-        |   └── Baremetal/
+        ├── software/
+        |   └── Baremetal/src
         |        └── Codegen/
         |            ├── uz_codegen.c
-        |            ├── uz_codegen.c
+        |            ├── uz_codegen.h
         |            └── uz_codegen0_ert_rtw/
         └── SimulinkCodegen
             ├── uz_generateSimulinkModel.m
@@ -62,7 +62,7 @@ First usage
 12. Code is generated and usable in Vitis
 13. Alternative: execute the script ``uz_generateSimulinkModel.m`` which executes all of the above steps
 14. Open Vitis
-15. The code is generated in ``ultrazohm_sw/vitis/export/Baremetal/Codegen/uz_codegen0_ert_rtw``
+15. The code is generated in ``ultrazohm_sw/vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw``
 16. Code is not called by the standard Vitis project
 17. Define ``uz_codegen codegenInstance`` as a global variable in ``main.c`` of the Baremetal project
 18. Call the init function (``uz_codegen_init(&codegenInstance)``) inside the main

@@ -15,14 +15,21 @@ The documentation is hosted on a web server, the build and deployment is handled
 Install
 =======
 
-To build and edit the documentation you need to:
+.. tip:: Use the :ref:`vscode_remote_container` to handle all installations for you instead of installing all dependencies on your machine and keeping them up to date.
 
-* Install latest python version
-* Install pip (included in current python versions)
-* Install everything in the ``requirements.txt`` in ``/docs`` by invoking ``pip install -r requirements.txt`` in a command shell inside ``/docs``
-* Build the documentation by invoking ``make html``
-* You can open the docs in ``/docs/build/html/index.html``
-* You can edit the documentation by using a text editor of your choice
+To build and edit the documentation on your native system you need to:
+
+#. Install latest python version
+#. Install pip (included in current python versions)
+#. Install everything in the ``requirements.txt`` in ``/docs`` by invoking ``pip install -r requirements.txt`` in a command shell inside ``/docs``
+#. Install everything required for the extension ``sphinxcontrib.tikz``. `Follow their install guide <https://github.com/sphinx-contrib/tikz>`_!
+  
+   * As image processing ``suite`` you have to install **Ghostscript**
+   * Assuming standard installation path the include path for **Ghostscript** is: ``C:\Program Files\gs\gs9.54.0\bin``  
+  
+#. Build the documentation by invoking ``make html``
+#. You can open the docs in ``/docs/build/html/index.html``
+#. You can edit the documentation by using a text editor of your choice
 
 .. tip:: Sometimes you might need to clean the output with ``make clean`` or clean build with ``make clean html``
 
@@ -40,6 +47,7 @@ Video
 *****
 
 This video shows how to install python, the requirements and build the documentation.
+Please note that the installation steps for ``sphinxcontrib.tikz`` (i.e., Ghostscript and Latex) is not shown in the video since the installation steps depend on your OS.
 
 .. youtube:: dxAlD-VzE0c
 
@@ -84,6 +92,56 @@ Common functions
 Use the following examples for reference on how to write the docs.
 Basics:
 
+Structure
+^^^^^^^^^
+
+The structure of ``.rst`` files is based on indentation with spaces.
+These indentations are a vital part of .rst and do **not** solely exist for visual alignment. 
+
+.. note:: Spaces are recommended for indentation, but tabs may also be used. For tabs, refer to :ref:`notepad`.
+
+**Example**
+
+.. code-block:: rst
+    
+    This is a top-level paragraph.
+
+        This paragraph belongs to a first-level block quote. *Indentation is 4 spaces form the previous.*
+
+            This paragraph belongs to a second-level block quote. *Indentation is 4 spaces form the first-level, or 8 form the top-level.*
+
+    Another top-level paragraph.
+
+        This paragraph belongs to a second-level block quote.
+
+    This paragraph belongs to a first-level block quote.  The
+    second-level block quote above is inside this first-level
+    block quote.
+    
+    * Level 1
+    
+        * Level 2
+   
+**This translates to the following:**
+
+This is a top-level paragraph.
+
+    This paragraph belongs to a first-level block quote. *Indentation is 4 spaces form the previous.* 
+
+        This paragraph belongs to a second-level block quote. *Indentation is 4 spaces form the first-level, or 8 form the top-level.*
+
+Another top-level paragraph.
+
+        This paragraph belongs to a second-level block quote.
+
+    This paragraph belongs to a first-level block quote.  The
+    second-level block quote above is inside this first-level
+    block quote.
+    
+* Level 1
+    
+    * Level 2
+   
 Code block
 ^^^^^^^^^^
 
@@ -181,5 +239,62 @@ All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
  Enable autobuild and reload after changes for local development with ``make livehtml``
  
 `sphinx-issues <https://github.com/sloria/sphinx-issues>`_
- Link to issues and pull requests with ``:issue:`51``` and ``:pr:`5```, e.g., issue :issue:`5`
+ Link to issues and pull requests with ``:issue:`51``` and ``:pr:`5```, e.g., issue :issue:`5``
  
+
+`sphinx-copybutton <https://github.com/executablebooks/sphinx-copybutton>`_
+  Adds a button the code blocks that copy the content of the block.
+ 
+`sphinxcontrib-tikz <https://github.com/sphinx-contrib/tikz>`_
+  Adds the possibility to write tikz pictures in the documentation.
+  Example:
+
+::
+
+   .. tikz:: An Example TikZ Directive with Caption
+     :align: left
+   
+     \draw[thick,rounded corners=8pt]
+     (0,0)--(0,2)--(1,3.25)--(2,2)--(2,0)--(0,2)--(2,2)--(0,0)--(2,0);
+
+.. tikz:: An Example TikZ Directive with Caption
+  :align: left
+
+  \draw[thick,rounded corners=8pt]
+  (0,0)--(0,2)--(1,3.25)--(2,2)--(2,0)--(0,2)--(2,2)--(0,0)--(2,0);
+
+Known Issues
+============
+
+.. _notepad:
+
+Compatibility issue with Notepad++ and .rst files 
+*************************************************
+
+
+* If u edit ``.rst`` files in the UltraZohm documentation an issue whilst using the tabulator key in Notepad++ can occur.
+
+  - If you align the command with the tabulator key in Notepad++, everything looks as its supposed to.
+
+  .. image:: ./img/Notepad_tabulator.png
+
+  - However, if u open the saved file with the tabulator alignment in the normal windows editor, the following is visible.
+
+  .. image:: ./img/Editor_tabulator.png
+
+  - This wrong alignment via Notepad++ leads to the following error whilst executing **make html**. You can see the the misalignment highlighted in green.
+
+  .. image:: ./img/CMD_tabulator.png
+  
+  
+
+* To fix this issue you can do the following:
+
+  1. In Notepad++ go to **Settings** → **Settings** → **Language**
+  2. On the right sight, check the box **Replace by space** (Durch Leerzeichen ersetzen) and set the **Tab size** to i.e. 4. 
+     4 spaces is the standard indentation size for different levels. 
+
+  .. image:: ./img/Notepad_fix.png
+  
+Next issue
+**********

@@ -12,3 +12,5 @@ IP Cores
 	adc_LTC2311
 	incre_encoder
 	interlock
+	axi_testIP/axi_testIP
+	uz_interlockDeadtime2L/uz_interlockDeadtime2L

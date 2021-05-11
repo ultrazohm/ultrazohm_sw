@@ -31,6 +31,8 @@ Using remote container with Docker might lead to unwanted problems with file per
 
 .. note:: It might be possible to use Podman with WSL2 on Windows, yet this is not tested. See https://www.redhat.com/sysadmin/podman-windows-wsl2 
 
+.. _Gitpod_chapter:
+
 Alternative: Gitpod
 -------------------
 

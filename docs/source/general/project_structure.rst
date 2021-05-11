@@ -1,3 +1,5 @@
+.. _ProjectStructure:
+
 ==================================
 Structure of the UltraZohm Project
 ==================================

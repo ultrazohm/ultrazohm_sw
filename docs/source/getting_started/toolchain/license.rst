@@ -1,3 +1,5 @@
+.. _VivadoLicense:
+
 ==============
 Vivado License
 ==============

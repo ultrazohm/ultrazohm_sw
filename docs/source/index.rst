@@ -55,7 +55,8 @@ Syllabus
 .. toctree::
     :maxdepth: 2
     :caption: Getting-Started
-
+    
+    getting_started/onboarding/onboarding
     getting_started/toolchain/index
     getting_started/quickstart/index
     getting_started/tutorials/index

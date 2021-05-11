@@ -2,6 +2,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+Library UNISIM;
+use UNISIM.vcomponents.all;
+
 library work;
 use work.ADC_LTC2311_PKG.all;
 
@@ -37,6 +40,11 @@ entity ADC_LVDS_LTC2311_v3_0 is
         SCLK            : out std_logic_vector(SPI_MASTER - 1 downto 0);
         MISO            : in std_logic_vector(CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
         SS_N            : out std_logic_vector(SPI_MASTER - 1 downto 0);
+        
+        -- Differential SPI Ports
+        SCLK_DIFF       : out std_logic_vector(2 * SPI_MASTER - 1 downto 0);
+        MISO_DIFF       : in std_logic_vector(2 * CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
+        
         
 		-- User ports ends
 		-- Do not modify the ports beyond this line
@@ -74,7 +82,8 @@ architecture arch_imp of ADC_LVDS_LTC2311_v3_0 is
     
     -- SPI signals
     signal S_CPHA, S_CPOL         : std_logic;
-    signal S_SCLK_IN, S_SS_IN_N   : std_logic_vector(SPI_MASTER - 1 downto 0);
+    signal S_SCLK_IN, S_SS_IN_N, S_SCLK   : std_logic_vector(SPI_MASTER - 1 downto 0);
+    signal S_MISO                 : std_logic_vector(CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
     signal S_PRE_DELAY, S_POST_DELAY              : std_logic_vector(C_DELAY_WIDTH - 1 downto 0);
     signal S_CLK_DIV                              : std_logic_vector(C_CLK_DIV_WIDTH - 1 downto 0);
     
@@ -178,7 +187,6 @@ architecture arch_imp of ADC_LVDS_LTC2311_v3_0 is
             -- Control Ports
             SET_CONVERSION  : in std_logic;
             SET_OFFSET      : in std_logic;
-            READ_DONE       : out std_logic;
             SI_VALID        : out std_logic;
             RAW_VALID       : out std_logic;
             BUSY            : out std_logic;
@@ -377,9 +385,9 @@ ADC_LVDS_LTC2311_v3_0_S00_AXI_inst : ADC_LVDS_LTC2311_v3_0_S00_AXI
             -- SPI ports
             CPHA        => S_CPHA,
             CPOL        => S_CPOL,
-            SCLK        => SCLK(i),
+            SCLK        => S_SCLK(i),
             SCLK_IN     => S_SCLK_IN(i),
-            MISO        => MISO((i + 1) * CHANNELS_PER_MASTER - 1 downto i * CHANNELS_PER_MASTER),
+            MISO        => S_MISO((i + 1) * CHANNELS_PER_MASTER - 1 downto i * CHANNELS_PER_MASTER),
             SS_OUT_N    => SS_N(i),
             SS_IN_N     => S_SS_IN_N(i),
             ENABLE      => S_ENABLE(i),
@@ -404,4 +412,33 @@ ADC_LVDS_LTC2311_v3_0_S00_AXI_inst : ADC_LVDS_LTC2311_v3_0_S00_AXI
 	   );
 	end generate GEN_ADC_CONT;
 
+
+    -- Generate differential output buffers
+    gen_diff: if DIFFERENTIAL = true generate
+        gen_diff1: for i in 0 to SPI_MASTER - 1 generate
+            
+            OBUFDS_inst : OBUFDS
+                port map (   
+                O => SCLK_DIFF(2 * i),   -- 1-bit output: Diff_p output (connect directly to top-level port)   
+                OB => SCLK_DIFF(2 * i + 1), -- 1-bit output: Diff_n output (connect directly to top-level port)   
+                I => S_SCLK(i)    -- 1-bit input: Buffer input
+                );
+                
+            gen_diff2: for j in 0 to CHANNELS_PER_MASTER - 1 generate
+            
+                IBUFDS_inst : IBUFDS
+                    port map (   
+                    O => S_MISO(i * CHANNELS_PER_MASTER + j),   -- 1-bit output: Buffer output   
+                    I => MISO_DIFF(2 * i * CHANNELS_PER_MASTER + j),   -- 1-bit input: Diff_p buffer input (connect directly to top-level port)   
+                    IB => MISO_DIFF(2 * i * CHANNELS_PER_MASTER + j + 1)  -- 1-bit input: Diff_n buffer input (connect directly to top-level port)
+                    );
+                    
+            end generate gen_diff2;
+        end generate gen_diff1;
+    end generate gen_diff;
+    
+    gen_single: if DIFFERENTIAL = false generate
+        SCLK <= S_SCLK;
+        S_MISO <= MISO;
+    end generate gen_single;
 end arch_imp;

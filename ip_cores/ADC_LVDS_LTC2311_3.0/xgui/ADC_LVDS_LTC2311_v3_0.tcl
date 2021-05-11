@@ -13,6 +13,7 @@ proc init_gui { IPINST } {
   ipgui::add_param $IPINST -name "CONVERSION_WIDTH"
   ipgui::add_param $IPINST -name "RES_LSB"
   ipgui::add_param $IPINST -name "RES_MSB"
+  ipgui::add_param $IPINST -name "DIFFERENTIAL"
   ipgui::add_param $IPINST -name "C_S00_AXI_DATA_WIDTH"
   ipgui::add_param $IPINST -name "C_S00_AXI_ADDR_WIDTH"
 
@@ -60,6 +61,15 @@ proc update_PARAM_VALUE.DATA_WIDTH { PARAM_VALUE.DATA_WIDTH } {
 
 proc validate_PARAM_VALUE.DATA_WIDTH { PARAM_VALUE.DATA_WIDTH } {
 	# Procedure called to validate DATA_WIDTH
+	return true
+}
+
+proc update_PARAM_VALUE.DIFFERENTIAL { PARAM_VALUE.DIFFERENTIAL } {
+	# Procedure called to update DIFFERENTIAL when any of the dependent parameters in the arguments change
+}
+
+proc validate_PARAM_VALUE.DIFFERENTIAL { PARAM_VALUE.DIFFERENTIAL } {
+	# Procedure called to validate DIFFERENTIAL
 	return true
 }
 
@@ -151,6 +161,11 @@ proc update_MODELPARAM_VALUE.RES_LSB { MODELPARAM_VALUE.RES_LSB PARAM_VALUE.RES_
 proc update_MODELPARAM_VALUE.RES_MSB { MODELPARAM_VALUE.RES_MSB PARAM_VALUE.RES_MSB } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
 	set_property value [get_property value ${PARAM_VALUE.RES_MSB}] ${MODELPARAM_VALUE.RES_MSB}
+}
+
+proc update_MODELPARAM_VALUE.DIFFERENTIAL { MODELPARAM_VALUE.DIFFERENTIAL PARAM_VALUE.DIFFERENTIAL } {
+	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
+	set_property value [get_property value ${PARAM_VALUE.DIFFERENTIAL}] ${MODELPARAM_VALUE.DIFFERENTIAL}
 }
 
 proc update_MODELPARAM_VALUE.C_S00_AXI_DATA_WIDTH { MODELPARAM_VALUE.C_S00_AXI_DATA_WIDTH PARAM_VALUE.C_S00_AXI_DATA_WIDTH } {

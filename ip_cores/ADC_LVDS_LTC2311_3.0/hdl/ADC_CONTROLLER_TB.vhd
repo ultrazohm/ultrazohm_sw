@@ -26,6 +26,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 -- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
 
+library work;
+use work.ADC_LTC2311_PKG.all;
+
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx leaf cells in this code.
 --library UNISIM;
@@ -71,7 +74,7 @@ signal S_CLK_DIV                        : std_logic_vector(TEST_CLK_DIV_WIDTH - 
 signal S_PRE_DELAY, S_POST_DELAY        : std_logic_vector(TEST_DELAY_WIDTH - 1 downto 0);
 
 -- control signals
-signal S_SET_CONVERSION, S_SET_OFFSET, S_ENABLE, S_READ_DONE, S_SI_VALID, S_RAW_VALID : std_logic := '0';
+signal S_SET_CONVERSION, S_SET_OFFSET, S_ENABLE, S_SI_VALID, S_RAW_VALID : std_logic := '0';
 signal S_RESET_N : std_logic := '0';
 signal S_CLK     : std_logic := '1';
 signal S_CHANNEL_SELECT : std_logic_vector(31 downto 0);
@@ -125,7 +128,6 @@ component ADC_CONTROLLER is
         -- Control Ports
         SET_CONVERSION  : in std_logic;
         SET_OFFSET      : in std_logic;
-        READ_DONE       : out std_logic;
         SI_VALID        : out std_logic;
         RAW_VALID       : out std_logic;
         BUSY            : out std_logic;
@@ -180,7 +182,6 @@ dut: ADC_CONTROLLER
         -- Control Ports
         SET_CONVERSION      => S_SET_CONVERSION,
         SET_OFFSET          => S_SET_OFFSET,
-        READ_DONE           => S_READ_DONE,
         SI_VALID            => S_SI_VALID,
         RAW_VALID           => S_RAW_VALID,
         BUSY                => S_BUSY,
@@ -214,7 +215,7 @@ stimulus : process begin
     S_CHANNEL_SELECT <= (0 => '1', others => '0');
     S_OFF_CONV <= std_logic_vector(to_signed(OFFSET_0, S_OFF_CONV'length));
     S_SET_OFFSET <= '1';
-    wait until S_READ_DONE = '1';
+    wait for CLOCK_PERIOD;
     
     S_SET_OFFSET <= '0';
     
@@ -222,7 +223,7 @@ stimulus : process begin
     
     S_OFF_CONV <= std_logic_vector(to_signed(CONVERSION_0, S_OFF_CONV'length));
     S_SET_CONVERSION <= '1';
-    wait until S_READ_DONE = '1';
+    wait for CLOCK_PERIOD;
     
     S_SET_CONVERSION <= '0';
     
@@ -232,7 +233,7 @@ stimulus : process begin
     S_CHANNEL_SELECT <= (1 => '1', others => '0');
     S_OFF_CONV <= std_logic_vector(to_signed(OFFSET_1, S_OFF_CONV'length));
     S_SET_OFFSET <= '1';
-    wait until S_READ_DONE = '1';
+    wait for CLOCK_PERIOD;
     
     S_SET_OFFSET <= '0';
     
@@ -240,7 +241,7 @@ stimulus : process begin
     
     S_OFF_CONV <= std_logic_vector(to_signed(CONVERSION_1, S_OFF_CONV'length));
     S_SET_CONVERSION <= '1';
-    wait until S_READ_DONE = '1';
+    wait for CLOCK_PERIOD;
     
     S_SET_CONVERSION <= '0';
     

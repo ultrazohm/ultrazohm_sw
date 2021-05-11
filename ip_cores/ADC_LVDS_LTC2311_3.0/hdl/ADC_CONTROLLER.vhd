@@ -190,12 +190,12 @@ begin
                 S_SPI_ENABLE     <= '0';
                 S_SPI_BUSY_PIPE  <= (others => '0');
                 
-                RAW_VALUE        <= (others => '0');
+                --RAW_VALUE        <= (others => '0');
                 SI_VALUE         <= (others => '0');
                 SI_VALID         <= '0';
                 RAW_VALID        <= '0';
-                SCLK             <= '0';
-                SS_OUT_N         <= '1';
+                --SCLK             <= '0';
+                --SS_OUT_N         <= '1';
                 BUSY             <= '0';
                 
             else

@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "IP_Cores/uz_d_gan_inverter/uz_d_gan_inverter.h"
 #define MAXIMUM_LENGTH_MTPA_TABLE 16
 // ========== Structures =========================================================================
 typedef struct
@@ -333,57 +334,8 @@ typedef struct _AnalogAdapters_ {
 	ADCcard A3;
 } AnalogAdapters;
 
-typedef struct _UZ_D_Gan_Inverter_ {
-	uint32_t PWMFreqTicks_H1;
-	uint32_t PWMhightimeTicks_H1;
-	uint32_t PWMlowtimeTicks_H1;
-	float PWMdutyCycPerCent_H1;
-	float GaN_ChipTempDegreesCelsius_H1;
-	uint32_t PWMFreqTicks_L1;
-	uint32_t PWMhightimeTicks_L1;
-	uint32_t PWMlowtimeTicks_L1;
-	float PWMdutyCycPerCent_L1;
-	float GaN_ChipTempDegreesCelsius_L1;
-	uint32_t PWMFreqTicks_H2;
-	uint32_t PWMhightimeTicks_H2;
-	uint32_t PWMlowtimeTicks_H2;
-	float PWMdutyCycPerCent_H2;
-	float GaN_ChipTempDegreesCelsius_H2;
-	uint32_t PWMFreqTicks_L2;
-	uint32_t PWMhightimeTicks_L2;
-	uint32_t PWMlowtimeTicks_L2;
-	float PWMdutyCycPerCent_L2;
-	float GaN_ChipTempDegreesCelsius_L2;
-	uint32_t PWMFreqTicks_H3;
-	uint32_t PWMhightimeTicks_H3;
-	uint32_t PWMlowtimeTicks_H3;
-	float PWMdutyCycPerCent_H3;
-	float GaN_ChipTempDegreesCelsius_H3;
-	uint32_t PWMFreqTicks_L3;
-	uint32_t PWMhightimeTicks_L3;
-	uint32_t PWMlowtimeTicks_L3;
-	float PWMdutyCycPerCent_L3;
-	float GaN_ChipTempDegreesCelsius_L3;
-	uint32_t OC_GaN_H1;
-	uint32_t OC_GaN_L1;
-	uint32_t OC_GaN_H2;
-	uint32_t OC_GaN_L2;
-	uint32_t OC_GaN_H3;
-	uint32_t OC_GaN_L3;
-	uint32_t FAULT_GaN_H1;
-	uint32_t FAULT_GaN_L1;
-	uint32_t FAULT_GaN_H2;
-	uint32_t FAULT_GaN_L2;
-	uint32_t FAULT_GaN_H3;
-	uint32_t FAULT_GaN_L3;
-	uint32_t I_DIAG;
-	uint32_t I1_DIAG;
-	uint32_t I2_DIAG;
-	uint32_t I3_DIAG;
-} UZ_D_Gan_Inverter;
-
 typedef struct _DigitalAdapters_ {
-	UZ_D_Gan_Inverter D4;
+	uz_d_gan_inverter *D4;
 } DigitalAdapters;
 
 typedef struct _actualValues_ {

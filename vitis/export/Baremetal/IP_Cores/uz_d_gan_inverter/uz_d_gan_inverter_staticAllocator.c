@@ -1,9 +1,12 @@
-#include "uz_d_gan_inverter_staticAllocator.h"
+#include <stdbool.h>
 #include "xparameters.h"
+#include "../uz_d_gan_inverter/uz_d_gan_inverter_staticAllocator.h"
 
-static uz_d_gan_inverter d_gan_inverter_instance1={
+static uz_d_gan_inverter uz_d_gan_inverter_instance1={
   .base_address=XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR,
-  .PWMFreqTicks_H1=0,
+  .is_ready=0,
+  .clockFreqHz=100000000,
+  .PWMFreqTicks_H1=false,
   .PWMhightimeTicks_H1=0,
   .PWMlowtimeTicks_H1=0,
   .PWMdutyCycPerCent_H1=0,
@@ -34,5 +37,5 @@ static uz_d_gan_inverter d_gan_inverter_instance1={
 };
 
 uz_d_gan_inverter_handle uz_d_gan_inverter_allocateAndInit_instance1(void){
-  return (uz_d_gan_inverter_init(&d_gan_inverter_instance1) );
+  return (uz_d_gan_inverter_init(&uz_d_gan_inverter_instance1) );
 }

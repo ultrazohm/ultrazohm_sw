@@ -74,6 +74,7 @@ Syllabus
     general/howToDocs/howToDocs
     general/useCases/useCases
     general/vscode_remote_container/vscode_remote_container
+    general/contributors
 
 .. toctree::
     :maxdepth: 2

@@ -49,4 +49,13 @@ This page serves as an onboarding for new users who want to contribute to the Ul
    * Alternatively you can use remote containers in **Virtual Studio Code** by checking out :ref:`vscode_remote_container`.
    * Another alternative is using :ref:`Gitpod <Gitpod_chapter>`, which can be opened in the browser and thus requires no additional installations. 
   
-#. To round up the onboarding you will include yourself in the list of contributors. 
+#. To round up the onboarding you will include yourself in the list of :ref:`Contributors`. 
+
+   #. Create a new feature branch with the name ``OnboardingFirstNameSurname``, i.e. ``OnboardingMaxMustermann``
+   #. Access the docs either in VSCode, Gitpod or locally on your machine.
+   #. Enter your name in the ``contributors.rst`` file located under ``../ultrazohm_sw/docs/source/general``
+   #. Save the file and build the docs locally to confirm everything works as intended
+   #. Commit the changed file with a descriptive title **OnboardingFirstNameSurname**
+   #. Push your new branch to the remote
+   #. Create a pull-request and assign as Reviewer your supervisor
+   #. Merge the pull-request after your supervisor approved it

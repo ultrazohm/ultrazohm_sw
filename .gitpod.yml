@@ -1,0 +1,22 @@
+
+image:
+  file: .devcontainer/Dockerfile
+
+# List the ports you want to expose and what to do when they are served. See https://www.gitpod.io/docs/config-ports/
+ports:
+  - port: 3000
+    onOpen: open-preview
+
+# List the start up tasks. You can start them in parallel in multiple terminals. See https://www.gitpod.io/docs/config-start-tasks/
+tasks:
+  - name: Docs dependencies
+    init: pip install -r docs/requirements.txt
+vscode:
+  extensions:
+    - eamodio.gitlens
+    - james-yu.latex-workshop
+    - lextudio.restructuredtext
+    - streetsidesoftware.code-spell-checker
+    - dracula-theme.theme-dracula
+    - pkief.material-icon-theme
+    - atlassian.atlascode

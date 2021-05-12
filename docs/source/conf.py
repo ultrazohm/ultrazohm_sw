@@ -37,8 +37,10 @@ extensions = [
     'sphinxcontrib.yt',
     'sphinx_issues',
     'sphinx_copybutton',
+    'sphinxcontrib.tikz',
     'breathe'
 ]
+tikz_proc_suite='GhostScript'
 breathe_projects = { "doxygen_baremetal_r5": "../doxygen_output/xml" }
 breathe_default_project = "doxygen_baremetal_r5"
 

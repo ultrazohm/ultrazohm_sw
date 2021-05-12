@@ -91,26 +91,26 @@ This might load your sensor and is not recommended for measuring current signals
 In all cases, you should change the feedback resistors from 1k to 10k to get a more linear behavior, see attached excel sheet. This means all the following 32 resistors (if this is relevant for all 8 channels): R_17,20,23,25,29,30,32,34,40,43,50,52,45,54,49,37
 
 
-4. Current signal using the shunt resistor R22 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+4. Current signal using the shunt resistor R22
+""""""""""""""""""""""""""""""""""""""""""""""
 A resistor can be placed between In_P and In_N to terminate a current signal and turn it into a voltage signal that can be measured with this circuit. In this case the voltage follower is absolutely necessary to avoid an undesired current flow into the differential amplifier. 
 Besides that it behaves like a single-ended measurement. Depending on the potential of In_N, you can refer to the suggestions in point 2 and 3. It is recommended to use the reference voltage of the sensor as negative input.
 
 Known issues
------------------------
+-------------
 
 .. warning::
    * single-ended measurements referenced to ground 
    * only one ADC card can be used at the moment due to problems with the trigger
 
 Compatibility 
-----------------------
+-------------
 
 * Slots A1 to A3 can be used without limitations
  
 
-See also
-"""""""""""""""
+References
+----------
 
 * :download:`Schematic 2v03 <LTC2311_16_v2/SCH_LTC2311_16_2v03.pdf>`
 * :download:`Assembly Drawing 2v03 <LTC2311_16_v2/ASM_LTC2311_16_2v03.pdf>`

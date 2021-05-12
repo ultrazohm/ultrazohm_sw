@@ -10,13 +10,13 @@ This page serves as an onboarding for new users who want to contribute to the Ul
    * A good starting point for the development of the Xilinx Zynq UltraScale+ MPSoC is the `Exploring Zynq® MPSoC <https://www.zynq-mpsoc-book.com>`_ 
    * This book walks the reader through all the important aspects of the software stack, the multi-processor processing system, and the powerful array of programmable hardware.
    
-#. The UltraZohm project is managed via GitHub/Bitbucket. Therefore a Bitbucket account is required. If you do not have one, create one `on the bitbucket homepage <https://www.bitbucket.com>`_.
+#. The UltraZohm project is managed via Bitbucket. Therefore a Bitbucket account is required. If you do not have one, create one `on the bitbucket homepage <https://www.bitbucket.com>`_.
 #. To familiarize yourself with the Bitbucket workflow (clones, issues, commits, pull-requests, etc.) it is advised to follow the Atlassian git tutorials.
    
-   *  `Tutorial Part 1 <https://www.atlassian.com/git/tutorials/learn-git-with-bitbucket-cloud>`_
-   *  `Tutorial Part 2 <https://www.atlassian.com/git/tutorials/learn-about-code-review-in-bitbucket-cloud>`_
-   *  `Tutorial Part 3 <https://www.atlassian.com/git/tutorials/learn-branching-with-bitbucket-cloud>`_
-   *  `Tutorial Part 4 <https://www.atlassian.com/git/tutorials/learn-undoing-changes-with-bitbucket>`_
+   *  `Tutorial Part 1 git basics <https://www.atlassian.com/git/tutorials/learn-git-with-bitbucket-cloud>`_
+   *  `Tutorial Part 2 code review <https://www.atlassian.com/git/tutorials/learn-about-code-review-in-bitbucket-cloud>`_
+   *  `Tutorial Part 3 branches <https://www.atlassian.com/git/tutorials/learn-branching-with-bitbucket-cloud>`_
+   *  `Tutorial Part 4 revert <https://www.atlassian.com/git/tutorials/learn-undoing-changes-with-bitbucket>`_
 
 #. Follow the installation process for :ref:`Git`. Documentation and additional tutorials for Git are provided there aswell. 
 #. Request access to the UltraZohm Bitbucket workspace from your supervisor.
@@ -39,7 +39,7 @@ This page serves as an onboarding for new users who want to contribute to the Ul
    * Test-Driven Development for Embedded C, James W. Grenning, 2011
    * Guidelines for the Use of the C Language in Critical Systems, ISBN 978-1-906400-10-1 (paperback), ISBN 978-1-906400-11-8 (PDF), March 2013.
   
-#. Install :ref:`Lattice`.
+#. Install :ref:`Lattice`, if you are planing to program the CPLD. 
 #. Install the latest version of `Java <java.com>`_. 
 #. Set up the UltraZohm workspace by following the :ref:`UltraZohmSetup` guide.
 #. Work through the provided :ref:`Tutorials` to get a better understanding about the UltraZohm.

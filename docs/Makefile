@@ -19,6 +19,14 @@ help:
 
 clean:
 	 rm -r build
+	 rm -r doxygen_output
+
+doxygen:
+	 doxygen doxygen_baremetal_r5
+
+docs:
+	make doxygen
+	make html
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).

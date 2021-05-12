@@ -19,10 +19,12 @@ pipelines:
         - apt-get -y install --no-install-recommends texlive-pictures
         - apt-get -y install --no-install-recommends texlive-science
         - apt-get -y install --no-install-recommends ghostscript
+        - apt-get -y install --no-install-recommends doxygen
         - cd docs
         - python -m pip install -U pip
         - pip install -r requirements.txt
         - pip list
+        - make doxygen
         - make html SPHINXOPTS="-W --keep-going -n"
         - cd build
         - ls
@@ -46,10 +48,12 @@ pipelines:
             - apt-get -y install --no-install-recommends texlive-pictures
             - apt-get -y install --no-install-recommends texlive-science
             - apt-get -y install --no-install-recommends ghostscript
+            - apt-get -y install --no-install-recommends doxygen
             - cd docs
             - python -m pip install -U pip
             - pip install -r requirements.txt
             - pip list
+            - make doxygen
             - make html SPHINXOPTS="-W --keep-going -n"
             - cd build
             - ls
@@ -75,11 +79,18 @@ pipelines:
          name: Deploy to Contabo Server
          deployment: contabo
          script:
+          - apt-get update && apt-get -y install --no-install-recommends texlive
+          - apt-get -y install --no-install-recommends texlive-latex-extra
+          - apt-get -y install --no-install-recommends texlive-pictures
+          - apt-get -y install --no-install-recommends texlive-science
+          - apt-get -y install --no-install-recommends ghostscript
+          - apt-get -y install --no-install-recommends doxygen
           - python -m pip install -U pip
           - ls
           - cd docs
           - ls
           - pip install -r requirements.txt
+          - make doxygen
           - make html SPHINXOPTS="-W --keep-going -n"
           - ls
           - echo "Deploying to test environment"

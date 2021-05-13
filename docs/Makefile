@@ -19,10 +19,12 @@ help:
 
 clean:
 	 rm -r build
-	 rm -r doxygen_output
 
 doxygen:
 	 doxygen doxygen_baremetal_r5
+
+doxygen_clean:
+	 rm -r doxygen_output
 
 docs:
 	make doxygen

@@ -57,16 +57,28 @@ AXI Functions
 The header ``uz_AXI.h`` provides the following functions to read/write from/to the PL by using the AXI interface.
 Use only these functions for AXI and use them only in the lowest layer of the software.
 
-=========================== ====================================================
-Define                      Functionality
-=========================== ====================================================
-uz_axi_read_float           Read ``float`` from a hardware register by AXI
-uz_axi_write_float          Write ``float`` from a hardware register by AXI
-uz_axi_write_uint32         Write ``uint32_t`` from a hardware register by AXI
-uz_axi_read_uint32          Read ``uint32_t`` from a hardware register by AXI
-uz_axi_write_int32          Write ``int32_t`` from a hardware register by AXI
-uz_axi_read_int32           Read ``int32_t`` from a hardware register by AXI
-uz_axi_write_bool           Write ``_Bool`` from a hardware register by AXI
-uz_convert_sfixed_to_float  Converts signed fixed point to ``float``
-uz_convert_float_to_sfixed  Converts ``float`` to signed fixed point
-=========================== ====================================================
+.. doxygenfunction:: uz_axi_write_float
+
+.. doxygenfunction:: uz_axi_read_float
+
+.. doxygenfunction:: uz_axi_write_uint32
+
+.. doxygenfunction:: uz_axi_read_uint32
+
+.. doxygenfunction:: uz_axi_read_int32
+
+.. doxygenfunction:: uz_axi_write_int32
+
+.. doxygenfunction:: uz_axi_write_bool
+
+.. doxygenfunction:: uz_axi_read_bool
+
+.. doxygenfunction:: uz_convert_sfixed_to_float
+
+.. doxygenfunction:: uz_convert_float_to_sfixed
+
+.. c:function:: int func(int a)
+
+This is a ref to func :func:`func` and this to axi write :func:`uz_axi_write_float`.
+
+

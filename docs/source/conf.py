@@ -121,5 +121,7 @@ numfig = True
 nitpick_ignore = [
     ('c:identifier', 'int32_t'),
     ('c:identifier', 'uint32_t'),
+    ('c:identifier', 'size_t'),
+    ('c:identifier', 'uintptr_t'),
     ('c:identifier', 'bool'),
 ]

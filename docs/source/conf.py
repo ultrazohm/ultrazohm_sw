@@ -43,7 +43,9 @@ extensions = [
 tikz_proc_suite='GhostScript'
 breathe_projects = { "doxygen_baremetal_r5": "../doxygen_output/xml" }
 breathe_default_project = "doxygen_baremetal_r5"
-
+breathe_domain_by_extension = {
+        "h" : "c",
+}
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -114,3 +116,10 @@ rst_prolog = """
 
 # enables numbered figures
 numfig = True
+
+# https://github.com/michaeljones/breathe/issues/696
+nitpick_ignore = [
+    ('c:identifier', 'int32_t'),
+    ('c:identifier', 'uint32_t'),
+    ('c:identifier', 'bool'),
+]

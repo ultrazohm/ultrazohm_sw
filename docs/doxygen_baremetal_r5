@@ -252,7 +252,7 @@ TCL_SUBST              =
 # members will be omitted, etc.
 # The default value is: NO.
 
-OPTIMIZE_OUTPUT_FOR_C  = YES
+OPTIMIZE_OUTPUT_FOR_C  =YES
 
 # Set the OPTIMIZE_OUTPUT_JAVA tag to YES if your project consists of Java or
 # Python sources only. Doxygen will then generate output that is more tailored
@@ -318,7 +318,7 @@ TOC_INCLUDE_HEADINGS   = 0
 # globally by setting AUTOLINK_SUPPORT to NO.
 # The default value is: YES.
 
-AUTOLINK_SUPPORT       = YES
+AUTOLINK_SUPPORT       = NO
 
 # If you use STL classes (i.e. std::string, std::vector, etc.) but do not want
 # to include (a tag file for) the STL sources as input, then you should set this
@@ -1080,7 +1080,7 @@ IGNORE_PREFIX          =
 # If the GENERATE_HTML tag is set to YES, doxygen will generate HTML output
 # The default value is: YES.
 
-GENERATE_HTML          = YES
+GENERATE_HTML          = NO
 
 # The HTML_OUTPUT tag is used to specify where the HTML docs will be put. If a
 # relative path is entered the value of OUTPUT_DIRECTORY will be put in front of

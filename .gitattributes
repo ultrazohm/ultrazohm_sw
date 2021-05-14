@@ -3,5 +3,5 @@
 *.jpg filter=lfs diff=lfs merge=lfs -text
 *.jpng filter=lfs diff=lfs merge=lfs -text
 *.xsa filter=lfs diff=lfs merge=lfs -text
-*.zip filter=lfs diff=lfs merge=lfs -text
 *.gif filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text

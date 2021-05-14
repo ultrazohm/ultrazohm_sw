@@ -29,7 +29,8 @@
 		"zhuangtongfa.material-theme",
 		"jeff-hykin.better-cpp-syntax",
 		"atlassian.atlascode",
-		"cschlosser.doxdocgen"
+		"cschlosser.doxdocgen",
+		"mhutchie.git-graph"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

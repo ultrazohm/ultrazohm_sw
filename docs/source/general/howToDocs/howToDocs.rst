@@ -15,7 +15,7 @@ The documentation is hosted on a web server, the build and deployment is handled
 Install
 =======
 
-.. tip:: Use the :ref:`vscode_remote_container` to handle all installations for you instead of installing all dependencies on your machine and keeping them up to date.
+.. tip:: Use the :ref:`vscode_remote_container` to handle all installations for you instead of installing all dependencies on your machine and keeping them up to date! This is strongly recommended!
 
 To build and edit the documentation on your native system you need to:
 
@@ -26,14 +26,16 @@ To build and edit the documentation on your native system you need to:
   
    * As image processing ``suite`` you have to install **Ghostscript**
    * Assuming standard installation path the include path for **Ghostscript** is: ``C:\Program Files\gs\gs9.54.0\bin``  
-  
+
+#. Install everything required for the extension ``breathe`` (`connects doxygen to sphinx <https://www.doxygen.nl/index.html>`_. `Install guide <https://github.com/michaeljones/breathe>`_!
+#. Build doxygen by invoking ``make doxygen``
 #. Build the documentation by invoking ``make html``
 #. You can open the docs in ``/docs/build/html/index.html``
 #. You can edit the documentation by using a text editor of your choice
 
 .. tip:: Sometimes you might need to clean the output with ``make clean`` or clean build with ``make clean html``
 
-.. tip:: We have added `sphinx-autobuild <https://github.com/executablebooks/sphinx-autobuild>`_ to the makefile. Therefore, you can use ``make livehtml`` instead of ``make html`` which opens a new browser that synchronizes live with changes that you make locally.
+.. tip:: You can use ``make livehtml`` instead of ``make html`` which opens a new browser that synchronizes live with changes that you make locally (uses `sphinx-autobuild <https://github.com/executablebooks/sphinx-autobuild>`_).
 
 .. image:: https://images2.imgbox.com/ed/32/B0uTI8EZ_o.gif
   :width: 500
@@ -48,6 +50,7 @@ Video
 
 This video shows how to install python, the requirements and build the documentation.
 Please note that the installation steps for ``sphinxcontrib.tikz`` (i.e., Ghostscript and Latex) is not shown in the video since the installation steps depend on your OS.
+Please note that the installation steps for ``breathe`` (i.e., Doxygen) is not shown in the video since the installation steps depend on your OS.
 
 .. youtube:: dxAlD-VzE0c
 
@@ -263,6 +266,54 @@ All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
   \draw[thick,rounded corners=8pt]
   (0,0)--(0,2)--(1,3.25)--(2,2)--(2,0)--(0,2)--(2,2)--(0,0)--(2,0);
 
+
+`breathe <https://github.com/michaeljones/breathe>`_
+  Adds doxygen documentation to sphinx.
+  See their list of `directives <https://breathe.readthedocs.io/en/latest/directives.html>`_.
+  The most common directives are ``doxygenfunction``, ``doxygenstruct``, ``doxygentypedef``, ``doxygendefine``.
+  See `doxygen documentation <https://www.doxygen.nl/manual/docblocks.html>`_ for how to write doxygen comments.
+
+Doxygen
+=======
+
+Write doxygen comments to header files that document the API.
+Example:
+
+.. code-block:: c
+
+   /**
+    * @brief Converts a signed fixed point value that is stored as a signed 32-bit integer value to a float.
+    *        This function should only be used directly after reading the int32_t variable from AXI!
+    * 
+    * @param data Fixed point value stored as a signed 32-bit integer that is read from AXI.
+    * @param number_of_fractional_bits Number of fractional bits of the data, 31-number_of_fractional_bits is the number of integer bits.
+    * @return float 
+    */
+   static inline float uz_convert_sfixed_to_float(int32_t data, int number_of_fractional_bits) {
+   	uz_assert(number_of_fractional_bits>=0);
+   	return (ldexpf((float) data, -number_of_fractional_bits));
+   }
+
+Adding the following line to a docs page:
+
+.. code-block:: rst
+
+   .. doxygenfunction:: uz_convert_sfixed_to_float
+
+Generates the following ouput in the docs:
+
+.. figure:: img/doxygen_sample_output.png
+   :scale: 70
+   :align: center
+
+   Example output of Breathe.
+
+Examples in docs:
+ - :ref:`HAL`
+ - :ref:`AXI_testIP`
+
+.. tip:: Note that all types that are used in the function arguments have to be documented, e.g., typedefed variables (see :ref:`AXI_testIP`).
+
 Known Issues
 ============
 
@@ -271,6 +322,7 @@ Known Issues
 Compatibility issue with Notepad++ and .rst files 
 *************************************************
 
+.. warning:: This is not recommended! Use the :ref:`vscode_remote_container` instead!
 
 * If u edit ``.rst`` files in the UltraZohm documentation an issue whilst using the tabulator key in Notepad++ can occur.
 
@@ -296,5 +348,3 @@ Compatibility issue with Notepad++ and .rst files
 
   .. image:: ./img/Notepad_fix.png
   
-Next issue
-**********

@@ -26,30 +26,38 @@ Furthermore, the HAL defines functions to read and write values from and to the 
 HAL Functions
 =============
 
-The HAL provides the following functions:
+The HAL provides the following functions and macros:
 
-=========================== ====================================================
-Define                      Functionality
-=========================== ====================================================
-uz_assert                   Statement that has to be true
-uz_assert_not_NULL          Assert that the statement is not NULL (e.g. pointer)
-uz_printf                   Printf to standard i/o, call like printf
-uz_convert_sfixed_to_float  Converts signed fixed point to ``float``
-uz_convert_float_to_sfixed  Converts ``float`` to signed fixed point
-uz_sleep_seconds            Do nothing for X seconds
-uz_sleep_useconds           Do nothing for X microseconds
-=========================== ====================================================
+Assertions
+----------
+
+.. doxygendefine:: uz_assert
+
+.. doxygendefine:: uz_assert_not_NULL
+
+.. doxygendefine:: uz_assert_not_zero
+
+.. doxygendefine:: uz_assert_false
 
 
-HAL Defines
-===========
+Sleep
+-----
 
-========== ===============================================================
-Define              Functionality
-========== ===============================================================
-UZ_SUCCESS Indicates success as zero (``0``, ``0L`` depending on platform)
-UZ_FAILURE Indicates failure as one (``1``, ``1L`` depending on platform)
-========== ===============================================================
+.. doxygendefine:: uz_sleep_seconds
+
+.. doxygendefine:: uz_sleep_useconds
+
+Printf
+------
+
+.. doxygendefine:: uz_printf
+
+Success and failure define
+--------------------------
+
+.. doxygendefine:: UZ_SUCCESS
+
+.. doxygendefine:: UZ_FAILURE
 
 AXI Functions
 =============
@@ -76,9 +84,5 @@ Use only these functions for AXI and use them only in the lowest layer of the so
 .. doxygenfunction:: uz_convert_sfixed_to_float
 
 .. doxygenfunction:: uz_convert_float_to_sfixed
-
-.. c:function:: int func(int a)
-
-This is a ref to func :func:`func` and this to axi write :func:`uz_axi_write_float`.
 
 

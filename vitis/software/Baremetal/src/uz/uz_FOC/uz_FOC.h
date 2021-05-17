@@ -8,20 +8,24 @@
 #include <stdbool.h>
 
 typedef struct uz_FOC_CurrentControl_config {
-	float Rs_mOmega;
+	float Rs_mOhm;
 	float Ld_mH;
 	float Lq_mH;
 	float Psi_PM_mVs;
-	float iq_soll_Ampere;
-	float id_soll_Ampere;
+	float polePairs;
+	float iq_target_Ampere;
+	float id_target_Ampere;
 } uz_FOC_CurrentControl_config;
 
 typedef struct uz_FOC_SpeedControl_config {
-	float Rs_mOmega;
+	float Rs_mOhm;
 	float Ld_mH;
 	float Lq_mH;
 	float Psi_PM_mVs;
-	float n_soll_rpm;
+	float polePairs;
+	float rotorInertia;
+	float dampingFactor;
+	float n_target_rpm;
 } uz_FOC_SpeedControl_config;
 
 
@@ -31,6 +35,9 @@ typedef struct uz_FOC_CurrentControl_parameters {
 	float Tn_id;
 	float Kp_iq;
 	float Tn_iq;
+	float bandwith_Hz;
+	float id_Ampere;
+	float iq_Ampere;
 	uz_FOC_CurrentControl_config config;
 } uz_FOC_CurrentControl_parameters;
 
@@ -42,6 +49,10 @@ typedef struct uz_FOC_SpeedControl_parameters {
 	float Tn_id;
 	float Kp_iq;
 	float Tn_iq;
+	float bandwith_Hz;
+	float id_Ampere;
+	float iq_Ampere;
+	float n_rpm;
 	uz_FOC_SpeedControl_config config;
 } uz_FOC_SpeedControl_parameters;
 

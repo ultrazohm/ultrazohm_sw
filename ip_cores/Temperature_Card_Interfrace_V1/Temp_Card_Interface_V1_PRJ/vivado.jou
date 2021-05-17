@@ -1,0 +1,18 @@
+#-----------------------------------------------------------
+# Vivado v2020.1.1 (64-bit)
+# SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
+# IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+# Start of session at: Mon May 17 16:43:52 2021
+# Process ID: 16212
+# Current directory: E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent19720 E:\01_Repos\Ultrazohm\ultrazohm_sw\ip_cores\Temperature_Card_Interfrace_V1\Temp_Card_Interface_V1_PRJ\Temp_Card_Interface_V1_PRJ.xpr
+# Log file: E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/vivado.log
+# Journal file: E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.xpr
+import_files -norecurse {E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temperature_Card_Interface_1.0/hdl/Temperature_Card_Interface_v1_0.vhd E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temperature_Card_Interface_1.0/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd}
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+import_files -norecurse {E:/01_Repos/FPGA/IP_Repo_Base/LTC2983_Interface/LTC2983_Interface.srcs/sources_1/new/spi_master_LTC.vhd E:/01_Repos/FPGA/IP_Repo_Base/LTC2983_Interface/LTC2983_Interface.srcs/sources_1/new/LTC2983_Interface.vhd}
+update_compile_order -fileset sources_1

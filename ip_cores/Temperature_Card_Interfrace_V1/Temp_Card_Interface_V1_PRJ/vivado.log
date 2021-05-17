@@ -1,0 +1,31 @@
+#-----------------------------------------------------------
+# Vivado v2020.1.1 (64-bit)
+# SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
+# IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+# Start of session at: Mon May 17 16:43:52 2021
+# Process ID: 16212
+# Current directory: E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent19720 E:\01_Repos\Ultrazohm\ultrazohm_sw\ip_cores\Temperature_Card_Interfrace_V1\Temp_Card_Interface_V1_PRJ\Temp_Card_Interface_V1_PRJ.xpr
+# Log file: E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/vivado.log
+# Journal file: E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.xpr
+INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter.
+Current project path is 'E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ'
+WARNING: [Board 49-91] Board repository path 'C:/Users/Admin/AppData/Roaming/Xilinx/Vivado/2019.2/xhub/board_store' does not exist, it will not be used to search board files.
+Scanning sources...
+Finished scanning sources
+WARNING: [filemgmt 56-3] Board Part Repository Path: Could not find the directory 'C:/Users/Admin/AppData/Roaming/Xilinx/Vivado/2019.2/xhub/board_store'.
+WARNING: [filemgmt 56-3] Default IP Output Path : Could not find the directory 'E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1'.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
+open_project: Time (s): cpu = 00:00:11 ; elapsed = 00:00:07 . Memory (MB): peak = 1082.438 ; gain = 0.000
+import_files -norecurse {E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temperature_Card_Interface_1.0/hdl/Temperature_Card_Interface_v1_0.vhd E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temperature_Card_Interface_1.0/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd}
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+import_files -norecurse {E:/01_Repos/FPGA/IP_Repo_Base/LTC2983_Interface/LTC2983_Interface.srcs/sources_1/new/spi_master_LTC.vhd E:/01_Repos/FPGA/IP_Repo_Base/LTC2983_Interface/LTC2983_Interface.srcs/sources_1/new/LTC2983_Interface.vhd}
+update_compile_order -fileset sources_1
+exit
+INFO: [Common 17-206] Exiting Vivado at Mon May 17 16:47:44 2021...

@@ -31,6 +31,7 @@
     <Option Name="ActiveSimSet" Val="sim_1"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>
     <Option Name="ProjectType" Val="Default"/>
+    <Option Name="IPRepoPath" Val="$PPRDIR/../Temp_Card_Interface_V1_IP"/>
     <Option Name="IPOutputRepo" Val="$PCACHEDIR/ip"/>
     <Option Name="IPDefaultOutputPath" Val="$PSRCDIR/sources_1"/>
     <Option Name="IPCachePermission" Val="read"/>
@@ -65,39 +66,40 @@
   <FileSets Version="1" Minor="31">
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
       <Filter Type="Srcs"/>
-      <File Path="$PSRCDIR/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/new/LTC2983_Interface.vhd">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../Temperature_Card_Interface_1.0/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd"/>
-          <Attr Name="ImportTime" Val="1621262310"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../Temp_Card_Interface_V1_IP/src/LTC2983_Interface.vhd"/>
+          <Attr Name="ImportTime" Val="1621349757"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/hdl/Temperature_Card_Interface_v1_0.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../Temperature_Card_Interface_1.0/hdl/Temperature_Card_Interface_v1_0.vhd"/>
-          <Attr Name="ImportTime" Val="1621262310"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../Temp_Card_Interface_V1_IP/src/Temperature_Card_Interface_v1_0_S00_AXI.vhd"/>
+          <Attr Name="ImportTime" Val="1621349786"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/imports/new/spi_master_LTC.vhd">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../../../../FPGA/IP_Repo_Base/LTC2983_Interface/LTC2983_Interface.srcs/sources_1/new/spi_master_LTC.vhd"/>
-          <Attr Name="ImportTime" Val="1579862546"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../Temp_Card_Interface_V1_IP/src/spi_master_LTC.vhd"/>
+          <Attr Name="ImportTime" Val="1621349715"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/new/LTC2983_Interface.vhd">
+      <File Path="$PSRCDIR/sources_1/imports/hdl/Temperature_Card_Interface_v1_0.vhd">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../../../../FPGA/IP_Repo_Base/LTC2983_Interface/LTC2983_Interface.srcs/sources_1/new/LTC2983_Interface.vhd"/>
-          <Attr Name="ImportTime" Val="1581406244"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../Temp_Card_Interface_V1_IP/src/Temperature_Card_Interface_v1_0.vhd"/>
+          <Attr Name="ImportTime" Val="1621349793"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../Temp_Card_Interface_V1_IP/component.xml">
+        <FileInfo SFType="IPXACT"/>
       </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
@@ -154,11 +156,12 @@
     </Simulator>
   </Simulators>
   <Runs Version="1" Minor="11">
-    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" IncludeInArchive="true">
+    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
       </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
       <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>

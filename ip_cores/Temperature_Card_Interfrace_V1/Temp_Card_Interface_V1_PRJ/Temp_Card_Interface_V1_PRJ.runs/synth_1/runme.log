@@ -1,0 +1,344 @@
+
+*** Running vivado
+    with args -log Temperature_Card_Interface_v1_0.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source Temperature_Card_Interface_v1_0.tcl
+
+
+
+****** Vivado v2020.1.1 (64-bit)
+  **** SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
+  **** IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source Temperature_Card_Interface_v1_0.tcl -notrace
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
+WARNING: [IP_Flow 19-4995] The host OS only allows 260 characters in a normal path. The IP cache path is more than 80 characters. If you experience issues with IP caching, please consider changing the IP cache to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter. 
+Current IP cache path is e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.cache/ip 
+Command: synth_design -top Temperature_Card_Interface_v1_0 -part xczu9eg-ffvc900-1-e
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xczu9eg'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xczu9eg'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 3712
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 1084.070 ; gain = 0.000
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'Temperature_Card_Interface_v1_0' [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0.vhd:144]
+	Parameter C_S00_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S00_AXI_ADDR_WIDTH bound to: 9 - type: integer 
+	Parameter C_S_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S_AXI_ADDR_WIDTH bound to: 9 - type: integer 
+INFO: [Synth 8-3491] module 'Temperature_Card_Interface_v1_0_S00_AXI' declared at 'E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:5' bound to instance 'Temperature_Card_Interface_v1_0_S00_AXI_inst' of component 'Temperature_Card_Interface_v1_0_S00_AXI' [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0.vhd:277]
+INFO: [Synth 8-638] synthesizing module 'Temperature_Card_Interface_v1_0_S00_AXI' [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:181]
+	Parameter C_S_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S_AXI_ADDR_WIDTH bound to: 9 - type: integer 
+INFO: [Synth 8-226] default block is never used [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:722]
+INFO: [Synth 8-226] default block is never used [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1968]
+WARNING: [Synth 8-614] signal 'error_flag_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'error_flag_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'error_flag_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_00_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_01_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_02_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_03_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_04_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_05_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_06_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_07_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_08_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_09_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_10_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_11_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_12_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_13_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_14_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_15_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_16_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_17_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_18_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_19_out_LTC_1_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_00_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_01_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_02_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_03_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_04_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_05_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_06_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_07_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_08_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_09_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_10_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_11_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_12_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_13_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_14_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_15_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_16_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_17_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_18_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_19_out_LTC_2_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_00_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_01_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_02_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_03_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_04_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_05_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_06_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_07_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_08_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_09_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_10_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_11_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_12_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_13_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_14_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_15_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_16_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_17_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_18_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+WARNING: [Synth 8-614] signal 'Temp_19_out_LTC_3_s' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:1963]
+	Parameter SPI_Datalength bound to: 32 - type: integer 
+	Parameter SPI_Slavenumber bound to: 1 - type: integer 
+	Parameter SPI_cpha bound to: 1'b0 
+	Parameter SPI_cpol bound to: 1'b0 
+	Parameter SPI_cont bound to: 1'b0 
+	Parameter SPI_clk_div bound to: 2 - type: integer 
+	Parameter Channelcount bound to: 20 - type: integer 
+INFO: [Synth 8-3491] module 'LTC2983_Interface' declared at 'E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/LTC2983_Interface.vhd:26' bound to instance 'LTC2983_Handler_1' of component 'LTC2983_Interface' [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:2250]
+INFO: [Synth 8-638] synthesizing module 'LTC2983_Interface' [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/LTC2983_Interface.vhd:97]
+	Parameter SPI_Datalength bound to: 32 - type: integer 
+	Parameter SPI_Slavenumber bound to: 1 - type: integer 
+	Parameter SPI_cpha bound to: 1'b0 
+	Parameter SPI_cpol bound to: 1'b0 
+	Parameter SPI_cont bound to: 1'b0 
+	Parameter SPI_clk_div bound to: 2 - type: integer 
+	Parameter Channelcount bound to: 20 - type: integer 
+	Parameter slaves bound to: 1 - type: integer 
+	Parameter d_width bound to: 32 - type: integer 
+INFO: [Synth 8-3491] module 'spi_master_LTC' declared at 'E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/spi_master_LTC.vhd:6' bound to instance 'SPI_Core' of component 'spi_master_LTC' [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/LTC2983_Interface.vhd:154]
+INFO: [Synth 8-638] synthesizing module 'spi_master_LTC' [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/spi_master_LTC.vhd:28]
+	Parameter slaves bound to: 1 - type: integer 
+	Parameter d_width bound to: 32 - type: integer 
+WARNING: [Synth 8-614] signal 'reset_n' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/spi_master_LTC.vhd:42]
+WARNING: [Synth 8-614] signal 'cpol' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/spi_master_LTC.vhd:42]
+INFO: [Synth 8-256] done synthesizing module 'spi_master_LTC' (1#1) [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/spi_master_LTC.vhd:28]
+WARNING: [Synth 8-614] signal 'reset_n' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/LTC2983_Interface.vhd:178]
+WARNING: [Synth 8-614] signal 'enable' is read in the process but is not in the sensitivity list [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/LTC2983_Interface.vhd:178]
+INFO: [Synth 8-256] done synthesizing module 'LTC2983_Interface' (2#1) [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/LTC2983_Interface.vhd:97]
+	Parameter SPI_Datalength bound to: 32 - type: integer 
+	Parameter SPI_Slavenumber bound to: 1 - type: integer 
+	Parameter SPI_cpha bound to: 1'b0 
+	Parameter SPI_cpol bound to: 1'b0 
+	Parameter SPI_cont bound to: 1'b0 
+	Parameter SPI_clk_div bound to: 2 - type: integer 
+	Parameter Channelcount bound to: 20 - type: integer 
+INFO: [Synth 8-3491] module 'LTC2983_Interface' declared at 'E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/LTC2983_Interface.vhd:26' bound to instance 'LTC2983_Handler_2' of component 'LTC2983_Interface' [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:2310]
+	Parameter SPI_Datalength bound to: 32 - type: integer 
+	Parameter SPI_Slavenumber bound to: 1 - type: integer 
+	Parameter SPI_cpha bound to: 1'b0 
+	Parameter SPI_cpol bound to: 1'b0 
+	Parameter SPI_cont bound to: 1'b0 
+	Parameter SPI_clk_div bound to: 2 - type: integer 
+	Parameter Channelcount bound to: 20 - type: integer 
+INFO: [Synth 8-3491] module 'LTC2983_Interface' declared at 'E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/LTC2983_Interface.vhd:26' bound to instance 'LTC2983_Handler_3' of component 'LTC2983_Interface' [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:2370]
+INFO: [Synth 8-256] done synthesizing module 'Temperature_Card_Interface_v1_0_S00_AXI' (3#1) [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd:181]
+INFO: [Synth 8-256] done synthesizing module 'Temperature_Card_Interface_v1_0' (4#1) [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0.vhd:144]
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 1084.070 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 1084.070 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xczu9eg-ffvc900-1-e
+INFO: [Synth 8-6742] Reading net delay rules and data
+INFO: [Device 21-403] Loading part xczu9eg-ffvc900-1-e
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 1084.070 ; gain = 0.000
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-327] inferring latch for variable 'error_flag_reg' [E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/LTC2983_Interface.vhd:183]
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:17 ; elapsed = 00:00:15 . Memory (MB): peak = 1796.734 ; gain = 712.664
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   32 Bit       Adders := 6     
+	   2 Input    9 Bit       Adders := 3     
+	   3 Input    8 Bit       Adders := 3     
+	   2 Input    8 Bit       Adders := 3     
+	   2 Input    7 Bit       Adders := 12    
++---Registers : 
+	               32 Bit    Registers := 268   
+	                9 Bit    Registers := 2     
+	                8 Bit    Registers := 3     
+	                7 Bit    Registers := 6     
+	                4 Bit    Registers := 6     
+	                2 Bit    Registers := 2     
+	                1 Bit    Registers := 43    
++---Muxes : 
+	   2 Input   32 Bit        Muxes := 165   
+	   4 Input   32 Bit        Muxes := 3     
+	  15 Input   32 Bit        Muxes := 63    
+	 128 Input   32 Bit        Muxes := 66    
+	   2 Input   26 Bit        Muxes := 6     
+	  15 Input    8 Bit        Muxes := 3     
+	   2 Input    8 Bit        Muxes := 9     
+	   4 Input    8 Bit        Muxes := 3     
+	   2 Input    7 Bit        Muxes := 3     
+	   5 Input    4 Bit        Muxes := 3     
+	   2 Input    4 Bit        Muxes := 9     
+	  15 Input    2 Bit        Muxes := 3     
+	   2 Input    1 Bit        Muxes := 123   
+	  15 Input    1 Bit        Muxes := 39    
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 2520 (col length:168)
+BRAMs: 1824 (col length: RAMB18 168 RAMB36 84)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:32 ; elapsed = 00:00:33 . Memory (MB): peak = 1796.734 ; gain = 712.664
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:32 ; elapsed = 00:00:33 . Memory (MB): peak = 1796.734 ; gain = 712.664
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:33 ; elapsed = 00:00:34 . Memory (MB): peak = 1796.734 ; gain = 712.664
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1796.734 ; gain = 712.664
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1796.734 ; gain = 712.664
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1796.734 ; gain = 712.664
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1796.734 ; gain = 712.664
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1796.734 ; gain = 712.664
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1796.734 ; gain = 712.664
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+------+------+
+|      |Cell  |Count |
++------+------+------+
+|1     |BUFG  |     1|
+|2     |LUT1  |     2|
+|3     |LUT2  |     2|
+|4     |LUT3  |     1|
+|5     |LUT4  |    38|
+|6     |LUT5  |   252|
+|7     |LUT6  |   674|
+|8     |MUXF7 |   224|
+|9     |MUXF8 |    32|
+|10    |FDPE  |     1|
+|11    |FDRE  |  2168|
+|12    |FDSE  |    16|
+|13    |IBUF  |    57|
+|14    |OBUF  |  1979|
+|15    |OBUFT |     3|
++------+------+------+
+
+Report Instance Areas: 
++------+-----------------------------------------------+----------------------------------------+------+
+|      |Instance                                       |Module                                  |Cells |
++------+-----------------------------------------------+----------------------------------------+------+
+|1     |top                                            |                                        |  5450|
+|2     |  Temperature_Card_Interface_v1_0_S00_AXI_inst |Temperature_Card_Interface_v1_0_S00_AXI |  3408|
+|3     |    LTC2983_Handler_1                          |LTC2983_Interface                       |     1|
++------+-----------------------------------------------+----------------------------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1796.734 ; gain = 712.664
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 68 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1796.734 ; gain = 712.664
+Synthesis Optimization Complete : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1796.734 ; gain = 712.664
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.047 . Memory (MB): peak = 1796.734 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 314 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1796.734 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 58 instances were transformed.
+  BUFG => BUFGCE: 1 instance 
+  IBUF => IBUF (IBUFCTRL, INBUF): 57 instances
+
+INFO: [Common 17-83] Releasing license: Synthesis
+31 Infos, 69 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:41 ; elapsed = 00:00:43 . Memory (MB): peak = 1796.734 ; gain = 712.664
+INFO: [Common 17-1381] The checkpoint 'E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.runs/synth_1/Temperature_Card_Interface_v1_0.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file Temperature_Card_Interface_v1_0_utilization_synth.rpt -pb Temperature_Card_Interface_v1_0_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Tue May 18 17:04:06 2021...

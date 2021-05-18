@@ -24,7 +24,6 @@ uz_FOC_SpeedControl_parameters* uz_FOC_SpeedControl_init(uz_FOC_SpeedControl_con
 	uz_assert(self->is_ready == false);
 	counter_FOC_SpeedControl += 1;
 	self->is_ready = true;
-	uz_assert(config.n_target_rpm != 0);
 	self->config = config;
 	self->error_omega_sum = 0.0f;
 	return (self);

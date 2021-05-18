@@ -4,7 +4,6 @@
 #endif // UZ_FOC_H
 
 #include "../uz_HAL.h"
-#include "../uz_SystemTime/uz_SystemTime.h"
 #include <math.h>
 #include <stdbool.h>
 

@@ -20,6 +20,7 @@ This page serves as an onboarding for new users who want to contribute to the Ul
 
 #. Follow the installation process for :ref:`Git`. Documentation and additional tutorials for Git are provided there aswell. 
 #. Request access to the UltraZohm Bitbucket workspace from your supervisor.
+#. Read up on the `git-flow workflow <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>`_ which is used as a branching model for the ``ultrazohm_sw`` repository. This explains the use of **feature-branches**.
 #. **(Optional)** Follow the installation process for :ref:`Sourcetree`. This is a graphical client to simplify the use of Git. If you are comfortable with using the **Git Bash**, this installation process is not necessary, but recommended.  
 #. Read the UltraZohm specific documentation for :ref:`Bitbucket`. 
 #. After Bitbucket has been set up and its workflow understood, continue with the installation of the :ref:`XilinxToolchain` and :ref:`VivadoLicense`.

@@ -427,10 +427,11 @@ ADC_LVDS_LTC2311_v3_0_S00_AXI_inst : ADC_LVDS_LTC2311_v3_0_S00_AXI
             gen_diff2: for j in 0 to CHANNELS_PER_MASTER - 1 generate
             
                 IBUFDS_inst : IBUFDS
+                    generic map (DIFF_TERM=>TRUE)
                     port map (   
                     O => S_MISO(i * CHANNELS_PER_MASTER + j),   -- 1-bit output: Buffer output   
-                    I => MISO_DIFF(2 * i * CHANNELS_PER_MASTER + j),   -- 1-bit input: Diff_p buffer input (connect directly to top-level port)   
-                    IB => MISO_DIFF(2 * i * CHANNELS_PER_MASTER + j + 1)  -- 1-bit input: Diff_n buffer input (connect directly to top-level port)
+                    I => MISO_DIFF(2 * i * CHANNELS_PER_MASTER + 2 * j),   -- 1-bit input: Diff_p buffer input (connect directly to top-level port)   
+                    IB => MISO_DIFF(2 * i * CHANNELS_PER_MASTER + 2 * j + 1)  -- 1-bit input: Diff_n buffer input (connect directly to top-level port)
                     );
                     
             end generate gen_diff2;

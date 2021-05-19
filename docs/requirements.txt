@@ -6,3 +6,5 @@ six
 sphinx-autobuild
 sphinx-issues
 sphinx-copybutton
+sphinxcontrib-tikz
+breathe

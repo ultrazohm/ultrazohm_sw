@@ -31,6 +31,20 @@ Using remote container with Docker might lead to unwanted problems with file per
 
 .. note:: It might be possible to use Podman with WSL2 on Windows, yet this is not tested. See https://www.redhat.com/sysadmin/podman-windows-wsl2 
 
+Alternative: Gitpod
+-------------------
+
+`Gitpod <https://gitpod.io>`_ can be used to start a VS Code workspace in the browser without any local installations required.
+
+- `Open UltraZohm workspace in Gitpod <https://gitpod.io/#https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/>`_
+- Login with your Bitbucket account
+- The complete development environment as outlined in this document is automatically loaded (sphinx, ceedling)
+- Just click the link and start development
+
+.. figure:: gitpod_preview.gif
+
+  Open repository in Gitpod workspace.
+
 Usage
 *****
 

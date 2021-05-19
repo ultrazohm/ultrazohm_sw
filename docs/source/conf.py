@@ -30,15 +30,22 @@ release = '0.0.1'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+
 extensions = [
     'sphinx_rtd_theme',
     'sphinxcontrib.mermaid',
     'sphinxcontrib.yt',
     'sphinx_issues',
     'sphinx_copybutton',
+    'sphinxcontrib.tikz',
+    'breathe'
 ]
-
-
+tikz_proc_suite='GhostScript'
+breathe_projects = { "doxygen_baremetal_r5": "../doxygen_output/xml" }
+breathe_default_project = "doxygen_baremetal_r5"
+breathe_domain_by_extension = {
+        "h" : "c",
+}
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -109,3 +116,12 @@ rst_prolog = """
 
 # enables numbered figures
 numfig = True
+
+# https://github.com/michaeljones/breathe/issues/696
+nitpick_ignore = [
+    ('c:identifier', 'int32_t'),
+    ('c:identifier', 'uint32_t'),
+    ('c:identifier', 'size_t'),
+    ('c:identifier', 'uintptr_t'),
+    ('c:identifier', 'bool'),
+]

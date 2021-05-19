@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 entity Temperature_Card_Interface_v1_0_S00_AXI is
 	generic (
 		-- Users to add parameters here
-
+        SPI_clk_div			: INTEGER	:=  2 ;
 		-- User parameters ends
 		-- Do not modify the parameters beyond this line
 
@@ -2248,6 +2248,9 @@ begin
 
 	-- Add user logic here
 LTC2983_Handler_1 : LTC2983_Interface 
+	Generic map(
+	    SPI_clk_div              => SPI_clk_div
+	)
 	Port map(
 		clock   				=> S_AXI_ACLK,
 		reset_n 				=> handlerreset,
@@ -2308,6 +2311,9 @@ LTC2983_Handler_1 : LTC2983_Interface
 	);
 
 LTC2983_Handler_2 : LTC2983_Interface 
+	Generic map(
+	    SPI_clk_div              => SPI_clk_div
+	)
 	Port map(
 		clock   				=> S_AXI_ACLK,
 		reset_n 				=> handlerreset,
@@ -2368,6 +2374,9 @@ LTC2983_Handler_2 : LTC2983_Interface
 	);
 	
 LTC2983_Handler_3 : LTC2983_Interface 
+	Generic map(
+	    SPI_clk_div              => SPI_clk_div
+	)
 	Port map(
 		clock   				=> S_AXI_ACLK,
 		reset_n 				=> handlerreset,

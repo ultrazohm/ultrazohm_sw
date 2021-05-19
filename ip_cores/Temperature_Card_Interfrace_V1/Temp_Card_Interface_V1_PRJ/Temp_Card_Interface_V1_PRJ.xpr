@@ -31,6 +31,7 @@
     <Option Name="ActiveSimSet" Val="sim_1"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>
     <Option Name="ProjectType" Val="Default"/>
+    <Option Name="IPRepoPath" Val="$PSRCDIR/sources_1/imports"/>
     <Option Name="IPRepoPath" Val="$PPRDIR/../Temp_Card_Interface_V1_IP"/>
     <Option Name="IPOutputRepo" Val="$PCACHEDIR/ip"/>
     <Option Name="IPDefaultOutputPath" Val="$PSRCDIR/sources_1"/>
@@ -98,7 +99,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../Temp_Card_Interface_V1_IP/component.xml">
+      <File Path="$PSRCDIR/sources_1/imports/component.xml">
         <FileInfo SFType="IPXACT"/>
       </File>
       <Config>

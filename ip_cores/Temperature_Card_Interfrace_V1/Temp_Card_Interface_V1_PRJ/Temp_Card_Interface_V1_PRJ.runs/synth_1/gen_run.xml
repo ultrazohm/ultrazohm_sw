@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GenRun Id="synth_1" LaunchPart="xczu9eg-ffvc900-1-e" LaunchTime="1621350192">
   <File Type="PA-TCL" Name="Temperature_Card_Interface_v1_0.tcl"/>
-  <File Type="RDS-PROPCONSTRS" Name="Temperature_Card_Interface_v1_0_drc_synth.rpt"/>
   <File Type="REPORTS-TCL" Name="Temperature_Card_Interface_v1_0_reports.tcl"/>
   <File Type="RDS-RDS" Name="Temperature_Card_Interface_v1_0.vds"/>
   <File Type="RDS-UTIL" Name="Temperature_Card_Interface_v1_0_utilization_synth.rpt"/>
   <File Type="RDS-UTIL-PB" Name="Temperature_Card_Interface_v1_0_utilization_synth.pb"/>
   <File Type="RDS-DCP" Name="Temperature_Card_Interface_v1_0.dcp"/>
-  <File Type="VDS-TIMINGSUMMARY" Name="Temperature_Card_Interface_v1_0_timing_summary_synth.rpt"/>
-  <File Type="VDS-TIMING-PB" Name="Temperature_Card_Interface_v1_0_timing_summary_synth.pb"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PSRCDIR/sources_1/imports/new/LTC2983_Interface.vhd">

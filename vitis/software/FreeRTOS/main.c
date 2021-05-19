@@ -136,9 +136,9 @@ void network_thread(void *p)
 #if LWIP_IPV6==0
 #if LWIP_DHCP==0
     /* initialize IP addresses to be used */
-    IP4_ADDR(&ipaddr,  192, 168, 1, 233);
+    IP4_ADDR(&ipaddr,  141, 51, 157, 98);
     IP4_ADDR(&netmask, 255, 255, 255,  0);
-    IP4_ADDR(&gw,      192, 168, 1, 1);
+    IP4_ADDR(&gw,      141, 54, 157, 1);
 #endif
 
     /* print out IP settings of the board */

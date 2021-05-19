@@ -1247,24 +1247,116 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:user:Temperature_Card_Interface:1.0">
+		<VLNV value="xilinx.com:user:Temperature_Card_Interface_v1_0:1.0">
 		</VLNV>
-		<DisplayName value="Temperature_Card_Interface_v1.0">
+		<DisplayName value="Temperature_Card_Interface_v1_0_v1_0">
 		</DisplayName>
-		<Description value="Interface for the Temperature Card">
+		<Description value="Temperature_Card_Interface_v1_0_v1_0">
 		</Description>
-		<CoreRevision value="1">
+		<CoreRevision value="3">
 		</CoreRevision>
-		<ComponentPath value="Temperature_Card_Interfrace_V1/Temperature_Card_Interface_1.0/component.xml">
+		<ComponentPath value="Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/component.xml">
 		</ComponentPath>
 		<Families>
+			<Family name="aartix7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="akintex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="artix7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="artix7l">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="aspartan7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="azynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintex7l">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qartix7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qkintex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qkintex7l">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qvirtex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qzynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="spartan7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus58g">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
 			<Family name="zynquplus">
-				<Part status="Pre-Production" name="ALL">
+				<Part status="Production" name="ALL">
 				</Part>
 			</Family>
 		</Families>
 		<Taxonomies>
-			<Taxonomy value="AXI_Peripheral">
+			<Taxonomy value="/AXI_Infrastructure">
+			</Taxonomy>
+			<Taxonomy value="/Embedded_Processing/AXI_Peripheral">
+			</Taxonomy>
+			<Taxonomy value="/UserIP">
 			</Taxonomy>
 		</Taxonomies>
 		<Interfaces>

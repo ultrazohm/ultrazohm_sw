@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 entity Temperature_Card_Interface_v1_0 is
 	generic (
 		-- Users to add parameters here
-
+        SPI_clk_div			: INTEGER	:=  50 ;
 		-- User parameters ends
 		-- Do not modify the parameters beyond this line
 
@@ -146,6 +146,7 @@ architecture arch_imp of Temperature_Card_Interface_v1_0 is
 	-- component declaration
 	component Temperature_Card_Interface_v1_0_S00_AXI is
 		generic (
+	    SPI_clk_div         : integer   := 2;
 		C_S_AXI_DATA_WIDTH	: integer	:= 32;
 		C_S_AXI_ADDR_WIDTH	: integer	:= 9
 		);
@@ -276,6 +277,7 @@ begin
 -- Instantiation of Axi Bus Interface S00_AXI
 Temperature_Card_Interface_v1_0_S00_AXI_inst : Temperature_Card_Interface_v1_0_S00_AXI
 	generic map (
+	    SPI_clk_div         => SPI_clk_div,
 		C_S_AXI_DATA_WIDTH	=> C_S00_AXI_DATA_WIDTH,
 		C_S_AXI_ADDR_WIDTH	=> C_S00_AXI_ADDR_WIDTH
 	)

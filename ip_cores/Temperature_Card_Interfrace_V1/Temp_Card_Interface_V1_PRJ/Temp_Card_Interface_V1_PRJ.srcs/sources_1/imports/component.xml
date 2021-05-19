@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <spirit:vendor>www.uni-kassel.de</spirit:vendor>
+  <spirit:vendor>xilinx.com</spirit:vendor>
   <spirit:library>user</spirit:library>
   <spirit:name>Temperature_Card_Interface_v1_0</spirit:name>
   <spirit:version>1.0</spirit:version>
@@ -242,7 +242,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>8a6f56b2</spirit:value>
+            <spirit:value>e723e6af</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -258,7 +258,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>8a6f56b2</spirit:value>
+            <spirit:value>e723e6af</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -272,7 +272,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>5f8446a6</spirit:value>
+            <spirit:value>d9d039f5</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -648,7 +648,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_00_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_00_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -672,7 +672,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_01_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_01_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -696,7 +696,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_02_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_02_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -720,7 +720,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_03_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_03_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -744,7 +744,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_04_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_04_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -768,7 +768,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_05_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_05_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -792,7 +792,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_06_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_06_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -816,7 +816,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_07_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_07_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -840,7 +840,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_08_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_08_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -864,7 +864,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_09_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_09_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -888,7 +888,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_10_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_10_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -912,7 +912,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_11_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_11_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -936,7 +936,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_12_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_12_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -960,7 +960,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_13_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_13_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -984,7 +984,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_14_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_14_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1008,7 +1008,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_15_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_15_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1032,7 +1032,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_16_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_16_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1056,7 +1056,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_17_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_17_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1080,7 +1080,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_18_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_18_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1104,7 +1104,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_19_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_19_out_LTC_1" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1128,7 +1128,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_00_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_00_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1152,7 +1152,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_01_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_01_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1176,7 +1176,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_02_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_02_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1200,7 +1200,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_03_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_03_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1224,7 +1224,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_04_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_04_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1248,7 +1248,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_05_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_05_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1272,7 +1272,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_06_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_06_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1296,7 +1296,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_07_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_07_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1320,7 +1320,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_08_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_08_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1344,7 +1344,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_09_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_09_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1368,7 +1368,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_10_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_10_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1392,7 +1392,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_11_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_11_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1416,7 +1416,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_12_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_12_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1440,7 +1440,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_13_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_13_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1464,7 +1464,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_14_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_14_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1488,7 +1488,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_15_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_15_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1512,7 +1512,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_16_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_16_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1536,7 +1536,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_17_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_17_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1560,7 +1560,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_18_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_18_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1584,7 +1584,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_19_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_19_out_LTC_2" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1608,7 +1608,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_00_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_00_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1632,7 +1632,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_01_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_01_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1656,7 +1656,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_02_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_02_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1680,7 +1680,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_03_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_03_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1704,7 +1704,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_04_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_04_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1728,7 +1728,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_05_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_05_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1752,7 +1752,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_06_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_06_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1776,7 +1776,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_07_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_07_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1800,7 +1800,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_08_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_08_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1824,7 +1824,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_09_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_09_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1848,7 +1848,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_10_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_10_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1872,7 +1872,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_11_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_11_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1896,7 +1896,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_12_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_12_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1920,7 +1920,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_13_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_13_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1944,7 +1944,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_14_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_14_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1968,7 +1968,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_15_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_15_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1992,7 +1992,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_16_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_16_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -2016,7 +2016,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_17_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_17_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -2040,7 +2040,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_18_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_18_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -2064,7 +2064,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_19_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_tempports&apos;))">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.Temp_19_out_LTC_3" xilinx:dependency="spirit:decode(id(&apos;PARAM_VALUE.enable_FPGA_Ports&apos;))">false</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -2413,7 +2413,12 @@
       </spirit:port>
     </spirit:ports>
     <spirit:modelParameters>
-      <spirit:modelParameter xsi:type="spirit:nameValueTypeType" spirit:dataType="integer">
+      <spirit:modelParameter xsi:type="spirit:nameValueTypeType" spirit:dataType="INTEGER">
+        <spirit:name>SPI_clk_div</spirit:name>
+        <spirit:displayName>Spi Clk Div</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.SPI_clk_div">50</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>C_S00_AXI_DATA_WIDTH</spirit:name>
         <spirit:displayName>C S00 Axi Data Width</spirit:displayName>
         <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_S00_AXI_DATA_WIDTH">32</spirit:value>
@@ -2436,80 +2441,39 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>src/LTC2983_Interface.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>src/Temperature_Card_Interface_v1_0_S00_AXI.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>src/spi_master_LTC.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>src/Temperature_Card_Interface_v1_0.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_ac5d5fa7</spirit:userFileType>
-        <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>../Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/LTC2983_Interface.vhd</spirit:name>
+        <spirit:name>new/LTC2983_Interface.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd</spirit:name>
+        <spirit:name>hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/spi_master_LTC.vhd</spirit:name>
+        <spirit:name>new/spi_master_LTC.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0.vhd</spirit:name>
+        <spirit:name>hdl/Temperature_Card_Interface_v1_0.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_ac5d5fa7</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_5b201f3d</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>src/LTC2983_Interface.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>src/Temperature_Card_Interface_v1_0_S00_AXI.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>src/spi_master_LTC.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>src/Temperature_Card_Interface_v1_0.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>../Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/LTC2983_Interface.vhd</spirit:name>
+        <spirit:name>new/LTC2983_Interface.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd</spirit:name>
+        <spirit:name>hdl/Temperature_Card_Interface_v1_0_S00_AXI.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/new/spi_master_LTC.vhd</spirit:name>
+        <spirit:name>new/spi_master_LTC.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/hdl/Temperature_Card_Interface_v1_0.vhd</spirit:name>
+        <spirit:name>hdl/Temperature_Card_Interface_v1_0.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
     </spirit:fileSet>
@@ -2518,13 +2482,18 @@
       <spirit:file>
         <spirit:name>xgui/Temperature_Card_Interface_v1_0_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_5f8446a6</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_d9d039f5</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
   </spirit:fileSets>
   <spirit:description>Temperature_Card_Interface_v1_0_v1_0</spirit:description>
   <spirit:parameters>
+    <spirit:parameter>
+      <spirit:name>SPI_clk_div</spirit:name>
+      <spirit:displayName>Spi Clk Div</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.SPI_clk_div">50</spirit:value>
+    </spirit:parameter>
     <spirit:parameter>
       <spirit:name>C_S00_AXI_DATA_WIDTH</spirit:name>
       <spirit:displayName>C S00 Axi Data Width</spirit:displayName>
@@ -2540,9 +2509,9 @@
       <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">Temperature_Card_Interface_v1_0_v1_0</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
-      <spirit:name>enable_FPGA_tempports</spirit:name>
-      <spirit:displayName>Enable Fpga Tempports</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.enable_FPGA_tempports">false</spirit:value>
+      <spirit:name>enable_FPGA_Ports</spirit:name>
+      <spirit:displayName>Enable Fpga Ports</spirit:displayName>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.enable_FPGA_Ports">false</spirit:value>
     </spirit:parameter>
   </spirit:parameters>
   <spirit:vendorExtensions>
@@ -2573,138 +2542,105 @@
         <xilinx:family xilinx:lifeCycle="Production">kintexu</xilinx:family>
       </xilinx:supportedFamilies>
       <xilinx:taxonomies>
+        <xilinx:taxonomy>/AXI_Infrastructure</xilinx:taxonomy>
+        <xilinx:taxonomy>/Embedded_Processing/AXI_Peripheral</xilinx:taxonomy>
         <xilinx:taxonomy>/UserIP</xilinx:taxonomy>
       </xilinx:taxonomies>
       <xilinx:displayName>Temperature_Card_Interface_v1_0_v1_0</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>4</xilinx:coreRevision>
-      <xilinx:upgrades>
-        <xilinx:canUpgradeFrom>xilinx.com:user:Temperature_Card_Interface_v1_0:1.0</xilinx:canUpgradeFrom>
-      </xilinx:upgrades>
-      <xilinx:coreCreationDateTime>2021-05-18T15:04:52Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>3</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-05-19T07:40:22Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@218bc96f_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1bc48af3_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@70f19fa9_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@69e40b23_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@29f93985_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4221bd9f_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3d9145c7_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@416a7344_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@9c58144_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@44f82a20_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@143487e9_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ab04021_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@33d9f84f_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@137a7ca5_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@243e648f_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5b67bec2_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@615eff46_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7d15d082_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4a75b3d0_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@57623b4d_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ad944ed_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@66ab10aa_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5f5d8057_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@52b75fa9_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@626f85b2_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@23b38236_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5af9219e_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@666c33ac_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@219af2a9_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@63f52d2_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5b24b24b_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@65f7fc04_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5a32b797_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@53f9875c_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@318a391e_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@60c055cc_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@27d3b005_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@29cf8545_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7bd25d2c_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@52708ff2_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2dc7ee48_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@78f643dc_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@717ab426_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3a73545a_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@42ec0fa_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2df4d7ae_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@77ba6c00_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@10eadc31_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d88a1cb_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3a5df747_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@699b2964_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6bec5b83_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@768668c6_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@c7a4b09_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@67badf92_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d3e9260_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@31192bb9_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@64c82b38_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2a34a591_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@fc60c17_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7f80e534_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3ccea2c7_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4bd0a183_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@105de388_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@358a6761_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3107b327_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3c4feb9c_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@76843e85_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@48c50442_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4b294f12_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2bcab823_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@77625885_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@efc0724_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@583b55f8_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7c0fe4b9_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1d02df54_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@17d3c161_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@15f8bbd7_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1fc7da45_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1fd494d4_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5bf57319_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6539ed8_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@40e192bb_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@37a67f6b_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5df45e21_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@65ff8921_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@76863326_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4c8c557d_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7e96fdfb_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@69a18150_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@61f94ac4_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d55b682_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7eb5ffde_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@74a6fc76_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@a9f3291_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@49e1e98a_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@52a57172_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2e63b439_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ebe343d_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@467df1bb_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@c56345_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7e57cd7f_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@55840735_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@69663162_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@637c8d09_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@26e06d8b_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2f84779_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7091efc9_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1aa0ba26_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@68a58fa3_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@63e2baf3_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6c2dbd2b_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@31957576_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@275074d7_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3b42935c_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@29184135_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2579d6c_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@f9d1d8f_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1f6937ee_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7835e696_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@e96da6a_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7b8be687_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@46a98a9d_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7d3969d7_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@16baafa_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3dae041c_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7fde4306_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@33e3f959_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@769c3510_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@aef84d3_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3b59a7b6_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@49b1b032_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7f9a22de_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7a04adb4_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@111fdf67_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3b199867_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@51ae80e7_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@26b9c160_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5f79434_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@696e7e35_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@67a8b466_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1ee9287c_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@34b4aa0d_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2b10cb3f_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6c8971bb_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@50c0af54_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@110c8a88_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1a091e43_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@528adf61_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6e9e18e9_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@30c5b411_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@68d1665_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2ae1bc50_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@50eb6b4a_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@ed09e73_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@fb0eaff_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@759e89c6_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@255808d4_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5526cec3_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@792eb029_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1d028343_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7193b0a7_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@60a1f4b7_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4767d661_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@71736ff0_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@134317c7_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4b8b22d_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1484b031_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1c3e663d_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@46b3de3c_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5b215714_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4deacbe5_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@288c8367_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3a5d700_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6ba0da8f_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@27bf2bb5_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7105f7be_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@758a9d18_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2c4303a4_ARCHIVE_LOCATION">e:/01_repos/ultrazohm/ultrazohm_sw/ip_cores/temperature_card_interfrace_v1/temp_card_interface_v1_prj/temp_card_interface_v1_prj.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@9d66cc9_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4dbcf4d9_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@68ad9693_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@34a1b8ea_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1e12a352_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1e37d92d_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4b2be3a0_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@962a2b5_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5f628429_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@53f3cbbb_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6f5702bc_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@21868f8a_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@473981e9_ARCHIVE_LOCATION">e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="9add38af"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="871c369d"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="07d86d61"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="904ba654"/>
-      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="b2c76dd2"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="37f95089"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="074985b6"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="2d9b5916"/>
+      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="c5c16d33"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="b37c07c5"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

@@ -380,22 +380,34 @@ After the duration of the chirp wave, the function ``uz_wavegen_chirp()`` will r
      - 0 -> \+ float
      - seconds
   
-Initialize the function with:
+Initialize the config file in the ``main.c``:
 
 .. code-block:: c
 
+    uz_wavegen* *name*;
     struct uz_wavegen_chirp_config *config* = {
     .amplitude= ...,
     .start_frequency_Hz = ...,
     .end_frequency_Hz = ...,
     .duration_Sec = ...,
     .initial_delay_Sec = ...};
-    uz_wavegen* *name* = uz_wavegen_chirp_init(*config*);
 
-Function call:
+Call the init function inside the main function, but before the ``while(1)``-loop.
 
 .. code-block:: c
 
+    int main(void) {
+    ...
+    *name* = uz_wavegen_chirp_init(*config*);
+    ...
+    while (1) {...}
+    }
+
+Function call. The first line is needed, if the function is called outside of ``main.c``:
+
+.. code-block:: c
+
+    extern uz_wavegen* *name*; 
     float *output* = uz_wavegen_chirp(*name*);
 
 The \*highlighted\* words are the variable names, which can be freely chosen. 

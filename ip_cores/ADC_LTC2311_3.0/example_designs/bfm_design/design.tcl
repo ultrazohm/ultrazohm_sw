@@ -9,19 +9,19 @@ proc create_ipi_design { offsetfile design_name } {
 	set_property -dict [ list CONFIG.POLARITY {ACTIVE_LOW}  ] $ARESETN
 	set_property CONFIG.ASSOCIATED_RESET ARESETN $ACLK
 
-	# Create instance: ADC_LVDS_LTC2311_0, and set properties
-	set ADC_LVDS_LTC2311_0 [ create_bd_cell -type ip -vlnv user.org:user:ADC_LVDS_LTC2311:3.0 ADC_LVDS_LTC2311_0]
+	# Create instance: ADC_LTC2311_0, and set properties
+	set ADC_LTC2311_0 [ create_bd_cell -type ip -vlnv user.org:user:ADC_LTC2311:3.0 ADC_LTC2311_0]
 
 	# Create instance: master_0, and set properties
 	set master_0 [ create_bd_cell -type ip -vlnv  xilinx.com:ip:axi_vip master_0]
 	set_property -dict [ list CONFIG.PROTOCOL {AXI4LITE} CONFIG.INTERFACE_MODE {MASTER} ] $master_0
 
 	# Create interface connections
-	connect_bd_intf_net [get_bd_intf_pins master_0/M_AXI ] [get_bd_intf_pins ADC_LVDS_LTC2311_0/S00_AXI]
+	connect_bd_intf_net [get_bd_intf_pins master_0/M_AXI ] [get_bd_intf_pins ADC_LTC2311_0/S00_AXI]
 
 	# Create port connections
-	connect_bd_net -net aclk_net [get_bd_ports ACLK] [get_bd_pins master_0/ACLK] [get_bd_pins ADC_LVDS_LTC2311_0/S00_AXI_ACLK]
-	connect_bd_net -net aresetn_net [get_bd_ports ARESETN] [get_bd_pins master_0/ARESETN] [get_bd_pins ADC_LVDS_LTC2311_0/S00_AXI_ARESETN]
+	connect_bd_net -net aclk_net [get_bd_ports ACLK] [get_bd_pins master_0/ACLK] [get_bd_pins ADC_LTC2311_0/S00_AXI_ACLK]
+	connect_bd_net -net aresetn_net [get_bd_ports ARESETN] [get_bd_pins master_0/ARESETN] [get_bd_pins ADC_LTC2311_0/S00_AXI_ARESETN]
 set_property target_simulator XSim [current_project]
 set_property -name {xsim.simulate.runtime} -value {100ms} -objects [get_filesets sim_1]
 
@@ -31,10 +31,10 @@ set_property -name {xsim.simulate.runtime} -value {100ms} -objects [get_filesets
 	# Copy all address to interface_address.vh file
 	set bd_path [file dirname [get_property NAME [get_files ${design_name}.bd]]]
 	upvar 1 $offsetfile offset_file
-	set offset_file "${bd_path}/ADC_LVDS_LTC2311_v3_0_tb_include.svh"
+	set offset_file "${bd_path}/ADC_LTC2311_v3_0_tb_include.svh"
 	set fp [open $offset_file "w"]
-	puts $fp "`ifndef ADC_LVDS_LTC2311_v3_0_tb_include_vh_"
-	puts $fp "`define ADC_LVDS_LTC2311_v3_0_tb_include_vh_\n"
+	puts $fp "`ifndef ADC_LTC2311_v3_0_tb_include_vh_"
+	puts $fp "`define ADC_LTC2311_v3_0_tb_include_vh_\n"
 	puts $fp "//Configuration current bd names"
 	puts $fp "`define BD_NAME ${design_name}"
 	puts $fp "`define BD_INST_NAME ${design_name}_i"
@@ -45,8 +45,8 @@ set_property -name {xsim.simulate.runtime} -value {100ms} -objects [get_filesets
 	close $fp
 }
 
-set ip_path [file dirname [file normalize [get_property XML_FILE_NAME [ipx::get_cores user.org:user:ADC_LVDS_LTC2311:3.0]]]]
-set test_bench_file ${ip_path}/example_designs/bfm_design/ADC_LVDS_LTC2311_v3_0_tb.sv
+set ip_path [file dirname [file normalize [get_property XML_FILE_NAME [ipx::get_cores user.org:user:ADC_LTC2311:3.0]]]]
+set test_bench_file ${ip_path}/example_designs/bfm_design/ADC_LTC2311_v3_0_tb.sv
 set interface_address_vh_file ""
 
 # Set IP Repository and Update IP Catalogue 
@@ -66,7 +66,7 @@ lappend all_bd $bd_name
 }
 
 for { set i 1 } { 1 } { incr i } {
-	set design_name "ADC_LVDS_LTC2311_v3_0_bfm_${i}"
+	set design_name "ADC_LTC2311_v3_0_bfm_${i}"
 	if { [lsearch -exact -nocase $all_bd $design_name ] == -1 } {
 		break
 	}
@@ -80,9 +80,9 @@ import_files -force -norecurse $wrapper_file
 
 set_property SOURCE_SET sources_1 [get_filesets sim_1]
 import_files -fileset sim_1 -norecurse -force $test_bench_file
-remove_files -quiet -fileset sim_1 ADC_LVDS_LTC2311_v3_0_tb_include.vh
+remove_files -quiet -fileset sim_1 ADC_LTC2311_v3_0_tb_include.vh
 import_files -fileset sim_1 -norecurse -force $interface_address_vh_file
-set_property top ADC_LVDS_LTC2311_v3_0_tb [get_filesets sim_1]
+set_property top ADC_LTC2311_v3_0_tb [get_filesets sim_1]
 set_property top_lib {} [get_filesets sim_1]
 set_property top_file {} [get_filesets sim_1]
 launch_simulation -simset sim_1 -mode behavioral

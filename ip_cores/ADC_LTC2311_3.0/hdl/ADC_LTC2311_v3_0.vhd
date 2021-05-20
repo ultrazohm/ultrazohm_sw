@@ -8,7 +8,7 @@ use UNISIM.vcomponents.all;
 library work;
 use work.ADC_LTC2311_PKG.all;
 
-entity ADC_LVDS_LTC2311_v3_0 is
+entity ADC_LTC2311_v3_0 is
 	generic (
 		-- Users to add parameters here
         DATA_WIDTH          : natural := 16;    -- Number of bits per SPI frame
@@ -73,9 +73,9 @@ entity ADC_LVDS_LTC2311_v3_0 is
 		s00_axi_rvalid	: out std_logic;
 		s00_axi_rready	: in std_logic
 	);
-end ADC_LVDS_LTC2311_v3_0;
+end ADC_LTC2311_v3_0;
 
-architecture arch_imp of ADC_LVDS_LTC2311_v3_0 is
+architecture arch_imp of ADC_LTC2311_v3_0 is
     
     constant STD_ZERO           : std_logic_vector(SPI_MASTER - 1 downto 0) := (others => '0');
     -- signal declarations
@@ -106,7 +106,7 @@ architecture arch_imp of ADC_LVDS_LTC2311_v3_0 is
     signal S_ADC_CONV_VALUE         : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
 
 	-- component declaration AXI4 Lite interface
-	component ADC_LVDS_LTC2311_v3_0_S00_AXI is
+	component ADC_LTC2311_v3_0_S00_AXI is
 		generic (
 		C_S_AXI_DATA_WIDTH	: integer	:= C_C_S_AXI_DATA_WIDTH;
 		C_S_AXI_ADDR_WIDTH	: integer	:= 6
@@ -147,7 +147,7 @@ architecture arch_imp of ADC_LVDS_LTC2311_v3_0 is
 		S_AXI_RVALID	: out std_logic;
 		S_AXI_RREADY	: in std_logic
 		);
-	end component ADC_LVDS_LTC2311_v3_0_S00_AXI;
+	end component ADC_LTC2311_v3_0_S00_AXI;
 	
 	-- user components
     
@@ -318,7 +318,7 @@ begin
 	-- User logic ends
 
 -- Instantiation of Axi Bus Interface S00_AXI
-ADC_LVDS_LTC2311_v3_0_S00_AXI_inst : ADC_LVDS_LTC2311_v3_0_S00_AXI
+ADC_LTC2311_v3_0_S00_AXI_inst : ADC_LTC2311_v3_0_S00_AXI
 	generic map (
 		C_S_AXI_DATA_WIDTH	=> C_S00_AXI_DATA_WIDTH,
 		C_S_AXI_ADDR_WIDTH	=> C_S00_AXI_ADDR_WIDTH

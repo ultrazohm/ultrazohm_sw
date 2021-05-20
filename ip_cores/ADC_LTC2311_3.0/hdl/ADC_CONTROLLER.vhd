@@ -4,7 +4,7 @@
 -- E-Mail: wendtth65566@th-nuernberg.de
 -- 
 -- Create Date: 03/10/2021 04:39:06 PM
--- Design Name: ADC_LVDS_LTC2311
+-- Design Name: ADC_LTC2311
 -- Module Name: ADC_CONTROLLER - Behavioral
 -- Project Name: UltraZohm
 -- Target Devices: Xilinx UltraScale

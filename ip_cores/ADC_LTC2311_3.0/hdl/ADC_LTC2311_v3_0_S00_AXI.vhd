@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 library work;
 use work.ADC_LTC2311_PKG.all;
 
-entity ADC_LVDS_LTC2311_v3_0_S00_AXI is
+entity ADC_LTC2311_v3_0_S00_AXI is
 	generic (
 		-- Users to add parameters here
 
@@ -94,9 +94,9 @@ entity ADC_LVDS_LTC2311_v3_0_S00_AXI is
     		-- accept the read data and response information.
 		S_AXI_RREADY	: in std_logic
 	);
-end ADC_LVDS_LTC2311_v3_0_S00_AXI;
+end ADC_LTC2311_v3_0_S00_AXI;
 
-architecture arch_imp of ADC_LVDS_LTC2311_v3_0_S00_AXI is
+architecture arch_imp of ADC_LTC2311_v3_0_S00_AXI is
 
 	-- AXI4LITE signals
 	signal axi_awaddr	: std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);

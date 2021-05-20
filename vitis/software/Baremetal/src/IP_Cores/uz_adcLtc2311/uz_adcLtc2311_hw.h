@@ -1,0 +1,5 @@
+#ifndef UZ_ADCLTC2311_HW_H
+#define UZ_ADCLTC2311_HW_H
+
+
+#endif // UZ_ADCLTC2311_HW_H

@@ -541,15 +541,15 @@
 		</VendorDisplayName>
 	</IP>
 	<IP>
-		<VLNV value="UltraZohm:user:ADC_LVDS_LTC2311:3.0">
+		<VLNV value="UltraZohm:user:ADC_LTC2311:3.0">
 		</VLNV>
-		<DisplayName value="ADC_LVDS_LTC2311_v3.0">
+		<DisplayName value="ADC_LTC2311_v3.0">
 		</DisplayName>
 		<Description value="Read out and process data from the LTC2311 ADC">
 		</Description>
-		<CoreRevision value="13">
+		<CoreRevision value="7">
 		</CoreRevision>
-		<ComponentPath value="ADC_LVDS_LTC2311_3.0/component.xml">
+		<ComponentPath value="ADC_LTC2311_3.0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="zynquplus">

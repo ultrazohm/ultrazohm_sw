@@ -11,7 +11,6 @@ void uz_SystemTime_ISR_Toc(); // stop the stopwatch
 // Getter functions
 float uz_SystemTime_GetIsrPeriodInUs();
 float uz_SystemTime_GetIsrExectionTimeInUs();
-float uz_SystemTime_GetIsrFrequencyInHz();
 uint64_t uz_SystemTime_GetInterruptCounter();
 uint64_t uz_SystemTime_GetUptimeInUs();
 unsigned int uz_SystemTime_GetUptimeInMs();

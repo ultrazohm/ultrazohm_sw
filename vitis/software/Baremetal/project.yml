@@ -29,6 +29,14 @@
 :extension:
   :executable: .out
 
+:flags:
+  :test:
+    :compile:
+      :*:          # add '-Wall' to compilation of all files
+        - -Wall
+        - -Wextra
+        - -Wpedantic
+
 :paths:
   :test:
     - +:test/**

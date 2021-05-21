@@ -174,6 +174,43 @@ To test if assertions are triggered, we use the following approach:
 This means a failing assertion throws an exception instead of triggering a *real* assertion.
 The test macros ``TEST_ASSERT_FAIL_ASSERT`` and ``TEST_ASSERT_PASS_ASSERT`` catch the thrown exception and print an error message if the test fails.
 
+
+Multiple source files with common header
+----------------------------------------
+If u want to test a function, which has multiple c-files and one common header file, i.e.
+
+* file1.h
+
+  .. code-block:: c
+
+      //Declare stuff here
+
+* file1.c
+  
+  .. code-block:: c
+
+      #include file1.h
+      //Do something here
+
+* file2.c
+
+  .. code-block:: c
+
+      #include file1.h
+      //Do something here
+
+After including the ``file1.h`` file in the ``test_file1.c`` file ceedling will produce an 
+error. This happens, because ceedling will only look for the corresponding ``file1.c`` to 
+the included ``file1.h`` file. ``file2.c`` will therefore be ignored during the linking stage. 
+
+To fix this, you have to include the following **macro** at the top of your ``test_file1.c`` file.
+
+.. code-block:: c
+
+    TEST_FILE("file2.c")
+
+You can include this way as many ``c-files`` as needed.
+    
 Sources
 =======
 

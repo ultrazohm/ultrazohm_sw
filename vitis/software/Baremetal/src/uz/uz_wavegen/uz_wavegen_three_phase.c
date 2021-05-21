@@ -36,3 +36,21 @@ void uz_wavegen_three_phase(uz_wavegen_three_phase_sine* self) {
 	self->phase_V = self->config.amplitude * sinf(angle + 2.0f * M_PI / 3.0f) + self->config.offset;
 	self->phase_W = self->config.amplitude * sinf(angle + 4.0f * M_PI / 3.0f) + self->config.offset;
 }
+
+float uz_wavegen_three_phase_get_phaseU(uz_wavegen_three_phase_sine* self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return (self->phase_U);
+}
+
+float uz_wavegen_three_phase_get_phaseV(uz_wavegen_three_phase_sine* self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return (self->phase_V);
+}
+
+float uz_wavegen_three_phase_get_phaseW(uz_wavegen_three_phase_sine* self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return (self->phase_W);
+}

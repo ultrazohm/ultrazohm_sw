@@ -5,7 +5,7 @@ Waveform Generator
 ==================
 
 The ``uz_wavegen`` functions can be used to create standard waveform, which, for example, can be displayed in the :ref:`JavaScope`.
-
+Wherever the functions are called, ``uz_wavegen.h`` has to be included. 
 
 Available waveforms
 *******************
@@ -268,7 +268,7 @@ Function call:
 
 .. code-block:: c
 
-    ... = uz_wavegen_triangle(amplitude, frequency_Hz, offset);
+    ... = uz_wavegen_triangle_with_offset(amplitude, frequency_Hz, offset);
 
 Saturation function
 ^^^^^^^^^^^^^^^^^^^
@@ -380,6 +380,12 @@ After the duration of the chirp wave, the function ``uz_wavegen_chirp()`` will r
      - 0 -> \+ float
      - seconds
   
+In the same file, where ``uz_wavegen.h`` is included, one has to define the following statement, where **x** ist the maximum for how often ``uz_wavegen_chirp_init`` will be called.  
+
+.. code-block:: c
+
+    #define max_wavegen_chirp_instances x
+
 Initialize the config file in the ``main.c``:
 
 .. code-block:: c
@@ -444,29 +450,46 @@ Creates a continous sine wave with free phases. For the input arguments a struct
      - +/- float
      -
 
-Initialize the function with:
+In the same file, where ``uz_wavegen.h`` is included, one has to define the following statement, where **x** ist the maximum for how often ``uz_wavegen_three_phase_init`` will be called.
 
 .. code-block:: c
 
-    struct uz_wavegen_three_phase_config *name* = {
-    .amplitude = ...,
-    .frequency_Hz= ...,
+    #define max_wavegen_three_phase_instances x
+
+Initialize the config file in the ``main.c``:
+
+.. code-block:: c
+     
+    uz_wavegen_three_phase_sine* *name*;
+    struct uz_wavegen_three_phase_config *config* = {
+    .amplitude= ...,
+    .frequency_Hz = ...,
     .offset = ...};
+     
+Call the init function inside the main function, but before the ``while(1)``-loop.
+     
+.. code-block:: c
+     
+    int main(void) {
+    ...
+    *name* = uz_wavegen_three_phase_init(*config*);
+    ...
+    while (1) {...}
+    }
+     
+Function call. The first line is needed, if the function is called outside of ``main.c``:
+     
+.. code-block:: c
+     
+    extern uz_wavegen_three_phase_sine* *name*; 
+    uz_wavegen_three_phase(*name*);
 
-    uz_wavegen_three_phase_sine* *output* = uz_wavegen_three_phase_init(*name*);
-
-Function call:
+Access the three phases with the following.
 
 .. code-block:: c
 
-    uz_wavegen_three_phase(*output*);
-
-The output for the three phases is stored in the \*output*\  struct. Access them with:
-
-.. code-block:: c
-
-    ... = *output*->phase_U;
-    ... = *output*->phase_V;
-    ... = *output*->phase_W;
+    float *phaseU* = uz_wavegen_three_phase_get_phaseU(*name*);
+    float *phaseV* = uz_wavegen_three_phase_get_phaseV(*name*);
+    float *phaseW* = uz_wavegen_three_phase_get_phaseW(*name*);
 
 The \*highlighted\* words are the variable names, which can be freely chosen. 

@@ -40,3 +40,7 @@ void uz_wavegen_chirp_reset(uz_wavegen* self);
 uz_wavegen_three_phase_sine* uz_wavegen_three_phase_init(struct uz_wavegen_three_phase_config config);
 void uz_wavegen_three_phase(uz_wavegen_three_phase_sine* self);
 
+float uz_wavegen_three_phase_get_phaseU(uz_wavegen_three_phase_sine* self);
+float uz_wavegen_three_phase_get_phaseV(uz_wavegen_three_phase_sine* self);
+float uz_wavegen_three_phase_get_phaseW(uz_wavegen_three_phase_sine* self);
+

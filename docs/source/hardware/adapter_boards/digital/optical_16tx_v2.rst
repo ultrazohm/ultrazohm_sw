@@ -1,4 +1,4 @@
-.. _dig_optical:
+.. _dig_optical_2vxx:
 
 =============================
 Digital Optical 16Tx 3Rx 2vXX

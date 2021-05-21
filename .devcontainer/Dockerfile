@@ -13,7 +13,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
                                                   texlive-latex-extra \
                                                   texlive-pictures \
                                                   texlive-science \
-                                                  ghostscript
-
+                                                  ghostscript \
+                                                  git-lfs \
+                                                  doxygen
 RUN gem install ceedling
 RUN wget -O ~/vsls-reqs https://aka.ms/vsls-linux-prereq-script && chmod +x ~/vsls-reqs && ~/vsls-reqs # Maybe required for liveshare https://docs.microsoft.com/en-us/visualstudio/liveshare/reference/linux#install-linux-prerequisites

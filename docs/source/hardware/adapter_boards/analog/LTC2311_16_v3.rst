@@ -222,18 +222,16 @@ Compatibility
 -------------
 * Slots A1 to A3 can be used without limitations
 
-See also
-""""""""
+References
+-------------
 * :download:`Schematic 3v03 <LTC2311_16_v3/SCH_ADC_LTC2311_16_3v03.pdf>`
 * :download:`Assembly Drawing 3v03 <LTC2311_16_v3/ASM_ADC_LTC2311_16_3v03.pdf>`
 * :download:`LTSpice simulation <LTC2311_16_v3/UZ_ADC_LTC2311-16_3v3_LTSpice.zip>`
-* `Data sheet ADC LTC2311-16 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_
 * See IP-Core :ref:`ipCore_LTC23`
+* .. [LTC2311_datasheet] `Data sheet ADC LTC2311-16 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_
 
 Designed by 
 """""""""""
 Simon Lukas (TUM), Eyke Liegmann (TUM) in 09/2020
 
-.. rubric:: Sources
 
-.. [LTC2311_datasheet] `Data sheet ADC LTC2311-16 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_

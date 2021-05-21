@@ -2459,6 +2459,7 @@ LTC2983_Handler_3 : LTC2983_Interface
 	
 	--Maps
 	handlerreset   <= S_AXI_ARESETN AND slv_reg0(1);       -- second Reset-Source for the Handlers
+	enable         <= slv_reg0(0);
 	 
 	busy_1         <= busy_1_s       ;
 	ready_1        <= ready_1_s      ;

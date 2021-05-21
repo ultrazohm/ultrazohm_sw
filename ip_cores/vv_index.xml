@@ -1253,7 +1253,7 @@
 		</DisplayName>
 		<Description value="Temperature_Card_Interface_v1_0_v1_0">
 		</Description>
-		<CoreRevision value="3">
+		<CoreRevision value="4">
 		</CoreRevision>
 		<ComponentPath value="Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/component.xml">
 		</ComponentPath>

@@ -1,8 +1,9 @@
+#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES 10
+#if UZ_WAVEGEN_CHIRP_MAX_INSTANCES > 0
 #include "uz_wavegen.h"
 #include <math.h>
 #include "../uz_HAL.h"
 #include "../uz_SystemTime/uz_SystemTime.h"
-#define max_wavegen_chirp_instances 2
 
 struct uz_wavegen_chirp {
 	bool is_ready;
@@ -13,11 +14,11 @@ struct uz_wavegen_chirp {
 	struct uz_wavegen_chirp_config config;
 };
 static size_t counter_chirp = 0;
-static uz_wavegen instances_chirp[max_wavegen_chirp_instances] = { 0 };
+static uz_wavegen_chirp instances_chirp[UZ_WAVEGEN_CHIRP_MAX_INSTANCES] = { 0 };
 
-uz_wavegen* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config) {
-	uz_assert(counter_chirp < max_wavegen_chirp_instances);
-	uz_wavegen* self = &instances_chirp[counter_chirp];
+uz_wavegen_chirp* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config) {
+	uz_assert(counter_chirp < UZ_WAVEGEN_CHIRP_MAX_INSTANCES);
+	uz_wavegen_chirp* self = &instances_chirp[counter_chirp];
 	uz_assert(self->is_ready == false);
 	counter_chirp += 1;
 	self->is_ready = true;
@@ -33,7 +34,7 @@ uz_wavegen* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config) {
 	return (self);
 }
 
-void uz_wavegen_chirp_reset(uz_wavegen* self) {
+void uz_wavegen_chirp_reset(uz_wavegen_chirp* self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready == true);
 	self->read_system_time = true;
@@ -41,7 +42,7 @@ void uz_wavegen_chirp_reset(uz_wavegen* self) {
 	self->transition_angle = 0.0f;
 }
 
-float uz_wavegen_chirp(uz_wavegen* self) {
+float uz_wavegen_chirp_sample(uz_wavegen_chirp* self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	float remaining_delay_Sec = self->config.initial_delay_Sec - self->elapsed_time_since_start;
@@ -68,3 +69,4 @@ float uz_wavegen_chirp(uz_wavegen* self) {
 	return (chirp_output);
 
 }
+#endif

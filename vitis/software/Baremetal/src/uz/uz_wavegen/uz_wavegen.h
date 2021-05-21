@@ -1,19 +1,15 @@
 #pragma once
 #include <stdbool.h>
 
-typedef struct uz_wavegen_chirp uz_wavegen;
-
+typedef struct uz_wavegen_chirp uz_wavegen_chirp;
+typedef struct uz_wavegen_three_phase uz_wavegen_three_phase_sine;
 struct uz_wavegen_chirp_config {
 	float amplitude;
 	float start_frequency_Hz;
 	float end_frequency_Hz;
 	float duration_Sec;
 	float initial_delay_Sec;
-
 };
-
-typedef struct uz_wavegen_three_phase uz_wavegen_three_phase_sine;
-
 struct uz_wavegen_three_phase_config {
 	float amplitude;
 	float frequency_Hz;
@@ -33,9 +29,9 @@ float uz_wavegen_white_noise(float amplitude);
 
 
 // Wave generation with state
-uz_wavegen* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config);
-float uz_wavegen_chirp(uz_wavegen* self);
-void uz_wavegen_chirp_reset(uz_wavegen* self);
+uz_wavegen_chirp* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config);
+float uz_wavegen_chirp_sample(uz_wavegen_chirp* self);
+void uz_wavegen_chirp_reset(uz_wavegen_chirp* self);
 
 uz_wavegen_three_phase_sine* uz_wavegen_three_phase_init(struct uz_wavegen_three_phase_config config);
 void uz_wavegen_three_phase(uz_wavegen_three_phase_sine* self);

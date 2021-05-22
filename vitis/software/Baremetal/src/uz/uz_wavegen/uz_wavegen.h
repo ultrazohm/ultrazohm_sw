@@ -7,8 +7,8 @@ struct uz_wavegen_chirp_config {
 	float amplitude;
 	float start_frequency_Hz;
 	float end_frequency_Hz;
-	float duration_Sec;
-	float initial_delay_Sec;
+	float duration_sec;
+	float initial_delay_sec;
 };
 struct uz_wavegen_three_phase_config {
 	float amplitude;

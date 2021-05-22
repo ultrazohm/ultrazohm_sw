@@ -420,6 +420,22 @@ The \*highlighted\* words are the variable names, which can be freely chosen.
 
 The function ``uz_wavegen_chirp_reset()`` can be used, to reset the chirp. A subsequent call of ``uz_wavegen_chirp()`` will start the chirp function from t=0 again.
 
+Reference
+*********
+
+.. doxygentypedef:: uz_wavegen_chirp
+
+.. doxygenstruct:: uz_wavegen_chirp_config
+  :members:
+
+.. doxygenfunction:: uz_wavegen_chirp_init
+
+.. doxygenfunction:: uz_wavegen_chirp_sample
+
+.. doxygenfunction:: uz_wavegen_chirp_reset
+
+
+
 Three phase sine function
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 

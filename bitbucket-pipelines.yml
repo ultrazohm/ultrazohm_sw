@@ -40,7 +40,7 @@ pipelines:
         - ceedling test:all
     - step:
        name: Cppcheck
-       image: neszt/cppcheck-docker
+       image: facthunder/cppcheck
        script:
         - cppcheck vitis/software/Baremetal/src 
         - cppcheck --addon=cert vitis/software/Baremetal/src 

@@ -38,6 +38,11 @@ pipelines:
         - gem install ceedling
         - cd vitis/software/Baremetal
         - ceedling test:all
+    - step:
+       name: Cppcheck
+       image: neszt/cppcheck-docker
+       script:
+        - cppcheck vitis/software/Baremetal/src 
    branches:
      develop:
         - step:

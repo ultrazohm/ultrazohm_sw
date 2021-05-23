@@ -43,6 +43,8 @@ pipelines:
        image: neszt/cppcheck-docker
        script:
         - cppcheck vitis/software/Baremetal/src 
+        - cppcheck --addon=cert vitis/software/Baremetal/src 
+        - cppcheck --addon=misra vitis/software/Baremetal/src 
    branches:
      develop:
         - step:

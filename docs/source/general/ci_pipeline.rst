@@ -72,6 +72,26 @@ Bitbucket pipeline (GitHub-Mirror)
 * The account uses the Bitbucket pipeline SSH key (``ultrazohm_sw -> Repository settings --> SSH keys``, only visible to admins) to push to Github
 * Github.com is added to ``Known hosts`` in ``ultrazohm_sw -> Repository settings --> SSH keys``
 
+Static code check
+*****************
+
+We use the following static code analysers:
+
+- `Cppcheck <https://github.com/danmar/cppcheck>`_
+- Useful information:
+
+    - https://github.com/danmar/cppcheck/blob/2.4.1/man/manual.md
+    - http://cppcheck.sourceforge.net/
+    - https://github.com/ChisholmKyle/SublimeLinter-cppcheck-misra
+
+Usage in VS Code Remote Container:
+
+::
+
+    cppcheck vitis/software/Baremetal/src/
+    cppcheck --addon=misra vitis/software/Baremetal/src/
+    cppcheck --addon=cert vitis/software/Baremetal/src/
+
 
 Drone pipeline (Software)
 -------------------------

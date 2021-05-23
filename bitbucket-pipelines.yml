@@ -40,8 +40,8 @@ pipelines:
         - ceedling test:all
     - step:
        name: Cppcheck
+       image: midokura/cppcheck-static-2.1
        script:
-        - wget https://github.com/danmar/cppcheck/archive/refs/tags/2.4.1.tar.gz && tar -xvf 2.4.1.tar.gz && cd cppcheck-2.4.1 && make SRCDIR=build CFGDIR=/usr/bin/cfg HAVE_RULES=yes install FILESDIR=/etc/cppcheck
         - cppcheck vitis/software/Baremetal/src 
         - cppcheck --addon=cert vitis/software/Baremetal/src 
         - cppcheck --addon=misra vitis/software/Baremetal/src 

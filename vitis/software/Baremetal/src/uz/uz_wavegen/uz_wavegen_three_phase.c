@@ -13,11 +13,11 @@ struct uz_wavegen_three_phase {
 };
 
 static size_t counter_three_phase = 0;
-static uz_wavegen_three_phase_sine instances_three_phase[max_wavegen_three_phase_instances] = { 0 };
+static uz_wavegen_three_phase instances_three_phase[max_wavegen_three_phase_instances] = { 0 };
 
-uz_wavegen_three_phase_sine* uz_wavegen_three_phase_init(struct uz_wavegen_three_phase_config config) {
+uz_wavegen_three_phase* uz_wavegen_three_phase_init(struct uz_wavegen_three_phase_config config) {
 	uz_assert(counter_three_phase < max_wavegen_three_phase_instances);
-	uz_wavegen_three_phase_sine* self = &instances_three_phase[counter_three_phase];
+	uz_wavegen_three_phase* self = &instances_three_phase[counter_three_phase];
 	uz_assert(self->is_ready == false);
 	counter_three_phase += 1;
 	self->is_ready = true;
@@ -27,7 +27,7 @@ uz_wavegen_three_phase_sine* uz_wavegen_three_phase_init(struct uz_wavegen_three
 	return (self);
 }
 
-void uz_wavegen_three_phase(uz_wavegen_three_phase_sine* self) {
+void uz_wavegen_three_phase_sample(uz_wavegen_three_phase* self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	float t_Sec = uz_SystemTime_GetGlobalTimeInSec();
@@ -37,19 +37,19 @@ void uz_wavegen_three_phase(uz_wavegen_three_phase_sine* self) {
 	self->phase_W = self->config.amplitude * sinf(angle + 4.0f * M_PI / 3.0f) + self->config.offset;
 }
 
-float uz_wavegen_three_phase_get_phaseU(uz_wavegen_three_phase_sine* self) {
+float uz_wavegen_three_phase_get_phaseU(uz_wavegen_three_phase* self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	return (self->phase_U);
 }
 
-float uz_wavegen_three_phase_get_phaseV(uz_wavegen_three_phase_sine* self) {
+float uz_wavegen_three_phase_get_phaseV(uz_wavegen_three_phase* self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	return (self->phase_V);
 }
 
-float uz_wavegen_three_phase_get_phaseW(uz_wavegen_three_phase_sine* self) {
+float uz_wavegen_three_phase_get_phaseW(uz_wavegen_three_phase* self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	return (self->phase_W);

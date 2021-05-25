@@ -216,7 +216,7 @@ Initialize the config file in the ``main.c``:
 
 .. code-block:: c
 
-    uz_wavegen* *name*;
+    uz_wavegen_chirp* *name*;
     struct uz_wavegen_chirp_config *config* = {
     .amplitude= ...,
     .start_frequency_Hz = ...,
@@ -239,7 +239,7 @@ Function call. The first line is needed, if the function is called outside of ``
 
 .. code-block:: c
 
-    extern uz_wavegen* *name*; 
+    extern uz_wavegen_chirp* *name*; 
     float *output* = uz_wavegen_chirp_sample(*name*);
 
 The \*highlighted\* words are the variable names, which can be freely chosen. 
@@ -259,17 +259,11 @@ Three phase sine function
 
 Creates a continous sine wave with free phases. For the input arguments a struct is required. For further information check :ref:`References <wave_generator_reference_three_phase>`.
 
-In the same file, where ``uz_wavegen.h`` is included, one has to define the following statement, where **x** ist the maximum for how often ``uz_wavegen_three_phase_init`` will be called.
-
-.. code-block:: c
-
-    #define max_wavegen_three_phase_instances x
-
 Initialize the config file in the ``main.c``:
 
 .. code-block:: c
      
-    uz_wavegen_three_phase_sine* *name*;
+    uz_wavegen_three_phase* *name*;
     struct uz_wavegen_three_phase_config *config* = {
     .amplitude= ...,
     .frequency_Hz = ...,
@@ -290,10 +284,11 @@ Function call. The first line is needed, if the function is called outside of ``
      
 .. code-block:: c
      
-    extern uz_wavegen_three_phase_sine* *name*; 
-    uz_wavegen_three_phase(*name*);
+    extern uz_wavegen_three_phase* *name*; 
+    uz_wavegen_three_phase_sample(*name*);
 
-Access the three phases with the following.
+After the values for the three phases at the current system time have been calculated in ``uz_wavegen_three_phase_sample()``, 
+the value of each phase can be accessed with the following functions.
 
 .. code-block:: c
 

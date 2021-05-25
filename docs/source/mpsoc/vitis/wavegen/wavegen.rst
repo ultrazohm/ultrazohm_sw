@@ -19,21 +19,7 @@ Sine wave
   \draw [densely dotted] (0,0)  -- +(6,0);
   \draw plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{0.5*sin(deg(\x*pi))});
    
-Creates a continous sine wave. 
-
-.. list-table:: Required input arguments
-   :widths: 25 25 25
-   :header-rows: 1
-
-   * - argument
-     - value
-     - unit
-   * - amplitude
-     - +/- float
-     - 
-   * - frequency
-     - \+ float 
-     - Hz
+Creates a continous sine wave. For further information check the :ref:`References <wave_generator_reference_sine>`.
 
 Function call:
 
@@ -50,24 +36,7 @@ Sine wave with offset
   \draw [densely dotted] (0,0)  -- +(6,0);
   \draw plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{0.25+0.5*sin(deg(\x*pi))});
 
-Creates a continous sine wave with an adjustable offset. 
-
-.. list-table:: Required input arguments
-   :widths: 25 25 25
-   :header-rows: 1
-
-   * - argument
-     - value
-     - unit
-   * - amplitude
-     - +/- float
-     - 
-   * - frequency
-     - \+ float 
-     - Hz
-   * - offset
-     - +/- float
-     -
+Creates a continous sine wave with an adjustable offset. For further information check :ref:`References <wave_generator_reference_sine_offset>`. 
 
 Function call:
 
@@ -84,21 +53,7 @@ Sawtooth wave
   \draw [densely dotted] (0,0)  -- +(6,0);
   \draw (0,0) foreach \x in {1,2,3} {-- ++(2,1) -- ++(0,-1) };
 
-Creates a continous sawtooth wave.
-
-.. list-table:: Required input arguments
-   :widths: 25 25 25
-   :header-rows: 1
-
-   * - argument
-     - value
-     - unit
-   * - amplitude
-     - +/- float
-     - 
-   * - frequency
-     - \+ float 
-     - Hz
+Creates a continous sawtooth wave. For further information check :ref:`References <wave_generator_reference_sawtooth>`.
 
 Function call:
 
@@ -115,24 +70,7 @@ Sawtooth wave with offset
   \draw [densely dotted] (0,0.25)  -- +(6,0);
   \draw (0,0) foreach \x in {1,2,3} {-- ++(2,1) -- ++(0,-1) };
 
-Creates a continous sawtooth wave with an adjustable offset.
-
-.. list-table:: Required input arguments
-   :widths: 25 25 25
-   :header-rows: 1
-
-   * - argument
-     - value
-     - unit
-   * - amplitude
-     - +/- float
-     - 
-   * - frequency
-     - \+ float 
-     - Hz
-   * - offset
-     - +/- float
-     -
+Creates a continous sawtooth wave with an adjustable offset. For further information check :ref:`References <wave_generator_reference_sawtooth_offset>`.
 
 Function call:
 
@@ -141,7 +79,7 @@ Function call:
     ... = uz_wavegen_sawtooth_with_offset(amplitude, frequency_Hz, offset);
     
 Pulse wave
-^^^^^^^^^^^^^
+^^^^^^^^^^
 
 .. tikz:: pulse wave
   :align: left
@@ -149,24 +87,7 @@ Pulse wave
   \draw [densely dotted] (0,0)  -- +(6,0);
   \draw (0,0) foreach \x in {1,2,3} {-- ++(0,1) -- ++(1,0) -- ++(0,-1) -- ++(1,0)};
 
-Creates a continous pulse wave.
-
-.. list-table:: Required input arguments
-   :widths: 25 25 25
-   :header-rows: 1
-
-   * - argument
-     - value
-     - unit
-   * - amplitude
-     - +/- float
-     - 
-   * - frequency
-     - \+ float 
-     - Hz
-   * - DutyCycle
-     - float 0.0 -> 1.0
-     -
+Creates a continous pulse wave. For further information check :ref:`References <wave_generator_reference_pulse>`.
   
 Function call:
 
@@ -175,7 +96,7 @@ Function call:
     ... = uz_wavegen_pulse(amplitude, frequency_Hz, duty_cycle);
 
 Square wave
-^^^^^^^^^^^^^
+^^^^^^^^^^^
  
 .. tikz:: square wave
   :align: left
@@ -183,21 +104,7 @@ Square wave
   \draw [densely dotted] (0,0)  -- +(6,0);
   \draw (0,0) foreach \x in {1,2,3} {-- ++(0,1) -- ++(1,0) -- ++(0,-2) -- ++(1,0)-- ++(0,1)};
 
-Creates a continous square wave.
-
-.. list-table:: Required input arguments
-   :widths: 25 25 25
-   :header-rows: 1
-
-   * - argument
-     - value
-     - unit
-   * - amplitude
-     - +/- float
-     - 
-   * - frequency
-     - \+ float 
-     - Hz
+Creates a continous square wave. For further information check :ref:`References <wave_generator_reference_square>`.
 
 Function call:
 
@@ -214,21 +121,7 @@ Triangle wave
   \draw [densely dotted] (0,0)  -- +(6,0);
   \draw (0,0) foreach \x in {1,2,3} {-- ++(1,1) -- ++(1,-1) };
 
-Creates a continous triangle wave.
-
-.. list-table:: Required input arguments
-   :widths: 25 25 25
-   :header-rows: 1
-
-   * - argument
-     - value
-     - unit
-   * - amplitude
-     - +/- float
-     - 
-   * - frequency
-     - \+ float 
-     - Hz
+Creates a continous triangle wave. For further information check :ref:`References <wave_generator_reference_triangle>`.
 
 Function call:
 
@@ -245,24 +138,8 @@ Triangle wave with offset
   \draw [densely dotted] (0,0.25)  -- +(6,0);
   \draw (0,0) foreach \x in {1,2,3} {-- ++(1,1) -- ++(1,-1) };
 
-Creates a continous triangle wave with an adjustable offset.
+Creates a continous triangle wave with an adjustable offset. For further information check :ref:`References <wave_generator_reference_triangle_offset>`.
 
-.. list-table:: Required input arguments
-   :widths: 25 25 25
-   :header-rows: 1
-
-   * - argument
-     - value
-     - unit
-   * - amplitude
-     - +/- float
-     - 
-   * - frequency
-     - \+ float 
-     - Hz
-   * - offset
-     - +/- offset
-     - 
 
 Function call:
 
@@ -283,24 +160,7 @@ Saturation function
   \draw[->] (2.75,-0.3) -- (3.2,-0.3);
   \node[below,color=black,font=\footnotesize] at (2.2,0){input};
 
-Limits an input signal to the upper and lower saturation values, similar to how the saturation block in matlab functions. Doesn't generate a waveform by itself.
-
-.. list-table:: Required input arguments
-   :widths: 25 25 25
-   :header-rows: 1
-
-   * - argument
-     - value
-     - unit
-   * - input signal
-     - +/- float
-     - 
-   * - upper limit
-     - +/- float 
-     - 
-   * - lower limit
-     - +/- float 
-     -
+Limits an input signal to the upper and lower saturation values, similar to how the saturation block in matlab functions. Doesn't generate a waveform by itself. For further information check :ref:`References <wave_generator_reference_saturation>`.
 
 Function call:
 
@@ -317,18 +177,7 @@ White noise function
   \draw [densely dotted] (0,0)  -- +(6,0);
   \draw plot[domain=0:6,variable=\x,samples=200,smooth] (\x,{rand});
 
-Creates a continous white noise function. With the argument **amplitude** one can input the max value of the white noise wave.
-
-.. list-table:: Required input arguments
-   :widths: 25 25 25
-   :header-rows: 1
-
-   * - argument
-     - value
-     - unit
-   * - amplitude
-     - +/- float 
-     - 
+Creates a continous white noise function. With the argument **amplitude** one can input the max value of the white noise wave. For further information check :ref:`References <wave_generator_reference_white_noise>`.
  
 Function call:
 
@@ -355,30 +204,7 @@ Chirp function
   \node[font=\footnotesize] at (3.3,-2.5){duration};
 
 Creates a configurable chirp function. The parameters for configuration are the amplitude, the start and end frequency, the duration for the chirp and a delay for the start of the chirp wave.
-After the duration of the chirp wave, the function ``uz_wavegen_chirp()`` will return a continous sinus with the ``end_frequency_Hz``. For the input arguments a struct is required.
-
-.. list-table:: Required input arguments
-   :widths: 25 25 25
-   :header-rows: 1
-
-   * - argument
-     - value
-     - unit
-   * - amplitude
-     - +/- float 
-     - 
-   * - start_frequency_Hz
-     - \+ float 
-     - Hz
-   * - end_frequency_Hz
-     - \+ float 
-     - Hz
-   * - duration
-     - \+ float
-     - seconds
-   * - delay
-     - 0 -> \+ float
-     - seconds
+After the duration of the chirp wave, the function ``uz_wavegen_chirp_sample()`` will return a continous sine wave with the ``end_frequency_Hz``. For the input arguments a struct is required. For further information check :ref:`References <wave_generator_reference_chirp>`.
   
 In the same file, where ``uz_wavegen.h`` is included, one has to define the following statement, where **x** ist the maximum for how often ``uz_wavegen_chirp_init`` will be called.  
 
@@ -414,30 +240,14 @@ Function call. The first line is needed, if the function is called outside of ``
 .. code-block:: c
 
     extern uz_wavegen* *name*; 
-    float *output* = uz_wavegen_chirp(*name*);
+    float *output* = uz_wavegen_chirp_sample(*name*);
 
 The \*highlighted\* words are the variable names, which can be freely chosen. 
 
 The function ``uz_wavegen_chirp_reset()`` can be used, to reset the chirp. A subsequent call of ``uz_wavegen_chirp()`` will start the chirp function from t=0 again.
 
-Reference
-*********
-
-.. doxygentypedef:: uz_wavegen_chirp
-
-.. doxygenstruct:: uz_wavegen_chirp_config
-  :members:
-
-.. doxygenfunction:: uz_wavegen_chirp_init
-
-.. doxygenfunction:: uz_wavegen_chirp_sample
-
-.. doxygenfunction:: uz_wavegen_chirp_reset
-
-
-
 Three phase sine function
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. tikz:: three phase sine wave
   :align: left
@@ -447,24 +257,7 @@ Three phase sine function
   \draw[color=blue] plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{sin(120+deg(\x*pi))});
   \draw[color=orange] plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{sin(240+deg(\x*pi))});
 
-Creates a continous sine wave with free phases. For the input arguments a struct is required.
-
-.. list-table:: Required input arguments
-   :widths: 25 25 25
-   :header-rows: 1
-
-   * - argument
-     - value
-     - unit
-   * - amplitude
-     - +/- float
-     - 
-   * - frequency
-     - \+ float 
-     - Hz
-   * - offset
-     - +/- float
-     -
+Creates a continous sine wave with free phases. For the input arguments a struct is required. For further information check :ref:`References <wave_generator_reference_three_phase>`.
 
 In the same file, where ``uz_wavegen.h`` is included, one has to define the following statement, where **x** ist the maximum for how often ``uz_wavegen_three_phase_init`` will be called.
 
@@ -509,3 +302,124 @@ Access the three phases with the following.
     float *phaseW* = uz_wavegen_three_phase_get_phaseW(*name*);
 
 The \*highlighted\* words are the variable names, which can be freely chosen. 
+
+
+Reference
+*********
+
+.. _wave_generator_reference_sine:
+
+Sine wave
+^^^^^^^^^
+
+.. doxygenfunction:: uz_wavegen_sine
+
+
+.. _wave_generator_reference_sine_offset:
+
+Sine wave with offset
+^^^^^^^^^^^^^^^^^^^^^
+
+.. doxygenfunction:: uz_wavegen_sine_with_offset
+
+
+.. _wave_generator_reference_sawtooth:
+
+Sawtooth wave
+^^^^^^^^^^^^^
+
+.. doxygenfunction:: uz_wavegen_sawtooth
+
+
+.. _wave_generator_reference_sawtooth_offset:  
+
+Sawtooth wave with offset
+^^^^^^^^^^^^^^^^^^^^^^^^^
+  
+.. doxygenfunction:: uz_wavegen_sawtooth_with_offset
+
+
+.. _wave_generator_reference_pulse: 
+
+Pulse wave
+^^^^^^^^^^
+  
+.. doxygenfunction:: uz_wavegen_pulse
+
+
+.. _wave_generator_reference_square: 
+
+Square wave
+^^^^^^^^^^^
+  
+.. doxygenfunction:: uz_wavegen_square
+
+
+.. _wave_generator_reference_triangle: 
+
+Triangle wave
+^^^^^^^^^^^^^
+  
+.. doxygenfunction:: uz_wavegen_triangle
+
+
+.. _wave_generator_reference_triangle_offset: 
+
+Triangle wave with offset
+^^^^^^^^^^^^^^^^^^^^^^^^^
+  
+.. doxygenfunction:: uz_wavegen_triangle_with_offset
+
+
+.. _wave_generator_reference_saturation: 
+
+Saturation function
+^^^^^^^^^^^^^^^^^^^
+  
+.. doxygenfunction:: uz_wavegen_saturation
+
+
+.. _wave_generator_reference_white_noise: 
+
+White noise function
+^^^^^^^^^^^^^^^^^^^^
+  
+.. doxygenfunction:: uz_wavegen_white_noise
+
+
+.. _wave_generator_reference_chirp: 
+
+Chirp function
+^^^^^^^^^^^^^^
+
+.. doxygentypedef:: uz_wavegen_chirp
+
+.. doxygenstruct:: uz_wavegen_chirp_config
+  :members:
+
+.. doxygenfunction:: uz_wavegen_chirp_init
+
+.. doxygenfunction:: uz_wavegen_chirp_sample
+
+.. doxygenfunction:: uz_wavegen_chirp_reset
+
+
+.. _wave_generator_reference_three_phase:
+
+Three phase sine function
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. doxygentypedef:: uz_wavegen_three_phase
+
+.. doxygenstruct:: uz_wavegen_three_phase_config
+  :members:
+
+.. doxygenfunction:: uz_wavegen_three_phase_init
+
+.. doxygenfunction:: uz_wavegen_three_phase_sample
+
+.. doxygenfunction:: uz_wavegen_three_phase_get_phaseU
+
+.. doxygenfunction:: uz_wavegen_three_phase_get_phaseV
+
+.. doxygenfunction:: uz_wavegen_three_phase_get_phaseW

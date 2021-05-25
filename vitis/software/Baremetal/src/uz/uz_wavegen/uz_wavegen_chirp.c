@@ -58,10 +58,10 @@ float uz_wavegen_chirp_sample(uz_wavegen_chirp* self) {
 		chirp_output = 0.0f;
 	} else {
 		if (t_Sec <= self->config.duration_sec) {
-			self->transition_angle = 2.0 * M_PI * (chirp_rate / 2 * t_Sec * t_Sec + t_Sec * self->config.start_frequency_Hz);
+			self->transition_angle = 2.0 * M_PI * (((chirp_rate / 2) * t_Sec * t_Sec) + (t_Sec * self->config.start_frequency_Hz));
 			chirp_output = self->config.amplitude * sinf(self->transition_angle);
 		} else {
-			chirp_output = self->config.amplitude * sinf(self->transition_angle + 2.0 * M_PI * t_Sec * self->config.end_frequency_Hz);
+			chirp_output = self->config.amplitude * sinf(self->transition_angle + (2.0 * M_PI * t_Sec * self->config.end_frequency_Hz));
 		}
 	}
 	self->elapsed_time_since_start = system_time_sec - self->initial_global_time_sec;

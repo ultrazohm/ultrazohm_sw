@@ -67,7 +67,7 @@ float uz_wavegen_triangle(float amplitude, float frequency_Hz) {
 	float t_Sec = uz_SystemTime_GetGlobalTimeInSec();
 	float sample = fmodf(t_Sec, 1 / frequency_Hz);
 	if (sample > 1 / frequency_Hz * 0.5f) {
-		triangle_wave = 2.0f * amplitude - 2.0f * sample * amplitude * frequency_Hz;
+		triangle_wave = (2.0f * amplitude) - (2.0f * sample * amplitude * frequency_Hz);
 	} else {
 		triangle_wave = 2.0f * sample * amplitude * frequency_Hz;
 	}
@@ -81,7 +81,7 @@ float uz_wavegen_triangle_with_offset(float amplitude, float frequency_Hz, float
 	float t_Sec = uz_SystemTime_GetGlobalTimeInSec();
 	float sample = fmodf(t_Sec, 1 / frequency_Hz);
 	if (sample > 1 / frequency_Hz * 0.5f) {
-		triangle_wave = (2.0f * amplitude - 2.0f * sample * amplitude * frequency_Hz) + offset;
+		triangle_wave = ((2.0f * amplitude) - (2.0f * sample * amplitude * frequency_Hz)) + offset;
 	} else {
 		triangle_wave = (2.0f * sample * amplitude * frequency_Hz) + offset;
 	}

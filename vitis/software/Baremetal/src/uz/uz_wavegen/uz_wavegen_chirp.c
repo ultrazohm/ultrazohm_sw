@@ -1,10 +1,13 @@
-#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES 10
-#if UZ_WAVEGEN_CHIRP_MAX_INSTANCES > 0
 #include "uz_wavegen.h"
 #include <math.h>
 #include "../uz_HAL.h"
 #include "../uz_SystemTime/uz_SystemTime.h"
+#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES 2
 
+#ifdef TEST
+	#undef UZ_WAVEGEN_CHIRP_MAX_INSTANCES
+	#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES 13
+#endif
 struct uz_wavegen_chirp {
 	bool is_ready;
 	bool is_first_call_to_sample;
@@ -50,6 +53,7 @@ float uz_wavegen_chirp_sample(uz_wavegen_chirp* self) {
 		self->initial_global_time_sec = system_time_sec; // system_time_sec holds the current global time, thus we take this value as the inital time
 		self->is_first_call_to_sample = false;
 	}
+	self->elapsed_time_since_start = system_time_sec - self->initial_global_time_sec;
 	float remaining_delay_sec = self->config.initial_delay_sec - self->elapsed_time_since_start;
 	float t_Sec = self->elapsed_time_since_start - self->config.initial_delay_sec;
 	float chirp_rate = (self->config.end_frequency_Hz - self->config.start_frequency_Hz) / self->config.duration_sec;
@@ -64,8 +68,6 @@ float uz_wavegen_chirp_sample(uz_wavegen_chirp* self) {
 			chirp_output = self->config.amplitude * sinf(self->transition_angle + (2.0 * M_PI * t_Sec * self->config.end_frequency_Hz));
 		}
 	}
-	self->elapsed_time_since_start = system_time_sec - self->initial_global_time_sec;
 	return (chirp_output);
 
 }
-#endif

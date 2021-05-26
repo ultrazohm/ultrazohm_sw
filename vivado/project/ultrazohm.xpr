@@ -203,7 +203,6 @@
       </File>
       <File Path="$PPRDIR/../constraints/Digital_AdapterBoard_D4.xdc">
         <FileInfo>
-          <Attr Name="UserDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
@@ -254,6 +253,7 @@
       </File>
       <File Path="$PPRDIR/../constraints/Digital_D4_packed.xdc">
         <FileInfo>
+          <Attr Name="UserDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
@@ -302,7 +302,7 @@
       <File Path="$PSRCDIR/utils_1/imports/synth_1/zusys_wrapper.dcp">
         <FileInfo>
           <Attr Name="ImportPath" Val="$PRUNDIR/synth_1/zusys_wrapper.dcp"/>
-          <Attr Name="ImportTime" Val="1621603688"/>
+          <Attr Name="ImportTime" Val="1622013701"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedInSteps" Val="synth_1"/>

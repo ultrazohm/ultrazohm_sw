@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xA874F9EB9AB864B6",
+      "boundary_crc": "0x4E9D7A82AB84237F",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -102,7 +102,6 @@
       "uz_axi_testIP_0": "",
       "smartconnect_1": "",
       "Temperature_Card_Interface": {
-        "vio_TC": "",
         "ila_0": "",
         "Temperature_Card_Int_0": ""
       },
@@ -319,6 +318,54 @@
         "direction": "I"
       },
       "D1_OUT_30": {
+        "direction": "I"
+      },
+      "Dig_02_Ch4": {
+        "direction": "O"
+      },
+      "Dig_01_Ch4": {
+        "direction": "O"
+      },
+      "Dig_04_Ch4": {
+        "direction": "O"
+      },
+      "Dig_19_Ch4": {
+        "direction": "O"
+      },
+      "Dig_03_Ch4": {
+        "direction": "I"
+      },
+      "Dig_05_Ch4": {
+        "direction": "I"
+      },
+      "Dig_14_Ch4": {
+        "direction": "O"
+      },
+      "Dig_13_Ch4": {
+        "direction": "O"
+      },
+      "Dig_16_Ch4": {
+        "direction": "O"
+      },
+      "Dig_15_Ch4": {
+        "direction": "I"
+      },
+      "Dig_17_Ch4": {
+        "direction": "I"
+      },
+      "Dig_08_Ch4": {
+        "direction": "O"
+      },
+      "Dig_07_Ch4": {
+        "direction": "O"
+      },
+      "Dig_10_Ch4": {
+        "direction": "O"
+      },
+      "Dig_09_Ch4": {
+        "direction": "I"
+      },
+      "Dig_11_Ch4": {
         "direction": "I"
       }
     },
@@ -1335,16 +1382,16 @@
           }
         },
         "interface_nets": {
-          "Conn1": {
-            "interface_ports": [
-              "s00_axi1",
-              "ADC_Block_A/s00_axi"
-            ]
-          },
           "ps8_0_axi_periph_M00_AXI": {
             "interface_ports": [
               "s00_axi",
               "ADC_Block_B/s00_axi"
+            ]
+          },
+          "Conn1": {
+            "interface_ports": [
+              "s00_axi1",
+              "ADC_Block_A/s00_axi"
             ]
           }
         },
@@ -1910,16 +1957,16 @@
           }
         },
         "interface_nets": {
-          "Conn1": {
-            "interface_ports": [
-              "s00_axi1",
-              "ADC_Block_A/s00_axi"
-            ]
-          },
           "ps8_0_axi_periph_M00_AXI": {
             "interface_ports": [
               "s00_axi",
               "ADC_Block_B/s00_axi"
+            ]
+          },
+          "Conn1": {
+            "interface_ports": [
+              "s00_axi1",
+              "ADC_Block_A/s00_axi"
             ]
           }
         },
@@ -6758,21 +6805,57 @@
           "s00_axi_aresetn": {
             "type": "rst",
             "direction": "I"
+          },
+          "SPI_MOSI_1": {
+            "direction": "O"
+          },
+          "SPI_SCLK_1": {
+            "direction": "O"
+          },
+          "SPI_SS_1": {
+            "direction": "O"
+          },
+          "LTC_resetn_1": {
+            "direction": "O"
+          },
+          "SPI_MISO_1": {
+            "direction": "I"
+          },
+          "LTC_Interrupt_1": {
+            "direction": "I"
+          },
+          "SPI_MOSI_2": {
+            "direction": "O"
+          },
+          "SPI_SCLK_2": {
+            "direction": "O"
+          },
+          "SPI_SS_2": {
+            "direction": "O"
+          },
+          "SPI_MISO_2": {
+            "direction": "I"
+          },
+          "LTC_Interrupt_2": {
+            "direction": "I"
+          },
+          "SPI_MOSI_3": {
+            "direction": "O"
+          },
+          "SPI_SCLK_3": {
+            "direction": "O"
+          },
+          "SPI_SS_3": {
+            "direction": "O"
+          },
+          "SPI_MISO_3": {
+            "direction": "I"
+          },
+          "LTC_Interrupt_3": {
+            "direction": "I"
           }
         },
         "components": {
-          "vio_TC": {
-            "vlnv": "xilinx.com:ip:vio:3.0",
-            "xci_name": "zusys_vio_0_0",
-            "parameters": {
-              "C_NUM_PROBE_IN": {
-                "value": "0"
-              },
-              "C_NUM_PROBE_OUT": {
-                "value": "6"
-              }
-            }
-          },
           "ila_0": {
             "vlnv": "xilinx.com:ip:ila:6.2",
             "xci_name": "zusys_ila_0_3",
@@ -6790,7 +6873,7 @@
                 "value": "Native"
               },
               "C_NUM_OF_PROBES": {
-                "value": "21"
+                "value": "27"
               }
             }
           },
@@ -6813,46 +6896,9 @@
           }
         },
         "nets": {
-          "vio_0_probe_out0": {
-            "ports": [
-              "vio_TC/probe_out0",
-              "Temperature_Card_Int_0/SPI_MISO_1"
-            ]
-          },
-          "vio_0_probe_out1": {
-            "ports": [
-              "vio_TC/probe_out1",
-              "Temperature_Card_Int_0/LTC_Interrupt_1"
-            ]
-          },
-          "vio_0_probe_out2": {
-            "ports": [
-              "vio_TC/probe_out2",
-              "Temperature_Card_Int_0/SPI_MISO_2"
-            ]
-          },
-          "vio_0_probe_out3": {
-            "ports": [
-              "vio_TC/probe_out3",
-              "Temperature_Card_Int_0/LTC_Interrupt_2"
-            ]
-          },
-          "vio_0_probe_out4": {
-            "ports": [
-              "vio_TC/probe_out4",
-              "Temperature_Card_Int_0/SPI_MISO_3"
-            ]
-          },
-          "vio_0_probe_out5": {
-            "ports": [
-              "vio_TC/probe_out5",
-              "Temperature_Card_Int_0/LTC_Interrupt_3"
-            ]
-          },
           "zynq_ultra_ps_e_0_pl_clk1": {
             "ports": [
               "clk",
-              "vio_TC/clk",
               "ila_0/clk",
               "Temperature_Card_Int_0/s00_axi_aclk"
             ]
@@ -6863,94 +6909,24 @@
               "Temperature_Card_Int_0/s00_axi_aresetn"
             ]
           },
-          "Temperature_Card_Int_0_error_flag_3": {
-            "ports": [
-              "Temperature_Card_Int_0/error_flag_3",
-              "ila_0/probe20"
-            ]
-          },
-          "Temperature_Card_Int_0_ready_3": {
-            "ports": [
-              "Temperature_Card_Int_0/ready_3",
-              "ila_0/probe19"
-            ]
-          },
-          "Temperature_Card_Int_0_busy_3": {
-            "ports": [
-              "Temperature_Card_Int_0/busy_3",
-              "ila_0/probe18"
-            ]
-          },
-          "Temperature_Card_Int_0_LTC_resetn_3": {
-            "ports": [
-              "Temperature_Card_Int_0/LTC_resetn_3",
-              "ila_0/probe17"
-            ]
-          },
-          "Temperature_Card_Int_0_SPI_SS_3": {
-            "ports": [
-              "Temperature_Card_Int_0/SPI_SS_3",
-              "ila_0/probe16"
-            ]
-          },
-          "Temperature_Card_Int_0_SPI_SCLK_3": {
-            "ports": [
-              "Temperature_Card_Int_0/SPI_SCLK_3",
-              "ila_0/probe15"
-            ]
-          },
-          "Temperature_Card_Int_0_SPI_MOSI_3": {
-            "ports": [
-              "Temperature_Card_Int_0/SPI_MOSI_3",
-              "ila_0/probe14"
-            ]
-          },
-          "Temperature_Card_Int_0_error_flag_2": {
-            "ports": [
-              "Temperature_Card_Int_0/error_flag_2",
-              "ila_0/probe13"
-            ]
-          },
-          "Temperature_Card_Int_0_ready_2": {
-            "ports": [
-              "Temperature_Card_Int_0/ready_2",
-              "ila_0/probe12"
-            ]
-          },
-          "Temperature_Card_Int_0_busy_2": {
-            "ports": [
-              "Temperature_Card_Int_0/busy_2",
-              "ila_0/probe11"
-            ]
-          },
-          "Temperature_Card_Int_0_LTC_resetn_2": {
-            "ports": [
-              "Temperature_Card_Int_0/LTC_resetn_2",
-              "ila_0/probe10"
-            ]
-          },
-          "Temperature_Card_Int_0_SPI_SS_2": {
-            "ports": [
-              "Temperature_Card_Int_0/SPI_SS_2",
-              "ila_0/probe9"
-            ]
-          },
-          "Temperature_Card_Int_0_SPI_SCLK_2": {
-            "ports": [
-              "Temperature_Card_Int_0/SPI_SCLK_2",
-              "ila_0/probe8"
-            ]
-          },
-          "Temperature_Card_Int_0_SPI_MOSI_2": {
-            "ports": [
-              "Temperature_Card_Int_0/SPI_MOSI_2",
-              "ila_0/probe7"
-            ]
-          },
           "Temperature_Card_Int_0_error_flag_1": {
             "ports": [
               "Temperature_Card_Int_0/error_flag_1",
               "ila_0/probe6"
+            ]
+          },
+          "Temperature_Card_Int_0_SPI_SCLK_1": {
+            "ports": [
+              "Temperature_Card_Int_0/SPI_SCLK_1",
+              "ila_0/probe1",
+              "SPI_SCLK_1"
+            ]
+          },
+          "Temperature_Card_Int_0_SPI_MOSI_1": {
+            "ports": [
+              "Temperature_Card_Int_0/SPI_MOSI_1",
+              "ila_0/probe0",
+              "SPI_MOSI_1"
             ]
           },
           "Temperature_Card_Int_0_ready_1": {
@@ -6968,25 +6944,147 @@
           "Temperature_Card_Int_0_LTC_resetn_1": {
             "ports": [
               "Temperature_Card_Int_0/LTC_resetn_1",
-              "ila_0/probe3"
+              "ila_0/probe3",
+              "LTC_resetn_1"
             ]
           },
           "Temperature_Card_Int_0_SPI_SS_1": {
             "ports": [
               "Temperature_Card_Int_0/SPI_SS_1",
-              "ila_0/probe2"
+              "ila_0/probe2",
+              "SPI_SS_1"
             ]
           },
-          "Temperature_Card_Int_0_SPI_SCLK_1": {
+          "Net": {
             "ports": [
-              "Temperature_Card_Int_0/SPI_SCLK_1",
-              "ila_0/probe1"
+              "SPI_MISO_1",
+              "Temperature_Card_Int_0/SPI_MISO_1",
+              "ila_0/probe7"
             ]
           },
-          "Temperature_Card_Int_0_SPI_MOSI_1": {
+          "Net1": {
             "ports": [
-              "Temperature_Card_Int_0/SPI_MOSI_1",
-              "ila_0/probe0"
+              "LTC_Interrupt_1",
+              "Temperature_Card_Int_0/LTC_Interrupt_1",
+              "ila_0/probe8"
+            ]
+          },
+          "Temperature_Card_Int_0_SPI_MOSI_2": {
+            "ports": [
+              "Temperature_Card_Int_0/SPI_MOSI_2",
+              "ila_0/probe9",
+              "SPI_MOSI_2"
+            ]
+          },
+          "Temperature_Card_Int_0_SPI_SCLK_2": {
+            "ports": [
+              "Temperature_Card_Int_0/SPI_SCLK_2",
+              "ila_0/probe10",
+              "SPI_SCLK_2"
+            ]
+          },
+          "Temperature_Card_Int_0_SPI_SS_2": {
+            "ports": [
+              "Temperature_Card_Int_0/SPI_SS_2",
+              "ila_0/probe11",
+              "SPI_SS_2"
+            ]
+          },
+          "Temperature_Card_Int_0_busy_2": {
+            "ports": [
+              "Temperature_Card_Int_0/busy_2",
+              "ila_0/probe13"
+            ]
+          },
+          "Temperature_Card_Int_0_ready_2": {
+            "ports": [
+              "Temperature_Card_Int_0/ready_2",
+              "ila_0/probe14"
+            ]
+          },
+          "Temperature_Card_Int_0_error_flag_2": {
+            "ports": [
+              "Temperature_Card_Int_0/error_flag_2",
+              "ila_0/probe15"
+            ]
+          },
+          "Net2": {
+            "ports": [
+              "SPI_MISO_2",
+              "Temperature_Card_Int_0/SPI_MISO_2",
+              "ila_0/probe16"
+            ]
+          },
+          "Net3": {
+            "ports": [
+              "LTC_Interrupt_2",
+              "Temperature_Card_Int_0/LTC_Interrupt_2",
+              "ila_0/probe17"
+            ]
+          },
+          "Temperature_Card_Int_0_SPI_MOSI_3": {
+            "ports": [
+              "Temperature_Card_Int_0/SPI_MOSI_3",
+              "ila_0/probe18",
+              "SPI_MOSI_3"
+            ]
+          },
+          "Temperature_Card_Int_0_SPI_SCLK_3": {
+            "ports": [
+              "Temperature_Card_Int_0/SPI_SCLK_3",
+              "ila_0/probe19",
+              "SPI_SCLK_3"
+            ]
+          },
+          "Temperature_Card_Int_0_SPI_SS_3": {
+            "ports": [
+              "Temperature_Card_Int_0/SPI_SS_3",
+              "ila_0/probe20",
+              "SPI_SS_3"
+            ]
+          },
+          "Temperature_Card_Int_0_LTC_resetn_3": {
+            "ports": [
+              "Temperature_Card_Int_0/LTC_resetn_3",
+              "ila_0/probe21"
+            ]
+          },
+          "Temperature_Card_Int_0_busy_3": {
+            "ports": [
+              "Temperature_Card_Int_0/busy_3",
+              "ila_0/probe22"
+            ]
+          },
+          "Temperature_Card_Int_0_ready_3": {
+            "ports": [
+              "Temperature_Card_Int_0/ready_3",
+              "ila_0/probe23"
+            ]
+          },
+          "Temperature_Card_Int_0_error_flag_3": {
+            "ports": [
+              "Temperature_Card_Int_0/error_flag_3",
+              "ila_0/probe24"
+            ]
+          },
+          "Net4": {
+            "ports": [
+              "SPI_MISO_3",
+              "Temperature_Card_Int_0/SPI_MISO_3",
+              "ila_0/probe25"
+            ]
+          },
+          "Net5": {
+            "ports": [
+              "LTC_Interrupt_3",
+              "Temperature_Card_Int_0/LTC_Interrupt_3",
+              "ila_0/probe26"
+            ]
+          },
+          "Temperature_Card_Int_0_LTC_resetn_2": {
+            "ports": [
+              "Temperature_Card_Int_0/LTC_resetn_2",
+              "ila_0/probe12"
             ]
           }
         }
@@ -7527,6 +7625,12 @@
       }
     },
     "interface_nets": {
+      "s00_axi_1": {
+        "interface_ports": [
+          "ADC_A3/s00_axi",
+          "smartconnect_0/M00_AXI"
+        ]
+      },
       "smartconnect_1_M00_AXI": {
         "interface_ports": [
           "smartconnect_1/M00_AXI",
@@ -7545,10 +7649,10 @@
           "smartconnect_0/M15_AXI"
         ]
       },
-      "s00_axi_1": {
+      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
         "interface_ports": [
-          "ADC_A3/s00_axi",
-          "smartconnect_0/M00_AXI"
+          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD",
+          "smartconnect_0/S00_AXI"
         ]
       },
       "s00_axi1_2": {
@@ -7557,52 +7661,10 @@
           "smartconnect_0/M03_AXI"
         ]
       },
-      "AXI4_Lite_3": {
-        "interface_ports": [
-          "Gates/AXI4_Lite",
-          "smartconnect_0/M09_AXI"
-        ]
-      },
-      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
-        "interface_ports": [
-          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD",
-          "smartconnect_0/S00_AXI"
-        ]
-      },
-      "smartconnect_2_M00_AXI": {
-        "interface_ports": [
-          "smartconnect_2/M00_AXI",
-          "Temperature_Card_Interface/s00_axi"
-        ]
-      },
-      "AXI2TCM_0_M00_AXI": {
-        "interface_ports": [
-          "zynq_ultra_ps_e_0/S_AXI_LPD",
-          "DataMover/M00_AXI"
-        ]
-      },
-      "smartconnect_1_M01_AXI": {
-        "interface_ports": [
-          "smartconnect_1/M01_AXI",
-          "uz_axi_testIP_0/AXI4"
-        ]
-      },
       "s00_axi_4": {
         "interface_ports": [
           "ADC_A1/s00_axi",
           "smartconnect_0/M10_AXI"
-        ]
-      },
-      "S00_AXI_3": {
-        "interface_ports": [
-          "Gates/S00_AXI",
-          "smartconnect_0/M07_AXI"
-        ]
-      },
-      "s00_axi1_3": {
-        "interface_ports": [
-          "ADC_A1/s00_axi1",
-          "smartconnect_0/M11_AXI"
         ]
       },
       "S_AXI_1": {
@@ -7617,10 +7679,40 @@
           "smartconnect_0/M12_AXI"
         ]
       },
+      "AXI4_Lite_3": {
+        "interface_ports": [
+          "Gates/AXI4_Lite",
+          "smartconnect_0/M09_AXI"
+        ]
+      },
+      "AXI2TCM_0_M00_AXI": {
+        "interface_ports": [
+          "zynq_ultra_ps_e_0/S_AXI_LPD",
+          "DataMover/M00_AXI"
+        ]
+      },
+      "smartconnect_1_M01_AXI": {
+        "interface_ports": [
+          "smartconnect_1/M01_AXI",
+          "uz_axi_testIP_0/AXI4"
+        ]
+      },
+      "s00_axi_2": {
+        "interface_ports": [
+          "ADC_A2/s00_axi",
+          "smartconnect_0/M02_AXI"
+        ]
+      },
       "smartconnect_0_M14_AXI": {
         "interface_ports": [
           "timer_uptime_64bit/S_AXI",
           "smartconnect_0/M14_AXI"
+        ]
+      },
+      "smartconnect_2_M00_AXI": {
+        "interface_ports": [
+          "smartconnect_2/M00_AXI",
+          "Temperature_Card_Interface/s00_axi"
         ]
       },
       "AXI4_Lite_1": {
@@ -7647,16 +7739,22 @@
           "smartconnect_0/M01_AXI"
         ]
       },
-      "s00_axi_2": {
+      "S00_AXI_3": {
         "interface_ports": [
-          "ADC_A2/s00_axi",
-          "smartconnect_0/M02_AXI"
+          "Gates/S00_AXI",
+          "smartconnect_0/M07_AXI"
         ]
       },
       "AXI4_Lite_2": {
         "interface_ports": [
           "Interrupt/AXI4_Lite",
           "smartconnect_0/M06_AXI"
+        ]
+      },
+      "s00_axi1_3": {
+        "interface_ports": [
+          "ADC_A1/s00_axi1",
+          "smartconnect_0/M11_AXI"
         ]
       }
     },
@@ -8066,6 +8164,102 @@
         "ports": [
           "D1_OUT_30",
           "vio_0/probe_in4"
+        ]
+      },
+      "Temperature_Card_Interface_SPI_MOSI_1": {
+        "ports": [
+          "Temperature_Card_Interface/SPI_MOSI_1",
+          "Dig_02_Ch4"
+        ]
+      },
+      "Temperature_Card_Interface_SPI_SCLK_1": {
+        "ports": [
+          "Temperature_Card_Interface/SPI_SCLK_1",
+          "Dig_01_Ch4"
+        ]
+      },
+      "Temperature_Card_Interface_SPI_SS_1": {
+        "ports": [
+          "Temperature_Card_Interface/SPI_SS_1",
+          "Dig_04_Ch4"
+        ]
+      },
+      "Temperature_Card_Interface_LTC_resetn_1": {
+        "ports": [
+          "Temperature_Card_Interface/LTC_resetn_1",
+          "Dig_19_Ch4"
+        ]
+      },
+      "SPI_MISO_1_1": {
+        "ports": [
+          "Dig_03_Ch4",
+          "Temperature_Card_Interface/SPI_MISO_1"
+        ]
+      },
+      "LTC_Interrupt_1_1": {
+        "ports": [
+          "Dig_05_Ch4",
+          "Temperature_Card_Interface/LTC_Interrupt_1"
+        ]
+      },
+      "Temperature_Card_Interface_SPI_MOSI_2": {
+        "ports": [
+          "Temperature_Card_Interface/SPI_MOSI_2",
+          "Dig_14_Ch4"
+        ]
+      },
+      "Temperature_Card_Interface_SPI_SCLK_2": {
+        "ports": [
+          "Temperature_Card_Interface/SPI_SCLK_2",
+          "Dig_13_Ch4"
+        ]
+      },
+      "Temperature_Card_Interface_SPI_SS_2": {
+        "ports": [
+          "Temperature_Card_Interface/SPI_SS_2",
+          "Dig_16_Ch4"
+        ]
+      },
+      "SPI_MISO_2_1": {
+        "ports": [
+          "Dig_15_Ch4",
+          "Temperature_Card_Interface/SPI_MISO_2"
+        ]
+      },
+      "LTC_Interrupt_2_1": {
+        "ports": [
+          "Dig_17_Ch4",
+          "Temperature_Card_Interface/LTC_Interrupt_2"
+        ]
+      },
+      "Temperature_Card_Interface_SPI_MOSI_3": {
+        "ports": [
+          "Temperature_Card_Interface/SPI_MOSI_3",
+          "Dig_08_Ch4"
+        ]
+      },
+      "Temperature_Card_Interface_SPI_SCLK_3": {
+        "ports": [
+          "Temperature_Card_Interface/SPI_SCLK_3",
+          "Dig_07_Ch4"
+        ]
+      },
+      "Temperature_Card_Interface_SPI_SS_3": {
+        "ports": [
+          "Temperature_Card_Interface/SPI_SS_3",
+          "Dig_10_Ch4"
+        ]
+      },
+      "SPI_MISO_3_1": {
+        "ports": [
+          "Dig_09_Ch4",
+          "Temperature_Card_Interface/SPI_MISO_3"
+        ]
+      },
+      "LTC_Interrupt_3_1": {
+        "ports": [
+          "Dig_11_Ch4",
+          "Temperature_Card_Interface/LTC_Interrupt_3"
         ]
       }
     },

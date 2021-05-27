@@ -1,6 +1,18 @@
 %% initialization script for uz_FOC
 clc
 clear
+
+
+% Controlparameter
+d_f_c=100000;   %Hz UZ-ISR-frequency
+d_d_c=16000;                %kHz
+
+
+%Parameter
+U_ZK=24; %V
+d_y_max=1000;               %V
+d_y_min=-d_y_max;           %V
+
 % motor parameters - Bühler 201
 % Bühler Typ BLDC_1_25_058_201 %
 
@@ -18,12 +30,14 @@ d_p = 4;                            % Number of Polepairs
 d_J_m = 0.00001773;                 % [kgm^2]inertia
 d_psi_pm = 0.0082;                  % [V*s] Permanent-Flux 
 
-d_Tn_id=0.002375;                   % [s] reset time of of d-current control integrator
-d_Tn_iq=0.002375;                   % [s] reset time of of q-current control integrator
+d_tau_d = d_L_d/d_R_ph;
+d_tau_q = d_L_q/d_R_ph;
+d_Tn_id=d_tau_d;                   % [s] reset time of of d-current control integrator
+d_Tn_iq=d_tau_q;                   % [s] reset time of of q-current control integrator
 d_Tn_n=0.1;                         % [s] reset time of of speed control integrator
-d_Kp_id=0.386;                     % [V/A] d-current controller P-Gain
-d_Kp_iq=0.386;                     % [V/A] q-current controller P-Gain
-d_Kp_n=0.0864;                     % [As/rad] speed controller P-Gain
+d_Kp_id=d_L_d / (4*1/d_f_c);                     % [V/A] d-current controller P-Gain
+d_Kp_iq=d_L_q / (4*1/d_f_c);                     % [V/A] q-current controller P-Gain
+d_Kp_n=0.00864;                     % [As/rad] speed controller P-Gain
 d_Ki_id=d_Kp_id/d_Tn_id;
 d_Ki_iq=d_Kp_iq/d_Tn_iq;
 d_Ki_n=d_Kp_n/d_Tn_n;
@@ -82,23 +96,7 @@ d_J_Loadside =   d_J_Ms_L+d_J_Loadmachine + d_J_Coupling_Ms_L;                  
 d_c_TMS = d_c_Ms;                                                                                % [Nm/rad] Stiffness of two mass system
 d_d_TMS=0.005;   
 
-% Alternative calculation for damping
-%d_kd = 0.05;                           % Damping constant for steel
-%d_d_TMS = (2*d_kd*d_c_TMS)/sqrt(d_c_TMS*(d_J_Antriebseite+d_J_Lastseite)/(d_J_Antriebseite*d_J_Lastseite)); 
-
-
-
-
-Reset = 0;
 
 % Simulation für constante Drehzahl
 d_omega_mech=(2000/60)*2*pi;%2000rpm
 polePairs = 4;
-
-% Controlparameter
-f_c=100000;   %Hz UZ-ISR-frequency
-d_d_c=16000;                %kHz
-
-
-%Parameter
-U_ZK=24; %V

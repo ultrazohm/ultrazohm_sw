@@ -23,42 +23,42 @@ void tearDown(void)
 // write function tests
 void test_adcLtc2311_hw_write_cr(void)
 {
-    uint32_t value = 10;
+    uint32_t value = TEST_RETURN;
     uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_CR, value);
     uz_adcLtc2311_hw_write_cr(TEST_BASE_ADDRESS, value);
 }
 
 void test_adcLtc2311_hw_write_spi_cr(void)
 {
-    uint32_t value = 10;
+    uint32_t value = TEST_RETURN;
     uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_SPI_CR, value);
     uz_adcLtc2311_hw_write_spi_cr(TEST_BASE_ADDRESS, value);
 }
 
 void test_adcLtc2311_hw_write_spi_cfgr(void)
 {
-    uint32_t value = 10;
+    uint32_t value = TEST_RETURN;
     uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_SPI_CFGR, value);
     uz_adcLtc2311_hw_write_spi_cfgr(TEST_BASE_ADDRESS, value);
 }
 
 void test_adcLtc2311_hw_write_master_channel(void)
 {
-    uint32_t value = 10;
+    uint32_t value = TEST_RETURN;
     uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_MASTER_CHANNEL, value);
     uz_adcLtc2311_hw_write_master_channel(TEST_BASE_ADDRESS, value);
 }
 
 void test_adcLtc2311_hw_write_channel(void)
 {
-    uint32_t value = 10;
+    uint32_t value = TEST_RETURN;
     uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_CHANNEL, value);
     uz_adcLtc2311_hw_write_channel(TEST_BASE_ADDRESS, value);
 }
 
 void test_adcLtc2311_hw_write_conversion_value(void)
 {
-    int32_t value = -10;
+    int32_t value = -TEST_RETURN;
     uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_CONV_VALUE, value);
     uz_adcLtc2311_hw_write_conversion_value(TEST_BASE_ADDRESS, value);
 }
@@ -67,42 +67,42 @@ void test_adcLtc2311_hw_write_conversion_value(void)
 // zero base address tests
 void test_adcLtc2311_hw_write_cr_zero_base_address(void)
 {
-    uint32_t value = 10;
+    uint32_t value = TEST_RETURN;
     uz_axi_write_uint32_Ignore();
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_write_cr(0, value));
 }
 
 void test_adcLtc2311_hw_write_spi_cr_zero_base_address(void)
 {
-    uint32_t value = 10;
+    uint32_t value = TEST_RETURN;
     uz_axi_write_uint32_Ignore();
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_write_spi_cr(0, value));
 }
 
 void test_adcLtc2311_hw_write_spi_cfgr_zero_base_address(void)
 {
-    uint32_t value = 10;
+    uint32_t value = TEST_RETURN;
     uz_axi_write_uint32_Ignore();
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_write_spi_cfgr(0, value));
 }
 
 void test_adcLtc2311_hw_write_master_channel_zero_base_address(void)
 {
-    uint32_t value = 10;
+    uint32_t value = TEST_RETURN;
     uz_axi_write_uint32_Ignore();
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_write_master_channel(0, value));
 }
 
 void test_adcLtc2311_hw_write_channel_zero_base_address(void)
 {
-    uint32_t value = 10;
+    uint32_t value = TEST_RETURN;
     uz_axi_write_uint32_Ignore();
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_write_channel(0, value));
 }
 
 void test_adcLtc2311_hw_write_conversion_value_zero_base_address(void)
 {
-    uint32_t value = 10;
+    uint32_t value = TEST_RETURN;
     uz_axi_write_uint32_Ignore();
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_write_conversion_value(0, value));
 }

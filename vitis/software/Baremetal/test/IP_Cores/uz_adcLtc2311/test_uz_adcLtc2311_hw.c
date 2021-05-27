@@ -10,6 +10,7 @@
 // #defines
 
 #define TEST_BASE_ADDRESS 0x00000000F
+#define TEST_RETURN       0x0
 
 void setUp(void)
 {
@@ -110,111 +111,113 @@ void test_adcLtc2311_hw_write_conversion_value_zero_base_address(void)
 
 void test_adcLtc2311_hw_read_cr(void)
 {
-    uz_axi_read_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_CR);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + ADC_LTC2311_CR, TEST_RETURN);
     uz_adcLtc2311_hw_read_cr(TEST_BASE_ADDRESS);
 }
 
 void test_adcLtc2311_hw_read_spi_cr(void)
 {
-    uz_axi_read_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_SPI_CR);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + ADC_LTC2311_SPI_CR, TEST_RETURN);
     uz_adcLtc2311_hw_read_spi_cr(TEST_BASE_ADDRESS);
 }
 
 void test_adcLtc2311_hw_read_spi_cfgr(void)
 {
-    uz_axi_read_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_SPI_CFGR);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + ADC_LTC2311_SPI_CFGR, TEST_RETURN);
     uz_adcLtc2311_hw_read_spi_cfgr(TEST_BASE_ADDRESS);
 }
 
 void test_adcLtc2311_hw_read_master_channel(void)
 {
-    uz_axi_read_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_MASTER_CHANNEL);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + ADC_LTC2311_MASTER_CHANNEL, TEST_RETURN);
     uz_adcLtc2311_hw_read_master_channel(TEST_BASE_ADDRESS);
 }
 
 void test_adcLtc2311_hw_read_channel(void)
 {
-    uz_axi_read_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_CHANNEL);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + ADC_LTC2311_CHANNEL, TEST_RETURN);
     uz_adcLtc2311_hw_read_channel(TEST_BASE_ADDRESS);
 }
 
 void test_adcLtc2311_hw_read_master_finish(void)
 {
-    uz_axi_read_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_MASTER_CHANNEL);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + ADC_LTC2311_MASTER_FINISH, TEST_RETURN);
     uz_adcLtc2311_hw_read_master_finish(TEST_BASE_ADDRESS);
 }
 
 void test_adcLtc2311_hw_read_master_si_finish(void)
 {
-    uz_axi_read_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_MASTER_CHANNEL);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + ADC_LTC2311_MASTER_SI_FINISH, TEST_RETURN);
     uz_adcLtc2311_hw_read_master_si_finish(TEST_BASE_ADDRESS);
 }
 
 void test_adcLtc2311_hw_read_master_busy(void)
 {
-    uz_axi_read_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_MASTER_CHANNEL);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + ADC_LTC2311_MASTER_BUSY, TEST_RETURN);
     uz_adcLtc2311_hw_read_master_busy(TEST_BASE_ADDRESS);
 }
 
 void test_adcLtc2311_hw_read_conversion_value(void)
 {
-    uz_axi_read_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_CONV_VALUE);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + ADC_LTC2311_CONV_VALUE, TEST_RETURN);
     uz_adcLtc2311_hw_read_conversion_value(TEST_BASE_ADDRESS);
 }
 
 
 // zero base address tests
+
+
 void test_adcLtc2311_hw_read_cr_zero_base_address(void)
 {
-    uz_axi_read_uint32_Ignore();
+    uz_axi_read_uint32_IgnoreAndReturn(TEST_RETURN);
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_read_cr(0));
 }
 
 void test_adcLtc2311_hw_read_spi_cr_zero_base_address(void)
 {
-    uz_axi_read_uint32_Ignore();
+    uz_axi_read_uint32_IgnoreAndReturn(TEST_RETURN);
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_read_spi_cr(0));
 }
 
 void test_adcLtc2311_hw_read_spi_cfgr_zero_base_address(void)
 {
-    uz_axi_read_uint32_Ignore();
+    uz_axi_read_uint32_IgnoreAndReturn(TEST_RETURN);
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_read_spi_cfgr(0));
 }
 
 void test_adcLtc2311_hw_read_master_channel_zero_base_address(void)
 {
-    uz_axi_read_uint32_Ignore();
+    uz_axi_read_uint32_IgnoreAndReturn(TEST_RETURN);
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_read_master_channel(0));
 }
 
 void test_adcLtc2311_hw_read_channel_zero_base_address(void)
 {
-    uz_axi_read_uint32_Ignore();
+    uz_axi_read_uint32_IgnoreAndReturn(TEST_RETURN);
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_read_channel(0));
 }
 
 void test_adcLtc2311_hw_read_master_finish_zero_base_address(void)
 {
-    uz_axi_read_uint32_Ignore();
+    uz_axi_read_uint32_IgnoreAndReturn(TEST_RETURN);
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_read_master_finish(0));
 }
 
 void test_adcLtc2311_hw_read_master_si_finish_zero_base_address(void)
 {
-    uz_axi_read_uint32_Ignore();
+    uz_axi_read_uint32_IgnoreAndReturn(TEST_RETURN);
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_read_master_si_finish(0));
 }
 
 void test_adcLtc2311_hw_read_master_busy_zero_base_address(void)
 {
-    uz_axi_read_uint32_Ignore();
+    uz_axi_read_uint32_IgnoreAndReturn(TEST_RETURN);
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_read_master_busy(0));
 }
 
 void test_adcLtc2311_hw_read_conversion_value_zero_base_address(void)
 {
-    uz_axi_read_uint32_Ignore();
+    uz_axi_read_uint32_IgnoreAndReturn(TEST_RETURN);
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_read_conversion_value(0));
 }
 

@@ -179,37 +179,37 @@ Multiple source files with common header
 ----------------------------------------
 If u want to test a function, which has multiple c-files and one common header file, i.e.
 
-* file1.h
+* main.h
 
   .. code-block:: c
 
       //Declare stuff here
 
-* file1.c
+* main.c
   
   .. code-block:: c
 
-      #include file1.h
+      #include main.h
       //Do something here
 
-* file2.c
+* file.c
 
   .. code-block:: c
 
-      #include file1.h
+      #include main.h
       //Do something here
 
-After including the ``file1.h`` file in the ``test_file1.c`` file ceedling will produce an 
-error. This happens, because ceedling will only look for the corresponding ``file1.c`` to 
-the included ``file1.h`` file. ``file2.c`` will therefore be ignored during the linking stage. 
+After including the ``main.h`` file in the ``test_main.c`` file ceedling will produce an 
+error if you try to access functions from ``file.c``. This happens, because ceedling will only look for the corresponding ``main.c`` to 
+the included ``main.h`` file. ``file.c`` will therefore be ignored during the linking stage. 
 
-To fix this, you have to include the following **macro** at the top of your ``test_file1.c`` file.
+To fix this, you have to include the following **macro** at the top of your ``test_main.c`` file.
 
 .. code-block:: c
 
-    TEST_FILE("file2.c")
+    TEST_FILE("file.c")
 
-You can include this way as many ``c-files`` as needed.
+This way you can include as many ``c-files`` as needed.
     
 Sources
 =======

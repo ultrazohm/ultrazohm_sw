@@ -49,12 +49,14 @@ float uz_wavegen_pulse(float amplitude, float frequency_Hz, float duty_cycle) {
 	return (amplitude);
 }
 
-float uz_wavegen_square(float amplitude, float frequency_Hz) {
+float uz_wavegen_square(float amplitude, float frequency_Hz, float duty_cycle) {
 	uz_assert(frequency_Hz > 0.0f);
+	uz_assert(duty_cycle >= 0.0f);
+	uz_assert(duty_cycle <= 1.0f);
 	uz_assert(amplitude != 0.0f);
 	float t_Sec = uz_SystemTime_GetGlobalTimeInSec();
 	float sample = fmodf(t_Sec, 1 / frequency_Hz);
-	if (sample > 1 / frequency_Hz * 0.5f) {
+	if (sample > 1 / frequency_Hz * duty_cycle) {
 		amplitude = amplitude * -1.0f;
 	}
 	return (amplitude);

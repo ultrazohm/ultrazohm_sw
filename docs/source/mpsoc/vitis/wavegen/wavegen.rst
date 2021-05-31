@@ -6,7 +6,7 @@ Waveform Generator
 
 The ``uz_wavegen`` functions can be used to create standard waveform, which, for example, can be displayed in the :ref:`JavaScope`.
 Wherever the functions are called, ``uz_wavegen.h`` has to be included. Each function is designed to output a sample that matches the 
-current system time when the function is called.
+current system time when the function is called. For a deterministic signal the functions must be called continuously.
 
 Available waveforms
 *******************
@@ -24,7 +24,7 @@ Sine wave
   \draw[|->](0,-1.5)--(2,-1.5);
   \node[font=\footnotesize] at (1,-2){frequency};
    
-Creates a continous sine wave. For further information check the :ref:`References <wave_generator_reference_sine>`.
+Outputs one sample of a sine wave for each function call. For further information check the :ref:`References <wave_generator_reference_sine>`.
 
 Function call:
 
@@ -47,7 +47,7 @@ Sine wave with offset
   \draw[|->](0,-1.5)--(2,-1.5);
   \node[font=\footnotesize] at (1,-2){frequency};
 
-Creates a continous sine wave with an adjustable offset. For further information check :ref:`References <wave_generator_reference_sine_offset>`. 
+Outputs one sample of a sine wave with an adjustable offset for each function call. For further information check :ref:`References <wave_generator_reference_sine_offset>`. 
 
 Function call:
 
@@ -68,7 +68,7 @@ Sawtooth wave
   \draw[|->](0,-0.5)--(2,-0.5);
   \node[font=\footnotesize] at (1,-1){frequency};
 
-Creates a continous sawtooth wave. For further information check :ref:`References <wave_generator_reference_sawtooth>`.
+Outputs one sample of a sawtooth wave for each function call. For further information check :ref:`References <wave_generator_reference_sawtooth>`.
 
 Function call:
 
@@ -91,7 +91,7 @@ Sawtooth wave with offset
   \draw[|->](0,-1)--(2,-1);
   \node[font=\footnotesize] at (1,-1.5){frequency};
 
-Creates a continous sawtooth wave with an adjustable offset. For further information check :ref:`References <wave_generator_reference_sawtooth_offset>`.
+Outputs one sample of a sawtooth wave with an adjustable offset for each function call. For further information check :ref:`References <wave_generator_reference_sawtooth_offset>`.
 
 Function call:
 
@@ -114,7 +114,7 @@ Pulse wave
   \draw[|->](0,-0.5)--(2,-0.5);
   \node[font=\footnotesize] at (1,-1){frequency};
 
-Creates a continous pulse wave. For further information check :ref:`References <wave_generator_reference_pulse>`.
+Outputs one sample of a pulse wave for each function call. For further information check :ref:`References <wave_generator_reference_pulse>`.
   
 Function call:
 
@@ -134,14 +134,16 @@ Square wave
   \node[font=\footnotesize] at (-1.3,0.5){amplitude};
   \draw[|->](0,-1.5)--(2,-1.5);
   \node[font=\footnotesize] at (1,-2){frequency};
+  \draw[|-|](0,1.5)--(1,1.5);
+  \node[font=\footnotesize] at (0.5,2){Duty Cycle};
 
-Creates a continous square wave. For further information check :ref:`References <wave_generator_reference_square>`.
+Outputs one sample of a square wave for each function call. For further information check :ref:`References <wave_generator_reference_square>`.
 
 Function call:
 
 .. code-block:: c
 
-    ... = uz_wavegen_square(amplitude, frequency_Hz);
+    ... = uz_wavegen_square(amplitude, frequency_Hz, duty_cycle);
 
 Triangle wave
 ^^^^^^^^^^^^^
@@ -156,7 +158,7 @@ Triangle wave
   \draw[|->](0,-0.5)--(2,-0.5);
   \node[font=\footnotesize] at (1,-1){frequency};
 
-Creates a continous triangle wave. For further information check :ref:`References <wave_generator_reference_triangle>`.
+Outputs one sample of a triangle wave for each function call. For further information check :ref:`References <wave_generator_reference_triangle>`.
 
 Function call:
 
@@ -179,7 +181,7 @@ Triangle wave with offset
   \draw[|-|](-0.5,-0.5)--(-0.5,0);
   \node[font=\footnotesize] at (-1.1,-0.25){offset};
 
-Creates a continous triangle wave with an adjustable offset. For further information check :ref:`References <wave_generator_reference_triangle_offset>`.
+Outputs one sample of a triangle wave with an adjustable offset for each function call. For further information check :ref:`References <wave_generator_reference_triangle_offset>`.
 
 
 Function call:
@@ -224,7 +226,7 @@ White noise function
   \draw[|-|](-0.25,0)--(-0.25,1);
   \node[font=\footnotesize] at (-1.1,0.5){amplitude};
 
-Creates a continous white noise function. With the argument **amplitude** one can input the max value of the white noise wave. For further information check :ref:`References <wave_generator_reference_white_noise>`.
+Outputs one sample of a white noise function for each function call. With the argument **amplitude** one can input the max value of the white noise wave. For further information check :ref:`References <wave_generator_reference_white_noise>`.
  
 Function call:
 
@@ -252,8 +254,8 @@ Chirp function
   \draw[|-|](-0.25,0)--(-0.25,1);
   \node[font=\footnotesize] at (-1.1,0.5){amplitude};
 
-Creates a configurable chirp function. The parameters for configuration are the amplitude, the start and end frequency, the duration for the chirp and a delay for the start of the chirp wave.
-After the duration of the chirp wave, the function ``uz_wavegen_chirp_sample()`` will return a continous sine wave with the ``end_frequency_Hz``. For the input arguments a struct is required. For further information check :ref:`References <wave_generator_reference_chirp>`.
+Outputs one sample of a configurable chirp for each function call. The parameters for configuration are the amplitude, the start and end frequency, the duration for the chirp and a delay for the start of the chirp wave.
+After the duration of the chirp wave, the function ``uz_wavegen_chirp_sample()`` will return a normal sine wave with the ``end_frequency_Hz``. For the input arguments a struct is required. For further information check :ref:`References <wave_generator_reference_chirp>`.
   
 The following define has to be set to the maximum of required instances, aka **x** ist the maximum for how often ``uz_wavegen_chirp_init`` will be called.  
 
@@ -312,7 +314,7 @@ Three phase sine function
   \draw[|-|](-0.5,-0.5)--(-0.5,0);
   \node[font=\footnotesize] at (-1.1,-0.25){offset};
 
-Creates a continous sine wave with free phases. For the input arguments a struct is required. For further information check :ref:`References <wave_generator_reference_three_phase>`.
+Outputs one sample of a sine wave with free phases for each function call. For the input arguments a struct is required. For further information check :ref:`References <wave_generator_reference_three_phase>`.
 
 The following define has to be set to the maximum of required instances, aka **x** ist the maximum for how often ``uz_wavegen_three_phase_init`` will be called.  
 

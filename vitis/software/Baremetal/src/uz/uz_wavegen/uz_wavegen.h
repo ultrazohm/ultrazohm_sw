@@ -74,7 +74,7 @@ float uz_wavegen_sawtooth_with_offset(float amplitude, float frequency_Hz, float
  * 
  * @param amplitude float Amplitude for the pulse wave
  * @param frequency_Hz float Frequency for the pulse wave in Hz. Only positive values are permitted
- * @param duty_cycle float Duty Cycle for the pulse wave. Only values 0.0 <= DutyCycle <= 1.0 is permitted
+ * @param duty_cycle float Duty Cycle for the pulse wave. Only values 0.0 <= DutyCycle <= 1.0 are permitted
  * @return float Returns one sample for current system time
  */
 float uz_wavegen_pulse(float amplitude, float frequency_Hz, float duty_cycle);
@@ -84,9 +84,10 @@ float uz_wavegen_pulse(float amplitude, float frequency_Hz, float duty_cycle);
  * 
  * @param amplitude float Amplitude for the square wave
  * @param frequency_Hz float Frequency for the square wave in Hz. Only positive values are permitted
+ * @param duty_cycle float Duty Cycle for the square wave. Only values 0.0 <= DutyCycle <= 1.0 is permitted
  * @return float Returns one sample for current system time
  */
-float uz_wavegen_square(float amplitude, float frequency_Hz);
+float uz_wavegen_square(float amplitude, float frequency_Hz, float duty_cycle);
 
 /**
  * @brief Returns one sample of a triangle wave

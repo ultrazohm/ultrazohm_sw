@@ -121,18 +121,26 @@ void test_uz_wavegen_pulse_output(void){
 }
 
 void test_uz_wavegen_square_negative_input_frequency(void){
-    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_square(1,-10));
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_square(1,-10,0.5));
 }
 
+void test_uz_wavegen_square_negative_DutyCycle(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_square(1,10,-0.5));
+}
+
+void test_uz_wavegen_square_too_high_DutyCycle(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_square(1,10,2.0));
+}
 void test_uz_wavegen_square_zero_input_frequency(void){
-    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_square(1,0));
+    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_square(1,0,0.5));
 }
 
 void test_uz_wavegen_square_output(void){
     float amplitude = 6.0f;
     float frequency_Hz = 20.0f;
+    float duty_cycle = 0.5f;
     uz_SystemTime_GetGlobalTimeInSec_ExpectAndReturn(0.02);
-    float output = uz_wavegen_square(amplitude, frequency_Hz);
+    float output = uz_wavegen_square(amplitude, frequency_Hz, duty_cycle);
     TEST_ASSERT_EQUAL_FLOAT(amplitude, output); 
 }
 

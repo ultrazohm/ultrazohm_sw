@@ -5,7 +5,8 @@ Waveform Generator
 ==================
 
 The ``uz_wavegen`` functions can be used to create standard waveform, which, for example, can be displayed in the :ref:`JavaScope`.
-Wherever the functions are called, ``uz_wavegen.h`` has to be included. 
+Wherever the functions are called, ``uz_wavegen.h`` has to be included. Each function is designed to output a sample that matches the 
+current system time when the function is called.
 
 Available waveforms
 *******************
@@ -17,7 +18,11 @@ Sine wave
   :align: left
 
   \draw [densely dotted] (0,0)  -- +(6,0);
-  \draw plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{0.5*sin(deg(\x*pi))});
+  \draw plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{sin(deg(\x*pi))});
+  \draw[|-|](-0.25,0)--(-0.25,1);
+  \node[font=\footnotesize] at (-1.1,0.5){amplitude};
+  \draw[|->](0,-1.5)--(2,-1.5);
+  \node[font=\footnotesize] at (1,-2){frequency};
    
 Creates a continous sine wave. For further information check the :ref:`References <wave_generator_reference_sine>`.
 
@@ -33,8 +38,14 @@ Sine wave with offset
 .. tikz:: sine wave with offset
   :align: left
 
-  \draw [densely dotted] (0,0)  -- +(6,0);
-  \draw plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{0.25+0.5*sin(deg(\x*pi))});
+  \draw [densely dotted] (0,-0.5)  -- +(6,0);
+  \draw plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{sin(deg(\x*pi))});
+  \draw[|-|](-0.25,0)--(-0.25,1);
+  \node[font=\footnotesize] at (-1.1,0.5){amplitude};
+  \draw[|-|](-0.5,-0.5)--(-0.5,0);
+  \node[font=\footnotesize] at (-1.1,-0.25){offset};
+  \draw[|->](0,-1.5)--(2,-1.5);
+  \node[font=\footnotesize] at (1,-2){frequency};
 
 Creates a continous sine wave with an adjustable offset. For further information check :ref:`References <wave_generator_reference_sine_offset>`. 
 
@@ -52,6 +63,10 @@ Sawtooth wave
 
   \draw [densely dotted] (0,0)  -- +(6,0);
   \draw (0,0) foreach \x in {1,2,3} {-- ++(2,1) -- ++(0,-1) };
+  \draw[|-|](-0.25,0)--(-0.25,1);
+  \node[font=\footnotesize] at (-1.1,0.5){amplitude};
+  \draw[|->](0,-0.5)--(2,-0.5);
+  \node[font=\footnotesize] at (1,-1){frequency};
 
 Creates a continous sawtooth wave. For further information check :ref:`References <wave_generator_reference_sawtooth>`.
 
@@ -67,8 +82,14 @@ Sawtooth wave with offset
 .. tikz:: sawtooth wave with offset
   :align: left
 
-  \draw [densely dotted] (0,0.25)  -- +(6,0);
+  \draw [densely dotted] (0,-0.5)  -- +(6,0);
   \draw (0,0) foreach \x in {1,2,3} {-- ++(2,1) -- ++(0,-1) };
+  \draw[|-|](-0.25,0)--(-0.25,1);
+  \node[font=\footnotesize] at (-1.1,0.5){amplitude};
+  \draw[|-|](-0.5,-0.5)--(-0.5,0);
+  \node[font=\footnotesize] at (-1.1,-0.25){offset};
+  \draw[|->](0,-1)--(2,-1);
+  \node[font=\footnotesize] at (1,-1.5){frequency};
 
 Creates a continous sawtooth wave with an adjustable offset. For further information check :ref:`References <wave_generator_reference_sawtooth_offset>`.
 
@@ -86,6 +107,12 @@ Pulse wave
 
   \draw [densely dotted] (0,0)  -- +(6,0);
   \draw (0,0) foreach \x in {1,2,3} {-- ++(0,1) -- ++(1,0) -- ++(0,-1) -- ++(1,0)};
+  \draw[|-|](-0.5,0)--(-0.5,1);
+  \node[font=\footnotesize] at (-1.3,0.5){amplitude};
+  \draw[|-|](0,1.5)--(1,1.5);
+  \node[font=\footnotesize] at (0.5,2){Duty Cycle};
+  \draw[|->](0,-0.5)--(2,-0.5);
+  \node[font=\footnotesize] at (1,-1){frequency};
 
 Creates a continous pulse wave. For further information check :ref:`References <wave_generator_reference_pulse>`.
   
@@ -103,6 +130,10 @@ Square wave
 
   \draw [densely dotted] (0,0)  -- +(6,0);
   \draw (0,0) foreach \x in {1,2,3} {-- ++(0,1) -- ++(1,0) -- ++(0,-2) -- ++(1,0)-- ++(0,1)};
+  \draw[|-|](-0.5,0)--(-0.5,1);
+  \node[font=\footnotesize] at (-1.3,0.5){amplitude};
+  \draw[|->](0,-1.5)--(2,-1.5);
+  \node[font=\footnotesize] at (1,-2){frequency};
 
 Creates a continous square wave. For further information check :ref:`References <wave_generator_reference_square>`.
 
@@ -120,6 +151,10 @@ Triangle wave
 
   \draw [densely dotted] (0,0)  -- +(6,0);
   \draw (0,0) foreach \x in {1,2,3} {-- ++(1,1) -- ++(1,-1) };
+  \draw[|-|](-0.25,0)--(-0.25,1);
+  \node[font=\footnotesize] at (-1.1,0.5){amplitude};
+  \draw[|->](0,-0.5)--(2,-0.5);
+  \node[font=\footnotesize] at (1,-1){frequency};
 
 Creates a continous triangle wave. For further information check :ref:`References <wave_generator_reference_triangle>`.
 
@@ -135,8 +170,14 @@ Triangle wave with offset
 .. tikz:: triangle wave with offset
   :align: left
 
-  \draw [densely dotted] (0,0.25)  -- +(6,0);
+  \draw [densely dotted] (0,-0.5)  -- +(6,0);
   \draw (0,0) foreach \x in {1,2,3} {-- ++(1,1) -- ++(1,-1) };
+  \draw[|-|](-0.25,0)--(-0.25,1);
+  \node[font=\footnotesize] at (-1.1,0.5){amplitude};
+  \draw[|->](0,-1)--(2,-1);
+  \node[font=\footnotesize] at (1,-1.5){frequency};
+  \draw[|-|](-0.5,-0.5)--(-0.5,0);
+  \node[font=\footnotesize] at (-1.1,-0.25){offset};
 
 Creates a continous triangle wave with an adjustable offset. For further information check :ref:`References <wave_generator_reference_triangle_offset>`.
 
@@ -156,9 +197,13 @@ Saturation function
   \draw [densely dotted] (0,0)  -- +(6,0);
   \draw (0,0) foreach \x in {1,2,3} {-- ++(1,1) -- ++(1,-1) };
   \draw[color=blue] (0,0.25) foreach \x in {1,2,3} {-- ++(0.25,0) -- ++(0.5,0.5) -- ++(0.5,0) -- ++(0.5,-0.5)-- ++(0.25,0) };
-  \node[below,color=blue,font=\footnotesize] at (3.8,0){output};
-  \draw[->] (2.75,-0.3) -- (3.2,-0.3);
+  \node[below,color=blue,font=\footnotesize] at (3.75,0){output};
+  \draw[->] (2.75,-0.5) -- (3.2,-0.5);
   \node[below,color=black,font=\footnotesize] at (2.2,0){input};
+  \draw[<-] (6.25,0.25) -- (6.75,0.25);
+  \node[below,color=black,font=\footnotesize] at (7.5,0.75){lower limit};
+  \draw[<-] (5.5,0.75) -- (6.75,0.75);
+  \node[below,color=black,font=\footnotesize] at (7.5,1.25){upper limit};
 
 Limits an input signal to the upper and lower saturation values, similar to how the saturation block in matlab functions. Doesn't generate a waveform by itself. For further information check :ref:`References <wave_generator_reference_saturation>`.
 
@@ -176,6 +221,8 @@ White noise function
 
   \draw [densely dotted] (0,0)  -- +(6,0);
   \draw plot[domain=0:6,variable=\x,samples=200,smooth] (\x,{rand});
+  \draw[|-|](-0.25,0)--(-0.25,1);
+  \node[font=\footnotesize] at (-1.1,0.5){amplitude};
 
 Creates a continous white noise function. With the argument **amplitude** one can input the max value of the white noise wave. For further information check :ref:`References <wave_generator_reference_white_noise>`.
  
@@ -202,15 +249,17 @@ Chirp function
   \node[font=\footnotesize] at (5.1,2){end frequency};
   \draw[|-|](1,-2)--(5.75,-2);
   \node[font=\footnotesize] at (3.3,-2.5){duration};
+  \draw[|-|](-0.25,0)--(-0.25,1);
+  \node[font=\footnotesize] at (-1.1,0.5){amplitude};
 
 Creates a configurable chirp function. The parameters for configuration are the amplitude, the start and end frequency, the duration for the chirp and a delay for the start of the chirp wave.
 After the duration of the chirp wave, the function ``uz_wavegen_chirp_sample()`` will return a continous sine wave with the ``end_frequency_Hz``. For the input arguments a struct is required. For further information check :ref:`References <wave_generator_reference_chirp>`.
   
-In the same file, where ``uz_wavegen.h`` is included, one has to define the following statement, where **x** ist the maximum for how often ``uz_wavegen_chirp_init`` will be called.  
+The following define has to be set to the maximum of required instances, aka **x** ist the maximum for how often ``uz_wavegen_chirp_init`` will be called.  
 
 .. code-block:: c
 
-    #define max_wavegen_chirp_instances x
+    #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES x
 
 Initialize the config file in the ``main.c``:
 
@@ -252,12 +301,24 @@ Three phase sine function
 .. tikz:: three phase sine wave
   :align: left
 
-  \draw [densely dotted] (0,0)  -- +(6,0);
+  \draw [densely dotted] (0,-0.5)  -- +(6,0);
   \draw plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{sin(deg(\x*pi))});
   \draw[color=blue] plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{sin(120+deg(\x*pi))});
   \draw[color=orange] plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{sin(240+deg(\x*pi))});
+  \draw[|-|](-0.25,0)--(-0.25,1);
+  \node[font=\footnotesize] at (-1.1,0.5){amplitude};
+  \draw[|->](0,-1.5)--(2,-1.5);
+  \node[font=\footnotesize] at (1,-2){frequency};
+  \draw[|-|](-0.5,-0.5)--(-0.5,0);
+  \node[font=\footnotesize] at (-1.1,-0.25){offset};
 
 Creates a continous sine wave with free phases. For the input arguments a struct is required. For further information check :ref:`References <wave_generator_reference_three_phase>`.
+
+The following define has to be set to the maximum of required instances, aka **x** ist the maximum for how often ``uz_wavegen_three_phase_init`` will be called.  
+
+.. code-block:: c
+
+    #define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES x
 
 Initialize the config file in the ``main.c``:
 
@@ -292,9 +353,14 @@ the value of each phase can be accessed with the following functions.
 
 .. code-block:: c
 
-    float *phaseU* = uz_wavegen_three_phase_get_phaseU(*name*);
-    float *phaseV* = uz_wavegen_three_phase_get_phaseV(*name*);
-    float *phaseW* = uz_wavegen_three_phase_get_phaseW(*name*);
+    float phase_U;
+    float phase_V;
+    float phase_W;
+    ...
+    phase_U = uz_wavegen_three_phase_get_phaseU(three_phase_test);
+    phase_V = uz_wavegen_three_phase_get_phaseV(three_phase_test);
+    phase_W = uz_wavegen_three_phase_get_phaseW(three_phase_test);
+
 
 The \*highlighted\* words are the variable names, which can be freely chosen. 
 

@@ -6,6 +6,7 @@ static uz_d_gan_inverter uz_d_gan_inverter_instance1={
   .base_address=XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR,
   .is_ready=0,
   .clockFreqHz=100000000,
+  .uz_d_gan_inverter_ADC_conversion_factors=UZ_D_GAN_ADC_CONV_FACTORS,
   .PWMFreqTicks_H1=false,
   .PWMhightimeTicks_H1=0,
   .PWMlowtimeTicks_H1=0,

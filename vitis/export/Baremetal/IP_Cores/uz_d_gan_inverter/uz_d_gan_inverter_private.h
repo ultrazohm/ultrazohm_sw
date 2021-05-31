@@ -2,9 +2,24 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define	UZ_D_GAN_ADC_CONV_FACTORS {33.8780, 60.9756, 150.875, 150.875}
+//ATTENTON: conversion factor depends on the used ADC board?
+//	float PhaseCurrentAmpere = 33.8780;
+//	float DC_CurrentAmpere = 60.9756;
+//	float DC_VoltageVolt = 150.875;
+//	float PhaseVoltageVolt = 150.875;
+
+typedef struct _uz_d_gan_inverter_ADC_conversion_factors_{
+	float PhaseCurrentAmpere;
+	float DC_CurrentAmpere;
+	float DC_VoltageVolt;
+	float PhaseVoltageVolt;
+} uz_d_gan_inverter_ADC_conversion_factors;
+
 struct uz_d_gan_inverter{
   const uint32_t base_address;
   bool is_ready;
+  uz_d_gan_inverter_ADC_conversion_factors uz_d_gan_inverter_ADC_conversion_factors;
   uint32_t clockFreqHz;
   uint32_t PWMFreqTicks_H1;
   uint32_t PWMhightimeTicks_H1;

@@ -366,10 +366,12 @@ typedef struct _actualValues_ {
 	float U_d;
 	float U_q;
 	float theta_elec;
+	float theta_elec_offset_compensated;
 	float theta_mech;
 	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
+	uint16_t activeState;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -391,6 +393,10 @@ typedef struct _referenceAndSetValues_ {
 	float pwmMinPulseWidth;				//Minimal Duty Cycle which is allowed. e.g. if the Duty Cycle wants to switch only for, lets say 100ns, we should avoid switching at all.
 	float open_loop_sin_amplitude;
 	float open_loop_sin_frequency;
+	_Bool NEXT;
+	//_Bool RESET;
+	uint16_t PERIOD;
+	_Bool currentORspeedControl;
 } referenceAndSetValues;
 
 typedef struct _communicationStateVariables_ {

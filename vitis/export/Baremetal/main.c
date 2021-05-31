@@ -20,6 +20,7 @@
 #include "IP_Cores/uz_d_gan_inverter/uz_d_gan_inverter_hw.h"
 #include "IP_Cores/uz_d_gan_inverter/uz_d_gan_inverter_staticAllocator.h"
 
+#include "Codegen/uz_codegen.h"
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -28,6 +29,7 @@ _Bool bNewControlMethodAvailable = false;
 _Bool bInit = false;
 DS_Data Global_Data;
 extern XGpio Gpio_OUT; /* GPIO Device driver instance for the real GPIOs */
+uz_codegen codegenInstance;
 
 //Data from R5_0 to A53_0 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
 ARM_to_Oszi_Data_shared_struct OsziData;
@@ -53,6 +55,8 @@ int main(void) {
 	uz_printf("\r\n\r\n");
 	uz_printf("Welcome to the UltraZohm\r\n");
 	uz_printf("----------------------------------------\r\n");
+
+	uz_codegen_init(&codegenInstance);
 
 	// Initialize the global "Global_Data" structure -> the values can be overwritten afterwards from the Java-GUI -> this must be the first INIT-function, because it is required subsequently!
 	InitializeDataStructure(&Global_Data);
@@ -94,8 +98,16 @@ int main(void) {
 	// Turn on AXI2TCM communication
 	AXI2TCM_on();
 
+	Global_Data.aa.A2.cf.ADC_A4 = uz_d_gan_inverter_inSocketD4->uz_d_gan_inverter_ADC_conversion_factors.DC_CurrentAmpere;
+	Global_Data.aa.A2.cf.ADC_A3 = uz_d_gan_inverter_inSocketD4->uz_d_gan_inverter_ADC_conversion_factors.DC_CurrentAmpere;
+	Global_Data.aa.A2.cf.ADC_A2 = uz_d_gan_inverter_inSocketD4->uz_d_gan_inverter_ADC_conversion_factors.DC_CurrentAmpere;
+	Global_Data.aa.A2.cf.ADC_A1 = uz_d_gan_inverter_inSocketD4->uz_d_gan_inverter_ADC_conversion_factors.DC_VoltageVolt;
+
 	// Infinite loop
 	while (1) {
+		//Get Data From UZ_D_GaN_Inverter
+		uz_d_gan_inverter_UpdateStates(uz_d_gan_inverter_inSocketD4);
+		Global_Data.da.D4 = uz_d_gan_inverter_inSocketD4;
 		// poll the buttons
 		Global_Data.dv.sw1 = uz_GetPushButtonEnableSystem();
 		Global_Data.dv.sw2 = uz_GetPushButtonEnableControl();
@@ -124,15 +136,12 @@ int main(void) {
 		                //Check the control values
 			if (Global_Data.cw.enableSystem == false) {
 				turnPowerElectronicsOff(&Global_Data); //Switch power converter off
+				//Set Data To UZ_D_GaN_Inverter
 				uz_d_gan_inverter_set_PWM_EN(uz_d_gan_inverter_inSocketD4, false);
 			} else if ((Global_Data.cw.enableSystem == true) && bInit == false) { //Call this function only once. If there was an error, "enableSystem " must be reseted!
 				bInit = turnPowerElectronicsOn(&Global_Data); //Switch power converter on
-
 				//Set Data To UZ_D_GaN_Inverter
 				uz_d_gan_inverter_set_PWM_EN(uz_d_gan_inverter_inSocketD4, true);
-				//Get Data From UZ_D_GaN_Inverter
-				uz_d_gan_inverter_UpdateStates(uz_d_gan_inverter_inSocketD4);
-				Global_Data.da.D4 = uz_d_gan_inverter_inSocketD4;
 			}
 
 			if (Global_Data.cw.enableControl == true) {
@@ -297,7 +306,12 @@ void plotData(DS_Data* data) {
 //==============================================================================================================================================================
 void InitializeDataStructure(DS_Data* data) {
 
-	data->av.U_ZK = 24.0; 								//[V] DC-Link voltage
+	data->av.U_ZK = 12.0; 								//[V] DC-Link voltage
+	data->av.theta_offset =  2.539921;
+	data->rasv.currentORspeedControl = 0.0;
+	data->rasv.PERIOD = 5000;
+	data->rasv.NEXT = false;
+	//data->rasv.RESET = false;
 
 	//Control
 	data->cw.ControlReference = CurrentControl; 		// default because of Parameter ID
@@ -307,7 +321,7 @@ void InitializeDataStructure(DS_Data* data) {
 
 	//Encoder
 	data->mrp.incrementalEncoderResolution = 5000.0; //[Increments per turn] // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
-	data->mrp.incrementalEncoderOffset = 3.141592653589; //[rad]  //Offset for the Park-Transformation -> pi = 3.141592653589
+	data->mrp.incrementalEncoderOffset = 0.0; //[rad]  //Offset for the Park-Transformation -> pi = 3.141592653589
 	data->mrp.motorMaximumSpeed = 6000.0; //[rpm]
 	data->mrp.incrementalEncoderOversamplingFactor = 5.0; //Oversampling factor must be between 1.0-6.0 (Achtung, immer mit Punkt da sonst nicht als float interpretiert
 

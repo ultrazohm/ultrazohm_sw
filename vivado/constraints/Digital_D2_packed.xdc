@@ -16,9 +16,9 @@ set_property PACKAGE_PIN Y8 	[get_ports D2_OUT[11]]
 set_property PACKAGE_PIN V3 	[get_ports D2_OUT[12]]
 set_property PACKAGE_PIN Y9 	[get_ports D2_OUT[13]]
 set_property PACKAGE_PIN AE1 	[get_ports D2_OUT[14]]
-set_property PACKAGE_PIN AE7 	[get_ports D2_OUT[15]]
+#set_property PACKAGE_PIN AE7 	[get_ports D2_OUT[15]]
 set_property PACKAGE_PIN AE8 	[get_ports D2_OUT[16]] 
-set_property PACKAGE_PIN AC12 	[get_ports D2_OUT[17]] 
+#set_property PACKAGE_PIN AC12 	[get_ports D2_OUT[17]] 
 set_property PACKAGE_PIN AA1 	[get_ports D2_OUT[18]]
 set_property PACKAGE_PIN AB1 	[get_ports D2_OUT[19]]
 set_property PACKAGE_PIN AC1 	[get_ports D2_OUT[20]]
@@ -30,9 +30,9 @@ set_property PACKAGE_PIN T10 	[get_ports D2_OUT[25]]
 
 
 # Possible Inputs
-#set_property PACKAGE_PIN AE1 [get_ports Dig_15_Ch2]
+set_property PACKAGE_PIN AE1 [get_ports Dig_15_Ch2]
 #set_property PACKAGE_PIN AE7 [get_ports Dig_16_Ch2]
-#set_property PACKAGE_PIN AE8 [get_ports Dig_17_Ch2]
+set_property PACKAGE_PIN AE8 [get_ports Dig_17_Ch2]
 #set_property PACKAGE_PIN AC12 [get_ports Dig_18_Ch2]
 
 

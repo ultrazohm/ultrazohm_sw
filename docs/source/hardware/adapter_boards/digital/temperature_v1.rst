@@ -51,23 +51,23 @@ Pinout
 The pinout is identical for each receptacle on the temperature card.
 
 .. image:: temperature_v1/pinout_onePlug.png
-   :height: 500
+   :height: 350
 
 IP-Core
 -----------------------
 The temperature card is provided with an IP-Core, which handles the configuration and triggeres a periodical measurement. For this purpose the core contains a memory-mapped-interface, wich stores the channel configurations and a freely configurable trigger-generator.
 
-To generate the needed channel configuration, it's neccessary to read the datasheet of the `LTC2983 <https://www.analog.com/en/products/ltc2983.html>`_. for easier use of the card, there will be a C-library.
+To generate the needed channel configuration, it's neccessary to read the datasheet of the `LTC2983 <https://www.analog.com/en/products/ltc2983.html>`_. For easier use of the card, there will be a C-library.
 
 Wiring
 ------------------------
 Since there exists many possible configuration for the temperature card, its possible to manage some wiring directly on the PCB. 
 
 .. image:: temperature_v1/Onboard_Wiring.png
-   :height: 500
+   :height: 350
 
-This area is dedicated to implement RC-lowpass filter (C left, R middle) or the placement of the Rsense needed for RTD's. Further it is possible to enable Rsense-Sharing with 0R-Resistor or solder bridges (R right).
-For most usecases this Filter-and-Wiring-Area should be enough, so that 9 RTD's can be implemented directly without the need of extra wiring. If more RTD's are needed, the user could extend the amount of sensors to 18 RTD's on one LTC (see `LTC_Application_Note <https://www.analog.com/media/en/reference-design-documentation/design-notes/DN1035f.pdf>`_ ), but this requires special wiring which is up to the user.
+This area is dedicated to implement RC-lowpass filter (C left, R middle) to use themocouples or the placement of the Rsense needed for RTD's. Further it is possible to enable Rsense-Sharing with 0R-Resistor or solder bridges (R right).
+For most usecases this Filter-and-Wiring-Area should be enough, so that 9 RTD's in 2-Wire-mode can be implemented directly without the need of extra wiring. If more RTD's are needed, the user could extend the amount of sensors by chainig up to 18 RTD's on one LTC (see `LTC_Application_Note <https://www.analog.com/media/en/reference-design-documentation/design-notes/DN1035f.pdf>`_ ), but this requires special wiring which is up to the user.
 
 
 
@@ -79,4 +79,4 @@ References
 
 Designed by 
 -----------------------
-Robert Zipprich (Universität Kassel / EMA) in 05/2021
+Robert Zipprich (Universität Kassel / EMA) in 06/2021

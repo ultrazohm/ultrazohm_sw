@@ -240,9 +240,10 @@ Chirp function
 .. tikz:: chirp wave
   :align: left
 
-  \draw [densely dotted] (0,0)  -- +(6,0);
+  \draw [densely dotted] (0,-0.5)  -- +(6,0);
   \draw plot[domain=0:5,variable=\x,samples=200,smooth] (\x+1,{sin(deg(\x^2*pi))});
-  \draw(0,0)--(1,0);
+  \draw[-](0,-0.5) -- (1,-0.5);
+  \draw[-](1,-0.5) -- (1,0);
   \draw[|-|](0,0.5)--(1,0.5);
   \node[font=\footnotesize] at (0.5,1){delay};
   \draw[->](1.75,1.7)--(1.75,1.2);
@@ -253,6 +254,8 @@ Chirp function
   \node[font=\footnotesize] at (3.3,-2.5){duration};
   \draw[|-|](-0.25,0)--(-0.25,1);
   \node[font=\footnotesize] at (-1.1,0.5){amplitude};
+  \draw[|-|](-0.5,-0.5)--(-0.5,0);
+  \node[font=\footnotesize] at (-1.1,-0.25){offset};
 
 Outputs one sample of a configurable chirp for each function call. The parameters for configuration are the amplitude, the start and end frequency, the duration for the chirp and a delay for the start of the chirp wave.
 After the duration of the chirp wave, the function ``uz_wavegen_chirp_sample()`` will return a normal sine wave with the ``end_frequency_Hz``. For the input arguments a struct is required. For further information check :ref:`References <wave_generator_reference_chirp>`.
@@ -273,7 +276,8 @@ Initialize the config file in the ``main.c``:
     .start_frequency_Hz = ...,
     .end_frequency_Hz = ...,
     .duration_Sec = ...,
-    .initial_delay_Sec = ...};
+    .initial_delay_Sec = ...,
+    .offset = ...};
 
 Call the init function inside the main function, but before the ``while(1)``-loop.
 

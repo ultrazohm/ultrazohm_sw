@@ -22,6 +22,7 @@ struct uz_wavegen_chirp_config {
 	float end_frequency_Hz; /**< End frequency of the chirp in Hz. Only positive values are permitted*/ 
 	float duration_sec; /**< Duration of the transition from start to end frequency in seconds. Only positive values are permitted */
 	float initial_delay_sec; /**< Delay after first function call until transition starts in seconds. No negative values are permitted */
+	float offset; /**< Offset of the chirp wave */
 };
 
 /**

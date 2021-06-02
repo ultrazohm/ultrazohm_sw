@@ -19,7 +19,8 @@ struct uz_wavegen_chirp_config config_chirp = {
         .start_frequency_Hz = 1.0f,
         .end_frequency_Hz = 10.0f,
         .duration_sec = 10.0f,
-        .initial_delay_sec = 0.0f
+        .initial_delay_sec = 0.0f,
+        .offset = 1.0f
 };
 
 void test_uz_wavegen_chirp_init_successful(void){    
@@ -103,7 +104,7 @@ void test_uz_wavegen_chirp_output_end(void){
     uz_SystemTime_GetGlobalTimeInSec_ExpectAndReturn(0.0f);
     uz_wavegen_chirp_sample(test_chirp);
     uz_SystemTime_GetGlobalTimeInSec_ExpectAndReturn(3.025f);
-    TEST_ASSERT_EQUAL_FLOAT(2.0f, uz_wavegen_chirp_sample(test_chirp));
+    TEST_ASSERT_EQUAL_FLOAT(3.0f, uz_wavegen_chirp_sample(test_chirp));
 }
 
 void test_uz_wavegen_chirp_init_max_instances(void){    

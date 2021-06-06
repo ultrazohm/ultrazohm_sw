@@ -13,13 +13,8 @@ pipelines:
    default:
     - step:
        name: docs
+       image: ultrazohm/ultrazohm_remote_container
        script: # Modify the commands below to build your repository.
-        - apt-get update && apt-get -y install --no-install-recommends texlive
-        - apt-get -y install --no-install-recommends texlive-latex-extra
-        - apt-get -y install --no-install-recommends texlive-pictures
-        - apt-get -y install --no-install-recommends texlive-science
-        - apt-get -y install --no-install-recommends ghostscript
-        - apt-get -y install --no-install-recommends doxygen
         - cd docs
         - python -m pip install -U pip
         - pip install -r requirements.txt
@@ -30,14 +25,17 @@ pipelines:
         - ls
     - step:
        name: Ceedling unit tests
+       image: ultrazohm/ultrazohm_remote_container
        script:
-        - apt-get update
-        - apt-get -y install build-essential
-        - apt-get -y install gdb
-        - apt-get -y install ruby
-        - gem install ceedling
         - cd vitis/software/Baremetal
         - ceedling test:all
+    - step:
+       name: Cppcheck
+       image: ultrazohm/ultrazohm_remote_container
+       script:
+        - cppcheck vitis/software/Baremetal/src 
+        - cppcheck --addon=cert vitis/software/Baremetal/src 
+        - cppcheck --addon=misra vitis/software/Baremetal/src 
    branches:
      develop:
         - step:

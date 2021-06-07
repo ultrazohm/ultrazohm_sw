@@ -53,6 +53,7 @@ The license manager shows the license in `View License Status` after a refresh.
 .. image:: ./images_license/trial_license_activated.png
    :align: center
    :scale: 50
+
 License information
 -------------------
 

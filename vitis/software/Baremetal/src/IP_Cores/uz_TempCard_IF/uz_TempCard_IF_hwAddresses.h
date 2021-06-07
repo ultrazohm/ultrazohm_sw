@@ -12,8 +12,11 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
-#ifndef SRC_IP_CORES_TEMPCARD_INTERFACE_IP_ADDR_H_
-#define SRC_IP_CORES_TEMPCARD_INTERFACE_IP_ADDR_H_
+
+#pragma once
+
+#ifndef SRC_IP_CORES_TEMPCARD_IF_HWADDRESSES_H_
+#define SRC_IP_CORES_TEMPCARD_IF_HWADDRESSES_H_
 
 // Control-register
 #define  TempCard_IF_Controlreg         0x000  	// controlregister for the temperature card interface IP

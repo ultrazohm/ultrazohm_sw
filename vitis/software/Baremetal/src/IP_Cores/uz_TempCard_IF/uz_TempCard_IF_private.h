@@ -13,3 +13,17 @@
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
+#pragma once
+
+//Configurations of one LTC2983
+struct UZ_TempCard_IF_OneChannel {
+	float       temperature[CHANNEL_COUNT];
+	long        temperature_raw[CHANNEL_COUNT];
+    u_int32_t   Configdata[CHANNEL_COUNT];
+};
+
+struct UZ_TempCard_IF_OneChannel {
+	float       temperature[CHANNEL_COUNT];
+	long        temperature_raw[CHANNEL_COUNT];
+    u_int32_t   Configdata[CHANNEL_COUNT];
+};

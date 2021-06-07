@@ -134,9 +134,3 @@ To see the remote branches, unfold remotes, origin and feature (small arrow).
 After you pushed your branch it will be visible here, if not, fetch the remote.
 
 .. image:: ./images_git/gitflow8.png
-
-
-.. Sourcetree stash changes
-.. ------------------------
-..
-.. TODO: Stash

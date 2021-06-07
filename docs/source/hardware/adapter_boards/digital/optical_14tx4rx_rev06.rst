@@ -1,5 +1,4 @@
 .. _dig_optical_rev06:
-.. _dig_optical:
 
 ==============================
 Digital Optical 14Tx4Rx Rev06

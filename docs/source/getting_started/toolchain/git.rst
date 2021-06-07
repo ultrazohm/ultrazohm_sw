@@ -13,12 +13,12 @@ Therefore, a git installation as well as git LFS is required:
 #. https://git-scm.com/downloads
 #. https://git-lfs.github.com/
 
-The homepage of git offers excellent documentation <https://git-scm.com/doc>, tutorials, and videos <https://git-scm.com/videos>.
-Another recommended tutorial is offered by Bitbucket <https://www.atlassian.com/git/tutorials>.
+The homepage of git offers excellent documentation (https://git-scm.com/doc), tutorials, and videos (https://git-scm.com/videos).
+Another recommended tutorial is offered by Bitbucket (https://www.atlassian.com/git/tutorials).
 An understanding of git is mandatory for working with the UltraZohm and is assumed in the following sections!
 
 A graphical git client can be used to simplify the usage of git.
-**Sourcetree** <https://www.sourcetreeapp.com/> (Free, Windows and Mac) or **GitKraken** <https://www.gitkraken.com> (paid for private repositories, free for students and research institutions/non-profit, Windows, Mac, Linux) is recommended.
+`Sourcetree <https://www.sourcetreeapp.com/>`_ (Free, Windows and Mac) or `GitKraken <https://www.gitkraken.com>`_ (paid for private repositories, free for students and research institutions/non-profit, Windows, Mac, Linux) is recommended.
 
 Git Bash
 --------

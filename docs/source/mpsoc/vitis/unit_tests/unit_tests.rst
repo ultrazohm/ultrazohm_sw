@@ -177,39 +177,41 @@ The test macros ``TEST_ASSERT_FAIL_ASSERT`` and ``TEST_ASSERT_PASS_ASSERT`` catc
 
 Multiple source files with common header
 ----------------------------------------
-If u want to test a function, which has multiple c-files and one common header file, i.e.
 
-* main.h
+To test a software module with one interface header and multiple c-files, i.e.:
 
-  .. code-block:: c
+.. code-block:: c
+   :caption: ``my_function.h``
 
-      //Declare stuff here
+   void do_something_A(void);
+   void do_something_B(void);
 
-* main.c
-  
-  .. code-block:: c
+.. code-block:: c
+   :caption: ``my_function_part_A.c``
 
-      #include main.h
-      //Do something here
+   #include my_function.h
+   void do_something_A(void){
+   // do something A
+   }
 
-* file.c
+.. code-block:: c
+   :caption: ``my_function_part_B.c``
 
-  .. code-block:: c
+   #include my_function.h
+   void do_something_B(void){
+   // do something B
+   }
 
-      #include main.h
-      //Do something here
-
-After including the ``main.h`` file in the ``test_main.c`` file ceedling will produce an 
-error if you try to access functions from ``file.c``. This happens, because ceedling will only look for the corresponding ``main.c`` to 
-the included ``main.h`` file. ``file.c`` will therefore be ignored during the linking stage. 
-
-To fix this, you have to include the following **macro** at the top of your ``test_main.c`` file.
+Including ``my_function.h`` in the ``test_my_function.c`` file Ceedling will throw an error if you use functions from ``my_function_part_A.c``.
+This happens because Ceedling will assume that the ``.c`` file name matches the name of t he header (``my_function.c`` in this case).
+To fix this, you have to include the following *macro* at the top of ``test_my_function.c``.
 
 .. code-block:: c
 
-    TEST_FILE("file.c")
+    TEST_FILE("my_function_part_A.c")
+    TEST_FILE("my_function_part_B.c")
 
-This way you can include as many ``c-files`` as needed.
+This way you can include as many ``.c`` as needed.
     
 Sources
 =======

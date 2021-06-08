@@ -38,8 +38,8 @@ struct uz_wavegen_three_phase_config {
 /**
  * @brief Returns one sample of a sine-wave
  * 
- * @param amplitude float Amplitude for the sine wave
- * @param frequency_Hz float Frequency for the sine wave in Hz. Only positive values are permitted
+ * @param amplitude Amplitude for the sine wave
+ * @param frequency_Hz Frequency for the sine wave in Hz. Only positive values are permitted
  * @return Returns one sample for current system time
  */
 float uz_wavegen_sine(float amplitude, float frequency_Hz);
@@ -47,9 +47,9 @@ float uz_wavegen_sine(float amplitude, float frequency_Hz);
 /**
  * @brief Returns one sample of a sine-wave with an configurable offset
  * 
- * @param amplitude float Amplitude for the sine wave
- * @param frequency_Hz float Frequency for the sine wave in Hz. Only positive values are permitted
- * @param offset float Offset for the sine wave
+ * @param amplitude Amplitude for the sine wave
+ * @param frequency_Hz Frequency for the sine wave in Hz. Only positive values are permitted
+ * @param offset Offset for the sine wave
  * @return Returns one sample for current system time
  */
 float uz_wavegen_sine_with_offset(float amplitude, float frequency_Hz, float offset);
@@ -57,8 +57,8 @@ float uz_wavegen_sine_with_offset(float amplitude, float frequency_Hz, float off
 /**
  * @brief Returns one sample of a sawtooth wave
  * 
- * @param amplitude float Amplitude for the sawtooth wave
- * @param frequency_Hz float Frequency for the sawtooth wave in Hz. Only positive values are permitted
+ * @param amplitude Amplitude for the sawtooth wave
+ * @param frequency_Hz Frequency for the sawtooth wave in Hz. Only positive values are permitted
  * @return Returns one sample for current system time
  */
 float uz_wavegen_sawtooth(float amplitude, float frequency_Hz);
@@ -66,9 +66,9 @@ float uz_wavegen_sawtooth(float amplitude, float frequency_Hz);
 /**
  * @brief Returns one sample of a sawtooth wave with an configurable offset
  * 
- * @param amplitude float Amplitude for the sawtooth wave
- * @param frequency_Hz float Frequency for the sawtooth wave in Hz. Only positive values are permitted
- * @param offset float Offset for the sawtooth wave
+ * @param amplitude Amplitude for the sawtooth wave
+ * @param frequency_Hz Frequency for the sawtooth wave in Hz. Only positive values are permitted
+ * @param offset Offset for the sawtooth wave
  * @return Returns one sample for current system time
  */
 float uz_wavegen_sawtooth_with_offset(float amplitude, float frequency_Hz, float offset);
@@ -76,9 +76,9 @@ float uz_wavegen_sawtooth_with_offset(float amplitude, float frequency_Hz, float
 /**
  * @brief Returns one sample of a pulse wave
  * 
- * @param amplitude float Amplitude for the pulse wave
- * @param frequency_Hz float Frequency for the pulse wave in Hz. Only positive values are permitted
- * @param duty_cycle float Duty Cycle for the pulse wave. Only values 0.0 <= DutyCycle <= 1.0 are permitted
+ * @param amplitude Amplitude for the pulse wave
+ * @param frequency_Hz Frequency for the pulse wave in Hz. Only positive values are permitted
+ * @param duty_cycle Duty Cycle for the pulse wave. Only values 0.0 <= DutyCycle <= 1.0 are permitted
  * @return Returns one sample for current system time
  */
 float uz_wavegen_pulse(float amplitude, float frequency_Hz, float duty_cycle);
@@ -86,9 +86,9 @@ float uz_wavegen_pulse(float amplitude, float frequency_Hz, float duty_cycle);
 /**
  * @brief Returns one sample of a square wave
  * 
- * @param amplitude float Amplitude for the square wave
- * @param frequency_Hz float Frequency for the square wave in Hz. Only positive values are permitted
- * @param duty_cycle float Duty Cycle for the square wave. Only values 0.0 <= DutyCycle <= 1.0 is permitted
+ * @param amplitude Amplitude for the square wave
+ * @param frequency_Hz Frequency for the square wave in Hz. Only positive values are permitted
+ * @param duty_cycle Duty Cycle for the square wave. Only values 0.0 <= DutyCycle <= 1.0 is permitted
  * @return Returns one sample for current system time
  */
 float uz_wavegen_square(float amplitude, float frequency_Hz, float duty_cycle);
@@ -96,8 +96,8 @@ float uz_wavegen_square(float amplitude, float frequency_Hz, float duty_cycle);
 /**
  * @brief Returns one sample of a triangle wave
  * 
- * @param amplitude float Amplitude for the triangle wave
- * @param frequency_Hz float Frequency for the triangle wave in Hz. Only positive values are permitted
+ * @param amplitude Amplitude for the triangle wave
+ * @param frequency_Hz Frequency for the triangle wave in Hz. Only positive values are permitted
  * @return Returns one sample for current system time
  */
 float uz_wavegen_triangle(float amplitude, float frequency_Hz);
@@ -105,9 +105,9 @@ float uz_wavegen_triangle(float amplitude, float frequency_Hz);
 /**
  * @brief Returns one sample of a triangle wave with an configurable offset
  * 
- * @param amplitude float Amplitude for the triangle wave
- * @param frequency_Hz float Frequency for the triangle wave in Hz. Only positive values are permitted
- * @param offset float Offset for the triangle wave
+ * @param amplitude Amplitude for the triangle wave
+ * @param frequency_Hz Frequency for the triangle wave in Hz. Only positive values are permitted
+ * @param offset Offset for the triangle wave
  * @return Returns one sample for current system time
  */
 float uz_wavegen_triangle_with_offset(float amplitude, float frequency_Hz, float offset);
@@ -115,9 +115,9 @@ float uz_wavegen_triangle_with_offset(float amplitude, float frequency_Hz, float
 /**
  * @brief Returns one sample which either limits the input signal to the lower or upper limit, or passes the input signal through. Functions very similar to the saturation block in Simulink.
  * 
- * @param signal float Any input signal
- * @param upper_limit float Upper limit of the saturation
- * @param lower_limit float Lower limit of the saturation. upper_limit > lower_limit is required
+ * @param signal Any input signal
+ * @param upper_limit Upper limit of the saturation
+ * @param lower_limit Lower limit of the saturation. upper_limit > lower_limit is required
  * @return Returns one sample of the adjusted input
  */
 float uz_wavegen_saturation(float signal, float upper_limit, float lower_limit);
@@ -125,7 +125,7 @@ float uz_wavegen_saturation(float signal, float upper_limit, float lower_limit);
 /**
  * @brief Returns one random sample of a white-noise function
  * 
- * @param amplitude float Max value of the white-noise wave
+ * @param amplitude Max value of the white-noise wave
  * @return Returns one random sample 
  */
 float uz_wavegen_white_noise(float amplitude);

@@ -28,6 +28,11 @@
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 
+// Include to test the driver
+#include "../IP_Cores/uz_TempCard_IF/uz_TempCard_IF.h"
+#include "../IP_Cores/uz_TempCard_IF/uz_TempCard_IF_private.h"
+#include "../IP_Cores/uz_TempCard_IF/uz_TempCard_IF_hwAddresses.h"
+
 
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
@@ -51,6 +56,14 @@ float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
 
+int initDone_Tempcard = 0;
+static uz_TempCard_IF uz_TempCard_IF_Instance1 = {
+			.base_address = 0x00A0000000
+		};
+uz_TempCard_IF_handle uz_TempCard_IF_staticAllocator(void) {
+	return (uz_TempCard_IF_init(&uz_TempCard_IF_Instance1));
+}
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -68,6 +81,10 @@ void ISR_Control(void *data)
 	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
 
 	ReadAllADC();
+
+	uz_TempCard_IF_handle UZ_TempCard = uz_TempCard_IF_staticAllocator();
+	uz_TempCard_IF_MeasureTemps(&UZ_TempCard);
+
 	CheckForErrors();
 	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
 
@@ -95,6 +112,8 @@ void ISR_Control(void *data)
 	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
+
+	// Test the TemperatureCard
 
 
 	// Update JavaScope
@@ -129,6 +148,27 @@ int Initialize_ISR(){
 			xil_printf("RPU: Error: GIC initialization failed\r\n");
 			return XST_FAILURE;
 		}
+
+		//--------------------------------------------------------------------------------------------------------------- Testinit for the Temperature Card
+			uz_TempCard_IF_handle UZ_TempCard = uz_TempCard_IF_staticAllocator();
+			uz_TempCard_IF_Reset(&UZ_TempCard);
+			//Channel configs
+			uz_TempCard_IF_SetConfig(&UZ_TempCard, 0xE80FA000, 1);	// Rsense 1k
+			uz_TempCard_IF_SetConfig(&UZ_TempCard, 0x60854000, 3);	// PT100-2wire
+			uz_TempCard_IF_SetConfig(&UZ_TempCard, 0x60854000, 5);	// PT100-2wire
+			uz_TempCard_IF_SetConfig(&UZ_TempCard, 0x60854000, 7);	// PT100-2wire
+			uz_TempCard_IF_SetConfig(&UZ_TempCard, 0x60854000, 9);	// PT100-2wire
+			uz_TempCard_IF_SetConfig(&UZ_TempCard, 0x60854000, 11);	// PT100-2wire
+			uz_TempCard_IF_SetConfig(&UZ_TempCard, 0x60854000, 13);	// PT100-2wire
+			uz_TempCard_IF_SetConfig(&UZ_TempCard, 0x60854000, 14);	// PT100-2wire
+			uz_TempCard_IF_SetConfig(&UZ_TempCard, 0x60854000, 15);	// PT100-2wire
+			uz_TempCard_IF_SetConfig(&UZ_TempCard, 0x60854000, 16);	// PT100-2wire
+			uz_TempCard_IF_SetConfig(&UZ_TempCard, 0x60854000, 17);	// PT100-2wire
+
+			uz_TempCard_IF_SyncConfig(&UZ_TempCard); 				// Write conf
+			uz_TempCard_IF_setCounter(&UZ_TempCard, 0x00F00000); 	// some Random Counter Value
+			uz_TempCard_IF_Start(&UZ_TempCard);						// Start the measurement
+		//---------------------------------------------------------------------------------------------------------------
 
 	// Initialize mux_axi to use correct interrupt for triggering the ADCs
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + IPCore_Enable_mux_axi_ip, 1); // enable IP core

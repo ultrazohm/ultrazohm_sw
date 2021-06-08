@@ -14,16 +14,28 @@
 ******************************************************************************/
 
 #pragma once
+#ifndef UZ_TEMPCARD_IF_PRIVATE_H
+#define UZ_TEMPCARD_IF_PRIVATE_H
+
+#include "uz_TempCard_IF.h"
 
 //Configurations of one LTC2983
-struct UZ_TempCard_IF_OneChannel {
-	float       temperature[CHANNEL_COUNT];
-	long        temperature_raw[CHANNEL_COUNT];
-    u_int32_t   Configdata[CHANNEL_COUNT];
+typedef struct {
+	float       temperature[CHANNEL_COUNT_OneChannel];
+	uint32_t    temperature_raw[CHANNEL_COUNT_OneChannel];
+    uint32_t    Configdata[CHANNEL_COUNT_OneChannel];
+	uint8_t		Channels_Valid[CHANNEL_COUNT_OneChannel];
+}UZ_TempCard_IF_OneChannel;
+
+struct uz_TempCard_IF {
+	const uint32_t 				base_address;
+	bool 						is_ready;
+	uint32_t 					Control_Reg;
+	uint32_t 					Counter_Period;
+	uint32_t 					Readback;
+	UZ_TempCard_IF_OneChannel	Channel_A;
+	UZ_TempCard_IF_OneChannel	Channel_B;
+	UZ_TempCard_IF_OneChannel	Channel_C;
 };
 
-struct UZ_TempCard_IF_OneChannel {
-	float       temperature[CHANNEL_COUNT];
-	long        temperature_raw[CHANNEL_COUNT];
-    u_int32_t   Configdata[CHANNEL_COUNT];
-};
+#endif // UZ_TEMPCARD_IF_PRIVATE_H

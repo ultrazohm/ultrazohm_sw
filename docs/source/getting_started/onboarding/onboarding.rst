@@ -98,13 +98,12 @@ Contribution to MPSoC FPGA
 **************************
 
 Contributions to the FPGA can either be an IP-Core or structural changes to the default Vivado project.
-Changes to the Vivado project (everything in ``ultrazohm_sw/vivado``) can not be merged into the project by creating a pull request! If you plan on changing the Vivado project you have to get in touch with the 
-
-#. 
+Changes to the Vivado project (everything in ``ultrazohm_sw/vivado``) can not be merged into the project by creating a pull request! If you plan on changing the Vivado project you have to get in touch with the maintainers in Slack.
 
 Hardware (PCB)
 **************
 
+Refer to :ref:`altium`.
 
 Additional information
 ======================

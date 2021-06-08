@@ -11,43 +11,46 @@ typedef struct uz_wavegen_chirp uz_wavegen_chirp;
  * @brief Object definition for generating a three phase sine signal
  * 
  */
+
 typedef struct uz_wavegen_three_phase uz_wavegen_three_phase;
 
 /**
  * @brief Configuration struct for chirp generation, pass to init function. Accessible by the user 
  */
 struct uz_wavegen_chirp_config {
-	float amplitude; /**< Amplitude of the chirp signal */ 
-	float start_frequency_Hz; /**< Start frequency of the chirp in Hz. Only positive values are permitted */
-	float end_frequency_Hz; /**< End frequency of the chirp in Hz. Only positive values are permitted*/ 
-	float duration_sec; /**< Duration of the transition from start to end frequency in seconds. Only positive values are permitted */
-	float initial_delay_sec; /**< Delay after first function call until transition starts in seconds. No negative values are permitted */
-	float offset; /**< Offset of the chirp wave */
+	float amplitude;            /**< Amplitude of the chirp signal */ 
+	float start_frequency_Hz;   /**< Start frequency of the chirp in Hz. Only positive values are permitted */
+	float end_frequency_Hz;     /**< End frequency of the chirp in Hz. Only positive values are permitted*/ 
+	float duration_sec;         /**< Duration of the transition from start to end frequency in seconds. Only positive values are permitted */
+	float initial_delay_sec;    /**< Delay after first function call until transition starts in seconds. No negative values are permitted */
+	float offset;               /**< Offset of the chirp wave */
 };
 
 /**
  * @brief Configuration struct for three phase sine, pass to init function. Accessible by the user
  */
 struct uz_wavegen_three_phase_config {
-	float amplitude; /**< Amplitude of the three sine waves */
+	float amplitude;    /**< Amplitude of the three sine waves */
 	float frequency_Hz; /**< Frequency of the three sine waves. Only positive values are permitted */
-	float offset; /**< Offset of the three sine waves */
+	float offset;       /**< Offset of the three sine waves */
 };
+
 /**
  * @brief Returns one sample of a sine-wave
  * 
  * @param amplitude float Amplitude for the sine wave
  * @param frequency_Hz float Frequency for the sine wave in Hz. Only positive values are permitted
- * @return float Returns one sample for current system time
+ * @return Returns one sample for current system time
  */
 float uz_wavegen_sine(float amplitude, float frequency_Hz);
+
 /**
  * @brief Returns one sample of a sine-wave with an configurable offset
  * 
  * @param amplitude float Amplitude for the sine wave
  * @param frequency_Hz float Frequency for the sine wave in Hz. Only positive values are permitted
  * @param offset float Offset for the sine wave
- * @return float Returns one sample for current system time
+ * @return Returns one sample for current system time
  */
 float uz_wavegen_sine_with_offset(float amplitude, float frequency_Hz, float offset);
 
@@ -56,7 +59,7 @@ float uz_wavegen_sine_with_offset(float amplitude, float frequency_Hz, float off
  * 
  * @param amplitude float Amplitude for the sawtooth wave
  * @param frequency_Hz float Frequency for the sawtooth wave in Hz. Only positive values are permitted
- * @return float Returns one sample for current system time
+ * @return Returns one sample for current system time
  */
 float uz_wavegen_sawtooth(float amplitude, float frequency_Hz);
 
@@ -66,7 +69,7 @@ float uz_wavegen_sawtooth(float amplitude, float frequency_Hz);
  * @param amplitude float Amplitude for the sawtooth wave
  * @param frequency_Hz float Frequency for the sawtooth wave in Hz. Only positive values are permitted
  * @param offset float Offset for the sawtooth wave
- * @return float Returns one sample for current system time
+ * @return Returns one sample for current system time
  */
 float uz_wavegen_sawtooth_with_offset(float amplitude, float frequency_Hz, float offset);
 
@@ -76,7 +79,7 @@ float uz_wavegen_sawtooth_with_offset(float amplitude, float frequency_Hz, float
  * @param amplitude float Amplitude for the pulse wave
  * @param frequency_Hz float Frequency for the pulse wave in Hz. Only positive values are permitted
  * @param duty_cycle float Duty Cycle for the pulse wave. Only values 0.0 <= DutyCycle <= 1.0 are permitted
- * @return float Returns one sample for current system time
+ * @return Returns one sample for current system time
  */
 float uz_wavegen_pulse(float amplitude, float frequency_Hz, float duty_cycle);
 
@@ -86,7 +89,7 @@ float uz_wavegen_pulse(float amplitude, float frequency_Hz, float duty_cycle);
  * @param amplitude float Amplitude for the square wave
  * @param frequency_Hz float Frequency for the square wave in Hz. Only positive values are permitted
  * @param duty_cycle float Duty Cycle for the square wave. Only values 0.0 <= DutyCycle <= 1.0 is permitted
- * @return float Returns one sample for current system time
+ * @return Returns one sample for current system time
  */
 float uz_wavegen_square(float amplitude, float frequency_Hz, float duty_cycle);
 
@@ -95,7 +98,7 @@ float uz_wavegen_square(float amplitude, float frequency_Hz, float duty_cycle);
  * 
  * @param amplitude float Amplitude for the triangle wave
  * @param frequency_Hz float Frequency for the triangle wave in Hz. Only positive values are permitted
- * @return float Returns one sample for current system time
+ * @return Returns one sample for current system time
  */
 float uz_wavegen_triangle(float amplitude, float frequency_Hz);
 
@@ -105,7 +108,7 @@ float uz_wavegen_triangle(float amplitude, float frequency_Hz);
  * @param amplitude float Amplitude for the triangle wave
  * @param frequency_Hz float Frequency for the triangle wave in Hz. Only positive values are permitted
  * @param offset float Offset for the triangle wave
- * @return float Returns one sample for current system time
+ * @return Returns one sample for current system time
  */
 float uz_wavegen_triangle_with_offset(float amplitude, float frequency_Hz, float offset);
 
@@ -115,7 +118,7 @@ float uz_wavegen_triangle_with_offset(float amplitude, float frequency_Hz, float
  * @param signal float Any input signal
  * @param upper_limit float Upper limit of the saturation
  * @param lower_limit float Lower limit of the saturation. upper_limit > lower_limit is required
- * @return float Returns one sample of the adjusted input
+ * @return Returns one sample of the adjusted input
  */
 float uz_wavegen_saturation(float signal, float upper_limit, float lower_limit);
 
@@ -123,16 +126,15 @@ float uz_wavegen_saturation(float signal, float upper_limit, float lower_limit);
  * @brief Returns one random sample of a white-noise function
  * 
  * @param amplitude float Max value of the white-noise wave
- * @return float Returns one random sample 
+ * @return Returns one random sample 
  */
 float uz_wavegen_white_noise(float amplitude);
-
 
 /**
  * @brief Initialization of a wavegenerator for a chirp signal
  * 
  * @param config Configuration struct
- * @return uz_wavegen_chirp* Pointer to wavegen_chirp instance
+ * @return Pointer to wavegen_chirp instance
  */
 uz_wavegen_chirp* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config);
 
@@ -140,7 +142,7 @@ uz_wavegen_chirp* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config);
  * @brief Returns one sample of the chirp
  * 
  * @param self wavegen_chirp instance
- * @return float One sample of the chirp output for current system time
+ * @return One sample of the chirp output for current system time
  */
 float uz_wavegen_chirp_sample(uz_wavegen_chirp* self);
 
@@ -155,7 +157,7 @@ void uz_wavegen_chirp_reset(uz_wavegen_chirp* self);
  * @brief Initialization of a wavegenerator for a three phase sine
  * 
  * @param config Configuration struct
- * @return uz_wavegen_three_phase* Pointer to wavegen_three_phase instance
+ * @return Pointer to wavegen_three_phase instance
  */
 uz_wavegen_three_phase* uz_wavegen_three_phase_init(struct uz_wavegen_three_phase_config config);
 
@@ -170,7 +172,7 @@ void uz_wavegen_three_phase_sample(uz_wavegen_three_phase* self);
  * @brief Returns the last calculated sample for the Phase U
  * 
  * @param self wavegen_three_phase instance
- * @return float Returns last sample for Phase U 
+ * @return Returns last sample for Phase U 
  */
 float uz_wavegen_three_phase_get_phaseU(uz_wavegen_three_phase* self);
 
@@ -178,7 +180,7 @@ float uz_wavegen_three_phase_get_phaseU(uz_wavegen_three_phase* self);
  * @brief Returns the last calculated sample for the Phase V
  * 
  * @param self wavegen_three_phase instance
- * @return float Returns last sample for Phase V 
+ * @return Returns last sample for Phase V 
  */
 float uz_wavegen_three_phase_get_phaseV(uz_wavegen_three_phase* self);
 
@@ -186,6 +188,6 @@ float uz_wavegen_three_phase_get_phaseV(uz_wavegen_three_phase* self);
  * @brief Returns the last calculated sample for the Phase W
  * 
  * @param self wavegen_three_phase instance
- * @return float Returns last sample for Phase W 
+ * @return Returns last sample for Phase W 
  */
 float uz_wavegen_three_phase_get_phaseW(uz_wavegen_three_phase* self);

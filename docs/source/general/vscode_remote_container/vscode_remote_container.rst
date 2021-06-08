@@ -1,8 +1,8 @@
 .. _vscode_remote_container:
 
-==================================================
-VS Code Remote Container (Development environment)
-==================================================
+========================
+VS Code Remote Container
+========================
 
 `VS Code <https://code.visualstudio.com/>`_ is the recommended text editor for the UltraZohm project.
 Using the `remote container extension <https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers>`_ allows for a consistent development environment with easy setup.

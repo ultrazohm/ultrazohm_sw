@@ -1,3 +1,5 @@
+.. _adapter_cards:
+
 =============
 Adapter Cards
 =============

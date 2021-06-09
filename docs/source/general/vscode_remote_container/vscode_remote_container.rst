@@ -1,8 +1,8 @@
 .. _vscode_remote_container:
 
-==================================================
-VS Code Remote Container (Development environment)
-==================================================
+========================
+VS Code Remote Container
+========================
 
 `VS Code <https://code.visualstudio.com/>`_ is the recommended text editor for the UltraZohm project.
 Using the `remote container extension <https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers>`_ allows for a consistent development environment with easy setup.
@@ -30,6 +30,8 @@ Using remote container with Docker might lead to unwanted problems with file per
 - To use, install Podman and write ``podman`` in the VS Code Setting ``Remote -> Container -> Docker Path``
 
 .. note:: It might be possible to use Podman with WSL2 on Windows, yet this is not tested. See https://www.redhat.com/sysadmin/podman-windows-wsl2 
+
+.. _Gitpod_chapter:
 
 Alternative: Gitpod
 -------------------

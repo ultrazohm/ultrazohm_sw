@@ -1,3 +1,5 @@
+.. _howToDocs:
+
 ===========
 How to docs
 ===========

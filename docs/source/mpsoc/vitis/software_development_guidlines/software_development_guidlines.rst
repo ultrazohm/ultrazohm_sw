@@ -1,4 +1,4 @@
-.. _software_development_guidlines:
+.. _software_development_guidelines:
 
 ===============================
 Software Development Guidelines

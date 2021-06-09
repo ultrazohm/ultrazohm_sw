@@ -1,17 +1,23 @@
-===============
-uz_wavegen_sine
-===============
+=========
+Sine wave
+=========
 
 .. doxygenfunction:: uz_wavegen_sine
 
 Example
 =======
 
-.. literalinclude:: ../../../../../vitis/software/Baremetal/test/uz/uz_wavegen/test_uz_wavegen.c
-    :lines: 23-29
-    :linenos:
-    :language: c
-    :caption: Example function call to sine wave generator
+.. code-block:: c
+  :linenos:
+  :caption: Example function call to sine wave generator
+
+  #include "uz_wavegen.h"
+  int main(void) {
+     float amplitude = 8.0f;
+     float frequency_Hz = 10.0f;
+     float duty_cycle = 0.5f;
+     float output = uz_wavegen_pulse(amplitude, frequency_Hz, duty_cycle);
+  }
 
 Description
 ===========

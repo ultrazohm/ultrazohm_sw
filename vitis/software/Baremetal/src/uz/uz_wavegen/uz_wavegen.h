@@ -11,7 +11,6 @@ typedef struct uz_wavegen_chirp uz_wavegen_chirp;
  * @brief Object definition for generating a three phase sine signal
  * 
  */
-
 typedef struct uz_wavegen_three_phase uz_wavegen_three_phase;
 
 /**
@@ -36,7 +35,7 @@ struct uz_wavegen_three_phase_config {
 };
 
 /**
- * @brief Returns one sample of a sine-wave
+ * @brief Outputs one sample of a sine wave for the current global system time at each function call.
  * 
  * @param amplitude Amplitude for the sine wave
  * @param frequency_Hz Frequency for the sine wave in Hz. Only positive values are permitted
@@ -45,7 +44,7 @@ struct uz_wavegen_three_phase_config {
 float uz_wavegen_sine(float amplitude, float frequency_Hz);
 
 /**
- * @brief Returns one sample of a sine-wave with an configurable offset
+ * @brief Outputs one sample of a sine wave with the specified offset for the current global system time at each function call.
  * 
  * @param amplitude Amplitude for the sine wave
  * @param frequency_Hz Frequency for the sine wave in Hz. Only positive values are permitted

@@ -4,37 +4,28 @@
 Waveform Generator
 ==================
 
+..	toctree::
+  :maxdepth: 2
+  :hidden:
+  :glob:
+
+  *
+
 The ``uz_wavegen`` functions can be used to create standard waveform, which, for example, can be displayed in the :ref:`JavaScope`.
-Wherever the functions are called, ``uz_wavegen.h`` has to be included. Each function is designed to output a sample that matches the 
-current system time when the function is called. For a deterministic signal the functions must be called continuously.
+Wherever the functions are called, ``uz_wavegen.h`` has to be included.
+Each function reads the current global system time (see :ref:`systemTimeR5`) and calculates a the output based on this time.
 
 Available waveforms
 *******************
-
-Sine wave
-^^^^^^^^^
-
-.. tikz:: sine wave
-  :align: left
-
-  \draw [densely dotted] (0,0)  -- +(6,0);
-  \draw plot[domain=0:6,variable=\x,samples=51,smooth] (\x,{sin(deg(\x*pi))});
-  \draw[|-|](-0.25,0)--(-0.25,1);
-  \node[font=\footnotesize] at (-1.1,0.5){amplitude};
-  \draw[|->](0,-1.5)--(2,-1.5);
-  \node[font=\footnotesize] at (1,-2){frequency};
-   
-Outputs one sample of a sine wave for each function call. For further information check the :ref:`References <wave_generator_reference_sine>`.
-
-Function call:
-
-.. code-block:: c
-
-    ... = uz_wavegen_sine(amplitude, frequency_Hz);
     
 Sine wave with offset
 ^^^^^^^^^^^^^^^^^^^^^
- 
+
+Outputs one sample of a sine wave with an adjustable offset for each function call. For further information check :ref:`References <wave_generator_reference_sine_offset>`. 
+
+.. doxygenfunction:: uz_wavegen_sine_with_offset
+
+
 .. tikz:: sine wave with offset
   :align: left
 
@@ -47,13 +38,12 @@ Sine wave with offset
   \draw[|->](0,-1.5)--(2,-1.5);
   \node[font=\footnotesize] at (1,-2){frequency};
 
-Outputs one sample of a sine wave with an adjustable offset for each function call. For further information check :ref:`References <wave_generator_reference_sine_offset>`. 
 
-Function call:
-
-.. code-block:: c
-
-    ... = uz_wavegen_sine_with_offset(amplitude, frequency_Hz, offset);   
+.. literalinclude:: ../../../../../vitis/software/Baremetal/test/uz/uz_wavegen/test_uz_wavegen.c
+  :lines: 43-50
+  :linenos:
+  :language: c
+  :caption: Example function call to sine wave generator with offset
 
 Sawtooth wave
 ^^^^^^^^^^^^^
@@ -379,7 +369,6 @@ Reference
 Sine wave
 ^^^^^^^^^
 
-.. doxygenfunction:: uz_wavegen_sine
 
 
 .. _wave_generator_reference_sine_offset:
@@ -387,7 +376,7 @@ Sine wave
 Sine wave with offset
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. doxygenfunction:: uz_wavegen_sine_with_offset
+
 
 
 .. _wave_generator_reference_sawtooth:

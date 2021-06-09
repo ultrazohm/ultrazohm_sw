@@ -14,31 +14,15 @@
 ******************************************************************************/
 
 #pragma once
+#ifndef UZ_TEMPCARD_IF_H
+#define UZ_TEMPCARD_IF_H
 
-#ifndef UZ_TEMPCARD_IF_PRIVATE_H
-#define UZ_TEMPCARD_IF_PRIVATE_H
-#include <stdbool.h>
 #include <stdint.h>
-#include "uz_TempCard_IF.h"
 
-//Configurations of one LTC2983
-typedef struct {
-	float       temperature[CHANNEL_COUNT_OneChannel];
-	uint32_t    temperature_raw[CHANNEL_COUNT_OneChannel];
-    uint32_t    Configdata[CHANNEL_COUNT_OneChannel];
-	uint8_t		Channels_Valid[CHANNEL_COUNT_OneChannel];
-}UZ_TempCard_IF_OneChannel;
+void        uz_TempCard_IF_hw_Reset(uint32_t base_address);                         // Resets the Interface-IP to write new Channel configs
+void        uz_TempCard_IF_hw_Start(uint32_t base_address);                         // Starts the Interface-IP
+void        uz_TempCard_IF_hw_Stop(uint32_t base_address);                          // Stops the Interface-IP
+void        uz_TempCard_IF_hw_writeReg(uint32_t base_address,int32_t B);            // write one Register
+int32_t     uz_TempCard_IF_hw_readReg(uint32_t base_address);                       // read one Register
 
-struct uz_TempCard_IF {
-	const uint32_t 				base_address;
-	const uint32_t 				ip_clk_frequency_Hz;
-	bool 						is_ready;
-	uint32_t 					Control_Reg;
-	uint32_t 					Counter_Period;
-	uint32_t 					Readback;
-	UZ_TempCard_IF_OneChannel	Channel_A;
-	UZ_TempCard_IF_OneChannel	Channel_B;
-	UZ_TempCard_IF_OneChannel	Channel_C;
-};
-
-#endif // UZ_TEMPCARD_IF_PRIVATE_H
+#endif // UZ_TEMPCARD_IF_H

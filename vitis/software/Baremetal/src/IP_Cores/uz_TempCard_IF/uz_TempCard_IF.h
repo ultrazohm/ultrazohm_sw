@@ -12,7 +12,6 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
-
 /******************************************************************************
  * HOW THIS DRIVER COULD BE USED:
  * ------------------------------
@@ -22,31 +21,28 @@
  * 
  * To get comfy with the library, here is some pseudo-code, which will configure the Channels and starts the continuous measurement:
  * 1. create needed handler and assign the IP-Base-Addresse
- * 		uz_TempCard_IF uz_TempCard_IF_Instance1 = {
-				.base_address = 0x00A0000000
-		};
-		uz_TempCard_IF_handle UZ_TempCard = uz_TempCard_IF_init(&uz_TempCard_IF_Instance1);
-
+ *      uz_TempCard_IF* uz_Tempcard = uz_TempCard_IF_allocate_instance_one();
+ *
  * 2. Perform an Initial Reset for the Interface-IP
- *      uz_TempCard_IF_Reset(handle);
+ *      uz_TempCard_IF_Reset(uz_Tempcard);
  * 
  * 3. Write the Channelconfigs according to the LTC2983-Datasheet. The config-words can be determined by (https://www.analog.com/en/products/ltc2983.html)
- *      uz_TempCard_IF_SetConfig(handle, Configword, Channel); [Repeat this for every channel needed]
+ *      uz_TempCard_IF_SetConfig(uz_Tempcard, Configword, Channel); [Repeat this for every channel needed]
  * 
  * 4. Sync the Configs to the Interface-IP
- *      uz_TempCard_IF_SyncConfig(handle);
+ *      uz_TempCard_IF_SyncConfig(uz_Tempcard);
  * 
  * 5. Set a counter period, which will trigger the continuous measurement
- *      uz_TempCard_IF_setCounter(handle, countervalue);
+ *      uz_TempCard_IF_setCounter(uz_Tempcard, countervalue);
  * 
  * 6. Start the Interface-IP
- *       uz_TempCard_IF_Start(handle);
+ *       uz_TempCard_IF_Start(uz_Tempcard);
  * 
  * 7. Fetch the Measurements in the internal structure
- *      uz_TempCard_IF_MeasureTemps(handle);
+ *      uz_TempCard_IF_MeasureTemps(uz_Tempcard);
  * 
  * 8. Enjoy measuremt temperatures
- *      uz_TempCard_IF_ReadMeasurement_Channel(handle, Channel);
+ *      uz_TempCard_IF_ReadMeasurement_Channel(uz_Tempcard, Channel);
  * 
  * ADDITIONAL INFORMATIONS:
  * A. If you want to change some Channel configs while running, you have to perform the following steps:
@@ -63,14 +59,12 @@
  *    More informations can be found in the Datasheet (https://www.analog.com/en/products/ltc2983.html).
  * 
  ******************************************************************************/
+
 #pragma once
 #ifndef UZ_TEMPCARD_IF_H
 #define UZ_TEMPCARD_IF_H
 
 #include <stdint.h>
-#include <stdbool.h>
-#include "../../uz/uz_HAL.h"
-#include "../../uz/uz_AXI.h"
 
 //Defines for the lib
 #define TEMP_CONVERSION_FACTOR      0.000976563     // 1/1024
@@ -90,11 +84,13 @@
 #define VALID                       1
 
 //
+
 typedef struct uz_TempCard_IF uz_TempCard_IF;
 typedef struct uz_TempCard_IF *uz_TempCard_IF_handle;
 
+
 //Handling with the Core
-uz_TempCard_IF_handle uz_TempCard_IF_init(uz_TempCard_IF_handle self);
+uz_TempCard_IF* uz_TempCard_IF_init(uz_TempCard_IF *self);
 
 void        uz_TempCard_IF_Reset(uz_TempCard_IF_handle self);                                               // Resets the Interface-IP to write new Channel configs
 void        uz_TempCard_IF_Start(uz_TempCard_IF_handle self);                                               // Starts the Interface-IP
@@ -104,14 +100,9 @@ void        uz_TempCard_IF_setCounter(uz_TempCard_IF_handle self, uint32_t Count
 uint32_t    uz_TempCard_IF_SetConfig(uz_TempCard_IF_handle self, uint32_t ConfigWord, uint32_t Channel);// Set the ConfigWord for the specified channel
 uint32_t    uz_TempCard_IF_GetConfig(uz_TempCard_IF_handle self, uint32_t Channel);                         // Read the Config of the specified Channel
 void        uz_TempCard_IF_SyncConfig(uz_TempCard_IF_handle self);                                          // Writes the in the struct stored config down to the Interface-IP
-bool        uz_TempCard_IF_CheckSync(uz_TempCard_IF_handle self);                                           // Checks wheather the in the IP stored config is in Sync with the config stored in the struct
+uint32_t    uz_TempCard_IF_CheckSync(uz_TempCard_IF_handle self);                                           // Checks wheather the in the IP stored config is in Sync with the config stored in the struct
 void        uz_TempCard_IF_MeasureTemps(uz_TempCard_IF_handle self);                                        // Gets the Temperature-Data from all LTC2983, converts the results and stores the tempvalue in the struct
 float       uz_TempCard_IF_ReadMeasurement_Channel(uz_TempCard_IF_handle self, uint32_t Channel);           // Read the Temperature Value of the specified Channel
 uint8_t     uz_TempCard_IF_CheckMeasurement_Channel(uz_TempCard_IF_handle self, uint32_t Channel);          // Checks wheather the measurement of the Channel is valid
-
-
-// Static allocator function
-uz_TempCard_IF_handle uz_TempCard_IF_staticAllocator(void);
-
 
 #endif // UZ_TEMPCARD_IF_H

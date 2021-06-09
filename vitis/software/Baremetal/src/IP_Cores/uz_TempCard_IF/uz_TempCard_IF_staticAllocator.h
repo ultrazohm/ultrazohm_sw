@@ -14,31 +14,11 @@
 ******************************************************************************/
 
 #pragma once
+#ifndef UZ_TEMPCARD_IF_STATICALLOCATOR_H
+#define UZ_TEMPCARD_IF_STATICALLOCATOR_H
 
-#ifndef UZ_TEMPCARD_IF_PRIVATE_H
-#define UZ_TEMPCARD_IF_PRIVATE_H
-#include <stdbool.h>
-#include <stdint.h>
 #include "uz_TempCard_IF.h"
 
-//Configurations of one LTC2983
-typedef struct {
-	float       temperature[CHANNEL_COUNT_OneChannel];
-	uint32_t    temperature_raw[CHANNEL_COUNT_OneChannel];
-    uint32_t    Configdata[CHANNEL_COUNT_OneChannel];
-	uint8_t		Channels_Valid[CHANNEL_COUNT_OneChannel];
-}UZ_TempCard_IF_OneChannel;
+uz_TempCard_IF_handle uz_TempCard_IF_instance_one(void);
 
-struct uz_TempCard_IF {
-	const uint32_t 				base_address;
-	const uint32_t 				ip_clk_frequency_Hz;
-	bool 						is_ready;
-	uint32_t 					Control_Reg;
-	uint32_t 					Counter_Period;
-	uint32_t 					Readback;
-	UZ_TempCard_IF_OneChannel	Channel_A;
-	UZ_TempCard_IF_OneChannel	Channel_B;
-	UZ_TempCard_IF_OneChannel	Channel_C;
-};
-
-#endif // UZ_TEMPCARD_IF_PRIVATE_H
+#endif

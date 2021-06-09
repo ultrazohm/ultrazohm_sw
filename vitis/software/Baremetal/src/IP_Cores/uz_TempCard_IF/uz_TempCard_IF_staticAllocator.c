@@ -13,32 +13,17 @@
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
-#pragma once
-
-#ifndef UZ_TEMPCARD_IF_PRIVATE_H
-#define UZ_TEMPCARD_IF_PRIVATE_H
-#include <stdbool.h>
-#include <stdint.h>
 #include "uz_TempCard_IF.h"
+#include "uz_TempCard_IF_private.h"
+#include "uz_TempCard_IF_staticAllocator.h"
+#include "xparameters.h"
 
-//Configurations of one LTC2983
-typedef struct {
-	float       temperature[CHANNEL_COUNT_OneChannel];
-	uint32_t    temperature_raw[CHANNEL_COUNT_OneChannel];
-    uint32_t    Configdata[CHANNEL_COUNT_OneChannel];
-	uint8_t		Channels_Valid[CHANNEL_COUNT_OneChannel];
-}UZ_TempCard_IF_OneChannel;
 
-struct uz_TempCard_IF {
-	const uint32_t 				base_address;
-	const uint32_t 				ip_clk_frequency_Hz;
-	bool 						is_ready;
-	uint32_t 					Control_Reg;
-	uint32_t 					Counter_Period;
-	uint32_t 					Readback;
-	UZ_TempCard_IF_OneChannel	Channel_A;
-	UZ_TempCard_IF_OneChannel	Channel_B;
-	UZ_TempCard_IF_OneChannel	Channel_C;
+static uz_TempCard_IF uz_TempCard_IF_instance={
+	.base_address=XPAR_TEMPERATURE_CARD_INTERFACE_TEMPERATURE_CARD_INT_0_BASEADDR,
+	.ip_clk_frequency_Hz=100000000U
 };
 
-#endif // UZ_TEMPCARD_IF_PRIVATE_H
+uz_TempCard_IF_handle uz_TempCard_IF_instance_one(void){
+    return (uz_TempCard_IF_init(&uz_TempCard_IF_instance));
+}

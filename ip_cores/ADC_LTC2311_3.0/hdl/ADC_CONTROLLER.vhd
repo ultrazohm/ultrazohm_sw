@@ -27,6 +27,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 -- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
 
+library work;
+use work.ADC_LTC2311_PKG.all;
+
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx leaf cells in this code.
 --library UNISIM;
@@ -39,12 +42,8 @@ entity ADC_CONTROLLER is
         OFFSET_WIDTH        : natural := 16;    -- Bit width of the offset value
         CONVERSION_WIDTH    : natural := 18;    -- Bit width of the conversion factor
         RES_LSB             : natural := 6;     -- LSB in the result vector of the multiplactor output
-        RES_MSB             : natural := 23;    -- MSB in the result vector of the multiplactor output
+        RES_MSB             : natural := 23    -- MSB in the result vector of the multiplactor output
         
-        -- SPI
-        DELAY_WIDTH         : natural := 8;     -- Bit width of the vector that contains pre and post delay
-                                                -- a.k.a. delay from SS_N -> low to first SCLK cycle and last before SS_N -> high
-        CLK_DIV_WIDTH       : natural := 16     -- Bit width of the vector that contains pre and post clock devider
     );
     port (
         CLK         : in std_logic;
@@ -58,12 +57,13 @@ entity ADC_CONTROLLER is
         MISO        : in std_logic_vector(CHANNELS - 1 downto 0);
         SS_OUT_N    : out std_logic;
         SS_IN_N     : in std_logic;
+        MANUAL      : in std_logic;
         ENABLE      : in std_logic;
         
         -- SPI config ports
-        PRE_DELAY   : in std_logic_vector(DELAY_WIDTH - 1 downto 0);
-        POST_DELAY  : in std_logic_vector(DELAY_WIDTH - 1 downto 0);
-        CLK_DIV     : in std_logic_vector(CLK_DIV_WIDTH - 1 downto 0);
+        PRE_DELAY   : in std_logic_vector(C_DELAY_WIDTH - 1 downto 0);
+        POST_DELAY  : in std_logic_vector(C_DELAY_WIDTH - 1 downto 0);
+        CLK_DIV     : in std_logic_vector(C_CLK_DIV_WIDTH - 1 downto 0);
         
         -- Control Ports
         SET_CONVERSION  : in std_logic;
@@ -96,17 +96,16 @@ architecture Behavioral of ADC_CONTROLLER is
     signal S_RESULT_COUNTER     : integer range 0 to CHANNELS + 3;
     
     -- single channel signals (inputs for the multiplier)
-    signal S_RAW_VALUE_S_C  : std_logic_vector(DATA_WIDTH - 1 downto 0);
     signal S_CONVERSION_S_C : std_logic_vector(CONVERSION_WIDTH - 1 downto 0);
     signal S_OFFSET_S_C     : std_logic_vector(OFFSET_WIDTH - 1 downto 0);
     signal S_RESULT_S_C     : std_logic_vector(DATA_WIDTH + CONVERSION_WIDTH downto 0);
+    signal S_RAW_VALUE_S_C  : std_logic_vector(DATA_WIDTH - 1 downto 0);
     
     -- SPI signals
     signal S_SPI_ENABLE     : std_logic;
     signal S_SPI_BUSY       : std_logic;
     signal S_SPI_BUSY_PIPE  : std_logic_vector(1 downto 0);
     signal S_SPI_RAW_VALUE  : std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0);
-    
     
     -- State definition for the FSM
     type state_type is (IDLE,SPI_TRANSFER,CONVERTING);
@@ -115,18 +114,44 @@ architecture Behavioral of ADC_CONTROLLER is
     attribute fsm_encoding of curstate, nxtstate : signal is "auto";
     attribute fsm_safe_state : string;
     attribute fsm_safe_state of curstate, nxtstate : signal is "power_on_state";
+    
+    -- attributes
+    -- keep
+    attribute keep : string;
+    attribute keep of S_CONVERSION : signal is "true";
+    attribute keep of S_OFFSET : signal is "true";
+    attribute keep of S_CONVERSION_S_C : signal is "true";
+    attribute keep of S_OFFSET_S_C : signal is "true";
+    attribute keep of S_RESULT_S_C : signal is "true";
+    attribute keep of S_RAW_VALUE_S_C : signal is "true";
+    attribute keep of S_SPI_ENABLE : signal is "true";
+    attribute keep of S_SPI_RAW_VALUE : signal is "true";
+    
+    -- state machine
+    attribute keep of curstate : signal is "true";
+    attribute keep of nxtstate : signal is "true";
+    
+    -- mark debug
+    attribute MARK_DEBUG : string;
+    attribute MARK_DEBUG of S_CONVERSION : signal is "true";
+    attribute MARK_DEBUG of S_OFFSET : signal is "true";
+    attribute MARK_DEBUG of S_CONVERSION_S_C : signal is "true";
+    attribute MARK_DEBUG of S_OFFSET_S_C : signal is "true";
+    attribute MARK_DEBUG of S_RESULT_S_C : signal is "true";
+    attribute MARK_DEBUG of S_RAW_VALUE_S_C : signal is "true";
+    attribute MARK_DEBUG of S_SPI_ENABLE : signal is "true";
+    attribute MARK_DEBUG of S_SPI_RAW_VALUE : signal is "true";
+    
+    -- state machine
+    attribute MARK_DEBUG of curstate : signal is "true";
+    attribute MARK_DEBUG of nxtstate : signal is "true";
 
     --component declarations
     
     component SPI_MASTER is
     generic(
         DATA_WIDTH      : natural := 16;    -- Number of bits per SPI frame
-        CHANNELS        : natural := 1;     -- Number of slaves that are controlled with the same SS_N and SCLK
-        
-        -- SPI configuration register
-        DELAY_WIDTH     : natural := 8;     -- Bit width of the vector that contains pre and post delay
-                                            -- a.k.a. delay from SS_N -> low to first SCLK cycle and last before SS_N -> high
-        CLK_DIV_WIDTH   : natural := 16     -- Bit width of the vector that contains pre and post clock devider
+        CHANNELS        : natural := 1     -- Number of slaves that are controlled with the same SS_N and SCLK
     );
     port (
         CLK         : in std_logic;
@@ -140,12 +165,13 @@ architecture Behavioral of ADC_CONTROLLER is
         MISO        : in std_logic_vector(CHANNELS - 1 downto 0);
         SS_OUT_N    : out std_logic;
         SS_IN_N     : in std_logic;
+        MANUAL      : in std_logic;
         -- Control Ports
         BUSY        : out std_logic;
         ENABLE      : in std_logic;
-        PRE_DELAY   : in std_logic_vector(DELAY_WIDTH - 1 downto 0);
-        POST_DELAY  : in std_logic_vector(DELAY_WIDTH - 1 downto 0);
-        CLK_DIV     : in std_logic_vector(CLK_DIV_WIDTH - 1 downto 0)
+        PRE_DELAY   : in std_logic_vector(C_DELAY_WIDTH - 1 downto 0);
+        POST_DELAY  : in std_logic_vector(C_DELAY_WIDTH - 1 downto 0);
+        CLK_DIV     : in std_logic_vector(C_CLK_DIV_WIDTH - 1 downto 0)
     );
     end component SPI_MASTER;
     
@@ -166,7 +192,6 @@ architecture Behavioral of ADC_CONTROLLER is
         POUT    : out std_logic_vector(AWIDTH + BWIDTH downto 0) 
         );
     end component MULT_ADD;
-    
 begin
 
 
@@ -329,9 +354,7 @@ begin
     spi: SPI_MASTER
     generic map (
         DATA_WIDTH      => DATA_WIDTH,
-        CHANNELS        => CHANNELS,
-        DELAY_WIDTH     => DELAY_WIDTH,
-        CLK_DIV_WIDTH   => CLK_DIV_WIDTH
+        CHANNELS        => CHANNELS
         )
     port map (
         CLK         => CLK,
@@ -345,6 +368,7 @@ begin
         MISO        => MISO,
         SS_OUT_N    => SS_OUT_N,
         SS_IN_N     => SS_IN_N,
+        MANUAL      => MANUAL,
         -- Control Ports
         BUSY        => S_SPI_BUSY,
         ENABLE      => S_SPI_ENABLE,

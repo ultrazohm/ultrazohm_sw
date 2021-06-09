@@ -126,9 +126,29 @@ typedef struct uz_adcLtc2311_conversionConfig
 
 } uz_adcLtc2311_conversionConfig;
 
+typedef struct uz_adcLtc2311_spiConfig
+{
+    
+} uz_adcLtc2311_spiConfig;
+
 // function declarations
 uz_adcLtc2311* uz_adcLtc2311_init(uz_adcLtc2311* self);
 uz_adcLtc2311_conversionConfig* uz_adcLtc2311_configureConversion(uz_adcLtc2311* self, uz_adcLtc2311_conversionConfig* configuration);
+void uz_adcLtc2311_init_conversionConfig(uz_adcLtc2311_conversionConfig* configuration);
+uz_adcLtc2311_spiConfig* uz_adcLtc2311_configureSpi(uz_adcLtc2311* self, uz_adcLtc2311_spiConfig* configuration);
+void uz_adcLtc2311_spiManualControlEnable(uz_adcLtc2311* self);
+void uz_adcLtc2311_spiManualControldisable(uz_adcLtc2311* self);
+void uz_adcLtc2311_spiSetSsN(uz_adcLtc2311* self, uint32_t spiMasters);
+void uz_adcLtc2311_spiResetSsN(uz_adcLtc2311* self, uint32_t spiMasters);
+void uz_adcLtc2311_spiSetSclk(uz_adcLtc2311* self, uint32_t spiMasters);
+void uz_adcLtc2311_spiResetSclk(uz_adcLtc2311* self, uint32_t spiMasters);
+void uz_adcLtc2311_spiResetSclk(uz_adcLtc2311* self, uint32_t spiMasters);
+
+void uz_adcLtc2311_softwareReset(uz_adcLtc2311* self);
+void uz_adcLtc2311_softwareTrigger(uz_adcLtc2311* self, uint32_t spiMasters);
+void uz_adcLtc2311_setContinuousMode(uz_adcLtc2311* self);
+void uz_adcLtc2311_setTriggeredMode(uz_adcLtc2311* self);
+
 
 
 #endif // UZ_ADCLTC2311_H

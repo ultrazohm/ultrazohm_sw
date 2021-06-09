@@ -12,8 +12,8 @@ entity ADC_LTC2311_v3_0 is
 	generic (
 		-- Users to add parameters here
         DATA_WIDTH          : natural := 16;    -- Number of bits per SPI frame
-        CHANNELS_PER_MASTER : natural := 4;     -- Number of slaves that are controlled with the same SS_N and SCLK
-        SPI_MASTER          : natural := 2;     -- Number of independent SPI Masters
+        CHANNELS_PER_MASTER : natural := 8;     -- Number of slaves that are controlled with the same SS_N and SCLK
+        SPI_MASTER          : natural := 1;     -- Number of independent SPI Masters
         OFFSET_WIDTH        : natural := 16;    -- Bit width of the offset value
         CONVERSION_WIDTH    : natural := 18;    -- Bit width of the conversion factor
         RES_LSB             : natural := 6;     -- LSB in the result vector of the multiplactor output
@@ -86,6 +86,7 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     signal S_MISO                 : std_logic_vector(CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
     signal S_PRE_DELAY, S_POST_DELAY              : std_logic_vector(C_DELAY_WIDTH - 1 downto 0);
     signal S_CLK_DIV                              : std_logic_vector(C_CLK_DIV_WIDTH - 1 downto 0);
+    signal S_SPI_MANUAL           : std_logic_vector(SPI_MASTER - 1 downto 0);
     
     -- control signals
     signal S_ENABLE, S_SET_CONVERSION, S_SET_OFFSET : std_logic_vector(SPI_MASTER - 1 downto 0);
@@ -104,6 +105,71 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     signal S_ADC_MASTER_SI_FINISH	: std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
     signal S_ADC_MASTER_BUSY	    : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
     signal S_ADC_CONV_VALUE         : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    
+    -- attributes
+    -- keep
+    attribute keep : string;
+    attribute keep of S_ENABLE : signal is "true";
+    attribute keep of S_SET_CONVERSION : signal is "true";
+    attribute keep of S_SET_OFFSET : signal is "true";
+    attribute keep of S_RESET_N : signal is "true";
+    attribute keep of S_CLK : signal is "true";
+    attribute keep of S_MISO : signal is "true";
+    attribute keep of S_PRE_DELAY : signal is "true";
+    attribute keep of S_POST_DELAY : signal is "true";
+    attribute keep of S_CLK_DIV : signal is "true";
+    attribute keep of S_SCLK : signal is "true";
+    
+    attribute keep of S_ADC_CR : signal is "true";
+    attribute keep of S_ADC_CR_IN : signal is "true";
+    attribute keep of S_ADC_SPI_CR : signal is "true";
+    attribute keep of S_ADC_SPI_CR_IN : signal is "true";
+    attribute keep of S_ADC_SPI_CFGR : signal is "true";
+    attribute keep of S_ADC_MASTER_CHANNEL : signal is "true";
+    attribute keep of S_ADC_CHANNEL : signal is "true";
+    attribute keep of S_ADC_MASTER_FINISH : signal is "true";
+    attribute keep of S_ADC_MASTER_SI_FINISH : signal is "true";
+    attribute keep of S_ADC_MASTER_BUSY : signal is "true";
+    attribute keep of S_ADC_CONV_VALUE : signal is "true";
+    attribute keep of S_SPI_MANUAL : signal is "true";
+    
+    -- mark debug
+    attribute MARK_DEBUG : string;
+    attribute MARK_DEBUG of S_ENABLE : signal is "true";
+    attribute MARK_DEBUG of S_SET_CONVERSION : signal is "true";
+    attribute MARK_DEBUG of S_SET_OFFSET : signal is "true";
+    attribute MARK_DEBUG of S_RESET_N : signal is "true";
+    attribute MARK_DEBUG of S_CLK : signal is "true";
+    attribute MARK_DEBUG of S_SCLK_IN : signal is "true";
+    attribute MARK_DEBUG of S_SS_IN_N : signal is "true";
+    attribute MARK_DEBUG of S_MISO : signal is "true";
+    attribute MARK_DEBUG of S_PRE_DELAY : signal is "true";
+    attribute MARK_DEBUG of S_POST_DELAY : signal is "true";
+    attribute MARK_DEBUG of S_CLK_DIV : signal is "true";
+    attribute MARK_DEBUG of S_SCLK : signal is "true";
+    
+    attribute MARK_DEBUG of S_ADC_CR : signal is "true";
+    attribute MARK_DEBUG of S_ADC_CR_IN : signal is "true";
+    attribute MARK_DEBUG of S_ADC_SPI_CR : signal is "true";
+    attribute MARK_DEBUG of S_ADC_SPI_CR_IN : signal is "true";
+    attribute MARK_DEBUG of S_ADC_SPI_CFGR : signal is "true";
+    attribute MARK_DEBUG of S_ADC_MASTER_CHANNEL : signal is "true";
+    attribute MARK_DEBUG of S_ADC_CHANNEL : signal is "true";
+    attribute MARK_DEBUG of S_ADC_MASTER_FINISH : signal is "true";
+    attribute MARK_DEBUG of S_ADC_MASTER_SI_FINISH : signal is "true";
+    attribute MARK_DEBUG of S_ADC_MASTER_BUSY : signal is "true";
+    attribute MARK_DEBUG of S_ADC_CONV_VALUE : signal is "true";
+    attribute MARK_DEBUG of S_SPI_MANUAL : signal is "true";
+    
+    -- ports
+    attribute MARK_DEBUG of RAW_VALUE : signal is "true";
+    attribute MARK_DEBUG of RAW_VALID : signal is "true";
+    attribute MARK_DEBUG of SI_VALUE : signal is "true";
+    attribute MARK_DEBUG of SI_VALID : signal is "true";
+    attribute MARK_DEBUG of TRIGGER_CNV : signal is "true";
+    attribute MARK_DEBUG of SS_N : signal is "true";
+    
+    
 
 	-- component declaration AXI4 Lite interface
 	component ADC_LTC2311_v3_0_S00_AXI is
@@ -158,12 +224,7 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
             OFFSET_WIDTH        : natural := 16;    -- Bit width of the offset value
             CONVERSION_WIDTH    : natural := 18;    -- Bit width of the conversion factor
             RES_LSB             : natural := 6;     -- LSB in the result vector of the multiplactor output
-            RES_MSB             : natural := 23;    -- MSB in the result vector of the multiplactor output
-            
-            -- SPI
-            DELAY_WIDTH         : natural := 8;     -- Bit width of the vector that contains pre and post delay
-                                                    -- a.k.a. delay from SS_N -> low to first SCLK cycle and last before SS_N -> high
-            CLK_DIV_WIDTH       : natural := 16     -- Bit width of the vector that contains pre and post clock devider
+            RES_MSB             : natural := 23    -- MSB in the result vector of the multiplactor output
         );
         port (
             CLK         : in std_logic;
@@ -177,12 +238,13 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
             MISO        : in std_logic_vector(CHANNELS - 1 downto 0);
             SS_OUT_N    : out std_logic;
             SS_IN_N     : in std_logic;
+            MANUAL      : in std_logic;
             ENABLE      : in std_logic;
             
             -- SPI config ports
-            PRE_DELAY   : in std_logic_vector(DELAY_WIDTH - 1 downto 0);
-            POST_DELAY  : in std_logic_vector(DELAY_WIDTH - 1 downto 0);
-            CLK_DIV     : in std_logic_vector(CLK_DIV_WIDTH - 1 downto 0);
+            PRE_DELAY   : in std_logic_vector(C_DELAY_WIDTH - 1 downto 0);
+            POST_DELAY  : in std_logic_vector(C_DELAY_WIDTH - 1 downto 0);
+            CLK_DIV     : in std_logic_vector(C_CLK_DIV_WIDTH - 1 downto 0);
             
             -- Control Ports
             SET_CONVERSION  : in std_logic;
@@ -216,6 +278,7 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
        
        return V_IS_BUSY;
     end function;
+    
 begin
 
     -- Add user logic here
@@ -226,10 +289,10 @@ begin
     S_POST_DELAY  <= S_ADC_SPI_CFGR(C_CLK_DIV_WIDTH + 2 * C_DELAY_WIDTH - 1 downto C_CLK_DIV_WIDTH + C_DELAY_WIDTH);
     SI_VALID      <= S_ADC_MASTER_SI_FINISH(SPI_MASTER - 1 downto 0);
     RAW_VALID     <= S_ADC_MASTER_FINISH(SPI_MASTER - 1 downto 0);
-    S_CPHA        <= S_ADC_SPI_CR(C_SPI_CPOL);
-    S_CPOL        <= S_ADC_SPI_CR(C_SPI_CPHA);
+    S_CPHA        <= S_ADC_SPI_CR(C_SPI_CPHA);
+    S_CPOL        <= S_ADC_SPI_CR(C_SPI_CPOL);
     
-    S_RESET_N     <= s00_axi_aresetn or S_ADC_CR(C_SW_RESET);
+    S_RESET_N     <= s00_axi_aresetn and (not S_ADC_CR(C_SW_RESET));
     
     -- Clock for AXI interface are the global signals for the whole IP core 
     S_CLK         <= s00_axi_aclk;
@@ -237,7 +300,6 @@ begin
     -- sequential logic
 	
 	control: process(S_CLK)
-	variable V_IS_BUSY : boolean := false;
 	begin
         if rising_edge(S_CLK) then
             
@@ -246,8 +308,10 @@ begin
            S_ADC_CR_IN(C_TRIGGER) <= '1';
            S_SET_CONVERSION <= (others => '0');
            S_SET_OFFSET <= (others => '0');
+           S_ENABLE <= (others => '0');
+           S_SPI_MANUAL <= (others => '0');
            
-           if (S_RESET_N = '1') then
+           if (S_RESET_N = '0') then
                
                S_ENABLE <= (others => '0');
                S_SET_CONVERSION <= (others => '0');
@@ -292,28 +356,28 @@ begin
                     S_ADC_CR_IN(C_TRIGGER) <= '0';
                end if;
            
-           elsif (S_ADC_CR(C_TRIGGER) = '0') or (S_ADC_CR(C_MODE) = '0') or (TRIGGER_CNV = STD_ZERO) then
-               S_ENABLE <= (others => '0');
-           
            -- manual SPI control
            elsif (S_ADC_SPI_CR(C_SPI_CONTROL) = '1') then
                 
                 if (IS_BUSY(S_ADC_MASTER_BUSY, S_ADC_MASTER_CHANNEL) = false) then
                     for i in SPI_MASTER - 1 downto 0 loop
                         if(S_ADC_MASTER_CHANNEL(i) = '1') then
-                            S_SCLK_IN(i)                       <= S_ADC_SPI_CR(C_SPI_SCLK);
-                            S_ADC_SPI_CR_IN(C_SPI_SCLK_STATUS) <= S_ADC_SPI_CR(C_SPI_SCLK);
-                            
+                            S_SPI_MANUAL(i)                    <= '1';
+                            S_SCLK_IN(i)                       <= S_ADC_SPI_CR(C_SPI_SCLK);                        
                             S_SS_IN_N(i)                       <= S_ADC_SPI_CR(C_SPI_SS_N);
                             S_ADC_SPI_CR_IN(C_SPI_SS_N_STATUS) <= S_ADC_SPI_CR(C_SPI_SS_N);
+                            S_ADC_SPI_CR_IN(C_SPI_SCLK_STATUS) <= S_ADC_SPI_CR(C_SPI_SCLK);
+                            
                         end if;
                     end loop;
                 end if;
+                
+           else
+                S_ENABLE <= (others => '0');
            end if;
            
         end if;
 	end process control;
-	
 	
 	-- User logic ends
 
@@ -370,12 +434,7 @@ ADC_LTC2311_v3_0_S00_AXI_inst : ADC_LTC2311_v3_0_S00_AXI
             OFFSET_WIDTH        => OFFSET_WIDTH,            -- Bit width of the offset value
             CONVERSION_WIDTH    => CONVERSION_WIDTH,        -- Bit width of the conversion factor
             RES_LSB             => RES_LSB,                 -- LSB in the result vector of the multiplactor output
-            RES_MSB             => RES_MSB,                 -- MSB in the result vector of the multiplactor output
-            
-            -- SPI
-            DELAY_WIDTH         => C_DELAY_WIDTH,     -- Bit width of the vector that contains pre and post delay
-                                          -- a.k.a. delay from SS_N -> low to first SCLK cycle and last before SS_N -> high
-            CLK_DIV_WIDTH       => C_CLK_DIV_WIDTH     -- Bit width of the vector that contains pre and post clock devider
+            RES_MSB             => RES_MSB                 -- MSB in the result vector of the multiplactor output
 	   )
 	   
 	   port map(
@@ -390,6 +449,7 @@ ADC_LTC2311_v3_0_S00_AXI_inst : ADC_LTC2311_v3_0_S00_AXI
             MISO        => S_MISO((i + 1) * CHANNELS_PER_MASTER - 1 downto i * CHANNELS_PER_MASTER),
             SS_OUT_N    => SS_N(i),
             SS_IN_N     => S_SS_IN_N(i),
+            MANUAL      => S_SPI_MANUAL(i),
             ENABLE      => S_ENABLE(i),
             
             -- SPI config ports
@@ -442,4 +502,5 @@ ADC_LTC2311_v3_0_S00_AXI_inst : ADC_LTC2311_v3_0_S00_AXI
         SCLK <= S_SCLK;
         S_MISO <= MISO;
     end generate gen_single;
+    
 end arch_imp;

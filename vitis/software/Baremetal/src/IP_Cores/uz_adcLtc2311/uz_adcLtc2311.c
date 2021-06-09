@@ -14,7 +14,7 @@ uz_adcLtc2311* uz_adcLtc2311_init(uz_adcLtc2311* self)
     return (self);
 }
 
-uz_adcLtc2311_init_conversionConfig(uz_adcLtc2311_conversionConfig* configuration)
+void uz_adcLtc2311_init_conversionConfig(uz_adcLtc2311_conversionConfig* configuration)
 {
     uz_assert_not_NULL(configuration);
 
@@ -27,8 +27,6 @@ uz_adcLtc2311_init_conversionConfig(uz_adcLtc2311_conversionConfig* configuratio
     configuration->error_code=0;
     configuration->try_infinite=true;
     configuration->max_attempts=0;
-
-    return configuration;
 }
 
 uz_adcLtc2311_conversionConfig* uz_adcLtc2311_configureConversion(uz_adcLtc2311* self, uz_adcLtc2311_conversionConfig* configuration)
@@ -42,7 +40,9 @@ uz_adcLtc2311_conversionConfig* uz_adcLtc2311_configureConversion(uz_adcLtc2311*
     uint32_t max_attempts=configuration->max_attempts;
     if(configuration->set_offset)
     {
-        while(uz_adcLtc2311_hw_read_cr(self->base_address) & UZ_ADCLTC2311_CR_CONV_VALUE_VALID);
+        uz_adcLtc2311_hw_write_conversion_value(self->base_address, configuration->offset);
+        uz_adcLtc2311_hw_write_cr(self->base_address, uz_adcLtc2311_hw_read_cr(self->base_address) | UZ_ADCLTC2311_CR_CONV_VALUE_VALID);
+        while(uz_adcLtc2311_hw_read_cr(self->base_address) & UZ_ADCLTC2311_CR_CONV_VALUE_VALID)
         {
             if((configuration->try_infinite == false) && (--max_attempts <= 0))
             {
@@ -55,7 +55,9 @@ uz_adcLtc2311_conversionConfig* uz_adcLtc2311_configureConversion(uz_adcLtc2311*
     max_attempts=configuration->max_attempts;
     if(configuration->set_conversion)
     {
-        while(uz_adcLtc2311_hw_read_cr(self->base_address) & UZ_ADCLTC2311_CR_CONV_VALUE_VALID);
+        uz_adcLtc2311_hw_write_conversion_value(self->base_address, configuration->conversion_factor);
+        uz_adcLtc2311_hw_write_cr(self->base_address, uz_adcLtc2311_hw_read_cr(self->base_address) | UZ_ADCLTC2311_CR_CONV_VALUE_VALID);
+        while(uz_adcLtc2311_hw_read_cr(self->base_address) & UZ_ADCLTC2311_CR_CONV_VALUE_VALID)
         {
             if((configuration->try_infinite == false) && (--max_attempts <= 0))
             {
@@ -66,4 +68,16 @@ uz_adcLtc2311_conversionConfig* uz_adcLtc2311_configureConversion(uz_adcLtc2311*
     }
 
     return configuration;
+}
+
+void uz_adcLtc2311_softwareReset(uz_adcLtc2311* self)
+{
+    uz_assert_not_NULL(self);
+
+    uz_adcLtc2311_hw_write_cr(self->base_address, uz_adcLtc2311_hw_read_cr(self->base_address) | UZ_ADCLTC2311_CR_SW_RESET);
+
+    while(uz_adcLtc2311_hw_read_cr(self->base_address) & UZ_ADCLTC2311_CR_SW_RESET)
+    {
+        ;
+    }
 }

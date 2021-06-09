@@ -547,7 +547,7 @@
 		</DisplayName>
 		<Description value="Read out and process data from the LTC2311 ADC">
 		</Description>
-		<CoreRevision value="7">
+		<CoreRevision value="13">
 		</CoreRevision>
 		<ComponentPath value="ADC_LTC2311_3.0/component.xml">
 		</ComponentPath>
@@ -567,6 +567,10 @@
 			<Interface value="AXI4">
 			</Interface>
 		</Interfaces>
+		<VendorDisplayName value="UltraZohm">
+		</VendorDisplayName>
+		<VendorURL value="https://ultrazohm.com">
+		</VendorURL>
 	</IP>
 	<IP>
 		<VLNV value="xilinx.com:ip:PWM_and_SS_control_V3_ip:1.0">

@@ -16,6 +16,7 @@
 //Includes from own files
 #include "main.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
+#include "sw/uz_adcLtc2311_testbench.h"
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -49,6 +50,8 @@ int main(void) {
 	uz_printf("\r\n\r\n");
 	uz_printf("Welcome to the UltraZohm\r\n");
 	uz_printf("----------------------------------------\r\n");
+
+	uz_adcLtc2311_testbench();
 
 	// Initialize the global "Global_Data" structure -> the values can be overwritten afterwards from the Java-GUI -> this must be the first INIT-function, because it is required subsequently!
 	InitializeDataStructure(&Global_Data);

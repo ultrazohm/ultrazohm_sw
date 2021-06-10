@@ -13,7 +13,7 @@ Example
 
   #include "uz_wavegen.h"
   int main(void) {
-     float output = = uz_wavegen_white_noise(1.0f);
+     float output = uz_wavegen_white_noise(1.0f);
   }
 
 Description

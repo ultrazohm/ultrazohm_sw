@@ -41,8 +41,8 @@ Call the init function:
 .. code-block:: c
      
     int main(void) {
-    uz_wavegen_three_phase* three_test = uz_wavegen_three_phase_init(config_three);
-    uz_wavegen_three_phase_sample(three_test);
+    uz_wavegen_three_phase* three_phase_test = uz_wavegen_three_phase_init(config_three);
+    uz_wavegen_three_phase_sample(three_phase_test);
     }
 
 After the values for the three phases at the current system time have been calculated in ``uz_wavegen_three_phase_sample()``, the value of each phase can be accessed with the following getter functions.

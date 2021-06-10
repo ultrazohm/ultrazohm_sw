@@ -15,8 +15,7 @@ Example
   int main(void) {
      float amplitude = 8.0f;
      float frequency_Hz = 10.0f;
-     float duty_cycle = 0.5f;
-     float output = uz_wavegen_pulse(amplitude, frequency_Hz, duty_cycle);
+     float output = uz_wavegen_sine(amplitude, frequency_Hz);
   }
 
 Description

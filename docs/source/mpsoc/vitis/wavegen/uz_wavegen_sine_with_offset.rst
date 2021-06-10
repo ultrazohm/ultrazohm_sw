@@ -16,7 +16,7 @@ Example
      float amplitude = 6.0f;
      float frequency_Hz = 5.0f;
      float offset = -5.0f;
-     float output = uz_wavegen_triangle_with_offset(amplitude, frequency_Hz, offset);
+     float output = uz_wavegen_sine_with_offset(amplitude, frequency_Hz, offset);
   }
 
 Description

@@ -1,6 +1,10 @@
+.. _JavaScope:
+
 =========
 JavaScope
 =========
+
+
 
 Idea
 ----

@@ -36,6 +36,8 @@ ARM_to_Oszi_Data_shared_struct OsziData;
 Oszi_to_ARM_Data_shared_struct ControlData;
 Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
 
+uz_TempCard_IF_handle TemperatureCard;
+
 static void uz_assertCallback(const char8 *file, s32 line) {
 	extern XScuGic INTCInst;
 	uz_printf("\r\nAssertion in file %s on line %d\r\n", file, line);
@@ -93,7 +95,7 @@ int main(void) {
 	AXI2TCM_on();
 
 	// Init Temperature Card
-	uz_TempCard_IF_handle TemperatureCard = uz_TempCard_IF_instance_one();
+	TemperatureCard = uz_TempCard_IF_instance_one();
     uz_TempCard_IF_Reset(TemperatureCard);
     uz_TempCard_IF_SetConfig(TemperatureCard, 0xE80FA000, 41);    	// Rsense 1k
     uz_TempCard_IF_SetConfig(TemperatureCard, 0x60854000, 43);   	// PT100-2wire

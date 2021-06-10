@@ -97,7 +97,7 @@ void        uz_TempCard_IF_Start(uz_TempCard_IF_handle self);                   
 void        uz_TempCard_IF_Stop(uz_TempCard_IF_handle self);                                                // Stops the Interface-IP
 uint32_t    uz_TempCard_IF_ReadBack(uz_TempCard_IF_handle self);                                            // Stops the Interface-IP
 void        uz_TempCard_IF_setCounter(uz_TempCard_IF_handle self, uint32_t Counter);                        // Set the Counter for the internal trigger generator
-uint32_t    uz_TempCard_IF_SetConfig(uz_TempCard_IF_handle self, uint32_t ConfigWord, uint32_t Channel);// Set the ConfigWord for the specified channel
+uint32_t    uz_TempCard_IF_SetConfig(uz_TempCard_IF_handle self, uint32_t ConfigWord, uint32_t Channel);    // Set the ConfigWord for the specified channel
 uint32_t    uz_TempCard_IF_GetConfig(uz_TempCard_IF_handle self, uint32_t Channel);                         // Read the Config of the specified Channel
 void        uz_TempCard_IF_SyncConfig(uz_TempCard_IF_handle self);                                          // Writes the in the struct stored config down to the Interface-IP
 uint32_t    uz_TempCard_IF_CheckSync(uz_TempCard_IF_handle self);                                           // Checks wheather the in the IP stored config is in Sync with the config stored in the struct

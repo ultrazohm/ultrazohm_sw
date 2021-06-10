@@ -79,7 +79,7 @@ uint32_t uz_TempCard_IF_SetConfig(uz_TempCard_IF_handle self, uint32_t ConfigWor
     if(Channel>=CHANNEL_TOTAL){
         return(UZ_FAILURE);
     }else{
-        if(Channel<20){                         //Select Channel_A
+        if	    (Channel>=0 && Channel<20){                         //Select Channel_A
             self->Channel_A.Configdata[Channel]     = ConfigWord;
         }else if(Channel>=20 && Channel<40){    //Select Channel_B
             self->Channel_B.Configdata[Channel-20]  = ConfigWord;
@@ -94,7 +94,7 @@ uint32_t uz_TempCard_IF_SetConfig(uz_TempCard_IF_handle self, uint32_t ConfigWor
 uint32_t uz_TempCard_IF_GetConfig(uz_TempCard_IF_handle self, uint32_t Channel){
     uz_assert_not_NULL(self);
     uz_assert_true(self->is_ready);
-    if(Channel<20){                             //Select Channel_A
+    if      (Channel>=0 && Channel<20){                             //Select Channel_A
         return(self->Channel_A.Configdata[Channel]);
     }else if(Channel>=20 && Channel<40){        //Select Channel_B
         return(self->Channel_B.Configdata[Channel-20]);
@@ -111,9 +111,9 @@ void uz_TempCard_IF_SyncConfig(uz_TempCard_IF_handle self){
         //Select Channel_A
         uz_TempCard_IF_hw_writeReg(self->base_address + TempCard_IF_Config_A_0 + (i * 0x4), self->Channel_A.Configdata[i]);
         //Select Channel_B
-        uz_TempCard_IF_hw_writeReg(self->base_address + TempCard_IF_Config_B_0 + (i * 0x4), self->Channel_A.Configdata[i]);
+        uz_TempCard_IF_hw_writeReg(self->base_address + TempCard_IF_Config_B_0 + (i * 0x4), self->Channel_B.Configdata[i]);
         //Select Channel_C
-        uz_TempCard_IF_hw_writeReg(self->base_address + TempCard_IF_Config_C_0 + (i * 0x4), self->Channel_A.Configdata[i]);
+        uz_TempCard_IF_hw_writeReg(self->base_address + TempCard_IF_Config_C_0 + (i * 0x4), self->Channel_C.Configdata[i]);
     }
 }
 
@@ -171,7 +171,7 @@ float uz_TempCard_IF_ReadMeasurement_Channel(uz_TempCard_IF_handle self, uint32_
     if(Channel>=CHANNEL_TOTAL){
         return(UZ_FAILURE);
     }else{
-		if(Channel<20){                             //Select Channel_A
+		if      (Channel>=0 && Channel<20){                             //Select Channel_A
 			return(self->Channel_A.temperature[Channel]);
 		}else if(Channel>=20 && Channel<40){        //Select Channel_B
 			return(self->Channel_B.temperature[Channel-20]);
@@ -184,7 +184,7 @@ float uz_TempCard_IF_ReadMeasurement_Channel(uz_TempCard_IF_handle self, uint32_
 // Checks wheather the measurement of the Channel is valid
 uint8_t uz_TempCard_IF_CheckMeasurement_Channel(uz_TempCard_IF_handle self, uint32_t Channel){
     uz_assert_not_NULL(self);
-    if(Channel<20){                             //Select Channel_A
+    if      (Channel>=0 && Channel<20){                             //Select Channel_A
         return(self->Channel_A.Channels_Valid[Channel]);
     }else if(Channel>=20 && Channel<40){        //Select Channel_B
         return(self->Channel_B.Channels_Valid[Channel-20]);

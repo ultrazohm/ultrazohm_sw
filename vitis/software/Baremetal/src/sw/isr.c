@@ -28,6 +28,7 @@
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 
+
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
 
@@ -67,7 +68,6 @@ void ISR_Control(void *data)
 	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
 
 	ReadAllADC();
-
 	CheckForErrors();
 	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
 
@@ -95,8 +95,6 @@ void ISR_Control(void *data)
 	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
-
-	// Test the TemperatureCard
 
 
 	// Update JavaScope
@@ -311,4 +309,5 @@ static void CheckForErrors(){
 		}
 	}
 };
+
 

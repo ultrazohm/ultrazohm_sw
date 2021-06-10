@@ -16,10 +16,6 @@
 //Includes from own files
 #include "main.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
-
-// Include to test the driver
-#include "IP_Cores/uz_TempCard_IF/uz_TempCard_IF_staticAllocator.h"
-
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -35,8 +31,6 @@ ARM_to_Oszi_Data_shared_struct OsziData;
 //Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
 Oszi_to_ARM_Data_shared_struct ControlData;
 Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
-
-uz_TempCard_IF_handle TemperatureCard;
 
 static void uz_assertCallback(const char8 *file, s32 line) {
 	extern XScuGic INTCInst;
@@ -94,29 +88,8 @@ int main(void) {
 	// Turn on AXI2TCM communication
 	AXI2TCM_on();
 
-	// Init Temperature Card
-	TemperatureCard = uz_TempCard_IF_instance_one();
-    uz_TempCard_IF_Reset(TemperatureCard);
-    uz_TempCard_IF_SetConfig(TemperatureCard, 0xE80FA000, 41);    	// Rsense 1k
-    uz_TempCard_IF_SetConfig(TemperatureCard, 0x60854000, 43);   	// PT100-2wire
-    uz_TempCard_IF_SetConfig(TemperatureCard, 0x60854000, 45);    	// PT100-2wire
-    uz_TempCard_IF_SetConfig(TemperatureCard, 0x60854000, 47);    	// PT100-2wire
-    uz_TempCard_IF_SetConfig(TemperatureCard, 0x60854000, 49);    	// PT100-2wire
-    uz_TempCard_IF_SetConfig(TemperatureCard, 0x60854000, 51);    	// PT100-2wire
-    uz_TempCard_IF_SetConfig(TemperatureCard, 0x60854000, 53);    	// PT100-2wire
-    uz_TempCard_IF_SetConfig(TemperatureCard, 0x60854000, 54);    	// PT100-2wire
-    uz_TempCard_IF_SetConfig(TemperatureCard, 0x60854000, 55);    	// PT100-2wire
-    uz_TempCard_IF_SetConfig(TemperatureCard, 0x60854000, 56);    	// PT100-2wire
-    uz_TempCard_IF_SetConfig(TemperatureCard, 0x60854000, 57);    	// PT100-2wire
-    uz_TempCard_IF_SyncConfig(TemperatureCard);                 	// Write conf
-    uz_TempCard_IF_setCounter(TemperatureCard, 0x00F00000);     	// some Random Counter Value
-    uz_TempCard_IF_Start(TemperatureCard);                        	// Start the measurement
-
 	// Infinite loop
 	while (1) {
-
-		// Poll Temperature Card
-	    uz_TempCard_IF_MeasureTemps(TemperatureCard);
 
 		// poll the buttons
 		Global_Data.dv.sw1 = uz_GetPushButtonEnableSystem();

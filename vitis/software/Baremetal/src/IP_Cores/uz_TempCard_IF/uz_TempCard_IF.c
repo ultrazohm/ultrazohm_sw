@@ -148,19 +148,32 @@ void uz_TempCard_IF_MeasureTemps(uz_TempCard_IF_handle self){
     uz_assert_not_NULL(self);
     for(int i = 0; i < CHANNEL_COUNT_OneChannel; i++){                       
         //Select Channel_A
-    	self->Channel_A.temperature_raw[i]  = uz_TempCard_IF_hw_readReg(self->base_address + TempCard_IF_Result_A_0 + (i * 0x4));    // Read raw Measurement
-    	self->Channel_A.temperature[i]      = (float)(self->Channel_A.temperature_raw[i] & 0x00FFFFFF) * TEMP_CONVERSION_FACTOR;    // extract temperature value
+    	self->Channel_A.temperature_raw[i]  = uz_TempCard_IF_hw_readReg(self->base_address + TempCard_IF_Result_A_0 + (i * 0x4));   // Read raw Measurement
     	self->Channel_A.Channels_Valid[i]   = (self->Channel_A.temperature_raw[i] & 0xFF000000) >> 24;                              // extract measurement information
+    	if(self->Channel_A.Channels_Valid[i] == 1){
+    		self->Channel_A.temperature[i]      = (float)(self->Channel_A.temperature_raw[i] & 0x00FFFFFF) * TEMP_CONVERSION_FACTOR;    // extract temperature value
+    	}else{
+    		self->Channel_A.temperature[i]      = 0;    // extract temperature value
+    	}
+
 
         //Select Channel_B
     	self->Channel_B.temperature_raw[i]  = uz_TempCard_IF_hw_readReg(self->base_address + TempCard_IF_Result_B_0 + (i * 0x4));   // Read raw Measurement
-    	self->Channel_B.temperature[i]      = (float)(self->Channel_B.temperature_raw[i] & 0x00FFFFFF) * TEMP_CONVERSION_FACTOR;    // extract temperature value
     	self->Channel_B.Channels_Valid[i]   = (self->Channel_B.temperature_raw[i] & 0xFF000000) >> 24;                              // extract measurement information
+    	if(self->Channel_B.Channels_Valid[i] == 1){
+    	self->Channel_B.temperature[i]      = (float)(self->Channel_B.temperature_raw[i] & 0x00FFFFFF) * TEMP_CONVERSION_FACTOR;    // extract temperature value
+    	}else{
+        		self->Channel_A.temperature[i]      = 0;    // extract temperature value
+        	}
 
         //Select Channel_C
     	self->Channel_C.temperature_raw[i]  = uz_TempCard_IF_hw_readReg(self->base_address + TempCard_IF_Result_C_0 + (i * 0x4));   // Read raw Measurement
-    	self->Channel_C.temperature[i]      = (float)(self->Channel_C.temperature_raw[i] & 0x00FFFFFF) * TEMP_CONVERSION_FACTOR;    // extract temperature value
     	self->Channel_C.Channels_Valid[i]   = (self->Channel_C.temperature_raw[i] & 0xFF000000) >> 24;                              // extract measurement information
+    	if(self->Channel_C.Channels_Valid[i] == 1){
+    	self->Channel_C.temperature[i]      = (float)(self->Channel_C.temperature_raw[i] & 0x00FFFFFF) * TEMP_CONVERSION_FACTOR;    // extract temperature value
+		}else{
+    		self->Channel_A.temperature[i]      = 0;    // extract temperature value
+    	}
     }
 
 }

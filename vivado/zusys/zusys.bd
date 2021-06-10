@@ -5,7 +5,7 @@
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
-      "synth_flow_mode": "None",
+      "synth_flow_mode": "Hierarchical",
       "tool_version": "2020.1.1",
       "validated": "true"
     },
@@ -633,16 +633,16 @@
               "uz_interlockDeadtime_0/AXI4"
             ]
           },
-          "Conn1": {
-            "interface_ports": [
-              "AXI4_Lite1",
-              "Counter_f_sw_V2_ip_0/AXI4_Lite"
-            ]
-          },
           "AXI4_Lite_1": {
             "interface_ports": [
               "AXI4_Lite",
               "PWM_and_SS_control_V_0/AXI4_Lite"
+            ]
+          },
+          "Conn1": {
+            "interface_ports": [
+              "AXI4_Lite1",
+              "Counter_f_sw_V2_ip_0/AXI4_Lite"
             ]
           }
         },
@@ -1382,16 +1382,16 @@
           }
         },
         "interface_nets": {
-          "ps8_0_axi_periph_M00_AXI": {
-            "interface_ports": [
-              "s00_axi",
-              "ADC_Block_B/s00_axi"
-            ]
-          },
           "Conn1": {
             "interface_ports": [
               "s00_axi1",
               "ADC_Block_A/s00_axi"
+            ]
+          },
+          "ps8_0_axi_periph_M00_AXI": {
+            "interface_ports": [
+              "s00_axi",
+              "ADC_Block_B/s00_axi"
             ]
           }
         },
@@ -6958,15 +6958,15 @@
           "Net": {
             "ports": [
               "SPI_MISO_1",
-              "Temperature_Card_Int_0/SPI_MISO_1",
-              "ila_0/probe7"
+              "ila_0/probe7",
+              "Temperature_Card_Int_0/SPI_MISO_1"
             ]
           },
           "Net1": {
             "ports": [
               "LTC_Interrupt_1",
-              "Temperature_Card_Int_0/LTC_Interrupt_1",
-              "ila_0/probe8"
+              "ila_0/probe8",
+              "Temperature_Card_Int_0/LTC_Interrupt_1"
             ]
           },
           "Temperature_Card_Int_0_SPI_MOSI_2": {
@@ -7011,15 +7011,15 @@
           "Net2": {
             "ports": [
               "SPI_MISO_2",
-              "Temperature_Card_Int_0/SPI_MISO_2",
-              "ila_0/probe16"
+              "ila_0/probe16",
+              "Temperature_Card_Int_0/SPI_MISO_2"
             ]
           },
           "Net3": {
             "ports": [
               "LTC_Interrupt_2",
-              "Temperature_Card_Int_0/LTC_Interrupt_2",
-              "ila_0/probe17"
+              "ila_0/probe17",
+              "Temperature_Card_Int_0/LTC_Interrupt_2"
             ]
           },
           "Temperature_Card_Int_0_SPI_MOSI_3": {
@@ -7070,15 +7070,15 @@
           "Net4": {
             "ports": [
               "SPI_MISO_3",
-              "Temperature_Card_Int_0/SPI_MISO_3",
-              "ila_0/probe25"
+              "ila_0/probe25",
+              "Temperature_Card_Int_0/SPI_MISO_3"
             ]
           },
           "Net5": {
             "ports": [
               "LTC_Interrupt_3",
-              "Temperature_Card_Int_0/LTC_Interrupt_3",
-              "ila_0/probe26"
+              "ila_0/probe26",
+              "Temperature_Card_Int_0/LTC_Interrupt_3"
             ]
           },
           "Temperature_Card_Int_0_LTC_resetn_2": {
@@ -7649,40 +7649,10 @@
           "smartconnect_0/M15_AXI"
         ]
       },
-      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
+      "smartconnect_2_M00_AXI": {
         "interface_ports": [
-          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD",
-          "smartconnect_0/S00_AXI"
-        ]
-      },
-      "s00_axi1_2": {
-        "interface_ports": [
-          "ADC_A2/s00_axi1",
-          "smartconnect_0/M03_AXI"
-        ]
-      },
-      "s00_axi_4": {
-        "interface_ports": [
-          "ADC_A1/s00_axi",
-          "smartconnect_0/M10_AXI"
-        ]
-      },
-      "S_AXI_1": {
-        "interface_ports": [
-          "Interrupt/S_AXI",
-          "smartconnect_0/M05_AXI"
-        ]
-      },
-      "smartconnect_0_M12_AXI": {
-        "interface_ports": [
-          "IncreEncoder_V24_ip_0/AXI4_Lite",
-          "smartconnect_0/M12_AXI"
-        ]
-      },
-      "AXI4_Lite_3": {
-        "interface_ports": [
-          "Gates/AXI4_Lite",
-          "smartconnect_0/M09_AXI"
+          "smartconnect_2/M00_AXI",
+          "Temperature_Card_Interface/s00_axi"
         ]
       },
       "AXI2TCM_0_M00_AXI": {
@@ -7691,40 +7661,10 @@
           "DataMover/M00_AXI"
         ]
       },
-      "smartconnect_1_M01_AXI": {
+      "AXI4_Lite_3": {
         "interface_ports": [
-          "smartconnect_1/M01_AXI",
-          "uz_axi_testIP_0/AXI4"
-        ]
-      },
-      "s00_axi_2": {
-        "interface_ports": [
-          "ADC_A2/s00_axi",
-          "smartconnect_0/M02_AXI"
-        ]
-      },
-      "smartconnect_0_M14_AXI": {
-        "interface_ports": [
-          "timer_uptime_64bit/S_AXI",
-          "smartconnect_0/M14_AXI"
-        ]
-      },
-      "smartconnect_2_M00_AXI": {
-        "interface_ports": [
-          "smartconnect_2/M00_AXI",
-          "Temperature_Card_Interface/s00_axi"
-        ]
-      },
-      "AXI4_Lite_1": {
-        "interface_ports": [
-          "Gates_3L/AXI4_Lite",
-          "smartconnect_0/M04_AXI"
-        ]
-      },
-      "smartconnect_0_M13_AXI": {
-        "interface_ports": [
-          "smartconnect_1/S00_AXI",
-          "smartconnect_0/M13_AXI"
+          "Gates/AXI4_Lite",
+          "smartconnect_0/M09_AXI"
         ]
       },
       "AXI4_Lite1_1": {
@@ -7733,16 +7673,16 @@
           "smartconnect_0/M08_AXI"
         ]
       },
+      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
+        "interface_ports": [
+          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD",
+          "smartconnect_0/S00_AXI"
+        ]
+      },
       "s00_axi1_1": {
         "interface_ports": [
           "ADC_A3/s00_axi1",
           "smartconnect_0/M01_AXI"
-        ]
-      },
-      "S00_AXI_3": {
-        "interface_ports": [
-          "Gates/S00_AXI",
-          "smartconnect_0/M07_AXI"
         ]
       },
       "AXI4_Lite_2": {
@@ -7751,10 +7691,70 @@
           "smartconnect_0/M06_AXI"
         ]
       },
+      "s00_axi_4": {
+        "interface_ports": [
+          "ADC_A1/s00_axi",
+          "smartconnect_0/M10_AXI"
+        ]
+      },
+      "smartconnect_0_M12_AXI": {
+        "interface_ports": [
+          "IncreEncoder_V24_ip_0/AXI4_Lite",
+          "smartconnect_0/M12_AXI"
+        ]
+      },
+      "s00_axi1_2": {
+        "interface_ports": [
+          "ADC_A2/s00_axi1",
+          "smartconnect_0/M03_AXI"
+        ]
+      },
+      "smartconnect_0_M14_AXI": {
+        "interface_ports": [
+          "timer_uptime_64bit/S_AXI",
+          "smartconnect_0/M14_AXI"
+        ]
+      },
+      "AXI4_Lite_1": {
+        "interface_ports": [
+          "Gates_3L/AXI4_Lite",
+          "smartconnect_0/M04_AXI"
+        ]
+      },
       "s00_axi1_3": {
         "interface_ports": [
           "ADC_A1/s00_axi1",
           "smartconnect_0/M11_AXI"
+        ]
+      },
+      "s00_axi_2": {
+        "interface_ports": [
+          "ADC_A2/s00_axi",
+          "smartconnect_0/M02_AXI"
+        ]
+      },
+      "S_AXI_1": {
+        "interface_ports": [
+          "Interrupt/S_AXI",
+          "smartconnect_0/M05_AXI"
+        ]
+      },
+      "smartconnect_1_M01_AXI": {
+        "interface_ports": [
+          "smartconnect_1/M01_AXI",
+          "uz_axi_testIP_0/AXI4"
+        ]
+      },
+      "S00_AXI_3": {
+        "interface_ports": [
+          "Gates/S00_AXI",
+          "smartconnect_0/M07_AXI"
+        ]
+      },
+      "smartconnect_0_M13_AXI": {
+        "interface_ports": [
+          "smartconnect_1/S00_AXI",
+          "smartconnect_0/M13_AXI"
         ]
       }
     },

@@ -18,10 +18,11 @@
  * This library provide an easy way to use the UZ_Temperature_Card.
  * For easier handling, the library uses an internal structure to mirror the Registers of the Interface-IP.
  * The Channels can be addressed by values from 0-59 and all needed address calculation will be performed internally.
+ * (Software Channel 0-19 equals Hardware Channel_A 0-19, Software Channel 20-39 equals Hardware Channel_B 0-19 and Software Channel 40-59 equals Hardware Channel_C 0-19).
  * 
  * To get comfy with the library, here is some pseudo-code, which will configure the Channels and starts the continuous measurement:
  * 1. create needed handler and assign the IP-Base-Addresse
- *      uz_TempCard_IF* uz_Tempcard = uz_TempCard_IF_allocate_instance_one();
+ *      uz_TempCard_IF* uz_Tempcard = uz_TempCard_IF_init();
  *
  * 2. Perform an Initial Reset for the Interface-IP
  *      uz_TempCard_IF_Reset(uz_Tempcard);
@@ -41,13 +42,13 @@
  * 7. Fetch the Measurements in the internal structure
  *      uz_TempCard_IF_MeasureTemps(uz_Tempcard);
  * 
- * 8. Enjoy measuremt temperatures
+ * 8. Enjoy Temperatures
  *      uz_TempCard_IF_ReadMeasurement_Channel(uz_Tempcard, Channel);
  * 
  * ADDITIONAL INFORMATIONS:
  * A. If you want to change some Channel configs while running, you have to perform the following steps:
  *      1. write the new config in the structure with uz_TempCard_IF_SetConfig.
- *      2.  sync down the configs with uz_TempCard_IF_SyncConfig.
+ *      2. sync down the configs with uz_TempCard_IF_SyncConfig.
  *      3. Just reset the Interface-IP with uz_TempCard_IF_Reset. This will apply the new config within the LTC2983 and resumes the measurement.
  * 
  * B. The function uz_TempCard_IF_ReadBack must always return 0xAFFEAFFE, otherwise the Interfafe-IP is not present at the specified address.
@@ -92,10 +93,11 @@ typedef struct uz_TempCard_IF *uz_TempCard_IF_handle;
 //Handling with the Core
 uz_TempCard_IF* uz_TempCard_IF_init(uz_TempCard_IF *self);
 
+//Functions
 void        uz_TempCard_IF_Reset(uz_TempCard_IF_handle self);                                               // Resets the Interface-IP to write new Channel configs
 void        uz_TempCard_IF_Start(uz_TempCard_IF_handle self);                                               // Starts the Interface-IP
 void        uz_TempCard_IF_Stop(uz_TempCard_IF_handle self);                                                // Stops the Interface-IP
-uint32_t    uz_TempCard_IF_ReadBack(uz_TempCard_IF_handle self);                                            // Stops the Interface-IP
+uint32_t    uz_TempCard_IF_ReadBack(uz_TempCard_IF_handle self);                                            // should always return 0xAFFEAFFE, otherwise there is no TempCard_Interface at the specified address
 void        uz_TempCard_IF_setCounter(uz_TempCard_IF_handle self, uint32_t Counter);                        // Set the Counter for the internal trigger generator
 uint32_t    uz_TempCard_IF_SetConfig(uz_TempCard_IF_handle self, uint32_t ConfigWord, uint32_t Channel);    // Set the ConfigWord for the specified channel
 uint32_t    uz_TempCard_IF_GetConfig(uz_TempCard_IF_handle self, uint32_t Channel);                         // Read the Config of the specified Channel

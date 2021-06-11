@@ -55,7 +55,8 @@ Syllabus
 .. toctree::
     :maxdepth: 2
     :caption: Getting-Started
-
+    
+    getting_started/onboarding/onboarding
     getting_started/toolchain/index
     getting_started/quickstart/index
     getting_started/tutorials/index
@@ -73,6 +74,7 @@ Syllabus
     general/howToDocs/howToDocs
     general/useCases/useCases
     general/vscode_remote_container/vscode_remote_container
+    general/contributors
 
 .. toctree::
     :maxdepth: 2
@@ -80,7 +82,7 @@ Syllabus
 
     mpsoc/platform_architecture/platform_architecture
     mpsoc/vivado/vivado
-    mpsoc/ip_cores/index
+    mpsoc/ip_cores/ip_cores
     mpsoc/vitis/vitis
     mpsoc/CPLD/index
 
@@ -102,8 +104,8 @@ Syllabus
    :maxdepth: 2
    :caption: Hardware
 
-   hardware/carrier_board/index
-   hardware/adapter_boards/index
+   hardware/carrier_board/carrier_board
+   hardware/adapter_cards/adapter_cards
    hardware/altium/altium
 
 Indices and tables

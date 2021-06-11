@@ -174,6 +174,45 @@ To test if assertions are triggered, we use the following approach:
 This means a failing assertion throws an exception instead of triggering a *real* assertion.
 The test macros ``TEST_ASSERT_FAIL_ASSERT`` and ``TEST_ASSERT_PASS_ASSERT`` catch the thrown exception and print an error message if the test fails.
 
+
+Multiple source files with common header
+----------------------------------------
+
+To test a software module with one interface header and multiple c-files, i.e.:
+
+.. code-block:: c
+   :caption: ``my_function.h``
+
+   void do_something_A(void);
+   void do_something_B(void);
+
+.. code-block:: c
+   :caption: ``my_function_part_A.c``
+
+   #include my_function.h
+   void do_something_A(void){
+   // do something A
+   }
+
+.. code-block:: c
+   :caption: ``my_function_part_B.c``
+
+   #include my_function.h
+   void do_something_B(void){
+   // do something B
+   }
+
+Including ``my_function.h`` in the ``test_my_function.c`` file Ceedling will throw an error if you use functions from ``my_function_part_A.c``.
+This happens because Ceedling will assume that the ``.c`` file name matches the name of t he header (``my_function.c`` in this case).
+To fix this, you have to include the following *macro* at the top of ``test_my_function.c``.
+
+.. code-block:: c
+
+    TEST_FILE("my_function_part_A.c")
+    TEST_FILE("my_function_part_B.c")
+
+This way you can include as many ``.c`` as needed.
+    
 Sources
 =======
 

@@ -33,8 +33,8 @@ void test_uz_myIP2_no_multiplication_before_initialization_and_no_NULL_pointer_p
     uz_myIP2_hw_write_A_Ignore();
     uz_myIP2_hw_write_B_Ignore();
     uz_myIP2_hw_read_C_IgnoreAndReturn(a * b);
-    TEST_ASSERT_FAIL_ASSERT(int32_t c = uz_myIP2_multiply(&test_instance_no_init, a, b));
-    TEST_ASSERT_FAIL_ASSERT(int32_t c = uz_myIP2_multiply(NULL, a, b));
+    TEST_ASSERT_FAIL_ASSERT(uz_myIP2_multiply(&test_instance_no_init, a, b));
+    TEST_ASSERT_FAIL_ASSERT(uz_myIP2_multiply(NULL, a, b));
 }
 
 void test_uz_myIP2_test_A_times_B_equals_C(void)
@@ -54,7 +54,7 @@ void test_uz_myIP2_test_base_address_not_zero(void)
     uz_myIP2 test_instance = {
         .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ};
 
-    TEST_ASSERT_FAIL_ASSERT(uz_myIP2 *test_ptr = uz_myIP2_init(&test_instance));
+    TEST_ASSERT_FAIL_ASSERT(uz_myIP2_init(&test_instance));
 }
 
 void test_uz_myIP2_test_ip_core_frq_not_zero(void)
@@ -62,14 +62,14 @@ void test_uz_myIP2_test_ip_core_frq_not_zero(void)
     uz_myIP2 test_instance = {
         .base_address = TEST_BASE_ADDRESS};
 
-    TEST_ASSERT_FAIL_ASSERT(uz_myIP2 *test_ptr = uz_myIP2_init(&test_instance));
+    TEST_ASSERT_FAIL_ASSERT(uz_myIP2_init(&test_instance));
 }
 
 void test_uz_myIP2_test_double_init(void)
 {
     uz_myIP2 *test_ptr = uz_myIP2_init(&instance);
     TEST_ASSERT_EQUAL_PTR(test_ptr, &instance);
-    TEST_ASSERT_FAIL_ASSERT(test_ptr = uz_myIP2_init(&instance));
+    TEST_ASSERT_FAIL_ASSERT(uz_myIP2_init(&instance));
 }
 
 void test_uz_myIP2_test_right_pointer_returned_form_init(void)

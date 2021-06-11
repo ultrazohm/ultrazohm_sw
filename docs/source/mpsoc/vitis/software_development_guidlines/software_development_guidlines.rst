@@ -1,4 +1,4 @@
-.. _software_development_guidlines:
+.. _software_development_guidelines:
 
 ===============================
 Software Development Guidelines
@@ -154,6 +154,33 @@ Coding style
     10. ``Preferences``
     11. ``Additional`` -> ``General`` -> ``Appearance``
     12. Choose a ``Theme`` to adjust color palette
+
+Static code analysis
+--------------------
+
+Static code analysis checks the source code for potential errors and problems.
+We use `cppcheck <https://github.com/danmar/cppcheck>`_ , which is also run in the bitbucket pipeline (see :ref:`ci_static_code_check`)
+Usage with the :ref:`vscode_remote_container` in a terminal to check all files in `src` folder (recursive):
+
+::
+
+    cppcheck vitis/software/Baremetal/src/
+    cppcheck --addon=misra vitis/software/Baremetal/src/
+    cppcheck --addon=cert vitis/software/Baremetal/src/
+
+You can specify a path to only check your currently developed files.
+Adding ``--addon=misra`` checks for violations of [#MISRA]_ coding rules.
+The output only gives the number of the violated rule, you have to obtain an copy to get readable information.
+Adding ``--addon=cert`` checks for violations of [#CERT]_ coding rules.
+
+Additional static code analyser that are not implemented for the UltraZohm project:
+
+- `flawfinder <https://github.com/david-a-wheeler/flawfinder>`_
+- `OCLint <https://github.com/oclint/oclint>`_
+- `lizard <https://github.com/terryyin/lizard>`_
+- `flawfinder list of other tools <https://dwheeler.com/essays/static-analysis-tools.html>`_
+- `Infer <https://fbinfer.com/>`_
+
 
 .. _exampleImplementation:
 

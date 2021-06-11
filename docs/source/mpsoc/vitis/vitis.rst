@@ -20,4 +20,5 @@ Vitis
     include_math_lib
     known_issues
     qemu/qemu
+    wavegen/wavegen
 

@@ -14,7 +14,9 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
                                                   texlive-pictures \
                                                   texlive-science \
                                                   ghostscript \
-                                                  git-lfs
-
+                                                  git-lfs \
+                                                  doxygen
 RUN gem install ceedling
 RUN wget -O ~/vsls-reqs https://aka.ms/vsls-linux-prereq-script && chmod +x ~/vsls-reqs && ~/vsls-reqs # Maybe required for liveshare https://docs.microsoft.com/en-us/visualstudio/liveshare/reference/linux#install-linux-prerequisites
+RUN wget https://github.com/danmar/cppcheck/archive/refs/tags/2.4.1.tar.gz && tar -xvf 2.4.1.tar.gz && cd cppcheck-2.4.1 && make SRCDIR=build CFGDIR=/usr/bin/cfg HAVE_RULES=yes install FILESDIR=/etc/cppcheck
+

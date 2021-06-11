@@ -18,6 +18,7 @@
 #include "uz_TempCard_IF_staticAllocator.h"
 #include "xparameters.h"
 
+#ifdef XPAR_TEMPERATURE_CARD_INTERFACE_TEMPERATURE_CARD_INT_0_BASEADDR
 
 static uz_TempCard_IF uz_TempCard_IF_instance={
 	.base_address=XPAR_TEMPERATURE_CARD_INTERFACE_TEMPERATURE_CARD_INT_0_BASEADDR,
@@ -27,3 +28,5 @@ static uz_TempCard_IF uz_TempCard_IF_instance={
 uz_TempCard_IF_handle uz_TempCard_IF_instance_one(void){
     return (uz_TempCard_IF_init(&uz_TempCard_IF_instance));
 }
+
+#endif

@@ -1,13 +1,25 @@
+#define UZ_STATIC_ALLOCATOR(objectname,maxinstances)                    \
+                                                                        \
+static size_t objectname##_counter = 0;                                 \
+static uz_##objectname objectname##_instances[maxinstances] = { 0 };	\
+
+
+#define UZ_ALLOCATION(objectname,maxinstances)   \
+	uz_assert( objectname##_counter < maxinstances);    \
+	uz_##objectname * self = &objectname##_instances[objectname##_counter];       \
+	objectname##_counter += 1;                                                 \
+	uz_assert(self->is_ready == false); \
+	self->is_ready = true; \
+
+
+#include "../uz_global_configuration.h"
+#if UZ_WAVEGEN_CHIRP_MAX_INSTANCES > 0
 #include "uz_wavegen.h"
 #include <math.h>
 #include "../uz_HAL.h"
 #include "../uz_SystemTime/uz_SystemTime.h"
-#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES 2
 
-#ifdef TEST
-	#undef UZ_WAVEGEN_CHIRP_MAX_INSTANCES
-	#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES 13
-#endif
+
 struct uz_wavegen_chirp {
 	bool is_ready;
 	bool is_first_call_to_sample;
@@ -16,15 +28,18 @@ struct uz_wavegen_chirp {
 	float transition_angle;
 	struct uz_wavegen_chirp_config config;
 };
-static size_t counter_chirp = 0;
-static uz_wavegen_chirp instances_chirp[UZ_WAVEGEN_CHIRP_MAX_INSTANCES] = { 0 };
+UZ_STATIC_ALLOCATOR(wavegen_chirp, UZ_WAVEGEN_CHIRP_MAX_INSTANCES)
+//static size_t counter_chirp = 0;
+//static uz_wavegen_chirp instances_chirp[UZ_WAVEGEN_CHIRP_MAX_INSTANCES] = { 0 };
 
 uz_wavegen_chirp* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config) {
-	uz_assert(counter_chirp < UZ_WAVEGEN_CHIRP_MAX_INSTANCES);
-	uz_wavegen_chirp* self = &instances_chirp[counter_chirp];
-	uz_assert_false(self->is_ready);
-	counter_chirp += 1;
-	self->is_ready = true;
+	//uz_assert(counter_chirp < UZ_WAVEGEN_CHIRP_MAX_INSTANCES);
+	//uz_wavegen_chirp* self = &instances_chirp[counter_chirp];
+	//uz_assert_false(self->is_ready);
+	//counter_chirp += 1;
+	//self->is_ready = true;
+	UZ_ALLOCATION(wavegen_chirp,UZ_WAVEGEN_CHIRP_MAX_INSTANCES)
+
 	self->is_first_call_to_sample = true;
 	uz_assert(config.amplitude != 0.0f);
 	uz_assert(config.start_frequency_Hz > 0);
@@ -71,3 +86,4 @@ float uz_wavegen_chirp_sample(uz_wavegen_chirp* self) {
 	return (chirp_output);
 
 }
+#endif

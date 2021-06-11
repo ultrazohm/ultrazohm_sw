@@ -1,14 +1,9 @@
+#include "../uz_global_configuration.h"
+#if UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES > 0
 #include "uz_wavegen.h"
 #include <math.h>
 #include "../uz_HAL.h"
 #include "../uz_SystemTime/uz_SystemTime.h"
-#define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES 2
-
-#ifdef TEST
-	#undef UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES
-	#define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES 5
-#endif
-
 struct uz_wavegen_three_phase {
 	bool is_ready;
 	float phase_U;
@@ -59,3 +54,4 @@ float uz_wavegen_three_phase_get_phaseW(uz_wavegen_three_phase* self) {
 	uz_assert(self->is_ready);
 	return (self->phase_W);
 }
+#endif

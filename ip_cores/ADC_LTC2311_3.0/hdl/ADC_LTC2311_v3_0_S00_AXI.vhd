@@ -422,6 +422,7 @@ begin
 	       
 	       ADC_SPI_CR(C_SPI_SS_N_STATUS) <= P_ADC_SPI_CR_IN(C_SPI_SS_N_STATUS);
 	       ADC_SPI_CR(C_SPI_SCLK_STATUS) <= P_ADC_SPI_CR_IN(C_SPI_SCLK_STATUS);
+	       ADC_SPI_CR(C_SPI_CONTROL_STATUS) <= P_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS);
 	       
 	    end if;
 	  end if;                   

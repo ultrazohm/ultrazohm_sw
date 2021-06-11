@@ -56,15 +56,15 @@ set_property PACKAGE_PIN AG11 [get_ports ANL_03_N_Ch1]
 
 #Analog_02
 #ANL_02_N_Ch1 = B64_L8_N
-set_property PACKAGE_PIN AG10 [get_ports ANL_02_N_Ch1[0]]
+set_property PACKAGE_PIN AG10 [get_ports {ANL_02_N_Ch1[0]}]
 #ANL_02_P_Ch1 = B64_L8_P
-set_property PACKAGE_PIN AF10 [get_ports ANL_02_P_Ch1[0]]
+set_property PACKAGE_PIN AF10 [get_ports {ANL_02_P_Ch1[0]}]
 
 #Analog_01
 #ANL_01_N_Ch1 = B64_L12_N
 #ANL_01_P_Ch1 = B64_L12_P
-set_property PACKAGE_PIN AG8 [get_ports ANL_01_P_Ch1[0]]
-set_property PACKAGE_PIN AH8 [get_ports ANL_01_N_Ch1[0]]
+set_property PACKAGE_PIN AG8 [get_ports {ANL_01_P_Ch1[0]}]
+set_property PACKAGE_PIN AH8 [get_ports {ANL_01_N_Ch1[0]}]
 
 
 
@@ -121,16 +121,17 @@ set_property DIFF_TERM_ADV TERM_100 [get_ports ANL_03_P_Ch1]
 set_property DIFF_TERM_ADV TERM_100 [get_ports ANL_03_N_Ch1]
 
 #Analog_02
-set_property IOSTANDARD LVCMOS18 [get_ports ANL_02_P_Ch1[0]]
-set_property IOSTANDARD LVCMOS18 [get_ports ANL_02_N_Ch1[0]]
+set_property IOSTANDARD LVCMOS18 [get_ports {ANL_02_P_Ch1[0]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {ANL_02_N_Ch1[0]}]
 #Pins L8 are the clock, therefore, no termination resistor!
 #set_property DIFF_TERM TRUE  [get_ports ANL_02_P_Ch1]
 
 #Analog_01
-set_property IOSTANDARD LVDS [get_ports ANL_01_P_Ch1[0]]
-set_property IOSTANDARD LVDS [get_ports ANL_01_N_Ch1[0]]
+set_property IOSTANDARD LVDS [get_ports {ANL_01_P_Ch1[0]}]
+set_property IOSTANDARD LVDS [get_ports {ANL_01_N_Ch1[0]}]
 #Pins L7 are the clock, therefore, no termination resistor!
 #set_property DIFF_TERM TRUE  [get_ports ANL_01_P_Ch1]
+
 
 
 

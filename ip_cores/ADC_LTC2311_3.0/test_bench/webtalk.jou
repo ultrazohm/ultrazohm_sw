@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Webtalk v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:35 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Mon Jun  7 19:34:55 2021
+# Process ID: 777196
+# Current directory: /home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0/test_bench
+# Command line: wbtcv -mode batch -source /home/thilo/ultrazohm/adc_test/adc_test.hw/webtalk/labtool_webtalk.tcl -notrace
+# Log file: /home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0/test_bench/webtalk.log
+# Journal file: /home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0/test_bench/webtalk.jou
+#-----------------------------------------------------------
+source /home/thilo/ultrazohm/adc_test/adc_test.hw/webtalk/labtool_webtalk.tcl -notrace

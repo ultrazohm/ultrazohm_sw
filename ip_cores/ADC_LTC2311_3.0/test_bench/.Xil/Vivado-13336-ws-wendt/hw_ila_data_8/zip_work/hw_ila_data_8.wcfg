@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="/home/thilo/ultrazohm/ultrazohm_sw/vivado/project/ultrazohm.hw/hw_1/wave/hw_ila_data_8/hw_ila_data_8.wdb" id="1">
+         <top_modules>
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="75fs"></ZoomEndTime>
+      <Cursor1Time time="2fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="214"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="13" />
+   <wave_markers>
+   </wave_markers>
+   <wvobject type="array" fp_name="zusys_i/ADC_LTC2311/U0/S_ADC_CR">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/S_ADC_CR[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_CR[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="zusys_i/ADC_LTC2311/U0/GEN_ADC_CONT[0].inst_adc/S_CONVERSION">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/GEN_ADC_CONT[0].inst_adc/S_CONVERSION[143:0]</obj_property>
+      <obj_property name="ObjectShortName">S_CONVERSION[143:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="zusys_i/ADC_LTC2311/U0/S_ADC_CONV_VALUE">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/S_ADC_CONV_VALUE[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_CONV_VALUE[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/S_SCLK">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/S_SCLK</obj_property>
+      <obj_property name="ObjectShortName">S_SCLK</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="zusys_i/ADC_LTC2311/U0/TRIGGER_CNV">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/TRIGGER_CNV[0:0]</obj_property>
+      <obj_property name="ObjectShortName">TRIGGER_CNV[0:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="zusys_i/ADC_LTC2311/U0/S_MISO">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/S_MISO[7:0]</obj_property>
+      <obj_property name="ObjectShortName">S_MISO[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/RAW_VALUE[127:0]</obj_property>
+      <obj_property name="ObjectShortName">RAW_VALUE[127:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALID">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/RAW_VALID[0:0]</obj_property>
+      <obj_property name="ObjectShortName">RAW_VALID[0:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/S_ENABLE">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/S_ENABLE</obj_property>
+      <obj_property name="ObjectShortName">S_ENABLE</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="zusys_i/ADC_LTC2311/U0/TRIGGER_CNV">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/TRIGGER_CNV[0:0]</obj_property>
+      <obj_property name="ObjectShortName">TRIGGER_CNV[0:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="zusys_i/ADC_LTC2311/U0/S_ADC_SPI_CR">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/S_ADC_SPI_CR[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_SPI_CR[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/S_CLK">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/S_CLK</obj_property>
+      <obj_property name="ObjectShortName">S_CLK</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/S_CLK">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/S_CLK</obj_property>
+      <obj_property name="ObjectShortName">S_CLK</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+</wave_config>

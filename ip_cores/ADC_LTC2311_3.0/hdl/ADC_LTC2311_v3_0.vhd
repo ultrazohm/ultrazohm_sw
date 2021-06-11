@@ -310,6 +310,7 @@ begin
            S_SET_OFFSET <= (others => '0');
            S_ENABLE <= (others => '0');
            S_SPI_MANUAL <= (others => '0');
+           S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '0';
            
            if (S_RESET_N = '0') then
                
@@ -367,13 +368,11 @@ begin
                             S_SS_IN_N(i)                       <= S_ADC_SPI_CR(C_SPI_SS_N);
                             S_ADC_SPI_CR_IN(C_SPI_SS_N_STATUS) <= S_ADC_SPI_CR(C_SPI_SS_N);
                             S_ADC_SPI_CR_IN(C_SPI_SCLK_STATUS) <= S_ADC_SPI_CR(C_SPI_SCLK);
+                            S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= S_ADC_SPI_CR(C_SPI_CONTROL);
                             
                         end if;
                     end loop;
                 end if;
-                
-           else
-                S_ENABLE <= (others => '0');
            end if;
            
         end if;

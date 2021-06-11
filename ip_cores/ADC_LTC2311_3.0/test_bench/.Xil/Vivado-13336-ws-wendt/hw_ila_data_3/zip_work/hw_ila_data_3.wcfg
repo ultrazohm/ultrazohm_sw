@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="/home/thilo/ultrazohm/adc_test/adc_test.hw/hw_1/wave/hw_ila_data_3/hw_ila_data_3.wdb" id="1">
+         <top_modules>
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="1025fs"></ZoomEndTime>
+      <Cursor1Time time="0fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="214"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="40" />
+   <wave_markers>
+   </wave_markers>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_PRE_DELAY">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_PRE_DELAY[7:0]</obj_property>
+      <obj_property name="ObjectShortName">S_PRE_DELAY[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/spi/curstate">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/spi/curstate[2:0]</obj_property>
+      <obj_property name="ObjectShortName">curstate[2:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_CLK_DIV">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_CLK_DIV[15:0]</obj_property>
+      <obj_property name="ObjectShortName">S_CLK_DIV[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_POST_DELAY">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_POST_DELAY[7:0]</obj_property>
+      <obj_property name="ObjectShortName">S_POST_DELAY[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_ADC_MASTER_CHANNEL">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_ADC_MASTER_CHANNEL[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_MASTER_CHANNEL[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_RAW_VALUE_S_C">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_RAW_VALUE_S_C[15:0]</obj_property>
+      <obj_property name="ObjectShortName">S_RAW_VALUE_S_C[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_RESULT_S_C">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_RESULT_S_C[34:0]</obj_property>
+      <obj_property name="ObjectShortName">S_RESULT_S_C[34:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_OFFSET_S_C">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_OFFSET_S_C[15:0]</obj_property>
+      <obj_property name="ObjectShortName">S_OFFSET_S_C[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/nxtstate">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/nxtstate[1:0]</obj_property>
+      <obj_property name="ObjectShortName">nxtstate[1:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_SPI_RAW_VALUE">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_SPI_RAW_VALUE[127:0]</obj_property>
+      <obj_property name="ObjectShortName">S_SPI_RAW_VALUE[127:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/SI_VALUE">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/SI_VALUE[143:0]</obj_property>
+      <obj_property name="ObjectShortName">SI_VALUE[143:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_ADC_SPI_CR">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_ADC_SPI_CR[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_SPI_CR[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_ADC_CHANNEL">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_ADC_CHANNEL[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_CHANNEL[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_ADC_MASTER_FINISH">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_ADC_MASTER_FINISH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_MASTER_FINISH[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_ADC_MASTER_BUSY">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_ADC_MASTER_BUSY[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_MASTER_BUSY[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_ADC_CONV_VALUE">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_ADC_CONV_VALUE[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_CONV_VALUE[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/RAW_VALUE">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/RAW_VALUE[127:0]</obj_property>
+      <obj_property name="ObjectShortName">RAW_VALUE[127:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_ADC_CR">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_ADC_CR[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_CR[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/RAW_VALID">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/RAW_VALID[0:0]</obj_property>
+      <obj_property name="ObjectShortName">RAW_VALID[0:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/SI_VALID">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/SI_VALID[0:0]</obj_property>
+      <obj_property name="ObjectShortName">SI_VALID[0:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_CONVERSION_S_C">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_CONVERSION_S_C[17:0]</obj_property>
+      <obj_property name="ObjectShortName">S_CONVERSION_S_C[17:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_ADC_SPI_CFGR">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_ADC_SPI_CFGR[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_SPI_CFGR[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_ADC_CR_IN">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_ADC_CR_IN[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_CR_IN[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_OFFSET">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_OFFSET[127:0]</obj_property>
+      <obj_property name="ObjectShortName">S_OFFSET[127:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_ADC_MASTER_SI_FINISH">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_ADC_MASTER_SI_FINISH[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_MASTER_SI_FINISH[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/spi/S_RX_BUFFER">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/spi/S_RX_BUFFER[127:0]</obj_property>
+      <obj_property name="ObjectShortName">S_RX_BUFFER[127:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/curstate">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/curstate[1:0]</obj_property>
+      <obj_property name="ObjectShortName">curstate[1:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_MISO">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_MISO[7:0]</obj_property>
+      <obj_property name="ObjectShortName">S_MISO[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_ADC_SPI_CR_IN">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_ADC_SPI_CR_IN[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_SPI_CR_IN[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_CONVERSION">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_CONVERSION[143:0]</obj_property>
+      <obj_property name="ObjectShortName">S_CONVERSION[143:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/spi/nxtstate">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/spi/nxtstate[2:0]</obj_property>
+      <obj_property name="ObjectShortName">nxtstate[2:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311_0/U0/TRIGGER_CNV">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/TRIGGER_CNV[0:0]</obj_property>
+      <obj_property name="ObjectShortName">TRIGGER_CNV[0:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_CLK">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_CLK</obj_property>
+      <obj_property name="ObjectShortName">S_CLK</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_ENABLE">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_ENABLE</obj_property>
+      <obj_property name="ObjectShortName">S_ENABLE</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_RESET_N">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_RESET_N</obj_property>
+      <obj_property name="ObjectShortName">S_RESET_N</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_SCLK_IN">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_SCLK_IN</obj_property>
+      <obj_property name="ObjectShortName">S_SCLK_IN</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_SET_CONVERSION">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_SET_CONVERSION</obj_property>
+      <obj_property name="ObjectShortName">S_SET_CONVERSION</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_SET_OFFSET">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_SET_OFFSET</obj_property>
+      <obj_property name="ObjectShortName">S_SET_OFFSET</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_SPI_ENABLE">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_SPI_ENABLE</obj_property>
+      <obj_property name="ObjectShortName">S_SPI_ENABLE</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311_0/U0/S_SS_IN_N">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311_0/U0/S_SS_IN_N</obj_property>
+      <obj_property name="ObjectShortName">S_SS_IN_N</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+</wave_config>

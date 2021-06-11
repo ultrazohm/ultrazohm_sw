@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="/home/thilo/ultrazohm/adc_test/adc_test.hw/hw_1/wave/hw_ila_data_3/hw_ila_data_3.wdb" id="1">
+         <top_modules>
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="722fs"></ZoomStartTime>
+      <ZoomEndTime time="759fs"></ZoomEndTime>
+      <Cursor1Time time="742fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="198"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="14" />
+   <wave_markers>
+   </wave_markers>
+   <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/S_ENABLE">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311/U0/S_ENABLE</obj_property>
+      <obj_property name="ObjectShortName">S_ENABLE</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[127:0]</obj_property>
+      <obj_property name="ObjectShortName">RAW_VALUE[127:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALID">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311/U0/RAW_VALID[0:0]</obj_property>
+      <obj_property name="ObjectShortName">RAW_VALID[0:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/S_SCLK">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311/U0/S_SCLK</obj_property>
+      <obj_property name="ObjectShortName">S_SCLK</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="vbus" fp_name="vbus150">
+      <obj_property name="label">Ch8</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[127]">
+         <obj_property name="ElementShortName">[127]</obj_property>
+         <obj_property name="ObjectShortName">[127]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[126]">
+         <obj_property name="ElementShortName">[126]</obj_property>
+         <obj_property name="ObjectShortName">[126]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[125]">
+         <obj_property name="ElementShortName">[125]</obj_property>
+         <obj_property name="ObjectShortName">[125]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[124]">
+         <obj_property name="ElementShortName">[124]</obj_property>
+         <obj_property name="ObjectShortName">[124]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[123]">
+         <obj_property name="ElementShortName">[123]</obj_property>
+         <obj_property name="ObjectShortName">[123]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[122]">
+         <obj_property name="ElementShortName">[122]</obj_property>
+         <obj_property name="ObjectShortName">[122]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[121]">
+         <obj_property name="ElementShortName">[121]</obj_property>
+         <obj_property name="ObjectShortName">[121]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[120]">
+         <obj_property name="ElementShortName">[120]</obj_property>
+         <obj_property name="ObjectShortName">[120]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[119]">
+         <obj_property name="ElementShortName">[119]</obj_property>
+         <obj_property name="ObjectShortName">[119]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[118]">
+         <obj_property name="ElementShortName">[118]</obj_property>
+         <obj_property name="ObjectShortName">[118]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[117]">
+         <obj_property name="ElementShortName">[117]</obj_property>
+         <obj_property name="ObjectShortName">[117]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[116]">
+         <obj_property name="ElementShortName">[116]</obj_property>
+         <obj_property name="ObjectShortName">[116]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[115]">
+         <obj_property name="ElementShortName">[115]</obj_property>
+         <obj_property name="ObjectShortName">[115]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[114]">
+         <obj_property name="ElementShortName">[114]</obj_property>
+         <obj_property name="ObjectShortName">[114]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[113]">
+         <obj_property name="ElementShortName">[113]</obj_property>
+         <obj_property name="ObjectShortName">[113]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[112]">
+         <obj_property name="ElementShortName">[112]</obj_property>
+         <obj_property name="ObjectShortName">[112]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311/U0/S_MISO">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311/U0/S_MISO[7:0]</obj_property>
+      <obj_property name="ObjectShortName">S_MISO[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311/U0/GEN_ADC_CONT[0].inst_adc/spi/S_RX_BUFFER">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311/U0/GEN_ADC_CONT[0].inst_adc/spi/S_RX_BUFFER[127:0]</obj_property>
+      <obj_property name="ObjectShortName">S_RX_BUFFER[127:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311/U0/SS_N">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311/U0/SS_N[0:0]</obj_property>
+      <obj_property name="ObjectShortName">SS_N[0:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="adc_tb_i/ADC_LTC2311/U0/S_SS_IN_N">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311/U0/S_SS_IN_N</obj_property>
+      <obj_property name="ObjectShortName">S_SS_IN_N</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311/U0/S_ADC_MASTER_CHANNEL">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311/U0/S_ADC_MASTER_CHANNEL[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_MASTER_CHANNEL[31:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311/U0/RAW_VALUE">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311/U0/RAW_VALUE[127:0]</obj_property>
+      <obj_property name="ObjectShortName">RAW_VALUE[127:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311/U0/GEN_ADC_CONT[0].inst_adc/S_RESULT_S_C">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311/U0/GEN_ADC_CONT[0].inst_adc/S_RESULT_S_C[34:0]</obj_property>
+      <obj_property name="ObjectShortName">S_RESULT_S_C[34:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311/U0/GEN_ADC_CONT[0].inst_adc/S_CONVERSION_S_C">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311/U0/GEN_ADC_CONT[0].inst_adc/S_CONVERSION_S_C[17:0]</obj_property>
+      <obj_property name="ObjectShortName">S_CONVERSION_S_C[17:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="adc_tb_i/ADC_LTC2311/U0/GEN_ADC_CONT[0].inst_adc/S_OFFSET_S_C">
+      <obj_property name="DisplayName">FullPathName</obj_property>
+      <obj_property name="ElementShortName">adc_tb_i/ADC_LTC2311/U0/GEN_ADC_CONT[0].inst_adc/S_OFFSET_S_C[15:0]</obj_property>
+      <obj_property name="ObjectShortName">S_OFFSET_S_C[15:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+   </wvobject>
+</wave_config>

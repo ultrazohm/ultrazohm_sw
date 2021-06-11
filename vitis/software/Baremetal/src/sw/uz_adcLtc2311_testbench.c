@@ -1,0 +1,32 @@
+#include "uz_adcLtc2311_testbench.h"
+#include "../uz/uz_HAL.h"
+#include "../IP_Cores/uz_adcLtc2311/uz_adcLtc2311.h"
+#include "../IP_Cores/uz_adcLtc2311/uz_adcLtc2311_staticAllocator.h"
+
+void uz_adcLtc2311_testbench(void) {
+
+	// while (1) {
+	uz_adcLtc2311* test_instance = uz_adcLtc2311_allocate_instance_one();
+
+	uz_adcLtc2311_conversionConfig test_config;
+	uz_adcLtc2311_init_conversionConfig(&test_config);
+	test_config.master_select = UZ_ADCLTC2311_MASTER1;
+	test_config.channel_select = UZ_ADCLTC2311_CH1 | UZ_ADCLTC2311_CH2 | UZ_ADCLTC2311_CH3 | UZ_ADCLTC2311_CH4 | UZ_ADCLTC2311_CH5 | UZ_ADCLTC2311_CH6 | UZ_ADCLTC2311_CH7 | UZ_ADCLTC2311_CH8;
+	test_config.set_conversion = true;
+	test_config.set_offset = true;
+	test_config.try_infinite = false;
+	test_config.max_attempts = 10;
+	test_config.conversion_factor = 10;
+	test_config.offset = 10;
+	uz_adcLtc2311_configureConversion(test_instance, &test_config);
+	//uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
+
+	//uz_printf("Hello World");
+	//}
+
+	while (1)
+	{
+		uz_adcLtc2311_configureConversion(test_instance, &test_config);
+		//uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
+	}
+}

@@ -52,8 +52,9 @@ package ADC_LTC2311_PKG is
     constant C_SPI_SCLK           : natural := 2;
     constant C_SPI_SCLK_STATUS    : natural := 3;
     constant C_SPI_CONTROL        : natural := 4;
-    constant C_SPI_CPOL           : natural := 5;
-    constant C_SPI_CPHA           : natural := 6;
+    constant C_SPI_CONTROL_STATUS : natural := 5;
+    constant C_SPI_CPOL           : natural := 6;
+    constant C_SPI_CPHA           : natural := 7;
     
     -- reset values
     constant C_RESET_CPOL         : std_logic := '1';

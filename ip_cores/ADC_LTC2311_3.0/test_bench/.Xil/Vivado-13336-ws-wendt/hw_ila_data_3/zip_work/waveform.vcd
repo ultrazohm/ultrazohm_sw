@@ -1,0 +1,103 @@
+$date
+        2021-Jun-07 19:11:33
+$end
+$version
+        Vivado v2020.1 (64-bit)
+$end
+$timescale
+        1ps
+$end
+$scope module dut $end
+$var reg 8 " adc_tb_i/ADC_LTC2311_0/U0/S_PRE_DELAY [7:0] $end
+$var reg 3 * \adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/spi/curstate [2:0] $end
+$var reg 16 - adc_tb_i/ADC_LTC2311_0/U0/S_CLK_DIV [15:0] $end
+$var reg 8 = adc_tb_i/ADC_LTC2311_0/U0/S_POST_DELAY [7:0] $end
+$var reg 32 E adc_tb_i/ADC_LTC2311_0/U0/S_ADC_MASTER_CHANNEL [31:0] $end
+$var reg 16 e \adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_RAW_VALUE_S_C [15:0] $end
+$var reg 35 u \adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_RESULT_S_C [34:0] $end
+$var reg 16 :" \adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_OFFSET_S_C [15:0] $end
+$var reg 2 J" \adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/nxtstate [1:0] $end
+$var reg 128 L" \adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_SPI_RAW_VALUE [127:0] $end
+$var reg 144 n# adc_tb_i/ADC_LTC2311_0/U0/SI_VALUE [143:0] $end
+$var reg 32 B% adc_tb_i/ADC_LTC2311_0/U0/S_ADC_SPI_CR [31:0] $end
+$var reg 32 b% adc_tb_i/ADC_LTC2311_0/U0/S_ADC_CHANNEL [31:0] $end
+$var reg 32 $& adc_tb_i/ADC_LTC2311_0/U0/S_ADC_MASTER_FINISH [31:0] $end
+$var reg 32 D& adc_tb_i/ADC_LTC2311_0/U0/S_ADC_MASTER_BUSY [31:0] $end
+$var reg 32 d& adc_tb_i/ADC_LTC2311_0/U0/S_ADC_CONV_VALUE [31:0] $end
+$var reg 128 &' adc_tb_i/ADC_LTC2311_0/U0/RAW_VALUE [127:0] $end
+$var reg 32 H( adc_tb_i/ADC_LTC2311_0/U0/S_ADC_CR [31:0] $end
+$var reg 1 h( adc_tb_i/ADC_LTC2311_0/U0/RAW_VALID $end
+$var reg 1 i( adc_tb_i/ADC_LTC2311_0/U0/SI_VALID $end
+$var reg 18 j( \adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_CONVERSION_S_C [17:0] $end
+$var reg 32 |( adc_tb_i/ADC_LTC2311_0/U0/S_ADC_SPI_CFGR [31:0] $end
+$var reg 32 >) adc_tb_i/ADC_LTC2311_0/U0/S_ADC_CR_IN [31:0] $end
+$var reg 128 ^) \adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_OFFSET [127:0] $end
+$var reg 32 "+ adc_tb_i/ADC_LTC2311_0/U0/S_ADC_MASTER_SI_FINISH [31:0] $end
+$var reg 128 B+ \adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/spi/S_RX_BUFFER [127:0] $end
+$var reg 2 d, \adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/curstate [1:0] $end
+$var reg 8 f, adc_tb_i/ADC_LTC2311_0/U0/S_MISO [7:0] $end
+$var reg 32 n, adc_tb_i/ADC_LTC2311_0/U0/S_ADC_SPI_CR_IN [31:0] $end
+$var reg 144 0- \adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_CONVERSION [143:0] $end
+$var reg 3 b. \adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/spi/nxtstate [2:0] $end
+$var reg 1 e. adc_tb_i/ADC_LTC2311_0/U0/TRIGGER_CNV $end
+$var reg 1 f. adc_tb_i/ADC_LTC2311_0/U0/S_CLK $end
+$var reg 1 g. adc_tb_i/ADC_LTC2311_0/U0/S_ENABLE $end
+$var reg 1 h. adc_tb_i/ADC_LTC2311_0/U0/S_RESET_N $end
+$var reg 1 i. adc_tb_i/ADC_LTC2311_0/U0/S_SCLK_IN $end
+$var reg 1 j. adc_tb_i/ADC_LTC2311_0/U0/S_SET_CONVERSION $end
+$var reg 1 k. adc_tb_i/ADC_LTC2311_0/U0/S_SET_OFFSET $end
+$var reg 1 l. \adc_tb_i/ADC_LTC2311_0/U0/GEN_ADC_CONT[0].inst_adc/S_SPI_ENABLE $end
+$var reg 1 m. adc_tb_i/ADC_LTC2311_0/U0/S_SS_IN_N $end
+$var reg 1 n. _TRIGGER $end
+$var reg 1 o. _WINDOW $end
+$var reg 1 p. _GAP $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+b0 "
+b0 *
+b0 -
+b0 =
+b0 E
+b0 e
+b0 u
+b0 :"
+b0 J"
+b0 L"
+b0 n#
+b100000 B%
+b0 b%
+b0 $&
+b0 D&
+b0 d&
+b0 &'
+b100 H(
+0h(
+0i(
+b0 j(
+b0 |(
+b1010 >)
+b0 ^)
+b0 "+
+b0 B+
+b0 d,
+b11000110 f,
+b0 n,
+b0 0-
+b0 b.
+0e.
+0f.
+0g.
+1h.
+0i.
+0j.
+0k.
+0l.
+0m.
+0n.
+1o.
+0p.
+$end
+#512
+1n.

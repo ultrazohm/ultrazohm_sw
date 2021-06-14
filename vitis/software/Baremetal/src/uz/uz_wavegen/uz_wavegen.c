@@ -99,9 +99,9 @@ float uz_wavegen_triangle_with_offset(float amplitude, float frequency_Hz, float
 float uz_wavegen_saturation(float input, float upper_limit, float lower_limit) {
 	uz_assert(upper_limit > lower_limit);
 	float output=0.0f;
-	if (signal > upper_limit) {
+	if (input > upper_limit) {
 		output = upper_limit;
-	} else if (signal < lower_limit) {
+	} else if (input < lower_limit) {
 		output = lower_limit;
 	} else{
 		output=input;

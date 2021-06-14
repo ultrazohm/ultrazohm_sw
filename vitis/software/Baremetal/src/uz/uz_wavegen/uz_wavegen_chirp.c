@@ -2,11 +2,11 @@
 #include <math.h>
 #include "../uz_HAL.h"
 #include "../uz_SystemTime/uz_SystemTime.h"
-#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES 2
+#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES 2u
 
 #ifdef TEST
 	#undef UZ_WAVEGEN_CHIRP_MAX_INSTANCES
-	#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES 13
+	#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES 13u
 #endif
 struct uz_wavegen_chirp {
 	bool is_ready;
@@ -16,21 +16,21 @@ struct uz_wavegen_chirp {
 	float transition_angle;
 	struct uz_wavegen_chirp_config config;
 };
-static size_t counter_chirp = 0;
+static size_t counter_chirp = 0u;
 static uz_wavegen_chirp instances_chirp[UZ_WAVEGEN_CHIRP_MAX_INSTANCES] = { 0 };
 
 uz_wavegen_chirp* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config) {
 	uz_assert(counter_chirp < UZ_WAVEGEN_CHIRP_MAX_INSTANCES);
 	uz_wavegen_chirp* self = &instances_chirp[counter_chirp];
 	uz_assert_false(self->is_ready);
-	counter_chirp += 1;
+	counter_chirp++;
 	self->is_ready = true;
 	self->is_first_call_to_sample = true;
 	uz_assert(config.amplitude != 0.0f);
-	uz_assert(config.start_frequency_Hz > 0);
-	uz_assert(config.end_frequency_Hz > 0);
+	uz_assert(config.start_frequency_Hz > 0.0f);
+	uz_assert(config.end_frequency_Hz > 0.0f);
 	uz_assert(config.end_frequency_Hz > config.start_frequency_Hz);
-	uz_assert(config.initial_delay_sec >= 0);
+	uz_assert(config.initial_delay_sec >= 0.0f);
 	uz_assert(config.duration_sec > 0);
 	self->config = config;
 	return (self);

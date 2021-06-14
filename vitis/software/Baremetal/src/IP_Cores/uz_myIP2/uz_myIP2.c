@@ -2,7 +2,6 @@
 #if UZ_MYIP2_MAX_INSTANCES > 0U
 #include "uz_myIP2.h"
 #include "../../uz/uz_HAL.h"
-#include "uz_myIP2_private.h"
 #include "uz_myIP2_hw.h"
 
 struct uz_myIP2_t {

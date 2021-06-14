@@ -105,6 +105,14 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     signal S_ADC_MASTER_SI_FINISH	: std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
     signal S_ADC_MASTER_BUSY	    : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
     signal S_ADC_CONV_VALUE         : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    signal S_ADC_AVAILABLE          : std_logic_vector(C_C_S_AXI_DATA_WIDTH - 1 downto 0);
+    
+    type state_type is (TRIGGERED,CONTINUOUS,SPI_MANUAL);
+    signal curstate, nxtstate : state_type := TRIGGERED;
+    attribute fsm_encoding : string;
+    attribute fsm_encoding of curstate, nxtstate : signal is "auto";
+    attribute fsm_safe_state : string;
+    attribute fsm_safe_state of curstate, nxtstate : signal is "power_on_state";
     
     -- attributes
     -- keep
@@ -132,6 +140,11 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     attribute keep of S_ADC_MASTER_BUSY : signal is "true";
     attribute keep of S_ADC_CONV_VALUE : signal is "true";
     attribute keep of S_SPI_MANUAL : signal is "true";
+    attribute keep of S_ADC_AVAILABLE : signal is "true";
+    
+    -- state machine
+    attribute keep of curstate : signal is "true";
+    attribute keep of nxtstate : signal is "true";
     
     -- mark debug
     attribute MARK_DEBUG : string;
@@ -160,6 +173,7 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     attribute MARK_DEBUG of S_ADC_MASTER_BUSY : signal is "true";
     attribute MARK_DEBUG of S_ADC_CONV_VALUE : signal is "true";
     attribute MARK_DEBUG of S_SPI_MANUAL : signal is "true";
+    attribute MARK_DEBUG of S_ADC_AVAILABLE : signal is "true";
     
     -- ports
     attribute MARK_DEBUG of RAW_VALUE : signal is "true";
@@ -168,6 +182,10 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     attribute MARK_DEBUG of SI_VALID : signal is "true";
     attribute MARK_DEBUG of TRIGGER_CNV : signal is "true";
     attribute MARK_DEBUG of SS_N : signal is "true";
+    
+    -- state machine
+    attribute MARK_DEBUG of curstate : signal is "true";
+    attribute MARK_DEBUG of nxtstate : signal is "true";
     
     
 
@@ -190,6 +208,7 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
         P_ADC_MASTER_SI_FINISH	     : in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         P_ADC_MASTER_BUSY	         : in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         P_ADC_CONV_VALUE	         : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_AVAILABLE              : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         -- communication
 		S_AXI_ACLK	: in std_logic;
 		S_AXI_ARESETN	: in std_logic;
@@ -298,85 +317,124 @@ begin
     S_CLK         <= s00_axi_aclk;
     
     -- sequential logic
+    
+    output_state_mem: process(S_CLK)
+    begin
+        if rising_edge(S_CLK) then
+        
+            if (S_RESET_N = '0') then
+                S_ADC_CR_IN(C_TRIGGER) <= '1';
+                S_ENABLE <= (others => '0');
+                S_SPI_MANUAL <= (others => '0');
+                S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '0';
+                curstate <= TRIGGERED;
+            else
+                curstate <= nxtstate;
+                case nxtstate is
+                    when TRIGGERED =>
+                        S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '0';
+                        
+                        if (TRIGGER_CNV /= STD_ZERO) then
+                            S_ENABLE <= (TRIGGER_CNV and S_ADC_AVAILABLE(SPI_MASTER - 1 downto 0));
+                       -- Triggered by AXI register
+                        elsif (S_ADC_CR(C_TRIGGER) = '1') then
+           
+                            if (IS_BUSY(S_ADC_MASTER_BUSY, S_ADC_MASTER_CHANNEL) = false) then
+                                S_ENABLE <= (S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0) and S_ADC_AVAILABLE(SPI_MASTER - 1 downto 0));
+                                S_ADC_CR_IN(C_TRIGGER) <= '0';
+                            end if;
+                            
+                        else
+                            S_ENABLE <= (others => '0');
+                        end if;
+                    
+                    when CONTINUOUS =>
+                        S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '0';
+                        S_ENABLE <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
+                    
+                    when SPI_MANUAL =>
+                        S_ENABLE <= (others => '0');
+                        S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '1';
+                        S_ADC_SPI_CR_IN(C_SPI_SS_N_STATUS) <= S_ADC_SPI_CR(C_SPI_SS_N);
+                        S_ADC_SPI_CR_IN(C_SPI_SCLK_STATUS) <= S_ADC_SPI_CR(C_SPI_SCLK);
+                        S_SPI_MANUAL <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
+
+                        for i in SPI_MASTER - 1 downto 0 loop
+                            if(S_ADC_MASTER_CHANNEL(i) = '1') then
+                                S_SCLK_IN(i)                       <= S_ADC_SPI_CR(C_SPI_SCLK);                        
+                                S_SS_IN_N(i)                       <= S_ADC_SPI_CR(C_SPI_SS_N);
+                            end if;
+                        end loop;
+                    
+                    when others => curstate <= TRIGGERED;
+                    report "Undecoded State" severity note;
+                end case;
+            end if;
+        end if;
+    end process output_state_mem;
+    
+    transition: process(curstate, S_ADC_MASTER_BUSY, S_ADC_MASTER_CHANNEL, S_ADC_CR, S_ADC_SPI_CR)
+    begin
+        case curstate is
+            when TRIGGERED =>
+                if ((IS_BUSY(S_ADC_MASTER_BUSY, S_ADC_MASTER_CHANNEL) = false) and (S_ADC_SPI_CR(C_SPI_CONTROL) = '1')) then
+                    nxtstate <= SPI_MANUAL;
+                elsif (S_ADC_CR(C_MODE) = '1') then
+                    nxtstate <= CONTINUOUS;
+                else
+                    nxtstate <= TRIGGERED;
+                end if;
+            when CONTINUOUS =>
+                if (S_ADC_CR(C_MODE) = '0') then 
+                    nxtstate <= TRIGGERED;
+                else 
+                    nxtstate <= CONTINUOUS;
+                end if;
+            when SPI_MANUAL =>
+                if ((S_ADC_SPI_CR(C_SPI_CONTROL) = '0') and (S_ADC_CR(C_MODE) = '0')) then
+                    nxtstate <= TRIGGERED;
+                elsif ((S_ADC_SPI_CR(C_SPI_CONTROL) = '0') and (S_ADC_CR(C_MODE) = '1')) then
+                    nxtstate <= CONTINUOUS;
+                else
+                    nxtstate <= SPI_MANUAL;
+                end if;
+           when others => nxtstate <= TRIGGERED;
+           report "Undecoded State" severity note;
+       end case;
+    end process transition;
 	
-	control: process(S_CLK)
+	-- setting offset and conversion is independent of the other operation modes
+	
+	proc_set_conversion: process(S_CLK)
 	begin
         if rising_edge(S_CLK) then
             
            -- set default values. If conditions below are true the signals overwritten
            S_ADC_CR_IN(C_CONV_VALUE_VALID) <= '1';
-           S_ADC_CR_IN(C_TRIGGER) <= '1';
            S_SET_CONVERSION <= (others => '0');
            S_SET_OFFSET <= (others => '0');
-           S_ENABLE <= (others => '0');
-           S_SPI_MANUAL <= (others => '0');
-           S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '0';
            
            if (S_RESET_N = '0') then
-               
-               S_ENABLE <= (others => '0');
                S_SET_CONVERSION <= (others => '0');
                S_SET_OFFSET <= (others => '0');
-               S_ADC_CR_IN <= (C_CONV_VALUE_VALID => '1', C_TRIGGER => '1', others => '0');
-               S_ADC_SPI_CR_IN <= (others => '0');
-               
+           
            elsif (S_ADC_CR(C_CONV_VALUE_VALID) = '1') then
+               -- reset the update request
+               S_ADC_CR_IN(C_CONV_VALUE_VALID) <= '0';
                
-               -- if non of the masters is busy update offset or conversion value
-               if (IS_BUSY(S_ADC_MASTER_BUSY, S_ADC_MASTER_CHANNEL) = false) then
-                   -- reset the update request
-                   S_ADC_CR_IN(C_CONV_VALUE_VALID) <= '0';
-                   
-                   -- update the values
-                   for i in SPI_MASTER - 1 downto 0 loop
-                       if(S_ADC_MASTER_CHANNEL(i) = '1') then
-                            if (S_ADC_CR(C_OFF_CONV) = '1') then
-                                S_SET_CONVERSION(i) <= '1';
-                                S_SET_OFFSET(i)     <= '0';
-                            else
-                                S_SET_OFFSET(i)     <= '1';
-                                S_SET_CONVERSION(i) <= '0';
-                            end if;
-                       end if;
-                   end loop; 
+               -- update the values
+               
+               if (S_ADC_CR(C_OFF_CONV) = '1') then
+                   S_SET_CONVERSION <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
+                   S_SET_OFFSET     <= (others => '0');
+               else
+                   S_SET_OFFSET         <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
+                   S_SET_CONVERSION     <= (others => '0');
                end if;
-           
-           -- Trigger by hardware port
-           elsif (TRIGGER_CNV /= STD_ZERO) then
-               S_ENABLE <= TRIGGER_CNV;
-           
-           -- Continuos mode
-           elsif (S_ADC_CR(C_MODE) = '1') then
-               S_ENABLE <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
-           
-           -- Triggered by AXI register
-           elsif (S_ADC_CR(C_TRIGGER) = '1') then
-           
-               if (IS_BUSY(S_ADC_MASTER_BUSY, S_ADC_MASTER_CHANNEL) = false) then
-                    S_ENABLE <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
-                    S_ADC_CR_IN(C_TRIGGER) <= '0';
-               end if;
-           
-           -- manual SPI control
-           elsif (S_ADC_SPI_CR(C_SPI_CONTROL) = '1') then
-                
-                if (IS_BUSY(S_ADC_MASTER_BUSY, S_ADC_MASTER_CHANNEL) = false) then
-                    for i in SPI_MASTER - 1 downto 0 loop
-                        if(S_ADC_MASTER_CHANNEL(i) = '1') then
-                            S_SPI_MANUAL(i)                    <= '1';
-                            S_SCLK_IN(i)                       <= S_ADC_SPI_CR(C_SPI_SCLK);                        
-                            S_SS_IN_N(i)                       <= S_ADC_SPI_CR(C_SPI_SS_N);
-                            S_ADC_SPI_CR_IN(C_SPI_SS_N_STATUS) <= S_ADC_SPI_CR(C_SPI_SS_N);
-                            S_ADC_SPI_CR_IN(C_SPI_SCLK_STATUS) <= S_ADC_SPI_CR(C_SPI_SCLK);
-                            S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= S_ADC_SPI_CR(C_SPI_CONTROL);
-                            
-                        end if;
-                    end loop;
-                end if;
-           end if;
-           
-        end if;
-	end process control;
+            end if;
+         end if;
+               
+	end process proc_set_conversion;
 	
 	-- User logic ends
 
@@ -399,6 +457,7 @@ ADC_LTC2311_v3_0_S00_AXI_inst : ADC_LTC2311_v3_0_S00_AXI
         P_ADC_MASTER_SI_FINISH	     => S_ADC_MASTER_SI_FINISH,
         P_ADC_MASTER_BUSY	         => S_ADC_MASTER_BUSY,
         P_ADC_CONV_VALUE	         => S_ADC_CONV_VALUE,
+        P_ADC_AVAILABLE              => S_ADC_AVAILABLE,
 	    -- AXI Ports
 		S_AXI_ACLK	=> s00_axi_aclk,
 		S_AXI_ARESETN	=> S_RESET_N,

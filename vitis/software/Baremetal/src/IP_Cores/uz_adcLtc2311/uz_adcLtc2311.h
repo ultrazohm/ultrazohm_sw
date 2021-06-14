@@ -118,6 +118,8 @@
 #define UZ_ADCLTC2311_NS_NOT_IN_MODE (1<<4)
 #define UZ_ADCLTC2311_NS_TIMEOUT (1<<5)
 #define UZ_ADCLTC2311_NS_NO_SELECTION (1<<6)
+#define UZ_ADCLTC2311_NAP_PULSES 2
+#define UZ_ADCLTC2311_SLEEP_PULSES 4
 
 // typedefs
 typedef struct uz_adcLtc2311 uz_adcLtc2311;
@@ -215,10 +217,10 @@ void uz_adcLtc2311_softwareReset(uz_adcLtc2311* self);
 void uz_adcLtc2311_softwareTrigger(uz_adcLtc2311* self, uint32_t spiMasters);
 void uz_adcLtc2311_setContinuousMode(uz_adcLtc2311* self);
 void uz_adcLtc2311_setTriggeredMode(uz_adcLtc2311* self);
-void uz_adcLtc2311_enterNapMode(uz_adcLtc2311* self, uint32_t spiMasters);
-void uz_adcLtc2311_leaveNapMode(uz_adcLtc2311* self, uint32_t spiMasters);
-void uz_adcLtc2311_enterSleepMode(uz_adcLtc2311* self, uint32_t spiMasters);
-void uz_adcLtc2311_leaveSleepMode(uz_adcLtc2311* self, uint32_t spiMasters);
+int32_t uz_adcLtc2311_enterNapMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration);
+int32_t uz_adcLtc2311_leaveNapMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration);
+int32_t uz_adcLtc2311_enterSleepMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration);
+int32_t uz_adcLtc2311_leaveSleepMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration);
 void uz_adcLtc2311_init_napSleepConfig(uz_adcLtc2311_napSleepConfig* configuration);
 
 #endif // UZ_ADCLTC2311_H

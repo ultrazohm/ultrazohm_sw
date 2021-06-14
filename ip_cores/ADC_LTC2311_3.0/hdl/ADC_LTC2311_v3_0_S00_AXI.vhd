@@ -30,6 +30,7 @@ entity ADC_LTC2311_v3_0_S00_AXI is
         P_ADC_MASTER_SI_FINISH	     : in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         P_ADC_MASTER_BUSY	         : in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         P_ADC_CONV_VALUE	         : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        P_ADC_AVAILABLE              : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -130,7 +131,7 @@ architecture arch_imp of ADC_LTC2311_v3_0_S00_AXI is
 	signal ADC_MASTER_SI_FINISH	     :std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 	signal ADC_MASTER_BUSY	         :std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 	signal ADC_CONV_VALUE	         :std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-	signal slv_reg9	    :std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+	signal ADC_AVAILABLE    	 :std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 	signal slv_reg10	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 	signal slv_reg11	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 	signal slv_reg12	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
@@ -248,7 +249,7 @@ begin
 --	      ADC_MASTER_SI_FINISH <= (others => '0');
 --	      ADC_MASTER_BUSY <= (others => '0');
 	      ADC_CONV_VALUE <= (others => '0');
-	      slv_reg9 <= (others => '0');
+	      ADC_AVAILABLE <= (others => '1');
 	      slv_reg10 <= (others => '0');
 	      slv_reg11 <= (others => '0');
 	      slv_reg12 <= (others => '0');
@@ -338,7 +339,7 @@ begin
 	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
 	                -- Respective byte enables are asserted as per write strobes                   
 	                -- slave registor 9
-	                slv_reg9(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
+	                ADC_AVAILABLE(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
 	              end if;
 	            end loop;
 	          when b"1010" =>
@@ -399,7 +400,7 @@ begin
 --	            ADC_MASTER_SI_FINISH <= ADC_MASTER_SI_FINISH;
 --	            ADC_MASTER_BUSY <= ADC_MASTER_BUSY;
 	            ADC_CONV_VALUE <= ADC_CONV_VALUE;
-	            slv_reg9 <= slv_reg9;
+	            ADC_AVAILABLE <= ADC_AVAILABLE;
 	            slv_reg10 <= slv_reg10;
 	            slv_reg11 <= slv_reg11;
 	            slv_reg12 <= slv_reg12;
@@ -509,7 +510,7 @@ begin
 	-- and the slave is ready to accept the read address.
 	slv_reg_rden <= axi_arready and S_AXI_ARVALID and (not axi_rvalid) ;
 
-	process (ADC_CR, ADC_SPI_CR, ADC_SPI_CFGR, ADC_MASTER_CHANNEL, ADC_CHANNEL, ADC_MASTER_FINISH, ADC_MASTER_SI_FINISH, ADC_MASTER_BUSY, ADC_CONV_VALUE, slv_reg9, slv_reg10, slv_reg11, slv_reg12, slv_reg13, slv_reg14, slv_reg15, axi_araddr, S_AXI_ARESETN, slv_reg_rden)
+	process (ADC_CR, ADC_SPI_CR, ADC_SPI_CFGR, ADC_MASTER_CHANNEL, ADC_CHANNEL, ADC_MASTER_FINISH, ADC_MASTER_SI_FINISH, ADC_MASTER_BUSY, ADC_CONV_VALUE, ADC_AVAILABLE, slv_reg10, slv_reg11, slv_reg12, slv_reg13, slv_reg14, slv_reg15, axi_araddr, S_AXI_ARESETN, slv_reg_rden)
 	variable loc_addr :std_logic_vector(OPT_MEM_ADDR_BITS downto 0);
 	begin
 	    -- Address decoding for reading registers
@@ -534,7 +535,7 @@ begin
 	      when b"1000" =>
 	        reg_data_out <= ADC_CONV_VALUE;
 	      when b"1001" =>
-	        reg_data_out <= slv_reg9;
+	        reg_data_out <= ADC_AVAILABLE;
 	      when b"1010" =>
 	        reg_data_out <= slv_reg10;
 	      when b"1011" =>
@@ -579,6 +580,7 @@ begin
     P_ADC_MASTER_CHANNEL	     <= ADC_MASTER_CHANNEL;
     P_ADC_CHANNEL	             <= ADC_CHANNEL; 
     P_ADC_CONV_VALUE	         <= ADC_CONV_VALUE;
+    P_ADC_AVAILABLE              <= ADC_AVAILABLE;
     
     -- read only registers
     

@@ -238,24 +238,7 @@ begin
                             SI_VALUE( ((S_RESULT_COUNTER + 1) * (RES_MSB - RES_LSB + 1)) - 1 downto (S_RESULT_COUNTER) * (RES_MSB - RES_LSB + 1)) 
                             <= S_RESULT_S_C(RES_MSB downto RES_LSB);
                         when others =>
-                            -- set conversion value for the selected channels
-                            if (SET_CONVERSION = '1') then
-                                set_conv: for i in (CHANNELS) downto 1 loop
-                                    if(CHANNEL_SELECT(i - 1) = '1') then
-                                        S_CONVERSION((i * CONVERSION_WIDTH) - 1 downto (i - 1) * CONVERSION_WIDTH) 
-                                        <= VALUE_OFF_CONV(CONVERSION_WIDTH - 1 downto 0);
-                                    end if;
-                                end loop set_conv;
                             
-                            -- set offset value for the selected channels
-                            elsif (SET_OFFSET = '1') then
-                                set_off: for i in (CHANNELS) downto 1 loop
-                                    if(CHANNEL_SELECT(i - 1) = '1') then
-                                        S_OFFSET((i * OFFSET_WIDTH) - 1 downto (i - 1) * OFFSET_WIDTH) 
-                                        <= VALUE_OFF_CONV(OFFSET_WIDTH - 1 downto 0);
-                                    end if;
-                                end loop set_off;
-                            end if;
                         end case;
                     
                     when SPI_TRANSFER =>
@@ -348,6 +331,34 @@ begin
                 report "Undecoded State" severity note;
             end case;
     end process transition;
+    
+    proc_set_conversion: process(CLK)
+    begin
+        if rising_edge(CLK) then
+            if (reset_n = '0') then
+                S_CONVERSION    <= (others => '0');
+                S_OFFSET        <= (others => '0');
+            -- set conversion value for the selected channels
+            elsif (SET_CONVERSION = '1') then
+                set_conv: for i in (CHANNELS) downto 1 loop
+                    if(CHANNEL_SELECT(i - 1) = '1') then
+                        S_CONVERSION((i * CONVERSION_WIDTH) - 1 downto (i - 1) * CONVERSION_WIDTH) 
+                        <= VALUE_OFF_CONV(CONVERSION_WIDTH - 1 downto 0);
+                    end if;
+                end loop set_conv;
+            
+            -- set offset value for the selected channels
+            elsif (SET_OFFSET = '1') then
+                set_off: for i in (CHANNELS) downto 1 loop
+                    if(CHANNEL_SELECT(i - 1) = '1') then
+                        S_OFFSET((i * OFFSET_WIDTH) - 1 downto (i - 1) * OFFSET_WIDTH) 
+                        <= VALUE_OFF_CONV(OFFSET_WIDTH - 1 downto 0);
+                    end if;
+                end loop set_off;
+            end if;
+         end if;
+        
+    end process proc_set_conversion;
     
     -- instantiation of the SPI master and the multiplicator
     

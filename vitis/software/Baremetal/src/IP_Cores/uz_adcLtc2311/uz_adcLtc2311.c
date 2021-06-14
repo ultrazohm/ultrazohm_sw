@@ -32,30 +32,57 @@ static void uz_adcLtc2311_setLsbs(uint32_t* value, uint32_t bits) {
 	*value = mask;
 }
 
-static int32_t uz_adcLtc2311_spiEnableManualControl(uz_adcLtc2311* self) {
-	uz_assert_not_NULL(self);
-	int32_t return_value = UZ_SUCESS;
+static int32_t uz_adcLtc2311_allMaskedBitsSetInValue(uint32_t value, uint32_t mask) {
+	int32_t return_value = UZ_SUCCESS;
 
-	uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) | UZ_ADCLTC2311_SPI_CR_CONTROL);
+	for (uint32_t i = 0; i < 32; i++) {
 
-	if (uz_adcLtc2311_hw_read_spi_cr(self->base_address) & UZ_ADCLTC2311_SPI_CR_CONTROL_STATUS)
-		return_value = UZ_SUCESS;
-	else
-		return_value = UZ_FAILURE;
+		if (mask & (1 << i)) {
+
+			if ((value & (1 << i)) == 0) {
+				return_value = UZ_FAILURE;
+				break;
+			}
+		}
+	}
 
 	return (return_value);
 }
 
-static int32_t uz_adcLtc2311_spiDisableManualControl(uz_adcLtc2311* self) {
+static int32_t uz_adcLtc2311_spiEnableManualControl(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration) {
+	uz_assert_not_NULL(self);
+	int32_t return_value = UZ_SUCCESS;
+	uint32_t max_attempts = configuration->max_attempts;
+
+	uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) | UZ_ADCLTC2311_SPI_CR_CONTROL);
+
+	while ((uz_adcLtc2311_hw_read_spi_cr(self->base_address) & UZ_ADCLTC2311_SPI_CR_CONTROL_STATUS) == 0) {
+
+		if ((configuration->try_infinite == false) && (--max_attempts <= 0)) {
+			configuration->error_code |= UZ_ADCLTC2311_NS_MAN_MODE_EN_FAILED;
+			return_value = UZ_FAILURE;
+			break;
+		}
+	}
+
+	return (return_value);
+}
+
+static int32_t uz_adcLtc2311_spiDisableManualControl(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration) {
 	uz_assert_not_NULL(self);
 	uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) & ~UZ_ADCLTC2311_SPI_CR_CONTROL);
 
-	int32_t return_value = UZ_SUCESS;
+	int32_t return_value = UZ_SUCCESS;
+	uint32_t max_attempts = configuration->max_attempts;
 
-	if ((uz_adcLtc2311_hw_read_spi_cr(self->base_address) & UZ_ADCLTC2311_SPI_CR_CONTROL_STATUS) == 0)
-		return_value = UZ_SUCESS;
-	else
-		return_value = UZ_FAILURE;
+	while (uz_adcLtc2311_hw_read_spi_cr(self->base_address) & UZ_ADCLTC2311_SPI_CR_CONTROL_STATUS) {
+
+		if ((configuration->try_infinite == false) && (--max_attempts <= 0)) {
+			configuration->error_code |= UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED;
+			return_value = UZ_FAILURE;
+			break;
+		}
+	}
 
 	return (return_value);
 }
@@ -76,9 +103,9 @@ static int32_t uz_adcLtc2311_spiManualControlIsEnabled(uz_adcLtc2311* self) {
 
 static int32_t uz_adcLtc2311_spiSetSsN(uz_adcLtc2311* self, uint32_t spiMasters) {
 	uz_assert_not_NULL(self);
-	int32_t return_value = UZ_SUCESS;
+	int32_t return_value = UZ_SUCCESS;
 
-	if (uz_adcLtc2311_spiManualControlIsEnabled(self->base_address)) {
+	if (uz_adcLtc2311_spiManualControlIsEnabled(self)) {
 		uz_adcLtc2311_hw_write_master_channel(self->base_address, spiMasters);
 		uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) | UZ_ADCLTC2311_SPI_CR_SS_N);
 
@@ -93,9 +120,9 @@ static int32_t uz_adcLtc2311_spiSetSsN(uz_adcLtc2311* self, uint32_t spiMasters)
 
 static int32_t uz_adcLtc2311_spiResetSsN(uz_adcLtc2311* self, uint32_t spiMasters) {
 	uz_assert_not_NULL(self);
-	int32_t return_value = UZ_SUCESS;
+	int32_t return_value = UZ_SUCCESS;
 
-	if (uz_adcLtc2311_spiManualControlIsEnabled(self->base_address)) {
+	if (uz_adcLtc2311_spiManualControlIsEnabled(self)) {
 		uz_adcLtc2311_hw_write_master_channel(self->base_address, spiMasters);
 		uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) & ~UZ_ADCLTC2311_SPI_CR_SS_N);
 
@@ -110,9 +137,9 @@ static int32_t uz_adcLtc2311_spiResetSsN(uz_adcLtc2311* self, uint32_t spiMaster
 
 static int32_t uz_adcLtc2311_spiSetSclk(uz_adcLtc2311* self, uint32_t spiMasters) {
 	uz_assert_not_NULL(self);
-	int32_t return_value = UZ_SUCESS;
+	int32_t return_value = UZ_SUCCESS;
 
-	if (uz_adcLtc2311_spiManualControlIsEnabled(self->base_address)) {
+	if (uz_adcLtc2311_spiManualControlIsEnabled(self)) {
 		uz_adcLtc2311_hw_write_master_channel(self->base_address, spiMasters);
 		uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) | UZ_ADCLTC2311_SPI_CR_SCLK);
 
@@ -127,9 +154,9 @@ static int32_t uz_adcLtc2311_spiSetSclk(uz_adcLtc2311* self, uint32_t spiMasters
 
 static int32_t uz_adcLtc2311_spiResetSclk(uz_adcLtc2311* self, uint32_t spiMasters) {
 	uz_assert_not_NULL(self);
-	int32_t return_value = UZ_SUCESS;
+	int32_t return_value = UZ_SUCCESS;
 
-	if (uz_adcLtc2311_spiManualControlIsEnabled(self->base_address)) {
+	if (uz_adcLtc2311_spiManualControlIsEnabled(self)) {
 		uz_adcLtc2311_hw_write_master_channel(self->base_address, spiMasters);
 		uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) & ~UZ_ADCLTC2311_SPI_CR_SCLK);
 
@@ -334,16 +361,28 @@ int32_t uz_adcLtc2311_enterNapMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepCo
 		return_value = UZ_FAILURE;
 		configuration->error_code |= UZ_ADCLTC2311_NS_NO_SELECTION;
 	}
-	if (self->napping_spi_masters & configuration->spi_masters) {
+	if ((self->napping_spi_masters & configuration->spi_masters) || (self->sleeping_spi_masters & configuration->spi_masters)) {
 		return_value = UZ_FAILURE;
 		configuration->error_code |= UZ_ADCLTC2311_NS_ALREADY_IN_MODE;
 	}
 
 	if (IS_UZ_SUCCESS(return_value)) {
-		return_value = uz_adcLtc2311_spiEnableManualControl(self);
+		return_value = uz_adcLtc2311_spiEnableManualControl(self, configuration);
 
 		if (IS_UZ_FAILURE(return_value))
 			configuration->error_code |= UZ_ADCLTC2311_NS_MAN_MODE_EN_FAILED;
+		else {
+			uz_adcLtc2311_spiResetSsN(self, configuration->spi_masters);
+
+			for (uint32_t i = 0; i < UZ_ADCLTC2311_NAP_PULSES; i++) {
+				uz_adcLtc2311_spiSetSsN(self, configuration->spi_masters);
+				uz_adcLtc2311_spiResetSsN(self, configuration->spi_masters);
+			}
+
+			self->napping_spi_masters |= configuration->spi_masters;
+			uz_adcLtc2311_hw_write_adc_available(self->base_address, uz_adcLtc2311_hw_read_adc_available(self->base_address) | configuration->spi_masters);
+			uz_adcLtc2311_spiDisableManualControl(self, configuration);
+		}
 
 	}
 
@@ -354,6 +393,41 @@ int32_t uz_adcLtc2311_leaveNapMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepCo
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(configuration);
 	int32_t return_value = UZ_SUCCESS;
+	configuration->error_code = 0;
+
+	if (configuration->spi_masters == 0) {
+		return_value = UZ_FAILURE;
+		configuration->error_code |= UZ_ADCLTC2311_NS_NO_SELECTION;
+	}
+
+	return_value = uz_adcLtc2311_allMaskedBitsSetInValue(self->napping_spi_masters, configuration->spi_masters);
+
+	if (IS_UZ_FAILURE(return_value))
+		configuration->error_code |= UZ_ADCLTC2311_NS_NOT_IN_MODE;
+
+	if (IS_UZ_SUCCESS(return_value)) {
+		return_value = uz_adcLtc2311_spiEnableManualControl(self, configuration);
+
+		if (IS_UZ_FAILURE(return_value))
+			configuration->error_code |= UZ_ADCLTC2311_NS_MAN_MODE_EN_FAILED;
+		else
+			return_value = uz_adcLtc2311_spiResetSclk(self, configuration->spi_masters);
+
+		if (IS_UZ_FAILURE(return_value))
+			configuration->error_code |= UZ_ADCLTC2311_NS_ACTION_INTERRUPTED;
+		else
+			return_value = uz_adcLtc2311_spiSetSclk(self, configuration->spi_masters);
+
+		if (IS_UZ_FAILURE(return_value))
+			configuration->error_code |= UZ_ADCLTC2311_NS_ACTION_INTERRUPTED;
+		else
+			self->napping_spi_masters &= ~configuration->spi_masters;
+
+		if (IS_UZ_FAILURE(uz_adcLtc2311_spiDisableManualControl(self, configuration))) {
+			return_value = UZ_FAILURE;
+			configuration->error_code |= UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED;
+		}
+	}
 
 	return (return_value);
 }

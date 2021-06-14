@@ -53,7 +53,7 @@ void test_uz_adcLtc2311_test_base_address_not_zero(void){
         .ip_clk_frequency_Hz=TEST_IP_CORE_FRQ
     };
 
-    TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311* test_ptr=uz_adcLtc2311_init(&test_instance));
+    TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_init(&test_instance));
 }
 
 void test_uz_adcLtc2311_test_ip_core_frq_not_zero(void){
@@ -63,7 +63,7 @@ void test_uz_adcLtc2311_test_ip_core_frq_not_zero(void){
         .base_address=TEST_BASE_ADDRESS
     };
 
-    TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311* test_ptr=uz_adcLtc2311_init(&test_instance));
+    TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_init(&test_instance));
 }
 
 #endif // TEST

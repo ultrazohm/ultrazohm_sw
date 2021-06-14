@@ -8,12 +8,12 @@
 // 4 for Interrupt_3L_start			
 // 5 for Interrupt_3L_center		
 // 6 for Interrupt_timer_fcc		
-#define Interrupt_ISR_source_user_choice        3
-#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES          2
-#define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES    2
+#define Interrupt_ISR_source_user_choice        3U
+#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES          2U
+#define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES    2U
 #endif
 
 #ifdef TEST
-	#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES          13
-    #define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES    5
+	#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES          13U
+    #define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES    5U
 #endif

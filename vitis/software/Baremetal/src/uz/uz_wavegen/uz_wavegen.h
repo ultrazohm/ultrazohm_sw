@@ -119,7 +119,7 @@ float uz_wavegen_triangle_with_offset(float amplitude, float frequency_Hz, float
  * @param lower_limit Lower limit of the saturation. upper_limit > lower_limit is required
  * @return Returns one sample of the adjusted input
  */
-float uz_wavegen_saturation(float signal, float upper_limit, float lower_limit);
+float uz_wavegen_saturation(float input, float upper_limit, float lower_limit);
 
 /**
  * @brief Returns one random sample of a white-noise function

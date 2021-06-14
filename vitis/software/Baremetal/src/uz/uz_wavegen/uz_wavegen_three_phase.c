@@ -24,7 +24,7 @@ uz_wavegen_three_phase* uz_wavegen_three_phase_init(struct uz_wavegen_three_phas
 	uz_assert(counter_three_phase < UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES);
 	uz_wavegen_three_phase* self = &instances_three_phase[counter_three_phase];
 	uz_assert(self->is_ready == false);
-	counter_three_phase += 1;
+	counter_three_phase++;
 	self->is_ready = true;
 	uz_assert(config.frequency_Hz > 0);
 	uz_assert(config.amplitude != 0.0f);

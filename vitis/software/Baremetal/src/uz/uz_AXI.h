@@ -88,10 +88,10 @@ int32_t uz_axi_read_int32(uintptr_t Addr);
  */
 static inline void uz_axi_write_bool(uintptr_t Addr, _Bool enable) {
 	if (enable == true) {
-		uz_axi_write_uint32(Addr, (uint32_t) 0x00000001);
+		uz_axi_write_uint32(Addr, (uint32_t) 0x00000001U);
 	}
 	if (enable == false) {
-		uz_axi_write_uint32(Addr, (uint32_t) 0x00000000);
+		uz_axi_write_uint32(Addr, (uint32_t) 0x00000000U);
 	}
 }
 /**
@@ -105,9 +105,9 @@ static inline void uz_axi_write_bool(uintptr_t Addr, _Bool enable) {
  */
 static inline _Bool uz_axi_read_bool(uintptr_t Addr) {
 	uint32_t tmp = uz_axi_read_uint32(Addr);
-	uz_assert( (tmp ==0x00000000) || (tmp==0x00000001) );
+	uz_assert( (tmp ==0x00000000U) || (tmp==0x00000001U) );
 	bool return_value = false;
-	if (tmp == 0x00000001) {
+	if (tmp == 0x00000001U) {
 		return_value = true;
 	}
 	return (return_value);

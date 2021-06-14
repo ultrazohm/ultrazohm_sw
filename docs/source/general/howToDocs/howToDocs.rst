@@ -292,6 +292,8 @@ All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
   The most common directives are ``doxygenfunction``, ``doxygenstruct``, ``doxygentypedef``, ``doxygendefine``.
   See `doxygen documentation <https://www.doxygen.nl/manual/docblocks.html>`_ for how to write Doxygen comments.
 
+.. _doxygen:
+
 Doxygen
 =======
 

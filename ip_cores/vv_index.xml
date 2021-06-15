@@ -547,7 +547,7 @@
 		</DisplayName>
 		<Description value="Read out and process data from the LTC2311 ADC">
 		</Description>
-		<CoreRevision value="22">
+		<CoreRevision value="25">
 		</CoreRevision>
 		<ComponentPath value="ADC_LTC2311_3.0/component.xml">
 		</ComponentPath>

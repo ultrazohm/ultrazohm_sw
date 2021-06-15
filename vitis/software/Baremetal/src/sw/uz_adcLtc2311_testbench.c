@@ -21,12 +21,25 @@ void uz_adcLtc2311_testbench(void) {
 	uz_adcLtc2311_configureConversion(test_instance, &test_config);
 	//uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
 
+	uz_adcLtc2311_napSleepConfig test_ns_config;
+	uz_adcLtc2311_init_napSleepConfig(&test_ns_config);
+	test_ns_config.max_attempts = 10;
+	test_ns_config.try_infinite = false;
+	test_ns_config.spi_masters = UZ_ADCLTC2311_MASTER1;
+
+
 	//uz_printf("Hello World");
 	//}
 
 	while (1)
 	{
 		uz_adcLtc2311_configureConversion(test_instance, &test_config);
-		//uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
+		uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
+		uz_adcLtc2311_enterNapMode(test_instance, &test_ns_config);
+		uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
+		uz_adcLtc2311_leaveNapMode(test_instance, &test_ns_config);
+//		uz_adcLtc2311_setTriggeredMode(test_instance);
+//		uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
+//		uz_adcLtc2311_setContinuousMode(test_instance);
 	}
 }

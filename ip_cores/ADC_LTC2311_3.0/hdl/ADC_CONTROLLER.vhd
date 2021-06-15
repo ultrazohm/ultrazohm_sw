@@ -200,8 +200,6 @@ begin
             if rising_edge(CLK) then
             if (reset_n = '0') then
                 curstate <= IDLE;
-                S_CONVERSION    <= (others => '0');
-                S_OFFSET        <= (others => '0');
                 S_CE_CONVERSION <= '0';
                 
                 S_RAW_VALUE_S_C  <= (others => '0');

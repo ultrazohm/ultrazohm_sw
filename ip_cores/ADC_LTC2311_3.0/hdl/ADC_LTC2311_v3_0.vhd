@@ -121,7 +121,6 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     attribute keep of S_SET_CONVERSION : signal is "true";
     attribute keep of S_SET_OFFSET : signal is "true";
     attribute keep of S_RESET_N : signal is "true";
-    attribute keep of S_CLK : signal is "true";
     attribute keep of S_MISO : signal is "true";
     attribute keep of S_PRE_DELAY : signal is "true";
     attribute keep of S_POST_DELAY : signal is "true";
@@ -152,7 +151,6 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     attribute MARK_DEBUG of S_SET_CONVERSION : signal is "true";
     attribute MARK_DEBUG of S_SET_OFFSET : signal is "true";
     attribute MARK_DEBUG of S_RESET_N : signal is "true";
-    attribute MARK_DEBUG of S_CLK : signal is "true";
     attribute MARK_DEBUG of S_SCLK_IN : signal is "true";
     attribute MARK_DEBUG of S_SS_IN_N : signal is "true";
     attribute MARK_DEBUG of S_MISO : signal is "true";
@@ -333,6 +331,7 @@ begin
                 case nxtstate is
                     when TRIGGERED =>
                         S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '0';
+                        S_SPI_MANUAL <= (others => '0');
                         
                         if (TRIGGER_CNV /= STD_ZERO) then
                             S_ENABLE <= (TRIGGER_CNV and S_ADC_AVAILABLE(SPI_MASTER - 1 downto 0));
@@ -351,6 +350,7 @@ begin
                     when CONTINUOUS =>
                         S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '0';
                         S_ENABLE <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
+                        S_SPI_MANUAL <= (others => '0');
                     
                     when SPI_MANUAL =>
                         S_ENABLE <= (others => '0');
@@ -409,14 +409,10 @@ begin
 	begin
         if rising_edge(S_CLK) then
             
-           -- set default values. If conditions below are true the signals overwritten
-           S_ADC_CR_IN(C_CONV_VALUE_VALID) <= '1';
-           S_SET_CONVERSION <= (others => '0');
-           S_SET_OFFSET <= (others => '0');
-           
            if (S_RESET_N = '0') then
                S_SET_CONVERSION <= (others => '0');
                S_SET_OFFSET <= (others => '0');
+               S_ADC_CR_IN(C_CONV_VALUE_VALID) <= '1';
            
            elsif (S_ADC_CR(C_CONV_VALUE_VALID) = '1') then
                -- reset the update request
@@ -431,6 +427,10 @@ begin
                    S_SET_OFFSET         <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
                    S_SET_CONVERSION     <= (others => '0');
                end if;
+            else
+               S_ADC_CR_IN(C_CONV_VALUE_VALID) <= '1';
+               S_SET_CONVERSION <= (others => '0');
+               S_SET_OFFSET <= (others => '0');
             end if;
          end if;
                

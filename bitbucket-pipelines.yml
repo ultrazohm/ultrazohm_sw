@@ -15,6 +15,7 @@ pipelines:
        name: docs
        image: ultrazohm/ultrazohm_remote_container
        script: # Modify the commands below to build your repository.
+        - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
         - cd docs
         - python -m pip install -U pip
         - pip install -r requirements.txt
@@ -27,12 +28,14 @@ pipelines:
        name: Ceedling unit tests
        image: ultrazohm/ultrazohm_remote_container
        script:
+        - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
         - cd vitis/software/Baremetal
         - ceedling test:all
     - step:
        name: Cppcheck
        image: ultrazohm/ultrazohm_remote_container
        script:
+        - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
         - cppcheck vitis/software/Baremetal/src 
         - cppcheck --addon=cert vitis/software/Baremetal/src 
         - cppcheck --addon=misra vitis/software/Baremetal/src 
@@ -47,6 +50,7 @@ pipelines:
             - apt-get -y install --no-install-recommends texlive-science
             - apt-get -y install --no-install-recommends ghostscript
             - apt-get -y install --no-install-recommends doxygen
+            - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
             - cd docs
             - python -m pip install -U pip
             - pip install -r requirements.txt
@@ -57,12 +61,9 @@ pipelines:
             - ls
         - step:
            name: Ceedling unit tests
+           image: ultrazohm/ultrazohm_remote_container
            script:
-            - apt-get update
-            - apt-get -y install build-essential
-            - apt-get -y install gdb
-            - apt-get -y install ruby
-            - gem install ceedling
+            - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
             - cd vitis/software/Baremetal
             - ceedling test:all
         - step:
@@ -84,6 +85,7 @@ pipelines:
           - apt-get -y install --no-install-recommends ghostscript
           - apt-get -y install --no-install-recommends doxygen
           - python -m pip install -U pip
+          - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
           - ls
           - cd docs
           - ls

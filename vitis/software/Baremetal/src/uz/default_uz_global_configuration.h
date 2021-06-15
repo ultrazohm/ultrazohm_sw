@@ -1,4 +1,8 @@
 #ifndef TEST
+
+// Hardware version of the UltraZohm
+#define UZ_HARDWARE_VERSION 3U
+
 /** ISR trigger source
  *
  * chose here which of the above interrupt trigger you want to use:

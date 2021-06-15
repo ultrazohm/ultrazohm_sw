@@ -15,6 +15,7 @@
 
 //Includes from own files
 #include "main.h"
+#include "uz/uz_global_configuration.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
 
 //Initialize the global variables
@@ -104,7 +105,7 @@ int main(void) {
 		if (Global_Data.dv.sw2 == true) {
 			Global_Data.cw.enableControl = true;
 		}
-#ifndef UltraZohmV2 // in CarrierBoard_v2 there are no buttons, therefore always SW_stop is always zero/false
+#if (UZ_HARDWARE_VERSION > 2U) // in CarrierBoard_v2 there are no buttons, therefore SW_stop is always zero/false
 		// Set the control enable and system enable flag to false if SW3 is pressed
 		if (Global_Data.dv.sw3 == false) {
 			Global_Data.cw.enableControl = false;

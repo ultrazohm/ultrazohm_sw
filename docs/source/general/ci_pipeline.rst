@@ -89,6 +89,12 @@ We use `cppcheck <https://github.com/danmar/cppcheck>`_  as our static code anal
 
 .. note:: The build pipeline does not fail if there are warnings from the static code analysis!
 
+
+Global configuration in CI
+**************************
+
+The CI uses the default :ref:`global_configuration` by renaming the file ``default_uz_global_configuration.h`` to ``uz_global_configuration.h``.
+
 UltraZohm development container
 *******************************
 

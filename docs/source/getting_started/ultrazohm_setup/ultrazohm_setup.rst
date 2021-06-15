@@ -169,6 +169,10 @@ A TCL script can be added to the Vivado icons to automate the process of exporti
 Generate the Vitis workspace
 ****************************
 
+- Navigate to ``~/ultrazohm/ultrazohm_sw/vitis/software/Baremetal/src/uz``
+- Copy the file ``default_uz_global_configuration.h``
+- Check that the configuration file matches your setup (ee :ref:`global_configuration` for details)
+- Rename the file to ``uz_global_configuration.h``
 - Open Vitis or launch Vitis from Vivado (``Tools -> Launch Vitis IDE``)
 - Choose the workspace
 - Path: ``~/ultrazohm/ultrazohm_sw/vitis/workspace``

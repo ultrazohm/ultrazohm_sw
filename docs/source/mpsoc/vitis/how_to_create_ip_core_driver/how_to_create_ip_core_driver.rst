@@ -282,15 +282,15 @@ IP-Core driver: User software
 
 Recall that we use the :ref:`AXI_testIP` to calculate :math:`C=A \cdot B`.
 Until now, we created an abstraction layer for the hardware registers.
-Implement the actual function of the driver. 
+We implement the actual function of the driver in the following. 
 
-1. In the terminal:
+1. Type in the terminal:
 
 ::
 
   ceedling module:create[IP_Cores/uz_myIP/uz_myIP]
 
-2. Create the interface of the IP-Core driver in ``uz_myIP.h``. Notice how the interface is focused on the user: We only have to initialize the module and use the hardware calculation :math:`C=A \cdot B` without knowledge about hardware registers and addresses.
+2. Create the interface of the IP-Core driver in ``uz_myIP.h``. Notice how the interface is focused on the user: We only have to initialize the module and use the hardware calculation :math:`C=A \cdot B` without knowledge about hardware registers and addresses. We use :ref:`doxygen` to document the interface. Type ``/**`` above a function, struct or typedef you want to comment and press enter, VSCode will auto-generate the doxygen boiler plate. We only use doxygen comments for the interface (in the ``.h`` file) and later include these in the sphinx documentation.
 
 .. code-block:: c
    :linenos:
@@ -316,7 +316,7 @@ Implement the actual function of the driver.
    };
    
    /**
-    * @brief Initializes and instance of the myIP driver
+    * @brief Initializes an instance of the myIP driver
     * 
     * @param config Configuration values for the IP-Core
     * @return Pointer to initialized instance 
@@ -387,7 +387,7 @@ Implement the actual function of the driver.
    #define TEST_BASE_ADDRESS 0x0000000A
    #define TEST_IP_CORE_FRQ 100000000U
 
-7. Run the tests, all tests pass, but uz_myIP_test is ignored.
+7. Run the tests, all tests pass, but ``uz_myIP_test`` is ignored.
 8. Test to prevent calling init without initialization of the base address:
 
 .. code-block:: c
@@ -442,27 +442,28 @@ Implement the actual function of the driver.
    :linenos:
 
    int32_t uz_myIP2_multiply(uz_myIP2_t* self, int32_t A, int32_t B){
-   uz_assert_not_NULL(self);
-   uz_assert(self->is_ready);
-   uz_myIP2_hw_write_A(self->config.base_address,A);
-   uz_myIP2_hw_write_B(self->config.base_address,B);
-   return (uz_myIP2_hw_read_C(self->config.base_address));
+      uz_assert_not_NULL(self);
+      uz_assert(self->is_ready);
+      uz_myIP2_hw_write_A(self->config.base_address,A);
+      uz_myIP2_hw_write_B(self->config.base_address,B);
+      return (uz_myIP2_hw_read_C(self->config.base_address));
    }
 
 13.  We now have a working and fully tested driver for our IP-Core! 
 
-.. warning:: While we tested our functions with a lot of different error cases and made sure they behave as expected, we omitted the fact that the multiplication can overflow. This is especially tricky in this case since the multiplication is implemented in hardware. Thus the rules for C do not apply to it. There are two ways to handle this: implement the hardware multiplication to saturate on overflow or check if the multiplication will overflow before writing to the PL. The way :ref:`AXI_testIP` is implemented will *wrap* on overflow, i.e., 2147483647*2 will be a negative value. Keep this concept in mind for real IP-Cores that you implement. Additionally, prevent the software driver from writing values that are out of range to the IP-Core, e.g., if the register only uses 10 bit. Note that the AXI data width is always 32-bit.
+.. warning:: While we tested our functions with different error cases and made sure they behave as expected, we omitted the fact that the multiplication can overflow. This is especially tricky in this case since the multiplication is implemented in hardware. Thus the rules for C do not apply to it. There are two ways to handle this: implement the hardware multiplication to saturate on overflow or check if the multiplication will overflow before writing to the PL. The way :ref:`AXI_testIP` is implemented will *wrap* on overflow, i.e., 2147483647*2 will be a negative value. Keep this concept in mind for real IP-Cores that you implement. Additionally, prevent the software driver from writing values that are out of range to the IP-Core, e.g., if the register only uses 10 bit. Note that the AXI data width is always 32-bit.
 
 Integration in Vitis
 ====================
 
 1. Open Vitis
-2. (if not already done) Run the tcl script to generate the workspace
+2. (if not already done) Run the tcl script to generate the workspace (:ref:`tcl_scripts`)
 3. Navigate to the Baremetal code
 4. Create the file ``uz_myIP_testebench.h`` in the ``sw`` folder
 
 .. code-block:: c
    :linenos:
+   :caption: ``uz_myIP_testebench.h``
 
    #pragma once
 
@@ -472,11 +473,11 @@ Integration in Vitis
 
 .. code-block:: c
    :linenos:
+   :caption: ``uz_myIP_testebench.c``
 
    #include "uz_myIP_testbench.h"
    #include "../uz/uz_HAL.h"
    #include "../IP_Cores/uz_myIP/uz_myIP.h"
-   #include "../IP_Cores/uz_myIP/uz_myIP_staticAllocator.h"
    
    void uz_myIP_testbench(void){
        struct uz_myIP2_config_t config={
@@ -499,6 +500,6 @@ Integration in Vitis
        }
    }
 
-6. In ``main.c`` (Baremetal) include ``#include "sw/uz_myIP_testbench.h"`` and call ``uz_myIP_testbench();`` before the ISR is initialized!
-7. Add the connected serial port to the Vitis Serial Terminal
-8. Run the UltraZohm. The success message should be printed to the Vitis Serial Terminal.
+1. In ``main.c`` (Baremetal) include ``#include "sw/uz_myIP_testbench.h"`` and call ``uz_myIP_testbench();`` before the ISR is initialized!
+2. Connected the serial port to the Vitis Serial Terminal
+3. Run the UltraZohm. The success message should be printed to the Vitis Serial Terminal.

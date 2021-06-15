@@ -210,8 +210,6 @@ Physical Setup of the UltraZohm
 - Turn on the UltraZohm
 - All four LEDs are turned on
 
-.. TODO: [UZ-9] Add pictures for the physical setup of the ultrazohm 
-
 .. image:: ./img_physical/physical_setup.png
 
 Debug

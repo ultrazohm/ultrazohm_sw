@@ -1,3 +1,5 @@
+.. _ipCore_incremental_encoder:
+
 ===================
 Incremental Encoder
 ===================

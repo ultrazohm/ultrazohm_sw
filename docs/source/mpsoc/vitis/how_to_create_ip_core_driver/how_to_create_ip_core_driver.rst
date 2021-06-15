@@ -335,21 +335,25 @@ We implement the actual function of the driver in the following.
    
    #endif // UZ_MYIP_H
 
-1. Open the file ``uz_myIP.c`` in ``src/IP_Cores/uz_myIP/``.
-2. Copy the following code for the static memory allocation (see :ref:`static_memory_allocation` for details). If you use :ref:`vscode_remote_container`, you can use the snippet by typing ``allocator`` in the file.
+3. Run Ceedling, the tests will pass but the test for ``uz_myIP`` is ignored.
+4. Open the file ``uz_myIP.c`` in ``src/IP_Cores/uz_myIP/``.
+5. Use the *allocation* VSCode snippet  for the static memory allocation boiler plate code (see :ref:`static_memory_allocation` for details). If you use :ref:`vscode_remote_container`, you can use the snippet by typing ``allocator`` in the file. Alternatively copy the following code.
+
+
+.. image:: https://images2.imgbox.com/6d/39/mL1WUwjP_o.gif
 
 .. code-block:: c
    :linenos:
    :caption: Boilerplate code and static allocation for the module
 
-   #include "../../uz/uz_global_configuration.h" 
+   #include "../../uz/uz_global_configuration.h"
    #if UZ_MYIP_MAX_INSTANCES > 0U
-   #include "uz_myIP.h"
+   #include <stdbool.h> 
    #include "../../uz/uz_HAL.h"
+   #include "uz_myIP.h" 
    
    struct uz_myIP_t {
        bool is_ready;
-       struct uz_myIP_config_t config;
    };
    
    static size_t instance_counter = 0U;
@@ -366,13 +370,15 @@ We implement the actual function of the driver in the following.
        return (self);
    }
    
-   uz_myIP_t* uz_myIP_init(struct uz_myIP_config_t config){
+   uz_myIP_t* uz_myIP_init() {
        uz_myIP_t* self = uz_myIP_allocation();
-       self->config=config;
        return (self);
    }
+   #endif
 
-6. Add to following code to ``test_uz_myIP.c``. We isolate the testing by using a mock version of our already implemented ``uz_myIP_hw``.
+6. Open ``uz_global_configuration.h`` if you already renamed the sample configuration. If not, see :ref:`global_configuration`.
+7. Add ``#define UZ_MYIP_MAX_INSTANCES 5U`` to ``uz_global_configuration.h`` inside the test ifdef (at the bottom of the file). We can now use up to 5 instances of the IP-core driver for five different instances of the IP-Core in the tests.
+8. Add to following code to ``test_uz_myIP.c``. We isolate the testing by using a mock version of our already implemented ``uz_myIP_hw``.
    
 .. code-block:: c
    :linenos:
@@ -388,68 +394,139 @@ We implement the actual function of the driver in the following.
    #define TEST_IP_CORE_FRQ 100000000U
 
 7. Run the tests, all tests pass, but ``uz_myIP_test`` is ignored.
-8. Test to prevent calling init without initialization of the base address:
+8. Change the implementation of ``uz_myIP_init`` in ``uz_myIP.c`` to match the interface in ``uz_myIP.h``
 
 .. code-block:: c
    :linenos:
 
-   void test_uz_myIP2_fail_assert_if_base_address_is_zero(void)
-   {
-       struct uz_myIP2_config_t config={
-           .ip_clk_frequency_Hz=TEST_IP_CORE_FRQ
-       };
-       TEST_ASSERT_FAIL_ASSERT(uz_myIP2_init(config) );
+   uz_myIP_t* uz_myIP_init(struct uz_myIP_config_t config){
+    uz_myIP_t* self = uz_myIP_allocation();
+    return (self);
    }
 
-9. Test fails, add ``uz_assert_not_zero(config.base_address);`` to ``uz_myIP_init`` before the allocation is done.
-10. Repeat for ``ip_clk_frequency_Hz``. Add ``uz_assert_not_zero(config.ip_clk_frequency_Hz);`` to ``uz_myIP_init`` and the following test:
-
-.. code-block:: c
-   :linenos:
-
-   void test_uz_myIP2_fail_assert_if_ip_frequency_is_zero(void)
-   {
-       struct uz_myIP2_config_t config={
-           .base_address=TEST_BASE_ADDRESS
-       };
-       TEST_ASSERT_FAIL_ASSERT(uz_myIP2_init(config) );
-   }
-
-11. Add a test for the multiplication :math:`C=A \cdot B`:
+9.  Start writing a test for the multiplication :math:`C=A \cdot B` by initializing an instance of the IP-Core driver:
    
 .. code-block:: c
    :linenos:
 
-   void test_uz_myIP2_test_A_times_B_equals_C(void)
+   void test_uz_myIP_test_A_times_B_equals_C(void)
    {
-       struct uz_myIP2_config_t config={
+       struct uz_myIP_config_t config={
            .base_address= TEST_BASE_ADDRESS,
            .ip_clk_frequency_Hz=TEST_IP_CORE_FRQ
        };
-       uz_myIP2_t *instance = uz_myIP2_init(config);
-       int32_t a = -10;
-       int32_t b = 200;
-       uz_myIP2_hw_write_A_Expect(TEST_BASE_ADDRESS, a);
-       uz_myIP2_hw_write_B_Expect(TEST_BASE_ADDRESS, b);
-       uz_myIP2_hw_read_C_ExpectAndReturn(TEST_BASE_ADDRESS, a * b);
-       int32_t c = uz_myIP2_multiply(instance, a, b);
-       TEST_ASSERT_EQUAL_INT32(a * b, c);
+       uz_myIP_t *instance = uz_myIP_init(config);
    }
 
-12. Add ``#include "uz_myIP_hw.h"`` to ``uz_myIP.c`` and implement the calls to the hardware
+10. Run the tests, they will pass but a warning about unused variables ``config`` and ``instance`` is shown.
+11. Add to the test:
 
 .. code-block:: c
    :linenos:
 
-   int32_t uz_myIP2_multiply(uz_myIP2_t* self, int32_t A, int32_t B){
-      uz_assert_not_NULL(self);
-      uz_assert(self->is_ready);
-      uz_myIP2_hw_write_A(self->config.base_address,A);
-      uz_myIP2_hw_write_B(self->config.base_address,B);
-      return (uz_myIP2_hw_read_C(self->config.base_address));
+    void test_uz_myIP_test_A_times_B_equals_C(void)
+    {
+        struct uz_myIP_config_t config={
+            .base_address= TEST_BASE_ADDRESS,
+            .ip_clk_frequency_Hz=TEST_IP_CORE_FRQ
+        };
+        uz_myIP_t *instance = uz_myIP_init(config);
+        int32_t a = -10;
+        int32_t b = 200;
+        uz_myIP_hw_write_A_Expect(TEST_BASE_ADDRESS, a);
+        uz_myIP_hw_write_B_Expect(TEST_BASE_ADDRESS, b);
+        uz_myIP_hw_read_C_ExpectAndReturn(TEST_BASE_ADDRESS, a * b);
+        int32_t c = uz_myIP_multiply(instance, a, b);
+        TEST_ASSERT_EQUAL_INT32(a * b, c);
+    }
+
+12. Run the tests, we have a linker error since ``uz_myIP_multiply`` is not implemented yet.
+13. Add ``#include "uz_myIP_hw.h"`` to ``uz_myIP.c`` and implement the calls to the hardware registers.
+
+.. code-block:: c
+   :linenos:
+
+   int32_t uz_myIP_multiply(uz_myIP_t* self, int32_t A, int32_t B){
+   //uz_assert_not_NULL(self);
+   uz_assert(self->is_ready);
+   uz_myIP_hw_write_A(self->config.base_address,A);
+   uz_myIP_hw_write_B(self->config.base_address,B);
+   return (uz_myIP_hw_read_C(self->config.base_address));
    }
 
-13.  We now have a working and fully tested driver for our IP-Core! 
+14. Run the tests, we have several errors since we have no struct member ``config``. Add config to the struct ``uz_myIP_t``:
+
+.. code-block:: C
+   :linenos:
+
+   struct uz_myIP_t {
+    bool is_ready;
+    struct uz_myIP_config_t config;
+   };
+
+15. Run the tests, they fail since ``uz_myIP_hw_write_A`` is not called with the correct base address.
+16. Assign the passed config value to the instance in ``uz_myIP_init()``:
+
+.. code-block:: c
+   :linenos:
+
+   uz_myIP_t* uz_myIP_init(struct uz_myIP_config_t config){
+    uz_myIP_t* self = uz_myIP_allocation();
+    self->config=config;
+    return (self);
+   }
+
+17. Run the tests, they pass!
+18. Add a test to prevent calling init without initialization of the base address:
+
+.. code-block:: c
+   :linenos:
+
+   void test_uz_myIP_fail_assert_if_base_address_is_zero(void)
+   {
+       struct uz_myIP_config_t config={
+           .ip_clk_frequency_Hz=TEST_IP_CORE_FRQ
+       };
+       TEST_ASSERT_FAIL_ASSERT(uz_myIP_init(config) );
+   }
+
+19. Test fails, add ``uz_assert_not_zero(config.base_address);`` to ``uz_myIP_init`` before the allocation is done.
+20. Run the test again, it passes now.
+21. Repeat for ``ip_clk_frequency_Hz``. Add ``uz_assert_not_zero(config.ip_clk_frequency_Hz);`` to ``uz_myIP_init`` and the following test:
+
+.. code-block:: c
+   :linenos:
+
+   void test_uz_myIP_fail_assert_if_ip_frequency_is_zero(void)
+   {
+       struct uz_myIP_config_t config={
+           .base_address=TEST_BASE_ADDRESS
+       };
+       TEST_ASSERT_FAIL_ASSERT(uz_myIP_init(config) );
+   }
+
+22. Add a test to prevent calling ``uz_myIP_multiply()`` with a NULL pointer
+
+.. code-block:: C
+
+   void test_uz_myIP_fail_assert_if_multiply_is_called_with_NULL_pointer(void)
+   {
+       TEST_ASSERT_FAIL_ASSERT(uz_myIP_multiply(NULL, 5, 1));
+   }
+
+23. Add an assertion to prevent calls with NULL pointer:
+
+.. code-block:: C
+
+   int32_t uz_myIP_multiply(uz_myIP_t* self, int32_t A, int32_t B){
+       uz_assert_not_NULL(self);
+       uz_assert(self->is_ready);
+       uz_myIP_hw_write_A(self->config.base_address,A);
+       uz_myIP_hw_write_B(self->config.base_address,B);
+       return (uz_myIP_hw_read_C(self->config.base_address));
+   }
+
+24.  We now have a working and fully tested driver for our IP-Core! 
 
 .. warning:: While we tested our functions with different error cases and made sure they behave as expected, we omitted the fact that the multiplication can overflow. This is especially tricky in this case since the multiplication is implemented in hardware. Thus the rules for C do not apply to it. There are two ways to handle this: implement the hardware multiplication to saturate on overflow or check if the multiplication will overflow before writing to the PL. The way :ref:`AXI_testIP` is implemented will *wrap* on overflow, i.e., 2147483647*2 will be a negative value. Keep this concept in mind for real IP-Cores that you implement. Additionally, prevent the software driver from writing values that are out of range to the IP-Core, e.g., if the register only uses 10 bit. Note that the AXI data width is always 32-bit.
 
@@ -459,7 +536,7 @@ Integration in Vitis
 1. Open Vitis
 2. (if not already done) Run the tcl script to generate the workspace (:ref:`tcl_scripts`)
 3. Navigate to the Baremetal code
-4. Create the file ``uz_myIP_testebench.h`` in the ``sw`` folder
+4. Create the file ``uz_myIP_testebench.h`` in the ``include`` folder
 
 .. code-block:: c
    :linenos:
@@ -475,19 +552,20 @@ Integration in Vitis
    :linenos:
    :caption: ``uz_myIP_testebench.c``
 
-   #include "uz_myIP_testbench.h"
+   #include "../include/uz_myIP_testbench.h"
    #include "../uz/uz_HAL.h"
    #include "../IP_Cores/uz_myIP/uz_myIP.h"
+   #include "xparameters.h"
    
    void uz_myIP_testbench(void){
-       struct uz_myIP2_config_t config={
-            .base_address= TEST_BASE_ADDRESS,
-            .ip_clk_frequency_Hz=TEST_IP_CORE_FRQ
+       struct uz_myIP_config_t config={
+            .base_address= XPAR_UZ_AXI_TESTIP_0_BASEADDR,
+            .ip_clk_frequency_Hz=100000000U
        };
-       uz_myIP2_t *instance = uz_myIP2_init(config);
+       uz_myIP_t *instance = uz_myIP_init(config);
        int32_t a = -10;
        int32_t b = 200;
-       int32_t c = uz_myIP2_multiply(instance, a, b);
+       int32_t c = uz_myIP_multiply(instance, a, b);
        uz_printf("Hardware multiply: %i, Software multiply: %i\n", c, a*b);
        if (c==a*b){
          uz_printf("Success: hardware and software multiply are equal! \n");
@@ -499,7 +577,10 @@ Integration in Vitis
          // do nothing and loop forever
        }
    }
+   
 
-1. In ``main.c`` (Baremetal) include ``#include "sw/uz_myIP_testbench.h"`` and call ``uz_myIP_testbench();`` before the ISR is initialized!
+6. Add ``#define UZ_MYIP_MAX_INSTANCES 1U`` between ``ifndef TEST`` and the first ``#endif`` to use one instance of the module in the software.
+7. Build the software.
+A. Include ``#include "include/uz_myIP_testbench.h"`` in ``main.c`` (Baremetal R5) and call ``uz_myIP_testbench();`` before the ISR is initialized!
 2. Connected the serial port to the Vitis Serial Terminal
 3. Run the UltraZohm. The success message should be printed to the Vitis Serial Terminal.

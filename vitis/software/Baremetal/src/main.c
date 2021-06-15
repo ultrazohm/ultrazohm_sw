@@ -16,6 +16,7 @@
 //Includes from own files
 #include "main.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
+
 //Initialize the global variables
 int i_LifeCheck;
 

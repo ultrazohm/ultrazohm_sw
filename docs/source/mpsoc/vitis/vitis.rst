@@ -22,4 +22,5 @@ Vitis
     known_issues
     qemu/qemu
     wavegen/wavegen
+    global_configuration
 

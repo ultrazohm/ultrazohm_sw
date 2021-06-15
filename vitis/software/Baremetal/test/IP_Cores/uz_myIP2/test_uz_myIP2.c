@@ -50,4 +50,9 @@ void test_uz_myIP2_fail_assert_if_ip_frequency_is_zero(void)
     TEST_ASSERT_FAIL_ASSERT(uz_myIP2_init(config) );
 }
 
+void test_uz_myIP2_fail_assert_if_multiply_is_called_with_NULL_pointer(void)
+{
+    TEST_ASSERT_FAIL_ASSERT(uz_myIP2_multiply(NULL, 5, 1));
+}
+
 #endif // TEST

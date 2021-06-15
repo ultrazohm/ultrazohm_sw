@@ -2,11 +2,11 @@
 #include <math.h>
 #include "../uz_HAL.h"
 #include "../uz_SystemTime/uz_SystemTime.h"
-#define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES 2
+#define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES 2u
 
 #ifdef TEST
 	#undef UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES
-	#define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES 5
+	#define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES 5u
 #endif
 
 struct uz_wavegen_three_phase {
@@ -17,16 +17,16 @@ struct uz_wavegen_three_phase {
 	struct uz_wavegen_three_phase_config config;
 };
 
-static size_t counter_three_phase = 0;
+static size_t counter_three_phase = 0u;
 static uz_wavegen_three_phase instances_three_phase[UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES] = { 0 };
 
 uz_wavegen_three_phase* uz_wavegen_three_phase_init(struct uz_wavegen_three_phase_config config) {
 	uz_assert(counter_three_phase < UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES);
 	uz_wavegen_three_phase* self = &instances_three_phase[counter_three_phase];
 	uz_assert(self->is_ready == false);
-	counter_three_phase += 1;
+	counter_three_phase++;
 	self->is_ready = true;
-	uz_assert(config.frequency_Hz > 0);
+	uz_assert(config.frequency_Hz > 0.0f);
 	uz_assert(config.amplitude != 0.0f);
 	self->config = config;
 	return (self);

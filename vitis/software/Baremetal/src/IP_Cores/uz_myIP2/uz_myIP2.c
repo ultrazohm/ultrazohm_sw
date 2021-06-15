@@ -1,4 +1,4 @@
-#include "../uz_global_configuration.h" 
+#include "../../uz/uz_global_configuration.h" 
 #if UZ_MYIP2_MAX_INSTANCES > 0U
 #include "uz_myIP2.h"
 #include "../../uz/uz_HAL.h"

@@ -10,7 +10,7 @@
 	 	"scope": "c",
 	 	"prefix": ["allocation", "allocator", "uz allocation", "static allocator"],
 	 	"body": [
-			"#include \"../uz_global_configuration.h\" ",
+			"#include \"$2/uz_global_configuration.h\" ",
 			"#if ${1/(.*)/${1:/upcase}/}_MAX_INSTANCES > 0U",
 			"#include <stdbool.h> ",
 			"#include \"$1.h\" ",

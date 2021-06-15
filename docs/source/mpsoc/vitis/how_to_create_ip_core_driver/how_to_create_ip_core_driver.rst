@@ -342,7 +342,7 @@ Implement the actual function of the driver.
    :linenos:
    :caption: Boilerplate code and static allocation for the module
 
-   #include "../uz_global_configuration.h" 
+   #include "../../uz/uz_global_configuration.h" 
    #if UZ_MYIP_MAX_INSTANCES > 0U
    #include "uz_myIP.h"
    #include "../../uz/uz_HAL.h"

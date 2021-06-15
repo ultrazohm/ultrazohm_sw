@@ -11,11 +11,8 @@ Without the rename, the compilation will fail.
 
 The configuration is used for the :ref:`static_memory_allocation` and the configure hardware version specific settings (e.g., ``UZ_HARDWARE_VERSION`` for different front panels).
 
-
 To make changes to the default global configuration, make the changes to your local ``uz_global_configuration.h``, and make sure that all :ref:`unit_tests` work locally.
 Then, copy the content of ``uz_global_configuration.h`` to ``default_uz_global_configuration.h``.
-
-
 
 .. _default_vivado_project:
 
@@ -36,7 +33,6 @@ Analog adapter card intended to be used with :ref:`Analog_LTC2311_16_v2` (A1) an
 - :ref:`ipCore_LTC23` (3 times)
 
 For controlling a two-level inverter on D1:
-
 
 - 2L PWM (:ref:`ipCore_pwm`)
 - 2L interlock module(:ref:`uz_interlockDeadtime2L`)

@@ -64,4 +64,15 @@ void test_uz_plantPT1_fail_assert_write_gain_zero_baseaddress(void){
     TEST_ASSERT_FAIL_ASSERT(uz_plantPT1_hw_write_gain(0U,3.2f));
 }
 
+void test_uz_plantPT1_write_input(void){
+    float input=3.2f;
+    uz_axi_write_float_Expect(TEST_BASE_ADDRESS+input_Data_uz_plantModel_pt1,input);
+    uz_plantPT1_hw_write_input(TEST_BASE_ADDRESS,input);
+}
+
+void test_uz_plantPT1_fail_assert_write_input_zero_baseaddress(void){
+    uz_axi_write_float_Ignore();
+    TEST_ASSERT_FAIL_ASSERT(uz_plantPT1_hw_write_input(0U,3.1f));
+}
+
 #endif // TEST

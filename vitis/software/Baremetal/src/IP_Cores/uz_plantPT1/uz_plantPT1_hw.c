@@ -22,3 +22,8 @@ void uz_plantPT1_hw_write_gain(uint32_t base_address,float gain){
     uz_assert_not_zero(base_address);
     uz_axi_write_float(base_address+gain_Data_uz_plantModel_pt1,gain);
 }
+
+void uz_plantPT1_hw_write_input(uint32_t base_address, float input){
+    uz_assert_not_zero(base_address);
+    uz_axi_write_float(base_address+input_Data_uz_plantModel_pt1,input);
+}

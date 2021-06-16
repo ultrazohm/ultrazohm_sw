@@ -8,4 +8,5 @@ void uz_plantPT1_hw_write_reset(uint32_t base_address,bool reset);
 float uz_plantPT1_hw_read_output(uint32_t base_address);
 void uz_plantPT1_hw_write_time_constant(uint32_t base_address, float time_constant);
 void uz_plantPT1_hw_write_gain(uint32_t base_address,float gain);
+void uz_plantPT1_hw_write_input(uint32_t base_address, float input);
 #endif // UZ_PLANTPT1_HW_H

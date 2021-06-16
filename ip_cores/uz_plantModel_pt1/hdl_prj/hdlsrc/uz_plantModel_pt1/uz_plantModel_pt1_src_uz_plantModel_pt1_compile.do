@@ -1,0 +1,8 @@
+vlib work
+vmap -c
+vcom  uz_plantModel_pt1_src_uz_plantModel_pt1_pkg.vhd
+vcom  uz_plantModel_pt1_src_nfp_mul_single.vhd
+vcom  uz_plantModel_pt1_src_nfp_add_single.vhd
+vcom  uz_plantModel_pt1_src_nfp_sub_single.vhd
+vcom  uz_plantModel_pt1_src_uz_plantModel_pt1_tc.vhd
+vcom  uz_plantModel_pt1_src_uz_plantModel_pt1.vhd

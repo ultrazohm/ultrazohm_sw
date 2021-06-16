@@ -65,18 +65,6 @@ static inline void uz_axi_write_int32(uintptr_t Addr, int32_t Value) {
 static inline int32_t uz_axi_read_int32(uintptr_t Addr) {
 	return *(volatile int32_t *) Addr;
 }
-#endif
-#ifdef TEST
-
-// Function declaration of axi read/write functions for which Cmock can generate mock interfaces
-// since functions that are static inline do not work
-void uz_axi_write_float(uintptr_t Addr, float Value);
-float uz_axi_read_float(uintptr_t Addr);
-void uz_axi_write_uint32(uintptr_t Addr, uint32_t Value);
-uint32_t uz_axi_read_uint32(uintptr_t Addr);
-void uz_axi_write_int32(uintptr_t Addr, int32_t Value);
-int32_t uz_axi_read_int32(uintptr_t Addr);
-#endif
 
 /**
  * @brief Writes a boolean to the specified register by AXI.
@@ -112,6 +100,21 @@ static inline _Bool uz_axi_read_bool(uintptr_t Addr) {
 	}
 	return (return_value);
 }
+
+#endif
+#ifdef TEST
+
+// Function declaration of axi read/write functions for which Cmock can generate mock interfaces
+// since functions that are static inline do not work
+void uz_axi_write_float(uintptr_t Addr, float Value);
+float uz_axi_read_float(uintptr_t Addr);
+void uz_axi_write_uint32(uintptr_t Addr, uint32_t Value);
+uint32_t uz_axi_read_uint32(uintptr_t Addr);
+void uz_axi_write_int32(uintptr_t Addr, int32_t Value);
+int32_t uz_axi_read_int32(uintptr_t Addr);
+void uz_axi_write_bool(uintptr_t Addr, _Bool enable);
+_Bool uz_axi_read_bool(uintptr_t Addr);
+#endif
 
 /**
  * @brief Converts a signed fixed point value that is stored as a signed 32-bit integer value to a float.

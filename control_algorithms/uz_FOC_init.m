@@ -2,7 +2,7 @@
 clc
 clear
 
-
+load('config.mat');
 % Controlparameter
 d_f_c=100000;   %Hz UZ-ISR-frequency
 d_d_c=16000;                %kHz

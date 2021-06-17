@@ -16,3 +16,4 @@ IP Cores
 	interlock
 	axi_testIP/axi_testIP
 	uz_interlockDeadtime2L/uz_interlockDeadtime2L
+	uz_plantModel_pt1/uz_plantModel_pt1

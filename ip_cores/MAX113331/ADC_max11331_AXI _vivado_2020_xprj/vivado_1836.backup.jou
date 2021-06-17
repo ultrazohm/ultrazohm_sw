@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Vivado v2020.1.1 (64-bit)
+# SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
+# IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+# Start of session at: Wed Sep 16 19:49:52 2020
+# Process ID: 1836
+# Current directory: C:/Users/thoma/Documents/UltraZohm/Ultrazohm drivers ADCs/Ultrazohm drivers ADCs/IP_Cores editable/ADC_max11331_AXI
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent3860 C:\Users\thoma\Documents\UltraZohm\Ultrazohm drivers ADCs\Ultrazohm drivers ADCs\IP_Cores editable\ADC_max11331_AXI\edit_ADC_max11331_AXI_v1_0.xpr
+# Log file: C:/Users/thoma/Documents/UltraZohm/Ultrazohm drivers ADCs/Ultrazohm drivers ADCs/IP_Cores editable/ADC_max11331_AXI/vivado.log
+# Journal file: C:/Users/thoma/Documents/UltraZohm/Ultrazohm drivers ADCs/Ultrazohm drivers ADCs/IP_Cores editable/ADC_max11331_AXI\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project -read_only {C:/Users/thoma/Documents/UltraZohm/Ultrazohm drivers ADCs/Ultrazohm drivers ADCs/IP_Cores editable/ADC_max11331_AXI/edit_ADC_max11331_AXI_v1_0.xpr}
+ipx::open_ipxact_file {C:/Users/thoma/Documents/UltraZohm/Ultrazohm drivers ADCs/Ultrazohm drivers ADCs/IP_Cores editable/ADC_max11331_AXI/ADC_max11331_AXI_1.0/component.xml}

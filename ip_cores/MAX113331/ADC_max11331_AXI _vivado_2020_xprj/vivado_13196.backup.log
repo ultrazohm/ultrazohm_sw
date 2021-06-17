@@ -1,0 +1,31 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:55:39 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Mon Sep 14 16:41:41 2020
+# Process ID: 13196
+# Current directory: C:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/ADC_max11331_AXI
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent15364 C:\Users\David\Documents\Vivado_Projects\2.-new_ip_repo\ADC_max11331_AXI\edit_ADC_max11331_AXI_v1_0.xpr
+# Log file: C:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/ADC_max11331_AXI/vivado.log
+# Journal file: C:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/ADC_max11331_AXI\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/ADC_max11331_AXI/edit_ADC_max11331_AXI_v1_0.xpr
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/ADC_max11331_AXI/ADC_max11331_AXI_1.0'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/average_8_samples_slow_adc'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/clock_divider/clock_divider_1.0'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/FPGA_to_ARM_debug/FPGA_to_ARM_debug_1.0'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/Modulador_SPS/modulador_SPS_2.0'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/transport_delay_x18/transport_delay_x18_1.0'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/transport_delay_x3/transport_delay_x3_1.0'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/shift_n_points'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/shift_50pts'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/sample_clock_50duty/sample_clock_50duty_2.0'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/David/Documents/Vivado_Projects/1.-ip_repo/average_64_samples'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2017.4/data/ip'.
+ipx::open_ipxact_file C:/Users/David/Documents/Vivado_Projects/2.-new_ip_repo/ADC_max11331_AXI/ADC_max11331_AXI_1.0/component.xml
+exit
+INFO: [Common 17-206] Exiting Vivado at Mon Sep 14 16:43:53 2020...

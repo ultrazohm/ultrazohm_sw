@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2020.1.1 (64-bit)
+# SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
+# IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+# Start of session at: Thu Jun 17 16:31:54 2021
+# Process ID: 4188
+# Current directory: C:/Users/Public/Documents/UltraZohm/ultrazohm_official/ip_cores/MAX113331/ADC_max11331_AXI _vivado_2020_xprj
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent10056 C:\Users\Public\Documents\UltraZohm\ultrazohm_official\ip_cores\MAX113331\ADC_max11331_AXI _vivado_2020_xprj\edit_ADC_max11331_AXI_v1_0.xpr
+# Log file: C:/Users/Public/Documents/UltraZohm/ultrazohm_official/ip_cores/MAX113331/ADC_max11331_AXI _vivado_2020_xprj/vivado.log
+# Journal file: C:/Users/Public/Documents/UltraZohm/ultrazohm_official/ip_cores/MAX113331/ADC_max11331_AXI _vivado_2020_xprj\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project {C:/Users/Public/Documents/UltraZohm/ultrazohm_official/ip_cores/MAX113331/ADC_max11331_AXI _vivado_2020_xprj/edit_ADC_max11331_AXI_v1_0.xpr}

@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="/home/ts/Dokumente/ultrazohm_testbench/ultrazohm_sw/ip_cores/uz_plantModel_pt1/hdl_prj/ipcore/uz_plantModel_pt1_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="4a06f177d7bc45aabefb03bf0edb499f"/>
+    <Option Name="Id" Val="2059c3a628c34a29bc86841239afa657"/>
     <Option Name="Part" Val="xazu11eg-ffvf1517-1-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -85,19 +85,37 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_single.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_single2double.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_single.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_plantModel_pt1_src_nfp_relop_double.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/uz_plantModel_pt1_src_nfp_add_single.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_double.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_double.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/uz_plantModel_pt1_src_nfp_add_double.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_double2single.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

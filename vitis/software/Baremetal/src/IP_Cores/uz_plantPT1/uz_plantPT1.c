@@ -42,8 +42,11 @@ void uz_plantPT1_reset_integrator(uz_plantPT1_t *self)
     uz_assert(self->is_ready);
     // Reset integrator by forcing a rising edge from low to high
     uz_plantPT1_hw_write_reset(self->config.base_address, false);
+    uz_sleep_useconds(1);
     uz_plantPT1_hw_write_reset(self->config.base_address, true);
+    uz_sleep_useconds(1);
     uz_plantPT1_hw_write_reset(self->config.base_address, false);
+    uz_sleep_useconds(1);
 }
 
 void uz_plantPT1_set_input(uz_plantPT1_t *self, float input_value)
@@ -64,7 +67,8 @@ void uz_plantPT1_set_time_constant(uz_plantPT1_t *self, float time_constant)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_plantPT1_hw_write_time_constant(self->config.base_address, time_constant);
+     // the time constant is inverted since the IP-Core expects 1/time_constant in the hardware register
+    uz_plantPT1_hw_write_time_constant(self->config.base_address, (1.0f/time_constant) );
 }
 
 float uz_plantPT1_read_output(uz_plantPT1_t *self)

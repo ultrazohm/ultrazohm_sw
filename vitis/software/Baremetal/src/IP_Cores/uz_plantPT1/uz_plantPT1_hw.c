@@ -13,9 +13,9 @@ float uz_plantPT1_hw_read_output(uint32_t base_address){
     return uz_axi_read_float(base_address+output_Data_uz_plantModel_pt1);
 }
 
-void uz_plantPT1_hw_write_time_constant(uint32_t base_address, float time_constant){
+void uz_plantPT1_hw_write_time_constant(uint32_t base_address, float reciprocal_time_constant){
     uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address+time_constant_Data_uz_plantModel_pt1,time_constant);
+    uz_axi_write_float(base_address+reciprocal_time_constant_Data_uz_plantModel_pt1,reciprocal_time_constant);
 }
 
 void uz_plantPT1_hw_write_gain(uint32_t base_address,float gain){

@@ -2,8 +2,8 @@
 # Vivado v2020.1 (64-bit)
 # SW Build 2902540 on Wed May 27 19:54:35 MDT 2020
 # IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
-# Start of session at: Wed Jun 16 13:58:52 2021
-# Process ID: 457365
+# Start of session at: Thu Jun 17 10:07:11 2021
+# Process ID: 248917
 # Current directory: /home/ts/Dokumente/ultrazohm_testbench/ultrazohm_sw/ip_cores/uz_plantModel_pt1/hdl_prj/ipcore/uz_plantModel_pt1_v1_0/prj_ip
 # Command line: vivado -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: /home/ts/Dokumente/ultrazohm_testbench/ultrazohm_sw/ip_cores/uz_plantModel_pt1/hdl_prj/ipcore/uz_plantModel_pt1_v1_0/prj_ip/vivado.log

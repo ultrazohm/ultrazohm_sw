@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>f1b874c5</spirit:value>
+            <spirit:value>82727dff</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>f1b874c5</spirit:value>
+            <spirit:value>82727dff</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -667,15 +667,27 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_single.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_single2double.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_single.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_relop_double.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_add_single.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_double.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_double.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_add_double.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_double2single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -701,7 +713,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_plantModel_pt1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_b50f5be4</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_03c8855c</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -722,17 +734,32 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_single.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_single2double.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_single.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_relop_double.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_add_single.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_double.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_double.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_add_double.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_double2single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -838,14 +865,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_plantModel_pt1</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2106161358</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-06-16T11:59:04Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2106171007</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-06-17T08:07:23Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="cbe416d3"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="dcf21c17"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="ab9ded63"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="35aa6757"/>
     </xilinx:packagingInfo>

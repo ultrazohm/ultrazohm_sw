@@ -27,12 +27,18 @@ INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
 INFO: [IP_Flow 19-2187] The Product Guide file is missing.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1_pkg.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1_pkg.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_add_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_add_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_single2double.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_single2double.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_relop_double.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_relop_double.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_double.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_double.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_double.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_double.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_add_double.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_add_double.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_double2single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_double2single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1_tc.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1_tc.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -49,6 +55,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_axi_lite.vhd" 
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_plantModel_pt1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Wed Jun 16 13:59:04 2021...
+INFO: [Common 17-206] Exiting Vivado at Thu Jun 17 10:07:23 2021...
 
-Elapsed time is 12.9168 seconds.
+Elapsed time is 12.9753 seconds.

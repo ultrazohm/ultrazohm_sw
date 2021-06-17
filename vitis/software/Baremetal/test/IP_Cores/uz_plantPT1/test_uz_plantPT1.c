@@ -86,7 +86,8 @@ void test_uz_plantPT1_set_time_constant(void)
             .ip_core_frequency_Hz = IP_FRQ};
     uz_plantPT1_t *instance = uz_plantPT1_init(config);
     float time_constant = 1.3f;
-    uz_plantPT1_hw_write_time_constant_Expect(BASE_ADDRESS, time_constant);
+     // the time constant is inverted in the function write_time_constant since the IP-Core expects 1/time_constant in the hardware register
+    uz_plantPT1_hw_write_time_constant_Expect(BASE_ADDRESS, (1.0f/time_constant) );
     uz_plantPT1_set_time_constant(instance, time_constant);
 }
 

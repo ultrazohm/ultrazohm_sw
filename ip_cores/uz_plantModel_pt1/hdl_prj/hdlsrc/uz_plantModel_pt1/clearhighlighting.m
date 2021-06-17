@@ -1,11 +1,3 @@
 SLStudio.Utils.RemoveHighlighting(get_param('uz_plantModel_pt1', 'handle'));
 SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_plantModel_pt1', 'handle'));
-annotate_port('gm_uz_plantModel_pt1/uz_plantModel_pt1/Delay3', 1, 1, '');
-annotate_port('uz_plantModel_pt1/uz_plantModel_pt1/Delay3', 1, 1, '');
-annotate_port('gm_uz_plantModel_pt1/uz_plantModel_pt1/Delay4', 1, 1, '');
-annotate_port('uz_plantModel_pt1/uz_plantModel_pt1/Delay4', 1, 1, '');
-annotate_port('gm_uz_plantModel_pt1/uz_plantModel_pt1/Delay5', 1, 1, '');
-annotate_port('uz_plantModel_pt1/uz_plantModel_pt1/Delay5', 1, 1, '');
-annotate_port('gm_uz_plantModel_pt1/uz_plantModel_pt1/Delay6', 1, 1, '');
-annotate_port('uz_plantModel_pt1/uz_plantModel_pt1/Delay6', 1, 1, '');
-annotate_port('gm_uz_plantModel_pt1/uz_plantModel_pt1/Sum', 0, 1, '');
+annotate_port('gm_uz_plantModel_pt1/uz_plantModel_pt1/Product', 0, 1, '');

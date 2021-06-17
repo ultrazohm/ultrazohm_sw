@@ -43,9 +43,9 @@ void test_uz_plantPT1_hw_fail_assert_read_output_without_baseaddress(void){
 }
 
 void test_uz_plantPT1_hw_write_time_constant(void){
-    float time_constant=5.3f;
-    uz_axi_write_float_Expect(TEST_BASE_ADDRESS+time_constant_Data_uz_plantModel_pt1,time_constant);
-    uz_plantPT1_hw_write_time_constant(TEST_BASE_ADDRESS,time_constant);
+    float reciprocal_time_constant=1.0f/5.3f;
+    uz_axi_write_float_Expect(TEST_BASE_ADDRESS+reciprocal_time_constant_Data_uz_plantModel_pt1,reciprocal_time_constant);
+    uz_plantPT1_hw_write_time_constant(TEST_BASE_ADDRESS,reciprocal_time_constant );
 }
 
 void test_uz_plantPT1_hw_fail_assert_write_time_constant_zero_baseaddress(void){

@@ -3,9 +3,12 @@ set_property ip_repo_paths {../../} [current_fileset]
 
 # Add HDL source files to project
 add_files -norecurse {../hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1_pkg.vhd}
-add_files -norecurse {../hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_single.vhd}
-add_files -norecurse {../hdl/vhdl/uz_plantModel_pt1_src_nfp_add_single.vhd}
-add_files -norecurse {../hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_single.vhd}
+add_files -norecurse {../hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_single2double.vhd}
+add_files -norecurse {../hdl/vhdl/uz_plantModel_pt1_src_nfp_relop_double.vhd}
+add_files -norecurse {../hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_double.vhd}
+add_files -norecurse {../hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_double.vhd}
+add_files -norecurse {../hdl/vhdl/uz_plantModel_pt1_src_nfp_add_double.vhd}
+add_files -norecurse {../hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_double2single.vhd}
 add_files -norecurse {../hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1_tc.vhd}
 add_files -norecurse {../hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1.vhd}
 add_files -norecurse {../hdl/vhdl/uz_plantModel_pt1_reset_sync.vhd}
@@ -33,25 +36,37 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2106161358 [ipx::current_core]
+set_property core_revision 2106171007 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_add_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_add_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_add_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_add_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_single2double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_single2double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_single2double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_single2double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_relop_double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_relop_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_relop_double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_relop_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_mul_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_sub_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_add_double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_add_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_add_double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_add_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_double2single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_double2single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_double2single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_nfp_convert_double2single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1_tc.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1_tc.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/uz_plantModel_pt1_src_uz_plantModel_pt1_tc.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

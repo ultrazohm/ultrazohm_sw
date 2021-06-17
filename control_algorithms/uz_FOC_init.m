@@ -10,7 +10,7 @@ d_d_c=16000;                %kHz
 
 %Parameter
 U_ZK=24; %V
-d_y_max=1000;               %V
+d_y_max=24;                    %V
 d_y_min=-d_y_max;           %V
 
 % motor parameters - Bühler 201

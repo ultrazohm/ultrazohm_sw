@@ -31,6 +31,7 @@ uz_plantPT1_t *uz_plantPT1_init(struct uz_plantPT1_config_t config)
 {
     uz_assert_not_zero(config.ip_core_frequency_Hz);
     uz_assert_not_zero(config.base_address);
+    uz_assert(config.time_constant>0.0f);
     uz_plantPT1_t *self = uz_plantPT1_allocation();
     self->config = config;
     return (self);

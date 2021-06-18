@@ -15,6 +15,8 @@ struct uz_plantPT1_config_t
 {
     uint32_t base_address; /**< Base address of IP-Core instance */
     uint32_t ip_core_frequency_Hz; /**< Clock frequency of IP-Core */
+    float gain;  /**< Gain of PT1 */
+    float time_constant; /**< time constant of the PT1 */
 };
 
 /**

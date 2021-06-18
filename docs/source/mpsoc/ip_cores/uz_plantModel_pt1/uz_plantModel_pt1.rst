@@ -93,11 +93,11 @@ Vitis
 
    struct uz_plantPT1_config_t config={
       .base_address=XPAR_UZ_PLANTMODEL_PT1_0_BASEADDR,
-      .ip_core_frequency_Hz=100000000
+      .ip_core_frequency_Hz=100000000,
+      .gain=1.0f,
+      .time_constant=1.0f
    };
    pt1=uz_plantPT1_init(config);
-   uz_plantPT1_set_gain(pt1,1.0f);
-   uz_plantPT1_set_time_constant(pt1,1.0f);
    uz_plantPT1_set_input(pt1,0.0f);
 
 - Write the input and read the output of the block in the `isr.c`

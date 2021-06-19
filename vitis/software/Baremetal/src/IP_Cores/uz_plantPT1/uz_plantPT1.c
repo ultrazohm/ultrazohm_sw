@@ -34,6 +34,8 @@ uz_plantPT1_t *uz_plantPT1_init(struct uz_plantPT1_config_t config)
     uz_assert(config.time_constant>0.0f);
     uz_plantPT1_t *self = uz_plantPT1_allocation();
     self->config = config;
+    uz_plantPT1_set_time_constant(self, config.time_constant);
+    uz_plantPT1_set_gain(self, config.gain);
     return (self);
 }
 
@@ -61,7 +63,8 @@ void uz_plantPT1_set_gain(uz_plantPT1_t *self, float gain)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_plantPT1_hw_write_gain(self->config.base_address, gain);
+    self->config.gain=gain;
+    uz_plantPT1_hw_write_gain(self->config.base_address, self->config.gain);
 }
 
 void uz_plantPT1_set_time_constant(uz_plantPT1_t *self, float time_constant)
@@ -69,7 +72,8 @@ void uz_plantPT1_set_time_constant(uz_plantPT1_t *self, float time_constant)
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
      // the time constant is inverted since the IP-Core expects 1/time_constant in the hardware register
-    uz_plantPT1_hw_write_time_constant(self->config.base_address, (1.0f/time_constant) );
+    self->config.time_constant=(1.0f/time_constant);
+    uz_plantPT1_hw_write_time_constant(self->config.base_address, self->config.time_constant);
 }
 
 float uz_plantPT1_read_output(uz_plantPT1_t *self)

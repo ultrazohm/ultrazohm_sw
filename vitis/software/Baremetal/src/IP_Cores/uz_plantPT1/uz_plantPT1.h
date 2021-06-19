@@ -1,6 +1,8 @@
 #ifndef UZ_PLANTPT1_H
 #define UZ_PLANTPT1_H
 
+#include <stdint.h>
+
 /**
  * @brief Object definition of the plant model PT1 IP-Core
  * 

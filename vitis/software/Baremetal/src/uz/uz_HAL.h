@@ -44,6 +44,7 @@
 #endif
 #ifdef TEST
 #include <stdio.h>
+#include <unistd.h>
 #include "CException.h"
 #define uz_assert(condition) if (!(condition)) Throw(0)
 #define uz_printf printf

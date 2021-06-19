@@ -50,16 +50,16 @@ void test_uz_pmsmModel_hw_write_omega_mech(void){
     uz_pmsmModel_hw_write_omega_mech(BASE_ADDRESS,omega_mech);
 }
 
-void test_uz_pmsmModel_hw_read_u_q(void){
+void test_uz_pmsmModel_hw_write_u_q(void){
     float u_q_expect=123.1f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+u_q_Data_uz_pmsm_model,u_q_expect);
-    float u_q_readback=uz_pmsmModel_hw_read_u_q(BASE_ADDRESS);
+    uz_axi_write_float_Expect(BASE_ADDRESS+u_q_Data_uz_pmsm_model,u_q_expect);
+    uz_pmsmModel_hw_write_u_q(BASE_ADDRESS,u_q_expect);
 }
 
-void test_uz_pmsmMOdel_hw_read_u_d(void){
+void test_uz_pmsmModel_hw_write_u_d(void){
     float u_d_expect=-3.1f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+u_d_Data_uz_pmsm_model,u_d_expect);
-    float u_d_readback=uz_pmsmModel_hw_read_u_d(BASE_ADDRESS);
+    uz_axi_write_float_Expect(BASE_ADDRESS+u_d_Data_uz_pmsm_model,u_d_expect);
+    uz_pmsmModel_hw_write_u_d(BASE_ADDRESS,u_d_expect);
 }
 
 

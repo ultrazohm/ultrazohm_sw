@@ -27,6 +27,11 @@ struct uz_pmsmModel_inputs_t
 };
 
 uz_pmsmModel_t *uz_pmsmModel_init(struct uz_pmsmModel_config_t config);
+
+// Struct API
+void uz_pmsmModel_set_inputs(uz_pmsmModel_t *self,struct uz_pmsmModel_inputs_t inputs);
+struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self);
+
 float uz_pmsmModel_get_i_d(uz_pmsmModel_t *self);
 float uz_pmsmModel_get_i_q(uz_pmsmModel_t *self);
 float uz_pmsmModel_get_torque(uz_pmsmModel_t *self);

@@ -89,4 +89,29 @@ void test_uz_pmsmModel_reset_model(void)
     uz_pmsmModel_reset(test_instance);
 }
 
+// Left HERE!
+// Example on how to use it with structs as in & outputs
+void test_uz_pmsmModel_struct_api_usage(void){
+    uz_pmsmModel_t *test_instance = uz_pmsmModel_init(config);
+    struct uz_pmsmModel_inputs_t inputs={
+        .u_d_V=100.1f,
+        .u_q_V=-300.f,
+        .omega_mech_1_s=312.123f
+    };
+    uz_pmsmModel_hw_write_u_d_Expect(BASE_ADDRESS,inputs.u_d_V);
+    uz_pmsmModel_hw_write_u_q_Expect(BASE_ADDRESS,inputs.u_q_V);
+    uz_pmsmModel_hw_write_omega_mech_Expect(BASE_ADDRESS,inputs.omega_mech_1_s);
+    uz_pmsmModel_set_inputs(test_instance,inputs);
+    float i_d_expect=6.4f;
+    float i_q_expect=1.1f;
+    float torque_expect=4.1f;
+    uz_pmsmModel_hw_read_i_d_ExpectAndReturn(BASE_ADDRESS,i_d_expect);
+    uz_pmsmModel_hw_read_i_q_ExpectAndReturn(BASE_ADDRESS,i_q_expect);
+    uz_pmsmModel_hw_read_torque_ExpectAndReturn(BASE_ADDRESS,torque_expect);
+    struct uz_pmsmModel_outputs_t out=uz_pmsmModel_get_outputs(test_instance);
+    TEST_ASSERT_EQUAL_FLOAT(i_d_expect,out.i_d_A);
+    TEST_ASSERT_EQUAL_FLOAT(i_q_expect,out.i_q_A);
+    TEST_ASSERT_EQUAL_FLOAT(torque_expect,out.torque_Nm);
+}
+
 #endif // TEST

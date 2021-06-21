@@ -1,6 +1,6 @@
 #include "uz_pmsmModel_hw.h"
 #include "uz_pmsmModel_hwAddresses.h"
-#include "../uz/uz_AXI.h"
+#include "../../uz/uz_AXI.h"
 
 float uz_pmsmModel_hw_read_torque(uint32_t base_address){
     uz_assert_not_zero(base_address);

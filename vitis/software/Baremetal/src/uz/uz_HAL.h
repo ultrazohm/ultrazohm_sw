@@ -14,7 +14,7 @@
  * @brief Asserts that the condition is true. If false, the assertion callback executes (program is stopped).
  * 
  */
-#define uz_assert Xil_AssertNonvoid
+#define uz_assert Xil_AssertVoid
 /**
  * @brief Prints to stdout, i.e., Vitis terminal
  * 

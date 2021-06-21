@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>9f757586</spirit:value>
+            <spirit:value>766bd65d</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>9f757586</spirit:value>
+            <spirit:value>766bd65d</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -671,7 +671,11 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_gain_pow2_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_signum_double.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_abs_double.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -679,11 +683,11 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_sub_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_add_double.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_add_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_sub_double.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -713,7 +717,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_pmsm_model.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_6992af71</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_c1142a2a</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -739,7 +743,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_gain_pow2_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_signum_double.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_abs_double.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -749,12 +758,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_sub_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_add_double.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_add_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_sub_double.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -865,14 +874,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pmsm_model</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2106171812</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-06-17T16:13:00Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2106211413</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-06-21T12:14:04Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="0eaab866"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="479df6ab"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="ab9ded63"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="49bb2f57"/>
     </xilinx:packagingInfo>

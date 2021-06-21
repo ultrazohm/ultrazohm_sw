@@ -149,25 +149,7 @@ Summary of native floating-point operators
 <br /><br /><table width="100%" border="1">
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-Adders
-</td>
-<td align="center" valign="top" style="border-style: none">
-3
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-Datatype Converters
-</td>
-<td align="center" valign="top" style="border-style: none">
-6
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-Gain-by-power-of-2
+Abs
 </td>
 <td align="center" valign="top" style="border-style: none">
 1
@@ -176,19 +158,46 @@ Gain-by-power-of-2
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-Multipliers
+Adders
 </td>
 <td align="center" valign="top" style="border-style: none">
-11
+5
 </td>
 
 </tr>
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
+Datatype Converters
+</td>
+<td align="center" valign="top" style="border-style: none">
+15
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+17
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Signum
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
 Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-5
+6
 </td>
 
 </tr>
@@ -360,9 +369,9 @@ Dynamic Shift operators
 
 </table>
 <p><hr /></p><h5>
-Module <!-- uz_pmsm_model/uz_pmsm_model/nfp_gain_pow2_double--> uz_pmsm_model_src_nfp_gain_pow2_double
+Module <!-- uz_pmsm_model/uz_pmsm_model/nfp_abs_double--> uz_pmsm_model_src_nfp_abs_double
 </h5>
-(Latency = "Max", Denormal = "off")<table width="100%" border="1">
+<table width="100%" border="1">
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 Multipliers
@@ -377,7 +386,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-1
+0
 </td>
 
 </tr>
@@ -386,7 +395,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-8
+0
 </td>
 
 </tr>
@@ -395,7 +404,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-141
+0
 </td>
 
 </tr>
@@ -413,7 +422,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-2
+0
 </td>
 
 </tr>
@@ -666,6 +675,84 @@ Dynamic Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
 2
+</td>
+
+</tr>
+
+</table>
+<p><hr /></p><h5>
+Module <!-- uz_pmsm_model/uz_pmsm_model/nfp_signum_double--> uz_pmsm_model_src_nfp_signum_double
+</h5>
+<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+6
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
 </td>
 
 </tr>

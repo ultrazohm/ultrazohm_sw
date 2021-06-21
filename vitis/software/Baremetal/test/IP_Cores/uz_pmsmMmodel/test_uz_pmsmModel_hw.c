@@ -40,13 +40,13 @@ void test_uz_pmsmModel_hw_read_i_d(void){
 }
 
 void test_uz_pmsmModel_hw_write_reset(void){
-    uz_axi_write_bool_Expect(BASE_ADDRESS+reset_Data_uz_pmsm_model,true);
+    uz_axi_write_bool_Expect(BASE_ADDRESS+reset_integrators_Data_uz_pmsm_model,true);
     uz_pmsmModel_hw_write_reset(BASE_ADDRESS,true);
 }
 
 void test_uz_pmsmModel_hw_write_omega_mech(void){
     float omega_mech=123.4f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+omega_mech_Data_uz_pmsm_model,omega_mech);
+    uz_axi_write_float_Expect(BASE_ADDRESS+in_omega_mech_Data_uz_pmsm_model,omega_mech);
     uz_pmsmModel_hw_write_omega_mech(BASE_ADDRESS,omega_mech);
 }
 
@@ -62,6 +62,66 @@ void test_uz_pmsmModel_hw_write_u_d(void){
     uz_pmsmModel_hw_write_u_d(BASE_ADDRESS,u_d_expect);
 }
 
+void test_uz_pmsmModel_hw_write_friction_coefficient(void){
+    float mu=1.1f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+mu_Data_uz_pmsm_model,mu);
+    uz_pmsmModel_hw_write_friction_coefficient(BASE_ADDRESS,mu);
+}
+
+void test_uz_pmsmModel_hw_write_coloumb_friction(void){
+    float m_c=1.1f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+M_n0_Data_uz_pmsm_model,m_c);
+    uz_pmsmModel_hw_write_coloumb_friction_constant(BASE_ADDRESS,m_c);
+}
+
+void test_uz_pmsmModel_hw_write_r1(void){
+    float r_1=11.2f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+R1_Data_uz_pmsm_model,r_1);
+    uz_pmsmModel_hw_write_r_1(BASE_ADDRESS,r_1);
+}
+
+void test_uz_pmsmModel_hw_write_poleparis(void){
+    float polepairs=3.0f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+polepairs_Data_uz_pmsm_model,polepairs);
+    uz_pmsmModel_hw_write_polepairs(BASE_ADDRESS,polepairs);
+}
+
+void test_uz_pmsmModel_hw_write_psi_pm(void){
+    float psi_pm=0.001f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+psi_pm_Data_uz_pmsm_model,psi_pm);
+    uz_pmsmModel_hw_write_psi_pm(BASE_ADDRESS,psi_pm);
+}
+
+void test_uz_pmsmModel_hw_write_L_d(void){
+    float L_d=0.003f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+recirprocal_L_d_Data_uz_pmsm_model,1.0f/L_d);
+    uz_pmsmModel_hw_write_L_d(BASE_ADDRESS,L_d);
+}
+
+void test_uz_pmsmModel_hw_write_L_q(void){
+    float L_q=0.001f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+reciprocal_L_q_Data_uz_pmsm_model,1.0f/L_q);
+    uz_pmsmModel_hw_write_L_q(BASE_ADDRESS,L_q);
+}
+
+void test_uz_pmsmModel_hw_read_omega_mech(void){
+    float omega_mech_expected=100.2f;
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+omega_mech_Data_uz_pmsm_model,omega_mech_expected);
+    float omega_mech=uz_pmsmModel_hw_read_omega_mech(BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(omega_mech_expected,omega_mech);
+}
+
+void test_uz_pmsmModel_hw_write_simulate_mechanical(void){
+    _Bool simulate_mech=true;
+    uz_axi_write_bool_Expect(BASE_ADDRESS+simulate_mechanical_Data_uz_pmsm_model,simulate_mech);
+    uz_pmsmModel_hw_write_simulate_mechanical(BASE_ADDRESS,simulate_mech);
+}
+
+void test_uz_pmsmModel_hw_write_inertia(void){
+    float inertia=0.00031f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+reciprocal_J_Data_uz_pmsm_model,1.0f/inertia);
+    uz_pmsmModel_hw_write_inertia(BASE_ADDRESS,inertia);
+}
 
 
 #endif // TEST

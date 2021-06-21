@@ -89,13 +89,11 @@ void test_uz_pmsmModel_reset_model(void)
     uz_pmsmModel_reset(test_instance);
 }
 
-// Left HERE!
-// Example on how to use it with structs as in & outputs
 void test_uz_pmsmModel_struct_api_usage(void){
     uz_pmsmModel_t *test_instance = uz_pmsmModel_init(config);
     struct uz_pmsmModel_inputs_t inputs={
         .u_d_V=100.1f,
-        .u_q_V=-300.f,
+        .u_q_V=-300.0f,
         .omega_mech_1_s=312.123f
     };
     uz_pmsmModel_hw_write_u_d_Expect(BASE_ADDRESS,inputs.u_d_V);

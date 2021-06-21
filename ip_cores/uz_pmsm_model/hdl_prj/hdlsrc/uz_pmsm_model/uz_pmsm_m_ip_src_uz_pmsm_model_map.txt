@@ -1,0 +1,9 @@
+ --> uz_pmsm_m_ip_src_uz_pmsm_model_pkg
+uz_pmsm_model/uz_pmsm_model/nfp_gain_pow2_double --> uz_pmsm_m_ip_src_nfp_gain_pow2_double
+uz_pmsm_model/uz_pmsm_model/nfp_convert_double2single --> uz_pmsm_m_ip_src_nfp_convert_double2single
+uz_pmsm_model/uz_pmsm_model/nfp_sub_double --> uz_pmsm_m_ip_src_nfp_sub_double
+uz_pmsm_model/uz_pmsm_model/nfp_add_double --> uz_pmsm_m_ip_src_nfp_add_double
+uz_pmsm_model/uz_pmsm_model/nfp_mul_double --> uz_pmsm_m_ip_src_nfp_mul_double
+uz_pmsm_model/uz_pmsm_model/nfp_convert_single2double --> uz_pmsm_m_ip_src_nfp_convert_single2double
+uz_pmsm_model_tc --> uz_pmsm_m_ip_src_uz_pmsm_model_tc
+uz_pmsm_model/uz_pmsm_model --> uz_pmsm_m_ip_src_uz_pmsm_model

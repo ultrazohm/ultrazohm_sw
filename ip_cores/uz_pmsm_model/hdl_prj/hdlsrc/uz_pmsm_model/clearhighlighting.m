@@ -1,0 +1,11 @@
+SLStudio.Utils.RemoveHighlighting(get_param('uz_pmsm_model', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_pmsm_model', 'handle'));
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Delay', 1, 1, '');
+annotate_port('uz_pmsm_model/uz_pmsm_model/Delay', 1, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Delay1', 1, 1, '');
+annotate_port('uz_pmsm_model/uz_pmsm_model/Delay1', 1, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Delay2', 1, 1, '');
+annotate_port('uz_pmsm_model/uz_pmsm_model/Delay2', 1, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Delay6', 1, 1, '');
+annotate_port('uz_pmsm_model/uz_pmsm_model/Delay6', 1, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Product', 0, 1, '');

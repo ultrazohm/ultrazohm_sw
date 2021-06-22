@@ -173,38 +173,42 @@ typedef struct uz_adcLtc2311_spiConfig {
 	uint32_t cpol;
 } uz_adcLtc2311_spiConfig;
 
-/********************************************************
+/**
+ * @brief Configuration to leave and enter nap and sleep mode
+ * 
+ * @details
+ * 
  * The functions
- *
- * uz_adcLtc2311_enterNapMode(...)
- * uz_adcLtc2311_leaveNapMode(...)
- * uz_adcLtc2311_enterSleepMode(...)
- * uz_adcLtc2311_leaveSleepMode(...)
- *
- * expect an instance of this struct as configuration
- *
+ * 
+ * <UL>
+ * <LI> @ref uz_adcLtc2311_enterNapMode </LI>
+ * <LI> @ref uz_adcLtc2311_leaveNapMode </LI>
+ * <LI> @ref uz_adcLtc2311_enterSleepMode </LI>
+ * <LI> @ref uz_adcLtc2311_leaveSleepMode </LI>
+ * </UL>
+ * expect an instance of this struct as configuration.
+ * 
  * The error code variable is one hot encoded
  * If the following bits are set the appropriate action
  * failed
  *
- * 0: Enable of the manual control mode for the SPI failed
- * 1: Disable of the manual control mode for the SPI failed
- * 2: Requested action has been interrupted
+ * 0: Enable of the manual control mode for the SPI failed <BR>
+ * 1: Disable of the manual control mode for the SPI failed <BR>
+ * 2: Requested action has been interrupted <BR>
  * 3: At least one of the chosen SPI masters is already in sleep
- *    or nap mode
+ *    or nap mode <BR>
  * 4: At least one of the chosen SPI masters is not in the requested
- *    mode on leaving the requested mode.
- * 5: Requested action timed out
- * 6: No SPI master has been selected
- *
- *******************************************************/
-
+ *    mode on leaving the requested mode. <BR>
+ * 5: Requested action timed out <BR>
+ * 6: No SPI master has been selected <BR>
+ * 
+ * 
+ */
 typedef struct uz_adcLtc2311_napSleepConfig {
-	uint32_t error_code;
-	uint32_t spi_masters;
-	uint32_t max_attempts;
-	_Bool try_infinite;
-
+	uint32_t error_code; 	/**< This variable contains the error code which is set by the called function */
+	uint32_t spi_masters;	/**< Indicates which SPI master shall be selected for the action */
+	uint32_t max_attempts;	/**< Maximum AXI read operations to enter the manual SPI control mode if try_infinite is set to false */
+	_Bool try_infinite;		/**< If true, the selected action will be tried infinitely */
 } uz_adcLtc2311_napSleepConfig;
 
 // function declarations
@@ -217,9 +221,41 @@ void uz_adcLtc2311_softwareReset(uz_adcLtc2311* self);
 void uz_adcLtc2311_softwareTrigger(uz_adcLtc2311* self, uint32_t spiMasters);
 void uz_adcLtc2311_setContinuousMode(uz_adcLtc2311* self);
 void uz_adcLtc2311_setTriggeredMode(uz_adcLtc2311* self);
+
+/**
+ * @brief Enter the nap mode of the selected ADCs
+ * 
+ * @param self 
+ * @param configuration 
+ * @return int32_t 
+ */
 int32_t uz_adcLtc2311_enterNapMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration);
+
+/**
+ * @brief Leave the nap mode of the selected ADCs
+ * 
+ * @param self 
+ * @param configuration 
+ * @return int32_t 
+ */
 int32_t uz_adcLtc2311_leaveNapMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration);
+
+/**
+ * @brief Enter the sleep mode of the selected ADCs
+ * 
+ * @param self 
+ * @param configuration 
+ * @return int32_t 
+ */
 int32_t uz_adcLtc2311_enterSleepMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration);
+
+/**
+ * @brief Leave the sleep mode of the selected ADCs
+ * 
+ * @param self 
+ * @param configuration 
+ * @return int32_t 
+ */
 int32_t uz_adcLtc2311_leaveSleepMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration);
 void uz_adcLtc2311_init_napSleepConfig(uz_adcLtc2311_napSleepConfig* configuration);
 

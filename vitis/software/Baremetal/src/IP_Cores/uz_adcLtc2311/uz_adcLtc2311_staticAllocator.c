@@ -1,4 +1,3 @@
-#pragma once
 #include "uz_adcLtc2311.h"
 #include "uz_adcLtc2311_private.h"
 #include "xparameters.h"

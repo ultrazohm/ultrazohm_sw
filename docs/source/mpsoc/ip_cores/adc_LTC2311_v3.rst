@@ -53,6 +53,19 @@ Features
   buffer needs to be placed at the output of the IP core. The core
   itself only implements the communication logic.
 
+Software Driver
+---------------
+
+.. doxygenstruct:: uz_adcLtc2311_napSleepConfig
+   :members:
+
+.. doxygenfunction:: uz_adcLtc2311_enterNapMode
+
+.. doxygenfunction:: uz_adcLtc2311_leaveNapMode
+
+.. doxygenfunction:: uz_adcLtc2311_enterSleepMode
+
+.. doxygenfunction:: uz_adcLtc2311_leaveSleepMode
 
 Functional Description
 ----------------------

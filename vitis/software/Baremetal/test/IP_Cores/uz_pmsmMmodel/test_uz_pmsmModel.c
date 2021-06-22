@@ -62,84 +62,13 @@ void test_uz_pmsmModel_successful_init(void)
     TEST_ASSERT_NOT_NULL(test_instance);
 }
 
-void test_uz_pmsmModel_get_i_d(void)
-{
-    uz_pmsmModel_t *test_instance = successful_init(config);
-    float i_d_expect = 1.3f;
-    uz_pmsmModel_hw_read_i_d_ExpectAndReturn(BASE_ADDRESS, i_d_expect);
-    float i_d_returned = uz_pmsmModel_get_i_d(test_instance);
-    TEST_ASSERT_EQUAL_FLOAT(i_d_expect, i_d_returned);
-}
-
-void test_uz_pmsmModel_get_i_q(void)
-{
-    uz_pmsmModel_t *test_instance = successful_init(config);
-    float i_q_expect = 11.312f;
-    uz_pmsmModel_hw_read_i_q_ExpectAndReturn(BASE_ADDRESS, i_q_expect);
-    float i_q_returned = uz_pmsmModel_get_i_q(test_instance);
-    TEST_ASSERT_EQUAL_FLOAT(i_q_expect, i_q_returned);
-}
-
-void test_uz_pmsmModel_get_torque(void)
-{
-    uz_pmsmModel_t *test_instance = successful_init(config);
-
-    float torque_expect = 23.1f;
-    uz_pmsmModel_hw_read_torque_ExpectAndReturn(BASE_ADDRESS, torque_expect);
-    float torque_returned = uz_pmsmModel_get_torque(test_instance);
-    TEST_ASSERT_EQUAL_FLOAT(torque_expect, torque_returned);
-}
-
-void test_uz_pmsmModel_set_u_d(void)
-{
-    uz_pmsmModel_t *test_instance = successful_init(config);
-
-    float u_d = 123.1f;
-    uz_pmsmModel_hw_write_u_d_Expect(BASE_ADDRESS, u_d);
-    uz_pmsmModel_set_u_d(test_instance, u_d);
-}
-
-void test_uz_pmsmModel_set_u_q(void)
-{
-    uz_pmsmModel_t *test_instance = successful_init(config);
-
-    float u_q = -31.2f;
-    uz_pmsmModel_hw_write_u_q_Expect(BASE_ADDRESS, u_q);
-    uz_pmsmModel_set_u_q(test_instance, u_q);
-}
-
-void test_uz_pmsmModel_set_omega_mech(void)
-{
-    config.simulate_mechanical_system = false;
-    uz_pmsmModel_t *test_instance = successful_init(config);
-
-    float omega_mech = -3111.2f;
-    uz_pmsmModel_hw_write_omega_mech_Expect(BASE_ADDRESS, omega_mech);
-    uz_pmsmModel_set_omega_mech(test_instance, omega_mech);
-}
-
-void test_uz_pmsmModel_set_load_torque(void){
-    uz_pmsmModel_t *test_instance=successful_init(config);
-
-    float load_torque=123.1f;
-    uz_pmsmModel_hw_write_load_torque_Expect(BASE_ADDRESS,load_torque);
-    uz_pmsmModel_set_load_torque(test_instance,load_torque);
-}
-
-void test_uz_pmsmModel_get_omega_mech(void){
-    uz_pmsmModel_t *test_instance=successful_init(config);
-    float omega_expected=12312.1f;
-    uz_pmsmModel_hw_read_omega_mech_ExpectAndReturn(BASE_ADDRESS,omega_expected);
-    float omega_return=uz_pmsmModel_get_omega_mech(test_instance);
-    TEST_ASSERT_EQUAL_FLOAT(omega_expected,omega_return);
-}
-
 void test_uz_pmsmModel_reset_model(void)
 {
     uz_pmsmModel_t *test_instance = successful_init(config);
 
     uz_pmsmModel_hw_write_u_d_Expect(BASE_ADDRESS, 0.0f);
     uz_pmsmModel_hw_write_u_q_Expect(BASE_ADDRESS, 0.0f);
+    uz_pmsmModel_hw_write_load_torque_Expect(BASE_ADDRESS,0.0f);
     uz_pmsmModel_hw_write_omega_mech_Expect(BASE_ADDRESS, 0.0f);
     uz_pmsmModel_hw_write_reset_Expect(BASE_ADDRESS, false);
     uz_pmsmModel_hw_write_reset_Expect(BASE_ADDRESS, true);
@@ -160,6 +89,7 @@ void test_uz_pmsmModel_struct_api_usage_without_mechanical(void)
 
     uz_pmsmModel_hw_write_u_d_Expect(BASE_ADDRESS, inputs.u_d_V);
     uz_pmsmModel_hw_write_u_q_Expect(BASE_ADDRESS, inputs.u_q_V);
+    uz_pmsmModel_hw_write_load_torque_Expect(BASE_ADDRESS,inputs.load_torque);
     uz_pmsmModel_hw_write_omega_mech_Expect(BASE_ADDRESS, inputs.omega_mech_1_s);
     uz_pmsmModel_set_inputs(test_instance, inputs);
 

@@ -123,5 +123,11 @@ void test_uz_pmsmModel_hw_write_inertia(void){
     uz_pmsmModel_hw_write_inertia(BASE_ADDRESS,inertia);
 }
 
+void test_uz_pmsmModel_hw_write_load_torque(void){
+    float load_torque=10.5f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+load_torque_Data_uz_pmsm_model,load_torque);
+    uz_pmsmModel_hw_write_load_torque(BASE_ADDRESS,load_torque);
+}
+
 
 #endif // TEST

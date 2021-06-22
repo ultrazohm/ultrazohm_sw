@@ -1,7 +1,7 @@
 /*
  * File Name:         hdl_prj/ipcore/uz_pmsm_model_v1_0/include/uz_pmsm_model_addr.h
  * Description:       C Header File
- * Created:           2021-06-21 14:13:51
+ * Created:           2021-06-22 09:44:05
 */
 
 #ifndef UZ_PMSM_MODEL_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_uz_pmsm_model               0x0U  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_pmsm_model              0x4U  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_pmsm_model           0x8U  //contains unique IP timestamp (yymmddHHMM): 2106211412: 2106211413
+#define  IPCore_Timestamp_uz_pmsm_model           0x8U  //contains unique IP timestamp (yymmddHHMM): 2106220944
 #define  u_d_Data_uz_pmsm_model                   0x100U  //data register for Inport u_d
 #define  u_q_Data_uz_pmsm_model                   0x104U  //data register for Inport u_q
 #define  mu_Data_uz_pmsm_model                    0x108U  //data register for Inport mu
@@ -25,6 +25,7 @@
 #define  omega_mech_Data_uz_pmsm_model            0x130U  //data register for Outport omega_mech
 #define  in_omega_mech_Data_uz_pmsm_model         0x134U  //data register for Inport in_omega_mech
 #define  simulate_mechanical_Data_uz_pmsm_model   0x138U  //data register for Inport simulate_mechanical
+#define  load_torque_Data_uz_pmsm_model           0x13CU  //data register for Inport load_torque
 #define  torque_Data_uz_pmsm_model                0x144U  //data register for Outport torque
 #define  reciprocal_J_Data_uz_pmsm_model          0x150U  //data register for Inport reciprocal_J
 

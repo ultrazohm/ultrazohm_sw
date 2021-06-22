@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.56
+<td class="summaryTableSndColOddRow">1.68
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">21-Jun-2021 14:13:49
+<td class="summaryTableSndColOddRow">22-Jun-2021 09:44:03
 </td>
 </tr>
 <tr>
@@ -336,21 +336,21 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:50')">i_d</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:364')">load_torque</a>
 </td>
-<td class="distinctCellColor">Outport
+<td class="distinctCellColor">Inport
 </td>
 <td class="distinctCellColor">single
 </td>
 <td class="distinctCellColor">AXI4-Lite
 </td>
-<td class="distinctCellColor">x"10C"
+<td class="distinctCellColor">x"13C"
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:51')">i_q</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:50')">i_d</a>
 </td>
 <td>Outport
 </td>
@@ -358,13 +358,13 @@ Target platform interface table:
 </td>
 <td>AXI4-Lite
 </td>
-<td>x"11C"
+<td>x"10C"
 </td>
 <td>
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:52')">torque</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:51')">i_q</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
@@ -372,13 +372,13 @@ Target platform interface table:
 </td>
 <td class="distinctCellColor">AXI4-Lite
 </td>
-<td class="distinctCellColor">x"144"
+<td class="distinctCellColor">x"11C"
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:322')">omega_mech</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:52')">torque</a>
 </td>
 <td>Outport
 </td>
@@ -386,9 +386,23 @@ Target platform interface table:
 </td>
 <td>AXI4-Lite
 </td>
-<td>x"130"
+<td>x"144"
 </td>
 <td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:322')">omega_mech</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">single
+</td>
+<td class="distinctCellColor">AXI4-Lite
+</td>
+<td class="distinctCellColor">x"130"
+</td>
+<td class="distinctCellColor">
 </td>
 </tr>
 </tbody>
@@ -431,7 +445,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2106211412: 2106211413
+<td>contains unique IP timestamp (yymmddHHMM): 2106220944
 </td>
 </tr>
 <tr>
@@ -555,19 +569,27 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 </tr>
 <tr>
-<td>torque_Data
+<td>load_torque_Data
 </td>
-<td>0x144
+<td>0x13C
 </td>
-<td>data register for Outport torque
+<td>data register for Inport load_torque
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">reciprocal_J_Data
+<td class="distinctCellColor">torque_Data
 </td>
-<td class="distinctCellColor">0x150
+<td class="distinctCellColor">0x144
 </td>
-<td class="distinctCellColor">data register for Inport reciprocal_J
+<td class="distinctCellColor">data register for Outport torque
+</td>
+</tr>
+<tr>
+<td>reciprocal_J_Data
+</td>
+<td>0x150
+</td>
+<td>data register for Inport reciprocal_J
 </td>
 </tr>
 </tbody>
@@ -649,19 +671,19 @@ Following files are generated under this folder:
 <br/>
 <a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_pkg.vhd')">hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_pkg.vhd</a>
 <br/>
+<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_convert_single2double.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_convert_single2double.vhd</a>
+<br/>
 <a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_convert_double2single.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_convert_double2single.vhd</a>
 <br/>
 <a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_mul_double.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_mul_double.vhd</a>
-<br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_convert_single2double.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_convert_single2double.vhd</a>
 <br/>
 <a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_sub_double.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_sub_double.vhd</a>
 <br/>
 <a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_add_double.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_add_double.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_abs_double.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_abs_double.vhd</a>
-<br/>
 <a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_signum_double.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_signum_double.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_abs_double.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_abs_double.vhd</a>
 <br/>
 <a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_tc.vhd')">hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_tc.vhd</a>
 <br/>

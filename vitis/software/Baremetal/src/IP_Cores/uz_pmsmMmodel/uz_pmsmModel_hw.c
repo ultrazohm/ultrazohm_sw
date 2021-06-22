@@ -105,3 +105,8 @@ void uz_pmsmModel_hw_write_inertia(uint32_t base_address, float intertia){
     uz_assert(intertia > 0.0f); // prevent division by zero and no negative inertia exists
     uz_axi_write_float(base_address+reciprocal_J_Data_uz_pmsm_model,(1.0f/intertia));
 }
+
+void uz_pmsmModel_hw_write_load_torque(uint32_t base_address, float load_torque){
+    uz_assert_not_zero(base_address);
+    uz_axi_write_float(base_address+load_torque_Data_uz_pmsm_model,load_torque);
+}

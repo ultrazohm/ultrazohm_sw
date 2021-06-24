@@ -59,7 +59,7 @@
  */
 #define uz_assert_not_NULL(Expression) \
 {                              \
-    uz_assert(Expression!=NULL);        \
+    uz_assert((Expression)!=NULL);        \
 }
 
 /**
@@ -68,7 +68,7 @@
  */
 #define uz_assert_not_zero(Expression) \
 {                              \
-    uz_assert(Expression!=0);        \
+    uz_assert((Expression)!=0);        \
 }
 
 /**
@@ -77,12 +77,12 @@
  */
 #define uz_assert_false(Expression) \
 {                              \
-    uz_assert(Expression==false);        \
+    uz_assert ((Expression)==false);        \
 }
 
 #define uz_assert_true(Expression) \
 {                              \
-    uz_assert(Expression==true);        \
+    uz_assert( (Expression) ==true);        \
 }
 #include "uz_AXI.h" // this include will be deleted but is required since some functions already use the AXI HAL - include has to be done after the assert definitions to prevent compiler warnings!
 #endif // Endif of guard

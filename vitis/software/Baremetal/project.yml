@@ -29,6 +29,14 @@
 :extension:
   :executable: .out
 
+:flags:
+  :test:
+    :compile:
+      :*:          # add '-Wall' to compilation of all files
+        - -Wall
+        - -Wextra
+        - -Wpedantic
+
 :paths:
   :test:
     - +:test/**
@@ -88,7 +96,7 @@
   :placement: :end
   :flag: "-l${1}"
   :path_flag: "-L ${1}"
-  :system: []    # for example, you might list 'm' to grab the math library
+  :system: [m]    # for example, you might list 'm' to grab the math library
   :test: []
   :release: []
 

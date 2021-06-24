@@ -42,7 +42,7 @@ IP-Core driver
 **************
 
 IP-Core drivers are a special and highly relevant case since the flexible usage of IP-cores is a main advantage of the MPSoC.
-Refer to :ref:`software_development_guidlines` for an example implementation.
+Refer to :ref:`software_development_guidelines` for an example implementation.
 
 
 .. mermaid::

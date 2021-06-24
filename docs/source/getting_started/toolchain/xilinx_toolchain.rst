@@ -1,3 +1,5 @@
+.. _XilinxToolchain:
+
 ================
 Xilinx Toolchain
 ================

@@ -1,67 +1,43 @@
-==================================
-Structure of the UltraZohm Project
-==================================
+.. _ProjectStructure:
 
-Communication channels
-----------------------
+=============================
+Community & project structure
+=============================
 
-.. mermaid::
+The following sections describe the structure of the UltraZohm project and community.
+Our general community approach is based on `GithHub Open Source Guide <https://opensource.guide/>`_.
+The repository is licensed under the `Apache 2.0 license <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/LICENSE>`_).
+We thrive to be a welcoming, open community and expect everybody to act accordingly.
+The documentation and code are public.
+However, the communication channels require new community members to get in touch with the existing community (e.g., mail to info@ultrazohm.com).
+While this adds a barrier of entry for new community members, this enables community members to share what they are working on freely.
+This is especially important for currently active research, including pre-publication results and related questions.
 
-  graph TD
-  A[I have a problem with the UltraZohm]
-  A --> B{What Problem <br> do I have?}
-  B -->|A bug in the code| D[Issue on <br> Bitbucket]
-  B -->|A tool does not work <br> e.g. Sourcetree, Vivado| E[Forum]
-  B -->|Informal communication| F[Nextcloud Talk]
-
-Project structure and user groups
----------------------------------
-
-The overall structure of the UltraZohm will be described in the following sections.
-Most of the information is based on <https://opensource.guide/> (and <https://opensource.guide/leadership-and-governance/> ).
+- The project is hosted on bitbucket (https://www.bitbucket.org/ultrazohm/ultrazohm_sw)
+- We use the UltraZohm Slack channel for direct, informal communication within the community
+- We use the UltraZohm forum (https://forum.ultrazohm.com/) for more general topics and discussions (topics related to the use-case)
+- We use Bitbucket issues as a bugtracker (topics related to the UltraZohm itself)
 
 User groups and name conventions
 --------------------------------
 
-The following user groups in the UltraZohm Community exist.
-The user groups also determine the permissions for read/write of the different repositorys.
-There are user groups in Bitbucket, in the UltraZohm-Cloud (Nextcloud) and the UltraZohm Forum, the naming conventions apply to all of them.
-There are two category's of resources in the UltraZohm community:
+The user groups determine the read/write permissions for Bitbucket.
+A maintainer has to add users to the groups in Bitbucket (except for *Everybody*).
+The UltraZohm community consists of the following user groups:
 
-* | Open source
-  | All open source code and hardware of the UltraZohm system
-* | Internal
-  | The internal files, code and hardware of the UltraZohm system which is mostly organization, contracts and bills as well as personal control algorithms before publication of papers.
-  | Furthermore files and code which can not be open sourced due to not owning the copyright (e.g. bought training material) is in this group.
+Maintainer
+ The core group of people who develop the system, the community and maintain the code as well as the hardware components.
+ Maintainer can write to the ``develop`` and ``main`` main branch by accepting pull requests. 
+ Maintainer have admin rights for the bitbucket team management, i.e., can add and remove users.
 
-The basic user groups are:
+Contributor
+ All user who contribute code or hardware back to the UltraZohm community (i.e., push a commit) are a **contributor** and *everybody is welcome to become contributor*!
+ To become a contributor, please get in contact with a maintainer by using Slack.
+ Contributor have write access the repository, can create branches, commit to feature branches and create pull requests.
 
-* | Admin
-  | Can add and remove user, can grant and revoke permissions of other user groups (=mange teams)
-  | This group is relevant for administration and organization of the community and has read/write to all repositorys as well as all folders in the cloud (e.g. billing information ).
-* | Maintainer
-  | The *core* group of people who organize the system, the community and maintain the code as well as the hardware components.
-* | Contributor
-  | All user who contribute code or hardware back to the UltraZohm community are a **contributor** and *everybody can be a contributor*!
-  | However, it is recommended to get in touch with a maintainer if you want to contribute for the first time.
-  | Contributor have write access to specific or all open source repositories / hardware folder.
-* | User
-  | Everybody who uses the system is a **user**, especially everybody who has a physical UltraZohm System which they can use.
-  | All user have read access to all open source repositories and open source hardware and folder in the UltraZohm cloud.
+User
+ Everybody who uses the system is a **user**, especially everybody who has access to a physical UltraZohm system.
+ User have read access to the repository and the issue tracker.
 
-
-
-+------------------+--------+------------+-------------+------+
-|                  | Admin  | Maintainer | Contributor | User |
-+==================+========+============+=============+======+
-| Bitbucket        | 1      | 2          | 3           | 4    |
-+------------------+--------+------------+-------------+------+
-| Bitbucket        | 1      | 2          | 3           | 4    |
-+------------------+--------+------------+-------------+------+
-| Bitbucket        | 1      | 2          | 3           | 4    |
-+------------------+--------+------------+-------------+------+
-
-How to contribute
------------------
-
-TODO
+Everybody
+ *Everybody* has read access to the repository and the pull requests.

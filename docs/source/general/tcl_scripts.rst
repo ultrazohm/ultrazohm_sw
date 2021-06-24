@@ -1,3 +1,5 @@
+.. _tcl_scripts:
+
 ===========
 Tcl Scripts
 ===========

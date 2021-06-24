@@ -19,6 +19,7 @@
 #include "../main.h"
 #include "xgpio.h"
 #include <stdbool.h>
+#include "../uz/uz_global_configuration.h"
 //Defines for the Interrupt fixed by hand from Vivado Block Design. 
 //signals are concatenated in this order forming an 8 bit interrupt vector. 
 // Shared Peripheral Interrupts: PL->PS
@@ -29,16 +30,6 @@
 #define Interrupt_3L_start			XPS_FPGA4_INT_ID
 #define Interrupt_3L_center			XPS_FPGA5_INT_ID
 #define Interrupt_timer_fcc			XPAR_FABRIC_INTERRUPT_TRIGGER_F_CC_INTERRUPT_INTR
-
-//chose here which of the above interrupt trigger you want to use:
-// 0 for Interrupt_2L_max_min		
-// 1 for Interrupt_2L_min			
-// 2 for Interrupt_2L_max			
-// 3 for Interrupt_3L_start_center	
-// 4 for Interrupt_3L_start			
-// 5 for Interrupt_3L_center		
-// 6 for Interrupt_timer_fcc		
-#define Interrupt_ISR_source_user_choice		3
 
 #if Interrupt_ISR_source_user_choice == 0
 	#define Interrupt_ISR_ID			Interrupt_2L_max_min

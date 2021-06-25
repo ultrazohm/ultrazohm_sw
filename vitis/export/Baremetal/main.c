@@ -422,9 +422,9 @@ void InitializeDataStructure(DS_Data* data) {
 	data->ew.mtpaTableError = false;
 	data->ew.pwmFrequencyError = false;
 	data->rasv.currentControlAngle = 0.0;
-	data->rasv.halfBridge1DutyCycle = 0.0;
-	data->rasv.halfBridge2DutyCycle = 0.0;
-	data->rasv.halfBridge3DutyCycle = 0.0;
+	data->rasv.halfBridge1DutyCycle = 0.5;
+	data->rasv.halfBridge2DutyCycle = 0.5;
+	data->rasv.halfBridge3DutyCycle = 0.5;
 	data->rasv.phaseAdvanceAngle = 0.0;
 	data->rasv.referenceCurrent_id = 0.0;
 	data->rasv.referenceCurrent_iq = 0.0;
@@ -467,7 +467,7 @@ void InitializeDataStructure(DS_Data* data) {
 	data->aa.A3.cf.ADC_B8 = 10;
 
 	// initalize PWM parameters
-	data->ctrl.pwmFrequency = 10e3;		// PWM carrier frequency
+	data->ctrl.pwmFrequency = 20e3;		// PWM carrier frequency
 	data->ctrl.pwmPeriod = 1 / data->ctrl.pwmFrequency;
 
 	data->ctrl.samplingFrequency = data->ctrl.pwmFrequency * Interrupt_ISR_freq_factor;

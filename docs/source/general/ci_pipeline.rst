@@ -1,3 +1,5 @@
+.. _ci:
+
 ======================
 Continuous Integration
 ======================
@@ -71,6 +73,57 @@ Bitbucket pipeline (GitHub-Mirror)
 * A special UltraZohm Github Account (Login information in Keepass) pushes to the Github repository
 * The account uses the Bitbucket pipeline SSH key (``ultrazohm_sw -> Repository settings --> SSH keys``, only visible to admins) to push to Github
 * Github.com is added to ``Known hosts`` in ``ultrazohm_sw -> Repository settings --> SSH keys``
+
+.. _ci_static_code_check:
+
+Static code check
+*****************
+
+We use `cppcheck <https://github.com/danmar/cppcheck>`_  as our static code analyser.
+
+- Useful information:
+
+    - https://github.com/danmar/cppcheck/blob/2.4.1/man/manual.md
+    - http://cppcheck.sourceforge.net/
+    - https://github.com/ChisholmKyle/SublimeLinter-cppcheck-misra
+
+.. note:: The build pipeline does not fail if there are warnings from the static code analysis!
+
+
+Global configuration in CI
+**************************
+
+The CI uses the default :ref:`global_configuration` by renaming the file ``default_uz_global_configuration.h`` to ``uz_global_configuration.h``.
+
+UltraZohm development container
+*******************************
+
+To reduce the time the CI steps spend on installing dependencies, we use a docker image for the UltraZohm development container.
+
+- `UltraZohm development container on Dockerhub <https://hub.docker.com/r/ultrazohm/ultrazohm_remote_container>`_
+- The container is based on the :ref:`vscode_remote_container`
+- Updating the docker image on dockerhub is a manual process
+
+Update:
+
+1.. Rebuild the container with VS Code locally (to also run the post-build steps!)
+2. Login to docker.io on the CLI with your credentials (account has to be part of ultrazohm team on Dockerhub):
+
+::
+
+  podman login docker.io
+
+3. Tag the local image (podman/docker) (the name of the local image may change):
+
+::
+
+   podman image tag localhost/vsc-ultrazohm_sw-ad6053a7600060d35be6bf639d2373c4:latest ultrazohm/ultrazohm_remote_container
+
+4. Push the image to dockerhub
+
+::
+
+   podman push ultrazohm/ultrazohm_remote_container:latest
 
 
 Drone pipeline (Software)

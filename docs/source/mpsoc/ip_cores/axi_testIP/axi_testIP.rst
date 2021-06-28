@@ -33,3 +33,16 @@ Use this IP-Core to test read/write operations by AXI between PL and PS using th
    :file: ./AXI_testIP_interfaces.csv
    :widths: 50 50 50 50
    :header-rows: 1
+
+
+Driver function reference
+=========================
+
+.. doxygentypedef:: uz_myIP2_t
+
+.. doxygenstruct:: uz_myIP2_config_t
+  :members:
+
+.. doxygenfunction:: uz_myIP2_init
+
+.. doxygenfunction:: uz_myIP2_multiply

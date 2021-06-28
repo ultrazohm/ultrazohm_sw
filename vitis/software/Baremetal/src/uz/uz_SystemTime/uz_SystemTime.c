@@ -1,4 +1,6 @@
 #include "uz_SystemTime.h"
+#include "uz_AxiTimer64Bit.h"
+#include "../uz_HAL.h"
 
 static void uz_SystemTime_update();
 
@@ -17,19 +19,8 @@ typedef struct {
 } uz_SystemTime;
 
 // private variables
-static uz_SystemTime timingR5 =
-                	{ .isr_period_us = 0,
-	                                .isr_execution_time_us = 0,
-	                                .interrupt_counter = 0,
-	                                .uptime_us = 0,
-	                                .uptime_ms = 0,
-	                                .uptime_sec = 0,
-	                                .uptime_min = 0,
-	                                .timestamp_ISR_start = 0,
-	                                .timestamp_ISR_end = 0,
-	                                .TicTocLock = false,
-	                                .IsReady = false
-	                };
+static uz_SystemTime timingR5 = { .isr_period_us = 0, .isr_execution_time_us = 0, .interrupt_counter = 0, .uptime_us = 0, .uptime_ms = 0, .uptime_sec = 0, .uptime_min = 0, .timestamp_ISR_start = 0,
+                .timestamp_ISR_end = 0, .TicTocLock = false, .IsReady = false };
 
 void uz_SystemTime_init() {
 	uz_AxiTimer64Bit_init();
@@ -113,3 +104,8 @@ uint64_t uz_SystemTime_GetInterruptCounter() {
 	return (timingR5.interrupt_counter);
 }
 
+float uz_SystemTime_GetGlobalTimeInSec() {
+	uint64_t timestamp = uz_AxiTimer64Bit_ReadValue64Bit();
+	float current_global_time = timestamp * (1.0 / UZ_AXI_TIMER_CLOCK_FREQ);
+	return (current_global_time);
+}

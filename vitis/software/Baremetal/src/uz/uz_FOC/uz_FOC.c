@@ -57,12 +57,44 @@ uz_FOC_PI_Controller_variables* uz_FOC_PI_Controller_variables_init(void) {
 	return (self);
 }
 
-float uz_FOC_Dead_Zone(float preSat, uz_FOC_config config) {
-
+float uz_FOC_Dead_Zone(float input, uz_FOC_config config) {
+	float output;
+	uz_assert(config.d_y_max>config.d_y_min);
+	if (input >= config.d_y_min && input <= config.d_y_max) {
+		output = 0.0f;
+	}
+	else if (input > config.d_y_max)
+	{
+		output = input - config.d_y_max;
+	}
+        else {
+		output = input - config.d_y_min;
+	}
+	return (output);
 }
+
+int uz_FOC_get_sign_of_value(float input) {
+	int sign;
+	if (input < 0)
+		sign = -1;
+	else if (input > 0) {
+		sign = 1;
+	} else {
+		sign = 0;
+	}
+	return (sign);
+}
+
 bool uz_FOC_Clamping_Circuit(float preIntegrator, float preSat, uz_FOC_config config) {
-
+	bool output = false;
+	float value_after_deadzone = uz_FOC_Dead_Zone(preSat, config);
+	int sign_after_deadzone = uz_FOC_get_sign_of_value(value_after_deadzone);
+	int sign_preIntegrator = uz_FOC_get_sign_of_value(preIntegrator);
+	if (0 != value_after_deadzone && sign_after_deadzone == sign_preIntegrator) {
+		output = true;
+	} else {
+		output = false;
+	}
+	return (output);
 }
-float uz_FOC_PI_Controller_id(uz_FOC_ActualValues* ActualValues, uz_FOC_config config, uz_FOC_PI_Controller_variables* variables, bool ext_clamping) {
 
-}

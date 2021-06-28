@@ -81,7 +81,7 @@ static uz_FOC_VoltageReference* uz_FOC_VoltageReference_allocation(void);
  *
  * @return Pointer to uz_FOC_VoltageReference instance
  */
-static uz_FOC_PI_Controller_variables* uz_FOC_PI_Controller_allocation(void);
+static uz_FOC_PI_Controller_variables* uz_FOC_PI_Controller_variables_allocation(void);
 
 /**
  * @brief Initialization of a ActualValues struct
@@ -123,4 +123,5 @@ float uz_FOC_PI_Controller_id(uz_FOC_ActualValues* ActualValues, uz_FOC_config c
  * @return Returns true if clamping is necessary
  */
 bool uz_FOC_Clamping_Circuit(float preIntegrator, float preSat, uz_FOC_config config);
-float uz_FOC_Dead_Zone(float preSat, uz_FOC_config config);
+float uz_FOC_Dead_Zone(float input, uz_FOC_config config);
+int uz_FOC_get_sign_of_value(float input);

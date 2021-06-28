@@ -7,54 +7,45 @@
 #include <math.h>
 #include <stdbool.h>
 
-typedef struct uz_FOC_CurrentControl_config {
+typedef struct uz_FOC_config {
 	float Kp_id;
-	float Tn_id;
 	float Kp_iq;
-	float Tn_iq;
-	float iq_target_Ampere;
-	float id_target_Ampere;
-} uz_FOC_CurrentControl_config;
-
-typedef struct uz_FOC_SpeedControl_config {
 	float Kp_n;
-	float Tn_n;
-	float Kp_id;
-	float Tn_id;
-	float Kp_iq;
-	float Tn_iq;
-	float id_target_Ampere;
-	float n_target_rpm;
-} uz_FOC_SpeedControl_config;
+	float Ki_id;
+	float Ki_iq;
+	float Ki_n;
+	float iq_ref_Ampere;
+	float id_ref_Ampere;
+	float n_ref_rpm;
+	bool FOC_Select;
+	bool ResetIntegrators;
+} uz_FOC_config;
 
-
-typedef struct uz_FOC_CurrentControl_parameters {
+typedef struct uz_FOC_ActualValues {
 	bool is_ready;
-	float error_iq_sum;
-	float error_id_sum;
-	float id_Ampere;
-	float iq_Ampere;
-	float ud_target_Volt;
-	float uq_target_Volt;
-	uz_FOC_CurrentControl_config config;
-} uz_FOC_CurrentControl_parameters;
+	float i_d_Ampere;
+	float i_q_Ampere;
+	float u_d_Volts;
+	float u_q_Volts;
+	float i_a_Ampere;
+	float i_b_Ampere;
+	float i_c_Ampere;
+	float omega_el_rad_per_sec;
+	float theta_el_rad;
+	float U_zk_Volts;
+	float u_a_Volts;
+	float u_b_Volts;
+	float u_c_Volts;
+} uz_FOC_ActualValues;
 
-typedef struct uz_FOC_SpeedControl_parameters {
+typedef struct uz_FOC_PI_Controller_output {
 	bool is_ready;
-	float error_omega_sum;
-	float error_iq_sum;
-	float error_id_sum;
-	float id_Ampere;
-	float iq_Ampere;
-	float ud_target_Volt;
-	float uq_target_Volt;
-	float omega_rad;
-	uz_FOC_SpeedControl_config config;
-} uz_FOC_SpeedControl_parameters;
+	float u_d_ref_Volts;
+	float u_q_ref__Volts;
+	float integrator_value;
+} uz_FOC_PI_Controller_output;
 
-
-uz_FOC_CurrentControl_parameters* uz_FOC_CurrentControl_init(uz_FOC_CurrentControl_config config);
-void uz_FOC_CurrentControl(uz_FOC_CurrentControl_parameters* self);
-
-uz_FOC_SpeedControl_parameters* uz_FOC_SpeedControl_init(uz_FOC_SpeedControl_config config);
-void uz_FOC_SpeedControl(uz_FOC_SpeedControl_parameters* self);
+static uz_FOC_ActualValues* uz_FOC_ActualValues_allocation(void);
+static uz_FOC_PI_Controller_output* uz_FOC_PI_Controller_output_allocation(void);
+uz_FOC_ActualValues* uz_FOC_ActualValues_init(void);
+uz_FOC_PI_Controller_output* uz_FOC_PI_Controller_output_init(void);

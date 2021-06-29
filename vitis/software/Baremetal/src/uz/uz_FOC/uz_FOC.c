@@ -12,7 +12,7 @@ static size_t instances_counter_FOC_PI_Controller_variables = 0;
 static size_t instances_counter_FOC_VoltageReference = 0;
 
 static uz_FOC_ActualValues instances_FOC_ActualValues[UZ_FOC_ACTUALVALUES_MAX_INSTANCES] = { 0 };
-static uz_FOC_VoltageReference instances_FOC_VoltageReference[UZ_FOC_PI_VOLTAGEREFERENCE_MAX_INSTANCES] = { 0 };
+static uz_FOC_VoltageReference instances_FOC_VoltageReference[UZ_FOC_VOLTAGEREFERENCE_MAX_INSTANCES] = { 0 };
 static uz_FOC_PI_Controller_variables instances_FOC_PI_Controller_variables[UZ_FOC_PI_CONTROLLER_VARIABLES_MAX_INSTANCES] = { 0 };
 
 static uz_FOC_ActualValues* uz_FOC_ActualValues_allocation(void) {
@@ -25,7 +25,7 @@ static uz_FOC_ActualValues* uz_FOC_ActualValues_allocation(void) {
 }
 
 static uz_FOC_VoltageReference* uz_FOC_VoltageReference_allocation(void) {
-	uz_assert(instances_counter_FOC_VoltageReference < UZ_FOC_PI_VOLTAGEREFERENCE_MAX_INSTANCES);
+	uz_assert(instances_counter_FOC_VoltageReference < UZ_FOC_VOLTAGEREFERENCE_MAX_INSTANCES);
 	uz_FOC_VoltageReference* self = &instances_FOC_VoltageReference[instances_counter_FOC_VoltageReference];
 	uz_assert(self->is_ready == false);
 	instances_counter_FOC_VoltageReference++;

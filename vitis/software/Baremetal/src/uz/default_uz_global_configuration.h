@@ -17,15 +17,21 @@
 #define Interrupt_ISR_source_user_choice        3U
 
 // Configuration defines for the number of used instances for testing with ceedling
-#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES          2U
-#define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES    2U
-#define UZ_MYIP2_MAX_INSTANCES                  0U
+#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                2U
+#define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES          2U
+#define UZ_MYIP2_MAX_INSTANCES                        0U
+#define UZ_FOC_ACTUALVALUES_MAX_INSTANCES             1U
+#define UZ_FOC_VOLTAGEREFERENCE_MAX_INSTANCES         1U
+#define UZ_FOC_PI_CONTROLLER_VARIABLES_MAX_INSTANCES  3U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
 #ifdef TEST
-    #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES          13U
-    #define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES    5U
-    #define UZ_MYIP2_MAX_INSTANCES                  5U
-    #define UZ_MYIP_MAX_INSTANCES                  5U
+    #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                13U
+    #define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES          5U
+    #define UZ_MYIP2_MAX_INSTANCES                        5U
+    #define UZ_MYIP_MAX_INSTANCES                         5U
+    #define UZ_FOC_ACTUALVALUES_MAX_INSTANCES             1U
+    #define UZ_FOC_VOLTAGEREFERENCE_MAX_INSTANCES         1U
+    #define UZ_FOC_PI_CONTROLLER_VARIABLES_MAX_INSTANCES  3U
 #endif

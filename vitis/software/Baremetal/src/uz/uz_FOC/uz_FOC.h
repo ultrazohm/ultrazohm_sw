@@ -23,6 +23,7 @@ typedef struct uz_FOC_config {
 	float d_y_max;
 	float d_y_min;
 	float SamplingTime_sec;
+	int polePairs;
 	int FOC_Select;
 	bool Reset;
 } uz_FOC_config;
@@ -148,4 +149,7 @@ bool uz_FOC_Clamping_Circuit(float preIntegrator, float preSat, uz_FOC_config co
 float uz_FOC_Dead_Zone(float input, uz_FOC_config config);
 int uz_FOC_get_sign_of_value(float input);
 uz_FOC_PI_Controller_variables* uz_FOC_update_PI_ID_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values);
+uz_FOC_PI_Controller_variables* uz_FOC_update_PI_IQ_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values);
+uz_FOC_PI_Controller_variables* uz_FOC_update_PI_N_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values);
+
 

@@ -67,11 +67,45 @@ uz_FOC_PI_Controller_variables* uz_FOC_PI_ID_Controller_variables_init(uz_FOC_co
 	return (self);
 }
 
+uz_FOC_PI_Controller_variables* uz_FOC_PI_IQ_Controller_variables_init(uz_FOC_config config, uz_FOC_ActualValues* values) {
+	uz_FOC_PI_Controller_variables* self = uz_FOC_PI_Controller_variables_allocation();
+	self->referenceValue = config.iq_ref_Ampere;
+	self->actualValue = values->i_q_Ampere;
+	self->Kp = config.Kp_iq;
+	self->Ki = config.Ki_iq;
+	return (self);
+}
+
+uz_FOC_PI_Controller_variables* uz_FOC_PI_N_Controller_variables_init(uz_FOC_config config, uz_FOC_ActualValues* values) {
+	uz_FOC_PI_Controller_variables* self = uz_FOC_PI_Controller_variables_allocation();
+	self->referenceValue = config.n_ref_rpm / 60.0f * (2.0f * M_PI + config.polePairs);
+	self->actualValue = values->omega_el_rad_per_sec;
+	self->Kp = config.Kp_n;
+	self->Ki = config.Ki_n;
+	return (self);
+}
+
 uz_FOC_PI_Controller_variables* uz_FOC_update_PI_ID_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values){
 	self->referenceValue = config.id_ref_Ampere;
 	self->actualValue = values->i_d_Ampere;
 	self->Kp = config.Kp_id;
 	self->Ki = config.Ki_id;
+	return(self);
+}
+
+uz_FOC_PI_Controller_variables* uz_FOC_update_PI_IQ_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values){
+	self->referenceValue = config.iq_ref_Ampere;
+	self->actualValue = values->i_q_Ampere;
+	self->Kp = config.Kp_iq;
+	self->Ki = config.Ki_iq;
+	return(self);
+}
+
+uz_FOC_PI_Controller_variables* uz_FOC_update_PI_N_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values){
+	self->referenceValue = config.n_ref_rpm / 60.0f * (2.0f * M_PI + config.polePairs);
+	self->actualValue = values->omega_el_rad_per_sec;
+	self->Kp = config.Kp_n;
+	self->Ki = config.Ki_n;
 	return(self);
 }
 
@@ -121,15 +155,14 @@ float uz_FOC_PI_Controller(uz_FOC_PI_Controller_variables* variables, uz_FOC_con
 	uz_assert(config.d_y_max > config.d_y_min);
 	float preSat = 0.0f;
 	float output = 0.0f;
-
-	if (ext_clamping == 1 || variables->int_clamping == 1) {
+	if (ext_clamping == true || variables->int_clamping == true) {
 		variables->I_sum += 0.0f;
 	} else {
 		variables->I_sum += variables->error * variables->Ki * config.SamplingTime_sec;
 	}
 	variables->error = variables->referenceValue - variables->actualValue;
 	variables->P_sum = variables->error * variables->Kp;
-	if (config.Reset == 1) {
+	if (config.Reset == true) {
 		variables->I_sum = 0.0f;
 		variables->P_sum = 0.0f;
 	}

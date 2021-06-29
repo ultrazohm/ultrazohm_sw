@@ -5,6 +5,10 @@ struct uz_FOC_PI_Controller_variables {
 	bool is_ready;
 	float I_sum;
 	float P_sum;
+	bool int_clamping;
+	unsigned int step;
+	float error;
+	float value_previous_step;
 };
 
 static size_t instances_counter_FOC_ActualValues = 0;
@@ -98,3 +102,26 @@ bool uz_FOC_Clamping_Circuit(float preIntegrator, float preSat, uz_FOC_config co
 	return (output);
 }
 
+float uz_FOC_PI_Controller_id(uz_FOC_ActualValues* ActualValues, uz_FOC_config config, uz_FOC_PI_Controller_variables* variables, bool ext_clamping){
+	uz_assert_not_NULL(ActualValues);
+	uz_assert_not_NULL(variables);
+	uz_assert(config.d_y_max>config.d_y_min);
+	float preSat = 0.0f;
+	float output = 0.0f;
+
+	if (ext_clamping == 1 || variables->int_clamping == 1) {
+		variables->I_sum += 0.0f;
+	} else {
+		variables->I_sum += variables->error * config.Ki_id * config.SamplingTime_sec;
+	}
+	variables->error = config.id_ref_Ampere - ActualValues->i_d_Ampere;
+	variables->P_sum = variables->error * config.Kp_id;
+	if (config.ResetIntegrators == 1) {
+		variables->I_sum = 0.0f;
+		variables->P_sum = 0.0f;
+	}
+	preSat = variables->I_sum + variables->P_sum;
+	variables->int_clamping = uz_FOC_Clamping_Circuit(variables->I_sum,preSat,config);
+	output = preSat;
+	return(output);
+}

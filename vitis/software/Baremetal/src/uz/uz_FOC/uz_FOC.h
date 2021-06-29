@@ -22,7 +22,8 @@ typedef struct uz_FOC_config {
 	float n_ref_rpm;
 	float d_y_max;
 	float d_y_min;
-	bool FOC_Select;
+	float SamplingTime_sec;
+	int FOC_Select;
 	bool ResetIntegrators;
 } uz_FOC_config;
 
@@ -102,7 +103,7 @@ uz_FOC_VoltageReference* uz_FOC_VoltageReference_init(void);
  *
  * @return Pointer to uz_FOC_VoltageReference instance
  */
-uz_FOC_PI_Controller_variables* uz_FOC_PI_Controller_init(void);
+uz_FOC_PI_Controller_variables* uz_FOC_PI_Controller_variables_init(void) ;
 /**
  * @brief Returns the last calculated sample for u_d_ref
  *

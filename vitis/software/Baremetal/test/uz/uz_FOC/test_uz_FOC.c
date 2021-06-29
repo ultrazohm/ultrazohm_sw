@@ -20,6 +20,39 @@ uz_FOC_config config = {
 	.FOC_Select = 1,
 	.Reset = false,
 };
+
+void test_uz_FOC_update_PI_ID_Controller_variables_Null(void){
+	uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
+	TEST_ASSERT_FAIL_ASSERT(uz_FOC_update_PI_ID_Controller_variables(NULL,config,values));
+}
+
+void test_uz_FOC_update_PI_ID_Controller_values_Null(void){
+	uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
+	uz_FOC_PI_Controller_variables* variables = uz_FOC_PI_ID_Controller_variables_init(config, values);
+	TEST_ASSERT_FAIL_ASSERT(uz_FOC_update_PI_ID_Controller_variables(variables,config,NULL));
+}
+
+void test_uz_FOC_update_PI_IQ_Controller_variables_Null(void){
+	uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
+	TEST_ASSERT_FAIL_ASSERT(uz_FOC_update_PI_IQ_Controller_variables(NULL,config,values));
+}
+
+void test_uz_FOC_update_PI_IQ_Controller_values_Null(void){
+	uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
+	uz_FOC_PI_Controller_variables* variables = uz_FOC_PI_IQ_Controller_variables_init(config, values);
+	TEST_ASSERT_FAIL_ASSERT(uz_FOC_update_PI_IQ_Controller_variables(variables,config,NULL));
+}
+
+void test_uz_FOC_update_PI_N_Controller_variables_Null(void){
+	uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
+	TEST_ASSERT_FAIL_ASSERT(uz_FOC_update_PI_N_Controller_variables(NULL,config,values));
+}
+
+void test_uz_FOC_update_PI_N_Controller_values_Null(void){
+	uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
+	uz_FOC_PI_Controller_variables* variables = uz_FOC_PI_N_Controller_variables_init(config, values);
+	TEST_ASSERT_FAIL_ASSERT(uz_FOC_update_PI_N_Controller_variables(variables,config,NULL));
+}
 void test_uz_FOC_Dead_Zone_min_greater_than_max(void){
 config.d_y_max=-10.0f;
 config.d_y_min=10.0f;

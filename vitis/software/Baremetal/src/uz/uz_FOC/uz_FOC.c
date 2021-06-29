@@ -86,6 +86,8 @@ uz_FOC_PI_Controller_variables* uz_FOC_PI_N_Controller_variables_init(uz_FOC_con
 }
 
 uz_FOC_PI_Controller_variables* uz_FOC_update_PI_ID_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values){
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(values);
 	self->referenceValue = config.id_ref_Ampere;
 	self->actualValue = values->i_d_Ampere;
 	self->Kp = config.Kp_id;
@@ -94,6 +96,8 @@ uz_FOC_PI_Controller_variables* uz_FOC_update_PI_ID_Controller_variables(uz_FOC_
 }
 
 uz_FOC_PI_Controller_variables* uz_FOC_update_PI_IQ_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values){
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(values);
 	self->referenceValue = config.iq_ref_Ampere;
 	self->actualValue = values->i_q_Ampere;
 	self->Kp = config.Kp_iq;
@@ -102,6 +106,8 @@ uz_FOC_PI_Controller_variables* uz_FOC_update_PI_IQ_Controller_variables(uz_FOC_
 }
 
 uz_FOC_PI_Controller_variables* uz_FOC_update_PI_N_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values){
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(values);	
 	self->referenceValue = config.n_ref_rpm / 60.0f * (2.0f * M_PI + config.polePairs);
 	self->actualValue = values->omega_el_rad_per_sec;
 	self->Kp = config.Kp_n;

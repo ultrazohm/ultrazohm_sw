@@ -6,9 +6,11 @@ struct uz_FOC_PI_Controller_variables {
 	float I_sum;
 	float P_sum;
 	bool int_clamping;
-	unsigned int step;
 	float error;
-	float value_previous_step;
+	float Kp;
+	float Ki;
+	float referenceValue;
+	float actualValue;
 };
 
 static size_t instances_counter_FOC_ActualValues = 0;
@@ -56,9 +58,21 @@ uz_FOC_VoltageReference* uz_FOC_VoltageReference_init(void) {
 	return (self);
 }
 
-uz_FOC_PI_Controller_variables* uz_FOC_PI_Controller_variables_init(void) {
+uz_FOC_PI_Controller_variables* uz_FOC_PI_ID_Controller_variables_init(uz_FOC_config config, uz_FOC_ActualValues* values) {
 	uz_FOC_PI_Controller_variables* self = uz_FOC_PI_Controller_variables_allocation();
+	self->referenceValue = config.id_ref_Ampere;
+	self->actualValue = values->i_d_Ampere;
+	self->Kp = config.Kp_id;
+	self->Ki = config.Ki_id;
 	return (self);
+}
+
+uz_FOC_PI_Controller_variables* uz_FOC_update_PI_ID_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values){
+	self->referenceValue = config.id_ref_Ampere;
+	self->actualValue = values->i_d_Ampere;
+	self->Kp = config.Kp_id;
+	self->Ki = config.Ki_id;
+	return(self);
 }
 
 float uz_FOC_Dead_Zone(float input, uz_FOC_config config) {
@@ -102,21 +116,20 @@ bool uz_FOC_Clamping_Circuit(float preIntegrator, float preSat, uz_FOC_config co
 	return (output);
 }
 
-float uz_FOC_PI_Controller_id(uz_FOC_ActualValues* ActualValues, uz_FOC_config config, uz_FOC_PI_Controller_variables* variables, bool ext_clamping){
-	uz_assert_not_NULL(ActualValues);
+float uz_FOC_PI_Controller(uz_FOC_PI_Controller_variables* variables, uz_FOC_config config, bool ext_clamping){
 	uz_assert_not_NULL(variables);
-	uz_assert(config.d_y_max>config.d_y_min);
+	uz_assert(config.d_y_max > config.d_y_min);
 	float preSat = 0.0f;
 	float output = 0.0f;
 
 	if (ext_clamping == 1 || variables->int_clamping == 1) {
 		variables->I_sum += 0.0f;
 	} else {
-		variables->I_sum += variables->error * config.Ki_id * config.SamplingTime_sec;
+		variables->I_sum += variables->error * variables->Ki * config.SamplingTime_sec;
 	}
-	variables->error = config.id_ref_Ampere - ActualValues->i_d_Ampere;
-	variables->P_sum = variables->error * config.Kp_id;
-	if (config.ResetIntegrators == 1) {
+	variables->error = variables->referenceValue - variables->actualValue;
+	variables->P_sum = variables->error * variables->Kp;
+	if (config.Reset == 1) {
 		variables->I_sum = 0.0f;
 		variables->P_sum = 0.0f;
 	}

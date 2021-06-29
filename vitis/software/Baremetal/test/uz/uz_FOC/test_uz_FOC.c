@@ -18,7 +18,7 @@ uz_FOC_config config = {
 	.d_y_min = 0.0f,
 	.SamplingTime_sec=0.00001,
 	.FOC_Select = 1,
-	.ResetIntegrators = false,
+	.Reset = false,
 };
 void test_uz_FOC_Dead_Zone_min_greater_than_max(void){
 config.d_y_max=-10.0f;
@@ -60,19 +60,11 @@ void test_uz_FOC_Clamping_Circuit_activate_clamping_true(void){
  TEST_ASSERT_EQUAL_FLOAT(true,uz_FOC_Clamping_Circuit(-30.0f,-25.0f,config));   
 }
 
-void test_uz_FOC_PI_Controller_id_ActualValues_Null(void){
-	uz_FOC_PI_Controller_variables* variables = uz_FOC_PI_Controller_variables_init();
-	TEST_ASSERT_FAIL_ASSERT(uz_FOC_PI_Controller_id(NULL,config,variables,false));
-}
-
 void test_uz_FOC_PI_Controller_id_ControllerVariables_Null(void){
-	uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
-	TEST_ASSERT_FAIL_ASSERT(uz_FOC_PI_Controller_id(values,config,NULL,false));
+	TEST_ASSERT_FAIL_ASSERT(uz_FOC_PI_Controller(NULL,config,false));
 }
 
 void test_uz_FOC_PI_Controller_id_output(void){
-	uz_FOC_PI_Controller_variables* variables = uz_FOC_PI_Controller_variables_init();
-	uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
 	config.Kp_id = 6.75f;
 	config.Kp_iq = 6.75f;
 	config.Kp_n = 0.0086;
@@ -80,22 +72,31 @@ void test_uz_FOC_PI_Controller_id_output(void){
 	config.Ki_iq = 2000.0f;
 	config.Ki_n = 0.0864f;
 	config.id_ref_Ampere = 1.0f;
+	uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
+	uz_FOC_PI_Controller_variables* variables = uz_FOC_PI_ID_Controller_variables_init(config, values);
 	//Compare values with Simulink Simulation
 	values->i_d_Ampere = 0.0f;
-	TEST_ASSERT_EQUAL_FLOAT(6.75f,uz_FOC_PI_Controller_id(values,config,variables,false));
+	TEST_ASSERT_EQUAL_FLOAT(6.75f,uz_FOC_PI_Controller(variables,config,false));
 	values->i_d_Ampere = 0.249f;
-	TEST_ASSERT_EQUAL_FLOAT(5.09f,roundf(uz_FOC_PI_Controller_id(values,config,variables,false)*100)/100);
+	variables = uz_FOC_update_PI_ID_Controller_variables(variables, config, values);
+	TEST_ASSERT_EQUAL_FLOAT(5.09f,roundf(uz_FOC_PI_Controller(variables,config,false)*100)/100);
 	values->i_d_Ampere = 0.436f;
-	TEST_ASSERT_EQUAL_FLOAT(3.84f,roundf(uz_FOC_PI_Controller_id(values,config,variables,false)*100)/100);
+	variables = uz_FOC_update_PI_ID_Controller_variables(variables, config, values);
+	TEST_ASSERT_EQUAL_FLOAT(3.84f,roundf(uz_FOC_PI_Controller(variables,config,false)*100)/100);
 	values->i_d_Ampere = 0.577f;
-	TEST_ASSERT_EQUAL_FLOAT(2.9f,roundf(uz_FOC_PI_Controller_id(values,config,variables,false)*100)/100);
+	variables = uz_FOC_update_PI_ID_Controller_variables(variables, config, values);
+	TEST_ASSERT_EQUAL_FLOAT(2.9f,roundf(uz_FOC_PI_Controller(variables,config,false)*100)/100);
 	values->i_d_Ampere = 0.682f;
-	TEST_ASSERT_EQUAL_FLOAT(2.2f,roundf(uz_FOC_PI_Controller_id(values,config,variables,false)*100)/100);
+	variables = uz_FOC_update_PI_ID_Controller_variables(variables, config, values);
+	TEST_ASSERT_EQUAL_FLOAT(2.2f,roundf(uz_FOC_PI_Controller(variables,config,false)*100)/100);
 	values->i_d_Ampere = 0.761f;
-	TEST_ASSERT_EQUAL_FLOAT(1.67f,roundf(uz_FOC_PI_Controller_id(values,config,variables,false)*100)/100);
+	variables = uz_FOC_update_PI_ID_Controller_variables(variables, config, values);
+	TEST_ASSERT_EQUAL_FLOAT(1.67f,roundf(uz_FOC_PI_Controller(variables,config,false)*100)/100);
 	values->i_d_Ampere = 0.82f;
-	TEST_ASSERT_EQUAL_FLOAT(1.28f,roundf(uz_FOC_PI_Controller_id(values,config,variables,false)*100)/100);
+	variables = uz_FOC_update_PI_ID_Controller_variables(variables, config, values);
+	TEST_ASSERT_EQUAL_FLOAT(1.28f,roundf(uz_FOC_PI_Controller(variables,config,false)*100)/100);
 	values->i_d_Ampere = 0.865f;
-	TEST_ASSERT_EQUAL_FLOAT(0.98f,roundf(uz_FOC_PI_Controller_id(values,config,variables,false)*100)/100);
+	variables = uz_FOC_update_PI_ID_Controller_variables(variables, config, values);
+	TEST_ASSERT_EQUAL_FLOAT(0.98f,roundf(uz_FOC_PI_Controller(variables,config,false)*100)/100);
 }
 #endif // TEST

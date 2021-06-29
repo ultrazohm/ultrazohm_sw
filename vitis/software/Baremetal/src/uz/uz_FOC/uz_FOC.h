@@ -24,7 +24,7 @@ typedef struct uz_FOC_config {
 	float d_y_min;
 	float SamplingTime_sec;
 	int FOC_Select;
-	bool ResetIntegrators;
+	bool Reset;
 } uz_FOC_config;
 
 /**
@@ -92,18 +92,39 @@ static uz_FOC_PI_Controller_variables* uz_FOC_PI_Controller_variables_allocation
 uz_FOC_ActualValues* uz_FOC_ActualValues_init(void);
 
 /**
- * @brief Initialization of a uz_FOC_PI_Controller_output struct
+ * @brief Initialization of the struct for the i_d-PI-Controller
  *
- * @return Pointer to uz_FOC_PI_Controller_output instance
+ * @param ActualValues uz_FOC_ActualValues instance
+ * @param config uz_FOC_config configuration struct
+ * @return Pointer to uz_FOC_PI_Controller_variables instance
  */
-uz_FOC_VoltageReference* uz_FOC_VoltageReference_init(void);
+uz_FOC_PI_Controller_variables* uz_FOC_PI_ID_Controller_variables_init(uz_FOC_config config, uz_FOC_ActualValues* values);
+
+/**
+ * @brief Initialization of the struct for the i_q-PI-Controller
+ *
+ * @param ActualValues uz_FOC_ActualValues instance
+ * @param config uz_FOC_config configuration struct
+ * @return Pointer to uz_FOC_PI_Controller_variables instance
+ */
+uz_FOC_PI_Controller_variables* uz_FOC_PI_IQ_Controller_variables_init(uz_FOC_config config, uz_FOC_ActualValues* values);
+
+/**
+ * @brief Initialization of the struct for the n-PI-Controller
+ *
+ * @param ActualValues uz_FOC_ActualValues instance
+ * @param config uz_FOC_config configuration struct
+ * @return Pointer to uz_FOC_PI_Controller_variables instance
+ */
+uz_FOC_PI_Controller_variables* uz_FOC_PI_N_Controller_variables_init(uz_FOC_config config, uz_FOC_ActualValues* values);
 
 /**
  * @brief Initialization of a uz_FOC_VoltageReference struct
  *
  * @return Pointer to uz_FOC_VoltageReference instance
  */
-uz_FOC_PI_Controller_variables* uz_FOC_PI_Controller_variables_init(void) ;
+uz_FOC_VoltageReference* uz_FOC_VoltageReference_init(void);
+
 /**
  * @brief Returns the last calculated sample for u_d_ref
  *
@@ -113,7 +134,7 @@ uz_FOC_PI_Controller_variables* uz_FOC_PI_Controller_variables_init(void) ;
  * @param internal values needed for further calculation
  * @return Returns last sample for u_d_ref
  */
-float uz_FOC_PI_Controller_id(uz_FOC_ActualValues* ActualValues, uz_FOC_config config, uz_FOC_PI_Controller_variables* variables, bool ext_clamping);
+float uz_FOC_PI_Controller(uz_FOC_PI_Controller_variables* variables, uz_FOC_config config, bool ext_clamping);
 
 /**
  * @brief Compares the values before and after the Integrator and decides if clamping is necessary
@@ -126,3 +147,5 @@ float uz_FOC_PI_Controller_id(uz_FOC_ActualValues* ActualValues, uz_FOC_config c
 bool uz_FOC_Clamping_Circuit(float preIntegrator, float preSat, uz_FOC_config config);
 float uz_FOC_Dead_Zone(float input, uz_FOC_config config);
 int uz_FOC_get_sign_of_value(float input);
+uz_FOC_PI_Controller_variables* uz_FOC_update_PI_ID_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values);
+

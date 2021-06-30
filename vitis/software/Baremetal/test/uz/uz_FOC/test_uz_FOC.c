@@ -18,7 +18,7 @@ uz_FOC_config config = {
 	.d_y_min = 0.0f,
 	.SamplingTime_sec=0.00001,
 	.polePairs=4,
-	.FOC_Select = 1,
+	.FOC_Select = 1U,
 	.Reset = false,
 };
 

@@ -5,6 +5,7 @@
 #pragma once
 #include "../uz_HAL.h"
 #include <math.h>
+#include <stdlib.h>
 #include <stdbool.h>
 
 /**
@@ -23,8 +24,11 @@ typedef struct uz_FOC_config {
 	float d_y_max;
 	float d_y_min;
 	float SamplingTime_sec;
-	int polePairs;
-	int FOC_Select;
+	unsigned int FOC_Select;
+	unsigned int polePairs;
+	float L_q;
+	float L_d;
+	float psi_pm;
 	bool Reset;
 } uz_FOC_config;
 
@@ -127,12 +131,11 @@ uz_FOC_PI_Controller_variables* uz_FOC_PI_N_Controller_variables_init(uz_FOC_con
 uz_FOC_VoltageReference* uz_FOC_VoltageReference_init(void);
 
 /**
- * @brief Returns the last calculated sample for u_d_ref
+ * @brief PI-Controller with internal clamping and input for external clamping. Returns the last calculated sample for the actuator variable
  *
- * @param ActualValues uz_FOC_ActualValues instance
+ * @param variables storage struct for the PI-Controller variables
  * @param config uz_FOC_config configuration struct
- * @param output uz_FOC_PI_Controller_output instance
- * @param internal values needed for further calculation
+ * @param ext_clamping external clamping signal from space-vector-limitation
  * @return Returns last sample for u_d_ref
  */
 float uz_FOC_PI_Controller(uz_FOC_PI_Controller_variables* variables, uz_FOC_config config, bool ext_clamping);
@@ -146,10 +149,53 @@ float uz_FOC_PI_Controller(uz_FOC_PI_Controller_variables* variables, uz_FOC_con
  * @return Returns true if clamping is necessary
  */
 bool uz_FOC_Clamping_Circuit(float preIntegrator, float preSat, uz_FOC_config config);
+
+/**
+ * @brief Similar to the Simulink-Deadzone block. If signal is within the deadzone, output is zero. Otherwise it outputs the input signal substracted by either the upper or lower limit.
+ *
+ * @param input any input signal
+ * @param config uz_FOC_config struct
+ * @return float Returns last sample
+ */
 float uz_FOC_Dead_Zone(float input, uz_FOC_config config);
+
+/**
+ * @brief Outputs 0 if input is 0. Outputs 1 if input is positive and -1 if input is negative. Similar to the sign block in Simulink.
+ *
+ * @param input any input signal
+ * @return int Returns sign for last sample
+ */
 int uz_FOC_get_sign_of_value(float input);
+
+/**
+ * @brief Updates the uz_FOC_PI_Controller_variables struct for the PI-ID-Controller in case any changes to the config struct and ActualValues struct have occured.
+ *
+ * @param self uz_FOC_PI_Controller_variables instance for the PI-ID-Controller
+ * @param config uz_FOC_config struct
+ * @param values uz_FOC_ActualValues instance
+ * @return uz_FOC_PI_Controller_variables* instance with updated variables
+ */
 uz_FOC_PI_Controller_variables* uz_FOC_update_PI_ID_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values);
+
+/**
+ * @brief Updates the uz_FOC_PI_Controller_variables struct for the PI-IQ-Controller in case any changes to the config struct and ActualValues struct have occured.
+ *
+ * @param self uz_FOC_PI_Controller_variables instance for the PI-IQ-Controller
+ * @param config uz_FOC_config struct
+ * @param values uz_FOC_ActualValues instance
+ * @return uz_FOC_PI_Controller_variables* instance with updated variables
+ */
 uz_FOC_PI_Controller_variables* uz_FOC_update_PI_IQ_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values);
+
+/**
+ * @brief Updates the uz_FOC_PI_Controller_variables struct for the PI-N-Controller in case any changes to the config struct and ActualValues struct have occured.
+ *
+ * @param self uz_FOC_PI_Controller_variables instance for the PI-N-Controller
+ * @param config uz_FOC_config struct
+ * @param values uz_FOC_ActualValues instance
+ * @return uz_FOC_PI_Controller_variables* instance with updated variables
+ */
 uz_FOC_PI_Controller_variables* uz_FOC_update_PI_N_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values);
 
-
+void uz_FOC_linear_decouppling(uz_FOC_ActualValues* values, uz_FOC_config config, float* u_d_vor, float* u_q_vor);
+bool uz_FOC_SpaceVector_Limitation(uz_FOC_VoltageReference* reference, uz_FOC_ActualValues* values);

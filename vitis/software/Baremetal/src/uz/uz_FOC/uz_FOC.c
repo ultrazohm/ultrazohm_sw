@@ -107,7 +107,7 @@ uz_FOC_PI_Controller_variables* uz_FOC_update_PI_IQ_Controller_variables(uz_FOC_
 
 uz_FOC_PI_Controller_variables* uz_FOC_update_PI_N_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values){
 	uz_assert_not_NULL(self);
-	uz_assert_not_NULL(values);	
+	uz_assert_not_NULL(values);
 	self->referenceValue = config.n_ref_rpm / 60.0f * (2.0f * M_PI * config.polePairs);
 	self->actualValue = values->omega_el_rad_per_sec;
 	self->Kp = config.Kp_n;
@@ -177,4 +177,54 @@ float uz_FOC_PI_Controller(uz_FOC_PI_Controller_variables* variables, uz_FOC_con
 	variables->int_clamping = uz_FOC_Clamping_Circuit(variables->I_sum,preSat,config);
 	output = preSat;
 	return(output);
+}
+
+void uz_FOC_linear_decouppling(uz_FOC_ActualValues* values, uz_FOC_config config, float* u_d_vor, float* u_q_vor){
+	uz_assert_not_NULL(values);
+	*u_d_vor = values->i_q_Ampere * -1.0f * config.L_q * values->omega_el_rad_per_sec;
+	*u_q_vor = (values->i_d_Ampere * config.L_d + config.psi_pm) * values->omega_el_rad_per_sec;
+}
+
+bool uz_FOC_SpaceVector_Limitation(uz_FOC_VoltageReference* reference, uz_FOC_ActualValues* values){
+	bool limit_on = false;
+	float U_d_limit=0.0f;
+	float U_q_limit=0.0f;
+
+   	float U_RZ_max =values->U_zk_Volts /sqrtf(3.0f);
+	float U_RZ_betrag = sqrtf(reference->u_d_ref_Volts * reference->u_d_ref_Volts + reference->u_q_ref_Volts * reference->u_q_ref_Volts);
+
+	if ( U_RZ_betrag > U_RZ_max ){
+		limit_on = true; 
+		if ((uz_FOC_get_sign_of_value(values->omega_el_rad_per_sec) == uz_FOC_get_sign_of_value(values->i_q_Ampere))) {
+			if ((abs(reference->u_d_ref_Volts) > 0.95f * U_RZ_max)) {
+				U_d_limit = uz_FOC_get_sign_of_value(reference->u_d_ref_Volts) * 0.95f * U_RZ_max;
+				U_q_limit = uz_FOC_get_sign_of_value(reference->u_q_ref_Volts) * sqrtf(U_RZ_max * U_RZ_max - U_d_limit * U_d_limit);
+			} else {
+				U_d_limit = reference->u_d_ref_Volts;
+				U_q_limit = uz_FOC_get_sign_of_value(reference->u_q_ref_Volts) * sqrtf(U_RZ_max * U_RZ_max - U_d_limit * U_d_limit);
+			}
+
+
+	       } else if ((uz_FOC_get_sign_of_value(values->omega_el_rad_per_sec) != uz_FOC_get_sign_of_value(values->i_q_Ampere))) {
+			if (abs(reference->u_q_ref_Volts) > 0.95f * U_RZ_max) {
+				U_q_limit = uz_FOC_get_sign_of_value(reference->u_q_ref_Volts) * 0.95f * U_RZ_max;
+				U_d_limit = uz_FOC_get_sign_of_value(reference->u_d_ref_Volts) * sqrtf(U_RZ_max * U_RZ_max - U_q_limit * U_q_limit);
+			} else {
+				U_q_limit = reference->u_q_ref_Volts;
+				U_d_limit = uz_FOC_get_sign_of_value(reference->u_d_ref_Volts) * sqrtf(U_RZ_max * U_RZ_max - U_q_limit * U_q_limit);
+			}
+		} else {
+			U_d_limit = reference->u_d_ref_Volts;
+			U_q_limit = reference->u_q_ref_Volts;
+		}
+
+	} else {
+		U_d_limit = reference->u_d_ref_Volts;
+		U_q_limit = reference->u_q_ref_Volts;
+		limit_on = false;
+	}
+
+reference->u_d_ref_Volts = U_d_limit;
+reference->u_q_ref_Volts = U_q_limit;
+	return (limit_on);
 }

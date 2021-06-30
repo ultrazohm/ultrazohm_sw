@@ -78,7 +78,7 @@ uz_FOC_PI_Controller_variables* uz_FOC_PI_IQ_Controller_variables_init(uz_FOC_co
 
 uz_FOC_PI_Controller_variables* uz_FOC_PI_N_Controller_variables_init(uz_FOC_config config, uz_FOC_ActualValues* values) {
 	uz_FOC_PI_Controller_variables* self = uz_FOC_PI_Controller_variables_allocation();
-	self->referenceValue = config.n_ref_rpm / 60.0f * (2.0f * M_PI + config.polePairs);
+	self->referenceValue = config.n_ref_rpm / 60.0f * (2.0f * M_PI * config.polePairs);
 	self->actualValue = values->omega_el_rad_per_sec;
 	self->Kp = config.Kp_n;
 	self->Ki = config.Ki_n;
@@ -108,7 +108,7 @@ uz_FOC_PI_Controller_variables* uz_FOC_update_PI_IQ_Controller_variables(uz_FOC_
 uz_FOC_PI_Controller_variables* uz_FOC_update_PI_N_Controller_variables(uz_FOC_PI_Controller_variables* self, uz_FOC_config config, uz_FOC_ActualValues* values){
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(values);	
-	self->referenceValue = config.n_ref_rpm / 60.0f * (2.0f * M_PI + config.polePairs);
+	self->referenceValue = config.n_ref_rpm / 60.0f * (2.0f * M_PI * config.polePairs);
 	self->actualValue = values->omega_el_rad_per_sec;
 	self->Kp = config.Kp_n;
 	self->Ki = config.Ki_n;
@@ -171,6 +171,7 @@ float uz_FOC_PI_Controller(uz_FOC_PI_Controller_variables* variables, uz_FOC_con
 	if (config.Reset == true) {
 		variables->I_sum = 0.0f;
 		variables->P_sum = 0.0f;
+		variables->error = 0.0f;
 	}
 	preSat = variables->I_sum + variables->P_sum;
 	variables->int_clamping = uz_FOC_Clamping_Circuit(variables->I_sum,preSat,config);

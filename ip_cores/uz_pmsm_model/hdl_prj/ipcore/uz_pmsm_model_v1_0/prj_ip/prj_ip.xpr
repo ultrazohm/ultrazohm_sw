@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="/home/ts/Dokumente/ultrazohm_testbench/ultrazohm_sw/ip_cores/uz_pmsm_model/hdl_prj/ipcore/uz_pmsm_model_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="397d1da3466444168ef4069f34b3fa1d"/>
+    <Option Name="Id" Val="4631f03a8a014881a1a77fc4dd3397a5"/>
     <Option Name="Part" Val="xazu11eg-ffvf1517-1-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -73,13 +73,13 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_tc.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_pkg.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_pkg.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_tc.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -145,13 +145,43 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_axi_lite_module.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_SimpleDualPortRAM_generic.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_axi_lite.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_rdfifo_data.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_rdfifo_rid.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_SimpleDualPortRAM_singlebit.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_rdfifo_last.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_axi4_module.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_axi4.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

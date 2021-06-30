@@ -94,7 +94,7 @@ void test_uz_pmsmModel_hw_write_psi_pm(void){
 
 void test_uz_pmsmModel_hw_write_L_d(void){
     float L_d=0.003f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+recirprocal_L_d_Data_uz_pmsm_model,1.0f/L_d);
+    uz_axi_write_float_Expect(BASE_ADDRESS+reciprocal_L_d_Data_uz_pmsm_model,1.0f/L_d);
     uz_pmsmModel_hw_write_L_d(BASE_ADDRESS,L_d);
 }
 

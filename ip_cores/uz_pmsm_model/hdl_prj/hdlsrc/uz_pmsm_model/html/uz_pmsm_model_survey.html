@@ -36,7 +36,7 @@ uz_pmsm_model
 Model version
 </td>
 <td align="right" valign="top" style="border-style: none">
-1.68
+1.116
 </td>
 
 </tr>
@@ -54,7 +54,7 @@ HDL Coder version
 HDL code generated on
 </td>
 <td align="right" valign="top" style="border-style: none">
-2021-06-22 09:44:49
+2021-06-29 09:29:59
 </td>
 
 </tr>
@@ -261,6 +261,15 @@ uz_pmsm_model
 <br /><br /><table width="100%" border="1">
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
+AXI4SlaveIDWidth
+</td>
+<td align="right" valign="top" style="border-style: none">
+12
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
 IPCoreName
 </td>
 <td align="right" valign="top" style="border-style: none">
@@ -268,7 +277,7 @@ uz_pmsm_model
 </td>
 
 </tr>
-<tr style="background-color: #ffffff">
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 OutputPipeline
 </td>
@@ -277,7 +286,7 @@ OutputPipeline
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 ProcessorFPGASynchronization
 </td>
@@ -306,7 +315,7 @@ u_d
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -339,7 +348,7 @@ u_q
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -372,7 +381,7 @@ R1
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -381,7 +390,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"118"
+x"108"
 </td>
 
 </tr>
@@ -405,7 +414,7 @@ polepairs
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -414,7 +423,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"120"
+x"10C"
 </td>
 
 </tr>
@@ -438,7 +447,7 @@ psi_pm
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -447,7 +456,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"124"
+x"110"
 </td>
 
 </tr>
@@ -455,7 +464,7 @@ x"124"
 </table>
 <br /><br /><b>
 Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:249')" name="code2model" class="code2model">
-recirprocal_L_d
+recirprocal_L_q
 </a>
 
 </b>
@@ -471,7 +480,7 @@ recirprocal_L_d
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -480,7 +489,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"128"
+x"114"
 </td>
 
 </tr>
@@ -488,7 +497,7 @@ x"128"
 </table>
 <br /><br /><b>
 Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:250')" name="code2model" class="code2model">
-reciprocal_L_q
+reciprocal_L_d
 </a>
 
 </b>
@@ -504,7 +513,7 @@ reciprocal_L_q
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -513,7 +522,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"12C"
+x"118"
 </td>
 
 </tr>
@@ -537,7 +546,7 @@ reset_integrators
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -546,7 +555,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"114"
+x"11C"
 </td>
 
 </tr>
@@ -570,7 +579,7 @@ mu
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -579,7 +588,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"108"
+x"120"
 </td>
 
 </tr>
@@ -603,7 +612,7 @@ M_n0
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -612,7 +621,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"110"
+x"124"
 </td>
 
 </tr>
@@ -636,7 +645,7 @@ reciprocal_J
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -645,7 +654,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"150"
+x"128"
 </td>
 
 </tr>
@@ -669,7 +678,7 @@ in_omega_mech
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -678,7 +687,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"134"
+x"12C"
 </td>
 
 </tr>
@@ -702,7 +711,7 @@ simulate_mechanical
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -711,7 +720,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"138"
+x"130"
 </td>
 
 </tr>
@@ -735,7 +744,7 @@ load_torque
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -744,7 +753,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"13C"
+x"134"
 </td>
 
 </tr>
@@ -752,7 +761,7 @@ x"13C"
 </table>
 <br /><br /><b>
 Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:300')" name="code2model" class="code2model">
-Subsystem
+mechanical_system
 </a>
 
 </b>
@@ -808,8 +817,32 @@ x"150"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:313')" name="code2model" class="code2model">
-integrator2
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:630')" name="code2model" class="code2model">
+integrator1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:436')" name="code2model" class="code2model">
+pmsm
 </a>
 
 </b>
@@ -856,8 +889,56 @@ on
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:126')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:622')" name="code2model" class="code2model">
 integrator1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:641')" name="code2model" class="code2model">
+integrator2
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_pmsm_model:428')" name="code2model" class="code2model">
+torque_caalculation
 </a>
 
 </b>
@@ -897,7 +978,7 @@ i_d
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -906,7 +987,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"10C"
+x"138"
 </td>
 
 </tr>
@@ -930,7 +1011,7 @@ i_q
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -939,7 +1020,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"11C"
+x"13C"
 </td>
 
 </tr>
@@ -963,7 +1044,7 @@ torque
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -972,7 +1053,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"144"
+x"140"
 </td>
 
 </tr>
@@ -996,7 +1077,7 @@ omega_mech
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
+AXI4
 </td>
 
 </tr>
@@ -1005,7 +1086,7 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"130"
+x"144"
 </td>
 
 </tr>

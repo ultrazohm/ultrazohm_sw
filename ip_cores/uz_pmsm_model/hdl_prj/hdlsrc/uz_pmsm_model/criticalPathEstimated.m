@@ -3,5 +3,5 @@ cs.HiliteType = 'user1';
 cs.ForegroundColor = 'black';
 cs.BackgroundColor = 'blue';
 set_param(0, 'HiliteAncestorsData', cs);
-hilite_system('gm_uz_pmsm_model/uz_pmsm_model/Product2', 'user1');
-annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Product2', 0, 1, 'cp : 3.722 ns');
+hilite_system('gm_uz_pmsm_model/uz_pmsm_model/Sum2', 'user1');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Sum2', 0, 1, 'cp : 3.623 ns');

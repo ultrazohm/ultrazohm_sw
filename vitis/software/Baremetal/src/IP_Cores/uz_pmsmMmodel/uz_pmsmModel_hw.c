@@ -79,7 +79,7 @@ void uz_pmsmModel_hw_write_L_d(uint32_t base_address, float L_d)
     uz_assert_not_zero(base_address);
     uz_assert(L_d > 0.0f); // prevent division by zero & negative inductance makes no sense
     // Hardware expects recirpocal of L_d to not have to invert L_d in the IP-Core
-    uz_axi_write_float(base_address + recirprocal_L_d_Data_uz_pmsm_model, (1.0f / L_d));
+    uz_axi_write_float(base_address + reciprocal_L_d_Data_uz_pmsm_model, (1.0f / L_d));
 }
 
 void uz_pmsmModel_hw_write_L_q(uint32_t base_address, float L_q)

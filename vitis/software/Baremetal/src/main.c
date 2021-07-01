@@ -17,6 +17,7 @@
 #include "main.h"
 #include "uz/uz_global_configuration.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
+#include "Codegen/uz_codegen.h"
 
 //Initialize the global variables
 int i_LifeCheck;
@@ -26,6 +27,8 @@ _Bool bNewControlMethodAvailable = false;
 _Bool bInit = false;
 DS_Data Global_Data;
 extern XGpio Gpio_OUT; /* GPIO Device driver instance for the real GPIOs */
+
+uz_codegen codegenInstance;
 
 //Data from R5_0 to A53_0 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
 ARM_to_Oszi_Data_shared_struct OsziData;
@@ -80,6 +83,9 @@ int main(void) {
 
 	//Initialize the Soft-Oscilloscope ("JavaScope")
 	JavaScope_initalize(&Global_Data);
+
+	// Initialize codegen
+	uz_codegen_init(&codegenInstance);
 
 	// Initialize the Interrupts
 	Initialize_ISR();

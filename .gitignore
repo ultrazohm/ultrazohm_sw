@@ -40,3 +40,4 @@ vitis/Sandbox/uz_LED/build/
 
 vitis/Sandbox/uz_MyIp/uz_MyIp_testbench
 .vscode/settings.json
+*.slxc

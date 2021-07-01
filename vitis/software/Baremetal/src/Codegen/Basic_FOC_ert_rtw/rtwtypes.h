@@ -5,18 +5,18 @@
  *
  * File: rtwtypes.h
  *
- * Code generated for Simulink model 'uz_codegen0'.
+ * Code generated for Simulink model 'Basic_FOC'.
  *
- * Model version                  : 1.29
+ * Model version                  : 2.22
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Sat Jun 26 17:25:29 2021
+ * C/C++ source code generated on : Tue Jun 29 12:48:17 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (11), Warning (1), Error (0)
+ * Validation result: Passed (9), Warnings (3), Error (0)
  */
 
 #ifndef RTWTYPES_H

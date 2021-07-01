@@ -13,7 +13,8 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 ******************************************************************************/
-#include "uz_codegen0_ert_rtw/uz_codegen0.h"
+//#include "uz_codegen0_ert_rtw/uz_codegen0.h"
+#include "Basic_FOC_ert_rtw/Basic_FOC.h"
 
 typedef struct{
 	ExtY output;

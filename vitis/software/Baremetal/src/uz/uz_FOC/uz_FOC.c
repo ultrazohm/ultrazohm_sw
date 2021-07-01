@@ -158,7 +158,6 @@ bool uz_FOC_Clamping_Circuit(float preIntegrator, float preSat, uz_FOC_config co
 
 float uz_FOC_PI_Controller(uz_FOC_PI_Controller_variables* variables, uz_FOC_config config, bool ext_clamping){
 	uz_assert_not_NULL(variables);
-	uz_assert(config.d_y_max > config.d_y_min);
 	float preSat = 0.0f;
 	float output = 0.0f;
 	if (ext_clamping == true || variables->int_clamping == true) {
@@ -181,16 +180,24 @@ float uz_FOC_PI_Controller(uz_FOC_PI_Controller_variables* variables, uz_FOC_con
 
 void uz_FOC_linear_decouppling(uz_FOC_ActualValues* values, uz_FOC_config config, float* u_d_vor, float* u_q_vor){
 	uz_assert_not_NULL(values);
+	uz_assert_not_NULL(u_q_vor);
+	uz_assert_not_NULL(u_d_vor);
+	uz_assert(config.L_q>0.0f);
+	uz_assert(config.L_d>0.0f);
+	uz_assert(config.psi_pm>=0.0f);
 	*u_d_vor = values->i_q_Ampere * -1.0f * config.L_q * values->omega_el_rad_per_sec;
 	*u_q_vor = (values->i_d_Ampere * config.L_d + config.psi_pm) * values->omega_el_rad_per_sec;
 }
 
 bool uz_FOC_SpaceVector_Limitation(uz_FOC_VoltageReference* reference, uz_FOC_ActualValues* values){
+	uz_assert_not_NULL(reference);
+	uz_assert_not_NULL(values);
+	uz_assert(values->U_zk_Volts > 0.0f);
 	bool limit_on = false;
 	float U_d_limit=0.0f;
 	float U_q_limit=0.0f;
 
-   	float U_RZ_max =values->U_zk_Volts /sqrtf(3.0f);
+   	float U_RZ_max =values->U_zk_Volts / sqrtf(3.0f);
 	float U_RZ_betrag = sqrtf(reference->u_d_ref_Volts * reference->u_d_ref_Volts + reference->u_q_ref_Volts * reference->u_q_ref_Volts);
 
 	if ( U_RZ_betrag > U_RZ_max ){

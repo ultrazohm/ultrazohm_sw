@@ -1,5 +1,6 @@
 #include "uz_FOC.h"
 #include "../uz_global_configuration.h"
+#include "../uz_PI_Controller/uz_PI_controller.h"
 
 struct uz_FOC_PI_Controller_variables {
 	bool is_ready;
@@ -201,7 +202,7 @@ bool uz_FOC_SpaceVector_Limitation(uz_FOC_VoltageReference* reference, uz_FOC_Ac
 	float U_RZ_betrag = sqrtf(reference->u_d_ref_Volts * reference->u_d_ref_Volts + reference->u_q_ref_Volts * reference->u_q_ref_Volts);
 
 	if ( U_RZ_betrag > U_RZ_max ){
-		limit_on = true; 
+		limit_on = true;
 		if ((uz_FOC_get_sign_of_value(values->omega_el_rad_per_sec) == uz_FOC_get_sign_of_value(values->i_q_Ampere))) {
 			if ((abs(reference->u_d_ref_Volts) > 0.95f * U_RZ_max)) {
 				U_d_limit = uz_FOC_get_sign_of_value(reference->u_d_ref_Volts) * 0.95f * U_RZ_max;

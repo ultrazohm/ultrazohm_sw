@@ -1,7 +1,6 @@
 #ifndef UZ_FOC_H
 #define UZ_FOC_H
 
-#endif // UZ_FOC_H
 #pragma once
 #include "../uz_HAL.h"
 #include <math.h>
@@ -199,3 +198,5 @@ uz_FOC_PI_Controller_variables* uz_FOC_update_PI_N_Controller_variables(uz_FOC_P
 
 void uz_FOC_linear_decouppling(uz_FOC_ActualValues* values, uz_FOC_config config, float* u_d_vor, float* u_q_vor);
 bool uz_FOC_SpaceVector_Limitation(uz_FOC_VoltageReference* reference, uz_FOC_ActualValues* values);
+
+#endif // UZ_FOC_H

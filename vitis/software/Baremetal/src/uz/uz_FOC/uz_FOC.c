@@ -121,12 +121,9 @@ float uz_FOC_Dead_Zone(float input, uz_FOC_config config) {
 	uz_assert(config.d_y_max>config.d_y_min);
 	if (input >= config.d_y_min && input <= config.d_y_max) {
 		output = 0.0f;
-	}
-	else if (input > config.d_y_max)
-	{
+	} else if (input > config.d_y_max) {
 		output = input - config.d_y_max;
-	}
-        else {
+	} else {
 		output = input - config.d_y_min;
 	}
 	return (output);
@@ -157,7 +154,7 @@ bool uz_FOC_Clamping_Circuit(float preIntegrator, float preSat, uz_FOC_config co
 	return (output);
 }
 
-float uz_FOC_PI_Controller(uz_FOC_PI_Controller_variables* variables, uz_FOC_config config, bool ext_clamping){
+float uz_FOC_PI_Controller(uz_FOC_PI_Controller_variables* variables, uz_FOC_config config, bool ext_clamping) {
 	uz_assert_not_NULL(variables);
 	float preSat = 0.0f;
 	float output = 0.0f;
@@ -174,9 +171,9 @@ float uz_FOC_PI_Controller(uz_FOC_PI_Controller_variables* variables, uz_FOC_con
 		variables->error = 0.0f;
 	}
 	preSat = variables->I_sum + variables->P_sum;
-	variables->int_clamping = uz_FOC_Clamping_Circuit(variables->I_sum,preSat,config);
+	variables->int_clamping = uz_FOC_Clamping_Circuit(variables->I_sum, preSat, config);
 	output = preSat;
-	return(output);
+	return (output);
 }
 
 void uz_FOC_linear_decouppling(uz_FOC_ActualValues* values, uz_FOC_config config, float* u_d_vor, float* u_q_vor){

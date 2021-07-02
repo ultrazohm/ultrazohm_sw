@@ -40,6 +40,46 @@ uz_PI_Controller* uz_PI_Controller_init(uz_PI_Controller_config config) {
 	self->d_y_min = config.d_y_min;
 	return (self);
 }
+
+float uz_PI_Controller_Dead_Zone(float input, float d_y_max, float d_y_min) {
+	float output;
+	uz_assert(d_y_max > d_y_min);
+	if (input >= d_y_min && input <= d_y_max) {
+		output = 0.0f;
+	} else if (input > d_y_max) {
+		output = input - d_y_max;
+	} else {
+		output = input - d_y_min;
+	}
+	return (output);
+}
+
+int uz_PI_Controller_get_sign_of_value(float input) {
+	int sign;
+	if (input < 0)
+		sign = -1;
+	else if (input > 0) {
+		sign = 1;
+	} else {
+		sign = 0;
+	}
+	return (sign);
+}
+
+bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float d_y_max, float d_y_min) {
+	bool output = false;
+	float value_after_deadzone = uz_PI_Controller_Dead_Zone(preSat, d_y_max, d_y_min);
+	int sign_after_deadzone = uz_PI_Controller_get_sign_of_value(value_after_deadzone);
+	int sign_preIntegrator = uz_PI_Controller_get_sign_of_value(preIntegrator);
+	if (0 != value_after_deadzone && sign_after_deadzone == sign_preIntegrator) {
+		output = true;
+	} else {
+		output = false;
+	}
+	return (output);
+}
+
+
 float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, float actualValue, bool ext_clamping) {
 	float output = 0.0f;
 	return (output);

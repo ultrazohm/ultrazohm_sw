@@ -4,6 +4,7 @@
 struct uz_PI_Controller {
 	bool is_ready;
 	float I_sum;
+    float P_sum;
 	float error;
 	float Kp;
 	float Ki;
@@ -34,6 +35,10 @@ static uz_PI_Controller* uz_PI_Controller_allocation(void) {
 
 uz_PI_Controller* uz_PI_Controller_init(uz_PI_Controller_config config) {
 	uz_PI_Controller* self = uz_PI_Controller_allocation();
+    uz_assert(config.Ki > 0.0f);
+    uz_assert(config.Kp > 0.0f);
+    uz_assert(config.samplingTime_sec > 0.0f);
+    uz_assert(config.d_y_max > config.d_y_min);
 	self->Ki = config.Ki;
 	self->Kp = config.Kp;
 	self->samplingTime_sec = config.samplingTime_sec;
@@ -44,7 +49,6 @@ uz_PI_Controller* uz_PI_Controller_init(uz_PI_Controller_config config) {
 
 float uz_PI_Controller_Dead_Zone(float input, float d_y_max, float d_y_min) {
 	float output;
-	uz_assert(d_y_max > d_y_min);
 	if (input >= d_y_min && input <= d_y_max) {
 		output = 0.0f;
 	} else if (input > d_y_max) {
@@ -95,10 +99,9 @@ float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, floa
 		self->I_sum += preIntegrator * self->samplingTime_sec;
 	}
 	self->error = referenceValue - actualValue;
-	P_sum = self->error * self->Kp;
-	preSat = self->I_sum + P_sum;
+	self->P_sum = self->error * self->Kp;
+	preSat = self->I_sum + self->P_sum;
 	self->int_clamping = uz_PI_Controller_Clamping_Circuit(preIntegrator, preSat, self->d_y_max, self->d_y_min);
 	output = preSat;
-	return (output);
 	return (output);
 }

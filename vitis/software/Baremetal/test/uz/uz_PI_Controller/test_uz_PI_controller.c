@@ -90,4 +90,20 @@ void test_uz_PI_Controller_sample_output(void){
 		TEST_ASSERT_EQUAL_FLOAT(values_output[i],roundf(uz_PI_Controller_sample(variables,1.0f,values_id[i],false)*100)/100);
 	}
 }
+
+void test_uz_PI_Controller_reset_NULL(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_reset(NULL));
+}
+
+void test_uz_PI_Controller_sample_output_Reset(void){
+    uz_PI_Controller* variables = uz_PI_Controller_init(config);
+	//Compare values with Simulink Simulation
+	float values_id[11]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f, 0.761f, 0.82f, 0.865f, 0.898f, 0.923f, 0.942f};
+	float values_output[11]={6.75f, 5.09f, 3.84f, 2.9f, 2.2f, 1.67f, 1.28f, 0.98f, 0.76f, 0.59f, 0.47f};
+	for(int i=0;i<11;i++){
+		TEST_ASSERT_EQUAL_FLOAT(values_output[i],roundf(uz_PI_Controller_sample(variables,1.0f,values_id[i],false)*100)/100);
+	}
+    uz_PI_Controller_reset(variables);
+    TEST_ASSERT_EQUAL_FLOAT(0.32f,roundf(uz_PI_Controller_sample(variables,1.0f,0.953f,false)*100)/100);
+}   
     #endif // TEST

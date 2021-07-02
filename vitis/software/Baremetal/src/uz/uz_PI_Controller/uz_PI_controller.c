@@ -105,3 +105,10 @@ float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, floa
 	output = preSat;
 	return (output);
 }
+
+void uz_PI_Controller_reset(uz_PI_Controller* self){
+    uz_assert_not_NULL(self);
+    self->P_sum = 0.0f;
+    self->I_sum = 0.0f;
+    self->error = 0.0f;
+}

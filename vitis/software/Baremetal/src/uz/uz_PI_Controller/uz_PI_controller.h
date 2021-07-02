@@ -62,4 +62,5 @@ bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float 
 
 float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, float actualValue, bool ext_clamping);
 
+void uz_PI_Controller_reset(uz_PI_Controller* self);
 #endif // UZ_PI_CONTROLLER_H

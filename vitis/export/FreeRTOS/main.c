@@ -24,7 +24,7 @@
 #endif
 
 //Includes for CAN
-#define CAN_ACTIVE 0 // (1 = CAN is active)  and (0 = CAN is inactive)
+#define CAN_ACTIVE 1 // (1 = CAN is active)  and (0 = CAN is inactive)
 #include "include/can.h"
 
 //Includes from own files
@@ -173,8 +173,8 @@ void network_thread(void *p)
 
 #if CAN_ACTIVE==1
 	xil_printf(" Init CAN \n\r"); //CAN interface
-	//hal_can_init(XPAR_PSU_CAN_0_BASEADDR, XPAR_PSU_CAN_0_DEVICE_ID); //CAN 0 interface
-	hal_can_init(XPAR_PSU_CAN_1_BASEADDR, XPAR_PSU_CAN_1_DEVICE_ID); //CAN 1 interface
+	hal_can_init(XPAR_PSU_CAN_0_BASEADDR, XPAR_PSU_CAN_0_DEVICE_ID); //CAN 0 interface
+//	hal_can_init(XPAR_PSU_CAN_1_BASEADDR, XPAR_PSU_CAN_1_DEVICE_ID); //CAN 1 interface
 
 	can_frame_t can_frame_rx; //CAN interface
 #endif

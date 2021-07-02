@@ -8,17 +8,19 @@
 
 
 // Defines that map the number of the MIO PIN of the PS to the signal name of the signal on the carrier board (X13)
-#define PS_DIG_GPIO_01	30
-#define PS_DIG_GPIO_02	31
-#define PS_ANL_GPIO_01	44
-#define PS_ANL_GPIO_02	45
+//#define PS_DIG_GPIO_01	30
+//#define PS_DIG_GPIO_02	31
+//#define PS_ANL_GPIO_01	44
+//#define PS_ANL_GPIO_02	45
 #define EXT_GPIO_1 		13
 #define EXT_GPIO_2 		33
 #define EXT_GPIO_3 		34
 #define EXT_GPIO_4 		39
 #define EXT_GPIO_5 		40
-#define EXT_GPIO_6 		52
-#define EXT_GPIO_7 		53
+#define EXT_GPIO_6 		52 //3v00
+#define EXT_GPIO_7 		53 //3v00
+//#define EXT_GPIO_6 		44 //Rev.04
+//#define EXT_GPIO_7 		30 // Rev.04
 #define EXT_GPIO_8 		55
 
 // LED on carrier board and frontpanel

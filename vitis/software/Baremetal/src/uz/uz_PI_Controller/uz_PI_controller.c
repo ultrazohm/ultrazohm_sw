@@ -4,12 +4,13 @@
 struct uz_PI_Controller {
 	bool is_ready;
 	float I_sum;
-	float P_sum;
+	float error;
 	float Kp;
 	float Ki;
 	float d_y_max;
 	float d_y_min;
 	float samplingTime_sec;
+	bool int_clamping;
 };
 static size_t instances_counter_PI_Controller = 0;
 
@@ -81,6 +82,23 @@ bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float 
 
 
 float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, float actualValue, bool ext_clamping) {
+	uz_assert_not_NULL(self);
+	float preSat = 0.0f;
+	float preIntegrator = 0.0f;
 	float output = 0.0f;
+	float P_sum = 0.0f;
+
+	preIntegrator = self->error * self->Ki;
+	if (ext_clamping == true || self->int_clamping == true) {
+		self->I_sum += 0.0f;
+	} else {
+		self->I_sum += preIntegrator * self->samplingTime_sec;
+	}
+	self->error = referenceValue - actualValue;
+	P_sum = self->error * self->Kp;
+	preSat = self->I_sum + P_sum;
+	self->int_clamping = uz_PI_Controller_Clamping_Circuit(preIntegrator, preSat, self->d_y_max, self->d_y_min);
+	output = preSat;
+	return (output);
 	return (output);
 }

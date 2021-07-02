@@ -106,4 +106,32 @@ void test_uz_PI_Controller_sample_output_Reset(void){
     uz_PI_Controller_reset(variables);
     TEST_ASSERT_EQUAL_FLOAT(0.32f,roundf(uz_PI_Controller_sample(variables,1.0f,0.953f,false)*100)/100);
 }   
+
+void test_uz_PI_Controller_set_Ki_NULL(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_set_Ki(NULL, 10.0f));
+}
+
+void test_uz_PI_Controller_set_Ki_negative(void){
+    uz_PI_Controller* variables = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_set_Ki(variables, -10.0f));
+}
+
+void test_uz_PI_Controller_set_Ki_zero(void){
+    uz_PI_Controller* variables = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_set_Ki(variables, 0.0f));
+}
+
+void test_uz_PI_Controller_set_Kp_NULL(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_set_Kp(NULL, 10.0f));
+}
+
+void test_uz_PI_Controller_set_Kp_negative(void){
+    uz_PI_Controller* variables = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_set_Kp(variables, -10.0f));
+}
+
+void test_uz_PI_Controller_set_Kp_zero(void){
+    uz_PI_Controller* variables = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_set_Kp(variables, 0.0f));
+}
     #endif // TEST

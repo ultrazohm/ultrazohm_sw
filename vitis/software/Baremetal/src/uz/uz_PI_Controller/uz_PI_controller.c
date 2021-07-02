@@ -90,7 +90,6 @@ float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, floa
 	float preSat = 0.0f;
 	float preIntegrator = 0.0f;
 	float output = 0.0f;
-	float P_sum = 0.0f;
 
 	preIntegrator = self->error * self->Ki;
 	if (ext_clamping == true || self->int_clamping == true) {
@@ -111,4 +110,16 @@ void uz_PI_Controller_reset(uz_PI_Controller* self){
     self->P_sum = 0.0f;
     self->I_sum = 0.0f;
     self->error = 0.0f;
+}
+
+void uz_PI_Controller_set_Ki(uz_PI_Controller* self, float new_Ki){
+    uz_assert_not_NULL(self);
+    uz_assert(new_Ki > 0.0f);
+    self->Ki = new_Ki;
+}
+
+void uz_PI_Controller_set_Kp(uz_PI_Controller* self, float new_Kp){
+    uz_assert_not_NULL(self);
+    uz_assert(new_Kp > 0.0f);
+    self->Kp = new_Kp;    
 }

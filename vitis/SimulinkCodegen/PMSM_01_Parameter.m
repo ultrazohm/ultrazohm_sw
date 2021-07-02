@@ -41,7 +41,7 @@ T_sigma = 0.5/f_switchingInverter + T_controller;
 %Ki_IdController = R/Ld;
 
 %Iq_Controller - TI: Set Current Bandwidth
-BW = 1000;
+BW = 400;
 Kp_IqController = Lq*2*pi*BW;
 Ki_IqController = R/Lq;
 %Id_Controller - TI

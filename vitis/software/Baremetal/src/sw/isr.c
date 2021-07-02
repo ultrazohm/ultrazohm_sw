@@ -127,9 +127,9 @@ void ISR_Control(void *data)
 	uz_codegen_step(&codegenInstance);
 
 	//Dutycycle outputs
-	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.Ua_DutyCycle;
-	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.Ub_DutyCycle;
-	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.Uc_DutyCycle;
+	//Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.Ua_DutyCycle;
+	//Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.Ub_DutyCycle;
+	//Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.Uc_DutyCycle;
 
 	Global_Data.av.I_d = codegenInstance.output.id_ist;
 	Global_Data.av.I_q = codegenInstance.output.iq_ist;
@@ -140,9 +140,9 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge3DutyCycle);
 
 	// Set duty cycles for three-level modulator
-	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-					Global_Data.rasv.halfBridge2DutyCycle,
-					Global_Data.rasv.halfBridge3DutyCycle);
+	//PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+	//				Global_Data.rasv.halfBridge2DutyCycle,
+	//				Global_Data.rasv.halfBridge3DutyCycle);
 
 
 	// Update JavaScope
@@ -185,7 +185,8 @@ int Initialize_ISR(){
 
 	//Motor parameters and constant factors
 	Global_Data.mrp.motorPolePairNumber = 21;
-	//ADC conversion factors
+	//ADC conversion factors --> Check actual value first
+/*
 	Global_Data.aa.A1.cf.ADC_A1 = 80*5/32767;
 	Global_Data.aa.A1.cf.ADC_A2 = 80*5/32767;
 	Global_Data.aa.A1.cf.ADC_A3 = 80*5/32767;
@@ -193,6 +194,7 @@ int Initialize_ISR(){
 	Global_Data.aa.A1.cf.ADC_B5 = 12.5*5/32767;
 	Global_Data.aa.A1.cf.ADC_B6 = 12.5*5/32767;
 	Global_Data.aa.A1.cf.ADC_B7 = 12.5*5/32767;
+*/
 
 	//Offset theta_el ---> Need to specify
 	Global_Data.av.theta_offset = 0.0;
@@ -202,6 +204,7 @@ int Initialize_ISR(){
 	codegenInstance.input.flg_fieldWeakening = 0.0;
 	codegenInstance.input.flgLimitUdUq = 1.0;
 	codegenInstance.input.flg_UseMMPA = 0.0;
+	codegenInstance.input.flg_SpeedControl = 0.0;
 
 	//Only ratio of frequencies is crucial
 	codegenInstance.input.T_speedController = 1/10000; //Hz

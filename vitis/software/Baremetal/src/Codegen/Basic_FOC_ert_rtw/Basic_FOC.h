@@ -7,21 +7,20 @@
  *
  * Code generated for Simulink model 'Basic_FOC'.
  *
- * Model version                  : 2.22
+ * Model version                  : 2.28
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Jun 29 12:48:17 2021
+ * C/C++ source code generated on : Fri Jul  2 16:27:32 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (9), Warnings (3), Error (0)
+ * Validation result: Passed (10), Warnings (2), Error (0)
  */
 
 #ifndef RTW_HEADER_Basic_FOC_h_
 #define RTW_HEADER_Basic_FOC_h_
-#include <stddef.h>
 #include <math.h>
 #include <string.h>
 #ifndef Basic_FOC_COMMON_INCLUDES_
@@ -63,27 +62,32 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (default storage) for system '<S1>/CurrentController' */
 typedef struct {
-  real_T Switch_b;                     /* '<S4>/Switch' */
-  real_T Switch2;                      /* '<S113>/Switch2' */
-  real32_T Gain1[3];                   /* '<S116>/Gain1' */
-  real32_T Integrator_DSTATE;          /* '<S45>/Integrator' */
-  real32_T Integrator_DSTATE_a;        /* '<S96>/Integrator' */
-  real32_T Integrator_PREV_U;          /* '<S45>/Integrator' */
-  real32_T Integrator_PREV_U_f;        /* '<S96>/Integrator' */
-  real32_T a_U_on;
-  real32_T a_W_on;
-  real32_T a;
-  real32_T b;
+  real_T Gain1[3];                     /* '<S116>/Gain1' */
+  real_T Integrator_DSTATE;            /* '<S45>/Integrator' */
+  real_T Integrator_DSTATE_j;          /* '<S96>/Integrator' */
+  real_T Integrator_PREV_U;            /* '<S45>/Integrator' */
+  real_T Integrator_PREV_U_f;          /* '<S96>/Integrator' */
+  real_T a;
+  real_T b;
+  real_T c;
+  real_T U_max;
+  real_T u2;
+  real_T IntegralGain;                 /* '<S42>/Integral Gain' */
+  real_T SignPreSat;                   /* '<S36>/SignPreSat' */
+  real_T Switch_ls;                    /* '<S4>/Switch' */
+  real_T UdV;                          /* '<S4>/Add' */
+  real_T Gain;                         /* '<S9>/Gain' */
+  real_T Gain1_p;                      /* '<S9>/Gain1' */
   uint32_T CurrentController_PREV_T;   /* '<S1>/CurrentController' */
   uint8_T Integrator_SYSTEM_ENABLE;    /* '<S45>/Integrator' */
-  uint8_T Integrator_SYSTEM_ENABLE_a;  /* '<S96>/Integrator' */
+  uint8_T Integrator_SYSTEM_ENABLE_n;  /* '<S96>/Integrator' */
   boolean_T CurrentController_RESET_ELAPS_T;/* '<S1>/CurrentController' */
 } DW_CurrentController;
 
 /* Block signals and states (default storage) for system '<S1>/SpeedController' */
 typedef struct {
-  real32_T Integrator_DSTATE;          /* '<S163>/Integrator' */
-  real32_T Integrator_PREV_U;          /* '<S163>/Integrator' */
+  real_T Integrator_DSTATE;            /* '<S163>/Integrator' */
+  real_T Integrator_PREV_U;            /* '<S163>/Integrator' */
   uint32_T SpeedController_PREV_T;     /* '<S1>/SpeedController' */
   uint8_T Integrator_SYSTEM_ENABLE;    /* '<S163>/Integrator' */
   boolean_T SpeedController_RESET_ELAPS_T;/* '<S1>/SpeedController' */
@@ -91,38 +95,38 @@ typedef struct {
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  DW_SpeedController SpeedController_c;/* '<S1>/SpeedController' */
-  DW_CurrentController CurrentController_i;/* '<S1>/CurrentController' */
-  real32_T Switch_h[2];                /* '<S115>/Switch' */
-  real32_T ia;                         /* '<Root>/Basic_FOC' */
-  real32_T ib;                         /* '<Root>/Basic_FOC' */
-  real32_T ic;                         /* '<Root>/Basic_FOC' */
-  real32_T w_el;                       /* '<Root>/Basic_FOC' */
-  real32_T flg_PreCtrl;                /* '<Root>/Basic_FOC' */
-  real32_T theta_el;                   /* '<Root>/Basic_FOC' */
-  real32_T U_IC;                       /* '<Root>/Basic_FOC' */
-  real32_T id_ref;                     /* '<Root>/Basic_FOC' */
-  real32_T iq_ref;                     /* '<Root>/Basic_FOC' */
-  real32_T flg_LimitUdUq;              /* '<Root>/Basic_FOC' */
-  real32_T flg_SpeedControl;           /* '<Root>/Basic_FOC' */
-  real32_T Switch;                     /* '<S127>/Switch' */
-  real32_T Switch1;                    /* '<S127>/Switch1' */
-  real32_T Switch2;                    /* '<S4>/Switch2' */
-  real32_T Switch3;                    /* '<S4>/Switch3' */
-  real32_T OutportBufferForId_ist;     /* '<S2>/Current Controller' */
-  real32_T u_a;                        /* '<S5>/SpaceVectorModulation' */
-  real32_T u_b;                        /* '<S5>/SpaceVectorModulation' */
-  real32_T u_c;                        /* '<S5>/SpaceVectorModulation' */
-  real32_T id_soll;                    /* '<Root>/Basic_FOC' */
-  real32_T iq_soll;                    /* '<Root>/Basic_FOC' */
-  real32_T rat_freq;                   /* '<Root>/Basic_FOC' */
-  real32_T cnt_CurrentCtrl;            /* '<Root>/Basic_FOC' */
-  real32_T id_ref_n;
-  real32_T iq_ref_o;
-  real32_T n_soll;
-  real32_T n_ist;
-  real32_T flg_fieldWeakening;
-  real32_T flg_UseMMPA;
+  DW_SpeedController SpeedController_j;/* '<S1>/SpeedController' */
+  DW_CurrentController CurrentController_f;/* '<S1>/CurrentController' */
+  real_T Switch_j[2];                  /* '<S115>/Switch' */
+  real_T ia;                           /* '<Root>/Basic_FOC' */
+  real_T ib;                           /* '<Root>/Basic_FOC' */
+  real_T ic;                           /* '<Root>/Basic_FOC' */
+  real_T w_el;                         /* '<Root>/Basic_FOC' */
+  real_T flg_PreCtrl;                  /* '<Root>/Basic_FOC' */
+  real_T theta_el;                     /* '<Root>/Basic_FOC' */
+  real_T U_IC;                         /* '<Root>/Basic_FOC' */
+  real_T id_ref;                       /* '<Root>/Basic_FOC' */
+  real_T iq_ref;                       /* '<Root>/Basic_FOC' */
+  real_T flg_LimitUdUq;                /* '<Root>/Basic_FOC' */
+  real_T flg_SpeedControl;             /* '<Root>/Basic_FOC' */
+  real_T Switch;                       /* '<S127>/Switch' */
+  real_T Switch1;                      /* '<S127>/Switch1' */
+  real_T Switch2;                      /* '<S4>/Switch2' */
+  real_T Switch3;                      /* '<S4>/Switch3' */
+  real_T OutportBufferForId_ist;       /* '<S2>/Current Controller' */
+  real_T u_a;                          /* '<S5>/SpaceVectorModulation' */
+  real_T u_b;                          /* '<S5>/SpaceVectorModulation' */
+  real_T u_c;                          /* '<S5>/SpaceVectorModulation' */
+  real_T id_soll;                      /* '<Root>/Basic_FOC' */
+  real_T iq_soll;                      /* '<Root>/Basic_FOC' */
+  real_T rat_freq;                     /* '<Root>/Basic_FOC' */
+  real_T cnt_CurrentCtrl;              /* '<Root>/Basic_FOC' */
+  real_T id_ref_h;
+  real_T iq_ref_e;
+  real_T n_soll;
+  real_T n_ist;
+  real_T flg_fieldWeakening;
+  real_T flg_UseMMPA;
   uint8_T is_active_c3_Basic_FOC;      /* '<Root>/Basic_FOC' */
   uint8_T is_c3_Basic_FOC;             /* '<Root>/Basic_FOC' */
   uint8_T is_InProcess;                /* '<Root>/Basic_FOC' */
@@ -130,10 +134,10 @@ typedef struct {
 
 /* Constant parameters (default storage) */
 typedef struct {
-  /* Computed Parameter: Gain3_Gain
+  /* Expression: [ 1   -1/2   -1/2; 0   sqrt(3)/2   -sqrt(3)/2; 1/2  1/2  1/2 ]
    * Referenced by: '<S116>/Gain3'
    */
-  real32_T Gain3_Gain[9];
+  real_T Gain3_Gain[9];
 } ConstP;
 
 /* External inputs (root inport signals with default storage) */
@@ -155,20 +159,20 @@ typedef struct {
   real32_T START;                      /* '<Root>/START' */
   real32_T flgLimitUdUq;               /* '<Root>/flgLimitUdUq' */
   real32_T flg_UseMMPA;                /* '<Root>/flg_UseMMPA' */
-  real32_T T_speedController;          /* '<Root>/T_speedController' */
-  real32_T T_controller;               /* '<Root>/T_controller' */
+  real_T T_speedController;            /* '<Root>/T_speedController' */
+  real_T T_controller;                 /* '<Root>/T_controller' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  real32_T Ua_DutyCycle;               /* '<Root>/Ua_DutyCycle' */
-  real32_T activeState;                /* '<Root>/activeState' */
-  real32_T Uc_DutyCycle;               /* '<Root>/Uc_DutyCycle' */
-  real32_T Ub_DutyCycle;               /* '<Root>/Ub_DutyCycle' */
-  real32_T iq_ist;                     /* '<Root>/iq_ist' */
-  real32_T id_ist;                     /* '<Root>/id_ist' */
-  real32_T uq;                         /* '<Root>/uq' */
-  real32_T ud;                         /* '<Root>/ud' */
+  real_T Ua_DutyCycle;                 /* '<Root>/Ua_DutyCycle' */
+  real_T activeState;                  /* '<Root>/activeState' */
+  real_T Uc_DutyCycle;                 /* '<Root>/Uc_DutyCycle' */
+  real_T Ub_DutyCycle;                 /* '<Root>/Ub_DutyCycle' */
+  real_T iq_ist;                       /* '<Root>/iq_ist' */
+  real_T id_ist;                       /* '<Root>/id_ist' */
+  real_T uq;                           /* '<Root>/uq' */
+  real_T ud;                           /* '<Root>/ud' */
 } ExtY;
 
 /* Real-time Model Data Structure */
@@ -198,10 +202,15 @@ extern void Basic_FOC_step(RT_MODEL *const rtM);
  * These blocks were eliminated from the model due to optimizations:
  *
  * Block '<S6>/Product2' : Unused code path elimination
+ * Block '<S7>/Scope' : Unused code path elimination
+ * Block '<S8>/Scope' : Unused code path elimination
  * Block '<S113>/Data Type Duplicate' : Unused code path elimination
  * Block '<S113>/Data Type Propagation' : Unused code path elimination
  * Block '<S114>/Data Type Duplicate' : Unused code path elimination
  * Block '<S114>/Data Type Propagation' : Unused code path elimination
+ * Block '<S9>/Scope' : Unused code path elimination
+ * Block '<S9>/Scope1' : Unused code path elimination
+ * Block '<S2>/Scope' : Unused code path elimination
  * Block '<S5>/Constant' : Unused code path elimination
  * Block '<S3>/Scope' : Unused code path elimination
  */

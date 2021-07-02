@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'Basic_FOC'.
  *
- * Model version                  : 2.22
+ * Model version                  : 2.28
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Jun 29 12:48:17 2021
+ * C/C++ source code generated on : Fri Jul  2 16:27:32 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (9), Warnings (3), Error (0)
+ * Validation result: Passed (10), Warnings (2), Error (0)
  */
 
 #ifndef RTW_HEADER_rtmodel_h_

@@ -80,7 +80,7 @@ uz_FOC* uz_FOC_init(uz_FOC_config config_FOC, uz_PI_Controller_config config_id,
 	uz_assert(config_FOC.L_d > 0.0f);
 	uz_assert(config_FOC.L_q > 0.0f);
 	uz_assert(config_FOC.psi_pm > 0.0f);
-	uz_assert(config_FOC.polePairs > 0U);
+	uz_assert(config_FOC.polePairs > 0.0f);
 	uz_assert(config_FOC.FOC_Select >= 1U && config_FOC.FOC_Select <= 2U);
 
 	if (config_FOC.FOC_Select == 2U) {
@@ -94,9 +94,9 @@ uz_FOC* uz_FOC_init(uz_FOC_config config_FOC, uz_PI_Controller_config config_id,
 
 int uz_FOC_get_sign_of_value(float input) {
 	int sign;
-	if (input < 0)
+	if (input < 0.0f)
 		sign = -1;
-	else if (input > 0) {
+	else if (input > 0.0f) {
 		sign = 1;
 	} else {
 		sign = 0;
@@ -156,8 +156,8 @@ bool uz_FOC_SpaceVector_Limitation(uz_FOC_VoltageReference* reference, uz_FOC_Ac
 		limit_on = false;
 	}
 
-reference->u_d_ref_Volts = U_d_limit;
-reference->u_q_ref_Volts = U_q_limit;
+ reference->u_d_ref_Volts = U_d_limit;
+ reference->u_q_ref_Volts = U_q_limit;
 	return (limit_on);
 }
 

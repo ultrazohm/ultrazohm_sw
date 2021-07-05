@@ -16,7 +16,7 @@ typedef struct uz_FOC_config {
 	float id_ref_Ampere;
 	float n_ref_rpm;
 	unsigned int FOC_Select; //1=CurrentControl 2=SpeedControl
-	unsigned int polePairs;
+	float polePairs;
 	float L_q;
 	float L_d;
 	float psi_pm;

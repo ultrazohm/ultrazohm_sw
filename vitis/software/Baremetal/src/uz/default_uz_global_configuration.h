@@ -23,7 +23,7 @@
 #define UZ_FOC_ACTUALVALUES_MAX_INSTANCES             1U
 #define UZ_FOC_VOLTAGEREFERENCE_MAX_INSTANCES         1U
 #define UZ_FOC_MAX_INSTANCES                          3U
-#define UZ_FOC_PI_CONTROLLER_MAX_INSTANCES            2U
+#define UZ_FOC_PI_CONTROLLER_MAX_INSTANCES            5U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -35,5 +35,5 @@
 #define UZ_FOC_ACTUALVALUES_MAX_INSTANCES             30U
 #define UZ_FOC_VOLTAGEREFERENCE_MAX_INSTANCES         20U
 #define UZ_FOC_MAX_INSTANCES                          30U
-#define UZ_FOC_PI_CONTROLLER_MAX_INSTANCES            20U
+#define UZ_FOC_PI_CONTROLLER_MAX_INSTANCES            50U
 #endif

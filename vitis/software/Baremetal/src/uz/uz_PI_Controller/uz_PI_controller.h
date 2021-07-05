@@ -60,11 +60,37 @@ int uz_PI_Controller_get_sign_of_value(float input);
  */
 bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float d_y_max, float d_y_min);
 
+/**
+ * @brief Calculates the last sample of the PI-Controller
+ * 
+ * @param self uz_PI_Controller object
+ * @param referenceValue reference values for error calculation
+ * @param actualValue actual value for error calculation
+ * @param ext_clamping input for external clamping signal
+ * @return float Returns last sample of PI-Controller
+ */
 float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, float actualValue, bool ext_clamping);
 
+/**
+ * @brief Resets the PI-Controller
+ * 
+ * @param self uz_PI_Controller object
+ */
 void uz_PI_Controller_reset(uz_PI_Controller* self);
 
+/**
+ * @brief Updates the Ki parameter with a new one
+ * 
+ * @param self uz_PI_Controller object
+ * @param new_Ki new value for Ki
+ */
 void uz_PI_Controller_set_Ki(uz_PI_Controller* self, float new_Ki);
 
+/**
+ * @brief Updates the Kp parameter with a new one
+ * 
+ * @param self uz_PI_Controller object
+ * @param new_Kp new value for Ki
+ */
 void uz_PI_Controller_set_Kp(uz_PI_Controller* self, float new_Kp);
 #endif // UZ_PI_CONTROLLER_H

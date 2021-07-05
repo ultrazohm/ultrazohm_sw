@@ -3,6 +3,7 @@
 
 #pragma once
 #include "../uz_HAL.h"
+#include "../uz_PI_Controller/uz_PI_controller.h"
 #include <math.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -11,19 +12,10 @@
  * @brief Configuration struct for FOC. Accessible by the user
  */
 typedef struct uz_FOC_config {
-	float Kp_id;
-	float Kp_iq;
-	float Kp_n;
-	float Ki_id;
-	float Ki_iq;
-	float Ki_n;
 	float iq_ref_Ampere;
 	float id_ref_Ampere;
 	float n_ref_rpm;
-	float d_y_max;
-	float d_y_min;
-	float SamplingTime_sec;
-	unsigned int FOC_Select;
+	unsigned int FOC_Select; //1=CurrentControl 2=SpeedControl
 	unsigned int polePairs;
 	float L_q;
 	float L_d;
@@ -33,6 +25,7 @@ typedef struct uz_FOC_config {
 
 /**
  * @brief Struct for measured parameters, which are needed for the FOC. Accessible by the user
+ * 
  */
 typedef struct uz_FOC_ActualValues {
 	bool is_ready;
@@ -74,6 +67,17 @@ uz_FOC_ActualValues* uz_FOC_ActualValues_init(void);
  * @return Pointer to uz_FOC_VoltageReference instance
  */
 uz_FOC_VoltageReference* uz_FOC_VoltageReference_init(void);
+
+/**
+ * @brief Initialization of the uz_FOC object
+ * 
+ * @param config_FOC configuration struct for FOC
+ * @param config_id configuration struct for id-PI-Controller
+ * @param config_iq configuration struct for iq-PI-Controller
+ * @param config_n configuration struct for n-PI-Controller
+ * @return uz_FOC* Pointer to uz_FOC instance
+ */
+uz_FOC* uz_FOC_init(uz_FOC_config config_FOC, uz_PI_Controller_config config_id, uz_PI_Controller_config config_iq, uz_PI_Controller_config config_n);
 
 
 void uz_FOC_linear_decouppling(uz_FOC_ActualValues* values, uz_FOC_config config, float* u_d_vor, float* u_q_vor);

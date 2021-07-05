@@ -9,6 +9,7 @@ struct uz_PI_Controller {
 	float error;
 	struct uz_PI_Controller_config config;
 };
+
 static size_t instances_counter_PI_Controller = 0;
 
 static uz_PI_Controller instances_PI_Controller[UZ_FOC_PI_CONTROLLER_MAX_INSTANCES] = { 0 };

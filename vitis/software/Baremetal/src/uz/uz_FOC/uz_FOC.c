@@ -1,12 +1,22 @@
 #include "uz_FOC.h"
 #include "../uz_global_configuration.h"
-#include "../uz_PI_Controller/uz_PI_controller.h"
+
+typedef struct uz_FOC {
+	bool is_ready;
+	bool ext_clamping;
+	struct uz_FOC_config config_FOC;
+	struct uz_PI_Controller_config config_id;
+	struct uz_PI_Controller_config config_iq;
+	struct uz_PI_Controller_config config_n;
+}uz_FOC;
 
 static size_t instances_counter_FOC_ActualValues = 0;
 static size_t instances_counter_FOC_VoltageReference = 0;
+static size_t instances_counter_FOC = 0;
 
 static uz_FOC_ActualValues instances_FOC_ActualValues[UZ_FOC_ACTUALVALUES_MAX_INSTANCES] = { 0 };
 static uz_FOC_VoltageReference instances_FOC_VoltageReference[UZ_FOC_VOLTAGEREFERENCE_MAX_INSTANCES] = { 0 };
+static uz_FOC instances_FOC[UZ_FOC_MAX_INSTANCES] = {0};
 
 /**
  * @brief Memory allocation of the ActualValues struct
@@ -25,9 +35,9 @@ static uz_FOC_ActualValues* uz_FOC_ActualValues_allocation(void) {
 }
 
 /**
- * @brief Memory allocation of the uz_FOC_PI_Controller_output struct
+ * @brief Memory allocation of the uz_FOC_VoltageReference struct
  *
- * @return Pointer to uz_FOC_PI_Controller_output instance
+ * @return Pointer to uz_FOC_VoltageReference instance
  */
 static uz_FOC_VoltageReference* uz_FOC_VoltageReference_allocation(void);
 
@@ -40,6 +50,22 @@ static uz_FOC_VoltageReference* uz_FOC_VoltageReference_allocation(void) {
 	return (self);
 }
 
+/**
+ * @brief Memory allocation of the uz_FOC struct
+ *
+ * @return Pointer to uz_FOC instance
+ */
+static uz_FOC* uz_FOC_allocation(void);
+
+static uz_FOC* uz_FOC_allocation(void) {
+	uz_assert(instances_counter_FOC < UZ_FOC_MAX_INSTANCES);
+	uz_FOC* self = &instances_FOC[instances_counter_FOC];
+	uz_assert(self->is_ready == false);
+	instances_counter_FOC++;
+	self->is_ready = true;
+	return (self);
+}
+
 uz_FOC_ActualValues* uz_FOC_ActualValues_init(void) {
 	uz_FOC_ActualValues* self = uz_FOC_ActualValues_allocation();
 	return (self);
@@ -47,6 +73,26 @@ uz_FOC_ActualValues* uz_FOC_ActualValues_init(void) {
 
 uz_FOC_VoltageReference* uz_FOC_VoltageReference_init(void) {
 	uz_FOC_VoltageReference* self = uz_FOC_VoltageReference_allocation();
+	return (self);
+}
+uz_FOC* uz_FOC_init(uz_FOC_config config_FOC, uz_PI_Controller_config config_id, uz_PI_Controller_config config_iq, uz_PI_Controller_config config_n){
+	uz_FOC* self = uz_FOC_allocation();
+	uz_assert(config_FOC.L_d > 0.0f);
+	uz_assert(config_FOC.L_q > 0.0f);
+	uz_assert(config_FOC.psi_pm > 0.0f);
+	uz_assert(config_FOC.polePairs > 0U);
+	uz_assert(config_FOC.FOC_Select >= 1U && config_FOC.FOC_Select <= 2U);
+
+	if(config_FOC.FOC_Select == 1U){
+		uz_PI_Controller_config config_n = { 0 };
+		self->config_n = config_n;
+	} else {
+		self->config_n = config_n;
+	}
+
+	self->config_FOC = config_FOC;
+	self->config_id = config_id;
+	self->config_iq = config_iq;
 	return (self);
 }
 

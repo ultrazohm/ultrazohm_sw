@@ -25,7 +25,7 @@ typedef struct uz_FOC_config {
 
 /**
  * @brief Struct for measured parameters, which are needed for the FOC. Accessible by the user
- * 
+ *
  */
 typedef struct uz_FOC_ActualValues {
 	bool is_ready;
@@ -54,6 +54,7 @@ typedef struct uz_FOC_VoltageReference {
 	float u_q_ref_Volts;
 } uz_FOC_VoltageReference;
 
+typedef struct uz_FOC uz_FOC;
 /**
  * @brief Initialization of a ActualValues struct
  *
@@ -70,7 +71,7 @@ uz_FOC_VoltageReference* uz_FOC_VoltageReference_init(void);
 
 /**
  * @brief Initialization of the uz_FOC object
- * 
+ *
  * @param config_FOC configuration struct for FOC
  * @param config_id configuration struct for id-PI-Controller
  * @param config_iq configuration struct for iq-PI-Controller

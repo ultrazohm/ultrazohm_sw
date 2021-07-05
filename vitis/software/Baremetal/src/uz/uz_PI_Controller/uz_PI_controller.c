@@ -3,15 +3,11 @@
 
 struct uz_PI_Controller {
 	bool is_ready;
+	bool int_clamping;
 	float I_sum;
     float P_sum;
 	float error;
-	float Kp;
-	float Ki;
-	float d_y_max;
-	float d_y_min;
-	float samplingTime_sec;
-	bool int_clamping;
+	struct uz_PI_Controller_config config;
 };
 static size_t instances_counter_PI_Controller = 0;
 
@@ -39,11 +35,7 @@ uz_PI_Controller* uz_PI_Controller_init(uz_PI_Controller_config config) {
     uz_assert(config.Kp > 0.0f);
     uz_assert(config.samplingTime_sec > 0.0f);
     uz_assert(config.d_y_max > config.d_y_min);
-	self->Ki = config.Ki;
-	self->Kp = config.Kp;
-	self->samplingTime_sec = config.samplingTime_sec;
-	self->d_y_max = config.d_y_max;
-	self->d_y_min = config.d_y_min;
+	self->config = config;
 	return (self);
 }
 
@@ -91,16 +83,16 @@ float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, floa
 	float preIntegrator = 0.0f;
 	float output = 0.0f;
 
-	preIntegrator = self->error * self->Ki;
+	preIntegrator = self->error * self->config.Ki;
 	if (ext_clamping == true || self->int_clamping == true) {
 		self->I_sum += 0.0f;
 	} else {
-		self->I_sum += preIntegrator * self->samplingTime_sec;
+		self->I_sum += preIntegrator * self->config.samplingTime_sec;
 	}
 	self->error = referenceValue - actualValue;
-	self->P_sum = self->error * self->Kp;
+	self->P_sum = self->error * self->config.Kp;
 	preSat = self->I_sum + self->P_sum;
-	self->int_clamping = uz_PI_Controller_Clamping_Circuit(preIntegrator, preSat, self->d_y_max, self->d_y_min);
+	self->int_clamping = uz_PI_Controller_Clamping_Circuit(preIntegrator, preSat, self->config.d_y_max, self->config.d_y_min);
 	output = preSat;
 	return (output);
 }
@@ -115,11 +107,11 @@ void uz_PI_Controller_reset(uz_PI_Controller* self){
 void uz_PI_Controller_set_Ki(uz_PI_Controller* self, float new_Ki){
     uz_assert_not_NULL(self);
     uz_assert(new_Ki > 0.0f);
-    self->Ki = new_Ki;
+    self->config.Ki = new_Ki;
 }
 
 void uz_PI_Controller_set_Kp(uz_PI_Controller* self, float new_Kp){
     uz_assert_not_NULL(self);
     uz_assert(new_Kp > 0.0f);
-    self->Kp = new_Kp;    
+    self->config.Kp = new_Kp;    
 }

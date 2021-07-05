@@ -5,9 +5,9 @@ typedef struct uz_FOC {
 	bool is_ready;
 	bool ext_clamping;
 	struct uz_FOC_config config_FOC;
-	struct uz_PI_Controller_config config_id;
-	struct uz_PI_Controller_config config_iq;
-	struct uz_PI_Controller_config config_n;
+	struct uz_PI_Controller* Controller_id;
+	struct uz_PI_Controller* Controller_iq;
+	struct uz_PI_Controller* Controller_n;
 }uz_FOC;
 
 static size_t instances_counter_FOC_ActualValues = 0;
@@ -83,16 +83,12 @@ uz_FOC* uz_FOC_init(uz_FOC_config config_FOC, uz_PI_Controller_config config_id,
 	uz_assert(config_FOC.polePairs > 0U);
 	uz_assert(config_FOC.FOC_Select >= 1U && config_FOC.FOC_Select <= 2U);
 
-	if(config_FOC.FOC_Select == 1U){
-		uz_PI_Controller_config config_n = { 0 };
-		self->config_n = config_n;
-	} else {
-		self->config_n = config_n;
+	if (config_FOC.FOC_Select == 2U) {
+		self->Controller_n = uz_PI_Controller_init(config_n);
 	}
-
+	self->Controller_id = uz_PI_Controller_init(config_id);
+	self->Controller_iq = uz_PI_Controller_init(config_iq);
 	self->config_FOC = config_FOC;
-	self->config_id = config_id;
-	self->config_iq = config_iq;
 	return (self);
 }
 
@@ -109,15 +105,13 @@ int uz_FOC_get_sign_of_value(float input) {
 }
 
 
-void uz_FOC_linear_decouppling(uz_FOC_ActualValues* values, uz_FOC_config config, float* u_d_vor, float* u_q_vor){
+void uz_FOC_linear_decouppling(uz_FOC_ActualValues* values, uz_FOC* self, float* u_d_vor, float* u_q_vor) {
 	uz_assert_not_NULL(values);
+	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(u_q_vor);
 	uz_assert_not_NULL(u_d_vor);
-	uz_assert(config.L_q>0.0f);
-	uz_assert(config.L_d>0.0f);
-	uz_assert(config.psi_pm>=0.0f);
-	*u_d_vor = values->i_q_Ampere * -1.0f * config.L_q * values->omega_el_rad_per_sec;
-	*u_q_vor = (values->i_d_Ampere * config.L_d + config.psi_pm) * values->omega_el_rad_per_sec;
+	*u_d_vor = values->i_q_Ampere * -1.0f * self->config_FOC.L_q * values->omega_el_rad_per_sec;
+	*u_q_vor = (values->i_d_Ampere * self->config_FOC.L_d + self->config_FOC.psi_pm) * values->omega_el_rad_per_sec;
 }
 
 bool uz_FOC_SpaceVector_Limitation(uz_FOC_VoltageReference* reference, uz_FOC_ActualValues* values){
@@ -165,4 +159,33 @@ bool uz_FOC_SpaceVector_Limitation(uz_FOC_VoltageReference* reference, uz_FOC_Ac
 reference->u_d_ref_Volts = U_d_limit;
 reference->u_q_ref_Volts = U_q_limit;
 	return (limit_on);
+}
+
+uz_FOC_VoltageReference* uz_FOC_Control(uz_FOC* self, uz_FOC_ActualValues* values, uz_FOC_VoltageReference* reference) {
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(values);
+	uz_assert_not_NULL(reference);
+	uz_assert(self->is_ready);
+	uz_assert(reference->is_ready);
+	uz_assert(values->is_ready);
+	float iq_ref = 0.0f;
+	float omega_ref = 0.0f;
+	float u_d_vor = 0.0f;
+	float u_q_vor = 0.0f;
+
+
+	if (self->config_FOC.FOC_Select == 2U) {
+		omega_ref = (self->config_FOC.n_ref_rpm * 2.0f * M_PI * self->config_FOC.polePairs) / 60.0f;
+		iq_ref = uz_PI_Controller_sample(self->Controller_n, omega_ref, values->omega_el_rad_per_sec, self->ext_clamping);
+		reference->u_q_ref_Volts = uz_PI_Controller_sample(self->Controller_iq, iq_ref, values->i_q_Ampere, self->ext_clamping);
+	} else {
+		reference->u_q_ref_Volts = uz_PI_Controller_sample(self->Controller_iq, self->config_FOC.iq_ref_Ampere, values->i_q_Ampere, self->ext_clamping);
+	}
+	reference->u_d_ref_Volts = uz_PI_Controller_sample(self->Controller_id, self->config_FOC.id_ref_Ampere, values->i_d_Ampere, self->ext_clamping);
+	uz_FOC_linear_decouppling(values, self, &u_d_vor, &u_q_vor);
+	reference->u_d_ref_Volts = reference->u_d_ref_Volts + u_d_vor;
+	reference->u_q_ref_Volts = reference->u_q_ref_Volts + u_q_vor;
+	self->ext_clamping = uz_FOC_SpaceVector_Limitation(reference, values);
+	return (reference);
+
 }

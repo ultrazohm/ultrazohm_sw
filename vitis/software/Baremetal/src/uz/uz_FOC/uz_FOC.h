@@ -81,8 +81,9 @@ uz_FOC_VoltageReference* uz_FOC_VoltageReference_init(void);
 uz_FOC* uz_FOC_init(uz_FOC_config config_FOC, uz_PI_Controller_config config_id, uz_PI_Controller_config config_iq, uz_PI_Controller_config config_n);
 
 
-void uz_FOC_linear_decouppling(uz_FOC_ActualValues* values, uz_FOC_config config, float* u_d_vor, float* u_q_vor);
+void uz_FOC_linear_decouppling(uz_FOC_ActualValues* values, uz_FOC* self, float* u_d_vor, float* u_q_vor);
 bool uz_FOC_SpaceVector_Limitation(uz_FOC_VoltageReference* reference, uz_FOC_ActualValues* values);
 int uz_FOC_get_sign_of_value(float input);
+uz_FOC_VoltageReference* uz_FOC_Control(uz_FOC* self, uz_FOC_ActualValues* values, uz_FOC_VoltageReference* reference);
 
 #endif // UZ_FOC_H

@@ -2,7 +2,7 @@
 Saturation function
 ===================
 
-.. doxygenfunction:: uz_wavegen_saturation
+.. doxygenfunction:: uz_signals_saturation
 
 Example
 =======
@@ -11,9 +11,9 @@ Example
   :linenos:
   :caption: Example function call limit the input (saturation)
 
-  #include "uz_wavegen.h"
+  #include "uz_signals.h"
   int main(void) {
-     float output = uz_wavegen_saturation(2, 0.5, 0.2);
+     float output = uz_signals_saturation(2, 0.5, 0.2);
   }
 
 Description

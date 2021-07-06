@@ -202,14 +202,14 @@ void test_uz_FOC_SpaceVector_Limitation_output(void){
     }
 }
 
-void test_uz_FOC_SpaceVector_Limitation_output_limit(void){
+void test_uz_FOC_SpaceVector_Limitation_output_transition_to_limit(void){
     //Values for comparision from simulation
     uz_FOC_VoltageReference* reference = uz_FOC_VoltageReference_init();
     uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
     bool output = false;
     values->U_zk_Volts = 12.0f;
     float values_iq[11]={1.7f, 1.7f, 1.7f, 1.7f, 1.7f, 0.761f, 0.82f, 0.865f, 0.898f, 0.923f, 0.942f};
-	float values_omega[11]={825.67, 825.69, 825.72f, 825.735f, 825.75f,825.765f, 825.78f, 825.8f, 825.82f, 825.84f, 825.851f};
+	float values_omega[11]={825.67f, 825.69f, 825.72f, 825.735f, 825.75f,825.765f, 825.78f, 825.8f, 825.82f, 825.84f, 825.851f};
     float ud_in[11]={-0.436f, -0.436f, -0.436f, -0.436f, -0.436f, -0.436f,-0.436f, -0.436f, -0.436f, -0.436f, -0.436f};
     float uq_in[11]={6.91f, 6.91f, 6.91f, 6.91f, 6.91f, 6.91f, 6.91f, 6.91f, 6.91f, 6.91f, 6.92f};
     float ud_out[11]={-0.436f, -0.436f, -0.436f, -0.436f, -0.436f, -0.436f, -0.436f, -0.436f, -0.436f, -0.436f, -0.436f};
@@ -225,6 +225,31 @@ void test_uz_FOC_SpaceVector_Limitation_output_limit(void){
 	    TEST_ASSERT_EQUAL_FLOAT(uq_out[i],roundf(reference->u_q_ref_Volts*100)/100);
         TEST_ASSERT_EQUAL_INT(output_ref[i], output);
     }
-    values->U_zk_Volts = 24.0f;
+    //values->U_zk_Volts = 24.0f;
+}
+
+void test_uz_FOC_SpaceVector_Limitation_output_limited(void){
+    //Values for comparision from simulation
+    uz_FOC_VoltageReference* reference = uz_FOC_VoltageReference_init();
+    uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
+    bool output = false;
+    values->U_zk_Volts = 12.0f;
+    float values_iq[11]={1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f};
+	float values_omega[11]={833.0f, 833.0f, 833.0f, 833.0f, 833.0f, 833.0f, 833.0f, 833.0f, 833.0f, 833.0f, 833.0f};
+    float ud_in[11]={-0.294f, -0.294f, -0.294f, -0.294f, -0.294f, -0.294f,-0.294f, -0.294f, -0.294f, -0.294f, -0.294f};
+    float uq_in[11]={11.4f, 11.4f, 11.4f, 11.4f, 11.4f, 11.4f, 11.4f, 11.4f, 11.4f, 11.4f, 11.4f};
+    float ud_out[11]={-0.294f, -0.294f, -0.294f, -0.294f, -0.294f, -0.294f, -0.294f, -0.294f, -0.294f, -0.294f, -0.294f};
+    float uq_out[11]={6.92f, 6.92f, 6.92f, 6.92f, 6.92f, 6.92f, 6.92f, 6.92f, 6.92f, 6.92f, 6.92f}; 
+    float output_ref[11]={true, true, true, true, true, true, true, true, true, true, true};
+    for(int i=0;i<11;i++){
+        values->i_q_Ampere = values_iq[i];
+        values->omega_el_rad_per_sec = values_omega[i];
+        reference->u_d_ref_Volts = ud_in[i];
+        reference->u_q_ref_Volts = uq_in[i];
+        output = uz_FOC_SpaceVector_Limitation(reference, values);
+		TEST_ASSERT_EQUAL_FLOAT(ud_out[i],roundf(reference->u_d_ref_Volts*1000)/1000);
+	    TEST_ASSERT_EQUAL_FLOAT(uq_out[i],roundf(reference->u_q_ref_Volts*100)/100);
+        TEST_ASSERT_EQUAL_INT(output_ref[i], output);
+    }
 }
 #endif // TEST

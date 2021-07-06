@@ -23,7 +23,6 @@ Description
 ===========
 
 Limits an input signal to the specified upper and lower saturation values.
-Doe not generate a waveform by itself.
 
 .. tikz:: saturation wave
   :align: left

@@ -4,11 +4,13 @@
 Signals
 =======
 
+A collection of common signal processing and manipulation functions.
+
+Functions
+=========
+
 ..	toctree::
-    :maxdepth: 2
-    :hidden:
+    :maxdepth: 1
     :glob:
   
     *
-
-Common signal processing / manipulation.

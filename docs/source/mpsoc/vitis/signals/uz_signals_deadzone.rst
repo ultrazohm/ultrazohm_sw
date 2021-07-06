@@ -1,6 +1,6 @@
-=================
-DeadZone function
-=================
+==================
+Dead zone function
+==================
 
 .. doxygenfunction:: uz_signals_dead_zone
 
@@ -22,7 +22,7 @@ Example
 Description
 ===========
 
-The Dead Zone generates zero output within a specified region.
+The dead zone function outputs zero output within a specified region and the input subtracted from the threshold otherwise.
 
 .. list-table:: Deadzone
    :widths: 40 25
@@ -37,7 +37,7 @@ The Dead Zone generates zero output within a specified region.
    * - input < lower_threshold
      - input - lower_threshold
 
-.. tikz:: Get_sign function 
+.. tikz:: Dead zone function 
   :align: left
 
   \draw [densely dotted] (0,0)  -- +(6,0);

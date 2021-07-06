@@ -177,18 +177,6 @@ void test_uz_wavegen_triangle_offset_output(void){
     TEST_ASSERT_EQUAL_FLOAT(0.5 * amplitude + offset, output); 
 }
 
-void test_uz_wavegen_saturation_limit(void){
-    TEST_ASSERT_FAIL_ASSERT(uz_wavegen_saturation(1,0.5,1.0));
-}
-
-void test_uz_wavegen_saturation_output(void){
-    
-    float output = uz_wavegen_saturation(2, 0.5, 0.2);
-    TEST_ASSERT_EQUAL_FLOAT(0.5, output); 
-    float output2 = uz_wavegen_saturation(0, 0.5, 0.2);
-    TEST_ASSERT_EQUAL_FLOAT(0.2, output2); 
-}
-
 void test_uz_wavegen_white_noise_zero_amplitude(void){
     TEST_ASSERT_FAIL_ASSERT(uz_wavegen_white_noise(0));
 }

@@ -59,6 +59,17 @@ void test_uz_PI_Controller_sample_output(void){
 	}
 }
 
+void test_uz_PI_Controller_sample_ext_clamping_output(void){
+    uz_PI_Controller* variables = uz_PI_Controller_init(config);
+	//Compare values with Simulink Simulation
+	float values_iq[11]={1.042f, 1.042f, 1.042f, 1.042f, 1.042f, 1.042f, 1.042f, 1.042f, 1.042f, 1.042f, 1.042f};
+	float values_output[11]={4.44f, 4.44f, 4.44f, 4.44f, 4.44f, 4.44f, 4.44f, 4.44f, 4.44f, 4.44f, 4.44f};
+	bool ext_clamping[11] = {true, true, true, true, true, true, true, true, true, true, true};
+    for(int i=0;i<11;i++){
+		TEST_ASSERT_EQUAL_FLOAT(values_output[i],roundf(uz_PI_Controller_sample(variables,1.7f,values_iq[i],ext_clamping[i])*100)/100);
+	}
+}
+
 void test_uz_PI_Controller_reset_assert_NULL(void){
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_reset(NULL));
 }

@@ -52,7 +52,7 @@ The dead zone function outputs zero output within a specified region and the inp
   \draw[->](0,-1)--(0,1.5);
   \draw[color=orange] (0,0) {(0,-0.5) -- ++(1.5,0.5) -- ++(3,0)-- ++(1.5,0.5)};
   \draw[->](6,-1)--(6,1.5);
-  \node[color=red, font=\footnotesize] at (7.2,0.5){upper threshold};
+  \node[color=red, font=\footnotesize] at (7.23,0.5){upper threshold};
   \node[color=red, font=\footnotesize] at (7.2,-0.5){lower threshold};
   \node[below,color=orange,font=\footnotesize] at (3.75,-1){output};
   \draw[->] (2.75,-1.25) -- (3.2,-1.25);

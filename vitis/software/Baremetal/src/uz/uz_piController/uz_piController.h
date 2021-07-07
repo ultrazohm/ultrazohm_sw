@@ -12,11 +12,11 @@
  * @brief Configuration struct for PI-Controller. Pass to init function. Accessible by the user
  */
 typedef struct uz_PI_Controller_config {
-	float Kp;
-	float Ki;
-	float samplingTime_sec;
-	float upper_threshold;
-	float lower_threshold;
+	float Kp; /**< Proportional gain for PI-Controller. Must be greater or equal than 0.0f */
+	float Ki; /**< Integral gain for PI-Controller. Must be greater or equal than 0.0f */
+	float samplingTime_sec; /**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
+	float upper_threshold; /**< Upper threshold for the dead zone. Must be greater than lower threshold */
+	float lower_threshold; /**< Lower threshold for the dead zone */
 } uz_PI_Controller_config;
 
 /**

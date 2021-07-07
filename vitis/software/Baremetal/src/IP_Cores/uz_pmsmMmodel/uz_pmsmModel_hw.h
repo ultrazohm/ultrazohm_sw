@@ -24,7 +24,7 @@ void uz_pmsmModel_hw_write_L_q(uint32_t base_address, float L_q);
 
 // Mechanical configuration parameters
 void uz_pmsmModel_hw_write_friction_coefficient(uint32_t base_address, float mu);
-void uz_pmsmModel_hw_write_coloumb_friction_constant(uint32_t base_address, float m_c);
+void uz_pmsmModel_hw_write_coulomb_friction_constant(uint32_t base_address, float m_c);
 void uz_pmsmModel_hw_write_inertia(uint32_t base_address, float intertia);
 
 // Determine if omega mech is a input or the mechanical system is simulated with a simple friction model

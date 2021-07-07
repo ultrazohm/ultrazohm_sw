@@ -43,10 +43,10 @@ uz_pmsmModel_t *uz_pmsmModel_init(struct uz_pmsmModel_config_t config)
     {
         config.inertia = 1.0f;              // If mechanical system is not simulated, set inertia to 1.0 to prevent division by zero
         config.friction_coefficient = 1.0f; // Random default values
-        config.coloumb_friction_constant = 0.0f;
+        config.coulomb_friction_constant = 0.0f;
     }
     uz_assert(config.inertia > 0.0f);
-    uz_assert(config.coloumb_friction_constant >= 0.0f);
+    uz_assert(config.coulomb_friction_constant >= 0.0f);
     uz_assert(config.friction_coefficient >= 0.0f);
 
     uz_pmsmModel_t *self = uz_pmsmModel_allocation();
@@ -111,7 +111,7 @@ static void write_config_to_pl(uz_pmsmModel_t *self)
     uz_pmsmModel_hw_write_L_d(self->config.base_address, self->config.L_d);
     uz_pmsmModel_hw_write_L_q(self->config.base_address, self->config.L_q);
     uz_pmsmModel_hw_write_friction_coefficient(self->config.base_address, self->config.friction_coefficient);
-    uz_pmsmModel_hw_write_coloumb_friction_constant(self->config.base_address, self->config.coloumb_friction_constant);
+    uz_pmsmModel_hw_write_coulomb_friction_constant(self->config.base_address, self->config.coulomb_friction_constant);
     uz_pmsmModel_hw_write_inertia(self->config.base_address, self->config.inertia);
     uz_pmsmModel_hw_write_simulate_mechanical(self->config.base_address, self->config.simulate_mechanical_system);
 }

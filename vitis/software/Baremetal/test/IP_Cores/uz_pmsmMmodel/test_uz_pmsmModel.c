@@ -18,7 +18,7 @@ struct uz_pmsmModel_config_t config = {
     .psi_pm = 0.05f,
     .polepairs = 2.0f,
     .inertia = 0.001f,
-    .coloumb_friction_constant = 0.01f,
+    .coulomb_friction_constant = 0.01f,
     .friction_coefficient = 0.001f};
 
 void setUp(void)
@@ -41,14 +41,14 @@ uz_pmsmModel_t *successful_init(struct uz_pmsmModel_config_t configuration)
     if (configuration.simulate_mechanical_system)
     {
         uz_pmsmModel_hw_write_friction_coefficient_Expect(BASE_ADDRESS, configuration.friction_coefficient);
-        uz_pmsmModel_hw_write_coloumb_friction_constant_Expect(BASE_ADDRESS, configuration.coloumb_friction_constant);
+        uz_pmsmModel_hw_write_coulomb_friction_constant_Expect(BASE_ADDRESS, configuration.coulomb_friction_constant);
         uz_pmsmModel_hw_write_inertia_Expect(BASE_ADDRESS, configuration.inertia);
     }
     else
     {
         // if mechanical part is not simulated, expect the hw write functions to be called with the default values
         uz_pmsmModel_hw_write_friction_coefficient_Expect(BASE_ADDRESS, 1.0f);
-        uz_pmsmModel_hw_write_coloumb_friction_constant_Expect(BASE_ADDRESS, 0.0f);
+        uz_pmsmModel_hw_write_coulomb_friction_constant_Expect(BASE_ADDRESS, 0.0f);
         uz_pmsmModel_hw_write_inertia_Expect(BASE_ADDRESS, 1.0f);
     }
     uz_pmsmModel_hw_write_simulate_mechanical_Expect(BASE_ADDRESS, configuration.simulate_mechanical_system);
@@ -78,6 +78,7 @@ void test_uz_pmsmModel_reset_model(void)
 
 void test_uz_pmsmModel_struct_api_usage_without_mechanical(void)
 {
+    // Note that for the driver and tests it does not make a difference if simulate_mechanical_system is true or false, only the hardware changes!
     config.simulate_mechanical_system = false;
     uz_pmsmModel_t *test_instance = successful_init(config);
 

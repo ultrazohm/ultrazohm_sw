@@ -50,7 +50,7 @@ void uz_pmsmModel_hw_write_friction_coefficient(uint32_t base_address, float mu)
     uz_axi_write_float(base_address + mu_Data_uz_pmsm_model, mu);
 }
 
-void uz_pmsmModel_hw_write_coloumb_friction_constant(uint32_t base_address, float m_c)
+void uz_pmsmModel_hw_write_coulomb_friction_constant(uint32_t base_address, float m_c)
 {
     uz_assert_not_zero(base_address);
     uz_axi_write_float(base_address + M_n0_Data_uz_pmsm_model, m_c);

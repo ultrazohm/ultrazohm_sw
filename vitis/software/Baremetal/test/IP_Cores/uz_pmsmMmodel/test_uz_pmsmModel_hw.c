@@ -68,10 +68,10 @@ void test_uz_pmsmModel_hw_write_friction_coefficient(void){
     uz_pmsmModel_hw_write_friction_coefficient(BASE_ADDRESS,mu);
 }
 
-void test_uz_pmsmModel_hw_write_coloumb_friction(void){
+void test_uz_pmsmModel_hw_write_coulomb_friction(void){
     float m_c=1.1f;
     uz_axi_write_float_Expect(BASE_ADDRESS+M_n0_Data_uz_pmsm_model,m_c);
-    uz_pmsmModel_hw_write_coloumb_friction_constant(BASE_ADDRESS,m_c);
+    uz_pmsmModel_hw_write_coulomb_friction_constant(BASE_ADDRESS,m_c);
 }
 
 void test_uz_pmsmModel_hw_write_r1(void){

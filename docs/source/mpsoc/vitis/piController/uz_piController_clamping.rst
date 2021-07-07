@@ -1,6 +1,6 @@
-==============================
-PI-Controller clamping circuit
-==============================
+=================
+Clamping function
+=================
 
 .. doxygenfunction:: uz_PI_Controller_Clamping_Circuit
 

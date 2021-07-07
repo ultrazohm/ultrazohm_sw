@@ -1,6 +1,6 @@
-====================
-PI-Controller set Kp
-====================
+===================
+Set new Kp function
+===================
 
 .. doxygenfunction:: uz_PI_Controller_set_Kp
 

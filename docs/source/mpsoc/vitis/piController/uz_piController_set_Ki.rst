@@ -1,6 +1,6 @@
-====================
-PI-Controller set Ki
-====================
+===================
+Set new Ki function
+===================
 
 .. doxygenfunction:: uz_PI_Controller_set_Ki
 

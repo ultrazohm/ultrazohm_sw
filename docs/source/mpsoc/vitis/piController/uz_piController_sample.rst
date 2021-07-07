@@ -1,8 +1,8 @@
 .. _uz_piController_sample:
 
-====================
-PI-Controller sample
-====================
+===============
+Sample function
+===============
 
 .. doxygenfunction:: uz_PI_Controller_sample
 

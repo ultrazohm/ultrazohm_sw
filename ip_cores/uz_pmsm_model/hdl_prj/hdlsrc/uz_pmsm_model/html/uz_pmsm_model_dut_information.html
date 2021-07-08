@@ -191,10 +191,7 @@ boolean
 </tr>
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:30')" name="code2model" class="code2model">
-u_d
-</a>
-
+input_signals_0
 </td>
 <td align="center" valign="top" style="border-style: none">
 single
@@ -206,10 +203,7 @@ single
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:31')" name="code2model" class="code2model">
-u_q
-</a>
-
+input_signals_1
 </td>
 <td align="center" valign="top" style="border-style: none">
 single
@@ -221,10 +215,7 @@ single
 </tr>
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:246')" name="code2model" class="code2model">
-R1
-</a>
-
+input_signals_2
 </td>
 <td align="center" valign="top" style="border-style: none">
 single
@@ -236,10 +227,7 @@ single
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:247')" name="code2model" class="code2model">
-polepairs
-</a>
-
+input_signals_3
 </td>
 <td align="center" valign="top" style="border-style: none">
 single
@@ -250,51 +238,6 @@ single
 
 </tr>
 <tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:248')" name="code2model" class="code2model">
-psi_pm
-</a>
-
-</td>
-<td align="center" valign="top" style="border-style: none">
-single
-</td>
-<td align="center" valign="top" style="border-style: none">
-32
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:249')" name="code2model" class="code2model">
-recirprocal_L_q
-</a>
-
-</td>
-<td align="center" valign="top" style="border-style: none">
-single
-</td>
-<td align="center" valign="top" style="border-style: none">
-32
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:250')" name="code2model" class="code2model">
-reciprocal_L_d
-</a>
-
-</td>
-<td align="center" valign="top" style="border-style: none">
-single
-</td>
-<td align="center" valign="top" style="border-style: none">
-32
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 <a href="matlab:coder.internal.code2model('uz_pmsm_model:251')" name="code2model" class="code2model">
 reset_integrators
@@ -309,33 +252,18 @@ boolean
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:293')" name="code2model" class="code2model">
-mu
-</a>
-
-</td>
-<td align="center" valign="top" style="border-style: none">
-single
-</td>
-<td align="center" valign="top" style="border-style: none">
-32
-</td>
-
-</tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:294')" name="code2model" class="code2model">
-M_n0
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:359')" name="code2model" class="code2model">
+simulate_mechanical
 </a>
 
 </td>
 <td align="center" valign="top" style="border-style: none">
-single
+boolean
 </td>
 <td align="center" valign="top" style="border-style: none">
-32
+1
 </td>
 
 </tr>
@@ -356,8 +284,8 @@ single
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:358')" name="code2model" class="code2model">
-in_omega_mech
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:293')" name="code2model" class="code2model">
+mu
 </a>
 
 </td>
@@ -371,23 +299,83 @@ single
 </tr>
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:359')" name="code2model" class="code2model">
-simulate_mechanical
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:294')" name="code2model" class="code2model">
+M_n0
 </a>
 
 </td>
 <td align="center" valign="top" style="border-style: none">
-boolean
+single
 </td>
 <td align="center" valign="top" style="border-style: none">
-1
+32
 </td>
 
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:364')" name="code2model" class="code2model">
-load_torque
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:250')" name="code2model" class="code2model">
+reciprocal_L_d
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:249')" name="code2model" class="code2model">
+reciprocal_L_q
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:246')" name="code2model" class="code2model">
+R1
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:247')" name="code2model" class="code2model">
+polepairs
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:248')" name="code2model" class="code2model">
+psi_pm
 </a>
 
 </td>
@@ -431,10 +419,7 @@ boolean
 </tr>
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:50')" name="code2model" class="code2model">
-i_d
-</a>
-
+output_signals_0
 </td>
 <td align="center" valign="top" style="border-style: none">
 single
@@ -446,10 +431,7 @@ single
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:51')" name="code2model" class="code2model">
-i_q
-</a>
-
+output_signals_1
 </td>
 <td align="center" valign="top" style="border-style: none">
 single
@@ -461,10 +443,7 @@ single
 </tr>
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:52')" name="code2model" class="code2model">
-torque
-</a>
-
+output_signals_2
 </td>
 <td align="center" valign="top" style="border-style: none">
 single
@@ -476,10 +455,7 @@ single
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:322')" name="code2model" class="code2model">
-omega_mech
-</a>
-
+output_signals_3
 </td>
 <td align="center" valign="top" style="border-style: none">
 single

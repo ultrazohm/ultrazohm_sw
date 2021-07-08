@@ -43,15 +43,16 @@ legend('U_q', 'i_q');
 % 2: i_q
 % 3: i_d
 % 4: u_d
-A=readmatrix('with_mechanical_wavegen-step.csv');
-measurements=A(175509:end,:);
+A=readmatrix('vector_core.csv');
+measurements=A(1:100000,:);
 first_nonzero=find(measurements(:,4),1,'first');
+first_nonzero=first_nonzero-1;
 time_offset=measurements(first_nonzero,1)-0.2;
 measurements(:,1)=measurements(:,1)-time_offset;
-measurment.id=measurements(first_nonzero-1:end,3);
-measurment.iq=measurements(first_nonzero-1:end,2);
-measurment.time=measurements(first_nonzero-1:end,1);
-measurment.ud=measurements(first_nonzero-1:end,4);
+measurment.id=measurements(first_nonzero:end,3);
+measurment.iq=measurements(first_nonzero:end,2);
+measurment.time=measurements(first_nonzero:end,1);
+measurment.ud=measurements(first_nonzero:end,4);
 measurment.uq=-measurment.ud;
 %%
 figure(2)

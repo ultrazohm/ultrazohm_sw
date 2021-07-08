@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>d5bb0a6e</spirit:value>
+            <spirit:value>6b9e0536</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>d5bb0a6e</spirit:value>
+            <spirit:value>6b9e0536</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1128,6 +1128,10 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_view_fileset</spirit:name>
       <spirit:file>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_pkg.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/vhdl/uz_pmsm_model_reset_sync.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1210,11 +1214,16 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_pmsm_model.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_230faa52</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_91b44d1d</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:name>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_pkg.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_pmsm_model_reset_sync.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
@@ -1341,6 +1350,10 @@
         <spirit:userFileType>image</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>doc/vector_strobe.jpg</spirit:name>
+        <spirit:userFileType>image</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>doc/uz_pmsm_model_ip_core_report.html</spirit:name>
         <spirit:userFileType>html</spirit:userFileType>
       </spirit:file>
@@ -1392,14 +1405,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pmsm_model</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2106290930</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-06-29T07:30:17Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2107082213</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-07-08T20:13:58Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="28409b6f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="7139251d"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="eae9d813"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="f0a50dee"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="2be5b0a2"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="49bb2f57"/>
     </xilinx:packagingInfo>

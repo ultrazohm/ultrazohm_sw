@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-2941
+2945
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-51430
+51558
 </td>
 
 </tr>
@@ -303,7 +303,7 @@ Adders/Subtractors (375)
 11x11-bit Subtractor 							: 12
 </span>
 <br /><h5>
-Registers (2941)
+Registers (2945)
 </h5>
 <span style="font-family:monospace">
 1-bit Register 							: 1377
@@ -348,7 +348,7 @@ Registers (2941)
 12-bit Register 							: 8
 </span>
 <br /><span style="font-family:monospace">
-32-bit Register 							: 16
+32-bit Register 							: 20
 </span>
 <br /><h5>
 Multiplexers (5021)
@@ -447,7 +447,7 @@ Number of I/O Bits (518)
 Number of Input Bits: 389
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="7fbaa64f-a7df-40bc-a5af-d82878e7afb4" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="e43d334c-f572-42b2-83fc-8cdab7c02606" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -458,14 +458,56 @@ reset: 1 bit
 clk_enable: 1 bit
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:30')" name="code2model" class="code2model">
-u_d
+input_signals_0: 32 bits
+</li>
+<li>
+input_signals_1: 32 bits
+</li>
+<li>
+input_signals_2: 32 bits
+</li>
+<li>
+input_signals_3: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:251')" name="code2model" class="code2model">
+reset_integrators
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:359')" name="code2model" class="code2model">
+simulate_mechanical
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:295')" name="code2model" class="code2model">
+reciprocal_J
 </a>
 : 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:31')" name="code2model" class="code2model">
-u_q
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:293')" name="code2model" class="code2model">
+mu
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:294')" name="code2model" class="code2model">
+M_n0
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:250')" name="code2model" class="code2model">
+reciprocal_L_d
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:249')" name="code2model" class="code2model">
+reciprocal_L_q
 </a>
 : 32 bits
 </li>
@@ -487,63 +529,9 @@ psi_pm
 </a>
 : 32 bits
 </li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:249')" name="code2model" class="code2model">
-recirprocal_L_q
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:250')" name="code2model" class="code2model">
-reciprocal_L_d
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:251')" name="code2model" class="code2model">
-reset_integrators
-</a>
-: 1 bit
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:293')" name="code2model" class="code2model">
-mu
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:294')" name="code2model" class="code2model">
-M_n0
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:295')" name="code2model" class="code2model">
-reciprocal_J
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:358')" name="code2model" class="code2model">
-in_omega_mech
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:359')" name="code2model" class="code2model">
-simulate_mechanical
-</a>
-: 1 bit
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:364')" name="code2model" class="code2model">
-load_torque
-</a>
-: 32 bits
-</li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '7fbaa64f-a7df-40bc-a5af-d82878e7afb4')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'e43d334c-f572-42b2-83fc-8cdab7c02606')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -560,28 +548,16 @@ Number of Output Bits: 129
 ce_out: 1 bit
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:50')" name="code2model" class="code2model">
-i_d
-</a>
-: 32 bits
+output_signals_0: 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:51')" name="code2model" class="code2model">
-i_q
-</a>
-: 32 bits
+output_signals_1: 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:52')" name="code2model" class="code2model">
-torque
-</a>
-: 32 bits
+output_signals_2: 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:322')" name="code2model" class="code2model">
-omega_mech
-</a>
-: 32 bits
+output_signals_3: 32 bits
 </li>
 
 </ul>

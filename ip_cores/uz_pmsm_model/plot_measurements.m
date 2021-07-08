@@ -1,4 +1,4 @@
-A=readmatrix('new_core2.csv');
+A=readmatrix('vector_core.csv');
 
 figure
 subplot(2,1,1)

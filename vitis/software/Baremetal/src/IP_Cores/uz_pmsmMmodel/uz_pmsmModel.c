@@ -83,6 +83,7 @@ void uz_pmsmModel_set_inputs(uz_pmsmModel_t *self, struct uz_pmsmModel_inputs_t 
     uz_pmsmModel_hw_write_u_q(self->config.base_address, inputs.u_q_V);
     uz_pmsmModel_hw_write_load_torque(self->config.base_address,inputs.load_torque);
     uz_pmsmModel_hw_write_omega_mech(self->config.base_address, inputs.omega_mech_1_s);
+    uz_pmsmModel_hw_write_input_strobe(self->config.base_address);
 }
 
 struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self)
@@ -94,6 +95,7 @@ struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self)
         .i_q_A = 0.0f,
         .torque_Nm = 0.0f,
         .omega_mech_1_s = 0.0f};
+    uz_pmsmModel_hw_write_output_strobe(self->config.base_address);
     outputs.i_d_A = uz_pmsmModel_hw_read_i_d(self->config.base_address);
     outputs.i_q_A = uz_pmsmModel_hw_read_i_q(self->config.base_address);
     outputs.torque_Nm = uz_pmsmModel_hw_read_torque(self->config.base_address);

@@ -4,6 +4,7 @@
 #include "test_assert_with_exception.h"
 #include "uz_FOC.h"
 TEST_FILE("uz_PI_controller.c")
+TEST_FILE("uz_signals.c")
 
 
 uz_PI_Controller_config config_id = {
@@ -100,18 +101,6 @@ void test_uz_FOC_init_FOC_select_zero(void){
     config_FOC.FOC_Select = 0U;
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_init(config_FOC,config_id, config_iq, config_n));
     config_FOC.FOC_Select = 1U;
-}
-
-void test_uz_FOC_get_sign_of_value_negative(void){
-    TEST_ASSERT_EQUAL_INT(-1,uz_FOC_get_sign_of_value(-20));
-}
-
-void test_uz_FOC_get_sign_of_value_positive(void){
-    TEST_ASSERT_EQUAL_INT(1,uz_FOC_get_sign_of_value(20));
-}
-
-void test_uz_FOC_get_sign_of_value_zero(void){
-    TEST_ASSERT_EQUAL_INT(0,uz_FOC_get_sign_of_value(0));
 }
 
 void test_uz_FOC_linear_decouppling_values_NULL(void){

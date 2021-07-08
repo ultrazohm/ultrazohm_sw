@@ -35,11 +35,10 @@ struct uz_pmsmModel_config_t
  */
 struct uz_pmsmModel_outputs_t
 {
-
-    float i_d_A; /** Current in d-axis in A */
-    float i_q_A; /** Current in q-Axis in A */
-    float torque_Nm; /** Inner torque of PMSM in Nm*/
-    float omega_mech_1_s; /** Rotational speed of PMSM in 1/s*/
+    float i_d_A; /**< Current in d-axis in A */
+    float i_q_A; /**< Current in q-Axis in A */
+    float torque_Nm; /**< Inner torque of PMSM in Nm*/
+    float omega_mech_1_s; /**< Rotational speed of PMSM in 1/s*/
 };
 
 /**
@@ -48,10 +47,10 @@ struct uz_pmsmModel_outputs_t
  */
 struct uz_pmsmModel_inputs_t
 {
-    float u_d_V; /** Voltage in d-axis in V */
-    float u_q_V; /** Voltage in q-axis in V */
-    float load_torque; /** Applied load torque in Nm */
-    float omega_mech_1_s; /** Rotational speed of PMSM in 1/s */
+    float u_d_V; /**< Voltage in d-axis in V */
+    float u_q_V; /**< Voltage in q-axis in V */
+    float load_torque; /**< Applied load torque in Nm */
+    float omega_mech_1_s; /**< Rotational speed of PMSM in 1/s */
 };
 
 /**

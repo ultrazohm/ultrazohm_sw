@@ -15,8 +15,8 @@ typedef struct uz_PI_Controller_config {
 	float Kp; /**< Proportional gain for PI-Controller. Must be greater or equal than 0.0f */
 	float Ki; /**< Integral gain for PI-Controller. Must be greater or equal than 0.0f */
 	float samplingTime_sec; /**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
-	float upper_threshold; /**< Upper threshold for the dead zone. Must be greater than lower threshold */
-	float lower_threshold; /**< Lower threshold for the dead zone */
+	float upper_limit; /**< Upper limit for the output limitation. Must be greater than lower limit */
+	float lower_limit; /**< Lower limit for the output limitation */
 } uz_PI_Controller_config;
 
 /**
@@ -42,7 +42,7 @@ uz_PI_Controller* uz_PI_Controller_init(uz_PI_Controller_config config);
  * @param lower_threshold min limit for deadzone
  * @return Returns true if clamping is necessary
  */
-bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float upper_threshold, float lower_threshold);
+bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float upper_limit, float lower_limit);
 
 /**
  * @brief Calculates the last sample of the PI-Controller

@@ -10,8 +10,8 @@ uz_PI_Controller_config config = {
     .Kp = 10.0f,
     .Ki = 10.0f,
     .samplingTime_sec = 0.001f,
-    .upper_threshold = 10.0f,
-    .lower_threshold = -10.0f
+    .upper_limit = 10.0f,
+    .lower_limit = -10.0f
 };
 
 void test_uz_PI_Controller_init_assert_Ki_negative(void){
@@ -38,11 +38,11 @@ void test_uz_PI_Controller_init_assert_samplingTime_zero(void){
 }
 
 void test_uz_PI_Controller_init_assert_upper_lower_threshold(void){
-    config.upper_threshold = -10.2f;
-    config.lower_threshold = 3.4f;
+    config.upper_limit = -10.2f;
+    config.lower_limit = 3.4f;
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_init(config));
-    config.upper_threshold = 10.0f;
-    config.lower_threshold = -10.0f;
+    config.upper_limit = 10.0f;
+    config.lower_limit = -10.0f;
 
 }
 void test_uz_PI_Controller_sample_NULL(void){

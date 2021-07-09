@@ -35,14 +35,14 @@ uz_PI_Controller* uz_PI_Controller_init(uz_PI_Controller_config config) {
     uz_assert(config.Ki >= 0.0f);
     uz_assert(config.Kp >= 0.0f);
     uz_assert(config.samplingTime_sec > 0.0f);
-    uz_assert(config.upper_threshold > config.lower_threshold);
+    uz_assert(config.upper_limit > config.lower_limit);
 	self->config = config;
 	return (self);
 }
 
-bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float upper_threshold, float lower_threshold) {
+bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float upper_limit, float lower_limit) {
 	bool output = false;
-	float value_after_deadzone = uz_signals_dead_zone(preSat, upper_threshold, lower_threshold);
+	float value_after_deadzone = uz_signals_dead_zone(preSat, upper_limit, lower_limit);
 	float sign_after_deadzone = uz_signals_get_sign_of_value(value_after_deadzone);
 	float sign_preIntegrator = uz_signals_get_sign_of_value(preIntegrator);
 	if ( (0.0f != value_after_deadzone) && (sign_after_deadzone == sign_preIntegrator) ) {
@@ -69,7 +69,7 @@ float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, floa
 	self->error = referenceValue - actualValue;
 	self->P_sum = self->error * self->config.Kp;
 	preSat = self->I_sum + self->P_sum;
-	self->int_clamping = uz_PI_Controller_Clamping_Circuit(preIntegrator, preSat, self->config.upper_threshold, self->config.lower_threshold);
+	self->int_clamping = uz_PI_Controller_Clamping_Circuit(preIntegrator, preSat, self->config.upper_limit, self->config.lower_limit);
 	output = preSat;
 	return (output);
 }

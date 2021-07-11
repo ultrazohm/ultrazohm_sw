@@ -209,7 +209,7 @@ Example usage
 =============
 
 Vivado
-******
+------
 
 - Add IP-Core to Vivado and connect to AXI (smartconnect)
 - Source IPCORE_CLK with a :math:`100\,MHz` clock!
@@ -223,8 +223,127 @@ Vivado
 
    Example connection of PMSM IP-Core
 
+
 Vitis
-*****
+-----
+
+- Init the driver in main and couple the base address of the instance with it
+
+.. code-block:: c
+  :caption: Changes in ``main.c`` (R5)
+
+  #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+  #include "xparameters.h"
+  uz_pmsmModel_t *pmsm=NULL;
+
+  int main(void) {
+  // other code...
+  struct uz_plantPT1_config_t config={
+    .base_address=XPAR_UZ_PLANTMODEL_PT1_0_BASEADDR,
+    .ip_core_frequency_Hz=100000000U,
+    .time_constant=1.0f,
+    .gain=1.0f
+  };
+  pt1=uz_plantPT1_init(config);
+  uz_plantPT1_set_input(pt1,intput);
+  
+  struct uz_pmsmModel_config_t pmsm_config={
+    .base_address=XPAR_UZ_PMSM_MODEL_0_BASEADDR,
+    .ip_core_frequency_Hz=100000000,
+      .simulate_mechanical_system = true,
+      .r_1 = 2.1f,
+      .L_d = 0.03f,
+      .L_q = 0.05f,
+      .psi_pm = 0.05f,
+      .polepairs = 2.0f,
+      .inertia = 0.001,
+      .coulomb_friction_constant = 0.01f,
+      .friction_coefficient = 0.001f};
+  
+  pmsm=uz_pmsmModel_init(pmsm_config);
+  // before ISR Init!
+  // more code of main
+
+- Read and write the inputs in ``isr.c``
+- Add before ISR with global scope to use the driver and :ref:`wave_generator`:
+
+.. code-block:: c
+  :caption: Changes in ``isr.c``
+
+  #include "../uz/uz_wavegen/uz_wavegen.h"
+  #include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+  extern uz_pmsmModel_t *pmsm;
+
+  float i_d_soll=0.0f;
+  float i_q_soll=0.0f;
+  struct uz_pmsmModel_inputs_t pmsm_inputs={
+      .omega_mech_1_s=0.0f,
+      .u_d_V=0.0f,
+      .u_q_V=0.0f,
+      .load_torque=0.0f
+  };
+  
+  struct uz_pmsmModel_outputs_t pmsm_outputs={
+      .i_d_A=0.0f,
+      .i_q_A=0.0f,
+      .torque_Nm=0.0f,
+      .omega_mech_1_s=0.0f
+  };
+
+  void ISR_Control(void *data){
+  // other code
+  pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+  pmsm_inputs.u_q_V=uz_wavegen_pulse(10.0f, 0.10f, 0.5f);
+  pmsm_inputs.u_d_V=-pmsm_inputs.u_q_V;
+  uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+  // [...]
+  }
+
+Javascope
+---------
+
+- Change in your Javascope folder as well (``javascope.h``)!
+
+.. code-block:: c
+  :caption: Adjust ``JS_OberservableData`` enum in ``javascope.h`` (R5) to measure pmsm_outputs
+
+  // Do not change the first (zero) and last (end) entries.
+  enum JS_OberservableData {
+    JSO_ZEROVALUE=0,
+    JSO_i_q,
+    JSO_i_d,
+    JSO_omega,
+    JSO_u_d,
+    JSO_ENDMARKER
+  };
+
+.. code-block:: c
+  :caption: Adjust ``JavaScope_initalize`` function in ``javascope.c`` (R5) to measure pmsm_outputs
+    
+    #include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+    extern struct uz_pmsmModel_outputs_t pmsm_outputs;
+    extern struct uz_pmsmModel_inputs_t pmsm_inputs;
+
+    int JavaScope_initalize(DS_Data* data){
+    // existing code
+    // [...]
+    // Store every observable signal into the Pointer-Array.
+    // With the JavaScope, 4 signals can be displayed simultaneously
+    // Changing between the observable signals is possible at runtime in the JavaScope.
+    // the addresses in Global_Data do not change during runtime, this can be done in the init
+    js_ptr_arr[JSO_i_q] = &pmsm_outputs.i_d_A;
+    js_ptr_arr[JSO_i_d] = &pmsm_outputs.omega_mech_1_s;
+    js_ptr_arr[JSO_omega] = &pmsm_outputs.i_q_A;
+    js_ptr_arr[JSO_u_d] = &pmsm_inputs.u_d_V;
+    return Status;
+    }
+
+
+
+
+
+
+
 
 Comparison between reference and IP-Core
 ****************************************
@@ -232,15 +351,15 @@ Comparison between reference and IP-Core
 - Program UltraZohm with included PMSM IP-Core and software as described above
 - Start Javascope
 - Measure and log data
-- Copy measured ``.csv`` data to ultrazohm_sw/ip-cores/uz_pmsm_model
+- Copy measured ``.csv`` data to ``ultrazohm_sw/ip-cores/uz_pmsm_model``
 - Rename it to ``measurment_with_speed.csv``
-- 
+- Run ``compare_simulation_to_measurement.m`` in ``ultrazohm_sw/ip-cores/uz_pmsm_model``
 
 .. figure:: referance_ip_core_measurment_comparision.svg
    :width: 800
    :align: center
 
-   Comparision of step response between reference model and IP-Core implementation measured by Javascope
+   Comparison of step response between reference model and IP-Core implementation measured by Javascope
 
 
 Driver reference

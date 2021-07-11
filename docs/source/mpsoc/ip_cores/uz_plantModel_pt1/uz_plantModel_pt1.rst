@@ -44,27 +44,6 @@ IP-Core Hardware
 - The time constant is written as its reciprocal to the AXI register to make the calculations on hardware simple (handled by the driver!)
 - The IP-Core uses an oversampling factor of 100
 
-
-Driver reference
-================
-
-.. doxygentypedef:: uz_plantPT1_t
-
-.. doxygenstruct:: uz_plantPT1_config_t
-  :members:
-
-.. doxygenfunction:: uz_plantPT1_init
-
-.. doxygenfunction:: uz_plantPT1_reset_integrator
-
-.. doxygenfunction:: uz_plantPT1_set_input
-
-.. doxygenfunction:: uz_plantPT1_set_gain
-
-.. doxygenfunction:: uz_plantPT1_set_time_constant
-
-.. doxygenfunction:: uz_plantPT1_read_output
-
 Example usage
 =============
 
@@ -113,3 +92,23 @@ Vitis
    float K_i=1.3f;
    float pi_output=K_p*error+K_i*(1.0f/20000.0f)*error_sum; // 20000.0f is the sample rate of the ISR in this example
    uz_plantPT1_set_input(pt1,pi_output);
+
+Driver reference
+================
+
+.. doxygentypedef:: uz_plantPT1_t
+
+.. doxygenstruct:: uz_plantPT1_config_t
+  :members:
+
+.. doxygenfunction:: uz_plantPT1_init
+
+.. doxygenfunction:: uz_plantPT1_reset_integrator
+
+.. doxygenfunction:: uz_plantPT1_set_input
+
+.. doxygenfunction:: uz_plantPT1_set_gain
+
+.. doxygenfunction:: uz_plantPT1_set_time_constant
+
+.. doxygenfunction:: uz_plantPT1_read_output

@@ -21,7 +21,7 @@ Electriclal System
 
 The model assumes a symmetric machine with sinusoidal input voltage as well as the common assumptions for the dq-transformation (neglecting the zero-component).
 Small letter values indicate time dependency without explicitly stating.
-The PMSM model is based on its differential equation using the flux-linkage as state values in the dq-plane:
+The PMSM model is based on its differential equation using the flux-linkage as state values in the dq-plane [[#Schroeder_Regelung]_, p. 1092]:
 
 .. math:: 
 
@@ -29,7 +29,7 @@ The PMSM model is based on its differential equation using the flux-linkage as s
 
     \frac{d \psi_q}{dt} &= u_q - R_1 i_q - \omega_{el} \psi_d
 
-The flux-linkages of the direct and quadrature axis are given by:
+The flux-linkages of the direct and quadrature axis are given by [[#Schroeder_Regelung]_, p. 1092]:
 
 .. math::
 
@@ -45,7 +45,7 @@ Rearranging to calculate the current from the flux-linkage:
 
     i_q &= \frac{\psi_q}{L_q}
 
-With the rotational speed linked to the electrical rotation speed in dq-coordinates by the number of pole pairs:
+With the rotational speed linked to the electrical rotation speed in dq-coordinates by the number of pole pairs [[#Schroeder_Regelung]_, p. 1092]:
 
 .. math::
 
@@ -57,7 +57,7 @@ The PMSM generates an inner torque :math:`M_I` according to:
 
     M_I=\frac{3}{2}p(\psi_d i_q - \psi_q i_d)
 
-This can be rearranged to the following equation. Note that the flux-based equation above is implemented in the model.
+This can be rearranged to the following equation [[#Schroeder_Regelung]_, p. 1092]. Note that the flux-based equation above is implemented in the model.
 
 .. math::
 
@@ -71,9 +71,7 @@ The inertia of the complete system is summed into the inertia :math:`J_{sum}`, i
 
 .. math::
 
-  M_I &= M_F + M_L + J_{sum} \frac{\omega_{mech}}{dt}
-
-  \frac{d \omega_{mech}}{dt} &= \frac{ M_I - M_F - M_L }{J_{sum}}
+  \frac{d \omega_{mech}}{dt} = \frac{ M_I - M_F - M_L }{J_{sum}}
 
 
 .. tikz:: Block diagram of mechanical system 
@@ -103,7 +101,7 @@ The inertia of the complete system is summed into the inertia :math:`J_{sum}`, i
 Friction
 ^^^^^^^^
 
-The friction :math:`M_F(\omega)` [#ZurModellierungReibung]_ (p. 12 ff) is implemented with the simplified viscous friction model:
+The friction :math:`M_F(\omega)`  [ [#ZurModellierungReibung]_, p. 12 ff] is implemented with the simplified viscous friction model:
 
 .. math::
 
@@ -111,7 +109,7 @@ The friction :math:`M_F(\omega)` [#ZurModellierungReibung]_ (p. 12 ff) is implem
 
 With the constant coulomb friction :math:`M_c`, and the friction coefficient :math:`\sigma`.
 
-.. tikz:: Friction model
+.. tikz:: Friction model [ [#ZurModellierungReibung]_, p. 13]
   :libs: 
 
   \begin{tikzpicture}
@@ -150,21 +148,21 @@ IP-Core overview
   \draw[->, dashed] (ghostnode) -| node {$\omega_{mech}$} (electrical);
   \end{tikzpicture}
 
-All time dependent variables are either inputs or outputs that are written/read by AXI (full).
+All time dependent variables are either inputs or outputs that are written/read by AXI4-full.
 That is, :math:`u_d`, :math:`u_q`, :math:`\omega_{mech}`, and :math:`M_L` are inputs.
 Furthermore, :math:`i_d`, :math:`i_q`, :math:`M_I`, and :math:`\omega_{mech}` are outputs.
 Note that :math:`\omega_{mech}` is an input as well as an output.
 The IP-Core has two modes regarding the rotational speed :math:`\omega_{mech}`:
 
-1. Simulate the mechanical system and calcualte :math:`\omega_{mech}` according to the equations above
-2. Use the rotational frequency :math:`\omega_{mech}` that is written as an input (written by AXI)
+1. Simulate the mechanical system and calcualte :math:`\omega_{mech}` according to the equations in `Friction`_.
+2. Use the rotational frequency :math:`\omega_{mech}` that is written as an input (written by AXI).
    
 When the flag ``simulate_mechanical_system`` is true, the rotational speed in the output struct is calculated by the IP-Core and the input value of the rotational speed has no effect.
 When the flag ``simulate_mechanical_system`` is false, the rotational speed in the output struct is equal to the rotational speed of the input.
 This behavior is implemented in the hardware of the IP-Core with switches.
 The input and output values are intended to be written and read in a periodical function, e.g., the ISR.
 
-In addition to the time dependent values, the PMSM model paramerters are configured by AXI.
+In addition to the time dependent values, the PMSM model parameters are configured by AXI.
 
 Driver reference
 ================
@@ -189,10 +187,8 @@ Driver reference
 .. doxygenfunction:: uz_pmsmModel_reset
 
 
-
 Sources
 -------
 
 .. [#ZurModellierungReibung] Zur Modellierung und Kompensationdynamischer Reibung in Aktuatorsystemen, Michael Ruderman, Dissertation, 2012, TU Dortmund
-
-
+.. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk Schröder, Springer, 2015, 4. Edition

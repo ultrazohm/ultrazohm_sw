@@ -3,7 +3,7 @@
 
 % Electrical parameters
 R_1=2.1;
-L_d=10e-3;
+L_d=30e-3;
 L_q=50e-3;
 psi_pm=0.05;
 polepair=2;

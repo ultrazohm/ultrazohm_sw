@@ -338,15 +338,8 @@ Javascope
     return Status;
     }
 
-
-
-
-
-
-
-
 Comparison between reference and IP-Core
-****************************************
+----------------------------------------
 
 - Program UltraZohm with included PMSM IP-Core and software as described above
 - Start Javascope

@@ -58,7 +58,6 @@ legend('U_q', 'i_q');
 % 4: speed
 % 5: ud
 A=readmatrix('measurment_with_speed.csv');
-measurements=A(1:100000,:);
 first_nonzero=find(measurements(:,5),1,'first');
 first_nonzero=first_nonzero;
 time_offset=measurements(first_nonzero,1)-0.2;
@@ -88,7 +87,8 @@ plot(measurment.time, measurment.iq); % i_d
 legend('U_q', 'i_q');
 
 %% Compare
-figure(3)
+f=figure(3);
+f.Position(3:4) = 2*[1024 768];
 subplot(2,3,1)
 title('Compare simulation and measurement');
 grid on
@@ -98,10 +98,11 @@ plot(sim.time,sim.id,'LineWidth',3); % i_d
 plot(measurment.time, measurment.ud,'--','LineWidth',3); % u_d input
 plot(measurment.time, measurment.id,'--','LineWidth',3); % i_d
 legend('U_d sim', 'i_d sim','u_d meas','i_d meas', 'FontSize', 18);
-xlim([0.15 2]);
+xlim([0.19 2]);
 title('Step Response $I_d$', 'FontSize', 20);
 xlabel('Time in s', 'FontSize', 18);
 ylabel('Current in A, Voltage in V', 'FontSize', 18);
+set(gca,'fontsize',20);
 
 subplot(2,3,2)
 grid on
@@ -111,10 +112,11 @@ plot(sim.time,sim.iq,'LineWidth',3); % i_d
 plot(measurment.time, measurment.uq,'--','LineWidth',3); % u_d input
 plot(measurment.time, measurment.iq,'--','LineWidth',3); % i_d
 legend('U_q sim', 'i_q sim','u_q meas','i_q meas', 'FontSize', 18);
-xlim([0.15 2]);
+xlim([0.19 2]);
 title('Step Response $I_q$', 'FontSize', 20);
 xlabel('Time in s', 'FontSize', 18);
 ylabel('Current in A, Voltage in V', 'FontSize', 18);
+set(gca,'fontsize',20);
 
 subplot(2,3,3)
 grid on
@@ -122,11 +124,12 @@ hold on
 plot(sim.time,sim.speed,'LineWidth',3);
 plot(measurment.time, measurment.speed,'--','LineWidth',3);
 %legend('U_q sim', 'i_q sim','u_q meas','i_q meas');
-xlim([0.15 2]);
+xlim([0.19 2]);
 title('Rotational speed', 'FontSize', 20);
 legend('\omega_{mech} sim','\omega_{mech} meas', 'FontSize', 18);
 xlabel('Time in s', 'FontSize', 18);
 ylabel('Rotational speed in $\frac{1}{s}$', 'FontSize', 18);
+set(gca,'fontsize',20);
 
 % calculate error
 sim_id=timeseries(sim.id,sim.time);
@@ -152,6 +155,8 @@ title('Error $I_d$', 'FontSize', 20);
 legend('i_d error', 'FontSize', 18);
 xlabel('Time in s', 'FontSize', 18);
 ylabel('Current in A', 'FontSize', 18);
+set(gca,'fontsize',20);
+xlim([0.19 2]);
 
 subplot(2,3,5)
 plot(abs_error_iq,'LineWidth',3);
@@ -160,6 +165,8 @@ title('Error $I_q$', 'FontSize', 20);
 legend('i_q error', 'FontSize', 18);
 xlabel('Time in s', 'FontSize', 18);
 ylabel('Current in A', 'FontSize', 18);
+set(gca,'fontsize',20);
+xlim([0.19 2]);
 
 subplot(2,3,6)
 plot(abs_error_omega,'LineWidth',3);
@@ -168,3 +175,6 @@ title('Rotational speed', 'FontSize', 20);
 legend('\omega_{mech} error', 'FontSize', 18);
 xlabel('Time in s', 'FontSize', 18);
 ylabel('Rotational speed in $\frac{1}{s}$', 'FontSize', 18);
+xlim([0.19 2]);
+set(gca,'fontsize',20);
+saveas(gcf,'referance_ip_core_measurment_comparision','svg');

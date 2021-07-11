@@ -164,6 +164,85 @@ The input and output values are intended to be written and read in a periodical 
 
 In addition to the time dependent values, the PMSM model parameters are configured by AXI.
 
+IP-Core Hardware
+----------------
+
+.. figure:: pmsm_model.svg
+  :width: 800
+  :align: center
+
+  Test bench of PMSM plant model
+
+.. figure:: pmsm_model_inside.svg
+  :width: 800
+  :align: center
+
+  Overview of PMSM IP-Core
+
+.. figure:: pmsm_model_inside_pmsm.svg
+  :width: 800
+  :align: center
+
+  Calculation of PMSM subsystem
+
+.. figure:: pmsm_model_inside_torque.svg
+  :width: 800
+  :align: center
+
+  Torque calculation subsystem
+
+.. figure:: pmsm_model_inside_mechanical.svg
+  :width: 800
+  :align: center
+
+  Mechanical calculation subsystem
+
+- The module takes all inputs and converts them from single precision to double precision.
+- The output is converted from double precision to single precision (using rounding to nearest value in both cases).
+- All input values are adjustable at run-time
+- The sample time is fixed!
+- The IP-Core uses `Native Floating Point of the HDL-Coder <https://de.mathworks.com/help/hdlcoder/native-floating-point.html>`_
+- Several parameters are written as their reciprocal to the AXI register to make the calculations on hardware simple (handled by the driver!)
+- The IP-Core uses an oversampling factor of 100
+
+Example usage
+=============
+
+Vivado
+******
+
+- Add IP-Core to Vivado and connect to AXI (smartconnect)
+- Source IPCORE_CLK with a :math:`100\,MHz` clock!
+- Connect other ports accordingly
+- Assign address to IP-Core
+- Build bitstream, export .xsa, update vitis platform
+
+.. figure:: pmsm_vivado.png
+   :width: 800
+   :align: center
+
+   Example connection of PMSM IP-Core
+
+Vitis
+*****
+
+Comparison between reference and IP-Core
+****************************************
+
+- Program UltraZohm with included PMSM IP-Core and software as described above
+- Start Javascope
+- Measure and log data
+- Copy measured ``.csv`` data to ultrazohm_sw/ip-cores/uz_pmsm_model
+- Rename it to ``measurment_with_speed.csv``
+- 
+
+.. figure:: referance_ip_core_measurment_comparision.svg
+   :width: 800
+   :align: center
+
+   Comparision of step response between reference model and IP-Core implementation measured by Javascope
+
+
 Driver reference
 ================
 
@@ -185,7 +264,6 @@ Driver reference
 .. doxygenfunction:: uz_pmsmModel_get_outputs
 
 .. doxygenfunction:: uz_pmsmModel_reset
-
 
 Sources
 -------

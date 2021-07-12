@@ -16,11 +16,11 @@ PMSM Model
 System description
 ==================
 
-Electriclal System
+Electrical System
 ------------------
 
-The model assumes a symmetric machine with sinusoidal input voltage as well as the common assumptions for the dq-transformation (neglecting the zero-component).
-Small letter values indicate time dependency without explicitly stating.
+The model assumes a symmetric machine with a sinusoidal input voltage as well as the common assumptions for the dq-transformation (neglecting the zero-component).
+Small letter values indicate time dependency without explicitly stating it.
 The PMSM model is based on its differential equation using the flux-linkage as state values in the dq-plane [[#Schroeder_Regelung]_, p. 1092]:
 
 .. math:: 
@@ -148,7 +148,7 @@ IP-Core overview
   \draw[->, dashed] (ghostnode) -| node {$\omega_{mech}$} (electrical);
   \end{tikzpicture}
 
-All time dependent variables are either inputs or outputs that are written/read by AXI4-full.
+All time-dependent variables are either inputs or outputs that are written/read by AXI4-full.
 That is, :math:`u_d`, :math:`u_q`, :math:`\omega_{mech}`, and :math:`M_L` are inputs.
 Furthermore, :math:`i_d`, :math:`i_q`, :math:`M_I`, and :math:`\omega_{mech}` are outputs.
 Note that :math:`\omega_{mech}` is an input as well as an output.
@@ -157,12 +157,12 @@ The IP-Core has two modes regarding the rotational speed :math:`\omega_{mech}`:
 1. Simulate the mechanical system and calcualte :math:`\omega_{mech}` according to the equations in `Friction`_.
 2. Use the rotational frequency :math:`\omega_{mech}` that is written as an input (written by AXI).
    
-When the flag ``simulate_mechanical_system`` is true, the rotational speed in the output struct is calculated by the IP-Core and the input value of the rotational speed has no effect.
+When the flag ``simulate_mechanical_system`` is true, the rotational speed in the output struct is calculated by the IP-Core, and the input value of the rotational speed has no effect.
 When the flag ``simulate_mechanical_system`` is false, the rotational speed in the output struct is equal to the rotational speed of the input.
 This behavior is implemented in the hardware of the IP-Core with switches.
 The input and output values are intended to be written and read in a periodical function, e.g., the ISR.
 
-In addition to the time dependent values, the PMSM model parameters are configured by AXI.
+In addition to the time-dependent values, the PMSM model parameters are configured by AXI.
 
 IP-Core Hardware
 ----------------
@@ -198,7 +198,7 @@ IP-Core Hardware
   Mechanical calculation subsystem
 
 - The module takes all inputs and converts them from single precision to double precision.
-- The output is converted from double precision to single precision (using rounding to nearest value in both cases).
+- The output is converted from double precision to single precision (using rounding to the nearest value in both cases).
 - All input values are adjustable at run-time
 - The sample time is fixed!
 - The IP-Core uses `Native Floating Point of the HDL-Coder <https://de.mathworks.com/help/hdlcoder/native-floating-point.html>`_
@@ -215,7 +215,7 @@ Vivado
 - Source IPCORE_CLK with a :math:`100\,MHz` clock!
 - Connect other ports accordingly
 - Assign address to IP-Core
-- Build bitstream, export .xsa, update vitis platform
+- Build bitstream, export .xsa, update Vitis platform
 
 .. figure:: pmsm_vivado.png
    :width: 800
@@ -227,7 +227,7 @@ Vivado
 Vitis
 -----
 
-- Init the driver in main and couple the base address of the instance with it
+- Initialize the driver in main and couple the base address with the driver instance
 
 .. code-block:: c
   :caption: Changes in ``main.c`` (R5)
@@ -299,10 +299,8 @@ Vitis
   // [...]
   }
 
-Javascope
----------
 
-- Change in your Javascope folder as well (``javascope.h``)!
+- Change the Javascope  ``enum`` to transfer the required measurement data
 
 .. code-block:: c
   :caption: Adjust ``JS_OberservableData`` enum in ``javascope.h`` (R5) to measure pmsm_outputs
@@ -316,6 +314,8 @@ Javascope
     JSO_u_d,
     JSO_ENDMARKER
   };
+
+- Configure the Javascope to transmit the pmsm output data:
 
 .. code-block:: c
   :caption: Adjust ``JavaScope_initalize`` function in ``javascope.c`` (R5) to measure pmsm_outputs
@@ -338,6 +338,12 @@ Javascope
     return Status;
     }
 
+Javascope
+---------
+
+- Copy your ``javascope.h`` file (of the R5) into your Javascope folder
+
+
 Comparison between reference and IP-Core
 ----------------------------------------
 
@@ -352,7 +358,7 @@ Comparison between reference and IP-Core
    :width: 800
    :align: center
 
-   Comparison of step response between reference model and IP-Core implementation measured by Javascope
+   Comparison of step response between the reference model and IP-Core implementation measured by Javascope
 
 
 Driver reference
@@ -380,5 +386,5 @@ Driver reference
 Sources
 -------
 
-.. [#ZurModellierungReibung] Zur Modellierung und Kompensationdynamischer Reibung in Aktuatorsystemen, Michael Ruderman, Dissertation, 2012, TU Dortmund
-.. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk Schröder, Springer, 2015, 4. Edition
+.. [#ZurModellierungReibung] Zur Modellierung und Kompensationdynamischer Reibung in Aktuatorsystemen, Michael Ruderman, Dissertation, 2012, TU Dortmund (German)
+.. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk Schröder, Springer, 2015, 4. Edition (German)

@@ -53,6 +53,7 @@ bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float 
 
 float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, float actualValue, bool ext_clamping) {
 	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
 	float error = referenceValue - actualValue;
 	float preIntegrator = error * self->config.Ki;
 	if (ext_clamping == true || self->int_clamping == true) {
@@ -70,18 +71,21 @@ float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, floa
 
 void uz_PI_Controller_reset(uz_PI_Controller* self){
     uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
     self->I_sum = 0.0f;
 	self->int_clamping = false;
 }
 
 void uz_PI_Controller_set_Ki(uz_PI_Controller* self, float new_Ki){
     uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
     uz_assert(new_Ki >= 0.0f);
     self->config.Ki = new_Ki;
 }
 
 void uz_PI_Controller_set_Kp(uz_PI_Controller* self, float new_Kp){
     uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
     uz_assert(new_Kp >= 0.0f);
     self->config.Kp = new_Kp;    
 }

@@ -1,11 +1,6 @@
 #ifndef UZ_PICONTROLLER_H
 #define UZ_PICONTROLLER_H
 
-#pragma once
-#include "../uz_HAL.h"
-#include "../uz_signals/uz_signals.h"
-#include <math.h>
-#include <stdlib.h>
 #include <stdbool.h>
 
 /**

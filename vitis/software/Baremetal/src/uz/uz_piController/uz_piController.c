@@ -5,8 +5,6 @@ struct uz_PI_Controller {
 	bool is_ready;
 	bool int_clamping;
 	float I_sum;
-    float P_sum;
-	float preIntegrator;
 	struct uz_PI_Controller_config config;
 };
 
@@ -55,31 +53,24 @@ bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float 
 
 float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, float actualValue, bool ext_clamping) {
 	uz_assert_not_NULL(self);
-	float preSat = 0.0f;
-	float error = 0.0f;
-	float output = 0.0f;
-
-	error = referenceValue - actualValue;
-	self->I_sum += self->preIntegrator * self->config.samplingTime_sec;
+	float error = referenceValue - actualValue;
+	float preIntegrator = error * self->config.Ki;
 	if (ext_clamping == true || self->int_clamping == true) {
-		self->preIntegrator = 0.0f;
+		self->I_sum += 0.0f;
 	} else {
-		self->preIntegrator = error * self->config.Ki;
+		self->I_sum += preIntegrator * self->config.samplingTime_sec;
 	}
-	
-	self->P_sum = error * self->config.Kp;
-	preSat = self->I_sum + self->P_sum;
-	self->int_clamping = uz_PI_Controller_Clamping_Circuit(error * self->config.Ki, preSat, self->config.upper_limit, self->config.lower_limit);
-	output = uz_signals_saturation(preSat, self->config.upper_limit, self->config.lower_limit);
+	float P_sum = error * self->config.Kp;
+	float preSat = self->I_sum + P_sum;
+	self->int_clamping = uz_PI_Controller_Clamping_Circuit(preIntegrator, preSat, self->config.upper_limit, self->config.lower_limit);
+	float output = uz_signals_saturation(preSat, self->config.upper_limit, self->config.lower_limit);
 	return (output);
 }
 
 
 void uz_PI_Controller_reset(uz_PI_Controller* self){
     uz_assert_not_NULL(self);
-    self->P_sum = 0.0f;
     self->I_sum = 0.0f;
-    self->preIntegrator = 0.0f;
 	self->int_clamping = false;
 }
 

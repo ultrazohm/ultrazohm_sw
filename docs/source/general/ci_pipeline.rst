@@ -89,6 +89,20 @@ We use `cppcheck <https://github.com/danmar/cppcheck>`_  as our static code anal
 
 .. note:: The build pipeline does not fail if there are warnings from the static code analysis!
 
+We check with regular cppcheck and with the extensions for MISRA and CERT rules.
+MISRA violations can be suppressed on a line-by-line basis, e.g.:
+
+.. code-block: c
+    :caption: MISRA rule violation suppression
+
+    #ifdef TEST
+    // cppcheck-suppress misra-c2012-21.6 //. stdio.h is not allowed by MISRA, we use it only with ceedling unit testing and never on the UltraZohm
+    #include <stdio.h>
+
+To suppress a MISRA violation, write a comment in the line before the violation ``// cppcheck-suppress misra-c2012-$rule_number`` with ``$rule_number`` specifying which rule the code violates.
+After the rule number, add ``//.`` and write a regular comment stating why this deviation is justified.
+
+.. warning:: Do not use this lightly! The only two places we deviate so far (in new code) is the <stdio.h> for testing and read/write from AXI since the latter requires casting.
 
 Global configuration in CI
 **************************

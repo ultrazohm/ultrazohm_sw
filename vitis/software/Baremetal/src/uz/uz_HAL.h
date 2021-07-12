@@ -43,6 +43,7 @@
 
 #endif
 #ifdef TEST
+// cppcheck-suppress misra-c2012-21.6 //. stdio.h is not allowed by MISRA, but we use it only with ceedling unit testing
 #include <stdio.h>
 #include "CException.h"
 #define uz_assert(condition) if (!(condition)) Throw(0)

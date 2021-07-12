@@ -98,6 +98,15 @@
 }
 
 /**
+ * @brief Asserts that the argument of type unsigned int is not zero (!=0).
+ * 
+ */
+#define uz_assert_not_zero_unsigned_int(Expression) \
+{                              \
+    uz_assert((Expression)!=0U);        \
+}
+
+/**
  * @brief Asserts that the argument is false.
  * 
  */

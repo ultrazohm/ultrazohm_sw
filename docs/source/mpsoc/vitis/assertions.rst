@@ -52,3 +52,20 @@ After that, the system is kept in an infinite error loop.
 To reset the error, you have to reboot.
 Note that there is no error handling / exceptions since assertions are used to prevent wrong function calls which have to be fixed in the source code.
 Common examples are the passing of ``NULL`` pointers or passing wrong arguments to init function (e.g. wrong base address, violation of min/max values). 
+
+Reference
+---------
+
+.. doxygendefine:: uz_assert
+
+.. doxygendefine:: uz_assert_not_NULL
+
+.. doxygendefine:: uz_assert_not_zero_uint32
+
+.. doxygendefine:: uz_assert_not_zero_int32
+
+.. doxygendefine:: uz_assert_not_zero_int
+
+.. doxygendefine:: uz_assert_not_zero_unsigned_int
+
+.. doxygendefine:: uz_assert_false

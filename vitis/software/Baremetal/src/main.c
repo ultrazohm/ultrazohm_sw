@@ -17,9 +17,12 @@
 #include "main.h"
 #include "uz/uz_global_configuration.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
+#include "Codegen/uz_codegen.h"
 
 //Initialize the global variables
 int i_LifeCheck;
+
+uz_codegen codegenInstance;
 
 _Bool bPlotData = false;
 _Bool bNewControlMethodAvailable = false;
@@ -80,6 +83,9 @@ int main(void) {
 
 	//Initialize the Soft-Oscilloscope ("JavaScope")
 	JavaScope_initalize(&Global_Data);
+
+	//Initialize CodeGen
+	uz_codegen_init(&codegenInstance);
 
 	// Initialize the Interrupts
 	Initialize_ISR();

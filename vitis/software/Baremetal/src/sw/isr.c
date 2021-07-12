@@ -50,6 +50,7 @@ XTmrCtr Timer_Interrupt;
 float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
+extern uz_codegen codegenInstance;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -85,6 +86,9 @@ void ISR_Control(void *data)
 		// add your torque controller here
 	}
 	//End: Control algorithm -------------------------------------------------------------------------------
+
+	//FOC_Strom
+	uz_codegen_step(&codegenInstance);
 
 	// Set duty cycles for two-level modulator
 	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

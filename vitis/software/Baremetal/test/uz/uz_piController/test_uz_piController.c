@@ -95,7 +95,7 @@ void test_uz_PI_Controller_sample_output_with_Kp_zero(void){
     } 
 }
 
-//Test the limitation 
+//Test the limitation&clamping for I-part
 void test_uz_PI_Controller_sample_output_limitation_with_Kp_zero(void){
     config.upper_limit = 5.0f;
     config.lower_limit = -5.0f;
@@ -128,6 +128,51 @@ void test_uz_PI_Controller_sample_output_limitation_with_Kp_zero(void){
     TEST_ASSERT_EQUAL_FLOAT(-4.0f, uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
 }
 
+void test_uz_PI_Controller_sample_output(void){
+    config.Ki = 1.0f;
+    config.Kp = 11.54f;
+    config.upper_limit = 20.0f;
+    config.lower_limit = -20.0f;
+    uz_PI_Controller* variables = uz_PI_Controller_init(config);
+    float referenceValue = 12.0f;
+    float actualValue = 2.0f;
+    float output[5] = {20.0f, 20.0f, 20.0f, 20.0f, 20.0f};
+    for(int i=0;i<5;i++){
+        TEST_ASSERT_EQUAL_FLOAT(output[i], uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
+    }
+    //Tests if clamping was active during limitation
+    actualValue = 12.1f;
+    float output2[5] = {8.846f, 8.746f, 8.646f, 8.546f, 8.446f};
+    for(int i=0;i<5;i++){
+        TEST_ASSERT_EQUAL_FLOAT(output2[i], uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
+    }
+
+    //Tests the same but with negative error at start
+    uz_PI_Controller_reset(variables);
+    referenceValue = 2.0f;
+    actualValue = 12.0f;
+    float output3[5] = {-20.0f, -20.0f, -20.0f, -20.0f, -20.0f};
+    for(int i=0;i<5;i++){
+        TEST_ASSERT_EQUAL_FLOAT(output3[i], uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
+    }
+    //Tests if clamping was active during limitation
+    actualValue = 1.9f;
+    float output4[5] = {-8.846f, -8.746f, -8.646f, -8.546f, -8.446f};
+    for(int i=0;i<5;i++){
+        TEST_ASSERT_EQUAL_FLOAT(output4[i], uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
+    }
+}
+
+//Tests if the external clamping signal stops the integrator from rising
+void test_uz_PI_Controller_sample_ext_clamping(void){
+    config.Kp = 1.154f;
+    uz_PI_Controller* variables = uz_PI_Controller_init(config);
+    float referenceValue = 12.0f;
+    float actualValue[5] = {2.0f, 4.0f, 6.0f, 8.0f, 10.0f};
+    for(int i=0;i<5;i++){
+        TEST_ASSERT_EQUAL_FLOAT((referenceValue - actualValue[i]) * config.Kp, uz_PI_Controller_sample(variables, referenceValue, actualValue[i], true));
+    }
+}
 void test_uz_PI_Controller_reset_assert_NULL(void){
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_reset(NULL));
 }

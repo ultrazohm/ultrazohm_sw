@@ -54,16 +54,17 @@ float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, floa
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	float error = referenceValue - actualValue;
+	float old_I_sum = self->I_sum;
 	float preIntegrator = error * self->config.Ki;
+	float P_sum = error * self->config.Kp;
+	float output_before_saturation = old_I_sum + P_sum;
+	self->internal_clamping = uz_PI_Controller_Clamping_Circuit(preIntegrator, output_before_saturation, self->config.upper_limit, self->config.lower_limit);
 	bool clamping_active=(ext_clamping == true) || (self->internal_clamping == true); // clamping is active if internal clamping or external clamping is true
 	if ( clamping_active ) {
 		self->I_sum += 0.0f;
 	} else {
 		self->I_sum += preIntegrator * self->config.samplingTime_sec;
 	}
-	float P_sum = error * self->config.Kp;
-	float output_before_saturation = self->I_sum + P_sum;
-	self->internal_clamping = uz_PI_Controller_Clamping_Circuit(preIntegrator, output_before_saturation, self->config.upper_limit, self->config.lower_limit);
 	float output = uz_signals_saturation(output_before_saturation, self->config.upper_limit, self->config.lower_limit);
 	return (output);
 }

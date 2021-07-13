@@ -83,14 +83,14 @@ void test_uz_PI_Controller_sample_output_with_Kp_zero(void){
     uz_PI_Controller* variables = uz_PI_Controller_init(config);
     float referenceValue = 2.0f;
     float actualValue = 1.0f;
-    for(int i=1;i<10;i++){
+    for(int i=0;i<10;i++){
         TEST_ASSERT_EQUAL_FLOAT( i * ( referenceValue - actualValue ),uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
     } 
     //Test with negative error
     uz_PI_Controller_reset(variables);
     referenceValue = 1.0f;
     actualValue = 2.0f;
-    for(int i=1;i<10;i++){
+    for(int i=0;i<10;i++){
         TEST_ASSERT_EQUAL_FLOAT( i * ( referenceValue - actualValue ),uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
     } 
 }
@@ -102,7 +102,7 @@ void test_uz_PI_Controller_sample_output_limitation_with_Kp_zero(void){
     uz_PI_Controller* variables = uz_PI_Controller_init(config);
     float referenceValue = 2.0f;
     float actualValue = 1.0f;
-    float output[10] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 5.0f, 5.0f, 5.0f, 5.0f, 5.0f};
+    float output[10] = {0.0f, 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 5.0f, 5.0f, 5.0f, 5.0f};
     for(int i=0;i<10;i++){
         TEST_ASSERT_EQUAL_FLOAT(output[i], uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
     }  
@@ -116,7 +116,7 @@ void test_uz_PI_Controller_sample_output_limitation_with_Kp_zero(void){
     uz_PI_Controller_reset(variables); 
     referenceValue = 1.0f;
     actualValue = 2.0f;
-    float output2[10] = {-1.0f, -2.0f, -3.0f, -4.0f, -5.0f, -5.0f, -5.0f, -5.0f, -5.0f, -5.0f};
+    float output2[10] = {-0.0f, -1.0f, -2.0f, -3.0f, -4.0f, -5.0f, -5.0f, -5.0f, -5.0f, -5.0f};
     for(int i=0;i<10;i++){
         TEST_ASSERT_EQUAL_FLOAT(output2[i], uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
     }  
@@ -142,7 +142,7 @@ void test_uz_PI_Controller_sample_output(void){
     }
     //Tests if clamping was active during limitation
     actualValue = 12.1f;
-    float output2[5] = {8.846f, 8.746f, 8.646f, 8.546f, 8.446f};
+    float output2[5] = {-1.154f, -1.254f, -1.354f, -1.454f, -1.554f};
     for(int i=0;i<5;i++){
         TEST_ASSERT_EQUAL_FLOAT(output2[i], uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
     }
@@ -157,7 +157,7 @@ void test_uz_PI_Controller_sample_output(void){
     }
     //Tests if clamping was active during limitation
     actualValue = 1.9f;
-    float output4[5] = {-8.846f, -8.746f, -8.646f, -8.546f, -8.446f};
+    float output4[5] = {1.154f, 1.254f, 1.354f, 1.454f, 1.554f};
     for(int i=0;i<5;i++){
         TEST_ASSERT_EQUAL_FLOAT(output4[i], uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
     }

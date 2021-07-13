@@ -73,6 +73,10 @@ int main(void) {
 	Initialize_Timer();
 	uz_SystemTime_init();
 	// Initialize the incremental encoder
+	Global_Data.av.theta_offset = 0.0;
+	//Global_Data.mrp.motorPolePairNumber = 21.0;
+	Global_Data.mrp.incrementalEncoderResolution = 5000;
+
 	Encoder_Incremental_Initialize(&Global_Data);
 
 	// Initialize the FPGA control algorithm

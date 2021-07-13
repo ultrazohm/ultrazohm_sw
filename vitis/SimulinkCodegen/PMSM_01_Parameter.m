@@ -1,7 +1,5 @@
 %Script to declare parameters
 
-flg_Reluctance = 0;
-
 %Motor parameters
 zp = 21;                     %Number of polepairs
 Lq = 16e-6;                  %H
@@ -10,22 +8,19 @@ psi_pm = 0.0048;              %Vs
 R = 0.040;                   %Ohm Strangwiderstand
 J_M = 0.0025;                %kg m²
 U_DC = 46;                   %V
-U_maxDQ = U_DC/sqrt(3);
-I_max = 100;                 %A
+%U_maxDQ = U_DC/sqrt(3);
+I_max = 10;                 %A
 
-if flg_Reluctance == 1
-   Ld = 0.6667*Lq; 
-end
 
 %Inverter parameters
 f_switchingInverter = 20000;            %Triangle signal frequency
 f_MCU_PWM = 10e6;                       %Inverter frequency
-T_dead = 0.2e-6;                        %Safety dead time of inverter
+T_dead = 0.2e-10;                        %Safety dead time of inverter
 Capacitance_CircuitCondensator = 500e-6;%uF, Intermediate circuit condensator
 
 
 %Controller Frequencies
-f_CurrentController = 10000;            %Current and speed controller
+f_CurrentController = 20000;            %Current and speed controller
 T_controller = 1/f_CurrentController;
 T_speedController = T_controller;
 
@@ -47,6 +42,12 @@ Ki_IqController = R/Lq;
 %Id_Controller - TI
 Kp_IdController = Ld*2*pi*BW;
 Ki_IdController = R/Ld;
+
+%Parallel Controller transfer function
+Kp_IqController = Kp_IqController;
+Ki_IqController = Kp_IqController * Ki_IqController;
+Kp_IdController = Kp_IdController;
+Ki_IdController = Kp_IdController * Ki_IdController;
 
 %Iq_Controller - TI: Set Speed Bandwidth
 %BW_Speed = 150*2*pi;

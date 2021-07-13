@@ -57,6 +57,8 @@ int bool_fault_V_Bot = 0;
 int bool_fault_W_Top = 0;
 int bool_fault_W_Bot = 0;
 
+int cnt_polepair = 0;
+
 
 float sin1amp=1.0;
 //Global variable structure
@@ -84,24 +86,19 @@ void ISR_Control(void *data)
 	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
 
 	//Assign Input Data
-
-	//Enable Control Software
-	codegenInstance.input.RESET = 0;
-	codegenInstance.input.START = 0;
-
 	//Read input values
-	codegenInstance.input.ia = Global_Data.aa.A1.me.ADC_A1;
-	codegenInstance.input.ib = Global_Data.aa.A1.me.ADC_A2;
-	codegenInstance.input.ic = Global_Data.aa.A1.me.ADC_A3;
-	codegenInstance.input.U_IC = Global_Data.aa.A1.me.ADC_A4;
+	codegenInstance.input.ia = (Global_Data.aa.A2.me.ADC_A1-2.5) * 80/2;		//A
+	codegenInstance.input.ib = (Global_Data.aa.A2.me.ADC_A2-2.5) * 80/2;		//A
+	codegenInstance.input.ic = (Global_Data.aa.A2.me.ADC_A3-2.5) * 80/2;		//A
+	codegenInstance.input.U_IC = Global_Data.aa.A2.me.ADC_A4 * 12.5;		//V
 	//Not used in Simulink-Model:
-	meas_Ua_Voltage = Global_Data.aa.A1.me.ADC_B5;
-	meas_Ub_Voltage = Global_Data.aa.A1.me.ADC_B6;
-	meas_Uc_Voltage = Global_Data.aa.A1.me.ADC_B7;
+	meas_Ua_Voltage = Global_Data.aa.A2.me.ADC_B5 * 12.5;
+	meas_Ub_Voltage = Global_Data.aa.A2.me.ADC_B6 * 12.5;
+	meas_Uc_Voltage = Global_Data.aa.A2.me.ADC_B7 * 12.5;
+
 
 	//Encoder
-	codegenInstance.input.theta_el = Global_Data.av.theta_elec; //rad
-	codegenInstance.input.n_ist = Global_Data.av.mechanicalRotorSpeed; //rpm
+	codegenInstance.input.theta_el = Global_Data.av.theta_elec - 5.139955762; //rad; Offset calculation in excel file
 	codegenInstance.input.w_el = Global_Data.av.mechanicalRotorSpeed * Global_Data.mrp.motorPolePairNumber*M_PI/30; //rad/s
 
 
@@ -110,12 +107,10 @@ void ISR_Control(void *data)
 	if (Global_Data.cw.ControlReference == SpeedControl)
 	{
 		// add your speed controller here
-		codegenInstance.input.flg_SpeedControl = 1.0;
 	}
 	else if(Global_Data.cw.ControlReference == CurrentControl)
 	{
 		// add your current controller here
-		codegenInstance.input.flg_SpeedControl = 0.0;
 	}
 	else if(Global_Data.cw.ControlReference == TorqueControl)
 	{
@@ -127,12 +122,12 @@ void ISR_Control(void *data)
 	uz_codegen_step(&codegenInstance);
 
 	//Dutycycle outputs
-	//Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.Ua_DutyCycle;
-	//Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.Ub_DutyCycle;
-	//Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.Uc_DutyCycle;
+	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.Ua_DutyCycle;
+	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.Ub_DutyCycle;
+	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.Uc_DutyCycle;
 
-	Global_Data.av.I_d = codegenInstance.output.id_ist;
-	Global_Data.av.I_q = codegenInstance.output.iq_ist;
+	//Global_Data.av.I_d = codegenInstance.output.id_ist;
+	//Global_Data.av.I_q = codegenInstance.output.iq_ist;
 
 	// Set duty cycles for two-level modulator
 	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
@@ -184,40 +179,32 @@ int Initialize_ISR(){
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
 
 	//Motor parameters and constant factors
-	Global_Data.mrp.motorPolePairNumber = 21;
-	//ADC conversion factors --> Check actual value first
-/*
-	Global_Data.aa.A1.cf.ADC_A1 = 80*5/32767;
-	Global_Data.aa.A1.cf.ADC_A2 = 80*5/32767;
-	Global_Data.aa.A1.cf.ADC_A3 = 80*5/32767;
-	Global_Data.aa.A1.cf.ADC_A4 = 12.5*5/32767;
-	Global_Data.aa.A1.cf.ADC_B5 = 12.5*5/32767;
-	Global_Data.aa.A1.cf.ADC_B6 = 12.5*5/32767;
-	Global_Data.aa.A1.cf.ADC_B7 = 12.5*5/32767;
-*/
+	//Global_Data.mrp.motorPolePairNumber = 21;
 
 	//Offset theta_el ---> Need to specify
-	Global_Data.av.theta_offset = 0.0;
+	//Global_Data.av.theta_offset = 0;
+
 
 	//Flags
-	codegenInstance.input.flg_PreCntr = 1.0;
-	codegenInstance.input.flg_fieldWeakening = 0.0;
-	codegenInstance.input.flgLimitUdUq = 1.0;
-	codegenInstance.input.flg_UseMMPA = 0.0;
-	codegenInstance.input.flg_SpeedControl = 0.0;
-
-	//Only ratio of frequencies is crucial
-	codegenInstance.input.T_speedController = 1/10000; //Hz
-	codegenInstance.input.T_controller = 1/10000; //Hz
+	codegenInstance.input.flg_PreCntr = 0.0;
+	codegenInstance.input.flgLimitUdUq = 0.0;
+	codegenInstance.input.flg_SpaceVectorModulation = FALSE;
+	codegenInstance.input.flg_deadTimeCompensation = FALSE;
+	codegenInstance.input.flg_theta_el_compensation = FALSE;
 
 	//Controller settings
 	Global_Data.cw.ControlReference = CurrentControl;
+	codegenInstance.input.Kp_Iq = 0.040212;
+	codegenInstance.input.Ki_Iq = 100.53097;
+	codegenInstance.input.Kp_Id = codegenInstance.input.Kp_Iq;
+	codegenInstance.input.Ki_Id = codegenInstance.input.Ki_Iq;
+
 	//Setpoints Controller
 	codegenInstance.input.iq_ref = 0.0;
 	codegenInstance.input.id_ref = 0.0;
-	codegenInstance.input.n_soll = 0.0;
 
-
+	codegenInstance.input.RESET = 0;
+	codegenInstance.input.START = 0;
 
 return Status;
 }

@@ -4,9 +4,15 @@
 PI-Controller
 =============
 
-Toolbox for a standard PI-Controller with internal and external clamping. 
+Toolbox for a standard PI-Controller in parallel form. It's transfer function is:
+
+.. math::
+
+  \frac{Y(s)}{E(s)}=K_p +\frac{K_i}{s}
 
 .. _uz_piController_config:
+
+It has an configurable output limitation with internal clamping to prevent the integrator to rise further during limitation. An input port for an external clamping signal is available as well.  
 
 Setup
 =====
@@ -29,7 +35,7 @@ Example
      uz_PI_Controller_config config = {
         .Kp = 10.0f,
         .Ki = 10.0f,
-        .samplingTime_sec = 0.001f,
+        .samplingTime_sec = 0.00002f,
         .upper_threshold = 10.0f,
         .lower_threshold = -10.0f
      };

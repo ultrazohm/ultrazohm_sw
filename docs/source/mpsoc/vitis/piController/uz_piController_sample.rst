@@ -27,6 +27,10 @@ Description
 Calculates the last sample of the PI-Controller. Has an integrated clamping circuit and an input port for an external
 clamping signal. The error between the reference and actual value will be calculated inside the function. 
 
+.. warning::
+
+  The sample function has to be called with the same sample time as specified in the ``samplingTime_sec`` member of the :ref:`configuration struct <uz_piController_config>`.
+
 .. tikz:: PI-Controller
   :align: left
 

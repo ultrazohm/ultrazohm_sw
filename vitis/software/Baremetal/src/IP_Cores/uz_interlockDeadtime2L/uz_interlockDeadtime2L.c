@@ -7,7 +7,7 @@ static int calculate_microseconds_from_delay_cycles(int clock_frequency_MHz, int
 
 uz_interlockDeadtime2L_handle uz_interlockDeadtime2L_init(uz_interlockDeadtime2L_handle self) {
 	uz_assert_not_NULL(self); // Make sure no NULL pointer is passed to the function since this would be an error
-	uz_assert((self->base_address) != 0); // Make sure that the base address is set
+	uz_assert((self->base_address) != 0U); // Make sure that the base address is set
 	uz_assert(self->is_ready == false); // Make sure this instance is not initialized two times
 	self->max_deadtime_us = (float) 1 / (self->clock_frequency_MHz) * UZ_INTERLOCKDEADTIME2L_HW_MAX_DELAY_CYCLES;
 	uz_assert(self->deadtime_us <= self->max_deadtime_us);
@@ -58,7 +58,7 @@ static int calculate_microseconds_from_delay_cycles(int clock_frequency_MHz, int
 	uz_assert(delay_cycles >= (int ) 0);
 	uz_assert(clock_frequency_MHz >= (int ) 0);
 	float clk_us = 1.0 / (clock_frequency_MHz);		// calculates the time of one clock cycle in us
-	float deadtime_in_us = clk_us * delay_cycles;
+	float deadtime_in_us = clk_us * (float)delay_cycles;
 	return (deadtime_in_us);
 }
 

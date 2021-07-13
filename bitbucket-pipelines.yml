@@ -38,7 +38,7 @@ pipelines:
         - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
         - cppcheck vitis/software/Baremetal/src 
         - cppcheck --addon=cert vitis/software/Baremetal/src 
-        - cppcheck --addon=misra vitis/software/Baremetal/src 
+        - cppcheck --addon=misra --inline-suppr vitis/software/Baremetal/src 
    branches:
      develop:
         - step:

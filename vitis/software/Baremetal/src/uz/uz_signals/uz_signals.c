@@ -16,8 +16,9 @@ float uz_signals_dead_zone(float input, float upper_threshold, float lower_thres
 
 float uz_signals_get_sign_of_value(float input) {
 	float sign=0.0f;
-	if (input < 0.0f)
+	if (input < 0.0f){
 		sign = -1.0f;
+	}
 	else if (input > 0.0f) {
 		sign = 1.0f;
 	} else {

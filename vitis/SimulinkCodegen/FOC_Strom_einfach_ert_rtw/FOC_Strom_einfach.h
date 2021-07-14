@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_Strom_einfach'.
  *
- * Model version                  : 2.2
+ * Model version                  : 2.3
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Mon Jul 12 17:04:00 2021
+ * C/C++ source code generated on : Wed Jul 14 12:21:52 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -21,6 +21,7 @@
 
 #ifndef RTW_HEADER_FOC_Strom_einfach_h_
 #define RTW_HEADER_FOC_Strom_einfach_h_
+#include "rtwtypes.h"
 #include <math.h>
 #include <string.h>
 #ifndef FOC_Strom_einfach_COMMON_INCLUDES_
@@ -68,20 +69,81 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  real_T Iv;                           /* '<Root>/Iv' */
-  real_T Iu;                           /* '<Root>/Iu' */
-  real_T theta_el;                     /* '<Root>/theta_el' */
-  real_T Iw;                           /* '<Root>/Iw' */
-  real_T Iq;                           /* '<Root>/Iq' */
-  real_T Id;                           /* '<Root>/Id' */
+  real_T Act_Iv;                       /* '<Root>/Act_Iv' */
+  real_T Act_Iu;                       /* '<Root>/Act_Iu' */
+  real_T Act_theta_el;                 /* '<Root>/Act_theta_el' */
+  real_T Act_Iw;                       /* '<Root>/Act_Iw' */
+  real_T Act_U_ZK;                     /* '<Root>/Act_U_ZK' */
+  real_T Ref_Iq;                       /* '<Root>/Ref_Iq' */
+  real_T Ref_Id;                       /* '<Root>/Ref_Id' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  real_T U;                            /* '<Root>/U' */
-  real_T V;                            /* '<Root>/V' */
-  real_T W;                            /* '<Root>/W' */
+  real_T a_U;                          /* '<Root>/a_U' */
+  real_T a_V;                          /* '<Root>/a_V' */
+  real_T a_W;                          /* '<Root>/a_W' */
 } ExtY;
+
+/* Parameters (default storage) */
+struct P_ {
+  real_T K_R_id;                       /* Variable: K_R_id
+                                        * Referenced by: '<S38>/Integral Gain'
+                                        */
+  real_T K_R_iq;                       /* Variable: K_R_iq
+                                        * Referenced by: '<S86>/Integral Gain'
+                                        */
+  real_T P_R_id;                       /* Variable: P_R_id
+                                        * Referenced by: '<S39>/Proportional Gain'
+                                        */
+  real_T P_R_iq;                       /* Variable: P_R_iq
+                                        * Referenced by: '<S87>/Proportional Gain'
+                                        */
+  real_T PI_d_InitialConditionForIntegra;
+                              /* Mask Parameter: PI_d_InitialConditionForIntegra
+                               * Referenced by: '<S41>/Integrator'
+                               */
+  real_T PI_q_InitialConditionForIntegra;
+                              /* Mask Parameter: PI_q_InitialConditionForIntegra
+                               * Referenced by: '<S89>/Integrator'
+                               */
+  real_T Gain2_Gain;                   /* Expression: 2
+                                        * Referenced by: '<S4>/Gain2'
+                                        */
+  real_T Gain_Gain;                    /* Expression: 1/3
+                                        * Referenced by: '<S4>/Gain'
+                                        */
+  real_T Gain1_Gain;                   /* Expression: 1/3*sqrt(3)
+                                        * Referenced by: '<S4>/Gain1'
+                                        */
+  real_T Integrator_gainval;           /* Computed Parameter: Integrator_gainval
+                                        * Referenced by: '<S41>/Integrator'
+                                        */
+  real_T Integrator_gainval_p;       /* Computed Parameter: Integrator_gainval_p
+                                      * Referenced by: '<S89>/Integrator'
+                                      */
+  real_T Gain_Gain_m;                  /* Expression: 1/2
+                                        * Referenced by: '<S106>/Gain'
+                                        */
+  real_T Gain2_Gain_i;                 /* Expression: 2
+                                        * Referenced by: '<S106>/Gain2'
+                                        */
+  real_T Constant1_Value;              /* Expression: 1/2
+                                        * Referenced by: '<S9>/Constant1'
+                                        */
+  real_T Gain1_Gain_d;                 /* Expression: 1/2*sqrt(3)
+                                        * Referenced by: '<S106>/Gain1'
+                                        */
+  real_T Constant2_Value;              /* Expression: 1/2
+                                        * Referenced by: '<S9>/Constant2'
+                                        */
+  real_T Constant3_Value;              /* Expression: 1/2
+                                        * Referenced by: '<S9>/Constant3'
+                                        */
+};
+
+/* Parameters (default storage) */
+typedef struct P_ P;
 
 /* Real-time Model Data Structure */
 struct tag_RTM {
@@ -90,29 +152,8 @@ struct tag_RTM {
   DW *dwork;
 };
 
-/*
- * Exported Global Parameters
- *
- * Note: Exported global parameters are tunable parameters with an exported
- * global storage class designation.  Code generation will declare the memory for
- * these parameters and exports their symbols.
- *
- */
-extern real_T P_R_id;                  /* Variable: P_R_id
-                                        * Referenced by: '<S39>/Proportional Gain'
-                                        */
-extern real_T P_R_iq;                  /* Variable: P_R_iq
-                                        * Referenced by: '<S87>/Proportional Gain'
-                                        */
-extern real_T T_R_id;                  /* Variable: T_R_id
-                                        * Referenced by: '<S38>/Integral Gain'
-                                        */
-extern real_T T_R_iq;                  /* Variable: T_R_iq
-                                        * Referenced by: '<S86>/Integral Gain'
-                                        */
-extern real_T U_ZK;                    /* Variable: U_ZK
-                                        * Referenced by: '<S9>/Constant'
-                                        */
+/* Block parameters (default storage) */
+extern P rtP;
 
 /* Model entry point functions */
 extern void FOC_Strom_einfach_initialize(RT_MODEL *const rtM);

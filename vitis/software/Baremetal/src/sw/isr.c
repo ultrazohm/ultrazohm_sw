@@ -87,8 +87,13 @@ void ISR_Control(void *data)
 	}
 	//End: Control algorithm -------------------------------------------------------------------------------
 
-	//FOC_Strom
+	//FOC_Strom Input
+
+
+	//FOC_Strom Calculate
 	uz_codegen_step(&codegenInstance);
+
+	//FOC_Strom Output
 
 	// Set duty cycles for two-level modulator
 	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

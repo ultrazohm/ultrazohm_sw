@@ -9,7 +9,7 @@
  *
  * Model version                  : 2.2
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Mon Jul 12 16:40:10 2021
+ * C/C++ source code generated on : Wed Jul 14 12:08:25 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -20,34 +20,6 @@
  */
 
 #include "FOC_Strom.h"
-
-/* Exported block parameters */
-real_T L_d = 3.0E-5;                   /* Variable: L_d
-                                        * Referenced by: '<S12>/Gain1'
-                                        */
-real_T L_q = 5.0E-5;                   /* Variable: L_q
-                                        * Referenced by: '<S12>/Gain'
-                                        */
-real_T P_R_id = 0.043563418129778458;  /* Variable: P_R_id
-                                        * Referenced by: '<S43>/Proportional Gain'
-                                        */
-real_T P_R_iq = 0.043563418129778458;   /* Variable: P_R_iq
-                                        * Referenced by: '<S91>/Proportional Gain'
-                                        */
-real_T Psi_PM = 0.007;                 /* Variable: Psi_PM
-                                        * Referenced by: '<S12>/Constant'
-                                        */
-real_T T_R_id = 0.00039999999999999996;/* Variable: T_R_id
-                                        * Referenced by: '<S42>/Integral Gain'
-                                        */
-real_T T_R_iq = 0.00039999999999999996;/* Variable: T_R_iq
-                                        * Referenced by: '<S90>/Integral Gain'
-                                        */
-real_T U_ZK = 12.0;                    /* Variable: U_ZK
-                                        * Referenced by: '<S11>/Constant'
-                                        */
-real_T T_sample = 1/(10*10e+3)         /* Sampletime for Integrator manually added
-                                        */
 
 /* Model step function */
 void FOC_Strom_step(RT_MODEL *const rtM)
@@ -67,34 +39,35 @@ void FOC_Strom_step(RT_MODEL *const rtM)
 
   /* Gain: '<S5>/Gain' incorporates:
    *  Gain: '<S5>/Gain2'
-   *  Inport: '<Root>/Iu'
-   *  Inport: '<Root>/Iv'
-   *  Inport: '<Root>/Iw'
+   *  Inport: '<Root>/Act_Iu'
+   *  Inport: '<Root>/Act_Iv'
+   *  Inport: '<Root>/Act_Iw'
    *  Sum: '<S5>/Add'
    */
-  rtDW->alpha_b = ((2.0 * rtU->Iu - rtU->Iv) - rtU->Iw) * 0.33333333333333331;
+  rtDW->alpha_b = ((rtP.Gain2_Gain_g * rtU->Act_Iu - rtU->Act_Iv) - rtU->Act_Iw)
+    * rtP.Gain_Gain_c;
 
   /* Outputs for IfAction SubSystem: '<S1>/Subsystem' incorporates:
    *  ActionPort: '<S3>/Action Port'
    */
   /* SwitchCase: '<S1>/Switch Case' incorporates:
-   *  Inport: '<Root>/theta_el'
+   *  Inport: '<Root>/Act_theta_el'
    *  Trigonometry: '<S111>/Cos'
    *  Trigonometry: '<S111>/Sin'
    *  Trigonometry: '<S6>/Cos'
    *  Trigonometry: '<S6>/Sin'
    */
-  rtb_Cos_tmp = cos(rtU->theta_el);
-  rtb_Sin_tmp = sin(rtU->theta_el);
+  rtb_Cos_tmp = cos(rtU->Act_theta_el);
+  rtb_Sin_tmp = sin(rtU->Act_theta_el);
 
   /* End of Outputs for SubSystem: '<S1>/Subsystem' */
 
   /* Gain: '<S5>/Gain1' incorporates:
-   *  Inport: '<Root>/Iv'
-   *  Inport: '<Root>/Iw'
+   *  Inport: '<Root>/Act_Iv'
+   *  Inport: '<Root>/Act_Iw'
    *  Sum: '<S5>/Add1'
    */
-  rtb_beta_k = (rtU->Iv - rtU->Iw) * 0.57735026918962573;
+  rtb_beta_k = (rtU->Act_Iv - rtU->Act_Iw) * rtP.Gain1_Gain_e;
 
   /* Sum: '<S6>/Add' incorporates:
    *  Product: '<S6>/Product'
@@ -113,10 +86,10 @@ void FOC_Strom_step(RT_MODEL *const rtM)
   rtb_q = rtb_Cos_tmp * rtb_beta_k - rtDW->alpha_b * rtb_Sin_tmp;
 
   /* SwitchCase: '<S1>/Switch Case' incorporates:
-   *  Inport: '<Root>/power'
+   *  Inport: '<Root>/fl_power'
    */
   rtPrevAction = rtDW->SwitchCase_ActiveSubsystem;
-  if ((int32_T)rtU->power == 1) {
+  if ((int32_T)rtU->fl_power == 1) {
     rtAction = 0;
   } else {
     rtAction = 1;
@@ -132,8 +105,8 @@ void FOC_Strom_step(RT_MODEL *const rtM)
        *  DiscreteIntegrator: '<S45>/Integrator'
        *  DiscreteIntegrator: '<S93>/Integrator'
        */
-      rtDW->Integrator_DSTATE = 0.0;
-      rtDW->Integrator_DSTATE_a = 0.0;
+      rtDW->Integrator_DSTATE = rtP.PI_d_InitialConditionForIntegra;
+      rtDW->Integrator_DSTATE_a = rtP.PI_q_InitialConditionForIntegra;
 
       /* End of InitializeConditions for SubSystem: '<S1>/Subsystem' */
     }
@@ -142,38 +115,39 @@ void FOC_Strom_step(RT_MODEL *const rtM)
      *  ActionPort: '<S3>/Action Port'
      */
     /* Sum: '<S3>/Sum1' incorporates:
-     *  Inport: '<Root>/Id'
+     *  Inport: '<Root>/Ref_Id'
      */
-    rtDW->alpha_b = rtU->Id - rtb_d;
+    rtDW->alpha_b = rtU->Ref_Id - rtb_d;
 
     /* DiscreteIntegrator: '<S45>/Integrator' incorporates:
      *  Gain: '<S42>/Integral Gain'
      */
-    rtb_beta_k = 1.0 / T_R_id * rtDW->alpha_b * T_sample + rtDW->Integrator_DSTATE;
+    rtb_beta_k = rtP.K_R_id * rtDW->alpha_b * rtP.Integrator_gainval +
+      rtDW->Integrator_DSTATE;
 
     /* Sum: '<S54>/Sum' */
     rtb_Sum = rtDW->alpha_b + rtb_beta_k;
 
     /* SwitchCase: '<S7>/Switch Case' incorporates:
-     *  Inport: '<Root>/decoupling'
+     *  Inport: '<Root>/fl_decoupling'
      */
-    if ((int32_T)rtU->decoupling == 1) {
+    if ((int32_T)rtU->fl_decoupling == 1) {
       /* Outputs for IfAction SubSystem: '<S7>/Switch Case Action Subsystem' incorporates:
        *  ActionPort: '<S12>/Action Port'
        */
       /* Product: '<S12>/Product1' incorporates:
        *  Constant: '<S12>/Constant'
        *  Gain: '<S12>/Gain1'
-       *  Inport: '<Root>/w_el'
+       *  Inport: '<Root>/Act_w_el'
        *  Sum: '<S12>/Add'
        */
-      rtb_d = (L_d * rtb_d + Psi_PM) * rtU->w_el;
+      rtb_d = (rtP.L_d * rtb_d + rtP.Psi_PM) * rtU->Act_w_el;
 
       /* Product: '<S12>/Product' incorporates:
        *  Gain: '<S12>/Gain'
-       *  Inport: '<Root>/w_el'
+       *  Inport: '<Root>/Act_w_el'
        */
-      rtDW->alpha_b = L_q * rtb_q * rtU->w_el;
+      rtDW->alpha_b = rtP.L_q * rtb_q * rtU->Act_w_el;
 
       /* End of Outputs for SubSystem: '<S7>/Switch Case Action Subsystem' */
     } else {
@@ -183,12 +157,12 @@ void FOC_Strom_step(RT_MODEL *const rtM)
       /* SignalConversion generated from: '<S13>/U_hd_default' incorporates:
        *  Constant: '<S13>/Constant'
        */
-      rtDW->alpha_b = 0.0;
+      rtDW->alpha_b = rtP.Constant_Value;
 
       /* SignalConversion generated from: '<S13>/U_hq_default' incorporates:
        *  Constant: '<S13>/Constant1'
        */
-      rtb_d = 0.0;
+      rtb_d = rtP.Constant1_Value;
 
       /* End of Outputs for SubSystem: '<S7>/Switch Case Action Subsystem1' */
     }
@@ -198,65 +172,68 @@ void FOC_Strom_step(RT_MODEL *const rtM)
     /* Sum: '<S3>/Sum2' incorporates:
      *  Gain: '<S43>/Proportional Gain'
      */
-    rtDW->alpha_b = P_R_id * rtb_Sum - rtDW->alpha_b;
+    rtDW->alpha_b = rtP.P_R_id * rtb_Sum - rtDW->alpha_b;
 
     /* Sum: '<S3>/Sum' incorporates:
-     *  Inport: '<Root>/Iq'
+     *  Inport: '<Root>/Ref_Iq'
      */
-    rtb_q = rtU->Iq - rtb_q;
+    rtb_q = rtU->Ref_Iq - rtb_q;
 
     /* DiscreteIntegrator: '<S93>/Integrator' incorporates:
      *  Gain: '<S90>/Integral Gain'
      */
-    rtb_Sum = 1.0 / T_R_iq * rtb_q * T_sample + rtDW->Integrator_DSTATE_a;
+    rtb_Sum = rtP.K_R_iq * rtb_q * rtP.Integrator_gainval_p +
+      rtDW->Integrator_DSTATE_a;
 
     /* Sum: '<S3>/Sum3' incorporates:
      *  Gain: '<S91>/Proportional Gain'
      *  Sum: '<S102>/Sum'
      */
-    rtb_d += (rtb_q + rtb_Sum) * P_R_iq;
+    rtb_d += (rtb_q + rtb_Sum) * rtP.P_R_iq;
 
     /* Gain: '<S110>/Gain' incorporates:
      *  Product: '<S111>/Product'
      *  Product: '<S111>/Product1'
      *  Sum: '<S111>/Add'
      */
-    rtb_Gain_g = (rtDW->alpha_b * rtb_Cos_tmp - rtb_d * rtb_Sin_tmp) * 0.5;
+    rtb_Gain_g = (rtDW->alpha_b * rtb_Cos_tmp - rtb_d * rtb_Sin_tmp) *
+      rtP.Gain_Gain;
 
     /* Gain: '<S110>/Gain1' incorporates:
      *  Product: '<S111>/Product2'
      *  Product: '<S111>/Product3'
      *  Sum: '<S111>/Add1'
      */
-    rtb_q = (rtDW->alpha_b * rtb_Sin_tmp + rtb_d * rtb_Cos_tmp) *
-      0.8660254037844386;
+    rtb_q = (rtDW->alpha_b * rtb_Sin_tmp + rtb_d * rtb_Cos_tmp) * rtP.Gain1_Gain;
 
-    /* Outport: '<Root>/V' incorporates:
-     *  Constant: '<S11>/Constant'
+    /* Outport: '<Root>/a_V' incorporates:
      *  Constant: '<S11>/Constant2'
+     *  Inport: '<Root>/Act_U_ZK'
      *  Product: '<S11>/Divide1'
      *  Sum: '<S110>/Add'
      *  Sum: '<S11>/Add1'
      */
-    rtY->V = (rtb_q - rtb_Gain_g) / U_ZK + 0.5;
+    rtY->a_V = (rtb_q - rtb_Gain_g) / rtU->Act_U_ZK + rtP.Constant2_Value;
 
-    /* Outport: '<Root>/U' incorporates:
-     *  Constant: '<S11>/Constant'
-     *  Constant: '<S11>/Constant1'
-     *  Gain: '<S110>/Gain2'
-     *  Product: '<S11>/Divide'
-     *  Sum: '<S11>/Add'
-     */
-    rtY->U = 2.0 * rtb_Gain_g / U_ZK + 0.5;
-
-    /* Outport: '<Root>/W' incorporates:
-     *  Constant: '<S11>/Constant'
+    /* Outport: '<Root>/a_W' incorporates:
      *  Constant: '<S11>/Constant3'
+     *  Inport: '<Root>/Act_U_ZK'
      *  Product: '<S11>/Divide2'
      *  Sum: '<S110>/Add1'
      *  Sum: '<S11>/Add2'
      */
-    rtY->W = ((0.0 - rtb_Gain_g) - rtb_q) / U_ZK + 0.5;
+    rtY->a_W = ((0.0 - rtb_Gain_g) - rtb_q) / rtU->Act_U_ZK +
+      rtP.Constant3_Value;
+
+    /* Outport: '<Root>/a_U' incorporates:
+     *  Constant: '<S11>/Constant1'
+     *  Gain: '<S110>/Gain2'
+     *  Inport: '<Root>/Act_U_ZK'
+     *  Product: '<S11>/Divide'
+     *  Sum: '<S11>/Add'
+     */
+    rtY->a_U = rtP.Gain2_Gain * rtb_Gain_g / rtU->Act_U_ZK +
+      rtP.Constant1_Value_i;
 
     /* Update for DiscreteIntegrator: '<S45>/Integrator' */
     rtDW->Integrator_DSTATE = rtb_beta_k;
@@ -269,23 +246,23 @@ void FOC_Strom_step(RT_MODEL *const rtM)
     /* Outputs for IfAction SubSystem: '<S1>/Switch Case Action Subsystem' incorporates:
      *  ActionPort: '<S4>/Action Port'
      */
-    /* Outport: '<Root>/U' incorporates:
+    /* Outport: '<Root>/a_U' incorporates:
      *  Constant: '<S4>/Constant'
      *  SignalConversion generated from: '<S4>/U_default'
      */
-    rtY->U = 0.0;
+    rtY->a_U = rtP.Constant_Value_p;
 
-    /* Outport: '<Root>/V' incorporates:
+    /* Outport: '<Root>/a_V' incorporates:
      *  Constant: '<S4>/Constant'
      *  SignalConversion generated from: '<S4>/V_default'
      */
-    rtY->V = 0.0;
+    rtY->a_V = rtP.Constant_Value_p;
 
-    /* Outport: '<Root>/W' incorporates:
+    /* Outport: '<Root>/a_W' incorporates:
      *  Constant: '<S4>/Constant'
      *  SignalConversion generated from: '<S4>/W_default'
      */
-    rtY->W = 0.0;
+    rtY->a_W = rtP.Constant_Value_p;
 
     /* End of Outputs for SubSystem: '<S1>/Switch Case Action Subsystem' */
   }
@@ -316,10 +293,10 @@ void FOC_Strom_initialize(RT_MODEL *const rtM)
 
   /* SystemInitialize for IfAction SubSystem: '<S1>/Subsystem' */
   /* InitializeConditions for DiscreteIntegrator: '<S45>/Integrator' */
-  rtDW->Integrator_DSTATE = 0.0;
+  rtDW->Integrator_DSTATE = rtP.PI_d_InitialConditionForIntegra;
 
   /* InitializeConditions for DiscreteIntegrator: '<S93>/Integrator' */
-  rtDW->Integrator_DSTATE_a = 0.0;
+  rtDW->Integrator_DSTATE_a = rtP.PI_q_InitialConditionForIntegra;
 
   /* End of SystemInitialize for SubSystem: '<S1>/Subsystem' */
 }

@@ -72,28 +72,23 @@ void ISR_Control(void *data)
 	CheckForErrors();
 	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
 
-	//Start: Control algorithm -------------------------------------------------------------------------------
-	if (Global_Data.cw.ControlReference == SpeedControl)
-	{
-		// add your speed controller here
-	}
-	else if(Global_Data.cw.ControlReference == CurrentControl)
-	{
-		// add your current controller here
-	}
-	else if(Global_Data.cw.ControlReference == TorqueControl)
-	{
-		// add your torque controller here
-	}
-	//End: Control algorithm -------------------------------------------------------------------------------
+	//FOC_Strom Assign Input Data
+	codegenInstance.input.Act_Iu = (Global_Data.aa.A2.me.ADC_A1-2.5) * 80/2;		//A
+	codegenInstance.input.Act_Iv = (Global_Data.aa.A2.me.ADC_A2-2.5) * 80/2;		//A
+	codegenInstance.input.Act_Iw = (Global_Data.aa.A2.me.ADC_A3-2.5) * 80/2;		//A
+	codegenInstance.input.Act_U_ZK = Global_Data.aa.A2.me.ADC_A4 * 12.5;			//V
 
-	//FOC_Strom Input
+	codegenInstance.input.Act_theta_el = Global_Data.av.theta_elec - 5.139955762; 						//[rad] Definition in main.c
+	codegenInstance.input.Act_w_el = Global_Data.av.mechanicalRotorSpeed * Global_Data.mrp.motorPolePairNumber*M_PI/30; //[rad/s]
 
-
-	//FOC_Strom Calculate
+	//FOC_Strom Call generated code
 	uz_codegen_step(&codegenInstance);
 
 	//FOC_Strom Output
+	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.a_U;
+	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.a_V;
+	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.a_W;
+
 
 	// Set duty cycles for two-level modulator
 	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

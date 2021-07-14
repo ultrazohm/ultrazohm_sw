@@ -101,7 +101,7 @@ The inertia of the complete system is summed into the inertia :math:`J_{sum}`, i
 Friction
 ^^^^^^^^
 
-The friction :math:`M_F(\omega)`  [ [#ZurModellierungReibung]_, p. 12 ff] is implemented with the simplified viscous friction model:
+The friction :math:`M_F(\omega)`  [ [#Ruderman_ZurModellierungReibung]_, p. 12 ff] is implemented with the simplified viscous friction model:
 
 .. math::
 
@@ -109,7 +109,7 @@ The friction :math:`M_F(\omega)`  [ [#ZurModellierungReibung]_, p. 12 ff] is imp
 
 With the constant coulomb friction :math:`M_c`, and the friction coefficient :math:`\sigma`.
 
-.. tikz:: Friction model [ [#ZurModellierungReibung]_, p. 13]
+.. tikz:: Friction model [ [#Ruderman_ZurModellierungReibung]_, p. 13]
   :libs: 
 
   \begin{tikzpicture}
@@ -163,6 +163,25 @@ This behavior is implemented in the hardware of the IP-Core with switches.
 The input and output values are intended to be written and read in a periodical function, e.g., the ISR.
 
 In addition to the time-dependent values, the PMSM model parameters are configured by AXI.
+
+Integration
+-----------
+
+The differential equations of the electrical and mechanical system are discretized using the explicit Euler method [ [#Sanchez_LimitsOfFloat]_, p. 3 ].
+Using this method is justified by the small integration step of the implementation (:math:`t_s=1~\mu s`) and is a commonly used approach [#Sanchez_LimitsOfFloat]_, p. 3 ].
+The new value at time :math:`k+1` of the state variable is calcualted for every time step based on the *old* values (:math:`k`):
+
+.. math:: 
+
+    \psi_d(k+1) &= t_s \bigg( u_d(k) - R_1 i_d(k) + \omega_{el} \psi_q(k) \bigg) + \psi_d(k)
+
+    \psi_q(k+1) &=t_s \bigg( u_q(k) - R_1 i_q(k) - \omega_{el} \psi_d(k) \bigg) + \psi_q(k)
+
+For the mechanical system:
+
+.. math::
+
+    \omega_{mech}(k+1) =ts \bigg( \frac{ M_I(k) - M_F(k) - M_L(k) }{J_{sum}} \bigg) + \omega_{mech}(k)
 
 IP-Core Hardware
 ----------------
@@ -386,5 +405,6 @@ Driver reference
 Sources
 -------
 
-.. [#ZurModellierungReibung] Zur Modellierung und Kompensationdynamischer Reibung in Aktuatorsystemen, Michael Ruderman, Dissertation, 2012, TU Dortmund (German)
+.. [#Ruderman_ZurModellierungReibung] Zur Modellierung und Kompensationdynamischer Reibung in Aktuatorsystemen, Michael Ruderman, Dissertation, 2012, TU Dortmund (German)
 .. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk Schröder, Springer, 2015, 4. Edition (German)
+.. [#Sanchez_LimitsOfFloat] Exploring the Limits of Floating-Point Resolution for Hardware-In-the-Loop Implemented with FPGAs, Alberto Sanchez, Elías Todorovich, and Angel De Castro, Applications of Power Electronics, https://doi.org/10.3390/electronics7100219

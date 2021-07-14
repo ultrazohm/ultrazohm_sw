@@ -34,7 +34,7 @@ clamping signal. The error between the reference and actual value will be calcul
 .. tikz:: PI-Controller
   :align: left
 
-  \usetikzlibrary{calc};
+  \usetikzlibrary{shapes,arrows, patterns,calc};
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm, shift={(-27,-4.25)}](actual){actualValue};
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm, shift={(-27,-1.75)}](Ki){Ki};
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm, shift={(-27,-3)}](ref){referenceValue};
@@ -77,14 +77,15 @@ clamping signal. The error between the reference and actual value will be calcul
   \draw[-latex] (ext.east)--($(OR.west)+(0,0.7)$);
   \draw[color=cyan](OR.east)-| ($(Switch1.west)+(-1.5,0)$);
   \draw[-latex,color=cyan]($(Switch1.west)+(-1.5,0)$) -- (Switch1.west);
-  \node[draw, rectangle, minimum height=1.1cm] (Constant2) at (-15.5,0.5) {~~~\,0\,\,~~~};
-  \draw[-latex](Constant2.south) |- ($(Switch1.west)+(0,0.4)$);
-  \begin{scope}[shift={(-2.5,-1.8)}]
+  \node[draw, rectangle, minimum height=1.1cm] (Constant2) at (-10,0.5) {~~~\,0\,\,~~~};
+  \draw(Constant2.south) |- ($(Switch1.west)+(-0.5,1.5)$);
+  \draw[-latex]($(Switch1.west)+(-0.5,1.5)$) |- ($(Switch1.west)+(0,0.4)$);
+  \begin{scope}[shift={(1,-1.8)}]
   \node[minimum size=0.7cm, draw, circle] (add1) at (0,0) {};
   \node[] at (0,-0.2) {+};
   \node at (-0.2,0) {+};
   \end{scope}
-  \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm, shift={(2,-1.8)}](out){output};
+  \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm, shift={(6,-1.8)}](out){output};
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm, shift={(-27,-9.5)}](Kp){Kp};
   \node[draw, rectangle, minimum height=1.1cm] (Multiply2) at (-22.5,-9.2) {~~~\,\large{x}\,\,~~~};
   \draw[-latex](Kp.east)--($(Multiply2.west)+(0,-0.3)$);
@@ -107,22 +108,21 @@ clamping signal. The error between the reference and actual value will be calcul
   \draw[-latex]($(Switch2.west)+(-0.3,0.4)$)--($(Switch2.west)+(0,0.4)$);
   \draw[-latex,color=gray](Switch2.east)-|(add1.south);
   \node [circle,fill,inner sep=1pt,color=blue] at ($(Clamping.north)+(0,0.75)$){};
-  \draw[-latex,color=green]($(Clamping.east)+(13.7,0)$) -- (Clamping.east);
-  \draw[-, bend angle=45, bend left,color=green]($(Clamping.east)+(13.7,0)$)to node[below,align=center]{}($(Clamping.east)+(14.2,0)$);
-  \draw[color=green]($(Clamping.east)+(14.2,0)$) -| ($(add1.east)+(0.75,0)$);
+  \draw[-latex,color=green]($(add1.south)+(-0.25,-2.35)$) -- (Clamping.east);
+  \draw[-, bend angle=45, bend left,color=green]($(add1.south)+(-0.25,-2.35)$)to node[below,align=center]{}($(add1.south)+(+0.25,-2.35)$);
+  \draw[color=green]($(add1.south)+(0.25,-2.35)$) -| ($(add1.east)+(0.75,0)$);
   \node [circle,fill,inner sep=1pt,color=green] at ($(add1.east)+(0.75,0)$) {};
-  \node[draw, rectangle, minimum height=1.1cm] (delay2) at (-6,-1.8) {~~~\,\large{$\frac{1}{z}$}\,\,~~~}; 
-  \begin{scope}[shift={(-12,-2.2)}]
-  \node[minimum size=0.7cm, draw, circle] at (0,0) (add3){};
+  \node[draw, rectangle, minimum height=1.1cm] (delay2) at (-2.5,-1.8) {~~~\,\large{$\frac{1}{z}$}\,\,~~~}; 
+  \begin{scope}[shift={(-8.5,-2.2)}]
+  \node[minimum size=0.7cm, draw, circle] (add3) at (0,0) {};
   \node[] at (0,-0.2) {+};
   \node at (-0.2,0) {+};
   \end{scope}
-  \draw[-latex](Switch1.east)--(add3.west);
   \draw[-latex,color=orange](delay2.east)--(add1.west);
   \draw[color=orange]($(delay2.east)+(0.5,0)$)|-($(add3.south)+(0,-1)$);
   \draw[color=orange,-latex]($(add3.south)+(0,-1)$)--(add3.south);
   \node [circle,fill,inner sep=1pt,color=orange] at ($(delay2.east)+(0.5,0)$) {};
-  \begin{scope}[shift={(-8.3,-1.8)}]
+  \begin{scope}[shift={(-4.8,-1.8)}]
   \node[draw, rectangle, minimum height=1.3cm, minimum width = 2cm] (Switch3) at (0,0) {\footnotesize{$>0$}};
   \draw(-1,0.4) to (0,0.4); 
   \draw(-1,-0.4) to (0,-0.4); 
@@ -134,7 +134,7 @@ clamping signal. The error between the reference and actual value will be calcul
   \draw(0.7,0) to (1,0);
   \end{scope}
   \draw[-latex,color=darkgray](add3.east)--($(Switch3.west)+(0,-0.4)$);
-  \draw[-latex](Switch3.east)--(delay2.west);
+  \draw[-latex,color=darkgray](Switch3.east)--(delay2.west);
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm, color=magenta, shift={(-14,-6)}](Reset){Reset};
   \node[color=magenta,align=center,shift={(-14,-5.25)}](Reset.north){done via \\Reset function};
   \draw[color=magenta](Reset.east)--($(Reset.east)+(0.75,0)$);
@@ -145,10 +145,12 @@ clamping signal. The error between the reference and actual value will be calcul
   \draw[-, bend angle=45, bend left,color=magenta]($(Reset.east)+(0.75,1.3)$)to node[below,align=center]{}($(Reset.east)+(0.75,1.8)$);
   \draw[color=magenta]($(Reset.east)+(0.75,1.8)$)--($(Reset.east)+(0.75,3.5)$);
   \draw[-, bend angle=45, bend left,color=magenta]($(Reset.east)+(0.75,3.5)$)to node[below,align=center]{}($(Reset.east)+(0.75,4)$);
-  \draw[-latex,color=magenta]($(Reset.east)+(0.75,4)$)|-(Switch3.west);
-  \draw[-latex]($(Switch3.west)+(-6.2,0.4)$)--($(Switch3.west)+(0,0.4)$);
-  \node [circle,fill,inner sep=1pt] at ($(Switch3.west)+(-6.2,0.4)$){};
-  \begin{scope}[shift={(0,-1.8)}]
+  \draw[-latex,color=magenta]($(Switch3.west)+(-1.5,0.5)$)|-(Switch3.west);
+  \draw[color=magenta]($(Reset.east)+(0.75,4)$)|-($(Switch3.west)+(-1.5,0.5)$);
+  \draw(Constant2.south)|-($(Switch3.west)+(-1,1.1)$);
+  \draw[-latex]($(Switch3.west)+(-1,1.1)$)|-($(Switch3.west)+(0,0.4)$);
+  \node [circle,fill,inner sep=1pt] at ($(Constant2.south)+(0,-0.64)$){};
+  \begin{scope}[shift={(3.5,-1.8)}]
   \node [draw, rectangle, minimum height=1.1cm] (Limit) at (0,0) {~~~~~~\,~~~};
   \draw[color=lightgray](-0.35,0) -- (0.35,0);
   \draw[color=lightgray](0,-0.27) -- (0,0.27);
@@ -165,3 +167,6 @@ clamping signal. The error between the reference and actual value will be calcul
   \node[color=darkgray] at ($(add3.east)+(1,-0.2)$){I\_sum};
   \node[color=gray] at ($(Switch2.east)+(5,+0.2)$){P\_sum};
   \node[color=red,rotate=-90] at ($(add.east)+(0.6,-2)$){error};
+  \node[isosceles triangle, isosceles triangle apex angle=30,draw,minimum size =0.5cm,font=\tiny] (gain) at (-11.5,-2.2) {samplingTime};
+  \draw[-latex](Switch1.east)--(gain.west);
+  \draw[-latex](gain.east)--(add3.west);

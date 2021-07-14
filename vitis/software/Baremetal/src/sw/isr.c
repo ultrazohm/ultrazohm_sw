@@ -38,6 +38,7 @@ uint32_t 		ADC_RAW_Sum_1 = 0.0;
 float 	ADC_RAW_Offset_1 = 0.0;
 int 		i_CountADCinit =0, MessOnce=0, CountCurrentError =0;
 _Bool     initADCdone = false;
+int bool_plot_values = 1;
 
 //Initialize the Interrupt structure
 XScuGic INTCInst;  		//Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -98,8 +99,9 @@ void ISR_Control(void *data)
 
 
 	//Encoder
-	codegenInstance.input.theta_el = Global_Data.av.theta_elec - 5.139955762; //rad; Offset calculation in excel file
-	codegenInstance.input.w_el = Global_Data.av.mechanicalRotorSpeed * Global_Data.mrp.motorPolePairNumber*M_PI/30; //rad/s
+	codegenInstance.input.theta_el = Global_Data.av.theta_elec - Global_Data.av.theta_offset; 						//[rad] Definition in main.c
+	codegenInstance.input.w_el = Global_Data.av.mechanicalRotorSpeed * Global_Data.mrp.motorPolePairNumber*M_PI/30; //[rad/s]
+	codegenInstance.input.n_ist = Global_Data.av.mechanicalRotorSpeed;												//[rpm]
 
 
 
@@ -138,6 +140,11 @@ void ISR_Control(void *data)
 	//PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 	//				Global_Data.rasv.halfBridge2DutyCycle,
 	//				Global_Data.rasv.halfBridge3DutyCycle);
+
+	//Plot values
+	if(bool_plot_values == 1){
+		uz_printf("Iq_ist: %f \r\n", codegenInstance.output.iq_ist);
+	}
 
 
 	// Update JavaScope
@@ -178,12 +185,6 @@ int Initialize_ISR(){
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + IPCore_Enable_mux_axi_ip, 1); // enable IP core
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
 
-	//Motor parameters and constant factors
-	//Global_Data.mrp.motorPolePairNumber = 21;
-
-	//Offset theta_el ---> Need to specify
-	//Global_Data.av.theta_offset = 0;
-
 
 	//Flags
 	codegenInstance.input.flg_PreCntr = 0.0;
@@ -191,17 +192,24 @@ int Initialize_ISR(){
 	codegenInstance.input.flg_SpaceVectorModulation = FALSE;
 	codegenInstance.input.flg_deadTimeCompensation = FALSE;
 	codegenInstance.input.flg_theta_el_compensation = FALSE;
+	codegenInstance.input.flg_FieldWeakening = 0.0;
+	codegenInstance.input.flg_SpeedControl = 0.0;
 
 	//Controller settings
-	Global_Data.cw.ControlReference = CurrentControl;
 	codegenInstance.input.Kp_Iq = 0.040212;
 	codegenInstance.input.Ki_Iq = 100.53097;
 	codegenInstance.input.Kp_Id = codegenInstance.input.Kp_Iq;
 	codegenInstance.input.Ki_Id = codegenInstance.input.Ki_Iq;
 
+	codegenInstance.input.Kp_Speed = 0.0;
+	codegenInstance.input.Ki_Speed = 0.0;
+	codegenInstance.input.I_max = 10.0;
+
+
 	//Setpoints Controller
 	codegenInstance.input.iq_ref = 0.0;
 	codegenInstance.input.id_ref = 0.0;
+	codegenInstance.input.n_ref = 0.0;
 
 	codegenInstance.input.RESET = 0;
 	codegenInstance.input.START = 0;

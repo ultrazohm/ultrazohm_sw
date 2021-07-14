@@ -9,13 +9,13 @@ R = 0.040;                   %Ohm Strangwiderstand
 J_M = 0.0025;                %kg m²
 U_DC = 46;                   %V
 %U_maxDQ = U_DC/sqrt(3);
-I_max = 50;                 %A
+I_max = 10;                 %A
 
 
 %Inverter parameters
-f_switchingInverter = 10000;            %Triangle signal frequency
+f_switchingInverter = 20000;            %Triangle signal frequency
 f_MCU_PWM = 10e6;                       %Inverter frequency
-T_dead = 2e-6;                        %Safety dead time of inverter
+T_dead = 0.2e-10;                        %Safety dead time of inverter
 Capacitance_CircuitCondensator = 500e-6;%uF, Intermediate circuit condensator
 
 
@@ -71,10 +71,6 @@ damping_factor = 6;
 K = 3*30*zp*psi_pm/(2*J_M*pi);
 Kp_SpeedController = Kp_IqController/(Lq*damping_factor*K);
 Ki_SpeedController = Kp_IqController/(Lq*damping_factor^2);
-
-%Parallel controller formulation
-Kp_SpeedController = Kp_SpeedController;
-Ki_SpeedController = Kp_SpeedController * Ki_SpeedController;
 
 %Speed_Controller - TI: Set speed Bandwidth
 % K = 3/2*zp*psi_pm/J_M;

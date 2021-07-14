@@ -73,6 +73,7 @@ Syllabus
     general/ci_pipeline
     general/howToDocs/howToDocs
     general/useCases/useCases
+    general/hil/hil
     general/vscode_remote_container/vscode_remote_container
     general/contributors
 

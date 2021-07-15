@@ -38,7 +38,7 @@ uint32_t 		ADC_RAW_Sum_1 = 0.0;
 float 	ADC_RAW_Offset_1 = 0.0;
 int 		i_CountADCinit =0, MessOnce=0, CountCurrentError =0;
 _Bool     initADCdone = false;
-int bool_plot_values = 1;
+//int bool_plot_values = 1;
 
 //Initialize the Interrupt structure
 XScuGic INTCInst;  		//Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -142,9 +142,9 @@ void ISR_Control(void *data)
 	//				Global_Data.rasv.halfBridge3DutyCycle);
 
 	//Plot values
-	if(bool_plot_values == 1){
-		uz_printf("Iq_ist: %f \r\n", codegenInstance.output.iq_ist);
-	}
+//	if(bool_plot_values == 1){
+//		uz_printf("Iq_ist: %f \r\n", codegenInstance.output.iq_ist);
+//	}
 
 
 	// Update JavaScope
@@ -201,9 +201,9 @@ int Initialize_ISR(){
 	codegenInstance.input.Kp_Id = codegenInstance.input.Kp_Iq;
 	codegenInstance.input.Ki_Id = codegenInstance.input.Ki_Iq;
 
-	codegenInstance.input.Kp_Speed = 0.0;
-	codegenInstance.input.Ki_Speed = 0.0;
-	codegenInstance.input.I_max = 10.0;
+	codegenInstance.input.Kp_Speed = 0.7252795;
+	codegenInstance.input.Ki_Speed = 50.634066;
+	codegenInstance.input.I_max = 5.0;
 
 
 	//Setpoints Controller

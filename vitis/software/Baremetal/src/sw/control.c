@@ -138,11 +138,11 @@ int Initialize_MotorRelatedParameters(DS_Data* data){
 	int Status = 0;
 
 	//PowerTower and Hacker Q-150 Parameters
-	data->mrp.motorMaximumCurrentShortTimeOperation = 150.0; 	//[A] maximum value of HASS-50S current sensors
-	data->mrp.motorMaximumDcLinkVoltage = 46.0;					//[V] maximum DC Voltage of Hacker Q150
-	data->mrp.motorMaximumSpeed = 4500;							//[rpm]
-	data->mrp.motorMaximumCurrentContinuousOperation = 100.0;	//[A] Where is this parameter used? Maximum Current of PowerTower?
-	data->mrp.motorPolePairNumber = 21.0;						//PolePairNumber --> Used in encoder.c and isr.c
+	//data->mrp.motorMaximumCurrentShortTimeOperation = 150.0; 	//[A] maximum value of HASS-50S current sensors
+	//data->mrp.motorMaximumDcLinkVoltage = 46.0;					//[V] maximum DC Voltage of Hacker Q150
+	//data->mrp.motorMaximumSpeed = 4500;							//[rpm]
+	//data->mrp.motorMaximumCurrentContinuousOperation = 100.0;	//[A] Where is this parameter used? Maximum Current of PowerTower?
+	//data->mrp.motorPolePairNumber = 21.0;						//PolePairNumber --> Used in encoder.c and isr.c
 
 
 //	//General parameters which mainly depend on the system and not on the motor
@@ -161,31 +161,31 @@ int Initialize_MotorRelatedParameters(DS_Data* data){
 	//	data->mrp.motorFluxConstant = 0.0092; //[Vs] Psi_sinus
 
 //	//Motor B�hler 1.25.058.401 (Comment strg+shift+/  Uncomment strg+shift+/)
-//	data->mrp.motorMaximumCurrentContinuousOperation = 11.0; // [A]
-//	data->mrp.FCS_MPC_Time_Period = 10.0000e-06; //FCS-IP-Core current control Period
-//	data->mrp.motorDirectInductance = 2.00e-04; // [H] Identified-ID-Run: Ld= 191 uH (Motor+Mosfet+Leitung+Klemme) //Identified LCR-Meter: L_ph_ph= 410uH -> Ld= 205uH
-//	data->mrp.motorQuadratureInductance = 2.00e-04; // [H]
-//	data->mrp.motorStatorResistance = 0.07; //[Ohm] Identified-ID-Run: Rs= 0.0718 (Motor+Mosfet+Leitung+Klemme) //R_ds,on Mosfet(BSC094N06LS5) = 0.0094 Ohm //Identified LCR-Meter: R_ph_ph= 0.118 -> Rs= 0.118/2 + 2*0.0094 = 0.0778 Ohm
-//	data->mrp.motorPolePairNumber = 21; // Number of pole pairs in the motor (necessary for the encoder)
-//	data->mrp.motorFluxConstant = 0.005950905; //[Vs] Psi_sinus
-//	data->mrp.motorNominalCurrent=8; //8;
-//	data->mrp.motorNominalSpeed=3000;
-//	data->mrp.motorRotorInertia=1.585e-05;
-//	data->ctrl.foc.cc.Kp_id=0.2;
-//	data->ctrl.foc.cc.Tn_id=0.003;
-//	data->ctrl.foc.cc.Kp_iq=0.2;
-//	data->ctrl.foc.cc.Tn_iq=0.003;
-//	data->ctrl.foc.sc.Kp=0.04;
-//	data->ctrl.foc.sc.Tn=0.1;
-//	data->ctrl.foc.cc.Kp_id_Custom=0.2;
-//	data->ctrl.foc.cc.Tn_id_Custom=0.003;
-//	data->ctrl.foc.cc.Kp_iq_Custom=0.2;
-//	data->ctrl.foc.cc.Tn_iq_Custom=0.003;
-//	data->ctrl.foc.sc.Kp_Custom=0.04;
-//	data->ctrl.foc.sc.Tn_Custom=0.1;
-//	data->mrp.ViscousFriction=0.000164;
-//	data->mrp.CoulombFriction=0.0145;
-//	data->mrp.BreakawayTorque=0.0284;
+	data->mrp.motorMaximumCurrentContinuousOperation = 11.0; // [A]
+	data->mrp.FCS_MPC_Time_Period = 10.0000e-06; //FCS-IP-Core current control Period
+	data->mrp.motorDirectInductance = 2.00e-04; // [H] Identified-ID-Run: Ld= 191 uH (Motor+Mosfet+Leitung+Klemme) //Identified LCR-Meter: L_ph_ph= 410uH -> Ld= 205uH
+	data->mrp.motorQuadratureInductance = 2.00e-04; // [H]
+	data->mrp.motorStatorResistance = 0.07; //[Ohm] Identified-ID-Run: Rs= 0.0718 (Motor+Mosfet+Leitung+Klemme) //R_ds,on Mosfet(BSC094N06LS5) = 0.0094 Ohm //Identified LCR-Meter: R_ph_ph= 0.118 -> Rs= 0.118/2 + 2*0.0094 = 0.0778 Ohm
+	data->mrp.motorPolePairNumber = 21; // Number of pole pairs in the motor (necessary for the encoder)
+	data->mrp.motorFluxConstant = 0.005950905; //[Vs] Psi_sinus
+	data->mrp.motorNominalCurrent=8; //8;
+	data->mrp.motorNominalSpeed=3000;
+	data->mrp.motorRotorInertia=1.585e-05;
+	data->ctrl.foc.cc.Kp_id=0.2;
+	data->ctrl.foc.cc.Tn_id=0.003;
+	data->ctrl.foc.cc.Kp_iq=0.2;
+	data->ctrl.foc.cc.Tn_iq=0.003;
+	data->ctrl.foc.sc.Kp=0.04;
+	data->ctrl.foc.sc.Tn=0.1;
+	data->ctrl.foc.cc.Kp_id_Custom=0.2;
+	data->ctrl.foc.cc.Tn_id_Custom=0.003;
+	data->ctrl.foc.cc.Kp_iq_Custom=0.2;
+	data->ctrl.foc.cc.Tn_iq_Custom=0.003;
+	data->ctrl.foc.sc.Kp_Custom=0.04;
+	data->ctrl.foc.sc.Tn_Custom=0.1;
+	data->mrp.ViscousFriction=0.000164;
+	data->mrp.CoulombFriction=0.0145;
+	data->mrp.BreakawayTorque=0.0284;
 
 	return Status;
 }

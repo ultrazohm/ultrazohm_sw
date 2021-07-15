@@ -96,9 +96,11 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge3DutyCycle);
 
 	// Set duty cycles for three-level modulator
+	/*
 	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
+	*/
 
 
 	// Update JavaScope
@@ -137,6 +139,12 @@ int Initialize_ISR(){
 	// Initialize mux_axi to use correct interrupt for triggering the ADCs
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + IPCore_Enable_mux_axi_ip, 1); // enable IP core
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
+
+	//Set Flags and referenceValues of FOC to zero
+	codegenInstance.input.fl_decoupling = 0.0;
+	codegenInstance.input.fl_power = 0.0;
+	codegenInstance.input.Ref_Id = 0.0;
+	codegenInstance.input.Ref_Iq = 0.0;
 
 return Status;
 }

@@ -18,15 +18,20 @@ Example
   int main(void) {
      float preIntegrator = 10.5f;
      float preSat = 1.1f;
-     float upper_threshold = 10.0f;
-     float lower_threshold = -8.0f;
-     bool output = uz_PI_Controller_Clamping_Circuit(preIntegrator, preSat, upper_threshold, lower_threshold);
+     float upper_limit = 10.0f;
+     float lower_limit = -8.0f;
+     bool clamp = uz_PI_Controller_Clamping_Circuit(preIntegrator, preSat, upper_threshold, lower_threshold);
   }
 
 Description
 ===========
 
-Compares the values before and after the integrator and decides, if clamping is necessary. It is already integrated into the :ref:`sample-function <uz_piController_sample>`. 
+Compares the values before the integrator ``preIntegrator`` and before the output limitation ``preSat``. Decides, that clamping is necessary, if the ``preSat`` value is outside the limit 
+and if ``preIntegrator`` and ``preSat`` have the same sign. It is already integrated into the :ref:`sample-function <uz_piController_sample>`. 
+
+.. warning::
+
+  The values for ``upper_limit`` and ``lower_limit`` must be the same as configured in the :ref:`PI-Controller configuration struct <uz_piController_config>`.
 
 .. tikz:: Clamping circuit
   :align: left

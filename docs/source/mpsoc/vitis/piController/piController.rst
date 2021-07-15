@@ -36,8 +36,8 @@ Example
         .Kp = 10.0f,
         .Ki = 10.0f,
         .samplingTime_sec = 0.00002f,
-        .upper_threshold = 10.0f,
-        .lower_threshold = -10.0f
+        .upper_limit = 10.0f,
+        .lower_limit = -10.0f
      };
   }
     
@@ -87,7 +87,7 @@ Example
 
   #include "uz_piController.h"
   int main(void) {
-  uz_PI_Controller_reset(PI_instance);
+     uz_PI_Controller_reset(PI_instance);
   }
 
 Description

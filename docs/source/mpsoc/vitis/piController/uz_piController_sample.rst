@@ -24,7 +24,7 @@ Example
 Description
 ===========
 
-Calculates the last sample of the PI-Controller. Has an :ref:`integrated clamping circuit <uz_piController_clamping>` and an input port for an external
+Calculates the last sample of the PI-Controller. Has an output limitation and a corresponding :ref:`clamping circuit <uz_piController_clamping>`. Furthermore it has an input port for an external
 clamping signal. The error between the reference and actual value will be calculated inside the function. 
 
 .. warning::

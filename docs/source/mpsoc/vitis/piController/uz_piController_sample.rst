@@ -40,7 +40,7 @@ clamping signal. The error between the reference and actual value will be calcul
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm, shift={(-27,-3)}](ref){referenceValue};
   \begin{scope}[shift={(-24.4,-3)}]
   \node[minimum size=0.7cm, draw, circle] (add) at (0,0) {};
-  \node[] at (0,-0.2) {+};
+  \node[] at (0,-0.25) {-};
   \node at (-0.2,0) {+};
   \end{scope}
   \node[draw, rectangle, minimum height=1.3cm] (Multiply1) at (-22.5,-2.6) {~~~\,\large{x}\,\,~~~};

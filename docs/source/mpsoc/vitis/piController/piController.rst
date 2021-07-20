@@ -12,7 +12,7 @@ Toolbox for a standard PI-Controller in parallel form. It's transfer function is
 
 .. _uz_piController_config:
 
-It has an configurable output limitation with internal clamping to prevent the integrator to rise further during limitation. An input port for an external clamping signal is available as well.  
+It has an configurable output limitation with internal clamping to prevent the integrator to rise further during limitation. An input port for an external clamping signal is available aswell.  
 
 Setup
 =====

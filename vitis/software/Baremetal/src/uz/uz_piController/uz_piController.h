@@ -33,8 +33,8 @@ uz_PI_Controller* uz_PI_Controller_init(uz_PI_Controller_config config);
  *
  * @param preIntegrator value before the integrator
  * @param preSat value after the integrator and before the saturation
- * @param upper_threshold Max limit for deadzone
- * @param lower_threshold min limit for deadzone
+ * @param upper_limit Max limit for deadzone. Must be greater than lower limit
+ * @param lower_limit min limit for deadzone
  * @return Returns true if clamping is necessary
  */
 bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float upper_limit, float lower_limit);
@@ -61,7 +61,7 @@ void uz_PI_Controller_reset(uz_PI_Controller* self);
  * @brief Function to change the Ki-value of the PI-Controller during runtime
  * 
  * @param self uz_PI_Controller instance
- * @param new_Ki new value for Ki. Must be >=0.0f
+ * @param new_Ki new value for Ki. Must be greater or equal than 0.0f
  */
 void uz_PI_Controller_set_Ki(uz_PI_Controller* self, float new_Ki);
 
@@ -69,7 +69,7 @@ void uz_PI_Controller_set_Ki(uz_PI_Controller* self, float new_Ki);
  * @brief Function to change the Kp-value of the PI-Controller during runtime
  * 
  * @param self uz_PI_Controller instance
- * @param new_Kp new value for Kp. Must be >=0.0f
+ * @param new_Kp new value for Kp. Must be greater or equal than 0.0f
  */
 void uz_PI_Controller_set_Kp(uz_PI_Controller* self, float new_Kp);
 #endif // UZ_PICONTROLLER_H

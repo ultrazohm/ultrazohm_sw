@@ -64,3 +64,4 @@ set_property PULLDOWN true [get_ports {D2_OUT[2]}]
 set_property PULLDOWN true [get_ports {D2_OUT[1]}]
 set_property PULLDOWN true [get_ports {D2_OUT[0]}]
 
+

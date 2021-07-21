@@ -45,6 +45,11 @@ entity ADC_LTC2311_v3_0 is
         SCLK_DIFF       : out std_logic_vector(2 * SPI_MASTER - 1 downto 0);
         MISO_DIFF       : in std_logic_vector(2 * CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
         
+        -- debug
+        
+        MISO_OUT        : out std_logic_vector(CHANNELS_PER_MASTER * SPI_MASTER - 1 downto 0);
+        ENABLE_OUT    : out std_logic_vector(SPI_MASTER - 1 downto 0);
+        
         
 		-- User ports ends
 		-- Do not modify the ports beyond this line
@@ -118,13 +123,13 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     -- keep
     attribute keep : string;
     attribute keep of S_ENABLE : signal is "true";
-    attribute keep of S_SET_CONVERSION : signal is "true";
-    attribute keep of S_SET_OFFSET : signal is "true";
-    attribute keep of S_RESET_N : signal is "true";
+--    attribute keep of S_SET_CONVERSION : signal is "true";
+--    attribute keep of S_SET_OFFSET : signal is "true";
+--    attribute keep of S_RESET_N : signal is "true";
     attribute keep of S_MISO : signal is "true";
-    attribute keep of S_PRE_DELAY : signal is "true";
-    attribute keep of S_POST_DELAY : signal is "true";
-    attribute keep of S_CLK_DIV : signal is "true";
+--    attribute keep of S_PRE_DELAY : signal is "true";
+--    attribute keep of S_POST_DELAY : signal is "true";
+--    attribute keep of S_CLK_DIV : signal is "true";
     attribute keep of S_SCLK : signal is "true";
     
     attribute keep of S_ADC_CR : signal is "true";
@@ -138,25 +143,25 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     attribute keep of S_ADC_MASTER_SI_FINISH : signal is "true";
     attribute keep of S_ADC_MASTER_BUSY : signal is "true";
     attribute keep of S_ADC_CONV_VALUE : signal is "true";
-    attribute keep of S_SPI_MANUAL : signal is "true";
+--    attribute keep of S_SPI_MANUAL : signal is "true";
     attribute keep of S_ADC_AVAILABLE : signal is "true";
     
-    -- state machine
-    attribute keep of curstate : signal is "true";
-    attribute keep of nxtstate : signal is "true";
+--    -- state machine
+--    attribute keep of curstate : signal is "true";
+--    attribute keep of nxtstate : signal is "true";
     
     -- mark debug
     attribute MARK_DEBUG : string;
     attribute MARK_DEBUG of S_ENABLE : signal is "true";
-    attribute MARK_DEBUG of S_SET_CONVERSION : signal is "true";
-    attribute MARK_DEBUG of S_SET_OFFSET : signal is "true";
-    attribute MARK_DEBUG of S_RESET_N : signal is "true";
-    attribute MARK_DEBUG of S_SCLK_IN : signal is "true";
-    attribute MARK_DEBUG of S_SS_IN_N : signal is "true";
+--    attribute MARK_DEBUG of S_SET_CONVERSION : signal is "true";
+--    attribute MARK_DEBUG of S_SET_OFFSET : signal is "true";
+--    attribute MARK_DEBUG of S_RESET_N : signal is "true";
+--    attribute MARK_DEBUG of S_SCLK_IN : signal is "true";
+--    attribute MARK_DEBUG of S_SS_IN_N : signal is "true";
     attribute MARK_DEBUG of S_MISO : signal is "true";
-    attribute MARK_DEBUG of S_PRE_DELAY : signal is "true";
-    attribute MARK_DEBUG of S_POST_DELAY : signal is "true";
-    attribute MARK_DEBUG of S_CLK_DIV : signal is "true";
+--    attribute MARK_DEBUG of S_PRE_DELAY : signal is "true";
+--    attribute MARK_DEBUG of S_POST_DELAY : signal is "true";
+--    attribute MARK_DEBUG of S_CLK_DIV : signal is "true";
     attribute MARK_DEBUG of S_SCLK : signal is "true";
     
     attribute MARK_DEBUG of S_ADC_CR : signal is "true";
@@ -170,7 +175,7 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     attribute MARK_DEBUG of S_ADC_MASTER_SI_FINISH : signal is "true";
     attribute MARK_DEBUG of S_ADC_MASTER_BUSY : signal is "true";
     attribute MARK_DEBUG of S_ADC_CONV_VALUE : signal is "true";
-    attribute MARK_DEBUG of S_SPI_MANUAL : signal is "true";
+--    attribute MARK_DEBUG of S_SPI_MANUAL : signal is "true";
     attribute MARK_DEBUG of S_ADC_AVAILABLE : signal is "true";
     
     -- ports
@@ -182,8 +187,8 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     attribute MARK_DEBUG of SS_N : signal is "true";
     
     -- state machine
-    attribute MARK_DEBUG of curstate : signal is "true";
-    attribute MARK_DEBUG of nxtstate : signal is "true";
+--    attribute MARK_DEBUG of curstate : signal is "true";
+--    attribute MARK_DEBUG of nxtstate : signal is "true";
     
     
 
@@ -556,9 +561,16 @@ ADC_LTC2311_v3_0_S00_AXI_inst : ADC_LTC2311_v3_0_S00_AXI
         end generate gen_diff1;
     end generate gen_diff;
     
-    gen_single: if DIFFERENTIAL = false generate
-        SCLK <= S_SCLK;
-        S_MISO <= MISO;
-    end generate gen_single;
+--    gen_single: if DIFFERENTIAL = false generate
+--        SCLK <= S_SCLK;
+--        S_MISO <= MISO;
+--    end generate gen_single;
+
+-- debug
+
+    SCLK <= S_SCLK;
+    MISO_OUT <= S_MISO;
+    ENABLE_OUT <= S_ENABLE;
+    
     
 end arch_imp;

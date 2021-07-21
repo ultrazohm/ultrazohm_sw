@@ -124,14 +124,14 @@ architecture Behavioral of ADC_CONTROLLER is
     attribute keep of S_OFFSET_S_C : signal is "true";
     attribute keep of S_RESULT_S_C : signal is "true";
     attribute keep of S_RAW_VALUE_S_C : signal is "true";
-    attribute keep of S_SPI_ENABLE : signal is "true";
-    attribute keep of S_SPI_RAW_VALUE : signal is "true";
+--    attribute keep of S_SPI_ENABLE : signal is "true";
+--    attribute keep of S_SPI_RAW_VALUE : signal is "true";
     
-    -- state machine
-    attribute keep of curstate : signal is "true";
-    attribute keep of nxtstate : signal is "true";
+--    -- state machine
+--    attribute keep of curstate : signal is "true";
+--    attribute keep of nxtstate : signal is "true";
     
-    -- mark debug
+--    -- mark debug
     attribute MARK_DEBUG : string;
     attribute MARK_DEBUG of S_CONVERSION : signal is "true";
     attribute MARK_DEBUG of S_OFFSET : signal is "true";
@@ -139,12 +139,12 @@ architecture Behavioral of ADC_CONTROLLER is
     attribute MARK_DEBUG of S_OFFSET_S_C : signal is "true";
     attribute MARK_DEBUG of S_RESULT_S_C : signal is "true";
     attribute MARK_DEBUG of S_RAW_VALUE_S_C : signal is "true";
-    attribute MARK_DEBUG of S_SPI_ENABLE : signal is "true";
-    attribute MARK_DEBUG of S_SPI_RAW_VALUE : signal is "true";
+--    attribute MARK_DEBUG of S_SPI_ENABLE : signal is "true";
+--    attribute MARK_DEBUG of S_SPI_RAW_VALUE : signal is "true";
     
-    -- state machine
-    attribute MARK_DEBUG of curstate : signal is "true";
-    attribute MARK_DEBUG of nxtstate : signal is "true";
+--    -- state machine
+--    attribute MARK_DEBUG of curstate : signal is "true";
+--    attribute MARK_DEBUG of nxtstate : signal is "true";
 
     --component declarations
     

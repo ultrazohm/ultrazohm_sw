@@ -5,7 +5,6 @@
 
 void uz_adcLtc2311_testbench(void) {
 
-	// while (1) {
 	uz_adcLtc2311* test_instance = uz_adcLtc2311_allocate_instance_one();
 
 	uz_adcLtc2311_conversionConfig test_config;
@@ -16,30 +15,36 @@ void uz_adcLtc2311_testbench(void) {
 	test_config.set_offset = true;
 	test_config.try_infinite = false;
 	test_config.max_attempts = 10;
-	test_config.conversion_factor = 10;
-	test_config.offset = 10;
+	test_config.conversion_factor = 153;
+	test_config.offset = 0;
 	uz_adcLtc2311_configureConversion(test_instance, &test_config);
 	//uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
 
 	uz_adcLtc2311_napSleepConfig test_ns_config;
+
 	uz_adcLtc2311_init_napSleepConfig(&test_ns_config);
 	test_ns_config.max_attempts = 10;
 	test_ns_config.try_infinite = false;
 	test_ns_config.spi_masters = UZ_ADCLTC2311_MASTER1;
 
+	//uz_adcLtc2311_setContinuousMode(test_instance);
 
-	//uz_printf("Hello World");
-	//}
+	while (1) {
+		for (uint32_t i = 0; i < 2; i++) {
+			uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
+		}
+		;
 
-	while (1)
-	{
-		uz_adcLtc2311_configureConversion(test_instance, &test_config);
-		uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
-		uz_adcLtc2311_enterNapMode(test_instance, &test_ns_config);
-		uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
-		uz_adcLtc2311_leaveNapMode(test_instance, &test_ns_config);
-//		uz_adcLtc2311_setTriggeredMode(test_instance);
+		//uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
+
+//		uz_adcLtc2311_enterNapMode(test_instance, &test_ns_config);
 //		uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
-//		uz_adcLtc2311_setContinuousMode(test_instance);
+//		uz_adcLtc2311_leaveNapMode(test_instance, &test_ns_config);
+//		uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
+//		uz_adcLtc2311_enterSleepMode(test_instance, &test_ns_config);
+//		uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
+//		uz_adcLtc2311_leaveSleepMode(test_instance, &test_ns_config);
+//		uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
+
 	}
 }

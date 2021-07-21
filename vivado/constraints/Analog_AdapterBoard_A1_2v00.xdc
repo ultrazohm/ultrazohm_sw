@@ -135,3 +135,4 @@ set_property IOSTANDARD LVDS [get_ports {ANL_01_N_Ch1[0]}]
 
 
 
+

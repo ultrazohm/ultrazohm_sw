@@ -88,20 +88,20 @@ architecture Behavioral of SPI_MASTER is
     
     -- attributes
     -- keep
-    attribute keep : string;
-    attribute keep of S_RX_BUFFER : signal is "true";
-    attribute keep of curstate : signal is "true";
-    attribute keep of nxtstate : signal is "true";
-    attribute keep of S_CPOL : signal is "true";
-    attribute keep of S_CPHA : signal is "true";
+--    attribute keep : string;
+--    attribute keep of S_RX_BUFFER : signal is "true";
+--    attribute keep of curstate : signal is "true";
+--    attribute keep of nxtstate : signal is "true";
+--    attribute keep of S_CPOL : signal is "true";
+--    attribute keep of S_CPHA : signal is "true";
     
-    -- mark debug
-    attribute MARK_DEBUG : string;
-    attribute MARK_DEBUG of S_RX_BUFFER : signal is "true";
-    attribute MARK_DEBUG of curstate : signal is "true";
-    attribute MARK_DEBUG of nxtstate : signal is "true";
-    attribute MARK_DEBUG of S_CPOL : signal is "true";
-    attribute MARK_DEBUG of S_CPHA : signal is "true";
+--    -- mark debug
+--    attribute MARK_DEBUG : string;
+--    attribute MARK_DEBUG of S_RX_BUFFER : signal is "true";
+--    attribute MARK_DEBUG of curstate : signal is "true";
+--    attribute MARK_DEBUG of nxtstate : signal is "true";
+--    attribute MARK_DEBUG of S_CPOL : signal is "true";
+--    attribute MARK_DEBUG of S_CPHA : signal is "true";
 
 begin
 

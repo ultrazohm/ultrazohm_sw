@@ -101,72 +101,36 @@ static int32_t uz_adcLtc2311_spiManualControlIsEnabled(uz_adcLtc2311* self) {
 
 }
 
-static int32_t uz_adcLtc2311_spiSetSsN(uz_adcLtc2311* self, uint32_t spiMasters) {
+static void uz_adcLtc2311_spiSetSsN(uz_adcLtc2311* self, uint32_t spiMasters) {
 	uz_assert_not_NULL(self);
-	int32_t return_value = UZ_SUCCESS;
 
-	if (IS_UZ_SUCCESS(uz_adcLtc2311_spiManualControlIsEnabled(self))) {
-		uz_adcLtc2311_hw_write_master_channel(self->base_address, spiMasters);
-		uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) | UZ_ADCLTC2311_SPI_CR_SS_N);
+	uz_adcLtc2311_hw_write_master_channel(self->base_address, spiMasters);
+	uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) | UZ_ADCLTC2311_SPI_CR_SS_N);
 
-		if ((uz_adcLtc2311_hw_read_spi_cr(self->base_address) & UZ_ADCLTC2311_SPI_CR_SS_N_STATUS) == 0)
-			return_value = UZ_FAILURE;
-
-	} else
-		return_value = UZ_FAILURE;
-
-	return (return_value);
 }
 
-static int32_t uz_adcLtc2311_spiResetSsN(uz_adcLtc2311* self, uint32_t spiMasters) {
+static void uz_adcLtc2311_spiResetSsN(uz_adcLtc2311* self, uint32_t spiMasters) {
 	uz_assert_not_NULL(self);
-	int32_t return_value = UZ_SUCCESS;
 
-	if (IS_UZ_SUCCESS(uz_adcLtc2311_spiManualControlIsEnabled(self))) {
-		uz_adcLtc2311_hw_write_master_channel(self->base_address, spiMasters);
-		uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) & ~UZ_ADCLTC2311_SPI_CR_SS_N);
+	uz_adcLtc2311_hw_write_master_channel(self->base_address, spiMasters);
+	uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) & ~UZ_ADCLTC2311_SPI_CR_SS_N);
 
-		if ((uz_adcLtc2311_hw_read_spi_cr(self->base_address) & UZ_ADCLTC2311_SPI_CR_SS_N_STATUS) != 0)
-			return_value = UZ_FAILURE;
-
-	} else
-		return_value = UZ_FAILURE;
-
-	return (return_value);
 }
 
-static int32_t uz_adcLtc2311_spiSetSclk(uz_adcLtc2311* self, uint32_t spiMasters) {
+static void uz_adcLtc2311_spiSetSclk(uz_adcLtc2311* self, uint32_t spiMasters) {
 	uz_assert_not_NULL(self);
-	int32_t return_value = UZ_SUCCESS;
 
-	if (IS_UZ_SUCCESS(uz_adcLtc2311_spiManualControlIsEnabled(self))) {
-		uz_adcLtc2311_hw_write_master_channel(self->base_address, spiMasters);
-		uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) | UZ_ADCLTC2311_SPI_CR_SCLK);
+	uz_adcLtc2311_hw_write_master_channel(self->base_address, spiMasters);
+	uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) | UZ_ADCLTC2311_SPI_CR_SCLK);
 
-		if ((uz_adcLtc2311_hw_read_spi_cr(self->base_address) & UZ_ADCLTC2311_SPI_CR_SCLK_STATUS) == 0)
-			return_value = UZ_FAILURE;
-
-	} else
-		return_value = UZ_FAILURE;
-
-	return (return_value);
 }
 
-static int32_t uz_adcLtc2311_spiResetSclk(uz_adcLtc2311* self, uint32_t spiMasters) {
+static void uz_adcLtc2311_spiResetSclk(uz_adcLtc2311* self, uint32_t spiMasters) {
 	uz_assert_not_NULL(self);
-	int32_t return_value = UZ_SUCCESS;
 
-	if (IS_UZ_SUCCESS(uz_adcLtc2311_spiManualControlIsEnabled(self))) {
-		uz_adcLtc2311_hw_write_master_channel(self->base_address, spiMasters);
-		uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) & ~UZ_ADCLTC2311_SPI_CR_SCLK);
+	uz_adcLtc2311_hw_write_master_channel(self->base_address, spiMasters);
+	uz_adcLtc2311_hw_write_spi_cr(self->base_address, uz_adcLtc2311_hw_read_spi_cr(self->base_address) & ~UZ_ADCLTC2311_SPI_CR_SCLK);
 
-		if ((uz_adcLtc2311_hw_read_spi_cr(self->base_address) & UZ_ADCLTC2311_SPI_CR_SCLK_STATUS) != 0)
-			return_value = UZ_FAILURE;
-
-	} else
-		return_value = UZ_FAILURE;
-
-	return (return_value);
 }
 
 /*********************
@@ -257,24 +221,30 @@ int32_t uz_adcLtc2311_configureSpi(uz_adcLtc2311* self, uz_adcLtc2311_spiConfig*
 	configuration->error_code = 0;
 
 	if (configuration->clk_div >> UZ_ADCLTC2311_SPI_CFGR_CLK_DIV_WIDTH) {
-		uz_adcLtc2311_setLsbs(&(configuration->clk_div), UZ_ADCLTC2311_SPI_CFGR_CLK_DIV_WIDTH);
-		uz_printf("CLK_DIV value is too big. Only the use of the lower %u bits is permitted.\n", UZ_ADCLTC2311_SPI_CFGR_CLK_DIV_WIDTH);
+		uz_adcLtc2311_setLsbs(&(configuration->clk_div),
+		UZ_ADCLTC2311_SPI_CFGR_CLK_DIV_WIDTH);
+		uz_printf("CLK_DIV value is too big. Only the use of the lower %u bits is permitted.\n",
+		UZ_ADCLTC2311_SPI_CFGR_CLK_DIV_WIDTH);
 		uz_printf("New value is %u \n", configuration->clk_div);
 		return_value = UZ_FAILURE;
 		configuration->error_code |= UZ_ADCLTC2311_CLK_DIV_INVALID;
 	}
 
 	if (configuration->pre_delay >> UZ_ADCLTC2311_SPI_CFGR_PRE_DELAY_WIDTH) {
-		uz_adcLtc2311_setLsbs(&(configuration->pre_delay), UZ_ADCLTC2311_SPI_CFGR_PRE_DELAY_WIDTH);
-		uz_printf("PRE_DELAY value is too big. Only the use of the lower %u bits is permitted.\n", UZ_ADCLTC2311_SPI_CFGR_PRE_DELAY_WIDTH);
+		uz_adcLtc2311_setLsbs(&(configuration->pre_delay),
+		UZ_ADCLTC2311_SPI_CFGR_PRE_DELAY_WIDTH);
+		uz_printf("PRE_DELAY value is too big. Only the use of the lower %u bits is permitted.\n",
+		UZ_ADCLTC2311_SPI_CFGR_PRE_DELAY_WIDTH);
 		uz_printf("New value is %u \n", configuration->pre_delay);
 		return_value = UZ_FAILURE;
 		configuration->error_code |= UZ_ADCLTC2311_PRE_DELAY_INVALID;
 	}
 
 	if (configuration->pre_delay >> UZ_ADCLTC2311_SPI_CFGR_POST_DELAY_WIDTH) {
-		uz_adcLtc2311_setLsbs(&(configuration->post_delay), UZ_ADCLTC2311_SPI_CFGR_POST_DELAY_WIDTH);
-		uz_printf("POST_DELAY value is too big. Only the use of the lower %u bits is permitted.\n", UZ_ADCLTC2311_SPI_CFGR_POST_DELAY_WIDTH);
+		uz_adcLtc2311_setLsbs(&(configuration->post_delay),
+		UZ_ADCLTC2311_SPI_CFGR_POST_DELAY_WIDTH);
+		uz_printf("POST_DELAY value is too big. Only the use of the lower %u bits is permitted.\n",
+		UZ_ADCLTC2311_SPI_CFGR_POST_DELAY_WIDTH);
 		uz_printf("New value is %u \n", configuration->post_delay);
 		return_value = UZ_FAILURE;
 		configuration->error_code |= UZ_ADCLTC2311_POST_DELAY_INVALID;
@@ -368,24 +338,35 @@ int32_t uz_adcLtc2311_enterNapMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepCo
 
 	if (IS_UZ_SUCCESS(return_value)) {
 		uz_adcLtc2311_hw_write_cr(self->base_address, uz_adcLtc2311_hw_read_cr(self->base_address) & ~UZ_ADCLTC2311_CR_MODE);
+
+		// set default values for SS_N and SCLK
+		uz_adcLtc2311_spiSetSsN(self, configuration->spi_masters);
+
+		if (uz_adcLtc2311_hw_read_spi_cr(self->base_address) & UZ_ADCLTC2311_SPI_CR_CPOL)
+			uz_adcLtc2311_spiSetSclk(self, configuration->spi_masters);
+		else
+			uz_adcLtc2311_spiResetSclk(self, configuration->spi_masters);
+
 		return_value = uz_adcLtc2311_spiEnableManualControl(self, configuration);
 
 		if (IS_UZ_FAILURE(return_value))
 			configuration->error_code |= UZ_ADCLTC2311_NS_MAN_MODE_EN_FAILED;
 		else {
-			uz_adcLtc2311_spiResetSsN(self, configuration->spi_masters);
 
 			for (uint32_t i = 0; i < UZ_ADCLTC2311_NAP_PULSES; i++) {
 				uz_adcLtc2311_spiSetSsN(self, configuration->spi_masters);
 				uz_adcLtc2311_spiResetSsN(self, configuration->spi_masters);
 			}
 
+			uz_adcLtc2311_spiSetSsN(self, configuration->spi_masters);
+
 			self->napping_spi_masters |= configuration->spi_masters;
 			uz_adcLtc2311_hw_write_adc_available(self->base_address, uz_adcLtc2311_hw_read_adc_available(self->base_address) & ~configuration->spi_masters);
 			return_value = uz_adcLtc2311_spiDisableManualControl(self, configuration);
 
 			if (IS_UZ_FAILURE(return_value))
-				configuration->error_code |= UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED;
+				configuration->error_code |=
+				UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED;
 		}
 
 	}
@@ -431,7 +412,8 @@ int32_t uz_adcLtc2311_leaveNapMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepCo
 			return_value = uz_adcLtc2311_spiDisableManualControl(self, configuration);
 
 			if (IS_UZ_FAILURE(return_value))
-				configuration->error_code |= UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED;
+				configuration->error_code |=
+				UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED;
 		}
 
 	}
@@ -443,20 +425,30 @@ int32_t uz_adcLtc2311_enterSleepMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleep
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(configuration);
 	int32_t return_value = UZ_SUCCESS;
+	uint32_t spi_masters = configuration->spi_masters;
 
 	configuration->error_code = 0;
 
-	if (configuration->spi_masters == 0) {
+	if (spi_masters == 0) {
 		return_value = UZ_FAILURE;
 		configuration->error_code |= UZ_ADCLTC2311_NS_NO_SELECTION;
 	}
-	if ((self->napping_spi_masters & configuration->spi_masters) || (self->sleeping_spi_masters & configuration->spi_masters)) {
+	if (self->sleeping_spi_masters & spi_masters) {
 		return_value = UZ_FAILURE;
 		configuration->error_code |= UZ_ADCLTC2311_NS_ALREADY_IN_MODE;
 	}
 
 	if (IS_UZ_SUCCESS(return_value)) {
 		uz_adcLtc2311_hw_write_cr(self->base_address, uz_adcLtc2311_hw_read_cr(self->base_address) & ~UZ_ADCLTC2311_CR_MODE);
+
+		// set default values for SS_N and SCLK
+		uz_adcLtc2311_spiSetSsN(self, configuration->spi_masters);
+
+		if (uz_adcLtc2311_hw_read_spi_cr(self->base_address) & UZ_ADCLTC2311_SPI_CR_CPOL)
+			uz_adcLtc2311_spiSetSclk(self, configuration->spi_masters);
+		else
+			uz_adcLtc2311_spiResetSclk(self, configuration->spi_masters);
+
 		return_value = uz_adcLtc2311_spiEnableManualControl(self, configuration);
 
 		if (IS_UZ_FAILURE(return_value))
@@ -464,36 +456,37 @@ int32_t uz_adcLtc2311_enterSleepMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleep
 		else {
 			// check which masters are currently in nap mode
 			// with 2 additional pulses the master enters sleep mode from nap mode
-			uint32_t nap_to_sleep = configuration->spi_masters & self->napping_spi_masters;
+			uint32_t nap_to_sleep = spi_masters & self->napping_spi_masters;
 
 			if (nap_to_sleep) {
 				// reset the bits for the masters which will enter sleep mode from nap mode
-				configuration->spi_masters &= ~nap_to_sleep;
-				uz_adcLtc2311_spiResetSsN(self, nap_to_sleep);
+				spi_masters &= ~nap_to_sleep;
 
 				for (uint32_t i = 0; i < UZ_ADCLTC2311_NAP_PULSES; i++) {
 					uz_adcLtc2311_spiSetSsN(self, nap_to_sleep);
 					uz_adcLtc2311_spiResetSsN(self, nap_to_sleep);
 				}
+
+				uz_adcLtc2311_spiSetSsN(self, nap_to_sleep);
 				self->napping_spi_masters &= ~nap_to_sleep;
 				self->sleeping_spi_masters |= nap_to_sleep;
 			}
 
-			if (configuration->spi_masters) {
-
-				uz_adcLtc2311_spiResetSsN(self, configuration->spi_masters);
+			if (spi_masters) {
 
 				for (uint32_t i = 0; i < UZ_ADCLTC2311_SLEEP_PULSES; i++) {
-					uz_adcLtc2311_spiSetSsN(self, configuration->spi_masters);
-					uz_adcLtc2311_spiResetSsN(self, configuration->spi_masters);
+					uz_adcLtc2311_spiSetSsN(self, spi_masters);
+					uz_adcLtc2311_spiResetSsN(self, spi_masters);
 				}
 
-				self->sleeping_spi_masters |= configuration->spi_masters;
-				uz_adcLtc2311_hw_write_adc_available(self->base_address, uz_adcLtc2311_hw_read_adc_available(self->base_address) & ~configuration->spi_masters);
+				uz_adcLtc2311_spiSetSsN(self, spi_masters);
+				self->sleeping_spi_masters |= spi_masters;
+				uz_adcLtc2311_hw_write_adc_available(self->base_address, uz_adcLtc2311_hw_read_adc_available(self->base_address) & ~spi_masters);
 			}
 			return_value = uz_adcLtc2311_spiDisableManualControl(self, configuration);
 			if (IS_UZ_FAILURE(return_value))
-				configuration->error_code |= UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED;
+				configuration->error_code |=
+				UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED;
 		}
 
 	}
@@ -540,7 +533,8 @@ int32_t uz_adcLtc2311_leaveSleepMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleep
 			return_value = uz_adcLtc2311_spiDisableManualControl(self, configuration);
 
 			if (IS_UZ_FAILURE(return_value))
-				configuration->error_code |= UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED;
+				configuration->error_code |=
+				UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED;
 		}
 
 	}

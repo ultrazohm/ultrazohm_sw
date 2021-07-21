@@ -26,8 +26,8 @@ Example
 Description
 ===========
 
-Compares the values before the integrator ``preIntegrator`` and before the output limitation ``preSat``. Decides, that clamping is necessary, if the ``preSat`` value is outside the limit 
-and if ``preIntegrator`` and ``preSat`` have the same sign. It is already integrated into the :ref:`sample-function <uz_piController_sample>`. 
+Compares the values before the integrator ``preIntegrator`` and before the output limitation ``preSat``. Activates clamping if ``preSat``  is outside the limit and ``preIntegrator`` and ``preSat`` have the same sign.
+The function is called by :ref:`sample-function <uz_piController_sample>`. 
 
 .. warning::
 

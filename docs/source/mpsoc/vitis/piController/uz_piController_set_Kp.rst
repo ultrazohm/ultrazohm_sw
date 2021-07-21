@@ -20,4 +20,5 @@ Example
 Description
 ===========
 
-Updates the proportional gain of the PI-Controller during runtime. Asserts, if the new value is greater or equal than 0.0f.
+Updates the proportional gain of the PI-Controller during runtime.
+Asserts that the new value is greater or equal than 0.0f.

@@ -12,7 +12,8 @@ Toolbox for a standard PI-Controller in parallel form. It's transfer function is
 
 .. _uz_piController_config:
 
-It has an configurable output limitation with internal clamping to prevent the integrator to rise further during limitation. An input port for an external clamping signal is available aswell.  
+It has a configurable output limitation with internal clamping to prevent the integrator from rising further if the output limitation is active.
+An input port for an external clamping signal is available as well.  
 
 Setup
 =====
@@ -44,7 +45,7 @@ Example
 Description
 ^^^^^^^^^^^
     
-With this config struct one can customize the PI-Controller variables to its needs.
+With this config struct one can customize the PI-Controller variables.
 It has to be initialized before the :ref:`init-function <uz_piController_init>` is called.
     
 .. _uz_piController_init:
@@ -93,13 +94,13 @@ Example
 Description
 ^^^^^^^^^^^
 
-Resets the PI-Controller. Initial condition for the integrator after the reset is 0.0f.
+Resets the PI-Controller. The initial condition for the integrator after the reset is 0.0f.
 
 
 Functions
 =========
 
-..	toctree::
+..  toctree::
     :maxdepth: 1
     :glob:
   

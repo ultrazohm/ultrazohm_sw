@@ -22,7 +22,7 @@ float uz_signals_get_sign_of_value(float input);
 /**
  * @brief Returns one sample which either limits the input signal to the lower or upper limit, or passes the input signal through. Functions very similar to the saturation block in Simulink.
  * 
- * @param signal Any input signal
+ * @param input Any input signal
  * @param upper_limit Upper limit of the saturation
  * @param lower_limit Lower limit of the saturation. upper_limit > lower_limit is required
  * @return Returns one sample of the adjusted input

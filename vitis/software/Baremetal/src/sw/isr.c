@@ -78,11 +78,20 @@ void ISR_Control(void *data)
 	codegenInstance.input.Act_Iw = (Global_Data.aa.A2.me.ADC_A3-2.5) * 80/2;		//A
 	codegenInstance.input.Act_U_ZK = Global_Data.aa.A2.me.ADC_A4 * 12.5;			//V
 
-	codegenInstance.input.Act_theta_el = Global_Data.av.theta_elec - 5.139955762; 						//[rad] Definition in main.c
-	codegenInstance.input.Act_w_el = Global_Data.av.mechanicalRotorSpeed * Global_Data.mrp.motorPolePairNumber*M_PI/30; //[rad/s]
+	codegenInstance.input.Act_theta_el = Global_Data.av.theta_elec - 5.139955762; 	//[rad] Definition in main.c
+	codegenInstance.input.Act_n = Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
 
-	//FOC_Strom Call generated code
-	uz_codegen_step(&codegenInstance);
+	//FOC_Strom Call generated code if no faults are present
+	if (codegenInstance.output.fault_peak_current || codegenInstance.output.fault_max_current ||codegenInstance.output.fault_peak_speed ||codegenInstance.output.fault_max_speed)
+	{
+		Global_Data.cw.enableSystem = false;
+		uz_led_set_errorLED_on();
+	}
+	else
+	{
+		uz_codegen_step(&codegenInstance);
+	}
+
 
 	//FOC_Strom Output
 	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.a_U;
@@ -141,10 +150,16 @@ int Initialize_ISR(){
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
 
 	//Set Flags and referenceValues of FOC to zero
-	codegenInstance.input.fl_decoupling = 0.0;
 	codegenInstance.input.fl_power = 0.0;
-	codegenInstance.input.Ref_Id = 0.0;
-	codegenInstance.input.Ref_Iq = 0.0;
+	codegenInstance.input.fl_control_type = 0.0;
+	codegenInstance.input.fl_integrator_reset = 0.0;
+	codegenInstance.input.fl_field_weakening = 0.0;
+	codegenInstance.input.fl_voltage_limitation = 0.0;
+	codegenInstance.input.fl_decoupling = 0.0;
+	codegenInstance.input.fl_angle_prediction = 0.0;
+	codegenInstance.input.Ref_n = 0.0;
+	codegenInstance.input.Ref_Id_ext = 0.0;
+	codegenInstance.input.Ref_Iq_ext = 0.0;
 
 return Status;
 }

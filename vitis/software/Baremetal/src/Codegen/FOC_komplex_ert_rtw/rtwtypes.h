@@ -5,11 +5,11 @@
  *
  * File: rtwtypes.h
  *
- * Code generated for Simulink model 'FOC_Strom'.
+ * Code generated for Simulink model 'FOC_komplex'.
  *
- * Model version                  : 2.2
+ * Model version                  : 2.22
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Wed Jul 14 12:08:25 2021
+ * C/C++ source code generated on : Wed Jul 21 16:23:06 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R

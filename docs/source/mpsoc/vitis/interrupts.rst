@@ -1,3 +1,5 @@
+.. _r5_interrupts:
+
 =============
 Interrupts R5
 =============

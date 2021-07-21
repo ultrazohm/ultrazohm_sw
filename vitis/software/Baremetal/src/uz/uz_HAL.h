@@ -43,6 +43,7 @@
 
 #endif
 #ifdef TEST
+// cppcheck-suppress misra-c2012-21.6 //. stdio.h is not allowed by MISRA, we use it only with ceedling unit testing and never on the UltraZohm
 #include <stdio.h>
 #include <unistd.h>
 #include "CException.h"
@@ -63,13 +64,47 @@
     uz_assert((Expression)!=NULL);        \
 }
 
-/**
- * @brief Asserts that the argument is not zero (!=0).
- * 
- */
+// No doxygen documentation since this should not be used in new code
+// Will be deleted in the future
 #define uz_assert_not_zero(Expression) \
 {                              \
     uz_assert((Expression)!=0);        \
+}
+
+/**
+ * @brief Asserts that the argument of type uint32_t is not zero (!=0).
+ * 
+ */
+#define uz_assert_not_zero_uint32(Expression) \
+{                              \
+    uz_assert((Expression)!=(uint32_t)0);        \
+}
+
+/**
+ * @brief Asserts that the argument of type int32_t is not zero (!=0).
+ * 
+ */
+#define uz_assert_not_zero_int32(Expression) \
+{                              \
+    uz_assert((Expression)!=(int32_t)0);        \
+}
+
+/**
+ * @brief Asserts that the argument of type int is not zero (!=0).
+ * 
+ */
+#define uz_assert_not_zero_int(Expression) \
+{                              \
+    uz_assert((Expression)!=(int)0);        \
+}
+
+/**
+ * @brief Asserts that the argument of type unsigned int is not zero (!=0).
+ * 
+ */
+#define uz_assert_not_zero_unsigned_int(Expression) \
+{                              \
+    uz_assert((Expression)!=0U);        \
 }
 
 /**
@@ -81,6 +116,8 @@
     uz_assert ((Expression)==false);        \
 }
 
+// No doxygen documentation since this should not be used in new code
+// Will be deleted in the future
 #define uz_assert_true(Expression) \
 {                              \
     uz_assert( (Expression) ==true);        \

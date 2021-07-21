@@ -58,7 +58,7 @@ Syllabus
     
     getting_started/onboarding/onboarding
     getting_started/toolchain/index
-    getting_started/quickstart/index
+    getting_started/ultrazohm_setup/ultrazohm_setup
     getting_started/tutorials/index
 
 .. toctree::

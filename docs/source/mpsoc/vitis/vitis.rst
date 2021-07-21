@@ -21,4 +21,7 @@ Vitis
     known_issues
     qemu/qemu
     wavegen/wavegen
+    signals/signals
+    piController/piController
+    global_configuration
 

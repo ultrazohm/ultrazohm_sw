@@ -34,7 +34,7 @@ struct uz_alphabeta uz_clarke_Transformation(struct uz_UVW input) {
         .gamma = 0.0f
     };
     output.alpha = (2.0f / 3.0f) * (input.U - (input.V / 2.0f) - (input.W / 2.0f) );
-    output.beta = (2.0f / 3.0f) * (input.V * (sqrtf(3.0f) / 2.0f) ) - (input.W * (sqrtf(3.0f) / 2.0f) );
+    output.beta = (2.0f / 3.0f) * ( (input.V * (sqrtf(3.0f) / 2.0f) ) - (input.W * (sqrtf(3.0f) / 2.0f) ) );
 	output.gamma = (1.0f / 3.0f) * (input.U + input.V + input.W);
     return(output);
 }

@@ -64,9 +64,9 @@ Example
   :linenos:
   :caption: Example function call to init a PI-Controller instance. Config according to :ref:`configuration section<uz_piController_config>`
 
-  #include "uz_piController.h"
+  #include "uz/uz_piController/uz_piController.h"
   int main(void) {
-     uz_PI_Controller PI_instance = uz_PI_Controller_init(config);
+     uz_PI_Controller *PI_instance = uz_PI_Controller_init(config);
   }
 
 Description
@@ -86,7 +86,7 @@ Example
   :linenos:
   :caption: Example function call to reset the PI-Controller output. PI-Instance via :ref:`init-function <uz_piController_init>`
 
-  #include "uz_piController.h"
+  #include "uz/uz_piController/uz_piController.h"
   int main(void) {
      uz_PI_Controller_reset(PI_instance);
   }

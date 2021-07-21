@@ -22,5 +22,6 @@ Vitis
     qemu/qemu
     wavegen/wavegen
     signals/signals
+    Transformation/Transformation
     global_configuration
 

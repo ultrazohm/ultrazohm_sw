@@ -14,7 +14,7 @@
  * 5 for Interrupt_3L_center		
  * 6 for Interrupt_timer_fcc		
 */
-#define Interrupt_ISR_source_user_choice        0U
+#define Interrupt_ISR_source_user_choice        3U
 
 // Configuration defines for the number of used instances for testing with ceedling
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES          2U

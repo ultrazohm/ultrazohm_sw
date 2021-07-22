@@ -81,27 +81,22 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, 4 signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ptr_arr[JSO_Speed_rpm]	= &data->av.mechanicalRotorSpeed;
-	js_ptr_arr[JSO_ia] 			= &data->av.I_U;
-	js_ptr_arr[JSO_ib] 			= &data->av.I_V;
-	js_ptr_arr[JSO_ic] 			= &data->av.I_W;
-	js_ptr_arr[JSO_ua] 			= &data->av.U_U;
-	js_ptr_arr[JSO_ub] 			= &data->av.U_V;
-	js_ptr_arr[JSO_uc] 			= &data->av.U_W;
-	js_ptr_arr[JSO_iq] 			= &data->av.I_q;
-	js_ptr_arr[JSO_id] 			= &data->av.I_d;
-	js_ptr_arr[JSO_Theta_el] 	= &data->av.theta_elec;
-	js_ptr_arr[JSO_theta_mech] 	= &data->av.theta_mech;
-	js_ptr_arr[JSO_Wtemp]		= &data->pID.WindingTemp;
-	js_ptr_arr[JSO_ud]			= &data->av.U_d;
-	js_ptr_arr[JSO_uq]			= &data->av.U_q;
-	js_ptr_arr[JSO_Ld_mH]		= &data->pID.Online_Ld;
-	js_ptr_arr[JSO_Lq_mH]		= &data->pID.Online_Lq;
-	js_ptr_arr[JSO_Rs_mOhm]		= &data->pID.Online_Rs;
-	js_ptr_arr[JSO_PsiPM_mVs]	= &data->pID.Online_Psi_PM;
-	js_ptr_arr[JSO_Sawtooth1] 	= &ISRExecutionTime;
-	js_ptr_arr[JSO_SineWave1]   = &lifecheck;
-	js_ptr_arr[JSO_SineWave2]   = &isr_period_us;
+	js_ptr_arr[JSO_iu] 			= &codegenInstance.input.Act_Iu;
+	js_ptr_arr[JSO_iv] 			= &codegenInstance.input.Act_Iv;
+	js_ptr_arr[JSO_iw] 			= &codegenInstance.input.Act_Iw;
+	js_ptr_arr[JSO_id] 			= &codegenInstance.output.Id_Act;
+	js_ptr_arr[JSO_iq] 			= &codegenInstance.output.Iq_Act;
+	js_ptr_arr[JSO_id_ref] 		= &codegenInstance.output.Id_RefAct;
+	js_ptr_arr[JSO_iq_ref] 		= &codegenInstance.output.Iq_Ref;
+	js_ptr_arr[JSO_ud_ref] 		= &codegenInstance.output.Ud_Ref;
+	js_ptr_arr[JSO_uq_ref] 		= &codegenInstance.output.Uq_Ref;
+	js_ptr_arr[JSO_Speed_rpm]	= &codegenInstance.input.Act_n;
+	js_ptr_arr[JSO_Speed_ref_rpm] = &codegenInstance.input.Ref_n;
+	js_ptr_arr[JSO_U_ZK] 		= &codegenInstance.input.Act_U_ZK;
+	js_ptr_arr[JSO_Theta_el] 	= &codegenInstance.input.Act_theta_el;
+	js_ptr_arr[JSO_ISR_ExecutionTime_us] = &ISRExecutionTime;
+	js_ptr_arr[JSO_ISR_Period_us] = &isr_period_us;
+	js_ptr_arr[JSO_lifecheck]   = &lifecheck;
 	return Status;
 }
 

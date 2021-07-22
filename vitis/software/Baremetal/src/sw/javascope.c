@@ -16,6 +16,7 @@
 #include "../main.h"
 #include "../defines.h"
 #include "../include/javascope.h"
+#include "../Codegen/uz_codegen.h"
 
 
 float myIQfactor[15] = {1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.0, 1024.0, 2048.0, 4096.0, 8192.0, 16384.0};
@@ -29,6 +30,8 @@ float myIQfactor[15] = {1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.
 extern ARM_to_Oszi_Data_shared_struct OsziData;
 extern Oszi_to_ARM_Data_shared_struct ControlData;
 extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
+extern uz_codegen codegenInstance;
+extern struct currents javascope_currents;
 
 uint32_t cnt_javascope=0, cnt_slowData=0;
 
@@ -81,20 +84,20 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, 4 signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ptr_arr[JSO_Speed_rpm]	= &data->av.mechanicalRotorSpeed;
-	js_ptr_arr[JSO_ia] 			= &data->av.I_U;
-	js_ptr_arr[JSO_ib] 			= &data->av.I_V;
-	js_ptr_arr[JSO_ic] 			= &data->av.I_W;
-	js_ptr_arr[JSO_ua] 			= &data->av.U_U;
-	js_ptr_arr[JSO_ub] 			= &data->av.U_V;
-	js_ptr_arr[JSO_uc] 			= &data->av.U_W;
-	js_ptr_arr[JSO_iq] 			= &data->av.I_q;
-	js_ptr_arr[JSO_id] 			= &data->av.I_d;
+	js_ptr_arr[JSO_Speed_rpm]	= &javascope_currents.n_ist;
+	js_ptr_arr[JSO_ia] 			= &javascope_currents.ia;
+	js_ptr_arr[JSO_ib] 			= &javascope_currents.ib;
+	js_ptr_arr[JSO_ic] 			= &javascope_currents.ic;
+	js_ptr_arr[JSO_ua] 			= &javascope_currents.n_soll;
+	js_ptr_arr[JSO_ub] 			= &javascope_currents.id_soll;
+	js_ptr_arr[JSO_uc] 			= &javascope_currents.iq_soll;
+	js_ptr_arr[JSO_iq] 			= &javascope_currents.iq;
+	js_ptr_arr[JSO_id] 			= &javascope_currents.id;
 	js_ptr_arr[JSO_Theta_el] 	= &data->av.theta_elec;
 	js_ptr_arr[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ptr_arr[JSO_Wtemp]		= &data->pID.WindingTemp;
-	js_ptr_arr[JSO_ud]			= &data->av.U_d;
-	js_ptr_arr[JSO_uq]			= &data->av.U_q;
+	js_ptr_arr[JSO_ud]			= &javascope_currents.ud_soll;
+	js_ptr_arr[JSO_uq]			= &javascope_currents.uq_soll;
 	js_ptr_arr[JSO_Ld_mH]		= &data->pID.Online_Ld;
 	js_ptr_arr[JSO_Lq_mH]		= &data->pID.Online_Lq;
 	js_ptr_arr[JSO_Rs_mOhm]		= &data->pID.Online_Rs;

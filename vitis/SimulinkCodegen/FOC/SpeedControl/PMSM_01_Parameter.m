@@ -7,9 +7,9 @@ Ld = Lq;                     %H
 psi_pm = 0.0048;              %Vs
 R = 0.040;                   %Ohm Strangwiderstand
 J_M = 0.0025;                %kg m²
-U_DC = 10;                   %V
-U_maxDQ = U_DC/sqrt(3);
-I_max = 210;                 %A
+U_DC = 46;                   %V
+%U_maxDQ = U_DC/sqrt(3);
+I_max = 50;                 %A
 
 
 %Inverter parameters
@@ -22,7 +22,6 @@ Capacitance_CircuitCondensator = 500e-6;%uF, Intermediate circuit condensator
 %Controller Frequencies
 f_CurrentController = 20000;            %Current and speed controller
 T_controller = 1/f_CurrentController;
-
 T_speedController = T_controller;
 
 %PI-CurrentController (BO)

@@ -58,6 +58,10 @@ int bool_fault_V_Bot = 0;
 int bool_fault_W_Top = 0;
 int bool_fault_W_Bot = 0;
 
+
+
+struct currents javascope_currents = {0};
+
 int cnt_polepair = 0;
 
 
@@ -97,11 +101,28 @@ void ISR_Control(void *data)
 	meas_Ub_Voltage = Global_Data.aa.A2.me.ADC_B6 * 12.5;
 	meas_Uc_Voltage = Global_Data.aa.A2.me.ADC_B7 * 12.5;
 
+	javascope_currents.ia = (float)codegenInstance.input.ia;
+	javascope_currents.ib = (float)codegenInstance.input.ib;
+	javascope_currents.ic = (float)codegenInstance.input.ic;
+	javascope_currents.id = (float)codegenInstance.output.id_ist;
+	javascope_currents.iq = (float)codegenInstance.output.iq_ist;
+	javascope_currents.id_soll = (float)codegenInstance.output.iq_soll;
+	javascope_currents.iq_soll = (float)codegenInstance.output.id_soll;
+	javascope_currents.ud_soll = (float)codegenInstance.output.ud;
+	javascope_currents.uq_soll = (float)codegenInstance.output.uq;
+	javascope_currents.n_ist = (float)codegenInstance.input.n_ist;
+	javascope_currents.n_soll = (float)codegenInstance.input.n_ref;
+
 
 	//Encoder
 	codegenInstance.input.theta_el = Global_Data.av.theta_elec - Global_Data.av.theta_offset; 						//[rad] Definition in main.c
 	codegenInstance.input.w_el = Global_Data.av.mechanicalRotorSpeed * Global_Data.mrp.motorPolePairNumber*M_PI/30; //[rad/s]
 	codegenInstance.input.n_ist = Global_Data.av.mechanicalRotorSpeed;												//[rpm]
+
+	if(codegenInstance.input.n_ist < 10.0){
+		//Only values greater 10rpm are valid
+		codegenInstance.input.n_ist = 0.0;
+	}
 
 
 
@@ -189,11 +210,11 @@ int Initialize_ISR(){
 	//Flags
 	codegenInstance.input.flg_PreCntr = 0.0;
 	codegenInstance.input.flgLimitUdUq = 0.0;
-	codegenInstance.input.flg_SpaceVectorModulation = FALSE;
+	codegenInstance.input.flg_SpaceVectorModulation = TRUE;
 	codegenInstance.input.flg_deadTimeCompensation = FALSE;
 	codegenInstance.input.flg_theta_el_compensation = FALSE;
 	codegenInstance.input.flg_FieldWeakening = 0.0;
-	codegenInstance.input.flg_SpeedControl = 0.0;
+	codegenInstance.input.flg_SpeedControl = 1.0;
 
 	//Controller settings
 	codegenInstance.input.Kp_Iq = 0.040212;

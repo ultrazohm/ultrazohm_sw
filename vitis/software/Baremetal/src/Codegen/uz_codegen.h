@@ -15,6 +15,21 @@
 ******************************************************************************/
 #include "uz_codegen0_ert_rtw/uz_codegen0.h"
 
+struct currents{
+	float ia;
+	float ib;
+	float ic;
+	float id;
+	float iq;
+	float id_soll;
+	float iq_soll;
+	float n_soll;
+	float n_ist;
+	float ud_soll;
+	float uq_soll;
+};
+
+
 typedef struct{
 	ExtY output;
 	ExtU input;

@@ -81,7 +81,9 @@
 #define UZ_ADCLTC2311_CR_TRIGGER (1<<1)
 #define UZ_ADCLTC2311_CR_SW_RESET (1<<2)
 #define UZ_ADCLTC2311_CR_CONV_VALUE_VALID (1<<3)
-#define UZ_ADCLTC2311_CR_OFF_CONV (1<<4)
+#define UZ_ADCLTC2311_CR_CONFIG_VALUE_0 (1<<4)
+#define UZ_ADCLTC2311_CR_CONFIG_VALUE_1 (1<<5)
+#define UZ_ADCLTC2311_CR_CONFIG_VALUE_2 (1<<6)
 
 // SPI control register
 #define UZ_ADCLTC2311_SPI_CR_SS_N (1<<0)
@@ -137,18 +139,20 @@ typedef struct uz_adcLtc2311 uz_adcLtc2311;
  * 1: Setting of the offset failed
  *
  *******************************************************/
-typedef struct uz_adcLtc2311_conversionConfig {
+typedef struct uz_adcLtc2311_config {
 	uint32_t master_select;
 	uint32_t channel_select;
 	int32_t conversion_factor;
 	int32_t offset;
+	uint32_t samples;
 	_Bool set_offset;
 	_Bool set_conversion;
+	_Bool set_samples;
 	uint32_t error_code;
 	_Bool try_infinite;
 	uint32_t max_attempts;
 
-} uz_adcLtc2311_conversionConfig;
+} uz_adcLtc2311_config;
 
 /********************************************************
  * Struct to configure the SPI unit of the IP core
@@ -175,11 +179,11 @@ typedef struct uz_adcLtc2311_spiConfig {
 
 /**
  * @brief Configuration to leave and enter nap and sleep mode
- * 
+ *
  * @details
- * 
+ *
  * The functions
- * 
+ *
  * <UL>
  * <LI> @ref uz_adcLtc2311_enterNapMode </LI>
  * <LI> @ref uz_adcLtc2311_leaveNapMode </LI>
@@ -187,7 +191,7 @@ typedef struct uz_adcLtc2311_spiConfig {
  * <LI> @ref uz_adcLtc2311_leaveSleepMode </LI>
  * </UL>
  * expect an instance of this struct as configuration.
- * 
+ *
  * The error code variable is one hot encoded
  * If the following bits are set the appropriate action
  * failed
@@ -201,8 +205,8 @@ typedef struct uz_adcLtc2311_spiConfig {
  *    mode on leaving the requested mode. <BR>
  * 5: Requested action timed out <BR>
  * 6: No SPI master has been selected <BR>
- * 
- * 
+ *
+ *
  */
 typedef struct uz_adcLtc2311_napSleepConfig {
 	uint32_t error_code; 	/**< This variable contains the error code which is set by the called function */
@@ -213,8 +217,8 @@ typedef struct uz_adcLtc2311_napSleepConfig {
 
 // function declarations
 uz_adcLtc2311* uz_adcLtc2311_init(uz_adcLtc2311* self);
-int32_t uz_adcLtc2311_configureConversion(uz_adcLtc2311* self, uz_adcLtc2311_conversionConfig* configuration);
-void uz_adcLtc2311_init_conversionConfig(uz_adcLtc2311_conversionConfig* configuration);
+int32_t uz_adcLtc2311_configure(uz_adcLtc2311* self, uz_adcLtc2311_config* configuration);
+void uz_adcLtc2311_initConfig(uz_adcLtc2311_config* configuration);
 int32_t uz_adcLtc2311_configureSpi(uz_adcLtc2311* self, uz_adcLtc2311_spiConfig* configuration);
 void uz_adcLtc2311_init_spiConfig(uz_adcLtc2311_spiConfig* configuration);
 void uz_adcLtc2311_softwareReset(uz_adcLtc2311* self);
@@ -224,37 +228,37 @@ void uz_adcLtc2311_setTriggeredMode(uz_adcLtc2311* self);
 
 /**
  * @brief Enter the nap mode of the selected ADCs
- * 
- * @param self 
- * @param configuration 
- * @return int32_t 
+ *
+ * @param self
+ * @param configuration
+ * @return int32_t
  */
 int32_t uz_adcLtc2311_enterNapMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration);
 
 /**
  * @brief Leave the nap mode of the selected ADCs
- * 
- * @param self 
- * @param configuration 
- * @return int32_t 
+ *
+ * @param self
+ * @param configuration
+ * @return int32_t
  */
 int32_t uz_adcLtc2311_leaveNapMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration);
 
 /**
  * @brief Enter the sleep mode of the selected ADCs
- * 
- * @param self 
- * @param configuration 
- * @return int32_t 
+ *
+ * @param self
+ * @param configuration
+ * @return int32_t
  */
 int32_t uz_adcLtc2311_enterSleepMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration);
 
 /**
  * @brief Leave the sleep mode of the selected ADCs
- * 
- * @param self 
- * @param configuration 
- * @return int32_t 
+ *
+ * @param self
+ * @param configuration
+ * @return int32_t
  */
 int32_t uz_adcLtc2311_leaveSleepMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration);
 void uz_adcLtc2311_init_napSleepConfig(uz_adcLtc2311_napSleepConfig* configuration);

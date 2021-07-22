@@ -94,7 +94,7 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     signal S_SPI_MANUAL           : std_logic_vector(SPI_MASTER - 1 downto 0);
     
     -- control signals
-    signal S_ENABLE, S_SET_CONVERSION, S_SET_OFFSET : std_logic_vector(SPI_MASTER - 1 downto 0);
+    signal S_ENABLE, S_SET_CONVERSION, S_SET_OFFSET, S_SET_SAMPLES : std_logic_vector(SPI_MASTER - 1 downto 0);
     signal S_RESET_N, S_CLK : std_logic;
     
     -- AXI values
@@ -247,6 +247,7 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
             CONVERSION_WIDTH    : natural := 18;    -- Bit width of the conversion factor
             RES_LSB             : natural := 6;     -- LSB in the result vector of the multiplactor output
             RES_MSB             : natural := 23    -- MSB in the result vector of the multiplactor output
+            
         );
         port (
             CLK         : in std_logic;
@@ -271,18 +272,18 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
             -- Control Ports
             SET_CONVERSION  : in std_logic;
             SET_OFFSET      : in std_logic;
+            SET_SAMPLES     : in std_logic;
             SI_VALID        : out std_logic;
             RAW_VALID       : out std_logic;
             BUSY            : out std_logic;
             
             -- Value Ports
-            VALUE_OFF_CONV  : in std_logic_vector(31 downto 0);           -- input for conversion or offset value
+            VALUE           : in std_logic_vector(31 downto 0);           -- input for conversion or offset value
             CHANNEL_SELECT  : in std_logic_vector(31 downto 0); -- selection which channels shall be updated with conversion factor or offset
             SI_VALUE        : out std_logic_vector((CHANNELS * (RES_MSB - RES_LSB + 1)) - 1 downto 0);
             RAW_VALUE       : out std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0)
             
         );
-        
     end component ADC_CONTROLLER;
         
     function IS_BUSY (
@@ -425,17 +426,27 @@ begin
                
                -- update the values
                
-               if (S_ADC_CR(C_OFF_CONV) = '1') then
-                   S_SET_CONVERSION <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
-                   S_SET_OFFSET     <= (others => '0');
-               else
-                   S_SET_OFFSET         <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
-                   S_SET_CONVERSION     <= (others => '0');
-               end if;
-            else
-               S_ADC_CR_IN(C_CONV_VALUE_VALID) <= '1';
+               S_SET_OFFSET     <= (others => '0');
                S_SET_CONVERSION <= (others => '0');
-               S_SET_OFFSET <= (others => '0');
+               S_SET_SAMPLES    <= (others => '0');
+               
+               case S_ADC_CR(C_CONFIG_VALUE_MSB downto C_CONFIG_VALUE_LSB) is
+                    when "000" =>
+                        S_SET_OFFSET     <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
+                    when "001" =>
+                        S_SET_CONVERSION <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
+                    when "010" =>
+                        S_SET_SAMPLES    <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
+                    when others =>
+                        S_SET_OFFSET     <= (others => '0');
+                        S_SET_CONVERSION <= (others => '0');
+                        S_SET_SAMPLES    <= (others => '0');
+               end case;
+            else
+               S_ADC_CR_IN(C_CONV_VALUE_VALID)  <= '1';
+               S_SET_CONVERSION                 <= (others => '0');
+               S_SET_OFFSET                     <= (others => '0');
+               S_SET_SAMPLES                    <= (others => '0');
             end if;
          end if;
                
@@ -523,12 +534,13 @@ ADC_LTC2311_v3_0_S00_AXI_inst : ADC_LTC2311_v3_0_S00_AXI
             -- Control Ports
             SET_CONVERSION  => S_SET_CONVERSION(i),
             SET_OFFSET      => S_SET_OFFSET(i),
+            SET_SAMPLES     => S_SET_SAMPLES(i),
             SI_VALID        => S_ADC_MASTER_SI_FINISH(i),
             RAW_VALID       => S_ADC_MASTER_FINISH(i),
             BUSY            => S_ADC_MASTER_BUSY(i),
             
             -- Value Ports
-            VALUE_OFF_CONV  => S_ADC_CONV_VALUE,           -- input for conversion or offset value
+            VALUE  => S_ADC_CONV_VALUE,           -- input for conversion or offset value
             CHANNEL_SELECT  => S_ADC_CHANNEL, -- selection which channels shall be updated with conversion factor or offset
             SI_VALUE        => SI_VALUE( (i + 1) * CHANNELS_PER_MASTER * (RES_MSB - RES_LSB + 1) - 1 downto i * CHANNELS_PER_MASTER * (RES_MSB - RES_LSB + 1)),
             RAW_VALUE       => RAW_VALUE( (i + 1) * CHANNELS_PER_MASTER * DATA_WIDTH - 1 downto i * CHANNELS_PER_MASTER * DATA_WIDTH)

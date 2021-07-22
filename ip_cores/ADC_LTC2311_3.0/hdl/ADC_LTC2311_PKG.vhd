@@ -44,7 +44,8 @@ package ADC_LTC2311_PKG is
     constant C_TRIGGER            : natural := 1;
     constant C_SW_RESET           : natural := 2;
     constant C_CONV_VALUE_VALID   : natural := 3;
-    constant C_OFF_CONV           : natural := 4;
+    constant C_CONFIG_VALUE_LSB   : natural := 4;
+    constant C_CONFIG_VALUE_MSB   : natural := 6;
     
     -- ADC_SPI_CR
     constant C_SPI_SS_N           : natural := 0;

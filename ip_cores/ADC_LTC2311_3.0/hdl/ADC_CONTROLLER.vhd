@@ -68,12 +68,13 @@ entity ADC_CONTROLLER is
         -- Control Ports
         SET_CONVERSION  : in std_logic;
         SET_OFFSET      : in std_logic;
+        SET_SAMPLES     : in std_logic;
         SI_VALID        : out std_logic;
         RAW_VALID       : out std_logic;
         BUSY            : out std_logic;
         
         -- Value Ports
-        VALUE_OFF_CONV  : in std_logic_vector(31 downto 0);           -- input for conversion or offset value
+        VALUE           : in std_logic_vector(31 downto 0);           -- input for conversion or offset value
         CHANNEL_SELECT  : in std_logic_vector(31 downto 0); -- selection which channels shall be updated with conversion factor or offset
         SI_VALUE        : out std_logic_vector((CHANNELS * (RES_MSB - RES_LSB + 1)) - 1 downto 0);
         RAW_VALUE       : out std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0)
@@ -89,6 +90,10 @@ architecture Behavioral of ADC_CONTROLLER is
     
     -- control signals
     signal S_CE_CONVERSION  : std_logic;
+    signal S_DUMMY_SAMPLE   : std_logic;
+    signal S_SAMPLES        : natural range 0 to 2147483647;
+    signal S_SAMPLE_COUNTER : natural range 0 to 2147483647;
+    signal S_MANUAL         : std_logic;
     
     -- multiplication pipeline
     signal S_CHANNEL_COUNTER    : integer range 0 to CHANNELS;
@@ -108,7 +113,7 @@ architecture Behavioral of ADC_CONTROLLER is
     signal S_SPI_RAW_VALUE  : std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0);
     
     -- State definition for the FSM
-    type state_type is (IDLE,SPI_TRANSFER,CONVERTING);
+    type state_type is (IDLE,OCCUPIED,SPI_TRANSFER,CONVERTING);
     signal curstate, nxtstate : state_type := IDLE;
     attribute fsm_encoding : string;
     attribute fsm_encoding of curstate, nxtstate : signal is "auto";
@@ -126,6 +131,9 @@ architecture Behavioral of ADC_CONTROLLER is
     attribute keep of S_RAW_VALUE_S_C : signal is "true";
 --    attribute keep of S_SPI_ENABLE : signal is "true";
 --    attribute keep of S_SPI_RAW_VALUE : signal is "true";
+    attribute keep of S_SAMPLE_COUNTER : signal is "true";
+    attribute keep of S_SAMPLES : signal is "true";
+    attribute keep of S_DUMMY_SAMPLE : signal is "true";
     
 --    -- state machine
 --    attribute keep of curstate : signal is "true";
@@ -141,6 +149,9 @@ architecture Behavioral of ADC_CONTROLLER is
     attribute MARK_DEBUG of S_RAW_VALUE_S_C : signal is "true";
 --    attribute MARK_DEBUG of S_SPI_ENABLE : signal is "true";
 --    attribute MARK_DEBUG of S_SPI_RAW_VALUE : signal is "true";
+    attribute MARK_DEBUG of S_SAMPLE_COUNTER : signal is "true";
+    attribute MARK_DEBUG of S_SAMPLES : signal is "true";
+    attribute MARK_DEBUG of S_DUMMY_SAMPLE : signal is "true";
     
 --    -- state machine
 --    attribute MARK_DEBUG of curstate : signal is "true";
@@ -220,29 +231,49 @@ begin
                 --SCLK             <= '0';
                 --SS_OUT_N         <= '1';
                 BUSY             <= '0';
+                S_DUMMY_SAMPLE <= '1';
                 
             else
                 curstate <= nxtstate;
                 case nxtstate is
                     -- Transition to IDLE
                     when IDLE =>
+                        S_MANUAL <= MANUAL;
                         case curstate is
+                        when OCCUPIED =>
+                            BUSY <= '0';
+                        when others =>
+                            
+                        end case;
+                        
+                    when OCCUPIED =>
+                        
+                        S_MANUAL <= '0';
+                        case curstate is
+                        when IDLE =>
+                            BUSY <= '1';
+                            S_DUMMY_SAMPLE <= '1';
+                            S_SAMPLE_COUNTER <= S_SAMPLES;
                         when CONVERTING =>
                             SI_VALID <= '1';
                             S_CE_CONVERSION <= '0';
-                            BUSY <= '0';
+                            S_SAMPLE_COUNTER <= S_SAMPLE_COUNTER - 1; 
                             
                             -- transfer last value to output vector
                             SI_VALUE( ((S_RESULT_COUNTER + 1) * (RES_MSB - RES_LSB + 1)) - 1 downto (S_RESULT_COUNTER) * (RES_MSB - RES_LSB + 1)) 
                             <= S_RESULT_S_C(RES_MSB downto RES_LSB);
+                        
+                        when SPI_TRANSFER =>
+                            S_DUMMY_SAMPLE <= '0';
+                        
                         when others =>
-                            
+                        
                         end case;
                     
                     when SPI_TRANSFER =>
                         case curstate is
-                        when IDLE =>
-                            BUSY <= '1';
+                        when OCCUPIED =>
+                            
                             RAW_VALID <= '0';
                             S_SPI_ENABLE <= '1';
                             S_SPI_BUSY_PIPE(1 downto 0) <= "00";
@@ -251,6 +282,13 @@ begin
                             S_CHANNEL_COUNTER <= CHANNELS;
                             S_CONV_COUNTER    <= CHANNELS + 1;
                             S_RESULT_COUNTER  <= CHANNELS + 3;
+                            
+                            -- reset SAMPLE_COUNTER. This transition only happens when ENABLE
+                            -- is held high in OCCUPIED state which applies to the conitinuous mode
+                            -- a new series is triggered directly without a dummy sample
+                            if (S_SAMPLE_COUNTER <= 0) then
+                                S_SAMPLE_COUNTER <= S_SAMPLES;
+                            end if;
                             
                         when others =>
                             if(S_SPI_BUSY = '1') then
@@ -300,19 +338,27 @@ begin
             end if;
     end process output_state_mem;
     
-    transition: process(curstate, ENABLE, S_RESULT_COUNTER, S_SPI_BUSY_PIPE)
+    transition: process(curstate, ENABLE, S_RESULT_COUNTER, S_SPI_BUSY_PIPE, S_DUMMY_SAMPLE, S_SAMPLE_COUNTER)
         begin
             case curstate is
                 when IDLE =>
-                    if (ENABLE = '1') then nxtstate <= SPI_TRANSFER;
+                    if (ENABLE = '1') then nxtstate <= OCCUPIED;
                     else                   nxtstate <= IDLE;
+                    end if;
+                    
+                when OCCUPIED =>
+                    if (S_SAMPLE_COUNTER <= 0) and (ENABLE = '0') then nxtstate <= IDLE;
+                    else                     nxtstate <= SPI_TRANSFER;
                     end if;
                 
                 when SPI_TRANSFER =>
                     case S_SPI_BUSY_PIPE is
                     -- falling edge of the SPI_BUSY signal
                     when "10" =>
-                        nxtstate <= CONVERTING;
+                        if (S_DUMMY_SAMPLE = '1') then nxtstate <= OCCUPIED;
+                        else                          nxtstate <= CONVERTING;
+                        end if; 
+                        
                     when others =>
                         nxtstate <= SPI_TRANSFER;
                     end case;
@@ -320,7 +366,7 @@ begin
                 when CONVERTING =>
                     -- conversion to SI value finished
                     if(S_RESULT_COUNTER <= 0) then
-                        nxtstate <= IDLE;
+                        nxtstate <= OCCUPIED;
                     else
                         nxtstate <= CONVERTING;
                     end if;
@@ -336,12 +382,13 @@ begin
             if (reset_n = '0') then
                 S_CONVERSION    <= (others => '0');
                 S_OFFSET        <= (others => '0');
+                S_SAMPLES       <= 1;
             -- set conversion value for the selected channels
             elsif (SET_CONVERSION = '1') then
                 set_conv: for i in (CHANNELS) downto 1 loop
                     if(CHANNEL_SELECT(i - 1) = '1') then
                         S_CONVERSION((i * CONVERSION_WIDTH) - 1 downto (i - 1) * CONVERSION_WIDTH) 
-                        <= VALUE_OFF_CONV(CONVERSION_WIDTH - 1 downto 0);
+                        <= VALUE(CONVERSION_WIDTH - 1 downto 0);
                     end if;
                 end loop set_conv;
             
@@ -350,9 +397,11 @@ begin
                 set_off: for i in (CHANNELS) downto 1 loop
                     if(CHANNEL_SELECT(i - 1) = '1') then
                         S_OFFSET((i * OFFSET_WIDTH) - 1 downto (i - 1) * OFFSET_WIDTH) 
-                        <= VALUE_OFF_CONV(OFFSET_WIDTH - 1 downto 0);
+                        <= VALUE(OFFSET_WIDTH - 1 downto 0);
                     end if;
                 end loop set_off;
+            elsif (SET_SAMPLES = '1') then
+                S_SAMPLES <= TO_INTEGER(unsigned(VALUE(30 downto 0)));
             end if;
          end if;
         
@@ -377,7 +426,7 @@ begin
         MISO        => MISO,
         SS_OUT_N    => SS_OUT_N,
         SS_IN_N     => SS_IN_N,
-        MANUAL      => MANUAL,
+        MANUAL      => S_MANUAL,
         -- Control Ports
         BUSY        => S_SPI_BUSY,
         ENABLE      => S_SPI_ENABLE,

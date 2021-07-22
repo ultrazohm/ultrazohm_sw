@@ -14,12 +14,14 @@
 #define PS_ANL_GPIO_02	45
 #define EXT_GPIO_1 		13
 #define EXT_GPIO_2 		33
-#define EXT_GPIO_3 		34
-#define EXT_GPIO_4 		39
-#define EXT_GPIO_5 		40
-#define EXT_GPIO_6 		52
-#define EXT_GPIO_7 		53
-#define EXT_GPIO_8 		55
+#define EXT_GPIO_3      34
+#define EXT_GPIO_4      39
+#define EXT_GPIO_5      40
+//#define EXT_GPIO_6        52 //3v00
+//#define EXT_GPIO_7        53 //3v00
+#define EXT_GPIO_6      44 //Rev.04
+#define EXT_GPIO_7      30 // Rev.04
+#define EXT_GPIO_8      55
 
 // LED on carrier board and frontpanel
 #define LED_1								EXT_GPIO_1

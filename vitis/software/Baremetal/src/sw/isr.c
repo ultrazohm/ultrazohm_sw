@@ -29,9 +29,8 @@
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 
 
-// Include for code-gen
+// Include for codegen
 #include "../Codegen/uz_codegen.h"
-
 
 //Initialize the variables for the ADC measurement
 u32 		XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
@@ -80,9 +79,10 @@ void ISR_Control(void *data)
 
 	codegenInstance.input.Act_theta_el = Global_Data.av.theta_elec - 5.139955762; 	//[rad] Definition in main.c
 	codegenInstance.input.Act_n = Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
+	codegenInstance.input.Act_w_el = Global_Data.av.mechanicalRotorSpeed * Global_Data.mrp.motorPolePairNumber*M_PI/30; //[rad/s]
 
 	//FOC_Strom Call generated code if no faults are present
-	if (codegenInstance.output.fault_peak_current || codegenInstance.output.fault_max_current ||codegenInstance.output.fault_peak_speed ||codegenInstance.output.fault_max_speed)
+	/*if (codegenInstance.output.fault_peak_current || codegenInstance.output.fault_max_current ||codegenInstance.output.fault_peak_speed ||codegenInstance.output.fault_max_speed)
 	{
 		Global_Data.cw.enableSystem = false;
 		uz_led_set_errorLED_on();
@@ -91,7 +91,7 @@ void ISR_Control(void *data)
 	{
 		uz_codegen_step(&codegenInstance);
 	}
-
+	*/
 
 	//FOC_Strom Output
 	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.a_U;
@@ -150,16 +150,17 @@ int Initialize_ISR(){
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
 
 	//Set Flags and referenceValues of FOC to zero
-	codegenInstance.input.fl_power = 0.0;
-	codegenInstance.input.fl_control_type = 0.0;
-	codegenInstance.input.fl_integrator_reset = 0.0;
-	codegenInstance.input.fl_field_weakening = 0.0;
-	codegenInstance.input.fl_voltage_limitation = 0.0;
-	codegenInstance.input.fl_decoupling = 0.0;
-	codegenInstance.input.fl_angle_prediction = 0.0;
+	codegenInstance.input.fl_power = 0U;
+	codegenInstance.input.fl_control_type = 0U;
+	codegenInstance.input.fl_integrator_reset = 0U;
+	codegenInstance.input.fl_field_weakening = 0U;
+	codegenInstance.input.fl_voltage_limitation = 0U;
+	codegenInstance.input.fl_decoupling = 0U;
+	codegenInstance.input.fl_angle_prediction = 0U;
 	codegenInstance.input.Ref_n = 0.0;
 	codegenInstance.input.Ref_Id_ext = 0.0;
 	codegenInstance.input.Ref_Iq_ext = 0.0;
+	rtP.T_R = Global_Data.ctrl.samplingPeriod;
 
 return Status;
 }

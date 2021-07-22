@@ -64,6 +64,7 @@ int main(void) {
 	// Initialize Park-Transformation 123 to dq
 	DQTransformation_Initialize(&Global_Data);
 	uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
+	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1, 2.0f);
 	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
 	//Initialize PWM and switch signal control
 	PWM_SS_Initialize(&Global_Data); 	// two-level modulator
@@ -72,6 +73,7 @@ int main(void) {
 	// Initialize Timer in order to Trigger the ISRs
 	Initialize_Timer();
 	uz_SystemTime_init();
+
 	// Initialize the incremental encoder
 	Encoder_Incremental_Initialize(&Global_Data);
 
@@ -81,10 +83,10 @@ int main(void) {
 	// Initialize the ARM control algorithm
 	Initialize_ARMController(&Global_Data);
 
-	//Initialize the Soft-Oscilloscope ("JavaScope")
+	// Initialize the Soft-Oscilloscope ("JavaScope")
 	JavaScope_initalize(&Global_Data);
 
-	//Initialize CodeGen
+	// Initialize CodeGen
 	uz_codegen_init(&codegenInstance);
 
 	// Initialize the Interrupts
@@ -295,14 +297,15 @@ void InitializeDataStructure(DS_Data* data) {
 
 	data->av.U_ZK = 24.0; 								//[V] DC-Link voltage
 
-	//Control
+	//Control NOT USED
 	data->cw.ControlReference = CurrentControl; 		// default because of Parameter ID
-	data->cw.ControlMethod = fieldOrientedControl; // default because of Parameter ID
+	data->cw.ControlMethod = fieldOrientedControl; 		// default because of Parameter ID
+
 	//Default control method
 	Configure_FOC_Control(data);
 
 	//Encoder
-	data->mrp.incrementalEncoderResolution = 5000.0; //[Increments per turn] // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
+	data->mrp.incrementalEncoderResolution = 5000.0; 	//[Increments per turn] // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
 	data->mrp.incrementalEncoderOffset = 3.141592653589; //[rad]  //Offset for the Park-Transformation -> pi = 3.141592653589
 	data->mrp.motorMaximumSpeed = 6000.0; //[rpm]
 	data->mrp.incrementalEncoderOversamplingFactor = 5.0; //Oversampling factor must be between 1.0-6.0 (Achtung, immer mit Punkt da sonst nicht als float interpretiert

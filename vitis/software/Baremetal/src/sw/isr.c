@@ -71,27 +71,35 @@ void ISR_Control(void *data)
 	CheckForErrors();
 	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
 
-	//FOC_Strom Assign Input Data
-	codegenInstance.input.Act_Iu = (Global_Data.aa.A2.me.ADC_A1-2.5) * 80/2;		//A
-	codegenInstance.input.Act_Iv = (Global_Data.aa.A2.me.ADC_A2-2.5) * 80/2;		//A
-	codegenInstance.input.Act_Iw = (Global_Data.aa.A2.me.ADC_A3-2.5) * 80/2;		//A
+	//FOC_Strom Assign Signal-Values
+	codegenInstance.input.Act_Iu = (Global_Data.aa.A2.me.ADC_A1-2.5) * 80/2 - 0.3;		//A
+	codegenInstance.input.Act_Iv = (Global_Data.aa.A2.me.ADC_A2-2.5) * 80/2 + 0.3;		//A
+	codegenInstance.input.Act_Iw = (Global_Data.aa.A2.me.ADC_A3-2.5) * 80/2 - 0.4;		//A
 	codegenInstance.input.Act_U_ZK = Global_Data.aa.A2.me.ADC_A4 * 12.5;			//V
-
 	codegenInstance.input.Act_theta_el = Global_Data.av.theta_elec - 5.139955762; 	//[rad] Definition in main.c
 	codegenInstance.input.Act_n = Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
 	codegenInstance.input.Act_w_el = Global_Data.av.mechanicalRotorSpeed * Global_Data.mrp.motorPolePairNumber*M_PI/30; //[rad/s]
 
+	//FOC Assign Javasope-reference-values
+	codegenInstance.input.Ref_n = Global_Data.rasv.referenceSpeed;
+	codegenInstance.input.Ref_Id_ext = Global_Data.rasv.referenceCurrent_id;
+	codegenInstance.input.Ref_Iq_ext = Global_Data.rasv.referenceCurrent_iq;
+
+	//FOC Enable control with Javascope
+	codegenInstance.input.fl_power = Global_Data.cw.enableControl;
+
 	//FOC_Strom Call generated code if no faults are present
-	/*if (codegenInstance.output.fault_peak_current || codegenInstance.output.fault_max_current ||codegenInstance.output.fault_peak_speed ||codegenInstance.output.fault_max_speed)
+	if (codegenInstance.output.fault_peak_current || codegenInstance.output.fault_max_current ||codegenInstance.output.fault_peak_speed ||codegenInstance.output.fault_max_speed)
 	{
 		Global_Data.cw.enableSystem = false;
 		uz_led_set_errorLED_on();
 	}
 	else
 	{
+		uz_led_set_errorLED_off();
 		uz_codegen_step(&codegenInstance);
 	}
-	*/
+
 
 	//FOC_Strom Output
 	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.a_U;

@@ -3,7 +3,7 @@
 
 #pragma once
 #include "../uz_HAL.h"
-#include "../uz_PI_Controller/uz_PI_controller.h"
+#include "../uz_piController/uz_piController.h"
 #include "../uz_signals/uz_signals.h"
 #include <math.h>
 #include <stdlib.h>

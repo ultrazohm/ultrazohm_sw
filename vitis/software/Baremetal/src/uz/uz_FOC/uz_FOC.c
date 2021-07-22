@@ -85,6 +85,12 @@ uz_FOC* uz_FOC_init(uz_FOC_config config_FOC, uz_PI_Controller_config config_id,
 
 	if (config_FOC.FOC_Select == 2U) {
 		self->Controller_n = uz_PI_Controller_init(config_n);
+	}else{
+		config_n.Ki = 0.0f;
+		config_n.Kp = 0.0f;
+		config_n.lower_limit = 0.0f;
+		config_n.upper_limit = 0.0f;
+		config_n.samplingTime_sec = 0.0f;
 	}
 	self->Controller_id = uz_PI_Controller_init(config_id);
 	self->Controller_iq = uz_PI_Controller_init(config_iq);

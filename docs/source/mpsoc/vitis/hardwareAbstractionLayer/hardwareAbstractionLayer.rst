@@ -31,13 +31,7 @@ The HAL provides the following functions and macros:
 Assertions
 ----------
 
-.. doxygendefine:: uz_assert
-
-.. doxygendefine:: uz_assert_not_NULL
-
-.. doxygendefine:: uz_assert_not_zero
-
-.. doxygendefine:: uz_assert_false
+See :ref:`assertions`.
 
 
 Sleep

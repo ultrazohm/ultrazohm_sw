@@ -16,6 +16,7 @@
 #include "../main.h"
 #include "../defines.h"
 #include "../include/javascope.h"
+#include "../Codegen/uz_codegen.h"
 
 
 float myIQfactor[15] = {1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.0, 1024.0, 2048.0, 4096.0, 8192.0, 16384.0};
@@ -29,6 +30,7 @@ float myIQfactor[15] = {1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.
 extern ARM_to_Oszi_Data_shared_struct OsziData;
 extern Oszi_to_ARM_Data_shared_struct ControlData;
 extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
+extern uz_codegen codegenInstance;
 
 uint32_t cnt_javascope=0, cnt_slowData=0;
 
@@ -86,7 +88,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_iw] 			= &codegenInstance.input.Act_Iw;
 	js_ptr_arr[JSO_id] 			= &codegenInstance.output.Id_Act;
 	js_ptr_arr[JSO_iq] 			= &codegenInstance.output.Iq_Act;
-	js_ptr_arr[JSO_id_ref] 		= &codegenInstance.output.Id_RefAct;
+	js_ptr_arr[JSO_id_ref] 		= &codegenInstance.output.Id_Ref;
 	js_ptr_arr[JSO_iq_ref] 		= &codegenInstance.output.Iq_Ref;
 	js_ptr_arr[JSO_ud_ref] 		= &codegenInstance.output.Ud_Ref;
 	js_ptr_arr[JSO_uq_ref] 		= &codegenInstance.output.Uq_Ref;

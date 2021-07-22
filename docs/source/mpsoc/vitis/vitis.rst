@@ -22,6 +22,7 @@ Vitis
     qemu/qemu
     wavegen/wavegen
     signals/signals
+    piController/piController
     Transformation/Transformation
     global_configuration
 

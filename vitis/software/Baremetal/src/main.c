@@ -64,7 +64,7 @@ int main(void) {
 	// Initialize Park-Transformation 123 to dq
 	DQTransformation_Initialize(&Global_Data);
 	uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
-	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1, 2.0f);
+	//uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1, 2.0f);
 	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
 	//Initialize PWM and switch signal control
 	PWM_SS_Initialize(&Global_Data); 	// two-level modulator

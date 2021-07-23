@@ -1,3 +1,13 @@
 SLStudio.Utils.RemoveHighlighting(get_param('uz_pmsm_model', 'handle'));
 SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_pmsm_model', 'handle'));
-annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Sum3', 0, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/out_2_pipe_in_pipe', 1, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/out_3_pipe_in_pipe', 1, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/out_0_pipe_in_pipe', 1, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/out_1_pipe_in_pipe', 1, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Data Type Conversion16', 0, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/delayMatch', 1, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/delayMatch1', 1, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/delayMatch2', 1, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/delayMatch3', 1, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/delayMatch4', 1, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/delayMatch5', 1, 1, '');

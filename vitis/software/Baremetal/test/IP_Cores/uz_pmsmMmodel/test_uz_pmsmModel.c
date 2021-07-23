@@ -70,7 +70,6 @@ void test_uz_pmsmModel_reset_model(void)
     uz_pmsmModel_hw_write_u_q_Expect(BASE_ADDRESS, 0.0f);
     uz_pmsmModel_hw_write_load_torque_Expect(BASE_ADDRESS,0.0f);
     uz_pmsmModel_hw_write_omega_mech_Expect(BASE_ADDRESS, 0.0f);
-    uz_pmsmModel_hw_write_input_strobe_Expect(BASE_ADDRESS);
     uz_pmsmModel_hw_write_reset_Expect(BASE_ADDRESS, false);
     uz_pmsmModel_hw_write_reset_Expect(BASE_ADDRESS, true);
     uz_pmsmModel_hw_write_reset_Expect(BASE_ADDRESS, false);
@@ -93,14 +92,12 @@ void test_uz_pmsmModel_struct_api_usage_without_mechanical(void)
     uz_pmsmModel_hw_write_u_q_Expect(BASE_ADDRESS, inputs.u_q_V);
     uz_pmsmModel_hw_write_load_torque_Expect(BASE_ADDRESS,inputs.load_torque);
     uz_pmsmModel_hw_write_omega_mech_Expect(BASE_ADDRESS, inputs.omega_mech_1_s);
-    uz_pmsmModel_hw_write_input_strobe_Expect(BASE_ADDRESS);
     uz_pmsmModel_set_inputs(test_instance, inputs);
 
     float i_d_expect = 6.4f;
     float i_q_expect = 1.1f;
     float torque_expect = 4.1f;
     float omega_mech_expect=131.1f;
-    uz_pmsmModel_hw_write_output_strobe_Expect(BASE_ADDRESS);
     uz_pmsmModel_hw_read_i_d_ExpectAndReturn(BASE_ADDRESS, i_d_expect);
     uz_pmsmModel_hw_read_i_q_ExpectAndReturn(BASE_ADDRESS, i_q_expect);
     uz_pmsmModel_hw_read_torque_ExpectAndReturn(BASE_ADDRESS, torque_expect);

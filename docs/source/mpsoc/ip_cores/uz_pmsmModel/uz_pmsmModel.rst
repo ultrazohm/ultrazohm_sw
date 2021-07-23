@@ -257,15 +257,7 @@ Vitis
 
   int main(void) {
   // other code...
-  struct uz_plantPT1_config_t config={
-    .base_address=XPAR_UZ_PLANTMODEL_PT1_0_BASEADDR,
-    .ip_core_frequency_Hz=100000000U,
-    .time_constant=1.0f,
-    .gain=1.0f
-  };
-  pt1=uz_plantPT1_init(config);
-  uz_plantPT1_set_input(pt1,intput);
-  
+
   struct uz_pmsmModel_config_t pmsm_config={
     .base_address=XPAR_UZ_PMSM_MODEL_0_BASEADDR,
     .ip_core_frequency_Hz=100000000,
@@ -350,9 +342,9 @@ Vitis
     // With the JavaScope, 4 signals can be displayed simultaneously
     // Changing between the observable signals is possible at runtime in the JavaScope.
     // the addresses in Global_Data do not change during runtime, this can be done in the init
-    js_ptr_arr[JSO_i_q] = &pmsm_outputs.i_d_A;
-    js_ptr_arr[JSO_i_d] = &pmsm_outputs.omega_mech_1_s;
-    js_ptr_arr[JSO_omega] = &pmsm_outputs.i_q_A;
+    js_ptr_arr[JSO_i_q] = &pmsm_outputs.i_q_A;
+    js_ptr_arr[JSO_i_d] = &pmsm_outputs.i_d_A;
+    js_ptr_arr[JSO_omega] = &pmsm_outputs.omega_mech_1_s;
     js_ptr_arr[JSO_u_d] = &pmsm_inputs.u_d_V;
     return Status;
     }

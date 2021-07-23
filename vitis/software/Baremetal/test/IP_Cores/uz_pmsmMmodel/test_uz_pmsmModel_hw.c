@@ -106,7 +106,7 @@ void test_uz_pmsmModel_hw_write_L_q(void){
 
 void test_uz_pmsmModel_hw_read_omega_mech(void){
     float omega_mech_expected=100.2f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+omega_mech_Data_uz_pmsm_model,omega_mech_expected);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+out_omega_mech_Data_uz_pmsm_model,omega_mech_expected);
     float omega_mech=uz_pmsmModel_hw_read_omega_mech(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(omega_mech_expected,omega_mech);
 }
@@ -127,18 +127,6 @@ void test_uz_pmsmModel_hw_write_load_torque(void){
     float load_torque=10.5f;
     uz_axi_write_float_Expect(BASE_ADDRESS+load_torque_Data_uz_pmsm_model,load_torque);
     uz_pmsmModel_hw_write_load_torque(BASE_ADDRESS,load_torque);
-}
-
-void test_uz_pmsmModel_hw_write_output_strobe(void){
-    uz_axi_write_bool_Expect(BASE_ADDRESS+output_signals_Strobe_uz_pmsm_model,true);
-    uz_axi_write_bool_Expect(BASE_ADDRESS+output_signals_Strobe_uz_pmsm_model,false);
-    uz_pmsmModel_hw_write_output_strobe(BASE_ADDRESS);
-}
-
-void test_uz_pmsmModel_hw_write_input_strobe(void){
-    uz_axi_write_bool_Expect(BASE_ADDRESS+input_signals_Strobe_uz_pmsm_model,true);
-    uz_axi_write_bool_Expect(BASE_ADDRESS+input_signals_Strobe_uz_pmsm_model,false);
-    uz_pmsmModel_hw_write_input_strobe(BASE_ADDRESS);
 }
 
 #endif // TEST

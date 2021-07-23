@@ -447,7 +447,7 @@ Number of I/O Bits (518)
 Number of Input Bits: 389
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="e43d334c-f572-42b2-83fc-8cdab7c02606" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="c494159f-2bc7-48cd-9148-10493ac55bbb" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -456,18 +456,6 @@ reset: 1 bit
 </li>
 <li>
 clk_enable: 1 bit
-</li>
-<li>
-input_signals_0: 32 bits
-</li>
-<li>
-input_signals_1: 32 bits
-</li>
-<li>
-input_signals_2: 32 bits
-</li>
-<li>
-input_signals_3: 32 bits
 </li>
 <li>
 <a href="matlab:coder.internal.code2model('uz_pmsm_model:251')" name="code2model" class="code2model">
@@ -529,9 +517,33 @@ psi_pm
 </a>
 : 32 bits
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:713')" name="code2model" class="code2model">
+u_d
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:714')" name="code2model" class="code2model">
+u_q
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:716')" name="code2model" class="code2model">
+in_omega_mech
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:717')" name="code2model" class="code2model">
+load_torque
+</a>
+: 32 bits
+</li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'e43d334c-f572-42b2-83fc-8cdab7c02606')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'c494159f-2bc7-48cd-9148-10493ac55bbb')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -548,16 +560,28 @@ Number of Output Bits: 129
 ce_out: 1 bit
 </li>
 <li>
-output_signals_0: 32 bits
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:724')" name="code2model" class="code2model">
+i_d
+</a>
+: 32 bits
 </li>
 <li>
-output_signals_1: 32 bits
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:725')" name="code2model" class="code2model">
+i_q
+</a>
+: 32 bits
 </li>
 <li>
-output_signals_2: 32 bits
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:726')" name="code2model" class="code2model">
+torque
+</a>
+: 32 bits
 </li>
 <li>
-output_signals_3: 32 bits
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:727')" name="code2model" class="code2model">
+out_omega_mech
+</a>
+: 32 bits
 </li>
 
 </ul>

@@ -15,6 +15,11 @@ void uz_pmsmModel_hw_write_omega_mech(uint32_t base_address, float omega_mech);
 void uz_pmsmModel_hw_write_u_q(uint32_t base_address, float u_d);
 void uz_pmsmModel_hw_write_u_d(uint32_t base_address, float u_q);
 void uz_pmsmModel_hw_write_load_torque(uint32_t base_address, float load_torque);
+
+// Strobes
+void uz_pmsmModel_hw_trigger_input_strobe(uint32_t base_address);
+void uz_pmsmModel_hw_trigger_output_strobe(uint32_t base_address);
+
 // Electrical configuration parameters
 void uz_pmsmModel_hw_write_polepairs(uint32_t base_address, float polepairs);
 void uz_pmsmModel_hw_write_r_1(uint32_t base_address, float r_1);

@@ -66,38 +66,38 @@ void test_uz_pmsmModel_reset_model(void)
 {
     uz_pmsmModel_t *test_instance = successful_init(config);
 
+    // write zeros to the model
     uz_pmsmModel_hw_write_u_d_Expect(BASE_ADDRESS, 0.0f);
     uz_pmsmModel_hw_write_u_q_Expect(BASE_ADDRESS, 0.0f);
-    uz_pmsmModel_hw_write_load_torque_Expect(BASE_ADDRESS,0.0f);
     uz_pmsmModel_hw_write_omega_mech_Expect(BASE_ADDRESS, 0.0f);
+    uz_pmsmModel_hw_write_load_torque_Expect(BASE_ADDRESS,0.0f);
+    // force rising edge on inputs strobe
+    uz_pmsmModel_hw_trigger_input_strobe_Expect(BASE_ADDRESS);
     uz_pmsmModel_hw_write_reset_Expect(BASE_ADDRESS, false);
     uz_pmsmModel_hw_write_reset_Expect(BASE_ADDRESS, true);
     uz_pmsmModel_hw_write_reset_Expect(BASE_ADDRESS, false);
     uz_pmsmModel_reset(test_instance);
 }
 
-void test_uz_pmsmModel_struct_api_usage_without_mechanical(void)
+void test_uz_pmsmModel_normal_usage(void)
 {
     // Note that for the driver and tests it does not make a difference if simulate_mechanical_system is true or false, only the hardware changes!
     config.simulate_mechanical_system = false;
     uz_pmsmModel_t *test_instance = successful_init(config);
 
-    struct uz_pmsmModel_inputs_t inputs = {
-        .u_d_V = 100.1f,
-        .u_q_V = -300.0f,
-        .omega_mech_1_s = 312.123f,
-        .load_torque=0.0f};
-
-    uz_pmsmModel_hw_write_u_d_Expect(BASE_ADDRESS, inputs.u_d_V);
-    uz_pmsmModel_hw_write_u_q_Expect(BASE_ADDRESS, inputs.u_q_V);
-    uz_pmsmModel_hw_write_load_torque_Expect(BASE_ADDRESS,inputs.load_torque);
-    uz_pmsmModel_hw_write_omega_mech_Expect(BASE_ADDRESS, inputs.omega_mech_1_s);
-    uz_pmsmModel_set_inputs(test_instance, inputs);
-
+    // trigger the strobe to sample new values into AXI shadow registers
+    // Furthermore, pass input values from shadow register to inputs by calling strobe 
+    uz_pmsmModel_hw_trigger_output_strobe_Expect(BASE_ADDRESS);
+    uz_pmsmModel_trigger_output_strobe(test_instance);
+    uz_pmsmModel_hw_trigger_output_strobe_Expect(BASE_ADDRESS);
+    uz_pmsmModel_trigger_output_strobe(test_instance);
+    
     float i_d_expect = 6.4f;
     float i_q_expect = 1.1f;
     float torque_expect = 4.1f;
     float omega_mech_expect=131.1f;
+
+    // After strobe register was high, current values can be read from AXI
     uz_pmsmModel_hw_read_i_d_ExpectAndReturn(BASE_ADDRESS, i_d_expect);
     uz_pmsmModel_hw_read_i_q_ExpectAndReturn(BASE_ADDRESS, i_q_expect);
     uz_pmsmModel_hw_read_torque_ExpectAndReturn(BASE_ADDRESS, torque_expect);
@@ -108,6 +108,20 @@ void test_uz_pmsmModel_struct_api_usage_without_mechanical(void)
     TEST_ASSERT_EQUAL_FLOAT(i_q_expect, out.i_q_A);
     TEST_ASSERT_EQUAL_FLOAT(torque_expect, out.torque_Nm);
     TEST_ASSERT_EQUAL_FLOAT(omega_mech_expect,out.omega_mech_1_s);
+
+    // Based on the new values, something can be calculated, e.g., a controller
+    struct uz_pmsmModel_inputs_t inputs = {
+        .u_d_V = 100.1f,
+        .u_q_V = -300.0f,
+        .omega_mech_1_s = 312.123f,
+        .load_torque=0.0f};
+    // Write new input values to the shadow registers by AXI
+    uz_pmsmModel_hw_write_u_d_Expect(BASE_ADDRESS, inputs.u_d_V);
+    uz_pmsmModel_hw_write_u_q_Expect(BASE_ADDRESS, inputs.u_q_V);
+    uz_pmsmModel_hw_write_omega_mech_Expect(BASE_ADDRESS, inputs.omega_mech_1_s);
+    uz_pmsmModel_hw_write_load_torque_Expect(BASE_ADDRESS,inputs.load_torque);
+    uz_pmsmModel_set_inputs(test_instance, inputs);
+
 }
 
 #endif // TEST

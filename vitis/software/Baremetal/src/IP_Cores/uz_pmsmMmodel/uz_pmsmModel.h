@@ -49,8 +49,8 @@ struct uz_pmsmModel_inputs_t
 {
     float u_d_V; /**< Voltage in d-axis in V */
     float u_q_V; /**< Voltage in q-axis in V */
-    float load_torque; /**< Applied load torque in Nm */
     float omega_mech_1_s; /**< Rotational speed of PMSM in 1/s */
+    float load_torque; /**< Applied load torque in Nm */
 };
 
 /**
@@ -60,6 +60,20 @@ struct uz_pmsmModel_inputs_t
  * @return uz_pmsmModel_t* Pointer to an initialized instance of the driver
  */
 uz_pmsmModel_t *uz_pmsmModel_init(struct uz_pmsmModel_config_t config);
+
+/**
+ * @brief Takes the values of the AXI shadow register and pass them to the actual input.
+ * 
+ * @param self 
+ */
+void uz_pmsmModel_trigger_input_strobe(uz_pmsmModel_t *self);
+
+/**
+ * @brief Takes the values of the shadow register and pass them to the actual AXI register.
+ * 
+ * @param self 
+ */
+void uz_pmsmModel_trigger_output_strobe(uz_pmsmModel_t *self);
 
 /**
  * @brief Set inputs of the model and write them to the PMSM model IP-Core
@@ -83,4 +97,6 @@ struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self);
  * @param self Pointer to driver instance
  */
 void uz_pmsmModel_reset(uz_pmsmModel_t *self);
+
+
 #endif // UZ_PMSMMODEL_H

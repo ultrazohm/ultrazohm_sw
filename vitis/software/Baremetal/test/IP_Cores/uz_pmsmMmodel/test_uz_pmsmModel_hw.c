@@ -129,4 +129,16 @@ void test_uz_pmsmModel_hw_write_load_torque(void){
     uz_pmsmModel_hw_write_load_torque(BASE_ADDRESS,load_torque);
 }
 
+void test_uz_pmsmModel_hw_trigger_input_strobe(void){
+    uz_axi_write_bool_Expect(BASE_ADDRESS+inputs_Strobe_uz_pmsm_model,true);
+    uz_axi_write_bool_Expect(BASE_ADDRESS+inputs_Strobe_uz_pmsm_model,false);
+    uz_pmsmModel_hw_trigger_input_strobe(BASE_ADDRESS);
+}
+
+void test_uz_pmsmModel_hw_trigger_output_strobe(void){
+    uz_axi_write_bool_Expect(BASE_ADDRESS+outputs_Strobe_uz_pmsm_model,true);
+    uz_axi_write_bool_Expect(BASE_ADDRESS+outputs_Strobe_uz_pmsm_model,false);
+    uz_pmsmModel_hw_trigger_output_strobe(BASE_ADDRESS);
+}
+
 #endif // TEST

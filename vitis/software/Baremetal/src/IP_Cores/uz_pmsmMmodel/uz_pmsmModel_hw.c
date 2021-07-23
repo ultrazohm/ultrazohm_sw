@@ -110,3 +110,15 @@ void uz_pmsmModel_hw_write_load_torque(uint32_t base_address, float load_torque)
     uz_assert_not_zero(base_address);
     uz_axi_write_float(base_address+load_torque_Data_uz_pmsm_model,load_torque);
 }
+
+void uz_pmsmModel_hw_trigger_input_strobe(uint32_t base_address){
+    uz_assert_not_zero_uint32(base_address);
+    uz_axi_write_bool(base_address+inputs_Strobe_uz_pmsm_model,true);
+    uz_axi_write_bool(base_address+inputs_Strobe_uz_pmsm_model,false);
+}
+
+void uz_pmsmModel_hw_trigger_output_strobe(uint32_t base_address){
+    uz_assert_not_zero_uint32(base_address);
+    uz_axi_write_bool(base_address+outputs_Strobe_uz_pmsm_model,true);
+    uz_axi_write_bool(base_address+outputs_Strobe_uz_pmsm_model,false);
+}

@@ -29,6 +29,7 @@ static uz_pmsmModel_t *uz_pmsmModel_allocation(void)
 // private function declarations
 static void write_config_to_pl(uz_pmsmModel_t *self);
 
+
 uz_pmsmModel_t *uz_pmsmModel_init(struct uz_pmsmModel_config_t config)
 {
     uz_assert(0U != config.base_address);
@@ -68,6 +69,7 @@ void uz_pmsmModel_reset(uz_pmsmModel_t *self)
         .u_q_V=0.0f
     };
     uz_pmsmModel_set_inputs(self, inputs);
+    uz_pmsmModel_hw_trigger_input_strobe(self->config.base_address);
     uz_pmsmModel_hw_write_reset(self->config.base_address, false);
     uz_sleep_useconds(1U);
     uz_pmsmModel_hw_write_reset(self->config.base_address, true);
@@ -79,10 +81,11 @@ void uz_pmsmModel_set_inputs(uz_pmsmModel_t *self, struct uz_pmsmModel_inputs_t 
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    //memcpy( (void *)(self->config.base_address+inputs_Data_uz_pmsm_model), &inputs,sizeof(struct uz_pmsmModel_inputs_t) );
     uz_pmsmModel_hw_write_u_d(self->config.base_address, inputs.u_d_V);
     uz_pmsmModel_hw_write_u_q(self->config.base_address, inputs.u_q_V);
-    uz_pmsmModel_hw_write_load_torque(self->config.base_address,inputs.load_torque);
     uz_pmsmModel_hw_write_omega_mech(self->config.base_address, inputs.omega_mech_1_s);
+    uz_pmsmModel_hw_write_load_torque(self->config.base_address, inputs.load_torque);
 }
 
 struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self)
@@ -94,12 +97,27 @@ struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self)
         .i_q_A = 0.0f,
         .torque_Nm = 0.0f,
         .omega_mech_1_s = 0.0f};
-    outputs.i_d_A = uz_pmsmModel_hw_read_i_d(self->config.base_address);
-    outputs.i_q_A = uz_pmsmModel_hw_read_i_q(self->config.base_address);
-    outputs.torque_Nm = uz_pmsmModel_hw_read_torque(self->config.base_address);
-    outputs.omega_mech_1_s = uz_pmsmModel_hw_read_omega_mech(self->config.base_address);
+    outputs.i_d_A =uz_pmsmModel_hw_read_i_d(self->config.base_address);
+    outputs.i_q_A =uz_pmsmModel_hw_read_i_q(self->config.base_address);
+    outputs.torque_Nm =uz_pmsmModel_hw_read_torque(self->config.base_address);
+    outputs.omega_mech_1_s =uz_pmsmModel_hw_read_omega_mech(self->config.base_address);
+//    memcpy(&outputs, (void *)(self->config.base_address+outputs_Data_uz_pmsm_model),sizeof(struct uz_pmsmModel_outputs_t) );
     return outputs;
 }
+
+void uz_pmsmModel_trigger_input_strobe(uz_pmsmModel_t *self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_pmsmModel_hw_trigger_input_strobe(self->config.base_address);
+}
+
+
+void uz_pmsmModel_trigger_output_strobe(uz_pmsmModel_t *self){
+        uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_pmsmModel_hw_trigger_output_strobe(self->config.base_address);
+}
+
 
 static void write_config_to_pl(uz_pmsmModel_t *self)
 {

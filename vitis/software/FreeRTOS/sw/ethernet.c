@@ -58,6 +58,7 @@ void process_request_thread(void *p)
 	int clientfd = (int)p;
 	int nread, nwrote;
 	int foo;
+	int upcount;
 
 	nwsend.status = 0x00;
 
@@ -84,6 +85,7 @@ void process_request_thread(void *p)
 		nwsend.val_19[foo] = 0;
 		nwsend.val_20[foo] = 0;
 		nwsend.slowDataID[foo] = 0;
+		upcount = 0;
 	}
 
 	xil_printf("tcpWorker: start clientfd = 0x%x\n", clientfd);
@@ -100,7 +102,7 @@ void process_request_thread(void *p)
 			// The maximum amount of time the task should block waiting for an item to receive should the queue be empty at the time of the call.
 			xQueueReceive(OsziData_queue,&OsziData_Shadow, OSZI_QUEUE_RECEIVE_TICKS_WAIT);
 
-			nwsend.val_01[i] 	= OsziData_Shadow.val[0];
+			/*nwsend.val_01[i] 	= OsziData_Shadow.val[0];
 			nwsend.val_02[i] 	= OsziData_Shadow.val[1];
 			nwsend.val_03[i] 	= OsziData_Shadow.val[2];
 			nwsend.val_04[i]  	= OsziData_Shadow.val[3];
@@ -119,12 +121,38 @@ void process_request_thread(void *p)
 			nwsend.val_17[i] 	= OsziData_Shadow.val[16];
 			nwsend.val_18[i] 	= OsziData_Shadow.val[17];
 			nwsend.val_19[i] 	= OsziData_Shadow.val[18];
-			nwsend.val_20[i] 	= OsziData_Shadow.val[19];
+			nwsend.val_20[i] 	= OsziData_Shadow.val[19];*/
+			nwsend.val_01[i] 	= 0 + upcount;
+			nwsend.val_02[i] 	= 100 + upcount;
+			nwsend.val_03[i] 	= 200 + upcount;
+			nwsend.val_04[i]  	= 300 + upcount;
+			nwsend.val_05[i]  	= 400 + upcount;
+			nwsend.val_06[i]  	= 500 + upcount;
+			nwsend.val_07[i] 	= 600 + upcount;
+			nwsend.val_08[i] 	= 800 + upcount;
+			nwsend.val_09[i] 	= 900 + upcount;
+			nwsend.val_10[i] 	= 1000 + upcount;
+			nwsend.val_11[i]  	= 1100 + upcount;
+			nwsend.val_12[i]  	= 1200 + upcount;
+			nwsend.val_13[i]  	= 1300 + upcount;
+			nwsend.val_14[i] 	= 1400 + upcount;
+			nwsend.val_15[i] 	= 1500 + upcount;
+			nwsend.val_16[i] 	= 1600 + upcount;
+			nwsend.val_17[i] 	= 1700 + upcount;
+			nwsend.val_18[i] 	= 1800 + upcount;
+			nwsend.val_19[i] 	= 1900 + upcount;
+			nwsend.val_20[i] 	= 2000 + upcount;
+
 			nwsend.slowDataContent[i] 	= OsziData_Shadow.slowDataContent;
 			nwsend.slowDataID[i] 		= OsziData_Shadow.slowDataID;
 		}
 
 		nwsend.status = OsziData_Shadow.status_BareToRTOS;
+
+		if(upcount > 1000)
+			upcount = 0;
+		else
+			upcount = upcount + 100;
 
 		// At this point, Ethernet Package is full and ready to be sent
 		i_LifeCheck_process_Ethernet++;

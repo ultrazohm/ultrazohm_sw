@@ -146,8 +146,8 @@ void test_uz_FOC_linear_decouppling_output(void){
 	values->i_q_Ampere = 1.0f;
 	values->i_d_Ampere = 1.0f;
 	uz_FOC_linear_decouppling(values, FOC, &ud_vor, &uq_vor);
-	TEST_ASSERT_EQUAL_FLOAT(-0.19f,roundf(ud_vor*100)/100);
-	TEST_ASSERT_EQUAL_FLOAT(6.05f,roundf(uq_vor*100)/100);
+	TEST_ASSERT_FLOAT_WITHIN(1e-02, -0.19f,ud_vor);
+	TEST_ASSERT_FLOAT_WITHIN(1e-02, 6.05f,uq_vor);
 }
 
 void test_uz_FOC_SpaceVector_Limitation_VoltageRef_NULL(void){
@@ -191,8 +191,8 @@ void test_uz_FOC_SpaceVector_Limitation_output(void){
         reference->u_d_ref_Volts = ud_in[i];
         reference->u_q_ref_Volts = uq_in[i];
         uz_FOC_SpaceVector_Limitation(reference, values);
-		TEST_ASSERT_EQUAL_FLOAT(ud_out[i],roundf(reference->u_d_ref_Volts*100)/100);
-	    TEST_ASSERT_EQUAL_FLOAT(uq_out[i],roundf(reference->u_q_ref_Volts*100)/100);
+		TEST_ASSERT_FLOAT_WITHIN(1e-02, ud_out[i], reference->u_d_ref_Volts);
+	    TEST_ASSERT_FLOAT_WITHIN(1e-02, uq_out[i], reference->u_q_ref_Volts);
     }
 }
 
@@ -215,8 +215,8 @@ void test_uz_FOC_SpaceVector_Limitation_output_transition_to_limit(void){
         reference->u_d_ref_Volts = ud_in[i];
         reference->u_q_ref_Volts = uq_in[i];
         output = uz_FOC_SpaceVector_Limitation(reference, values);
-		TEST_ASSERT_EQUAL_FLOAT(ud_out[i],roundf(reference->u_d_ref_Volts*1000)/1000);
-	    TEST_ASSERT_EQUAL_FLOAT(uq_out[i],roundf(reference->u_q_ref_Volts*100)/100);
+		TEST_ASSERT_FLOAT_WITHIN(1e-03, ud_out[i],reference->u_d_ref_Volts);
+	    TEST_ASSERT_FLOAT_WITHIN(1e-02, uq_out[i],reference->u_q_ref_Volts);
         TEST_ASSERT_EQUAL_INT(output_ref[i], output);
     }
     //values->U_zk_Volts = 24.0f;
@@ -241,8 +241,8 @@ void test_uz_FOC_SpaceVector_Limitation_output_limited(void){
         reference->u_d_ref_Volts = ud_in[i];
         reference->u_q_ref_Volts = uq_in[i];
         output = uz_FOC_SpaceVector_Limitation(reference, values);
-		TEST_ASSERT_EQUAL_FLOAT(ud_out[i],roundf(reference->u_d_ref_Volts*1000)/1000);
-	    TEST_ASSERT_EQUAL_FLOAT(uq_out[i],roundf(reference->u_q_ref_Volts*100)/100);
+		TEST_ASSERT_FLOAT_WITHIN(1e-03, ud_out[i],reference->u_d_ref_Volts);
+	    TEST_ASSERT_FLOAT_WITHIN(1e-02, uq_out[i],reference->u_q_ref_Volts);
         TEST_ASSERT_EQUAL_INT(output_ref[i], output);
     }
 }

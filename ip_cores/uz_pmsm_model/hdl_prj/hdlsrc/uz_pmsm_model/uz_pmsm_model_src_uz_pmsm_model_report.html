@@ -48,28 +48,15 @@
  <div class="page_container"><div class="content_frame">
 <h1>HDL Code Generation Check Report for 'uz_pmsm_model/uz_pmsm_model'
 <a href="matlab:open_system('uz_pmsm_model/uz_pmsm_model');">open model 'uz_pmsm_model/uz_pmsm_model'</a><BR>
-Generated on 2021-07-22 09:41:26</h1>
-<H2>HDL check for 'uz_pmsm_model' complete with 0 errors, 2 warnings, and 4 messages.</H2><BR>
+Generated on 2021-07-23 14:37:00</h1>
+<H2>HDL check for 'uz_pmsm_model' complete with 0 errors, 1 warnings, and 3 messages.</H2><BR>
 <H3>The following table describes blocks for which errors, warnings or messages were reported.</H3><BR>
 <TABLE>
 <TR><TD> <B>Simulink Blocks and resources</B> </TD><TD> <B>Level</B> </TD><TD> <B>Description</B> </TD></TR><TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcoder:engine:MultirateSolver" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108]))">uz_pmsm_model</a>
-</TD>
-<TD>Warning</TD>
-<TD>HDL optimizations that result in overclocking, such as streaming, resource sharing, or clock-rate pipelining require a fixed step, discrete solver in single-tasking mode. The fixed-step size must be set to 'auto' and the treat each discrete rate as a separate task must be set to 'off'.
-You can set these options in Simulation -> Model Configuration Parameters -> Solver -> Solver details -> Tasking and sample time options. Not setting these options may result in failure to update (Ctrl+D) the generated models (like the validation model) and inability to generate an HDL testbench.</TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
 <a alt="HDLShared:hdlshared:cpespeednotspecified" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108]))">uz_pmsm_model</a>
 </TD>
 <TD>Warning</TD>
 <TD>SynthesisToolSpeedValue not specified. Using default values, SynthesisToolSpeedValue=-1, for critical path estimation.</TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcoder:workflow:LUTMapToRAMOffMessage" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108]))">uz_pmsm_model</a>
-</TD>
-<TD>Message</TD>
-<TD><a href="matlab:configset.internal.open('uz_pmsm_model','LUTMapToRAM')">'LUTMapToRAM'</a> is set to 'On' for the model. This option is used to map lookup tables to a block RAM in hardware.  To disable pipeline insertion for mapping lookup tables to RAM, please set the option to 'Off'.</TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:hdldisp:GeneratingCPEHiliteScript" href="matlab:run('hdl_prj/hdlsrc/uz_pmsm_model/criticalPathEstimated')">hdl_prj/hdlsrc/uz_pmsm_model/criticalPathEstimated.m</a>
@@ -87,7 +74,7 @@ You can set these options in Simulation -> Model Configuration Parameters -> Sol
 <a alt="hdlcoder:hdldisp:OversampleMessage" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108]))">uz_pmsm_model</a>
 </TD>
 <TD>Message</TD>
-<TD>MESSAGE: The design requires 100 times faster clock with respect to the base rate = 1e-06.</TD>
+<TD>MESSAGE: The design requires 50 times faster clock with respect to the base rate = 5e-07.</TD>
 </TR>
 </TABLE>
 <BR><BR> </div></div></div></div>

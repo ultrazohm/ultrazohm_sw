@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>8d099cb0</spirit:value>
+            <spirit:value>27463820</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>8d099cb0</spirit:value>
+            <spirit:value>27463820</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -659,10 +659,6 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_pkg.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_tc.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -676,6 +672,10 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_abs_double.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_pkg.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -717,18 +717,13 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_pmsm_model.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_e26ac8eb</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_33f6ecb1</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_pmsm_model_reset_sync.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_pkg.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -749,6 +744,11 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_pmsm_model_src_nfp_abs_double.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_pkg.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -815,19 +815,11 @@
     <spirit:fileSet>
       <spirit:name>xilinx_productguide_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>doc/doc_arch_axi4.jpg</spirit:name>
-        <spirit:userFileType>image</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>doc/doc_arch_axi4_lite.jpg</spirit:name>
         <spirit:userFileType>image</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>doc/free_running.jpg</spirit:name>
-        <spirit:userFileType>image</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>doc/vector_strobe.jpg</spirit:name>
         <spirit:userFileType>image</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -882,14 +874,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pmsm_model</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2107220941</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-07-22T07:41:45Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2107231437</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-07-23T12:37:18Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="9c225593"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="bd5c4f1f"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="ab9ded63"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="49bb2f57"/>
     </xilinx:packagingInfo>

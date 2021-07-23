@@ -10,6 +10,9 @@ typedef struct uz_FOC {
 	struct uz_PI_Controller* Controller_n;
 }uz_FOC;
 
+uz_FOC_VoltageReference* uz_FOC_CurrentControl(uz_FOC* self, uz_FOC_ActualValues* values, uz_FOC_VoltageReference* reference);
+uz_FOC_VoltageReference* uz_FOC_SpeedControl(uz_FOC* self, uz_FOC_ActualValues* values, uz_FOC_VoltageReference* reference);
+
 static size_t instances_counter_FOC_ActualValues = 0;
 static size_t instances_counter_FOC_VoltageReference = 0;
 static size_t instances_counter_FOC = 0;
@@ -153,6 +156,17 @@ bool uz_FOC_SpaceVector_Limitation(uz_FOC_VoltageReference* reference, uz_FOC_Ac
  reference->u_q_ref_Volts = U_q_limit;
 	return (limit_on);
 }
+uz_FOC_VoltageReference* uz_FOC_sample(uz_FOC* self, uz_FOC_ActualValues* values, uz_FOC_VoltageReference* reference) {
+	if(self->config_FOC.FOC_Select == 1U){
+		reference = uz_FOC_CurrentControl(self, values, reference);
+	}else if(self->config_FOC.FOC_Select == 2U){
+		reference = uz_FOC_SpeedControl(self, values, reference);
+	}else{
+		reference->u_d_ref_Volts = 0.0f;
+		reference->u_q_ref_Volts = 0.0f;
+	}
+	return(reference);
+}
 
 uz_FOC_VoltageReference* uz_FOC_CurrentControl(uz_FOC* self, uz_FOC_ActualValues* values, uz_FOC_VoltageReference* reference) {
 	uz_assert_not_NULL(self);
@@ -187,3 +201,4 @@ uz_FOC_VoltageReference* uz_FOC_SpeedControl(uz_FOC* self, uz_FOC_ActualValues* 
 	reference = uz_FOC_CurrentControl(self, values, reference);
 	return (reference);
 }
+

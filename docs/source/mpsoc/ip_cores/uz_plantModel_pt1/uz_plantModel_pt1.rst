@@ -76,7 +76,7 @@ Vitis
       .gain=1.0f,
       .time_constant=1.0f
    };
-   pt1=uz_plantPT1_init(config);
+   uz_plantPT1_t* pt1=uz_plantPT1_init(config);
    uz_plantPT1_set_input(pt1,0.0f);
 
 - Write the input and read the output of the block in the `isr.c`
@@ -86,7 +86,7 @@ Vitis
 
    static float error_sum=0;
    float output=uz_plantPT1_read_output(pt1);
-   float error=intput-output;
+   float error=input-output;
    error_sum+=error;
    float K_p=0.3f;
    float K_i=1.3f;

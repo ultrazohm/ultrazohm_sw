@@ -154,26 +154,17 @@ bool uz_FOC_SpaceVector_Limitation(uz_FOC_VoltageReference* reference, uz_FOC_Ac
 	return (limit_on);
 }
 
-uz_FOC_VoltageReference* uz_FOC_Control(uz_FOC* self, uz_FOC_ActualValues* values, uz_FOC_VoltageReference* reference) {
+uz_FOC_VoltageReference* uz_FOC_CurrentControl(uz_FOC* self, uz_FOC_ActualValues* values, uz_FOC_VoltageReference* reference) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(values);
 	uz_assert_not_NULL(reference);
 	uz_assert(self->is_ready);
 	uz_assert(reference->is_ready);
 	uz_assert(values->is_ready);
-	float iq_ref = 0.0f;
-	float omega_ref = 0.0f;
 	float u_d_vor = 0.0f;
 	float u_q_vor = 0.0f;
 
-
-	if (self->config_FOC.FOC_Select == 2U) {
-		omega_ref = (self->config_FOC.n_ref_rpm * 2.0f * M_PI * self->config_FOC.polePairs) / 60.0f;
-		iq_ref = uz_PI_Controller_sample(self->Controller_n, omega_ref, values->omega_el_rad_per_sec, self->ext_clamping);
-		reference->u_q_ref_Volts = uz_PI_Controller_sample(self->Controller_iq, iq_ref, values->i_q_Ampere, self->ext_clamping);
-	} else {
-		reference->u_q_ref_Volts = uz_PI_Controller_sample(self->Controller_iq, self->config_FOC.iq_ref_Ampere, values->i_q_Ampere, self->ext_clamping);
-	}
+	reference->u_q_ref_Volts = uz_PI_Controller_sample(self->Controller_iq, self->config_FOC.iq_ref_Ampere, values->i_q_Ampere, self->ext_clamping);
 	reference->u_d_ref_Volts = uz_PI_Controller_sample(self->Controller_id, self->config_FOC.id_ref_Ampere, values->i_d_Ampere, self->ext_clamping);
 	uz_FOC_linear_decouppling(values, self, &u_d_vor, &u_q_vor);
 	reference->u_d_ref_Volts = reference->u_d_ref_Volts + u_d_vor;
@@ -181,4 +172,18 @@ uz_FOC_VoltageReference* uz_FOC_Control(uz_FOC* self, uz_FOC_ActualValues* value
 	self->ext_clamping = uz_FOC_SpaceVector_Limitation(reference, values);
 	return (reference);
 
+}
+
+uz_FOC_VoltageReference* uz_FOC_SpeedControl(uz_FOC* self, uz_FOC_ActualValues* values, uz_FOC_VoltageReference* reference) {
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(values);
+	uz_assert_not_NULL(reference);
+	uz_assert(self->is_ready);
+	uz_assert(reference->is_ready);
+	uz_assert(values->is_ready);
+
+	float omega_el_ref_rad_per_sec = (self->config_FOC.n_ref_rpm * 2.0f * M_PI * self->config_FOC.polePairs) / 60.0f;
+	self->config_FOC.iq_ref_Ampere = uz_PI_Controller_sample(self->Controller_n, omega_el_ref_rad_per_sec, values->omega_el_rad_per_sec, self->ext_clamping);
+	reference = uz_FOC_CurrentControl(self, values, reference);
+	return (reference);
 }

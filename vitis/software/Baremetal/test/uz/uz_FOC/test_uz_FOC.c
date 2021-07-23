@@ -124,40 +124,43 @@ void test_uz_FOC_linear_decouppling_FOC_NULL(void){
 void test_uz_FOC_linear_decouppling_values_NULL(void){
     setUp_PI_Controller_id();
     setUp_PI_Controller_iq();
-    //setUp_PI_Controller_n();
+    setUp_PI_Controller_n();
     uz_FOC* FOC = uz_FOC_init(config_FOC,config_id, config_iq, config_n);
     float u_d_vor = 0.0f;
     float u_q_vor = 0.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_linear_decouppling(NULL, FOC, &u_d_vor, &u_q_vor));
 }
 
-// void test_uz_FOC_linear_decouppling_u_d_vor_NULL(void){
-//     uz_FOC* FOC = uz_FOC_init(config_FOC,config_id, config_iq, config_n);
-//     uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
-//     float u_q_vor = 0.0f;
-//     TEST_ASSERT_FAIL_ASSERT(uz_FOC_linear_decouppling(values, FOC, NULL, &u_q_vor));
-// }
+void test_uz_FOC_linear_decouppling_u_d_vor_NULL(void){
+    uz_FOC* FOC = uz_FOC_init(config_FOC,config_id, config_iq, config_n);
+    uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
+    float u_q_vor = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_FOC_linear_decouppling(values, FOC, NULL, &u_q_vor));
+}
 
-// void test_uz_FOC_linear_decouppling_u_q_vor_NULL(void){
-//     uz_FOC* FOC = uz_FOC_init(config_FOC,config_id, config_iq, config_n);
-//     uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
-//     float u_d_vor = 0.0f;
-//     TEST_ASSERT_FAIL_ASSERT(uz_FOC_linear_decouppling(values, FOC, &u_d_vor, NULL));
-// }
+void test_uz_FOC_linear_decouppling_u_q_vor_NULL(void){
+    uz_FOC* FOC = uz_FOC_init(config_FOC,config_id, config_iq, config_n);
+    uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
+    float u_d_vor = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_FOC_linear_decouppling(values, FOC, &u_d_vor, NULL));
+}
 
-// void test_uz_FOC_linear_decouppling_output(void){
-// 	//Values for comparision from simulation
-// 	uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
-//     uz_FOC* FOC = uz_FOC_init(config_FOC,config_id, config_iq, config_n);
-// 	float ud_vor = 0.0f;
-// 	float uq_vor = 0.0f;
-// 	values->omega_el_rad_per_sec = 714.0f;
-// 	values->i_q_Ampere = 1.0f;
-// 	values->i_d_Ampere = 1.0f;
-// 	uz_FOC_linear_decouppling(values, FOC, &ud_vor, &uq_vor);
-// 	TEST_ASSERT_EQUAL_FLOAT(-0.19f,roundf(ud_vor*100)/100);
-// 	TEST_ASSERT_EQUAL_FLOAT(6.05f,roundf(uq_vor*100)/100);
-// }
+void test_uz_FOC_linear_decouppling_output(void){
+    setUp_PI_Controller_id();
+    setUp_PI_Controller_iq();
+    setUp_PI_Controller_n();
+	//Values for comparision from simulation
+	uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();
+    uz_FOC* FOC = uz_FOC_init(config_FOC,config_id, config_iq, config_n);
+	float ud_vor = 0.0f;
+	float uq_vor = 0.0f;
+	values->omega_el_rad_per_sec = 714.0f;
+	values->i_q_Ampere = 1.0f;
+	values->i_d_Ampere = 1.0f;
+	uz_FOC_linear_decouppling(values, FOC, &ud_vor, &uq_vor);
+	TEST_ASSERT_EQUAL_FLOAT(-0.19f,roundf(ud_vor*100)/100);
+	TEST_ASSERT_EQUAL_FLOAT(6.05f,roundf(uq_vor*100)/100);
+}
 
 void test_uz_FOC_SpaceVector_Limitation_VoltageRef_NULL(void){
     uz_FOC_ActualValues* values = uz_FOC_ActualValues_init();

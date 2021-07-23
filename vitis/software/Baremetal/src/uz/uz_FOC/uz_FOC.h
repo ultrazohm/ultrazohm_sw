@@ -32,17 +32,9 @@ typedef struct uz_FOC_ActualValues {
 	bool is_ready;
 	float i_d_Ampere;
 	float i_q_Ampere;
-	float u_d_Volts;
-	float u_q_Volts;
-	float i_a_Ampere;
-	float i_b_Ampere;
-	float i_c_Ampere;
 	float omega_el_rad_per_sec;
 	float theta_el_rad;
 	float U_zk_Volts;
-	float u_a_Volts;
-	float u_b_Volts;
-	float u_c_Volts;
 } uz_FOC_ActualValues;
 
 /**

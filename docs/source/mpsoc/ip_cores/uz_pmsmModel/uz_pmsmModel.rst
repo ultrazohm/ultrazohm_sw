@@ -8,7 +8,7 @@ PMSM Model
 - Simulates a PMSM on the FPGA
 - Intended for HIL/SIL/xIL on the UltraZohm
 - Time discrete transformation is done by *zero order hold* transformation
-- Sample time of the integrator is :math:`T_s=\frac{1}{1\,MHz}`
+- Sample frequency of the integrator is :math:`T_s=\frac{1}{2\,MHz}`
 - IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
 - IP-Core has single precision AXI ports
 - All calculations in the IP-Core are done in double precision!
@@ -168,7 +168,7 @@ Integration
 -----------
 
 The differential equations of the electrical and mechanical system are discretized using the explicit Euler method [ [#Sanchez_LimitsOfFloat]_, p. 3 ].
-Using this method is justified by the small integration step of the implementation (:math:`t_s=1~\mu s`) and is a commonly used approach [#Sanchez_LimitsOfFloat]_, p. 3 ].
+Using this method is justified by the small integration step of the implementation (:math:`t_s=0.5~\mu s`) and is a commonly used approach [#Sanchez_LimitsOfFloat]_, p. 3 ].
 The new value at time :math:`k+1` of the state variable is calcualted for every time step based on the *old* values (:math:`k`):
 
 .. math:: 

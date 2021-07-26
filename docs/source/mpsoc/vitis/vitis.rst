@@ -23,5 +23,6 @@ Vitis
     wavegen/wavegen
     signals/signals
     piController/piController
+    dq_transformation/dq_transformation
     global_configuration
 

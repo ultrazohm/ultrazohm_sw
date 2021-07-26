@@ -10,8 +10,10 @@ typedef struct uz_FOC {
 	struct uz_PI_Controller* Controller_n;
 }uz_FOC;
 
-uz_FOC_VoltageReference* uz_FOC_CurrentControl(uz_FOC* self, uz_FOC_ActualValues values, uz_FOC_VoltageReference* reference);
-uz_FOC_VoltageReference* uz_FOC_SpeedControl(uz_FOC* self, uz_FOC_ActualValues values, uz_FOC_VoltageReference* reference);
+static uz_FOC_VoltageReference* uz_FOC_CurrentControl(uz_FOC* self, uz_FOC_ActualValues values, uz_FOC_VoltageReference* reference);
+static uz_FOC_VoltageReference* uz_FOC_SpeedControl(uz_FOC* self, uz_FOC_ActualValues values, uz_FOC_VoltageReference* reference);
+void uz_FOC_linear_decouppling(uz_FOC_ActualValues values, uz_FOC* self, float* u_d_vor, float* u_q_vor);
+bool uz_FOC_SpaceVector_Limitation(uz_FOC_VoltageReference* reference, uz_FOC_ActualValues values);
 
 static size_t instances_counter_FOC_VoltageReference = 0;
 static size_t instances_counter_FOC = 0;
@@ -96,8 +98,8 @@ bool uz_FOC_SpaceVector_Limitation(uz_FOC_VoltageReference* reference, uz_FOC_Ac
 	uz_assert(values.is_ready);
 	uz_assert(values.U_zk_Volts > 0.0f);
 	bool limit_on = false;
-	float U_d_limit=0.0f;
-	float U_q_limit=0.0f;
+	float U_d_limit_Volts=0.0f;
+	float U_q_limit_Volts=0.0f;
 
    	float U_RZ_max =values.U_zk_Volts / sqrtf(3.0f);
 	float U_RZ_betrag = sqrtf(reference->u_d_ref_Volts * reference->u_d_ref_Volts + reference->u_q_ref_Volts * reference->u_q_ref_Volts);
@@ -106,37 +108,38 @@ bool uz_FOC_SpaceVector_Limitation(uz_FOC_VoltageReference* reference, uz_FOC_Ac
 		limit_on = true;
 		if ((uz_signals_get_sign_of_value(values.omega_el_rad_per_sec) == uz_signals_get_sign_of_value(values.i_q_Ampere))) {
 			if ((abs(reference->u_d_ref_Volts) > 0.95f * U_RZ_max)) {
-				U_d_limit = uz_signals_get_sign_of_value(reference->u_d_ref_Volts) * 0.95f * U_RZ_max;
-				U_q_limit = uz_signals_get_sign_of_value(reference->u_q_ref_Volts) * sqrtf(U_RZ_max * U_RZ_max - U_d_limit * U_d_limit);
+				U_d_limit_Volts = uz_signals_get_sign_of_value(reference->u_d_ref_Volts) * 0.95f * U_RZ_max;
+				U_q_limit_Volts = uz_signals_get_sign_of_value(reference->u_q_ref_Volts) * sqrtf( (U_RZ_max * U_RZ_max) - (U_d_limit_Volts * U_d_limit_Volts) );
 			} else {
-				U_d_limit = reference->u_d_ref_Volts;
-				U_q_limit = uz_signals_get_sign_of_value(reference->u_q_ref_Volts) * sqrtf(U_RZ_max * U_RZ_max - U_d_limit * U_d_limit);
+				U_d_limit_Volts = reference->u_d_ref_Volts;
+				U_q_limit_Volts = uz_signals_get_sign_of_value(reference->u_q_ref_Volts) * sqrtf( (U_RZ_max * U_RZ_max) - (U_d_limit_Volts * U_d_limit_Volts) );
 			}
 
 
-	       } else if ((uz_signals_get_sign_of_value(values.omega_el_rad_per_sec) != uz_signals_get_sign_of_value(values.i_q_Ampere))) {
+	    } else if ((uz_signals_get_sign_of_value(values.omega_el_rad_per_sec) != uz_signals_get_sign_of_value(values.i_q_Ampere))) {
 			if (abs(reference->u_q_ref_Volts) > 0.95f * U_RZ_max) {
-				U_q_limit = uz_signals_get_sign_of_value(reference->u_q_ref_Volts) * 0.95f * U_RZ_max;
-				U_d_limit = uz_signals_get_sign_of_value(reference->u_d_ref_Volts) * sqrtf(U_RZ_max * U_RZ_max - U_q_limit * U_q_limit);
+				U_q_limit_Volts = uz_signals_get_sign_of_value(reference->u_q_ref_Volts) * 0.95f * U_RZ_max;
+				U_d_limit_Volts = uz_signals_get_sign_of_value(reference->u_d_ref_Volts) * sqrtf( (U_RZ_max * U_RZ_max) - (U_q_limit_Volts * U_q_limit_Volts) );
 			} else {
-				U_q_limit = reference->u_q_ref_Volts;
-				U_d_limit = uz_signals_get_sign_of_value(reference->u_d_ref_Volts) * sqrtf(U_RZ_max * U_RZ_max - U_q_limit * U_q_limit);
+				U_q_limit_Volts = reference->u_q_ref_Volts;
+				U_d_limit_Volts = uz_signals_get_sign_of_value(reference->u_d_ref_Volts) * sqrtf( (U_RZ_max * U_RZ_max) - (U_q_limit_Volts * U_q_limit_Volts) );
 			}
 		} else {
-			U_d_limit = reference->u_d_ref_Volts;
-			U_q_limit = reference->u_q_ref_Volts;
+			U_d_limit_Volts = 0.0f;
+			U_q_limit_Volts = 0.0f;
 		}
 
 	} else {
-		U_d_limit = reference->u_d_ref_Volts;
-		U_q_limit = reference->u_q_ref_Volts;
+		U_d_limit_Volts = reference->u_d_ref_Volts;
+		U_q_limit_Volts = reference->u_q_ref_Volts;
 		limit_on = false;
 	}
 
- reference->u_d_ref_Volts = U_d_limit;
- reference->u_q_ref_Volts = U_q_limit;
+ 	reference->u_d_ref_Volts = U_d_limit_Volts;
+ 	reference->u_q_ref_Volts = U_q_limit_Volts;
 	return (limit_on);
 }
+
 uz_FOC_VoltageReference* uz_FOC_sample(uz_FOC* self, uz_FOC_ActualValues values, uz_FOC_VoltageReference* reference) {
 	if(self->config_FOC.FOC_Select == 1U){
 		reference = uz_FOC_CurrentControl(self, values, reference);
@@ -146,6 +149,7 @@ uz_FOC_VoltageReference* uz_FOC_sample(uz_FOC* self, uz_FOC_ActualValues values,
 		reference->u_d_ref_Volts = 0.0f;
 		reference->u_q_ref_Volts = 0.0f;
 	}
+	self->ext_clamping = uz_FOC_SpaceVector_Limitation(reference, values);
 	return(reference);
 }
 
@@ -163,7 +167,6 @@ uz_FOC_VoltageReference* uz_FOC_CurrentControl(uz_FOC* self, uz_FOC_ActualValues
 	uz_FOC_linear_decouppling(values, self, &u_d_vor, &u_q_vor);
 	reference->u_d_ref_Volts = reference->u_d_ref_Volts + u_d_vor;
 	reference->u_q_ref_Volts = reference->u_q_ref_Volts + u_q_vor;
-	self->ext_clamping = uz_FOC_SpaceVector_Limitation(reference, values);
 	return (reference);
 
 }

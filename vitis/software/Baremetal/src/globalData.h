@@ -225,24 +225,24 @@ typedef struct _errorWord_ { // 18 bits
 	uint16_t errorCodeXilinx:8;
 	_Bool mtpaTableError:1;
 	_Bool dcLinkOvervoltageOccured:1;
-	_Bool maximumShortTermCurrentReached:1;
-	_Bool maximumContinuousCurrentExceeded:1;
+	_Bool maxPeakCurrentReached:1;
+	_Bool maxContinuousCurrentReached:1;
 	_Bool communicationTimeoutOccured:1;
 	_Bool pwmFrequencyError:1;
-	_Bool rsvd1:1;
-	_Bool rsvd2:1;
+	_Bool maxPeakSpeedReached:1;
+	_Bool maxContinuousSpeedReached:1;
 	_Bool rsvd3:1;
 	_Bool rsvd4:1;
 } errorWord;
 
 typedef struct _errorReset_ { // 10 bits
 	_Bool dcLinkOvervoltageOccured:1;
-	_Bool maximumShortTermCurrentReached:1;
-	_Bool maximumContinuousCurrentExceeded:1;
+	_Bool maxPeakCurrentReached:1;
+	_Bool maxContinuousCurrentReached:1;
 	_Bool communicationTimeoutOccured:1;
 	_Bool pwmFrequencyError:1;
-	_Bool rsvd1:1;
-	_Bool rsvd2:1;
+	_Bool maxPeakSpeedReached:1;
+	_Bool maxContinuousSpeedReached:1;
 	_Bool rsvd3:1;
 	_Bool rsvd4:1;
 } errorReset;

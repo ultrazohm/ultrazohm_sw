@@ -75,8 +75,10 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		else if (msgId == 112) // reset all Errors
 		{
 			data->er.dcLinkOvervoltageOccured = true;
-			data->er.maximumContinuousCurrentExceeded = true;
-			data->er.maximumShortTermCurrentReached = true;
+			data->er.maxContinuousCurrentReached = true;
+			data->er.maxContinuousSpeedReached = true;
+			data->er.maxPeakCurrentReached = true;
+			data->er.maxPeakSpeedReached = true;
 			data->er.pwmFrequencyError = true;
 
 		}
@@ -145,8 +147,10 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			data->er.communicationTimeoutOccured = true;
 			data->er.dcLinkOvervoltageOccured = true;
-			data->er.maximumContinuousCurrentExceeded = true;
-			data->er.maximumShortTermCurrentReached = true;
+			data->er.maxContinuousCurrentReached = true;
+			data->er.maxContinuousSpeedReached = true;
+			data->er.maxPeakCurrentReached = true;
+			data->er.maxPeakSpeedReached = true;
 			data->er.pwmFrequencyError = true;
 		}
 		else if (msgId == 0x110+MOTORCONTROL_OFFSET_bits) // referenceTorque (1000 + 0x110 = 1272)

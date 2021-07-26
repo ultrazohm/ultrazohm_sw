@@ -90,17 +90,7 @@ void ISR_Control(void *data)
 	codegenInstance.input.fl_power = Global_Data.cw.enableControl;
 
 	//FOC_Strom Call generated code if no faults are present
-	if (codegenInstance.output.fault_peak_current || codegenInstance.output.fault_max_current ||codegenInstance.output.fault_peak_speed ||codegenInstance.output.fault_max_speed)
-	{
-		Global_Data.cw.enableSystem = false;
-		uz_led_set_errorLED_on();
-	}
-	else
-	{
-		uz_led_set_errorLED_off();
-		uz_codegen_step(&codegenInstance);
-	}
-
+	uz_codegen_step(&codegenInstance);
 
 	//FOC_Strom Output
 	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.a_U;
@@ -325,6 +315,7 @@ static void ReadAllADC(){
 	}
 };
 
+/* Old CheckForErrors
 static void CheckForErrors(){
 	//Error detection
 	if(Global_Data.cw.enableControl == true){
@@ -346,5 +337,36 @@ static void CheckForErrors(){
 		}
 	}
 };
+*/
 
+static void CheckForErrors(){
+	//Error detection
+	if(Global_Data.cw.enableControl == true)
+	{
+		//Detect peak current-limit ---------------------------------------------------------------------------------------
+		if (codegenInstance.output.fault_peak_current)
+		{
+			Global_Data.ew.maxPeakCurrentReached = true; //Current error detected
+			ErrorHandling(&Global_Data);
+		}
 
+		//Detect continuous current-limit ---------------------------------------------------------------------------------------
+		if (codegenInstance.output.fault_max_current)
+		{
+			Global_Data.ew.maxContinuousCurrentReached = true; //Current error detected
+			ErrorHandling(&Global_Data);
+		}
+		//Detect peak speed-limit ---------------------------------------------------------------------------------------
+		if (codegenInstance.output.fault_peak_speed)
+		{
+			Global_Data.ew.maxPeakSpeedReached = true; //Speed error detected
+			ErrorHandling(&Global_Data);
+		}
+		//Detect continuous speed-limit ---------------------------------------------------------------------------------------
+		if (codegenInstance.output.fault_max_speed)
+		{
+			Global_Data.ew.maxContinuousSpeedReached = true; //Speed error detected
+			ErrorHandling(&Global_Data);
+		}
+	}
+};

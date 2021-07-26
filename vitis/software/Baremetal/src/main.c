@@ -120,8 +120,8 @@ int main(void) {
 			Global_Data.cw.enableSystem = false;
 		}
 #endif
-		if ((Global_Data.ew.maximumContinuousCurrentExceeded == true) || (Global_Data.ew.maximumShortTermCurrentReached == true) || (Global_Data.ew.dcLinkOvervoltageOccured == true)
-		                || (Global_Data.ew.pwmFrequencyError == true)) {
+		if ((Global_Data.ew.maxContinuousCurrentReached == true) || (Global_Data.ew.maxPeakCurrentReached == true) || (Global_Data.ew.dcLinkOvervoltageOccured == true)
+		                || (Global_Data.ew.pwmFrequencyError == true) || (Global_Data.ew.maxContinuousSpeedReached == true) || (Global_Data.ew.maxPeakSpeedReached == true)) {
 			uz_led_set_errorLED_on();
 			ErrorHandling(&Global_Data);
 			ErrorReset(&Global_Data);	//If any error is active -> check if an error-reset is received
@@ -244,13 +244,21 @@ void ErrorReset(DS_Data* data) {
 		data->ew.dcLinkOvervoltageOccured = false;  	//Reset over-voltage
 		data->er.dcLinkOvervoltageOccured = false;	//Reset flag
 	}
-	if (data->er.maximumContinuousCurrentExceeded == true) {
-		data->ew.maximumContinuousCurrentExceeded = false;  //Reset Continuous Current Exceeded
-		data->er.maximumContinuousCurrentExceeded = false;	//Reset flag
+	if (data->er.maxContinuousCurrentReached == true) {
+		data->ew.maxContinuousCurrentReached = false;   //Reset Continuous Current Reached
+		data->er.maxContinuousCurrentReached = false;	//Reset flag
 	}
-	if (data->er.maximumShortTermCurrentReached == true) {
-		data->ew.maximumShortTermCurrentReached = false;  	//Reset maximum Short-Term Current Reached
-		data->er.maximumShortTermCurrentReached = false;		//Reset flag
+	if (data->er.maxPeakCurrentReached == true) {
+		data->ew.maxPeakCurrentReached = false;  	//Reset maximum Peak Current Reached
+		data->er.maxPeakCurrentReached = false;		//Reset flag
+	}
+	if (data->er.maxContinuousSpeedReached == true) {
+			data->ew.maxContinuousSpeedReached = false;   //Reset Continuous Speed Reached
+			data->er.maxContinuousSpeedReached = false;	//Reset flag
+		}
+	if (data->er.maxPeakSpeedReached == true) {
+			data->ew.maxPeakSpeedReached = false;  		//Reset maximum Peak Speed Reached
+			data->er.maxPeakSpeedReached = false;		//Reset flag
 	}
 	if (data->er.pwmFrequencyError == true) {
 		data->ew.pwmFrequencyError = false;  //Reset pwm Frequency Error
@@ -402,8 +410,10 @@ void InitializeDataStructure(DS_Data* data) {
 	data->ew.communicationTimeoutOccured = false;
 	data->ew.dcLinkOvervoltageOccured = false;
 	data->ew.errorCodeXilinx = 0;
-	data->ew.maximumContinuousCurrentExceeded = false;
-	data->ew.maximumShortTermCurrentReached = false;
+	data->ew.maxContinuousCurrentReached = false;
+	data->ew.maxContinuousSpeedReached = false;
+	data->ew.maxPeakCurrentReached = false;
+	data->ew.maxPeakSpeedReached = false;
 	data->ew.mtpaTableError = false;
 	data->ew.pwmFrequencyError = false;
 	data->rasv.currentControlAngle = 0.0;

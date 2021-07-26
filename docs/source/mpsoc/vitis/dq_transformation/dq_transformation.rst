@@ -30,7 +30,7 @@ These structs are needed to hand over the input values and get the output values
 dq-Transformation
 =================
 
-.. doxygenfunction:: uz_dq_Transformation
+.. doxygenfunction:: uz_dq_transformation
 
 This uses the Park transformation to transform a three-phase (uvw) signal to a dq0 rotating reference frame. 
 ``X`` is a placeholder and can be replaced by either ``U``, ``I`` or any other applicable unit. 
@@ -57,7 +57,7 @@ The d-Axis has to be aligned with the U-phase.
 inverse dq-Transformation
 =========================
 
-.. doxygenfunction:: uz_inverse_dq_Transformation
+.. doxygenfunction:: uz_dq_inverse_transformation
 
 This uses the inverse Park transformation to transform a dq0 rotating reference frame to a three-phase (uvw) signal. 
 ``X`` is a placeholder and can be replaced by either ``U``, ``I`` or any other applicable unit. 
@@ -84,7 +84,7 @@ The d-Axis has to be aligned with the U-phase.
 clarke-Transformation
 =====================
 
-.. doxygenfunction:: uz_clarke_Transformation
+.. doxygenfunction:: uz_clarke_transformation
 
 The clarke transformation converts the time-domain components of a three-phase system in an uvw reference frame to components in a stationary αβγ reference frame. 
 ``X`` is a placeholder and can be replaced by either ``U``, ``I`` or any other applicable unit.
@@ -110,7 +110,7 @@ The clarke transformation converts the time-domain components of a three-phase s
 inverse clarke-Transformation
 =============================
 
-.. doxygenfunction:: uz_inverse_clarke_Transformation
+.. doxygenfunction:: uz_clarke_inverse_transformation
   
 The inverse clarke transformation converts the components in a stationary αβγ reference frame to the time-domain components of a three-phase system in an uvw reference frame. 
 ``X`` is a placeholder and can be replaced by either ``U``, ``I`` or any other applicable unit.

@@ -3,8 +3,8 @@
 #include <math.h>
 
 
-struct uz_dq uz_dq_Transformation(struct uz_UVW input, float theta_el_rad){
-    struct uz_dq output ={
+struct uz_dq_t uz_dq_transformation(struct uz_UVW_t input, float theta_el_rad){
+    struct uz_dq_t output ={
         .d = 0.0f,
         .q = 0.0f,
         .zero = 0.0f
@@ -15,8 +15,8 @@ struct uz_dq uz_dq_Transformation(struct uz_UVW input, float theta_el_rad){
     return(output);
 }
 
-struct uz_UVW uz_inverse_dq_Transformation(struct uz_dq input, float theta_el_rad){
-    struct uz_UVW output = {
+struct uz_UVW_t uz_dq_inverse_transformation(struct uz_dq_t input, float theta_el_rad){
+    struct uz_UVW_t output = {
         .U = 0.0f,
         .V = 0.0f,
         .W = 0.0f
@@ -27,8 +27,8 @@ struct uz_UVW uz_inverse_dq_Transformation(struct uz_dq input, float theta_el_ra
     return(output);
 }
 
-struct uz_alphabeta uz_clarke_Transformation(struct uz_UVW input) {
-	struct uz_alphabeta output = {
+struct uz_alphabeta_t uz_clarke_transformation(struct uz_UVW_t input) {
+	struct uz_alphabeta_t output = {
         .alpha = 0.0f,
         .beta = 0.0f,
         .gamma = 0.0f
@@ -39,8 +39,8 @@ struct uz_alphabeta uz_clarke_Transformation(struct uz_UVW input) {
     return(output);
 }
 
-struct uz_UVW uz_inverse_clarke_Transformation(struct uz_alphabeta input){
-    struct uz_UVW output = {
+struct uz_UVW_t uz_clarke_inverse_transformation(struct uz_alphabeta_t input){
+    struct uz_UVW_t output = {
         .U = 0.0f,
         .V = 0.0f,
         .W = 0.0f

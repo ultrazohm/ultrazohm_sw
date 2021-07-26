@@ -1,10 +1,10 @@
-.. _Transformation:
+.. _dq_transformation:
 
-======================
-Signal-Transformations
-======================
+=================
+dq-Transformation
+=================
 
-The following signal transformations are incorporated in this module. 
+The following amplitude invariant coordinate transformations are incorporated in this module. 
 All of them are general purpose. 
 This means, that they can be used to either transform voltages, currents or any other applicable unit. 
 
@@ -18,13 +18,13 @@ Variables structs
 
 These structs are needed to hand over the input values and get the output values of the functions.
     
-.. doxygenstruct:: uz_UVW
+.. doxygenstruct:: uz_UVW_t
   :members:
 
-.. doxygenstruct:: uz_dq
+.. doxygenstruct:: uz_dq_t
   :members:
 
-.. doxygenstruct:: uz_alphabeta
+.. doxygenstruct:: uz_alphabeta_t
   :members:
 
 dq-Transformation

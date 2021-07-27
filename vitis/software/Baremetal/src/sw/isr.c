@@ -73,13 +73,21 @@ void ISR_Control(void *data)
 	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
 
 	//FOC_Strom Assign Signal-Values
-	codegenInstance.input.Act_Iu = (Global_Data.aa.A2.me.ADC_A1-2.5) * 80/2 - 0.3;		//A
-	codegenInstance.input.Act_Iv = (Global_Data.aa.A2.me.ADC_A2-2.5) * 80/2 + 0.3;		//A
-	codegenInstance.input.Act_Iw = (Global_Data.aa.A2.me.ADC_A3-2.5) * 80/2 - 0.4;		//A
-	codegenInstance.input.Act_U_ZK = Global_Data.aa.A2.me.ADC_A4 * 12.5;			//V
-	codegenInstance.input.Act_theta_el = Global_Data.av.theta_elec - 5.139955762; 	//[rad] Definition in main.c
-	codegenInstance.input.Act_n = Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
-	codegenInstance.input.Act_w_el = Global_Data.av.mechanicalRotorSpeed * Global_Data.mrp.motorPolePairNumber*M_PI/30; //[rad/s]
+	codegenInstance.input.Act_Iu = (Global_Data.aa.A2.me.ADC_A1-2.5) * 80.0F/2.0F - 0.25F;		//A
+	codegenInstance.input.Act_Iv = (Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/2.0F + 0.35F;		//A
+	codegenInstance.input.Act_Iw = (Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/2.0F - 0.43F;		//A
+	codegenInstance.input.Act_U_ZK = Global_Data.aa.A2.me.ADC_A4 * 12.5F;			//V
+	if ((Global_Data.av.mechanicalRotorSpeed >= -15.0F) &&(Global_Data.av.mechanicalRotorSpeed <= 15.0F))
+	{
+		codegenInstance.input.Act_w_el = (Global_Data.av.theta_elec + Global_Data.mrp.incrementalEncoderOffset - codegenInstance.input.Act_theta_el) / rtP.T_R;
+		codegenInstance.input.Act_n = codegenInstance.input.Act_w_el * 30.0F / (Global_Data.mrp.motorPolePairNumber*M_PI);
+	}
+	else
+	{
+		codegenInstance.input.Act_n = Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
+		codegenInstance.input.Act_w_el = codegenInstance.input.Act_n * Global_Data.mrp.motorPolePairNumber*M_PI/30.0F; //[rad/s]
+	}
+	codegenInstance.input.Act_theta_el = Global_Data.av.theta_elec + Global_Data.mrp.incrementalEncoderOffset; 	//[rad] Definition in main.c
 
 	//FOC Assign Javasope-reference-values
 	codegenInstance.input.Ref_n = Global_Data.rasv.referenceSpeed;
@@ -88,6 +96,16 @@ void ISR_Control(void *data)
 
 	//FOC Enable control with Javascope
 	codegenInstance.input.fl_power = Global_Data.cw.enableControl;
+
+	//Change control type with javascope
+	if(Global_Data.cw.ControlReference == 2U)
+	{
+		codegenInstance.input.fl_control_type = 1U;
+	}
+	else
+	{
+		codegenInstance.input.fl_control_type = 0U;
+	}
 
 	//FOC_Strom Call generated code if no faults are present
 	uz_codegen_step(&codegenInstance);
@@ -156,10 +174,15 @@ int Initialize_ISR(){
 	codegenInstance.input.fl_voltage_limitation = 0U;
 	codegenInstance.input.fl_decoupling = 0U;
 	codegenInstance.input.fl_angle_prediction = 0U;
-	codegenInstance.input.Ref_n = 0.0;
-	codegenInstance.input.Ref_Id_ext = 0.0;
-	codegenInstance.input.Ref_Iq_ext = 0.0;
+	codegenInstance.input.Ref_n = 0.0F;
+	codegenInstance.input.Ref_Id_ext = 0.0F;
+	codegenInstance.input.Ref_Iq_ext = 0.0F;
+
+	//Set CodeGen-SampleTime according to settings in main
 	rtP.T_R = Global_Data.ctrl.samplingPeriod;
+
+	//Set incremental offset
+	Global_Data.mrp.incrementalEncoderOffset = - 5.139955762F;
 
 return Status;
 }

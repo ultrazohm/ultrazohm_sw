@@ -106,6 +106,7 @@
 // status conversion config
 #define UZ_ADCLTC2311_SET_CONV_FAILED (1<<0)
 #define UZ_ADCLTC2311_SET_OFFSET_FAILED (1<<1)
+#define UZ_ADCLTC2311_SET_SAMPLES_FAILED (1<<2)
 
 // status SPI config
 #define UZ_ADCLTC2311_CLK_DIV_INVALID (1<<0)
@@ -115,30 +116,38 @@
 // status napSleepConfig
 #define UZ_ADCLTC2311_NS_MAN_MODE_EN_FAILED (1<<0)
 #define UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED (1<<1)
-#define UZ_ADCLTC2311_NS_ACTION_INTERRUPTED (1<<2)
-#define UZ_ADCLTC2311_NS_ALREADY_IN_MODE (1<<3)
-#define UZ_ADCLTC2311_NS_NOT_IN_MODE (1<<4)
-#define UZ_ADCLTC2311_NS_TIMEOUT (1<<5)
-#define UZ_ADCLTC2311_NS_NO_SELECTION (1<<6)
+#define UZ_ADCLTC2311_NS_ALREADY_IN_MODE (1<<2)
+#define UZ_ADCLTC2311_NS_NOT_IN_MODE (1<<3)
+#define UZ_ADCLTC2311_NS_TIMEOUT (1<<4)
+#define UZ_ADCLTC2311_NS_NO_SELECTION (1<<5)
 #define UZ_ADCLTC2311_NAP_PULSES 2
 #define UZ_ADCLTC2311_SLEEP_PULSES 4
 
 // typedefs
 typedef struct uz_adcLtc2311 uz_adcLtc2311;
 
-/********************************************************
- * Struct to configure the conversion unit of the IP core
- * The function uz_adcLtc2311_configureConversion(...)
- * expects an instance of this struct as configuration
+/**
+ * @brief Configuration of the IP core
  *
- * The error code variable is one hot encoded
+ * @details
+ *
+ * Struct to configure the conversion unit of the IP core
+ * The function @ref uz_adcLtc2311_configure
+ * expects an instance of this struct as configuration.
+ *
+ * It is highly recommended to initialize the struct with the function
+ * @ref uz_adcLtc2311_initConfig. After the initialization, the struct
+ * can be customized and given to the function @ref uz_adcLtc2311_configure.
+ *
+ * The error code variable is one hot encoded.
  * If the following bits are set the appropriate action
  * failed
  *
- * 0: Setting of the conversion factor failed
- * 1: Setting of the offset failed
+ * 0: Setting of the conversion factor failed <BR>
+ * 1: Setting of the offset failed <BR>
+ * 2: Setting of the number of samples failed <BR>
  *
- *******************************************************/
+ */
 typedef struct uz_adcLtc2311_config {
 	uint32_t master_select;
 	uint32_t channel_select;
@@ -168,6 +177,30 @@ typedef struct uz_adcLtc2311_config {
  * 2: The POST_DELAY value is invalid
  *
  *******************************************************/
+
+/**
+ * @brief Configuration of the SPI unit
+ *
+ * @details
+ *
+ * Struct to configure the SPI unit of the IP core
+ * The function @ref uz_adcLtc2311_configureSpi
+ * expects an instance of this struct as configuration
+ *
+ * It is highly recommended to initialize the struct with the function
+ * @ref uz_adcLtc2311_initSpiConfig. After the initialization, the struct
+ * can be customized and given to the function @ref uz_adcLtc2311_configureSpi.
+ *
+ * The error code variable is one hot encoded.
+ * If the following bits are set the appropriate action
+ * failed
+ *
+ * 0: The CLK_DIV value is invalid <BR>
+ * 1: The PRE_DELAY value is invalid <BR>
+ * 2: The POST_DELAY value is invalid <BR>
+ *
+ */
+
 typedef struct uz_adcLtc2311_spiConfig {
 	uint32_t error_code;
 	uint32_t pre_delay;
@@ -192,19 +225,18 @@ typedef struct uz_adcLtc2311_spiConfig {
  * </UL>
  * expect an instance of this struct as configuration.
  *
- * The error code variable is one hot encoded
+ * The error code variable is one hot encoded.
  * If the following bits are set the appropriate action
  * failed
  *
  * 0: Enable of the manual control mode for the SPI failed <BR>
  * 1: Disable of the manual control mode for the SPI failed <BR>
- * 2: Requested action has been interrupted <BR>
- * 3: At least one of the chosen SPI masters is already in sleep
+ * 2: At least one of the chosen SPI masters is already in sleep
  *    or nap mode <BR>
- * 4: At least one of the chosen SPI masters is not in the requested
+ * 3: At least one of the chosen SPI masters is not in the requested
  *    mode on leaving the requested mode. <BR>
- * 5: Requested action timed out <BR>
- * 6: No SPI master has been selected <BR>
+ * 4: Requested action timed out <BR>
+ * 5: No SPI master has been selected <BR>
  *
  *
  */
@@ -217,13 +249,67 @@ typedef struct uz_adcLtc2311_napSleepConfig {
 
 // function declarations
 uz_adcLtc2311* uz_adcLtc2311_init(uz_adcLtc2311* self);
+
+/**
+ * @brief Configure the IP core
+ *
+ * @param self
+ * @param configuration
+ * @return int32_t
+ */
 int32_t uz_adcLtc2311_configure(uz_adcLtc2311* self, uz_adcLtc2311_config* configuration);
+
+/**
+ * @brief Initialize the struct to configure the IP core
+ *
+ * @param configuration
+ */
 void uz_adcLtc2311_initConfig(uz_adcLtc2311_config* configuration);
+
+/**
+ * @brief Configure the SPI interface of the IP core
+ *
+ * @param self
+ * @param configuration
+ * @return int32_t
+ */
 int32_t uz_adcLtc2311_configureSpi(uz_adcLtc2311* self, uz_adcLtc2311_spiConfig* configuration);
-void uz_adcLtc2311_init_spiConfig(uz_adcLtc2311_spiConfig* configuration);
+
+/**
+ * @brief Initialize the struct to configure the IP core
+ *
+ * @param configuration
+ */
+void uz_adcLtc2311_initSpiConfig(uz_adcLtc2311_spiConfig* configuration);
+
+/**
+ * @brief Reset the IP core. This function has the same effect as applying a low pulse to the
+ * RESET_N pin of the IP core.
+ *
+ * @param self
+ */
 void uz_adcLtc2311_softwareReset(uz_adcLtc2311* self);
+
+/**
+ * @brief Trigger the selected SPI Masters
+ *
+ * @param self
+ * @param spiMasters
+ */
 void uz_adcLtc2311_softwareTrigger(uz_adcLtc2311* self, uint32_t spiMasters);
+
+/**
+ * @brief Enable the continuous sampling mode
+ *
+ * @param self
+ */
 void uz_adcLtc2311_setContinuousMode(uz_adcLtc2311* self);
+
+/**
+ * @brief Enable the triggered sampling mode
+ *
+ * @param self
+ */
 void uz_adcLtc2311_setTriggeredMode(uz_adcLtc2311* self);
 
 /**
@@ -261,6 +347,12 @@ int32_t uz_adcLtc2311_enterSleepMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleep
  * @return int32_t
  */
 int32_t uz_adcLtc2311_leaveSleepMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleepConfig* configuration);
-void uz_adcLtc2311_init_napSleepConfig(uz_adcLtc2311_napSleepConfig* configuration);
+
+/**
+ * @brief Initialize the struct to for entering and leaving the nap or sleep modes of the ADC
+ *
+ * @param configuration
+ */
+void uz_adcLtc2311_initNapSleepConfig(uz_adcLtc2311_napSleepConfig* configuration);
 
 #endif // UZ_ADCLTC2311_H

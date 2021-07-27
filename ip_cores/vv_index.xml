@@ -547,7 +547,9 @@
 		</DisplayName>
 		<Description value="Read out and process data from the LTC2311 ADC">
 		</Description>
-		<CoreRevision value="32">
+		<ProductGuide value="https://docs.ultrazohm.com/mpsoc/ip_cores/adc_LTC2311_v3.html">
+		</ProductGuide>
+		<CoreRevision value="36">
 		</CoreRevision>
 		<ComponentPath value="ADC_LTC2311_3.0/component.xml">
 		</ComponentPath>

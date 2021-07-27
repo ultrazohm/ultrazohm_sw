@@ -87,20 +87,6 @@ static int32_t uz_adcLtc2311_spiDisableManualControl(uz_adcLtc2311* self, uz_adc
 	return (return_value);
 }
 
-static int32_t uz_adcLtc2311_spiManualControlIsEnabled(uz_adcLtc2311* self) {
-	uz_assert_not_NULL(self);
-
-	int32_t return_value = UZ_SUCCESS;
-
-	if (uz_adcLtc2311_hw_read_spi_cr(self->base_address) & UZ_ADCLTC2311_SPI_CR_CONTROL_STATUS)
-		return_value = UZ_SUCCESS;
-	else
-		return_value = UZ_FAILURE;
-
-	return (return_value);
-
-}
-
 static void uz_adcLtc2311_spiSetSsN(uz_adcLtc2311* self, uint32_t spiMasters) {
 	uz_assert_not_NULL(self);
 
@@ -182,7 +168,7 @@ int32_t uz_adcLtc2311_configure(uz_adcLtc2311* self, uz_adcLtc2311_config* confi
 		uz_cr = uz_adcLtc2311_hw_read_cr(self->base_address);
 		uz_cr &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
 		uz_cr |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID;
-		uz_adcLtc2311_hw_write_conversion_value(self->base_address, configuration->offset);
+		uz_adcLtc2311_hw_write_value(self->base_address, configuration->offset);
 		uz_adcLtc2311_hw_write_cr(self->base_address, uz_cr);
 
 		while (uz_adcLtc2311_hw_read_cr(self->base_address) & UZ_ADCLTC2311_CR_CONV_VALUE_VALID) {
@@ -200,7 +186,7 @@ int32_t uz_adcLtc2311_configure(uz_adcLtc2311* self, uz_adcLtc2311_config* confi
 		uz_cr = uz_adcLtc2311_hw_read_cr(self->base_address);
 		uz_cr &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
 		uz_cr |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID | UZ_ADCLTC2311_CR_CONFIG_VALUE_0;
-		uz_adcLtc2311_hw_write_conversion_value(self->base_address, configuration->conversion_factor);
+		uz_adcLtc2311_hw_write_value(self->base_address, configuration->conversion_factor);
 		uz_adcLtc2311_hw_write_cr(self->base_address, uz_cr);
 
 		while (uz_adcLtc2311_hw_read_cr(self->base_address) & UZ_ADCLTC2311_CR_CONV_VALUE_VALID) {
@@ -218,13 +204,13 @@ int32_t uz_adcLtc2311_configure(uz_adcLtc2311* self, uz_adcLtc2311_config* confi
 		uz_cr = uz_adcLtc2311_hw_read_cr(self->base_address);
 		uz_cr &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
 		uz_cr |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID | UZ_ADCLTC2311_CR_CONFIG_VALUE_1;
-		uz_adcLtc2311_hw_write_conversion_value(self->base_address, configuration->samples);
+		uz_adcLtc2311_hw_write_value(self->base_address, configuration->samples);
 		uz_adcLtc2311_hw_write_cr(self->base_address, uz_cr);
 
 		while (uz_adcLtc2311_hw_read_cr(self->base_address) & UZ_ADCLTC2311_CR_CONV_VALUE_VALID) {
 
 			if ((configuration->try_infinite == false) && (--max_attempts <= 0)) {
-				configuration->error_code |= UZ_ADCLTC2311_SET_CONV_FAILED;
+				configuration->error_code |= UZ_ADCLTC2311_SET_SAMPLES_FAILED;
 				return_value = UZ_FAILURE;
 				break;
 			}
@@ -295,7 +281,7 @@ int32_t uz_adcLtc2311_configureSpi(uz_adcLtc2311* self, uz_adcLtc2311_spiConfig*
 	return (return_value);
 }
 
-void uz_adcLtc2311_init_spiConfig(uz_adcLtc2311_spiConfig* configuration) {
+void uz_adcLtc2311_initSpiConfig(uz_adcLtc2311_spiConfig* configuration) {
 	uz_assert_not_NULL(configuration);
 	configuration->error_code = 0;
 	configuration->clk_div = 0;
@@ -333,7 +319,7 @@ void uz_adcLtc2311_setTriggeredMode(uz_adcLtc2311* self) {
 	uz_adcLtc2311_hw_write_cr(self->base_address, uz_adcLtc2311_hw_read_cr(self->base_address) & ~UZ_ADCLTC2311_CR_MODE);
 }
 
-void uz_adcLtc2311_init_napSleepConfig(uz_adcLtc2311_napSleepConfig* configuration) {
+void uz_adcLtc2311_initNapSleepConfig(uz_adcLtc2311_napSleepConfig* configuration) {
 	uz_assert_not_NULL(configuration);
 
 	configuration->error_code = 0;

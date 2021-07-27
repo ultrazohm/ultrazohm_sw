@@ -13,8 +13,8 @@ which are located on the :ref:`analog adapter board
 from the ADCs. The IP core features an AXI4 Lite interface for
 settings and software control. For real time control, the IP core can
 be triggered by using a hardware port as well. The raw value from the
-ADC and the processed value are available as std_logic_vectors at the
-hardware interface of the IP core.
+ADC and the processed value are available as ``std_logic_vectors`` at
+the hardware interface of the IP core.
 
 Features
 --------
@@ -35,6 +35,7 @@ Features
 
 - Offset and conversion factor are configurable by software
   individually for each ADC
+- Burst transfer of a setable number of samples
 - Continuous and triggered operation modes
 - Hardware trigger interface for real time requirements and software
   trigger interface via AXI4 Lite for convenient usage in case of non
@@ -53,8 +54,31 @@ Features
   buffer needs to be placed at the output of the IP core. The core
   itself only implements the communication logic.
 
+
 Software Driver
 ---------------
+
+.. doxygenstruct:: uz_adcLtc2311_config
+   :members:
+
+.. doxygenstruct:: uz_adcLtc2311_spiConfig
+   :members:
+
+.. doxygenfunction:: uz_adcLtc2311_configure
+
+.. doxygenfunction:: uz_adcLtc2311_initConfig
+
+.. doxygenfunction:: uz_adcLtc2311_configureSpi
+
+.. doxygenfunction:: uz_adcLtc2311_initSpiConfig
+
+.. doxygenfunction:: uz_adcLtc2311_softwareReset
+
+.. doxygenfunction:: uz_adcLtc2311_softwareTrigger
+
+.. doxygenfunction:: uz_adcLtc2311_setContinuousMode
+
+.. doxygenfunction:: uz_adcLtc2311_setTriggeredMode
 
 .. doxygenstruct:: uz_adcLtc2311_napSleepConfig
    :members:
@@ -66,6 +90,9 @@ Software Driver
 .. doxygenfunction:: uz_adcLtc2311_enterSleepMode
 
 .. doxygenfunction:: uz_adcLtc2311_leaveSleepMode
+
+.. doxygenfunction:: uz_adcLtc2311_initNapSleepConfig
+
 
 Functional Description
 ----------------------
@@ -101,6 +128,17 @@ Software control register of the IP core.
   :widths: 5 10 5 10 40 40
   :header-rows: 1
 
+By setting the bits 4 to 6 the meaning of the value in the
+``ADC_VALUE`` register is determined. Bit 4 to 6 are interpreted as an
+unsigned integer.
+
+.. _table_adc_cr_2:
+.. csv-table::
+  :file: ./adc_v3/tables/adc_cr_2.csv
+  :widths: 2 2 2 10 40 20
+  :header-rows: 1
+
+
 SPI Control Register
 ********************
 
@@ -125,8 +163,8 @@ SPI Configuration Register
 
 Setting for
 
-- DCNVSCKL (a.k.a PRE_DELAY)
-- DSCKLCNVH (a.k.a POST_DELAY)
+- DCNVSCKL (a.k.a PRE_WAIT)
+- DSCKLCNVH (a.k.a POST_WAIT)
 - Number of system clock cycles per half SCLK cycle - 1 (a.k.a
   CLK_DIV)
 
@@ -150,11 +188,12 @@ Encoding: :ref:`One-Hot <adc_one_hot>`
 
 This register is used for two different functions:
 
-1. Update of the offset and conversion factor. In order to specify
-   which individual ADC channels shall be updated, the SPI master
-   channel as well as the ADC which is controlled by the selected SPI
-   master channel must be selected. The individual channel selection
-   is done in :ref:`table_adc_channel`
+1. Update of the configuration values such as offset, conversion
+   factor and number of samples per trigger. In order to specify which
+   individual ADC channels shall be updated, the SPI master as well as
+   the ADC which is controlled by the selected SPI master channel must
+   be selected. The individual channel selection is done in
+   :ref:`table_adc_channel`
 2. Channel selection for software trigger: When setting the software
    trigger bit in the :ref:`table_adc_cr` all channels selected in
    :ref:`table_adc_master_channel` are triggered by software. When
@@ -225,17 +264,17 @@ or a multiplication is ongoing.
   :widths: 7 25 3 10 30 30
   :header-rows: 1
 
-Offset and conversion
-*********************
+Configuration Value register
+****************************
 
-Encoding: signed two's complement
+Encoding: Depending on the value
 
 The value for the offset and the conversion factor is given in this
 register. The distinction between the offset and the conversion factor
 is done in :ref:`table_adc_cr`.
 
 .. _table_adc_off_conv:
-.. csv-table:: ADC_CONV_VALUE
+.. csv-table:: ADC_VALUE
   :file: ./adc_v3/tables/adc_conv_value.csv
   :widths: 10 10 5 10 30 30
   :header-rows: 1
@@ -260,6 +299,8 @@ The IP core is globally clocked with the signal ``s00_axi_aclk``. The
 global reset signal apart from the software reset is
 ``s00_axi_aresetn``. The reset is synchronous and low activ. Keep this
 signal high for normal operation.
+
+The IP core can be operated with a system clock frequency of up to 100MHz.
 
 AXI Signals
 ***********

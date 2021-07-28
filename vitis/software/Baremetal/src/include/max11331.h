@@ -147,6 +147,7 @@ typedef struct max11331 {
 } MAX11331;
 
 typedef enum SCLK_freq {f_50MHz=0x01,f_25MHz=0x02,f_16_67MHz=0x03,f_12_5MHz=0x04,f_6_25MHz=0x08} SCLK_freq;
+typedef enum adcstatus {adc_disabled,adc_init,adc_ready,adc_reading_data,adc_error} ADCstatus;
 
 typedef struct max11331_daughter_board{
 	// Slot specific parameter

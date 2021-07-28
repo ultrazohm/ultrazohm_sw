@@ -58,9 +58,16 @@ int bool_fault_V_Bot = 0;
 int bool_fault_W_Top = 0;
 int bool_fault_W_Bot = 0;
 
+//Maximum values
+float n_ref_max = 1200;
+float n_max =  1500;
+float iq_ref_max = 10;		//Limitation for set values from Java GUI
+float id_ref_max = 10;		//Limitation for set values from Java GUI
+float iabc_max = 50;		//Maximum phase current --> Error stop
 
 
-struct currents javascope_currents = {0};
+
+struct javascope_interface javascope_interface = {0};
 
 int cnt_polepair = 0;
 
@@ -92,26 +99,20 @@ void ISR_Control(void *data)
 
 	//Assign Input Data
 	//Read input values
-	codegenInstance.input.ia = (Global_Data.aa.A2.me.ADC_A1-2.5) * 80/2;		//A
-	codegenInstance.input.ib = (Global_Data.aa.A2.me.ADC_A2-2.5) * 80/2;		//A
-	codegenInstance.input.ic = (Global_Data.aa.A2.me.ADC_A3-2.5) * 80/2;		//A
-	codegenInstance.input.U_IC = Global_Data.aa.A2.me.ADC_A4 * 12.5;		//V
+	codegenInstance.input.ia = (Global_Data.aa.A2.me.ADC_A1-2.5F) * (80.0F/2.0F)-0.25F;		//A
+	codegenInstance.input.ib = (Global_Data.aa.A2.me.ADC_A2-2.5F) * (80.0F/2.0F)+0.35F;		//A
+	codegenInstance.input.ic = (Global_Data.aa.A2.me.ADC_A3-2.5F) * (80.0F/2.0F)-0.43F;		//A
+	codegenInstance.input.U_IC = Global_Data.aa.A2.me.ADC_A4 * 12.5F;		//V
 	//Not used in Simulink-Model:
-	meas_Ua_Voltage = Global_Data.aa.A2.me.ADC_B5 * 12.5;
-	meas_Ub_Voltage = Global_Data.aa.A2.me.ADC_B6 * 12.5;
-	meas_Uc_Voltage = Global_Data.aa.A2.me.ADC_B7 * 12.5;
+	meas_Ua_Voltage = Global_Data.aa.A2.me.ADC_B5 * 12.5F;
+	meas_Ub_Voltage = Global_Data.aa.A2.me.ADC_B6 * 12.5F;
+	meas_Uc_Voltage = Global_Data.aa.A2.me.ADC_B7 * 12.5F;
 
-	javascope_currents.ia = (float)codegenInstance.input.ia;
-	javascope_currents.ib = (float)codegenInstance.input.ib;
-	javascope_currents.ic = (float)codegenInstance.input.ic;
-	javascope_currents.id = (float)codegenInstance.output.id_ist;
-	javascope_currents.iq = (float)codegenInstance.output.iq_ist;
-	javascope_currents.id_soll = (float)codegenInstance.output.iq_soll;
-	javascope_currents.iq_soll = (float)codegenInstance.output.id_soll;
-	javascope_currents.ud_soll = (float)codegenInstance.output.ud;
-	javascope_currents.uq_soll = (float)codegenInstance.output.uq;
-	javascope_currents.n_ist = (float)codegenInstance.input.n_ist;
-	javascope_currents.n_soll = (float)codegenInstance.input.n_ref;
+	javascope_interface.ia = (float)codegenInstance.input.ia;
+	javascope_interface.ib = (float)codegenInstance.input.ib;
+	javascope_interface.ic = (float)codegenInstance.input.ic;
+	javascope_interface.n_ist = (float)codegenInstance.input.n_ist;
+	javascope_interface.n_soll = (float)codegenInstance.input.n_ref;
 
 
 	//Encoder
@@ -124,16 +125,43 @@ void ISR_Control(void *data)
 		codegenInstance.input.n_ist = 0.0;
 	}
 
+	//Get set values from Java GUI
+	if(Global_Data.rasv.referenceSpeed > 0.0F && Global_Data.rasv.referenceSpeed < n_ref_max){
+		codegenInstance.input.n_ref = (real32_T)Global_Data.rasv.referenceSpeed;
+	}
+	if(fabs(Global_Data.rasv.referenceCurrent_id) < id_ref_max){
+		codegenInstance.input.id_ref = (real32_T)Global_Data.rasv.referenceCurrent_id;
+	}
+	if(fabs(Global_Data.rasv.referenceCurrent_iq) < iq_ref_max){
+		codegenInstance.input.iq_ref = (real32_T)Global_Data.rasv.referenceCurrent_iq;
+	}
 
+	//Check maximum current
+	if(fabs(codegenInstance.input.ia) > iabc_max || fabs(codegenInstance.input.ib) > iabc_max || fabs(codegenInstance.input.ic) > iabc_max || fabs(codegenInstance.input.n_ist) > n_max){
+		//Disable Inverter and Controller
+		Global_Data.cw.enableSystem = FALSE;
+		Global_Data.cw.enableControl = FALSE;
+	}
+
+	//Set enable control for software
+	if(Global_Data.cw.enableControl == TRUE){
+		codegenInstance.input.START = 1U;
+		codegenInstance.input.RESET = 0U;
+	} else{
+		codegenInstance.input.START = 0U;
+		codegenInstance.input.RESET = 1U;
+	}
 
 	//Start: Control algorithm -------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)
 	{
 		// add your speed controller here
+		codegenInstance.input.flg_SpeedControl = 1U;
 	}
 	else if(Global_Data.cw.ControlReference == CurrentControl)
 	{
 		// add your current controller here
+		codegenInstance.input.flg_SpeedControl = 0U;
 	}
 	else if(Global_Data.cw.ControlReference == TorqueControl)
 	{
@@ -169,6 +197,12 @@ void ISR_Control(void *data)
 
 
 	// Update JavaScope
+	javascope_interface.id_soll = (float)codegenInstance.output.iq_soll;
+	javascope_interface.iq_soll = (float)codegenInstance.output.id_soll;
+	javascope_interface.id = (float)codegenInstance.output.id_ist;
+	javascope_interface.iq = (float)codegenInstance.output.iq_ist;
+	javascope_interface.ud_soll = (float)codegenInstance.output.ud;
+	javascope_interface.uq_soll = (float)codegenInstance.output.uq;
 	JavaScope_update(&Global_Data);
 
 	// Read the timer value at the very end of the ISR to minimize measurement error
@@ -208,12 +242,12 @@ int Initialize_ISR(){
 
 
 	//Flags
-	codegenInstance.input.flg_PreCntr = 0.0;
-	codegenInstance.input.flgLimitUdUq = 0.0;
+	codegenInstance.input.flg_PreCntr = 1.0;
+	codegenInstance.input.flgLimitUdUq = 1.0;
 	codegenInstance.input.flg_SpaceVectorModulation = TRUE;
 	codegenInstance.input.flg_deadTimeCompensation = FALSE;
-	codegenInstance.input.flg_theta_el_compensation = FALSE;
-	codegenInstance.input.flg_FieldWeakening = 0.0;
+	codegenInstance.input.flg_theta_el_compensation = TRUE;
+	codegenInstance.input.flg_FieldWeakening = 1.0;
 	codegenInstance.input.flg_SpeedControl = 1.0;
 
 	//Controller settings

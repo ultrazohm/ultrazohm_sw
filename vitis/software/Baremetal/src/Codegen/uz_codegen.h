@@ -15,7 +15,7 @@
 ******************************************************************************/
 #include "uz_codegen0_ert_rtw/uz_codegen0.h"
 
-struct currents{
+struct javascope_interface{
 	float ia;
 	float ib;
 	float ic;

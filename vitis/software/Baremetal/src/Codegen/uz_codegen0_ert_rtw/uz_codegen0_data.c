@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 2.33
+ * Model version                  : 2.98
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Wed Jul 14 10:03:41 2021
+ * C/C++ source code generated on : Wed Jul 28 15:29:21 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (8), Warnings (2), Errors (2)
+ * Validation result: Passed (10), Warnings (2), Error (0)
  */
 
 #include "uz_codegen0.h"
@@ -25,25 +25,23 @@
 const ConstB rtConstB = {
   /* Start of '<S1>/CurrentController' */
   {
-    0U,                                /* '<S27>/Compare' */
-    0U                                 /* '<S33>/Compare' */
+    0U,                                /* '<S128>/Compare' */
+    0U                                 /* '<S134>/Compare' */
   }
   /* End of '<S1>/CurrentController' */
 };
 
 /* Constant parameters (default storage) */
 const ConstP rtConstP = {
-  /* Expression: [ 1   0   1; -1/2  sqrt(3)/2   1; -1/2  -sqrt(3)/2  1 ]
-   * Referenced by: '<S24>/Gain3'
+  /* Computed Parameter: Gain3_Gain
+   * Referenced by: '<S125>/Gain3'
    */
-  { 1.0, -0.5, -0.5, 0.0, 0.8660254037844386, -0.8660254037844386, 1.0, 1.0, 1.0
-  },
+  { 1.0F, -0.5F, -0.5F, 0.0F, 0.866025388F, -0.866025388F, 1.0F, 1.0F, 1.0F },
 
-  /* Expression: [ 1   -1/2   -1/2; 0   sqrt(3)/2   -sqrt(3)/2; 1/2  1/2  1/2 ]
-   * Referenced by: '<S16>/Gain3'
+  /* Computed Parameter: Gain3_Gain_i
+   * Referenced by: '<S116>/Gain3'
    */
-  { 1.0, 0.0, 0.5, -0.5, 0.8660254037844386, 0.5, -0.5, -0.8660254037844386, 0.5
-  }
+  { 1.0F, 0.0F, 0.5F, -0.5F, 0.866025388F, 0.5F, -0.5F, -0.866025388F, 0.5F }
 };
 
 /*

@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 2.33
+ * Model version                  : 2.98
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Wed Jul 14 10:03:41 2021
+ * C/C++ source code generated on : Wed Jul 28 15:29:21 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (8), Warnings (2), Errors (2)
+ * Validation result: Passed (10), Warnings (2), Error (0)
  */
 
 #include "uz_codegen0.h"
@@ -28,21 +28,30 @@
 #define IN_Start                       ((uint8_T)3U)
 #define NumBitsPerChar                 8U
 
-static void Subsystempi2delay(uint8_T rtu_Enable, real_T rtu_dq, real_T rtu_dq_a,
-  real_T rtu_wt, real_T *rty_alpha_beta, real_T *rty_alpha_beta_d);
-static void Subsystem1(uint8_T rtu_Enable, real_T rtu_dq, real_T rtu_dq_g,
-  real_T rtu_wt, real_T *rty_alpha_beta, real_T *rty_alpha_beta_k);
+static void Subsystempi2delay(uint8_T rtu_Enable, real32_T rtu_dq, real32_T
+  rtu_dq_a, real32_T rtu_wt, real32_T *rty_alpha_beta, real32_T
+  *rty_alpha_beta_d);
+static void Subsystem1(uint8_T rtu_Enable, real32_T rtu_dq, real32_T rtu_dq_g,
+  real32_T rtu_wt, real32_T *rty_alpha_beta, real32_T *rty_alpha_beta_k);
 static void CurrentController_Init(DW_CurrentController *localDW);
 static void CurrentController_Enable(DW_CurrentController *localDW);
-static void CurrentController(RT_MODEL * const rtM, real_T rtu_ia, real_T rtu_ib,
-  real_T rtu_ic, real_T rtu_w_el, real_T rtu_flg_PreCtrl, real_T rtu_theta_el,
-  real_T rtu_U_IC, real_T rtu_id_ref, real_T rtu_iq_ref, real_T
-  rtu_flg_LimitUdUq, real_T rtu_Kp_Iq, real_T rtu_Ki_Iq, real_T rtu_Kp_Id,
-  real_T rtu_Ki_Id, real_T rtu_flg_SpaceVectorModulation, real_T rtu_flg_Reset,
-  real_T rtu_flg_theta_el_compensation, real_T rty_ua[3], real_T *rty_ub, real_T
-  *rty_uc, real_T rty_Iq_ist[2], real_T *rty_Id_ist, real_T *rty_ud_soll, real_T
-  *rty_uq_soll, const ConstB_CurrentController *localC, DW_CurrentController
-  *localDW);
+static void CurrentController(RT_MODEL * const rtM, real32_T rtu_ia, real32_T
+  rtu_ib, real32_T rtu_ic, real32_T rtu_w_el, int8_T rtu_flg_PreCtrl, real32_T
+  rtu_theta_el, real32_T rtu_U_IC, real32_T rtu_id_ref, real32_T rtu_iq_ref,
+  int8_T rtu_flg_LimitUdUq, real32_T rtu_Kp_Iq, real32_T rtu_Ki_Iq, real32_T
+  rtu_Kp_Id, real32_T rtu_Ki_Id, int8_T rtu_flg_SpaceVectorModulation, int8_T
+  rtu_flg_Reset, int8_T rtu_flg_deadTimeCompensation, int8_T
+  rtu_flg_theta_el_compensation, real32_T rty_ua[3], real32_T *rty_ub, real32_T *
+  rty_uc, real32_T rty_Iq_ist[2], real32_T *rty_Id_ist, real32_T *rty_ud_soll,
+  real32_T *rty_uq_soll, const ConstB_CurrentController *localC,
+  DW_CurrentController *localDW);
+static void SpeedController_Init(DW_SpeedController *localDW);
+static void SpeedController_Enable(DW_SpeedController *localDW);
+static void SpeedController(RT_MODEL * const rtM, real32_T rtu_id_ref, real32_T
+  rtu_iq_ref, real32_T rtu_n_ref, real32_T rtu_n_ist, int8_T
+  rtu_flg_SpeedControl, int8_T rtu_flg_FieldWeakening, real32_T rtu_Kp_Speed,
+  real32_T rtu_Ki_Speed, real32_T rtu_I_max, real32_T rtu_U_DC, int8_T rtu_RESET,
+  real32_T *rty_id_soll, real32_T *rty_iq_soll, DW_SpeedController *localDW);
 static real_T rtGetNaN(void);
 static real32_T rtGetNaNF(void);
 extern real_T rtInf;
@@ -254,72 +263,73 @@ static real32_T rtGetMinusInfF(void)
 
 /*
  * Output and update for enable system:
- *    '<S25>/Subsystem - pi//2 delay'
- *    '<S31>/Subsystem - pi//2 delay'
+ *    '<S126>/Subsystem - pi//2 delay'
+ *    '<S132>/Subsystem - pi//2 delay'
  */
-static void Subsystempi2delay(uint8_T rtu_Enable, real_T rtu_dq, real_T rtu_dq_a,
-  real_T rtu_wt, real_T *rty_alpha_beta, real_T *rty_alpha_beta_d)
+static void Subsystempi2delay(uint8_T rtu_Enable, real32_T rtu_dq, real32_T
+  rtu_dq_a, real32_T rtu_wt, real32_T *rty_alpha_beta, real32_T
+  *rty_alpha_beta_d)
 {
-  real_T tmp;
-  real_T tmp_0;
+  real32_T tmp;
+  real32_T tmp_0;
 
-  /* Outputs for Enabled SubSystem: '<S25>/Subsystem - pi//2 delay' incorporates:
-   *  EnablePort: '<S28>/Enable'
+  /* Outputs for Enabled SubSystem: '<S126>/Subsystem - pi//2 delay' incorporates:
+   *  EnablePort: '<S129>/Enable'
    */
   if (rtu_Enable > 0) {
-    /* Fcn: '<S28>/Fcn' incorporates:
-     *  Fcn: '<S28>/Fcn1'
+    /* Fcn: '<S129>/Fcn' incorporates:
+     *  Fcn: '<S129>/Fcn1'
      */
-    tmp = cos(rtu_wt);
-    tmp_0 = sin(rtu_wt);
+    tmp = cosf(rtu_wt);
+    tmp_0 = sinf(rtu_wt);
     *rty_alpha_beta = rtu_dq * tmp_0 + rtu_dq_a * tmp;
 
-    /* Fcn: '<S28>/Fcn1' */
+    /* Fcn: '<S129>/Fcn1' */
     *rty_alpha_beta_d = -rtu_dq * tmp + rtu_dq_a * tmp_0;
   }
 
-  /* End of Outputs for SubSystem: '<S25>/Subsystem - pi//2 delay' */
+  /* End of Outputs for SubSystem: '<S126>/Subsystem - pi//2 delay' */
 }
 
 /*
  * Output and update for enable system:
- *    '<S25>/Subsystem1'
- *    '<S31>/Subsystem1'
+ *    '<S126>/Subsystem1'
+ *    '<S132>/Subsystem1'
  */
-static void Subsystem1(uint8_T rtu_Enable, real_T rtu_dq, real_T rtu_dq_g,
-  real_T rtu_wt, real_T *rty_alpha_beta, real_T *rty_alpha_beta_k)
+static void Subsystem1(uint8_T rtu_Enable, real32_T rtu_dq, real32_T rtu_dq_g,
+  real32_T rtu_wt, real32_T *rty_alpha_beta, real32_T *rty_alpha_beta_k)
 {
-  real_T tmp;
-  real_T tmp_0;
+  real32_T tmp;
+  real32_T tmp_0;
 
-  /* Outputs for Enabled SubSystem: '<S25>/Subsystem1' incorporates:
-   *  EnablePort: '<S29>/Enable'
+  /* Outputs for Enabled SubSystem: '<S126>/Subsystem1' incorporates:
+   *  EnablePort: '<S130>/Enable'
    */
   if (rtu_Enable > 0) {
-    /* Fcn: '<S29>/Fcn' incorporates:
-     *  Fcn: '<S29>/Fcn1'
+    /* Fcn: '<S130>/Fcn' incorporates:
+     *  Fcn: '<S130>/Fcn1'
      */
-    tmp = sin(rtu_wt);
-    tmp_0 = cos(rtu_wt);
+    tmp = sinf(rtu_wt);
+    tmp_0 = cosf(rtu_wt);
     *rty_alpha_beta = rtu_dq * tmp_0 - rtu_dq_g * tmp;
 
-    /* Fcn: '<S29>/Fcn1' */
+    /* Fcn: '<S130>/Fcn1' */
     *rty_alpha_beta_k = rtu_dq * tmp + rtu_dq_g * tmp_0;
   }
 
-  /* End of Outputs for SubSystem: '<S25>/Subsystem1' */
+  /* End of Outputs for SubSystem: '<S126>/Subsystem1' */
 }
 
 /* System initialize for function-call system: '<S1>/CurrentController' */
 static void CurrentController_Init(DW_CurrentController *localDW)
 {
-  /* InitializeConditions for DiscreteIntegrator: '<S7>/Discrete-Time Integrator' */
-  localDW->DiscreteTimeIntegrator_PrevRese = 0;
-  localDW->DiscreteTimeIntegrator_PREV_U = 0.0;
+  /* InitializeConditions for DiscreteIntegrator: '<S43>/Integrator' */
+  localDW->Integrator_PrevResetState = 0;
+  localDW->Integrator_PREV_U = 0.0F;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S8>/Discrete-Time Integrator' */
-  localDW->DiscreteTimeIntegrator_PrevRe_j = 0;
-  localDW->DiscreteTimeIntegrator_PREV_U_j = 0.0;
+  /* InitializeConditions for DiscreteIntegrator: '<S96>/Integrator' */
+  localDW->Integrator_PrevResetState_p = 0;
+  localDW->Integrator_PREV_U_e = 0.0F;
 }
 
 /* Enable for function-call system: '<S1>/CurrentController' */
@@ -327,30 +337,38 @@ static void CurrentController_Enable(DW_CurrentController *localDW)
 {
   localDW->CurrentController_RESET_ELAPS_T = true;
 
-  /* Enable for DiscreteIntegrator: '<S7>/Discrete-Time Integrator' */
-  localDW->DiscreteTimeIntegrator_SYSTEM_E = 1U;
+  /* Enable for DiscreteIntegrator: '<S43>/Integrator' */
+  localDW->Integrator_SYSTEM_ENABLE = 1U;
 
-  /* Enable for DiscreteIntegrator: '<S8>/Discrete-Time Integrator' */
-  localDW->DiscreteTimeIntegrator_SYSTEM_c = 1U;
+  /* Enable for DiscreteIntegrator: '<S96>/Integrator' */
+  localDW->Integrator_SYSTEM_ENABLE_b = 1U;
 }
 
 /* Output and update for function-call system: '<S1>/CurrentController' */
-static void CurrentController(RT_MODEL * const rtM, real_T rtu_ia, real_T rtu_ib,
-  real_T rtu_ic, real_T rtu_w_el, real_T rtu_flg_PreCtrl, real_T rtu_theta_el,
-  real_T rtu_U_IC, real_T rtu_id_ref, real_T rtu_iq_ref, real_T
-  rtu_flg_LimitUdUq, real_T rtu_Kp_Iq, real_T rtu_Ki_Iq, real_T rtu_Kp_Id,
-  real_T rtu_Ki_Id, real_T rtu_flg_SpaceVectorModulation, real_T rtu_flg_Reset,
-  real_T rtu_flg_theta_el_compensation, real_T rty_ua[3], real_T *rty_ub, real_T
-  *rty_uc, real_T rty_Iq_ist[2], real_T *rty_Id_ist, real_T *rty_ud_soll, real_T
-  *rty_uq_soll, const ConstB_CurrentController *localC, DW_CurrentController
-  *localDW)
+static void CurrentController(RT_MODEL * const rtM, real32_T rtu_ia, real32_T
+  rtu_ib, real32_T rtu_ic, real32_T rtu_w_el, int8_T rtu_flg_PreCtrl, real32_T
+  rtu_theta_el, real32_T rtu_U_IC, real32_T rtu_id_ref, real32_T rtu_iq_ref,
+  int8_T rtu_flg_LimitUdUq, real32_T rtu_Kp_Iq, real32_T rtu_Ki_Iq, real32_T
+  rtu_Kp_Id, real32_T rtu_Ki_Id, int8_T rtu_flg_SpaceVectorModulation, int8_T
+  rtu_flg_Reset, int8_T rtu_flg_deadTimeCompensation, int8_T
+  rtu_flg_theta_el_compensation, real32_T rty_ua[3], real32_T *rty_ub, real32_T *
+  rty_uc, real32_T rty_Iq_ist[2], real32_T *rty_Id_ist, real32_T *rty_ud_soll,
+  real32_T *rty_uq_soll, const ConstB_CurrentController *localC,
+  DW_CurrentController *localDW)
 {
-  real_T DiscreteTimeIntegrator;
-  real_T rtb_Gain_c_tmp;
-  real_T rtb_Sum_c;
-  real_T rtb_Switch2_n;
   int32_T quadrant;
-  int32_T sector;
+  real32_T Integrator;
+  real32_T U_max;
+  real32_T c;
+  real32_T rtb_Gain;
+  real32_T rtb_Gain1_lc;
+  real32_T rtb_SignPreIntegrator;
+  real32_T rtb_Sum;
+  real32_T rtb_Sum_dd;
+  real32_T rtb_Switch1_h;
+  real32_T rtb_UdV;
+  real32_T rtb_error;
+  real32_T u2;
   uint32_T CurrentController_ELAPS_T;
   if (localDW->CurrentController_RESET_ELAPS_T) {
     CurrentController_ELAPS_T = 0U;
@@ -362,179 +380,122 @@ static void CurrentController(RT_MODEL * const rtM, real_T rtu_ia, real_T rtu_ib
   localDW->CurrentController_PREV_T = rtM->Timing.clockTick0;
   localDW->CurrentController_RESET_ELAPS_T = false;
   for (quadrant = 0; quadrant < 3; quadrant++) {
-    /* Gain: '<S16>/Gain1' incorporates:
-     *  Gain: '<S16>/Gain3'
-     *  SignalConversion generated from: '<S16>/Gain3'
+    /* Gain: '<S116>/Gain1' incorporates:
+     *  Gain: '<S116>/Gain3'
+     *  SignalConversion generated from: '<S116>/Gain3'
      */
-    localDW->Gain1[quadrant] = 0.66666666666666663 *
-      (rtConstP.Gain3_Gain_i[quadrant + 6] * rtu_ic +
-       (rtConstP.Gain3_Gain_i[quadrant + 3] * rtu_ib +
-        rtConstP.Gain3_Gain_i[quadrant] * rtu_ia));
+    localDW->Gain1[quadrant] = 0.666666687F * (rtConstP.Gain3_Gain_i[quadrant +
+      6] * rtu_ic + (rtConstP.Gain3_Gain_i[quadrant + 3] * rtu_ib +
+                     rtConstP.Gain3_Gain_i[quadrant] * rtu_ia));
   }
 
-  /* Gain: '<S2>/Gain' */
-  localDW->U_max_dq = 0.57735026918962584 * rtu_U_IC;
-
-  /* Outputs for Enabled SubSystem: '<S15>/Subsystem1' incorporates:
-   *  EnablePort: '<S20>/Enable'
+  /* Outputs for Enabled SubSystem: '<S115>/Subsystem1' incorporates:
+   *  EnablePort: '<S120>/Enable'
    */
-  /* Fcn: '<S20>/Fcn' incorporates:
-   *  Fcn: '<S20>/Fcn1'
+  /* Fcn: '<S120>/Fcn' incorporates:
+   *  Fcn: '<S120>/Fcn1'
    */
-  localDW->error = sin(rtu_theta_el);
-  DiscreteTimeIntegrator = cos(rtu_theta_el);
+  rtb_Sum = sinf(rtu_theta_el);
+  rtb_Sum_dd = cosf(rtu_theta_el);
 
-  /* Switch: '<S15>/Switch' incorporates:
-   *  Fcn: '<S20>/Fcn'
-   *  Fcn: '<S20>/Fcn1'
+  /* Switch: '<S115>/Switch' incorporates:
+   *  Fcn: '<S120>/Fcn'
+   *  Fcn: '<S120>/Fcn1'
    */
-  rty_Iq_ist[0] = localDW->Gain1[0] * DiscreteTimeIntegrator + localDW->Gain1[1]
-    * localDW->error;
-  rty_Iq_ist[1] = -localDW->Gain1[0] * localDW->error + localDW->Gain1[1] *
-    DiscreteTimeIntegrator;
+  rty_Iq_ist[0] = localDW->Gain1[0] * rtb_Sum_dd + localDW->Gain1[1] * rtb_Sum;
+  rty_Iq_ist[1] = -localDW->Gain1[0] * rtb_Sum + localDW->Gain1[1] * rtb_Sum_dd;
 
-  /* End of Outputs for SubSystem: '<S15>/Subsystem1' */
+  /* End of Outputs for SubSystem: '<S115>/Subsystem1' */
 
   /* Sum: '<S7>/Subtract' */
-  localDW->error = rtu_id_ref - rty_Iq_ist[0];
+  rtb_error = rtu_id_ref - rty_Iq_ist[0];
 
-  /* DiscreteIntegrator: '<S7>/Discrete-Time Integrator' */
-  if (localDW->DiscreteTimeIntegrator_SYSTEM_E != 0) {
-    /* DiscreteIntegrator: '<S7>/Discrete-Time Integrator' */
-    DiscreteTimeIntegrator = localDW->DiscreteTimeIntegrator_DSTATE;
-  } else if ((rtu_flg_Reset != 0.0) || (localDW->DiscreteTimeIntegrator_PrevRese
-              != 0)) {
-    localDW->DiscreteTimeIntegrator_DSTATE = 0.0;
+  /* DiscreteIntegrator: '<S43>/Integrator' incorporates:
+   *  DataTypeConversion: '<S2>/Data Type Conversion'
+   */
+  if (localDW->Integrator_SYSTEM_ENABLE != 0) {
+    /* DiscreteIntegrator: '<S43>/Integrator' */
+    Integrator = localDW->Integrator_DSTATE;
+  } else if ((rtu_flg_Reset != 0) || (localDW->Integrator_PrevResetState != 0))
+  {
+    localDW->Integrator_DSTATE = 0.0F;
 
-    /* DiscreteIntegrator: '<S7>/Discrete-Time Integrator' */
-    DiscreteTimeIntegrator = localDW->DiscreteTimeIntegrator_DSTATE;
+    /* DiscreteIntegrator: '<S43>/Integrator' */
+    Integrator = localDW->Integrator_DSTATE;
   } else {
-    /* DiscreteIntegrator: '<S7>/Discrete-Time Integrator' */
-    DiscreteTimeIntegrator = 5.0E-5 * (real_T)CurrentController_ELAPS_T
-      * localDW->DiscreteTimeIntegrator_PREV_U +
-      localDW->DiscreteTimeIntegrator_DSTATE;
+    /* DiscreteIntegrator: '<S43>/Integrator' */
+    Integrator = 2.5E-5F * (real32_T)CurrentController_ELAPS_T
+      * localDW->Integrator_PREV_U + localDW->Integrator_DSTATE;
   }
 
-  /* End of DiscreteIntegrator: '<S7>/Discrete-Time Integrator' */
+  /* End of DiscreteIntegrator: '<S43>/Integrator' */
 
-  /* Sum: '<S7>/Sum' incorporates:
-   *  Product: '<S7>/Product'
+  /* Sum: '<S53>/Sum' incorporates:
+   *  Product: '<S48>/PProd Out'
    */
-  localDW->Sum_l = localDW->error * rtu_Kp_Id + DiscreteTimeIntegrator;
+  rtb_Sum = rtb_error * rtu_Kp_Id + Integrator;
 
-  /* Switch: '<S11>/Switch2' incorporates:
-   *  Gain: '<S7>/Gain'
-   *  RelationalOperator: '<S11>/LowerRelop1'
-   *  RelationalOperator: '<S11>/UpperRelop'
-   *  Switch: '<S11>/Switch'
+  /* Switch: '<S51>/Switch2' incorporates:
+   *  Gain: '<S7>/Gain1'
+   *  RelationalOperator: '<S51>/LowerRelop1'
+   *  RelationalOperator: '<S51>/UpperRelop'
+   *  Switch: '<S51>/Switch'
+   *  UnitDelay: '<S4>/Unit Delay1'
    */
-  if (localDW->Sum_l > localDW->U_max_dq) {
-    localDW->Sum_l = localDW->U_max_dq;
-  } else if (localDW->Sum_l < -localDW->U_max_dq) {
-    /* Switch: '<S11>/Switch' incorporates:
-     *  Gain: '<S7>/Gain'
+  if (rtb_Sum > localDW->UnitDelay1_DSTATE) {
+    rtb_Sum = localDW->UnitDelay1_DSTATE;
+  } else if (rtb_Sum < -localDW->UnitDelay1_DSTATE) {
+    /* Switch: '<S51>/Switch' incorporates:
+     *  Gain: '<S7>/Gain1'
      */
-    localDW->Sum_l = -localDW->U_max_dq;
+    rtb_Sum = -localDW->UnitDelay1_DSTATE;
   }
 
-  /* End of Switch: '<S11>/Switch2' */
+  /* End of Switch: '<S51>/Switch2' */
 
   /* Switch: '<S6>/Switch' incorporates:
    *  Constant: '<S6>/Constant1'
    *  Gain: '<S6>/Gain1'
    *  Product: '<S6>/Product'
    */
-  if (rtu_flg_PreCtrl > 0.0) {
-    rtb_Sum_c = -1.6E-5 * rty_Iq_ist[1] * rtu_w_el;
+  if (rtu_flg_PreCtrl > 0) {
+    rtb_Switch1_h = -1.6E-5F * rty_Iq_ist[1] * rtu_w_el;
   } else {
-    rtb_Sum_c = 0.0;
+    rtb_Switch1_h = 0.0F;
   }
 
   /* End of Switch: '<S6>/Switch' */
 
   /* Sum: '<S4>/Add' */
-  localDW->Sum_l += rtb_Sum_c;
-
-  /* Gain: '<S9>/Gain' incorporates:
-   *  Gain: '<S21>/Gain'
-   *  Switch: '<S5>/Switch'
-   */
-  rtb_Gain_c_tmp = 0.5774 * rtu_U_IC;
-
-  /* Switch: '<S13>/Switch2' incorporates:
-   *  Gain: '<S9>/Gain'
-   *  Gain: '<S9>/Gain1'
-   *  RelationalOperator: '<S13>/LowerRelop1'
-   *  RelationalOperator: '<S13>/UpperRelop'
-   *  Switch: '<S13>/Switch'
-   */
-  if (localDW->Sum_l > rtb_Gain_c_tmp) {
-    rtb_Switch2_n = rtb_Gain_c_tmp;
-  } else if (localDW->Sum_l < -rtb_Gain_c_tmp) {
-    /* Switch: '<S13>/Switch' incorporates:
-     *  Gain: '<S9>/Gain1'
-     */
-    rtb_Switch2_n = -rtb_Gain_c_tmp;
-  } else {
-    rtb_Switch2_n = localDW->Sum_l;
-  }
-
-  /* End of Switch: '<S13>/Switch2' */
-
-  /* Switch: '<S9>/Switch2' */
-  if (rtu_flg_LimitUdUq > 0.0) {
-    *rty_ud_soll = rtb_Switch2_n;
-  } else {
-    *rty_ud_soll = localDW->Sum_l;
-  }
-
-  /* End of Switch: '<S9>/Switch2' */
+  rtb_UdV = rtb_Sum + rtb_Switch1_h;
 
   /* Sum: '<S8>/Subtract' */
-  localDW->Sum_l = rtu_iq_ref - rty_Iq_ist[1];
+  rtb_Sum = rtu_iq_ref - rty_Iq_ist[1];
 
-  /* DiscreteIntegrator: '<S8>/Discrete-Time Integrator' */
-  if (localDW->DiscreteTimeIntegrator_SYSTEM_c != 0) {
-    /* DiscreteIntegrator: '<S8>/Discrete-Time Integrator' */
-    localDW->Gain_j = localDW->DiscreteTimeIntegrator_DSTATE_g;
-  } else if ((rtu_flg_Reset != 0.0) || (localDW->DiscreteTimeIntegrator_PrevRe_j
-              != 0)) {
-    localDW->DiscreteTimeIntegrator_DSTATE_g = 0.0;
+  /* DiscreteIntegrator: '<S96>/Integrator' incorporates:
+   *  DataTypeConversion: '<S2>/Data Type Conversion'
+   */
+  if (localDW->Integrator_SYSTEM_ENABLE_b != 0) {
+    /* DiscreteIntegrator: '<S96>/Integrator' */
+    rtb_Gain1_lc = localDW->Integrator_DSTATE_b;
+  } else if ((rtu_flg_Reset != 0) || (localDW->Integrator_PrevResetState_p != 0))
+  {
+    localDW->Integrator_DSTATE_b = 0.0F;
 
-    /* DiscreteIntegrator: '<S8>/Discrete-Time Integrator' */
-    localDW->Gain_j = localDW->DiscreteTimeIntegrator_DSTATE_g;
+    /* DiscreteIntegrator: '<S96>/Integrator' */
+    rtb_Gain1_lc = localDW->Integrator_DSTATE_b;
   } else {
-    /* DiscreteIntegrator: '<S8>/Discrete-Time Integrator' */
-    localDW->Gain_j = 5.0E-5 * (real_T)CurrentController_ELAPS_T
-      * localDW->DiscreteTimeIntegrator_PREV_U_j +
-      localDW->DiscreteTimeIntegrator_DSTATE_g;
+    /* DiscreteIntegrator: '<S96>/Integrator' */
+    rtb_Gain1_lc = 2.5E-5F * (real32_T)CurrentController_ELAPS_T
+      * localDW->Integrator_PREV_U_e + localDW->Integrator_DSTATE_b;
   }
 
-  /* End of DiscreteIntegrator: '<S8>/Discrete-Time Integrator' */
+  /* End of DiscreteIntegrator: '<S96>/Integrator' */
 
-  /* Sum: '<S8>/Sum' incorporates:
-   *  Product: '<S8>/Product'
+  /* Sum: '<S106>/Sum' incorporates:
+   *  Product: '<S101>/PProd Out'
    */
-  rtb_Sum_c = localDW->Sum_l * rtu_Kp_Iq + localDW->Gain_j;
-
-  /* Switch: '<S12>/Switch2' incorporates:
-   *  RelationalOperator: '<S12>/LowerRelop1'
-   */
-  if (!(rtb_Sum_c > localDW->U_max_dq)) {
-    /* Gain: '<S8>/Gain' */
-    localDW->U_max_dq = -localDW->U_max_dq;
-
-    /* Switch: '<S12>/Switch' incorporates:
-     *  RelationalOperator: '<S12>/UpperRelop'
-     */
-    if (!(rtb_Sum_c < localDW->U_max_dq)) {
-      localDW->U_max_dq = rtb_Sum_c;
-    }
-
-    /* End of Switch: '<S12>/Switch' */
-  }
-
-  /* End of Switch: '<S12>/Switch2' */
+  rtb_Sum_dd = rtb_Sum * rtu_Kp_Iq + rtb_Gain1_lc;
 
   /* Switch: '<S6>/Switch1' incorporates:
    *  Constant: '<S6>/Constant'
@@ -543,118 +504,276 @@ static void CurrentController(RT_MODEL * const rtM, real_T rtu_ia, real_T rtu_ib
    *  Product: '<S6>/Product1'
    *  Sum: '<S6>/Add'
    */
-  if (rtu_flg_PreCtrl > 0.0) {
-    rtb_Sum_c = (1.6E-5 * rty_Iq_ist[0] + 0.0048) * rtu_w_el;
+  if (rtu_flg_PreCtrl > 0) {
+    rtb_Switch1_h = (1.6E-5F * rty_Iq_ist[0] + 0.0048F) * rtu_w_el;
   } else {
-    rtb_Sum_c = 0.0;
+    rtb_Switch1_h = 0.0F;
   }
 
   /* End of Switch: '<S6>/Switch1' */
 
+  /* Switch: '<S104>/Switch2' incorporates:
+   *  Gain: '<S8>/Gain1'
+   *  RelationalOperator: '<S104>/LowerRelop1'
+   *  RelationalOperator: '<S104>/UpperRelop'
+   *  Switch: '<S104>/Switch'
+   *  UnitDelay: '<S4>/Unit Delay'
+   */
+  if (rtb_Sum_dd > localDW->UnitDelay_DSTATE) {
+    rtb_SignPreIntegrator = localDW->UnitDelay_DSTATE;
+  } else if (rtb_Sum_dd < -localDW->UnitDelay_DSTATE) {
+    /* Switch: '<S104>/Switch' incorporates:
+     *  Gain: '<S8>/Gain1'
+     */
+    rtb_SignPreIntegrator = -localDW->UnitDelay_DSTATE;
+  } else {
+    rtb_SignPreIntegrator = rtb_Sum_dd;
+  }
+
+  /* End of Switch: '<S104>/Switch2' */
+
   /* Sum: '<S4>/Add1' */
-  localDW->U_max_dq += rtb_Sum_c;
+  rtb_SignPreIntegrator += rtb_Switch1_h;
 
-  /* Switch: '<S9>/Switch3' */
-  if (rtu_flg_LimitUdUq > 0.0) {
-    /* Sqrt: '<S9>/Sqrt' incorporates:
-     *  Gain: '<S9>/Gain'
-     *  Math: '<S9>/Square'
-     *  Math: '<S9>/Square1'
-     *  Sum: '<S9>/Add'
-     */
-    localDW->Gain_c = sqrt(rtb_Gain_c_tmp * rtb_Gain_c_tmp - rtb_Switch2_n *
-      rtb_Switch2_n);
+  /* Gain: '<S9>/Gain' */
+  rtb_Gain = 0.577350259F * rtu_U_IC;
 
-    /* Switch: '<S14>/Switch2' incorporates:
-     *  Gain: '<S9>/Gain2'
-     *  RelationalOperator: '<S14>/LowerRelop1'
-     *  RelationalOperator: '<S14>/UpperRelop'
-     *  Switch: '<S14>/Switch'
-     */
-    if (localDW->U_max_dq > localDW->Gain_c) {
-      *rty_uq_soll = localDW->Gain_c;
-    } else if (localDW->U_max_dq < -localDW->Gain_c) {
-      /* Switch: '<S14>/Switch' incorporates:
-       *  Gain: '<S9>/Gain2'
-       */
-      *rty_uq_soll = -localDW->Gain_c;
+  /* MATLAB Function: '<S9>/MATLAB Function' */
+  /* Voltage Limitation Quang S.183 */
+  /* MATLAB Function 'uz_codegen/CurrentController/Current Controller/Spannungsbegrenzung/MATLAB Function': '<S114>:1' */
+  /* '<S114>:1:5' if flg_limitUdUq == 1 */
+  if (rtu_flg_LimitUdUq == 1) {
+    /* '<S114>:1:6' if 0.95 * U_max_dq > sqrt(ud_soll^2 + uq_soll^2) */
+    if (0.95F * rtb_Gain > sqrtf(rtb_UdV * rtb_UdV + rtb_SignPreIntegrator *
+         rtb_SignPreIntegrator)) {
+      /* Update for UnitDelay: '<S4>/Unit Delay1' */
+      /* Limitation is not necessary */
+      /* '<S114>:1:8' ud_ref = ud_soll; */
+      /* '<S114>:1:9' uq_ref = uq_soll; */
+      /* '<S114>:1:10' ud_lim = single(0.95) * U_max_dq; */
+      localDW->UnitDelay1_DSTATE = 0.95F * rtb_Gain;
+
+      /* '<S114>:1:11' uq_lim = single(0.95) * U_max_dq; */
+      rtb_Switch1_h = 0.95F * rtb_Gain;
     } else {
-      *rty_uq_soll = localDW->U_max_dq;
+      /* '<S114>:1:12' else */
+      /* '<S114>:1:13' if sign(w_el) ~= sign(iq_soll) */
+      if (rtu_w_el < 0.0F) {
+        rtb_Switch1_h = -1.0F;
+      } else if (rtu_w_el > 0.0F) {
+        rtb_Switch1_h = 1.0F;
+      } else if (rtu_w_el == 0.0F) {
+        rtb_Switch1_h = 0.0F;
+      } else {
+        rtb_Switch1_h = (rtNaNF);
+      }
+
+      if (rtu_iq_ref < 0.0F) {
+        localDW->a_W_on = -1.0F;
+      } else if (rtu_iq_ref > 0.0F) {
+        localDW->a_W_on = 1.0F;
+      } else if (rtu_iq_ref == 0.0F) {
+        localDW->a_W_on = 0.0F;
+      } else {
+        localDW->a_W_on = (rtNaNF);
+      }
+
+      if (rtb_Switch1_h != localDW->a_W_on) {
+        /* Breaking  */
+        /* '<S114>:1:15' if abs(uq_soll) > 0.95 * U_max_dq */
+        if (fabsf(rtb_SignPreIntegrator) > 0.95F * rtb_Gain) {
+          /* '<S114>:1:16' uq_ref = sign(uq_soll)*0.95*U_max_dq; */
+          if (rtb_SignPreIntegrator < 0.0F) {
+            rtb_SignPreIntegrator = -1.0F;
+          } else if (rtb_SignPreIntegrator > 0.0F) {
+            rtb_SignPreIntegrator = 1.0F;
+          } else if (rtb_SignPreIntegrator == 0.0F) {
+            rtb_SignPreIntegrator = 0.0F;
+          } else {
+            rtb_SignPreIntegrator = (rtNaNF);
+          }
+
+          rtb_SignPreIntegrator = rtb_SignPreIntegrator * 0.95F * rtb_Gain;
+
+          /* '<S114>:1:17' ud_ref = sign(ud_soll)*sqrt(U_max_dq^2 - uq_ref^2); */
+          if (rtb_UdV < 0.0F) {
+            rtb_UdV = -1.0F;
+          } else if (rtb_UdV > 0.0F) {
+            rtb_UdV = 1.0F;
+          } else if (rtb_UdV == 0.0F) {
+            rtb_UdV = 0.0F;
+          } else {
+            rtb_UdV = (rtNaNF);
+          }
+
+          rtb_UdV *= sqrtf(rtb_Gain * rtb_Gain - rtb_SignPreIntegrator *
+                           rtb_SignPreIntegrator);
+        } else {
+          /* '<S114>:1:18' else */
+          /* '<S114>:1:19' uq_ref = uq_soll; */
+          /* '<S114>:1:20' ud_ref = sign(ud_soll) * sqrt(U_max_dq^2 - uq_ref^2); */
+          if (rtb_UdV < 0.0F) {
+            rtb_UdV = -1.0F;
+          } else if (rtb_UdV > 0.0F) {
+            rtb_UdV = 1.0F;
+          } else if (rtb_UdV == 0.0F) {
+            rtb_UdV = 0.0F;
+          } else {
+            rtb_UdV = (rtNaNF);
+          }
+
+          rtb_UdV *= sqrtf(rtb_Gain * rtb_Gain - rtb_SignPreIntegrator *
+                           rtb_SignPreIntegrator);
+        }
+
+        /* '<S114>:1:22' uq_lim = single(0.95)*U_max_dq; */
+        rtb_Switch1_h = 0.95F * rtb_Gain;
+
+        /* Update for UnitDelay: '<S4>/Unit Delay1' */
+        /* '<S114>:1:23' ud_lim = single(sqrt(U_max_dq^2 - uq_ref^2)); */
+        localDW->UnitDelay1_DSTATE = sqrtf(rtb_Gain * rtb_Gain -
+          rtb_SignPreIntegrator * rtb_SignPreIntegrator);
+      } else {
+        /* '<S114>:1:24' else */
+        /* Acceleration */
+        /* '<S114>:1:26' if abs(ud_soll) > 0.95 * U_max_dq */
+        if (fabsf(rtb_UdV) > 0.95F * rtb_Gain) {
+          /* '<S114>:1:27' ud_ref = sign(ud_soll) * 0.95*U_max_dq; */
+          if (rtb_UdV < 0.0F) {
+            rtb_UdV = -1.0F;
+          } else if (rtb_UdV > 0.0F) {
+            rtb_UdV = 1.0F;
+          } else if (rtb_UdV == 0.0F) {
+            rtb_UdV = 0.0F;
+          } else {
+            rtb_UdV = (rtNaNF);
+          }
+
+          rtb_UdV = rtb_UdV * 0.95F * rtb_Gain;
+
+          /* '<S114>:1:28' uq_ref = sign(uq_soll) * sqrt(U_max_dq^2 - ud_ref^2); */
+          if (rtb_SignPreIntegrator < 0.0F) {
+            rtb_SignPreIntegrator = -1.0F;
+          } else if (rtb_SignPreIntegrator > 0.0F) {
+            rtb_SignPreIntegrator = 1.0F;
+          } else if (rtb_SignPreIntegrator == 0.0F) {
+            rtb_SignPreIntegrator = 0.0F;
+          } else {
+            rtb_SignPreIntegrator = (rtNaNF);
+          }
+
+          rtb_SignPreIntegrator *= sqrtf(rtb_Gain * rtb_Gain - rtb_UdV * rtb_UdV);
+        } else {
+          /* '<S114>:1:29' else */
+          /* '<S114>:1:30' ud_ref = ud_soll; */
+          /* '<S114>:1:31' uq_ref = sign(uq_soll) * sqrt(U_max_dq^2 - ud_ref^2); */
+          if (rtb_SignPreIntegrator < 0.0F) {
+            rtb_SignPreIntegrator = -1.0F;
+          } else if (rtb_SignPreIntegrator > 0.0F) {
+            rtb_SignPreIntegrator = 1.0F;
+          } else if (rtb_SignPreIntegrator == 0.0F) {
+            rtb_SignPreIntegrator = 0.0F;
+          } else {
+            rtb_SignPreIntegrator = (rtNaNF);
+          }
+
+          rtb_SignPreIntegrator *= sqrtf(rtb_Gain * rtb_Gain - rtb_UdV * rtb_UdV);
+        }
+
+        /* '<S114>:1:33' uq_lim = single(sqrt(U_max_dq^2 - ud_ref^2)); */
+        rtb_Switch1_h = sqrtf(rtb_Gain * rtb_Gain - rtb_UdV * rtb_UdV);
+
+        /* Update for UnitDelay: '<S4>/Unit Delay1' */
+        /* '<S114>:1:34' ud_lim = single(0.95)*U_max_dq; */
+        localDW->UnitDelay1_DSTATE = 0.95F * rtb_Gain;
+      }
     }
-
-    /* End of Switch: '<S14>/Switch2' */
   } else {
-    *rty_uq_soll = localDW->U_max_dq;
+    /* '<S114>:1:37' else */
+    /* '<S114>:1:38' ud_ref = ud_soll; */
+    /* '<S114>:1:39' uq_ref = uq_soll; */
+    /* '<S114>:1:40' uq_lim = single(U_max_dq); */
+    rtb_Switch1_h = rtb_Gain;
+
+    /* Update for UnitDelay: '<S4>/Unit Delay1' */
+    /* '<S114>:1:41' ud_lim = single(U_max_dq); */
+    localDW->UnitDelay1_DSTATE = rtb_Gain;
   }
 
-  /* End of Switch: '<S9>/Switch3' */
+  /* '<S114>:1:44' ud = ud_ref; */
+  *rty_ud_soll = rtb_UdV;
 
-  /* Switch: '<S21>/Switch' incorporates:
-   *  Constant: '<S21>/Constant2'
-   *  Gain: '<S21>/Gain2'
+  /* '<S114>:1:45' uq = uq_ref; */
+  *rty_uq_soll = rtb_SignPreIntegrator;
+
+  /* End of MATLAB Function: '<S9>/MATLAB Function' */
+
+  /* Switch: '<S121>/Switch' incorporates:
+   *  Constant: '<S121>/Constant2'
+   *  Gain: '<S121>/Gain2'
    */
-  if (rtu_flg_theta_el_compensation > 0.0) {
-    localDW->U_max_dq = 0.00015000000000000001 * rtu_w_el;
+  if (rtu_flg_theta_el_compensation > 0) {
+    rtb_SignPreIntegrator = 5.0E-5F * rtu_w_el;
   } else {
-    localDW->U_max_dq = 0.0;
+    rtb_SignPreIntegrator = 0.0F;
   }
 
-  /* End of Switch: '<S21>/Switch' */
+  /* End of Switch: '<S121>/Switch' */
 
-  /* Sum: '<S21>/Sum1' */
-  localDW->U_max_dq += rtu_theta_el;
+  /* Sum: '<S121>/Sum1' */
+  rtb_SignPreIntegrator += rtu_theta_el;
 
-  /* Outputs for Enabled SubSystem: '<S25>/Subsystem1' */
-  Subsystem1(1, *rty_ud_soll, *rty_uq_soll, localDW->U_max_dq, &localDW->Fcn_d,
-             &localDW->Fcn1_o);
+  /* Outputs for Enabled SubSystem: '<S126>/Subsystem1' */
+  Subsystem1(1, *rty_ud_soll, *rty_uq_soll, rtb_SignPreIntegrator,
+             &localDW->Fcn_d, &localDW->Fcn1_o);
 
-  /* End of Outputs for SubSystem: '<S25>/Subsystem1' */
+  /* End of Outputs for SubSystem: '<S126>/Subsystem1' */
 
-  /* Outputs for Enabled SubSystem: '<S25>/Subsystem - pi//2 delay' */
+  /* Outputs for Enabled SubSystem: '<S126>/Subsystem - pi//2 delay' */
   Subsystempi2delay(localC->Compare_g, *rty_ud_soll, *rty_uq_soll,
-                    localDW->U_max_dq, &localDW->Fcn_g, &localDW->Fcn1_p);
+                    rtb_SignPreIntegrator, &localDW->Fcn_g, &localDW->Fcn1_p);
 
-  /* End of Outputs for SubSystem: '<S25>/Subsystem - pi//2 delay' */
+  /* End of Outputs for SubSystem: '<S126>/Subsystem - pi//2 delay' */
 
-  /* Switch: '<S22>/Switch' incorporates:
-   *  Constant: '<S22>/Constant2'
-   *  Gain: '<S22>/Gain2'
+  /* Switch: '<S122>/Switch' incorporates:
+   *  Constant: '<S122>/Constant2'
+   *  Gain: '<S122>/Gain2'
    */
-  if (rtu_flg_theta_el_compensation > 0.0) {
-    localDW->U_max_dq = 0.00015000000000000001 * rtu_w_el;
+  if (rtu_flg_theta_el_compensation > 0) {
+    rtb_SignPreIntegrator = 5.0E-5F * rtu_w_el;
   } else {
-    localDW->U_max_dq = 0.0;
+    rtb_SignPreIntegrator = 0.0F;
   }
 
-  /* End of Switch: '<S22>/Switch' */
+  /* End of Switch: '<S122>/Switch' */
 
-  /* Sum: '<S22>/Sum' */
-  localDW->U_max_dq += rtu_theta_el;
+  /* Sum: '<S122>/Sum' */
+  rtb_SignPreIntegrator += rtu_theta_el;
 
-  /* Outputs for Enabled SubSystem: '<S31>/Subsystem1' */
-  Subsystem1(1, *rty_ud_soll, *rty_uq_soll, localDW->U_max_dq, &localDW->Fcn,
+  /* Outputs for Enabled SubSystem: '<S132>/Subsystem1' */
+  Subsystem1(1, *rty_ud_soll, *rty_uq_soll, rtb_SignPreIntegrator, &localDW->Fcn,
              &localDW->Fcn1);
 
-  /* End of Outputs for SubSystem: '<S31>/Subsystem1' */
+  /* End of Outputs for SubSystem: '<S132>/Subsystem1' */
 
-  /* Outputs for Enabled SubSystem: '<S31>/Subsystem - pi//2 delay' */
+  /* Outputs for Enabled SubSystem: '<S132>/Subsystem - pi//2 delay' */
   Subsystempi2delay(localC->Compare_fz, *rty_ud_soll, *rty_uq_soll,
-                    localDW->U_max_dq, &localDW->Fcn_b, &localDW->Fcn1_h);
+                    rtb_SignPreIntegrator, &localDW->Fcn_b, &localDW->Fcn1_h);
 
-  /* End of Outputs for SubSystem: '<S31>/Subsystem - pi//2 delay' */
+  /* End of Outputs for SubSystem: '<S132>/Subsystem - pi//2 delay' */
 
-  /* MATLAB Function: '<S22>/SpaceVectorModulation' incorporates:
-   *  Switch: '<S31>/Switch'
+  /* MATLAB Function: '<S122>/SpaceVectorModulation' incorporates:
+   *  Switch: '<S132>/Switch'
    */
-  /* MATLAB Function 'uz_codegen/CurrentController/Modulation/SpaceVectorModulation/SpaceVectorModulation': '<S30>:1' */
-  /* '<S30>:1:3' a_U_on=0; */
-  localDW->U_max_dq = 0.0;
+  /* MATLAB Function 'uz_codegen/CurrentController/Modulation/SpaceVectorModulation/SpaceVectorModulation': '<S131>:1' */
+  /* '<S131>:1:3' a_U_on=single(0); */
+  rtb_SignPreIntegrator = 0.0F;
 
-  /* '<S30>:1:4' a_V_on=0; */
-  localDW->Gain_c = 0.0;
+  /* '<S131>:1:4' a_V_on=single(0); */
+  rtb_UdV = 0.0F;
 
-  /* '<S30>:1:5' a_W_on=0; */
-  localDW->a_W_on = 0.0;
+  /* '<S131>:1:5' a_W_on=single(0); */
+  localDW->a_W_on = 0.0F;
 
   /* __%%__%%__%%__%%__%%__%%__%%__%%__%%__%%__%%__%%__%%__%%__%%__%%__%%__%%_ */
   /* Tr‰gerbasierte Raumzeigermodulation%% */
@@ -669,286 +788,450 @@ static void CurrentController(RT_MODEL * const rtM, real_T rtu_ia, real_T rtu_ib
   /* CMP_W        -- Vergleichswert W */
   /* sector       -- Ausgabe des Sektors des Spannungszeigers */
   /* Berechnung von a, b, c nach Quang Dittrich S24 */
-  /* '<S30>:1:23' a = abs(u_alpha) + 0.5774*abs(u_beta); */
-  rtb_Switch2_n = fabs(localDW->Fcn);
-  localDW->c = fabs(localDW->Fcn1);
-  localDW->Switch1_c = 0.5774 * localDW->c + rtb_Switch2_n;
+  /* '<S131>:1:23' a = single(abs(u_alpha) + 0.5774*abs(u_beta)); */
+  rtb_Gain = fabsf(localDW->Fcn);
+  c = fabsf(localDW->Fcn1);
+  localDW->a = 0.5774F * c + rtb_Gain;
 
-  /* '<S30>:1:24' b = abs(u_alpha) - 0.5774*abs(u_beta); */
-  rtb_Sum_c = rtb_Switch2_n - 0.5774 * fabs(localDW->Fcn1);
+  /* '<S131>:1:24' b = single(abs(u_alpha) - 0.5774*abs(u_beta)); */
+  localDW->b = rtb_Gain - 0.5774F * fabsf(localDW->Fcn1);
 
-  /* '<S30>:1:25' c = 1.1547*abs(u_beta); */
-  localDW->c *= 1.1547;
+  /* '<S131>:1:25' c = single(1.1547*abs(u_beta)); */
+  c *= 1.1547F;
 
-  /* '<S30>:1:27' U_max = 0.6667 * U_ZK; */
-  localDW->U_max = 0.6667 * rtu_U_IC;
+  /* '<S131>:1:27' U_max = single(0.6667) * U_ZK; */
+  U_max = 0.6667F * rtu_U_IC;
 
   /* Maximum Voltage U_ZL/sqrt(3) */
   /* Sektor und Quadranten nach Quang Dittrich S32 */
-  /* '<S30>:1:31' if(u_beta < 0) */
-  if (localDW->Fcn1 < 0.0) {
-    /* '<S30>:1:32' if (u_alpha <0) */
-    if (localDW->Fcn < 0.0) {
-      /* '<S30>:1:33' quadrant=3; */
+  /* '<S131>:1:31' if(u_beta < 0) */
+  if (localDW->Fcn1 < 0.0F) {
+    /* '<S131>:1:32' if (u_alpha <0) */
+    if (localDW->Fcn < 0.0F) {
+      /* '<S131>:1:33' quadrant=single(3); */
       quadrant = 3;
 
-      /* '<S30>:1:34' if(b < 0) */
-      if (rtb_Sum_c < 0.0) {
-        /* '<S30>:1:35' sector = 5; */
-        sector = 5;
+      /* '<S131>:1:34' if(b < 0) */
+      if (localDW->b < 0.0F) {
+        /* '<S131>:1:35' sector = single(5); */
+        localDW->sector = 5;
       } else {
-        /* '<S30>:1:36' else */
-        /* '<S30>:1:37' sector = 4; */
-        sector = 4;
+        /* '<S131>:1:36' else */
+        /* '<S131>:1:37' sector = single(4); */
+        localDW->sector = 4;
       }
     } else {
-      /* '<S30>:1:39' else */
-      /* '<S30>:1:40' quadrant=4; */
+      /* '<S131>:1:39' else */
+      /* '<S131>:1:40' quadrant=single(4); */
       quadrant = 4;
 
-      /* '<S30>:1:41' if(b < 0) */
-      if (rtb_Sum_c < 0.0) {
-        /* '<S30>:1:42' sector = 5; */
-        sector = 5;
+      /* '<S131>:1:41' if(b < 0) */
+      if (localDW->b < 0.0F) {
+        /* '<S131>:1:42' sector = single(5); */
+        localDW->sector = 5;
       } else {
-        /* '<S30>:1:43' else */
-        /* '<S30>:1:44' sector = 6; */
-        sector = 6;
+        /* '<S131>:1:43' else */
+        /* '<S131>:1:44' sector = single(6); */
+        localDW->sector = 6;
       }
     }
 
-    /* '<S30>:1:48' else */
-    /* '<S30>:1:49' if (u_alpha <0) */
-  } else if (localDW->Fcn < 0.0) {
-    /* '<S30>:1:50' quadrant=2; */
+    /* '<S131>:1:48' else */
+    /* '<S131>:1:49' if (u_alpha <0) */
+  } else if (localDW->Fcn < 0.0F) {
+    /* '<S131>:1:50' quadrant=single(2); */
     quadrant = 2;
 
-    /* '<S30>:1:51' if(b < 0) */
-    if (rtb_Sum_c < 0.0) {
-      /* '<S30>:1:52' sector = 2; */
-      sector = 2;
+    /* '<S131>:1:51' if(b < 0) */
+    if (localDW->b < 0.0F) {
+      /* '<S131>:1:52' sector = single(2); */
+      localDW->sector = 2;
     } else {
-      /* '<S30>:1:53' else */
-      /* '<S30>:1:54' sector = 3; */
-      sector = 3;
+      /* '<S131>:1:53' else */
+      /* '<S131>:1:54' sector = single(3); */
+      localDW->sector = 3;
     }
   } else {
-    /* '<S30>:1:56' else */
-    /* '<S30>:1:57' quadrant=1; */
+    /* '<S131>:1:56' else */
+    /* '<S131>:1:57' quadrant=single(1); */
     quadrant = 1;
 
-    /* '<S30>:1:58' if(b < 0) */
-    if (rtb_Sum_c < 0.0) {
-      /* '<S30>:1:59' sector = 2; */
-      sector = 2;
+    /* '<S131>:1:58' if(b < 0) */
+    if (localDW->b < 0.0F) {
+      /* '<S131>:1:59' sector = single(2); */
+      localDW->sector = 2;
     } else {
-      /* '<S30>:1:60' else */
-      /* '<S30>:1:61' sector = 1; */
-      sector = 1;
+      /* '<S131>:1:60' else */
+      /* '<S131>:1:61' sector = single(1); */
+      localDW->sector = 1;
     }
   }
 
-  /* '<S30>:1:66' sector = sector; */
+  /* '<S131>:1:66' sector = sector; */
   /* Modulationsfunktionen f¸r Phasen U,V,W */
   /* Erzeugung der Aussteuergrade f¸r die Halbbr¸cken */
   /* --> Erzeugung einer "regulary Sampled SVM" erfolgt anschlieﬂend durch Abtastung */
   /* mit Dreiecksz‰hlern in Hardware. */
-  /* '<S30>:1:73' if (sector == 1) */
-  if (sector == 1) {
+  /* '<S131>:1:73' if (sector == 1) */
+  if (localDW->sector == 1) {
     /* Quang S.24 and normed to 2/3 U_DC */
-    /* '<S30>:1:76' u1 = b/(U_max); */
-    localDW->a_W_on = rtb_Sum_c / localDW->U_max;
+    /* '<S131>:1:76' u1 = b/(U_max); */
+    localDW->a_W_on = localDW->b / U_max;
 
-    /* '<S30>:1:77' u2 = c/(U_max); */
-    localDW->u2 = localDW->c / localDW->U_max;
+    /* '<S131>:1:77' u2 = c/(U_max); */
+    u2 = c / U_max;
 
     /* Quang S.34 */
-    /* '<S30>:1:80' a_U_on = 0.5 + u1*0.5 + u2*0.5; */
-    localDW->U_max_dq = (localDW->a_W_on * 0.5 + 0.5) + localDW->u2 * 0.5;
+    /* '<S131>:1:80' a_U_on = single(0.5 + u1*0.5 + u2*0.5); */
+    rtb_SignPreIntegrator = (localDW->a_W_on * 0.5F + 0.5F) + u2 * 0.5F;
 
-    /* '<S30>:1:81' a_V_on = 0.5 - u1*0.5 + u2*0.5; */
-    localDW->Gain_c = (0.5 - localDW->a_W_on * 0.5) + localDW->u2 * 0.5;
+    /* '<S131>:1:81' a_V_on = single(0.5 - u1*0.5 + u2*0.5); */
+    rtb_UdV = (0.5F - localDW->a_W_on * 0.5F) + u2 * 0.5F;
 
-    /* '<S30>:1:82' a_W_on = 0.5 - u1*0.5 - u2*0.5; */
-    localDW->a_W_on = (0.5 - localDW->a_W_on * 0.5) - localDW->u2 * 0.5;
+    /* '<S131>:1:82' a_W_on = single(0.5 - u1*0.5 - u2*0.5); */
+    localDW->a_W_on = (0.5F - localDW->a_W_on * 0.5F) - u2 * 0.5F;
   }
 
-  /* '<S30>:1:86' if ((sector == 2) && (quadrant == 1)) */
-  if ((sector == 2) && (quadrant == 1)) {
-    /* '<S30>:1:88' u1 = a/(U_max); */
-    localDW->a_W_on = localDW->Switch1_c / localDW->U_max;
+  /* '<S131>:1:86' if ((sector == 2) && (quadrant == 1)) */
+  if ((localDW->sector == 2) && (quadrant == 1)) {
+    /* '<S131>:1:88' u1 = a/(U_max); */
+    localDW->a_W_on = localDW->a / U_max;
 
-    /* '<S30>:1:89' u2 = (-abs(u_alpha) + 0.5774*abs(u_beta))/(U_max); */
-    localDW->u2 = (0.5774 * fabs(localDW->Fcn1) + -rtb_Switch2_n) /
-      localDW->U_max;
+    /* '<S131>:1:89' u2 = single((-abs(u_alpha) + 0.5774*abs(u_beta))/(U_max)); */
+    u2 = (0.5774F * fabsf(localDW->Fcn1) + -rtb_Gain) / U_max;
 
-    /* '<S30>:1:91' a_U_on = 0.5 + u1*0.5 - u2*0.5; */
-    localDW->U_max_dq = (localDW->a_W_on * 0.5 + 0.5) - localDW->u2 * 0.5;
+    /* '<S131>:1:91' a_U_on = single(0.5 + u1*0.5 - u2*0.5); */
+    rtb_SignPreIntegrator = (localDW->a_W_on * 0.5F + 0.5F) - u2 * 0.5F;
 
-    /* '<S30>:1:92' a_V_on = 0.5 + u1*0.5 + u2*0.5; */
-    localDW->Gain_c = (localDW->a_W_on * 0.5 + 0.5) + localDW->u2 * 0.5;
+    /* '<S131>:1:92' a_V_on = single(0.5 + u1*0.5 + u2*0.5); */
+    rtb_UdV = (localDW->a_W_on * 0.5F + 0.5F) + u2 * 0.5F;
 
-    /* '<S30>:1:93' a_W_on = 0.5 - u1*0.5 - u2*0.5; */
-    localDW->a_W_on = (0.5 - localDW->a_W_on * 0.5) - localDW->u2 * 0.5;
+    /* '<S131>:1:93' a_W_on = single(0.5 - u1*0.5 - u2*0.5); */
+    localDW->a_W_on = (0.5F - localDW->a_W_on * 0.5F) - u2 * 0.5F;
   }
 
-  /* '<S30>:1:97' if ((sector == 2) && (quadrant == 2)) */
-  if ((sector == 2) && (quadrant == 2)) {
-    /* '<S30>:1:99' u1 = (-abs(u_alpha) + 0.5774*abs(u_beta))/(U_max); */
-    localDW->a_W_on = (0.5774 * fabs(localDW->Fcn1) + -fabs(localDW->Fcn)) /
-      localDW->U_max;
+  /* '<S131>:1:97' if ((sector == 2) && (quadrant == 2)) */
+  if ((localDW->sector == 2) && (quadrant == 2)) {
+    /* '<S131>:1:99' u1 = single((-abs(u_alpha) + 0.5774*abs(u_beta))/(U_max)); */
+    localDW->a_W_on = (0.5774F * fabsf(localDW->Fcn1) + -fabsf(localDW->Fcn)) /
+      U_max;
 
-    /* '<S30>:1:100' u2 = a/(U_max); */
-    localDW->u2 = localDW->Switch1_c / localDW->U_max;
+    /* '<S131>:1:100' u2 = a/(U_max); */
+    u2 = localDW->a / U_max;
 
-    /* '<S30>:1:102' a_U_on = 0.5 + u1*0.5 - u2*0.5; */
-    localDW->U_max_dq = (localDW->a_W_on * 0.5 + 0.5) - localDW->u2 * 0.5;
+    /* '<S131>:1:102' a_U_on = single(0.5 + u1*0.5 - u2*0.5); */
+    rtb_SignPreIntegrator = (localDW->a_W_on * 0.5F + 0.5F) - u2 * 0.5F;
 
-    /* '<S30>:1:103' a_V_on = 0.5 + u1*0.5 + u2*0.5; */
-    localDW->Gain_c = (localDW->a_W_on * 0.5 + 0.5) + localDW->u2 * 0.5;
+    /* '<S131>:1:103' a_V_on = single(0.5 + u1*0.5 + u2*0.5); */
+    rtb_UdV = (localDW->a_W_on * 0.5F + 0.5F) + u2 * 0.5F;
 
-    /* '<S30>:1:104' a_W_on = 0.5 - u1*0.5 - u2*0.5; */
-    localDW->a_W_on = (0.5 - localDW->a_W_on * 0.5) - localDW->u2 * 0.5;
+    /* '<S131>:1:104' a_W_on = single(0.5 - u1*0.5 - u2*0.5); */
+    localDW->a_W_on = (0.5F - localDW->a_W_on * 0.5F) - u2 * 0.5F;
   }
 
-  /* '<S30>:1:108' if (sector == 3) */
-  if (sector == 3) {
-    /* '<S30>:1:110' u1 = c/(U_max); */
-    localDW->a_W_on = localDW->c / localDW->U_max;
+  /* '<S131>:1:108' if (sector == 3) */
+  if (localDW->sector == 3) {
+    /* '<S131>:1:110' u1 = c/(U_max); */
+    localDW->a_W_on = c / U_max;
 
-    /* '<S30>:1:111' u2 = b/(U_max); */
-    localDW->u2 = rtb_Sum_c / localDW->U_max;
+    /* '<S131>:1:111' u2 = b/(U_max); */
+    u2 = localDW->b / U_max;
 
-    /* '<S30>:1:113' a_U_on=  0.5 - u1*0.5 - u2*0.5; */
-    localDW->U_max_dq = (0.5 - localDW->a_W_on * 0.5) - localDW->u2 * 0.5;
+    /* '<S131>:1:113' a_U_on=  single(0.5 - u1*0.5 - u2*0.5); */
+    rtb_SignPreIntegrator = (0.5F - localDW->a_W_on * 0.5F) - u2 * 0.5F;
 
-    /* '<S30>:1:114' a_V_on = 0.5 + u1*0.5 + u2*0.5; */
-    localDW->Gain_c = (localDW->a_W_on * 0.5 + 0.5) + localDW->u2 * 0.5;
+    /* '<S131>:1:114' a_V_on = single(0.5 + u1*0.5 + u2*0.5); */
+    rtb_UdV = (localDW->a_W_on * 0.5F + 0.5F) + u2 * 0.5F;
 
-    /* '<S30>:1:115' a_W_on = 0.5 - u1*0.5 + u2*0.5; */
-    localDW->a_W_on = (0.5 - localDW->a_W_on * 0.5) + localDW->u2 * 0.5;
+    /* '<S131>:1:115' a_W_on = single(0.5 - u1*0.5 + u2*0.5); */
+    localDW->a_W_on = (0.5F - localDW->a_W_on * 0.5F) + u2 * 0.5F;
   }
 
-  /* '<S30>:1:118' if (sector == 4) */
-  if (sector == 4) {
-    /* '<S30>:1:120' u1 = b/(U_max); */
-    localDW->a_W_on = rtb_Sum_c / localDW->U_max;
+  /* '<S131>:1:118' if (sector == 4) */
+  if (localDW->sector == 4) {
+    /* '<S131>:1:120' u1 = b/(U_max); */
+    localDW->a_W_on = localDW->b / U_max;
 
-    /* '<S30>:1:121' u2 = c/(U_max); */
-    localDW->u2 = localDW->c / localDW->U_max;
+    /* '<S131>:1:121' u2 = c/(U_max); */
+    u2 = c / U_max;
 
-    /* '<S30>:1:123' a_U_on = 0.5 - u1*0.5 - u2*0.5; */
-    localDW->U_max_dq = (0.5 - localDW->a_W_on * 0.5) - localDW->u2 * 0.5;
+    /* '<S131>:1:123' a_U_on = single(0.5 - u1*0.5 - u2*0.5); */
+    rtb_SignPreIntegrator = (0.5F - localDW->a_W_on * 0.5F) - u2 * 0.5F;
 
-    /* '<S30>:1:124' a_V_on = 0.5 + u1*0.5 - u2*0.5; */
-    rtb_Switch2_n = localDW->a_W_on * 0.5 + 0.5;
-    localDW->Gain_c = rtb_Switch2_n - localDW->u2 * 0.5;
+    /* '<S131>:1:124' a_V_on = single(0.5 + u1*0.5 - u2*0.5); */
+    localDW->a_W_on = localDW->a_W_on * 0.5F + 0.5F;
+    rtb_UdV = localDW->a_W_on - u2 * 0.5F;
 
-    /* '<S30>:1:125' a_W_on = 0.5 + u1*0.5 + u2*0.5; */
-    localDW->a_W_on = rtb_Switch2_n + localDW->u2 * 0.5;
+    /* '<S131>:1:125' a_W_on = single(0.5 + u1*0.5 + u2*0.5); */
+    localDW->a_W_on += u2 * 0.5F;
   }
 
-  /* '<S30>:1:129' if ((sector == 5) && (quadrant == 3)) */
-  if ((sector == 5) && (quadrant == 3)) {
-    /* '<S30>:1:131' u1 = a/(U_max); */
-    localDW->a_W_on = localDW->Switch1_c / localDW->U_max;
+  /* '<S131>:1:129' if ((sector == 5) && (quadrant == 3)) */
+  if ((localDW->sector == 5) && (quadrant == 3)) {
+    /* '<S131>:1:131' u1 = a/(U_max); */
+    localDW->a_W_on = localDW->a / U_max;
 
-    /* '<S30>:1:132' u2 = (-abs(u_alpha) + 0.5774*abs(u_beta))/(U_max); */
-    localDW->u2 = (0.5774 * fabs(localDW->Fcn1) + -fabs(localDW->Fcn)) /
-      localDW->U_max;
+    /* '<S131>:1:132' u2 = single((-abs(u_alpha) + 0.5774*abs(u_beta))/(U_max)); */
+    u2 = (0.5774F * fabsf(localDW->Fcn1) + -fabsf(localDW->Fcn)) / U_max;
 
-    /* '<S30>:1:134' a_U_on = 0.5 - u1*0.5 + u2*0.5; */
-    localDW->U_max_dq = (0.5 - localDW->a_W_on * 0.5) + localDW->u2 * 0.5;
+    /* '<S131>:1:134' a_U_on = single(0.5 - u1*0.5 + u2*0.5); */
+    rtb_SignPreIntegrator = (0.5F - localDW->a_W_on * 0.5F) + u2 * 0.5F;
 
-    /* '<S30>:1:135' a_V_on = 0.5 - u1*0.5 - u2*0.5; */
-    localDW->Gain_c = (0.5 - localDW->a_W_on * 0.5) - localDW->u2 * 0.5;
+    /* '<S131>:1:135' a_V_on = single(0.5 - u1*0.5 - u2*0.5); */
+    rtb_UdV = (0.5F - localDW->a_W_on * 0.5F) - u2 * 0.5F;
 
-    /* '<S30>:1:136' a_W_on = 0.5 + u1*0.5 + u2*0.5; */
-    localDW->a_W_on = (localDW->a_W_on * 0.5 + 0.5) + localDW->u2 * 0.5;
+    /* '<S131>:1:136' a_W_on = single(0.5 + u1*0.5 + u2*0.5); */
+    localDW->a_W_on = (localDW->a_W_on * 0.5F + 0.5F) + u2 * 0.5F;
   }
 
-  /* '<S30>:1:140' if ((sector == 5) && (quadrant == 4)) */
-  if ((sector == 5) && (quadrant == 4)) {
-    /* '<S30>:1:142' u1 =(-abs(u_alpha) + 0.5774*abs(u_beta))/(U_max); */
-    localDW->a_W_on = (0.5774 * fabs(localDW->Fcn1) + -fabs(localDW->Fcn)) /
-      localDW->U_max;
+  /* '<S131>:1:140' if ((sector == 5) && (quadrant == 4)) */
+  if ((localDW->sector == 5) && (quadrant == 4)) {
+    /* '<S131>:1:142' u1 = single((-abs(u_alpha) + 0.5774*abs(u_beta))/(U_max)); */
+    localDW->a_W_on = (0.5774F * fabsf(localDW->Fcn1) + -fabsf(localDW->Fcn)) /
+      U_max;
 
-    /* '<S30>:1:143' u2 =  a/(U_max); */
-    localDW->u2 = localDW->Switch1_c / localDW->U_max;
+    /* '<S131>:1:143' u2 =  a/(U_max); */
+    u2 = localDW->a / U_max;
 
-    /* '<S30>:1:145' a_U_on = 0.5 - u1*0.5 + u2*0.5; */
-    localDW->U_max_dq = (0.5 - localDW->a_W_on * 0.5) + localDW->u2 * 0.5;
+    /* '<S131>:1:145' a_U_on = single(0.5 - u1*0.5 + u2*0.5); */
+    rtb_SignPreIntegrator = (0.5F - localDW->a_W_on * 0.5F) + u2 * 0.5F;
 
-    /* '<S30>:1:146' a_V_on = 0.5 - u1*0.5 - u2*0.5; */
-    localDW->Gain_c = (0.5 - localDW->a_W_on * 0.5) - localDW->u2 * 0.5;
+    /* '<S131>:1:146' a_V_on = single(0.5 - u1*0.5 - u2*0.5); */
+    rtb_UdV = (0.5F - localDW->a_W_on * 0.5F) - u2 * 0.5F;
 
-    /* '<S30>:1:147' a_W_on = 0.5 + u1*0.5 + u2*0.5; */
-    localDW->a_W_on = (localDW->a_W_on * 0.5 + 0.5) + localDW->u2 * 0.5;
+    /* '<S131>:1:147' a_W_on = single(0.5 + u1*0.5 + u2*0.5); */
+    localDW->a_W_on = (localDW->a_W_on * 0.5F + 0.5F) + u2 * 0.5F;
   }
 
-  /* '<S30>:1:151' if (sector == 6) */
-  if (sector == 6) {
-    /* '<S30>:1:153' u1 = c/(U_max); */
-    localDW->a_W_on = localDW->c / localDW->U_max;
+  /* '<S131>:1:151' if (sector == 6) */
+  if (localDW->sector == 6) {
+    /* '<S131>:1:153' u1 = c/(U_max); */
+    localDW->a_W_on = c / U_max;
 
-    /* '<S30>:1:154' u2 = b/(U_max); */
-    localDW->u2 = rtb_Sum_c / localDW->U_max;
+    /* '<S131>:1:154' u2 = b/(U_max); */
+    u2 = localDW->b / U_max;
 
-    /* '<S30>:1:156' a_U_on = 0.5 + u1*0.5 + u2*0.5; */
-    localDW->U_max_dq = (localDW->a_W_on * 0.5 + 0.5) + localDW->u2 * 0.5;
+    /* '<S131>:1:156' a_U_on = single(0.5 + u1*0.5 + u2*0.5); */
+    rtb_SignPreIntegrator = (localDW->a_W_on * 0.5F + 0.5F) + u2 * 0.5F;
 
-    /* '<S30>:1:157' a_V_on = 0.5 - u1*0.5 - u2*0.5; */
-    localDW->Gain_c = (0.5 - localDW->a_W_on * 0.5) - localDW->u2 * 0.5;
+    /* '<S131>:1:157' a_V_on = single(0.5 - u1*0.5 - u2*0.5); */
+    rtb_UdV = (0.5F - localDW->a_W_on * 0.5F) - u2 * 0.5F;
 
-    /* '<S30>:1:158' a_W_on = 0.5 + u1*0.5 - u2*0.5; */
-    localDW->a_W_on = (localDW->a_W_on * 0.5 + 0.5) - localDW->u2 * 0.5;
+    /* '<S131>:1:158' a_W_on = single(0.5 + u1*0.5 - u2*0.5); */
+    localDW->a_W_on = (localDW->a_W_on * 0.5F + 0.5F) - u2 * 0.5F;
   }
 
-  /* '<S30>:1:161' if a_U_on > 1.0 */
-  if (localDW->U_max_dq > 1.0) {
-    /* '<S30>:1:162' a_U_on = 1.0; */
-    localDW->U_max_dq = 1.0;
+  /* '<S131>:1:161' if a_U_on > single(1.0) */
+  if (rtb_SignPreIntegrator > 1.0F) {
+    /* '<S131>:1:162' a_U_on = single(1.0); */
+    rtb_SignPreIntegrator = 1.0F;
   }
 
-  /* '<S30>:1:164' if a_V_on > 1.0 */
-  if (localDW->Gain_c > 1.0) {
-    /* '<S30>:1:165' a_V_on = 1.0; */
-    localDW->Gain_c = 1.0;
+  /* '<S131>:1:164' if a_V_on > single(1.0) */
+  if (rtb_UdV > 1.0F) {
+    /* '<S131>:1:165' a_V_on = single(1.0); */
+    rtb_UdV = 1.0F;
   }
 
-  /* '<S30>:1:167' if a_W_on > 1.0 */
-  if (localDW->a_W_on > 1.0) {
-    /* '<S30>:1:168' a_W_on = 1.0; */
-    localDW->a_W_on = 1.0;
+  /* '<S131>:1:167' if a_W_on > single(1.0) */
+  if (localDW->a_W_on > 1.0F) {
+    /* '<S131>:1:168' a_W_on = single(1.0); */
+    localDW->a_W_on = 1.0F;
   }
 
   /* Switch: '<S5>/Switch' incorporates:
-   *  MATLAB Function: '<S22>/SpaceVectorModulation'
+   *  MATLAB Function: '<S122>/SpaceVectorModulation'
+   *  Sum: '<S122>/Sum1'
    */
-  /* '<S30>:1:171' u_a = a_U_on; */
-  /* '<S30>:1:172' u_b = a_V_on; */
-  /* '<S30>:1:173' u_c = a_W_on; */
-  if (rtu_flg_SpaceVectorModulation > 0.0) {
-    rty_ua[0] = localDW->U_max_dq;
-    rty_ua[1] = localDW->Gain_c;
-    rty_ua[2] = localDW->a_W_on;
-  } else {
-    /* Product: '<S21>/Divide' incorporates:
-     *  Constant: '<S21>/Constant1'
-     *  Gain: '<S21>/Gain1'
-     *  Gain: '<S24>/Gain3'
-     *  Sum: '<S21>/Sum'
-     *  Switch: '<S25>/Switch'
+  /* '<S131>:1:171' u_a = a_U_on; */
+  /* '<S131>:1:172' u_b = a_V_on; */
+  /* '<S131>:1:173' u_c = a_W_on; */
+  if (rtu_flg_SpaceVectorModulation > 0) {
+    /* Switch: '<S122>/Switch1' incorporates:
+     *  Constant: '<S122>/Constant1'
+     *  Gain: '<S122>/Gain'
      */
-    for (quadrant = 0; quadrant < 3; quadrant++) {
-      rty_ua[quadrant] = ((rtConstP.Gain3_Gain[quadrant + 3] * localDW->Fcn1_o +
-                           rtConstP.Gain3_Gain[quadrant] * localDW->Fcn_d) +
-                          rtConstP.Gain3_Gain[quadrant + 6] * 0.0) /
-        rtb_Gain_c_tmp * 0.5 + 0.5;
+    if (rtu_flg_deadTimeCompensation > 0) {
+      /* Signum: '<S122>/Sign' incorporates:
+       *  SignalConversion generated from: '<S116>/Gain3'
+       */
+      if (rtu_ia < 0.0F) {
+        rtb_Gain = -1.0F;
+      } else if (rtu_ia > 0.0F) {
+        rtb_Gain = 1.0F;
+      } else if (rtu_ia == 0.0F) {
+        rtb_Gain = 0.0F;
+      } else {
+        rtb_Gain = (rtNaNF);
+      }
+
+      localDW->Gain1[0] = 0.02F * rtb_Gain;
+
+      /* Signum: '<S122>/Sign' incorporates:
+       *  Gain: '<S122>/Gain'
+       *  SignalConversion generated from: '<S116>/Gain3'
+       */
+      if (rtu_ib < 0.0F) {
+        rtb_Gain = -1.0F;
+      } else if (rtu_ib > 0.0F) {
+        rtb_Gain = 1.0F;
+      } else if (rtu_ib == 0.0F) {
+        rtb_Gain = 0.0F;
+      } else {
+        rtb_Gain = (rtNaNF);
+      }
+
+      localDW->Gain1[1] = 0.02F * rtb_Gain;
+
+      /* Signum: '<S122>/Sign' incorporates:
+       *  Gain: '<S122>/Gain'
+       *  SignalConversion generated from: '<S116>/Gain3'
+       */
+      if (rtu_ic < 0.0F) {
+        rtb_Gain = -1.0F;
+      } else if (rtu_ic > 0.0F) {
+        rtb_Gain = 1.0F;
+      } else if (rtu_ic == 0.0F) {
+        rtb_Gain = 0.0F;
+      } else {
+        rtb_Gain = (rtNaNF);
+      }
+
+      localDW->Gain1[2] = 0.02F * rtb_Gain;
+    } else {
+      localDW->Gain1[0] = 0.0F;
+      localDW->Gain1[1] = 0.0F;
+      localDW->Gain1[2] = 0.0F;
     }
 
-    /* End of Product: '<S21>/Divide' */
+    /* End of Switch: '<S122>/Switch1' */
+    localDW->TmpSignalConversionAtGain3I[0] = rtb_SignPreIntegrator +
+      localDW->Gain1[0];
+    localDW->TmpSignalConversionAtGain3I[1] = rtb_UdV + localDW->Gain1[1];
+    localDW->TmpSignalConversionAtGain3I[2] = localDW->a_W_on + localDW->Gain1[2];
+  } else {
+    /* Gain: '<S121>/Gain' */
+    rtb_SignPreIntegrator = 0.5F * rtu_U_IC;
+
+    /* Switch: '<S121>/Switch2' incorporates:
+     *  Constant: '<S121>/Constant5'
+     *  Gain: '<S123>/Gain'
+     *  Gain: '<S123>/Gain1'
+     *  Product: '<S123>/Product'
+     *  Product: '<S123>/Product1'
+     *  SignalConversion generated from: '<S116>/Gain3'
+     */
+    if (rtu_flg_deadTimeCompensation > 0) {
+      /* Signum: '<S123>/Sign' incorporates:
+       *  SignalConversion generated from: '<S116>/Gain3'
+       */
+      if (rtu_ia < 0.0F) {
+        rtb_Gain = -1.0F;
+      } else if (rtu_ia > 0.0F) {
+        rtb_Gain = 1.0F;
+      } else if (rtu_ia == 0.0F) {
+        rtb_Gain = 0.0F;
+      } else {
+        rtb_Gain = (rtNaNF);
+      }
+
+      localDW->Switch2[0] = 1.0E-6F * rtu_ia * 20000.0F * rtb_Gain *
+        *rty_ud_soll;
+
+      /* Signum: '<S123>/Sign' incorporates:
+       *  Gain: '<S123>/Gain'
+       *  Gain: '<S123>/Gain1'
+       *  Product: '<S123>/Product'
+       *  Product: '<S123>/Product1'
+       *  SignalConversion generated from: '<S116>/Gain3'
+       */
+      if (rtu_ib < 0.0F) {
+        rtb_Gain = -1.0F;
+      } else if (rtu_ib > 0.0F) {
+        rtb_Gain = 1.0F;
+      } else if (rtu_ib == 0.0F) {
+        rtb_Gain = 0.0F;
+      } else {
+        rtb_Gain = (rtNaNF);
+      }
+
+      localDW->Switch2[1] = 1.0E-6F * rtu_ib * 20000.0F * rtb_Gain *
+        *rty_ud_soll;
+
+      /* Signum: '<S123>/Sign' incorporates:
+       *  Gain: '<S123>/Gain'
+       *  Gain: '<S123>/Gain1'
+       *  Product: '<S123>/Product'
+       *  Product: '<S123>/Product1'
+       *  SignalConversion generated from: '<S116>/Gain3'
+       */
+      if (rtu_ic < 0.0F) {
+        rtb_Gain = -1.0F;
+      } else if (rtu_ic > 0.0F) {
+        rtb_Gain = 1.0F;
+      } else if (rtu_ic == 0.0F) {
+        rtb_Gain = 0.0F;
+      } else {
+        rtb_Gain = (rtNaNF);
+      }
+
+      localDW->Switch2[2] = 1.0E-6F * rtu_ic * 20000.0F * rtb_Gain *
+        *rty_ud_soll;
+    } else {
+      localDW->Switch2[0] = 0.0;
+      localDW->Switch2[1] = 0.0;
+      localDW->Switch2[2] = 0.0;
+    }
+
+    /* End of Switch: '<S121>/Switch2' */
+
+    /* Product: '<S121>/Divide' incorporates:
+     *  Constant: '<S121>/Constant1'
+     *  Gain: '<S121>/Gain1'
+     *  Gain: '<S125>/Gain3'
+     *  Sum: '<S121>/Sum'
+     *  Sum: '<S121>/Sum2'
+     *  Switch: '<S126>/Switch'
+     */
+    for (quadrant = 0; quadrant < 3; quadrant++) {
+      localDW->TmpSignalConversionAtGain3I[quadrant] = (real32_T)
+        ((((rtConstP.Gain3_Gain[quadrant + 3] * localDW->Fcn1_o +
+            rtConstP.Gain3_Gain[quadrant] * localDW->Fcn_d) +
+           rtConstP.Gain3_Gain[quadrant + 6] * 0.0F) + localDW->Switch2[quadrant])
+         / rtb_SignPreIntegrator) * 0.5F + 0.5F;
+    }
+
+    /* End of Product: '<S121>/Divide' */
   }
+
+  /* End of Switch: '<S5>/Switch' */
+
+  /* Saturate: '<S5>/Saturation' */
+  if (localDW->TmpSignalConversionAtGain3I[0] > 1.0F) {
+    rty_ua[0] = 1.0F;
+  } else if (localDW->TmpSignalConversionAtGain3I[0] < 0.0F) {
+    rty_ua[0] = 0.0F;
+  } else {
+    rty_ua[0] = localDW->TmpSignalConversionAtGain3I[0];
+  }
+
+  if (localDW->TmpSignalConversionAtGain3I[1] > 1.0F) {
+    rty_ua[1] = 1.0F;
+  } else if (localDW->TmpSignalConversionAtGain3I[1] < 0.0F) {
+    rty_ua[1] = 0.0F;
+  } else {
+    rty_ua[1] = localDW->TmpSignalConversionAtGain3I[1];
+  }
+
+  if (localDW->TmpSignalConversionAtGain3I[2] > 1.0F) {
+    rty_ua[2] = 1.0F;
+  } else if (localDW->TmpSignalConversionAtGain3I[2] < 0.0F) {
+    rty_ua[2] = 0.0F;
+  } else {
+    rty_ua[2] = localDW->TmpSignalConversionAtGain3I[2];
+  }
+
+  /* End of Saturate: '<S5>/Saturation' */
 
   /* SignalConversion generated from: '<S2>/ub' */
   *rty_ub = rty_ua[1];
@@ -956,46 +1239,425 @@ static void CurrentController(RT_MODEL * const rtM, real_T rtu_ia, real_T rtu_ib
   /* SignalConversion generated from: '<S2>/uc' */
   *rty_uc = rty_ua[2];
 
+  /* Switch: '<S89>/Switch' incorporates:
+   *  Gain: '<S8>/Gain1'
+   *  RelationalOperator: '<S89>/u_GTE_up'
+   *  RelationalOperator: '<S89>/u_GT_lo'
+   *  Switch: '<S89>/Switch1'
+   *  UnitDelay: '<S4>/Unit Delay'
+   */
+  if (rtb_Sum_dd >= localDW->UnitDelay_DSTATE) {
+    rtb_SignPreIntegrator = localDW->UnitDelay_DSTATE;
+  } else if (rtb_Sum_dd > -localDW->UnitDelay_DSTATE) {
+    /* Switch: '<S89>/Switch1' */
+    rtb_SignPreIntegrator = rtb_Sum_dd;
+  } else {
+    rtb_SignPreIntegrator = -localDW->UnitDelay_DSTATE;
+  }
+
+  /* End of Switch: '<S89>/Switch' */
+
+  /* Sum: '<S89>/Diff' */
+  rtb_SignPreIntegrator = rtb_Sum_dd - rtb_SignPreIntegrator;
+
+  /* Product: '<S93>/IProd Out' */
+  rtb_Sum *= rtu_Ki_Iq;
+
   /* SignalConversion generated from: '<S2>/Id_ist' */
   *rty_Id_ist = rty_Iq_ist[0];
 
-  /* Update for DiscreteIntegrator: '<S7>/Discrete-Time Integrator' incorporates:
-   *  DiscreteIntegrator: '<S8>/Discrete-Time Integrator'
-   *  Product: '<S7>/Product1'
+  /* Update for DiscreteIntegrator: '<S43>/Integrator' incorporates:
+   *  DataTypeConversion: '<S2>/Data Type Conversion'
+   *  DiscreteIntegrator: '<S96>/Integrator'
+   *  Product: '<S40>/IProd Out'
    */
-  localDW->DiscreteTimeIntegrator_SYSTEM_E = 0U;
-  localDW->DiscreteTimeIntegrator_DSTATE = DiscreteTimeIntegrator;
-  if (rtu_flg_Reset > 0.0) {
-    localDW->DiscreteTimeIntegrator_PrevRese = 1;
-    localDW->DiscreteTimeIntegrator_PrevRe_j = 1;
+  localDW->Integrator_SYSTEM_ENABLE = 0U;
+  localDW->Integrator_DSTATE = Integrator;
+  if (rtu_flg_Reset > 0) {
+    localDW->Integrator_PrevResetState = 1;
+    localDW->Integrator_PrevResetState_p = 1;
   } else {
-    if (rtu_flg_Reset < 0.0) {
-      localDW->DiscreteTimeIntegrator_PrevRese = -1;
-    } else if (rtu_flg_Reset == 0.0) {
-      localDW->DiscreteTimeIntegrator_PrevRese = 0;
+    if (rtu_flg_Reset < 0) {
+      localDW->Integrator_PrevResetState = -1;
     } else {
-      localDW->DiscreteTimeIntegrator_PrevRese = 2;
+      localDW->Integrator_PrevResetState = 0;
     }
 
-    if (rtu_flg_Reset < 0.0) {
-      localDW->DiscreteTimeIntegrator_PrevRe_j = -1;
-    } else if (rtu_flg_Reset == 0.0) {
-      localDW->DiscreteTimeIntegrator_PrevRe_j = 0;
+    if (rtu_flg_Reset < 0) {
+      localDW->Integrator_PrevResetState_p = -1;
     } else {
-      localDW->DiscreteTimeIntegrator_PrevRe_j = 2;
+      localDW->Integrator_PrevResetState_p = 0;
     }
   }
 
-  localDW->DiscreteTimeIntegrator_PREV_U = localDW->error * rtu_Ki_Id;
+  localDW->Integrator_PREV_U = rtb_error * rtu_Ki_Id;
 
-  /* End of Update for DiscreteIntegrator: '<S7>/Discrete-Time Integrator' */
+  /* End of Update for DiscreteIntegrator: '<S43>/Integrator' */
 
-  /* Update for DiscreteIntegrator: '<S8>/Discrete-Time Integrator' incorporates:
-   *  Product: '<S8>/Product1'
+  /* Update for UnitDelay: '<S4>/Unit Delay' */
+  localDW->UnitDelay_DSTATE = rtb_Switch1_h;
+
+  /* Update for DiscreteIntegrator: '<S96>/Integrator' */
+  localDW->Integrator_SYSTEM_ENABLE_b = 0U;
+  localDW->Integrator_DSTATE_b = rtb_Gain1_lc;
+
+  /* Signum: '<S86>/SignPreSat' */
+  if (rtb_SignPreIntegrator < 0.0F) {
+    rtb_error = -1.0F;
+  } else if (rtb_SignPreIntegrator > 0.0F) {
+    rtb_error = 1.0F;
+  } else if (rtb_SignPreIntegrator == 0.0F) {
+    rtb_error = 0.0F;
+  } else {
+    rtb_error = (rtNaNF);
+  }
+
+  /* End of Signum: '<S86>/SignPreSat' */
+
+  /* Signum: '<S86>/SignPreIntegrator' */
+  if (rtb_Sum < 0.0F) {
+    Integrator = -1.0F;
+  } else if (rtb_Sum > 0.0F) {
+    Integrator = 1.0F;
+  } else if (rtb_Sum == 0.0F) {
+    Integrator = 0.0F;
+  } else {
+    Integrator = (rtNaNF);
+  }
+
+  /* End of Signum: '<S86>/SignPreIntegrator' */
+
+  /* Switch: '<S86>/Switch' incorporates:
+   *  DataTypeConversion: '<S86>/DataTypeConv1'
+   *  DataTypeConversion: '<S86>/DataTypeConv2'
+   *  Gain: '<S86>/ZeroGain'
+   *  Logic: '<S86>/AND3'
+   *  RelationalOperator: '<S86>/Equal1'
+   *  RelationalOperator: '<S86>/NotEqual'
    */
-  localDW->DiscreteTimeIntegrator_SYSTEM_c = 0U;
-  localDW->DiscreteTimeIntegrator_DSTATE_g = localDW->Gain_j;
-  localDW->DiscreteTimeIntegrator_PREV_U_j = localDW->Sum_l * rtu_Ki_Iq;
+  if ((0.0F * rtb_Sum_dd != rtb_SignPreIntegrator) && ((int8_T)rtb_error ==
+       (int8_T)Integrator)) {
+    /* Update for DiscreteIntegrator: '<S96>/Integrator' incorporates:
+     *  Constant: '<S86>/Constant1'
+     */
+    localDW->Integrator_PREV_U_e = 0.0F;
+  } else {
+    /* Update for DiscreteIntegrator: '<S96>/Integrator' */
+    localDW->Integrator_PREV_U_e = rtb_Sum;
+  }
+
+  /* End of Switch: '<S86>/Switch' */
+}
+
+/* System initialize for function-call system: '<S1>/SpeedController' */
+static void SpeedController_Init(DW_SpeedController *localDW)
+{
+  /* InitializeConditions for DiscreteIntegrator: '<S176>/Integrator' */
+  localDW->Integrator_PrevResetState = 0;
+  localDW->Integrator_PREV_U = 0.0F;
+}
+
+/* Enable for function-call system: '<S1>/SpeedController' */
+static void SpeedController_Enable(DW_SpeedController *localDW)
+{
+  localDW->SpeedController_RESET_ELAPS_T = true;
+
+  /* Enable for DiscreteIntegrator: '<S176>/Integrator' */
+  localDW->Integrator_SYSTEM_ENABLE = 1U;
+}
+
+/* Output and update for function-call system: '<S1>/SpeedController' */
+static void SpeedController(RT_MODEL * const rtM, real32_T rtu_id_ref, real32_T
+  rtu_iq_ref, real32_T rtu_n_ref, real32_T rtu_n_ist, int8_T
+  rtu_flg_SpeedControl, int8_T rtu_flg_FieldWeakening, real32_T rtu_Kp_Speed,
+  real32_T rtu_Ki_Speed, real32_T rtu_I_max, real32_T rtu_U_DC, int8_T rtu_RESET,
+  real32_T *rty_id_soll, real32_T *rty_iq_soll, DW_SpeedController *localDW)
+{
+  real32_T Integrator;
+  real32_T a;
+  real32_T a_fw;
+  real32_T a_tmp;
+  real32_T b;
+  real32_T b_fw;
+  real32_T rtb_IProdOut_a;
+  real32_T rtb_Sum;
+  real32_T u_max_dq;
+  real32_T u_max_dq_tmp;
+  uint32_T SpeedController_ELAPS_T;
+  if (localDW->SpeedController_RESET_ELAPS_T) {
+    SpeedController_ELAPS_T = 0U;
+  } else {
+    SpeedController_ELAPS_T = rtM->Timing.clockTick0 -
+      localDW->SpeedController_PREV_T;
+  }
+
+  localDW->SpeedController_PREV_T = rtM->Timing.clockTick0;
+  localDW->SpeedController_RESET_ELAPS_T = false;
+
+  /* DiscreteIntegrator: '<S176>/Integrator' incorporates:
+   *  DataTypeConversion: '<S3>/Data Type Conversion'
+   */
+  if (localDW->Integrator_SYSTEM_ENABLE != 0) {
+    /* DiscreteIntegrator: '<S176>/Integrator' */
+    Integrator = localDW->Integrator_DSTATE;
+  } else if ((rtu_RESET != 0) || (localDW->Integrator_PrevResetState != 0)) {
+    localDW->Integrator_DSTATE = 0.0F;
+
+    /* DiscreteIntegrator: '<S176>/Integrator' */
+    Integrator = localDW->Integrator_DSTATE;
+  } else {
+    /* DiscreteIntegrator: '<S176>/Integrator' */
+    Integrator = 2.5E-5F * (real32_T)SpeedController_ELAPS_T
+      * localDW->Integrator_PREV_U + localDW->Integrator_DSTATE;
+  }
+
+  /* End of DiscreteIntegrator: '<S176>/Integrator' */
+
+  /* Sum: '<S138>/Sum' */
+  rtb_IProdOut_a = rtu_n_ref - rtu_n_ist;
+
+  /* Sum: '<S186>/Sum' incorporates:
+   *  Product: '<S181>/PProd Out'
+   */
+  rtb_Sum = rtb_IProdOut_a * rtu_Kp_Speed + Integrator;
+
+  /* MATLAB Function: '<S139>/MATLAB Function' incorporates:
+   *  Constant: '<S139>/Constant'
+   *  Constant: '<S139>/Constant1'
+   *  Constant: '<S139>/Constant2'
+   *  Constant: '<S139>/Constant3'
+   *  Constant: '<S139>/Constant5'
+   */
+  /* Maximum voltage vector */
+  /* MATLAB Function 'uz_codegen/SpeedController/speed controller/PI_Speed_Control/Field Weakening/MATLAB Function': '<S141>:1' */
+  /* '<S141>:1:4' u_max_dq = single(0.95* U_IC/sqrt(single(3))); */
+  u_max_dq = 0.95F * rtu_U_DC / 1.73205078F;
+
+  /* Calculation of n_cut */
+  /* '<S141>:1:7' a = single(I_max^2 * Lq^2 + psi_pm^2); */
+  a_tmp = rtu_I_max * rtu_I_max;
+  a = a_tmp * 2.56E-10F + 2.30400019E-5F;
+
+  /* '<S141>:1:8' b = single(2*R*psi_pm*I_max); */
+  b = 0.000384F * rtu_I_max;
+
+  /* '<S141>:1:9' c = single((I_max^2 * R^2)-u_max_dq^2); */
+  /* '<S141>:1:11' w_cut = single((-b + sqrt(b^2 - 4*a*c))/(2*a)); */
+  a = (sqrtf(b * b - (a_tmp * 0.0016F - u_max_dq * u_max_dq) * (4.0F * a)) + -b)
+    / (2.0F * a);
+
+  /* Current speed */
+  /* '<S141>:1:14' w_el = single(n_ist*2*pi*zp/60); */
+  b = rtu_n_ist * 2.0F * 3.14159274F * 21.0F / 60.0F;
+
+  /* Check if w_cut is valid */
+  /* '<S141>:1:17' if w_cut > 0 && isreal(single(w_cut)) */
+  if (a > 0.0F) {
+    /* Calcultation of Id_ref */
+    /* '<S141>:1:19' if w_el > w_cut */
+    if (b > a) {
+      /* '<S141>:1:20' id_ref = single(psi_pm/Ld * (w_cut/w_el -1)); */
+      a = (a / b - 1.0F) * 300.0F;
+
+      /* '<S141>:1:21' if id_ref < -I_max */
+      if (a < -rtu_I_max) {
+        /* '<S141>:1:22' id_ref = -I_max; */
+        a = -rtu_I_max;
+      }
+    } else {
+      /* '<S141>:1:24' else */
+      /* '<S141>:1:25' id_ref = single(0.0); */
+      a = 0.0F;
+    }
+  } else {
+    /* '<S141>:1:27' else */
+    /* '<S141>:1:28' id_ref = single(0.0); */
+    a = 0.0F;
+  }
+
+  /* '<S141>:1:31' id_soll = single(id_ref); */
+  /* '<S141>:1:33' if id_soll < single(0.0) */
+  if (a < 0.0F) {
+    /* '<S141>:1:34' a_fw = single(R^2 + w_el^2 * Lq^2); */
+    a_fw = b * b * 2.56E-10F + 0.0016F;
+
+    /* '<S141>:1:35' b_fw = single(2*R*w_el*psi_pm); */
+    b_fw = 0.08F * b * 0.0048F;
+
+    /* '<S141>:1:36' c_fw = single(id_soll^2 * R^2 -u_max_dq^2 + w_el^2 * (psi_pm^2 + Ld^2 * id_soll^2 + 2*psi_pm*Ld*id_soll)); */
+    /* '<S141>:1:38' iq_max = single((-b_fw + sqrt(b_fw^2 - 4*a_fw*c_fw))/(2*a_fw)); */
+    u_max_dq_tmp = a * a;
+    u_max_dq = (sqrtf(b_fw * b_fw - (((u_max_dq_tmp * 2.56E-10F + 2.30400019E-5F)
+      + 1.53600013E-7F * a) * (b * b) + (u_max_dq_tmp * 0.0016F - u_max_dq *
+      u_max_dq)) * (4.0F * a_fw)) + -b_fw) / (2.0F * a_fw);
+
+    /* '<S141>:1:39' if iq_max > single(sqrt(I_max^2 - id_soll^2)) */
+    b = sqrtf(a_tmp - u_max_dq_tmp);
+    if (u_max_dq > b) {
+      /* '<S141>:1:40' iq_max =  single(sqrt(I_max^2 - id_soll^2)); */
+      u_max_dq = b;
+    }
+  } else {
+    /* '<S141>:1:42' else */
+    /* '<S141>:1:43' iq_max = I_max; */
+    u_max_dq = rtu_I_max;
+  }
+
+  /* Switch: '<S138>/Switch1' incorporates:
+   *  DataTypeConversion: '<S3>/Data Type Conversion1'
+   *  MATLAB Function: '<S139>/MATLAB Function'
+   */
+  if (rtu_flg_FieldWeakening > 0) {
+    b = u_max_dq;
+  } else {
+    b = rtu_I_max;
+  }
+
+  /* End of Switch: '<S138>/Switch1' */
+
+  /* Switch: '<S169>/Switch' incorporates:
+   *  Gain: '<S138>/Gain'
+   *  RelationalOperator: '<S169>/u_GTE_up'
+   *  RelationalOperator: '<S169>/u_GT_lo'
+   *  Switch: '<S169>/Switch1'
+   */
+  if (rtb_Sum >= b) {
+    u_max_dq = b;
+  } else if (rtb_Sum > -b) {
+    /* Switch: '<S169>/Switch1' */
+    u_max_dq = rtb_Sum;
+  } else {
+    u_max_dq = -b;
+  }
+
+  /* End of Switch: '<S169>/Switch' */
+
+  /* Sum: '<S169>/Diff' */
+  u_max_dq = rtb_Sum - u_max_dq;
+
+  /* Product: '<S173>/IProd Out' */
+  rtb_IProdOut_a *= rtu_Ki_Speed;
+
+  /* Switch: '<S137>/Switch1' incorporates:
+   *  DataTypeConversion: '<S3>/Data Type Conversion2'
+   *  Switch: '<S137>/Switch'
+   */
+  if (rtu_flg_SpeedControl > 0) {
+    /* Switch: '<S138>/Switch2' incorporates:
+     *  Constant: '<S138>/Constant1'
+     *  Constant: '<S138>/Constant2'
+     *  DataTypeConversion: '<S3>/Data Type Conversion'
+     *  Gain: '<S138>/Gain'
+     *  RelationalOperator: '<S184>/LowerRelop1'
+     *  RelationalOperator: '<S184>/UpperRelop'
+     *  Switch: '<S138>/Switch3'
+     *  Switch: '<S184>/Switch'
+     *  Switch: '<S184>/Switch2'
+     */
+    if (rtu_RESET > 0) {
+      *rty_iq_soll = 0.0F;
+      *rty_id_soll = 0.0F;
+    } else {
+      if (rtb_Sum > b) {
+        /* Switch: '<S184>/Switch2' */
+        *rty_iq_soll = b;
+      } else if (rtb_Sum < -b) {
+        /* Switch: '<S184>/Switch' incorporates:
+         *  Gain: '<S138>/Gain'
+         *  Switch: '<S184>/Switch2'
+         */
+        *rty_iq_soll = -b;
+      } else {
+        /* Switch: '<S184>/Switch2' incorporates:
+         *  Switch: '<S184>/Switch'
+         */
+        *rty_iq_soll = rtb_Sum;
+      }
+
+      /* Switch: '<S138>/Switch' incorporates:
+       *  Constant: '<S138>/Constant'
+       *  DataTypeConversion: '<S3>/Data Type Conversion1'
+       *  Gain: '<S138>/Gain'
+       *  MATLAB Function: '<S139>/MATLAB Function'
+       *  RelationalOperator: '<S184>/UpperRelop'
+       *  Switch: '<S184>/Switch'
+       *  Switch: '<S184>/Switch2'
+       */
+      if (rtu_flg_FieldWeakening > 0) {
+        *rty_id_soll = a;
+      } else {
+        *rty_id_soll = 0.0F;
+      }
+
+      /* End of Switch: '<S138>/Switch' */
+    }
+
+    /* End of Switch: '<S138>/Switch2' */
+  } else {
+    *rty_iq_soll = rtu_iq_ref;
+    *rty_id_soll = rtu_id_ref;
+  }
+
+  /* End of Switch: '<S137>/Switch1' */
+
+  /* Update for DiscreteIntegrator: '<S176>/Integrator' incorporates:
+   *  DataTypeConversion: '<S3>/Data Type Conversion'
+   */
+  localDW->Integrator_SYSTEM_ENABLE = 0U;
+  localDW->Integrator_DSTATE = Integrator;
+  if (rtu_RESET > 0) {
+    localDW->Integrator_PrevResetState = 1;
+  } else if (rtu_RESET < 0) {
+    localDW->Integrator_PrevResetState = -1;
+  } else {
+    localDW->Integrator_PrevResetState = 0;
+  }
+
+  /* Signum: '<S166>/SignPreSat' */
+  if (u_max_dq < 0.0F) {
+    Integrator = -1.0F;
+  } else if (u_max_dq > 0.0F) {
+    Integrator = 1.0F;
+  } else if (u_max_dq == 0.0F) {
+    Integrator = 0.0F;
+  } else {
+    Integrator = (rtNaNF);
+  }
+
+  /* End of Signum: '<S166>/SignPreSat' */
+
+  /* Signum: '<S166>/SignPreIntegrator' */
+  if (rtb_IProdOut_a < 0.0F) {
+    a = -1.0F;
+  } else if (rtb_IProdOut_a > 0.0F) {
+    a = 1.0F;
+  } else if (rtb_IProdOut_a == 0.0F) {
+    a = 0.0F;
+  } else {
+    a = (rtNaNF);
+  }
+
+  /* End of Signum: '<S166>/SignPreIntegrator' */
+
+  /* Switch: '<S166>/Switch' incorporates:
+   *  DataTypeConversion: '<S166>/DataTypeConv1'
+   *  DataTypeConversion: '<S166>/DataTypeConv2'
+   *  Gain: '<S166>/ZeroGain'
+   *  Logic: '<S166>/AND3'
+   *  RelationalOperator: '<S166>/Equal1'
+   *  RelationalOperator: '<S166>/NotEqual'
+   */
+  if ((0.0F * rtb_Sum != u_max_dq) && ((int8_T)Integrator == (int8_T)a)) {
+    /* Update for DiscreteIntegrator: '<S176>/Integrator' incorporates:
+     *  Constant: '<S166>/Constant1'
+     */
+    localDW->Integrator_PREV_U = 0.0F;
+  } else {
+    /* Update for DiscreteIntegrator: '<S176>/Integrator' */
+    localDW->Integrator_PREV_U = rtb_IProdOut_a;
+  }
+
+  /* End of Switch: '<S166>/Switch' */
 }
 
 /* Model step function */
@@ -1004,7 +1666,6 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   DW *rtDW = rtM->dwork;
   ExtU *rtU = (ExtU *) rtM->inputs;
   ExtY *rtY = (ExtY *) rtM->outputs;
-  uint32_T SpeedController_ELAPS_T;
 
   /* Chart: '<Root>/uz_codegen' incorporates:
    *  Inport: '<Root>/RESET'
@@ -1023,217 +1684,52 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     /* Outport: '<Root>/activeState' */
     /* Entry 'Start': '<S1>:1' */
     /* '<S1>:1:3' activeState = 1; */
-    rtY->activeState = 1.0;
+    rtY->activeState = 1.0F;
 
     /* Outport: '<Root>/Ua_DutyCycle' */
     /* '<S1>:1:4' Ua_DutyCycle = 0; */
-    rtY->Ua_DutyCycle = 0.0;
+    rtY->Ua_DutyCycle = 0.0F;
 
     /* Outport: '<Root>/Ub_DutyCycle' */
     /* '<S1>:1:5' Ub_DutyCycle = 0; */
-    rtY->Ub_DutyCycle = 0.0;
+    rtY->Ub_DutyCycle = 0.0F;
 
     /* Outport: '<Root>/Uc_DutyCycle' */
     /* '<S1>:1:6' Uc_DutyCycle = 0; */
-    rtY->Uc_DutyCycle = 0.0;
+    rtY->Uc_DutyCycle = 0.0F;
   } else {
     switch (rtDW->is_c3_uz_codegen0) {
      case IN_InProcess:
       /* During 'InProcess': '<S1>:3' */
       /* '<S1>:18:1' sf_internal_predicateOutput = RESET==1; */
-      if (rtU->RESET == 1.0F) {
+      if (rtU->RESET == 1) {
         /* Transition: '<S1>:18' */
         rtDW->is_c3_uz_codegen0 = IN_Reset;
 
         /* Entry 'Reset': '<S1>:119' */
       } else {
         /* Outputs for Function Call SubSystem: '<S1>/SpeedController' */
-        /* '<S1>:3:5' [id_soll, iq_soll] = SpeedController(id_ref, iq_ref, n_ref, n_ist, flg_SpeedControl, flg_FieldWeakening, Kp_Speed, Ki_Speed, I_max, RESET) */
-        /* Simulink Function 'SpeedController': '<S1>:133' */
-        if (rtDW->SpeedController_RESET_ELAPS_T) {
-          SpeedController_ELAPS_T = 0U;
-        } else {
-          SpeedController_ELAPS_T = rtM->Timing.clockTick0 -
-            rtDW->SpeedController_PREV_T;
-        }
-
-        rtDW->SpeedController_PREV_T = rtM->Timing.clockTick0;
-        rtDW->SpeedController_RESET_ELAPS_T = false;
-
-        /* Sum: '<S37>/Sum' incorporates:
+        /* Outport: '<Root>/iq_soll' incorporates:
+         *  Inport: '<Root>/I_max'
+         *  Inport: '<Root>/Ki_Speed'
+         *  Inport: '<Root>/Kp_Speed'
+         *  Inport: '<Root>/U_IC'
+         *  Inport: '<Root>/flg_FieldWeakening'
+         *  Inport: '<Root>/flg_SpeedControl'
+         *  Inport: '<Root>/id_ref'
+         *  Inport: '<Root>/iq_ref'
          *  Inport: '<Root>/n_ist'
          *  Inport: '<Root>/n_ref'
+         *  Outport: '<Root>/id_soll'
          */
-        rtDW->IProdOut = (real_T)rtU->n_ref - rtU->n_ist;
+        /* '<S1>:3:5' [id_soll, iq_soll] = SpeedController(id_ref, iq_ref, n_ref, n_ist, flg_SpeedControl, flg_FieldWeakening, Kp_Speed, Ki_Speed, I_max, U_IC, RESET) */
+        /* Simulink Function 'SpeedController': '<S1>:133' */
+        SpeedController(rtM, rtU->id_ref, rtU->iq_ref, rtU->n_ref, rtU->n_ist,
+                        rtU->flg_SpeedControl, rtU->flg_FieldWeakening,
+                        rtU->Kp_Speed, rtU->Ki_Speed, rtU->I_max, rtU->U_IC,
+                        rtU->RESET, &rtY->id_soll, &rtY->iq_soll,
+                        &rtDW->SpeedController_j);
 
-        /* DiscreteIntegrator: '<S73>/Integrator' */
-        if (rtDW->Integrator_SYSTEM_ENABLE != 0) {
-          /* DiscreteIntegrator: '<S73>/Integrator' */
-          rtDW->Integrator = rtDW->Integrator_DSTATE;
-        } else if ((rtU->RESET != 0.0F) || (rtDW->Integrator_PrevResetState != 0))
-        {
-          rtDW->Integrator_DSTATE = 0.0;
-
-          /* DiscreteIntegrator: '<S73>/Integrator' */
-          rtDW->Integrator = rtDW->Integrator_DSTATE;
-        } else {
-          /* DiscreteIntegrator: '<S73>/Integrator' */
-          rtDW->Integrator = 5.0E-5 * (real_T)SpeedController_ELAPS_T
-            * rtDW->Integrator_PREV_U + rtDW->Integrator_DSTATE;
-        }
-
-        /* End of DiscreteIntegrator: '<S73>/Integrator' */
-
-        /* Sum: '<S83>/Sum' incorporates:
-         *  Inport: '<Root>/Kp_Speed'
-         *  Product: '<S78>/PProd Out'
-         */
-        rtDW->Sum = rtDW->IProdOut * rtU->Kp_Speed + rtDW->Integrator;
-
-        /* Switch: '<S66>/Switch' incorporates:
-         *  Gain: '<S37>/Gain'
-         *  Inport: '<Root>/I_max'
-         *  RelationalOperator: '<S66>/u_GTE_up'
-         *  RelationalOperator: '<S66>/u_GT_lo'
-         *  Switch: '<S66>/Switch1'
-         */
-        if (rtDW->Sum >= rtU->I_max) {
-          rtDW->SignPreIntegrator = rtU->I_max;
-        } else if (rtDW->Sum > -(real_T)rtU->I_max) {
-          /* Switch: '<S66>/Switch1' */
-          rtDW->SignPreIntegrator = rtDW->Sum;
-        } else {
-          rtDW->SignPreIntegrator = -(real_T)rtU->I_max;
-        }
-
-        /* End of Switch: '<S66>/Switch' */
-
-        /* Sum: '<S66>/Diff' */
-        rtDW->SignPreIntegrator = rtDW->Sum - rtDW->SignPreIntegrator;
-
-        /* Product: '<S70>/IProd Out' incorporates:
-         *  Inport: '<Root>/Ki_Speed'
-         */
-        rtDW->IProdOut *= rtU->Ki_Speed;
-
-        /* Switch: '<S36>/Switch1' incorporates:
-         *  Inport: '<Root>/flg_SpeedControl'
-         */
-        if (rtU->flg_SpeedControl > 0.0F) {
-          /* Switch: '<S81>/Switch2' incorporates:
-           *  Gain: '<S37>/Gain'
-           *  Inport: '<Root>/I_max'
-           *  RelationalOperator: '<S81>/LowerRelop1'
-           *  RelationalOperator: '<S81>/UpperRelop'
-           *  Switch: '<S81>/Switch'
-           */
-          if (rtDW->Sum > rtU->I_max) {
-            /* Outport: '<Root>/iq_soll' incorporates:
-             *  Switch: '<S36>/Switch1'
-             */
-            rtY->iq_soll = rtU->I_max;
-          } else if (rtDW->Sum < -(real_T)rtU->I_max) {
-            /* Switch: '<S81>/Switch' incorporates:
-             *  Gain: '<S37>/Gain'
-             *  Outport: '<Root>/iq_soll'
-             *  Switch: '<S36>/Switch1'
-             */
-            rtY->iq_soll = -(real_T)rtU->I_max;
-          } else {
-            /* Outport: '<Root>/iq_soll' incorporates:
-             *  Switch: '<S36>/Switch1'
-             *  Switch: '<S81>/Switch'
-             */
-            rtY->iq_soll = rtDW->Sum;
-          }
-
-          /* End of Switch: '<S81>/Switch2' */
-        } else {
-          /* Outport: '<Root>/iq_soll' incorporates:
-           *  Inport: '<Root>/iq_ref'
-           *  Switch: '<S36>/Switch1'
-           */
-          rtY->iq_soll = rtU->iq_ref;
-        }
-
-        /* End of Switch: '<S36>/Switch1' */
-
-        /* Update for DiscreteIntegrator: '<S73>/Integrator' */
-        rtDW->Integrator_SYSTEM_ENABLE = 0U;
-        rtDW->Integrator_DSTATE = rtDW->Integrator;
-        if (rtU->RESET > 0.0F) {
-          rtDW->Integrator_PrevResetState = 1;
-        } else if (rtU->RESET < 0.0F) {
-          rtDW->Integrator_PrevResetState = -1;
-        } else if (rtU->RESET == 0.0F) {
-          rtDW->Integrator_PrevResetState = 0;
-        } else {
-          rtDW->Integrator_PrevResetState = 2;
-        }
-
-        /* Signum: '<S63>/SignPreSat' */
-        if (rtDW->SignPreIntegrator < 0.0) {
-          rtDW->Integrator = -1.0;
-        } else if (rtDW->SignPreIntegrator > 0.0) {
-          rtDW->Integrator = 1.0;
-        } else if (rtDW->SignPreIntegrator == 0.0) {
-          rtDW->Integrator = 0.0;
-        } else {
-          rtDW->Integrator = (rtNaN);
-        }
-
-        /* End of Signum: '<S63>/SignPreSat' */
-
-        /* Signum: '<S63>/SignPreIntegrator' */
-        if (rtDW->IProdOut < 0.0) {
-          rtDW->rtb_IProdOut_m = -1.0;
-        } else if (rtDW->IProdOut > 0.0) {
-          rtDW->rtb_IProdOut_m = 1.0;
-        } else if (rtDW->IProdOut == 0.0) {
-          rtDW->rtb_IProdOut_m = 0.0;
-        } else {
-          rtDW->rtb_IProdOut_m = (rtNaN);
-        }
-
-        /* End of Signum: '<S63>/SignPreIntegrator' */
-
-        /* Switch: '<S63>/Switch' incorporates:
-         *  DataTypeConversion: '<S63>/DataTypeConv1'
-         *  DataTypeConversion: '<S63>/DataTypeConv2'
-         *  Gain: '<S63>/ZeroGain'
-         *  Logic: '<S63>/AND3'
-         *  RelationalOperator: '<S63>/Equal1'
-         *  RelationalOperator: '<S63>/NotEqual'
-         */
-        if ((0.0 * rtDW->Sum != rtDW->SignPreIntegrator) && ((int8_T)
-             rtDW->Integrator == (int8_T)rtDW->rtb_IProdOut_m)) {
-          /* Update for DiscreteIntegrator: '<S73>/Integrator' incorporates:
-           *  Constant: '<S63>/Constant1'
-           */
-          rtDW->Integrator_PREV_U = 0.0;
-        } else {
-          /* Update for DiscreteIntegrator: '<S73>/Integrator' */
-          rtDW->Integrator_PREV_U = rtDW->IProdOut;
-        }
-
-        /* End of Switch: '<S63>/Switch' */
-
-        /* Switch: '<S36>/Switch' incorporates:
-         *  Inport: '<Root>/flg_SpeedControl'
-         */
-        if (rtU->flg_SpeedControl > 0.0F) {
-          /* Outport: '<Root>/id_soll' incorporates:
-           *  Constant: '<S37>/Constant'
-           */
-          rtY->id_soll = 0.0;
-        } else {
-          /* Outport: '<Root>/id_soll' incorporates:
-           *  Inport: '<Root>/id_ref'
-           */
-          rtY->id_soll = rtU->id_ref;
-        }
-
-        /* End of Switch: '<S36>/Switch' */
         /* End of Outputs for SubSystem: '<S1>/SpeedController' */
 
         /* Outputs for Function Call SubSystem: '<S1>/CurrentController' */
@@ -1246,6 +1742,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Inport: '<Root>/flgLimitUdUq'
          *  Inport: '<Root>/flg_PreCntr'
          *  Inport: '<Root>/flg_SpaceVectorModulation'
+         *  Inport: '<Root>/flg_deadTimeCompensation'
          *  Inport: '<Root>/flg_theta_el_compensation'
          *  Inport: '<Root>/ia'
          *  Inport: '<Root>/ib'
@@ -1261,14 +1758,13 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          */
         /* '<S1>:3:6' [Ua_DutyCycle, Ub_DutyCycle, Uc_DutyCycle, iq_ist, id_ist, ud, uq] = CurrentController(ia, ib, ic, w_el, flg_PreCntr, theta_el, U_IC,id_soll,iq_soll,flgLimitUdUq, Kp_Iq, Ki_Iq, Kp_Id, Ki_Id, flg_SpaceVectorModulation, RESET, flg_deadTimeCompensation, flg_theta_el_compensation) */
         /* Simulink Function 'CurrentController': '<S1>:72' */
-        CurrentController(rtM, (real_T)rtU->ia, (real_T)rtU->ib, (real_T)rtU->ic,
-                          (real_T)rtU->w_el, (real_T)rtU->flg_PreCntr, (real_T)
-                          rtU->theta_el, (real_T)rtU->U_IC, rtY->id_soll,
-                          rtY->iq_soll, (real_T)rtU->flgLimitUdUq, (real_T)
-                          rtU->Kp_Iq, (real_T)rtU->Ki_Iq, (real_T)rtU->Kp_Id,
-                          (real_T)rtU->Ki_Id, (real_T)
-                          rtU->flg_SpaceVectorModulation, (real_T)rtU->RESET,
-                          (real_T)rtU->flg_theta_el_compensation, rtDW->Switch_e,
+        CurrentController(rtM, rtU->ia, rtU->ib, rtU->ic, rtU->w_el,
+                          rtU->flg_PreCntr, rtU->theta_el, rtU->U_IC,
+                          rtY->id_soll, rtY->iq_soll, rtU->flgLimitUdUq,
+                          rtU->Kp_Iq, rtU->Ki_Iq, rtU->Kp_Id, rtU->Ki_Id,
+                          rtU->flg_SpaceVectorModulation, rtU->RESET,
+                          rtU->flg_deadTimeCompensation,
+                          rtU->flg_theta_el_compensation, rtDW->Saturation,
                           &rtY->Ub_DutyCycle, &rtY->Uc_DutyCycle, rtDW->Switch_m,
                           &rtY->id_ist, &rtY->ud, &rtY->uq,
                           &rtConstB.CurrentController_o,
@@ -1277,7 +1773,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         /* End of Outputs for SubSystem: '<S1>/CurrentController' */
 
         /* Outport: '<Root>/Ua_DutyCycle' */
-        rtY->Ua_DutyCycle = rtDW->Switch_e[0];
+        rtY->Ua_DutyCycle = rtDW->Saturation[0];
 
         /* Outport: '<Root>/iq_ist' */
         rtY->iq_ist = rtDW->Switch_m[1];
@@ -1287,30 +1783,54 @@ void uz_codegen0_step(RT_MODEL *const rtM)
      case IN_Reset:
       /* During 'Reset': '<S1>:119' */
       /* '<S1>:121:1' sf_internal_predicateOutput = RESET == 0; */
-      if (rtU->RESET == 0.0F) {
+      if (rtU->RESET == 0) {
         /* Transition: '<S1>:121' */
         rtDW->is_c3_uz_codegen0 = IN_Start;
 
         /* Outport: '<Root>/activeState' */
         /* Entry 'Start': '<S1>:1' */
         /* '<S1>:1:3' activeState = 1; */
-        rtY->activeState = 1.0;
+        rtY->activeState = 1.0F;
 
         /* Outport: '<Root>/Ua_DutyCycle' */
         /* '<S1>:1:4' Ua_DutyCycle = 0; */
-        rtY->Ua_DutyCycle = 0.0;
+        rtY->Ua_DutyCycle = 0.0F;
 
         /* Outport: '<Root>/Ub_DutyCycle' */
         /* '<S1>:1:5' Ub_DutyCycle = 0; */
-        rtY->Ub_DutyCycle = 0.0;
+        rtY->Ub_DutyCycle = 0.0F;
 
         /* Outport: '<Root>/Uc_DutyCycle' */
         /* '<S1>:1:6' Uc_DutyCycle = 0; */
-        rtY->Uc_DutyCycle = 0.0;
+        rtY->Uc_DutyCycle = 0.0F;
       } else {
         /* Outport: '<Root>/activeState' */
         /* '<S1>:119:3' activeState = 3; */
-        rtY->activeState = 3.0;
+        rtY->activeState = 3.0F;
+
+        /* Outputs for Function Call SubSystem: '<S1>/SpeedController' */
+        /* Outport: '<Root>/iq_soll' incorporates:
+         *  Inport: '<Root>/I_max'
+         *  Inport: '<Root>/Ki_Speed'
+         *  Inport: '<Root>/Kp_Speed'
+         *  Inport: '<Root>/U_IC'
+         *  Inport: '<Root>/flg_FieldWeakening'
+         *  Inport: '<Root>/flg_SpeedControl'
+         *  Inport: '<Root>/id_ref'
+         *  Inport: '<Root>/iq_ref'
+         *  Inport: '<Root>/n_ist'
+         *  Inport: '<Root>/n_ref'
+         *  Outport: '<Root>/id_soll'
+         */
+        /* '<S1>:119:4' [id_soll, iq_soll] = SpeedController(id_ref, iq_ref, n_ref, n_ist, flg_SpeedControl, flg_FieldWeakening, Kp_Speed, Ki_Speed, I_max, U_IC, RESET) */
+        /* Simulink Function 'SpeedController': '<S1>:133' */
+        SpeedController(rtM, rtU->id_ref, rtU->iq_ref, rtU->n_ref, rtU->n_ist,
+                        rtU->flg_SpeedControl, rtU->flg_FieldWeakening,
+                        rtU->Kp_Speed, rtU->Ki_Speed, rtU->I_max, rtU->U_IC,
+                        rtU->RESET, &rtY->id_soll, &rtY->iq_soll,
+                        &rtDW->SpeedController_j);
+
+        /* End of Outputs for SubSystem: '<S1>/SpeedController' */
 
         /* Outputs for Function Call SubSystem: '<S1>/CurrentController' */
         /* Outport: '<Root>/uq' incorporates:
@@ -1322,6 +1842,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Inport: '<Root>/flgLimitUdUq'
          *  Inport: '<Root>/flg_PreCntr'
          *  Inport: '<Root>/flg_SpaceVectorModulation'
+         *  Inport: '<Root>/flg_deadTimeCompensation'
          *  Inport: '<Root>/flg_theta_el_compensation'
          *  Inport: '<Root>/ia'
          *  Inport: '<Root>/ib'
@@ -1333,18 +1854,17 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Outport: '<Root>/id_ist'
          *  Outport: '<Root>/ud'
          */
-        /* '<S1>:119:4' [Ua_DutyCycle, Ub_DutyCycle, Uc_DutyCycle, iq_ist, id_ist, ud, uq] = CurrentController(ia, ib, ic, w_el, flg_PreCntr, theta_el, U_IC,id_ref,iq_ref,flgLimitUdUq, Kp_Iq, Ki_Iq, Kp_Id, Ki_Id, flg_SpaceVectorModulation, RESET, flg_deadTimeCompensation, flg_theta_el_compensation) */
+        /* '<S1>:119:5' [Ua_DutyCycle, Ub_DutyCycle, Uc_DutyCycle, iq_ist, id_ist, ud, uq] = CurrentController(ia, ib, ic, w_el, flg_PreCntr, theta_el, U_IC,id_ref,iq_ref,flgLimitUdUq, Kp_Iq, Ki_Iq, Kp_Id, Ki_Id, flg_SpaceVectorModulation, RESET, flg_deadTimeCompensation, flg_theta_el_compensation) */
         /* Simulink Function 'CurrentController': '<S1>:72' */
-        CurrentController(rtM, (real_T)rtU->ia, (real_T)rtU->ib, (real_T)rtU->ic,
-                          (real_T)rtU->w_el, (real_T)rtU->flg_PreCntr, (real_T)
-                          rtU->theta_el, (real_T)rtU->U_IC, (real_T)rtU->id_ref,
-                          (real_T)rtU->iq_ref, (real_T)rtU->flgLimitUdUq,
-                          (real_T)rtU->Kp_Iq, (real_T)rtU->Ki_Iq, (real_T)
-                          rtU->Kp_Id, (real_T)rtU->Ki_Id, (real_T)
-                          rtU->flg_SpaceVectorModulation, (real_T)rtU->RESET,
-                          (real_T)rtU->flg_theta_el_compensation, rtDW->Switch_e,
-                          &rtDW->Sum, &rtDW->IProdOut, rtDW->Switch_m,
-                          &rtY->id_ist, &rtY->ud, &rtY->uq,
+        CurrentController(rtM, rtU->ia, rtU->ib, rtU->ic, rtU->w_el,
+                          rtU->flg_PreCntr, rtU->theta_el, rtU->U_IC,
+                          rtU->id_ref, rtU->iq_ref, rtU->flgLimitUdUq,
+                          rtU->Kp_Iq, rtU->Ki_Iq, rtU->Kp_Id, rtU->Ki_Id,
+                          rtU->flg_SpaceVectorModulation, rtU->RESET,
+                          rtU->flg_deadTimeCompensation,
+                          rtU->flg_theta_el_compensation, rtDW->Saturation,
+                          &rtDW->OutportBufferForub, &rtDW->OutportBufferForuc,
+                          rtDW->Switch_m, &rtY->id_ist, &rtY->ud, &rtY->uq,
                           &rtConstB.CurrentController_o,
                           &rtDW->CurrentController_o);
 
@@ -1354,30 +1874,30 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         rtY->iq_ist = rtDW->Switch_m[1];
 
         /* Outport: '<Root>/Ua_DutyCycle' */
-        /* '<S1>:119:5' Ua_DutyCycle = 0; */
-        rtY->Ua_DutyCycle = 0.0;
+        /* '<S1>:119:6' Ua_DutyCycle = 0; */
+        rtY->Ua_DutyCycle = 0.0F;
 
         /* Outport: '<Root>/Ub_DutyCycle' */
-        /* '<S1>:119:6' Ub_DutyCycle = 0; */
-        rtY->Ub_DutyCycle = 0.0;
+        /* '<S1>:119:7' Ub_DutyCycle = 0; */
+        rtY->Ub_DutyCycle = 0.0F;
 
         /* Outport: '<Root>/Uc_DutyCycle' */
-        /* '<S1>:119:7' Uc_DutyCycle = 0; */
-        rtY->Uc_DutyCycle = 0.0;
+        /* '<S1>:119:8' Uc_DutyCycle = 0; */
+        rtY->Uc_DutyCycle = 0.0F;
       }
       break;
 
      default:
       /* During 'Start': '<S1>:1' */
       /* '<S1>:17:1' sf_internal_predicateOutput = START==1 & RESET==0; */
-      if ((rtU->START == 1.0F) && (rtU->RESET == 0.0F)) {
+      if ((rtU->START == 1) && (rtU->RESET == 0)) {
         /* Transition: '<S1>:17' */
         rtDW->is_c3_uz_codegen0 = IN_InProcess;
 
         /* Outport: '<Root>/activeState' */
         /* Entry 'InProcess': '<S1>:3' */
         /* '<S1>:3:3' activeState = 2; */
-        rtY->activeState = 2.0;
+        rtY->activeState = 2.0F;
       }
       break;
     }
@@ -1387,7 +1907,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
 
   /* Update absolute time for base rate */
   /* The "clockTick0" counts the number of times the code of this task has
-   * been executed. The resolution of this integer timer is 5.0E-5, which is the step size
+   * been executed. The resolution of this integer timer is 2.5E-5, which is the step size
    * of the task. Size of "clockTick0" ensures timer will not overflow during the
    * application lifespan selected.
    */
@@ -1420,34 +1940,34 @@ void uz_codegen0_initialize(RT_MODEL *const rtM)
   rtDW->is_c3_uz_codegen0 = IN_NO_ACTIVE_CHILD;
 
   /* SystemInitialize for Outport: '<Root>/Ua_DutyCycle' */
-  rtY->Ua_DutyCycle = 0.0;
+  rtY->Ua_DutyCycle = 0.0F;
 
   /* SystemInitialize for Outport: '<Root>/activeState' */
-  rtY->activeState = 0.0;
+  rtY->activeState = 0.0F;
 
   /* SystemInitialize for Outport: '<Root>/Uc_DutyCycle' */
-  rtY->Uc_DutyCycle = 0.0;
+  rtY->Uc_DutyCycle = 0.0F;
 
   /* SystemInitialize for Outport: '<Root>/Ub_DutyCycle' */
-  rtY->Ub_DutyCycle = 0.0;
+  rtY->Ub_DutyCycle = 0.0F;
 
   /* SystemInitialize for Outport: '<Root>/iq_ist' */
-  rtY->iq_ist = 0.0;
+  rtY->iq_ist = 0.0F;
 
   /* SystemInitialize for Outport: '<Root>/id_ist' */
-  rtY->id_ist = 0.0;
+  rtY->id_ist = 0.0F;
 
   /* SystemInitialize for Outport: '<Root>/uq' */
-  rtY->uq = 0.0;
+  rtY->uq = 0.0F;
 
   /* SystemInitialize for Outport: '<Root>/ud' */
-  rtY->ud = 0.0;
+  rtY->ud = 0.0F;
 
   /* SystemInitialize for Outport: '<Root>/iq_soll' */
-  rtY->iq_soll = 0.0;
+  rtY->iq_soll = 0.0F;
 
   /* SystemInitialize for Outport: '<Root>/id_soll' */
-  rtY->id_soll = 0.0;
+  rtY->id_soll = 0.0F;
 
   /* SystemInitialize for Chart: '<Root>/uz_codegen' incorporates:
    *  SubSystem: '<S1>/CurrentController'
@@ -1457,9 +1977,7 @@ void uz_codegen0_initialize(RT_MODEL *const rtM)
   /* SystemInitialize for Chart: '<Root>/uz_codegen' incorporates:
    *  SubSystem: '<S1>/SpeedController'
    */
-  /* InitializeConditions for DiscreteIntegrator: '<S73>/Integrator' */
-  rtDW->Integrator_PrevResetState = 0;
-  rtDW->Integrator_PREV_U = 0.0;
+  SpeedController_Init(&rtDW->SpeedController_j);
 
   /* Enable for Chart: '<Root>/uz_codegen' incorporates:
    *  SubSystem: '<S1>/CurrentController'
@@ -1469,10 +1987,7 @@ void uz_codegen0_initialize(RT_MODEL *const rtM)
   /* Enable for Chart: '<Root>/uz_codegen' incorporates:
    *  SubSystem: '<S1>/SpeedController'
    */
-  rtDW->SpeedController_RESET_ELAPS_T = true;
-
-  /* Enable for DiscreteIntegrator: '<S73>/Integrator' */
-  rtDW->Integrator_SYSTEM_ENABLE = 1U;
+  SpeedController_Enable(&rtDW->SpeedController_j);
 }
 
 /*

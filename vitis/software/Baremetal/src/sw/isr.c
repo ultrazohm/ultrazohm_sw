@@ -181,9 +181,6 @@ int Initialize_ISR(){
 	//Set CodeGen-SampleTime according to settings in main
 	rtP.T_R = Global_Data.ctrl.samplingPeriod;
 
-	//Set incremental offset
-	Global_Data.mrp.incrementalEncoderOffset = - 5.139955762F;
-
 return Status;
 }
 

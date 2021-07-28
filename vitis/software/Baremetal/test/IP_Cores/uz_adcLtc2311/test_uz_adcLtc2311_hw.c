@@ -56,11 +56,11 @@ void test_adcLtc2311_hw_write_channel(void)
     uz_adcLtc2311_hw_write_channel(TEST_BASE_ADDRESS, value);
 }
 
-void test_adcLtc2311_hw_write_conversion_value(void)
+void test_adcLtc2311_hw_write_value(void)
 {
     int32_t value = -TEST_RETURN;
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_CONV_VALUE, value);
-    uz_adcLtc2311_hw_write_conversion_value(TEST_BASE_ADDRESS, value);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_VALUE, value);
+    uz_adcLtc2311_hw_write_value(TEST_BASE_ADDRESS, value);
 }
 
 
@@ -100,11 +100,11 @@ void test_adcLtc2311_hw_write_channel_zero_base_address(void)
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_write_channel(0, value));
 }
 
-void test_adcLtc2311_hw_write_conversion_value_zero_base_address(void)
+void test_adcLtc2311_hw_write_value_zero_base_address(void)
 {
     uint32_t value = TEST_RETURN;
     uz_axi_write_uint32_Ignore();
-    TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_write_conversion_value(0, value));
+    TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_write_value(0, value));
 }
 
 // read functions
@@ -157,10 +157,10 @@ void test_adcLtc2311_hw_read_master_busy(void)
     uz_adcLtc2311_hw_read_master_busy(TEST_BASE_ADDRESS);
 }
 
-void test_adcLtc2311_hw_read_conversion_value(void)
+void test_adcLtc2311_hw_read_value(void)
 {
-    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + ADC_LTC2311_CONV_VALUE, TEST_RETURN);
-    uz_adcLtc2311_hw_read_conversion_value(TEST_BASE_ADDRESS);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + ADC_LTC2311_VALUE, TEST_RETURN);
+    uz_adcLtc2311_hw_read_value(TEST_BASE_ADDRESS);
 }
 
 
@@ -215,10 +215,10 @@ void test_adcLtc2311_hw_read_master_busy_zero_base_address(void)
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_read_master_busy(0));
 }
 
-void test_adcLtc2311_hw_read_conversion_value_zero_base_address(void)
+void test_adcLtc2311_hw_read_value_zero_base_address(void)
 {
     uz_axi_read_uint32_IgnoreAndReturn(TEST_RETURN);
-    TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_read_conversion_value(0));
+    TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_read_value(0));
 }
 
 #endif // TEST

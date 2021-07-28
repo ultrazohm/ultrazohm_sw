@@ -58,15 +58,18 @@ Features
 Software Driver
 ---------------
 
-.. doxygenstruct:: uz_adcLtc2311_config
+.. doxygenstruct:: uz_adcLtc2311
    :members:
 
-.. doxygenstruct:: uz_adcLtc2311_spiConfig
+.. doxygenstruct:: uz_adcLtc2311_config
    :members:
 
 .. doxygenfunction:: uz_adcLtc2311_configure
 
 .. doxygenfunction:: uz_adcLtc2311_initConfig
+
+.. doxygenstruct:: uz_adcLtc2311_spiConfig
+   :members:
 
 .. doxygenfunction:: uz_adcLtc2311_configureSpi
 
@@ -120,7 +123,10 @@ Configuration Registers
 Control Register
 ****************
 
+Address offset: 0x0
+
 Software control register of the IP core.
+
 
 .. _table_adc_cr:
 .. csv-table:: ADC_CR
@@ -142,6 +148,8 @@ unsigned integer.
 SPI Control Register
 ********************
 
+Address offset: 0x4
+
 The SPI interfaces can be controlled manually with this register in
 order to use sleep and nap modes of the ADC. The signal ``SS_N`` and
 ``SCLK`` only can be controlled manually if the selected master
@@ -158,8 +166,11 @@ instantiated.
   :widths: 5 10 5 10 40 40
   :header-rows: 1
 
+
 SPI Configuration Register
 **************************
+
+Address offset: 0x8
 
 Setting for
 
@@ -184,6 +195,8 @@ time described.
 Master Channel selection
 ************************
 
+Address offset: 0xC
+
 Encoding: :ref:`One-Hot <adc_one_hot>`
 
 This register is used for two different functions:
@@ -202,11 +215,13 @@ This register is used for two different functions:
 .. _table_adc_master_channel:
 .. csv-table:: ADC_MASTER_CHANNEL
   :file: ./adc_v3/tables/adc_master_channel.csv
-  :widths: 7 25 3 10 30 30
+  :widths: 8 30 3 10 30 30
   :header-rows: 1
 
 ADC Channel selection
 *********************
+
+Address offset: 0x10
 
 Encoding: :ref:`One-Hot <adc_one_hot>`
 
@@ -217,11 +232,13 @@ be updated.
 .. _table_adc_channel:
 .. csv-table:: ADC_CHANNEL
   :file: ./adc_v3/tables/adc_channel.csv
-  :widths: 7 25 3 10 30 30
+  :widths: 8 30 3 10 30 30
   :header-rows: 1
 
 Transmission ended register
 ***************************
+
+Address offset: 0x14
 
 Encoding: :ref:`One-Hot <adc_one_hot>`
 
@@ -238,6 +255,8 @@ the hardware port ``RAW_VALUE`` is valid for the indicated channels.
 Addition and Multiplication ended register
 ******************************************
 
+Address offset: 0x18
+
 Encoding: :ref:`One-Hot <adc_one_hot>`
 
 This register indicates that an SPI master unit finished with the
@@ -247,11 +266,13 @@ the hardware port ``SI_VALUE`` is valid for the indicated channels.
 .. _table_adc_si_finish:
 .. csv-table:: ADC_MASTER_SI_FINISH
   :file: ./adc_v3/tables/adc_master_si_finish.csv
-  :widths: 7 25 3 10 30 30
+  :widths: 8 30 3 10 30 30
   :header-rows: 1
 
-Status indicator
-****************
+Conversion ongoing indicator
+****************************
+
+Address offset: 0x1C
 
 Encoding: :ref:`One-Hot <adc_one_hot>`
 
@@ -261,11 +282,13 @@ or a multiplication is ongoing.
 .. _table_adc_master_busy:
 .. csv-table:: ADC_MASTER_BUSY
   :file: ./adc_v3/tables/adc_master_busy.csv
-  :widths: 7 25 3 10 30 30
+  :widths: 8 30 3 10 30 30
   :header-rows: 1
 
 Configuration Value register
 ****************************
+
+Address offset: 0x20
 
 Encoding: Depending on the value
 
@@ -277,6 +300,24 @@ is done in :ref:`table_adc_cr`.
 .. csv-table:: ADC_VALUE
   :file: ./adc_v3/tables/adc_conv_value.csv
   :widths: 10 10 5 10 30 30
+  :header-rows: 1
+
+ADC Available indicator
+***********************
+
+Address offset: 0x24
+
+Encoding: :ref:`One-Hot <adc_one_hot>`
+
+The indicated master channels are currently not available because they
+are either in sleep mode or in nap mode. This register is set by
+software and used by the hardware in order to prohibit a trigger when
+an ADC is not available.
+
+.. _table_adc_available:
+.. csv-table:: ADC_AVAILABLE
+  :file: ./adc_v3/tables/adc_available.csv
+  :widths: 8 30 3 10 30 30
   :header-rows: 1
 
 

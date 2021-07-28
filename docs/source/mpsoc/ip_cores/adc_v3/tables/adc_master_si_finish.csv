@@ -1,2 +1,2 @@
 Bit(s),Name,Default Value,Access,True ('1'),False ('0')
-0 - 31,ADC_MST_0 - ADC_MST_31,0,Read only,The processing the specified master channel finished,There is processing ongoing on the master channel
+0 - 31,ADC_MASTER_0 - ADC_MASTER_31,0,Read only,The processing the specified master channel finished,There is processing ongoing on the master channel

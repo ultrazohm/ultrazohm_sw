@@ -149,17 +149,17 @@ typedef struct uz_adcLtc2311 uz_adcLtc2311;
  *
  */
 typedef struct uz_adcLtc2311_config {
-	uint32_t master_select;
-	uint32_t channel_select;
-	int32_t conversion_factor;
-	int32_t offset;
-	uint32_t samples;
-	_Bool set_offset;
-	_Bool set_conversion;
-	_Bool set_samples;
-	uint32_t error_code;
-	_Bool try_infinite;
-	uint32_t max_attempts;
+	uint32_t master_select; /**< One hot encoded variable to select the SPI masters that shall be configured */
+	uint32_t channel_select; /**< One hot encoded variable to select the channels of the selected SPI masters shall be configured */
+	int32_t conversion_factor; /**< Factor with which the sum of the offset and the raw value is multiplied */
+	int32_t offset; /**< Offset that is added to the raw value before the multiplication */
+	uint32_t samples; /**< Number of samples that shall be taken on a single trigger */
+	_Bool set_offset; /**< Set to true if the offset shall be configured */
+	_Bool set_conversion; /**< Set to true if the conversion factor shall be configured */
+	_Bool set_samples; /**< Set to true if the number of samples shall be configured */
+	uint32_t error_code; /**< One-Hot encoded error variable described above */
+	_Bool try_infinite; /**< Set to true if the configuration shall not be aborted after a certain number of attempts */
+	uint32_t max_attempts; /**< If try_infinite is set to false, the function @ref uz_adcLtc2311_configure tries to configure the IP core with max_attempts */
 
 } uz_adcLtc2311_config;
 
@@ -202,12 +202,12 @@ typedef struct uz_adcLtc2311_config {
  */
 
 typedef struct uz_adcLtc2311_spiConfig {
-	uint32_t error_code;
-	uint32_t pre_delay;
-	uint32_t post_delay;
-	uint32_t clk_div;
-	uint32_t cpha;
-	uint32_t cpol;
+	uint32_t error_code; /**< One-Hot encoded error variable described above */
+	uint32_t pre_delay; /**< See the SPI configuration register for explanation */
+	uint32_t post_delay; /**< See the SPI configuration register for explanation */
+	uint32_t clk_div; /**< See the SPI configuration register for explanation */
+	uint32_t cpha; /**< SPI CPHA. Must be set to 0 for the LTC2311 */
+	uint32_t cpol; /**< SPI CPOL. Must be set to 1 for the LTC2311 */
 } uz_adcLtc2311_spiConfig;
 
 /**
@@ -241,10 +241,10 @@ typedef struct uz_adcLtc2311_spiConfig {
  *
  */
 typedef struct uz_adcLtc2311_napSleepConfig {
-	uint32_t error_code; 	/**< This variable contains the error code which is set by the called function */
-	uint32_t spi_masters;	/**< Indicates which SPI master shall be selected for the action */
-	uint32_t max_attempts;	/**< Maximum AXI read operations to enter the manual SPI control mode if try_infinite is set to false */
-	_Bool try_infinite;		/**< If true, the selected action will be tried infinitely */
+	uint32_t error_code; /**< This variable contains the error code which is set by the called function */
+	uint32_t spi_masters; /**< Indicates which SPI master shall be selected for the action */
+	uint32_t max_attempts; /**< Maximum AXI read operations to enter the manual SPI control mode if try_infinite is set to false */
+	_Bool try_infinite; /**< If true, the selected action will be tried infinitely */
 } uz_adcLtc2311_napSleepConfig;
 
 // function declarations

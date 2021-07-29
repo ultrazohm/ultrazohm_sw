@@ -17,6 +17,7 @@
 #include "../defines.h"
 #include "../include/javascope.h"
 #include "../Codegen/uz_codegen.h"
+#include "../globalData.h"
 
 
 float myIQfactor[15] = {1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.0, 1024.0, 2048.0, 4096.0, 8192.0, 16384.0};
@@ -31,6 +32,7 @@ extern ARM_to_Oszi_Data_shared_struct OsziData;
 extern Oszi_to_ARM_Data_shared_struct ControlData;
 extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
 extern uz_codegen codegenInstance;
+extern DS_Data Global_Data;
 
 uint32_t cnt_javascope=0, cnt_slowData=0;
 
@@ -96,6 +98,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_Speed_ref_rpm] = &codegenInstance.input.Ref_n;
 	js_ptr_arr[JSO_U_ZK] 		= &codegenInstance.input.Act_U_ZK;
 	js_ptr_arr[JSO_Theta_el] 	= &codegenInstance.input.Act_theta_el;
+	js_ptr_arr[JSO_Theta_mech] 	= &Global_Data.av.theta_mech;
 	js_ptr_arr[JSO_ISR_ExecutionTime_us] = &ISRExecutionTime;
 	js_ptr_arr[JSO_ISR_Period_us] = &isr_period_us;
 	js_ptr_arr[JSO_lifecheck]   = &lifecheck;

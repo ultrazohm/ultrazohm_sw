@@ -38,6 +38,7 @@ enum JS_OberservableData {
 	JSO_Speed_ref_rpm,
 	JSO_U_ZK,
 	JSO_Theta_el,
+	JSO_Theta_mech,
 	JSO_ISR_ExecutionTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,

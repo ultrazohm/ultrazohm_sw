@@ -16,3 +16,4 @@ IP Cores
 	interlock
 	axi_testIP/axi_testIP
 	uz_interlockDeadtime2L/uz_interlockDeadtime2L
+	adc_LTC2311_v3

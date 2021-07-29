@@ -1,7 +1,7 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
---Date        : Thu Jul 22 11:45:45 2021
+--Date        : Wed Jul 28 15:36:21 2021
 --Host        : ws-wendt running 64-bit Ubuntu 20.04.2 LTS
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -40,7 +40,6 @@ entity zusys_wrapper is
     ANL_10_N_Ch1 : in STD_LOGIC;
     ANL_10_P_Ch1 : in STD_LOGIC;
     D1_OUT_ADC : out STD_LOGIC_VECTOR ( 7 downto 0 );
-    D1_OUT_ADC_10 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_ADC_11 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_ADC_12 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_ADC_13 : out STD_LOGIC;
@@ -143,7 +142,6 @@ architecture STRUCTURE of zusys_wrapper is
     D1_OUT_ADC : out STD_LOGIC_VECTOR ( 7 downto 0 );
     D1_OUT_ADC_8 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_ADC_9 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT_ADC_10 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_ADC_11 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_ADC_12 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_ADC_13 : out STD_LOGIC
@@ -179,7 +177,6 @@ zusys_i: component zusys
       ANL_10_N_Ch1 => ANL_10_N_Ch1,
       ANL_10_P_Ch1 => ANL_10_P_Ch1,
       D1_OUT_ADC(7 downto 0) => D1_OUT_ADC(7 downto 0),
-      D1_OUT_ADC_10(0) => D1_OUT_ADC_10(0),
       D1_OUT_ADC_11(0) => D1_OUT_ADC_11(0),
       D1_OUT_ADC_12(0) => D1_OUT_ADC_12(0),
       D1_OUT_ADC_13 => D1_OUT_ADC_13,

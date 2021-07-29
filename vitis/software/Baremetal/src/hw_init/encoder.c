@@ -56,9 +56,27 @@ float 	fSpeed_rpm_Mean = 0;
 
 void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in global data struct
 
+	// Get mechanical angle theta prototype
+	int32_t i_theta_m  = Xil_In32(Encoder_position_REG);  //Read AXI-register
+	float fTheta_mech  = (float)(i_theta_m) /20000.0F * 2 * M_PI;
+
 	//Read the speed encoder (own IP-Block)
 	int32_t i_speed = Xil_In32(Encoder_rps_REG); //Read AXI-register
 	float fSpeed_rpm = 9.5492966 * (float)(ldexpf(i_speed, Q11toF));  // Shift 11 Bit for fixed-point //(60/(2*pi)) = 9.5493 Conversion Omega to rpm (Compare Simulink)
+
+	//Calculate speed here if abs(RPM)<15 because speed value tends to stick to a value in range [-15 ,15] even if actual speed is zero
+	if (fabs(fSpeed_rpm) < 15.0F)
+	{
+		fSpeed_rpm = (fTheta_mech - data->av.theta_mech)/data->ctrl.samplingPeriod; //difference between new and old value / time
+		if (fSpeed_rpm > 15.0F)		//to caps spikes caused by the change 2pi->0. To counter a onetime negative speed, the inverse sign is used.
+		{
+			fSpeed_rpm = -15.0F;
+		}
+		if (fSpeed_rpm < -15.0F)
+		{
+			fSpeed_rpm = 15.0F;
+		}
+	}
 
 	fSpeed_rpm_Mean -= fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //subtract the old value for the averaging
 	fSpeed_rpm_Buf[u8Speed_Buf_Inc] = fSpeed_rpm;		//restore the new value for the averaging
@@ -72,14 +90,20 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 	//Speed over buffer
 	data->av.mechanicalRotorSpeed = fSpeed_rpm_Mean * SPEED_BUF_SIZE_INVERS; //Calculate mean value for the speed
 
+	//Write theta mech
+	data->av.theta_mech = fTheta_mech;
+
 	// Get electrical angle theta
 	int32_t i_theta_e  = Xil_In32(Encoder_theta_e_REG);  //Read AXI-register
 	data->av.theta_elec  = (float)(ldexpf(i_theta_e, Q20toF));  // Shift 20 Bit for fixed-point
 
+
+
+	/*
 	// low-pass filter of mechanical speed
 	static float speed_lpf_mem_in = 0.0f;
 	static float speed_lpf_mem_out = 0.0f;
 	data->av.mechanicalRotorSpeed_filtered = LPF1(	data->av.mechanicalRotorSpeed, &speed_lpf_mem_in, &speed_lpf_mem_out,
 													data->ctrl.samplingFrequency, data->mrp.IncEncoderLPF_freq);
-
+	*/
 }

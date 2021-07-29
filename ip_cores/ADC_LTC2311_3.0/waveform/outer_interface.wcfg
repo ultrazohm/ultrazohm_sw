@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="/home/thilo/ultrazohm/ultrazohm_sw/vivado/project/ultrazohm.hw/hw_1/wave/hw_ila_data_8/hw_ila_data_8.wdb" id="1">
+         <top_modules>
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="285fs"></ZoomEndTime>
+      <Cursor1Time time="28fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="249"></NameColumnWidth>
+      <ValueColumnWidth column_width="121"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="9" />
+   <wave_markers>
+   </wave_markers>
+   <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/S_ENABLE">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/S_ENABLE</obj_property>
+      <obj_property name="ObjectShortName">S_ENABLE</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+      <obj_property name="label">ENABLE</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SS_N[0]">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[0]</obj_property>
+      <obj_property name="ObjectShortName">[0]</obj_property>
+      <obj_property name="label">SS_N</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/S_SCLK">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/S_SCLK</obj_property>
+      <obj_property name="ObjectShortName">S_SCLK</obj_property>
+      <obj_property name="LABELRADIX">true</obj_property>
+      <obj_property name="WaveformStyle">STYLE_DIGITAL</obj_property>
+      <obj_property name="label">SCLK</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/S_MISO[0]">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[0]</obj_property>
+      <obj_property name="ObjectShortName">[0]</obj_property>
+      <obj_property name="label">MISO_CH1</obj_property>
+   </wvobject>
+   <wvobject type="vbus" fp_name="vbus1435">
+      <obj_property name="label">RAW_CH1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[15]">
+         <obj_property name="ElementShortName">[15]</obj_property>
+         <obj_property name="ObjectShortName">[15]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[14]">
+         <obj_property name="ElementShortName">[14]</obj_property>
+         <obj_property name="ObjectShortName">[14]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[13]">
+         <obj_property name="ElementShortName">[13]</obj_property>
+         <obj_property name="ObjectShortName">[13]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[12]">
+         <obj_property name="ElementShortName">[12]</obj_property>
+         <obj_property name="ObjectShortName">[12]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[11]">
+         <obj_property name="ElementShortName">[11]</obj_property>
+         <obj_property name="ObjectShortName">[11]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[10]">
+         <obj_property name="ElementShortName">[10]</obj_property>
+         <obj_property name="ObjectShortName">[10]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[9]">
+         <obj_property name="ElementShortName">[9]</obj_property>
+         <obj_property name="ObjectShortName">[9]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[8]">
+         <obj_property name="ElementShortName">[8]</obj_property>
+         <obj_property name="ObjectShortName">[8]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[7]">
+         <obj_property name="ElementShortName">[7]</obj_property>
+         <obj_property name="ObjectShortName">[7]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[6]">
+         <obj_property name="ElementShortName">[6]</obj_property>
+         <obj_property name="ObjectShortName">[6]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[5]">
+         <obj_property name="ElementShortName">[5]</obj_property>
+         <obj_property name="ObjectShortName">[5]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[4]">
+         <obj_property name="ElementShortName">[4]</obj_property>
+         <obj_property name="ObjectShortName">[4]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[3]">
+         <obj_property name="ElementShortName">[3]</obj_property>
+         <obj_property name="ObjectShortName">[3]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[2]">
+         <obj_property name="ElementShortName">[2]</obj_property>
+         <obj_property name="ObjectShortName">[2]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[1]">
+         <obj_property name="ElementShortName">[1]</obj_property>
+         <obj_property name="ObjectShortName">[1]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALUE[0]">
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">[0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/RAW_VALID[0]">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[0]</obj_property>
+      <obj_property name="ObjectShortName">[0]</obj_property>
+      <obj_property name="label">RAW_VALID</obj_property>
+   </wvobject>
+   <wvobject type="vbus" fp_name="vbus591">
+      <obj_property name="label">SI_CH1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[18]">
+         <obj_property name="ElementShortName">[18]</obj_property>
+         <obj_property name="ObjectShortName">[18]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[17]">
+         <obj_property name="ElementShortName">[17]</obj_property>
+         <obj_property name="ObjectShortName">[17]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[16]">
+         <obj_property name="ElementShortName">[16]</obj_property>
+         <obj_property name="ObjectShortName">[16]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[15]">
+         <obj_property name="ElementShortName">[15]</obj_property>
+         <obj_property name="ObjectShortName">[15]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[14]">
+         <obj_property name="ElementShortName">[14]</obj_property>
+         <obj_property name="ObjectShortName">[14]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[13]">
+         <obj_property name="ElementShortName">[13]</obj_property>
+         <obj_property name="ObjectShortName">[13]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[12]">
+         <obj_property name="ElementShortName">[12]</obj_property>
+         <obj_property name="ObjectShortName">[12]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[11]">
+         <obj_property name="ElementShortName">[11]</obj_property>
+         <obj_property name="ObjectShortName">[11]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[10]">
+         <obj_property name="ElementShortName">[10]</obj_property>
+         <obj_property name="ObjectShortName">[10]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[9]">
+         <obj_property name="ElementShortName">[9]</obj_property>
+         <obj_property name="ObjectShortName">[9]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[8]">
+         <obj_property name="ElementShortName">[8]</obj_property>
+         <obj_property name="ObjectShortName">[8]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[7]">
+         <obj_property name="ElementShortName">[7]</obj_property>
+         <obj_property name="ObjectShortName">[7]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[6]">
+         <obj_property name="ElementShortName">[6]</obj_property>
+         <obj_property name="ObjectShortName">[6]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[5]">
+         <obj_property name="ElementShortName">[5]</obj_property>
+         <obj_property name="ObjectShortName">[5]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[4]">
+         <obj_property name="ElementShortName">[4]</obj_property>
+         <obj_property name="ObjectShortName">[4]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[3]">
+         <obj_property name="ElementShortName">[3]</obj_property>
+         <obj_property name="ObjectShortName">[3]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[2]">
+         <obj_property name="ElementShortName">[2]</obj_property>
+         <obj_property name="ObjectShortName">[2]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[1]">
+         <obj_property name="ElementShortName">[1]</obj_property>
+         <obj_property name="ObjectShortName">[1]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALUE[0]">
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">[0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="array" fp_name="zusys_i/ADC_LTC2311/U0/S_ADC_CONV_VALUE">
+      <obj_property name="ElementShortName">zusys_i/ADC_LTC2311/U0/S_ADC_CONV_VALUE[31:0]</obj_property>
+      <obj_property name="ObjectShortName">S_ADC_CONV_VALUE[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="zusys_i/ADC_LTC2311/U0/SI_VALID[0]">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[0]</obj_property>
+      <obj_property name="ObjectShortName">[0]</obj_property>
+      <obj_property name="label">SI_VALID</obj_property>
+   </wvobject>
+</wave_config>

@@ -355,7 +355,7 @@ begin
                     
                     when CONTINUOUS =>
                         S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '0';
-                        S_ENABLE <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
+                        S_ENABLE <= (S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0) and S_ADC_AVAILABLE(SPI_MASTER - 1 downto 0));
                         S_SPI_MANUAL <= (others => '0');
                     
                     when SPI_MANUAL =>

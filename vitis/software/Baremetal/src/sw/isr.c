@@ -1,12 +1,12 @@
 /******************************************************************************
 * Copyright 2021 Eyke Liegmann, Tobias Schindler, Sebastian Wendel
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,6 +27,7 @@
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
+#include "../IP_Cores/uz_adcLtc2311/uz_adcLtc2311.h"
 
 
 // Include for code-gen
@@ -61,12 +62,16 @@ static void toggleLEDdependingOnReadyOrRunning(uint32_t i_count_1ms, uint32_t i_
 static void ReadAllADC();
 static void CheckForErrors();
 
+extern uz_adcLtc2311* test_instance;
+
 void ISR_Control(void *data)
 {
 	uz_SystemTime_ISR_Tic();
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
 	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
+	uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
 
+	uz_sleep_useconds(5);
 	ReadAllADC();
 	CheckForErrors();
 	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle

@@ -3,9 +3,11 @@
 #include "../IP_Cores/uz_adcLtc2311/uz_adcLtc2311.h"
 #include "../IP_Cores/uz_adcLtc2311/uz_adcLtc2311_staticAllocator.h"
 
+uz_adcLtc2311* test_instance = NULL;
+
 void uz_adcLtc2311_testbench(void) {
 
-	uz_adcLtc2311* test_instance = uz_adcLtc2311_allocate_instance_one();
+	test_instance = uz_adcLtc2311_allocate_instance_one();
 
 	uz_adcLtc2311_spiConfig test_spi_config;
 	uz_adcLtc2311_initSpiConfig(&test_spi_config);
@@ -22,7 +24,7 @@ void uz_adcLtc2311_testbench(void) {
 	test_config.max_attempts = 10;
 	test_config.conversion_factor = 153;
 	test_config.offset = 0;
-	test_config.samples = 4;
+	test_config.samples = 1;
 	uz_adcLtc2311_configure(test_instance, &test_config);
 	//uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
 
@@ -36,9 +38,9 @@ void uz_adcLtc2311_testbench(void) {
 	uz_adcLtc2311_setTriggeredMode(test_instance);
 	//uz_adcLtc2311_setContinuousMode(test_instance);
 
-	while (1) {
-
-		uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
+//	while (1) {
+//
+//		uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
 
 //		uz_adcLtc2311_enterNapMode(test_instance, &test_ns_config);
 //		uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
@@ -49,5 +51,5 @@ void uz_adcLtc2311_testbench(void) {
 //		uz_adcLtc2311_leaveSleepMode(test_instance, &test_ns_config);
 //		uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
 
-	}
+//	}
 }

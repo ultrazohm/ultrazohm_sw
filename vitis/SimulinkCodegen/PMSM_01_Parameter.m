@@ -7,9 +7,9 @@ Ld = Lq;                     %H
 psi_pm = 0.0048;              %Vs
 R = 0.040;                   %Ohm Strangwiderstand
 J_M = 0.0025;                %kg m²
-U_DC = 46;                   %V
+U_DC = 24;                   %V
 U_maxDQ = U_DC/sqrt(3);
-I_max = 210;                 %A
+I_max = 5;                 %A
 
 
 %Inverter parameters

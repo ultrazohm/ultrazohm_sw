@@ -59,11 +59,11 @@ int bool_fault_W_Top = 0;
 int bool_fault_W_Bot = 0;
 
 //Maximum values
-float n_ref_max = 1200;
-float n_max =  1500;
+float n_ref_max = 2500;
+float n_max =  2600;
 float iq_ref_max = 10;		//Limitation for set values from Java GUI
 float id_ref_max = 10;		//Limitation for set values from Java GUI
-float iabc_max = 50;		//Maximum phase current --> Error stop
+float iabc_max = 70;		//Maximum phase current --> Error stop
 
 
 
@@ -120,7 +120,7 @@ void ISR_Control(void *data)
 	codegenInstance.input.w_el = Global_Data.av.mechanicalRotorSpeed * Global_Data.mrp.motorPolePairNumber*M_PI/30; //[rad/s]
 	codegenInstance.input.n_ist = Global_Data.av.mechanicalRotorSpeed;												//[rpm]
 
-	if(codegenInstance.input.n_ist < 10.0){
+	if(fabs(codegenInstance.input.n_ist) < 10.0){
 		//Only values greater 10rpm are valid
 		codegenInstance.input.n_ist = 0.0;
 	}
@@ -161,7 +161,8 @@ void ISR_Control(void *data)
 	else if(Global_Data.cw.ControlReference == CurrentControl)
 	{
 		// add your current controller here
-		codegenInstance.input.flg_SpeedControl = 0U;
+		// only use speed control without any break
+		codegenInstance.input.flg_SpeedControl = 1U;
 	}
 	else if(Global_Data.cw.ControlReference == TorqueControl)
 	{
@@ -197,8 +198,8 @@ void ISR_Control(void *data)
 
 
 	// Update JavaScope
-	javascope_interface.id_soll = (float)codegenInstance.output.iq_soll;
-	javascope_interface.iq_soll = (float)codegenInstance.output.id_soll;
+	javascope_interface.id_soll = (float)codegenInstance.output.id_soll;
+	javascope_interface.iq_soll = (float)codegenInstance.output.iq_soll;
 	javascope_interface.id = (float)codegenInstance.output.id_ist;
 	javascope_interface.iq = (float)codegenInstance.output.iq_ist;
 	javascope_interface.ud_soll = (float)codegenInstance.output.ud;

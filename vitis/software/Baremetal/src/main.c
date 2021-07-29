@@ -455,7 +455,7 @@ void InitializeDataStructure(DS_Data* data) {
 	data->aa.A3.cf.ADC_B8 = 10;
 
 	// initalize PWM parameters
-	data->ctrl.pwmFrequency = 10e3;		// PWM carrier frequency
+	data->ctrl.pwmFrequency = 20e3;		// PWM carrier frequency
 	data->ctrl.pwmPeriod = 1 / data->ctrl.pwmFrequency;
 
 	data->ctrl.samplingFrequency = data->ctrl.pwmFrequency * Interrupt_ISR_freq_factor;

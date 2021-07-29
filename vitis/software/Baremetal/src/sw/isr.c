@@ -77,16 +77,9 @@ void ISR_Control(void *data)
 	codegenInstance.input.Act_Iv = (Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/2.0F + 0.35F;		//A
 	codegenInstance.input.Act_Iw = (Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/2.0F - 0.43F;		//A
 	codegenInstance.input.Act_U_ZK = Global_Data.aa.A2.me.ADC_A4 * 12.5F;			//V
-	if ((Global_Data.av.mechanicalRotorSpeed >= -15.0F) &&(Global_Data.av.mechanicalRotorSpeed <= 15.0F))
-	{
-		codegenInstance.input.Act_w_el = (Global_Data.av.theta_elec + Global_Data.mrp.incrementalEncoderOffset - codegenInstance.input.Act_theta_el) / rtP.T_R;
-		codegenInstance.input.Act_n = codegenInstance.input.Act_w_el * 30.0F / (Global_Data.mrp.motorPolePairNumber*M_PI);
-	}
-	else
-	{
-		codegenInstance.input.Act_n = Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
-		codegenInstance.input.Act_w_el = codegenInstance.input.Act_n * Global_Data.mrp.motorPolePairNumber*M_PI/30.0F; //[rad/s]
-	}
+
+	codegenInstance.input.Act_n = Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
+	codegenInstance.input.Act_w_el = codegenInstance.input.Act_n * Global_Data.mrp.motorPolePairNumber*M_PI/30.0F; //[rad/s]
 	codegenInstance.input.Act_theta_el = Global_Data.av.theta_elec + Global_Data.mrp.incrementalEncoderOffset; 	//[rad] Definition in main.c
 
 	//FOC Assign Javasope-reference-values

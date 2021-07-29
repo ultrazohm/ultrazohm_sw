@@ -1,16 +1,36 @@
-// system includes
-#include <stdbool.h>
+#include "../../uz/uz_global_configuration.h"
+#if UZ_ADCLTC2311_MAX_INSTANCES > 0U
+#include <stdbool.h> 
 #include <stdint.h>
-
-// includes
 #include "uz_adcLtc2311.h"
 #include "uz_adcLtc2311_hw.h"
 #include "../../uz/uz_HAL.h"
-#include "uz_adcLtc2311_private.h"
 
 // defines
 #define IS_UZ_SUCCESS(ARG) ((ARG) == (UZ_SUCCESS) ? (true) : (false))
 #define IS_UZ_FAILURE(ARG) ((ARG) == (UZ_FAILURE) ? (true) : (false))
+
+struct uz_adcLtc2311 {
+	uint32_t base_address;		/**< AXI Base Address of the IP core in the FPGA */
+	uint32_t ip_clk_frequency_Hz;	/**< System clock frequency, the IP core is driven with */
+	bool is_ready;				/**< Status indicator that the IP core is usable */
+	uint32_t sleeping_spi_masters;		/**< One hot encoded status variable, which SPI masters are currently in sleep mode */
+	uint32_t napping_spi_masters;		/**< One hot encoded status variable, which SPI masters are currently in nap mode */
+};
+
+static size_t instance_counter = 0U;
+static uz_adcLtc2311 instances[UZ_ADCLTC2311_MAX_INSTANCES] = { 0 };
+
+static uz_adcLtc2311* UZ_ADCLTC2311_allocation(void);
+
+static uz_adcLtc2311* UZ_ADCLTC2311_allocation(void){
+	uz_assert(instance_counter < UZ_ADCLTC2311_MAX_INSTANCES);
+	uz_adcLtc2311* self = &instances[instance_counter];
+	uz_assert_false(self->is_ready);
+	instance_counter++;
+	self->is_ready = true;
+	return (self);
+}
 
 /*********************
  *
@@ -125,13 +145,14 @@ static void uz_adcLtc2311_spiResetSclk(uz_adcLtc2311* self, uint32_t spiMasters)
  *
  *********************/
 
-uz_adcLtc2311* uz_adcLtc2311_init(uz_adcLtc2311* self) {
+uz_adcLtc2311* uz_adcLtc2311_init(struct uz_adcLtc2311_base_config config){
 	// Check correct initialization
-	uz_assert_not_NULL(self);
-	uz_assert_false(self->is_ready);
+	uz_assert_not_zero(config.base_address);
+	uz_assert_not_zero(config.ip_clk_frequency_Hz);
+	uz_adcLtc2311* self = UZ_ADCLTC2311_allocation();
+	self->base_address=config.base_address;
+	self->ip_clk_frequency_Hz=config.ip_clk_frequency_Hz;
 	self->is_ready = true;
-	uz_assert_not_zero(self->base_address);
-	uz_assert_not_zero(self->ip_clk_frequency_Hz);
 	self->napping_spi_masters = 0;
 	self->sleeping_spi_masters = 0;
 	return (self);
@@ -549,3 +570,4 @@ int32_t uz_adcLtc2311_leaveSleepMode(uz_adcLtc2311* self, uz_adcLtc2311_napSleep
 	return (return_value);
 }
 
+#endif

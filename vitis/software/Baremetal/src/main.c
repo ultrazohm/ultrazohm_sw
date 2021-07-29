@@ -17,7 +17,7 @@
 #include "main.h"
 #include "uz/uz_global_configuration.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
-
+#include "include/new_adc.h"
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -69,6 +69,7 @@ int main(void) {
 	// Initialize Timer in order to Trigger the ISRs
 	Initialize_Timer();
 	uz_SystemTime_init();
+	uz_adcLtc2311_testbench();
 	// Initialize the incremental encoder
 	Encoder_Incremental_Initialize(&Global_Data);
 

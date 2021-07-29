@@ -8,6 +8,11 @@
 
 // defines
 
+struct uz_adcLtc2311_base_config {
+	uint32_t base_address;		/**< AXI Base Address of the IP core in the FPGA */
+	uint32_t ip_clk_frequency_Hz;	/**< System clock frequency, the IP core is driven with */
+};
+
 // SPI channel defintions
 #define UZ_ADCLTC2311_CH1  (1<<0)
 #define UZ_ADCLTC2311_CH2  (1<<1)
@@ -248,7 +253,7 @@ typedef struct uz_adcLtc2311_napSleepConfig {
 } uz_adcLtc2311_napSleepConfig;
 
 // function declarations
-uz_adcLtc2311* uz_adcLtc2311_init(uz_adcLtc2311* self);
+uz_adcLtc2311* uz_adcLtc2311_init(struct uz_adcLtc2311_base_config config);
 
 /**
  * @brief Configure the IP core

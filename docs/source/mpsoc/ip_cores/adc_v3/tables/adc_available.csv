@@ -1,0 +1,2 @@
+Bit(s),Name,Default Value,Access,True ('1'),False ('0')
+0 - 31,ADC_MASTER_0 - ADC_MASTER_31,1,Read/Write,The specified master channel is available,The specified master channel is not available

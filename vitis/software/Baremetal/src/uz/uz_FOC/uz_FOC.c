@@ -176,6 +176,7 @@ uz_FOC* uz_FOC_set_control_Method(uz_FOC* self, uz_FOC_config config_FOC, uz_PI_
 	self->Controller_n = uz_PI_Controller_update_config(self->Controller_n, config_n);
 	self->config_FOC = config_FOC;
 	self->config_lin_Decoup = config_lin_Decoup;
+	return (self);
 }
 
 

@@ -15,9 +15,9 @@
  * @brief Asserts that the condition is true. If false, the assertion callback executes (program is stopped).
  * 
  */
-#define uz_assert(expr)                       \
+#define uz_assert(Expression)                 \
   do {                                        \
-      if(!(expr)){                            \
+      if(!(Expression)){                            \
       Xil_Assert(__FILE__, __LINE__);         \
     }                                         \
   } while (0)

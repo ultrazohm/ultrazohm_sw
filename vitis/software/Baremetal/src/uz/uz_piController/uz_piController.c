@@ -88,6 +88,18 @@ void uz_PI_Controller_set_Kp(uz_PI_Controller* self, float new_Kp){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     uz_assert(new_Kp >= 0.0f);
-    self->config.Kp = new_Kp;    
+    self->config.Kp = new_Kp;
+}
+
+uz_PI_Controller* uz_PI_Controller_update_config(uz_PI_Controller* self, uz_PI_Controller_config config) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(config.Ki >= 0.0f);
+	uz_assert(config.Kp >= 0.0f);
+	uz_assert(config.samplingTime_sec > 0.0f);
+	uz_assert(config.upper_limit > config.lower_limit);
+	uz_assert(config.lower_limit < config.upper_limit);
+	self->config = config;
+	return (self);
 }
 #endif

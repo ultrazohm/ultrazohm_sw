@@ -41,25 +41,25 @@ bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float 
 
 /**
  * @brief Calculates the last sample of the PI-Controller
- * 
+ *
  * @param self uz_PI_Controller instance
  * @param referenceValue reference value for error calculation
  * @param actualValue actual value for error calculation
  * @param ext_clamping input port for an external clamping signal
- * @return float 
+ * @return float
  */
 float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, float actualValue, bool ext_clamping);
 
 /**
- * @brief Resets the PI-Controller 
- * 
+ * @brief Resets the PI-Controller
+ *
  * @param self uz_PI_Controller instance
  */
 void uz_PI_Controller_reset(uz_PI_Controller* self);
 
 /**
  * @brief Function to change the Ki-value of the PI-Controller during runtime
- * 
+ *
  * @param self uz_PI_Controller instance
  * @param new_Ki new value for Ki. Must be greater or equal than 0.0f
  */
@@ -67,9 +67,18 @@ void uz_PI_Controller_set_Ki(uz_PI_Controller* self, float new_Ki);
 
 /**
  * @brief Function to change the Kp-value of the PI-Controller during runtime
- * 
+ *
  * @param self uz_PI_Controller instance
  * @param new_Kp new value for Kp. Must be greater or equal than 0.0f
  */
 void uz_PI_Controller_set_Kp(uz_PI_Controller* self, float new_Kp);
+
+/**
+ * @brief Updates the config struct of the PI_Controller instance
+ *
+ * @param self uz_PI_Controller instance
+ * @param config uz_PI_Controller_config configuration struct
+ */
+uz_PI_Controller* uz_PI_Controller_update_config(uz_PI_Controller* self, uz_PI_Controller_config config);
+
 #endif // UZ_PICONTROLLER_H

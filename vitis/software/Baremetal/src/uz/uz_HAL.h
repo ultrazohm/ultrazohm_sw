@@ -15,7 +15,14 @@
  * @brief Asserts that the condition is true. If false, the assertion callback executes (program is stopped).
  * 
  */
-#define uz_assert Xil_AssertVoid
+#define uz_assert(Expression)                 \
+  do {                                        \
+      if(!(Expression)){                      \
+      Xil_Assert(__FILE__, __LINE__);         \
+    }                                         \
+  } while (0)
+
+
 /**
  * @brief Prints to stdout, i.e., Vitis terminal
  * 

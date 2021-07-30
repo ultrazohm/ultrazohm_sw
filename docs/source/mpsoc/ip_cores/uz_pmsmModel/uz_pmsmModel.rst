@@ -6,7 +6,7 @@ PMSM Model
 
 - IP-Core of a PMSM model
 - Simulates a PMSM on the FPGA
-- Intended for HIL/SIL/xIL on the UltraZohm
+- Intended for controller-in-the-loop (CIL) on the UltraZohm
 - Time discrete transformation is done by *zero order hold* transformation
 - Sample frequency of the integrator is :math:`T_s=\frac{1}{2\,MHz}`
 - IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
@@ -51,17 +51,17 @@ With the rotational speed linked to the electrical rotation speed in dq-coordina
 
     \omega_{el}=p \cdot \omega_{mech}
 
-The PMSM generates an inner torque :math:`M_I` according to:
+The PMSM generates an inner torque :math:`T_I` according to:
 
 .. math::
 
-    M_I=\frac{3}{2}p(\psi_d i_q - \psi_q i_d)
+    T_I=\frac{3}{2}p(\psi_d i_q - \psi_q i_d)
 
 This can be rearranged to the following equation [[#Schroeder_Regelung]_, p. 1092]. Note that the flux-based equation above is implemented in the model.
 
 .. math::
 
-    M_I=\frac{3}{2} p \big(i_q \psi_{pm} + i_d i_q (L_d -L_q) \big)
+    T_I=\frac{3}{2} p \big(i_q \psi_{pm} + i_d i_q (L_d -L_q) \big)
 
 Mechanical system
 -----------------
@@ -71,7 +71,7 @@ The inertia of the complete system is summed into the inertia :math:`J_{sum}`, i
 
 .. math::
 
-  \frac{d \omega_{mech}}{dt} = \frac{ M_I - M_F - M_L }{J_{sum}}
+  \frac{d \omega_{mech}}{dt} = \frac{ T_I - T_F - T_L }{J_{sum}}
 
 
 .. tikz:: Block diagram of mechanical system 
@@ -81,10 +81,10 @@ The inertia of the complete system is summed into the inertia :math:`J_{sum}`, i
   \tikzstyle{block} = [draw, fill=black!10, rectangle, minimum height=3em, minimum width=3em]
   \node[name=Mi]{$M_I$};
   \node[draw,circle,name=torque_sum,right of=Mi] {};
-  \node[name=load_torque,above of=torque_sum] {$M_L$};
+  \node[name=load_torque,above of=torque_sum] {$T_L$};
   \node[block,name=inertia,right of=torque_sum] {$\frac{1}{J_{sum}}$};
   \node[block,name=integrator,right of=inertia] {$\frac{1}{s}$};
-  \node[block,name=friction,below of=integrator] {$M_F(\omega)$ };
+  \node[block,name=friction,below of=integrator] {$T_F(\omega)$ };
   \node[fill=black,circle,inner sep=1pt,name=output_node,right of=integrator] {};
   \node[name=output,right of=output_node] {};
   
@@ -151,6 +151,13 @@ IP-Core overview
 All time-dependent variables are either inputs or outputs that are written/read by AXI4-full.
 That is, :math:`u_d`, :math:`u_q`, :math:`\omega_{mech}`, and :math:`M_L` are inputs.
 Furthermore, :math:`i_d`, :math:`i_q`, :math:`M_I`, and :math:`\omega_{mech}` are outputs.
+The IP-Core inputs :math:`\boldsymbol{u}(k)=[{v}_{d} ~ v_{q} ~ T_{L}]` and outputs :math:`\boldsymbol{y}(k)=[i_{d} ~ i_{q} ~ T_{L} ~ \omega_{m}]` are accessible by AXI4 (including burst transactions).
+Furthermore, all machine parameters, e.g., stator resistance, can be written by AXI at runtime.
+All AXI-transactions use single-precision variables, which the IP-Core converts to and from double precision.
+The inputs :math:`\boldsymbol{u}(k)` and outputs :math:`\boldsymbol{y}(k)` use a shadow register that holds the value of the register until a sample signal is triggered.
+Upon triggering, the inputs from the shadow register are passed to the actual input registers of the IP-Core, and the current output :math:`\boldsymbol{y}(k)` is stored in the output shadow register (strobe functions of driver).
+The shadow registers can be triggered according to the requirements of the controller in the loop and ensure synchronous read/write operations. 
+The inputs and outputs are implemented as an vector, therefore the HDL-Coder adds the strobe / shadow register automatically - it is not visible in the model itself.
 Note that :math:`\omega_{mech}` is an input as well as an output.
 The IP-Core has two modes regarding the rotational speed :math:`\omega_{mech}`:
 
@@ -181,10 +188,20 @@ For the mechanical system:
 
 .. math::
 
-    \omega_{mech}(k+1) =ts \bigg( \frac{ M_I(k) - M_F(k) - M_L(k) }{J_{sum}} \bigg) + \omega_{mech}(k)
+    \omega_{mech}(k+1) =ts \bigg( \frac{ T_I(k) - T_F(k) - T_L(k) }{J_{sum}} \bigg) + \omega_{mech}(k)
 
 IP-Core Hardware
 ----------------
+
+- The module takes all inputs and converts them from single precision to double precision.
+- The output is converted from double precision to single precision (using rounding to the nearest value in both cases).
+- All input values are adjustable at run-time
+- The sample time is fixed!
+- The IP-Core uses `Native Floating Point of the HDL-Coder <https://de.mathworks.com/help/hdlcoder/native-floating-point.html>`_
+- Several parameters are written as their reciprocal to the AXI register to make the calculations on hardware simple (handled by the driver!)
+- The IP-Core uses an oversampling factor of 50
+- Floating Point latency Strategy is set to ``MIN``
+- Handle denormals is activated 
 
 .. figure:: pmsm_model.svg
   :width: 800
@@ -215,14 +232,6 @@ IP-Core Hardware
   :align: center
 
   Mechanical calculation subsystem
-
-- The module takes all inputs and converts them from single precision to double precision.
-- The output is converted from double precision to single precision (using rounding to the nearest value in both cases).
-- All input values are adjustable at run-time
-- The sample time is fixed!
-- The IP-Core uses `Native Floating Point of the HDL-Coder <https://de.mathworks.com/help/hdlcoder/native-floating-point.html>`_
-- Several parameters are written as their reciprocal to the AXI register to make the calculations on hardware simple (handled by the driver!)
-- The IP-Core uses an oversampling factor of 100
 
 Example usage
 =============
@@ -372,6 +381,23 @@ Comparison between reference and IP-Core
    Comparison of step response between the reference model and IP-Core implementation measured by Javascope
 
 
+Closed loop
+-----------
+
+
+.. code-block:: c
+
+    uz_pmsmModel_trigger_input_strobe(pmsm);
+    uz_pmsmModel_trigger_output_strobe(pmsm);
+    pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+    referenceValue=uz_wavegen_pulse(1.0f, 0.10f, 0.5f);
+    pmsm_inputs.u_q_V=uz_PI_Controller_sample(pi_q, referenceValue, pmsm_outputs_old.i_q_A, false);
+    pmsm_inputs.u_d_V=uz_PI_Controller_sample(pi_d, -referenceValue, pmsm_outputs_old.i_d_A, false);
+    pmsm_inputs.u_q_V+=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_d*pmsm_outputs_old.i_d_A+pmsm_config.psi_pm);
+    pmsm_inputs.u_d_V-=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_q*pmsm_outputs_old.i_q_A);
+    uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+    pmsm_outputs_old=pmsm_outputs;
+
 Driver reference
 ================
 
@@ -393,6 +419,10 @@ Driver reference
 .. doxygenfunction:: uz_pmsmModel_get_outputs
 
 .. doxygenfunction:: uz_pmsmModel_reset
+
+.. doxygenfunction:: uz_pmsmModel_trigger_input_strobe
+
+.. doxygenfunction:: uz_pmsmModel_trigger_output_strobe
 
 Sources
 -------

@@ -10,6 +10,7 @@
 #include "xstatus.h"
 #include "xil_printf.h"
 #include "sleep.h"
+
 /**
  * @brief Asserts that the condition is true. If false, the assertion callback executes (program is stopped).
  * 
@@ -20,21 +21,25 @@
  * 
  */
 #define uz_printf xil_printf
+
 /**
  * @brief Processor does nothing for defined seconds
  * 
  */
 #define uz_sleep_seconds sleep
+
 /**
  * @brief Processor does nothing for defined microseconds
  * 
  */
 #define uz_sleep_useconds usleep
+
 /**
  * @brief Return this define to indicate success in a function and check return value.
  * 
  */
 #define UZ_SUCCESS XST_SUCCESS
+
 /**
  * @brief Return this define to indicate failure in a function and check return value.
  * 

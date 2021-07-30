@@ -91,3 +91,91 @@ struct uz_dq_t uz_FOC_SpeedControl(uz_FOC* self, uz_FOC_ActualValues values) {
 	return (u_dq_ref_Volts);
 }
 
+void uz_FOC_reset(uz_FOC* self){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_PI_Controller_reset(self->Controller_id);
+	uz_PI_Controller_reset(self->Controller_iq);
+	uz_PI_Controller_reset(self->Controller_n);
+	self->ext_clamping = false;
+}
+
+
+void uz_FOC_set_Kp_n(uz_FOC* self, float Kp_n){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(Kp_n >= 0.0f);
+	uz_PI_Controller_set_Kp(self->Controller_n, Kp_n);
+}
+
+void uz_FOC_set_Ki_n(uz_FOC* self, float Ki_n){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(Ki_n >= 0.0f);
+	uz_PI_Controller_set_Ki(self->Controller_n, Ki_n);
+}
+
+void uz_FOC_set_Kp_id(uz_FOC* self, float Kp_id){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(Kp_id >= 0.0f);
+	uz_PI_Controller_set_Kp(self->Controller_id, Kp_id);
+}
+
+void uz_FOC_set_Ki_id(uz_FOC* self, float Ki_id){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(Ki_id >= 0.0f);
+	uz_PI_Controller_set_Ki(self->Controller_id, Ki_id);
+}
+
+void uz_FOC_set_Kp_iq(uz_FOC* self, float Kp_iq){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(Kp_iq >= 0.0f);
+	uz_PI_Controller_set_Kp(self->Controller_iq, Kp_iq);
+}
+
+void uz_FOC_set_Ki_iq(uz_FOC* self, float Ki_iq){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(Ki_iq >= 0.0f);
+	uz_PI_Controller_set_Ki(self->Controller_iq, Ki_iq);
+}
+
+void uz_FOC_set_id_ref(uz_FOC* self, float id_ref){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->config_FOC.id_ref_Ampere = id_ref;
+}
+
+void uz_FOC_set_iq_ref(uz_FOC* self, float iq_ref) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->config_FOC.iq_ref_Ampere = iq_ref;
+}
+
+void uz_FOC_set_polePairs(uz_FOC* self, float polePairs){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(self->config_FOC.polePairs > 0.0f);
+	self->config_FOC.polePairs = polePairs;
+}
+
+uz_FOC* uz_FOC_set_control_Method(uz_FOC* self, uz_FOC_config config_FOC, uz_PI_Controller_config config_id, uz_PI_Controller_config config_iq, uz_PI_Controller_config config_n, uz_lin_decoupling_config config_lin_Decoup){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(self->config_FOC.FOC_Select >= 1U && self->config_FOC.FOC_Select <= 2U);
+	uz_assert(self->config_FOC.FOC_Select != config_FOC.FOC_Select);
+	uz_assert(config_lin_Decoup.Ld_Henry > 0.0f);
+	uz_assert(config_lin_Decoup.Lq_Henry > 0.0f);
+	uz_assert(config_lin_Decoup.Psi_PM_Vs > 0.0f);
+	uz_FOC_reset(self);
+	self->Controller_id = uz_PI_Controller_update_config(self->Controller_id, config_id);
+	self->Controller_iq = uz_PI_Controller_update_config(self->Controller_iq, config_iq);
+	self->Controller_n = uz_PI_Controller_update_config(self->Controller_n, config_n);
+	self->config_FOC = config_FOC;
+	self->config_lin_Decoup = config_lin_Decoup;
+}
+
+

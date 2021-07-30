@@ -21,7 +21,6 @@ typedef struct uz_FOC_config {
 	float n_ref_rpm;
 	unsigned int FOC_Select; //1=CurrentControl 2=SpeedControl
 	float polePairs;
-	bool Reset;
 } uz_FOC_config;
 
 /**
@@ -52,5 +51,104 @@ typedef struct uz_FOC uz_FOC;
  * @return uz_FOC* Pointer to uz_FOC instance
  */
 uz_FOC* uz_FOC_init(uz_FOC_config config_FOC, uz_PI_Controller_config config_id, uz_PI_Controller_config config_iq, uz_PI_Controller_config config_n, uz_lin_decoupling_config config_lin_Decoup);
+
+/**
+ * @brief calculates last sample for dq-reference voltages
+ *
+ * @param self uz_FOC instance
+ * @param values uz_FOC_ActualValues struct with the actual measurement values
+ * @return struct uz_dq_t Output dq-reference voltage struct
+ */
 struct uz_dq_t uz_FOC_sample(uz_FOC* self, uz_FOC_ActualValues values);
+
+/**
+ * @brief Resets the FOC and the integrators of the PI-Controllers
+ *
+ * @param self uz_FOC instance
+ */
+void uz_FOC_reset(uz_FOC* self);
+
+/**
+ * @brief Function to change the Kp-value of the n-PI-Controller during runtime
+ *
+ * @param self uz_FOC instance
+ * @param Kp_n new Kp_n value. Must be greater or equal than 0.0f
+ */
+void uz_FOC_set_Kp_n(uz_FOC* self, float Kp_n);
+
+/**
+ * @brief Function to change the Ki-value of the n-PI-Controller during runtime
+ *
+ * @param self uz_FOC instance
+ * @param Ki_n new Ki_n value. Must be greater or equal than 0.0f
+ */
+void uz_FOC_set_Ki_n(uz_FOC* self, float Ki_n);
+
+/**
+ * @brief Function to change the Kp-value of the id-PI-Controller during runtime
+ *
+ * @param self uz_FOC instance
+ * @param Kp_n new Kp_id value. Must be greater or equal than 0.0f
+ */
+void uz_FOC_set_Kp_id(uz_FOC* self, float Kp_id);
+
+/**
+ * @brief Function to change the Ki-value of the id-PI-Controller during runtime
+ *
+ * @param self uz_FOC instance
+ * @param Kp_n new Ki_id value. Must be greater or equal than 0.0f
+ */
+void uz_FOC_set_Ki_id(uz_FOC* self, float Ki_id);
+
+/**
+ * @brief Function to change the Kp-value of the iq-PI-Controller during runtime
+ *
+ * @param self uz_FOC instance
+ * @param Kp_n new Kp_iq value. Must be greater or equal than 0.0f
+ */
+void uz_FOC_set_Kp_iq(uz_FOC* self, float Kp_iq);
+
+/**
+ * @brief Function to change the Ki-value of the iq-PI-Controller during runtime
+ *
+ * @param self uz_FOC instance
+ * @param Kp_n new Ki_iq value. Must be greater or equal than 0.0f
+ */
+void uz_FOC_set_Ki_iq(uz_FOC* self, float Ki_iq);
+
+/**
+ * @brief Function to change the d-reference current during runtime
+ *
+ * @param self uz_FOC instance
+ * @param id_ref new id_ref value.
+ */
+void uz_FOC_set_id_ref(uz_FOC* self, float id_ref);
+
+/**
+ * @brief Function to change the q-reference current during runtime
+ *
+ * @param self uz_FOC instance
+ * @param id_ref new iq_ref value.
+ */
+void uz_FOC_set_iq_ref(uz_FOC* self, float iq_ref);
+
+/**
+ * @brief 
+ * 
+ * @param self 
+ * @param config_FOC 
+ * @param config_id 
+ * @param config_iq 
+ * @param config_n 
+ * @param config_lin_Decoup 
+ * @return uz_FOC* 
+ */
+uz_FOC* uz_FOC_set_control_Method(uz_FOC* self, uz_FOC_config config_FOC, uz_PI_Controller_config config_id, uz_PI_Controller_config config_iq, uz_PI_Controller_config config_n, uz_lin_decoupling_config config_lin_Decoup);
+
+/**
+ * @brief Function to change the polePairs during runtime
+ *
+ * @param polePairs new value for polePairs. Must be greater than 0.0f
+ */
+void uz_FOC_set_polePairs(uz_FOC* self, float polePairs);
 #endif // UZ_FOC_H

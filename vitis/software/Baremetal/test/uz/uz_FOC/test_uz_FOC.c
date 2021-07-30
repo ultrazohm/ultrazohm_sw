@@ -37,7 +37,6 @@ void setUp(void)
     config_FOC.n_ref_rpm = 1000.0f;
     config_FOC.FOC_Select = 1U;
     config_FOC.polePairs = 4.0f;
-    config_FOC.Reset = false;
     values.i_dq_meas_Ampere.d = 0.0f;
     values.i_dq_meas_Ampere.q = 0.0f;
     values.i_dq_meas_Ampere.zero = 0.0f;

@@ -303,6 +303,8 @@ Vitis
 
   void ISR_Control(void *data){
   // other code
+  uz_pmsmModel_trigger_input_strobe(pmsm);
+	uz_pmsmModel_trigger_output_strobe(pmsm);
   pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
   pmsm_inputs.u_q_V=uz_wavegen_pulse(10.0f, 0.10f, 0.5f);
   pmsm_inputs.u_d_V=-pmsm_inputs.u_q_V;
@@ -353,6 +355,7 @@ Javascope
 ---------
 
 - Copy your ``javascope.h`` file (of the R5) into your Javascope folder
+- Make sure that in ``properties.ini``, ``smallestTimeStepUSEC = 50`` is set
 
 
 Comparison between reference and IP-Core
@@ -360,12 +363,13 @@ Comparison between reference and IP-Core
 
 - Program UltraZohm with included PMSM IP-Core and software as described above
 - Start Javascope
-- Measure and log data
+- Connect to javascope, set scope to running and time scale to 100x
+- Start logging of data after a falling edge on the setpoint and stop at the next fallning edge
 - Copy measured ``.csv`` data to ``ultrazohm_sw/ip-cores/uz_pmsm_model``
 - Rename it to ``measurment_with_speed.csv``
 - Run ``compare_simulation_to_measurement.m`` in ``ultrazohm_sw/ip-cores/uz_pmsm_model``
 
-.. figure:: referance_ip_core_measurment_comparision.svg
+.. figure:: ref_open_loop_compare.svg
    :width: 800
    :align: center
 

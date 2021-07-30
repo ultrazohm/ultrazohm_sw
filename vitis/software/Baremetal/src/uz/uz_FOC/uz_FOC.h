@@ -143,7 +143,7 @@ void uz_FOC_set_iq_ref(uz_FOC* self, float iq_ref);
  * @param config_lin_Decoup 
  * @return uz_FOC* 
  */
-uz_FOC* uz_FOC_set_control_Method(uz_FOC* self, uz_FOC_config config_FOC, uz_PI_Controller_config config_id, uz_PI_Controller_config config_iq, uz_PI_Controller_config config_n, uz_lin_decoupling_config config_lin_Decoup);
+uz_FOC* uz_FOC_change_control_Method(uz_FOC* self, uz_FOC_config config_FOC, uz_PI_Controller_config config_id, uz_PI_Controller_config config_iq, uz_PI_Controller_config config_n, uz_lin_decoupling_config config_lin_Decoup);
 
 /**
  * @brief Function to change the polePairs during runtime

@@ -14,7 +14,7 @@ void uz_PushButton_facade_init(uz_PushButtonFacadeCfg cfg)
 _Bool uz_GetPushButtonStop()
 {
 	return (uz_PushButton_GetValue(&PBStop));
-};
+}
 
 _Bool uz_GetPushButtonEnableSystem()
 {

@@ -16,6 +16,7 @@ void uz_gpio_init(uz_gpio *self, XGpioPs *Xgpio_instance, uint32_t pin_number, u
 void uz_gpio_set_direction(struct uz_gpio_ *self, uint32_t Direction) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
+	self->direction=Direction;
 	XGpioPs_SetDirectionPin(self->hw, (uint32_t) self->pin_number, (uint32_t) self->direction);
 }
 

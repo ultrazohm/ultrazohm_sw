@@ -19,14 +19,14 @@ static void InitializeMioPinsForButtons();
 static void InitializeAllPushButtons();
 static void enableAllMioWithButonsAttached();
 
-XGpioPs Gpio_inst;
-uz_gpio MIO_LedReady;
-uz_gpio MIO_LedRunning;
-uz_gpio MIO_LedError;
-uz_gpio MIO_LedUser;
-uz_gpio MIO_SWError;
-uz_gpio MIO_SWControl;
-uz_gpio MIO_SWSystem;
+static XGpioPs Gpio_inst;
+static uz_gpio MIO_LedReady;
+static uz_gpio MIO_LedRunning;
+static uz_gpio MIO_LedError;
+static uz_gpio MIO_LedUser;
+static uz_gpio MIO_SWError;
+static uz_gpio MIO_SWControl;
+static uz_gpio MIO_SWSystem;
 
 void uz_frontplane_button_and_led_init() {
 	InitializeXilinxMioGpioInstance();
@@ -44,9 +44,8 @@ static void InitializeXilinxMioGpioInstance() {
 	XGpioPs_Config gpio_config;
 	gpio_config.BaseAddr = XPAR_PSU_GPIO_0_BASEADDR; // e.g.: XPAR_PSU_GPIO_0_BASEADDR;
 	gpio_config.DeviceId = XPAR_PSU_GPIO_0_DEVICE_ID; // e.g.: XPAR_PSU_GPIO_0_DEVICE_ID;
-	int status;
-	status = XGpioPs_CfgInitialize(&Gpio_inst, &gpio_config, gpio_config.BaseAddr);
-	uz_assert(status == UZ_SUCCESS);
+	int status = XGpioPs_CfgInitialize(&Gpio_inst, &gpio_config, gpio_config.BaseAddr);
+	uz_assert_false(status); // 0 -> no error 
 }
 
 static void InitializeMioPinsForLEDs() {

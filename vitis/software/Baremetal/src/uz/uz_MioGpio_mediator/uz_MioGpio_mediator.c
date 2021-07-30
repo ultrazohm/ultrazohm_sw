@@ -1,3 +1,13 @@
+#include "../uz_HAL.h"
+#include "../uz_GPIO/uz_gpio.h"
+#include "../uz_LED/uz_LED.h"
+#include "../uz_LED/uz_LED_facade.h"
+
+#include "../uz_PushButton/uz_PushButton.h"
+#include "../uz_PushButton/uz_PushButton_facade.h"
+
+#include "xgpiops.h"
+#include "../uz_MioGpio_mediator/uz_MioGpioMapping.h"
 #include "uz_MioGpio_mediator.h"
 
 static void InitializeXilinxMioGpioInstance();
@@ -10,8 +20,13 @@ static void InitializeAllPushButtons();
 static void enableAllMioWithButonsAttached();
 
 XGpioPs Gpio_inst;
-uz_gpio MIO_LedReady, MIO_LedRunning, MIO_LedError, MIO_LedUser;
-uz_gpio MIO_SWError, MIO_SWControl, MIO_SWSystem;
+uz_gpio MIO_LedReady;
+uz_gpio MIO_LedRunning;
+uz_gpio MIO_LedError;
+uz_gpio MIO_LedUser;
+uz_gpio MIO_SWError;
+uz_gpio MIO_SWControl;
+uz_gpio MIO_SWSystem;
 
 void uz_frontplane_button_and_led_init() {
 	InitializeXilinxMioGpioInstance();
@@ -57,16 +72,16 @@ static void InitializeAllPushButtons() {
 ;
 
 static void enableAllMioWithLEDsAttached() {
-	MIO_LedReady.set_enable_output(&MIO_LedReady, true);
-	MIO_LedRunning.set_enable_output(&MIO_LedRunning, true);
-	MIO_LedError.set_enable_output(&MIO_LedError, true);
-	MIO_LedUser.set_enable_output(&MIO_LedUser, true);
+	uz_gpio_set_enable_output(&MIO_LedReady, true);
+	uz_gpio_set_enable_output(&MIO_LedRunning, true);
+	uz_gpio_set_enable_output(&MIO_LedError, true);
+	uz_gpio_set_enable_output(&MIO_LedUser, true);
 }
 
 static void enableAllMioWithButonsAttached() {
-	MIO_SWError.set_enable_output(&MIO_SWError, 1);
-	MIO_SWSystem.set_enable_output(&MIO_SWSystem, 1);
-	MIO_SWControl.set_enable_output(&MIO_SWControl, 1);
+	uz_gpio_set_enable_output(&MIO_SWError, 1);
+	uz_gpio_set_enable_output(&MIO_SWSystem, 1);
+	uz_gpio_set_enable_output(&MIO_SWControl, 1);
 }
 
 static void InitializeAllStatusLEDs() {

@@ -39,6 +39,8 @@ To build and edit the documentation on your native system, you need to:
 
 .. tip:: You can use ``make livehtml`` instead of ``make html`` which opens a new browser that synchronizes live with changes that you make locally (uses `sphinx-autobuild <https://github.com/executablebooks/sphinx-autobuild>`_).
 
+.. tip:: Use ``make docs`` to build doxygen and the sphinx exactly as it is used in the build pipeline, see :ref:`ci`.
+
 .. image:: https://images2.imgbox.com/ed/32/B0uTI8EZ_o.gif
   :width: 500
   :align: center

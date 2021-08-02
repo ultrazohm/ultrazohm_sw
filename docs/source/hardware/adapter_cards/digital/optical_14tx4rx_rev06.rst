@@ -1,5 +1,4 @@
 .. _dig_optical_rev06:
-.. _dig_optical:
 
 ==============================
 Digital Optical 14Tx4Rx Rev06
@@ -70,26 +69,23 @@ Receiver Logic
 
 Before first use
 ----------------
-Solder in up to 14 transmitters and 4 receivers. 
 
-* optical transmitters: **Broadcom HFBR-1521Z**
-* optical receiver: **Broadcom HFBR-2521Z**
+Soldering 
+"""""""""
+Solder in up to 
+
+* 14 optical transmitters: **Broadcom HFBR-1521Z**
+* 4 optical receiver: **Broadcom HFBR-2521Z**
+
+Please refer to this page for detailed :ref:`dig_optical_soldering`.
 
 .. note::
      Note that transmitters and receivers with even numbers are on the top side, starting to count from 0, to match with Vivado vector logic. While the uneven numbers are on the bottom side.
 
-1. Click the optical transmitter and receiver together before soldering them
-#. Solder the transmitter/receivers on the top side of the PCB first
-#. Shorten the through-hole pins of the transmitter/receivers that now stick out on the bottom side of the PCB.
-#. Solder the transmitter/receivers on the bottom side. Through-hole pins 5 and 8 are covered by the components on the top side. This is no problem, they do not have to be soldered, since they do not carry any electrical signal. As can be seen in the screenshot below, they are marked with DNC. 
-#. Program CPLDs with firmware, see :ref:`label_cpld_programming` for details. Note, that the signals are simply passed through the CPLD. Optionally, additional functionality can be implemented in the CPLD, e.g. checking for invalid switching combinations or introducing a dead time.
+Program CPLDs 
+"""""""""""""
+Program CPLDs with firmware, see :ref:`label_cpld_programming` for details. Note, that the signals are simply passed through the CPLD. Optionally, additional functionality can be implemented in the CPLD, e.g. checking for invalid switching combinations or introducing a dead time.
 
-
-.. image:: optical_14tx4rx_rev06/pcb_top_view_closeup.jpg
-   :height: 250
-
-.. image:: optical_14tx4rx_rev06/pcb_bot_view_closeup.jpg
-   :height: 250
 
 Additional features
 """"""""""""""""""""""

@@ -14,18 +14,12 @@
 ******************************************************************************/
 
 #include "../include/adc.h"
+#include "../IP_Cores/uz_dataMover/uz_dataMover.h"
 
 void ADC_readCardA1(DS_Data* data){
 
 	// read all 8 ADC values from Analog Adapter card slot A1
-	int16_t ADC1 = Xil_In16(ADC_A1_ChA1_REG);
-	int16_t ADC2 = Xil_In16(ADC_A1_ChA2_REG);
-	int16_t ADC3 = Xil_In16(ADC_A1_ChA3_REG);
-	int16_t ADC4 = Xil_In16(ADC_A1_ChA4_REG);
-	int16_t ADC5 = Xil_In16(ADC_A1_ChB5_REG);
-	int16_t ADC6 = Xil_In16(ADC_A1_ChB6_REG);
-	int16_t ADC7 = Xil_In16(ADC_A1_ChB7_REG);
-	int16_t ADC8 = Xil_In16(ADC_A1_ChB8_REG);
+
 
 	// bitshift operation of -16 digits, because it is an 16-bit ADC
 	// Conversion Factor is defined in main.c InitializeDataStructure
@@ -41,14 +35,7 @@ void ADC_readCardA1(DS_Data* data){
 
 void ADC_readCardA2(DS_Data* data){
 	// read all 8 ADC values from Analog Adapter card slot A1
-	int16_t ADC1 = Xil_In16(ADC_A2_ChA1_REG);
-	int16_t ADC2 = Xil_In16(ADC_A2_ChA2_REG);
-	int16_t ADC3 = Xil_In16(ADC_A2_ChA3_REG);
-	int16_t ADC4 = Xil_In16(ADC_A2_ChA4_REG);
-	int16_t ADC5 = Xil_In16(ADC_A2_ChB5_REG);
-	int16_t ADC6 = Xil_In16(ADC_A2_ChB6_REG);
-	int16_t ADC7 = Xil_In16(ADC_A2_ChB7_REG);
-	int16_t ADC8 = Xil_In16(ADC_A2_ChB8_REG);
+
 
 	// bitshift operation of -16 digits, because it is an 16-bit ADC
 	// Conversion Factor is defined in main.c InitializeDataStructure
@@ -62,11 +49,7 @@ void ADC_readCardA2(DS_Data* data){
 	data->aa.A2.me.ADC_array[7] =  ldexpf((float)ADC8, -16)* data->aa.A2.cf.ADC_B8;
 };
 void ADC_readCardA3(DS_Data* data){
-	ADCread_union ReadBlockA;
-	ADCread_union ReadBlockB;
 
-	ReadBlockA.ADC_Block_64bit = Xil_In64(ADC_A3_ChA1_REG);
-	ReadBlockB.ADC_Block_64bit = Xil_In64(ADC_A3_ChB5_REG);
 
 	data->aa.A3.me.ADC_array[0] =  ldexpf((float)ReadBlockA.ADC1, -16)* data->aa.A3.cf.ADC_A1;
 	data->aa.A3.me.ADC_array[1] =  ldexpf((float)ReadBlockA.ADC2, -16)* data->aa.A3.cf.ADC_A2;

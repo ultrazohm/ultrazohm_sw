@@ -1,4 +1,4 @@
-.. dig_optical:
+.. _dig_optical:
 
 =================================
 Digital Optical

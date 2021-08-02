@@ -375,7 +375,7 @@ Comparison between reference and IP-Core
 - Connect to javascope, set scope to running and time scale to 100x
 - Start logging of data after a falling edge on the setpoint and stop at the next fallning edge
 - Copy measured ``.csv`` data to ``ultrazohm_sw/ip-cores/uz_pmsm_model``
-- Rename it to ``measurment_with_speed.csv``
+- Rename it to ``open_loop_mearuement.csv``
 - Run ``compare_simulation_to_measurement.m`` in ``ultrazohm_sw/ip-cores/uz_pmsm_model``
 
 .. figure:: ref_open_loop_compare.svg

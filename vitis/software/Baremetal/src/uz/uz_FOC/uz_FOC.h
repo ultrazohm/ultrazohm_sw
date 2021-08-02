@@ -30,7 +30,6 @@ typedef struct uz_FOC_config {
 typedef struct uz_FOC_ActualValues {
 	struct uz_dq_t i_dq_meas_Ampere;
 	float omega_el_rad_per_sec;
-	float theta_el_rad;
 	float U_zk_Volts;
 } uz_FOC_ActualValues;
 

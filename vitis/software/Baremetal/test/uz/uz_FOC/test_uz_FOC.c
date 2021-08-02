@@ -19,20 +19,20 @@ void setUp(void)
 {
     config_id.Kp = 6.75f;
     config_id.Ki = 2000.0f;
-    config_id.samplingTime_sec = 0.0001f;
+    config_id.samplingTime_sec = 0.00001f;
     config_id.upper_limit = 10.0f;
     config_id.lower_limit = -10.0f;
     config_iq.Kp = 6.75f;
     config_iq.Ki = 2000.0f;
-    config_iq.samplingTime_sec = 0.0001f;
+    config_iq.samplingTime_sec = 0.00001f;
     config_iq.upper_limit = 10.0f;
     config_iq.lower_limit = -10.0f;
     config_n.Kp = 0.00864f,
     config_n.Ki = 0.0864f,
-    config_n.samplingTime_sec = 0.0001f;
+    config_n.samplingTime_sec = 0.00001f;
     config_n.upper_limit = 10.0f;
     config_n.lower_limit = -10.0f;
-    config_FOC.iq_ref_Ampere = 1.0;
+    config_FOC.iq_ref_Ampere = 1.0f;
     config_FOC.id_ref_Ampere = 1.0f;
     config_FOC.n_ref_rpm = 1000.0f;
     config_FOC.FOC_Select = 1U;
@@ -41,7 +41,6 @@ void setUp(void)
     values.i_dq_meas_Ampere.q = 0.0f;
     values.i_dq_meas_Ampere.zero = 0.0f;
     values.omega_el_rad_per_sec = 0.0f;
-    values.theta_el_rad = 0.0f;
     values.U_zk_Volts = 24.0f;
     config_lin_Decoup.Ld_Henry = 0.00027f;
     config_lin_Decoup.Lq_Henry = 0.00027f;
@@ -202,4 +201,22 @@ void test_uz_FOC_change_control_Method_same_FOC_Select(void){
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_change_control_Method(instance,config_FOC, config_id, config_iq, config_n, config_lin_Decoup));
 }
 
+void test_uz_FOC_sample_output(void){
+    setUp();
+    //Values for comparision from simulation
+    uz_FOC* instance = uz_FOC_init(config_FOC, config_id, config_iq, config_n, config_lin_Decoup);
+    float values_iq[11]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f, 0.76f, 0.819f, 0.863f, 0.895f, 0.919f, 0.937f};
+    float values_id[11]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f, 0.761f, 0.82f, 0.865f, 0.899f, 0.924f, 0.943f};
+	float values_omega[11]={0.0f, 0.0f, 0.0178f, 0.0876f, 0.264f, 0.622f, 1.26f, 2.29f, 3.85f, 6.08f, 9.13f};
+    float ud_out[11]={6.75f, 5.09f, 3.84f, 2.9f, 2.2f, 1.67f, 1.28f, 0.98f, 0.756f, 0.588f, 0.461f};
+    float uq_out[11]={6.75f, 5.09f, 3.84f, 2.91f, 2.21f, 1.68f, 1.3f, 1.01f, 0.811f, 0.671f, 0.581}; 
+    for(int i=0;i<11;i++){
+        values.i_dq_meas_Ampere.q = values_iq[i];
+        values.i_dq_meas_Ampere.d = values_id[i];
+        values.omega_el_rad_per_sec = values_omega[i];
+        struct uz_dq_t output = uz_FOC_sample(instance, values);
+		TEST_ASSERT_FLOAT_WITHIN(1e-02, ud_out[i], output.d);
+	    TEST_ASSERT_FLOAT_WITHIN(1e-02, uq_out[i], output.q);
+    }
+}
 #endif // TEST

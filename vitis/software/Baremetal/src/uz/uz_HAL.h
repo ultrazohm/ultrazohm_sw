@@ -17,10 +17,11 @@
  */
 #define uz_assert(Expression)                 \
   do {                                        \
-      if(!(Expression)){                            \
+      if(!(Expression)){                      \
       Xil_Assert(__FILE__, __LINE__);         \
     }                                         \
   } while (0)
+
 
 /**
  * @brief Prints to stdout, i.e., Vitis terminal
@@ -56,6 +57,7 @@
 #ifdef TEST
 // cppcheck-suppress misra-c2012-21.6 //. stdio.h is not allowed by MISRA, we use it only with ceedling unit testing and never on the UltraZohm
 #include <stdio.h>
+#include <unistd.h>
 #include "CException.h"
 #define uz_assert(condition) if (!(condition)) Throw(0)
 #define uz_printf printf

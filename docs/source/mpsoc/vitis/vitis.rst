@@ -22,6 +22,7 @@ Vitis
     qemu/qemu
     wavegen/wavegen
     signals/signals
+    array/array
     piController/piController
     dq_transformation/dq_transformation
     global_configuration

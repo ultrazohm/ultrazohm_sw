@@ -12,35 +12,54 @@
 #define UZ_ARRAY_SIZE(x) \
     ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
 
-
+/**
+ * @brief Array of floats with length to pass and receive from functions.
+ * 
+ */
 typedef struct uz_array_float_t
 {
-    size_t length; // length of the vector
-    float * data; // const pointer to data
+    size_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
+    float *data; /**< pointer to data */
 }uz_array_float_t;
 
+/**
+ * @brief Array of uint32_t with length to pass and receive from functions.
+ * 
+ */
 typedef struct uz_array_uint32_t
 {
-    size_t length; // length of the vector
-    uint32_t * data; // const pointer to data
+    size_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
+    uint32_t *data;  /**< pointer to data */
 }uz_array_uint32_t;
 
+/**
+ * @brief Array of int32_t with length to pass and receive from functions.
+ * 
+ */
 typedef struct uz_array_int32_t
 {
-    size_t length; // length of the vector
-    int32_t * data; // const pointer to data
+    size_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
+    int32_t *data;  /**< pointer to data */
 }uz_array_int32_t;
 
+/**
+ * @brief Array of int16_t with length to pass and receive from functions.
+ * 
+ */
 typedef struct uz_array_int16_t
 {
-    size_t length; // length of the vector
-    int16_t *data; // const pointer to data
+    size_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
+    int16_t *data;  /**< pointer to data */
 }uz_array_int16_t;
 
+/**
+ * @brief Array of uint16_t with length to pass and receive from functions.
+ * 
+ */
 typedef struct uz_array_uint16_t
 {
-    size_t length; // length of the vector
-    uint16_t * data; // const pointer to data
+    size_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
+    uint16_t *data;  /**< pointer to data */
 }uz_array_uint16_t;
 
 #endif // UZ_ARRAY_H

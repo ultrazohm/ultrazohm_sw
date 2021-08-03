@@ -25,7 +25,7 @@ void test_uz_FOC_linear_decoupling_output_positive_omega(void){
 	omega_el_rad_per_sec = 714.0f;
 	i_dq_meas_Ampere.q = 1.0f;
 	i_dq_meas_Ampere.d = 1.0f;
-	struct uz_dq_t output = uz_FOC_linear_decoupling(i_dq_meas_Ampere, config, omega_el_rad_per_sec);
+	struct uz_dq_t output = uz_FOC_linear_decoupling(config, i_dq_meas_Ampere, omega_el_rad_per_sec);
 	TEST_ASSERT_FLOAT_WITHIN(1e-02, -0.19f,output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-02, 6.05f,output.q);
 }
@@ -36,7 +36,7 @@ void test_uz_FOC_linear_decoupling_output_negative_omega(void){
 	omega_el_rad_per_sec = -714.0f;
 	i_dq_meas_Ampere.q = 1.0f;
 	i_dq_meas_Ampere.d = 1.0f;
-	struct uz_dq_t output = uz_FOC_linear_decoupling(i_dq_meas_Ampere, config, omega_el_rad_per_sec);
+	struct uz_dq_t output = uz_FOC_linear_decoupling(config, i_dq_meas_Ampere, omega_el_rad_per_sec);
 	TEST_ASSERT_FLOAT_WITHIN(1e-02, 0.19f,output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-02, -6.05f,output.q);
 }
@@ -47,7 +47,7 @@ void test_uz_FOC_linear_decoupling_output_zero(void){
 	omega_el_rad_per_sec = 0.0f;
 	i_dq_meas_Ampere.q = 1.0f;
 	i_dq_meas_Ampere.d = 1.0f;
-	struct uz_dq_t output = uz_FOC_linear_decoupling(i_dq_meas_Ampere, config, omega_el_rad_per_sec);
+	struct uz_dq_t output = uz_FOC_linear_decoupling(config, i_dq_meas_Ampere, omega_el_rad_per_sec);
 	TEST_ASSERT_FLOAT_WITHIN(1e-04, 0.0f,output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-04, 0.0f,output.q);
 }

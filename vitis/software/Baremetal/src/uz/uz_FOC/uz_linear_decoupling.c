@@ -1,6 +1,6 @@
 #include "uz_linear_decoupling.h"
 
-struct uz_dq_t uz_FOC_linear_decoupling(struct uz_dq_t i_dq_meas_Ampere, uz_lin_decoupling_config config, float omega_el_rad_per_sec){
+struct uz_dq_t uz_FOC_linear_decoupling(uz_lin_decoupling_config config, struct uz_dq_t i_dq_meas_Ampere, float omega_el_rad_per_sec){
     uz_assert(config.Ld_Henry > 0.0f);
 	uz_assert(config.Lq_Henry > 0.0f);
 	uz_assert(config.Psi_PM_Vs > 0.0f);

@@ -6,7 +6,7 @@
 /****************** Include Files ********************/
 #include "xil_types.h"
 #include "xstatus.h"
-
+typedef enum adcstatus {adc_disabled,adc_init,adc_ready,adc_reading_data,adc_error} ADCstatus;
 #define ADC_MAX11331_AXI_S0_AXI_Lite_SLV_REG0_OFFSET 0
 #define ADC_MAX11331_AXI_S0_AXI_Lite_SLV_REG1_OFFSET 4
 #define ADC_MAX11331_AXI_S0_AXI_Lite_SLV_REG2_OFFSET 8

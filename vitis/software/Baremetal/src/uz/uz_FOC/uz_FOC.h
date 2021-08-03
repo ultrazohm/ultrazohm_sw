@@ -47,7 +47,7 @@ uz_FOC* uz_FOC_init(uz_FOC_config config_FOC, uz_PI_Controller_config config_id,
  * @param self uz_FOC instance
  * @param i_dq_meas_Ampere uz_dq_t struct for measured dq-currents
  * @param U_zk_Volts measured U_zk voltage. Must be greater than 0.0f
- * @param omega_el_rad_per_sec measured omega_el in rad per seconds
+ * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
  * @return struct uz_dq_t Output dq-reference voltage struct
  */
 struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_dq_meas_Ampere, float U_zk_Volts, float omega_el_rad_per_sec);

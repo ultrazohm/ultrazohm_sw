@@ -24,5 +24,6 @@ Vitis
     signals/signals
     piController/piController
     dq_transformation/dq_transformation
+    linear_decoupling/linear_decoupling
     global_configuration
 

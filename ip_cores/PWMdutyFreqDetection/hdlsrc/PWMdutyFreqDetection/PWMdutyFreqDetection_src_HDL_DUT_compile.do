@@ -1,0 +1,7 @@
+vlib work
+vcom  PWMdutyFreqDetection_src_HDL_DUT_pkg.vhd
+vcom  PWMdutyFreqDetection_src_Detect_Fall_Nonpositive.vhd
+vcom  PWMdutyFreqDetection_src_Detect_Rise_Positive.vhd
+vcom  PWMdutyFreqDetection_src_HDL_Reciprocal_core.vhd
+vcom  PWMdutyFreqDetection_src_HDL_Reciprocal.vhd
+vcom  PWMdutyFreqDetection_src_HDL_DUT.vhd

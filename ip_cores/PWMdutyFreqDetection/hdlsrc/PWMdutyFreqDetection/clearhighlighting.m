@@ -1,0 +1,13 @@
+SLStudio.Utils.RemoveHighlighting(get_param('PWMdutyFreqDetection', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_PWMdutyFreqDetection', 'handle'));
+annotate_port('gm_PWMdutyFreqDetection/HDL_DUT/Detect Fall Nonpositive', 0, 1, '');
+annotate_port('gm_PWMdutyFreqDetection/HDL_DUT/Detect Fall Nonpositive', 1, 1, '');
+annotate_port('PWMdutyFreqDetection/HDL_DUT/Detect Fall Nonpositive', 1, 1, '');
+annotate_port('gm_PWMdutyFreqDetection/HDL_DUT/Detect Rise Positive', 1, 1, '');
+annotate_port('PWMdutyFreqDetection/HDL_DUT/Detect Rise Positive', 1, 1, '');
+annotate_port('gm_PWMdutyFreqDetection/HDL_DUT/Gain', 0, 1, '');
+annotate_port('gm_PWMdutyFreqDetection/HDL_DUT/Compare To Constant', 0, 1, '');
+annotate_port('gm_PWMdutyFreqDetection/HDL_DUT/Product', 0, 1, '');
+annotate_port('gm_PWMdutyFreqDetection/HDL_DUT/Switch1', 0, 1, '');
+annotate_port('gm_PWMdutyFreqDetection/HDL_DUT/Detect Fall Nonpositive/FixPt Relational Operator', 0, 1, '');
+annotate_port('gm_PWMdutyFreqDetection/HDL_DUT/Detect Fall Nonpositive/Nonpositive', 0, 1, '');

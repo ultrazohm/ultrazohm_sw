@@ -1,0 +1,18 @@
+open_system('PWMdutyFreqDetection');
+open_system('gm_PWMdutyFreqDetection');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_PWMdutyFreqDetection/HDL_DUT/Detect Fall Nonpositive', 'user2');
+annotate_port('gm_PWMdutyFreqDetection/HDL_DUT/Detect Fall Nonpositive', 1, 1, 'Block not characterized');
+hilite_system('PWMdutyFreqDetection/HDL_DUT/Detect Fall Nonpositive', 'user2');
+annotate_port('PWMdutyFreqDetection/HDL_DUT/Detect Fall Nonpositive', 1, 1, 'Block not characterized');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_PWMdutyFreqDetection/HDL_DUT/Detect Rise Positive', 'user2');
+annotate_port('gm_PWMdutyFreqDetection/HDL_DUT/Detect Rise Positive', 1, 1, 'Block not characterized');
+hilite_system('PWMdutyFreqDetection/HDL_DUT/Detect Rise Positive', 'user2');
+annotate_port('PWMdutyFreqDetection/HDL_DUT/Detect Rise Positive', 1, 1, 'Block not characterized');

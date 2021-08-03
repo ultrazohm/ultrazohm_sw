@@ -122,10 +122,10 @@ void process_request_thread(void *p)
 			nwsend.val_18[i] 	= OsziData_Shadow.val[17];
 			nwsend.val_19[i] 	= OsziData_Shadow.val[18];
 			nwsend.val_20[i] 	= OsziData_Shadow.val[19];*/
-			nwsend.val_01[i] 	= 0 + upcount;
-			nwsend.val_02[i] 	= 100 + upcount;
-			nwsend.val_03[i] 	= 200 + upcount;
-			nwsend.val_04[i]  	= 300 + upcount;
+			nwsend.val_01[i] 	= OsziData_Shadow.val[0];
+			nwsend.val_02[i]  	= OsziData_Shadow.val[5];
+			nwsend.val_03[i]  	= OsziData_Shadow.val[10];
+			nwsend.val_04[i] 	= OsziData_Shadow.val[15];
 			nwsend.val_05[i]  	= 400 + upcount;
 			nwsend.val_06[i]  	= 500 + upcount;
 			nwsend.val_07[i] 	= 600 + upcount;

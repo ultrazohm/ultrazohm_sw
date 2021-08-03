@@ -15,32 +15,32 @@
 
 typedef struct uz_array_float_t
 {
-    const size_t length; // length of the vector
-    float * const data; // const pointer to data
+    size_t length; // length of the vector
+    float * data; // const pointer to data
 }uz_array_float_t;
 
 typedef struct uz_array_uint32_t
 {
-    const size_t length; // length of the vector
-    uint32_t * const data; // const pointer to data
+    size_t length; // length of the vector
+    uint32_t * data; // const pointer to data
 }uz_array_uint32_t;
 
 typedef struct uz_array_int32_t
 {
-    const size_t length; // length of the vector
-    int32_t * const data; // const pointer to data
+    size_t length; // length of the vector
+    int32_t * data; // const pointer to data
 }uz_array_int32_t;
 
 typedef struct uz_array_int16_t
 {
-    const size_t length; // length of the vector
-    int16_t * const data; // const pointer to data
+    size_t length; // length of the vector
+    int16_t *data; // const pointer to data
 }uz_array_int16_t;
 
 typedef struct uz_array_uint16_t
 {
-    const size_t length; // length of the vector
-    uint16_t * const data; // const pointer to data
+    size_t length; // length of the vector
+    uint16_t * data; // const pointer to data
 }uz_array_uint16_t;
 
 #endif // UZ_ARRAY_H

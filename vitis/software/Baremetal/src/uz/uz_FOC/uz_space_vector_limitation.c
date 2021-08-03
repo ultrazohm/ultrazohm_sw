@@ -35,6 +35,7 @@ struct uz_dq_t uz_FOC_SpaceVector_Limitation(struct uz_dq_t u_dq_ref_Volts, floa
 		} else {
 			u_dq_limit_Volts.d = 0.0f;
 			u_dq_limit_Volts.q = 0.0f;
+			uz_assert(0); //This should never be reached
 		}
 
 	} else {

@@ -1,6 +1,6 @@
 #include "uz_piController.h"
 #include "../uz_global_configuration.h"
-#if UZ_FOC_PI_CONTROLLER_MAX_INSTANCES > 0U
+#if UZ_PI_CONTROLLER_MAX_INSTANCES > 0U
 #include "../uz_HAL.h"
 #include "../uz_signals/uz_signals.h"
 #include <math.h>
@@ -14,11 +14,11 @@ struct uz_PI_Controller {
 };
 
 static size_t instances_counter_PI_Controller = 0;
-static uz_PI_Controller instances_PI_Controller[UZ_FOC_PI_CONTROLLER_MAX_INSTANCES] = { 0 };
+static uz_PI_Controller instances_PI_Controller[UZ_PI_CONTROLLER_MAX_INSTANCES] = { 0 };
 static uz_PI_Controller* uz_PI_Controller_allocation(void);
 
 static uz_PI_Controller* uz_PI_Controller_allocation(void) {
-	uz_assert(instances_counter_PI_Controller < UZ_FOC_PI_CONTROLLER_MAX_INSTANCES);
+	uz_assert(instances_counter_PI_Controller < UZ_PI_CONTROLLER_MAX_INSTANCES);
 	uz_PI_Controller* self = &instances_PI_Controller[instances_counter_PI_Controller];
 	uz_assert(self->is_ready == false);
 	instances_counter_PI_Controller++;

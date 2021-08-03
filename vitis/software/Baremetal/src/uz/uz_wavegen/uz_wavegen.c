@@ -96,19 +96,6 @@ float uz_wavegen_triangle_with_offset(float amplitude, float frequency_Hz, float
 	return (triangle_wave);
 }
 
-float uz_wavegen_saturation(float input, float upper_limit, float lower_limit) {
-	uz_assert(upper_limit > lower_limit);
-	float output=0.0f;
-	if (input > upper_limit) {
-		output = upper_limit;
-	} else if (input < lower_limit) {
-		output = lower_limit;
-	} else{
-		output=input;
-	}
-	return (output);
-}
-
 float uz_wavegen_white_noise(float amplitude) {
 	uz_assert(amplitude != 0.0f);
 	return (amplitude * ( ((float)rand() / RAND_MAX * 2.0f) - 1.0f) );

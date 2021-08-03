@@ -1,0 +1,6 @@
+Bit(s),Name,Default Value,Access,True ('1'),False ('0')
+0,MODE,0,Read/Write,**Continuous mode:** The core is triggered as frequent as possible,**Triggered mode:** The core must be triggered by software or by hardware where hardware trigger is prioritized
+1,TRIGGER,0,Read/Write,Start conversion of the channels selected in :ref:`table_adc_master_channel` synchronously. If a selected channel is busy when the bit is set a new conversion is only started after the ongoing conversion has terminated.,The bit is reset by hardware after the conversion has been started synchronously.
+2,SW_RESET,0,Read/Write,Trigger a reset of the IP core by software. All registers and ports are reset to their default values., Reset finished. Reading from this bit always returns 0.
+3,CONV_VALUE_VALID,0,Read/Write,Indicates that the value in :ref:`table_adc_off_conv` is valid. After setting the bit the value will be updated in the selected channels as soon as the selected channels are not busy anymore.,Reset by hardware after the value in :ref:`table_adc_off_conv` is read.
+[4..6],CR_CONFIG_VALUE_[0..2],000,Read/Write,See table below,See table below

@@ -1,0 +1,2 @@
+Bit(s),Name,Default Value,Access,True ('1'),False ('0')
+0 - 31,ADC_MASTER_0 - ADC_MASTER_31,0,Read only,The transmission on the specified master channel finished,There is a transmission ongoing on the master channel

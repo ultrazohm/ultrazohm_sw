@@ -16,22 +16,12 @@
  * @brief Configuration struct for FOC. Accessible by the user
  */
 typedef struct uz_FOC_config {
-	float iq_ref_Ampere;
-	float id_ref_Ampere;
-	float n_ref_rpm;
-	unsigned int FOC_Select; //1=CurrentControl 2=SpeedControl
-	float polePairs;
+	float iq_ref_Ampere; /**< Reference current for the q-Axis in Ampere */
+	float id_ref_Ampere; /**< Reference current for the d-Axis in Ampere*/
+	float n_ref_rpm; /**< Reference speed for SpeedControl in rounds per minute */
+	unsigned int FOC_Select; /**< Selection, if Speed- or CurrentControl will be use. Input must be either 1=CurrentControl or 2=SpeedControl */
+	float polePairs; /**< Number of polePairs for the machine */
 } uz_FOC_config;
-
-/**
- * @brief Struct for measured parameters, which are needed for the FOC. Accessible by the user
- *
- */
-typedef struct uz_FOC_ActualValues {
-	struct uz_dq_t i_dq_meas_Ampere;
-	float omega_el_rad_per_sec;
-	float U_zk_Volts;
-} uz_FOC_ActualValues;
 
 /**
  * @brief Object definition for FOC
@@ -55,10 +45,12 @@ uz_FOC* uz_FOC_init(uz_FOC_config config_FOC, uz_PI_Controller_config config_id,
  * @brief calculates last sample for dq-reference voltages
  *
  * @param self uz_FOC instance
- * @param values uz_FOC_ActualValues struct with the actual measurement values
+ * @param i_dq_meas_Ampere uz_dq_t struct for measured dq-currents
+ * @param U_zk_Volts measured U_zk voltage. Must be greater than 0.0f
+ * @param omega_el_rad_per_sec measured omega_el in rad per seconds
  * @return struct uz_dq_t Output dq-reference voltage struct
  */
-struct uz_dq_t uz_FOC_sample(uz_FOC* self, uz_FOC_ActualValues values);
+struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_dq_meas_Ampere, float U_zk_Volts, float omega_el_rad_per_sec);
 
 /**
  * @brief Resets the FOC and the integrators of the PI-Controllers
@@ -132,15 +124,15 @@ void uz_FOC_set_id_ref(uz_FOC* self, float id_ref);
 void uz_FOC_set_iq_ref(uz_FOC* self, float iq_ref);
 
 /**
- * @brief 
- * 
- * @param self 
- * @param config_FOC 
- * @param config_id 
- * @param config_iq 
- * @param config_n 
- * @param config_lin_Decoup 
- * @return uz_FOC* 
+ * @brief Changes the control method from Current- to SpeedControl or vice versa
+ *
+ * @param self uz_FOC instance
+ * @param config_FOC configuration struct for FOC
+ * @param config_id configuration struct for id-PI-Controller
+ * @param config_iq configuration struct for iq-PI-Controller
+ * @param config_n configuration struct for n-PI-Controller
+ * @param config_lin_Decoup configuration struct for linear decoupling
+ * @return uz_FOC* Pointer to uz_FOC instance
  */
 uz_FOC* uz_FOC_change_control_Method(uz_FOC* self, uz_FOC_config config_FOC, uz_PI_Controller_config config_id, uz_PI_Controller_config config_iq, uz_PI_Controller_config config_n, uz_lin_decoupling_config config_lin_Decoup);
 

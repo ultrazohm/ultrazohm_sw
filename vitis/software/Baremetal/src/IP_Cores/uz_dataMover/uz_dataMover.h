@@ -2,8 +2,6 @@
 #define UZ_DATAMOVER_H
 #include "../../uz/uz_array/uz_array.h"
 
-#define UZ_DATAMOVER_ARRAY_LENGTH 24
-
 /**
  * @brief Returns an array with a direct pointer into the BTCM. The values of the array change independend of the software.
  *

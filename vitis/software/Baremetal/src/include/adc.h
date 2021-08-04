@@ -16,29 +16,12 @@
 #ifndef ADC_H_
 #define ADC_H_
 
-#include <stdint.h>
-#include <math.h>
-
-#include "xil_types.h"
-#include "xil_io.h"
-
 #include "../globalData.h"
-#include "../IP_Cores/ADC_Module_LVDS_v2_ip_addr.h"
+#include "../uz/uz_array/uz_array.h"
 
-typedef union _ADCread_union_ {
-	struct{
-		int16_t ADC1;
-		int16_t ADC2;
-		int16_t ADC3;
-		int16_t ADC4;
-		};
-	u64 ADC_Block_64bit;
-} ADCread_union;
-
-
-void ADC_readCardA1(DS_Data* data);
-void ADC_readCardA2(DS_Data* data);
-void ADC_readCardA3(DS_Data* data);
+void ADC_readCardA1(DS_Data *data, uz_array_int16_t adc_data);
+void ADC_readCardA2(DS_Data *data, uz_array_int16_t adc_data);
+void ADC_readCardA3(DS_Data *data, uz_array_int16_t adc_data);
 
 void ADC_readCardALL(DS_Data* data);
 

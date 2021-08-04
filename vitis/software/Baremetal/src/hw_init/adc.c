@@ -14,130 +14,71 @@
 ******************************************************************************/
 
 #include "../include/adc.h"
+#include <stdint.h>
+#include <math.h>
+
+#include "xil_types.h"
+#include "xil_io.h"
+
+#include "../IP_Cores/ADC_Module_LVDS_v2_ip_addr.h"
 #include "../IP_Cores/uz_dataMover/uz_dataMover.h"
 #include "../uz/uz_HAL.h"
-#define R5_0_BTCM_SPLIT_REG	0x20000
-#define ADC_A1_ChA1_REG		(R5_0_BTCM_SPLIT_REG + 0x00)
-#define ADC_A1_ChA2_REG		(R5_0_BTCM_SPLIT_REG + 0x02)
-#define ADC_A1_ChA3_REG		(R5_0_BTCM_SPLIT_REG + 0x04)
-#define ADC_A1_ChA4_REG		(R5_0_BTCM_SPLIT_REG + 0x06)
 
-#define ADC_A1_ChB5_REG		(R5_0_BTCM_SPLIT_REG + 0x08)
-#define ADC_A1_ChB6_REG		(R5_0_BTCM_SPLIT_REG + 0x0A)
-#define ADC_A1_ChB7_REG		(R5_0_BTCM_SPLIT_REG + 0x0C)
-#define ADC_A1_ChB8_REG		(R5_0_BTCM_SPLIT_REG + 0x0E)
-
-// ADC Card Slot
-#define ADC_A2_ChA1_REG		(R5_0_BTCM_SPLIT_REG + 0x10)
-#define ADC_A2_ChA2_REG		(R5_0_BTCM_SPLIT_REG + 0x12)
-#define ADC_A2_ChA3_REG		(R5_0_BTCM_SPLIT_REG + 0x14)
-#define ADC_A2_ChA4_REG		(R5_0_BTCM_SPLIT_REG + 0x16)
-
-#define ADC_A2_ChB5_REG		(R5_0_BTCM_SPLIT_REG + 0x18)
-#define ADC_A2_ChB6_REG		(R5_0_BTCM_SPLIT_REG + 0x1A)
-#define ADC_A2_ChB7_REG		(R5_0_BTCM_SPLIT_REG + 0x1C)
-#define ADC_A2_ChB8_REG		(R5_0_BTCM_SPLIT_REG + 0x1E)
-
-// ADC Card Slot
-#define ADC_A3_ChA1_REG		(R5_0_BTCM_SPLIT_REG + 0x20)
-#define ADC_A3_ChA2_REG		(R5_0_BTCM_SPLIT_REG + 0x22)
-#define ADC_A3_ChA3_REG		(R5_0_BTCM_SPLIT_REG + 0x24)
-#define ADC_A3_ChA4_REG		(R5_0_BTCM_SPLIT_REG + 0x26)
-
-#define ADC_A3_ChB5_REG		(R5_0_BTCM_SPLIT_REG + 0x28)
-#define ADC_A3_ChB6_REG		(R5_0_BTCM_SPLIT_REG + 0x2A)
-#define ADC_A3_ChB7_REG		(R5_0_BTCM_SPLIT_REG + 0x2C)
-#define ADC_A3_ChB8_REG		(R5_0_BTCM_SPLIT_REG + 0x2E)
-
-#define ADC_ChA1	0
-#define ADC_ChA2	1
-#define ADC_ChA3	2
-#define ADC_ChA4	3
-#define ADC_ChB5	4
-#define ADC_ChB6	5
-#define ADC_ChB7	6
-#define ADC_ChB8	7
-
-uz_array_int16_t adc_values={0};
-float is_equal_adc=0.0F;
-
-extern int16_t buffer[24];
-extern int16_t *ptr;
-
-uz_array_int16_t dat_by_value;
-
-void ADC_readCardA1(DS_Data* data){
-
-	// read all 8 ADC values from Analog Adapter card slot A1
-	int16_t ADC1 = Xil_In16(ADC_A1_ChA1_REG);
-	int16_t ADC2 = Xil_In16(ADC_A1_ChA2_REG);
-	int16_t ADC3 = Xil_In16(ADC_A1_ChA3_REG);
-	int16_t ADC4 = Xil_In16(ADC_A1_ChA4_REG);
-	int16_t ADC5 = Xil_In16(ADC_A1_ChB5_REG);
-	int16_t ADC6 = Xil_In16(ADC_A1_ChB6_REG);
-	int16_t ADC7 = Xil_In16(ADC_A1_ChB7_REG);
-	int16_t ADC8 = Xil_In16(ADC_A1_ChB8_REG);
-
+void ADC_readCardA1(DS_Data *data, uz_array_int16_t adc_data)
+{
 	// bitshift operation of -16 digits, because it is an 16-bit ADC
 	// Conversion Factor is defined in main.c InitializeDataStructure
-	 data->aa.A1.me.ADC_array[0] =  ldexpf((float)ADC1, -16)* data->aa.A1.cf.ADC_A1;
-	 data->aa.A1.me.ADC_array[1] =  ldexpf((float)ADC2, -16)* data->aa.A1.cf.ADC_A2;
-	 data->aa.A1.me.ADC_array[2] =  ldexpf((float)ADC3, -16)* data->aa.A1.cf.ADC_A3;
-	 data->aa.A1.me.ADC_array[3] =  ldexpf((float)ADC4, -16)* data->aa.A1.cf.ADC_A4;
-	 data->aa.A1.me.ADC_array[4] =  ldexpf((float)ADC5, -16)* data->aa.A1.cf.ADC_B5;
-	 data->aa.A1.me.ADC_array[5] =  ldexpf((float)ADC6, -16)* data->aa.A1.cf.ADC_B6;
-	 data->aa.A1.me.ADC_array[6] =  ldexpf((float)ADC7, -16)* data->aa.A1.cf.ADC_B7;
-	 data->aa.A1.me.ADC_array[7] =  ldexpf((float)ADC8, -16)* data->aa.A1.cf.ADC_B8;
-	 dat_by_value=uz_dataMover_get_data_from_buffer();
-	 uz_assert(dat_by_value.data[0] == ADC1);
-	 uz_assert(adc_values.data[0] == ADC1);
-	 //uz_printf("Xil_in: %i, ptr: %i, by value: %i \n",ADC1,adc_values.data[0],dat_by_value.data[0]);
-
+	data->aa.A1.me.ADC_array[0] = ldexpf((float)adc_data.data[0], -16) * data->aa.A1.cf.ADC_A1;
+	data->aa.A1.me.ADC_array[1] = ldexpf((float)adc_data.data[1], -16) * data->aa.A1.cf.ADC_A2;
+	data->aa.A1.me.ADC_array[2] = ldexpf((float)adc_data.data[2], -16) * data->aa.A1.cf.ADC_A3;
+	data->aa.A1.me.ADC_array[3] = ldexpf((float)adc_data.data[3], -16) * data->aa.A1.cf.ADC_A4;
+	data->aa.A1.me.ADC_array[4] = ldexpf((float)adc_data.data[4], -16) * data->aa.A1.cf.ADC_B5;
+	data->aa.A1.me.ADC_array[5] = ldexpf((float)adc_data.data[5], -16) * data->aa.A1.cf.ADC_B6;
+	data->aa.A1.me.ADC_array[6] = ldexpf((float)adc_data.data[6], -16) * data->aa.A1.cf.ADC_B7;
+	data->aa.A1.me.ADC_array[7] = ldexpf((float)adc_data.data[7], -16) * data->aa.A1.cf.ADC_B8;
 }
 
-void ADC_readCardA2(DS_Data* data){
-	// read all 8 ADC values from Analog Adapter card slot A1
-
-
+void ADC_readCardA2(DS_Data *data, uz_array_int16_t adc_data)
+{
 	// bitshift operation of -16 digits, because it is an 16-bit ADC
 	// Conversion Factor is defined in main.c InitializeDataStructure
-	// data->aa.A2.me.ADC_array[0] =  ldexpf((float)ADC1, -16)* data->aa.A2.cf.ADC_A1;
-	// data->aa.A2.me.ADC_array[1] =  ldexpf((float)ADC2, -16)* data->aa.A2.cf.ADC_A2;
-	// data->aa.A2.me.ADC_array[2] =  ldexpf((float)ADC3, -16)* data->aa.A2.cf.ADC_A3;
-	// data->aa.A2.me.ADC_array[3] =  ldexpf((float)ADC4, -16)* data->aa.A2.cf.ADC_A4;
-	// data->aa.A2.me.ADC_array[4] =  ldexpf((float)ADC5, -16)* data->aa.A2.cf.ADC_B5;
-	// data->aa.A2.me.ADC_array[5] =  ldexpf((float)ADC6, -16)* data->aa.A2.cf.ADC_B6;
-	// data->aa.A2.me.ADC_array[6] =  ldexpf((float)ADC7, -16)* data->aa.A2.cf.ADC_B7;
-	// data->aa.A2.me.ADC_array[7] =  ldexpf((float)ADC8, -16)* data->aa.A2.cf.ADC_B8;
-};
-void ADC_readCardA3(DS_Data* data){
-
-
-	//data->aa.A3.me.ADC_array[0] =  ldexpf((float)ReadBlockA.ADC1, -16)* data->aa.A3.cf.ADC_A1;
-	//data->aa.A3.me.ADC_array[1] =  ldexpf((float)ReadBlockA.ADC2, -16)* data->aa.A3.cf.ADC_A2;
-	//data->aa.A3.me.ADC_array[2] =  ldexpf((float)ReadBlockA.ADC3, -16)* data->aa.A3.cf.ADC_A3;
-	//data->aa.A3.me.ADC_array[3] =  ldexpf((float)ReadBlockA.ADC4, -16)* data->aa.A3.cf.ADC_A4;
-//
-	//data->aa.A3.me.ADC_array[4] =  ldexpf((float)ReadBlockB.ADC1, -16)* data->aa.A3.cf.ADC_B5;
-	//data->aa.A3.me.ADC_array[5] =  ldexpf((float)ReadBlockB.ADC2, -16)* data->aa.A3.cf.ADC_B6;
-	//data->aa.A3.me.ADC_array[6] =  ldexpf((float)ReadBlockB.ADC3, -16)* data->aa.A3.cf.ADC_B7;
-	//data->aa.A3.me.ADC_array[7] =  ldexpf((float)ReadBlockB.ADC4, -16)* data->aa.A3.cf.ADC_B8;
-};
-
-void ADC_readCardALL(DS_Data* data){
-	ADC_readCardA1(data);
-	ADC_readCardA2(data);
-	ADC_readCardA3(data);
+	data->aa.A2.me.ADC_array[0] = ldexpf((float)adc_data.data[8], -16) * data->aa.A2.cf.ADC_A1;
+	data->aa.A2.me.ADC_array[1] = ldexpf((float)adc_data.data[9], -16) * data->aa.A2.cf.ADC_A2;
+	data->aa.A2.me.ADC_array[2] = ldexpf((float)adc_data.data[10], -16) * data->aa.A2.cf.ADC_A3;
+	data->aa.A2.me.ADC_array[3] = ldexpf((float)adc_data.data[11], -16) * data->aa.A2.cf.ADC_A4;
+	data->aa.A2.me.ADC_array[4] = ldexpf((float)adc_data.data[12], -16) * data->aa.A2.cf.ADC_B5;
+	data->aa.A2.me.ADC_array[5] = ldexpf((float)adc_data.data[13], -16) * data->aa.A2.cf.ADC_B6;
+	data->aa.A2.me.ADC_array[6] = ldexpf((float)adc_data.data[14], -16) * data->aa.A2.cf.ADC_B7;
+	data->aa.A2.me.ADC_array[7] = ldexpf((float)adc_data.data[15], -16) * data->aa.A2.cf.ADC_B8;
 }
 
-void ADC_WriteConversionFactor(int ADC_ConversionFactor){
+void ADC_readCardA3(DS_Data *data, uz_array_int16_t adc_data)
+{
+	data->aa.A3.me.ADC_array[0] = ldexpf((float)adc_data.data[16], -16) * data->aa.A3.cf.ADC_A1;
+	data->aa.A3.me.ADC_array[1] = ldexpf((float)adc_data.data[17], -16) * data->aa.A3.cf.ADC_A2;
+	data->aa.A3.me.ADC_array[2] = ldexpf((float)adc_data.data[18], -16) * data->aa.A3.cf.ADC_A3;
+	data->aa.A3.me.ADC_array[3] = ldexpf((float)adc_data.data[19], -16) * data->aa.A3.cf.ADC_A4;
+	data->aa.A3.me.ADC_array[4] = ldexpf((float)adc_data.data[20], -16) * data->aa.A3.cf.ADC_B5;
+	data->aa.A3.me.ADC_array[5] = ldexpf((float)adc_data.data[21], -16) * data->aa.A3.cf.ADC_B6;
+	data->aa.A3.me.ADC_array[6] = ldexpf((float)adc_data.data[22], -16) * data->aa.A3.cf.ADC_B7;
+	data->aa.A3.me.ADC_array[7] = ldexpf((float)adc_data.data[23], -16) * data->aa.A3.cf.ADC_B8;
+};
+
+void ADC_readCardALL(DS_Data *data)
+{
+	uz_array_int16_t adc_data = uz_dataMover_update_buffer_and_get_data();
+	ADC_readCardA1(data, adc_data);
+	ADC_readCardA2(data, adc_data);
+	ADC_readCardA3(data, adc_data);
+}
+
+void ADC_WriteConversionFactor(int ADC_ConversionFactor)
+{
 	// Example how to set the conversion factor in the ADC Module in the FPGA for ADC slot A1 Block A (4 ADCs)
-	adc_values=uz_dataMover_get_data_by_pointer();
-	Xil_Out32(XPAR_ADC_A1_ADC_BLOCK_A_BASEADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip , ADC_ConversionFactor);
-	Xil_Out32(XPAR_ADC_A1_ADC_BLOCK_B_BASEADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip , ADC_ConversionFactor);
-	Xil_Out32(XPAR_ADC_A2_ADC_BLOCK_A_BASEADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip , ADC_ConversionFactor);
-	Xil_Out32(XPAR_ADC_A2_ADC_BLOCK_B_BASEADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip , ADC_ConversionFactor);
-	Xil_Out32(XPAR_ADC_A3_ADC_BLOCK_A_BASEADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip , ADC_ConversionFactor);
-	Xil_Out32(XPAR_ADC_A3_ADC_BLOCK_B_BASEADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip , ADC_ConversionFactor);
-	
+	Xil_Out32(XPAR_ADC_A1_ADC_BLOCK_A_BASEADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip, ADC_ConversionFactor);
+	Xil_Out32(XPAR_ADC_A1_ADC_BLOCK_B_BASEADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip, ADC_ConversionFactor);
+	Xil_Out32(XPAR_ADC_A2_ADC_BLOCK_A_BASEADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip, ADC_ConversionFactor);
+	Xil_Out32(XPAR_ADC_A2_ADC_BLOCK_B_BASEADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip, ADC_ConversionFactor);
+	Xil_Out32(XPAR_ADC_A3_ADC_BLOCK_A_BASEADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip, ADC_ConversionFactor);
+	Xil_Out32(XPAR_ADC_A3_ADC_BLOCK_B_BASEADDR + Conversion_Factor_1_ADC_Module_LVDS_V2_ip, ADC_ConversionFactor);
 }

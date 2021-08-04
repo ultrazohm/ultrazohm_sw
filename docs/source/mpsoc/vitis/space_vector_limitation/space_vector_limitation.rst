@@ -26,7 +26,9 @@ Example
 Description
 ===========
 
-Limits the input voltages according to the following flowchart. Further information can be found in [#Quang]_ .
+Limits the input voltages according to the following flowchart. 
+Further information can be found in [#Quang]_ . 
+This function is already included in the :ref:`uz_FOC`.
 
 .. math::
 

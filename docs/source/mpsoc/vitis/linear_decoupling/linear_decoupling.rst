@@ -1,4 +1,4 @@
-.. _lineardecoupling:
+.. _uz_lineardecoupling:
 
 =================
 Linear decoupling
@@ -35,7 +35,7 @@ Calculates the values for a linear decoupling according to the following formula
     u_{d,decoup} &= -\omega_{el} \cdot L_q \cdot i_q \\
     u_{q,decoup} &= \omega_{el} \cdot (L_d \cdot i_d + \psi_{PM})
 
-This function is already included in the ``uz_FOC``, but it can be used independently for any other purpose.
+This function is already included in the :ref:`uz_FOC`, but it can be used independently for any other purpose.
 
 .. tikz:: linear decoupling
   :align: left

@@ -86,7 +86,6 @@ Example
   :linenos:
   :caption: Example function call to reset the PI-Controller output. PI-Instance via :ref:`init-function <uz_piController_init>`
 
-  #include "uz/uz_piController/uz_piController.h"
   int main(void) {
      uz_PI_Controller_reset(PI_instance);
   }

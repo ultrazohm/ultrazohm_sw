@@ -23,6 +23,11 @@ uz_array_int16_t uz_dataMover_get_data_by_pointer(void){
     return data_array;
 }
 
+uz_array_int16_t uz_dataMover_update_buffer_and_get_data(void){
+    uz_dataMover_update_buffer();
+    return (uz_dataMover_get_data_from_buffer());
+}
+
 void uz_dataMover_update_buffer(void){
     void *ptr_res=memcpy(&buffer, ptr_to_btcm,sizeof(buffer) );
     uz_assert_not_NULL(ptr_res); // checks return value of memcpy to make sure something happend

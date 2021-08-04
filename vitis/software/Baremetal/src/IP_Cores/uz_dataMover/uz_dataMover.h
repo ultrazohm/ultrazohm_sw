@@ -12,6 +12,13 @@
 uz_array_int16_t uz_dataMover_get_data_by_pointer(void);
 
 /**
+ * @brief Copies all data from TCM to buffer and retruns the buffered data.
+ * 
+ * @return uz_array_int16_t 
+ */
+uz_array_int16_t uz_dataMover_update_buffer_and_get_data(void);
+
+/**
  * @brief Copies all data from BTCM to a buffer in the PS.
  *
  * @return void

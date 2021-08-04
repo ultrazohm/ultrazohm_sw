@@ -88,7 +88,7 @@ void ADC_readCardA1(DS_Data* data){
 	 data->aa.A1.me.ADC_array[5] =  ldexpf((float)ADC6, -16)* data->aa.A1.cf.ADC_B6;
 	 data->aa.A1.me.ADC_array[6] =  ldexpf((float)ADC7, -16)* data->aa.A1.cf.ADC_B7;
 	 data->aa.A1.me.ADC_array[7] =  ldexpf((float)ADC8, -16)* data->aa.A1.cf.ADC_B8;
-	 dat_by_value=uz_dataMover_get_data_by_buffer();
+	 dat_by_value=uz_dataMover_get_data_from_buffer();
 	 uz_assert(dat_by_value.data[0] == ADC1);
 	 uz_assert(adc_values.data[0] == ADC1);
 	 //uz_printf("Xil_in: %i, ptr: %i, by value: %i \n",ADC1,adc_values.data[0],dat_by_value.data[0]);

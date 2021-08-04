@@ -2,7 +2,7 @@
 
 #include "unity.h"
 
-#include "uz_DataMover.h"
+#include "uz_dataMover.h"
 
 void setUp(void)
 {

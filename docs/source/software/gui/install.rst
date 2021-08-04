@@ -10,6 +10,6 @@ Install Java JDK to use GUI
 
 ..	image:: ./images_install/terminal_check_java_version.png
 
-3. If it displays something different than your installed version (e.g. version 1.8), you may have installed some Java Runtime Environment (JRE)
-    - Solution A: If you don't need explicitly the JRE --> uninstall it
-    - Solution B: Check your PATH variable JAVA_HOME if it points to your JDK installation
+3. If it displays something different than your installed version (e.g. version 1.8), you may have already installed some Java Runtime Environment (JRE)
+    - Solution A: If you do not explicitly need the JRE --> Uninstall it and check your version again
+    - Solution B: Add your JDK installation folder (probably: ``C:\Program Files\Java\jdk-16\bin``) to your system PATH variable

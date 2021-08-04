@@ -125,6 +125,118 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 
 			}
 		}
+		else if (msgId == 208) // SELECT_DATA_CH5_bits
+				{
+					if ( value >= 0 && value < JSO_ENDMARKER )
+					{
+						js_ptr[4] = js_ptr_arr[value];
+
+					}
+				}
+		else if (msgId == 209) // SELECT_DATA_CH6_bits
+				{
+					if ( value >= 0 && value < JSO_ENDMARKER )
+					{
+						js_ptr[5] = js_ptr_arr[value];
+
+					}
+				}
+		else if (msgId == 210) // SELECT_DATA_CH7_bits
+				{
+					if ( value >= 0 && value < JSO_ENDMARKER )
+					{
+						js_ptr[6] = js_ptr_arr[value];
+
+					}
+				}
+		else if (msgId == 211) // SELECT_DATA_CH8_bits
+				{
+					if ( value >= 0 && value < JSO_ENDMARKER )
+					{
+						js_ptr[7] = js_ptr_arr[value];
+
+					}
+				}
+		else if (msgId == 212) // SELECT_DATA_CH9_bits
+				{
+					if ( value >= 0 && value < JSO_ENDMARKER )
+					{
+						js_ptr[8] = js_ptr_arr[value];
+
+					}
+				}
+		else if (msgId == 213) // SELECT_DATA_CH10_bits
+				{
+					if ( value >= 0 && value < JSO_ENDMARKER )
+					{
+						js_ptr[9] = js_ptr_arr[value];
+
+					}
+				}
+		else if (msgId == 214) // SELECT_DATA_CH11_bits
+				{
+					if ( value >= 0 && value < JSO_ENDMARKER )
+					{
+						js_ptr[10] = js_ptr_arr[value];
+
+					}
+				}
+		else if (msgId == 215) // SELECT_DATA_CH12_bits
+				{
+					if ( value >= 0 && value < JSO_ENDMARKER )
+					{
+						js_ptr[11] = js_ptr_arr[value];
+
+					}
+				}
+		else if (msgId == 216) // SELECT_DATA_CH13_bits
+				{
+					if ( value >= 0 && value < JSO_ENDMARKER )
+					{
+						js_ptr[12] = js_ptr_arr[value];
+
+					}
+				}
+		else if (msgId == 217) // SELECT_DATA_CH14_bits
+				{
+					if ( value >= 0 && value < JSO_ENDMARKER )
+					{
+						js_ptr[13] = js_ptr_arr[value];
+
+					}
+				}
+		else if (msgId == 218) // SELECT_DATA_CH15_bits
+				{
+					if ( value >= 0 && value < JSO_ENDMARKER )
+					{
+						js_ptr[14] = js_ptr_arr[value];
+
+					}
+				}
+		else if (msgId == 219) // SELECT_DATA_CH16_bits
+				{
+					if ( value >= 0 && value < JSO_ENDMARKER )
+					{
+						js_ptr[15] = js_ptr_arr[value];
+
+					}
+				}
+		else if (msgId == 220) // SELECT_DATA_CH17_bits
+				{
+					if ( value >= 0 && value < JSO_ENDMARKER )
+					{
+						js_ptr[16] = js_ptr_arr[value];
+
+					}
+				}
+		else if (msgId == 221) // SELECT_DATA_CH18_bits
+				{
+					if ( value >= 0 && value < JSO_ENDMARKER )
+					{
+						js_ptr[17] = js_ptr_arr[value];
+
+					}
+				}
 		else if (msgId == 0x01+MOTORCONTROL_OFFSET_bits) // ConverterEnable
 		{
 			data->cw.enableSystem = true;

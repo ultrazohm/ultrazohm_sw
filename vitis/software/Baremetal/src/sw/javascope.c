@@ -36,7 +36,7 @@ uint16_t js_factor1 = 0, js_factor2 = 0, js_factor3 = 0, js_factor4 = 0;
 
 // Channel-pointer and pointer array
 float *js_ptr_arr[JSO_ENDMARKER];
-float *js_ptr[4];	// channel ptr
+float *js_ptr[18];	// channel ptr
 float zerovalue = 0.0;
 uint32_t  i_fetchDataLifeCheck=0;
 
@@ -66,6 +66,25 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr[1] = &zerovalue;
 	js_ptr[2] = &zerovalue;
 	js_ptr[3] = &zerovalue;
+
+	js_ptr[4] = &zerovalue;
+	js_ptr[5] = &zerovalue;
+	js_ptr[6] = &zerovalue;
+	js_ptr[7] = &zerovalue;
+
+	js_ptr[8] = &zerovalue;
+	js_ptr[9] = &zerovalue;
+	js_ptr[10] = &zerovalue;
+	js_ptr[11] = &zerovalue;
+
+	js_ptr[12] = &zerovalue;
+	js_ptr[13] = &zerovalue;
+	js_ptr[14] = &zerovalue;
+	js_ptr[15] = &zerovalue;
+
+	js_ptr[16] = &zerovalue;
+	js_ptr[17] = &zerovalue;
+
 
 	for (j=0; j<JSSD_ENDMARKER; j++)
 	{
@@ -137,10 +156,10 @@ void js_fetchData4CH()
 			cnt_slowData = 0;
 	}
 
-	i_fetchDataLifeCheck++; //LiveCheck
+	/*i_fetchDataLifeCheck++; //LiveCheck
 	if(i_fetchDataLifeCheck > 10000){
 		i_fetchDataLifeCheck =0;
-	}
+	}*/
 
 	//SW: Write message for interrupt to APU
 	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, MsgPtr, IPI_R5toA53_MSG_LEN, XIPIPSU_BUF_TYPE_MSG);

@@ -126,7 +126,7 @@ union SlowData {
 
 
 extern float *js_ptr_arr[JSO_ENDMARKER];
-extern float *js_ptr[4];	// channel ptr
+extern float *js_ptr[18];	// channel ptr
 
 extern union SlowData js_slowDataArray[JSSD_ENDMARKER];
 

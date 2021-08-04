@@ -37,7 +37,7 @@ Calculates the values for a linear decoupling according to the following formula
 
 This function is already included in the ``uz_FOC``, but it can be used independently for any other purpose.
 
-.. tikz:: Clamping circuit
+.. tikz:: linear decoupling
   :align: left
 
   \usetikzlibrary{shapes,arrows, patterns,calc};

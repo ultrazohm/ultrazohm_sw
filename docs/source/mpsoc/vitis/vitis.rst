@@ -25,5 +25,6 @@ Vitis
     piController/piController
     dq_transformation/dq_transformation
     linear_decoupling/linear_decoupling
+    space_vector_limitation/space_vector_limitation
     global_configuration
 

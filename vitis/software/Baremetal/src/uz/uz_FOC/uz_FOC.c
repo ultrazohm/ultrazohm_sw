@@ -67,7 +67,7 @@ struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_dq_meas_Ampere, floa
 		u_dq_ref_Volts.q = 0.0f;
 		uz_assert(0);
 	}
-	struct uz_dq_t u_dq_vor_Volts = uz_FOC_linear_decoupling(i_dq_meas_Ampere, self->config_lin_Decoup, omega_el_rad_per_sec);
+	struct uz_dq_t u_dq_vor_Volts = uz_FOC_linear_decoupling(self->config_lin_Decoup, i_dq_meas_Ampere, omega_el_rad_per_sec);
 	u_dq_ref_Volts.d = u_dq_ref_Volts.d + u_dq_vor_Volts.d;
 	u_dq_ref_Volts.q = u_dq_ref_Volts.q + u_dq_vor_Volts.q;
 	struct uz_dq_t u_dq_limit_Volts = uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts, U_zk_Volts, omega_el_rad_per_sec, i_dq_meas_Ampere, &self->ext_clamping);
@@ -189,4 +189,23 @@ uz_FOC* uz_FOC_change_control_Method(uz_FOC* self, uz_FOC_config config_FOC, uz_
 	return (self);
 }
 
+void uz_FOC_set_Ld(uz_FOC* self, float Ld_Henry){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(Ld_Henry > 0.0f);
+	self->config_lin_Decoup.Ld_Henry = Ld_Henry;
+}
 
+void uz_FOC_set_Lq(uz_FOC* self, float Lq_Henry){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(Lq_Henry > 0.0f);
+	self->config_lin_Decoup.Lq_Henry = Lq_Henry;
+}
+
+void uz_FOC_set_Psi_PM(uz_FOC* self, float Psi_PM_Vs){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(Psi_PM_Vs > 0.0f);
+	self->config_lin_Decoup.Psi_PM_Vs = Psi_PM_Vs;
+}

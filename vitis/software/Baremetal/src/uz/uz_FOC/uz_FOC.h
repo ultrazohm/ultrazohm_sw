@@ -142,4 +142,28 @@ uz_FOC* uz_FOC_change_control_Method(uz_FOC* self, uz_FOC_config config_FOC, uz_
  * @param polePairs new value for polePairs. Must be greater than 0.0f
  */
 void uz_FOC_set_polePairs(uz_FOC* self, float polePairs);
+
+/**
+ * @brief Function to change Ld_Henry during runtime
+ * 
+ * @param self uz_FOC instance
+ * @param Ld_Henry New Value for d-axis inductance. Must be greater than 0.0f
+ */
+void uz_FOC_set_Ld(uz_FOC* self, float Ld_Henry);
+
+/**
+ * @brief Function to change Lq_Henry during runtime
+ * 
+ * @param self uz_FOC instance
+ * @param Lq_Henry New Value for q-axis inductance. Must be greater than 0.0f
+ */
+void uz_FOC_set_Lq(uz_FOC* self, float Lq_Henry);
+
+/**
+ * @brief Function to change Psi_PM_Vs during runtime
+ * 
+ * @param self uz_FOC instance
+ * @param Psi_PM_Vs New Value for permanent magnet flux linkage. Must be greater than 0.0f
+ */
+void uz_FOC_set_Psi_PM(uz_FOC* self, float Psi_PM_Vs);
 #endif // UZ_FOC_H

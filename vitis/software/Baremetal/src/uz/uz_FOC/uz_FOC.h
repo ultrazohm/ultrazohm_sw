@@ -20,7 +20,7 @@ typedef struct uz_FOC_config {
 	float id_ref_Ampere; /**< Reference current for the d-Axis in Ampere*/
 	float n_ref_rpm; /**< Reference speed for SpeedControl in rounds per minute */
 	unsigned int FOC_Select; /**< Selection, if Speed- or CurrentControl will be use. Input must be either 1=CurrentControl or 2=SpeedControl */
-	float polePairs; /**< Number of polePairs for the machine */
+	float polePairs; /**< Number of polePairs for the machine. Must be greater than 0.0f. Must be no decimal value (i.e. 2.5f is not allowed) */
 } uz_FOC_config;
 
 /**
@@ -146,7 +146,7 @@ uz_FOC* uz_FOC_change_control_Method(uz_FOC* self, uz_FOC_config config_FOC, uz_
 /**
  * @brief Function to change the polePairs during runtime
  *
- * @param polePairs new value for polePairs. Must be greater than 0.0f
+ * @param polePairs new value for polePairs. Must be greater than 0.0f. Must be no decimal value (i.e. 2.5f is not allowed)
  */
 void uz_FOC_set_polePairs(uz_FOC* self, float polePairs);
 

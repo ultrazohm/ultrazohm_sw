@@ -75,7 +75,7 @@ struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_dq_meas_Ampere, floa
 	return (u_dq_limit_Volts);
 }
 
-struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_dq_meas_Ampere) {
+static struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_dq_meas_Ampere) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	struct uz_dq_t u_dq_ref_Volts = { 0 };
@@ -85,7 +85,7 @@ struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_dq_meas_Ampe
 
 }
 
-void uz_FOC_SpeedControl(uz_FOC* self, float omega_el_rad_per_sec) {
+static void uz_FOC_SpeedControl(uz_FOC* self, float omega_el_rad_per_sec) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	float omega_el_ref_rad_per_sec = (self->config_FOC.n_ref_rpm * 2.0f * M_PI * self->config_FOC.polePairs) / 60.0f;

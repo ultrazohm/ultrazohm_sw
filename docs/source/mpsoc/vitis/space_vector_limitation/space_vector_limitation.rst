@@ -1,4 +1,4 @@
-.. _spacevectorlimiation:
+.. _uz_spacevectorlimiation:
 
 =======================
 Space vector limitation

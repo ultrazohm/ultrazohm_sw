@@ -27,4 +27,4 @@ Description
 ===========
 
 Updates every value in the config struct with the latest value in the uz_PI_Controller configuration struct.
-It is mainly needed for the uz_FOC.
+It is mainly needed for the :ref:`uz_FOC`.

@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include "../../uz/uz_HAL.h"
 
-#define UZ_INTERLOCKDEADTIME2L_HW_MAX_DELAY_CYCLES 1023 // Maximum number of delay cycles is based on the bit-width of the hardware counter which is 10
+#define UZ_INTERLOCKDEADTIME2L_HW_MAX_DELAY_CYCLES 1023.0F // Maximum number of delay cycles is based on the bit-width of the hardware counter which is 10. Defined as float since it is used in float calculations.
 
 void uz_interlockDeadtime2L_hw_set_reset(uint32_t base_address, bool reset);
 void uz_interlockDeadtime2L_hw_set_enable(uint32_t base_address, bool enable);

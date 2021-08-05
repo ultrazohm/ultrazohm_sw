@@ -156,6 +156,12 @@ void uz_FOC_set_iq_ref(uz_FOC* self, float iq_ref) {
 	self->config_FOC.iq_ref_Ampere = iq_ref;
 }
 
+void uz_FOC_set_n_ref(uz_FOC* self, float n_ref_rpm) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->config_FOC.n_ref_rpm = n_ref_rpm;
+}
+
 void uz_FOC_set_polePairs(uz_FOC* self, float polePairs){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);

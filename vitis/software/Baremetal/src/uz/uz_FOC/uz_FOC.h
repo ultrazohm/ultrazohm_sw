@@ -111,7 +111,7 @@ void uz_FOC_set_Ki_iq(uz_FOC* self, float Ki_iq);
  * @brief Function to change the d-reference current during runtime
  *
  * @param self uz_FOC instance
- * @param id_ref new id_ref value.
+ * @param id_ref new id_ref value in Ampere
  */
 void uz_FOC_set_id_ref(uz_FOC* self, float id_ref);
 
@@ -119,10 +119,17 @@ void uz_FOC_set_id_ref(uz_FOC* self, float id_ref);
  * @brief Function to change the q-reference current during runtime
  *
  * @param self uz_FOC instance
- * @param id_ref new iq_ref value.
+ * @param id_ref new iq_ref value in Ampere
  */
 void uz_FOC_set_iq_ref(uz_FOC* self, float iq_ref);
 
+/**
+ * @brief Function to change the reference speed during runtime
+ * 
+ * @param self uz_FOC instance
+ * @param n_ref_rpm new n_ref value in rpm
+ */
+void uz_FOC_set_n_ref(uz_FOC* self, float n_ref_rpm);
 /**
  * @brief Changes the control method from Current- to SpeedControl or vice versa
  *

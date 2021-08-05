@@ -86,26 +86,18 @@ void Transfer_ipc_Intr_Handler(void *data)
 		}
 	}
 
-
-	if (cnt_javascope < 5)
-	{
 		// IpiBuf contains float values from R5, use memcpy to avoid unwanted cast to other type
-		memcpy(&OsziData.val[cnt_javascope],  	&IpiBuf[0], sizeof(float));
-		memcpy(&OsziData.val[5+cnt_javascope],  &IpiBuf[1], sizeof(float));
-		memcpy(&OsziData.val[10+cnt_javascope], &IpiBuf[2], sizeof(float));
-		memcpy(&OsziData.val[15+cnt_javascope], &IpiBuf[3], sizeof(float));
-	}
+		memcpy(&OsziData.val[0], &IpiBuf[0], sizeof(float));
+		memcpy(&OsziData.val[1], &IpiBuf[1], sizeof(float));
+		memcpy(&OsziData.val[2], &IpiBuf[2], sizeof(float));
+		memcpy(&OsziData.val[3], &IpiBuf[3], sizeof(float));
+		memcpy(&OsziData.val[4], &IpiBuf[7], sizeof(float));
 
-	cnt_javascope++;
-
-	if (cnt_javascope >= 5)
-	{
 		// these variables are sent every time, but only evaluated every 5th time
 		OsziData.slowDataContent 		= IpiBuf[4];
 		OsziData.slowDataID 			= (Xuint16)IpiBuf[5];
 		OsziData.status_BareToRTOS 		= IpiBuf[6];
 
-		cnt_javascope = 0;
 
 		// append OsziData to queue
 		if ( errQUEUE_FULL == xQueueSendToBackFromISR(OsziData_queue, &OsziData, &xHigherPriorityTaskWoken)  )
@@ -117,7 +109,6 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 		// force context switch after ISR finishes -> switching to ethernet task
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-	}
 }
 
 //==============================================================================================================================================================

@@ -31,7 +31,6 @@ extern Oszi_to_ARM_Data_shared_struct ControlData;
 extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
 
 uint32_t cnt_javascope=0, cnt_slowData=0;
-//int check = 0;
 
 uint16_t js_factor1 = 0, js_factor2 = 0, js_factor3 = 0, js_factor4 = 0;
 
@@ -137,22 +136,17 @@ void js_fetchData4CH()
 	isr_period_us=uz_SystemTime_GetIsrPeriodInUs();
 	//EL: write values that will be transfered into MsgPtr array
 	//MsgPtr contains values, js_ptr contains pointers to values
-	//check = cnt_javascope*4;
-	/*memcpy(&(MsgPtr[0]), js_ptr[0 + check], sizeof(u32));
-	memcpy(&(MsgPtr[1]), js_ptr[1 + check], sizeof(u32));
-	if(cnt_javascope < 4)
-	{memcpy(&(MsgPtr[2]), js_ptr[2 + check], sizeof(u32));
-	memcpy(&(MsgPtr[3]), js_ptr[3 + check], sizeof(u32));}*/
+
 	memcpy(&(MsgPtr[0]), js_ptr[0], sizeof(u32));
 	memcpy(&(MsgPtr[1]), js_ptr[1], sizeof(u32));
 	memcpy(&(MsgPtr[2]), js_ptr[2], sizeof(u32));
 	memcpy(&(MsgPtr[3]), js_ptr[3], sizeof(u32));
+	memcpy(&(MsgPtr[7]), js_ptr[4], sizeof(u32));
 
 
 	memcpy(&(MsgPtr[4]), &(js_slowDataArray[cnt_slowData]), sizeof(u32));		// copy without automatic float -> int conversion
 	MsgPtr[5] = cnt_slowData;
 	MsgPtr[6] = OsziData.status_BareToRTOS;
-	MsgPtr[7] = 0;//free 32bit channel
 
 
 	cnt_javascope++;

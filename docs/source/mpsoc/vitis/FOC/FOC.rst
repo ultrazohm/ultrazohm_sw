@@ -4,7 +4,7 @@
 Field Oriented Control (FOC)
 ============================
 
-Toolbox for a standard FOC with parallel PI-Controllers, linear decoupling and a space vector limitation. 
+Toolbox for a standard FOC with parallel :ref:`PI-Controllers <uz_piController>`, :ref:`linear decoupling <uz_lineardecoupling>` and a :ref:`space vector limitation <uz_spacevectorlimiation>`. 
 
 Setup
 =====
@@ -141,6 +141,29 @@ Description
 
 Allocates the memory for the FOC instance and the included PI-Controller instances. 
 Furthermore the input values of the configuration structs are asserted. 
+
+.. _uz_FOC_reset:
+
+Reset
+-----
+
+.. doxygenfunction:: uz_FOC_reset
+
+Example
+^^^^^^^
+
+.. code-block:: c
+  :linenos:
+  :caption: Example function call to reset the FOC. FOC-Instance via :ref:`init-function <uz_FOC_init>`
+
+  int main(void) {
+     uz_FOC_reset(FOC_instance);
+  }
+
+Description
+^^^^^^^^^^^
+
+Resets the FOC and the integrated PI-Controller. The initial condition for the integrator after the reset is 0.0f.
 
 Functions
 =========

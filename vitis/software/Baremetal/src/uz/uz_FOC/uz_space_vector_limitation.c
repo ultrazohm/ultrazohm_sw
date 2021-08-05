@@ -10,27 +10,27 @@ struct uz_dq_t uz_FOC_SpaceVector_Limitation(struct uz_dq_t u_dq_ref_Volts, floa
 	struct uz_dq_t u_dq_limit_Volts = {0};
 
   	float U_SV_max =U_zk_Volts / sqrtf(3.0f);
-	float U_SV_abs = sqrtf(u_dq_ref_Volts.d * u_dq_ref_Volts.d + u_dq_ref_Volts.q * u_dq_ref_Volts.q);
+	float U_SV_abs = sqrtf(powf(u_dq_ref_Volts.d, 2.0f)  + powf(u_dq_ref_Volts.q, 2.0f) );
 
 	if ( U_SV_abs > U_SV_max ){
 		*ext_clamping = true;
 		if ((uz_signals_get_sign_of_value(omega_el_rad_per_sec) == uz_signals_get_sign_of_value(i_dq_meas_Ampere.q))) {
-			if ((fabsf(u_dq_ref_Volts.d) > 0.95f * U_SV_max)) {
+			if ( (fabsf(u_dq_ref_Volts.d) ) > (0.95f * U_SV_max) ) {
 				u_dq_limit_Volts.d = uz_signals_get_sign_of_value(u_dq_ref_Volts.d) * 0.95f * U_SV_max;
-				u_dq_limit_Volts.q = uz_signals_get_sign_of_value(u_dq_ref_Volts.q) * sqrtf( (U_SV_max * U_SV_max) - (u_dq_limit_Volts.d * u_dq_limit_Volts.d) );
+				u_dq_limit_Volts.q = uz_signals_get_sign_of_value(u_dq_ref_Volts.q) * sqrtf( powf(U_SV_max, 2.0f) - powf(u_dq_limit_Volts.d, 2.0f) );
 			} else {
 				u_dq_limit_Volts.d = u_dq_ref_Volts.d;
-				u_dq_limit_Volts.q = uz_signals_get_sign_of_value(u_dq_ref_Volts.q) * sqrtf( (U_SV_max * U_SV_max) - (u_dq_limit_Volts.d * u_dq_limit_Volts.d) );
+				u_dq_limit_Volts.q = uz_signals_get_sign_of_value(u_dq_ref_Volts.q) * sqrtf( powf(U_SV_max, 2.0f) - powf(u_dq_limit_Volts.d, 2.0f) );
 			}
 
 
 	     } else if ((uz_signals_get_sign_of_value(omega_el_rad_per_sec) != uz_signals_get_sign_of_value(i_dq_meas_Ampere.q))) {
-			if (fabsf(u_dq_ref_Volts.q) > 0.95f * U_SV_max) {
+			if ( (fabsf(u_dq_ref_Volts.q) ) > (0.95f * U_SV_max) ) {
 				u_dq_limit_Volts.q = uz_signals_get_sign_of_value(u_dq_ref_Volts.q) * 0.95f * U_SV_max;
-				u_dq_limit_Volts.d = uz_signals_get_sign_of_value(u_dq_ref_Volts.d) * sqrtf((U_SV_max * U_SV_max) - (u_dq_limit_Volts.q * u_dq_limit_Volts.q));
+				u_dq_limit_Volts.d = uz_signals_get_sign_of_value(u_dq_ref_Volts.d) * sqrtf( powf(U_SV_max, 2.0f) - powf(u_dq_limit_Volts.q, 2.0f) );
 			} else {
 				u_dq_limit_Volts.q = u_dq_ref_Volts.q;
-				u_dq_limit_Volts.d = uz_signals_get_sign_of_value(u_dq_ref_Volts.d) * sqrtf((U_SV_max * U_SV_max) - (u_dq_limit_Volts.q * u_dq_limit_Volts.q));
+				u_dq_limit_Volts.d = uz_signals_get_sign_of_value(u_dq_ref_Volts.d) * sqrtf( powf(U_SV_max, 2.0f) - powf(u_dq_limit_Volts.q, 2.0f) );
 			}
 		} else {
 			u_dq_limit_Volts.d = 0.0f;

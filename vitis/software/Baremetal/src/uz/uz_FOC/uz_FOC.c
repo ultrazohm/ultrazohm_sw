@@ -36,7 +36,7 @@ static uz_FOC* uz_FOC_allocation(void) {
 uz_FOC* uz_FOC_init(uz_FOC_config config_FOC, uz_PI_Controller_config config_id, uz_PI_Controller_config config_iq, uz_PI_Controller_config config_n, uz_lin_decoupling_config config_lin_Decoup){
 	uz_FOC* self = uz_FOC_allocation();
 	uz_assert(config_FOC.polePairs > 0.0f);
-	uz_assert(config_FOC.FOC_Select >= 1U && config_FOC.FOC_Select <= 2U);
+	uz_assert( (config_FOC.FOC_Select >= 1U) && (config_FOC.FOC_Select <= 2U) );
 
 	if (config_FOC.FOC_Select == 2U) {
 		self->Controller_n = uz_PI_Controller_init(config_n);
@@ -173,12 +173,12 @@ void uz_FOC_set_polePairs(uz_FOC* self, float polePairs){
 uz_FOC* uz_FOC_change_control_Method(uz_FOC* self, uz_FOC_config config_FOC, uz_PI_Controller_config config_id, uz_PI_Controller_config config_iq, uz_PI_Controller_config config_n, uz_lin_decoupling_config config_lin_Decoup){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	uz_assert(config_FOC.FOC_Select >= 1U && config_FOC.FOC_Select <= 2U);
+	uz_assert( (config_FOC.FOC_Select >= 1U) && (config_FOC.FOC_Select <= 2U) );
 	uz_assert(self->config_FOC.FOC_Select != config_FOC.FOC_Select);
 	uz_FOC_reset(self);
 	self->Controller_id = uz_PI_Controller_update_config(self->Controller_id, config_id);
 	self->Controller_iq = uz_PI_Controller_update_config(self->Controller_iq, config_iq);
-	if(config_FOC.FOC_Select == 2){
+	if(config_FOC.FOC_Select == 2U){
 		self->Controller_n = uz_PI_Controller_update_config(self->Controller_n, config_n);
 	}else{
 		//Default Values, so that the n-PI_Controller instance can be initialized

@@ -15,15 +15,37 @@ void tearDown(void)
 {
 }
 
-    void uz_d_gan_inverter_hw_write_PWM_on_off(uint32_t base_address, uint32_t PWM_on_off){
-        uz_axi_write_uint32(base_address+AXI_PWM_Enable_Data_UZ_D_GaN_Inverter, PWM_on_off);
+
+    void test_uz_d_gan_inverter_get_PWMFreqTicks_H1(void)
+    {
+        uint32_t PWMFreqTicks_H1 = 10000;
+        uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + AXI_Gan_Temp_1_period_Data_UZ_D_GaN_Inverter,PWMFreqTicks_H1);
+        uint32_t PWMFreqTicks_H1_readback = uz_d_gan_inverter_get_PWMFreqTicks_H1(TEST_BASE_ADDRESS);
+        TEST_ASSERT_EQUAL_INT(PWMFreqTicks_H1,PWMFreqTicks_H1_readback);
+    }
+
+    void test_uz_d_gan_inverter_hw_get_PWMFreqTicks_H1_with_zero_base_address(void)
+    {
+        uint32_t PWMFreqTicks_H1 = 10000;
+        // Tell the test that we do not care how often this function is called
+        uz_axi_read_uint32_IgnoreAndReturn(PWMFreqTicks_H1);
+        // Test passes if an assert fails in the function under test
+        TEST_ASSERT_FAIL_ASSERT(uz_d_gan_inverter_get_PWMFreqTicks_H1(0))
     }
 
     void test_uz_d_gan_inverter_hw_set_PWM_EN(void)
     {
         uint32_t PWM_on_off = true;
-        uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS+AXI_PWM_Enable_Data_UZ_D_GaN_Inverter, PWM_on_off);
-        uz_d_gan_inverter_hw_write_PWM_on_off(TEST_BASE_ADDRESS, PWM_on_off);
+        uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + AXI_PWM_Enable_Data_UZ_D_GaN_Inverter, PWM_on_off);
+        uz_d_gan_inverter_hw_set_PWM_EN(TEST_BASE_ADDRESS, PWM_on_off);
     }
 
+    void test_uz_d_gan_inverter_hw_set_PWM_EN_with_zero_base_address(void)
+    {
+        uint32_t PWM_on_off = true;
+        // Tell the test that we do not care how often this function is called
+        uz_axi_write_uint32_Ignore();
+        // Test passes if an assert fails in the function under test
+        TEST_ASSERT_FAIL_ASSERT(uz_d_gan_inverter_hw_set_PWM_EN(0,PWM_on_off))
+    }
 #endif // TEST

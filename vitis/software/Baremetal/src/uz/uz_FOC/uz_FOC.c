@@ -166,6 +166,7 @@ void uz_FOC_set_polePairs(uz_FOC* self, float polePairs){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(polePairs > 0.0f);
+	uz_assert(fmodf(polePairs, 1.0f) == 0);
 	self->config_FOC.polePairs = polePairs;
 }
 

@@ -176,6 +176,13 @@ void test_uz_FOC_set_polePairs_zero(void){
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_polePairs(instance, polePairs));
 }
 
+void test_uz_FOC_set_polePairs_decimal_value(void){
+    setUp();
+    uz_FOC* instance = uz_FOC_init(config_FOC, config_id, config_iq, config_n, config_lin_Decoup);
+    float polePairs = 2.5f;
+    TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_polePairs(instance, polePairs));
+}
+
 void test_uz_FOC_change_control_Method_NULL(void){
     setUp();
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_change_control_Method(NULL,config_FOC, config_id, config_iq, config_n, config_lin_Decoup));

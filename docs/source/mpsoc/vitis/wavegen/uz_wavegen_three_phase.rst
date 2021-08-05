@@ -20,7 +20,7 @@ Three phase sine function
 Example
 =======
 
-The following define has to be set to the maximum of required instances, i.e., ``x`` is the maximum for how often ``uz_wavegen_three_phase_init`` will be called.  
+The following define has to be set in ``uz_global_configuration.h`` to the maximum of required instances, i.e., ``x`` is the maximum for how often ``uz_wavegen_three_phase_init`` will be called.  
 
 .. code-block:: c
 

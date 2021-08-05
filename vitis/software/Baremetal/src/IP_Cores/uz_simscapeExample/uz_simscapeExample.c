@@ -9,7 +9,7 @@ static float uz_simscapeExample_get_Iout(uz_simscapeExample_handle self);
 
 uz_simscapeExample_handle uz_simscapeExample_init(uz_simscapeExample_handle self) {
 	uz_assert_not_NULL(self); // Make sure no NULL pointer is passed to the function since this would be an error
-	uz_assert( (self->base_address) != 0); // Make sure that the base address is set
+	uz_assert( (self->base_address) != 0U); // Make sure that the base address is set
 	uz_assert(self->is_ready == false); // Make sure this instance is not initialized two times
 	self->is_ready = true;
 	return (self);

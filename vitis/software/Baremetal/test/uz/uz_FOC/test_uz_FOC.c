@@ -156,6 +156,12 @@ void test_uz_FOC_set_iq_ref_NULL(void){
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_iq_ref(NULL, iq_ref));
 }
 
+void test_uz_FOC_set_n_ref_NULL(void){
+    setUp();
+    float n_ref_rpm = 1000.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_iq_ref(NULL, n_ref_rpm));
+}
+
 void test_uz_FOC_set_polePairs_negative(void){
     setUp();
     uz_FOC* instance = uz_FOC_init(config_FOC, config_id, config_iq, config_n, config_lin_Decoup);
@@ -505,4 +511,42 @@ void test_uz_FOC_set_iq_ref(void){
     }
 }
 
+void test_uz_FOC_set_n_ref(void){
+    //Tests, if the new values are properly written into the FOC instance
+    setUp();
+    config_FOC.FOC_Select = 2U;
+    config_FOC.id_ref_Ampere = 0.0f;
+    config_FOC.n_ref_rpm = 500.0f;
+    //Values for comparision from simulation
+    uz_FOC* instance = uz_FOC_init(config_FOC, config_id, config_iq, config_n, config_lin_Decoup);
+    float values_iq[12]={0.0f, 0.36930f, 0.72709f, 0.99564f, 1.1972f, 1.3485f, 1.4619f, 1.5469f, 1.6105f, 1.65795f, 1.6933f, 1.7194f};
+    float values_id[12]={0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+	float values_omega[12]={0.0f, 0.0f, 0.0f, 0.010545f, 0.041861f, 0.10171f, 0.19404f, 0.31847f, 0.47053f, 0.64254f, 0.82482f, 1.0071f};
+    float ud_out[12]={0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.00017f, -0.00025f, -0.00045f, -0.00055};
+    float uq_out[12]={10.0f, 9.7230f, 7.3379f, 5.5475f, 4.2028f, 3.1922f, 2.4324f, 1.8606f, 1.4303f, 1.1065f, 0.86317f, 0.68073f}; 
+    for(int i=0;i<12;i++){
+        i_dq_meas_Ampere.q = values_iq[i];
+        i_dq_meas_Ampere.d = values_id[i];
+        omega_el_rad_per_sec = values_omega[i];
+        struct uz_dq_t output = uz_FOC_sample(instance, i_dq_meas_Ampere, U_zk_Volts, omega_el_rad_per_sec);
+		TEST_ASSERT_FLOAT_WITHIN(1e-03, ud_out[i], output.d);
+	    TEST_ASSERT_FLOAT_WITHIN(1e-03, uq_out[i], output.q);
+    }
+    //Checks if currents and omega rise faster now
+    uz_FOC_set_n_ref(instance,2000.0f);
+    uz_FOC_reset(instance);
+    float values_id2[6]={0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    float values_iq2[6]={0.0f, 0.36930f, 0.73732f, 1.1041f, 1.46978f, 1.8342f};
+	float values_omega2[6]={0.0f, 0.0f, 0.0f, 0.012f, 0.04951f, 0.12525};
+    float ud_out2[6]={0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    float uq_out2[6]={10.0f, 10.0f, 10.0f, 10.0f, 10.0f, 10.0f}; 
+    for(int i=0;i<5;i++){
+        i_dq_meas_Ampere.q = values_iq2[i];
+        i_dq_meas_Ampere.d = values_id2[i];
+        omega_el_rad_per_sec = values_omega2[i];
+        struct uz_dq_t output2 = uz_FOC_sample(instance, i_dq_meas_Ampere, U_zk_Volts, omega_el_rad_per_sec);
+		TEST_ASSERT_FLOAT_WITHIN(1e-03, ud_out2[i], output2.d);
+	    TEST_ASSERT_FLOAT_WITHIN(1e-03, uq_out2[i], output2.q);
+    }
+}
 #endif // TEST

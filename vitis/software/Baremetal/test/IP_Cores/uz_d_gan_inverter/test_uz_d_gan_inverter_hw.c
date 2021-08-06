@@ -33,6 +33,49 @@ void tearDown(void)
         TEST_ASSERT_FAIL_ASSERT(uz_d_gan_inverter_get_PWMFreqTicks_H1(0))
     }
 
+    void test_uz_d_gan_inverter_get_PWMhightimeTicks_H1(void)
+    {
+        uint32_t PWMhightimeTicks_H1 = 1000;
+        uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + AXI_Gan_Temp_1_hightime_Data_UZ_D_GaN_Inverter,PWMhightimeTicks_H1);
+        uint32_t PWMhightimeTicks_H1_readback = uz_d_gan_inverter_get_PWMhightimeTicks_H1(TEST_BASE_ADDRESS);
+        TEST_ASSERT_EQUAL_INT(PWMhightimeTicks_H1,PWMhightimeTicks_H1_readback);
+    }
+
+    void test_uz_d_gan_inverter_hw_get_PWMhightimeTicks_H1_with_zero_base_address(void)
+    {
+        uint32_t PWMhightimeTicks_H1 = 1000;
+        // Tell the test that we do not care how often this function is called
+        uz_axi_read_uint32_IgnoreAndReturn(PWMhightimeTicks_H1);
+        // Test passes if an assert fails in the function under test
+        TEST_ASSERT_FAIL_ASSERT(uz_d_gan_inverter_get_PWMhightimeTicks_H1(0))
+    }
+
+    void test_uz_d_gan_inverter_get_PWMlowtimeTicks_H1(void)
+    {
+        uint32_t PWMlowtimeTicks_H1 = 9000;
+        uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + AXI_Gan_Temp_1_lowtime_Data_UZ_D_GaN_Inverter,PWMlowtimeTicks_H1);
+        uint32_t PWMlowtimeTicks_H1_readback = uz_d_gan_inverter_get_PWMlowtimeTicks_H1(TEST_BASE_ADDRESS);
+        TEST_ASSERT_EQUAL_INT(PWMlowtimeTicks_H1,PWMlowtimeTicks_H1_readback);
+    }
+
+    void test_uz_d_gan_inverter_hw_get_PWMlowtimeTicks_H1_with_zero_base_address(void)
+    {
+        uint32_t PWMlowtimeTicks_H1 = 9000;
+        // Tell the test that we do not care how often this function is called
+        uz_axi_read_uint32_IgnoreAndReturn(PWMlowtimeTicks_H1);
+        // Test passes if an assert fails in the function under test
+        TEST_ASSERT_FAIL_ASSERT(uz_d_gan_inverter_get_PWMlowtimeTicks_H1(0))
+    }
+
+    void test_uz_d_gan_inverter_get_PWMdutyCycPerCent_H1(void)
+    {
+        uint32_t axi_read_tempAsDutyCyc = 10;
+        float tempAsDutyCyc_returnedFloat = 0.1;
+        uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + AXI_Gan_Temp_1_dutycyc_Data_UZ_D_GaN_Inverter, axi_read_tempAsDutyCyc);
+        float tempAsDutyCyc_returnedFloat_readback = uz_d_gan_inverter_get_PWMdutyCycPerCent_H1(TEST_BASE_ADDRESS);
+        TEST_ASSERT_EQUAL_FLOAT(tempAsDutyCyc_returnedFloat,tempAsDutyCyc_returnedFloat_readback); 
+    }          
+
     void test_uz_d_gan_inverter_hw_set_PWM_EN(void)
     {
         uint32_t PWM_on_off = true;

@@ -15,7 +15,7 @@ static int16_t buffer[UZ_DATAMOVER_ARRAY_LENGTH]={0};
 // Since I am not sure how far the volatile keyword should be "propagated upwards"
 // The version without is used - not sure about it
 // cppcheck-suppress misra-c2012-11.4 // this is not allowed since there is no way to know that ptr_to_btcm actually points to int16_t variables - this can only be known be knowing the Vivado project
-static int16_t *ptr_to_btcm=(int16_t *)(R5_0_BTCM_SPLIT_REG);
+static int16_t *ptr_to_btcm=(void *)(R5_0_BTCM_SPLIT_REG);
 
 uz_array_int16_t uz_dataMover_get_data_by_pointer(void){
     uz_array_int16_t data_array={

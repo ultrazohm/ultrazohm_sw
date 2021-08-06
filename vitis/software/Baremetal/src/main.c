@@ -67,7 +67,7 @@ int main(void) {
 	PWM_SS_Initialize(&Global_Data); 	// two-level modulator
 	PWM_3L_Initialize(&Global_Data);	// three-level modulator
 	uint32_t adc_select=0x1U;
-	SCLK_freq_t frq=f_6_25MHz;
+	SCLK_freq_t frq=f_25MHz;
 	uz_max11_write_adc_selector(XPAR_ADC_MAX11331_AXI_0_S_AXI_LITE_BASEADDR, adc_select);
 	uz_max11_write_clk_divider(XPAR_ADC_MAX11331_AXI_0_S_AXI_LITE_BASEADDR, frq);
 	// Initialize Timer in order to Trigger the ISRs

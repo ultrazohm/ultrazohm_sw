@@ -70,6 +70,14 @@ void ISR_Control(void *data)
 	turnPowerElectronicsOff(&Global_Data);
 	//ReadAllADC();
 	uz_dataMover_update_buffer();
+	//self->ADC1.Data_raw[0] = Xil_In16(self->TCM_BASEADDR + 0x00);
+	//self->ADC1.Data_raw[1] = Xil_In16(self->TCM_BASEADDR + 0x02);
+	//self->ADC1.Data_raw[2] = Xil_In16(self->TCM_BASEADDR + 0x04);
+	//self->ADC1.Data_raw[3] = Xil_In16(self->TCM_BASEADDR + 0x06);
+	//self->ADC1.Data_raw[4] = Xil_In16(self->TCM_BASEADDR + 0x08);
+	//self->ADC1.Data_raw[5] = Xil_In16(self->TCM_BASEADDR + 0x0A);
+	//self->ADC1.Data_raw[6] = Xil_In16(self->TCM_BASEADDR + 0x0C);
+	//self->ADC1.Data_raw[7] = Xil_In16(self->TCM_BASEADDR + 0x0E);
 	CheckForErrors();
 	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
 

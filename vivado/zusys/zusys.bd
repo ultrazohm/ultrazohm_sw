@@ -93,7 +93,40 @@
       "xlconcat_1": "",
       "ila_0": "",
       "Enable_Gates_CPLD_Low1": "",
-      "ila_1": ""
+      "ila_1": "",
+      "xlconcat_2": "",
+      "Enable_Gates_CPLD_Low2": "",
+      "xlconcat_3": "",
+      "xlconcat_4": "",
+      "xlconcat_5": "",
+      "xlconcat_6": "",
+      "xlconcat_7": "",
+      "xlconcat_8": "",
+      "xlconcat_9": "",
+      "xlconcat_10": "",
+      "xlconcat_11": "",
+      "xlconcat_12": "",
+      "xlconcat_13": "",
+      "xlconcat_14": "",
+      "xlconcat_15": "",
+      "xlconcat_16": "",
+      "xlconcat_17": "",
+      "xlconcat_18": "",
+      "xlconcat_19": "",
+      "xlconcat_20": "",
+      "xlconcat_21": "",
+      "xlconcat_22": "",
+      "xlconcat_23": "",
+      "xlconcat_24": "",
+      "xlconcat_25": "",
+      "xlconcat_26": "",
+      "xlconcat_27": "",
+      "xlconcat_28": "",
+      "xlconcat_29": "",
+      "xlconcat_30": "",
+      "xlconcat_31": "",
+      "xlconcat_32": "",
+      "xlconcat_33": ""
     },
     "ports": {
       "SPI_SCK": {
@@ -6546,7 +6579,7 @@
         "xci_name": "zusys_ADC_MAX11331_AXI_0_0",
         "parameters": {
           "OUTPUT_WORD_WIDTH": {
-            "value": "16"
+            "value": "12"
           }
         }
       },
@@ -6630,6 +6663,146 @@
             "value": "4"
           }
         }
+      },
+      "xlconcat_2": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_2_0"
+      },
+      "Enable_Gates_CPLD_Low2": {
+        "vlnv": "xilinx.com:ip:xlconstant:1.1",
+        "xci_name": "zusys_Enable_Gates_CPLD_Low1_0",
+        "parameters": {
+          "CONST_VAL": {
+            "value": "0"
+          },
+          "CONST_WIDTH": {
+            "value": "4"
+          }
+        }
+      },
+      "xlconcat_3": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_2_1"
+      },
+      "xlconcat_4": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_2_2"
+      },
+      "xlconcat_5": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_2_3"
+      },
+      "xlconcat_6": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_3_0"
+      },
+      "xlconcat_7": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_6_0"
+      },
+      "xlconcat_8": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_6_1"
+      },
+      "xlconcat_9": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_6_2"
+      },
+      "xlconcat_10": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_6_3"
+      },
+      "xlconcat_11": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_6_4"
+      },
+      "xlconcat_12": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_6_5"
+      },
+      "xlconcat_13": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_6_6"
+      },
+      "xlconcat_14": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_0"
+      },
+      "xlconcat_15": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_1"
+      },
+      "xlconcat_16": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_2"
+      },
+      "xlconcat_17": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_3"
+      },
+      "xlconcat_18": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_4"
+      },
+      "xlconcat_19": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_5"
+      },
+      "xlconcat_20": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_6"
+      },
+      "xlconcat_21": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_7"
+      },
+      "xlconcat_22": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_8"
+      },
+      "xlconcat_23": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_9"
+      },
+      "xlconcat_24": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_10"
+      },
+      "xlconcat_25": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_11"
+      },
+      "xlconcat_26": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_12"
+      },
+      "xlconcat_27": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_13"
+      },
+      "xlconcat_28": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_14"
+      },
+      "xlconcat_29": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_15"
+      },
+      "xlconcat_30": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_16"
+      },
+      "xlconcat_31": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_17"
+      },
+      "xlconcat_32": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_18"
+      },
+      "xlconcat_33": {
+        "vlnv": "xilinx.com:ip:xlconcat:2.1",
+        "xci_name": "zusys_xlconcat_7_19"
       }
     },
     "interface_nets": {
@@ -7095,199 +7268,6 @@
           "A3_OUT_CLK"
         ]
       },
-      "ADC_MAX11331_AXI_0_data_board_1_input_1_ch1": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_1_ch1",
-          "xlconcat_0/In0",
-          "ila_0/probe7"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_1_ch2": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_1_ch2",
-          "xlconcat_0/In1"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_1_ch3": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_1_ch3",
-          "xlconcat_0/In2"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_1_ch4": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_1_ch4",
-          "xlconcat_0/In3"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_2_ch1": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_2_ch1",
-          "xlconcat_0/In4"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_2_ch2": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_2_ch2",
-          "xlconcat_0/In5"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_2_ch3": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_2_ch3",
-          "xlconcat_0/In6"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_2_ch4": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_2_ch4",
-          "xlconcat_0/In7"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_3_ch1": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_3_ch1",
-          "xlconcat_0/In8"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_3_ch2": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_3_ch2",
-          "xlconcat_0/In9"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_3_ch3": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_3_ch3",
-          "xlconcat_0/In10"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_3_ch4": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_3_ch4",
-          "xlconcat_0/In11"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_4_ch1": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_4_ch1",
-          "xlconcat_0/In12"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_4_ch2": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_4_ch2",
-          "xlconcat_0/In13"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_4_ch3": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_4_ch3",
-          "xlconcat_0/In14"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_4_ch4": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_4_ch4",
-          "xlconcat_0/In15"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_5_ch1": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_5_ch1",
-          "xlconcat_0/In16"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_5_ch2": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_5_ch2",
-          "xlconcat_0/In17"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_5_ch3": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_5_ch3",
-          "xlconcat_0/In18"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_5_ch4": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_5_ch4",
-          "xlconcat_0/In19"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_6_ch1": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_6_ch1",
-          "xlconcat_0/In20"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_6_ch2": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_6_ch2",
-          "xlconcat_0/In21"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_6_ch3": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_6_ch3",
-          "xlconcat_0/In22"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_1_input_6_ch4": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_1_input_6_ch4",
-          "xlconcat_0/In23"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_2_input_1_ch1": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_2_input_1_ch1",
-          "xlconcat_0/In24"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_2_input_1_ch2": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_2_input_1_ch2",
-          "xlconcat_0/In25"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_2_input_1_ch3": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_2_input_1_ch3",
-          "xlconcat_0/In26"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_2_input_1_ch4": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_2_input_1_ch4",
-          "xlconcat_0/In27"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_2_input_2_ch1": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_2_input_2_ch1",
-          "xlconcat_0/In28"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_2_input_2_ch2": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_2_input_2_ch2",
-          "xlconcat_0/In29"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_2_input_2_ch3": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_2_input_2_ch3",
-          "xlconcat_0/In30"
-        ]
-      },
-      "ADC_MAX11331_AXI_0_data_board_2_input_2_ch4": {
-        "ports": [
-          "ADC_MAX11331_AXI_0/data_board_2_input_2_ch4",
-          "xlconcat_0/In31"
-        ]
-      },
       "xlconcat_0_dout1": {
         "ports": [
           "xlconcat_0/dout",
@@ -7372,6 +7352,428 @@
         "ports": [
           "MISO_3",
           "ila_1/probe2"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_1_ch1": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_1_ch1",
+          "xlconcat_2/In0"
+        ]
+      },
+      "Enable_Gates_CPLD_Low2_dout": {
+        "ports": [
+          "Enable_Gates_CPLD_Low2/dout",
+          "xlconcat_2/In1",
+          "xlconcat_4/In1",
+          "xlconcat_5/In1",
+          "xlconcat_3/In1",
+          "xlconcat_6/In1",
+          "xlconcat_13/In1",
+          "xlconcat_12/In1",
+          "xlconcat_11/In1",
+          "xlconcat_10/In1",
+          "xlconcat_9/In1",
+          "xlconcat_8/In1",
+          "xlconcat_7/In1",
+          "xlconcat_14/In1",
+          "xlconcat_15/In1",
+          "xlconcat_33/In1",
+          "xlconcat_32/In1",
+          "xlconcat_28/In1",
+          "xlconcat_29/In1",
+          "xlconcat_31/In1",
+          "xlconcat_30/In1",
+          "xlconcat_27/In1",
+          "xlconcat_26/In1",
+          "xlconcat_25/In1",
+          "xlconcat_24/In1",
+          "xlconcat_23/In1",
+          "xlconcat_16/In1",
+          "xlconcat_19/In1",
+          "xlconcat_21/In1",
+          "xlconcat_22/In1",
+          "xlconcat_20/In1",
+          "xlconcat_18/In1",
+          "xlconcat_17/In1"
+        ]
+      },
+      "xlconcat_2_dout": {
+        "ports": [
+          "xlconcat_2/dout",
+          "xlconcat_0/In0",
+          "ila_0/probe7"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_1_ch2": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_1_ch2",
+          "xlconcat_4/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_1_ch3": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_1_ch3",
+          "xlconcat_5/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_1_ch4": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_1_ch4",
+          "xlconcat_3/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_2_ch1": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_2_ch1",
+          "xlconcat_6/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_2_ch2": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_2_ch2",
+          "xlconcat_13/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_2_ch3": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_2_ch3",
+          "xlconcat_12/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_2_ch4": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_2_ch4",
+          "xlconcat_11/In0"
+        ]
+      },
+      "xlconcat_4_dout": {
+        "ports": [
+          "xlconcat_4/dout",
+          "xlconcat_0/In1"
+        ]
+      },
+      "xlconcat_5_dout": {
+        "ports": [
+          "xlconcat_5/dout",
+          "xlconcat_0/In2"
+        ]
+      },
+      "xlconcat_3_dout": {
+        "ports": [
+          "xlconcat_3/dout",
+          "xlconcat_0/In3"
+        ]
+      },
+      "xlconcat_6_dout": {
+        "ports": [
+          "xlconcat_6/dout",
+          "xlconcat_0/In4"
+        ]
+      },
+      "xlconcat_13_dout": {
+        "ports": [
+          "xlconcat_13/dout",
+          "xlconcat_0/In5"
+        ]
+      },
+      "xlconcat_12_dout": {
+        "ports": [
+          "xlconcat_12/dout",
+          "xlconcat_0/In6"
+        ]
+      },
+      "xlconcat_11_dout": {
+        "ports": [
+          "xlconcat_11/dout",
+          "xlconcat_0/In7"
+        ]
+      },
+      "xlconcat_10_dout": {
+        "ports": [
+          "xlconcat_10/dout",
+          "xlconcat_0/In8"
+        ]
+      },
+      "xlconcat_9_dout": {
+        "ports": [
+          "xlconcat_9/dout",
+          "xlconcat_0/In9"
+        ]
+      },
+      "xlconcat_8_dout": {
+        "ports": [
+          "xlconcat_8/dout",
+          "xlconcat_0/In10"
+        ]
+      },
+      "xlconcat_7_dout": {
+        "ports": [
+          "xlconcat_7/dout",
+          "xlconcat_0/In11"
+        ]
+      },
+      "xlconcat_14_dout": {
+        "ports": [
+          "xlconcat_14/dout",
+          "xlconcat_0/In12"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_3_ch1": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_3_ch1",
+          "xlconcat_10/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_3_ch2": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_3_ch2",
+          "xlconcat_9/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_3_ch3": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_3_ch3",
+          "xlconcat_8/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_3_ch4": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_3_ch4",
+          "xlconcat_7/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_4_ch1": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_4_ch1",
+          "xlconcat_14/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_4_ch2": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_4_ch2",
+          "xlconcat_15/In0"
+        ]
+      },
+      "xlconcat_15_dout": {
+        "ports": [
+          "xlconcat_15/dout",
+          "xlconcat_0/In13"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_4_ch3": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_4_ch3",
+          "xlconcat_17/In0"
+        ]
+      },
+      "xlconcat_17_dout": {
+        "ports": [
+          "xlconcat_17/dout",
+          "xlconcat_0/In14"
+        ]
+      },
+      "xlconcat_18_dout": {
+        "ports": [
+          "xlconcat_18/dout",
+          "xlconcat_0/In15"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_4_ch4": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_4_ch4",
+          "xlconcat_18/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_5_ch1": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_5_ch1",
+          "xlconcat_20/In0"
+        ]
+      },
+      "xlconcat_20_dout": {
+        "ports": [
+          "xlconcat_20/dout",
+          "xlconcat_0/In16"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_5_ch2": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_5_ch2",
+          "xlconcat_22/In0"
+        ]
+      },
+      "xlconcat_22_dout": {
+        "ports": [
+          "xlconcat_22/dout",
+          "xlconcat_0/In17"
+        ]
+      },
+      "xlconcat_21_dout": {
+        "ports": [
+          "xlconcat_21/dout",
+          "xlconcat_0/In18"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_5_ch3": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_5_ch3",
+          "xlconcat_21/In0"
+        ]
+      },
+      "xlconcat_19_dout": {
+        "ports": [
+          "xlconcat_19/dout",
+          "xlconcat_0/In19"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_5_ch4": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_5_ch4",
+          "xlconcat_19/In0"
+        ]
+      },
+      "xlconcat_16_dout": {
+        "ports": [
+          "xlconcat_16/dout",
+          "xlconcat_0/In20"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_6_ch1": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_6_ch1",
+          "xlconcat_16/In0"
+        ]
+      },
+      "xlconcat_26_dout": {
+        "ports": [
+          "xlconcat_26/dout",
+          "xlconcat_0/In21"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_6_ch2": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_6_ch2",
+          "xlconcat_26/In0"
+        ]
+      },
+      "xlconcat_25_dout": {
+        "ports": [
+          "xlconcat_25/dout",
+          "xlconcat_0/In22"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_6_ch3": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_6_ch3",
+          "xlconcat_25/In0"
+        ]
+      },
+      "xlconcat_24_dout": {
+        "ports": [
+          "xlconcat_24/dout",
+          "xlconcat_0/In23"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_1_input_6_ch4": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_1_input_6_ch4",
+          "xlconcat_24/In0"
+        ]
+      },
+      "xlconcat_23_dout": {
+        "ports": [
+          "xlconcat_23/dout",
+          "xlconcat_0/In24"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_2_input_1_ch1": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_2_input_1_ch1",
+          "xlconcat_23/In0"
+        ]
+      },
+      "xlconcat_28_dout": {
+        "ports": [
+          "xlconcat_28/dout",
+          "xlconcat_0/In25"
+        ]
+      },
+      "xlconcat_29_dout": {
+        "ports": [
+          "xlconcat_29/dout",
+          "xlconcat_0/In26"
+        ]
+      },
+      "xlconcat_31_dout": {
+        "ports": [
+          "xlconcat_31/dout",
+          "xlconcat_0/In27"
+        ]
+      },
+      "xlconcat_30_dout": {
+        "ports": [
+          "xlconcat_30/dout",
+          "xlconcat_0/In28"
+        ]
+      },
+      "xlconcat_27_dout": {
+        "ports": [
+          "xlconcat_27/dout",
+          "xlconcat_0/In29"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_2_input_1_ch2": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_2_input_1_ch2",
+          "xlconcat_28/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_2_input_1_ch3": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_2_input_1_ch3",
+          "xlconcat_29/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_2_input_1_ch4": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_2_input_1_ch4",
+          "xlconcat_31/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_2_input_2_ch1": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_2_input_2_ch1",
+          "xlconcat_30/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_2_input_2_ch2": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_2_input_2_ch2",
+          "xlconcat_27/In0"
+        ]
+      },
+      "xlconcat_32_dout": {
+        "ports": [
+          "xlconcat_32/dout",
+          "xlconcat_0/In30"
+        ]
+      },
+      "xlconcat_33_dout": {
+        "ports": [
+          "xlconcat_33/dout",
+          "xlconcat_0/In31"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_2_input_2_ch3": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_2_input_2_ch3",
+          "xlconcat_32/In0"
+        ]
+      },
+      "ADC_MAX11331_AXI_0_data_board_2_input_2_ch4": {
+        "ports": [
+          "ADC_MAX11331_AXI_0/data_board_2_input_2_ch4",
+          "xlconcat_33/In0"
         ]
       }
     },

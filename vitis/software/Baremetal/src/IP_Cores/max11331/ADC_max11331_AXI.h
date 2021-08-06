@@ -4,9 +4,6 @@
 
 
 /****************** Include Files ********************/
-#include "xil_types.h"
-#include "xstatus.h"
-typedef enum adcstatus {adc_disabled,adc_init,adc_ready,adc_reading_data,adc_error} ADCstatus;
 #define ADC_MAX11331_AXI_S0_AXI_Lite_SLV_REG0_OFFSET 0
 #define ADC_MAX11331_AXI_S0_AXI_Lite_SLV_REG1_OFFSET 4
 #define ADC_MAX11331_AXI_S0_AXI_Lite_SLV_REG2_OFFSET 8
@@ -36,7 +33,8 @@ typedef enum adcstatus {adc_disabled,adc_init,adc_ready,adc_reading_data,adc_err
 #define MAX11331_ADC_SELECTOR_OFFSET 		32
 #define MAX11331_CLK_DIVISION_OFFSET 		36
 
-
+typedef int32_t u32;
+typedef int16_t u16;
 /**************************** Type Definitions *****************************/
 /**
  *

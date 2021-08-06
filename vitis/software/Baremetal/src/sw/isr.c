@@ -27,7 +27,7 @@
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
-
+#include "../IP_Cores/uz_dataMover/uz_dataMover.h"
 
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
@@ -50,7 +50,7 @@ XTmrCtr Timer_Interrupt;
 float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
-
+#include "../main.h"
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -60,14 +60,16 @@ extern DS_Data Global_Data;
 static void toggleLEDdependingOnReadyOrRunning(uint32_t i_count_1ms, uint32_t i_count_1s);
 static void ReadAllADC();
 static void CheckForErrors();
-
+extern XGpio Gpio_OUT; /* GPIO Device driver instance for the real GPIOs */
 void ISR_Control(void *data)
 {
 	uz_SystemTime_ISR_Tic();
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
 	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
-
-	ReadAllADC();
+	turnPowerElectronicsOn(&Global_Data);
+	turnPowerElectronicsOff(&Global_Data);
+	//ReadAllADC();
+	uz_dataMover_update_buffer();
 	CheckForErrors();
 	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
 

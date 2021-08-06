@@ -48,13 +48,13 @@ set_property PACKAGE_PIN AG5 [get_ports MISO_2[3]]
 
 #Analog_07 - SCLK2, CS2
 #ANL_07_P_Ch2 = B64_L17_P
-set_property PACKAGE_PIN AJ5 [get_ports SCLK_2]
+#set_property PACKAGE_PIN AJ5 [get_ports SCLK_2]
 #ANL_07_N_Ch2 = B64_L17_N
-set_property PACKAGE_PIN AK5 [get_ports CS_2]
+#set_property PACKAGE_PIN AK5 [get_ports CS_2]
 
 #Analog_08 - MOSI2, SCLKRTN2
 #ANL_08_P_Ch2 = B64_L18_P
-set_property PACKAGE_PIN AH4 [get_ports MOSI_2]
+#set_property PACKAGE_PIN AH4 [get_ports MOSI_2]
 #ANL_08_N_Ch2 = B64_L18_N 
 #set_property PACKAGE_PIN AJ4 [get_ports SCLKRTN_2]
 
@@ -73,11 +73,11 @@ set_property PACKAGE_PIN AJ6 [get_ports MISO_3[3]]
 
 #Shared SPI across all slots
 #SPI_SCK (single-ended) = B64_T0
-set_property PACKAGE_PIN AH11 [get_ports SCLK_3]
+#set_property PACKAGE_PIN AH11 [get_ports SCLK_3]
 #SPI_CS (single-ended) = B64_T2
-set_property PACKAGE_PIN AG4 [get_ports CS_3]
+#set_property PACKAGE_PIN AG4 [get_ports CS_3]
 #SPI_MOSI (single-ended) = B64_T1
-set_property PACKAGE_PIN AG9 [get_ports MOSI_3]
+#set_property PACKAGE_PIN AG9 [get_ports MOSI_3]
 ##Free/reserve = B66_L23_N
 #set_property PACKAGE_PIN L11 [get_ports SCLKRTN_3]
 

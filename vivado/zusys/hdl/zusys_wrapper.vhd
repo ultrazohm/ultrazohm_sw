@@ -1,8 +1,8 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
---Date        : Wed May 19 08:46:11 2021
---Host        : 7e110fca65f1 running 64-bit unknown
+--Date        : Fri Aug  6 15:44:28 2021
+--Host        : ts-ThinkStation-P6203 running 64-bit Ubuntu 20.04.2 LTS
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
 --Purpose     : IP block netlist
@@ -15,13 +15,11 @@ entity zusys_wrapper is
   port (
     A1_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
     A1_OUT : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    A2_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A2_OUT_CNV : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
     A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A3_OUT_CNV : out STD_LOGIC_VECTOR ( 1 downto 0 );
     ADC_ConvStart : out STD_LOGIC_VECTOR ( 0 to 0 );
+    CS_1 : out STD_LOGIC;
     D1_OUT : out STD_LOGIC_VECTOR ( 5 downto 0 );
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -58,7 +56,12 @@ entity zusys_wrapper is
     Dig_22_Ch5 : in STD_LOGIC;
     Dig_23_Ch5 : in STD_LOGIC;
     Dig_24_Ch5 : in STD_LOGIC;
+    MISO_1 : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    MISO_2 : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    MISO_3 : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    MOSI_1 : out STD_LOGIC;
     Reserve : out STD_LOGIC_VECTOR ( 0 to 0 );
+    SCLK_1 : out STD_LOGIC;
     SPI_CS : out STD_LOGIC_VECTOR ( 0 to 0 );
     SPI_MOSI : out STD_LOGIC_VECTOR ( 0 to 0 );
     SPI_SCK : out STD_LOGIC_VECTOR ( 0 to 0 )
@@ -98,7 +101,6 @@ architecture STRUCTURE of zusys_wrapper is
     D2_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_30 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT : out STD_LOGIC_VECTOR ( 11 downto 0 );
-    A2_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
     A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
     A1_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
     D3_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -115,8 +117,12 @@ architecture STRUCTURE of zusys_wrapper is
     D1_OUT : out STD_LOGIC_VECTOR ( 5 downto 0 );
     A3_OUT_CNV : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A2_OUT_CNV : out STD_LOGIC_VECTOR ( 1 downto 0 )
+    SCLK_1 : out STD_LOGIC;
+    CS_1 : out STD_LOGIC;
+    MOSI_1 : out STD_LOGIC;
+    MISO_1 : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    MISO_2 : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    MISO_3 : in STD_LOGIC_VECTOR ( 3 downto 0 )
   );
   end component zusys;
 begin
@@ -124,13 +130,11 @@ zusys_i: component zusys
      port map (
       A1_IN(15 downto 0) => A1_IN(15 downto 0),
       A1_OUT(3 downto 0) => A1_OUT(3 downto 0),
-      A2_IN(15 downto 0) => A2_IN(15 downto 0),
-      A2_OUT_CLK(1 downto 0) => A2_OUT_CLK(1 downto 0),
-      A2_OUT_CNV(1 downto 0) => A2_OUT_CNV(1 downto 0),
       A3_IN(15 downto 0) => A3_IN(15 downto 0),
       A3_OUT_CLK(1 downto 0) => A3_OUT_CLK(1 downto 0),
       A3_OUT_CNV(1 downto 0) => A3_OUT_CNV(1 downto 0),
       ADC_ConvStart(0) => ADC_ConvStart(0),
+      CS_1 => CS_1,
       D1_OUT(5 downto 0) => D1_OUT(5 downto 0),
       D1_OUT_27(0) => D1_OUT_27(0),
       D1_OUT_28(0) => D1_OUT_28(0),
@@ -167,7 +171,12 @@ zusys_i: component zusys
       Dig_22_Ch5 => Dig_22_Ch5,
       Dig_23_Ch5 => Dig_23_Ch5,
       Dig_24_Ch5 => Dig_24_Ch5,
+      MISO_1(3 downto 0) => MISO_1(3 downto 0),
+      MISO_2(3 downto 0) => MISO_2(3 downto 0),
+      MISO_3(3 downto 0) => MISO_3(3 downto 0),
+      MOSI_1 => MOSI_1,
       Reserve(0) => Reserve(0),
+      SCLK_1 => SCLK_1,
       SPI_CS(0) => SPI_CS(0),
       SPI_MOSI(0) => SPI_MOSI(0),
       SPI_SCK(0) => SPI_SCK(0)

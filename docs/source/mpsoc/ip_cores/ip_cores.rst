@@ -18,3 +18,4 @@ IP Cores
     uz_interlockDeadtime2L/uz_interlockDeadtime2L
     uz_plantModel_pt1/uz_plantModel_pt1
     uz_pmsmModel/uz_pmsmModel
+    max11331/max11331_ip_core

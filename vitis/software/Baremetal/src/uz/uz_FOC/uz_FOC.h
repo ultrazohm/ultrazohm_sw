@@ -15,13 +15,13 @@
 /**
  * @brief Configuration struct for FOC. Accessible by the user
  */
-typedef struct uz_FOC_config {
-	float iq_ref_Ampere; /**< Reference current for the q-Axis in Ampere */
-	float id_ref_Ampere; /**< Reference current for the d-Axis in Ampere*/
-	float n_ref_rpm; /**< Reference speed for SpeedControl in rounds per minute */
-	unsigned int FOC_Select; /**< Selection, if Speed- or CurrentControl will be use. Input must be either 1=CurrentControl or 2=SpeedControl */
+struct uz_FOC_config {
+	struct uz_dq_t ref_current_Ampere; /**< Reference current for the dq-Axis in Ampere */
 	float polePairs; /**< Number of polePairs for the machine. Must be greater than 0.0f. Must be no decimal value (i.e. 2.5f is not allowed) */
-} uz_FOC_config;
+	struct uz_lin_decoupling_config config_lin_decoupling; /** Configuration struct for linear decoupling */
+	uz_PI_Controller_config config_id; /** Configuration struct for id-Controller */
+	uz_PI_Controller_config config_iq; /** Configuration struct for iq-Controller */
+};
 
 /**
  * @brief Object definition for FOC
@@ -33,13 +33,9 @@ typedef struct uz_FOC uz_FOC;
  * @brief Initialization of the uz_FOC object
  *
  * @param config_FOC configuration struct for FOC
- * @param config_id configuration struct for id-PI-Controller
- * @param config_iq configuration struct for iq-PI-Controller
- * @param config_n configuration struct for n-PI-Controller
- * @param config_lin_Decoup configuration struct for linear decoupling
  * @return uz_FOC* Pointer to uz_FOC instance
  */
-uz_FOC* uz_FOC_init(uz_FOC_config config_FOC, uz_PI_Controller_config config_id, uz_PI_Controller_config config_iq, uz_PI_Controller_config config_n, uz_lin_decoupling_config config_lin_Decoup);
+uz_FOC* uz_FOC_init(struct uz_FOC_config config_FOC);
 
 /**
  * @brief calculates last sample for dq-reference voltages
@@ -124,26 +120,6 @@ void uz_FOC_set_id_ref(uz_FOC* self, float id_ref);
 void uz_FOC_set_iq_ref(uz_FOC* self, float iq_ref);
 
 /**
- * @brief Function to change the reference speed during runtime
- * 
- * @param self uz_FOC instance
- * @param n_ref_rpm new n_ref value in rpm
- */
-void uz_FOC_set_n_ref(uz_FOC* self, float n_ref_rpm);
-/**
- * @brief Changes the control method from Current- to SpeedControl or vice versa
- *
- * @param self uz_FOC instance
- * @param config_FOC configuration struct for FOC
- * @param config_id configuration struct for id-PI-Controller
- * @param config_iq configuration struct for iq-PI-Controller
- * @param config_n configuration struct for n-PI-Controller
- * @param config_lin_Decoup configuration struct for linear decoupling
- * @return uz_FOC* Pointer to uz_FOC instance
- */
-uz_FOC* uz_FOC_change_control_Method(uz_FOC* self, uz_FOC_config config_FOC, uz_PI_Controller_config config_id, uz_PI_Controller_config config_iq, uz_PI_Controller_config config_n, uz_lin_decoupling_config config_lin_Decoup);
-
-/**
  * @brief Function to change the polePairs during runtime
  *
  * @param polePairs new value for polePairs. Must be greater than 0.0f. Must be no decimal value (i.e. 2.5f is not allowed)
@@ -152,7 +128,7 @@ void uz_FOC_set_polePairs(uz_FOC* self, float polePairs);
 
 /**
  * @brief Function to change Ld_Henry during runtime
- * 
+ *
  * @param self uz_FOC instance
  * @param Ld_Henry New Value for d-axis inductance. Must be greater than 0.0f
  */
@@ -160,7 +136,7 @@ void uz_FOC_set_Ld(uz_FOC* self, float Ld_Henry);
 
 /**
  * @brief Function to change Lq_Henry during runtime
- * 
+ *
  * @param self uz_FOC instance
  * @param Lq_Henry New Value for q-axis inductance. Must be greater than 0.0f
  */
@@ -168,9 +144,9 @@ void uz_FOC_set_Lq(uz_FOC* self, float Lq_Henry);
 
 /**
  * @brief Function to change Psi_PM_Vs during runtime
- * 
+ *
  * @param self uz_FOC instance
- * @param Psi_PM_Vs New Value for permanent magnet flux linkage. Must be greater than 0.0f
+ * @param Psi_PM_Vs New Value for permanent magnet flux linkage. Must be greater or equal than 0.0f
  */
 void uz_FOC_set_Psi_PM(uz_FOC* self, float Psi_PM_Vs);
 #endif // UZ_FOC_H

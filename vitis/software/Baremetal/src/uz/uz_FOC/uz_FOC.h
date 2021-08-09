@@ -56,26 +56,10 @@ struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_dq_meas_Ampere, floa
 void uz_FOC_reset(uz_FOC* self);
 
 /**
- * @brief Function to change the Kp-value of the n-PI-Controller during runtime
- *
- * @param self uz_FOC instance
- * @param Kp_n new Kp_n value. Must be greater or equal than 0.0f
- */
-void uz_FOC_set_Kp_n(uz_FOC* self, float Kp_n);
-
-/**
- * @brief Function to change the Ki-value of the n-PI-Controller during runtime
- *
- * @param self uz_FOC instance
- * @param Ki_n new Ki_n value. Must be greater or equal than 0.0f
- */
-void uz_FOC_set_Ki_n(uz_FOC* self, float Ki_n);
-
-/**
  * @brief Function to change the Kp-value of the id-PI-Controller during runtime
  *
  * @param self uz_FOC instance
- * @param Kp_n new Kp_id value. Must be greater or equal than 0.0f
+ * @param Kp_id new Kp_id value. Must be greater or equal than 0.0f
  */
 void uz_FOC_set_Kp_id(uz_FOC* self, float Kp_id);
 
@@ -83,7 +67,7 @@ void uz_FOC_set_Kp_id(uz_FOC* self, float Kp_id);
  * @brief Function to change the Ki-value of the id-PI-Controller during runtime
  *
  * @param self uz_FOC instance
- * @param Kp_n new Ki_id value. Must be greater or equal than 0.0f
+ * @param Ki_id new Ki_id value. Must be greater or equal than 0.0f
  */
 void uz_FOC_set_Ki_id(uz_FOC* self, float Ki_id);
 
@@ -91,7 +75,7 @@ void uz_FOC_set_Ki_id(uz_FOC* self, float Ki_id);
  * @brief Function to change the Kp-value of the iq-PI-Controller during runtime
  *
  * @param self uz_FOC instance
- * @param Kp_n new Kp_iq value. Must be greater or equal than 0.0f
+ * @param Kp_iq new Kp_iq value. Must be greater or equal than 0.0f
  */
 void uz_FOC_set_Kp_iq(uz_FOC* self, float Kp_iq);
 
@@ -99,29 +83,14 @@ void uz_FOC_set_Kp_iq(uz_FOC* self, float Kp_iq);
  * @brief Function to change the Ki-value of the iq-PI-Controller during runtime
  *
  * @param self uz_FOC instance
- * @param Kp_n new Ki_iq value. Must be greater or equal than 0.0f
+ * @param Ki_iq new Ki_iq value. Must be greater or equal than 0.0f
  */
 void uz_FOC_set_Ki_iq(uz_FOC* self, float Ki_iq);
 
 /**
- * @brief Function to change the d-reference current during runtime
- *
- * @param self uz_FOC instance
- * @param id_ref new id_ref value in Ampere
- */
-void uz_FOC_set_id_ref(uz_FOC* self, float id_ref);
-
-/**
- * @brief Function to change the q-reference current during runtime
- *
- * @param self uz_FOC instance
- * @param id_ref new iq_ref value in Ampere
- */
-void uz_FOC_set_iq_ref(uz_FOC* self, float iq_ref);
-
-/**
  * @brief Function to change the polePairs during runtime
  *
+ * @param self uz_FOC instance
  * @param polePairs new value for polePairs. Must be greater than 0.0f. Must be no decimal value (i.e. 2.5f is not allowed)
  */
 void uz_FOC_set_polePairs(uz_FOC* self, float polePairs);

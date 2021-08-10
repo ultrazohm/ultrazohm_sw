@@ -9,7 +9,7 @@
  *
  * Model version                  : 2.22
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Aug 10 10:14:27 2021
+ * C/C++ source code generated on : Tue Aug 10 16:05:37 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -77,8 +77,8 @@ typedef struct {
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  real32_T Delay_DSTATE_j[100];        /* '<S31>/Delay' */
-  real32_T Delay_DSTATE_m[500];        /* '<S32>/Delay' */
+  real32_T Delay_DSTATE_j[50];         /* '<S31>/Delay' */
+  real32_T Delay_DSTATE_m[200];        /* '<S32>/Delay' */
   real32_T Ref_Id;                     /* '<S4>/Merge' */
   real32_T Ref_Iq;                     /* '<S4>/Merge1' */
   real32_T Delay_DSTATE;               /* '<S3>/Delay' */

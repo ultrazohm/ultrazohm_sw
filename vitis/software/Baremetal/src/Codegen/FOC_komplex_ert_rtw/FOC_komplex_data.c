@@ -9,7 +9,7 @@
  *
  * Model version                  : 2.22
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Aug 10 10:14:27 2021
+ * C/C++ source code generated on : Tue Aug 10 16:05:37 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -56,7 +56,7 @@ P rtP = {
   /* Variable: Kp_n
    * Referenced by: '<S13>/Gain'
    */
-  1.45055914F,
+  6.0923F,
 
   /* Variable: L_d
    * Referenced by:
@@ -117,17 +117,17 @@ P rtP = {
   /* Variable: n_max
    * Referenced by: '<S5>/Constant3'
    */
-  2200.0F,
+  5625.0F,
 
   /* Variable: n_max_peak
    * Referenced by: '<S5>/Constant2'
    */
-  2400.0F,
+  6750.0F,
 
   /* Variable: n_ref_max
    * Referenced by: '<S8>/function_Eckdrehzahl'
    */
-  2000.0F,
+  4500.0F,
 
   /* Variable: p
    * Referenced by: '<S8>/function_Eckdrehzahl'

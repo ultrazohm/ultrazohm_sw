@@ -9,7 +9,7 @@
  *
  * Model version                  : 2.22
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Aug 10 10:14:27 2021
+ * C/C++ source code generated on : Tue Aug 10 16:05:37 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -895,7 +895,7 @@ void FOC_komplex_step(RT_MODEL *const rtM)
    *  Gain: '<S31>/Gain'
    *  RelationalOperator: '<S5>/Smaller1'
    */
-  rtY->fault_max_current = (real32_T)(rtP.i_max <= 0.01F * rtb_Sin);
+  rtY->fault_max_current = (real32_T)(rtP.i_max <= 0.02F * rtb_Sin);
 
   /* Outport: '<Root>/Iq_Act' */
   rtY->Iq_Act = rtb_q;
@@ -924,7 +924,7 @@ void FOC_komplex_step(RT_MODEL *const rtM)
    *  Gain: '<S32>/Gain'
    *  RelationalOperator: '<S5>/Smaller3'
    */
-  rtY->fault_max_speed = (real32_T)(rtP.n_max <= 0.002F * rtb_Cos);
+  rtY->fault_max_speed = (real32_T)(rtP.n_max <= 0.005F * rtb_Cos);
 
   /* Update for Delay: '<S3>/Delay' */
   rtDW->Delay_DSTATE = DiscreteTimeIntegrator;
@@ -933,12 +933,12 @@ void FOC_komplex_step(RT_MODEL *const rtM)
   rtDW->DiscreteTimeIntegrator_DSTATE = 0.5F * rtb_Gain + DiscreteTimeIntegrator;
 
   /* Update for Delay: '<S31>/Delay' */
-  for (rtDW->idxDelay = 0; rtDW->idxDelay < 99; rtDW->idxDelay++) {
+  for (rtDW->idxDelay = 0; rtDW->idxDelay < 49; rtDW->idxDelay++) {
     rtDW->Delay_DSTATE_j[rtDW->idxDelay] = rtDW->Delay_DSTATE_j[rtDW->idxDelay +
       1];
   }
 
-  rtDW->Delay_DSTATE_j[99] = rtb_alpha_j;
+  rtDW->Delay_DSTATE_j[49] = rtb_alpha_j;
 
   /* End of Update for Delay: '<S31>/Delay' */
 
@@ -946,12 +946,12 @@ void FOC_komplex_step(RT_MODEL *const rtM)
   rtDW->Accumulator_DSTATE = rtb_Sin;
 
   /* Update for Delay: '<S32>/Delay' */
-  for (rtDW->idxDelay = 0; rtDW->idxDelay < 499; rtDW->idxDelay++) {
+  for (rtDW->idxDelay = 0; rtDW->idxDelay < 199; rtDW->idxDelay++) {
     rtDW->Delay_DSTATE_m[rtDW->idxDelay] = rtDW->Delay_DSTATE_m[rtDW->idxDelay +
       1];
   }
 
-  rtDW->Delay_DSTATE_m[499] = rtb_q;
+  rtDW->Delay_DSTATE_m[199] = rtb_q;
 
   /* End of Update for Delay: '<S32>/Delay' */
 

@@ -2,6 +2,16 @@
 #define UZ_SPACE_VECTOR_LIMITATION_H
 #include <stdbool.h>
 
-struct uz_dq_t uz_FOC_SpaceVector_Limitation(struct uz_dq_t u_dq_ref_Volts, float U_zk_Volts, float omega_el_rad_per_sec, struct uz_dq_t i_dq_meas_Ampere, bool* ext_clamping);
+/**
+ * @brief function to limit the voltages of a give control algorithm
+ * 
+ * @param u_input_Volts uz_dq_t struct with the voltages, which shall be limited 
+ * @param U_zk_Volts DC-link voltage
+ * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
+ * @param i_actual_Ampere uz_dq_t struct for measured dq-currents in Ampere
+ * @param ext_clamping flag which states, if the SVL is active
+ * @return struct uz_dq_t 
+ */
+struct uz_dq_t uz_FOC_SpaceVector_Limitation(struct uz_dq_t u_input_Volts, float U_zk_Volts, float omega_el_rad_per_sec, struct uz_dq_t i_actual_Ampere, bool* ext_clamping);
 
 #endif // UZ_SPACE_VECTOR_LIMITATION_H

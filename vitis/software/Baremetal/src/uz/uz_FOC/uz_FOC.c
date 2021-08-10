@@ -8,7 +8,7 @@ typedef struct uz_FOC {
 	struct uz_PI_Controller* Controller_iq;
 }uz_FOC;
 
-static struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_dq_meas_Ampere);
+static struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere);
 static size_t instances_counter_FOC = 0;
 
 static uz_FOC instances_FOC[UZ_FOC_MAX_INSTANCES] = {0};
@@ -39,21 +39,21 @@ uz_FOC* uz_FOC_init(struct uz_FOC_config config_FOC) {
 	return (self);
 }
 
-struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_dq_meas_Ampere, float U_zk_Volts, float omega_el_rad_per_sec) {
-	struct uz_dq_t u_dq_ref_Volts = uz_FOC_CurrentControl(self, i_dq_meas_Ampere);
-	struct uz_dq_t u_dq_decoup_Volts = uz_FOC_linear_decoupling(self->config_FOC.config_lin_decoupling, i_dq_meas_Ampere, omega_el_rad_per_sec);
+struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float U_zk_Volts, float omega_el_rad_per_sec) {
+	struct uz_dq_t u_dq_ref_Volts = uz_FOC_CurrentControl(self, i_reference_Ampere, i_actual_Ampere);
+	struct uz_dq_t u_dq_decoup_Volts = uz_FOC_linear_decoupling(self->config_FOC.config_lin_decoupling, i_actual_Ampere, omega_el_rad_per_sec);
 	u_dq_ref_Volts.d = u_dq_ref_Volts.d + u_dq_decoup_Volts.d;
 	u_dq_ref_Volts.q = u_dq_ref_Volts.q + u_dq_decoup_Volts.q;
-	struct uz_dq_t u_dq_limit_Volts = uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts, U_zk_Volts, omega_el_rad_per_sec, i_dq_meas_Ampere, &self->ext_clamping);
+	struct uz_dq_t u_dq_limit_Volts = uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts, U_zk_Volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
 	return (u_dq_limit_Volts);
 }
 
-static struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_dq_meas_Ampere) {
+static struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	struct uz_dq_t u_dq_ref_Volts = { 0 };
-	u_dq_ref_Volts.q = uz_PI_Controller_sample(self->Controller_iq, self->config_FOC.ref_current_Ampere.q, i_dq_meas_Ampere.q, self->ext_clamping);
-	u_dq_ref_Volts.d = uz_PI_Controller_sample(self->Controller_id, self->config_FOC.ref_current_Ampere.d, i_dq_meas_Ampere.d, self->ext_clamping);
+	u_dq_ref_Volts.q = uz_PI_Controller_sample(self->Controller_iq, i_reference_Ampere.q, i_actual_Ampere.q, self->ext_clamping);
+	u_dq_ref_Volts.d = uz_PI_Controller_sample(self->Controller_id, i_reference_Ampere.d, i_actual_Ampere.d, self->ext_clamping);
 	return (u_dq_ref_Volts);
 
 }

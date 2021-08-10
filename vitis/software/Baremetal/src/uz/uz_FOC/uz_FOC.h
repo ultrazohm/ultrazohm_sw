@@ -16,7 +16,6 @@
  * @brief Configuration struct for FOC. Accessible by the user
  */
 struct uz_FOC_config {
-	struct uz_dq_t ref_current_Ampere; /**< Reference current for the dq-Axis in Ampere */
 	float polePairs; /**< Number of polePairs for the machine. Must be greater than 0.0f. Must be no decimal value (i.e. 2.5f is not allowed) */
 	struct uz_lin_decoupling_config config_lin_decoupling; /** Configuration struct for linear decoupling */
 	uz_PI_Controller_config config_id; /** Configuration struct for id-Controller */
@@ -41,12 +40,13 @@ uz_FOC* uz_FOC_init(struct uz_FOC_config config_FOC);
  * @brief calculates last sample for dq-reference voltages
  *
  * @param self uz_FOC instance
- * @param i_dq_meas_Ampere uz_dq_t struct for measured dq-currents
+ * @param i_reference_Ampere uz_dq_t struct for reference dq-currents in Ampere
+ * @param i_actual_Ampere uz_dq_t struct for measured dq-currents in Ampere
  * @param U_zk_Volts measured U_zk voltage. Must be greater than 0.0f
  * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
  * @return struct uz_dq_t Output dq-reference voltage struct
  */
-struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_dq_meas_Ampere, float U_zk_Volts, float omega_el_rad_per_sec);
+struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float U_zk_Volts, float omega_el_rad_per_sec);
 
 /**
  * @brief Resets the FOC and the integrators of the PI-Controllers

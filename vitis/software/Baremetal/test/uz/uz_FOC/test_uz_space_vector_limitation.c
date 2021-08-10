@@ -7,7 +7,7 @@ TEST_FILE("uz_signals.c")
 #include "uz_space_vector_limitation.h"
 
 struct uz_dq_t u_dq_ref_Volts = {0};
-struct uz_dq_t i_dq_meas_Ampere = {0};
+struct uz_dq_t i_actual_Ampere = {0};
 float U_zk_Volts = 0.0f;
 float omega_el_rad_per_sec = 0.0f;
 bool ext_clamping = false;
@@ -16,9 +16,9 @@ void setUp(void)
     u_dq_ref_Volts.d = 0.0f;
     u_dq_ref_Volts.q = 0.0f;
     u_dq_ref_Volts.zero = 0.0f;
-    i_dq_meas_Ampere.d = 0.0f;
-    i_dq_meas_Ampere.q = 0.0f;
-    i_dq_meas_Ampere.zero = 0.0f;
+    i_actual_Ampere.d = 0.0f;
+    i_actual_Ampere.q = 0.0f;
+    i_actual_Ampere.zero = 0.0f;
     U_zk_Volts = 24.0f;
     omega_el_rad_per_sec = 100.0f;
     ext_clamping = false;
@@ -26,19 +26,19 @@ void setUp(void)
 
 void test_uz_FOC_SpaceVector_Limitation_ext_clamping_NULL(void){
     setUp();
-    TEST_ASSERT_FAIL_ASSERT(uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts,U_zk_Volts, omega_el_rad_per_sec, i_dq_meas_Ampere, NULL));
+    TEST_ASSERT_FAIL_ASSERT(uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts,U_zk_Volts, omega_el_rad_per_sec, i_actual_Ampere, NULL));
 }
 
 void test_uz_FOC_SpaceVector_Limitation_U_zk_negative(void){
     setUp();
     U_zk_Volts = -5.2f;
-    TEST_ASSERT_FAIL_ASSERT(uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts,U_zk_Volts, omega_el_rad_per_sec, i_dq_meas_Ampere, &ext_clamping));
+    TEST_ASSERT_FAIL_ASSERT(uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts,U_zk_Volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping));
 }
 
 void test_uz_FOC_SpaceVector_Limitation_U_zk_zero(void){
     setUp();
     U_zk_Volts = 0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts,U_zk_Volts, omega_el_rad_per_sec, i_dq_meas_Ampere, &ext_clamping));
+    TEST_ASSERT_FAIL_ASSERT(uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts,U_zk_Volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping));
 }
 
 void test_uz_FOC_SpaceVector_Limitation_output(void){
@@ -51,11 +51,11 @@ void test_uz_FOC_SpaceVector_Limitation_output(void){
     float ud_out[11]={6.75f, 5.09f, 3.84f, 2.9f, 2.2f, 1.67f, 1.28f, 0.98f, 0.76f, 0.59f, 0.46f};
     float uq_out[11]={6.75f, 5.09f, 3.84f, 2.9f, 2.2f, 1.67f, 1.28f, 0.98f, 0.76f, 0.59f, 0.47f}; 
     for(int i=0;i<11;i++){
-        i_dq_meas_Ampere.q = values_iq[i];
+        i_actual_Ampere.q = values_iq[i];
         omega_el_rad_per_sec = values_omega[i];
         u_dq_ref_Volts.d = ud_in[i];
         u_dq_ref_Volts.q = uq_in[i];
-        struct uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts,U_zk_Volts, omega_el_rad_per_sec, i_dq_meas_Ampere, &ext_clamping);
+        struct uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts,U_zk_Volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 		TEST_ASSERT_FLOAT_WITHIN(1e-02, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02, uq_out[i], output.q);
     }
@@ -73,11 +73,11 @@ void test_uz_FOC_SpaceVector_Limitation_output_transition_to_limit(void){
     float uq_out[11]={6.91f, 6.91f, 6.91f, 6.91f, 6.91f, 6.91f, 6.91f, 6.91f, 6.91f, 6.91f, 6.91f}; 
     float output_ref[11]={false, false, false, false, false, false, false, false, false, false, true};
     for(int i=0;i<11;i++){
-        i_dq_meas_Ampere.q = values_iq[i];
+        i_actual_Ampere.q = values_iq[i];
         omega_el_rad_per_sec = values_omega[i];
         u_dq_ref_Volts.d = ud_in[i];
         u_dq_ref_Volts.q = uq_in[i];
-        struct uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts,U_zk_Volts, omega_el_rad_per_sec, i_dq_meas_Ampere, &ext_clamping);
+        struct uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts,U_zk_Volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 		TEST_ASSERT_FLOAT_WITHIN(1e-03, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02, uq_out[i], output.q);
         TEST_ASSERT_EQUAL_INT(output_ref[i], ext_clamping);
@@ -96,11 +96,11 @@ void test_uz_FOC_SpaceVector_Limitation_output_limited(void){
     float uq_out[11]={6.92f, 6.92f, 6.92f, 6.92f, 6.92f, 6.92f, 6.92f, 6.92f, 6.92f, 6.92f, 6.92f}; 
     float output_ref[11]={true, true, true, true, true, true, true, true, true, true, true};
     for(int i=0;i<11;i++){
-        i_dq_meas_Ampere.q = values_iq[i];
+        i_actual_Ampere.q = values_iq[i];
         omega_el_rad_per_sec = values_omega[i];
         u_dq_ref_Volts.d = ud_in[i];
         u_dq_ref_Volts.q = uq_in[i];
-        struct uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts,U_zk_Volts, omega_el_rad_per_sec, i_dq_meas_Ampere, &ext_clamping);
+        struct uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts,U_zk_Volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 		TEST_ASSERT_FLOAT_WITHIN(1e-03, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02, uq_out[i], output.q);
         TEST_ASSERT_EQUAL_INT(output_ref[i], ext_clamping);

@@ -26,7 +26,7 @@ static uz_PI_Controller* uz_PI_Controller_allocation(void) {
 	return (self);
 }
 
-uz_PI_Controller* uz_PI_Controller_init(uz_PI_Controller_config config) {
+uz_PI_Controller* uz_PI_Controller_init(struct uz_PI_Controller_config config) {
 	uz_PI_Controller* self = uz_PI_Controller_allocation();
     uz_assert(config.Ki >= 0.0f);
     uz_assert(config.Kp >= 0.0f);
@@ -91,7 +91,7 @@ void uz_PI_Controller_set_Kp(uz_PI_Controller* self, float new_Kp){
     self->config.Kp = new_Kp;
 }
 
-uz_PI_Controller* uz_PI_Controller_update_config(uz_PI_Controller* self, uz_PI_Controller_config config) {
+uz_PI_Controller* uz_PI_Controller_update_config(uz_PI_Controller* self, struct uz_PI_Controller_config config) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(config.Ki >= 0.0f);

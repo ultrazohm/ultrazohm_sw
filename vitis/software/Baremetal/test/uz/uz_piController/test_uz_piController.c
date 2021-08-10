@@ -6,7 +6,7 @@
 #include "test_assert_with_exception.h"
 TEST_FILE("uz_signals.c")
 
-uz_PI_Controller_config config = {0};
+struct uz_PI_Controller_config config = {0};
 void setUp(void)
 {
     config.Kp = 10.0f;

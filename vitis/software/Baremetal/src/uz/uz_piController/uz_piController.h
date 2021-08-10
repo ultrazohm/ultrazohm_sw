@@ -6,13 +6,13 @@
 /**
  * @brief Configuration struct for PI-Controller. Pass to init function. Accessible by the user
  */
-typedef struct uz_PI_Controller_config {
+struct uz_PI_Controller_config {
 	float Kp; /**< Proportional gain for PI-Controller. Must be greater or equal than 0.0f */
 	float Ki; /**< Integral gain for PI-Controller. Must be greater or equal than 0.0f */
 	float samplingTime_sec; /**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
 	float upper_limit; /**< Upper limit for the output limitation. Must be greater than lower limit */
 	float lower_limit; /**< Lower limit for the output limitation */
-} uz_PI_Controller_config;
+};
 
 /**
  * @brief Object definition for generating a PI-Controller
@@ -26,7 +26,7 @@ typedef struct uz_PI_Controller uz_PI_Controller;
  * @param config uz_PI_Controller_config configuration struct
  * @return Pointer to uz_PI_Controller instance
  */
-uz_PI_Controller* uz_PI_Controller_init(uz_PI_Controller_config config);
+uz_PI_Controller* uz_PI_Controller_init(struct uz_PI_Controller_config config);
 
 /**
  * @brief Compares the values before and after the Integrator and decides if clamping is necessary
@@ -79,6 +79,6 @@ void uz_PI_Controller_set_Kp(uz_PI_Controller* self, float new_Kp);
  * @param self uz_PI_Controller instance
  * @param config uz_PI_Controller_config configuration struct
  */
-uz_PI_Controller* uz_PI_Controller_update_config(uz_PI_Controller* self, uz_PI_Controller_config config);
+uz_PI_Controller* uz_PI_Controller_update_config(uz_PI_Controller* self, struct uz_PI_Controller_config config);
 
 #endif // UZ_PICONTROLLER_H

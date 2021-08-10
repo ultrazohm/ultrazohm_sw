@@ -99,6 +99,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_U_ZK] 		= &codegenInstance.input.Act_U_ZK;
 	js_ptr_arr[JSO_Theta_el] 	= &codegenInstance.input.Act_theta_el;
 	js_ptr_arr[JSO_Theta_mech] 	= &Global_Data.av.theta_mech;
+	js_ptr_arr[JSO_Error_I_continuous] = &codegenInstance.output.fault_max_current;
+	js_ptr_arr[JSO_Error_I_peak] = &codegenInstance.output.fault_peak_current;
+	js_ptr_arr[JSO_Error_n_continuous] = &codegenInstance.output.fault_max_speed;
+	js_ptr_arr[JSO_Error_n_peak] = &codegenInstance.output.fault_peak_speed;
 	js_ptr_arr[JSO_ISR_ExecutionTime_us] = &ISRExecutionTime;
 	js_ptr_arr[JSO_ISR_Period_us] = &isr_period_us;
 	js_ptr_arr[JSO_lifecheck]   = &lifecheck;

@@ -1,7 +1,7 @@
 #ifndef TEST
 
 // Hardware version of the UltraZohm
-#define UZ_HARDWARE_VERSION 3U
+#define UZ_HARDWARE_VERSION 4U
 
 /** ISR trigger source
  *

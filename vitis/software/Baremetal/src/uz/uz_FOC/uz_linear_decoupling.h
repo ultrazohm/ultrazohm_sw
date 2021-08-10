@@ -17,10 +17,10 @@ struct uz_lin_decoupling_config{
  * @brief function to calculate linear decoupling values for d- and q-axis
  *
  * @param config uz_lin_decouppling_config struct
- * @param i_dq_meas_Ampere uz_dq_t struct with the measured d- and q-currents
+ * @param i_actual_Ampere uz_dq_t struct with the measured d- and q-currents in ampere
  * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
  * @return struct uz_dq_t outputs latest values
  */
-struct uz_dq_t uz_FOC_linear_decoupling(struct uz_lin_decoupling_config config, struct uz_dq_t i_dq_meas_Ampere, float omega_el_rad_per_sec);
+struct uz_dq_t uz_FOC_linear_decoupling(struct uz_lin_decoupling_config config, struct uz_dq_t i_actual_Ampere, float omega_el_rad_per_sec);
 
 #endif // UZ_LINEAR_DECOUPPLING_H

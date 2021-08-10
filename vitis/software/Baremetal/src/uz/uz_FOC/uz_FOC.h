@@ -16,9 +16,9 @@
  * @brief Configuration struct for FOC. Accessible by the user
  */
 struct uz_FOC_config {
-	struct uz_lin_decoupling_config config_lin_decoupling; /** Configuration struct for linear decoupling */
-	uz_PI_Controller_config config_id; /** Configuration struct for id-Controller */
-	uz_PI_Controller_config config_iq; /** Configuration struct for iq-Controller */
+	struct uz_PI_Controller_config config_id; /**< Configuration struct for id-Controller */
+	struct uz_PI_Controller_config config_iq; /**< Configuration struct for iq-Controller */
+	struct uz_lin_decoupling_config config_lin_decoupling; /**< Configuration struct for linear decoupling */
 };
 
 /**
@@ -30,7 +30,7 @@ typedef struct uz_FOC uz_FOC;
 /**
  * @brief Initialization of the uz_FOC object
  *
- * @param config_FOC configuration struct for FOC
+ * @param config configuration struct for FOC
  * @return uz_FOC* Pointer to uz_FOC instance
  */
 uz_FOC* uz_FOC_init(struct uz_FOC_config config);

@@ -13,14 +13,14 @@ Example
   :linenos:
   :caption: Example function call for space vector limitation
 
-  #include "uz_linear_decoupling.h"
+  #include "uz/uz_FOC/uz_space_vector_limitation.h"
   int main(void) {
      float U_zk_Volts = 24.0f;
      float omega_el_rad_per_sec = 100.0f;
-     struct uz_dq_t i_dq_meas_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-     struct uz_dq_t u_dq_ref_Volts = {.d = 5.0f, .q = 8.0f, .zero = 0.0f};
+     struct uz_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
+     struct uz_dq_t u_input_Volts = {.d = 5.0f, .q = 8.0f, .zero = 0.0f};
      bool ext_clamping = false;
-     struct uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_dq_ref_Volts, U_zk_Volts, omega_el_rad_per_sec, i_dq_meas_Ampere, &ext_clamping);
+     struct uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts, U_zk_Volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
   }
 
 Description

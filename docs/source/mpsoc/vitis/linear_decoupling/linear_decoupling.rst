@@ -17,12 +17,16 @@ Example
   :linenos:
   :caption: Example function call for linear decoupling
 
-  #include "uz_linear_decoupling.h"
+  #include "uz/uz_FOC/uz_linear_decoupling.h"
   int main(void) {
-     uz_lin_decoupling_config config_lin_Decoup = {.Ld_Henry = 0.0001f, .Lq_Henry = 0.0002f, .Psi_PM_Vs = 0.008f};
+     struct uz_lin_decoupling_config config_lin_Decoup = {
+        .Ld_Henry = 0.0001f,
+        .Lq_Henry = 0.0002f, 
+        .Psi_PM_Vs = 0.008f
+     };
      float omega_el_rad_per_sec = 100.0f;
-     struct uz_dq_t i_dq_meas_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-     struct uz_dq_t output = uz_FOC_linear_decoupling(config_lin_Decoup, i_dq_meas_Ampere, omega_el_rad_per_sec);
+     struct uz_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
+     struct uz_dq_t output = uz_FOC_linear_decoupling(config_lin_Decoup, i_actual_Ampere, omega_el_rad_per_sec);
   }
 
 Description

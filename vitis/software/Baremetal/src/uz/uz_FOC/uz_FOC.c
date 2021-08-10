@@ -3,7 +3,7 @@
 typedef struct uz_FOC {
 	bool is_ready;
 	bool ext_clamping;
-	struct uz_FOC_config config_FOC;
+	struct uz_FOC_config config;
 	struct uz_PI_Controller* Controller_id;
 	struct uz_PI_Controller* Controller_iq;
 }uz_FOC;
@@ -30,12 +30,11 @@ static uz_FOC* uz_FOC_allocation(void) {
 	return (self);
 }
 
-uz_FOC* uz_FOC_init(struct uz_FOC_config config_FOC) {
+uz_FOC* uz_FOC_init(struct uz_FOC_config config) {
 	uz_FOC* self = uz_FOC_allocation();
-	uz_assert(config_FOC.polePairs > 0.0f);
-	self->Controller_id = uz_PI_Controller_init(config_FOC.config_id);
-	self->Controller_iq = uz_PI_Controller_init(config_FOC.config_iq);
-	self->config_FOC = config_FOC;
+	self->Controller_id = uz_PI_Controller_init(config.config_id);
+	self->Controller_iq = uz_PI_Controller_init(config.config_iq);
+	self->config = config;
 	return (self);
 }
 
@@ -44,7 +43,7 @@ struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, st
 	uz_assert(self->is_ready);
 	uz_assert(U_zk_Volts > 0.0f);
 	struct uz_dq_t u_pre_limit_Volts = uz_FOC_CurrentControl(self, i_reference_Ampere, i_actual_Ampere);
-	struct uz_dq_t u_decoup_Volts = uz_FOC_linear_decoupling(self->config_FOC.config_lin_decoupling, i_actual_Ampere, omega_el_rad_per_sec);
+	struct uz_dq_t u_decoup_Volts = uz_FOC_linear_decoupling(self->config.config_lin_decoupling, i_actual_Ampere, omega_el_rad_per_sec);
 	u_pre_limit_Volts.d = u_pre_limit_Volts.d + u_decoup_Volts.d;
 	u_pre_limit_Volts.q = u_pre_limit_Volts.q + u_decoup_Volts.q;
 	struct uz_dq_t u_output_Volts = uz_FOC_SpaceVector_Limitation(u_pre_limit_Volts, U_zk_Volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
@@ -97,31 +96,23 @@ void uz_FOC_set_Ki_iq(uz_FOC* self, float Ki_iq){
 	uz_PI_Controller_set_Ki(self->Controller_iq, Ki_iq);
 }
 
-void uz_FOC_set_polePairs(uz_FOC* self, float polePairs){
-	uz_assert_not_NULL(self);
-	uz_assert(self->is_ready);
-	uz_assert(polePairs > 0.0f);
-	uz_assert(fmodf(polePairs, 1.0f) == 0);
-	self->config_FOC.polePairs = polePairs;
-}
-
 void uz_FOC_set_Ld(uz_FOC* self, float Ld_Henry){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(Ld_Henry > 0.0f);
-	self->config_FOC.config_lin_decoupling.Ld_Henry = Ld_Henry;
+	self->config.config_lin_decoupling.Ld_Henry = Ld_Henry;
 }
 
 void uz_FOC_set_Lq(uz_FOC* self, float Lq_Henry){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(Lq_Henry > 0.0f);
-	self->config_FOC.config_lin_decoupling.Lq_Henry = Lq_Henry;
+	self->config.config_lin_decoupling.Lq_Henry = Lq_Henry;
 }
 
 void uz_FOC_set_Psi_PM(uz_FOC* self, float Psi_PM_Vs){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(Psi_PM_Vs >= 0.0f);
-	self->config_FOC.config_lin_decoupling.Psi_PM_Vs = Psi_PM_Vs;
+	self->config.config_lin_decoupling.Psi_PM_Vs = Psi_PM_Vs;
 }

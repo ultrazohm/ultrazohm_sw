@@ -10,47 +10,34 @@ TEST_FILE("uz_space_vector_limitation.c")
 
 
 
-struct uz_FOC_config config_FOC = {0};
+struct uz_FOC_config config = {0};
 struct uz_dq_t i_actual_Ampere = {0};
 struct uz_dq_t i_reference_Ampere = {0};
 float omega_el_rad_per_sec = 0.0f;
 float U_zk_Volts = 0.0f;
 void setUp(void)
 {
-    config_FOC.config_id.Kp = 6.75f;
-    config_FOC.config_id.Ki = 2000.0f;
-    config_FOC.config_id.samplingTime_sec = 0.00001f;
-    config_FOC.config_id.upper_limit = 10.0f;
-    config_FOC.config_id.lower_limit = -10.0f;
-    config_FOC.config_iq.Kp = 6.75f;
-    config_FOC.config_iq.Ki = 2000.0f;
-    config_FOC.config_iq.samplingTime_sec = 0.00001f;
-    config_FOC.config_iq.upper_limit = 10.0f;
-    config_FOC.config_iq.lower_limit = -10.0f;
-    config_FOC.polePairs = 4.0f;
+    config.config_id.Kp = 6.75f;
+    config.config_id.Ki = 2000.0f;
+    config.config_id.samplingTime_sec = 0.00001f;
+    config.config_id.upper_limit = 10.0f;
+    config.config_id.lower_limit = -10.0f;
+    config.config_iq.Kp = 6.75f;
+    config.config_iq.Ki = 2000.0f;
+    config.config_iq.samplingTime_sec = 0.00001f;
+    config.config_iq.upper_limit = 10.0f;
+    config.config_iq.lower_limit = -10.0f;
     i_actual_Ampere.d = 0.0f;
     i_actual_Ampere.q = 0.0f;
     i_actual_Ampere.zero = 0.0f;
     omega_el_rad_per_sec = 0.0f;
     U_zk_Volts = 24.0f;
-    config_FOC.config_lin_decoupling.Ld_Henry = 0.00027f;
-    config_FOC.config_lin_decoupling.Lq_Henry = 0.00027f;
-    config_FOC.config_lin_decoupling.Psi_PM_Vs = 0.0082f;
+    config.config_lin_decoupling.Ld_Henry = 0.00027f;
+    config.config_lin_decoupling.Lq_Henry = 0.00027f;
+    config.config_lin_decoupling.Psi_PM_Vs = 0.0082f;
     i_reference_Ampere.d = 1.0f;
     i_reference_Ampere.q = 1.0f;
     i_reference_Ampere.zero = 0.0f;
-}
-
-void test_uz_FOC_init_polePairs_negative(void){
-    setUp();
-    config_FOC.polePairs = -2.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_FOC_init(config_FOC));
-}
-
-void test_uz_FOC_init_polePairs_zero(void){
-    setUp();
-    config_FOC.polePairs = 0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_FOC_init(config_FOC));
 }
 
 void test_uz_FOC_reset_NULL(void){
@@ -67,14 +54,14 @@ void test_uz_FOC_set_Kp_id_NULL(void){
 void test_uz_FOC_set_Kp_id_negative(void){
     setUp();
     float Kp_id = -10.0f;
-    uz_FOC* instance = uz_FOC_init(config_FOC);
+    uz_FOC* instance = uz_FOC_init(config);
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_Kp_id(instance, Kp_id));
 }
 
 void test_uz_FOC_set_Ki_id_negative(void){
     setUp();
     float Ki_id = -10.0f;
-    uz_FOC* instance = uz_FOC_init(config_FOC);
+    uz_FOC* instance = uz_FOC_init(config);
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_Ki_id(instance, Ki_id));
 }
 
@@ -87,42 +74,21 @@ void test_uz_FOC_set_Kp_iq_NULL(void){
 void test_uz_FOC_set_Kp_iq_negative(void){
     setUp();
     float Kp_iq = -10.0f;
-    uz_FOC* instance = uz_FOC_init(config_FOC);
+    uz_FOC* instance = uz_FOC_init(config);
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_Kp_iq(instance, Kp_iq));
 }
 
 void test_uz_FOC_set_Ki_iq_negative(void){
     setUp();
     float Ki_iq = -10.0f;
-    uz_FOC* instance = uz_FOC_init(config_FOC);
+    uz_FOC* instance = uz_FOC_init(config);
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_Ki_iq(instance, Ki_iq));
-}
-
-void test_uz_FOC_set_polePairs_negative(void){
-    setUp();
-    uz_FOC* instance = uz_FOC_init(config_FOC);
-    float polePairs = -2.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_polePairs(instance, polePairs));
-}
-
-void test_uz_FOC_set_polePairs_zero(void){
-    setUp();
-    uz_FOC* instance = uz_FOC_init(config_FOC);
-    float polePairs = 0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_polePairs(instance, polePairs));
-}
-
-void test_uz_FOC_set_polePairs_decimal_value(void){
-    setUp();
-    uz_FOC* instance = uz_FOC_init(config_FOC);
-    float polePairs = 2.5f;
-    TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_polePairs(instance, polePairs));
 }
 
 void test_uz_FOC_sample_output(void){
     setUp();
     //Values for comparision from simulation
-    uz_FOC* instance = uz_FOC_init(config_FOC);
+    uz_FOC* instance = uz_FOC_init(config);
     float values_iq[11]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f, 0.76f, 0.819f, 0.863f, 0.895f, 0.919f, 0.937f};
     float values_id[11]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f, 0.761f, 0.82f, 0.865f, 0.899f, 0.924f, 0.943f};
 	float values_omega[11]={0.0f, 0.0f, 0.0178f, 0.0876f, 0.264f, 0.622f, 1.26f, 2.29f, 3.85f, 6.08f, 9.13f};
@@ -142,7 +108,7 @@ void test_uz_FOC_sample_output_SVLimitation_active(void){
     setUp();
     U_zk_Volts = 10.0f;
     //Values for comparision from simulation
-    uz_FOC* instance = uz_FOC_init(config_FOC);
+    uz_FOC* instance = uz_FOC_init(config);
     float values_iq[11]={0.874f, 0.871f, 0.871f, 0.871f, 0.871f, 0.871f, 0.871f, 0.871f, 0.871f, 0.871f, 0.871f};
     float values_id[11]={1.0f, 0.998f, 0.997f, 0.996f, 0.995f, 0.995f, 0.994f, 0.994f, 0.994f, 0.994f, 0.993f};
 	float values_omega[11]={673.0f, 673.0f, 673.0f, 673.0f, 673.0f, 673.0f, 673.0f, 673.0f, 673.0f, 673.0f, 673.0f};
@@ -161,7 +127,7 @@ void test_uz_FOC_sample_output_SVLimitation_active(void){
 void test_uz_FOC_reset(void){
     setUp();
     //Values for comparision from simulation
-    uz_FOC* instance = uz_FOC_init(config_FOC);
+    uz_FOC* instance = uz_FOC_init(config);
     float values_iq[5]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f};
     float values_id[5]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f};
 	float values_omega[5]={0.0f, 0.0f, 0.0178f, 0.0876f, 0.264f};
@@ -191,7 +157,7 @@ void test_uz_FOC_set_Kp_and_Ki_id(void){
     setUp();
     struct uz_dq_t output = {0};
     //Values for comparision from simulation
-    uz_FOC* instance = uz_FOC_init(config_FOC);
+    uz_FOC* instance = uz_FOC_init(config);
     for(int i=0;i<11;i++){
         output = uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec);
     }    
@@ -212,7 +178,7 @@ void test_uz_FOC_set_Kp_and_Ki_iq(void){
     setUp();
     struct uz_dq_t output = {0};
     //Values for comparision from simulation
-    uz_FOC* instance = uz_FOC_init(config_FOC);
+    uz_FOC* instance = uz_FOC_init(config);
     for(int i=0;i<11;i++){
         output = uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec);
     }    

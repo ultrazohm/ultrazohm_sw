@@ -16,7 +16,6 @@
  * @brief Configuration struct for FOC. Accessible by the user
  */
 struct uz_FOC_config {
-	float polePairs; /**< Number of polePairs for the machine. Must be greater than 0.0f. Must be no decimal value (i.e. 2.5f is not allowed) */
 	struct uz_lin_decoupling_config config_lin_decoupling; /** Configuration struct for linear decoupling */
 	uz_PI_Controller_config config_id; /** Configuration struct for id-Controller */
 	uz_PI_Controller_config config_iq; /** Configuration struct for iq-Controller */
@@ -34,7 +33,7 @@ typedef struct uz_FOC uz_FOC;
  * @param config_FOC configuration struct for FOC
  * @return uz_FOC* Pointer to uz_FOC instance
  */
-uz_FOC* uz_FOC_init(struct uz_FOC_config config_FOC);
+uz_FOC* uz_FOC_init(struct uz_FOC_config config);
 
 /**
  * @brief calculates last sample for dq-reference voltages

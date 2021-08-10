@@ -69,7 +69,6 @@ void ISR_Control(void *data)
 	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
 
 	ReadAllADC();
-	CheckForErrors();
 	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
 
 	//FOC_Strom Assign Signal-Values
@@ -101,7 +100,11 @@ void ISR_Control(void *data)
 	}
 
 	//FOC_Strom Call generated code if no faults are present
-	uz_codegen_step(&codegenInstance);
+	if (Global_Data.cw.enableSystem)
+	{
+		uz_codegen_step(&codegenInstance);
+	}
+	CheckForErrors();
 
 	//FOC_Strom Output
 	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.a_U;
@@ -357,26 +360,26 @@ static void CheckForErrors(){
 	if(Global_Data.cw.enableControl == true)
 	{
 		//Detect peak current-limit ---------------------------------------------------------------------------------------
-		if (codegenInstance.output.fault_peak_current)
+		if (codegenInstance.output.fault_peak_current == 1.0F)
 		{
 			Global_Data.ew.maxPeakCurrentReached = true; //Current error detected
 			ErrorHandling(&Global_Data);
 		}
 
 		//Detect continuous current-limit ---------------------------------------------------------------------------------------
-		if (codegenInstance.output.fault_max_current)
+		if (codegenInstance.output.fault_max_current == 1.0F)
 		{
 			Global_Data.ew.maxContinuousCurrentReached = true; //Current error detected
 			ErrorHandling(&Global_Data);
 		}
 		//Detect peak speed-limit ---------------------------------------------------------------------------------------
-		if (codegenInstance.output.fault_peak_speed)
+		if (codegenInstance.output.fault_peak_speed == 1.0F)
 		{
 			Global_Data.ew.maxPeakSpeedReached = true; //Speed error detected
 			ErrorHandling(&Global_Data);
 		}
 		//Detect continuous speed-limit ---------------------------------------------------------------------------------------
-		if (codegenInstance.output.fault_max_speed)
+		if (codegenInstance.output.fault_max_speed == 1.0F)
 		{
 			Global_Data.ew.maxContinuousSpeedReached = true; //Speed error detected
 			ErrorHandling(&Global_Data);

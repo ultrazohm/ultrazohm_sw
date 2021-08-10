@@ -9,7 +9,7 @@
  *
  * Model version                  : 2.22
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Wed Jul 21 16:23:06 2021
+ * C/C++ source code generated on : Tue Aug 10 10:14:27 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -284,7 +284,7 @@ void FOC_komplex_step(RT_MODEL *const rtM)
        *  Delay: '<S14>/Delay'
        *  Sum: '<S14>/Sum'
        */
-      rtb_Cos = rtP.T_R / rtP.T_VF_n * (rtb_Cos - rtDW->Delay_DSTATE_i);
+      rtb_Cos = rtP.T_R / (real32_T)rtP.T_VF_n * (rtb_Cos - rtDW->Delay_DSTATE_i);
 
       /* DiscreteIntegrator: '<S14>/Discrete-Time Integrator' */
       rtb_Add1_k = 0.5F * rtb_Cos + rtDW->DiscreteTimeIntegrator_DSTATE_o;
@@ -847,19 +847,19 @@ void FOC_komplex_step(RT_MODEL *const rtM)
      *  Constant: '<S7>/Constant'
      *  SignalConversion generated from: '<S7>/a_U'
      */
-    rtY->a_U = 0.0F;
+    rtY->a_U = 0.5F;
 
     /* Outport: '<Root>/a_V' incorporates:
      *  Constant: '<S7>/Constant'
      *  SignalConversion generated from: '<S7>/a_V'
      */
-    rtY->a_V = 0.0F;
+    rtY->a_V = 0.5F;
 
     /* Outport: '<Root>/a_W' incorporates:
      *  Constant: '<S7>/Constant'
      *  SignalConversion generated from: '<S7>/a_W'
      */
-    rtY->a_W = 0.0F;
+    rtY->a_W = 0.5F;
 
     /* End of Outputs for SubSystem: '<S1>/aus' */
   }
@@ -878,9 +878,10 @@ void FOC_komplex_step(RT_MODEL *const rtM)
 
   /* Outport: '<Root>/fault_peak_current' incorporates:
    *  Constant: '<S5>/Constant'
+   *  DataTypeConversion: '<S5>/Data Type Conversion3'
    *  RelationalOperator: '<S5>/Smaller'
    */
-  rtY->fault_peak_current = (rtP.i_max_peak <= rtb_alpha_j);
+  rtY->fault_peak_current = (real32_T)(rtP.i_max_peak <= rtb_alpha_j);
 
   /* DiscreteIntegrator: '<S31>/Accumulator' incorporates:
    *  Delay: '<S31>/Delay'
@@ -890,34 +891,40 @@ void FOC_komplex_step(RT_MODEL *const rtM)
 
   /* Outport: '<Root>/fault_max_current' incorporates:
    *  Constant: '<S5>/Constant1'
+   *  DataTypeConversion: '<S5>/Data Type Conversion2'
    *  Gain: '<S31>/Gain'
    *  RelationalOperator: '<S5>/Smaller1'
    */
-  rtY->fault_max_current = (rtP.i_max <= 0.05F * rtb_Sin);
+  rtY->fault_max_current = (real32_T)(rtP.i_max <= 0.01F * rtb_Sin);
 
   /* Outport: '<Root>/Iq_Act' */
   rtY->Iq_Act = rtb_q;
 
+  /* Abs: '<S5>/Abs' incorporates:
+   *  Inport: '<Root>/Act_n'
+   */
+  rtb_q = fabsf(rtU->Act_n);
+
   /* Outport: '<Root>/fault_peak_speed' incorporates:
    *  Constant: '<S5>/Constant2'
-   *  Inport: '<Root>/Act_n'
+   *  DataTypeConversion: '<S5>/Data Type Conversion'
    *  RelationalOperator: '<S5>/Smaller2'
    */
-  rtY->fault_peak_speed = (rtP.n_max_peak <= rtU->Act_n);
+  rtY->fault_peak_speed = (real32_T)(rtP.n_max_peak <= rtb_q);
 
   /* DiscreteIntegrator: '<S32>/Accumulator' incorporates:
    *  Delay: '<S32>/Delay'
-   *  Inport: '<Root>/Act_n'
    *  Sum: '<S32>/Sum'
    */
-  rtb_q = (rtU->Act_n - rtDW->Delay_DSTATE_m[0]) + rtDW->Accumulator_DSTATE_o;
+  rtb_Cos = (rtb_q - rtDW->Delay_DSTATE_m[0]) + rtDW->Accumulator_DSTATE_o;
 
   /* Outport: '<Root>/fault_max_speed' incorporates:
    *  Constant: '<S5>/Constant3'
+   *  DataTypeConversion: '<S5>/Data Type Conversion1'
    *  Gain: '<S32>/Gain'
    *  RelationalOperator: '<S5>/Smaller3'
    */
-  rtY->fault_max_speed = (rtP.n_max <= 0.005F * rtb_q);
+  rtY->fault_max_speed = (real32_T)(rtP.n_max <= 0.002F * rtb_Cos);
 
   /* Update for Delay: '<S3>/Delay' */
   rtDW->Delay_DSTATE = DiscreteTimeIntegrator;
@@ -926,32 +933,30 @@ void FOC_komplex_step(RT_MODEL *const rtM)
   rtDW->DiscreteTimeIntegrator_DSTATE = 0.5F * rtb_Gain + DiscreteTimeIntegrator;
 
   /* Update for Delay: '<S31>/Delay' */
-  for (rtDW->idxDelay = 0; rtDW->idxDelay < 19; rtDW->idxDelay++) {
+  for (rtDW->idxDelay = 0; rtDW->idxDelay < 99; rtDW->idxDelay++) {
     rtDW->Delay_DSTATE_j[rtDW->idxDelay] = rtDW->Delay_DSTATE_j[rtDW->idxDelay +
       1];
   }
 
-  rtDW->Delay_DSTATE_j[19] = rtb_alpha_j;
+  rtDW->Delay_DSTATE_j[99] = rtb_alpha_j;
 
   /* End of Update for Delay: '<S31>/Delay' */
 
   /* Update for DiscreteIntegrator: '<S31>/Accumulator' */
   rtDW->Accumulator_DSTATE = rtb_Sin;
 
-  /* Update for Delay: '<S32>/Delay' incorporates:
-   *  Inport: '<Root>/Act_n'
-   */
-  for (rtDW->idxDelay = 0; rtDW->idxDelay < 199; rtDW->idxDelay++) {
+  /* Update for Delay: '<S32>/Delay' */
+  for (rtDW->idxDelay = 0; rtDW->idxDelay < 499; rtDW->idxDelay++) {
     rtDW->Delay_DSTATE_m[rtDW->idxDelay] = rtDW->Delay_DSTATE_m[rtDW->idxDelay +
       1];
   }
 
-  rtDW->Delay_DSTATE_m[199] = rtU->Act_n;
+  rtDW->Delay_DSTATE_m[499] = rtb_q;
 
   /* End of Update for Delay: '<S32>/Delay' */
 
   /* Update for DiscreteIntegrator: '<S32>/Accumulator' */
-  rtDW->Accumulator_DSTATE_o = rtb_q;
+  rtDW->Accumulator_DSTATE_o = rtb_Cos;
 }
 
 /* Model initialize function */

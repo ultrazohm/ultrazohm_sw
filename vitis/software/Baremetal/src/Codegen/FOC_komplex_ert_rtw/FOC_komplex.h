@@ -9,7 +9,7 @@
  *
  * Model version                  : 2.22
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Wed Jul 21 16:23:06 2021
+ * C/C++ source code generated on : Tue Aug 10 10:14:27 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -77,8 +77,8 @@ typedef struct {
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  real32_T Delay_DSTATE_j[20];         /* '<S31>/Delay' */
-  real32_T Delay_DSTATE_m[200];        /* '<S32>/Delay' */
+  real32_T Delay_DSTATE_j[100];        /* '<S31>/Delay' */
+  real32_T Delay_DSTATE_m[500];        /* '<S32>/Delay' */
   real32_T Ref_Id;                     /* '<S4>/Merge' */
   real32_T Ref_Iq;                     /* '<S4>/Merge1' */
   real32_T Delay_DSTATE;               /* '<S3>/Delay' */
@@ -135,14 +135,17 @@ typedef struct {
   real32_T Uq_Ref;                     /* '<Root>/Uq_Ref' */
   uint8_T Voltage_Limit;               /* '<Root>/Voltage_Limit' */
   uint8_T error_speed_limit;           /* '<Root>/error_speed_limit' */
-  boolean_T fault_peak_current;        /* '<Root>/fault_peak_current' */
-  boolean_T fault_max_current;         /* '<Root>/fault_max_current' */
-  boolean_T fault_peak_speed;          /* '<Root>/fault_peak_speed' */
-  boolean_T fault_max_speed;           /* '<Root>/fault_max_speed' */
+  real32_T fault_peak_current;         /* '<Root>/fault_peak_current' */
+  real32_T fault_max_current;          /* '<Root>/fault_max_current' */
+  real32_T fault_peak_speed;           /* '<Root>/fault_peak_speed' */
+  real32_T fault_max_speed;            /* '<Root>/fault_max_speed' */
 } ExtY;
 
 /* Parameters (default storage) */
 struct P_ {
+  real_T T_VF_n;                       /* Variable: T_VF_n
+                                        * Referenced by: '<S14>/Gain'
+                                        */
   real32_T Kis_id;                     /* Variable: Kis_id
                                         * Referenced by: '<S20>/Gain1'
                                         */
@@ -188,9 +191,6 @@ struct P_ {
                                         *   '<S14>/Gain'
                                         *   '<S20>/Gain1'
                                         *   '<S21>/Gain1'
-                                        */
-  real32_T T_VF_n;                     /* Variable: T_VF_n
-                                        * Referenced by: '<S14>/Gain'
                                         */
   real32_T i_max;                      /* Variable: i_max
                                         * Referenced by: '<S5>/Constant1'

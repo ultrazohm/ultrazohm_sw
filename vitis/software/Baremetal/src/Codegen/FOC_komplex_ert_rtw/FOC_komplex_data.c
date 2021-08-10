@@ -9,7 +9,7 @@
  *
  * Model version                  : 2.22
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Wed Jul 21 16:23:06 2021
+ * C/C++ source code generated on : Tue Aug 10 10:14:27 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -23,6 +23,11 @@
 
 /* Block parameters (default storage) */
 P rtP = {
+  /* Variable: T_VF_n
+   * Referenced by: '<S14>/Gain'
+   */
+  0.001,
+
   /* Variable: Kis_id
    * Referenced by: '<S20>/Gain1'
    */
@@ -36,22 +41,22 @@ P rtP = {
   /* Variable: Kis_n
    * Referenced by: '<S13>/Gain1'
    */
-  6.2831860F,
+  69.813179F,
 
   /* Variable: Kp_id
    * Referenced by: '<S20>/Gain'
    */
-  0.0402124F,
+  0.160849556F,
 
   /* Variable: Kp_iq
    * Referenced by: '<S21>/Gain'
    */
-  0.0402124F,
+  0.160849556F,
 
   /* Variable: Kp_n
    * Referenced by: '<S13>/Gain'
    */
-  0.2175839F,
+  1.45055914F,
 
   /* Variable: L_d
    * Referenced by:
@@ -89,24 +94,17 @@ P rtP = {
    *   '<S20>/Gain1'
    *   '<S21>/Gain1'
    */
-  5.0E-5F,
-
-  /* Variable: T_VF_n
-   * Referenced by: '<S14>/Gain'
-   */
-  0.3978873F,
+  2.5E-5F,
 
   /* Variable: i_max
    * Referenced by: '<S5>/Constant1'
    */
-  //252.0F,
-  50.0F,
+  70.0F,
 
   /* Variable: i_max_peak
    * Referenced by: '<S5>/Constant'
    */
-  //420.0F,
-  75.0F,
+  74.0F,
 
   /* Variable: i_ref_max
    * Referenced by:
@@ -114,26 +112,22 @@ P rtP = {
    *   '<S8>/Constant'
    *   '<S10>/Constant'
    */
-  //210.0F,
-  20.0F,
+  60.0F,
 
   /* Variable: n_max
    * Referenced by: '<S5>/Constant3'
    */
-  //5625.0F,
-  400.0F,
+  2200.0F,
 
   /* Variable: n_max_peak
    * Referenced by: '<S5>/Constant2'
    */
-  //6750.0F,
-  500.0F,
+  2400.0F,
 
   /* Variable: n_ref_max
    * Referenced by: '<S8>/function_Eckdrehzahl'
    */
-  //4500.0F,
-  300.0F,
+  2000.0F,
 
   /* Variable: p
    * Referenced by: '<S8>/function_Eckdrehzahl'

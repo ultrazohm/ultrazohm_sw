@@ -27,5 +27,6 @@ Vitis
     linear_decoupling/linear_decoupling
     space_vector_limitation/space_vector_limitation
     FOC/FOC
+    SpeedControl/SpeedControl
     global_configuration
 

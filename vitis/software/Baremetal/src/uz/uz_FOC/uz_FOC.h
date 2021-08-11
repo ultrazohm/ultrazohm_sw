@@ -117,4 +117,12 @@ void uz_FOC_set_Lq(uz_FOC* self, float Lq_Henry);
  * @param Psi_PM_Vs New Value for permanent magnet flux linkage. Must be greater or equal than 0.0f
  */
 void uz_FOC_set_Psi_PM(uz_FOC* self, float Psi_PM_Vs);
+
+/**
+ * @brief Returns the current value of the external clamping signal
+ * 
+ * @param self uz_FOC instance
+ * @return current value as bool 
+ */
+bool uz_FOC_get_ext_clamping(uz_FOC* self);
 #endif // UZ_FOC_H

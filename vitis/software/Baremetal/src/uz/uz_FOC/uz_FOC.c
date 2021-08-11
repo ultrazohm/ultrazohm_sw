@@ -116,3 +116,9 @@ void uz_FOC_set_Psi_PM(uz_FOC* self, float Psi_PM_Vs){
 	uz_assert(Psi_PM_Vs >= 0.0f);
 	self->config.config_lin_decoupling.Psi_PM_Vs = Psi_PM_Vs;
 }
+
+bool uz_FOC_get_ext_clamping(uz_FOC* self){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(self->ext_clamping);
+}

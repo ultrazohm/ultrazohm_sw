@@ -193,4 +193,26 @@ void test_uz_FOC_set_Kp_and_Ki_iq(void){
     TEST_ASSERT_FLOAT_WITHIN(1e-02, 6.83f, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-02, 0.0f, output.q);
 }
+
+void test_uz_FOC_get_ext_clamping_NULL(void){
+    setUp();
+    TEST_ASSERT_FAIL_ASSERT(uz_FOC_get_ext_clamping(NULL));
+}
+
+void test_uz_FOC_get_ext_clamping_output(void){
+    setUp();
+    //Values for comparision from simulation
+    uz_FOC* instance = uz_FOC_init(config);
+    i_actual_Ampere.q = 0.0f;
+    i_actual_Ampere.d = 0.0f;
+    omega_el_rad_per_sec =  0.0f; 
+    uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec);
+    TEST_ASSERT_EQUAL_INT(0,uz_FOC_get_ext_clamping(instance));
+    U_zk_Volts = 10.0f;
+    i_actual_Ampere.q = 0.874f;
+    i_actual_Ampere.d = 1.0f;
+    omega_el_rad_per_sec =  673.0f; 
+    uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec);
+    TEST_ASSERT_EQUAL_INT(1,uz_FOC_get_ext_clamping(instance));
+}
 #endif // TEST

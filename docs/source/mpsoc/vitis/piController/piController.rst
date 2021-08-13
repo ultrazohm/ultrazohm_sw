@@ -36,7 +36,7 @@ Example
      struct uz_PI_Controller_config config = {
         .Kp = 10.0f,
         .Ki = 10.0f,
-        .samplingTime_sec = 0.00002f,
+        .samplingTime_sec = 0.00005f,
         .upper_limit = 10.0f,
         .lower_limit = -10.0f
      };

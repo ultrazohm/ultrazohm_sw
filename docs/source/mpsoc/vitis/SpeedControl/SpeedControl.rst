@@ -34,8 +34,7 @@ Example
   :linenos:
   :caption: Example function call to init a PI-Controller for the SpeedControl. ``config`` according to :ref:`configuration section<uz_piController_config>`
   
-  #include "../uz_piController/uz_piController.h"
-  #include "../uz_SpeedControl/uz_speedcontrol.h"
+  #include "uz/uz_SpeedControl/uz_speedcontrol.h"
   int main(void) {
      uz_PI_Controller* instance = uz_SpeedControl_init(config);
   }

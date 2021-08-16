@@ -27,8 +27,6 @@ Example
   :caption: Example to initialize the configuration struct
     
   #include "uz/uz_FOC/uz_FOC.h"
-  #include "uz/uz_FOC/uz_linear_decoupling.h"
-  #include "uz/uz_FOC/uz_space_vector_limitation.h"
   int main(void) {
      struct uz_lin_decoupling_config config_lin_Decoup = {
         .Ld_Henry = 0.0001f,

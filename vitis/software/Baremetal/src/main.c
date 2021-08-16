@@ -79,14 +79,16 @@ int main(void) {
 	//Initialize the Soft-Oscilloscope ("JavaScope")
 	JavaScope_initalize(&Global_Data);
 
-	// Initialize the Interrupts
-	Initialize_ISR();
-
 	//Set the current value in the ADC as offset/default value
 	ADC_Set_Offset();
 
 	// Turn on AXI2TCM communication
 	AXI2TCM_on();
+
+	// Initialize the Interrupts
+	Initialize_ISR();
+
+
 
 	// Infinite loop
 	while (1) {
@@ -439,6 +441,8 @@ void InitializeDataStructure(DS_Data* data) {
 	data->aa.A3.cf.ADC_B6 = 10;
 	data->aa.A3.cf.ADC_B7 = 10;
 	data->aa.A3.cf.ADC_B8 = 10;
+
+	data->dv.ADC_scope_display=3;
 
 	// initalize PWM parameters
 	data->ctrl.pwmFrequency = 10e3;		// PWM carrier frequency

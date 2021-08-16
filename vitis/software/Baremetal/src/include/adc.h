@@ -23,6 +23,7 @@
 #include "xil_io.h"
 
 #include "../globalData.h"
+#include "../defines.h"
 #include "../IP_Cores/ADC_Module_LVDS_v2_ip_addr.h"
 
 typedef union _ADCread_union_ {

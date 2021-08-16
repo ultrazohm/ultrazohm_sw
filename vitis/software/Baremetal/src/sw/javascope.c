@@ -91,7 +91,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_iq] 			= &data->av.I_q;
 	js_ptr_arr[JSO_id] 			= &data->av.I_d;
 	js_ptr_arr[JSO_Theta_el] 	= &data->av.theta_elec;
-	js_ptr_arr[JSO_theta_mech] 	= &data->av.theta_mech;
+	//js_ptr_arr[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ptr_arr[JSO_Wtemp]		= &data->pID.WindingTemp;
 	js_ptr_arr[JSO_ud]			= &data->av.U_d;
 	js_ptr_arr[JSO_uq]			= &data->av.U_q;
@@ -99,9 +99,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_Lq_mH]		= &data->pID.Online_Lq;
 	js_ptr_arr[JSO_Rs_mOhm]		= &data->pID.Online_Rs;
 	js_ptr_arr[JSO_PsiPM_mVs]	= &data->pID.Online_Psi_PM;
-	js_ptr_arr[JSO_Sawtooth1] 	= &ISRExecutionTime;
-	js_ptr_arr[JSO_SineWave1]   = &lifecheck;
-	js_ptr_arr[JSO_SineWave2]   = &isr_period_us;
+
 	return Status;
 }
 
@@ -175,13 +173,52 @@ void JavaScope_update(DS_Data* data){
 		ipc_Control_func(ControlDataShadowBare.id, ControlDataShadowBare.value, data); //check always in while(1) if there are new control values
 	}
 
+	if(data->dv.ADC_scope_display==3){
+		js_ptr_arr[JSO_SineWave1 ] = &data->aa.A1.me.ADC_A1;
+		js_ptr_arr[JSO_Sawtooth1 ] = &data->aa.A1.me.ADC_A2;
+		js_ptr_arr[JSO_SineWave2 ] = &data->aa.A1.me.ADC_A3;
+		js_ptr_arr[JSO_theta_mech] = &data->aa.A1.me.ADC_A4;
+	}
+	else if(data->dv.ADC_scope_display==4){
+		js_ptr_arr[JSO_SineWave1 ] = &data->aa.A1.me.ADC_B5;
+		js_ptr_arr[JSO_Sawtooth1 ] = &data->aa.A1.me.ADC_B6;
+		js_ptr_arr[JSO_SineWave2 ] = &data->aa.A1.me.ADC_B7;
+		js_ptr_arr[JSO_theta_mech] = &data->aa.A1.me.ADC_B8;
+	}
+	else if(data->dv.ADC_scope_display==5){
+		js_ptr_arr[JSO_SineWave1 ] = &data->aa.A2.me.ADC_A1;
+		js_ptr_arr[JSO_Sawtooth1 ] = &data->aa.A2.me.ADC_A2;
+		js_ptr_arr[JSO_SineWave2 ] = &data->aa.A2.me.ADC_A3;
+		js_ptr_arr[JSO_theta_mech] = &data->aa.A2.me.ADC_A4;
+	}
+	else if(data->dv.ADC_scope_display==6){
+		js_ptr_arr[JSO_SineWave1 ] = &data->aa.A2.me.ADC_B5;
+		js_ptr_arr[JSO_Sawtooth1 ] = &data->aa.A2.me.ADC_B6;
+		js_ptr_arr[JSO_SineWave2 ] = &data->aa.A2.me.ADC_B7;
+		js_ptr_arr[JSO_theta_mech] = &data->aa.A2.me.ADC_B8;
+	}
+	else if(data->dv.ADC_scope_display==7){
+		js_ptr_arr[JSO_theta_mech] = &data->aa.A3.me.ADC_A1;
+		js_ptr_arr[JSO_theta_mech] = &data->aa.A3.me.ADC_A2;
+		js_ptr_arr[JSO_Sawtooth1 ] = &data->aa.A3.me.ADC_A3;
+		js_ptr_arr[JSO_theta_mech] = &data->aa.A3.me.ADC_A4;
+	}
+	else if(data->dv.ADC_scope_display==8){
+		js_ptr_arr[JSO_theta_mech] = &data->aa.A3.me.ADC_B5;
+		js_ptr_arr[JSO_theta_mech] = &data->aa.A3.me.ADC_B6;
+		js_ptr_arr[JSO_Sawtooth1 ] = &data->aa.A3.me.ADC_B7;
+		js_ptr_arr[JSO_theta_mech] = &data->aa.A3.me.ADC_B8;
+	}
+
+/*
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another (one every 0,5 ms).
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	js_slowDataArray[JSSD_INT_SecondsSinceSystemStart].i 	= uz_SystemTime_GetUptimeInSec();
+	*/
 	js_slowDataArray[JSSD_FLOAT_uSecPerIsr].f 			 	= uz_SystemTime_GetIsrExectionTimeInUs();
 	js_slowDataArray[JSSD_FLOAT_Sine].f 					= uz_SystemTime_GetIsrPeriodInUs();
-	js_slowDataArray[JSSD_FLOAT_FreqReadback].f 			= data->rasv.referenceFrequency;
+	/*js_slowDataArray[JSSD_FLOAT_FreqReadback].f 			= data->rasv.referenceFrequency;
 	js_slowDataArray[JSSD_INT_Milliseconds].i 				= uz_SystemTime_GetUptimeInMs();
 	js_slowDataArray[JSSD_FLOAT_ADCconvFactorReadback].f = data->mrp.ADCconvFactorReadback;
 	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline].f= data->pID.Offline_Psi_PM;
@@ -238,7 +275,7 @@ void JavaScope_update(DS_Data* data){
 	js_slowDataArray[JSSD_FLOAT_Ld].f 			= data->mrp.motorDirectInductance;
 	js_slowDataArray[JSSD_FLOAT_Lq].f 			= data->mrp.motorQuadratureInductance;
 	js_slowDataArray[JSSD_FLOAT_totalRotorInertia].f 	= data->mrp.totalRotorInertia;
-
+*/
 	js_fetchData4CH();
 
 	// End JavaScope---------------------------------------------------------------------------------------

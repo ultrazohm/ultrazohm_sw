@@ -38,7 +38,7 @@
 // 4 for Interrupt_3L_start			
 // 5 for Interrupt_3L_center		
 // 6 for Interrupt_timer_fcc		
-#define Interrupt_ISR_source_user_choice		3
+#define Interrupt_ISR_source_user_choice		1
 
 #if Interrupt_ISR_source_user_choice == 0
 	#define Interrupt_ISR_ID			Interrupt_2L_max_min

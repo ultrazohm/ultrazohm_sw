@@ -50,7 +50,7 @@ XTmrCtr Timer_Interrupt;
 float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
-
+float pwm_freq_shadow=0;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -63,31 +63,25 @@ static void CheckForErrors();
 
 void ISR_Control(void *data)
 {
+	XScuGic_DisableIntr(INTCInst.Config->CpuBaseAddress, Interrupt_ISR_ID);
+
 	uz_SystemTime_ISR_Tic();
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
-	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
+	//toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
 
 	ReadAllADC();
-	CheckForErrors();
-	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
 
-	//Start: Control algorithm -------------------------------------------------------------------------------
-	if (Global_Data.cw.ControlReference == SpeedControl)
-	{
-		// add your speed controller here
-	}
-	else if(Global_Data.cw.ControlReference == CurrentControl)
-	{
-		// add your current controller here
-	}
-	else if(Global_Data.cw.ControlReference == TorqueControl)
-	{
-		// add your torque controller here
+	//CheckForErrors();
+	//Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
+
+	if (Global_Data.ctrl.pwmFrequency != pwm_freq_shadow){
+		PWM_SS_SetCarrierFrequency(Global_Data.ctrl.pwmFrequency);
+		pwm_freq_shadow = Global_Data.ctrl.pwmFrequency;
 	}
 	//End: Control algorithm -------------------------------------------------------------------------------
 
 	// Set duty cycles for two-level modulator
-	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+/*	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
 
@@ -95,7 +89,7 @@ void ISR_Control(void *data)
 	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
-
+*/
 
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
@@ -103,6 +97,7 @@ void ISR_Control(void *data)
 	// Read the timer value at the very end of the ISR to minimize measurement error
 	// This has to be the last function executed in the ISR!
 	uz_SystemTime_ISR_Toc();
+	XScuGic_EnableIntr(INTCInst.Config->CpuBaseAddress, Interrupt_ISR_ID);
 }
 
 //==============================================================================================================================================================

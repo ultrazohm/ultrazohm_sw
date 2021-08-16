@@ -41,9 +41,9 @@ extern "C" {
 #define NETWORK_SEND_FIELD_SIZE 15 //EL //before: 30
 //The IP-address, SubNet address-and StandartGateway-address are set in the main-thread in the main.c
 
-// ========== Definitions =========================================================================
-#define PI 3.141592653589
+#define ChannelsR5toA53 5
 
+// ========== Definitions =========================================================================
 #define OUTPUT_PIN							1 								//This Pin is an Output
 #define INPUT_PIN							0 								//This Pin is an Input
 
@@ -94,6 +94,15 @@ typedef struct
 	u16_t slowDataID;
 	Xfloat32 val[20]; // EL: changed from uint16 to float
 } ARM_to_Oszi_Data_shared_struct;
+
+
+typedef struct
+{
+	u32_t status_BareToRTOS;
+	u32_t slowDataContent;
+	u16_t slowDataID;
+	Xfloat32 val[ChannelsR5toA53]; // EL: changed from uint16 to float
+} IPI2EthernetTask_struct;
 
 typedef struct
 {

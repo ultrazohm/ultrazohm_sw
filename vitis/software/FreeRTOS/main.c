@@ -35,6 +35,7 @@
 //Data from R5_0 to A53_0 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
 ARM_to_Oszi_Data_shared_struct OsziData;
 ARM_to_Oszi_Data_shared_struct OsziData_Shadow;
+IPI2EthernetTask_struct IPI2Ethernet_Data;
 
 //Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
 Oszi_to_ARM_Data_shared_struct ControlData;

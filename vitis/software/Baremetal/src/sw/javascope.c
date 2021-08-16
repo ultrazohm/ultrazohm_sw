@@ -200,8 +200,8 @@ void JavaScope_update(DS_Data* data){
 	// Will be transferred one after another (one every 0,5 ms).
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	js_slowDataArray[JSSD_INT_SecondsSinceSystemStart].i 	= uz_SystemTime_GetUptimeInSec();
-	js_slowDataArray[JSSD_FLOAT_uSecPerIsr].f 			 	= uz_SystemTime_GetIsrExectionTimeInUs();
-	js_slowDataArray[JSSD_FLOAT_Sine].f 					= uz_SystemTime_GetIsrPeriodInUs();
+	js_slowDataArray[JSSD_FLOAT_ExecTimeISR_us].f 		 	= uz_SystemTime_GetIsrExectionTimeInUs();
+	js_slowDataArray[JSSD_FLOAT_PeriodISR_us].f 			= uz_SystemTime_GetIsrPeriodInUs();
 	js_slowDataArray[JSSD_FLOAT_FreqReadback].f 			= data->rasv.referenceFrequency;
 	js_slowDataArray[JSSD_INT_Milliseconds].i 				= uz_SystemTime_GetUptimeInMs();
 	js_slowDataArray[JSSD_FLOAT_ADCconvFactorReadback].f = data->mrp.ADCconvFactorReadback;

@@ -30,6 +30,8 @@ extern Oszi_to_ARM_Data_shared_struct ControlData;
 
 extern QueueHandle_t OsziData_queue;
 extern const int OSZI_QUEUE_RECEIVE_TICKS_WAIT;
+extern int OSZI_QUEUE_FULL;
+
 
 NetworkSendStruct nwsend;
 
@@ -102,32 +104,12 @@ void process_request_thread(void *p)
 			// The maximum amount of time the task should block waiting for an item to receive should the queue be empty at the time of the call.
 			xQueueReceive(OsziData_queue,&OsziData_Shadow, OSZI_QUEUE_RECEIVE_TICKS_WAIT);
 
-			/*nwsend.val_01[i] 	= OsziData_Shadow.val[0];
-			nwsend.val_02[i] 	= OsziData_Shadow.val[1];
-			nwsend.val_03[i] 	= OsziData_Shadow.val[2];
-			nwsend.val_04[i]  	= OsziData_Shadow.val[3];
-			nwsend.val_05[i]  	= OsziData_Shadow.val[4];
-			nwsend.val_06[i]  	= OsziData_Shadow.val[5];
-			nwsend.val_07[i] 	= OsziData_Shadow.val[6];
-			nwsend.val_08[i] 	= OsziData_Shadow.val[7];
-			nwsend.val_09[i] 	= OsziData_Shadow.val[8];
-			nwsend.val_10[i] 	= OsziData_Shadow.val[9];
-			nwsend.val_11[i]  	= OsziData_Shadow.val[10];
-			nwsend.val_12[i]  	= OsziData_Shadow.val[11];
-			nwsend.val_13[i]  	= OsziData_Shadow.val[12];
-			nwsend.val_14[i] 	= OsziData_Shadow.val[13];
-			nwsend.val_15[i] 	= OsziData_Shadow.val[14];
-			nwsend.val_16[i] 	= OsziData_Shadow.val[15];
-			nwsend.val_17[i] 	= OsziData_Shadow.val[16];
-			nwsend.val_18[i] 	= OsziData_Shadow.val[17];
-			nwsend.val_19[i] 	= OsziData_Shadow.val[18];
-			nwsend.val_20[i] 	= OsziData_Shadow.val[19];*/
 			nwsend.val_01[i] 	= OsziData_Shadow.val[0];
 			nwsend.val_02[i]  	= OsziData_Shadow.val[1];
 			nwsend.val_03[i]  	= OsziData_Shadow.val[2];
 			nwsend.val_04[i] 	= OsziData_Shadow.val[3];
 			nwsend.val_05[i]  	= OsziData_Shadow.val[4];
-			nwsend.val_06[i]  	= 500 + upcount;
+			nwsend.val_06[i]  	= OSZI_QUEUE_FULL;
 			nwsend.val_07[i] 	= 600 + upcount;
 			nwsend.val_08[i] 	= 800 + upcount;
 			nwsend.val_09[i] 	= 900 + upcount;

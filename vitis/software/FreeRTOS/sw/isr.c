@@ -37,7 +37,7 @@ extern A53_Data Global_Data_A53;
 // Oszi Data Queue parameters
 QueueHandle_t OsziData_queue;
 int OSZI_QUEUE_FULL = 0;
-const int OSZI_QUEUE_SIZE_ELEMENTS = 1000; 		// could be optimized, empirical minimum is ~400, otherwise data might be lost
+const int OSZI_QUEUE_SIZE_ELEMENTS = 5000; 		// could be optimized, empirical minimum is ~400, otherwise data might be lost
 const int OSZI_QUEUE_RECEIVE_TICKS_WAIT = 100;  // 1 tick = 100ms, wait (almost) indefinitely
 
 Xint16  i_LifeCheck_Transfer_ipc, cnt_javascope=0;

@@ -74,11 +74,12 @@ void uz_PI_Controller_set_Ki(uz_PI_Controller* self, float new_Ki);
 void uz_PI_Controller_set_Kp(uz_PI_Controller* self, float new_Kp);
 
 /**
- * @brief Updates the config struct of the PI_Controller instance
- *
+ * @brief Function to change the saturation limits of the PI-Controller during runtime 
+ * 
  * @param self uz_PI_Controller instance
- * @param config uz_PI_Controller_config configuration struct
+ * @param upper_limit new value for upper limit. Must be greater than lower limit
+ * @param lower_limit new value for lower limit 
  */
-uz_PI_Controller* uz_PI_Controller_update_config(uz_PI_Controller* self, struct uz_PI_Controller_config config);
+void uz_PI_Controller_update_limits(uz_PI_Controller* self, float upper_limit, float lower_limit);
 
 #endif // UZ_PICONTROLLER_H

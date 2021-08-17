@@ -218,34 +218,20 @@ void test_uz_PI_Controller_set_Kp_assert_Kp_negative(void){
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_set_Kp(variables, -10.0f));
 }
 
-void test_uz_PI_Controller_update_config_assert_Ki_negative(void){
+void test_uz_PI_Controller_update_limits_NULL(void){
     setUp();
-    config.Ki = -10.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_init(config));
+    float upper_limit = 10.0f;
+    float lower_limit = -10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_update_limits(NULL, upper_limit, lower_limit));
 }
 
-void test_uz_PI_Controller_update_config_assert_Kp_negative(void){
+void test_uz_PI_Controller_update_limits_assert_limits(void){
     setUp();
-    config.Kp = -10.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_init(config));
+    uz_PI_Controller* variables = uz_PI_Controller_init(config);
+    float upper_limit = 10.0f;
+    float lower_limit = -10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_update_limits(variables, lower_limit, upper_limit));
 }
 
-void test_uz_PI_Controller_update_config_assert_samplingTime_negative(void){
-    setUp();
-    config.samplingTime_sec = -0.0001f;
-    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_init(config));
-}
 
-void test_uz_PI_Controller_update_config_assert_samplingTime_zero(void){
-    setUp();
-    config.samplingTime_sec = 0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_init(config));
-}
-
-void test_uz_PI_Controller_update_config_upper_lower_threshold(void){
-    setUp();
-    config.upper_limit = -10.2f;
-    config.lower_limit = 3.4f;
-    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_init(config));
-}
 #endif // TEST

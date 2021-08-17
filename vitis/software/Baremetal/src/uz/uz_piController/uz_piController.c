@@ -91,15 +91,12 @@ void uz_PI_Controller_set_Kp(uz_PI_Controller* self, float new_Kp){
     self->config.Kp = new_Kp;
 }
 
-uz_PI_Controller* uz_PI_Controller_update_config(uz_PI_Controller* self, struct uz_PI_Controller_config config) {
+void uz_PI_Controller_update_limits(uz_PI_Controller* self, float upper_limit, float lower_limit){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	uz_assert(config.Ki >= 0.0f);
-	uz_assert(config.Kp >= 0.0f);
-	uz_assert(config.samplingTime_sec > 0.0f);
-	uz_assert(config.upper_limit > config.lower_limit);
-	uz_assert(config.lower_limit < config.upper_limit);
-	self->config = config;
-	return (self);
+	uz_assert(upper_limit > lower_limit);
+	uz_assert(lower_limit < upper_limit);
+	self->config.upper_limit = upper_limit;
+	self->config.lower_limit = lower_limit;
 }
 #endif

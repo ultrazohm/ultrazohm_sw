@@ -94,6 +94,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_iq_ref] 		= &codegenInstance.output.Iq_Ref;
 	js_ptr_arr[JSO_ud_ref] 		= &codegenInstance.output.Ud_Ref;
 	js_ptr_arr[JSO_uq_ref] 		= &codegenInstance.output.Uq_Ref;
+	js_ptr_arr[JSO_Voltage_Limitation] = &codegenInstance.output.Voltage_Limit;
 	js_ptr_arr[JSO_Speed_rpm]	= &codegenInstance.input.Act_n;
 	js_ptr_arr[JSO_Speed_ref_rpm] = &codegenInstance.input.Ref_n;
 	js_ptr_arr[JSO_U_ZK] 		= &codegenInstance.input.Act_U_ZK;

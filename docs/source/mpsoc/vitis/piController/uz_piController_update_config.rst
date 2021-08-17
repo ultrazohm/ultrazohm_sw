@@ -1,8 +1,8 @@
-================================
-Update config struct of instance
-================================
+========================
+Update saturation limits
+========================
 
-.. doxygenfunction:: uz_PI_Controller_update_config
+.. doxygenfunction:: uz_PI_Controller_update_limits
 
 Example
 =======
@@ -13,18 +13,13 @@ Example
 
   #include "uz_piController.h"
   int main(void) {
-     uz_PI_Controller_config config = {
-        .Kp = 10.0f,
-        .Ki = 10.0f,
-        .samplingTime_sec = 0.00002f,
-        .upper_limit = 10.0f,
-        .lower_limit = -10.0f
-     };
+     float upper_limit = 5.0f;
+     float lower_limit = -5.0f;
+     PI_instance = uz_PI_Controller_update_limits(PI_instance, upper_limit, lower_limit);
   }
-  PI_instance = uz_PI_Controller_update_config(PI_instance, config);
+  
 
 Description
 ===========
 
-Updates every value in the config struct with the latest value in the uz_PI_Controller configuration struct.
-It is mainly needed for the :ref:`uz_FOC`.
+Updates the limits of the saturation function during runtime.

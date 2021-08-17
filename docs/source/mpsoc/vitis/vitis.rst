@@ -20,6 +20,7 @@ Vitis
     include_math_lib
     known_issues
     qemu/qemu
+    PMSM_config/uz_PMSM_config
     wavegen/wavegen
     signals/signals
     piController/piController

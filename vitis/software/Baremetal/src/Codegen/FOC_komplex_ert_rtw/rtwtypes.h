@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'FOC_komplex'.
  *
- * Model version                  : 2.22
+ * Model version                  : 2.23
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Aug 10 16:05:37 2021
+ * C/C++ source code generated on : Tue Aug 17 14:08:55 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
- *    2. Traceability
- * Validation result: Passed (11), Warning (1), Error (0)
+ *    2. RAM efficiency
+ * Validation result: Passed (12), Warning (1), Error (0)
  */
 
 #ifndef RTWTYPES_H

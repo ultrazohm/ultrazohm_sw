@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'FOC_komplex'.
  *
- * Model version                  : 2.22
+ * Model version                  : 2.23
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Aug 10 16:05:37 2021
+ * C/C++ source code generated on : Tue Aug 17 14:08:55 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
- *    2. Traceability
- * Validation result: Passed (11), Warning (1), Error (0)
+ *    2. RAM efficiency
+ * Validation result: Passed (12), Warning (1), Error (0)
  */
 
 #include "FOC_komplex.h"
@@ -44,7 +44,6 @@ void FOC_komplex_step(RT_MODEL *const rtM)
   real32_T y_i_k;
   int8_T rtAction;
   int8_T rtPrevAction;
-  uint8_T error_speed_limit;
 
   /* Gain: '<S3>/Gain' incorporates:
    *  Delay: '<S3>/Delay'
@@ -56,42 +55,42 @@ void FOC_komplex_step(RT_MODEL *const rtM)
   /* DiscreteIntegrator: '<S3>/Discrete-Time Integrator' */
   DiscreteTimeIntegrator = 0.5F * rtb_Gain + rtDW->DiscreteTimeIntegrator_DSTATE;
 
-  /* Gain: '<S33>/Gain' incorporates:
-   *  Gain: '<S33>/Gain2'
+  /* Gain: '<S35>/Gain' incorporates:
+   *  Gain: '<S35>/Gain2'
    *  Inport: '<Root>/Act_Iu'
    *  Inport: '<Root>/Act_Iv'
    *  Inport: '<Root>/Act_Iw'
-   *  Sum: '<S33>/Add'
+   *  Sum: '<S35>/Add'
    */
   rtb_alpha_j = ((2.0F * rtU->Act_Iu - rtU->Act_Iv) - rtU->Act_Iw) *
     0.333333343F;
 
-  /* Trigonometry: '<S34>/Sin' incorporates:
+  /* Trigonometry: '<S36>/Sin' incorporates:
    *  Inport: '<Root>/Act_theta_el'
    */
   rtb_Sin = sinf(rtU->Act_theta_el);
 
-  /* Trigonometry: '<S34>/Cos' incorporates:
+  /* Trigonometry: '<S36>/Cos' incorporates:
    *  Inport: '<Root>/Act_theta_el'
    */
   rtb_Cos = cosf(rtU->Act_theta_el);
 
-  /* Gain: '<S33>/Gain1' incorporates:
+  /* Gain: '<S35>/Gain1' incorporates:
    *  Inport: '<Root>/Act_Iv'
    *  Inport: '<Root>/Act_Iw'
-   *  Sum: '<S33>/Add1'
+   *  Sum: '<S35>/Add1'
    */
   rtb_Add1_k = (rtU->Act_Iv - rtU->Act_Iw) * 0.577350259F;
 
-  /* Sum: '<S34>/Add1' incorporates:
-   *  Product: '<S34>/Product2'
-   *  Product: '<S34>/Product3'
+  /* Sum: '<S36>/Add1' incorporates:
+   *  Product: '<S36>/Product2'
+   *  Product: '<S36>/Product3'
    */
   rtb_q = rtb_Cos * rtb_Add1_k - rtb_alpha_j * rtb_Sin;
 
-  /* Sum: '<S34>/Add' incorporates:
-   *  Product: '<S34>/Product'
-   *  Product: '<S34>/Product1'
+  /* Sum: '<S36>/Add' incorporates:
+   *  Product: '<S36>/Product'
+   *  Product: '<S36>/Product1'
    */
   rtb_alpha_j = rtb_alpha_j * rtb_Cos + rtb_Sin * rtb_Add1_k;
 
@@ -123,7 +122,7 @@ void FOC_komplex_step(RT_MODEL *const rtM)
        *  DiscreteIntegrator: '<S20>/Discrete-Time Integrator'
        *  DiscreteIntegrator: '<S21>/Discrete-Time Integrator'
        */
-      rtDW->Delay_DSTATE_bl = 0U;
+      rtDW->Delay_DSTATE_b = 0.0F;
       rtDW->Delay1_DSTATE = 0.0F;
       rtDW->DiscreteTimeIntegrator_DSTATE_k = 0.0F;
       rtDW->Delay_DSTATE_a = 0.0F;
@@ -157,7 +156,7 @@ void FOC_komplex_step(RT_MODEL *const rtM)
          */
         rtDW->Delay_DSTATE_i = 0.0F;
         rtDW->DiscreteTimeIntegrator_DSTATE_o = 0.0F;
-        rtDW->Delay_DSTATE_b = 0.0F;
+        rtDW->Delay_DSTATE_bc = 0.0F;
         rtDW->DiscreteTimeIntegrator_DSTATE_a = 0.0F;
 
         /* End of InitializeConditions for SubSystem: '<S4>/Drehzahlregler' */
@@ -190,28 +189,28 @@ void FOC_komplex_step(RT_MODEL *const rtM)
         rtb_Sin = (sqrtf(rtb_Cos * rtb_Cos - 4.0F * rtb_Sin * rtb_Add1_k) +
                    -rtb_Cos) * (30.0F / (rtP.p * 3.14159274F)) / (2.0F * rtb_Sin);
 
-        /* '<S17>:1:10' error_speed_limit = uint8(0); */
-        error_speed_limit = 0U;
+        /* '<S17>:1:10' error_speed_limit = single(0); */
+        rtDW->error_speed_limit = 0;
       } else {
         /* '<S17>:1:11' else */
         /* '<S17>:1:12' n_eck = single(0); */
         rtb_Sin = 0.0F;
 
-        /* '<S17>:1:13' error_speed_limit = uint8(1); */
-        error_speed_limit = 1U;
+        /* '<S17>:1:13' error_speed_limit = single(1); */
+        rtDW->error_speed_limit = 1;
       }
 
       /* '<S17>:1:15' if (flag_id == 1) && (error_speed_limit == 0) */
-      if ((rtU->fl_field_weakening == 1) && (error_speed_limit == 0)) {
+      if ((rtU->fl_field_weakening == 1) && (rtDW->error_speed_limit == 0)) {
         /* '<S17>:1:16' n_sat = min(3*n_eck, n_ref_max); */
-        rtb_Cos = fminf(3.0F * rtb_Sin, rtP.n_ref_max);
+        rtb_Add1_k = fminf(3.0F * rtb_Sin, rtP.n_ref_max);
       } else {
         /* '<S17>:1:17' else */
         /* '<S17>:1:18' n_sat = min(n_eck, n_ref_max); */
-        rtb_Cos = fminf(rtb_Sin, rtP.n_ref_max);
+        rtb_Add1_k = fminf(rtb_Sin, rtP.n_ref_max);
       }
 
-      rtDW->error_speed_limit_h = error_speed_limit;
+      rtDW->error_speed_limit_h = (real32_T)rtDW->error_speed_limit;
 
       /* MATLAB Function: '<S8>/Function_Feldschwaeche' incorporates:
        *  Constant: '<S8>/Constant'
@@ -227,52 +226,52 @@ void FOC_komplex_step(RT_MODEL *const rtM)
         if (rtU->Act_n > rtb_Sin) {
           /* I_d_soll = (Psi_PM*(n_eck-n_ist))/L_d; */
           /* '<S12>:1:7' I_d_soll = Psi_PM/L_d * (n_eck/n_ist - single(1)); */
-          rtb_Add1_k = (rtb_Sin / rtU->Act_n - 1.0F) * (rtP.Psi_PM / rtP.L_d);
+          rtb_Cos = (rtb_Sin / rtU->Act_n - 1.0F) * (rtP.Psi_PM / rtP.L_d);
         } else {
           /* '<S12>:1:8' else */
           /* '<S12>:1:9' I_d_soll = single(0); */
-          rtb_Add1_k = 0.0F;
+          rtb_Cos = 0.0F;
         }
       } else {
         /* '<S12>:1:11' otherwise */
         /* '<S12>:1:12' I_d_soll = single(0); */
-        rtb_Add1_k = 0.0F;
+        rtb_Cos = 0.0F;
       }
 
       /* '<S12>:1:15' if abs(I_d_soll)>= 0.95*I_ref_max */
-      if (fabsf(rtb_Add1_k) >= 0.95F * rtP.i_ref_max) {
+      if (fabsf(rtb_Cos) >= 0.95F * rtP.i_ref_max) {
         /* '<S12>:1:16' I_d_soll = sign(I_d_soll)*0.95*I_ref_max; */
-        if (rtb_Add1_k < 0.0F) {
-          rtb_Add1_k = -1.0F;
-        } else if (rtb_Add1_k > 0.0F) {
-          rtb_Add1_k = 1.0F;
+        if (rtb_Cos < 0.0F) {
+          rtb_Cos = -1.0F;
+        } else if (rtb_Cos > 0.0F) {
+          rtb_Cos = 1.0F;
         }
 
-        rtb_Add1_k = rtb_Add1_k * 0.95F * rtP.i_ref_max;
+        rtb_Cos = rtb_Cos * 0.95F * rtP.i_ref_max;
       }
 
       /* '<S12>:1:19' I_q_max = sqrt(I_ref_max^2-I_d_soll^2); */
-      rtb_Sin = sqrtf(rtP.i_ref_max * rtP.i_ref_max - rtb_Add1_k * rtb_Add1_k);
+      rtb_Sin = sqrtf(rtP.i_ref_max * rtP.i_ref_max - rtb_Cos * rtb_Cos);
 
       /* Merge: '<S4>/Merge' incorporates:
        *  MATLAB Function: '<S8>/Function_Feldschwaeche'
        *  SignalConversion generated from: '<S8>/Id_soll [A]'
        */
-      rtDW->Ref_Id = rtb_Add1_k;
+      rtDW->Ref_Id = rtb_Cos;
 
       /* Switch: '<S16>/Switch2' incorporates:
        *  Inport: '<Root>/Ref_n'
        *  RelationalOperator: '<S16>/LowerRelop1'
        */
-      if (rtU->Ref_n <= rtb_Cos) {
-        /* Gain: '<S8>/Gain3' */
-        rtb_Cos = -rtb_Cos;
-
+      if (rtU->Ref_n <= rtb_Add1_k) {
         /* Switch: '<S16>/Switch' incorporates:
+         *  Gain: '<S8>/Gain3'
          *  RelationalOperator: '<S16>/UpperRelop'
          */
-        if (rtU->Ref_n >= rtb_Cos) {
-          rtb_Cos = rtU->Ref_n;
+        if (rtU->Ref_n < -rtb_Add1_k) {
+          rtb_Add1_k = -rtb_Add1_k;
+        } else {
+          rtb_Add1_k = rtU->Ref_n;
         }
 
         /* End of Switch: '<S16>/Switch' */
@@ -284,7 +283,7 @@ void FOC_komplex_step(RT_MODEL *const rtM)
        *  Delay: '<S14>/Delay'
        *  Sum: '<S14>/Sum'
        */
-      rtb_Cos = rtP.T_R / (real32_T)rtP.T_VF_n * (rtb_Cos - rtDW->Delay_DSTATE_i);
+      rtb_Cos = rtP.T_R / rtP.T_VF_n * (rtb_Add1_k - rtDW->Delay_DSTATE_i);
 
       /* DiscreteIntegrator: '<S14>/Discrete-Time Integrator' */
       rtb_Add1_k = 0.5F * rtb_Cos + rtDW->DiscreteTimeIntegrator_DSTATE_o;
@@ -299,7 +298,7 @@ void FOC_komplex_step(RT_MODEL *const rtM)
        *  Delay: '<S8>/Delay'
        *  Sum: '<S13>/Sum1'
        */
-      rtb_Gain1_n = rtP.T_R * rtP.Kis_n * (rtb_Switch2 + rtDW->Delay_DSTATE_b);
+      rtb_Gain1_n = rtP.T_R * rtP.Kis_n * (rtb_Switch2 + rtDW->Delay_DSTATE_bc);
 
       /* DiscreteIntegrator: '<S13>/Discrete-Time Integrator' incorporates:
        *  Inport: '<Root>/fl_integrator_reset'
@@ -351,72 +350,119 @@ void FOC_komplex_step(RT_MODEL *const rtM)
        *  Sum: '<S8>/Sum2'
        *  Sum: '<S8>/Sum3'
        */
-      rtDW->Delay_DSTATE_b = (rtb_q - rtb_Switch2) * (real32_T)
-        rtDW->Delay_DSTATE_bl + (rtb_Switch2 - rtb_y_h);
+      rtDW->Delay_DSTATE_bc = (rtb_q - rtb_Switch2) * rtDW->Delay_DSTATE_b +
+        (rtb_Switch2 - rtb_y_h);
 
       /* Update for DiscreteIntegrator: '<S13>/Discrete-Time Integrator' */
       rtDW->DiscreteTimeIntegrator_DSTATE_a = 0.5F * rtb_Gain1_n + y_i_k;
 
       /* End of Outputs for SubSystem: '<S4>/Drehzahlregler' */
     } else {
+      if (1 != rtPrevAction) {
+        /* InitializeConditions for IfAction SubSystem: '<S4>/Stromvorgabe_extern' incorporates:
+         *  ActionPort: '<S10>/Action Port'
+         */
+        /* InitializeConditions for SwitchCase: '<S4>/Switch Case' incorporates:
+         *  Delay: '<S25>/Delay'
+         *  Delay: '<S26>/Delay'
+         *  DiscreteIntegrator: '<S25>/Discrete-Time Integrator'
+         *  DiscreteIntegrator: '<S26>/Discrete-Time Integrator'
+         */
+        rtDW->Delay_DSTATE_f = 0.0F;
+        rtDW->DiscreteTimeIntegrator_DSTAT_kt = 0.0F;
+        rtDW->Delay_DSTATE_l = 0.0F;
+        rtDW->DiscreteTimeIntegrator_DSTATE_p = 0.0F;
+
+        /* End of InitializeConditions for SubSystem: '<S4>/Stromvorgabe_extern' */
+      }
+
       /* Outputs for IfAction SubSystem: '<S4>/Stromvorgabe_extern' incorporates:
        *  ActionPort: '<S10>/Action Port'
        */
+      /* Gain: '<S25>/Gain' incorporates:
+       *  Delay: '<S25>/Delay'
+       *  Inport: '<Root>/Ref_Id_ext'
+       *  Sum: '<S25>/Sum'
+       */
+      rtb_Sin = rtP.T_R / 0.8F * (rtU->Ref_Id_ext - rtDW->Delay_DSTATE_f);
+
+      /* DiscreteIntegrator: '<S25>/Discrete-Time Integrator' */
+      rtb_Add1_k = 0.5F * rtb_Sin + rtDW->DiscreteTimeIntegrator_DSTAT_kt;
+
+      /* Gain: '<S26>/Gain' incorporates:
+       *  Delay: '<S26>/Delay'
+       *  Inport: '<Root>/Ref_Iq_ext'
+       *  Sum: '<S26>/Sum'
+       */
+      rtb_Gain1_n = rtP.T_R / 0.8F * (rtU->Ref_Iq_ext - rtDW->Delay_DSTATE_l);
+
+      /* DiscreteIntegrator: '<S26>/Discrete-Time Integrator' */
+      y_i_k = 0.5F * rtb_Gain1_n + rtDW->DiscreteTimeIntegrator_DSTATE_p;
+
       /* MATLAB Function: '<S10>/Function_I_limit' incorporates:
        *  Constant: '<S10>/Constant'
-       *  Inport: '<Root>/Ref_Id_ext'
-       *  Inport: '<Root>/Ref_Iq_ext'
        */
       /* MATLAB Function 'FOC_komplex/Regelung/Stromvorgabe_extern/Function_I_limit': '<S24>:1' */
       /* '<S24>:1:4' I_abs_ext = sqrt(I_d_soll_ext^2+I_q_soll_ext^2); */
       /* '<S24>:1:5' if I_abs_ext > I_ref_max */
-      if (sqrtf(rtU->Ref_Id_ext * rtU->Ref_Id_ext + rtU->Ref_Iq_ext *
-                rtU->Ref_Iq_ext) > rtP.i_ref_max) {
+      if (sqrtf(rtb_Add1_k * rtb_Add1_k + y_i_k * y_i_k) > rtP.i_ref_max) {
         /* '<S24>:1:6' if abs(I_d_soll_ext)>= 0.95*I_ref_max */
-        if (fabsf(rtU->Ref_Id_ext) >= 0.95F * rtP.i_ref_max) {
+        if (fabsf(rtb_Add1_k) >= 0.95F * rtP.i_ref_max) {
           /* '<S24>:1:7' I_d_soll = sign(I_d_soll_ext)*0.95*I_ref_max; */
-          if (rtU->Ref_Id_ext < 0.0F) {
-            rtDW->U_q_lim = -1.0F;
-          } else if (rtU->Ref_Id_ext > 0.0F) {
-            rtDW->U_q_lim = 1.0F;
+          if (rtb_Add1_k < 0.0F) {
+            rtb_Cos = -1.0F;
+          } else if (rtb_Add1_k > 0.0F) {
+            rtb_Cos = 1.0F;
           } else {
-            rtDW->U_q_lim = rtU->Ref_Id_ext;
+            rtb_Cos = rtb_Add1_k;
           }
 
-          rtb_Add1_k = rtDW->U_q_lim * 0.95F * rtP.i_ref_max;
+          rtb_Cos = rtb_Cos * 0.95F * rtP.i_ref_max;
         } else {
           /* '<S24>:1:8' else */
           /* '<S24>:1:9' I_d_soll = I_d_soll_ext; */
-          rtb_Add1_k = rtU->Ref_Id_ext;
+          rtb_Cos = rtb_Add1_k;
         }
 
         /* '<S24>:1:11' I_q_soll = sign(I_q_soll_ext)*sqrt(I_ref_max^2-I_d_soll^2); */
-        if (rtU->Ref_Iq_ext < 0.0F) {
-          rtDW->U_q_lim = -1.0F;
-        } else if (rtU->Ref_Iq_ext > 0.0F) {
-          rtDW->U_q_lim = 1.0F;
+        if (y_i_k < 0.0F) {
+          rtb_Switch2 = -1.0F;
+        } else if (y_i_k > 0.0F) {
+          rtb_Switch2 = 1.0F;
         } else {
-          rtDW->U_q_lim = rtU->Ref_Iq_ext;
+          rtb_Switch2 = y_i_k;
         }
 
         /* Merge: '<S4>/Merge1' */
-        rtDW->Ref_Iq = sqrtf(rtP.i_ref_max * rtP.i_ref_max - rtb_Add1_k *
-                             rtb_Add1_k) * rtDW->U_q_lim;
+        rtDW->Ref_Iq = sqrtf(rtP.i_ref_max * rtP.i_ref_max - rtb_Cos * rtb_Cos) *
+          rtb_Switch2;
       } else {
         /* '<S24>:1:12' else */
         /* '<S24>:1:13' I_d_soll = I_d_soll_ext; */
-        rtb_Add1_k = rtU->Ref_Id_ext;
+        rtb_Cos = rtb_Add1_k;
 
         /* Merge: '<S4>/Merge1' */
         /* '<S24>:1:14' I_q_soll = I_q_soll_ext; */
-        rtDW->Ref_Iq = rtU->Ref_Iq_ext;
+        rtDW->Ref_Iq = y_i_k;
       }
 
       /* Merge: '<S4>/Merge' incorporates:
        *  MATLAB Function: '<S10>/Function_I_limit'
        *  SignalConversion generated from: '<S10>/I_d_soll'
        */
-      rtDW->Ref_Id = rtb_Add1_k;
+      rtDW->Ref_Id = rtb_Cos;
+
+      /* Update for Delay: '<S25>/Delay' */
+      rtDW->Delay_DSTATE_f = rtb_Add1_k;
+
+      /* Update for DiscreteIntegrator: '<S25>/Discrete-Time Integrator' */
+      rtDW->DiscreteTimeIntegrator_DSTAT_kt = 0.5F * rtb_Sin + rtb_Add1_k;
+
+      /* Update for Delay: '<S26>/Delay' */
+      rtDW->Delay_DSTATE_l = y_i_k;
+
+      /* Update for DiscreteIntegrator: '<S26>/Discrete-Time Integrator' */
+      rtDW->DiscreteTimeIntegrator_DSTATE_p = 0.5F * rtb_Gain1_n + y_i_k;
 
       /* End of Outputs for SubSystem: '<S4>/Stromvorgabe_extern' */
     }
@@ -432,7 +478,7 @@ void FOC_komplex_step(RT_MODEL *const rtM)
      *  Delay: '<S4>/Delay'
      *  SignalConversion generated from: '<S4>/InfoOut_Outport_4'
      */
-    rtY->Voltage_Limit = rtDW->Delay_DSTATE_bl;
+    rtY->Voltage_Limit = rtDW->Delay_DSTATE_b;
 
     /* Gain: '<S20>/Gain' incorporates:
      *  Sum: '<S9>/Sum1'
@@ -542,8 +588,9 @@ void FOC_komplex_step(RT_MODEL *const rtM)
       /* '<S19>:1:8' case 1 */
       /* Prio U_d */
       /* '<S19>:1:9' if (U_d^2 + U_q^2)<=U_FA^2 */
-      if (rtb_Gain1_n * rtb_Gain1_n + rtb_Switch2 * rtb_Switch2 <= rtb_Add1_k *
-          rtb_Add1_k) {
+      rtDW->U_q_lim = rtb_Add1_k * rtb_Add1_k;
+      if (rtb_Gain1_n * rtb_Gain1_n + rtb_Switch2 * rtb_Switch2 <= rtDW->U_q_lim)
+      {
         /* '<S19>:1:10' U_d_lim = U_d; */
         rtb_Merge1 = rtb_Gain1_n;
 
@@ -551,8 +598,8 @@ void FOC_komplex_step(RT_MODEL *const rtM)
         rtDW->U_q_lim = rtb_Switch2;
 
         /* Update for Delay: '<S4>/Delay' */
-        /* '<S19>:1:12' stat_lim_u = uint8(0); */
-        rtDW->Delay_DSTATE_bl = 0U;
+        /* '<S19>:1:12' stat_lim_u = single(0); */
+        rtDW->Delay_DSTATE_b = 0.0F;
       } else {
         /* '<S19>:1:13' else */
         /* '<S19>:1:14' if abs(U_d)>0.95*U_FA */
@@ -575,18 +622,19 @@ void FOC_komplex_step(RT_MODEL *const rtM)
 
         /* '<S19>:1:19' U_q_lim = sqrt(U_FA^2 - U_d_lim^2)*sign(U_q); */
         if (rtb_Switch2 < 0.0F) {
-          rtDW->U_q_lim = -1.0F;
+          rtb_theta_el_verwendet = -1.0F;
         } else if (rtb_Switch2 > 0.0F) {
-          rtDW->U_q_lim = 1.0F;
+          rtb_theta_el_verwendet = 1.0F;
         } else {
-          rtDW->U_q_lim = rtb_Switch2;
+          rtb_theta_el_verwendet = rtb_Switch2;
         }
 
-        rtDW->U_q_lim *= sqrtf(rtb_Add1_k * rtb_Add1_k - rtb_Merge1 * rtb_Merge1);
+        rtDW->U_q_lim = sqrtf(rtDW->U_q_lim - rtb_Merge1 * rtb_Merge1) *
+          rtb_theta_el_verwendet;
 
         /* Update for Delay: '<S4>/Delay' */
-        /* '<S19>:1:20' stat_lim_u = uint8(1); */
-        rtDW->Delay_DSTATE_bl = 1U;
+        /* '<S19>:1:20' stat_lim_u = single(1); */
+        rtDW->Delay_DSTATE_b = 1.0F;
       }
       break;
 
@@ -603,8 +651,8 @@ void FOC_komplex_step(RT_MODEL *const rtM)
         rtDW->U_q_lim = rtb_Switch2;
 
         /* Update for Delay: '<S4>/Delay' */
-        /* '<S19>:1:26' stat_lim_u = uint8(0); */
-        rtDW->Delay_DSTATE_bl = 0U;
+        /* '<S19>:1:26' stat_lim_u = single(0); */
+        rtDW->Delay_DSTATE_b = 0.0F;
       } else {
         if (rtb_Merge1 < 0.0F) {
           rtb_Merge1 = -1.0F;
@@ -627,14 +675,14 @@ void FOC_komplex_step(RT_MODEL *const rtM)
           if (fabsf(rtb_Switch2) > 0.95F * rtb_Add1_k) {
             /* '<S19>:1:30' U_q_lim = sign(U_q)*0.95*U_FA; */
             if (rtb_Switch2 < 0.0F) {
-              rtDW->U_q_lim = -1.0F;
+              rtb_theta_el_verwendet = -1.0F;
             } else if (rtb_Switch2 > 0.0F) {
-              rtDW->U_q_lim = 1.0F;
+              rtb_theta_el_verwendet = 1.0F;
             } else {
-              rtDW->U_q_lim = rtb_Switch2;
+              rtb_theta_el_verwendet = rtb_Switch2;
             }
 
-            rtDW->U_q_lim = rtDW->U_q_lim * 0.95F * rtb_Add1_k;
+            rtDW->U_q_lim = rtb_theta_el_verwendet * 0.95F * rtb_Add1_k;
           } else {
             /* '<S19>:1:31' else */
             /* '<S19>:1:32' U_q_lim = U_q; */
@@ -654,8 +702,8 @@ void FOC_komplex_step(RT_MODEL *const rtM)
                               rtDW->U_q_lim);
 
           /* Update for Delay: '<S4>/Delay' */
-          /* '<S19>:1:35' stat_lim_u = uint8(1); */
-          rtDW->Delay_DSTATE_bl = 1U;
+          /* '<S19>:1:35' stat_lim_u = single(1); */
+          rtDW->Delay_DSTATE_b = 1.0F;
         } else {
           /* '<S19>:1:36' else */
           /* Motor */
@@ -679,19 +727,19 @@ void FOC_komplex_step(RT_MODEL *const rtM)
 
           /* '<S19>:1:43' U_q_lim = sign(U_q)*sqrt(U_FA^2 - U_d_lim^2); */
           if (rtb_Switch2 < 0.0F) {
-            rtDW->U_q_lim = -1.0F;
+            rtb_theta_el_verwendet = -1.0F;
           } else if (rtb_Switch2 > 0.0F) {
-            rtDW->U_q_lim = 1.0F;
+            rtb_theta_el_verwendet = 1.0F;
           } else {
-            rtDW->U_q_lim = rtb_Switch2;
+            rtb_theta_el_verwendet = rtb_Switch2;
           }
 
-          rtDW->U_q_lim *= sqrtf(rtb_Add1_k * rtb_Add1_k - rtb_Merge1 *
-            rtb_Merge1);
+          rtDW->U_q_lim = sqrtf(rtb_Add1_k * rtb_Add1_k - rtb_Merge1 *
+                                rtb_Merge1) * rtb_theta_el_verwendet;
 
           /* Update for Delay: '<S4>/Delay' */
-          /* '<S19>:1:44' stat_lim_u = uint8(1); */
-          rtDW->Delay_DSTATE_bl = 1U;
+          /* '<S19>:1:44' stat_lim_u = single(1); */
+          rtDW->Delay_DSTATE_b = 1.0F;
         }
       }
       break;
@@ -706,8 +754,8 @@ void FOC_komplex_step(RT_MODEL *const rtM)
       rtDW->U_q_lim = rtb_Switch2;
 
       /* Update for Delay: '<S4>/Delay' */
-      /* '<S19>:1:49' stat_lim_u = uint8(0); */
-      rtDW->Delay_DSTATE_bl = 0U;
+      /* '<S19>:1:49' stat_lim_u = single(0); */
+      rtDW->Delay_DSTATE_b = 0.0F;
       break;
     }
 
@@ -717,84 +765,84 @@ void FOC_komplex_step(RT_MODEL *const rtM)
      *  Inport: '<Root>/fl_angle_prediction'
      */
     /*  Winkelprädiktion für die nächste Schalperiode, wenn das Flag gesetzt ist */
-    /* MATLAB Function 'FOC_komplex/Regelung/Tastgradumwandlung/Winkelwahl': '<S28>:1' */
-    /* '<S28>:1:5' if flag_Winkelpraediktion */
+    /* MATLAB Function 'FOC_komplex/Regelung/Tastgradumwandlung/Winkelwahl': '<S30>:1' */
+    /* '<S30>:1:5' if flag_Winkelpraediktion */
     if (rtU->fl_angle_prediction != 0) {
-      /* '<S28>:1:6' theta_el_verwendet = theta_el_ist + w_el_ist*1.5*T_R; */
+      /* '<S30>:1:6' theta_el_verwendet = theta_el_ist + w_el_ist*1.5*T_R; */
       rtb_theta_el_verwendet = rtU->Act_w_el * 1.5F * rtP.T_R +
         rtU->Act_theta_el;
     } else {
-      /* '<S28>:1:7' else */
-      /* '<S28>:1:8' theta_el_verwendet = theta_el_ist; */
+      /* '<S30>:1:7' else */
+      /* '<S30>:1:8' theta_el_verwendet = theta_el_ist; */
       rtb_theta_el_verwendet = rtU->Act_theta_el;
     }
 
     /* End of MATLAB Function: '<S11>/Winkelwahl' */
 
-    /* Trigonometry: '<S30>/Cos' */
+    /* Trigonometry: '<S32>/Cos' */
     rtb_Add1_k = cosf(rtb_theta_el_verwendet);
 
-    /* Trigonometry: '<S30>/Sin' */
+    /* Trigonometry: '<S32>/Sin' */
     rtb_theta_el_verwendet = sinf(rtb_theta_el_verwendet);
 
-    /* Gain: '<S29>/Gain' incorporates:
+    /* Gain: '<S31>/Gain' incorporates:
      *  MATLAB Function: '<S9>/Function_Spannungsbegrenzung'
-     *  Product: '<S30>/Product'
-     *  Product: '<S30>/Product1'
-     *  Sum: '<S30>/Add'
+     *  Product: '<S32>/Product'
+     *  Product: '<S32>/Product1'
+     *  Sum: '<S32>/Add'
      */
     rtb_u = (rtb_Merge1 * rtb_Add1_k - rtDW->U_q_lim * rtb_theta_el_verwendet) *
       0.5F;
 
-    /* Gain: '<S29>/Gain1' incorporates:
+    /* Gain: '<S31>/Gain1' incorporates:
      *  MATLAB Function: '<S9>/Function_Spannungsbegrenzung'
-     *  Product: '<S30>/Product2'
-     *  Product: '<S30>/Product3'
-     *  Sum: '<S30>/Add1'
+     *  Product: '<S32>/Product2'
+     *  Product: '<S32>/Product3'
+     *  Sum: '<S32>/Add1'
      */
     rtb_Add1_k = (rtb_Merge1 * rtb_theta_el_verwendet + rtDW->U_q_lim *
                   rtb_Add1_k) * 0.866025388F;
 
-    /* Sum: '<S29>/Add' */
+    /* Sum: '<S31>/Add' */
     rtb_theta_el_verwendet = rtb_Add1_k - rtb_u;
 
-    /* Sum: '<S29>/Add1' */
+    /* Sum: '<S31>/Add1' */
     rtb_Add1_k = (0.0F - rtb_u) - rtb_Add1_k;
 
-    /* Gain: '<S29>/Gain2' */
+    /* Gain: '<S31>/Gain2' */
     rtb_u *= 2.0F;
 
-    /* Gain: '<S26>/Gain2' incorporates:
-     *  MinMax: '<S26>/Min'
-     *  MinMax: '<S26>/Min1'
-     *  Sum: '<S26>/Add3'
+    /* Gain: '<S28>/Gain2' incorporates:
+     *  MinMax: '<S28>/Min'
+     *  MinMax: '<S28>/Min1'
+     *  Sum: '<S28>/Add3'
      */
     rtb_Gain2_l = (fmaxf(fmaxf(rtb_u, rtb_theta_el_verwendet), rtb_Add1_k) +
                    fminf(fminf(rtb_u, rtb_theta_el_verwendet), rtb_Add1_k)) *
       -0.5F;
 
     /* Outport: '<Root>/a_V' incorporates:
-     *  Constant: '<S27>/Constant2'
-     *  Product: '<S27>/Divide1'
-     *  Sum: '<S26>/Add5'
-     *  Sum: '<S27>/Add1'
+     *  Constant: '<S29>/Constant2'
+     *  Product: '<S29>/Divide1'
+     *  Sum: '<S28>/Add5'
+     *  Sum: '<S29>/Add1'
      */
     rtY->a_V = (rtb_theta_el_verwendet + rtb_Gain2_l) / DiscreteTimeIntegrator +
       0.5F;
 
     /* Outport: '<Root>/a_U' incorporates:
-     *  Constant: '<S27>/Constant1'
-     *  Product: '<S27>/Divide'
-     *  Sum: '<S26>/Add4'
-     *  Sum: '<S27>/Add'
+     *  Constant: '<S29>/Constant1'
+     *  Product: '<S29>/Divide'
+     *  Sum: '<S28>/Add4'
+     *  Sum: '<S29>/Add'
      */
     rtY->a_U = (rtb_u + rtb_Gain2_l) / DiscreteTimeIntegrator + 0.5F;
 
     /* Outport: '<Root>/a_W' incorporates:
-     *  Constant: '<S27>/Constant3'
-     *  Product: '<S27>/Divide2'
-     *  Sum: '<S26>/Add6'
-     *  Sum: '<S27>/Add2'
+     *  Constant: '<S29>/Constant3'
+     *  Product: '<S29>/Divide2'
+     *  Sum: '<S28>/Add6'
+     *  Sum: '<S29>/Add2'
      */
     rtY->a_W = (rtb_Add1_k + rtb_Gain2_l) / DiscreteTimeIntegrator + 0.5F;
 
@@ -883,19 +931,19 @@ void FOC_komplex_step(RT_MODEL *const rtM)
    */
   rtY->fault_peak_current = (real32_T)(rtP.i_max_peak <= rtb_alpha_j);
 
-  /* DiscreteIntegrator: '<S31>/Accumulator' incorporates:
-   *  Delay: '<S31>/Delay'
-   *  Sum: '<S31>/Sum'
+  /* DiscreteIntegrator: '<S33>/Accumulator' incorporates:
+   *  Delay: '<S33>/Delay'
+   *  Sum: '<S33>/Sum'
    */
   rtb_Sin = (rtb_alpha_j - rtDW->Delay_DSTATE_j[0]) + rtDW->Accumulator_DSTATE;
 
   /* Outport: '<Root>/fault_max_current' incorporates:
    *  Constant: '<S5>/Constant1'
    *  DataTypeConversion: '<S5>/Data Type Conversion2'
-   *  Gain: '<S31>/Gain'
+   *  Gain: '<S33>/Gain'
    *  RelationalOperator: '<S5>/Smaller1'
    */
-  rtY->fault_max_current = (real32_T)(rtP.i_max <= 0.02F * rtb_Sin);
+  rtY->fault_max_current = (real32_T)(rtP.i_max <= 0.0333333351F * rtb_Sin);
 
   /* Outport: '<Root>/Iq_Act' */
   rtY->Iq_Act = rtb_q;
@@ -912,19 +960,19 @@ void FOC_komplex_step(RT_MODEL *const rtM)
    */
   rtY->fault_peak_speed = (real32_T)(rtP.n_max_peak <= rtb_q);
 
-  /* DiscreteIntegrator: '<S32>/Accumulator' incorporates:
-   *  Delay: '<S32>/Delay'
-   *  Sum: '<S32>/Sum'
+  /* DiscreteIntegrator: '<S34>/Accumulator' incorporates:
+   *  Delay: '<S34>/Delay'
+   *  Sum: '<S34>/Sum'
    */
   rtb_Cos = (rtb_q - rtDW->Delay_DSTATE_m[0]) + rtDW->Accumulator_DSTATE_o;
 
   /* Outport: '<Root>/fault_max_speed' incorporates:
    *  Constant: '<S5>/Constant3'
    *  DataTypeConversion: '<S5>/Data Type Conversion1'
-   *  Gain: '<S32>/Gain'
+   *  Gain: '<S34>/Gain'
    *  RelationalOperator: '<S5>/Smaller3'
    */
-  rtY->fault_max_speed = (real32_T)(rtP.n_max <= 0.005F * rtb_Cos);
+  rtY->fault_max_speed = (real32_T)(rtP.n_max <= 0.00666666683F * rtb_Cos);
 
   /* Update for Delay: '<S3>/Delay' */
   rtDW->Delay_DSTATE = DiscreteTimeIntegrator;
@@ -932,30 +980,32 @@ void FOC_komplex_step(RT_MODEL *const rtM)
   /* Update for DiscreteIntegrator: '<S3>/Discrete-Time Integrator' */
   rtDW->DiscreteTimeIntegrator_DSTATE = 0.5F * rtb_Gain + DiscreteTimeIntegrator;
 
-  /* Update for Delay: '<S31>/Delay' */
-  for (rtDW->idxDelay = 0; rtDW->idxDelay < 49; rtDW->idxDelay++) {
-    rtDW->Delay_DSTATE_j[rtDW->idxDelay] = rtDW->Delay_DSTATE_j[rtDW->idxDelay +
-      1];
+  /* Update for Delay: '<S33>/Delay' */
+  for (rtDW->error_speed_limit = 0; rtDW->error_speed_limit < 29;
+       rtDW->error_speed_limit++) {
+    rtDW->Delay_DSTATE_j[rtDW->error_speed_limit] = rtDW->Delay_DSTATE_j
+      [rtDW->error_speed_limit + 1];
   }
 
-  rtDW->Delay_DSTATE_j[49] = rtb_alpha_j;
+  rtDW->Delay_DSTATE_j[29] = rtb_alpha_j;
 
-  /* End of Update for Delay: '<S31>/Delay' */
+  /* End of Update for Delay: '<S33>/Delay' */
 
-  /* Update for DiscreteIntegrator: '<S31>/Accumulator' */
+  /* Update for DiscreteIntegrator: '<S33>/Accumulator' */
   rtDW->Accumulator_DSTATE = rtb_Sin;
 
-  /* Update for Delay: '<S32>/Delay' */
-  for (rtDW->idxDelay = 0; rtDW->idxDelay < 199; rtDW->idxDelay++) {
-    rtDW->Delay_DSTATE_m[rtDW->idxDelay] = rtDW->Delay_DSTATE_m[rtDW->idxDelay +
-      1];
+  /* Update for Delay: '<S34>/Delay' */
+  for (rtDW->error_speed_limit = 0; rtDW->error_speed_limit < 149;
+       rtDW->error_speed_limit++) {
+    rtDW->Delay_DSTATE_m[rtDW->error_speed_limit] = rtDW->Delay_DSTATE_m
+      [rtDW->error_speed_limit + 1];
   }
 
-  rtDW->Delay_DSTATE_m[199] = rtb_q;
+  rtDW->Delay_DSTATE_m[149] = rtb_q;
 
-  /* End of Update for Delay: '<S32>/Delay' */
+  /* End of Update for Delay: '<S34>/Delay' */
 
-  /* Update for DiscreteIntegrator: '<S32>/Accumulator' */
+  /* Update for DiscreteIntegrator: '<S34>/Accumulator' */
   rtDW->Accumulator_DSTATE_o = rtb_Cos;
 }
 
@@ -987,7 +1037,7 @@ void FOC_komplex_initialize(RT_MODEL *const rtM)
   rtDW->SwitchCase_ActiveSubsystem = -1;
 
   /* InitializeConditions for Delay: '<S4>/Delay' */
-  rtDW->Delay_DSTATE_bl = 0U;
+  rtDW->Delay_DSTATE_b = 0.0F;
 
   /* InitializeConditions for Delay: '<S9>/Delay1' */
   rtDW->Delay1_DSTATE = 0.0F;
@@ -1009,12 +1059,27 @@ void FOC_komplex_initialize(RT_MODEL *const rtM)
   rtDW->DiscreteTimeIntegrator_DSTATE_o = 0.0F;
 
   /* InitializeConditions for Delay: '<S8>/Delay' */
-  rtDW->Delay_DSTATE_b = 0.0F;
+  rtDW->Delay_DSTATE_bc = 0.0F;
 
   /* InitializeConditions for DiscreteIntegrator: '<S13>/Discrete-Time Integrator' */
   rtDW->DiscreteTimeIntegrator_DSTATE_a = 0.0F;
 
   /* End of SystemInitialize for SubSystem: '<S4>/Drehzahlregler' */
+
+  /* SystemInitialize for IfAction SubSystem: '<S4>/Stromvorgabe_extern' */
+  /* InitializeConditions for Delay: '<S25>/Delay' */
+  rtDW->Delay_DSTATE_f = 0.0F;
+
+  /* InitializeConditions for DiscreteIntegrator: '<S25>/Discrete-Time Integrator' */
+  rtDW->DiscreteTimeIntegrator_DSTAT_kt = 0.0F;
+
+  /* InitializeConditions for Delay: '<S26>/Delay' */
+  rtDW->Delay_DSTATE_l = 0.0F;
+
+  /* InitializeConditions for DiscreteIntegrator: '<S26>/Discrete-Time Integrator' */
+  rtDW->DiscreteTimeIntegrator_DSTATE_p = 0.0F;
+
+  /* End of SystemInitialize for SubSystem: '<S4>/Stromvorgabe_extern' */
 
   /* SystemInitialize for Merge: '<S4>/Merge' */
   rtDW->Ref_Id = 0.0F;

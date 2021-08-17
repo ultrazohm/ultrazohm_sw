@@ -25,7 +25,8 @@
 
 void ADC_readCardA1(DS_Data *data, uz_array_int16_t adc_data)
 {
-	// bitshift operation of -16 digits, because it is an 16-bit ADC
+	// bitshift operation of -16 digits, because it is an 16-bit ADC, scaling the value to +/- 0.5 
+	// multiplying it afterwards with the conversion factor, which is the peak-to-peak into value
 	// Conversion Factor is defined in main.c InitializeDataStructure
 	data->aa.A1.me.ADC_array[0] = ((float)adc_data.data[0]) / (1<<Q16) * data->aa.A1.cf.ADC_A1;
 	data->aa.A1.me.ADC_array[1] = ((float)adc_data.data[1]) / (1<<Q16) * data->aa.A1.cf.ADC_A2;

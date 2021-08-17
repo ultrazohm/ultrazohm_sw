@@ -16,7 +16,6 @@
 #include "../include/adc.h"
 #include <stdint.h>
 #include <math.h>
-
 #include "xil_types.h"
 #include "xil_io.h"
 
@@ -28,40 +27,38 @@ void ADC_readCardA1(DS_Data *data, uz_array_int16_t adc_data)
 {
 	// bitshift operation of -16 digits, because it is an 16-bit ADC
 	// Conversion Factor is defined in main.c InitializeDataStructure
-	data->aa.A1.me.ADC_array[0] = ldexpf((float)adc_data.data[0], -16) * data->aa.A1.cf.ADC_A1;
-	data->aa.A1.me.ADC_array[1] = ldexpf((float)adc_data.data[1], -16) * data->aa.A1.cf.ADC_A2;
-	data->aa.A1.me.ADC_array[2] = ldexpf((float)adc_data.data[2], -16) * data->aa.A1.cf.ADC_A3;
-	data->aa.A1.me.ADC_array[3] = ldexpf((float)adc_data.data[3], -16) * data->aa.A1.cf.ADC_A4;
-	data->aa.A1.me.ADC_array[4] = ldexpf((float)adc_data.data[4], -16) * data->aa.A1.cf.ADC_B5;
-	data->aa.A1.me.ADC_array[5] = ldexpf((float)adc_data.data[5], -16) * data->aa.A1.cf.ADC_B6;
-	data->aa.A1.me.ADC_array[6] = ldexpf((float)adc_data.data[6], -16) * data->aa.A1.cf.ADC_B7;
-	data->aa.A1.me.ADC_array[7] = ldexpf((float)adc_data.data[7], -16) * data->aa.A1.cf.ADC_B8;
+	data->aa.A1.me.ADC_array[0] = ((float)adc_data.data[0]) / (1<<Q16) * data->aa.A1.cf.ADC_A1;
+	data->aa.A1.me.ADC_array[1] = ((float)adc_data.data[1]) / (1<<Q16) * data->aa.A1.cf.ADC_A2;
+	data->aa.A1.me.ADC_array[2] = ((float)adc_data.data[2]) / (1<<Q16) * data->aa.A1.cf.ADC_A3;
+	data->aa.A1.me.ADC_array[3] = ((float)adc_data.data[3]) / (1<<Q16) * data->aa.A1.cf.ADC_A4;
+	data->aa.A1.me.ADC_array[4] = ((float)adc_data.data[4]) / (1<<Q16) * data->aa.A1.cf.ADC_B5;
+	data->aa.A1.me.ADC_array[5] = ((float)adc_data.data[5]) / (1<<Q16) * data->aa.A1.cf.ADC_B6;
+	data->aa.A1.me.ADC_array[6] = ((float)adc_data.data[6]) / (1<<Q16) * data->aa.A1.cf.ADC_B7;
+	data->aa.A1.me.ADC_array[7] = ((float)adc_data.data[7]) / (1<<Q16) * data->aa.A1.cf.ADC_B8;
 }
 
 void ADC_readCardA2(DS_Data *data, uz_array_int16_t adc_data)
 {
-	// bitshift operation of -16 digits, because it is an 16-bit ADC
-	// Conversion Factor is defined in main.c InitializeDataStructure
-	data->aa.A2.me.ADC_array[0] = ldexpf((float)adc_data.data[8], -16) * data->aa.A2.cf.ADC_A1;
-	data->aa.A2.me.ADC_array[1] = ldexpf((float)adc_data.data[9], -16) * data->aa.A2.cf.ADC_A2;
-	data->aa.A2.me.ADC_array[2] = ldexpf((float)adc_data.data[10], -16) * data->aa.A2.cf.ADC_A3;
-	data->aa.A2.me.ADC_array[3] = ldexpf((float)adc_data.data[11], -16) * data->aa.A2.cf.ADC_A4;
-	data->aa.A2.me.ADC_array[4] = ldexpf((float)adc_data.data[12], -16) * data->aa.A2.cf.ADC_B5;
-	data->aa.A2.me.ADC_array[5] = ldexpf((float)adc_data.data[13], -16) * data->aa.A2.cf.ADC_B6;
-	data->aa.A2.me.ADC_array[6] = ldexpf((float)adc_data.data[14], -16) * data->aa.A2.cf.ADC_B7;
-	data->aa.A2.me.ADC_array[7] = ldexpf((float)adc_data.data[15], -16) * data->aa.A2.cf.ADC_B8;
+	data->aa.A2.me.ADC_array[0] = ((float)adc_data.data[8] ) / (1<<Q16) * data->aa.A2.cf.ADC_A1;
+	data->aa.A2.me.ADC_array[1] = ((float)adc_data.data[9] ) / (1<<Q16) * data->aa.A2.cf.ADC_A2;
+	data->aa.A2.me.ADC_array[2] = ((float)adc_data.data[10]) / (1<<Q16) * data->aa.A2.cf.ADC_A3;
+	data->aa.A2.me.ADC_array[3] = ((float)adc_data.data[11]) / (1<<Q16) * data->aa.A2.cf.ADC_A4;
+	data->aa.A2.me.ADC_array[4] = ((float)adc_data.data[12]) / (1<<Q16) * data->aa.A2.cf.ADC_B5;
+	data->aa.A2.me.ADC_array[5] = ((float)adc_data.data[13]) / (1<<Q16) * data->aa.A2.cf.ADC_B6;
+	data->aa.A2.me.ADC_array[6] = ((float)adc_data.data[14]) / (1<<Q16) * data->aa.A2.cf.ADC_B7;
+	data->aa.A2.me.ADC_array[7] = ((float)adc_data.data[15]) / (1<<Q16) * data->aa.A2.cf.ADC_B8;
 }
 
 void ADC_readCardA3(DS_Data *data, uz_array_int16_t adc_data)
 {
-	data->aa.A3.me.ADC_array[0] = ldexpf((float)adc_data.data[16], -16) * data->aa.A3.cf.ADC_A1;
-	data->aa.A3.me.ADC_array[1] = ldexpf((float)adc_data.data[17], -16) * data->aa.A3.cf.ADC_A2;
-	data->aa.A3.me.ADC_array[2] = ldexpf((float)adc_data.data[18], -16) * data->aa.A3.cf.ADC_A3;
-	data->aa.A3.me.ADC_array[3] = ldexpf((float)adc_data.data[19], -16) * data->aa.A3.cf.ADC_A4;
-	data->aa.A3.me.ADC_array[4] = ldexpf((float)adc_data.data[20], -16) * data->aa.A3.cf.ADC_B5;
-	data->aa.A3.me.ADC_array[5] = ldexpf((float)adc_data.data[21], -16) * data->aa.A3.cf.ADC_B6;
-	data->aa.A3.me.ADC_array[6] = ldexpf((float)adc_data.data[22], -16) * data->aa.A3.cf.ADC_B7;
-	data->aa.A3.me.ADC_array[7] = ldexpf((float)adc_data.data[23], -16) * data->aa.A3.cf.ADC_B8;
+	data->aa.A3.me.ADC_array[0] = ((float)adc_data.data[16]) / (1<<Q16) * data->aa.A3.cf.ADC_A1;
+	data->aa.A3.me.ADC_array[1] = ((float)adc_data.data[17]) / (1<<Q16) * data->aa.A3.cf.ADC_A2;
+	data->aa.A3.me.ADC_array[2] = ((float)adc_data.data[18]) / (1<<Q16) * data->aa.A3.cf.ADC_A3;
+	data->aa.A3.me.ADC_array[3] = ((float)adc_data.data[19]) / (1<<Q16) * data->aa.A3.cf.ADC_A4;
+	data->aa.A3.me.ADC_array[4] = ((float)adc_data.data[20]) / (1<<Q16) * data->aa.A3.cf.ADC_B5;
+	data->aa.A3.me.ADC_array[5] = ((float)adc_data.data[21]) / (1<<Q16) * data->aa.A3.cf.ADC_B6;
+	data->aa.A3.me.ADC_array[6] = ((float)adc_data.data[22]) / (1<<Q16) * data->aa.A3.cf.ADC_B7;
+	data->aa.A3.me.ADC_array[7] = ((float)adc_data.data[23]) / (1<<Q16) * data->aa.A3.cf.ADC_B8;
 };
 
 void ADC_readCardALL(DS_Data *data)

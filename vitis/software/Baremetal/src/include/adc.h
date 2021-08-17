@@ -16,6 +16,7 @@
 #ifndef ADC_H_
 #define ADC_H_
 
+#include "../defines.h"
 #include "../globalData.h"
 #include "../uz/uz_array/uz_array.h"
 

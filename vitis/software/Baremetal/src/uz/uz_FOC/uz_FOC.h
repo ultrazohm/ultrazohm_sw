@@ -6,6 +6,7 @@
 #include "../uz_piController/uz_piController.h"
 #include "../uz_signals/uz_signals.h"
 #include "../uz_Transformation/uz_Transformation.h"
+#include "../uz_PMSM_config/uz_PMSM_config.h"
 #include "uz_linear_decoupling.h"
 #include "uz_space_vector_limitation.h"
 #include <math.h>
@@ -18,7 +19,7 @@
 struct uz_FOC_config {
 	struct uz_PI_Controller_config config_id; /**< Configuration struct for id-Controller */
 	struct uz_PI_Controller_config config_iq; /**< Configuration struct for iq-Controller */
-	struct uz_lin_decoupling_config config_lin_decoupling; /**< Configuration struct for linear decoupling */
+	struct uz_PMSM_t config_PMSM; /**< Configuration struct for PMSM parameters */
 };
 
 /**

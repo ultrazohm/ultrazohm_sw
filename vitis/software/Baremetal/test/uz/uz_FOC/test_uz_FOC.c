@@ -32,9 +32,9 @@ void setUp(void)
     i_actual_Ampere.zero = 0.0f;
     omega_el_rad_per_sec = 0.0f;
     U_zk_Volts = 24.0f;
-    config.config_lin_decoupling.Ld_Henry = 0.00027f;
-    config.config_lin_decoupling.Lq_Henry = 0.00027f;
-    config.config_lin_decoupling.Psi_PM_Vs = 0.0082f;
+    config.config_PMSM.Ld_Henry = 0.00027f;
+    config.config_PMSM.Lq_Henry = 0.00027f;
+    config.config_PMSM.Psi_PM_Vs = 0.0082f;
     i_reference_Ampere.d = 1.0f;
     i_reference_Ampere.q = 1.0f;
     i_reference_Ampere.zero = 0.0f;

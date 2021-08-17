@@ -4,10 +4,6 @@
 Linear decoupling
 =================
 
-
-.. doxygenstruct:: uz_lin_decoupling_config
-    :members:
-
 .. doxygenfunction:: uz_FOC_linear_decoupling
 
 Example
@@ -15,18 +11,18 @@ Example
 
 .. code-block:: c
   :linenos:
-  :caption: Example function call for linear decoupling
+  :caption: Example function call for linear decoupling. For ``uz_PMSM_t`` struct check :ref:`uz_PMSM_config`. 
 
   #include "uz/uz_FOC/uz_linear_decoupling.h"
   int main(void) {
-     struct uz_lin_decoupling_config config_lin_Decoup = {
+     struct uz_PMSM_t config_pmsm = {
         .Ld_Henry = 0.0001f,
         .Lq_Henry = 0.0002f, 
         .Psi_PM_Vs = 0.008f
-     };
+     }; //only these parameters are needed
      float omega_el_rad_per_sec = 100.0f;
      struct uz_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-     struct uz_dq_t output = uz_FOC_linear_decoupling(config_lin_Decoup, i_actual_Ampere, omega_el_rad_per_sec);
+     struct uz_dq_t output = uz_FOC_linear_decoupling(config_pmsm, i_actual_Ampere, omega_el_rad_per_sec);
   }
 
 Description

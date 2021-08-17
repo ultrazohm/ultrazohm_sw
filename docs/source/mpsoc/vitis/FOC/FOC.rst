@@ -28,11 +28,11 @@ Example
     
   #include "uz/uz_FOC/uz_FOC.h"
   int main(void) {
-     struct uz_lin_decoupling_config config_lin_Decoup = {
+     struct uz_PMSM_t config_PMSM = {
         .Ld_Henry = 0.0001f,
         .Lq_Henry = 0.0002f, 
         .Psi_PM_Vs = 0.008f
-      };
+      };//only these parameters are needed
       struct uz_PI_Controller_config config_id = {
         .Kp = 10.0f,
         .Ki = 10.0f,
@@ -57,7 +57,7 @@ Example
 Description
 ^^^^^^^^^^^
     
-With this config struct one can customize the FOC and the included :ref:`PI-Controller <uz_piController>` and :ref:`linear decoupling <uz_lineardecoupling>`.
+With this config struct one can customize the FOC and the included :ref:`PI-Controller <uz_piController>` and :ref:`linear decoupling <uz_lineardecoupling>` and :ref:`PMSM config <uz_PMSM_config>`.
 Each of the two PI-Controller need their own :ref:`config struct <uz_piController_config>`.
 One for the id-Controller and the other one for the iq-Controller. 
 

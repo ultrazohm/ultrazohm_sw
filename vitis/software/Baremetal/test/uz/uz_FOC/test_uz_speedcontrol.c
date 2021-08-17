@@ -11,7 +11,9 @@ float omega_el_rad_per_sec = 0.0f;
 float n_ref_rpm = 1000.0f;
 float id_ref_Ampere = 1.0f; 
 float polePairs = 4.0f;
+float U_zk_Volts = 24.0f;
 bool ext_clamping = false;
+struct uz_PMSM_t config_PMSM = {0};
 void setUp(void)
 {
     config.Kp = 0.00864f;
@@ -22,12 +24,18 @@ void setUp(void)
     omega_el_rad_per_sec = 0.0f;
     n_ref_rpm = 1000.0f;
     id_ref_Ampere = 1.0f; 
-    polePairs = 4.0f;
+    U_zk_Volts = 24.0f;
     ext_clamping = false;
+    config_PMSM.R_ph_Ohm = 0.08f;
+    config_PMSM.Ld_Henry = 0.00027f;
+    config_PMSM.Lq_Henry = 0.00027f;
+    config_PMSM.Psi_PM_Vs = 0.0082f;
+    config_PMSM.polePairs = 4.0f;
+    config_PMSM.I_max_Ampere = 20.0f;
 }
 void test_uz_SpeedControl_sample_NULL(void){
     setUp();
-    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(NULL, omega_el_rad_per_sec, n_ref_rpm, id_ref_Ampere, polePairs, ext_clamping));
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(NULL, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
 }
 
 void test_uz_SpeedControl_reset_NULL(void){
@@ -45,7 +53,7 @@ void test_uz_SpeedControl_sample_output(void){
     float iq_out[5]={3.6191f, 3.6195f, 3.6198f, 3.62f, 3.62f}; 
     for(int i=0;i<5;i++){
         omega_el_rad_per_sec = values_omega[i];
-        struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, id_ref_Ampere, polePairs, ext_clamping);
+        struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping);
 		TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out[i], output.q);
     }
@@ -60,7 +68,7 @@ void test_uz_SpeedControl_sample_output_limit(void){
     float id_out = 1.0f;
     float iq_out = 10.0f;
     omega_el_rad_per_sec = 0.0f;
-    struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, id_ref_Ampere, polePairs, ext_clamping);
+    struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out, output.q);
 }
@@ -76,7 +84,7 @@ void test_uz_SpeedControl_sample_ext_clamping(void){
     float iq_out[5]={3.6191f, 3.6191f, 3.6191f, 3.6190f, 3.6189f}; 
     for(int i=0;i<5;i++){
         omega_el_rad_per_sec = values_omega[i];
-        struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, id_ref_Ampere, polePairs, ext_clamping);
+        struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping);
 		TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out[i], output.q);
     }

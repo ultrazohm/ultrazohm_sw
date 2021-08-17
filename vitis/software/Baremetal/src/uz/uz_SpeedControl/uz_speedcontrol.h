@@ -5,6 +5,7 @@
 #include "../uz_HAL.h"
 #include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_piController/uz_piController.h"
+#include "../uz_PMSM_config/uz_PMSM_config.h"
 #include <math.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -28,7 +29,7 @@ uz_PI_Controller* uz_SpeedControl_init(struct uz_PI_Controller_config config);
  * @param ext_clamping external clamping signal
  * @return struct uz_dq_t reference currents in Ampere
  */
-struct uz_dq_t uz_SpeedControl_sample(uz_PI_Controller* self, float omega_el_rad_per_sec, float n_ref_rpm,  float id_ref_Ampere, float polePairs, bool ext_clamping);
+struct uz_dq_t uz_SpeedControl_sample(uz_PI_Controller* self, float omega_el_rad_per_sec, float n_ref_rpm, float U_zk_Volts, float id_ref_Ampere, struct uz_PMSM_t config, bool ext_clamping);
 
 /**
  * @brief Resets the PI-Controller

@@ -31,7 +31,7 @@ void setUp(void)
     config_PMSM.Lq_Henry = 0.00027f;
     config_PMSM.Psi_PM_Vs = 0.0082f;
     config_PMSM.polePairs = 4.0f;
-    config_PMSM.I_max_Ampere = 20.0f;
+    config_PMSM.I_max_Ampere = 10.0f;
 }
 void test_uz_SpeedControl_sample_NULL(void){
     setUp();
@@ -90,4 +90,61 @@ void test_uz_SpeedControl_sample_ext_clamping(void){
     }
 }
 
+void test_uz_SpeedControl_sample_field_weakening_active(void){
+    setUp();
+    //Values for comparision from simulation
+    //Tests, if the id_fw_current is correct and the iq_output ist correctly limited
+    n_ref_rpm = 7000.0f;
+    id_ref_Ampere = 0.0f; 
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    float id_out = -4.332f;
+    float iq_out = 8.582f;
+    omega_el_rad_per_sec = 1675.5f;
+    struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping);
+	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
+	TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out, output.q);
+}
+
+void test_uz_SpeedControl_sample_field_weakening_manual_id_ref(void){
+    setUp();
+    //Values for comparision from simulation
+    //Tests, that the manual id_ref is used, if its lower than id_fw_current
+    n_ref_rpm = 7000.0f;
+    id_ref_Ampere = -5.0f; 
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    float id_out = -5.0f;
+    float iq_out = 8.582f;
+    omega_el_rad_per_sec = 1675.5f;
+    struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping);
+	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
+	TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out, output.q);
+}
+
+void test_uz_SpeedControl_sample_field_weakening_manual_id_ref_too_low(void){
+    setUp();
+    //Values for comparision from simulation
+    //Tests, that the manual id_ref is not used, if its lower than -I_max
+    n_ref_rpm = 7000.0f;
+    id_ref_Ampere = -25.0f; 
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    float id_out = -4.332f;
+    float iq_out = 8.582f;
+    omega_el_rad_per_sec = 1675.5f;
+    struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping);
+	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
+	TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out, output.q);
+}
+
+void test_uz_SpeedControl_sample_field_weakening_manual_id_positive(void){
+    setUp();
+    //Values for comparision from simulation
+    //Tests, that a positive manual id_ref is used, if FW is off
+    n_ref_rpm = 2000.0f;
+    id_ref_Ampere = 5.0f; 
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    float id_out = 5.0f;
+    omega_el_rad_per_sec = 837.75f;
+    struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping);
+	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
+}
 #endif // TEST

@@ -36,22 +36,22 @@ P rtP = {
   /* Variable: Kis_n
    * Referenced by: '<S13>/Gain1'
    */
-  680.678406F,
+  7.4467F,
 
   /* Variable: Kp_id
    * Referenced by: '<S20>/Gain'
    */
-  16.3362827F,
+  10.0531F,
 
   /* Variable: Kp_iq
    * Referenced by: '<S21>/Gain'
    */
-  16.3362827F,
+  10.0531F,
 
   /* Variable: Kp_n
    * Referenced by: '<S13>/Gain'
    */
-  1.19612432F,
+  0.9394F,
 
   /* Variable: L_d
    * Referenced by:
@@ -101,12 +101,12 @@ P rtP = {
   /* Variable: i_max
    * Referenced by: '<S5>/Constant1'
    */
-  28.5105438F,
+  30.0F,
 
   /* Variable: i_max_peak
    * Referenced by: '<S5>/Constant'
    */
-  47.5175743F,
+  36.0F,
 
   /* Variable: i_ref_max
    * Referenced by:
@@ -114,22 +114,22 @@ P rtP = {
    *   '<S8>/Constant'
    *   '<S10>/Constant'
    */
-  23.7587872F,
+  25.0F,
 
   /* Variable: n_max
    * Referenced by: '<S5>/Constant3'
    */
-  750.0F,
+  600.0F,
 
   /* Variable: n_max_peak
    * Referenced by: '<S5>/Constant2'
    */
-  900.0F,
+  1500.0F,
 
   /* Variable: n_ref_max
    * Referenced by: '<S8>/function_Eckdrehzahl'
    */
-  600.0F,
+  400.0F,
 
   /* Variable: p
    * Referenced by: '<S8>/function_Eckdrehzahl'

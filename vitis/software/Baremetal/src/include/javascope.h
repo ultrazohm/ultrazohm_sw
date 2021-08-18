@@ -44,6 +44,7 @@ enum JS_OberservableData {
 	JSO_Error_I_continuous,
 	JSO_Error_n_peak,
 	JSO_Error_n_continuous,
+	JSO_Speed_rpm_filtered,
 	JSO_ISR_ExecutionTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,

@@ -13,6 +13,7 @@ void setUp(void)
     config.Psi_PM_Vs = 0.0082f;
     config.polePairs = 4.0f;
     config.J_kg_m_squared = 0.00001773f;
+    config.I_max_Ampere = 20.0f;
 }
 
 
@@ -61,6 +62,14 @@ void test_uz_PMSM_config_assert_J(void){
     config.J_kg_m_squared = -0.08f;
     TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
     config.J_kg_m_squared = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+}
+
+void test_uz_PMSM_config_assert_I_max(void){
+    setUp();
+    config.I_max_Ampere = -5.08f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
+    config.I_max_Ampere = 0.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
 }
 #endif // TEST

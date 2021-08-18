@@ -14,6 +14,7 @@ struct uz_PMSM_t{
     float Psi_PM_Vs;/**< permanent magnet flux linkage in Volt-seconds. Must be greater or equal than 0.0f */
     float polePairs; /**< number of polePairs of the machine. Must be greater than 0.0f. Must be no decimal value (i.e. 2.5f is not allowed) */
     float J_kg_m_squared; /**< inertia of the PMSM. Must be greater than 0.0f */
+    float I_max_Ampere; /**< max allowed current per phase. Must be greater than 0.0f */
 };
 
 /**

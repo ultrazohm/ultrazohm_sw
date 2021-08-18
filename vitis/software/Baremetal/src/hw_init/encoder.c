@@ -21,11 +21,10 @@
 int Encoder_Incremental_Initialize(DS_Data* data){
 
 	int Status = 0;
-    int QuadratureFactor = 4.0;
 
-	int32_t increments_per_turn_elec = (int32_t)((data->mrp.incrementalEncoderResolution*QuadratureFactor)/data->mrp.motorPolePairNumber); // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
-	int32_t increments_per_turn_mech = (int32_t)(data->mrp.incrementalEncoderResolution*QuadratureFactor); // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
-	int32_t pi2_to_increments_elec = (int32_t)(ldexpf(((2.0*M_PI/(data->mrp.incrementalEncoderResolution*QuadratureFactor))*data->mrp.motorPolePairNumber),Q24)); // Shift 24 Bit for fixed-point
+	int32_t increments_per_turn_elec = (int32_t)((data->mrp.incrementalEncoderResolution*QUADRATURE_FACTOR)/data->mrp.motorPolePairNumber); // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
+	int32_t increments_per_turn_mech = (int32_t)(data->mrp.incrementalEncoderResolution*QUADRATURE_FACTOR); // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
+	int32_t pi2_to_increments_elec = (int32_t)(ldexpf(((2.0*M_PI/(data->mrp.incrementalEncoderResolution*QUADRATURE_FACTOR))*data->mrp.motorPolePairNumber),Q24)); // Shift 24 Bit for fixed-point
     int32_t OmegaPerOverSample = (int32_t)(ldexpf(500.0*((2*M_PI)/60),Q11));  //In steps of 500rpm, the Oversampling-Factor is increased in order to have a better speed accuracy. Smaller value, smoother speed but less dynamic. Higher value, less averaging but also higher dynamic.
 
 	//Write down the factor 2*pi/Increments for theta elek. calculation
@@ -49,38 +48,54 @@ int Encoder_Incremental_Initialize(DS_Data* data){
 return Status;
 }
 
-//Initialize the variables for the speed encoder
-float 	fSpeed_rpm_Buf[SPEED_BUF_SIZE] = {0,0};
-u8 			u8Speed_Buf_Inc =0;
-float 	fSpeed_rpm_Mean = 0;
+//Initialize the variables for filtering of the speed encoder
+    float 	fSpeed_rpm_Buf[SPEED_BUF_SIZE] = {0};
+    u8 		u8Speed_Buf_Inc = 0;
+    float 	fSpeed_rpm = 0;
+    float 	fSpeed_rpm_Sum = 0;
+    float 	fSpeed_rpm_exp_old = 0;
+    float	fSpeed_rpm_exp = 0;
+    float	expB = 0;
 
 void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in global data struct
 
 	// Get mechanical angle theta prototype
 	int32_t i_theta_m  = Xil_In32(Encoder_position_REG);  //Read AXI-register
-	float fTheta_mech  = (float)(i_theta_m) /20000.0F * 2 * M_PI;
+	float fTheta_mech  = ((float)(i_theta_m) / (float)(data->mrp.incrementalEncoderResolution*QUADRATURE_FACTOR)) * 2.0F * M_PI;
 
-	//Read the speed encoder (own IP-Block)
+
+	//Read the speed encoder (own IP-Block) and write to filtered speed for comparison
 	int32_t i_speed = Xil_In32(Encoder_rps_REG); //Read AXI-register
-	float fSpeed_rpm = 9.5492966 * (float)(ldexpf(i_speed, Q11toF));  // Shift 11 Bit for fixed-point //(60/(2*pi)) = 9.5493 Conversion Omega to rpm (Compare Simulink)
+	data->av.mechanicalRotorSpeed_filtered = OMEGA_2_RPM * (float)(ldexpf(i_speed, Q11toF));  // Shift 11 Bit for fixed-point //(60/(2*pi)) = 9.5493 Conversion Omega to rpm (Compare Simulink)
 
-	//Calculate speed here if abs(RPM)<15 because speed value tends to stick to a value in range [-15 ,15] even if actual speed is zero
-	if (fabs(fSpeed_rpm) < 15.0F)
+
+	//Manual speed calculation
+	//calculate difference between new and old mechanical angle
+	float deltaTheta_mech = fTheta_mech - data->av.theta_mech;
+	//Detect 2pi->0 crossing (change bigger than one quarter negative mechanical rotation)
+	if (deltaTheta_mech < (-0.5F * M_PI))
 	{
-		fSpeed_rpm = (fTheta_mech - data->av.theta_mech)/data->ctrl.samplingPeriod; //difference between new and old value / time
-		if (fSpeed_rpm > 15.0F)		//to caps spikes caused by the change 2pi->0. To counter a onetime negative speed, the inverse sign is used.
-		{
-			fSpeed_rpm = -15.0F;
-		}
-		if (fSpeed_rpm < -15.0F)
-		{
-			fSpeed_rpm = 15.0F;
-		}
+		fSpeed_rpm = (deltaTheta_mech + 2.0F * M_PI)/(data->ctrl.samplingPeriod) * OMEGA_2_RPM;
+	}
+	//Detect 0->2pi crossing (change bigger than one quarter positive mechanical rotation)
+	else if (deltaTheta_mech > (0.5F * M_PI))
+	{
+		fSpeed_rpm = (deltaTheta_mech - 2.0F * M_PI)/(data->ctrl.samplingPeriod) * OMEGA_2_RPM;
+	}
+	else
+	{
+		fSpeed_rpm = deltaTheta_mech/(data->ctrl.samplingPeriod) * OMEGA_2_RPM;
 	}
 
-	fSpeed_rpm_Mean -= fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //subtract the old value for the averaging
-	fSpeed_rpm_Buf[u8Speed_Buf_Inc] = fSpeed_rpm;		//restore the new value for the averaging
-	fSpeed_rpm_Mean += fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //add the new value for the averaging
+	//Smoothing 1: Double exponential smoothing
+	fSpeed_rpm_exp_old = fSpeed_rpm_exp;
+	fSpeed_rpm_exp = SPEED_FIL_ALPHA * fSpeed_rpm + (1-SPEED_FIL_ALPHA) * (fSpeed_rpm_exp_old + expB);
+	expB = SPEED_FIL_BETA * (fSpeed_rpm_exp - fSpeed_rpm_exp_old) + (1 - SPEED_FIL_BETA) * expB;
+
+	//Smoothing 2: moving average
+	fSpeed_rpm_Sum -= fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //subtract the old value for the averaging
+	fSpeed_rpm_Buf[u8Speed_Buf_Inc] = fSpeed_rpm_exp;		//restore the new value for the averaging
+	fSpeed_rpm_Sum += fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //add the new value for the averaging
 
 	u8Speed_Buf_Inc +=1; //Count up for the averaging
 	if (u8Speed_Buf_Inc >= SPEED_BUF_SIZE){ //Safe calculation for array overflow
@@ -88,7 +103,7 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 	}
 
 	//Speed over buffer
-	data->av.mechanicalRotorSpeed = fSpeed_rpm_Mean * SPEED_BUF_SIZE_INVERS; //Calculate mean value for the speed
+	data->av.mechanicalRotorSpeed = fSpeed_rpm_Sum * SPEED_BUF_SIZE_INVERS; //Calculate mean value for the speed
 
 	//Write theta mech
 	data->av.theta_mech = fTheta_mech;

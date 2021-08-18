@@ -18,7 +18,32 @@ Configuration
 -------------
 
 In order to configure the SpeedControl check the :ref:`configuration section of the PI-Controller <uz_piController_config>` for further information.
-No additional config structs besides the one for the PI-Controller have to be initialized.
+Some values of the :ref:`uz_PMSM_t struct <uz_PMSM_config>` have to be initialized as well.
+
+Example
+^^^^^^^
+
+.. code-block:: c
+  :linenos:
+  :caption: Example function call for configuration
+  
+  #include "uz/uz_SpeedControl/uz_speedcontrol.h"
+  int main(void) {
+     struct uz_PI_Controller_config config = {
+      .Kp = 10.0f,
+      .Ki = 10.0f,
+      .samplingTime_sec = 0.00005f,
+      .upper_limit = 10.0f,
+      .lower_limit = -10.0f
+     }; 
+     struct uz_PMSM_t config = {
+      .R_ph_Ohm = 0.08f,
+      .Ld_Henry = 0.00027f,
+      .Lq_Henry = 0.00027f,
+      .Psi_PM_Vs = 0.0082f,
+      .polePairs = 4.0f,
+     };
+  }
 
 .. _uz_SpeedControl_init:
 

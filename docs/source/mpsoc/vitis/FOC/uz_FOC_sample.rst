@@ -106,10 +106,10 @@ It returns the reference voltages in an ``uz_dq_t`` struct.
   \end{scope}
   \begin{scope}[shift={(10,2.45)}]
   \node[draw, rectangle, minimum height=3.8cm, minimum width = 5cm, fill=magenta, fill opacity=0.2] (SVL) at (0,0) {};
-  \node[font=\footnotesize] at ($(SVL.west)+(0.6,1.3)$) {uz\_dq\_t};
-  \node[font=\footnotesize] at ($(SVL.west)+(0.6,0.6)$) {uz\_dq\_t};
+  \node[font=\footnotesize] at ($(SVL.west)+(0.65,1.3)$) {uz\_dq\_t};
+  \node[font=\footnotesize] at ($(SVL.west)+(0.65,0.6)$) {uz\_dq\_t};
   \node[font=\footnotesize] at ($(SVL.west)+(0.6,0)$) {$\omega_{el}$};
-  \node[font=\footnotesize] at ($(SVL.west)+(0.95,-0.6)$) {ext\_clamping};
+  \node[font=\footnotesize] at ($(SVL.west)+(1.1,-0.6)$) {ext\_clamping};
   \node[font=\footnotesize] at ($(SVL.west)+(0.6,-1.3)$) {$U_{zk}$};
   \node[font=\footnotesize] at ($(SVL.east)+(-0.5,-0.6)$) {uz\_dq};
   \node[font=\footnotesize] at ($(SVL.east)+(-0.95,0.6)$) {ext\_clamping};
@@ -157,7 +157,7 @@ It returns the reference voltages in an ``uz_dq_t`` struct.
   \draw[-latex](input_FOC.east) -- ($(FOC_current.west)+(0,2.3)$);
   \draw[-latex](input_dq_ref.east) -- ($(FOC_current.west)+(0,0.8)$);
   \draw[-latex](input_dq_meas.east) -- ($(FOC_current.west)+(0,-0.5)$);
-  \node[font=\scriptsize, rotate=90] at ($(linearDecouppling.west)+(-0.6,-2.6)$) {-$>$config.config\_lin\_decoupling};
+  \node[font=\scriptsize, rotate=90] at ($(linearDecouppling.west)+(-0.6,-2.6)$) {-$>$config.config\_PMSM};
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm] at ($(FOC_sample.east)+(2,0.85)$) (output){output}; 
   \draw[-latex]($(FOC_sample.east)+(0,0.85)$) -- (output.west);
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm] at ($(input_dq_ref.west)+(-3,0)$) (input_dq2){reference-dq-currents};

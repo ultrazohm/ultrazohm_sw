@@ -38,6 +38,104 @@ void test_uz_SpeedControl_sample_NULL(void){
     TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(NULL, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
 }
 
+void test_uz_SpeedControl_assert_Rph_negative(void){
+    setUp();
+    config_PMSM.R_ph_Ohm = -0.08f;
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
+void test_uz_SpeedControl_assert_Rph_zero(void){
+    setUp();
+    config_PMSM.R_ph_Ohm = 0.0f;
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
+void test_uz_SpeedControl_assert_Ld_negative(void){
+    setUp();
+    config_PMSM.Ld_Henry = -0.08f;
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
+void test_uz_SpeedControl_assert_Ld_zero(void){
+    setUp();
+    config_PMSM.Ld_Henry = 0.0f;
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
+void test_uz_SpeedControl_assert_Lq_negative(void){
+    setUp();
+    config_PMSM.Lq_Henry = -0.08f;
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
+void test_uz_SpeedControl_assert_Lq_zero(void){
+    setUp();
+    config_PMSM.Lq_Henry = 0.0f;
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
+void test_uz_SpeedControl_assert_Psi_pm(void){
+    setUp();
+    config_PMSM.Psi_PM_Vs = -0.08f;
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
+void test_uz_SpeedControl_assert_polePairs_negative(void){
+    setUp();
+    config_PMSM.polePairs = -2.0f;
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
+void test_uz_SpeedControl_assert_polePairs_zero(void){
+    setUp();
+    config_PMSM.polePairs = 0.0f;
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
+void test_uz_SpeedControl_assert_polePairs_decimal_value(void){
+    setUp();
+    config_PMSM.polePairs = 0.5f;
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
+void test_uz_SpeedControl_assert_I_max_negative(void){
+    setUp();
+     config_PMSM.I_max_Ampere = -5.08f;
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
+void test_uz_SpeedControl_assert_I_max_zero(void){
+    setUp();
+     config_PMSM.I_max_Ampere = 0.0f;
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
+void test_uz_SpeedControl_assert_U_zk_negative(void){
+    setUp();
+    U_zk_Volts = -5.0f;
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
+void test_uz_SpeedControl_assert_U_zk_zero(void){
+    setUp();
+    U_zk_Volts = 0.0f;
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
 void test_uz_SpeedControl_reset_NULL(void){
     setUp();
     TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_reset(NULL));

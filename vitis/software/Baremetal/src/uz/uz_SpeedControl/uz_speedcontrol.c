@@ -13,6 +13,12 @@ uz_PI_Controller* uz_SpeedControl_init(struct uz_PI_Controller_config config){
 struct uz_dq_t uz_SpeedControl_sample(uz_PI_Controller* self, float omega_el_rad_per_sec, float n_ref_rpm, float U_zk_Volts, float id_ref_Ampere, struct uz_PMSM_t config_PMSM, bool ext_clamping){
     uz_assert(config_PMSM.polePairs > 0.0f);
 	uz_assert(fmodf(config_PMSM.polePairs, 1.0f) == 0);
+    uz_assert(config_PMSM.R_ph_Ohm > 0.0f);
+    uz_assert(config_PMSM.I_max_Ampere > 0.0f);
+    uz_assert(config_PMSM.Ld_Henry > 0.0f);
+    uz_assert(config_PMSM.Lq_Henry > 0.0f);
+    uz_assert(config_PMSM.Psi_PM_Vs >= 0.0f);
+    uz_assert(U_zk_Volts > 0.0f);
     bool fw_flag = false;
     struct uz_dq_t i_output_Ampere = {0};
 	float omega_el_ref_rad_per_sec = (n_ref_rpm * 2.0f * M_PI * config_PMSM.polePairs) / 60.0f;

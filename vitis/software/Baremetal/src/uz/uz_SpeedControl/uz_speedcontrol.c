@@ -44,7 +44,7 @@ static struct uz_dq_t uz_SpeedControl_field_weakening(struct uz_PMSM_t config_PM
     } else {
 	    fw_flag = false;
     }
-    output.d = uz_SpeedControl_decide_id_ref(config_PMSM.I_max_Ampere, id_ref_Ampere, output.d, fw_flag);
+	output.d = uz_SpeedControl_decide_id_ref(config_PMSM.I_max_Ampere * 0.95f, id_ref_Ampere, output.d, fw_flag);
     float iq_max = sqrtf(powf(config_PMSM.I_max_Ampere, 2.0f) - powf(output.d, 2.0f));
     if( (output.q > iq_max) || (fw_flag == false) ) {
          output.q = iq_max;
@@ -53,11 +53,12 @@ static struct uz_dq_t uz_SpeedControl_field_weakening(struct uz_PMSM_t config_PM
 }
 
 static float uz_SpeedControl_decide_id_ref(float I_max, float id_ref_Ampere, float id_field_weakening_Ampere, bool fw_flag){
-    float output = 0.0f;
+	//Gives out the input id_ref, as long as fw is off, or the input value is lower than the needed id_fw value to reach its n_ref speed
+	float output = 0.0f;
     bool id_ref_smaller_than_id_fw = id_ref_Ampere <= id_field_weakening_Ampere;
     bool id_ref_valid = fabsf(id_ref_Ampere) < I_max;
     if(fw_flag == false){
-	    output = uz_signals_saturation(id_ref_Ampere, I_max, -I_max);
+		output = uz_signals_saturation(id_ref_Ampere, I_max, -I_max);
 	} else if ( (fw_flag == true) && (id_ref_smaller_than_id_fw == true) && (id_ref_valid == true)) {
 		output = uz_signals_saturation(id_ref_Ampere, I_max, -I_max);
     }else{

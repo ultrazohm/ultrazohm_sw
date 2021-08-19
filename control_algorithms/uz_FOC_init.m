@@ -10,7 +10,7 @@ d_d_c=16000;                %kHz
 
 %Parameter
 U_ZK=24; %V
-d_y_max=24;                 %V
+d_y_max=10;                 %V
 d_y_min=-d_y_max;           %V
 d_i_max=10;                 %A
 d_i_min=-d_i_max;           %A

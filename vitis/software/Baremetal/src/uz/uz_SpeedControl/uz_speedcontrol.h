@@ -6,6 +6,7 @@
 #include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_piController/uz_piController.h"
 #include "../uz_PMSM_config/uz_PMSM_config.h"
+#include "../uz_signals/uz_signals.h"
 #include <math.h>
 #include <stdlib.h>
 #include <stdbool.h>

@@ -164,7 +164,7 @@ void test_uz_SpeedControl_sample_output_limit(void){
     n_ref_rpm = 3000.0f;
     uz_PI_Controller* instance = uz_PI_Controller_init(config);
     float id_out = 1.0f;
-    float iq_out = 10.0f;
+    float iq_out = 9.9499f;
     omega_el_rad_per_sec = 0.0f;
     struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
@@ -244,5 +244,20 @@ void test_uz_SpeedControl_sample_field_weakening_manual_id_positive(void){
     omega_el_rad_per_sec = 837.75f;
     struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
+}
+
+void test_uz_SpeedControl_sample_field_weakening_manual_id_ref_limit_iq(void){
+    setUp();
+    //Values for comparision from simulation
+    //Tests, that the manual id_ref is not used, if its lower than -I_max
+    n_ref_rpm = 7000.0f;
+    id_ref_Ampere = 5.0f; 
+    uz_PI_Controller* instance = uz_PI_Controller_init(config);
+    float id_out = 5.0f;
+    float iq_out = 8.66f;
+    omega_el_rad_per_sec = 209.44f;
+    struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping);
+	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
+	TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out, output.q);
 }
 #endif // TEST

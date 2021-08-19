@@ -115,7 +115,7 @@ void ISR_Control(void *data)
 int Initialize_ISR(){
 
 	int Status = 0;
-
+	sleep(10);
 	// Initialize interrupt controller for the IPI -> Initialize RPU IPI
 	Status = Rpu_IpiInit(INTERRUPT_ID_IPI);
 		if(Status != XST_SUCCESS) {

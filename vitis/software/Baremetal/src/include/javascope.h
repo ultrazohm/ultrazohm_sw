@@ -60,8 +60,8 @@ enum JS_OberservableData {
 enum JS_SlowData {
 	JSSD_ZEROVALUE=0,
 	JSSD_INT_SecondsSinceSystemStart,
-	JSSD_FLOAT_uSecPerIsr,
-	JSSD_FLOAT_Sine,
+	JSSD_FLOAT_ExecTimeISR_us,
+	JSSD_FLOAT_PeriodISR_us,
 	JSSD_FLOAT_FreqReadback,
 	JSSD_INT_Milliseconds,
 	JSSD_FLOAT_ADCconvFactorReadback,

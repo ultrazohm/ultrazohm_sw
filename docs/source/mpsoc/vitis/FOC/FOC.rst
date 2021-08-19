@@ -57,7 +57,7 @@ Example
 Description
 ^^^^^^^^^^^
     
-With this config struct one can customize the FOC and the included :ref:`PI-Controller <uz_piController>` and :ref:`linear decoupling <uz_lineardecoupling>` and :ref:`PMSM config <uz_PMSM_config>`.
+With these config structs one can customize the FOC and the included :ref:`PI-Controller <uz_piController>` and :ref:`linear decoupling <uz_lineardecoupling>` and :ref:`PMSM config <uz_PMSM_config>`.
 Each of the two PI-Controller need their own :ref:`config struct <uz_piController_config>`.
 One for the id-Controller and the other one for the iq-Controller. 
 

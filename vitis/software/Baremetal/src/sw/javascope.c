@@ -141,12 +141,12 @@ void js_fetchData4CH()
 	memcpy(&(MsgPtr[1]), js_ptr[1], sizeof(u32));
 	memcpy(&(MsgPtr[2]), js_ptr[2], sizeof(u32));
 	memcpy(&(MsgPtr[3]), js_ptr[3], sizeof(u32));
-	memcpy(&(MsgPtr[7]), js_ptr[4], sizeof(u32));
+	memcpy(&(MsgPtr[4]), js_ptr[4], sizeof(u32));
 
 
-	memcpy(&(MsgPtr[4]), &(js_slowDataArray[cnt_slowData]), sizeof(u32));		// copy without automatic float -> int conversion
-	MsgPtr[5] = cnt_slowData;
-	MsgPtr[6] = OsziData.status_BareToRTOS;
+	memcpy(&(MsgPtr[5]), &(js_slowDataArray[cnt_slowData]), sizeof(u32));		// copy without automatic float -> int conversion
+	MsgPtr[6] = cnt_slowData;
+	MsgPtr[7] = OsziData.status_BareToRTOS;
 
 
 	cnt_javascope++;

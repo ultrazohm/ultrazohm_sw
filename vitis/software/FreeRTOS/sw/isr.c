@@ -91,12 +91,12 @@ void Transfer_ipc_Intr_Handler(void *data)
 		memcpy(&OsziData.val[1], &IpiBuf[1], sizeof(float));
 		memcpy(&OsziData.val[2], &IpiBuf[2], sizeof(float));
 		memcpy(&OsziData.val[3], &IpiBuf[3], sizeof(float));
-		memcpy(&OsziData.val[4], &IpiBuf[7], sizeof(float));
+		memcpy(&OsziData.val[4], &IpiBuf[4], sizeof(float));
 
 		// these variables are sent every time, but only evaluated every 5th time
-		OsziData.slowDataContent 		= IpiBuf[4];
-		OsziData.slowDataID 			= (Xuint16)IpiBuf[5];
-		OsziData.status_BareToRTOS 		= IpiBuf[6];
+		OsziData.slowDataContent 		= IpiBuf[5];
+		OsziData.slowDataID 			= (Xuint16)IpiBuf[6];
+		OsziData.status_BareToRTOS 		= IpiBuf[7];
 
 
 		// append OsziData to queue

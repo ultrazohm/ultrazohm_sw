@@ -16,10 +16,10 @@ Example
   int main(void) {
      float omega_el_rad_per_sec = 1.5f;
      float n_ref_rpm = 500.0f;
+     float U_zk_Volts = 24.0f;
      bool ext_clamping = false;
      float id_ref_Ampere = 2.0f;
-     float polePairs = 4.0f;
-     struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, id_ref_Ampere, polePairs, ext_clamping);
+     struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping);
   }
 
 Description
@@ -43,9 +43,9 @@ This function includes a field weakening calculator. The ``id_ref`` current ther
   c &= I_d^2 \cdot R_{ph}^2 - U_{SV,max}^2 + \omega_{el}^2 \cdot (\psi_{PM}^2 + L_d^2 \cdot I_d^2 + 2\cdot \psi_{PM} \cdot L_d \cdot I_d)\\
   I_{q,limit} &= \frac{-b + \sqrt{b^2 - 4\cdot a \cdot c}}{2\cdot a}
 
-If the machine is not in the field weakening territory, the input ``id_ref`` current will be used. 
-If the machine is inside the field weakening territory, the input ``id_ref`` will only be used, if it's value is lower than the required ``id_fw`` current from the field weakening (i.e. ``id_ref=-5`` and ``id_fw=-2`` will result in ``id_output=-5``).
-The limits of the saturation inside the include PI-Controller will be adjusted with the calculated ``iq_limit`` value each timestep.
+If the machine is not in the field weakening territory, the input ``id_ref_Ampere`` current will be used. 
+If the machine is inside the field weakening territory, the input ``id_ref_Ampere`` will only be used, if it's value is lower than the required ``id_fw`` current from the field weakening (i.e. ``id_ref_Ampere=-5`` and ``id_fw=-2`` will result in ``id_output=-5``).
+The limits of the saturation inside the include PI-Controller will be adjusted with the calculated ``iq_limit`` value for each time step.
 
 .. tikz:: PI-Controller
   :align: left

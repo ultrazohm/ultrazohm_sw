@@ -48,7 +48,7 @@ Example
         .lower_limit = -10.0f
      };
      struct uz_FOC_config config_FOC = {
-        .config_lin_decoupling = config_lin_Decoup,
+        .config_PMSM = config_PMSM,
         .config_id = config_id,
         .config_iq = config_iq
      };

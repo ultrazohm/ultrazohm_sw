@@ -18,7 +18,7 @@ Example
      float omega_el_rad_per_sec = 125.1f;
      struct uz_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
      struct uz_dq_t i_reference_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-     struct uz_dq_t u_output_Volts = uz_FOC_sample(self, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec);
+     struct uz_dq_t u_output_Volts = uz_FOC_sample(FOC_instance, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec);
   }
 
 Description

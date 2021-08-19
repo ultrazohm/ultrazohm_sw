@@ -4,7 +4,7 @@
 Speed Control
 =============
 
-Toolbox for a standard SpeedControl with a :ref:`PI-Controllers <uz_piController>` in parallel form. 
+Toolbox for a standard SpeedControl with a :ref:`PI-Controller <uz_piController>` in parallel form. 
 It outputs only the reference currents for the :ref:`FOC <uz_FOC>`.
 Other control algorithms can be used as well.
 It can not control a machine on its own. 
@@ -36,12 +36,13 @@ Example
       .upper_limit = 10.0f,
       .lower_limit = -10.0f
      }; 
-     struct uz_PMSM_t config = {
+     struct uz_PMSM_t config_PMSM = {
       .R_ph_Ohm = 0.08f,
       .Ld_Henry = 0.00027f,
       .Lq_Henry = 0.00027f,
       .Psi_PM_Vs = 0.0082f,
       .polePairs = 4.0f,
+      .I_max_Ampere = 10.0f
      };
   }
 

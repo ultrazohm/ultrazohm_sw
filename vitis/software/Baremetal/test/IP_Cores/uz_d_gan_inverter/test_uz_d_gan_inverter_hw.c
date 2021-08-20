@@ -378,7 +378,7 @@ void tearDown(void)
 
     void test_uz_d_gan_inverter_hw_get_OC(void)
     {
-        uint32_t axi_read_OC = 15;
+        uint32_t axi_read_OC = 63;
         uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + AXI_GaN_OC_Data_UZ_D_GaN_Inverter,axi_read_OC);
         uint32_t axi_read_OC_readback = uz_d_gan_inverter_get_OC_GaN(TEST_BASE_ADDRESS);
         TEST_ASSERT_EQUAL_INT(axi_read_OC,axi_read_OC_readback);
@@ -386,7 +386,7 @@ void tearDown(void)
 
     void test_uz_D_gan_inverter_hw_get_OC_with_zero_base_address(void)
     {
-        uint32_t axi_read_OC = 15;
+        uint32_t axi_read_OC = 63;
         // Tell the test that we do not care how often this function is called
         uz_axi_read_uint32_IgnoreAndReturn(axi_read_OC);
         // Test passes if an assert fails in the function under test
@@ -395,7 +395,7 @@ void tearDown(void)
 
     void test_uz_d_gan_inverter_hw_get_FAULT(void)
     {
-        uint32_t axi_read_FAULT = 15;
+        uint32_t axi_read_FAULT = 63;
         uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + AXI_GaN_FAULT_Data_UZ_D_GaN_Inverter,axi_read_FAULT);
         uint32_t axi_read_FAULT_readback = uz_d_gan_inverter_get_FAULT_GaN(TEST_BASE_ADDRESS);
         TEST_ASSERT_EQUAL_INT(axi_read_FAULT,axi_read_FAULT_readback);
@@ -403,7 +403,7 @@ void tearDown(void)
 
     void test_uz_D_gan_inverter_hw_get_FAULT_with_zero_base_address(void)
     {
-        uint32_t axi_read_FAULT = 15;
+        uint32_t axi_read_FAULT = 63;
         // Tell the test that we do not care how often this function is called
         uz_axi_read_uint32_IgnoreAndReturn(axi_read_FAULT);
         // Test passes if an assert fails in the function under test

@@ -40,7 +40,9 @@ float uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(float dutyCyclePerCe
 
 
 void uz_d_gan_inverter_update_states(uz_d_gan_inverter_t *self) {
-    
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+
     self->outputs.PWMdutyCycPerCent_H1 = uz_d_gan_inverter_get_PWMdutyCycPerCent_H1(self->config.base_address);
     self->outputs.PWMdutyCycPerCent_L1 = uz_d_gan_inverter_get_PWMdutyCycPerCent_L1(self->config.base_address);
     self->outputs.PWMdutyCycPerCent_H2 = uz_d_gan_inverter_get_PWMdutyCycPerCent_H2(self->config.base_address);
@@ -49,26 +51,26 @@ void uz_d_gan_inverter_update_states(uz_d_gan_inverter_t *self) {
     self->outputs.PWMdutyCycPerCent_L3 = uz_d_gan_inverter_get_PWMdutyCycPerCent_L3(self->config.base_address);
 
     //get OC status bits of each switch via bit mask
-    self->outputs.OC_H1 = ((uz_d_gan_inverter_get_OC_GaN(self->config.base_address)) & 0x1);
-    self->outputs.OC_L1 = ((uz_d_gan_inverter_get_OC_GaN(self->config.base_address)) & 0x2);
-    self->outputs.OC_H2 = ((uz_d_gan_inverter_get_OC_GaN(self->config.base_address)) & 0x4);
-    self->outputs.OC_L2 = ((uz_d_gan_inverter_get_OC_GaN(self->config.base_address)) & 0x8);
-    self->outputs.OC_H3 = ((uz_d_gan_inverter_get_OC_GaN(self->config.base_address)) & 0x10);
-    self->outputs.OC_L3 = ((uz_d_gan_inverter_get_OC_GaN(self->config.base_address)) & 0x20);
+    self->outputs.OC_H1 = (((uz_d_gan_inverter_get_OC_GaN(self->config.base_address)) & 0x1) >> 0);
+    self->outputs.OC_L1 = (((uz_d_gan_inverter_get_OC_GaN(self->config.base_address)) & 0x2) >> 1);
+    self->outputs.OC_H2 = (((uz_d_gan_inverter_get_OC_GaN(self->config.base_address)) & 0x4) >> 2);
+    self->outputs.OC_L2 = (((uz_d_gan_inverter_get_OC_GaN(self->config.base_address)) & 0x8) >> 3);
+    self->outputs.OC_H3 = (((uz_d_gan_inverter_get_OC_GaN(self->config.base_address)) & 0x10) >> 4);
+    self->outputs.OC_L3 = (((uz_d_gan_inverter_get_OC_GaN(self->config.base_address)) & 0x20) >> 5);
 
     //get FAULT status bits of each switch via bit mask
-    self->outputs.FAULT_H1 = ((uz_d_gan_inverter_get_FAULT_GaN(self->config.base_address)) & 0x1);
-    self->outputs.FAULT_L1 = ((uz_d_gan_inverter_get_FAULT_GaN(self->config.base_address)) & 0x2);
-    self->outputs.FAULT_H2 = ((uz_d_gan_inverter_get_FAULT_GaN(self->config.base_address)) & 0x4);
-    self->outputs.FAULT_L2 = ((uz_d_gan_inverter_get_FAULT_GaN(self->config.base_address)) & 0x8);
-    self->outputs.FAULT_H3 = ((uz_d_gan_inverter_get_FAULT_GaN(self->config.base_address)) & 0x10);
-    self->outputs.FAULT_L3 = ((uz_d_gan_inverter_get_FAULT_GaN(self->config.base_address)) & 0x20);
+    self->outputs.FAULT_H1 = (((uz_d_gan_inverter_get_FAULT_GaN(self->config.base_address)) & 0x1) >> 0);
+    self->outputs.FAULT_L1 = (((uz_d_gan_inverter_get_FAULT_GaN(self->config.base_address)) & 0x2) >> 1);
+    self->outputs.FAULT_H2 = (((uz_d_gan_inverter_get_FAULT_GaN(self->config.base_address)) & 0x4) >> 2);
+    self->outputs.FAULT_L2 = (((uz_d_gan_inverter_get_FAULT_GaN(self->config.base_address)) & 0x8) >> 3);
+    self->outputs.FAULT_H3 = (((uz_d_gan_inverter_get_FAULT_GaN(self->config.base_address)) & 0x10) >> 4);
+    self->outputs.FAULT_L3 = (((uz_d_gan_inverter_get_FAULT_GaN(self->config.base_address)) & 0x20) >> 5);
 
     //get I_DIAG status bits of each current amplifier via bit mask
-    self->outputs.I_DC_DIAG = ((uz_d_gan_inverter_get_I_DIAG(self->config.base_address)) & 0x1);
-    self->outputs.I1_DIAG = ((uz_d_gan_inverter_get_I_DIAG(self->config.base_address)) & 0x2);
-    self->outputs.I2_DIAG = ((uz_d_gan_inverter_get_I_DIAG(self->config.base_address)) & 0x4);
-    self->outputs.I3_DIAG = ((uz_d_gan_inverter_get_I_DIAG(self->config.base_address)) & 0x8);    
+    self->outputs.I_DC_DIAG = (((uz_d_gan_inverter_get_I_DIAG(self->config.base_address)) & 0x1) >> 0);
+    self->outputs.I1_DIAG = (((uz_d_gan_inverter_get_I_DIAG(self->config.base_address)) & 0x2) >> 1);
+    self->outputs.I2_DIAG = (((uz_d_gan_inverter_get_I_DIAG(self->config.base_address)) & 0x4) >> 2);
+    self->outputs.I3_DIAG = (((uz_d_gan_inverter_get_I_DIAG(self->config.base_address)) & 0x8) >> 3);    
 
     self->outputs.GaN_ChipTempDegreesCelsius_H1 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(self->outputs.PWMdutyCycPerCent_H1);
     self->outputs.GaN_ChipTempDegreesCelsius_H1 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(self->outputs.PWMdutyCycPerCent_L1);

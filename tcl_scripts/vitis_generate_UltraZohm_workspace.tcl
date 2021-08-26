@@ -107,7 +107,7 @@ platform write
 bsp config lwip_dhcp true
 platform write 
 # increase heap size of freertos, to fix javascope glitches
-bsp config total_heap_size  1048576
+bsp config total_heap_size  20000000
 platform write 
 
 puts "Info:(UltraZohm) regenerate FreeRTOS BSP"

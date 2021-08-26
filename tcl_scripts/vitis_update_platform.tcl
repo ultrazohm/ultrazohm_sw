@@ -93,7 +93,7 @@ puts "Info:(UltraZohm) Regenerate FreeRTOS_domain BSP"
 domain active FreeRTOS_domain
 # increase heap size of freertos, to fix javascope glitches
 # this has to be included in update_platform script, otherwise this setting is overwritten (for some strange reason)
-bsp config total_heap_size  1048576
+bsp config total_heap_size  20000000
 platform write 
 bsp regenerate
 

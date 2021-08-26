@@ -16,88 +16,60 @@
 #include "../main.h"
 #include "../defines.h"
 #include "../include/javascope.h"
-
-
-float myIQfactor[15] = {1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.0, 1024.0, 2048.0, 4096.0, 8192.0, 16384.0};
+#include "xil_cache.h"
 
 // IPI Messaging System R5 <-> A53
-#define IPI_HEADER			0x1E0000 /* 1E - Target Module ID */
-#define IPI_R5toA53_MSG_LEN		8U //27U
 #define IPI_A53toR5_MSG_LEN		3U
 
 //Variables for JavaScope
-extern ARM_to_Oszi_Data_shared_struct OsziData;
 extern Oszi_to_ARM_Data_shared_struct ControlData;
 extern Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
 
-uint32_t cnt_javascope=0, cnt_slowData=0;
-
-uint16_t js_factor1 = 0, js_factor2 = 0, js_factor3 = 0, js_factor4 = 0;
-
 // Channel-pointer and pointer array
+static float const zerovalue = 0.0;
+union SlowData js_slowDataArray[JSSD_ENDMARKER];
 float *js_ptr_arr[JSO_ENDMARKER];
-float *js_ptr[18];	// channel ptr
-float zerovalue = 0.0;
-uint32_t  i_fetchDataLifeCheck=0;
+float *js_ptr[JS_CHANNELS];			// channel ptr
+static uint16_t *js_ptr_status;		// ptr to status word
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
-//Xint16 values[20];
-union SlowData js_slowDataArray[JSSD_ENDMARKER];
-
 static float lifecheck;
 static float ISRExecutionTime;
 static float isr_period_us;
+
+uint32_t  i_fetchDataLifeCheck=0;
 
 
 int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
 	//Initialize all variables with zero
-	int j=0;
-
-	for (j=0; j<JSO_ENDMARKER; j++)
+	for (int j=0; j<JSO_ENDMARKER; j++)
 	{
 		js_ptr_arr[j] = &zerovalue;
 	}
 
-	js_ptr[0] = &zerovalue;
-	js_ptr[1] = &zerovalue;
-	js_ptr[2] = &zerovalue;
-	js_ptr[3] = &zerovalue;
+	for(int j=0; j<JS_CHANNELS; j++)
+	{
+		js_ptr[j] = &zerovalue;
+	}
 
-	js_ptr[4] = &zerovalue;
-	js_ptr[5] = &zerovalue;
-	js_ptr[6] = &zerovalue;
-	js_ptr[7] = &zerovalue;
-
-	js_ptr[8] = &zerovalue;
-	js_ptr[9] = &zerovalue;
-	js_ptr[10] = &zerovalue;
-	js_ptr[11] = &zerovalue;
-
-	js_ptr[12] = &zerovalue;
-	js_ptr[13] = &zerovalue;
-	js_ptr[14] = &zerovalue;
-	js_ptr[15] = &zerovalue;
-
-	js_ptr[16] = &zerovalue;
-	js_ptr[17] = &zerovalue;
-
-
-	for (j=0; j<JSSD_ENDMARKER; j++)
+	for (int j=0; j<JSSD_ENDMARKER; j++)
 	{
 		js_slowDataArray[j].i = (uint32_t) zerovalue;
 	}
 
-	//Initialize the RAM with zeros
+	js_ptr_status = &data->sw; //which status word is correct?
+
+
 	ControlData.digInputs =0;
 	ControlData.id =0;
 	ControlData.value =0;
 
 	// Store every observable signal into the Pointer-Array.
-	// With the JavaScope, 4 signals can be displayed simultaneously
+	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ptr_arr[JSO_Speed_rpm]	= &data->av.mechanicalRotorSpeed;
@@ -125,54 +97,39 @@ int JavaScope_initalize(DS_Data* data)
 }
 
 
-void js_fetchData4CH()
+void js_fetchData()
 {
+	// create pointer to javascope_data_STRUCT named javascope_data located at MEM_SHARED_START
+	static struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
+
+	static int cnt_slowData=0;
 	int status;
-	u32 MsgPtr[IPI_R5toA53_MSG_LEN] = {0};
 	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0};
+
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
 	lifecheck =  uz_SystemTime_GetInterruptCounter() % 1000;
 	ISRExecutionTime=uz_SystemTime_GetIsrExectionTimeInUs();
 	isr_period_us=uz_SystemTime_GetIsrPeriodInUs();
-	//EL: write values that will be transfered into MsgPtr array
-	//MsgPtr contains values, js_ptr contains pointers to values
-
-	memcpy(&(MsgPtr[0]), js_ptr[0], sizeof(u32));
-	memcpy(&(MsgPtr[1]), js_ptr[1], sizeof(u32));
-	memcpy(&(MsgPtr[2]), js_ptr[2], sizeof(u32));
-	memcpy(&(MsgPtr[3]), js_ptr[3], sizeof(u32));
-	memcpy(&(MsgPtr[4]), js_ptr[4], sizeof(u32));
 
 
-	memcpy(&(MsgPtr[5]), &(js_slowDataArray[cnt_slowData]), sizeof(u32));		// copy without automatic float -> int conversion
-	MsgPtr[6] = cnt_slowData;
-	MsgPtr[7] = OsziData.status_BareToRTOS;
-
-
-	cnt_javascope++;
-	if (cnt_javascope >= 5) //Send a new SlowData only every 5th cycle
-	{
-		cnt_javascope =0;
-		cnt_slowData++;
-		if (cnt_slowData >= JSSD_ENDMARKER)
-			cnt_slowData = 0;
+	// write to shared memory
+	for(int j=0; j<JS_CHANNELS; j++){
+		javascope_data->scope_ch[j] = *js_ptr[j];
 	}
+	javascope_data->slowDataID 		= cnt_slowData;
+	javascope_data->status 			= *js_ptr_status;
+	javascope_data->slowDataContent = js_slowDataArray[cnt_slowData].u;
 
-	/*i_fetchDataLifeCheck++; //LiveCheck
-	if(i_fetchDataLifeCheck > 10000){
-		i_fetchDataLifeCheck =0;
-	}*/
+	// flush data cache of shared memory region to make sure shared memory is updated
+	Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
 
-	//SW: Write message for interrupt to APU
-	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, MsgPtr, IPI_R5toA53_MSG_LEN, XIPIPSU_BUF_TYPE_MSG);
-
-	//SW: Send an interrupt to APU
+	//Send an interrupt to APU
 	status = XIpiPsu_TriggerIpi(&INTCInst_IPI,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("RPU: IPI Trigger failed\r\n");
 	}
 
-	//SW: Afterwards an acknowledge and a message from the APU can be read/checked, but we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
+	//Afterwards an acknowledge and a message from the APU can be read/checked, but we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
 	status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, RespBuf,IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_RESP);
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("RPU: IPI reading from A53 failed\r\n");
@@ -182,7 +139,15 @@ void js_fetchData4CH()
 	ControlData.value 		= (uint16_t)RespBuf[1];
 	ControlData.digInputs 	= (uint16_t)RespBuf[2];
 
-	//End: send interrupt/message to the other processor with the FreeRTOS----------------------------
+	cnt_slowData++;
+	if (cnt_slowData >= JSSD_ENDMARKER){
+			cnt_slowData = 0;
+	}
+
+	i_fetchDataLifeCheck++; //LiveCheck
+	if(i_fetchDataLifeCheck > 10000){
+		i_fetchDataLifeCheck =0;
+	}
 }
 
 void JavaScope_update(DS_Data* data){
@@ -260,7 +225,7 @@ void JavaScope_update(DS_Data* data){
 	js_slowDataArray[JSSD_FLOAT_Lq].f 			= data->mrp.motorQuadratureInductance;
 	js_slowDataArray[JSSD_FLOAT_totalRotorInertia].f 	= data->mrp.totalRotorInertia;
 
-	js_fetchData4CH();
+	js_fetchData();
 
 	// End JavaScope---------------------------------------------------------------------------------------
 

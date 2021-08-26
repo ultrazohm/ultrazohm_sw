@@ -33,13 +33,6 @@ extern float sin1amp;
 extern _Bool bNewControlMethodAvailable;
 
 
-extern uint16_t js_factor1, js_factor2, js_factor3, js_factor4;	// javascope
-
-
-
-extern ARM_to_Oszi_Data_shared_struct OsziData;
-
-
 void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 {
 
@@ -82,19 +75,19 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		}
 		else if (msgId == 200) // SEND_PREC_CH1_bits
 		{
-			js_factor1 = value;
+
 		}
 		else if (msgId == 201) // SEND_PREC_CH2_bits
 		{
-			js_factor2 = value;
+
 		}
 		else if (msgId == 202) // SEND_PREC_CH3_bits
 		{
-			js_factor3 = value;
+
 		}
 		else if (msgId == 203) // SEND_PREC_CH4_bits
 		{
-			js_factor4 = value;
+
 		}
 		else if (msgId == 204) // SELECT_DATA_CH1_bits
 		{

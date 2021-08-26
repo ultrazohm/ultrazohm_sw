@@ -16,11 +16,9 @@
 #ifndef INCLUDE_JAVASCOPE_H_
 #define INCLUDE_JAVASCOPE_H_
 
-
 #include "ipc_ARM.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
-
-extern float zerovalue;
+#include "APU_RPU_shared.h"
 
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
@@ -122,11 +120,12 @@ enum JS_SlowData {
 union SlowData {
    int i;
    float f;
+   int unsigned u;
 };
 
 
 extern float *js_ptr_arr[JSO_ENDMARKER];
-extern float *js_ptr[18];	// channel ptr
+extern float *js_ptr[JS_CHANNELS];	// channel ptr
 
 extern union SlowData js_slowDataArray[JSSD_ENDMARKER];
 
@@ -134,7 +133,7 @@ extern union SlowData js_slowDataArray[JSSD_ENDMARKER];
 int JavaScope_initalize(DS_Data* data);
 void JavaScope_update(DS_Data* data);
 
-void js_fetchData4CH();
+void js_fetchData();
 
 
 

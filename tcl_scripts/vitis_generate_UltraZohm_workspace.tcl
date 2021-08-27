@@ -186,6 +186,11 @@ puts stdout $filename_FreeRTOS
 importsources -name FreeRTOS -path $filename_FreeRTOS -soft-link
 importsources -name FreeRTOS -path $filename_FreeRTOS/lscript.ld -linker-script
 
+# add shared folder to build directory
+app config -name FreeRTOS compiler-misc -I"$FOLDER_PATH/shared"
+app config -name Baremetal compiler-misc -I"$FOLDER_PATH/shared"
+
+
 # set optimization level 
 app config -name FreeRTOS -set compiler-optimization {Optimize most (-O3)}
 app config -name Baremetal -set compiler-optimization {Optimize more (-O2)}

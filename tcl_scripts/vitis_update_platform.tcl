@@ -18,7 +18,7 @@
 #	source {../../tcl_scripts/vitis_update_platform.tcl}
 #
 # XSCT Programming Reference
-# https://www.xilinx.com/html_docs/xilinx2019_2/vitis_doc/
+# https://www.xilinx.com/html_docs/xilinx2020_1/vitis_doc/
 ###########################################################################
 
 

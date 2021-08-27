@@ -37,7 +37,6 @@ extern "C" {
 // ========== JavaScope-Ethernet =========================================================================
 #define TCPPACKETSIZE 1460 //Maximum TCPPaketSize -> Default: 1460 -> Jumbo-Frames would enable a TCPPACKETSIZE of 8960
 #define TCPPORT 1000	   //Random chosen, but equivalent to the Concerto-OHMrichter
-#define NUMTCPWORKERS 3
 #define NETWORK_SEND_FIELD_SIZE 15
 //The IP-address, SubNet address-and StandartGateway-address are set in the main-thread in the main.c
 
@@ -89,14 +88,14 @@ typedef struct		// status + time + 20 elements (32bit) + 32 bit
 
 typedef struct
 {
-	u16_t id;
-	u16_t value;
-	u16_t digInputs;
+	uint16_t id;
+	uint16_t value;
+	uint16_t digInputs;
 } Oszi_to_ARM_Data_shared_struct;
 
 
 typedef struct _errorWord_ { // 16 bits
-	u16_t  errorCodeXilinx:8;
+	uint16_t  errorCodeXilinx:8;
 	_Bool wrongInterruptByIPI:1; //Wrong interrupt arrived
 	_Bool missingInterruptByIPI:1; //No Interrupt arrived
 	_Bool InitFailedInterruptByIPI:1; //Error during initialization

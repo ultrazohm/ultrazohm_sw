@@ -24,8 +24,8 @@ MEMORY
    psu_ddr_0_MEM_0 : ORIGIN = 0x0, LENGTH = 0x3FFF0000
    psu_ddr_1_MEM_0 : ORIGIN = 0x800000000, LENGTH = 0x80000000
    psu_qspi_linear_0_MEM_0 : ORIGIN = 0xC0000000, LENGTH = 0x20000000
-   psu_shared_ram_R5_0_to_A53_0  : ORIGIN = 0xFFFF8000, LENGTH = 0x7FFF
-   psu_shared_ram_A53_0_to_R5_0  : ORIGIN = 0xFFFF0000, LENGTH = 0x7FFF
+   psu_shared_ram_R5_0_to_A53_0  : ORIGIN = 0xFFFF8000, LENGTH = 0x8000
+   psu_shared_ram_A53_0_to_R5_0  : ORIGIN = 0xFFFF0000, LENGTH = 0x8000
 }
 
 /* Specify the default entry point to the program */

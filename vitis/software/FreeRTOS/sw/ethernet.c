@@ -111,6 +111,7 @@ void process_request_thread(void *p)
 			xil_printf("APU: %s: ERROR responding to client echo request. received = %d, written = %d\r\n",
 			__FUNCTION__, nread, nwrote);
 			xil_printf("APU: Closing socket %d\r\n", clientfd);
+			js_connection_established = 0;
 			break;
 		}
 		asm(" nop");
@@ -121,6 +122,7 @@ void process_request_thread(void *p)
 			nread = read(clientfd, (char *)recv_buf, TCPPACKETSIZE);
 			if (nread < 0) {
 				xil_printf("APU: %s: error reading from socket %d, closing Javascope socket\r\n", __FUNCTION__, clientfd);
+				js_connection_established = 0;
 				break;
 			}
 			//asm(" nop");
@@ -136,15 +138,18 @@ void process_request_thread(void *p)
 			// break if client closed connection /
 			if (nread <= 0){
 				close(clientfd);
+				js_connection_established = 0;
 				break;
 			}
 		}else{
 			close(clientfd);
+			js_connection_established = 0;
 		}
 	}
 
 	// close connection
 	close(clientfd);
+	js_connection_established = 0;
 	vTaskDelete(NULL);
 }
 

@@ -60,14 +60,20 @@ void Transfer_ipc_Intr_Handler(void *data)
 	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0,0,XST_SUCCESS};
 	BaseType_t xHigherPriorityTaskWoken;
 
+	// flush cache of shared memory
 	Xil_DCacheFlushRange( MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
 
-	// append to queue
-	if ( errQUEUE_FULL == xQueueSendToBackFromISR(js_queue, javascope_data, &xHigherPriorityTaskWoken)  )
+	// if javascope connection is established
+	if(js_connection_established!=0)
 	{
-		if(js_connection_established!=0)
-		js_queue_full++;
-		// xil_printf("OsziData_queue is full\r\n");
+		// append sample to queue
+		size_t queue_status = xQueueSendToBackFromISR(js_queue, javascope_data, &xHigherPriorityTaskWoken);
+
+		if (queue_status == errQUEUE_FULL)
+		{
+			js_queue_full++;
+			// xil_printf("OsziData_queue is full\r\n");
+		}
 	}
 
 	RespBuf[0] = (u32)ControlData.id;

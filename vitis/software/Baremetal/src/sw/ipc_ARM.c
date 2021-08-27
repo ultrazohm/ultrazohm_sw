@@ -29,9 +29,12 @@ uint32_t ADCconvFactor_Lbytes = 0;
 uint16_t ADCconvFactorReadRequest	= 0;
 float ADCconvFactorReadback = 0.0;
 
+
+extern float *js_ptr_arr[JSO_ENDMARKER];
+extern float *js_ptr[JS_CHANNELS];	// channel ptr
 extern float sin1amp;
 extern _Bool bNewControlMethodAvailable;
-
+extern uint32_t js_status_BareToRTOS;
 
 void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 {
@@ -559,52 +562,52 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 
 	/* Bit 0 - ui16_drv_enable */
 		if (data->cw.enableSystem == true) {
-			OsziData.status_BareToRTOS |= 1 << 0;
+			js_status_BareToRTOS |= 1 << 0;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 0);
+			js_status_BareToRTOS &= ~(1 << 0);
 		}
 		/* Bit 1 - PIR_ENABLE */
 		if (data->cw.enableControl == true) {
-			OsziData.status_BareToRTOS |= 1 << 1;
+			js_status_BareToRTOS |= 1 << 1;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 1);
+			js_status_BareToRTOS &= ~(1 << 1);
 		}
 		/* Bit 2 - IDENT_LQ */
 		if (data->pID.identLq == 1) {
-			OsziData.status_BareToRTOS |= 1 << 2;
+			js_status_BareToRTOS |= 1 << 2;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 2);
+			js_status_BareToRTOS &= ~(1 << 2);
 		}
 		/* Bit 3 - CURRENT_CONTROL */
 		if (data->cw.ControlReference == CurrentControl){
-			OsziData.status_BareToRTOS |= 1 << 3;
+			js_status_BareToRTOS |= 1 << 3;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 3);
+			js_status_BareToRTOS &= ~(1 << 3);
 		}
 		/* Bit 4 - SPEED_CONTROL */
 		if (data->cw.ControlReference == SpeedControl){
-			OsziData.status_BareToRTOS |= 1 << 4;
+			js_status_BareToRTOS |= 1 << 4;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 4);
+			js_status_BareToRTOS &= ~(1 << 4);
 		}
 		/* Bit 5 - ADD VIBRATION */
 		if (data->pID.VibON == 1) {
-			OsziData.status_BareToRTOS |= 1 << 5;
+			js_status_BareToRTOS |= 1 << 5;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 5);
+			js_status_BareToRTOS &= ~(1 << 5);
 		}
 		/* Bit 6 - IDorNOT */
 		//if (data->pID.MotorID == 1) {
 		if (data->cw.enableParameterID == true) {
-			OsziData.status_BareToRTOS |= 1 << 6;
+			js_status_BareToRTOS |= 1 << 6;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 6);
+			js_status_BareToRTOS &= ~(1 << 6);
 		}
 		/* Bit 7 - identROnline */
 		if (data->pID.identR == 1) {
-			OsziData.status_BareToRTOS |= 1 << 7;
+			js_status_BareToRTOS |= 1 << 7;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 7);
+			js_status_BareToRTOS &= ~(1 << 7);
 		}
 
 

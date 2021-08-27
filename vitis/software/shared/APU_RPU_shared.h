@@ -10,7 +10,6 @@
 
 // update by hand when changing JS_CHANNELS
 #define JAVASCOPE_DATA_SIZE_2POW  	128
-#define JAVASCOPE_DATA_SIZE  		92 //= sizeof(JAVASCOPE_DATA_STRUCT);
 
 
 struct javascope_data_t

@@ -23,9 +23,9 @@
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
     JSO_ZEROVALUE=0,
-	JSO_SineWave1,
-    JSO_Sawtooth1,
-    JSO_SineWave2,
+	JSO_ISR_ExecTime_us,
+	JSO_ISR_Period_us,
+    JSO_lifecheck,
 	JSO_theta_mech,
 	JSO_ua,
 	JSO_ub,
@@ -118,23 +118,15 @@ enum JS_SlowData {
 
 
 union SlowData {
-   int i;
-   float f;
-   int unsigned u;
+   int32_t  i;
+   uint32_t u;
+   float 	f;
 };
-
-
-extern float *js_ptr_arr[JSO_ENDMARKER];
-extern float *js_ptr[JS_CHANNELS];	// channel ptr
-
-extern union SlowData js_slowDataArray[JSSD_ENDMARKER];
 
 
 int JavaScope_initalize(DS_Data* data);
 void JavaScope_update(DS_Data* data);
 
 void js_fetchData();
-
-
 
 #endif /* INCLUDE_JAVASCOPE_H_ */

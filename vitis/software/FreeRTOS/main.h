@@ -38,10 +38,13 @@ extern "C" {
 #define TCPPACKETSIZE 1460 //Maximum TCPPaketSize -> Default: 1460 -> Jumbo-Frames would enable a TCPPACKETSIZE of 8960
 #define TCPPORT 1000	   //Random chosen, but equivalent to the Concerto-OHMrichter
 #define NUMTCPWORKERS 3
-#define NETWORK_SEND_FIELD_SIZE 15 //EL //before: 30
+#define NETWORK_SEND_FIELD_SIZE 15
 //The IP-address, SubNet address-and StandartGateway-address are set in the main-thread in the main.c
 
-#define ChannelsR5toA53 5
+// ========== JavaScope-Queue =========================================================================
+#define JS_QUEUE_SIZE_ELEMENTS  	5000
+#define JS_QUEUE_RECEIVE_TICKS2WAIT 100  // 1 tick = 100ms, wait (almost) indefinitely
+
 
 // ========== Definitions =========================================================================
 #define OUTPUT_PIN							1 								//This Pin is an Output
@@ -56,53 +59,33 @@ extern "C" {
 
 // ========== Structures =========================================================================
 
-typedef struct		// status + time + 20 elemente (32bit) + 16 bit
+typedef struct		// status + time + 20 elements (32bit) + 32 bit
 {
-	u32_t status;
-	u32_t slowDataContent[NETWORK_SEND_FIELD_SIZE];
-	Xfloat32 val_01[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_02[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_03[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_04[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_05[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_06[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_07[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_08[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_09[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_10[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_11[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_12[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_13[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_14[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_15[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_16[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_17[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_18[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_19[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 val_20[NETWORK_SEND_FIELD_SIZE];
-    Xfloat32 slowDataID[NETWORK_SEND_FIELD_SIZE];
+	uint32_t status;
+	uint32_t slowDataContent[NETWORK_SEND_FIELD_SIZE];
+	float val_01[NETWORK_SEND_FIELD_SIZE];
+    float val_02[NETWORK_SEND_FIELD_SIZE];
+    float val_03[NETWORK_SEND_FIELD_SIZE];
+    float val_04[NETWORK_SEND_FIELD_SIZE];
+    float val_05[NETWORK_SEND_FIELD_SIZE];
+    float val_06[NETWORK_SEND_FIELD_SIZE];
+    float val_07[NETWORK_SEND_FIELD_SIZE];
+    float val_08[NETWORK_SEND_FIELD_SIZE];
+    float val_09[NETWORK_SEND_FIELD_SIZE];
+    float val_10[NETWORK_SEND_FIELD_SIZE];
+    float val_11[NETWORK_SEND_FIELD_SIZE];
+    float val_12[NETWORK_SEND_FIELD_SIZE];
+    float val_13[NETWORK_SEND_FIELD_SIZE];
+    float val_14[NETWORK_SEND_FIELD_SIZE];
+    float val_15[NETWORK_SEND_FIELD_SIZE];
+    float val_16[NETWORK_SEND_FIELD_SIZE];
+    float val_17[NETWORK_SEND_FIELD_SIZE];
+    float val_18[NETWORK_SEND_FIELD_SIZE];
+    float val_19[NETWORK_SEND_FIELD_SIZE];
+    float val_20[NETWORK_SEND_FIELD_SIZE];
+    float slowDataID[NETWORK_SEND_FIELD_SIZE];
 } NetworkSendStruct;
 
-
-typedef struct
-{
-	u32_t status_BareToRTOS;
-	_Bool SampledDataWriteDone;
-	_Bool SampledDataReadDone;
-	_Bool SampledDataError;
-	u32_t slowDataContent;
-	u16_t slowDataID;
-	Xfloat32 val[20]; // EL: changed from uint16 to float
-} ARM_to_Oszi_Data_shared_struct;
-
-
-typedef struct
-{
-	u32_t status_BareToRTOS;
-	u32_t slowDataContent;
-	u16_t slowDataID;
-	Xfloat32 val[ChannelsR5toA53]; // EL: changed from uint16 to float
-} IPI2EthernetTask_struct;
 
 typedef struct
 {

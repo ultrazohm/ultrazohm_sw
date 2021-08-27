@@ -112,7 +112,6 @@ void js_fetchData()
 	}
 	javascope_data->slowDataID 		= js_cnt_slowData;
 	javascope_data->slowDataContent = js_slowDataArray[js_cnt_slowData].u;
-//	javascope_data->slowDataContent = *js_slowDataArray[js_cnt_slowData].u;
 	javascope_data->status 			= js_status_BareToRTOS;
 
 	// flush data cache of shared memory region to make sure shared memory is updated

@@ -22,10 +22,10 @@
 
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
-    JSO_ZEROVALUE=0,
+	JSO_ZEROVALUE=0,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
-    JSO_lifecheck,
+	JSO_lifecheck,
 	JSO_theta_mech,
 	JSO_ua,
 	JSO_ub,
@@ -50,7 +50,7 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
-    JSO_ENDMARKER
+	JSO_ENDMARKER
 };
 
 // slowData Naming Convention: Use INT or FLOAT to automatically identify Data Type in Java.

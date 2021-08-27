@@ -74,6 +74,7 @@ cd $WS_PATH
 set PLATFORM_NAME 	UltraZohm
 set XSA_FOLDER 		$FOLDER_PATH/vivado_exported_xsa
 set EXPORT_FOLDER [file join $FOLDER_PATH software]
+set SHARED_FOLDER [file join $EXPORT_FOLDER shared]
 puts "Path to exports to be imported:"
 puts stdout $EXPORT_FOLDER
 
@@ -187,9 +188,8 @@ importsources -name FreeRTOS -path $filename_FreeRTOS -soft-link
 importsources -name FreeRTOS -path $filename_FreeRTOS/lscript.ld -linker-script
 
 # add shared folder to build directory
-app config -name FreeRTOS compiler-misc -I"$FOLDER_PATH/shared"
-app config -name Baremetal compiler-misc -I"$FOLDER_PATH/shared"
-
+app config -name Baremetal compiler-misc -I"$SHARED_FOLDER"
+app config -name FreeRTOS compiler-misc -I"$SHARED_FOLDER"
 
 # set optimization level 
 app config -name FreeRTOS -set compiler-optimization {Optimize most (-O3)}

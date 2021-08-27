@@ -107,7 +107,7 @@ platform write
 bsp config lwip_dhcp true
 platform write 
 # increase heap size of freertos, to fix javascope glitches
-bsp config total_heap_size  1048576
+bsp config total_heap_size  20000000 
 platform write 
 
 puts "Info:(UltraZohm) regenerate FreeRTOS BSP"
@@ -156,15 +156,18 @@ platform generate
 #Application Baremetal R5_0
 #####################################################
 puts "Info:(UltraZohm) create Baremetal Application"
-# application 
+# create application
 app create -name Baremetal -template {Empty Application} -platform $PLATFORM_NAME -domain Baremetal_domain
 
 puts "Info:(UltraZohm) import Baremetal Application sources"
-#import sources to baremetal project
-# first the c-files are linked
-# then the linker script is copied to the folder with a hard copy due to compilation errors otherwise - note that the sequence (first link the file, then copy the linker script is important due to -soft-link deleting the linker script otherwise
-importsources -name Baremetal -path $FOLDER_PATH/software/Baremetal/src -soft-link
-importsources -name Baremetal -path $FOLDER_PATH/software/Baremetal/src/lscript.ld -linker-script 
+#import sources 
+set filename_Baremetal [file join $EXPORT_FOLDER Baremetal/src]
+puts "Path to Baremetal source files:"
+puts stdout $filename_Baremetal
+# first the source files are linked
+importsources -name Baremetal -path $filename_Baremetal -soft-link
+#link to linker-script instead of copying it
+app config -name Baremetal -set linker-script $filename_Baremetal/lscript.ld
 #add math library to linker option
 app config -name Baremetal -add  libraries m
 
@@ -172,19 +175,19 @@ app config -name Baremetal -add  libraries m
 #Application FreeRTOS A53_0
 ####################################################
 puts "Info:(UltraZohm) create FreeRTOS Application"
-#create freertos app based on {FreeRTOS lwIP Echo Server}
-#app create -name FreeRTOS -template {FreeRTOS lwIP Echo Server} -platform $PLATFORM_NAME -domain FreeRTOS_domain
+# create application
 app create -name FreeRTOS -template {Empty Application} -platform $PLATFORM_NAME -domain FreeRTOS_domain
 
 puts "Info:(UltraZohm) import FreeRTOS Application sources"
 #import sources to freertos project
 
 set filename_FreeRTOS [file join $EXPORT_FOLDER FreeRTOS]
-puts "Path to FreeRTOS:"
+puts "Path to FreeRTOS source files:"
 puts stdout $filename_FreeRTOS
-
+# first the source files are linked
 importsources -name FreeRTOS -path $filename_FreeRTOS -soft-link
-importsources -name FreeRTOS -path $filename_FreeRTOS/lscript.ld -linker-script
+#link to linker-script instead of copying it
+app config -name FreeRTOS -set linker-script $filename_FreeRTOS/lscript.ld
 
 # set optimization level 
 app config -name FreeRTOS -set compiler-optimization {Optimize most (-O3)}

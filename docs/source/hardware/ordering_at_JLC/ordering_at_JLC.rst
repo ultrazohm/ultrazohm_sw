@@ -46,13 +46,13 @@ If there is no container yet, create one by clicking on **Add New Output Contain
 
 .. note:: If you are using different variants in your PCB design, make sure to select the one you want to build. 
 
-.. figure:: pictures/Output_Container1.PNG 
+.. figure:: pictures/Output_Container1.png 
     :width: 950 
 
 The generated outjob files can be found in the project folder under "Project Outputs for...". 
 Since all necessary files are created, the next part will be about JLCPCB's ordering process for SMT assembled PCBs. 
 
-.. figure:: pictures/Project_Folder1.PNG
+.. figure:: pictures/Project_Folder1.png
     :width: 500 
 
 ----------------------------------
@@ -62,12 +62,12 @@ Ordering Process with SMT Assembly
 - Go to `JLCPCB`_ and sign in with your account 
 - Go to your shopping cart and choose **Add new item** 
 
-.. figure:: pictures/Add_New_Item.PNG 
+.. figure:: pictures/Add_New_Item.png 
     :width: 500 
 
 - Click on **Add gerber file** and upload your Gerber and NC Drill files as .zip 
 
-.. figure:: pictures/Add_Gerber_File.PNG 
+.. figure:: pictures/Add_Gerber_File.png 
     :width: 500 
 
 - Choose your preferred settings and quantity for the PCB you want to oder 
@@ -75,17 +75,17 @@ Ordering Process with SMT Assembly
 
 .. note:: When choosing SMT assembly some settings are not available e.g. gold fingers. If necessary change them to fit JLC's requirements 
 
-.. figure:: pictures/SMT_Assembly.PNG 
+.. figure:: pictures/SMT_Assembly.png 
     :width: 500 
 
 - Now upload your BOM and Pick and Place (CPL) files and click on **Next** 
 
-.. figure:: pictures/Upload_BOM_CLP.PNG 
+.. figure:: pictures/Upload_BOM_CLP.png 
     :width: 500 
 
 - Check if everything in the shown list is correct an click on **Next** 
 
-.. figure:: pictures/Component_Check.PNG 
+.. figure:: pictures/Component_Check.png 
     :width: 500 
 
 - Check the orientation of the components in the review window (e.g. red and white dot should be on the same side, if not adjust the rotation in the Pick and Place file in Altium) 
@@ -96,12 +96,12 @@ Ordering Process with SMT Assembly
 - Press **Save To Cart** 
 - Click on **Product Details** to check your settings and then **Secure Checkout** 
 
-.. figure:: pictures/Secure_Checkout.PNG 
+.. figure:: pictures/Secure_Checkout.png 
     :width: 500 
 
 - Follow the steps of the delivery and payment (recommended delivery method: DHL Express Priority (DDP)) 
 
-.. figure:: pictures/Shipping.PNG 
+.. figure:: pictures/Shipping.png 
     :width: 500 
 
 .. _JLCPCB: https://jlcpcb.com/

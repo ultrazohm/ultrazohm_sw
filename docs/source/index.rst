@@ -108,6 +108,7 @@ Syllabus
    hardware/carrier_board/carrier_board
    hardware/adapter_cards/adapter_cards
    hardware/altium/altium
+   hardware/ordering_at_JLC/ordering_at_JLC
 
 Indices and tables
 ==================

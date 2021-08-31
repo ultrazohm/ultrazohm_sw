@@ -36,7 +36,7 @@ mux_axi
 Model version
 </td>
 <td align="right" valign="top" style="border-style: none">
-1.10
+3.9
 </td>
 
 </tr>
@@ -45,7 +45,7 @@ Model version
 HDL Coder version
 </td>
 <td align="right" valign="top" style="border-style: none">
-3.15
+3.17
 </td>
 
 </tr>
@@ -54,7 +54,7 @@ HDL Coder version
 HDL code generated on
 </td>
 <td align="right" valign="top" style="border-style: none">
-2020-09-18 11:40:42
+2021-08-30 13:21:31
 </td>
 
 </tr>
@@ -102,6 +102,24 @@ Non-default model properties
 <br /><br /><table width="100%" border="1">
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
+AdaptivePipelining
+</td>
+<td align="right" valign="top" style="border-style: none">
+off
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+BalanceDelays
+</td>
+<td align="right" valign="top" style="border-style: none">
+off
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
 CriticalPathEstimation
 </td>
 <td align="right" valign="top" style="border-style: none">
@@ -147,6 +165,15 @@ on
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
+ResetType
+</td>
+<td align="right" valign="top" style="border-style: none">
+Synchronous
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
 ResourceReport
 </td>
 <td align="right" valign="top" style="border-style: none">
@@ -154,7 +181,7 @@ on
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 SynthesisTool
 </td>
@@ -163,7 +190,7 @@ Xilinx Vivado
 </td>
 
 </tr>
-<tr style="background-color: #ffffff">
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 SynthesisToolChipFamily
 </td>
@@ -172,7 +199,7 @@ Zynq UltraScale+
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 SynthesisToolDeviceName
 </td>
@@ -181,7 +208,7 @@ xqzu9eg-ffrc900-1-i
 </td>
 
 </tr>
-<tr style="background-color: #ffffff">
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 TargetDirectory
 </td>
@@ -190,7 +217,7 @@ hdl_prj\hdlsrc
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 TargetPlatform
 </td>
@@ -199,7 +226,7 @@ Generic Xilinx Platform
 </td>
 
 </tr>
-<tr style="background-color: #ffffff">
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 Traceability
 </td>
@@ -208,7 +235,7 @@ on
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 Workflow
 </td>
@@ -304,6 +331,39 @@ x"100"
 
 </table>
 <br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('mux_axi:93')" name="code2model" class="code2model">
+select_n_th_adc_interrupt
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"104"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
 Block Parameters for:<a href="matlab:coder.internal.code2model('mux_axi:9')" name="code2model" class="code2model">
 interrupts_in
 </a>
@@ -329,7 +389,31 @@ External Port
 </table>
 <br /><br /><b>
 Block Parameters for:<a href="matlab:coder.internal.code2model('mux_axi:10')" name="code2model" class="code2model">
-interrupt_out
+interrupt_out_adc
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('mux_axi:60')" name="code2model" class="code2model">
+interrupt_out_isr
 </a>
 
 </b>

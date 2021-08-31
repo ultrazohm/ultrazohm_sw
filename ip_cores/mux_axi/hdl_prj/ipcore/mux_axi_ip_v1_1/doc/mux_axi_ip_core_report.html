@@ -100,19 +100,19 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.9
+<td class="summaryTableSndColOddRow">3.9
 </td>
 </tr>
 <tr>
 <td>HDL Coder version
 </td>
-<td class="summaryTableSndColEvenRow">3.15
+<td class="summaryTableSndColEvenRow">3.17
 </td>
 </tr>
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">18-Sep-2020 11:26:13
+<td class="summaryTableSndColOddRow">30-Aug-2021 13:21:36
 </td>
 </tr>
 <tr>
@@ -146,7 +146,9 @@ Target platform interface table:
 </td>
 <td>Target Platform Interfaces
 </td>
-<td>Bit Range / Address / FPGA Pin
+<td>Interface Mapping
+</td>
+<td>Interface Options
 </td>
 </tr>
 </thead>
@@ -162,27 +164,61 @@ Target platform interface table:
 </td>
 <td>x"100"
 </td>
+<td>
+</td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('mux_axi:9')">interrupts_in</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('mux_axi:93')">select_n_th_adc_interrupt</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
-<td class="distinctCellColor">uint8
+<td class="distinctCellColor">uint32
 </td>
-<td class="distinctCellColor">External Port
+<td class="distinctCellColor">AXI4-Lite
+</td>
+<td class="distinctCellColor">x"104"
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('mux_axi:10')">interrupt_out</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('mux_axi:9')">interrupts_in</a>
+</td>
+<td>Inport
+</td>
+<td>uint8
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('mux_axi:10')">interrupt_out_adc</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('mux_axi:60')">interrupt_out_isr</a>
 </td>
 <td>Outport
 </td>
-<td>boolean
+<td>uint8
 </td>
 <td>External Port
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -195,6 +231,8 @@ Target platform interface table:
 <td class="distinctCellColor">ufix4
 </td>
 <td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
 </td>
@@ -239,7 +277,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2009181126
+<td>contains unique IP timestamp (yymmddHHMM): 2108301321
 </td>
 </tr>
 <tr>
@@ -248,6 +286,14 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 <td class="distinctCellColor">0x100
 </td>
 <td class="distinctCellColor">data register for Inport select_AXI
+</td>
+</tr>
+<tr>
+<td>select_n_th_adc_interrupt_Data
+</td>
+<td>0x104
+</td>
+<td>data register for Inport select_n_th_adc_interrupt
 </td>
 </tr>
 </tbody>
@@ -279,7 +325,7 @@ interface. To connect the external ports to the FPGA external IO pins, add FPGA 
 <br/><br/>
 The AXI4 Slave port to pipeline register ratio selected as 35 in task 3.2 for this model. The default delay to read AXI4 register is one clock cycle.
 Depending on the selected ratio and IO connected to AXI4 interface, register pipelining is introduced in the read logic of AXI4 registers.
-For your model AXI4 pipeline register ratio setting 35 is larger than all the readable AXI4 slave registers. Total readable AXI4 slave registers are 2, so no pipelining is added to the AXI4 register read back logic.
+For your model AXI4 pipeline register ratio setting 35 is larger than all the readable AXI4 slave registers. Total readable AXI4 slave registers are 4, so no pipelining is added to the AXI4 register read back logic.
 <br/><br/>
 <b>Processor/FPGA Synchronization</b>
 <br/><br/>
@@ -330,6 +376,12 @@ Following files are generated under this folder:
 <a href="matlab:web('hdl_prj\ipcore\mux_axi_ip_v1_1\doc\mux_axi_ip_core_report.html')">doc\mux_axi_ip_core_report.html</a>
 <br/><br/>
 <b>IP core HDL source files</b>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\mux_axi_ip_v1_1\hdl\vhdl\mux_axi_ip_src_Detect_Fall_Nonpositive2.vhd')">hdl\vhdl\mux_axi_ip_src_Detect_Fall_Nonpositive2.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\mux_axi_ip_v1_1\hdl\vhdl\mux_axi_ip_src_Detect_Rise_Positive.vhd')">hdl\vhdl\mux_axi_ip_src_Detect_Rise_Positive.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\mux_axi_ip_v1_1\hdl\vhdl\mux_axi_ip_src_Subsystem1.vhd')">hdl\vhdl\mux_axi_ip_src_Subsystem1.vhd</a>
 <br/>
 <a href="matlab:edit('hdl_prj\ipcore\mux_axi_ip_v1_1\hdl\vhdl\mux_axi_ip_src_mux_axi.vhd')">hdl\vhdl\mux_axi_ip_src_mux_axi.vhd</a>
 <br/>

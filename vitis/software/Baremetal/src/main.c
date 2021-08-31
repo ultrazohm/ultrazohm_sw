@@ -18,6 +18,11 @@
 #include "uz/uz_global_configuration.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
 
+#include "IP_Cores/uz_d_gan_inverter/uz_d_gan_inverter.h"
+#include "IP_Cores/uz_d_gan_inverter/uz_d_gan_inverter_hw.h"
+
+#include "Codegen/uz_codegen.h"
+
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -26,6 +31,8 @@ _Bool bNewControlMethodAvailable = false;
 _Bool bInit = false;
 DS_Data Global_Data;
 extern XGpio Gpio_OUT; /* GPIO Device driver instance for the real GPIOs */
+
+uz_codegen codegenInstance;
 
 //Data from R5_0 to A53_0 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
 ARM_to_Oszi_Data_shared_struct OsziData;
@@ -61,6 +68,7 @@ int main(void) {
 	// Initialize Park-Transformation 123 to dq
 	DQTransformation_Initialize(&Global_Data);
 	uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
+	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1, 0.05);
 	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
 	//Initialize PWM and switch signal control
 	PWM_SS_Initialize(&Global_Data); 	// two-level modulator
@@ -81,8 +89,49 @@ int main(void) {
 	//Initialize the Soft-Oscilloscope ("JavaScope")
 	JavaScope_initalize(&Global_Data);
 
-	// Initialize the Interrupts
-	Initialize_ISR();
+    struct uz_d_gan_inverter_config_t config = {
+        .base_address = XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR,
+        .ip_clk_frequency_Hz = 1000000,
+    };
+
+    struct uz_d_gan_inverter_outputs_t outputs = {
+        .PWMdutyCycPerCent_H1 = 0.0,
+        .PWMdutyCycPerCent_L1 = 0.0,
+        .PWMdutyCycPerCent_H2 = 0.0,
+        .PWMdutyCycPerCent_L2 = 0.0,
+        .PWMdutyCycPerCent_H3 = 0.0,
+        .PWMdutyCycPerCent_L3 = 0.0,
+        .GaN_ChipTempDegreesCelsius_H1 = 0.0,
+        .GaN_ChipTempDegreesCelsius_L1 = 0.0,
+        .GaN_ChipTempDegreesCelsius_H2 = 0.0,
+        .GaN_ChipTempDegreesCelsius_L2 = 0.0,
+        .GaN_ChipTempDegreesCelsius_H3 = 0.0,
+        .GaN_ChipTempDegreesCelsius_L3 = 0.0,
+        .OC = 0,
+        .OC_H1 = 0,
+        .OC_L1 = 0,
+        .OC_H2 = 0,
+        .OC_L2 = 0,
+        .OC_H3 = 0,
+        .OC_L3 = 0,
+        .FAULT = 0,
+        .FAULT_H1 = 0,
+        .FAULT_L1 = 0,
+        .FAULT_H2 = 0,
+        .FAULT_L2 = 0,
+        .FAULT_H3 = 0,
+        .FAULT_L3 = 0,
+        .I_DIAG = 0,
+        .I_DC_DIAG = 0,
+        .I1_DIAG = 0,
+        .I2_DIAG = 0,
+        .I3_DIAG = 0,
+    };
+
+	//Initialize UZ_D_GaN_Inverter
+	uz_d_gan_inverter_t *uz_d_gan_inverter_inSocketD4 = uz_d_gan_inverter_init(config, outputs);
+
+
 
 	//Set the current value in the ADC as offset/default value
 	ADC_Set_Offset();
@@ -90,8 +139,28 @@ int main(void) {
 	// Turn on AXI2TCM communication
 	AXI2TCM_on();
 
+	// ADC conversion factors for GaN inverter usage
+	//ATTENTON: conversion factor depends on the used ADC board?
+	//	float PhaseCurrentAmpere = 33.8780;
+	//	float DC_CurrentAmpere = 60.9756;
+	//	float DC_VoltageVolt = 150.875;
+	//	float PhaseVoltageVolt = 150.875;
+	Global_Data.aa.A2.cf.ADC_A4 = 33.8780;
+	Global_Data.aa.A2.cf.ADC_A3 = 33.8780;
+	Global_Data.aa.A2.cf.ADC_A2 = 33.8780;
+	Global_Data.aa.A2.cf.ADC_A1 = 150.875;
+
+	uz_codegen_init(&codegenInstance);
+
+	// Initialize the Interrupts
+	Initialize_ISR();
+
 	// Infinite loop
 	while (1) {
+
+		//Get Data From UZ_D_GaN_Inverter
+		uz_d_gan_inverter_update_states(uz_d_gan_inverter_inSocketD4);
+		Global_Data.da.D4 = uz_d_gan_inverter_inSocketD4;
 
 		// poll the buttons
 		Global_Data.dv.sw1 = uz_GetPushButtonEnableSystem();
@@ -121,8 +190,12 @@ int main(void) {
 		                //Check the control values
 			if (Global_Data.cw.enableSystem == false) {
 				turnPowerElectronicsOff(&Global_Data); //Switch power converter off
+				//Set Data To UZ_D_GaN_Inverter
+				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR, false);
 			} else if ((Global_Data.cw.enableSystem == true) && bInit == false) { //Call this function only once. If there was an error, "enableSystem " must be reseted!
 				bInit = turnPowerElectronicsOn(&Global_Data); //Switch power converter on
+				//Set Data To UZ_D_GaN_Inverter
+				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR, true);
 			}
 
 			if (Global_Data.cw.enableControl == true) {
@@ -287,7 +360,11 @@ void plotData(DS_Data* data) {
 //==============================================================================================================================================================
 void InitializeDataStructure(DS_Data* data) {
 
-	data->av.U_ZK = 24.0; 								//[V] DC-Link voltage
+	data->av.U_ZK = 36.0; 								//[V] DC-Link voltage
+	data->av.theta_offset =  2.539921;
+	data->rasv.currentORspeedControl = 0.0;
+	data->rasv.PERIOD = 5000;
+	data->rasv.NEXT = false;
 
 	//Control
 	data->cw.ControlReference = CurrentControl; 		// default because of Parameter ID
@@ -297,7 +374,7 @@ void InitializeDataStructure(DS_Data* data) {
 
 	//Encoder
 	data->mrp.incrementalEncoderResolution = 5000.0; //[Increments per turn] // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
-	data->mrp.incrementalEncoderOffset = 3.141592653589; //[rad]  //Offset for the Park-Transformation -> pi = 3.141592653589
+	data->mrp.incrementalEncoderOffset = 0.0; //[rad]  //Offset for the Park-Transformation -> pi = 3.141592653589
 	data->mrp.motorMaximumSpeed = 6000.0; //[rpm]
 	data->mrp.incrementalEncoderOversamplingFactor = 5.0; //Oversampling factor must be between 1.0-6.0 (Achtung, immer mit Punkt da sonst nicht als float interpretiert
 
@@ -398,9 +475,9 @@ void InitializeDataStructure(DS_Data* data) {
 	data->ew.mtpaTableError = false;
 	data->ew.pwmFrequencyError = false;
 	data->rasv.currentControlAngle = 0.0;
-	data->rasv.halfBridge1DutyCycle = 0.0;
-	data->rasv.halfBridge2DutyCycle = 0.0;
-	data->rasv.halfBridge3DutyCycle = 0.0;
+	data->rasv.halfBridge1DutyCycle = 0.5;
+	data->rasv.halfBridge2DutyCycle = 0.5;
+	data->rasv.halfBridge3DutyCycle = 0.5;
 	data->rasv.phaseAdvanceAngle = 0.0;
 	data->rasv.referenceCurrent_id = 0.0;
 	data->rasv.referenceCurrent_iq = 0.0;
@@ -443,7 +520,7 @@ void InitializeDataStructure(DS_Data* data) {
 	data->aa.A3.cf.ADC_B8 = 10;
 
 	// initalize PWM parameters
-	data->ctrl.pwmFrequency = 10e3;		// PWM carrier frequency
+	data->ctrl.pwmFrequency = 100e3;		// PWM carrier frequency
 	data->ctrl.pwmPeriod = 1 / data->ctrl.pwmFrequency;
 
 	data->ctrl.samplingFrequency = data->ctrl.pwmFrequency * Interrupt_ISR_freq_factor;

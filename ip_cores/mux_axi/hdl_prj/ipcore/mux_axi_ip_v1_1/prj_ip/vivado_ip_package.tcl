@@ -2,6 +2,9 @@ create_project prj_ip {} -part xqzu9eg-ffrc900-1-i -force
 set_property ip_repo_paths {../../} [current_fileset]
 
 # Add HDL source files to project
+add_files -norecurse {../hdl/vhdl/mux_axi_ip_src_Detect_Fall_Nonpositive2.vhd}
+add_files -norecurse {../hdl/vhdl/mux_axi_ip_src_Detect_Rise_Positive.vhd}
+add_files -norecurse {../hdl/vhdl/mux_axi_ip_src_Subsystem1.vhd}
 add_files -norecurse {../hdl/vhdl/mux_axi_ip_src_mux_axi.vhd}
 add_files -norecurse {../hdl/vhdl/mux_axi_ip_reset_sync.vhd}
 add_files -norecurse {../hdl/vhdl/mux_axi_ip_dut.vhd}
@@ -28,9 +31,21 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2009181126 [ipx::current_core]
+set_property core_revision 2108301321 [ipx::current_core]
 
 # Add HDL source files to IP
+ipx::add_file {hdl/vhdl/mux_axi_ip_src_Detect_Fall_Nonpositive2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/mux_axi_ip_src_Detect_Fall_Nonpositive2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/mux_axi_ip_src_Detect_Fall_Nonpositive2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/mux_axi_ip_src_Detect_Fall_Nonpositive2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/mux_axi_ip_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/mux_axi_ip_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/mux_axi_ip_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/mux_axi_ip_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/mux_axi_ip_src_Subsystem1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/mux_axi_ip_src_Subsystem1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/mux_axi_ip_src_Subsystem1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/mux_axi_ip_src_Subsystem1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/mux_axi_ip_src_mux_axi.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/mux_axi_ip_src_mux_axi.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/mux_axi_ip_src_mux_axi.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

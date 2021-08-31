@@ -50,6 +50,7 @@ XTmrCtr Timer_Interrupt;
 float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
+extern uz_codegen codegenInstance;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -70,6 +71,31 @@ void ISR_Control(void *data)
 	ReadAllADC();
 	CheckForErrors();
 	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
+
+
+	//assign eletrical angle and compensate offset
+	Global_Data.av.theta_elec_offset_compensated = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
+
+	//assign ADC values to motor currents
+	Global_Data.av.I_U = -1.0*Global_Data.aa.A2.me.ADC_A4;
+	Global_Data.av.I_V = -1.0*Global_Data.aa.A2.me.ADC_A3;
+	Global_Data.av.I_W = -1.0*Global_Data.aa.A2.me.ADC_A2;
+
+
+	codegenInstance.input.period = 2500;
+	codegenInstance.input.currentORspeedControl = 0;
+	codegenInstance.input.i1 = Global_Data.av.I_U;
+	codegenInstance.input.i2 = Global_Data.av.I_V;
+	codegenInstance.input.i3 = Global_Data.av.I_W;
+	codegenInstance.input.theta_el = Global_Data.av.theta_elec_offset_compensated;
+	codegenInstance.input.u_dc = Global_Data.av.U_ZK;
+
+	uz_codegen_step(&codegenInstance);
+
+	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.CMPA_1 * 0.0004; // * 1/PERIOD
+	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.CMPA_2 * 0.0004;
+	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.CMPA_3 * 0.0004;
+
 
 	//Start: Control algorithm -------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)
@@ -131,8 +157,9 @@ int Initialize_ISR(){
 		}
 
 	// Initialize mux_axi to use correct interrupt for triggering the ADCs
-	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + IPCore_Enable_mux_axi_ip, 1); // enable IP core
-	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
+	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR + IPCore_Enable_mux_axi_ip, 1); // enable IP core
+	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
+	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR + select_n_th_adc_interrupt_Data_mux_axi_ip, Interrupt_ISR_every_n_th_time);
 
 return Status;
 }

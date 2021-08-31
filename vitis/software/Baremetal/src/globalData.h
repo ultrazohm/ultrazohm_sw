@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "IP_Cores/uz_d_gan_inverter/uz_d_gan_inverter.h"
 #define MAXIMUM_LENGTH_MTPA_TABLE 16
 // ========== Structures =========================================================================
 typedef struct
@@ -333,6 +334,10 @@ typedef struct _AnalogAdapters_ {
 	ADCcard A3;
 } AnalogAdapters;
 
+typedef struct _DigitalAdapters_ {
+	uz_d_gan_inverter_t *D4;
+} DigitalAdapters;
+
 typedef struct _actualValues_ {
 	float I_L1; 		// Grid side current in A
 	float I_L2; 		// Grid side current in A
@@ -361,10 +366,12 @@ typedef struct _actualValues_ {
 	float U_d;
 	float U_q;
 	float theta_elec;
+	float theta_elec_offset_compensated;
 	float theta_mech;
 	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
+	uint16_t activeState;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -386,6 +393,10 @@ typedef struct _referenceAndSetValues_ {
 	float pwmMinPulseWidth;				//Minimal Duty Cycle which is allowed. e.g. if the Duty Cycle wants to switch only for, lets say 100ns, we should avoid switching at all.
 	float open_loop_sin_amplitude;
 	float open_loop_sin_frequency;
+	_Bool NEXT;
+	//_Bool RESET;
+	uint16_t PERIOD;
+	_Bool currentORspeedControl;
 } referenceAndSetValues;
 
 typedef struct _communicationStateVariables_ {
@@ -661,6 +672,7 @@ typedef struct _DS_Data_ {
 	controllerVars ctrl;
 	debugVariables dv;
 	AnalogAdapters aa;
+	DigitalAdapters da;
 } DS_Data;
 
 #endif

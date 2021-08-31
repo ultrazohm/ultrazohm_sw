@@ -3,10 +3,10 @@
 <!--                                                         -->
 <!-- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="49" Path="C:/Users/ga92wum/git/UltraZohm/Software/uz_sw/ip_cores/mux_axi/hdl_prj/ipcore/mux_axi_ip_v1_1/prj_ip/prj_ip.xpr">
+<Project Version="7" Minor="49" Path="C:/ZynqUltra/60_Software/ultrazohm_sw_1/ip_cores/mux_axi/hdl_prj/ipcore/mux_axi_ip_v1_1/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="f7fc208604674b74ac795ab9d1285242"/>
+    <Option Name="Id" Val="3089fe2a7c044eff8cae165848f00ec3"/>
     <Option Name="Part" Val="xqzu9eg-ffrc900-1-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -86,6 +86,24 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/vhdl/mux_axi_ip_axi_lite.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/mux_axi_ip_src_Detect_Rise_Positive.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/mux_axi_ip_src_Detect_Fall_Nonpositive2.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/mux_axi_ip_src_Subsystem1.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

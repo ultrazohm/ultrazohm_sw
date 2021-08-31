@@ -2,11 +2,11 @@
 # Vivado v2020.1.1 (64-bit)
 # SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
 # IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
-# Start of session at: Fri Sep 18 11:26:17 2020
-# Process ID: 2644
-# Current directory: C:/Users/ga92wum/git/UltraZohm/Software/uz_sw/ip_cores/mux_axi/hdl_prj/ipcore/mux_axi_ip_v1_1/prj_ip
+# Start of session at: Mon Aug 30 13:21:43 2021
+# Process ID: 6472
+# Current directory: C:/ZynqUltra/60_Software/ultrazohm_sw_1/ip_cores/mux_axi/hdl_prj/ipcore/mux_axi_ip_v1_1/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
-# Log file: C:/Users/ga92wum/git/UltraZohm/Software/uz_sw/ip_cores/mux_axi/hdl_prj/ipcore/mux_axi_ip_v1_1/prj_ip/vivado.log
-# Journal file: C:/Users/ga92wum/git/UltraZohm/Software/uz_sw/ip_cores/mux_axi/hdl_prj/ipcore/mux_axi_ip_v1_1/prj_ip\vivado.jou
+# Log file: C:/ZynqUltra/60_Software/ultrazohm_sw_1/ip_cores/mux_axi/hdl_prj/ipcore/mux_axi_ip_v1_1/prj_ip/vivado.log
+# Journal file: C:/ZynqUltra/60_Software/ultrazohm_sw_1/ip_cores/mux_axi/hdl_prj/ipcore/mux_axi_ip_v1_1/prj_ip\vivado.jou
 #-----------------------------------------------------------
 source vivado_ip_package.tcl -notrace

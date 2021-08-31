@@ -1381,6 +1381,16 @@ function rtwHilite(aBlock,aParentSID) {
     }
 }
 
+function rtwHiliteMultiple(sids, action) {
+	//For new Code Gen report
+	if (top.slwebview) {
+        // webview 2.x
+        if (top.codeToWebViewArray(sids, action) === -1) {
+            alert("Cannot highlight block(s) in model Web view. It may not be exported.");
+        }
+    }
+}
+
 function str2StrVar(str) {
     return str.replace(/'/g,"''");
 }
@@ -2069,4 +2079,13 @@ function getCodeLines()
             });
         }
     return codeLocs;
+}
+
+//add source to frame when _codegen_rpt openend from outisde matlab
+function loadDocFrameSource(modelName) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const opendInExtBrowser = urlParams.get('useExternalBrowser');
+    if (opendInExtBrowser === null) {
+        document.getElementById('rtwreport_document_frame').src = modelName.concat('_survey.html');
+    }
 }

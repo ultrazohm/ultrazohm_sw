@@ -2,6 +2,9 @@
 Create new Project
 ==================
 
+.. note:: In the standard UltraZohm software, the generate workspace .tcl script should take care of this! 
+
+
 `Here <https://www.hackster.io/news/microzed-chronicles-getting-up-and-running-with-vitis-8f05eb013289>`_ you can find a nice tutorial on how
 to get started with Vitis.
 

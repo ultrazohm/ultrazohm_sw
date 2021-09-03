@@ -183,6 +183,13 @@ int main(void) {
 		if (i_LifeCheck > 2500) {
 			i_LifeCheck = 0;
 		}
+
+		rtP.Kp_id =  Global_Data.ctrl.foc.cc.Kp_id;
+		rtP.Kp_iq =  Global_Data.ctrl.foc.cc.Kp_iq;
+		rtP.Kis_id = 1.0F/Global_Data.ctrl.foc.cc.Tn_id;
+		rtP.Kis_iq = 1.0F/Global_Data.ctrl.foc.cc.Tn_iq;
+		rtP.Kp_n = Global_Data.ctrl.foc.sc.Kp;
+		rtP.Kis_n = 1.0F/Global_Data.ctrl.foc.sc.Tn;
 	}
 	return (status);
 }

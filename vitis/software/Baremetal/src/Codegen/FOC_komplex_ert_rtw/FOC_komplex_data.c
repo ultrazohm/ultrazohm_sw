@@ -9,7 +9,7 @@
  *
  * Model version                  : 2.23
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Aug 17 14:08:55 2021
+ * C/C++ source code generated on : Tue Aug 24 11:49:34 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -26,46 +26,46 @@ P rtP = {
   /* Variable: Kis_id
    * Referenced by: '<S20>/Gain1'
    */
-  53.3333321F,
+  69.1666565F,
 
   /* Variable: Kis_iq
    * Referenced by: '<S21>/Gain1'
    */
-  53.3333321F,
+  69.1666565F,
 
   /* Variable: Kis_n
    * Referenced by: '<S13>/Gain1'
    */
-  7.4467F,
+  12.5664F,
 
   /* Variable: Kp_id
    * Referenced by: '<S20>/Gain'
    */
-  10.0531F,
+  6.0319F,
 
   /* Variable: Kp_iq
    * Referenced by: '<S21>/Gain'
    */
-  10.0531F,
+  6.0319F,
 
   /* Variable: Kp_n
    * Referenced by: '<S13>/Gain'
    */
-  0.9394F,
+  0.1197F,
 
   /* Variable: L_d
    * Referenced by:
    *   '<S8>/Function_Feldschwaeche'
    *   '<S22>/Gain1'
    */
-  0.0015F,
+  0.0012F,
 
   /* Variable: L_q
    * Referenced by:
    *   '<S8>/function_Eckdrehzahl'
    *   '<S22>/Gain'
    */
-  0.0015F,
+  0.0012F,
 
   /* Variable: Psi_PM
    * Referenced by:
@@ -73,12 +73,12 @@ P rtP = {
    *   '<S8>/function_Eckdrehzahl'
    *   '<S22>/Constant'
    */
-  0.01854F,
+  0.0171F,
 
   /* Variable: R
    * Referenced by: '<S8>/function_Eckdrehzahl'
    */
-  0.08F,
+  0.083F,
 
   /* Variable: T_R
    * Referenced by:
@@ -88,15 +88,13 @@ P rtP = {
    *   '<S14>/Gain'
    *   '<S20>/Gain1'
    *   '<S21>/Gain1'
-   *   '<S25>/Gain'
-   *   '<S26>/Gain'
    */
   2.5E-5F,
 
   /* Variable: T_VF_n
    * Referenced by: '<S14>/Gain'
    */
-  0.00367280631F,
+  0.4F,
 
   /* Variable: i_max
    * Referenced by: '<S5>/Constant1'

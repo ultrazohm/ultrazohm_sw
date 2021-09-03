@@ -9,7 +9,7 @@
  *
  * Model version                  : 2.23
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Aug 17 14:08:55 2021
+ * C/C++ source code generated on : Tue Aug 24 11:49:34 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -77,24 +77,20 @@ typedef struct {
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  real32_T Delay_DSTATE_j[30];         /* '<S33>/Delay' */
-  real32_T Delay_DSTATE_m[150];        /* '<S34>/Delay' */
+  real32_T Delay_DSTATE_j[30];         /* '<S31>/Delay' */
+  real32_T Delay_DSTATE_m[150];        /* '<S32>/Delay' */
   real32_T Ref_Id;                     /* '<S4>/Merge' */
   real32_T Ref_Iq;                     /* '<S4>/Merge1' */
   real32_T error_speed_limit_h;        /* '<S8>/function_Eckdrehzahl' */
   real32_T Delay_DSTATE;               /* '<S3>/Delay' */
   real32_T DiscreteTimeIntegrator_DSTATE;/* '<S3>/Discrete-Time Integrator' */
-  real32_T Accumulator_DSTATE;         /* '<S33>/Accumulator' */
-  real32_T Accumulator_DSTATE_o;       /* '<S34>/Accumulator' */
+  real32_T Accumulator_DSTATE;         /* '<S31>/Accumulator' */
+  real32_T Accumulator_DSTATE_o;       /* '<S32>/Accumulator' */
   real32_T Delay_DSTATE_b;             /* '<S4>/Delay' */
   real32_T Delay1_DSTATE;              /* '<S9>/Delay1' */
   real32_T DiscreteTimeIntegrator_DSTATE_k;/* '<S20>/Discrete-Time Integrator' */
   real32_T Delay_DSTATE_a;             /* '<S9>/Delay' */
   real32_T DiscreteTimeIntegrator_DSTATE_l;/* '<S21>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE_f;             /* '<S25>/Delay' */
-  real32_T DiscreteTimeIntegrator_DSTAT_kt;/* '<S25>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE_l;             /* '<S26>/Delay' */
-  real32_T DiscreteTimeIntegrator_DSTATE_p;/* '<S26>/Discrete-Time Integrator' */
   real32_T Delay_DSTATE_i;             /* '<S14>/Delay' */
   real32_T DiscreteTimeIntegrator_DSTATE_o;/* '<S14>/Discrete-Time Integrator' */
   real32_T Delay_DSTATE_bc;            /* '<S8>/Delay' */
@@ -192,8 +188,6 @@ struct P_ {
                                         *   '<S14>/Gain'
                                         *   '<S20>/Gain1'
                                         *   '<S21>/Gain1'
-                                        *   '<S25>/Gain'
-                                        *   '<S26>/Gain'
                                         */
   real32_T T_VF_n;                     /* Variable: T_VF_n
                                         * Referenced by: '<S14>/Gain'
@@ -298,18 +292,16 @@ extern void FOC_komplex_step(RT_MODEL *const rtM);
  * '<S22>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Stromregler diskret/Entkopplung/Switch Case Action Subsystem'
  * '<S23>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Stromregler diskret/Entkopplung/Switch Case Action Subsystem1'
  * '<S24>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Stromvorgabe_extern/Function_I_limit'
- * '<S25>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Stromvorgabe_extern/PT1'
- * '<S26>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Stromvorgabe_extern/PT2'
- * '<S27>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Tastgradumwandlung/Rotor-Strang'
- * '<S28>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Tastgradumwandlung/Symmetrierung'
- * '<S29>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Tastgradumwandlung/Tastgradbestimmung'
- * '<S30>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Tastgradumwandlung/Winkelwahl'
- * '<S31>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Tastgradumwandlung/Rotor-Strang/Inverse-Clark-Transformation'
- * '<S32>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Tastgradumwandlung/Rotor-Strang/Inverse-Park-Transormation'
- * '<S33>'  : 'uz_codegen_FOC/FOC_komplex/Sicherheitsabschaltung/moving mean'
- * '<S34>'  : 'uz_codegen_FOC/FOC_komplex/Sicherheitsabschaltung/moving mean1'
- * '<S35>'  : 'uz_codegen_FOC/FOC_komplex/Strang-Rotor/Clarke-Transformation'
- * '<S36>'  : 'uz_codegen_FOC/FOC_komplex/Strang-Rotor/Park-Transformation'
+ * '<S25>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Tastgradumwandlung/Rotor-Strang'
+ * '<S26>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Tastgradumwandlung/Symmetrierung'
+ * '<S27>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Tastgradumwandlung/Tastgradbestimmung'
+ * '<S28>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Tastgradumwandlung/Winkelwahl'
+ * '<S29>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Tastgradumwandlung/Rotor-Strang/Inverse-Clark-Transformation'
+ * '<S30>'  : 'uz_codegen_FOC/FOC_komplex/Regelung/Tastgradumwandlung/Rotor-Strang/Inverse-Park-Transormation'
+ * '<S31>'  : 'uz_codegen_FOC/FOC_komplex/Sicherheitsabschaltung/moving mean'
+ * '<S32>'  : 'uz_codegen_FOC/FOC_komplex/Sicherheitsabschaltung/moving mean1'
+ * '<S33>'  : 'uz_codegen_FOC/FOC_komplex/Strang-Rotor/Clarke-Transformation'
+ * '<S34>'  : 'uz_codegen_FOC/FOC_komplex/Strang-Rotor/Park-Transformation'
  */
 
 /*-

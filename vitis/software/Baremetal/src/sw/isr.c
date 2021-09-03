@@ -72,9 +72,9 @@ void ISR_Control(void *data)
 	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
 
 	//FOC_Strom Assign Signal-Values
-	codegenInstance.input.Act_Iu = (Global_Data.aa.A2.me.ADC_A1-2.5) * 80.0F/4.0F - 0.17F;		//A
-	codegenInstance.input.Act_Iv = (Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F + 0.06F;		//A
-	codegenInstance.input.Act_Iw = (Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/4.0F - 0.21F;		//A
+	codegenInstance.input.Act_Iu = (Global_Data.aa.A2.me.ADC_A1-2.5) * 80.0F/4.0F - 0.20F;		//A
+	codegenInstance.input.Act_Iv = (Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F + 0.03F;		//A
+	codegenInstance.input.Act_Iw = (Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/4.0F - 0.15F;		//A
 	codegenInstance.input.Act_U_ZK = Global_Data.aa.A2.me.ADC_A4 * 12.5F;			//V
 
 	codegenInstance.input.Act_n = Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
@@ -119,13 +119,11 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
 
-	// Set duty cycles for three-level modulator
-	/*
-	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-					Global_Data.rasv.halfBridge2DutyCycle,
-					Global_Data.rasv.halfBridge3DutyCycle);
-	*/
-
+	// Write current and voltage data to av
+	Global_Data.av.I_d = codegenInstance.output.Id_Act;
+	Global_Data.av.I_q = codegenInstance.output.Iq_Act;
+	Global_Data.av.U_d = codegenInstance.output.Ud_Ref;
+	Global_Data.av.U_q = codegenInstance.output.Uq_Ref;
 
 	// Update JavaScope
 	JavaScope_update(&Global_Data);

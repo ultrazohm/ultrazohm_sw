@@ -27,14 +27,13 @@
 #include "../globalData.h"
 
 //Defines for averaging the speed from the encoder
-#define SPEED_BUF_SIZE  					12 //averaging over n values
-#define SPEED_BUF_SIZE_INVERS 				1.0F/((float)(SPEED_BUF_SIZE))
-#define SPEED_FIL_ALPHA						0.035F //defines actuality of filtered size
-#define SPEED_FIL_BETA						0.07F //defines actuality of slope of filtered size
+#define SPEED_BUF_SIZE  					8U //averaging over n values
+#define SPEED_FIL_ALPHA						0.05F //defines actuality of filtered size
+#define SPEED_FIL_BETA						0.015F //defines actuality of slope of filtered size
 
 // Defines for Calculation
 #define QUADRATURE_FACTOR					4
-#define OMEGA_2_RPM							60.0 / (2.0 * M_PI)
+#define OMEGA_2_RPM							60.0F / (2.0F * M_PI)
 
 
 int Encoder_Incremental_Initialize(DS_Data* data);   // Init Encoder

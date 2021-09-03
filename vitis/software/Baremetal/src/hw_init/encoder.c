@@ -49,13 +49,13 @@ return Status;
 }
 
 //Initialize the variables for filtering of the speed encoder
-    float 	fSpeed_rpm_Buf[SPEED_BUF_SIZE] = {0};
-    u8 		u8Speed_Buf_Inc = 0;
-    float 	fSpeed_rpm = 0;
-    float 	fSpeed_rpm_Sum = 0;
-    float 	fSpeed_rpm_exp_old = 0;
-    float	fSpeed_rpm_exp = 0;
-    float	expB = 0;
+    float 	fSpeed_rpm_Buf[SPEED_BUF_SIZE] = {0.0F};
+    u8 		u8Speed_Buf_Inc = 0U;
+    float 	fSpeed_rpm = 0.0F;
+    float 	fSpeed_rpm_Sum = 0.0F;
+    float 	fSpeed_rpm_exp_old = 0.0F;
+    float	fSpeed_rpm_exp = 0.0F;
+    float	expB = 0.0F;
 
 void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in global data struct
 
@@ -103,7 +103,7 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 	}
 
 	//Speed over buffer
-	data->av.mechanicalRotorSpeed = fSpeed_rpm_Sum * SPEED_BUF_SIZE_INVERS; //Calculate mean value for the speed
+	data->av.mechanicalRotorSpeed = fSpeed_rpm_Sum / SPEED_BUF_SIZE; //Calculate mean value for the speed
 
 	//Write theta mech
 	data->av.theta_mech = fTheta_mech;

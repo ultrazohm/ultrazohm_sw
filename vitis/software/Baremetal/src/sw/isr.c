@@ -357,7 +357,7 @@ static void CheckForErrors(){
 
 static void CheckForErrors(){
 	//Error detection
-	if(Global_Data.cw.enableControl == true)
+	if(Global_Data.cw.enableSystem == true)
 	{
 		//Detect peak current-limit ---------------------------------------------------------------------------------------
 		if (codegenInstance.output.fault_peak_current == 1.0F)

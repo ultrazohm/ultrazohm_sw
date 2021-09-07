@@ -12,13 +12,10 @@ Vitis
     hardwareAbstractionLayer/hardwareAbstractionLayer
     unit_tests/unit_tests
     how_to_create_ip_core_driver/how_to_create_ip_core_driver
+    debugging
     assertions
     SystemTime/SystemTime
     interrupts
-    gcc_optimization
-    create_project
-    include_math_lib
-    known_issues
     qemu/qemu
     wavegen/wavegen
     signals/signals
@@ -26,4 +23,7 @@ Vitis
     piController/piController
     dq_transformation/dq_transformation
     global_configuration
+    create_project
+    include_math_lib
+    gcc_optimization
 

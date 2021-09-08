@@ -5,7 +5,7 @@ PMSM config
 ===========
 
 Motor parameters of a permanent magnet synchronous motor (PMSM) are needed for multiple functions.
-To streamline the coding process, every necessary PMSM parameter will be bundled inside a ``uz_PMSM_t`` struct, which can be used in the whole UltraZohm project. 
+To streamline the coding process, every necessary PMSM parameter is be bundled inside a ``uz_PMSM_t`` struct, which can be used in the whole UltraZohm project. 
 
 .. doxygenstruct:: uz_PMSM_t
     :members:

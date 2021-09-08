@@ -22,13 +22,13 @@ Example
 
   int main(void) {
      float Kp_id = 4.0f;
-     uz_FOC_set_Kp_id(FOC_instance, float Kp_id);
+     uz_FOC_set_Kp_id(FOC_instance, Kp_id);
      float Kp_iq = 4.0f;
-     uz_FOC_set_Kp_iq(FOC_instance, float Kp_iq);
+     uz_FOC_set_Kp_iq(FOC_instance, Kp_iq);
      float Ki_id = 20.0f;
-     uz_FOC_set_Ki_id(FOC_instance, float Ki_id);
+     uz_FOC_set_Ki_id(FOC_instance, Ki_id);
      float Ki_iq = 20.0f;
-     uz_FOC_set_Ki_iq(FOC_instance, float Ki_iq);
+     uz_FOC_set_Ki_iq(FOC_instance, Ki_iq);
   }
 
 Description

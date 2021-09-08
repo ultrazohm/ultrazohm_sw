@@ -19,11 +19,11 @@ Example
 
   int main(void) {
      float Ld_Henry = 0.00027f;
-     uz_FOC_set_Ld(FOC_instance, float Ld_Henry);
+     uz_FOC_set_Ld(FOC_instance, Ld_Henry);
      float Lq_Henry = 0.00027f;
-     uz_FOC_set_Lq(FOC_instance, float Lq_Henry);
+     uz_FOC_set_Lq(FOC_instance, Lq_Henry);
      float Psi_PM_Vs = 0.0082f;
-     uz_FOC_set_Psi_PM(FOC_instance, float Psi_PM_Vs);
+     uz_FOC_set_Psi_PM(FOC_instance, Psi_PM_Vs);
   }
 
 Description

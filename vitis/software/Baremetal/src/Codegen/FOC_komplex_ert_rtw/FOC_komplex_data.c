@@ -58,14 +58,14 @@ P rtP = {
    *   '<S8>/Function_Feldschwaeche'
    *   '<S22>/Gain1'
    */
-  0.0012F,
+  0.00003F,
 
   /* Variable: L_q
    * Referenced by:
    *   '<S8>/function_Eckdrehzahl'
    *   '<S22>/Gain'
    */
-  0.0012F,
+  0.00005F,
 
   /* Variable: Psi_PM
    * Referenced by:
@@ -73,12 +73,12 @@ P rtP = {
    *   '<S8>/function_Eckdrehzahl'
    *   '<S22>/Constant'
    */
-  0.0171F,
+  0.007F,
 
   /* Variable: R
    * Referenced by: '<S8>/function_Eckdrehzahl'
    */
-  0.083F,
+  0.02F,
 
   /* Variable: T_R
    * Referenced by:
@@ -99,12 +99,12 @@ P rtP = {
   /* Variable: i_max
    * Referenced by: '<S5>/Constant1'
    */
-  30.0F,
+  36.0F,
 
   /* Variable: i_max_peak
    * Referenced by: '<S5>/Constant'
    */
-  36.0F,
+  37.0F,
 
   /* Variable: i_ref_max
    * Referenced by:
@@ -112,27 +112,27 @@ P rtP = {
    *   '<S8>/Constant'
    *   '<S10>/Constant'
    */
-  25.0F,
+  32.0F,
 
   /* Variable: n_max
    * Referenced by: '<S5>/Constant3'
    */
-  600.0F,
+  1375.0F,
 
   /* Variable: n_max_peak
    * Referenced by: '<S5>/Constant2'
    */
-  1500.0F,
+  1650.0F,
 
   /* Variable: n_ref_max
    * Referenced by: '<S8>/function_Eckdrehzahl'
    */
-  400.0F,
+  1100.0F,
 
   /* Variable: p
    * Referenced by: '<S8>/function_Eckdrehzahl'
    */
-  18.0F
+  5.0F
 };
 
 /*

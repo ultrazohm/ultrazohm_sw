@@ -56,6 +56,11 @@ float 	fSpeed_rpm_Mean = 0;
 
 void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in global data struct
 
+	// Get mechanical angle theta prototype
+	int32_t i_theta_m  = Xil_In32(Encoder_position_REG);  //Read AXI-register
+	float fTheta_mech  = ((float)(i_theta_m) / (float)(data->mrp.incrementalEncoderResolution*QUADRATURE_FACTOR)) * 2.0F * M_PI;
+	data->av.theta_mech = fTheta_mech;
+
 	//Read the speed encoder (own IP-Block)
 	int32_t i_speed = Xil_In32(Encoder_rps_REG); //Read AXI-register
 	float fSpeed_rpm = 9.5492966 * (float)(ldexpf(i_speed, Q11toF));  // Shift 11 Bit for fixed-point //(60/(2*pi)) = 9.5493 Conversion Omega to rpm (Compare Simulink)

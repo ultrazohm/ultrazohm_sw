@@ -6,7 +6,7 @@
 #include "test_assert_with_exception.h"
 TEST_FILE("uz_signals.c")
 
-uz_PI_Controller_config config = {0};
+struct uz_PI_Controller_config config = {0};
 void setUp(void)
 {
     config.Kp = 10.0f;
@@ -217,4 +217,21 @@ void test_uz_PI_Controller_set_Kp_assert_Kp_negative(void){
     uz_PI_Controller* variables = uz_PI_Controller_init(config);
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_set_Kp(variables, -10.0f));
 }
+
+void test_uz_PI_Controller_update_limits_NULL(void){
+    setUp();
+    float upper_limit = 10.0f;
+    float lower_limit = -10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_update_limits(NULL, upper_limit, lower_limit));
+}
+
+void test_uz_PI_Controller_update_limits_assert_limits(void){
+    setUp();
+    uz_PI_Controller* variables = uz_PI_Controller_init(config);
+    float upper_limit = 10.0f;
+    float lower_limit = -10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_update_limits(variables, lower_limit, upper_limit));
+}
+
+
 #endif // TEST

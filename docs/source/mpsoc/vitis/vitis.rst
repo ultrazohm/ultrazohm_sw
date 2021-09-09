@@ -17,11 +17,16 @@ Vitis
     SystemTime/SystemTime
     interrupts
     qemu/qemu
+    PMSM_config/uz_PMSM_config
     wavegen/wavegen
     signals/signals
     array/array
     piController/piController
     dq_transformation/dq_transformation
+    linear_decoupling/linear_decoupling
+    space_vector_limitation/space_vector_limitation
+    FOC/FOC
+    SpeedControl/SpeedControl
     global_configuration
     create_project
     include_math_lib

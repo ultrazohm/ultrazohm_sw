@@ -22,7 +22,8 @@ Example
 Description
 ===========
 
-The dead zone function outputs zero output within a specified region and the input subtracted from the threshold otherwise.
+The dead zone function outputs zero within a specified region.
+Otherwise it outputs the input subtracted from the threshold.
 
 .. list-table:: Deadzone
    :widths: 40 25

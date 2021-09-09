@@ -26,7 +26,7 @@ static uz_PI_Controller* uz_PI_Controller_allocation(void) {
 	return (self);
 }
 
-uz_PI_Controller* uz_PI_Controller_init(uz_PI_Controller_config config) {
+uz_PI_Controller* uz_PI_Controller_init(struct uz_PI_Controller_config config) {
 	uz_PI_Controller* self = uz_PI_Controller_allocation();
     uz_assert(config.Ki >= 0.0f);
     uz_assert(config.Kp >= 0.0f);
@@ -88,6 +88,15 @@ void uz_PI_Controller_set_Kp(uz_PI_Controller* self, float new_Kp){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     uz_assert(new_Kp >= 0.0f);
-    self->config.Kp = new_Kp;    
+    self->config.Kp = new_Kp;
+}
+
+void uz_PI_Controller_update_limits(uz_PI_Controller* self, float upper_limit, float lower_limit){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(upper_limit > lower_limit);
+	uz_assert(lower_limit < upper_limit);
+	self->config.upper_limit = upper_limit;
+	self->config.lower_limit = lower_limit;
 }
 #endif

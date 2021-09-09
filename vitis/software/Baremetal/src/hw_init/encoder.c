@@ -56,6 +56,8 @@ return Status;
     float 	fSpeed_rpm_exp_old = 0.0F;
     float	fSpeed_rpm_exp = 0.0F;
     float	expB = 0.0F;
+    float 	expB_old = 0.0F;
+    int32_t i_theta_m_old = 0;
 
 void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in global data struct
 
@@ -71,6 +73,7 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 
 	//Manual speed calculation
 	//calculate difference between new and old mechanical angle
+	/*
 	float deltaTheta_mech = fTheta_mech - data->av.theta_mech;
 	//Detect 2pi->0 crossing (change bigger than one quarter negative mechanical rotation)
 	if (deltaTheta_mech < (-0.5F * M_PI))
@@ -86,13 +89,40 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 	{
 		fSpeed_rpm = deltaTheta_mech/(data->ctrl.samplingPeriod) * OMEGA_2_RPM;
 	}
+	*/
+
+	//Manual speed calculation
+	//calculate difference between new and old mechanical angle INCREMENT
+
+	int32_t deltaITheta_mech = i_theta_m - i_theta_m_old;
+	//Detect 2pi->0 crossing (change bigger than one quarter negative mechanical rotation)
+	if (deltaITheta_mech < (-5000))
+	{
+		fSpeed_rpm = ((float)(deltaITheta_mech + 19992))/(data->ctrl.samplingPeriod) * 60.0F/20000.0F;
+	}
+	//Detect 0->2pi crossing (change bigger than one quarter positive mechanical rotation)
+	else if (deltaITheta_mech > (5000))
+	{
+		fSpeed_rpm = ((float)(deltaITheta_mech - 19992))/(data->ctrl.samplingPeriod) * 60.0F/20000.0F;
+	}
+	else
+	{
+		fSpeed_rpm = ((float)(deltaITheta_mech))/(data->ctrl.samplingPeriod) * 60.0F/20000.0F;
+	}
+	i_theta_m_old = i_theta_m;
+
 
 	//Smoothing 1: Double exponential smoothing
+	// Save old variables
 	fSpeed_rpm_exp_old = fSpeed_rpm_exp;
-	fSpeed_rpm_exp = SPEED_FIL_ALPHA * fSpeed_rpm + (1-SPEED_FIL_ALPHA) * (fSpeed_rpm_exp_old + expB);
-	expB = SPEED_FIL_BETA * (fSpeed_rpm_exp - fSpeed_rpm_exp_old) + (1 - SPEED_FIL_BETA) * expB;
+	expB_old = expB;
+	//FIltering Algorithm
+	fSpeed_rpm_exp = SPEED_FIL_ALPHA * fSpeed_rpm + (1-SPEED_FIL_ALPHA) * (fSpeed_rpm_exp_old + expB_old);
+	expB = SPEED_FIL_BETA * (fSpeed_rpm_exp - fSpeed_rpm_exp_old) + (1 - SPEED_FIL_BETA) * expB_old;
+
 
 	//Smoothing 2: moving average
+
 	fSpeed_rpm_Sum -= fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //subtract the old value for the averaging
 	fSpeed_rpm_Buf[u8Speed_Buf_Inc] = fSpeed_rpm_exp;		//restore the new value for the averaging
 	fSpeed_rpm_Sum += fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //add the new value for the averaging
@@ -103,10 +133,11 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 	}
 
 	//Speed over buffer
-	data->av.mechanicalRotorSpeed = fSpeed_rpm_Sum / SPEED_BUF_SIZE; //Calculate mean value for the speed
+	data->av.mechanicalRotorSpeed = fSpeed_rpm_Sum / ((float)SPEED_BUF_SIZE); //Calculate mean value for the speed
+	//data->av.mechanicalRotorSpeed = fSpeed_rpm_exp;
 
 	//Write theta mech
-	data->av.theta_mech = fTheta_mech;
+	data->av.theta_mech = (float)i_theta_m;//fTheta_mech;
 
 	// Get electrical angle theta
 	int32_t i_theta_e  = Xil_In32(Encoder_theta_e_REG);  //Read AXI-register

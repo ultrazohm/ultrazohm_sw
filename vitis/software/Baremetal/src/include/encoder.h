@@ -32,7 +32,7 @@
 #define SPEED_FIL_BETA						0.015F //defines actuality of slope of filtered size
 
 // Defines for Calculation
-#define QUADRATURE_FACTOR					4
+#define QUADRATURE_FACTOR					4.0F
 #define OMEGA_2_RPM							60.0F / (2.0F * M_PI)
 
 

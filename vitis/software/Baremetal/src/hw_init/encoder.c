@@ -51,19 +51,42 @@ return Status;
 
 //Initialize the variables for the speed encoder
 float 	fSpeed_rpm_Buf[SPEED_BUF_SIZE] = {0,0};
-u8 			u8Speed_Buf_Inc =0;
-float 	fSpeed_rpm_Mean = 0;
+u8 			u8Speed_Buf_Inc = 0U;
+float 	fSpeed_rpm_Mean = 0.0F;
+float	fTheta_mech_old = 0.0F;
 
 void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in global data struct
 
 	// Get mechanical angle theta prototype
 	int32_t i_theta_m  = Xil_In32(Encoder_position_REG);  //Read AXI-register
 	float fTheta_mech  = ((float)(i_theta_m) / (float)(data->mrp.incrementalEncoderResolution*QUADRATURE_FACTOR)) * 2.0F * M_PI;
-	data->av.theta_mech = fTheta_mech;
+	data->dv.thetaIncrement = (float)(i_theta_m);
+	data->dv.dTheta = fTheta_mech;
+
 
 	//Read the speed encoder (own IP-Block)
 	int32_t i_speed = Xil_In32(Encoder_rps_REG); //Read AXI-register
-	float fSpeed_rpm = 9.5492966 * (float)(ldexpf(i_speed, Q11toF));  // Shift 11 Bit for fixed-point //(60/(2*pi)) = 9.5493 Conversion Omega to rpm (Compare Simulink)
+	data->dv.n_fpga = OMEGA_2_RPM * (float)(ldexpf(i_speed, Q11toF));  // Shift 11 Bit for fixed-point
+
+	//Manual speed calculation on R5
+	//calculate difference between new and old mechanical angle
+	float deltaTheta_mech = fTheta_mech - fTheta_mech_old;
+
+	//Detect 2pi->0 crossing (change bigger than one quarter negative mechanical rotation)
+	if (deltaTheta_mech < (-0.5F * M_PI))
+	{
+		fSpeed_rpm = (deltaTheta_mech + 2.0F * M_PI)/(data->ctrl.samplingPeriod) * OMEGA_2_RPM;
+	}
+	//Detect 0->2pi crossing (change bigger than one quarter positive mechanical rotation)
+	else if (deltaTheta_mech > (0.5F * M_PI))
+	{
+		fSpeed_rpm = (deltaTheta_mech - 2.0F * M_PI)/(data->ctrl.samplingPeriod) * OMEGA_2_RPM;
+	}
+	else
+	{
+		fSpeed_rpm = deltaTheta_mech/(data->ctrl.samplingPeriod) * OMEGA_2_RPM;
+	}
+
 
 	fSpeed_rpm_Mean -= fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //subtract the old value for the averaging
 	fSpeed_rpm_Buf[u8Speed_Buf_Inc] = fSpeed_rpm;		//restore the new value for the averaging
@@ -87,4 +110,6 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 	data->av.mechanicalRotorSpeed_filtered = LPF1(	data->av.mechanicalRotorSpeed, &speed_lpf_mem_in, &speed_lpf_mem_out,
 													data->ctrl.samplingFrequency, data->mrp.IncEncoderLPF_freq);
 
+	//write current data to "old" data for next calculation
+	fTheta_mech_old = fTheta_mech;
 }

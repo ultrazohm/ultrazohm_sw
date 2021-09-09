@@ -158,7 +158,7 @@ int Initialize_MotorRelatedParameters(DS_Data* data){
 	data->mrp.motorDirectInductance = 2.00e-04; // [H] Identified-ID-Run: Ld= 191 uH (Motor+Mosfet+Leitung+Klemme) //Identified LCR-Meter: L_ph_ph= 410uH -> Ld= 205uH
 	data->mrp.motorQuadratureInductance = 2.00e-04; // [H]
 	data->mrp.motorStatorResistance = 0.07; //[Ohm] Identified-ID-Run: Rs= 0.0718 (Motor+Mosfet+Leitung+Klemme) //R_ds,on Mosfet(BSC094N06LS5) = 0.0094 Ohm //Identified LCR-Meter: R_ph_ph= 0.118 -> Rs= 0.118/2 + 2*0.0094 = 0.0778 Ohm
-	data->mrp.motorPolePairNumber = 4; // Number of pole pairs in the motor (necessary for the encoder)
+	data->mrp.motorPolePairNumber = 1; // Number of pole pairs in the motor (necessary for the encoder)
 	data->mrp.motorFluxConstant = 0.005950905; //[Vs] Psi_sinus
 	data->mrp.motorNominalCurrent=8; //8;
 	data->mrp.motorNominalSpeed=3000;

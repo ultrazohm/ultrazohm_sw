@@ -251,7 +251,7 @@ float LPF1(const float input, float *const in_mem, float *const out_mem, const f
 	float K2;
 	float output;
 
-	P1 =M_PI*Fc/Fs;
+	P1 = M_PI*Fc/Fs;
 	K1 = P1/(P1+1);
 	K2 = (P1-1)/(P1+1);
 

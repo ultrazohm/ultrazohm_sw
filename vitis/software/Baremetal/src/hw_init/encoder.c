@@ -21,11 +21,10 @@
 int Encoder_Incremental_Initialize(DS_Data* data){
 
 	int Status = 0;
-    int QuadratureFactor = 4.0;
 
-	int32_t increments_per_turn_elec = (int32_t)((data->mrp.incrementalEncoderResolution*QuadratureFactor)/data->mrp.motorPolePairNumber); // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
-	int32_t increments_per_turn_mech = (int32_t)(data->mrp.incrementalEncoderResolution*QuadratureFactor); // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
-	int32_t pi2_to_increments_elec = (int32_t)(ldexpf(((2.0*M_PI/(data->mrp.incrementalEncoderResolution*QuadratureFactor))*data->mrp.motorPolePairNumber),Q24)); // Shift 24 Bit for fixed-point
+	int32_t increments_per_turn_elec = (int32_t)((data->mrp.incrementalEncoderResolution*QUADRATURE_FACTOR)/data->mrp.motorPolePairNumber); // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
+	int32_t increments_per_turn_mech = (int32_t)(data->mrp.incrementalEncoderResolution*QUADRATURE_FACTOR); // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
+	int32_t pi2_to_increments_elec = (int32_t)(ldexpf(((2.0*M_PI/(data->mrp.incrementalEncoderResolution*QUADRATURE_FACTOR))*data->mrp.motorPolePairNumber),Q24)); // Shift 24 Bit for fixed-point
     int32_t OmegaPerOverSample = (int32_t)(ldexpf(500.0*((2*M_PI)/60),Q11));  //In steps of 500rpm, the Oversampling-Factor is increased in order to have a better speed accuracy. Smaller value, smoother speed but less dynamic. Higher value, less averaging but also higher dynamic.
 
 	//Write down the factor 2*pi/Increments for theta elek. calculation
@@ -49,24 +48,30 @@ int Encoder_Incremental_Initialize(DS_Data* data){
 return Status;
 }
 
-//Initialize the variables for the speed encoder
-float 	fSpeed_rpm_Buf[SPEED_BUF_SIZE] = {0,0};
-u8 			u8Speed_Buf_Inc = 0U;
-float 	fSpeed_rpm_Mean = 0.0F;
-float	fTheta_mech_old = 0.0F;
+//Initialize the variables for filtering of the speed encoder
+    float 	fSpeed_rpm_Buf[SPEED_BUF_SIZE] = {0.0F};
+    u8 		u8Speed_Buf_Inc = 0U;
+    float 	fSpeed_rpm = 0.0F;
+    float 	fSpeed_rpm_Sum = 0.0F;
+    float 	fSpeed_rpm_exp_old = 0.0F;
+    float	fSpeed_rpm_exp = 0.0F;
+    float	expB = 0.0F;
+    float 	expB_old = 0.0F;
+    int32_t i_theta_m_old = 0;
+    float fTheta_mech_old = 0.0F;
 
 void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in global data struct
 
 	// Get mechanical angle theta prototype
 	int32_t i_theta_m  = Xil_In32(Encoder_position_REG);  //Read AXI-register
 	float fTheta_mech  = ((float)(i_theta_m) / (float)(data->mrp.incrementalEncoderResolution*QUADRATURE_FACTOR)) * 2.0F * M_PI;
-	data->dv.thetaIncrement = (float)(i_theta_m);
-	data->dv.dTheta = fTheta_mech;
+	data->enc.thetaIncrement = (float)(i_theta_m);
+	data->enc.dTheta = fTheta_mech;
 
 
 	//Read the speed encoder (own IP-Block)
 	int32_t i_speed = Xil_In32(Encoder_rps_REG); //Read AXI-register
-	data->dv.n_fpga = OMEGA_2_RPM * (float)(ldexpf(i_speed, Q11toF));  // Shift 11 Bit for fixed-point
+	data->enc.n_fpga = OMEGA_2_RPM * (float)(ldexpf(i_speed, Q11toF));  // Shift 11 Bit for fixed-point
 
 	//Manual speed calculation on R5
 	//calculate difference between new and old mechanical angle
@@ -87,10 +92,14 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 		fSpeed_rpm = deltaTheta_mech/(data->ctrl.samplingPeriod) * OMEGA_2_RPM;
 	}
 
+	//Smoothing 1: Double exponential smoothing
+	fSpeed_rpm_exp = SPEED_FIL_ALPHA * fSpeed_rpm + (1-SPEED_FIL_ALPHA) * (fSpeed_rpm_exp_old + expB_old);
+	expB = SPEED_FIL_BETA * (fSpeed_rpm_exp - fSpeed_rpm_exp_old) + (1 - SPEED_FIL_BETA) * expB_old;
 
-	fSpeed_rpm_Mean -= fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //subtract the old value for the averaging
-	fSpeed_rpm_Buf[u8Speed_Buf_Inc] = fSpeed_rpm;		//restore the new value for the averaging
-	fSpeed_rpm_Mean += fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //add the new value for the averaging
+	//Smoothing 2: moving average
+	fSpeed_rpm_Sum -= fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //subtract the old value for the averaging
+	fSpeed_rpm_Buf[u8Speed_Buf_Inc] = fSpeed_rpm_exp;		//restore the new value for the averaging
+	fSpeed_rpm_Sum += fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //add the new value for the averaging
 
 	u8Speed_Buf_Inc +=1; //Count up for the averaging
 	if (u8Speed_Buf_Inc >= SPEED_BUF_SIZE){ //Safe calculation for array overflow
@@ -98,7 +107,7 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 	}
 
 	//Speed over buffer
-	data->av.mechanicalRotorSpeed = fSpeed_rpm_Mean * SPEED_BUF_SIZE_INVERS; //Calculate mean value for the speed
+	data->enc.n_R5 = fSpeed_rpm_Sum / ((float)SPEED_BUF_SIZE); //Calculate mean value for the speed
 
 	// Get electrical angle theta
 	int32_t i_theta_e  = Xil_In32(Encoder_theta_e_REG);  //Read AXI-register
@@ -112,4 +121,6 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 
 	//write current data to "old" data for next calculation
 	fTheta_mech_old = fTheta_mech;
+	fSpeed_rpm_exp_old = fSpeed_rpm_exp;
+	expB_old = expB;
 }

@@ -81,12 +81,12 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, 4 signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ptr_arr[JSO_thetaIncrement]		= &data->dv.ThetaIncrement;
-	js_ptr_arr[JSO_theta] 				= &data->dv.Theta;
-	js_ptr_arr[JSO_dThetaIncrement] 	= &data->dv.dThetaIncrement;
-	js_ptr_arr[JSO_dTheta] 				= &data->dv.dTheta;
-	js_ptr_arr[JSO_n_R5] 				= &data->dv.n_R5;
-	js_ptr_arr[JSO_n_fpga] 				= &data->dv.n_fpga;
+	js_ptr_arr[JSO_thetaIncrement]		= &data->enc.thetaIncrement;
+	js_ptr_arr[JSO_theta] 				= &data->enc.theta;
+	js_ptr_arr[JSO_dThetaIncrement] 	= &data->enc.dThetaIncrement;
+	js_ptr_arr[JSO_dTheta] 				= &data->enc.dTheta;
+	js_ptr_arr[JSO_n_R5] 				= &data->enc.n_R5;
+	js_ptr_arr[JSO_n_fpga] 				= &data->enc.n_fpga;
 	js_ptr_arr[JSO_ISR_period]			= &isr_period_us;
 	js_ptr_arr[JSO_ISR_ExecutionTime]	= &ISRExecutionTime;
 	js_ptr_arr[JSO_lifecheck] 			= &lifecheck;

@@ -1,6 +1,6 @@
 #include "uz_piController.h"
 #include "../uz_global_configuration.h"
-#if UZ_FOC_PI_CONTROLLER_MAX_INSTANCES > 0U
+#if UZ_PI_CONTROLLER_MAX_INSTANCES > 0U
 #include "../uz_HAL.h"
 #include "../uz_signals/uz_signals.h"
 #include <math.h>
@@ -14,11 +14,11 @@ struct uz_PI_Controller {
 };
 
 static size_t instances_counter_PI_Controller = 0;
-static uz_PI_Controller instances_PI_Controller[UZ_FOC_PI_CONTROLLER_MAX_INSTANCES] = { 0 };
+static uz_PI_Controller instances_PI_Controller[UZ_PI_CONTROLLER_MAX_INSTANCES] = { 0 };
 static uz_PI_Controller* uz_PI_Controller_allocation(void);
 
 static uz_PI_Controller* uz_PI_Controller_allocation(void) {
-	uz_assert(instances_counter_PI_Controller < UZ_FOC_PI_CONTROLLER_MAX_INSTANCES);
+	uz_assert(instances_counter_PI_Controller < UZ_PI_CONTROLLER_MAX_INSTANCES);
 	uz_PI_Controller* self = &instances_PI_Controller[instances_counter_PI_Controller];
 	uz_assert(self->is_ready == false);
 	instances_counter_PI_Controller++;
@@ -26,7 +26,7 @@ static uz_PI_Controller* uz_PI_Controller_allocation(void) {
 	return (self);
 }
 
-uz_PI_Controller* uz_PI_Controller_init(uz_PI_Controller_config config) {
+uz_PI_Controller* uz_PI_Controller_init(struct uz_PI_Controller_config config) {
 	uz_PI_Controller* self = uz_PI_Controller_allocation();
     uz_assert(config.Ki >= 0.0f);
     uz_assert(config.Kp >= 0.0f);
@@ -88,6 +88,15 @@ void uz_PI_Controller_set_Kp(uz_PI_Controller* self, float new_Kp){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     uz_assert(new_Kp >= 0.0f);
-    self->config.Kp = new_Kp;    
+    self->config.Kp = new_Kp;
+}
+
+void uz_PI_Controller_update_limits(uz_PI_Controller* self, float upper_limit, float lower_limit){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(upper_limit > lower_limit);
+	uz_assert(lower_limit < upper_limit);
+	self->config.upper_limit = upper_limit;
+	self->config.lower_limit = lower_limit;
 }
 #endif

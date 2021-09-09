@@ -10,31 +10,43 @@
 #include "xstatus.h"
 #include "xil_printf.h"
 #include "sleep.h"
+
 /**
  * @brief Asserts that the condition is true. If false, the assertion callback executes (program is stopped).
  * 
  */
-#define uz_assert Xil_AssertNonvoid
+#define uz_assert(Expression)                 \
+  do {                                        \
+      if(!(Expression)){                      \
+      Xil_Assert(__FILE__, __LINE__);         \
+    }                                         \
+  } while (0)
+
+
 /**
  * @brief Prints to stdout, i.e., Vitis terminal
  * 
  */
 #define uz_printf xil_printf
+
 /**
  * @brief Processor does nothing for defined seconds
  * 
  */
 #define uz_sleep_seconds sleep
+
 /**
  * @brief Processor does nothing for defined microseconds
  * 
  */
 #define uz_sleep_useconds usleep
+
 /**
  * @brief Return this define to indicate success in a function and check return value.
  * 
  */
 #define UZ_SUCCESS XST_SUCCESS
+
 /**
  * @brief Return this define to indicate failure in a function and check return value.
  * 
@@ -45,6 +57,7 @@
 #ifdef TEST
 // cppcheck-suppress misra-c2012-21.6 //. stdio.h is not allowed by MISRA, we use it only with ceedling unit testing and never on the UltraZohm
 #include <stdio.h>
+#include <unistd.h>
 #include "CException.h"
 #define uz_assert(condition) if (!(condition)) Throw(0)
 #define uz_printf printf

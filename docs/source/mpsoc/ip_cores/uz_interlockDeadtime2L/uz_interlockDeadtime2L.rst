@@ -142,7 +142,7 @@ Deadtime
    Deadtime module
 
 The deadtime module adds a delay to every rising edge on the signals ``S0..S5``.
-If TOP_IN/BOT_IN is ``true`` the 8-bit counter starts counting until the value of ``DelayCycles`` is reached.
+If TOP_IN/BOT_IN is ``true`` the 10 bit counter starts counting until the value of ``DelayCycles`` is reached.
 The switch changes to pass through input one, which in turn makes the ``AND`` switch to true.
 The ``true`` signal is held by the resettable delay block.
 As soon as TOP_IN/BOT_In switches to ``false`` the ``AND`` switches to ``false``.

@@ -1,16 +1,14 @@
 #include "uz_PushButton.h"
-
-static _Bool uz_PushButton_GetValue(uz_PushButton *self);
+#include "../uz_HAL.h"
 
 void uz_PushBotton_init(uz_PushButton *self, uz_gpio *hw){
 	uz_assert_not_NULL(self);
 	self->isReady=true;
 	self->hw=hw;
-	self->GetValue=&uz_PushButton_GetValue;
-};
+}
 
-static _Bool uz_PushButton_GetValue(uz_PushButton *self){
+_Bool uz_PushButton_GetValue(uz_PushButton *self){
 	uz_assert_not_NULL(self);
 	uz_assert(self->isReady);
-	return ((_Bool)self->hw->read_pin(self->hw));
-};
+	return ((_Bool) uz_gpio_read_pin(self->hw));
+}

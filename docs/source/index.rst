@@ -100,7 +100,6 @@ Syllabus
    code_generation/hdl_coder/index
    code_generation/vivado_hls/index
    code_generation/embedded_coder/index
-   code_generation/BinaryExport/index
 
 .. toctree::
    :maxdepth: 2

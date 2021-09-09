@@ -634,13 +634,27 @@ typedef struct _controllerVars_ {
 } controllerVars;
 
 typedef struct _debugVariables_ {
+	uint32_t  counter;
+	float finalReferenceCurrent;
+	float controlError;
+	float referenceSpeedLimited;
+	float positionWithPhaseAdvance;
+	uint32_t  timeStampCounter;
+	uint32_t isrCyclesFor10Millisec;
+	int sw1;
+	int sw2;
+	int sw3;
+	int ADC_scope_display;
+} debugVariables;
+
+typedef struct _encoderDebug_ {
 	float thetaIncrement;
 	float theta;
 	float dThetaIncrement;
 	float dTheta;
 	float n_R5;
 	float n_fpga;
-} debugVariables;
+} encoderDebug;
 
 
 typedef struct _DS_Data_ {
@@ -656,6 +670,7 @@ typedef struct _DS_Data_ {
 	controllerVars ctrl;
 	debugVariables dv;
 	AnalogAdapters aa;
+	encoderDebug enc;
 } DS_Data;
 
 #endif

@@ -31,12 +31,12 @@ Example
   :linenos:
   :caption: Example to initialize the configuration struct
     
-  #include "uz_piController.h"
+  #include "uz/uz_piController/uz_piController.h"
   int main(void) {
-     uz_PI_Controller_config config = {
+     struct uz_PI_Controller_config config = {
         .Kp = 10.0f,
         .Ki = 10.0f,
-        .samplingTime_sec = 0.00002f,
+        .samplingTime_sec = 0.00005f,
         .upper_limit = 10.0f,
         .lower_limit = -10.0f
      };
@@ -64,7 +64,6 @@ Example
   :linenos:
   :caption: Example function call to init a PI-Controller instance. Config according to :ref:`configuration section<uz_piController_config>`
 
-  #include "uz/uz_piController/uz_piController.h"
   int main(void) {
      uz_PI_Controller *PI_instance = uz_PI_Controller_init(config);
   }
@@ -86,7 +85,6 @@ Example
   :linenos:
   :caption: Example function call to reset the PI-Controller output. PI-Instance via :ref:`init-function <uz_piController_init>`
 
-  #include "uz/uz_piController/uz_piController.h"
   int main(void) {
      uz_PI_Controller_reset(PI_instance);
   }

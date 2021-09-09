@@ -59,7 +59,7 @@ constant OFFSET_0       : integer := 150;
 constant CONVERSION_0   : integer := 10;
 
 constant OFFSET_1       : integer := 120;
-constant CONVERSION_1   : integer := 5;
+constant CONVERSION_1   : integer := -5;
 
 constant SAMPLES        : natural := 2;
 
@@ -198,9 +198,10 @@ stimulus : process begin
     S_PRE_DELAY <= std_logic_vector(to_unsigned(TEST_DELAY, S_PRE_DELAY'length));
     S_POST_DELAY <= std_logic_vector(to_unsigned(TEST_DELAY, S_POST_DELAY'length));
     S_CLK_DIV <= std_logic_vector(to_unsigned(TEST_CLK_DIV, S_CLK_DIV'length));
-       
     -- init test tx vector
-    S_TX_DATA <= std_logic_vector(to_unsigned(RAW_VALUE, S_TX_DATA'length));
+    S_TX_DATA <= std_logic_vector(to_signed(RAW_VALUE, S_TX_DATA'length));
+    wait for 2 * CLOCK_PERIOD;
+    S_TX_DATA <= S_TX_DATA(TEST_DATA_WIDTH - 1) & S_TX_DATA(TEST_DATA_WIDTH - 1 downto 0);
     
     wait for 2 * CLOCK_PERIOD;
     S_RESET_N <= '1';
@@ -238,15 +239,6 @@ stimulus : process begin
     S_SET_SAMPLES <= '0';
     
     wait for CLOCK_PERIOD;
-    
-    -- test if SS_N signal can be controlled manually
-    S_MANUAL <= '1';
-    S_SS_IN_N <= '0';
-    wait for CLOCK_PERIOD * 2;
-    S_SS_IN_N <= '1';
-    wait for CLOCK_PERIOD * 2;
-    S_MANUAL <= '0';
-    wait for CLOCK_PERIOD * 2;
     -- start transfer
     S_ENABLE <= '1';
     wait for CLOCK_PERIOD;
@@ -264,6 +256,14 @@ stimulus : process begin
     S_SS_IN_N <= '1';
     wait for 8 * (CLOCK_PERIOD * (TEST_CLK_DIV + 2) * TEST_DATA_WIDTH
            + CLOCK_PERIOD * (TEST_DELAY + 1));
+--     test if SS_N signal can be controlled manually
+    S_MANUAL <= '1';
+    S_SS_IN_N <= '0';
+    wait for CLOCK_PERIOD * 2;
+    S_SS_IN_N <= '1';
+    wait for CLOCK_PERIOD * 2;
+    S_MANUAL <= '0';
+    wait for CLOCK_PERIOD * 2;
     report "Simulation ended" severity error;
 
 end process stimulus;
@@ -271,23 +271,25 @@ end process stimulus;
 
 spi_slave : process (S_SCLK, S_SS_OUT_N, S_MISO)
             begin
-    -- generate new output value on falling edge
     if falling_edge(S_SS_OUT_N) then
         S_MISO <= (others => S_TX_DATA(S_TX_BIT_COUNT)) after (DCNVSDOV + 2 * PCB_DEL);
     end if;
     
+    -- generate new output value on falling edge
     if falling_edge(S_SCLK) then
         S_MISO <= (others => 'X') after (HSDO + 2 * PCB_DEL);
-        S_TX_BIT_COUNT <= S_TX_BIT_COUNT - 1;
+        if (S_TX_BIT_COUNT > 0) then
+            S_TX_BIT_COUNT <= S_TX_BIT_COUNT - 1;
+        end if;
     end if;
-    
     if S_MISO(0) = 'X' then
         S_MISO <= (others => S_TX_DATA(S_TX_BIT_COUNT)) after (DSCKSDOV - HSDO);
-    if S_TX_BIT_COUNT <= 0 then
-        S_TX_BIT_COUNT <= TEST_DATA_WIDTH - 1;
-    end if;
     end if;
     
+    -- reset bit counter for next transmission
+    if rising_edge(S_SS_OUT_N) then
+        S_TX_BIT_COUNT <= TEST_DATA_WIDTH;
+    end if;
 end process spi_slave;
 
 end Behavioral;

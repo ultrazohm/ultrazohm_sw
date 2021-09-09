@@ -11,7 +11,7 @@ void uz_adcLtc2311_testbench(void) {
 
 	uz_adcLtc2311_spiConfig test_spi_config;
 	uz_adcLtc2311_initSpiConfig(&test_spi_config);
-	test_spi_config.clk_div = 4;
+	test_spi_config.clk_div = 8;
 	uz_adcLtc2311_configureSpi(test_instance, &test_spi_config);
 	uz_adcLtc2311_config test_config;
 	uz_adcLtc2311_initConfig(&test_config);
@@ -24,7 +24,7 @@ void uz_adcLtc2311_testbench(void) {
 	test_config.max_attempts = 10;
 	test_config.conversion_factor = 153;
 	test_config.offset = 0;
-	test_config.samples = 1;
+	test_config.samples = 4;
 	uz_adcLtc2311_configure(test_instance, &test_config);
 	//uz_adcLtc2311_softwareTrigger(test_instance, UZ_ADCLTC2311_MASTER1);
 

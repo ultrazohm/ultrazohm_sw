@@ -11,66 +11,484 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="2634001fs"></ZoomEndTime>
-      <Cursor1Time time="1366764fs"></Cursor1Time>
+      <ZoomStartTime time="107000fs"></ZoomStartTime>
+      <ZoomEndTime time="1441001fs"></ZoomEndTime>
+      <Cursor1Time time="2523805fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="184"></NameColumnWidth>
+      <NameColumnWidth column_width="156"></NameColumnWidth>
       <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="22" />
+   <WVObjectSize size="19" />
    <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_CLK">
       <obj_property name="ElementShortName">S_CLK</obj_property>
       <obj_property name="ObjectShortName">S_CLK</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA">
-      <obj_property name="ElementShortName">S_RX_DATA[31:0]</obj_property>
-      <obj_property name="ObjectShortName">S_RX_DATA[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_SCLK">
-      <obj_property name="ElementShortName">S_SCLK</obj_property>
-      <obj_property name="ObjectShortName">S_SCLK</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_SCLK_IN">
-      <obj_property name="ElementShortName">S_SCLK_IN</obj_property>
-      <obj_property name="ObjectShortName">S_SCLK_IN</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_SS_OUT_N">
-      <obj_property name="ElementShortName">S_SS_OUT_N</obj_property>
-      <obj_property name="ObjectShortName">S_SS_OUT_N</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_SS_IN_N">
-      <obj_property name="ElementShortName">S_SS_IN_N</obj_property>
-      <obj_property name="ObjectShortName">S_SS_IN_N</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_BUSY">
-      <obj_property name="ElementShortName">S_BUSY</obj_property>
-      <obj_property name="ObjectShortName">S_BUSY</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_DUMMY_SAMPLE">
-      <obj_property name="ElementShortName">S_DUMMY_SAMPLE</obj_property>
-      <obj_property name="ObjectShortName">S_DUMMY_SAMPLE</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/ADC_CONTROLLER_TB/S_MISO">
-      <obj_property name="ElementShortName">S_MISO[1:0]</obj_property>
-      <obj_property name="ObjectShortName">S_MISO[1:0]</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_ENABLE">
       <obj_property name="ElementShortName">S_ENABLE</obj_property>
       <obj_property name="ObjectShortName">S_ENABLE</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_MANUAL">
-      <obj_property name="ElementShortName">S_MANUAL</obj_property>
-      <obj_property name="ObjectShortName">S_MANUAL</obj_property>
+   <wvobject type="vbus" fp_name="vbus321">
+      <obj_property name="label">RX_DATA_1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[31]">
+         <obj_property name="ElementShortName">[31]</obj_property>
+         <obj_property name="ObjectShortName">[31]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[30]">
+         <obj_property name="ElementShortName">[30]</obj_property>
+         <obj_property name="ObjectShortName">[30]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[29]">
+         <obj_property name="ElementShortName">[29]</obj_property>
+         <obj_property name="ObjectShortName">[29]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[28]">
+         <obj_property name="ElementShortName">[28]</obj_property>
+         <obj_property name="ObjectShortName">[28]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[27]">
+         <obj_property name="ElementShortName">[27]</obj_property>
+         <obj_property name="ObjectShortName">[27]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[26]">
+         <obj_property name="ElementShortName">[26]</obj_property>
+         <obj_property name="ObjectShortName">[26]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[25]">
+         <obj_property name="ElementShortName">[25]</obj_property>
+         <obj_property name="ObjectShortName">[25]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[24]">
+         <obj_property name="ElementShortName">[24]</obj_property>
+         <obj_property name="ObjectShortName">[24]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[23]">
+         <obj_property name="ElementShortName">[23]</obj_property>
+         <obj_property name="ObjectShortName">[23]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[22]">
+         <obj_property name="ElementShortName">[22]</obj_property>
+         <obj_property name="ObjectShortName">[22]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[21]">
+         <obj_property name="ElementShortName">[21]</obj_property>
+         <obj_property name="ObjectShortName">[21]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[20]">
+         <obj_property name="ElementShortName">[20]</obj_property>
+         <obj_property name="ObjectShortName">[20]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[19]">
+         <obj_property name="ElementShortName">[19]</obj_property>
+         <obj_property name="ObjectShortName">[19]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[18]">
+         <obj_property name="ElementShortName">[18]</obj_property>
+         <obj_property name="ObjectShortName">[18]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[17]">
+         <obj_property name="ElementShortName">[17]</obj_property>
+         <obj_property name="ObjectShortName">[17]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[16]">
+         <obj_property name="ElementShortName">[16]</obj_property>
+         <obj_property name="ObjectShortName">[16]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="vbus" fp_name="vbus481">
+      <obj_property name="label">RESULT_1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[69]">
+         <obj_property name="ElementShortName">[69]</obj_property>
+         <obj_property name="ObjectShortName">[69]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[68]">
+         <obj_property name="ElementShortName">[68]</obj_property>
+         <obj_property name="ObjectShortName">[68]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[67]">
+         <obj_property name="ElementShortName">[67]</obj_property>
+         <obj_property name="ObjectShortName">[67]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[66]">
+         <obj_property name="ElementShortName">[66]</obj_property>
+         <obj_property name="ObjectShortName">[66]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[65]">
+         <obj_property name="ElementShortName">[65]</obj_property>
+         <obj_property name="ObjectShortName">[65]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[64]">
+         <obj_property name="ElementShortName">[64]</obj_property>
+         <obj_property name="ObjectShortName">[64]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[63]">
+         <obj_property name="ElementShortName">[63]</obj_property>
+         <obj_property name="ObjectShortName">[63]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[62]">
+         <obj_property name="ElementShortName">[62]</obj_property>
+         <obj_property name="ObjectShortName">[62]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[61]">
+         <obj_property name="ElementShortName">[61]</obj_property>
+         <obj_property name="ObjectShortName">[61]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[60]">
+         <obj_property name="ElementShortName">[60]</obj_property>
+         <obj_property name="ObjectShortName">[60]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[59]">
+         <obj_property name="ElementShortName">[59]</obj_property>
+         <obj_property name="ObjectShortName">[59]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[58]">
+         <obj_property name="ElementShortName">[58]</obj_property>
+         <obj_property name="ObjectShortName">[58]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[57]">
+         <obj_property name="ElementShortName">[57]</obj_property>
+         <obj_property name="ObjectShortName">[57]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[56]">
+         <obj_property name="ElementShortName">[56]</obj_property>
+         <obj_property name="ObjectShortName">[56]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[55]">
+         <obj_property name="ElementShortName">[55]</obj_property>
+         <obj_property name="ObjectShortName">[55]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[54]">
+         <obj_property name="ElementShortName">[54]</obj_property>
+         <obj_property name="ObjectShortName">[54]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[53]">
+         <obj_property name="ElementShortName">[53]</obj_property>
+         <obj_property name="ObjectShortName">[53]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[52]">
+         <obj_property name="ElementShortName">[52]</obj_property>
+         <obj_property name="ObjectShortName">[52]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[51]">
+         <obj_property name="ElementShortName">[51]</obj_property>
+         <obj_property name="ObjectShortName">[51]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[50]">
+         <obj_property name="ElementShortName">[50]</obj_property>
+         <obj_property name="ObjectShortName">[50]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[49]">
+         <obj_property name="ElementShortName">[49]</obj_property>
+         <obj_property name="ObjectShortName">[49]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[48]">
+         <obj_property name="ElementShortName">[48]</obj_property>
+         <obj_property name="ObjectShortName">[48]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[47]">
+         <obj_property name="ElementShortName">[47]</obj_property>
+         <obj_property name="ObjectShortName">[47]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[46]">
+         <obj_property name="ElementShortName">[46]</obj_property>
+         <obj_property name="ObjectShortName">[46]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[45]">
+         <obj_property name="ElementShortName">[45]</obj_property>
+         <obj_property name="ObjectShortName">[45]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[44]">
+         <obj_property name="ElementShortName">[44]</obj_property>
+         <obj_property name="ObjectShortName">[44]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[43]">
+         <obj_property name="ElementShortName">[43]</obj_property>
+         <obj_property name="ObjectShortName">[43]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[42]">
+         <obj_property name="ElementShortName">[42]</obj_property>
+         <obj_property name="ObjectShortName">[42]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[41]">
+         <obj_property name="ElementShortName">[41]</obj_property>
+         <obj_property name="ObjectShortName">[41]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[40]">
+         <obj_property name="ElementShortName">[40]</obj_property>
+         <obj_property name="ObjectShortName">[40]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[39]">
+         <obj_property name="ElementShortName">[39]</obj_property>
+         <obj_property name="ObjectShortName">[39]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[38]">
+         <obj_property name="ElementShortName">[38]</obj_property>
+         <obj_property name="ObjectShortName">[38]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[37]">
+         <obj_property name="ElementShortName">[37]</obj_property>
+         <obj_property name="ObjectShortName">[37]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[36]">
+         <obj_property name="ElementShortName">[36]</obj_property>
+         <obj_property name="ObjectShortName">[36]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[35]">
+         <obj_property name="ElementShortName">[35]</obj_property>
+         <obj_property name="ObjectShortName">[35]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="vbus" fp_name="vbus304">
+      <obj_property name="label">RX_DATA_0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[15]">
+         <obj_property name="ElementShortName">[15]</obj_property>
+         <obj_property name="ObjectShortName">[15]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[14]">
+         <obj_property name="ElementShortName">[14]</obj_property>
+         <obj_property name="ObjectShortName">[14]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[13]">
+         <obj_property name="ElementShortName">[13]</obj_property>
+         <obj_property name="ObjectShortName">[13]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[12]">
+         <obj_property name="ElementShortName">[12]</obj_property>
+         <obj_property name="ObjectShortName">[12]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[11]">
+         <obj_property name="ElementShortName">[11]</obj_property>
+         <obj_property name="ObjectShortName">[11]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[10]">
+         <obj_property name="ElementShortName">[10]</obj_property>
+         <obj_property name="ObjectShortName">[10]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[9]">
+         <obj_property name="ElementShortName">[9]</obj_property>
+         <obj_property name="ObjectShortName">[9]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[8]">
+         <obj_property name="ElementShortName">[8]</obj_property>
+         <obj_property name="ObjectShortName">[8]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[7]">
+         <obj_property name="ElementShortName">[7]</obj_property>
+         <obj_property name="ObjectShortName">[7]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[6]">
+         <obj_property name="ElementShortName">[6]</obj_property>
+         <obj_property name="ObjectShortName">[6]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[5]">
+         <obj_property name="ElementShortName">[5]</obj_property>
+         <obj_property name="ObjectShortName">[5]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[4]">
+         <obj_property name="ElementShortName">[4]</obj_property>
+         <obj_property name="ObjectShortName">[4]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[3]">
+         <obj_property name="ElementShortName">[3]</obj_property>
+         <obj_property name="ObjectShortName">[3]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[2]">
+         <obj_property name="ElementShortName">[2]</obj_property>
+         <obj_property name="ObjectShortName">[2]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[1]">
+         <obj_property name="ElementShortName">[1]</obj_property>
+         <obj_property name="ObjectShortName">[1]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RX_DATA[0]">
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">[0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="vbus" fp_name="vbus445">
+      <obj_property name="label">RESULT_0</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[34]">
+         <obj_property name="ElementShortName">[34]</obj_property>
+         <obj_property name="ObjectShortName">[34]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[33]">
+         <obj_property name="ElementShortName">[33]</obj_property>
+         <obj_property name="ObjectShortName">[33]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[32]">
+         <obj_property name="ElementShortName">[32]</obj_property>
+         <obj_property name="ObjectShortName">[32]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[31]">
+         <obj_property name="ElementShortName">[31]</obj_property>
+         <obj_property name="ObjectShortName">[31]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[30]">
+         <obj_property name="ElementShortName">[30]</obj_property>
+         <obj_property name="ObjectShortName">[30]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[29]">
+         <obj_property name="ElementShortName">[29]</obj_property>
+         <obj_property name="ObjectShortName">[29]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[28]">
+         <obj_property name="ElementShortName">[28]</obj_property>
+         <obj_property name="ObjectShortName">[28]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[27]">
+         <obj_property name="ElementShortName">[27]</obj_property>
+         <obj_property name="ObjectShortName">[27]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[26]">
+         <obj_property name="ElementShortName">[26]</obj_property>
+         <obj_property name="ObjectShortName">[26]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[25]">
+         <obj_property name="ElementShortName">[25]</obj_property>
+         <obj_property name="ObjectShortName">[25]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[24]">
+         <obj_property name="ElementShortName">[24]</obj_property>
+         <obj_property name="ObjectShortName">[24]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[23]">
+         <obj_property name="ElementShortName">[23]</obj_property>
+         <obj_property name="ObjectShortName">[23]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[22]">
+         <obj_property name="ElementShortName">[22]</obj_property>
+         <obj_property name="ObjectShortName">[22]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[21]">
+         <obj_property name="ElementShortName">[21]</obj_property>
+         <obj_property name="ObjectShortName">[21]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[20]">
+         <obj_property name="ElementShortName">[20]</obj_property>
+         <obj_property name="ObjectShortName">[20]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[19]">
+         <obj_property name="ElementShortName">[19]</obj_property>
+         <obj_property name="ObjectShortName">[19]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[18]">
+         <obj_property name="ElementShortName">[18]</obj_property>
+         <obj_property name="ObjectShortName">[18]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[17]">
+         <obj_property name="ElementShortName">[17]</obj_property>
+         <obj_property name="ObjectShortName">[17]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[16]">
+         <obj_property name="ElementShortName">[16]</obj_property>
+         <obj_property name="ObjectShortName">[16]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[15]">
+         <obj_property name="ElementShortName">[15]</obj_property>
+         <obj_property name="ObjectShortName">[15]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[14]">
+         <obj_property name="ElementShortName">[14]</obj_property>
+         <obj_property name="ObjectShortName">[14]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[13]">
+         <obj_property name="ElementShortName">[13]</obj_property>
+         <obj_property name="ObjectShortName">[13]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[12]">
+         <obj_property name="ElementShortName">[12]</obj_property>
+         <obj_property name="ObjectShortName">[12]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[11]">
+         <obj_property name="ElementShortName">[11]</obj_property>
+         <obj_property name="ObjectShortName">[11]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[10]">
+         <obj_property name="ElementShortName">[10]</obj_property>
+         <obj_property name="ObjectShortName">[10]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[9]">
+         <obj_property name="ElementShortName">[9]</obj_property>
+         <obj_property name="ObjectShortName">[9]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[8]">
+         <obj_property name="ElementShortName">[8]</obj_property>
+         <obj_property name="ObjectShortName">[8]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[7]">
+         <obj_property name="ElementShortName">[7]</obj_property>
+         <obj_property name="ObjectShortName">[7]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[6]">
+         <obj_property name="ElementShortName">[6]</obj_property>
+         <obj_property name="ObjectShortName">[6]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[5]">
+         <obj_property name="ElementShortName">[5]</obj_property>
+         <obj_property name="ObjectShortName">[5]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[4]">
+         <obj_property name="ElementShortName">[4]</obj_property>
+         <obj_property name="ObjectShortName">[4]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[3]">
+         <obj_property name="ElementShortName">[3]</obj_property>
+         <obj_property name="ObjectShortName">[3]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[2]">
+         <obj_property name="ElementShortName">[2]</obj_property>
+         <obj_property name="ObjectShortName">[2]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[1]">
+         <obj_property name="ElementShortName">[1]</obj_property>
+         <obj_property name="ObjectShortName">[1]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESULT[0]">
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">[0]</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RAW_VALID">
+      <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">S_RAW_VALID</obj_property>
       <obj_property name="ObjectShortName">S_RAW_VALID</obj_property>
+      <obj_property name="label">RAW_VALID</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_SI_VALID">
+      <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">S_SI_VALID</obj_property>
       <obj_property name="ObjectShortName">S_SI_VALID</obj_property>
+      <obj_property name="label">SI_VALID</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_SCLK">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">S_SCLK</obj_property>
+      <obj_property name="ObjectShortName">S_SCLK</obj_property>
+      <obj_property name="label">SCLK</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_MISO[1]">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[1]</obj_property>
+      <obj_property name="ObjectShortName">[1]</obj_property>
+      <obj_property name="label">MISO</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_SS_OUT_N">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">S_SS_OUT_N</obj_property>
+      <obj_property name="ObjectShortName">S_SS_OUT_N</obj_property>
+      <obj_property name="label">SS_N</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_BUSY">
+      <obj_property name="ElementShortName">S_BUSY</obj_property>
+      <obj_property name="ObjectShortName">S_BUSY</obj_property>
    </wvobject>
    <wvobject fp_name="divider223" type="divider">
       <obj_property name="label">Internal ADC Controller</obj_property>
@@ -95,14 +513,6 @@
    <wvobject type="other" fp_name="/ADC_CONTROLLER_TB/dut/nxtstate">
       <obj_property name="ElementShortName">nxtstate</obj_property>
       <obj_property name="ObjectShortName">nxtstate</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/dut/ENABLE">
-      <obj_property name="ElementShortName">ENABLE</obj_property>
-      <obj_property name="ObjectShortName">ENABLE</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_RESET_N">
-      <obj_property name="ElementShortName">S_RESET_N</obj_property>
-      <obj_property name="ObjectShortName">S_RESET_N</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/dut/SET_SAMPLES">
       <obj_property name="ElementShortName">SET_SAMPLES</obj_property>

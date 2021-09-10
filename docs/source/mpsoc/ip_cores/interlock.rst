@@ -2,6 +2,8 @@
 Interlock Module
 ================
 
+.. note:: This IP-Core is deprecated and not included in the default :ref:`global_configuration`.
+
 ..	image:: ./images_interlock/interlock0.png
 
 Idea

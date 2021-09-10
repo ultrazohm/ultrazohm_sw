@@ -28,6 +28,7 @@ Vitis
     FOC/FOC
     SpeedControl/SpeedControl
     global_configuration
+    binaryExport/binaryExport
     create_project
     include_math_lib
     gcc_optimization

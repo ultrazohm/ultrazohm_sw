@@ -1,9 +1,9 @@
+/*
 #ifdef TEST
 
 #include "unity.h"
 #include "uz_adcLtc2311.h"
 #include "test_assert_with_exception.h"
-#include "uz_adcLtc2311.h"
 #include "mock_uz_adcLtc2311_hw.h" // Mock the _hw functions to isolate testing
 #include <stdint.h>
 
@@ -32,3 +32,4 @@ void test_uz_adcLtc2311_test_init_(void)
 }
 
 #endif // TEST
+*/

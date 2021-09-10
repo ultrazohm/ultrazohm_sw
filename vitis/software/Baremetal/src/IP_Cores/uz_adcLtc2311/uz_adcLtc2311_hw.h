@@ -1,6 +1,7 @@
 #ifndef UZ_ADCLTC2311_HW_H
 #define UZ_ADCLTC2311_HW_H
 
+
 // includes
 
 #include <stdint.h>
@@ -25,6 +26,5 @@ uint32_t uz_adcLtc2311_hw_read_master_si_finish(uint32_t base_address);
 uint32_t uz_adcLtc2311_hw_read_master_busy(uint32_t base_address);
 int32_t uz_adcLtc2311_hw_read_value(uint32_t base_address);
 uint32_t uz_adcLtc2311_hw_read_adc_available(uint32_t base_address);
-
 
 #endif // UZ_ADCLTC2311_HW_H

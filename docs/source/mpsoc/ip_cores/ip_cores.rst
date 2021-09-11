@@ -12,7 +12,7 @@ IP Cores
     pwm_and_ss_control
     adc_LTC2311
     adc_LTC2311_v3
-    incre_encoder
+    uz_incrementalEncoder/uz_incrementalEncoder
     interlock
     axi_testIP/axi_testIP
     uz_interlockDeadtime2L/uz_interlockDeadtime2L

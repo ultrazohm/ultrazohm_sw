@@ -1,0 +1,24 @@
+Port Name, Port Type, Data Type, Target Platform Interfaces, Function
+A, Input, bool, External Signal, Lane A of encoder
+B, Input, bool, External Signal, Lane B of encoder
+I, Input, bool, External Signal, Lane I of encoder (zero)
+PeriodEnd, Input, bool, External Signal, Resets subsystem that calculates ``countPerPeriod_AXI4``
+Theta_el, Output, sfix24_En20,External Signal, Theta electric based on the subsystem ``Counter_theta_ele``
+omega, Output, sfix24_En11, External Signal, Rotational speed based on time measurement between rising edge of A-lane (subsystem ``omega_by_measure_time``)
+position, Output, uint16_t, External Signal, ?
+count, Output, bool, External Signal, 1 if edge counter is triggered - 0 otherwise
+edge, Output, bool, External Signal, 1 if an edge is detected - 0 otherwise
+OverSamplFactor, Output, uint16, External Signal, ?
+Reset, Input, bool, AXI, Resets the IP-Core
+Enable, Input, bool, AXI, Enables the IP-Core
+Timestamp, Output, uint32_t, AXI, Returns unique IP timestamp
+omega_AXI4, Output, sfix24_En11, AXI, same signal as omega
+theta_el_AXI4, Output, sfix24_en20, AXI, same signal as Theta_el
+position_AXI4, Output, uint16_t, AXI, Outputs the position of the encoder with a range of 0 to
+direction_AXI4, Output, sfix4, AXI, 1 if rotation is clockwise - 0 otherwise
+counterPerPeriod_AXI4, Output, int16, AXI, Result of ``omega_by_count_lines`` subsystem
+PI2_Inc_AXI, Input, ufix24_En24, AXI, ?
+Timer_FPGA_ms_AXI4, Input, ufix32_En32, AXI,?
+IncPerTurn_mech_AXI4, Input, uint16_t, AXI, Number of increments of the encoder of one mechanical turn
+IncPerTurn_elek_AXI4, Input, uint16_t, AXI, Number of increments of the encoder divided by pole pairs for electrical angle
+OmegaPerOverSampl_AXI4, Input, sfix24_En11, AXI,?

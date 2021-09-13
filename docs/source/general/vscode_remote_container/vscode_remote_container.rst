@@ -79,22 +79,6 @@ In VS Code:
 
   Use ``make livehtml`` to create a live preview of the docs
 
-Building C-Programs
--------------------
-
-VS Code integrates gcc and gdb wich enables the usage of VS Code as a development environment.
-See `this tutorial <https://code.visualstudio.com/docs/languages/cpp>`_.
-In the ``ultrazohm_sw`` repository the folder ``Vitis/Sandbox`` can be used to prototype your code.
-The remote container is setup in a way that all *.c files inside the folder of the *.c file that holds the *main* function are visible to the linker.
-
-.. figure:: container_build_debug.gif
-
-  Build and debug the example IP-Core driver
-
-.. figure:: container_debug_new_c_file.gif
-
-  Build and debug of a new C program
-
 Git
 ---
 

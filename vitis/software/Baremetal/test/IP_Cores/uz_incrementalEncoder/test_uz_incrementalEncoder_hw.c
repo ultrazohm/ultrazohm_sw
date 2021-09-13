@@ -18,7 +18,7 @@ void tearDown(void)
 
 void test_uz_incrementalEncoder_hw_set_pi2_inc(void)
 {
-    float expected=0.0012566447257996; //  (2*pi/(IncPerTurn*QuadratureFactor))*PolePair from Simulink model
+    float expected=0.0012566447257996; // (2*pi/(IncPerTurn*QuadratureFactor))*PolePair from Simulink model
     uz_axi_write_uint32_Expect(BASE_ADDRESS+PI2_Inc_AXI4_Data_IncreEncoder_V24_ip, uz_convert_float_to_unsigned_fixed(expected,24) ); // Data type is ufix24_En24
     TEST_ASSERT_EQUAL_HEX32(0x00525B,uz_convert_float_to_unsigned_fixed(expected,24) ); // 0x00525B is taken with a "display" from simulink using "hex (Stored Integer)" numeric display format 
     uz_incrementalEncoder_hw_set_pi2_inc(BASE_ADDRESS,expected);
@@ -27,7 +27,7 @@ void test_uz_incrementalEncoder_hw_set_pi2_inc(void)
 
 void test_uz_incrementalEncoder_hw_set_timer_fpga_ms(void)
 {
-    float expected=1.5915604308248e-5; //  (T_50MHz*IncPerTurn)/(2*pi) from Simulink model
+    float expected=1.5915604308248e-5; // (T_50MHz*IncPerTurn)/(2*pi) from Simulink model
     uz_axi_write_uint32_Expect(BASE_ADDRESS+Timer_FPGA_ms_AXI4_Data_IncreEncoder_V24_ip, uz_convert_float_to_unsigned_fixed(expected,32) ); // Data type is ufix32_En32
     TEST_ASSERT_EQUAL_HEX32(0x00010B05,uz_convert_float_to_unsigned_fixed(expected,32) ); // 0x00010B05 is taken with a "display" from simulink using "hex (Stored Integer)" numeric display format 
     uz_incrementalEncoder_hw_set_timer_fpga_ms(BASE_ADDRESS, expected );

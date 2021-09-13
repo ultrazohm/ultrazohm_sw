@@ -15,6 +15,10 @@ Position (electrical)
   Calculates the rotational position of the encoder and transforms the position to the *electrical* position of electric drives (e.g., permanent magnet synchronous machines).
   Uses the number of pole pairs to divide one mechanical turn of the encoder to (multiple) turns of the electrical system.
   *Can only be used if the number of pole paris is an integer multiple of the number of increments!*
+  The value of ``drive_pole_pair`` in the config struct has to be an integer multiple of the increments per turn or set to zero.
+  If ``drive_pole_pair`` is an integer multiple of increments per turn, the electrical angle can be read.
+  If ``drive_pole_pair`` is set to ``0``, the function can not be called (assertion fires).
+  If ``drive_pole_pair`` is not ``0`` and not an integer multiple of increments per turn, the initialization of the driver fails with an assertion.
 
 Rotational speed
   Calculates the rotational speed of the drive by counting rising edges of the A-lane in combination with a oversampling mechanism and subsequent filtering of the speed signal in the IP-Core.

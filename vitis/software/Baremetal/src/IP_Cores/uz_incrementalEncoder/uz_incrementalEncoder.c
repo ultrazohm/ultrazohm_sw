@@ -39,6 +39,7 @@ static void set_inc_per_turn_mechanical(uz_incrementalEncoder_t* self);
 static void set_inc_per_turn_elek(uz_incrementalEncoder_t* self);
 static bool check_if_theta_el_can_be_used(uint32_t inc_per_turn,uint32_t pole_pair);
 static void set_omega_per_over_sampl(uz_incrementalEncoder_t* self);
+static void set_configuration(uz_incrementalEncoder_t* self);
 
 uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder_config config) {
     uz_assert_not_zero_uint32(config.base_address);
@@ -48,12 +49,32 @@ uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder
     uz_incrementalEncoder_t* self = uz_incrementalEncoder_allocation();
     self->config=config;
     self->use_theta_el=check_if_theta_el_can_be_used(self->config.increments_per_turn_mech,self->config.drive_pole_pair);
+    set_configuration(self);
+    return (self);
+}
+
+float uz_incrementalEncoder_get_omega(uz_incrementalEncoder_t* self){
+    uz_assert(self->is_ready);
+    return uz_incrementalEncoder_hw_get_omega(self->config.base_address);
+}
+
+float uz_incrementalEncoder_get_theta_el(uz_incrementalEncoder_t* self){
+    uz_assert(self->is_ready);
+    uz_assert(self->use_theta_el);
+    return uz_incrementalEncoder_hw_get_theta_electric(self->config.base_address);
+}
+
+uint32_t uz_incrementalEncoder_get_position(uz_incrementalEncoder_t* self){
+    uz_assert(self->is_ready);
+    return uz_incrementalEncoder_hw_get_position(self->config.base_address);
+}
+
+static void set_configuration(uz_incrementalEncoder_t* self){
     set_pi2_inc(self);
     set_fpga_timer(self);
     set_inc_per_turn_mechanical(self);
     set_inc_per_turn_elek(self);
     set_omega_per_over_sampl(self);
-    return (self);
 }
 
 bool check_if_theta_el_can_be_used(uint32_t inc_per_turn, uint32_t pole_pair){

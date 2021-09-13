@@ -13,6 +13,8 @@ struct uz_incrementalEncoder_config{
 };
 
 uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder_config config);
-
+float uz_incrementalEncoder_get_omega(uz_incrementalEncoder_t* self);
+float uz_incrementalEncoder_get_theta_el(uz_incrementalEncoder_t* self);
+uint32_t uz_incrementalEncoder_get_position(uz_incrementalEncoder_t* self);
 
 #endif // UZ_INCREMENTALENCODER_H

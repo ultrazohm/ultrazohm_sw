@@ -23,6 +23,8 @@ struct uz_incrementalEncoder_config testconfig={
     .drive_pole_pair=4U
 };
 
+uz_incrementalEncoder_t* test_instance;
+
 void test_uz_incrementalEncoder_init(void)
 {
 
@@ -43,9 +45,28 @@ void test_uz_incrementalEncoder_init(void)
     float expected_omegaPerOverSampl=52.35986328125; // from Simulink
     uz_incrementalEncoder_hw_set_omegaPerOverSampl_Expect(TEST_BASE_ADDRESS,expected_omegaPerOverSampl);
 
-    uz_incrementalEncoder_t* test_instance=uz_incrementalEncoder_init(testconfig);
+    test_instance=uz_incrementalEncoder_init(testconfig);
+}
 
+void test_uz_incrementalEncoder_get_omega(void){
+    float expected=321.1f;
+    uz_incrementalEncoder_hw_get_omega_ExpectAndReturn(TEST_BASE_ADDRESS,expected);
+    float omega=uz_incrementalEncoder_get_omega(test_instance);
+    TEST_ASSERT_EQUAL_FLOAT(expected,omega);
+}
 
+void test_uz_incrementalEncoder_get_theta_el(void){
+    float expected=0.13f;
+    uz_incrementalEncoder_hw_get_theta_electric_ExpectAndReturn(TEST_BASE_ADDRESS,expected);
+    float theta_el=uz_incrementalEncoder_get_theta_el(test_instance);
+    TEST_ASSERT_EQUAL_FLOAT(expected,theta_el);
+}
+
+void test_uz_incrementalEncoder_get_position(void){
+    uint32_t expected=3421;
+    uz_incrementalEncoder_hw_get_position_ExpectAndReturn(TEST_BASE_ADDRESS,expected);
+    uint32_t position=uz_incrementalEncoder_get_position(test_instance);
+    TEST_ASSERT_EQUAL_UINT32(expected,position);
 }
 
 #endif // TEST

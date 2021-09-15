@@ -145,9 +145,9 @@ int main(void) {
 	//	float DC_CurrentAmpere = 60.9756;
 	//	float DC_VoltageVolt = 150.875;
 	//	float PhaseVoltageVolt = 150.875;
-	Global_Data.aa.A2.cf.ADC_A4 = 33.8780;
-	Global_Data.aa.A2.cf.ADC_A3 = 33.8780;
-	Global_Data.aa.A2.cf.ADC_A2 = 33.8780;
+	Global_Data.aa.A2.cf.ADC_A4 = 33.8780*2;
+	Global_Data.aa.A2.cf.ADC_A3 = 33.8780*2;
+	Global_Data.aa.A2.cf.ADC_A2 = 33.8780*2;
 	Global_Data.aa.A2.cf.ADC_A1 = 150.875;
 
 	uz_codegen_init(&codegenInstance);

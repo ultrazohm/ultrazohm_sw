@@ -155,8 +155,59 @@ Input ports
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
+clk
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+reset
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+clk_enable
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
 <a href="matlab:coder.internal.code2model('mux_axi:8')" name="code2model" class="code2model">
 select_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint32
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('mux_axi:93')" name="code2model" class="code2model">
+select_n_th_adc_interrupt
 </a>
 
 </td>
@@ -203,8 +254,20 @@ Output ports
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
+ce_out
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
 <a href="matlab:coder.internal.code2model('mux_axi:10')" name="code2model" class="code2model">
-interrupt_out
+interrupt_out_adc
 </a>
 
 </td>
@@ -213,6 +276,21 @@ boolean
 </td>
 <td align="center" valign="top" style="border-style: none">
 1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('mux_axi:60')" name="code2model" class="code2model">
+interrupt_out_isr
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+uint8
+</td>
+<td align="center" valign="top" style="border-style: none">
+8
 </td>
 
 </tr>

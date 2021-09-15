@@ -1,5 +1,8 @@
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="4" WIDTH="100%%" BGCOLOR="#ffffff"><TR><TD>
 <B>Generated Source Files</B>
 </TD></TR><TR></TR>
+<tr><td><a href="mux_axi_ip_src_Detect_Fall_Nonpositive2_vhd.html" onclick="if (top) if (top.tocHiliteMe) top.tocHiliteMe(window, this, false);" id="mux_axi_ip_src_Detect_Fall_Nonpositive2_vhd.html" target="rtwreport_document_frame" name="rtwIdGenFileLinks">mux_axi_ip_src_Detect_Fall_Nonpositive2.vhd</a><span> </span></td></tr><tr></tr>
+<tr><td><a href="mux_axi_ip_src_Detect_Rise_Positive_vhd.html" onclick="if (top) if (top.tocHiliteMe) top.tocHiliteMe(window, this, false);" id="mux_axi_ip_src_Detect_Rise_Positive_vhd.html" target="rtwreport_document_frame" name="rtwIdGenFileLinks">mux_axi_ip_src_Detect_Rise_Positive.vhd</a><span> </span></td></tr><tr></tr>
+<tr><td><a href="mux_axi_ip_src_Subsystem1_vhd.html" onclick="if (top) if (top.tocHiliteMe) top.tocHiliteMe(window, this, false);" id="mux_axi_ip_src_Subsystem1_vhd.html" target="rtwreport_document_frame" name="rtwIdGenFileLinks">mux_axi_ip_src_Subsystem1.vhd</a><span> </span></td></tr><tr></tr>
 <tr><td><a href="mux_axi_ip_src_mux_axi_vhd.html" onclick="if (top) if (top.tocHiliteMe) top.tocHiliteMe(window, this, false);" id="mux_axi_ip_src_mux_axi_vhd.html" target="rtwreport_document_frame" name="rtwIdGenFileLinks">mux_axi_ip_src_mux_axi.vhd</a><span> </span></td></tr><tr></tr>
 </table>

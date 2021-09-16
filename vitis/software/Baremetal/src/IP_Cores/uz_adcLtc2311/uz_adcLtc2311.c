@@ -1,9 +1,11 @@
 #include "../../uz/uz_global_configuration.h"
 #if UZ_ADCLTC2311_MAX_INSTANCES > 0U
 #include <stdbool.h>
+#include <stdint.h>
 #include "../../uz/uz_HAL.h"
 #include "uz_adcLtc2311.h"
 #include "uz_adcLtc2311_private_utilities.h"
+#include "uz_adcLtc2311_hw.h"
 
 struct uz_adcLtc2311_t {
     bool is_ready;
@@ -73,6 +75,13 @@ void uz_adcLtc2311_set_samples(uz_adcLtc2311_t* self, uint32_t value)
     self->config.samples = value;
 }
 
+void uz_adcLtc2311_set_max_attempts(uz_adcLtc2311_t* self, uint32_t value)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->config.max_attempts = value;
+} 
+
 uint32_t uz_adcLtc2311_get_master_select(uz_adcLtc2311_t* self)
 {
     uz_assert_not_NULL(self);
@@ -108,12 +117,43 @@ uint32_t uz_adcLtc2311_get_samples(uz_adcLtc2311_t* self)
     return(self->config.samples);
 }
 
-// update functions
-
-void uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self)
+uint32_t uz_adcLtc2311_get_max_attempts(uz_adcLtc2311_t* self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    return(self->config.max_attempts);
+}
+
+// update functions
+
+int32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+
+    int32_t return_value = UZ_SUCCESS;
+    // Get the current state of the control register
+    uint32_t adc_cr = uz_adcLtc2311_hw_read_cr(self->config.base_address);
+
+    // Reset all bits that determine the meaning of the value
+    adc_cr &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
+    // Set the LSB. This means, that the config value is the conversion factor
+    // Set the VALUE_VALID bit as well to trigger the update
+    adc_cr |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID | UZ_ADCLTC2311_CR_CONFIG_VALUE_0;
+
+    // Perform the actual writing to the hardware registers
+    // Selection, which channels shall be updated
+    uz_adcLtc2311_hw_write_master_channel(self->config.base_address, self->config.master_select);
+	uz_adcLtc2311_hw_write_channel(self->config.base_address, self->config.channel_select);
+    // Write the desired factor
+    uz_adcLtc2311_hw_write_value(self->config.base_address, self->config.conversion_factor);
+	// Trigger the update
+    uz_adcLtc2311_hw_write_cr(self->config.base_address, adc_cr);
+
+    // Wait for the acknowledgement
+    return_value = uz_adcLtc2311_cr_wait_for_value_acknowledgement(self->config.base_address, self->config.max_attempts);
+
+    return return_value;
 }
 
 #endif

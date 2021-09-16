@@ -208,6 +208,7 @@ void uz_adcLtc2311_set_channel_select(uz_adcLtc2311_t* self, uint32_t value);
 void uz_adcLtc2311_set_conversion_factor(uz_adcLtc2311_t* self, int32_t value);
 void uz_adcLtc2311_set_offset(uz_adcLtc2311_t* self, int32_t value);
 void uz_adcLtc2311_set_samples(uz_adcLtc2311_t* self, uint32_t value);
+void uz_adcLtc2311_set_max_attempts(uz_adcLtc2311_t* self, uint32_t value);
 
 // get functions
 uint32_t uz_adcLtc2311_get_master_select(uz_adcLtc2311_t* self);
@@ -215,8 +216,9 @@ uint32_t uz_adcLtc2311_get_channel_select(uz_adcLtc2311_t* self);
 int32_t uz_adcLtc2311_get_conversion_factor(uz_adcLtc2311_t* self);
 int32_t uz_adcLtc2311_get_offset(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_samples(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_get_max_attempts(uz_adcLtc2311_t* self);
 
 // update functions
-void uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self);
+int32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self);
 
 #endif // UZ_ADCLTC2311_H

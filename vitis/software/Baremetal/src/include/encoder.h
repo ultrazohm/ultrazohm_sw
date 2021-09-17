@@ -30,7 +30,7 @@
 #define SPEED_BUF_SIZE  					2 //3== erster CCS-Versuch
 #define SPEED_BUF_SIZE_INVERS 				1/SPEED_BUF_SIZE
 
-int Encoder_Incremental_Initialize(DS_Data* data);   // Init Encoder
+void Encoder_Incremental_Initialize(DS_Data* data);   // Init Encoder
 void Encoder_UpdateSpeedPosition(DS_Data* data);	// update speed and position in global data struct
 
 #define EncoderPI2_Inc_elek_REG               XPAR_INCREENCODER_V24_IP_0_BASEADDR + PI2_Inc_AXI4_Data_IncreEncoder_V24_ip

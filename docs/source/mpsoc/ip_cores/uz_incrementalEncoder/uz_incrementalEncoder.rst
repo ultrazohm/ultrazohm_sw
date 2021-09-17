@@ -96,3 +96,20 @@ Vivado
    :file: incrementalEncoder_register_mapping.csv
    :widths: 50 50 50 50 200
    :header-rows: 1
+
+
+Driver reference
+================
+
+.. doxygentypedef:: uz_incrementalEncoder_t
+
+.. doxygenstruct:: uz_incrementalEncoder_config
+  :members:
+
+.. doxygenfunction:: uz_incrementalEncoder_init
+
+.. doxygenfunction:: uz_incrementalEncoder_get_omega
+
+.. doxygenfunction:: uz_incrementalEncoder_get_theta_el
+
+.. doxygenfunction:: uz_incrementalEncoder_get_position

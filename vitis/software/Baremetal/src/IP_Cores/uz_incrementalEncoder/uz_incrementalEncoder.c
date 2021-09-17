@@ -44,11 +44,11 @@ static void set_configuration(uz_incrementalEncoder_t* self);
 uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder_config config) {
     uz_assert_not_zero_uint32(config.base_address);
     uz_assert(config.ip_core_frequency_Hz == 50000000U); // IP-Core has to be used with 50 MHz!
-    uz_assert_not_zero_uint32(config.increments_per_turn_mech);
-    uz_assert(config.increments_per_turn_mech < UINT16_MAX); // Increments per turn is implemented as a 16 bit unsigned int in the IP-core hardware
+    uz_assert_not_zero_uint32(config.line_number_per_turn_mech);
+    uz_assert(config.line_number_per_turn_mech < UINT16_MAX); // Increments per turn is implemented as a 16 bit unsigned int in the IP-core hardware
     uz_incrementalEncoder_t* self = uz_incrementalEncoder_allocation();
     self->config=config;
-    self->use_theta_el=check_if_theta_el_can_be_used(self->config.increments_per_turn_mech,self->config.drive_pole_pair);
+    self->use_theta_el=check_if_theta_el_can_be_used(self->config.line_number_per_turn_mech,self->config.drive_pole_pair);
     set_configuration(self);
     return (self);
 }
@@ -89,29 +89,29 @@ bool check_if_theta_el_can_be_used(uint32_t inc_per_turn, uint32_t pole_pair){
 
 void set_pi2_inc(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
-    float pi2_inc=(2*M_PI/(self->config.increments_per_turn_mech *QUADRATURE_FACTOR)) * self->config.drive_pole_pair;
+    float pi2_inc=(2*M_PI/(self->config.line_number_per_turn_mech *QUADRATURE_FACTOR)) * self->config.drive_pole_pair;
     uz_incrementalEncoder_hw_set_pi2_inc(self->config.base_address,pi2_inc);
 }
 
 void set_fpga_timer(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
-    float fpga_timer=self->config.increments_per_turn_mech/(2*M_PI*self->config.ip_core_frequency_Hz);
+    float fpga_timer=self->config.line_number_per_turn_mech/(2*M_PI*self->config.ip_core_frequency_Hz);
     uz_incrementalEncoder_hw_set_timer_fpga_ms(self->config.base_address,fpga_timer);
 }
 
 void set_inc_per_turn_mechanical(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
-    uint32_t inc_per_turn=self->config.increments_per_turn_mech*QUADRATURE_FACTOR;
+    uint32_t inc_per_turn=self->config.line_number_per_turn_mech*QUADRATURE_FACTOR;
     uz_incrementalEncoder_hw_set_increments_per_turn_mechanical(self->config.base_address,inc_per_turn);
 }
 
 void set_inc_per_turn_elek(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
     if(self->use_theta_el){ // prevents division by zero if drive_pole_pair is 0 and thus theta_el is not used
-        uint32_t inc_per_turn_el=(self->config.increments_per_turn_mech*QUADRATURE_FACTOR)/self->config.drive_pole_pair;
+        uint32_t inc_per_turn_el=(self->config.line_number_per_turn_mech*QUADRATURE_FACTOR)/self->config.drive_pole_pair;
         uz_incrementalEncoder_hw_set_increments_per_turn_electric(self->config.base_address,inc_per_turn_el);
     }else{
-        uz_incrementalEncoder_hw_set_increments_per_turn_electric(self->config.base_address,self->config.increments_per_turn_mech); // if theta_el is not used, just set it to mechanical increments as a default
+        uz_incrementalEncoder_hw_set_increments_per_turn_electric(self->config.base_address,self->config.line_number_per_turn_mech); // if theta_el is not used, just set it to mechanical increments as a default
     }
 }
 

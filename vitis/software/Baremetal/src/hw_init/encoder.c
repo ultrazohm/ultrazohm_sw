@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Eyke Liegmann, Sebastian Wendel
+* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Tobias Schindler
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -13,68 +13,57 @@
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
+#include <stdint.h>
 #include "../include/encoder.h"
+#include "../IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+
+// Declares pointer to instance on file scope. DO NOT DO THIS! Just done here to be compatible to the rest of the legacy code in this file!
+static uz_incrementalEncoder_t* encoder_D5;
+
+// Just for debugging & testing
+static float debug_omega=0.0f;
+static float debug_theta_el=0.0f;
+static uint32_t debug_position_mech=0.0f;
 
 //----------------------------------------------------
 // INITIALIZE & SET THE ENCODER
 //----------------------------------------------------
-int Encoder_Incremental_Initialize(DS_Data* data){
-
-	int Status = 0;
-    int QuadratureFactor = 4.0;
-
-	int32_t increments_per_turn_elec = (int32_t)((data->mrp.incrementalEncoderResolution*QuadratureFactor)/data->mrp.motorPolePairNumber); // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
-	int32_t increments_per_turn_mech = (int32_t)(data->mrp.incrementalEncoderResolution*QuadratureFactor); // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
-	int32_t pi2_to_increments_elec = (int32_t)(ldexpf(((2.0*M_PI/(data->mrp.incrementalEncoderResolution*QuadratureFactor))*data->mrp.motorPolePairNumber),Q24)); // Shift 24 Bit for fixed-point
-    int32_t OmegaPerOverSample = (int32_t)(ldexpf(500.0*((2*M_PI)/60),Q11));  //In steps of 500rpm, the Oversampling-Factor is increased in order to have a better speed accuracy. Smaller value, smoother speed but less dynamic. Higher value, less averaging but also higher dynamic.
-
-	//Write down the factor 2*pi/Increments for theta elek. calculation
-	Xil_Out32(EncoderPI2_Inc_elek_REG, (int32_t)pi2_to_increments_elec);	// Input to the IP-Core
-
-	//Write down the number of increments per turn ( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
-	Xil_Out32(EncoderIncsPerTurn_elek_REG, (int32_t)increments_per_turn_elec);	// Input to the IP-Core
-
-	//Write down the number of increments per turn ( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
-	Xil_Out32(EncoderIncsPerTurn_mech_REG, (int32_t)increments_per_turn_mech);	// Input to the IP-Core
-
-	//Write down the hardware time of the counter in ms (100 MHz Clock is connected)
-    Xil_Out32(Encoder_Time_REG, (int32_t)((ldexpf(((1.0f/25000000.0f)*data->mrp.incrementalEncoderResolution), Q32))/(M_TWOPI)));      // Input to the IP-Core
-
-	//Write down the OverSampling factor for the Speed measurement
-	Xil_Out32(Encoder_OmegaPerOverSampl_REG, (int32_t)data->mrp.incrementalEncoderOversamplingFactor);	// Input to the IP-Core
-
-    //Write down the omega value which increments the OverSampling factor for the Speed measurement
-    Xil_Out32(Encoder_OmegaPerOverSampl_REG, (int32_t)OmegaPerOverSample);       // Input to the IP-Core
-
-return Status;
+void Encoder_Incremental_Initialize(DS_Data* data){
+	struct uz_incrementalEncoder_config encoder_D5_config={
+		.base_address=XPAR_INCREENCODER_V24_IP_0_BASEADDR,
+		.ip_core_frequency_Hz=50000000U,
+		.line_number_per_turn_mech=data->mrp.incrementalEncoderResolution,
+		.OmegaPerOverSample_in_rpm=500.0f,
+		.drive_pole_pair=data->mrp.motorPolePairNumber
+	};
+	encoder_D5=uz_incrementalEncoder_init(encoder_D5_config);
 }
 
 //Initialize the variables for the speed encoder
-float 	fSpeed_rpm_Buf[SPEED_BUF_SIZE] = {0,0};
-u8 			u8Speed_Buf_Inc =0;
-float 	fSpeed_rpm_Mean = 0;
+static float fSpeed_rpm_Buf[SPEED_BUF_SIZE] = {0.0f,0.0f};
+static size_t buffer_counter =0U;
+static float speed_mean_rpm = 0.0f;
 
 void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in global data struct
+	debug_omega=uz_incrementalEncoder_get_omega(encoder_D5);
+	debug_theta_el=uz_incrementalEncoder_get_theta_el(encoder_D5);
+	debug_position_mech=uz_incrementalEncoder_get_position(encoder_D5);
+	float speed_rpm = debug_omega * (60.0f/2.0f*M_PI);
 
-	//Read the speed encoder (own IP-Block)
-	int32_t i_speed = Xil_In32(Encoder_rps_REG); //Read AXI-register
-	float fSpeed_rpm = 9.5492966 * (float)(ldexpf(i_speed, Q11toF));  // Shift 11 Bit for fixed-point //(60/(2*pi)) = 9.5493 Conversion Omega to rpm (Compare Simulink)
+	speed_mean_rpm -= fSpeed_rpm_Buf[buffer_counter]; //subtract the old value for the averaging
+	fSpeed_rpm_Buf[buffer_counter] = speed_rpm;		//restore the new value for the averaging
+	speed_mean_rpm += fSpeed_rpm_Buf[buffer_counter]; //add the new value for the averaging
 
-	fSpeed_rpm_Mean -= fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //subtract the old value for the averaging
-	fSpeed_rpm_Buf[u8Speed_Buf_Inc] = fSpeed_rpm;		//restore the new value for the averaging
-	fSpeed_rpm_Mean += fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //add the new value for the averaging
-
-	u8Speed_Buf_Inc +=1; //Count up for the averaging
-	if (u8Speed_Buf_Inc >= SPEED_BUF_SIZE){ //Safe calculation for array overflow
-		u8Speed_Buf_Inc = 0;
+	buffer_counter +=1; //Count up for the averaging
+	if (buffer_counter >= SPEED_BUF_SIZE){ //Safe calculation for array overflow
+		buffer_counter = 0;
 	}
 
 	//Speed over buffer
-	data->av.mechanicalRotorSpeed = fSpeed_rpm_Mean * SPEED_BUF_SIZE_INVERS; //Calculate mean value for the speed
+	data->av.mechanicalRotorSpeed = speed_mean_rpm * SPEED_BUF_SIZE_INVERS; //Calculate mean value for the speed
 
 	// Get electrical angle theta
-	int32_t i_theta_e  = Xil_In32(Encoder_theta_e_REG);  //Read AXI-register
-	data->av.theta_elec  = (float)(ldexpf(i_theta_e, Q20toF));  // Shift 20 Bit for fixed-point
+	data->av.theta_elec  = debug_theta_el;
 
 	// low-pass filter of mechanical speed
 	static float speed_lpf_mem_in = 0.0f;

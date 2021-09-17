@@ -153,8 +153,11 @@ struct uz_adcLtc2311_config_t{
     uint32_t error_code; /**< One-Hot encoded error variable described above */
 
     /* Timing */
-    _Bool try_infinite; /**< Set to true if the configuration shall not be aborted after a certain number of attempts */
-	uint32_t max_attempts; /**< If try_infinite is set to false, the function @ref uz_adcLtc2311_configure tries to configure the IP core with max_attempts */
+	uint32_t max_attempts; /**< If non zero, the update of the operation parameters is tried max_attempts times. Otherwise it is tried infinitely (default) */
+
+    /* Nap and Sleep mode */
+    uint32_t sleeping_spi_masters;
+    uint32_t napping_spi_masters;
 };
 
 /**
@@ -184,41 +187,88 @@ void uz_adcLtc2311_softwareReset(uz_adcLtc2311_t* self);
  * @brief Trigger the selected SPI Masters
  *
  * @param self
- * @param spiMasters
+ * @param spi_masters
  */
-void uz_adcLtc2311_softwareTrigger(uz_adcLtc2311_t* self);
+void uz_adcLtc2311_software_trigger(uz_adcLtc2311_t* self, uint32_t spi_masters);
 
 /**
  * @brief Enable the continuous sampling mode
  *
  * @param self
  */
-void uz_adcLtc2311_setContinuousMode(uz_adcLtc2311_t* self);
+void uz_adcLtc2311_set_continuous_mode(uz_adcLtc2311_t* self);
 
 /**
  * @brief Enable the triggered sampling mode
  *
  * @param self
  */
-void uz_adcLtc2311_setTriggeredMode(uz_adcLtc2311_t* self);
+void uz_adcLtc2311_set_triggered_mode(uz_adcLtc2311_t* self);
+
+// update functions
+int32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self);
+int32_t uz_adcLtc2311_update_offset(uz_adcLtc2311_t* self);
+int32_t uz_adcLtc2311_update_samples(uz_adcLtc2311_t* self);
+int32_t uz_adcLtc2311_update_sample_time(uz_adcLtc2311_t* self);
+void uz_adcLtc2311_update_spi(uz_adcLtc2311_t* self);
+
+// Entering and leaving of Nap and Sleep mode
+int32_t uz_adcLtc2311_enter_nap_mode(uz_adcLtc2311_t* self);
+int32_t uz_adcLtc2311_leave_nap_mode(uz_adcLtc2311_t* self);
+int32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self);
+int32_t uz_adcLtc2311_leave_sleep_mode(uz_adcLtc2311_t* self);
 
 // set functions
 void uz_adcLtc2311_set_master_select(uz_adcLtc2311_t* self, uint32_t value);
 void uz_adcLtc2311_set_channel_select(uz_adcLtc2311_t* self, uint32_t value);
 void uz_adcLtc2311_set_conversion_factor(uz_adcLtc2311_t* self, int32_t value);
 void uz_adcLtc2311_set_offset(uz_adcLtc2311_t* self, int32_t value);
+
+/**
+ * @brief Set the number of samples taken per trigger event
+ * 
+ * @param self 
+ * @param value Number of samples taken per trigger event. Min: 1 Max: (2^31)-1 = 2147483647
+ */
 void uz_adcLtc2311_set_samples(uz_adcLtc2311_t* self, uint32_t value);
 void uz_adcLtc2311_set_max_attempts(uz_adcLtc2311_t* self, uint32_t value);
 
+/**
+ * @brief Set the minimum number of system clock cycles between two samples
+ * 
+ * @param self 
+ * @param value Number of system clock cycles between two samples. Max: (2^31)-1 = 2147483647
+ */
+void uz_adcLtc2311_set_sample_time(uz_adcLtc2311_t* self, uint32_t value);
+
+// SPI parameters
+void uz_adcLtc2311_set_pre_delay(uz_adcLtc2311_t* self, uint32_t value);
+void uz_adcLtc2311_set_post_delay(uz_adcLtc2311_t* self, uint32_t value);
+void uz_adcLtc2311_set_clk_div(uz_adcLtc2311_t* self, uint32_t value);
+void uz_adcLtc2311_set_cpha(uz_adcLtc2311_t* self, uint32_t value);
+void uz_adcLtc2311_set_cpol(uz_adcLtc2311_t* self, uint32_t value);
+
+
 // get functions
+
+// operation parameters
 uint32_t uz_adcLtc2311_get_master_select(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_channel_select(uz_adcLtc2311_t* self);
 int32_t uz_adcLtc2311_get_conversion_factor(uz_adcLtc2311_t* self);
 int32_t uz_adcLtc2311_get_offset(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_samples(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_max_attempts(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_get_sample_time(uz_adcLtc2311_t* self);
 
-// update functions
-int32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self);
+// SPI parameters
+uint32_t uz_adcLtc2311_get_pre_delay(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_get_post_delay(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_get_clk_div(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_get_cpha(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_get_cpol(uz_adcLtc2311_t* self);
+
+// Nap and Sleep mode
+uint32_t uz_adcLtc2311_get_napping_masters(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_get_sleeping_masters(uz_adcLtc2311_t* self);
 
 #endif // UZ_ADCLTC2311_H

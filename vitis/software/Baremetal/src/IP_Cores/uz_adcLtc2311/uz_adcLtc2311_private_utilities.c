@@ -13,11 +13,11 @@ int32_t uz_adcLtc2311_cr_wait_for_value_acknowledgement(uint32_t base_address, u
     if (l_max_attempts > 0) {
         while (condition)
         {
-            condition = uz_adcLtc2311_hw_read_cr(base_address) & UZ_ADCLTC2311_CR_CONV_VALUE_VALID;
             if (--l_max_attempts <= 0) {
                 return_value = UZ_FAILURE;
                 break;
             }
+            condition = uz_adcLtc2311_hw_read_cr(base_address) & UZ_ADCLTC2311_CR_CONV_VALUE_VALID;
         }
     }
     else {
@@ -28,4 +28,40 @@ int32_t uz_adcLtc2311_cr_wait_for_value_acknowledgement(uint32_t base_address, u
     }
 
     return(return_value);
+}
+
+/**
+ * @brief Returns true if the MSB of value is not set
+ * 
+ * @param value value to be tested
+ * @return _Bool 
+ */
+_Bool uz_adcLtc2311_check_32_bit_int_if_msb_not_set(uint32_t value)
+{
+    _Bool return_value = true;
+    if ((value >> 31))
+    {
+        return_value = false;
+    }
+
+    return(return_value);
+}
+
+/**
+ * @brief Returns true, if no more bits than specified by spec are set in the value
+ * 
+ * @param value Value to be tested
+ * @param spec Number of LSBs that can be set. If a higher bit is set, the function returns false
+ * @return _Bool 
+ */
+_Bool uz_adcLtc2311_check_32_bit_int_if_not_more_sign_bits_set_than_spec(uint32_t value, uint32_t spec)
+{
+    _Bool return_value = true;
+    if(value >> spec)
+    {
+        return_value = false;
+    }
+
+    return(return_value);
+
 }

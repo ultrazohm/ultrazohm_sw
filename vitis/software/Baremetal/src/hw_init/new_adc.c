@@ -34,7 +34,7 @@ void uz_adcLtc2311_testbench(void)
     test_ns_config.max_attempts = 10;
     test_ns_config.try_infinite = false;
     test_ns_config.spi_masters = UZ_ADCLTC2311_MASTER1;
-    uz_adcLtc2311_setTriggeredMode(test_instance);
+    uz_adcLtc2311_set_triggered_mode(test_instance);
     //uz_adcLtc2311_setContinuousMode(test_instance);
     // while (1)
     // {

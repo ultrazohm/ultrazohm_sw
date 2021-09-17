@@ -66,6 +66,20 @@ Software
 QuadratureFactor
   Specifies the number of edges based on the number of increments per turn. For regular incremental encoders with A and B-lane, this factor is four (4).
 
+Hardware filter of rotational speed
+===================================
+
+Subsystem ``omega_by_measure_time`` outputs :math:`\omega_{raw}`, ``new_measurement`` and oversampling factor :math:`k_{Oversample}`.
+The following calculation is done:
+
+.. math::
+
+  \omega_{scaled}=\frac{1}{\omega_{raw}} \cdot k_{Oversample}
+
+This is fed to the ``Average_linear_Reg`` with the constants :math:`S_{factor}=6` and :math:`S_{invFactor} = \frac{1}{6}` (not used at al).
+Whenever ``new_measurement`` is ``true``, the current value of :math:`\omega_{scaled}` is added to an internal storage that sums up the rotational speed.
+After six (:math:`S_{factor}=6`) measurements the internal storage is reset to zero, restarting the averaging.
+The value of the internal storage is divided by the number of samples that are currently in the internal storage and output.
 
 
 Vivado

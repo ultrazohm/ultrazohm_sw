@@ -14,6 +14,7 @@
 ******************************************************************************/
 
 #include <stdint.h>
+#include <math.h>
 #include "../include/encoder.h"
 #include "../IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
 

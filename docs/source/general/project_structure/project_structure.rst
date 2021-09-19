@@ -1,8 +1,8 @@
 .. _ProjectStructure:
 
-=============================
-Community & project structure
-=============================
+=================
+Project structure
+=================
 
 The following sections describe the structure of the UltraZohm project and community.
 Our general community approach is based on `GithHub Open Source Guide <https://opensource.guide/>`_.
@@ -17,9 +17,6 @@ This is especially important for currently active research, including pre-public
 - We use the UltraZohm Slack channel for direct, informal communication within the community
 - We use the UltraZohm forum (https://forum.ultrazohm.com/) for more general topics and discussions (topics related to the use-case)
 - We use Bitbucket issues as a bugtracker (topics related to the UltraZohm itself)
-
-User groups and name conventions
---------------------------------
 
 The user groups determine the read/write permissions for Bitbucket.
 A maintainer has to add users to the groups in Bitbucket (except for *Everybody*).
@@ -41,3 +38,10 @@ User
 
 Everybody
  *Everybody* has read access to the repository and the pull requests.
+
+..	toctree::
+    :maxdepth: 2
+    :caption: Project structure
+
+    contribution_workflow
+    contributors

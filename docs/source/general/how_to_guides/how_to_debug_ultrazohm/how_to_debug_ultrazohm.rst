@@ -1,3 +1,5 @@
+.. _how_to_debug_ultrazohm:
+
 ==========================
 How to debug the UltraZohm
 ==========================

@@ -70,7 +70,7 @@ int main(void) {
 	Initialize_Timer();
 	uz_SystemTime_init();
 	// Initialize the incremental encoder
-	Encoder_Incremental_Initialize(&Global_Data);
+	initialize_incremental_encoder_ipcore_on_D5(Global_Data.mrp.incrementalEncoderResolution,Global_Data.mrp.motorPolePairNumber);
 
 	// Initialize the FPGA control algorithm
 	Initialize_FPGAController(&Global_Data);

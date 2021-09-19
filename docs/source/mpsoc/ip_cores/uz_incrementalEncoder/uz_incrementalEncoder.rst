@@ -66,6 +66,9 @@ Software
 QuadratureFactor
   Specifies the number of edges based on the number of increments per turn. For regular incremental encoders with A and B-lane, this factor is four (4).
 
+
+.. note:: The IP-Core has a bug that results in an error of factor 2 on the speed calculation if ``Timer_FPGA_ms`` is supplied with the same value as done in Simulink. The bug is handled in the software driver by just writing ``Timer_FPGA_ms/2`` to the IP-Core register, no user action is required. That is, the correct speed is read-out by the driver.
+
 Hardware filter of rotational speed
 ===================================
 

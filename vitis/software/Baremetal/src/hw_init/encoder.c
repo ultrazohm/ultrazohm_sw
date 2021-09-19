@@ -17,6 +17,7 @@
 #include <math.h>
 #include "../include/encoder.h"
 #include "../IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+#include "xparameters.h"
 
 // Declares pointer to instance on file scope. DO NOT DO THIS! Just done here to be compatible to the rest of the legacy code in this file!
 static uz_incrementalEncoder_t* encoder_D5;
@@ -29,13 +30,13 @@ static uint32_t debug_position_mech=0.0f;
 //----------------------------------------------------
 // INITIALIZE & SET THE ENCODER
 //----------------------------------------------------
-void Encoder_Incremental_Initialize(DS_Data* data){
+void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber){
 	struct uz_incrementalEncoder_config encoder_D5_config={
 		.base_address=XPAR_INCREENCODER_V24_IP_0_BASEADDR,
 		.ip_core_frequency_Hz=50000000U,
-		.line_number_per_turn_mech=data->mrp.incrementalEncoderResolution,
+		.line_number_per_turn_mech=incrementalEncoderResolution,
 		.OmegaPerOverSample_in_rpm=500.0f,
-		.drive_pole_pair=data->mrp.motorPolePairNumber
+		.drive_pole_pair=motorPolePairNumber
 	};
 	encoder_D5=uz_incrementalEncoder_init(encoder_D5_config);
 }
@@ -45,14 +46,14 @@ static float fSpeed_rpm_Buf[SPEED_BUF_SIZE] = {0.0f,0.0f};
 static size_t buffer_counter =0U;
 static float speed_mean_rpm = 0.0f;
 
-void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in global data struct
+void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update speed and position in global data struct
 	debug_omega=uz_incrementalEncoder_get_omega(encoder_D5);
 	debug_theta_el=uz_incrementalEncoder_get_theta_el(encoder_D5);
 	debug_position_mech=uz_incrementalEncoder_get_position(encoder_D5);
 	float speed_rpm = debug_omega * (60.0f/2.0f*M_PI);
 
 	speed_mean_rpm -= fSpeed_rpm_Buf[buffer_counter]; //subtract the old value for the averaging
-	fSpeed_rpm_Buf[buffer_counter] = speed_rpm;		//restore the new value for the averaging
+	fSpeed_rpm_Buf[buffer_counter] = speed_rpm; //restore the new value for the averaging
 	speed_mean_rpm += fSpeed_rpm_Buf[buffer_counter]; //add the new value for the averaging
 
 	buffer_counter +=1; //Count up for the averaging

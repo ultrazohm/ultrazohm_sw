@@ -66,7 +66,7 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 	int32_t i_theta_m  = Xil_In32(Encoder_position_REG);  //Read AXI-register
 	float fTheta_mech  = ((float)(i_theta_m) / (float)(data->mrp.incrementalEncoderResolution*QUADRATURE_FACTOR)) * 2.0F * M_PI;
 	data->enc.thetaIncrement = (float)(i_theta_m);
-	data->enc.dTheta = fTheta_mech;
+	data->enc.theta = fTheta_mech;
 
 
 	//Read the speed encoder (own IP-Block)
@@ -80,26 +80,30 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 	//Detect 2pi->0 crossing (change bigger than one quarter negative mechanical rotation)
 	if (deltaTheta_mech < (-0.5F * M_PI))
 	{
-		fSpeed_rpm = (deltaTheta_mech + 2.0F * M_PI)/(data->ctrl.samplingPeriod) * OMEGA_2_RPM;
+		deltaTheta_mech = (deltaTheta_mech + 2.0F * M_PI);
 	}
 	//Detect 0->2pi crossing (change bigger than one quarter positive mechanical rotation)
 	else if (deltaTheta_mech > (0.5F * M_PI))
 	{
-		fSpeed_rpm = (deltaTheta_mech - 2.0F * M_PI)/(data->ctrl.samplingPeriod) * OMEGA_2_RPM;
+		deltaTheta_mech = (deltaTheta_mech - 2.0F * M_PI);
 	}
-	else
-	{
-		fSpeed_rpm = deltaTheta_mech/(data->ctrl.samplingPeriod) * OMEGA_2_RPM;
-	}
+
+	fSpeed_rpm = deltaTheta_mech/(data->ctrl.samplingPeriod) * OMEGA_2_RPM;
+	data->enc.dTheta = deltaTheta_mech;
 
 	//Smoothing 1: Double exponential smoothing
 	fSpeed_rpm_exp = SPEED_FIL_ALPHA * fSpeed_rpm + (1-SPEED_FIL_ALPHA) * (fSpeed_rpm_exp_old + expB_old);
 	expB = SPEED_FIL_BETA * (fSpeed_rpm_exp - fSpeed_rpm_exp_old) + (1 - SPEED_FIL_BETA) * expB_old;
 
 	//Smoothing 2: moving average
-	fSpeed_rpm_Sum -= fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //subtract the old value for the averaging
+	//fSpeed_rpm_Sum -= fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //subtract the old value for the averaging
 	fSpeed_rpm_Buf[u8Speed_Buf_Inc] = fSpeed_rpm_exp;		//restore the new value for the averaging
-	fSpeed_rpm_Sum += fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //add the new value for the averaging
+	//fSpeed_rpm_Sum += fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //add the new value for the averaging
+	fSpeed_rpm_Sum = 0.0F;
+	for(int i=0; i<SPEED_BUF_SIZE;i++)
+	{
+		fSpeed_rpm_Sum+=fSpeed_rpm_Buf[i];
+	}
 
 	u8Speed_Buf_Inc +=1; //Count up for the averaging
 	if (u8Speed_Buf_Inc >= SPEED_BUF_SIZE){ //Safe calculation for array overflow

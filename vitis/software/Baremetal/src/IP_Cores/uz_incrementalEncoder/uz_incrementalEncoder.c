@@ -96,6 +96,7 @@ void set_pi2_inc(uz_incrementalEncoder_t* self){
 void set_fpga_timer(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
     float fpga_timer=self->config.line_number_per_turn_mech/(2*M_PI*self->config.ip_core_frequency_Hz);
+    fpga_timer=fpga_timer*0.5f; // Correction factor of 0,5 due to bug in IP-Core, see issue #145
     uz_incrementalEncoder_hw_set_timer_fpga_ms(self->config.base_address,fpga_timer);
 }
 

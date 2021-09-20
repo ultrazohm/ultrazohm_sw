@@ -69,7 +69,7 @@ void ISR_Control(void *data)
 
 	ReadAllADC();
 	CheckForErrors();
-	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
+	update_speed_and_position_of_encoder_on_D5(&Global_Data); 	//Read out speed and theta angle
 
 	//Start: Control algorithm -------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)

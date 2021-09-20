@@ -297,9 +297,9 @@ void InitializeDataStructure(DS_Data* data) {
 
 	//Encoder
 	data->mrp.incrementalEncoderResolution = 5000.0; //[Increments per turn] // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
-	data->mrp.incrementalEncoderOffset = 3.141592653589; //[rad]  //Offset for the Park-Transformation -> pi = 3.141592653589
+	data->mrp.incrementalEncoderOffset = 3.141592653589; //[rad]  // DOES NOT AFFECT theta_el in global data! Offset for the Park-Transformation IP-Core -> pi = 3.141592653589
 	data->mrp.motorMaximumSpeed = 6000.0; //[rpm]
-	data->mrp.incrementalEncoderOversamplingFactor = 5.0; //Oversampling factor must be between 1.0-6.0 (Achtung, immer mit Punkt da sonst nicht als float interpretiert
+    data->mrp.IncEncoderLPF_freq=1000.0f; // Filter for rotational speed
 
 	//Motor related parameters
 	Initialize_MotorRelatedParameters(data);

@@ -29,7 +29,7 @@ uz_incrementalEncoder_t* successful_init(){
     float expected_pi2_inc=0.0012566447257996; // (2*pi/(IncPerTurn*QuadratureFactor))*PolePair from Simulink model
     uz_incrementalEncoder_hw_set_pi2_inc_Expect(TEST_BASE_ADDRESS,expected_pi2_inc);
     // (T_50MHz*IncPerTurn)/(2*pi) in Simulink
-    float expected_timer_fpga=1.5915604308248e-5 / 2.0f; // Half of the expected timer due to bug in IP-Core, see issue #145
+    float expected_timer_fpga=1.5915604308248e-5 * 2.0f; // Half of the expected timer due to bug in IP-Core, see issue #145
     uz_incrementalEncoder_hw_set_timer_fpga_ms_Expect(TEST_BASE_ADDRESS, expected_timer_fpga);
 
     uint32_t expected_inc_per_turn_mech=5000*4; // random encoder value, *4 due to quadrature factor

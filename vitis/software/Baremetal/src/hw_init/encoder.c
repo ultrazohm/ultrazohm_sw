@@ -40,28 +40,16 @@ void Encoder_Incremental_Initialize(DS_Data* data){
 	encoder_D5=uz_incrementalEncoder_init(encoder_D5_config);
 }
 
-//Initialize the variables for the speed encoder
-static float fSpeed_rpm_Buf[SPEED_BUF_SIZE] = {0.0f,0.0f};
-static size_t buffer_counter =0U;
-static float speed_mean_rpm = 0.0f;
+float speed_rpm=0.0f;
 
 void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in global data struct
 	debug_omega=uz_incrementalEncoder_get_omega(encoder_D5);
 	debug_theta_el=uz_incrementalEncoder_get_theta_el(encoder_D5);
 	debug_position_mech=uz_incrementalEncoder_get_position(encoder_D5);
-	float speed_rpm = debug_omega * (60.0f/2.0f*M_PI);
-
-	speed_mean_rpm -= fSpeed_rpm_Buf[buffer_counter]; //subtract the old value for the averaging
-	fSpeed_rpm_Buf[buffer_counter] = speed_rpm;		//restore the new value for the averaging
-	speed_mean_rpm += fSpeed_rpm_Buf[buffer_counter]; //add the new value for the averaging
-
-	buffer_counter +=1; //Count up for the averaging
-	if (buffer_counter >= SPEED_BUF_SIZE){ //Safe calculation for array overflow
-		buffer_counter = 0;
-	}
+	speed_rpm = debug_omega * 60 / (2*M_PI);
 
 	//Speed over buffer
-	data->av.mechanicalRotorSpeed = speed_mean_rpm * SPEED_BUF_SIZE_INVERS; //Calculate mean value for the speed
+	data->av.mechanicalRotorSpeed = speed_rpm; //Calculate mean value for the speed
 
 	// Get electrical angle theta
 	data->av.theta_elec  = debug_theta_el;

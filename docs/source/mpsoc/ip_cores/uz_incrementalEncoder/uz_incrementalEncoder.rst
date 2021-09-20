@@ -21,7 +21,7 @@ Position (electrical)
   If ``drive_pole_pair`` is not ``0`` and not an integer multiple of increments per turn, the initialization of the driver fails with an assertion.
 
 Rotational speed
-  Calculates the rotational speed of the drive by counting rising edges of the A-lane in combination with an oversampling mechanism and subsequent filtering of the speed signal in the IP-Core.
+  Calculates the rotational speed of the drive by counting the time between rising edges of the A-lane in combination with an speed-dependent oversampling mechanism and subsequent filtering of the speed signal in the IP-Core.
 
 Direction of rotation
   Determines the direction of the rotation (clockwise / counterclockwise)
@@ -29,13 +29,7 @@ Direction of rotation
 Configuration
 =============
 
-
-
-Software
---------
-
-
-.. note:: The IP-Core has a bug that results in an error of factor 2 on the speed calculation if ``Timer_FPGA_ms`` is supplied with the same value as done in Simulink. The bug is handled in the software driver by just writing ``Timer_FPGA_ms/2`` to the IP-Core register, no user action is required. That is, the correct speed is read-out by the driver.
+.. note:: The IP-Core has a bug that results in an error of factor 2 on the speed calculation if ``Timer_FPGA_ms`` is supplied with the same value as done in Simulink. The bug is handled in the software driver by just writing ``Timer_FPGA_ms*2`` to the IP-Core register, no user action is required. That is, the correct speed is read-out by the driver.
 
 Hardware filter of rotational speed
 ===================================
@@ -57,8 +51,6 @@ IP-Core Hardware
 ================
 
 The IP-Core is generated using Matlab/Simulink HDL-Coder based on the model ``Encoder_Zynq_V24.slx`` (in ``ultrazohm_sw/ip-cores/IncreEncoder_V24_ip/Simulation/Encoder_Zynq_V24.slx``).
-
-
 
 
 Vivado integration

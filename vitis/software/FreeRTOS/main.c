@@ -87,6 +87,7 @@ int main()
 	//SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
 	Initialize_InterruptHandler();
 
+
 	//Start the main-threat
 	sys_thread_new("main_thrd", (void(*)(void*))main_thread, 0,
 	                THREAD_STACKSIZE,

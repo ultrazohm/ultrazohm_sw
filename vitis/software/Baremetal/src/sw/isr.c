@@ -29,6 +29,10 @@
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 
 
+//Inclusion of WDT code
+#include "xwdtps_intr.h"
+
+
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
 
@@ -63,6 +67,12 @@ static void CheckForErrors();
 
 void ISR_Control(void *data)
 {
+
+	/*
+	 * RE Start the WDT device.
+	 */
+	XWdtPs_Restart();
+
 	uz_SystemTime_ISR_Tic();
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
 	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
@@ -96,6 +106,15 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
 
+//	to trigger the out of time *and missing the next ISR
+	uz_sleep_useconds(2000);
+//	u32 ExpiredTimeDelta = 0U;
+//	while (1) {
+//		ExpiredTimeDelta++;
+//		if (ExpiredTimeDelta > 200000000U) {
+//			break;
+//		}
+//	}
 
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
@@ -103,6 +122,9 @@ void ISR_Control(void *data)
 	// Read the timer value at the very end of the ISR to minimize measurement error
 	// This has to be the last function executed in the ISR!
 	uz_SystemTime_ISR_Toc();
+
+
+	XWdtPs_StopWdt() ;
 }
 
 //==============================================================================================================================================================
@@ -123,6 +145,18 @@ int Initialize_ISR(){
 			return XST_FAILURE;
 		}
 
+
+	/*
+	 * Call the WDT init to initialize, make a self test, and set timer to the given timeout
+	 */
+	xil_printf("#### 4 WDT Initializing!!!!!\r\n");
+	Status = WdtPsIntrInit(0U);
+	if (Status != XST_SUCCESS) {
+		xil_printf("WDT Interrupt init Failed\r\n");
+		return XST_FAILURE;
+	}
+
+
 	// Initialize interrupt controller for the GIC
 	Status = Rpu_GicInit(&INTCInst, INTERRUPT_ID_SCUG, &Timer_Interrupt);
 		if(Status != XST_SUCCESS) {
@@ -130,9 +164,28 @@ int Initialize_ISR(){
 			return XST_FAILURE;
 		}
 
+
+//	xil_printf("WDT Interrupt Example Test\r\n");
+//
+//	Status = WdtPsIntrExample(&INTCInst);
+//	if(Status != XST_SUCCESS) {
+//		xil_printf("RPU: Error: WdtPsIntrExample failed\r\n");
+//		return XST_FAILURE;
+//	}
+
+	/*
+	 * Start the Wdt device.
+	 */
+	XWdtPs_Start_RestartWdt();
+
+
+
 	// Initialize mux_axi to use correct interrupt for triggering the ADCs
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + IPCore_Enable_mux_axi_ip, 1); // enable IP core
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
+
+
+	xil_printf("EXAMPLE Successfully init WDT WITH  LOW  SLEEP !!!! !!!   @@@@@ \r\n");
 
 return Status;
 }
@@ -192,7 +245,7 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	// b01	Active HIGH level sensitive
 	// b11 	Rising edge sensitive
 	// XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
-	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
+	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 8U, 0b11); // rising-edge
 	//XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
 
 	// Make the connection between the IntId of the interrupt source and the
@@ -210,13 +263,24 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 //								(void *)Conv_ADC_InstancePtr);
 //		if(status != XST_SUCCESS) return XST_FAILURE;
 
+
+
+	/*
+	 * Connect to the interrupt subsystem so that interrupts can occur and Enable the IRQ output.
+	 */
+	status = WdtSetupIntrSystem(IntcInstPtr);
+	if (status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+
 	// Enable GPIO and timer interrupts in the controller
 	XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
 	XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
 //	XScuGic_Enable(&INTCInst, INTC_ADC_Conv_INTERRUPT_ID);
 
 
-	xil_printf("RPU: Rpu_GicInit: Done\r\n");
+	xil_printf("RPU: Rpu_GicInit: Done wdt int added\r\n");
 	return XST_SUCCESS;
 }
 

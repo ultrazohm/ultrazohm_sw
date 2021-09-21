@@ -1,51 +1,67 @@
-###Analog Adapter Board D3
-# Author: Eyke Ligemann
-# Date: 19.08.2020
+###Digital Adapter Board D3: UZ_D_GaN_Inverter
+# Author: Michael Hoerner
+# Date: 21.09.2021
 
-set_property PACKAGE_PIN K10 	[get_ports D3_OUT[0]]
-set_property PACKAGE_PIN U2 	[get_ports D3_OUT[1]]
-set_property PACKAGE_PIN L10 	[get_ports D3_OUT[2]]
-set_property PACKAGE_PIN U3 	[get_ports D3_OUT[3]]
-set_property PACKAGE_PIN U8 	[get_ports D3_OUT[4]]
-set_property PACKAGE_PIN V1 	[get_ports D3_OUT[5]]
-set_property PACKAGE_PIN V8 	[get_ports D3_OUT[6]]
-set_property PACKAGE_PIN V2 	[get_ports D3_OUT[7]]
-set_property PACKAGE_PIN V6 	[get_ports D3_OUT[8]]
-set_property PACKAGE_PIN W1 	[get_ports D3_OUT[9]]
-set_property PACKAGE_PIN V7 	[get_ports D3_OUT[10]]
-set_property PACKAGE_PIN W2 	[get_ports D3_OUT[11]]
-set_property PACKAGE_PIN W5 	[get_ports D3_OUT[12]]
-set_property PACKAGE_PIN Y1 	[get_ports D3_OUT[13]]
-set_property PACKAGE_PIN Y5 	[get_ports D3_OUT[14]]
-set_property PACKAGE_PIN Y2 	[get_ports D3_OUT[15]]
-set_property PACKAGE_PIN M12 	[get_ports D3_OUT[16]]
-set_property PACKAGE_PIN U9 	[get_ports D3_OUT[17]]
-set_property PACKAGE_PIN N12 	[get_ports D3_OUT[18]]
-set_property PACKAGE_PIN V9 	[get_ports D3_OUT[19]]
-set_property PACKAGE_PIN P10 	[get_ports D3_OUT[20]]
-set_property PACKAGE_PIN P11 	[get_ports D3_OUT[21]]
-set_property PACKAGE_PIN W6 	[get_ports D3_OUT[22]]
-set_property PACKAGE_PIN W7 	[get_ports D3_OUT[23]]
-set_property PACKAGE_PIN F10 	[get_ports D3_OUT[24]]
-set_property PACKAGE_PIN D10 	[get_ports D3_OUT[25]]
-
-
-# Possible Inputs
-#set_property PACKAGE_PIN Y5 	[get_ports Dig_15_Ch3]
-#set_property PACKAGE_PIN Y2 	[get_ports Dig_16_Ch3]
-#set_property PACKAGE_PIN M12 	[get_ports Dig_17_Ch3]
-#set_property PACKAGE_PIN U9 	[get_ports Dig_18_Ch3]
-
-#Digital_27_Ch3 = B66_L9_P
-set_property PACKAGE_PIN U5 	[get_ports D3_OUT_27]
-#Digital_28_Ch3 = B66_L6_P
-set_property PACKAGE_PIN T1 	[get_ports D3_OUT_28]
-#Digital_29_Ch3 = B66_L9_N
-set_property PACKAGE_PIN U4 	[get_ports D3_OUT_29]
-#Digital_30_Ch3 = B66_L6_N
-set_property PACKAGE_PIN U1 	[get_ports D3_OUT_30]
-
-
+# DIG_IO_1
+set_property PACKAGE_PIN A15    [get_ports D3_pwm_h1]
+# DIG_IO_2
+set_property PACKAGE_PIN J14 	[get_ports D3_pwm_l1]
+# DIG_IO_3
+set_property PACKAGE_PIN J12 	[get_ports D3_pwm_h2]
+# DIG_IO_4
+set_property PACKAGE_PIN E12 	[get_ports D3_pwm_l2]
+# DIG_IO_5
+set_property PACKAGE_PIN H11 	[get_ports D3_pwm_h3]
+# DIG_IO_6
+set_property PACKAGE_PIN D12 	[get_ports D3_pwm_l3]
+# DIG_IO_7
+set_property PACKAGE_PIN H12 	[get_ports D3_i1_diag]
+# DIG_IO_8
+set_property PACKAGE_PIN A12 	[get_ports D3_gan_h1_temp]
+# DIG_IO_9
+set_property PACKAGE_PIN G11 	[get_ports D3_i2_diag]
+# DIG_IO_10
+set_property PACKAGE_PIN A11 	[get_ports D3_gan_l1_temp]
+# DIG_IO_11
+set_property PACKAGE_PIN F12 	[get_ports D3_i3_diag]
+# DIG_IO_12
+set_property PACKAGE_PIN C12 	[get_ports D3_gan_l1_oc]
+# DIG_IO_13
+set_property PACKAGE_PIN F11 	[get_ports D3_i_diag]
+# DIG_IO_14
+set_property PACKAGE_PIN B11 	[get_ports D3_gan_l1_fault]
+# DIG_IO_15
+set_property PACKAGE_PIN J11 	[get_ports D3_pwm_en]
+# DIG_IO_16
+set_property PACKAGE_PIN D11 	[get_ports D3_gan_h1_oc]
+# DIG_IO_17
+set_property PACKAGE_PIN J10 	[get_ports D3_DIG_IO_17]
+# DIG_IO_18
+set_property PACKAGE_PIN C11 	[get_ports D3_gan_h1_fault]
+# DIG_IO_19
+set_property PACKAGE_PIN K13 	[get_ports D3_gan_h3_temp]
+# DIG_IO_20
+set_property PACKAGE_PIN B10 	[get_ports D3_gan_h2_temp]
+# DIG_IO_21
+set_property PACKAGE_PIN K12 	[get_ports D3_gan_l3_temp]
+# DIG_IO_22
+set_property PACKAGE_PIN A10 	[get_ports D3_gan_l2_temp]
+# DIG_IO_23
+set_property PACKAGE_PIN G10 	[get_ports D3_gan_l3_oc]
+# DIG_IO_24
+set_property PACKAGE_PIN E10 	[get_ports D3_gan_l2_oc]
+# DIG_IO_25
+set_property PACKAGE_PIN C14 	[get_ports D3_gan_l3_fault]
+# DIG_IO_26
+set_property PACKAGE_PIN H14 	[get_ports D3_gan_l2_fault]
+# DIG_IO_27
+set_property PACKAGE_PIN C13    [get_ports D3_gan_h3_oc]
+# DIG_IO_28
+set_property PACKAGE_PIN H13    [get_ports D3_gan_h2_oc]
+# DIG_IO_29
+set_property PACKAGE_PIN B15    [get_ports D3_gan_h3_fault]
+# DIG_IO_30
+set_property PACKAGE_PIN K14    [get_ports D3_gan_h2_fault]
 
 set_property IOSTANDARD LVCMOS18 	[get_ports {D3_*}]
-set_property PULLDOWN true 			[get_ports D3_OUT]
+set_property PULLDOWN true 			[get_ports D3_PWM_*]

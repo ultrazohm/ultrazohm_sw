@@ -56,7 +56,7 @@ The build pipeline:
   * Variables for username, password and server path are stored as secret repository variables
   * Only accessible for admins: ``repository settings -> repository variables`` in Bitbucket (``ultrazohm_sw`` repository)
 
-.. literalinclude:: ../../../bitbucket-pipelines.yml
+.. literalinclude:: ../../../../../bitbucket-pipelines.yml
     :linenos:
 
 Unit tets (Ceedling)

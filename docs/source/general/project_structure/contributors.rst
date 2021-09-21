@@ -1,8 +1,8 @@
 .. _Contributors:
 
-============
-Contributors
-============
+====================
+List of contributors
+====================
 
 This is a list of contributors to the UltraZohm project. 
 

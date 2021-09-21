@@ -14,13 +14,15 @@
  * 5 for Interrupt_3L_center		
  * 6 for Interrupt_timer_fcc		
 */
-#define Interrupt_ISR_source_user_choice        3U
+#define Interrupt_ISR_source_user_choice        1U
+#define Interrupt_ISR_every_n_th_time			5U
 
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES          2U
 #define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES    2U
 #define UZ_MYIP2_MAX_INSTANCES                  0U
 #define UZ_PI_CONTROLLER_MAX_INSTANCES      3U
+#define UZ_D_GAN_INVERTER_MAX_INSTANCES			4U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -30,4 +32,5 @@
     #define UZ_MYIP2_MAX_INSTANCES                  5U
     #define UZ_MYIP_MAX_INSTANCES                   5U
     #define UZ_PI_CONTROLLER_MAX_INSTANCES      30U
+	#define UZ_D_GAN_INVERTER_MAX_INSTANCES			4U
 #endif

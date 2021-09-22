@@ -23,5 +23,5 @@ void uz_codegen_init(uz_codegen *self){
 }
 
 void uz_codegen_step(uz_codegen *self){
-	FOC_komplex_step(self->PtrToModelData);
+	Regelung_step(self->PtrToModelData);
 }

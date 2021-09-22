@@ -184,10 +184,8 @@ int main(void) {
 			i_LifeCheck = 0;
 		}
 
-		rtP.Kp_id =  Global_Data.ctrl.foc.cc.Kp_id;
-		rtP.Kp_iq =  Global_Data.ctrl.foc.cc.Kp_iq;
-		rtP.Kis_id = 1.0F/Global_Data.ctrl.foc.cc.Tn_id;
-		rtP.Kis_iq = 1.0F/Global_Data.ctrl.foc.cc.Tn_iq;
+		rtP.Kp =  Global_Data.ctrl.foc.cc.Kp_id;
+		rtP.K1 = 1.0F/Global_Data.ctrl.foc.cc.Tn_id;
 		rtP.Kp_n = Global_Data.ctrl.foc.sc.Kp;
 		rtP.Kis_n = 1.0F/Global_Data.ctrl.foc.sc.Tn;
 	}
@@ -320,8 +318,8 @@ void InitializeDataStructure(DS_Data* data) {
 	Configure_FOC_Control(data);
 
 	//Encoder
-	data->mrp.incrementalEncoderResolution = 4998.0F; 	//[Increments per turn] // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
-	data->mrp.incrementalEncoderOffset = -2.60F; //[rad]  //Offset for the Park-Transformation -> pi = 3.141592653589
+	data->mrp.incrementalEncoderResolution = 5000.0F; 	//[Increments per turn] // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
+	data->mrp.incrementalEncoderOffset = -0.463F; //[rad]  //Offset for the Park-Transformation -> pi = 3.141592653589
 	data->mrp.motorMaximumSpeed = 6000.0; //[rpm]
 	data->mrp.incrementalEncoderOversamplingFactor = 5.0F; //Oversampling factor must be between 1.0-6.0 (Achtung, immer mit Punkt da sonst nicht als float interpretiert
 
@@ -469,7 +467,7 @@ void InitializeDataStructure(DS_Data* data) {
 	data->aa.A3.cf.ADC_B8 = 10;
 
 	// initalize PWM parameters
-	data->ctrl.pwmFrequency = 20e3;		// PWM carrier frequency
+	data->ctrl.pwmFrequency = 12.5e3;		// PWM carrier frequency
 	data->ctrl.pwmPeriod = 1 / data->ctrl.pwmFrequency;
 
 	data->ctrl.samplingFrequency = data->ctrl.pwmFrequency * Interrupt_ISR_freq_factor;

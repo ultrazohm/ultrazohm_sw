@@ -158,17 +158,17 @@ int Initialize_MotorRelatedParameters(DS_Data* data){
 	data->mrp.motorDirectInductance = 2.00e-04; // [H] Identified-ID-Run: Ld= 191 uH (Motor+Mosfet+Leitung+Klemme) //Identified LCR-Meter: L_ph_ph= 410uH -> Ld= 205uH
 	data->mrp.motorQuadratureInductance = 2.00e-04; // [H]
 	data->mrp.motorStatorResistance = 0.07; //[Ohm] Identified-ID-Run: Rs= 0.0718 (Motor+Mosfet+Leitung+Klemme) //R_ds,on Mosfet(BSC094N06LS5) = 0.0094 Ohm //Identified LCR-Meter: R_ph_ph= 0.118 -> Rs= 0.118/2 + 2*0.0094 = 0.0778 Ohm
-	data->mrp.motorPolePairNumber = 5.0; // Number of pole pairs in the motor (necessary for the encoder)
+	data->mrp.motorPolePairNumber = 18.0; // Number of pole pairs in the motor (necessary for the encoder)
 	data->mrp.motorFluxConstant = 0.005950905; //[Vs] Psi_sinus
 	data->mrp.motorNominalCurrent=8; //8;
 	data->mrp.motorNominalSpeed=3000;
 	data->mrp.motorRotorInertia=1.585e-05;
-	data->ctrl.foc.cc.Kp_id=0.1508;
-	data->ctrl.foc.cc.Tn_id=0.0015;
-	data->ctrl.foc.cc.Kp_iq=0.2513;
-	data->ctrl.foc.cc.Tn_iq=0.0025;
-	data->ctrl.foc.sc.Kp=0.5325;
-	data->ctrl.foc.sc.Tn=0.0127;
+	data->ctrl.foc.cc.Kp_id=2.7646F;
+	data->ctrl.foc.cc.Tn_id=1.0F/109.0F;
+	data->ctrl.foc.cc.Kp_iq=2.7646F;
+	data->ctrl.foc.cc.Tn_iq=1.0/109.0F;
+	data->ctrl.foc.sc.Kp=0.170507073F;
+	data->ctrl.foc.sc.Tn=1.0F/39.2699127F;
 	data->ctrl.foc.cc.Kp_id_Custom=0.2;
 	data->ctrl.foc.cc.Tn_id_Custom=0.003;
 	data->ctrl.foc.cc.Kp_iq_Custom=0.2;

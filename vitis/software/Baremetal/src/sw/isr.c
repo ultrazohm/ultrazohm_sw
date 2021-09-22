@@ -79,15 +79,22 @@ void ISR_Control(void *data)
 
 	codegenInstance.input.Act_n = Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
 	codegenInstance.input.Act_w_el = codegenInstance.input.Act_n * Global_Data.mrp.motorPolePairNumber*M_PI/30.0F; //[rad/s]
-	codegenInstance.input.Act_theta_el = Global_Data.av.theta_elec + Global_Data.mrp.incrementalEncoderOffset; 	//[rad] Definition in main.c
+	codegenInstance.input.Act_theta_u_el = Global_Data.av.theta_elec + Global_Data.mrp.incrementalEncoderOffset; 	//[rad] Definition in main.c
 
 	//FOC Assign Javasope-reference-values
 	codegenInstance.input.Ref_n = Global_Data.rasv.referenceSpeed;
-	codegenInstance.input.Ref_Id_ext = Global_Data.rasv.referenceCurrent_id;
-	codegenInstance.input.Ref_Iq_ext = Global_Data.rasv.referenceCurrent_iq;
+	codegenInstance.input.Ref_I_re_ext = Global_Data.rasv.referenceCurrent_id;
+	codegenInstance.input.Ref_I_im_ext = Global_Data.rasv.referenceCurrent_iq;
 
 	//FOC Enable control with Javascope
-	codegenInstance.input.fl_power = Global_Data.cw.enableControl;
+	if(Global_Data.cw.enableControl)
+	{
+		codegenInstance.input.fl_power = 3U;
+	}
+	else
+	{
+		codegenInstance.input.fl_power = 0U;
+	}
 
 	//Change control type with javascope
 	if(Global_Data.cw.ControlReference == 2U)
@@ -120,10 +127,7 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge3DutyCycle);
 
 	// Write current and voltage data to av
-	Global_Data.av.I_d = codegenInstance.output.Id_Act;
-	Global_Data.av.I_q = codegenInstance.output.Iq_Act;
-	Global_Data.av.U_d = codegenInstance.output.Ud_Ref;
-	Global_Data.av.U_q = codegenInstance.output.Uq_Ref;
+
 
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
@@ -171,8 +175,8 @@ int Initialize_ISR(){
 	codegenInstance.input.fl_decoupling = 1U;
 	codegenInstance.input.fl_angle_prediction = 1U;
 	codegenInstance.input.Ref_n = 0.0F;
-	codegenInstance.input.Ref_Id_ext = 0.0F;
-	codegenInstance.input.Ref_Iq_ext = 0.0F;
+	codegenInstance.input.Ref_I_re_ext = 0.0F;
+	codegenInstance.input.Ref_I_im_ext = 0.0F;
 
 	//Set CodeGen-SampleTime according to settings in main
 	rtP.T_R = Global_Data.ctrl.samplingPeriod;
@@ -360,26 +364,28 @@ static void CheckForErrors(){
 	if(Global_Data.cw.enableSystem == true)
 	{
 		//Detect peak current-limit ---------------------------------------------------------------------------------------
-		if (codegenInstance.output.fault_peak_current == 1.0F)
+		if (codegenInstance.output.fault_peak_current_u || codegenInstance.output.fault_peak_current_v
+				|| codegenInstance.output.fault_peak_current_w)
 		{
 			Global_Data.ew.maxPeakCurrentReached = true; //Current error detected
 			ErrorHandling(&Global_Data);
 		}
 
 		//Detect continuous current-limit ---------------------------------------------------------------------------------------
-		if (codegenInstance.output.fault_max_current == 1.0F)
+		if (codegenInstance.output.fault_rms_current_u || codegenInstance.output.fault_rms_current_v
+				|| codegenInstance.output.fault_rms_current_w)
 		{
 			Global_Data.ew.maxContinuousCurrentReached = true; //Current error detected
 			ErrorHandling(&Global_Data);
 		}
 		//Detect peak speed-limit ---------------------------------------------------------------------------------------
-		if (codegenInstance.output.fault_peak_speed == 1.0F)
+		if (codegenInstance.output.fault_peak_speed)
 		{
 			Global_Data.ew.maxPeakSpeedReached = true; //Speed error detected
 			ErrorHandling(&Global_Data);
 		}
 		//Detect continuous speed-limit ---------------------------------------------------------------------------------------
-		if (codegenInstance.output.fault_max_speed == 1.0F)
+		if (codegenInstance.output.fault_max_speed)
 		{
 			Global_Data.ew.maxContinuousSpeedReached = true; //Speed error detected
 			ErrorHandling(&Global_Data);

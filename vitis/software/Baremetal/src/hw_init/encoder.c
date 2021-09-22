@@ -123,9 +123,13 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 
 	//Smoothing 2: moving average
 
-	fSpeed_rpm_Sum -= fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //subtract the old value for the averaging
-	fSpeed_rpm_Buf[u8Speed_Buf_Inc] = fSpeed_rpm_exp;		//restore the new value for the averaging
-	fSpeed_rpm_Sum += fSpeed_rpm_Buf[u8Speed_Buf_Inc]; //add the new value for the averaging
+	fSpeed_rpm_Buf[u8Speed_Buf_Inc] = fSpeed_rpm_exp;
+	fSpeed_rpm_Sum = 0.0F;
+	for(int i=0; i<SPEED_BUF_SIZE;i++)
+	{
+		fSpeed_rpm_Sum+=fSpeed_rpm_Buf[i];
+	}
+
 
 	u8Speed_Buf_Inc +=1; //Count up for the averaging
 	if (u8Speed_Buf_Inc >= SPEED_BUF_SIZE){ //Safe calculation for array overflow
@@ -137,12 +141,12 @@ void Encoder_UpdateSpeedPosition(DS_Data* data){	// update speed and position in
 	//data->av.mechanicalRotorSpeed = fSpeed_rpm_exp;
 
 	//Write theta mech
-	data->av.theta_mech = (float)i_theta_m;//fTheta_mech;
+	data->av.theta_mech = (float)fTheta_mech;
 
 	// Get electrical angle theta
 	int32_t i_theta_e  = Xil_In32(Encoder_theta_e_REG);  //Read AXI-register
-	data->av.theta_elec  = (float)(ldexpf(i_theta_e, Q20toF));  // Shift 20 Bit for fixed-point
-
+	//data->av.theta_elec  = (float)(ldexpf(i_theta_e, Q20toF));  // Shift 20 Bit for fixed-point
+	data->av.theta_elec  = fmod(data->av.theta_mech*data->mrp.motorPolePairNumber, 2.0*M_PI);
 
 
 	/*

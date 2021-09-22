@@ -71,7 +71,7 @@ static float uz_SpeedControl_calculate_omega_cut(struct uz_PMSM_t config_PMSM, f
 	float a_omega = (powf(config_PMSM.I_max_Ampere, 2.0f) * powf(config_PMSM.Lq_Henry, 2.0f)) + powf(config_PMSM.Psi_PM_Vs, 2.0f);
 	float b_omega = 2.0f * config_PMSM.R_ph_Ohm * config_PMSM.Psi_PM_Vs * config_PMSM.I_max_Ampere;
 	float c_omega = (powf(config_PMSM.I_max_Ampere, 2.0f) * powf(config_PMSM.R_ph_Ohm, 2.0f)) - powf(U_SV_max, 2.0f);
-    float omega_cut = (-b_omega + sqrtf(powf(b_omega, 2.0f) - (4 * a_omega * c_omega) )) / (2 * a_omega);
+    float omega_cut = (-b_omega + sqrtf(powf(b_omega, 2.0f) - (4.0f * a_omega * c_omega) )) / (2.0f * a_omega);
 	return (omega_cut);
 }
 
@@ -88,6 +88,6 @@ static struct uz_dq_t uz_SpeedControl_calculate_fw_currents(struct uz_PMSM_t con
 	                + (powf(omega_el_rad_per_sec, 2.0f)
 	                                * (powf(config_PMSM.Psi_PM_Vs, 2.0f) + (powf(config_PMSM.Ld_Henry, 2.0f) * powf(output.d, 2.0f))
 	                                                + (2.0f * config_PMSM.Psi_PM_Vs * config_PMSM.Ld_Henry * output.d))) - powf(U_SV_max, 2.0f);
-   	output.q = (-b_iq_fw + sqrtf(powf(b_iq_fw, 2.0f) - (4 * a_iq_fw * c_iq_fw) )) / (2 * a_iq_fw);
+   	output.q = (-b_iq_fw + sqrtf(powf(b_iq_fw, 2.0f) - (4.0f * a_iq_fw * c_iq_fw) )) / (2.0f * a_iq_fw);
     return(output);
 }

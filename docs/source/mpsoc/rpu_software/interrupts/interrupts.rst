@@ -9,7 +9,7 @@ Software User Model
 
 The interrupt triggers the ``ISR_Control`` function (in ``isr.c``) and the ADC conversion in the PL. 
 The trigger can be synchronized with the PWM (two- and three-level) modules or a timer. 
-The interrupt trigger is defined in ``isr.h``  by assigning a value to ``Interrupt_ISR_source_user_choice``.
+The interrupt trigger is defined in ``uz_global_configuration.h``  by assigning a value to ``Interrupt_ISR_source_user_choice``.
 
 .. code-block:: c 
 

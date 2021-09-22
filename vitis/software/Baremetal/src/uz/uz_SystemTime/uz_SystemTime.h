@@ -13,6 +13,7 @@ float uz_SystemTime_GetIsrPeriodInUs();
 float uz_SystemTime_GetIsrExectionTimeInUs();
 uint64_t uz_SystemTime_GetInterruptCounter();
 uint64_t uz_SystemTime_GetUptimeInUs();
+uint64_t uz_SystemTime_GetIsrDirectExectionTimeInUs();
 unsigned int uz_SystemTime_GetUptimeInMs();
 unsigned int uz_SystemTime_GetUptimeInSec();
 unsigned int uz_SystemTime_GetUptimeInMin();

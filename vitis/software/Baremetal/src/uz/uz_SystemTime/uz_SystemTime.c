@@ -89,6 +89,13 @@ uint64_t uz_SystemTime_GetUptimeInUs() {
 	return (timingR5.uptime_us);
 }
 
+
+uint64_t uz_SystemTime_GetIsrDirectExectionTimeInUs() {
+	uint64_t const Uptime_timer_counts_per_us = UZ_AXI_TIMER_CLOCK_FREQ * 1e-6; // for 100 MHz->10ns; 10ns * 100 = 1us
+	uz_assert(timingR5.IsReady);
+	return ((timingR5.timestamp_ISR_start - timingR5.timestamp_ISR_end)/Uptime_timer_counts_per_us);
+}
+
 unsigned int uz_SystemTime_GetUptimeInMin() {
 	uz_assert(timingR5.IsReady);
 	return (timingR5.uptime_min);

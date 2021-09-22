@@ -68,10 +68,10 @@ static void CheckForErrors();
 void ISR_Control(void *data)
 {
 
-	/*
-	 * RE Start the WDT device.
-	 */
-	XWdtPs_Restart();
+//	/*
+//	 * RE Start the WDT device.
+//	 */
+//	XWdtPs_Restart();
 
 	uz_SystemTime_ISR_Tic();
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
@@ -107,7 +107,7 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge3DutyCycle);
 
 //	to trigger the out of time *and missing the next ISR
-	uz_sleep_useconds(2000);
+//	uz_sleep_useconds(10);
 //	u32 ExpiredTimeDelta = 0U;
 //	while (1) {
 //		ExpiredTimeDelta++;
@@ -119,12 +119,20 @@ void ISR_Control(void *data)
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
 
+
+//	// Execution time must be less than the period
+//	uz_assert(((uz_SystemTime_GetIsrExectionTimeInUs() == 0) || ((uz_SystemTime_GetIsrExectionTimeInUs() * 1e-6) <= Global_Data.ctrl.pwmPeriod)));
+
+
 	// Read the timer value at the very end of the ISR to minimize measurement error
 	// This has to be the last function executed in the ISR!
 	uz_SystemTime_ISR_Toc();
 
+	if ((uz_SystemTime_GetIsrExectionTimeInUs() * 1e-6) > Global_Data.ctrl.pwmPeriod){
+	      Xil_Assert(__FILE__, __LINE__);
+	}
 
-	XWdtPs_StopWdt() ;
+//	XWdtPs_StopWdt() ;
 }
 
 //==============================================================================================================================================================
@@ -149,7 +157,7 @@ int Initialize_ISR(){
 	/*
 	 * Call the WDT init to initialize, make a self test, and set timer to the given timeout
 	 */
-	xil_printf("#### 4 WDT Initializing!!!!!\r\n");
+	xil_printf("#### 14 WDT Initializing!!!!!\r\n");
 	Status = WdtPsIntrInit(0U);
 	if (Status != XST_SUCCESS) {
 		xil_printf("WDT Interrupt init Failed\r\n");
@@ -173,10 +181,10 @@ int Initialize_ISR(){
 //		return XST_FAILURE;
 //	}
 
-	/*
-	 * Start the Wdt device.
-	 */
-	XWdtPs_Start_RestartWdt();
+//	/*
+//	 * Start the Wdt device.
+//	 */
+//	XWdtPs_Start_RestartWdt();
 
 
 
@@ -245,7 +253,7 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	// b01	Active HIGH level sensitive
 	// b11 	Rising edge sensitive
 	// XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
-	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 8U, 0b11); // rising-edge
+	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x8, 0b11); // rising-edge
 	//XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
 
 	// Make the connection between the IntId of the interrupt source and the

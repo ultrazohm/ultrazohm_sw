@@ -24,3 +24,4 @@ Software Framework
     unit_tests/unit_tests
     assertions/assertions
     SystemTime/SystemTime
+    matrix/matrix_math

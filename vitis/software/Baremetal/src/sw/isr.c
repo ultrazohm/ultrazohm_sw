@@ -128,7 +128,7 @@ void ISR_Control(void *data)
 	// This has to be the last function executed in the ISR!
 	uz_SystemTime_ISR_Toc();
 
-	if ((uz_SystemTime_GetIsrExectionTimeInUs() * 1e-6) > Global_Data.ctrl.pwmPeriod){
+	if ((uz_SystemTime_GetIsrDirectExectionTimeInUs() * 1e-6) > Global_Data.ctrl.pwmPeriod){
 	      Xil_Assert(__FILE__, __LINE__);
 	}
 
@@ -157,7 +157,7 @@ int Initialize_ISR(){
 	/*
 	 * Call the WDT init to initialize, make a self test, and set timer to the given timeout
 	 */
-	xil_printf("#### 14 WDT Initializing!!!!!\r\n");
+	xil_printf("#### 16 WDT Initializing!!!!!\r\n");
 	Status = WdtPsIntrInit(0U);
 	if (Status != XST_SUCCESS) {
 		xil_printf("WDT Interrupt init Failed\r\n");

@@ -181,7 +181,7 @@ void uz_adcLtc2311_configure(uz_adcLtc2311_t* self);
  * 
  * @param self 
  */
-void uz_adcLtc2311_softwareReset(uz_adcLtc2311_t* self);
+void uz_adcLtc2311_software_reset(uz_adcLtc2311_t* self);
 
 /**
  * @brief Trigger the selected SPI Masters

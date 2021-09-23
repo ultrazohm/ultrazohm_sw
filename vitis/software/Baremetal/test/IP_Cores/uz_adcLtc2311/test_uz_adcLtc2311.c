@@ -466,7 +466,6 @@ void test_uz_adcLtc2311_update_spi(void)
     spi_cr_write = spi_cr_write & ~(UZ_ADCLTC2311_SPI_CR_CPHA);
     uz_adcLtc2311_hw_write_spi_cr_Expect(TEST_BASE_ADDRESS, spi_cr_write);
     uz_adcLtc2311_update_spi(instance);
-
 }
 
 #endif // TEST

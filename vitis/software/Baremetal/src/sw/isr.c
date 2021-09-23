@@ -55,6 +55,9 @@ float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
 
+
+int isr_failures = 0;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -107,7 +110,7 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge3DutyCycle);
 
 //	to trigger the out of time *and missing the next ISR
-//	uz_sleep_useconds(10);
+	uz_sleep_useconds(100);
 //	u32 ExpiredTimeDelta = 0U;
 //	while (1) {
 //		ExpiredTimeDelta++;
@@ -128,9 +131,13 @@ void ISR_Control(void *data)
 	// This has to be the last function executed in the ISR!
 	uz_SystemTime_ISR_Toc();
 
-	if ((uz_SystemTime_GetIsrDirectExectionTimeInUs() * 1e-6) > Global_Data.ctrl.pwmPeriod){
-	      Xil_Assert(__FILE__, __LINE__);
+	if ((uz_SystemTime_GetIsrDirectExectionTimeInUs() * 1e-6) > (Global_Data.ctrl.pwmPeriod)){
+		isr_failures++; //xil_printf("RPU: ERROR: ISR TO\r\n");// Xil_Assert(__FILE__, __LINE__);
 	}
+
+//	if (uz_SystemTime_GetIsrExectionTimeInUs() > uz_SystemTime_GetIsrPeriodInUs()){
+//		isr_failures++; //xil_printf("RPU: ERROR: ISR TO\r\n");// Xil_Assert(__FILE__, __LINE__);
+//	}
 
 //	XWdtPs_StopWdt() ;
 }
@@ -157,7 +164,7 @@ int Initialize_ISR(){
 	/*
 	 * Call the WDT init to initialize, make a self test, and set timer to the given timeout
 	 */
-	xil_printf("#### 16 WDT Initializing!!!!!\r\n");
+	xil_printf("#### 80 WDT Initializing!!!!!\r\n");
 	Status = WdtPsIntrInit(0U);
 	if (Status != XST_SUCCESS) {
 		xil_printf("WDT Interrupt init Failed\r\n");

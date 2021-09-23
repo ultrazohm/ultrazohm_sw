@@ -18,12 +18,12 @@ static size_t counter=0;
 uz_matrix_t *uz_matrix_init(float* data,size_t length_of_data, size_t rows, size_t columns)
 {
     uz_assert_not_NULL(data);
-    uz_assert_not_zero(rows);
-    uz_assert_not_zero(columns);
-    uz_assert(length_of_data == rows*columns);
+    uz_assert_not_zero_unsigned_int(rows);
+    uz_assert_not_zero_unsigned_int(columns);
+    uz_assert(length_of_data == (rows*columns));
     uz_assert(counter < UZ_MATRIX_MAX_INSTANCES);
     uz_matrix_t *self = &instances[counter];
-    counter += 1;
+    counter += 1U;
     self->is_ready = true;
     self->rows = rows;
     self->columns = columns;
@@ -61,7 +61,7 @@ void uz_matrix_elementwise_product(uz_matrix_t const*const A, uz_matrix_t const*
     {
         for (size_t column = 0; column < A->columns; column++)
         {
-            C_out->data[row * A->columns + column] = A->data[row * A->columns + column] * B->data[row * A->columns + column];
+            C_out->data[ (row * A->columns) + column] = A->data[(row * A->columns )+ column] * B->data[(row * A->columns) + column];
         }
     }
 }
@@ -72,7 +72,7 @@ float uz_matrix_get_element_zero_based(uz_matrix_t const*const A, size_t row, si
     uz_assert_true(A->is_ready);
     uz_assert(row <= A->rows);
     uz_assert(column <= A->columns);
-    return (A->data[row * A->columns + column]);
+    return (A->data[(row * A->columns)+ column]);
 }
 
 void uz_matrix_set_element_zero_based(uz_matrix_t *const A,float x,size_t row, size_t column)
@@ -81,7 +81,7 @@ void uz_matrix_set_element_zero_based(uz_matrix_t *const A,float x,size_t row, s
     uz_assert_true(A->is_ready);
     uz_assert(row <= A->rows);
     uz_assert(column <= A->columns);
-    A->data[row * A->columns + column]=x;
+    A->data[(row * A->columns) + column]=x;
 }
 
 void uz_matrix_sum(uz_matrix_t const*const A, uz_matrix_t const*const B, uz_matrix_t *const C_out)
@@ -101,7 +101,7 @@ void uz_matrix_sum(uz_matrix_t const*const A, uz_matrix_t const*const B, uz_matr
     {
         for (size_t column = 0; column < A->columns; column++)
         {
-            C_out->data[row * A->columns + column] = A->data[row * A->columns + column] + B->data[row * A->columns + column];
+            C_out->data[(row * A->columns )+ column] = A->data[(row * A->columns) + column] + B->data[(row * A->columns) + column];
         }
     }
 }
@@ -113,14 +113,14 @@ float uz_matrix_dot_product(uz_matrix_t const*const A, uz_matrix_t const*const B
     uz_assert(A->is_ready);
     uz_assert(B->is_ready);
     uz_assert(A->columns == B->columns);
-    uz_assert(A->rows == 1);
-    uz_assert(B->rows == 1);
-    float C = 0;
+    uz_assert(A->rows == 1U);
+    uz_assert(B->rows == 1U);
+    float C = 0.0f;
     for (size_t row = 0; row < A->rows; row++)
     {
         for (size_t column = 0; column < A->columns; column++)
         {
-            C += A->data[row * A->columns + column] * B->data[row * A->columns + column];
+            C += A->data[ (row * A->columns) + column] * B->data[ (row * A->columns) + column];
         }
     }
     return (C);
@@ -151,7 +151,7 @@ void uz_matrix_multiply(uz_matrix_t const *const A, uz_matrix_t const *const B, 
         {
             for (size_t k = 0; k < n; k++)
             {
-                C_out->data[p * i + j] += A->data[n * i + k] * B->data[p * k + j];
+                C_out->data[(p * i) + j] += A->data[(n * i) + k] * B->data[(p * k) + j];
             }
         }
     }
@@ -165,7 +165,7 @@ void uz_matrix_set_zero(uz_matrix_t *const A)
     {
         for (size_t column = 0; column < A->columns; column++)
         {
-            A->data[row * A->columns + column] = 0.0f;
+            A->data[(row * A->columns) + column] = 0.0f;
         }
     }
 }
@@ -181,7 +181,7 @@ void uz_matrix_add(uz_matrix_t const *const A, uz_matrix_t *const C_out){
     {
         for (size_t column = 0; column < A->columns; column++)
         {
-            C_out->data[row * A->columns + column] += A->data[row * A->columns + column];
+            C_out->data[(row * A->columns) + column] += A->data[(row * A->columns) + column];
         }
     }
 }

@@ -4,8 +4,6 @@
 matrix_multiply
 ===============
 
-.. doxygenfunction:: uz_matrix_multiply
-
 Matrix multiplication :math:`\boldsymbol{C}=\boldsymbol{A} \boldsymbol{B}` of the matrix :math:`\boldsymbol{A}` with dimension :math:`m \times n` and :math:`\boldsymbol{B}` with dimension :math:`n \times p` results in matrix :math:`\boldsymbol{C}` with dimension :math:`m \times p`.
 For matrix multiplication, the number of columns :math:`n` in :math:`\boldsymbol{A}` must be equal to the number of rows of matrix :math:`\boldsymbol{B}`.
 
@@ -15,13 +13,6 @@ For matrix multiplication, the number of columns :math:`n` in :math:`\boldsymbol
 
 .. math::
 
-    \begin{bmatrix}
-    c_{11} & c_{12} & \cdots & c_{1p} \\
-    c_{21} & c_{22} & \cdots & c_{2p} \\
-    \vdots & \vdots & \ddots & \vdots \\
-    c_{m1} & c_{m2} & \cdots & c_{mp}
-    \end{bmatrix}
-   =
     \begin{bmatrix}
    a_{11} & a_{12} & \cdots & a_{1n} \\
    a_{21} & a_{22} & \cdots & a_{2n} \\
@@ -34,6 +25,16 @@ For matrix multiplication, the number of columns :math:`n` in :math:`\boldsymbol
    \vdots & \vdots & \ddots & \vdots \\
    b_{n1} & b_{n2} & \cdots & b_{np}
    \end{bmatrix}
+   =
+   \begin{bmatrix}
+    c_{11} & c_{12} & \cdots & c_{1p} \\
+    c_{21} & c_{22} & \cdots & c_{2p} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    c_{m1} & c_{m2} & \cdots & c_{mp}
+    \end{bmatrix}
+
+.. doxygenfunction:: uz_matrix_multiply
+
 
 Example
 =======

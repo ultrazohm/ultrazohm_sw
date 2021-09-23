@@ -4,11 +4,13 @@
 uz_matrix_sum
 =============
 
-.. doxygenfunction:: uz_matrix_sum
 
 Calculates :math:`\boldsymbol{C}=\boldsymbol{A} + \boldsymbol{B}` if dimensions of :math:`\boldsymbol{A}`, :math:`\boldsymbol{B}` and :math:`\boldsymbol{C}` are equal.
 
 .. warning:: Do not call this function with A and B having the same pointer to prevent aliasing issues.
+
+.. doxygenfunction:: uz_matrix_sum
+
 
 Example
 -------

@@ -4,12 +4,13 @@
 add_to_matrix
 =============
 
-.. doxygenfunction:: uz_matrix_add
-
 Calculates :math:`\boldsymbol{C}= \boldsymbol{C} + \boldsymbol{A}` if dimensions of :math:`\boldsymbol{A}` and :math:`\boldsymbol{C}` are equal.
 
+.. doxygenfunction:: uz_matrix_add
+
+
 Example
--------
+=======
 
 .. math::
 

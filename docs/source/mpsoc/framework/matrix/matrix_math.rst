@@ -11,13 +11,21 @@ Matrix math
 
     *
 
-The matrix math functions provide an easy way to use matrixes.
+The matrix math software module provides an easy way to use matrixes.
+It uses an opaque data type ``uz_matrix_t`` that boxes important information about the matrix (e.g., number of rows and colums) together with the data.
+The module provides common functions, e.g., matrix multiplication, which are called with matrixes of the data type ``uz_matrix_t``, allowing error checking regarding dimensions.
+The module does not hold the data of the matrix internally but uses an pointer to the data instead.
+Therefore, the variable holding the data has to be initialized outside of the module.
+The number of matrix instances has to be configured in :ref:`global_configuration`.
 
+.. warning:: Take the `storage duration of variables <https://iso-9899.info/wiki/Storage_Duration>`_ into account that are pointed to in the the init function! Most of the time, use ``static`` storage duration.
+
+.. note:: The matrix software module has similarities to the :ref:`uz_array` module but features math functions instead of a box for arrays including their length for different data types.
 
 Matrix definition
 =================
 
-The following matrix definition is used:
+The following matrix definition with the number of columns :math:`n` and number of rows :math:`m` is used:
 
 .. math::
 
@@ -32,13 +40,13 @@ The following matrix definition is used:
     \end{bmatrix}
     \end{array}
     
-.. warning:: Keep in mind that in C everything is 0-indexed while the matrix definitions still use 1-based indexing to be consistent with common math convetions! Thus, :math:`a_{11}` is the element with index :math:`[0,0]` in c-code!
+.. note:: Keep in mind that in C everything is 0-indexed while the matrix definitions still use 1-based indexing to be consistent with common math convetions! Thus, :math:`a_{11}` is the element with index :math:`[0,0]` in c-code!
 
 Dimensions
-**********
+==========
 
-A pointer to the actual data has to be supplied as the first argument to ``uz_matrix_init``.
-The vector has to be of length :math:`m \times n`.
+A pointer to the actual data array has to be supplied as the first argument to ``uz_matrix_init``.
+The array has to be of length :math:`m \times n`.
 The dimension :math:`n` (``columns``) can be one to generate a column vector :math:`m \times 1`.
 
 .. math::
@@ -58,7 +66,9 @@ The dimension :math:`n` can be one to generate a row vector :math:`1 \times n`.
     x_{11} & x_{12} & \cdots & x_{1n}
     \end{bmatrix}
 
-Internally, the matrix is always stored as an array in the following way (zero indexing internally):
+The provided array is always an vector with :math:`m \times n` elements.
+The array is split up according to the provided dimensions.
+It is treated as an matrix in the following way (zero indexing internally):
 
 .. math::
 
@@ -79,7 +89,39 @@ Internally, the matrix is always stored as an array in the following way (zero i
     x_{6} & x_{7} & x_{8}
     \end{bmatrix}
 
+.. note:: Keep this in mind when initializing the data array or initialize all elements of the array to zero and use the set functions.
 
+
+Example
+=======
+
+Each matrix has to be initialized with ``uz_matrix_init``.
+To initialize the following :math:`3 \times 3` matrix:
+
+.. math::
+
+    \begin{bmatrix}
+    \color{red} 1 & \color{red} 2 & \color{red} 3\\
+    \color{blue} 4 & \color{blue} 5 &  \color{blue} 6\\
+    \color{green} 7 & \color{green} 8 & \color{green} 9
+    \end{bmatrix} = 
+    \begin{bmatrix}
+    \color{red} 1 & \color{red} 2 & \color{red} 3 &
+    \color{blue} 4 & \color{blue} 5 &  \color{blue} 6 &
+    \color{green} 7 & \color{green} 8 & \color{green} 9
+    \end{bmatrix} \\ 
+
+.. code-block:: c
+    :caption: Initialize a :math:`3 \times 3` matrix:
+
+    // declare data array static outside of a function to ensure static storage duration and file scope. 
+    static float mat[9]={1,2,3,4,5,6,7,8,9};
+
+    void uz_matrix_init_3_times_3_matrix(void){
+        int rows=3; // Row and columns can be automatic storage duration since they are not required after initialization (stored in the module)
+        int columns=3;
+        uz_matrix_t* my_matrix=uz_matrix_init(mat,UZ_MATRIX_SIZE(mat),rows,columns);
+    }
 
 Reference
 =========
@@ -92,13 +134,4 @@ Reference
 
 .. doxygenfunction:: uz_matrix_get_number_of_columns
 
-
-Example
-=======
-
-Each matrix has to be initialized with ``uz_matrix_init``:
-
-.. literalinclude:: ../../../../../vitis/software/Baremetal/test/uz/uz_matrix/test_uz_matrix.c
-   :lines: 1-
-   :linenos:
-   :language: c
+.. doxygenfunction:: uz_matrix_get_element_zero_based

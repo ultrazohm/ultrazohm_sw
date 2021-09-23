@@ -1,5 +1,6 @@
 #include "uz_FOC.h"
 #include "../uz_global_configuration.h"
+#if UZ_FOC_MAX_INSTANCES > 0
 typedef struct uz_FOC {
 	bool is_ready;
 	bool ext_clamping;
@@ -122,3 +123,5 @@ bool uz_FOC_get_ext_clamping(uz_FOC* self){
 	uz_assert(self->is_ready);
 	return(self->ext_clamping);
 }
+
+#endif

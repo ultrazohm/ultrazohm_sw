@@ -11,7 +11,13 @@ Matrix math
 
     *
 
-The matrix math functions use the matrix definition:
+The matrix math functions provide an easy way to use matrixes.
+
+
+Matrix definition
+=================
+
+The following matrix definition is used:
 
 .. math::
 
@@ -26,22 +32,7 @@ The matrix math functions use the matrix definition:
     \end{bmatrix}
     \end{array}
     
-.. warning:: Keep in mind that in C everything is 0-indexed
-
-
-uz_matrix_init
-==============
-
-.. doxygenfunction:: uz_matrix_init
-
-Each matrix has to be initialized with ``uz_matrix_init``:
-
-.. literalinclude:: ../../../../../vitis/software/Baremetal/test/uz/uz_matrix/test_uz_matrix.c
-   :lines: 1-
-   :linenos:
-   :language: c
-
-.. doxygentypedef:: uz_matrix_t
+.. warning:: Keep in mind that in C everything is 0-indexed while the matrix definitions still use 1-based indexing to be consistent with common math convetions! Thus, :math:`a_{11}` is the element with index :math:`[0,0]` in c-code!
 
 Dimensions
 **********
@@ -88,9 +79,26 @@ Internally, the matrix is always stored as an array in the following way (zero i
     x_{6} & x_{7} & x_{8}
     \end{bmatrix}
 
-Set & Get functions
-*******************
+
+
+Reference
+=========
+
+.. doxygentypedef:: uz_matrix_t
+
+.. doxygenfunction:: uz_matrix_init
 
 .. doxygenfunction:: uz_matrix_get_number_of_rows
 
 .. doxygenfunction:: uz_matrix_get_number_of_columns
+
+
+Example
+=======
+
+Each matrix has to be initialized with ``uz_matrix_init``:
+
+.. literalinclude:: ../../../../../vitis/software/Baremetal/test/uz/uz_matrix/test_uz_matrix.c
+   :lines: 1-
+   :linenos:
+   :language: c

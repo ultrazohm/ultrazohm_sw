@@ -135,3 +135,36 @@ Reference
 .. doxygenfunction:: uz_matrix_get_number_of_columns
 
 .. doxygenfunction:: uz_matrix_get_element_zero_based
+
+
+Performance estimation
+======================
+
+The following performance is measured when the functions are called in the, expect for the test code and ``uz_SystemTime_ISR_Tic()`` functions, empty ISR of the R5.
+
+.. code-block:: c
+    :caption: Test code for performance estimation
+
+    void ISR_Control(void *data)
+    {
+    	uz_SystemTime_ISR_Tic();
+    	for(size_t i=0U;i<10;i++){
+    		function_under_test(A,B,C ); //
+    	}
+    	uz_SystemTime_ISR_Toc();
+    }
+ 
+Testing is conducted with compiler optimization set to -O2.
+
+- Empty ISR: 2.7 us
+- Add a 3x3 matrix, code executed 10 times: 5.5 us
+- elementwise_product of two 10x10 matrix, code executed 10 times: 18 us
+- matrix_multiply 10x10 matrix, code executed 1 time: 23 us
+- matrix_multiply 3x3 matrix, code executed 10 times: 14 us
+- matrix_multiply 10x10 matrix with double data type (not implemented in the software module!), code executed 1 time: 52.8 us
+
+Rough estimation:
+
+- Adding a 3x3 matrix takes 0.3 us
+- Multiplication of a 3x3 matrix takes 1us, of a 10x10 matrix 12 us.
+- Multiplication of a 10x10 matrix takes 12 us.

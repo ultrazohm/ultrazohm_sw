@@ -197,4 +197,22 @@ void uz_matrix_add(uz_matrix_t const *const A, uz_matrix_t *const C_out){
         }
     }
 }
+
+
+void uz_matrix_add_scalar(uz_matrix_t *const A, float scalar){
+    uz_assert_not_NULL(A);
+    uz_assert(A->is_ready);
+    for (size_t i=0;i < (A->rows*A->columns);i++){
+        A->data[i] += scalar;
+    }
+}
+
+void uz_matrix_multiply_by_scalar(uz_matrix_t *const A, float scalar){
+    uz_assert_not_NULL(A);
+    uz_assert(A->is_ready);
+    for (size_t i=0;i < (A->rows*A->columns);i++){
+        A->data[i] = A->data[i] * scalar;
+    }
+}
+
 #endif

@@ -118,4 +118,20 @@ void uz_matrix_sum(uz_matrix_t const*const A, uz_matrix_t const*const B, uz_matr
  */
 void uz_matrix_add(uz_matrix_t const*const A, uz_matrix_t *const C_out);
 
+/**
+ * @brief Adds a scalar to all elements of the matrix A
+ * 
+ * @param A 
+ * @param scalar 
+ */
+void uz_matrix_add_scalar(uz_matrix_t *const A, float scalar);
+
+/**
+ * @brief Multiplies all elements of the matrix A by a scalar
+ * 
+ * @param A 
+ * @param scalar 
+ */
+void uz_matrix_multiply_by_scalar(uz_matrix_t *const A, float scalar);
+
 #endif // UZ_MATRIX_H

@@ -139,6 +139,10 @@ Reference
 
 .. doxygenfunction:: uz_matrix_set_element_zero_based
 
+.. doxygenfunction:: uz_matrix_add_scalar
+
+.. doxygenfunction:: uz_matrix_multiply_by_scalar
+
 
 Performance estimation
 ======================

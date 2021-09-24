@@ -78,9 +78,3 @@ Example
        TEST_ASSERT_EQUAL_FLOAT(58,get_matrix_element_zero_based(C,2,0) );
        TEST_ASSERT_EQUAL_FLOAT(35,get_matrix_element_zero_based(C,2,1) );
    }
-
-
-.. literalinclude:: ../../../../../vitis/software/Baremetal/test/uz/uz_matrix/test_uz_matrix_matrix_multiply.c
-   :lines: 1-
-   :linenos:
-   :language: c

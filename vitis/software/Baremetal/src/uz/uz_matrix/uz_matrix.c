@@ -12,8 +12,19 @@ struct uz_matrix_t
     float *data;
 };
 
-static uz_matrix_t instances[UZ_MATRIX_MAX_INSTANCES] = {0};
-static size_t counter=0;
+static size_t instance_counter = 0U;
+static uz_matrix_t instances[UZ_MATRIX_MAX_INSTANCES] = { 0 };
+
+static uz_matrix_t* uz_matrix_allocation(void);
+
+static uz_matrix_t* uz_matrix_allocation(void){
+    uz_assert(instance_counter < UZ_MATRIX_MAX_INSTANCES);
+    uz_matrix_t* self = &instances[instance_counter];
+    uz_assert_false(self->is_ready);
+    instance_counter++;
+    self->is_ready = true;
+    return (self);
+}
 
 uz_matrix_t *uz_matrix_init(float* data,size_t length_of_data, size_t rows, size_t columns)
 {
@@ -21,9 +32,7 @@ uz_matrix_t *uz_matrix_init(float* data,size_t length_of_data, size_t rows, size
     uz_assert_not_zero_unsigned_int(rows);
     uz_assert_not_zero_unsigned_int(columns);
     uz_assert(length_of_data == (rows*columns));
-    uz_assert(counter < UZ_MATRIX_MAX_INSTANCES);
-    uz_matrix_t *self = &instances[counter];
-    counter += 1U;
+    uz_matrix_t *self = uz_matrix_allocation();
     self->is_ready = true;
     self->rows = rows;
     self->columns = columns;
@@ -69,7 +78,7 @@ void uz_matrix_elementwise_product(uz_matrix_t const*const A, uz_matrix_t const*
 float uz_matrix_get_element_zero_based(uz_matrix_t const*const A, size_t row, size_t column)
 {
     uz_assert_not_NULL(A);
-    uz_assert_true(A->is_ready);
+    uz_assert(A->is_ready);
     uz_assert(row <= A->rows);
     uz_assert(column <= A->columns);
     return (A->data[(row * A->columns)+ column]);
@@ -78,7 +87,7 @@ float uz_matrix_get_element_zero_based(uz_matrix_t const*const A, size_t row, si
 void uz_matrix_set_element_zero_based(uz_matrix_t *const A,float x,size_t row, size_t column)
 {
     uz_assert_not_NULL(A);
-    uz_assert_true(A->is_ready);
+    uz_assert(A->is_ready);
     uz_assert(row <= A->rows);
     uz_assert(column <= A->columns);
     A->data[(row * A->columns) + column]=x;
@@ -131,6 +140,9 @@ void uz_matrix_multiply(uz_matrix_t const *const A, uz_matrix_t const *const B, 
     uz_assert_not_NULL(A);
     uz_assert_not_NULL(B);
     uz_assert_not_NULL(C_out);
+    uz_assert(A->is_ready);
+    uz_assert(B->is_ready);
+    uz_assert(C->is_ready);
     // C= A * B
     // number of columns in A must b equal to rows of B
     uz_assert(A->columns == B->rows);
@@ -160,7 +172,7 @@ void uz_matrix_multiply(uz_matrix_t const *const A, uz_matrix_t const *const B, 
 void uz_matrix_set_zero(uz_matrix_t *const A)
 {
     uz_assert_not_NULL(A);
-    uz_assert_true(A->is_ready);
+    uz_assert(A->is_ready);
     for (size_t row = 0; row < A->rows; row++)
     {
         for (size_t column = 0; column < A->columns; column++)

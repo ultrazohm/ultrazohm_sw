@@ -62,7 +62,17 @@ void uz_matrix_set_zero(uz_matrix_t * const A);
  */
 float uz_matrix_get_element_zero_based(uz_matrix_t const*const A,size_t row, size_t column);
 
+/**
+ * @brief Set the element row x column of matrix A with zero based indexing.
+ * 
+ * @param A Matrix object
+ * @param x Value that the element is set to
+ * @param row Row of element to set
+ * @param column Column of element to set
+ */
 void uz_matrix_set_element_zero_based(uz_matrix_t *const A,float x,size_t row, size_t column);
+
+
 /**
  * @brief Calculates the "real" matrix multiplication C_out=A * B
  * 
@@ -82,8 +92,8 @@ void uz_matrix_multiply(uz_matrix_t const*const A, uz_matrix_t const*const B, uz
 void uz_matrix_elementwise_product(uz_matrix_t const*const A, uz_matrix_t const*const B, uz_matrix_t* const C_out);
 
 /**
- * @brief Calculates the dot product (scalar product) of the vectors A and B.
- *        A and B can be row or column vectors, but one dimension of A and B has to be 1.
+ * @brief Calculates the dot product (scalar product) of the column vectors A and B.
+ *        Rows of A and B have to be 1 and the column dimension mus be equal.
  * 
  * @param A Column or row vector
  * @param B Column or row vector

@@ -11,9 +11,9 @@ Matrix math
 
     *
 
-The matrix math software module provides an easy way to use matrixes.
+The matrix math software module provides an easy way to use matrices.
 It uses an opaque data type ``uz_matrix_t`` that boxes important information about the matrix (e.g., number of rows and colums) together with the data.
-The module provides common functions, e.g., matrix multiplication, which are called with matrixes of the data type ``uz_matrix_t``, allowing error checking regarding dimensions.
+The module provides common functions, e.g., matrix multiplication, which are called with matrices of the data type ``uz_matrix_t``, allowing error checking regarding dimensions.
 The module does not hold the data of the matrix internally but uses an pointer to the data instead.
 Therefore, the variable holding the data has to be initialized outside of the module.
 The number of matrix instances has to be configured in :ref:`global_configuration`.
@@ -76,13 +76,14 @@ It is treated as an matrix in the following way (zero indexing internally):
     \color{red} x_{11} & \color{red} x_{12} & \color{red} x_{13}\\
     \color{blue} x_{21} & \color{blue} x_{22} &  \color{blue} x_{23}\\
     \color{green} x_{31} & \color{green} x_{32} & \color{green} x_{33}
-    \end{bmatrix} = 
+    \end{bmatrix} 
+    &= 
     \begin{bmatrix}
     \color{red} x_{11} & \color{red} x_{12} & \color{red} x_{13} &
     \color{blue} x_{21} & \color{blue} x_{22} &  \color{blue} x_{23} &
     \color{green} x_{31} & \color{green} x_{32} & \color{green} x_{33}
     \end{bmatrix} \\ 
-    =
+    &=
     \begin{bmatrix}
     x_{0} & x_{1} & x_{2} &
     x_{3} & x_{4} & x_{5} &
@@ -135,6 +136,8 @@ Reference
 .. doxygenfunction:: uz_matrix_get_number_of_columns
 
 .. doxygenfunction:: uz_matrix_get_element_zero_based
+
+.. doxygenfunction:: uz_matrix_set_element_zero_based
 
 
 Performance estimation

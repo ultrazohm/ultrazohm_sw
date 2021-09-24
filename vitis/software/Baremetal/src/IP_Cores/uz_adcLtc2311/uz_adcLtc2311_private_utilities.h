@@ -18,3 +18,5 @@ void uz_adcLtc2311_spi_reset_sclk(uint32_t base_address);
 uint32_t uz_adcLtc2311_get_base_address(uz_adcLtc2311_t* self);
 int32_t uz_adcLtc2311_disable_manual_mode(uint32_t base_address, uint32_t max_attempts);
 int32_t uz_adcLtc2311_all_masked_bits_set_in_value(uint32_t value, uint32_t mask);
+
+void uz_adcLtc2311_init_set_parameters(uz_adcLtc2311_t* self);

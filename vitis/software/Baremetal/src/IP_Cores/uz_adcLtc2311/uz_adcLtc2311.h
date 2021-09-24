@@ -169,13 +169,6 @@ struct uz_adcLtc2311_config_t{
 uz_adcLtc2311_t* uz_adcLtc2311_init(struct uz_adcLtc2311_config_t config);
 
 /**
- * @brief Configures the IP cores with the parameters in the self struct
- * 
- * @param self Configuration values for the IP-Core
- */
-void uz_adcLtc2311_configure(uz_adcLtc2311_t* self);
-
-/**
  * @brief Reset the IP core. This function has the same effect as applying a low pulse to the
  * RESET_N pin of the IP core.
  * 
@@ -250,6 +243,7 @@ void uz_adcLtc2311_set_cpol(uz_adcLtc2311_t* self, uint32_t value);
 
 
 // get functions
+uint32_t uz_adcLtc2311_get_error_code(uz_adcLtc2311_t* self);
 
 // operation parameters
 uint32_t uz_adcLtc2311_get_master_select(uz_adcLtc2311_t* self);

@@ -30,14 +30,14 @@ uz_adcLtc2311_t* uz_adcLtc2311_init(struct uz_adcLtc2311_config_t config) {
     uz_adcLtc2311_t* self = uz_adcLtc2311_allocation();
     uz_assert_not_zero(config.ip_clk_frequency_Hz);
     uz_assert_not_zero(config.base_address);
-    self->config=config;
+    uz_assert(config.napping_spi_masters == 0);
+    uz_assert(config.sleeping_spi_masters == 0);
+    uz_assert(config.conversion_factor != 0);
+    uz_assert(config.cpol != 0);
+    uz_assert(config.cpha == 0);
+    uz_assert(config.samples > 0);
+    uz_adcLtc2311_init_set_parameters(self);
     return (self);
-}
-
-void uz_adcLtc2311_configure(uz_adcLtc2311_t* self)
-{
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
 }
 
 void uz_adcLtc2311_software_reset(uz_adcLtc2311_t* self)
@@ -298,6 +298,13 @@ uint32_t uz_adcLtc2311_get_base_address(uz_adcLtc2311_t* self)
     return(self->config.base_address);
 }
 
+uint32_t uz_adcLtc2311_get_error_code(uz_adcLtc2311_t* self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return(self->config.error_code);
+}
+
 // update functions
 
 int32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self)
@@ -532,7 +539,7 @@ int32_t uz_adcLtc2311_leave_nap_mode(uz_adcLtc2311_t* self)
     // Check if the selected masters are in nap mode
     else
     {
-        return_value = uz_adcLtc2311_all_masked_bits_set_in_value(self->config.napping_spi_masters, self->config.sleeping_spi_masters);
+        return_value = uz_adcLtc2311_all_masked_bits_set_in_value(self->config.napping_spi_masters, self->config.master_select);
         if (return_value == UZ_FAILURE)
         {
             self->config.error_code |= UZ_ADCLTC2311_NS_NOT_IN_MODE;
@@ -550,10 +557,10 @@ int32_t uz_adcLtc2311_leave_nap_mode(uz_adcLtc2311_t* self)
                 uz_adcLtc2311_spi_reset_sclk(self->config.base_address);
                 uz_adcLtc2311_spi_set_sclk(self->config.base_address);
 
-                // capture, which masters entered nap mode
+                // capture, which masters left nap mode
                 self->config.napping_spi_masters &= ~self->config.master_select;
 
-                // signal the hardware that the selected channels are not available
+                // signal the hardware that the selected channels are available
                 uint32_t adc_available = uz_adcLtc2311_hw_read_adc_available(self->config.base_address);
                 adc_available |= self->config.master_select;
                 uz_adcLtc2311_hw_write_adc_available(self->config.base_address, adc_available);
@@ -578,6 +585,52 @@ int32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self)
     int32_t return_value = UZ_SUCCESS;
     self->config.error_code = 0;
 
+    // Check if masters have been selected for the operation
+    if (self->config.master_select == 0)
+    {
+        return_value = UZ_FAILURE;
+        self->config.error_code |= UZ_ADCLTC2311_NS_NO_SELECTION;
+    }
+    // Check if the selected masters are already in nap or sleep mode
+    else if ((self->config.master_select & self->config.napping_spi_masters) || 
+    (self->config.master_select & self->config.sleeping_spi_masters))
+    {
+        return_value = UZ_FAILURE;
+        self->config.error_code |= UZ_ADCLTC2311_NS_ALREADY_IN_MODE;
+    }
+    else
+    {
+        return_value = uz_adcLtc2311_prepare_manual_operation(self);
+        if(return_value == UZ_FAILURE)
+        {
+            self->config.error_code |= UZ_ADCLTC2311_NS_MAN_MODE_EN_FAILED;
+        }
+        else
+        {
+            // perform the hardware action to send the LTC2311 to sleep mode
+            for (uint32_t i = 0; i < UZ_ADCLTC2311_SLEEP_PULSES; i++) 
+            {
+				uz_adcLtc2311_spi_set_ss_n(self->config.base_address);
+                uz_adcLtc2311_spi_reset_ss_n(self->config.base_address);
+			}
+			uz_adcLtc2311_spi_set_ss_n(self->config.base_address);
+
+            // capture, which masters entered sleep mode
+			self->config.sleeping_spi_masters |= self->config.master_select;
+
+            // signal the hardware that the selected channels are not available
+            uint32_t adc_available = uz_adcLtc2311_hw_read_adc_available(self->config.base_address);
+            adc_available &= ~(self->config.master_select);
+            uz_adcLtc2311_hw_write_adc_available(self->config.base_address, adc_available);
+
+            // Disable manual mode
+            return_value = uz_adcLtc2311_disable_manual_mode(self->config.base_address, self->config.max_attempts);
+            if (return_value == UZ_FAILURE)
+            {
+                self->config.error_code |= UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED;
+            }
+        }
+    }
     return(return_value);
 }
 
@@ -588,6 +641,56 @@ int32_t uz_adcLtc2311_leave_sleep_mode(uz_adcLtc2311_t* self)
     int32_t return_value = UZ_SUCCESS;
     self->config.error_code = 0;
 
+    // Check if masters have been selected for the operation
+    if (self->config.master_select == 0)
+    {
+        return_value = UZ_FAILURE;
+        self->config.error_code |= UZ_ADCLTC2311_NS_NO_SELECTION;
+    }
+    // Check if the selected master are not in nap mode
+    else if (self->config.master_select & self->config.napping_spi_masters)
+    {
+        return_value = UZ_FAILURE;
+        self->config.error_code |= UZ_ADCLTC2311_NS_NOT_IN_MODE;
+    }
+    // Check if the selected masters are in sleep mode
+    else
+    {
+        return_value = uz_adcLtc2311_all_masked_bits_set_in_value(self->config.sleeping_spi_masters, self->config.master_select);
+        if (return_value == UZ_FAILURE)
+        {
+            self->config.error_code |= UZ_ADCLTC2311_NS_NOT_IN_MODE;
+        }
+        else
+        {
+            return_value = uz_adcLtc2311_prepare_manual_operation(self);
+            if (return_value == UZ_FAILURE)
+            {
+                self->config.error_code |= UZ_ADCLTC2311_NS_MAN_MODE_EN_FAILED;
+            }
+            else
+            {
+                // perform the hardware action to wake the LTC2311 from nap mode
+                uz_adcLtc2311_spi_reset_ss_n(self->config.base_address);
+                uz_adcLtc2311_spi_set_ss_n(self->config.base_address);
+
+                // capture, which masters left sleep mode
+                self->config.sleeping_spi_masters &= ~self->config.master_select;
+
+                // signal the hardware that the selected channels are available
+                uint32_t adc_available = uz_adcLtc2311_hw_read_adc_available(self->config.base_address);
+                adc_available |= self->config.master_select;
+                uz_adcLtc2311_hw_write_adc_available(self->config.base_address, adc_available);
+
+                // Disable manual mode
+                return_value = uz_adcLtc2311_disable_manual_mode(self->config.base_address, self->config.max_attempts);
+                if (return_value == UZ_FAILURE)
+                {
+                    self->config.error_code |= UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED;
+                }
+            }
+        }
+    }
     return(return_value);
 }
 

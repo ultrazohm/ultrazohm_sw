@@ -31,7 +31,6 @@ void test_uz_matrix_dot_product_two_row_vectors(void){
     uz_matrix_t* A=uz_matrix_init(A_data,UZ_MATRIX_SIZE(A_data),rows, columns );
     uz_matrix_t* B=uz_matrix_init(B_data,UZ_MATRIX_SIZE(B_data),rows, columns );
     TEST_ASSERT_FAIL_ASSERT(uz_matrix_dot_product(A,B));
-    TEST_ASSERT_EQUAL_FLOAT(30,C);
 }
 
 void test_uz_matrix_dot_product_wrong_dimensions(void){

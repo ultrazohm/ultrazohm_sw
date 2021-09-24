@@ -142,7 +142,7 @@ void uz_matrix_multiply(uz_matrix_t const *const A, uz_matrix_t const *const B, 
     uz_assert_not_NULL(C_out);
     uz_assert(A->is_ready);
     uz_assert(B->is_ready);
-    uz_assert(C->is_ready);
+    uz_assert(C_out->is_ready);
     // C= A * B
     // number of columns in A must b equal to rows of B
     uz_assert(A->columns == B->rows);

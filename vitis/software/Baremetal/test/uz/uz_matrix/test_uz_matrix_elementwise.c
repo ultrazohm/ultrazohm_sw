@@ -12,7 +12,7 @@ void tearDown(void)
 {
 }
 
-void test_uz_matrix_vector_elementwise_multiplication_1_times_3(void){
+void test_uz_matrix_vector_elementwise_multiplication_3_times_1(void){
     int rows=3;
     int columns=1;
     float A_data[3]={1,2,3};
@@ -48,8 +48,8 @@ void test_uz_matrix_matrix_elementwise_multiplication_2_times_2(void){
 }
 
 void test_uz_matrix_matrix_elementwise_multiplication_1_times_4(void){
-    int rows=4;
-    int columns=1;
+    int rows=1;
+    int columns=4;
     float A_data[4]={1,2,3,4};
     float B_data[4]={1,2,3,4};
     float C_data[4]={21345};
@@ -59,9 +59,9 @@ void test_uz_matrix_matrix_elementwise_multiplication_1_times_4(void){
     // C=A .* B
     uz_matrix_elementwise_product(A,B, C);
     TEST_ASSERT_EQUAL_FLOAT(1, uz_matrix_get_element_zero_based(C,0,0) );
-    TEST_ASSERT_EQUAL_FLOAT(4, uz_matrix_get_element_zero_based(C,1,0) );
-    TEST_ASSERT_EQUAL_FLOAT(9, uz_matrix_get_element_zero_based(C,2,0) );
-    TEST_ASSERT_EQUAL_FLOAT(16,uz_matrix_get_element_zero_based(C,3,0) );
+    TEST_ASSERT_EQUAL_FLOAT(4, uz_matrix_get_element_zero_based(C,0,1) );
+    TEST_ASSERT_EQUAL_FLOAT(9, uz_matrix_get_element_zero_based(C,0,2) );
+    TEST_ASSERT_EQUAL_FLOAT(16,uz_matrix_get_element_zero_based(C,0,3) );
 }
 
 #endif // TEST

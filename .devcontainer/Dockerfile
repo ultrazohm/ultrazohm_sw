@@ -13,6 +13,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
                                                   texlive-latex-extra \
                                                   texlive-pictures \
                                                   texlive-science \
+                                                  pdf2svg \
                                                   ghostscript \
                                                   git-lfs \
                                                   doxygen

@@ -197,6 +197,7 @@ int32_t uz_adcLtc2311_all_masked_bits_set_in_value(uint32_t value, uint32_t mask
 void uz_adcLtc2311_init_set_parameters(uz_adcLtc2311_t* self)
 {
     int32_t return_value = UZ_SUCCESS;
+    uz_adcLtc2311_set_triggered_mode(self);
     return_value = uz_adcLtc2311_update_conversion_factor(self);
     uz_assert(return_value == UZ_SUCCESS);
     return_value = uz_adcLtc2311_update_offset(self);
@@ -206,5 +207,4 @@ void uz_adcLtc2311_init_set_parameters(uz_adcLtc2311_t* self)
     return_value = uz_adcLtc2311_update_sample_time(self);
     uz_assert(return_value == UZ_SUCCESS);
     uz_adcLtc2311_update_spi(self);
-    /* uz_adcLtc2311_set_triggered_mode(self); */
 }

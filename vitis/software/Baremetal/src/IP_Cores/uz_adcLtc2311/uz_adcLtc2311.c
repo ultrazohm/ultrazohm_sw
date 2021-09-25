@@ -671,7 +671,7 @@ int32_t uz_adcLtc2311_leave_sleep_mode(uz_adcLtc2311_t* self)
             }
             else
             {
-                // perform the hardware action to wake the LTC2311 from nap mode
+                // perform the hardware action to wake the LTC2311 from sleep mode
                 uz_adcLtc2311_spi_reset_ss_n(self->config.base_address);
                 uz_adcLtc2311_spi_set_ss_n(self->config.base_address);
 

@@ -27,11 +27,11 @@ void tearDown(void)
  * The functions set up expects for specific operations. the expect_ functions may
  * be called for different use cases
  * 
- * Example: The init function as well as the update_conversion_factor function needs
+ * Example: The uz_adcLtc2311_init(...) function as well as the update_conversion_factor(...) function needs
  * expects for a successfull update of the conversion factor
  * -> the function expect_update_conversion_factor_success(...) is called in both functions
- * The expect_ functions only setup expects they do not have access to the instance
- * HW registers are always given as pointers and they are updated by the expect_functions
+ * The expect_ functions only set up expects they do not have access to the instance
+ * HW registers are always given as pointers and they are updated by the expect_ functions
  */
 
 void expect_set_ss_n(uint32_t* spi_cr_content);
@@ -420,6 +420,31 @@ void test_uz_adcLtc2311_update_spi(void)
     uz_adcLtc2311_update_spi(instance);
 }
 
+void test_uz_adcLtc2311_software_trigger_success(void)
+{
+    uint32_t cr_content = 0x0;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
+    uz_adcLtc2311_t* instance = successfull_init();
+
+    // test software trigger with direct channel indication
+    uz_adcLtc2311_hw_write_master_channel_Expect(TEST_BASE_ADDRESS, master);
+    uz_adcLtc2311_hw_read_cr_ExpectAndReturn(TEST_BASE_ADDRESS, cr_content);
+    cr_content |= UZ_ADCLTC2311_CR_TRIGGER;
+    uz_adcLtc2311_hw_write_cr_Expect(TEST_BASE_ADDRESS, cr_content);
+    // reset bit by HW
+    cr_content &= ~UZ_ADCLTC2311_CR_TRIGGER;
+    uz_adcLtc2311_software_trigger(instance, master);
+
+    // test software trigger with indirect channel indication
+    master = UZ_ADCLTC2311_MASTER10;
+    uz_adcLtc2311_set_master_select(instance, master);
+    uz_adcLtc2311_hw_write_master_channel_Expect(TEST_BASE_ADDRESS, master);
+    uz_adcLtc2311_hw_read_cr_ExpectAndReturn(TEST_BASE_ADDRESS, cr_content);
+    cr_content |= UZ_ADCLTC2311_CR_TRIGGER;
+    uz_adcLtc2311_hw_write_cr_Expect(TEST_BASE_ADDRESS, cr_content);
+    uz_adcLtc2311_software_trigger(instance, 0);
+}
+
 // tests for nap mode
 
 void test_uz_adcLtc2311_enter_nap_mode_success(void)
@@ -431,7 +456,7 @@ void test_uz_adcLtc2311_enter_nap_mode_success(void)
     uint32_t adc_available_content = gen_uint32_all_bits_set();
 
     uz_adcLtc2311_t* instance = successfull_init();
-
+    uz_adcLtc2311_set_master_select(instance, master);
     expect_enter_nap_mode_success(&spi_cr_content, &cr_content, &adc_available_content, master);
 
     return_value = uz_adcLtc2311_enter_nap_mode(instance);
@@ -482,6 +507,196 @@ void test_uz_adcLtc2311_enter_nap_mode_master_already_in_nap_mode(void)
     TEST_ASSERT_EQUAL(master, uz_adcLtc2311_get_napping_masters(instance));
 }
 
+void test_uz_adcLtc2311_leave_nap_mode_success(void)
+{
+    int32_t return_value = UZ_FAILURE;
+    uint32_t cr_content = 0;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
+    uint32_t spi_cr_content = UZ_ADCLTC2311_SPI_CR_CPOL;
+    uint32_t adc_available_content = gen_uint32_all_bits_set();
+
+    uz_adcLtc2311_t* instance = successfull_init();
+    uz_adcLtc2311_set_master_select(instance, master);
+    expect_enter_nap_mode_success(&spi_cr_content, &cr_content, &adc_available_content, master);
+
+    return_value = uz_adcLtc2311_enter_nap_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_SUCCESS, return_value);
+    TEST_ASSERT_EQUAL(master, uz_adcLtc2311_get_napping_masters(instance));
+
+    // leave nap mode
+    expect_prepare_manual_operation_success(&spi_cr_content, &cr_content, master);
+    expect_reset_sclk(&spi_cr_content);
+    expect_set_sclk(&spi_cr_content);
+
+    expect_adc_available(&adc_available_content, master);
+    expect_disable_manual_mode_success(&spi_cr_content);
+
+    return_value = uz_adcLtc2311_leave_nap_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_SUCCESS, return_value);
+    TEST_ASSERT_EQUAL(0, uz_adcLtc2311_get_napping_masters(instance));
+}
+
+void test_uz_adcLtc2311_leave_nap_mode_master_not_in_nap_mode(void)
+{
+    int32_t return_value = UZ_FAILURE;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
+
+    uz_adcLtc2311_t* instance = successfull_init();
+    uz_adcLtc2311_set_master_select(instance, master);
+    
+    return_value = uz_adcLtc2311_leave_nap_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_FAILURE, return_value);
+    TEST_ASSERT_EQUAL(UZ_ADCLTC2311_NS_NOT_IN_MODE, uz_adcLtc2311_get_error_code(instance));
+}
+
+void test_uz_adcLtc2311_enter_sleep_mode_success(void)
+{
+    int32_t return_value = UZ_FAILURE;
+    uint32_t cr_content = 0;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
+    uint32_t spi_cr_content = UZ_ADCLTC2311_SPI_CR_CPOL;
+    uint32_t adc_available_content = gen_uint32_all_bits_set();
+
+    uz_adcLtc2311_t* instance = successfull_init();
+    uz_adcLtc2311_set_master_select(instance, master);
+    expect_enter_sleep_mode_success(&spi_cr_content, &cr_content, &adc_available_content, master);
+
+    return_value = uz_adcLtc2311_enter_sleep_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_SUCCESS, return_value);
+    TEST_ASSERT_EQUAL(master, uz_adcLtc2311_get_sleeping_masters(instance));
+
+    // try to send another channel to sleep mode. This should work and both channels should be in sleep mode
+    master = UZ_ADCLTC2311_MASTER2;
+    uz_adcLtc2311_set_master_select(instance, master);
+    expect_enter_sleep_mode_success(&spi_cr_content, &cr_content, &adc_available_content, master);
+    return_value = uz_adcLtc2311_enter_sleep_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_SUCCESS, return_value);
+    TEST_ASSERT_EQUAL(master | UZ_ADCLTC2311_MASTER1, uz_adcLtc2311_get_sleeping_masters(instance));
+}
+
+void test_uz_adcLtc2311_enter_sleep_mode_no_master_selected(void)
+{
+    int32_t return_value = UZ_SUCCESS;
+    uz_adcLtc2311_t* instance = successfull_init();
+
+    uz_adcLtc2311_set_master_select(instance, 0);
+    return_value = uz_adcLtc2311_enter_sleep_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_FAILURE, return_value);
+    TEST_ASSERT_EQUAL(UZ_ADCLTC2311_NS_NO_SELECTION, uz_adcLtc2311_get_error_code(instance));
+}
+
+void test_uz_adcLtc2311_enter_sleep_mode_master_already_in_sleep_mode(void)
+{
+    int32_t return_value = UZ_FAILURE;
+    uint32_t cr_content = 0;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
+    uint32_t spi_cr_content = UZ_ADCLTC2311_SPI_CR_CPOL;
+    uint32_t adc_available_content = gen_uint32_all_bits_set();
+
+    uz_adcLtc2311_t* instance = successfull_init();
+
+    uz_adcLtc2311_set_master_select(instance, master);
+    expect_enter_sleep_mode_success(&spi_cr_content, &cr_content, &adc_available_content, master);
+
+    return_value = uz_adcLtc2311_enter_sleep_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_SUCCESS, return_value);
+    TEST_ASSERT_EQUAL(master, uz_adcLtc2311_get_sleeping_masters(instance));
+
+    // try to send the same channel again to sleep mode. This should fail
+    return_value = uz_adcLtc2311_enter_sleep_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_FAILURE, return_value);
+    TEST_ASSERT_EQUAL(UZ_ADCLTC2311_NS_ALREADY_IN_MODE, uz_adcLtc2311_get_error_code(instance));
+    TEST_ASSERT_EQUAL(master, uz_adcLtc2311_get_sleeping_masters(instance));
+}
+
+void test_uz_adcLtc2311_leave_sleep_mode_success(void)
+{
+    int32_t return_value = UZ_FAILURE;
+    uint32_t cr_content = 0;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
+    uint32_t spi_cr_content = UZ_ADCLTC2311_SPI_CR_CPOL;
+    uint32_t adc_available_content = gen_uint32_all_bits_set();
+
+    uz_adcLtc2311_t* instance = successfull_init();
+    uz_adcLtc2311_set_master_select(instance, master);
+    expect_enter_sleep_mode_success(&spi_cr_content, &cr_content, &adc_available_content, master);
+
+    return_value = uz_adcLtc2311_enter_sleep_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_SUCCESS, return_value);
+    TEST_ASSERT_EQUAL(master, uz_adcLtc2311_get_sleeping_masters(instance));
+
+    // leave nap mode
+    expect_prepare_manual_operation_success(&spi_cr_content, &cr_content, master);
+    expect_reset_ss_n(&spi_cr_content);
+    expect_set_ss_n(&spi_cr_content);
+
+    expect_adc_available(&adc_available_content, master);
+    expect_disable_manual_mode_success(&spi_cr_content);
+
+    return_value = uz_adcLtc2311_leave_sleep_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_SUCCESS, return_value);
+    TEST_ASSERT_EQUAL(0, uz_adcLtc2311_get_napping_masters(instance));
+}
+
+void test_uz_adcLtc2311_leave_sleep_mode_master_not_in_sleep_mode(void)
+{
+    int32_t return_value = UZ_FAILURE;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
+
+    uz_adcLtc2311_t* instance = successfull_init();
+    uz_adcLtc2311_set_master_select(instance, master);
+    
+    return_value = uz_adcLtc2311_leave_sleep_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_FAILURE, return_value);
+    TEST_ASSERT_EQUAL(UZ_ADCLTC2311_NS_NOT_IN_MODE, uz_adcLtc2311_get_error_code(instance));
+}
+
+void test_uz_adcLtc2311_enter_nap_mode_master_in_sleep(void)
+{
+    int32_t return_value = UZ_FAILURE;
+    uint32_t cr_content = 0;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
+    uint32_t spi_cr_content = UZ_ADCLTC2311_SPI_CR_CPOL;
+    uint32_t adc_available_content = gen_uint32_all_bits_set();
+
+    uz_adcLtc2311_t* instance = successfull_init();
+    uz_adcLtc2311_set_master_select(instance, master);
+    expect_enter_sleep_mode_success(&spi_cr_content, &cr_content, &adc_available_content, master);
+
+    return_value = uz_adcLtc2311_enter_sleep_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_SUCCESS, return_value);
+    TEST_ASSERT_EQUAL(master, uz_adcLtc2311_get_sleeping_masters(instance));
+
+    // try to send the same master to sleep mode. This should fail
+    return_value = uz_adcLtc2311_enter_nap_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_FAILURE, return_value);
+    TEST_ASSERT_EQUAL(UZ_ADCLTC2311_NS_ALREADY_IN_MODE, uz_adcLtc2311_get_error_code(instance));
+    TEST_ASSERT_EQUAL(master, uz_adcLtc2311_get_sleeping_masters(instance));
+}
+
+void test_uz_adcLtc2311_enter_sleep_mode_master_in_nap(void)
+{
+    int32_t return_value = UZ_FAILURE;
+    uint32_t cr_content = 0;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
+    uint32_t spi_cr_content = UZ_ADCLTC2311_SPI_CR_CPOL;
+    uint32_t adc_available_content = gen_uint32_all_bits_set();
+
+    uz_adcLtc2311_t* instance = successfull_init();
+    uz_adcLtc2311_set_master_select(instance, master);
+    expect_enter_nap_mode_success(&spi_cr_content, &cr_content, &adc_available_content, master);
+
+    return_value = uz_adcLtc2311_enter_nap_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_SUCCESS, return_value);
+    TEST_ASSERT_EQUAL(master, uz_adcLtc2311_get_napping_masters(instance));
+
+    // try to send the same master to nap mode. This should fail
+    return_value = uz_adcLtc2311_enter_sleep_mode(instance);
+    TEST_ASSERT_EQUAL(UZ_FAILURE, return_value);
+    TEST_ASSERT_EQUAL(UZ_ADCLTC2311_NS_ALREADY_IN_MODE, uz_adcLtc2311_get_error_code(instance));
+    TEST_ASSERT_EQUAL(master, uz_adcLtc2311_get_napping_masters(instance));
+}
+
 /************* Private utilites implementation used in the tests above **********************/
 
 // Utilities
@@ -514,7 +729,7 @@ uz_adcLtc2311_t* successfull_init(void)
     // Simulated HW register content
     uint32_t cr_content = 0x0;
     uint32_t spi_cr_content = UZ_ADCLTC2311_SPI_CR_CPOL;
-    uint32_t spi_cfgr_content = UZ_ADCLTC2311_SPI_CR_CPOL;
+    uint32_t spi_cfgr_content = 0;
 
     struct uz_adcLtc2311_config_t default_configuration = {
         .base_address=TEST_BASE_ADDRESS,
@@ -576,7 +791,7 @@ void expect_update_offset_success(uint32_t* cr_content, uint32_t master, uint32_
     // prepare instance for test cases
     expect_update_specific_channel(cr_content, master, channel);
 
-    // expect the software to write the conversion factor
+    // expect the software to write the offset
     uz_adcLtc2311_hw_write_value_Expect(TEST_BASE_ADDRESS, value);
     *cr_content &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
     *cr_content |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID;
@@ -606,7 +821,7 @@ void expect_update_sample_time_success(uint32_t* cr_content, uint32_t master, ui
     // prepare instance for test cases
     expect_update_master_only(cr_content, master);
 
-    // expect the software to write the number of samples
+    // expect the software to write the sample time
     uz_adcLtc2311_hw_write_value_Expect(TEST_BASE_ADDRESS, value);
     *cr_content &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
     *cr_content |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_0;
@@ -793,29 +1008,6 @@ void expect_disable_manual_mode_success(uint32_t* spi_cr_content)
 
     *spi_cr_content &= ~UZ_ADCLTC2311_SPI_CR_CONTROL_STATUS;
     uz_adcLtc2311_hw_read_spi_cr_ExpectAndReturn(TEST_BASE_ADDRESS, *spi_cr_content);
-}
-
-void ignore_hw_transactions_nap_sleep_mode(
-    uint32_t spi_cr_content,
-    uint32_t cr_content,
-    uint32_t adc_available_content)
-{
-    uz_adcLtc2311_hw_read_spi_cr_IgnoreAndReturn(spi_cr_content);
-    uz_adcLtc2311_hw_write_spi_cr_Ignore();
-    uz_adcLtc2311_hw_read_cr_IgnoreAndReturn(cr_content);
-    uz_adcLtc2311_hw_write_cr_Ignore();
-    uz_adcLtc2311_hw_read_adc_available_IgnoreAndReturn(adc_available_content);
-    uz_adcLtc2311_hw_write_adc_available_Ignore();
-}
-
-void stop_ignore_hw_transactions_nap_sleep_mode(void)
-{
-    uz_adcLtc2311_hw_read_spi_cr_StopIgnore();
-    uz_adcLtc2311_hw_write_spi_cr_StopIgnore();
-    uz_adcLtc2311_hw_read_cr_StopIgnore();
-    uz_adcLtc2311_hw_write_cr_StopIgnore();
-    uz_adcLtc2311_hw_read_adc_available_StopIgnore();
-    uz_adcLtc2311_hw_write_adc_available_StopIgnore();
 }
 
 #endif // TEST

@@ -36,6 +36,7 @@ uz_adcLtc2311_t* uz_adcLtc2311_init(struct uz_adcLtc2311_config_t config) {
     uz_assert(config.cpol != 0);
     uz_assert(config.cpha == 0);
     uz_assert(config.samples > 0);
+    self->config = config;
     uz_adcLtc2311_init_set_parameters(self);
     return (self);
 }

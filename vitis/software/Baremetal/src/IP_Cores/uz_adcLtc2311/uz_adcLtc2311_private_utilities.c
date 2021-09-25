@@ -199,6 +199,7 @@ void uz_adcLtc2311_init_set_parameters(uz_adcLtc2311_t* self)
     int32_t return_value = UZ_SUCCESS;
     return_value = uz_adcLtc2311_update_conversion_factor(self);
     uz_assert(return_value == UZ_SUCCESS);
+    /*
     return_value = uz_adcLtc2311_update_offset(self);
     uz_assert(return_value == UZ_SUCCESS);
     return_value = uz_adcLtc2311_update_samples(self);
@@ -207,4 +208,5 @@ void uz_adcLtc2311_init_set_parameters(uz_adcLtc2311_t* self)
     uz_assert(return_value == UZ_SUCCESS);
     uz_adcLtc2311_update_spi(self);
     uz_adcLtc2311_set_triggered_mode(self);
+    */
 }

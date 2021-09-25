@@ -24,11 +24,6 @@ void tearDown(void)
 /************ These functions are not tests on there own ************************/
 /************ Implementation can be found at the bottom of the file *************/
 
-void ignore_hw_transactions_init(void);
-void stop_ignore_hw_transactions_init(void);
-void prepare_instance_operation_param_update(uz_adcLtc2311_t* instance, uint32_t cr_return_value, _Bool update_channel);
-void prepare_instance_operation_param_update_hw_success(uz_adcLtc2311_t* instance, uint32_t cr_write_value);
-void prepare_instance_operation_param_update_hw_failure(uz_adcLtc2311_t* instance, uint32_t cr_write_value, uint32_t max_attempts);
 void uz_adcLtc2311_expect_set_ss_n(uint32_t* spi_cr_content);
 void uz_adcLtc2311_expect_reset_ss_n(uint32_t* spi_cr_content);
 void uz_adcLtc2311_expect_set_sclk(uint32_t* spi_cr_content);
@@ -42,13 +37,17 @@ uint32_t gen_uint32_all_bits_set(void);
 void expect_operation_param_update_success(uint32_t* cr_content);
 void expect_operation_param_update_failure(uint32_t* cr_content, uint32_t max_attempts);
 void expect_update_specific_channel(uint32_t* cr_content, uint32_t master, uint32_t channel);
+void expect_update_master_only(uint32_t* cr_content, uint32_t master);
 
 // functions for successfull test cases
 uz_adcLtc2311_t* successfull_init(void);
 void expect_update_conversion_factor_success(uint32_t* cr_content, uint32_t master, uint32_t channel, int32_t value);
+void expect_update_offset_success(uint32_t* cr_content, uint32_t master, uint32_t channel, int32_t value);
+void expect_update_samples_success(uint32_t* cr_content, uint32_t master, uint32_t value);
+void expect_update_sample_time_success(uint32_t* cr_content, uint32_t master, uint32_t value);
+void expect_update_spi_success(uint32_t* spi_cr_content, uint32_t* spi_cfgr_content,  uint32_t pre_delay, uint32_t post_delay, uint32_t clk_div, uint32_t cpol, uint32_t cpha);
 
 /************ End of private utility declaration used in this file *************************/
-
 
 void test_uz_adcLtc2311_successfull_init_(void)
 {
@@ -176,26 +175,23 @@ void test_uz_adcLtc2311_update_conversion_factor_hw_failure(void)
 void test_uz_adcLtc2311_update_offset(void)
 {
     int32_t offset = 5;
-    uint32_t cr_return_value = 0x0;
-    uint32_t cr_write_value = cr_return_value;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
+    uint32_t channel = UZ_ADCLTC2311_CH1;
+    uint32_t cr_content = 0x0;
     int32_t function_return_value = UZ_FAILURE;
-    // setup the expected values
-    // see the function implementation for more details
-    cr_write_value &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
-    cr_write_value |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID;
-    
-   uz_adcLtc2311_t* instance = successfull_init();
 
-    // prepare instance for test cases
-    prepare_instance_operation_param_update(instance, cr_return_value, true);
 
-    // expect the software to write the conversion factor
+    uz_adcLtc2311_t* instance = successfull_init();
+
+    // setup the instance
+    uz_adcLtc2311_set_master_select(instance, master);
+    uz_adcLtc2311_set_channel_select(instance, channel);
     uz_adcLtc2311_set_offset(instance, offset);
-    uz_adcLtc2311_hw_write_value_Expect(TEST_BASE_ADDRESS, offset);
 
-    // expect successfull update
-    prepare_instance_operation_param_update_hw_success(instance, cr_write_value);
+    // expect the HW transactions
+    expect_update_offset_success(&cr_content, master, channel, offset);
 
+    // call the actual function
     function_return_value = uz_adcLtc2311_update_offset(instance);
     TEST_ASSERT_EQUAL(function_return_value, UZ_SUCCESS);
 }
@@ -208,27 +204,33 @@ void test_uz_adcLtc2311_update_offset(void)
 void test_uz_adcLtc2311_update_offset_hw_failure(void)
 {
     int32_t offset = 5;
-    uint32_t max_attempts = 1;
-    uint32_t cr_return_value = 0x0;
-    uint32_t cr_write_value = cr_return_value;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
+    uint32_t channel = UZ_ADCLTC2311_CH1;
+    uint32_t cr_content = 0x0;
+    uint32_t max_attempts = 2;
     int32_t function_return_value = UZ_FAILURE;
-    // setup the expected values
-    // see the function implementation for more details
-    cr_write_value &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
-    cr_write_value |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID;
     
     uz_adcLtc2311_t* instance = successfull_init();
 
+    // setup the instance
+    uz_adcLtc2311_set_master_select(instance, master);
+    uz_adcLtc2311_set_channel_select(instance, channel);
+    uz_adcLtc2311_set_offset(instance, offset);
+    uz_adcLtc2311_set_max_attempts(instance, max_attempts);
+
+    // expect the HW transactions
     // prepare instance for test cases
-    prepare_instance_operation_param_update(instance, cr_return_value, true);
+    expect_update_specific_channel(&cr_content, master, channel);
 
     // expect the software to write the conversion factor
-    uz_adcLtc2311_set_offset(instance, offset);
     uz_adcLtc2311_hw_write_value_Expect(TEST_BASE_ADDRESS, offset);
+    cr_content &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
+    cr_content |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID;
 
-    // expect update to fail (no acknowledgement)
-    prepare_instance_operation_param_update_hw_failure(instance, cr_write_value, max_attempts);
+    // expect update failure
+    expect_operation_param_update_failure(&cr_content, max_attempts);
 
+    // call the actual function
     function_return_value = uz_adcLtc2311_update_offset(instance);
     TEST_ASSERT_EQUAL(function_return_value, UZ_FAILURE);
 }
@@ -236,26 +238,20 @@ void test_uz_adcLtc2311_update_offset_hw_failure(void)
 void test_uz_adcLtc2311_update_samples(void)
 {
     uint32_t samples = 2147483647;
-    uint32_t cr_return_value = 0x0;
-    uint32_t cr_write_value = cr_return_value;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
+    uint32_t cr_content = 0x0;
     int32_t function_return_value = UZ_FAILURE;
-    // setup the expected values
-    // see the function implementation for more details
-    cr_write_value &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
-    cr_write_value |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID | UZ_ADCLTC2311_CR_CONFIG_VALUE_1;
-    
+
     uz_adcLtc2311_t* instance = successfull_init();
 
-    // prepare instance for test cases
-    prepare_instance_operation_param_update(instance, cr_return_value, false);
-
-    // expect the software to write the conversion factor
+    // setup the instance
+    uz_adcLtc2311_set_master_select(instance, master);
     uz_adcLtc2311_set_samples(instance, samples);
-    uz_adcLtc2311_hw_write_value_Expect(TEST_BASE_ADDRESS, samples);
 
-    // expect successfull update
-    prepare_instance_operation_param_update_hw_success(instance, cr_write_value);
+    // expect the HW transactions
+    expect_update_samples_success(&cr_content, master, samples);
 
+    // call the actual function
     function_return_value = uz_adcLtc2311_update_samples(instance);
     TEST_ASSERT_EQUAL(function_return_value, UZ_SUCCESS);
 }
@@ -268,27 +264,32 @@ void test_uz_adcLtc2311_update_samples(void)
 void test_uz_adcLtc2311_update_samples_hw_failure(void)
 {
     uint32_t samples = 15;
-    uint32_t max_attempts = 1;
-    uint32_t cr_return_value = 0x0;
-    uint32_t cr_write_value = cr_return_value;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
+    uint32_t cr_content = 0x0;
+    uint32_t max_attempts = 2;
     int32_t function_return_value = UZ_FAILURE;
-    // setup the expected values
-    // see the function implementation for more details
-    cr_write_value &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
-    cr_write_value |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID | UZ_ADCLTC2311_CR_CONFIG_VALUE_1;
     
     uz_adcLtc2311_t* instance = successfull_init();
 
-    // prepare instance for test cases
-    prepare_instance_operation_param_update(instance, cr_return_value, false);
-
-    // expect the software to write the conversion factor
+    // setup the instance
+    uz_adcLtc2311_set_master_select(instance, master);
     uz_adcLtc2311_set_samples(instance, samples);
+    uz_adcLtc2311_set_max_attempts(instance, max_attempts);
+
+    // expect the HW transactions
+    // prepare instance for test cases
+    expect_update_master_only(&cr_content, master);
+
+    // expect the software to write the number of samples
     uz_adcLtc2311_hw_write_value_Expect(TEST_BASE_ADDRESS, samples);
+    cr_content &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
+    cr_content |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID | UZ_ADCLTC2311_CR_CONFIG_VALUE_1;
 
-    // expect update to fail (no acknowledgement)
-    prepare_instance_operation_param_update_hw_failure(instance, cr_write_value, max_attempts);
+    // expect successfull update
 
+    expect_operation_param_update_failure(&cr_content, max_attempts);
+
+    // call the actual function
     function_return_value = uz_adcLtc2311_update_samples(instance);
     TEST_ASSERT_EQUAL(function_return_value, UZ_FAILURE);
 }
@@ -296,26 +297,21 @@ void test_uz_adcLtc2311_update_samples_hw_failure(void)
 void test_uz_adcLtc2311_update_sample_time(void)
 {
     uint32_t sample_time = 25;
-    uint32_t cr_return_value = 0x0;
-    uint32_t cr_write_value = cr_return_value;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
+    uint32_t cr_content = 0x0;
     int32_t function_return_value = UZ_FAILURE;
-    // setup the expected values
-    // see the function implementation for more details
-    cr_write_value &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
-    cr_write_value |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_0;
     
+
     uz_adcLtc2311_t* instance = successfull_init();
 
-    // prepare instance for test cases
-    prepare_instance_operation_param_update(instance, cr_return_value, false);
-
-    // expect the software to write the conversion factor
+    // setup the instance
+    uz_adcLtc2311_set_master_select(instance, master);
     uz_adcLtc2311_set_sample_time(instance, sample_time);
-    uz_adcLtc2311_hw_write_value_Expect(TEST_BASE_ADDRESS, sample_time);
 
-    // expect successfull update
-    prepare_instance_operation_param_update_hw_success(instance, cr_write_value);
+    // expect the HW transactions
+    expect_update_sample_time_success(&cr_content, master, sample_time);
 
+    // call the actual function
     function_return_value = uz_adcLtc2311_update_sample_time(instance);
     TEST_ASSERT_EQUAL(function_return_value, UZ_SUCCESS);
 }
@@ -328,27 +324,32 @@ void test_uz_adcLtc2311_update_sample_time(void)
 void test_uz_adcLtc2311_update_sample_time_hw_failure(void)
 {
     uint32_t sample_time = 25;
+    uint32_t master = UZ_ADCLTC2311_MASTER1;
     uint32_t max_attempts = 10;
-    uint32_t cr_return_value = 0x0;
-    uint32_t cr_write_value = cr_return_value;
+    uint32_t cr_content = 0x0;
     int32_t function_return_value = UZ_FAILURE;
-    // setup the expected values
-    // see the function implementation for more details
-    cr_write_value &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
-    cr_write_value |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_0;
     
+
     uz_adcLtc2311_t* instance = successfull_init();
 
-    // prepare instance for test cases
-    prepare_instance_operation_param_update(instance, cr_return_value, false);
-
-    // expect the software to write the conversion factor
+    // setup the instance
+    uz_adcLtc2311_set_master_select(instance, master);
     uz_adcLtc2311_set_sample_time(instance, sample_time);
+    uz_adcLtc2311_set_max_attempts(instance, max_attempts);
+
+    // expect the HW transactions
+    expect_update_master_only(&cr_content, master);
+
+    // expect the software to write the number of samples
     uz_adcLtc2311_hw_write_value_Expect(TEST_BASE_ADDRESS, sample_time);
+    cr_content &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
+    cr_content |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_0;
 
-    // expect update to fail (no acknowledgement)
-    prepare_instance_operation_param_update_hw_failure(instance, cr_write_value, max_attempts);
+    // expect successfull update
 
+    expect_operation_param_update_failure(&cr_content, max_attempts);
+
+    // call the actual function
     function_return_value = uz_adcLtc2311_update_sample_time(instance);
     TEST_ASSERT_EQUAL(function_return_value, UZ_FAILURE);
 }
@@ -388,36 +389,25 @@ void test_uz_adcLtc2311_update_spi(void)
     uint32_t pre_delay = 10;
     uint32_t post_delay = 5;
     uint32_t clk_div = 20;
+    uint32_t cpol = 1;
+    uint32_t cpha = 0;
     // set another bit for testing purposes
     uint32_t spi_cr_content = UZ_ADCLTC2311_SPI_CR_SS_N;
+    uint32_t spi_cfgr_content = 0x0;
     uz_adcLtc2311_t* instance = successfull_init();
 
     uz_adcLtc2311_set_pre_delay(instance, pre_delay);
     uz_adcLtc2311_set_post_delay(instance, post_delay);
     uz_adcLtc2311_set_clk_div(instance, clk_div);
-    uz_adcLtc2311_set_cpha(instance, 0);
-    uz_adcLtc2311_set_cpol(instance, 1);
+    uz_adcLtc2311_set_cpha(instance, cpha);
+    uz_adcLtc2311_set_cpol(instance, cpol);
 
-    // values are concatenated in the SPI configuration register
-    uint32_t spi_cfgr = (clk_div << UZ_ADCLTC2311_SPI_CFGR_CLK_DIV_LSB) |
-                        (pre_delay << UZ_ADCLTC2311_SPI_CFGR_PRE_DELAY_LSB) | 
-	                    (post_delay << UZ_ADCLTC2311_SPI_CFGR_POST_DELAY_LSB); 
-    uz_adcLtc2311_hw_write_spi_cfgr_Expect(TEST_BASE_ADDRESS, spi_cfgr);
-
-    uz_adcLtc2311_hw_read_spi_cr_ExpectAndReturn(TEST_BASE_ADDRESS, spi_cr_content);
-    uint32_t spi_cr_write = spi_cr_content | UZ_ADCLTC2311_SPI_CR_CPOL;
-    spi_cr_write = spi_cr_write & ~(UZ_ADCLTC2311_SPI_CR_CPHA);
-    uz_adcLtc2311_hw_write_spi_cr_Expect(TEST_BASE_ADDRESS, spi_cr_write);
+    expect_update_spi_success(&spi_cr_content, &spi_cfgr_content, pre_delay, post_delay, clk_div, cpol, cpha);
     uz_adcLtc2311_update_spi(instance);
 }
 
 // tests for nap mode
-/*
-void uz_adcLtc2311_ignore_hw_transactions_nap_sleep(uint32_t spi_cr_content, uint32_t cr_content)
-{
 
-}
-*/
 void test_uz_adcLtc2311_enter_nap_mode_success(void)
 {
     int32_t return_value = UZ_FAILURE;
@@ -477,12 +467,16 @@ uz_adcLtc2311_t* successfull_init(void)
     uint32_t sample_time = 0;
     uint32_t cpol = 1;
     uint32_t cpha = 0;
+    uint32_t pre_delay = 0;
+    uint32_t post_delay = 0;
+    uint32_t clk_div = 0;
     uint32_t master = UZ_ADCLTC2311_MASTER1;
     uint32_t channel = UZ_ADCLTC2311_CH1 | UZ_ADCLTC2311_CH2 | UZ_ADCLTC2311_CH3 | UZ_ADCLTC2311_CH4 | UZ_ADCLTC2311_CH5 | UZ_ADCLTC2311_CH6 | UZ_ADCLTC2311_CH7 | UZ_ADCLTC2311_CH8;
 
     // Simulated HW register content
     uint32_t cr_content = 0x0;
     uint32_t spi_cr_content = UZ_ADCLTC2311_SPI_CR_CPOL;
+    uint32_t spi_cfgr_content = UZ_ADCLTC2311_SPI_CR_CPOL;
 
     struct uz_adcLtc2311_config_t default_configuration = {
         .base_address=TEST_BASE_ADDRESS,
@@ -495,10 +489,18 @@ uz_adcLtc2311_t* successfull_init(void)
         .napping_spi_masters=0,
         .sleeping_spi_masters=0,
         .master_select = master,
-        .channel_select = channel
+        .channel_select = channel,
+        .sample_time = sample_time,
+        .pre_delay = pre_delay,
+        .post_delay = post_delay,
+        .clk_div = clk_div
     };
 
     expect_update_conversion_factor_success(&cr_content, master, channel, conversion_factor);
+    expect_update_offset_success(&cr_content, master, channel, offset);
+    expect_update_samples_success(&cr_content, master, samples);
+    expect_update_sample_time_success(&cr_content, master, sample_time);
+    expect_update_spi_success(&spi_cr_content, &spi_cfgr_content, pre_delay, post_delay, clk_div, cpol, cpha);
     uz_adcLtc2311_t* instance = uz_adcLtc2311_init(default_configuration);
     return instance;
 }
@@ -528,29 +530,72 @@ void expect_update_conversion_factor_success(uint32_t* cr_content, uint32_t mast
     expect_operation_param_update_success(cr_content);
 }
 
-
-void ignore_hw_transactions_init(void)
+void expect_update_offset_success(uint32_t* cr_content, uint32_t master, uint32_t channel, int32_t value)
 {
-    uz_adcLtc2311_hw_read_cr_IgnoreAndReturn(0);
-    uz_adcLtc2311_hw_write_master_channel_Ignore();
-    uz_adcLtc2311_hw_write_channel_Ignore();
-    uz_adcLtc2311_hw_write_value_Ignore();
-    uz_adcLtc2311_hw_write_cr_Ignore();
-    uz_adcLtc2311_hw_write_spi_cfgr_Ignore();
-    uz_adcLtc2311_hw_read_spi_cr_IgnoreAndReturn(UZ_ADCLTC2311_SPI_CR_CPOL);
-    uz_adcLtc2311_hw_write_spi_cr_Ignore();
+    // prepare instance for test cases
+    expect_update_specific_channel(cr_content, master, channel);
+
+    // expect the software to write the conversion factor
+    uz_adcLtc2311_hw_write_value_Expect(TEST_BASE_ADDRESS, value);
+    *cr_content &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
+    *cr_content |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID;
+
+    // expect successfull update
+
+    expect_operation_param_update_success(cr_content);
 }
 
-void stop_ignore_hw_transactions_init(void)
+void expect_update_samples_success(uint32_t* cr_content, uint32_t master, uint32_t value)
 {
-    uz_adcLtc2311_hw_read_cr_StopIgnore();
-    uz_adcLtc2311_hw_write_master_channel_StopIgnore();
-    uz_adcLtc2311_hw_write_channel_StopIgnore();
-    uz_adcLtc2311_hw_write_value_StopIgnore();
-    uz_adcLtc2311_hw_write_cr_StopIgnore();
-    uz_adcLtc2311_hw_write_spi_cfgr_StopIgnore();
-    uz_adcLtc2311_hw_read_spi_cr_StopIgnore();
-    uz_adcLtc2311_hw_write_spi_cr_StopIgnore();
+    // prepare instance for test cases
+    expect_update_master_only(cr_content, master);
+
+    // expect the software to write the number of samples
+    uz_adcLtc2311_hw_write_value_Expect(TEST_BASE_ADDRESS, value);
+    *cr_content &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
+    *cr_content |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID | UZ_ADCLTC2311_CR_CONFIG_VALUE_1;
+
+    // expect successfull update
+
+    expect_operation_param_update_success(cr_content);
+}
+
+void expect_update_sample_time_success(uint32_t* cr_content, uint32_t master, uint32_t value)
+{
+    // prepare instance for test cases
+    expect_update_master_only(cr_content, master);
+
+    // expect the software to write the number of samples
+    uz_adcLtc2311_hw_write_value_Expect(TEST_BASE_ADDRESS, value);
+    *cr_content &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
+    *cr_content |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_0;
+
+    // expect successfull update
+
+    expect_operation_param_update_success(cr_content);
+}
+
+void expect_update_spi_success(uint32_t* spi_cr_content, uint32_t* spi_cfgr_content,  uint32_t pre_delay, uint32_t post_delay, uint32_t clk_div, uint32_t cpol, uint32_t cpha)
+{
+    // values are concatenated in the SPI configuration register
+    *spi_cfgr_content = (clk_div << UZ_ADCLTC2311_SPI_CFGR_CLK_DIV_LSB) |
+                        (pre_delay << UZ_ADCLTC2311_SPI_CFGR_PRE_DELAY_LSB) | 
+	                    (post_delay << UZ_ADCLTC2311_SPI_CFGR_POST_DELAY_LSB); 
+    uz_adcLtc2311_hw_write_spi_cfgr_Expect(TEST_BASE_ADDRESS, *spi_cfgr_content);
+
+    uz_adcLtc2311_hw_read_spi_cr_ExpectAndReturn(TEST_BASE_ADDRESS, *spi_cr_content);
+
+    if(cpol == 0)
+        *spi_cr_content &= ~UZ_ADCLTC2311_SPI_CR_CPOL;
+    else
+        *spi_cr_content |= UZ_ADCLTC2311_SPI_CR_CPOL;
+
+    if(cpha == 0)
+        *spi_cr_content &= ~UZ_ADCLTC2311_SPI_CR_CPHA;
+    else
+        *spi_cr_content |= UZ_ADCLTC2311_SPI_CR_CPHA;
+    
+    uz_adcLtc2311_hw_write_spi_cr_Expect(TEST_BASE_ADDRESS, *spi_cr_content);
 }
 
 void expect_update_specific_channel(uint32_t* cr_content, uint32_t master, uint32_t channel)
@@ -584,77 +629,6 @@ void expect_operation_param_update_failure(uint32_t* cr_content, uint32_t max_at
     for(uint32_t i = 0; i < max_attempts; i++)
     {
         uz_adcLtc2311_hw_read_cr_ExpectAndReturn(TEST_BASE_ADDRESS, *cr_content);
-    }
-}
-
-
-/**
- * @brief Setup instance for operation parameter update testing and expect the function calls
- * until acknowledgement
- * 
- * @param instance 
- * @param cr_return_value Current state of the CR register
- * @param update_channel Determination, if individual ADC channels shall be updated or not
- */
-void prepare_instance_operation_param_update(
-    uz_adcLtc2311_t* instance, 
-    uint32_t cr_return_value,
-    _Bool update_channel)
-{
-    // @TODO: Remove definitions of master and channel and the update in the SW instance
-    uint32_t master_select = UZ_ADCLTC2311_MASTER1;
-    uint32_t channel_select = UZ_ADCLTC2311_CH2;
-    uz_adcLtc2311_set_master_select(instance, master_select);
-
-    uz_adcLtc2311_hw_read_cr_ExpectAndReturn(TEST_BASE_ADDRESS, cr_return_value);
-    uz_adcLtc2311_hw_write_master_channel_Expect(TEST_BASE_ADDRESS, master_select);
-    if (update_channel)
-    {
-        uz_adcLtc2311_set_channel_select(instance, channel_select);
-        uz_adcLtc2311_hw_write_channel_Expect(TEST_BASE_ADDRESS,channel_select);
-    }
-}
-
-/**
- * @brief Setup instance for operation parameter update success
- * -> return acknowledgement
- * 
- * @param instance 
- * @param cr_write_value Value that is expected wo be written to the CR register
- */
-void prepare_instance_operation_param_update_hw_success(uz_adcLtc2311_t* instance, uint32_t cr_write_value)
-{
-    uz_adcLtc2311_hw_write_cr_Expect(TEST_BASE_ADDRESS, cr_write_value);
-    // max_attempts = 0 -> try infinitely
-    uz_adcLtc2311_set_max_attempts(instance, 0);
-    // cr return value now signals the acknowledgement of the update request
-    uint32_t cr_return_value = cr_write_value & ~(UZ_ADCLTC2311_CR_CONV_VALUE_VALID);
-    uz_adcLtc2311_hw_read_cr_ExpectAndReturn(TEST_BASE_ADDRESS, cr_return_value);
-}
-
-/**
- * @brief Setup instance for operation parameter update failure
- * -> return no acknowledgement
- * 
- * @param instance 
- * @param cr_write_value Value that is expected wo be written to the CR register
- * @param max_attempts Maximum number of reads from the CR with no acknowledgement before
- * the update is considered to be failed.
- */
-void prepare_instance_operation_param_update_hw_failure(
-    uz_adcLtc2311_t* instance,
-    uint32_t cr_write_value,
-    uint32_t max_attempts)
-{
-    uz_adcLtc2311_hw_write_cr_Expect(TEST_BASE_ADDRESS, cr_write_value);
-    uz_adcLtc2311_set_max_attempts(instance, max_attempts);
-    // cr return value does not signal the acknowledgement of the update request
-    uint32_t cr_return_value = cr_write_value  | UZ_ADCLTC2311_CR_CONV_VALUE_VALID;
-
-    // expect the software to call the read function max_attempts times
-    for(uint32_t i = 0; i < max_attempts; i++)
-    {
-        uz_adcLtc2311_hw_read_cr_ExpectAndReturn(TEST_BASE_ADDRESS, cr_return_value);
     }
 }
 

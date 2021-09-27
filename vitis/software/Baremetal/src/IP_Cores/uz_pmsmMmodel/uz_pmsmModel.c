@@ -1,4 +1,4 @@
-#define UZ_PMSMMODEL_MAX_INSTANCES 11U
+#include "../../uz/uz_global_configuration.h"
 #if UZ_PMSMMODEL_MAX_INSTANCES > 0U
 #include "uz_pmsmModel.h"
 #include "uz_pmsmModel_hw.h"

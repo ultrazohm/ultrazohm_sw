@@ -8,7 +8,7 @@ void uz_incrementalEncoder_hw_set_timer_fpga_ms(uint32_t base_address, float tim
 void uz_incrementalEncoder_hw_set_pi2_inc(uint32_t base_address, float pi2_inc);
 void uz_incrementalEncoder_hw_set_increments_per_turn_mechanical(uint32_t base_address, uint32_t increments_per_turn);
 void uz_incrementalEncoder_hw_set_increments_per_turn_electric(uint32_t base_address, uint32_t increments_per_turn);
-void uz_incrementalEncoder_hw_set_omegaPerOverSampl(uint32_t base_address,float omega_per_over_sampl); 
+void uz_incrementalEncoder_hw_set_omegaPerOverSample(uint32_t base_address,float omega_per_over_sampl); 
 
 float uz_incrementalEncoder_hw_get_omega(uint32_t base_address);
 float uz_incrementalEncoder_hw_get_direction(uint32_t base_address);

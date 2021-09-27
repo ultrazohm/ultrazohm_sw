@@ -49,7 +49,7 @@ void test_uz_incrementalEncoder_hw_set_omegaPerOverSampl(void){
     float expected=52.35986328125; // from Simulink model
     uz_axi_write_int32_Expect(BASE_ADDRESS+OmegaPerOverSampl_AXI4_Data_IncreEncoder_V24_ip,uz_convert_float_to_sfixed(expected,11)); // datatype sfix24_en11
     TEST_ASSERT_EQUAL_HEX32(0x01A2E1, uz_convert_float_to_sfixed(expected,11));
-    uz_incrementalEncoder_hw_set_omegaPerOverSampl(BASE_ADDRESS,expected);
+    uz_incrementalEncoder_hw_set_omegaPerOverSample(BASE_ADDRESS,expected);
 }
 
 void test_uz_incrementalEncoder_hw_get_omega(void){

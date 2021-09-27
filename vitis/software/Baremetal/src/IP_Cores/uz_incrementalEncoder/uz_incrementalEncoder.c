@@ -36,9 +36,9 @@ static uz_incrementalEncoder_t* uz_incrementalEncoder_allocation(void){
 static void set_pi2_inc(uz_incrementalEncoder_t* self);
 static void set_fpga_timer(uz_incrementalEncoder_t* self);
 static void set_inc_per_turn_mechanical(uz_incrementalEncoder_t* self);
-static void set_inc_per_turn_elek(uz_incrementalEncoder_t* self);
+static void set_inc_per_turn_elec(uz_incrementalEncoder_t* self);
 static bool check_if_theta_el_can_be_used(uint32_t inc_per_turn,uint32_t pole_pair);
-static void set_omega_per_over_sampl(uz_incrementalEncoder_t* self);
+static void set_omega_per_over_sample(uz_incrementalEncoder_t* self);
 static void set_configuration(uz_incrementalEncoder_t* self);
 
 uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder_config config) {
@@ -53,7 +53,7 @@ uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder
     return (self);
 }
 
-float uz_incrementalEncoder_get_omega(uz_incrementalEncoder_t* self){
+float uz_incrementalEncoder_get_omega_mech(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
     return uz_incrementalEncoder_hw_get_omega(self->config.base_address);
 }
@@ -73,23 +73,24 @@ static void set_configuration(uz_incrementalEncoder_t* self){
     set_pi2_inc(self);
     set_fpga_timer(self);
     set_inc_per_turn_mechanical(self);
-    set_inc_per_turn_elek(self);
-    set_omega_per_over_sampl(self);
+    set_inc_per_turn_elec(self);
+    set_omega_per_over_sample(self);
 }
 
 bool check_if_theta_el_can_be_used(uint32_t inc_per_turn, uint32_t pole_pair){
     bool use_theta_el=false;
     if (pole_pair != 0U){
         uint32_t division_reminder=inc_per_turn % pole_pair; // if inc_per_turn is an integer multiple of pole pairs, modulo returns zero
-        uz_assert(division_reminder==0U); // if modulo is not zero, one can not use theta el even thought the user intends to use it since pole_pair is not zero
-        use_theta_el=true;
+        if(division_reminder==0U){  // if modulo is not zero, one can not use theta el even thought the user intends to use it since pole_pair is not zero
+            use_theta_el=true;
+        } 
     }
     return use_theta_el;
 }
 
 void set_pi2_inc(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
-    float pi2_inc=(2*M_PI/(self->config.line_number_per_turn_mech *QUADRATURE_FACTOR)) * self->config.drive_pole_pair;
+    float pi2_inc=( (2.0f*M_PI) /(self->config.line_number_per_turn_mech *QUADRATURE_FACTOR) ) * self->config.drive_pole_pair;
     uz_incrementalEncoder_hw_set_pi2_inc(self->config.base_address,pi2_inc);
 }
 
@@ -106,20 +107,20 @@ void set_inc_per_turn_mechanical(uz_incrementalEncoder_t* self){
     uz_incrementalEncoder_hw_set_increments_per_turn_mechanical(self->config.base_address,inc_per_turn);
 }
 
-void set_inc_per_turn_elek(uz_incrementalEncoder_t* self){
+void set_inc_per_turn_elec(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
     if(self->use_theta_el){ // prevents division by zero if drive_pole_pair is 0 and thus theta_el is not used
         uint32_t inc_per_turn_el=(self->config.line_number_per_turn_mech*QUADRATURE_FACTOR)/self->config.drive_pole_pair;
         uz_incrementalEncoder_hw_set_increments_per_turn_electric(self->config.base_address,inc_per_turn_el);
     }else{
-        uz_incrementalEncoder_hw_set_increments_per_turn_electric(self->config.base_address,self->config.line_number_per_turn_mech); // if theta_el is not used, just set it to mechanical increments as a default
+        uz_incrementalEncoder_hw_set_increments_per_turn_electric(self->config.base_address,self->config.line_number_per_turn_mech*QUADRATURE_FACTOR ); // if theta_el is not used, just set it to mechanical increments as a default
     }
 }
 
-static void set_omega_per_over_sampl(uz_incrementalEncoder_t* self){
+static void set_omega_per_over_sample(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
     float omega_per_over_sample=self->config.OmegaPerOverSample_in_rpm*((2*M_PI)/60);
-    uz_incrementalEncoder_hw_set_omegaPerOverSampl(self->config.base_address,omega_per_over_sample);
+    uz_incrementalEncoder_hw_set_omegaPerOverSample(self->config.base_address,omega_per_over_sample);
 }
 
 

@@ -29,7 +29,7 @@ void uz_incrementalEncoder_hw_set_increments_per_turn_electric(uint32_t base_add
     uz_axi_write_uint32(base_address+IncPerTurn_elek_AXI4_Data_IncreEncoder_V24_ip,increments_per_turn);
 }
 
-void uz_incrementalEncoder_hw_set_omegaPerOverSampl(uint32_t base_address,float omega_per_over_sampl){
+void uz_incrementalEncoder_hw_set_omegaPerOverSample(uint32_t base_address,float omega_per_over_sampl){
     uz_assert_not_zero_uint32(base_address);
     uz_assert(omega_per_over_sampl < 4095.0f);
     uz_assert(omega_per_over_sampl > -4095.0f); // make sure omega_per_oversampl fits data type sfix_24_en11

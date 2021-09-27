@@ -14,14 +14,16 @@ Position
 Position (electrical)
   Calculates the rotational position of the encoder and transforms the position to the *electrical* position of electric drive (e.g., permanent magnet synchronous machines).
   Uses the number of pole pairs to divide one mechanical turn of the encoder to (multiple) turns of the electrical system.
-  Can only be used if the number of pole pairs is an integer multiple of the number of increments!
+  Can only be used if the number of increments is an integer multiple of the number of pole pairs!
   The value of ``drive_pole_pair`` in the driver configuration has to be an integer multiple of the increments per turn or set to zero.
   If ``drive_pole_pair`` is an integer multiple of increments per turn, the electrical angle can be used and read by calling ``uz_incrementalEncoder_get_theta_el``.
   If ``drive_pole_pair`` is set to ``0``, the function can not be called (assertion fires if it is called).
   If ``drive_pole_pair`` is not ``0`` and not an integer multiple of increments per turn, the initialization of the driver fails with an assertion.
+  Note that the FPGA output port of the IP-Core outputs the (potentially false!) electrical position regardless of this setting!
 
 Rotational speed
-  Calculates the rotational speed of the drive by counting the time between rising edges of the A-lane in combination with an speed-dependent oversampling mechanism and subsequent filtering of the speed signal in the IP-Core.
+  Calculates the rotational speed of the drive by counting the time between two consecutive rising edges of the A-lane in combination with an speed-dependent oversampling mechanism and subsequent filtering of the speed signal in the IP-Core.
+  The oversampling mechanism allows to skip edges to improve the measurement at higher speeds.
 
 Direction of rotation
   Determines the direction of the rotation (clockwise / counterclockwise)
@@ -77,12 +79,12 @@ PI2_Inc_AXI
 
 Timer_FPGA_ms
   Scales the timer, that is used to calculate the rotational speed, from FPGA clock ticks to seconds w.r.t. the number of increments and :math:`2\pi`.
-  Default is :math:`\frac{1}{f_{IP-Core} \cdot IncPerTurn} \cdot \frac{1}{2\pi}=1.5915e-05` with :math:`f_{IP-Core}=50 MHz`.
+  Default is :math:`\frac{f_{IP-Core}}{IncPerTurn} \cdot \frac{1}{2\pi}=1.5915e-05` with :math:`f_{IP-Core}=50 MHz` and :math:`IncPerTurn=5000`.
 
 IncPerTurn_mech
   Configures the number of lines per mechanical revolution.
 
-IncPerTurn_elek
+IncPerTurn_elec
   Configures the number of lines per electrical revolution, i.e., w.r.t. to the pole pairs of a electrical machine.
   Set to ``IncPerTurn_mech`` divided by pole pairs of the electrical machine.
 
@@ -127,7 +129,7 @@ The software driver for the IP-Core handles the configuration of the aforementio
 .. code-block:: c
   :caption: Read position and speed
 
-  float omega=uz_incrementalEncoder_get_omega(test_instance);
+  float omega=uz_incrementalEncoder_get_omega_mech(test_instance);
   float theta_el=uz_incrementalEncoder_get_theta_el(test_instance);
   uint32_t position=uz_incrementalEncoder_get_position(test_instance);
 
@@ -141,7 +143,7 @@ Driver reference
 
 .. doxygenfunction:: uz_incrementalEncoder_init
 
-.. doxygenfunction:: uz_incrementalEncoder_get_omega
+.. doxygenfunction:: uz_incrementalEncoder_get_omega_mech
 
 .. doxygenfunction:: uz_incrementalEncoder_get_theta_el
 

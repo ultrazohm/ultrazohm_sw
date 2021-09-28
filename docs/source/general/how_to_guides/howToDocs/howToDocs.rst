@@ -287,7 +287,7 @@ All extensions are listed in ``ultrazohm_sw/docs/requirements.txt``.
   \draw[thick,rounded corners=8pt]
   (0,0)--(0,2)--(1,3.25)--(2,2)--(2,0)--(0,2)--(2,2)--(0,0)--(2,0);
 
-Alternative to using the Tikz extension for complicated tikz pictures: Create a standalone .tex document with the following boiler plate in an folder called ``img`` next the the rst that includes the picture.
+Alternative to using the Tikz extension for complicated tikz pictures: Create a standalone .tex document with the following boiler plate in an folder called ``img`` next the the .rst that includes the picture.
 Navigate the the folder of the .tex file using the terminal of the remote container and call ``pdflatex -shell-escape FILE.tex``.
 This generates a .svg from the .tex file that can be included as a regular figure.
 Add the .tex **and** the .svg to git since this is currently a manual process.

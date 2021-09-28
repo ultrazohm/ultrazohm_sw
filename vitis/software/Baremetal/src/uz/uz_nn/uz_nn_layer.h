@@ -8,6 +8,7 @@
  */
 typedef struct uz_nn_layer_t uz_nn_layer_t;
 
+
 /**
  * @brief Enum for passing the type of the activation function to the init function of the layer
  * 
@@ -15,6 +16,22 @@ typedef struct uz_nn_layer_t uz_nn_layer_t;
 enum activation_function{
     ReLU,
     linear
+};
+
+/**
+ * @brief Configuration struct
+ * 
+ */
+struct uz_nn_layer_config{
+    enum activation_function activation_function;
+    size_t number_of_neurons;
+    size_t number_of_inputs;
+    size_t length_of_weights;
+    size_t length_of_bias;
+    size_t length_of_output;
+    float *const weights;
+    float *const bias;
+    float *const output;
 };
 
 /**
@@ -34,11 +51,14 @@ enum activation_function{
  * @param activation Defines the activation function of the layer using an enum type
  * @return uz_nn_layer* Pointer to the layer object
  */
-uz_nn_layer_t *uz_nn_layer_init(size_t number_of_neurons, size_t number_of_inputs,
-                              float *const weights, size_t length_of_weights,
-                              float *const bias, size_t length_of_bias,
-                              float *const output, size_t length_of_output,
-                              enum activation_function activation);
+
+//uz_nn_layer_t *uz_nn_layer_init(size_t number_of_neurons, size_t number_of_inputs,
+//                              float *const weights, size_t length_of_weights,
+//                              float *const bias, size_t length_of_bias,
+//                              float *const output, size_t length_of_output,
+//                              enum activation_function activation);
+
+uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config);
 
 /**
  * @brief Calculates one forward pass of the network with the given input value (column vector)

@@ -30,25 +30,26 @@ static uz_nn_layer_t* uz_nn_layer_allocation(void){
     return (self);
 }
 
-uz_nn_layer_t *uz_nn_layer_init(size_t number_of_neurons, size_t number_of_inputs,
-                              float *const weights, size_t length_of_weights,
-                              float *const bias, size_t length_of_bias,
-                              float *const output, size_t length_of_output,
-                              enum activation_function activation)
+//uz_nn_layer_t *uz_nn_layer_init(size_t number_of_neurons, size_t number_of_inputs,
+//                              float *const weights, size_t length_of_weights,
+//                              float *const bias, size_t length_of_bias,
+//                              float *const output, size_t length_of_output,
+//                              enum activation_function activation)
+uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
 {
-    uz_assert_not_NULL(weights);
-    uz_assert_not_NULL(bias);
-    uz_assert_not_NULL(output);
-    uz_assert(number_of_neurons * number_of_inputs == length_of_weights);
-    uz_assert(number_of_neurons == length_of_output);
-    uz_assert(number_of_neurons == length_of_bias);
+    uz_assert_not_NULL(layer_config.weights);
+    uz_assert_not_NULL(layer_config.bias);
+    uz_assert_not_NULL(layer_config.output);
+    uz_assert(layer_config.number_of_neurons * layer_config.number_of_inputs == layer_config.length_of_weights);
+    uz_assert(layer_config.number_of_neurons == layer_config.length_of_output);
+    uz_assert(layer_config.number_of_neurons == layer_config.length_of_bias);
     uz_nn_layer_t *self=uz_nn_layer_allocation();
-    self->number_of_neurons = number_of_neurons;
-    self->weights = uz_matrix_init(weights, length_of_weights, number_of_inputs, number_of_neurons);
-    self->bias = uz_matrix_init(bias, length_of_bias, 1, number_of_neurons);
-    self->output = uz_matrix_init(output, length_of_output, 1, number_of_neurons);
+    self->number_of_neurons = layer_config.number_of_neurons;
+    self->weights = uz_matrix_init(layer_config.weights, layer_config.length_of_weights, layer_config.number_of_inputs, layer_config.number_of_neurons);
+    self->bias = uz_matrix_init(layer_config.bias, layer_config.length_of_bias, 1, layer_config.number_of_neurons);
+    self->output = uz_matrix_init(layer_config.output, layer_config.length_of_output, 1, layer_config.number_of_neurons);
 
-    switch (activation)
+    switch (layer_config.activation_function)
     {
     case linear:
         self->activation_function = &uz_nn_activation_function_linear;

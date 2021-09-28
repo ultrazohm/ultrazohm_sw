@@ -16,6 +16,8 @@ float w[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_LAYER] = {0.5377, 1.8339, -2.258
 float b[NUMBER_OF_NEURONS_IN_LAYER] = {1, -2, 3, -4};
 float out[NUMBER_OF_NEURONS_IN_LAYER] = {0};
 uz_matrix_t *input = 0;
+
+
 void setUp(void)
 {
     input = uz_matrix_init(x, UZ_MATRIX_SIZE(x), 1, NUMBER_OF_INPUTS);
@@ -25,17 +27,37 @@ void tearDown(void)
 {
 }
 
+
 void test_uz_nn_layer_init(void)
 {
-    enum activation_function act = ReLU;
-    uz_nn_layer_init(NUMBER_OF_NEURONS_IN_LAYER, NUMBER_OF_INPUTS, w, UZ_MATRIX_SIZE(w), b, UZ_MATRIX_SIZE(b), out, UZ_MATRIX_SIZE(out), act);
+    struct uz_nn_layer_config config = {
+    .activation_function = ReLU,
+    .number_of_neurons = NUMBER_OF_NEURONS_IN_LAYER,
+    .number_of_inputs = NUMBER_OF_INPUTS,
+    .length_of_weights = UZ_MATRIX_SIZE(w),
+    .length_of_bias = UZ_MATRIX_SIZE(b),
+    .length_of_output = UZ_MATRIX_SIZE(out),
+    .weights = w,
+    .bias = b,
+    .output = out};
+    uz_nn_layer_init(config);
 }
 
 void test_uz_nn_layer_matrix_multiply_zero_bias(void)
 {
-    enum activation_function act = linear;
     float b0[4] = {0, 0, 0, 0};
-    uz_nn_layer_t *layer = uz_nn_layer_init(NUMBER_OF_NEURONS_IN_LAYER, NUMBER_OF_INPUTS, w, UZ_MATRIX_SIZE(w), b0, UZ_MATRIX_SIZE(b0), out, UZ_MATRIX_SIZE(out), act);
+
+    struct uz_nn_layer_config config = {
+    .activation_function = linear,
+    .number_of_neurons = NUMBER_OF_NEURONS_IN_LAYER,
+    .number_of_inputs = NUMBER_OF_INPUTS,
+    .length_of_weights = UZ_MATRIX_SIZE(w),
+    .length_of_bias = UZ_MATRIX_SIZE(b0),
+    .length_of_output = UZ_MATRIX_SIZE(out),
+    .weights = w,
+    .bias = b0,
+    .output = out};
+    uz_nn_layer_t *layer = uz_nn_layer_init(config);
     float expected[4] = {11.9105, 7.5267, -7.1757, 10.6521};
     uz_nn_layer_ff(layer, input);
     uz_matrix_t *result = uz_nn_layer_get_output_data(layer);
@@ -47,9 +69,19 @@ void test_uz_nn_layer_matrix_multiply_zero_bias(void)
 
 void test_uz_nn_layer_matrix_multiply_with_bias(void)
 {
-    enum activation_function act = linear;
     float b0[4] = {1, -2, 3, -4};
-    uz_nn_layer_t *layer = uz_nn_layer_init(NUMBER_OF_NEURONS_IN_LAYER, NUMBER_OF_INPUTS, w, UZ_MATRIX_SIZE(w), b0, UZ_MATRIX_SIZE(b0), out, UZ_MATRIX_SIZE(out), act);
+    struct uz_nn_layer_config config = {
+    .activation_function = linear,
+    .number_of_neurons = NUMBER_OF_NEURONS_IN_LAYER,
+    .number_of_inputs = NUMBER_OF_INPUTS,
+    .length_of_weights = UZ_MATRIX_SIZE(w),
+    .length_of_bias = UZ_MATRIX_SIZE(b0),
+    .length_of_output = UZ_MATRIX_SIZE(out),
+    .weights = w,
+    .bias = b0,
+    .output = out};
+
+    uz_nn_layer_t *layer = uz_nn_layer_init(config);
     float expected[4] = {12.9105, 5.5267 , -4.1757 , 6.6521};
     uz_nn_layer_ff(layer, input);
     uz_matrix_t *result = uz_nn_layer_get_output_data(layer);
@@ -61,9 +93,19 @@ void test_uz_nn_layer_matrix_multiply_with_bias(void)
 
 void test_uz_nn_layer_ff_relu(void)
 {
-    enum activation_function act = ReLU;
-    float b0[4] = {1, -2, 3, -4};
-    uz_nn_layer_t *layer = uz_nn_layer_init(NUMBER_OF_NEURONS_IN_LAYER, NUMBER_OF_INPUTS, w, UZ_MATRIX_SIZE(w), b0, UZ_MATRIX_SIZE(b0), out, UZ_MATRIX_SIZE(out), act);
+        float b0[4] = {1, -2, 3, -4};
+        struct uz_nn_layer_config config = {
+    .activation_function = ReLU,
+    .number_of_neurons = NUMBER_OF_NEURONS_IN_LAYER,
+    .number_of_inputs = NUMBER_OF_INPUTS,
+    .length_of_weights = UZ_MATRIX_SIZE(w),
+    .length_of_bias = UZ_MATRIX_SIZE(b0),
+    .length_of_output = UZ_MATRIX_SIZE(out),
+    .weights = w,
+    .bias = b0,
+    .output = out};
+
+    uz_nn_layer_t *layer = uz_nn_layer_init(config);
     float expected[4] = {12.9105, 5.5267 , 0.0 , 6.6521};
     uz_nn_layer_ff(layer, input);
     uz_matrix_t *result = uz_nn_layer_get_output_data(layer);

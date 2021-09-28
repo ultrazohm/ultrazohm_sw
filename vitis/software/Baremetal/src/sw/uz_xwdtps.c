@@ -99,9 +99,13 @@
 //volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
 
 
-#include "xwdtps_intr.h"
+#include "uz_xwdtps.h"
+#include "../uz/uz_HAL.h"
 
 #ifdef ENABLE_WDT_INT
+
+
+_Bool Wdt_IsReady = false;
 
 /*****************************************************************************/
 /**
@@ -204,10 +208,14 @@ int WdtPsIntrInit(u32 Timeout) //&WdtInstance, WDT_DEVICE_ID,
 //				XWDTPS_CCR_PSCALE_4096);
 //	}
 
+	Wdt_IsReady = true;
+
 	return XST_SUCCESS;
 }
 
 u32 WdtPsIntrPolled(u32 ExpiredTimeDelta) {
+
+	uz_assert(Wdt_IsReady);
 
 	/*
 	 * Disable the RESET output.
@@ -248,39 +256,44 @@ u32 WdtPsIntrPolled(u32 ExpiredTimeDelta) {
 	return ExpiredTimeDelta;
 }
 
-/*
-	 * Stop the timer to set up the device in interrupt mode.
-	 */
-void XWdtPs_StopWdt() {
-	/*
-	 * Start the Wdt device.
-	 */
+///*
+//	 * Stop the timer to set up the device in interrupt mode.
+//	 */
+//void XWdtPs_StopWdt() {
+//	/*
+//	 * Start the Wdt device.
+//	 */
+//	XWdtPs_Stop(&WdtInstance);
+//}
+
+
+//void XWdtPs_Restart() {
+//	/*
+//	 * RE Start the Wdt device.
+//	 */
+//	XWdtPs_RestartWdt(&WdtInstance);
+//}
+//
+//void XWdtPs_Start_RestartWdt() {
+//	/*
+//	 * Start the Wdt device.
+//	 */
+//	HandlerCalled = 0;
+//	XWdtPs_Start(&WdtInstance);
+//	XWdtPs_RestartWdt(&WdtInstance);
+//}
+
+void XWdtPs_ResetRestart()
+{
+	uz_assert(Wdt_IsReady);
+
+	XWdtPs_DisableOutput(&WdtInstance, XWDTPS_RESET_SIGNAL);
 	XWdtPs_Stop(&WdtInstance);
-
-//	/*
-//	 * Disable the RESET output.
-//	 */
-//	XWdtPs_DisableOutput(&WdtInstance, XWDTPS_RESET_SIGNAL);
-//	/*
-//	 * Disable the IRQ output.
-//	 */
-//	XWdtPs_DisableOutput(&WdtInstance, (u8) XWDTPS_IRQ_SIGNAL);
-}
-
-void XWdtPs_Restart() {
-	/*
-	 * RE Start the Wdt device.
-	 */
-	XWdtPs_RestartWdt(&WdtInstance);
-}
-
-void XWdtPs_Start_RestartWdt() {
-	/*
-	 * Start the Wdt device.
-	 */
-	HandlerCalled = 0;
+	/* Start the Watchdog timer */
 	XWdtPs_Start(&WdtInstance);
 	XWdtPs_RestartWdt(&WdtInstance);
+	/* Enable reset output */
+	XWdtPs_EnableOutput(&WdtInstance, XWDTPS_RESET_SIGNAL);
 }
 
 /*****************************************************************************/
@@ -346,6 +359,9 @@ int WdtPsIntrExample(XScuGic *IntcInstancePtr)
 //		return XST_FAILURE;
 //	}
 
+
+	uz_assert(Wdt_IsReady);
+
 	/*
 	 * Without INT, establish the expiration time by polling the driver.
 	 */
@@ -362,10 +378,14 @@ int WdtPsIntrExample(XScuGic *IntcInstancePtr)
 		return XST_FAILURE;
 	}
 
+
 	/*
 	 * Start the Wdt device.
 	 */
-	XWdtPs_Start_RestartWdt();
+	HandlerCalled = 0;
+	XWdtPs_Start(&WdtInstance);
+	XWdtPs_RestartWdt(&WdtInstance);
+
 	/*
 	 * Verify that the Watchdog Timer does  timeout when not restarted
 	 * all the time, wait more than the amount of time it took for it
@@ -481,6 +501,8 @@ int WdtSetupIntrSystem(XScuGic *IntcInstancePtr)
 //	XScuGic_Config *IntcConfig;
 	u8 Priority, Trigger;
 
+	uz_assert(Wdt_IsReady);
+
 	Xil_ExceptionInit();
 //
 //	/*
@@ -586,6 +608,8 @@ void WdtIntrHandler(void *CallBackRef)
 void WdtDisableIntrSystem(XScuGic *IntcInstancePtr)
 {
 
+	uz_assert(Wdt_IsReady);
+
 	/*
 	 * Disconnect and disable the interrupt for the Wdt.
 	 */
@@ -596,11 +620,13 @@ void WdtDisableIntrSystem(XScuGic *IntcInstancePtr)
 
 u32 WdtPsIntrPolled(u32 ExpiredTimeDelta) { }
 
-void XWdtPs_StopWdt() {}
+//void XWdtPs_StopWdt() {}
+//
+//void XWdtPs_Restart() {}
+//
+//void XWdtPs_Start_RestartWdt() {}
 
-void XWdtPs_Restart() {}
-
-void XWdtPs_Start_RestartWdt() {}
+void XWdtPs_ResetRestart() {}
 
 int WdtPsIntrInit(XWdtPs * WdtInstancePtr, u16 WdtDeviceId, u32 Timeout){ }
 

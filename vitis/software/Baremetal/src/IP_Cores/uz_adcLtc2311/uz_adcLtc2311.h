@@ -100,23 +100,12 @@
 #define UZ_ADCLTC2311_SPI_CFGR_PRE_DELAY_LSB 16
 #define UZ_ADCLTC2311_SPI_CFGR_POST_DELAY_LSB 24
 
-// status conversion config
-#define UZ_ADCLTC2311_SET_CONV_FAILED (1<<0)
-#define UZ_ADCLTC2311_SET_OFFSET_FAILED (1<<1)
-#define UZ_ADCLTC2311_SET_SAMPLES_FAILED (1<<2)
-
-// status SPI config
-#define UZ_ADCLTC2311_CLK_DIV_INVALID (1<<0)
-#define UZ_ADCLTC2311_PRE_DELAY_INVALID (1<<0)
-#define UZ_ADCLTC2311_POST_DELAY_INVALID (1<<0)
-
 // status napSleepConfig
 #define UZ_ADCLTC2311_NS_MAN_MODE_EN_FAILED (1<<0)
 #define UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED (1<<1)
 #define UZ_ADCLTC2311_NS_ALREADY_IN_MODE (1<<2)
 #define UZ_ADCLTC2311_NS_NOT_IN_MODE (1<<3)
-#define UZ_ADCLTC2311_NS_TIMEOUT (1<<4)
-#define UZ_ADCLTC2311_NS_NO_SELECTION (1<<5)
+#define UZ_ADCLTC2311_NS_NO_SELECTION (1<<4)
 #define UZ_ADCLTC2311_NAP_PULSES 2
 #define UZ_ADCLTC2311_SLEEP_PULSES 4
 
@@ -131,8 +120,8 @@ typedef struct uz_adcLtc2311_t uz_adcLtc2311_t;
  *
  */
 struct uz_adcLtc2311_config_t{
-    uint32_t base_address; /**< Base address of the IP-Core */
-    uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
+    uint32_t base_address; /**< Base address of the IP-Core. No get or set function available */
+    uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core. No get or set function available */
 
     /* Operation parameter */
     uint32_t master_select; /**< One hot encoded variable to select the SPI masters that shall be configured */
@@ -161,7 +150,23 @@ struct uz_adcLtc2311_config_t{
 };
 
 /**
- * @brief Initializes an instance of the adcLtc2311 driver
+ * @brief Initializes an instance of the adcLtc2311
+ * 
+ * @details
+ * 
+ * This function allocates an instance of the IP core and updates the operation
+ * parameters that are shipped with the given @ref uz_adcLtc2311_config_t configuration struct
+ * 
+ * The function initializes the hardware by executing the following functions:
+ * 
+ * <UL>
+ * <LI> @ref uz_adcLtc2311_set_triggered_mode </LI>
+ * <LI> @ref uz_adcLtc2311_update_conversion_factor </LI>
+ * <LI> @ref uz_adcLtc2311_update_offset </LI>
+ * <LI> @ref uz_adcLtc2311_update_samples </LI>
+ * <LI> @ref uz_adcLtc2311_update_sample_time </LI>
+ * <LI> @ref uz_adcLtc2311_update_spi </LI>
+ * </UL>
  *
  * @param config Configuration values for the IP-Core
  * @return Pointer to initialized instance
@@ -172,43 +177,149 @@ uz_adcLtc2311_t* uz_adcLtc2311_init(struct uz_adcLtc2311_config_t config);
  * @brief Reset the IP core. This function has the same effect as applying a low pulse to the
  * RESET_N pin of the IP core.
  * 
- * @param self 
  */
 void uz_adcLtc2311_software_reset(uz_adcLtc2311_t* self);
 
 /**
- * @brief Trigger the selected SPI Masters
+ * @brief Trigger the selected SPI Masters.
  *
- * @param self
- * @param spi_masters
+ * @param spi_masters If non zero, the argument is interpreted as a binary mask which masters shall be triggered.
+ *                    If zero, the master_select value from @ref uz_adcLtc2311_config_t is considered instead.
  */
 void uz_adcLtc2311_software_trigger(uz_adcLtc2311_t* self, uint32_t spi_masters);
 
 /**
  * @brief Enable the continuous sampling mode
- *
- * @param self
  */
 void uz_adcLtc2311_set_continuous_mode(uz_adcLtc2311_t* self);
 
 /**
  * @brief Enable the triggered sampling mode
- *
- * @param self
  */
 void uz_adcLtc2311_set_triggered_mode(uz_adcLtc2311_t* self);
 
 // update functions
+
+/**
+ * @brief Update the conversion factor of the indicated channels
+ * 
+ * @details
+ * 
+ * 
+ * @return UZ_FAILURE when the hardware did not acknowledge the update of the value within max_attempts. 
+ *         Otherwise, the function returns UZ_SUCCESS.
+ */
 int32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self);
+
+/**
+ * @brief Update the offset of the indicated channels
+ * 
+ * @return UZ_FAILURE when the hardware did not acknowledge the update of the value within max_attempts. 
+ *         Otherwise, the function returns UZ_SUCCESS.
+ */
 int32_t uz_adcLtc2311_update_offset(uz_adcLtc2311_t* self);
+
+/**
+ * @brief Update the samples per trigger event of the indicated channels
+ * 
+ * @return UZ_FAILURE when the hardware did not acknowledge the update of the value within max_attempts. 
+ *         Otherwise, the function returns UZ_SUCCESS.
+ */
 int32_t uz_adcLtc2311_update_samples(uz_adcLtc2311_t* self);
+
+/**
+ * @brief Update the sample time of the indicated channels
+ * 
+ * @return UZ_FAILURE when the hardware did not acknowledge the update of the value within max_attempts. 
+ *         Otherwise, the function returns UZ_SUCCESS.
+ */
 int32_t uz_adcLtc2311_update_sample_time(uz_adcLtc2311_t* self);
+
+/**
+ * @brief Updates the global SPI configuration of the IP core.
+ */
 void uz_adcLtc2311_update_spi(uz_adcLtc2311_t* self);
 
 // Entering and leaving of Nap and Sleep mode
+
+/**
+ * @brief Send the selected channels to nap mode
+ * 
+ * @details
+ * 
+ * The function depends on the master_select and the max_attempts setting
+ * in @ref uz_adcLtc2311_config_t that is attached to the @ref uz_adcLtc2311_t
+ * instance. master_select determines, which channels are sent to nap mode and
+ * max_attempts determines the maximum number of attempts to enter the manual
+ * control mode of the SPI. Adjust these settings before calling the function.
+ * 
+ * \#defines for the error_code variable in case of failure are located in the
+ * uz_adcLtc2311.h file (public interface of this software module).
+ * 
+ * @return UZ_FAILURE if the operation failed. Check the error_code from
+ *         @ref uz_adcLtc2311_config_t for details. Otherwise, return value is
+ *         UZ_SUCCESS
+ */
 int32_t uz_adcLtc2311_enter_nap_mode(uz_adcLtc2311_t* self);
+
+/**
+ * @brief Return the selected channels from nap mode to operation mode
+ * 
+ * @details
+ * 
+ * The function depends on the master_select and the max_attempts setting
+ * in @ref uz_adcLtc2311_config_t that is attached to the @ref uz_adcLtc2311_t
+ * instance. master_select determines, which channels leave nap mode and
+ * max_attempts determines the maximum number of attempts to enter the manual
+ * control mode of the SPI. Adjust these settings before calling the function.
+ * 
+ * \#defines for the error_code variable in case of failure are located in the
+ * uz_adcLtc2311.h file (public interface of this software module).
+ * 
+ * @return UZ_FAILURE if the operation failed. Check the error_code from
+ *         @ref uz_adcLtc2311_config_t for details. Otherwise, return value is
+ *         UZ_SUCCESS
+ */
 int32_t uz_adcLtc2311_leave_nap_mode(uz_adcLtc2311_t* self);
+
+/**
+ * @brief Send the selected channels to sleep mode
+ * 
+ * @details
+ * 
+ * The function depends on the master_select and the max_attempts setting
+ * in @ref uz_adcLtc2311_config_t that is attached to the @ref uz_adcLtc2311_t
+ * instance. master_select determines, which channels are sent to sleep mode and
+ * max_attempts determines the maximum number of attempts to enter the manual
+ * control mode of the SPI. Adjust these settings before calling the function.
+ * 
+ * \#defines for the error_code variable in case of failure are located in the
+ * uz_adcLtc2311.h file (public interface of this software module).
+ * 
+ * @return UZ_FAILURE if the operation failed. Check the error_code from
+ *         @ref uz_adcLtc2311_config_t for details. Otherwise, return value is
+ *         UZ_SUCCESS
+ */
 int32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self);
+
+/**
+ * @brief Return the selected channels from sleep mode to operation mode
+ * 
+ * @details
+ * 
+ * The function depends on the master_select and the max_attempts setting
+ * in @ref uz_adcLtc2311_config_t that is attached to the @ref uz_adcLtc2311_t
+ * instance. master_select determines, which channels leave sleep mode and
+ * max_attempts determines the maximum number of attempts to enter the manual
+ * control mode of the SPI. Adjust these settings before calling the function.
+ * 
+ * \#defines for the error_code variable in case of failure are located in the
+ * uz_adcLtc2311.h file (public interface of this software module).
+ * 
+ * @return UZ_FAILURE if the operation failed. Check the error_code from
+ *         @ref uz_adcLtc2311_config_t for details. Otherwise, return value is
+ *         UZ_SUCCESS
+ */
 int32_t uz_adcLtc2311_leave_sleep_mode(uz_adcLtc2311_t* self);
 
 // set functions
@@ -218,27 +329,62 @@ void uz_adcLtc2311_set_conversion_factor(uz_adcLtc2311_t* self, int32_t value);
 void uz_adcLtc2311_set_offset(uz_adcLtc2311_t* self, int32_t value);
 
 /**
- * @brief Set the number of samples taken per trigger event
+ * @brief Set the number of samples taken per trigger event. Asserts that the value is in a valid range.
  * 
- * @param self 
  * @param value Number of samples taken per trigger event. Min: 1 Max: (2^31)-1 = 2147483647
  */
 void uz_adcLtc2311_set_samples(uz_adcLtc2311_t* self, uint32_t value);
 void uz_adcLtc2311_set_max_attempts(uz_adcLtc2311_t* self, uint32_t value);
 
 /**
- * @brief Set the minimum number of system clock cycles between two samples
+ * @brief Set the minimum number of system clock cycles between two samples. 
  * 
- * @param self 
- * @param value Number of system clock cycles between two samples. Max: (2^31)-1 = 2147483647
+ * @details
+ * 
+ * In this period, the sample and hold capacitor of the ADC is charged. The appropriate time depends on the driving 
+ * strength of the signal. Asserts that the value is in a valid range.
+ * 
+ * @param value Minimum number of system clock cycles that the SS_N signal stays high. Max: (2^31)-1 = 2147483647
  */
 void uz_adcLtc2311_set_sample_time(uz_adcLtc2311_t* self, uint32_t value);
 
 // SPI parameters
+/**
+ * @brief Asserts that not to many MSBs are set and that the value fits in the config register.
+ * 
+ * @param value Number of system clock cycles for the PRE_DELAY
+ */
 void uz_adcLtc2311_set_pre_delay(uz_adcLtc2311_t* self, uint32_t value);
+
+/**
+ * @brief Asserts that not to many MSBs are set and that the value fits in the config register.
+ * 
+ * @param value Number of system clock cycles for the POST_DELAY
+ */
 void uz_adcLtc2311_set_post_delay(uz_adcLtc2311_t* self, uint32_t value);
+
+/**
+ * @brief Asserts that not to many MSBs are set and that the value fits in the config register.
+ * 
+ * @param value Clock devider to scale the SCLK signal
+ */
 void uz_adcLtc2311_set_clk_div(uz_adcLtc2311_t* self, uint32_t value);
+
+/**
+ * @brief Set the edge, on which edge the first bit is sampled. Must be the first edge (a.k.a. CPHA = 0) for the LTC2311.
+ *        Asserts, that the value is 0.
+ * 
+ * @param value If 0, the first bit is sampled on the first edge of SCLK. If non 0, the first bit is sampled on the second
+ *              edge of SCLK.
+ */
 void uz_adcLtc2311_set_cpha(uz_adcLtc2311_t* self, uint32_t value);
+
+/**
+ * @brief Determines the IDLE state of SCLK. Must be the logic high (a.k.a. CPOL = 1) for the LTC2311.
+ *        Asserts, that the value is non 0.
+ * 
+ * @param value If 0, the IDLE state of SCLK is 0. If non 0, the IDLE state of SCLK is 1.
+ */
 void uz_adcLtc2311_set_cpol(uz_adcLtc2311_t* self, uint32_t value);
 
 

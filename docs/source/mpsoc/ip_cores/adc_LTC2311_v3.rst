@@ -14,7 +14,9 @@ from the ADCs. The IP core features an AXI4 Lite interface for
 settings and software control. For real time control, the IP core can
 be triggered by using a hardware port as well. The raw value from the
 ADC and the processed value are available as ``std_logic_vectors`` at
-the hardware interface of the IP core.
+the hardware interface of the IP core. For a thorough project description
+please refer to the project report which is available in the 
+:ref:`Downloads section <downloads>`
 
 Features
 --------
@@ -58,43 +60,80 @@ Features
 Software Driver
 ---------------
 
-.. doxygenstruct:: uz_adcLtc2311
+Configuration Procedure
+***********************
+
+Representation in software
+**************************
+
+.. _config_typedef:
+
+.. doxygentypedef:: uz_adcLtc2311_t
+
+.. _config_struct:
+
+.. doxygenstruct:: uz_adcLtc2311_config_t
    :members:
 
-.. doxygenstruct:: uz_adcLtc2311_config
-   :members:
+Operation
+*********
 
-.. doxygenfunction:: uz_adcLtc2311_configure
+.. doxygenfunction:: uz_adcLtc2311_init
 
-.. doxygenfunction:: uz_adcLtc2311_initConfig
+.. doxygenfunction:: uz_adcLtc2311_update_conversion_factor
 
-.. doxygenstruct:: uz_adcLtc2311_spiConfig
-   :members:
+.. doxygenfunction:: uz_adcLtc2311_update_offset
 
-.. doxygenfunction:: uz_adcLtc2311_configureSpi
+.. doxygenfunction:: uz_adcLtc2311_update_samples
 
-.. doxygenfunction:: uz_adcLtc2311_initSpiConfig
+.. doxygenfunction:: uz_adcLtc2311_update_sample_time
 
-.. doxygenfunction:: uz_adcLtc2311_softwareReset
+.. doxygenfunction:: uz_adcLtc2311_update_spi
 
-.. doxygenfunction:: uz_adcLtc2311_softwareTrigger
+.. doxygenfunction:: uz_adcLtc2311_set_triggered_mode
 
-.. doxygenfunction:: uz_adcLtc2311_setContinuousMode
+.. doxygenfunction:: uz_adcLtc2311_set_continuous_mode
 
-.. doxygenfunction:: uz_adcLtc2311_setTriggeredMode
+.. doxygenfunction:: uz_adcLtc2311_software_trigger
 
-.. doxygenstruct:: uz_adcLtc2311_napSleepConfig
-   :members:
+.. doxygenfunction:: uz_adcLtc2311_software_reset
 
-.. doxygenfunction:: uz_adcLtc2311_enterNapMode
+Nap and Sleep Mode
+******************
 
-.. doxygenfunction:: uz_adcLtc2311_leaveNapMode
+.. doxygenfunction:: uz_adcLtc2311_enter_nap_mode
 
-.. doxygenfunction:: uz_adcLtc2311_enterSleepMode
+.. doxygenfunction:: uz_adcLtc2311_leave_nap_mode
 
-.. doxygenfunction:: uz_adcLtc2311_leaveSleepMode
+.. doxygenfunction:: uz_adcLtc2311_enter_sleep_mode
 
-.. doxygenfunction:: uz_adcLtc2311_initNapSleepConfig
+.. doxygenfunction:: uz_adcLtc2311_leave_sleep_mode
+
+
+Parameter Adjustment
+********************
+
+Every parameter in :ref:`configuration struct <config_struct>` has a get and set function by default.
+If a get or set function is not available it is mentioned explicitly. The ``self`` parameter is always
+a pointer to the :ref:`instance representing the IP core in software <config_typedef>`. The get function
+always asserts that self is not NULL and that the instance is ready and then it returns the demanded value.
+
+If the set function is not further explained below, the value is not examined for validity. Otherwise, the
+performed asserts are mentioned below.
+
+.. doxygenfunction:: uz_adcLtc2311_set_samples
+
+.. doxygenfunction:: uz_adcLtc2311_set_sample_time
+
+.. doxygenfunction:: uz_adcLtc2311_set_pre_delay
+
+.. doxygenfunction:: uz_adcLtc2311_set_post_delay
+
+.. doxygenfunction:: uz_adcLtc2311_set_clk_div
+
+.. doxygenfunction:: uz_adcLtc2311_set_cpha
+
+.. doxygenfunction:: uz_adcLtc2311_set_cpol
 
 
 Functional Description
@@ -103,19 +142,20 @@ Functional Description
 Architecture
 ************
 
-The IP core is hierarchically subdivided into five components:
+The IP core is hierarchically organized. The figure below shows the components of the IP core.
+Every component is a single VHDL file. The functionality, which is assigned to the component is
+also mentioned in the figure.
 
-- 1 x ``ADC_LVDS_LTC2311_v3_0``
+.. _uz_adcLtc2311_architecture:
 
-  + 1 x ``ADC_LVDS_LTC2311_v3_0_S00_AXI``
-  + ``SPI_MASTER`` x ``ADC_CONTROLLER``
+.. figure:: ./adc_v3/images/architecture.svg
+   :width: 800
+   :align: center
 
-    - 1 x ``SPI_MASTER`` with ``CHANNELS_PER_MASTER`` synchronous
-      channels
-    - 1 x ``MULT_ADD``
+   Architecture of the ADC IP core.
 
-Timing
-******
+Data Flow
+*********
 
 Configuration Registers
 -----------------------
@@ -358,9 +398,6 @@ Other I/O Signals
   :widths: 10 5 40 5 30
   :header-rows: 1
 
-Configuration procedure
------------------------
-
 
 Terminology
 -----------
@@ -376,6 +413,13 @@ a DSP48 block or a channel (a.k.a. individual ADC) of that instance
 which is synchronously controlled with the other channels assigned to
 the SPI master instance. This distinction is done in the description
 of the individual register.
+
+.. _downloads:
+
+Downloads
+---------
+
+:download:`Detailed project description <./adc_v3/report_2_wendt.pdf>` 
 
 
 Designed by

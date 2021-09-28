@@ -82,5 +82,29 @@ void test_uz_matrix_multiply_by_scalar(void){
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(expect,mat,UZ_MATRIX_SIZE(mat));
 }
 
+void test_uz_matrix_multiply_3_times_2(void){
+    int rows=3;
+    int columns=2;
+    //    | 1 2 |
+    // A= | 3 4 |
+    //    | 5 6 |
+    //
+    // B= | 1 3 5 |
+    //    | 2 4 6 |
+    //
+    //    | 5 11 17 |
+    // C= | 11 25 39|
+    //    | 17 39 61|
+    float A_data[6]={1,2,3,4,5,6};
+    float B_data[6]={1,3,5,2,4,6};
+    float C_data[9]={0};
+    float C_expected[9]={5,11,17,11,25,39,17,39,61};
+    uz_matrix_t* A=uz_matrix_init(A_data,UZ_MATRIX_SIZE(A_data),3,2);
+    uz_matrix_t* B=uz_matrix_init(B_data,UZ_MATRIX_SIZE(B_data),2,3);
+    uz_matrix_t* C=uz_matrix_init(C_data,UZ_MATRIX_SIZE(C_data),3,3);
+    uz_matrix_multiply(A,B,C);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(C_expected,C_data,UZ_MATRIX_SIZE(C_expected));
+}
+
 
 #endif // TEST

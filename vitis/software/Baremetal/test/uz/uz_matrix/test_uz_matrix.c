@@ -83,18 +83,16 @@ void test_uz_matrix_multiply_by_scalar(void){
 }
 
 void test_uz_matrix_multiply_3_times_2(void){
-    int rows=3;
-    int columns=2;
-    //    | 1 2 |
-    // A= | 3 4 |
-    //    | 5 6 |
+    //          | 1 2 |
+    // A (3x2)= | 3 4 |
+    //          | 5 6 |
     //
-    // B= | 1 3 5 |
-    //    | 2 4 6 |
+    // B (2x3)= | 1 3 5 |
+    //          | 2 4 6 |
     //
-    //    | 5 11 17 |
-    // C= | 11 25 39|
-    //    | 17 39 61|
+    //          | 5  11 17 |
+    // C (3x3)= | 11 25 39 |
+    //          | 17 39 61 |
     float A_data[6]={1,2,3,4,5,6};
     float B_data[6]={1,3,5,2,4,6};
     float C_data[9]={0};

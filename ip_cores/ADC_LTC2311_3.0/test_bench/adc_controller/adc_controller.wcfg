@@ -12,14 +12,14 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="2634001fs"></ZoomEndTime>
+      <ZoomEndTime time="1312802fs"></ZoomEndTime>
       <Cursor1Time time="1366764fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="184"></NameColumnWidth>
+      <NameColumnWidth column_width="176"></NameColumnWidth>
       <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="22" />
+   <WVObjectSize size="23" />
    <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_CLK">
       <obj_property name="ElementShortName">S_CLK</obj_property>
       <obj_property name="ObjectShortName">S_CLK</obj_property>
@@ -40,6 +40,10 @@
       <obj_property name="ElementShortName">S_SS_OUT_N</obj_property>
       <obj_property name="ObjectShortName">S_SS_OUT_N</obj_property>
    </wvobject>
+   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/dut/S_SPI_BUSY">
+      <obj_property name="ElementShortName">S_SPI_BUSY</obj_property>
+      <obj_property name="ObjectShortName">S_SPI_BUSY</obj_property>
+   </wvobject>
    <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_SS_IN_N">
       <obj_property name="ElementShortName">S_SS_IN_N</obj_property>
       <obj_property name="ObjectShortName">S_SS_IN_N</obj_property>
@@ -47,10 +51,6 @@
    <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_BUSY">
       <obj_property name="ElementShortName">S_BUSY</obj_property>
       <obj_property name="ObjectShortName">S_BUSY</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/S_DUMMY_SAMPLE">
-      <obj_property name="ElementShortName">S_DUMMY_SAMPLE</obj_property>
-      <obj_property name="ObjectShortName">S_DUMMY_SAMPLE</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/ADC_CONTROLLER_TB/S_MISO">
       <obj_property name="ElementShortName">S_MISO[1:0]</obj_property>
@@ -107,5 +107,9 @@
    <wvobject type="logic" fp_name="/ADC_CONTROLLER_TB/dut/SET_SAMPLES">
       <obj_property name="ElementShortName">SET_SAMPLES</obj_property>
       <obj_property name="ObjectShortName">SET_SAMPLES</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/ADC_CONTROLLER_TB/dut/S_SAMPLE_TIME_COUNTER">
+      <obj_property name="ElementShortName">S_SAMPLE_TIME_COUNTER</obj_property>
+      <obj_property name="ObjectShortName">S_SAMPLE_TIME_COUNTER</obj_property>
    </wvobject>
 </wave_config>

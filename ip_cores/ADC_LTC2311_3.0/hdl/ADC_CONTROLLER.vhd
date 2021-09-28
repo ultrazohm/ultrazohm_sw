@@ -69,6 +69,7 @@ entity ADC_CONTROLLER is
         SET_CONVERSION  : in std_logic;
         SET_OFFSET      : in std_logic;
         SET_SAMPLES     : in std_logic;
+        SET_SAMPLE_TIME : in std_logic;
         SI_VALID        : out std_logic;
         RAW_VALID       : out std_logic;
         BUSY            : out std_logic;
@@ -89,11 +90,13 @@ architecture Behavioral of ADC_CONTROLLER is
     signal S_OFFSET         : std_logic_vector((CHANNELS * OFFSET_WIDTH) - 1 downto 0);
     
     -- control signals
-    signal S_CE_CONVERSION  : std_logic;
-    signal S_DUMMY_SAMPLE   : std_logic;
-    signal S_SAMPLES        : natural range 0 to 2147483647;
-    signal S_SAMPLE_COUNTER : natural range 0 to 2147483647;
-    signal S_MANUAL         : std_logic;
+    signal S_CE_CONVERSION          : std_logic;
+    signal S_DUMMY_SAMPLE           : std_logic;
+    signal S_SAMPLES                : natural range 0 to 2147483647;
+    signal S_SAMPLE_COUNTER         : natural range 0 to 2147483647;
+    signal S_SAMPLE_TIME            : natural range 0 to 2147483647;
+    signal S_SAMPLE_TIME_COUNTER    : natural range 0 to 2147483647;
+    signal S_MANUAL                 : std_logic;
     
     -- multiplication pipeline
     signal S_CHANNEL_COUNTER    : integer range 0 to CHANNELS;
@@ -111,6 +114,7 @@ architecture Behavioral of ADC_CONTROLLER is
     signal S_SPI_BUSY       : std_logic;
     signal S_SPI_BUSY_PIPE  : std_logic_vector(1 downto 0);
     signal S_SPI_RAW_VALUE  : std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0);
+    signal S_SS_OUT_N       : std_logic;
     
     -- State definition for the FSM
     type state_type is (IDLE,OCCUPIED,SPI_TRANSFER,CONVERTING);
@@ -183,6 +187,7 @@ begin
                 S_CHANNEL_COUNTER <= 0;
                 S_CONV_COUNTER    <= 0;
                 S_RESULT_COUNTER  <= 0;
+                S_SAMPLE_TIME_COUNTER <= 0;
                 
                 S_SPI_ENABLE     <= '0';
                 S_SPI_BUSY_PIPE  <= (others => '0');
@@ -212,11 +217,19 @@ begin
                     when OCCUPIED =>
                         
                         S_MANUAL <= '0';
+                        
+                        -- Minimum sample time
+                        -- decrement counter as soon as SS_N is high
+                        if (S_SS_OUT_N = '1') and (S_SAMPLE_TIME_COUNTER > 0) then
+                            S_SAMPLE_TIME_COUNTER <= S_SAMPLE_TIME_COUNTER - 1;
+                        end if;
+                        
                         case curstate is
                         when IDLE =>
                             BUSY <= '1';
                             S_DUMMY_SAMPLE <= '1';
                             S_SAMPLE_COUNTER <= S_SAMPLES;
+                            S_SAMPLE_TIME_COUNTER <= S_SAMPLE_TIME;
                         when CONVERTING =>
                             SI_VALID <= '1';
                             S_CE_CONVERSION <= '0';
@@ -240,6 +253,7 @@ begin
                             RAW_VALID <= '0';
                             S_SPI_ENABLE <= '1';
                             S_SPI_BUSY_PIPE(1 downto 0) <= "00";
+                            S_SAMPLE_TIME_COUNTER <= S_SAMPLE_TIME;
                             
                             -- preparation for multiplication
                             S_CHANNEL_COUNTER <= CHANNELS;
@@ -264,6 +278,12 @@ begin
                         S_CE_CONVERSION <= '1';
                         RAW_VALID <= '1';
                         SI_VALID <= '0';
+                        
+                        -- Minimum sample time
+                        -- decrement counter as soon as SS_N is high
+                        if (S_SS_OUT_N = '1') and (S_SAMPLE_TIME_COUNTER > 0) then
+                            S_SAMPLE_TIME_COUNTER <= S_SAMPLE_TIME_COUNTER - 1;
+                        end if;
                             
                         -- input signal formation for the multiplier
                         
@@ -301,7 +321,7 @@ begin
             end if;
     end process output_state_mem;
     
-    transition: process(curstate, ENABLE, S_RESULT_COUNTER, S_SPI_BUSY_PIPE, S_DUMMY_SAMPLE, S_SAMPLE_COUNTER)
+    transition: process(curstate, ENABLE, S_RESULT_COUNTER, S_SPI_BUSY_PIPE, S_DUMMY_SAMPLE, S_SAMPLE_COUNTER, S_SAMPLE_TIME_COUNTER)
         begin
             case curstate is
                 when IDLE =>
@@ -311,7 +331,8 @@ begin
                     
                 when OCCUPIED =>
                     if (S_SAMPLE_COUNTER <= 0) and (ENABLE = '0') then nxtstate <= IDLE;
-                    else                     nxtstate <= SPI_TRANSFER;
+                    elsif (S_SAMPLE_TIME_COUNTER <= 0)            then nxtstate <= SPI_TRANSFER;
+                    else                                               nxtstate <= OCCUPIED;
                     end if;
                 
                 when SPI_TRANSFER =>
@@ -319,7 +340,7 @@ begin
                     -- falling edge of the SPI_BUSY signal
                     when "10" =>
                         if (S_DUMMY_SAMPLE = '1') then nxtstate <= OCCUPIED;
-                        else                          nxtstate <= CONVERTING;
+                        else                           nxtstate <= CONVERTING;
                         end if; 
                         
                     when others =>
@@ -365,10 +386,13 @@ begin
                 end loop set_off;
             elsif (SET_SAMPLES = '1') then
                 S_SAMPLES <= TO_INTEGER(unsigned(VALUE(30 downto 0)));
+            elsif (SET_SAMPLE_TIME = '1') then
+                S_SAMPLE_TIME <= TO_INTEGER(unsigned(VALUE(30 downto 0)));
             end if;
          end if;
         
     end process proc_set_conversion;
+
     
     -- instantiation of the SPI master and the multiplicator
     
@@ -387,7 +411,7 @@ begin
         SCLK        => SCLK,
         SCLK_IN     => SCLK_IN,
         MISO        => MISO,
-        SS_OUT_N    => SS_OUT_N,
+        SS_OUT_N    => S_SS_OUT_N,
         SS_IN_N     => SS_IN_N,
         MANUAL      => S_MANUAL,
         -- Control Ports
@@ -419,6 +443,7 @@ begin
      -- concurrent signal assigenments
      
      RAW_VALUE <= S_SPI_RAW_VALUE;
+     SS_OUT_N  <= S_SS_OUT_N;
     
 
 end Behavioral;

@@ -89,7 +89,7 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     signal S_SPI_MANUAL           : std_logic_vector(SPI_MASTER - 1 downto 0);
     
     -- control signals
-    signal S_ENABLE, S_SET_CONVERSION, S_SET_OFFSET, S_SET_SAMPLES : std_logic_vector(SPI_MASTER - 1 downto 0);
+    signal S_ENABLE, S_SET_CONVERSION, S_SET_OFFSET, S_SET_SAMPLES, S_SET_SAMPLE_TIME : std_logic_vector(SPI_MASTER - 1 downto 0);
     signal S_RESET_N, S_CLK : std_logic;
     
     -- AXI values
@@ -196,6 +196,7 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
             SET_CONVERSION  : in std_logic;
             SET_OFFSET      : in std_logic;
             SET_SAMPLES     : in std_logic;
+            SET_SAMPLE_TIME : in std_logic;
             SI_VALID        : out std_logic;
             RAW_VALID       : out std_logic;
             BUSY            : out std_logic;
@@ -360,10 +361,13 @@ begin
                         S_SET_CONVERSION <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
                     when "010" =>
                         S_SET_SAMPLES    <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
+                    when "011" =>
+                        S_SET_SAMPLE_TIME <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
                     when others =>
                         S_SET_OFFSET     <= (others => '0');
                         S_SET_CONVERSION <= (others => '0');
                         S_SET_SAMPLES    <= (others => '0');
+                        S_SET_SAMPLE_TIME <= (others => '0');
                end case;
             else
                S_ADC_CR_IN(C_CONV_VALUE_VALID)  <= '1';
@@ -458,6 +462,7 @@ ADC_LTC2311_v3_0_S00_AXI_inst : ADC_LTC2311_v3_0_S00_AXI
             SET_CONVERSION  => S_SET_CONVERSION(i),
             SET_OFFSET      => S_SET_OFFSET(i),
             SET_SAMPLES     => S_SET_SAMPLES(i),
+            SET_SAMPLE_TIME => S_SET_SAMPLE_TIME(i),
             SI_VALID        => S_ADC_MASTER_SI_FINISH(i),
             RAW_VALID       => S_ADC_MASTER_FINISH(i),
             BUSY            => S_ADC_MASTER_BUSY(i),

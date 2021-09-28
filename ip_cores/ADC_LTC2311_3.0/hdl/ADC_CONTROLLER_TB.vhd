@@ -51,7 +51,8 @@ constant TEST_CLK_DIV_WIDTH         : natural := 16;
 constant TEST_RES_MSB               : natural := 34;
 constant TEST_RES_LSB               : natural := 0;
 constant TEST_CLK_DIV               : integer := 0;
-constant TEST_DELAY                 : integer := 0;
+constant TEST_DELAY                 : integer := 2;
+constant TEST_SAMPLE_TIME           : integer := 0;
 
 -- values
 constant RAW_VALUE      : integer := 200;
@@ -74,7 +75,7 @@ signal S_CLK_DIV                        : std_logic_vector(TEST_CLK_DIV_WIDTH - 
 signal S_PRE_DELAY, S_POST_DELAY        : std_logic_vector(TEST_DELAY_WIDTH - 1 downto 0);
 
 -- control signals
-signal S_SET_CONVERSION, S_SET_OFFSET, S_ENABLE, S_SI_VALID, S_RAW_VALID, S_MANUAL, S_SET_SAMPLES : std_logic := '0';
+signal S_SET_CONVERSION, S_SET_OFFSET, S_ENABLE, S_SI_VALID, S_RAW_VALID, S_MANUAL, S_SET_SAMPLES, S_SET_SAMPLE_TIME : std_logic := '0';
 signal S_RESET_N : std_logic := '1';
 signal S_CLK     : std_logic := '1';
 signal S_CHANNEL_SELECT : std_logic_vector(31 downto 0);
@@ -126,6 +127,7 @@ component ADC_CONTROLLER is
         SET_CONVERSION  : in std_logic;
         SET_OFFSET      : in std_logic;
         SET_SAMPLES     : in std_logic;
+        SET_SAMPLE_TIME : in std_logic;
         SI_VALID        : out std_logic;
         RAW_VALID       : out std_logic;
         BUSY            : out std_logic;
@@ -177,6 +179,7 @@ dut: ADC_CONTROLLER
         SET_CONVERSION      => S_SET_CONVERSION,
         SET_OFFSET          => S_SET_OFFSET,
         SET_SAMPLES         => S_SET_SAMPLES,
+        SET_SAMPLE_TIME     => S_SET_SAMPLE_TIME,
         SI_VALID            => S_SI_VALID,
         RAW_VALID           => S_RAW_VALID,
         BUSY                => S_BUSY,
@@ -235,6 +238,12 @@ stimulus : process begin
     -- set number of samples
     S_OFF_CONV <= std_logic_vector(to_signed(SAMPLES, S_OFF_CONV'length));
     S_SET_SAMPLES <= '1';
+    wait for CLOCK_PERIOD;
+    S_SET_SAMPLES <= '0';
+    
+    -- set minimum sample time
+    S_OFF_CONV <= std_logic_vector(to_signed(TEST_SAMPLE_TIME, S_OFF_CONV'length));
+    S_SET_SAMPLE_TIME <= '1';
     wait for CLOCK_PERIOD;
     S_SET_SAMPLES <= '0';
     

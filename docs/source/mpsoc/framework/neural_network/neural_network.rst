@@ -1,22 +1,11 @@
-.. _uz_nn:
+.. _neural_network:
 
 ==============
 Neural network
 ==============
 
-Software module for fully connected `multilayer perceptron networks <https://en.wikipedia.org/wiki/Multilayer_perceptron>`_, a class of feedforward neutral networks.
-The module is based on the :ref:`matrix_math` module.
-
-Features and limitations:
-
-- Multiplayer perceptron
-- No recurrent connections
-- Configurable number of outputs
-- Configurable number of inputs
-- Configurable number of hidden layer
-- Number of neurons in each hidden layer are equal
-- Activation function of all hidden layer are equal
-- Output layer activation function is independent of hidden layer activation function
+The following describes basic theory and definitions for `multilayer perceptron networks <https://en.wikipedia.org/wiki/Multilayer_perceptron>`_, a class of feedforward neutral networks.
+The software module :ref:`uz_nn` is based on the definitions on this page.
 
 Network and dimension definition
 ================================
@@ -80,9 +69,6 @@ The bias are not shown but represented as following:
    
    b^{(2)}_{j}=\left[ \begin{array}{rr} b_{1}\\ \end{array}\right]
 
-Structure of NN
-===============
-
 Neurons
 *******
 
@@ -110,13 +96,6 @@ The output value :math:`y^l_j` of the neuron is calculated by the activation fun
 
    y^l_j = \mathcal{F}(s^l_j)
 
-
-Layer
-*****
-
-The module is based around a layer concept.
-That is, a network is constructed by having one input layer without weights and baises that represents the input to the network as a row vector (number of column is one).
-, one output layer and multiple 
 
 Network
 *******

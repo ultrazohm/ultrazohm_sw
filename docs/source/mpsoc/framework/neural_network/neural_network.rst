@@ -243,8 +243,8 @@ Activation function:
 .. math::
 
       y^{3} &= linear(\boldsymbol{s^{(3)}}) \\
-      y^{3} &= linear(   \left[ \begin{array}{rr} 443 \\ \end{array}\right])\\
-      &=  \left[ \begin{array}{rr} 443 \\ \end{array}\right]
+      y^{3} &= linear(   \left[ \begin{array}{rr} 846 \\ \end{array}\right])\\
+      &=  \left[ \begin{array}{rr} 846 \\ \end{array}\right]
 
 Additional functions
 ====================

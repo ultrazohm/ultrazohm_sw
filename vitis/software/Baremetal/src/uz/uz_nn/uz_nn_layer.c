@@ -89,4 +89,6 @@ uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)
     return (self->output);
 }
 
+
+
 #endif

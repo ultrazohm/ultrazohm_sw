@@ -62,6 +62,12 @@ void test_uz_nn_ff(void)
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected_result_first_layer,y_1,UZ_MATRIX_SIZE(expected_result_first_layer));
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected_result_second_layer,y_2,UZ_MATRIX_SIZE(expected_result_second_layer));
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected_result_output_layer,y_3,UZ_MATRIX_SIZE(expected_result_output_layer));
+
+    float expected_result=846;
+    uz_matrix_t* output=uz_nn_get_output_data(test);
+    float result=uz_matrix_get_element_zero_based(output,0,0);
+    TEST_ASSERT_EQUAL_FLOAT(expected_result,result);
+
 }
 
 #endif // TEST

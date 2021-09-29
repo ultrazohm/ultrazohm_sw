@@ -24,6 +24,7 @@
 #define UZ_FOC_MAX_INSTANCES                    2U
 #define UZ_MATRIX_MAX_INSTANCES                 0U
 #define UZ_NN_LAYER_MAX_INSTANCES               0U
+    #define UZ_NN_MAX_INSTANCES                 0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -36,4 +37,5 @@
     #define UZ_FOC_MAX_INSTANCES                    100U
     #define UZ_MATRIX_MAX_INSTANCES                 201U
     #define UZ_NN_LAYER_MAX_INSTANCES               100U
+    #define UZ_NN_MAX_INSTANCES                     10U
 #endif

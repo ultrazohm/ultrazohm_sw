@@ -197,8 +197,8 @@ Activation function:
 .. math::
 
       y^{1} &= ReLU(\boldsymbol{s^{(1)}}) \\
-      y^{1} &= ReLU(   \left[ \begin{array}{rr} 9 & 12 & 15 \\ \end{array}\right])\\
-      &=  \left[ \begin{array}{rr} 9 & 12 & 15 \\ \end{array}\right]
+      y^{1} &= ReLU(   \left[ \begin{array}{rr} 10 & 14 & 18 \\ \end{array}\right])\\
+      &=  \left[ \begin{array}{rr} 10 & 14 & 18 \\ \end{array}\right]
 
 Second layer
 ************
@@ -208,20 +208,20 @@ The input of the second hidden layer is the output of the first hidden layer :ma
 .. math::
 
    \boldsymbol{y^{(1)}} \boldsymbol{w^{(2)}} + \boldsymbol{b^{(2)}} &= \boldsymbol{s^{(2)}} \\  
-   \left[ \begin{array}{rr} 9 & 12 & 15 \\ \end{array}\right]
+   \left[ \begin{array}{rr} 10 & 14 & 18 \\ \end{array}\right]
    \left[ \begin{array}{rr} -7 & -8 & -9 \\ -10 & -11 & -12 \\ 13 & 14 & -15 \\ \end{array}\right] 
    +
    \left[ \begin{array}{rr} 4 & 5 & 6 \\ \end{array}\right]
    &= 
-   \left[ \begin{array}{rr} 16 & 11 & -444 \\ \end{array}\right]
+   \left[ \begin{array}{rr} 28 & 23 & -522 \\ \end{array}\right]
 
 Activation function:
 
 .. math::
 
       y^{2} &= ReLU(\boldsymbol{s^{(2)}}) \\
-      y^{2} &= ReLU(   \left[ \begin{array}{rr} 16 & 11 & -444 \\ \end{array}\right])\\
-      &=  \left[ \begin{array}{rr} 16 & 11 & 0 \\ \end{array}\right]
+      y^{2} &= ReLU(   \left[ \begin{array}{rr} 28 & 23 & -522 \\ \end{array}\right])\\
+      &=  \left[ \begin{array}{rr} 28 & 23 & 0 \\ \end{array}\right]
 
 Output layer
 ************
@@ -231,12 +231,12 @@ The input of the output layer is the output of the second hidden layer :math:`y^
 .. math::
 
    \boldsymbol{y^{(2)}} \boldsymbol{w^{(3)}} + \boldsymbol{b^{(3)}} &= \boldsymbol{s^{(3)}} \\  
-   \left[ \begin{array}{rr} 16 & 11 & 0 \\ \end{array}\right]
+   \left[ \begin{array}{rr} 28 & 23 & 0 \\ \end{array}\right]
    \left[ \begin{array}{rr} 16 \\ 17 \\ -18 \end{array}\right] 
    +
    \left[ \begin{array}{rr} 7 \\ \end{array}\right]
    &= 
-   \left[ \begin{array}{rr} 443 \\ \end{array}\right]
+   \left[ \begin{array}{rr} 846 \\ \end{array}\right]
 
 Activation function:
 

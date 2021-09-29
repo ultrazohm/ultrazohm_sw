@@ -20,19 +20,19 @@ enum activation_function{
 };
 
 /**
- * @brief Configuration struct
+ * @brief Configuration struct for a layer of uz_nn
  * 
  */
 struct uz_nn_layer_config{
-    enum activation_function activation_function;
-    size_t number_of_neurons;
-    size_t number_of_inputs;
-    size_t length_of_weights;
-    size_t length_of_bias;
-    size_t length_of_output;
-    float *const weights;
-    float *const bias;
-    float *const output;
+    enum activation_function activation_function; /**< Activation function of all neurons in this layer */
+    size_t number_of_neurons; /**< Number of neurons in the layer */
+    size_t number_of_inputs; /**< Number of inputs to the layer. Is either the number of inputs to the network or the number of neurons of the previouse layer */
+    size_t length_of_weights; /**< Number of weights in the layer, has to be calculated by UZ_MATRIX_SIZE(weights) */
+    size_t length_of_bias; /**< Number of bias in the layer, has to be calculated by UZ_MATRIX_SIZE(bias) */
+    size_t length_of_output; /**< Number of outputs in the layer, has to be calculated by UZ_MATRIX_SIZE(output) and is equal to the number of weights */
+    float *const weights; /** Pointer to an array that holds the weights */
+    float *const bias; /** Pointer to an array that holds the bias */
+    float *const output; /** Pointer to an array that holds the output / where the output is written to */
 };
 
 /**

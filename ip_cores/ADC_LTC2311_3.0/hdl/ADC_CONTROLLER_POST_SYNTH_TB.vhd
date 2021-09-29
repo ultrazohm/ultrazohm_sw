@@ -34,21 +34,21 @@ use work.ADC_LTC2311_PKG.all;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity ADC_CONTROLLER_TB is
+entity ADC_CONTROLLER_POST_SYNTH_TB is
 --  Port ( );
-end ADC_CONTROLLER_TB;
+end ADC_CONTROLLER_POST_SYNTH_TB;
 
-architecture Behavioral of ADC_CONTROLLER_TB is
+architecture post_synth of ADC_CONTROLLER_TB is
 
 -- settings with constants
 constant CLOCK_PERIOD               : TIME := 10 ns;
 constant TEST_DATA_WIDTH            : natural := 16;
-constant TEST_CHANNELS              : natural := 2;
+constant TEST_CHANNELS              : natural := 1;
 constant TEST_OFFSET_WIDTH          : natural := 16;
 constant TEST_CONVERSION_WIDTH      : natural := 18;
 constant TEST_DELAY_WIDTH           : natural := 8;
 constant TEST_CLK_DIV_WIDTH         : natural := 16;
-constant TEST_RES_MSB               : natural := 34;
+constant TEST_RES_MSB               : natural := 17;
 constant TEST_RES_LSB               : natural := 0;
 constant TEST_CLK_DIV               : integer := 0;
 constant TEST_DELAY                 : integer := 2;
@@ -95,52 +95,34 @@ signal S_TX_BIT_COUNT : integer := TEST_DATA_WIDTH;
 
 
 component ADC_CONTROLLER is
-    generic(
-        DATA_WIDTH          : natural := 16;    -- Number of bits per SPI frame
-        CHANNELS            : natural := 1;     -- Number of slaves that are controlled with the same SS_N and SCLK
-        OFFSET_WIDTH        : natural := 16;    -- Bit width of the offset value
-        CONVERSION_WIDTH    : natural := 18;    -- Bit width of the conversion factor
-        RES_LSB             : natural := 6;     -- LSB in the result vector of the multiplactor output
-        RES_MSB             : natural := 23    -- MSB in the result vector of the multiplactor output
-        
-    );
     port (
-        CLK         : in std_logic;
-        RESET_N     : in std_logic;
-        
-        -- SPI ports
-        CPHA        : in std_logic;
-        CPOL        : in std_logic;
-        SCLK        : out std_logic;
-        SCLK_IN     : in std_logic;
-        MISO        : in std_logic_vector(CHANNELS - 1 downto 0);
-        SS_OUT_N    : out std_logic;
-        SS_IN_N     : in std_logic;
-        MANUAL      : in std_logic;
-        ENABLE      : in std_logic;
-        
-        -- SPI config ports
-        PRE_DELAY   : in std_logic_vector(C_DELAY_WIDTH - 1 downto 0);
-        POST_DELAY  : in std_logic_vector(C_DELAY_WIDTH - 1 downto 0);
-        CLK_DIV     : in std_logic_vector(C_CLK_DIV_WIDTH - 1 downto 0);
-        
-        -- Control Ports
-        SET_CONVERSION  : in std_logic;
-        SET_OFFSET      : in std_logic;
-        SET_SAMPLES     : in std_logic;
-        SET_SAMPLE_TIME : in std_logic;
-        SI_VALID        : out std_logic;
-        RAW_VALID       : out std_logic;
-        BUSY            : out std_logic;
-        
-        -- Value Ports
-        VALUE           : in std_logic_vector(31 downto 0);           -- input for conversion or offset value
-        CHANNEL_SELECT  : in std_logic_vector(31 downto 0); -- selection which channels shall be updated with conversion factor or offset
-        SI_VALUE        : out std_logic_vector((CHANNELS * (RES_MSB - RES_LSB + 1)) - 1 downto 0);
-        RAW_VALUE       : out std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0);
-        SAMPLE_COUNTER  : out std_logic_vector(31 downto 0)
-        
-    );
+    CLK : in STD_LOGIC;
+    RESET_N : in STD_LOGIC;
+    CPHA : in STD_LOGIC;
+    CPOL : in STD_LOGIC;
+    SCLK : out STD_LOGIC;
+    SCLK_IN : in STD_LOGIC;
+    MISO : in STD_LOGIC_VECTOR ( 0 to 0 );
+    SS_OUT_N : out STD_LOGIC;
+    SS_IN_N : in STD_LOGIC;
+    MANUAL : in STD_LOGIC;
+    ENABLE : in STD_LOGIC;
+    PRE_DELAY : in STD_LOGIC_VECTOR ( 7 downto 0 );
+    POST_DELAY : in STD_LOGIC_VECTOR ( 7 downto 0 );
+    CLK_DIV : in STD_LOGIC_VECTOR ( 15 downto 0 );
+    SET_CONVERSION : in STD_LOGIC;
+    SET_OFFSET : in STD_LOGIC;
+    SET_SAMPLES : in STD_LOGIC;
+    SET_SAMPLE_TIME : in STD_LOGIC;
+    SI_VALID : out STD_LOGIC;
+    RAW_VALID : out STD_LOGIC;
+    BUSY : out STD_LOGIC;
+    VALUE : in STD_LOGIC_VECTOR ( 31 downto 0 );
+    CHANNEL_SELECT : in STD_LOGIC_VECTOR ( 31 downto 0 );
+    SI_VALUE : out STD_LOGIC_VECTOR ( 17 downto 0 );
+    RAW_VALUE : out STD_LOGIC_VECTOR ( 15 downto 0 );
+    SAMPLE_COUNTER : out STD_LOGIC_VECTOR ( 31 downto 0 )
+  );
 end component ADC_CONTROLLER;
 
 
@@ -149,14 +131,6 @@ begin
 S_CLK <= not S_CLK after CLOCK_PERIOD / 2;
 
 dut: ADC_CONTROLLER
-    generic map(
-        DATA_WIDTH          => TEST_DATA_WIDTH,         -- Number of bits per SPI frame
-        CHANNELS            => TEST_CHANNELS,           -- Number of slaves that are controlled with the same SS_N and SCLK
-        OFFSET_WIDTH        => TEST_OFFSET_WIDTH,       -- Bit width of the offset value
-        CONVERSION_WIDTH    => TEST_CONVERSION_WIDTH,   -- Bit width of the conversion factor
-        RES_LSB             => TEST_RES_LSB,            -- LSB in the result vector of the multiplactor output
-        RES_MSB             => TEST_RES_MSB            -- MSB in the result vector of the multiplactor output
-    )
     port map(
         CLK                 => S_CLK,
         RESET_N             => S_RESET_N,
@@ -268,7 +242,9 @@ stimulus : process begin
 --    S_SS_IN_N <= '1';
 --    wait for 8 * (CLOCK_PERIOD * (TEST_CLK_DIV + 2) * TEST_DATA_WIDTH
 --           + CLOCK_PERIOD * (TEST_DELAY + 1));
-      wait for 20us;
+      wait for 6900ns;
+      S_ENABLE <= '0';
+      wait for 5us;
 --     test if SS_N signal can be controlled manually
 --    S_MANUAL <= '1';
 --    S_SS_IN_N <= '0';
@@ -305,12 +281,11 @@ spi_slave : process (S_SCLK, S_SS_OUT_N, S_MISO)
     end if;
 end process spi_slave;
 
-end Behavioral;
+end post_synth;
 
 configuration conf_adc_controller_tb of ADC_CONTROLLER_TB is
-    for Behavioral
-    
-        for dut : ADC_CONTROLLER use entity work.ADC_CONTROLLER(Behavioral);
+    for post_synth
+        for dut : ADC_CONTROLLER use entity work.ADC_CONTROLLER(STRUCTURE);
         end for;
     end for;
 end configuration conf_adc_controller_tb;

@@ -78,12 +78,15 @@ entity ADC_CONTROLLER is
         VALUE           : in std_logic_vector(31 downto 0);           -- input for conversion or offset value
         CHANNEL_SELECT  : in std_logic_vector(31 downto 0); -- selection which channels shall be updated with conversion factor or offset
         SI_VALUE        : out std_logic_vector((CHANNELS * (RES_MSB - RES_LSB + 1)) - 1 downto 0);
-        RAW_VALUE       : out std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0)
+        RAW_VALUE       : out std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0);
+        SAMPLE_COUNTER  : out std_logic_vector(31 downto 0)
         
     );
 end ADC_CONTROLLER;
 
 architecture Behavioral of ADC_CONTROLLER is
+    -- settings
+    constant C_SAMPLE_COUNT_LIMIT : natural := 2147483647;
     
     -- signal declarations
     signal S_CONVERSION     : std_logic_vector((CHANNELS * CONVERSION_WIDTH) - 1 downto 0);
@@ -92,10 +95,10 @@ architecture Behavioral of ADC_CONTROLLER is
     -- control signals
     signal S_CE_CONVERSION          : std_logic;
     signal S_DUMMY_SAMPLE           : std_logic;
-    signal S_SAMPLES                : natural range 0 to 2147483647;
-    signal S_SAMPLE_COUNTER         : natural range 0 to 2147483647;
-    signal S_SAMPLE_TIME            : natural range 0 to 2147483647;
-    signal S_SAMPLE_TIME_COUNTER    : natural range 0 to 2147483647;
+    signal S_SAMPLES                : natural range 0 to C_SAMPLE_COUNT_LIMIT;
+    signal S_SAMPLE_COUNTER         : integer;
+    signal S_SAMPLE_TIME            : natural range 0 to C_SAMPLE_COUNT_LIMIT;
+    signal S_SAMPLE_TIME_COUNTER    : natural range 0 to C_SAMPLE_COUNT_LIMIT;
     signal S_MANUAL                 : std_logic;
     
     -- multiplication pipeline
@@ -174,6 +177,7 @@ begin
 
 
     output_state_mem: process(CLK)
+        variable V_SAMPLE_COUNTER : integer := 0;
         begin
             if rising_edge(CLK) then
             if (reset_n = '0') then
@@ -228,12 +232,11 @@ begin
                         when IDLE =>
                             BUSY <= '1';
                             S_DUMMY_SAMPLE <= '1';
-                            S_SAMPLE_COUNTER <= S_SAMPLES;
+                            S_SAMPLE_COUNTER <= -1;
                             S_SAMPLE_TIME_COUNTER <= S_SAMPLE_TIME;
                         when CONVERTING =>
                             SI_VALID <= '1';
                             S_CE_CONVERSION <= '0';
-                            S_SAMPLE_COUNTER <= S_SAMPLE_COUNTER - 1; 
                             
                             -- transfer last value to output vector
                             SI_VALUE( ((S_RESULT_COUNTER + 1) * (RES_MSB - RES_LSB + 1)) - 1 downto (S_RESULT_COUNTER) * (RES_MSB - RES_LSB + 1)) 
@@ -260,12 +263,6 @@ begin
                             S_CONV_COUNTER    <= CHANNELS + 1;
                             S_RESULT_COUNTER  <= CHANNELS + 3;
                             
-                            -- reset SAMPLE_COUNTER. This transition only happens when ENABLE
-                            -- is held high in OCCUPIED state which applies to the conitinuous mode
-                            -- a new series is triggered directly without a dummy sample
-                            if (S_SAMPLE_COUNTER <= 0) then
-                                S_SAMPLE_COUNTER <= S_SAMPLES;
-                            end if;
                             
                         when others =>
                             if(S_SPI_BUSY = '1') then
@@ -278,6 +275,19 @@ begin
                         S_CE_CONVERSION <= '1';
                         RAW_VALID <= '1';
                         SI_VALID <= '0';
+                        
+                        -- increment the sample counter on transition from SPI_TRANSFER
+                        -- Prevent overflow by reseting S_SAMPLE_COUNTER to 0 in case of overflow
+                        if (curstate = SPI_TRANSFER) then
+                            V_SAMPLE_COUNTER := S_SAMPLE_COUNTER;
+                            V_SAMPLE_COUNTER := V_SAMPLE_COUNTER + 1;
+                            -- V_SAMPLE_COUNTER is < 0 in case of overflow
+                            if (V_SAMPLE_COUNTER < 0) then
+                                V_SAMPLE_COUNTER := 0;
+                            end if;
+                            S_SAMPLE_COUNTER <= V_SAMPLE_COUNTER;
+                        end if;
+                        
                         
                         -- Minimum sample time
                         -- decrement counter as soon as SS_N is high
@@ -330,7 +340,10 @@ begin
                     end if;
                     
                 when OCCUPIED =>
-                    if (S_SAMPLE_COUNTER <= 0) and (ENABLE = '0') then nxtstate <= IDLE;
+                    if ((S_SAMPLE_COUNTER >= (S_SAMPLES - 1)) 
+                       or (S_SAMPLE_COUNTER <= -1)) 
+                       and (ENABLE = '0') 
+                            then nxtstate <= IDLE;
                     elsif (S_SAMPLE_TIME_COUNTER <= 0)            then nxtstate <= SPI_TRANSFER;
                     else                                               nxtstate <= OCCUPIED;
                     end if;
@@ -444,6 +457,7 @@ begin
      
      RAW_VALUE <= S_SPI_RAW_VALUE;
      SS_OUT_N  <= S_SS_OUT_N;
+     SAMPLE_COUNTER <= std_logic_vector(TO_UNSIGNED(S_SAMPLE_COUNTER, SAMPLE_COUNTER'length));
     
 
 end Behavioral;

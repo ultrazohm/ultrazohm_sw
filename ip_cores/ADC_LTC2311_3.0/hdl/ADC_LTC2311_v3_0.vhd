@@ -35,6 +35,7 @@ entity ADC_LTC2311_v3_0 is
         SI_VALUE        : out std_logic_vector((SPI_MASTER * CHANNELS_PER_MASTER * (RES_MSB - RES_LSB + 1) ) - 1  downto 0);
         SI_VALID        : out std_logic_vector(SPI_MASTER - 1 downto 0);
         TRIGGER_CNV     : in std_logic_vector(SPI_MASTER - 1 downto 0);
+        SAMPLE_COUNTER  : out std_logic_vector((SPI_MASTER * C_S00_AXI_DATA_WIDTH) - 1 downto 0);
         
         -- SPI ports
         SCLK            : out std_logic_vector(SPI_MASTER - 1 downto 0);
@@ -205,7 +206,8 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
             VALUE           : in std_logic_vector(31 downto 0);           -- input for conversion or offset value
             CHANNEL_SELECT  : in std_logic_vector(31 downto 0); -- selection which channels shall be updated with conversion factor or offset
             SI_VALUE        : out std_logic_vector((CHANNELS * (RES_MSB - RES_LSB + 1)) - 1 downto 0);
-            RAW_VALUE       : out std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0)
+            RAW_VALUE       : out std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0);
+            SAMPLE_COUNTER  : out std_logic_vector(31 downto 0)
             
         );
     end component ADC_CONTROLLER;
@@ -471,7 +473,8 @@ ADC_LTC2311_v3_0_S00_AXI_inst : ADC_LTC2311_v3_0_S00_AXI
             VALUE  => S_ADC_CONV_VALUE,           -- input for conversion or offset value
             CHANNEL_SELECT  => S_ADC_CHANNEL, -- selection which channels shall be updated with conversion factor or offset
             SI_VALUE        => SI_VALUE( (i + 1) * CHANNELS_PER_MASTER * (RES_MSB - RES_LSB + 1) - 1 downto i * CHANNELS_PER_MASTER * (RES_MSB - RES_LSB + 1)),
-            RAW_VALUE       => RAW_VALUE( (i + 1) * CHANNELS_PER_MASTER * DATA_WIDTH - 1 downto i * CHANNELS_PER_MASTER * DATA_WIDTH)
+            RAW_VALUE       => RAW_VALUE( (i + 1) * CHANNELS_PER_MASTER * DATA_WIDTH - 1 downto i * CHANNELS_PER_MASTER * DATA_WIDTH),
+            SAMPLE_COUNTER  => SAMPLE_COUNTER( (i + 1) * C_S00_AXI_DATA_WIDTH - 1 downto i * C_S00_AXI_DATA_WIDTH)
 	   );
 	end generate GEN_ADC_CONT;
 

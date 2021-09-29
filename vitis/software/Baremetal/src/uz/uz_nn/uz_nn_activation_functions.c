@@ -1,5 +1,5 @@
 #include "uz_nn_activation_functions.h"
-#include "../uz/uz_HAL.h"
+#include "../uz_HAL.h"
 
 float uz_nn_activation_function_linear(float x){
     return (x);

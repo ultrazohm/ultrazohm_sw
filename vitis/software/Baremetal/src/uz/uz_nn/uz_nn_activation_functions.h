@@ -15,6 +15,7 @@ float uz_nn_activation_function_linear(float x);
  * @param x 
  * @return float 
  */
+// cppcheck-suppress misra-c2012-2.7 // the input argument "x" is not used here. However, the function definition should be consistent with all other activation function definitions to ensure that function pointers can be used with the same arguments.
 float uz_nn_activation_function_linear_derivative(float x);
 
 /**

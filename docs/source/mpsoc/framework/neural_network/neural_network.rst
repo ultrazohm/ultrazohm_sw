@@ -246,6 +246,33 @@ Activation function:
       y^{3} &= linear(   \left[ \begin{array}{rr} 846 \\ \end{array}\right])\\
       &=  \left[ \begin{array}{rr} 846 \\ \end{array}\right]
 
+
+Timing
+******
+
+The following lists basic timing to expect for different networks with the feedforward calculation in the *empty* (expect for required code for system function) ISR (takes 2.6 us without feedforward calculation).
+
+- 2 inputs, 1 output, 3 neurons, two hidden layer with ReLU takes 5.0 us
+- 2 inputs, 1 output, 3 neurons, two hidden layer with ReLU ten times takes 25.5 us
+- (5.0us-2.6us)*10+2.6us is approx. 25.5us, which means that the calculation is actually happening 10 times (compiler does not optimize it away)
+- 4 inputs, 8 outputs, 64 neurons, two hidden layer with ReLU takes 89 us.
+- 4 inputs, 8 outputs, 64 neurons, one hidden layer with ReLU takes 24.7 us.
+- 4 inputs, 8 outputs, 128 neurons, one hidden layer with ReLU takes 44 us.
+- 7 inputs, 2 outputs, 100 neurons ReLU, 30.2 us.
+
+Optimization
+------------
+
+All timing above was done with -O2 flag.
+Testing with ``-funroll-all-loops`` leads to worse performance (4 inputs, 8 outputs, 64 neurons, two hidden layer with ReLU takes 94 us with the flag compared to 89 us without).
+Testing with ``-funroll-loops`` results in 92 us.
+Most time in the program is spent on multiplying the inputs of a layer with the weight matrix.
+
+See:
+
+- https://gcc.gnu.org/onlinedocs/gcc-3.4.4/gcc/Optimize-Options.html
+- https://stackoverflow.com/questions/24196076/is-gcc-loop-unrolling-flag-really-effective
+
 Additional functions
 ====================
 

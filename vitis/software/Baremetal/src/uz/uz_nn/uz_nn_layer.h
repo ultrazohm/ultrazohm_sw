@@ -1,6 +1,7 @@
 #ifndef UZ_NN_LAYER_H
 #define UZ_NN_LAYER_H
 #include "../uz_matrix/uz_matrix.h"
+#include "uz_nn_activation_functions.h"
 
 /**
  * @brief Object definition for a layer of a neural network

@@ -1,7 +1,7 @@
 #ifndef UZ_NN_H
 #define UZ_NN_H
 
-#define UZ_NN_MAX_LAYER 10
+#define UZ_NN_MAX_LAYER 10U
 #include "uz_nn_layer.h"
 
 

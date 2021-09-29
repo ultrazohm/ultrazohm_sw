@@ -67,7 +67,6 @@ void test_uz_nn_ff(void)
     uz_matrix_t* output=uz_nn_get_output_data(test);
     float result=uz_matrix_get_element_zero_based(output,0,0);
     TEST_ASSERT_EQUAL_FLOAT(expected_result,result);
-
 }
 
 #endif // TEST

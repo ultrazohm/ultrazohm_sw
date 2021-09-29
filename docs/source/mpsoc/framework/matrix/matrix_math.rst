@@ -143,6 +143,7 @@ Reference
 
 .. doxygenfunction:: uz_matrix_multiply_by_scalar
 
+.. doxygenfunction:: uz_matrix_apply_function_to_each_element
 
 Performance estimation
 ======================

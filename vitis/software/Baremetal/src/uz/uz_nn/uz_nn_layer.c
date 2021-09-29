@@ -3,7 +3,6 @@
 #include "uz_nn_layer.h"
 #include "../uz_HAL.h"
 #include <stdbool.h>
-#include "uz_nn_activation_functions.h"
 struct uz_nn_layer_t
 {
     size_t number_of_neurons;
@@ -14,7 +13,6 @@ struct uz_nn_layer_t
     float (*activation_function_derivative)(float);
     bool is_ready;
 };
-
 
 static size_t instance_counter = 0U;
 static uz_nn_layer_t instances[UZ_NN_LAYER_MAX_INSTANCES] = { 0 };
@@ -40,7 +38,7 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     uz_assert_not_NULL(layer_config.weights);
     uz_assert_not_NULL(layer_config.bias);
     uz_assert_not_NULL(layer_config.output);
-    uz_assert(layer_config.number_of_neurons * layer_config.number_of_inputs == layer_config.length_of_weights);
+    uz_assert( (layer_config.number_of_neurons * layer_config.number_of_inputs) == layer_config.length_of_weights);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_output);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_bias);
     uz_nn_layer_t *self=uz_nn_layer_allocation();
@@ -70,16 +68,11 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input)
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(input);
     uz_assert(self->is_ready);
-    uz_assert(uz_matrix_get_number_of_rows(input)==1);
+    uz_assert(uz_matrix_get_number_of_rows(input)==1U);
     uz_matrix_set_zero(self->output);
     uz_matrix_multiply(input, self->weights, self->output);
     uz_matrix_add(self->bias, self->output);
-    for (size_t i = 0; i < self->number_of_neurons; i++)
-    {
-        float out = uz_matrix_get_element_zero_based(self->output, 0, i);
-        float s = self->activation_function(out);
-        uz_matrix_set_element_zero_based(self->output, s, 0, i);
-    }
+    uz_matrix_apply_function_to_each_element(self->output,self->activation_function);
 }
 
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)

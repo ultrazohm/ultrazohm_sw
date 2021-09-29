@@ -3,6 +3,7 @@
 #include "unity.h"
 #include "test_assert_with_exception.h"
 #include "uz_matrix.h"
+#include "uz_nn_activation_functions.h" // used for uz_matrix_apply_function_to_each_element test
 
 void setUp(void)
 {
@@ -104,5 +105,14 @@ void test_uz_matrix_multiply_3_times_2(void){
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(C_expected,C_data,UZ_MATRIX_SIZE(C_expected));
 }
 
+void test_uz_matrix_apply_function_to_each_element(void){
+    float (*fcn_pointer)(float);
+    fcn_pointer=&uz_nn_activation_function_relu;
+    float A_data[5]={1,-1,2,-2,5};
+    float expected[5]={1,0,2,0,5}; // Relu function just sets every element that is negative to zero
+    uz_matrix_t* A=uz_matrix_init(A_data,UZ_MATRIX_SIZE(A_data),1,5);
+    uz_matrix_apply_function_to_each_element(A,fcn_pointer);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected,A_data,UZ_MATRIX_SIZE(expected));
+}
 
 #endif // TEST

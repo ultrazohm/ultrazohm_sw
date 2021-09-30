@@ -49,6 +49,18 @@ uz_FOC* uz_FOC_init(struct uz_FOC_config config);
 struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float U_zk_Volts, float omega_el_rad_per_sec);
 
 /**
+ * @brief calculates last sample and transforms the dq-output voltage into the UVW-system
+ * 
+ * @param self uz_FOC instance
+ * @param i_reference_Ampere uz_dq_t struct for reference dq-currents in Ampere
+ * @param i_actual_Ampere uz_dq_t struct for measured dq-currents in Ampere
+ * @param U_zk_Volts measured U_zk voltage. Must be greater than 0.0f
+ * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
+ * @param theta_el_rad electrical theta in rad
+ * @return struct uz_UVW_t Output UVW-voltage struct
+ */
+struct uz_UVW_t uz_FOC_sample_UVW(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float U_zk_Volts, float omega_el_rad_per_sec, float theta_el_rad);
+/**
  * @brief Resets the FOC and the integrators of the PI-Controllers
  *
  * @param self uz_FOC instance

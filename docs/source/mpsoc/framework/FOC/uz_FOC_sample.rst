@@ -6,6 +6,8 @@ Sample function
 
 .. doxygenfunction:: uz_FOC_sample
 
+.. doxygenfunction:: uz_FOC_sample_UVW
+
 Example
 =======
 
@@ -16,9 +18,12 @@ Example
   int main(void) {
      float U_zk_Volts = 24.0f;
      float omega_el_rad_per_sec = 125.1f;
+     float theta_el_rad = 1.2f;
      struct uz_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
      struct uz_dq_t i_reference_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-     struct uz_dq_t u_output_Volts = uz_FOC_sample(FOC_instance, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec);
+     struct uz_dq_t u_dq_Volts = uz_FOC_sample(FOC_instance, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec);
+     //Alternatively the sample function can output the UVW-values
+     struct uz_UVW_t u_UVW_Volts = uz_FOC_sample_UVW(FOC_instance, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec, theta_el_rad);
   }
 
 Description
@@ -26,7 +31,10 @@ Description
 
 Calculates one sample of the FOC.
 A space vector output limitation and a linear decoupling function are integrated. 
-It returns the reference voltages in an ``uz_dq_t`` struct. 
+
+.. note::
+
+  Either use the ``uz_FOC_sample`` function to get the output voltages in the dq0-frame or use the ``uz_FOC_sample_UVW`` function to get the output voltages in the UVW-system. 
 
 .. warning::
 

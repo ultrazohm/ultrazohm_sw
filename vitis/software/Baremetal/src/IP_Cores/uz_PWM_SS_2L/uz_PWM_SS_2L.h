@@ -29,6 +29,9 @@ struct uz_PWM_SS_2L_config_t{
                                          2 = direct control of switching states via FPGA */
     uint32_t PWM_en;                /**< IP core enable flag\n 
                                          0=disable module, 1=enable module */
+    uint32_t CntExtSrc;             /**< Flag for choosing the PWM counter source\n
+                                         0 = internal counter source of the instance\n
+                                         1 = counter at port count_in */
     float init_dutyCyc_A;           /**< Initial PWM duty cycle of half-bridge 1, 0...1 */
     float init_dutyCyc_B;           /**< Initial PWM duty cycle of half-bridge 2, 0...1 */
     float init_dutyCyc_C;           /**< Initial PWM duty cycle of half-bridge 3, 0...1 */

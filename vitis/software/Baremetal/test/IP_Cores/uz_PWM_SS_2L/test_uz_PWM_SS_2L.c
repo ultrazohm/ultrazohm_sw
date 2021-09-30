@@ -39,6 +39,7 @@ void test_uz_PWM_SS_2L_set_duty_cycle(void)
         .PWM_freq_Hz = 100e6,
         .PWM_mode = 0,
         .PWM_en = 1,
+        .CntExtSrc = 0,
         .init_dutyCyc_A = 0.0,
         .init_dutyCyc_B = 0.0,
         .init_dutyCyc_C = 0.0
@@ -47,6 +48,7 @@ void test_uz_PWM_SS_2L_set_duty_cycle(void)
 
     uz_PWM_SS_2L_hw_SetStatus_Expect(instance->config.base_address, instance->config.PWM_en);
     uz_PWM_SS_2L_hw_SetMode_Expect(instance->config.base_address, instance->config.PWM_mode);
+    uz_PWM_SS_2L_hw_SetExternalCounterSource_Expect(instance->config.base_address, instance->config.CntExtSrc);
     uz_PWM_SS_2L_hw_SetCarrierFrequency_Expect(instance->config.base_address, instance->config.ip_clk_frequency_Hz, instance->config.PWM_freq_Hz);
     uz_PWM_SS_2L_hw_SetMinimumPulseWidth_Expect(instance->config.base_address, instance->config.min_pulse_width);
     uz_PWM_SS_2L_hw_SetDutyCycle_Expect(instance->config.base_address, instance->config.init_dutyCyc_A, instance->config.init_dutyCyc_B, instance->config.init_dutyCyc_C);
@@ -75,6 +77,7 @@ void test_uz_PWM_SS_2L_init(void)
         .PWM_freq_Hz = 100e6,
         .PWM_mode = 0,
         .PWM_en = 1,
+        .CntExtSrc = 0,
         .init_dutyCyc_A = 0.0,
         .init_dutyCyc_B = 0.0,
         .init_dutyCyc_C = 0.0
@@ -83,6 +86,7 @@ void test_uz_PWM_SS_2L_init(void)
 
     uz_PWM_SS_2L_hw_SetStatus_Expect(instance->config.base_address, instance->config.PWM_en);
     uz_PWM_SS_2L_hw_SetMode_Expect(instance->config.base_address, instance->config.PWM_mode);
+    uz_PWM_SS_2L_hw_SetExternalCounterSource_Expect(instance->config.base_address, instance->config.CntExtSrc);
     uz_PWM_SS_2L_hw_SetCarrierFrequency_Expect(instance->config.base_address, instance->config.ip_clk_frequency_Hz, instance->config.PWM_freq_Hz);
     uz_PWM_SS_2L_hw_SetMinimumPulseWidth_Expect(instance->config.base_address, instance->config.min_pulse_width);
     uz_PWM_SS_2L_hw_SetDutyCycle_Expect(instance->config.base_address, instance->config.init_dutyCyc_A, instance->config.init_dutyCyc_B, instance->config.init_dutyCyc_C);

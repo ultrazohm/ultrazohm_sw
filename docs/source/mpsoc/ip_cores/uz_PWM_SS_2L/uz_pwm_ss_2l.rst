@@ -1,13 +1,14 @@
 .. _uz_pwm_ss_2l:
 
-==================
-PWM and SS Control
-==================
+=====================
+PWM and SS Control V4
+=====================
 
 The IP core implements a modulation and switching state control unit that generates control signals for power electronic applications for 
 three phase legs of two-level inverter topologies. Interlock and dead-time functionalities are not part of this IP core and are handled in a subsequent IP core.
 If less than three phase legs are used, unused phase legs can be set to a tristate mode, where neither the top nor the bottom switch of the phase leg are active.
-For higher phase numbers, multiple instances of this module can be used in the FPGA, each containing its own up-down counter.
+For higher phase numbers, multiple instances of this module can be used in the FPGA, each containing its own up-down counter. For synchronizing multiple instances, 
+the counter can be fed to subsequent instances. This feature is the only difference between versions V3 and V4.
  
 The IP core provides two general modes of operation.
 
@@ -51,16 +52,23 @@ Example usage
 Vivado
 ******
 
-- One instance of the IP core is always part of the basic block design.
-- It can be found in the "Gates" hierarchy.
+- One instance:
 
 .. figure:: vivado_example.png
    :width: 800
    :align: center
 
-   Example implementation in the basic block design
+   Example implementation in the block design
 
 For further instances, add the IP core to your design as many times as needed and connect them accordingly.
+For synchronization of instances, feed the count_out port of the first instance into the count_in port of one or several subsequent instances:
+
+.. figure:: vivado_2instances.png
+   :width: 800
+   :align: center
+
+   Example implementation in the block design with two synchronized instances
+
 A flag for 1 cycle is active at the counter maximum and minimum value for triggering subsequent blocks or interrupts.
 
 Vitis
@@ -81,6 +89,7 @@ Vitis
             .PWM_freq_Hz = 10e3,
             .PWM_mode = 0,
             .PWM_en = 1,
+            .CntExtSrc = 0,
             .init_dutyCyc_A = 0.0,
             .init_dutyCyc_B = 0.0,
             .init_dutyCyc_C = 0.0

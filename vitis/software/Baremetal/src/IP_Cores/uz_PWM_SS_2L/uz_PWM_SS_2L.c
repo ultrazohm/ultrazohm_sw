@@ -43,6 +43,8 @@ void uz_PWM_SS_2L_set_config(struct uz_PWM_SS_2L_t *instance) {
 
     uz_PWM_SS_2L_hw_SetMode(instance->config.base_address, instance->config.PWM_mode);
 
+    uz_PWM_SS_2L_hw_SetExternalCounterSource(instance->config.base_address, instance->config.CntExtSrc);
+
     uz_PWM_SS_2L_hw_SetCarrierFrequency(instance->config.base_address, instance->config.ip_clk_frequency_Hz, instance->config.PWM_freq_Hz);
     
     uz_PWM_SS_2L_hw_SetMinimumPulseWidth(instance->config.base_address, instance->config.min_pulse_width);

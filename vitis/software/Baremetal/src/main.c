@@ -17,6 +17,7 @@
 #include "main.h"
 #include "uz/uz_global_configuration.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
+#include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
 //Initialize the global variables
 int i_LifeCheck;
@@ -44,6 +45,9 @@ static void uz_assertCallback(const char8 *file, s32 line) {
 	XScuGic_Disable(&INTCInst, Interrupt_ISR_ID);
 }
 
+uz_PWM_SS_2L_t *PWM_SS_2L_instance_1;
+uz_PWM_SS_2L_t *PWM_SS_2L_instance_2;
+
 int main(void) {
 
 	int status = UZ_SUCCESS;
@@ -61,10 +65,52 @@ int main(void) {
 	// Initialize Park-Transformation 123 to dq
 	DQTransformation_Initialize(&Global_Data);
 	uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
+	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1, 2);
 	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
+	uz_interlockDeadtime2L_handle deadtime_slotd1_1 = uz_interlockDeadtime2L_staticAllocator_slotD1_1();
+	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1_1, 4);
+	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1_1, true);
 	//Initialize PWM and switch signal control
-	PWM_SS_Initialize(&Global_Data); 	// two-level modulator
+	//PWM_SS_Initialize(&Global_Data); 	// two-level modulator
 	PWM_3L_Initialize(&Global_Data);	// three-level modulator
+
+	struct uz_PWM_SS_2L_config_t config_1 = {
+			.base_address = XPAR_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR,
+			.ip_clk_frequency_Hz = 100e6,
+			.Tristate_HB1 = 0,
+			.Tristate_HB2 = 0,
+			.Tristate_HB3 = 0,
+			.min_pulse_width = 0.01,
+			.PWM_freq_Hz = 10e3,
+			.PWM_mode = 0,
+			.PWM_en = 1,
+			.CntExtSrc = 0,
+			.init_dutyCyc_A = 0.0,
+			.init_dutyCyc_B = 0.0,
+			.init_dutyCyc_C = 0.0
+	};
+
+	PWM_SS_2L_instance_1 = uz_PWM_SS_2L_init(config_1);
+	uz_PWM_SS_2L_set_config(PWM_SS_2L_instance_1);
+
+	struct uz_PWM_SS_2L_config_t config_2 = {
+			.base_address = XPAR_GATES_PWM_AND_SS_CONTROL_V_2_BASEADDR,
+			.ip_clk_frequency_Hz = 100e6,
+			.Tristate_HB1 = 0,
+			.Tristate_HB2 = 0,
+			.Tristate_HB3 = 0,
+			.min_pulse_width = 0.01,
+			.PWM_freq_Hz = 10e3,
+			.PWM_mode = 0,
+			.PWM_en = 1,
+			.CntExtSrc = 1,
+			.init_dutyCyc_A = 0.0,
+			.init_dutyCyc_B = 0.0,
+			.init_dutyCyc_C = 0.0
+	};
+
+	PWM_SS_2L_instance_2 = uz_PWM_SS_2L_init(config_2);
+	uz_PWM_SS_2L_set_config(PWM_SS_2L_instance_2);
 
 	// Initialize Timer in order to Trigger the ISRs
 	Initialize_Timer();
@@ -137,27 +183,27 @@ int main(void) {
 			switch (Global_Data.cw.ControlMethod) {
 			case DirectTorqueControl:
 				Configure_DTC_Control(&Global_Data);
-				PWM_SS_Initialize(&Global_Data);
+				//PWM_SS_Initialize(&Global_Data);
 				uz_printf("DTC is active\n");
 				break;
 			case fieldOrientedControl:
 				Configure_FOC_Control(&Global_Data);
-				PWM_SS_Initialize(&Global_Data);
+				//PWM_SS_Initialize(&Global_Data);
 				uz_printf("FOC is active\n");
 				break;
 			case ModelPredictiveControl:
 				Configure_MPC_Control(&Global_Data);
-				PWM_SS_Initialize(&Global_Data);
+				//PWM_SS_Initialize(&Global_Data);
 				uz_printf("MPC is active\n");
 				break;
 			case sixStepCommutation:
 				//toDO not used at the moment
-				PWM_SS_Initialize(&Global_Data);
+				//PWM_SS_Initialize(&Global_Data);
 				uz_printf("Six-Step commutation is active\n");
 				break;
 			case halfBridgeControl:
 				Configure_HalfBridge_Control(&Global_Data);
-				PWM_SS_Initialize(&Global_Data);
+				//PWM_SS_Initialize(&Global_Data);
 				uz_printf("Half Bridge control is active\n");
 				break;
 			default:

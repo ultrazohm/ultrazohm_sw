@@ -2,6 +2,15 @@
 #define UZ_PWM_SS_2L_HW_H
 #include <stdint.h>
 
+/**
+ * @brief selects whether the PWM counter is taken from within the instance or 
+ *        from an externel source
+ * 
+ * @param base_address      base address of the instance
+ * @param CntExtSrc_on_off  flag for choosing the PWM counter source
+ *                          0=internal counter source, 1=external counter source
+ */
+void uz_PWM_SS_2L_hw_SetExternalCounterSource(uint32_t base_address, uint32_t CntExtSrc_on_off);
 
 /**
  * @brief sets the input reference (dutyCycle) of the module

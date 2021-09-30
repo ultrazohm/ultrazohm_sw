@@ -31,7 +31,7 @@
 
 //Inclusion of WDT code
 #include "../Codegen/uz_codegen.h"
-#include "uz_xwdtps.h"
+#include "../uz/uz_wdt/uz_xwdtps.h"
 
 
 //Initialize the variables for the ADC measurement
@@ -52,10 +52,9 @@ float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
 
-
-int isr_failures = 0;
-
-int isr_reset = 0;
+// Testing variables for WDT
+//int isr_failures = 0;
+//int isr_reset = 0;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -69,11 +68,10 @@ static void CheckForErrors();
 
 void ISR_Control(void *data)
 {
-
-//	/*
-//	 * RE Start the WDT device.
-//	 */
-//	XWdtPs_ResetRestart();
+	/*
+	 * RE Start the WDT device.
+	 */
+	XWdtPs_ResetRestart();
 
 	uz_SystemTime_ISR_Tic();
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
@@ -108,15 +106,12 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
 
-//	to trigger the out of time *and missing the next ISR
+//	//	TEST: to trigger the time violation of ISR
 //	uz_sleep_useconds(100);
-//	u32 ExpiredTimeDelta = 0U;
-//	while (1) {
-//		ExpiredTimeDelta++;
-//		if (ExpiredTimeDelta > 200000000U) {
-//			break;
-//		}
-//	}
+//
+//	//	TEST: to trigger system hang and the reset
+//	uz_sleep_useconds(350);  // 1500 for 1 msecond
+
 
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
@@ -126,13 +121,11 @@ void ISR_Control(void *data)
 	// This has to be the last function executed in the ISR!
 	uz_SystemTime_ISR_Toc();
 
-	//	// Execution time must be less than the period
+	// Execution time must be less than the period
 	if ((uz_SystemTime_GetIsrDirectExectionTimeInUs() * 1e-6) > Global_Data.ctrl.pwmPeriod){
-		isr_failures++; //Xil_Assert(__FILE__, __LINE__); //isr_failures++; //xil_printf("RPU: ERROR: ISR TO\r\n");// Xil_Assert(__FILE__, __LINE__);
+		 Xil_Assert(__FILE__, __LINE__);// isr_failures++; // change the instruction for testing
 	}
 
-
-//	XWdtPs_StopWdt() ;
 }
 
 //==============================================================================================================================================================
@@ -155,12 +148,11 @@ int Initialize_ISR(){
 
 
 	/*
-	 * Call the WDT init to initialize, make a self test, and set timer to the given timeout
+	 * Call the WDT init to initialize and set timer to the given timeout
 	 */
-	xil_printf("#### 10 WDT Initializing!!!!!\r\n");
-	Status = WdtPsIntrInit(0U);
+	Status = WdtPsInit(XPFW_WDT_EXPIRE_TIME);
 	if (Status != XST_SUCCESS) {
-		xil_printf("WDT Interrupt init Failed\r\n");
+		xil_printf("WDT initialization failed\r\n");
 		return XST_FAILURE;
 	}
 
@@ -173,43 +165,12 @@ int Initialize_ISR(){
 		}
 
 
-//	xil_printf("WDT Interrupt Example Test\r\n");
-//
-//	Status = WdtPsIntrExample(&INTCInst);
-//	if(Status != XST_SUCCESS) {
-//		xil_printf("RPU: Error: WdtPsIntrExample failed\r\n");
-//		return XST_FAILURE;
-//	}
-
-	/*
-	 * RE Start the WDT device.
-	 */
-	XWdtPs_ResetRestart();
-
-
-	/*
-	 * Determine how long it takes for the Watchdog Timer to expire
-	 * for later processing.
-	 * If the reset output of the device is connected to the processor,
-	 * the following code will cause a reset.
-	 */
-	while (1) {
-		if (!(XWdtPs_IsWdtExpired(&WdtInstance))) {
-			isr_reset++;
-		} else {
-			break;
-		}
-	}
-
-	xil_printf("Sys works. Not reseted. WdtPsIntrPolled with ExpiredTimeDelta: %u \r\n", isr_reset);
-
-
 	// Initialize mux_axi to use correct interrupt for triggering the ADCs
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + IPCore_Enable_mux_axi_ip, 1); // enable IP core
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
 
 
-	xil_printf("EXAMPLE Successfully init WDT WITH  LOW  SLEEP !!!! !!!   @@@@@ \r\n");
+	xil_printf("RPU: Initialize_ISR Done\r\n");
 
 return Status;
 }
@@ -289,22 +250,13 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 
 
 
-//	/*
-//	 * Connect to the interrupt subsystem so that interrupts can occur and Enable the IRQ output.
-//	 */
-//	status = WdtSetupIntrSystem(IntcInstPtr);
-//	if (status != XST_SUCCESS) {
-//		return XST_FAILURE;
-//	}
-
-
 	// Enable GPIO and timer interrupts in the controller
 	XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
 	XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
 //	XScuGic_Enable(&INTCInst, INTC_ADC_Conv_INTERRUPT_ID);
 
 
-	xil_printf("RPU: Rpu_GicInit: Done wdt int added\r\n");
+	xil_printf("RPU: Rpu_GicInit: Done\r\n");
 	return XST_SUCCESS;
 }
 

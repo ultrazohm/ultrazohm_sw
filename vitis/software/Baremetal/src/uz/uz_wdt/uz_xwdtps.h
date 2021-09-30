@@ -1,18 +1,15 @@
-/******************************************************************************
-* Copyright (C) 2010 - 2021 Xilinx, Inc.  All rights reserved.
-* SPDX-License-Identifier: MIT
-******************************************************************************/
-
 /*****************************************************************************/
 /**
 *
-* @file xwdtps_intr_example.c
+* @file uz_xwdtps.h
 *
 * This file contains a design example using the System Watchdog Timer Device
-* (WdtPs) driver and hardware device using interrupt mode. This test
+* (WdtPs) driver and hardware device using interrupt mode. This example test
 * assumes that the RESET OUTPUT OF WDT IS NOT CONNECTED to the processor and
 * the IRQ output is connected to an interrupt controller attached to the
-* processor
+* processor.
+*
+* It also contains a XWdtPs_ResetRestart to restart the WDT and enabling Reset Output.
 *
 *
 * @note
@@ -26,6 +23,8 @@
 * 1.00a ecm/jz 01/15/10 First release
 * 3.1	sg	   08/20/18 Updated interrupt example to fix interrupt ID
 * 						conflict issue
+* 4		DKen	09/30/2021 Detached Init function with TimeOut timer in ms.
+* 						Added a Restart function to use the RESET OUTPUT.
 *
 * </pre>
 *
@@ -72,10 +71,22 @@
 #define WDT_DEVICE_ID		XPAR_XWDTPS_0_DEVICE_ID
 #define INTC_DEVICE_ID		XPAR_SCUGIC_SINGLE_DEVICE_ID
 
-/* Assign default values for WDT params assuming default config */
-#define WDT_CRV_SHIFT 12U
-#define WDT_PRESCALER 4096U
-#define WDT_CLK_PER_SEC ((XPAR_PSU_WDT_0_WDT_CLK_FREQ_HZ) / (WDT_PRESCALER))
+
+/*
+ * WDT Default expire time in milliseconds.
+ *
+ * If defined with 0U it will expire with the smallest time value
+ * (about 350 useconds).
+ */
+#define XPFW_WDT_EXPIRE_TIME (0U)
+
+#define XPFW_WDT_CRV_SHIFT 12U
+#define XPFW_WDT_PRESCALER 8U
+
+#define XPFW_WDT_CLK_PER_MSEC ((XPAR_PSU_WDT_0_WDT_CLK_FREQ_HZ) / (XPFW_WDT_PRESCALER * 1000U))
+#define XPFW_WDT_COUNTER_VAL ((XPFW_WDT_EXPIRE_TIME) * (XPFW_WDT_CLK_PER_MSEC))
+
+
 
 /**************************** Type Definitions *******************************/
 #define HANDLER_CALLED  0xFFFFFFFF
@@ -86,15 +97,9 @@
 
 u32 WdtPsIntrPolled(u32 ExpiredTimeDelta) ;
 
-//void XWdtPs_StopWdt() ;
-//
-//void XWdtPs_Restart() ;
-//
-//void XWdtPs_Start_RestartWdt() ;
-
 void XWdtPs_ResetRestart() ;
 
-int WdtPsIntrInit(u32 Timeout);
+int WdtPsInit(u32 Timeout);
 
 int WdtPsIntrExample(XScuGic *IntcInstancePtr);
 

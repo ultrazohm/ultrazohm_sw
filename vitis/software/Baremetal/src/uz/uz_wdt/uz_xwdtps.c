@@ -1,106 +1,40 @@
-///******************************************************************************
-//* Copyright (C) 2010 - 2021 Xilinx, Inc.  All rights reserved.
-//* SPDX-License-Identifier: MIT
-//******************************************************************************/
-//
-///*****************************************************************************/
-///**
-//*
-//* @file xwdtps_intr_example.c
-//*
-//* This file contains a design example using the System Watchdog Timer Device
-//* (WdtPs) driver and hardware device using interrupt mode. This test
-//* assumes that the RESET OUTPUT OF WDT IS NOT CONNECTED to the processor and
-//* the IRQ output is connected to an interrupt controller attached to the
-//* processor
-//*
-//*
-//* @note
-//*
-//* <pre>
-//*
-//* MODIFICATION HISTORY:
-//*
-//* Ver   Who    Date     Changes
-//* ----- ------ -------- ---------------------------------------------
-//* 1.00a ecm/jz 01/15/10 First release
-//* 3.1	sg	   08/20/18 Updated interrupt example to fix interrupt ID
-//* 						conflict issue
-//*
-//* </pre>
-//*
-//******************************************************************************/
-//
-///***************************** Include Files *********************************/
-//
-//#include "xparameters.h"
-//#include "xwdtps.h"
-//#include "xscugic.h"
-//#include "xil_exception.h"
-//#include "xil_printf.h"
-//
-///************************** Constant Definitions *****************************/
-//
-///*
-// * The following constants map to the XPAR parameters created in the
-// * xparameters.h file. They are only defined here such that a user can easily
-// * change all the needed parameters in one place.
-// */
-//#ifdef XPAR_PS7_WDT_0_DEVICE_ID
-//#define WDT_IRPT_INTR		XPS_WDT_INT_ID
-//#endif
-//
-//#ifdef XPAR_PSU_CSU_WDT_DEVICE_ID
-//	#define WDT_IRPT_INTR		XPS_CSU_WDT_INT_ID
-//#else
-//	#ifdef XPAR_PSU_WDT_0_DEVICE_ID
-//		#define WDT_IRPT_INTR		XPS_LPD_SWDT_INT_ID
-//	#else
-//		#ifdef XPAR_PSU_WDT_1_DEVICE_ID
-//			#define WDT_IRPT_INTR		XPS_FPD_SWDT_INT_ID
-//		#endif
-//	#endif
-//#endif
-//
-//#define WDT_DEVICE_ID		XPAR_XWDTPS_0_DEVICE_ID
-//#define INTC_DEVICE_ID		XPAR_SCUGIC_SINGLE_DEVICE_ID
-//
-///* Assign default values for WDT params assuming default config */
-//#define WDT_CRV_SHIFT 12U
-//#define WDT_PRESCALER 4096U
-//#define WDT_CLK_PER_SEC ((XPAR_PSU_WDT_1_WDT_CLK_FREQ_HZ) / (WDT_PRESCALER))
-//
-///**************************** Type Definitions *******************************/
-//#define HANDLER_CALLED  0xFFFFFFFF
-//
-///***************** Macros (Inline Functions) Definitions *********************/
-//
-///************************** Function Prototypes ******************************/
-//
-//u32 WdtPsIntrPolled(u32 ExpiredTimeDelta, XWdtPs* WdtInstancePtr) ;
-//
-//int WdtPsIntrInit(XWdtPs * WdtInstancePtr, u16 WdtDeviceId, u32 Timeout);
-//
-//int WdtPsIntrExample(XScuGic *IntcInstancePtr, XWdtPs * WdtInstancePtr,
-//		       u16 WdtDeviceId, u16 WdtIntrId);
-//
-//static void WdtIntrHandler(void *CallBackRef);
-//
-//static int WdtSetupIntrSystem(XScuGic *IntcInstancePtr,
-//				  XWdtPs * WdtInstancePtr, u16 WdtIntrId);
-//
-//static void WdtDisableIntrSystem(XScuGic *IntcInstancePtr, u16 WdtIntrId);
-//
-///************************** Variable Definitions *****************************/
-//
-//XWdtPs WdtInstance;		/* Instance of WatchDog Timer */
-//XScuGic IntcInstance;		/* Instance of the Interrupt Controller */
-//
-//volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
+/*****************************************************************************/
+/**
+*
+* @file uz_xwdtps.c
+*
+* This file contains a design example using the System Watchdog Timer Device
+* (WdtPs) driver and hardware device using interrupt mode. This test
+* assumes that the RESET OUTPUT OF WDT IS NOT CONNECTED to the processor and
+* the IRQ output is connected to an interrupt controller attached to the
+* processor.
+*
+* It also contains a XWdtPs_ResetRestart to restart the WDT and enabling Reset Output.
+*
+* Based on @file xwdtps_intr_example.c. Copyright (C) 2010 - 2021 Xilinx, Inc.  All rights reserved. SPDX-License-Identifier: MIT
+*
+*
+* @note
+*
+* <pre>
+*
+* MODIFICATION HISTORY:
+*
+* Ver   Who    Date     Changes
+* ----- ------ -------- ---------------------------------------------
+* 1.00a ecm/jz 01/15/10 First release
+* 3.1	sg	   08/20/18 Updated interrupt example to fix interrupt ID
+* 						conflict issue
+* 4		DKen	09/30/2021 Detached Init function with TimeOut timer in ms.
+* 						Added a Restart function to use the RESET OUTPUT.
+*
+* </pre>
+*
+******************************************************************************/
 
 
 #include "uz_xwdtps.h"
-#include "../uz/uz_HAL.h"
+#include "../uz_HAL.h"
 
 #ifdef ENABLE_WDT_INT
 
@@ -142,18 +76,18 @@ _Bool Wdt_IsReady = false;
 /*****************************************************************************/
 /**
 *
-* This function initializes and tests the functioning of the System WatchDog Timer driver in the
-* Interrupt mode.
+* This function initializes and tests the functioning of the System WatchDog Timer driver and
+* sets the inital value to the counter. If the value of Timeout param is 0U it is set to the
+* SMALLEST VALUE (about 350 useconds).
 *
-* @param	WdtInstancePtr is a pointer to the instance of XWdtPs driver.
-* @param	WdtDeviceId is the Device ID of the XWdtPs device.
+* @param	Timeout - Watchdog timeout in ms.
 *
 * @return	XST_SUCCESS if successful, otherwise XST_FAILURE.
 *
 * @note		None.
 *
 ******************************************************************************/
-int WdtPsIntrInit(u32 Timeout) //&WdtInstance, WDT_DEVICE_ID,
+int WdtPsInit(u32 Timeout) //&WdtInstance, WDT_DEVICE_ID,
 {
 	int Status;
 //	u32 Timebase = 0;
@@ -161,6 +95,7 @@ int WdtPsIntrInit(u32 Timeout) //&WdtInstance, WDT_DEVICE_ID,
 	u32 EffectiveAddress;	/* This can be the virtual address */
 	XWdtPs_Config *ConfigPtr;
 
+	u32 CounterValue;
 
 	/*
 	 * Initialize the Wdt driver.
@@ -178,40 +113,47 @@ int WdtPsIntrInit(u32 Timeout) //&WdtInstance, WDT_DEVICE_ID,
 		return XST_FAILURE;
 	}
 
-//	/*
-//	 * Perform a self-test to ensure that the hardware was built correctly.
-//	 */
-//	Status = XWdtPs_SelfTest(&WdtInstance);
-//	if (Status != XST_SUCCESS) {
-//		return XST_FAILURE;
-//	}
+	/*
+	 * Perform a self-test to ensure that the hardware was built correctly.
+	 */
+	Status = XWdtPs_SelfTest(&WdtInstance);
+	if (Status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
 
-//	if (Timeout == 0U) {
+
+	/*
+	 * Set the initial Divider ratio at the SMALLEST VALUE .
+	 */
+	XWdtPs_SetControlValue(&WdtInstance, (u8) XWDTPS_CLK_PRESCALE,
+			(u8) XWDTPS_CCR_PSCALE_0008);
+
+	if (Timeout == 0U) {
 
 		/*
-		 * Set the initial counter restart to the smallest value (0).
+		 * Set the initial counter restart to the SMALLEST VALUE (0).
 		 */
 		XWdtPs_SetControlValue(&WdtInstance, (u8) XWDTPS_COUNTER_RESET, (u8) 0);
-		/*
-		 * Set the initial Divider ratio at the smallest value.
+
+	} else {
+
+		/* Set the Watchdog counter reset value */
+
+		/* Watchdog counter reset value for Expire time of 100Sec,
+		 * i.e., XPFW_WDT_EXPIRE_TIME
 		 */
-		XWdtPs_SetControlValue(&WdtInstance, (u8) XWDTPS_CLK_PRESCALE,
-				(u8) XWDTPS_CCR_PSCALE_0008);
-//	} else {
-//
-//		/* Set the Watchdog counter reset value */
-//		XWdtPs_SetControlValue(&WdtInstance, XWDTPS_COUNTER_RESET,
-//				(Timeout*WDT_CLK_PER_SEC) >> WDT_CRV_SHIFT);
-//
-//		/* Setting the divider value */
-//		XWdtPs_SetControlValue(&WdtInstance, XWDTPS_CLK_PRESCALE,
-//				XWDTPS_CCR_PSCALE_4096);
-//	}
+		CounterValue = ((Timeout) * (XPFW_WDT_CLK_PER_MSEC)) >> XPFW_WDT_CRV_SHIFT;
+
+		/* Set the Watchdog counter reset value */
+		XWdtPs_SetControlValue(&WdtInstance, XWDTPS_COUNTER_RESET,
+				CounterValue);
+	}
 
 	Wdt_IsReady = true;
 
 	return XST_SUCCESS;
 }
+
 
 u32 WdtPsIntrPolled(u32 ExpiredTimeDelta) {
 
@@ -256,33 +198,17 @@ u32 WdtPsIntrPolled(u32 ExpiredTimeDelta) {
 	return ExpiredTimeDelta;
 }
 
-///*
-//	 * Stop the timer to set up the device in interrupt mode.
-//	 */
-//void XWdtPs_StopWdt() {
-//	/*
-//	 * Start the Wdt device.
-//	 */
-//	XWdtPs_Stop(&WdtInstance);
-//}
-
-
-//void XWdtPs_Restart() {
-//	/*
-//	 * RE Start the Wdt device.
-//	 */
-//	XWdtPs_RestartWdt(&WdtInstance);
-//}
-//
-//void XWdtPs_Start_RestartWdt() {
-//	/*
-//	 * Start the Wdt device.
-//	 */
-//	HandlerCalled = 0;
-//	XWdtPs_Start(&WdtInstance);
-//	XWdtPs_RestartWdt(&WdtInstance);
-//}
-
+/*****************************************************************************/
+/**
+*
+* This function resets the System WatchDog Timer to the inital value to the counter.
+* And Enables the Reset OutPut of the System WatchDog Driver to be
+* handled by the PMU processor
+*
+*
+* @note		None.
+*
+******************************************************************************/
 void XWdtPs_ResetRestart()
 {
 	uz_assert(Wdt_IsReady);
@@ -310,10 +236,7 @@ void XWdtPs_ResetRestart()
 * processor to reset when it expires.
 *
 * @param	IntcInstancePtr is a pointer to the instance of the XScuGic
-*		driver.
-* @param	WdtInstancePtr is a pointer to the instance of XWdtPs driver.
-* @param	WdtDeviceId is the Device ID of the XWdtPs device.
-* @param	WdtIntrId is the Interrupt Id of the XWdtPs device.
+*		driver. It has to be already Initialized.
 *
 * @return	XST_SUCCESS if successful, otherwise XST_FAILURE.
 *
@@ -326,39 +249,17 @@ int WdtPsIntrExample(XScuGic *IntcInstancePtr)
 	int Status;
 	u32 Timebase = 0;
 	u32 ExpiredTimeDelta = 0;
-//	u32 EffectiveAddress;	/* This can be the virtual address */
-//	XWdtPs_Config *ConfigPtr;
-
-
-//	/*
-//	 * Initialize the Wdt driver.
-//	 */
-//	ConfigPtr = XWdtPs_LookupConfig(WdtDeviceId);
-//
-//	/*
-//	 * This is where the virtual address would be used, this example
-//	 * uses physical address.
-//	 */
-//	EffectiveAddress = ConfigPtr->BaseAddress;
-//
-//	Status = XWdtPs_CfgInitialize(WdtInstancePtr, ConfigPtr,
-//				       EffectiveAddress);
-//	if (Status != XST_SUCCESS) {
-//		return XST_FAILURE;
-//	}
-
-
-
 
 	/*
 	 * Initialize the Wdt driver and Perform a self-test to ensure that the hardware was built correctly.
 	 * Set the initial counter restart to the smallest value (0).
 	 */
-//	Status = WdtPsIntrInit(0U);
-//	if (Status != XST_SUCCESS) {
-//		return XST_FAILURE;
-//	}
-
+	if (!Wdt_IsReady) {
+		Status = WdtPsInit(0U);
+		if (Status != XST_SUCCESS) {
+			return XST_FAILURE;
+		}
+	}
 
 	uz_assert(Wdt_IsReady);
 
@@ -620,15 +521,9 @@ void WdtDisableIntrSystem(XScuGic *IntcInstancePtr)
 
 u32 WdtPsIntrPolled(u32 ExpiredTimeDelta) { }
 
-//void XWdtPs_StopWdt() {}
-//
-//void XWdtPs_Restart() {}
-//
-//void XWdtPs_Start_RestartWdt() {}
-
 void XWdtPs_ResetRestart() {}
 
-int WdtPsIntrInit(XWdtPs * WdtInstancePtr, u16 WdtDeviceId, u32 Timeout){ }
+int WdtPsInit(XWdtPs * WdtInstancePtr, u16 WdtDeviceId, u32 Timeout){ }
 
 int WdtPsIntrExample(XScuGic *IntcInstancePtr){ }
 

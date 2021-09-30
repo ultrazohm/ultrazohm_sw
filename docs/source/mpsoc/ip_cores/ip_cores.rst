@@ -9,7 +9,7 @@ IP Cores
     :maxdepth: 2
     :caption: IP Cores
     
-    pwm_and_ss_control
+    uz_PWM_SS_2L/uz_pwm_ss_2l
     adc_LTC2311
     adc_LTC2311_v3
     incre_encoder

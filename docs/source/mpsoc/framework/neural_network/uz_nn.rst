@@ -1,4 +1,4 @@
-.. uz_nn::
+.. _uz_nn:
 
 ======================================
 Neural network software implementation

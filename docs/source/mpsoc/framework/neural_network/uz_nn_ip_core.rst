@@ -1,4 +1,4 @@
-.. uz_nn_ip_core::
+.. _uz_nn_ip_core:
 
 ======================
 Neural network IP-Core

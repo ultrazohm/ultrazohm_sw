@@ -1,8 +1,8 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
---Date        : Fri May  7 11:54:53 2021
---Host        : df10c3fa77d8 running 64-bit unknown
+--Date        : Thu Sep 30 13:17:23 2021
+--Host        : ts-ThinkStation-P620 running 64-bit Ubuntu 20.04.3 LTS
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
 --Purpose     : IP block netlist
@@ -23,6 +23,7 @@ entity zusys_wrapper is
     A3_OUT_CNV : out STD_LOGIC_VECTOR ( 1 downto 0 );
     ADC_ConvStart : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT : out STD_LOGIC_VECTOR ( 5 downto 0 );
+    D1_OUT2 : out STD_LOGIC_VECTOR ( 5 downto 0 );
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -116,7 +117,8 @@ architecture STRUCTURE of zusys_wrapper is
     A3_OUT_CNV : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A2_OUT_CNV : out STD_LOGIC_VECTOR ( 1 downto 0 )
+    A2_OUT_CNV : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    D1_OUT2 : out STD_LOGIC_VECTOR ( 5 downto 0 )
   );
   end component zusys;
 begin
@@ -132,6 +134,7 @@ zusys_i: component zusys
       A3_OUT_CNV(1 downto 0) => A3_OUT_CNV(1 downto 0),
       ADC_ConvStart(0) => ADC_ConvStart(0),
       D1_OUT(5 downto 0) => D1_OUT(5 downto 0),
+      D1_OUT2(5 downto 0) => D1_OUT2(5 downto 0),
       D1_OUT_27(0) => D1_OUT_27(0),
       D1_OUT_28(0) => D1_OUT_28(0),
       D1_OUT_29(0) => D1_OUT_29(0),

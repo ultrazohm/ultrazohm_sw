@@ -248,8 +248,7 @@ void uz_adcLtc2311_update_spi(uz_adcLtc2311_t* self);
  * @details
  * 
  * The function depends on the master_select and the max_attempts setting
- * in @ref uz_adcLtc2311_config_t that is attached to the @ref uz_adcLtc2311_t
- * instance. master_select determines, which channels are sent to nap mode and
+ * in @ref uz_adcLtc2311_config_t. master_select determines, which channels are sent to nap mode and
  * max_attempts determines the maximum number of attempts to enter the manual
  * control mode of the SPI. Adjust these settings before calling the function.
  * 
@@ -268,8 +267,7 @@ int32_t uz_adcLtc2311_enter_nap_mode(uz_adcLtc2311_t* self);
  * @details
  * 
  * The function depends on the master_select and the max_attempts setting
- * in @ref uz_adcLtc2311_config_t that is attached to the @ref uz_adcLtc2311_t
- * instance. master_select determines, which channels leave nap mode and
+ * in @ref uz_adcLtc2311_config_t. master_select determines, which channels leave nap mode and
  * max_attempts determines the maximum number of attempts to enter the manual
  * control mode of the SPI. Adjust these settings before calling the function.
  * 
@@ -288,8 +286,7 @@ int32_t uz_adcLtc2311_leave_nap_mode(uz_adcLtc2311_t* self);
  * @details
  * 
  * The function depends on the master_select and the max_attempts setting
- * in @ref uz_adcLtc2311_config_t that is attached to the @ref uz_adcLtc2311_t
- * instance. master_select determines, which channels are sent to sleep mode and
+ * in @ref uz_adcLtc2311_config_t. master_select determines, which channels are sent to sleep mode and
  * max_attempts determines the maximum number of attempts to enter the manual
  * control mode of the SPI. Adjust these settings before calling the function.
  * 
@@ -308,8 +305,7 @@ int32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self);
  * @details
  * 
  * The function depends on the master_select and the max_attempts setting
- * in @ref uz_adcLtc2311_config_t that is attached to the @ref uz_adcLtc2311_t
- * instance. master_select determines, which channels leave sleep mode and
+ * in @ref uz_adcLtc2311_config_t. master_select determines, which channels leave sleep mode and
  * max_attempts determines the maximum number of attempts to enter the manual
  * control mode of the SPI. Adjust these settings before calling the function.
  * 

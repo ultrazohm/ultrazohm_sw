@@ -37,7 +37,7 @@ Features
 
 - Offset and conversion factor are configurable by software
   individually for each ADC
-- Burst transfer of a setable number of samples
+- Burst transfer of an adjustable number of samples
 - Continuous and triggered operation modes
 - Hardware trigger interface for real time requirements and software
   trigger interface via AXI4 Lite for convenient usage in case of non
@@ -51,10 +51,10 @@ Features
   by software
 - Read only SPI. Only a **unidirectional** communication from the ADC
   to FPGA is possible.
-- Single ended output of the core interface. In order to interact with
-  the analog adapter board which is connected via LVDS a differential
-  buffer needs to be placed at the output of the IP core. The core
-  itself only implements the communication logic.
+- Single ended and differential operation modes. In order to interact with the
+  :ref:`analog adapter board <Analog_LTC2311_16_v3>`, the interface must be
+  set to differential. In this case, an LVDS buffer is instantiated inside 
+  the IP core.
 
 
 Software Driver
@@ -381,7 +381,14 @@ global reset signal apart from the software reset is
 ``s00_axi_aresetn``. The reset is synchronous and low activ. Keep this
 signal high for normal operation.
 
-The IP core can be operated with a system clock frequency of up to 100MHz.
+The IP core has been tested with a system clock frequency of up to 100MHz.
+The if the IP core is operated with a higher frequency, the PRE_DELAY
+and the POST_DELAY of the SPI must be adjusted according to
+`the datasheet of the LTC2311
+<https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_.
+Besides that, the minimum sample time should be adjusted to a value, that meets
+the hardware requirements of the LTC2311 and suits the driving strength of the
+captured analog signal.
 
 AXI Signals
 ***********

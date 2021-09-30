@@ -56,7 +56,7 @@ void uz_adcLtc2311_software_trigger(uz_adcLtc2311_t* self, uint32_t spi_masters)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    
+
     // if no channel is selected with the function call, use the value in the config struct instead
     if(spi_masters == 0)
     {
@@ -73,8 +73,8 @@ void uz_adcLtc2311_software_trigger(uz_adcLtc2311_t* self, uint32_t spi_masters)
 
 /**
  * @brief Set the continuos operation mode.
- * 
- * @param self 
+ *
+ * @param self
  */
 void uz_adcLtc2311_set_continuous_mode(uz_adcLtc2311_t* self)
 {
@@ -82,14 +82,14 @@ void uz_adcLtc2311_set_continuous_mode(uz_adcLtc2311_t* self)
     uz_assert(self->is_ready);
 
     uint32_t adc_cr = uz_adcLtc2311_hw_read_cr(self->config.base_address);
-    adc_cr &= ~(UZ_ADCLTC2311_CR_MODE);
+    adc_cr |= UZ_ADCLTC2311_CR_MODE;
     uz_adcLtc2311_hw_write_cr(self->config.base_address, adc_cr);
 }
 
 /**
  * @brief Set the triggered operation mode
- * 
- * @param self 
+ *
+ * @param self
  */
 void uz_adcLtc2311_set_triggered_mode(uz_adcLtc2311_t* self)
 {
@@ -97,7 +97,7 @@ void uz_adcLtc2311_set_triggered_mode(uz_adcLtc2311_t* self)
     uz_assert(self->is_ready);
 
     uint32_t adc_cr = uz_adcLtc2311_hw_read_cr(self->config.base_address);
-    adc_cr |= UZ_ADCLTC2311_CR_MODE;
+    adc_cr &= ~UZ_ADCLTC2311_CR_MODE;
     uz_adcLtc2311_hw_write_cr(self->config.base_address, adc_cr);
 }
 
@@ -443,7 +443,7 @@ void uz_adcLtc2311_update_spi(uz_adcLtc2311_t* self)
 
     // assemble the content of SPI configuration register and write it
     uint32_t spi_cfgr = (self->config.clk_div << UZ_ADCLTC2311_SPI_CFGR_CLK_DIV_LSB) |
-                        (self->config.pre_delay << UZ_ADCLTC2311_SPI_CFGR_PRE_DELAY_LSB) | 
+                        (self->config.pre_delay << UZ_ADCLTC2311_SPI_CFGR_PRE_DELAY_LSB) |
 	                    (self->config.post_delay << UZ_ADCLTC2311_SPI_CFGR_POST_DELAY_LSB);
     uz_adcLtc2311_hw_write_spi_cfgr(self->config.base_address, spi_cfgr);
 
@@ -486,7 +486,7 @@ int32_t uz_adcLtc2311_enter_nap_mode(uz_adcLtc2311_t* self)
         self->config.error_code |= UZ_ADCLTC2311_NS_NO_SELECTION;
     }
     // Check if the selected masters are already in nap or sleep mode
-    else if ((self->config.master_select & self->config.napping_spi_masters) || 
+    else if ((self->config.master_select & self->config.napping_spi_masters) ||
     (self->config.master_select & self->config.sleeping_spi_masters))
     {
         return_value = UZ_FAILURE;
@@ -502,7 +502,7 @@ int32_t uz_adcLtc2311_enter_nap_mode(uz_adcLtc2311_t* self)
         else
         {
             // perform the hardware action to send the LTC2311 to nap mode
-            for (uint32_t i = 0; i < UZ_ADCLTC2311_NAP_PULSES; i++) 
+            for (uint32_t i = 0; i < UZ_ADCLTC2311_NAP_PULSES; i++)
             {
 				uz_adcLtc2311_spi_set_ss_n(self->config.base_address);
                 uz_adcLtc2311_spi_reset_ss_n(self->config.base_address);
@@ -603,7 +603,7 @@ int32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self)
         self->config.error_code |= UZ_ADCLTC2311_NS_NO_SELECTION;
     }
     // Check if the selected masters are already in nap or sleep mode
-    else if ((self->config.master_select & self->config.napping_spi_masters) || 
+    else if ((self->config.master_select & self->config.napping_spi_masters) ||
     (self->config.master_select & self->config.sleeping_spi_masters))
     {
         return_value = UZ_FAILURE;
@@ -619,7 +619,7 @@ int32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self)
         else
         {
             // perform the hardware action to send the LTC2311 to sleep mode
-            for (uint32_t i = 0; i < UZ_ADCLTC2311_SLEEP_PULSES; i++) 
+            for (uint32_t i = 0; i < UZ_ADCLTC2311_SLEEP_PULSES; i++)
             {
 				uz_adcLtc2311_spi_set_ss_n(self->config.base_address);
                 uz_adcLtc2311_spi_reset_ss_n(self->config.base_address);

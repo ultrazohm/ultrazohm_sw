@@ -227,8 +227,8 @@ stimulus : process begin
     wait for CLOCK_PERIOD;
     -- start transfer
     S_ENABLE <= '1';
---    wait for CLOCK_PERIOD;
---    S_ENABLE <= '0';
+    wait for CLOCK_PERIOD;
+    S_ENABLE <= '0';
 --    wait for 4 * (CLOCK_PERIOD * (TEST_CLK_DIV + 2) * TEST_DATA_WIDTH
 --           + CLOCK_PERIOD * (TEST_DELAY + 1));
 --    -- check if SS_N signal can not be controlled manually during transfer

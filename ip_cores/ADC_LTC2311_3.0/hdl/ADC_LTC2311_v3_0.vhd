@@ -115,6 +115,20 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     attribute fsm_safe_state : string;
     attribute fsm_safe_state of curstate, nxtstate : signal is "power_on_state";
     
+    -- Debug
+    -- Signals
+    attribute mark_debug : string;
+    attribute mark_debug of S_ENABLE : signal is "true";
+    
+    -- Ports
+    attribute mark_debug of SAMPLE_COUNTER : signal is "true";
+    attribute mark_debug of SI_VALUE : signal is "true";
+    attribute mark_debug of RAW_VALUE : signal is "true";
+    attribute mark_debug of RAW_VALID : signal is "true";
+    attribute mark_debug of SI_VALID : signal is "true";
+    attribute mark_debug of SS_N : signal is "true";
+    attribute mark_debug of SCLK : signal is "true";
+    
 
 	-- component declaration AXI4 Lite interface
 	component ADC_LTC2311_v3_0_S00_AXI is

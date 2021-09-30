@@ -945,7 +945,7 @@ void expect_adc_available(uint32_t* adc_available_content, uint32_t mask)
 void expect_set_triggered_mode(uint32_t* cr_content)
 {
     uz_adcLtc2311_hw_read_cr_ExpectAndReturn(TEST_BASE_ADDRESS, *cr_content);
-    *cr_content |= UZ_ADCLTC2311_CR_MODE;
+    *cr_content &= ~UZ_ADCLTC2311_CR_MODE;
     uz_adcLtc2311_hw_write_cr_Expect(TEST_BASE_ADDRESS, *cr_content);
 }
 

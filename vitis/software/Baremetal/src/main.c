@@ -17,7 +17,7 @@
 #include "main.h"
 #include "uz/uz_global_configuration.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
-#include "include/new_adc.h"
+#include "include/uz_adcLtc2311_testbench.h"
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -51,6 +51,7 @@ int main(void) {
 	uz_printf("\r\n\r\n");
 	uz_printf("Welcome to the UltraZohm\r\n");
 	uz_printf("----------------------------------------\r\n");
+	uz_adcLtc2311_testbench();
 
 	// Initialize the global "Global_Data" structure -> the values can be overwritten afterwards from the Java-GUI -> this must be the first INIT-function, because it is required subsequently!
 	InitializeDataStructure(&Global_Data);
@@ -69,7 +70,6 @@ int main(void) {
 	// Initialize Timer in order to Trigger the ISRs
 	Initialize_Timer();
 	uz_SystemTime_init();
-	uz_adcLtc2311_testbench();
 	// Initialize the incremental encoder
 	Encoder_Incremental_Initialize(&Global_Data);
 

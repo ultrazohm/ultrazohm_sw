@@ -4,8 +4,8 @@
 #if UZ_PWM_SS_2L_MAX_INSTANCES > 0U
 #include <stdbool.h> 
 #include "../../uz/uz_HAL.h"
-#include "UZ_PWM_SS_2L.h" 
-#include "UZ_PWM_SS_2L_hw.h" 
+#include "uz_PWM_SS_2L.h" 
+#include "uz_PWM_SS_2L_hw.h" 
 
 struct uz_PWM_SS_2L_t {
     bool is_ready;

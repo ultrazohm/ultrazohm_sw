@@ -3,14 +3,12 @@
 #include "unity.h"
 #include "test_assert_with_exception.h"
 #include "uz_FOC.h"
+#include "../uz_piController/uz_piController.h"
+#include "../uz_signals/uz_signals.h"
+#include "uz_linear_decoupling.h"
+#include "../uz_Transformation/uz_Transformation.h"
+#include "uz_space_vector_limitation.h"
 #include <math.h>
-TEST_FILE("uz_piController.c")
-TEST_FILE("uz_signals.c")
-TEST_FILE("uz_linear_decoupling.c")
-TEST_FILE("uz_space_vector_limitation.c")
-TEST_FILE("uz_Transformation.c")
-
-
 
 struct uz_FOC_config config = {0};
 struct uz_dq_t i_actual_Ampere = {0};

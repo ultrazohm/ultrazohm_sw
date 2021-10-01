@@ -1,4 +1,4 @@
-.. _activation_function:
+.. _nn_activation_function:
 
 ===================
 Activation function
@@ -35,7 +35,7 @@ Derivative:
 
 .. doxygenfunction:: uz_nn_activation_function_linear_derivative
 
-.. _activation_functon_relu:
+.. _activation_function_relu:
 
 ReLU
 ====

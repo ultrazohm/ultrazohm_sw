@@ -238,6 +238,10 @@ The following lists basic timing to expect for different networks with the feedf
 - 4 inputs, 8 outputs, 64 neurons, one hidden layer with ReLU takes 24.7 us.
 - 4 inputs, 8 outputs, 128 neurons, one hidden layer with ReLU takes 44 us.
 - 7 inputs, 2 outputs, 100 neurons ReLU, 30.2 us.
+- 5 inputs, 8 outputs, three hidden layer with 64 neurons, ReLU, takes 200 us.
+- 13 inputs, 1 output, one hidden layer with 20 neurons ReLU, takes 11 us.
+
+
 
 Optimization
 ------------

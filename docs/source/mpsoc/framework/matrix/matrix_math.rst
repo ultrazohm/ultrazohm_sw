@@ -20,6 +20,8 @@ The number of matrix instances has to be configured in :ref:`global_configuratio
 
 .. warning:: Take the `storage duration of variables <https://iso-9899.info/wiki/Storage_Duration>`_ into account that are pointed to in the the init function! Most of the time, use ``static`` storage duration.
 
+.. warning:: The data can be accessed directly in the array. Do not do this after a ``uz_matrix_t`` instance is coupled with the array by initialization.
+
 .. note:: The matrix software module has similarities to the :ref:`uz_array` module but features math functions instead of a box for arrays including their length for different data types.
 
 Matrix definition

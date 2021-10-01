@@ -667,7 +667,7 @@
 		</Description>
 		<ProductGuide value="https://docs.ultrazohm.com/mpsoc/ip_cores/adc_LTC2311_v3.html">
 		</ProductGuide>
-		<CoreRevision value="44">
+		<CoreRevision value="45">
 		</CoreRevision>
 		<ComponentPath value="ADC_LTC2311_3.0/component.xml">
 		</ComponentPath>

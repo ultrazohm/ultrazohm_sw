@@ -43,12 +43,12 @@ void uz_adcLtc2311_testbench(void)
 
 
     uz_adcLtc2311_t* test_instance = uz_adcLtc2311_init(default_configuration);
-    uz_adcLtc2311_set_triggered_mode(test_instance);
+
     default_configuration.base_address = XPAR_A2_ADC_LTC2311_S00_AXI_BASEADDR;
-    uz_adcLtc2311_init(default_configuration);
+    uz_adcLtc2311_t* test_instance_2 = uz_adcLtc2311_init(default_configuration);
 
     default_configuration.base_address = XPAR_A3_ADC_LTC2311_S00_AXI_BASEADDR;
-    uz_adcLtc2311_init(default_configuration);
+    uz_adcLtc2311_t* test_instance_3 = uz_adcLtc2311_init(default_configuration);
 
     // Adjust operation parameters
     // 1: Select which channels you want to update
@@ -77,19 +77,26 @@ void uz_adcLtc2311_testbench(void)
     return_value = uz_adcLtc2311_update_sample_time(test_instance);
     uz_assert(return_value == UZ_SUCCESS);
 
+
+
     while(1)
     {
-	    uz_adcLtc2311_software_trigger(test_instance, 0);
-	    uz_adcLtc2311_enter_nap_mode(test_instance);
-	    uz_adcLtc2311_software_trigger(test_instance, 0);
-	    uz_adcLtc2311_leave_nap_mode(test_instance);
-	    uz_adcLtc2311_software_trigger(test_instance, 0);
-	    uz_adcLtc2311_enter_sleep_mode(test_instance);
-	    uz_adcLtc2311_software_trigger(test_instance, 0);
-	    uz_adcLtc2311_leave_sleep_mode(test_instance);
 
+//	    uz_adcLtc2311_software_trigger(test_instance, 0);
+//	    uz_adcLtc2311_software_trigger(test_instance_2, 0);
+//	    uz_adcLtc2311_software_trigger(test_instance_3, 0);
+//	    uz_adcLtc2311_enter_nap_mode(test_instance);
+//	    uz_adcLtc2311_software_trigger(test_instance, 0);
+//	    uz_adcLtc2311_leave_nap_mode(test_instance);
+//	    uz_adcLtc2311_software_trigger(test_instance, 0);
+//	    uz_adcLtc2311_enter_sleep_mode(test_instance);
+//	    uz_adcLtc2311_software_trigger(test_instance, 0);
+//	    uz_adcLtc2311_leave_sleep_mode(test_instance);
+//
 	    uz_adcLtc2311_set_continuous_mode(test_instance);
+	    uz_sleep_useconds(5);
 	    uz_adcLtc2311_set_triggered_mode(test_instance);
+	    uz_adcLtc2311_software_trigger(test_instance, 0);
 
     }
 }

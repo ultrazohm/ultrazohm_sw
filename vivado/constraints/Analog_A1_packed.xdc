@@ -20,6 +20,14 @@ set_property PACKAGE_PIN AF10 [get_ports 	 A1_OUT_2]
 set_property PACKAGE_PIN AG10 [get_ports 	 A1_OUT_3]
 #ANL_02_N_Ch1 = B64_L8_N
 
+# slave select
+#Analog_02
+#ANL_02_N_Ch1 = B64_L8_N
+set_property PACKAGE_PIN AG10 [get_ports {A1_OUT_CNV_1[0]}]
+#ANL_02_P_Ch1 = B64_L8_P
+set_property PACKAGE_PIN AF10 [get_ports {A1_OUT_CNV_0[0]}]
+
+
 ####################################
 
 ## input pins from ADC
@@ -77,6 +85,8 @@ set_property PACKAGE_PIN AB5 [get_ports {A1_IN[9]}]
 ## input standards
 set_property IOSTANDARD LVDS [get_ports {A1_OUT_0[0]}]
 set_property IOSTANDARD LVDS [get_ports {A1_OUT_1[0]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {A1_OUT_CNV_1[0]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {A1_OUT_CNV_0[0]}]
 #set_property IOSTANDARD LVCMOS18 [get_ports A1_OUT2]
 set_property IOSTANDARD LVDS [get_ports {A1_IN[15]}]
 set_property IOSTANDARD LVDS [get_ports {A1_IN[14]}]

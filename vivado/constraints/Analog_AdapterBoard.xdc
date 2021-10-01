@@ -6,6 +6,8 @@
 
 # single-ended FPGA pins with 1.8V signal level
 
+############### DEPRECATED ######################
+
 #SPI_CS (single-ended) = B64_T2
 set_property PACKAGE_PIN AG4 [get_ports {SPI_CS[0]}]
 #ADC_ConvStart for LVDS = B64_T3

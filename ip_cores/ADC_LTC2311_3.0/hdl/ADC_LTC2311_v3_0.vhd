@@ -119,6 +119,7 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     -- Signals
     attribute mark_debug : string;
     attribute mark_debug of S_ENABLE : signal is "true";
+    attribute mark_debug of S_SCLK : signal is "true";
     
     -- Ports
     attribute mark_debug of SAMPLE_COUNTER : signal is "true";
@@ -127,7 +128,6 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     attribute mark_debug of RAW_VALID : signal is "true";
     attribute mark_debug of SI_VALID : signal is "true";
     attribute mark_debug of SS_N : signal is "true";
-    attribute mark_debug of SCLK : signal is "true";
     
 
 	-- component declaration AXI4 Lite interface

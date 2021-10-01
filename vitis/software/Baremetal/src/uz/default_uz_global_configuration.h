@@ -31,7 +31,7 @@
     #define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES    5U
     #define UZ_MYIP2_MAX_INSTANCES                  5U
     #define UZ_MYIP_MAX_INSTANCES                   5U
-    #define UZ_ADCLTC2311_MAX_INSTANCES             3U
+    #define UZ_ADCLTC2311_MAX_INSTANCES             50U
     #define UZ_PI_CONTROLLER_MAX_INSTANCES          100U
     #define UZ_FOC_MAX_INSTANCES                    100U
 #endif

@@ -3,8 +3,8 @@
 #include "test_assert_with_exception.h"
 #include "unity.h"
 #include "uz_speedcontrol.h"
-TEST_FILE("uz_piController.c")
-TEST_FILE("uz_signals.c")
+#include "../uz_piController/uz_piController.h"
+#include "../uz_signals/uz_signals.h"
 
 struct uz_PI_Controller_config config = {0};
 float omega_el_rad_per_sec = 0.0f;

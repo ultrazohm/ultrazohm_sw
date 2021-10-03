@@ -1,7 +1,7 @@
 #ifdef TEST
 
 #include "unity.h"
-TEST_FILE("uz_signals.c")
+#include "../uz_signals/uz_signals.h"
 #include "uz_Transformation.h"
 #include "test_assert_with_exception.h"
 #include "uz_space_vector_limitation.h"

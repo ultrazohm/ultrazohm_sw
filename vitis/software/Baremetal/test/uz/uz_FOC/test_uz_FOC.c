@@ -3,10 +3,12 @@
 #include "unity.h"
 #include "test_assert_with_exception.h"
 #include "uz_FOC.h"
+#include <math.h>
 TEST_FILE("uz_piController.c")
 TEST_FILE("uz_signals.c")
 TEST_FILE("uz_linear_decoupling.c")
 TEST_FILE("uz_space_vector_limitation.c")
+TEST_FILE("uz_Transformation.c")
 
 
 
@@ -102,6 +104,23 @@ void test_uz_FOC_sample_output(void){
 		TEST_ASSERT_FLOAT_WITHIN(1e-02, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02, uq_out[i], output.q);
     }
+}
+
+void test_uz_FOC_sample_UVW_output(void) {
+    setUp();
+    //Values for comparision from simulation
+    uz_FOC* instance = uz_FOC_init(config);
+    float theta_el_rad = M_PI;
+    struct uz_UVW_t output = uz_FOC_sample_UVW(instance, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec, theta_el_rad);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,-6.75,output.U);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,-2.4707,output.V);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,9.2207,output.W);
+    theta_el_rad = M_PI * 1.5f;
+    uz_FOC_reset(instance);
+    output = uz_FOC_sample_UVW(instance, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec, theta_el_rad);
+    TEST_ASSERT_FLOAT_WITHIN(1e-02,6.75,output.U);
+    TEST_ASSERT_FLOAT_WITHIN(1e-02,-9.2207,output.V);
+    TEST_ASSERT_FLOAT_WITHIN(1e-02,2.4707,output.W);
 }
 
 void test_uz_FOC_sample_output_SVLimitation_active(void){

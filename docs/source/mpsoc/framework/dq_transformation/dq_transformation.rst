@@ -69,7 +69,7 @@ The d-Axis has to be aligned with the U-phase.
     X_U \\
     X_V \\
     X_W \\
-  \end{bmatrix} = \frac{2}{3}
+  \end{bmatrix} = 
   \begin{bmatrix}
     cos{(\theta_{el})} & -sin{(\theta_{el})} & 1 \\
     cos{(\theta_{el}-\frac{2\pi}{3})} & -sin{(\theta_{el}-\frac{2\pi}{3})} & 1\\

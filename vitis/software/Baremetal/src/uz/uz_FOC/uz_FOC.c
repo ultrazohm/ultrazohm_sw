@@ -51,6 +51,14 @@ struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, st
 	return (u_output_Volts);
 }
 
+struct uz_UVW_t uz_FOC_sample_UVW(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float U_zk_Volts, float omega_el_rad_per_sec, float theta_el_rad) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	struct uz_dq_t u_dq_Volts = uz_FOC_sample(self, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec);
+	struct uz_UVW_t u_output_Volts = uz_dq_inverse_transformation(u_dq_Volts, theta_el_rad);
+	return(u_output_Volts);
+}
+
 static struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);

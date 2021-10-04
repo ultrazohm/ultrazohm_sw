@@ -132,4 +132,15 @@ bool uz_FOC_get_ext_clamping(uz_FOC* self){
 	return(self->ext_clamping);
 }
 
+struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(struct uz_UVW_t input, float U_zk_Volts) {
+	//Uses continuous sinusoidal PWM (SPWM) 
+	struct uz_DutyCycle_t output = {0};
+	output.DutyCycle_U = ( (input.U / (0.5f * U_zk_Volts) ) +1.0f) * 0.5f;
+	output.DutyCycle_V = ( (input.V / (0.5f * U_zk_Volts) ) +1.0f) * 0.5f;
+	output.DutyCycle_W = ( (input.W / (0.5f * U_zk_Volts) ) +1.0f) * 0.5f;
+	output.DutyCycle_U = uz_signals_saturation(output.DutyCycle_U, 1.0f, 0.0f);
+	output.DutyCycle_V = uz_signals_saturation(output.DutyCycle_V, 1.0f, 0.0f);
+	output.DutyCycle_W = uz_signals_saturation(output.DutyCycle_W, 1.0f, 0.0f);
+	return(output);
+}
 #endif

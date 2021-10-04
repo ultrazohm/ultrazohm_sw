@@ -21,6 +21,15 @@ struct uz_FOC_config {
 	struct uz_PI_Controller_config config_iq; /**< Configuration struct for iq-Controller */
 	struct uz_PMSM_t config_PMSM; /**< Configuration struct for PMSM parameters */
 };
+/**
+ * @brief Struct for the three DutyCycles for a three-phase-system
+ * 
+ */
+struct uz_DutyCycle_t {
+	float DutyCycle_U;
+	float DutyCycle_V;
+	float DutyCycle_W; 
+};
 
 /**
  * @brief Object definition for FOC
@@ -138,4 +147,6 @@ void uz_FOC_set_Psi_PM(uz_FOC* self, float Psi_PM_Vs);
  * @return current value as bool 
  */
 bool uz_FOC_get_ext_clamping(uz_FOC* self);
+
+struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(struct uz_UVW_t input, float U_zk_Volts);
 #endif // UZ_FOC_H

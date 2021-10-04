@@ -12,9 +12,9 @@ Network and dimension definition
 
 A neural network consists of an input layer, one or multiple hidden layer, and an output layer.
 Each layer has one or multiple neurons (also called perceptorn or nodes). 
-A network with one input layer, one hidden layer and one output layer has :math:`l=2` layers (``Hiddenlayer=1``) (hidden layer +1, input layer is not counted).
-A network can have different number of inputs and outputs, e.g., two inputs (``numInputs=2``) and one output (``numOut=1``).
-The number of neurons in each hidden layer is defined by ``NeuronsPerLayer=2``.
+A network with one input layer, one hidden layer and one output layer has :math:`l=2` layers (hidden layer +1, input layer is not counted).
+A network can have different number of inputs and outputs, e.g., two inputs and one output.
+Each hidden layer has a defined number of neurons in the layer.
 
 The weight connecting the first input :math:`x_1` to the first neuron of the first hidden layer is called :math:`w^{(1)}_{11}`.
 From the first input to the second neuron :math:`w^{(1)}_{12}` and from the second input to the first neuron of the first hidden layer :math:`w^{(1)}_{21}`.
@@ -24,10 +24,11 @@ Generalized:
 
    w^{(l)}_{i,j}
 
-The index of the layer :math:`l` is counted by :math:`w^{(l)}`, :math:`w^{(1)}` is the comlpete matrix with all weights of the layer :math:`l=1`.
+The index of the layer :math:`l` is counted by a superscript (:math:`w^{(l)}`).
+Therefore, :math:`w^{(1)}` is the complete matrix with all weights of the layer :math:`l=1`.
 The row of the weight matrix is defined by the number of connections which end in the layer.
-That is, ``numInput`` for the first hidden layer (:math:`w^{(1)}`) and for all other hidden layer the number of rows (:math:`m`) is equal to ``NeuronsPerLayer`` since the implementation only allows for fully connected neutworks with an equal number of neurons per layer.
-Therefore each neuron in a hidden layer :math:`l` has one connection to every neuron of the following layer :math:`l+1`.
+That is, the number of rows (:math:`m`) is equal to the number of inputs in first hidden layer (:math:`w^{(1)}`) and for all other hidden layer (:math:`l>1`) the number of rows (:math:`m`) is equal to the number of neurons of the previous hidden layer (:math:`l-1`).
+Each neuron in a hidden layer :math:`l` has one connection to every neuron of the following layer :math:`l+1` (*fully connected*).
 
 The weight matrix has the following dimensions (generic).
 
@@ -35,7 +36,6 @@ The weight matrix has the following dimensions (generic).
    :align: center
 
    Dimensions of weight matrix
-
 
 For each layer :math:`l` there is a weight and a bias matrix.
 The matrix is number by the layer :math:`l` of which the weight belongs to (= the layer to which the weight connects to / where the arrow ends).
@@ -70,7 +70,7 @@ The bias are not shown but represented as following:
    b^{(2)}_{j}=\left[ \begin{array}{rr} b_{1}\\ \end{array}\right]
 
 Neurons
-*******
+=======
 
 .. _nn_neuron_definition:
 
@@ -97,38 +97,36 @@ The output value :math:`y^l_j` of the neuron is calculated by the activation fun
    y^l_j = \mathcal{F}(s^l_j)
 
 
-Network
-*******
+Network example
+===============
 
 MLP are implemented with the following definition and representation of the neural network.
 The following example illustrates the implementation structure.
+The neural network has a number of layers which consists of the input layer, the output layer and the number of hidden layer :math:`l`).
+Each layer has a number of neurons.
 
-
-The neural network has a number of layers which consists of the input layer, the output layer and the number of hidden layer :math:`l` (`Hiddenlayer`).
-The implementation does not hold any parameters for the input layer.
-The number of neurons per layer is set by `NeuronsPerLayer` and is the same for all hidden layers.
+.. _nn_structure:
 
 .. figure:: img/nn_structure.svg
    :align: center
 
    Structure of a neural network
 
-The MLP has a number of input variables `numInput` (:math:`x`), e.g., two:
+The MLP shown in :numref:`nn_structure` has two inputs, two hidden layer with three neurons each and one output.
+The input is defined as:
 
 .. math::
 
     x &=y^{(0)}=\left[ \begin{array}{rr} x_{1} & x_{2} \\ \end{array}\right] \\
     x &=y^{(0)}=\left[ \begin{array}{rr} 1 & 2 \\ \end{array}\right] 
 
-The MLP has a number of output variables `numOut`, e.g., one:
+The output is defined as:
 
 .. math::
 
     y^{(3)}=\left[ \begin{array}{rr} y_{1} \\ \end{array}\right]
 
-The MLP has a number of hidden layer, e.g., two with a number of neurons (three in this case).
-This results in the following weight matrices and bias vectors.
-
+The weights and bias matrices for each layer with example values are given n the following.
 For the first hidden layer:
 
 .. math::
@@ -157,6 +155,7 @@ For the output layer:
    b^{(3)} &=\left[ \begin{array}{rr} 7 \\ \end{array}\right]
 
 The activation function of the hidden layer is set to ReLU, the output activation function to linear.
+The following section calculates all steps and intermediate results in the network.
 
 First layer
 ***********
@@ -224,37 +223,6 @@ Activation function:
       y^{3} &= linear(\boldsymbol{s^{(3)}}) \\
       y^{3} &= linear(   \left[ \begin{array}{rr} 846 \\ \end{array}\right])\\
       &=  \left[ \begin{array}{rr} 846 \\ \end{array}\right]
-
-
-Timing
-******
-
-The following lists basic timing to expect for different networks with the feedforward calculation in the *empty* (expect for required code for system function) ISR (takes 2.6 us without feedforward calculation).
-
-- 2 inputs, 1 output, 3 neurons, two hidden layer with ReLU takes 5.0 us
-- 2 inputs, 1 output, 3 neurons, two hidden layer with ReLU ten times takes 25.5 us
-- (5.0us-2.6us)*10+2.6us is approx. 25.5us, which means that the calculation is actually happening 10 times (compiler does not optimize it away)
-- 4 inputs, 8 outputs, 64 neurons, two hidden layer with ReLU takes 89 us.
-- 4 inputs, 8 outputs, 64 neurons, one hidden layer with ReLU takes 24.7 us.
-- 4 inputs, 8 outputs, 128 neurons, one hidden layer with ReLU takes 44 us.
-- 7 inputs, 2 outputs, 100 neurons ReLU, 30.2 us.
-- 5 inputs, 8 outputs, three hidden layer with 64 neurons, ReLU, takes 200 us.
-- 13 inputs, 1 output, one hidden layer with 20 neurons ReLU, takes 11 us.
-
-
-
-Optimization
-------------
-
-All timing above was done with -O2 flag.
-Testing with ``-funroll-all-loops`` leads to worse performance (4 inputs, 8 outputs, 64 neurons, two hidden layer with ReLU takes 94 us with the flag compared to 89 us without).
-Testing with ``-funroll-loops`` results in 92 us.
-Most time in the program is spent on multiplying the inputs of a layer with the weight matrix.
-
-See:
-
-- https://gcc.gnu.org/onlinedocs/gcc-3.4.4/gcc/Optimize-Options.html
-- https://stackoverflow.com/questions/24196076/is-gcc-loop-unrolling-flag-really-effective
 
 Additional functions
 ====================

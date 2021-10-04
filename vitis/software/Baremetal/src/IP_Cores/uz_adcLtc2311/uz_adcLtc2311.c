@@ -71,11 +71,6 @@ void uz_adcLtc2311_software_trigger(uz_adcLtc2311_t* self, uint32_t spi_masters)
     uz_adcLtc2311_hw_write_cr(self->config.base_address, adc_cr);
 }
 
-/**
- * @brief Set the continuos operation mode.
- *
- * @param self
- */
 void uz_adcLtc2311_set_continuous_mode(uz_adcLtc2311_t* self)
 {
     uz_assert_not_NULL(self);
@@ -86,11 +81,6 @@ void uz_adcLtc2311_set_continuous_mode(uz_adcLtc2311_t* self)
     uz_adcLtc2311_hw_write_cr(self->config.base_address, adc_cr);
 }
 
-/**
- * @brief Set the triggered operation mode
- *
- * @param self
- */
 void uz_adcLtc2311_set_triggered_mode(uz_adcLtc2311_t* self)
 {
     uz_assert_not_NULL(self);

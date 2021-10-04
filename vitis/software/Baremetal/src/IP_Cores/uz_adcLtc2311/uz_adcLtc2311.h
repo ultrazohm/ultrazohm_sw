@@ -139,7 +139,7 @@ struct uz_adcLtc2311_config_t{
 	uint32_t cpol; /**< SPI CPOL. Must be set to 1 for the LTC2311 */
 
     /* Error code */
-    uint32_t error_code; /**< One-Hot encoded error variable described above */
+    uint32_t error_code; /**< One-Hot encoded error variable if the usage of nap or sleep mode fails */
 
     /* Timing */
 	uint32_t max_attempts; /**< If non zero, the update of the operation parameters is tried max_attempts times. Otherwise it is tried infinitely (default) */
@@ -308,6 +308,9 @@ int32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self);
  * in @ref uz_adcLtc2311_config_t. master_select determines, which channels leave sleep mode and
  * max_attempts determines the maximum number of attempts to enter the manual
  * control mode of the SPI. Adjust these settings before calling the function.
+ * After the datasheet of the LTC2311, one must wait 10ms before operating the ADC again
+ * after exiting the sleep mode. This is not performed by this function. The user needs
+ * to take care about this.
  * 
  * \#defines for the error_code variable in case of failure are located in the
  * uz_adcLtc2311.h file (public interface of this software module).

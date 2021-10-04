@@ -126,24 +126,6 @@ architecture Behavioral of ADC_CONTROLLER is
     attribute fsm_encoding of curstate, nxtstate : signal is "auto";
     attribute fsm_safe_state : string;
     attribute fsm_safe_state of curstate, nxtstate : signal is "power_on_state";
-    
-    -- Keep
-    attribute keep : string;
-    attribute keep of S_SAMPLES : signal is "true";
-    attribute keep of S_SAMPLE_COUNTER : signal is "true";
-    attribute keep of S_SAMPLE_TIME : signal is "true";
-    attribute keep of S_SAMPLE_TIME_COUNTER : signal is "true";
-    attribute keep of S_SPI_ENABLE : signal is "true";
-    
-    
-    -- Debug
-    -- Signals
-    attribute mark_debug : string;
-    attribute mark_debug of S_SAMPLES : signal is "true";
-    attribute mark_debug of S_SAMPLE_COUNTER : signal is "true";
-    attribute mark_debug of S_SAMPLE_TIME : signal is "true";
-    attribute mark_debug of S_SAMPLE_TIME_COUNTER : signal is "true";
-    attribute mark_debug of S_SPI_ENABLE : signal is "true";
 
     --component declarations
     

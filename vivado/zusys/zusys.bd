@@ -70,7 +70,6 @@
       "xlslice_0": "",
       "xlslice_1": "",
       "uz_axi_testIP_0": "",
-      "vio_adc_trigger": "",
       "A1_ADC_LTC2311": "",
       "A2_ADC_LTC2311": "",
       "A3_ADC_LTC2311": ""
@@ -574,12 +573,6 @@
           }
         },
         "interface_nets": {
-          "S00_AXI_1": {
-            "interface_ports": [
-              "S00_AXI",
-              "uz_interlockDeadtime_0/AXI4"
-            ]
-          },
           "AXI4_Lite_1": {
             "interface_ports": [
               "AXI4_Lite",
@@ -590,6 +583,12 @@
             "interface_ports": [
               "AXI4_Lite1",
               "Counter_f_sw_V2_ip_0/AXI4_Lite"
+            ]
+          },
+          "S00_AXI_1": {
+            "interface_ports": [
+              "S00_AXI",
+              "uz_interlockDeadtime_0/AXI4"
             ]
           }
         },
@@ -5221,16 +5220,16 @@
           }
         },
         "interface_nets": {
-          "AXI4_Lite_1": {
-            "interface_ports": [
-              "AXI4_Lite",
-              "mux_axi_ip_0/AXI4_Lite"
-            ]
-          },
           "smartconnect_0_M11_AXI": {
             "interface_ports": [
               "S_AXI",
               "Trigger_f_cc/S_AXI"
+            ]
+          },
+          "AXI4_Lite_1": {
+            "interface_ports": [
+              "AXI4_Lite",
+              "mux_axi_ip_0/AXI4_Lite"
             ]
           }
         },
@@ -5477,15 +5476,6 @@
         "vlnv": "user.org:ip:uz_axi_testIP:1.0",
         "xci_name": "zusys_uz_axi_testIP_0_0"
       },
-      "vio_adc_trigger": {
-        "vlnv": "xilinx.com:ip:vio:3.0",
-        "xci_name": "zusys_vio_0_0",
-        "parameters": {
-          "C_NUM_PROBE_IN": {
-            "value": "0"
-          }
-        }
-      },
       "A1_ADC_LTC2311": {
         "vlnv": "UltraZohm:user:ADC_LTC2311:3.0",
         "xci_name": "zusys_A1_ADC_LTC2311_1",
@@ -5524,6 +5514,12 @@
       }
     },
     "interface_nets": {
+      "AXI4_Lite1_1": {
+        "interface_ports": [
+          "Gates/AXI4_Lite1",
+          "smartconnect_0/M03_AXI"
+        ]
+      },
       "smartconnect_0_M01_AXI": {
         "interface_ports": [
           "A2_ADC_LTC2311/S00_AXI",
@@ -5619,12 +5615,6 @@
           "A3_ADC_LTC2311/S00_AXI",
           "smartconnect_0/M02_AXI"
         ]
-      },
-      "AXI4_Lite1_1": {
-        "interface_ports": [
-          "Gates/AXI4_Lite1",
-          "smartconnect_0/M03_AXI"
-        ]
       }
     },
     "nets": {
@@ -5714,7 +5704,10 @@
         "ports": [
           "Interrupt/trigger_converesions",
           "IncreEncoder_V24_ip_0/PeriodEnd",
-          "ila_Encoder/probe5"
+          "ila_Encoder/probe5",
+          "A1_ADC_LTC2311/TRIGGER_CNV",
+          "A2_ADC_LTC2311/TRIGGER_CNV",
+          "A3_ADC_LTC2311/TRIGGER_CNV"
         ]
       },
       "proc_sys_reset_50MHz_peripheral_aresetn": {
@@ -5913,7 +5906,6 @@
           "smartconnect_1/aclk",
           "uz_axi_testIP_0/IPCORE_CLK",
           "uz_axi_testIP_0/AXI4_ACLK",
-          "vio_adc_trigger/clk",
           "A1_ADC_LTC2311/s00_axi_aclk",
           "A2_ADC_LTC2311/s00_axi_aclk",
           "A3_ADC_LTC2311/s00_axi_aclk"
@@ -5999,14 +5991,6 @@
           "A1_ADC_LTC2311/SCLK_DIFF",
           "xlslice_1/Din",
           "xlslice_0/Din"
-        ]
-      },
-      "xlconstant_0_dout": {
-        "ports": [
-          "vio_adc_trigger/probe_out0",
-          "A1_ADC_LTC2311/TRIGGER_CNV",
-          "A2_ADC_LTC2311/TRIGGER_CNV",
-          "A3_ADC_LTC2311/TRIGGER_CNV"
         ]
       }
     },

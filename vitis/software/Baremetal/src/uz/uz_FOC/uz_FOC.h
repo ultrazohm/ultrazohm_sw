@@ -26,9 +26,9 @@ struct uz_FOC_config {
  * 
  */
 struct uz_DutyCycle_t {
-	float DutyCycle_U;
-	float DutyCycle_V;
-	float DutyCycle_W; 
+	float DutyCycle_U; /**< DutyCycle for Phase U */
+	float DutyCycle_V; /**< DutyCycle for Phase V */
+	float DutyCycle_W; /**< DutyCycle for Phase W */
 };
 
 /**
@@ -148,5 +148,12 @@ void uz_FOC_set_Psi_PM(uz_FOC* self, float Psi_PM_Vs);
  */
 bool uz_FOC_get_ext_clamping(uz_FOC* self);
 
+/**
+ * @brief Generates one sample for a continuous sinusoidal PWM (SPWM)  
+ * 
+ * @param input uz_UVW_t struct 
+ * @param U_zk_Volts DC link voltage. Must be greater than 0.0f
+ * @return struct uz_DutyCycle_t outputs the corresponding DutyCycle for each phase
+ */
 struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(struct uz_UVW_t input, float U_zk_Volts);
 #endif // UZ_FOC_H

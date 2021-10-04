@@ -64,7 +64,7 @@ For further instances, add the IP core to your design as many times as needed an
 For synchronization of instances, feed the count_out port of the first instance into the count_in port of one or several subsequent instances:
 
 .. figure:: vivado_2instances.png
-   :width: 800
+   :width: 400
    :align: center
 
    Example implementation in the block design with two synchronized instances
@@ -114,6 +114,8 @@ Driver reference
 
 .. doxygenfunction:: uz_PWM_SS_2L_init
 
-.. doxygenfunction:: uz_PWM_SS_2L_set_config
-
 .. doxygenfunction:: uz_PWM_SS_2L_set_duty_cycle
+
+.. doxygenfunction:: uz_PWM_SS_2L_set_tristate
+
+.. doxygenfunction:: uz_PWM_SS_2L_set_PWM_mode

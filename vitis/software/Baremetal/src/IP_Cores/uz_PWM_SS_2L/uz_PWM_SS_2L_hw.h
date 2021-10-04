@@ -1,16 +1,17 @@
 #ifndef UZ_PWM_SS_2L_HW_H
 #define UZ_PWM_SS_2L_HW_H
 #include <stdint.h>
+#include <stdbool.h>
 
 /**
  * @brief selects whether the PWM counter is taken from within the instance or 
  *        from an externel source
  * 
- * @param base_address      base address of the instance
- * @param CntExtSrc_on_off  flag for choosing the PWM counter source
- *                          0=internal counter source, 1=external counter source
+ * @param base_address          base address of the instance
+ * @param use_external_counter  flag for choosing the PWM counter source
+ *                              false=internal counter source, true=external counter source
  */
-void uz_PWM_SS_2L_hw_SetExternalCounterSource(uint32_t base_address, uint32_t CntExtSrc_on_off);
+void uz_PWM_SS_2L_hw_SetExternalCounterSource(uint32_t base_address, bool use_external_counter);
 
 /**
  * @brief sets the input reference (dutyCycle) of the module
@@ -27,9 +28,9 @@ void uz_PWM_SS_2L_hw_SetDutyCycle(uint32_t base_address, float dutyCyc_A, float 
  * @brief turns the whole PWM_SS_2L module on or off
  * 
  * @param base_address  //base address of the instance
- * @param PWM_en        //0=disable module, 1=enable module
+ * @param PWM_en        //false=disable module, true=enable module
  */
-void uz_PWM_SS_2L_hw_SetStatus(uint32_t base_address, uint32_t PWM_en);
+void uz_PWM_SS_2L_hw_SetStatus(uint32_t base_address, bool PWM_en);
 
 /**
  * @brief sets the input source for the PWM_SS_2L module.
@@ -58,9 +59,9 @@ void uz_PWM_SS_2L_hw_SetCarrierFrequency(uint32_t base_address, uint32_t ip_clk_
  * 
  * @param base_address          //base address of the instance
  * @param halfBridgeNumber      //number of the half bridge to set. 1,2 or 3.
- * @param TriState_true_false   //turns tri state mode on or off. 1=on, 0=off
+ * @param TriState_true_false   //turns tri state mode on or off. true=on, false=off
  */
-void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumber, uint32_t TriState_true_false);
+void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumber, bool TriState_true_false);
 
 /**
  * @brief sets the minimum amount of pulse width that is generated 
@@ -70,5 +71,15 @@ void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumbe
  * @param min_pulse_width_percent   //minimum pulse width in percent, e.g. 0.01
  */
 void uz_PWM_SS_2L_hw_SetMinimumPulseWidth(uint32_t base_address, float min_pulse_width_percent);
+
+/**
+ * @brief enum for readable configuring of the PWM mode in uz_PWM_SS_2L_hw_SetMode function
+ * 
+ */
+enum uz_PWM_SS_2L_PWM_mode {
+  normalized_input_via_AXI=0,
+  normalized_input_via_FPGA,
+  direct_control_via_FPGA
+};
 
 #endif // UZ_PWM_SS_2L_HW_H

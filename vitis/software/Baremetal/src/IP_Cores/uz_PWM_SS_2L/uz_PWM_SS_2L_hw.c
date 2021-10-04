@@ -3,10 +3,9 @@
 #include "../../uz/uz_AXI.h"
 #include "../../uz/uz_HAL.h"
 
-void uz_PWM_SS_2L_hw_SetExternalCounterSource(uint32_t base_address, uint32_t CntExtSrc_on_off){
+void uz_PWM_SS_2L_hw_SetExternalCounterSource(uint32_t base_address, bool use_external_counter){
     uz_assert_not_zero(base_address);
-    uz_assert(CntExtSrc_on_off<=1);
-    uz_axi_write_uint32(base_address + count_src_ext_AXI_Data_PWM_and_SS_control_V4_ip, CntExtSrc_on_off);
+    uz_axi_write_bool(base_address + count_src_ext_AXI_Data_PWM_and_SS_control_V4_ip, use_external_counter);
 }
 
 void uz_PWM_SS_2L_hw_SetDutyCycle(uint32_t base_address, float dutyCyc_A, float dutyCyc_B, float dutyCyc_C){
@@ -22,10 +21,9 @@ void uz_PWM_SS_2L_hw_SetDutyCycle(uint32_t base_address, float dutyCyc_A, float 
     uz_axi_write_uint32(base_address + m_u3_norm_AXI_Data_PWM_and_SS_control_V4_ip, (uint32_t)m_u3_norm);
 }
 
-void uz_PWM_SS_2L_hw_SetStatus(uint32_t base_address, uint32_t PWM_en){
+void uz_PWM_SS_2L_hw_SetStatus(uint32_t base_address, bool PWM_en){
     uz_assert_not_zero(base_address);
-    uz_assert(PWM_en<=1);
-    uz_axi_write_uint32(base_address + PWM_en_AXI_Data_PWM_and_SS_control_V4_ip, PWM_en);
+    uz_axi_write_bool(base_address + PWM_en_AXI_Data_PWM_and_SS_control_V4_ip, PWM_en);
 }
 
 void uz_PWM_SS_2L_hw_SetMode(uint32_t base_address, uint32_t PWM_mode){
@@ -56,11 +54,10 @@ void uz_PWM_SS_2L_hw_SetMinimumPulseWidth(uint32_t base_address, float min_pulse
     uz_axi_write_uint32(base_address + PWM_min_pulse_width_AXI_Data_PWM_and_SS_control_V4_ip, min_pulse_width_percent_Q12);
 }
 
-void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumber, uint32_t TriState_true_false){
+void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumber, bool TriState_true_false){
     uz_assert_not_zero(base_address);
     uz_assert_not_zero(halfBridgeNumber);
     uz_assert(halfBridgeNumber<=3);
-    uz_assert(TriState_true_false<=1);
     uint32_t halfBridgeAddress = 0;
     switch (halfBridgeNumber) {
         case 1  :
@@ -74,6 +71,9 @@ void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumbe
         case 3  :
             halfBridgeAddress = TriState_HB3_AXI_Data_PWM_and_SS_control_V4_ip;
             break;
+
+        default :
+            uz_assert(1);
     }
-    uz_axi_write_uint32(base_address + halfBridgeAddress, TriState_true_false);
+    uz_axi_write_bool(base_address + halfBridgeAddress, TriState_true_false);
 }

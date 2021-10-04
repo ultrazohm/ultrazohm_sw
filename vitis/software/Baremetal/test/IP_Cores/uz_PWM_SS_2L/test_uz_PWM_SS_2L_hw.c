@@ -19,20 +19,14 @@ void tearDown(void)
 
 void test_uz_PWM_SS_2L_hw_SetExternalCounterSource(void)
     {
-        uint32_t CntExtSrc_on_off = 1;
-        uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + count_src_ext_AXI_Data_PWM_and_SS_control_V4_ip, CntExtSrc_on_off);
+        bool CntExtSrc_on_off = true;
+        uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + count_src_ext_AXI_Data_PWM_and_SS_control_V4_ip, CntExtSrc_on_off);
         uz_PWM_SS_2L_hw_SetExternalCounterSource(TEST_BASE_ADDRESS, CntExtSrc_on_off);
     }
 
-void test_uz_PWM_SS_2L_hw_SetExternalCounterSource_with_invalid_source(void)
-    {
-        uint32_t CntExtSrc_on_off = -42;
-        TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetExternalCounterSource(TEST_BASE_ADDRESS, CntExtSrc_on_off));
-    }    
-
 void test_uz_PWM_SS_2L_hw_SetExternalCounterSource_with_zero_base_address(void)
     {
-        uint32_t CntExtSrc_on_off = 1;
+        bool CntExtSrc_on_off = true;
         TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetExternalCounterSource(0, CntExtSrc_on_off));
     }
 
@@ -76,32 +70,20 @@ void test_uz_PWM_SS_2L_hw_SetDutyCycle_with_zero_base_address(void)
 
 void test_uz_PWM_SS_2L_hw_SetStatus_on(void)
     {
-        uint32_t PWM_en = 1;
-        uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + PWM_en_AXI_Data_PWM_and_SS_control_V4_ip, PWM_en);
+        bool PWM_en = true;
+        uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + PWM_en_AXI_Data_PWM_and_SS_control_V4_ip, PWM_en);
         uz_PWM_SS_2L_hw_SetStatus(TEST_BASE_ADDRESS, PWM_en);
-    }
-
-void test_uz_PWM_SS_2L_hw_SetStatus_with_invalid_negative_status(void)
-    {
-        uint32_t PWM_en = -42;
-        TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetStatus(TEST_BASE_ADDRESS, PWM_en));
-    }
-
-void test_uz_PWM_SS_2L_hw_SetStatus_with_invalid_positive_status(void)
-    {
-        uint32_t PWM_en = 42;
-        TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetStatus(TEST_BASE_ADDRESS, PWM_en));
     }
 
 void test_uz_PWM_SS_2L_hw_SetStatus_with_zero_base_address(void)
     {
-        uint32_t PWM_en = 0;
+        bool PWM_en = false;
         TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetStatus(0, PWM_en));
     }
 
     void test_uz_PWM_SS_2L_hw_SetMode(void)
     {
-        uint32_t PWM_mode = 0;
+        uint32_t PWM_mode = normalized_input_via_AXI;
         uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + Mode_AXI_Data_PWM_and_SS_control_V4_ip, PWM_mode);
         uz_PWM_SS_2L_hw_SetMode(TEST_BASE_ADDRESS,PWM_mode);
     }
@@ -120,7 +102,7 @@ void test_uz_PWM_SS_2L_hw_SetStatus_with_zero_base_address(void)
 
     void test_uz_PWM_SS_2L_hw_SetMode_with_zero_base_address(void)
     {
-        uint32_t PWM_mode = 0;
+        uint32_t PWM_mode = normalized_input_via_AXI;
         TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetMode(0,PWM_mode));
     }
 
@@ -164,36 +146,29 @@ void test_uz_PWM_SS_2L_hw_SetStatus_with_zero_base_address(void)
 
     void test_uz_PWM_SS_2L_hw_set_Tristate_all_halfBridges(void)
     {
-        uint32_t TriState_HB1 = true;
-        uint32_t TriState_HB2 = true;
-        uint32_t TriState_HB3 = true;
-        uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + TriState_HB1_AXI_Data_PWM_and_SS_control_V4_ip, TriState_HB1);
-        uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + TriState_HB2_AXI_Data_PWM_and_SS_control_V4_ip, TriState_HB2);
-        uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + TriState_HB3_AXI_Data_PWM_and_SS_control_V4_ip, TriState_HB3);
+        bool TriState_HB1 = true;
+        bool TriState_HB2 = true;
+        bool TriState_HB3 = true;
+        uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + TriState_HB1_AXI_Data_PWM_and_SS_control_V4_ip, TriState_HB1);
+        uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + TriState_HB2_AXI_Data_PWM_and_SS_control_V4_ip, TriState_HB2);
+        uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + TriState_HB3_AXI_Data_PWM_and_SS_control_V4_ip, TriState_HB3);
         uz_PWM_SS_2L_hw_SetTristate(TEST_BASE_ADDRESS, 1, TriState_HB1);
         uz_PWM_SS_2L_hw_SetTristate(TEST_BASE_ADDRESS, 2, TriState_HB2);
         uz_PWM_SS_2L_hw_SetTristate(TEST_BASE_ADDRESS, 3, TriState_HB3);
     }
 
-    void test_uz_PWM_SS_2L_hw_SetTristate_with_invalid_TriState(void)
-    {
-        uint32_t TriState = -42;
-        uint32_t halfBridgeNumber = 1;
-        TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTristate(TEST_BASE_ADDRESS,halfBridgeNumber,TriState));
-    }
-
     void test_uz_PWM_SS_2L_hw_SetTristate_with_invalid_halfBridgeNumber(void)
     {
-        uint32_t TriState = true;
+        bool TriState = true;
         uint32_t halfBridgeNumber = 0;
         TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTristate(TEST_BASE_ADDRESS,halfBridgeNumber,TriState));
     }
 
     void test_uz_PWM_SS_2L_hw_SetTristate_with_zero_base_address(void)
     {
-        uint32_t TriState = true;
+        bool TriState = true;
         // Tell the test that we do not care how often this function is called
-        uz_axi_write_uint32_Ignore();
+        uz_axi_write_bool_Ignore();
         // Test passes if an assert fails in the function under test
         TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTristate(0,0,TriState));
     }

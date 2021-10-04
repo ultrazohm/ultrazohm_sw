@@ -31,35 +31,47 @@ uz_PWM_SS_2L_t* uz_PWM_SS_2L_init(struct uz_PWM_SS_2L_config_t config) {
     uz_assert(0U != config.ip_clk_frequency_Hz);     
     uz_PWM_SS_2L_t* self = uz_PWM_SS_2L_allocation();
     self->config=config;
+    uz_assert_not_zero(self->is_ready);
+    uz_PWM_SS_2L_hw_SetStatus(self->config.base_address, self->config.PWM_en);
+
+    uz_PWM_SS_2L_hw_SetMode(self->config.base_address, self->config.PWM_mode);
+
+    uz_PWM_SS_2L_hw_SetExternalCounterSource(self->config.base_address, self->config.use_external_counter);
+
+    uz_PWM_SS_2L_hw_SetCarrierFrequency(self->config.base_address, self->config.ip_clk_frequency_Hz, self->config.PWM_freq_Hz);
+    
+    uz_PWM_SS_2L_hw_SetMinimumPulseWidth(self->config.base_address, self->config.min_pulse_width);
+
+    uz_PWM_SS_2L_hw_SetDutyCycle(self->config.base_address, self->config.init_dutyCyc_A, self->config.init_dutyCyc_B, self->config.init_dutyCyc_C);
+
+    uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 1, self->config.Tristate_HB1);
+    uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 2, self->config.Tristate_HB2);
+    uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 3, self->config.Tristate_HB3);    
+
     return (self);
 }
 
-void uz_PWM_SS_2L_set_config(struct uz_PWM_SS_2L_t *instance) {
-    uz_assert_not_zero(instance->config.base_address);
-    uz_assert_not_zero(instance->config.ip_clk_frequency_Hz);
-    uz_assert_not_zero(instance->is_ready);
-    
-    uz_PWM_SS_2L_hw_SetStatus(instance->config.base_address, instance->config.PWM_en);
-
-    uz_PWM_SS_2L_hw_SetMode(instance->config.base_address, instance->config.PWM_mode);
-
-    uz_PWM_SS_2L_hw_SetExternalCounterSource(instance->config.base_address, instance->config.CntExtSrc);
-
-    uz_PWM_SS_2L_hw_SetCarrierFrequency(instance->config.base_address, instance->config.ip_clk_frequency_Hz, instance->config.PWM_freq_Hz);
-    
-    uz_PWM_SS_2L_hw_SetMinimumPulseWidth(instance->config.base_address, instance->config.min_pulse_width);
-
-    uz_PWM_SS_2L_hw_SetDutyCycle(instance->config.base_address, instance->config.init_dutyCyc_A, instance->config.init_dutyCyc_B, instance->config.init_dutyCyc_C);
-
-    uz_PWM_SS_2L_hw_SetTristate(instance->config.base_address, 1, instance->config.Tristate_HB1);
-    uz_PWM_SS_2L_hw_SetTristate(instance->config.base_address, 2, instance->config.Tristate_HB2);
-    uz_PWM_SS_2L_hw_SetTristate(instance->config.base_address, 3, instance->config.Tristate_HB3);
+void uz_PWM_SS_2L_set_duty_cycle(struct uz_PWM_SS_2L_t *self, float dutyCyc_A, float dutyCyc_B, float dutyCyc_C) {
+    uz_assert_not_zero(self->config.base_address);
+    uz_assert_not_zero(self->is_ready);
+    uz_PWM_SS_2L_hw_SetDutyCycle(self->config.base_address, dutyCyc_A, dutyCyc_B, dutyCyc_C);
 }
 
-void uz_PWM_SS_2L_set_duty_cycle(struct uz_PWM_SS_2L_t *instance, float dutyCyc_A, float dutyCyc_B, float dutyCyc_C) {
-    uz_assert_not_zero(instance->config.base_address);
-    uz_assert_not_zero(instance->is_ready);
+void uz_PWM_SS_2L_set_tristate(struct uz_PWM_SS_2L_t *self, bool Tristate_HB1, bool Tristate_HB2, bool Tristate_HB3) {
+    uz_assert_not_zero(self->config.base_address);
+    uz_assert_not_zero(self->is_ready);
+    self->config.Tristate_HB1 = Tristate_HB1;
+    self->config.Tristate_HB2 = Tristate_HB2;
+    self->config.Tristate_HB3 = Tristate_HB3;
+    uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 1, Tristate_HB1);
+    uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 2, Tristate_HB2);    
+    uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 3, Tristate_HB3);
+}
 
-    uz_PWM_SS_2L_hw_SetDutyCycle(instance->config.base_address, dutyCyc_A, dutyCyc_B, dutyCyc_C);
+void uz_PWM_SS_2L_set_PWM_mode(struct uz_PWM_SS_2L_t *self, uint32_t PWM_mode) {
+    uz_assert_not_zero(self->config.base_address);
+    uz_assert_not_zero(self->is_ready);
+    self->config.PWM_mode = PWM_mode;
+    uz_PWM_SS_2L_hw_SetMode(self->config.base_address, PWM_mode);    
 }
 #endif

@@ -234,22 +234,11 @@ void test_uz_FOC_get_ext_clamping_output(void){
 }
 
 void test_uz_FOC_generate_DutyCycles_output(void) {
-    setUp();
-    //Values for comparision from simulation
-    uz_FOC* instance = uz_FOC_init(config);
-    float theta_el_rad = M_PI;
-    struct uz_UVW_t UVW = uz_FOC_sample_UVW(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
+    struct uz_UVW_t UVW = {10.0f, 0.0f, -6.0f};
     struct uz_DutyCycle_t output = uz_FOC_generate_DutyCycles(UVW, V_dc_volts);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.21875f, output.DutyCycle_U);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.39705f, output.DutyCycle_V);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.88420f, output.DutyCycle_W);
-    theta_el_rad = M_PI * 1.5f;
-    uz_FOC_reset(instance);
-    UVW = uz_FOC_sample_UVW(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
-    output = uz_FOC_generate_DutyCycles(UVW, V_dc_volts);
-    TEST_ASSERT_FLOAT_WITHIN(1e-02, 0.78125f, output.DutyCycle_U);
-    TEST_ASSERT_FLOAT_WITHIN(1e-02, 0.1158f, output.DutyCycle_V);
-    TEST_ASSERT_FLOAT_WITHIN(1e-02, 0.6029f, output.DutyCycle_W);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.91667f, output.DutyCycle_U);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.5f, output.DutyCycle_V);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.25f, output.DutyCycle_W);
 }
 
 void test_uz_FOC_generate_DutyCycles_limit(void) {

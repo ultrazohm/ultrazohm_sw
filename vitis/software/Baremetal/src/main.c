@@ -65,10 +65,10 @@ int main(void) {
 	// Initialize Park-Transformation 123 to dq
 	DQTransformation_Initialize(&Global_Data);
 	uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
-	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1, 2);
+	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1, 0);
 	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
 	uz_interlockDeadtime2L_handle deadtime_slotd1_1 = uz_interlockDeadtime2L_staticAllocator_slotD1_1();
-	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1_1, 4);
+	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1_1, 0);
 	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1_1, true);
 	//Initialize PWM and switch signal control
 	//PWM_SS_Initialize(&Global_Data); 	// two-level modulator
@@ -84,14 +84,13 @@ int main(void) {
 			.PWM_freq_Hz = 10e3,
 			.PWM_mode = 0,
 			.PWM_en = 1,
-			.CntExtSrc = 0,
+			.use_external_counter = 0,
 			.init_dutyCyc_A = 0.0,
 			.init_dutyCyc_B = 0.0,
 			.init_dutyCyc_C = 0.0
 	};
 
 	PWM_SS_2L_instance_1 = uz_PWM_SS_2L_init(config_1);
-	uz_PWM_SS_2L_set_config(PWM_SS_2L_instance_1);
 
 	struct uz_PWM_SS_2L_config_t config_2 = {
 			.base_address = XPAR_GATES_PWM_AND_SS_CONTROL_V_2_BASEADDR,
@@ -103,14 +102,13 @@ int main(void) {
 			.PWM_freq_Hz = 10e3,
 			.PWM_mode = 0,
 			.PWM_en = 1,
-			.CntExtSrc = 1,
+			.use_external_counter = 1,
 			.init_dutyCyc_A = 0.0,
 			.init_dutyCyc_B = 0.0,
 			.init_dutyCyc_C = 0.0
 	};
 
 	PWM_SS_2L_instance_2 = uz_PWM_SS_2L_init(config_2);
-	uz_PWM_SS_2L_set_config(PWM_SS_2L_instance_2);
 
 	// Initialize Timer in order to Trigger the ISRs
 	Initialize_Timer();

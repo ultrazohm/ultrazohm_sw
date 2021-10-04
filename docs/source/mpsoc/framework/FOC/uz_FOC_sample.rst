@@ -16,14 +16,14 @@ Example
   :caption: Example function call to calculate the FOC output. FOC-Instance via :ref:`init-function <uz_FOC_init>`
 
   int main(void) {
-     float U_zk_Volts = 24.0f;
+     float V_dc_volts = 24.0f;
      float omega_el_rad_per_sec = 125.1f;
      float theta_el_rad = 1.2f;
      struct uz_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
      struct uz_dq_t i_reference_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-     struct uz_dq_t u_dq_Volts = uz_FOC_sample(FOC_instance, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec);
+     struct uz_dq_t u_dq_Volts = uz_FOC_sample(FOC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
      //Alternatively the sample function can output the UVW-values
-     struct uz_UVW_t u_UVW_Volts = uz_FOC_sample_UVW(FOC_instance, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec, theta_el_rad);
+     struct uz_UVW_t u_UVW_Volts = uz_FOC_sample_UVW(FOC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
   }
 
 Description

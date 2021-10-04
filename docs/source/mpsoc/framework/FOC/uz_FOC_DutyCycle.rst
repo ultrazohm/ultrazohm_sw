@@ -17,9 +17,9 @@ Example
   :caption: Example function call to generate PWM values from a UVW-three-phase system. 
 
   int main(void) {
-     float U_zk_Volts = 24.0f;
+     float V_dc_volts = 24.0f;
      struct uz_UVW_t UVW = {.U = 0.0f, .V = -0.866f, .W = 0.866f};
-     struct uz_DutyCycle_t output = uz_FOC_generate_DutyCycles(UVW, U_zk_Volts);
+     struct uz_DutyCycle_t output = uz_FOC_generate_DutyCycles(UVW, V_dc_volts);
   }
 
 Description

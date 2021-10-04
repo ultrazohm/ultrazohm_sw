@@ -16,10 +16,10 @@ Example
   int main(void) {
      float omega_el_rad_per_sec = 1.5f;
      float n_ref_rpm = 500.0f;
-     float U_zk_Volts = 24.0f;
+     float V_dc_volts = 24.0f;
      bool ext_clamping = false;
      float id_ref_Ampere = 2.0f;
-     struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, U_zk_Volts, id_ref_Ampere, config_PMSM, ext_clamping);
+     struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
   }
 
 Description

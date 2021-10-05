@@ -143,7 +143,7 @@ Effectively, each row is attached to the columns one by one.
 See :ref:`matrix_math` for details regarding the transformation of matrix to vector dimensions and :ref:`neural_network` regarding the dimension definition of the network.
 
 Full example
-************
+============
 
 The following example is based on a basic `Matlb Example <https://de.mathworks.com/help/deeplearning/ug/train-and-apply-multilayer-neural-networks.html>`_.
 A network with 13 inputs, two hidden layer (50 neurons in the first, 20 neurons in the second), ReLU activatin and one output is trained on a existing data set.
@@ -154,7 +154,7 @@ See the file ``test_uz_nn_full_example.c`` in ``~/ultrazohm_sw/vitis/software/Ba
 
 
 Timing
-******
+======
 
 The following lists basic timing to expect for different networks with the feedforward calculation in the *empty* (expect for required code for system function) ISR (takes 2.6 us without feedforward calculation).
 
@@ -167,8 +167,7 @@ The following lists basic timing to expect for different networks with the feedf
 - 7 inputs, 2 outputs, 100 neurons ReLU, 30.2 us.
 - 5 inputs, 8 outputs, three hidden layer with 64 neurons, ReLU, takes 200 us.
 - 13 inputs, 1 output, one hidden layer with 20 neurons ReLU, takes 11 us.
-
-
+- 13 inputs, 1 output, two hidden layer (50 neurons in the first, 20 neurons in the second hidden layer) with 
 
 Optimization
 ------------
@@ -176,7 +175,7 @@ Optimization
 All timing above was done with -O2 flag.
 Testing with ``-funroll-all-loops`` leads to worse performance (4 inputs, 8 outputs, 64 neurons, two hidden layer with ReLU takes 94 us with the flag compared to 89 us without).
 Testing with ``-funroll-loops`` results in 92 us.
-Most time in the program is spent on multiplying the inputs of a layer with the weight matrix.
+Most time in the program is spent on multiplying the inputs of a layer with the weight matrix (as expected).
 
 See:
 

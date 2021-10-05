@@ -10,9 +10,12 @@ void uz_PWM_SS_2L_hw_SetExternalCounterSource(uint32_t base_address, bool use_ex
 
 void uz_PWM_SS_2L_hw_SetDutyCycle(uint32_t base_address, float dutyCyc_A, float dutyCyc_B, float dutyCyc_C){
     uz_assert_not_zero(base_address);
-    uz_assert(dutyCyc_A>=0 && dutyCyc_A<=1.0);
-    uz_assert(dutyCyc_B>=0 && dutyCyc_B<=1.0);
-    uz_assert(dutyCyc_C>=0 && dutyCyc_C<=1.0);
+    uz_assert(dutyCyc_A>=0);
+    uz_assert(dutyCyc_A<=1.0);
+    uz_assert(dutyCyc_B>=0);
+    uz_assert(dutyCyc_B<=1.0);
+    uz_assert(dutyCyc_C>=0);
+    uz_assert(dutyCyc_C<=1.0);        
     int32_t m_u1_norm = uz_convert_float_to_sfixed(dutyCyc_A,12);
     int32_t m_u2_norm = uz_convert_float_to_sfixed(dutyCyc_B,12);
     int32_t m_u3_norm = uz_convert_float_to_sfixed(dutyCyc_C,12);

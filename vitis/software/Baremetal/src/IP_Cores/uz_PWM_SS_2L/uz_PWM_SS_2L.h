@@ -11,31 +11,41 @@
 typedef struct uz_PWM_SS_2L_t uz_PWM_SS_2L_t;
 
 /**
+ * @brief enum for readable configuring of the PWM mode in uz_PWM_SS_2L_hw_SetMode function
+ * 
+ */
+enum uz_PWM_SS_2L_PWM_mode {
+  normalized_input_via_AXI=0,
+  normalized_input_via_FPGA,
+  direct_control_via_FPGA
+};
+
+/**
  * @brief Configuration struct for UZ_PWM_SS_2L
  *
  */
 struct uz_PWM_SS_2L_config_t{
-    uint32_t base_address;          /**< Base address of the IP-Core */
-    uint32_t ip_clk_frequency_Hz;   /**< Clock frequency of the IP-Core */
-    bool Tristate_HB1;              /**< Tristate flag for half-bridge 1, true=on, false=off */
-    bool Tristate_HB2;              /**< Tristate flag for half-bridge 2, true=on, false=off */
-    bool Tristate_HB3;              /**< Tristate flag for half-bridge 3, true=on, false=off */
-    float min_pulse_width;          /**< Minimum pulse width in percent, e.g. 0.01 */
-    float PWM_freq_Hz;              /**< Switching frequency of PWM mode in Hz */
-    uint32_t PWM_mode;              /**< PWM mode selector\n  
-                                         0 = normalized input of reference signal via AXI\n
-                                             e.g. a reference voltage value between 0 and 1\n
-                                         1 = normalized input of reference signal via FPGA\n
-                                             e.g. a reference voltage value between 0 and 1\n
-                                         2 = direct control of switching states via FPGA */
-    bool PWM_en;                    /**< IP core enable flag\n 
+    uint32_t base_address;              /**< Base address of the IP-Core */
+    uint32_t ip_clk_frequency_Hz;       /**< Clock frequency of the IP-Core */
+    bool Tristate_HB1;                  /**< Tristate flag for half-bridge 1, true=on, false=off */
+    bool Tristate_HB2;                  /**< Tristate flag for half-bridge 2, true=on, false=off */
+    bool Tristate_HB3;                  /**< Tristate flag for half-bridge 3, true=on, false=off */
+    float min_pulse_width;              /**< Minimum pulse width in percent, e.g. 0.01 */
+    float PWM_freq_Hz;                  /**< Switching frequency of PWM mode in Hz */
+    enum uz_PWM_SS_2L_PWM_mode PWM_mode;/**< PWM mode selector\n  
+                                        0 = normalized input of reference signal via AXI\n
+                                            e.g. a reference voltage value between 0 and 1\n
+                                        1 = normalized input of reference signal via FPGA\n
+                                            e.g. a reference voltage value between 0 and 1\n
+                                        2 = direct control of switching states via FPGA */
+    bool PWM_en;                        /**< IP core enable flag\n 
                                          0=disable module, 1=enable module */
-    bool use_external_counter;      /**< Flag for choosing the PWM counter source\n
+    bool use_external_counter;          /**< Flag for choosing the PWM counter source\n
                                          0 = internal counter source of the instance\n
                                          1 = counter at port count_in */
-    float init_dutyCyc_A;           /**< Initial PWM duty cycle of half-bridge 1, 0...1 */
-    float init_dutyCyc_B;           /**< Initial PWM duty cycle of half-bridge 2, 0...1 */
-    float init_dutyCyc_C;           /**< Initial PWM duty cycle of half-bridge 3, 0...1 */
+    float init_dutyCyc_A;               /**< Initial PWM duty cycle of half-bridge 1, 0...1 */
+    float init_dutyCyc_B;               /**< Initial PWM duty cycle of half-bridge 2, 0...1 */
+    float init_dutyCyc_C;               /**< Initial PWM duty cycle of half-bridge 3, 0...1 */
 };
 
 /**

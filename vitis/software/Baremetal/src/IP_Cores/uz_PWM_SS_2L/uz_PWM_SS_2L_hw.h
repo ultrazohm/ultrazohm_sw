@@ -72,14 +72,4 @@ void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumbe
  */
 void uz_PWM_SS_2L_hw_SetMinimumPulseWidth(uint32_t base_address, float min_pulse_width_percent);
 
-/**
- * @brief enum for readable configuring of the PWM mode in uz_PWM_SS_2L_hw_SetMode function
- * 
- */
-enum uz_PWM_SS_2L_PWM_mode {
-  normalized_input_via_AXI=0,
-  normalized_input_via_FPGA,
-  direct_control_via_FPGA
-};
-
 #endif // UZ_PWM_SS_2L_HW_H

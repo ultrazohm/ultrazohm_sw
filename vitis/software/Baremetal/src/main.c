@@ -65,10 +65,10 @@ int main(void) {
 	// Initialize Park-Transformation 123 to dq
 	DQTransformation_Initialize(&Global_Data);
 	uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
-	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1, 0);
+	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1, 1);
 	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
 	uz_interlockDeadtime2L_handle deadtime_slotd1_1 = uz_interlockDeadtime2L_staticAllocator_slotD1_1();
-	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1_1, 0);
+	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1_1, 1);
 	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1_1, true);
 	//Initialize PWM and switch signal control
 	//PWM_SS_Initialize(&Global_Data); 	// two-level modulator
@@ -77,14 +77,14 @@ int main(void) {
 	struct uz_PWM_SS_2L_config_t config_1 = {
 			.base_address = XPAR_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR,
 			.ip_clk_frequency_Hz = 100e6,
-			.Tristate_HB1 = 0,
-			.Tristate_HB2 = 0,
-			.Tristate_HB3 = 0,
+			.Tristate_HB1 = false,
+			.Tristate_HB2 = false,
+			.Tristate_HB3 = false,
 			.min_pulse_width = 0.01,
 			.PWM_freq_Hz = 10e3,
-			.PWM_mode = 0,
-			.PWM_en = 1,
-			.use_external_counter = 0,
+			.PWM_mode = normalized_input_via_AXI,
+			.PWM_en = true,
+			.use_external_counter = false,
 			.init_dutyCyc_A = 0.0,
 			.init_dutyCyc_B = 0.0,
 			.init_dutyCyc_C = 0.0
@@ -95,14 +95,14 @@ int main(void) {
 	struct uz_PWM_SS_2L_config_t config_2 = {
 			.base_address = XPAR_GATES_PWM_AND_SS_CONTROL_V_2_BASEADDR,
 			.ip_clk_frequency_Hz = 100e6,
-			.Tristate_HB1 = 0,
-			.Tristate_HB2 = 0,
-			.Tristate_HB3 = 0,
+			.Tristate_HB1 = false,
+			.Tristate_HB2 = false,
+			.Tristate_HB3 = false,
 			.min_pulse_width = 0.01,
 			.PWM_freq_Hz = 10e3,
-			.PWM_mode = 0,
-			.PWM_en = 1,
-			.use_external_counter = 1,
+			.PWM_mode = normalized_input_via_AXI,
+			.PWM_en = true,
+			.use_external_counter = true,
 			.init_dutyCyc_A = 0.0,
 			.init_dutyCyc_B = 0.0,
 			.init_dutyCyc_C = 0.0

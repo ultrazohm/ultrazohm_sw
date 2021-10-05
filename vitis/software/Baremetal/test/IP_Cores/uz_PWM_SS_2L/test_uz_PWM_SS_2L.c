@@ -37,7 +37,7 @@ void test_uz_PWM_SS_2L_set_pwm_mode(void)
         .Tristate_HB3 = false,
         .min_pulse_width = 0.01,
         .PWM_freq_Hz = 100e6,
-        .PWM_mode = 0,
+        .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
         .use_external_counter = false,
         .init_dutyCyc_A = 0.0,
@@ -57,7 +57,7 @@ void test_uz_PWM_SS_2L_set_pwm_mode(void)
 
     uz_PWM_SS_2L_t *self = uz_PWM_SS_2L_init(config);
 
-    uint32_t pwm_mode = 2;
+    enum uz_PWM_SS_2L_PWM_mode pwm_mode = direct_control_via_FPGA;
 
     uz_PWM_SS_2L_hw_SetMode_Expect(self->config.base_address, pwm_mode);
     uz_PWM_SS_2L_set_PWM_mode(self, pwm_mode);
@@ -73,7 +73,7 @@ void test_uz_PWM_SS_2L_set_tristate(void)
         .Tristate_HB3 = false,
         .min_pulse_width = 0.01,
         .PWM_freq_Hz = 100e6,
-        .PWM_mode = 0,
+        .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
         .use_external_counter = false,
         .init_dutyCyc_A = 0.0,
@@ -113,7 +113,7 @@ void test_uz_PWM_SS_2L_set_duty_cycle(void)
         .Tristate_HB3 = false,
         .min_pulse_width = 0.01,
         .PWM_freq_Hz = 100e6,
-        .PWM_mode = 0,
+        .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
         .use_external_counter = false,
         .init_dutyCyc_A = 0.0,
@@ -150,7 +150,7 @@ void test_uz_PWM_SS_2L_init(void)
         .Tristate_HB3 = false,
         .min_pulse_width = 0.01,
         .PWM_freq_Hz = 100e6,
-        .PWM_mode = 0,
+        .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
         .use_external_counter = false,
         .init_dutyCyc_A = 0.0,

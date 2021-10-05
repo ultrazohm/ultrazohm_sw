@@ -82,14 +82,14 @@ Vitis
     struct uz_PWM_SS_2L_config_t config_1 = {
             .base_address= XPAR_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR,
             .ip_clk_frequency_Hz=100e6,
-            .Tristate_HB1 = 0,
-            .Tristate_HB2 = 0,
-            .Tristate_HB3 = 0,
+            .Tristate_HB1 = false,
+            .Tristate_HB2 = false,
+            .Tristate_HB3 = false,
             .min_pulse_width = 0.01,
             .PWM_freq_Hz = 10e3,
-            .PWM_mode = 0,
-            .PWM_en = 1,
-            .CntExtSrc = 0,
+            .PWM_mode = normalized_input_via_AXI,
+            .PWM_en = true,
+            .use_external_counter = false,
             .init_dutyCyc_A = 0.0,
             .init_dutyCyc_B = 0.0,
             .init_dutyCyc_C = 0.0
@@ -100,7 +100,6 @@ An instance has to be initialized first and then configured:
 .. code-block:: c
 
     PWM_SS_2L_instance_1 = uz_PWM_SS_2L_init(config_1);
-    uz_PWM_SS_2L_set_config(PWM_SS_2L_instance_1);
 
 After that it can be used in the application. For easy setting of the duty cycles, use the ``uz_PWM_SS2L_set_duty_cycle`` function.
 
@@ -108,6 +107,8 @@ Driver reference
 ================
 
 .. doxygentypedef:: uz_PWM_SS_2L_t
+
+.. doxygenenum:: uz_PWM_SS_2L_PWM_mode
 
 .. doxygenstruct:: uz_PWM_SS_2L_config_t
   :members:

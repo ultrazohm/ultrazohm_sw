@@ -74,12 +74,16 @@ Receiver Logic
 
 Before first use
 ----------------
-Solder in up to 18 transmitters **Broadcom HFBR-1521Z**
 
-1. Click the optical transmitter and receiver together before soldering them
-#. Solder the transmitter/receivers on the top side of the PCB first
-#. Shorten the through-hole pins of the transmitter/receivers that now stick out on the bottom side of the PCB.
-#. Solder the transmitter/receivers on the bottom side. Through-hole pins 5 and 8 are covered by the components on the top side. This is no problem, they do not have to be soldered, since they do not carry any electrical signal. As can be seen in the screenshot below, they are marked with DNC. 
+
+Soldering 
+"""""""""
+Solder in up to 18 transmitters **Broadcom HFBR-1521Z**. 
+Please refer to this page for detailed :ref:`dig_optical_soldering`.
+
+
+Program CPLDs 
+"""""""""""""
 #. Program CPLDs with firmware, see :ref:`label_cpld_programming` for details. Note, that the signals are simply passed through the CPLD. 
 #. Optionally, additional functionality can be implemented in the CPLD, e.g. checking for invalid switching combinations or introducing a dead time.
 #. (optional) Manual rework allows to exchange the 4 receiver channels to 4 transmitter channels, resulting in up to 18 transmitter channels, check Schematic and Assembly Drawing at the end of this page for the necessary changes.

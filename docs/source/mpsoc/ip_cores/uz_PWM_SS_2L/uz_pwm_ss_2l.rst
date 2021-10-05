@@ -69,6 +69,11 @@ For synchronization of instances, feed the count_out port of the first instance 
 
    Example implementation in the block design with two synchronized instances
 
+
+.. warning::
+   * There will be a delay of about one FPGA clock cycle (measured 16 ns @ 100 MHz) in the counter for a subsequent instance.
+   * This means that switching actions are shifted by that delay time between two instances.
+
 A flag for 1 cycle is active at the counter maximum and minimum value for triggering subsequent blocks or interrupts.
 
 Vitis

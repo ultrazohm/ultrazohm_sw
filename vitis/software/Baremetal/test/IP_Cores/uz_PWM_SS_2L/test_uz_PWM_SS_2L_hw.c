@@ -83,7 +83,7 @@ void test_uz_PWM_SS_2L_hw_SetStatus_with_zero_base_address(void)
 
     void test_uz_PWM_SS_2L_hw_SetMode(void)
     {
-        uint32_t PWM_mode = normalized_input_via_AXI;
+        uint32_t PWM_mode = 0;
         uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + Mode_AXI_Data_PWM_and_SS_control_V4_ip, PWM_mode);
         uz_PWM_SS_2L_hw_SetMode(TEST_BASE_ADDRESS,PWM_mode);
     }
@@ -102,7 +102,7 @@ void test_uz_PWM_SS_2L_hw_SetStatus_with_zero_base_address(void)
 
     void test_uz_PWM_SS_2L_hw_SetMode_with_zero_base_address(void)
     {
-        uint32_t PWM_mode = normalized_input_via_AXI;
+        uint32_t PWM_mode = 0;
         TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetMode(0,PWM_mode));
     }
 

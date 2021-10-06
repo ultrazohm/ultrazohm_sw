@@ -21,7 +21,6 @@
 #include <xtmrctr.h>
 #include "../include/javascope.h"
 #include "../include/pwm.h"
-#include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
 #include "../include/encoder.h"
@@ -51,9 +50,6 @@ XTmrCtr Timer_Interrupt;
 float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
-
-extern uz_PWM_SS_2L_t *PWM_SS_2L_instance_1;
-extern uz_PWM_SS_2L_t *PWM_SS_2L_instance_2;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -91,17 +87,9 @@ void ISR_Control(void *data)
 	//End: Control algorithm -------------------------------------------------------------------------------
 
 	// Set duty cycles for two-level modulator
-//	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-//					Global_Data.rasv.halfBridge2DutyCycle,
-//					Global_Data.rasv.halfBridge3DutyCycle);
-
-	uz_PWM_SS_2L_set_duty_cycle(PWM_SS_2L_instance_1, Global_Data.rasv.halfBridge1DutyCycle,
+	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
-
-	uz_PWM_SS_2L_set_duty_cycle(PWM_SS_2L_instance_2, Global_Data.rasv.halfBridge4DutyCycle,
-					Global_Data.rasv.halfBridge5DutyCycle,
-					Global_Data.rasv.halfBridge6DutyCycle);
 
 	// Set duty cycles for three-level modulator
 	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

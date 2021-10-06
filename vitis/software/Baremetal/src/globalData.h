@@ -377,9 +377,6 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge1DutyCycle;
 	float halfBridge2DutyCycle;
 	float halfBridge3DutyCycle;
-	float halfBridge4DutyCycle;
-	float halfBridge5DutyCycle;
-	float halfBridge6DutyCycle;
 	float sixStepCommutationDutyCycle;
 	float phaseAdvanceAngle;
 	float currentControlAngle;

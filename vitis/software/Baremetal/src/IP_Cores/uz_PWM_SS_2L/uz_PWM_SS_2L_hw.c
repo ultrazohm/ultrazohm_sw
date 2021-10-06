@@ -76,7 +76,7 @@ void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumbe
             break;
 
         default :
-            uz_assert(1);
+            break;
     }
     uz_axi_write_bool(base_address + halfBridgeAddress, TriState_true_false);
 }

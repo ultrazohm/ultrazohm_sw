@@ -203,7 +203,7 @@ To test a software module with one interface header and multiple c-files, i.e.:
    }
 
 Including ``my_function.h`` in the ``test_my_function.c`` file Ceedling will throw an error if you use functions from ``my_function_part_A.c``.
-This happens because Ceedling will assume that the ``.c`` file name matches the name of t he header (``my_function.c`` in this case).
+This happens because Ceedling will assume that the ``.c`` file name matches the name of the header (``my_function.c`` in this case).
 To fix this, you have to include the following *macro* at the top of ``test_my_function.c``.
 
 .. code-block:: c

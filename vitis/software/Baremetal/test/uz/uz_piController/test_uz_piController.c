@@ -4,7 +4,7 @@
 
 #include "uz_piController.h"
 #include "test_assert_with_exception.h"
-TEST_FILE("uz_signals.c")
+#include "../uz_signals/uz_signals.h"
 
 struct uz_PI_Controller_config config = {0};
 void setUp(void)

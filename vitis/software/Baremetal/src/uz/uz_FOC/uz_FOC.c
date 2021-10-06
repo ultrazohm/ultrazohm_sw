@@ -39,22 +39,22 @@ uz_FOC* uz_FOC_init(struct uz_FOC_config config) {
 	return (self);
 }
 
-struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float U_zk_Volts, float omega_el_rad_per_sec) {
+struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	uz_assert(U_zk_Volts > 0.0f);
+	uz_assert(V_dc_volts > 0.0f);
 	struct uz_dq_t u_pre_limit_Volts = uz_FOC_CurrentControl(self, i_reference_Ampere, i_actual_Ampere);
 	struct uz_dq_t u_decoup_Volts = uz_FOC_linear_decoupling(self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
 	u_pre_limit_Volts.d = u_pre_limit_Volts.d + u_decoup_Volts.d;
 	u_pre_limit_Volts.q = u_pre_limit_Volts.q + u_decoup_Volts.q;
-	struct uz_dq_t u_output_Volts = uz_FOC_SpaceVector_Limitation(u_pre_limit_Volts, U_zk_Volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
+	struct uz_dq_t u_output_Volts = uz_FOC_SpaceVector_Limitation(u_pre_limit_Volts, V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
 	return (u_output_Volts);
 }
 
-struct uz_UVW_t uz_FOC_sample_UVW(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float U_zk_Volts, float omega_el_rad_per_sec, float theta_el_rad) {
+struct uz_UVW_t uz_FOC_sample_UVW(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	struct uz_dq_t u_dq_Volts = uz_FOC_sample(self, i_reference_Ampere, i_actual_Ampere, U_zk_Volts, omega_el_rad_per_sec);
+	struct uz_dq_t u_dq_Volts = uz_FOC_sample(self, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
 	struct uz_UVW_t u_output_Volts = uz_dq_inverse_transformation(u_dq_Volts, theta_el_rad);
 	return(u_output_Volts);
 }
@@ -132,4 +132,15 @@ bool uz_FOC_get_ext_clamping(uz_FOC* self){
 	return(self->ext_clamping);
 }
 
+struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(struct uz_UVW_t input, float V_dc_volts) {
+	//Uses continuous sinusoidal PWM (SPWM) 
+	struct uz_DutyCycle_t output = {0};
+	output.DutyCycle_U = ( (input.U / (0.5f * V_dc_volts) ) +1.0f) * 0.5f;
+	output.DutyCycle_V = ( (input.V / (0.5f * V_dc_volts) ) +1.0f) * 0.5f;
+	output.DutyCycle_W = ( (input.W / (0.5f * V_dc_volts) ) +1.0f) * 0.5f;
+	output.DutyCycle_U = uz_signals_saturation(output.DutyCycle_U, 1.0f, 0.0f);
+	output.DutyCycle_V = uz_signals_saturation(output.DutyCycle_V, 1.0f, 0.0f);
+	output.DutyCycle_W = uz_signals_saturation(output.DutyCycle_W, 1.0f, 0.0f);
+	return(output);
+}
 #endif

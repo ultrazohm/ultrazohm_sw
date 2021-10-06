@@ -4,7 +4,7 @@
 Neural network
 ==============
 
-The following describes basic theory and definitions for `multilayer perceptron networks <https://en.wikipedia.org/wiki/Multilayer_perceptron>`_, a class of feedforward neutral networks.
+The following describes the basic theory and definitions for `multilayer perceptron networks <https://en.wikipedia.org/wiki/Multilayer_perceptron>`_, a class of feedforward neutral networks.
 The software module :ref:`uz_nn` is based on the definitions on this page.
 
 Network and dimension definition
@@ -13,7 +13,7 @@ Network and dimension definition
 A neural network consists of an input layer, one or multiple hidden layer, and an output layer.
 Each layer has one or multiple neurons (also called perceptorn or nodes). 
 A network with one input layer, one hidden layer and one output layer has :math:`l=2` layers (hidden layer +1, input layer is not counted).
-A network can have different number of inputs and outputs, e.g., two inputs and one output.
+A network can have a different number of inputs and outputs, e.g., two inputs and one output.
 Each hidden layer has a defined number of neurons in the layer.
 
 The weight connecting the first input :math:`x_1` to the first neuron of the first hidden layer is called :math:`w^{(1)}_{11}`.
@@ -30,7 +30,7 @@ The row of the weight matrix is defined by the number of connections which end i
 That is, the number of rows (:math:`m`) is equal to the number of inputs in first hidden layer (:math:`w^{(1)}`) and for all other hidden layer (:math:`l>1`) the number of rows (:math:`m`) is equal to the number of neurons of the previous hidden layer (:math:`l-1`).
 Each neuron in a hidden layer :math:`l` has one connection to every neuron of the following layer :math:`l+1` (*fully connected*).
 
-The weight matrix has the following dimensions (generic).
+The weight matrix has the following generic dimensions:
 
 .. figure:: img/weights.svg
    :align: center
@@ -38,7 +38,7 @@ The weight matrix has the following dimensions (generic).
    Dimensions of weight matrix
 
 For each layer :math:`l` there is a weight and a bias matrix.
-The matrix is number by the layer :math:`l` of which the weight belongs to (= the layer to which the weight connects to / where the arrow ends).
+The matrix is numbered by the layer :math:`l` of which the weight belongs to (= the layer to which the weight connects to / where the arrow ends).
 The first subscript :math:`i` notes the number (counted from up to down in the layer) of the starting neuron (or the input).
 The second subscript :math:`j` notes the number of the neuron where the connection ends.
 
@@ -49,7 +49,7 @@ The second subscript :math:`j` notes the number of the neuron where the connecti
 
    Simple neural network with naming scheme of weights
 
-The weights and bias of network in :numref:`simple_nn_twolayer` are represented by the following equations.
+The weights and bias of the network in :numref:`simple_nn_twolayer` are represented by the following equations.
 
 .. math::
 
@@ -69,6 +69,8 @@ The bias are not shown but represented as following:
    
    b^{(2)}_{j}=\left[ \begin{array}{rr} b_{1}\\ \end{array}\right]
 
+.. note:: The notation across the literature and different other software implementations (e.g., Tensorflow, Pytorch, Matlab) is not consistent. The definition of inputs, weights, and bias can be transposed and the calculation of :math:`s` rearranged (:math:`w^T y` instead of :math:`yw`) without changing the function of the network. Having the inputs as column or row vector is used by differend software modules, see this `article <https://medium.com/from-the-scratch/deep-learning-deep-guide-for-all-your-matrix-dimensions-and-calculations-415012de1568>`_ for example. 
+
 Neurons
 =======
 
@@ -81,13 +83,13 @@ Neurons
 
 Neurons are the basic building block of neural networks.
 A neuron sums over its weighted input values as well as the bias and calculates the output based on an arbitrary activation function :math:`\mathcal{F}(\cdot)`.
-The notation of  this software module is based on [#intelligente_verfahren]_, which denotes the number of the layer with the superscript :math:`l` for all parameters.
-The weight connecting the output :math:`y^{l-1}_i` of the :math:`i`th neuron of the previous layer :math:`l-1` with the input of the :math:`j`th neuron of the layer :math:`l` is denoted by :math:`w^l_{i,j}`.
+The notation of this software module denotes the number of the layer with the superscript :math:`l` for all parameters.
+The weight connecting the output :math:`y^{l-1}_i` of the :math:`i`-th neuron of the previous layer :math:`l-1` with the input of the :math:`j`-th neuron of the layer :math:`l` is denoted by :math:`w^l_{i,j}`.
 The following equation calculates the dot product of the weight vector :math:`\boldsymbol{w}^l_j` and the input vector :math:`\boldsymbol{y}^l_j` of the :math:`j`th neuron of layer :math:`l` with the length :math:`n` and adds the bias :math:`b^l_j` to yield the sum :math:`s^l_j` of the neuron inputs.
 
 .. math::
 
-   s^l_j =\sum^n_{i=1} w^l_{ij} y^{l-1}_{ij} +b^l_j
+   s^l_j =\sum^n_{i=1} y^{l-1}_{ij} w^l_{ij} + b^l_j
 
 
 The output value :math:`y^l_j` of the neuron is calculated by the activation function for all hidden layers.
@@ -101,8 +103,7 @@ Network example
 ===============
 
 MLP are implemented with the following definition and representation of the neural network.
-The following example illustrates the implementation structure.
-The neural network has a number of layers which consists of the input layer, the output layer and the number of hidden layer :math:`l`).
+The neural network has a number of layers which consists of the input layer, the output layer, and the number of hidden layer :math:`l`).
 Each layer has a number of neurons.
 
 .. _nn_structure:
@@ -112,7 +113,7 @@ Each layer has a number of neurons.
 
    Structure of a neural network
 
-The MLP shown in :numref:`nn_structure` has two inputs, two hidden layer with three neurons each and one output.
+The MLP shown in :numref:`nn_structure` has two inputs, two hidden layer with three neurons each, and one output.
 The input is defined as:
 
 .. math::
@@ -224,19 +225,21 @@ Activation function:
       y^{3} &= linear(   \left[ \begin{array}{rr} 846 \\ \end{array}\right])\\
       &=  \left[ \begin{array}{rr} 846 \\ \end{array}\right]
 
-Additional functions
-====================
-
-..	toctree::
-    :maxdepth: 2
-    :hidden:
-    :glob:
-
-    *
-
 Sources
 =======
 
 .. [#intelligente_verfahren] Schröder, Dierk, "Intelligente Verfahren", Springer, 2010.
 .. [#realTimeInference] T. Schindler and A. Dietz, "Real-Time Inference of Neural Networks on FPGAs for Motor Control Applications," 2020 10th International Electric Drives Production Conference (EDPC), 2020, pp. 1-6, doi: 10.1109/EDPC51184.2020.9388185.
 
+Software implementation
+=======================
+
+..	toctree::
+    :maxdepth: 2
+    :hidden:
+    :glob:
+
+    uz_nn
+    uz_nn_layer
+    activation_function
+    uz_nn_ip_core

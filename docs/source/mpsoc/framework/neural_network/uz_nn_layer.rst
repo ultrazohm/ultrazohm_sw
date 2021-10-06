@@ -4,7 +4,7 @@
 uz_nn_layer
 ===========
 
-The uz_nn_layer is used by the :ref:`uz_nn` and is based on :ref:`matrix_math` as well as :ref:`nn_activation_function`.
+The uz_nn_layer is used by the neural network software module (:ref:`uz_nn`) and is based on :ref:`matrix_math` as well as :ref:`nn_activation_function`.
 A layer in a neural network consists of a configurable number of neurons and an activation function.
 A layer multiplies the input :math:`\boldsymbol{x}` of the layer with the weight matrix :math:`\boldsymbol{w}` of the layer and adds the bias :math:`\boldsymbol{b}` to calculate :math:`\boldsymbol{s}`.
 The output of the layer :math:`\boldsymbol{y}` is the result of feeding the sum :math:`\boldsymbol{s}` into the activation function of the layer.

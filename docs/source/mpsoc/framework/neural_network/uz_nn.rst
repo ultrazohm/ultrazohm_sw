@@ -5,7 +5,7 @@ uz_nn
 =====
 
 The neural network software implementation follows the definitions outlined in :ref:`neural_network`.
-The module is based on the :ref:`uz_nn_layer` and :ref:`matrix_math` module.
+The module is based on the :ref:`uz_nn_layer` and the :ref:`matrix_math` module.
 
 Features and limitations:
 
@@ -39,7 +39,8 @@ Initialization of config struct
 - The following elements define the subsequent hidden layers
 - The last element of the config struct configures the output layer
 - Arrays for the data (weight, bias, output) have to be provided for each layer
-- Use defines to setup the arrays
+
+.. tip:: Use defines to setup the dimensions of the data arrays
 
 Dimensions of arrays
 ********************
@@ -128,7 +129,7 @@ The following shows an example initialization of a ``uz_nn`` that implements the
 Initialization of pretrained network
 ************************************
 
-- To ease the declaration of weight and bias arrays, initialization based on ``.csv`` data can be used, like so:
+To ease the declaration of weight and bias arrays, initialization based on ``.csv`` data can be used, like so:
 
 .. code-block::
 
@@ -142,6 +143,8 @@ Furthermore, for the weights, the first :math:`n` elements correspond to the fir
 Effectively, each row is attached to the columns one by one.
 See :ref:`matrix_math` for details regarding the transformation of matrix to vector dimensions and :ref:`neural_network` regarding the dimension definition of the network.
 
+.. tip:: Use the declaration and defines shown in the examples and unit tests and adjust them to specific networks.
+
 Full example
 ============
 
@@ -153,10 +156,10 @@ Be aware that the Matlab neural network definition differs from the network defi
 See the file ``test_uz_nn_full_example.c`` in ``~/ultrazohm_sw/vitis/software/Baremetal/test/uz/uz_nn`` for the code.
 
 
-Timing
-======
+Execution time on R5
+====================
 
-The following lists basic timing to expect for different networks with the feedforward calculation in the *empty* (expect for required code for system function) ISR (takes 2.6 us without feedforward calculation).
+The following lists the expected execution time for different networks with the feedforward calculation in the *empty* (expect for required code for system function) ISR of the R5 processors (takes 2.6 us without feedforward calculation).
 
 - 2 inputs, 1 output, 3 neurons, two hidden layer with ReLU takes 5.0 us
 - 2 inputs, 1 output, 3 neurons, two hidden layer with ReLU ten times takes 25.5 us

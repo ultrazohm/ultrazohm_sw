@@ -170,7 +170,7 @@ The following lists basic timing to expect for different networks with the feedf
 - 13 inputs, 1 output, two hidden layer (50 neurons in the first, 20 neurons in the second hidden layer) with 
 
 Optimization
-------------
+************
 
 All timing above was done with -O2 flag.
 Testing with ``-funroll-all-loops`` leads to worse performance (4 inputs, 8 outputs, 64 neurons, two hidden layer with ReLU takes 94 us with the flag compared to 89 us without).

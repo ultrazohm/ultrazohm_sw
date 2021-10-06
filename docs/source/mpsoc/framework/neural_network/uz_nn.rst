@@ -194,3 +194,5 @@ Reference
 .. doxygenfunction:: uz_nn_init
 
 .. doxygenfunction:: uz_nn_get_output_data
+
+.. doxygendefine:: UZ_NN_MAX_LAYER

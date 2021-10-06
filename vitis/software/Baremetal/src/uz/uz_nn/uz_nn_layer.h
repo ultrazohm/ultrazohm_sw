@@ -37,28 +37,10 @@ struct uz_nn_layer_config{
 
 /**
  * @brief Initializes a layer of a neural network.
- *        Length of bias has to be equal to the number of neurons in the layer
- *        Length of output has to be equal to the number of neurons in the layer
- *        Length of weights has to be number_of_neurons*number_of_inputs
  * 
- * @param number_of_neurons 
- * @param number_of_inputs 
- * @param weights Array of the weights
- * @param length_of_weights Length of the weights calculated with ARRAY_SIZE(weights)
- * @param bias Array of the bias
- * @param length_of_bias Length of the bias calculated with ARRAY_SIZE(bias)
- * @param output Array for the output of the layer
- * @param length_of_output Length of the bias calculated with ARRAY_SIZE(output)
- * @param activation Defines the activation function of the layer using an enum type
- * @return uz_nn_layer* Pointer to the layer object
+ * @param layer_config Configuration struct
+ * @return uz_nn_layer_t* 
  */
-
-//uz_nn_layer_t *uz_nn_layer_init(size_t number_of_neurons, size_t number_of_inputs,
-//                              float *const weights, size_t length_of_weights,
-//                              float *const bias, size_t length_of_bias,
-//                              float *const output, size_t length_of_output,
-//                              enum activation_function activation);
-
 uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config);
 
 /**

@@ -24,7 +24,7 @@ Summary
 Model
 </td>
 <td align="right" valign="top" style="border-style: none">
-<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM')" name="code2model" class="code2model">
 IP_Core_SS_Switch_and_PWM
 </a>
 
@@ -36,7 +36,7 @@ IP_Core_SS_Switch_and_PWM
 Model version
 </td>
 <td align="right" valign="top" style="border-style: none">
-1.65
+7.11
 </td>
 
 </tr>
@@ -45,7 +45,7 @@ Model version
 HDL Coder version
 </td>
 <td align="right" valign="top" style="border-style: none">
-3.12
+3.18
 </td>
 
 </tr>
@@ -54,7 +54,7 @@ HDL Coder version
 HDL code generated on
 </td>
 <td align="right" valign="top" style="border-style: none">
-2020-02-07 14:11:52
+2021-09-21 17:37:41
 </td>
 
 </tr>
@@ -63,7 +63,7 @@ HDL code generated on
 HDL code generated for
 </td>
 <td align="right" valign="top" style="border-style: none">
-<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:192')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:192')" name="code2model" class="code2model">
 PWM_and_Switching_Signal_Control
 </a>
 
@@ -102,6 +102,15 @@ Non-default model properties
 <br /><br /><table width="100%" border="1">
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
+BalanceDelays
+</td>
+<td align="right" valign="top" style="border-style: none">
+off
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
 CriticalPathEstimation
 </td>
 <td align="right" valign="top" style="border-style: none">
@@ -109,7 +118,7 @@ on
 </td>
 
 </tr>
-<tr style="background-color: #ffffff">
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 HDLSubsystem
 </td>
@@ -118,16 +127,16 @@ IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 ModulePrefix
 </td>
 <td align="right" valign="top" style="border-style: none">
-PWM_and_SS_control_V3_ip_src_
+PWM_and_SS_control_V4_ip_src_
 </td>
 
 </tr>
-<tr style="background-color: #ffffff">
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 OptimizationReport
 </td>
@@ -136,7 +145,7 @@ on
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 ResetType
 </td>
@@ -145,7 +154,7 @@ Synchronous
 </td>
 
 </tr>
-<tr style="background-color: #ffffff">
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 ResourceReport
 </td>
@@ -154,7 +163,7 @@ on
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 SynthesisTool
 </td>
@@ -163,43 +172,25 @@ Xilinx Vivado
 </td>
 
 </tr>
-<tr style="background-color: #ffffff">
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 SynthesisToolChipFamily
 </td>
 <td align="right" valign="top" style="border-style: none">
-Zynq
+Zynq UltraScale+
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 SynthesisToolDeviceName
 </td>
 <td align="right" valign="top" style="border-style: none">
-xa7z020
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-SynthesisToolPackageName
-</td>
-<td align="right" valign="top" style="border-style: none">
-clg484
+xczu9eg-ffvc900-1-e
 </td>
 
 </tr>
 <tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-SynthesisToolSpeedValue
-</td>
-<td align="right" valign="top" style="border-style: none">
--1Q
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 TargetDirectory
 </td>
@@ -208,7 +199,7 @@ hdl_prj\hdlsrc
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 TargetPlatform
 </td>
@@ -217,7 +208,7 @@ Generic Xilinx Platform
 </td>
 
 </tr>
-<tr style="background-color: #ffffff">
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 Traceability
 </td>
@@ -226,7 +217,7 @@ on
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 Workflow
 </td>
@@ -247,7 +238,7 @@ Non-default block properties
 
 </a>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:192')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:192')" name="code2model" class="code2model">
 PWM_and_Switching_Signal_Control
 </a>
 
@@ -264,11 +255,20 @@ PWM_and_Switching_Signal_Control
 IPCoreName
 </td>
 <td align="right" valign="top" style="border-style: none">
-PWM_and_SS_control_V3_ip
+PWM_and_SS_control_V4_ip
 </td>
 
 </tr>
 <tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IPCoreVersion
+</td>
+<td align="right" valign="top" style="border-style: none">
+4.0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 ProcessorFPGASynchronization
 </td>
@@ -280,7 +280,7 @@ Free running
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:193')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:193')" name="code2model" class="code2model">
 PWM_en_AXI
 </a>
 
@@ -313,7 +313,7 @@ x"100"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:194')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:194')" name="code2model" class="code2model">
 Mode_AXI
 </a>
 
@@ -346,7 +346,7 @@ x"104"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:195')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:195')" name="code2model" class="code2model">
 Scal_f_carrier_AXI
 </a>
 
@@ -379,7 +379,7 @@ x"108"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:502')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:502')" name="code2model" class="code2model">
 Scal_T_carrier_AXI
 </a>
 
@@ -412,7 +412,7 @@ x"10C"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:196')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:196')" name="code2model" class="code2model">
 PWM_min_pulse_width_AXI
 </a>
 
@@ -445,7 +445,7 @@ x"110"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:197')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:197')" name="code2model" class="code2model">
 m_u1_norm
 </a>
 
@@ -469,7 +469,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:198')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:198')" name="code2model" class="code2model">
 m_u2_norm
 </a>
 
@@ -493,7 +493,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:199')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:199')" name="code2model" class="code2model">
 m_u3_norm
 </a>
 
@@ -517,7 +517,223 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:201')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1088')" name="code2model" class="code2model">
+m_u4_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1089')" name="code2model" class="code2model">
+m_u5_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1090')" name="code2model" class="code2model">
+m_u6_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1097')" name="code2model" class="code2model">
+m_u7_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1098')" name="code2model" class="code2model">
+m_u8_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1099')" name="code2model" class="code2model">
+m_u9_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1100')" name="code2model" class="code2model">
+m_u10_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1101')" name="code2model" class="code2model">
+m_u11_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1102')" name="code2model" class="code2model">
+m_u12_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:201')" name="code2model" class="code2model">
 m_u1_norm_AXI
 </a>
 
@@ -550,7 +766,7 @@ x"114"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:203')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:203')" name="code2model" class="code2model">
 m_u2_norm_AXI
 </a>
 
@@ -583,7 +799,7 @@ x"118"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:205')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:205')" name="code2model" class="code2model">
 m_u3_norm_AXI
 </a>
 
@@ -616,152 +832,8 @@ x"11C"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:200')" name="code2model" class="code2model">
-SS0_IN_External
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-External Port
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:202')" name="code2model" class="code2model">
-SS1_IN_External
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-External Port
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:204')" name="code2model" class="code2model">
-SS2_IN_External
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-External Port
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:206')" name="code2model" class="code2model">
-SS3_IN_External
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-External Port
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:207')" name="code2model" class="code2model">
-SS4_IN_External
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-External Port
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:208')" name="code2model" class="code2model">
-SS5_IN_External
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-External Port
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:514')" name="code2model" class="code2model">
-TriState_HB1_AXI
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1091')" name="code2model" class="code2model">
+m_u4_norm_AXI
 </a>
 
 </b>
@@ -793,8 +865,8 @@ x"120"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:515')" name="code2model" class="code2model">
-TriState_HB2_AXI
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1092')" name="code2model" class="code2model">
+m_u5_norm_AXI
 </a>
 
 </b>
@@ -826,8 +898,8 @@ x"124"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:516')" name="code2model" class="code2model">
-TriState_HB3_AXI
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1093')" name="code2model" class="code2model">
+m_u6_norm_AXI
 </a>
 
 </b>
@@ -859,7 +931,1177 @@ x"128"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:371')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1103')" name="code2model" class="code2model">
+m_u7_norm_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"12C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1104')" name="code2model" class="code2model">
+m_u8_norm_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"130"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1105')" name="code2model" class="code2model">
+m_u9_norm_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"134"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1106')" name="code2model" class="code2model">
+m_u10_norm_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"138"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1107')" name="code2model" class="code2model">
+m_u11_norm_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"13C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1108')" name="code2model" class="code2model">
+m_u12_norm_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"140"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:200')" name="code2model" class="code2model">
+SS0_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:202')" name="code2model" class="code2model">
+SS1_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:204')" name="code2model" class="code2model">
+SS2_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:206')" name="code2model" class="code2model">
+SS3_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:207')" name="code2model" class="code2model">
+SS4_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:208')" name="code2model" class="code2model">
+SS5_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:514')" name="code2model" class="code2model">
+TriState_HB1_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"144"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:515')" name="code2model" class="code2model">
+TriState_HB2_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"148"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:516')" name="code2model" class="code2model">
+TriState_HB3_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"14C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1043')" name="code2model" class="code2model">
+SS6_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1044')" name="code2model" class="code2model">
+SS7_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1045')" name="code2model" class="code2model">
+SS8_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1046')" name="code2model" class="code2model">
+SS9_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1047')" name="code2model" class="code2model">
+SS10_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1048')" name="code2model" class="code2model">
+SS11_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1049')" name="code2model" class="code2model">
+TriState_HB4	_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"150"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1050')" name="code2model" class="code2model">
+TriState_HB5_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"154"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1051')" name="code2model" class="code2model">
+TriState_HB6_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"158"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1052')" name="code2model" class="code2model">
+SS12_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1053')" name="code2model" class="code2model">
+SS13_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1054')" name="code2model" class="code2model">
+SS14_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1055')" name="code2model" class="code2model">
+SS15_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1056')" name="code2model" class="code2model">
+SS16_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1057')" name="code2model" class="code2model">
+SS17_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1058')" name="code2model" class="code2model">
+TriState_HB7	_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"15C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1059')" name="code2model" class="code2model">
+TriState_HB8_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"160"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1060')" name="code2model" class="code2model">
+TriState_HB9_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"164"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1061')" name="code2model" class="code2model">
+SS18_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1062')" name="code2model" class="code2model">
+SS19_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1063')" name="code2model" class="code2model">
+SS20_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1064')" name="code2model" class="code2model">
+SS21_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1065')" name="code2model" class="code2model">
+SS22_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1066')" name="code2model" class="code2model">
+SS23_IN_External
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1067')" name="code2model" class="code2model">
+TriState_HB10_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"168"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1068')" name="code2model" class="code2model">
+TriState_HB11_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"16C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1069')" name="code2model" class="code2model">
+TriState_HB12_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"170"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:371')" name="code2model" class="code2model">
 GenPWM
 </a>
 
@@ -910,7 +2152,7 @@ Free running
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:372')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:372')" name="code2model" class="code2model">
 PWM_en_AXI
 </a>
 
@@ -943,7 +2185,7 @@ x"100"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:373')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:373')" name="code2model" class="code2model">
 f_carrier_kHz_AXI
 </a>
 
@@ -976,7 +2218,7 @@ x"104"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:374')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:374')" name="code2model" class="code2model">
 T_carrier_us_AXI
 </a>
 
@@ -1009,7 +2251,7 @@ x"108"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:375')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:375')" name="code2model" class="code2model">
 min_pulse_width_AXI
 </a>
 
@@ -1042,7 +2284,7 @@ x"10C"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:376')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:376')" name="code2model" class="code2model">
 U1_norm
 </a>
 
@@ -1066,7 +2308,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:377')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:377')" name="code2model" class="code2model">
 U2_norm
 </a>
 
@@ -1090,7 +2332,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:378')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:378')" name="code2model" class="code2model">
 U3_norm
 </a>
 
@@ -1114,7 +2356,223 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:490')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:596')" name="code2model" class="code2model">
+U4_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:625')" name="code2model" class="code2model">
+U5_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:654')" name="code2model" class="code2model">
+U6_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:770')" name="code2model" class="code2model">
+U7_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:771')" name="code2model" class="code2model">
+U8_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:772')" name="code2model" class="code2model">
+U9_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:857')" name="code2model" class="code2model">
+U10_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:858')" name="code2model" class="code2model">
+U11_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:859')" name="code2model" class="code2model">
+U12_norm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:490')" name="code2model" class="code2model">
 S1
 </a>
 
@@ -1138,7 +2596,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:491')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:491')" name="code2model" class="code2model">
 S2
 </a>
 
@@ -1162,7 +2620,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:492')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:492')" name="code2model" class="code2model">
 S3
 </a>
 
@@ -1186,7 +2644,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:493')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:493')" name="code2model" class="code2model">
 S4
 </a>
 
@@ -1210,7 +2668,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:494')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:494')" name="code2model" class="code2model">
 S5
 </a>
 
@@ -1234,7 +2692,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:495')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:495')" name="code2model" class="code2model">
 S6
 </a>
 
@@ -1258,7 +2716,439 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:496')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:621')" name="code2model" class="code2model">
+S7
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:622')" name="code2model" class="code2model">
+S8
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:650')" name="code2model" class="code2model">
+S9
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:651')" name="code2model" class="code2model">
+S10
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:679')" name="code2model" class="code2model">
+S11
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:680')" name="code2model" class="code2model">
+S12
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:845')" name="code2model" class="code2model">
+S13
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:846')" name="code2model" class="code2model">
+S14
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:847')" name="code2model" class="code2model">
+S15
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:848')" name="code2model" class="code2model">
+S16
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:849')" name="code2model" class="code2model">
+S17
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:850')" name="code2model" class="code2model">
+S18
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:932')" name="code2model" class="code2model">
+S19
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:933')" name="code2model" class="code2model">
+S20
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:934')" name="code2model" class="code2model">
+S21
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:935')" name="code2model" class="code2model">
+S22
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:936')" name="code2model" class="code2model">
+S23
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:937')" name="code2model" class="code2model">
+S24
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:496')" name="code2model" class="code2model">
 PWM_en_rd_AXI
 </a>
 
@@ -1291,7 +3181,7 @@ x"110"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:497')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:497')" name="code2model" class="code2model">
 f_carrier_kHz_rd_AXI
 </a>
 
@@ -1324,7 +3214,7 @@ x"114"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:498')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:498')" name="code2model" class="code2model">
 T_carrier_us_rd_AXI
 </a>
 
@@ -1357,7 +3247,7 @@ x"118"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:499')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:499')" name="code2model" class="code2model">
 min_pulse_width_rd_AXI
 </a>
 
@@ -1390,7 +3280,7 @@ x"11C"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:500')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:500')" name="code2model" class="code2model">
 enb_out
 </a>
 
@@ -1414,7 +3304,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:518')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:518')" name="code2model" class="code2model">
 TriState_HB1_AXI
 </a>
 
@@ -1447,7 +3337,7 @@ x"104"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:519')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:519')" name="code2model" class="code2model">
 TriState_HB2_AXI
 </a>
 
@@ -1480,7 +3370,7 @@ x"104"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:520')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:520')" name="code2model" class="code2model">
 TriState_HB3_AXI
 </a>
 
@@ -1513,7 +3403,304 @@ x"104"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:209')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1034')" name="code2model" class="code2model">
+TriState_HB4_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"104"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1035')" name="code2model" class="code2model">
+TriState_HB5_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"104"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1036')" name="code2model" class="code2model">
+TriState_HB6_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"104"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1037')" name="code2model" class="code2model">
+TriState_HB7_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"104"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1038')" name="code2model" class="code2model">
+TriState_HB8_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"104"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1039')" name="code2model" class="code2model">
+TriState_HB9_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"104"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1040')" name="code2model" class="code2model">
+TriState_HB10_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"104"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1041')" name="code2model" class="code2model">
+TriState_HB11_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"104"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1042')" name="code2model" class="code2model">
+TriState_HB12_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"104"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:209')" name="code2model" class="code2model">
 SS0_OUT
 </a>
 
@@ -1537,7 +3724,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:210')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:210')" name="code2model" class="code2model">
 SS1_OUT
 </a>
 
@@ -1561,7 +3748,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:211')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:211')" name="code2model" class="code2model">
 SS2_OUT
 </a>
 
@@ -1585,7 +3772,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:212')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:212')" name="code2model" class="code2model">
 SS3_OUT
 </a>
 
@@ -1609,7 +3796,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:213')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:213')" name="code2model" class="code2model">
 SS4_OUT
 </a>
 
@@ -1633,7 +3820,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:214')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:214')" name="code2model" class="code2model">
 SS5_OUT
 </a>
 
@@ -1657,7 +3844,439 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:215')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1070')" name="code2model" class="code2model">
+SS6_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1071')" name="code2model" class="code2model">
+SS7_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1072')" name="code2model" class="code2model">
+SS8_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1073')" name="code2model" class="code2model">
+SS9_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1074')" name="code2model" class="code2model">
+SS10_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1075')" name="code2model" class="code2model">
+SS11_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1076')" name="code2model" class="code2model">
+SS12_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1077')" name="code2model" class="code2model">
+SS13_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1078')" name="code2model" class="code2model">
+SS14_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1079')" name="code2model" class="code2model">
+SS15_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1080')" name="code2model" class="code2model">
+SS16_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1081')" name="code2model" class="code2model">
+SS17_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1082')" name="code2model" class="code2model">
+SS18_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1083')" name="code2model" class="code2model">
+SS19_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1084')" name="code2model" class="code2model">
+SS20_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1085')" name="code2model" class="code2model">
+SS21_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1086')" name="code2model" class="code2model">
+SS22_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1087')" name="code2model" class="code2model">
+SS23_OUT
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:215')" name="code2model" class="code2model">
 PWM_en_rd_AXI
 </a>
 
@@ -1683,14 +4302,14 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"12C"
+x"174"
 </td>
 
 </tr>
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:216')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:216')" name="code2model" class="code2model">
 PWM_f_carrier_kHz_rd_AXI
 </a>
 
@@ -1716,14 +4335,14 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"130"
+x"178"
 </td>
 
 </tr>
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:501')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:501')" name="code2model" class="code2model">
 PWM_T_carrier_us_rd_AXI
 </a>
 
@@ -1749,14 +4368,14 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"134"
+x"17C"
 </td>
 
 </tr>
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:217')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:217')" name="code2model" class="code2model">
 PWM_min_pulse_width_rd_AXI
 </a>
 
@@ -1782,14 +4401,14 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"138"
+x"180"
 </td>
 
 </tr>
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:218')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:218')" name="code2model" class="code2model">
 PWM_enb_out
 </a>
 
@@ -1813,7 +4432,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:220')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:220')" name="code2model" class="code2model">
 Mode_rd_AXI
 </a>
 
@@ -1839,14 +4458,14 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"13C"
+x"184"
 </td>
 
 </tr>
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:512')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:512')" name="code2model" class="code2model">
 Triangular_Max
 </a>
 
@@ -1870,7 +4489,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:set_param('IP_Core_SS_Switch_and_PWM', 'hiliteAncestors', 'none'); Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:538')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:538')" name="code2model" class="code2model">
 Triangular_Min
 </a>
 

@@ -135,6 +135,8 @@ float uz_matrix_dot_product(uz_matrix_t const*const A, uz_matrix_t const*const B
     return (C);
 }
 
+
+
 void uz_matrix_multiply(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
 {
     uz_assert_not_NULL(A);
@@ -151,7 +153,7 @@ void uz_matrix_multiply(uz_matrix_t const *const A, uz_matrix_t const *const B, 
     uz_assert(A->rows == C_out->rows);
     uz_assert(B->columns == C_out->columns);
     uz_matrix_set_zero(C_out);
-    // The following implementation is "slow" as in it does not use special mechanism to speed it up. See the following ressources for possible improvements.
+    // The following implementation is "slow" as in it does not use special mechanism to speed it up. See the following resources for possible improvements.
     // https://github.com/deuxbot/fast-matrix-multiplication/blob/master/mxm.c
     // https://en.wikipedia.org/wiki/Matrix_multiplication
     size_t m = A->rows;
@@ -212,6 +214,15 @@ void uz_matrix_multiply_by_scalar(uz_matrix_t *const A, float scalar){
     uz_assert(A->is_ready);
     for (size_t i=0;i < (A->rows*A->columns);i++){
         A->data[i] = A->data[i] * scalar;
+    }
+}
+
+void uz_matrix_apply_function_to_each_element(uz_matrix_t *const A, float(*f)(float) ){
+    uz_assert_not_NULL(A);
+    uz_assert_not_NULL(f);
+    uz_assert(A->is_ready);
+    for (size_t i=0;i < (A->rows*A->columns);i++){
+        A->data[i]=f(A->data[i]);
     }
 }
 

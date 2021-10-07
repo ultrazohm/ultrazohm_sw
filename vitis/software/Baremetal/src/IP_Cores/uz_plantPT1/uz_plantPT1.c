@@ -1,5 +1,5 @@
-//#include "../../uz/uz_global_configuration.h"
-#define UZ_PLANTPT1_MAX_INSTANCES 6U
+#include "../../uz/uz_global_configuration.h"
+//#define UZ_PLANTPT1_MAX_INSTANCES 6U
 #if UZ_PLANTPT1_MAX_INSTANCES > 0U
 #include <stdbool.h>
 #include "../../uz/uz_HAL.h"

@@ -42,4 +42,5 @@
     #define UZ_NN_LAYER_MAX_INSTANCES               100U
     #define UZ_NN_MAX_INSTANCES                     10U
     #define UZ_PMSMMODEL_MAX_INSTANCES              11U
+    #define UZ_PLANTPT1_MAX_INSTANCES               6U
 #endif

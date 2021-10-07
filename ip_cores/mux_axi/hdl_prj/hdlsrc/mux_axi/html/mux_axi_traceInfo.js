@@ -354,6 +354,14 @@ Operator */
 	this.urlHashMap["mux_axi:119:27"] = "msg=rtwMsg_notTraceable&block=mux_axi:119:27";
 	/* <S68>/Wrap */
 	this.urlHashMap["mux_axi:119:28"] = "msg=rtwMsg_notTraceable&block=mux_axi:119:28";
+	/* <S69>/Compare */
+	this.urlHashMap["mux_axi:119:215:2"] = "msg=rtwMsg_notTraceable&block=mux_axi:119:215:2";
+	/* <S69>/Constant */
+	this.urlHashMap["mux_axi:119:215:3"] = "msg=rtwMsg_notTraceable&block=mux_axi:119:215:3";
+	/* <S70>/Compare */
+	this.urlHashMap["mux_axi:119:213:2"] = "msg=rtwMsg_notTraceable&block=mux_axi:119:213:2";
+	/* <S70>/Constant */
+	this.urlHashMap["mux_axi:119:213:3"] = "msg=rtwMsg_notTraceable&block=mux_axi:119:213:3";
 	this.getUrlHash = function(sid) { return this.urlHashMap[sid];}
 }
 RTW_Sid2UrlHash.instance = new RTW_Sid2UrlHash();
@@ -832,10 +840,10 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["mux_axi:118:4"] = {rtwname: "<S62>/Positive"};
 	this.rtwnameHashMap["<S62>/Y"] = {sid: "mux_axi:118:5"};
 	this.sidHashMap["mux_axi:118:5"] = {rtwname: "<S62>/Y"};
-	this.rtwnameHashMap["<S63>/rst"] = {sid: "mux_axi:119:213"};
-	this.sidHashMap["mux_axi:119:213"] = {rtwname: "<S63>/rst"};
-	this.rtwnameHashMap["<S63>/enb"] = {sid: "mux_axi:119:214"};
-	this.sidHashMap["mux_axi:119:214"] = {rtwname: "<S63>/enb"};
+	this.rtwnameHashMap["<S63>/rst"] = {sid: "mux_axi:119:233"};
+	this.sidHashMap["mux_axi:119:233"] = {rtwname: "<S63>/rst"};
+	this.rtwnameHashMap["<S63>/enb"] = {sid: "mux_axi:119:234"};
+	this.sidHashMap["mux_axi:119:234"] = {rtwname: "<S63>/enb"};
 	this.rtwnameHashMap["<S63>/Add_wrap"] = {sid: "mux_axi:119:1"};
 	this.sidHashMap["mux_axi:119:1"] = {rtwname: "<S63>/Add_wrap"};
 	this.rtwnameHashMap["<S63>/Constant"] = {sid: "mux_axi:119:212"};
@@ -880,6 +888,10 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["mux_axi:119:38"] = {rtwname: "<S63>/const_load"};
 	this.rtwnameHashMap["<S63>/const_load_val"] = {sid: "mux_axi:119:39"};
 	this.sidHashMap["mux_axi:119:39"] = {rtwname: "<S63>/const_load_val"};
+	this.rtwnameHashMap["<S63>/count_hit_subsystem"] = {sid: "mux_axi:119:221"};
+	this.sidHashMap["mux_axi:119:221"] = {rtwname: "<S63>/count_hit_subsystem"};
+	this.rtwnameHashMap["<S63>/count_hit_terminator"] = {sid: "mux_axi:119:220"};
+	this.sidHashMap["mux_axi:119:220"] = {rtwname: "<S63>/count_hit_terminator"};
 	this.rtwnameHashMap["<S63>/count"] = {sid: "mux_axi:119:41"};
 	this.sidHashMap["mux_axi:119:41"] = {rtwname: "<S63>/count"};
 	this.rtwnameHashMap["<S64>/u"] = {sid: "mux_axi:117:4:1"};
@@ -904,6 +916,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["mux_axi:119:3"] = {rtwname: "<S66>/fb"};
 	this.rtwnameHashMap["<S66>/Add"] = {sid: "mux_axi:119:4"};
 	this.sidHashMap["mux_axi:119:4"] = {rtwname: "<S66>/Add"};
+	this.rtwnameHashMap["<S66>/Compare To Constant"] = {sid: "mux_axi:119:215"};
+	this.sidHashMap["mux_axi:119:215"] = {rtwname: "<S66>/Compare To Constant"};
 	this.rtwnameHashMap["<S66>/Mod_value"] = {sid: "mux_axi:119:5"};
 	this.sidHashMap["mux_axi:119:5"] = {rtwname: "<S66>/Mod_value"};
 	this.rtwnameHashMap["<S66>/Switch_wrap"] = {sid: "mux_axi:119:6"};
@@ -912,6 +926,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["mux_axi:119:7"] = {rtwname: "<S66>/Wrap"};
 	this.rtwnameHashMap["<S66>/add"] = {sid: "mux_axi:119:8"};
 	this.sidHashMap["mux_axi:119:8"] = {rtwname: "<S66>/add"};
+	this.rtwnameHashMap["<S66>/count_hit"] = {sid: "mux_axi:119:216"};
+	this.sidHashMap["mux_axi:119:216"] = {rtwname: "<S66>/count_hit"};
 	this.rtwnameHashMap["<S67>/dir_port"] = {sid: "mux_axi:119:13"};
 	this.sidHashMap["mux_axi:119:13"] = {rtwname: "<S67>/dir_port"};
 	this.rtwnameHashMap["<S67>/Logical Operator"] = {sid: "mux_axi:119:14"};
@@ -926,6 +942,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["mux_axi:119:24"] = {rtwname: "<S68>/fb"};
 	this.rtwnameHashMap["<S68>/Add"] = {sid: "mux_axi:119:25"};
 	this.sidHashMap["mux_axi:119:25"] = {rtwname: "<S68>/Add"};
+	this.rtwnameHashMap["<S68>/Compare To Constant"] = {sid: "mux_axi:119:213"};
+	this.sidHashMap["mux_axi:119:213"] = {rtwname: "<S68>/Compare To Constant"};
 	this.rtwnameHashMap["<S68>/Mod_value"] = {sid: "mux_axi:119:26"};
 	this.sidHashMap["mux_axi:119:26"] = {rtwname: "<S68>/Mod_value"};
 	this.rtwnameHashMap["<S68>/Switch_wrap"] = {sid: "mux_axi:119:27"};
@@ -934,6 +952,24 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["mux_axi:119:28"] = {rtwname: "<S68>/Wrap"};
 	this.rtwnameHashMap["<S68>/sub"] = {sid: "mux_axi:119:29"};
 	this.sidHashMap["mux_axi:119:29"] = {rtwname: "<S68>/sub"};
+	this.rtwnameHashMap["<S68>/count_hit"] = {sid: "mux_axi:119:214"};
+	this.sidHashMap["mux_axi:119:214"] = {rtwname: "<S68>/count_hit"};
+	this.rtwnameHashMap["<S69>/u"] = {sid: "mux_axi:119:215:1"};
+	this.sidHashMap["mux_axi:119:215:1"] = {rtwname: "<S69>/u"};
+	this.rtwnameHashMap["<S69>/Compare"] = {sid: "mux_axi:119:215:2"};
+	this.sidHashMap["mux_axi:119:215:2"] = {rtwname: "<S69>/Compare"};
+	this.rtwnameHashMap["<S69>/Constant"] = {sid: "mux_axi:119:215:3"};
+	this.sidHashMap["mux_axi:119:215:3"] = {rtwname: "<S69>/Constant"};
+	this.rtwnameHashMap["<S69>/y"] = {sid: "mux_axi:119:215:4"};
+	this.sidHashMap["mux_axi:119:215:4"] = {rtwname: "<S69>/y"};
+	this.rtwnameHashMap["<S70>/u"] = {sid: "mux_axi:119:213:1"};
+	this.sidHashMap["mux_axi:119:213:1"] = {rtwname: "<S70>/u"};
+	this.rtwnameHashMap["<S70>/Compare"] = {sid: "mux_axi:119:213:2"};
+	this.sidHashMap["mux_axi:119:213:2"] = {rtwname: "<S70>/Compare"};
+	this.rtwnameHashMap["<S70>/Constant"] = {sid: "mux_axi:119:213:3"};
+	this.sidHashMap["mux_axi:119:213:3"] = {rtwname: "<S70>/Constant"};
+	this.rtwnameHashMap["<S70>/y"] = {sid: "mux_axi:119:213:4"};
+	this.sidHashMap["mux_axi:119:213:4"] = {rtwname: "<S70>/y"};
 	this.getSID = function(rtwname) { return this.rtwnameHashMap[rtwname];}
 	this.getRtwname = function(sid) { return this.sidHashMap[sid];}
 }

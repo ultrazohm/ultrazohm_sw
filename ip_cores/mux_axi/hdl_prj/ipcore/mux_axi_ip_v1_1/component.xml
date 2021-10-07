@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>e6296f81</spirit:value>
+            <spirit:value>6556357e</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>e6296f81</spirit:value>
+            <spirit:value>6556357e</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -757,7 +757,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/mux_axi_ip.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_85053be8</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_533ae2b8</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -855,9 +855,7 @@
   <spirit:vendorExtensions>
     <xilinx:coreExtensions>
       <xilinx:supportedFamilies>
-        <xilinx:family xilinx:lifeCycle="Production">azynq</xilinx:family>
         <xilinx:family xilinx:lifeCycle="Production">kintexu</xilinx:family>
-        <xilinx:family xilinx:lifeCycle="Production">qzynq</xilinx:family>
         <xilinx:family xilinx:lifeCycle="Production">virtexuplus</xilinx:family>
         <xilinx:family xilinx:lifeCycle="Production">virtexuplusHBM</xilinx:family>
         <xilinx:family xilinx:lifeCycle="Production">zynq</xilinx:family>
@@ -868,14 +866,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>mux_axi_ip</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2108301321</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-08-30T11:21:58Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2110071136</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-10-07T09:36:39Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="ace8592a"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="4577d6b0"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="93af6dcb"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="12fb697e"/>
     </xilinx:packagingInfo>

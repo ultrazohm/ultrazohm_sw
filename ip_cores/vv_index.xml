@@ -803,20 +803,12 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2108301321">
+		<CoreRevision value="2110071136">
 		</CoreRevision>
 		<ComponentPath value="mux_axi/hdl_prj/ipcore/mux_axi_ip_v1_1/component.xml">
 		</ComponentPath>
 		<Families>
-			<Family name="azynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
 			<Family name="kintexu">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="qzynq">
 				<Part status="Production" name="ALL">
 				</Part>
 			</Family>

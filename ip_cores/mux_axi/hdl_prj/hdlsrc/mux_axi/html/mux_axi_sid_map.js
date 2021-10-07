@@ -235,8 +235,8 @@ function RTW_SidParentMap() {
     this.sidParentMap["mux_axi:118:3"] = "mux_axi:118";
     this.sidParentMap["mux_axi:118:4"] = "mux_axi:118";
     this.sidParentMap["mux_axi:118:5"] = "mux_axi:118";
-    this.sidParentMap["mux_axi:119:213"] = "mux_axi:119";
-    this.sidParentMap["mux_axi:119:214"] = "mux_axi:119";
+    this.sidParentMap["mux_axi:119:233"] = "mux_axi:119";
+    this.sidParentMap["mux_axi:119:234"] = "mux_axi:119";
     this.sidParentMap["mux_axi:119:1"] = "mux_axi:119";
     this.sidParentMap["mux_axi:119:212"] = "mux_axi:119";
     this.sidParentMap["mux_axi:119:9"] = "mux_axi:119";
@@ -259,6 +259,8 @@ function RTW_SidParentMap() {
     this.sidParentMap["mux_axi:119:36"] = "mux_axi:119";
     this.sidParentMap["mux_axi:119:38"] = "mux_axi:119";
     this.sidParentMap["mux_axi:119:39"] = "mux_axi:119";
+    this.sidParentMap["mux_axi:119:221"] = "mux_axi:119";
+    this.sidParentMap["mux_axi:119:220"] = "mux_axi:119";
     this.sidParentMap["mux_axi:119:41"] = "mux_axi:119";
     this.sidParentMap["mux_axi:117:4:1"] = "mux_axi:117:4";
     this.sidParentMap["mux_axi:117:4:2"] = "mux_axi:117:4";
@@ -271,10 +273,12 @@ function RTW_SidParentMap() {
     this.sidParentMap["mux_axi:119:2"] = "mux_axi:119:1";
     this.sidParentMap["mux_axi:119:3"] = "mux_axi:119:1";
     this.sidParentMap["mux_axi:119:4"] = "mux_axi:119:1";
+    this.sidParentMap["mux_axi:119:215"] = "mux_axi:119:1";
     this.sidParentMap["mux_axi:119:5"] = "mux_axi:119:1";
     this.sidParentMap["mux_axi:119:6"] = "mux_axi:119:1";
     this.sidParentMap["mux_axi:119:7"] = "mux_axi:119:1";
     this.sidParentMap["mux_axi:119:8"] = "mux_axi:119:1";
+    this.sidParentMap["mux_axi:119:216"] = "mux_axi:119:1";
     this.sidParentMap["mux_axi:119:13"] = "mux_axi:119:12";
     this.sidParentMap["mux_axi:119:14"] = "mux_axi:119:12";
     this.sidParentMap["mux_axi:119:15"] = "mux_axi:119:12";
@@ -282,10 +286,20 @@ function RTW_SidParentMap() {
     this.sidParentMap["mux_axi:119:23"] = "mux_axi:119:22";
     this.sidParentMap["mux_axi:119:24"] = "mux_axi:119:22";
     this.sidParentMap["mux_axi:119:25"] = "mux_axi:119:22";
+    this.sidParentMap["mux_axi:119:213"] = "mux_axi:119:22";
     this.sidParentMap["mux_axi:119:26"] = "mux_axi:119:22";
     this.sidParentMap["mux_axi:119:27"] = "mux_axi:119:22";
     this.sidParentMap["mux_axi:119:28"] = "mux_axi:119:22";
     this.sidParentMap["mux_axi:119:29"] = "mux_axi:119:22";
+    this.sidParentMap["mux_axi:119:214"] = "mux_axi:119:22";
+    this.sidParentMap["mux_axi:119:215:1"] = "mux_axi:119:215";
+    this.sidParentMap["mux_axi:119:215:2"] = "mux_axi:119:215";
+    this.sidParentMap["mux_axi:119:215:3"] = "mux_axi:119:215";
+    this.sidParentMap["mux_axi:119:215:4"] = "mux_axi:119:215";
+    this.sidParentMap["mux_axi:119:213:1"] = "mux_axi:119:213";
+    this.sidParentMap["mux_axi:119:213:2"] = "mux_axi:119:213";
+    this.sidParentMap["mux_axi:119:213:3"] = "mux_axi:119:213";
+    this.sidParentMap["mux_axi:119:213:4"] = "mux_axi:119:213";
     this.getParentSid = function(sid) { return this.sidParentMap[sid];}
 }
     RTW_SidParentMap.instance = new RTW_SidParentMap();

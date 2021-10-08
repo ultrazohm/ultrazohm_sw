@@ -336,6 +336,7 @@ typedef struct _AnalogAdapters_ {
 
 typedef struct _DigitalAdapters_ {
 	uz_d_gan_inverter_t *D4;
+	uz_d_gan_inverter_t *D3;
 } DigitalAdapters;
 
 typedef struct _actualValues_ {
@@ -384,6 +385,9 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge1DutyCycle;
 	float halfBridge2DutyCycle;
 	float halfBridge3DutyCycle;
+	float halfBridge4DutyCycle;
+	float halfBridge5DutyCycle;
+	float halfBridge6DutyCycle;
 	float sixStepCommutationDutyCycle;
 	float phaseAdvanceAngle;
 	float currentControlAngle;

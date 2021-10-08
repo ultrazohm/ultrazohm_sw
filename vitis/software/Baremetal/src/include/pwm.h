@@ -43,23 +43,23 @@ void PWM_SS_Calculate_DutyCycle_open_loop_sin(DS_Data* data);
 
 //==============================================================================================================================================================
 //IP-Block for the 2-level PWM with DutyCycle
-#define PWM_BASE_ADDR					XPAR_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR
-#define PWM_SS_Con_Enable_REG			PWM_BASE_ADDR + PWM_en_AXI_Data_PWM_and_SS_control_V3_ip                //data register for Inport PWM_en_AXI
-#define PWM_SS_Con_Mode_REG				PWM_BASE_ADDR + Mode_AXI_Data_PWM_and_SS_control_V3_ip                  //data register for Inport Mode_AXI
-#define PWM_SS_Con_Scal_f_car_REG		PWM_BASE_ADDR + Scal_f_carrier_AXI_Data_PWM_and_SS_control_V3_ip        //data register for Inport PWM_f_carrier_kHz_AXI
-#define PWM_SS_Con_Scal_T_car_REG		PWM_BASE_ADDR + Scal_T_carrier_AXI_Data_PWM_and_SS_control_V3_ip        //data register for Inport PWM_T_carrier_us_AXI
-#define PWM_SS_Con_min_pulse_REG		PWM_BASE_ADDR + PWM_min_pulse_width_AXI_Data_PWM_and_SS_control_V3_ip   //data register for Inport PWM_min_pulse_width_AXI
-#define PWM_SS_Con_m_u1_norm_REG		PWM_BASE_ADDR + m_u1_norm_AXI_Data_PWM_and_SS_control_V3_ip             //data register for Inport m_u1_norm_AXI
-#define PWM_SS_Con_m_u2_norm_REG		PWM_BASE_ADDR + m_u2_norm_AXI_Data_PWM_and_SS_control_V3_ip             //data register for Inport m_u2_norm_AXI
-#define PWM_SS_Con_m_u3_norm_REG		PWM_BASE_ADDR + m_u3_norm_AXI_Data_PWM_and_SS_control_V3_ip             //data register for Inport m_u3_norm_AXI
-#define PWM_SS_Con_Enable_Rd_REG		PWM_BASE_ADDR + PWM_en_rd_AXI_Data_PWM_and_SS_control_V3_ip             //data register for Outport PWM_en_rd_AXI
-#define PWM_SS_Con_f_car_kHz_Rd_REG		PWM_BASE_ADDR + PWM_f_carrier_kHz_rd_AXI_Data_PWM_and_SS_control_V3_ip  //data register for Outport PWM_f_carrier_kHz_rd_AXI
-#define PWM_SS_Con_T_car_us_Rd_REG		PWM_BASE_ADDR + PWM_T_carrier_us_rd_AXI_Data_PWM_and_SS_control_V3_ip   //data register for Outport PWM_T_carrier_us_rd_AXI
-#define PWM_SS_Con_min_pulse_Rd_REG		PWM_BASE_ADDR + PWM_min_pulse_width_rd_AXI_Data_PWM_and_SS_control_V3_ip//data register for Outport PWM_min_pulse_width_rd_AXI
-#define PWM_SS_Con_Mode_Rd_REG			PWM_BASE_ADDR + Mode_rd_AXI_Data_PWM_and_SS_control_V3_ip               //data register for Outport Mode_rd_AXI
-#define PWM_SS_Con_TriState_HB1_REG		PWM_BASE_ADDR + TriState_HB1_AXI_Data_PWM_and_SS_control_V3_ip          //data register for Inport TriState_HB1_AXI
-#define PWM_SS_Con_TriState_HB2_REG		PWM_BASE_ADDR + TriState_HB2_AXI_Data_PWM_and_SS_control_V3_ip          //data register for Inport TriState_HB2_AXI
-#define PWM_SS_Con_TriState_HB3_REG		PWM_BASE_ADDR + TriState_HB3_AXI_Data_PWM_and_SS_control_V3_ip          //data register for Inport TriState_HB3_AXI
+//#define PWM_BASE_ADDR					XPAR_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR
+//#define PWM_SS_Con_Enable_REG			PWM_BASE_ADDR + PWM_en_AXI_Data_PWM_and_SS_control_V3_ip                //data register for Inport PWM_en_AXI
+//#define PWM_SS_Con_Mode_REG				PWM_BASE_ADDR + Mode_AXI_Data_PWM_and_SS_control_V3_ip                  //data register for Inport Mode_AXI
+//#define PWM_SS_Con_Scal_f_car_REG		PWM_BASE_ADDR + Scal_f_carrier_AXI_Data_PWM_and_SS_control_V3_ip        //data register for Inport PWM_f_carrier_kHz_AXI
+//#define PWM_SS_Con_Scal_T_car_REG		PWM_BASE_ADDR + Scal_T_carrier_AXI_Data_PWM_and_SS_control_V3_ip        //data register for Inport PWM_T_carrier_us_AXI
+//#define PWM_SS_Con_min_pulse_REG		PWM_BASE_ADDR + PWM_min_pulse_width_AXI_Data_PWM_and_SS_control_V3_ip   //data register for Inport PWM_min_pulse_width_AXI
+//#define PWM_SS_Con_m_u1_norm_REG		PWM_BASE_ADDR + m_u1_norm_AXI_Data_PWM_and_SS_control_V3_ip             //data register for Inport m_u1_norm_AXI
+//#define PWM_SS_Con_m_u2_norm_REG		PWM_BASE_ADDR + m_u2_norm_AXI_Data_PWM_and_SS_control_V3_ip             //data register for Inport m_u2_norm_AXI
+//#define PWM_SS_Con_m_u3_norm_REG		PWM_BASE_ADDR + m_u3_norm_AXI_Data_PWM_and_SS_control_V3_ip             //data register for Inport m_u3_norm_AXI
+//#define PWM_SS_Con_Enable_Rd_REG		PWM_BASE_ADDR + PWM_en_rd_AXI_Data_PWM_and_SS_control_V3_ip             //data register for Outport PWM_en_rd_AXI
+//#define PWM_SS_Con_f_car_kHz_Rd_REG		PWM_BASE_ADDR + PWM_f_carrier_kHz_rd_AXI_Data_PWM_and_SS_control_V3_ip  //data register for Outport PWM_f_carrier_kHz_rd_AXI
+//#define PWM_SS_Con_T_car_us_Rd_REG		PWM_BASE_ADDR + PWM_T_carrier_us_rd_AXI_Data_PWM_and_SS_control_V3_ip   //data register for Outport PWM_T_carrier_us_rd_AXI
+//#define PWM_SS_Con_min_pulse_Rd_REG		PWM_BASE_ADDR + PWM_min_pulse_width_rd_AXI_Data_PWM_and_SS_control_V3_ip//data register for Outport PWM_min_pulse_width_rd_AXI
+//#define PWM_SS_Con_Mode_Rd_REG			PWM_BASE_ADDR + Mode_rd_AXI_Data_PWM_and_SS_control_V3_ip               //data register for Outport Mode_rd_AXI
+//#define PWM_SS_Con_TriState_HB1_REG		PWM_BASE_ADDR + TriState_HB1_AXI_Data_PWM_and_SS_control_V3_ip          //data register for Inport TriState_HB1_AXI
+//#define PWM_SS_Con_TriState_HB2_REG		PWM_BASE_ADDR + TriState_HB2_AXI_Data_PWM_and_SS_control_V3_ip          //data register for Inport TriState_HB2_AXI
+//#define PWM_SS_Con_TriState_HB3_REG		PWM_BASE_ADDR + TriState_HB3_AXI_Data_PWM_and_SS_control_V3_ip          //data register for Inport TriState_HB3_AXI
 
 
 #endif /* PWM_H_ */

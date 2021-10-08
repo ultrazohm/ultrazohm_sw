@@ -22,6 +22,7 @@
 #include "../include/javascope.h"
 #include "../include/pwm.h"
 #include "../include/pwm_3L_driver.h"
+#include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../include/adc.h"
 #include "../include/encoder.h"
 #include "../IP_Cores/mux_axi_ip_addr.h"
@@ -51,6 +52,9 @@ float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
 extern uz_codegen codegenInstance;
+
+extern uz_PWM_SS_2L_t *PWM_SS_2L_d4;
+extern uz_PWM_SS_2L_t *PWM_SS_2L_d3;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -96,6 +100,9 @@ void ISR_Control(void *data)
 	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.CMPA_2 * 0.0004;
 	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.CMPA_3 * 0.0004;
 
+	Global_Data.rasv.halfBridge4DutyCycle = codegenInstance.output.CMPA_1 * 0.0004; // * 1/PERIOD
+	Global_Data.rasv.halfBridge5DutyCycle = codegenInstance.output.CMPA_2 * 0.0004;
+	Global_Data.rasv.halfBridge6DutyCycle = codegenInstance.output.CMPA_3 * 0.0004;
 
 	//Start: Control algorithm -------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)
@@ -112,10 +119,18 @@ void ISR_Control(void *data)
 	}
 	//End: Control algorithm -------------------------------------------------------------------------------
 
-	// Set duty cycles for two-level modulator
-	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-					Global_Data.rasv.halfBridge2DutyCycle,
-					Global_Data.rasv.halfBridge3DutyCycle);
+//	// Set duty cycles for two-level modulator
+//	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+//					Global_Data.rasv.halfBridge2DutyCycle,
+//					Global_Data.rasv.halfBridge3DutyCycle);
+	uz_PWM_SS_2L_set_duty_cycle(PWM_SS_2L_d4, Global_Data.rasv.halfBridge1DutyCycle,
+											  Global_Data.rasv.halfBridge2DutyCycle,
+											  Global_Data.rasv.halfBridge3DutyCycle);
+	uz_PWM_SS_2L_set_duty_cycle(PWM_SS_2L_d3, Global_Data.rasv.halfBridge4DutyCycle,
+											  Global_Data.rasv.halfBridge5DutyCycle,
+											  Global_Data.rasv.halfBridge6DutyCycle);
+
+
 
 	// Set duty cycles for three-level modulator
 	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

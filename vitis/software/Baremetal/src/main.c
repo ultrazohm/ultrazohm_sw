@@ -21,6 +21,8 @@
 #include "IP_Cores/uz_d_gan_inverter/uz_d_gan_inverter.h"
 #include "IP_Cores/uz_d_gan_inverter/uz_d_gan_inverter_hw.h"
 
+#include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+
 #include "Codegen/uz_codegen.h"
 
 //Initialize the global variables
@@ -51,6 +53,9 @@ static void uz_assertCallback(const char8 *file, s32 line) {
 	XScuGic_Disable(&INTCInst, Interrupt_ISR_ID);
 }
 
+uz_PWM_SS_2L_t *PWM_SS_2L_d4;
+uz_PWM_SS_2L_t *PWM_SS_2L_d3;
+
 int main(void) {
 
 	int status = UZ_SUCCESS;
@@ -67,11 +72,14 @@ int main(void) {
 
 	// Initialize Park-Transformation 123 to dq
 	DQTransformation_Initialize(&Global_Data);
-	uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
-	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd1, 0.05);
-	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
+	uz_interlockDeadtime2L_handle deadtime_slotd4 = uz_interlockDeadtime2L_staticAllocator_slotD4();
+	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd4, 0.05);
+	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd4, true);
+	uz_interlockDeadtime2L_handle deadtime_slotd3 = uz_interlockDeadtime2L_staticAllocator_slotD3();
+	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd3, 0.05);
+	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd3, true);
 	//Initialize PWM and switch signal control
-	PWM_SS_Initialize(&Global_Data); 	// two-level modulator
+//	PWM_SS_Initialize(&Global_Data); 	// two-level modulator
 	PWM_3L_Initialize(&Global_Data);	// three-level modulator
 
 	// Initialize Timer in order to Trigger the ISRs
@@ -89,12 +97,17 @@ int main(void) {
 	//Initialize the Soft-Oscilloscope ("JavaScope")
 	JavaScope_initalize(&Global_Data);
 
-    struct uz_d_gan_inverter_config_t config = {
+    struct uz_d_gan_inverter_config_t config_D4_GaN = {
         .base_address = XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR,
         .ip_clk_frequency_Hz = 1000000,
     };
 
-    struct uz_d_gan_inverter_outputs_t outputs = {
+    struct uz_d_gan_inverter_config_t config_D3_GaN = {
+        .base_address = XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_0_BASEADDR,
+        .ip_clk_frequency_Hz = 1000000,
+    };
+
+    struct uz_d_gan_inverter_outputs_t outputs_D4 = {
         .PWMdutyCycPerCent_H1 = 0.0,
         .PWMdutyCycPerCent_L1 = 0.0,
         .PWMdutyCycPerCent_H2 = 0.0,
@@ -128,10 +141,93 @@ int main(void) {
         .I3_DIAG = 0,
     };
 
+    struct uz_d_gan_inverter_outputs_t outputs_D3 = {
+        .PWMdutyCycPerCent_H1 = 0.0,
+        .PWMdutyCycPerCent_L1 = 0.0,
+        .PWMdutyCycPerCent_H2 = 0.0,
+        .PWMdutyCycPerCent_L2 = 0.0,
+        .PWMdutyCycPerCent_H3 = 0.0,
+        .PWMdutyCycPerCent_L3 = 0.0,
+        .GaN_ChipTempDegreesCelsius_H1 = 0.0,
+        .GaN_ChipTempDegreesCelsius_L1 = 0.0,
+        .GaN_ChipTempDegreesCelsius_H2 = 0.0,
+        .GaN_ChipTempDegreesCelsius_L2 = 0.0,
+        .GaN_ChipTempDegreesCelsius_H3 = 0.0,
+        .GaN_ChipTempDegreesCelsius_L3 = 0.0,
+        .OC = 0,
+        .OC_H1 = 0,
+        .OC_L1 = 0,
+        .OC_H2 = 0,
+        .OC_L2 = 0,
+        .OC_H3 = 0,
+        .OC_L3 = 0,
+        .FAULT = 0,
+        .FAULT_H1 = 0,
+        .FAULT_L1 = 0,
+        .FAULT_H2 = 0,
+        .FAULT_L2 = 0,
+        .FAULT_H3 = 0,
+        .FAULT_L3 = 0,
+        .I_DIAG = 0,
+        .I_DC_DIAG = 0,
+        .I1_DIAG = 0,
+        .I2_DIAG = 0,
+        .I3_DIAG = 0,
+    };
+
+    struct uz_PWM_SS_2L_config_t config_D4_PWM = {
+        .base_address = XPAR_GATES_PWM_AND_SS_CONTROL_0_BASEADDR,              /**< Base address of the IP-Core */
+        .ip_clk_frequency_Hz= 100e6,      /**< Clock frequency of the IP-Core */
+        .Tristate_HB1 = false,                  /**< Tristate flag for half-bridge 1, true=on, false=off */
+        .Tristate_HB2 = false,                  /**< Tristate flag for half-bridge 2, true=on, false=off */
+        .Tristate_HB3 = false,                  /**< Tristate flag for half-bridge 3, true=on, false=off */
+        .min_pulse_width = 0.01,              /**< Minimum pulse width in percent, e.g. 0.01 */
+        .PWM_freq_Hz = 100e3,                  /**< Switching frequency of PWM mode in Hz */
+        .PWM_mode = normalized_input_via_AXI,/**< PWM mode selector\n
+                                            0 = normalized input of reference signal via AXI\n
+                                                e.g. a reference voltage value between 0 and 1\n
+                                            1 = normalized input of reference signal via FPGA\n
+                                                e.g. a reference voltage value between 0 and 1\n
+                                            2 = direct control of switching states via FPGA */
+        .PWM_en = true,                        /**< IP core enable flag\n
+                                             0=disable module, 1=enable module */
+        .use_external_counter = false,          /**< Flag for choosing the PWM counter source\n
+                                             0 = internal counter source of the instance\n
+                                             1 = counter at port count_in */
+        .init_dutyCyc_A = 0.0,               /**< Initial PWM duty cycle of half-bridge 1, 0...1 */
+        .init_dutyCyc_B = 0.0,               /**< Initial PWM duty cycle of half-bridge 2, 0...1 */
+        .init_dutyCyc_C = 0.0,               /**< Initial PWM duty cycle of half-bridge 3, 0...1 */
+    };
+
+    struct uz_PWM_SS_2L_config_t config_D3_PWM = {
+        .base_address = XPAR_GATES_PWM_AND_SS_CONTROL_1_BASEADDR,              /**< Base address of the IP-Core */
+        .ip_clk_frequency_Hz= 100e6,      /**< Clock frequency of the IP-Core */
+        .Tristate_HB1 = false,                  /**< Tristate flag for half-bridge 1, true=on, false=off */
+        .Tristate_HB2 = false,                  /**< Tristate flag for half-bridge 2, true=on, false=off */
+        .Tristate_HB3 = false,                  /**< Tristate flag for half-bridge 3, true=on, false=off */
+        .min_pulse_width = 0.01,              /**< Minimum pulse width in percent, e.g. 0.01 */
+        .PWM_freq_Hz = 100e3,                  /**< Switching frequency of PWM mode in Hz */
+        .PWM_mode = normalized_input_via_AXI,/**< PWM mode selector\n
+                                            0 = normalized input of reference signal via AXI\n
+                                                e.g. a reference voltage value between 0 and 1\n
+                                            1 = normalized input of reference signal via FPGA\n
+                                                e.g. a reference voltage value between 0 and 1\n
+                                            2 = direct control of switching states via FPGA */
+        .PWM_en = true,                        /**< IP core enable flag\n
+                                             0=disable module, 1=enable module */
+        .use_external_counter = true,          /**< Flag for choosing the PWM counter source\n
+                                             0 = internal counter source of the instance\n
+                                             1 = counter at port count_in */
+        .init_dutyCyc_A = 0.0,               /**< Initial PWM duty cycle of half-bridge 1, 0...1 */
+        .init_dutyCyc_B = 0.0,               /**< Initial PWM duty cycle of half-bridge 2, 0...1 */
+        .init_dutyCyc_C = 0.0,               /**< Initial PWM duty cycle of half-bridge 3, 0...1 */
+    };
 	//Initialize UZ_D_GaN_Inverter
-	uz_d_gan_inverter_t *uz_d_gan_inverter_inSocketD4 = uz_d_gan_inverter_init(config, outputs);
+	uz_d_gan_inverter_t *uz_d_gan_inverter_inSocketD4 = uz_d_gan_inverter_init(config_D4_GaN, outputs_D4);
+	uz_d_gan_inverter_t *uz_d_gan_inverter_inSocketD3 = uz_d_gan_inverter_init(config_D3_GaN, outputs_D3);
 
-
+    	PWM_SS_2L_d4 = uz_PWM_SS_2L_init(config_D4_PWM);
+    	PWM_SS_2L_d3 = uz_PWM_SS_2L_init(config_D3_PWM);
 
 	//Set the current value in the ADC as offset/default value
 	ADC_Set_Offset();
@@ -160,7 +256,9 @@ int main(void) {
 
 		//Get Data From UZ_D_GaN_Inverter
 		uz_d_gan_inverter_update_states(uz_d_gan_inverter_inSocketD4);
+		uz_d_gan_inverter_update_states(uz_d_gan_inverter_inSocketD3);
 		Global_Data.da.D4 = uz_d_gan_inverter_inSocketD4;
+		Global_Data.da.D3 = uz_d_gan_inverter_inSocketD3;
 
 		// poll the buttons
 		Global_Data.dv.sw1 = uz_GetPushButtonEnableSystem();
@@ -192,10 +290,12 @@ int main(void) {
 				turnPowerElectronicsOff(&Global_Data); //Switch power converter off
 				//Set Data To UZ_D_GaN_Inverter
 				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR, false);
+				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_0_BASEADDR, false);
 			} else if ((Global_Data.cw.enableSystem == true) && bInit == false) { //Call this function only once. If there was an error, "enableSystem " must be reseted!
 				bInit = turnPowerElectronicsOn(&Global_Data); //Switch power converter on
 				//Set Data To UZ_D_GaN_Inverter
 				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR, true);
+				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_0_BASEADDR, true);
 			}
 
 			if (Global_Data.cw.enableControl == true) {
@@ -210,27 +310,27 @@ int main(void) {
 			switch (Global_Data.cw.ControlMethod) {
 			case DirectTorqueControl:
 				Configure_DTC_Control(&Global_Data);
-				PWM_SS_Initialize(&Global_Data);
+//				PWM_SS_Initialize(&Global_Data);
 				uz_printf("DTC is active\n");
 				break;
 			case fieldOrientedControl:
 				Configure_FOC_Control(&Global_Data);
-				PWM_SS_Initialize(&Global_Data);
+//				PWM_SS_Initialize(&Global_Data);
 				uz_printf("FOC is active\n");
 				break;
 			case ModelPredictiveControl:
 				Configure_MPC_Control(&Global_Data);
-				PWM_SS_Initialize(&Global_Data);
+//				PWM_SS_Initialize(&Global_Data);
 				uz_printf("MPC is active\n");
 				break;
 			case sixStepCommutation:
 				//toDO not used at the moment
-				PWM_SS_Initialize(&Global_Data);
+//				PWM_SS_Initialize(&Global_Data);
 				uz_printf("Six-Step commutation is active\n");
 				break;
 			case halfBridgeControl:
 				Configure_HalfBridge_Control(&Global_Data);
-				PWM_SS_Initialize(&Global_Data);
+//				PWM_SS_Initialize(&Global_Data);
 				uz_printf("Half Bridge control is active\n");
 				break;
 			default:

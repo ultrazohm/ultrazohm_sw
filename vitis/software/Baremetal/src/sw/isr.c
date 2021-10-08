@@ -53,7 +53,7 @@ float sin1amp=1.0;
 extern DS_Data Global_Data;
 
 // Testing variables for WDT
-//int isr_failures = 0;
+int isr_failures = 0;
 //int isr_reset = 0;
 
 //==============================================================================================================================================================
@@ -110,8 +110,10 @@ void ISR_Control(void *data)
 //	uz_sleep_useconds(100);
 //
 //	//	TEST: to trigger system hang and the reset
-//	uz_sleep_useconds(350);  // 1500 for 1 msecond
 
+//	if (!(XWdtPs_IsWdtExpired(&WdtInstance))) {
+		uz_sleep_useconds(350);  // 1500 for 1 msecond
+//	}
 
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
@@ -123,7 +125,7 @@ void ISR_Control(void *data)
 
 	// Execution time must be less than the period
 	if ((uz_SystemTime_GetIsrDirectExectionTimeInUs() * 1e-6) > Global_Data.ctrl.pwmPeriod){
-		 Xil_Assert(__FILE__, __LINE__);// isr_failures++; // change the instruction for testing
+		isr_failures++; //  Xil_Assert(__FILE__, __LINE__);// change the instruction for testing
 	}
 
 }

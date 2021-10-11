@@ -114,13 +114,13 @@ architecture arch_imp of ip_uz_error_handler_v1_0_S00_AXI is
 	---- Signals for user logic register space example
 	--------------------------------------------------
 	---- Number of Slave Registers 7
-	signal slv_reg0	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-	signal slv_reg1	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-	signal slv_reg2	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-	signal slv_reg3	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-	signal slv_reg4	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-	signal slv_reg5	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-	signal slv_reg6	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+	signal slv_reg0	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0); -- error_mask 
+	signal slv_reg1	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0); -- error_state 
+	signal slv_reg2	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0); -- reset_error 
+	signal slv_reg3	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0); -- set_error
+	signal slv_reg4	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0); -- threshold_min
+	signal slv_reg5	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0); -- threshold_max
+	signal slv_reg6	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0); -- value_to_compare
 	signal slv_reg_rden	: std_logic;
 	signal slv_reg_wren	: std_logic;
 	signal reg_data_out	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);

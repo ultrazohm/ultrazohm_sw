@@ -93,7 +93,7 @@ int JavaScope_initalize(DS_Data* data)
 
 void js_fetchData()
 {
-	// create pointer to struct javascope_data_t named javascope_data located at MEM_SHARED_START
+	// create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START
 	static struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
 
 	static int js_cnt_slowData=0;

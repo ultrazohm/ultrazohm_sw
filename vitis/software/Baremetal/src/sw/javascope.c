@@ -24,11 +24,10 @@
 //Variables for JavaScope
 static Oszi_to_ARM_Data_shared_struct ControlData;
 
-// Channel-pointer and pointer array
 static float zerovalue = 0.0;
 static union SlowData js_slowDataArray[JSSD_ENDMARKER];
-float *js_ptr_arr[JSO_ENDMARKER];
-float *js_ptr[JS_CHANNELS];			// channel ptr
+float *js_ch_observable[JSO_ENDMARKER];
+float *js_ch_selected[JS_CHANNELS];
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -46,12 +45,12 @@ int JavaScope_initalize(DS_Data* data)
 	//Initialize all variables with zero
 	for (int j=0; j<JSO_ENDMARKER; j++)
 	{
-		js_ptr_arr[j] = &zerovalue;
+		js_ch_observable[j] = &zerovalue;
 	}
 
 	for(int j=0; j<JS_CHANNELS; j++)
 	{
-		js_ptr[j] = &zerovalue;
+		js_ch_selected[j] = &zerovalue;
 	}
 
 	for (int j=0; j<JSSD_ENDMARKER; j++)
@@ -67,27 +66,27 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ptr_arr[JSO_Speed_rpm]	= &data->av.mechanicalRotorSpeed;
-	js_ptr_arr[JSO_ia] 			= &data->av.I_U;
-	js_ptr_arr[JSO_ib] 			= &data->av.I_V;
-	js_ptr_arr[JSO_ic] 			= &data->av.I_W;
-	js_ptr_arr[JSO_ua] 			= &data->av.U_U;
-	js_ptr_arr[JSO_ub] 			= &data->av.U_V;
-	js_ptr_arr[JSO_uc] 			= &data->av.U_W;
-	js_ptr_arr[JSO_iq] 			= &data->av.I_q;
-	js_ptr_arr[JSO_id] 			= &data->av.I_d;
-	js_ptr_arr[JSO_Theta_el] 	= &data->av.theta_elec;
-	js_ptr_arr[JSO_theta_mech] 	= &data->av.theta_mech;
-	js_ptr_arr[JSO_Wtemp]		= &data->pID.WindingTemp;
-	js_ptr_arr[JSO_ud]			= &data->av.U_d;
-	js_ptr_arr[JSO_uq]			= &data->av.U_q;
-	js_ptr_arr[JSO_Ld_mH]		= &data->pID.Online_Ld;
-	js_ptr_arr[JSO_Lq_mH]		= &data->pID.Online_Lq;
-	js_ptr_arr[JSO_Rs_mOhm]		= &data->pID.Online_Rs;
-	js_ptr_arr[JSO_PsiPM_mVs]	= &data->pID.Online_Psi_PM;
-	js_ptr_arr[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
-	js_ptr_arr[JSO_lifecheck]   	= &lifecheck;
-	js_ptr_arr[JSO_ISR_Period_us]   = &ISR_period_us;
+	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
+	js_ch_observable[JSO_ia] 			= &data->av.I_U;
+	js_ch_observable[JSO_ib] 			= &data->av.I_V;
+	js_ch_observable[JSO_ic] 			= &data->av.I_W;
+	js_ch_observable[JSO_ua] 			= &data->av.U_U;
+	js_ch_observable[JSO_ub] 			= &data->av.U_V;
+	js_ch_observable[JSO_uc] 			= &data->av.U_W;
+	js_ch_observable[JSO_iq] 			= &data->av.I_q;
+	js_ch_observable[JSO_id] 			= &data->av.I_d;
+	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
+	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
+	js_ch_observable[JSO_Wtemp]			= &data->pID.WindingTemp;
+	js_ch_observable[JSO_ud]			= &data->av.U_d;
+	js_ch_observable[JSO_uq]			= &data->av.U_q;
+	js_ch_observable[JSO_Ld_mH]			= &data->pID.Online_Ld;
+	js_ch_observable[JSO_Lq_mH]			= &data->pID.Online_Lq;
+	js_ch_observable[JSO_Rs_mOhm]		= &data->pID.Online_Rs;
+	js_ch_observable[JSO_PsiPM_mVs]		= &data->pID.Online_Psi_PM;
+	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
+	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
+	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 	return Status;
 }
 
@@ -108,7 +107,7 @@ void js_fetchData()
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){
-		javascope_data->scope_ch[j] = *js_ptr[j];
+		javascope_data->scope_ch[j] = *js_ch_selected[j];
 	}
 	javascope_data->slowDataID 		= js_cnt_slowData;
 	javascope_data->slowDataContent = js_slowDataArray[js_cnt_slowData].u;

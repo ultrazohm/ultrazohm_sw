@@ -19,8 +19,3 @@ struct javascope_data_t
 	uint32_t    slowDataID;
 	float       scope_ch[JS_CHANNELS];
 };
-
-// Rounding up to next power of 2
-//uint32_t next_pow2(uint32_t x) { 	return x == 1 ? 1 : 1<<(32-__builtin_clz(x-1)); }
-
-

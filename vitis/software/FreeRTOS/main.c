@@ -32,15 +32,8 @@
 #include "defines.h"
 #include "include/isr.h"
 
-
 size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;
-
-#ifdef XPS_BOARD_ZCU102
-#ifdef XPAR_XIICPS_0_DEVICE_ID
-int IicPhyReset(void);
-#endif
-#endif
 
 #if LWIP_DHCP==1
 extern volatile int dhcp_timoutcntr;
@@ -73,8 +66,7 @@ void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw){
  *---------------------------------------------------------------------------*
  * Description:
  *      Starts only the main thread "main_thread()" with priority
- *      "DEFAULT_THREAD_PRIO". Afterwards nothing will happen here and the
- *      LifeCheck will not run further.
+ *      "DEFAULT_THREAD_PRIO". Afterwards nothing will happen here.
  *---------------------------------------------------------------------------*/
 int main()
 {
@@ -279,8 +271,7 @@ int main_thread()
 			break;
 		}
 		mscnt += DHCP_FINE_TIMER_MSECS;
-		if (mscnt >=10000) { // define timeout time here
-			// DHCP_COARSE_TIMER_SECS * 2000) {
+		if (mscnt >=1000) { // define timeout time here
 			xil_printf("APU: DHCP request timed out\r\n");
 			xil_printf("APU: Configuring default IP of 192.168.1.233\r\n");
 			IP4_ADDR(&(server_netif.ip_addr),  192, 168, 1, 233);

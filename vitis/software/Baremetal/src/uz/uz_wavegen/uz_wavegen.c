@@ -1,3 +1,20 @@
+/******************************************************************************
+* Copyright Contributors to the UltraZohm project.
+* Copyright 2021 Dennis Hufnagel, Tobias Schindler
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and limitations under the License.
+******************************************************************************/
+
+
 #include "uz_wavegen.h"
 #include <math.h>
 #include <stdlib.h>
@@ -94,19 +111,6 @@ float uz_wavegen_triangle_with_offset(float amplitude, float frequency_Hz, float
 		triangle_wave = (2.0f * sample * amplitude * frequency_Hz) + offset;
 	}
 	return (triangle_wave);
-}
-
-float uz_wavegen_saturation(float input, float upper_limit, float lower_limit) {
-	uz_assert(upper_limit > lower_limit);
-	float output=0.0f;
-	if (input > upper_limit) {
-		output = upper_limit;
-	} else if (input < lower_limit) {
-		output = lower_limit;
-	} else{
-		output=input;
-	}
-	return (output);
 }
 
 float uz_wavegen_white_noise(float amplitude) {

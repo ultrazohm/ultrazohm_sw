@@ -1,0 +1,2 @@
+Bit(s),Name,Default Value,Access,Description,Encoding
+0 - 31,CLK_DIV,0,Read/Write,Offset or conversion value, Offset: Unsigned integer. Conversion: Signed integer two's complement

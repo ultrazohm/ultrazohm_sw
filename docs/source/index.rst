@@ -1,8 +1,3 @@
-.. UltraZohm documentation master file, created by
-   sphinx-quickstart on Tue Feb  4 21:12:00 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Documentation of the UltraZohm
 ==============================
 
@@ -65,25 +60,21 @@ Syllabus
     :maxdepth: 2
     :caption: General
 
-    general/overview
-    general/project_structure
-    general/bitbucket
-    general/contribution_workflow
-    general/tcl_scripts
-    general/ci_pipeline
-    general/howToDocs/howToDocs
+    general/system_overview
+    general/project_structure/project_structure
+    general/infrastructure/infrastructure
+    general/how_to_guides/how_to_guides
     general/useCases/useCases
-    general/vscode_remote_container/vscode_remote_container
-    general/contributors
 
 .. toctree::
     :maxdepth: 2
     :caption: MPSoC Platform
 
     mpsoc/platform_architecture/platform_architecture
-    mpsoc/vivado/vivado
+    mpsoc/rpu_software/rpu_software
+    mpsoc/apu_software/apu_software
+    mpsoc/framework/framework
     mpsoc/ip_cores/ip_cores
-    mpsoc/vitis/vitis
     mpsoc/CPLD/index
 
 .. toctree::

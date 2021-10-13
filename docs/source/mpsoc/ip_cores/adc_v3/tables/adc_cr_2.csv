@@ -1,0 +1,9 @@
+6,5,4,Access,Description, Encoding
+0,0,0,Read/Write,The value in the ``ADC_VALUE`` register is the offset,Signed two's complement
+0,0,1,Read/Write,The value in the ``ADC_VALUE`` register is the conversion factor,Signed two's complement
+0,1,0,Read/Write,The value in the ``ADC_VALUE`` register is the number of samples per trigger,Unsigned integer
+0,1,1,Read/Write,Reserved
+1,0,0,Read/Write,Reserved
+1,0,1,Read/Write,Reserved
+1,1,0,Read/Write,Reserved
+1,1,1,Read/Write,Reserved

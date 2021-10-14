@@ -11,7 +11,7 @@ Please refer first to the :ref:`description of the RPU code <datamoverA53>`.
     :align: center
     :caption: Signal flow of data mover
 
-   graph LR
+    graph LR
       subgraph Transfer_ipc_Intr_Handler
           E(IPI from R5)
           E-->F(Flush Cache)

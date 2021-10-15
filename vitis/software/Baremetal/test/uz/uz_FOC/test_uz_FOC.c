@@ -38,6 +38,7 @@ void setUp(void)
     i_reference_Ampere.d = 1.0f;
     i_reference_Ampere.q = 1.0f;
     i_reference_Ampere.zero = 0.0f;
+    config.decoupling_select = linear_decoupling;
 }
 
 void test_uz_FOC_reset_NULL(void){
@@ -248,5 +249,13 @@ void test_uz_FOC_generate_DutyCycles_limit(void) {
     TEST_ASSERT_EQUAL_FLOAT(1.0f, output.DutyCycle_U);
     TEST_ASSERT_EQUAL_FLOAT(1.0f, output.DutyCycle_V);
     TEST_ASSERT_EQUAL_FLOAT(0.0f, output.DutyCycle_W);
+}
+void test_uz_FOC_sample_no_decoupling(void) {
+    setUp();
+    config.decoupling_select = no_decoupling;
+    config.config_PMSM.Ld_Henry = 0.0f;
+    config.config_PMSM.Lq_Henry = 0.0f;
+    uz_FOC* instance = uz_FOC_init(config);
+    uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
 }
 #endif // TEST

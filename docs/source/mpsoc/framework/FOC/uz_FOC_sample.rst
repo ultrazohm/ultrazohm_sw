@@ -31,6 +31,7 @@ Description
 
 Calculates one sample of the FOC.
 A space vector output limitation and a linear decoupling function are integrated. 
+The decoupling function can be deactivated in the :ref:`FOC configuration struct <uz_FOC_config>`.
 
 .. note::
 

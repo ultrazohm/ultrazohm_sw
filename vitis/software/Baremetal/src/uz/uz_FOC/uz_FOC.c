@@ -60,9 +60,11 @@ struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, st
 	uz_assert(self->is_ready);
 	uz_assert(V_dc_volts > 0.0f);
 	struct uz_dq_t u_pre_limit_Volts = uz_FOC_CurrentControl(self, i_reference_Ampere, i_actual_Ampere);
-	struct uz_dq_t u_decoup_Volts = uz_FOC_linear_decoupling(self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
-	u_pre_limit_Volts.d = u_pre_limit_Volts.d + u_decoup_Volts.d;
-	u_pre_limit_Volts.q = u_pre_limit_Volts.q + u_decoup_Volts.q;
+	if(self->config.decoupling_select == 1) {
+		struct uz_dq_t u_decoup_Volts = uz_FOC_linear_decoupling(self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+		u_pre_limit_Volts.d += u_decoup_Volts.d;
+		u_pre_limit_Volts.q += u_decoup_Volts.q;
+	}
 	struct uz_dq_t u_output_Volts = uz_FOC_SpaceVector_Limitation(u_pre_limit_Volts, V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
 	return (u_output_Volts);
 }

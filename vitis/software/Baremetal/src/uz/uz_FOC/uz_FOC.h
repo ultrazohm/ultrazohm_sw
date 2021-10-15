@@ -13,13 +13,23 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+/*! enum for readable configuring for the decoupling in the FOC sample function */
+enum uz_FOC_decoupling_select {
+	no_decoupling=0, 
+	linear_decoupling
+	}; 
+
 /**
  * @brief Configuration struct for FOC. Accessible by the user
  */
 struct uz_FOC_config {
+	enum uz_FOC_decoupling_select decoupling_select; /**< FOC decoupling selector \n
+													0 = no_decoupling \n
+													1 = linear_decoupling*/
 	struct uz_PI_Controller_config config_id; /**< Configuration struct for id-Controller */
 	struct uz_PI_Controller_config config_iq; /**< Configuration struct for iq-Controller */
 	struct uz_PMSM_t config_PMSM; /**< Configuration struct for PMSM parameters */
+
 };
 /**
  * @brief Struct for the three DutyCycles for a three-phase-system
@@ -30,6 +40,7 @@ struct uz_DutyCycle_t {
 	float DutyCycle_V; /**< DutyCycle for Phase V */
 	float DutyCycle_W; /**< DutyCycle for Phase W */
 };
+
 
 /**
  * @brief Object definition for FOC

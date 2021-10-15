@@ -157,6 +157,8 @@ int WdtPsInit(u32 Timeout) //&WdtInstance, WDT_DEVICE_ID,
 
 u32 WdtPsIntrPolled(u32 ExpiredTimeDelta) {
 
+//	xil_printf("WdtPsIntrPolled: start");
+
 	uz_assert(Wdt_IsReady);
 
 	/*
@@ -202,24 +204,26 @@ u32 WdtPsIntrPolled(u32 ExpiredTimeDelta) {
 /**
 *
 * This function resets the System WatchDog Timer to the inital value to the counter.
-* And Enables the Reset OutPut of the System WatchDog Driver to be
+* And Enables the IRQ OutPut of the System WatchDog Driver to be
 * handled by the PMU processor
 *
 *
 * @note		None.
 *
 ******************************************************************************/
-void XWdtPs_ResetRestart()
+void XWdtPs_Restart()
 {
 	uz_assert(Wdt_IsReady);
 
-	XWdtPs_DisableOutput(&WdtInstance, XWDTPS_RESET_SIGNAL);
+//	XWdtPs_DisableOutput(&WdtInstance, XWDTPS_RESET_SIGNAL);
+	XWdtPs_DisableOutput(&WdtInstance, (u8) XWDTPS_IRQ_SIGNAL);
 	XWdtPs_Stop(&WdtInstance);
 	/* Start the Watchdog timer */
 	XWdtPs_Start(&WdtInstance);
 	XWdtPs_RestartWdt(&WdtInstance);
 	/* Enable reset output */
-	XWdtPs_EnableOutput(&WdtInstance, XWDTPS_RESET_SIGNAL);
+//	XWdtPs_EnableOutput(&WdtInstance, XWDTPS_RESET_SIGNAL);
+	XWdtPs_EnableOutput(&WdtInstance, (u8) XWDTPS_IRQ_SIGNAL);
 }
 
 /*****************************************************************************/
@@ -250,6 +254,8 @@ int WdtPsIntrExample(XScuGic *IntcInstancePtr)
 	u32 Timebase = 0;
 	u32 ExpiredTimeDelta = 0;
 
+	xil_printf("WdtPsIntrExample: start\r\n");
+
 	/*
 	 * Initialize the Wdt driver and Perform a self-test to ensure that the hardware was built correctly.
 	 * Set the initial counter restart to the smallest value (0).
@@ -263,12 +269,14 @@ int WdtPsIntrExample(XScuGic *IntcInstancePtr)
 
 	uz_assert(Wdt_IsReady);
 
+//	xil_printf("WdtPsIntrExample: uz_assert");
+
 	/*
 	 * Without INT, establish the expiration time by polling the driver.
 	 */
 	ExpiredTimeDelta = WdtPsIntrPolled(ExpiredTimeDelta);
 
-	xil_printf("WdtPsIntrExample: WdtPsIntrPolled with ExpiredTimeDelta: %u", ExpiredTimeDelta);
+//	xil_printf("WdtPsIntrExample: WdtPsIntrPolled with ExpiredTimeDelta: %u", ExpiredTimeDelta);
 
 
 	/*
@@ -423,9 +431,15 @@ int WdtSetupIntrSystem(XScuGic *IntcInstancePtr)
 
 	XScuGic_GetPriorityTriggerType(IntcInstancePtr, WDT_IRPT_INTR,
 	                                            &Priority, &Trigger);
+
+	Priority = 0x7;
 	Trigger = 3;
 	XScuGic_SetPriorityTriggerType(IntcInstancePtr, WDT_IRPT_INTR,
-			0x0, Trigger);
+			Priority, Trigger);
+
+	XScuGic_GetPriorityTriggerType(IntcInstancePtr, WDT_IRPT_INTR,
+		                                            &Priority, &Trigger);
+	xil_printf("WdtSetupIntrSystem: Wd Prio is %d, level is %d\r\n",Priority, Trigger);
 
 //	/*
 //	 * Connect the interrupt controller interrupt handler to the hardware
@@ -486,11 +500,16 @@ void WdtIntrHandler(void *CallBackRef)
 	/*
 	 * WDT timed out and interrupt occurred, let main test loop know.
 	 */
-	xil_printf("\r\nHANDLER_CALLED WdtIntrHandler: HANDLER_CALLED HANDLER_CALLED\r\n");
+	xil_printf("WdtIntrHandler: HANDLER_CALLED\r\n");
+
+
+	u32 reg;
+	reg = XScuGic_ReadReg(TempConfig->CpuBaseAddress, XSCUGIC_RUN_PRIOR_OFFSET);
+	xil_printf("WdtIntrHandler: Running priority in WDT handler is %d\r\n",reg >> 3);
 
 	HandlerCalled = HANDLER_CALLED;
 
-	XWdtPs_RestartWdt(&WdtInstance);
+//	XWdtPs_RestartWdt(&WdtInstance);
 }
 
 /*****************************************************************************/
@@ -521,7 +540,7 @@ void WdtDisableIntrSystem(XScuGic *IntcInstancePtr)
 
 u32 WdtPsIntrPolled(u32 ExpiredTimeDelta) { }
 
-void XWdtPs_ResetRestart() {}
+void XWdtPs_Restart() {}
 
 int WdtPsInit(XWdtPs * WdtInstancePtr, u16 WdtDeviceId, u32 Timeout){ }
 

@@ -97,7 +97,7 @@
 
 u32 WdtPsIntrPolled(u32 ExpiredTimeDelta) ;
 
-void XWdtPs_ResetRestart() ;
+void XWdtPs_Restart() ;
 
 int WdtPsInit(u32 Timeout);
 

@@ -68,10 +68,10 @@ static void CheckForErrors();
 
 void ISR_Control(void *data)
 {
-	/*
-	 * RE Start the WDT device.
-	 */
-	XWdtPs_ResetRestart();
+//	/*
+//	 * RE Start the WDT device.
+//	 */
+//	XWdtPs_Restart();
 
 	uz_SystemTime_ISR_Tic();
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
@@ -112,7 +112,7 @@ void ISR_Control(void *data)
 //	//	TEST: to trigger system hang and the reset
 
 //	if (!(XWdtPs_IsWdtExpired(&WdtInstance))) {
-		uz_sleep_useconds(350);  // 1500 for 1 msecond
+//		uz_sleep_useconds(350);  // 1500 for 1 msecond
 //	}
 
 	// Update JavaScope
@@ -167,6 +167,15 @@ int Initialize_ISR(){
 		}
 
 
+//	 xil_printf("WDT Interrupt Example Test\r\n");
+//
+//	 Status = WdtPsIntrExample(&INTCInst);
+//	 if(Status != XST_SUCCESS) {
+//			 xil_printf("RPU: Error: WdtPsIntrExample failed\r\n");
+//			 return XST_FAILURE;
+//	 }
+
+
 	// Initialize mux_axi to use correct interrupt for triggering the ADCs
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + IPCore_Enable_mux_axi_ip, 1); // enable IP core
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
@@ -217,10 +226,23 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	XScuGic_Config *IntcConfig;
 	int status;
 
+	u8 prio;
+	u8 trigger;
+	u32 reg;
+
 	// Interrupt controller initialization
 	IntcConfig = XScuGic_LookupConfig(DeviceId);
 	status = XScuGic_CfgInitialize(IntcInstPtr, IntcConfig, IntcConfig->CpuBaseAddress);
 	if(status != XST_SUCCESS) return XST_FAILURE;
+
+
+	/*
+	 * Program the priority mask of the CPU using the Priority mask register
+	 */
+	XScuGic_CPUWriteReg(IntcInstPtr, XSCUGIC_BIN_PT_OFFSET, 0x03);
+	Xil_ExceptionInit();
+
+
 
 	// Connect the interrupt controller interrupt handler to the hardware interrupt handling logic in the processor
 	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,(Xil_ExceptionHandler)XScuGic_InterruptHandler,IntcInstPtr);
@@ -232,8 +254,20 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	// b01	Active HIGH level sensitive
 	// b11 	Rising edge sensitive
 	// XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
-	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
+//	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
 	//XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
+
+
+	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
+	xil_printf("OLD Timer Prio is %d, level is %d\r\n",prio, trigger);
+	prio = 15;
+	trigger = 0b11;
+	XScuGic_SetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,prio,trigger);
+	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
+	xil_printf("NEW Timer Prio is %d, level is %d\r\n",prio, trigger);
+
+
+
 
 	// Make the connection between the IntId of the interrupt source and the
 	// associated handler that is to run when the interrupt is recognized.
@@ -252,10 +286,22 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 
 
 
+	/*
+	  * Connect to the interrupt subsystem so that interrupts can occur and Enable the IRQ output.
+	  */
+	 status = WdtSetupIntrSystem(IntcInstPtr);
+	 if (status != XST_SUCCESS) {
+	         return XST_FAILURE;
+	 }
+
 	// Enable GPIO and timer interrupts in the controller
 	XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
 	XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
 //	XScuGic_Enable(&INTCInst, INTC_ADC_Conv_INTERRUPT_ID);
+
+
+	reg = XScuGic_ReadReg(IntcConfig->CpuBaseAddress, XSCUGIC_BIN_PT_OFFSET);
+	xil_printf("Binary Point offset is %d\r\n",reg);
 
 
 	xil_printf("RPU: Rpu_GicInit: Done\r\n");

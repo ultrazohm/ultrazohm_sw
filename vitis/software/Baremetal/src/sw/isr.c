@@ -68,10 +68,13 @@ static void CheckForErrors();
 
 void ISR_Control(void *data)
 {
-//	/*
-//	 * RE Start the WDT device.
-//	 */
-//	XWdtPs_Restart();
+	/*
+	 * RE Start the WDT device.
+	 */
+	XWdtPs_Restart();
+
+	//  Ensure that the source of the current interrupt is cleared and enable Nested Interrupts
+	Xil_EnableNestedInterrupts();
 
 	uz_SystemTime_ISR_Tic();
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
@@ -112,17 +115,19 @@ void ISR_Control(void *data)
 //	//	TEST: to trigger system hang and the reset
 
 //	if (!(XWdtPs_IsWdtExpired(&WdtInstance))) {
-//		uz_sleep_useconds(350);  // 1500 for 1 msecond
+		uz_sleep_useconds(350);  // 1500 for 1 msecond
 //	}
 
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
 
 
+	Xil_DisableNestedInterrupts();
+
+
 	// Read the timer value at the very end of the ISR to minimize measurement error
 	// This has to be the last function executed in the ISR!
 	uz_SystemTime_ISR_Toc();
-
 	// Execution time must be less than the period
 	if ((uz_SystemTime_GetIsrDirectExectionTimeInUs() * 1e-6) > Global_Data.ctrl.pwmPeriod){
 		isr_failures++; //  Xil_Assert(__FILE__, __LINE__);// change the instruction for testing
@@ -165,16 +170,6 @@ int Initialize_ISR(){
 			xil_printf("RPU: Error: GIC initialization failed\r\n");
 			return XST_FAILURE;
 		}
-
-
-//	 xil_printf("WDT Interrupt Example Test\r\n");
-//
-//	 Status = WdtPsIntrExample(&INTCInst);
-//	 if(Status != XST_SUCCESS) {
-//			 xil_printf("RPU: Error: WdtPsIntrExample failed\r\n");
-//			 return XST_FAILURE;
-//	 }
-
 
 	// Initialize mux_axi to use correct interrupt for triggering the ADCs
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + IPCore_Enable_mux_axi_ip, 1); // enable IP core
@@ -289,7 +284,7 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	/*
 	  * Connect to the interrupt subsystem so that interrupts can occur and Enable the IRQ output.
 	  */
-	 status = WdtSetupIntrSystem(IntcInstPtr);
+	 status = WdtSetupIntrSystem(IntcConfig, IntcInstPtr);
 	 if (status != XST_SUCCESS) {
 	         return XST_FAILURE;
 	 }
@@ -302,6 +297,15 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 
 	reg = XScuGic_ReadReg(IntcConfig->CpuBaseAddress, XSCUGIC_BIN_PT_OFFSET);
 	xil_printf("Binary Point offset is %d\r\n",reg);
+
+
+	//	 xil_printf("WDT Interrupt Example Test\r\n");
+	//
+	//	 Status = WdtPsIntrExample(IntcConfig, IntcInstPtr);
+	//	 if(Status != XST_SUCCESS) {
+	//			 xil_printf("RPU: Error: WdtPsIntrExample failed\r\n");
+	//			 return XST_FAILURE;
+	//	 }
 
 
 	xil_printf("RPU: Rpu_GicInit: Done\r\n");

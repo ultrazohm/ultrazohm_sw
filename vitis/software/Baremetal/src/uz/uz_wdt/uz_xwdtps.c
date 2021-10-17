@@ -41,6 +41,8 @@
 
 _Bool Wdt_IsReady = false;
 
+XScuGic_Config *TempConfig;
+
 /*****************************************************************************/
 /**
 * Main function to call the Wdt interrupt example.
@@ -247,7 +249,7 @@ void XWdtPs_Restart()
 * @note		None.
 *
 ******************************************************************************/
-int WdtPsIntrExample(XScuGic *IntcInstancePtr)
+int WdtPsIntrExample(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 //	Status = WdtPsIntrExample(&IntcInstance, WDT_DEVICE_ID, WDT_IRPT_INTR);
 {
 	int Status;
@@ -282,7 +284,7 @@ int WdtPsIntrExample(XScuGic *IntcInstancePtr)
 	/*
 	 * Connect to the interrupt subsystem so that interrupts can occur and Enable the IRQ output.
 	 */
-	Status = WdtSetupIntrSystem(IntcInstancePtr);
+	Status = WdtSetupIntrSystem(IntcConfig, IntcInstancePtr);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
@@ -404,7 +406,7 @@ int WdtPsIntrExample(XScuGic *IntcInstancePtr)
 * @note		None.
 *
 ******************************************************************************/
-int WdtSetupIntrSystem(XScuGic *IntcInstancePtr)
+int WdtSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 {
 	int Status;
 //	XScuGic_Config *IntcConfig;
@@ -422,6 +424,8 @@ int WdtSetupIntrSystem(XScuGic *IntcInstancePtr)
 //	if (NULL == IntcConfig) {
 //		return XST_FAILURE;
 //	}
+
+	TempConfig = IntcConfig;
 //
 //	Status = XScuGic_CfgInitialize(IntcInstancePtr, IntcConfig,
 //					IntcConfig->CpuBaseAddress);
@@ -544,11 +548,11 @@ void XWdtPs_Restart() {}
 
 int WdtPsInit(XWdtPs * WdtInstancePtr, u16 WdtDeviceId, u32 Timeout){ }
 
-int WdtPsIntrExample(XScuGic *IntcInstancePtr){ }
+int WdtPsIntrExample(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr){ }
 
 void WdtIntrHandler(void *CallBackRef){ }
 
-int WdtSetupIntrSystem(XScuGic *IntcInstancePtr){ }
+int WdtSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr){ }
 
 void WdtDisableIntrSystem(XScuGic *IntcInstancePtr){ }
 

@@ -101,11 +101,11 @@ void XWdtPs_Restart() ;
 
 int WdtPsInit(u32 Timeout);
 
-int WdtPsIntrExample(XScuGic *IntcInstancePtr);
+int WdtPsIntrExample(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr);
 
 void WdtIntrHandler(void *CallBackRef);
 
-int WdtSetupIntrSystem(XScuGic *IntcInstancePtr);
+int WdtSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr);
 
 void WdtDisableIntrSystem(XScuGic *IntcInstancePtr);
 

@@ -436,7 +436,7 @@ int WdtSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 	XScuGic_GetPriorityTriggerType(IntcInstancePtr, WDT_IRPT_INTR,
 	                                            &Priority, &Trigger);
 
-	Priority = 0x7;
+	Priority = 0x0;
 	Trigger = 3;
 	XScuGic_SetPriorityTriggerType(IntcInstancePtr, WDT_IRPT_INTR,
 			Priority, Trigger);
@@ -501,19 +501,21 @@ int WdtSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 ******************************************************************************/
 void WdtIntrHandler(void *CallBackRef)
 {
-	/*
-	 * WDT timed out and interrupt occurred, let main test loop know.
-	 */
-	xil_printf("WdtIntrHandler: HANDLER_CALLED\r\n");
-
-
 	u32 reg;
 	reg = XScuGic_ReadReg(TempConfig->CpuBaseAddress, XSCUGIC_RUN_PRIOR_OFFSET);
 	xil_printf("WdtIntrHandler: Running priority in WDT handler is %d\r\n",reg >> 3);
 
+	/*
+	 * WDT timed out and interrupt occurred, let main test loop know.
+	 */
 	HandlerCalled = HANDLER_CALLED;
 
-//	XWdtPs_RestartWdt(&WdtInstance);
+	/*
+	 * Code for handling the SYSTEM HANG goes here.
+	 */
+	//  Xil_Assert(__FILE__, __LINE__);
+	//  OR
+	//	XWdtPs_RestartWdt(&WdtInstance);
 }
 
 /*****************************************************************************/

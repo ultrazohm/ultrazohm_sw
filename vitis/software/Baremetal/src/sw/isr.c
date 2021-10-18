@@ -72,11 +72,12 @@ void ISR_Control(void *data)
 	 * RE Start the WDT device.
 	 */
 	XWdtPs_Restart();
+	uz_SystemTime_ISR_Tic();
 
-	//  Ensure that the source of the current interrupt is cleared and enable Nested Interrupts
+	//  Ensure that the source of the current interrupt is cleared: TESTED, AND NOT NECESARY
+	//	and enable Nested Interrupts: TESTED, NECESARY
 	Xil_EnableNestedInterrupts();
 
-	uz_SystemTime_ISR_Tic();
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
 	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
 
@@ -109,19 +110,22 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
 
-//	//	TEST: to trigger the time violation of ISR
-//	uz_sleep_useconds(100);
-//
-//	//	TEST: to trigger system hang and the reset
 
-//	if (!(XWdtPs_IsWdtExpired(&WdtInstance))) {
+//	//	TEST1: to trigger the time violation of ISR
+//	uz_sleep_useconds(100);
+
+
+//	//	TEST2: to trigger system hang and the reset
+
+//	//	If the handler is not called, launch the test
+	if ((HandlerCalled == 0)) {
 		uz_sleep_useconds(350);  // 1500 for 1 msecond
-//	}
+	}
 
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
 
-
+	// Before exiting the Interrupt handler, the Nested Interrupts must be disabled
 	Xil_DisableNestedInterrupts();
 
 
@@ -221,9 +225,10 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	XScuGic_Config *IntcConfig;
 	int status;
 
-	u8 prio;
-	u8 trigger;
-	u32 reg;
+//	Variables for testing
+//	u8 prio;
+//	u8 trigger;
+//	u32 reg;
 
 	// Interrupt controller initialization
 	IntcConfig = XScuGic_LookupConfig(DeviceId);
@@ -237,6 +242,8 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	XScuGic_CPUWriteReg(IntcInstPtr, XSCUGIC_BIN_PT_OFFSET, 0x03);
 	Xil_ExceptionInit();
 
+//	reg = XScuGic_ReadReg(IntcConfig->CpuBaseAddress, XSCUGIC_BIN_PT_OFFSET);
+//	xil_printf("Rpu_GicInit: Binary Point offset is %d\r\n",reg);
 
 
 	// Connect the interrupt controller interrupt handler to the hardware interrupt handling logic in the processor
@@ -249,19 +256,18 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	// b01	Active HIGH level sensitive
 	// b11 	Rising edge sensitive
 	// XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
-//	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
+	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
 	//XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
 
 
-	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
-	xil_printf("OLD Timer Prio is %d, level is %d\r\n",prio, trigger);
-	prio = 15;
-	trigger = 0b11;
-	XScuGic_SetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,prio,trigger);
-	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
-	xil_printf("NEW Timer Prio is %d, level is %d\r\n",prio, trigger);
-
-
+//	Testing code
+//	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
+//	xil_printf("OLD Timer Prio is %d, level is %d\r\n",prio, trigger);
+//	prio = 15;
+//	trigger = 0b11;
+//	XScuGic_SetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,prio,trigger);
+//	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
+//	xil_printf("NEW Timer Prio is %d, level is %d\r\n",prio, trigger);
 
 
 	// Make the connection between the IntId of the interrupt source and the
@@ -289,16 +295,6 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	         return XST_FAILURE;
 	 }
 
-	// Enable GPIO and timer interrupts in the controller
-	XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
-	XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
-//	XScuGic_Enable(&INTCInst, INTC_ADC_Conv_INTERRUPT_ID);
-
-
-	reg = XScuGic_ReadReg(IntcConfig->CpuBaseAddress, XSCUGIC_BIN_PT_OFFSET);
-	xil_printf("Binary Point offset is %d\r\n",reg);
-
-
 	//	 xil_printf("WDT Interrupt Example Test\r\n");
 	//
 	//	 Status = WdtPsIntrExample(IntcConfig, IntcInstPtr);
@@ -306,6 +302,11 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	//			 xil_printf("RPU: Error: WdtPsIntrExample failed\r\n");
 	//			 return XST_FAILURE;
 	//	 }
+
+	// Enable GPIO and timer interrupts in the controller
+	XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
+	XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
+	//	XScuGic_Enable(&INTCInst, INTC_ADC_Conv_INTERRUPT_ID);
 
 
 	xil_printf("RPU: Rpu_GicInit: Done\r\n");

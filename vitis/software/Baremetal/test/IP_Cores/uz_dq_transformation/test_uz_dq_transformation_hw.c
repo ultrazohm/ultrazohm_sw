@@ -22,4 +22,21 @@ void test_uz_dq_transformation_hw_NeedToImplement(void)
     TEST_IGNORE_MESSAGE("Need to Implement uz_dq_transformation_hw");
 }
 
+void test_uz_dq_transformation_hw_write_thetaOffset(void)
+{
+    float thetaOffset = 1.35f;
+    uint32_t thetaOffset_int = uz_convert_float_to_sfixed(thetaOffset,20);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS+theta_offset_AXI_Data_Trans_123_dq_V12_ip, thetaOffset_int);
+    uz_dqTransformation_hw_write_thetaOffset(TEST_BASE_ADDRESS,thetaOffset);
+}
+
+
+void test_uz_dq_transformation_hw_write_thetaOffsetFail(void)
+{
+    float thetaOffset = 9.0f;
+    uint32_t thetaOffset_int = uz_convert_float_to_sfixed(thetaOffset,20);
+    //uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS+theta_offset_AXI_Data_Trans_123_dq_V12_ip, thetaOffset_int);
+    TEST_ASSERT_FAIL_ASSERT(uz_dqTransformation_hw_write_thetaOffset(TEST_BASE_ADDRESS,thetaOffset));
+}
+
 #endif // TEST

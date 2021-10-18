@@ -258,4 +258,16 @@ void test_uz_FOC_sample_no_decoupling(void) {
     uz_FOC* instance = uz_FOC_init(config);
     uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
 }
+
+void test_uz_FOC_change_decoupling_select(void) {
+    setUp();
+    config.decoupling_select = no_decoupling;
+    config.config_PMSM.Ld_Henry = 0.0f;
+    config.config_PMSM.Lq_Henry = 0.0f;
+    uz_FOC* instance = uz_FOC_init(config);
+    TEST_ASSERT_PASS_ASSERT(uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec));
+    uz_FOC_change_decoupling_select(instance, linear_decoupling);
+    //Assertion should trigger now, since for the linear_decoupling Ld/Lq must be greater than 0.0f
+    TEST_ASSERT_FAIL_ASSERT(uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec));
+}
 #endif // TEST

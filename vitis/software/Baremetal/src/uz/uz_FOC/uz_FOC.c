@@ -23,6 +23,7 @@ typedef struct uz_FOC {
 	struct uz_FOC_config config;
 	struct uz_PI_Controller* Controller_id;
 	struct uz_PI_Controller* Controller_iq;
+	struct uz_dq_t (*decoupling_function)(struct uz_PMSM_t, struct uz_dq_t, float);
 }uz_FOC;
 
 static struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere);
@@ -52,6 +53,17 @@ uz_FOC* uz_FOC_init(struct uz_FOC_config config) {
 	self->Controller_id = uz_PI_Controller_init(config.config_id);
 	self->Controller_iq = uz_PI_Controller_init(config.config_iq);
 	self->config = config;
+	switch (config.decoupling_select)
+    {
+    case no_decoupling:
+        self->decoupling_function = &uz_FOC_no_decoupling;
+        break;
+    case linear_decoupling:
+        self->decoupling_function = &uz_FOC_linear_decoupling;
+        break;
+    default:
+        break;
+    }
 	return (self);
 }
 
@@ -60,11 +72,9 @@ struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, st
 	uz_assert(self->is_ready);
 	uz_assert(V_dc_volts > 0.0f);
 	struct uz_dq_t u_pre_limit_Volts = uz_FOC_CurrentControl(self, i_reference_Ampere, i_actual_Ampere);
-	if(self->config.decoupling_select == linear_decoupling) {
-		struct uz_dq_t u_decoup_Volts = uz_FOC_linear_decoupling(self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
-		u_pre_limit_Volts.d += u_decoup_Volts.d;
-		u_pre_limit_Volts.q += u_decoup_Volts.q;
-	}
+	struct uz_dq_t u_decoup_Volts = self->decoupling_function(self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+	u_pre_limit_Volts.d += u_decoup_Volts.d;
+	u_pre_limit_Volts.q += u_decoup_Volts.q;
 	struct uz_dq_t u_output_Volts = uz_FOC_SpaceVector_Limitation(u_pre_limit_Volts, V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
 	return (u_output_Volts);
 }
@@ -144,6 +154,22 @@ void uz_FOC_set_Psi_PM(uz_FOC* self, float Psi_PM_Vs){
 	self->config.config_PMSM.Psi_PM_Vs = Psi_PM_Vs;
 }
 
+void uz_FOC_change_decoupling_select(uz_FOC* self, enum uz_FOC_decoupling_select decoupling_select) {
+	switch (decoupling_select)
+    {
+    case no_decoupling:
+        self->decoupling_function = &uz_FOC_no_decoupling;
+		self->config.decoupling_select = no_decoupling;
+        break;
+    case linear_decoupling:
+        self->decoupling_function = &uz_FOC_linear_decoupling;
+		self->config.decoupling_select = linear_decoupling;
+        break;
+    default:
+        break;
+    }
+}
+
 bool uz_FOC_get_ext_clamping(uz_FOC* self){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
@@ -161,4 +187,6 @@ struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(struct uz_UVW_t input, float V_
 	output.DutyCycle_W = uz_signals_saturation(output.DutyCycle_W, 1.0f, 0.0f);
 	return(output);
 }
+
+
 #endif

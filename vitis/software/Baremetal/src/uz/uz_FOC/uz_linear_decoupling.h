@@ -15,4 +15,10 @@
  */
 struct uz_dq_t uz_FOC_linear_decoupling(struct uz_PMSM_t config, struct uz_dq_t i_actual_Ampere, float omega_el_rad_per_sec);
 
+/**
+ * @brief function to calculate no decoupling values. No assertion for input parameters.
+ * 
+ * @return struct uz_dq_t output with 0 for all values
+ */
+struct uz_dq_t uz_FOC_no_decoupling(struct uz_PMSM_t config, struct uz_dq_t i_actual_Ampere, float omega_el_rad_per_sec);
 #endif // UZ_LINEAR_DECOUPPLING_H

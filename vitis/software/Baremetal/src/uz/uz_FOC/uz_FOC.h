@@ -152,6 +152,16 @@ void uz_FOC_set_Lq(uz_FOC* self, float Lq_Henry);
 void uz_FOC_set_Psi_PM(uz_FOC* self, float Psi_PM_Vs);
 
 /**
+ * @brief Function to change the type of decoupling during runtime
+ * 
+ * @param self uz_FOC instance
+ * @param decoupling_select enum FOC decoupling selector \n
+							0 = no_decoupling \n
+							1 = linear_decoupling
+ */
+void uz_FOC_change_decoupling_select(uz_FOC* self, enum uz_FOC_decoupling_select decoupling_select);
+
+/**
  * @brief Returns the current value of the external clamping signal
  * 
  * @param self uz_FOC instance

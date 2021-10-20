@@ -13,14 +13,23 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 ******************************************************************************/
-#include "FOC/FOC0.h"
+//#include "FOC/FOC0.h"
+#include "FOC_6ph0_ert_rtw/FOC_6ph0.h"
+
+//typedef struct{
+//	ExtY output;
+//	ExtU input;
+//	DW rtDW;                        /* Observable states */
+//	RT_MODEL modelData;
+//	RT_MODEL *PtrToModelData;
+//}uz_codegen;
 
 typedef struct{
-	ExtY output;
-	ExtU input;
-	DW rtDW;                        /* Observable states */
-	RT_MODEL modelData;
-	RT_MODEL *PtrToModelData;
+	ExtY_FOC_6ph0_T output;
+	ExtU_FOC_6ph0_T input;
+	DW_FOC_6ph0_T rtDW;                        /* Observable states */
+	RT_MODEL_FOC_6ph0_T modelData;
+	RT_MODEL_FOC_6ph0_T *PtrToModelData;
 }uz_codegen;
 
 void uz_codegen_init(uz_codegen *self);

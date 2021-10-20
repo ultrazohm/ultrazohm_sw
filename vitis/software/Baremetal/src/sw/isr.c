@@ -81,28 +81,46 @@ void ISR_Control(void *data)
 	Global_Data.av.theta_elec_offset_compensated = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
 
 	//assign ADC values to motor currents
-	Global_Data.av.I_U = -1.0*Global_Data.aa.A2.me.ADC_A4;
-	Global_Data.av.I_V = -1.0*Global_Data.aa.A2.me.ADC_A3;
-	Global_Data.av.I_W = -1.0*Global_Data.aa.A2.me.ADC_A2;
+	Global_Data.av.I_a1 = -1.0*Global_Data.aa.A2.me.ADC_A4;
+	Global_Data.av.I_b1 = -1.0*Global_Data.aa.A2.me.ADC_A3;
+	Global_Data.av.I_c1 = -1.0*Global_Data.aa.A2.me.ADC_A2;
 
+	Global_Data.av.I_a2 = -1.0*Global_Data.aa.A2.me.ADC_B8;
+	Global_Data.av.I_b2 = -1.0*Global_Data.aa.A2.me.ADC_B7;
+	Global_Data.av.I_c2 = -1.0*Global_Data.aa.A2.me.ADC_B6;
 
-	codegenInstance.input.period = 2500;
+//3ph
+//	codegenInstance.input.period = 2500;
+//	codegenInstance.input.currentORspeedControl = 0;
+//	codegenInstance.input.i1 = Global_Data.av.I_a1;
+//	codegenInstance.input.i2 = Global_Data.av.I_b1;
+//	codegenInstance.input.i3 = Global_Data.av.I_c1;
+//	codegenInstance.input.theta_el = Global_Data.av.theta_elec_offset_compensated;
+//	codegenInstance.input.u_dc = Global_Data.av.U_ZK;
+
+	codegenInstance.input.PERIOD_k = 500;
 	codegenInstance.input.currentORspeedControl = 0;
-	codegenInstance.input.i1 = Global_Data.av.I_U;
-	codegenInstance.input.i2 = Global_Data.av.I_V;
-	codegenInstance.input.i3 = Global_Data.av.I_W;
+	codegenInstance.input.i_a1 = Global_Data.av.I_a1;
+	codegenInstance.input.i_b1 = Global_Data.av.I_b1;
+	codegenInstance.input.i_c1 = Global_Data.av.I_c1;
+	codegenInstance.input.i_a2 = Global_Data.av.I_a2;
+	codegenInstance.input.i_b2 = Global_Data.av.I_b2;
+	codegenInstance.input.i_c2 = Global_Data.av.I_c2;
 	codegenInstance.input.theta_el = Global_Data.av.theta_elec_offset_compensated;
-	codegenInstance.input.u_dc = Global_Data.av.U_ZK;
+	codegenInstance.input.u_dc_d = Global_Data.av.U_ZK;
 
 	uz_codegen_step(&codegenInstance);
 
-	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.CMPA_1 * 0.0004; // * 1/PERIOD
-	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.CMPA_2 * 0.0004;
-	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.CMPA_3 * 0.0004;
+//	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.CMPA_1 * 0.0004; // * 1/PERIOD
+//	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.CMPA_2 * 0.0004;
+//	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.CMPA_3 * 0.0004;
 
-	Global_Data.rasv.halfBridge4DutyCycle = codegenInstance.output.CMPA_1 * 0.0004; // * 1/PERIOD
-	Global_Data.rasv.halfBridge5DutyCycle = codegenInstance.output.CMPA_2 * 0.0004;
-	Global_Data.rasv.halfBridge6DutyCycle = codegenInstance.output.CMPA_3 * 0.0004;
+	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.CMPA_1;
+	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.CMPA_2;
+	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.CMPA_3;
+	Global_Data.rasv.halfBridge4DutyCycle = codegenInstance.output.CMPA_4;
+	Global_Data.rasv.halfBridge5DutyCycle = codegenInstance.output.CMPA_5;
+	Global_Data.rasv.halfBridge6DutyCycle = codegenInstance.output.CMPA_6;
 
 	//Start: Control algorithm -------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)
@@ -334,7 +352,7 @@ static void CheckForErrors(){
 	//Error detection
 	if(Global_Data.cw.enableControl == true){
 		//Detect continuous current-limit ---------------------------------------------------------------------------------------
-		if ((Global_Data.av.I_U > Global_Data.mrp.motorMaximumCurrentContinuousOperation) || (Global_Data.av.I_V > Global_Data.mrp.motorMaximumCurrentContinuousOperation) || (Global_Data.av.I_W > Global_Data.mrp.motorMaximumCurrentContinuousOperation)){
+		if ((Global_Data.av.I_a1 > Global_Data.mrp.motorMaximumCurrentContinuousOperation) || (Global_Data.av.I_b1 > Global_Data.mrp.motorMaximumCurrentContinuousOperation) || (Global_Data.av.I_c1 > Global_Data.mrp.motorMaximumCurrentContinuousOperation)){
 			CountCurrentError++;
 			if(CountCurrentError > 10){ //Only if the error is available for at least 10 cycles
 		 // if(CountCurrentError > 20000){ //Only if the error is available for at least 2 seconds @100us ISR-cycle
@@ -345,7 +363,7 @@ static void CheckForErrors(){
 		}
 
 		//Detect short-time current-limit ---------------------------------------------------------------------------------------
-		if ((Global_Data.av.I_U > Global_Data.mrp.motorMaximumCurrentShortTimeOperation) || (Global_Data.av.I_V > Global_Data.mrp.motorMaximumCurrentShortTimeOperation) || (Global_Data.av.I_W > Global_Data.mrp.motorMaximumCurrentShortTimeOperation)){
+		if ((Global_Data.av.I_a1 > Global_Data.mrp.motorMaximumCurrentShortTimeOperation) || (Global_Data.av.I_b1 > Global_Data.mrp.motorMaximumCurrentShortTimeOperation) || (Global_Data.av.I_c1 > Global_Data.mrp.motorMaximumCurrentShortTimeOperation)){
 			ErrorHandling(&Global_Data);
 			Global_Data.ew.maximumShortTermCurrentReached = true; //Current error detected -> errors are handled directly herein
 		}

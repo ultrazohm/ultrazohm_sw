@@ -237,14 +237,20 @@ int main(void) {
 
 	// ADC conversion factors for GaN inverter usage
 	//ATTENTON: conversion factor depends on the used ADC board?
-	//	float PhaseCurrentAmpere = 33.8780;
-	//	float DC_CurrentAmpere = 60.9756;
+	//	float PhaseCurrentAmpere = 33.8780 @18mOhm shunt resistor;
+	//	float DC_CurrentAmpere = 60.9756 @10mOhm shunt resistor;
 	//	float DC_VoltageVolt = 150.875;
 	//	float PhaseVoltageVolt = 150.875;
-	Global_Data.aa.A2.cf.ADC_A4 = 33.8780*2;
+	//currents  a1 b1 c1, v_dc
+	Global_Data.aa.A2.cf.ADC_A4 = 33.8780*2; //@ 2*18mOhm shunts in parallel
 	Global_Data.aa.A2.cf.ADC_A3 = 33.8780*2;
 	Global_Data.aa.A2.cf.ADC_A2 = 33.8780*2;
 	Global_Data.aa.A2.cf.ADC_A1 = 150.875;
+	//currents a2 b2 c2, v_dc
+	Global_Data.aa.A2.cf.ADC_B5 = 150.875;
+	Global_Data.aa.A2.cf.ADC_B6 = 33.8780*2;
+	Global_Data.aa.A2.cf.ADC_B7 = 33.8780*2;
+	Global_Data.aa.A2.cf.ADC_B8 = 33.8780*2;
 
 	uz_codegen_init(&codegenInstance);
 
@@ -444,9 +450,9 @@ void plotData(DS_Data* data) {
 
 	uz_printf("Reference current in float: %f \r\n", data->rasv.referenceCurrent_iq);
 
-	uz_printf("ADC I_a: %f \r\n", data->av.I_U);
-	uz_printf("ADC I_b: %f \r\n", data->av.I_V);
-	uz_printf("ADC I_c: %f \r\n", data->av.I_W);
+	uz_printf("ADC I_a: %f \r\n", data->av.I_a1);
+	uz_printf("ADC I_b: %f \r\n", data->av.I_b1);
+	uz_printf("ADC I_c: %f \r\n", data->av.I_c1);
 
 	//Output encoder values
 	uz_printf("Speed in rpm: %f \r\n", data->av.mechanicalRotorSpeed);
@@ -461,7 +467,7 @@ void plotData(DS_Data* data) {
 void InitializeDataStructure(DS_Data* data) {
 
 	data->av.U_ZK = 36.0; 								//[V] DC-Link voltage
-	data->av.theta_offset =  2.539921;
+	data->av.theta_offset =  4.471956;					//Brose 3ph machine=2.539921, Brose 6ph machine=4.471956
 	data->rasv.currentORspeedControl = 0.0;
 	data->rasv.PERIOD = 5000;
 	data->rasv.NEXT = false;
@@ -575,9 +581,12 @@ void InitializeDataStructure(DS_Data* data) {
 	data->ew.mtpaTableError = false;
 	data->ew.pwmFrequencyError = false;
 	data->rasv.currentControlAngle = 0.0;
-	data->rasv.halfBridge1DutyCycle = 0.5;
-	data->rasv.halfBridge2DutyCycle = 0.5;
-	data->rasv.halfBridge3DutyCycle = 0.5;
+	data->rasv.halfBridge1DutyCycle = 0.0;
+	data->rasv.halfBridge2DutyCycle = 0.0;
+	data->rasv.halfBridge3DutyCycle = 0.0;
+	data->rasv.halfBridge4DutyCycle = 0.0;
+	data->rasv.halfBridge5DutyCycle = 0.0;
+	data->rasv.halfBridge6DutyCycle = 0.0;
 	data->rasv.phaseAdvanceAngle = 0.0;
 	data->rasv.referenceCurrent_id = 0.0;
 	data->rasv.referenceCurrent_iq = 0.0;

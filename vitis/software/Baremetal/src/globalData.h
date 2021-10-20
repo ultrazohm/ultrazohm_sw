@@ -346,9 +346,12 @@ typedef struct _actualValues_ {
 	float U_L1; 		// Grid side voltage in V
 	float U_L2; 		// Grid side voltage in V
 	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
+	float I_a1; 		// Machine side current in A
+	float I_b1; 		// Machine side current in A
+	float I_c1; 		// Machine side current in A
+	float I_a2; 		// Machine side current in A
+	float I_b2; 		// Machine side current in A
+	float I_c2; 		// Machine side current in A
 	float U_U; 		// Machine side voltage in V
 	float U_V; 		// Machine side voltage in V
 	float U_W; 		// Machine side voltage in V

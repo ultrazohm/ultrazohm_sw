@@ -49,6 +49,7 @@ union SlowData js_slowDataArray[JSSD_ENDMARKER];
 static float lifecheck;
 static float ISRExecutionTime;
 static float isr_period_us;
+static float RefWave;
 
 
 int JavaScope_initalize(DS_Data* data)
@@ -82,15 +83,19 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ptr_arr[JSO_Speed_rpm]	= &data->av.mechanicalRotorSpeed;
-	js_ptr_arr[JSO_ia] 			= &data->av.I_U;
-	js_ptr_arr[JSO_ib] 			= &data->av.I_V;
-	js_ptr_arr[JSO_ic] 			= &data->av.I_W;
+	js_ptr_arr[JSO_ia1] 			= &data->av.I_a1;
+	js_ptr_arr[JSO_ib1] 			= &data->av.I_b1;
+	js_ptr_arr[JSO_ic1] 			= &data->av.I_c1;
+	js_ptr_arr[JSO_ia2] 			= &data->av.I_a2;
+	js_ptr_arr[JSO_ib2] 			= &data->av.I_b2;
+	js_ptr_arr[JSO_ic2] 			= &data->av.I_c2;
 	js_ptr_arr[JSO_ua] 			= &data->av.U_U;
 	js_ptr_arr[JSO_ub] 			= &data->av.U_V;
 	js_ptr_arr[JSO_uc] 			= &data->av.U_W;
 	js_ptr_arr[JSO_iq] 			= &data->av.I_q;
 	js_ptr_arr[JSO_id] 			= &data->av.I_d;
 	js_ptr_arr[JSO_Theta_el] 	= &data->av.theta_elec;
+	js_ptr_arr[JSO_Theta_el_comp] 	= &data->av.theta_elec_offset_compensated;
 	js_ptr_arr[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ptr_arr[JSO_Wtemp]		= &data->pID.WindingTemp;
 	js_ptr_arr[JSO_ud]			= &data->av.U_d;
@@ -102,12 +107,16 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_Sawtooth1] 	= &ISRExecutionTime;
 	js_ptr_arr[JSO_SineWave1]   = &lifecheck;
 	js_ptr_arr[JSO_SineWave2]   = &isr_period_us;
+	js_ptr_arr[JSO_RefWave]		= &RefWave;
 	return Status;
 }
 
 
 void js_fetchData4CH()
 {
+	static uint64_t cnt;
+	cnt++;
+	RefWave = 10*cos(52.36*cnt*0.00005);
 	int status;
 	u32 MsgPtr[IPI_R5toA53_MSG_LEN] = {0};
 	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0};
@@ -184,60 +193,60 @@ void JavaScope_update(DS_Data* data){
 	js_slowDataArray[JSSD_FLOAT_FreqReadback].f 			= data->rasv.referenceFrequency;
 	js_slowDataArray[JSSD_INT_Milliseconds].i 				= uz_SystemTime_GetUptimeInMs();
 	js_slowDataArray[JSSD_FLOAT_ADCconvFactorReadback].f = data->mrp.ADCconvFactorReadback;
-	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline].f= data->pID.Offline_Psi_PM;
-	js_slowDataArray[JSSD_FLOAT_Lq_Offline].f 	= data->pID.Offline_Lq;
-	js_slowDataArray[JSSD_FLOAT_Ld_Offline].f 	= data->pID.Offline_Ld;
-	js_slowDataArray[JSSD_FLOAT_Rs_Offline].f 	= data->pID.Offline_Rs;
-	js_slowDataArray[JSSD_INT_polePairs].i 		= (int)data->mrp.motorPolePairNumber;
-	js_slowDataArray[JSSD_FLOAT_J].f 			= data->pID.Offline_motorRotorInertia;
-	js_slowDataArray[JSSD_INT_activeState].i 	= data->pID.activeState;
-	js_slowDataArray[JSSD_FLOAT_J].f 			= data->pID.Offline_motorRotorInertia;
-	js_slowDataArray[JSSD_FLOAT_u_d].f 			= data->av.U_d;
-	js_slowDataArray[JSSD_FLOAT_u_q].f 			= data->av.U_q;
-	js_slowDataArray[JSSD_FLOAT_i_d].f 			= data->av.I_d; //data->pID.ParameterID_I_d;	//
-	js_slowDataArray[JSSD_FLOAT_i_q].f 			= data->av.I_q; //data->pID.ParameterID_I_q;	//
-	js_slowDataArray[JSSD_FLOAT_speed].f 		= data->av.mechanicalRotorSpeed;
-	js_slowDataArray[JSSD_FLOAT_torque].f 		= data->av.mechanicalTorqueObserved;
-	js_slowDataArray[JSSD_FLOAT_encoderOffset].f= data->mrp.incrementalEncoderOffset;
-	js_slowDataArray[JSSD_FLOAT_u_d_ref].f 		= data->pID.Offline_ud_ref;
-	js_slowDataArray[JSSD_FLOAT_u_q_ref].f 		= data->pID.Offline_uq_ref;
-	js_slowDataArray[JSSD_FLOAT_ArrayCounter].f = data->pID.array_counter;
-	js_slowDataArray[JSSD_FLOAT_measArray].f 	= data->pID.Online_MessArray_Element; //OHMrichterMotorControl_Y_measArray1[(Xuint16)(data->pID.array_counter)];
-	js_slowDataArray[JSSD_FLOAT_i_est].f		= data->pID.Online_i_est_Element; //OHMrichterMotorControl_Y_i_est[(Xuint16)(data->pID.array_counter)];
-	js_slowDataArray[JSSD_FLOAT_ArrayControl].f = data->pID.array_counter;
-	js_slowDataArray[JSSD_FLOAT_Stribtorque].f 	= data->pID.Offline_BreakawayTorque;
-	js_slowDataArray[JSSD_FLOAT_Coulombtorque].f= data->pID.Offline_CoulombFriction;
-	js_slowDataArray[JSSD_FLOAT_Viscotorque].f 	= data->pID.Offline_ViscousFriction;
-	js_slowDataArray[JSSD_FLOAT_Rs].f 			= data->mrp.motorStatorResistance;
-	js_slowDataArray[JSSD_FLOAT_PsiPM].f 		= data->mrp.motorFluxConstant;
-	js_slowDataArray[JSSD_FLOAT_TrainInertia].f = data->pID.Offline_totalRotorInertia;//OHMrichterMotorControl_Y_ViscoTorqueLoad;
-	js_slowDataArray[JSSD_FLOAT_LoadInertia].f 	= data->pID.Offline_loadRotorInertia;
-	js_slowDataArray[JSSD_FLOAT_c_est].f		= data->pID.Offline_TwoMassSystemStiffness;
-	js_slowDataArray[JSSD_FLOAT_d_est].f		= data->pID.Offline_TwoMassSystemDamping;
-	js_slowDataArray[JSSD_FLOAT_c_0].f			= data->pID.Offline_TwoMassSystem_c_0;
-	js_slowDataArray[JSSD_FLOAT_MapCounter].f	= data->pID.map_counter;
-
-	if(data->pID.map_counter<401){ //400 = comes from 20x20 Raster of the flux maps
-		js_slowDataArray[JSSD_FLOAT_psidMap].f	= data->pID.FluxMap_d[(uint16_t)(data->pID.map_counter)];
-		js_slowDataArray[JSSD_FLOAT_psiqMap].f	= data->pID.FluxMap_q[(uint16_t)(data->pID.map_counter)];
-		js_slowDataArray[JSSD_FLOAT_idMap].f	= data->pID.InvFluxMap_d[(uint16_t)(data->pID.map_counter)];
-		js_slowDataArray[JSSD_FLOAT_iqMap].f	= data->pID.InvFluxMap_q[(uint16_t)(data->pID.map_counter)];
-		js_slowDataArray[JSSD_FLOAT_FluxTemp].f	= data->pID.FluxTemp[(uint16_t)(data->pID.map_counter/2)];
-	}
-	js_slowDataArray[JSSD_FLOAT_psi_array].f	= data->pID.psi_array[(uint16_t)(data->pID.map_counter)];
-	js_slowDataArray[JSSD_FLOAT_MapControl].f	= data->pID.map_counter;
-	js_slowDataArray[JSSD_FLOAT_I_rated].f		= data->mrp.motorNominalCurrent;
-	js_slowDataArray[JSSD_FLOAT_Wtemp].f		= data->pID.WindingTemp;
-	js_slowDataArray[JSSD_FLOAT_FluxTempConst].f= data->pID.FluxTempConst;
-	js_slowDataArray[JSSD_FLOAT_FluxTempError].f= data->pID.FluxTempError;
-	js_slowDataArray[JSSD_FLOAT_Ld_Online].f	= data->pID.Online_Ld;
-	js_slowDataArray[JSSD_FLOAT_Lq_Online].f	= data->pID.Online_Lq;
-	js_slowDataArray[JSSD_FLOAT_PsiPM_Online].f	= data->pID.Online_Psi_PM;
-	js_slowDataArray[JSSD_FLOAT_Rs_Online].f	= data->pID.Online_Rs;
-	js_slowDataArray[JSSD_FLOAT_n_FluxPoints].f	= data->pID.n_FluxPoints;
-	js_slowDataArray[JSSD_FLOAT_Ld].f 			= data->mrp.motorDirectInductance;
-	js_slowDataArray[JSSD_FLOAT_Lq].f 			= data->mrp.motorQuadratureInductance;
-	js_slowDataArray[JSSD_FLOAT_totalRotorInertia].f 	= data->mrp.totalRotorInertia;
+//	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline].f= data->pID.Offline_Psi_PM;
+//	js_slowDataArray[JSSD_FLOAT_Lq_Offline].f 	= data->pID.Offline_Lq;
+//	js_slowDataArray[JSSD_FLOAT_Ld_Offline].f 	= data->pID.Offline_Ld;
+//	js_slowDataArray[JSSD_FLOAT_Rs_Offline].f 	= data->pID.Offline_Rs;
+//	js_slowDataArray[JSSD_INT_polePairs].i 		= (int)data->mrp.motorPolePairNumber;
+//	js_slowDataArray[JSSD_FLOAT_J].f 			= data->pID.Offline_motorRotorInertia;
+//	js_slowDataArray[JSSD_INT_activeState].i 	= data->pID.activeState;
+//	js_slowDataArray[JSSD_FLOAT_J].f 			= data->pID.Offline_motorRotorInertia;
+//	js_slowDataArray[JSSD_FLOAT_u_d].f 			= data->av.U_d;
+//	js_slowDataArray[JSSD_FLOAT_u_q].f 			= data->av.U_q;
+//	js_slowDataArray[JSSD_FLOAT_i_d].f 			= data->av.I_d; //data->pID.ParameterID_I_d;	//
+//	js_slowDataArray[JSSD_FLOAT_i_q].f 			= data->av.I_q; //data->pID.ParameterID_I_q;	//
+//	js_slowDataArray[JSSD_FLOAT_speed].f 		= data->av.mechanicalRotorSpeed;
+//	js_slowDataArray[JSSD_FLOAT_torque].f 		= data->av.mechanicalTorqueObserved;
+//	js_slowDataArray[JSSD_FLOAT_encoderOffset].f= data->mrp.incrementalEncoderOffset;
+//	js_slowDataArray[JSSD_FLOAT_u_d_ref].f 		= data->pID.Offline_ud_ref;
+//	js_slowDataArray[JSSD_FLOAT_u_q_ref].f 		= data->pID.Offline_uq_ref;
+//	js_slowDataArray[JSSD_FLOAT_ArrayCounter].f = data->pID.array_counter;
+//	js_slowDataArray[JSSD_FLOAT_measArray].f 	= data->pID.Online_MessArray_Element; //OHMrichterMotorControl_Y_measArray1[(Xuint16)(data->pID.array_counter)];
+//	js_slowDataArray[JSSD_FLOAT_i_est].f		= data->pID.Online_i_est_Element; //OHMrichterMotorControl_Y_i_est[(Xuint16)(data->pID.array_counter)];
+//	js_slowDataArray[JSSD_FLOAT_ArrayControl].f = data->pID.array_counter;
+//	js_slowDataArray[JSSD_FLOAT_Stribtorque].f 	= data->pID.Offline_BreakawayTorque;
+//	js_slowDataArray[JSSD_FLOAT_Coulombtorque].f= data->pID.Offline_CoulombFriction;
+//	js_slowDataArray[JSSD_FLOAT_Viscotorque].f 	= data->pID.Offline_ViscousFriction;
+//	js_slowDataArray[JSSD_FLOAT_Rs].f 			= data->mrp.motorStatorResistance;
+//	js_slowDataArray[JSSD_FLOAT_PsiPM].f 		= data->mrp.motorFluxConstant;
+//	js_slowDataArray[JSSD_FLOAT_TrainInertia].f = data->pID.Offline_totalRotorInertia;//OHMrichterMotorControl_Y_ViscoTorqueLoad;
+//	js_slowDataArray[JSSD_FLOAT_LoadInertia].f 	= data->pID.Offline_loadRotorInertia;
+//	js_slowDataArray[JSSD_FLOAT_c_est].f		= data->pID.Offline_TwoMassSystemStiffness;
+//	js_slowDataArray[JSSD_FLOAT_d_est].f		= data->pID.Offline_TwoMassSystemDamping;
+//	js_slowDataArray[JSSD_FLOAT_c_0].f			= data->pID.Offline_TwoMassSystem_c_0;
+//	js_slowDataArray[JSSD_FLOAT_MapCounter].f	= data->pID.map_counter;
+//
+//	if(data->pID.map_counter<401){ //400 = comes from 20x20 Raster of the flux maps
+//		js_slowDataArray[JSSD_FLOAT_psidMap].f	= data->pID.FluxMap_d[(uint16_t)(data->pID.map_counter)];
+//		js_slowDataArray[JSSD_FLOAT_psiqMap].f	= data->pID.FluxMap_q[(uint16_t)(data->pID.map_counter)];
+//		js_slowDataArray[JSSD_FLOAT_idMap].f	= data->pID.InvFluxMap_d[(uint16_t)(data->pID.map_counter)];
+//		js_slowDataArray[JSSD_FLOAT_iqMap].f	= data->pID.InvFluxMap_q[(uint16_t)(data->pID.map_counter)];
+//		js_slowDataArray[JSSD_FLOAT_FluxTemp].f	= data->pID.FluxTemp[(uint16_t)(data->pID.map_counter/2)];
+//	}
+//	js_slowDataArray[JSSD_FLOAT_psi_array].f	= data->pID.psi_array[(uint16_t)(data->pID.map_counter)];
+//	js_slowDataArray[JSSD_FLOAT_MapControl].f	= data->pID.map_counter;
+//	js_slowDataArray[JSSD_FLOAT_I_rated].f		= data->mrp.motorNominalCurrent;
+//	js_slowDataArray[JSSD_FLOAT_Wtemp].f		= data->pID.WindingTemp;
+//	js_slowDataArray[JSSD_FLOAT_FluxTempConst].f= data->pID.FluxTempConst;
+//	js_slowDataArray[JSSD_FLOAT_FluxTempError].f= data->pID.FluxTempError;
+//	js_slowDataArray[JSSD_FLOAT_Ld_Online].f	= data->pID.Online_Ld;
+//	js_slowDataArray[JSSD_FLOAT_Lq_Online].f	= data->pID.Online_Lq;
+//	js_slowDataArray[JSSD_FLOAT_PsiPM_Online].f	= data->pID.Online_Psi_PM;
+//	js_slowDataArray[JSSD_FLOAT_Rs_Online].f	= data->pID.Online_Rs;
+//	js_slowDataArray[JSSD_FLOAT_n_FluxPoints].f	= data->pID.n_FluxPoints;
+//	js_slowDataArray[JSSD_FLOAT_Ld].f 			= data->mrp.motorDirectInductance;
+//	js_slowDataArray[JSSD_FLOAT_Lq].f 			= data->mrp.motorQuadratureInductance;
+//	js_slowDataArray[JSSD_FLOAT_totalRotorInertia].f 	= data->mrp.totalRotorInertia;
 
 	js_fetchData4CH();
 

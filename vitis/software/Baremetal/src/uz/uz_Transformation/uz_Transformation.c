@@ -18,12 +18,12 @@
 #include "../uz_HAL.h"
 #include <math.h>
 struct uz_dq_t uz_dq_transformation(struct uz_UVW_t input, float theta_el_rad){
-    struct uz_alphabeta_t ab= uz_clarke_transformation(input);
-    float sin_coefficent=sinf(theta_el_rad);
-    float cos_coefficent=cosf(theta_el_rad);
-    struct uz_dq_t output ={
-        .d = cos_coefficent*ab.alpha+sin_coefficent*ab.beta,
-        .q = (-sin_coefficent*ab.alpha)+cos_coefficent*ab.beta,
+    struct uz_alphabeta_t ab = uz_clarke_transformation(input);
+    float sin_coefficent = sinf(theta_el_rad);
+    float cos_coefficent = cosf(theta_el_rad);
+    struct uz_dq_t output = {
+        .d = (cos_coefficent * ab.alpha) + (sin_coefficent * ab.beta),
+        .q = (-sin_coefficent * ab.alpha) + (cos_coefficent * ab.beta),
         .zero = ab.gamma
     };
     return(output);
@@ -31,12 +31,12 @@ struct uz_dq_t uz_dq_transformation(struct uz_UVW_t input, float theta_el_rad){
 
 struct uz_UVW_t uz_dq_inverse_transformation(struct uz_dq_t input, float theta_el_rad){
    
-   float sin_coefficent=sinf(theta_el_rad);
-   float cos_coefficent=cosf(theta_el_rad);
-    struct uz_alphabeta_t ab={
-        .alpha=input.d*cos_coefficent-input.q*sin_coefficent,
-        .beta=input.q*cos_coefficent+input.d*sin_coefficent,
-        .gamma=input.zero
+   float sin_coefficent = sinf(theta_el_rad);
+   float cos_coefficent = cosf(theta_el_rad);
+    struct uz_alphabeta_t ab = {
+        .alpha = (cos_coefficent * input.d) - (sin_coefficent * input.q),
+        .beta = (sin_coefficent * input.d) + (cos_coefficent * input.q),
+        .gamma = input.zero
     };
     struct uz_UVW_t output=uz_clarke_inverse_transformation(ab);
     return(output);

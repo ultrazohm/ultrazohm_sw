@@ -61,7 +61,7 @@ struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, st
 	uz_assert(self->is_ready);
 	uz_assert(V_dc_volts > 0.0f);
 	struct uz_dq_t u_pre_limit_Volts = uz_FOC_CurrentControl(self, i_reference_Ampere, i_actual_Ampere);
-	struct uz_dq_t u_decoup_Volts = uz_FOC_decoupling(self->config.decoupling_select,self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+	struct uz_dq_t u_decoup_Volts = uz_FOC_decoupling(self->config.decoupling_select, self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
 	u_pre_limit_Volts.d += u_decoup_Volts.d;
 	u_pre_limit_Volts.q += u_decoup_Volts.q;
 	struct uz_dq_t u_output_Volts = uz_FOC_SpaceVector_Limitation(u_pre_limit_Volts, V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
@@ -155,7 +155,7 @@ bool uz_FOC_get_ext_clamping(uz_FOC* self){
 	return(self->ext_clamping);
 }
 
-static struct uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t pmsm, struct uz_dq_t actual_Ampere, float omega_el_rad_per_sec){
+static struct uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t config_PMSM, struct uz_dq_t i_actual_Ampere, float omega_el_rad_per_sec){
 	struct uz_dq_t decouple_voltage={0};
 	switch (decoupling_select)
     {
@@ -163,7 +163,7 @@ static struct uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling
         // do nothing since no decoupling
         break;
     case linear_decoupling:
-        decouple_voltage=uz_FOC_linear_decoupling(pmsm,actual_Ampere, omega_el_rad_per_sec);
+        decouple_voltage=uz_FOC_linear_decoupling(config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
         break;
     default:
         break;

@@ -159,7 +159,7 @@ void uz_FOC_set_Psi_PM(uz_FOC* self, float Psi_PM_Vs);
 							0 = no_decoupling \n
 							1 = linear_decoupling
  */
-void uz_FOC_change_decoupling_select(uz_FOC* self, enum uz_FOC_decoupling_select decoupling_select);
+void uz_FOC_set_decoupling_method(uz_FOC* self, enum uz_FOC_decoupling_select decoupling_select);
 
 /**
  * @brief Returns the current value of the external clamping signal

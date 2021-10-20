@@ -15,6 +15,7 @@ struct uz_dq_t i_actual_Ampere = {0};
 struct uz_dq_t i_reference_Ampere = {0};
 float omega_el_rad_per_sec = 0.0f;
 float V_dc_volts = 0.0f;
+
 void setUp(void)
 {
     config.config_id.Kp = 6.75f;
@@ -42,52 +43,44 @@ void setUp(void)
 }
 
 void test_uz_FOC_reset_NULL(void){
-    setUp();
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_reset(NULL));
 }
 
 void test_uz_FOC_set_Kp_id_NULL(void){
-    setUp();
     float Kp_id = 10.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_Kp_id(NULL, Kp_id));
 }
 
 void test_uz_FOC_set_Kp_id_negative(void){
-    setUp();
     float Kp_id = -10.0f;
     uz_FOC* instance = uz_FOC_init(config);
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_Kp_id(instance, Kp_id));
 }
 
 void test_uz_FOC_set_Ki_id_negative(void){
-    setUp();
     float Ki_id = -10.0f;
     uz_FOC* instance = uz_FOC_init(config);
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_Ki_id(instance, Ki_id));
 }
 
 void test_uz_FOC_set_Kp_iq_NULL(void){
-    setUp();
     float Kp_iq = 10.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_Kp_iq(NULL, Kp_iq));
 }
 
 void test_uz_FOC_set_Kp_iq_negative(void){
-    setUp();
     float Kp_iq = -10.0f;
     uz_FOC* instance = uz_FOC_init(config);
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_Kp_iq(instance, Kp_iq));
 }
 
 void test_uz_FOC_set_Ki_iq_negative(void){
-    setUp();
     float Ki_iq = -10.0f;
     uz_FOC* instance = uz_FOC_init(config);
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_set_Ki_iq(instance, Ki_iq));
 }
 
 void test_uz_FOC_sample_output(void){
-    setUp();
     //Values for comparision from simulation
     uz_FOC* instance = uz_FOC_init(config);
     float values_iq[11]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f, 0.76f, 0.819f, 0.863f, 0.895f, 0.919f, 0.937f};
@@ -106,7 +99,6 @@ void test_uz_FOC_sample_output(void){
 }
 
 void test_uz_FOC_sample_UVW_output(void) {
-    setUp();
     //Values for comparision from simulation
     uz_FOC* instance = uz_FOC_init(config);
     float theta_el_rad = M_PI;
@@ -123,7 +115,6 @@ void test_uz_FOC_sample_UVW_output(void) {
 }
 
 void test_uz_FOC_sample_output_SVLimitation_active(void){
-    setUp();
     V_dc_volts = 10.0f;
     //Values for comparision from simulation
     uz_FOC* instance = uz_FOC_init(config);
@@ -143,7 +134,6 @@ void test_uz_FOC_sample_output_SVLimitation_active(void){
 }
 
 void test_uz_FOC_reset(void){
-    setUp();
     //Values for comparision from simulation
     uz_FOC* instance = uz_FOC_init(config);
     float values_iq[5]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f};
@@ -172,7 +162,6 @@ void test_uz_FOC_reset(void){
 
 void test_uz_FOC_set_Kp_and_Ki_id(void){
     //Tests, if the new values are properly written into the FOC instance
-    setUp();
     struct uz_dq_t output = {0};
     //Values for comparision from simulation
     uz_FOC* instance = uz_FOC_init(config);
@@ -193,7 +182,6 @@ void test_uz_FOC_set_Kp_and_Ki_id(void){
 
 void test_uz_FOC_set_Kp_and_Ki_iq(void){
     //Tests, if the new values are properly written into the FOC instance
-    setUp();
     struct uz_dq_t output = {0};
     //Values for comparision from simulation
     uz_FOC* instance = uz_FOC_init(config);
@@ -213,12 +201,10 @@ void test_uz_FOC_set_Kp_and_Ki_iq(void){
 }
 
 void test_uz_FOC_get_ext_clamping_NULL(void){
-    setUp();
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_get_ext_clamping(NULL));
 }
 
 void test_uz_FOC_get_ext_clamping_output(void){
-    setUp();
     //Values for comparision from simulation
     uz_FOC* instance = uz_FOC_init(config);
     i_actual_Ampere.q = 0.0f;
@@ -243,7 +229,6 @@ void test_uz_FOC_generate_DutyCycles_output(void) {
 }
 
 void test_uz_FOC_generate_DutyCycles_limit(void) {
-    setUp();
     struct uz_UVW_t UVW = {.U = 30.0f, .V = 35.32f, .W = -25.0f};
     struct uz_DutyCycle_t output = uz_FOC_generate_DutyCycles(UVW, V_dc_volts);
     TEST_ASSERT_EQUAL_FLOAT(1.0f, output.DutyCycle_U);
@@ -251,7 +236,6 @@ void test_uz_FOC_generate_DutyCycles_limit(void) {
     TEST_ASSERT_EQUAL_FLOAT(0.0f, output.DutyCycle_W);
 }
 void test_uz_FOC_sample_no_decoupling(void) {
-    setUp();
     config.decoupling_select = no_decoupling;
     config.config_PMSM.Ld_Henry = 0.0f;
     config.config_PMSM.Lq_Henry = 0.0f;
@@ -259,14 +243,13 @@ void test_uz_FOC_sample_no_decoupling(void) {
     uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
 }
 
-void test_uz_FOC_change_decoupling_select(void) {
-    setUp();
+void test_uz_FOC_set_decoupling_method(void) {
     config.decoupling_select = no_decoupling;
     config.config_PMSM.Ld_Henry = 0.0f;
     config.config_PMSM.Lq_Henry = 0.0f;
     uz_FOC* instance = uz_FOC_init(config);
     TEST_ASSERT_PASS_ASSERT(uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec));
-    uz_FOC_change_decoupling_select(instance, linear_decoupling);
+    uz_FOC_set_decoupling_method(instance, linear_decoupling);
     //Assertion should trigger now, since for the linear_decoupling Ld/Lq must be greater than 0.0f
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec));
 }

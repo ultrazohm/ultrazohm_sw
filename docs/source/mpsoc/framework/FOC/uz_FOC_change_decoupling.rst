@@ -1,10 +1,10 @@
-.. _uz_FOC_change_decoupling:
+.. _uz_FOC_set_decoupling:
 
 =============================
 Change the type of decoupling
 =============================
 
-.. doxygenfunction:: uz_FOC_change_decoupling_select
+.. doxygenfunction:: uz_FOC_set_decoupling_method
 
 Example
 =======
@@ -14,7 +14,7 @@ Example
   :caption: Example function call to change decoupling during runtime. FOC-Instance via :ref:`init-function <uz_FOC_init>`
 
   int main(void) {
-     uz_FOC_change_decoupling_select(FOC_instance, linear_decoupling);
+     uz_FOC_set_decoupling_method(FOC_instance, linear_decoupling);
   }
 
 Description

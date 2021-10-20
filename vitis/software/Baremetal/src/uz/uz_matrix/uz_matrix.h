@@ -142,4 +142,15 @@ void uz_matrix_multiply_by_scalar(uz_matrix_t *const A, float scalar);
  */
 void uz_matrix_apply_function_to_each_element(uz_matrix_t *const A, float(*f)(float) );
 
+
+/**
+ * @brief 
+ * 
+ * @param A 
+ * @return float 
+ */
+float uz_matrix_get_max_value(uz_matrix_t const*const A);
+
+size_t uz_matrix_get_max_index(uz_matrix_t const*const A);
+
 #endif // UZ_MATRIX_H

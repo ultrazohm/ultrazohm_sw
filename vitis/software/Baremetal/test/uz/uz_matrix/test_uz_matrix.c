@@ -115,4 +115,21 @@ void test_uz_matrix_apply_function_to_each_element(void){
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected,A_data,UZ_MATRIX_SIZE(expected));
 }
 
+
+void test_uz_matrix_get_max_element_value(void){
+    float A_data[9]={1.0f, 3.0f, 5.0f, 9.0f, 1.0f, 1.0f, 1.0f, 2.0f,6.0f};
+    float expected_maximum=9.0f;
+    uz_matrix_t* A=uz_matrix_init(A_data,UZ_MATRIX_SIZE(A_data),1,9);
+    float actual=uz_matrix_get_max_value(A);
+    TEST_ASSERT_EQUAL_FLOAT(expected_maximum,actual);
+}
+
+void test_uz_matrix_get_max_index(void){
+    float A_data[9]={1.0f, 3.0f, 5.0f, 9.0f, 1.0f, 1.0f, 1.0f, 2.0f,6.0f};
+    size_t expected_maximum=3U;
+    uz_matrix_t* A=uz_matrix_init(A_data,UZ_MATRIX_SIZE(A_data),1,9);
+    size_t actual=uz_matrix_get_max_index(A);
+    TEST_ASSERT_EQUAL_UINT32(expected_maximum,actual);
+}
+
 #endif // TEST

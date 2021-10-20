@@ -242,4 +242,33 @@ void uz_matrix_apply_function_to_each_element(uz_matrix_t *const A, float(*f)(fl
     }
 }
 
+float uz_matrix_get_max_value(uz_matrix_t const*const A){
+    uz_assert_not_NULL(A);
+    uz_assert(A->is_ready);
+    size_t length_of_data=A->columns*A->rows;
+    float maximum_value = A->data[0U]; // Set maximum arbitrarily to first element to initialize the variable
+    for (size_t i = 1U; i < length_of_data; i++) { // Already got the value of the first element [0], thus start at 1
+        if ( A->data[i] > maximum_value ) {
+            maximum_value = A->data[i];
+        }
+    }
+    return maximum_value;
+}
+
+size_t uz_matrix_get_max_index(uz_matrix_t const*const A){
+        uz_assert_not_NULL(A);
+    uz_assert(A->is_ready);
+    size_t length_of_data=A->columns*A->rows;
+    float maximum_value = A->data[0U]; // Set maximum arbitrarily to first element to initialize the variable
+    size_t max_index=0U;
+    for (size_t i = 1U; i < length_of_data; i++) { // Already got the value of the first element [0], thus start at 1
+        if ( A->data[i] > maximum_value ) {
+            maximum_value = A->data[i];
+            max_index=i;
+        }
+    }
+    return max_index;
+}
+
+
 #endif

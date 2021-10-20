@@ -23,7 +23,6 @@ typedef struct uz_FOC {
 	struct uz_FOC_config config;
 	struct uz_PI_Controller* Controller_id;
 	struct uz_PI_Controller* Controller_iq;
-	struct uz_dq_t (*decoupling_function)(struct uz_PMSM_t, struct uz_dq_t, float);
 }uz_FOC;
 
 static struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere);
@@ -54,7 +53,6 @@ uz_FOC* uz_FOC_init(struct uz_FOC_config config) {
 	self->Controller_id = uz_PI_Controller_init(config.config_id);
 	self->Controller_iq = uz_PI_Controller_init(config.config_iq);
 	self->config = config;
-	uz_FOC_set_decoupling_method(self,self->config.decoupling_select);
 	return (self);
 }
 

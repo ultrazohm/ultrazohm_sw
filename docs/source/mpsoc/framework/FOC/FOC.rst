@@ -16,9 +16,11 @@ Configuration
 
 In order to configure the FOC, multiple configuration structs have to be initialized.
 
+.. doxygenenum:: uz_FOC_decoupling_select 
+
 .. doxygenstruct:: uz_FOC_config
-  :members:
-    
+  :members: 
+   
 Example
 ^^^^^^^
     
@@ -32,7 +34,7 @@ Example
         .Ld_Henry = 0.0001f,
         .Lq_Henry = 0.0002f, 
         .Psi_PM_Vs = 0.008f
-      };//only these parameters are needed
+      };//these parameters are only needed if linear decoupling is selected
       struct uz_PI_Controller_config config_id = {
         .Kp = 10.0f,
         .Ki = 10.0f,
@@ -48,6 +50,7 @@ Example
         .lower_limit = -10.0f
      };
      struct uz_FOC_config config_FOC = {
+        .decoupling_select = linear_decoupling,
         .config_PMSM = config_PMSM,
         .config_id = config_id,
         .config_iq = config_iq
@@ -57,7 +60,9 @@ Example
 Description
 ^^^^^^^^^^^
     
-With these config structs one can customize the FOC and the included :ref:`PI-Controller <uz_piController>` and :ref:`linear decoupling <uz_lineardecoupling>` and :ref:`PMSM config <uz_PMSM_config>`.
+With these config structs one can customize the FOC and the included :ref:`PI-Controller <uz_piController>` and :ref:`PMSM config <uz_PMSM_config>`. 
+It is possible to use the FOC with or without the :ref:`linear decoupling <uz_lineardecoupling>` via the FOC_config member ``decoupling_select``. 
+If no decoupling is selected, no variables for the ``struct uz_PMSM_t`` have to be configured and can be left 0.
 Each of the two PI-Controller need their own :ref:`config struct <uz_piController_config>`.
 One for the id-Controller and the other one for the iq-Controller. 
 

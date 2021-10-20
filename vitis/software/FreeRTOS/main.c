@@ -57,6 +57,9 @@ struct netif *echo_netif;
 
 A53_Data Global_Data_A53;
 
+int netif_being_up;
+int netif_link_being_up;
+
 //==============================================================================================================================================================
 void print_ip(char *msg, ip_addr_t *ip)
 {
@@ -186,6 +189,9 @@ void network_thread(void *p)
       	if(i_LifeCheck_networkThreat > 2500){
       		i_LifeCheck_networkThreat =0;
       	}
+
+      	netif_being_up = netif_is_up(netif);
+      	netif_link_being_up = netif_is_link_up(netif);
 
 		#if CAN_ACTIVE==1
 			if( ! hal_can_is_rx_empty() ){

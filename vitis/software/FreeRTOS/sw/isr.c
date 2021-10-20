@@ -154,6 +154,14 @@ int Initialize_ISR(){
 
 	int Status = 0;
 
+	// create queue with queue_elements elements of of type ARM_to_Oszi_Data_shared_struct
+	OsziData_queue = xQueueCreate( OSZI_QUEUE_SIZE_ELEMENTS, sizeof(ARM_to_Oszi_Data_shared_struct) );
+		if (OsziData_queue == NULL){
+			xil_printf("APU: Error: Queue creation failed\r\n");
+			return XST_FAILURE;
+		}
+
+
 	/* Initialize RPU GIC and Connect IPI interrupt*/
 	Status = Apu_GicInit(&INTCipc, XPAR_XIPIPSU_0_INT_ID,(Xil_ExceptionHandler)Transfer_ipc_Intr_Handler, &INTCInst_IPI);
 	//toDO: check "XPAR_XIPIPSU_0_INT_ID" or "XPAR_XTTCPS_0_INTR"
@@ -169,12 +177,6 @@ int Initialize_ISR(){
 			return XST_FAILURE;
 		}
 
-	// create queue with queue_elements elements of of type ARM_to_Oszi_Data_shared_struct
-	OsziData_queue = xQueueCreate( OSZI_QUEUE_SIZE_ELEMENTS, sizeof(ARM_to_Oszi_Data_shared_struct) );
-		if (OsziData_queue == NULL){
-			xil_printf("APU: Error: Queue creation failed\r\n");
-			return XST_FAILURE;
-		}
 
 	//xil_printf("APU: Queue successfully created\r\n");
 

@@ -32,6 +32,8 @@
 #include "defines.h"
 #include "include/isr.h"
 
+#include "netif/xemacpsif.h"
+
 //Data from R5_0 to A53_0 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
 ARM_to_Oszi_Data_shared_struct OsziData;
 ARM_to_Oszi_Data_shared_struct OsziData_Shadow;
@@ -57,8 +59,18 @@ struct netif *echo_netif;
 
 A53_Data Global_Data_A53;
 
-int netif_being_up;
-int netif_link_being_up;
+#warning This needs manual modification of the BSP file  xemacpsif.c
+// PHY DEBUGGING
+// add in xemacpsif.c in line 67: XEmacPs *uz_xemacpsp;
+// add in xemacpsif.c in line 78: uz_xemacpsp = xemacpsp;
+
+extern XEmacPs *uz_xemacpsp;
+extern u32_t phymapemac0[32];
+extern u32_t phymapemac1[32];
+u32_t netif_being_up;
+u32_t netif_link_being_up;
+u32_t PHYs_found = 0;
+u32_t PHY_debug_count = 1;
 
 //==============================================================================================================================================================
 void print_ip(char *msg, ip_addr_t *ip)
@@ -87,6 +99,12 @@ void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw){
  *---------------------------------------------------------------------------*/
 int main()
 {
+    xil_printf("\r\n\r\n");
+    xil_printf("-----UltraZohm - Test Setup for PHY------\r\n");
+
+	// initialize leds
+	uz_frontplane_button_and_led_init();
+
 	//SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
 	Initialize_InterruptHandler();
 
@@ -133,8 +151,8 @@ void network_thread(void *p)
 
     netif = &server_netif;
 
-    xil_printf("\r\n\r\n");
-    xil_printf("-----lwIP Socket Mode Echo server Demo Application ------\r\n");
+    xil_printf("\r\n");
+    xil_printf("network thread started\r\n");
 
 #if LWIP_IPV6==0
 #if LWIP_DHCP==0
@@ -182,16 +200,67 @@ void network_thread(void *p)
 	can_frame_t can_frame_rx; //CAN interface
 #endif
 
+
+
 #if LWIP_DHCP==1
     dhcp_start(netif);
     while (1) {
+
+      	// PHY DEBUGGING START
+
+		netif_being_up = netif_is_up(netif);
+		netif_link_being_up = netif_is_link_up(netif);
+
+		// executed every loop_time_phy_debug_seconds
+      	const int loop_time_phy_debug_seconds = 20;
+      	if(i_LifeCheck_networkThreat % loop_time_phy_debug_seconds == 0){
+      		PHY_debug_count++;
+			xil_printf("\r\nPHY debugging loop: %u \r\n", PHY_debug_count);
+
+        	// detect phys and print out message if no phy detected
+        	detect_phy(uz_xemacpsp);
+        	PHYs_found = 0;
+        	for (u32_t i = 31; i > 0; i--) {
+        		PHYs_found += phymapemac0[i];
+        		PHYs_found += phymapemac1[i];
+          	}
+        	if(PHYs_found == 0){
+				xil_printf("ERROR: No PHY detected \r\n");
+        	}
+
+        	// print out other netif flags
+			xil_printf("netif_is_up: %u \r\n", netif_being_up);
+			xil_printf("netif_is_link_up: %u \r\n", netif_link_being_up);
+      	}
+
+
+		// switch LEDs according to status
+      	// LED 1 = netif_is_up
+      	// LED 2 = netif_link_being_up
+      	// LED 3 = LED 4 = no PHY detected = error
+		if(PHYs_found == 0){
+			uz_led_set_errorLED_on();
+			uz_led_set_userLED_on(); }
+    	else{
+    		uz_led_set_errorLED_off();
+    		uz_led_set_userLED_off(); }
+
+      	if(netif_being_up){
+			uz_led_set_readyLED_on(); }
+		else{
+			uz_led_set_readyLED_off(); }
+
+		if(netif_link_being_up){
+			uz_led_set_runningLED_on(); }
+		else{
+			uz_led_set_runningLED_off(); }
+
+		// PHY DEBUGGING END
+
       	i_LifeCheck_networkThreat++; //LifeCheck
       	if(i_LifeCheck_networkThreat > 2500){
       		i_LifeCheck_networkThreat =0;
       	}
-
-      	netif_being_up = netif_is_up(netif);
-      	netif_link_being_up = netif_is_link_up(netif);
 
 		#if CAN_ACTIVE==1
 			if( ! hal_can_is_rx_empty() ){

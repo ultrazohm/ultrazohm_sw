@@ -31,6 +31,12 @@ extern "C" {
 #include "math.h"										//Include for math operations
 #include <stdio.h>
 
+
+#include "uz/uz_HAL.h"
+#include "uz/uz_LED/uz_LED_facade.h"
+#include "uz/uz_MioGpio_mediator/uz_MioGpio_mediator.h"
+#include "uz/uz_MioGpio_mediator/uz_MioGpioMapping.h"
+
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024
 
@@ -49,10 +55,6 @@ extern "C" {
 
 #define ENABLE_PIN							1 								//This Pin is enabled
 #define DISABLE_PIN							0 								//This Pin is disabled
-
-#define PUSHBUTTONS_CHANNEL 				1								/* GPIO port for PushButtons */
-#define LED_CHANNEL 						1								/* GPIO port for LEDs */
-#define GPIO_CHANNEL 						1								/* GPIO port for GPIOs */
 
 // ========== Structures =========================================================================
 

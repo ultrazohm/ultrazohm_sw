@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Index Version="1" Minor="0">
-	<Repository value="c:/GIT/UltraZohm/Software/ultrazohm_sw_PullRequests/ip_cores">
+	<Repository value="c:/GIT/UltraZohm/ultrazohm_sw/ip_cores">
 	</Repository>
 	<IP>
 		<VLNV value="UltraZohm:user:ADC_LTC2311:3.0">
@@ -795,7 +795,7 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:ip:mux_axi_ip:1.1">
+		<VLNV value="xilinx.com:ip:mux_axi_ip:1.2">
 		</VLNV>
 		<DisplayName value="mux_axi_ip">
 		</DisplayName>
@@ -803,9 +803,9 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2108301321">
+		<CoreRevision value="2110211105">
 		</CoreRevision>
-		<ComponentPath value="mux_axi/hdl_prj/ipcore/mux_axi_ip_v1_1/component.xml">
+		<ComponentPath value="mux_axi/hdl_prj/ipcore/mux_axi_ip_v1_2/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="azynq">
@@ -1878,6 +1878,146 @@
 		<CoreVLNV value="xilinx.com:ip:axi_vip:1.1">
 		</CoreVLNV>
 		<CoreRevision value="1">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Mapping/UZ_D_GaN_Inverter_Mapping.srcs/sources_1/bd/UZ_D_GaN_Inverter_Mapping/ip/UZ_D_GaN_Inverter_Mapping_xlconcat_0_0/UZ_D_GaN_Inverter_Mapping_xlconcat_0_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlconcat:2.1">
+		</CoreVLNV>
+		<CoreRevision value="3">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Mapping/UZ_D_GaN_Inverter_Mapping.srcs/sources_1/bd/UZ_D_GaN_Inverter_Mapping/ip/UZ_D_GaN_Inverter_Mapping_xlconcat_0_1/UZ_D_GaN_Inverter_Mapping_xlconcat_0_1.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlconcat:2.1">
+		</CoreVLNV>
+		<CoreRevision value="3">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Mapping/UZ_D_GaN_Inverter_Mapping.srcs/sources_1/bd/UZ_D_GaN_Inverter_Mapping/ip/UZ_D_GaN_Inverter_Mapping_xlconcat_1_0/UZ_D_GaN_Inverter_Mapping_xlconcat_1_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlconcat:2.1">
+		</CoreVLNV>
+		<CoreRevision value="3">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Mapping/UZ_D_GaN_Inverter_Mapping.srcs/sources_1/bd/UZ_D_GaN_Inverter_Mapping/ip/UZ_D_GaN_Inverter_Mapping_xlconcat_2_0/UZ_D_GaN_Inverter_Mapping_xlconcat_2_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlconcat:2.1">
+		</CoreVLNV>
+		<CoreRevision value="3">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Mapping/UZ_D_GaN_Inverter_Mapping.srcs/sources_1/bd/UZ_D_GaN_Inverter_Mapping/ip/UZ_D_GaN_Inverter_Mapping_xlslice_0_0/UZ_D_GaN_Inverter_Mapping_xlslice_0_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Mapping/UZ_D_GaN_Inverter_Mapping.srcs/sources_1/bd/UZ_D_GaN_Inverter_Mapping/ip/UZ_D_GaN_Inverter_Mapping_xlslice_0_1/UZ_D_GaN_Inverter_Mapping_xlslice_0_1.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Mapping/UZ_D_GaN_Inverter_Mapping.srcs/sources_1/bd/UZ_D_GaN_Inverter_Mapping/ip/UZ_D_GaN_Inverter_Mapping_xlslice_1_0/UZ_D_GaN_Inverter_Mapping_xlslice_1_0.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Mapping/UZ_D_GaN_Inverter_Mapping.srcs/sources_1/bd/UZ_D_GaN_Inverter_Mapping/ip/UZ_D_GaN_Inverter_Mapping_xlslice_1_1/UZ_D_GaN_Inverter_Mapping_xlslice_1_1.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Mapping/UZ_D_GaN_Inverter_Mapping.srcs/sources_1/bd/UZ_D_GaN_Inverter_Mapping/ip/UZ_D_GaN_Inverter_Mapping_xlslice_1_2/UZ_D_GaN_Inverter_Mapping_xlslice_1_2.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<InstID value="">
+		</InstID>
+	</IPInst>
+	<IPInst>
+		<VLNV value="xilinx.com:xci:unknown:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="UZ_D_GaN_Inverter/Mapping/UZ_D_GaN_Inverter_Mapping.srcs/sources_1/bd/UZ_D_GaN_Inverter_Mapping/ip/UZ_D_GaN_Inverter_Mapping_xlslice_1_3/UZ_D_GaN_Inverter_Mapping_xlslice_1_3.xci">
+		</XMLFile>
+		<CoreVLNV value="xilinx.com:ip:xlslice:1.0">
+		</CoreVLNV>
+		<CoreRevision value="2">
 		</CoreRevision>
 		<InstID value="">
 		</InstID>

@@ -55,7 +55,7 @@ static struct uz_dq_t uz_SpeedControl_field_weakening(struct uz_PMSM_t config_PM
     bool fw_flag = false;
     float U_SV_max =(V_dc_volts / sqrtf(3.0f) ) * 0.95f;
 	float omega_cut = uz_SpeedControl_calculate_omega_cut(config_PMSM, U_SV_max);
-    if (fabsf(omega_el_rad_per_sec) > omega_cut) {//adjust it to work for negative speed aswell 
+    if (fabsf(omega_el_rad_per_sec) > omega_cut) {
         fw_flag = true;
         output = uz_SpeedControl_calculate_fw_currents(config_PMSM, omega_el_rad_per_sec, omega_cut, U_SV_max);
     } else {

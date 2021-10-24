@@ -21,7 +21,9 @@ float uz_nn_activation_function_linear(float x){
     return (x);
 }
 
-float uz_nn_activation_function_linear_derivative(float x){
+// The variable x is unused here since it is not required to calculate the derivative. Still in the function call to ensure consistent interface to all activation functions+derivatives.
+// Compiler warning suppresed by using gcc attribute "unused" 
+float uz_nn_activation_function_linear_derivative(__attribute__((unused)) float x){
     return (1.0f);
 }
 

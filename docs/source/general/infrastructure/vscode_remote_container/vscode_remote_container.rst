@@ -74,6 +74,13 @@ The performance of using the remote container in VSCode on Windows is relatively
 
     .. image:: docker_setup_ubuntu.png
 
+#. Add your git-credentials from your **git-account** (without ``<>``) in the Ubuntu shell
+
+    .. code-block:: c
+
+       git config --global user.name <your_username>
+       git config --global user.password <your_password>
+
 #. Apply the changes and restart the computer.
 
 Usage

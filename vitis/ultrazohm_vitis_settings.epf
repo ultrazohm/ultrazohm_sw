@@ -1,11 +1,13 @@
-#Mon Apr 19 13:54:08 CEST 2021
+#Mon Oct 25 14:04:56 CEST 2021
 \!/=
 /configuration/org.eclipse.core.net/org.eclipse.core.net.hasMigrated=true
 /configuration/org.eclipse.ui.ide/MAX_RECENT_WORKSPACES=10
+/configuration/org.eclipse.ui.ide/RECENT_WORKSPACES=C\:\\Users\\ga92wum\\git\\UltraZohm\\Software\\uz_sw\\vitis\\workspace\nC\:\\Users\\ga92wum\\git\\07_testbench\\vitis\\ws_2020\nC\:\\XilinxEyke\\MPSOC\\009_FSBLmodified\\TE0808-SK_20192\\vivado\\vitis\nC\:\\XilinxEyke\\MPSOC\\009_FSBLmodified\\TE0808-SK_20192\\vitis\nC\:\\Users\\ga92wum\\git\\07_testbench\\vitis\\workspace2020\nC\:\\Users\\ga92wum\\git\\UltraZohm\\Software\\uz_sw_192\\vitis\\workspace\nC\:\\Users\\ga92wum\\git\\UltraZohm\\Software\\uz_sw_192\\vitis\\workspace\\Baremetal
 /configuration/org.eclipse.ui.ide/RECENT_WORKSPACES_PROTOCOL=3
 /configuration/org.eclipse.ui.ide/SHOW_RECENT_WORKSPACES=true
 /configuration/org.eclipse.ui.ide/SHOW_WORKSPACE_SELECTION_DIALOG=true
 /instance/com.sdkterminal/Last\ selected\ port\:=/dev/ttyUSB1
+/instance/com.xilinx.sdk.tcf.debug/com.xilinx.sdk.tcf.debug.xilinxtcflaunchdelegate.dont_show_debug_launch_warn=always
 /instance/org.eclipse.ant.ui/org.eclipse.ant.ui.commentsColor=98,98,98
 /instance/org.eclipse.ant.ui/org.eclipse.ant.ui.constantStringsColor=23,198,163
 /instance/org.eclipse.ant.ui/org.eclipse.ant.ui.constantStringsColor_italic=true
@@ -287,23 +289,37 @@
 /instance/org.eclipse.cdt.core/org.eclipse.cdt.core.showSourceNotFoundEditor=all_time
 /instance/org.eclipse.cdt.core/org.eclipse.cdt.core.showSourceRootsAtTopLevelOfProject=true
 /instance/org.eclipse.cdt.debug.core/org.eclipse.cdt.debug.core.cDebug.default_source_containers=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<sourceLookupDirector>\n    <sourceContainers duplicates\="false">\n        <container memento\="AbsolutePath" typeId\="org.eclipse.cdt.debug.core.containerType.absolutePath"/>\n        <container memento\="programRelativePath" typeId\="org.eclipse.cdt.debug.core.containerType.programRelativePath"/>\n        <container memento\="&lt;?xml version\=&quot;1.0&quot; encoding\=&quot;UTF-8&quot; standalone\=&quot;no&quot;?&gt;&\#10;&lt;project referencedProjects\=&quot;true&quot;/&gt;&\#10;" typeId\="org.eclipse.cdt.debug.core.containerType.project"/>\n    </sourceContainers>\n</sourceLookupDirector>\n
+/instance/org.eclipse.cdt.debug.ui/columnOrderKeyEXE=0,1,2,3,4,5
+/instance/org.eclipse.cdt.debug.ui/columnOrderKeySF=0,1,2,3,4,5
+/instance/org.eclipse.cdt.debug.ui/columnSortDirectionKeyEXE=128
+/instance/org.eclipse.cdt.debug.ui/columnSortDirectionKeySF=128
+/instance/org.eclipse.cdt.debug.ui/visibleColumnsKeyEXE=1,1,1,0,0,0
+/instance/org.eclipse.cdt.debug.ui/visibleColumnsKeySF=1,1,0,0,0,0
 /instance/org.eclipse.cdt.dsf.ui/useAnnotationsPrefPage=true
 /instance/org.eclipse.cdt.managedbuilder.core/properties/Baremetal.xilinx.gnu.arm.r5.exe.248689570/xilinx.gnu.arm.r5.exe.debug.436634248=xilinx.gnu.arm.r5.toolchain.archiver.1884354635\=rebuildState\\\=false\\n\nxilinx.gnu.arm.r5.cxx.toolchain.linker.debug.2113903414\=rebuildState\\\=false\\n\nxilinx.gnu.arm.r5.c.toolchain.compiler.debug.636476974\=rebuildState\\\=false\\n\nxilinx.gnu.arm.r5.exe.debug.toolchain.610720639\=rebuildState\\\=false\\n\nxilinx.gnu.arm.r5.c.toolchain.assembler.debug.564401172\=rebuildState\\\=false\\n\nxilinx.gnu.arm.r5.size.debug.1096779096\=rebuildState\\\=false\\n\nxilinx.gnu.arm.r5.exe.debug.436634248\=rebuildState\\\=false\\nrcState\\\=0\\n\nxilinx.gnu.arm.r5.cxx.toolchain.compiler.debug.1822061294\=rebuildState\\\=false\\n\nxilinx.gnu.arm.r5.c.toolchain.linker.debug.1477187021\=rebuildState\\\=false\\n\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/Baremetal.xilinx.gnu.arm.r5.exe.248689570/xilinx.gnu.arm.r5.exe.release.1517342336=xilinx.gnu.arm.r5.c.toolchain.assembler.release.647759141\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.cxx.toolchain.compiler.release.738206186\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.cxx.toolchain.linker.release.1737654430\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.exe.release.1517342336\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.c.toolchain.compiler.release.1008262431\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.toolchain.archiver.856271258\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.size.release.2109620526\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.exe.release.toolchain.1889034679\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.c.toolchain.linker.release.1457139699\=rebuildState\\\=true\\n\n
+/instance/org.eclipse.cdt.managedbuilder.core/properties/Baremetal.xilinx.gnu.arm.r5.exe.394445746/xilinx.gnu.arm.r5.exe.debug.904457449=xilinx.gnu.arm.r5.size.debug.350926650\=rebuildState\\\=false\\r\\n\r\nxilinx.gnu.arm.r5.cxx.toolchain.linker.debug.164826513\=rebuildState\\\=false\\r\\n\r\nxilinx.gnu.arm.r5.exe.debug.toolchain.1174907000\=rebuildState\\\=false\\r\\n\r\nxilinx.gnu.arm.r5.c.toolchain.compiler.debug.378302881\=rebuildState\\\=false\\r\\n\r\nxilinx.gnu.arm.r5.toolchain.archiver.759448113\=rebuildState\\\=false\\r\\n\r\nxilinx.gnu.arm.r5.c.toolchain.linker.debug.697370221\=rebuildState\\\=false\\r\\n\r\nxilinx.gnu.arm.r5.exe.debug.904457449\=rebuildState\\\=false\\r\\nrcState\\\=0\\r\\n\r\nxilinx.gnu.arm.r5.c.toolchain.assembler.debug.594063290\=rebuildState\\\=false\\r\\n\r\nxilinx.gnu.arm.r5.cxx.toolchain.compiler.debug.2055207100\=rebuildState\\\=false\\r\\n\r\n
+/instance/org.eclipse.cdt.managedbuilder.core/properties/Baremetal.xilinx.gnu.arm.r5.exe.394445746/xilinx.gnu.arm.r5.exe.release.939979059=xilinx.gnu.arm.r5.cxx.toolchain.linker.release.1742023569\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.r5.exe.release.toolchain.1808830505\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.r5.toolchain.archiver.11122042\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.r5.size.release.1938938109\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.r5.exe.release.939979059\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.r5.c.toolchain.assembler.release.1236371590\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.r5.cxx.toolchain.compiler.release.1406656812\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.r5.c.toolchain.compiler.release.2016967273\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.r5.c.toolchain.linker.release.1895275604\=rebuildState\\\=true\\r\\n\r\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/Baremetal.xilinx.gnu.arm.r5.exe.63442402/xilinx.gnu.arm.r5.exe.debug.1011046276=xilinx.gnu.arm.r5.size.debug.1798767257\=rebuildState\\\=false\\n\nxilinx.gnu.arm.r5.exe.debug.1011046276\=rebuildState\\\=false\\nrcState\\\=0\\n\nxilinx.gnu.arm.r5.exe.debug.toolchain.1719739408\=rebuildState\\\=false\\n\nxilinx.gnu.arm.r5.c.toolchain.compiler.debug.1692352804\=rebuildState\\\=false\\n\nxilinx.gnu.arm.r5.cxx.toolchain.linker.debug.1410897528\=rebuildState\\\=false\\n\nxilinx.gnu.arm.r5.toolchain.archiver.705374547\=rebuildState\\\=false\\n\nxilinx.gnu.arm.r5.c.toolchain.assembler.debug.1342885861\=rebuildState\\\=false\\n\nxilinx.gnu.arm.r5.c.toolchain.linker.debug.1013370008\=rebuildState\\\=false\\n\nxilinx.gnu.arm.r5.cxx.toolchain.compiler.debug.835999104\=rebuildState\\\=false\\n\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/Baremetal.xilinx.gnu.arm.r5.exe.63442402/xilinx.gnu.arm.r5.exe.release.1141356171=xilinx.gnu.arm.r5.size.release.545371248\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.c.toolchain.compiler.release.1391971847\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.cxx.toolchain.linker.release.1895745097\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.exe.release.1141356171\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.toolchain.archiver.1355979079\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.exe.release.toolchain.978593901\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.c.toolchain.assembler.release.1135766013\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.cxx.toolchain.compiler.release.219078802\=rebuildState\\\=true\\n\nxilinx.gnu.arm.r5.c.toolchain.linker.release.1833421607\=rebuildState\\\=true\\n\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/Baremetal_system.com.xilinx.sdx.system.managedbuilder.projectType.1219009974/com.xilinx.sdx.system.managedbuilder.debugConfiguration.861197303=com.xilinx.sdx.system.managedbuilder.debugConfiguration.861197303\=rebuildState\\\=false\\nrcState\\\=0\\n\ncom.xilinx.sdx.system.managedbuilder.debug.toolChain.1231485901\=rebuildState\\\=false\\n\ncom.xilinx.sdx.system.managedbuilder.toolchain.cfjoinTool.319249787\=rebuildState\\\=false\\n\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/Baremetal_system.com.xilinx.sdx.system.managedbuilder.projectType.1219009974/com.xilinx.sdx.system.managedbuilder.releaseConfiguration.2038760781=com.xilinx.sdx.system.managedbuilder.release.toolChain.1567496557\=rebuildState\\\=true\\n\ncom.xilinx.sdx.system.managedbuilder.releaseConfiguration.2038760781\=rebuildState\\\=true\\n\ncom.xilinx.sdx.system.managedbuilder.toolchain.cfjoinTool.439928146\=rebuildState\\\=true\\n\n
+/instance/org.eclipse.cdt.managedbuilder.core/properties/Baremetal_system.com.xilinx.sdx.system.managedbuilder.projectType.256435743/com.xilinx.sdx.system.managedbuilder.debugConfiguration.95441972=com.xilinx.sdx.system.managedbuilder.debugConfiguration.95441972\=rebuildState\\\=true\\r\\n\r\ncom.xilinx.sdx.system.managedbuilder.toolchain.cfjoinTool.1794633317\=rebuildState\\\=true\\r\\n\r\ncom.xilinx.sdx.system.managedbuilder.debug.toolChain.97918233\=rebuildState\\\=true\\r\\n\r\n
+/instance/org.eclipse.cdt.managedbuilder.core/properties/Baremetal_system.com.xilinx.sdx.system.managedbuilder.projectType.256435743/com.xilinx.sdx.system.managedbuilder.releaseConfiguration.1623253556=com.xilinx.sdx.system.managedbuilder.release.toolChain.176377848\=rebuildState\\\=true\\r\\n\r\ncom.xilinx.sdx.system.managedbuilder.toolchain.cfjoinTool.1532918809\=rebuildState\\\=true\\r\\n\r\ncom.xilinx.sdx.system.managedbuilder.releaseConfiguration.1623253556\=rebuildState\\\=true\\r\\n\r\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/Baremetal_system.com.xilinx.sdx.system.managedbuilder.projectType.961215867/com.xilinx.sdx.system.managedbuilder.debugConfiguration.1327531675=com.xilinx.sdx.system.managedbuilder.debugConfiguration.1327531675\=rebuildState\\\=true\\n\ncom.xilinx.sdx.system.managedbuilder.debug.toolChain.1961637962\=rebuildState\\\=true\\n\ncom.xilinx.sdx.system.managedbuilder.toolchain.cfjoinTool.694762048\=rebuildState\\\=true\\n\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/Baremetal_system.com.xilinx.sdx.system.managedbuilder.projectType.961215867/com.xilinx.sdx.system.managedbuilder.releaseConfiguration.240734879=com.xilinx.sdx.system.managedbuilder.releaseConfiguration.240734879\=rebuildState\\\=true\\n\ncom.xilinx.sdx.system.managedbuilder.release.toolChain.511541882\=rebuildState\\\=true\\n\ncom.xilinx.sdx.system.managedbuilder.toolchain.cfjoinTool.482000084\=rebuildState\\\=true\\n\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/FreeRTOS.xilinx.gnu.arm.a53.exe.1127917743/xilinx.gnu.arm.a53.exe.debug.272846693=xilinx.gnu.arm.a53.c.toolchain.linker.debug.1921733926\=rebuildState\\\=false\\n\nxilinx.gnu.arm.a53.exe.debug.272846693\=rebuildState\\\=false\\nrcState\\\=0\\n\nxilinx.gnu.arm.a53.cxx.toolchain.compiler.debug.263599434\=rebuildState\\\=false\\n\nxilinx.gnu.arm.a53.c.toolchain.compiler.debug.85888155\=rebuildState\\\=false\\n\nxilinx.gnu.arm.a53.c.toolchain.assembler.debug.1059519373\=rebuildState\\\=false\\n\nxilinx.gnu.arm.a53.toolchain.archiver.480200239\=rebuildState\\\=false\\n\nxilinx.gnu.arm.a53.cxx.toolchain.linker.debug.587425421\=rebuildState\\\=false\\n\nxilinx.gnu.arm.a53.exe.debug.toolchain.507392971\=rebuildState\\\=false\\n\nxilinx.gnu.arm.a53.size.debug.398842584\=rebuildState\\\=false\\n\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/FreeRTOS.xilinx.gnu.arm.a53.exe.1127917743/xilinx.gnu.arm.a53.exe.release.797547337=xilinx.gnu.arm.a53.exe.release.toolchain.1145199664\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.exe.release.797547337\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.size.release.1154390317\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.cxx.toolchain.compiler.release.2127455631\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.toolchain.archiver.1055794019\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.c.toolchain.compiler.release.497463044\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.cxx.toolchain.linker.release.1561590814\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.c.toolchain.assembler.release.1935992565\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.c.toolchain.linker.release.2114674019\=rebuildState\\\=true\\n\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/FreeRTOS.xilinx.gnu.arm.a53.exe.439237835/xilinx.gnu.arm.a53.exe.debug.1405899039=xilinx.gnu.arm.a53.exe.debug.1405899039\=rebuildState\\\=false\\nrcState\\\=0\\n\nxilinx.gnu.arm.a53.exe.debug.toolchain.1343213707\=rebuildState\\\=false\\n\nxilinx.gnu.arm.a53.cxx.toolchain.linker.debug.58576442\=rebuildState\\\=false\\n\nxilinx.gnu.arm.a53.c.toolchain.compiler.debug.1582213705\=rebuildState\\\=false\\n\nxilinx.gnu.arm.a53.cxx.toolchain.compiler.debug.1895460085\=rebuildState\\\=false\\n\nxilinx.gnu.arm.a53.c.toolchain.assembler.debug.411781860\=rebuildState\\\=false\\n\nxilinx.gnu.arm.a53.toolchain.archiver.275572426\=rebuildState\\\=false\\n\nxilinx.gnu.arm.a53.size.debug.1563067272\=rebuildState\\\=false\\n\nxilinx.gnu.arm.a53.c.toolchain.linker.debug.469449531\=rebuildState\\\=false\\n\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/FreeRTOS.xilinx.gnu.arm.a53.exe.439237835/xilinx.gnu.arm.a53.exe.release.262379283=xilinx.gnu.arm.a53.size.release.1298891931\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.c.toolchain.assembler.release.1377860577\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.c.toolchain.compiler.release.981711825\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.toolchain.archiver.48234160\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.cxx.toolchain.linker.release.969093908\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.c.toolchain.linker.release.858518942\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.exe.release.toolchain.1771433853\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.cxx.toolchain.compiler.release.102446179\=rebuildState\\\=true\\n\nxilinx.gnu.arm.a53.exe.release.262379283\=rebuildState\\\=true\\n\n
+/instance/org.eclipse.cdt.managedbuilder.core/properties/FreeRTOS.xilinx.gnu.arm.a53.exe.446248428/xilinx.gnu.arm.a53.exe.debug.431460378=xilinx.gnu.arm.a53.exe.debug.431460378\=rebuildState\\\=false\\r\\nrcState\\\=0\\r\\n\r\nxilinx.gnu.arm.a53.cxx.toolchain.linker.debug.1907662207\=rebuildState\\\=false\\r\\n\r\nxilinx.gnu.arm.a53.exe.debug.toolchain.1324746886\=rebuildState\\\=false\\r\\n\r\nxilinx.gnu.arm.a53.cxx.toolchain.compiler.debug.1418690809\=rebuildState\\\=false\\r\\n\r\nxilinx.gnu.arm.a53.size.debug.889451139\=rebuildState\\\=false\\r\\n\r\nxilinx.gnu.arm.a53.c.toolchain.compiler.debug.979781514\=rebuildState\\\=false\\r\\n\r\nxilinx.gnu.arm.a53.c.toolchain.linker.debug.1512379883\=rebuildState\\\=false\\r\\n\r\nxilinx.gnu.arm.a53.c.toolchain.assembler.debug.898029195\=rebuildState\\\=false\\r\\n\r\nxilinx.gnu.arm.a53.toolchain.archiver.422387955\=rebuildState\\\=false\\r\\n\r\n
+/instance/org.eclipse.cdt.managedbuilder.core/properties/FreeRTOS.xilinx.gnu.arm.a53.exe.446248428/xilinx.gnu.arm.a53.exe.release.313965822=xilinx.gnu.arm.a53.cxx.toolchain.linker.release.2107681785\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.a53.toolchain.archiver.1607331517\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.a53.c.toolchain.assembler.release.1291959876\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.a53.exe.release.toolchain.1159680818\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.a53.size.release.388681924\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.a53.c.toolchain.compiler.release.1168713441\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.a53.cxx.toolchain.compiler.release.1941701125\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.a53.c.toolchain.linker.release.1474686172\=rebuildState\\\=true\\r\\n\r\nxilinx.gnu.arm.a53.exe.release.313965822\=rebuildState\\\=true\\r\\n\r\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/FreeRTOS_system.com.xilinx.sdx.system.managedbuilder.projectType.1737787748/com.xilinx.sdx.system.managedbuilder.debugConfiguration.1252940507=com.xilinx.sdx.system.managedbuilder.debug.toolChain.741613825\=rebuildState\\\=false\\n\ncom.xilinx.sdx.system.managedbuilder.debugConfiguration.1252940507\=rebuildState\\\=false\\nrcState\\\=0\\n\ncom.xilinx.sdx.system.managedbuilder.toolchain.cfjoinTool.343314429\=rebuildState\\\=false\\n\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/FreeRTOS_system.com.xilinx.sdx.system.managedbuilder.projectType.1737787748/com.xilinx.sdx.system.managedbuilder.releaseConfiguration.626151146=com.xilinx.sdx.system.managedbuilder.releaseConfiguration.626151146\=rebuildState\\\=true\\n\ncom.xilinx.sdx.system.managedbuilder.toolchain.cfjoinTool.1349747619\=rebuildState\\\=true\\n\ncom.xilinx.sdx.system.managedbuilder.release.toolChain.152045397\=rebuildState\\\=true\\n\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/FreeRTOS_system.com.xilinx.sdx.system.managedbuilder.projectType.1982878509/com.xilinx.sdx.system.managedbuilder.debugConfiguration.663626003=com.xilinx.sdx.system.managedbuilder.debugConfiguration.663626003\=rebuildState\\\=true\\n\ncom.xilinx.sdx.system.managedbuilder.debug.toolChain.732115802\=rebuildState\\\=true\\n\ncom.xilinx.sdx.system.managedbuilder.toolchain.cfjoinTool.1139974848\=rebuildState\\\=true\\n\n
 /instance/org.eclipse.cdt.managedbuilder.core/properties/FreeRTOS_system.com.xilinx.sdx.system.managedbuilder.projectType.1982878509/com.xilinx.sdx.system.managedbuilder.releaseConfiguration.358735786=com.xilinx.sdx.system.managedbuilder.release.toolChain.46596181\=rebuildState\\\=true\\n\ncom.xilinx.sdx.system.managedbuilder.toolchain.cfjoinTool.2136531113\=rebuildState\\\=true\\n\ncom.xilinx.sdx.system.managedbuilder.releaseConfiguration.358735786\=rebuildState\\\=true\\n\n
+/instance/org.eclipse.cdt.managedbuilder.core/properties/FreeRTOS_system.com.xilinx.sdx.system.managedbuilder.projectType.551642028/com.xilinx.sdx.system.managedbuilder.debugConfiguration.1808343743=com.xilinx.sdx.system.managedbuilder.debug.toolChain.1316054133\=rebuildState\\\=true\\r\\n\r\ncom.xilinx.sdx.system.managedbuilder.debugConfiguration.1808343743\=rebuildState\\\=true\\r\\n\r\ncom.xilinx.sdx.system.managedbuilder.toolchain.cfjoinTool.893263487\=rebuildState\\\=true\\r\\n\r\n
+/instance/org.eclipse.cdt.managedbuilder.core/properties/FreeRTOS_system.com.xilinx.sdx.system.managedbuilder.projectType.551642028/com.xilinx.sdx.system.managedbuilder.releaseConfiguration.272764128=com.xilinx.sdx.system.managedbuilder.release.toolChain.1418419944\=rebuildState\\\=true\\r\\n\r\ncom.xilinx.sdx.system.managedbuilder.toolchain.cfjoinTool.1911470267\=rebuildState\\\=true\\r\\n\r\ncom.xilinx.sdx.system.managedbuilder.releaseConfiguration.272764128\=rebuildState\\\=true\\r\\n\r\n
 /instance/org.eclipse.cdt.ui.prj-Baremetal/buildConsole/keepLog=true
 /instance/org.eclipse.cdt.ui.prj-Baremetal/buildConsole/logLocation=/home/ts/Dokumente/ultrazohm_testbench/ultrazohm_sw/vitis/workspace/.metadata/.plugins/org.eclipse.cdt.ui/Baremetal.build.log
 /instance/org.eclipse.cdt.ui/asm_directive=221,40,103
@@ -382,6 +398,7 @@
 /instance/org.eclipse.cdt.ui/pp_directive=221,40,103
 /instance/org.eclipse.cdt.ui/pp_header=23,198,163
 /instance/org.eclipse.cdt.ui/removeTrailingWhitespaceEditedLines=false
+/instance/org.eclipse.cdt.ui/scalability.detect=false
 /instance/org.eclipse.cdt.ui/semanticHighlighting.class.bold=true
 /instance/org.eclipse.cdt.ui/semanticHighlighting.class.color=18,144,195
 /instance/org.eclipse.cdt.ui/semanticHighlighting.class.enabled=true
@@ -428,6 +445,7 @@
 /instance/org.eclipse.cdt.ui/spelling_locale_initialized=true
 /instance/org.eclipse.cdt.ui/useAnnotationsPrefPage=true
 /instance/org.eclipse.cdt.ui/useQuickDiffPrefPage=true
+/instance/org.eclipse.core.net/org.eclipse.core.net.hasMigrated=true
 /instance/org.eclipse.core.resources/version=1
 /instance/org.eclipse.debug.core//org.eclipse.debug.core.PREFERRED_DELEGATES/org.eclipse.cdt.launch.applicationLaunchType=org.eclipse.cdt.dsf.gdb.launch.localCLaunch,debug,;org.eclipse.cdt.cdi.launch.localCLaunch,run,;
 /instance/org.eclipse.debug.core//org.eclipse.debug.core.PREFERRED_DELEGATES/org.eclipse.cdt.launch.attachLaunchType=org.eclipse.cdt.dsf.gdb.launch.attachCLaunch,debug,;
@@ -439,7 +457,7 @@
 /instance/org.eclipse.debug.ui/org.eclipse.debug.ui.MemoryHistoryUnknownColor=170,175,185
 /instance/org.eclipse.debug.ui/org.eclipse.debug.ui.MemoryView.orientation=0
 /instance/org.eclipse.debug.ui/org.eclipse.debug.ui.PREF_CHANGED_VALUE_BACKGROUND=150,80,115
-/instance/org.eclipse.debug.ui/org.eclipse.debug.ui.PREF_LAUNCH_PERSPECTIVES=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<launchPerspectives/>\n
+/instance/org.eclipse.debug.ui/org.eclipse.debug.ui.PREF_LAUNCH_PERSPECTIVES=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<launchPerspectives/>\r\n
 /instance/org.eclipse.debug.ui/org.eclipse.debug.ui.build_before_launch=false
 /instance/org.eclipse.debug.ui/org.eclipse.debug.ui.changedDebugElement=255,128,128
 /instance/org.eclipse.debug.ui/org.eclipse.debug.ui.consoleBackground=53,53,53
@@ -468,7 +486,9 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.assertIdentifier=error
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.enumIdentifier=error
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.source=9
-/instance/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_VM_XML=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<vmSettings defaultVM\="57,org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType13,1617720426024">\n    <vmType id\="org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType">\n        <vm id\="1617720426024" name\="jre9.0.4" path\="/tools/Xilinx/Vitis/2020.1/tps/lnx64/jre9.0.4"/>\n    </vmType>\n</vmSettings>\n
+/instance/org.eclipse.jdt.debug.ui/org.eclipse.debug.ui.ExpressionView.org.eclipse.jdt.debug.ui.show_null_entries=true
+/instance/org.eclipse.jdt.debug.ui/org.eclipse.debug.ui.VariableView.org.eclipse.jdt.debug.ui.show_null_entries=true
+/instance/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_VM_XML=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<vmSettings defaultVM\="57,org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType13,1635163376702">\r\n    <vmType id\="org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType">\r\n        <vm id\="1635163376702" name\="jre9.0.4" path\="C\:\\Xilinx\\Vitis\\2020.1\\tps\\win64\\jre9.0.4"/>\r\n    </vmType>\r\n</vmSettings>\r\n
 /instance/org.eclipse.jdt.ui/content_assist_completion_replacement_background=200,200,0
 /instance/org.eclipse.jdt.ui/content_assist_completion_replacement_foreground=200,0,0
 /instance/org.eclipse.jdt.ui/content_assist_number_of_computers=12
@@ -565,10 +585,15 @@
 /instance/org.eclipse.launchbar.core/LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/name=Local
 /instance/org.eclipse.launchbar.core/LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/os=linux
 /instance/org.eclipse.launchbar.core/configDescList=org.eclipse.launchbar.core.descriptorType.default\:DebugBaremetal,org.eclipse.launchbar.core.descriptorType.default\:Debug_FreeRTOS_Baremetal_FPGA
+/instance/org.eclipse.launchbar.core/org.eclipse.launchbar.core.descriptorType.default\:DebugBaremetal/activeLaunchMode=run
+/instance/org.eclipse.launchbar.core/org.eclipse.launchbar.core.descriptorType.default\:DebugBaremetal/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local
 /instance/org.eclipse.launchbar.core/org.eclipse.launchbar.core.descriptorType.default\:Debug_FreeRTOS_Baremetal_FPGA/activeLaunchMode=run
 /instance/org.eclipse.launchbar.core/org.eclipse.launchbar.core.descriptorType.default\:Debug_FreeRTOS_Baremetal_FPGA/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local
 /instance/org.eclipse.launchbar.core/org.eclipse.launchbar.core.descriptorType.default\:Debugger_Baremetal-Default/activeLaunchMode=run
 /instance/org.eclipse.launchbar.core/org.eclipse.launchbar.core.descriptorType.default\:Debugger_Baremetal-Default/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local
+/instance/org.eclipse.launchbar.core/org.eclipse.launchbar.core.descriptorType.default\:Debugger_Baremetal-GDB/activeLaunchMode=run
+/instance/org.eclipse.launchbar.core/org.eclipse.launchbar.core.descriptorType.default\:Debugger_Baremetal-GDB/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local
+/instance/org.eclipse.pde.core/workspace_target_handle=local\:1634797753331.target
 /instance/org.eclipse.pde.ui/editor.color.default=217,232,247
 /instance/org.eclipse.pde.ui/editor.color.externalized_string=140,210,20
 /instance/org.eclipse.pde.ui/editor.color.externalized_string_italic=true
@@ -647,6 +672,7 @@
 /instance/org.eclipse.ui.workbench/INCOMING_COLOR=31,179,235
 /instance/org.eclipse.ui.workbench/OUTGOING_COLOR=238,238,238
 /instance/org.eclipse.ui.workbench/RESOLVED_COLOR=108,210,17
+/instance/org.eclipse.ui.workbench/UIActivities.org.eclipse.cdt.debug.dsfgdbActivity=true
 /instance/org.eclipse.ui.workbench/org.eclipse.egit.ui.DiffAddBackgroundColor=11,121,90
 /instance/org.eclipse.ui.workbench/org.eclipse.egit.ui.DiffAddForegroundColor=216,254,245
 /instance/org.eclipse.ui.workbench/org.eclipse.egit.ui.DiffHeadlineBackgroundColor=71,71,71
@@ -660,7 +686,7 @@
 /instance/org.eclipse.ui.workbench/org.eclipse.egit.ui.UncommittedChangeBackgroundColor=42,42,42
 /instance/org.eclipse.ui.workbench/org.eclipse.egit.ui.UncommittedChangeForegroundColor=114,157,186
 /instance/org.eclipse.ui.workbench/org.eclipse.search.ui.match.highlight=206,92,0
-/instance/org.eclipse.ui.workbench/org.eclipse.ui.commands=<?xml version\="1.0" encoding\="UTF-8"?>\n<org.eclipse.ui.commands>\n<keyBinding contextId\="org.eclipse.ui.contexts.dialogAndWindow" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="CTRL+SPACE"/>\n<keyBinding commandId\="org.eclipse.ui.edit.text.contentAssist.proposals" contextId\="org.eclipse.ui.contexts.dialogAndWindow" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="TAB"/>\n</org.eclipse.ui.commands>
+/instance/org.eclipse.ui.workbench/org.eclipse.ui.commands=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<org.eclipse.ui.commands>\r\n<keyBinding commandId\="org.eclipse.ui.edit.text.contentAssist.proposals" contextId\="org.eclipse.ui.contexts.dialogAndWindow" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="TAB"/>\r\n<keyBinding contextId\="org.eclipse.ui.contexts.dialogAndWindow" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="CTRL+SPACE"/>\r\n<keyBinding commandId\="org.eclipse.ui.project.buildProject" contextId\="org.eclipse.ui.contexts.window" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="ALT+1"/>\r\n</org.eclipse.ui.commands>
 /instance/org.eclipse.ui.workbench/org.eclipse.ui.editors.rangeIndicatorColor=27,118,153
 /instance/org.eclipse.ui.workbench/org.eclipse.ui.workbench.HOVER_BACKGROUND=52,57,61
 /instance/org.eclipse.ui.workbench/org.eclipse.ui.workbench.HOVER_FOREGROUND=238,238,238
@@ -690,13 +716,16 @@
 /instance/org.eclipse.wst.xml.ui/tagBorder=\#0080ff | null | false | false | false | false
 /instance/org.eclipse.wst.xml.ui/tagName=\#03a8d8 | null | true | false | false | false
 /instance/org.eclipse.wst.xml.ui/xmlContent=\#D9E8F7 | null | false | false | false | false
+@com.xilinx.sdk.tcf.debug=1.0.0.202008060528
 @org.eclipse.ant.ui=3.7.0.v20170412-1054
 @org.eclipse.cdt.codan.core=4.0.0.201802261533
 @org.eclipse.cdt.core=6.4.0.201802261533
 @org.eclipse.cdt.debug.core=8.3.0.201802261533
+@org.eclipse.cdt.debug.ui=8.3.0.201802261533
 @org.eclipse.cdt.dsf.ui=2.5.0.201802261533
 @org.eclipse.cdt.managedbuilder.core=8.6.0.201802261533
 @org.eclipse.cdt.ui=6.3.0.201802261533
+@org.eclipse.core.net=1.3.200.v20180515-0858
 @org.eclipse.core.resources=3.13.0.v20180512-1138
 @org.eclipse.debug.core=3.12.0.v20180509-0959
 @org.eclipse.debug.ui=3.13.0.v20180514-0621
@@ -704,12 +733,15 @@
 @org.eclipse.e4.ui.workbench.renderers.swt=0.14.200.v20180516-2019
 @org.eclipse.egit.core=4.0.1.201506240215-r
 @org.eclipse.jdt.core=3.13.102.v20180330-0919
+@org.eclipse.jdt.debug.ui=3.8.100.v20180322-1256
 @org.eclipse.jdt.launching=3.9.100.v20180323-1351
 @org.eclipse.jdt.ui=3.13.100.v20180330-0726
 @org.eclipse.launchbar.core=2.2.0.201711162100
+@org.eclipse.pde.core=3.11.1.v20161115-1951
 @org.eclipse.pde.ui=3.9.100.v20161102-0517
 @org.eclipse.rse.core=3.3.100.201603151753
 @org.eclipse.rse.ui=3.3.400.201704241037
+@org.eclipse.search=3.11.200.v20180503-1856
 @org.eclipse.team.ui=3.8.100.v20180418-1233
 @org.eclipse.tm.terminal.control=4.3.0.201706130821
 @org.eclipse.ui=3.109.100.v20180426-0903

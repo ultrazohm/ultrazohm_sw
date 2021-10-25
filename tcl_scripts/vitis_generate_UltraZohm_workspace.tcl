@@ -235,6 +235,7 @@ puts stdout $filename_launches
 
 file mkdir $filename_launches
 set DebugBaremetal [file join $EXPORT_FOLDER DebugBaremetal.launch]
+set DebugFreeRTOS [file join $EXPORT_FOLDER DebugFreeRTOS.launch]
 set DebugAll [file join $EXPORT_FOLDER Debug_FreeRTOS_Baremetal_FPGA.launch]
 #     file copy ?-force? ?--? source ?source ...? targetDir
 file copy -force -- $DebugBaremetal $filename_launches

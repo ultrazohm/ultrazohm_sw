@@ -45,4 +45,5 @@
 	#define UZ_PWM_SS_2L_MAX_INSTANCES              50U
 	#define UZ_MATRIX_MAX_INSTANCES                 201U
     #define UZ_PMSMMODEL_MAX_INSTANCES              11U
+    #define UZ_PLANTPT1_MAX_INSTANCES               6U
 #endif

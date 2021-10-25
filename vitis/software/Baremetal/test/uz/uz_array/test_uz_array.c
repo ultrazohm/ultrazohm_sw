@@ -22,11 +22,7 @@ void test_uz_array_float_initialization(void)
     uz_array_float_t testarray = {
         .length = UZ_ARRAY_SIZE(data), // ALWAYS use the UZ_ARRAY_SIZE makro in the initialization of the length of the array
         .data = &data[0]}; // Pointer to the first element of the actual data of the array
-    // This test is using an for-loop to highligth how the .length variable is inteded to be used
-    for (size_t i = 0; i++; i < testarray.length)
-    {
-        TEST_ASSERT_EQUAL_FLOAT(data[i], testarray.data[i]);
-    }
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(data, testarray.data,UZ_ARRAY_SIZE(data));
 }
 
 void test_uz_array_uint32_t_initialization(void)

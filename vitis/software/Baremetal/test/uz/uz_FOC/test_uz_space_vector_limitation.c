@@ -25,24 +25,20 @@ void setUp(void)
 }
 
 void test_uz_FOC_SpaceVector_Limitation_ext_clamping_NULL(void){
-    setUp();
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, NULL));
 }
 
 void test_uz_FOC_SpaceVector_Limitation_V_dc_negative(void){
-    setUp();
     V_dc_volts = -5.2f;
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping));
 }
 
 void test_uz_FOC_SpaceVector_Limitation_V_dc_zero(void){
-    setUp();
     V_dc_volts = 0.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping));
 }
 
 void test_uz_FOC_SpaceVector_Limitation_output(void){
-    setUp();
     //Values for comparision from simulation
     float values_iq[11]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f, 0.761f, 0.82f, 0.865f, 0.898f, 0.923f, 0.942f};
 	float values_omega[11]={0.0f, 0.0f, 0.0f, 0.0f, 0.0121f, 0.0402f, 0.0861f, 0.149f, 0.227f, 0.315f, 0.408f};
@@ -62,7 +58,6 @@ void test_uz_FOC_SpaceVector_Limitation_output(void){
 }
 
 void test_uz_FOC_SpaceVector_Limitation_output_transition_to_limit(void){
-    setUp();
     //Values for comparision from simulation
     V_dc_volts = 12.0f;
     float values_iq[11]={1.7f, 1.7f, 1.7f, 1.7f, 1.7f, 0.761f, 0.82f, 0.865f, 0.898f, 0.923f, 0.942f};
@@ -85,7 +80,6 @@ void test_uz_FOC_SpaceVector_Limitation_output_transition_to_limit(void){
 }
 
 void test_uz_FOC_SpaceVector_Limitation_output_limited(void){
-    setUp();
     //Values for comparision from simulation
     V_dc_volts = 12.0f;
     float values_iq[11]={1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f};
@@ -109,7 +103,6 @@ void test_uz_FOC_SpaceVector_Limitation_output_limited(void){
 
 void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_d_axis_prio(void){
     //Tests, that the function still works, if very low values for V_dc are used and the d-axis is prioritized
-    setUp();
     //Values for comparision manually calculated
     V_dc_volts = 0.2f;
     i_actual_Ampere.q = 2.0f;
@@ -124,7 +117,6 @@ void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_d_axis_prio(void){
 
 void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_q_axis_prio(void){
     //Tests, that the function still works, if very low values for V_dc are used and the q-axis is prioritized
-    setUp();
     //Values for comparision manually calculated
     V_dc_volts = 0.2f;
     i_actual_Ampere.q = 2.0f;
@@ -140,7 +132,6 @@ void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_q_axis_prio(void){
 void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_d_axis_prio_95(void){
     //Tests, that the function still works, if very low values for V_dc are used and the d-axis is prioritized and the prioritized
     //voltage is lower than 95% of U_SV_max
-    setUp();
     //Values for comparision manually calculated
     V_dc_volts = 0.2f;
     i_actual_Ampere.q = 2.0f;
@@ -156,7 +147,6 @@ void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_d_axis_prio_95(void){
 void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_q_axis_prio_95(void){
     //Tests, that the function still works, if very low values for V_dc are used and the q-axis is prioritized and the prioritized
     //voltage is lower than 95% of U_SV_max
-    setUp();
     //Values for comparision manually calculated
     V_dc_volts = 0.2f;
     i_actual_Ampere.q = 2.0f;

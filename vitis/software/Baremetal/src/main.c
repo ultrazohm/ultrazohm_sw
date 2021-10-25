@@ -65,7 +65,6 @@ int main(void) {
 	//Initialize PWM and switch signal control
 	PWM_SS_Initialize(&Global_Data); 	// two-level modulator
 	PWM_3L_Initialize(&Global_Data);	// three-level modulator
-	
 
 	// Initialize Timer in order to Trigger the ISRs
 	Initialize_Timer();

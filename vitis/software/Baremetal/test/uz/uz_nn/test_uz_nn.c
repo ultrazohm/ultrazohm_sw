@@ -63,7 +63,7 @@ struct uz_nn_layer_config config[3] = {
 
 void test_uz_nn_init(void)
 {
-    uz_nn_t *test = uz_nn_init(config, 3);
+    uz_nn_init(config, 3);
 }
 
 

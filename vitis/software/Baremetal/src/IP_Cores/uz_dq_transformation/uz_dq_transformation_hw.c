@@ -3,14 +3,14 @@
 
 #include "uz_dq_transformation_hwAddresses.h"
 
-void uz_dqTransformation_hw_write_thetaOffset(uint32_t base_address, float thetaOffset){
+void uz_dqTransformation_hw_set_thetaOffset(uint32_t base_address, float thetaOffset){
     //sfix24_En20
-    const int fractionalBits = 20;
-    const int integerBits    =  3;
-    const int signedness     =  1; // 0=no sign, 1=sign
+    int fractionalBits = 20;
+    int integerBits    =  3;
+    int signedness     =  1; // 0=no sign, 1=sign
 
-    float const value_max = 1<<integerBits;
-    float const value_min = value_max * signedness * (-1);
+    float  value_max = 1<<integerBits;
+    float  value_min = value_max * signedness * (-1);
     uz_assert(thetaOffset < value_max);
     uz_assert(thetaOffset > value_min);
     uz_assert_not_zero_uint32(base_address);
@@ -20,9 +20,9 @@ void uz_dqTransformation_hw_write_thetaOffset(uint32_t base_address, float theta
 } 
 
 float uz_dqTransformation_hw_get_id(uint32_t base_address){
-    const int fractionalBits = 11;     // sfix18_En11
-    float const value_max = 64.0f;
-    float const value_min = -64.0f;
+    int fractionalBits = 11;     // sfix18_En11
+    float value_max = 64.0f;
+    float value_min = -64.0f;
 
     uz_assert_not_zero_uint32(base_address);
     int32_t tmp = uz_axi_read_int32(base_address + id_AXI_Data_Trans_123_dq_V12_ip);
@@ -36,9 +36,9 @@ float uz_dqTransformation_hw_get_id(uint32_t base_address){
 
 float uz_dqTransformation_hw_get_iq(uint32_t base_address){
     // sfix18_En11
-    const int fractionalBits = 11;
-    float const value_max = 64.0f;
-    float const value_min = -64.0f;
+    int fractionalBits = 11;
+    float  value_max = 64.0f;
+    float  value_min = -64.0f;
 
     uz_assert_not_zero_uint32(base_address);
     int32_t tmp = uz_axi_read_int32(base_address + iq_AXI_Data_Trans_123_dq_V12_ip);

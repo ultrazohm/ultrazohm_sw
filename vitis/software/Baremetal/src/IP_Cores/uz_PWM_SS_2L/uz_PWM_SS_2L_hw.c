@@ -38,7 +38,7 @@ void uz_PWM_SS_2L_hw_SetMode(uint32_t base_address, uint32_t PWM_mode){
 void uz_PWM_SS_2L_hw_SetCarrierFrequency(uint32_t base_address, uint32_t ip_clk_frequency_Hz, float PWM_freq_Hz){
     uz_assert_not_zero_uint32(base_address);
     uz_assert_not_zero_uint32(ip_clk_frequency_Hz);
-    float PWM_Scal_f_carrier = (PWM_freq_Hz / (float)ip_clk_frequency_Hz)*0.5f;
+    float PWM_Scal_f_carrier = (PWM_freq_Hz/( (float)ip_clk_frequency_Hz*0.5f));
     int32_t PWM_Scal_f_carrier_Q26 = uz_convert_float_to_sfixed(PWM_Scal_f_carrier,26);
     // PWM carrier signal frequency is set, e.g. 100 kHz
     uz_axi_write_uint32(base_address + Scal_f_carrier_AXI_Data_PWM_and_SS_control_V4_ip, PWM_Scal_f_carrier_Q26);

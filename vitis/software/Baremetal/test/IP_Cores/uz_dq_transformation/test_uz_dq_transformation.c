@@ -50,4 +50,32 @@ void test_uz_dq_transformation_read_idq(void)
    TEST_ASSERT_EQUAL_FLOAT(currents.q, iq_expected);
 }
 
+void test_uz_dq_transformation_read_i_uvw(void)
+{
+   uz_dqTransformation_hw_set_thetaOffset_Expect(config.base_address, config.theta_offset);
+   uz_dq_transformation_t* test_instance = uz_dq_transformation_init(config);
+
+   float iu_expected = -2.25f; 
+   uz_dqTransformation_hw_get_i1_ExpectAndReturn(config.base_address, iu_expected);
+
+   float iv_expected = 12.125f; 
+   uz_dqTransformation_hw_get_i2_ExpectAndReturn(config.base_address, iv_expected);
+
+   float iw_expected = 13.125f; 
+   uz_dqTransformation_hw_get_i3_ExpectAndReturn(config.base_address, iw_expected);
+
+   struct uz_UVW_t currents = uz_dqTransformation_get_i_uvw(test_instance);
+   
+   TEST_ASSERT_EQUAL_FLOAT(currents.U, iu_expected);
+   TEST_ASSERT_EQUAL_FLOAT(currents.V, iv_expected);
+   TEST_ASSERT_EQUAL_FLOAT(currents.W, iw_expected);
+}
+
+void test_uz_dq_transformation_read_i_uvw_pointer(void)
+{
+   uz_dq_transformation_t* testpointer = NULL;
+   TEST_ASSERT_FAIL_ASSERT(uz_dqTransformation_get_i_uvw(testpointer));
+}
+
+
 #endif // TEST

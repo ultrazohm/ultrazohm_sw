@@ -31,7 +31,10 @@
 
 //Inclusion of WDT code
 #include "../Codegen/uz_codegen.h"
-#include "../uz/uz_wdt/uz_xwdtps.h"
+
+
+
+#include "../uz/uz_wdt/uz_xwdttb.h"
 
 
 //Initialize the variables for the ADC measurement
@@ -118,7 +121,8 @@ void ISR_Control(void *data)
 //	//	TEST2: to trigger system hang and the reset
 
 //	//	If the handler is not called, launch the test
-	if ((HandlerCalled == 0)) {
+//	if ((HandlerCalled == 0)) {
+	if (!WdtExpired) {
 		uz_sleep_useconds(350);  // 1500 for 1 msecond
 	}
 
@@ -161,7 +165,7 @@ int Initialize_ISR(){
 	/*
 	 * Call the WDT init to initialize and set timer to the given timeout
 	 */
-	Status = WdtPsInit(XPFW_WDT_EXPIRE_TIME);
+	Status = WdtTbInit(WIN_WDT_SW_COUNT); // XPFW_WDT_EXPIRE_TIME for WDT PS
 	if (Status != XST_SUCCESS) {
 		xil_printf("WDT initialization failed\r\n");
 		return XST_FAILURE;
@@ -290,18 +294,20 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	/*
 	  * Connect to the interrupt subsystem so that interrupts can occur and Enable the IRQ output.
 	  */
-	 status = WdtSetupIntrSystem(IntcConfig, IntcInstPtr);
+//	 status = WdtSetupIntrSystem(IntcConfig, IntcInstPtr);
+	 status = WdtTbSetupIntrSystem(IntcConfig, (INTC*)IntcInstPtr);
 	 if (status != XST_SUCCESS) {
 	         return XST_FAILURE;
 	 }
 
-	//	 xil_printf("WDT Interrupt Example Test\r\n");
-	//
-	//	 Status = WdtPsIntrExample(IntcConfig, IntcInstPtr);
-	//	 if(Status != XST_SUCCESS) {
-	//			 xil_printf("RPU: Error: WdtPsIntrExample failed\r\n");
-	//			 return XST_FAILURE;
-	//	 }
+	 xil_printf("WDT Interrupt Example Test\r\n");
+
+//	 status = WdtPsIntrExample(IntcConfig, IntcInstPtr);
+	 status = WinWdtIntrExample(IntcConfig, IntcInstPtr);
+	 if(status != XST_SUCCESS) {
+			 xil_printf("RPU: Error: WdtPsIntrExample failed\r\n");
+			 return XST_FAILURE;
+	 }
 
 	// Enable GPIO and timer interrupts in the controller
 	XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
@@ -309,7 +315,7 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	//	XScuGic_Enable(&INTCInst, INTC_ADC_Conv_INTERRUPT_ID);
 
 
-	xil_printf("RPU: Rpu_GicInit: Done\r\n");
+	xil_printf("RPU: Rpu_GicInit: Done!\r\n");
 	return XST_SUCCESS;
 }
 

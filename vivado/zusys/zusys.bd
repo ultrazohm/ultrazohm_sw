@@ -6,7 +6,8 @@
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2020.1"
+      "tool_version": "2020.1",
+      "validated": "true"
     },
     "design_tree": {
       "proc_sys_reset_25MHz": "",
@@ -100,7 +101,8 @@
       },
       "timer_uptime_64bit": "",
       "uz_axi_testIP_0": "",
-      "smartconnect_1": ""
+      "smartconnect_1": "",
+      "axi_timebase_wdt_0": ""
     },
     "ports": {
       "SPI_SCK": {
@@ -219,7 +221,13 @@
       "D2_OUT": {
         "direction": "O",
         "left": "11",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "12",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "A2_IN": {
         "direction": "I",
@@ -274,7 +282,21 @@
       "D4_OUT": {
         "direction": "O",
         "left": "7",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortType": {
+            "value": "intr",
+            "value_src": "ip_prop"
+          },
+          "PortWidth": {
+            "value": "8",
+            "value_src": "ip_prop"
+          },
+          "SENSITIVITY": {
+            "value": "NULL:LEVEL_HIGH:NULL:NULL:NULL:NULL:NULL:NULL",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "D4_OUT_28": {
         "direction": "O",
@@ -294,27 +316,57 @@
       "D1_OUT": {
         "direction": "O",
         "left": "5",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "6",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "A3_OUT_CNV": {
         "direction": "O",
         "left": "1",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "2",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "A3_OUT_CLK": {
         "direction": "O",
         "left": "1",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "2",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "A2_OUT_CLK": {
         "direction": "O",
         "left": "1",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "2",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "A2_OUT_CNV": {
         "direction": "O",
         "left": "1",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "2",
+            "value_src": "ip_prop"
+          }
+        }
       }
     },
     "components": {
@@ -575,16 +627,16 @@
           }
         },
         "interface_nets": {
-          "AXI4_Lite_1": {
-            "interface_ports": [
-              "AXI4_Lite",
-              "PWM_and_SS_control_V_0/AXI4_Lite"
-            ]
-          },
           "S00_AXI_1": {
             "interface_ports": [
               "S00_AXI",
               "uz_interlockDeadtime_0/AXI4"
+            ]
+          },
+          "AXI4_Lite_1": {
+            "interface_ports": [
+              "AXI4_Lite",
+              "PWM_and_SS_control_V_0/AXI4_Lite"
             ]
           },
           "Conn1": {
@@ -1905,16 +1957,16 @@
           }
         },
         "interface_nets": {
-          "ps8_0_axi_periph_M00_AXI": {
-            "interface_ports": [
-              "s00_axi",
-              "ADC_Block_B/s00_axi"
-            ]
-          },
           "Conn1": {
             "interface_ports": [
               "s00_axi1",
               "ADC_Block_A/s00_axi"
+            ]
+          },
+          "ps8_0_axi_periph_M00_AXI": {
+            "interface_ports": [
+              "s00_axi",
+              "ADC_Block_B/s00_axi"
             ]
           }
         },
@@ -2481,16 +2533,16 @@
           }
         },
         "interface_nets": {
-          "ps8_0_axi_periph_M00_AXI": {
-            "interface_ports": [
-              "s00_axi",
-              "ADC_Block_B/s00_axi"
-            ]
-          },
           "Conn1": {
             "interface_ports": [
               "s00_axi1",
               "ADC_Block_A/s00_axi"
+            ]
+          },
+          "ps8_0_axi_periph_M00_AXI": {
+            "interface_ports": [
+              "s00_axi",
+              "ADC_Block_B/s00_axi"
             ]
           }
         },
@@ -5695,7 +5747,10 @@
             "value": "APB"
           },
           "PSU__LPD_SLCR__CSUPMU__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
+          },
+          "PSU__LPD_SLCR__CSUPMU__FREQMHZ": {
+            "value": "100"
           },
           "PSU__MAXIGP2__DATA_WIDTH": {
             "value": "128"
@@ -5799,59 +5854,8 @@
           "PSU__PL__POWER__ON": {
             "value": "1"
           },
-          "PSU__PMU_COHERENCY": {
-            "value": "0"
-          },
-          "PSU__PMU__AIBACK__ENABLE": {
-            "value": "0"
-          },
-          "PSU__PMU__EMIO_GPI__ENABLE": {
-            "value": "0"
-          },
-          "PSU__PMU__EMIO_GPO__ENABLE": {
-            "value": "0"
-          },
-          "PSU__PMU__GPI0__ENABLE": {
-            "value": "0"
-          },
-          "PSU__PMU__GPI1__ENABLE": {
-            "value": "0"
-          },
-          "PSU__PMU__GPI2__ENABLE": {
-            "value": "0"
-          },
-          "PSU__PMU__GPI3__ENABLE": {
-            "value": "0"
-          },
-          "PSU__PMU__GPI4__ENABLE": {
-            "value": "0"
-          },
-          "PSU__PMU__GPI5__ENABLE": {
-            "value": "0"
-          },
-          "PSU__PMU__GPO0__ENABLE": {
-            "value": "0"
-          },
-          "PSU__PMU__GPO1__ENABLE": {
-            "value": "0"
-          },
-          "PSU__PMU__GPO2__ENABLE": {
-            "value": "0"
-          },
-          "PSU__PMU__GPO3__ENABLE": {
-            "value": "0"
-          },
-          "PSU__PMU__GPO4__ENABLE": {
-            "value": "0"
-          },
-          "PSU__PMU__GPO5__ENABLE": {
-            "value": "0"
-          },
           "PSU__PMU__PERIPHERAL__ENABLE": {
-            "value": "1"
-          },
-          "PSU__PMU__PLERROR__ENABLE": {
-            "value": "1"
+            "value": "0"
           },
           "PSU__PRESET_APPLIED": {
             "value": "0"
@@ -6181,7 +6185,7 @@
             "value": "1"
           },
           "PSU__USE__IRQ1": {
-            "value": "0"
+            "value": "1"
           },
           "PSU__USE__M_AXI_GP0": {
             "value": "0"
@@ -6402,7 +6406,17 @@
             "ports": {
               "clock": {
                 "type": "clk",
-                "direction": "I"
+                "direction": "I",
+                "parameters": {
+                  "CLK_DOMAIN": {
+                    "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                    "value_src": "default_prop"
+                  },
+                  "FREQ_HZ": {
+                    "value": "100000000",
+                    "value_src": "user_prop"
+                  }
+                }
               },
               "enable": {
                 "direction": "I"
@@ -6410,7 +6424,13 @@
               "switching_signals": {
                 "direction": "I",
                 "left": "5",
-                "right": "0"
+                "right": "0",
+                "parameters": {
+                  "PortWidth": {
+                    "value": "6",
+                    "value_src": "ip_prop"
+                  }
+                }
               },
               "deadtime": {
                 "direction": "I",
@@ -6950,7 +6970,17 @@
             "ports": {
               "clk": {
                 "type": "clk",
-                "direction": "I"
+                "direction": "I",
+                "parameters": {
+                  "CLK_DOMAIN": {
+                    "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                    "value_src": "default_prop"
+                  },
+                  "FREQ_HZ": {
+                    "value": "100000000",
+                    "value_src": "user_prop"
+                  }
+                }
               },
               "delay_cycles": {
                 "direction": "I",
@@ -7121,7 +7151,7 @@
             "value": "2"
           },
           "NUM_MI": {
-            "value": "2"
+            "value": "3"
           },
           "NUM_SI": {
             "value": "1"
@@ -7133,7 +7163,8 @@
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
             "bridges": [
               "M00_AXI",
-              "M01_AXI"
+              "M01_AXI",
+              "M02_AXI"
             ],
             "parameters": {
               "NUM_READ_OUTSTANDING": {
@@ -7191,6 +7222,30 @@
                 "value": "0"
               }
             }
+          },
+          "M02_AXI": {
+            "mode": "Master",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "parameters": {
+              "MAX_BURST_LENGTH": {
+                "value": "1"
+              },
+              "NUM_READ_OUTSTANDING": {
+                "value": "8"
+              },
+              "NUM_WRITE_OUTSTANDING": {
+                "value": "8"
+              },
+              "RUSER_BITS_PER_BYTE": {
+                "value": "0"
+              },
+              "SUPPORTS_NARROW_BURST": {
+                "value": "0"
+              },
+              "WUSER_BITS_PER_BYTE": {
+                "value": "0"
+              }
+            }
           }
         },
         "addressing": {
@@ -7199,42 +7254,49 @@
               "mode": "Slave",
               "bridges": [
                 "M00_AXI",
-                "M01_AXI"
+                "M01_AXI",
+                "M02_AXI"
               ]
             }
+          }
+        }
+      },
+      "axi_timebase_wdt_0": {
+        "vlnv": "xilinx.com:ip:axi_timebase_wdt:3.0",
+        "xci_name": "zusys_axi_timebase_wdt_0_1",
+        "parameters": {
+          "C_WDT_INTERVAL": {
+            "value": "14"
+          },
+          "ENABLE_WINDOW_WDT": {
+            "value": "1"
+          },
+          "SST_COUNT_WIDTH": {
+            "value": "30"
+          },
+          "WDT_ENABLE_ONCE": {
+            "value": "Enable_repeatedly"
           }
         }
       }
     },
     "interface_nets": {
-      "smartconnect_0_M00_AXI": {
+      "smartconnect_0_M15_AXI": {
         "interface_ports": [
-          "smartconnect_0/M00_AXI",
-          "ADC_A1/s00_axi1"
+          "smartconnect_0/M15_AXI",
+          "timer_uptime_64bit/S_AXI"
         ]
       },
-      "smartconnect_0_M04_AXI": {
+      "smartconnect_0_M02_AXI": {
         "interface_ports": [
-          "smartconnect_0/M04_AXI",
-          "ADC_A3/s00_axi1"
+          "smartconnect_0/M02_AXI",
+          "ADC_A2/s00_axi1"
         ]
       },
-      "smartconnect_0_M07_AXI": {
+      "smartconnect_0_M09_AXI": {
         "interface_ports": [
-          "smartconnect_0/M07_AXI",
-          "Gates/S00_AXI"
-        ]
-      },
-      "smartconnect_0_M12_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M12_AXI",
-          "Gates_3L/AXI4_Lite"
-        ]
-      },
-      "smartconnect_1_M01_AXI": {
-        "interface_ports": [
-          "smartconnect_1/M01_AXI",
-          "uz_axi_testIP_0/AXI4"
+          "smartconnect_0/M09_AXI",
+          "IncreEncoder_V24_ip_0/AXI4_Lite"
         ]
       },
       "AXI2TCM_0_M00_AXI": {
@@ -7249,16 +7311,52 @@
           "ADC_A3/s00_axi"
         ]
       },
-      "smartconnect_0_M01_AXI": {
+      "smartconnect_1_M01_AXI": {
         "interface_ports": [
-          "smartconnect_0/M01_AXI",
-          "ADC_A1/s00_axi"
+          "smartconnect_1/M01_AXI",
+          "uz_axi_testIP_0/AXI4"
+        ]
+      },
+      "smartconnect_0_M12_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M12_AXI",
+          "Gates_3L/AXI4_Lite"
+        ]
+      },
+      "smartconnect_0_M03_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M03_AXI",
+          "ADC_A2/s00_axi"
         ]
       },
       "smartconnect_0_M06_AXI": {
         "interface_ports": [
           "smartconnect_0/M06_AXI",
           "axi_gpio_2/S_AXI"
+        ]
+      },
+      "smartconnect_1_M02_AXI": {
+        "interface_ports": [
+          "smartconnect_1/M02_AXI",
+          "axi_timebase_wdt_0/S_AXI"
+        ]
+      },
+      "smartconnect_0_M07_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M07_AXI",
+          "Gates/S00_AXI"
+        ]
+      },
+      "smartconnect_0_M08_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M08_AXI",
+          "Gates/AXI4_Lite"
+        ]
+      },
+      "smartconnect_0_M04_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M04_AXI",
+          "ADC_A3/s00_axi1"
         ]
       },
       "smartconnect_0_M10_AXI": {
@@ -7273,40 +7371,10 @@
           "Interrupt/S_AXI"
         ]
       },
-      "smartconnect_0_M15_AXI": {
+      "smartconnect_0_M01_AXI": {
         "interface_ports": [
-          "smartconnect_0/M15_AXI",
-          "timer_uptime_64bit/S_AXI"
-        ]
-      },
-      "smartconnect_0_M03_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M03_AXI",
-          "ADC_A2/s00_axi"
-        ]
-      },
-      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
-        "interface_ports": [
-          "smartconnect_0/S00_AXI",
-          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
-        ]
-      },
-      "smartconnect_0_M09_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M09_AXI",
-          "IncreEncoder_V24_ip_0/AXI4_Lite"
-        ]
-      },
-      "smartconnect_0_M02_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M02_AXI",
-          "ADC_A2/s00_axi1"
-        ]
-      },
-      "smartconnect_1_M00_AXI": {
-        "interface_ports": [
-          "smartconnect_1/M00_AXI",
-          "Trans_123_dq_V12_ip_0/AXI4_Lite"
+          "smartconnect_0/M01_AXI",
+          "ADC_A1/s00_axi"
         ]
       },
       "smartconnect_0_M14_AXI": {
@@ -7315,16 +7383,28 @@
           "Interrupt/AXI4_Lite"
         ]
       },
+      "smartconnect_1_M00_AXI": {
+        "interface_ports": [
+          "smartconnect_1/M00_AXI",
+          "Trans_123_dq_V12_ip_0/AXI4_Lite"
+        ]
+      },
       "smartconnect_0_M13_AXI": {
         "interface_ports": [
           "smartconnect_0/M13_AXI",
           "Gates/AXI4_Lite1"
         ]
       },
-      "smartconnect_0_M08_AXI": {
+      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
         "interface_ports": [
-          "smartconnect_0/M08_AXI",
-          "Gates/AXI4_Lite"
+          "smartconnect_0/S00_AXI",
+          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
+        ]
+      },
+      "smartconnect_0_M00_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M00_AXI",
+          "ADC_A1/s00_axi1"
         ]
       }
     },
@@ -7344,7 +7424,8 @@
           "timer_uptime_64bit/s_axi_aresetn",
           "uz_axi_testIP_0/IPCORE_RESETN",
           "smartconnect_1/aresetn",
-          "uz_axi_testIP_0/AXI4_ARESETN"
+          "uz_axi_testIP_0/AXI4_ARESETN",
+          "axi_timebase_wdt_0/s_axi_aresetn"
         ]
       },
       "zynq_ultra_ps_e_0_pl_resetn0": {
@@ -7688,7 +7769,8 @@
           "timer_uptime_64bit/s_axi_aclk",
           "uz_axi_testIP_0/IPCORE_CLK",
           "uz_axi_testIP_0/AXI4_ACLK",
-          "smartconnect_1/aclk"
+          "smartconnect_1/aclk",
+          "axi_timebase_wdt_0/s_axi_aclk"
         ]
       },
       "ADC_A3_A_OUT_CNV": {
@@ -7713,6 +7795,12 @@
         "ports": [
           "ADC_A2/A_OUT_CNV",
           "A2_OUT_CNV"
+        ]
+      },
+      "axi_timebase_wdt_0_wdt_interrupt": {
+        "ports": [
+          "axi_timebase_wdt_0/wdt_interrupt",
+          "zynq_ultra_ps_e_0/pl_ps_irq1"
         ]
       }
     },
@@ -7819,6 +7907,11 @@
               "SEG_axi_gpio_2_Reg": {
                 "address_block": "/axi_gpio_2/S_AXI/Reg",
                 "offset": "0x0080070000",
+                "range": "64K"
+              },
+              "SEG_axi_timebase_wdt_0_Reg": {
+                "address_block": "/axi_timebase_wdt_0/S_AXI/Reg",
+                "offset": "0x0080110000",
                 "range": "64K"
               },
               "SEG_axi_timer_0_Reg": {

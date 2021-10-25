@@ -2,8 +2,8 @@
 
 #pragma once
 
-// OCM starts at 				0xFFFF0000
-// DDR free region starting at 	0x7FFF0000
+// OCM starts at               0xFFFF0000
+// DDR free region starting at 0x7FFF0000
 
 #define MEM_SHARED_START 	0xFFFF0000
 #define JS_CHANNELS 		20

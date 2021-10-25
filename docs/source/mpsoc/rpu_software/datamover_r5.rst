@@ -42,19 +42,8 @@ Shared header file
 To this end, the shared  header file ``APU_RPU_shared.h`` located at ``vitis\software\shared`` is included in both software projects, i.e., R5 and A53. 
 The shared memory can be in OCM or DDR, here we use the OCM (on-chip memory) of the A53.
 
-.. code-block:: c
-
-   #define MEM_SHARED_START          0xFFFF0000
-   #define JS_CHANNELS               20
-   #define JAVASCOPE_DATA_SIZE_2POW  128
-
-   struct javascope_data_t
-   {
-      uint32_t    status;
-      uint32_t    slowDataContent;
-      uint32_t    slowDataID;
-      float       scope_ch[JS_CHANNELS];
-   };
+.. literalinclude:: ../../../../vitis/software/shared/APU_RPU_shared.h
+    :language: c
 
 It defines the following:
 

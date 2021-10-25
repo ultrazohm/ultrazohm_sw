@@ -35,6 +35,9 @@ The performance of using the remote container in VSCode on Windows is relatively
 
     .. code-block:: c
 
+       dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+       dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+       wsl --set-default-version 2
        wsl --install -d Ubuntu  
 
 #. Open the Ubuntu terminal by typing ``Ubuntu`` in the window search.
@@ -54,19 +57,19 @@ The performance of using the remote container in VSCode on Windows is relatively
 
     .. code-block:: c
 
-       mkdir UltraZohm
+       mkdir uz
 
 #. Enter this directory with
 
     .. code-block:: c
 
-       cd UltraZohm
+       cd uz
   
-#. Clone the repository from the remote inside the UltraZohm directory (or any other repository)
+#. Clone the repository from the remote inside the ``uz`` directory (or any other repository)
 
     .. code-block:: c
 
-        git clone https://USERNAME@bitbucket.org/ultrazohm/ultrazohm_sw.git
+        git clone https://bitbucket.org/ultrazohm/ultrazohm_sw.git
 
     .. note:: The repositories inside the Ubuntu subsystem and on Windows are two different local repositories. They do not sync automatically. You can only sync them via the ``push, pull`` etc. commands.
 
@@ -74,12 +77,12 @@ The performance of using the remote container in VSCode on Windows is relatively
 
     .. image:: docker_setup_ubuntu.png
 
-#. Add your git-credentials from your **git-account** (without ``<>``) in the Ubuntu shell
+#. Add your git-credentials from your **Bitbucket Account** in the Ubuntu shell
 
     .. code-block:: c
 
-       git config --global user.name <your_username>
-       git config --global user.password <your_password>
+      git config --global user.name "John Doe"
+      git config --global user.email johndoe@example.com
 
 #. Apply the changes and restart the computer.
 
@@ -90,7 +93,7 @@ Usage
 
     .. code-block:: c
 
-       cd UltraZohm
+       cd uz
 
 #. Open up VSCode 
 
@@ -115,7 +118,7 @@ Usage
 
        browse .
 
-.. note:: Sourcetree can not be natively installed in the Ubuntu distribution. The repository in the Ubuntu distro can be added to Sourctree. However this is not advised, since the performance is pretty bad.
+.. note:: Sourcetree can not be natively installed in the Ubuntu distribution. The repository in the Ubuntu distro can be added to Sourctree. However, this is not advised since the performance is bad.
           It is recommended to either use the Ubuntu shell with the standard git-commands or the :ref:`git lense extension <vscode_remote_container_gitlense>`. 
 
 Podman instead of Docker

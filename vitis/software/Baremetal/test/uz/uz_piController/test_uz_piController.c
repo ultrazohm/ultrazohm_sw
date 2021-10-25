@@ -17,31 +17,26 @@ void setUp(void)
 }
 
 void test_uz_PI_Controller_init_assert_Ki_negative(void){
-    setUp();
     config.Ki = -10.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_init(config));
 }
 
 void test_uz_PI_Controller_init_assert_Kp_negative(void){
-    setUp();
     config.Kp = -10.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_init(config));
 }
 
 void test_uz_PI_Controller_init_assert_samplingTime_negative(void){
-    setUp();
     config.samplingTime_sec = -0.0001f;
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_init(config));
 }
 
 void test_uz_PI_Controller_init_assert_samplingTime_zero(void){
-    setUp();
     config.samplingTime_sec = 0.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_init(config));
 }
 
 void test_uz_PI_Controller_init_assert_upper_lower_threshold(void){
-    setUp();
     config.upper_limit = -10.2f;
     config.lower_limit = 3.4f;
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_init(config));
@@ -52,7 +47,6 @@ void test_uz_PI_Controller_sample_NULL(void){
 
 //Tests if proportional part of the controller outputs the expected values
 void test_uz_PI_Controller_sample_output_with_Ki_zero(void){
-    setUp();
     config.Ki = 0.0f;
     config.Kp = 11.54f;
     config.upper_limit = 100.0f;
@@ -67,7 +61,6 @@ void test_uz_PI_Controller_sample_output_with_Ki_zero(void){
 
 //Tests if the output limitation of the controller functions as expected
 void test_uz_PI_Controller_sample_output_limitation_with_Ki_zero(void){
-    setUp();
     config.upper_limit = 10.0f;
     config.lower_limit = -10.0f;
     config.Ki = 0.0f;
@@ -83,7 +76,6 @@ void test_uz_PI_Controller_sample_output_limitation_with_Ki_zero(void){
 
 //Tests if the integrator of the controller outputs the expected values. 
 void test_uz_PI_Controller_sample_output_with_Kp_zero(void){
-    setUp();
     config.Ki = 1.0f;
     config.Kp = 0.0f;
     config.upper_limit = 100.0f;
@@ -106,7 +98,6 @@ void test_uz_PI_Controller_sample_output_with_Kp_zero(void){
 
 //Test the limitation&clamping for I-part
 void test_uz_PI_Controller_sample_output_limitation_with_Kp_zero(void){
-    setUp();
     config.upper_limit = 5.0f;
     config.lower_limit = -5.0f;
     config.Ki = 1.0f;
@@ -142,7 +133,6 @@ void test_uz_PI_Controller_sample_output_limitation_with_Kp_zero(void){
 }
 
 void test_uz_PI_Controller_sample_output(void){
-    setUp();
     config.samplingTime_sec = 1.0f;
     config.Ki = 1.0f;
     config.Kp = 11.54f;
@@ -180,7 +170,6 @@ void test_uz_PI_Controller_sample_output(void){
 
 //Tests if the external clamping signal stops the integrator from rising
 void test_uz_PI_Controller_sample_ext_clamping(void){
-    setUp();
     config.samplingTime_sec = 1.0f;
     config.Ki = 1.0f;
     config.Kp = 1.154f;
@@ -202,36 +191,29 @@ void test_uz_PI_Controller_set_Ki_assert_NULL(void){
 }
 
 void test_uz_PI_Controller_set_Ki_assert_Ki_negative(void){
-    setUp();
     uz_PI_Controller* variables = uz_PI_Controller_init(config);
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_set_Ki(variables, -10.0f));
 }
 
 void test_uz_PI_Controller_set_Kp_assert_NULL(void){
-    setUp();
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_set_Kp(NULL, 10.0f));
 }
 
 void test_uz_PI_Controller_set_Kp_assert_Kp_negative(void){
-    setUp();
     uz_PI_Controller* variables = uz_PI_Controller_init(config);
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_set_Kp(variables, -10.0f));
 }
 
 void test_uz_PI_Controller_update_limits_NULL(void){
-    setUp();
     float upper_limit = 10.0f;
     float lower_limit = -10.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_update_limits(NULL, upper_limit, lower_limit));
 }
 
 void test_uz_PI_Controller_update_limits_assert_limits(void){
-    setUp();
     uz_PI_Controller* variables = uz_PI_Controller_init(config);
     float upper_limit = 10.0f;
     float lower_limit = -10.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_update_limits(variables, lower_limit, upper_limit));
 }
-
-
 #endif // TEST

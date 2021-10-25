@@ -52,15 +52,8 @@ void test_uz_dqTransformation_hw_get_iq(void){
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
 
-void test_uz_dq_Transformation_hw_read_id(void){
-    float id_expected=31.1f;
-    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+id_AXI_Data_Trans_123_dq_V12_ip,uz_convert_float_to_unsigned_fixed(id_expected,11));
-    float id_returned=uz_dqTransformation_hw_read_id(TEST_BASE_ADDRESS);
-    TEST_ASSERT_FLOAT_WITHIN(1e-3,id_expected,id_returned);
-}
-
 void test_uz_dq_Transformation_hw_read_id_fail_due_to_zero_base_address(void){
-    TEST_ASSERT_FAIL_ASSERT(uz_dqTransformation_hw_read_id(0));
+    TEST_ASSERT_FAIL_ASSERT(uz_dqTransformation_hw_get_id(0));
 }
 
 #endif // TEST

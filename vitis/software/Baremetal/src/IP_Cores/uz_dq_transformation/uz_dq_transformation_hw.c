@@ -49,10 +49,3 @@ float uz_dqTransformation_hw_get_iq(uint32_t base_address){
 
     return iq;
 } 
-
-float uz_dqTransformation_hw_read_id(uint32_t base_address){
-    uz_assert_not_zero_uint32(base_address);
-   uint32_t id_read=uz_axi_read_uint32(base_address+id_AXI_Data_Trans_123_dq_V12_ip);
-   int fractionalBits=11;
-   return uz_convert_unsigned_fixed_to_float(id_read,fractionalBits);
-}

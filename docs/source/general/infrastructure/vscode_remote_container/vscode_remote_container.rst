@@ -116,7 +116,7 @@ Usage
 
     .. code-block:: c
 
-       browse .
+       explorer.exe .
 
 .. note:: Sourcetree can not be natively installed in the Ubuntu distribution. The repository in the Ubuntu distro can be added to Sourctree. However, this is not advised since the performance is bad.
           It is recommended to either use the Ubuntu shell with the standard git-commands or the :ref:`git lense extension <vscode_remote_container_gitlense>`. 

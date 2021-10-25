@@ -55,4 +55,28 @@ void test_uz_dq_Transformation_hw_read_id_fail_due_to_zero_base_address(void){
     TEST_ASSERT_FAIL_ASSERT(uz_dqTransformation_hw_get_id(0));
 }
 
+void test_uz_dqTransformation_hw_get_i1(void){
+    int fractionalBits = 11;     // sfix18_En11
+    float expected_return_value = -63.25;
+    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS + i1_AXI_Data_Trans_123_dq_V12_ip, uz_convert_float_to_sfixed(expected_return_value, fractionalBits)); 
+    float actual_return_value = uz_dqTransformation_hw_get_i1(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
+}
+
+void test_uz_dqTransformation_hw_get_i2(void){
+    int fractionalBits = 11;     // sfix18_En11
+    float expected_return_value = -63.25;
+    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS + i2_AXI_Data_Trans_123_dq_V12_ip, uz_convert_float_to_sfixed(expected_return_value, fractionalBits)); 
+    float actual_return_value = uz_dqTransformation_hw_get_i2(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
+}
+
+void test_uz_dqTransformation_hw_get_i3(void){
+    int fractionalBits = 11;     // sfix18_En11
+    float expected_return_value = -63.25;
+    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS + i3_AXI_Data_Trans_123_dq_V12_ip, uz_convert_float_to_sfixed(expected_return_value, fractionalBits)); 
+    float actual_return_value = uz_dqTransformation_hw_get_i3(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
+}
+
 #endif // TEST

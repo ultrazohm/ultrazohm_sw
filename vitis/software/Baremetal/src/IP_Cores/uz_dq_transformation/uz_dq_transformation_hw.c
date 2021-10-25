@@ -49,3 +49,48 @@ float uz_dqTransformation_hw_get_iq(uint32_t base_address){
 
     return iq;
 } 
+
+float uz_dqTransformation_hw_get_i1(uint32_t base_address){
+    int fractionalBits = 11;     // sfix18_En11
+    float value_max = 64.0f;
+    float value_min = -64.0f;
+
+    uz_assert_not_zero_uint32(base_address);
+    int32_t tmp = uz_axi_read_int32(base_address + i1_AXI_Data_Trans_123_dq_V12_ip);
+    float i1 =  uz_convert_sfixed_to_float(tmp,  fractionalBits);
+
+    uz_assert(i1 < value_max);
+    uz_assert(i1 > value_min);
+
+    return i1;
+}  
+
+float uz_dqTransformation_hw_get_i2(uint32_t base_address){
+    int fractionalBits = 11;     // sfix18_En11
+    float value_max = 64.0f;
+    float value_min = -64.0f;
+
+    uz_assert_not_zero_uint32(base_address);
+    int32_t tmp = uz_axi_read_int32(base_address + i2_AXI_Data_Trans_123_dq_V12_ip);
+    float i2 =  uz_convert_sfixed_to_float(tmp,  fractionalBits);
+
+    uz_assert(i2 < value_max);
+    uz_assert(i2 > value_min);
+
+    return i2;
+}  
+
+float uz_dqTransformation_hw_get_i3(uint32_t base_address){
+    int fractionalBits = 11;     // sfix18_En11
+    float value_max = 64.0f;
+    float value_min = -64.0f;
+
+    uz_assert_not_zero_uint32(base_address);
+    int32_t tmp = uz_axi_read_int32(base_address + i3_AXI_Data_Trans_123_dq_V12_ip);
+    float i3 =  uz_convert_sfixed_to_float(tmp,  fractionalBits);
+
+    uz_assert(i3 < value_max);
+    uz_assert(i3 > value_min);
+
+    return i3;
+} 

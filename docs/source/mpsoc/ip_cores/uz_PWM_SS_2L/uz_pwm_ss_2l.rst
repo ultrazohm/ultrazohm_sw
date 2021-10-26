@@ -4,11 +4,11 @@
 PWM and SS Control V4
 =====================
 
-The IP core implements a modulation and switching state control unit that generates control signals for power electronic applications for 
-three phase legs of two-level inverter topologies. Interlock and dead-time functionalities are not part of this IP core and are handled in a subsequent IP core.
+The IP core implements a modulation and switching state control unit that generates control signals for power electronic applications for three phase legs of two-level inverter topologies.
+Interlock and dead-time functionalities are not part of this IP core and are handled in a subsequent IP core.
 If less than three phase legs are used, unused phase legs can be set to a tristate mode, where neither the top nor the bottom switch of the phase leg are active.
-For higher phase numbers, multiple instances of this module can be used in the FPGA, each containing its own up-down counter. For synchronizing multiple instances, 
-the counter can be fed to subsequent instances. This feature is the only difference between versions V3 and V4.
+For higher phase numbers, multiple instances of this module can be used in the FPGA, each containing its own up-down counter.
+For synchronizing multiple instances, the counter can be fed to subsequent instances. This feature is the only difference between versions V3 and V4.
  
 The IP core provides two general modes of operation.
 
@@ -86,18 +86,18 @@ Vitis
 
     struct uz_PWM_SS_2L_config_t config_1 = {
             .base_address= XPAR_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR,
-            .ip_clk_frequency_Hz=100e6,
+            .ip_clk_frequency_Hz=100000000,
             .Tristate_HB1 = false,
             .Tristate_HB2 = false,
             .Tristate_HB3 = false,
-            .min_pulse_width = 0.01,
-            .PWM_freq_Hz = 10e3,
+            .min_pulse_width = 0.01f,
+            .PWM_freq_Hz = 10e3f,
             .PWM_mode = normalized_input_via_AXI,
             .PWM_en = true,
             .use_external_counter = false,
-            .init_dutyCyc_A = 0.0,
-            .init_dutyCyc_B = 0.0,
-            .init_dutyCyc_C = 0.0
+            .init_dutyCyc_A = 0.0f,
+            .init_dutyCyc_B = 0.0f,
+            .init_dutyCyc_C = 0.0f
     };
 
 An instance has to be initialized first and then configured:

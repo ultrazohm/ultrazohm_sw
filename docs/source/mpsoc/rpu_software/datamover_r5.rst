@@ -19,7 +19,7 @@ Important requirements are
 
 At the same time, a data path in the opposite direction GUI -> A53 -> R5 is needed to enable and disable the system and set references. This path is not time critical and is described in detail at the end of this section.
 
-Please see also the matching :ref:`description of the APU code <datamoverA53>`. ,
+Please see also the matching :ref:`description of the APU code <datamoverA53>`.
 
 .. mermaid::
     :align: center
@@ -39,8 +39,9 @@ Shared header file
 ------------------
 .. _datamoverSharedHeader:
 
-To this end, the shared  header file ``APU_RPU_shared.h`` located at ``vitis\software\shared`` is included in both software projects, i.e., R5 and A53. 
-The shared memory can be in OCM or DDR, here we use the OCM (on-chip memory) of the A53.
+To this end, the shared  header file ``APU_RPU_shared.h`` located at ``vitis/software/shared`` is included in both software projects, i.e., R5 and A53. 
+The shared memory can be in OCM or DDR, here we use the `OCM (on-chip memory) <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G20.364401>`_ of the A53.
+The start address of the OCM is hard-coded into the software since it is specific to the `UltraScale+ memory map <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G20.375357>`_.
 
 .. literalinclude:: ../../../../vitis/software/shared/APU_RPU_shared.h
     :language: c

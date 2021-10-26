@@ -467,7 +467,7 @@ void plotData(DS_Data* data) {
 void InitializeDataStructure(DS_Data* data) {
 
 	data->av.U_ZK = 36.0; 								//[V] DC-Link voltage
-	data->av.theta_offset =  4.471956;					//Brose 3ph machine=2.539921, Brose 6ph machine=4.471956
+	data->av.theta_offset =  1.956397;					//Brose 3ph machine=2.539921, Brose 6ph machine=1.956397
 	data->rasv.currentORspeedControl = 0.0;
 	data->rasv.PERIOD = 5000;
 	data->rasv.NEXT = false;

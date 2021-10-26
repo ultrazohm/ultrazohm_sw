@@ -115,12 +115,12 @@ void ISR_Control(void *data)
 //	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.CMPA_2 * 0.0004;
 //	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.CMPA_3 * 0.0004;
 
-	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.CMPA_1;
-	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.CMPA_2;
-	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.CMPA_3;
-	Global_Data.rasv.halfBridge4DutyCycle = codegenInstance.output.CMPA_4;
-	Global_Data.rasv.halfBridge5DutyCycle = codegenInstance.output.CMPA_5;
-	Global_Data.rasv.halfBridge6DutyCycle = codegenInstance.output.CMPA_6;
+//	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.CMPA_1;
+//	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.CMPA_2;
+//	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.CMPA_3;
+//	Global_Data.rasv.halfBridge4DutyCycle = codegenInstance.output.CMPA_4;
+//	Global_Data.rasv.halfBridge5DutyCycle = codegenInstance.output.CMPA_5;
+//	Global_Data.rasv.halfBridge6DutyCycle = codegenInstance.output.CMPA_6;
 
 	//Start: Control algorithm -------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)

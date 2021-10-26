@@ -32,8 +32,6 @@
 //Inclusion of WDT code
 #include "../Codegen/uz_codegen.h"
 
-
-
 #include "../uz/uz_wdt/uz_xwdttb.h"
 
 
@@ -74,7 +72,12 @@ void ISR_Control(void *data)
 	/*
 	 * RE Start the WDT device.
 	 */
-	XWdtPs_Restart();
+//	XWdtPs_Restart();
+
+	/* Restart the watchdog timer as a normal application would */
+	WdtTb_Start();
+//	XWdtTb_RestartWdt(&WdtTbInstance);
+
 	uz_SystemTime_ISR_Tic();
 
 	//  Ensure that the source of the current interrupt is cleared: TESTED, AND NOT NECESARY
@@ -121,8 +124,8 @@ void ISR_Control(void *data)
 //	//	TEST2: to trigger system hang and the reset
 
 //	//	If the handler is not called, launch the test
-//	if ((HandlerCalled == 0)) {
-	if (!WdtExpired) {
+	if ((HandlerCalled == 0)) {
+//	if (!WdtExpired) {
 		uz_sleep_useconds(350);  // 1500 for 1 msecond
 	}
 
@@ -166,6 +169,7 @@ int Initialize_ISR(){
 	 * Call the WDT init to initialize and set timer to the given timeout
 	 */
 	Status = WdtTbInit(WIN_WDT_SW_COUNT); // XPFW_WDT_EXPIRE_TIME for WDT PS
+//	Status = WdtPsInit(XPFW_WDT_EXPIRE_TIME);
 	if (Status != XST_SUCCESS) {
 		xil_printf("WDT initialization failed\r\n");
 		return XST_FAILURE;
@@ -184,7 +188,7 @@ int Initialize_ISR(){
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
 
 
-	xil_printf("RPU: Initialize_ISR Done\r\n");
+	xil_printf("RPU: Initialize_ISR Done!\r\n");
 
 return Status;
 }
@@ -230,9 +234,9 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	int status;
 
 //	Variables for testing
-//	u8 prio;
-//	u8 trigger;
-//	u32 reg;
+	u8 prio;
+	u8 trigger;
+	u32 reg;
 
 	// Interrupt controller initialization
 	IntcConfig = XScuGic_LookupConfig(DeviceId);
@@ -260,18 +264,18 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	// b01	Active HIGH level sensitive
 	// b11 	Rising edge sensitive
 	// XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
-	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
+//	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
 	//XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
 
 
 //	Testing code
-//	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
-//	xil_printf("OLD Timer Prio is %d, level is %d\r\n",prio, trigger);
-//	prio = 15;
-//	trigger = 0b11;
-//	XScuGic_SetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,prio,trigger);
-//	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
-//	xil_printf("NEW Timer Prio is %d, level is %d\r\n",prio, trigger);
+	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
+	xil_printf("OLD Timer Prio is %d, level is %d\r\n",prio, trigger);
+	prio = 15;
+	trigger = 0b11;
+	XScuGic_SetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,prio,trigger);
+	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
+	xil_printf("NEW Timer Prio is %d, level is %d\r\n",prio, trigger);
 
 
 	// Make the connection between the IntId of the interrupt source and the
@@ -295,24 +299,28 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	  * Connect to the interrupt subsystem so that interrupts can occur and Enable the IRQ output.
 	  */
 //	 status = WdtSetupIntrSystem(IntcConfig, IntcInstPtr);
-	 status = WdtTbSetupIntrSystem(IntcConfig, (INTC*)IntcInstPtr);
+	 status = WdtTbSetupIntrSystem(IntcConfig, IntcInstPtr);
 	 if (status != XST_SUCCESS) {
 	         return XST_FAILURE;
 	 }
 
-	 xil_printf("WDT Interrupt Example Test\r\n");
-
-//	 status = WdtPsIntrExample(IntcConfig, IntcInstPtr);
-	 status = WinWdtIntrExample(IntcConfig, IntcInstPtr);
-	 if(status != XST_SUCCESS) {
-			 xil_printf("RPU: Error: WdtPsIntrExample failed\r\n");
-			 return XST_FAILURE;
-	 }
+//	 xil_printf("WDT Interrupt Example Test\r\n");
+//
+////	 status = WdtPsIntrExample(IntcConfig, IntcInstPtr);
+//	 status = WinWdtIntrExample(IntcConfig);
+//	 if(status != XST_SUCCESS) {
+//			 xil_printf("RPU: Error: WdtPsIntrExample failed\r\n");
+//			 return XST_FAILURE;
+//	 }
 
 	// Enable GPIO and timer interrupts in the controller
 	XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
 	XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
 	//	XScuGic_Enable(&INTCInst, INTC_ADC_Conv_INTERRUPT_ID);
+
+
+//	Enable the WDT and launch first kick
+//	WdtTb_Start();
 
 
 	xil_printf("RPU: Rpu_GicInit: Done!\r\n");

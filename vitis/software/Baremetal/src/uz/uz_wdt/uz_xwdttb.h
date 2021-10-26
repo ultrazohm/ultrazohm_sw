@@ -74,23 +74,24 @@
 //#define WIN_WDT_SBC_COUNT	16		/**< Selected byte count */
 //#define WIN_WDT_BSS_COUNT	2		/**< Byte segment selected */
 
-
-#define WIN_WDT_SW_COUNT	0x002710	/**< Number of clock cycles for
-						  	  	  	  	  *  second window */
-#define WIN_WDT_SBC_COUNT	0		/**< Selected byte count */
+/**< Number of clock cycles for
+ *  second window
+*/
+//#define WIN_WDT_SW_COUNT	0x002710	/**< 10000 Tics, 100 usec */
+#define WIN_WDT_SW_COUNT	0x004E20	/**< 200 usec */
+#define WIN_WDT_SBC_COUNT	128		/**< Selected byte count */
 #define WIN_WDT_BSS_COUNT	0		/**< Byte segment selected */
 
 /**************************** Type Definitions *******************************/
+#define HANDLER_CALLED  0xFFFFFFFF
 
 //#ifdef XPAR_INTC_0_DEVICE_ID
 //
 //#define INTC			XIntc
 //#define INTC_HANDLER		XIntc_InterruptHandler
 //#else
-
-#define INTC			XScuGic
-#define INTC_HANDLER		XScuGic_InterruptHandler
-
+//#define INTC			XScuGic
+//#define INTC_HANDLER		XScuGic_InterruptHandler
 //#endif /* XPAR_INTC_0_DEVICE_ID */
 
 /***************** Macros (Inline Functions) Definitions *********************/
@@ -99,24 +100,24 @@
 /************************** Function Prototypes ******************************/
 
 
-void WdtTb_Restart() ;
+void WdtTb_Start() ;
 
 int WdtTbInit(u32 Timeout);
 
-int WinWdtIntrExample(INTC *IntcInstancePtr,
-			XWdtTb *WdtTbInstancePtr);
+int WinWdtIntrExample(XScuGic *IntcInstancePtr);
 
-static void WdtTbIntrHandler(void *CallBackRef);
+void WdtTbIntrHandler(void *CallBackRef);
 //static int WdtTbSetupIntrSystem(INTC *IntcInstancePtr);
-static int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, INTC *IntcInstancePtr);
-static void WdtTbDisableIntrSystem(INTC *IntcInstancePtr);
+int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr);
+void WdtTbDisableIntrSystem(XScuGic *IntcInstancePtr);
 
 /************************** Variable Definitions *****************************/
 
 #ifndef TESTAPP_GEN
 XWdtTb WdtTbInstance;	/* Instance of Time Base WatchDog Timer */
-INTC IntcInstance;	/* Instance of the Interrupt Controller */
+XScuGic IntcInstance;	/* Instance of the Interrupt Controller */
 #endif
 
-static volatile int WdtExpired;
+//volatile int WdtExpired;
+u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
 

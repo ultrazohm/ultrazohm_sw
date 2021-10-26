@@ -162,7 +162,9 @@ int WdtTbInit(u32 Timeout) {
 * @note		None.
 *
 ******************************************************************************/
-void WdtTb_Restart() {
+void WdtTb_Start() {
+
+	uz_assert(Wdttb_IsReady);
 
 	/* Stop the timer, disabling the WDTTB, writing 0 in bit WEN */
 	XWdtTb_Stop(&WdtTbInstance);
@@ -171,7 +173,7 @@ void WdtTb_Restart() {
 	 * Start the watchdog timer as a normal application would
 	 */
 	XWdtTb_Start(&WdtTbInstance);
-	WdtExpired = FALSE;
+//	WdtExpired = FALSE;
 
 	/* After enabled, write enabled auto clears, so we have to write a 1 to Set register space to writable */
 	XWdtTb_SetRegSpaceAccessMode(&WdtTbInstance, 1);
@@ -211,10 +213,11 @@ void WdtTb_Restart() {
 * @note		None.
 *
 ******************************************************************************/
-int WinWdtIntrExample(INTC *IntcInstancePtr,
-			XWdtTb *WdtTbInstancePtr)
+int WinWdtIntrExample(XScuGic *IntcInstancePtr)
 {
 	int Status;
+
+	uz_assert(Wdttb_IsReady);
 
 //	Status = WdtTbInit(0);
 //	if (Status != XST_SUCCESS) {
@@ -223,63 +226,67 @@ int WinWdtIntrExample(INTC *IntcInstancePtr,
 
 
 
-#ifndef TESTAPP_GEN
-	XScuGic_Config *IntcConfig;
+//#ifndef TESTAPP_GEN
+//	XScuGic_Config *IntcConfig;
+//
+//	/*
+//	 * Initialize the interrupt controller driver so that it is ready to
+//	 * use.
+//	 */
+//	IntcConfig = XScuGic_LookupConfig(INTC_DEVICE_ID);
+//	if (NULL == IntcConfig) {
+//		return XST_FAILURE;
+//	}
+//
+//	Status = XScuGic_CfgInitialize(&IntcInstance, IntcConfig,
+//					IntcConfig->CpuBaseAddress);
+//	if (Status != XST_SUCCESS) {
+//		return XST_FAILURE;
+//	}
+//
+//#endif /* TESTAPP_GEN */
+//
+//	/*
+//	 * Connect the WdtTb to the interrupt subsystem so that interrupts
+//	 * can occur
+//	 */
+//	Status = WdtTbSetupIntrSystem(IntcConfig, &IntcInstance);
+//	if (Status != XST_SUCCESS) {
+//		return XST_FAILURE;
+//	}
 
-	/*
-	 * Initialize the interrupt controller driver so that it is ready to
-	 * use.
-	 */
-	IntcConfig = XScuGic_LookupConfig(INTC_DEVICE_ID);
-	if (NULL == IntcConfig) {
-		return XST_FAILURE;
-	}
 
-	Status = XScuGic_CfgInitialize(&IntcInstance, IntcConfig,
-					IntcConfig->CpuBaseAddress);
-	if (Status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
-
-#endif /* TESTAPP_GEN */
-
-	/*
-	 * Connect the WdtTb to the interrupt subsystem so that interrupts
-	 * can occur
-	 */
-	Status = WdtTbSetupIntrSystem(IntcConfig, &IntcInstance);
-	if (Status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
-
-
-	WdtTb_Restart();
+	WdtTb_Start();
 
 
 	/*
 	 * Wait for the first occurrence of interrupt programmed point.
 	 */
-	while (WdtExpired != TRUE);
+//	while (WdtExpired != TRUE);
+	while ((HandlerCalled == 0)) ;
 
 
 	/* Clear interrupt point */
-	XWdtTb_IntrClear(WdtTbInstancePtr);
-	WdtExpired = FALSE;
+	XWdtTb_IntrClear(&WdtTbInstance);
+//	WdtExpired = FALSE;
+	HandlerCalled = 0;
 
 	/* Wait for the second occurrence of interrupt programmed point */
-	while (WdtExpired != TRUE);
+//	while (WdtExpired != TRUE);
+	while ((HandlerCalled == 0)) ;
 
 	/* Clear interrupt point */
-	XWdtTb_IntrClear(WdtTbInstancePtr);
-	WdtExpired = FALSE;
+	XWdtTb_IntrClear(&WdtTbInstance);
+//	WdtExpired = FALSE;
+	HandlerCalled = 0;
 
 	/* Check for last event */
-	if (XWdtTb_GetLastEvent(WdtTbInstancePtr) != XWDTTB_NO_BAD_EVENT) {
+	if (XWdtTb_GetLastEvent(&WdtTbInstance) != XWDTTB_NO_BAD_EVENT) {
 		/* Disable and disconnect the interrupt system */
 		WdtTbDisableIntrSystem(IntcInstancePtr);
 
 		/* Stop the timer */
-		XWdtTb_Stop(WdtTbInstancePtr);
+		XWdtTb_Stop(&WdtTbInstance);
 		return XST_FAILURE;
 	}
 
@@ -287,7 +294,7 @@ int WinWdtIntrExample(INTC *IntcInstancePtr,
 	WdtTbDisableIntrSystem(IntcInstancePtr);
 
 	/* Stop the timer */
-	XWdtTb_Stop(WdtTbInstancePtr);
+	XWdtTb_Stop(&WdtTbInstance);
 
 	return XST_SUCCESS;
 }
@@ -317,10 +324,12 @@ int WinWdtIntrExample(INTC *IntcInstancePtr,
 *
 ******************************************************************************/
 //static int WdtTbSetupIntrSystem(INTC *IntcInstancePtr)
-static int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, INTC *IntcInstancePtr)
+int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 {
 	int Status;
 	u8 Priority, Trigger;
+
+	uz_assert(Wdttb_IsReady);
 
 #ifdef XPAR_INTC_0_DEVICE_ID
 
@@ -408,7 +417,7 @@ static int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, INTC *IntcInstancePt
 	 * Register the interrupt controller handler with the exception table
 	 */
 	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
-			(Xil_ExceptionHandler)INTC_HANDLER,
+			(Xil_ExceptionHandler)XScuGic_InterruptHandler, // (Xil_ExceptionHandler)INTC_HANDLER,
 			IntcInstancePtr);
 
 	/* Enable non-critical exceptions */
@@ -433,27 +442,36 @@ static int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, INTC *IntcInstancePt
 * @note		None.
 *
 ******************************************************************************/
-static void WdtTbIntrHandler(void *CallBackRef)
+void WdtTbIntrHandler(void *CallBackRef)
 {
+
+	uz_assert(Wdttb_IsReady);
+
 	XWdtTb *WdtTbInstancePtr = (XWdtTb *)CallBackRef;
 
 	u32 reg;
 	reg = XScuGic_ReadReg(TempConfig->CpuBaseAddress, XSCUGIC_RUN_PRIOR_OFFSET);
-	xil_printf("WdtIntrHandler: Running priority in WDT handler is %d\r\n",reg >> 3);
+	xil_printf("WdtTbIntrHandler AND RESTART AND CLEAR: Running priority in WDT handler is %d\r\n",reg >> 3);
+
+	/* Restart the watchdog timer as a normal application would */
+	XWdtTb_RestartWdt(WdtTbInstancePtr);
+
+	/* Clear interrupt point */
+	XWdtTb_IntrClear(&WdtTbInstance);
 
 	/*
 	 * WDT timed out and interrupt occurred, let main test loop know.
 	 */
 	/* Set the flag indicating that the WDT has expired */
-	WdtExpired = TRUE;
+//	WdtExpired = TRUE;
+	HandlerCalled = HANDLER_CALLED;
 
 	/*
 	 * Code for handling the SYSTEM HANG goes here.
 	 */
 //  Xil_Assert(__FILE__, __LINE__);
 //	OR
-	/* Restart the watchdog timer as a normal application would */
-//	XWdtTb_RestartWdt(WdtTbInstancePtr);
+
 }
 
 /*****************************************************************************/
@@ -471,8 +489,10 @@ static void WdtTbIntrHandler(void *CallBackRef)
 * @note		None.
 *
 ******************************************************************************/
-static void WdtTbDisableIntrSystem(INTC *IntcInstancePtr)
+void WdtTbDisableIntrSystem(XScuGic *IntcInstancePtr)
 {
+
+	uz_assert(Wdttb_IsReady);
 
 	/* Disconnect and disable the interrupt for the WdtTb */
 #ifdef XPAR_INTC_0_DEVICE_ID
@@ -487,17 +507,16 @@ static void WdtTbDisableIntrSystem(INTC *IntcInstancePtr)
 
 #else /* ENABLE_WDTTB_INT */
 
-void WdtTb_Restart() {}
+void WdtTb_Start() {}
 
 int WdtTbInit(u32 Timeout){}
 
-int WinWdtIntrExample(INTC *IntcInstancePtr,
-			XWdtTb *WdtTbInstancePtr) {}
+int WinWdtIntrExample(INTC *IntcInstancePtr) {}
 
-static void WdtTbIntrHandler(void *CallBackRef);
+void WdtTbIntrHandler(void *CallBackRef);
 //static int WdtTbSetupIntrSystem(INTC *IntcInstancePtr){}
-static int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, INTC *IntcInstancePtr){}
+int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr){}
 
-static void WdtTbDisableIntrSystem(INTC *IntcInstancePtr){}
+void WdtTbDisableIntrSystem(XScuGic *IntcInstancePtr){}
 
 #endif /* ENABLE_WDT_INT */

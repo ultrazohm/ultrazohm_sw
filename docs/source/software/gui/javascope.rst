@@ -155,7 +155,6 @@ Known issues
 See also
 """""""""""""""
 * :download:`Java <https://www.java.com/de/download/>`
-* :download:`Java Scope on Bitbucket <https://bitbucket.org/ultrazohm/javascope_standalone/src/develop/>`
 
 Designed by
 """""""""""

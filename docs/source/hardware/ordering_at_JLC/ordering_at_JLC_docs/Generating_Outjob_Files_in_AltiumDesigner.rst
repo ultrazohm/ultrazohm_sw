@@ -73,7 +73,7 @@ Choose ``BOM Output Container`` -> ``Generate content->``. Repeat this for the `
 
 The generated outjob files can be found in the project folder under ``Project Outputs for.../ProjectRevision``. 
 
-.. figure:: pictures/Output_Files.PNG
+.. figure:: pictures/Output_Files.png
     :width: 1200
     :class: with-shadow
 

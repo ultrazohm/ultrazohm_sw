@@ -1,9 +1,23 @@
-*.pdf filter=lfs diff=lfs merge=lfs -text
-*.png filter=lfs diff=lfs merge=lfs -text
-*.jpg filter=lfs diff=lfs merge=lfs -text
-*.jpng filter=lfs diff=lfs merge=lfs -text
+# IMAGES
+*.[gG][iI][fF] filter=lfs diff=lfs merge=lfs -text
+*.[jJ][pP][eE][gG] filter=lfs diff=lfs merge=lfs -text
+*.[jJ][pP][nN][gG] filter=lfs diff=lfs merge=lfs -text
+*.[jJ][pP][gG] filter=lfs diff=lfs merge=lfs -text
+*.[pP][iI][cC][tT] filter=lfs diff=lfs merge=lfs -text
+*.[pP][nN][gG] filter=lfs diff=lfs merge=lfs -text
+*.[pP][sS][dD] filter=lfs diff=lfs merge=lfs -text
+*.[tT][gG][aA] filter=lfs diff=lfs merge=lfs -text
+*.[tT][iI][fF] filter=lfs diff=lfs merge=lfs -text
+*.[tT][iI][fF][fF] filter=lfs diff=lfs merge=lfs -text
+
+#DOCUMENTS
+*.[pP][dD][fF] filter=lfs diff=lfs merge=lfs -text
+
+# Packaging
+*.[zZ][iI][pP] filter=lfs diff=lfs merge=lfs -text
+
+# VIVADO
 *.xsa filter=lfs diff=lfs merge=lfs -text
-*.gif filter=lfs diff=lfs merge=lfs -text
-*.zip filter=lfs diff=lfs merge=lfs -text
-docs/source/hardware/adapter_boards/digital/encoder_v1/*.pdn filter=lfs diff=lfs merge=lfs -text
+
+# ALTIUM?
 *.pdn filter=lfs diff=lfs merge=lfs -text

@@ -32,8 +32,9 @@
 //Inclusion of WDT code
 #include "../Codegen/uz_codegen.h"
 
-#include "../uz/uz_wdt/uz_xwdttb.h"
+#include "../uz/uz_wdt/xwdttb_winwdt_intr_example.c"
 
+//#include "../uz/uz_wdt/uz_xwdttb.h"
 
 //Initialize the variables for the ADC measurement
 u32 		XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
@@ -124,8 +125,8 @@ void ISR_Control(void *data)
 //	//	TEST2: to trigger system hang and the reset
 
 //	//	If the handler is not called, launch the test
-	if ((HandlerCalled == 0)) {
-//	if (!WdtExpired) {
+//	if ((HandlerCalled == 0)) {
+	if (!WdtExpired) {
 		uz_sleep_useconds(350);  // 1500 for 1 msecond
 	}
 
@@ -174,6 +175,19 @@ int Initialize_ISR(){
 		xil_printf("WDT initialization failed\r\n");
 		return XST_FAILURE;
 	}
+
+
+
+	/*
+	 * Call the WdtTb interrupt example, specify the parameters generated in
+	 * xparameters.h
+	 */
+	Status = WinWdtIntrExample(&IntcInstance,
+				&WdtTbInstance,
+				WDTTB_DEVICE_ID,
+				WDTTB_IRPT_INTR);
+
+	xil_printf("Successfully ran Window WDT interrupt example.\n\r");
 
 
 	// Initialize interrupt controller for the GIC
@@ -299,10 +313,12 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	  * Connect to the interrupt subsystem so that interrupts can occur and Enable the IRQ output.
 	  */
 //	 status = WdtSetupIntrSystem(IntcConfig, IntcInstPtr);
-	 status = WdtTbSetupIntrSystem(IntcConfig, IntcInstPtr);
-	 if (status != XST_SUCCESS) {
-	         return XST_FAILURE;
-	 }
+
+	// TODO: UNCOMMENT!!
+//	 status = WdtTbSetupIntrSystem(IntcConfig, IntcInstPtr);
+//	 if (status != XST_SUCCESS) {
+//	         return XST_FAILURE;
+//	 }
 
 //	 xil_printf("WDT Interrupt Example Test\r\n");
 //

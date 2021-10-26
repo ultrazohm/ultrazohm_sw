@@ -5,7 +5,7 @@
 
 /**
  * @brief selects whether the PWM counter is taken from within the instance or 
- *        from an externel source
+ *        from an external source
  * 
  * @param base_address          base address of the instance
  * @param use_external_counter  flag for choosing the PWM counter source

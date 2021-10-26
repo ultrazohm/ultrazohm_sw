@@ -83,6 +83,6 @@ void uz_PWM_SS_2L_set_tristate(struct uz_PWM_SS_2L_t *self, bool Tristate_HB1, b
  *                  e.g. a reference voltage value between 0 and 1\n
  *                  2 = direct control of switching states via FPGA
  */
-void uz_PWM_SS_2L_set_PWM_mode(struct uz_PWM_SS_2L_t *self, uint32_t PWM_mode);
+void uz_PWM_SS_2L_set_PWM_mode(struct uz_PWM_SS_2L_t *self, enum uz_PWM_SS_2L_PWM_mode PWM_mode);
 
 #endif // UZ_PWM_SS_2L_H

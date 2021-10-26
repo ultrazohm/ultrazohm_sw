@@ -53,7 +53,7 @@ arise for basic parts (resistors, diodes, capacitors). On the other hand for all
 
 .. note:: The orientation of parts will be checked by JLC after submission and adjusted manually according to the orientation mark (the dot ° on pin 1).
 
-.. figure:: pictures/Component_Orientation.PNG 
+.. figure:: pictures/Component_Orientation.png 
     :width: 700 
     :class: with-shadow
 

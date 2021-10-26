@@ -65,7 +65,7 @@ Choose ``BOM Output Container`` -> ``Generate content->``. Repeat this for the `
     but since it is no necessary file for an order at JLC, you can ignore this. 
     See `here <https://www.altium.com/documentation/altium-designer/draftsman-ad?version=19.0>`_ for more information. 
 
-    .. figure:: pictures/draftsman_file2.png 
+    .. figure:: pictures/draftsman_file.png 
         :width: 1200 
         :class: with-shadow
 
@@ -73,7 +73,7 @@ Choose ``BOM Output Container`` -> ``Generate content->``. Repeat this for the `
 
 The generated outjob files can be found in the project folder under ``Project Outputs for.../ProjectRevision``. 
 
-.. figure:: pictures/Output_Files.PNG
+.. figure:: pictures/Output_Files.png
     :width: 1200
     :class: with-shadow
 

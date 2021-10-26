@@ -4,9 +4,9 @@ Adding the LCSC Part Number
 
 LCSC is JLC's supplier for components. These can be found in `JLC's component library <https://jlcpcb.com/parts>`__. There, every component has
 a unique part number called **JLCPCB Part #** (formerly also LCSC Part #). This number is going to be important for the BOM, since you can only use these components for a SMT assembled PCB.
-Therefore every component of the UltraZohm library has a parameter called **LCSC part number**, that later needs do be included in the BOM. 
+Therefore, every component of the UltraZohm library has a parameter called **LCSC part number** that later needs do be included in the BOM. 
 
-.. figure:: pictures/LCSC_Part_Number1.png 
+.. figure:: pictures/LCSC_Part_Number.png 
     :width: 1200 
     :class: with-shadow
 

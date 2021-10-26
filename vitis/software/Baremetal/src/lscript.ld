@@ -23,14 +23,13 @@ _UNDEF_STACK_SIZE = DEFINED(_UNDEF_STACK_SIZE) ? _UNDEF_STACK_SIZE : 1024;
 
 MEMORY
 {
-   psu_ocm_ram_0_MEM_0 : ORIGIN = 0xFFFC0000, LENGTH = 0x30000
+   psu_ocm_ram_bank0_to_2_MEM_0 : ORIGIN = 0xFFFC0000, LENGTH = 0x30000
+   psu_ocm_ram_bank3_MEM_0 : ORIGIN = 0xFFFF0000, LENGTH = 0x10000
    psu_qspi_linear_0_MEM_0 : ORIGIN = 0xC0000000, LENGTH = 0x20000000
    psu_r5_0_atcm_MEM_0 : ORIGIN = 0x0, LENGTH = 0x10000
    psu_r5_0_btcm_MEM_0 : ORIGIN = 0x20000, LENGTH = 0x10000
    psu_r5_ddr_0_MEM_0 : ORIGIN = 0x40000000, LENGTH = 0x3FFF0000
    psu_r5_tcm_ram_0_MEM_0 : ORIGIN = 0x0, LENGTH = 0x40000
-   psu_shared_ram_R5_0_to_A53_0  : ORIGIN = 0xFFFF8000, LENGTH = 0x8000
-   psu_shared_ram_A53_0_to_R5_0  : ORIGIN = 0xFFFF0000, LENGTH = 0x8000
 }
 
 /* Specify the default entry point to the program */
@@ -297,25 +296,6 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    . = ALIGN(16);
    __undef_stack = .;
 } > psu_r5_ddr_0_MEM_0
-
-/* SW: Generate own sharedRAM for JavaScope */
-
-.sharedRAM_Oszidata : {
-   __sharedRAM_Oszidata_start = .;
-   *(.sharedRAM_Oszidata)
-   *(.sharedRAM_Oszidata.*)
-   *(.gnu.linkonce.sOz.*)
-   __sharedRAM_Oszidata_end = .;
-} > psu_shared_ram_R5_0_to_A53_0
-
-
-.sharedRAM_Controldata : {
-   __sharedRAM_Controldata_start = .;
-   *(.sharedRAM_Controldata)
-   *(.sharedRAM_Controldata.*)
-   *(.gnu.linkonce.sOz.*)
-   __sharedRAM_Controldata_end = .;
-} > psu_shared_ram_A53_0_to_R5_0
 
 _end = .;
 }

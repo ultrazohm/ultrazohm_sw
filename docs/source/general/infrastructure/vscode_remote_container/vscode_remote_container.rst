@@ -33,7 +33,7 @@ The performance of using the remote container in VSCode on Windows is relatively
 #. Install the programs listed in the prerequisites.
 #. Install the WSL2-Linux subsystem for windows with the ``Ubuntu`` distribution by entering the following command in the **cmd**-window.
 
-    .. code-block:: c
+    .. code-block:: console
 
        dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
        dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
@@ -48,26 +48,26 @@ The performance of using the remote container in VSCode on Windows is relatively
 #. Now you have access to the Ubuntu shell.
 #. Install GIT LFS with the following commands.
 
-    .. code-block:: c
+    .. code-block:: console
 
        curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
        sudo apt-get install git-lfs
 
 #. On the root level create a new directory in which you will store all your repositories by typing in the Ubuntu shell. 
 
-    .. code-block:: c
+    .. code-block:: console
 
        mkdir uz
 
 #. Enter this directory with
 
-    .. code-block:: c
+    .. code-block:: console
 
        cd uz
   
 #. Clone the repository from the remote inside the ``uz`` directory (or any other repository)
 
-    .. code-block:: c
+    .. code-block:: console
 
         git clone https://bitbucket.org/ultrazohm/ultrazohm_sw.git
 
@@ -79,10 +79,10 @@ The performance of using the remote container in VSCode on Windows is relatively
 
 #. Add your git-credentials from your **Bitbucket Account** in the Ubuntu shell
 
-    .. code-block:: c
+    .. code-block:: console
 
-      git config --global user.name "John Doe"
-      git config --global user.email johndoe@example.com
+       git config --global user.name "John Doe"
+       git config --global user.email johndoe@example.com
 
 #. Apply the changes and restart the computer.
 
@@ -91,13 +91,13 @@ Usage
 
 #. To use the remote container with VSCode inside the Ubuntu distribution open the Ubuntu shell and navigate to the local repository.
 
-    .. code-block:: c
+    .. code-block:: console
 
        cd uz
 
 #. Open up VSCode 
 
-    .. code-block:: c
+    .. code-block:: console
 
        ls
        code .
@@ -114,7 +114,7 @@ Usage
 
 #. To open the file explorer inside the Ubuntu distribution use the following command in the directory you want to open. This may be necessary to copy pictures, files, etc. into the repository.
 
-    .. code-block:: c
+    .. code-block:: console
 
        explorer.exe .
 

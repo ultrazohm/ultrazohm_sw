@@ -9,7 +9,7 @@
 #define JS_CHANNELS 		20
 
 // update by hand when changing JS_CHANNELS
-// Bank 3 of OCM has 64 KB, thus a maximum of 2^16/32=2048 float values can be stored
+// Bank 3 of OCM has 64 KB, thus a maximum of 16K float values can be stored
 #define JAVASCOPE_DATA_SIZE_2POW  	128
 
 

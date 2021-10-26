@@ -76,7 +76,7 @@ arise for basic parts (resistors, diodes, capacitors). On the other hand for all
         :width: 700 
         :class: with-shadow
 
-      JLC - Shipping
+        JLC - Shipping
 
 .. note:: After JLC shipped the manufactured PCBs and you received the shipping number, a custom declaration (Zollvoranmeldung) has to be done for this shipment via `DHL Express website <https://www.dhl.de/de/geschaeftskunden/express/produkte-und-services/formular-zollabfertigung.html>`_. This is to avoid the package getting stock in customs.
  

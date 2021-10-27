@@ -5,6 +5,8 @@ Ordering Process with SMT Assembly
 This section will guide you through the ordering process at JLCPCB with the intend to choose SMT assembly. It is useful to mention that no additional setup costs 
 arise for basic parts (resistors, diodes, capacitors). On the other hand for all extended parts there will be a setup cost of 3$ each. 
 
+.. warning:: For the order with SMT assembly JLC needs tooling holes on the PCB. These will be added by JLC if none are specified by the customer, but it is recommended to add them as described `here <https://support.jlcpcb.com/article/92-how-to-add-tooling-holes-for-smt-assembly-order>`_. 
+
 1. Go to `JLCPCB`_ and sign in with your account 
 2. Go to your shopping cart and choose ``Add new item`` 
 

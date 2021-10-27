@@ -1,40 +1,56 @@
 %07.10.2021
 %FFT calculation of currents
 
+start_time = 0.02;
+activation_time = 0.1;
+
 length_timeseries = length(phase_currents.Time);
-start_index = find(phase_currents.Time > 0.02,1);
+start_index = find(phase_currents.Time > start_time,1);
+activation_index = find(phase_currents.Time > activation_time,1);
 
-i_a = phase_currents.Data(start_index:length_timeseries,1);
-i_b = phase_currents.Data(start_index:length_timeseries,2);
-i_c = phase_currents.Data(start_index:length_timeseries,3);
+%i_a = phase_currents.Data(start_index:length_timeseries,1);
+%i_b = phase_currents.Data(start_index:length_timeseries,2);
+%i_c = phase_currents.Data(start_index:length_timeseries,3);
 
-i_q = idq.Data(start_index:length_timeseries,2);
+i_q_before = idq.Data(start_index:(activation_index-10),2);
+i_q_after = idq.Data((activation_index+10):length_timeseries,2);
+w_el = omega_el.Data(start_index:length(omega_el.Data),1);
+f_el = mean(w_el)/(2*pi);
 
-time = phase_currents.Time(start_index:length_timeseries);
+%Select length of signal for fft to get multiple frequencies of f_el
+selected_length = round(f_c/f_el);
 
-length_ia = length(i_q);
-frequency_meas = 1/(time(5)-time(4));
+iq_before = i_q_before(1:selected_length);
+iq_after = i_q_after(1:selected_length);
 
-Y_ia = fft(i_q);
-P2 = abs(Y_ia/length_ia);
-P1 = P2(1:length_ia/2+1);
-P1(2:end-1) = 2*P1(2:end-1);
+iq_before = iq_before-mean(iq_before);
+iq_after = iq_after-mean(iq_after);
 
-f = 2*pi*frequency_meas*(0:(length_ia/2))/length_ia;
 
-omega_0 = omega_el.Data(length(omega_el.Data));
 
-figure(1)
-stem(f,P1)
-hold on
+Y_iq_before = fft(iq_before);
+P2_before = abs(Y_iq_before/selected_length);
+P1_before = P2_before(1:selected_length/2+1);
+P1_before(2:end-1) = 2*P1_before(2:end-1);
 
-%plot harmonic lines
-plot([omega_0,omega_0], [0,10], 'r--');
-plot([omega_0*2,omega_0*2], [0,10], 'r--');
-plot([omega_0*3,omega_0*3], [0,10], 'r--');
-plot([omega_0*4,omega_0*4], [0,10], 'r--');
-plot([omega_0*5,omega_0*5], [0,10], 'r--');
-plot([omega_0*6,omega_0*6], [0,10], 'r--');
-plot([omega_0*7,omega_0*7], [0,10], 'r--');
+f = f_c*(0:(selected_length/2))/selected_length;
+
+Y_iq_after = fft(iq_after);
+P2_after = abs(Y_iq_after/selected_length);
+P1_after = P2_after(1:selected_length/2+1);
+P1_after(2:end-1) = 2*P1_after(2:end-1);
+
+
+subplot(2,1,1)
+bar(f./f_el,P1_before)
 grid on
-xlabel('Frequency [rad/s]')
+xlim([0,20])
+ylim([0,0.5])
+title('FFT of Iq without resonant controller')
+subplot(2,1,2)
+bar(f./f_el,P1_after)
+xlim([0,20])
+ylim([0,0.5])
+title('FFT of Iq with resonant controller')
+grid on
+xlabel('Harmonic Order of f-el = ' + string(f_el) + 'Hz')

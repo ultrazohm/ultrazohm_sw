@@ -32,9 +32,7 @@
 //Inclusion of WDT code
 #include "../Codegen/uz_codegen.h"
 
-#include "../uz/uz_wdt/xwdttb_winwdt_intr_example.c"
-
-//#include "../uz/uz_wdt/uz_xwdttb.h"
+#include "../uz/uz_wdt/uz_xwdttb.h"
 
 //Initialize the variables for the ADC measurement
 u32 		XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
@@ -75,9 +73,8 @@ void ISR_Control(void *data)
 	 */
 //	XWdtPs_Restart();
 
-	/* Restart the watchdog timer as a normal application would */
-	WdtTb_Start();
-//	XWdtTb_RestartWdt(&WdtTbInstance);
+	/* Restart the watch dog timer: kick forward */
+	XWdtTb_RestartWdt(&WdtTbInstance);
 
 	uz_SystemTime_ISR_Tic();
 
@@ -126,9 +123,9 @@ void ISR_Control(void *data)
 
 //	//	If the handler is not called, launch the test
 //	if ((HandlerCalled == 0)) {
-	if (!WdtExpired) {
-		uz_sleep_useconds(350);  // 1500 for 1 msecond
-	}
+//////	if (!WdtExpired) {
+//		uz_sleep_useconds(250);  // 1500 for 1 msecond
+//	}
 
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
@@ -175,19 +172,6 @@ int Initialize_ISR(){
 		xil_printf("WDT initialization failed\r\n");
 		return XST_FAILURE;
 	}
-
-
-
-	/*
-	 * Call the WdtTb interrupt example, specify the parameters generated in
-	 * xparameters.h
-	 */
-	Status = WinWdtIntrExample(&IntcInstance,
-				&WdtTbInstance,
-				WDTTB_DEVICE_ID,
-				WDTTB_IRPT_INTR);
-
-	xil_printf("Successfully ran Window WDT interrupt example.\n\r");
 
 
 	// Initialize interrupt controller for the GIC
@@ -314,16 +298,16 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	  */
 //	 status = WdtSetupIntrSystem(IntcConfig, IntcInstPtr);
 
-	// TODO: UNCOMMENT!!
-//	 status = WdtTbSetupIntrSystem(IntcConfig, IntcInstPtr);
-//	 if (status != XST_SUCCESS) {
-//	         return XST_FAILURE;
-//	 }
+	 status = WdtTbSetupIntrSystem(IntcConfig, IntcInstPtr);
+	 if (status != XST_SUCCESS) {
+	         return XST_FAILURE;
+	 }
+
 
 //	 xil_printf("WDT Interrupt Example Test\r\n");
 //
 ////	 status = WdtPsIntrExample(IntcConfig, IntcInstPtr);
-//	 status = WinWdtIntrExample(IntcConfig);
+//	 status = WinWdtIntrExample(IntcInstPtr);
 //	 if(status != XST_SUCCESS) {
 //			 xil_printf("RPU: Error: WdtPsIntrExample failed\r\n");
 //			 return XST_FAILURE;
@@ -336,10 +320,9 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 
 
 //	Enable the WDT and launch first kick
-//	WdtTb_Start();
+	WdtTb_Start();
 
-
-	xil_printf("RPU: Rpu_GicInit: Done!\r\n");
+	xil_printf("RPU: Rpu_GicInit and EXAMPLE: Done\r\n");
 	return XST_SUCCESS;
 }
 

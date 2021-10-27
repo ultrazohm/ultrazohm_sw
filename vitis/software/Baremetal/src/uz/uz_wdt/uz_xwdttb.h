@@ -79,7 +79,7 @@
 */
 //#define WIN_WDT_SW_COUNT	0x002710	/**< 10000 Tics, 100 usec */
 #define WIN_WDT_SW_COUNT	0x004E20	/**< 200 usec */
-#define WIN_WDT_SBC_COUNT	128		/**< Selected byte count */
+#define WIN_WDT_SBC_COUNT	1		/**< Selected byte count */
 #define WIN_WDT_BSS_COUNT	0		/**< Byte segment selected */
 
 /**************************** Type Definitions *******************************/
@@ -119,5 +119,5 @@ XScuGic IntcInstance;	/* Instance of the Interrupt Controller */
 #endif
 
 //volatile int WdtExpired;
-u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
+volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
 

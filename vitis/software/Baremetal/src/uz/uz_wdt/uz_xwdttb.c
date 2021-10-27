@@ -166,8 +166,20 @@ void WdtTb_Start() {
 
 	uz_assert(Wdttb_IsReady);
 
-	/* Stop the timer, disabling the WDTTB, writing 0 in bit WEN */
-	XWdtTb_Stop(&WdtTbInstance);
+//	/* Stop the timer, disabling the WDTTB, writing 0 in bit WEN */
+//	XWdtTb_Stop(&WdtTbInstance);
+
+
+	/* Write a 1 to Set register space to writable */
+	XWdtTb_SetRegSpaceAccessMode(&WdtTbInstance, 1);
+
+	/*
+	 * Set the AEN bit (to enable protection against accidental clearing)
+	 * and to avoid disable (WEN = 0) when Second Window times out, and bad even occurs and RESET is produced
+	 */
+	 XWdtTb_AlwaysEnable(&WdtTbInstance);
+
+	 XWdtTb_EnableExtraProtection(&WdtTbInstance);
 
 	/*
 	 * Start the watchdog timer as a normal application would
@@ -256,8 +268,15 @@ int WinWdtIntrExample(XScuGic *IntcInstancePtr)
 //	}
 
 
-	WdtTb_Start();
+//	WdtTb_Start();
 
+	XWdtTb_Start(&WdtTbInstance);
+	//	WdtExpired = FALSE;
+
+	/* After enabled, write enabled auto clears, so we have to write a 1 to Set register space to writable */
+	XWdtTb_SetRegSpaceAccessMode(&WdtTbInstance, 1);
+
+	HandlerCalled = 0;
 
 	/*
 	 * Wait for the first occurrence of interrupt programmed point.
@@ -290,11 +309,11 @@ int WinWdtIntrExample(XScuGic *IntcInstancePtr)
 		return XST_FAILURE;
 	}
 
-	/* Disable and disconnect the interrupt system */
-	WdtTbDisableIntrSystem(IntcInstancePtr);
-
+//	/* Disable and disconnect the interrupt system */
+//	WdtTbDisableIntrSystem(IntcInstancePtr);
+//
 	/* Stop the timer */
-	XWdtTb_Stop(&WdtTbInstance);
+//	XWdtTb_Stop(&WdtTbInstance);
 
 	return XST_SUCCESS;
 }

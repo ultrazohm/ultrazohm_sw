@@ -122,10 +122,9 @@ void ISR_Control(void *data)
 //	//	TEST2: to trigger system hang and the reset
 
 //	//	If the handler is not called, launch the test
-//	if ((HandlerCalled == 0)) {
-//////	if (!WdtExpired) {
-//		uz_sleep_useconds(250);  // 1500 for 1 msecond
-//	}
+	if (((uz_SystemTime_GetInterruptCounter()%1000) == 0)) {
+		uz_sleep_useconds(250);  // 1500 for 1 msecond
+	}
 
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
@@ -309,8 +308,8 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 ////	 status = WdtPsIntrExample(IntcConfig, IntcInstPtr);
 //	 status = WinWdtIntrExample(IntcInstPtr);
 //	 if(status != XST_SUCCESS) {
-//			 xil_printf("RPU: Error: WdtPsIntrExample failed\r\n");
-//			 return XST_FAILURE;
+//		 xil_printf("RPU: Error: WinWdtIntrExample failed\r\n");
+//		 return XST_FAILURE;
 //	 }
 
 	// Enable GPIO and timer interrupts in the controller

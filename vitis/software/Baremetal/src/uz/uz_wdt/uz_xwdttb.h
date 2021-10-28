@@ -69,18 +69,32 @@
  #endif
 #endif /* XPAR_INTC_0_DEVICE_ID */
 
+
+// ORIGINAL VALUES FOR THE EXAMPLE
 //#define WIN_WDT_SW_COUNT	0xF00000	/**< Number of clock cycles for
 //						  *  second window */
 //#define WIN_WDT_SBC_COUNT	16		/**< Selected byte count */
 //#define WIN_WDT_BSS_COUNT	2		/**< Byte segment selected */
 
+
+
 /**< Number of clock cycles for
  *  second window
 */
-//#define WIN_WDT_SW_COUNT	0x002710	/**< 10000 Tics, 100 usec */
-#define WIN_WDT_SW_COUNT	0x004E20	/**< 200 usec */
-#define WIN_WDT_SBC_COUNT	1		/**< Selected byte count */
-#define WIN_WDT_BSS_COUNT	0		/**< Byte segment selected */
+
+// VALUES FOR TESTING, ENOUGHT TIME FOR HANDLER PRINTS (54*2^10, more than 500 micro secs)
+#define WIN_WDT_SW_COUNT	0x0000FC00	/**< 63*2^10 INITIAL VALUE*/
+#define WIN_WDT_SBC_COUNT	0xD8		/**< Selected byte count */
+#define WIN_WDT_BSS_COUNT	1		/**< Byte segment selected */
+
+
+// REAL AND ADJUNTED VALUES, Handler left with 50 micro seconds aprox, 5*2^10 clock ticks exactly *a little over 5000 that the 50 us requieres
+//#define WIN_WDT_SW_COUNT	0x00003800	/**< 14*2^10 INITIAL VALUE */
+//#define WIN_WDT_SBC_COUNT	0x14		/**< Selected byte count */
+//#define WIN_WDT_BSS_COUNT	1		/**< Byte segment selected */
+
+
+
 
 /**************************** Type Definitions *******************************/
 #define HANDLER_CALLED  0xFFFFFFFF

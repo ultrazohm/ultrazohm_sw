@@ -86,7 +86,9 @@ XScuGic_Config *TempConfig;
 * sets the inital value to the counter. If the value of Timeout param is 0U it is set to the
 * SMALLEST VALUE (about 350 useconds).
 *
-* @param	Timeout - Watchdog timeout in ms.
+* @param	Timeout - Initial value for the counter in number of tics.
+* 					Watchdog timeout is therefore timeout * Tcycle,
+* 					and Tcycle = 10 ns with a 100MH processor.
 *
 * @return	XST_SUCCESS if successful, otherwise XST_FAILURE.
 *
@@ -175,7 +177,8 @@ void WdtTb_Start() {
 
 	/*
 	 * Set the AEN bit (to enable protection against accidental clearing)
-	 * and to avoid disable (WEN = 0) when Second Window times out, and bad even occurs and RESET is produced
+	 * and to avoid disable (WEN = 0) ==>> XWdtTb_Stop() NOT POSSIBLE
+	 * BUT when Second Window times out, and bad even occurs and RESET is produced ANYWAY (and IP CORE STOPS RUNNING)
 	 */
 	 XWdtTb_AlwaysEnable(&WdtTbInstance);
 
@@ -396,7 +399,6 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 
 	TempConfig = IntcConfig;
 
-
 	IntcInstance.Config = IntcInstancePtr->Config;
 	IntcInstance.IsReady = IntcInstancePtr->IsReady;
 	IntcInstance.UnhandledInterrupts = IntcInstancePtr->UnhandledInterrupts;
@@ -470,7 +472,7 @@ void WdtTbIntrHandler(void *CallBackRef)
 
 	u32 reg;
 	reg = XScuGic_ReadReg(TempConfig->CpuBaseAddress, XSCUGIC_RUN_PRIOR_OFFSET);
-	xil_printf("WdtTbIntrHandler AND RESTART AND CLEAR: Running priority in WDT handler is %d\r\n",reg >> 3);
+//	xil_printf("WdtTbIntrHandler AND RESTART AND CLEAR: Running priority in WDT handler is %d\r\n",reg >> 3);
 
 	/* Restart the watchdog timer as a normal application would */
 	XWdtTb_RestartWdt(WdtTbInstancePtr);
@@ -483,13 +485,29 @@ void WdtTbIntrHandler(void *CallBackRef)
 	 */
 	/* Set the flag indicating that the WDT has expired */
 //	WdtExpired = TRUE;
-	HandlerCalled = HANDLER_CALLED;
+//	HandlerCalled = HANDLER_CALLED;
+	HandlerCalled++;
 
 	/*
 	 * Code for handling the SYSTEM HANG goes here.
 	 */
+
+	/* Check for last event:
+	 *    As FC is disabled, every bad event generates a reset
+	 *    and the IP Core to stop running. S
+	 *
+	 * */
+	if (XWdtTb_GetLastEvent(&WdtTbInstance) != XWDTTB_NO_BAD_EVENT) {
+		/* Disable and disconnect the interrupt system */
+		WdtTbDisableIntrSystem(&IntcInstance);
+
+		/* Stop the timer */
+		XWdtTb_Stop(&WdtTbInstance);
+
+	}
+//	OR / AND
 //  Xil_Assert(__FILE__, __LINE__);
-//	OR
+
 
 }
 

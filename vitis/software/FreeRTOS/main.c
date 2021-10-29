@@ -59,10 +59,10 @@ struct netif *echo_netif;
 
 A53_Data Global_Data_A53;
 
-#warning This needs manual modification of the BSP file  xemacpsif.c
+#warning This needs manual modification of the BSP file xemacpsif_hw.c
 // PHY DEBUGGING
-// add in xemacpsif.c in line 67: XEmacPs *uz_xemacpsp;
-// add in xemacpsif.c in line 78: uz_xemacpsp = xemacpsp;
+// add in xemacpsif_hw.c in line 67: XEmacPs *uz_xemacpsp;
+// add in xemacpsif_hw.c in line 78: uz_xemacpsp = xemacpsp;
 
 extern XEmacPs *uz_xemacpsp;
 extern u32_t phymapemac0[32];

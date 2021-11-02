@@ -116,7 +116,7 @@
 
 void WdtTb_Start() ;
 
-int WdtTbInit(u32 Timeout);
+int WdtTbInit(u32 CounterValue);
 
 int WinWdtIntrExample(XScuGic *IntcInstancePtr);
 

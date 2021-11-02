@@ -86,7 +86,7 @@ XScuGic_Config *TempConfig;
 * sets the inital value to the counter. If the value of Timeout param is 0U it is set to the
 * SMALLEST VALUE (about 350 useconds).
 *
-* @param	Timeout - Initial value for the counter in number of tics.
+* @param	CounterValue - Initial value for the counter in number of tics.
 * 					Watchdog timeout is therefore timeout * Tcycle,
 * 					and Tcycle = 10 ns with a 100MH processor.
 *
@@ -95,7 +95,7 @@ XScuGic_Config *TempConfig;
 * @note		None.
 *
 ******************************************************************************/
-int WdtTbInit(u32 Timeout) {
+int WdtTbInit(u32 CounterValue) {
 	int Status;
 	XWdtTb_Config *Config;
 
@@ -135,7 +135,7 @@ int WdtTbInit(u32 Timeout) {
 	XWdtTb_SetRegSpaceAccessMode(&WdtTbInstance, 1);
 
 	/* Configure first window = 0 (NOT USED THE CLOSED WINDOW) and second window */
-	XWdtTb_SetWindowCount(&WdtTbInstance, 0, Timeout);
+	XWdtTb_SetWindowCount(&WdtTbInstance, 0, CounterValue);
 
 	/* Set interrupt position */
 	XWdtTb_SetByteCount(&WdtTbInstance, WIN_WDT_SBC_COUNT);
@@ -546,7 +546,7 @@ void WdtTbDisableIntrSystem(XScuGic *IntcInstancePtr)
 
 void WdtTb_Start() {}
 
-int WdtTbInit(u32 Timeout){}
+int WdtTbInit(u32 CounterValue){}
 
 int WinWdtIntrExample(INTC *IntcInstancePtr) {}
 

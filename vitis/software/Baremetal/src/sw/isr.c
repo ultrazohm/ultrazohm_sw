@@ -69,18 +69,19 @@ static void CheckForErrors();
 void ISR_Control(void *data)
 {
 	/*
-	 * RE Start the WDT device.
+	 * To measure the real execution time of the ISR_Control() function this function is the first called.
 	 */
-//	XWdtPs_Restart();
-
-	/* Restart the watch dog timer: kick forward */
-	XWdtTb_RestartWdt(&WdtTbInstance);
-
 	uz_SystemTime_ISR_Tic();
 
 	//  Ensure that the source of the current interrupt is cleared: TESTED, AND NOT NECESARY
 	//	and enable Nested Interrupts: TESTED, NECESARY
 	Xil_EnableNestedInterrupts();
+
+	/* RE Start the SYSTEM WDT device. */
+//	XWdtPs_Restart();
+
+	/* Restart the AXI IP watch dog timer: kick forward */
+	XWdtTb_RestartWdt(&WdtTbInstance);
 
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
 	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
@@ -123,7 +124,7 @@ void ISR_Control(void *data)
 
 //	//	If the handler is not called, launch the test
 	if (((uz_SystemTime_GetInterruptCounter()%1000) == 0)) {
-		uz_sleep_useconds(250);  // 1500 for 1 msecond
+		uz_sleep_useconds(100);  // 1500 for 1 msecond
 	}
 
 	// Update JavaScope

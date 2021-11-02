@@ -31,14 +31,6 @@ pipelines:
         - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
         - cd vitis/software/Baremetal
         - ceedling test:all
-    - step:
-       name: Cppcheck
-       image: ultrazohm/ultrazohm_remote_container
-       script:
-        - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
-        - cppcheck vitis/software/Baremetal/src 
-        - cppcheck --addon=cert vitis/software/Baremetal/src 
-        - cppcheck --addon=misra --inline-suppr vitis/software/Baremetal/src 
    branches:
      develop:
         - step:
@@ -66,6 +58,14 @@ pipelines:
             - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
             - cd vitis/software/Baremetal
             - ceedling test:all
+        - step:
+            name: Cppcheck
+            image: ultrazohm/ultrazohm_remote_container
+            script:
+             - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
+             - cppcheck vitis/software/Baremetal/src 
+             - cppcheck --addon=cert vitis/software/Baremetal/src 
+             - cppcheck --addon=misra --inline-suppr vitis/software/Baremetal/src 
         - step:
            name: Github-Mirror
            image: alpine/git

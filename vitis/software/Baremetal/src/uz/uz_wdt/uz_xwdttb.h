@@ -1,30 +1,22 @@
-/******************************************************************************
-* Copyright (C) 2016 - 2021 Xilinx, Inc.  All rights reserved.
-* SPDX-License-Identifier: MIT
-******************************************************************************/
-
 /*****************************************************************************/
 /**
 *
-* @file xwdttb_winwdt_intr_example.c
+* @file uz_xwdttb.h
 *
-* This file contains a design example using the TimeBase Watchdog Timer Device
-* (WdtTb) driver and hardware device using interrupt mode (for the WDT
-* interrupt).
+* This file contains the functions to initialize the TimeBase Watchdog Timer Device
+* (WdtTb) driver and hardware device and a design example using the using interrupt
+* mode (for the WDT interrupt).
 *
 * @note
 *
-* This example assumes that the reset output of the WdtTb device is not
-* connected to the reset of the processor. This example will not return
-* if the interrupts are not working.
+* This library has been developed based in the Xilinx driver examples.
 *
 * MODIFICATION HISTORY:
 *
 * <pre>
 * Ver   Who  Date     Changes
 * ----- ---- -------- ---------------------------------------------------------
-* 4.0   sha  02/04/16 First release
-* 5.0	sne  03/26/20 Updated example to support versal platform.
+* 1.0   David Ken  03/11/21 First release
 * </pre>
 *
 ******************************************************************************/
@@ -78,21 +70,21 @@
 
 
 
-/**< Number of clock cycles for
- *  second window
-*/
-
-// VALUES FOR TESTING, ENOUGHT TIME FOR HANDLER PRINTS (54*2^10, more than 500 micro secs)
-#define WIN_WDT_SW_COUNT	0x0000FC00	/**< 63*2^10 INITIAL VALUE*/
+/* How to set the second Window Size and the Interruption Point.
+ * ------------------------------------------------------------
+ * WIN_WDT_SW_COUNT		Second Window Size (Initial counter value)
+ * WIN_WDT_BSS_COUNT	Byte selected of the counter. Possible values: 0,1,2,3
+ * WIN_WDT_SBC_COUNT	Value to the selected byte. When selected byte of the counter equals this value and the rest of bits are 0, the INT is activated.
+ *
+ * Wit the nexte values we have:
+ * 9*2^10 = 10.000 clock ticks => 100 microsec to launch the Interruption
+ * 54*2^10 = more than 500 micro secs to execute the handler function (and restart the WD timer inside the Second Win if we wan to resume normal execution)
+ *
+ * Giving a total Secon Window Size of 63*2^10
+ * */
+#define WIN_WDT_SW_COUNT	0x0000FC00	/**< 63*2^10 INITIAL COUNTER VALUE*/
 #define WIN_WDT_SBC_COUNT	0xD8		/**< Selected byte count */
 #define WIN_WDT_BSS_COUNT	1		/**< Byte segment selected */
-
-
-// REAL AND ADJUNTED VALUES, Handler left with 50 micro seconds aprox, 5*2^10 clock ticks exactly *a little over 5000 that the 50 us requieres
-//#define WIN_WDT_SW_COUNT	0x00003800	/**< 14*2^10 INITIAL VALUE */
-//#define WIN_WDT_SBC_COUNT	0x14		/**< Selected byte count */
-//#define WIN_WDT_BSS_COUNT	1		/**< Byte segment selected */
-
 
 
 

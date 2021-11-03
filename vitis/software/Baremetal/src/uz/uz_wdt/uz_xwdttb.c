@@ -1,30 +1,22 @@
-/******************************************************************************
-* Copyright (C) 2016 - 2021 Xilinx, Inc.  All rights reserved.
-* SPDX-License-Identifier: MIT
-******************************************************************************/
-
 /*****************************************************************************/
 /**
 *
-* @file xwdttb_winwdt_intr_example.c
+* @file uz_xwdttb.c
 *
-* This file contains a design example using the TimeBase Watchdog Timer Device
-* (WdtTb) driver and hardware device using interrupt mode (for the WDT
-* interrupt).
+* This file contains the functions to initialize the TimeBase Watchdog Timer Device
+* (WdtTb) driver and hardware device and a design example using the using interrupt
+* mode (for the WDT interrupt).
 *
 * @note
 *
-* This example assumes that the reset output of the WdtTb device is not
-* connected to the reset of the processor. This example will not return
-* if the interrupts are not working.
+* This library has been developed based in the Xilinx driver examples.
 *
 * MODIFICATION HISTORY:
 *
 * <pre>
 * Ver   Who  Date     Changes
 * ----- ---- -------- ---------------------------------------------------------
-* 4.0   sha  02/04/16 First release
-* 5.0	sne  03/26/20 Updated example to support versal platform.
+* 1.0   David Ken  03/11/21 First release
 * </pre>
 *
 ******************************************************************************/
@@ -43,51 +35,17 @@ _Bool Wdttb_IsReady = false;
 XScuGic_Config *TempConfig;
 
 
-///*****************************************************************************/
-///**
-//* Main function to call the WdtTb interrupt example.
-//*
-//*
-//* @return
-//*		- XST_SUCCESS if successful
-//*		- XST_FAILURE, otherwise.
-//*
-//* @note		None.
-//*
-//******************************************************************************/
-//#ifndef TESTAPP_GEN
-//int main(void)
-//{
-//	int Status;
-//
-//	/*
-//	 * Call the WdtTb interrupt example, specify the parameters generated in
-//	 * xparameters.h
-//	 */
-//	Status = WinWdtIntrExample(&IntcInstance,
-//				&WdtTbInstance,
-//				WDTTB_DEVICE_ID,
-//				WDTTB_IRPT_INTR);
-//	if (Status != XST_SUCCESS) {
-//		xil_printf("Window WDT interrupt example failed.\n\r");
-//		return XST_FAILURE;
-//	}
-//
-//	xil_printf("Successfully ran Window WDT interrupt example.\n\r");
-//	return XST_SUCCESS;
-//}
-//#endif
-
-
 /*****************************************************************************/
 /**
 *
 * This function initializes and tests the functioning of the System WatchDog Timer driver and
-* sets the inital value to the counter. If the value of Timeout param is 0U it is set to the
-* SMALLEST VALUE (about 350 useconds).
+* sets the inital value to the counter. This is the total size for The Second Window (Open).
+* The closed Window is not used (0 value for its counter).
+* The rest of the optional functions: FC, SST and SIGNATURE are disabled.
+*
 *
 * @param	CounterValue - Initial value for the counter in number of tics.
-* 					Watchdog timeout is therefore timeout * Tcycle,
+* 					Watchdog timeout is therefore CounterValue * Tcycle,
 * 					and Tcycle = 10 ns with a 100MH processor.
 *
 * @return	XST_SUCCESS if successful, otherwise XST_FAILURE.
@@ -157,9 +115,13 @@ int WdtTbInit(u32 CounterValue) {
 
 /**
 *
-* This function RESTARTs the System WatchDog Timer to the initial value to the counter.
+* This function STARTs the System WatchDog Timer to the initial value to the counter.
 * Generates a good event if executed inside the Second Window, or OPEN Window.
 *
+* The WDT Start is accomplished by enabling the IP Core writing WEN bit =1.
+* The And granting write access to the IP Registers.
+*
+* It also protects the WEN bit. It is not possible to Stop() the device.
 *
 * @note		None.
 *
@@ -185,7 +147,7 @@ void WdtTb_Start() {
 	 XWdtTb_EnableExtraProtection(&WdtTbInstance);
 
 	/*
-	 * Start the watchdog timer as a normal application would
+	 * Start the watchdog timer as a normal application would (WEN bit = 1)
 	 */
 	XWdtTb_Start(&WdtTbInstance);
 //	WdtExpired = FALSE;
@@ -330,13 +292,10 @@ int WinWdtIntrExample(XScuGic *IntcInstancePtr)
 * directly connected to a processor without an interrupt controller. The
 * user should modify this function to fit the application.
 *
+* @param	IntcConfig is a pointer to the instance of the XGIC
+*		Configutarion.
 * @param	IntcInstancePtr is a pointer to the instance of the Intc
 *		driver.
-* @param	WdtTbInstancePtr is a pointer to the instance of WdtTb driver.
-* @param	WdtTbIntrId is the Interrupt Id of the WDT interrupt and is
-*		typically
-*		XPAR_<INTC_instance>_<WDTTB_instance>_WDT_INTERRUPT_VEC_ID
-*		value from xparameters.h.
 *
 * @return
 *		- XST_SUCCESS if successful.
@@ -456,6 +415,11 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 * WdtTb device. It is called when reached to the interrupt programmed point
 * and is called from an interrupt context.
 *
+* The handler of the timing violation. The default behavior is to resume the execution,
+* by restarting the WDT. The execution time of this function is also limited, as is has
+* to restart the WDT inside the second window, otherwise a Reset from the IP core is
+* activated, and the IP stops running
+*
 * @param	CallBackRef is a pointer to the callback reference.
 *
 * @return	None.
@@ -474,28 +438,21 @@ void WdtTbIntrHandler(void *CallBackRef)
 	reg = XScuGic_ReadReg(TempConfig->CpuBaseAddress, XSCUGIC_RUN_PRIOR_OFFSET);
 //	xil_printf("WdtTbIntrHandler AND RESTART AND CLEAR: Running priority in WDT handler is %d\r\n",reg >> 3);
 
-	/* Restart the watchdog timer as a normal application would */
+	/*
+	 * Restart the watchdog timer as a normal application would.
+	 * The WDT Retart is to continue the execution
+	 * */
 	XWdtTb_RestartWdt(WdtTbInstancePtr);
 
-	/* Clear interrupt point */
+	/* Clear interrupt point. To allow a new INT to be triggered again (see documentation)*/
 	XWdtTb_IntrClear(&WdtTbInstance);
 
-	/*
-	 * WDT timed out and interrupt occurred, let main test loop know.
-	 */
-	/* Set the flag indicating that the WDT has expired */
-//	WdtExpired = TRUE;
-//	HandlerCalled = HANDLER_CALLED;
+
+	/* Increment the number of failures handled or received invocations.*/
 	HandlerCalled++;
 
-	/*
-	 * Code for handling the SYSTEM HANG goes here.
-	 */
-
-	/* Check for last event:
-	 *    As FC is disabled, every bad event generates a reset
-	 *    and the IP Core to stop running. S
-	 *
+	/* Check for last event: After Restart inside the second Window it should be always a GOOD_EVENT.
+	 * If it is not, Disable and Stop().
 	 * */
 	if (XWdtTb_GetLastEvent(&WdtTbInstance) != XWDTTB_NO_BAD_EVENT) {
 		/* Disable and disconnect the interrupt system */
@@ -505,7 +462,7 @@ void WdtTbIntrHandler(void *CallBackRef)
 		XWdtTb_Stop(&WdtTbInstance);
 
 	}
-//	OR / AND
+//	OR / AND TO STOP PS EXECUTION!!
 //  Xil_Assert(__FILE__, __LINE__);
 
 

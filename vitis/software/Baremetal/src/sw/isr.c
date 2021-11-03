@@ -116,23 +116,20 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge3DutyCycle);
 
 
-//	//	TEST1: to trigger the time violation of ISR
-//	uz_sleep_useconds(100);
-
-
-//	//	TEST2: to trigger system hang and the reset
-
-//	//	If the handler is not called, launch the test
+//	//	TEST: to trigger the time violation of ISR or system hang and the reset
+//	//	Launch the test every 1000 invocations
 	if (((uz_SystemTime_GetInterruptCounter()%1000) == 0)) {
-		uz_sleep_useconds(100);  // 1500 for 1 msecond
+		uz_sleep_useconds(100);
 	}
 
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
 
+
+
+
 	// Before exiting the Interrupt handler, the Nested Interrupts must be disabled
 	Xil_DisableNestedInterrupts();
-
 
 	// Read the timer value at the very end of the ISR to minimize measurement error
 	// This has to be the last function executed in the ISR!

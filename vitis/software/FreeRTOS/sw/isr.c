@@ -22,25 +22,23 @@
 
 #include "../include/isr.h"
 #include "../defines.h"
+#include "APU_RPU_shared.h"
+#include "xil_cache.h"
 
-#include <math.h>
 
 #define IPI_HEADER			0x1E0000 /* 1E - Target Module ID */
-#define IPI_R5toA53_MSG_LEN		8U
 #define IPI_A53toR5_MSG_LEN		3U
 
-extern ARM_to_Oszi_Data_shared_struct OsziData;
-extern Oszi_to_ARM_Data_shared_struct ControlData;
+Oszi_to_ARM_Data_shared_struct ControlData;
 
 extern A53_Data Global_Data_A53;
+extern int js_connection_established;
 
-// Oszi Data Queue parameters
-QueueHandle_t OsziData_queue;
-int OSZI_QUEUE_FULL = 0;
-const int OSZI_QUEUE_SIZE_ELEMENTS = 1000; 		// could be optimized, empirical minimum is ~400, otherwise data might be lost
-const int OSZI_QUEUE_RECEIVE_TICKS_WAIT = 100;  // 1 tick = 100ms, wait (almost) indefinitely
+// Javascope Queue parameters
+QueueHandle_t js_queue;
+int js_queue_full = 0;
 
-Xint16  i_LifeCheck_Transfer_ipc, cnt_javascope=0;
+int i_LifeCheck_Transfer_ipc;
 
 //Initialize the Interrupt structure
 XScuGic INTCipc;	//Interrupt for IPC
@@ -55,70 +53,49 @@ XScuGic_Config *IntcConfig;
 // Standard isr interrupt from BareMetal -> frequency depends on the Software-interrupt from BareMetal
 void Transfer_ipc_Intr_Handler(void *data)
 {
+	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START
+	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
+
 	int status;
-	u32 IpiBuf[IPI_R5toA53_MSG_LEN] = {0U};
 	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0,0,XST_SUCCESS};
-	u32 RegVal;
 	BaseType_t xHigherPriorityTaskWoken;
 
-	// Check if the IPI is from the expected source i-> here we expect from R5_0
-	RegVal = XIpiPsu_GetInterruptStatus(&INTCInst_IPI);
-	if((RegVal & (u32)XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK) == 0U) {//Check if received source is equal to expected source (R5_0)
-		xil_printf("APU: Received IPI from invalid source, ISR:%x\r\n", RegVal);
-		Global_Data_A53.ew.wrongInterruptByIPI = XTRUE;
-	} else {
-		//SW: Now read the IPI payload buffer from the source - if necessary -> but we don't need it!
-		RegVal = (u32)XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, IpiBuf, IPI_R5toA53_MSG_LEN, XIPIPSU_BUF_TYPE_MSG);
+	// flush cache of shared memory
+	Xil_DCacheFlushRange( MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
 
-		RespBuf[0] = (u32)ControlData.id;
-		RespBuf[1] = (u32)ControlData.value;
-		RespBuf[2] = (u32)ControlData.digInputs;
-
-		//SW: Write message for acknowledge of the interrupt to RPU
-		status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, RespBuf, IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_RESP);
-
-		// Valid IPI. Clear the appropriate bit in the respective ISR
-		XIpiPsu_ClearInterruptStatus(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
-
-		i_LifeCheck_Transfer_ipc++;
-		if(i_LifeCheck_Transfer_ipc > 25000){
-			i_LifeCheck_Transfer_ipc =0;
-		}
-	}
-
-
-	if (cnt_javascope < 5)
+	// if javascope connection is established
+	if(js_connection_established!=0)
 	{
-		// IpiBuf contains float values from R5, use memcpy to avoid unwanted cast to other type
-		memcpy(&OsziData.val[cnt_javascope],  	&IpiBuf[0], sizeof(float));
-		memcpy(&OsziData.val[5+cnt_javascope],  &IpiBuf[1], sizeof(float));
-		memcpy(&OsziData.val[10+cnt_javascope], &IpiBuf[2], sizeof(float));
-		memcpy(&OsziData.val[15+cnt_javascope], &IpiBuf[3], sizeof(float));
-	}
+		// append sample to queue
+		size_t queue_status = xQueueSendToBackFromISR(js_queue, javascope_data, &xHigherPriorityTaskWoken);
 
-	cnt_javascope++;
-
-	if (cnt_javascope >= 5)
-	{
-		// these variables are sent every time, but only evaluated every 5th time
-		OsziData.slowDataContent 		= IpiBuf[4];
-		OsziData.slowDataID 			= (Xuint16)IpiBuf[5];
-		OsziData.status_BareToRTOS 		= IpiBuf[6];
-
-		cnt_javascope = 0;
-
-		// append OsziData to queue
-		if ( errQUEUE_FULL == xQueueSendToBackFromISR(OsziData_queue, &OsziData, &xHigherPriorityTaskWoken)  )
+		if (queue_status == errQUEUE_FULL)
 		{
-			// count how many packages are lost due to a full queue
-			// if JavaScope is not connected, this keep counting up
-			OSZI_QUEUE_FULL++;
+			js_queue_full++;
+			// xil_printf("OsziData_queue is full\r\n");
 		}
-
-		// force context switch after ISR finishes -> switching to ethernet task
-		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 	}
+
+	RespBuf[0] = (u32)ControlData.id;
+	RespBuf[1] = (u32)ControlData.value;
+	RespBuf[2] = (u32)ControlData.digInputs;
+
+	// Write message for acknowledge of the interrupt to RPU
+	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, RespBuf, IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_RESP);
+
+	// Valid IPI. Clear the appropriate bit in the respective ISR
+	XIpiPsu_ClearInterruptStatus(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
+
+	i_LifeCheck_Transfer_ipc++;
+
+	if(i_LifeCheck_Transfer_ipc > 25000){
+		i_LifeCheck_Transfer_ipc =0;
+	}
+
+	// force context switch after ISR finishes -> switching to ethernet task
+	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -154,29 +131,27 @@ int Initialize_ISR(){
 
 	int Status = 0;
 
-	/* Initialize RPU GIC and Connect IPI interrupt*/
+	// Initialize RPU GIC and Connect IPI interrupt
 	Status = Apu_GicInit(&INTCipc, XPAR_XIPIPSU_0_INT_ID,(Xil_ExceptionHandler)Transfer_ipc_Intr_Handler, &INTCInst_IPI);
-	//toDO: check "XPAR_XIPIPSU_0_INT_ID" or "XPAR_XTTCPS_0_INTR"
-		if(Status != XST_SUCCESS) {
-			xil_printf("APU: Error: GIC initialization failed\r\n");
-			return XST_FAILURE;
-		}
+	if(Status != XST_SUCCESS) {
+		xil_printf("APU: Error: GIC initialization failed\r\n");
+		return XST_FAILURE;
+	}
+
+	// create queue for buffering R5 interrupt -> ethernet thread
+	js_queue = xQueueCreate( JS_QUEUE_SIZE_ELEMENTS, sizeof(struct javascope_data_t) );
+	if (js_queue == NULL){
+		xil_printf("APU: Error: Queue creation failed\r\n");
+		return XST_FAILURE;
+	}
 
 	// Initialize interrupt controller for the IPI -> Initialize RPU IPI
 	Status = Apu_IpiInit(&INTCInst_IPI, INTERRUPT_ID_IPI);
-		if(Status != XST_SUCCESS) {
-			xil_printf("APU: Error: IPI initialization failed\r\n");
-			return XST_FAILURE;
-		}
+	if(Status != XST_SUCCESS) {
+		xil_printf("APU: Error: IPI initialization failed\r\n");
+		return XST_FAILURE;
+	}
 
-	// create queue with queue_elements elements of of type ARM_to_Oszi_Data_shared_struct
-	OsziData_queue = xQueueCreate( OSZI_QUEUE_SIZE_ELEMENTS, sizeof(ARM_to_Oszi_Data_shared_struct) );
-		if (OsziData_queue == NULL){
-			xil_printf("APU: Error: Queue creation failed\r\n");
-			return XST_FAILURE;
-		}
-
-	//xil_printf("APU: Queue successfully created\r\n");
 
 	return Status;
 }

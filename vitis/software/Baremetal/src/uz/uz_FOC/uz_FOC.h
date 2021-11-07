@@ -13,14 +13,34 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+/*! enum for readable configuring for the decoupling in the FOC sample function */
+enum uz_FOC_decoupling_select {
+	no_decoupling=0, 
+	linear_decoupling
+	}; 
+
 /**
  * @brief Configuration struct for FOC. Accessible by the user
  */
 struct uz_FOC_config {
+	enum uz_FOC_decoupling_select decoupling_select; /**< FOC decoupling selector \n
+													0 = no_decoupling \n
+													1 = linear_decoupling*/
 	struct uz_PI_Controller_config config_id; /**< Configuration struct for id-Controller */
 	struct uz_PI_Controller_config config_iq; /**< Configuration struct for iq-Controller */
 	struct uz_PMSM_t config_PMSM; /**< Configuration struct for PMSM parameters */
+
 };
+/**
+ * @brief Struct for the three DutyCycles for a three-phase-system
+ * 
+ */
+struct uz_DutyCycle_t {
+	float DutyCycle_U; /**< DutyCycle for Phase U */
+	float DutyCycle_V; /**< DutyCycle for Phase V */
+	float DutyCycle_W; /**< DutyCycle for Phase W */
+};
+
 
 /**
  * @brief Object definition for FOC
@@ -42,11 +62,11 @@ uz_FOC* uz_FOC_init(struct uz_FOC_config config);
  * @param self uz_FOC instance
  * @param i_reference_Ampere uz_dq_t struct for reference dq-currents in Ampere
  * @param i_actual_Ampere uz_dq_t struct for measured dq-currents in Ampere
- * @param U_zk_Volts measured U_zk voltage. Must be greater than 0.0f
+ * @param V_dc_volts DC link voltage. Must be greater than 0.0f
  * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
  * @return struct uz_dq_t Output dq-reference voltage struct
  */
-struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float U_zk_Volts, float omega_el_rad_per_sec);
+struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec);
 
 /**
  * @brief calculates last sample and transforms the dq-output voltage into the UVW-system
@@ -54,12 +74,12 @@ struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, st
  * @param self uz_FOC instance
  * @param i_reference_Ampere uz_dq_t struct for reference dq-currents in Ampere
  * @param i_actual_Ampere uz_dq_t struct for measured dq-currents in Ampere
- * @param U_zk_Volts measured U_zk voltage. Must be greater than 0.0f
+ * @param V_dc_volts DC link voltage. Must be greater than 0.0f
  * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
  * @param theta_el_rad electrical theta in rad
  * @return struct uz_UVW_t Output UVW-voltage struct
  */
-struct uz_UVW_t uz_FOC_sample_UVW(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float U_zk_Volts, float omega_el_rad_per_sec, float theta_el_rad);
+struct uz_UVW_t uz_FOC_sample_UVW(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad);
 /**
  * @brief Resets the FOC and the integrators of the PI-Controllers
  *
@@ -132,10 +152,29 @@ void uz_FOC_set_Lq(uz_FOC* self, float Lq_Henry);
 void uz_FOC_set_Psi_PM(uz_FOC* self, float Psi_PM_Vs);
 
 /**
+ * @brief Function to change the type of decoupling during runtime
+ * 
+ * @param self uz_FOC instance
+ * @param decoupling_select enum FOC decoupling selector \n
+							0 = no_decoupling \n
+							1 = linear_decoupling
+ */
+void uz_FOC_set_decoupling_method(uz_FOC* self, enum uz_FOC_decoupling_select decoupling_select);
+
+/**
  * @brief Returns the current value of the external clamping signal
  * 
  * @param self uz_FOC instance
  * @return current value as bool 
  */
 bool uz_FOC_get_ext_clamping(uz_FOC* self);
+
+/**
+ * @brief Generates one sample for a continuous sinusoidal PWM (SPWM)  
+ * 
+ * @param input uz_UVW_t struct 
+ * @param V_dc_volts DC link voltage. Must be greater than 0.0f
+ * @return struct uz_DutyCycle_t outputs the corresponding DutyCycle for each phase
+ */
+struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(struct uz_UVW_t input, float V_dc_volts);
 #endif // UZ_FOC_H

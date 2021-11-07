@@ -21,4 +21,5 @@ Therefore the `Altium documentation <https://www.altium.com/documentation/altium
    altium_db_lib/altium_Structure
    altium_db_lib/altium_Layer_Stack
    altium_db_lib/altium_Rules
+   ordering_at_JLC/ordering_at_JLC
 

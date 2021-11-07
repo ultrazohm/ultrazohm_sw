@@ -25,3 +25,4 @@ Software Framework
     assertions/assertions
     SystemTime/SystemTime
     matrix/matrix_math
+    neural_network/neural_network

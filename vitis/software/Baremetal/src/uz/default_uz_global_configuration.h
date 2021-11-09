@@ -27,7 +27,7 @@
 #define UZ_NN_LAYER_MAX_INSTANCES               0U
 #define UZ_NN_MAX_INSTANCES                     0U
 #define UZ_PMSMMODEL_MAX_INSTANCES              0U
-#define UZ_DQ_TRANSFORMATION_MAX_INSTANCES      1U
+#define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -44,5 +44,5 @@
     #define UZ_NN_MAX_INSTANCES                     10U
     #define UZ_PMSMMODEL_MAX_INSTANCES              11U
     #define UZ_PLANTPT1_MAX_INSTANCES               6U
-    #define UZ_DQ_TRANSFORMATION_MAX_INSTANCES      11U
+    #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      11U
 #endif

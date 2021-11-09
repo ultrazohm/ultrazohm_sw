@@ -9,7 +9,7 @@
 #include "mock_uz_dq_transformation_hw.h"
 #include "uz_Transformation.h" 
 
-static struct uz_dq_transformation_config_t config={
+static struct uz_dqIPcore_config_t config={
    .base_address= TEST_BASE_ADDRESS,
    .ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
    .theta_offset = -1.5f
@@ -29,14 +29,14 @@ void tearDown(void)
 void test_uz_dq_transformation_init_test(void)
 {
    uz_dqTransformation_hw_set_thetaOffset_Expect(config.base_address, config.theta_offset);
-   uz_dq_transformation_t* test_instance = uz_dq_transformation_init(config);
+   uz_dqIPcore_init(config);
 }
 
 
 void test_uz_dq_transformation_read_idq(void)
 {
    uz_dqTransformation_hw_set_thetaOffset_Expect(config.base_address, config.theta_offset);
-   uz_dq_transformation_t* test_instance = uz_dq_transformation_init(config);
+   uz_dqIPcore_t* test_instance = uz_dqIPcore_init(config);
 
    float id_expected = -2.25f; 
    uz_dqTransformation_hw_get_id_ExpectAndReturn(config.base_address, id_expected);
@@ -44,7 +44,7 @@ void test_uz_dq_transformation_read_idq(void)
    float iq_expected = 12.125f; 
    uz_dqTransformation_hw_get_iq_ExpectAndReturn(config.base_address, iq_expected);
 
-   struct uz_dq_t currents = uz_dqTransformation_get_id_iq(test_instance);
+   struct uz_dq_t currents = uz_dqIPcore_get_id_iq(test_instance);
    
    TEST_ASSERT_EQUAL_FLOAT(currents.d, id_expected);
    TEST_ASSERT_EQUAL_FLOAT(currents.q, iq_expected);
@@ -53,7 +53,7 @@ void test_uz_dq_transformation_read_idq(void)
 void test_uz_dq_transformation_read_i_uvw(void)
 {
    uz_dqTransformation_hw_set_thetaOffset_Expect(config.base_address, config.theta_offset);
-   uz_dq_transformation_t* test_instance = uz_dq_transformation_init(config);
+   uz_dqIPcore_t* test_instance = uz_dqIPcore_init(config);
 
    float iu_expected = -2.25f; 
    uz_dqTransformation_hw_get_i1_ExpectAndReturn(config.base_address, iu_expected);
@@ -64,7 +64,7 @@ void test_uz_dq_transformation_read_i_uvw(void)
    float iw_expected = 13.125f; 
    uz_dqTransformation_hw_get_i3_ExpectAndReturn(config.base_address, iw_expected);
 
-   struct uz_UVW_t currents = uz_dqTransformation_get_i_uvw(test_instance);
+   struct uz_UVW_t currents = uz_dqIPcore_get_i_uvw(test_instance);
    
    TEST_ASSERT_EQUAL_FLOAT(currents.U, iu_expected);
    TEST_ASSERT_EQUAL_FLOAT(currents.V, iv_expected);
@@ -73,8 +73,8 @@ void test_uz_dq_transformation_read_i_uvw(void)
 
 void test_uz_dq_transformation_read_i_uvw_pointer(void)
 {
-   uz_dq_transformation_t* testpointer = NULL;
-   TEST_ASSERT_FAIL_ASSERT(uz_dqTransformation_get_i_uvw(testpointer));
+   uz_dqIPcore_t* testpointer = NULL;
+   TEST_ASSERT_FAIL_ASSERT(uz_dqIPcore_get_i_uvw(testpointer));
 }
 
 

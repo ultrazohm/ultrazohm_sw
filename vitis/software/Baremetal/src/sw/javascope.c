@@ -60,7 +60,7 @@ int JavaScope_initalize(DS_Data* data)
 
 	ControlData.digInputs =0;
 	ControlData.id =0;
-	ControlData.value =0;
+	ControlData.value_float =0;
 
 	// Store every observable signal into the Pointer-Array.
 	// With the JavaScope, signals can be displayed simultaneously
@@ -128,9 +128,9 @@ void js_fetchData()
 		xil_printf("RPU: IPI reading from A53 failed\r\n");
 	}
 
-	ControlData.id 			= (uint16_t)RespBuf[0];
-	ControlData.value 		= (uint16_t)RespBuf[1];
-	ControlData.digInputs 	= (uint16_t)RespBuf[2];
+	ControlData.id 			= RespBuf[0];
+	ControlData.value_uint	= RespBuf[1];
+	ControlData.digInputs 	= RespBuf[2];
 
 	js_cnt_slowData++;
 	if (js_cnt_slowData >= JSSD_ENDMARKER){
@@ -147,13 +147,13 @@ void JavaScope_update(DS_Data* data){
 	static Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
 
 	 //In order to avoid unnecessary memory access, call only if something has changed!
-	if((ControlDataShadowBare.id != ControlData.id)||(ControlDataShadowBare.value != ControlData.value)){
+	if((ControlDataShadowBare.id != ControlData.id)||(ControlDataShadowBare.value_float != ControlData.value_float)){
 		//Safe the current control data into a shadow register
 		ControlDataShadowBare.id = ControlData.id;
-		ControlDataShadowBare.value = ControlData.value;
+		ControlDataShadowBare.value_float = ControlData.value_float;
 		ControlDataShadowBare.digInputs = ControlData.digInputs;
 		//Read the control values from JavaScope
-		ipc_Control_func(ControlDataShadowBare.id, ControlDataShadowBare.value, data); //check always in while(1) if there are new control values
+		ipc_Control_func(ControlDataShadowBare.id, ControlDataShadowBare.value_float, data); //check always in while(1) if there are new control values
 	}
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

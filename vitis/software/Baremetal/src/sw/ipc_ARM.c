@@ -36,7 +36,7 @@ extern float sin1amp;
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 
-void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
+void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 {
 
 	if ( msgId != 0)
@@ -96,28 +96,28 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[0] = js_ch_observable[value];
+				js_ch_selected[0] = js_ch_observable[(uint32_t)value];
 			}
 		}
 		else if (msgId == 205) // SELECT_DATA_CH2_bits
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[1] = js_ch_observable[value];
+				js_ch_selected[1] = js_ch_observable[(uint32_t)value];
 			}
 		}
 		else if (msgId == 206) // SELECT_DATA_CH3_bits
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[2] = js_ch_observable[value];
+				js_ch_selected[2] = js_ch_observable[(uint32_t)value];
 			}
 		}
 		else if (msgId == 207) // SELECT_DATA_CH4_bits
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[3] = js_ch_observable[value];
+				js_ch_selected[3] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -125,7 +125,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[4] = js_ch_observable[value];
+				js_ch_selected[4] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -133,7 +133,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[5] = js_ch_observable[value];
+				js_ch_selected[5] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -141,7 +141,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[6] = js_ch_observable[value];
+				js_ch_selected[6] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -149,7 +149,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[7] = js_ch_observable[value];
+				js_ch_selected[7] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -157,7 +157,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[8] = js_ch_observable[value];
+				js_ch_selected[8] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -165,7 +165,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[9] = js_ch_observable[value];
+				js_ch_selected[9] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -173,7 +173,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[10] = js_ch_observable[value];
+				js_ch_selected[10] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -181,7 +181,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[11] = js_ch_observable[value];
+				js_ch_selected[11] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -189,7 +189,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[12] = js_ch_observable[value];
+				js_ch_selected[12] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -197,7 +197,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[13] = js_ch_observable[value];
+				js_ch_selected[13] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -205,7 +205,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[14] = js_ch_observable[value];
+				js_ch_selected[14] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -213,7 +213,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[15] = js_ch_observable[value];
+				js_ch_selected[15] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -221,7 +221,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[16] = js_ch_observable[value];
+				js_ch_selected[16] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -229,7 +229,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[17] = js_ch_observable[value];
+				js_ch_selected[17] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -237,7 +237,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[18] = js_ch_observable[value];
+				js_ch_selected[18] = js_ch_observable[(uint32_t)value];
 
 			}
 		}
@@ -245,7 +245,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ch_selected[19] = js_ch_observable[value];
+				js_ch_selected[19] = js_ch_observable[(uint32_t)value];
 
 			}
 		}

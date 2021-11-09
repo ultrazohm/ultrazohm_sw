@@ -19,6 +19,6 @@
 #include <stdint.h>
 #include "../globalData.h"
 
-void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data);
+void ipc_Control_func(uint32_t msgId, float value, DS_Data* data);
 
 #endif /* IPC_H_ */

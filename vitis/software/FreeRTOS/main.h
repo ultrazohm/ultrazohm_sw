@@ -88,10 +88,13 @@ typedef struct		// status + time + 20 elements (32bit) + 32 bit
 
 typedef struct
 {
-	uint16_t id;
-	uint16_t value;
-	uint16_t digInputs;
+	uint32_t id;
+	union{	uint32_t value_uint;
+			float 	 value_float;
+	};
+	uint32_t digInputs;
 } Oszi_to_ARM_Data_shared_struct;
+
 
 
 typedef struct _errorWord_ { // 16 bits

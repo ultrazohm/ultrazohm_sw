@@ -65,7 +65,7 @@ void process_request_thread(void *p)
 
 	while (1) {
 
-		u32_t command=0;
+		u32_t command[2]={};
 
 		for (size_t i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
 
@@ -126,12 +126,12 @@ void process_request_thread(void *p)
 				break;
 			}
 			//asm(" nop");
-			if (nread == 4){
-				command = *((u32_t*)recv_buf); // cast 4 bytes to Uint32
-				if (command != 0)
+			if (nread == 8){
+				command[0] = *((u32_t*)recv_buf); // cast 4 bytes to Uint32
+				if (command[0] != 0)
 				{
-					ControlData.id = (u16_t)command; 			// Erste 2 Bytes: Commands in Form von Flags/Nummern
-					ControlData.value = (s16_t)(command >> 16);	// Letzte 2 Bytes: Zahlenwert Uebergabe
+					ControlData.id = command[0]; 			// Erste 2 Bytes: Commands in Form von Flags/Nummern
+					ControlData.value_uint = command[1];	// Letzte 2 Bytes: Zahlenwert Uebergabe
 				}
 			}
 

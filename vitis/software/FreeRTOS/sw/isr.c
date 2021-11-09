@@ -77,7 +77,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	}
 
 	RespBuf[0] = (u32)ControlData.id;
-	RespBuf[1] = (u32)ControlData.value;
+	RespBuf[1] = (u32)ControlData.value_uint;
 	RespBuf[2] = (u32)ControlData.digInputs;
 
 	// Write message for acknowledge of the interrupt to RPU

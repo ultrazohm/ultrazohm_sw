@@ -18,18 +18,6 @@ typedef struct
 
 typedef struct
 {
-	uint32_t status_BareToRTOS;
-	_Bool SampledDataWriteDone;
-	_Bool SampledDataReadDone;
-	_Bool SampledDataError;
-	uint16_t schiebereg_ausgaenge;
-	uint32_t slowDataContent;
-	uint16_t slowDataID;
-//	uint16_t val[20];
-} ARM_to_Oszi_Data_shared_struct;
-
-typedef struct
-{
 	uint16_t id;
 	uint16_t value;
 	uint16_t digInputs;

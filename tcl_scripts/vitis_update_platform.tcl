@@ -18,7 +18,7 @@
 #	source {../../tcl_scripts/vitis_update_platform.tcl}
 #
 # XSCT Programming Reference
-# https://www.xilinx.com/html_docs/xilinx2019_2/vitis_doc/
+# https://www.xilinx.com/html_docs/xilinx2020_1/vitis_doc/
 ###########################################################################
 
 
@@ -92,8 +92,8 @@ platform config -updatehw $XSA_FILE
 puts "Info:(UltraZohm) Regenerate FreeRTOS_domain BSP"
 domain active FreeRTOS_domain
 # increase heap size of freertos, to fix javascope glitches
-# this has to be included in update_platform script, otherwise this setting is overwritten
-bsp config total_heap_size  20000000
+# this has to be included in update_platform script, otherwise this setting is overwritten (for some strange reason)
+bsp config total_heap_size  200000000
 platform write 
 bsp regenerate
 

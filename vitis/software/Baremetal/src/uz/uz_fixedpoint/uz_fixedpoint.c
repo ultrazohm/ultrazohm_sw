@@ -42,13 +42,15 @@ float uz_fixedpoint_axi_read(uint32_t memory_address, struct uz_fixedpoint_defin
     uz_assert_not_zero_uint32(memory_address);
     uz_assert(32U > (fixedpoint_definition.fractional_bits + fixedpoint_definition.integer_bits));
     uint32_t register_value = uz_axi_read_uint32(memory_address);
-    return uz_fixedpoint_convert_to_float(register_value, fixedpoint_definition);
+    float read_value=uz_fixedpoint_convert_to_float(register_value, fixedpoint_definition);
+    uz_fixedpoint_check_limits(read_value,fixedpoint_definition);
+    return read_value;
 }
 
 void uz_fixedpoint_axi_write(uint32_t memory_address, float data, struct uz_fixedpoint_definition_t fixedpoint_definition)
 {
     uz_assert_not_zero_uint32(memory_address);
-    uz_assert(32U > (fixedpoint_definition.fractional_bits + fixedpoint_definition.integer_bits));
+    uz_fixedpoint_check_limits(data,fixedpoint_definition);
     uint32_t fixed_data = uz_fixedpoint_convert_to_fixed(data, fixedpoint_definition);
     uz_axi_write_uint32(memory_address, fixed_data);
 }
@@ -61,6 +63,6 @@ static float uz_fixedpoint_convert_to_float(uint32_t input, struct uz_fixedpoint
 
 static uint32_t uz_fixedpoint_convert_to_fixed(float data, struct uz_fixedpoint_definition_t fixed_data)
 {
-    uz_assert(32U > (fixed_data.fractional_bits + fixed_data.integer_bits));
+    uz_fixedpoint_check_limits(data,fixed_data);
     return ((uint32_t)ldexpf(data, fixed_data.fractional_bits));
 }

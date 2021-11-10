@@ -27,6 +27,44 @@ The MSB determines the signedness, the bits *between* the MSB and the integer bi
 
 .. note:: This is not intended to do fixed point math on the processor!
 
+Example
+=======
+
+Write
+*****
+
+Write a value that is a ``float`` in the processor to an IP-Core that expects signed fixed point data with 3 integer and 4 fraction bits.
+
+.. code-block:: c
+
+    #include "uz_fixedpoint.h"
+    #define TEST_ADDRESS 0x00F
+    float write_value=1.0f;
+    struct uz_fixedpoint_definition_t def={
+        .is_signed=true,
+        .fractional_bits=4,
+        .integer_bits=3
+    };
+    uz_fixedpoint_axi_write(TEST_ADDRESS,write_value,def);
+
+
+Read
+****
+
+Read a value from an IP-Core that is an unsigned fixed point with 10 integer bits and 2 fractional bits and pass it to the processor as a ``float``.
+
+
+.. code-block:: c
+
+    #include "uz_fixedpoint.h"
+    #define TEST_ADDRESS 0x00F
+    struct uz_fixedpoint_definition_t def={
+        .is_signed=false,
+        .fractional_bits=2,
+        .integer_bits=10
+    };
+    float data=uz_fixedpoint_axi_read(TEST_ADDRESS,def);
+
 Reference
 =========
 

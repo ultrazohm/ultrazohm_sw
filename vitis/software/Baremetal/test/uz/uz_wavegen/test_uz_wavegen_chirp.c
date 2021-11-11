@@ -25,7 +25,7 @@ struct uz_wavegen_chirp_config config_chirp = {
 
 void test_uz_wavegen_chirp_init_successful(void){    
     uz_wavegen_chirp* chirp_instance=uz_wavegen_chirp_init(config_chirp);
-    uz_SystemTime_GetGlobalTimeInSec_ExpectAndReturn(0.05);
+    uz_SystemTime_GetGlobalTimeInSec_ExpectAndReturn(0.05f);
     uz_wavegen_chirp_sample(chirp_instance);
 }
 

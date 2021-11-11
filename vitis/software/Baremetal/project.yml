@@ -32,10 +32,12 @@
 :flags:
   :test:
     :compile:
-      :*:          # add '-Wall' to compilation of all files
+      :*:          # add '-Wall' to compilation of all files #- -Wsign-conversion
         - -Wall
         - -Wextra
         - -Wpedantic
+        - -Wconversion
+        
 
 :paths:
   :test:

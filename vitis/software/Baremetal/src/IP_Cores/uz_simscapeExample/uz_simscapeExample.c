@@ -19,8 +19,8 @@ void uz_simscapeExample_step_model_once(uz_simscapeExample_handle self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	int tmp = (uz_SystemTime_GetInterruptCounter() % 10000);
-	float t = tmp / 10000.0;
-	self->sine = self->amp * sinf(2 * M_PI * t * self->freq_Hz);
+	float t = tmp / 10000.0f;
+	self->sine = self->amp * sinf(2.0f * UZ_PIf * t * self->freq_Hz);
 	uz_simscapeExample_set_Vin(self, self->sine);
 	self->IR = uz_simscapeExample_get_IR(self);
 	self->Iout = uz_simscapeExample_get_Iout(self);

@@ -56,8 +56,19 @@ void uz_fixedpoint_axi_write(uint32_t memory_address, float data, struct uz_fixe
 float uz_fixedpoint_convert_to_float(uint32_t input, struct uz_fixedpoint_definition_t fixedpoint_definition)
 {
     uz_assert(32U > (fixedpoint_definition.fractional_bits + fixedpoint_definition.integer_bits));
-    return ldexpf((float)input, -fixedpoint_definition.fractional_bits); // 2^(-fractional bits)
+    float input_float=(float)input;
+    float output=ldexpf(input_float, -fixedpoint_definition.fractional_bits);
+    return output; // 2^(-fractional bits)
 }
+
+float uz_fixedpoint_convert_signed_to_float(int32_t input, struct uz_fixedpoint_definition_t fixedpoint_definition)
+{
+    uz_assert(32U > (fixedpoint_definition.fractional_bits + fixedpoint_definition.integer_bits));
+    float input_float=(float)input;
+    float output=ldexpf(input_float, -fixedpoint_definition.fractional_bits);
+    return output; // 2^(-fractional bits)
+}
+
 
 uint32_t uz_fixedpoint_convert_to_fixed(float data, struct uz_fixedpoint_definition_t fixed_data)
 {

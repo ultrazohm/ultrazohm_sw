@@ -152,9 +152,20 @@ void test_uz_fixedpoint_convert_to_float_positive(void)
         .fractional_bits = 3,
         .integer_bits = 3};
     uint32_t testinput = (1) << 3;
-    int32_t testinput2=-1;
-    float return_value=uz_fixedpoint_convert_to_float(testinput2, def);
+    float return_value=uz_fixedpoint_convert_to_float(testinput, def);
     TEST_ASSERT_EQUAL_FLOAT(1.0f,return_value);
+}
+
+void test_uz_fixedpoint_convert_to_float_negative(void)
+{
+    struct uz_fixedpoint_definition_t def = {
+        .is_signed = true,
+        .fractional_bits = 5,
+        .integer_bits = 16};
+    //uint32_t testinput = 0b111111111111111111111111111110000;
+    int32_t testinput= ((int32_t)ldexpf(-4.0f, def.fractional_bits));
+    float return_value=uz_fixedpoint_convert_to_float(testinput, def);
+    TEST_ASSERT_EQUAL_FLOAT(-4.0f,return_value);
 }
 
 #endif // TEST

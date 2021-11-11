@@ -15,7 +15,9 @@
 
 //Includes from own files
 #include "main.h"
+#include "uz/uz_global_configuration.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
+
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -25,12 +27,6 @@ _Bool bInit = false;
 DS_Data Global_Data;
 extern XGpio Gpio_OUT; /* GPIO Device driver instance for the real GPIOs */
 
-//Data from R5_0 to A53_0 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
-ARM_to_Oszi_Data_shared_struct OsziData;
-
-//Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-Oszi_to_ARM_Data_shared_struct ControlData;
-Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
 
 static void uz_assertCallback(const char8 *file, s32 line) {
 	extern XScuGic INTCInst;
@@ -68,7 +64,7 @@ int main(void) {
 	Initialize_Timer();
 	uz_SystemTime_init();
 	// Initialize the incremental encoder
-	Encoder_Incremental_Initialize(&Global_Data);
+	initialize_incremental_encoder_ipcore_on_D5(Global_Data.mrp.incrementalEncoderResolution,Global_Data.mrp.motorPolePairNumber);
 
 	// Initialize the FPGA control algorithm
 	Initialize_FPGAController(&Global_Data);
@@ -103,7 +99,7 @@ int main(void) {
 		if (Global_Data.dv.sw2 == true) {
 			Global_Data.cw.enableControl = true;
 		}
-#ifndef UltraZohmV2 // in CarrierBoard_v2 there are no buttons, therefore always SW_stop is always zero/false
+#if (UZ_HARDWARE_VERSION > 2U) // in CarrierBoard_v2 there are no buttons, therefore SW_stop is always zero/false
 		// Set the control enable and system enable flag to false if SW3 is pressed
 		if (Global_Data.dv.sw3 == false) {
 			Global_Data.cw.enableControl = false;
@@ -295,9 +291,9 @@ void InitializeDataStructure(DS_Data* data) {
 
 	//Encoder
 	data->mrp.incrementalEncoderResolution = 5000.0; //[Increments per turn] // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
-	data->mrp.incrementalEncoderOffset = 3.141592653589; //[rad]  //Offset for the Park-Transformation -> pi = 3.141592653589
+	data->mrp.incrementalEncoderOffset = 3.141592653589; //[rad]  // DOES NOT AFFECT theta_el in global data! Offset for the Park-Transformation IP-Core -> pi = 3.141592653589
 	data->mrp.motorMaximumSpeed = 6000.0; //[rpm]
-	data->mrp.incrementalEncoderOversamplingFactor = 5.0; //Oversampling factor must be between 1.0-6.0 (Achtung, immer mit Punkt da sonst nicht als float interpretiert
+    data->mrp.IncEncoderLPF_freq=1000.0f; // Filter for rotational speed
 
 	//Motor related parameters
 	Initialize_MotorRelatedParameters(data);

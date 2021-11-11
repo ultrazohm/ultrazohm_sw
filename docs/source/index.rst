@@ -1,8 +1,3 @@
-.. UltraZohm documentation master file, created by
-   sphinx-quickstart on Tue Feb  4 21:12:00 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Documentation of the UltraZohm
 ==============================
 
@@ -55,33 +50,31 @@ Syllabus
 .. toctree::
     :maxdepth: 2
     :caption: Getting-Started
-
+    
+    getting_started/onboarding/onboarding
     getting_started/toolchain/index
-    getting_started/quickstart/index
+    getting_started/ultrazohm_setup/ultrazohm_setup
     getting_started/tutorials/index
 
 .. toctree::
     :maxdepth: 2
     :caption: General
 
-    general/overview
-    general/project_structure
-    general/bitbucket
-    general/contribution_workflow
-    general/tcl_scripts
-    general/ci_pipeline
-    general/howToDocs/howToDocs
+    general/system_overview
+    general/project_structure/project_structure
+    general/infrastructure/infrastructure
+    general/how_to_guides/how_to_guides
     general/useCases/useCases
-    general/vscode_remote_container/vscode_remote_container
 
 .. toctree::
     :maxdepth: 2
     :caption: MPSoC Platform
 
     mpsoc/platform_architecture/platform_architecture
-    mpsoc/vivado/vivado
-    mpsoc/ip_cores/index
-    mpsoc/vitis/vitis
+    mpsoc/rpu_software/rpu_software
+    mpsoc/apu_software/apu_software
+    mpsoc/framework/framework
+    mpsoc/ip_cores/ip_cores
     mpsoc/CPLD/index
 
 .. toctree::
@@ -102,8 +95,8 @@ Syllabus
    :maxdepth: 2
    :caption: Hardware
 
-   hardware/carrier_board/index
-   hardware/adapter_boards/index
+   hardware/carrier_board/carrier_board
+   hardware/adapter_cards/adapter_cards
    hardware/altium/altium
 
 Indices and tables

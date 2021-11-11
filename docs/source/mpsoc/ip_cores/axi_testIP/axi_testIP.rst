@@ -38,7 +38,10 @@ Use this IP-Core to test read/write operations by AXI between PL and PS using th
 Driver function reference
 =========================
 
-.. doxygentypedef:: uz_myIP2
+.. doxygentypedef:: uz_myIP2_t
+
+.. doxygenstruct:: uz_myIP2_config_t
+  :members:
 
 .. doxygenfunction:: uz_myIP2_init
 

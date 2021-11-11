@@ -74,6 +74,7 @@ cd $WS_PATH
 set PLATFORM_NAME 	UltraZohm
 set XSA_FOLDER 		$FOLDER_PATH/vivado_exported_xsa
 set EXPORT_FOLDER [file join $FOLDER_PATH software]
+set SHARED_FOLDER [file join $EXPORT_FOLDER shared]
 puts "Path to exports to be imported:"
 puts stdout $EXPORT_FOLDER
 
@@ -161,10 +162,13 @@ app create -name Baremetal -template {Empty Application} -platform $PLATFORM_NAM
 
 puts "Info:(UltraZohm) import Baremetal Application sources"
 #import sources to baremetal project
-# first the c-files are linked
-# then the linker script is copied to the folder with a hard copy due to compilation errors otherwise - note that the sequence (first link the file, then copy the linker script is important due to -soft-link deleting the linker script otherwise
+# first the source files are linked
 importsources -name Baremetal -path $FOLDER_PATH/software/Baremetal/src -soft-link
+# add shared folder 
+importsources -name Baremetal -path $SHARED_FOLDER -soft-link
+# then the linker script is copied to the folder with a hard copy due to compilation errors otherwise - note that the sequence (first link the file, then copy the linker script is important due to -soft-link deleting the linker script otherwise
 importsources -name Baremetal -path $FOLDER_PATH/software/Baremetal/src/lscript.ld -linker-script 
+
 #add math library to linker option
 app config -name Baremetal -add  libraries m
 
@@ -184,7 +188,15 @@ puts "Path to FreeRTOS:"
 puts stdout $filename_FreeRTOS
 
 importsources -name FreeRTOS -path $filename_FreeRTOS -soft-link
+importsources -name FreeRTOS -path $SHARED_FOLDER -soft-link
 importsources -name FreeRTOS -path $filename_FreeRTOS/lscript.ld -linker-script
+
+# add shared folder to build directory
+# this is a bit of hack, since it is not possible to add a compiler directory using the TCL script
+# we have to add it with -I"path" which results in the same
+# but in Vitis in the compiler settings, it is listed under miscellaneous instead of directories
+app config -name Baremetal compiler-misc -I"$SHARED_FOLDER"
+app config -name FreeRTOS compiler-misc -I"$SHARED_FOLDER"
 
 # set optimization level 
 app config -name FreeRTOS -set compiler-optimization {Optimize most (-O3)}

@@ -16,18 +16,16 @@
 #ifndef INCLUDE_JAVASCOPE_H_
 #define INCLUDE_JAVASCOPE_H_
 
-
 #include "ipc_ARM.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
-
-extern float zerovalue;
+#include "APU_RPU_shared.h"
 
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
-    JSO_ZEROVALUE=0,
-	JSO_SineWave1,
-    JSO_Sawtooth1,
-    JSO_SineWave2,
+	JSO_ZEROVALUE=0,
+	JSO_ISR_ExecTime_us,
+	JSO_ISR_Period_us,
+	JSO_lifecheck,
 	JSO_theta_mech,
 	JSO_ua,
 	JSO_ub,
@@ -52,7 +50,7 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
-    JSO_ENDMARKER
+	JSO_ENDMARKER
 };
 
 // slowData Naming Convention: Use INT or FLOAT to automatically identify Data Type in Java.
@@ -60,8 +58,8 @@ enum JS_OberservableData {
 enum JS_SlowData {
 	JSSD_ZEROVALUE=0,
 	JSSD_INT_SecondsSinceSystemStart,
-	JSSD_FLOAT_uSecPerIsr,
-	JSSD_FLOAT_Sine,
+	JSSD_FLOAT_ISR_ExecTime_us,
+	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_FreqReadback,
 	JSSD_INT_Milliseconds,
 	JSSD_FLOAT_ADCconvFactorReadback,
@@ -120,22 +118,15 @@ enum JS_SlowData {
 
 
 union SlowData {
-   int i;
-   float f;
+   int32_t  i;
+   uint32_t u;
+   float 	f;
 };
-
-
-extern float *js_ptr_arr[JSO_ENDMARKER];
-extern float *js_ptr[4];	// channel ptr
-
-extern union SlowData js_slowDataArray[JSSD_ENDMARKER];
 
 
 int JavaScope_initalize(DS_Data* data);
 void JavaScope_update(DS_Data* data);
 
-void js_fetchData4CH();
-
-
+void js_fetchData();
 
 #endif /* INCLUDE_JAVASCOPE_H_ */

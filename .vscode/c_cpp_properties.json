@@ -3,7 +3,8 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "/var/lib/gems/2.5.0/gems/ceedling-0.31.0/**"
             ],
             "forcedInclude": ["${workspaceFolder}/vitis/software/Baremetal/src/uz/uz_HAL.h",
                 "${workspaceFolder}/vitis/software/Baremetal/src/uz/uz_AXI.h"],

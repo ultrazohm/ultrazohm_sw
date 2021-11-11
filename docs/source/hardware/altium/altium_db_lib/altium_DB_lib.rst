@@ -74,7 +74,14 @@ Server access setup
 
 Altium needs to get access to the database system on the UltraZohm server. The interface to the database is an ODBC database driver.
 
-1. If not done yet download and install the `MariaDB ODBC 3.1 Driver <https://downloads.mariadb.org/connector-odbc/>`_
+1. If not done yet download and install the `MariaDB ODBC 3.1 Driver <https://mariadb.com/kb/en/mariadb-connector-odbc/>`_
+
+.. _20_ODBC_sources_download_link:
+
+   .. figure:: img/19_ODBC_download_link.jpg
+      :width: 600px
+
+      OBDC - download link.
 
 2. ``Open`` the ODBC-Datasource App (64-Bit)
 

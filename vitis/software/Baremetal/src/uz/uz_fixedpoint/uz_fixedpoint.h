@@ -10,8 +10,8 @@
  */
 struct uz_fixedpoint_definition_t{
     const bool is_signed;
-    const uint32_t fractional_bits;
-    const uint32_t integer_bits;
+    const int32_t fractional_bits;
+    const int32_t integer_bits;
 };
 
 /**

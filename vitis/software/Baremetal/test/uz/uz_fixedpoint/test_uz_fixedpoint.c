@@ -19,28 +19,28 @@ void tearDown(void)
 
 const struct uz_fixedpoint_definition_t fixed_def = {
     .is_signed = true,
-    .fractional_bits = 4U,
-    .integer_bits = 5U};
+    .fractional_bits = 4,
+    .integer_bits = 5};
 
 void test_uz_fixedpoint_get_precision(void)
 {
     // Precision of the fixed point variable is determined by the number of fractional bits
     // Precision is calculated by 2^(- number_of_fractional_bits)
-    float expected_precision = ldexpf(1, -(int)fixed_def.fractional_bits); // 2^(-4)=0.0625
+    float expected_precision = ldexpf(1.0f, -(int)fixed_def.fractional_bits); // 2^(-4)=0.0625
     float precision = uz_fixedpoint_get_precision(fixed_def);
     TEST_ASSERT_EQUAL_FLOAT(expected_precision, precision);
 }
 
 void test_uz_fixedpoint_get_max_representable_value(void)
 {
-    float expected_max = ldexpf(1, (int)fixed_def.integer_bits); // 2^5=32
+    float expected_max = ldexpf(1.0f, (int)fixed_def.integer_bits); // 2^5=32
     float returned_max = uz_fixedpoint_get_max_representable_value(fixed_def);
     TEST_ASSERT_EQUAL_FLOAT(expected_max, returned_max);
 }
 
 void test_uz_fixedpoint_get_min_representable_value_signed(void)
 {
-    float expected_min = ldexpf(-1, (int)fixed_def.integer_bits); // -1*2^5=-32
+    float expected_min = ldexpf(-1.0f, (int)fixed_def.integer_bits); // -1*2^5=-32
     float returned_min = uz_fixedpoint_get_min_representable_value(fixed_def);
     TEST_ASSERT_EQUAL_FLOAT(expected_min, returned_min);
 }
@@ -49,8 +49,8 @@ void test_uz_fixedpoint_get_min_representable_value_unsigned(void)
 {
     struct uz_fixedpoint_definition_t fixed_def_unsigned = {
         .is_signed = false,
-        .fractional_bits = 4U,
-        .integer_bits = 5U};
+        .fractional_bits = 4,
+        .integer_bits = 5};
     float expected_min = 0.0f; // unsigned -> min value is zero
     float returned_min = uz_fixedpoint_get_min_representable_value(fixed_def_unsigned);
     TEST_ASSERT_EQUAL_FLOAT(expected_min, returned_min);
@@ -59,13 +59,13 @@ void test_uz_fixedpoint_get_min_representable_value_unsigned(void)
 void test_uz_fixedpoint_axi_write(void)
 {
 
-    float write_value = 1.0f;
+    float write_value = -1.0f;
     struct uz_fixedpoint_definition_t def = {
         .is_signed = true,
         .fractional_bits = 3,
         .integer_bits = 3};
-    uint32_t write_fixed = 1 << def.fractional_bits; // first three bits are integer
-    uz_axi_write_uint32_Expect(TEST_ADDRESS, write_fixed);
+    uint32_t write_fixed = uz_fixedpoint_convert_signed_to_float(write_value,def); // first three bits are integer
+    uz_axi_write_int32_Expect(TEST_ADDRESS, write_fixed);
     uz_fixedpoint_axi_write(TEST_ADDRESS, write_value, def);
 }
 
@@ -164,7 +164,7 @@ void test_uz_fixedpoint_convert_to_float_negative(void)
         .integer_bits = 16};
     //uint32_t testinput = 0b111111111111111111111111111110000;
     int32_t testinput= ((int32_t)ldexpf(-4.0f, def.fractional_bits));
-    float return_value=uz_fixedpoint_convert_to_float(testinput, def);
+    float return_value=uz_fixedpoint_convert_signed_to_float(testinput, def);
     TEST_ASSERT_EQUAL_FLOAT(-4.0f,return_value);
 }
 

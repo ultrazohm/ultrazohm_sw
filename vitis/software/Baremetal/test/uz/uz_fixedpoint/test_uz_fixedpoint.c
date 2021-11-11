@@ -122,7 +122,7 @@ void test_uz_fixedpoint_write_fail_limits_too_big(void)
         .fractional_bits = 3,
         .integer_bits = 3};
     float too_large_data = 1000.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_fixedpoint_axi_write(TEST_ADDRESS, too_large_data,def) );
+    TEST_ASSERT_FAIL_ASSERT(uz_fixedpoint_axi_write(TEST_ADDRESS, too_large_data, def));
 }
 
 void test_uz_fixedpoint_write_fail_limits_too_small(void)
@@ -132,7 +132,7 @@ void test_uz_fixedpoint_write_fail_limits_too_small(void)
         .fractional_bits = 3,
         .integer_bits = 3};
     float too_small_data = -1000.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_fixedpoint_axi_write(TEST_ADDRESS, too_small_data,def) );
+    TEST_ASSERT_FAIL_ASSERT(uz_fixedpoint_axi_write(TEST_ADDRESS, too_small_data, def));
 }
 
 void test_uz_fixedpoint_read_fail_limits_too_small(void)
@@ -141,9 +141,20 @@ void test_uz_fixedpoint_read_fail_limits_too_small(void)
         .is_signed = true,
         .fractional_bits = 3,
         .integer_bits = 3};
-    uz_axi_read_uint32_ExpectAndReturn(TEST_ADDRESS,0x11111111U); // Some random value that is large than sfix3_3 can represent
-    TEST_ASSERT_FAIL_ASSERT(uz_fixedpoint_axi_read(TEST_ADDRESS, def) );
+    uz_axi_read_uint32_ExpectAndReturn(TEST_ADDRESS, 0x11111111U); // Some random value that is large than sfix3_3 can represent
+    TEST_ASSERT_FAIL_ASSERT(uz_fixedpoint_axi_read(TEST_ADDRESS, def));
 }
 
+void test_uz_fixedpoint_convert_to_float_positive(void)
+{
+    struct uz_fixedpoint_definition_t def = {
+        .is_signed = true,
+        .fractional_bits = 3,
+        .integer_bits = 3};
+    uint32_t testinput = (1) << 3;
+    int32_t testinput2=-1;
+    float return_value=uz_fixedpoint_convert_to_float(testinput2, def);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f,return_value);
+}
 
 #endif // TEST

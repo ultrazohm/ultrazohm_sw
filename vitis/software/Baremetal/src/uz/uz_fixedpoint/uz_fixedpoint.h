@@ -64,5 +64,8 @@ float uz_fixedpoint_get_max_representable_value(struct uz_fixedpoint_definition_
  */
 float uz_fixedpoint_get_min_representable_value(struct uz_fixedpoint_definition_t input);
 
+float uz_fixedpoint_convert_to_float(uint32_t input, struct uz_fixedpoint_definition_t fixedpoint_definition);
+uint32_t uz_fixedpoint_convert_to_fixed(float data, struct uz_fixedpoint_definition_t fixed_data);
+
 
 #endif // UZ_FIXEDPOINT_H

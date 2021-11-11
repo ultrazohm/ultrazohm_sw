@@ -4,8 +4,6 @@
 #include "../uz_HAL.h"
 #include <math.h>
 
-static float uz_fixedpoint_convert_to_float(uint32_t input, struct uz_fixedpoint_definition_t fixedpoint_definition);
-static uint32_t uz_fixedpoint_convert_to_fixed(float data, struct uz_fixedpoint_definition_t fixed_data);
 
 float uz_fixedpoint_get_precision(struct uz_fixedpoint_definition_t input)
 {
@@ -55,13 +53,13 @@ void uz_fixedpoint_axi_write(uint32_t memory_address, float data, struct uz_fixe
     uz_axi_write_uint32(memory_address, fixed_data);
 }
 
-static float uz_fixedpoint_convert_to_float(uint32_t input, struct uz_fixedpoint_definition_t fixedpoint_definition)
+float uz_fixedpoint_convert_to_float(uint32_t input, struct uz_fixedpoint_definition_t fixedpoint_definition)
 {
     uz_assert(32U > (fixedpoint_definition.fractional_bits + fixedpoint_definition.integer_bits));
     return ldexpf((float)input, -fixedpoint_definition.fractional_bits); // 2^(-fractional bits)
 }
 
-static uint32_t uz_fixedpoint_convert_to_fixed(float data, struct uz_fixedpoint_definition_t fixed_data)
+uint32_t uz_fixedpoint_convert_to_fixed(float data, struct uz_fixedpoint_definition_t fixed_data)
 {
     uz_fixedpoint_check_limits(data,fixed_data);
     return ((uint32_t)ldexpf(data, fixed_data.fractional_bits));

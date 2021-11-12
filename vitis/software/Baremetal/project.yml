@@ -32,11 +32,15 @@
 :flags:
   :test:
     :compile:
-      :*:          # add '-Wall' to compilation of all files #- -Wsign-conversion
+      :*:          # add '-Wall' to compilation of all files #- -Wsign-conversion https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
         - -Wall
         - -Wextra
         - -Wpedantic
         - -Wconversion
+        - -Wdouble-promotion
+        - -Wswitch-default
+        - -Walloca
+        - -Wvla
         
 
 :paths:

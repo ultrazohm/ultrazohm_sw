@@ -1,5 +1,8 @@
 #pragma once
 
+#include <stdint.h>
+#include <stdbool.h>
+
 typedef struct uz_simscapeExample uz_simscapeExample;
 typedef struct uz_simscapeExample *uz_simscapeExample_handle;
 

@@ -2,8 +2,6 @@
 #include "uz_simscapeExample_private.h"
 #include "uz_simscapeExample_hwAddresses.h"
 
-#include <stdint.h>
-#include <stdbool.h>
 #include <math.h>
 #include "../../uz/uz_HAL.h"
 #include "../../uz/uz_math_constants.h"

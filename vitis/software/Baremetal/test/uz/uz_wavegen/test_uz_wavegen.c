@@ -174,7 +174,7 @@ void test_uz_wavegen_triangle_offset_output(void){
     float offset = -5.0f;
     uz_SystemTime_GetGlobalTimeInSec_ExpectAndReturn(0.05f);
     float output = uz_wavegen_triangle_with_offset(amplitude, frequency_Hz, offset);
-    TEST_ASSERT_EQUAL_FLOAT(0.5 * amplitude + offset, output); 
+    TEST_ASSERT_EQUAL_FLOAT(0.5f * amplitude + offset, output); 
 }
 
 void test_uz_wavegen_white_noise_zero_amplitude(void){

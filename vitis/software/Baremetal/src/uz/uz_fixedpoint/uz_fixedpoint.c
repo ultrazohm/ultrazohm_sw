@@ -11,17 +11,21 @@ float uz_fixedpoint_get_precision(struct uz_fixedpoint_definition_t input)
 
 float uz_fixedpoint_get_max_representable_value(struct uz_fixedpoint_definition_t input)
 {
-    uz_assert(32 > (input.fractional_bits + input.integer_bits));
-    return ldexpf(1.0f, (int)input.integer_bits);
+    float max_value=0.0f;
+    if(input.is_signed){
+        max_value=ldexpf(1.0f,input.integer_bits-1)-uz_fixedpoint_get_precision(input);
+    }else{
+        max_value=ldexpf(1.0f,input.integer_bits)-uz_fixedpoint_get_precision(input);
+    }
+    return max_value;
 }
 
 float uz_fixedpoint_get_min_representable_value(struct uz_fixedpoint_definition_t input)
 {
-    uz_assert(32 > (input.fractional_bits + input.integer_bits));
     float min_value = 0.0f;
     if (input.is_signed)
     {
-        min_value = (-1.0f) * uz_fixedpoint_get_max_representable_value(input);
+        min_value = ldexpf(-1.0f,input.integer_bits-1);
     }
     return (min_value);
 }

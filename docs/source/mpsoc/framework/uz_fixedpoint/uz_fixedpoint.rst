@@ -91,7 +91,7 @@ A signed fixed point data with :math:`M` integer bits and :math:`N` fractional b
 .. math::
 
   min &=-2^{(M-1)} \\
-  max &=2^{(M-1)}-1
+  max &=2^{(M-1)}-2^{-N}
 
 Example: signed fixed point with 16 bits of which :math:`N=5` bits are used for the fraction and :math:`M=16-5=11` bits are used for the integer part.
 The precision of the data type is equal to the inverse of the scaling :math:`s^{-1}=2^{-N}=2^{-5}=0.03125`.
@@ -99,8 +99,8 @@ The smallest and largest representable numbers for this data type are:
 
 .. math::
 
-  min &=-2^{M-1}=-2^{10-1}=-1024 \\
-  max &=2^{M-1}-2^{-N}=2^{10-1}-0.0312=1023.96875
+  min &=-2^{M-1}=-2^{11-1}=-1024 \\
+  max &=2^{M-1}-2^{-N}=2^{11-1}-0.0312=1023.96875
 
 Rounding
 ********

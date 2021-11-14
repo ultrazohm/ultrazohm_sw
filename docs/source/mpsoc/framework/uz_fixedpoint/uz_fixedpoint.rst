@@ -4,20 +4,24 @@
 Fixed point library
 ===================
 
-Fixed point data types store fractional numbers as integer values with a fixed number of bits used for the integer part of the value and a fixed number of bits used for the fractional part.
-Fixed point data type can have an arbitrary number of total bits (maximum number of bits is 32) and are distinguished between signed and unsigned data.
+Fixed point data types represent fractional numbers as integer values with a fixed number of bits used for the integer part of the value and a fixed number of bits used for the fractional part.
+Fixed point data types can have an arbitrary number of total bits and are distinguished between signed and unsigned data.
+This software module only supports a total bit number of 32.
 The fixed point library provides a definition data type for the PS to ease the handling of them.
-The library is only intended to be used in the lowest software layer of IP-Core drivers to read/write to and from the PL (i.e., functions that are named with ``_hw``).
-It is aimed to provide a clean way to interact with IP-Cores that use fixed-point data representation.
-Thus, all functions accept ``float`` values as their inputs and return ``float`` values, all fixed point handling is done internally.
-The read and write functions check against boundaries of the fixed point data type - the data itself is always a 32 bit integer internally on the PS that is not exposed to the user.
-That is due to the AXI data width of 32-bit.
-This software module is not intended to do fixed point math on the processor and does not provide functions for it!
 
-- Data is stored as 32 bit on the processor (signed/unsigned)
-- Data is divided into fractional and integer bits
+This software module is not intended to do fixed point math on the processor and does not provide functions for it!
+It is only intended to be used in the lowest software layer of IP-Core drivers to read/write to and from the PL (i.e., functions that are named with ``_hw``).
+The aim is to provide a clean way to interact with IP-Cores that use fixed-point data representation.
+Thus, all functions accept ``float`` values as their inputs and return ``float`` values, all fixed point handling is done internally.
+The read and write functions check against boundaries of the fixed point data type - the data itself is always a 32 bit integer internally on the PS, which is not exposed to the user.
+The 32-bit limitation is due to the AXI data width of 32-bit.
+
+- Data is passed and received from the software module as ``float`` values
+- Data is stored as 32 bit integers on the processor internally (signed/unsigned).
+- The integer is divided into fractional and integer bits
 - The first :math:`N`-bits are the fractional bits depending on the representation
 - The following :math:`M`-bits are the integer bits depending on the representation
+- The fixed point data is :math:`K=N+M` bits wide with :math:`K \leq 32`
 
 .. _fixedpoint_bitmap:
 
@@ -26,50 +30,143 @@ This software module is not intended to do fixed point math on the processor and
   Binary representation of fixed point values in memory.
 
 :numref:`fixedpoint_bitmap` showcases the split-up of a 32 bit integer variable.
-Note that this is just a metal model for the user, the processor nor the compiler do know about the split up.
+Note that this is just a mental model for the user, the processor nor the compiler do know about the split up.
 
-The represented fixed point number is scaled (multiplied) by a fixed scaling factor.
+Scaling and precision
+*********************
+
+The represented fixed point number is scaled by a fixed scaling factor :math:`s`.
 The software assumes binary scaling, that is, base 2 is used for scaling the fixed point value.
-The scaling factor :math:`s` is determined by the number of fractional bits :math:`n` by :math:`s=2^{-N}`.
-A ``float`` value :math:`r` is converted to a fixed point number (stored integer) :math:`x` by :math:`x = r \cdot s = r \cdot 2^{-N}`.
-The inverse conversion is done by :math:`r = x \cdot 2^{N}`.
+The scaling factor :math:`s` is determined by the number of fractional bits :math:`N`:
 
-The fixed point data type uses `two's complement <https://en.wikipedia.org/wiki/Two%27s_complement>`_ for Vitis HLS and Matlab HDL-Coder (https://de.mathworks.com/help/simulink/ug/fixed-point-numbers.html)
-Please note that are conflicting definitions of fixed point data types.
-The definition outlined here is consistent with Vitis HLS (see https://www.xilinx.com/html_docs/xilinx2021_1/vitis_doc/use_arbitrary_precision_data_type.html) and Matlab HDL-Coder (https://de.mathworks.com/help/dsp/ug/concepts-and-terminology.html).
-See https://de.mathworks.com/help/simulink/ug/scaling-precision-range-quantization.html for a description of the range of the values.
+.. math::
+ 
+  s=2^{N}
+
+A floating-point value :math:`x_f` is converted to a fixed point number (stored integer) :math:`x_i` by:
+
+.. math::
+
+  x_i = x_f \cdot s = x_f \cdot 2^{N}
+
+The inverse conversion from the stored integer :math:`x_i` to the floating-point representation :math:`x_f` is done by:
+
+.. math::
+
+  x_f = x_i \cdot 2^{-N}
+
+Please note that there are conflicting definitions of fixed point data types.
+The fixed point data type used by Vitis HLS and Matlab HDL-Coder is defined as `two's complement <https://en.wikipedia.org/wiki/Two%27s_complement>`_.
+The definition outlined of the software module is therefore consistent with Vitis HLS and Matlab HDL-Coder.
+See the following information for more details:
+
+- https://www.xilinx.com/html_docs/xilinx2021_1/vitis_doc/use_arbitrary_precision_data_type.html
+- https://de.mathworks.com/help/simulink/ug/fixed-point-numbers.html
+- https://de.mathworks.com/help/dsp/ug/concepts-and-terminology.html
+- https://de.mathworks.com/help/simulink/ug/scaling-precision-range-quantization.html
 
 Unsigned fixed point data
 *************************
 
-The smallest representable value of unsigned fixed point data is zero (:math:`min=0`).
-The biggest representable value is **ADD FORMULA**
+For unsigned fixed point data, the smallest and largest values that the data type can represent are calculated by:
+
+.. math::
+
+  min &= 0 \\
+  max &= 2^{M}-2^{-N}
+
+Example: unsigned fixed point with 16 bits of which :math:`N=5` bits are used for the fraction and :math:`M=16-5=11` bits are used for the integer part.
+The smallest representable value of unsigned fixed point data type is zero (:math:`min=0`).
+The largest number is:
+
+.. math::
+
+  max=2^{M}-2^{-N}=2^{11}-0.0312=2047.96875
 
 Signed fixed point data
 ***********************
 
-For signed data, the MSB indicates the sign of the value.
-A signed fixed point data with :math:`N` integer bits can represent all integers from :math:`-(2^{(N-1)})` to :math:`2^{(N-1)} -1`.
+A signed fixed point data with :math:`M` integer bits and :math:`N` fractional bits can represent integers from:
 
+.. math::
 
+  min &=-2^{(M-1)} \\
+  max &=2^{(M-1)}-1
+
+Example: signed fixed point with 16 bits of which :math:`N=5` bits are used for the fraction and :math:`M=16-5=11` bits are used for the integer part.
+The precision of the data type is equal to the inverse of the scaling :math:`s^{-1}=2^{-N}=2^{-5}=0.03125`.
+The smallest and largest representable numbers for this data type are:
+
+.. math::
+
+  min &=-2^{M-1}=-2^{10-1}=-1024 \\
+  max &=2^{M-1}-2^{-N}=2^{10-1}-0.0312=1023.96875
 
 Rounding
 ********
 
-Currently, the rounding is done by casing the result of ``ldexf`` to ``int``, thus the floating point is truncated (the fractional part is dropped).
+Since all input and output functions of this software module use single-precision floating-point values (i.e., ``float``), the values have to be rounded to be represented in fixed-point data type.
+Note that floating-point values also introduce rounding errors and can not represent values exactly.
+See the following for details:
 
-.. warning:: Todo: Add rounding versions with roundf, floorf, and so on as an enum for the conversion functions.
-
+- https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html
+- https://floating-point-gui.de/
+- https://en.wikipedia.org/wiki/Floating-point_arithmetic
+- https://en.wikipedia.org/wiki/IEEE_754
 
 .. _fixedpoint_float_rep:
 
 .. figure:: fixed_point_precision.svg
 
-  Relationship of fixed point precision, error and representation of a floating point variable (``float``).
+  Relationship of fixed point precision, error, and representation of a floating point variable (``float``).
+
+Given the limited precision of the fixed-point data type (determined by the number of fractional bits :math:`N`), the floating-point value is rounded when converting to fixed-point precision.
+The following rounding methods are available:
+
+- Nearest integer (roundf, https://en.cppreference.com/w/c/numeric/math/round)
+- https://en.cppreference.com/w/c/numeric/math/floor
+- https://en.cppreference.com/w/c/numeric/math/ceil
+- https://en.cppreference.com/w/c/numeric/math/trunc
+
+Examples
+========
+
+Conversion
+**********
+
+Converting the floating-point value of :math:`x_f=2.9` to a signed fixed-point data type with :math:`M=14` bits for the integer part and :math:`N=2` bits for the fraction yields the scaling factor :math:`s=2^{4}=4`.
+
+The stored integer is calculated by:
+
+.. math::
+
+  x_i &=x_f \cdot 2^{N} \\
+  x_i &=2.9 \cdot 4 = 11.6
+
+The result is rounded by a rounding function:
+
+- ceil: :math:`x_i=12` (:math:`x_f=3.0`)
+- floor: :math:`x_i=11` (:math:`x_f=2.75`)
+- round: :math:`x_i=12` (:math:`x_f=3.0`)
+- trunc: :math:`x_i=11` (:math:`x_f=2.75`)
+
+To convert back to a floating-point value, the stored integer :math:`x_i` is multiplied by the inverse scaling factor:
+
+.. math::
+
+  x_f &= x_i \cdot 2^{-N} \\
+  x_{f,ceil} &= 12 \cdot 2^{-2}=3.0 \\
+  x_{f,floor} &= 11 \cdot 2^{-2}=2.75 \\
+  x_{f,round} &= 12 \cdot 2^{-2}=3 \\
+  x_{f,trunc} &= 11 \cdot 2^{-2}=2.75
 
 
-Example
-=======
+
+
+
+
+
+
 
 Write
 *****

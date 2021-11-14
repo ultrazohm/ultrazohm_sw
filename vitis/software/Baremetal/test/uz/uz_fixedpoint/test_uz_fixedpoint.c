@@ -151,11 +151,11 @@ void test_uz_fixedpoint_convert_to_float_positive(void)
         .is_signed = true,
         .fractional_bits = 9,
         .integer_bits = 3};
-    float min_precision=uz_fixedpoint_get_precision(def); // Gets the precision to have a float test value that is fractional but representable by the fixed point data type
-    float expected_result=4.0f+min_precision*10.0f;
+    float min_precision = uz_fixedpoint_get_precision(def); // Gets the precision to have a float test value that is fractional but representable by the fixed point data type
+    float expected_result = 4.0f + min_precision * 10.0f;
     uint32_t testinput = ((uint32_t)ldexpf(expected_result, def.fractional_bits));
-    float return_value=uz_fixedpoint_convert_to_float(testinput, def);
-    TEST_ASSERT_EQUAL_FLOAT(expected_result,return_value);
+    float return_value = uz_fixedpoint_convert_to_float(testinput, def);
+    TEST_ASSERT_EQUAL_FLOAT(expected_result, return_value);
 }
 
 void test_uz_fixedpoint_convert_to_float_negative(void)
@@ -164,11 +164,11 @@ void test_uz_fixedpoint_convert_to_float_negative(void)
         .is_signed = true,
         .fractional_bits = 5,
         .integer_bits = 16};
-    float min_precision=uz_fixedpoint_get_precision(def); // Gets the precision to have a float test value that is fractional but representable by the fixed point data type
-    float expected_result=-4.0f + min_precision*11.0f;
-    int32_t testinput= ((int32_t)ldexpf(expected_result, def.fractional_bits));
-    float return_value=uz_fixedpoint_convert_signed_to_float(testinput, def);
-    TEST_ASSERT_EQUAL_FLOAT(expected_result,return_value);
+    float min_precision = uz_fixedpoint_get_precision(def); // Gets the precision to have a float test value that is fractional but representable by the fixed point data type
+    float expected_result = -4.0f + min_precision * 11.0f;
+    int32_t testinput = ((int32_t)ldexpf(expected_result, def.fractional_bits));
+    float return_value = uz_fixedpoint_convert_signed_to_float(testinput, def);
+    TEST_ASSERT_EQUAL_FLOAT(expected_result, return_value);
 }
 
 #endif // TEST

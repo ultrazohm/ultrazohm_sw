@@ -6,8 +6,7 @@
 
 float uz_fixedpoint_get_precision(struct uz_fixedpoint_definition_t input)
 {
-    uz_assert(32 > (input.fractional_bits + input.integer_bits));
-    return ldexpf(1.0f, -(int)input.fractional_bits); // 1*2^(-fractional_bits)
+    return ldexpf(1.0f, -input.fractional_bits); // 1*2^(-fractional_bits)
 }
 
 float uz_fixedpoint_get_max_representable_value(struct uz_fixedpoint_definition_t input)

@@ -152,7 +152,8 @@ void test_uz_fixedpoint_convert_to_float_positive(void)
 }
 
 // float to unsigned fixed
-void test_uz_fixedpoint_convert_to_unsigned_fixed(void){
+void test_uz_fixedpoint_convert_to_unsigned_fixed(void)
+{
     struct uz_fixedpoint_definition_t def = {
         .is_signed = false,
         .fractional_bits = 2,
@@ -163,7 +164,8 @@ void test_uz_fixedpoint_convert_to_unsigned_fixed(void){
     TEST_ASSERT_EQUAL_FLOAT(expected_retrun, return_value);
 }
 
-void test_uz_fixedpoint_convert_to_signed_fixed(void){
+void test_uz_fixedpoint_convert_to_signed_fixed(void)
+{
     struct uz_fixedpoint_definition_t def = {
         .is_signed = true,
         .fractional_bits = 2,

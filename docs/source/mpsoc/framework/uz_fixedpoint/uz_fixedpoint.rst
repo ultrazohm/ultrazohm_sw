@@ -1,4 +1,4 @@
-.. uz_fixedpoint:
+.. uz_fixedpoint::
 
 ===================
 Fixed point library

@@ -116,7 +116,7 @@ See the following for details:
 
 .. _fixedpoint_float_rep:
 
-.. figure:: fixed_point_precision.svg
+.. figure:: fixed_point_precision.drawio.svg
 
   Relationship of fixed point precision, error, and representation of a floating point variable (``float``).
 
@@ -159,13 +159,6 @@ To convert back to a floating-point value, the stored integer :math:`x_i` is mul
   x_{f,floor} &= 11 \cdot 2^{-2}=2.75 \\
   x_{f,round} &= 12 \cdot 2^{-2}=3 \\
   x_{f,trunc} &= 11 \cdot 2^{-2}=2.75
-
-
-
-
-
-
-
 
 
 Write

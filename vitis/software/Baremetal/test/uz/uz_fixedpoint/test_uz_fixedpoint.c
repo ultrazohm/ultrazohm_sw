@@ -58,7 +58,7 @@ void test_uz_fixedpoint_get_min_representable_value_signed(void)
 
 void test_uz_fixedpoint_get_max_representable_value_unsigned(void)
 {
-        const struct uz_fixedpoint_definition_t def = {
+    const struct uz_fixedpoint_definition_t def = {
         .is_signed = false,
         .fractional_bits = 5,
         .integer_bits = 11};
@@ -77,32 +77,6 @@ void test_uz_fixedpoint_get_min_representable_value_unsigned(void)
     float returned_min = uz_fixedpoint_get_min_representable_value(fixed_def_unsigned);
     TEST_ASSERT_EQUAL_FLOAT(expected_min, returned_min);
 }
-
-// void test_uz_fixedpoint_axi_write(void)
-// {
-
-//     float write_value = -1.0f;
-//     struct uz_fixedpoint_definition_t def = {
-//         .is_signed = true,
-//         .fractional_bits = 3,
-//         .integer_bits = 3};
-//     uint32_t write_fixed = uz_fixedpoint_convert_signed_to_float(write_value,def); // first three bits are integer
-//     uz_axi_write_int32_Expect(TEST_ADDRESS, write_fixed);
-//     uz_fixedpoint_axi_write(TEST_ADDRESS, write_value, def);
-// }
-
-// void test_uz_fixedpoint_axi_read(void)
-// {
-//     float expected_return_value = 1.0f;
-//     struct uz_fixedpoint_definition_t def = {
-//         .is_signed = true,
-//         .fractional_bits = 3,
-//         .integer_bits = 3};
-//     uint32_t return_value_fixed = 1 << def.fractional_bits; // first three bits are integer
-//     uz_axi_read_uint32_ExpectAndReturn(TEST_ADDRESS, return_value_fixed);
-//     float return_value = uz_fixedpoint_axi_read(TEST_ADDRESS, def);
-//     TEST_ASSERT_EQUAL_FLOAT(expected_return_value, return_value);
-// }
 
 void test_uz_fixedpoint_check_limits_above_max(void)
 {
@@ -137,60 +111,120 @@ void test_uz_fixedpoint_check_limits_sign(void)
     TEST_ASSERT_FAIL_ASSERT(uz_fixedpoint_check_limits(below_min, def));
 }
 
-void test_uz_fixedpoint_write_fail_limits_too_big(void)
+// Conversion functions
+//
+//Unsigned
+void test_uz_fixedpoint_convert_unsiged_to_float_positive(void)
 {
     struct uz_fixedpoint_definition_t def = {
         .is_signed = false,
-        .fractional_bits = 3,
-        .integer_bits = 3};
-    float too_large_data = 1000.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_fixedpoint_axi_write(TEST_ADDRESS, too_large_data, def));
+        .fractional_bits = 2,
+        .integer_bits = 14};
+    float expected_result = 2.75f;
+    uint32_t testinput = 11;
+    float return_value = uz_fixedpoint_convert_unsigned_to_float(testinput, def);
+    TEST_ASSERT_EQUAL_FLOAT(expected_result, return_value);
 }
 
-void test_uz_fixedpoint_write_fail_limits_too_small(void)
+// Signed
+void test_uz_fixedpoint_convert_to_float_negative(void)
 {
     struct uz_fixedpoint_definition_t def = {
         .is_signed = true,
-        .fractional_bits = 3,
-        .integer_bits = 3};
-    float too_small_data = -1000.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_fixedpoint_axi_write(TEST_ADDRESS, too_small_data, def));
-}
-
-void test_uz_fixedpoint_read_fail_limits_too_small(void)
-{
-    struct uz_fixedpoint_definition_t def = {
-        .is_signed = true,
-        .fractional_bits = 3,
-        .integer_bits = 3};
-    uz_axi_read_uint32_ExpectAndReturn(TEST_ADDRESS, 0x11111111U); // Some random value that is large than sfix3_3 can represent
-    TEST_ASSERT_FAIL_ASSERT(uz_fixedpoint_axi_read(TEST_ADDRESS, def));
+        .fractional_bits = 2,
+        .integer_bits = 14};
+    float expected_result = -2.75f;
+    int32_t testinput = -11;
+    float return_value = uz_fixedpoint_convert_signed_to_float(testinput, def);
+    TEST_ASSERT_EQUAL_FLOAT(expected_result, return_value);
 }
 
 void test_uz_fixedpoint_convert_to_float_positive(void)
 {
     struct uz_fixedpoint_definition_t def = {
         .is_signed = true,
-        .fractional_bits = 9,
-        .integer_bits = 3};
-    float min_precision = uz_fixedpoint_get_precision(def); // Gets the precision to have a float test value that is fractional but representable by the fixed point data type
-    float expected_result = 4.0f + min_precision * 10.0f;
-    uint32_t testinput = ((uint32_t)ldexpf(expected_result, def.fractional_bits));
-    float return_value = uz_fixedpoint_convert_to_float(testinput, def);
+        .fractional_bits = 2,
+        .integer_bits = 14};
+    float expected_result = 2.75f;
+    int32_t testinput = 11;
+    float return_value = uz_fixedpoint_convert_signed_to_float(testinput, def);
     TEST_ASSERT_EQUAL_FLOAT(expected_result, return_value);
 }
 
-void test_uz_fixedpoint_convert_to_float_negative(void)
+// read/write functions
+void test_uz_fixedpoint_axi_write_signed_negative(void)
 {
     struct uz_fixedpoint_definition_t def = {
         .is_signed = true,
-        .fractional_bits = 5,
-        .integer_bits = 16};
-    float min_precision = uz_fixedpoint_get_precision(def); // Gets the precision to have a float test value that is fractional but representable by the fixed point data type
-    float expected_result = -4.0f + min_precision * 11.0f;
-    int32_t testinput = ((int32_t)ldexpf(expected_result, def.fractional_bits));
-    float return_value = uz_fixedpoint_convert_signed_to_float(testinput, def);
-    TEST_ASSERT_EQUAL_FLOAT(expected_result, return_value);
+        .fractional_bits = 2,
+        .integer_bits = 14};
+    float write_value = -2.75f;
+    int32_t expected_write = -11; // first three bits are integer
+    uz_axi_write_int32_Expect(TEST_ADDRESS, expected_write);
+    uz_fixedpoint_axi_write(TEST_ADDRESS, write_value, def);
+}
+
+void test_uz_fixedpoint_axi_write_signed_positive(void)
+{
+    struct uz_fixedpoint_definition_t def = {
+        .is_signed = true,
+        .fractional_bits = 2,
+        .integer_bits = 14};
+    float write_value = 2.75f;
+    int32_t expected_write = 11; // first three bits are integer
+    uz_axi_write_int32_Expect(TEST_ADDRESS, expected_write);
+    uz_fixedpoint_axi_write(TEST_ADDRESS, write_value, def);
+}
+
+void test_uz_fixedpoint_axi_write_unsigned_positive(void)
+{
+    struct uz_fixedpoint_definition_t def = {
+        .is_signed = false,
+        .fractional_bits = 2,
+        .integer_bits = 14};
+    float write_value = 2.75f;
+    uint32_t expected_write = 11U; // first three bits are integer
+    uz_axi_write_uint32_Expect(TEST_ADDRESS, expected_write);
+    uz_fixedpoint_axi_write(TEST_ADDRESS, write_value, def);
+}
+
+void test_uz_fixedpoint_axi_read_unsigned(void)
+{
+    struct uz_fixedpoint_definition_t def = {
+        .is_signed = false,
+        .fractional_bits = 2,
+        .integer_bits = 14};
+    float expected_return_value = 2.75f;
+    uint32_t expected_read_value = 11U;
+    uz_axi_read_uint32_ExpectAndReturn(TEST_ADDRESS, expected_read_value);
+    float return_value = uz_fixedpoint_axi_read(TEST_ADDRESS, def);
+    TEST_ASSERT_EQUAL_FLOAT(expected_return_value, return_value);
+}
+
+void test_uz_fixedpoint_axi_read_signed_positive(void)
+{
+    struct uz_fixedpoint_definition_t def = {
+        .is_signed = true,
+        .fractional_bits = 2,
+        .integer_bits = 14};
+    float expected_return_value = 2.75f;
+    int32_t expected_read_value = 11;
+    uz_axi_read_int32_ExpectAndReturn(TEST_ADDRESS, expected_read_value);
+    float return_value = uz_fixedpoint_axi_read(TEST_ADDRESS, def);
+    TEST_ASSERT_EQUAL_FLOAT(expected_return_value, return_value);
+}
+
+void test_uz_fixedpoint_axi_read_signed_negative(void)
+{
+    struct uz_fixedpoint_definition_t def = {
+        .is_signed = true,
+        .fractional_bits = 2,
+        .integer_bits = 14};
+    float expected_return_value = -2.75f;
+    int32_t expected_read_value = -11;
+    uz_axi_read_int32_ExpectAndReturn(TEST_ADDRESS, expected_read_value);
+    float return_value = uz_fixedpoint_axi_read(TEST_ADDRESS, def);
+    TEST_ASSERT_EQUAL_FLOAT(expected_return_value, return_value);
 }
 
 #endif // TEST

@@ -113,7 +113,7 @@ void test_uz_fixedpoint_check_limits_sign(void)
 
 // Conversion functions
 //
-//Unsigned
+// Unsigned to float
 void test_uz_fixedpoint_convert_unsiged_to_float_positive(void)
 {
     struct uz_fixedpoint_definition_t def = {
@@ -126,7 +126,7 @@ void test_uz_fixedpoint_convert_unsiged_to_float_positive(void)
     TEST_ASSERT_EQUAL_FLOAT(expected_result, return_value);
 }
 
-// Signed
+// Signed to float
 void test_uz_fixedpoint_convert_to_float_negative(void)
 {
     struct uz_fixedpoint_definition_t def = {
@@ -149,6 +149,29 @@ void test_uz_fixedpoint_convert_to_float_positive(void)
     int32_t testinput = 11;
     float return_value = uz_fixedpoint_convert_signed_to_float(testinput, def);
     TEST_ASSERT_EQUAL_FLOAT(expected_result, return_value);
+}
+
+// float to unsigned fixed
+void test_uz_fixedpoint_convert_to_unsigned_fixed(void){
+    struct uz_fixedpoint_definition_t def = {
+        .is_signed = false,
+        .fractional_bits = 2,
+        .integer_bits = 14};
+    float testinput = 2.75f;
+    uint32_t expected_retrun = 11;
+    uint32_t return_value = uz_fixedpoint_convert_to_unsigned_fixed(testinput, def);
+    TEST_ASSERT_EQUAL_FLOAT(expected_retrun, return_value);
+}
+
+void test_uz_fixedpoint_convert_to_signed_fixed(void){
+    struct uz_fixedpoint_definition_t def = {
+        .is_signed = true,
+        .fractional_bits = 2,
+        .integer_bits = 14};
+    float testinput = -2.75f;
+    int32_t expected_retrun = -11;
+    int32_t return_value = uz_fixedpoint_convert_to_signed_fixed(testinput, def);
+    TEST_ASSERT_EQUAL_FLOAT(expected_retrun, return_value);
 }
 
 // read/write functions

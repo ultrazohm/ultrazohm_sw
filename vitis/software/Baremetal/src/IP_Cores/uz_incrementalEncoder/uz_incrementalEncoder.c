@@ -21,6 +21,7 @@
 #include <stdbool.h> 
 #include <math.h>
 #include "../../uz/uz_HAL.h"
+#include "../../uz/uz_math_constants.h"
 #include "uz_incrementalEncoder.h" 
 #include "uz_incrementalEncoder_hw.h" 
 
@@ -106,13 +107,13 @@ bool check_if_theta_el_can_be_used(uint32_t inc_per_turn, uint32_t pole_pair){
 
 void set_pi2_inc(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
-    float pi2_inc=( (2.0f*M_PI) /(self->config.line_number_per_turn_mech *QUADRATURE_FACTOR) ) * self->config.drive_pole_pair;
+    float pi2_inc=( (2.0f*UZ_PIf) /( (float)self->config.line_number_per_turn_mech * (float)QUADRATURE_FACTOR) ) * (float)self->config.drive_pole_pair;
     uz_incrementalEncoder_hw_set_pi2_inc(self->config.base_address,pi2_inc);
 }
 
 void set_fpga_timer(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
-    float fpga_timer=self->config.line_number_per_turn_mech/(2*M_PI*self->config.ip_core_frequency_Hz);
+    float fpga_timer= (float)self->config.line_number_per_turn_mech/(2.0f*UZ_PIf* (float)self->config.ip_core_frequency_Hz);
     fpga_timer=fpga_timer*2.0f; // Correction factor of 2 due to bug in IP-Core, see issue #145
     uz_incrementalEncoder_hw_set_timer_fpga_ms(self->config.base_address,fpga_timer);
 }
@@ -135,7 +136,7 @@ void set_inc_per_turn_elec(uz_incrementalEncoder_t* self){
 
 static void set_omega_per_over_sample(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
-    float omega_per_over_sample=self->config.OmegaPerOverSample_in_rpm*((2*M_PI)/60);
+    float omega_per_over_sample=self->config.OmegaPerOverSample_in_rpm*((2.0f*UZ_PIf)/60.0f);
     uz_incrementalEncoder_hw_set_omegaPerOverSample(self->config.base_address,omega_per_over_sample);
 }
 

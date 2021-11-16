@@ -41,11 +41,11 @@ void uz_PWM_SS_2L_hw_SetCarrierFrequency(uint32_t base_address, uint32_t ip_clk_
     float PWM_Scal_f_carrier = (PWM_freq_Hz/( (float)ip_clk_frequency_Hz*0.5f));
     int32_t PWM_Scal_f_carrier_Q26 = uz_convert_float_to_sfixed(PWM_Scal_f_carrier,26);
     // PWM carrier signal frequency is set, e.g. 100 kHz
-    uz_axi_write_uint32(base_address + Scal_f_carrier_AXI_Data_PWM_and_SS_control_V4_ip, PWM_Scal_f_carrier_Q26);
+    uz_axi_write_uint32(base_address + Scal_f_carrier_AXI_Data_PWM_and_SS_control_V4_ip, (uint32_t)PWM_Scal_f_carrier_Q26);
     // calculate PWM period in microseconds	
     float PWM_period_us = 1.0f/(PWM_freq_Hz)*1e6f;
     // Set carrier signal period time (T_carrier = 1/PWM_period)
-	float PWM_Scal_T_carrier = (PWM_period_us*((ip_clk_frequency_Hz*1e-6f)*0.5f));
+	float PWM_Scal_T_carrier = (PWM_period_us*(( (float)ip_clk_frequency_Hz*1e-6f)*0.5f));
     // PWM carrier signal Period is set to 1/PWM_freq, e.g. 10 us
     uz_axi_write_uint32(base_address + Scal_T_carrier_AXI_Data_PWM_and_SS_control_V4_ip, (uint32_t)PWM_Scal_T_carrier);
 }
@@ -54,7 +54,7 @@ void uz_PWM_SS_2L_hw_SetMinimumPulseWidth(uint32_t base_address, float min_pulse
     uz_assert_not_zero_uint32(base_address);
     uz_assert(min_pulse_width_percent>=0.0f);
     int32_t min_pulse_width_percent_Q12 = uz_convert_float_to_sfixed(min_pulse_width_percent,12);
-    uz_axi_write_uint32(base_address + PWM_min_pulse_width_AXI_Data_PWM_and_SS_control_V4_ip, min_pulse_width_percent_Q12);
+    uz_axi_write_uint32(base_address + PWM_min_pulse_width_AXI_Data_PWM_and_SS_control_V4_ip, (uint32_t)min_pulse_width_percent_Q12);
 }
 
 void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumber, bool TriState_true_false){

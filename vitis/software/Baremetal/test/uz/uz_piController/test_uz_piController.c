@@ -85,14 +85,14 @@ void test_uz_PI_Controller_sample_output_with_Kp_zero(void){
     float referenceValue = 2.0f;
     float actualValue = 1.0f;
     for(int i=0;i<10;i++){
-        TEST_ASSERT_EQUAL_FLOAT( i * ( referenceValue - actualValue ),uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
+        TEST_ASSERT_EQUAL_FLOAT( (float)i * ( referenceValue - actualValue ),uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
     } 
     //Test with negative error
     uz_PI_Controller_reset(variables);
     referenceValue = 1.0f;
     actualValue = 2.0f;
     for(int i=0;i<10;i++){
-        TEST_ASSERT_EQUAL_FLOAT( i * ( referenceValue - actualValue ),uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
+        TEST_ASSERT_EQUAL_FLOAT( (float)i * ( referenceValue - actualValue ),uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
     } 
 }
 

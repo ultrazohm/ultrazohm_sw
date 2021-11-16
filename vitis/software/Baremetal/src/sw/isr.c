@@ -32,7 +32,7 @@
 //Inclusion of WDT code
 #include "../Codegen/uz_codegen.h"
 
-#include "../uz/uz_wdt/uz_xwdttb.h"
+#include "../IP_Cores/uz_xwdttb/uz_xwdttb.h"
 
 //Initialize the variables for the ADC measurement
 u32 		XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
@@ -81,7 +81,7 @@ void ISR_Control(void *data)
 //	XWdtPs_Restart();
 
 	/* Restart the AXI IP watch dog timer: kick forward */
-	XWdtTb_RestartWdt(&WdtTbInstance);
+	WdtTb_Restart();
 
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
 	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());

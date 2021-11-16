@@ -34,7 +34,8 @@
 
 
 #include "uz_xwdtps.h"
-#include "../uz_HAL.h"
+
+#include "../../uz/uz_HAL.h"
 
 #ifdef ENABLE_WDT_INT
 

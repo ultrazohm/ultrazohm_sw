@@ -4,6 +4,8 @@
 #include "../uz_HAL.h"
 #include <math.h>
 
+static float convert_data(float data, struct uz_fixedpoint_definition_t fixed_data);
+
 float uz_fixedpoint_get_precision(struct uz_fixedpoint_definition_t input)
 {
     return ldexpf(1.0f, -input.fractional_bits); // 1*2^(-fractional_bits)
@@ -60,8 +62,7 @@ uint32_t uz_fixedpoint_convert_to_unsigned_fixed(float data, struct uz_fixedpoin
 {
     uz_assert(!fixed_data.is_signed);
     uz_fixedpoint_check_limits(data, fixed_data);
-    float output_float = ldexpf(data, fixed_data.fractional_bits);
-    uint32_t unsigned_output = (uint32_t)output_float;
+    uint32_t unsigned_output = (uint32_t)convert_data(data,fixed_data);
     return unsigned_output;
 }
 
@@ -69,17 +70,41 @@ int32_t uz_fixedpoint_convert_to_signed_fixed(float data, struct uz_fixedpoint_d
 {
     uz_assert(fixed_data.is_signed);
     uz_fixedpoint_check_limits(data, fixed_data);
-    return ((int32_t)ldexpf(data, fixed_data.fractional_bits));
+    int32_t signed_output = (int32_t)convert_data(data,fixed_data);
+    return signed_output;
+}
+
+static float convert_data(float data, struct uz_fixedpoint_definition_t fixed_data)
+{
+    float output = ldexpf(data, fixed_data.fractional_bits);
+    switch (fixed_data.rounding_type)
+    {
+    case round_nearest:
+        output=roundf(output);
+        break;
+    case round_floor:
+        output=floorf(output);
+        break;
+    case round_ceil:
+        output=ceilf(output);
+        break;
+    case round_trunc:
+        output=truncf(output);
+        break;
+    default:
+        break;
+    }
+    return output;
 }
 
 float uz_fixedpoint_axi_read(uint32_t memory_address, struct uz_fixedpoint_definition_t fixedpoint_definition)
 {
     uz_assert_not_zero_uint32(memory_address);
-    float read_value=0.0f;    
+    float read_value = 0.0f;
     if (fixedpoint_definition.is_signed)
     {
-        int32_t register_value_signed=uz_axi_read_int32(memory_address);
-        read_value=uz_fixedpoint_convert_signed_to_float(register_value_signed,fixedpoint_definition);
+        int32_t register_value_signed = uz_axi_read_int32(memory_address);
+        read_value = uz_fixedpoint_convert_signed_to_float(register_value_signed, fixedpoint_definition);
     }
     else
     {

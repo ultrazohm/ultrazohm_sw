@@ -4,10 +4,18 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+enum uz_fixedpoint_rounding{
+    round_trunc=0,
+    round_nearest,
+    round_floor,
+    round_ceil,
+};
+
 struct uz_fixedpoint_definition_t{
     const bool is_signed; /**< Determines if the fixed point value is signed or unsigned */
     const int32_t fractional_bits; /**< Number of bits for the the fraction */
     const int32_t integer_bits; /**< Number of bits for the integer part */
+    const enum uz_fixedpoint_rounding rounding_type;
 };
 
 float uz_fixedpoint_axi_read(uint32_t memory_address, struct uz_fixedpoint_definition_t fixedpoint_definition);

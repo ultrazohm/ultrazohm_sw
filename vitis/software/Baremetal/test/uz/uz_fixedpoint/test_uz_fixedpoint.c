@@ -24,8 +24,7 @@ void test_uz_fixedpoint_get_precision(void)
     const struct uz_fixedpoint_definition_t fixed_def = {
         .is_signed = true,
         .fractional_bits = 4,
-        .integer_bits = 5,
-        .rounding_type=round_trunc};
+        .integer_bits = 5};
 
     float expected_precision = 0.0625f; // 2^(-4)=0.0625
     float precision = uz_fixedpoint_get_precision(fixed_def);
@@ -165,15 +164,14 @@ void test_uz_fixedpoint_convert_to_unsigned_fixed(void)
     TEST_ASSERT_EQUAL_FLOAT(expected_retrun, return_value);
 }
 
-void test_uz_fixedpoint_convert_to_signed_fixed(void)
+void test_uz_fixedpoint_convert_to_signed_fixed_rounding(void)
 {
     struct uz_fixedpoint_definition_t def = {
         .is_signed = true,
         .fractional_bits = 2,
-        .integer_bits = 14,
-        .rounding_type = round_trunc};
+        .integer_bits = 14};
     float testinput = -2.9f;
-    int32_t expected_retrun = -11;
+    int32_t expected_retrun = -12;
     int32_t return_value = uz_fixedpoint_convert_to_signed_fixed(testinput, def);
     TEST_ASSERT_EQUAL_FLOAT(expected_retrun, return_value);
 }

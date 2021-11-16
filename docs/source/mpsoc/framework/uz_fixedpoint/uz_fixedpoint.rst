@@ -1,4 +1,4 @@
-.. uz_fixedpoint::
+.. _uz_fixedpoint:
 
 ===================
 Fixed point library
@@ -121,12 +121,14 @@ See the following for details:
   Relationship of fixed point precision, error, and representation of a floating point variable (``float``).
 
 Given the limited precision of the fixed-point data type (determined by the number of fractional bits :math:`N`), the floating-point value is rounded when converting to fixed-point precision.
-The following rounding methods are available:
+The following rounding methods are possible:
 
-- Nearest integer (roundf, https://en.cppreference.com/w/c/numeric/math/round)
-- https://en.cppreference.com/w/c/numeric/math/floor
-- https://en.cppreference.com/w/c/numeric/math/ceil
-- https://en.cppreference.com/w/c/numeric/math/trunc
+- Round to nearest integer (roundf, https://en.cppreference.com/w/c/numeric/math/round)
+- Round down (floorf, https://en.cppreference.com/w/c/numeric/math/floor)
+- Round up (ceilf, https://en.cppreference.com/w/c/numeric/math/ceil)
+- Round towards zero (truncf, https://en.cppreference.com/w/c/numeric/math/trunc)
+
+The software module **always** rounds towards the nearest integer!
 
 Examples
 ========
@@ -160,6 +162,7 @@ To convert back to a floating-point value, the stored integer :math:`x_i` is mul
   x_{f,round} &= 12 \cdot 2^{-2}=3 \\
   x_{f,trunc} &= 11 \cdot 2^{-2}=2.75
 
+As it is usually desired to represent the floating-point value as a fixed-point value with the smallest error, rounding to the nearest integer is used.
 
 Write
 *****

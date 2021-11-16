@@ -4,7 +4,7 @@
 #include "../uz_HAL.h"
 #include <math.h>
 
-static float convert_data(float data, struct uz_fixedpoint_definition_t fixed_data);
+static float convert_data_and_round(float data, struct uz_fixedpoint_definition_t fixed_data);
 
 float uz_fixedpoint_get_precision(struct uz_fixedpoint_definition_t input)
 {
@@ -62,7 +62,7 @@ uint32_t uz_fixedpoint_convert_to_unsigned_fixed(float data, struct uz_fixedpoin
 {
     uz_assert(!fixed_data.is_signed);
     uz_fixedpoint_check_limits(data, fixed_data);
-    uint32_t unsigned_output = (uint32_t)convert_data(data,fixed_data);
+    uint32_t unsigned_output = (uint32_t)convert_data_and_round(data,fixed_data);
     return unsigned_output;
 }
 
@@ -70,30 +70,14 @@ int32_t uz_fixedpoint_convert_to_signed_fixed(float data, struct uz_fixedpoint_d
 {
     uz_assert(fixed_data.is_signed);
     uz_fixedpoint_check_limits(data, fixed_data);
-    int32_t signed_output = (int32_t)convert_data(data,fixed_data);
+    int32_t signed_output = (int32_t)convert_data_and_round(data,fixed_data);
     return signed_output;
 }
 
-static float convert_data(float data, struct uz_fixedpoint_definition_t fixed_data)
+static float convert_data_and_round(float data, struct uz_fixedpoint_definition_t fixed_data)
 {
     float output = ldexpf(data, fixed_data.fractional_bits);
-    switch (fixed_data.rounding_type)
-    {
-    case round_nearest:
-        output=roundf(output);
-        break;
-    case round_floor:
-        output=floorf(output);
-        break;
-    case round_ceil:
-        output=ceilf(output);
-        break;
-    case round_trunc:
-        output=truncf(output);
-        break;
-    default:
-        break;
-    }
+    output=roundf(output); // round to nearest integer since a cast only truncates (drops) the fractional
     return output;
 }
 

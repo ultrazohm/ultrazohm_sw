@@ -72,12 +72,12 @@ set FOLDER_PATH [pwd]
 cd $WS_PATH
 
 set PLATFORM_NAME 	UltraZohm
-set XSA_FOLDER 		$FOLDER_PATH/vivado_exported_xsa
+set XSA_FOLDER 	[file join $FOLDER_PATH vivado_exported_xsa]
 set EXPORT_FOLDER [file join $FOLDER_PATH software]
 set SHARED_FOLDER [file join $EXPORT_FOLDER shared]
 
 
-set filename_Baremetal [file join $EXPORT_FOLDER software/Baremetal/src]
+set filename_Baremetal [file join $EXPORT_FOLDER Baremetal/src]
 set filename_FreeRTOS  [file join $EXPORT_FOLDER FreeRTOS]
 set filename_FSBL      [file join $EXPORT_FOLDER FSBL]
 set filename_FSBLelf   [file join $EXPORT_FOLDER BootImage]

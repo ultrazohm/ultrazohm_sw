@@ -11,7 +11,7 @@ void uz_dqTransformation_hw_set_thetaOffset(uint32_t base_address, float thetaOf
         .is_signed = true,
         .fractional_bits = 20,
         .integer_bits = 4};
-    uz_fixedpoint_axi_write(0, 1.35f, fixedpoint_definition);
+    uz_fixedpoint_axi_write(base_address+theta_offset_AXI_Data_Trans_123_dq_V12_ip, thetaOffset, fixedpoint_definition);
 }
 
 float uz_dqTransformation_hw_get_id(uint32_t base_address)

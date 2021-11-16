@@ -3,6 +3,7 @@
 #include "unity.h"
 
 #include "uz_xwdttb.h"
+#include "mock_xwdttb.h"
 
 void setUp(void)
 {

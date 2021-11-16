@@ -79,7 +79,7 @@
     int8:     INT8
     bool:     UINT8
   :includes:
-    - "test/uz_fixedpoint_helper.h"
+    - "uz_fixedpoint_helper.h"
   :unity_helper_path:
     - "test/helper/uz_fixedpoint_helper.h"
 

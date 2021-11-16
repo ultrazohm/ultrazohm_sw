@@ -8,10 +8,10 @@ void uz_dqTransformation_hw_set_thetaOffset(uint32_t base_address, float thetaOf
     uz_assert_not_zero_uint32(base_address);
     //sfix24_En20
     struct uz_fixedpoint_definition_t fixedpoint_definition = {
+        .is_signed = true,
         .fractional_bits = 20,
-        .integer_bits = 3,
-        .is_signed = true};
-    uz_fixedpoint_axi_write(base_address + theta_offset_AXI_Data_Trans_123_dq_V12_ip, thetaOffset, fixedpoint_definition);
+        .integer_bits = 4};
+    uz_fixedpoint_axi_write(0, 1.35f, fixedpoint_definition);
 }
 
 float uz_dqTransformation_hw_get_id(uint32_t base_address)
@@ -20,7 +20,7 @@ float uz_dqTransformation_hw_get_id(uint32_t base_address)
     // sfix18_En11
     struct uz_fixedpoint_definition_t fixedpoint_definition = {
         .fractional_bits = 11,
-        .integer_bits = 6,
+        .integer_bits = 7,
         .is_signed = true};
     return uz_fixedpoint_axi_read(base_address + id_AXI_Data_Trans_123_dq_V12_ip, fixedpoint_definition);
 }

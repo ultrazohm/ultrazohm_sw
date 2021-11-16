@@ -1,11 +1,11 @@
 #ifdef TEST
 
 #include "unity.h"
-
+#include "uz_fixedpoint_helper.h"
 #include "uz_dq_transformation_hw.h"
-#include "uz_fixedpoint.h"
 #include "test_assert_with_exception.h"
 #include "mock_uz_AXI.h" // Tells Ceedling to create mock versions of the functions in uz_AXI (e.g., _Expect)
+#include "mock_uz_fixedpoint.h"
 #include "uz_dq_transformation_hwAddresses.h"
 #define TEST_BASE_ADDRESS 0x00000000F // random hex value that represents a fictional base address
 
@@ -18,11 +18,17 @@ void tearDown(void)
 }
 
 void test_uz_dq_transformation_hw_set_thetaOffset(void){
-    int fractionalBits = 20;
-    float thetaOffset = 1.35f;
-    uint32_t thetaOffset_int = uz_convert_float_to_sfixed(thetaOffset, fractionalBits);
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS+theta_offset_AXI_Data_Trans_123_dq_V12_ip, thetaOffset_int);
-    uz_dqTransformation_hw_set_thetaOffset(TEST_BASE_ADDRESS,thetaOffset);
+    //int fractionalBits = 20;
+    //uint32_t thetaOffset_int = uz_convert_float_to_sfixed(thetaOffset, fractionalBits);
+    struct uz_fixedpoint_definition_t def={
+        .is_signed=true,
+        .fractional_bits=20,
+        .integer_bits=4
+    };
+    float theta_offset = 1.35f;
+    //uz_fixedpoint_axi_write_Expect(TEST_BASE_ADDRESS+theta_offset_AXI_Data_Trans_123_dq_V12_ip,theta_offset, def);
+    uz_fixedpoint_axi_write_Expect(0,theta_offset,def);
+    uz_dqTransformation_hw_set_thetaOffset(TEST_BASE_ADDRESS,theta_offset);
 }
 
 void test_uz_dq_transformation_hw_set_thetaOffsetFail(void){

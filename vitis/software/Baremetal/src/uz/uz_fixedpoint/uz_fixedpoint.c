@@ -99,7 +99,7 @@ float uz_fixedpoint_axi_read(uint32_t memory_address, struct uz_fixedpoint_defin
     return read_value;
 }
 
-void uz_fixedpoint_axi_write(uint32_t memory_address, float data, uz_fixedpoint_definition_t fixedpoint_definition)
+void uz_fixedpoint_axi_write(uint32_t memory_address, float data, struct uz_fixedpoint_definition_t fixedpoint_definition)
 {
     uz_assert_not_zero_uint32(memory_address);
     uz_fixedpoint_check_limits(data, fixedpoint_definition);

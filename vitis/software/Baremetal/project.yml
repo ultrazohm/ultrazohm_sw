@@ -79,9 +79,9 @@
     int8:     INT8
     bool:     UINT8
   :includes:
-    - "uz_fixedpoint_helper.h"
+    - "uz_struct_helper.h"
   :unity_helper_path:
-    - "test/helper/uz_fixedpoint_helper.h"
+    - "test/helper/uz_struct_helper.h"
 
 
 # Add -gcov to the plugins list to make sure of the gcov plugin

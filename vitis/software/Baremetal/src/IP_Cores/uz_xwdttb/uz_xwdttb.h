@@ -38,7 +38,7 @@
 #include <stdio.h>
 #else
 #include "xscugic.h"
-#include "xil_printf.h"
+// #include "xil_printf.h"
 #endif
 
 /************************** Constant Definitions *****************************/

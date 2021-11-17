@@ -384,7 +384,8 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 
 	XScuGic_GetPriorityTriggerType(IntcInstancePtr, WDTTB_IRPT_INTR,
 													&Priority, &Trigger);
-	xil_printf("WdtTbSetupIntrSystem: Wd Prio is %d, level is %d\r\n",Priority, Trigger);
+	//	DEBUG INFO
+	//	xil_printf("WdtTbSetupIntrSystem: Wd Prio is %d, level is %d\r\n",Priority, Trigger);
 
 	/*
 	 * Connect the interrupt handler that will be called when an
@@ -446,8 +447,9 @@ void WdtTbIntrHandler(void *CallBackRef)
 
 	XWdtTb *WdtTbInstancePtr = (XWdtTb *)CallBackRef;
 
-	u32 reg;
-	reg = XScuGic_ReadReg(TempConfig->CpuBaseAddress, XSCUGIC_RUN_PRIOR_OFFSET);
+	//	DEBUG INFO
+	// u32 reg;
+	// reg = XScuGic_ReadReg(TempConfig->CpuBaseAddress, XSCUGIC_RUN_PRIOR_OFFSET);
 //	xil_printf("WdtTbIntrHandler AND RESTART AND CLEAR: Running priority in WDT handler is %d\r\n",reg >> 3);
 
 	/*

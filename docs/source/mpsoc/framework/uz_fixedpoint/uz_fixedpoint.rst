@@ -27,7 +27,7 @@ The 32-bit limitation is due to the AXI data width of 32-bit.
 
 .. figure:: fixedpoint_bitfield.drawio.svg
 
-  Binary representation of fixed-point values in memory.
+  Binary representation of a fixed-point value in memory. Depicted is a fixed point value with :math:`N=4` fractional bits and :math:`M=5` integer bits. The highest bit of the integer bits is the MSB of the fixed point value while all bits to the left are not used.
 
 :numref:`fixedpoint_bitmap` showcases the split-up of a 32-bit integer variable.
 Note that this is just a mental model for the user, neither the processor nor the compiler do know about the split up.
@@ -133,7 +133,7 @@ The software module **always** rounds towards the nearest integer!
 Conversion
 **********
 
-Converting the floating-point value of :math:`x_f=2.9` to a signed fixed-point data type with :math:`M=14` bits for the integer part and :math:`N=2` bits for the fraction yields the scaling factor :math:`s=2^{4}=4`.
+Converting the floating-point value of :math:`x_f=2.9` to a signed fixed-point data type with :math:`M=14` bits for the integer part and :math:`N=2` bits for the fraction yields the scaling factor :math:`s=2^{2}=4`.
 Note that the different rounding modes are shown here to highlight their importance and to keep in mind that *round to nearest integer* is used by the software module.
 
 The stored integer is calculated by:

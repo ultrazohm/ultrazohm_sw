@@ -114,7 +114,7 @@ void test_uz_fixedpoint_check_limits_sign(void)
 // Conversion functions
 //
 // Unsigned to float
-void test_uz_fixedpoint_convert_unsiged_to_float_positive(void)
+void test_uz_fixedpoint_convert_unsigned_to_float_positive(void)
 {
     struct uz_fixedpoint_definition_t def = {
         .is_signed = false,

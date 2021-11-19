@@ -239,6 +239,7 @@ set DebugFreeRTOS [file join $EXPORT_FOLDER DebugFreeRTOS.launch]
 set DebugAll [file join $EXPORT_FOLDER Debug_FreeRTOS_Baremetal_FPGA.launch]
 #     file copy ?-force? ?--? source ?source ...? targetDir
 file copy -force -- $DebugBaremetal $filename_launches
+file copy -force -- $DebugFreeRTOS $filename_launches
 file copy -force -- $DebugAll $filename_launches
 puts "========================================"
 puts "debug files copied"

@@ -18,15 +18,12 @@ void tearDown(void)
 }
 
 void test_uz_dq_transformation_hw_set_thetaOffset(void){
-    //int fractionalBits = 20;
-    //uint32_t thetaOffset_int = uz_convert_float_to_sfixed(thetaOffset, fractionalBits);
     struct uz_fixedpoint_definition_t def={
         .is_signed=true,
         .fractional_bits=20,
         .integer_bits=4
     };
     float theta_offset = 1.35f;
-    //uz_fixedpoint_axi_write_Expect(TEST_BASE_ADDRESS+theta_offset_AXI_Data_Trans_123_dq_V12_ip,theta_offset, def);
     uz_fixedpoint_axi_write_Expect(TEST_BASE_ADDRESS+theta_offset_AXI_Data_Trans_123_dq_V12_ip,theta_offset,def);
     uz_dqTransformation_hw_set_thetaOffset(TEST_BASE_ADDRESS,theta_offset);
 }
@@ -48,37 +45,59 @@ void test_uz_dqTransformation_hw_get_id(void){
 }
 
 void test_uz_dqTransformation_hw_get_iq(void){
-    int fractionalBits = 11;     // sfix18_En11
+    struct uz_fixedpoint_definition_t fixedpoint_definition={
+        .fractional_bits=11,
+        .integer_bits=7,
+        .is_signed=true
+    };
     float expected_return_value = -63.25;
-    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS + iq_AXI_Data_Trans_123_dq_V12_ip, uz_convert_float_to_sfixed(expected_return_value, fractionalBits)); 
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+iq_AXI_Data_Trans_123_dq_V12_ip, fixedpoint_definition, expected_return_value);
     float actual_return_value = uz_dqTransformation_hw_get_iq(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
 
 void test_uz_dq_Transformation_hw_read_id_fail_due_to_zero_base_address(void){
-    TEST_ASSERT_FAIL_ASSERT(uz_dqTransformation_hw_get_id(0));
+    TEST_ASSERT_FAIL_ASSERT(uz_dqTransformation_hw_get_id(0U));
 }
 
 void test_uz_dqTransformation_hw_get_i1(void){
-    int fractionalBits = 11;     // sfix18_En11
+    // sfix18_En11
+    struct uz_fixedpoint_definition_t fixedpoint_definition={
+        .fractional_bits=11,
+        .integer_bits=7,
+        .is_signed=true
+    };
+
     float expected_return_value = -63.25;
-    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS + i1_AXI_Data_Trans_123_dq_V12_ip, uz_convert_float_to_sfixed(expected_return_value, fractionalBits)); 
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+i1_AXI_Data_Trans_123_dq_V12_ip,fixedpoint_definition,expected_return_value);
     float actual_return_value = uz_dqTransformation_hw_get_i1(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
 
 void test_uz_dqTransformation_hw_get_i2(void){
-    int fractionalBits = 11;     // sfix18_En11
+    // sfix18_En11
+    struct uz_fixedpoint_definition_t fixedpoint_definition={
+        .fractional_bits=11,
+        .integer_bits=7,
+        .is_signed=true
+    };
+
     float expected_return_value = -63.25;
-    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS + i2_AXI_Data_Trans_123_dq_V12_ip, uz_convert_float_to_sfixed(expected_return_value, fractionalBits)); 
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+i2_AXI_Data_Trans_123_dq_V12_ip,fixedpoint_definition,expected_return_value);
     float actual_return_value = uz_dqTransformation_hw_get_i2(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
 
 void test_uz_dqTransformation_hw_get_i3(void){
-    int fractionalBits = 11;     // sfix18_En11
+    // sfix18_En11
+    struct uz_fixedpoint_definition_t fixedpoint_definition={
+        .fractional_bits=11,
+        .integer_bits=7,
+        .is_signed=true
+    };
+    
     float expected_return_value = -63.25;
-    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS + i3_AXI_Data_Trans_123_dq_V12_ip, uz_convert_float_to_sfixed(expected_return_value, fractionalBits)); 
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+i3_AXI_Data_Trans_123_dq_V12_ip,fixedpoint_definition,expected_return_value);
     float actual_return_value = uz_dqTransformation_hw_get_i3(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }

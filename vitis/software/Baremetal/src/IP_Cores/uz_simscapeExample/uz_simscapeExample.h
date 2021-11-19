@@ -1,9 +1,7 @@
 #pragma once
+
 #include <stdint.h>
 #include <stdbool.h>
-#include <math.h>
-#include "../../uz/uz_HAL.h"
-#include "../../uz/uz_SystemTime/uz_SystemTime.h"
 
 typedef struct uz_simscapeExample uz_simscapeExample;
 typedef struct uz_simscapeExample *uz_simscapeExample_handle;

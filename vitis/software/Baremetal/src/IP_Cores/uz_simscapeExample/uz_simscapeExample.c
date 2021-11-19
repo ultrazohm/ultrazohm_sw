@@ -2,6 +2,11 @@
 #include "uz_simscapeExample_private.h"
 #include "uz_simscapeExample_hwAddresses.h"
 
+#include <math.h>
+#include "../../uz/uz_HAL.h"
+#include "../../uz/uz_math_constants.h"
+#include "../../uz/uz_SystemTime/uz_SystemTime.h"
+
 static void uz_simscapeExample_set_Vin(uz_simscapeExample_handle self, float Vin);
 static float uz_simscapeExample_get_IR(uz_simscapeExample_handle self);
 static float uz_simscapeExample_get_Vdiode(uz_simscapeExample_handle self);
@@ -19,8 +24,8 @@ void uz_simscapeExample_step_model_once(uz_simscapeExample_handle self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	int tmp = (uz_SystemTime_GetInterruptCounter() % 10000);
-	float t = tmp / 10000.0;
-	self->sine = self->amp * sinf(2 * M_PI * t * self->freq_Hz);
+	float t = tmp / 10000.0f;
+	self->sine = self->amp * sinf(2.0f * UZ_PIf * t * self->freq_Hz);
 	uz_simscapeExample_set_Vin(self, self->sine);
 	self->IR = uz_simscapeExample_get_IR(self);
 	self->Iout = uz_simscapeExample_get_Iout(self);

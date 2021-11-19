@@ -13,8 +13,8 @@ void tearDown(void)
 }
 
 void test_uz_matrix_add_to_matrix_column_vector(void){
-    int rows=1;
-    int columns=4;
+    size_t rows=1;
+    size_t columns=4;
     float A_data[4]={1,2,3,4};
     float C_data[4]={1,2,3,4};
     uz_matrix_t* A=uz_matrix_init(A_data,UZ_MATRIX_SIZE(A_data),rows, columns );
@@ -28,8 +28,8 @@ void test_uz_matrix_add_to_matrix_column_vector(void){
 }
 
 void test_uz_matrix_add_to_matrix_row_vector(void){
-    int rows=4;
-    int columns=1;
+    size_t rows=4;
+    size_t columns=1;
     float A_data[4]={1,2,3,4};
     float C_data[4]={1,2,3,4};
     uz_matrix_t* A=uz_matrix_init(A_data,UZ_MATRIX_SIZE(A_data),rows, columns );
@@ -43,8 +43,8 @@ void test_uz_matrix_add_to_matrix_row_vector(void){
 }
 
 void test_uz_matrix_add_to_matrix_2_times2(void){
-    int rows=2;
-    int columns=2;
+    size_t rows=2;
+    size_t columns=2;
     float A_data[4]={1,2,3,4};
     float C_data[4]={1,2,3,4};
     uz_matrix_t* A=uz_matrix_init(A_data,UZ_MATRIX_SIZE(A_data),rows, columns );

@@ -33,6 +33,9 @@
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
 
+#include "../uz/uz_wavegen/uz_wavegen.h"
+
+float phase_a=0, phase_b=0, phase_c=0;
 
 //Initialize the variables for the ADC measurement
 u32 		XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
@@ -55,6 +58,9 @@ extern uz_codegen codegenInstance;
 
 extern uz_PWM_SS_2L_t *PWM_SS_2L_d4;
 extern uz_PWM_SS_2L_t *PWM_SS_2L_d3;
+
+
+extern uz_wavegen_three_phase *three_phase_test;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -115,12 +121,25 @@ void ISR_Control(void *data)
 //	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.CMPA_2 * 0.0004;
 //	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.CMPA_3 * 0.0004;
 
-//	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.CMPA_1;
-//	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.CMPA_2;
-//	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.CMPA_3;
-//	Global_Data.rasv.halfBridge4DutyCycle = codegenInstance.output.CMPA_4;
-//	Global_Data.rasv.halfBridge5DutyCycle = codegenInstance.output.CMPA_5;
-//	Global_Data.rasv.halfBridge6DutyCycle = codegenInstance.output.CMPA_6;
+	uz_wavegen_three_phase_sample(three_phase_test);
+	phase_a = uz_wavegen_three_phase_get_phaseU(three_phase_test);
+	phase_b = uz_wavegen_three_phase_get_phaseV(three_phase_test);
+	phase_c = uz_wavegen_three_phase_get_phaseW(three_phase_test);
+
+
+//		Global_Data.rasv.halfBridge1DutyCycle = phase_a;
+//		Global_Data.rasv.halfBridge2DutyCycle = phase_b;
+//		Global_Data.rasv.halfBridge3DutyCycle = phase_c;
+
+	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.CMPA_1;
+	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.CMPA_2;
+	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.CMPA_3;
+	Global_Data.rasv.halfBridge4DutyCycle = codegenInstance.output.CMPA_4;
+	Global_Data.rasv.halfBridge5DutyCycle = codegenInstance.output.CMPA_5;
+	Global_Data.rasv.halfBridge6DutyCycle = codegenInstance.output.CMPA_6;
+
+	Global_Data.av.I_d = codegenInstance.output.id;
+	Global_Data.av.I_q = codegenInstance.output.iq;
 
 	//Start: Control algorithm -------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)

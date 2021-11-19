@@ -25,7 +25,7 @@
 #define FOC_6ph_IN_FieldOrientedControl ((uint8_T)1U)
 
 /* Exported block parameters */
-real_T Kpd = 0.075398223686155036*0.5;     /* Variable: Kpd
+real_T Kpd = 0.175;     /* Variable: Kpd 0.075398223686155036*0.5
                                         * Referenced by:
                                         *   '<S96>/Proportional Gain'
                                         *   '<S102>/P Copy'
@@ -35,7 +35,7 @@ real_T Kpn = 1.224610768327322;        /* Variable: Kpn
                                         *   '<S46>/Proportional Gain'
                                         *   '<S52>/P Copy'
                                         */
-real_T Kpq = 0.12566370614359174*0.5;      /* Variable: Kpq
+real_T Kpq = 0.175;      /* Variable: Kpq
                                         * Referenced by:
                                         *   '<S146>/Proportional Gain'
                                         *   '<S152>/P Copy'
@@ -49,13 +49,13 @@ real_T PERIOD = 500.0;                 /* Variable: PERIOD
                                         *   '<S2>/Gain6'
                                         *   '<S2>/Gain7'
                                         */
-real_T Tnd = 9999;/*0.0013043478260869566;    /* Variable: Tnd
+real_T Tnd = 0.002;/*0.0013043478260869566;    /* Variable: Tnd
                                         * Referenced by: '<S95>/Integral Gain'
                                         */
 real_T Tnn = 0.039788735772973829;     /* Variable: Tnn
                                         * Referenced by: '<S45>/Integral Gain'
                                         */
-real_T Tnq = 9999;/*0.0021739130434782609;    /* Variable: Tnq
+real_T Tnq = 0.002;/*0.0021739130434782609;    /* Variable: Tnq
                                         * Referenced by: '<S145>/Integral Gain'
                                         */
 real_T u_dc = 36.0;                    /* Variable: u_dc

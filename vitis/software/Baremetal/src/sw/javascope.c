@@ -51,6 +51,7 @@ static float ISRExecutionTime;
 static float isr_period_us;
 static float RefWave;
 
+extern float phase_a, phase_b, phase_c;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -108,6 +109,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_SineWave1]   = &lifecheck;
 	js_ptr_arr[JSO_SineWave2]   = &isr_period_us;
 	js_ptr_arr[JSO_RefWave]		= &RefWave;
+	js_ptr_arr[JSO_phase_a]		= &phase_a;
+	js_ptr_arr[JSO_phase_b]		= &phase_b;
+	js_ptr_arr[JSO_phase_c]		= &phase_c;
 	return Status;
 }
 

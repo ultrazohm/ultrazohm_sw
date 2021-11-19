@@ -57,6 +57,9 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_phase_a,
+	JSO_phase_b,
+	JSO_phase_c,
     JSO_ENDMARKER
 };
 

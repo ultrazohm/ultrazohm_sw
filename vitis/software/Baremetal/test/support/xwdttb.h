@@ -1,3 +1,6 @@
+/******************************************************************************
+* FAKEEEE!!!
+******************************************************************************/
 #ifndef XWDTTB_H		/* prevent circular inclusions */
 #define XWDTTB_H		/* by using protection macros */
 
@@ -7,7 +10,7 @@
 // #include <stdint.h>
 #include "xil_types.h"
 // #include "xil_assert.h"
-// #include "xstatus.h"
+//#include "xstatus.h"
 // #include "xwdttb_l.h"
 
 #ifdef __cplusplus
@@ -73,17 +76,17 @@ typedef struct {
 * @note		None.
 *
 ******************************************************************************/
-u32 XWdtTb_GetTbValue(const XWdtTb *InstancePtr)
-{
-	// /* Verify arguments. */
-	// Xil_AssertNonvoid(InstancePtr != NULL);
-	// Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-	// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 0U);
+u32 XWdtTb_GetTbValue(const XWdtTb *InstancePtr);
+//{
+		// /* Verify arguments. */
+		// Xil_AssertNonvoid(InstancePtr != NULL);
+		// Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+		// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 0U);
 
-	// /* Return the contents of the timebase register */
-	// return XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_TBR_OFFSET);
-	return 0L;
-}
+		// /* Return the contents of the timebase register */
+		// return XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_TBR_OFFSET);
+	//return 0L;
+//}
 /*****************************************************************************/
 /**
 * @brief
@@ -105,8 +108,8 @@ u32 XWdtTb_GetTbValue(const XWdtTb *InstancePtr)
 *
 ******************************************************************************/
 void XWdtTb_SetRegSpaceAccessMode(const XWdtTb *InstancePtr,
-						u32 AccessMode)
-{
+						u32 AccessMode);
+//{
 	// /* Verify arguments. */
 	// Xil_AssertVoid(InstancePtr != NULL);
 	// Xil_AssertVoid(InstancePtr->EnableWinMode == 1U);
@@ -115,7 +118,7 @@ void XWdtTb_SetRegSpaceAccessMode(const XWdtTb *InstancePtr,
 	// /* Write access mode */
 	// XWdtTb_WriteReg(InstancePtr->Config.BaseAddr, XWT_MWR_OFFSET,
 	// 	AccessMode);
-}
+//}
 
 /*****************************************************************************/
 /**
@@ -133,19 +136,19 @@ void XWdtTb_SetRegSpaceAccessMode(const XWdtTb *InstancePtr,
 * @note		None.
 *
 ******************************************************************************/
-u32 XWdtTb_GetRegSpaceAccessMode(const XWdtTb *InstancePtr)
-{
-	// /* Verify arguments. */
-	// Xil_AssertNonvoid(InstancePtr != NULL);
-	// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
+u32 XWdtTb_GetRegSpaceAccessMode(const XWdtTb *InstancePtr);
+//{
+		// /* Verify arguments. */
+		// Xil_AssertNonvoid(InstancePtr != NULL);
+		// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
 
-	// /* Read master write control register and return register space read
-	//  * only or writable
-	//  */
-	// return (XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_MWR_OFFSET) &
-	// 	XWT_MWR_MWC_MASK);
-	return 0L;
-}
+		// /* Read master write control register and return register space read
+		//  * only or writable
+		//  */
+		// return (XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_MWR_OFFSET) &
+		// 	XWT_MWR_MWC_MASK);
+	//return 0L;
+//}
 
 /*****************************************************************************/
 /**
@@ -162,17 +165,17 @@ u32 XWdtTb_GetRegSpaceAccessMode(const XWdtTb *InstancePtr)
 *		reset was caused by a watchdog timeout.
 *
 ******************************************************************************/
-u32 XWdtTb_GetLastEvent(const XWdtTb *InstancePtr)
-{
-	// /* Verify arguments. */
-	// Xil_AssertNonvoid(InstancePtr != NULL);
-	// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
+u32 XWdtTb_GetLastEvent(const XWdtTb *InstancePtr);
+//{
+		// /* Verify arguments. */
+		// Xil_AssertNonvoid(InstancePtr != NULL);
+		// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
 
-	// /* Read enable status register and return last bad event(s) */
-	// return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
-	// 	XWT_ESR_LBE_MASK) >> XWT_ESR_LBE_SHIFT);
-	return 0L;
-}
+		// /* Read enable status register and return last bad event(s) */
+		// return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
+		// 	XWT_ESR_LBE_MASK) >> XWT_ESR_LBE_SHIFT);
+	//return 0L;
+//}
 
 /*****************************************************************************/
 /**
@@ -193,18 +196,18 @@ u32 XWdtTb_GetLastEvent(const XWdtTb *InstancePtr)
 *		- When fail counter is disabled, bad event leads to reset.
 *
 ******************************************************************************/
-u32 XWdtTb_GetFailCounter(const XWdtTb *InstancePtr)
-{
+u32 XWdtTb_GetFailCounter(const XWdtTb *InstancePtr);
+//{
 
-// 	/* Verify arguments. */
-// 	Xil_AssertNonvoid(InstancePtr != NULL);
-// 	Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
+	// 	/* Verify arguments. */
+	// 	Xil_AssertNonvoid(InstancePtr != NULL);
+	// 	Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
 
-// 	/* Read enable status register and return fail counter value */
-// 	return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
-// 		XWT_ESR_FCV_MASK) >> XWT_ESR_FCV_SHIFT);
-return 0L;
-}
+	// 	/* Read enable status register and return fail counter value */
+	// 	return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
+	// 		XWT_ESR_FCV_MASK) >> XWT_ESR_FCV_SHIFT);
+//return 0L;
+//}
 
 /*****************************************************************************/
 /**
@@ -223,17 +226,17 @@ return 0L;
 * @note		None.
 *
 ******************************************************************************/
-u32 XWdtTb_IsResetPending(const XWdtTb *InstancePtr)
-{
-	// /* Verify arguments. */
-	// Xil_AssertNonvoid(InstancePtr != NULL);
-	// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
+u32 XWdtTb_IsResetPending(const XWdtTb *InstancePtr);
+//{
+		// /* Verify arguments. */
+		// Xil_AssertNonvoid(InstancePtr != NULL);
+		// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
 
-	// /* Read enable status register and return reset pending bit */
-	// return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
-	// 	XWT_ESR_WRP_MASK) >> XWT_ESR_WRP_SHIFT);
-	return 0L;
-}
+		// /* Read enable status register and return reset pending bit */
+		// return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
+		// 	XWT_ESR_WRP_MASK) >> XWT_ESR_WRP_SHIFT);
+	//return 0L;
+//}
 
 /*****************************************************************************/
 /**
@@ -254,17 +257,17 @@ u32 XWdtTb_IsResetPending(const XWdtTb *InstancePtr)
 * @note		None.
 *
 ******************************************************************************/
-u32 XWdtTb_GetIntrStatus(const XWdtTb *InstancePtr)
-{
-	// /* Verify arguments. */
-	// Xil_AssertNonvoid(InstancePtr != NULL);
-	// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
+u32 XWdtTb_GetIntrStatus(const XWdtTb *InstancePtr);
+//{
+		// /* Verify arguments. */
+		// Xil_AssertNonvoid(InstancePtr != NULL);
+		// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
 
-	// /* Read enable status register and return interrupt status */
-	// return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
-	// 	XWT_ESR_WINT_MASK) >> XWT_ESR_WINT_SHIFT);
-	return 0L;
-}
+		// /* Read enable status register and return interrupt status */
+		// return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
+		// 	XWT_ESR_WINT_MASK) >> XWT_ESR_WINT_SHIFT);
+	//return 0L;
+//}
 
 /*****************************************************************************/
 /**
@@ -283,17 +286,17 @@ u32 XWdtTb_GetIntrStatus(const XWdtTb *InstancePtr)
 * @note		None.
 *
 ******************************************************************************/
-u32 XWdtTb_IsWrongCfg(const XWdtTb *InstancePtr)
-{
-	// /* Verify arguments. */
-	// Xil_AssertNonvoid(InstancePtr != NULL);
-	// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
+u32 XWdtTb_IsWrongCfg(const XWdtTb *InstancePtr);
+//{
+		// /* Verify arguments. */
+		// Xil_AssertNonvoid(InstancePtr != NULL);
+		// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
 
-	// /* Read enable status register and return wrong configuration value */
-	// return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
-	// 	XWT_ESR_WCFG_MASK) >> XWT_ESR_WCFG_SHIFT);
-	return 0L;
-}
+		// /* Read enable status register and return wrong configuration value */
+		// return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
+		// 	XWT_ESR_WCFG_MASK) >> XWT_ESR_WCFG_SHIFT);
+	//return 0L;
+//}
 
 /*****************************************************************************/
 /**
@@ -316,15 +319,15 @@ u32 XWdtTb_IsWrongCfg(const XWdtTb *InstancePtr)
 *
 ******************************************************************************/
 
-void XWdtTb_SetSSTWindow(const XWdtTb *InstancePtr, u32 SST_window_config)
-{
+void XWdtTb_SetSSTWindow(const XWdtTb *InstancePtr, u32 SST_window_config);
+//{
         // /* Verify arguments. */
         // Xil_AssertVoid(InstancePtr != NULL);
         // Xil_AssertVoid(InstancePtr->EnableWinMode == (u32)TRUE);
 
         // /*  Write SST window count value */
         // XWdtTb_WriteReg(InstancePtr->Config.BaseAddr, XWT_SSTWR_OFFSET,SST_window_config);
-}
+//}
 
 /*****************************************************************************/
 /**
@@ -341,18 +344,18 @@ void XWdtTb_SetSSTWindow(const XWdtTb *InstancePtr, u32 SST_window_config)
 *
 ******************************************************************************/
 
-u32 XWdtTb_ConfigureWDTMode(XWdtTb *InstancePtr, u32 Mode)
-{
-	// Xil_AssertNonvoid(InstancePtr != NULL);
+u32 XWdtTb_ConfigureWDTMode(XWdtTb *InstancePtr, u32 Mode);
+//{
+		// Xil_AssertNonvoid(InstancePtr != NULL);
 
-	// if ((Mode == (u32) 0) || (Mode == (u32)1)) {
-	// 	InstancePtr->EnableWinMode = Mode;
-	// 	return XST_SUCCESS;
-	// } else {
-	// 	return XST_FAILURE;
-	// }
-	return 0L;
-}
+		// if ((Mode == (u32) 0) || (Mode == (u32)1)) {
+		// 	InstancePtr->EnableWinMode = Mode;
+		// 	return XST_SUCCESS;
+		// } else {
+		// 	return XST_FAILURE;
+		// }
+	//return 0L;
+//}
 
 /************************** Function Prototypes ******************************/
 

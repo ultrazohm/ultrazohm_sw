@@ -1,39 +1,6 @@
 /******************************************************************************
-* Copyright (c) 2015 - 2020 Xilinx, Inc.  All rights reserved.
-* SPDX-License-Identifier: MIT
+* FAKEEEE!!!
 ******************************************************************************/
-
-/*****************************************************************************/
-/**
-*
-* @file xil_exception.h
-*
-* This header file contains ARM Cortex A53,A9,R5 specific exception related APIs.
-* For exception related functions that can be used across all Xilinx supported
-* processors, please use xil_exception.h.
-*
-* @addtogroup arm_exception_apis ARM Processor Exception Handling
-* @{
-* ARM processors specific exception related APIs for cortex A53,A9 and R5 can
-* utilized for enabling/disabling IRQ, registering/removing handler for
-* exceptions or initializing exception vector table with null handler.
-*
-* <pre>
-* MODIFICATION HISTORY:
-*
-* Ver   Who      Date     Changes
-* ----- -------- -------- -----------------------------------------------
-* 5.2	pkp  	 28/05/15 First release
-* 6.0   mus      27/07/16 Consolidated file for a53,a9 and r5 processors
-* 6.7   mna      26/04/18 Add API Xil_GetExceptionRegisterHandler.
-* 6.7   asa      18/05/18 Update signature of API Xil_GetExceptionRegisterHandler.
-* 7.0   mus      01/03/19 Tweak Xil_ExceptionEnableMask and
-*                         Xil_ExceptionDisableMask macros to support legacy
-*                         examples for Cortexa72 EL3 exception level.
-* </pre>
-*
-******************************************************************************/
-
 #ifndef XIL_EXCEPTION_H /* prevent circular inclusions */
 #define XIL_EXCEPTION_H /* by using protection macros */
 
@@ -102,24 +69,11 @@ typedef void (*Xil_InterruptHandler)(void *data);
 *			C-Style signature: void Xil_ExceptionEnableMask(Mask)
 *
 ******************************************************************************/
-#if defined (versal) && !defined(ARMR5) && EL3
-/*
- * Cortexa72 processor in versal is coupled with GIC-500, and GIC-500 supports
- * only FIQ at EL3. Hence, tweaking this macro to always enable FIQ
- * ignoring argument passed by user.
- */
-#define Xil_ExceptionEnableMask(Mask)	\
-		mtcpsr(mfcpsr() & ~ ((XIL_EXCEPTION_FIQ) & XIL_EXCEPTION_ALL))
-#elif defined (__GNUC__) || defined (__ICCARM__)
-#define Xil_ExceptionEnableMask(Mask)	\
-		mtcpsr(mfcpsr() & ~ ((Mask) & XIL_EXCEPTION_ALL))
-#else
+
 #define Xil_ExceptionEnableMask(Mask)	\
 		{								\
-		  register u32 Reg __asm("cpsr"); \
-		  mtcpsr((Reg) & (~((Mask) & XIL_EXCEPTION_ALL))); \
 		}
-#endif
+
 /****************************************************************************/
 /**
 * @brief	Enable the IRQ exception.
@@ -149,24 +103,11 @@ typedef void (*Xil_InterruptHandler)(void *data);
 *			C-Style signature: Xil_ExceptionDisableMask(Mask)
 *
 ******************************************************************************/
-#if defined (versal) && !defined(ARMR5) && EL3
-/*
- * Cortexa72 processor in versal is coupled with GIC-500, and GIC-500 supports
- * only FIQ at EL3. Hence, tweaking this macro to always disable FIQ
- * ignoring argument passed by user.
- */
-#define Xil_ExceptionDisableMask(Mask)	\
-		mtcpsr(mfcpsr() | ((XIL_EXCEPTION_FIQ) & XIL_EXCEPTION_ALL))
-#elif defined (__GNUC__) || defined (__ICCARM__)
-#define Xil_ExceptionDisableMask(Mask)	\
-		mtcpsr(mfcpsr() | ((Mask) & XIL_EXCEPTION_ALL))
-#else
 #define Xil_ExceptionDisableMask(Mask)	\
 		{									\
-		  register u32 Reg __asm("cpsr"); \
-		  mtcpsr((Reg) | ((Mask) & XIL_EXCEPTION_ALL)); \
 		}
-#endif
+
+
 /****************************************************************************/
 /**
 * Disable the IRQ exception.

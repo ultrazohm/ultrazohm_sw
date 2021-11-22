@@ -122,14 +122,6 @@ void WdtTbIntrHandler(void *CallBackRef);
 int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr);
 void WdtTbDisableIntrSystem(XScuGic *IntcInstancePtr);
 
-/************************** Variable Definitions *****************************/
 
-#ifndef TESTAPP_GEN
-XWdtTb WdtTbInstance;	/* Instance of Time Base WatchDog Timer */
-XScuGic IntcInstance;	/* Instance of the Interrupt Controller */
-#endif
-
-//volatile int WdtExpired;
-volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
 
 #endif // UZ_XWDTTB_H

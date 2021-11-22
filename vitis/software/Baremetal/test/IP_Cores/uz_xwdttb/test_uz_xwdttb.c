@@ -2,8 +2,12 @@
 
 #include "unity.h"
 
-#include "uz_xwdttb.h"
+//#include "uz_xwdttb.h"
+
+// Driver level to be mocked (from XILINX)
 #include "mock_xwdttb.h"
+#include "mock_xscugic.h"
+//#include "mock_xil_exception.h"
 
 void setUp(void)
 {

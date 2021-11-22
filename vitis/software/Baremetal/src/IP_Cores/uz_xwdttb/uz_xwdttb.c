@@ -29,6 +29,17 @@
 
 #ifdef ENABLE_WDTTB_INT
 
+
+/************************** Variable Definitions *****************************/
+
+#ifndef TESTAPP_GEN
+XWdtTb WdtTbInstance;	/* Instance of Time Base WatchDog Timer */
+XScuGic IntcInstance;	/* Instance of the Interrupt Controller */
+#endif
+
+//volatile int WdtExpired;
+volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
+
 _Bool Wdttb_IsReady = false;
 
 XScuGic_Config *TempConfig;

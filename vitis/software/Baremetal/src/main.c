@@ -29,7 +29,7 @@
 
 struct uz_wavegen_three_phase_config config_three = {
         .amplitude = 0.2f,
-        .frequency_Hz = 50.0f,
+        .frequency_Hz = 1.0f,
         .offset = 0.5f
 };
 
@@ -83,10 +83,10 @@ int main(void) {
 	// Initialize Park-Transformation 123 to dq
 	DQTransformation_Initialize(&Global_Data);
 	uz_interlockDeadtime2L_handle deadtime_slotd4 = uz_interlockDeadtime2L_staticAllocator_slotD4();
-	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd4, 1.0);
+	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd4, 0.05);
 	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd4, true);
 	uz_interlockDeadtime2L_handle deadtime_slotd3 = uz_interlockDeadtime2L_staticAllocator_slotD3();
-	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd3, 1.0);
+	uz_interlockDeadtime2L_set_deadtime_us(deadtime_slotd3, 0.05);
 	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd3, true);
 	//Initialize PWM and switch signal control
 //	PWM_SS_Initialize(&Global_Data); 	// two-level modulator
@@ -192,7 +192,7 @@ int main(void) {
         .Tristate_HB2 = false,                  /**< Tristate flag for half-bridge 2, true=on, false=off */
         .Tristate_HB3 = false,                  /**< Tristate flag for half-bridge 3, true=on, false=off */
         .min_pulse_width = 0.01,              /**< Minimum pulse width in percent, e.g. 0.01 */
-        .PWM_freq_Hz = 60e3,                  /**< Switching frequency of PWM mode in Hz */
+        .PWM_freq_Hz = 100e3,                  /**< Switching frequency of PWM mode in Hz */
         .PWM_mode = normalized_input_via_AXI,/**< PWM mode selector\n
                                             0 = normalized input of reference signal via AXI\n
                                                 e.g. a reference voltage value between 0 and 1\n
@@ -216,7 +216,7 @@ int main(void) {
         .Tristate_HB2 = false,                  /**< Tristate flag for half-bridge 2, true=on, false=off */
         .Tristate_HB3 = false,                  /**< Tristate flag for half-bridge 3, true=on, false=off */
         .min_pulse_width = 0.01,              /**< Minimum pulse width in percent, e.g. 0.01 */
-        .PWM_freq_Hz = 60e3,                  /**< Switching frequency of PWM mode in Hz */
+        .PWM_freq_Hz = 100e3,                  /**< Switching frequency of PWM mode in Hz */
         .PWM_mode = normalized_input_via_AXI,/**< PWM mode selector\n
                                             0 = normalized input of reference signal via AXI\n
                                                 e.g. a reference voltage value between 0 and 1\n
@@ -480,7 +480,7 @@ void plotData(DS_Data* data) {
 void InitializeDataStructure(DS_Data* data) {
 
 	data->av.U_ZK = 36.0; 								//[V] DC-Link voltage
-	data->av.theta_offset =  0.0;					//Brose 3ph machine=2.539921, Brose 6ph machine=1.956397
+	data->av.theta_offset =  0.14608003;					//Brose 3ph machine=2.539921, Brose 6ph machine=1.956397
 	data->rasv.currentORspeedControl = 0.0;
 	data->rasv.PERIOD = 5000;
 	data->rasv.NEXT = false;
@@ -642,7 +642,7 @@ void InitializeDataStructure(DS_Data* data) {
 	data->aa.A3.cf.ADC_B8 = 10;
 
 	// initalize PWM parameters
-	data->ctrl.pwmFrequency = 60e3;		// PWM carrier frequency
+	data->ctrl.pwmFrequency = 100e3;		// PWM carrier frequency
 	data->ctrl.pwmPeriod = 1 / data->ctrl.pwmFrequency;
 
 	data->ctrl.samplingFrequency = data->ctrl.pwmFrequency * Interrupt_ISR_freq_factor;

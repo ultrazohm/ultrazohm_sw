@@ -49,13 +49,13 @@ real_T PERIOD = 500.0;                 /* Variable: PERIOD
                                         *   '<S2>/Gain6'
                                         *   '<S2>/Gain7'
                                         */
-real_T Tnd = 0.002;/*0.0013043478260869566;    /* Variable: Tnd
+real_T Tnd = 0.002;    /* Variable: Tnd
                                         * Referenced by: '<S95>/Integral Gain'
                                         */
 real_T Tnn = 0.039788735772973829;     /* Variable: Tnn
                                         * Referenced by: '<S45>/Integral Gain'
                                         */
-real_T Tnq = 0.002;/*0.0021739130434782609;    /* Variable: Tnq
+real_T Tnq = 0.002;    /* Variable: Tnq
                                         * Referenced by: '<S145>/Integral Gain'
                                         */
 real_T u_dc = 36.0;                    /* Variable: u_dc

@@ -21,9 +21,10 @@
 
 #ifndef RTW_HEADER_ElectricalID_h_
 #define RTW_HEADER_ElectricalID_h_
-#include "../rtwtypes.h"
 #include <math.h>
 #include <string.h>
+
+#include "../rtwtypes.h"
 #ifndef ElectricalID_COMMON_INCLUDES_
 #define ElectricalID_COMMON_INCLUDES_
 #include "../rtwtypes.h"

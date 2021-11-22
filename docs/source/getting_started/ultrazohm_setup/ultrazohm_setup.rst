@@ -40,8 +40,7 @@ Clone the UltraZohm Repositories
 ::
 
    git clone https://$BitbucketUsername@bitbucket.org/ultrazohm/cpld_lattice.git
-   git clone https://$BitbucketUsername@bitbucket.org/ultrazohm/javascope_standalone.git
-   git clone https://$BitbucketUsername@bitbucket.org/ultrazohm/ultrazohm_sw.git
+   git clone https://bitbucket.org/ultrazohm/ultrazohm_sw.git
 
 
 After executing the ``git clone`` commands, the following directory structure exists.
@@ -50,7 +49,6 @@ After executing the ``git clone`` commands, the following directory structure ex
 
   ./ultrazohm/
       cpld_lattice
-      javascope_standalone
       ultrazohm_sw
 
 

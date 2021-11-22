@@ -1,8 +1,25 @@
+/******************************************************************************
+* Copyright Contributors to the UltraZohm project.
+* Copyright 2021 Dennis Hufnagel, Tobias Schindler
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and limitations under the License.
+******************************************************************************/
+
 #include "../uz_global_configuration.h"
 #if UZ_WAVEGEN_CHIRP_MAX_INSTANCES > 0U
 #include "uz_wavegen.h"
 #include <math.h>
 #include "../uz_HAL.h"
+#include "../uz_math_constants.h"
 #include "../uz_SystemTime/uz_SystemTime.h"
 
 struct uz_wavegen_chirp {
@@ -66,10 +83,10 @@ float uz_wavegen_chirp_sample(uz_wavegen_chirp* self) {
 		chirp_output =0.0f;
 	} else {
 		if (t_Sec <= self->config.duration_sec) {
-			self->transition_angle = 2.0f * M_PI * (((chirp_rate / 2.0f) * t_Sec * t_Sec) + (t_Sec * self->config.start_frequency_Hz));
+			self->transition_angle = 2.0f * UZ_PIf * (((chirp_rate / 2.0f) * t_Sec * t_Sec) + (t_Sec * self->config.start_frequency_Hz));
 			chirp_output = self->config.amplitude * sinf(self->transition_angle) + self->config.offset;
 		} else {
-			chirp_output = self->config.amplitude * sinf(self->transition_angle + (2.0f * M_PI * t_Sec * self->config.end_frequency_Hz)) + self->config.offset;
+			chirp_output = self->config.amplitude * sinf(self->transition_angle + (2.0f * UZ_PIf * t_Sec * self->config.end_frequency_Hz)) + self->config.offset;
 		}
 	}
 	return (chirp_output);

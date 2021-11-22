@@ -18,7 +18,6 @@ void setUp(void)
 
 
 void test_uz_PMSM_config_assert_R_ph(void){
-    setUp();
     config.R_ph_Ohm = -0.08f;
     TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
     config.R_ph_Ohm = 0.0f;
@@ -26,7 +25,6 @@ void test_uz_PMSM_config_assert_R_ph(void){
 }
 
 void test_uz_PMSM_config_assert_Ld(void){
-    setUp();
     config.Ld_Henry = -0.08f;
     TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
     config.Ld_Henry = 0.0f;
@@ -34,7 +32,6 @@ void test_uz_PMSM_config_assert_Ld(void){
 }
 
 void test_uz_PMSM_config_assert_Lq(void){
-    setUp();
     config.Lq_Henry = -0.08f;
     TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
     config.Lq_Henry = 0.0f;
@@ -42,13 +39,11 @@ void test_uz_PMSM_config_assert_Lq(void){
 }
 
 void test_uz_PMSM_config_assert_Psi_PM(void){
-    setUp();
     config.Psi_PM_Vs = -0.08f;
     TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
 }
 
 void test_uz_PMSM_config_assert_polePairs(void){
-    setUp();
     config.polePairs = -2.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
     config.polePairs = 0.0f;
@@ -58,7 +53,6 @@ void test_uz_PMSM_config_assert_polePairs(void){
 }
 
 void test_uz_PMSM_config_assert_J(void){
-    setUp();
     config.J_kg_m_squared = -0.08f;
     TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
     config.J_kg_m_squared = 0.0f;
@@ -66,7 +60,6 @@ void test_uz_PMSM_config_assert_J(void){
 }
 
 void test_uz_PMSM_config_assert_I_max(void){
-    setUp();
     config.I_max_Ampere = -5.08f;
     TEST_ASSERT_FAIL_ASSERT(uz_PMSM_config_assert(config));
     config.I_max_Ampere = 0.0f;

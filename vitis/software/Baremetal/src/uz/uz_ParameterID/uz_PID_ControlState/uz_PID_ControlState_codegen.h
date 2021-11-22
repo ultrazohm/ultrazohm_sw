@@ -19,7 +19,7 @@
  * Validation result: Passed (11), Warning (1), Error (0)
  */
 #include "../../uz_global_configuration.h"
-#if UZ_PID_CONTROLSTATE_ACTIVE > 0U
+#if UZ_PARAMETERID_ACTIVE > 0U
 
 #ifndef RTW_HEADER_ControlState_h_
 #define RTW_HEADER_ControlState_h_
@@ -57,10 +57,10 @@
 #define rtmSetY(rtm, val)              ((rtm)->outputs = (val))
 #endif
 
-#define ControlState_M                 (rtM)
+#define ControlState_M                 (rtControlState_M)
 
 /* Forward declaration for rtModel */
-typedef struct tag_RTM RT_MODEL;
+typedef struct tag_RTM_ControlState_t RT_MODEL_ControlState_t;
 
 #ifndef DEFINED_TYPEDEF_FOR_ElectricalID_output_
 #define DEFINED_TYPEDEF_FOR_ElectricalID_output_
@@ -168,7 +168,7 @@ typedef struct {
   boolean_T finishedFrictionID_loc;    /* '<Root>/ControlState' */
   boolean_T finishedTwoMassID_loc;     /* '<Root>/ControlState' */
   boolean_T finishedFluxMapID_loc;     /* '<Root>/ControlState' */
-} DW;
+} DW_ControlState_t;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
@@ -183,25 +183,25 @@ typedef struct {
   ElectricalID_output ElectricalID_output_n;/* '<Root>/ElectricalID_output' */
   State_FOC_output ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
   GlobalConfig GlobalConfig_in;        /* '<Root>/GlobalConfig_in' */
-} ExtU;
+} ExtU_ControlState_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
   real32_T thetaOffset;                /* '<Root>/thetaOffset' */
   GlobalConfig GlobalConfig_out;       /* '<Root>/GlobalConfig_out' */
   ControlFlags ControlFlags_p;         /* '<Root>/ControlFlags' */
-} ExtY;
+} ExtY_ControlState_t;
 
 /* Real-time Model Data Structure */
-struct tag_RTM {
-  ExtU *inputs;
-  ExtY *outputs;
-  DW *dwork;
+struct tag_RTM_ControlState_t {
+	ExtU_ControlState_t *inputs;
+	ExtY_ControlState_t *outputs;
+	DW_ControlState_t *dwork;
 };
 
 /* Model entry point functions */
-extern void ControlState_initialize(RT_MODEL *const rtM);
-extern void ControlState_step(RT_MODEL *const rtM);
+extern void ControlState_initialize(RT_MODEL_ControlState_t * const rtControlState_M);
+extern void ControlState_step(RT_MODEL_ControlState_t * const rtControlState_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly

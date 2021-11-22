@@ -7,26 +7,26 @@
  *
  * Code generated for Simulink model 'ElectricalID'.
  *
- * Model version                  : 2.11
+ * Model version                  : 2.17
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Mon Nov 22 08:28:19 2021
+ * C/C++ source code generated on : Mon Nov 22 16:19:12 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (10), Warnings (2), Error (0)
+ * Validation result: Passed (11), Warning (1), Error (0)
  */
+
 #include "../../uz_global_configuration.h"
-#if UZ_PID_ELECTRICALID_ACTIVE > 0U
+#if UZ_PARAMETERID_ACTIVE > 0U
 
 #ifndef RTW_HEADER_ElectricalID_h_
 #define RTW_HEADER_ElectricalID_h_
+#include "../rtwtypes.h"
 #include <math.h>
 #include <string.h>
-
-#include "../rtwtypes.h"
 #ifndef ElectricalID_COMMON_INCLUDES_
 #define ElectricalID_COMMON_INCLUDES_
 #include "../rtwtypes.h"
@@ -59,10 +59,10 @@
 #define rtmSetY(rtm, val)              ((rtm)->outputs = (val))
 #endif
 
-#define ElectricalID_M                 (rtM)
+#define ElectricalID_M                 (rtElectricalID_M)
 
 /* Forward declaration for rtModel */
-typedef struct tag_RTM RT_MODEL;
+typedef struct tag_RTM_ElectricalID_t RT_MODEL_ElectricalID_t;
 
 #ifndef DEFINED_TYPEDEF_FOR_ElectricalIDConfig_
 #define DEFINED_TYPEDEF_FOR_ElectricalIDConfig_
@@ -238,7 +238,7 @@ typedef struct {
 	boolean_T om_con; /* '<Root>/ElectricalID' */
 	boolean_T ia_valid; /* '<Root>/ElectricalID' */
 	boolean_T DC_manual; /* '<Root>/ElectricalID' */
-} DW;
+} DW_ElectricalID_t;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
@@ -246,7 +246,7 @@ typedef struct {
 	ActualValues ActualValues_i; /* '<Root>/ActualValues' */
   GlobalConfig GlobalConfig_out;       /* '<Root>/GlobalConfig' */
 	ControlFlags ControlFlags_o; /* '<Root>/ControlFlags' */
-} ExtU;
+} ExtU_ElectricalID_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
@@ -254,18 +254,18 @@ typedef struct {
   boolean_T finishedElectricalID;      /* '<Root>/finishedElectricalID' */
   State_FOC_output ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
 	ElectricalID_output ElectricalID_output_o;/* '<Root>/ElectricalID_output' */
-} ExtY;
+} ExtY_ElectricalID_t;
 
 /* Real-time Model Data Structure */
-struct tag_RTM {
-	ExtU *inputs;
-	ExtY *outputs;
-	DW *dwork;
+struct tag_RTM_ElectricalID_t {
+	ExtU_ElectricalID_t *inputs;
+	ExtY_ElectricalID_t *outputs;
+	DW_ElectricalID_t *dwork;
 };
 
 /* Model entry point functions */
-extern void ElectricalID_initialize(RT_MODEL * const rtM);
-extern void ElectricalID_step(RT_MODEL * const rtM);
+extern void ElectricalID_initialize(RT_MODEL_ElectricalID_t * const rtElectricalID_M);
+extern void ElectricalID_step(RT_MODEL_ElectricalID_t * const rtElectricalID_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly

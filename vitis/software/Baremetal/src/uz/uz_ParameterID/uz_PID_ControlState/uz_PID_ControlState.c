@@ -14,10 +14,10 @@
  * limitations under the License.
  ******************************************************************************/
 #include "../../uz_global_configuration.h"
-#if UZ_PID_CONTROLSTATE_ACTIVE > 0U
+#if UZ_PARAMETERID_ACTIVE > 0U
 #include "uz_PID_ControlState.h"
 
-void uz_ControlState_init(uz_PID_ControlState *self) {
+void uz_PID_ControlState_init(uz_PID_ControlState_t *self) {
 	uz_assert(self->is_ready == false);
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
@@ -25,7 +25,7 @@ void uz_ControlState_init(uz_PID_ControlState *self) {
 	self->PtrToModelData->outputs = &self->output;
 }
 
-void uz_ControlState_step(uz_PID_ControlState *self) {
+void uz_PID_ControlState_step(uz_PID_ControlState_t *self) {
 	uz_assert(self->is_ready);
 	ControlState_step(self->PtrToModelData);
 }

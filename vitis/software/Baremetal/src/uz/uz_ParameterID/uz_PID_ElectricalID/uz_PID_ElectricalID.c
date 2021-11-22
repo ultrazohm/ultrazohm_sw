@@ -15,19 +15,19 @@
  ******************************************************************************/
 #include "../../uz_global_configuration.h"
 #include "uz_PID_ElectricalID.h"
-#if UZ_PID_ELECTRICALID_ACTIVE > 0U
+#if UZ_PARAMETERID_ACTIVE > 0U
 #include "../../uz_HAL.h"
 
-void uz_ElectricalID_init(uz_PID_ElectricalID *self) {
+void uz_PID_ElectricalID_init(uz_PID_ElectricalID_t *self) {
 	uz_assert(self->is_ready == false);
-	uz_assert(UZ_PID_CONTROLSTATE_ACTIVE > 0U);
+	self->is_ready = true;
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
 	self->PtrToModelData->outputs = &self->output;
 }
 
-void uz_ElectricalID_step(uz_PID_ElectricalID *self) {
+void uz_PID_ElectricalID_step(uz_PID_ElectricalID_t *self) {
 	uz_assert(self->is_ready);
 	ElectricalID_step(self->PtrToModelData);
 }

@@ -18,12 +18,12 @@
 
 typedef struct {
 	bool is_ready;
-	ExtY output;
-	ExtU input;
-	DW rtDW; /* Observable states */
-	RT_MODEL modelData;
-	RT_MODEL *PtrToModelData;
-} uz_PID_ElectricalID;
+	ExtY_ElectricalID_t output;
+	ExtU_ElectricalID_t input;
+	DW_ElectricalID_t rtDW; /* Observable states */
+	RT_MODEL_ElectricalID_t modelData;
+	RT_MODEL_ElectricalID_t *PtrToModelData;
+} uz_PID_ElectricalID_t;
 
-void uz_ElectricalID_init(uz_PID_ElectricalID *self);
-void uz_ElectricalID_step(uz_PID_ElectricalID *self);
+void uz_PID_ElectricalID_init(uz_PID_ElectricalID_t *self);
+void uz_PID_ElectricalID_step(uz_PID_ElectricalID_t *self);

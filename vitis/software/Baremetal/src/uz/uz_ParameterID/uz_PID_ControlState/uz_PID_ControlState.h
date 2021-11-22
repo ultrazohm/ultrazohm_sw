@@ -19,12 +19,12 @@
 
 typedef struct {
 	bool is_ready;
-	ExtY output;
-	ExtU input;
-	DW rtDW; /* Observable states */
-	RT_MODEL modelData;
-	RT_MODEL *PtrToModelData;
-} uz_PID_ControlState;
+	ExtY_ControlState_t output;
+	ExtU_ControlState_t input;
+	DW_ControlState_t rtDW; /* Observable states */
+	RT_MODEL_ControlState_t modelData;
+	RT_MODEL_ControlState_t *PtrToModelData;
+} uz_PID_ControlState_t;
 
-void uz_ElectricalID_init(uz_PID_ControlState *self);
-void uz_ElectricalID_step(uz_PID_ControlState *self);
+void uz_PID_ControlState_init(uz_PID_ControlState_t *self);
+void uz_PID_ControlState_step(uz_PID_ControlState_t *self);

@@ -14,8 +14,11 @@
  * limitations under the License.
  ******************************************************************************/
 #include "uz_PID_ControlState_codegen.h"
+#include "../../uz_HAL.h"
+#include <stdbool.h>
 
 typedef struct {
+	bool is_ready;
 	ExtY output;
 	ExtU input;
 	DW rtDW; /* Observable states */

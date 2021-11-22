@@ -19,6 +19,9 @@
  * Validation result: Passed (11), Warning (1), Error (0)
  */
 
+#include "../../uz_global_configuration.h"
+#if UZ_PID_CONTROLSTATE_ACTIVE > 0U
+
 #include "uz_PID_ControlState_codegen.h"
 
 /* Named constants for Chart: '<Root>/ControlState' */
@@ -823,3 +826,5 @@ void ControlState_initialize(RT_MODEL *const rtM)
  *
  * [EOF]
  */
+
+#endif

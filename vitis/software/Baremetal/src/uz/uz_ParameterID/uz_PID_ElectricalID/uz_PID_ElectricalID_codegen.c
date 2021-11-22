@@ -20,6 +20,7 @@
  */
 
 #include "uz_PID_ElectricalID_codegen.h"
+#if UZ_PID_ELECTRICALID_ACTIVE > 0U 
 
 /* Named constants for Chart: '<Root>/ElectricalID' */
 #define IN_ElectricalID                ((uint8_T)1U)
@@ -2762,3 +2763,5 @@ void ElectricalID_initialize(RT_MODEL * const rtM)
  *
  * [EOF]
  */
+
+#endif

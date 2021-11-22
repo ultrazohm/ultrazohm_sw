@@ -18,6 +18,8 @@
  *    2. Traceability
  * Validation result: Passed (10), Warnings (2), Error (0)
  */
+#include "../../uz_global_configuration.h"
+#if UZ_PID_ELECTRICALID_ACTIVE > 0U
 
 #ifndef RTW_HEADER_ElectricalID_h_
 #define RTW_HEADER_ElectricalID_h_
@@ -296,3 +298,5 @@ extern void ElectricalID_step(RT_MODEL * const rtM);
  *
  * [EOF]
  */
+
+#endif

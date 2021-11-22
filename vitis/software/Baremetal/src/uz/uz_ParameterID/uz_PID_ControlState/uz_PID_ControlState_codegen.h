@@ -18,6 +18,8 @@
  *    2. Traceability
  * Validation result: Passed (11), Warning (1), Error (0)
  */
+#include "../../uz_global_configuration.h"
+#if UZ_PID_CONTROLSTATE_ACTIVE > 0U
 
 #ifndef RTW_HEADER_ControlState_h_
 #define RTW_HEADER_ControlState_h_
@@ -232,3 +234,5 @@ extern void ControlState_step(RT_MODEL *const rtM);
  *
  * [EOF]
  */
+
+#endif

@@ -14,8 +14,10 @@
  * limitations under the License.
  ******************************************************************************/
 #include "uz_PID_ElectricalID_codegen.h"
+#include <stdbool.h>
 
 typedef struct {
+	bool is_ready;
 	ExtY output;
 	ExtU input;
 	DW rtDW; /* Observable states */

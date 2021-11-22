@@ -176,15 +176,28 @@ typedef void (*Xil_InterruptHandler)(void *data);
 
 /************************** Function Prototypes *****************************/
 
-extern void Xil_ExceptionRegisterHandler(u32 Exception_id,
+/*extern void Xil_ExceptionRegisterHandler(u32 Exception_id,
 					 Xil_ExceptionHandler Handler,
-					 void *Data);
+					 void *Data);*/
 
-extern void Xil_ExceptionRemoveHandler(u32 Exception_id);
+#define Xil_ExceptionRegisterHandler(Exception_id,Handler, Data) \
+		{								\
+		}
+
+//extern void Xil_ExceptionRemoveHandler(u32 Exception_id);
+
+#define Xil_ExceptionRemoveHandler(Exception_id)	\
+		{								\
+		}
 extern void Xil_GetExceptionRegisterHandler(u32 Exception_id,
 					Xil_ExceptionHandler *Handler, void **Data);
 
-extern void Xil_ExceptionInit(void);
+//extern void Xil_ExceptionInit(void);
+
+#define Xil_ExceptionInit(void)	\
+		{								\
+		}
+
 #if defined (__aarch64__)
 void Xil_SyncAbortHandler(void *CallBackRef);
 void Xil_SErrorAbortHandler(void *CallBackRef);

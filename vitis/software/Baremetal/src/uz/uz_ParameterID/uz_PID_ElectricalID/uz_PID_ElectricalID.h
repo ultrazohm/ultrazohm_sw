@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#include "uz_codegen_ElectricalID.h"
+#include "uz_PID_ElectricalID_codegen.h"
 
 typedef struct {
 	ExtY output;
@@ -21,7 +21,7 @@ typedef struct {
 	DW rtDW; /* Observable states */
 	RT_MODEL modelData;
 	RT_MODEL *PtrToModelData;
-} uz_ElectricalID;
+} uz_PID_ElectricalID;
 
-void uz_ElectricalID_init(uz_ElectricalID *self);
-void uz_ElectricalID_step(uz_ElectricalID *self);
+void uz_ElectricalID_init(uz_PID_ElectricalID *self);
+void uz_ElectricalID_step(uz_PID_ElectricalID *self);

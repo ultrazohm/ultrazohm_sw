@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#include "uz_ElectricalID.h"
+#include "uz_PID_ControlState.h"
 
-void uz_ElectricalID_init(uz_ElectricalID *self) {
+void uz_ControlState_init(uz_PID_ControlState *self) {
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
 	self->PtrToModelData->outputs = &self->output;
 }
 
-void uz_ElectricalID_step(uz_ElectricalID *self) {
-	ElectricalID_step(self->PtrToModelData);
+void uz_ControlState_step(uz_PID_ControlState *self) {
+	ControlState_step(self->PtrToModelData);
 }

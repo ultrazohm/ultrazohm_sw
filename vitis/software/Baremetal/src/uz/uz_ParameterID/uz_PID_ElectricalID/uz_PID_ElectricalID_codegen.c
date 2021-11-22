@@ -19,7 +19,7 @@
  * Validation result: Passed (10), Warnings (2), Error (0)
  */
 
-#include "uz_codegen_ElectricalID.h"
+#include "uz_PID_ElectricalID_codegen.h"
 
 /* Named constants for Chart: '<Root>/ElectricalID' */
 #define IN_ElectricalID                ((uint8_T)1U)

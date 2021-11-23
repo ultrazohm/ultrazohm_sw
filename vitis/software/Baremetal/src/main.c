@@ -54,7 +54,7 @@ int main(void) {
 	ADC_WriteConversionFactor(10); 	// Conversion Factor of 10, because the full input range of the ADC is +-5V = 10V range
 
 	// Initialize Park-Transformation 123 to dq
-	DQTransformation_Initialize(&Global_Data);
+
 	uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
 	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
 	//Initialize PWM and switch signal control

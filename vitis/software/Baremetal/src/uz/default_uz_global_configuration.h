@@ -28,6 +28,7 @@
 #define UZ_NN_LAYER_MAX_INSTANCES               0U
 #define UZ_NN_MAX_INSTANCES                     0U
 #define UZ_PMSMMODEL_MAX_INSTANCES              0U
+#define UZ_PARAMETERID_ACTIVE                   1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -46,4 +47,5 @@
 	#define UZ_MATRIX_MAX_INSTANCES                 201U
     #define UZ_PMSMMODEL_MAX_INSTANCES              11U
     #define UZ_PLANTPT1_MAX_INSTANCES               6U
+    #define UZ_PARAMETERID_ACTIVE                   1U
 #endif

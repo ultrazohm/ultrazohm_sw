@@ -32,10 +32,8 @@
 
 /************************** Variable Definitions *****************************/
 
-#ifndef TESTAPP_GEN
 XWdtTb WdtTbInstance;	/* Instance of Time Base WatchDog Timer */
 XScuGic IntcInstance;	/* Instance of the Interrupt Controller */
-#endif
 
 //volatile int WdtExpired;
 volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
@@ -217,46 +215,11 @@ int WinWdtIntrExample(XScuGic *IntcInstancePtr)
 {
 	int Status;
 
+	/*
+	 * The Driver has to be properly initialized and the GIC interrupt system
+	 */
 	uz_assert(Wdttb_IsReady);
 
-//	Status = WdtTbInit(0);
-//	if (Status != XST_SUCCESS) {
-//		return XST_FAILURE;
-//	}
-
-
-
-//#ifndef TESTAPP_GEN
-//	XScuGic_Config *IntcConfig;
-//
-//	/*
-//	 * Initialize the interrupt controller driver so that it is ready to
-//	 * use.
-//	 */
-//	IntcConfig = XScuGic_LookupConfig(INTC_DEVICE_ID);
-//	if (NULL == IntcConfig) {
-//		return XST_FAILURE;
-//	}
-//
-//	Status = XScuGic_CfgInitialize(&IntcInstance, IntcConfig,
-//					IntcConfig->CpuBaseAddress);
-//	if (Status != XST_SUCCESS) {
-//		return XST_FAILURE;
-//	}
-//
-//#endif /* TESTAPP_GEN */
-//
-//	/*
-//	 * Connect the WdtTb to the interrupt subsystem so that interrupts
-//	 * can occur
-//	 */
-//	Status = WdtTbSetupIntrSystem(IntcConfig, &IntcInstance);
-//	if (Status != XST_SUCCESS) {
-//		return XST_FAILURE;
-//	}
-
-
-//	WdtTb_Start();
 
 	XWdtTb_Start(&WdtTbInstance);
 	//	WdtExpired = FALSE;
@@ -269,7 +232,6 @@ int WinWdtIntrExample(XScuGic *IntcInstancePtr)
 	/*
 	 * Wait for the first occurrence of interrupt programmed point.
 	 */
-//	while (WdtExpired != TRUE);
 	while ((HandlerCalled == 0)) ;
 
 
@@ -279,12 +241,10 @@ int WinWdtIntrExample(XScuGic *IntcInstancePtr)
 	HandlerCalled = 0;
 
 	/* Wait for the second occurrence of interrupt programmed point */
-//	while (WdtExpired != TRUE);
 	while ((HandlerCalled == 0)) ;
 
 	/* Clear interrupt point */
 	XWdtTb_IntrClear(&WdtTbInstance);
-//	WdtExpired = FALSE;
 	HandlerCalled = 0;
 
 	/* Check for last event */
@@ -335,47 +295,6 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 
 	uz_assert(Wdttb_IsReady);
 
-#ifdef XPAR_INTC_0_DEVICE_ID
-
-#ifndef TESTAPP_GEN
-	/*
-	 * Initialize the interrupt controller driver so that
-	 * it's ready to use. Specify the device ID that is generated in
-	 * xparameters.h
-	 */
-	Status = XIntc_Initialize(IntcInstancePtr, INTC_DEVICE_ID);
-	if(Status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
-#endif /* TESTAPP_GEN */
-
-	/*
-	 * Connect a device driver handler that will be called when the WDT
-	 * interrupt for the device occurs, the device driver handler performs
-	 * the specific interrupt processing for the device
-	 */
-	Status = XIntc_Connect(IntcInstancePtr, WdtTbIntrId,
-			(XInterruptHandler)WdtTbIntrHandler,
-			(void *)WdtTbInstancePtr);
-	if(Status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
-
-#ifndef TESTAPP_GEN
-	/*
-	 * Start the interrupt controller such that interrupts are enabled for
-	 * all devices that cause interrupts
-	 */
-	Status = XIntc_Start(IntcInstancePtr, XIN_REAL_MODE);
-	if(Status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
-#endif /* TESTAPP_GEN */
-
-	/* Enable the WDT interrupt of the WdtTb Device */
-	XIntc_Enable(IntcInstancePtr, WDTTB_IRPT_INTR);
-#else
-
 //	XScuGic_SetPriorityTriggerType(IntcInstancePtr, WDTTB_IRPT_INTR,
 //					0xA0, 0x3);
 
@@ -411,9 +330,7 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 
 	/* Enable the interrupt for the Timer device */
 	XScuGic_Enable(IntcInstancePtr, WDTTB_IRPT_INTR);
-#endif /* XPAR_INTC_0_DEVICE_ID */
 
-#ifndef TESTAPP_GEN
 	/* Initialize the exception table */
 	Xil_ExceptionInit();
 
@@ -426,8 +343,6 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 
 	/* Enable non-critical exceptions */
 	Xil_ExceptionEnable();
-
-#endif /* TESTAPP_GEN */
 
 	return XST_SUCCESS;
 }
@@ -510,18 +425,13 @@ void WdtTbIntrHandler(void *CallBackRef)
 ******************************************************************************/
 void WdtTbDisableIntrSystem(XScuGic *IntcInstancePtr)
 {
-
 	uz_assert(Wdttb_IsReady);
 
 	/* Disconnect and disable the interrupt for the WdtTb */
-#ifdef XPAR_INTC_0_DEVICE_ID
-	XIntc_Disconnect(IntcInstancePtr, WDTTB_IRPT_INTR);
-#else
-	/* Disconnect the interrupt */
+
 	XScuGic_Disable(IntcInstancePtr, WDTTB_IRPT_INTR);
 	XScuGic_Disconnect(IntcInstancePtr, WDTTB_IRPT_INTR);
 
-#endif
 }
 
 #else /* ENABLE_WDTTB_INT */

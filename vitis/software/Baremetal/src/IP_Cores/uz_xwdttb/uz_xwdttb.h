@@ -29,17 +29,12 @@
 #include "xparameters.h"
 #include "xwdttb.h"
 #include "xil_exception.h"
-
-
-#define ENABLE_WDTTB_INT
-
-#ifdef XPAR_INTC_0_DEVICE_ID
-#include "xintc.h"
-#include <stdio.h>
-#else
 #include "xscugic.h"
 // #include "xil_printf.h"
-#endif
+
+/************************** Enabling Constant  *****************************/
+// Delete this constant to DISABLE the WDTTB Driver here!
+#define ENABLE_WDTTB_INT
 
 /************************** Constant Definitions *****************************/
 
@@ -48,30 +43,10 @@
  * xparameters.h file. They are only defined here such that a user can easily
  * change all the needed parameters in one place.
  */
-#ifndef TESTAPP_GEN
 #define WDTTB_DEVICE_ID         XPAR_WDTTB_0_DEVICE_ID
-#endif
-
-#ifdef XPAR_INTC_0_DEVICE_ID
- #define INTC_DEVICE_ID         XPAR_INTC_0_DEVICE_ID
- #define WDTTB_IRPT_INTR         XPAR_INTC_0_WDTTB_0_VEC_ID
-#else
- #define INTC_DEVICE_ID         XPAR_SCUGIC_SINGLE_DEVICE_ID
- #ifdef versal
-  #define WDTTB_IRPT_INTR       XPAR_XWWDT_0_INTR
- #else
-  #define WDTTB_IRPT_INTR       XPAR_FABRIC_WDTTB_0_VEC_ID
- #endif
-#endif /* XPAR_INTC_0_DEVICE_ID */
-
-
-// ORIGINAL VALUES FOR THE EXAMPLE
-//#define WIN_WDT_SW_COUNT	0xF00000	/**< Number of clock cycles for
-//						  *  second window */
-//#define WIN_WDT_SBC_COUNT	16		/**< Selected byte count */
-//#define WIN_WDT_BSS_COUNT	2		/**< Byte segment selected */
-
-
+// Constants for the GIC driver management
+#define INTC_DEVICE_ID         XPAR_SCUGIC_SINGLE_DEVICE_ID
+#define WDTTB_IRPT_INTR       XPAR_FABRIC_WDTTB_0_VEC_ID
 
 /* How to set the second Window Size and the Interruption Point.
  * ------------------------------------------------------------
@@ -89,21 +64,16 @@
 #define WIN_WDT_SBC_COUNT	0xD8		/**< Selected byte count */
 #define WIN_WDT_BSS_COUNT	1		/**< Byte segment selected */
 
+// ORIGINAL VALUES FOR THE EXAMPLE
+//#define WIN_WDT_SW_COUNT	0xF00000	/**< Number of clock cycles for
+//						  *  second window */
+//#define WIN_WDT_SBC_COUNT	16		/**< Selected byte count */
+//#define WIN_WDT_BSS_COUNT	2		/**< Byte segment selected */
+
 
 
 /**************************** Type Definitions *******************************/
 #define HANDLER_CALLED  0xFFFFFFFF
-
-//#ifdef XPAR_INTC_0_DEVICE_ID
-//
-//#define INTC			XIntc
-//#define INTC_HANDLER		XIntc_InterruptHandler
-//#else
-//#define INTC			XScuGic
-//#define INTC_HANDLER		XScuGic_InterruptHandler
-//#endif /* XPAR_INTC_0_DEVICE_ID */
-
-/***************** Macros (Inline Functions) Definitions *********************/
 
 
 /************************** Function Prototypes ******************************/

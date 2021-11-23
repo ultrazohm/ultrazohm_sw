@@ -20,11 +20,12 @@
 
 void uz_PID_ElectricalID_init(uz_PID_ElectricalID_t *self) {
 	uz_assert(self->is_ready == false);
-	self->is_ready = true;
+	uz_assert_not_NULL(self);
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
 	self->PtrToModelData->outputs = &self->output;
+	self->is_ready = true;
 }
 
 void uz_PID_ElectricalID_step(uz_PID_ElectricalID_t *self) {

@@ -64,8 +64,8 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ElectricalID_t RT_MODEL_ElectricalID_t;
 
-#ifndef DEFINED_TYPEDEF_FOR_ElectricalIDConfig_
-#define DEFINED_TYPEDEF_FOR_ElectricalIDConfig_
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_ElectricalIDConfig_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_ElectricalIDConfig_t_
 
 typedef struct {
   real32_T dutyCyc;
@@ -73,12 +73,12 @@ typedef struct {
   boolean_T identLq;
   real32_T goertzlAmp;
   real32_T min_n_ratio;
-} ElectricalIDConfig;
+} uz_PID_ElectricalIDConfig_t;
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_ActualValues_
-#define DEFINED_TYPEDEF_FOR_ActualValues_
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
 
 typedef struct {
   real32_T i_a;
@@ -95,12 +95,12 @@ typedef struct {
   real32_T u_q;
   real32_T i_d;
   real32_T i_q;
-} ActualValues;
+} uz_PID_ActualValues_t;
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_GlobalConfig_
-#define DEFINED_TYPEDEF_FOR_GlobalConfig_
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
 
 typedef struct {
   boolean_T controlType;
@@ -129,12 +129,12 @@ typedef struct {
   real32_T VibAmp;
   boolean_T VibOn;
   uint16_T VibFreq;
-} GlobalConfig;
+} uz_PID_GlobalConfig_t;
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_ControlFlags_
-#define DEFINED_TYPEDEF_FOR_ControlFlags_
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
 
 typedef struct {
   boolean_T startFrictionID;
@@ -145,12 +145,12 @@ typedef struct {
   boolean_T enableFOCcurrentState;
   boolean_T enableFOCspeedState;
   boolean_T enableOnlineID;
-} ControlFlags;
+} uz_PID_ControlFlags_t;
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_State_FOC_output_
-#define DEFINED_TYPEDEF_FOR_State_FOC_output_
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_Controller_Parameters_output_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_Controller_Parameters_output_t_
 
 typedef struct {
   uint16_T activeState;
@@ -170,7 +170,7 @@ typedef struct {
   real32_T Ki_id_out;
   real32_T Ki_iq_out;
   real32_T Ki_n_out;
-} State_FOC_output;
+} uz_PID_Controller_Parameters_output_t;
 
 #endif
 
@@ -242,17 +242,17 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-	ElectricalIDConfig ElectricalIDConfig_l;/* '<Root>/ElectricalIDConfig' */
-	ActualValues ActualValues_i; /* '<Root>/ActualValues' */
-  GlobalConfig GlobalConfig_out;       /* '<Root>/GlobalConfig' */
-	ControlFlags ControlFlags_o; /* '<Root>/ControlFlags' */
+	uz_PID_ElectricalIDConfig_t ElectricalIDConfig;/* '<Root>/ElectricalIDConfig' */
+	uz_PID_ActualValues_t ActualValues; /* '<Root>/ActualValues' */
+	uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
+	uz_PID_ControlFlags_t ControlFlags; /* '<Root>/ControlFlags' */
 } ExtU_ElectricalID_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
   boolean_T enteredElectricalID;       /* '<Root>/enteredElectricalID' */
   boolean_T finishedElectricalID;      /* '<Root>/finishedElectricalID' */
-  State_FOC_output ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
+	uz_PID_Controller_Parameters_output_t ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
 	ElectricalID_output ElectricalID_output_o;/* '<Root>/ElectricalID_output' */
 } ExtY_ElectricalID_t;
 

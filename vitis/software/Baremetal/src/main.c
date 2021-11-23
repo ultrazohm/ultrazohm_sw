@@ -27,6 +27,8 @@ _Bool bInit = false;
 DS_Data Global_Data;
 extern XGpio Gpio_OUT; /* GPIO Device driver instance for the real GPIOs */
 
+//Experimental Code
+uz_ParameterID_t ParameterID_instance;
 
 static void uz_assertCallback(const char8 *file, s32 line) {
 	extern XScuGic INTCInst;
@@ -74,6 +76,9 @@ int main(void) {
 
 	//Initialize the Soft-Oscilloscope ("JavaScope")
 	JavaScope_initalize(&Global_Data);
+
+	//Experimental Code
+	uz_ParameterID_init(&ParameterID_instance);
 
 	// Initialize the Interrupts
 	Initialize_ISR();

@@ -14,13 +14,43 @@
  * limitations under the License.
  ******************************************************************************/
 #include "uz_ParameterID.h"
+#include "../uz_global_configuration.h"
 
-typedef struct uz_ParameterID_t {
-	bool is_ready;
-	uz_PID_ElectricalID_t *ElectricalID;
-	uz_PID_ControlState_t *ControlState;
-} uz_ParameterID_t;
+#if UZ_PARAMETERID_ACTIVE > 0U
 
-void uz_ParameterID_init(uz_ParameterID_t *self) {
+void uz_ParameterID_init(uz_ParameterID_t* self) {
+	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready == false);
+	uz_PID_ControlState_init(self->ControlState);
+	uz_PID_ElectricalID_init(self->ElectricalID);
+	self->is_ready = true;
 }
+
+void uz_ParameterID_step(uz_ParameterID_t* self, uz_PID_GlobalConfig_t GlobalConfig, uz_PID_ActualValues_t ActualValues, uz_PID_ElectricalIDConfig_t ElectricalIDConfig) {
+
+	if (GlobalConfig.ElectricalID == true && GlobalConfig.Reset == false) {
+		//Update State-Inputs
+		self->ElectricalID->input.ActualValues = ActualValues;
+		self->ElectricalID->input.ElectricalIDConfig = ElectricalIDConfig;
+		self->ElectricalID->input.GlobalConfig_out = GlobalConfig;
+		self->ElectricalID->input.ControlFlags = self->ControlState->output.ControlFlags;
+
+		//Step the function
+		uz_PID_ElectricalID_step(self->ElectricalID);
+
+		//Update Control-State-inputs
+		self->ControlState->input.ElectricalID_FOC_output = self->ElectricalID->output.ElectricalID_FOC_output;
+		self->ControlState->input.ElectricalID_output_n = self->ElectricalID->output.ElectricalID_output_o;
+		self->ControlState->input.enteredElectricalID = self->ElectricalID->output.enteredElectricalID;
+		self->ControlState->input.finishedElectricalID = self->ElectricalID->output.finishedElectricalID;
+	} else if (GlobalConfig.ElectricalID == false) {
+		self->ElectricalID->input.GlobalConfig_out.ElectricalID = false;
+		uz_PID_ElectricalID_step(self->ElectricalID);
+	} else if (GlobalConfig.Reset == true) {
+		self->ElectricalID->input.GlobalConfig_out.Reset = true;
+		uz_PID_ElectricalID_step(self->ElectricalID);
+	}
+
+}
+
+#endif

@@ -85,8 +85,8 @@ typedef struct {
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_State_FOC_output_
-#define DEFINED_TYPEDEF_FOR_State_FOC_output_
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_Controller_Parameters_output_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_Controller_Parameters_output_t_
 
 typedef struct {
   uint16_T activeState;
@@ -106,12 +106,12 @@ typedef struct {
   real32_T Ki_id_out;
   real32_T Ki_iq_out;
   real32_T Ki_n_out;
-} State_FOC_output;
+} uz_PID_Controller_Parameters_output_t;
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_GlobalConfig_
-#define DEFINED_TYPEDEF_FOR_GlobalConfig_
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
 
 typedef struct {
   boolean_T controlType;
@@ -140,12 +140,12 @@ typedef struct {
   real32_T VibAmp;
   boolean_T VibOn;
   uint16_T VibFreq;
-} GlobalConfig;
+} uz_PID_GlobalConfig_t;
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_ControlFlags_
-#define DEFINED_TYPEDEF_FOR_ControlFlags_
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
 
 typedef struct {
   boolean_T startFrictionID;
@@ -156,7 +156,7 @@ typedef struct {
   boolean_T enableFOCcurrentState;
   boolean_T enableFOCspeedState;
   boolean_T enableOnlineID;
-} ControlFlags;
+} uz_PID_ControlFlags_t;
 
 #endif
 
@@ -181,15 +181,15 @@ typedef struct {
   boolean_T enteredTwoMassID;          /* '<Root>/enteredTwoMassID' */
   boolean_T enteredElectricalID;       /* '<Root>/enteredElectricalID' */
   ElectricalID_output ElectricalID_output_n;/* '<Root>/ElectricalID_output' */
-  State_FOC_output ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
-  GlobalConfig GlobalConfig_in;        /* '<Root>/GlobalConfig_in' */
+	uz_PID_Controller_Parameters_output_t ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
+	uz_PID_GlobalConfig_t GlobalConfig_in;/* '<Root>/GlobalConfig_in' */
 } ExtU_ControlState_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
   real32_T thetaOffset;                /* '<Root>/thetaOffset' */
-  GlobalConfig GlobalConfig_out;       /* '<Root>/GlobalConfig_out' */
-  ControlFlags ControlFlags_p;         /* '<Root>/ControlFlags' */
+	uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig_out' */
+	uz_PID_ControlFlags_t ControlFlags; /* '<Root>/ControlFlags' */
 } ExtY_ControlState_t;
 
 /* Real-time Model Data Structure */

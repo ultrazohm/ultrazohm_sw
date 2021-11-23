@@ -28,6 +28,14 @@ typedef struct uz_ParameterID_t {
 	uz_PID_ControlState_t* ControlState;
 } uz_ParameterID_t;
 
+typedef struct uz_ParameterID_Data_t {
+	uz_PID_ActualValues_t PID_ActualValues;
+	uz_PID_ControlFlags_t PID_ControlFlags;
+	uz_PID_GlobalConfig_t PID_GlobalConifg;
+	uz_PID_ElectricalIDConfig_t PID_ElectricalID_Config;
+
+} uz_ParameterID_Data_t;
+
 void uz_ParameterID_init(uz_ParameterID_t* self);
 
 void uz_ParameterID_step(uz_ParameterID_t* self, uz_PID_GlobalConfig_t GlobalConfig, uz_PID_ActualValues_t ActualValues, uz_PID_ElectricalIDConfig_t ElectricalIDConfig);

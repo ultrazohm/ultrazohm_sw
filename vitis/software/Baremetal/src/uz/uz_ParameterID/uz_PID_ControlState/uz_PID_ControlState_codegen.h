@@ -62,8 +62,8 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ControlState_t RT_MODEL_ControlState_t;
 
-#ifndef DEFINED_TYPEDEF_FOR_ElectricalID_output_
-#define DEFINED_TYPEDEF_FOR_ElectricalID_output_
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_ElectricalID_output_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_ElectricalID_output_t_
 
 typedef struct {
   real32_T PWM_Switch_0;
@@ -81,7 +81,7 @@ typedef struct {
   real32_T thetaOffset;
   uint16_T p;
   real32_T TrainInertia;
-} ElectricalID_output;
+} uz_PID_ElectricalID_output_t;
 
 #endif
 
@@ -180,7 +180,7 @@ typedef struct {
   boolean_T enteredFluxMapID;          /* '<Root>/enteredFluxMapID' */
   boolean_T enteredTwoMassID;          /* '<Root>/enteredTwoMassID' */
   boolean_T enteredElectricalID;       /* '<Root>/enteredElectricalID' */
-  ElectricalID_output ElectricalID_output_n;/* '<Root>/ElectricalID_output' */
+	uz_PID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_output' */
 	uz_PID_Controller_Parameters_output_t ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
 	uz_PID_GlobalConfig_t GlobalConfig_in;/* '<Root>/GlobalConfig_in' */
 } ExtU_ControlState_t;

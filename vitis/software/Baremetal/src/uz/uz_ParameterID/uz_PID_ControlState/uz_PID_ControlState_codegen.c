@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ControlState'.
  *
- * Model version                  : 2.32
+ * Model version                  : 2.33
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Nov 23 13:29:45 2021
+ * C/C++ source code generated on : Tue Nov 23 16:21:04 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -23,7 +23,6 @@
 #if UZ_PARAMETERID_ACTIVE > 0U
 
 #include "uz_PID_ControlState_codegen.h"
-
 
 /* Named constants for Chart: '<Root>/ControlState' */
 #define IN_CurrentControl              ((uint8_T)1U)
@@ -432,14 +431,14 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
          */
         /* '<S1>:624:4' thetaOffset=ElectricalID_output.thetaOffset; */
         rtControlState_Y->thetaOffset =
-          rtControlState_U->ElectricalID_output_n.thetaOffset;
+          rtControlState_U->ElectricalID_output.thetaOffset;
       } else {
         /* Outport: '<Root>/thetaOffset' incorporates:
          *  Inport: '<Root>/ElectricalID_output'
          */
         /* '<S1>:617:6' thetaOffset=ElectricalID_output.thetaOffset; */
         rtControlState_Y->thetaOffset =
-          rtControlState_U->ElectricalID_output_n.thetaOffset;
+          rtControlState_U->ElectricalID_output.thetaOffset;
       }
       break;
 
@@ -516,7 +515,7 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
          */
         /* '<S1>:617:4' thetaOffset=ElectricalID_output.thetaOffset; */
         rtControlState_Y->thetaOffset =
-          rtControlState_U->ElectricalID_output_n.thetaOffset;
+          rtControlState_U->ElectricalID_output.thetaOffset;
 
         /* '<S1>:682:1' sf_internal_predicateOutput = ControlFlags.transNr==4 && finishedFluxMapID_loc==0.... */
         /* '<S1>:682:2' && GlobalConfig_in.ACCEPT==1; */
@@ -621,7 +620,7 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
 
         /* '<S1>:626:10' GlobalConfig_out.thetaOffset=ElectricalID_output.thetaOffset; */
         rtControlState_Y->GlobalConfig_out.thetaOffset =
-          rtControlState_U->ElectricalID_output_n.thetaOffset;
+          rtControlState_U->ElectricalID_output.thetaOffset;
 
         /* '<S1>:710:1' sf_internal_predicateOutput = GlobalConfig_in.ElectricalID==0; */
       } else if (!rtControlState_U->GlobalConfig_in.ElectricalID) {
@@ -638,23 +637,23 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
          */
         /* '<S1>:624:6' thetaOffset=ElectricalID_output.thetaOffset; */
         rtControlState_Y->thetaOffset =
-          rtControlState_U->ElectricalID_output_n.thetaOffset;
+          rtControlState_U->ElectricalID_output.thetaOffset;
 
         /* '<S1>:624:7' GlobalConfig_out.L_d=ElectricalID_output.L_d; */
         rtControlState_Y->GlobalConfig_out.L_d =
-          rtControlState_U->ElectricalID_output_n.L_d;
+          rtControlState_U->ElectricalID_output.L_d;
 
         /* '<S1>:624:8' GlobalConfig_out.L_q=ElectricalID_output.L_q; */
         rtControlState_Y->GlobalConfig_out.L_q =
-          rtControlState_U->ElectricalID_output_n.L_q;
+          rtControlState_U->ElectricalID_output.L_q;
 
         /* '<S1>:624:9' GlobalConfig_out.R_ph=ElectricalID_output.R_s; */
         rtControlState_Y->GlobalConfig_out.R_ph =
-          rtControlState_U->ElectricalID_output_n.R_s;
+          rtControlState_U->ElectricalID_output.R_s;
 
         /* '<S1>:624:10' GlobalConfig_out.psi_pm=ElectricalID_output.psiPM; */
         rtControlState_Y->GlobalConfig_out.psi_pm =
-          rtControlState_U->ElectricalID_output_n.psiPM;
+          rtControlState_U->ElectricalID_output.psiPM;
       }
       break;
 

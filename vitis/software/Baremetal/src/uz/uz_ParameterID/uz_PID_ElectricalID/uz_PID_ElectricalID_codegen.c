@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID'.
  *
- * Model version                  : 2.32
+ * Model version                  : 2.33
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Nov 23 13:31:38 2021
+ * C/C++ source code generated on : Tue Nov 23 16:23:59 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -198,28 +198,28 @@ static void initParams(ExtY_ElectricalID_t *rtElectricalID_Y, DW_ElectricalID_t 
 
   /* Outport: '<Root>/ElectricalID_output' */
   /* '<S1>:88:47' ElectricalID_output.PWM_Switch_0        = single(0.0); */
-  rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = 0.0F;
+  rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
 
   /* '<S1>:88:48' ElectricalID_output.PWM_Switch_1        = single(0.0); */
-  rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_1 = 0.0F;
+  rtElectricalID_Y->ElectricalID_output.PWM_Switch_1 = 0.0F;
 
   /* '<S1>:88:49' ElectricalID_output.PWM_Switch_2        = single(0.0); */
-  rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_2 = 0.0F;
+  rtElectricalID_Y->ElectricalID_output.PWM_Switch_2 = 0.0F;
 
   /* '<S1>:88:50' ElectricalID_output.PWM_Switch_3        = single(0.0); */
-  rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_3 = 0.0F;
+  rtElectricalID_Y->ElectricalID_output.PWM_Switch_3 = 0.0F;
 
   /* '<S1>:88:51' ElectricalID_output.PWM_Switch_4        = single(0.0); */
-  rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_4 = 0.0F;
+  rtElectricalID_Y->ElectricalID_output.PWM_Switch_4 = 0.0F;
 
   /* '<S1>:88:52' ElectricalID_output.PWM_Switch_5        = single(0.0); */
-  rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_5 = 0.0F;
+  rtElectricalID_Y->ElectricalID_output.PWM_Switch_5 = 0.0F;
 
   /* '<S1>:88:53' ElectricalID_output.outputMode          = boolean(zeros(1,3)); */
   /* '<S1>:88:54' ElectricalID_output.outputMode          = [boolean(1),boolean(1),boolean(1)]; */
-  rtElectricalID_Y->ElectricalID_output_o.outputMode[0] = true;
-  rtElectricalID_Y->ElectricalID_output_o.outputMode[1] = true;
-  rtElectricalID_Y->ElectricalID_output_o.outputMode[2] = true;
+  rtElectricalID_Y->ElectricalID_output.outputMode[0] = true;
+  rtElectricalID_Y->ElectricalID_output.outputMode[1] = true;
+  rtElectricalID_Y->ElectricalID_output.outputMode[2] = true;
 
   /* Outport: '<Root>/ElectricalID_FOC_output' */
   /* 0 = GPIO, 1 = PWM */
@@ -228,28 +228,28 @@ static void initParams(ExtY_ElectricalID_t *rtElectricalID_Y, DW_ElectricalID_t 
 
   /* Outport: '<Root>/ElectricalID_output' */
   /* '<S1>:88:56' ElectricalID_output.thetaOffset         = single(0.0); */
-  rtElectricalID_Y->ElectricalID_output_o.thetaOffset = 0.0F;
+  rtElectricalID_Y->ElectricalID_output.thetaOffset = 0.0F;
 
   /* '<S1>:88:57' ElectricalID_output.R_s                 = single(0.0); */
-  rtElectricalID_Y->ElectricalID_output_o.R_s = 0.0F;
+  rtElectricalID_Y->ElectricalID_output.R_s = 0.0F;
 
   /* '<S1>:88:58' ElectricalID_output.L_d                 = single(0.0); */
-  rtElectricalID_Y->ElectricalID_output_o.L_d = 0.0F;
+  rtElectricalID_Y->ElectricalID_output.L_d = 0.0F;
 
   /* '<S1>:88:59' ElectricalID_output.L_q                 = single(0.0); */
-  rtElectricalID_Y->ElectricalID_output_o.L_q = 0.0F;
+  rtElectricalID_Y->ElectricalID_output.L_q = 0.0F;
 
   /* '<S1>:88:60' ElectricalID_output.psiPM               = single(0.0); */
-  rtElectricalID_Y->ElectricalID_output_o.psiPM = 0.0F;
+  rtElectricalID_Y->ElectricalID_output.psiPM = 0.0F;
 
   /* '<S1>:88:61' ElectricalID_output.rotorInertia        = single(0.0); */
-  rtElectricalID_Y->ElectricalID_output_o.rotorInertia = 0.0F;
+  rtElectricalID_Y->ElectricalID_output.rotorInertia = 0.0F;
 
   /* '<S1>:88:62' ElectricalID_output.p                   = uint16(0); */
-  rtElectricalID_Y->ElectricalID_output_o.p = 0U;
+  rtElectricalID_Y->ElectricalID_output.p = 0U;
 
   /* '<S1>:88:63' ElectricalID_output.TrainInertia        = single(0.0); */
-  rtElectricalID_Y->ElectricalID_output_o.TrainInertia = 0.0F;
+  rtElectricalID_Y->ElectricalID_output.TrainInertia = 0.0F;
 
   /* Outport: '<Root>/enteredElectricalID' */
   /* '<S1>:88:64' enteredElectricalID                     = boolean(0); */
@@ -390,11 +390,11 @@ static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
   /* Outport: '<Root>/ElectricalID_output' */
   /*  calculation according to TI instaSpin */
   /* '<S1>:284:6' Kp_id_loc = ElectricalID_output.L_d * bandwidthCurrentControl; */
-  Kp_id_loc = rtElectricalID_Y->ElectricalID_output_o.L_d *
+  Kp_id_loc = rtElectricalID_Y->ElectricalID_output.L_d *
     rtElectricalID_DW->bandwidthCurrentControl;
 
   /* '<S1>:284:7' Ki_id_loc = ElectricalID_output.R_s * bandwidthCurrentControl; */
-  Ki_id_loc = rtElectricalID_Y->ElectricalID_output_o.R_s *
+  Ki_id_loc = rtElectricalID_Y->ElectricalID_output.R_s *
     rtElectricalID_DW->bandwidthCurrentControl;
 
   /* Inport: '<Root>/ElectricalIDConfig' */
@@ -403,17 +403,17 @@ static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
   if (rtElectricalID_U->ElectricalIDConfig.identLq) {
     /* Outport: '<Root>/ElectricalID_output' */
     /* '<S1>:284:10' ElectricalID_output.L_q = 0.00245; */
-    rtElectricalID_Y->ElectricalID_output_o.L_q = 0.00245F;
+    rtElectricalID_Y->ElectricalID_output.L_q = 0.00245F;
 
     /* '<S1>:284:11' Kp_iq_loc = ElectricalID_output.L_q * bandwidthCurrentControl; */
-    rtElectricalID_DW->Kp_iq_loc = rtElectricalID_Y->ElectricalID_output_o.L_q *
+    rtElectricalID_DW->Kp_iq_loc = rtElectricalID_Y->ElectricalID_output.L_q *
       rtElectricalID_DW->bandwidthCurrentControl;
   } else {
     /* Outport: '<Root>/ElectricalID_output' */
     /* '<S1>:284:12' elseif (ElectricalIDConfig.identLq == 0) */
     /* '<S1>:284:13' ElectricalID_output.L_q = ElectricalID_output.L_d; */
-    rtElectricalID_Y->ElectricalID_output_o.L_q =
-      rtElectricalID_Y->ElectricalID_output_o.L_d;
+    rtElectricalID_Y->ElectricalID_output.L_q =
+      rtElectricalID_Y->ElectricalID_output.L_d;
 
     /* '<S1>:284:14' Kp_iq_loc = Kp_id_loc; */
     rtElectricalID_DW->Kp_iq_loc = Kp_id_loc;
@@ -427,7 +427,7 @@ static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
   /* '<S1>:284:16' Kp_n_loc = Kp_iq_loc/(ElectricalID_output.L_q*dampingFactor*.... */
   /* '<S1>:284:17'     GlobalConfig.polePairs*3.0/2.0*psiOverJ); */
   rtElectricalID_DW->Kp_n_loc = rtElectricalID_DW->Kp_iq_loc /
-    (rtElectricalID_Y->ElectricalID_output_o.L_q *
+    (rtElectricalID_Y->ElectricalID_output.L_q *
      rtElectricalID_DW->dampingFactor *
      rtElectricalID_U->GlobalConfig_out.polePairs * 3.0F / 2.0F *
      rtElectricalID_DW->psiOverJ);
@@ -437,10 +437,9 @@ static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
   /* '<S1>:284:19' Ki_n_loc = (Kp_iq_loc * Kp_iq_loc)/( ElectricalID_output.L_q * ElectricalID_output.L_q * .... */
   /* '<S1>:284:20'     dampingFactor * dampingFactor * dampingFactor * GlobalConfig.polePairs*3.0/2.0*psiOverJ); */
   rtElectricalID_DW->Ki_n_loc = rtElectricalID_DW->Kp_iq_loc *
-    rtElectricalID_DW->Kp_iq_loc / (rtElectricalID_Y->ElectricalID_output_o.L_q *
-    rtElectricalID_Y->ElectricalID_output_o.L_q *
-    rtElectricalID_DW->dampingFactor * rtElectricalID_DW->dampingFactor *
-    rtElectricalID_DW->dampingFactor *
+    rtElectricalID_DW->Kp_iq_loc / (rtElectricalID_Y->ElectricalID_output.L_q *
+    rtElectricalID_Y->ElectricalID_output.L_q * rtElectricalID_DW->dampingFactor
+    * rtElectricalID_DW->dampingFactor * rtElectricalID_DW->dampingFactor *
     rtElectricalID_U->GlobalConfig_out.polePairs * 3.0F / 2.0F *
     rtElectricalID_DW->psiOverJ);
 
@@ -625,29 +624,29 @@ static void DutyCycle_mod(const real32_T om_reg_in[5], ExtU_ElectricalID_t
 static void TurnMotor(ExtU_ElectricalID_t *rtElectricalID_U, ExtY_ElectricalID_t
                       *rtElectricalID_Y, DW_ElectricalID_t *rtElectricalID_DW)
 {
-  real32_T ElectricalID_output_o_tmp;
+  real32_T ElectricalID_output_tmp;
 
   /* Inport: '<Root>/GlobalConfig' */
   /* MATLAB Function 'TurnMotor': '<S1>:380' */
   /* '<S1>:380:3' sineCounter = single(counter); */
   /*  rechtslauf */
   /* '<S1>:380:6' ElectricalID_output.PWM_Switch_0 = 0.5*DutyCycle*sin(2*pi*8*sineCounter*GlobalConfig.sampleTimeISR+pi/2)+0.5; */
-  ElectricalID_output_o_tmp = 50.2654839F * (real32_T)rtElectricalID_DW->counter
-    * rtElectricalID_U->GlobalConfig_out.sampleTimeISR;
+  ElectricalID_output_tmp = 50.2654839F * (real32_T)rtElectricalID_DW->counter *
+    rtElectricalID_U->GlobalConfig_out.sampleTimeISR;
 
   /* Outport: '<Root>/ElectricalID_output' */
-  rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = sinf
-    (ElectricalID_output_o_tmp + 1.57079637F) * (0.5F *
+  rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = sinf
+    (ElectricalID_output_tmp + 1.57079637F) * (0.5F *
     rtElectricalID_DW->DutyCycle) + 0.5F;
 
   /* '<S1>:380:7' ElectricalID_output.PWM_Switch_2 = 0.5*DutyCycle*sin(2*pi*8*sineCounter*GlobalConfig.sampleTimeISR-2*pi/3+pi/2)+0.5; */
-  rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_2 = sinf
-    ((ElectricalID_output_o_tmp - 2.09439516F) + 1.57079637F) * (0.5F *
+  rtElectricalID_Y->ElectricalID_output.PWM_Switch_2 = sinf
+    ((ElectricalID_output_tmp - 2.09439516F) + 1.57079637F) * (0.5F *
     rtElectricalID_DW->DutyCycle) + 0.5F;
 
   /* '<S1>:380:8' ElectricalID_output.PWM_Switch_4 = 0.5*DutyCycle*sin(2*pi*8*sineCounter*GlobalConfig.sampleTimeISR+2*pi/3+pi/2)+0.5; */
-  rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_4 = sinf
-    ((ElectricalID_output_o_tmp + 2.09439516F) + 1.57079637F) * (0.5F *
+  rtElectricalID_Y->ElectricalID_output.PWM_Switch_4 = sinf
+    ((ElectricalID_output_tmp + 2.09439516F) + 1.57079637F) * (0.5F *
     rtElectricalID_DW->DutyCycle) + 0.5F;
 
   /*  linkslauf */
@@ -674,13 +673,13 @@ static void evaluate_Turn_DC(ExtU_ElectricalID_t *rtElectricalID_U,
     /* Transition: '<S1>:383' */
     /* Exit 'evaluate_Turn_DC': '<S1>:379' */
     /* '<S1>:379:27' ElectricalID_output.PWM_Switch_0 = single(0); */
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
 
     /* '<S1>:379:28' ElectricalID_output.PWM_Switch_2 = single(0); */
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_2 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_2 = 0.0F;
 
     /* '<S1>:379:29' ElectricalID_output.PWM_Switch_4 = single(0); */
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_4 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_4 = 0.0F;
     rtElectricalID_DW->is_ElectricalID = IN_alignRotor_d_on;
     rtElectricalID_DW->temporalCounter_i1 = 0U;
 
@@ -825,7 +824,7 @@ static void findDutyCycle(ExtU_ElectricalID_t *rtElectricalID_U,
     /* Transition: '<S1>:790' */
     /* Exit 'findDutyCycle': '<S1>:789' */
     /* '<S1>:789:29' ElectricalID_output.PWM_Switch_0 = single(0); */
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
     rtElectricalID_DW->is_ElectricalID = IN_alignRotor_d_off2;
     rtElectricalID_DW->temporalCounter_i1 = 0U;
 
@@ -839,7 +838,7 @@ static void findDutyCycle(ExtU_ElectricalID_t *rtElectricalID_U,
   {
     /* Outport: '<Root>/ElectricalID_output' */
     /* '<S1>:789:15' ElectricalID_output.PWM_Switch_0 = single(DutyCycle); */
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 =
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 =
       rtElectricalID_DW->DutyCycle;
 
     /* '<S1>:789:16' if(counter < (0.4/GlobalConfig.sampleTimeISR)) */
@@ -918,7 +917,7 @@ static void measure_psiPM(ExtU_ElectricalID_t *rtElectricalID_U,
    */
   /* During 'measure_psiPM': '<S1>:405' */
   /* '<S1>:406:1' sf_internal_predicateOutput = ElectricalID_output.psiPM > 0; */
-  if (rtElectricalID_Y->ElectricalID_output_o.psiPM > 0.0F) {
+  if (rtElectricalID_Y->ElectricalID_output.psiPM > 0.0F) {
     /* Transition: '<S1>:406' */
     /* Exit 'measure_psiPM': '<S1>:405' */
     /* '<S1>:405:20' counter = uint32(1); */
@@ -987,8 +986,8 @@ static void measure_psiPM(ExtU_ElectricalID_t *rtElectricalID_U,
         c_x += rtElectricalID_DW->i_est[k + 1];
       }
 
-      rtElectricalID_Y->ElectricalID_output_o.psiPM = (x / 1024.0F - b_x /
-        1024.0F * rtElectricalID_Y->ElectricalID_output_o.R_s) / (c_x / 1024.0F);
+      rtElectricalID_Y->ElectricalID_output.psiPM = (x / 1024.0F - b_x / 1024.0F
+        * rtElectricalID_Y->ElectricalID_output.R_s) / (c_x / 1024.0F);
 
       /* . */
     }
@@ -1070,7 +1069,7 @@ static real32_T goertzel(ExtU_ElectricalID_t *rtElectricalID_U,
     /* '<S1>:350:7' d(k) = 1.5*GlobalConfig.polePairs*ElectricalID_output.psiPM*measArray1(k); */
     rtElectricalID_DW->d[k] = 1.5F *
       rtElectricalID_U->GlobalConfig_out.polePairs *
-      rtElectricalID_Y->ElectricalID_output_o.psiPM *
+      rtElectricalID_Y->ElectricalID_output.psiPM *
       rtElectricalID_DW->measArray1[k];
 
     /* N multiplications, 2N additions */
@@ -1199,11 +1198,11 @@ static real32_T goertzel(ExtU_ElectricalID_t *rtElectricalID_U,
   }
 
   /* Outport: '<Root>/ElectricalID_output' */
-  rtElectricalID_Y->ElectricalID_output_o.rotorInertia = rt_hypotf(s0, Xg_im);
+  rtElectricalID_Y->ElectricalID_output.rotorInertia = rt_hypotf(s0, Xg_im);
 
   /* without damping */
   /* '<S1>:350:57' u = single(ElectricalID_output.rotorInertia); */
-  return rtElectricalID_Y->ElectricalID_output_o.rotorInertia;
+  return rtElectricalID_Y->ElectricalID_output.rotorInertia;
 }
 
 /* Function for Chart: '<Root>/ElectricalID' */
@@ -1449,15 +1448,15 @@ static void stepResponse(ExtU_ElectricalID_t *rtElectricalID_U,
     /*  Therefore Rs and Ld are the values expressed in */
     /*  star connection */
     /* '<S1>:91:12' ElectricalID_output.R_s = (R_est-R_corr)*2.0/3.0; */
-    rtElectricalID_Y->ElectricalID_output_o.R_s = (R_est -
+    rtElectricalID_Y->ElectricalID_output.R_s = (R_est -
       rtElectricalID_DW->R_corr) * 2.0F / 3.0F;
 
     /* '<S1>:91:13' ElectricalID_output.L_d = L_est*2.0/3.0; */
-    rtElectricalID_Y->ElectricalID_output_o.L_d = L_est * 2.0F / 3.0F;
+    rtElectricalID_Y->ElectricalID_output.L_d = L_est * 2.0F / 3.0F;
   } else {
     /* Outport: '<Root>/ElectricalID_output' */
     /* '<S1>:5:7' ElectricalID_output.PWM_Switch_0 = single(DutyCycle); */
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 =
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 =
       rtElectricalID_DW->DutyCycle;
 
     /* '<S1>:5:8' if(counter <= 1024) */
@@ -1562,7 +1561,7 @@ static void stepResponse(ExtU_ElectricalID_t *rtElectricalID_U,
 
       /* Outport: '<Root>/ElectricalID_output' */
       /* '<S1>:5:28' ElectricalID_output.PWM_Switch_0 = single(0); */
-      rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = 0.0F;
+      rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
 
       /* '<S1>:5:29' counter = counter + 1; */
       qY = rtElectricalID_DW->counter + /*MW:OvSatOk*/ 1U;
@@ -1763,9 +1762,9 @@ static void stepResponse_q(ExtU_ElectricalID_t *rtElectricalID_U,
     /* Transition: '<S1>:279' */
     /* Exit 'stepResponse_q': '<S1>:277' */
     /* '<S1>:277:38' ElectricalID_output.outputMode          = [boolean(1),boolean(1),boolean(1)]; */
-    rtElectricalID_Y->ElectricalID_output_o.outputMode[0] = true;
-    rtElectricalID_Y->ElectricalID_output_o.outputMode[1] = true;
-    rtElectricalID_Y->ElectricalID_output_o.outputMode[2] = true;
+    rtElectricalID_Y->ElectricalID_output.outputMode[0] = true;
+    rtElectricalID_Y->ElectricalID_output.outputMode[1] = true;
+    rtElectricalID_Y->ElectricalID_output.outputMode[2] = true;
     rtElectricalID_DW->is_ElectricalID = IN_Levenberg_Marquardt_q;
     rtElectricalID_DW->temporalCounter_i1 = 0U;
 
@@ -1779,11 +1778,11 @@ static void stepResponse_q(ExtU_ElectricalID_t *rtElectricalID_U,
 
     /* Outport: '<Root>/ElectricalID_output' */
     /* '<S1>:278:6' ElectricalID_output.L_q = L_est*0.5; */
-    rtElectricalID_Y->ElectricalID_output_o.L_q = L_est * 0.5F;
+    rtElectricalID_Y->ElectricalID_output.L_q = L_est * 0.5F;
   } else {
     /* Outport: '<Root>/ElectricalID_output' */
     /* '<S1>:277:12' ElectricalID_output.PWM_Switch_4 = single(DutyCycle); */
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_4 =
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_4 =
       rtElectricalID_DW->DutyCycle;
 
     /* '<S1>:277:13' if(counter <= 1024) */
@@ -1891,7 +1890,7 @@ static void stepResponse_q(ExtU_ElectricalID_t *rtElectricalID_U,
 
       /* Outport: '<Root>/ElectricalID_output' */
       /* '<S1>:277:34' ElectricalID_output.PWM_Switch_4 = single(0); */
-      rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_4 = 0.0F;
+      rtElectricalID_Y->ElectricalID_output.PWM_Switch_4 = 0.0F;
 
       /* '<S1>:277:35' counter = counter + 1; */
       qY = rtElectricalID_DW->counter + /*MW:OvSatOk*/ 1U;
@@ -1926,7 +1925,7 @@ static void exit_internal_ElectricalID(ExtU_ElectricalID_t *rtElectricalID_U,
      */
     /* Exit 'alignRotor_d_off': '<S1>:53' */
     /* '<S1>:53:7' ElectricalID_output.thetaOffset = ActualValues.theta_m; */
-    rtElectricalID_Y->ElectricalID_output_o.thetaOffset =
+    rtElectricalID_Y->ElectricalID_output.thetaOffset =
       rtElectricalID_U->ActualValues.theta_m;
     rtElectricalID_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
     break;
@@ -1945,7 +1944,7 @@ static void exit_internal_ElectricalID(ExtU_ElectricalID_t *rtElectricalID_U,
     /* Outport: '<Root>/ElectricalID_output' */
     /* Exit 'alignRotor_d_on': '<S1>:3' */
     /* '<S1>:3:16' ElectricalID_output.PWM_Switch_0 = single(0); */
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
     rtElectricalID_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
     break;
 
@@ -1953,7 +1952,7 @@ static void exit_internal_ElectricalID(ExtU_ElectricalID_t *rtElectricalID_U,
     /* Outport: '<Root>/ElectricalID_output' */
     /* Exit 'alignRotor_d_on1': '<S1>:415' */
     /* '<S1>:415:15' ElectricalID_output.PWM_Switch_0 = single(0); */
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
 
     /* '<S1>:415:16' DutyCycle=single(0.0); */
     rtElectricalID_DW->DutyCycle = 0.0F;
@@ -1970,7 +1969,7 @@ static void exit_internal_ElectricalID(ExtU_ElectricalID_t *rtElectricalID_U,
     /* Outport: '<Root>/ElectricalID_output' */
     /* Exit 'alignRotor_q_on': '<S1>:410' */
     /* '<S1>:410:17' ElectricalID_output.PWM_Switch_2 = single(0); */
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_2 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_2 = 0.0F;
     rtElectricalID_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
     break;
 
@@ -1978,13 +1977,13 @@ static void exit_internal_ElectricalID(ExtU_ElectricalID_t *rtElectricalID_U,
     /* Outport: '<Root>/ElectricalID_output' */
     /* Exit 'evaluate_Turn_DC': '<S1>:379' */
     /* '<S1>:379:27' ElectricalID_output.PWM_Switch_0 = single(0); */
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
 
     /* '<S1>:379:28' ElectricalID_output.PWM_Switch_2 = single(0); */
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_2 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_2 = 0.0F;
 
     /* '<S1>:379:29' ElectricalID_output.PWM_Switch_4 = single(0); */
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_4 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_4 = 0.0F;
     rtElectricalID_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
     break;
 
@@ -1992,7 +1991,7 @@ static void exit_internal_ElectricalID(ExtU_ElectricalID_t *rtElectricalID_U,
     /* Outport: '<Root>/ElectricalID_output' */
     /* Exit 'findDutyCycle': '<S1>:789' */
     /* '<S1>:789:29' ElectricalID_output.PWM_Switch_0 = single(0); */
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
     rtElectricalID_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
     break;
 
@@ -2007,7 +2006,7 @@ static void exit_internal_ElectricalID(ExtU_ElectricalID_t *rtElectricalID_U,
     /* Outport: '<Root>/ElectricalID_output' */
     /* Exit 'rotorInertiaEstimation': '<S1>:337' */
     /* '<S1>:337:21' ElectricalID_output.TrainInertia = goertzel; */
-    rtElectricalID_Y->ElectricalID_output_o.TrainInertia = goertzel
+    rtElectricalID_Y->ElectricalID_output.TrainInertia = goertzel
       (rtElectricalID_U, rtElectricalID_Y, rtElectricalID_DW);
     rtElectricalID_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
     break;
@@ -2024,9 +2023,9 @@ static void exit_internal_ElectricalID(ExtU_ElectricalID_t *rtElectricalID_U,
     /* Outport: '<Root>/ElectricalID_output' */
     /* Exit 'stepResponse_q': '<S1>:277' */
     /* '<S1>:277:38' ElectricalID_output.outputMode          = [boolean(1),boolean(1),boolean(1)]; */
-    rtElectricalID_Y->ElectricalID_output_o.outputMode[0] = true;
-    rtElectricalID_Y->ElectricalID_output_o.outputMode[1] = true;
-    rtElectricalID_Y->ElectricalID_output_o.outputMode[2] = true;
+    rtElectricalID_Y->ElectricalID_output.outputMode[0] = true;
+    rtElectricalID_Y->ElectricalID_output.outputMode[1] = true;
+    rtElectricalID_Y->ElectricalID_output.outputMode[2] = true;
     rtElectricalID_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
     break;
 
@@ -2118,15 +2117,15 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
         /* Outport: '<Root>/ElectricalID_output' */
         /* '<S1>:277:7' ElectricalID_output.outputMode          = [boolean(0),boolean(1),boolean(1)]; */
-        rtElectricalID_Y->ElectricalID_output_o.outputMode[0] = false;
-        rtElectricalID_Y->ElectricalID_output_o.outputMode[1] = true;
-        rtElectricalID_Y->ElectricalID_output_o.outputMode[2] = true;
+        rtElectricalID_Y->ElectricalID_output.outputMode[0] = false;
+        rtElectricalID_Y->ElectricalID_output.outputMode[1] = true;
+        rtElectricalID_Y->ElectricalID_output.outputMode[2] = true;
 
         /* '<S1>:277:8' ElectricalID_output.PWM_Switch_0 = single(0); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = 0.0F;
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
 
         /* '<S1>:277:9' ElectricalID_output.PWM_Switch_1 = single(0); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_1 = 0.0F;
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_1 = 0.0F;
 
         /* '<S1>:277:10' counter = uint32(1); */
         rtElectricalID_DW->counter = 1U;
@@ -2155,7 +2154,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
         /* Transition: '<S1>:411' */
         /* Exit 'alignRotor_d_off': '<S1>:53' */
         /* '<S1>:53:7' ElectricalID_output.thetaOffset = ActualValues.theta_m; */
-        rtElectricalID_Y->ElectricalID_output_o.thetaOffset =
+        rtElectricalID_Y->ElectricalID_output.thetaOffset =
           rtElectricalID_U->ActualValues.theta_m;
         rtElectricalID_DW->is_ElectricalID = IN_alignRotor_q_on;
         rtElectricalID_DW->temporalCounter_i1 = 0U;
@@ -2167,15 +2166,15 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
         /* Outport: '<Root>/ElectricalID_output' */
         /* '<S1>:410:5' ElectricalID_output.outputMode          = [boolean(0),boolean(1),boolean(1)]; */
-        rtElectricalID_Y->ElectricalID_output_o.outputMode[0] = false;
-        rtElectricalID_Y->ElectricalID_output_o.outputMode[1] = true;
-        rtElectricalID_Y->ElectricalID_output_o.outputMode[2] = true;
+        rtElectricalID_Y->ElectricalID_output.outputMode[0] = false;
+        rtElectricalID_Y->ElectricalID_output.outputMode[1] = true;
+        rtElectricalID_Y->ElectricalID_output.outputMode[2] = true;
 
         /* '<S1>:410:6' ElectricalID_output.PWM_Switch_0 = single(0); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = 0.0F;
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
 
         /* '<S1>:410:7' ElectricalID_output.PWM_Switch_1 = single(0); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_1 = 0.0F;
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_1 = 0.0F;
 
         /* '<S1>:410:8' counter = uint32(1); */
         rtElectricalID_DW->counter = 1U;
@@ -2251,7 +2250,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
         /* Transition: '<S1>:164' */
         /* Exit 'alignRotor_d_on': '<S1>:3' */
         /* '<S1>:3:16' ElectricalID_output.PWM_Switch_0 = single(0); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = 0.0F;
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
         rtElectricalID_DW->is_ElectricalID = IN_alignRotor_d_off;
         rtElectricalID_DW->temporalCounter_i1 = 0U;
 
@@ -2272,14 +2271,14 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
         /* Outport: '<Root>/ElectricalID_output' */
         /* '<S1>:3:11' ElectricalID_output.PWM_Switch_0 = single(DutyCycle*DutyCycle_filt); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 =
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 =
           rtElectricalID_DW->DutyCycle * DutyCycle_filt;
 
         /* '<S1>:3:12' ElectricalID_output.PWM_Switch_2 = single(0); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_2 = 0.0F;
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_2 = 0.0F;
 
         /* '<S1>:3:13' ElectricalID_output.PWM_Switch_4 = single(0); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_4 = 0.0F;
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_4 = 0.0F;
 
         /* '<S1>:3:14' counter  = counter +1; */
         qY = rtElectricalID_DW->counter + /*MW:OvSatOk*/ 1U;
@@ -2299,7 +2298,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
         /* Transition: '<S1>:418' */
         /* Exit 'alignRotor_d_on1': '<S1>:415' */
         /* '<S1>:415:15' ElectricalID_output.PWM_Switch_0 = single(0); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = 0.0F;
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
 
         /* '<S1>:415:16' DutyCycle=single(0.0); */
         rtElectricalID_DW->DutyCycle = 0.0F;
@@ -2329,7 +2328,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
         /* Outport: '<Root>/ElectricalID_output' */
         /* '<S1>:415:12' ElectricalID_output.PWM_Switch_0 = single(DutyCycle*DutyCycle_filt); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 =
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 =
           rtElectricalID_DW->DutyCycle * DutyCycle_filt;
 
         /* '<S1>:415:13' counter = counter + 1; */
@@ -2370,7 +2369,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
         /* Transition: '<S1>:413' */
         /* Exit 'alignRotor_q_on': '<S1>:410' */
         /* '<S1>:410:17' ElectricalID_output.PWM_Switch_2 = single(0); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_2 = 0.0F;
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_2 = 0.0F;
         rtElectricalID_DW->is_ElectricalID = IN_alignRotor_q_off;
 
         /* Outport: '<Root>/ElectricalID_FOC_output' */
@@ -2380,9 +2379,9 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
         /* Outport: '<Root>/ElectricalID_output' */
         /* '<S1>:412:5' ElectricalID_output.outputMode          = [boolean(1),boolean(1),boolean(1)]; */
-        rtElectricalID_Y->ElectricalID_output_o.outputMode[0] = true;
-        rtElectricalID_Y->ElectricalID_output_o.outputMode[1] = true;
-        rtElectricalID_Y->ElectricalID_output_o.outputMode[2] = true;
+        rtElectricalID_Y->ElectricalID_output.outputMode[0] = true;
+        rtElectricalID_Y->ElectricalID_output.outputMode[1] = true;
+        rtElectricalID_Y->ElectricalID_output.outputMode[2] = true;
 
         /* Inport: '<Root>/ActualValues' */
         /* '<S1>:412:6' ElectricalID_output.p = uint16(round((pi/2.0) / (abs(ActualValues.theta_m)))); */
@@ -2390,10 +2389,10 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
           (rtElectricalID_U->ActualValues.theta_m));
         if (DutyCycle_filt < 65536.0F) {
           /* Outport: '<Root>/ElectricalID_output' */
-          rtElectricalID_Y->ElectricalID_output_o.p = (uint16_T)DutyCycle_filt;
+          rtElectricalID_Y->ElectricalID_output.p = (uint16_T)DutyCycle_filt;
         } else {
           /* Outport: '<Root>/ElectricalID_output' */
-          rtElectricalID_Y->ElectricalID_output_o.p = MAX_uint16_T;
+          rtElectricalID_Y->ElectricalID_output.p = MAX_uint16_T;
         }
       } else {
         /* '<S1>:410:10' DutyCycle_filt = single(single(counter)*GlobalConfig.sampleTimeISR*2); */
@@ -2408,7 +2407,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
         /* Outport: '<Root>/ElectricalID_output' */
         /* '<S1>:410:14' ElectricalID_output.PWM_Switch_2 = single(1.5*DutyCycle*DutyCycle_filt); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_2 = 1.5F *
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_2 = 1.5F *
           rtElectricalID_DW->DutyCycle * DutyCycle_filt;
 
         /* '<S1>:410:15' counter = counter + 1; */
@@ -2475,11 +2474,11 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
         /* '<S1>:428:5' Kp_n_loc = Kp_iq_loc/(ElectricalID_output.L_q*dampingFactor*GlobalConfig.polePairs.... */
         /* '<S1>:428:6'     *3.0/2.0*ElectricalID_output.psiPM/ElectricalID_output.rotorInertia); */
         rtElectricalID_DW->Kp_n_loc = rtElectricalID_DW->Kp_iq_loc /
-          (rtElectricalID_Y->ElectricalID_output_o.L_q *
+          (rtElectricalID_Y->ElectricalID_output.L_q *
            rtElectricalID_DW->dampingFactor *
            rtElectricalID_U->GlobalConfig_out.polePairs * 3.0F / 2.0F *
-           rtElectricalID_Y->ElectricalID_output_o.psiPM /
-           rtElectricalID_Y->ElectricalID_output_o.rotorInertia);
+           rtElectricalID_Y->ElectricalID_output.psiPM /
+           rtElectricalID_Y->ElectricalID_output.rotorInertia);
 
         /* . */
         /* Ki_n_loc = (dampingFactor*dampingFactor*ElectricalID_output.L_q)/Kp_iq_loc; */
@@ -2488,13 +2487,13 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
         /* '<S1>:428:10'     ElectricalID_output.psiPM/ElectricalID_output.rotorInertia); */
         rtElectricalID_DW->Ki_n_loc = rtElectricalID_DW->Kp_iq_loc *
           rtElectricalID_DW->Kp_iq_loc /
-          (rtElectricalID_Y->ElectricalID_output_o.L_q *
-           rtElectricalID_Y->ElectricalID_output_o.L_q *
+          (rtElectricalID_Y->ElectricalID_output.L_q *
+           rtElectricalID_Y->ElectricalID_output.L_q *
            rtElectricalID_DW->dampingFactor * rtElectricalID_DW->dampingFactor *
            rtElectricalID_DW->dampingFactor *
            rtElectricalID_U->GlobalConfig_out.polePairs * 3.0F / 2.0F *
-           rtElectricalID_Y->ElectricalID_output_o.psiPM /
-           rtElectricalID_Y->ElectricalID_output_o.rotorInertia);
+           rtElectricalID_Y->ElectricalID_output.psiPM /
+           rtElectricalID_Y->ElectricalID_output.rotorInertia);
 
         /* Outport: '<Root>/ElectricalID_FOC_output' */
         /* . */
@@ -2535,7 +2534,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
         /* Transition: '<S1>:357' */
         /* Exit 'rotorInertiaEstimation': '<S1>:337' */
         /* '<S1>:337:21' ElectricalID_output.TrainInertia = goertzel; */
-        rtElectricalID_Y->ElectricalID_output_o.TrainInertia = goertzel
+        rtElectricalID_Y->ElectricalID_output.TrainInertia = goertzel
           (rtElectricalID_U, rtElectricalID_Y, rtElectricalID_DW);
         rtElectricalID_DW->is_ElectricalID = IN_endState;
         rtElectricalID_DW->temporalCounter_i1 = 0U;
@@ -2636,13 +2635,13 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
         /* Outport: '<Root>/ElectricalID_output' */
         /* '<S1>:337:5' ElectricalID_output.PWM_Switch_0 = single(0); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = 0.0F;
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
 
         /* '<S1>:337:6' ElectricalID_output.PWM_Switch_2 = single(0); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_2 = 0.0F;
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_2 = 0.0F;
 
         /* '<S1>:337:7' ElectricalID_output.PWM_Switch_4 = single(0); */
-        rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_4 = 0.0F;
+        rtElectricalID_Y->ElectricalID_output.PWM_Switch_4 = 0.0F;
 
         /* Outport: '<Root>/ElectricalID_FOC_output' incorporates:
          *  Inport: '<Root>/ElectricalIDConfig'
@@ -2914,23 +2913,23 @@ void ElectricalID_initialize(RT_MODEL_ElectricalID_t *const rtElectricalID_M)
     rtElectricalID_Y->ElectricalID_FOC_output.Ki_id_out = 0.0F;
     rtElectricalID_Y->ElectricalID_FOC_output.Ki_iq_out = 0.0F;
     rtElectricalID_Y->ElectricalID_FOC_output.Ki_n_out = 0.0F;
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_0 = 0.0F;
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_1 = 0.0F;
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_2 = 0.0F;
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_3 = 0.0F;
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_4 = 0.0F;
-    rtElectricalID_Y->ElectricalID_output_o.PWM_Switch_5 = 0.0F;
-    rtElectricalID_Y->ElectricalID_output_o.outputMode[0] = false;
-    rtElectricalID_Y->ElectricalID_output_o.outputMode[1] = false;
-    rtElectricalID_Y->ElectricalID_output_o.outputMode[2] = false;
-    rtElectricalID_Y->ElectricalID_output_o.R_s = 0.0F;
-    rtElectricalID_Y->ElectricalID_output_o.L_d = 0.0F;
-    rtElectricalID_Y->ElectricalID_output_o.L_q = 0.0F;
-    rtElectricalID_Y->ElectricalID_output_o.psiPM = 0.0F;
-    rtElectricalID_Y->ElectricalID_output_o.rotorInertia = 0.0F;
-    rtElectricalID_Y->ElectricalID_output_o.thetaOffset = 0.0F;
-    rtElectricalID_Y->ElectricalID_output_o.p = 0U;
-    rtElectricalID_Y->ElectricalID_output_o.TrainInertia = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_1 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_2 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_3 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_4 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.PWM_Switch_5 = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.outputMode[0] = false;
+    rtElectricalID_Y->ElectricalID_output.outputMode[1] = false;
+    rtElectricalID_Y->ElectricalID_output.outputMode[2] = false;
+    rtElectricalID_Y->ElectricalID_output.R_s = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.L_d = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.L_q = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.psiPM = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.rotorInertia = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.thetaOffset = 0.0F;
+    rtElectricalID_Y->ElectricalID_output.p = 0U;
+    rtElectricalID_Y->ElectricalID_output.TrainInertia = 0.0F;
   }
 }
 

@@ -178,8 +178,8 @@ uint32_t uz_adcLtc2311_all_masked_bits_set_in_value(uint32_t value, uint32_t mas
 
 	for (uint32_t i = 0; i < sizeof(value); i++) {
 
-		if (mask & (1 << i)) {
-			if ((value & (1 << i)) == 0) {
+		if (mask & (1U << i)) {
+			if ((value & (1U << i)) == 0) {
 				return_value = UZ_FAILURE;
 				break;
 			}

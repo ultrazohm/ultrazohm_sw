@@ -33,13 +33,15 @@ typedef struct uz_ParameterID_Data_t {
 	uz_PID_ControlFlags_t PID_ControlFlags;
 	uz_PID_GlobalConfig_t PID_GlobalConifg;
 	uz_PID_ElectricalIDConfig_t PID_ElectricalID_Config;
-
+	uz_PID_ElectricalID_output_t PID_ElectricalID_Output;
+	uz_PID_Controller_Parameters_output_t PID_Controller_Parameters;
 } uz_ParameterID_Data_t;
 
 void uz_ParameterID_init(uz_ParameterID_t* self);
 
-void uz_ParameterID_step(uz_ParameterID_t* self, uz_PID_GlobalConfig_t GlobalConfig, uz_PID_ActualValues_t ActualValues, uz_PID_ElectricalIDConfig_t ElectricalIDConfig);
+void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t Data);
 
+uz_ParameterID_Data_t uz_ParameterID_initialize_data_structs(void);
 
 
 

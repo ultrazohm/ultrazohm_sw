@@ -1,12 +1,12 @@
 /******************************************************************************
 * Copyright 2021 Eyke Liegmann, Tobias Schindler, Sebastian Wendel
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,6 +50,10 @@ float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
 
+//Experimental Code
+extern uz_ParameterID_t ParameterID_instance;
+extern uz_ParameterID_Data_t PID_Data;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -69,6 +73,10 @@ void ISR_Control(void *data)
 	ReadAllADC();
 	CheckForErrors();
 	update_speed_and_position_of_encoder_on_D5(&Global_Data); 	//Read out speed and theta angle
+
+	//ParameterID
+	uz_ParameterID_step(&ParameterID_instance, PID_Data);
+
 
 	//Start: Control algorithm -------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)

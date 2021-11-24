@@ -29,6 +29,7 @@ extern XGpio Gpio_OUT; /* GPIO Device driver instance for the real GPIOs */
 
 //Experimental Code
 uz_ParameterID_t ParameterID_instance;
+uz_ParameterID_Data_t PID_Data = { 0 };
 
 static void uz_assertCallback(const char8 *file, s32 line) {
 	extern XScuGic INTCInst;
@@ -78,6 +79,7 @@ int main(void) {
 	JavaScope_initalize(&Global_Data);
 
 	//Experimental Code
+	PID_Data = uz_ParameterID_initialize_data_structs();
 	uz_ParameterID_init(&ParameterID_instance);
 
 	// Initialize the Interrupts

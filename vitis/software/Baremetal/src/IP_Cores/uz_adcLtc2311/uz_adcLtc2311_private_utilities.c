@@ -3,10 +3,10 @@
 #include "uz_adcLtc2311.h"
 #include "../../uz/uz_HAL.h"
 
-int32_t uz_adcLtc2311_cr_wait_for_value_acknowledgement(uint32_t base_address, uint32_t max_attempts)
+uint32_t uz_adcLtc2311_cr_wait_for_value_acknowledgement(uint32_t base_address, uint32_t max_attempts)
 {
     uint32_t l_max_attempts = max_attempts;
-    int32_t return_value = UZ_SUCCESS;
+    uint32_t return_value = UZ_SUCCESS;
     // Wait for max_attempts if set otherwise wait forever until the condition is zero
     // Condition == zero means that the hardware has updated the value
     uint32_t condition = uz_adcLtc2311_hw_read_cr(base_address) & UZ_ADCLTC2311_CR_CONV_VALUE_VALID;
@@ -30,10 +30,10 @@ int32_t uz_adcLtc2311_cr_wait_for_value_acknowledgement(uint32_t base_address, u
     return(return_value);
 }
 
-int32_t uz_adcLtc2311_spi_cr_wait_for_control_set_acknowledgement(uint32_t base_address, uint32_t max_attempts)
+uint32_t uz_adcLtc2311_spi_cr_wait_for_control_set_acknowledgement(uint32_t base_address, uint32_t max_attempts)
 {
     uint32_t l_max_attempts = max_attempts;
-    int32_t return_value = UZ_SUCCESS;
+    uint32_t return_value = UZ_SUCCESS;
     // Wait for max_attempts if set otherwise wait forever until the condition is zero
     // Condition != zero means that the hardware transitioned to manual control mode
     uint32_t condition = uz_adcLtc2311_hw_read_spi_cr(base_address) & UZ_ADCLTC2311_SPI_CR_CONTROL_STATUS;
@@ -57,10 +57,10 @@ int32_t uz_adcLtc2311_spi_cr_wait_for_control_set_acknowledgement(uint32_t base_
     return(return_value);
 }
 
-int32_t uz_adcLtc2311_spi_cr_wait_for_control_reset_acknowledgement(uint32_t base_address, uint32_t max_attempts)
+uint32_t uz_adcLtc2311_spi_cr_wait_for_control_reset_acknowledgement(uint32_t base_address, uint32_t max_attempts)
 {
     uint32_t l_max_attempts = max_attempts;
-    int32_t return_value = UZ_SUCCESS;
+    uint32_t return_value = UZ_SUCCESS;
     // Wait for max_attempts if set otherwise wait forever until the condition is zero
     // Condition == zero means that the hardware left manual mode
     uint32_t condition = uz_adcLtc2311_hw_read_spi_cr(base_address) & UZ_ADCLTC2311_SPI_CR_CONTROL_STATUS;
@@ -147,7 +147,7 @@ void uz_adcLtc2311_spi_reset_sclk(uint32_t base_address)
 	uz_adcLtc2311_hw_write_spi_cr(base_address, spi_cr);
 }
 
-int32_t uz_adcLtc2311_prepare_manual_operation(uz_adcLtc2311_t* self)
+uint32_t uz_adcLtc2311_prepare_manual_operation(uz_adcLtc2311_t* self)
 {
     uint32_t base_address = uz_adcLtc2311_get_base_address(self);
     // leave continuous mode because a transition to manual mode is only possible from triggered mode
@@ -165,7 +165,7 @@ int32_t uz_adcLtc2311_prepare_manual_operation(uz_adcLtc2311_t* self)
     return(return_value);
 }
 
-int32_t uz_adcLtc2311_disable_manual_mode(uint32_t base_address, uint32_t max_attempts)
+uint32_t uz_adcLtc2311_disable_manual_mode(uint32_t base_address, uint32_t max_attempts)
 {
     uint32_t spi_cr = uz_adcLtc2311_hw_read_spi_cr(base_address) & ~UZ_ADCLTC2311_SPI_CR_CONTROL;
     uz_adcLtc2311_hw_write_spi_cr(base_address, spi_cr);
@@ -173,8 +173,8 @@ int32_t uz_adcLtc2311_disable_manual_mode(uint32_t base_address, uint32_t max_at
     return(return_value);
 }
 
-int32_t uz_adcLtc2311_all_masked_bits_set_in_value(uint32_t value, uint32_t mask) {
-	int32_t return_value = UZ_SUCCESS;
+uint32_t uz_adcLtc2311_all_masked_bits_set_in_value(uint32_t value, uint32_t mask) {
+	uint32_t return_value = UZ_SUCCESS;
 
 	for (uint32_t i = 0; i < sizeof(value); i++) {
 
@@ -196,7 +196,7 @@ int32_t uz_adcLtc2311_all_masked_bits_set_in_value(uint32_t value, uint32_t mask
  */
 void uz_adcLtc2311_init_set_parameters(uz_adcLtc2311_t* self)
 {
-    int32_t return_value = UZ_SUCCESS;
+    uint32_t return_value = UZ_SUCCESS;
     uz_adcLtc2311_set_triggered_mode(self);
     return_value = uz_adcLtc2311_update_conversion_factor(self);
     uz_assert(return_value == UZ_SUCCESS);

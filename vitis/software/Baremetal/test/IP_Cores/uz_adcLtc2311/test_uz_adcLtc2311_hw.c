@@ -61,7 +61,7 @@ void test_adcLtc2311_hw_write_channel(void)
 
 void test_adcLtc2311_hw_write_value(void)
 {
-    int32_t value = -TEST_RETURN;
+    uint32_t value = 0U;
     uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_VALUE, value);
     uz_adcLtc2311_hw_write_value(TEST_BASE_ADDRESS, value);
 }

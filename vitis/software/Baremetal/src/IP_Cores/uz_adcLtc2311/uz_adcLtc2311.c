@@ -31,12 +31,12 @@ uz_adcLtc2311_t* uz_adcLtc2311_init(struct uz_adcLtc2311_config_t config) {
     uz_adcLtc2311_t* self = uz_adcLtc2311_allocation();
     uz_assert_not_zero(config.ip_clk_frequency_Hz);
     uz_assert_not_zero(config.base_address);
-    uz_assert(config.napping_spi_masters == 0);
-    uz_assert(config.sleeping_spi_masters == 0);
-    uz_assert(config.conversion_factor != 0);
-    uz_assert(config.cpol != 0);
-    uz_assert(config.cpha == 0);
-    uz_assert(config.samples > 0);
+    uz_assert(config.napping_spi_masters == 0U);
+    uz_assert(config.sleeping_spi_masters == 0U);
+    uz_assert(config.conversion_factor != 0.0f);
+    uz_assert(config.cpol != 0U);
+    uz_assert(config.cpha == 0U);
+    uz_assert(config.samples > 0U);
     self->config = config;
     uz_adcLtc2311_init_set_parameters(self);
     return (self);
@@ -87,7 +87,7 @@ void uz_adcLtc2311_set_triggered_mode(uz_adcLtc2311_t* self)
     uz_assert(self->is_ready);
 
     uint32_t adc_cr = uz_adcLtc2311_hw_read_cr(self->config.base_address); // read out current settings of the control register
-    adc_cr &= ~UZ_ADCLTC2311_CR_MODE; // AND of current settings and 0x111...0, leaving all bits but the bit 0 as they are and setting bit 0 to false, entering triggered mode
+    adc_cr &= ~UZ_ADCLTC2311_CR_MODE; // AND operation of current settings and 0x111...0, leaving all bits but the bit 0 as they are and setting bit 0 to false, entering triggered mode
     uz_adcLtc2311_hw_write_cr(self->config.base_address, adc_cr);
 }
 
@@ -105,18 +105,23 @@ void uz_adcLtc2311_set_channel_select(uz_adcLtc2311_t* self, uint32_t value)
     self->config.channel_select = value;
 }
 
-void uz_adcLtc2311_set_conversion_factor(uz_adcLtc2311_t* self, int32_t value)
+void uz_adcLtc2311_set_conversion_factor(uz_adcLtc2311_t* self, float value, struct uz_fixedpoint_definition_t fixedpoint_definition)
+
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert(fixedpoint_definition.is_signed); // IP-Core only uses signed fixed point data type
     self->config.conversion_factor = value;
+    self->config.conversion_factor_definition=fixedpoint_definition;
 }
 
-void uz_adcLtc2311_set_offset(uz_adcLtc2311_t* self, int32_t value)
+void uz_adcLtc2311_set_offset(uz_adcLtc2311_t* self, float value,struct uz_fixedpoint_definition_t fixedpoint_definition)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert(fixedpoint_definition.is_signed); // IP-Core only uses signed fixed point data type
     self->config.offset = value;
+    self->config.offset_definition=fixedpoint_definition;
 }
 
 void uz_adcLtc2311_set_samples(uz_adcLtc2311_t* self, uint32_t value)
@@ -209,14 +214,14 @@ uint32_t uz_adcLtc2311_get_channel_select(uz_adcLtc2311_t* self)
     return(self->config.channel_select);
 }
 
-int32_t uz_adcLtc2311_get_conversion_factor(uz_adcLtc2311_t* self)
+float uz_adcLtc2311_get_conversion_factor(uz_adcLtc2311_t* self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return(self->config.conversion_factor);
 }
 
-int32_t uz_adcLtc2311_get_offset(uz_adcLtc2311_t* self)
+float uz_adcLtc2311_get_offset(uz_adcLtc2311_t* self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -308,12 +313,12 @@ uint32_t uz_adcLtc2311_get_error_code(uz_adcLtc2311_t* self)
 }
 
 // update functions
-int32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self)
+uint32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
-    int32_t return_value = UZ_SUCCESS;
+    uint32_t return_value = UZ_SUCCESS;
     // Get the current state of the control register
     uint32_t adc_cr = uz_adcLtc2311_hw_read_cr(self->config.base_address);
 
@@ -328,7 +333,7 @@ int32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self)
     uz_adcLtc2311_hw_write_master_channel(self->config.base_address, self->config.master_select);
 	uz_adcLtc2311_hw_write_channel(self->config.base_address, self->config.channel_select);
     // Write the desired factor
-    uz_adcLtc2311_hw_write_value(self->config.base_address, self->config.conversion_factor);
+    uz_adcLtc2311_hw_write_value_fixedpoint(self->config.base_address,self->config.conversion_factor,self->config.conversion_factor_definition);
 	// Trigger the update
     uz_adcLtc2311_hw_write_cr(self->config.base_address, adc_cr);
 
@@ -338,12 +343,12 @@ int32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self)
     return return_value;
 }
 
-int32_t uz_adcLtc2311_update_offset(uz_adcLtc2311_t* self)
+uint32_t uz_adcLtc2311_update_offset(uz_adcLtc2311_t* self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
-    int32_t return_value = UZ_SUCCESS;
+    uint32_t return_value = UZ_SUCCESS;
     // Get the current state of the control register
     uint32_t adc_cr = uz_adcLtc2311_hw_read_cr(self->config.base_address);
 
@@ -358,7 +363,7 @@ int32_t uz_adcLtc2311_update_offset(uz_adcLtc2311_t* self)
     uz_adcLtc2311_hw_write_master_channel(self->config.base_address, self->config.master_select);
 	uz_adcLtc2311_hw_write_channel(self->config.base_address, self->config.channel_select);
     // Write the desired factor
-    uz_adcLtc2311_hw_write_value(self->config.base_address, self->config.offset);
+    uz_adcLtc2311_hw_write_value_fixedpoint(self->config.base_address,self->config.offset,self->config.offset_definition);
 	// Trigger the update
     uz_adcLtc2311_hw_write_cr(self->config.base_address, adc_cr);
 
@@ -368,12 +373,12 @@ int32_t uz_adcLtc2311_update_offset(uz_adcLtc2311_t* self)
     return return_value;
 }
 
-int32_t uz_adcLtc2311_update_samples(uz_adcLtc2311_t* self)
+uint32_t uz_adcLtc2311_update_samples(uz_adcLtc2311_t* self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
-    int32_t return_value = UZ_SUCCESS;
+    uint32_t return_value = UZ_SUCCESS;
     // Get the current state of the control register
     uint32_t adc_cr = uz_adcLtc2311_hw_read_cr(self->config.base_address);
 
@@ -397,12 +402,12 @@ int32_t uz_adcLtc2311_update_samples(uz_adcLtc2311_t* self)
     return return_value;
 }
 
-int32_t uz_adcLtc2311_update_sample_time(uz_adcLtc2311_t* self)
+uint32_t uz_adcLtc2311_update_sample_time(uz_adcLtc2311_t* self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
-    int32_t return_value = UZ_SUCCESS;
+    uint32_t return_value = UZ_SUCCESS;
     // Get the current state of the control register
     uint32_t adc_cr = uz_adcLtc2311_hw_read_cr(self->config.base_address);
 
@@ -462,11 +467,11 @@ void uz_adcLtc2311_update_spi(uz_adcLtc2311_t* self)
 
 // nap and sleep modes
 
-int32_t uz_adcLtc2311_enter_nap_mode(uz_adcLtc2311_t* self)
+uint32_t uz_adcLtc2311_enter_nap_mode(uz_adcLtc2311_t* self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    int32_t return_value = UZ_SUCCESS;
+    uint32_t return_value = UZ_SUCCESS;
     self->config.error_code = 0;
 
     // Check if masters have been selected for the operation
@@ -518,11 +523,11 @@ int32_t uz_adcLtc2311_enter_nap_mode(uz_adcLtc2311_t* self)
     return(return_value);
 }
 
-int32_t uz_adcLtc2311_leave_nap_mode(uz_adcLtc2311_t* self)
+uint32_t uz_adcLtc2311_leave_nap_mode(uz_adcLtc2311_t* self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    int32_t return_value = UZ_SUCCESS;
+    uint32_t return_value = UZ_SUCCESS;
     self->config.error_code = 0;
 
     // Check if masters have been selected for the operation
@@ -579,11 +584,11 @@ int32_t uz_adcLtc2311_leave_nap_mode(uz_adcLtc2311_t* self)
 
 }
 
-int32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self)
+uint32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    int32_t return_value = UZ_SUCCESS;
+    uint32_t return_value = UZ_SUCCESS;
     self->config.error_code = 0;
 
     // Check if masters have been selected for the operation
@@ -635,11 +640,11 @@ int32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self)
     return(return_value);
 }
 
-int32_t uz_adcLtc2311_leave_sleep_mode(uz_adcLtc2311_t* self)
+uint32_t uz_adcLtc2311_leave_sleep_mode(uz_adcLtc2311_t* self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    int32_t return_value = UZ_SUCCESS;
+    uint32_t return_value = UZ_SUCCESS;
     self->config.error_code = 0;
 
     // Check if masters have been selected for the operation

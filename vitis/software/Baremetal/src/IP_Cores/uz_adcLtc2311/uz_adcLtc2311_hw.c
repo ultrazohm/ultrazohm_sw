@@ -27,7 +27,7 @@ void uz_adcLtc2311_hw_write_channel(uint32_t base_address, uint32_t value) {
 	uz_axi_write_uint32(base_address + ADC_LTC2311_CHANNEL, value);
 }
 
-void uz_adcLtc2311_hw_write_value(uint32_t base_address, int32_t value) {
+void uz_adcLtc2311_hw_write_value(uint32_t base_address, uint32_t value) {
 	uz_assert_not_zero(base_address);
 	uz_axi_write_uint32(base_address + ADC_LTC2311_VALUE, value);
 }
@@ -79,7 +79,7 @@ uint32_t uz_adcLtc2311_hw_read_master_busy(uint32_t base_address) {
 	return (uz_axi_read_uint32(base_address + ADC_LTC2311_MASTER_BUSY));
 }
 
-int32_t uz_adcLtc2311_hw_read_value(uint32_t base_address) {
+uint32_t uz_adcLtc2311_hw_read_value(uint32_t base_address) {
 	uz_assert_not_zero(base_address);
 	return (uz_axi_read_uint32(base_address + ADC_LTC2311_VALUE));
 }

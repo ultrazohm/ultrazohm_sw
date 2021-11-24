@@ -2,6 +2,7 @@
 #define UZ_ADCLTC2311_H
 #include <stdint.h>
 #include <stdbool.h>
+#include "../../uz/uz_fixedpoint/uz_fixedpoint.h"
 
 // #defines
 
@@ -101,11 +102,11 @@
 #define UZ_ADCLTC2311_SPI_CFGR_POST_DELAY_LSB 24U
 
 // status napSleepConfig
-#define UZ_ADCLTC2311_NS_MAN_MODE_EN_FAILED (1<<0)
-#define UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED (1<<1)
-#define UZ_ADCLTC2311_NS_ALREADY_IN_MODE (1<<2)
-#define UZ_ADCLTC2311_NS_NOT_IN_MODE (1<<3)
-#define UZ_ADCLTC2311_NS_NO_SELECTION (1<<4)
+#define UZ_ADCLTC2311_NS_MAN_MODE_EN_FAILED (1U<<0)
+#define UZ_ADCLTC2311_NS_MAN_MODE_DIS_FAILED (1U<<1)
+#define UZ_ADCLTC2311_NS_ALREADY_IN_MODE (1U<<2)
+#define UZ_ADCLTC2311_NS_NOT_IN_MODE (1U<<3)
+#define UZ_ADCLTC2311_NS_NO_SELECTION (1U<<4)
 #define UZ_ADCLTC2311_NAP_PULSES 2
 #define UZ_ADCLTC2311_SLEEP_PULSES 4
 
@@ -126,8 +127,10 @@ struct uz_adcLtc2311_config_t{
     /* Operation parameter */
     uint32_t master_select; /**< One hot encoded variable to select the SPI masters that shall be configured */
 	uint32_t channel_select; /**< One hot encoded variable to select the channels of the selected SPI masters shall be configured */
-	int32_t conversion_factor; /**< Factor with which the sum of the offset and the raw value is multiplied */
-	int32_t offset; /**< Offset that is added to the raw value before the multiplication */
+	float conversion_factor; /**< Factor with which the sum of the offset and the raw value is multiplied */
+	struct uz_fixedpoint_definition_t conversion_factor_definition;
+    float offset; /**< Offset that is added to the raw value before the multiplication */
+	struct uz_fixedpoint_definition_t offset_definition;
 	uint32_t samples; /**< Number of samples that shall be taken on a single trigger */
     uint32_t sample_time; /**<Minimal number of system clock cycles for sample and hold */
     
@@ -209,7 +212,7 @@ void uz_adcLtc2311_set_triggered_mode(uz_adcLtc2311_t* self);
  * @return UZ_FAILURE when the hardware did not acknowledge the update of the value within max_attempts. 
  *         Otherwise, the function returns UZ_SUCCESS.
  */
-int32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self);
 
 /**
  * @brief Update the offset of the indicated channels
@@ -217,7 +220,7 @@ int32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self);
  * @return UZ_FAILURE when the hardware did not acknowledge the update of the value within max_attempts. 
  *         Otherwise, the function returns UZ_SUCCESS.
  */
-int32_t uz_adcLtc2311_update_offset(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_update_offset(uz_adcLtc2311_t* self);
 
 /**
  * @brief Update the samples per trigger event of the indicated channels
@@ -225,7 +228,7 @@ int32_t uz_adcLtc2311_update_offset(uz_adcLtc2311_t* self);
  * @return UZ_FAILURE when the hardware did not acknowledge the update of the value within max_attempts. 
  *         Otherwise, the function returns UZ_SUCCESS.
  */
-int32_t uz_adcLtc2311_update_samples(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_update_samples(uz_adcLtc2311_t* self);
 
 /**
  * @brief Update the sample time of the indicated channels
@@ -233,7 +236,7 @@ int32_t uz_adcLtc2311_update_samples(uz_adcLtc2311_t* self);
  * @return UZ_FAILURE when the hardware did not acknowledge the update of the value within max_attempts. 
  *         Otherwise, the function returns UZ_SUCCESS.
  */
-int32_t uz_adcLtc2311_update_sample_time(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_update_sample_time(uz_adcLtc2311_t* self);
 
 /**
  * @brief Updates the global SPI configuration of the IP core.
@@ -259,7 +262,7 @@ void uz_adcLtc2311_update_spi(uz_adcLtc2311_t* self);
  *         @ref uz_adcLtc2311_config_t for details. Otherwise, return value is
  *         UZ_SUCCESS
  */
-int32_t uz_adcLtc2311_enter_nap_mode(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_enter_nap_mode(uz_adcLtc2311_t* self);
 
 /**
  * @brief Return the selected channels from nap mode to operation mode
@@ -278,7 +281,7 @@ int32_t uz_adcLtc2311_enter_nap_mode(uz_adcLtc2311_t* self);
  *         @ref uz_adcLtc2311_config_t for details. Otherwise, return value is
  *         UZ_SUCCESS
  */
-int32_t uz_adcLtc2311_leave_nap_mode(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_leave_nap_mode(uz_adcLtc2311_t* self);
 
 /**
  * @brief Send the selected channels to sleep mode
@@ -297,7 +300,7 @@ int32_t uz_adcLtc2311_leave_nap_mode(uz_adcLtc2311_t* self);
  *         @ref uz_adcLtc2311_config_t for details. Otherwise, return value is
  *         UZ_SUCCESS
  */
-int32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self);
 
 /**
  * @brief Return the selected channels from sleep mode to operation mode
@@ -319,13 +322,14 @@ int32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self);
  *         @ref uz_adcLtc2311_config_t for details. Otherwise, return value is
  *         UZ_SUCCESS
  */
-int32_t uz_adcLtc2311_leave_sleep_mode(uz_adcLtc2311_t* self);
+uint32_t uz_adcLtc2311_leave_sleep_mode(uz_adcLtc2311_t* self);
 
 // set functions
 void uz_adcLtc2311_set_master_select(uz_adcLtc2311_t* self, uint32_t value);
 void uz_adcLtc2311_set_channel_select(uz_adcLtc2311_t* self, uint32_t value);
-void uz_adcLtc2311_set_conversion_factor(uz_adcLtc2311_t* self, int32_t value);
-void uz_adcLtc2311_set_offset(uz_adcLtc2311_t* self, int32_t value);
+
+void uz_adcLtc2311_set_conversion_factor(uz_adcLtc2311_t* self, float value, struct uz_fixedpoint_definition_t fixedpoint_definition);
+void uz_adcLtc2311_set_offset(uz_adcLtc2311_t* self, float value,struct uz_fixedpoint_definition_t fixedpoint_definition);
 
 /**
  * @brief Set the number of samples taken per trigger event. Asserts that the value is in a valid range.
@@ -393,8 +397,8 @@ uint32_t uz_adcLtc2311_get_error_code(uz_adcLtc2311_t* self);
 // operation parameters
 uint32_t uz_adcLtc2311_get_master_select(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_channel_select(uz_adcLtc2311_t* self);
-int32_t uz_adcLtc2311_get_conversion_factor(uz_adcLtc2311_t* self);
-int32_t uz_adcLtc2311_get_offset(uz_adcLtc2311_t* self);
+float uz_adcLtc2311_get_conversion_factor(uz_adcLtc2311_t* self);
+float uz_adcLtc2311_get_offset(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_samples(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_max_attempts(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_sample_time(uz_adcLtc2311_t* self);

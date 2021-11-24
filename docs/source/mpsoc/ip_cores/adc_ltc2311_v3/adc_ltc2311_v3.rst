@@ -8,8 +8,10 @@ Introduction
 ------------
 
 The IP core ADC_LVDS_LTC2311 in version 3 is designed to read the ADCs which are located on the :ref:`analog adapter board <Analog_LTC2311_16_v3>` and to further process the values obtained from the ADCs.
-The IP core features an AXI4 Lite interface for settings and software control. For real time control, the IP core can be triggered by using a hardware port as well.
-The raw value from the ADC and the processed value are available as ``std_logic_vectors`` at the hardware interface of the IP core.
+The IP core features an AXI4 Lite interface for settings and software control.
+For real time control, the IP core can be triggered by using the hardware port ``TRIGGER_CONV``.
+The IP-Core adds a offset value to the raw value and multiplies the result with a conversion factor, which in turn is avialable on the hardware port ``SI_VALUE``.
+The raw value from the ADC and the processed value are ``std_logic_vectors`` at the hardware interface of the IP core.
 For a thorough project description please refer to the project report which is available in the :ref:`Downloads section <downloads>`.
 
 Features
@@ -483,6 +485,14 @@ Other I/O Signals
   :header-rows: 1
 
 
+.. _adcltc_vivado_picture:
+
+.. figure:: ltc_v3_vivado.png
+   :width: 400px
+   :align: center
+
+   ADC LTC2311 IP-Core.
+
 Terminology
 -----------
 
@@ -494,6 +504,7 @@ One-Hot Encoding
 One-Hot encoding means that every bit in a register controls a channel of the IP core.
 This channel can be either an SPI master instance with a DSP48 block or a channel (a.k.a. individual ADC) of that instance which is synchronously controlled with the other channels assigned to the SPI master instance.
 This distinction is done in the description of the individual register.
+
 
 .. _downloads:
 

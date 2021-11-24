@@ -1,0 +1,6 @@
+Port Name,      	    CLK, Usage
+AXI4_Lite, 50 MHz, Connecto to AXI_smartconnect
+IPCORE_CLK, 50 MHz, Connect to 50 MHz clock
+IPCORE_RESETN, 50 MHz, Connect to 50 MHz reset
+AXI4_LiteACLK, 50 MHz, Connecto to IPCORE_CLK
+AXI4_Lite_ARESETN,  50 MHz, Connect to IPCORE_RESETN

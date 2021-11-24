@@ -176,10 +176,10 @@ uint32_t uz_adcLtc2311_disable_manual_mode(uint32_t base_address, uint32_t max_a
 uint32_t uz_adcLtc2311_all_masked_bits_set_in_value(uint32_t value, uint32_t mask) {
 	uint32_t return_value = UZ_SUCCESS;
 
-	for (uint32_t i = 0; i < sizeof(value); i++) {
+	for (uint32_t i = 0U; i < sizeof(value); i++) {
 
 		if (mask & (1U << i)) {
-			if ((value & (1U << i)) == 0) {
+			if ((value & (1U << i)) == 0U) {
 				return_value = UZ_FAILURE;
 				break;
 			}

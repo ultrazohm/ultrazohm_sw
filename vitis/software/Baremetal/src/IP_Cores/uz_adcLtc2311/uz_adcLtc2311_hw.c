@@ -88,3 +88,9 @@ uint32_t uz_adcLtc2311_hw_read_adc_available(uint32_t base_address) {
 	uz_assert_not_zero(base_address);
 	return (uz_axi_read_uint32(base_address + ADC_LTC2311_ADC_AVAILABLE));
 }
+
+
+void uz_adcLtc2311_hw_write_value_fixedpoint(uint32_t base_address, float value,struct uz_fixedpoint_definition_t fixedpoint_definition){
+	uz_assert_not_zero_uint32(base_address);
+	uz_fixedpoint_axi_write(base_address+ADC_LTC2311_VALUE,value,fixedpoint_definition);
+}

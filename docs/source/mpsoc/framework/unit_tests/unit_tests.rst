@@ -304,6 +304,8 @@ Example of the resulting informative error message:
     At line (30): "Expected 3 Was 4. Function uz_fixedpoint_axi_write Argument fixedpoint_definition. Fixed point definition .integer_bits comparison failed"
 
 
+.. note:: The file ``#include "uz_struct_helper.h"`` has to be included in all tests that call or mock functions of the custom struct / typedef!
+
 More information:
 
 - https://bitbucket.org/ultrazohm/ultrazohm_sw/issues/180/ceedling-cmock-can-not-compare-structs-if

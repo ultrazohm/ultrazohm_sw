@@ -7,6 +7,9 @@
 #include "uz_adcLtc2311_hwAdresses.h"
 #include "uz_adcLtc2311_hw.h"
 
+#include "uz_struct_helper.h"
+#include "mock_uz_fixedpoint.h"
+
 // #defines
 
 #define TEST_BASE_ADDRESS 0x00000000F
@@ -243,6 +246,18 @@ void test_adcLtc2311_hw_read_adc_available_zero_base_address(void)
 {
     uz_axi_read_uint32_IgnoreAndReturn(TEST_RETURN);
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_read_adc_available(0));
+}
+
+void test_adcLtc2311_hw_write_value_fixedpoint(void){
+    struct uz_fixedpoint_definition_t fixedpoint_definition={
+        .is_signed=true,
+        .integer_bits=10,
+        .fractional_bits=10
+    };
+
+    float conversion_factor=1.3f;
+    uz_fixedpoint_axi_write_Expect(TEST_BASE_ADDRESS+ADC_LTC2311_VALUE,conversion_factor,fixedpoint_definition);
+    uz_adcLtc2311_hw_write_value_fixedpoint(TEST_BASE_ADDRESS, conversion_factor, fixedpoint_definition);
 }
 
 #endif // TEST

@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "../../uz/uz_HAL.h"
+#include "uz_struct_helper.h"
+#include "mock_uz_fixedpoint.h"
 
 #define TEST_BASE_ADDRESS 0x0000000A
 #define TEST_IP_CORE_FRQ 100000000U

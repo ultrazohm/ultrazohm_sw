@@ -86,8 +86,8 @@ void uz_adcLtc2311_set_triggered_mode(uz_adcLtc2311_t* self)
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
-    uint32_t adc_cr = uz_adcLtc2311_hw_read_cr(self->config.base_address);
-    adc_cr &= ~UZ_ADCLTC2311_CR_MODE;
+    uint32_t adc_cr = uz_adcLtc2311_hw_read_cr(self->config.base_address); // read out current settings of the control register
+    adc_cr &= ~UZ_ADCLTC2311_CR_MODE; // AND of current settings and 0x111...0, leaving all bits but the bit 0 as they are and setting bit 0 to false, entering triggered mode
     uz_adcLtc2311_hw_write_cr(self->config.base_address, adc_cr);
 }
 

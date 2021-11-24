@@ -5,19 +5,20 @@ ADC LTC2311 V3
 ==============
 
 Introduction
-------------
+============
 
 The IP core ADC_LVDS_LTC2311 in version 3 is designed to read the ADCs which are located on the :ref:`analog adapter board <Analog_LTC2311_16_v3>` and to further process the values obtained from the ADCs.
 The IP core features an AXI4 Lite interface for settings and software control.
 For real time control, the IP core can be triggered by using the hardware port ``TRIGGER_CONV``.
-The IP-Core adds a offset value to the raw value and multiplies the result with a conversion factor, which in turn is avialable on the hardware port ``SI_VALUE``.
+The IP-Core adds an offset value to the raw value and multiplies the result with a conversion factor, which in turn is avialable on the hardware port ``SI_VALUE``.
 The raw value from the ADC and the processed value are ``std_logic_vectors`` at the hardware interface of the IP core.
 For a thorough project description please refer to the project report which is available in the :ref:`Downloads section <downloads>`.
 
 Features
 --------
 
-- Up to 32 independent Serial Peripheral Interface (SPI) Masters with each up to 32 synchronous channels. In total up to 1024 individual ADCs are theoretically possible.
+- Up to 32 independent Serial Peripheral Interface (SPI) Masters with each up to 32 synchronous channels.
+  In total up to 1024 individual ADCs are theoretically possible with one IP-Core instance.
 - Pipelined addition with an offset value and subsequent multiplication with a conversion factor with the following features:
 
   + Low resource footprint due to pipelined setup
@@ -40,19 +41,40 @@ Features
   + The SCLK frequency scales with :math:`f_{SCLK} = \frac{ f_{SystemClock} }{2 \cdot (CLK\_DIV + 1)}`
 
 - Read only SPI. Only a **unidirectional** communication from the ADC to FPGA is possible.
-- Single ended and differential operation modes. In order to interact with the :ref:`analog adapter board <Analog_LTC2311_16_v3>`, the interface must be set to differential.
+- Single ended and differential operation modes.
+  In order to interact with the :ref:`analog adapter board <Analog_LTC2311_16_v3>`, the interface must be set to differential.
   In this case, an LVDS buffer is instantiated inside the IP core.
 
 
 Software Driver
----------------
+===============
+
+The configuration of the IP-Core settings by software use the control register, the SPI-Master, and the channel selection to distribute the configuration values from one AXI register to the internal configuration registers in the IP-Core.
+The control register is used to set the trigger mode, trigger the conversion, reset the IP-Core or determine to which register in the IP-Core the value in the ``Configuration Value Register`` AXI register should be written.
+This control is facilitated by writing different bit patterns to the control register (see table :ref:`table_adc_cr`).
+
+To write a config value to a specific ADC channel, the number of the SPI master and the desired channel has to be written to the Master Channel selection and ADC Channel selection AXI registers.
+Furthermore, the control register has to be set to match the variable that is write to the ``Configuration Value Register``.
+Effectively, the SPI Master and channel selection as well as the configuration value register act as a switch to route the values from the AXI registers to the ADC channels.
+
+
+To write a specific conversion factor to one of the ADC channels, the following steps are performed:
+
+1. read the current value from the configuration register
+2. Reset all bits that encode what the ``Configuration Value Register`` holds (bit 4 to 6)
+3. Set the bit pattern to ``001`` to indicate that the value is the conversion factor
+4. Write the spi master and channel number to the AXI registers of the ADC channel that has to be changed
+5. Write the conversion factor to ``Configuration Value Register``
+6. Write the configuration to the configuration register
+7. Call ``uz_adcLtc2311_cr_wait_for_value_acknowledgement`` which repeatedly reads the configuration register and waits for the acknowledgement of a successful data transfer
+
 
 Configuration Procedure
-***********************
+-----------------------
 
 The test bench function below displays an example of how to configure and use the IP core.
 In this example the software trigger is used but instead the hardware trigger in the FPGA can be used as well.
-The functions are further explained in the section :ref:`Representation in Software <uz_adcLtc2311_software_representation>`
+The functions are further explained in the section :ref:`Representation in Software <uz_adcLtc2311_software_driver>`
 
 .. code-block:: c
   :caption: Content of the file ``uz_adcLtc2311_testbench.c``
@@ -170,7 +192,12 @@ The functions are further explained in the section :ref:`Representation in Softw
   }
 
 
-.. _uz_adcLtc2311_software_representation:
+.. _uz_adcLtc2311_software_driver:
+
+Driver reference
+----------------
+
+
 
 Representation in software
 **************************
@@ -220,7 +247,7 @@ Nap and Sleep Mode
 
 
 Parameter Adjustment
-********************
+--------------------
 
 Every parameter in :ref:`configuration struct <config_struct>` has a get and set function by default.
 If a get or set function is not available it is mentioned explicitly.
@@ -246,10 +273,10 @@ Otherwise, the performed asserts are mentioned below.
 
 
 Functional Description
-----------------------
+======================
 
 Architecture
-************
+------------
 
 The IP core is hierarchically organized.
 The figure below shows the components of the IP core.
@@ -455,11 +482,11 @@ Design Parameters
   :widths: 10 30 5 5 30
   :header-rows: 1
 
-I/O Signals
------------
+I/O Signals (Interface)
+=======================
 
 Clock and Reset
-***************
+---------------
 
 The IP core is globally clocked with the signal ``s00_axi_aclk``.
 The global reset signal apart from the software reset is ``s00_axi_aresetn``.
@@ -470,13 +497,13 @@ The if the IP core is operated with a higher frequency, the PRE_DELAY and the PO
 Besides that, the minimum sample time should be adjusted to a value, that meets the hardware requirements of the LTC2311 and suits the driving strength of the captured analog signal.
 
 AXI Signals
-***********
+-----------
 
 All signals with the prefix ``s00_axi`` belong to the AXI4 Lite interface.
 See the Xilinx AXI signal description for details.
 
 Other I/O Signals
-*****************
+-----------------
 
 .. _table_adc_io_interface:
 .. csv-table:: I/O Interface
@@ -494,12 +521,12 @@ Other I/O Signals
    ADC LTC2311 IP-Core.
 
 Terminology
------------
+===========
 
 .. _adc_one_hot:
 
 One-Hot Encoding
-****************
+----------------
 
 One-Hot encoding means that every bit in a register controls a channel of the IP core.
 This channel can be either an SPI master instance with a DSP48 block or a channel (a.k.a. individual ADC) of that instance which is synchronously controlled with the other channels assigned to the SPI master instance.
@@ -509,7 +536,7 @@ This distinction is done in the description of the individual register.
 .. _downloads:
 
 Downloads
----------
+=========
 
 :download:`Detailed project description <./adc_v3/report_2_wendt.pdf>` 
 

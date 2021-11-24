@@ -74,7 +74,33 @@ Configuration Procedure
 
 The test bench function below displays an example of how to configure and use the IP core.
 In this example the software trigger is used but instead the hardware trigger in the FPGA can be used as well.
-The functions are further explained in the section :ref:`Representation in Software <uz_adcLtc2311_software_driver>`
+The functions are further explained in the section :ref:`Representation in Software <uz_adcLtc2311_software_driver>`.
+
+The following settings are set globally for each IP-Core instance:
+
+- base_address
+- ip_clk_frequency_Hz
+- samples
+- sample_time
+- pre_delay
+- post_delay
+- clk_div
+- cpha
+- cpol
+- max_attempts
+
+The following settings are set on a per master basis within one IP-Core instance:
+
+- sleeping_spi_masters
+- napping_spi_masters
+- error_code
+
+The following settings are set on a per channel basis of one SPI master within an IP-Core instance:
+
+- conversion_factor
+- offset
+- mode (either triggered or continuous sampling)
+
 
 .. code-block:: c
   :caption: Content of the file ``uz_adcLtc2311_testbench.c``

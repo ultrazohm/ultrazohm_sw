@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'ElectricalID'.
  *
- * Model version                  : 2.17
+ * Model version                  : 2.60
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Mon Nov 22 16:19:12 2021
+ * C/C++ source code generated on : Thu Nov 25 15:30:38 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (11), Warning (1), Error (0)
+ * Validation result: Passed (10), Warnings (2), Error (0)
  */
 
 #include "../../uz_global_configuration.h"
@@ -28,7 +28,6 @@
 #include "../rtwtypes.h"
 #include <math.h>
 #include <string.h>
-#include "../../uz_Transformation/uz_Transformation.h"
 #ifndef ElectricalID_COMMON_INCLUDES_
 #define ElectricalID_COMMON_INCLUDES_
 #include "../rtwtypes.h"
@@ -66,7 +65,6 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ElectricalID_t RT_MODEL_ElectricalID_t;
 
-/* user code (top of header file) */
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_ElectricalIDConfig_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_ElectricalIDConfig_t_
 
@@ -84,10 +82,10 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
 
 typedef struct {
-	struct uz_UVW_t U_UVW;
-	struct uz_UVW_t I_UVW;
-	struct uz_dq_t i_dq;
-	struct uz_dq_t u_dq;
+	uz_UVW_t U_UVW;
+	uz_UVW_t I_UVW;
+	uz_dq_t i_dq;
+	uz_dq_t u_dq;
   real32_T omega_m;
   real32_T omega_el;
   real32_T theta_m;

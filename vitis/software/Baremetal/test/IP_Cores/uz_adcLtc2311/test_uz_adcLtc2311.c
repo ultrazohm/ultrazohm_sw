@@ -734,26 +734,31 @@ uz_adcLtc2311_t *successfull_init(void)
     struct uz_adcLtc2311_config_t default_configuration = {
         .base_address = TEST_BASE_ADDRESS,
         .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ,
-        .conversion_factor = conversion_factor,
-        .conversion_factor_definition = {
-            .is_signed = true,
-            .integer_bits = 10,
-            .fractional_bits = 6},
-        .samples = samples,
+        .channel_config={
+            .conversion_factor=conversion_factor,
+            .conversion_factor_definition={
+                .is_signed=true,
+                .integer_bits=10,
+                .fractional_bits=6
+            },
+            .offset=offset,
+        },
+        .spi_master_config={
+            .samples=samples,
+            .sample_time=sample_time
+        },
         .cpol = cpol,
         .cpha = cpha,
-        .offset = offset,
         .napping_spi_masters = 0,
         .sleeping_spi_masters = 0,
         .master_select = master,
         .channel_select = channel,
-        .sample_time = sample_time,
         .pre_delay = pre_delay,
         .post_delay = post_delay,
         .clk_div = clk_div};
 
     expect_set_triggered_mode(&cr_content);
-    expect_update_conversion_factor_success(&cr_content, master, channel, conversion_factor, default_configuration.conversion_factor_definition);
+    expect_update_conversion_factor_success(&cr_content, master, channel, conversion_factor, default_configuration.channel_config.conversion_factor_definition);
     expect_update_offset_success(&cr_content, master, channel, offset);
     expect_update_samples_success(&cr_content, master, samples);
     expect_update_sample_time_success(&cr_content, master, sample_time);

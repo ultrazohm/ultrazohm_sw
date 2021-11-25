@@ -116,6 +116,18 @@
  */
 typedef struct uz_adcLtc2311_t uz_adcLtc2311_t;
 
+
+struct uz_adcLtc2311_channel_config_t{
+	float conversion_factor; /**< Factor with which the sum of the offset and the raw value is multiplied */
+	struct uz_fixedpoint_definition_t conversion_factor_definition;
+    int offset; /**< Offset that is added to the raw value before the multiplication */
+};
+
+struct uz_adcLtc2311_spi_master_config_t{
+	uint32_t samples; /**< Number of samples that shall be taken on a single trigger */
+    uint32_t sample_time; /**<Minimal number of system clock cycles for sample and hold */
+};
+
 /**
  * @brief Configuration struct for adcLtc2311
  *
@@ -127,12 +139,7 @@ struct uz_adcLtc2311_config_t{
     /* Operation parameter */
     uint32_t master_select; /**< One hot encoded variable to select the SPI masters that shall be configured */
 	uint32_t channel_select; /**< One hot encoded variable to select the channels of the selected SPI masters shall be configured */
-	float conversion_factor; /**< Factor with which the sum of the offset and the raw value is multiplied */
-	struct uz_fixedpoint_definition_t conversion_factor_definition;
-    int offset; /**< Offset that is added to the raw value before the multiplication */
-	uint32_t samples; /**< Number of samples that shall be taken on a single trigger */
-    uint32_t sample_time; /**<Minimal number of system clock cycles for sample and hold */
-    
+
     /* SPI */
     uint32_t pre_delay; /**< See the SPI configuration register for explanation */
 	uint32_t post_delay; /**< See the SPI configuration register for explanation */
@@ -149,6 +156,11 @@ struct uz_adcLtc2311_config_t{
     /* Nap and Sleep mode */
     uint32_t sleeping_spi_masters;
     uint32_t napping_spi_masters;
+
+    struct uz_adcLtc2311_spi_master_config_t spi_master_config;
+    struct uz_adcLtc2311_channel_config_t channel_config;
+
+
 };
 
 /**

@@ -53,9 +53,10 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 #include "uz/uz_wavegen/uz_wavegen.h"
 
-//Experimental Code
+//ParameterID-Code
 #include "uz/uz_ParameterID/uz_ParameterID.h"
-
+#include "uz/uz_FOC/uz_FOC.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
 //ADC define
 #define TX_BUFFER_SIZE						1
 #define RX_BUFFER_SIZE  					64

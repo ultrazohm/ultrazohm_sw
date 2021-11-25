@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID'.
  *
- * Model version                  : 2.33
+ * Model version                  : 2.59
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Nov 23 16:23:59 2021
+ * C/C++ source code generated on : Thu Nov 25 08:31:44 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -866,8 +866,8 @@ static void findDutyCycle(ExtU_ElectricalID_t *rtElectricalID_U,
       rtElectricalID_DW->counter = qY;
 
       /* Inport: '<Root>/ActualValues' */
-      /* '<S1>:789:21' ia_sum=ia_sum+single(ActualValues.i_a); */
-      rtElectricalID_DW->ia_sum += rtElectricalID_U->ActualValues.i_a;
+      /* '<S1>:789:21' ia_sum=ia_sum+single(ActualValues.I_UVW.U); */
+      rtElectricalID_DW->ia_sum += rtElectricalID_U->ActualValues.I_UVW.U;
     } else {
       tmp = roundf(0.5F / rtElectricalID_U->GlobalConfig_out.sampleTimeISR);
       if (tmp < 4.2949673E+9F) {
@@ -941,7 +941,7 @@ static void measure_psiPM(ExtU_ElectricalID_t *rtElectricalID_U,
 
     if ((rtElectricalID_DW->counter > rtElectricalID_DW->wait_count) &&
         (rtElectricalID_DW->counter < qY)) {
-      /* '<S1>:405:10' measArray1(counter-wait_count) = ActualValues.u_q; */
+      /* '<S1>:405:10' measArray1(counter-wait_count) = ActualValues.u_dq.q; */
       qY_tmp_tmp = rtElectricalID_DW->counter - /*MW:OvSatOk*/
         rtElectricalID_DW->wait_count;
       qY_tmp = qY_tmp_tmp;
@@ -952,11 +952,11 @@ static void measure_psiPM(ExtU_ElectricalID_t *rtElectricalID_U,
       }
 
       rtElectricalID_DW->measArray1[(int32_T)qY - 1] =
-        rtElectricalID_U->ActualValues.u_q;
+        rtElectricalID_U->ActualValues.u_dq.q;
 
-      /* '<S1>:405:11' d(counter-wait_count) = ActualValues.i_q; */
+      /* '<S1>:405:11' d(counter-wait_count) = ActualValues.i_dq.q; */
       rtElectricalID_DW->d[(int32_T)qY_tmp - 1] =
-        rtElectricalID_U->ActualValues.i_q;
+        rtElectricalID_U->ActualValues.i_dq.q;
 
       /* '<S1>:405:12' i_est(counter-wait_count) = ActualValues.omega_el; */
       qY = qY_tmp_tmp;
@@ -1463,7 +1463,7 @@ static void stepResponse(ExtU_ElectricalID_t *rtElectricalID_U,
     if (rtElectricalID_DW->counter <= 1024U) {
       /* '<S1>:5:9' if(counter > 1) */
       if (rtElectricalID_DW->counter > 1U) {
-        /* '<S1>:5:10' measArray1(counter-1) = ActualValues.i_a; */
+        /* '<S1>:5:10' measArray1(counter-1) = ActualValues.I_UVW.U; */
         qY = rtElectricalID_DW->counter - /*MW:OvSatOk*/ 1U;
         if (rtElectricalID_DW->counter - 1U > rtElectricalID_DW->counter) {
           qY = 0U;
@@ -1471,12 +1471,12 @@ static void stepResponse(ExtU_ElectricalID_t *rtElectricalID_U,
 
         /* Inport: '<Root>/ActualValues' */
         rtElectricalID_DW->measArray1[(int32_T)qY - 1] =
-          rtElectricalID_U->ActualValues.i_a;
+          rtElectricalID_U->ActualValues.I_UVW.U;
 
         /* '<S1>:5:11' if(mod(counter,5) == 0) */
         if (rtElectricalID_DW->counter - rtElectricalID_DW->counter / 5U * 5U ==
             0U) {
-          /* '<S1>:5:12' Ustep(z-1) = ActualValues.u_a; */
+          /* '<S1>:5:12' Ustep(z-1) = ActualValues.U_UVW.U; */
           qY = rtElectricalID_DW->z - 1U;
           if (rtElectricalID_DW->z - 1U > rtElectricalID_DW->z) {
             qY = 0U;
@@ -1484,7 +1484,7 @@ static void stepResponse(ExtU_ElectricalID_t *rtElectricalID_U,
 
           /* Inport: '<Root>/ActualValues' */
           rtElectricalID_DW->Ustep[(int32_T)qY - 1] =
-            rtElectricalID_U->ActualValues.u_a;
+            rtElectricalID_U->ActualValues.U_UVW.U;
 
           /* '<S1>:5:13' z = z + 1; */
           qY = rtElectricalID_DW->z + 1U;
@@ -1515,8 +1515,8 @@ static void stepResponse(ExtU_ElectricalID_t *rtElectricalID_U,
         rtElectricalID_DW->counter = qY;
 
         /* Inport: '<Root>/ActualValues' */
-        /* '<S1>:5:19' Ustep(1) = ActualValues.u_a; */
-        rtElectricalID_DW->Ustep[0] = rtElectricalID_U->ActualValues.u_a;
+        /* '<S1>:5:19' Ustep(1) = ActualValues.U_UVW.U; */
+        rtElectricalID_DW->Ustep[0] = rtElectricalID_U->ActualValues.U_UVW.U;
 
         /* '<S1>:5:20' z = z + 1; */
         qY = rtElectricalID_DW->z + 1U;
@@ -1530,7 +1530,7 @@ static void stepResponse(ExtU_ElectricalID_t *rtElectricalID_U,
       /* '<S1>:5:22' else */
       /* '<S1>:5:23' if(counter == 1025) */
       if (rtElectricalID_DW->counter == 1025U) {
-        /* '<S1>:5:24' measArray1(counter-1) = ActualValues.i_a; */
+        /* '<S1>:5:24' measArray1(counter-1) = ActualValues.I_UVW.U; */
         qY = rtElectricalID_DW->counter - /*MW:OvSatOk*/ 1U;
         if (rtElectricalID_DW->counter - 1U > rtElectricalID_DW->counter) {
           qY = 0U;
@@ -1538,9 +1538,9 @@ static void stepResponse(ExtU_ElectricalID_t *rtElectricalID_U,
 
         /* Inport: '<Root>/ActualValues' */
         rtElectricalID_DW->measArray1[(int32_T)qY - 1] =
-          rtElectricalID_U->ActualValues.i_a;
+          rtElectricalID_U->ActualValues.I_UVW.U;
 
-        /* '<S1>:5:25' Ustep(z-1) = ActualValues.u_a; */
+        /* '<S1>:5:25' Ustep(z-1) = ActualValues.I_UVW.U; */
         qY = rtElectricalID_DW->z - 1U;
         if (rtElectricalID_DW->z - 1U > rtElectricalID_DW->z) {
           qY = 0U;
@@ -1548,7 +1548,7 @@ static void stepResponse(ExtU_ElectricalID_t *rtElectricalID_U,
 
         /* Inport: '<Root>/ActualValues' */
         rtElectricalID_DW->Ustep[(int32_T)qY - 1] =
-          rtElectricalID_U->ActualValues.u_a;
+          rtElectricalID_U->ActualValues.I_UVW.U;
 
         /* '<S1>:5:26' U0 = mean(Ustep); */
         L_est = rtElectricalID_DW->Ustep[0];
@@ -1789,7 +1789,7 @@ static void stepResponse_q(ExtU_ElectricalID_t *rtElectricalID_U,
     if (rtElectricalID_DW->counter <= 1024U) {
       /* '<S1>:277:14' if(counter > 1) */
       if (rtElectricalID_DW->counter > 1U) {
-        /* '<S1>:277:15' measArray1(counter-1) = ActualValues.i_c; */
+        /* '<S1>:277:15' measArray1(counter-1) = ActualValues.I_UVW.W; */
         qY = rtElectricalID_DW->counter - /*MW:OvSatOk*/ 1U;
         if (rtElectricalID_DW->counter - 1U > rtElectricalID_DW->counter) {
           qY = 0U;
@@ -1797,12 +1797,12 @@ static void stepResponse_q(ExtU_ElectricalID_t *rtElectricalID_U,
 
         /* Inport: '<Root>/ActualValues' */
         rtElectricalID_DW->measArray1[(int32_T)qY - 1] =
-          rtElectricalID_U->ActualValues.i_c;
+          rtElectricalID_U->ActualValues.I_UVW.W;
 
         /* '<S1>:277:16' if(mod(counter,5) == 0) */
         if (rtElectricalID_DW->counter - rtElectricalID_DW->counter / 5U * 5U ==
             0U) {
-          /* '<S1>:277:17' Ustep(z-1) = ActualValues.u_b+ActualValues.u_c; */
+          /* '<S1>:277:17' Ustep(z-1) = ActualValues.U_UVW.V+ActualValues.U_UVW.W; */
           qY = rtElectricalID_DW->z - 1U;
           if (rtElectricalID_DW->z - 1U > rtElectricalID_DW->z) {
             qY = 0U;
@@ -1810,8 +1810,8 @@ static void stepResponse_q(ExtU_ElectricalID_t *rtElectricalID_U,
 
           /* Inport: '<Root>/ActualValues' */
           rtElectricalID_DW->Ustep[(int32_T)qY - 1] =
-            rtElectricalID_U->ActualValues.u_b +
-            rtElectricalID_U->ActualValues.u_c;
+            rtElectricalID_U->ActualValues.U_UVW.V +
+            rtElectricalID_U->ActualValues.U_UVW.W;
 
           /* '<S1>:277:18' z = z + 1; */
           qY = rtElectricalID_DW->z + 1U;
@@ -1842,9 +1842,9 @@ static void stepResponse_q(ExtU_ElectricalID_t *rtElectricalID_U,
         rtElectricalID_DW->counter = qY;
 
         /* Inport: '<Root>/ActualValues' */
-        /* '<S1>:277:24' Ustep(1) = ActualValues.u_b+ActualValues.u_c; */
-        rtElectricalID_DW->Ustep[0] = rtElectricalID_U->ActualValues.u_b +
-          rtElectricalID_U->ActualValues.u_c;
+        /* '<S1>:277:24' Ustep(1) = ActualValues.U_UVW.V+ActualValues.U_UVW.W; */
+        rtElectricalID_DW->Ustep[0] = rtElectricalID_U->ActualValues.U_UVW.V +
+          rtElectricalID_U->ActualValues.U_UVW.W;
 
         /* '<S1>:277:25' z = z + 1; */
         qY = rtElectricalID_DW->z + 1U;
@@ -1858,7 +1858,7 @@ static void stepResponse_q(ExtU_ElectricalID_t *rtElectricalID_U,
       /* '<S1>:277:27' else */
       /* '<S1>:277:28' if(counter == 1025) */
       if (rtElectricalID_DW->counter == 1025U) {
-        /* '<S1>:277:29' measArray1(counter-1) = ActualValues.i_c; */
+        /* '<S1>:277:29' measArray1(counter-1) = ActualValues.I_UVW.W; */
         qY = rtElectricalID_DW->counter - /*MW:OvSatOk*/ 1U;
         if (rtElectricalID_DW->counter - 1U > rtElectricalID_DW->counter) {
           qY = 0U;
@@ -1866,9 +1866,9 @@ static void stepResponse_q(ExtU_ElectricalID_t *rtElectricalID_U,
 
         /* Inport: '<Root>/ActualValues' */
         rtElectricalID_DW->measArray1[(int32_T)qY - 1] =
-          rtElectricalID_U->ActualValues.i_c;
+          rtElectricalID_U->ActualValues.I_UVW.W;
 
-        /* '<S1>:277:30' Ustep(z-1) = ActualValues.u_b+ActualValues.u_c; */
+        /* '<S1>:277:30' Ustep(z-1) = ActualValues.U_UVW.V+ActualValues.U_UVW.W; */
         qY = rtElectricalID_DW->z - 1U;
         if (rtElectricalID_DW->z - 1U > rtElectricalID_DW->z) {
           qY = 0U;
@@ -1876,8 +1876,8 @@ static void stepResponse_q(ExtU_ElectricalID_t *rtElectricalID_U,
 
         /* Inport: '<Root>/ActualValues' */
         rtElectricalID_DW->Ustep[(int32_T)qY - 1] =
-          rtElectricalID_U->ActualValues.u_b +
-          rtElectricalID_U->ActualValues.u_c;
+          rtElectricalID_U->ActualValues.U_UVW.V +
+          rtElectricalID_U->ActualValues.U_UVW.W;
 
         /* '<S1>:277:31' U0 = mean(Ustep); */
         L_est = rtElectricalID_DW->Ustep[0];
@@ -2576,7 +2576,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
         if ((rtElectricalID_DW->counter > rtElectricalID_DW->wait_count) &&
             (rtElectricalID_DW->counter < qY)) {
-          /* '<S1>:337:16' measArray1(counter-wait_count) = ActualValues.i_q; */
+          /* '<S1>:337:16' measArray1(counter-wait_count) = ActualValues.i_dq.q; */
           qY = rtElectricalID_DW->counter - /*MW:OvSatOk*/
             rtElectricalID_DW->wait_count;
           if (qY > rtElectricalID_DW->counter) {
@@ -2585,7 +2585,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
           /* Inport: '<Root>/ActualValues' */
           rtElectricalID_DW->measArray1[(int32_T)qY - 1] =
-            rtElectricalID_U->ActualValues.i_q;
+            rtElectricalID_U->ActualValues.i_dq.q;
 
           /* '<S1>:337:17' i_est(counter-wait_count) = ActualValues.omega_m; */
           qY = rtElectricalID_DW->counter - /*MW:OvSatOk*/

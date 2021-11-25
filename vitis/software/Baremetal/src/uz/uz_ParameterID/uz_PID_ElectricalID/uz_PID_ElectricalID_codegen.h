@@ -21,12 +21,14 @@
 
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_ACTIVE > 0U
+#include "../../uz_Transformation/uz_Transformation.h"
 
 #ifndef RTW_HEADER_ElectricalID_h_
 #define RTW_HEADER_ElectricalID_h_
 #include "../rtwtypes.h"
 #include <math.h>
 #include <string.h>
+#include "../../uz_Transformation/uz_Transformation.h"
 #ifndef ElectricalID_COMMON_INCLUDES_
 #define ElectricalID_COMMON_INCLUDES_
 #include "../rtwtypes.h"
@@ -64,6 +66,7 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ElectricalID_t RT_MODEL_ElectricalID_t;
 
+/* user code (top of header file) */
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_ElectricalIDConfig_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_ElectricalIDConfig_t_
 
@@ -81,20 +84,14 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
 
 typedef struct {
-  real32_T i_a;
-  real32_T i_b;
-  real32_T i_c;
+	struct uz_UVW_t U_UVW;
+	struct uz_UVW_t I_UVW;
+	struct uz_dq_t i_dq;
+	struct uz_dq_t u_dq;
   real32_T omega_m;
   real32_T omega_el;
   real32_T theta_m;
-  real32_T u_a;
-  real32_T u_b;
-  real32_T u_c;
   real32_T U_zk;
-  real32_T u_d;
-  real32_T u_q;
-  real32_T i_d;
-  real32_T i_q;
 } uz_PID_ActualValues_t;
 
 #endif

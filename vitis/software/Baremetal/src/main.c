@@ -27,9 +27,13 @@ _Bool bInit = false;
 DS_Data Global_Data;
 extern XGpio Gpio_OUT; /* GPIO Device driver instance for the real GPIOs */
 
-//Experimental Code
+//ParameterID Code
 uz_ParameterID_t ParameterID_instance;
 uz_ParameterID_Data_t PID_Data = { 0 };
+uz_FOC* FOC_instance = NULL;
+uz_PI_Controller* SpeedControl_instance = NULL;
+uz_FOC* FOC_instance_SC = NULL;
+struct uz_PMSM_t config_PMSM = { 0 };
 
 static void uz_assertCallback(const char8 *file, s32 line) {
 	extern XScuGic INTCInst;
@@ -81,6 +85,25 @@ int main(void) {
 	//Experimental Code
 	PID_Data = uz_ParameterID_initialize_data_structs();
 	uz_ParameterID_init(&ParameterID_instance);
+
+	config_PMSM.R_ph_Ohm = PID_Data.PID_GlobalConifg.R_ph;
+	config_PMSM.Ld_Henry = PID_Data.PID_GlobalConifg.L_d;
+	config_PMSM.Lq_Henry = PID_Data.PID_GlobalConifg.L_q;
+	config_PMSM.Psi_PM_Vs = PID_Data.PID_GlobalConifg.psi_pm;
+	config_PMSM.polePairs = PID_Data.PID_GlobalConifg.polePairs;
+	config_PMSM.I_max_Ampere = Global_Data.mrp.motorMaximumCurrentContinuousOperation;
+
+	struct uz_PI_Controller_config config_id = { .Kp = Global_Data.ctrl.foc.cc.Kp_id, .Ki = Global_Data.ctrl.foc.cc.Kp_id / Global_Data.ctrl.foc.cc.Tn_id, .samplingTime_sec = 0.00005f,
+	                .upper_limit = 15.0f, .lower_limit = -15.0f };
+	struct uz_PI_Controller_config config_iq = { .Kp = Global_Data.ctrl.foc.cc.Kp_iq, .Ki = Global_Data.ctrl.foc.cc.Kp_iq / Global_Data.ctrl.foc.cc.Tn_iq, .samplingTime_sec = 0.00005f,
+	                .upper_limit = 15.0f, .lower_limit = -15.0f };
+	struct uz_PI_Controller_config config_n = { .Kp = Global_Data.ctrl.foc.sc.Kp, .Ki = Global_Data.ctrl.foc.sc.Kp / Global_Data.ctrl.foc.sc.Tn, .samplingTime_sec = 0.00005f, .upper_limit = 10.0f,
+	                .lower_limit = -10.0f };
+	struct uz_FOC_config config_FOC = { .config_PMSM = config_PMSM, .config_id = config_id, .config_iq = config_iq };
+
+	FOC_instance = uz_FOC_init(config_FOC);
+	SpeedControl_instance = uz_SpeedControl_init(config_n);
+	FOC_instance_SC = uz_FOC_init(config_FOC);
 
 	// Initialize the Interrupts
 	Initialize_ISR();

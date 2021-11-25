@@ -1,17 +1,17 @@
 .. _unit_tests:
 
-==========
-Unit tests
-==========
+=====================
+Unit tests (Ceedling)
+=====================
 
 The software of the R5 uses unit tests.
 Unit tests make sure that the code works as expected.
 Unit tests are short and focused on a specific software module, e.g., testing one translation unit (``.c file``).
 They state how the software ought to behave and tests if it does.
 These tests are run on the local developer machine instead of a UltraZohm.
-Unit tests do not test the complete system and verified that it works (that is, system & integration test) but makes sure that individual modules work, i.e., all the small things.
+Unit tests do not test the complete system and verified that it works (this would be system & integration test) but makes sure that individual modules work, i.e., all the small things.
 
-.. note:: Using the Ceedling and unit tests for the UltraZohm requires that usage of :ref:`vscode_remote_container`. The remote container handles the installation of all required tools and paths such that no setup is required!
+.. note:: Using Ceedling and unit tests for the UltraZohm requires that usage of :ref:`vscode_remote_container`. The remote container handles the installation of all required tools and paths such that no setup is required!
 
 We use the four-phase test pattern [#TDD]_ (p. 25):
 
@@ -20,8 +20,8 @@ We use the four-phase test pattern [#TDD]_ (p. 25):
 - Verify: Check the expected outcome
 - Cleanup: Return the system under test to its initial state
 
-Out test framework is `Ceedling <https://github.com/ThrowTheSwitch/Ceedling>`_.
-Ceedling simplifies the usage of `Unity <https://github.com/throwtheswitch/unity>`_ (the actual testing framework) `Cmock <https://github.com/throwtheswitch/cmock`>_ (used for generating mocks).
+We use the `Ceedling <https://github.com/ThrowTheSwitch/Ceedling>`_ test framework.
+Ceedling simplifies the usage of `Unity <https://github.com/throwtheswitch/unity>`_ (the actual testing framework) and `Cmock <https://github.com/throwtheswitch/cmock>`_ (used for generating mocks).
 The unit tests are located in ``vitis/software/Baremetal/``.
 The folder ``src`` holds the software that is tested and used when programming the UltraZohm with Vitis.
 The other folders hold auxiliary files for the test suite.
@@ -42,17 +42,17 @@ The file ``project.yml`` holds the configuration for Ceedling.
             └── FSBL
 
 More information:
-
-- `CMock summary <https://github.com/ThrowTheSwitch/CMock/blob/master/docs/CMock_Summary.md>`_
-- `Add unit tests to your current project with Ceedling (Blogpost) <http://www.electronvector.com/blog/add-unit-tests-to-your-current-project-with-ceedling>`_
-- `Ceedling homepage <http://www.throwtheswitch.org/ceedling>`_
-- `Introduction video <http://www.electronvector.com/blog/getting-started-with-ceedling-creating-a-new-project0>`_
-- `More videos <https://vimeo.com/user27428789>`_
+  - `CMock summary <https://github.com/ThrowTheSwitch/CMock/blob/master/docs/CMock_Summary.md>`_
+  - `Add unit tests to your current project with Ceedling (Blogpost) <http://www.electronvector.com/blog/add-unit-tests-to-your-current-project-with-ceedling>`_
+  - `Ceedling homepage <http://www.throwtheswitch.org/ceedling>`_
+  - `Introduction video <http://www.electronvector.com/blog/getting-started-with-ceedling-creating-a-new-project0>`_
+  - `More videos <https://vimeo.com/user27428789>`_
 
 Ceedling
 ========
 
 The following section assumes the usage of :ref:`vscode_remote_container` and the successful completion of :ref:`how_to_create_ipcore_driver`.
+It is meant as a reference for specific situation that arise when using Ceedling.
 
 Run Tests from CLI
 ------------------
@@ -100,7 +100,7 @@ See `Cmock docs <https://github.com/ThrowTheSwitch/CMock/blob/master/docs/CMock_
    #include <stdint.h>
    #include "uz_axiTestIP2_hw.h"
    #include "mock_uz_AXI.h"
-   #define base_address 0x0000000F
+   #define base_address 0x0000000FU
 
 :ref:`simple-test-expect` uses the automatically generated mock function ``uz_axi_write_int32_Expect`` to indicate that in this test, the function ``uz_axiTestIP2_hw_write_A_int32`` has to call ``uz_axi_write_int32`` with the specified arguments. If the function is not called or other arguments are passed to ``uz_axi_write_int32`` from ``uz_axiTestIP2_hw_write_A_int32`` the test will fail.
 Note that the function ``uz_axi_write_int32`` expects a call with the sum of base address and offset for the specific axi register, i.e., ``uz_axiTestIP2_hw_write_A_int32`` has to add the right offset.
@@ -112,7 +112,7 @@ Note that the function ``uz_axi_write_int32`` expects a call with the sum of bas
 
     void test_uz_axiTestIP2_hw_write_to_A_int32(void)
     {
-        int a=10;
+        int32_t a=10;
         uz_axi_write_int32_Expect(base_address+A_int32_Data_uz_axi_testIP, a);
         uz_axiTestIP2_hw_write_A_int32(base_address,a);
     }
@@ -126,14 +126,14 @@ Note that the function ``uz_axi_write_int32`` expects a call with the sum of bas
     
    void test_uz_axiTestIP2_hw_read_C_int32(void)
    {
-       int a=20;
-       int b=-10;
+       int32_t a=20;
+       int32_t b=-10;
        uz_axi_read_int32_ExpectAndReturn(base_address+C_int32_Data_uz_axi_testIP,a*b);
-       int c=uz_axiTestIP2_hw_read_C_int32(base_address);
+       int32_t c=uz_axiTestIP2_hw_read_C_int32(base_address);
        TEST_ASSERT_EQUAL_INT(a*b,c);
    }
 
-.. note:: These tests rely on the usage of the HAL functions and HAL AXi read/write functions.
+.. note:: These tests rely on the usage of the HAL functions and AXI read/write functions.
 
 .. warning:: The unit test for IP-core drivers *only* tests if the software works as intended. Dedicated testing for the actual hardware of the IP-core is assumed here! The example above tests if the software driver reads and writes the correct registers, but this unit test does not test the function of the IP-core (the multiplication). 
 
@@ -143,7 +143,7 @@ Testing assertions
 
 :ref:`assertions` are used in the UltraZohm project to protect from programming errors such as calling functions with arguments that are out of range or passing ``NULL`` pointers.
 
-- Include the test macros for the assertions in the test file (``#include "test_assert_with_exception.h``)
+- Include the test macros for the assertions in the test file (``#include "test_assert_with_exception.h"``)
 - Use the test macro ``TEST_ASSERT_FAIL_ASSERT`` to test if an assert fails.
 - Use the test macro ``TEST_ASSERT_PASS_ASSERT`` to test if an assert passes.
 - Both function calls should cause an assert fo fail due to calling it with a ``NULL`` pointer and a pointer to an uninitialized instance (``is_ready`` is ``false`` in the second call). Example:
@@ -158,12 +158,12 @@ Testing assertions
    TEST_ASSERT_FAIL_ASSERT(uz_axiTestIP2_multiply(testptr, a,b));
 
 Implementation details
-----------------------
+^^^^^^^^^^^^^^^^^^^^^^
 
-To test if assertions are triggered, we use the following approach:
+The following approach is used to test if assertions are triggered:
 
 - http://www.electronvector.com/blog/unit-testing-with-asserts
-- Use ``CException <https://github.com/ThrowTheSwitch/CException>``_ while testing (``:use_exceptions: TRUE`` in Ceedling ``project.yml``)
+- Use `CException <https://github.com/ThrowTheSwitch/CException>`_ while testing (``:use_exceptions: TRUE`` in Ceedling ``project.yml``)
 - Defined ``uz_assert`` in the following way in ``uz_HAL.h`` for testing.
 
 .. code-block:: c
@@ -173,7 +173,7 @@ To test if assertions are triggered, we use the following approach:
 
 This means a failing assertion throws an exception instead of triggering a *real* assertion.
 The test macros ``TEST_ASSERT_FAIL_ASSERT`` and ``TEST_ASSERT_PASS_ASSERT`` catch the thrown exception and print an error message if the test fails.
-
+If the code is used in production (i.e., on the UltraZohm), the define ``TEST`` is not present, therefore ``#define uz_assert(condition) if (!(condition)) Throw(0)`` is not used in the code but the actual assert define (see ``uz_HAL.h``).
 
 Multiple source files with common header
 ----------------------------------------
@@ -202,9 +202,9 @@ To test a software module with one interface header and multiple c-files, i.e.:
    // do something B
    }
 
-Including ``my_function.h`` in the ``test_my_function.c`` file Ceedling will throw an error if you use functions from ``my_function_part_A.c``.
+Including ``my_function.h`` in the ``test_my_function.c`` file will throw a Ceedling error the functions from ``my_function_part_A.c`` are used.
 This happens because Ceedling will assume that the ``.c`` file name matches the name of the header (``my_function.c`` in this case).
-To fix this, you have to include the following *macro* at the top of ``test_my_function.c``.
+To fix this, include the following *macro* at the top of ``test_my_function.c``.
 
 .. code-block:: c
 
@@ -212,6 +212,165 @@ To fix this, you have to include the following *macro* at the top of ``test_my_f
     TEST_FILE("my_function_part_B.c")
 
 This way you can include as many ``.c`` as needed.
+See:
+
+- https://github.com/ThrowTheSwitch/Ceedling/issues/113
+- `test_uz_wavegen_chirp.c <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/vitis/software/Baremetal/test/uz/uz_wavegen/test_uz_wavegen_chirp.c>`_
+
+Passing and testing with structs or typedef as function arguments
+-----------------------------------------------------------------
+
+To test a software module, the functions that are called by the module under test have to be mocked.
+This is done by using CMock, i.e., including the header of the functions that are called with the prefix ``mock_``.
+In the tests, it has to be specified with which arguments the function is called using ``_Expect`` (and others).
+If the mocked function is expected to be called with a ``struct`` (or a typedefed struct) as one of its arguments, Ceedling does compare the memory per byte.
+Therefore, the error message of the failing test can not specify which member of the struct did not match the expected values.
+Furthermore, this can fail due to padding.
+If the test fails, either due to padding or due to passing wrong arguments, the following error message is shown by Ceedling:
+
+::
+
+   At line (11): "Memory Mismatch. Byte 3 Expected 0x60F Was 0x00. Function my_function Argument first_argument. Function called with unexpected argument value."
+
+This indicates that the byte-based comparison of the memory failed, but deriving information about the error is non-obvious as it is not clear if one of the members is used with a wrong value or if a padding-issue is present.
+Thus, it is required to test on a per member basis of the struct instead.
+
+Example
+^^^^^^^
+
+Suppose that a struct ``my_struct`` is defined in ``my_software_module.h`` and ``my_function`` has a variable of type ``my_struct`` as an argument.
+
+.. code-block:: c
+   :caption: Example of ``my_software_module.h``
+   :linenos:
+
+   #pragma once
+   #include <stdint.h>
+
+   struct my_struct{
+      int8_t member_one; // Purposefully trigger the padding problem
+      int32_t member_two;
+   };
+
+   void my_function(struct my_struct);
+
+To add a test for the custom struct that is defined in ``my_software_module.h``, the following has to be added to ``uz_struct_helper.h`` in ``vitis/software/Baremetal/test/helper``.
+
+1. Include ``my_software_module.h`` in ``uz_struct_helper.h`` and add a define for the , like so:
+
+.. code-block:: c
+  :caption: ``uz_struct_helper.h``
+  :linenos:
+  :emphasize-lines: 6,11
+
+  #pragma once
+  #include "unity.h"
+
+  // List of header files that define public structs / typedefs that are passed into functions
+  #include "uz_fixedpoint.h"
+  #include "my_software_module.h"
+
+  // List of defines that map the function declarations to a type / struct name
+  // Has to match exactly (case sensitive) the name of the struct (including struct_) or the typedef (without struct_ or typedef, just the name)
+  #define UNITY_TEST_ASSERT_EQUAL_struct_uz_fixedpoint_definition_t(expected, actual, line, message) AssertEqual_uz_fixedpoint_definition_t(expected, actual, line)
+  #define UNITY_TEST_ASSERT_EQUAL_struct_my_struct(expected, actual, line, message) AssertEqual_my_struct(expected, actual, line)
+
+2. Add the function ``AssertEqual_my_struct`` to ``uz_struct_helper.c``:
+
+.. code-block:: c
+  :caption: ``uz_struct_helper.c``
+  :linenos:
+
+  #include "uz_struct_helper.h"
+
+  // The define "UNITY_UINT" comes from unity (https://github.com/ThrowTheSwitch/Unity/blob/master/src/unity_internals.h)
+  // Use for the "line" argument of the AssertEqual function to prevent warnings and issues regarding the size of int (32, 64 bit...)
+  void AssertEqual_my_struct(struct my_struct expected, struct my_struct actual, UNITY_UINT line) {
+    UNITY_TEST_ASSERT_EQUAL_INT8(expected.member_one, actual.member_one, line, "my_struct .member_one comparison failed");
+    UNITY_TEST_ASSERT_EQUAL_INT32(expected.member_two, actual.member_two, line, "my_struct .member_two comparison failed");
+  }
+
+3. In the test file ``test_uz_my_software_module.c``, include the helper file with ``#include "uz_struct_helper.h"``
+
+With these steps, Ceedling automatically uses the function ``AssertEqual_my_struct`` inside of the unit tests, e.g., inside of the mocks.
+Furthermore, the user can use the define ``UNITY_TEST_ASSERT_EQUAL_struct_my_struct`` in the tests to test for equality.
+
+Example of the resulting informative error message:
+
+::
+
+  [test_uz_dq_transformation_hw.c]
+    Test: test_uz_dq_transformation_hw_set_thetaOffset
+    At line (30): "Expected 3 Was 4. Function uz_fixedpoint_axi_write Argument fixedpoint_definition. Fixed point definition .integer_bits comparison failed"
+
+
+More information:
+
+- https://bitbucket.org/ultrazohm/ultrazohm_sw/issues/180/ceedling-cmock-can-not-compare-structs-if
+- https://papers707.rssing.com/chan-6065534/latest.php#item4
+- https://github.com/ThrowTheSwitch/Ceedling/issues/470
+- https://github.com/ThrowTheSwitch/CMock/issues/228
+- https://github.com/ThrowTheSwitch/CMock/issues/167
+- https://github.com/ThrowTheSwitch/CMock/issues/314
+
+
+Padding
+^^^^^^^
+
+As an simplified rule, padding (might) occur if not all members of a struct have the same type (more precise, if the type of the members have a different size - `see sizeof <https://en.wikipedia.org/wiki/Sizeof>`_).
+It is crucial to note that the machines that run the tests are typically a 64-bit platform while the ARM R5 of the UltraZohm is a 32-bit platform.
+Therefore, padding may or may not differ between the build targets (developer machine / UltraZohm).
+Thus, the unit tests have to be robust against padding, alignment, and packing.
+
+More information regarding padding and alignment:
+
+- https://en.wikipedia.org/wiki/Data_structure_alignment
+- https://stackoverflow.com/questions/4306186/structure-padding-and-packing
+- http://www.catb.org/esr/structure-packing/
+
+
+Configuration details
+^^^^^^^^^^^^^^^^^^^^^
+
+The following settings are present in the Ceedling ``project.yml``.
+The relevant lines are 14 to 17, which instruct CMock to add ``#include "uz_struct_helper.h"`` to the mocks that it generates and specifies the path to the included file.
+
+.. code-block::
+   :linenos:
+
+   :cmock:
+     :mock_prefix: mock_
+     :when_no_prototypes: :warn
+     :enforce_strict_ordering: TRUE
+     :plugins:
+       - :ignore
+       - :callback
+     :treat_as:
+       uint8:    HEX8
+       uint16:   HEX16
+       uint32:   UINT32
+       int8:     INT8
+       bool:     UINT8
+     :includes:
+       - "uz_struct_helper.h"
+     :unity_helper_path:
+       - "test/helper/uz_struct_helper.h"
+
+Internals
+^^^^^^^^^
+
+Internally, Ceedling/CMock/Unity does the following (see :issue:`180`):
+
+- Ceedling checks the arguments of the functions that are mocked
+- Inside of the mock, depending on the type of the arguments, the UNITY_TEST_ASSERT defines are called inside of the mock
+- This matching of argument type & UNITY_TEST_ASSERT is done by comparing names
+- Inside of the mock, the define is inserted, which in turn is just an alias for the real function that does the comparison
+- For build-in types, this calls the unity functions (see https://github.com/ThrowTheSwitch/Unity/blob/master/src/unity.c, line 707 is called for testing HEX32 on equality)
+- For costume types, it works exactly the same, just that the test function that is “behind” the define has to be user supplied
+- The insertion can be seen in the following snippet, which is auto-generated by Ceedling (mock_uz_fixedpoint.c) - see line 35
+- Thus, the helper.h has to declare the test function and provide a define that matches the type name of the arguments and an actual implementation (in helper.c) to do the comparison on a per-member basis
+
+
     
 Sources
 =======

@@ -14,6 +14,8 @@ struct uz_fixedpoint_definition_t{
     const int32_t integer_bits; /**< Number of bits for the integer part */
 };
 
+//typedef struct uz_fixedpoint_definition_t uz_fixedpoint_definition_t;
+
 /**
  * @brief Reads a fixed-point data type from AXI and converts it to float given the fixed-point definition
  * 

@@ -25,8 +25,8 @@ typedef struct uz_FOC {
 	struct uz_PI_Controller* Controller_iq;
 }uz_FOC;
 
-static struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere);
-static struct uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t pmsm,struct uz_dq_t actual_Ampere, float omega_el_rad_per_sec);
+static uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, uz_dq_t i_reference_Ampere, uz_dq_t i_actual_Ampere);
+static uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t pmsm, uz_dq_t actual_Ampere, float omega_el_rad_per_sec);
 static size_t instances_counter_FOC = 0;
 
 static uz_FOC instances_FOC[UZ_FOC_MAX_INSTANCES] = {0};
@@ -56,30 +56,30 @@ uz_FOC* uz_FOC_init(struct uz_FOC_config config) {
 	return (self);
 }
 
-struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec) {
+uz_dq_t uz_FOC_sample(uz_FOC* self, uz_dq_t i_reference_Ampere, uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(V_dc_volts > 0.0f);
-	struct uz_dq_t u_pre_limit_Volts = uz_FOC_CurrentControl(self, i_reference_Ampere, i_actual_Ampere);
-	struct uz_dq_t u_decoup_Volts = uz_FOC_decoupling(self->config.decoupling_select, self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+	uz_dq_t u_pre_limit_Volts = uz_FOC_CurrentControl(self, i_reference_Ampere, i_actual_Ampere);
+	uz_dq_t u_decoup_Volts = uz_FOC_decoupling(self->config.decoupling_select, self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
 	u_pre_limit_Volts.d += u_decoup_Volts.d;
 	u_pre_limit_Volts.q += u_decoup_Volts.q;
-	struct uz_dq_t u_output_Volts = uz_FOC_SpaceVector_Limitation(u_pre_limit_Volts, V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
+	uz_dq_t u_output_Volts = uz_FOC_SpaceVector_Limitation(u_pre_limit_Volts, V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
 	return (u_output_Volts);
 }
 
-struct uz_UVW_t uz_FOC_sample_UVW(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad) {
+uz_UVW_t uz_FOC_sample_UVW(uz_FOC* self, uz_dq_t i_reference_Ampere, uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	struct uz_dq_t u_dq_Volts = uz_FOC_sample(self, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
-	struct uz_UVW_t u_output_Volts = uz_dq_inverse_transformation(u_dq_Volts, theta_el_rad);
+	uz_dq_t u_dq_Volts = uz_FOC_sample(self, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+	uz_UVW_t u_output_Volts = uz_dq_inverse_transformation(u_dq_Volts, theta_el_rad);
 	return(u_output_Volts);
 }
 
-static struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere) {
+static uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, uz_dq_t i_reference_Ampere, uz_dq_t i_actual_Ampere) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	struct uz_dq_t u_output_Volts = { 0 };
+	uz_dq_t u_output_Volts = { 0 };
 	u_output_Volts.q = uz_PI_Controller_sample(self->Controller_iq, i_reference_Ampere.q, i_actual_Ampere.q, self->ext_clamping);
 	u_output_Volts.d = uz_PI_Controller_sample(self->Controller_id, i_reference_Ampere.d, i_actual_Ampere.d, self->ext_clamping);
 	return (u_output_Volts);
@@ -155,8 +155,8 @@ bool uz_FOC_get_ext_clamping(uz_FOC* self){
 	return(self->ext_clamping);
 }
 
-static struct uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t config_PMSM, struct uz_dq_t i_actual_Ampere, float omega_el_rad_per_sec){
-	struct uz_dq_t decouple_voltage={0};
+static uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t config_PMSM, uz_dq_t i_actual_Ampere, float omega_el_rad_per_sec){
+	uz_dq_t decouple_voltage={0};
 	switch (decoupling_select)
     {
     case no_decoupling:
@@ -171,7 +171,7 @@ static struct uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling
 	return (decouple_voltage);
 }
 
-struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(struct uz_UVW_t input, float V_dc_volts) {
+struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(uz_UVW_t input, float V_dc_volts) {
 	//Uses continuous sinusoidal PWM (SPWM) 
 	struct uz_DutyCycle_t output = {0};
 	output.DutyCycle_U = ( (input.U / (0.5f * V_dc_volts) ) +1.0f) * 0.5f;

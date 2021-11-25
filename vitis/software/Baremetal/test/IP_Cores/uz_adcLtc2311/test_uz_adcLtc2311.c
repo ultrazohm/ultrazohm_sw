@@ -49,7 +49,7 @@ void expect_update_specific_channel(uint32_t *cr_content, uint32_t master, uint3
 void expect_update_master_only(uint32_t *cr_content, uint32_t master);
 
 void expect_update_conversion_factor_success(uint32_t *cr_content, uint32_t master, uint32_t channel, float value, struct uz_fixedpoint_definition_t fixedpoint_definition);
-void expect_update_offset_success(uint32_t *cr_content, uint32_t master, uint32_t channel, float value, struct uz_fixedpoint_definition_t fixedpoint_definition);
+void expect_update_offset_success(uint32_t *cr_content, uint32_t master, uint32_t channel, int value);
 void expect_update_samples_success(uint32_t *cr_content, uint32_t master, uint32_t value);
 void expect_update_sample_time_success(uint32_t *cr_content, uint32_t master, uint32_t value);
 void expect_update_spi_success(uint32_t *spi_cr_content, uint32_t *spi_cfgr_content, uint32_t pre_delay, uint32_t post_delay, uint32_t clk_div, uint32_t cpol, uint32_t cpha);
@@ -194,26 +194,21 @@ void test_uz_adcLtc2311_update_conversion_factor_hw_failure(void)
  */
 void test_uz_adcLtc2311_update_offset(void)
 {
-    float offset = 5;
+    int32_t offset = 5;
     uint32_t master = UZ_ADCLTC2311_MASTER1;
     uint32_t channel = UZ_ADCLTC2311_CH1;
     uint32_t cr_content = 0x0;
     uint32_t function_return_value = UZ_FAILURE;
-
-    struct uz_fixedpoint_definition_t fixedpoint_definition = {
-        .is_signed = true,
-        .fractional_bits = 10,
-        .integer_bits = 6};
 
     uz_adcLtc2311_t *instance = successfull_init();
 
     // setup the instance
     uz_adcLtc2311_set_master_select(instance, master);
     uz_adcLtc2311_set_channel_select(instance, channel);
-    uz_adcLtc2311_set_offset(instance, offset, fixedpoint_definition);
+    uz_adcLtc2311_set_offset(instance, offset);
 
     // expect the HW transactions
-    expect_update_offset_success(&cr_content, master, channel, offset, fixedpoint_definition);
+    expect_update_offset_success(&cr_content, master, channel, offset);
 
     // call the actual function
     function_return_value = uz_adcLtc2311_update_offset(instance);
@@ -226,24 +221,19 @@ void test_uz_adcLtc2311_update_offset(void)
  */
 void test_uz_adcLtc2311_update_offset_hw_failure(void)
 {
-    float offset = 5;
+    int32_t offset = 5;
     uint32_t master = UZ_ADCLTC2311_MASTER1;
     uint32_t channel = UZ_ADCLTC2311_CH1;
     uint32_t cr_content = 0x0;
     uint32_t max_attempts = 2;
     uint32_t function_return_value = UZ_FAILURE;
 
-    struct uz_fixedpoint_definition_t fixedpoint_definition = {
-        .is_signed = true,
-        .fractional_bits = 10,
-        .integer_bits = 6};
-
     uz_adcLtc2311_t *instance = successfull_init();
 
     // setup the instance
     uz_adcLtc2311_set_master_select(instance, master);
     uz_adcLtc2311_set_channel_select(instance, channel);
-    uz_adcLtc2311_set_offset(instance, offset, fixedpoint_definition);
+    uz_adcLtc2311_set_offset(instance, offset);
     uz_adcLtc2311_set_max_attempts(instance, max_attempts);
 
     // expect the HW transactions
@@ -251,7 +241,7 @@ void test_uz_adcLtc2311_update_offset_hw_failure(void)
     expect_update_specific_channel(&cr_content, master, channel);
 
     // expect the software to write the conversion factor
-    uz_adcLtc2311_hw_write_value_fixedpoint_Ignore();
+    uz_adcLtc2311_hw_write_value_signed_Ignore();
     cr_content &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
     cr_content |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID;
 
@@ -726,7 +716,7 @@ uz_adcLtc2311_t *successfull_init(void)
 {
     float conversion_factor = 1.0f;
     uint32_t samples = 1U;
-    float offset = 0.0f;
+    int32_t offset = 0;
     uint32_t sample_time = 0U;
     uint32_t cpol = 1U;
     uint32_t cpha = 0U;
@@ -753,7 +743,6 @@ uz_adcLtc2311_t *successfull_init(void)
         .cpol = cpol,
         .cpha = cpha,
         .offset = offset,
-        .offset_definition = {.is_signed = true, .integer_bits = 11, .fractional_bits = 7},
         .napping_spi_masters = 0,
         .sleeping_spi_masters = 0,
         .master_select = master,
@@ -765,7 +754,7 @@ uz_adcLtc2311_t *successfull_init(void)
 
     expect_set_triggered_mode(&cr_content);
     expect_update_conversion_factor_success(&cr_content, master, channel, conversion_factor, default_configuration.conversion_factor_definition);
-    expect_update_offset_success(&cr_content, master, channel, offset, default_configuration.offset_definition);
+    expect_update_offset_success(&cr_content, master, channel, offset);
     expect_update_samples_success(&cr_content, master, samples);
     expect_update_sample_time_success(&cr_content, master, sample_time);
     expect_update_spi_success(&spi_cr_content, &spi_cfgr_content, pre_delay, post_delay, clk_div, cpol, cpha);
@@ -801,13 +790,13 @@ void expect_update_conversion_factor_success(uint32_t *cr_content, uint32_t mast
     expect_operation_param_update_success(cr_content);
 }
 
-void expect_update_offset_success(uint32_t *cr_content, uint32_t master, uint32_t channel, float value, struct uz_fixedpoint_definition_t fixedpoint_definition)
+void expect_update_offset_success(uint32_t *cr_content, uint32_t master, uint32_t channel, int value)
 {
     // prepare instance for test cases
     expect_update_specific_channel(cr_content, master, channel);
 
     // expect the software to write the offset
-    uz_adcLtc2311_hw_write_value_fixedpoint_Expect(TEST_BASE_ADDRESS, value, fixedpoint_definition);
+    uz_adcLtc2311_hw_write_value_signed_Expect(TEST_BASE_ADDRESS, value);
 
     *cr_content &= ~(UZ_ADCLTC2311_CR_CONFIG_VALUE_0 | UZ_ADCLTC2311_CR_CONFIG_VALUE_1 | UZ_ADCLTC2311_CR_CONFIG_VALUE_2);
     *cr_content |= UZ_ADCLTC2311_CR_CONV_VALUE_VALID;

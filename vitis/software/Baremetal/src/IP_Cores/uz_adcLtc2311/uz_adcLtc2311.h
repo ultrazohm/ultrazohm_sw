@@ -129,8 +129,7 @@ struct uz_adcLtc2311_config_t{
 	uint32_t channel_select; /**< One hot encoded variable to select the channels of the selected SPI masters shall be configured */
 	float conversion_factor; /**< Factor with which the sum of the offset and the raw value is multiplied */
 	struct uz_fixedpoint_definition_t conversion_factor_definition;
-    float offset; /**< Offset that is added to the raw value before the multiplication */
-	struct uz_fixedpoint_definition_t offset_definition;
+    int offset; /**< Offset that is added to the raw value before the multiplication */
 	uint32_t samples; /**< Number of samples that shall be taken on a single trigger */
     uint32_t sample_time; /**<Minimal number of system clock cycles for sample and hold */
     
@@ -329,7 +328,7 @@ void uz_adcLtc2311_set_master_select(uz_adcLtc2311_t* self, uint32_t value);
 void uz_adcLtc2311_set_channel_select(uz_adcLtc2311_t* self, uint32_t value);
 
 void uz_adcLtc2311_set_conversion_factor(uz_adcLtc2311_t* self, float value, struct uz_fixedpoint_definition_t fixedpoint_definition);
-void uz_adcLtc2311_set_offset(uz_adcLtc2311_t* self, float value,struct uz_fixedpoint_definition_t fixedpoint_definition);
+void uz_adcLtc2311_set_offset(uz_adcLtc2311_t* self, int value);
 
 /**
  * @brief Set the number of samples taken per trigger event. Asserts that the value is in a valid range.
@@ -398,7 +397,7 @@ uint32_t uz_adcLtc2311_get_error_code(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_master_select(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_channel_select(uz_adcLtc2311_t* self);
 float uz_adcLtc2311_get_conversion_factor(uz_adcLtc2311_t* self);
-float uz_adcLtc2311_get_offset(uz_adcLtc2311_t* self);
+int32_t uz_adcLtc2311_get_offset(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_samples(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_max_attempts(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_sample_time(uz_adcLtc2311_t* self);

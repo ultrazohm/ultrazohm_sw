@@ -15,6 +15,7 @@ void uz_adcLtc2311_hw_write_spi_cfgr(uint32_t base_address,uint32_t value);
 void uz_adcLtc2311_hw_write_master_channel(uint32_t base_address,uint32_t value);
 void uz_adcLtc2311_hw_write_channel(uint32_t base_address,uint32_t value);
 void uz_adcLtc2311_hw_write_value(uint32_t base_address,uint32_t value);
+void uz_adcLtc2311_hw_write_value_signed(uint32_t base_address,int32_t value);
 void uz_adcLtc2311_hw_write_value_fixedpoint(uint32_t base_address, float value,struct uz_fixedpoint_definition_t fixedpoint_definition);
 
 void uz_adcLtc2311_hw_write_adc_available(uint32_t base_address, uint32_t value);

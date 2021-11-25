@@ -66,6 +66,13 @@ void test_adcLtc2311_hw_write_value(void)
     uz_adcLtc2311_hw_write_value(TEST_BASE_ADDRESS, value);
 }
 
+void test_adcLtc2311_hw_write_value_signed(void)
+{
+    int32_t value = 0;
+    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS + ADC_LTC2311_VALUE, value);
+    uz_adcLtc2311_hw_write_value_signed(TEST_BASE_ADDRESS, value);
+}
+
 void test_adcLtc2311_hw_write_adc_available(void)
 {
     uint32_t value = TEST_RETURN;
@@ -114,6 +121,13 @@ void test_adcLtc2311_hw_write_value_zero_base_address(void)
     uint32_t value = TEST_RETURN;
     uz_axi_write_uint32_Ignore();
     TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_write_value(0, value));
+}
+
+void test_adcLtc2311_hw_write_value_signed_zero_base_address(void)
+{
+    int32_t value = TEST_RETURN;
+    uz_axi_write_int32_Ignore();
+    TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_write_value_signed(0, value));
 }
 
 void test_adcLtc2311_hw_write_adc_available_zero_base_address(void)

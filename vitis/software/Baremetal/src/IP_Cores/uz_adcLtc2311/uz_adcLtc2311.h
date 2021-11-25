@@ -116,13 +116,20 @@
  */
 typedef struct uz_adcLtc2311_t uz_adcLtc2311_t;
 
-
+/**
+ * @brief Configuration struct that holds parameters that are adjustable on a per-channel basis
+ * 
+ */
 struct uz_adcLtc2311_channel_config_t{
 	float conversion_factor; /**< Factor with which the sum of the offset and the raw value is multiplied */
 	struct uz_fixedpoint_definition_t conversion_factor_definition;
     int offset; /**< Offset that is added to the raw value before the multiplication */
 };
 
+/**
+ * @brief Configuration struct that holds parameters that are adjustable on a per SPI master basis
+ * 
+ */
 struct uz_adcLtc2311_spi_master_config_t{
 	uint32_t samples; /**< Number of samples that shall be taken on a single trigger */
     uint32_t sample_time; /**<Minimal number of system clock cycles for sample and hold */
@@ -159,8 +166,6 @@ struct uz_adcLtc2311_config_t{
 
     struct uz_adcLtc2311_spi_master_config_t spi_master_config;
     struct uz_adcLtc2311_channel_config_t channel_config;
-
-
 };
 
 /**
@@ -424,5 +429,16 @@ uint32_t uz_adcLtc2311_get_cpol(uz_adcLtc2311_t* self);
 // Nap and Sleep mode
 uint32_t uz_adcLtc2311_get_napping_masters(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_sleeping_masters(uz_adcLtc2311_t* self);
+
+/**
+ * @brief Wrapper function to set the conversion factor and offset of specified channels of one or multiple SPI-Masters in a single function call
+ * 
+ * @param self Pointer to driver instance
+ * @param master_select Bitmask to select SPI-Masters - use UZ_ADCLTC2311_MASTER defines
+ * @param channel_select Bitmask to select ADC-Channels - use UZ_ADCLTC2311_CH32 defines 
+ * @param channel_config Config struct that is written to the IP-Core to change offset and conversion factor
+ */
+void uz_adcLtc2311_set_channel_config(uz_adcLtc2311_t* self, uint32_t master_select, uint32_t channel_select,  struct uz_adcLtc2311_channel_config_t channel_config);
+
 
 #endif // UZ_ADCLTC2311_H

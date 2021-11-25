@@ -108,6 +108,27 @@ void test_uz_adcLtc2311_set_sample_time_msb_not_set(void)
     uz_adcLtc2311_set_sample_time(instance, (1U << 30));
 }
 
+void test_uz_adcLtc2311_set_channel_config_successful(void)
+{
+    uz_adcLtc2311_t *instance = successfull_init();
+
+    uint32_t master_select = UZ_ADCLTC2311_MASTER1;
+    uint32_t channel_select = UZ_ADCLTC2311_CH1 | UZ_ADCLTC2311_CH2 | UZ_ADCLTC2311_CH3; // Set same config to channel 1, 2, and 3
+    struct uz_adcLtc2311_channel_config_t channel_config = {
+        .conversion_factor = 13.3f,
+        .conversion_factor_definition = {
+            .is_signed = true,
+            .fractional_bits = 5,
+            .integer_bits = 10},
+        .offset = 10};
+    // expect the HW transactions
+    uint32_t cr_content = 0x0;
+    expect_update_conversion_factor_success(&cr_content, master_select, channel_select, channel_config.conversion_factor, channel_config.conversion_factor_definition);
+    expect_update_offset_success(&cr_content, master_select, channel_select, channel_config.offset);
+
+    uz_adcLtc2311_set_channel_config(instance, master_select, channel_select, channel_config);
+}
+
 void test_uz_adcLtc2311_set_samples_value_is_zero(void)
 {
     uz_adcLtc2311_t *instance = successfull_init();
@@ -136,7 +157,7 @@ void test_uz_adcLtc2311_update_conversion_factor(void)
     // setup the instance
     uz_adcLtc2311_set_master_select(instance, master);
     uz_adcLtc2311_set_channel_select(instance, channel);
-    uz_adcLtc2311_set_conversion_factor(instance, conversion_factor,conversion_factor_fixedpoint_definition);
+    uz_adcLtc2311_set_conversion_factor(instance, conversion_factor, conversion_factor_fixedpoint_definition);
 
     // expect the HW transactions
     expect_update_conversion_factor_success(&cr_content, master, channel, conversion_factor, conversion_factor_fixedpoint_definition);
@@ -168,7 +189,7 @@ void test_uz_adcLtc2311_update_conversion_factor_hw_failure(void)
     // setup the instance
     uz_adcLtc2311_set_master_select(instance, master);
     uz_adcLtc2311_set_channel_select(instance, channel);
-    uz_adcLtc2311_set_conversion_factor(instance, conversion_factor,conversion_factor_fixedpoint_definition);
+    uz_adcLtc2311_set_conversion_factor(instance, conversion_factor, conversion_factor_fixedpoint_definition);
     uz_adcLtc2311_set_max_attempts(instance, max_attempts);
 
     // expect the HW transactions
@@ -734,19 +755,15 @@ uz_adcLtc2311_t *successfull_init(void)
     struct uz_adcLtc2311_config_t default_configuration = {
         .base_address = TEST_BASE_ADDRESS,
         .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ,
-        .channel_config={
-            .conversion_factor=conversion_factor,
-            .conversion_factor_definition={
-                .is_signed=true,
-                .integer_bits=10,
-                .fractional_bits=6
-            },
-            .offset=offset,
+        .channel_config = {
+            .conversion_factor = conversion_factor,
+            .conversion_factor_definition = {
+                .is_signed = true,
+                .integer_bits = 10,
+                .fractional_bits = 6},
+            .offset = offset,
         },
-        .spi_master_config={
-            .samples=samples,
-            .sample_time=sample_time
-        },
+        .spi_master_config = {.samples = samples, .sample_time = sample_time},
         .cpol = cpol,
         .cpha = cpha,
         .napping_spi_masters = 0,

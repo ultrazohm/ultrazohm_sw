@@ -234,6 +234,13 @@ Representation in software
 
 .. doxygentypedef:: uz_adcLtc2311_t
 
+
+.. doxygenstruct:: uz_adcLtc2311_channel_config_t
+   :members:
+
+.. doxygenstruct:: uz_adcLtc2311_spi_master_config_t
+   :members:
+
 .. _config_struct:
 
 .. doxygenstruct:: uz_adcLtc2311_config_t
@@ -284,6 +291,8 @@ The get function always asserts that self is not NULL and that the instance is r
 
 If the set function is not further explained below, the value is not examined for validity.
 Otherwise, the performed asserts are mentioned below.
+
+.. doxygenfunction:: uz_adcLtc2311_set_channel_config
 
 .. doxygenfunction:: uz_adcLtc2311_set_samples
 

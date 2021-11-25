@@ -698,4 +698,13 @@ uint32_t uz_adcLtc2311_leave_sleep_mode(uz_adcLtc2311_t* self)
     return(return_value);
 }
 
+void uz_adcLtc2311_set_channel_config(uz_adcLtc2311_t* self, uint32_t master_select, uint32_t channel_select,  struct uz_adcLtc2311_channel_config_t channel_config){
+    uz_adcLtc2311_set_conversion_factor(self,channel_config.conversion_factor,channel_config.conversion_factor_definition);
+    uz_adcLtc2311_set_offset(self,channel_config.offset);
+    uz_adcLtc2311_set_master_select(self,master_select);
+    uz_adcLtc2311_set_channel_select(self,channel_select);
+    uz_adcLtc2311_update_conversion_factor(self);
+    uz_adcLtc2311_update_offset(self);
+}
+
 #endif

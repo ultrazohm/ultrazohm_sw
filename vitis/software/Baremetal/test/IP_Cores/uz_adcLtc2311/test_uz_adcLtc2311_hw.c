@@ -120,7 +120,7 @@ void test_adcLtc2311_hw_write_adc_available_zero_base_address(void)
 {
     uint32_t value = TEST_RETURN;
     uz_axi_write_uint32_Ignore();
-    TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_write_value(0, value));
+    TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_hw_write_adc_available(0, value));
 }
 
 // read functions

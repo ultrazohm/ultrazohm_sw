@@ -9,18 +9,13 @@ void uz_adcLtc2311_testbench(void)
     struct uz_adcLtc2311_config_t default_configuration = {
         .base_address=XPAR_A1_ADC_LTC2311_S00_AXI_BASEADDR,
         .ip_clk_frequency_Hz=100000000U,
-        .conversion_factor = 1.0f,
+        .conversion_factor = 1.1f,
         .conversion_factor_definition={
             .is_signed=true,
-            .fractional_bits=2,
-            .integer_bits=18
-        },
-        .offset = 0.0f,
-        .offset_definition={
-            .is_signed=true,
-            .fractional_bits=2,
+            .fractional_bits=4,
             .integer_bits=14
         },
+        .offset = 0,
         .samples = 1U,
         .cpol = 1U,
         .cpha = 0U,

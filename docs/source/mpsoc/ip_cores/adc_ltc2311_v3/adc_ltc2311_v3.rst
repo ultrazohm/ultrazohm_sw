@@ -513,6 +513,21 @@ Design Parameters
 I/O Signals (Interface)
 =======================
 
+:numref:`adcltc_interface_picture` shows the interface of the IP-Core and the mapping of using multiple SPI-Master / Channels to the interface.
+ALl signals from the SPI-Master and individual channels are concated into one vector for each signal.
+For differential signals, all even bit number is the P signal, the odd bit numbers are the N signal.
+
+
+
+.. _adcltc_interface_picture:
+
+.. figure:: adc_ip_core_concept.svg
+   :width: 800px
+   :align: center
+
+   Example interfaces for IP-Core configuration with 8 Channels and 3 SPI-Master. Note that is not the way the IP-Core is used in the default case!
+
+
 Clock and Reset
 ---------------
 

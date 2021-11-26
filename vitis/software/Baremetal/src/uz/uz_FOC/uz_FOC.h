@@ -28,7 +28,7 @@ struct uz_FOC_config {
 													1 = linear_decoupling*/
 	struct uz_PI_Controller_config config_id; /**< Configuration struct for id-Controller */
 	struct uz_PI_Controller_config config_iq; /**< Configuration struct for iq-Controller */
-	struct uz_PMSM_t config_PMSM; /**< Configuration struct for PMSM parameters */
+	uz_PMSM_t config_PMSM; /**< Configuration struct for PMSM parameters */
 
 };
 /**

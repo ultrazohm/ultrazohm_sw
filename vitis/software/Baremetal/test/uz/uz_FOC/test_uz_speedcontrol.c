@@ -13,7 +13,7 @@ float id_ref_Ampere = 1.0f;
 float polePairs = 4.0f;
 float V_dc_volts = 24.0f;
 bool ext_clamping = false;
-struct uz_PMSM_t config_PMSM = {0};
+uz_PMSM_t config_PMSM = {0};
 void setUp(void)
 {
     config.Kp = 0.00864f;

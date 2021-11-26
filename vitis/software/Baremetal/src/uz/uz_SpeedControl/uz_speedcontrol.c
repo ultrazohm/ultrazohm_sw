@@ -23,17 +23,17 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-static uz_dq_t uz_SpeedControl_field_weakening(struct uz_PMSM_t config_PMSM, float id_ref_Ampere, float omega_el_rad_per_sec, float V_dc_volts);
+static uz_dq_t uz_SpeedControl_field_weakening(uz_PMSM_t config_PMSM, float id_ref_Ampere, float omega_el_rad_per_sec, float V_dc_volts);
 static float uz_SpeedControl_decide_id_ref(float I_max, float id_ref_Ampere, float id_field_weakening_Ampere, bool fw_flag);
-static float uz_SpeedControl_calculate_omega_cut(struct uz_PMSM_t config_PMSM, float U_SV_max);
-static uz_dq_t uz_SpeedControl_calculate_fw_currents(struct uz_PMSM_t config_PMSM, float omega_el_rad_per_sec, float omega_cut, float U_SV_max);
+static float uz_SpeedControl_calculate_omega_cut(uz_PMSM_t config_PMSM, float U_SV_max);
+static uz_dq_t uz_SpeedControl_calculate_fw_currents(uz_PMSM_t config_PMSM, float omega_el_rad_per_sec, float omega_cut, float U_SV_max);
 
 uz_PI_Controller* uz_SpeedControl_init(struct uz_PI_Controller_config config){
     uz_PI_Controller* self = uz_PI_Controller_init(config);
     return(self);
 }
 
-uz_dq_t uz_SpeedControl_sample(uz_PI_Controller* self, float omega_el_rad_per_sec, float n_ref_rpm, float V_dc_volts, float id_ref_Ampere, struct uz_PMSM_t config_PMSM, bool ext_clamping){
+uz_dq_t uz_SpeedControl_sample(uz_PI_Controller* self, float omega_el_rad_per_sec, float n_ref_rpm, float V_dc_volts, float id_ref_Ampere, uz_PMSM_t config_PMSM, bool ext_clamping){
     uz_assert_not_NULL(self);
     uz_assert(config_PMSM.polePairs > 0.0f);
 	uz_assert(fmodf(config_PMSM.polePairs, 1.0f) == 0);
@@ -56,7 +56,7 @@ void uz_SpeedControl_reset(uz_PI_Controller* self){
 	uz_PI_Controller_reset(self);
 }
 
-static uz_dq_t uz_SpeedControl_field_weakening(struct uz_PMSM_t config_PMSM, float id_ref_Ampere, float omega_el_rad_per_sec, float V_dc_volts){
+static uz_dq_t uz_SpeedControl_field_weakening(uz_PMSM_t config_PMSM, float id_ref_Ampere, float omega_el_rad_per_sec, float V_dc_volts){
     uz_dq_t output = {0};
     bool fw_flag = false;
     float U_SV_max =(V_dc_volts / sqrtf(3.0f) ) * 0.95f;
@@ -90,7 +90,7 @@ static float uz_SpeedControl_decide_id_ref(float I_max, float id_ref_Ampere, flo
     return(output);
 }
 
-static float uz_SpeedControl_calculate_omega_cut(struct uz_PMSM_t config_PMSM, float U_SV_max) {
+static float uz_SpeedControl_calculate_omega_cut(uz_PMSM_t config_PMSM, float U_SV_max) {
 	float a_omega = (powf(config_PMSM.I_max_Ampere, 2.0f) * powf(config_PMSM.Lq_Henry, 2.0f)) + powf(config_PMSM.Psi_PM_Vs, 2.0f);
 	float b_omega = 2.0f * config_PMSM.R_ph_Ohm * config_PMSM.Psi_PM_Vs * config_PMSM.I_max_Ampere;
 	float c_omega = (powf(config_PMSM.I_max_Ampere, 2.0f) * powf(config_PMSM.R_ph_Ohm, 2.0f)) - powf(U_SV_max, 2.0f);
@@ -98,7 +98,7 @@ static float uz_SpeedControl_calculate_omega_cut(struct uz_PMSM_t config_PMSM, f
 	return (omega_cut);
 }
 
-static uz_dq_t uz_SpeedControl_calculate_fw_currents(struct uz_PMSM_t config_PMSM, float omega_el_rad_per_sec, float omega_cut, float U_SV_max) {
+static uz_dq_t uz_SpeedControl_calculate_fw_currents(uz_PMSM_t config_PMSM, float omega_el_rad_per_sec, float omega_cut, float U_SV_max) {
     uz_assert(omega_cut > 0.0f);
     uz_dq_t output = {0};
 	output.d = (config_PMSM.Psi_PM_Vs / config_PMSM.Ld_Henry) * ( (omega_cut / fabsf(omega_el_rad_per_sec) ) - 1.0f);

@@ -26,7 +26,7 @@ typedef struct uz_FOC {
 }uz_FOC;
 
 static uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, uz_dq_t i_reference_Ampere, uz_dq_t i_actual_Ampere);
-static uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t pmsm, uz_dq_t actual_Ampere, float omega_el_rad_per_sec);
+static uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, uz_PMSM_t pmsm, uz_dq_t actual_Ampere, float omega_el_rad_per_sec);
 static size_t instances_counter_FOC = 0;
 
 static uz_FOC instances_FOC[UZ_FOC_MAX_INSTANCES] = {0};
@@ -155,7 +155,7 @@ bool uz_FOC_get_ext_clamping(uz_FOC* self){
 	return(self->ext_clamping);
 }
 
-static uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t config_PMSM, uz_dq_t i_actual_Ampere, float omega_el_rad_per_sec){
+static uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, uz_PMSM_t config_PMSM, uz_dq_t i_actual_Ampere, float omega_el_rad_per_sec){
 	uz_dq_t decouple_voltage={0};
 	switch (decoupling_select)
     {

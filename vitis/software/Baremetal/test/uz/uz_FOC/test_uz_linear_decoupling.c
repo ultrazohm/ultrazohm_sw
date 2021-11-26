@@ -4,7 +4,7 @@
 #include "test_assert_with_exception.h"
 #include "uz_linear_decoupling.h"
 
-struct uz_PMSM_t config = {0};
+uz_PMSM_t config = {0};
 uz_dq_t i_actual_Ampere = {0};
 float omega_el_rad_per_sec = 0.0f;
 void setUp(void)

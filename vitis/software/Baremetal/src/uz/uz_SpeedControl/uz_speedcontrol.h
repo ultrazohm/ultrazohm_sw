@@ -26,7 +26,7 @@ uz_PI_Controller* uz_SpeedControl_init(struct uz_PI_Controller_config config);
  * @param ext_clamping external clamping signal
  * @return uz_dq_t reference currents in Ampere
  */
-uz_dq_t uz_SpeedControl_sample(uz_PI_Controller* self, float omega_el_rad_per_sec, float n_ref_rpm, float V_dc_volts, float id_ref_Ampere, struct uz_PMSM_t config_PMSM, bool ext_clamping);
+uz_dq_t uz_SpeedControl_sample(uz_PI_Controller* self, float omega_el_rad_per_sec, float n_ref_rpm, float V_dc_volts, float id_ref_Ampere, uz_PMSM_t config_PMSM, bool ext_clamping);
 
 /**
  * @brief Resets the PI-Controller

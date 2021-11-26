@@ -4,6 +4,8 @@
 #include "xparameters.h"
 #include <stdint.h>
 
+bool sample_once=false;
+
 void uz_adcLtc2311_testbench(void)
 {
     struct uz_adcLtc2311_config_t default_configuration = {
@@ -47,6 +49,14 @@ void uz_adcLtc2311_testbench(void)
     channel_config.conversion_factor=10.0f;
     channel_config.offset=100;
     uz_adcLtc2311_set_channel_config(test_instance, UZ_ADCLTC2311_MASTER1, UZ_ADCLTC2311_CH4, channel_config);
+
+    while(1){
+        if(sample_once){
+            uz_adcLtc2311_software_trigger(test_instance, UZ_ADCLTC2311_MASTER1);
+            sample_once=false;
+        }
+    }
+
     // // Adjust operation parameters
     // // 1: Select which channels you want to update
     // uz_adcLtc2311_set_master_select(test_instance, UZ_ADCLTC2311_MASTER1);

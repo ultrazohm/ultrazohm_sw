@@ -281,7 +281,6 @@ static void ReadAllADC(){
 			initADCdone = true;
 			Global_Data.cw.ControlReference = CurrentControl; //default
 			Global_Data.cw.ControlMethod = fieldOrientedControl; //default
-			ADC_Clear_Offset();
 		}
 	}else{
 		ADC_readCardALL(&Global_Data);

@@ -21,6 +21,7 @@
 
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_ACTIVE > 0U
+#include "../../uz_PMSM_config/uz_PMSM_config.h"
 
 #ifndef RTW_HEADER_ControlState_h_
 #define RTW_HEADER_ControlState_h_
@@ -115,6 +116,7 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
 
 typedef struct {
+  uz_PMSM_t PMSM_config;
   boolean_T controlType;
   boolean_T Reset;
   real32_T Kp_id;
@@ -131,13 +133,8 @@ typedef struct {
   real32_T thetaOffset;
   boolean_T ACCEPT;
   real32_T sampleTimeISR;
-  real32_T polePairs;
   real32_T ratCurrent;
   real32_T ratSpeed;
-  real32_T L_d;
-  real32_T L_q;
-  real32_T R_ph;
-  real32_T psi_pm;
   real32_T VibAmp;
   boolean_T VibOn;
   uint16_T VibFreq;
@@ -181,28 +178,29 @@ typedef struct {
   boolean_T enteredFluxMapID;          /* '<Root>/enteredFluxMapID' */
   boolean_T enteredTwoMassID;          /* '<Root>/enteredTwoMassID' */
   boolean_T enteredElectricalID;       /* '<Root>/enteredElectricalID' */
-	uz_PID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_output' */
-	uz_PID_Controller_Parameters_output_t ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
-	uz_PID_GlobalConfig_t GlobalConfig_in;/* '<Root>/GlobalConfig_in' */
+  uz_PID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_output' */
+  uz_PID_Controller_Parameters_output_t ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
+  uz_PID_GlobalConfig_t GlobalConfig_in;/* '<Root>/GlobalConfig_in' */
 } ExtU_ControlState_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
   real32_T thetaOffset;                /* '<Root>/thetaOffset' */
-	uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig_out' */
-	uz_PID_ControlFlags_t ControlFlags; /* '<Root>/ControlFlags' */
+  uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig_out' */
+  uz_PID_ControlFlags_t ControlFlags;  /* '<Root>/ControlFlags' */
 } ExtY_ControlState_t;
 
 /* Real-time Model Data Structure */
 struct tag_RTM_ControlState_t {
-	ExtU_ControlState_t *inputs;
-	ExtY_ControlState_t *outputs;
-	DW_ControlState_t *dwork;
+  ExtU_ControlState_t *inputs;
+  ExtY_ControlState_t *outputs;
+  DW_ControlState_t *dwork;
 };
 
 /* Model entry point functions */
-extern void ControlState_initialize(RT_MODEL_ControlState_t * const rtControlState_M);
-extern void ControlState_step(RT_MODEL_ControlState_t * const rtControlState_M);
+extern void ControlState_initialize(RT_MODEL_ControlState_t *const
+  rtControlState_M);
+extern void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly

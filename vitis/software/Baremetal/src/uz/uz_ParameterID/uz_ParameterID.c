@@ -92,11 +92,11 @@ uz_ParameterID_Data_t uz_ParameterID_initialize_data_structs(void) {
 	output.PID_GlobalConifg.Kp_id = 0.54f;
 	output.PID_GlobalConifg.Kp_iq = 0.54f;
 	output.PID_GlobalConifg.Kp_n = 0.08f;
-	output.PID_GlobalConifg.L_d = 2.90e-04f;
-	output.PID_GlobalConifg.L_q = 3.00e-04f;
-	output.PID_GlobalConifg.R_ph = 0.085f;
-	output.PID_GlobalConifg.psi_pm = 0.0075f;
-	output.PID_GlobalConifg.polePairs = 4.0f;
+	output.PID_GlobalConifg.PMSM_config.Ld_Henry = 2.90e-04f;
+	output.PID_GlobalConifg.PMSM_config.Lq_Henry = 3.00e-04f;
+	output.PID_GlobalConifg.PMSM_config.R_ph_Ohm = 0.085f;
+	output.PID_GlobalConifg.PMSM_config.Psi_PM_Vs = 0.0075f;
+	output.PID_GlobalConifg.PMSM_config.polePairs = 4.0f;
 	output.PID_GlobalConifg.ratCurrent = 8.0f;
 	output.PID_GlobalConifg.ratSpeed = 3000.0f;
 

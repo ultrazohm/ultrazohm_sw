@@ -22,6 +22,7 @@
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_ACTIVE > 0U
 #include "../../uz_Transformation/uz_Transformation.h"
+#include "../../uz_PMSM_config/uz_PMSM_config.h"
 
 #ifndef RTW_HEADER_ElectricalID_h_
 #define RTW_HEADER_ElectricalID_h_
@@ -82,10 +83,10 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
 
 typedef struct {
-	uz_UVW_t U_UVW;
-	uz_UVW_t I_UVW;
-	uz_dq_t i_dq;
-	uz_dq_t u_dq;
+  uz_UVW_t U_UVW;
+  uz_UVW_t I_UVW;
+  uz_dq_t i_dq;
+  uz_dq_t u_dq;
   real32_T omega_m;
   real32_T omega_el;
   real32_T theta_m;
@@ -98,6 +99,7 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
 
 typedef struct {
+  uz_PMSM_t PMSM_config;
   boolean_T controlType;
   boolean_T Reset;
   real32_T Kp_id;
@@ -114,13 +116,8 @@ typedef struct {
   real32_T thetaOffset;
   boolean_T ACCEPT;
   real32_T sampleTimeISR;
-  real32_T polePairs;
   real32_T ratCurrent;
   real32_T ratSpeed;
-  real32_T L_d;
-  real32_T L_q;
-  real32_T R_ph;
-  real32_T psi_pm;
   real32_T VibAmp;
   boolean_T VibOn;
   uint16_T VibFreq;
@@ -203,10 +200,10 @@ typedef struct {
   real32_T measArray1[1024];           /* '<Root>/ElectricalID' */
   real32_T fv[2048];
   real32_T fv1[2048];
-	real32_T fv2[4];
-	real32_T fv3[2];
-	real32_T fv4[4];
-	real32_T fv5[2];
+  real32_T fv2[4];
+  real32_T fv3[2];
+  real32_T fv4[4];
+  real32_T fv5[2];
   real32_T e;                          /* '<Root>/ElectricalID' */
   real32_T lambda;                     /* '<Root>/ElectricalID' */
   real32_T U0;                         /* '<Root>/ElectricalID' */
@@ -220,47 +217,48 @@ typedef struct {
   real32_T omega_sum;                  /* '<Root>/ElectricalID' */
   real32_T ia_sum;                     /* '<Root>/ElectricalID' */
   real32_T DutyCycle;                  /* '<Root>/ElectricalID' */
-	int32_T i;
+  int32_T i;
   uint32_T counter;                    /* '<Root>/ElectricalID' */
   uint32_T wait_count;                 /* '<Root>/ElectricalID' */
   uint16_T n_iters;                    /* '<Root>/ElectricalID' */
   uint16_T z;                          /* '<Root>/ElectricalID' */
   uint16_T temporalCounter_i1;         /* '<Root>/ElectricalID' */
-	uint8_T is_active_c3_ElectricalID; /* '<Root>/ElectricalID' */
-	uint8_T is_c3_ElectricalID; /* '<Root>/ElectricalID' */
-	uint8_T is_ElectricalID; /* '<Root>/ElectricalID' */
-	boolean_T updateJ; /* '<Root>/ElectricalID' */
-	boolean_T om_con; /* '<Root>/ElectricalID' */
-	boolean_T ia_valid; /* '<Root>/ElectricalID' */
-	boolean_T DC_manual; /* '<Root>/ElectricalID' */
+  uint8_T is_active_c3_ElectricalID;   /* '<Root>/ElectricalID' */
+  uint8_T is_c3_ElectricalID;          /* '<Root>/ElectricalID' */
+  uint8_T is_ElectricalID;             /* '<Root>/ElectricalID' */
+  boolean_T updateJ;                   /* '<Root>/ElectricalID' */
+  boolean_T om_con;                    /* '<Root>/ElectricalID' */
+  boolean_T ia_valid;                  /* '<Root>/ElectricalID' */
+  boolean_T DC_manual;                 /* '<Root>/ElectricalID' */
 } DW_ElectricalID_t;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-	uz_PID_ElectricalIDConfig_t ElectricalIDConfig;/* '<Root>/ElectricalIDConfig' */
-	uz_PID_ActualValues_t ActualValues; /* '<Root>/ActualValues' */
-	uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
-	uz_PID_ControlFlags_t ControlFlags; /* '<Root>/ControlFlags' */
+  uz_PID_ElectricalIDConfig_t ElectricalIDConfig;/* '<Root>/ElectricalIDConfig' */
+  uz_PID_ActualValues_t ActualValues;  /* '<Root>/ActualValues' */
+  uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
+  uz_PID_ControlFlags_t ControlFlags;  /* '<Root>/ControlFlags' */
 } ExtU_ElectricalID_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
   boolean_T enteredElectricalID;       /* '<Root>/enteredElectricalID' */
   boolean_T finishedElectricalID;      /* '<Root>/finishedElectricalID' */
-	uz_PID_Controller_Parameters_output_t ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
-	uz_PID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_output' */
+  uz_PID_Controller_Parameters_output_t ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
+  uz_PID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_output' */
 } ExtY_ElectricalID_t;
 
 /* Real-time Model Data Structure */
 struct tag_RTM_ElectricalID_t {
-	ExtU_ElectricalID_t *inputs;
-	ExtY_ElectricalID_t *outputs;
-	DW_ElectricalID_t *dwork;
+  ExtU_ElectricalID_t *inputs;
+  ExtY_ElectricalID_t *outputs;
+  DW_ElectricalID_t *dwork;
 };
 
 /* Model entry point functions */
-extern void ElectricalID_initialize(RT_MODEL_ElectricalID_t * const rtElectricalID_M);
-extern void ElectricalID_step(RT_MODEL_ElectricalID_t * const rtElectricalID_M);
+extern void ElectricalID_initialize(RT_MODEL_ElectricalID_t *const
+  rtElectricalID_M);
+extern void ElectricalID_step(RT_MODEL_ElectricalID_t *const rtElectricalID_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly

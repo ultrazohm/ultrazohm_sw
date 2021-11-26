@@ -425,45 +425,46 @@ static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
    *  Inport: '<Root>/GlobalConfig'
    */
   /* '<S1>:284:16' Kp_n_loc = Kp_iq_loc/(ElectricalID_output.L_q*dampingFactor*.... */
-  /* '<S1>:284:17'     GlobalConfig.polePairs*3.0/2.0*psiOverJ); */
+  /* '<S1>:284:17'     GlobalConfig.PMSM_config.polePairs*3.0/2.0*psiOverJ); */
   rtElectricalID_DW->Kp_n_loc = rtElectricalID_DW->Kp_iq_loc /
     (rtElectricalID_Y->ElectricalID_output.L_q *
      rtElectricalID_DW->dampingFactor *
-     rtElectricalID_U->GlobalConfig_out.polePairs * 3.0F / 2.0F *
+     rtElectricalID_U->GlobalConfig_out.PMSM_config.polePairs * 3.0F / 2.0F *
      rtElectricalID_DW->psiOverJ);
 
   /* . */
   /* Ki_n_loc = (dampingFactor*dampingFactor*ElectricalID_output.L_q)/Kp_iq_loc; */
   /* '<S1>:284:19' Ki_n_loc = (Kp_iq_loc * Kp_iq_loc)/( ElectricalID_output.L_q * ElectricalID_output.L_q * .... */
-  /* '<S1>:284:20'     dampingFactor * dampingFactor * dampingFactor * GlobalConfig.polePairs*3.0/2.0*psiOverJ); */
+  /* '<S1>:284:20'     dampingFactor * dampingFactor * dampingFactor * GlobalConfig.PMSM_config.polePairs... */
+  /* '<S1>:284:21'     *3.0/2.0*psiOverJ); */
   rtElectricalID_DW->Ki_n_loc = rtElectricalID_DW->Kp_iq_loc *
     rtElectricalID_DW->Kp_iq_loc / (rtElectricalID_Y->ElectricalID_output.L_q *
     rtElectricalID_Y->ElectricalID_output.L_q * rtElectricalID_DW->dampingFactor
     * rtElectricalID_DW->dampingFactor * rtElectricalID_DW->dampingFactor *
-    rtElectricalID_U->GlobalConfig_out.polePairs * 3.0F / 2.0F *
+    rtElectricalID_U->GlobalConfig_out.PMSM_config.polePairs * 3.0F / 2.0F *
     rtElectricalID_DW->psiOverJ);
 
   /* Outport: '<Root>/ElectricalID_FOC_output' */
   /* . */
   /* Output calculated values */
-  /* '<S1>:284:22' ElectricalID_FOC_output.Kp_id_out = Kp_id_loc; */
+  /* '<S1>:284:23' ElectricalID_FOC_output.Kp_id_out = Kp_id_loc; */
   rtElectricalID_Y->ElectricalID_FOC_output.Kp_id_out = Kp_id_loc;
 
-  /* '<S1>:284:23' ElectricalID_FOC_output.Ki_id_out = Ki_id_loc; */
+  /* '<S1>:284:24' ElectricalID_FOC_output.Ki_id_out = Ki_id_loc; */
   rtElectricalID_Y->ElectricalID_FOC_output.Ki_id_out = Ki_id_loc;
 
-  /* '<S1>:284:24' ElectricalID_FOC_output.Kp_iq_out = Kp_iq_loc; */
+  /* '<S1>:284:25' ElectricalID_FOC_output.Kp_iq_out = Kp_iq_loc; */
   rtElectricalID_Y->ElectricalID_FOC_output.Kp_iq_out =
     rtElectricalID_DW->Kp_iq_loc;
 
-  /* '<S1>:284:25' ElectricalID_FOC_output.Ki_iq_out = Ki_iq_loc; */
+  /* '<S1>:284:26' ElectricalID_FOC_output.Ki_iq_out = Ki_iq_loc; */
   rtElectricalID_Y->ElectricalID_FOC_output.Ki_iq_out = Ki_id_loc;
 
-  /* '<S1>:284:26' ElectricalID_FOC_output.Kp_n_out = Kp_n_loc; */
+  /* '<S1>:284:27' ElectricalID_FOC_output.Kp_n_out = Kp_n_loc; */
   rtElectricalID_Y->ElectricalID_FOC_output.Kp_n_out =
     rtElectricalID_DW->Kp_n_loc;
 
-  /* '<S1>:284:27' ElectricalID_FOC_output.Ki_n_out = single(Ki_n_loc); */
+  /* '<S1>:284:28' ElectricalID_FOC_output.Ki_n_out = single(Ki_n_loc); */
   rtElectricalID_Y->ElectricalID_FOC_output.Ki_n_out =
     rtElectricalID_DW->Ki_n_loc;
 }
@@ -1066,9 +1067,9 @@ static real32_T goertzel(ExtU_ElectricalID_t *rtElectricalID_U,
     /* Inport: '<Root>/GlobalConfig' incorporates:
      *  Outport: '<Root>/ElectricalID_output'
      */
-    /* '<S1>:350:7' d(k) = 1.5*GlobalConfig.polePairs*ElectricalID_output.psiPM*measArray1(k); */
+    /* '<S1>:350:7' d(k) = 1.5*GlobalConfig.PMSM_config.polePairs*ElectricalID_output.psiPM*measArray1(k); */
     rtElectricalID_DW->d[k] = 1.5F *
-      rtElectricalID_U->GlobalConfig_out.polePairs *
+      rtElectricalID_U->GlobalConfig_out.PMSM_config.polePairs *
       rtElectricalID_Y->ElectricalID_output.psiPM *
       rtElectricalID_DW->measArray1[k];
 
@@ -2471,19 +2472,18 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
         /* Outport: '<Root>/ElectricalID_output' */
         /*  recalculate speed controller using psiPM and J */
-        /* '<S1>:428:5' Kp_n_loc = Kp_iq_loc/(ElectricalID_output.L_q*dampingFactor*GlobalConfig.polePairs.... */
-        /* '<S1>:428:6'     *3.0/2.0*ElectricalID_output.psiPM/ElectricalID_output.rotorInertia); */
+        /* '<S1>:428:5' Kp_n_loc = Kp_iq_loc/(ElectricalID_output.L_q*dampingFactor*... */
+        /* '<S1>:428:6'     GlobalConfig.PMSM_config.polePairs*3.0/2.0*ElectricalID_output.psiPM/ElectricalID_output.rotorInertia); */
         rtElectricalID_DW->Kp_n_loc = rtElectricalID_DW->Kp_iq_loc /
           (rtElectricalID_Y->ElectricalID_output.L_q *
            rtElectricalID_DW->dampingFactor *
-           rtElectricalID_U->GlobalConfig_out.polePairs * 3.0F / 2.0F *
-           rtElectricalID_Y->ElectricalID_output.psiPM /
+           rtElectricalID_U->GlobalConfig_out.PMSM_config.polePairs * 3.0F /
+           2.0F * rtElectricalID_Y->ElectricalID_output.psiPM /
            rtElectricalID_Y->ElectricalID_output.rotorInertia);
 
-        /* . */
         /* Ki_n_loc = (dampingFactor*dampingFactor*ElectricalID_output.L_q)/Kp_iq_loc; */
         /* '<S1>:428:8' Ki_n_loc = (Kp_iq_loc * Kp_iq_loc)/( ElectricalID_output.L_q * ElectricalID_output.L_q * .... */
-        /* '<S1>:428:9'     dampingFactor * dampingFactor * dampingFactor * GlobalConfig.polePairs*3.0/2.0*.... */
+        /* '<S1>:428:9'     dampingFactor * dampingFactor * dampingFactor * GlobalConfig.PMSM_config.polePairs*3.0/2.0*.... */
         /* '<S1>:428:10'     ElectricalID_output.psiPM/ElectricalID_output.rotorInertia); */
         rtElectricalID_DW->Ki_n_loc = rtElectricalID_DW->Kp_iq_loc *
           rtElectricalID_DW->Kp_iq_loc /
@@ -2491,8 +2491,8 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
            rtElectricalID_Y->ElectricalID_output.L_q *
            rtElectricalID_DW->dampingFactor * rtElectricalID_DW->dampingFactor *
            rtElectricalID_DW->dampingFactor *
-           rtElectricalID_U->GlobalConfig_out.polePairs * 3.0F / 2.0F *
-           rtElectricalID_Y->ElectricalID_output.psiPM /
+           rtElectricalID_U->GlobalConfig_out.PMSM_config.polePairs * 3.0F /
+           2.0F * rtElectricalID_Y->ElectricalID_output.psiPM /
            rtElectricalID_Y->ElectricalID_output.rotorInertia);
 
         /* Outport: '<Root>/ElectricalID_FOC_output' */

@@ -640,20 +640,20 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
         rtControlState_Y->thetaOffset =
           rtControlState_U->ElectricalID_output.thetaOffset;
 
-        /* '<S1>:624:7' GlobalConfig_out.L_d=ElectricalID_output.L_d; */
-        rtControlState_Y->GlobalConfig_out.L_d =
+        /* '<S1>:624:7' GlobalConfig_out.PMSM_config.Ld_Henry=ElectricalID_output.L_d; */
+        rtControlState_Y->GlobalConfig_out.PMSM_config.Ld_Henry =
           rtControlState_U->ElectricalID_output.L_d;
 
-        /* '<S1>:624:8' GlobalConfig_out.L_q=ElectricalID_output.L_q; */
-        rtControlState_Y->GlobalConfig_out.L_q =
+        /* '<S1>:624:8' GlobalConfig_out.PMSM_config.Lq_Henry=ElectricalID_output.L_q; */
+        rtControlState_Y->GlobalConfig_out.PMSM_config.Lq_Henry =
           rtControlState_U->ElectricalID_output.L_q;
 
-        /* '<S1>:624:9' GlobalConfig_out.R_ph=ElectricalID_output.R_s; */
-        rtControlState_Y->GlobalConfig_out.R_ph =
+        /* '<S1>:624:9' GlobalConfig_out.PMSM_config.R_ph_Ohm=ElectricalID_output.R_s; */
+        rtControlState_Y->GlobalConfig_out.PMSM_config.R_ph_Ohm =
           rtControlState_U->ElectricalID_output.R_s;
 
-        /* '<S1>:624:10' GlobalConfig_out.psi_pm=ElectricalID_output.psiPM; */
-        rtControlState_Y->GlobalConfig_out.psi_pm =
+        /* '<S1>:624:10' GlobalConfig_out.PMSM_config.Psi_PM_Vs=ElectricalID_output.psiPM; */
+        rtControlState_Y->GlobalConfig_out.PMSM_config.Psi_PM_Vs =
           rtControlState_U->ElectricalID_output.psiPM;
       }
       break;
@@ -828,6 +828,13 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
    *  Outport: '<Root>/ControlFlags'
    *  Outport: '<Root>/GlobalConfig_out'
    */
+  rtControlState_Y->GlobalConfig_out.PMSM_config.R_ph_Ohm = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_config.Ld_Henry = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_config.Lq_Henry = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_config.Psi_PM_Vs = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_config.polePairs = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_config.J_kg_m_squared = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_config.I_max_Ampere = 0.0F;
   rtControlState_Y->GlobalConfig_out.controlType = false;
   rtControlState_Y->GlobalConfig_out.Reset = false;
   rtControlState_Y->GlobalConfig_out.Kp_id = 0.0F;
@@ -844,13 +851,8 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
   rtControlState_Y->GlobalConfig_out.thetaOffset = 0.0F;
   rtControlState_Y->GlobalConfig_out.ACCEPT = false;
   rtControlState_Y->GlobalConfig_out.sampleTimeISR = 0.0F;
-  rtControlState_Y->GlobalConfig_out.polePairs = 0.0F;
   rtControlState_Y->GlobalConfig_out.ratCurrent = 0.0F;
   rtControlState_Y->GlobalConfig_out.ratSpeed = 0.0F;
-  rtControlState_Y->GlobalConfig_out.L_d = 0.0F;
-  rtControlState_Y->GlobalConfig_out.L_q = 0.0F;
-  rtControlState_Y->GlobalConfig_out.R_ph = 0.0F;
-  rtControlState_Y->GlobalConfig_out.psi_pm = 0.0F;
   rtControlState_Y->GlobalConfig_out.VibAmp = 0.0F;
   rtControlState_Y->GlobalConfig_out.VibOn = false;
   rtControlState_Y->GlobalConfig_out.VibFreq = 0U;

@@ -87,13 +87,13 @@ void ISR_Control(void *data)
 	Global_Data.av.theta_elec_offset_compensated = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
 
 	//assign ADC values to motor currents
-	Global_Data.av.I_a1 = -1.0*Global_Data.aa.A2.me.ADC_A4;
-	Global_Data.av.I_b1 = -1.0*Global_Data.aa.A2.me.ADC_A3;
-	Global_Data.av.I_c1 = -1.0*Global_Data.aa.A2.me.ADC_A2;
+	Global_Data.av.I_a1 = -1.0*Global_Data.aa.A2.me.ADC_A4-0.0338*Global_Data.aa.A2.me.ADC_A4+0.0259;
+	Global_Data.av.I_b1 = -1.0*Global_Data.aa.A2.me.ADC_A3+0.0407*Global_Data.aa.A2.me.ADC_A3+0.0280;
+	Global_Data.av.I_c1 = -1.0*Global_Data.aa.A2.me.ADC_A2+0.0401*Global_Data.aa.A2.me.ADC_A2+0.0220;
 
-	Global_Data.av.I_a2 = -1.0*Global_Data.aa.A2.me.ADC_B8;
-	Global_Data.av.I_b2 = -1.0*Global_Data.aa.A2.me.ADC_B7;
-	Global_Data.av.I_c2 = -1.0*Global_Data.aa.A2.me.ADC_B6;
+	Global_Data.av.I_a2 = -1.0*Global_Data.aa.A2.me.ADC_B8+0.0541*Global_Data.aa.A2.me.ADC_B8+0.0352;
+	Global_Data.av.I_b2 = -1.0*Global_Data.aa.A2.me.ADC_B7+0.0516*Global_Data.aa.A2.me.ADC_B7-0.0133;
+	Global_Data.av.I_c2 = -1.0*Global_Data.aa.A2.me.ADC_B6+0.0341*Global_Data.aa.A2.me.ADC_B6+0.0383;
 
 //3ph
 //	codegenInstance.input.period = 2500;
@@ -140,7 +140,8 @@ void ISR_Control(void *data)
 
 	Global_Data.av.I_d = codegenInstance.output.id;
 	Global_Data.av.I_q = codegenInstance.output.iq;
-
+	Global_Data.av.U_d = codegenInstance.output.ud_ctrl;
+	Global_Data.av.U_q = codegenInstance.output.uq_ctrl;
 	//Start: Control algorithm -------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)
 	{

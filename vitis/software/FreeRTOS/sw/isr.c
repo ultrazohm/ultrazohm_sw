@@ -27,9 +27,8 @@
 
 
 #define IPI_HEADER			0x1E0000 /* 1E - Target Module ID */
-#define IPI_A53toR5_MSG_LEN		3U
 
-Oszi_to_ARM_Data_shared_struct ControlData;
+struct APU_to_RPU_t ControlData;
 
 extern A53_Data Global_Data_A53;
 extern int js_connection_established;
@@ -76,12 +75,9 @@ void Transfer_ipc_Intr_Handler(void *data)
 		}
 	}
 
-	RespBuf[0] = (u32)ControlData.id;
-	RespBuf[1] = (u32)ControlData.value_uint;
-	RespBuf[2] = (u32)ControlData.digInputs;
-
+	u32_t ControlData_size = sizeof(ControlData);
 	// Write message for acknowledge of the interrupt to RPU
-	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, RespBuf, IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_RESP);
+	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, (u32_t*)(&ControlData), ControlData_size, XIPIPSU_BUF_TYPE_RESP);
 
 	// Valid IPI. Clear the appropriate bit in the respective ISR
 	XIpiPsu_ClearInterruptStatus(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);

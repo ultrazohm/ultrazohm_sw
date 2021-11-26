@@ -16,14 +16,6 @@ typedef struct
 	float theta_offset; //in rad/s
 } ParkTrans_struct;
 
-typedef struct
-{
-	uint32_t id;
-	union{	uint32_t value_uint;
-			float 	 value_float;
-	};
-	uint32_t digInputs;
-} Oszi_to_ARM_Data_shared_struct;
 
 //========================
 typedef enum {
@@ -542,7 +534,7 @@ typedef struct _parameterIdentificationVars_ {
 
 
 	//Offline ID Stateflow Outputs
-	uint16_t  activeState;			//active State of Offline ID Stateflow
+	float  activeState;			//active State of Offline ID Stateflow
 	uint16_t  offsetLock;			// offset Lock of identified mechanical encoder offset
 	float array_counter;			// counter for array slow data communication of Mech ID Plot
 	uint16_t  controlArrCounter;		// controlcounter for successful communication

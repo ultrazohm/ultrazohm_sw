@@ -26,8 +26,9 @@
 
 #include "../main.h"
 
-extern Oszi_to_ARM_Data_shared_struct ControlData;
 extern QueueHandle_t js_queue;
+extern struct APU_to_RPU_t ControlData;
+struct APU_to_RPU_t* Received_Data;
 
 int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
@@ -64,8 +65,6 @@ void process_request_thread(void *p)
 	js_connection_established = clientfd;
 
 	while (1) {
-
-		u32_t command[2]={};
 
 		for (size_t i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
 
@@ -114,7 +113,7 @@ void process_request_thread(void *p)
 			js_connection_established = 0;
 			break;
 		}
-		asm(" nop");
+		asm("nop");
 
 		// read a max of RECV_BUF_SIZE bytes from socket /
 		if (nwrote > 0){
@@ -126,12 +125,14 @@ void process_request_thread(void *p)
 				break;
 			}
 			//asm(" nop");
-			if (nread == 8){
-				command[0] = *((u32_t*)recv_buf); // cast 4 bytes to Uint32
+			if ( nread == sizeof(Received_Data) ){
+
+				Received_Data = ((struct APU_to_RPU_t*)recv_buf); // cast received bytes to u32_t
+
 				if (command[0] != 0)
 				{
-					ControlData.id = command[0]; 			// Erste 2 Bytes: Commands in Form von Flags/Nummern
-					ControlData.value_uint = command[1];	// Letzte 2 Bytes: Zahlenwert Uebergabe
+					ControlData.id 		= Received_Data->id;
+					ControlData.value 	= Received_Data->value;
 				}
 			}
 

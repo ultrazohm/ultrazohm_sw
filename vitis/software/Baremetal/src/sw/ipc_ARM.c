@@ -76,22 +76,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			data->er.pwmFrequencyError = true;
 
 		}
-		else if (msgId == 200) // SEND_PREC_CH1_bits
-		{
-
-		}
-		else if (msgId == 201) // SEND_PREC_CH2_bits
-		{
-
-		}
-		else if (msgId == 202) // SEND_PREC_CH3_bits
-		{
-
-		}
-		else if (msgId == 203) // SEND_PREC_CH4_bits
-		{
-
-		}
 		else if (msgId == 204) // SELECT_DATA_CH1_bits
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )

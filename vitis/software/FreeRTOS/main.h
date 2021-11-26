@@ -86,17 +86,6 @@ typedef struct		// status + time + 20 elements (32bit) + 32 bit
 } NetworkSendStruct;
 
 
-typedef struct
-{
-	uint32_t id;
-	union{	uint32_t value_uint;
-			float 	 value_float;
-	};
-	uint32_t digInputs;
-} Oszi_to_ARM_Data_shared_struct;
-
-
-
 typedef struct _errorWord_ { // 16 bits
 	uint16_t  errorCodeXilinx:8;
 	_Bool wrongInterruptByIPI:1; //Wrong interrupt arrived

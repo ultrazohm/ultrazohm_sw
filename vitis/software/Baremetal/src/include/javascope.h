@@ -57,19 +57,19 @@ enum JS_OberservableData {
 // Do not change the first (zero) and last (end) entries.
 enum JS_SlowData {
 	JSSD_ZEROVALUE=0,
-	JSSD_INT_SecondsSinceSystemStart,
+	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_FreqReadback,
-	JSSD_INT_Milliseconds,
+	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_ADCconvFactorReadback,
 	JSSD_FLOAT_Rs_Offline,
 	JSSD_FLOAT_Ld_Offline,
 	JSSD_FLOAT_Lq_Offline,
 	JSSD_FLOAT_PsiPM_Offline,
 	JSSD_FLOAT_J,
-	JSSD_INT_polePairs,
-	JSSD_INT_activeState,
+	JSSD_FLOAT_polePairs,
+	JSSD_FLOAT_activeState,
 	JSSD_FLOAT_u_d,
 	JSSD_FLOAT_u_q,
 	JSSD_FLOAT_i_d,
@@ -115,14 +115,6 @@ enum JS_SlowData {
 	JSSD_FLOAT_totalRotorInertia,
 	JSSD_ENDMARKER
 };
-
-
-union SlowData {
-   int32_t  i;
-   uint32_t u;
-   float 	f;
-};
-
 
 int JavaScope_initalize(DS_Data* data);
 void JavaScope_update(DS_Data* data);

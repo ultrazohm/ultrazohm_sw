@@ -1,7 +1,7 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
---Date        : Tue Nov 23 16:38:11 2021
+--Date        : Fri Nov 26 14:49:26 2021
 --Host        : ts-ThinkStation-P6203 running 64-bit Ubuntu 20.04.2 LTS
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -14,8 +14,7 @@ use UNISIM.VCOMPONENTS.ALL;
 entity zusys_wrapper is
   port (
     A1_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A1_OUT_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A1_OUT_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    A1_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A1_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A1_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A2_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
@@ -113,18 +112,16 @@ architecture STRUCTURE of zusys_wrapper is
     A2_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A1_OUT_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A1_OUT_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A1_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A1_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 )
+    A1_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    A1_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 )
   );
   end component zusys;
 begin
 zusys_i: component zusys
      port map (
       A1_IN(15 downto 0) => A1_IN(15 downto 0),
-      A1_OUT_0(0) => A1_OUT_0(0),
-      A1_OUT_1(0) => A1_OUT_1(0),
+      A1_OUT_CLK(1 downto 0) => A1_OUT_CLK(1 downto 0),
       A1_OUT_CNV_0(0) => A1_OUT_CNV_0(0),
       A1_OUT_CNV_1(0) => A1_OUT_CNV_1(0),
       A2_IN(15 downto 0) => A2_IN(15 downto 0),

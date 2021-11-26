@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x7583F294BEDA41E3",
+      "boundary_crc": "0x7F6DB095B2BB2D4A",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -14,11 +14,8 @@
       "proc_sys_reset_10MHz": "",
       "proc_sys_reset_50MHz": "",
       "proc_sys_reset_100MHz": "",
-      "vio_GPIO": "",
       "xlslice_Enable_Inverter_Bit0": "",
-      "xlslice_Set_ADC_Offset_Bit2": "",
       "xlslice_Enable_Gate_Bit1": "",
-      "xlslice_Set_ADC_Test_Bit3": "",
       "Gates": {
         "PWM_and_SS_control_V_0": "",
         "ila_GateSignal": "",
@@ -66,8 +63,6 @@
       },
       "timer_uptime_64bit": "",
       "smartconnect_1": "",
-      "xlslice_0": "",
-      "xlslice_1": "",
       "uz_axi_testIP_0": "",
       "A1_ADC_LTC2311": "",
       "A2_ADC_LTC2311": "",
@@ -304,16 +299,6 @@
         "left": "0",
         "right": "0"
       },
-      "A1_OUT_0": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "A1_OUT_1": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
       "A1_OUT_CNV_1": {
         "direction": "O",
         "left": "0",
@@ -322,6 +307,11 @@
       "A1_OUT_CNV_0": {
         "direction": "O",
         "left": "0",
+        "right": "0"
+      },
+      "A1_OUT_CLK": {
+        "direction": "O",
+        "left": "1",
         "right": "0"
       }
     },
@@ -342,18 +332,6 @@
         "vlnv": "xilinx.com:ip:proc_sys_reset:5.0",
         "xci_name": "zusys_proc_sys_reset_100MHz_0"
       },
-      "vio_GPIO": {
-        "vlnv": "xilinx.com:ip:vio:3.0",
-        "xci_name": "zusys_vio_GPIO_0",
-        "parameters": {
-          "C_NUM_PROBE_IN": {
-            "value": "5"
-          },
-          "C_NUM_PROBE_OUT": {
-            "value": "0"
-          }
-        }
-      },
       "xlslice_Enable_Inverter_Bit0": {
         "vlnv": "xilinx.com:ip:xlslice:1.0",
         "xci_name": "zusys_xlslice_Enable_Inverter_Bit0_0",
@@ -369,24 +347,6 @@
           }
         }
       },
-      "xlslice_Set_ADC_Offset_Bit2": {
-        "vlnv": "xilinx.com:ip:xlslice:1.0",
-        "xci_name": "zusys_xlslice_Set_ADC_Offset_Bit2_0",
-        "parameters": {
-          "DIN_FROM": {
-            "value": "2"
-          },
-          "DIN_TO": {
-            "value": "2"
-          },
-          "DIN_WIDTH": {
-            "value": "8"
-          },
-          "DOUT_WIDTH": {
-            "value": "1"
-          }
-        }
-      },
       "xlslice_Enable_Gate_Bit1": {
         "vlnv": "xilinx.com:ip:xlslice:1.0",
         "xci_name": "zusys_xlslice_Enable_Gate_Bit1_0",
@@ -396,24 +356,6 @@
           },
           "DIN_TO": {
             "value": "1"
-          },
-          "DIN_WIDTH": {
-            "value": "8"
-          },
-          "DOUT_WIDTH": {
-            "value": "1"
-          }
-        }
-      },
-      "xlslice_Set_ADC_Test_Bit3": {
-        "vlnv": "xilinx.com:ip:xlslice:1.0",
-        "xci_name": "zusys_xlslice_Set_ADC_Test_Bit3_0",
-        "parameters": {
-          "DIN_FROM": {
-            "value": "3"
-          },
-          "DIN_TO": {
-            "value": "3"
           },
           "DIN_WIDTH": {
             "value": "8"
@@ -5425,33 +5367,6 @@
           }
         }
       },
-      "xlslice_0": {
-        "vlnv": "xilinx.com:ip:xlslice:1.0",
-        "xci_name": "zusys_xlslice_0_0",
-        "parameters": {
-          "DIN_WIDTH": {
-            "value": "2"
-          }
-        }
-      },
-      "xlslice_1": {
-        "vlnv": "xilinx.com:ip:xlslice:1.0",
-        "xci_name": "zusys_xlslice_1_0",
-        "parameters": {
-          "DIN_FROM": {
-            "value": "1"
-          },
-          "DIN_TO": {
-            "value": "1"
-          },
-          "DIN_WIDTH": {
-            "value": "2"
-          },
-          "DOUT_WIDTH": {
-            "value": "1"
-          }
-        }
-      },
       "uz_axi_testIP_0": {
         "vlnv": "user.org:ip:uz_axi_testIP:1.0",
         "xci_name": "zusys_uz_axi_testIP_0_0"
@@ -5969,16 +5884,8 @@
         "ports": [
           "axi_gpio_2/gpio_io_o",
           "xlslice_Enable_Inverter_Bit0/Din",
-          "xlslice_Set_ADC_Offset_Bit2/Din",
           "xlslice_Enable_Gate_Bit1/Din",
-          "xlslice_Set_ADC_Test_Bit3/Din",
           "xlslice_Enable_AXI2TCM_Bit4/Din"
-        ]
-      },
-      "xlslice_Set_ADC_Offset_Dout": {
-        "ports": [
-          "xlslice_Set_ADC_Offset_Bit2/Dout",
-          "vio_GPIO/probe_in2"
         ]
       },
       "xlslice_Enable_Gate_Dout": {
@@ -5987,16 +5894,14 @@
           "D1_OUT_30",
           "D2_OUT_30",
           "D3_OUT_30",
-          "D4_OUT_30",
-          "vio_GPIO/probe_in1"
+          "D4_OUT_30"
         ]
       },
       "xlslice_Enable_Inverter_Dout": {
         "ports": [
           "xlslice_Enable_Inverter_Bit0/Dout",
           "Gates/Enable_Gate",
-          "Gates_3L/Enable_Gates",
-          "vio_GPIO/probe_in0"
+          "Gates_3L/Enable_Gates"
         ]
       },
       "Interrupt_muxed": {
@@ -6092,17 +5997,10 @@
           "D4_OUT_29"
         ]
       },
-      "xlslice_Set_ADC_Test_Dout": {
-        "ports": [
-          "xlslice_Set_ADC_Test_Bit3/Dout",
-          "vio_GPIO/probe_in3"
-        ]
-      },
       "xlslice_Enable_AXI2TCM_Bit4_Dout": {
         "ports": [
           "xlslice_Enable_AXI2TCM_Bit4/Dout",
-          "DataMover/Enable_AXI2TCM",
-          "vio_GPIO/probe_in4"
+          "DataMover/Enable_AXI2TCM"
         ]
       },
       "vio_D2_test_probe_out0": {
@@ -6187,7 +6085,6 @@
         "ports": [
           "zynq_ultra_ps_e_0/pl_clk0",
           "proc_sys_reset_100MHz/slowest_sync_clk",
-          "vio_GPIO/clk",
           "Gates/AXI4_Lite_ACLK",
           "DataMover/m00_axi_aclk",
           "vio_D34_test/clk",
@@ -6273,23 +6170,10 @@
           "A3_OUT_CNV_0"
         ]
       },
-      "xlslice_0_Dout": {
-        "ports": [
-          "xlslice_0/Dout",
-          "A1_OUT_0"
-        ]
-      },
-      "xlslice_1_Dout": {
-        "ports": [
-          "xlslice_1/Dout",
-          "A1_OUT_1"
-        ]
-      },
       "A1_ADC_LTC2311_SCLK_DIFF": {
         "ports": [
           "A1_ADC_LTC2311/SCLK_DIFF",
-          "xlslice_1/Din",
-          "xlslice_0/Din"
+          "A1_OUT_CLK"
         ]
       },
       "A1_ADC_LTC2311_SAMPLE_COUNTER": {

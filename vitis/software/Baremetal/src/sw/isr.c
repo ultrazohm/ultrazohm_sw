@@ -28,8 +28,6 @@
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 
-#include "../include/uz_adcLtc2311_testbench.h"
-
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
 

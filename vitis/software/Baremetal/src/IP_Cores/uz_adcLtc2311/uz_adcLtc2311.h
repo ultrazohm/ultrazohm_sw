@@ -76,12 +76,13 @@
 
 // control register
 #define UZ_ADCLTC2311_CR_MODE (1U<<0)
-#define UZ_ADCLTC2311_CR_TRIGGER (1u<<1)
-#define UZ_ADCLTC2311_CR_SW_RESET (1U<<2)
-#define UZ_ADCLTC2311_CR_CONV_VALUE_VALID (1U<<3)
-#define UZ_ADCLTC2311_CR_CONFIG_VALUE_0 (1U<<4)
-#define UZ_ADCLTC2311_CR_CONFIG_VALUE_1 (1U<<5)
-#define UZ_ADCLTC2311_CR_CONFIG_VALUE_2 (1U<<6)
+#define UZ_ADCLTC2311_CR_SW_TRIGGER_MODE (1U<<1)
+#define UZ_ADCLTC2311_CR_TRIGGER (1u<<2)
+#define UZ_ADCLTC2311_CR_SW_RESET (1U<<3)
+#define UZ_ADCLTC2311_CR_CONV_VALUE_VALID (1U<<4)
+#define UZ_ADCLTC2311_CR_CONFIG_VALUE_0 (1U<<5)
+#define UZ_ADCLTC2311_CR_CONFIG_VALUE_1 (1U<<6)
+#define UZ_ADCLTC2311_CR_CONFIG_VALUE_2 (1U<<7)
 
 // SPI control register
 #define UZ_ADCLTC2311_SPI_CR_SS_N (1U<<0)
@@ -216,6 +217,16 @@ void uz_adcLtc2311_set_continuous_mode(uz_adcLtc2311_t* self);
  * @brief Enable the triggered sampling mode
  */
 void uz_adcLtc2311_set_triggered_mode(uz_adcLtc2311_t* self);
+
+/**
+ * @brief In triggered mode: The IP core is triggered by software via AXI
+ */
+void uz_adcLtc2311_set_software_trigger_mode(uz_adcLtc2311_t* self);
+
+/**
+ * @brief In triggered mode: The IP core is triggered by hardware through the PL pin
+ */
+void uz_adcLtc2311_set_pl_trigger_mode(uz_adcLtc2311_t* self);
 
 // update functions
 

@@ -92,6 +92,7 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     -- control signals
     signal S_ENABLE, S_SET_CONVERSION, S_SET_OFFSET, S_SET_SAMPLES, S_SET_SAMPLE_TIME : std_logic_vector(SPI_MASTER - 1 downto 0);
     signal S_RESET_N, S_CLK : std_logic;
+    signal S_TRIGGER_CNV_PIPE : std_logic_vector(SPI_MASTER - 1 downto 0);
     
     -- AXI values
     
@@ -258,27 +259,42 @@ begin
                 S_SPI_MANUAL <= (others => '0');
                 S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '0';
                 curstate <= TRIGGERED;
+                S_TRIGGER_CNV_PIPE <= (others => '0');
             else
+                S_TRIGGER_CNV_PIPE <= TRIGGER_CNV;
                 curstate <= nxtstate;
                 case nxtstate is
                     when TRIGGERED =>
                         S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '0';
                         S_SPI_MANUAL <= (others => '0');
                         
-                        if (TRIGGER_CNV /= STD_ZERO) then
-                            S_ENABLE <= (TRIGGER_CNV and S_ADC_AVAILABLE(SPI_MASTER - 1 downto 0));
+                        if (S_ADC_CR(C_SW_TRIGGER) = '0') then
+                            -- check for rising edge on HW port
+                            for i in SPI_MASTER - 1 downto 0 loop
+                               if((S_TRIGGER_CNV_PIPE(i) = '0') and TRIGGER_CNV(i) = '1') then
+                                   -- ADC_AVAILABLE is high activ ->
+                                   -- if trigger event occurs TRIGGER_CNV == '1'
+                                   -- S_ENABLE <= TRIGGER_CNV(i) and S_ADC_AVAILABLE(i)
+                                   -- which is equivilant to S_ADC_AVAILABLE(i) because TRIGGER_CNV is always high  
+                                   S_ENABLE(i) <= S_ADC_AVAILABLE(i);
+                               else
+                                   S_ENABLE(i) <= '0';
+                               end if;
+                           end loop;
+                           
                        -- Triggered by AXI register
-                        elsif (S_ADC_CR(C_TRIGGER) = '1') then
-           
-                            if (IS_BUSY(S_ADC_MASTER_BUSY, S_ADC_MASTER_CHANNEL) = false) then
-                                S_ENABLE <= (S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0) and S_ADC_AVAILABLE(SPI_MASTER - 1 downto 0));
-                                S_ADC_CR_IN(C_TRIGGER) <= '0';
+                       else
+                            if (S_ADC_CR(C_TRIGGER) = '1') then
+               
+                                if (IS_BUSY(S_ADC_MASTER_BUSY, S_ADC_MASTER_CHANNEL) = false) then
+                                    S_ENABLE <= (S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0) and S_ADC_AVAILABLE(SPI_MASTER - 1 downto 0));
+                                    S_ADC_CR_IN(C_TRIGGER) <= '0';
+                                end if;
+                                
+                            else
+                                S_ENABLE <= (others => '0');
                             end if;
-                            
-                        else
-                            S_ENABLE <= (others => '0');
-                        end if;
-                    
+                       end if;
                     when CONTINUOUS =>
                         S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '0';
                         S_ENABLE <= (S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0) and S_ADC_AVAILABLE(SPI_MASTER - 1 downto 0));

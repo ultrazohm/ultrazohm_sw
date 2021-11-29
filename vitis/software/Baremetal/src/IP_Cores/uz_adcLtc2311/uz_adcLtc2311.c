@@ -91,6 +91,24 @@ void uz_adcLtc2311_set_triggered_mode(uz_adcLtc2311_t* self)
     uz_adcLtc2311_hw_write_cr(self->config.base_address, adc_cr);
 }
 
+void uz_adcLtc2311_set_software_trigger_mode(uz_adcLtc2311_t* self)
+{
+    uint32_t adc_cr = uz_adcLtc2311_hw_read_cr(self->config.base_address);
+    adc_cr |= UZ_ADCLTC2311_CR_SW_TRIGGER_MODE;
+    uz_adcLtc2311_hw_write_cr(self->config.base_address, adc_cr);
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+}
+
+void uz_adcLtc2311_set_pl_trigger_mode(uz_adcLtc2311_t* self)
+{
+    uint32_t adc_cr = uz_adcLtc2311_hw_read_cr(self->config.base_address);
+    adc_cr &= ~UZ_ADCLTC2311_CR_SW_TRIGGER_MODE;
+    uz_adcLtc2311_hw_write_cr(self->config.base_address, adc_cr);
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+}
+
 void uz_adcLtc2311_set_master_select(uz_adcLtc2311_t* self, uint32_t value)
 {
     uz_assert_not_NULL(self);

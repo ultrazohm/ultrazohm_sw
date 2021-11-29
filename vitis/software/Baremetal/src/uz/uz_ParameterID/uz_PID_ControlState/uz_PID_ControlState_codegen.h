@@ -22,6 +22,7 @@
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_ACTIVE > 0U
 #include "../../uz_PMSM_config/uz_PMSM_config.h"
+#include "../../uz_Transformation/uz_Transformation.h"
 
 #ifndef RTW_HEADER_ControlState_h_
 #define RTW_HEADER_ControlState_h_
@@ -91,10 +92,9 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_Controller_Parameters_output_t_
 
 typedef struct {
+	uz_dq_t i_dq_ref;
   uint16_T activeState;
   real32_T n_ref_FOC;
-  real32_T i_d_ref_out;
-  real32_T i_q_ref_out;
   boolean_T enableFOC_speed;
   boolean_T enableFOC_current;
   boolean_T VibOn_out;

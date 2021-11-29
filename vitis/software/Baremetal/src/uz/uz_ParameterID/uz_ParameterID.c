@@ -66,6 +66,40 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t Data) {
 	uz_PID_ControlState_step(self->ControlState);
 }
 
+struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance) {
+	struct uz_DutyCycle_t output_DutyCycle = { 0 };
+	uz_dq_t u_dq_Volts = { 0 };
+	uz_dq_t i_SpeedControl_reference_Ampere = { 0 };
+
+	if (Data.PID_Controller_Parameters.enableFOC_speed == true) {
+		bool ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
+		i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data.PID_ActualValues.omega_el, Data.PID_Controller_Parameters.n_ref_FOC, Data.PID_ActualValues.U_zk,
+		                Data.PID_Controller_Parameters.i_dq_ref.d, Data.PID_GlobalConifg.PMSM_config, ext_clamping);
+	} else if (Data.PID_Controller_Parameters.enableFOC_current || Data.PID_Controller_Parameters.enableFOC_speed == true) {
+
+		if (Data.PID_Controller_Parameters.enableFOC_current == true) {
+			u_dq_Volts = uz_FOC_sample(FOC_instance, Data.PID_Controller_Parameters.i_dq_ref, Data.PID_ActualValues.i_dq, Data.PID_ActualValues.U_zk, Data.PID_ActualValues.omega_el);
+		}
+
+		if (Data.PID_Controller_Parameters.enableFOC_current == true) {
+			u_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data.PID_ActualValues.i_dq, Data.PID_ActualValues.U_zk, Data.PID_ActualValues.omega_el);
+		}
+		uz_UVW_t U_UVW_Volts = uz_dq_inverse_transformation(u_dq_Volts, Data.PID_ActualValues.theta_el);
+		output_DutyCycle = uz_FOC_generate_DutyCycles(U_UVW_Volts, Data.PID_ActualValues.U_zk);
+	} else if (Data.PID_Controller_Parameters.resetIntegrator == true) {
+		uz_FOC_reset(FOC_instance);
+		uz_SpeedControl_reset(Speed_instance);
+	}
+	uz_FOC_set_Kp_id(FOC_instance, Data.PID_GlobalConifg.Kp_id);
+	uz_FOC_set_Kp_iq(FOC_instance, Data.PID_GlobalConifg.Kp_iq);
+	uz_FOC_set_Ki_id(FOC_instance, Data.PID_GlobalConifg.Ki_id);
+	uz_FOC_set_Ki_iq(FOC_instance, Data.PID_GlobalConifg.Ki_iq);
+
+
+
+	return (output_DutyCycle);
+}
+
 uz_ParameterID_Data_t uz_ParameterID_initialize_data_structs(void) {
 	uz_ParameterID_Data_t output = { 0 };
 

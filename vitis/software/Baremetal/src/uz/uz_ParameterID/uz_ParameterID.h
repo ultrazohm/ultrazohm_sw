@@ -21,6 +21,8 @@
 #include <stdbool.h>
 #include "uz_PID_ControlState/uz_PID_ControlState.h"
 #include "uz_PID_ElectricalID/uz_PID_ElectricalID.h"
+#include "../uz_FOC/uz_FOC.h"
+#include "../uz_SpeedControl/uz_speedcontrol.h"
 
 typedef struct uz_ParameterID_t {
 	bool is_ready;
@@ -40,6 +42,8 @@ typedef struct uz_ParameterID_Data_t {
 void uz_ParameterID_init(uz_ParameterID_t* self);
 
 void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t Data);
+
+struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
 
 uz_ParameterID_Data_t uz_ParameterID_initialize_data_structs(void);
 

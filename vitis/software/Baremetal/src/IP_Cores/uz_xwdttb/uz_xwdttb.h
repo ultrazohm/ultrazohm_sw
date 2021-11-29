@@ -32,9 +32,8 @@
 //#include "xscugic.h"
 // #include "xil_printf.h"
 
-/************************** Enabling Constant  *****************************/
-// Delete this constant to DISABLE the WDTTB Driver here!
-#define ENABLE_WDTTB_INT
+/************************** Enabling Module  *****************************/
+// Go to "../../uz/uz_global_configuration.h" and set UZ_WDTTB_MAX_INSTANCES to 0U (0 instances)
 
 /************************** Constant Definitions *****************************/
 
@@ -79,20 +78,26 @@
 /************************** Function Prototypes ******************************/
 
 
-void WdtTb_Start() ;
+void WdtTb_Start(XWdtTb *WdtTbInstance) ;
 
-void WdtTb_Restart() ;
+void WdtTb_Restart(XWdtTb *WdtTbInstance) ;
 
-int WdtTbInit(u32 CounterValue);
+/**
+ * @brief Initializes and instance of the WDTTB driver
+ *
+ * @return Pointer to initialized instance
+ */
+XWdtTb* uz_WdtTb_init();
+
 
 //int WinWdtIntrExample(XScuGic *IntcInstancePtr);
-int WinWdtIntrExample();
+int WinWdtIntrExample(XWdtTb *WdtTbInstance);
 
 
 void WdtTbIntrHandler(void *CallBackRef);
 
-XWdtTb *getWdtTbInstance();
-
+//XWdtTb *getWdtTbInstance();
+//int WdtTbInit(u32 CounterValue);
 //static int WdtTbSetupIntrSystem(INTC *IntcInstancePtr);
 //int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr);
 //void WdtTbDisableIntrSystem(XScuGic *IntcInstancePtr);

@@ -48,6 +48,10 @@ XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible 
 //Initialize the Timer structure
 XTmrCtr Timer_Interrupt;
 
+//Initialize the WDTTB structure
+XWdtTb *WdtTbInstancePtr;
+
+
 float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
@@ -81,7 +85,7 @@ void ISR_Control(void *data)
 //	XWdtPs_Restart();
 
 	/* Restart the AXI IP watch dog timer: kick forward */
-	WdtTb_Restart();
+	WdtTb_Restart(WdtTbInstancePtr);
 
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
 	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
@@ -163,12 +167,14 @@ int Initialize_ISR(){
 	/*
 	 * Call the WDT init to initialize and set timer to the given timeout
 	 */
-	Status = WdtTbInit(WIN_WDT_SW_COUNT); // XPFW_WDT_EXPIRE_TIME for WDT PS
-//	Status = WdtPsInit(XPFW_WDT_EXPIRE_TIME);
-	if (Status != XST_SUCCESS) {
-		xil_printf("WDT initialization failed\r\n");
-		return XST_FAILURE;
-	}
+//	Status = WdtTbInit(WIN_WDT_SW_COUNT); // XPFW_WDT_EXPIRE_TIME for WDT PS
+////	Status = WdtPsInit(XPFW_WDT_EXPIRE_TIME);
+//	if (Status != XST_SUCCESS) {
+//		xil_printf("WDT initialization failed\r\n");
+//		return XST_FAILURE;
+//	}
+
+	WdtTbInstancePtr = uz_WdtTb_init();
 
 
 	// Initialize interrupt controller for the GIC
@@ -267,7 +273,7 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 	 */
 	Status = XScuGic_Connect(IntcInstancePtr, WDTTB_IRPT_INTR,
 				(Xil_ExceptionHandler)WdtTbIntrHandler,
-				getWdtTbInstance());
+				WdtTbInstancePtr);
 	if (Status != XST_SUCCESS) {
 		return Status;
 	}
@@ -394,7 +400,7 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 
 
 //	Enable the WDT and launch first kick
-	WdtTb_Start();
+	WdtTb_Start(WdtTbInstancePtr);
 
 	xil_printf("RPU: Rpu_GicInit and EXAMPLE: Done\r\n");
 	return XST_SUCCESS;

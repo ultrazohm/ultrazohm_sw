@@ -122,25 +122,14 @@ void uz_FOC_set_Ki_iq(uz_FOC* self, float Ki_iq){
 	uz_PI_Controller_set_Ki(self->Controller_iq, Ki_iq);
 }
 
-void uz_FOC_set_Ld(uz_FOC* self, float Ld_Henry){
+void uz_FOC_set_PMSM_parameters(uz_FOC* self, uz_PMSM_t pmsm_config) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	uz_assert(Ld_Henry > 0.0f);
-	self->config.config_PMSM.Ld_Henry = Ld_Henry;
-}
-
-void uz_FOC_set_Lq(uz_FOC* self, float Lq_Henry){
-	uz_assert_not_NULL(self);
-	uz_assert(self->is_ready);
-	uz_assert(Lq_Henry > 0.0f);
-	self->config.config_PMSM.Lq_Henry = Lq_Henry;
-}
-
-void uz_FOC_set_Psi_PM(uz_FOC* self, float Psi_PM_Vs){
-	uz_assert_not_NULL(self);
-	uz_assert(self->is_ready);
-	uz_assert(Psi_PM_Vs >= 0.0f);
-	self->config.config_PMSM.Psi_PM_Vs = Psi_PM_Vs;
+	//Only assert relevant parts of the PMSM-struct
+    uz_assert(pmsm_config.Ld_Henry > 0.0f);
+	uz_assert(pmsm_config.Lq_Henry > 0.0f);
+	uz_assert(pmsm_config.Psi_PM_Vs >= 0.0f);
+	self->config.config_PMSM = pmsm_config;
 }
 
 void uz_FOC_set_decoupling_method(uz_FOC* self, enum uz_FOC_decoupling_select decoupling_select) {

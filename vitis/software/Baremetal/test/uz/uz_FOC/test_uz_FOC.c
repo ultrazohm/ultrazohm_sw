@@ -200,6 +200,33 @@ void test_uz_FOC_set_Kp_and_Ki_iq(void){
 	TEST_ASSERT_FLOAT_WITHIN(1e-02, 0.0f, output.q);
 }
 
+void test_uz_FOC_set_PMSM_parameters(void) {
+    uz_dq_t output = { 0 };
+    //sets the output of the Pi-Controllers 0
+    config.config_id.Ki = 0.0f;
+    config.config_id.Kp = 0.0f;
+    config.config_iq.Ki = 0.0f;
+    config.config_iq.Kp = 0.0f;
+    uz_FOC* instance = uz_FOC_init(config);
+
+    //Check outputs from the linear decoupling
+    i_actual_Ampere.q = 4.0f;
+    i_actual_Ampere.d = 4.0f;
+    omega_el_rad_per_sec = 500.0f;
+    output = uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+    TEST_ASSERT_EQUAL_FLOAT(-0.54f, output.d);
+    TEST_ASSERT_EQUAL_FLOAT(4.64f, output.q);
+    //Set params of linear decoupling to 0
+    config.config_PMSM.Ld_Henry = 0.0001f;
+    config.config_PMSM.Lq_Henry = 0.0001f;
+    config.config_PMSM.Psi_PM_Vs = 0.0f;
+    uz_FOC_set_PMSM_parameters(instance, config.config_PMSM);
+    output = uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+    //Check, if the output is changed
+    TEST_ASSERT_EQUAL_FLOAT(-0.2f, output.d);
+    TEST_ASSERT_EQUAL_FLOAT(0.2f, output.q);
+}
+
 void test_uz_FOC_get_ext_clamping_NULL(void){
     TEST_ASSERT_FAIL_ASSERT(uz_FOC_get_ext_clamping(NULL));
 }

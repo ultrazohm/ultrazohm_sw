@@ -28,8 +28,8 @@
 
 #include "xparameters.h"
 #include "xwdttb.h"
-#include "xil_exception.h"
-#include "xscugic.h"
+//#include "xil_exception.h"
+//#include "xscugic.h"
 // #include "xil_printf.h"
 
 /************************** Enabling Constant  *****************************/
@@ -85,12 +85,17 @@ void WdtTb_Restart() ;
 
 int WdtTbInit(u32 CounterValue);
 
-int WinWdtIntrExample(XScuGic *IntcInstancePtr);
+//int WinWdtIntrExample(XScuGic *IntcInstancePtr);
+int WinWdtIntrExample();
+
 
 void WdtTbIntrHandler(void *CallBackRef);
+
+XWdtTb *getWdtTbInstance();
+
 //static int WdtTbSetupIntrSystem(INTC *IntcInstancePtr);
-int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr);
-void WdtTbDisableIntrSystem(XScuGic *IntcInstancePtr);
+//int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr);
+//void WdtTbDisableIntrSystem(XScuGic *IntcInstancePtr);
 
 
 

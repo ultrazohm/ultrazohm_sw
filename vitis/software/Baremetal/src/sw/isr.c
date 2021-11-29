@@ -214,6 +214,83 @@ int Initialize_Timer(){
 	return Status;
 }
 
+/*****************************************************************************/
+/**
+*
+* This function setups the interrupt system such that WDT interrupt can occur
+* for the WdtTb. This function is application specific since the actual
+* system may or may not have an interrupt controller. The WdtTb device could be
+* directly connected to a processor without an interrupt controller. The
+* user should modify this function to fit the application.
+*
+* @param	IntcConfig is a pointer to the instance of the XGIC
+*		Configutarion.
+* @param	IntcInstancePtr is a pointer to the instance of the Intc
+*		driver.
+*
+* @return
+*		- XST_SUCCESS if successful.
+*		- XST_FAILURE, otherwise.
+*
+* @note		None.
+*
+******************************************************************************/
+int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
+{
+	int Status;
+	u8 Priority, Trigger;
+
+//	uz_assert(Wdttb_IsReady);
+
+//	TempConfig = IntcConfig;
+
+//	IntcInstance.Config = IntcInstancePtr->Config;
+//	IntcInstance.IsReady = IntcInstancePtr->IsReady;
+//	IntcInstance.UnhandledInterrupts = IntcInstancePtr->UnhandledInterrupts;
+
+	XScuGic_GetPriorityTriggerType(IntcInstancePtr, WDTTB_IRPT_INTR,
+		                                            &Priority, &Trigger);
+
+	Priority = 0x0;
+	Trigger = 3;
+	XScuGic_SetPriorityTriggerType(IntcInstancePtr, WDTTB_IRPT_INTR,
+			Priority, Trigger);
+
+	XScuGic_GetPriorityTriggerType(IntcInstancePtr, WDTTB_IRPT_INTR,
+													&Priority, &Trigger);
+	//	DEBUG INFO
+	//	xil_printf("WdtTbSetupIntrSystem: Wd Prio is %d, level is %d\r\n",Priority, Trigger);
+
+	/*
+	 * Connect the interrupt handler that will be called when an
+	 * interrupt occurs for the device.
+	 */
+	Status = XScuGic_Connect(IntcInstancePtr, WDTTB_IRPT_INTR,
+				(Xil_ExceptionHandler)WdtTbIntrHandler,
+				getWdtTbInstance());
+	if (Status != XST_SUCCESS) {
+		return Status;
+	}
+
+	/* Enable the interrupt for the Timer device */
+	XScuGic_Enable(IntcInstancePtr, WDTTB_IRPT_INTR);
+
+	/* Initialize the exception table */
+	Xil_ExceptionInit();
+
+	/*
+	 * Register the interrupt controller handler with the exception table
+	 */
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
+			(Xil_ExceptionHandler)XScuGic_InterruptHandler, // (Xil_ExceptionHandler)INTC_HANDLER,
+			IntcInstancePtr);
+
+	/* Enable non-critical exceptions */
+	Xil_ExceptionEnable();
+
+	return XST_SUCCESS;
+}
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // Rpu_GicInit() - This function initializes RPU GIC and connects

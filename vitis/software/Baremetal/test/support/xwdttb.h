@@ -22,8 +22,6 @@ extern "C" {
 
 /**************************** Type Definitions *******************************/
 
-// typedef uint32_t u32;
-
 /**
  * This typedef contains enumeration of different events in basic mode.
  */
@@ -76,17 +74,9 @@ typedef struct {
 * @note		None.
 *
 ******************************************************************************/
+// static inline and code {}
 u32 XWdtTb_GetTbValue(const XWdtTb *InstancePtr);
-//{
-		// /* Verify arguments. */
-		// Xil_AssertNonvoid(InstancePtr != NULL);
-		// Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-		// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 0U);
 
-		// /* Return the contents of the timebase register */
-		// return XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_TBR_OFFSET);
-	//return 0L;
-//}
 /*****************************************************************************/
 /**
 * @brief
@@ -107,18 +97,10 @@ u32 XWdtTb_GetTbValue(const XWdtTb *InstancePtr);
 *		are ignored and does not lead to good or bad event generation.
 *
 ******************************************************************************/
+// static inline and code {}
 void XWdtTb_SetRegSpaceAccessMode(const XWdtTb *InstancePtr,
 						u32 AccessMode);
-//{
-	// /* Verify arguments. */
-	// Xil_AssertVoid(InstancePtr != NULL);
-	// Xil_AssertVoid(InstancePtr->EnableWinMode == 1U);
-	// Xil_AssertVoid((AccessMode == 0U) || (AccessMode == 1U));
 
-	// /* Write access mode */
-	// XWdtTb_WriteReg(InstancePtr->Config.BaseAddr, XWT_MWR_OFFSET,
-	// 	AccessMode);
-//}
 
 /*****************************************************************************/
 /**
@@ -136,19 +118,9 @@ void XWdtTb_SetRegSpaceAccessMode(const XWdtTb *InstancePtr,
 * @note		None.
 *
 ******************************************************************************/
+// static inline and code {}
 u32 XWdtTb_GetRegSpaceAccessMode(const XWdtTb *InstancePtr);
-//{
-		// /* Verify arguments. */
-		// Xil_AssertNonvoid(InstancePtr != NULL);
-		// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
 
-		// /* Read master write control register and return register space read
-		//  * only or writable
-		//  */
-		// return (XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_MWR_OFFSET) &
-		// 	XWT_MWR_MWC_MASK);
-	//return 0L;
-//}
 
 /*****************************************************************************/
 /**
@@ -165,17 +137,9 @@ u32 XWdtTb_GetRegSpaceAccessMode(const XWdtTb *InstancePtr);
 *		reset was caused by a watchdog timeout.
 *
 ******************************************************************************/
+// static inline and code {}
 u32 XWdtTb_GetLastEvent(const XWdtTb *InstancePtr);
-//{
-		// /* Verify arguments. */
-		// Xil_AssertNonvoid(InstancePtr != NULL);
-		// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
 
-		// /* Read enable status register and return last bad event(s) */
-		// return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
-		// 	XWT_ESR_LBE_MASK) >> XWT_ESR_LBE_SHIFT);
-	//return 0L;
-//}
 
 /*****************************************************************************/
 /**
@@ -196,18 +160,9 @@ u32 XWdtTb_GetLastEvent(const XWdtTb *InstancePtr);
 *		- When fail counter is disabled, bad event leads to reset.
 *
 ******************************************************************************/
+// static inline and code {}
 u32 XWdtTb_GetFailCounter(const XWdtTb *InstancePtr);
-//{
 
-	// 	/* Verify arguments. */
-	// 	Xil_AssertNonvoid(InstancePtr != NULL);
-	// 	Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
-
-	// 	/* Read enable status register and return fail counter value */
-	// 	return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
-	// 		XWT_ESR_FCV_MASK) >> XWT_ESR_FCV_SHIFT);
-//return 0L;
-//}
 
 /*****************************************************************************/
 /**
@@ -226,17 +181,9 @@ u32 XWdtTb_GetFailCounter(const XWdtTb *InstancePtr);
 * @note		None.
 *
 ******************************************************************************/
+// static inline and code {}
 u32 XWdtTb_IsResetPending(const XWdtTb *InstancePtr);
-//{
-		// /* Verify arguments. */
-		// Xil_AssertNonvoid(InstancePtr != NULL);
-		// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
 
-		// /* Read enable status register and return reset pending bit */
-		// return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
-		// 	XWT_ESR_WRP_MASK) >> XWT_ESR_WRP_SHIFT);
-	//return 0L;
-//}
 
 /*****************************************************************************/
 /**
@@ -257,17 +204,9 @@ u32 XWdtTb_IsResetPending(const XWdtTb *InstancePtr);
 * @note		None.
 *
 ******************************************************************************/
+// static inline and code {}
 u32 XWdtTb_GetIntrStatus(const XWdtTb *InstancePtr);
-//{
-		// /* Verify arguments. */
-		// Xil_AssertNonvoid(InstancePtr != NULL);
-		// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
 
-		// /* Read enable status register and return interrupt status */
-		// return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
-		// 	XWT_ESR_WINT_MASK) >> XWT_ESR_WINT_SHIFT);
-	//return 0L;
-//}
 
 /*****************************************************************************/
 /**
@@ -286,17 +225,9 @@ u32 XWdtTb_GetIntrStatus(const XWdtTb *InstancePtr);
 * @note		None.
 *
 ******************************************************************************/
+// static inline and code {}
 u32 XWdtTb_IsWrongCfg(const XWdtTb *InstancePtr);
-//{
-		// /* Verify arguments. */
-		// Xil_AssertNonvoid(InstancePtr != NULL);
-		// Xil_AssertNonvoid(InstancePtr->EnableWinMode == 1U);
 
-		// /* Read enable status register and return wrong configuration value */
-		// return ((XWdtTb_ReadReg(InstancePtr->Config.BaseAddr, XWT_ESR_OFFSET) &
-		// 	XWT_ESR_WCFG_MASK) >> XWT_ESR_WCFG_SHIFT);
-	//return 0L;
-//}
 
 /*****************************************************************************/
 /**
@@ -318,16 +249,9 @@ u32 XWdtTb_IsWrongCfg(const XWdtTb *InstancePtr);
 *              SC count delay
 *
 ******************************************************************************/
-
+// static inline and code {}
 void XWdtTb_SetSSTWindow(const XWdtTb *InstancePtr, u32 SST_window_config);
-//{
-        // /* Verify arguments. */
-        // Xil_AssertVoid(InstancePtr != NULL);
-        // Xil_AssertVoid(InstancePtr->EnableWinMode == (u32)TRUE);
 
-        // /*  Write SST window count value */
-        // XWdtTb_WriteReg(InstancePtr->Config.BaseAddr, XWT_SSTWR_OFFSET,SST_window_config);
-//}
 
 /*****************************************************************************/
 /**

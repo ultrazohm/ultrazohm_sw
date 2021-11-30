@@ -120,7 +120,9 @@ struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t Data, uz_F
 			uz_FOC_set_decoupling_method(FOC_instance, linear_decoupling);
 		} else if (Data.PID_Controller_Parameters.activeState >= 110 && Data.PID_Controller_Parameters.activeState <= 143) {
 			PWM_SS_SetTriState(Data.PID_ElectricalID_Output.enable_TriState[0], Data.PID_ElectricalID_Output.enable_TriState[1], Data.PID_ElectricalID_Output.enable_TriState[2]);
-			PWM_SS_SetDutyCycle(Data.PID_ElectricalID_Output.PWM_Switch_0, Data.PID_ElectricalID_Output.PWM_Switch_2, Data.PID_ElectricalID_Output.PWM_Switch_4);
+			output_DutyCycle.DutyCycle_U = Data.PID_ElectricalID_Output.PWM_Switch_0;
+			output_DutyCycle.DutyCycle_V = Data.PID_ElectricalID_Output.PWM_Switch_2;
+			output_DutyCycle.DutyCycle_W = Data.PID_ElectricalID_Output.PWM_Switch_4;
 		}
 		uz_FOC_set_Kp_id(FOC_instance, Data.PID_Controller_Parameters.Kp_id_out);
 		uz_FOC_set_Kp_iq(FOC_instance, Data.PID_Controller_Parameters.Kp_iq_out);

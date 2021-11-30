@@ -21,13 +21,15 @@
 #include <stdbool.h>
 #include "uz_PID_ControlState/uz_PID_ControlState.h"
 #include "uz_PID_ElectricalID/uz_PID_ElectricalID.h"
+#include "uz_PID_FluxMapID/uz_PID_FluxMapID.h"
 #include "../uz_FOC/uz_FOC.h"
 #include "../uz_SpeedControl/uz_speedcontrol.h"
 
 typedef struct uz_ParameterID_t {
 	bool is_ready;
-	uz_PID_ElectricalID_t* ElectricalID;
 	uz_PID_ControlState_t* ControlState;
+	uz_PID_ElectricalID_t* ElectricalID;
+	uz_PID_FluxMapID_t* FluxMapID;
 } uz_ParameterID_t;
 
 typedef struct uz_ParameterID_Data_t {
@@ -35,7 +37,9 @@ typedef struct uz_ParameterID_Data_t {
 	uz_PID_ControlFlags_t PID_ControlFlags;
 	uz_PID_GlobalConfig_t PID_GlobalConfig;
 	uz_PID_ElectricalIDConfig_t PID_ElectricalID_Config;
+	uz_PID_FluxMapIDConfig_t PID_FluxMapID_Config;
 	uz_PID_ElectricalID_output_t PID_ElectricalID_Output;
+	uz_PID_FluxMapID_output_t PID_FluxMapID_Output;
 	uz_PID_Controller_Parameters_output_t PID_Controller_Parameters;
 } uz_ParameterID_Data_t;
 

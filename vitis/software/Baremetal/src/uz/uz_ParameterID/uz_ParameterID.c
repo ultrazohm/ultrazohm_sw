@@ -44,6 +44,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t Data) {
 	//Update Data-Struct with Control-State outputs
 	Data.PID_ControlFlags = self->ControlState->output.ControlFlags;
 
+	//ElectricalID
 	if (self->ControlState->output.GlobalConfig_out.ElectricalID == true && self->ControlState->output.GlobalConfig_out.Reset == false) {
 		//Update State-Inputs
 		self->ElectricalID->input.ActualValues = Data.PID_ActualValues;
@@ -66,13 +67,41 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t Data) {
 		Data.PID_GlobalConfig.thetaOffset = self->ElectricalID->output.ElectricalID_output.thetaOffset;
 
 
-	} else if (self->ControlState->output.GlobalConfig_out.ElectricalID == false) {
-		self->ElectricalID->input.GlobalConfig_out.ElectricalID = false;
+	} else if (self->ControlState->output.GlobalConfig_out.ElectricalID == false && self->ElectricalID->output.enteredElectricalID == true) {
+		self->ElectricalID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
 		uz_PID_ElectricalID_step(self->ElectricalID);
 	} else if (self->ControlState->output.GlobalConfig_out.Reset == true) {
 		self->ElectricalID->input.GlobalConfig_out.Reset = true;
 		uz_PID_ElectricalID_step(self->ElectricalID);
 	}
+
+	//FluxMapID
+	if (self->ControlState->output.GlobalConfig_out.FluxMapID == true && self->ControlState->output.GlobalConfig_out.Reset == false) {
+		//Update State-Inputs
+		self->FluxMapID->input.ActualValues = Data.PID_ActualValues;
+		self->FluxMapID->input.FluxMapIDConfig = Data.PID_FluxMapID_Config;
+		self->FluxMapID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
+		self->FluxMapID->input.ControlFlags = self->ControlState->output.ControlFlags;
+
+		//Step the function
+		uz_PID_FluxMapID_step(self->FluxMapID);
+
+		//Update Control-State-inputs
+		self->ControlState->input.enteredFluxMapID = self->FluxMapID->output.enteredFluxMapID;
+		self->ControlState->input.finishedFluxMapID = self->FluxMapID->output.finishedFluxMapID;
+
+		//Update Data struct with new output values
+		Data.PID_Controller_Parameters = self->FluxMapID->output.FluxMapID_FOC_output;
+		Data.PID_FluxMapID_Output = self->FluxMapID->output.FluxMapID_output;
+	} else if (self->ControlState->output.GlobalConfig_out.FluxMapID == false && self->FluxMapID->output.enteredFluxMapID == true) {
+		self->FluxMapID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
+		uz_PID_FluxMapID_step(self->FluxMapID);
+	} else if (self->ControlState->output.GlobalConfig_out.Reset == true) {
+		self->FluxMapID->input.GlobalConfig_out.Reset = true;
+		uz_PID_FluxMapID_step(self->FluxMapID);
+	}
+
+
 }
 
 struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance) {
@@ -177,6 +206,20 @@ uz_ParameterID_Data_t uz_ParameterID_initialize_data_structs(void) {
 	output.PID_ElectricalID_Config.identLq = false;
 	output.PID_ElectricalID_Config.min_n_ratio = 0.0f;
 	output.PID_ElectricalID_Config.n_ref_measurement = 0.0f;
+
+	//Initialize FluxMapID-Config
+	output.PID_FluxMapID_Config.AMMsampleTime = 0.0f;
+	output.PID_FluxMapID_Config.IDstart = 0.0f;
+	output.PID_FluxMapID_Config.IDstepsize = 0.0f;
+	output.PID_FluxMapID_Config.IDstop = 0.0f;
+	output.PID_FluxMapID_Config.IQstart = 0.0f;
+	output.PID_FluxMapID_Config.IQstepsize = 0.0f;
+	output.PID_FluxMapID_Config.IQstop = 0.0f;
+	output.PID_FluxMapID_Config.R_s_ref = 0.0f;
+	output.PID_FluxMapID_Config.Temp_ref = 0.0f;
+	output.PID_FluxMapID_Config.identR = false;
+	output.PID_FluxMapID_Config.identRAmp = 0.0f;
+	output.PID_FluxMapID_Config.start_FM_ID = false;
 
 	return (output);
 }

@@ -2,6 +2,8 @@
 
 
 /* DEFINED FOR FAKE XWDTTB */
+/* Definitions for driver WDTTB */
+#define XPAR_XWDTTB_NUM_INSTANCES 1U
 
 /* FROM FILE xparameters.h*/
 #define XPAR_WDTTB_0_DEVICE_ID 0U

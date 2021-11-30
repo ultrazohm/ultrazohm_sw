@@ -24,7 +24,6 @@
 /***************************** Include Files *********************************/
 #include "../../uz/uz_global_configuration.h"
 #include "uz_xwdttb.h"
-
 #include "../../uz/uz_HAL.h"
 
 #if (UZ_WDTTB_MAX_INSTANCES > 0U && UZ_WDTTB_MAX_INSTANCES <= XPAR_XWDTTB_NUM_INSTANCES)
@@ -33,47 +32,6 @@
 
 static size_t instance_counter = 0U;
 static XWdtTb instances[UZ_WDTTB_MAX_INSTANCES] = {0};
-
-static XWdtTb *uz_WdtTb_allocation(void);
-
-static XWdtTb *uz_WdtTb_allocation(void)
-{
-    uz_assert(instance_counter < UZ_WDTTB_MAX_INSTANCES);
-
-    /*
-	 * Call the WDT init to initialize and set timer to the given timeout.
-	 * Both
-	 */
-	int Status = WdtTbInit(&instances[instance_counter], WIN_WDT_SW_COUNT); // XPFW_WDT_EXPIRE_TIME for WDT PS
-
-	if (Status != XST_SUCCESS) {
-		//DEBUG
-		//xil_printf("WDT initialization failed\r\n");
-		return NULL;
-	}
-
-    XWdtTb *self = &instances[instance_counter];
-    uz_assert(self != NULL);
-    uz_assert_true(self->IsReady == XIL_COMPONENT_IS_READY);
-    instance_counter++;
-    return (self);
-}
-
-XWdtTb *uz_WdtTb_init()
-{
-    XWdtTb *self = uz_WdtTb_allocation();
-    return (self);
-}
-
-//XWdtTb WdtTbInstance;	/* Instance of Time Base WatchDog Timer */
-//XScuGic IntcInstance;	/* Instance of the Interrupt Controller */
-
-//volatile int WdtExpired;
-volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
-
-//_Bool Wdttb_IsReady = false;
-
-//XScuGic_Config *TempConfig;
 
 
 /*****************************************************************************/
@@ -94,7 +52,7 @@ volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
 * @note		None.
 *
 ******************************************************************************/
-int WdtTbInit(XWdtTb *WdtTbInstance, u32 CounterValue) {
+static int WdtTbInit(XWdtTb *WdtTbInstance, u32 CounterValue) {
 	int Status;
 	XWdtTb_Config *Config;
 
@@ -152,6 +110,45 @@ int WdtTbInit(XWdtTb *WdtTbInstance, u32 CounterValue) {
 	return XST_SUCCESS;
 }
 
+static XWdtTb *uz_WdtTb_allocation(void)
+{
+    uz_assert(instance_counter < UZ_WDTTB_MAX_INSTANCES);
+
+    /*
+	 * Call the WDT init to initialize and set timer to the given timeout.
+	 * Both
+	 */
+	int Status = WdtTbInit(&instances[instance_counter], WIN_WDT_SW_COUNT); // XPFW_WDT_EXPIRE_TIME for WDT PS
+
+	if (Status != XST_SUCCESS) {
+		//DEBUG
+		//xil_printf("WDT initialization failed\r\n");
+		return NULL;
+	}
+
+    XWdtTb *self = &instances[instance_counter];
+    uz_assert(self != NULL);
+#ifndef TEST
+// The real initialization and readyness is done by xilinx driver.
+// Not done if we are mocking the driver under TEST.
+    uz_assert(self->IsReady == XIL_COMPONENT_IS_READY);
+#endif
+    instance_counter++;
+    return (self);
+}
+
+XWdtTb *uz_WdtTb_init()
+{
+    XWdtTb *self = uz_WdtTb_allocation();
+    return (self);
+}
+
+volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
+
+// Used for testing, to access INT priority, and check preemtion
+//XScuGic_Config *TempConfig;
+
+
 /**
 *
 * This function STARTs the System WatchDog Timer to the initial value to the counter.
@@ -168,7 +165,6 @@ int WdtTbInit(XWdtTb *WdtTbInstance, u32 CounterValue) {
 void WdtTb_Start(XWdtTb *WdtTbInstance) {
 
 	/* Verify arguments. */
-//	uz_assert(Wdttb_IsReady);
 	uz_assert(WdtTbInstance != NULL);
 	uz_assert(WdtTbInstance->IsReady == XIL_COMPONENT_IS_READY);
 
@@ -198,12 +194,6 @@ void WdtTb_Start(XWdtTb *WdtTbInstance) {
 	XWdtTb_SetRegSpaceAccessMode(WdtTbInstance, 1);
 }
 
-//XWdtTb *getWdtTbInstance(){
-//	uz_assert(Wdttb_IsReady);
-////	uz_assert_not_NULL(WdtTbInstance);
-//	return &instances[current_instance];
-//}
-
 
 /**
 *
@@ -214,7 +204,6 @@ void WdtTb_Start(XWdtTb *WdtTbInstance) {
 ******************************************************************************/
 void WdtTb_Restart(XWdtTb *WdtTbInstance) {
 	/* Verify arguments. */
-	//	uz_assert(Wdttb_IsReady);
 	uz_assert(WdtTbInstance != NULL);
 	uz_assert(WdtTbInstance->IsReady == XIL_COMPONENT_IS_READY);
 
@@ -255,17 +244,13 @@ void WdtTb_Restart(XWdtTb *WdtTbInstance) {
 * @note		None.
 *
 ******************************************************************************/
-//int WinWdtIntrExample(XScuGic *IntcInstancePtr)
 int WinWdtIntrExample(XWdtTb *WdtTbInstance)
 {
-	int Status;
-
 	/*
 	 * The Driver has to be properly initialized and the GIC interrupt system ALSO!
 	 */
 	uz_assert(WdtTbInstance != NULL);
 	uz_assert(WdtTbInstance->IsReady == XIL_COMPONENT_IS_READY);
-
 
 	XWdtTb_Start(WdtTbInstance);
 	//	WdtExpired = FALSE;
@@ -419,7 +404,7 @@ void WdtTbIntrHandler(void *CallBackRef)
 	//	DEBUG INFO
 	// u32 reg;
 	// reg = XScuGic_ReadReg(TempConfig->CpuBaseAddress, XSCUGIC_RUN_PRIOR_OFFSET);
-//	xil_printf("WdtTbIntrHandler AND RESTART AND CLEAR: Running priority in WDT handler is %d\r\n",reg >> 3);
+	//	xil_printf("WdtTbIntrHandler AND RESTART AND CLEAR: Running priority in WDT handler is %d\r\n",reg >> 3);
 
 	/*
 	 * Restart the watchdog timer as a normal application would.

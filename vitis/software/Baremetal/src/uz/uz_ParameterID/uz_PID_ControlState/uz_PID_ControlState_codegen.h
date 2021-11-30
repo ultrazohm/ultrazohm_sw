@@ -70,20 +70,11 @@ typedef struct tag_RTM_ControlState_t RT_MODEL_ControlState_t;
 
 typedef struct {
   real32_T PWM_Switch_0;
-  real32_T PWM_Switch_1;
   real32_T PWM_Switch_2;
-  real32_T PWM_Switch_3;
   real32_T PWM_Switch_4;
-  real32_T PWM_Switch_5;
-  boolean_T outputMode[3];
-  real32_T R_s;
-  real32_T L_d;
-  real32_T L_q;
-  real32_T psiPM;
-  real32_T rotorInertia;
+	boolean_T enable_TriState[3];
   real32_T thetaOffset;
-  uint16_T p;
-  real32_T TrainInertia;
+	uz_PMSM_t PMSM_parameters;
 } uz_PID_ElectricalID_output_t;
 
 #endif
@@ -185,7 +176,6 @@ typedef struct {
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  real32_T thetaOffset;                /* '<Root>/thetaOffset' */
   uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig_out' */
   uz_PID_ControlFlags_t ControlFlags;  /* '<Root>/ControlFlags' */
 } ExtY_ControlState_t;

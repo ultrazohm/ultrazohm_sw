@@ -194,27 +194,23 @@ static void initParams(ExtU_ControlState_t *rtControlState_U,
   /* '<S1>:566:12' ControlFlags.startFluxMapID          = boolean(0); */
   rtControlState_Y->ControlFlags.startFluxMapID = false;
 
-  /* Outport: '<Root>/thetaOffset' */
-  /* '<S1>:566:13' thetaOffset                          = single(0.0); */
-  rtControlState_Y->thetaOffset = 0.0F;
-
   /* Outport: '<Root>/GlobalConfig_out' incorporates:
    *  Inport: '<Root>/GlobalConfig_in'
    */
-  /* '<S1>:566:14' GlobalConfig_out                     = GlobalConfig_in; */
+	/* '<S1>:566:13' GlobalConfig_out                     = GlobalConfig_in; */
   rtControlState_Y->GlobalConfig_out = rtControlState_U->GlobalConfig_in;
 
   /* Outport: '<Root>/ControlFlags' */
-  /* '<S1>:566:15' ControlFlags.enableFOCcurrentState   = boolean(0); */
+	/* '<S1>:566:14' ControlFlags.enableFOCcurrentState   = boolean(0); */
   rtControlState_Y->ControlFlags.enableFOCcurrentState = false;
 
-  /* '<S1>:566:16' ControlFlags.enableFOCspeedState     = boolean(0); */
+	/* '<S1>:566:15' ControlFlags.enableFOCspeedState     = boolean(0); */
   rtControlState_Y->ControlFlags.enableFOCspeedState = false;
 
-  /* '<S1>:566:17' ControlFlags.enableOnlineID          = boolean(0); */
+	/* '<S1>:566:16' ControlFlags.enableOnlineID          = boolean(0); */
   rtControlState_Y->ControlFlags.enableOnlineID = false;
 
-  /* '<S1>:566:18' ControlFlags.transNr                 = uint16(0); */
+	/* '<S1>:566:17' ControlFlags.transNr                 = uint16(0); */
   rtControlState_Y->ControlFlags.transNr = 0U;
 }
 
@@ -426,19 +422,12 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
         /* '<S1>:624:3' ControlFlags.startElectricalID=boolean(0); */
         rtControlState_Y->ControlFlags.startElectricalID = false;
 
-        /* Outport: '<Root>/thetaOffset' incorporates:
-         *  Inport: '<Root>/ElectricalID_output'
-         *  Outport: '<Root>/ControlFlags'
-         */
-        /* '<S1>:624:4' thetaOffset=ElectricalID_output.thetaOffset; */
-        rtControlState_Y->thetaOffset =
+				/* '<S1>:624:4' GlobalConfig_out.thetaOffset=ElectricalID_output.thetaOffset; */
+				rtControlState_Y->GlobalConfig_out.thetaOffset =
           rtControlState_U->ElectricalID_output.thetaOffset;
       } else {
-        /* Outport: '<Root>/thetaOffset' incorporates:
-         *  Inport: '<Root>/ElectricalID_output'
-         */
-        /* '<S1>:617:6' thetaOffset=ElectricalID_output.thetaOffset; */
-        rtControlState_Y->thetaOffset =
+				/* '<S1>:617:6' GlobalConfig_out.thetaOffset=ElectricalID_output.thetaOffset; */
+				rtControlState_Y->GlobalConfig_out.thetaOffset =
           rtControlState_U->ElectricalID_output.thetaOffset;
       }
       break;
@@ -511,11 +500,8 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
         /* '<S1>:617:3' ControlFlags.startElectricalID=boolean(1); */
         rtControlState_Y->ControlFlags.startElectricalID = true;
 
-        /* Outport: '<Root>/thetaOffset' incorporates:
-         *  Inport: '<Root>/ElectricalID_output'
-         */
-        /* '<S1>:617:4' thetaOffset=ElectricalID_output.thetaOffset; */
-        rtControlState_Y->thetaOffset =
+				/* '<S1>:617:4' GlobalConfig_out.thetaOffset=ElectricalID_output.thetaOffset; */
+				rtControlState_Y->GlobalConfig_out.thetaOffset =
           rtControlState_U->ElectricalID_output.thetaOffset;
 
         /* '<S1>:682:1' sf_internal_predicateOutput = ControlFlags.transNr==4 && finishedFluxMapID_loc==0.... */
@@ -619,10 +605,6 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
         rtControlState_Y->GlobalConfig_out.Ki_n =
           rtControlState_U->ElectricalID_FOC_output.Ki_n_out;
 
-        /* '<S1>:626:10' GlobalConfig_out.thetaOffset=ElectricalID_output.thetaOffset; */
-        rtControlState_Y->GlobalConfig_out.thetaOffset =
-          rtControlState_U->ElectricalID_output.thetaOffset;
-
         /* '<S1>:710:1' sf_internal_predicateOutput = GlobalConfig_in.ElectricalID==0; */
       } else if (!rtControlState_U->GlobalConfig_in.ElectricalID) {
         /* Transition: '<S1>:710' */
@@ -633,28 +615,34 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
         /* '<S1>:605:3' decideIDstates; */
         decideIDstates(rtControlState_U, rtControlState_Y, rtControlState_DW);
       } else {
-        /* Outport: '<Root>/thetaOffset' incorporates:
-         *  Inport: '<Root>/ElectricalID_output'
-         */
-        /* '<S1>:624:6' thetaOffset=ElectricalID_output.thetaOffset; */
-        rtControlState_Y->thetaOffset =
+				/* '<S1>:624:6' GlobalConfig_out.thetaOffset=ElectricalID_output.thetaOffset; */
+				rtControlState_Y->GlobalConfig_out.thetaOffset =
           rtControlState_U->ElectricalID_output.thetaOffset;
 
-        /* '<S1>:624:7' GlobalConfig_out.PMSM_config.Ld_Henry=ElectricalID_output.L_d; */
+				/* '<S1>:624:7' GlobalConfig_out.PMSM_config.Ld_Henry=ElectricalID_output.PMSM_parameters.Ld_Henry; */
         rtControlState_Y->GlobalConfig_out.PMSM_config.Ld_Henry =
-          rtControlState_U->ElectricalID_output.L_d;
+          rtControlState_U->ElectricalID_output.PMSM_parameters.Ld_Henry;
 
-        /* '<S1>:624:8' GlobalConfig_out.PMSM_config.Lq_Henry=ElectricalID_output.L_q; */
+				/* '<S1>:624:8' GlobalConfig_out.PMSM_config.Lq_Henry=ElectricalID_output.PMSM_parameters.Lq_Henry; */
         rtControlState_Y->GlobalConfig_out.PMSM_config.Lq_Henry =
-          rtControlState_U->ElectricalID_output.L_q;
+          rtControlState_U->ElectricalID_output.PMSM_parameters.Lq_Henry;
 
-        /* '<S1>:624:9' GlobalConfig_out.PMSM_config.R_ph_Ohm=ElectricalID_output.R_s; */
+				/* '<S1>:624:9' GlobalConfig_out.PMSM_config.R_ph_Ohm=ElectricalID_output.PMSM_parameters.R_ph_Ohm; */
         rtControlState_Y->GlobalConfig_out.PMSM_config.R_ph_Ohm =
-          rtControlState_U->ElectricalID_output.R_s;
+          rtControlState_U->ElectricalID_output.PMSM_parameters.R_ph_Ohm;
 
-        /* '<S1>:624:10' GlobalConfig_out.PMSM_config.Psi_PM_Vs=ElectricalID_output.psiPM; */
+				/* '<S1>:624:10' GlobalConfig_out.PMSM_config.Psi_PM_Vs=ElectricalID_output.PMSM_parameters.Psi_PM_Vs; */
         rtControlState_Y->GlobalConfig_out.PMSM_config.Psi_PM_Vs =
-          rtControlState_U->ElectricalID_output.psiPM;
+          rtControlState_U->ElectricalID_output.PMSM_parameters.Psi_PM_Vs;
+
+				/* '<S1>:624:11' GlobalConfig_out.PMSM_config.polePairs=ElectricalID_output.PMSM_parameters.polePairs; */
+				rtControlState_Y->GlobalConfig_out.PMSM_config.polePairs = rtControlState_U->ElectricalID_output.PMSM_parameters.polePairs;
+
+				/* '<S1>:624:12' GlobalConfig_out.PMSM_config.J_kg_m_squared=.... */
+				/* '<S1>:624:13'     ElectricalID_output.PMSM_parameters.J_kg_m_squared; */
+				rtControlState_Y->GlobalConfig_out.PMSM_config.J_kg_m_squared = rtControlState_U->ElectricalID_output.PMSM_parameters.J_kg_m_squared;
+
+				/* . */
       }
       break;
 
@@ -811,23 +799,16 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
   (void) memset((void *)rtControlState_Y, 0,
                 sizeof(ExtY_ControlState_t));
 
-  /* SystemInitialize for Chart: '<Root>/ControlState' */
+	/* SystemInitialize for Chart: '<Root>/ControlState' incorporates:
+	 *  Outport: '<Root>/ControlFlags'
+	 *  Outport: '<Root>/GlobalConfig_out'
+	 */
   rtControlState_DW->is_ControlState = IN_NO_ACTIVE_CHILD;
   rtControlState_DW->is_active_c8_ControlState = 0U;
   rtControlState_DW->finishedElectricalID_loc = false;
   rtControlState_DW->finishedFrictionID_loc = false;
   rtControlState_DW->finishedTwoMassID_loc = false;
   rtControlState_DW->finishedFluxMapID_loc = false;
-
-  /* SystemInitialize for Outport: '<Root>/thetaOffset' incorporates:
-   *  Chart: '<Root>/ControlState'
-   */
-  rtControlState_Y->thetaOffset = 0.0F;
-
-  /* SystemInitialize for Chart: '<Root>/ControlState' incorporates:
-   *  Outport: '<Root>/ControlFlags'
-   *  Outport: '<Root>/GlobalConfig_out'
-   */
   rtControlState_Y->GlobalConfig_out.PMSM_config.R_ph_Ohm = 0.0F;
   rtControlState_Y->GlobalConfig_out.PMSM_config.Ld_Henry = 0.0F;
   rtControlState_Y->GlobalConfig_out.PMSM_config.Lq_Henry = 0.0F;

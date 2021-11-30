@@ -86,11 +86,11 @@ int main(void) {
 	PID_Data = uz_ParameterID_initialize_data_structs();
 	uz_ParameterID_init(&ParameterID_instance);
 
-	config_PMSM.R_ph_Ohm = PID_Data.PID_GlobalConifg.PMSM_config.R_ph_Ohm;
-	config_PMSM.Ld_Henry = PID_Data.PID_GlobalConifg.PMSM_config.Ld_Henry;
-	config_PMSM.Lq_Henry = PID_Data.PID_GlobalConifg.PMSM_config.Lq_Henry;
-	config_PMSM.Psi_PM_Vs = PID_Data.PID_GlobalConifg.PMSM_config.Psi_PM_Vs;
-	config_PMSM.polePairs = PID_Data.PID_GlobalConifg.PMSM_config.polePairs;
+	config_PMSM.R_ph_Ohm = PID_Data.PID_GlobalConfig.PMSM_config.R_ph_Ohm;
+	config_PMSM.Ld_Henry = PID_Data.PID_GlobalConfig.PMSM_config.Ld_Henry;
+	config_PMSM.Lq_Henry = PID_Data.PID_GlobalConfig.PMSM_config.Lq_Henry;
+	config_PMSM.Psi_PM_Vs = PID_Data.PID_GlobalConfig.PMSM_config.Psi_PM_Vs;
+	config_PMSM.polePairs = PID_Data.PID_GlobalConfig.PMSM_config.polePairs;
 	config_PMSM.I_max_Ampere = Global_Data.mrp.motorMaximumCurrentContinuousOperation;
 
 	struct uz_PI_Controller_config config_id = { .Kp = Global_Data.ctrl.foc.cc.Kp_id, .Ki = Global_Data.ctrl.foc.cc.Kp_id / Global_Data.ctrl.foc.cc.Tn_id, .samplingTime_sec = 0.00005f,

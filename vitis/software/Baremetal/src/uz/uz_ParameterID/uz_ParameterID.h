@@ -33,7 +33,7 @@ typedef struct uz_ParameterID_t {
 typedef struct uz_ParameterID_Data_t {
 	uz_PID_ActualValues_t PID_ActualValues;
 	uz_PID_ControlFlags_t PID_ControlFlags;
-	uz_PID_GlobalConfig_t PID_GlobalConifg;
+	uz_PID_GlobalConfig_t PID_GlobalConfig;
 	uz_PID_ElectricalIDConfig_t PID_ElectricalID_Config;
 	uz_PID_ElectricalID_output_t PID_ElectricalID_Output;
 	uz_PID_Controller_Parameters_output_t PID_Controller_Parameters;

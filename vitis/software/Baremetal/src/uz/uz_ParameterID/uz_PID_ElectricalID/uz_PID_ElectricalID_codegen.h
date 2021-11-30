@@ -171,26 +171,18 @@ typedef struct {
 
 typedef struct {
   real32_T PWM_Switch_0;
-  real32_T PWM_Switch_1;
   real32_T PWM_Switch_2;
-  real32_T PWM_Switch_3;
   real32_T PWM_Switch_4;
-  real32_T PWM_Switch_5;
-  boolean_T outputMode[3];
-  real32_T R_s;
-  real32_T L_d;
-  real32_T L_q;
-  real32_T psiPM;
-  real32_T rotorInertia;
+	boolean_T enable_TriState[3];
   real32_T thetaOffset;
-  uint16_T p;
-  real32_T TrainInertia;
+	uz_PMSM_t PMSM_parameters;
 } uz_PID_ElectricalID_output_t;
 
 #endif
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
+	real_T d_m;
   real32_T H[4];                       /* '<Root>/ElectricalID' */
   real32_T omega_register[5];          /* '<Root>/ElectricalID' */
   real32_T d[2048];                    /* '<Root>/ElectricalID' */

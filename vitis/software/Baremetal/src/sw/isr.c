@@ -87,7 +87,7 @@ void ISR_Control(void *data)
 	PID_Data.PID_ActualValues.U_UVW.W = (Global_Data.aa.A1.me.ADC_A4 - 2.5f) * (20.0f / 2.084f) / 3.0f;
 	PID_Data.PID_ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed;
 	PID_Data.PID_ActualValues.theta_el = Global_Data.av.theta_elec;
-	PID_Data.PID_ActualValues.theta_m = Global_Data.av.theta_elec / PID_Data.PID_GlobalConifg.PMSM_config.polePairs;
+	PID_Data.PID_ActualValues.theta_m = Global_Data.av.theta_elec / PID_Data.PID_GlobalConfig.PMSM_config.polePairs;
 
 	//Calculate missing ActualValues
 	PID_Data.PID_ActualValues.i_dq = uz_dq_transformation(PID_Data.PID_ActualValues.I_UVW, Global_Data.av.theta_elec);

@@ -837,6 +837,10 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
   rtControlState_Y->GlobalConfig_out.VibAmp = 0.0F;
   rtControlState_Y->GlobalConfig_out.VibOn = false;
   rtControlState_Y->GlobalConfig_out.VibFreq = 0U;
+	rtControlState_Y->GlobalConfig_out.i_dq_ref.d = 0.0F;
+	rtControlState_Y->GlobalConfig_out.i_dq_ref.q = 0.0F;
+	rtControlState_Y->GlobalConfig_out.i_dq_ref.zero = 0.0F;
+	rtControlState_Y->GlobalConfig_out.n_ref = 0.0F;
   rtControlState_Y->ControlFlags.startFrictionID = false;
   rtControlState_Y->ControlFlags.startElectricalID = false;
   rtControlState_Y->ControlFlags.startTwoMassID = false;

@@ -129,6 +129,8 @@ typedef struct {
   real32_T VibAmp;
   boolean_T VibOn;
   uint16_T VibFreq;
+	uz_dq_t i_dq_ref;
+	real32_T n_ref;
 } uz_PID_GlobalConfig_t;
 
 #endif

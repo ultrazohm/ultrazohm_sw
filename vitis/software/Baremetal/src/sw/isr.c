@@ -54,6 +54,8 @@ extern DS_Data Global_Data;
 //Experimental Code
 extern uz_ParameterID_t ParameterID_instance;
 extern uz_ParameterID_Data_t PID_Data;
+extern uz_FOC* FOC_instance;
+extern uz_PI_Controller* SpeedControl_instance;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -98,6 +100,8 @@ void ISR_Control(void *data)
 
 
 	uz_ParameterID_step(&ParameterID_instance, PID_Data);
+	uz_ParameterID_Controller(PID_Data, FOC_instance, SpeedControl_instance);
+
 	//End ParameterID -------------------------------------------------------------------------------------------------------------------
 
 	//Start: Control algorithm -------------------------------------------------------------------------------

@@ -1,12 +1,12 @@
 /******************************************************************************
 * Copyright 2021 Sebastian Wendel, Philipp Löhdefink
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,6 +35,9 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern float sin1amp;
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
+
+//Experimental Code
+extern uz_ParameterID_Data_t PID_Data;
 
 void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 {
@@ -412,15 +415,15 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		else if (msgId == 0x510 + MOTORCONTROL_OFFSET_bits)
 			data->mrp.motorStatorResistance = value * 0.001;
 		else if (msgId == 0x511 + MOTORCONTROL_OFFSET_bits)
-			data->pID.Temp_ref = value * 0.01;
+			PID_Data.PID_FluxMapID_Config.Temp_ref = value * 0.01;
 
 		//Hoerner Offline ID
 		//ACCEPT
 		else if (msgId == 5 + MOTORCONTROL_OFFSET_bits)
-			data->pID.accept = true;
+			PID_Data.PID_GlobalConfig.ACCEPT = true;
 		//RESET
 		else if (msgId == 6 + MOTORCONTROL_OFFSET_bits)
-			data->pID.reset_Offl = true;
+			PID_Data.PID_GlobalConfig.Reset = true;
 		//MOTOR_ID
 		else if (msgId == 0x101 + MOTORCONTROL_OFFSET_bits)
 			data->pID.MotorID = (MotorID_Method)value;
@@ -428,37 +431,40 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 			data->cw.enableParameterID = (_Bool)value;
 		//IDENTLQ
 		else if (msgId == 0x103 + MOTORCONTROL_OFFSET_bits)
-			data->pID.identLq = (uint16_t)value;
+			PID_Data.PID_ElectricalID_Config.identLq = (bool) value;
 		//I_D_SAMPLETIMEISR
 		else if (msgId == 0x105 + MOTORCONTROL_OFFSET_bits)
-			data->pID.sampleTimeISR = value * 0.000001;
+			PID_Data.PID_GlobalConfig.sampleTimeISR = value * 0.000001;
 		//I_D_POLEPAIRS
 		else if (msgId == 0x106 + MOTORCONTROL_OFFSET_bits)
-			data->mrp.motorPolePairNumber = value;
+			PID_Data.PID_GlobalConfig.PMSM_config.polePairs = value;
 		//I_D_DUTYCYC
 		else if (msgId == 0x107 + MOTORCONTROL_OFFSET_bits)
-			data->pID.dutyCyc = value * 0.01;
+			PID_Data.PID_ElectricalID_Config.dutyCyc = value * 0.01;
 		//I_D_NREFM
 		else if (msgId == 0x108 + MOTORCONTROL_OFFSET_bits)
-			data->pID.n_ref_measurement = value;
+			PID_Data.PID_ElectricalID_Config.n_ref_measurement = value;
 		//I_D_NREFFOC
-		else if (msgId == 0x109 + MOTORCONTROL_OFFSET_bits)
+		else if (msgId == 0x109 + MOTORCONTROL_OFFSET_bits) {
 			data->rasv.referenceSpeed = value;
+		PID_Data.PID_GlobalConfig.n_ref = value;
 		//I_D_IDREF
-		else if (msgId == 0x111 + MOTORCONTROL_OFFSET_bits)
+		} else if (msgId == 0x111 + MOTORCONTROL_OFFSET_bits) {
 			data->rasv.referenceCurrent_id = value * 0.001;
+			PID_Data.PID_GlobalConfig.i_dq_ref.d = value * 0.001f;
 		//I_D_IQREF
-		else if (msgId == 0x112 + MOTORCONTROL_OFFSET_bits)
+		} else if (msgId == 0x112 + MOTORCONTROL_OFFSET_bits) {
 			data->rasv.referenceCurrent_iq = value * 0.001;
+			PID_Data.PID_GlobalConfig.i_dq_ref.q = value * 0.001f;
 		//Ronline_ON
-		else if (msgId == 0x190 + MOTORCONTROL_OFFSET_bits)
-			data->pID.identR = 1;
+		} else if (msgId == 0x190 + MOTORCONTROL_OFFSET_bits)
+			PID_Data.PID_FluxMapID_Config.identR = true;
 		//Ronline_OFF
 		else if (msgId == 0x191 + MOTORCONTROL_OFFSET_bits)
-			data->pID.identR = 0;
+			PID_Data.PID_FluxMapID_Config.identR = false;
 		//identRAmp
 		else if (msgId == 0x192 + MOTORCONTROL_OFFSET_bits)
-			data->pID.identRAmp = value * 0.01;
+			PID_Data.PID_FluxMapID_Config.identRAmp = value * 0.01;
 		//I_D_MaxCurrent_update
 		else if (msgId == 0x193 + MOTORCONTROL_OFFSET_bits)
 			data->mrp.motorMaximumCurrentContinuousOperation = value * 0.1;
@@ -473,10 +479,10 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 			data->pID.ControlMapCounter=value;
 		//AMM_ON
 		else if (msgId == 0x201 + MOTORCONTROL_OFFSET_bits)//Automated Measuring Mode - Enter State
-			data->pID.AMM_ON = 1;
+			PID_Data.PID_FluxMapID_Config.start_FM_ID = true;
 		//AMM_OFF
 		else if (msgId == 0x202 + MOTORCONTROL_OFFSET_bits)
-			data->pID.AMM_ON = 0;
+			PID_Data.PID_FluxMapID_Config.start_FM_ID = false;
 		//AMM_RUN_ON
 		else if (msgId == 0x203 + MOTORCONTROL_OFFSET_bits)//Automated Measuring Mode - Run Automated Measuring
 			data->pID.AMM_RUN = 1;
@@ -494,25 +500,25 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 			data->pID.settlingTime = value;
 		//IDstart
 		else if (msgId == 0x210 + MOTORCONTROL_OFFSET_bits)
-			data->pID.IDstart = value * 0.001;
+			PID_Data.PID_FluxMapID_Config.IDstart = value * 0.001;
 		//IDstop
 		else if (msgId == 0x211 + MOTORCONTROL_OFFSET_bits)
-			data->pID.IDstop = value * 0.001;
+			PID_Data.PID_FluxMapID_Config.IDstop = value * 0.001;
 		//IDstepsize
 		else if (msgId == 0x212 + MOTORCONTROL_OFFSET_bits)
-			data->pID.IDstepsize = value * 0.001;
+			PID_Data.PID_FluxMapID_Config.IDstepsize = value * 0.001;
 		//IQstart
 		else if (msgId == 0x213 + MOTORCONTROL_OFFSET_bits)
-			data->pID.IQstart = value * 0.001;
+			PID_Data.PID_FluxMapID_Config.IQstart = value * 0.001;
 		//IQstop
 		else if (msgId == 0x214 + MOTORCONTROL_OFFSET_bits)
-			data->pID.IQstop = value * 0.001;
+			PID_Data.PID_FluxMapID_Config.IQstop = value * 0.001;
 		//IQstepsize
 		else if (msgId == 0x215 + MOTORCONTROL_OFFSET_bits)
-			data->pID.IQstepsize = value * 0.001;
+			PID_Data.PID_FluxMapID_Config.IQstepsize = value * 0.001;
 		//Goertzel Amplitude
 		else if (msgId == 0x613 + MOTORCONTROL_OFFSET_bits)
-			data->pID.goertzlAmp = value * 0.1;
+			PID_Data.PID_ElectricalID_Config.goertzlAmp = value * 0.1;
 
 		//Gebhardt Offline ID
 		else if (msgId == 0x610+MOTORCONTROL_OFFSET_bits)
@@ -589,7 +595,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 			js_status_BareToRTOS &= ~(1 << 1);
 		}
 		/* Bit 2 - IDENT_LQ */
-		if (data->pID.identLq == 1) {
+	if (PID_Data.PID_ElectricalID_Config.identLq == true) {
 			js_status_BareToRTOS |= 1 << 2;
 		} else {
 			js_status_BareToRTOS &= ~(1 << 2);
@@ -614,13 +620,13 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		}
 		/* Bit 6 - IDorNOT */
 		//if (data->pID.MotorID == 1) {
-		if (data->cw.enableParameterID == true) {
+	if (PID_Data.PID_FluxMapID_Config.start_FM_ID == true) {
 			js_status_BareToRTOS |= 1 << 6;
 		} else {
 			js_status_BareToRTOS &= ~(1 << 6);
 		}
 		/* Bit 7 - identROnline */
-		if (data->pID.identR == 1) {
+	if (PID_Data.PID_FluxMapID_Config.identR == true) {
 			js_status_BareToRTOS |= 1 << 7;
 		} else {
 			js_status_BareToRTOS &= ~(1 << 7);

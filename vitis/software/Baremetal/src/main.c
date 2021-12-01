@@ -93,13 +93,13 @@ int main(void) {
 	config_PMSM.polePairs = PID_Data.PID_GlobalConfig.PMSM_config.polePairs;
 	config_PMSM.I_max_Ampere = Global_Data.mrp.motorMaximumCurrentContinuousOperation;
 
-	struct uz_PI_Controller_config config_id = { .Kp = Global_Data.ctrl.foc.cc.Kp_id, .Ki = Global_Data.ctrl.foc.cc.Kp_id / Global_Data.ctrl.foc.cc.Tn_id, .samplingTime_sec = 0.00005f,
+	struct uz_PI_Controller_config config_id = { .Kp = PID_Data.PID_GlobalConfig.Kp_id, .Ki = PID_Data.PID_GlobalConfig.Ki_id, .samplingTime_sec = 0.00005f,
 	                .upper_limit = 15.0f, .lower_limit = -15.0f };
-	struct uz_PI_Controller_config config_iq = { .Kp = Global_Data.ctrl.foc.cc.Kp_iq, .Ki = Global_Data.ctrl.foc.cc.Kp_iq / Global_Data.ctrl.foc.cc.Tn_iq, .samplingTime_sec = 0.00005f,
+	struct uz_PI_Controller_config config_iq = { .Kp = PID_Data.PID_GlobalConfig.Kp_iq, .Ki = PID_Data.PID_GlobalConfig.Ki_iq, .samplingTime_sec = 0.00005f,
 	                .upper_limit = 15.0f, .lower_limit = -15.0f };
-	struct uz_PI_Controller_config config_n = { .Kp = Global_Data.ctrl.foc.sc.Kp, .Ki = Global_Data.ctrl.foc.sc.Kp / Global_Data.ctrl.foc.sc.Tn, .samplingTime_sec = 0.00005f, .upper_limit = 10.0f,
+	struct uz_PI_Controller_config config_n = { .Kp = PID_Data.PID_GlobalConfig.Kp_n, .Ki = PID_Data.PID_GlobalConfig.Ki_n, .samplingTime_sec = 0.00005f, .upper_limit = 10.0f,
 	                .lower_limit = -10.0f };
-	struct uz_FOC_config config_FOC = { .config_PMSM = config_PMSM, .config_id = config_id, .config_iq = config_iq };
+	struct uz_FOC_config config_FOC = { .config_PMSM = PID_Data.PID_GlobalConfig.PMSM_config, .config_id = config_id, .config_iq = config_iq };
 
 	FOC_instance = uz_FOC_init(config_FOC);
 	SpeedControl_instance = uz_SpeedControl_init(config_n);

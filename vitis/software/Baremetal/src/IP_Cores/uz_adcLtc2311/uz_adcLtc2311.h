@@ -77,7 +77,7 @@
 // control register
 #define UZ_ADCLTC2311_CR_MODE (1U<<0)
 #define UZ_ADCLTC2311_CR_SW_TRIGGER_MODE (1U<<1)
-#define UZ_ADCLTC2311_CR_TRIGGER (1u<<2)
+#define UZ_ADCLTC2311_CR_TRIGGER (1U<<2)
 #define UZ_ADCLTC2311_CR_SW_RESET (1U<<3)
 #define UZ_ADCLTC2311_CR_CONV_VALUE_VALID (1U<<4)
 #define UZ_ADCLTC2311_CR_CONFIG_VALUE_0 (1U<<5)
@@ -118,6 +118,16 @@
 typedef struct uz_adcLtc2311_t uz_adcLtc2311_t;
 
 /**
+ * @brief Enum to determine the trigger mode of a SPI-Master
+ * 
+ */
+enum uz_adcLtc2311_trigger_mode{
+    pl_trigger=0,
+    software_trigger,
+    continuous_trigger,
+};
+
+/**
  * @brief Configuration struct that holds parameters that are adjustable on a per-channel basis
  * 
  */
@@ -134,6 +144,7 @@ struct uz_adcLtc2311_channel_config_t{
 struct uz_adcLtc2311_spi_master_config_t{
 	uint32_t samples; /**< Number of samples that shall be taken on a single trigger */
     uint32_t sample_time; /**<Minimal number of system clock cycles for sample and hold */
+    enum uz_adcLtc2311_trigger_mode trigger_mode;
 };
 
 /**
@@ -441,6 +452,12 @@ uint32_t uz_adcLtc2311_get_cpol(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_napping_masters(uz_adcLtc2311_t* self);
 uint32_t uz_adcLtc2311_get_sleeping_masters(uz_adcLtc2311_t* self);
 
+
+
+
+// do not use this function, only for internal use:
+void uz_adcLtc2311_set_trigger_mode(uz_adcLtc2311_t *self);
+
 /**
  * @brief Wrapper function to set the conversion factor and offset of specified channels of one or multiple SPI-Masters in a single function call
  * 
@@ -450,6 +467,14 @@ uint32_t uz_adcLtc2311_get_sleeping_masters(uz_adcLtc2311_t* self);
  * @param channel_config Config struct that is written to the IP-Core to change offset and conversion factor
  */
 void uz_adcLtc2311_set_channel_config(uz_adcLtc2311_t* self, uint32_t master_select, uint32_t channel_select,  struct uz_adcLtc2311_channel_config_t channel_config);
+
+/**
+ * @brief Wrapper function to set the trigger mode for 
+ * 
+ * @param self 
+ * @param trigger_mode 
+ */
+void uz_adcLtc2311_change_trigger_mode(uz_adcLtc2311_t *self, enum uz_adcLtc2311_trigger_mode trigger_mode);
 
 
 #endif // UZ_ADCLTC2311_H

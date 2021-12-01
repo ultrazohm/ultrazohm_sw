@@ -58,6 +58,7 @@ void expect_enter_sleep_mode_success(uint32_t *spi_cr_content, uint32_t *cr_cont
 void expect_adc_available(uint32_t *adc_available_content, uint32_t mask);
 void expect_adc_not_available(uint32_t *adc_available_content, uint32_t mask);
 void expect_set_triggered_mode(uint32_t *cr_content);
+void expect_set_pl_trigger_mode(uint32_t *cr_content);
 
 // Utilites
 uint32_t gen_uint32_all_bits_set(void);
@@ -763,7 +764,7 @@ uz_adcLtc2311_t *successfull_init(void)
                 .fractional_bits = 6},
             .offset = offset,
         },
-        .spi_master_config = {.samples = samples, .sample_time = sample_time},
+        .spi_master_config = {.samples = samples, .sample_time = sample_time, .trigger_mode=pl_trigger},
         .cpol = cpol,
         .cpha = cpha,
         .napping_spi_masters = 0,
@@ -772,9 +773,10 @@ uz_adcLtc2311_t *successfull_init(void)
         .channel_select = channel,
         .pre_delay = pre_delay,
         .post_delay = post_delay,
-        .clk_div = clk_div};
+        .clk_div = clk_div,};
 
     expect_set_triggered_mode(&cr_content);
+    expect_set_pl_trigger_mode(&cr_content);
     expect_update_conversion_factor_success(&cr_content, master, channel, conversion_factor, default_configuration.channel_config.conversion_factor_definition);
     expect_update_offset_success(&cr_content, master, channel, offset);
     expect_update_samples_success(&cr_content, master, samples);
@@ -971,6 +973,13 @@ void expect_set_triggered_mode(uint32_t *cr_content)
 {
     uz_adcLtc2311_hw_read_cr_ExpectAndReturn(TEST_BASE_ADDRESS, *cr_content);
     *cr_content &= ~UZ_ADCLTC2311_CR_MODE;
+    uz_adcLtc2311_hw_write_cr_Expect(TEST_BASE_ADDRESS, *cr_content);
+}
+
+void expect_set_pl_trigger_mode(uint32_t *cr_content)
+{
+    uz_adcLtc2311_hw_read_cr_ExpectAndReturn(TEST_BASE_ADDRESS, *cr_content);
+    *cr_content &= ~UZ_ADCLTC2311_CR_SW_TRIGGER_MODE;
     uz_adcLtc2311_hw_write_cr_Expect(TEST_BASE_ADDRESS, *cr_content);
 }
 

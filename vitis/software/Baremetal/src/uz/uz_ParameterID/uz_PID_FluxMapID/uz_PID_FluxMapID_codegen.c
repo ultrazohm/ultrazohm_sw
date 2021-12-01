@@ -37,6 +37,7 @@
 
 /* Forward declaration for local functions */
 static void initParams(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFluxMapID_Y, DW_FluxMapID_t *rtFluxMapID_DW);
+static void RefreshDataRegister(DW_FluxMapID_t *rtFluxMapID_DW);
 static real32_T identRes(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFluxMapID_Y, DW_FluxMapID_t *rtFluxMapID_DW);
 static void enter_atomic_AMMnewRef(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFluxMapID_Y, DW_FluxMapID_t *rtFluxMapID_DW);
 static void AMMstate(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFluxMapID_Y, DW_FluxMapID_t *rtFluxMapID_DW);
@@ -49,14 +50,14 @@ static void AMMstate(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFluxMa
 static void initParams(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFluxMapID_Y, DW_FluxMapID_t *rtFluxMapID_DW)
 {
 	/* MATLAB Function 'initParams': '<S1>:651' */
-	/* '<S1>:651:4' ud1_counter 		= single(0.0); */
-	rtFluxMapID_DW->ud1_counter = 0.0F;
+	/* '<S1>:651:4' vd1_counter 		= single(0.0); */
+	rtFluxMapID_DW->vd1_counter = 0.0F;
 
 	/* '<S1>:651:5' id1_counter        	= single(0.0); */
 	rtFluxMapID_DW->id1_counter = 0.0F;
 
-	/* '<S1>:651:6' ud2_counter 		= single(0.0); */
-	rtFluxMapID_DW->ud2_counter = 0.0F;
+	/* '<S1>:651:6' vd2_counter 		= single(0.0); */
+	rtFluxMapID_DW->vd2_counter = 0.0F;
 
 	/* '<S1>:651:7' id2_counter        	= single(0.0); */
 	rtFluxMapID_DW->id2_counter = 0.0F;
@@ -70,73 +71,92 @@ static void initParams(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFlux
 	/* '<S1>:651:10' i_q_ref_AMM_loc     = single(0.0); */
 	rtFluxMapID_DW->i_q_ref_AMM_loc = 0.0F;
 
+	/* '<S1>:651:11' R_s_array           = single(zeros(50,1)); */
+	memset(&rtFluxMapID_DW->R_s_array[0], 0, 50U * sizeof(real32_T));
+
 	/* Outport: '<Root>/FluxMapID_FOC_output' incorporates:
 	 *  Inport: '<Root>/GlobalConfig'
 	 */
   /* Outputs */
-	/* '<S1>:651:12' FluxMapID_FOC_output.n_ref_FOC         	= single(0.0); */
+	/* '<S1>:651:13' FluxMapID_FOC_output.n_ref_FOC         	= single(0.0); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.n_ref_FOC = 0.0F;
 
-	/* '<S1>:651:13' FluxMapID_FOC_output.PRBS_out         	= single(0.0); */
+	/* '<S1>:651:14' FluxMapID_FOC_output.PRBS_out         	= single(0.0); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.PRBS_out = 0.0F;
 
-	/* '<S1>:651:14' FluxMapID_FOC_output.i_dq_ref.d      	= single(0.0); */
+	/* '<S1>:651:15' FluxMapID_FOC_output.i_dq_ref.d      	= single(0.0); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.i_dq_ref.d = 0.0F;
 
-	/* '<S1>:651:15' FluxMapID_FOC_output.i_dq_ref.q       	= single(0.0); */
+	/* '<S1>:651:16' FluxMapID_FOC_output.i_dq_ref.q       	= single(0.0); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.i_dq_ref.q = 0.0F;
 
-	/* '<S1>:651:16' FluxMapID_FOC_output.i_dq_ref.zero      = single(0.0); */
+	/* '<S1>:651:17' FluxMapID_FOC_output.i_dq_ref.zero      = single(0.0); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.i_dq_ref.zero = 0.0F;
 
-	/* '<S1>:651:17' FluxMapID_FOC_output.enableFOC_speed   	= boolean(0); */
+	/* '<S1>:651:18' FluxMapID_FOC_output.enableFOC_speed   	= boolean(0); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.enableFOC_speed = false;
 
-	/* '<S1>:651:18' FluxMapID_FOC_output.VibOn_out       	= boolean(0); */
+	/* '<S1>:651:19' FluxMapID_FOC_output.VibOn_out       	= boolean(0); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.VibOn_out = false;
 
-	/* '<S1>:651:19' FluxMapID_FOC_output.VibFreq_out      	= uint16(0); */
+	/* '<S1>:651:20' FluxMapID_FOC_output.VibFreq_out      	= uint16(0); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.VibFreq_out = 0U;
 
-	/* '<S1>:651:20' FluxMapID_FOC_output.VibAmp_out         = single(0); */
+	/* '<S1>:651:21' FluxMapID_FOC_output.VibAmp_out         = single(0); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.VibAmp_out = 0.0F;
 
-	/* '<S1>:651:21' FluxMapID_FOC_output.resetIntegrator 	= boolean(0); */
+	/* '<S1>:651:22' FluxMapID_FOC_output.resetIntegrator 	= boolean(0); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.resetIntegrator = false;
 
-	/* '<S1>:651:22' FluxMapID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
+	/* '<S1>:651:23' FluxMapID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.Kp_id_out = rtFluxMapID_U->GlobalConfig_out.Kp_id;
 
-	/* '<S1>:651:23' FluxMapID_FOC_output.Kp_iq_out         	= single(GlobalConfig.Kp_iq); */
+	/* '<S1>:651:24' FluxMapID_FOC_output.Kp_iq_out         	= single(GlobalConfig.Kp_iq); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.Kp_iq_out = rtFluxMapID_U->GlobalConfig_out.Kp_iq;
 
-	/* '<S1>:651:24' FluxMapID_FOC_output.Kp_n_out         	= single(0.0); */
+	/* '<S1>:651:25' FluxMapID_FOC_output.Kp_n_out         	= single(0.0); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.Kp_n_out = 0.0F;
 
-	/* '<S1>:651:25' FluxMapID_FOC_output.Ki_id_out         	= single(GlobalConfig.Ki_id); */
+	/* '<S1>:651:26' FluxMapID_FOC_output.Ki_id_out         	= single(GlobalConfig.Ki_id); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.Ki_id_out = rtFluxMapID_U->GlobalConfig_out.Ki_id;
 
-	/* '<S1>:651:26' FluxMapID_FOC_output.Ki_iq_out        	= single(GlobalConfig.Ki_iq); */
+	/* '<S1>:651:27' FluxMapID_FOC_output.Ki_iq_out        	= single(GlobalConfig.Ki_iq); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.Ki_iq_out = rtFluxMapID_U->GlobalConfig_out.Ki_iq;
 
-	/* '<S1>:651:27' FluxMapID_FOC_output.Ki_n_out          	= single(0.0); */
+	/* '<S1>:651:28' FluxMapID_FOC_output.Ki_n_out          	= single(0.0); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.Ki_n_out = 0.0F;
 
-	/* '<S1>:651:28' FluxMapID_FOC_output.activeState        = uint16(0); */
+	/* '<S1>:651:29' FluxMapID_FOC_output.activeState        = uint16(0); */
 	rtFluxMapID_Y->FluxMapID_FOC_output.activeState = 0U;
 
 	/* Outport: '<Root>/finishedFluxMapID' */
-	/* '<S1>:651:29' finishedFluxMapID                       = boolean(0); */
+	/* '<S1>:651:30' finishedFluxMapID                       = boolean(0); */
 	rtFluxMapID_Y->finishedFluxMapID = false;
 
 	/* Outport: '<Root>/FluxMapID_output' incorporates:
 	 *  Inport: '<Root>/FluxMapIDConfig'
 	 */
-	/* '<S1>:651:32' FluxMapID_output.R_s                    = single(FluxMapIDConfig.R_s_ref); */
+	/* '<S1>:651:33' FluxMapID_output.R_s                    = single(FluxMapIDConfig.R_s_ref); */
 	rtFluxMapID_Y->FluxMapID_output.R_s = rtFluxMapID_U->FluxMapIDConfig.R_s_ref;
 
-	/* '<S1>:651:33' FluxMapID_output.WindingTemp            = single(FluxMapIDConfig.Temp_ref); */
+	/* '<S1>:651:34' FluxMapID_output.WindingTemp            = single(FluxMapIDConfig.Temp_ref); */
 	rtFluxMapID_Y->FluxMapID_output.WindingTemp = rtFluxMapID_U->FluxMapIDConfig.Temp_ref;
+}
+
+/*
+ * Function for Chart: '<Root>/FluxMapID'
+ * function RefreshDataRegister
+ */
+static void RefreshDataRegister(DW_FluxMapID_t *rtFluxMapID_DW) {
+	uint16_T k;
+
+	/* MATLAB Function 'RefreshDataRegister': '<S1>:690' */
+	/* '<S1>:690:3' m=length(R_s_array); */
+	/* '<S1>:690:4' for k= uint16(0):uint16(m-2) */
+	for (k = 0; k < 49; k++) {
+		/* '<S1>:690:5' R_s_array(m-k)=R_s_array(m-(k+1)); */
+		rtFluxMapID_DW->R_s_array[49 - k] = rtFluxMapID_DW->R_s_array[48 - k];
+	}
 }
 
 /*
@@ -145,19 +165,18 @@ static void initParams(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFlux
  */
 static real32_T identRes(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFluxMapID_Y, DW_FluxMapID_t *rtFluxMapID_DW)
 {
-	int32_T i;
-	int32_T n;
-	real32_T In1;
+	int32_T k;
 	real32_T tmp;
+	real32_T vd1_counter_tmp;
 	uint32_T qY;
 
 	/* Inport: '<Root>/GlobalConfig' */
 	/* MATLAB Function 'identRes': '<S1>:669' */
 	/* '<S1>:669:3' if(counter <= uint32(0.2/GlobalConfig.sampleTimeISR)) */
-	In1 = roundf(0.2F / rtFluxMapID_U->GlobalConfig_out.sampleTimeISR);
-	if (In1 < 4.2949673E+9F) {
-		if (In1 >= 0.0F) {
-			qY = (uint32_T) In1;
+	vd1_counter_tmp = roundf(0.2F / rtFluxMapID_U->GlobalConfig_out.sampleTimeISR);
+	if (vd1_counter_tmp < 4.2949673E+9F) {
+		if (vd1_counter_tmp >= 0.0F) {
+			qY = (uint32_T) vd1_counter_tmp;
 		} else {
 			qY = 0U;
 		}
@@ -185,9 +204,9 @@ static real32_T identRes(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFl
 		}
 
 		if (rtFluxMapID_DW->counter >= qY) {
-			if (In1 < 4.2949673E+9F) {
-				if (In1 >= 0.0F) {
-					qY = (uint32_T) In1;
+			if (vd1_counter_tmp < 4.2949673E+9F) {
+				if (vd1_counter_tmp >= 0.0F) {
+					qY = (uint32_T) vd1_counter_tmp;
 				} else {
 					qY = 0U;
 				}
@@ -197,8 +216,8 @@ static real32_T identRes(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFl
 
 			if (rtFluxMapID_DW->counter < qY) {
 				/* Inport: '<Root>/ActualValues' */
-				/* '<S1>:669:6' ud1_counter = ud1_counter + ActualValues.u_dq.d; */
-				rtFluxMapID_DW->ud1_counter += rtFluxMapID_U->ActualValues.u_dq.d;
+				/* '<S1>:669:6' vd1_counter = vd1_counter + ActualValues.v_dq.d; */
+				rtFluxMapID_DW->vd1_counter += rtFluxMapID_U->ActualValues.v_dq.d;
 
 				/* '<S1>:669:7' id1_counter = id1_counter + ActualValues.i_dq.d; */
 				rtFluxMapID_DW->id1_counter += rtFluxMapID_U->ActualValues.i_dq.d;
@@ -207,9 +226,9 @@ static real32_T identRes(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFl
 	}
 
 	/* '<S1>:669:11' if(counter > uint32(0.2/GlobalConfig.sampleTimeISR) && counter <= uint32(0.4/GlobalConfig.sampleTimeISR)) */
-	if (In1 < 4.2949673E+9F) {
-		if (In1 >= 0.0F) {
-			qY = (uint32_T) In1;
+	if (vd1_counter_tmp < 4.2949673E+9F) {
+		if (vd1_counter_tmp >= 0.0F) {
+			qY = (uint32_T) vd1_counter_tmp;
 		} else {
 			qY = 0U;
 		}
@@ -219,10 +238,10 @@ static real32_T identRes(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFl
 
 	if (rtFluxMapID_DW->counter > qY) {
 		/* Inport: '<Root>/GlobalConfig' */
-		In1 = roundf(0.4F / rtFluxMapID_U->GlobalConfig_out.sampleTimeISR);
-		if (In1 < 4.2949673E+9F) {
-			if (In1 >= 0.0F) {
-				qY = (uint32_T) In1;
+		vd1_counter_tmp = roundf(0.4F / rtFluxMapID_U->GlobalConfig_out.sampleTimeISR);
+		if (vd1_counter_tmp < 4.2949673E+9F) {
+			if (vd1_counter_tmp >= 0.0F) {
+				qY = (uint32_T) vd1_counter_tmp;
       } else {
 				qY = 0U;
       }
@@ -249,9 +268,9 @@ static real32_T identRes(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFl
       }
 
 			if (rtFluxMapID_DW->counter >= qY) {
-				if (In1 < 4.2949673E+9F) {
-					if (In1 >= 0.0F) {
-						qY = (uint32_T) In1;
+				if (vd1_counter_tmp < 4.2949673E+9F) {
+					if (vd1_counter_tmp >= 0.0F) {
+						qY = (uint32_T) vd1_counter_tmp;
 					} else {
 						qY = 0U;
 					}
@@ -261,8 +280,8 @@ static real32_T identRes(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFl
 
 				if (rtFluxMapID_DW->counter < qY) {
 					/* Inport: '<Root>/ActualValues' */
-					/* '<S1>:669:14' ud2_counter = ud2_counter + ActualValues.u_dq.d; */
-					rtFluxMapID_DW->ud2_counter += rtFluxMapID_U->ActualValues.u_dq.d;
+					/* '<S1>:669:14' vd2_counter = vd2_counter + ActualValues.v_dq.d; */
+					rtFluxMapID_DW->vd2_counter += rtFluxMapID_U->ActualValues.v_dq.d;
 
 					/* '<S1>:669:15' id2_counter = id2_counter + ActualValues.i_dq.d; */
 					rtFluxMapID_DW->id2_counter += rtFluxMapID_U->ActualValues.i_dq.d;
@@ -273,10 +292,10 @@ static real32_T identRes(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFl
 
   /* Inport: '<Root>/GlobalConfig' */
 	/* '<S1>:669:19' if(counter == uint32(0.4/GlobalConfig.sampleTimeISR + 1) ) */
-	In1 = roundf(0.4F / rtFluxMapID_U->GlobalConfig_out.sampleTimeISR + 1.0F);
-	if (In1 < 4.2949673E+9F) {
-		if (In1 >= 0.0F) {
-			qY = (uint32_T) In1;
+	vd1_counter_tmp = roundf(0.4F / rtFluxMapID_U->GlobalConfig_out.sampleTimeISR + 1.0F);
+	if (vd1_counter_tmp < 4.2949673E+9F) {
+		if (vd1_counter_tmp >= 0.0F) {
+			qY = (uint32_T) vd1_counter_tmp;
 		} else {
 			qY = 0U;
 		}
@@ -290,68 +309,39 @@ static real32_T identRes(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFl
 		rtFluxMapID_DW->i_d_R_online = -rtFluxMapID_U->FluxMapIDConfig.identRAmp;
 
 		/* Inport: '<Root>/GlobalConfig' */
-		/* '<S1>:669:21' ud1_counter=ud1_counter/(0.1/GlobalConfig.sampleTimeISR); */
-		In1 = 0.1F / rtFluxMapID_U->GlobalConfig_out.sampleTimeISR;
-		rtFluxMapID_DW->ud1_counter /= In1;
+		/* '<S1>:669:21' vd1_counter=vd1_counter/(0.1/GlobalConfig.sampleTimeISR); */
+		vd1_counter_tmp = 0.1F / rtFluxMapID_U->GlobalConfig_out.sampleTimeISR;
+		rtFluxMapID_DW->vd1_counter /= vd1_counter_tmp;
 
 		/* '<S1>:669:22' id1_counter=id1_counter/(0.1/GlobalConfig.sampleTimeISR); */
-		rtFluxMapID_DW->id1_counter /= In1;
+		rtFluxMapID_DW->id1_counter /= vd1_counter_tmp;
 
-		/* '<S1>:669:23' ud2_counter=ud2_counter/(0.1/GlobalConfig.sampleTimeISR); */
-		rtFluxMapID_DW->ud2_counter /= In1;
+		/* '<S1>:669:23' vd2_counter=vd2_counter/(0.1/GlobalConfig.sampleTimeISR); */
+		rtFluxMapID_DW->vd2_counter /= vd1_counter_tmp;
 
 		/* '<S1>:669:24' id2_counter=id2_counter/(0.1/GlobalConfig.sampleTimeISR); */
-		rtFluxMapID_DW->id2_counter /= In1;
+		rtFluxMapID_DW->id2_counter /= vd1_counter_tmp;
 
-		/* Outputs for Function Call SubSystem: '<S1>/AMMstate.MovAverage' */
-		/* InitialCondition: '<S2>/IC' */
-		/* '<S1>:669:25' FluxMapID_output.R_s = MovAverage(single((ud2_counter-ud1_counter)/(id2_counter-id1_counter))); */
-		/* Simulink Function 'MovAverage': '<S1>:672' */
-		if (rtFluxMapID_DW->IC_FirstOutputTime) {
-			rtFluxMapID_DW->IC_FirstOutputTime = false;
+		/* '<S1>:669:25' R_s_array(1,1) = single((vd2_counter-vd1_counter)/(id2_counter-id1_counter)); */
+		rtFluxMapID_DW->R_s_array[0] = (rtFluxMapID_DW->vd2_counter - rtFluxMapID_DW->vd1_counter) / (rtFluxMapID_DW->id2_counter - rtFluxMapID_DW->id1_counter);
 
-			/* InitialCondition: '<S2>/IC' */
-			memset(&rtFluxMapID_DW->IC[0], 0, 50U * sizeof(real32_T));
-		} else {
-			/* InitialCondition: '<S2>/IC' incorporates:
-			 *  Memory: '<S2>/Memory'
-			 */
-			memcpy(&rtFluxMapID_DW->IC[0], &rtFluxMapID_DW->Memory_PreviousInput[0], 50U * sizeof(real32_T));
+		/* '<S1>:669:26' RefreshDataRegister; */
+		RefreshDataRegister(rtFluxMapID_DW);
+
+		/* '<S1>:669:27' FluxMapID_output.R_s = mean(R_s_array); */
+		vd1_counter_tmp = rtFluxMapID_DW->R_s_array[0];
+		for (k = 0; k < 49; k++) {
+			vd1_counter_tmp += rtFluxMapID_DW->R_s_array[k + 1];
     }
-
-		/* End of InitialCondition: '<S2>/IC' */
-
-		/* S-Function (sdspperm2): '<S2>/Variable Selector' */
-		memcpy(&rtFluxMapID_DW->VariableSelector[0], &rtFluxMapID_DW->IC[0], 49U * sizeof(real32_T));
-
-		/* SignalConversion generated from: '<S2>/Mean' */
-		rtFluxMapID_DW->IC[0] = (rtFluxMapID_DW->ud2_counter - rtFluxMapID_DW->ud1_counter) / (rtFluxMapID_DW->id2_counter - rtFluxMapID_DW->id1_counter);
-		memcpy(&rtFluxMapID_DW->IC[1], &rtFluxMapID_DW->VariableSelector[0], 49U * sizeof(real32_T));
-
-		/* S-Function (sdspstatfcns): '<S2>/Mean' */
-		In1 = rtFluxMapID_DW->IC[0];
-		i = 1;
-		for (n = 48; n >= 0; n--) {
-			In1 += rtFluxMapID_DW->IC[i];
-			i++;
-    }
-
-		/* S-Function (sdspstatfcns): '<S2>/Mean' */
-		rtFluxMapID_DW->Mean = In1 / 50.0F;
-
-		/* Update for Memory: '<S2>/Memory' */
-		memcpy(&rtFluxMapID_DW->Memory_PreviousInput[0], &rtFluxMapID_DW->IC[0], 50U * sizeof(real32_T));
-
-		/* End of Outputs for SubSystem: '<S1>/AMMstate.MovAverage' */
 
 		/* Outport: '<Root>/FluxMapID_output' */
-		rtFluxMapID_Y->FluxMapID_output.R_s = rtFluxMapID_DW->Mean;
+		rtFluxMapID_Y->FluxMapID_output.R_s = vd1_counter_tmp / 50.0F;
 
-		/* '<S1>:669:26' counter = uint32(1); */
+		/* '<S1>:669:28' counter = uint32(1); */
 		rtFluxMapID_DW->counter = 1U;
   }
 
-	/* '<S1>:669:29' counter = counter + 1; */
+	/* '<S1>:669:31' counter = counter + 1; */
 	qY = rtFluxMapID_DW->counter + /*MW:OvSatOk*/1U;
 	if (rtFluxMapID_DW->counter + 1U < rtFluxMapID_DW->counter) {
 		qY = MAX_uint32_T;
@@ -360,7 +350,7 @@ static real32_T identRes(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFl
 	rtFluxMapID_DW->counter = qY;
 
 	/* Outport: '<Root>/FluxMapID_output' */
-	/* '<S1>:669:30' fun = single(FluxMapID_output.R_s); */
+	/* '<S1>:669:32' fun = single(FluxMapID_output.R_s); */
 	return rtFluxMapID_Y->FluxMapID_output.R_s;
 }
 
@@ -994,12 +984,14 @@ void FluxMapID_initialize(RT_MODEL_FluxMapID_t * const rtFluxMapID_M)
 
   /* external outputs */
 	(void) memset((void *) rtFluxMapID_Y, 0, sizeof(ExtY_FluxMapID_t));
+
+	/* SystemInitialize for Chart: '<Root>/FluxMapID' */
 	rtFluxMapID_DW->is_AMMstate = IN_NO_ACTIVE_CHILD;
 	rtFluxMapID_DW->temporalCounter_i1 = 0U;
 	rtFluxMapID_DW->is_active_c16_FluxMapID = 0U;
 	rtFluxMapID_DW->is_c16_FluxMapID = IN_NO_ACTIVE_CHILD;
 	rtFluxMapID_DW->counter = 0U;
-	rtFluxMapID_DW->ud2_counter = 0.0F;
+	rtFluxMapID_DW->vd2_counter = 0.0F;
 	rtFluxMapID_DW->AMMj = 0U;
 	rtFluxMapID_DW->AMMn = 0U;
 	rtFluxMapID_DW->i_d_ref_AMM = 0.0F;
@@ -1011,16 +1003,24 @@ void FluxMapID_initialize(RT_MODEL_FluxMapID_t * const rtFluxMapID_M)
 	rtFluxMapID_DW->i_d_R_online = 0.0F;
 	rtFluxMapID_DW->repetitionCounter = 0U;
 	rtFluxMapID_DW->id2_counter = 0.0F;
-	rtFluxMapID_DW->ud1_counter = 0.0F;
+	rtFluxMapID_DW->vd1_counter = 0.0F;
 	rtFluxMapID_DW->id1_counter = 0.0F;
+	memset(&rtFluxMapID_DW->R_s_array[0], 0, 50U * sizeof(real32_T));
 
-	/* SystemInitialize for Outport: '<Root>/finishedFluxMapID' */
+	/* SystemInitialize for Outport: '<Root>/finishedFluxMapID' incorporates:
+	 *  Chart: '<Root>/FluxMapID'
+	 */
 	rtFluxMapID_Y->finishedFluxMapID = false;
 
-	/* SystemInitialize for Outport: '<Root>/enteredFluxMapID' */
+	/* SystemInitialize for Outport: '<Root>/enteredFluxMapID' incorporates:
+	 *  Chart: '<Root>/FluxMapID'
+	 */
 	rtFluxMapID_Y->enteredFluxMapID = false;
 
-	/* SystemInitialize for Outport: '<Root>/FluxMapID_FOC_output' */
+	/* SystemInitialize for Chart: '<Root>/FluxMapID' incorporates:
+	 *  Outport: '<Root>/FluxMapID_FOC_output'
+	 *  Outport: '<Root>/FluxMapID_output'
+	 */
 	rtFluxMapID_Y->FluxMapID_FOC_output.i_dq_ref.d = 0.0F;
 	rtFluxMapID_Y->FluxMapID_FOC_output.i_dq_ref.q = 0.0F;
 	rtFluxMapID_Y->FluxMapID_FOC_output.i_dq_ref.zero = 0.0F;
@@ -1039,16 +1039,8 @@ void FluxMapID_initialize(RT_MODEL_FluxMapID_t * const rtFluxMapID_M)
 	rtFluxMapID_Y->FluxMapID_FOC_output.Ki_id_out = 0.0F;
 	rtFluxMapID_Y->FluxMapID_FOC_output.Ki_iq_out = 0.0F;
 	rtFluxMapID_Y->FluxMapID_FOC_output.Ki_n_out = 0.0F;
-
-	/* SystemInitialize for Outport: '<Root>/FluxMapID_output' */
 	rtFluxMapID_Y->FluxMapID_output.R_s = 0.0F;
 	rtFluxMapID_Y->FluxMapID_output.WindingTemp = 0.0F;
-
-	/* SystemInitialize for Chart: '<Root>/FluxMapID' incorporates:
-	 *  SubSystem: '<S1>/AMMstate.MovAverage'
-	 */
-	/* Start for InitialCondition: '<S2>/IC' */
-	rtFluxMapID_DW->IC_FirstOutputTime = true;
 }
 
 /*

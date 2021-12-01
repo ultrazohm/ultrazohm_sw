@@ -106,13 +106,13 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t Data) {
 
 struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance) {
 	struct uz_DutyCycle_t output_DutyCycle = { 0 };
-	uz_dq_t u_dq_Volts = { 0 };
+	uz_dq_t v_dq_Volts = { 0 };
 	uz_dq_t i_SpeedControl_reference_Ampere = { 0 };
 
 	if (Data.PID_Controller_Parameters.enableFOC_speed == true) {
 		//Change, if desired, the speed controller here
 		bool ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
-		i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data.PID_ActualValues.omega_el, Data.PID_Controller_Parameters.n_ref_FOC, Data.PID_ActualValues.U_zk,
+		i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data.PID_ActualValues.omega_el, Data.PID_Controller_Parameters.n_ref_FOC, Data.PID_ActualValues.V_DC,
 		                Data.PID_Controller_Parameters.i_dq_ref.d, Data.PID_GlobalConfig.PMSM_config, ext_clamping);
 		//Create sine excitation for J-Identification
 		if (Data.PID_Controller_Parameters.VibOn_out == true) {
@@ -125,13 +125,13 @@ struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t Data, uz_F
 		//Change, if desired, the current controller here
 		if (Data.PID_Controller_Parameters.enableFOC_current == true) {
 			//If CurrentControl is active, use input reference currents
-			u_dq_Volts = uz_FOC_sample(FOC_instance, Data.PID_Controller_Parameters.i_dq_ref, Data.PID_ActualValues.i_dq, Data.PID_ActualValues.U_zk, Data.PID_ActualValues.omega_el);
+			v_dq_Volts = uz_FOC_sample(FOC_instance, Data.PID_Controller_Parameters.i_dq_ref, Data.PID_ActualValues.i_dq, Data.PID_ActualValues.V_DC, Data.PID_ActualValues.omega_el);
 		} else if (Data.PID_Controller_Parameters.enableFOC_speed == true) {
 			//If SpeedControl is active, use reference currents from SpeedControl
-			u_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data.PID_ActualValues.i_dq, Data.PID_ActualValues.U_zk, Data.PID_ActualValues.omega_el);
+			v_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data.PID_ActualValues.i_dq, Data.PID_ActualValues.V_DC, Data.PID_ActualValues.omega_el);
 		}
-		uz_UVW_t U_UVW_Volts = uz_dq_inverse_transformation(u_dq_Volts, Data.PID_ActualValues.theta_el);
-		output_DutyCycle = uz_FOC_generate_DutyCycles(U_UVW_Volts, Data.PID_ActualValues.U_zk);
+		uz_UVW_t V_UVW_Volts = uz_dq_inverse_transformation(v_dq_Volts, Data.PID_ActualValues.theta_el);
+		output_DutyCycle = uz_FOC_generate_DutyCycles(V_UVW_Volts, Data.PID_ActualValues.V_DC);
 	} else if (Data.PID_Controller_Parameters.resetIntegrator == true) {
 		uz_FOC_reset(FOC_instance);
 		uz_SpeedControl_reset(Speed_instance);

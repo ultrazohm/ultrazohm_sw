@@ -118,8 +118,8 @@ static void initParams(ExtY_ElectricalID_t *rtElectricalID_Y, DW_ElectricalID_t 
   /* used for Friction Id */
   /* '<S1>:88:18' J2                  = single(zeros(256,5)); */
   /* '<S1>:88:19' thetaOffset         = single(0.0); */
-  /* '<S1>:88:20' Ustep               = single(zeros(205,1)); */
-  memset(&rtElectricalID_DW->Ustep[0], 0, 205U * sizeof(real32_T));
+	/* '<S1>:88:20' Vstep               = single(zeros(205,1)); */
+	memset(&rtElectricalID_DW->Vstep[0], 0, 205U * sizeof(real32_T));
 
   /* '<S1>:88:21' DutyCycle           = single(0.0); */
   rtElectricalID_DW->DutyCycle = 0.0F;
@@ -275,8 +275,8 @@ static void initParams(ExtY_ElectricalID_t *rtElectricalID_Y, DW_ElectricalID_t 
 	/* '<S1>:88:78' R0 					= single(0); */
 	/* '<S1>:88:79' R_est 				= single(0); */
 	/* '<S1>:88:80' R_lm 				= single(0); */
-	/* '<S1>:88:81' U0 					= single(0); */
-  rtElectricalID_DW->U0 = 0.0F;
+	/* '<S1>:88:81' V0 					= single(0); */
+	rtElectricalID_DW->V0 = 0.0F;
 
 	/* '<S1>:88:82' lambda  			= single(0.01); */
   rtElectricalID_DW->lambda = 0.01F;
@@ -311,8 +311,8 @@ static void resetParams_LM(DW_ElectricalID_t *rtElectricalID_DW)
   /* '<S1>:283:4' measArray1			= single(zeros(1024,1)); */
   memset(&rtElectricalID_DW->measArray1[0], 0, sizeof(real32_T) << 10U);
 
-  /* '<S1>:283:5' Ustep               = single(zeros(205,1)); */
-  memset(&rtElectricalID_DW->Ustep[0], 0, 205U * sizeof(real32_T));
+	/* '<S1>:283:5' Vstep               = single(zeros(205,1)); */
+	memset(&rtElectricalID_DW->Vstep[0], 0, 205U * sizeof(real32_T));
 
   /*  initialize variables for Levenberg-Marquardt */
   /* '<S1>:283:8' d        			= single(zeros(2048,1)); */
@@ -347,8 +347,8 @@ static void resetParams_LM(DW_ElectricalID_t *rtElectricalID_DW)
   /* '<S1>:283:23' R0 					= single(0); */
   /* '<S1>:283:24' R_est 				= single(0); */
   /* '<S1>:283:25' R_lm 				= single(0); */
-  /* '<S1>:283:26' U0 					= single(0); */
-  rtElectricalID_DW->U0 = 0.0F;
+	/* '<S1>:283:26' V0 					= single(0); */
+	rtElectricalID_DW->V0 = 0.0F;
 
   /* '<S1>:283:27' lambda  			= single(0.01); */
   rtElectricalID_DW->lambda = 0.01F;
@@ -838,7 +838,7 @@ static void measure_psiPM(ExtU_ElectricalID_t *rtElectricalID_U,
 
     if ((rtElectricalID_DW->counter > rtElectricalID_DW->wait_count) &&
         (rtElectricalID_DW->counter < qY)) {
-      /* '<S1>:405:10' measArray1(counter-wait_count) = ActualValues.u_dq.q; */
+			/* '<S1>:405:10' measArray1(counter-wait_count) = ActualValues.v_dq.q; */
       qY_tmp_tmp = rtElectricalID_DW->counter - /*MW:OvSatOk*/
         rtElectricalID_DW->wait_count;
       qY_tmp = qY_tmp_tmp;
@@ -849,7 +849,7 @@ static void measure_psiPM(ExtU_ElectricalID_t *rtElectricalID_U,
       }
 
       rtElectricalID_DW->measArray1[(int32_T)qY - 1] =
-        rtElectricalID_U->ActualValues.u_dq.q;
+        rtElectricalID_U->ActualValues.v_dq.q;
 
       /* '<S1>:405:11' d(counter-wait_count) = ActualValues.i_dq.q; */
       rtElectricalID_DW->d[(int32_T)qY_tmp - 1] =
@@ -1139,7 +1139,7 @@ static void mtimes(const real32_T A[2048], const real32_T B[1024], real32_T C[2]
  * Function for Chart: '<Root>/ElectricalID'
  * function LM_algorithm
  *  Startwerte Festlegen
- * U0 = U_s;                           % Spannungssprung in Volt
+ * V0 = V_s;                           % Spannungssprung in Volt
  */
 static void LM_algorithm(real32_T *L_est, real32_T *R_est, ExtU_ElectricalID_t
   *rtElectricalID_U, DW_ElectricalID_t *rtElectricalID_DW)
@@ -1184,16 +1184,16 @@ static void LM_algorithm(real32_T *L_est, real32_T *R_est, ExtU_ElectricalID_t
       /* '<S1>:92:40' d(1:1024) = measArray1(1:1024)-i_est(1:1024); */
       for (k = 0; k < 1024; k++) {
         /* Inport: '<Root>/GlobalConfig' */
-        /* '<S1>:92:29' J(k,:) = [- (U0*(exp(-(R_est*(k-1)*GlobalConfig.sampleTimeISR)/L_est).... */
-        /* '<S1>:92:30'                  - 1))/R_est^2 - (U0*(k-1)*GlobalConfig.sampleTimeISR*exp.... */
+				/* '<S1>:92:29' J(k,:) = [- (V0*(exp(-(R_est*(k-1)*GlobalConfig.sampleTimeISR)/L_est).... */
+				/* '<S1>:92:30'                  - 1))/R_est^2 - (V0*(k-1)*GlobalConfig.sampleTimeISR*exp.... */
         /* '<S1>:92:31'                  (-(R_est*(k-1)*GlobalConfig.sampleTimeISR)/L_est))/(L_est*R_est).... */
-        /* '<S1>:92:32'                  , (U0*(k-1)*GlobalConfig.sampleTimeISR*exp(-(R_est*(k-1)*.... */
+				/* '<S1>:92:32'                  , (V0*(k-1)*GlobalConfig.sampleTimeISR*exp(-(R_est*(k-1)*.... */
         /* '<S1>:92:33'                  GlobalConfig.sampleTimeISR)/L_est))/L_est^2]; */
         R_lm = expf(-((((real32_T)k + 1.0F) - 1.0F) * *R_est *
                       rtElectricalID_U->GlobalConfig_out.sampleTimeISR) / *L_est);
-        L_lm = (((real32_T)k + 1.0F) - 1.0F) * rtElectricalID_DW->U0 *
+				L_lm = (((real32_T) k + 1.0F) - 1.0F) * rtElectricalID_DW->V0 *
           rtElectricalID_U->GlobalConfig_out.sampleTimeISR;
-        rtElectricalID_DW->J[k] = -((R_lm - 1.0F) * rtElectricalID_DW->U0) /
+				rtElectricalID_DW->J[k] = -((R_lm - 1.0F) * rtElectricalID_DW->V0) /
           (*R_est * *R_est) - L_lm * R_lm / (*L_est * *R_est);
         rtElectricalID_DW->J[k + 2048] = R_lm * L_lm / (*L_est * *L_est);
 
@@ -1202,10 +1202,10 @@ static void LM_algorithm(real32_T *L_est, real32_T *R_est, ExtU_ElectricalID_t
         /* . */
         /* . */
         /* . */
-        /* '<S1>:92:37' i_est(k) = U0/R_est*(1-exp(-R_est*((k-1)*GlobalConfig.sampleTimeISR)/L_est)); */
+				/* '<S1>:92:37' i_est(k) = V0/R_est*(1-exp(-R_est*((k-1)*GlobalConfig.sampleTimeISR)/L_est)); */
         rtElectricalID_DW->i_est[k] = (1.0F - expf((((real32_T)k + 1.0F) - 1.0F)
           * rtElectricalID_U->GlobalConfig_out.sampleTimeISR * -*R_est / *L_est))
-          * (rtElectricalID_DW->U0 / *R_est);
+				                * (rtElectricalID_DW->V0 / *R_est);
         rtElectricalID_DW->d[k] = rtElectricalID_DW->measArray1[k] -
           rtElectricalID_DW->i_est[k];
       }
@@ -1270,10 +1270,10 @@ static void LM_algorithm(real32_T *L_est, real32_T *R_est, ExtU_ElectricalID_t
     e_lm = 0.0F;
     for (k = 0; k < 1024; k++) {
       /* Inport: '<Root>/GlobalConfig' */
-      /* '<S1>:92:59' i_est(k) = U0/R_lm*(1-exp(-R_lm*((k-1)*GlobalConfig.sampleTimeISR)/L_lm)); */
+			/* '<S1>:92:59' i_est(k) = V0/R_lm*(1-exp(-R_lm*((k-1)*GlobalConfig.sampleTimeISR)/L_lm)); */
       rtElectricalID_DW->i_est[k] = (1.0F - expf((((real32_T)k + 1.0F) - 1.0F) *
         rtElectricalID_U->GlobalConfig_out.sampleTimeISR * -R_lm / L_lm)) *
-        (rtElectricalID_DW->U0 / R_lm);
+        (rtElectricalID_DW->V0 / R_lm);
       rtElectricalID_DW->d[k] = rtElectricalID_DW->measArray1[k] -
         rtElectricalID_DW->i_est[k];
       e_lm += rtElectricalID_DW->d[k] * rtElectricalID_DW->d[k];
@@ -1370,15 +1370,14 @@ static void stepResponse(ExtU_ElectricalID_t *rtElectricalID_U,
         /* '<S1>:5:11' if(mod(counter,5) == 0) */
         if (rtElectricalID_DW->counter - rtElectricalID_DW->counter / 5U * 5U ==
             0U) {
-          /* '<S1>:5:12' Ustep(z-1) = ActualValues.U_UVW.U; */
+					/* '<S1>:5:12' Vstep(z-1) = ActualValues.V_UVW.U; */
           qY = rtElectricalID_DW->z - 1U;
           if (rtElectricalID_DW->z - 1U > rtElectricalID_DW->z) {
             qY = 0U;
           }
 
           /* Inport: '<Root>/ActualValues' */
-          rtElectricalID_DW->Ustep[(int32_T)qY - 1] =
-            rtElectricalID_U->ActualValues.U_UVW.U;
+					rtElectricalID_DW->Vstep[(int32_T) qY - 1] = rtElectricalID_U->ActualValues.V_UVW.U;
 
           /* '<S1>:5:13' z = z + 1; */
           qY = rtElectricalID_DW->z + 1U;
@@ -1409,8 +1408,8 @@ static void stepResponse(ExtU_ElectricalID_t *rtElectricalID_U,
         rtElectricalID_DW->counter = qY;
 
         /* Inport: '<Root>/ActualValues' */
-        /* '<S1>:5:19' Ustep(1) = ActualValues.U_UVW.U; */
-        rtElectricalID_DW->Ustep[0] = rtElectricalID_U->ActualValues.U_UVW.U;
+				/* '<S1>:5:19' Vstep(1) = ActualValues.V_UVW.U; */
+				rtElectricalID_DW->Vstep[0] = rtElectricalID_U->ActualValues.V_UVW.U;
 
         /* '<S1>:5:20' z = z + 1; */
         qY = rtElectricalID_DW->z + 1U;
@@ -1434,23 +1433,23 @@ static void stepResponse(ExtU_ElectricalID_t *rtElectricalID_U,
         rtElectricalID_DW->measArray1[(int32_T)qY - 1] =
           rtElectricalID_U->ActualValues.I_UVW.U;
 
-        /* '<S1>:5:25' Ustep(z-1) = ActualValues.I_UVW.U; */
+				/* '<S1>:5:25' Vstep(z-1) = ActualValues.I_UVW.U; */
         qY = rtElectricalID_DW->z - 1U;
         if (rtElectricalID_DW->z - 1U > rtElectricalID_DW->z) {
           qY = 0U;
         }
 
         /* Inport: '<Root>/ActualValues' */
-        rtElectricalID_DW->Ustep[(int32_T)qY - 1] =
+				rtElectricalID_DW->Vstep[(int32_T) qY - 1] =
           rtElectricalID_U->ActualValues.I_UVW.U;
 
-        /* '<S1>:5:26' U0 = mean(Ustep); */
-        L_est = rtElectricalID_DW->Ustep[0];
+				/* '<S1>:5:26' V0 = mean(Vstep); */
+				L_est = rtElectricalID_DW->Vstep[0];
         for (k = 0; k < 204; k++) {
-          L_est += rtElectricalID_DW->Ustep[k + 1];
+					L_est += rtElectricalID_DW->Vstep[k + 1];
         }
 
-        rtElectricalID_DW->U0 = L_est / 205.0F;
+				rtElectricalID_DW->V0 = L_est / 205.0F;
       }
 
       /* Outport: '<Root>/ElectricalID_output' */
@@ -1472,7 +1471,7 @@ static void stepResponse(ExtU_ElectricalID_t *rtElectricalID_U,
  * Function for Chart: '<Root>/ElectricalID'
  * function LM_algorithm_Lq
  *  Startwerte Festlegen
- * U0 = U_s;                           % Spannungssprung in Volt
+ * V0 = V_s;                           % Spannungssprung in Volt
  */
 static void LM_algorithm_Lq(real32_T *L_est, ExtU_ElectricalID_t
   *rtElectricalID_U, DW_ElectricalID_t *rtElectricalID_DW)
@@ -1518,16 +1517,16 @@ static void LM_algorithm_Lq(real32_T *L_est, ExtU_ElectricalID_t
       /* '<S1>:281:40' d(1:1024) = measArray1(1:1024)-i_est(1:1024); */
       for (k = 0; k < 1024; k++) {
         /* Inport: '<Root>/GlobalConfig' */
-        /* '<S1>:281:29' J(k,:) = [- (U0*(exp(-(R_est*(k-1)*GlobalConfig.sampleTimeISR)/L_est).... */
-        /* '<S1>:281:30'                  - 1))/R_est^2 - (U0*(k-1)*GlobalConfig.sampleTimeISR*exp.... */
+				/* '<S1>:281:29' J(k,:) = [- (V0*(exp(-(R_est*(k-1)*GlobalConfig.sampleTimeISR)/L_est).... */
+				/* '<S1>:281:30'                  - 1))/R_est^2 - (V0*(k-1)*GlobalConfig.sampleTimeISR*exp.... */
         /* '<S1>:281:31'                  (-(R_est*(k-1)*GlobalConfig.sampleTimeISR)/L_est))/(L_est*R_est).... */
-        /* '<S1>:281:32'                  , (U0*(k-1)*GlobalConfig.sampleTimeISR*exp(-(R_est*(k-1)*.... */
+				/* '<S1>:281:32'                  , (V0*(k-1)*GlobalConfig.sampleTimeISR*exp(-(R_est*(k-1)*.... */
         /* '<S1>:281:33'                  GlobalConfig.sampleTimeISR)/L_est))/L_est^2]; */
         R_lm = expf(-((((real32_T)k + 1.0F) - 1.0F) * R_est *
                       rtElectricalID_U->GlobalConfig_out.sampleTimeISR) / *L_est);
-        L_lm = (((real32_T)k + 1.0F) - 1.0F) * rtElectricalID_DW->U0 *
+				L_lm = (((real32_T) k + 1.0F) - 1.0F) * rtElectricalID_DW->V0 *
           rtElectricalID_U->GlobalConfig_out.sampleTimeISR;
-        rtElectricalID_DW->J[k] = -((R_lm - 1.0F) * rtElectricalID_DW->U0) /
+				rtElectricalID_DW->J[k] = -((R_lm - 1.0F) * rtElectricalID_DW->V0) /
           (R_est * R_est) - L_lm * R_lm / (*L_est * R_est);
         rtElectricalID_DW->J[k + 2048] = R_lm * L_lm / (*L_est * *L_est);
 
@@ -1536,10 +1535,10 @@ static void LM_algorithm_Lq(real32_T *L_est, ExtU_ElectricalID_t
         /* . */
         /* . */
         /* . */
-        /* '<S1>:281:37' i_est(k) = U0/R_est*(1-exp(-R_est*((k-1)*GlobalConfig.sampleTimeISR)/L_est)); */
+				/* '<S1>:281:37' i_est(k) = V0/R_est*(1-exp(-R_est*((k-1)*GlobalConfig.sampleTimeISR)/L_est)); */
         rtElectricalID_DW->i_est[k] = (1.0F - expf((((real32_T)k + 1.0F) - 1.0F)
           * rtElectricalID_U->GlobalConfig_out.sampleTimeISR * -R_est / *L_est))
-          * (rtElectricalID_DW->U0 / R_est);
+				                * (rtElectricalID_DW->V0 / R_est);
         rtElectricalID_DW->d[k] = rtElectricalID_DW->measArray1[k] -
           rtElectricalID_DW->i_est[k];
       }
@@ -1604,10 +1603,10 @@ static void LM_algorithm_Lq(real32_T *L_est, ExtU_ElectricalID_t
     e_lm = 0.0F;
     for (k = 0; k < 1024; k++) {
       /* Inport: '<Root>/GlobalConfig' */
-      /* '<S1>:281:59' i_est(k) = U0/R_lm*(1-exp(-R_lm*((k-1)*GlobalConfig.sampleTimeISR)/L_lm)); */
+			/* '<S1>:281:59' i_est(k) = V0/R_lm*(1-exp(-R_lm*((k-1)*GlobalConfig.sampleTimeISR)/L_lm)); */
       rtElectricalID_DW->i_est[k] = (1.0F - expf((((real32_T)k + 1.0F) - 1.0F) *
         rtElectricalID_U->GlobalConfig_out.sampleTimeISR * -R_lm / L_lm)) *
-        (rtElectricalID_DW->U0 / R_lm);
+        (rtElectricalID_DW->V0 / R_lm);
       rtElectricalID_DW->d[k] = rtElectricalID_DW->measArray1[k] -
         rtElectricalID_DW->i_est[k];
       e_lm += rtElectricalID_DW->d[k] * rtElectricalID_DW->d[k];
@@ -1696,16 +1695,14 @@ static void stepResponse_q(ExtU_ElectricalID_t *rtElectricalID_U,
 				/* '<S1>:277:15' if(mod(counter,5) == 0) */
         if (rtElectricalID_DW->counter - rtElectricalID_DW->counter / 5U * 5U ==
             0U) {
-					/* '<S1>:277:16' Ustep(z-1) = ActualValues.U_UVW.V+ActualValues.U_UVW.W; */
+					/* '<S1>:277:16' Vstep(z-1) = ActualValues.V_UVW.V+ActualValues.V_UVW.W; */
           qY = rtElectricalID_DW->z - 1U;
           if (rtElectricalID_DW->z - 1U > rtElectricalID_DW->z) {
             qY = 0U;
           }
 
           /* Inport: '<Root>/ActualValues' */
-          rtElectricalID_DW->Ustep[(int32_T)qY - 1] =
-            rtElectricalID_U->ActualValues.U_UVW.V +
-            rtElectricalID_U->ActualValues.U_UVW.W;
+					rtElectricalID_DW->Vstep[(int32_T) qY - 1] = rtElectricalID_U->ActualValues.V_UVW.V + rtElectricalID_U->ActualValues.V_UVW.W;
 
 					/* '<S1>:277:17' z = z + 1; */
           qY = rtElectricalID_DW->z + 1U;
@@ -1736,9 +1733,8 @@ static void stepResponse_q(ExtU_ElectricalID_t *rtElectricalID_U,
         rtElectricalID_DW->counter = qY;
 
         /* Inport: '<Root>/ActualValues' */
-				/* '<S1>:277:23' Ustep(1) = ActualValues.U_UVW.V+ActualValues.U_UVW.W; */
-        rtElectricalID_DW->Ustep[0] = rtElectricalID_U->ActualValues.U_UVW.V +
-          rtElectricalID_U->ActualValues.U_UVW.W;
+				/* '<S1>:277:23' Vstep(1) = ActualValues.V_UVW.V+ActualValues.V_UVW.W; */
+				rtElectricalID_DW->Vstep[0] = rtElectricalID_U->ActualValues.V_UVW.V + rtElectricalID_U->ActualValues.V_UVW.W;
 
 				/* '<S1>:277:24' z = z + 1; */
         qY = rtElectricalID_DW->z + 1U;
@@ -1762,24 +1758,22 @@ static void stepResponse_q(ExtU_ElectricalID_t *rtElectricalID_U,
         rtElectricalID_DW->measArray1[(int32_T)qY - 1] =
           rtElectricalID_U->ActualValues.I_UVW.W;
 
-				/* '<S1>:277:29' Ustep(z-1) = ActualValues.U_UVW.V+ActualValues.U_UVW.W; */
+				/* '<S1>:277:29' Vstep(z-1) = ActualValues.V_UVW.V+ActualValues.V_UVW.W; */
         qY = rtElectricalID_DW->z - 1U;
         if (rtElectricalID_DW->z - 1U > rtElectricalID_DW->z) {
           qY = 0U;
         }
 
         /* Inport: '<Root>/ActualValues' */
-        rtElectricalID_DW->Ustep[(int32_T)qY - 1] =
-          rtElectricalID_U->ActualValues.U_UVW.V +
-          rtElectricalID_U->ActualValues.U_UVW.W;
+				rtElectricalID_DW->Vstep[(int32_T) qY - 1] = rtElectricalID_U->ActualValues.V_UVW.V + rtElectricalID_U->ActualValues.V_UVW.W;
 
-				/* '<S1>:277:30' U0 = mean(Ustep); */
-        L_est = rtElectricalID_DW->Ustep[0];
+				/* '<S1>:277:30' V0 = mean(Vstep); */
+				L_est = rtElectricalID_DW->Vstep[0];
         for (k = 0; k < 204; k++) {
-          L_est += rtElectricalID_DW->Ustep[k + 1];
+					L_est += rtElectricalID_DW->Vstep[k + 1];
         }
 
-        rtElectricalID_DW->U0 = L_est / 205.0F;
+				rtElectricalID_DW->V0 = L_est / 205.0F;
       }
 
       /* Outport: '<Root>/ElectricalID_output' */
@@ -2800,7 +2794,7 @@ void ElectricalID_initialize(RT_MODEL_ElectricalID_t *const rtElectricalID_M)
     rtElectricalID_DW->n_iters = 0U;
     rtElectricalID_DW->lambda = 0.0F;
     rtElectricalID_DW->updateJ = false;
-    rtElectricalID_DW->U0 = 0.0F;
+		rtElectricalID_DW->V0 = 0.0F;
     rtElectricalID_DW->z = 0U;
     rtElectricalID_DW->R_corr = 0.0F;
     rtElectricalID_DW->bandwidthCurrentControl = 0.0F;
@@ -2821,7 +2815,7 @@ void ElectricalID_initialize(RT_MODEL_ElectricalID_t *const rtElectricalID_M)
     memset(&rtElectricalID_DW->d[0], 0, sizeof(real32_T) << 11U);
     memset(&rtElectricalID_DW->i_est[0], 0, sizeof(real32_T) << 11U);
     memset(&rtElectricalID_DW->J[0], 0, sizeof(real32_T) << 12U);
-    memset(&rtElectricalID_DW->Ustep[0], 0, 205U * sizeof(real32_T));
+		memset(&rtElectricalID_DW->Vstep[0], 0, 205U * sizeof(real32_T));
     rtElectricalID_DW->DutyCycle = 0.0F;
     rtElectricalID_DW->wait_count = 0U;
     memset(&rtElectricalID_DW->measArray1[0], 0, sizeof(real32_T) << 10U);

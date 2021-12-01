@@ -83,15 +83,15 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
 
 typedef struct {
-  uz_UVW_t U_UVW;
+	uz_UVW_t V_UVW;
   uz_UVW_t I_UVW;
   uz_dq_t i_dq;
-  uz_dq_t u_dq;
+	uz_dq_t v_dq;
   real32_T omega_m;
   real32_T omega_el;
   real32_T theta_m;
 	real32_T theta_el;
-  real32_T U_zk;
+	real32_T V_DC;
 } uz_PID_ActualValues_t;
 
 #endif
@@ -190,7 +190,7 @@ typedef struct {
   real32_T d[2048];                    /* '<Root>/ElectricalID' */
   real32_T i_est[2048];                /* '<Root>/ElectricalID' */
   real32_T J[4096];                    /* '<Root>/ElectricalID' */
-  real32_T Ustep[205];                 /* '<Root>/ElectricalID' */
+	real32_T Vstep[205]; /* '<Root>/ElectricalID' */
   real32_T measArray1[1024];           /* '<Root>/ElectricalID' */
   real32_T fv[2048];
   real32_T fv1[2048];
@@ -200,7 +200,7 @@ typedef struct {
   real32_T fv5[2];
   real32_T e;                          /* '<Root>/ElectricalID' */
   real32_T lambda;                     /* '<Root>/ElectricalID' */
-  real32_T U0;                         /* '<Root>/ElectricalID' */
+	real32_T V0; /* '<Root>/ElectricalID' */
   real32_T R_corr;                     /* '<Root>/ElectricalID' */
   real32_T bandwidthCurrentControl;    /* '<Root>/ElectricalID' */
   real32_T dampingFactor;              /* '<Root>/ElectricalID' */

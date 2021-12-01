@@ -90,15 +90,15 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
 
 typedef struct {
-  uz_UVW_t U_UVW;
+	uz_UVW_t V_UVW;
   uz_UVW_t I_UVW;
   uz_dq_t i_dq;
-  uz_dq_t u_dq;
+	uz_dq_t v_dq;
   real32_T omega_m;
   real32_T omega_el;
   real32_T theta_m;
 	real32_T theta_el;
-  real32_T U_zk;
+	real32_T V_DC;
 } uz_PID_ActualValues_t;
 
 #endif
@@ -187,11 +187,8 @@ typedef struct {
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-	real32_T Memory_PreviousInput[50]; /* '<S2>/Memory' */
-	real32_T IC[50];
-	real32_T VariableSelector[49]; /* '<S2>/Variable Selector' */
-	real32_T Mean; /* '<S2>/Mean' */
-	real32_T ud2_counter; /* '<Root>/FluxMapID' */
+	real32_T R_s_array[50]; /* '<Root>/FluxMapID' */
+	real32_T vd2_counter; /* '<Root>/FluxMapID' */
 	real32_T i_d_ref_AMM; /* '<Root>/FluxMapID' */
 	real32_T i_d_ref_AMM_loc; /* '<Root>/FluxMapID' */
 	real32_T i_q_ref_AMM; /* '<Root>/FluxMapID' */
@@ -200,7 +197,7 @@ typedef struct {
 	real32_T NumberOfPoints; /* '<Root>/FluxMapID' */
 	real32_T i_d_R_online; /* '<Root>/FluxMapID' */
 	real32_T id2_counter; /* '<Root>/FluxMapID' */
-	real32_T ud1_counter; /* '<Root>/FluxMapID' */
+	real32_T vd1_counter; /* '<Root>/FluxMapID' */
 	real32_T id1_counter; /* '<Root>/FluxMapID' */
 	uint32_T counter; /* '<Root>/FluxMapID' */
 	uint32_T AMMj; /* '<Root>/FluxMapID' */
@@ -210,7 +207,6 @@ typedef struct {
 	uint8_T is_active_c16_FluxMapID; /* '<Root>/FluxMapID' */
 	uint8_T is_c16_FluxMapID; /* '<Root>/FluxMapID' */
 	uint8_T is_AMMstate; /* '<Root>/FluxMapID' */
-	boolean_T IC_FirstOutputTime; /* '<S2>/IC' */
 } DW_FluxMapID_t;
 
 /* External inputs (root inport signals with default storage) */
@@ -259,7 +255,6 @@ extern void FluxMapID_step(RT_MODEL_FluxMapID_t * const rtFluxMapID_M);
  *
  * '<Root>' : 'uz_ParameterID'
  * '<S1>'   : 'uz_ParameterID/FluxMapID'
- * '<S2>'   : 'uz_ParameterID/FluxMapID/AMMstate.MovAverage'
  */
 
 /*-

@@ -45,7 +45,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t Data) {
 	Data.PID_ControlFlags = self->ControlState->output.ControlFlags;
 
 	//ElectricalID
-	if (self->ControlState->output.GlobalConfig_out.ElectricalID == true && self->ControlState->output.GlobalConfig_out.Reset == false) {
+	if (self->ControlState->output.GlobalConfig_out.ElectricalID == true && self->ControlState->output.GlobalConfig_out.Reset == false && self->ControlState->output.ControlFlags.transNr == 1U) {
 		//Update State-Inputs
 		self->ElectricalID->input.ActualValues = Data.PID_ActualValues;
 		self->ElectricalID->input.ElectricalIDConfig = Data.PID_ElectricalID_Config;
@@ -76,7 +76,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t Data) {
 	}
 
 	//FluxMapID
-	if (self->ControlState->output.GlobalConfig_out.FluxMapID == true && self->ControlState->output.GlobalConfig_out.Reset == false) {
+	if (self->ControlState->output.GlobalConfig_out.FluxMapID == true && self->ControlState->output.GlobalConfig_out.Reset == false && self->ControlState->output.ControlFlags.transNr == 4U) {
 		//Update State-Inputs
 		self->FluxMapID->input.ActualValues = Data.PID_ActualValues;
 		self->FluxMapID->input.FluxMapIDConfig = Data.PID_FluxMapID_Config;

@@ -95,6 +95,8 @@ The following settings are set on a per master basis within one IP-Core instance
 - error_code
 - samples
 - sample_time
+- Trigger mode (software, PL, continuous)
+- 
 
 The following settings are set on a per channel basis of one SPI master within an IP-Core instance:
 
@@ -346,7 +348,8 @@ Software control register of the IP core.
   :widths: 5 10 5 10 40 40
   :header-rows: 1
 
-By setting the bits 4 to 6 the meaning of the value in the ``ADC_VALUE`` register is determined. Bit 4 to 6 are interpreted as an unsigned integer.
+By setting the bits 5 to 7 the meaning of the value in the ``ADC_VALUE`` register is determined.
+Bit 5 to 7 are interpreted as an unsigned integer.
 
 .. _table_adc_cr_2:
 .. csv-table::

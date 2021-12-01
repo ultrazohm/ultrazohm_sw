@@ -42,17 +42,20 @@ static XWdtTb instances[UZ_WDTTB_MAX_INSTANCES] = {0};
 * The closed Window is not used (0 value for its counter).
 * The rest of the optional functions: FC, SST and SIGNATURE are disabled.
 *
-*
+* @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents the WDTTB driver.
 * @param	CounterValue - Initial value for the counter in number of tics.
 * 					Watchdog timeout is therefore CounterValue * Tcycle,
 * 					and Tcycle = 10 ns with a 100MH processor.
+* @param	WdtTbDeviceId is the Device ID of the WdtTb Device and is
+*		typically XPAR_<WDTTB_instance>_DEVICE_ID value from
+*		xparameters.h.
 *
 * @return	XST_SUCCESS if successful, otherwise XST_FAILURE.
 *
 * @note		None.
 *
 ******************************************************************************/
-static int WdtTbInit(XWdtTb *WdtTbInstance, u32 CounterValue) {
+static int WdtTbInit(XWdtTb *WdtTbInstancePtr, u32 CounterValue, u16 WdtTbDeviceId) {
 	int Status;
 	XWdtTb_Config *Config;
 
@@ -60,7 +63,7 @@ static int WdtTbInit(XWdtTb *WdtTbInstance, u32 CounterValue) {
 	 * Initialize the WDTTB driver so that it's ready to use look up
 	 * configuration in the config table, then initialize it.
 	 */
-	Config = XWdtTb_LookupConfig(WDTTB_DEVICE_ID);
+	Config = XWdtTb_LookupConfig(WdtTbDeviceId); // WDTTB_DEVICE_ID by default
 	if (NULL == Config) {
 		return XST_FAILURE;
 	}
@@ -69,48 +72,48 @@ static int WdtTbInit(XWdtTb *WdtTbInstance, u32 CounterValue) {
 	 * Initialize the watchdog timer and timebase driver so that
 	 * it is ready to use.
 	 */
-	Status = XWdtTb_CfgInitialize(WdtTbInstance, Config,
+	Status = XWdtTb_CfgInitialize(WdtTbInstancePtr, Config,
 					  Config->BaseAddr);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-	if(!WdtTbInstance->Config.IsPl) {
+	if(!WdtTbInstancePtr->Config.IsPl) {
 		/*Enable Window Watchdog Feature in WWDT */
-		XWdtTb_ConfigureWDTMode(WdtTbInstance, XWT_WWDT);
+		XWdtTb_ConfigureWDTMode(WdtTbInstancePtr, XWT_WWDT);
 	}
 
 	/*
 	 * Perform a self-test to ensure that the hardware was built correctly
 	 */
-	Status = XWdtTb_SelfTest(WdtTbInstance);
+	Status = XWdtTb_SelfTest(WdtTbInstancePtr);
 	if (Status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
 	/* Set register space to writable */
-	XWdtTb_SetRegSpaceAccessMode(WdtTbInstance, 1);
+	XWdtTb_SetRegSpaceAccessMode(WdtTbInstancePtr, 1);
 
 	/* Configure first window = 0 (NOT USED THE CLOSED WINDOW) and second window */
-	XWdtTb_SetWindowCount(WdtTbInstance, 0, CounterValue);
+	XWdtTb_SetWindowCount(WdtTbInstancePtr, 0, CounterValue);
 
 	/* Set interrupt position */
-	XWdtTb_SetByteCount(WdtTbInstance, WIN_WDT_SBC_COUNT);
-	XWdtTb_SetByteSegment(WdtTbInstance, WIN_WDT_BSS_COUNT);
+	XWdtTb_SetByteCount(WdtTbInstancePtr, WIN_WDT_SBC_COUNT);
+	XWdtTb_SetByteSegment(WdtTbInstancePtr, WIN_WDT_BSS_COUNT);
 
 	/* Disable Secondary Sequence Timer (SST) */
-	XWdtTb_DisableSst(WdtTbInstance);
+	XWdtTb_DisableSst(WdtTbInstancePtr);
 
 	/* Disable Program Sequence Monitor (PSM) */
-	XWdtTb_DisablePsm(WdtTbInstance);
+	XWdtTb_DisablePsm(WdtTbInstancePtr);
 
 	/* Disable Fail Counter */
-	XWdtTb_DisableFailCounter(WdtTbInstance);
+	XWdtTb_DisableFailCounter(WdtTbInstancePtr);
 
 	return XST_SUCCESS;
 }
 
-static XWdtTb *uz_WdtTb_allocation(void)
+static XWdtTb *uz_WdtTb_allocation(u32 CounterValue, u16 WdtTbDeviceId)
 {
     uz_assert(instance_counter < UZ_WDTTB_MAX_INSTANCES);
 
@@ -118,7 +121,7 @@ static XWdtTb *uz_WdtTb_allocation(void)
 	 * Call the WDT init to initialize and set timer to the given timeout.
 	 * Both
 	 */
-	int Status = WdtTbInit(&instances[instance_counter], WIN_WDT_SW_COUNT); // XPFW_WDT_EXPIRE_TIME for WDT PS
+	int Status = WdtTbInit(&instances[instance_counter], CounterValue, WdtTbDeviceId); // XPFW_WDT_EXPIRE_TIME for WDT PS
 
 	if (Status != XST_SUCCESS) {
 		//DEBUG
@@ -139,7 +142,32 @@ static XWdtTb *uz_WdtTb_allocation(void)
 
 XWdtTb *uz_WdtTb_init()
 {
-    XWdtTb *self = uz_WdtTb_allocation();
+    XWdtTb *self = uz_WdtTb_allocation(WIN_WDT_SW_COUNT, WDTTB_DEVICE_ID);
+    return (self);
+}
+
+/**
+*
+* This function initializes and tests the functioning of the System WatchDog Timer driver and
+* sets the inital value to the counter. This is the total size for The Second Window (Open).
+* The closed Window is not used (0 value for its counter).
+* The rest of the optional functions: FC, SST and SIGNATURE are disabled.
+*
+* @param	CounterValue - Initial value for the counter in number of tics.
+* 					Watchdog timeout is therefore CounterValue * Tcycle,
+* 					and Tcycle = 10 ns with a 100MH processor.
+* @param	WdtTbDeviceId is the Device ID of the WdtTb Device and is
+*		typically XPAR_<WDTTB_instance>_DEVICE_ID value from
+*		xparameters.h.
+*
+* @return	XWdtTb pointer to the initialized WDTTB driver.
+*
+* @note		None.
+*
+******************************************************************************/
+XWdtTb *uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId)
+{
+    XWdtTb *self = uz_WdtTb_allocation(CounterValue, WdtTbDeviceId);
     return (self);
 }
 
@@ -154,60 +182,66 @@ volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
 * This function STARTs the System WatchDog Timer to the initial value to the counter.
 * Generates a good event if executed inside the Second Window, or OPEN Window.
 *
+* NO: It also protects the WEN bit. It is not possible to Stop() the device.
+*
 * The WDT Start is accomplished by enabling the IP Core writing WEN bit =1.
 * The And granting write access to the IP Registers.
 *
-* It also protects the WEN bit. It is not possible to Stop() the device.
+* @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents
+*							the WDTTB driver. Initialized and ready
 *
 * @note		None.
 *
 ******************************************************************************/
-void WdtTb_Start(XWdtTb *WdtTbInstance) {
+void WdtTb_Start(XWdtTb *WdtTbInstancePtr) {
 
 	/* Verify arguments. */
-	uz_assert(WdtTbInstance != NULL);
-	uz_assert(WdtTbInstance->IsReady == XIL_COMPONENT_IS_READY);
+	uz_assert(WdtTbInstancePtr != NULL);
+	uz_assert(WdtTbInstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
 //	/* Stop the timer, disabling the WDTTB, writing 0 in bit WEN */
-//	XWdtTb_Stop(&WdtTbInstance);
+//	XWdtTb_Stop(&WdtTbInstancePtr);
 
 
 	/* Write a 1 to Set register space to writable */
-	XWdtTb_SetRegSpaceAccessMode(WdtTbInstance, 1);
+	XWdtTb_SetRegSpaceAccessMode(WdtTbInstancePtr, 1);
 
-	/*
-	 * Set the AEN bit (to enable protection against accidental clearing)
-	 * and to avoid disable (WEN = 0) ==>> XWdtTb_Stop() NOT POSSIBLE
-	 * BUT when Second Window times out, and bad even occurs and RESET is produced ANYWAY (and IP CORE STOPS RUNNING)
-	 */
-	 XWdtTb_AlwaysEnable(WdtTbInstance);
+	// /*
+	//  * Set the AEN bit (to enable protection against accidental clearing)
+	//  * and to avoid disable (WEN = 0) ==>> XWdtTb_Stop() NOT POSSIBLE
+	//  * BUT when Second Window times out, and bad even occurs and RESET is produced ANYWAY (and IP CORE STOPS RUNNING)
+	//  */
+	//  XWdtTb_AlwaysEnable(WdtTbInstancePtr);
 
-	 XWdtTb_EnableExtraProtection(WdtTbInstance);
+	//  XWdtTb_EnableExtraProtection(WdtTbInstancePtr);
 
 	/*
 	 * Start the watchdog timer as a normal application would (WEN bit = 1)
 	 */
-	XWdtTb_Start(WdtTbInstance);
+	XWdtTb_Start(WdtTbInstancePtr);
 //	WdtExpired = FALSE;
 
 	/* After enabled, write enabled auto clears, so we have to write a 1 to Set register space to writable */
-	XWdtTb_SetRegSpaceAccessMode(WdtTbInstance, 1);
+	XWdtTb_SetRegSpaceAccessMode(WdtTbInstancePtr, 1);
 }
 
 
 /**
 *
-* This function Restart the AXI IP watch dog timer: kick forward .
+* This function Restart the AXI IP watch dog timer: kick forward.
+*
+* @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents
+*							the WDTTB driver. Initialized and ready
 *
 * @note		None.
 *
 ******************************************************************************/
-void WdtTb_Restart(XWdtTb *WdtTbInstance) {
+void WdtTb_Restart(XWdtTb *WdtTbInstancePtr) {
 	/* Verify arguments. */
-	uz_assert(WdtTbInstance != NULL);
-	uz_assert(WdtTbInstance->IsReady == XIL_COMPONENT_IS_READY);
+	uz_assert(WdtTbInstancePtr != NULL);
+	uz_assert(WdtTbInstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-	XWdtTb_RestartWdt(WdtTbInstance);
+	XWdtTb_RestartWdt(WdtTbInstancePtr);
 }
 
 
@@ -227,8 +261,6 @@ void WdtTb_Restart(XWdtTb *WdtTbInstance) {
 * Window Watchdog Timer to timeout such that a reset will occur if it is
 * connected.
 *
-* @param	IntcInstancePtr is a pointer to the instance of the INTC
-*		driver.
 * @param	WdtTbInstancePtr is a pointer to the instance of WdtTb driver.
 * @param	WdtTbDeviceId is the Device ID of the WdtTb Device and is
 *		typically XPAR_<WDTTB_instance>_DEVICE_ID value from
@@ -244,19 +276,19 @@ void WdtTb_Restart(XWdtTb *WdtTbInstance) {
 * @note		None.
 *
 ******************************************************************************/
-int WinWdtIntrExample(XWdtTb *WdtTbInstance)
+int WinWdtIntrExample(XWdtTb *WdtTbInstancePtr)
 {
 	/*
 	 * The Driver has to be properly initialized and the GIC interrupt system ALSO!
 	 */
-	uz_assert(WdtTbInstance != NULL);
-	uz_assert(WdtTbInstance->IsReady == XIL_COMPONENT_IS_READY);
+	uz_assert(WdtTbInstancePtr != NULL);
+	uz_assert(WdtTbInstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-	XWdtTb_Start(WdtTbInstance);
+	XWdtTb_Start(WdtTbInstancePtr);
 	//	WdtExpired = FALSE;
 
 	/* After enabled, write enabled auto clears, so we have to write a 1 to Set register space to writable */
-	XWdtTb_SetRegSpaceAccessMode(WdtTbInstance, 1);
+	XWdtTb_SetRegSpaceAccessMode(WdtTbInstancePtr, 1);
 
 	HandlerCalled = 0;
 
@@ -267,7 +299,7 @@ int WinWdtIntrExample(XWdtTb *WdtTbInstance)
 
 
 	/* Clear interrupt point */
-	XWdtTb_IntrClear(WdtTbInstance);
+	XWdtTb_IntrClear(WdtTbInstancePtr);
 //	WdtExpired = FALSE;
 	HandlerCalled = 0;
 
@@ -275,16 +307,16 @@ int WinWdtIntrExample(XWdtTb *WdtTbInstance)
 	while ((HandlerCalled == 0)) ;
 
 	/* Clear interrupt point */
-	XWdtTb_IntrClear(WdtTbInstance);
+	XWdtTb_IntrClear(WdtTbInstancePtr);
 	HandlerCalled = 0;
 
 	/* Check for last event */
-	if (XWdtTb_GetLastEvent(WdtTbInstance) != XWDTTB_NO_BAD_EVENT) {
+	if (XWdtTb_GetLastEvent(WdtTbInstancePtr) != XWDTTB_NO_BAD_EVENT) {
 		/* Disable and disconnect the interrupt system */
 //		WdtTbDisableIntrSystem(IntcInstancePtr);
 
 		/* Stop the timer */
-		XWdtTb_Stop(WdtTbInstance);
+		XWdtTb_Stop(WdtTbInstancePtr);
 		return XST_FAILURE;
 	}
 
@@ -475,6 +507,8 @@ int WinWdtIntrExample(XWdtTb *WdtTbInstance) {}
 //XWdtTb *getWdtTbInstance(){}
 
 XWdtTb* uz_WdtTb_init(){}
+
+XWdtTb *uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId) {}
 
 void WdtTbIntrHandler(void *CallBackRef);
 //static int WdtTbSetupIntrSystem(INTC *IntcInstancePtr){}

@@ -89,6 +89,27 @@ void WdtTb_Restart(XWdtTb *WdtTbInstance) ;
  */
 XWdtTb* uz_WdtTb_init();
 
+/**
+*
+* This function initializes and tests the functioning of the System WatchDog Timer driver and
+* sets the inital value to the counter. This is the total size for The Second Window (Open).
+* The closed Window is not used (0 value for its counter).
+* The rest of the optional functions: FC, SST and SIGNATURE are disabled.
+*
+* @param	CounterValue - Initial value for the counter in number of tics.
+* 					Watchdog timeout is therefore CounterValue * Tcycle,
+* 					and Tcycle = 10 ns with a 100MH processor.
+* @param	WdtTbDeviceId is the Device ID of the WdtTb Device and is
+*		typically XPAR_<WDTTB_instance>_DEVICE_ID value from
+*		xparameters.h.
+*
+* @return	XWdtTb pointer to the initialized WDTTB driver.
+*
+* @note		None.
+*
+******************************************************************************/
+XWdtTb *uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId);
+
 
 //int WinWdtIntrExample(XScuGic *IntcInstancePtr);
 int WinWdtIntrExample(XWdtTb *WdtTbInstance);

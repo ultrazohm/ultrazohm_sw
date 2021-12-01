@@ -59,8 +59,8 @@ void test_uz_xwdttb_start(void)
     };
 
     XWdtTb_SetRegSpaceAccessMode_Expect(&testWdtTb, 1);
-    XWdtTb_AlwaysEnable_Expect(&testWdtTb);
-    XWdtTb_EnableExtraProtection_Expect(&testWdtTb);
+    // XWdtTb_AlwaysEnable_Expect(&testWdtTb);
+    // XWdtTb_EnableExtraProtection_Expect(&testWdtTb);
     XWdtTb_Start_Expect(&testWdtTb);
     XWdtTb_SetRegSpaceAccessMode_Expect(&testWdtTb, 1);                                             
     // Invoke the function to test if it does whats Expected                                     

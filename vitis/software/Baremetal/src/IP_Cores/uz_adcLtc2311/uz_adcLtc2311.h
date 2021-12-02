@@ -122,9 +122,9 @@ typedef struct uz_adcLtc2311_t uz_adcLtc2311_t;
  * 
  */
 enum uz_adcLtc2311_trigger_mode{
-    pl_trigger=0,
-    software_trigger,
-    continuous_trigger,
+    pl_trigger=0, /**< Conversion is only triggered by IP-Core PL port */
+    software_trigger, /**< Conversion is only triggered by software */
+    continuous_trigger, /**< Conversion is triggered continuously with the maximum frequency */
 };
 
 /**
@@ -469,7 +469,7 @@ void uz_adcLtc2311_set_trigger_mode(uz_adcLtc2311_t *self);
 void uz_adcLtc2311_set_channel_config(uz_adcLtc2311_t* self, uint32_t master_select, uint32_t channel_select,  struct uz_adcLtc2311_channel_config_t channel_config);
 
 /**
- * @brief Wrapper function to set the trigger mode for 
+ * @brief Wrapper function to set the trigger mode for the driver instance.
  * 
  * @param self 
  * @param trigger_mode 

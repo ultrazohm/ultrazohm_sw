@@ -7,6 +7,8 @@
 #include "uz_adcLtc2311_private_utilities.h"
 #include "uz_adcLtc2311_hw.h"
 
+#define CONVERSION_FACTOR_NUMBER_OF_BITS 18
+
 struct uz_adcLtc2311_t
 {
     bool is_ready;
@@ -131,6 +133,7 @@ void uz_adcLtc2311_set_conversion_factor(uz_adcLtc2311_t *self, float value, str
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_assert(fixedpoint_definition.is_signed); // IP-Core only uses signed fixed point data type
+    uz_assert(CONVERSION_FACTOR_NUMBER_OF_BITS >= (fixedpoint_definition.fractional_bits + fixedpoint_definition.integer_bits) );
     self->config.channel_config.conversion_factor = value;
     self->config.channel_config.conversion_factor_definition = fixedpoint_definition;
 }

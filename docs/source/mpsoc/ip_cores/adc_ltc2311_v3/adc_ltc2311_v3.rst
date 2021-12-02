@@ -9,8 +9,8 @@ Introduction
 
 The IP core ADC_LVDS_LTC2311 in version 3 is designed to read the ADCs which are located on the :ref:`analog adapter board <Analog_LTC2311_16_v3>` and to further process the values obtained from the ADCs.
 The IP core features an AXI4 Lite interface for settings and software control.
-For real time control, the IP core can be triggered by using the hardware port ``TRIGGER_CONV``.
-The IP-Core adds an offset value to the raw value and multiplies the result with a conversion factor, which in turn is avialable on the hardware port ``SI_VALUE``.
+The conversion can be triggered by using the hardware port ``TRIGGER_CONV`` for real-time control.
+The IP-Core adds an offset value to the raw value and multiplies the result with a conversion factor, which in turn is available on the hardware port ``SI_VALUE``.
 The raw value from the ADC and the processed value are ``std_logic_vectors`` at the hardware interface of the IP core.
 For a thorough project description please refer to the project report which is available in the :ref:`Downloads section <downloads>`.
 
@@ -27,18 +27,21 @@ Features
     This leads to high throughput while maintaining a low resource footprint by not granting a single DSP48 block per ADC channel.
 
 - Offset and conversion factor are configurable by software individually for each ADC
+
+  - Offset is set as an signed integer
+  - COnversion factor is set as a fixed point value
+
 - Burst transfer of an adjustable number of samples
 - Continuous and triggered operation modes
-- Hardware trigger interface for real time requirements and software trigger interface via AXI4 Lite for convenient usage in case of non time-critical applications
+- Hardware trigger interface for real-time requirements and software trigger interface via AXI4 Lite for convenient usage in case of non time-critical applications
 - Software control:
 
   + Software trigger
   + Software reset
 
-- CPHA CPOL and SCLK frequency of the SPI interface are configurable
-  by software
+- ``CPHA``, ``CPOL``, and ``SCLK`` frequency of the SPI interface are configurable by software
 
-  + The SCLK frequency scales with :math:`f_{SCLK} = \frac{ f_{SystemClock} }{2 \cdot (CLK\_DIV + 1)}`
+  + The ``SCLK`` frequency scales with :math:`f_{SCLK} = \frac{ f_{SystemClock} }{2 \cdot (CLK\_DIV + 1)}`
 
 - Read only SPI. Only a **unidirectional** communication from the ADC to FPGA is possible.
 - Single ended and differential operation modes.
@@ -53,15 +56,14 @@ The configuration of the IP-Core settings by software use the control register, 
 The control register is used to set the trigger mode, trigger the conversion, reset the IP-Core or determine to which register in the IP-Core the value in the ``Configuration Value Register`` AXI register should be written.
 This control is facilitated by writing different bit patterns to the control register (see table :ref:`table_adc_cr`).
 
-To write a config value to a specific ADC channel, the number of the SPI master and the desired channel has to be written to the Master Channel selection and ADC Channel selection AXI registers.
+To write a config value to a specific ADC channel, the number of the SPI master and the desired channel has to be written to the master channel selection and ADC channel selection AXI registers.
 Furthermore, the control register has to be set to match the variable that is write to the ``Configuration Value Register``.
-Effectively, the SPI Master and channel selection as well as the configuration value register act as a switch to route the values from the AXI registers to the ADC channels.
-
+Effectively, the SPI master and channel selection as well as the configuration value register act as a switch to route the values from the AXI registers to the ADC channels.
 
 To write a specific conversion factor to one of the ADC channels, the following steps are performed:
 
 1. read the current value from the configuration register
-2. Reset all bits that encode what the ``Configuration Value Register`` holds (bit 4 to 6)
+2. Reset all bits that encode what the ``Configuration Value Register`` holds (bit 5 to 7)
 3. Set the bit pattern to ``001`` to indicate that the value is the conversion factor
 4. Write the spi master and channel number to the AXI registers of the ADC channel that has to be changed
 5. Write the conversion factor to ``Configuration Value Register``
@@ -105,128 +107,94 @@ The following settings are set on a per channel basis of one SPI master within a
 
 Additionally, the trigger as well as the software trigger affects all ADC channels of one SPI master.
 
+Example initialization of three IP-Core driver instances:
 
 .. code-block:: c
-  :caption: Content of the file ``uz_adcLtc2311_testbench.c``
+  :caption: Initialization of IP-Core driver instances
 
-  #include "../include/uz_adcLtc2311_testbench.h"
-  #include "../uz/uz_HAL.h"
-  #include "../IP_Cores/uz_adcLtc2311/uz_adcLtc2311.h"
-  #include "xparameters.h"
-  #include <stdint.h>
+   #define XPAR_A1_ADC_LTC2311_IP_CORE_FREQUENCY 100000000U
+   #define DEFAULT_CONVERSION_FACTOR 1.0f
+   #define DEFAULT_INTEGER_BITS 14
+   #define DEFAULT_FRACTIONAL_BITS 4
+   #define DEFAULT_OFFSET 0
+   
+   void uz_adcLtc2311_ip_core_init(void)
+   {
+       struct uz_adcLtc2311_config_t default_configuration = {
+           .base_address = XPAR_A1_ADC_LTC2311_S00_AXI_BASEADDR,
+           .ip_clk_frequency_Hz = XPAR_A1_ADC_LTC2311_IP_CORE_FREQUENCY,
+           .channel_config = {
+               .conversion_factor = DEFAULT_CONVERSION_FACTOR,
+               .conversion_factor_definition = {
+                   .is_signed = true,
+                   .integer_bits = DEFAULT_INTEGER_BITS,
+                   .fractional_bits = DEFAULT_FRACTIONAL_BITS},
+               .offset = DEFAULT_OFFSET,
+           },
+           .spi_master_config = {.samples = 1U, .sample_time = 6U, .trigger_mode=pl_trigger},
+           .cpol = 1U,
+           .cpha = 0U,
+           .napping_spi_masters = 0U,
+           .sleeping_spi_masters = 0U,
+           .master_select = UZ_ADCLTC2311_MASTER1,
+           .channel_select = UZ_ADCLTC2311_CH1 | UZ_ADCLTC2311_CH2 | UZ_ADCLTC2311_CH3 | UZ_ADCLTC2311_CH4 | UZ_ADCLTC2311_CH5 | UZ_ADCLTC2311_CH6 | UZ_ADCLTC2311_CH7 | UZ_ADCLTC2311_CH8,
+           .pre_delay = 0U,
+           .post_delay = 0U,
+           .clk_div = 0U,
+           .max_attempts = 10U};
+   
+       // Apply the same configurations to all instances
+       uz_adcLtc2311_t *test_instance = uz_adcLtc2311_init(default_configuration);
+       default_configuration.base_address = XPAR_A2_ADC_LTC2311_S00_AXI_BASEADDR;
+       uz_adcLtc2311_t *test_instance_2 = uz_adcLtc2311_init(default_configuration);
+       default_configuration.base_address = XPAR_A3_ADC_LTC2311_S00_AXI_BASEADDR;
+       uz_adcLtc2311_t *test_instance_3 = uz_adcLtc2311_init(default_configuration);
+   }
 
-  void uz_adcLtc2311_testbench(void)
-  {
-      int32_t conversion_factor = 153;
-      uint32_t samples = 4;
-      int32_t offset = 0;
-      uint32_t sample_time = 6;
-      uint32_t cpol = 1;
-      uint32_t cpha = 0;
-      uint32_t pre_delay = 0;
-      uint32_t post_delay = 0;
-      uint32_t clk_div = 0;
-      uint32_t master = UZ_ADCLTC2311_MASTER1;
-      uint32_t channel = UZ_ADCLTC2311_CH1 | UZ_ADCLTC2311_CH2 | UZ_ADCLTC2311_CH3 | UZ_ADCLTC2311_CH4 | UZ_ADCLTC2311_CH5 | UZ_ADCLTC2311_CH6 | UZ_ADCLTC2311_CH7 | UZ_ADCLTC2311_CH8;
-      // set max_attempts to non zero if you want to prevent that the IP core potentially tries to update
-      // operation parameters infinitely
-      uint32_t max_attempts = 10;
+Change trigger mode to triggered by software:
 
-      struct uz_adcLtc2311_config_t default_configuration = {
-          .base_address=XPAR_A1_ADC_LTC2311_S00_AXI_BASEADDR,
-          .ip_clk_frequency_Hz=100000000U,
-          .conversion_factor = conversion_factor,
-          .samples = samples,
-          .cpol = cpol,
-          .cpha = cpha,
-          .offset = offset,
-          .napping_spi_masters=0,
-          .sleeping_spi_masters=0,
-          .master_select = master,
-          .channel_select = channel,
-          .sample_time = sample_time,
-          .pre_delay = pre_delay,
-          .post_delay = post_delay,
-          .clk_div = clk_div,
-          .max_attempts = max_attempts
-      };
+.. code-block:: c
+   :caption: Change trigger mode
 
-      // Apply the same configurations to all instances
-      uz_adcLtc2311_t* test_instance = uz_adcLtc2311_init(default_configuration);
-      default_configuration.base_address = XPAR_A2_ADC_LTC2311_S00_AXI_BASEADDR;
-      uz_adcLtc2311_t* test_instance_2 = uz_adcLtc2311_init(default_configuration);
-      default_configuration.base_address = XPAR_A3_ADC_LTC2311_S00_AXI_BASEADDR;
-      uz_adcLtc2311_t* test_instance_3 = uz_adcLtc2311_init(default_configuration);
+   uz_adcLtc2311_change_trigger_mode(test_instance, software_trigger);
 
-      // Adjust operation parameters
-      // 1: Select which channels you want to update
-      uz_adcLtc2311_set_master_select(test_instance, UZ_ADCLTC2311_MASTER1);
-      uz_adcLtc2311_set_channel_select(test_instance, UZ_ADCLTC2311_CH4);
+Change conversion factor of ADC1, ADC2, and ADC3 of SPI-Master 1 to ``2.0`` and ADC4 to ``10.0``. 
 
-      // 2: Adjust the parameters in the software representation
-      // These parameters are channel specific
-      uz_adcLtc2311_set_conversion_factor(test_instance, 160);
-      uz_adcLtc2311_set_offset(test_instance, 10);
+.. code-block:: c
+   :caption: Set conversion factor and offset
 
-      // These parameters are specific for a master but not channel specific
-      // Take 5 samples per trigger event
-      uz_adcLtc2311_set_samples(test_instance, 5);
-      // Wait at least 20 system clock cycles from the rising edge of SS_N to the next falling edge of SS_N
-      uz_adcLtc2311_set_sample_time(test_instance, 20);
+   struct uz_adcLtc2311_channel_config_t adc_123_config={
+    .conversion_factor=2.0f,
+    .conversion_factor_definition={
+      .is_signed=true,
+      .fractional_bits=5,
+      .integer_bits=13
+      },
+    .offset=0
+   };
+   uz_adcLtc2311_set_channel_config(test_instance, UZ_ADCLTC2311_MASTER1, (UZ_ADCLTC2311_CH1 | UZ_ADCLTC2311_CH2 | UZ_ADCLTC2311_CH3), adc_123_config);
 
-      // 3: Call the update functions to write the values to the hardware and check their return values
-      // Since these functions are potentially called during operation they do not stop the application
-      // by raising an exception if the action fails. The user has to take care about this case!!!
-      int32_t return_value = uz_adcLtc2311_update_conversion_factor(test_instance);
-      uz_assert(return_value == UZ_SUCCESS);
-      return_value = uz_adcLtc2311_update_offset(test_instance);
-      uz_assert(return_value == UZ_SUCCESS);
-      return_value = uz_adcLtc2311_update_samples(test_instance);
-      uz_assert(return_value == UZ_SUCCESS);
-      return_value = uz_adcLtc2311_update_sample_time(test_instance);
-      uz_assert(return_value == UZ_SUCCESS);
+   struct uz_adcLtc2311_channel_config_t adc_4_config={
+    .conversion_factor=10.0f,
+    .conversion_factor_definition={
+      .is_signed=true,
+      .fractional_bits=5,
+      .integer_bits=13
+      },
+    .offset=0
+   };
+   uz_adcLtc2311_set_channel_config(test_instance, UZ_ADCLTC2311_MASTER1, UZ_ADCLTC2311_CH4, adc_4_config);
 
-      // Operation
-      while(1)
-      {
-        // Software trigger with explicitely chosen SPI master
-        uz_adcLtc2311_software_trigger(test_instance, UZ_ADCLTC2311_MASTER1);
-        // When setting the choice to 0 the SPI masters from
-        // test_instance->config.master_select are chosen for the trigger
-        uz_adcLtc2311_software_trigger(test_instance_2, 0);
-        uz_adcLtc2311_software_trigger(test_instance_3, 0);
 
-        // Nap and sleep mode:
-        uz_adcLtc2311_enter_nap_mode(test_instance);
-        // This trigger event will not trigger any conversions
-        // because the masters are in nap mode
-        uz_adcLtc2311_software_trigger(test_instance, 0);
-        uz_adcLtc2311_leave_nap_mode(test_instance);
-        // The trigger works again
-        uz_adcLtc2311_software_trigger(test_instance, 0);
-        uz_adcLtc2311_enter_sleep_mode(test_instance);
-        // This trigger event will not trigger any conversions
-        // because the masters are in sleep mode
-        uz_adcLtc2311_software_trigger(test_instance, 0);
-        uz_adcLtc2311_leave_sleep_mode(test_instance);
-
-        // After enabling continuous mode the ADC is triggered at maximum sampling frequency
-        uz_adcLtc2311_set_continuous_mode(test_instance);
-        // Execute some samples
-        uz_sleep_useconds(5);
-        // After enabling the triggered mode the current conversion is executed until the end
-        // end the triggered mode is entered
-        uz_adcLtc2311_set_triggered_mode(test_instance);
-        uz_adcLtc2311_software_trigger(test_instance, 0);
-      }
-  }
+.. note:: The conversion factor only affects the output of the IP-Core ``SI_VALUE``.
+          Additionally, the number of fractional bits of the conversion factor implicitly determine the number of fractional bits of the ``SI_VALUE`` port.
+          Example: For ``Result LSB=0`` and ``Result MSB=34`` in the IP-Core settings and an conversion factor with 5 fractional bits, the lowest 5 bits of ``SI_VALUE`` (for each output value) have to be interpreted as fractional bits.
 
 
 .. _uz_adcLtc2311_software_driver:
 
 Driver reference
 ----------------
-
 
 
 Representation in software
@@ -242,6 +210,8 @@ Representation in software
 
 .. doxygenstruct:: uz_adcLtc2311_spi_master_config_t
    :members:
+
+.. doxygenenum:: uz_adcLtc2311_trigger_mode
 
 .. _config_struct:
 
@@ -295,6 +265,8 @@ If the set function is not further explained below, the value is not examined fo
 Otherwise, the performed asserts are mentioned below.
 
 .. doxygenfunction:: uz_adcLtc2311_set_channel_config
+
+.. doxygenfunction:: uz_adcLtc2311_change_trigger_mode
 
 .. doxygenfunction:: uz_adcLtc2311_set_samples
 

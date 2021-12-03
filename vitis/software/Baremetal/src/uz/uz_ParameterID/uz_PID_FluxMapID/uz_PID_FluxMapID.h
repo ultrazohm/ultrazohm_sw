@@ -17,7 +17,6 @@
 #include "uz_PID_FluxMapID_codegen.h"
 
 typedef struct {
-	bool is_ready;
 	ExtY_FluxMapID_t output;
 	ExtU_FluxMapID_t input;
 	DW_FluxMapID_t rtDW; /* Observable states */

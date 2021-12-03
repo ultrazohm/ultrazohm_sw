@@ -17,7 +17,6 @@
 #include <stdbool.h>
 
 typedef struct {
-	bool is_ready;
 	ExtY_ElectricalID_t output;
 	ExtU_ElectricalID_t input;
 	DW_ElectricalID_t rtDW; /* Observable states */

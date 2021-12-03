@@ -67,8 +67,8 @@ void test_uz_pmsmModel_reset_model(void)
     uz_pmsmModel_t *test_instance = successful_init(config);
 
     // write zeros to the model
-    uz_pmsmModel_hw_write_u_d_Expect(BASE_ADDRESS, 0.0f);
-    uz_pmsmModel_hw_write_u_q_Expect(BASE_ADDRESS, 0.0f);
+    uz_pmsmModel_hw_write_v_d_Expect(BASE_ADDRESS, 0.0f);
+    uz_pmsmModel_hw_write_v_q_Expect(BASE_ADDRESS, 0.0f);
     uz_pmsmModel_hw_write_omega_mech_Expect(BASE_ADDRESS, 0.0f);
     uz_pmsmModel_hw_write_load_torque_Expect(BASE_ADDRESS,0.0f);
     // force rising edge on inputs strobe
@@ -111,13 +111,13 @@ void test_uz_pmsmModel_normal_usage(void)
 
     // Based on the new values, something can be calculated, e.g., a controller
     struct uz_pmsmModel_inputs_t inputs = {
-        .u_d_V = 100.1f,
-        .u_q_V = -300.0f,
+        .v_d_V = 100.1f,
+        .v_q_V = -300.0f,
         .omega_mech_1_s = 312.123f,
         .load_torque=0.0f};
     // Write new input values to the shadow registers by AXI
-    uz_pmsmModel_hw_write_u_d_Expect(BASE_ADDRESS, inputs.u_d_V);
-    uz_pmsmModel_hw_write_u_q_Expect(BASE_ADDRESS, inputs.u_q_V);
+    uz_pmsmModel_hw_write_v_d_Expect(BASE_ADDRESS, inputs.v_d_V);
+    uz_pmsmModel_hw_write_v_q_Expect(BASE_ADDRESS, inputs.v_q_V);
     uz_pmsmModel_hw_write_omega_mech_Expect(BASE_ADDRESS, inputs.omega_mech_1_s);
     uz_pmsmModel_hw_write_load_torque_Expect(BASE_ADDRESS,inputs.load_torque);
     uz_pmsmModel_set_inputs(test_instance, inputs);

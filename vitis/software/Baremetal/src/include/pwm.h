@@ -43,7 +43,7 @@ void PWM_SS_Calculate_DutyCycle_open_loop_sin(DS_Data* data);
 
 //==============================================================================================================================================================
 //IP-Block for the 2-level PWM with DutyCycle
-#define PWM_BASE_ADDR					XPAR_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR
+#define PWM_BASE_ADDR					XPAR_GATES_PWM_AND_SS_CONTROL_0_BASEADDR
 #define PWM_SS_Con_Enable_REG			PWM_BASE_ADDR + PWM_en_AXI_Data_PWM_and_SS_control_V3_ip                //data register for Inport PWM_en_AXI
 #define PWM_SS_Con_Mode_REG				PWM_BASE_ADDR + Mode_AXI_Data_PWM_and_SS_control_V3_ip                  //data register for Inport Mode_AXI
 #define PWM_SS_Con_Scal_f_car_REG		PWM_BASE_ADDR + Scal_f_carrier_AXI_Data_PWM_and_SS_control_V3_ip        //data register for Inport PWM_f_carrier_kHz_AXI

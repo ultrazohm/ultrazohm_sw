@@ -526,6 +526,6 @@ void InitializeDataStructure(DS_Data* data) {
 	data->ctrl.samplingFrequency = data->ctrl.pwmFrequency * Interrupt_ISR_freq_factor;
 	data->ctrl.samplingPeriod = 1 / data->ctrl.samplingFrequency;
 
-	data->cw.switchingMode = 0; 		// PWM modulation
+	data->cw.switchingMode = 2; 		// Direct FPGA connection
 	data->rasv.pwmMinPulseWidth = 0.01;	// PWM minimum on time in %
 }

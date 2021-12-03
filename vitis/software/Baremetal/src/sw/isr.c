@@ -27,6 +27,7 @@
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
+#include "../IP_Cores/Interleaved_Boost/interleaved_hw.h"
 
 
 // Include for code-gen
@@ -81,20 +82,28 @@ void ISR_Control(void *data)
 	Global_Data.av.I_V = -1.0*Global_Data.aa.A2.me.ADC_A3;
 	Global_Data.av.I_W = -1.0*Global_Data.aa.A2.me.ADC_A2;
 
+	float i1 = -1.0*Global_Data.aa.A2.me.ADC_A4; // CHECK!!
+	float i2 = -1.0*Global_Data.aa.A2.me.ADC_A3; // CHECK!!
+	float vout = -1.0*Global_Data.aa.A2.me.ADC_A1; // CHECK!!
 
-	codegenInstance.input.period = 2500;
-	codegenInstance.input.currentORspeedControl = 0;
-	codegenInstance.input.i1 = Global_Data.av.I_U;
-	codegenInstance.input.i2 = Global_Data.av.I_V;
-	codegenInstance.input.i3 = Global_Data.av.I_W;
-	codegenInstance.input.theta_el = Global_Data.av.theta_elec_offset_compensated;
-	codegenInstance.input.u_dc = Global_Data.av.U_ZK;
 
-	uz_codegen_step(&codegenInstance);
+//	codegenInstance.input.period = 2500;
+//	codegenInstance.input.currentORspeedControl = 0;
+//	codegenInstance.input.i1 = Global_Data.av.I_U;
+//	codegenInstance.input.i2 = Global_Data.av.I_V;
+//	codegenInstance.input.i3 = Global_Data.av.I_W;
+//	codegenInstance.input.theta_el = Global_Data.av.theta_elec_offset_compensated;
+//	codegenInstance.input.u_dc = Global_Data.av.U_ZK;
 
-	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.CMPA_1 * 0.0004; // * 1/PERIOD
-	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.CMPA_2 * 0.0004;
-	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.CMPA_3 * 0.0004;
+//	uz_codegen_step(&codegenInstance);
+
+//	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.CMPA_1 * 0.0004; // * 1/PERIOD
+//	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.CMPA_2 * 0.0004;
+//	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.CMPA_3 * 0.0004;
+
+	interleaved_set_i1(XPAR_GATES_INTERLEAVED_BOOST_FI_0_BASEADDR, i1);
+	interleaved_set_i2(XPAR_GATES_INTERLEAVED_BOOST_FI_0_BASEADDR, i2);
+	interleaved_set_vout(XPAR_GATES_INTERLEAVED_BOOST_FI_0_BASEADDR, vout);
 
 
 	//Start: Control algorithm -------------------------------------------------------------------------------

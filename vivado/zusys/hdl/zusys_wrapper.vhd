@@ -1,8 +1,8 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1.1 (win64) Build 2960000 Wed Aug  5 22:57:20 MDT 2020
---Date        : Thu Oct  7 13:43:00 2021
---Host        : ELN176252 running 64-bit major release  (build 9200)
+--Date        : Wed Dec  1 15:49:05 2021
+--Host        : TUEIEAL-TL01 running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
 --Purpose     : IP block netlist
@@ -32,36 +32,6 @@ entity zusys_wrapper is
     D2_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_30 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_dig_io_17 : in STD_LOGIC;
-    D3_gan_h1_fault : in STD_LOGIC;
-    D3_gan_h1_oc : in STD_LOGIC;
-    D3_gan_h1_temp : in STD_LOGIC;
-    D3_gan_h2_fault : in STD_LOGIC;
-    D3_gan_h2_oc : in STD_LOGIC;
-    D3_gan_h2_temp : in STD_LOGIC;
-    D3_gan_h3_fault : in STD_LOGIC;
-    D3_gan_h3_oc : in STD_LOGIC;
-    D3_gan_h3_temp : in STD_LOGIC;
-    D3_gan_l1_fault : in STD_LOGIC;
-    D3_gan_l1_oc : in STD_LOGIC;
-    D3_gan_l1_temp : in STD_LOGIC;
-    D3_gan_l2_fault : in STD_LOGIC;
-    D3_gan_l2_oc : in STD_LOGIC;
-    D3_gan_l2_temp : in STD_LOGIC;
-    D3_gan_l3_fault : in STD_LOGIC;
-    D3_gan_l3_oc : in STD_LOGIC;
-    D3_gan_l3_temp : in STD_LOGIC;
-    D3_i1_diag : in STD_LOGIC;
-    D3_i2_diag : in STD_LOGIC;
-    D3_i3_diag : in STD_LOGIC;
-    D3_i_diag : in STD_LOGIC;
-    D3_pwm_en : out STD_LOGIC;
-    D3_pwm_h1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_pwm_h2 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_pwm_h3 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_pwm_l1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_pwm_l2 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_pwm_l3 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D4_dig_io_17 : in STD_LOGIC;
     D4_gan_h1_fault : in STD_LOGIC;
     D4_gan_h1_oc : in STD_LOGIC;
@@ -157,36 +127,6 @@ architecture STRUCTURE of zusys_wrapper is
     A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A2_OUT_CNV : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    D3_gan_l1_fault : in STD_LOGIC;
-    D3_gan_h2_oc : in STD_LOGIC;
-    D3_gan_h3_fault : in STD_LOGIC;
-    D3_dig_io_17 : in STD_LOGIC;
-    D3_i3_diag : in STD_LOGIC;
-    D3_gan_h3_temp : in STD_LOGIC;
-    D3_gan_l3_fault : in STD_LOGIC;
-    D3_i_diag : in STD_LOGIC;
-    D3_gan_l3_temp : in STD_LOGIC;
-    D3_pwm_h1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_pwm_en : out STD_LOGIC;
-    D3_pwm_h2 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_pwm_l3 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_pwm_h3 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_gan_l1_oc : in STD_LOGIC;
-    D3_gan_l3_oc : in STD_LOGIC;
-    D3_gan_h1_fault : in STD_LOGIC;
-    D3_i1_diag : in STD_LOGIC;
-    D3_gan_h2_temp : in STD_LOGIC;
-    D3_gan_h1_oc : in STD_LOGIC;
-    D3_gan_h3_oc : in STD_LOGIC;
-    D3_gan_l1_temp : in STD_LOGIC;
-    D3_pwm_l1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_gan_l2_fault : in STD_LOGIC;
-    D3_gan_h2_fault : in STD_LOGIC;
-    D3_pwm_l2 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_i2_diag : in STD_LOGIC;
-    D3_gan_h1_temp : in STD_LOGIC;
-    D3_gan_l2_oc : in STD_LOGIC;
-    D3_gan_l2_temp : in STD_LOGIC;
     D4_gan_l1_fault : in STD_LOGIC;
     D4_gan_h2_oc : in STD_LOGIC;
     D4_gan_h3_fault : in STD_LOGIC;
@@ -241,36 +181,6 @@ zusys_i: component zusys
       D2_OUT_28(0) => D2_OUT_28(0),
       D2_OUT_29(0) => D2_OUT_29(0),
       D2_OUT_30(0) => D2_OUT_30(0),
-      D3_dig_io_17 => D3_dig_io_17,
-      D3_gan_h1_fault => D3_gan_h1_fault,
-      D3_gan_h1_oc => D3_gan_h1_oc,
-      D3_gan_h1_temp => D3_gan_h1_temp,
-      D3_gan_h2_fault => D3_gan_h2_fault,
-      D3_gan_h2_oc => D3_gan_h2_oc,
-      D3_gan_h2_temp => D3_gan_h2_temp,
-      D3_gan_h3_fault => D3_gan_h3_fault,
-      D3_gan_h3_oc => D3_gan_h3_oc,
-      D3_gan_h3_temp => D3_gan_h3_temp,
-      D3_gan_l1_fault => D3_gan_l1_fault,
-      D3_gan_l1_oc => D3_gan_l1_oc,
-      D3_gan_l1_temp => D3_gan_l1_temp,
-      D3_gan_l2_fault => D3_gan_l2_fault,
-      D3_gan_l2_oc => D3_gan_l2_oc,
-      D3_gan_l2_temp => D3_gan_l2_temp,
-      D3_gan_l3_fault => D3_gan_l3_fault,
-      D3_gan_l3_oc => D3_gan_l3_oc,
-      D3_gan_l3_temp => D3_gan_l3_temp,
-      D3_i1_diag => D3_i1_diag,
-      D3_i2_diag => D3_i2_diag,
-      D3_i3_diag => D3_i3_diag,
-      D3_i_diag => D3_i_diag,
-      D3_pwm_en => D3_pwm_en,
-      D3_pwm_h1(0) => D3_pwm_h1(0),
-      D3_pwm_h2(0) => D3_pwm_h2(0),
-      D3_pwm_h3(0) => D3_pwm_h3(0),
-      D3_pwm_l1(0) => D3_pwm_l1(0),
-      D3_pwm_l2(0) => D3_pwm_l2(0),
-      D3_pwm_l3(0) => D3_pwm_l3(0),
       D4_dig_io_17 => D4_dig_io_17,
       D4_gan_h1_fault => D4_gan_h1_fault,
       D4_gan_h1_oc => D4_gan_h1_oc,

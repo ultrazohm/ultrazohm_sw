@@ -517,7 +517,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		else if (msgId == 0x215 + MOTORCONTROL_OFFSET_bits)
 			PID_Data.PID_FluxMapID_Config.IQstepsize = value * 0.001;
 		//Goertzel Amplitude
-		else if (msgId == 0x613 + MOTORCONTROL_OFFSET_bits)
+		else if (msgId == 0x113 + MOTORCONTROL_OFFSET_bits)
 			PID_Data.PID_ElectricalID_Config.goertzlAmp = value * 0.1;
 
 		//Gebhardt Offline ID

@@ -20,7 +20,6 @@
 #include "../../uz_HAL.h"
 
 void uz_PID_FluxMapID_init(uz_PID_FluxMapID_t *self) {
-	uz_assert_not_NULL(self);
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;

@@ -18,7 +18,6 @@
 #include "uz_PID_ControlState.h"
 
 void uz_PID_ControlState_init(uz_PID_ControlState_t *self) {
-	uz_assert_not_NULL(self);
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;

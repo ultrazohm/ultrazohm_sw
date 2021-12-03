@@ -21,10 +21,10 @@
 #if UZ_PARAMETERID_ACTIVE > 0U
 
 void uz_ParameterID_init(uz_ParameterID_t* self) {
-	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready == false);
 	uz_PID_ControlState_init(self->ControlState);
 	uz_PID_ElectricalID_init(self->ElectricalID);
+	uz_PID_FluxMapID_init(self->FluxMapID);
 	self->is_ready = true;
 }
 

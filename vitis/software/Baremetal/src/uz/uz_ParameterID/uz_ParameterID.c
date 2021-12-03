@@ -104,7 +104,8 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t Data) {
 
 }
 
-struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance) {
+//struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance) {
+struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance) {
 	struct uz_DutyCycle_t output_DutyCycle = { 0 };
 	uz_dq_t v_dq_Volts = { 0 };
 	uz_dq_t i_SpeedControl_reference_Ampere = { 0 };
@@ -163,7 +164,8 @@ struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t Data, uz_F
 
 
 
-	return (output_DutyCycle);
+	//return (output_DutyCycle);
+	return (v_dq_Volts);
 }
 
 uz_ParameterID_Data_t uz_ParameterID_initialize_data_structs(void) {

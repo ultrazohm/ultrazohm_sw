@@ -17,6 +17,8 @@
 #include "../defines.h"
 #include "../include/javascope.h"
 #include "xil_cache.h"
+#include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+
 
 // IPI Messaging System R5 <-> A53
 #define IPI_A53toR5_MSG_LEN		3U
@@ -41,6 +43,8 @@ uint32_t js_status_BareToRTOS=0;
 
 //Experimental Code
 extern uz_ParameterID_Data_t PID_Data;
+extern struct uz_pmsmModel_outputs_t pmsm_outputs;
+extern struct uz_pmsmModel_inputs_t pmsm_inputs;
 
 int JavaScope_initalize(DS_Data* data)
 {

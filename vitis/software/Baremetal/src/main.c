@@ -18,6 +18,8 @@
 #include "uz/uz_global_configuration.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
 #include "include/uz_adcLtc2311_ip_core_init.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -33,6 +35,7 @@ uz_FOC* FOC_instance = NULL;
 uz_PI_Controller* SpeedControl_instance = NULL;
 uz_FOC* FOC_instance_SC = NULL;
 struct uz_PMSM_t config_PMSM = { 0 };
+uz_pmsmModel_t *pmsm = NULL;
 
 static void uz_assertCallback(const char8 *file, s32 line) {
 	extern XScuGic INTCInst;
@@ -41,7 +44,7 @@ static void uz_assertCallback(const char8 *file, s32 line) {
 	uz_led_set_readyLED_off();
 	uz_led_set_runningLED_off();
 	ErrorHandling(&Global_Data);
-	XScuGic_Disable(&INTCInst, Interrupt_ISR_ID);
+	//XScuGic_Disable(&INTCInst, Interrupt_ISR_ID);
 }
 
 int main(void)
@@ -101,6 +104,10 @@ int main(void)
 	                .lower_limit = -10.0f };
 	struct uz_FOC_config config_FOC = { .config_PMSM = PID_Data.PID_GlobalConfig.PMSM_config, .config_id = config_id, .config_iq = config_iq };
 
+	struct uz_pmsmModel_config_t pmsm_config = { .base_address = XPAR_UZ_PMSM_MODEL_0_BASEADDR, .ip_core_frequency_Hz = 100000000, .simulate_mechanical_system = true, .r_1 = 2.1f, .L_d = 0.03f,
+	                .L_q = 0.05f, .psi_pm = 0.05f, .polepairs = 2.0f, .inertia = 0.001, .coulomb_friction_constant = 0.01f, .friction_coefficient = 0.001f };
+
+	pmsm = uz_pmsmModel_init(pmsm_config);
 	FOC_instance = uz_FOC_init(config_FOC);
 	SpeedControl_instance = uz_SpeedControl_init(config_n);
 	FOC_instance_SC = uz_FOC_init(config_FOC);

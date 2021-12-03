@@ -31,6 +31,8 @@
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../uz/uz_wavegen/uz_wavegen.h"
+#include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 
 
 //Initialize the variables for the ADC measurement
@@ -53,8 +55,13 @@ extern DS_Data Global_Data;
 //Experimental Code
 extern uz_ParameterID_t ParameterID_instance;
 extern uz_ParameterID_Data_t PID_Data;
+extern uz_pmsmModel_t *pmsm;
 extern uz_FOC* FOC_instance;
 extern uz_PI_Controller* SpeedControl_instance;
+float i_d_soll = 0.0f;
+float i_q_soll = 0.0f;
+struct uz_pmsmModel_inputs_t pmsm_inputs = { .omega_mech_1_s = 0.0f, .u_d_V = 0.0f, .u_q_V = 0.0f, .load_torque = 0.0f };
+struct uz_pmsmModel_outputs_t pmsm_outputs = { .i_d_A = 0.0f, .i_q_A = 0.0f, .torque_Nm = 0.0f, .omega_mech_1_s = 0.0f };
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -86,19 +93,30 @@ void ISR_Control(void *data)
 	PID_Data.PID_ActualValues.V_UVW.U = (Global_Data.aa.A1.me.ADC_A2 - 2.5f) * (20.0f / 2.084f) / 3.0f;
 	PID_Data.PID_ActualValues.V_UVW.V = (Global_Data.aa.A1.me.ADC_A3 - 2.5f) * (20.0f / 2.084f) / 3.0f;
 	PID_Data.PID_ActualValues.V_UVW.W = (Global_Data.aa.A1.me.ADC_A4 - 2.5f) * (20.0f / 2.084f) / 3.0f;
-	PID_Data.PID_ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed;
+	//PID_Data.PID_ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed;
 	PID_Data.PID_ActualValues.theta_el = Global_Data.av.theta_elec;
 
 	//Calculate missing ActualValues
-	PID_Data.PID_ActualValues.i_dq = uz_dq_transformation(PID_Data.PID_ActualValues.I_UVW, Global_Data.av.theta_elec);
+	//PID_Data.PID_ActualValues.i_dq = uz_dq_transformation(PID_Data.PID_ActualValues.I_UVW, Global_Data.av.theta_elec);
 	PID_Data.PID_ActualValues.v_dq = uz_dq_transformation(PID_Data.PID_ActualValues.V_UVW, Global_Data.av.theta_elec);
 	PID_Data.PID_ActualValues.theta_m = Global_Data.av.theta_elec / PID_Data.PID_GlobalConfig.PMSM_config.polePairs;
 
 	uz_ParameterID_step(&ParameterID_instance, PID_Data);
-	struct uz_DutyCycle_t PID_DutyCycle = uz_ParameterID_Controller(PID_Data, FOC_instance, SpeedControl_instance);
-	Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;
-	Global_Data.rasv.halfBridge2DutyCycle = PID_DutyCycle.DutyCycle_V;
-	Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;
+//	struct uz_DutyCycle_t PID_DutyCycle = uz_ParameterID_Controller(PID_Data, FOC_instance, SpeedControl_instance);
+	struct uz_dq_t PID_v_dq = uz_ParameterID_Controller(PID_Data, FOC_instance, SpeedControl_instance);
+//	Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;
+//	Global_Data.rasv.halfBridge2DutyCycle = PID_DutyCycle.DutyCycle_V;
+//	Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;
+
+	uz_pmsmModel_trigger_input_strobe(pmsm);
+	uz_pmsmModel_trigger_output_strobe(pmsm);
+	pmsm_outputs = uz_pmsmModel_get_outputs(pmsm);
+	PID_Data.PID_ActualValues.i_dq.d = pmsm_outputs.i_d_A;
+	PID_Data.PID_ActualValues.i_dq.q = pmsm_outputs.i_q_A;
+	PID_Data.PID_ActualValues.omega_m = pmsm_outputs.omega_mech_1_s;
+	pmsm_inputs.u_d_V = PID_v_dq.d;
+	pmsm_inputs.u_q_V = PID_v_dq.q;
+	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
 
 	//End ParameterID -------------------------------------------------------------------------------------------------------------------
 

@@ -26,6 +26,5 @@ void ADC_readCardA3(DS_Data *data, uz_array_int16_t adc_data);
 
 void ADC_readCardALL(DS_Data* data);
 
-void ADC_WriteConversionFactor(int ADC_ConversionFactor);	// Init for the ADC-conversion IP-Block
 
 #endif /* ADC_H_ */

@@ -44,7 +44,6 @@
 // Parameter definitions
 #define INTERRUPT_ID_SCUG 				XPAR_SCUGIC_0_DEVICE_ID			/* SCUGIC device that Interrupt is connected to */
 #define INTERRUPT_ID_IPI 				XPAR_XIPIPSU_0_DEVICE_ID		/* IPI device that Interrupt is connected to */
-#define GPIO_out_ID						XPAR_AXI_GPIO_2_DEVICE_ID 		/* GPIO device that GPIO is connected to output*/
 
 //Frequencies in the system
 #define FPGA_100MHz		100000000.0f		//Clock frequency

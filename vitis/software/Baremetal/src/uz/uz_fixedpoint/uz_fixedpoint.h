@@ -9,9 +9,9 @@
  * 
  */
 struct uz_fixedpoint_definition_t{
-    const bool is_signed; /**< Determines if the fixed point value is signed or unsigned */
-    const int32_t fractional_bits; /**< Number of bits for the the fraction */
-    const int32_t integer_bits; /**< Number of bits for the integer part */
+    bool is_signed; /**< Determines if the fixed point value is signed or unsigned */
+    int32_t fractional_bits; /**< Number of bits for the the fraction */
+    int32_t integer_bits; /**< Number of bits for the integer part */
 };
 
 //typedef struct uz_fixedpoint_definition_t uz_fixedpoint_definition_t;

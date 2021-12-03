@@ -1,12 +1,12 @@
 ###Analog Adapter Board D1
 # Author: Eyke Ligemann
 # Date: 19.08.2020
-set_property PACKAGE_PIN AC9  	[get_ports D1_OUT[0]]
-set_property PACKAGE_PIN AB9  	[get_ports D1_OUT[1]]
-set_property PACKAGE_PIN AB10  	[get_ports D1_OUT[2]]
-set_property PACKAGE_PIN AB11  	[get_ports D1_OUT[3]]
-set_property PACKAGE_PIN AJ11  	[get_ports D1_OUT[4]]
-set_property PACKAGE_PIN AK11  	[get_ports D1_OUT[5]]
+set_property PACKAGE_PIN AC9 [get_ports {D1_OUT[0]}]
+set_property PACKAGE_PIN AB9 [get_ports {D1_OUT[1]}]
+set_property PACKAGE_PIN AB10 [get_ports {D1_OUT[2]}]
+set_property PACKAGE_PIN AB11 [get_ports {D1_OUT[3]}]
+set_property PACKAGE_PIN AJ11 [get_ports {D1_OUT[4]}]
+set_property PACKAGE_PIN AK11 [get_ports {D1_OUT[5]}]
 set_property PACKAGE_PIN AA7  	[get_ports D1_OUT[6]]
 set_property PACKAGE_PIN AA8  	[get_ports D1_OUT[7]]
 set_property PACKAGE_PIN AE9  	[get_ports D1_OUT[8]]
@@ -31,14 +31,20 @@ set_property PACKAGE_PIN AF2  	[get_ports D1_OUT[25]]
 
 
 #Digital_27_Ch1 = B65_L19_N
-set_property PACKAGE_PIN AC3  	[get_ports D1_OUT_27]
+set_property PACKAGE_PIN AC3 [get_ports {D1_OUT_27[0]}]
 #Digital_28_Ch1= B65_L19_P
-set_property PACKAGE_PIN AB3  	[get_ports D1_OUT_28]
+set_property PACKAGE_PIN AB3 [get_ports {D1_OUT_28[0]}]
 #Digital_29_Ch1 = B65_L15_N
-set_property PACKAGE_PIN AA5  	[get_ports D1_OUT_29]
+set_property PACKAGE_PIN AA5 [get_ports {D1_OUT_29[0]}]
 #Digital_30_Ch1 = B65_L15_P
-set_property PACKAGE_PIN AA6  	[get_ports D1_OUT_30]
+set_property PACKAGE_PIN AA6 [get_ports {D1_OUT_30[0]}]
 
 
-set_property IOSTANDARD LVCMOS18 	[get_ports {D1_*}]
-set_property PULLDOWN true 			[get_ports D1_OUT]
+set_property IOSTANDARD LVCMOS18 [get_ports D1_*]
+set_property PULLDOWN true [get_ports {D1_OUT[5]}]
+set_property PULLDOWN true [get_ports {D1_OUT[4]}]
+set_property PULLDOWN true [get_ports {D1_OUT[3]}]
+set_property PULLDOWN true [get_ports {D1_OUT[2]}]
+set_property PULLDOWN true [get_ports {D1_OUT[1]}]
+set_property PULLDOWN true [get_ports {D1_OUT[0]}]
+

@@ -20,7 +20,7 @@ The library system splits up in three different locations:
 
 In the following, the individual tools and necessary installation steps are discussed.
 
-.. note :: All usernames and passwords can be obtained from the UltraZohm core developer team. Please write an E-Mail to `info@ultrazohm.com <mailto:info@ultrazohm>`_
+.. note :: All usernames and passwords can be obtained from the UltraZohm core developer team. Please get in touch via the Slack channel!
 
 
 In order to use the database driven library for Altium, a few settings need to be made initially.
@@ -34,6 +34,8 @@ The following tools are required:
 
 Videos of the setup
 ===================
+
+.. note:: The login information and user name in the videos do not match the real login data. Please get in touch via Slack to obtain the login information.
 
 How to install Altium:
 

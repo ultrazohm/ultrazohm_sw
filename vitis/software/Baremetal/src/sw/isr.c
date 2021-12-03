@@ -28,7 +28,6 @@
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 
-
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
@@ -313,7 +312,6 @@ static void ReadAllADC(){
 			initADCdone = true;
 			Global_Data.cw.ControlReference = CurrentControl; //default
 			Global_Data.cw.ControlMethod = fieldOrientedControl; //default
-			ADC_Clear_Offset();
 		}
 	}else{
 		ADC_readCardALL(&Global_Data);

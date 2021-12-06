@@ -210,8 +210,8 @@ Physical Setup of the UltraZohm
 - Connect the UltraZohm to the grid
 - Connect the Ethernet to your PC
 - Connect the USB (JTAG) to your PC
-- For UltraZohm carrier board version 3: plug an external stop or the external stop dummy into the front plane
-- For UltraZohm carrier board version 4: external stop / dummy is not required
+- For UltraZohm :ref:`carrier_board_rev4_carrier_board_rev3`: plug an external stop or the external stop dummy into the front plane
+- For UltraZohm :ref:`carrier_board_rev4_carrier_board_rev4`: external stop / dummy is not required
 - Turn on the UltraZohm
 - All four LEDs are turned on
 

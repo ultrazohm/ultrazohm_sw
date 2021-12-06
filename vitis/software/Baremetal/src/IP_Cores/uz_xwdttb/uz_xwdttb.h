@@ -111,18 +111,9 @@ XWdtTb* uz_WdtTb_init();
 XWdtTb *uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId);
 
 
-//int WinWdtIntrExample(XScuGic *IntcInstancePtr);
 int WinWdtIntrExample(XWdtTb *WdtTbInstance);
 
-
 void WdtTbIntrHandler(void *CallBackRef);
-
-//XWdtTb *getWdtTbInstance();
-//int WdtTbInit(u32 CounterValue);
-//static int WdtTbSetupIntrSystem(INTC *IntcInstancePtr);
-//int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr);
-//void WdtTbDisableIntrSystem(XScuGic *IntcInstancePtr);
-
 
 
 #endif // UZ_XWDTTB_H

@@ -223,6 +223,28 @@ int Initialize_Timer(){
 /*****************************************************************************/
 /**
 *
+* This function disables the interrupts that occur for the WdtTb.
+*
+* @param	IntcInstancePtr is the pointer to the instance of INTC driver.
+* @param	WdtTbIntrId is the WDT Interrupt Id and is typically
+*		XPAR_<INTC_instance>_<WDTTB_instance>_WDT_INTERRUPT_VEC_ID
+*		value from xparameters.h.
+*
+* @return	None.
+*
+* @note		None.
+*
+******************************************************************************/
+void WdtTbDisableIntrSystem(XScuGic *IntcInstancePtr)
+{
+	/* Disconnect and disable the interrupt for the WdtTb */
+	XScuGic_Disable(IntcInstancePtr, WDTTB_IRPT_INTR);
+	XScuGic_Disconnect(IntcInstancePtr, WDTTB_IRPT_INTR);
+}
+
+/*****************************************************************************/
+/**
+*
 * This function setups the interrupt system such that WDT interrupt can occur
 * for the WdtTb. This function is application specific since the actual
 * system may or may not have an interrupt controller. The WdtTb device could be
@@ -246,17 +268,9 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 	int Status;
 	u8 Priority, Trigger;
 
-//	uz_assert(Wdttb_IsReady);
-
-//	TempConfig = IntcConfig;
-
-//	IntcInstance.Config = IntcInstancePtr->Config;
-//	IntcInstance.IsReady = IntcInstancePtr->IsReady;
-//	IntcInstance.UnhandledInterrupts = IntcInstancePtr->UnhandledInterrupts;
-
 	XScuGic_GetPriorityTriggerType(IntcInstancePtr, WDTTB_IRPT_INTR,
 		                                            &Priority, &Trigger);
-
+	// Highest priority for the WDT
 	Priority = 0x0;
 	Trigger = 3;
 	XScuGic_SetPriorityTriggerType(IntcInstancePtr, WDTTB_IRPT_INTR,

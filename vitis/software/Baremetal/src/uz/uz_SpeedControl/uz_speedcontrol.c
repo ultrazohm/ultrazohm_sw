@@ -25,8 +25,8 @@
 
 static uz_dq_t uz_SpeedControl_field_weakening(uz_PMSM_t config_PMSM, float id_ref_Ampere, float omega_el_rad_per_sec, float V_dc_volts);
 static float uz_SpeedControl_decide_id_ref(float I_max, float id_ref_Ampere, float id_field_weakening_Ampere, bool fw_flag);
-static float uz_SpeedControl_calculate_omega_cut(uz_PMSM_t config_PMSM, float U_SV_max);
-static uz_dq_t uz_SpeedControl_calculate_fw_currents(uz_PMSM_t config_PMSM, float omega_el_rad_per_sec, float omega_cut, float U_SV_max);
+static float uz_SpeedControl_calculate_omega_cut(uz_PMSM_t config_PMSM, float V_SV_max);
+static uz_dq_t uz_SpeedControl_calculate_fw_currents(uz_PMSM_t config_PMSM, float omega_el_rad_per_sec, float omega_cut, float V_SV_max);
 
 uz_PI_Controller* uz_SpeedControl_init(struct uz_PI_Controller_config config){
     uz_PI_Controller* self = uz_PI_Controller_init(config);
@@ -59,11 +59,11 @@ void uz_SpeedControl_reset(uz_PI_Controller* self){
 static uz_dq_t uz_SpeedControl_field_weakening(uz_PMSM_t config_PMSM, float id_ref_Ampere, float omega_el_rad_per_sec, float V_dc_volts){
     uz_dq_t output = {0};
     bool fw_flag = false;
-    float U_SV_max =(V_dc_volts / sqrtf(3.0f) ) * 0.95f;
-	float omega_cut = uz_SpeedControl_calculate_omega_cut(config_PMSM, U_SV_max);
+    float V_SV_max =(V_dc_volts / sqrtf(3.0f) ) * 0.95f;
+	float omega_cut = uz_SpeedControl_calculate_omega_cut(config_PMSM, V_SV_max);
     if (fabsf(omega_el_rad_per_sec) > omega_cut) {
         fw_flag = true;
-        output = uz_SpeedControl_calculate_fw_currents(config_PMSM, omega_el_rad_per_sec, omega_cut, U_SV_max);
+        output = uz_SpeedControl_calculate_fw_currents(config_PMSM, omega_el_rad_per_sec, omega_cut, V_SV_max);
     } else {
 	    fw_flag = false;
     }
@@ -90,15 +90,15 @@ static float uz_SpeedControl_decide_id_ref(float I_max, float id_ref_Ampere, flo
     return(output);
 }
 
-static float uz_SpeedControl_calculate_omega_cut(uz_PMSM_t config_PMSM, float U_SV_max) {
+static float uz_SpeedControl_calculate_omega_cut(uz_PMSM_t config_PMSM, float V_SV_max) {
 	float a_omega = (powf(config_PMSM.I_max_Ampere, 2.0f) * powf(config_PMSM.Lq_Henry, 2.0f)) + powf(config_PMSM.Psi_PM_Vs, 2.0f);
 	float b_omega = 2.0f * config_PMSM.R_ph_Ohm * config_PMSM.Psi_PM_Vs * config_PMSM.I_max_Ampere;
-	float c_omega = (powf(config_PMSM.I_max_Ampere, 2.0f) * powf(config_PMSM.R_ph_Ohm, 2.0f)) - powf(U_SV_max, 2.0f);
+	float c_omega = (powf(config_PMSM.I_max_Ampere, 2.0f) * powf(config_PMSM.R_ph_Ohm, 2.0f)) - powf(V_SV_max, 2.0f);
     float omega_cut = (-b_omega + sqrtf(powf(b_omega, 2.0f) - (4.0f * a_omega * c_omega) )) / (2.0f * a_omega);
 	return (omega_cut);
 }
 
-static uz_dq_t uz_SpeedControl_calculate_fw_currents(uz_PMSM_t config_PMSM, float omega_el_rad_per_sec, float omega_cut, float U_SV_max) {
+static uz_dq_t uz_SpeedControl_calculate_fw_currents(uz_PMSM_t config_PMSM, float omega_el_rad_per_sec, float omega_cut, float V_SV_max) {
     uz_assert(omega_cut > 0.0f);
     uz_dq_t output = {0};
 	output.d = (config_PMSM.Psi_PM_Vs / config_PMSM.Ld_Henry) * ( (omega_cut / fabsf(omega_el_rad_per_sec) ) - 1.0f);
@@ -110,7 +110,7 @@ static uz_dq_t uz_SpeedControl_calculate_fw_currents(uz_PMSM_t config_PMSM, floa
 	float c_iq_fw = (powf(output.d, 2.0f) * powf(config_PMSM.R_ph_Ohm, 2.0f))
 	                + (powf(omega_el_rad_per_sec, 2.0f)
 	                                * (powf(config_PMSM.Psi_PM_Vs, 2.0f) + (powf(config_PMSM.Ld_Henry, 2.0f) * powf(output.d, 2.0f))
-	                                                + (2.0f * config_PMSM.Psi_PM_Vs * config_PMSM.Ld_Henry * output.d))) - powf(U_SV_max, 2.0f);
+	                                                + (2.0f * config_PMSM.Psi_PM_Vs * config_PMSM.Ld_Henry * output.d))) - powf(V_SV_max, 2.0f);
    	output.q = (-b_iq_fw + sqrtf(powf(b_iq_fw, 2.0f) - (4.0f * a_iq_fw * c_iq_fw) )) / (2.0f * a_iq_fw);
     return(output);
 }

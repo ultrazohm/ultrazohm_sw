@@ -60,29 +60,29 @@ uz_dq_t uz_FOC_sample(uz_FOC* self, uz_dq_t i_reference_Ampere, uz_dq_t i_actual
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(V_dc_volts > 0.0f);
-	uz_dq_t u_pre_limit_Volts = uz_FOC_CurrentControl(self, i_reference_Ampere, i_actual_Ampere);
-	uz_dq_t u_decoup_Volts = uz_FOC_decoupling(self->config.decoupling_select, self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
-	u_pre_limit_Volts.d += u_decoup_Volts.d;
-	u_pre_limit_Volts.q += u_decoup_Volts.q;
-	uz_dq_t u_output_Volts = uz_FOC_SpaceVector_Limitation(u_pre_limit_Volts, V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
-	return (u_output_Volts);
+	uz_dq_t v_pre_limit_Volts = uz_FOC_CurrentControl(self, i_reference_Ampere, i_actual_Ampere);
+	uz_dq_t v_decoup_Volts = uz_FOC_decoupling(self->config.decoupling_select, self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+	v_pre_limit_Volts.d += v_decoup_Volts.d;
+	v_pre_limit_Volts.q += v_decoup_Volts.q;
+	uz_dq_t v_output_Volts = uz_FOC_SpaceVector_Limitation(v_pre_limit_Volts, V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
+	return (v_output_Volts);
 }
 
 uz_UVW_t uz_FOC_sample_UVW(uz_FOC* self, uz_dq_t i_reference_Ampere, uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	uz_dq_t u_dq_Volts = uz_FOC_sample(self, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
-	uz_UVW_t u_output_Volts = uz_dq_inverse_transformation(u_dq_Volts, theta_el_rad);
-	return(u_output_Volts);
+	uz_dq_t v_dq_Volts = uz_FOC_sample(self, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+	uz_UVW_t v_output_Volts = uz_dq_inverse_transformation(v_dq_Volts, theta_el_rad);
+	return(v_output_Volts);
 }
 
 static uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, uz_dq_t i_reference_Ampere, uz_dq_t i_actual_Ampere) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	uz_dq_t u_output_Volts = { 0 };
-	u_output_Volts.q = uz_PI_Controller_sample(self->Controller_iq, i_reference_Ampere.q, i_actual_Ampere.q, self->ext_clamping);
-	u_output_Volts.d = uz_PI_Controller_sample(self->Controller_id, i_reference_Ampere.d, i_actual_Ampere.d, self->ext_clamping);
-	return (u_output_Volts);
+	uz_dq_t v_output_Volts = { 0 };
+	v_output_Volts.q = uz_PI_Controller_sample(self->Controller_iq, i_reference_Ampere.q, i_actual_Ampere.q, self->ext_clamping);
+	v_output_Volts.d = uz_PI_Controller_sample(self->Controller_id, i_reference_Ampere.d, i_actual_Ampere.d, self->ext_clamping);
+	return (v_output_Volts);
 
 }
 

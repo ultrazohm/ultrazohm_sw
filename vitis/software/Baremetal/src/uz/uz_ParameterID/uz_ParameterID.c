@@ -30,7 +30,7 @@ void uz_ParameterID_init(uz_ParameterID_t* self) {
 
 uz_PID_GlobalConfig_t PID_GlobalConfig;
 
-void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t Data) {
+uz_ParameterID_Data_t uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t Data) {
 
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
@@ -101,6 +101,18 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t Data) {
 		uz_PID_FluxMapID_step(self->FluxMapID);
 	}
 
+	// reset ACCEPT
+	if (self->ControlState->output.GlobalConfig_out.ACCEPT == true) {
+		self->ControlState->output.GlobalConfig_out.ACCEPT = false;
+		Data.PID_GlobalConfig.ACCEPT = false;
+	}
+
+	// reset RESET-button
+	if (Data.PID_GlobalConfig.Reset == true) {
+		self->ControlState->output.GlobalConfig_out.ACCEPT = false;
+		Data.PID_GlobalConfig.Reset = false;
+	}
+	return (Data);
 
 }
 

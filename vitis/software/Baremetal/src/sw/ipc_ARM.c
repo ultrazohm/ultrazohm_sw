@@ -419,16 +419,21 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 
 		//Hoerner Offline ID
 		//ACCEPT
-		else if (msgId == 5 + MOTORCONTROL_OFFSET_bits)
+		else if (msgId == 0x05 + MOTORCONTROL_OFFSET_bits)
 			PID_Data.PID_GlobalConfig.ACCEPT = true;
 		//RESET
-		else if (msgId == 6 + MOTORCONTROL_OFFSET_bits)
+		else if (msgId == 0x06 + MOTORCONTROL_OFFSET_bits)
 			PID_Data.PID_GlobalConfig.Reset = true;
 		//MOTOR_ID
 		else if (msgId == 0x101 + MOTORCONTROL_OFFSET_bits)
 			data->pID.MotorID = (MotorID_Method)value;
 		else if (msgId == 0x102 + MOTORCONTROL_OFFSET_bits)
 			data->cw.enableParameterID = (_Bool)value;
+		//ELECTRICALID
+		else if (msgId == 0x120 + MOTORCONTROL_OFFSET_bits)
+			PID_Data.PID_GlobalConfig.ElectricalID = true;
+		else if (msgId == 0x121 + MOTORCONTROL_OFFSET_bits)
+			PID_Data.PID_GlobalConfig.ElectricalID = false;
 		//IDENTLQ
 		else if (msgId == 0x103 + MOTORCONTROL_OFFSET_bits)
 			PID_Data.PID_ElectricalID_Config.identLq = (bool) value;

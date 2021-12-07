@@ -4,7 +4,7 @@
 Xilinx Toolchain
 ================
 
-1. `Download Link <https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis.html>`_ (Xilinx account required)
+1. `Download Link <https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-2.html>`_ (Xilinx account required)
 
 .. image:: ./images_installation/vitis_website1_2020.png
 

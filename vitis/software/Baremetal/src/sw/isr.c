@@ -60,7 +60,7 @@ extern uz_FOC* FOC_instance;
 extern uz_PI_Controller* SpeedControl_instance;
 float i_d_soll = 0.0f;
 float i_q_soll = 0.0f;
-struct uz_pmsmModel_inputs_t pmsm_inputs = { .omega_mech_1_s = 0.0f, .u_d_V = 0.0f, .u_q_V = 0.0f, .load_torque = 0.0f };
+struct uz_pmsmModel_inputs_t pmsm_inputs = { .omega_mech_1_s = 0.0f, .v_d_V = 0.0f, .v_q_V = 0.0f, .load_torque = 0.0f };
 struct uz_pmsmModel_outputs_t pmsm_outputs = { .i_d_A = 0.0f, .i_q_A = 0.0f, .torque_Nm = 0.0f, .omega_mech_1_s = 0.0f };
 
 //==============================================================================================================================================================
@@ -114,8 +114,8 @@ void ISR_Control(void *data)
 	PID_Data.PID_ActualValues.i_dq.d = pmsm_outputs.i_d_A;
 	PID_Data.PID_ActualValues.i_dq.q = pmsm_outputs.i_q_A;
 	PID_Data.PID_ActualValues.omega_m = pmsm_outputs.omega_mech_1_s;
-	pmsm_inputs.u_d_V = PID_v_dq.d;
-	pmsm_inputs.u_q_V = PID_v_dq.q;
+	pmsm_inputs.v_d_V = PID_v_dq.d;
+	pmsm_inputs.v_q_V = PID_v_dq.q;
 	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
 
 	//End ParameterID -------------------------------------------------------------------------------------------------------------------

@@ -21,8 +21,8 @@ uz_dq_t uz_FOC_linear_decoupling(uz_PMSM_t config, uz_dq_t i_actual_Ampere, floa
     uz_assert(config.Ld_Henry > 0.0f);
 	uz_assert(config.Lq_Henry > 0.0f);
 	uz_assert(config.Psi_PM_Vs >= 0.0f);
-	uz_dq_t u_dq_vor_Volts = {0};
-	u_dq_vor_Volts.d = i_actual_Ampere.q * -1.0f * config.Lq_Henry * omega_el_rad_per_sec;
-	u_dq_vor_Volts.q = ( (i_actual_Ampere.d* config.Ld_Henry) + config.Psi_PM_Vs) * omega_el_rad_per_sec;
-	return (u_dq_vor_Volts);
+	uz_dq_t v_dq_vor_Volts = {0};
+	v_dq_vor_Volts.d = i_actual_Ampere.q * -1.0f * config.Lq_Henry * omega_el_rad_per_sec;
+	v_dq_vor_Volts.q = ( (i_actual_Ampere.d* config.Ld_Henry) + config.Psi_PM_Vs) * omega_el_rad_per_sec;
+	return (v_dq_vor_Volts);
 }

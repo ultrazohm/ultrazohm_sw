@@ -34,7 +34,6 @@ static void uz_assertCallback(const char8 *file, s32 line)
 	uz_led_set_readyLED_off();
 	uz_led_set_runningLED_off();
 	ErrorHandling(&Global_Data);
-	XScuGic_Disable(&INTCInst, Interrupt_ISR_ID);
 }
 
 int main(void)

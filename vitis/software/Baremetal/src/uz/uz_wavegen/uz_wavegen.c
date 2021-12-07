@@ -19,13 +19,14 @@
 #include <math.h>
 #include <stdlib.h>
 #include "../uz_HAL.h"
+#include "../uz_math_constants.h"
 #include "../uz_SystemTime/uz_SystemTime.h"
 
 float uz_wavegen_sine(float amplitude, float frequency_Hz) {
 	uz_assert(frequency_Hz > 0.0f);
 	uz_assert(amplitude != 0.0f);
 	float t_Sec = uz_SystemTime_GetGlobalTimeInSec();
-	float angle = 2.0f * M_PI * t_Sec * frequency_Hz;
+	float angle = 2.0f * UZ_PIf * t_Sec * frequency_Hz;
 	return (amplitude * sinf(angle));
 }
 
@@ -33,7 +34,7 @@ float uz_wavegen_sine_with_offset(float amplitude, float frequency_Hz, float off
 	uz_assert(frequency_Hz > 0.0f);
 	uz_assert(amplitude != 0.0f);
 	float t_Sec = uz_SystemTime_GetGlobalTimeInSec();
-	float angle = 2.0f * M_PI * t_Sec * frequency_Hz;
+	float angle = 2.0f * UZ_PIf * t_Sec * frequency_Hz;
 	return ((amplitude * sinf(angle)) + offset);
 }
 
@@ -115,5 +116,5 @@ float uz_wavegen_triangle_with_offset(float amplitude, float frequency_Hz, float
 
 float uz_wavegen_white_noise(float amplitude) {
 	uz_assert(amplitude != 0.0f);
-	return (amplitude * ( ((float)rand() / RAND_MAX * 2.0f) - 1.0f) );
+	return (amplitude * ( ((float)rand() / (float)RAND_MAX * 2.0f) - 1.0f) );
 }

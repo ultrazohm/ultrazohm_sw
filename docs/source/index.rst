@@ -9,7 +9,7 @@ The UltraZohm is a powerful real-time computation platform for research, develop
 Development is driven by researchers for researches to accelerate research by establishing a common control platform.
 Having a common platform enables the active research community to focus on publication and results, while the platform development is a shared effort. 
 
-- **High Computational power**: Four ARM A53, two ARM R5, and a large FPGA provided by a Xilinx Zynq UltraScale+ MPSoC.
+- **High Computational power**: Four ARM A53, two ARM R5, and a large FPGA provided by a Xilinx Zynq UltraScale+ MPSoC (ZU9EG).
 - **Hard real-time**: Designed to meet modern control systems' timing requirements for power electronics.
 - **Open Source**: Platform with no black-boxes and no barriers for your research. Adapt to your needs and use as you like.
 - **Modularity**: Extend the platform with your own hardware (adapter cards), IP-Cores and software components.

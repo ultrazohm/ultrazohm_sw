@@ -3,8 +3,11 @@ close all
 clear all
 format compact
 
+%% settings
+save_all_logged_data = 0; 
+
 %% import latest csv
-Logfile_list = dir('Log_*');
+Logfile_list = dir('Log_*.csv');
 %chose latest logfile which is not empty
 Logfile_list_size = Logfile_list.bytes;
 for logfile_list_index = size(Logfile_list,1):-1:1
@@ -96,3 +99,9 @@ log = renamevars(log, "CH19", "CH19");
 log = renamevars(log, "CH20", "CH20");
 
 channel_names  = log.Properties.VariableNames;
+
+%% saving data in compressed mat file format
+file_name_log = file_name(1:end-4)
+if (save_all_logged_data ~= 0)
+    save(file_name_log,'log','variable_names','channel_names','-v7.3')
+end

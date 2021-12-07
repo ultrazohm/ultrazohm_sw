@@ -41,11 +41,12 @@ package ADC_LTC2311_PKG is
     -- bit positions in the config register
     -- ADC_CR
     constant C_MODE               : natural := 0;
-    constant C_TRIGGER            : natural := 1;
-    constant C_SW_RESET           : natural := 2;
-    constant C_CONV_VALUE_VALID   : natural := 3;
-    constant C_CONFIG_VALUE_LSB   : natural := 4;
-    constant C_CONFIG_VALUE_MSB   : natural := 6;
+    constant C_SW_TRIGGER         : natural := 1;
+    constant C_TRIGGER            : natural := 2;
+    constant C_SW_RESET           : natural := 3;
+    constant C_CONV_VALUE_VALID   : natural := 4;
+    constant C_CONFIG_VALUE_LSB   : natural := 5;
+    constant C_CONFIG_VALUE_MSB   : natural := 7;
     
     -- ADC_SPI_CR
     constant C_SPI_SS_N           : natural := 0;

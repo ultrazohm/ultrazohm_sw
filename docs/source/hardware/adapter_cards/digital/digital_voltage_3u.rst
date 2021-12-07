@@ -12,6 +12,11 @@ Designed by Thilo Wendt (TH Nürnberg), 08/2020
 General description
 """""""""""""""""""
 
+.. danger:: Please note that the 5V version outputs a high signal for multiple micro seconds during power-down of the UltraZohm!
+            It is crucially important to first power-down the power electronics before power-down of the UltraZohm (i.e., using the main switch).
+            This does not affect other versions of the adapter card (3V3, differential).
+            See :issue:`164` for more details.
+
 Functionality
 -------------
 

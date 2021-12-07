@@ -72,9 +72,16 @@ set FOLDER_PATH [pwd]
 cd $WS_PATH
 
 set PLATFORM_NAME 	UltraZohm
-set XSA_FOLDER 		$FOLDER_PATH/vivado_exported_xsa
+set XSA_FOLDER 	[file join $FOLDER_PATH vivado_exported_xsa]
 set EXPORT_FOLDER [file join $FOLDER_PATH software]
 set SHARED_FOLDER [file join $EXPORT_FOLDER shared]
+
+
+set filename_Baremetal [file join $EXPORT_FOLDER Baremetal/src]
+set filename_FreeRTOS  [file join $EXPORT_FOLDER FreeRTOS]
+set filename_FSBL      [file join $EXPORT_FOLDER FSBL]
+set filename_FSBLelf   [file join $EXPORT_FOLDER BootImage]
+
 puts "Path to exports to be imported:"
 puts stdout $EXPORT_FOLDER
 
@@ -163,11 +170,11 @@ app create -name Baremetal -template {Empty Application} -platform $PLATFORM_NAM
 puts "Info:(UltraZohm) import Baremetal Application sources"
 #import sources to baremetal project
 # first the source files are linked
-importsources -name Baremetal -path $FOLDER_PATH/software/Baremetal/src -soft-link
+importsources -name Baremetal -path $filename_Baremetal -soft-link
 # add shared folder 
 importsources -name Baremetal -path $SHARED_FOLDER -soft-link
 # then the linker script is copied to the folder with a hard copy due to compilation errors otherwise - note that the sequence (first link the file, then copy the linker script is important due to -soft-link deleting the linker script otherwise
-importsources -name Baremetal -path $FOLDER_PATH/software/Baremetal/src/lscript.ld -linker-script 
+importsources -name Baremetal -path $filename_Baremetal/lscript.ld -linker-script 
 
 #add math library to linker option
 app config -name Baremetal -add  libraries m
@@ -183,7 +190,6 @@ app create -name FreeRTOS -template {Empty Application} -platform $PLATFORM_NAME
 puts "Info:(UltraZohm) import FreeRTOS Application sources"
 #import sources to freertos project
 
-set filename_FreeRTOS [file join $EXPORT_FOLDER FreeRTOS]
 puts "Path to FreeRTOS:"
 puts stdout $filename_FreeRTOS
 
@@ -209,7 +215,6 @@ app config -name Baremetal -set compiler-optimization {Optimize more (-O2)}
 #app create -name FSBL -template {Zynq MP FSBL} -platform $PLATFORM_NAME -domain FSBL_domain
 ##app create -name FSBL -template {Empty Application} -platform $PLATFORM_NAME -domain FSBL_domain
 #
-#set filename_FSBL [file join $EXPORT_FOLDER FSBL]
 #puts "Path to FSBL:"
 #puts stdout $filename_FSBL
 #
@@ -220,7 +225,7 @@ app config -name Baremetal -set compiler-optimization {Optimize more (-O2)}
 
 puts "Info:(UltraZohm) add standard FSBL.elf"
 platform config -remove-boot-bsp
-platform config -fsbl-elf $FOLDER_PATH/software/FSBL.elf 
+platform config -fsbl-elf $filename_FSBLelf/FSBL.elf 
 platform write 
 
 #Clean all

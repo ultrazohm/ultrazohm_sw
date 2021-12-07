@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Sebastian Wendel
+* Copyright 2021 Sebastian Wendel, Tobias Schindler
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,8 +16,11 @@
 #ifndef GPIO_AXI_H_
 #define GPIO_AXI_H_
 
-#include "../main.h"
+void Initialize_AXI_GPIO(void);
 
-int Initialize_AXI_GPIO(void);
+void uz_axigpio_disable_pwm_and_power_electronics(void);
+void uz_axigpio_enable_pwm_and_power_electronics(void);
+void uz_axigpio_disable_datamover(void);
+void uz_axigpio_enable_datamover(void);
 
 #endif /* GPIO_H_ */

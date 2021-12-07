@@ -1,3 +1,5 @@
+.. _carrier_board_rev3:
+
 ==================
 Carrier Board 3v00
 ==================

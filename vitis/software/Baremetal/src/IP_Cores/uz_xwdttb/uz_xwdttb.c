@@ -33,10 +33,17 @@
 static size_t instance_counter = 0U;
 static XWdtTb instances[UZ_WDTTB_MAX_INSTANCES] = {0};
 
+volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
 
-/*****************************************************************************/
+// Used for testing, to access INT priority, and check preemtion
+//XScuGic_Config *TempConfig;
+
+/************************** Function Definitions ******************************/
+
+
+/************************** Private Functions ******************************/
+
 /**
-*
 * This function initializes and tests the functioning of the System WatchDog Timer driver and
 * sets the inital value to the counter. This is the total size for The Second Window (Open).
 * The closed Window is not used (0 value for its counter).
@@ -140,59 +147,24 @@ static XWdtTb *uz_WdtTb_allocation(u32 CounterValue, u16 WdtTbDeviceId)
     return (self);
 }
 
-XWdtTb *uz_WdtTb_init()
+/************************** Public Functions ******************************/
+
+XWdtTb* uz_WdtTb_init()
 {
     XWdtTb *self = uz_WdtTb_allocation(WIN_WDT_SW_COUNT, WDTTB_DEVICE_ID);
     return (self);
 }
 
-/**
-*
-* This function initializes and tests the functioning of the System WatchDog Timer driver and
-* sets the inital value to the counter. This is the total size for The Second Window (Open).
-* The closed Window is not used (0 value for its counter).
-* The rest of the optional functions: FC, SST and SIGNATURE are disabled.
-*
-* @param	CounterValue - Initial value for the counter in number of tics.
-* 					Watchdog timeout is therefore CounterValue * Tcycle,
-* 					and Tcycle = 10 ns with a 100MH processor.
-* @param	WdtTbDeviceId is the Device ID of the WdtTb Device and is
-*		typically XPAR_<WDTTB_instance>_DEVICE_ID value from
-*		xparameters.h.
-*
-* @return	XWdtTb pointer to the initialized WDTTB driver.
-*
-* @note		None.
-*
-******************************************************************************/
-XWdtTb *uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId)
+/*****************************************************************************/
+
+XWdtTb* uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId)
 {
     XWdtTb *self = uz_WdtTb_allocation(CounterValue, WdtTbDeviceId);
     return (self);
 }
 
-volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
+/*****************************************************************************/
 
-// Used for testing, to access INT priority, and check preemtion
-//XScuGic_Config *TempConfig;
-
-
-/**
-*
-* This function STARTs the System WatchDog Timer to the initial value to the counter.
-* Generates a good event if executed inside the Second Window, or OPEN Window.
-*
-* NO: It also protects the WEN bit. It is not possible to Stop() the device.
-*
-* The WDT Start is accomplished by enabling the IP Core writing WEN bit =1.
-* The And granting write access to the IP Registers.
-*
-* @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents
-*							the WDTTB driver. Initialized and ready
-*
-* @note		None.
-*
-******************************************************************************/
 void WdtTb_Start(XWdtTb *WdtTbInstancePtr) {
 
 	/* Verify arguments. */
@@ -212,7 +184,6 @@ void WdtTb_Start(XWdtTb *WdtTbInstancePtr) {
 	//  * BUT when Second Window times out, and bad even occurs and RESET is produced ANYWAY (and IP CORE STOPS RUNNING)
 	//  */
 	//  XWdtTb_AlwaysEnable(WdtTbInstancePtr);
-
 	//  XWdtTb_EnableExtraProtection(WdtTbInstancePtr);
 
 	/*
@@ -225,17 +196,8 @@ void WdtTb_Start(XWdtTb *WdtTbInstancePtr) {
 	XWdtTb_SetRegSpaceAccessMode(WdtTbInstancePtr, 1);
 }
 
+/*****************************************************************************/
 
-/**
-*
-* This function Restart the AXI IP watch dog timer: kick forward.
-*
-* @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents
-*							the WDTTB driver. Initialized and ready
-*
-* @note		None.
-*
-******************************************************************************/
 void WdtTb_Restart(XWdtTb *WdtTbInstancePtr) {
 	/* Verify arguments. */
 	uz_assert(WdtTbInstancePtr != NULL);
@@ -246,36 +208,7 @@ void WdtTb_Restart(XWdtTb *WdtTbInstancePtr) {
 
 
 /*****************************************************************************/
-/**
-*
-* This function tests the functioning of the Window Watchdog Timer in the
-* interrupt mode.
-*
-* This function waits for interrupt programmed point in second window. If the
-* interrupt has occurred, interrupt handler sets a flag and restarts the timer.
-* This function then clears the interrupt, flag and waits for second interrupt
-* to occur and continue waiting for second interrupt as mentioned above.
-*
-* This function assumes that the reset output of the Window Watchdog Timer
-* is not connected to the reset of the processor. The function allows the
-* Window Watchdog Timer to timeout such that a reset will occur if it is
-* connected.
-*
-* @param	WdtTbInstancePtr is a pointer to the instance of WdtTb driver.
-* @param	WdtTbDeviceId is the Device ID of the WdtTb Device and is
-*		typically XPAR_<WDTTB_instance>_DEVICE_ID value from
-*		xparameters.h.
-* @param	WdtTbIntrId is the Interrupt Id of the WatchDog and is
-*		typically XPAR_<INTC_instance>_<WDTTB_instance>_WDT_
-*		INTERRUPT_VEC_ID value from xparameters.h.
-*
-* @return
-*		- XST_SUCCESS if interrupt example run successfully.
-*		- XST_FAILURE, if reset has occurred.
-*
-* @note		None.
-*
-******************************************************************************/
+
 int WinWdtIntrExample(XWdtTb *WdtTbInstancePtr)
 {
 	/*
@@ -330,24 +263,7 @@ int WinWdtIntrExample(XWdtTb *WdtTbInstancePtr)
 }
 
 /*****************************************************************************/
-/**
-*
-* This function is the Interrupt handler for the WDT Interrupt of the
-* WdtTb device. It is called when reached to the interrupt programmed point
-* and is called from an interrupt context.
-*
-* The handler of the timing violation. The default behavior is to resume the execution,
-* by restarting the WDT. The execution time of this function is also limited, as is has
-* to restart the WDT inside the second window, otherwise a Reset from the IP core is
-* activated, and the IP stops running
-*
-* @param	CallBackRef is a pointer to the callback reference.
-*
-* @return	None.
-*
-* @note		None.
-*
-******************************************************************************/
+
 void WdtTbIntrHandler(void *CallBackRef)
 {
 
@@ -396,12 +312,12 @@ void WdtTbIntrHandler(void *CallBackRef)
 
 #else /* UZ_WDTTB_MAX_INSTANCES <= 0 */
 
-void WdtTb_Start(XWdtTb *WdtTbInstance) {}
+void WdtTb_Start(XWdtTb *WdtTbInstancePtr) {}
 
-void WdtTb_Restart(XWdtTb *WdtTbInstance) {}
+void WdtTb_Restart(XWdtTb *WdtTbInstancePtr) {}
 
 
-int WinWdtIntrExample(XWdtTb *WdtTbInstance) {}
+int WinWdtIntrExample(XWdtTb *WdtTbInstancePtr) {}
 
 
 XWdtTb* uz_WdtTb_init(){}

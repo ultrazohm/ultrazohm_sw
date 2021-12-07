@@ -19,3 +19,4 @@ IP Cores
     uz_plantModel_pt1/uz_plantModel_pt1
     uz_pmsmModel/uz_pmsmModel
     uz_dataMover/uz_dataMover
+    uz_xwdttb/uz_xwdttb

@@ -11,7 +11,7 @@
 *
 * It also contains a XWdtPs_ResetRestart to restart the WDT and enabling Reset Output.
 *
-* Based on @file xwdtps_intr_example.c. Copyright (C) 2010 - 2021 Xilinx, Inc.  All rights reserved. SPDX-License-Identifier: MIT
+* Based on xwdtps_intr_example.c. Copyright (C) 2010 - 2021 Xilinx, Inc.  All rights reserved. SPDX-License-Identifier: MIT
 *
 *
 * @note
@@ -242,6 +242,8 @@ void XWdtPs_Restart()
 * connected to the reset of the processor, otherwise, the timer will cause the
 * processor to reset when it expires.
 *
+* @param	IntcConfig is a pointer to the instance of the XGIC
+*		Configutarion.
 * @param	IntcInstancePtr is a pointer to the instance of the XScuGic
 *		driver. It has to be already Initialized.
 *
@@ -400,6 +402,7 @@ int WdtPsIntrExample(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 * directly connected to a processor without an interrupt controller. The
 * user should modify this function to fit the application.
 *
+* @param	IntcConfig is a pointer to the instance of the XGIC Configutarion.
 * @param	IntcInstancePtr is a pointer to the instance of ScuGic driver ALREADY INITIALIZED
 *
 * @return	XST_SUCCESS if successful, otherwise XST_FAILURE.

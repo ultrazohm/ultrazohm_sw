@@ -226,9 +226,6 @@ int Initialize_Timer(){
 * This function disables the interrupts that occur for the WdtTb.
 *
 * @param	IntcInstancePtr is the pointer to the instance of INTC driver.
-* @param	WdtTbIntrId is the WDT Interrupt Id and is typically
-*		XPAR_<INTC_instance>_<WDTTB_instance>_WDT_INTERRUPT_VEC_ID
-*		value from xparameters.h.
 *
 * @return	None.
 *
@@ -237,7 +234,11 @@ int Initialize_Timer(){
 ******************************************************************************/
 void WdtTbDisableIntrSystem(XScuGic *IntcInstancePtr)
 {
-	/* Disconnect and disable the interrupt for the WdtTb */
+	/* Disconnect and disable the interrupt for the WdtTb
+	*  WDTTB_IRPT_INTR is the WDT Interrupt Id and is typically
+	*  XPAR_<INTC_instance>_<WDTTB_instance>_WDT_INTERRUPT_VEC_ID
+	*  value from xparameters.h.
+	*/
 	XScuGic_Disable(IntcInstancePtr, WDTTB_IRPT_INTR);
 	XScuGic_Disconnect(IntcInstancePtr, WDTTB_IRPT_INTR);
 }

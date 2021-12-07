@@ -298,8 +298,8 @@ Vitis
   float i_q_soll=0.0f;
   struct uz_pmsmModel_inputs_t pmsm_inputs={
       .omega_mech_1_s=0.0f,
-      .u_d_V=0.0f,
-      .u_q_V=0.0f,
+      .v_d_V=0.0f,
+      .v_q_V=0.0f,
       .load_torque=0.0f
   };
   
@@ -315,8 +315,8 @@ Vitis
   uz_pmsmModel_trigger_input_strobe(pmsm);
 	uz_pmsmModel_trigger_output_strobe(pmsm);
   pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
-  pmsm_inputs.u_q_V=uz_wavegen_pulse(10.0f, 0.10f, 0.5f);
-  pmsm_inputs.u_d_V=-pmsm_inputs.u_q_V;
+  pmsm_inputs.v_q_V=uz_wavegen_pulse(10.0f, 0.10f, 0.5f);
+  pmsm_inputs.v_d_V=-pmsm_inputs.u_q_V;
   uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
   // [...]
   }
@@ -356,7 +356,7 @@ Vitis
     js_ptr_arr[JSO_i_q] = &pmsm_outputs.i_q_A;
     js_ptr_arr[JSO_i_d] = &pmsm_outputs.i_d_A;
     js_ptr_arr[JSO_omega] = &pmsm_outputs.omega_mech_1_s;
-    js_ptr_arr[JSO_u_d] = &pmsm_inputs.u_d_V;
+    js_ptr_arr[JSO_u_d] = &pmsm_inputs.v_d_V;
     return Status;
     }
 
@@ -395,10 +395,10 @@ Closed loop
     uz_pmsmModel_trigger_output_strobe(pmsm);
     pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
     referenceValue=uz_wavegen_pulse(1.0f, 0.10f, 0.5f);
-    pmsm_inputs.u_q_V=uz_PI_Controller_sample(pi_q, referenceValue, pmsm_outputs_old.i_q_A, false);
-    pmsm_inputs.u_d_V=uz_PI_Controller_sample(pi_d, -referenceValue, pmsm_outputs_old.i_d_A, false);
-    pmsm_inputs.u_q_V+=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_d*pmsm_outputs_old.i_d_A+pmsm_config.psi_pm);
-    pmsm_inputs.u_d_V-=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_q*pmsm_outputs_old.i_q_A);
+    pmsm_inputs.v_q_V=uz_PI_Controller_sample(pi_q, referenceValue, pmsm_outputs_old.i_q_A, false);
+    pmsm_inputs.v_d_V=uz_PI_Controller_sample(pi_d, -referenceValue, pmsm_outputs_old.i_d_A, false);
+    pmsm_inputs.v_q_V+=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_d*pmsm_outputs_old.i_d_A+pmsm_config.psi_pm);
+    pmsm_inputs.v_d_V-=pmsm_config.polepairs*pmsm_outputs_old.omega_mech_1_s*(pmsm_config.L_q*pmsm_outputs_old.i_q_A);
     uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
     pmsm_outputs_old=pmsm_outputs;
 

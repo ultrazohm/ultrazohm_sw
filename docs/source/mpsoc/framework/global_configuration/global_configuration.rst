@@ -41,10 +41,10 @@ General purpose:
 - Interrupt module (see :ref:`r5_interrupts`)
 - 64-bit counter for :ref:`systemTimeR5`
 
-Analog adapter card intended to be used with :ref:`Analog_LTC2311_16_v2` (A1) and :ref:`Analog_LTC2311_16_v3` (A2 and A3):
+Analog adapter card intended to be used with :ref:`Analog_LTC2311_16_v3` (A1, A2, and A3):
 
-- DataMover (PL to R5 by using the TCM)
-- :ref:`ipCore_LTC23` (3 times)
+- :ref:`uz_dataMover` (PL to R5 by using the TCM)
+- :ref:`ipCore_LTC2311_v3` (3 times)
 
 For controlling a two-level inverter on D1:
 

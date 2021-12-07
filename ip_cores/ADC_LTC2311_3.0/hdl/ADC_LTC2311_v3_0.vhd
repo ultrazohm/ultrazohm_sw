@@ -35,6 +35,7 @@ entity ADC_LTC2311_v3_0 is
         SI_VALUE        : out std_logic_vector((SPI_MASTER * CHANNELS_PER_MASTER * (RES_MSB - RES_LSB + 1) ) - 1  downto 0);
         SI_VALID        : out std_logic_vector(SPI_MASTER - 1 downto 0);
         TRIGGER_CNV     : in std_logic_vector(SPI_MASTER - 1 downto 0);
+        SAMPLE_COUNTER  : out std_logic_vector((SPI_MASTER * C_S00_AXI_DATA_WIDTH) - 1 downto 0);
         
         -- SPI ports
         SCLK            : out std_logic_vector(SPI_MASTER - 1 downto 0);
@@ -89,8 +90,9 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
     signal S_SPI_MANUAL           : std_logic_vector(SPI_MASTER - 1 downto 0);
     
     -- control signals
-    signal S_ENABLE, S_SET_CONVERSION, S_SET_OFFSET, S_SET_SAMPLES : std_logic_vector(SPI_MASTER - 1 downto 0);
+    signal S_ENABLE, S_SET_CONVERSION, S_SET_OFFSET, S_SET_SAMPLES, S_SET_SAMPLE_TIME : std_logic_vector(SPI_MASTER - 1 downto 0);
     signal S_RESET_N, S_CLK : std_logic;
+    signal S_TRIGGER_CNV_PIPE : std_logic_vector(SPI_MASTER - 1 downto 0);
     
     -- AXI values
     
@@ -196,6 +198,7 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
             SET_CONVERSION  : in std_logic;
             SET_OFFSET      : in std_logic;
             SET_SAMPLES     : in std_logic;
+            SET_SAMPLE_TIME : in std_logic;
             SI_VALID        : out std_logic;
             RAW_VALID       : out std_logic;
             BUSY            : out std_logic;
@@ -204,7 +207,8 @@ architecture arch_imp of ADC_LTC2311_v3_0 is
             VALUE           : in std_logic_vector(31 downto 0);           -- input for conversion or offset value
             CHANNEL_SELECT  : in std_logic_vector(31 downto 0); -- selection which channels shall be updated with conversion factor or offset
             SI_VALUE        : out std_logic_vector((CHANNELS * (RES_MSB - RES_LSB + 1)) - 1 downto 0);
-            RAW_VALUE       : out std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0)
+            RAW_VALUE       : out std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0);
+            SAMPLE_COUNTER  : out std_logic_vector(31 downto 0)
             
         );
     end component ADC_CONTROLLER;
@@ -255,27 +259,42 @@ begin
                 S_SPI_MANUAL <= (others => '0');
                 S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '0';
                 curstate <= TRIGGERED;
+                S_TRIGGER_CNV_PIPE <= (others => '0');
             else
+                S_TRIGGER_CNV_PIPE <= TRIGGER_CNV;
                 curstate <= nxtstate;
                 case nxtstate is
                     when TRIGGERED =>
                         S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '0';
                         S_SPI_MANUAL <= (others => '0');
                         
-                        if (TRIGGER_CNV /= STD_ZERO) then
-                            S_ENABLE <= (TRIGGER_CNV and S_ADC_AVAILABLE(SPI_MASTER - 1 downto 0));
+                        if (S_ADC_CR(C_SW_TRIGGER) = '0') then
+                            -- check for rising edge on HW port
+                            for i in SPI_MASTER - 1 downto 0 loop
+                               if((S_TRIGGER_CNV_PIPE(i) = '0') and TRIGGER_CNV(i) = '1') then
+                                   -- ADC_AVAILABLE is high activ ->
+                                   -- if trigger event occurs TRIGGER_CNV == '1'
+                                   -- S_ENABLE <= TRIGGER_CNV(i) and S_ADC_AVAILABLE(i)
+                                   -- which is equivilant to S_ADC_AVAILABLE(i) because TRIGGER_CNV is always high  
+                                   S_ENABLE(i) <= S_ADC_AVAILABLE(i);
+                               else
+                                   S_ENABLE(i) <= '0';
+                               end if;
+                           end loop;
+                           
                        -- Triggered by AXI register
-                        elsif (S_ADC_CR(C_TRIGGER) = '1') then
-           
-                            if (IS_BUSY(S_ADC_MASTER_BUSY, S_ADC_MASTER_CHANNEL) = false) then
-                                S_ENABLE <= (S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0) and S_ADC_AVAILABLE(SPI_MASTER - 1 downto 0));
-                                S_ADC_CR_IN(C_TRIGGER) <= '0';
+                       else
+                            if (S_ADC_CR(C_TRIGGER) = '1') then
+               
+                                if (IS_BUSY(S_ADC_MASTER_BUSY, S_ADC_MASTER_CHANNEL) = false) then
+                                    S_ENABLE <= (S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0) and S_ADC_AVAILABLE(SPI_MASTER - 1 downto 0));
+                                    S_ADC_CR_IN(C_TRIGGER) <= '0';
+                                end if;
+                                
+                            else
+                                S_ENABLE <= (others => '0');
                             end if;
-                            
-                        else
-                            S_ENABLE <= (others => '0');
-                        end if;
-                    
+                       end if;
                     when CONTINUOUS =>
                         S_ADC_SPI_CR_IN(C_SPI_CONTROL_STATUS) <= '0';
                         S_ENABLE <= (S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0) and S_ADC_AVAILABLE(SPI_MASTER - 1 downto 0));
@@ -360,10 +379,13 @@ begin
                         S_SET_CONVERSION <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
                     when "010" =>
                         S_SET_SAMPLES    <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
+                    when "011" =>
+                        S_SET_SAMPLE_TIME <= S_ADC_MASTER_CHANNEL(SPI_MASTER - 1 downto 0);
                     when others =>
                         S_SET_OFFSET     <= (others => '0');
                         S_SET_CONVERSION <= (others => '0');
                         S_SET_SAMPLES    <= (others => '0');
+                        S_SET_SAMPLE_TIME <= (others => '0');
                end case;
             else
                S_ADC_CR_IN(C_CONV_VALUE_VALID)  <= '1';
@@ -458,6 +480,7 @@ ADC_LTC2311_v3_0_S00_AXI_inst : ADC_LTC2311_v3_0_S00_AXI
             SET_CONVERSION  => S_SET_CONVERSION(i),
             SET_OFFSET      => S_SET_OFFSET(i),
             SET_SAMPLES     => S_SET_SAMPLES(i),
+            SET_SAMPLE_TIME => S_SET_SAMPLE_TIME(i),
             SI_VALID        => S_ADC_MASTER_SI_FINISH(i),
             RAW_VALID       => S_ADC_MASTER_FINISH(i),
             BUSY            => S_ADC_MASTER_BUSY(i),
@@ -466,7 +489,8 @@ ADC_LTC2311_v3_0_S00_AXI_inst : ADC_LTC2311_v3_0_S00_AXI
             VALUE  => S_ADC_CONV_VALUE,           -- input for conversion or offset value
             CHANNEL_SELECT  => S_ADC_CHANNEL, -- selection which channels shall be updated with conversion factor or offset
             SI_VALUE        => SI_VALUE( (i + 1) * CHANNELS_PER_MASTER * (RES_MSB - RES_LSB + 1) - 1 downto i * CHANNELS_PER_MASTER * (RES_MSB - RES_LSB + 1)),
-            RAW_VALUE       => RAW_VALUE( (i + 1) * CHANNELS_PER_MASTER * DATA_WIDTH - 1 downto i * CHANNELS_PER_MASTER * DATA_WIDTH)
+            RAW_VALUE       => RAW_VALUE( (i + 1) * CHANNELS_PER_MASTER * DATA_WIDTH - 1 downto i * CHANNELS_PER_MASTER * DATA_WIDTH),
+            SAMPLE_COUNTER  => SAMPLE_COUNTER( (i + 1) * C_S00_AXI_DATA_WIDTH - 1 downto i * C_S00_AXI_DATA_WIDTH)
 	   );
 	end generate GEN_ADC_CONT;
 

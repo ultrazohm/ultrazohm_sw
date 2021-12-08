@@ -113,7 +113,7 @@ uz_ParameterID_Data_t uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID
 
 		// reset RESET-button
 		if (Data.PID_GlobalConfig.Reset == true) {
-			self->ControlState->output.GlobalConfig_out.ACCEPT = false;
+			self->ControlState->output.GlobalConfig_out.Reset = false;
 			Data.PID_GlobalConfig.Reset = false;
 		}
 	}

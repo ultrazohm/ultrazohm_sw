@@ -24,8 +24,6 @@ MEMORY
    psu_ddr_0_MEM_0 : ORIGIN = 0x0, LENGTH = 0x3FFF0000
    psu_ddr_1_MEM_0 : ORIGIN = 0x800000000, LENGTH = 0x80000000
    psu_qspi_linear_0_MEM_0 : ORIGIN = 0xC0000000, LENGTH = 0x20000000
-   psu_shared_ram_R5_0_to_A53_0  : ORIGIN = 0xFFFF8000, LENGTH = 0x7FFF
-   psu_shared_ram_A53_0_to_R5_0  : ORIGIN = 0xFFFF0000, LENGTH = 0x7FFF
 }
 
 /* Specify the default entry point to the program */
@@ -315,24 +313,6 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    . = ALIGN(64);
    __el0_stack = .;
 } > psu_ddr_0_MEM_0
-
-/* SW: Generate own sharedRAM for JavaScope */
-
-.sharedRAM_Oszidata : {
-   __sharedRAM_Oszidata_start = .;
-   *(.sharedRAM_Oszidata)
-   *(.sharedRAM_Oszidata.*)
-   *(.gnu.linkonce.sOz.*)
-   __sharedRAM_Oszidata_end = .;
-} > psu_shared_ram_R5_0_to_A53_0
-
-.sharedRAM_Controldata : {
-   __sharedRAM_Controldata_start = .;
-   *(.sharedRAM_Controldata)
-   *(.sharedRAM_Controldata.*)
-   *(.gnu.linkonce.sOz.*)
-   __sharedRAM_Controldata_end = .;
-} > psu_shared_ram_A53_0_to_R5_0
 
 _end = .;
 }

@@ -148,7 +148,21 @@ static inline float uz_convert_sfixed_to_float(int32_t data, int number_of_fract
 }
 
 /**
- * @brief Converts a float to a 32-bit signed fixed point value.
+ * @brief Converts a unsigned fixed point value that is stored as a unsigned 32-bit integer value to a float.
+ *        This function should only be used directly after reading the uint32_t variable from AXI!
+ * 
+ * @param data Fixed point value stored as a signed 32-bit integer that is read from AXI.
+ * @param number_of_fractional_bits Number of fractional bits of the data, 31-number_of_fractional_bits is the number of integer bits.
+ * @return float 
+ */
+static inline float uz_convert_unsigned_fixed_to_float(uint32_t data, int number_of_fractional_bits)
+{
+	uz_assert(number_of_fractional_bits >= 0);
+	return (ldexpf((float)data, -number_of_fractional_bits));
+}
+
+/**
+ * @brief Converts a float to a 32-bit signed integer value.
  *        This function should only be used directly before writing the int32_t variable from AXI!
  * 
  * @param data 
@@ -159,6 +173,21 @@ static inline int32_t uz_convert_float_to_sfixed(float data, int number_of_fract
 {
 	uz_assert(number_of_fractional_bits >= 0);
 	return ((int32_t)ldexpf(data, number_of_fractional_bits));
+}
+
+/**
+ * @brief Converts a float to a 32-bit unsigned integer value.
+ *        This function should only be used directly before writing the int32_t variable from AXI!
+ * 
+ * @param data 
+ * @param number_of_fractional_bits Number of fractional bits of the data, 31-number_of_fractional_bits is the number of integer bits.
+ * @return int32_t 
+ */
+static inline uint32_t uz_convert_float_to_unsigned_fixed(float data, int number_of_fractional_bits)
+{
+	uz_assert(number_of_fractional_bits >= 0);
+	uz_assert(data >= 0.0f); // target data type is unsigned, thus no negative values for "data" are allowed
+	return ((uint32_t)ldexpf(data, number_of_fractional_bits));
 }
 
 #endif

@@ -1,7 +1,7 @@
 ###Digital Adapter Board D5
 # Author: Sebastian Wendel
 # Date: 21.03.2019
-# 16 I/Os are available 
+# 16 I/Os are available
 # All Digital-Pins are 1,8 Volt on Bank47
 # Bank47 are High-Density Banks (HD). HD pins have NOT the internal 100R termination resistors and support NO LVDS
 
@@ -45,19 +45,4 @@ set_property PACKAGE_PIN D15 [get_ports Dig_09_Ch5]
 ##Set voltage level
 ##Set Pin in CMOS Mode for single-ended Signal
 
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_24_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_23_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_22_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_21_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_20_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_19_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_18_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_17_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_16_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_15_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_14_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_13_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_12_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_11_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_10_Ch5]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_09_Ch5]
+

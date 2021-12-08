@@ -1,7 +1,6 @@
 #ifndef UZ_LINEAR_DECOUPPLING_H
 #define UZ_LINEAR_DECOUPPLING_H
 #include "../uz_Transformation/uz_Transformation.h"
-#include "../uz_HAL.h"
 #include "../uz_PMSM_config/uz_PMSM_config.h"
 
 

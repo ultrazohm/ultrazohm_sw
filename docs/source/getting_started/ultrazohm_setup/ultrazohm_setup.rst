@@ -40,8 +40,7 @@ Clone the UltraZohm Repositories
 ::
 
    git clone https://$BitbucketUsername@bitbucket.org/ultrazohm/cpld_lattice.git
-   git clone https://$BitbucketUsername@bitbucket.org/ultrazohm/javascope_standalone.git
-   git clone https://$BitbucketUsername@bitbucket.org/ultrazohm/ultrazohm_sw.git
+   git clone https://bitbucket.org/ultrazohm/ultrazohm_sw.git
 
 
 After executing the ``git clone`` commands, the following directory structure exists.
@@ -50,7 +49,6 @@ After executing the ``git clone`` commands, the following directory structure ex
 
   ./ultrazohm/
       cpld_lattice
-      javascope_standalone
       ultrazohm_sw
 
 
@@ -171,8 +169,14 @@ Generate the Vitis workspace
 
 - Navigate to ``~/ultrazohm/ultrazohm_sw/vitis/software/Baremetal/src/uz``
 - Copy the file ``default_uz_global_configuration.h``
-- Check that the configuration file matches your setup (ee :ref:`global_configuration` for details)
 - Rename the file to ``uz_global_configuration.h``
+
+.. warning:: Do not rename the file directly! Copy the file and rename the copy!
+
+- Check that the configuration file matches your setup (see :ref:`global_configuration` for details)
+
+.. important:: You probably have to adjust the UltraZohm version in uz_global_configuration.h by setting the define ``UZ_HARDWARE_VERSION`` to your version (e.g., ``2U``, ``3U``, ``4U``,...)
+
 - Open Vitis or launch Vitis from Vivado (``Tools -> Launch Vitis IDE``)
 - Choose the workspace
 - Path: ``~/ultrazohm/ultrazohm_sw/vitis/workspace``
@@ -206,7 +210,8 @@ Physical Setup of the UltraZohm
 - Connect the UltraZohm to the grid
 - Connect the Ethernet to your PC
 - Connect the USB (JTAG) to your PC
-- Plug an external Stop into the front plane
+- For UltraZohm :ref:`carrier_board_rev3`: plug an external stop or the external stop dummy into the front plane
+- For UltraZohm :ref:`carrier_board_rev4`: external stop / dummy is not required
 - Turn on the UltraZohm
 - All four LEDs are turned on
 

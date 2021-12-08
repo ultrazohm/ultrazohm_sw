@@ -1,5 +1,22 @@
+/******************************************************************************
+* Copyright Contributors to the UltraZohm project.
+* Copyright 2021 Dennis Hufnagel
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and limitations under the License.
+******************************************************************************/
+
 #include "uz_FOC.h"
 #include "../uz_global_configuration.h"
+#if UZ_FOC_MAX_INSTANCES > 0
 typedef struct uz_FOC {
 	bool is_ready;
 	bool ext_clamping;
@@ -9,6 +26,7 @@ typedef struct uz_FOC {
 }uz_FOC;
 
 static struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere);
+static struct uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t pmsm,struct uz_dq_t actual_Ampere, float omega_el_rad_per_sec);
 static size_t instances_counter_FOC = 0;
 
 static uz_FOC instances_FOC[UZ_FOC_MAX_INSTANCES] = {0};
@@ -38,16 +56,24 @@ uz_FOC* uz_FOC_init(struct uz_FOC_config config) {
 	return (self);
 }
 
-struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float U_zk_Volts, float omega_el_rad_per_sec) {
+struct uz_dq_t uz_FOC_sample(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	uz_assert(U_zk_Volts > 0.0f);
+	uz_assert(V_dc_volts > 0.0f);
 	struct uz_dq_t u_pre_limit_Volts = uz_FOC_CurrentControl(self, i_reference_Ampere, i_actual_Ampere);
-	struct uz_dq_t u_decoup_Volts = uz_FOC_linear_decoupling(self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
-	u_pre_limit_Volts.d = u_pre_limit_Volts.d + u_decoup_Volts.d;
-	u_pre_limit_Volts.q = u_pre_limit_Volts.q + u_decoup_Volts.q;
-	struct uz_dq_t u_output_Volts = uz_FOC_SpaceVector_Limitation(u_pre_limit_Volts, U_zk_Volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
+	struct uz_dq_t u_decoup_Volts = uz_FOC_decoupling(self->config.decoupling_select, self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+	u_pre_limit_Volts.d += u_decoup_Volts.d;
+	u_pre_limit_Volts.q += u_decoup_Volts.q;
+	struct uz_dq_t u_output_Volts = uz_FOC_SpaceVector_Limitation(u_pre_limit_Volts, V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
 	return (u_output_Volts);
+}
+
+struct uz_UVW_t uz_FOC_sample_UVW(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	struct uz_dq_t u_dq_Volts = uz_FOC_sample(self, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+	struct uz_UVW_t u_output_Volts = uz_dq_inverse_transformation(u_dq_Volts, theta_el_rad);
+	return(u_output_Volts);
 }
 
 static struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere) {
@@ -117,8 +143,45 @@ void uz_FOC_set_Psi_PM(uz_FOC* self, float Psi_PM_Vs){
 	self->config.config_PMSM.Psi_PM_Vs = Psi_PM_Vs;
 }
 
+void uz_FOC_set_decoupling_method(uz_FOC* self, enum uz_FOC_decoupling_select decoupling_select) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->config.decoupling_select=decoupling_select;
+}
+
 bool uz_FOC_get_ext_clamping(uz_FOC* self){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	return(self->ext_clamping);
 }
+
+static struct uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t config_PMSM, struct uz_dq_t i_actual_Ampere, float omega_el_rad_per_sec){
+	struct uz_dq_t decouple_voltage={0};
+	switch (decoupling_select)
+    {
+    case no_decoupling:
+        // do nothing since no decoupling
+        break;
+    case linear_decoupling:
+        decouple_voltage=uz_FOC_linear_decoupling(config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+        break;
+    default:
+        break;
+    }
+	return (decouple_voltage);
+}
+
+struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(struct uz_UVW_t input, float V_dc_volts) {
+	//Uses continuous sinusoidal PWM (SPWM) 
+	struct uz_DutyCycle_t output = {0};
+	output.DutyCycle_U = ( (input.U / (0.5f * V_dc_volts) ) +1.0f) * 0.5f;
+	output.DutyCycle_V = ( (input.V / (0.5f * V_dc_volts) ) +1.0f) * 0.5f;
+	output.DutyCycle_W = ( (input.W / (0.5f * V_dc_volts) ) +1.0f) * 0.5f;
+	output.DutyCycle_U = uz_signals_saturation(output.DutyCycle_U, 1.0f, 0.0f);
+	output.DutyCycle_V = uz_signals_saturation(output.DutyCycle_V, 1.0f, 0.0f);
+	output.DutyCycle_W = uz_signals_saturation(output.DutyCycle_W, 1.0f, 0.0f);
+	return(output);
+}
+
+
+#endif

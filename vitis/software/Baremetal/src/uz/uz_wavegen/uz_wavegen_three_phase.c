@@ -2,6 +2,7 @@
 #if UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES > 0
 #include "uz_wavegen.h"
 #include <math.h>
+#include "../uz_math_constants.h"
 #include "../uz_HAL.h"
 #include "../uz_SystemTime/uz_SystemTime.h"
 
@@ -32,10 +33,10 @@ void uz_wavegen_three_phase_sample(uz_wavegen_three_phase* self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	float t_Sec = uz_SystemTime_GetGlobalTimeInSec();
-	float angle = 2.0f * M_PI * t_Sec * self->config.frequency_Hz;
+	float angle = 2.0f * UZ_PIf * t_Sec * self->config.frequency_Hz;
 	self->phase_U = self->config.amplitude * sinf(angle) + self->config.offset;
-	self->phase_V = self->config.amplitude * sinf(angle + (2.0f * M_PI / 3.0f)) + self->config.offset;
-	self->phase_W = self->config.amplitude * sinf(angle + (4.0f * M_PI / 3.0f)) + self->config.offset;
+	self->phase_V = self->config.amplitude * sinf(angle + (2.0f * UZ_PIf / 3.0f)) + self->config.offset;
+	self->phase_W = self->config.amplitude * sinf(angle + (4.0f * UZ_PIf / 3.0f)) + self->config.offset;
 }
 
 float uz_wavegen_three_phase_get_phaseU(uz_wavegen_three_phase* self) {

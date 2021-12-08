@@ -1,12 +1,12 @@
 /******************************************************************************
 * Copyright 2021 Eyke Liegmann, Tobias Schindler, Sebastian Wendel
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,18 +28,16 @@
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 
-
 //Inclusion of WDT code
 #include "../Codegen/uz_codegen.h"
 
 #include "../IP_Cores/uz_xwdttb/uz_xwdttb.h"
 
 //Initialize the variables for the ADC measurement
-u32 		XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
-uint32_t 		ADC_RAW_Sum_1 = 0.0;
+uint32_t 	ADC_RAW_Sum_1 = 0.0;
 float 	ADC_RAW_Offset_1 = 0.0;
-int 		i_CountADCinit =0, MessOnce=0, CountCurrentError =0;
-_Bool     initADCdone = false;
+int 	i_CountADCinit =0, CountCurrentError =0;
+_Bool   initADCdone = false;
 
 //Initialize the Interrupt structure
 XScuGic INTCInst;  		//Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -55,10 +53,6 @@ XWdtTb *WdtTbInstancePtr;
 float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
-
-// Testing variables for WDT
-int isr_failures = 0;
-//int isr_reset = 0;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -92,7 +86,7 @@ void ISR_Control(void *data)
 
 	ReadAllADC();
 	CheckForErrors();
-	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
+	update_speed_and_position_of_encoder_on_D5(&Global_Data); 	//Read out speed and theta angle
 
 	//Start: Control algorithm -------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)
@@ -187,9 +181,6 @@ int Initialize_ISR(){
 	// Initialize mux_axi to use correct interrupt for triggering the ADCs
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + IPCore_Enable_mux_axi_ip, 1); // enable IP core
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
-
-
-	xil_printf("RPU: Initialize_ISR Done!\r\n");
 
 return Status;
 }
@@ -357,6 +348,7 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	// b01	Active HIGH level sensitive
 	// b11 	Rising edge sensitive
 	// XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
+	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
 //	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
 	//XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
 
@@ -411,9 +403,11 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	// Enable GPIO and timer interrupts in the controller
 	XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
 	XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
+//	XScuGic_Enable(&INTCInst, INTC_ADC_Conv_INTERRUPT_ID);
 	//	XScuGic_Enable(&INTCInst, INTC_ADC_Conv_INTERRUPT_ID);
 
 
+	xil_printf("RPU: Rpu_GicInit: Done\r\n");
 //	Enable the WDT and launch first kick
 	WdtTb_Start(WdtTbInstancePtr);
 
@@ -482,7 +476,6 @@ static void ReadAllADC(){
 			initADCdone = true;
 			Global_Data.cw.ControlReference = CurrentControl; //default
 			Global_Data.cw.ControlMethod = fieldOrientedControl; //default
-			ADC_Clear_Offset();
 		}
 	}else{
 		ADC_readCardALL(&Global_Data);
@@ -496,7 +489,6 @@ static void CheckForErrors(){
 		if ((Global_Data.av.I_U > Global_Data.mrp.motorMaximumCurrentContinuousOperation) || (Global_Data.av.I_V > Global_Data.mrp.motorMaximumCurrentContinuousOperation) || (Global_Data.av.I_W > Global_Data.mrp.motorMaximumCurrentContinuousOperation)){
 			CountCurrentError++;
 			if(CountCurrentError > 10){ //Only if the error is available for at least 10 cycles
-		 // if(CountCurrentError > 20000){ //Only if the error is available for at least 2 seconds @100us ISR-cycle
 				Global_Data.ew.maximumContinuousCurrentExceeded = true; //Current error detected -> errors are handled in the main.c
 			}
 		}else{
@@ -510,5 +502,4 @@ static void CheckForErrors(){
 		}
 	}
 };
-
 

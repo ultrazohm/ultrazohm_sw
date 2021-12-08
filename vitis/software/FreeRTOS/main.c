@@ -32,20 +32,8 @@
 #include "defines.h"
 #include "include/isr.h"
 
-//Data from R5_0 to A53_0 (from BareMetal to FreeRTOS) in order to provide data for the GUI (Ethernet-Plot)
-ARM_to_Oszi_Data_shared_struct OsziData;
-ARM_to_Oszi_Data_shared_struct OsziData_Shadow;
-
-//Data from A53_0 to R5_0 (from FreeRTOS to BareMetal) in order to receive control data from the GUI
-Oszi_to_ARM_Data_shared_struct ControlData;
-
-Xint16 i_LifeCheck, i_LifeCheck_mainThreat, i_LifeCheck_networkThreat, i_LifeCheck_IPC_Threat, i_LifeCheck_canThreat;
-
-#ifdef XPS_BOARD_ZCU102
-#ifdef XPAR_XIICPS_0_DEVICE_ID
-int IicPhyReset(void);
-#endif
-#endif
+size_t lifecheck_mainThread = 0;
+size_t lifeCheck_networkThread = 0;
 
 #if LWIP_DHCP==1
 extern volatile int dhcp_timoutcntr;
@@ -53,7 +41,6 @@ err_t dhcp_start(struct netif *netif);
 #endif
 
 static struct netif server_netif;
-struct netif *echo_netif;
 
 A53_Data Global_Data_A53;
 
@@ -79,8 +66,7 @@ void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw){
  *---------------------------------------------------------------------------*
  * Description:
  *      Starts only the main thread "main_thread()" with priority
- *      "DEFAULT_THREAD_PRIO". Afterwards nothing will happen here and the
- *      LifeCheck will not run further.
+ *      "DEFAULT_THREAD_PRIO". Afterwards nothing will happen here.
  *---------------------------------------------------------------------------*/
 int main()
 {
@@ -94,12 +80,8 @@ int main()
 	                DEFAULT_THREAD_PRIO);
 	vTaskStartScheduler();
 
-	while(1){
-		i_LifeCheck++; //LifeCheck for main, but never runs, because of main-threat.
-		if(i_LifeCheck > 2500){
-			i_LifeCheck =0;
-		}
-	}
+	xil_printf("APU: Error in scheduler");
+
 	return 0;
 }
 
@@ -132,7 +114,7 @@ void network_thread(void *p)
     netif = &server_netif;
 
     xil_printf("\r\n\r\n");
-    xil_printf("-----lwIP Socket Mode Echo server Demo Application ------\r\n");
+    xil_printf("APU: Network thread started\r\n");
 
 #if LWIP_IPV6==0
 #if LWIP_DHCP==0
@@ -158,7 +140,7 @@ void network_thread(void *p)
 
     /* Add network interface to the netif_list, and set it as default */
     if (!xemac_add(netif, &ipaddr, &netmask, &gw, mac_ethernet_address, PLATFORM_EMAC_BASEADDR)) {
-	xil_printf("Error adding N/W interface\r\n");
+	xil_printf("APU: Error adding N/W interface\r\n");
 	return;
     }
 
@@ -183,9 +165,9 @@ void network_thread(void *p)
 #if LWIP_DHCP==1
     dhcp_start(netif);
     while (1) {
-      	i_LifeCheck_networkThreat++; //LifeCheck
-      	if(i_LifeCheck_networkThreat > 2500){
-      		i_LifeCheck_networkThreat =0;
+    	lifeCheck_networkThread++;
+      	if(lifeCheck_networkThread > 2500){
+      		lifeCheck_networkThread =0;
       	}
 
 		#if CAN_ACTIVE==1
@@ -273,14 +255,14 @@ int main_thread()
 #if LWIP_DHCP==1
     while (1) {
 
-	i_LifeCheck_mainThreat++; //LifeCheck
-	if(i_LifeCheck_mainThreat > 2500){
-		i_LifeCheck_mainThreat =0;
+	lifecheck_mainThread++;
+	if(lifecheck_mainThread > 2500){
+		lifecheck_mainThread =0;
 	}
 
 	vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
 		if (server_netif.ip_addr.addr) {
-			xil_printf("DHCP request success\r\n");
+			xil_printf("APU: DHCP request success\r\n");
 			print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));
 			print_echo_app_header();
 			xil_printf("\r\n");
@@ -290,10 +272,9 @@ int main_thread()
 			break;
 		}
 		mscnt += DHCP_FINE_TIMER_MSECS;
-		if (mscnt >=10000) { // define timeout time here
-			// DHCP_COARSE_TIMER_SECS * 2000) {
-			xil_printf("ERROR: DHCP request timed out\r\n");
-			xil_printf("Configuring default IP of 192.168.1.233\r\n");
+		if (mscnt >=1000) { // define timeout time here
+			xil_printf("APU: DHCP request timed out\r\n");
+			xil_printf("APU: Configuring default IP of 192.168.1.233\r\n");
 			IP4_ADDR(&(server_netif.ip_addr),  192, 168, 1, 233);
 			IP4_ADDR(&(server_netif.netmask), 255, 255, 255,  0);
 			IP4_ADDR(&(server_netif.gw),  192, 168, 1, 1);

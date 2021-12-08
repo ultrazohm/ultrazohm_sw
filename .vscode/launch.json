@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/vitis/Sandbox/build/test/out/${fileBasenameNoExtension}.out",
+            "program": "${workspaceFolder}/vitis/software/Baremetal/build/test/out/${fileBasenameNoExtension}.out",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

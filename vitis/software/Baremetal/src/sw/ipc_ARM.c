@@ -29,16 +29,12 @@ uint32_t ADCconvFactor_Lbytes = 0;
 uint16_t ADCconvFactorReadRequest	= 0;
 float ADCconvFactorReadback = 0.0;
 
+
+extern float *js_ch_observable[JSO_ENDMARKER];
+extern float *js_ch_selected[JS_CHANNELS];
 extern float sin1amp;
 extern _Bool bNewControlMethodAvailable;
-
-
-extern uint16_t js_factor1, js_factor2, js_factor3, js_factor4;	// javascope
-
-
-
-extern ARM_to_Oszi_Data_shared_struct OsziData;
-
+extern uint32_t js_status_BareToRTOS;
 
 void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 {
@@ -82,46 +78,174 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		}
 		else if (msgId == 200) // SEND_PREC_CH1_bits
 		{
-			js_factor1 = value;
+
 		}
 		else if (msgId == 201) // SEND_PREC_CH2_bits
 		{
-			js_factor2 = value;
+
 		}
 		else if (msgId == 202) // SEND_PREC_CH3_bits
 		{
-			js_factor3 = value;
+
 		}
 		else if (msgId == 203) // SEND_PREC_CH4_bits
 		{
-			js_factor4 = value;
+
 		}
 		else if (msgId == 204) // SELECT_DATA_CH1_bits
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ptr[0] = js_ptr_arr[value];
+				js_ch_selected[0] = js_ch_observable[value];
 			}
 		}
 		else if (msgId == 205) // SELECT_DATA_CH2_bits
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ptr[1] = js_ptr_arr[value];
+				js_ch_selected[1] = js_ch_observable[value];
 			}
 		}
 		else if (msgId == 206) // SELECT_DATA_CH3_bits
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ptr[2] = js_ptr_arr[value];
+				js_ch_selected[2] = js_ch_observable[value];
 			}
 		}
 		else if (msgId == 207) // SELECT_DATA_CH4_bits
 		{
 			if ( value >= 0 && value < JSO_ENDMARKER )
 			{
-				js_ptr[3] = js_ptr_arr[value];
+				js_ch_selected[3] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 208) // SELECT_DATA_CH5_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[4] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 209) // SELECT_DATA_CH6_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[5] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 210) // SELECT_DATA_CH7_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[6] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 211) // SELECT_DATA_CH8_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[7] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 212) // SELECT_DATA_CH9_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[8] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 213) // SELECT_DATA_CH10_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[9] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 214) // SELECT_DATA_CH11_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[10] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 215) // SELECT_DATA_CH12_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[11] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 216) // SELECT_DATA_CH13_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[12] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 217) // SELECT_DATA_CH14_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[13] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 218) // SELECT_DATA_CH15_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[14] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 219) // SELECT_DATA_CH16_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[15] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 220) // SELECT_DATA_CH17_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[16] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 221) // SELECT_DATA_CH18_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[17] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 222) // SELECT_DATA_CH19_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[18] = js_ch_observable[value];
+
+			}
+		}
+		else if (msgId == 223) // SELECT_DATA_CH20_bits
+		{
+			if ( value >= 0 && value < JSO_ENDMARKER )
+			{
+				js_ch_selected[19] = js_ch_observable[value];
 
 			}
 		}
@@ -454,52 +578,52 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 
 	/* Bit 0 - ui16_drv_enable */
 		if (data->cw.enableSystem == true) {
-			OsziData.status_BareToRTOS |= 1 << 0;
+			js_status_BareToRTOS |= 1 << 0;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 0);
+			js_status_BareToRTOS &= ~(1 << 0);
 		}
 		/* Bit 1 - PIR_ENABLE */
 		if (data->cw.enableControl == true) {
-			OsziData.status_BareToRTOS |= 1 << 1;
+			js_status_BareToRTOS |= 1 << 1;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 1);
+			js_status_BareToRTOS &= ~(1 << 1);
 		}
 		/* Bit 2 - IDENT_LQ */
 		if (data->pID.identLq == 1) {
-			OsziData.status_BareToRTOS |= 1 << 2;
+			js_status_BareToRTOS |= 1 << 2;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 2);
+			js_status_BareToRTOS &= ~(1 << 2);
 		}
 		/* Bit 3 - CURRENT_CONTROL */
 		if (data->cw.ControlReference == CurrentControl){
-			OsziData.status_BareToRTOS |= 1 << 3;
+			js_status_BareToRTOS |= 1 << 3;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 3);
+			js_status_BareToRTOS &= ~(1 << 3);
 		}
 		/* Bit 4 - SPEED_CONTROL */
 		if (data->cw.ControlReference == SpeedControl){
-			OsziData.status_BareToRTOS |= 1 << 4;
+			js_status_BareToRTOS |= 1 << 4;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 4);
+			js_status_BareToRTOS &= ~(1 << 4);
 		}
 		/* Bit 5 - ADD VIBRATION */
 		if (data->pID.VibON == 1) {
-			OsziData.status_BareToRTOS |= 1 << 5;
+			js_status_BareToRTOS |= 1 << 5;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 5);
+			js_status_BareToRTOS &= ~(1 << 5);
 		}
 		/* Bit 6 - IDorNOT */
 		//if (data->pID.MotorID == 1) {
 		if (data->cw.enableParameterID == true) {
-			OsziData.status_BareToRTOS |= 1 << 6;
+			js_status_BareToRTOS |= 1 << 6;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 6);
+			js_status_BareToRTOS &= ~(1 << 6);
 		}
 		/* Bit 7 - identROnline */
 		if (data->pID.identR == 1) {
-			OsziData.status_BareToRTOS |= 1 << 7;
+			js_status_BareToRTOS |= 1 << 7;
 		} else {
-			OsziData.status_BareToRTOS &= ~(1 << 7);
+			js_status_BareToRTOS &= ~(1 << 7);
 		}
 
 

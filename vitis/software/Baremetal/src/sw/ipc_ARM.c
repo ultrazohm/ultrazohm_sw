@@ -434,6 +434,21 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 			PID_Data.PID_GlobalConfig.ElectricalID = true;
 		else if (msgId == 0x121 + MOTORCONTROL_OFFSET_bits)
 			PID_Data.PID_GlobalConfig.ElectricalID = false;
+		//FLUXMAPID
+		else if (msgId == 0x122 + MOTORCONTROL_OFFSET_bits)
+			PID_Data.PID_GlobalConfig.FluxMapID = true;
+		else if (msgId == 0x123 + MOTORCONTROL_OFFSET_bits)
+			PID_Data.PID_GlobalConfig.FluxMapID = false;
+		//TwoMassID
+		else if (msgId == 0x0124 + MOTORCONTROL_OFFSET_bits)
+			PID_Data.PID_GlobalConfig.TwoMassID = true;
+		else if (msgId == 0x125 + MOTORCONTROL_OFFSET_bits)
+			PID_Data.PID_GlobalConfig.TwoMassID = false;
+		//FrictionID
+		else if (msgId == 0x126 + MOTORCONTROL_OFFSET_bits)
+			PID_Data.PID_GlobalConfig.FrictionID = true;
+		else if (msgId == 0x127 + MOTORCONTROL_OFFSET_bits)
+			PID_Data.PID_GlobalConfig.FrictionID = false;
 		//IDENTLQ
 		else if (msgId == 0x103 + MOTORCONTROL_OFFSET_bits)
 			PID_Data.PID_ElectricalID_Config.identLq = (bool) value;

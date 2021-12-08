@@ -28,6 +28,7 @@ static uz_incrementalEncoder_t* encoder_D5;
 
 #define OMEGA_PER_OVER_SAMPLE_RPM 500.0f
 
+uint32_t encoder_debug_position=0U;
 
 void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber){
 	struct uz_incrementalEncoder_config encoder_D5_config={
@@ -42,8 +43,10 @@ void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolut
 
 void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update speed and position in global data struct
 	data->av.theta_elec=uz_incrementalEncoder_get_theta_el(encoder_D5);
+	data->av.theta_elec=fmodf(data->av.theta_elec*3.0f,2*M_PI);
 	data->av.mechanicalRotorSpeed = uz_incrementalEncoder_get_omega_mech(encoder_D5) * 60.0f / (2.0f*M_PI);
-
+	encoder_debug_position=uz_incrementalEncoder_get_position(encoder_D5);
+	//encoder_debug_position=fmodf(encoder_debug_position,1024.0f/3.0f);
 	// low-pass filter of mechanical speed
 	static float speed_lpf_mem_in = 0.0f;
 	static float speed_lpf_mem_out = 0.0f;

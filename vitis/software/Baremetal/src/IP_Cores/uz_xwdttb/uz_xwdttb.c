@@ -149,7 +149,7 @@ static XWdtTb *uz_WdtTb_allocation(u32 CounterValue, u16 WdtTbDeviceId)
 
 /************************** Public Functions ******************************/
 
-XWdtTb* uz_WdtTb_init()
+XWdtTb *uz_WdtTb_init()
 {
     XWdtTb *self = uz_WdtTb_allocation(WIN_WDT_SW_COUNT, WDTTB_DEVICE_ID);
     return (self);
@@ -157,7 +157,7 @@ XWdtTb* uz_WdtTb_init()
 
 /*****************************************************************************/
 
-XWdtTb* uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId)
+XWdtTb *uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId)
 {
     XWdtTb *self = uz_WdtTb_allocation(CounterValue, WdtTbDeviceId);
     return (self);
@@ -320,7 +320,7 @@ void WdtTb_Restart(XWdtTb *WdtTbInstancePtr) {}
 int WinWdtIntrExample(XWdtTb *WdtTbInstancePtr) {}
 
 
-XWdtTb* uz_WdtTb_init(){}
+XWdtTb *uz_WdtTb_init(){}
 
 XWdtTb *uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId) {}
 

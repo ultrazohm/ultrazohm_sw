@@ -100,7 +100,7 @@ void WdtTb_Restart(XWdtTb *WdtTbInstancePtr) ;
  *
  * @return XWdtTb pointer to the initialized WDTTB driver.
  */
-XWdtTb* uz_WdtTb_init();
+XWdtTb *uz_WdtTb_init();
 
 /**
 * @brief This function initializes and tests the functioning of the System
@@ -118,7 +118,7 @@ XWdtTb* uz_WdtTb_init();
 *
 * @return	XWdtTb pointer to the initialized WDTTB driver.
 */
-XWdtTb* uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId);
+XWdtTb *uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId);
 
 /**
 * @brief This function tests the functioning of the Window Watchdog

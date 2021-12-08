@@ -194,7 +194,6 @@ uz_ParameterID_Data_t uz_ParameterID_initialize_data_structs(void) {
 	output.PID_GlobalConfig.VibAmp = 0.0f;
 	output.PID_GlobalConfig.VibFreq = 0U;
 	output.PID_GlobalConfig.VibOn = false;
-	output.PID_GlobalConfig.controlType = 0.0f;
 	output.PID_GlobalConfig.thetaOffset = 0.0f;
 	output.PID_GlobalConfig.sampleTimeISR = 50.0e-06f;
 

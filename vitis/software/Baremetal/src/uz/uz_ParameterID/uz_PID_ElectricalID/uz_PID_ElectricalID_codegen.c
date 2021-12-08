@@ -653,11 +653,9 @@ static void evaluate_Turn_DC(ExtU_ElectricalID_t *rtElectricalID_U,
   real32_T tmp;
   uint32_T y;
 
-  /* Inport: '<Root>/GlobalConfig' */
   /* During 'evaluate_Turn_DC': '<S1>:379' */
-  /* '<S1>:383:1' sf_internal_predicateOutput = GlobalConfig.ACCEPT == 1 && (om_con==1 || DC_manual == 1); */
-  if (rtElectricalID_U->GlobalConfig_out.ACCEPT && (rtElectricalID_DW->om_con ||
-       rtElectricalID_DW->DC_manual)) {
+	/* '<S1>:383:1' sf_internal_predicateOutput = (after(1.0,sec)) && (om_con==1 || DC_manual == 1); */
+	if ((rtElectricalID_DW->temporalCounter_i1 >= 10000U) && (rtElectricalID_DW->om_con || rtElectricalID_DW->DC_manual)) {
     /* Outport: '<Root>/ElectricalID_output' */
     /* Transition: '<S1>:383' */
     /* Exit 'evaluate_Turn_DC': '<S1>:379' */
@@ -687,6 +685,7 @@ static void evaluate_Turn_DC(ExtU_ElectricalID_t *rtElectricalID_U,
       /* '<S1>:379:14' omega_sum=omega_sum+single(ActualValues.omega_m); */
       rtElectricalID_DW->omega_sum += rtElectricalID_U->ActualValues.omega_m;
 
+			/* Inport: '<Root>/GlobalConfig' */
       /* '<S1>:379:15' if(mod(counter,uint32(0.1/GlobalConfig.sampleTimeISR))==0) */
       tmp = roundf(0.1F / rtElectricalID_U->GlobalConfig_out.sampleTimeISR);
       if (tmp < 4.2949673E+9F) {
@@ -709,6 +708,7 @@ static void evaluate_Turn_DC(ExtU_ElectricalID_t *rtElectricalID_U,
         /* '<S1>:379:16' RefreshDataRegister; */
         RefreshDataRegister(rtElectricalID_DW);
 
+				/* Inport: '<Root>/GlobalConfig' */
         /* '<S1>:379:17' omega_register(1,1)=omega_sum*(GlobalConfig.sampleTimeISR/0.1); */
         rtElectricalID_DW->omega_register[0] =
           rtElectricalID_U->GlobalConfig_out.sampleTimeISR / 0.1F *
@@ -718,6 +718,7 @@ static void evaluate_Turn_DC(ExtU_ElectricalID_t *rtElectricalID_U,
         rtElectricalID_DW->omega_sum = 0.0F;
       }
 
+			/* Inport: '<Root>/GlobalConfig' */
       /* '<S1>:379:20' if(mod(counter,uint32(2/GlobalConfig.sampleTimeISR))==0) */
       tmp = roundf(2.0F / rtElectricalID_U->GlobalConfig_out.sampleTimeISR);
       if (tmp < 4.2949673E+9F) {
@@ -758,8 +759,6 @@ static void evaluate_Turn_DC(ExtU_ElectricalID_t *rtElectricalID_U,
     /* '<S1>:379:25' TurnMotor; */
     TurnMotor(rtElectricalID_U, rtElectricalID_Y, rtElectricalID_DW);
   }
-
-  /* End of Inport: '<Root>/GlobalConfig' */
 }
 
 /*
@@ -2063,9 +2062,8 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
      case IN_alignRotor_d_off1:
       /* During 'alignRotor_d_off1': '<S1>:417' */
-      /* '<S1>:419:1' sf_internal_predicateOutput = (after(1.0,sec)) && (GlobalConfig.ACCEPT == 1); */
-      if ((rtElectricalID_DW->temporalCounter_i1 >= 10000U) &&
-          rtElectricalID_U->GlobalConfig_out.ACCEPT) {
+			/* '<S1>:419:1' sf_internal_predicateOutput = after(1.0,sec); */
+			if (rtElectricalID_DW->temporalCounter_i1 >= 10000U) {
         /* Transition: '<S1>:419' */
         /* Exit 'alignRotor_d_off1': '<S1>:417' */
         rtElectricalID_DW->is_ElectricalID = IN_findDutyCycle;
@@ -2223,22 +2221,19 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
      case IN_alignRotor_q_off:
       /* During 'alignRotor_q_off': '<S1>:412' */
-      /* '<S1>:55:1' sf_internal_predicateOutput = GlobalConfig.ACCEPT == 1; */
-      if (rtElectricalID_U->GlobalConfig_out.ACCEPT) {
-        /* Transition: '<S1>:55' */
-        rtElectricalID_DW->is_ElectricalID = IN_alignRotor_d_on1;
-        rtElectricalID_DW->temporalCounter_i1 = 0U;
+			/* Transition: '<S1>:55' */
+			rtElectricalID_DW->is_ElectricalID = IN_alignRotor_d_on1;
+			rtElectricalID_DW->temporalCounter_i1 = 0U;
 
-        /* Outport: '<Root>/ElectricalID_FOC_output' */
-        /* Entry 'alignRotor_d_on1': '<S1>:415' */
-        /* '<S1>:415:4' ElectricalID_FOC_output.activeState = uint16(125); */
-        rtElectricalID_Y->ElectricalID_FOC_output.activeState = 125U;
+			/* Outport: '<Root>/ElectricalID_FOC_output' */
+			/* Entry 'alignRotor_d_on1': '<S1>:415' */
+			/* '<S1>:415:4' ElectricalID_FOC_output.activeState = uint16(125); */
+			rtElectricalID_Y->ElectricalID_FOC_output.activeState = 125U;
 
-        /* '<S1>:415:5' counter = uint32(1); */
-        rtElectricalID_DW->counter = 1U;
+			/* '<S1>:415:5' counter = uint32(1); */
+			rtElectricalID_DW->counter = 1U;
 
-        /* '<S1>:415:6' DutyCycle_filt = single(0.0); */
-      }
+			/* '<S1>:415:6' DutyCycle_filt = single(0.0); */
       break;
 
      case IN_alignRotor_q_on:
@@ -2298,7 +2293,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
      case IN_calculatePIcontroller:
       /* During 'calculatePIcontroller': '<S1>:284' */
-      /* '<S1>:408:1' sf_internal_predicateOutput = GlobalConfig.ACCEPT == 1; */
+			/* '<S1>:408:1' sf_internal_predicateOutput = GlobalConfig.ACCEPT==1; */
       if (rtElectricalID_U->GlobalConfig_out.ACCEPT) {
         /* Transition: '<S1>:408' */
         rtElectricalID_DW->is_ElectricalID = IN_measure_psiPM;
@@ -2394,8 +2389,8 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
      case IN_findDutyCycle:
 			/* During 'findDutyCycle': '<S1>:789' */
-			/* '<S1>:790:1' sf_internal_predicateOutput = GlobalConfig.ACCEPT == 1 && (ia_valid==1 ||DC_manual == 1); */
-			if (rtElectricalID_U->GlobalConfig_out.ACCEPT && (rtElectricalID_DW->ia_valid || rtElectricalID_DW->DC_manual)) {
+			/* '<S1>:790:1' sf_internal_predicateOutput = ia_valid==1 ||DC_manual == 1; */
+			if (rtElectricalID_DW->ia_valid || rtElectricalID_DW->DC_manual) {
 				/* Outport: '<Root>/ElectricalID_output' */
 				/* Transition: '<S1>:790' */
 				/* Exit 'findDutyCycle': '<S1>:789' */
@@ -2705,6 +2700,7 @@ void ElectricalID_step(RT_MODEL_ElectricalID_t *const rtElectricalID_M)
     /* Entry Internal 'ElectricalID': '<S1>:761' */
     /* Transition: '<S1>:243' */
     rtElectricalID_DW->is_ElectricalID = IN_evaluate_Turn_DC;
+		rtElectricalID_DW->temporalCounter_i1 = 0U;
 
     /* Entry 'evaluate_Turn_DC': '<S1>:379' */
     /* '<S1>:379:3' ElectricalID_FOC_output.activeState = uint16(110); */

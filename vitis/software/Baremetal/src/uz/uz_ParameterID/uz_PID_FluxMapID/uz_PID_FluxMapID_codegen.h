@@ -108,7 +108,6 @@ typedef struct {
 
 typedef struct {
   uz_PMSM_t PMSM_config;
-  boolean_T controlType;
   boolean_T Reset;
   real32_T Kp_id;
   real32_T Kp_iq;
@@ -144,9 +143,8 @@ typedef struct {
   boolean_T startTwoMassID;
   boolean_T startFluxMapID;
   uint16_T transNr;
-  boolean_T enableFOCcurrentState;
-  boolean_T enableFOCspeedState;
   boolean_T enableOnlineID;
+	boolean_T finished_all_Offline_states;
 } uz_PID_ControlFlags_t;
 
 #endif

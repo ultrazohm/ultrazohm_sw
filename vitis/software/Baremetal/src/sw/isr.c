@@ -30,7 +30,7 @@
 
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
-
+#include "../uz/uz_FOC/uz_FOC.h"
 
 //Initialize the variables for the ADC measurement
 uint32_t 	ADC_RAW_Sum_1 = 0.0;
@@ -48,6 +48,13 @@ XTmrCtr Timer_Interrupt;
 float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
+
+uz_FOC* FOC_instance;
+struct uz_dq_t i_reference_Ampere={
+		.d=0.0f,
+		.q=0.0f
+};
+struct uz_dq_t dq_actual={0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -77,6 +84,19 @@ void ISR_Control(void *data)
 	else if(Global_Data.cw.ControlReference == CurrentControl)
 	{
 		// add your current controller here
+		struct uz_UVW_t actual_currents={
+				.U=Global_Data.aa.A1.me.ADC_A2,
+				.V=Global_Data.aa.A1.me.ADC_A3,
+				.W=Global_Data.aa.A1.me.ADC_A4
+		};
+
+		dq_actual= uz_dq_transformation(actual_currents, Global_Data.av.theta_elec-5.638787f);
+		   struct uz_dq_t u_dq_Volts = uz_FOC_sample(FOC_instance, i_reference_Ampere, dq_actual, 24.0f, 0.0f);
+		   struct uz_UVW_t UVW=uz_dq_inverse_transformation(u_dq_Volts, Global_Data.av.theta_elec-5.638787f);
+		   struct uz_DutyCycle_t output = uz_FOC_generate_DutyCycles(UVW, 24.0f);
+		   Global_Data.rasv.halfBridge1DutyCycle=output.DutyCycle_U;
+		   Global_Data.rasv.halfBridge2DutyCycle=output.DutyCycle_V;
+		   Global_Data.rasv.halfBridge3DutyCycle=output.DutyCycle_W;
 	}
 	else if(Global_Data.cw.ControlReference == TorqueControl)
 	{
@@ -113,6 +133,36 @@ void ISR_Control(void *data)
 int Initialize_ISR(){
 
 	int Status = 0;
+
+	   struct uz_PMSM_t config_PMSM = {
+	      .Ld_Henry = 0.0001f,
+	      .Lq_Henry = 0.0002f,
+	      .Psi_PM_Vs = 0.008f
+	    };//these parameters are only needed if linear decoupling is selected
+	    struct uz_PI_Controller_config config_id = {
+	      .Kp = 10.0f,
+	      .Ki = 00.0f,
+	      .samplingTime_sec = 0.00005f,
+	      .upper_limit = 10.0f,
+	      .lower_limit = -10.0f
+	   };
+
+	   struct uz_PI_Controller_config config_iq = {
+	      .Kp = 10.0f,
+	      .Ki = 00.0f,
+	      .samplingTime_sec = 0.00005f,
+	      .upper_limit = 10.0f,
+	      .lower_limit = -10.0f
+	   };
+
+	   struct uz_FOC_config config_FOC = {
+	      .decoupling_select = no_decoupling,
+	      .config_PMSM = config_PMSM,
+	      .config_id = config_id,
+	      .config_iq = config_iq
+	   };
+
+	   FOC_instance = uz_FOC_init(config_FOC);
 
 	// Initialize interrupt controller for the IPI -> Initialize RPU IPI
 	Status = Rpu_IpiInit(INTERRUPT_ID_IPI);

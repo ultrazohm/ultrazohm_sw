@@ -48,6 +48,12 @@ void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update 
 	encoder_debug_position=uz_incrementalEncoder_get_position(encoder_D5);
 	//encoder_debug_position=fmodf(encoder_debug_position,1024.0f/3.0f);
 	// low-pass filter of mechanical speed
+	// offset: 5.675603
+	// 5.638787
+	// 5.381082
+	// 5.730824
+	// 5.743183
+	// 4.166177
 	static float speed_lpf_mem_in = 0.0f;
 	static float speed_lpf_mem_out = 0.0f;
 	data->av.mechanicalRotorSpeed_filtered = LPF1(	data->av.mechanicalRotorSpeed, &speed_lpf_mem_in, &speed_lpf_mem_out,

@@ -85,7 +85,7 @@ int main(void)
 	JavaScope_initalize(&Global_Data);
 
 	//Experimental Code
-	PID_Data = uz_ParameterID_initialize_data_structs();
+	uz_ParameterID_initialize_data_structs(&PID_Data);
 	uz_ParameterID_init(&ParameterID_instance);
 
 	config_PMSM.R_ph_Ohm = PID_Data.PID_GlobalConfig.PMSM_config.R_ph_Ohm;

@@ -45,12 +45,12 @@ typedef struct uz_ParameterID_Data_t {
 
 void uz_ParameterID_init(uz_ParameterID_t* self);
 
-uz_ParameterID_Data_t uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t Data);
+void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 
-//struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
-struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
+//struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
+struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
 
-uz_ParameterID_Data_t uz_ParameterID_initialize_data_structs(void);
+void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data);
 
 
 

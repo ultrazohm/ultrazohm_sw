@@ -101,9 +101,9 @@ void ISR_Control(void *data)
 	PID_Data.PID_ActualValues.v_dq = uz_dq_transformation(PID_Data.PID_ActualValues.V_UVW, Global_Data.av.theta_elec);
 	PID_Data.PID_ActualValues.theta_m = Global_Data.av.theta_elec / PID_Data.PID_GlobalConfig.PMSM_config.polePairs;
 
-	PID_Data = uz_ParameterID_step(&ParameterID_instance, PID_Data);
+	uz_ParameterID_step(&ParameterID_instance, &PID_Data);
 //	struct uz_DutyCycle_t PID_DutyCycle = uz_ParameterID_Controller(PID_Data, FOC_instance, SpeedControl_instance);
-	struct uz_dq_t PID_v_dq = uz_ParameterID_Controller(PID_Data, FOC_instance, SpeedControl_instance);
+	struct uz_dq_t PID_v_dq = uz_ParameterID_Controller(&PID_Data, FOC_instance, SpeedControl_instance);
 //	Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;
 //	Global_Data.rasv.halfBridge2DutyCycle = PID_DutyCycle.DutyCycle_V;
 //	Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;

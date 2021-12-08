@@ -44,73 +44,78 @@ uz_ParameterID_Data_t uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID
 	//Update Data-Struct with Control-State outputs
 	Data.PID_ControlFlags = self->ControlState->output.ControlFlags;
 
-	//ElectricalID
-	if (self->ControlState->output.GlobalConfig_out.ElectricalID == true && self->ControlState->output.GlobalConfig_out.Reset == false && self->ControlState->output.ControlFlags.transNr == 1U) {
-		//Update State-Inputs
-		self->ElectricalID->input.ActualValues = Data.PID_ActualValues;
-		self->ElectricalID->input.ElectricalIDConfig = Data.PID_ElectricalID_Config;
-		self->ElectricalID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-		self->ElectricalID->input.ControlFlags = self->ControlState->output.ControlFlags;
+	//All Offline states
+	if (self->ControlState->output.ControlFlags.finished_all_Offline_states == true) {
 
-		//Step the function
-		uz_PID_ElectricalID_step(self->ElectricalID);
+		//ElectricalID
+		if (self->ControlState->output.GlobalConfig_out.ElectricalID == true && self->ControlState->output.GlobalConfig_out.Reset == false
+		                && self->ControlState->output.ControlFlags.transNr == 1U) {
+			//Update State-Inputs
+			self->ElectricalID->input.ActualValues = Data.PID_ActualValues;
+			self->ElectricalID->input.ElectricalIDConfig = Data.PID_ElectricalID_Config;
+			self->ElectricalID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
+			self->ElectricalID->input.ControlFlags = self->ControlState->output.ControlFlags;
 
-		//Update Control-State-inputs
-		self->ControlState->input.ElectricalID_FOC_output = self->ElectricalID->output.ElectricalID_FOC_output;
-		self->ControlState->input.ElectricalID_output = self->ElectricalID->output.ElectricalID_output;
-		self->ControlState->input.enteredElectricalID = self->ElectricalID->output.enteredElectricalID;
-		self->ControlState->input.finishedElectricalID = self->ElectricalID->output.finishedElectricalID;
+			//Step the function
+			uz_PID_ElectricalID_step(self->ElectricalID);
 
-		//Update Data struct with new output values
-		Data.PID_Controller_Parameters = self->ElectricalID->output.ElectricalID_FOC_output;
-		Data.PID_ElectricalID_Output = self->ElectricalID->output.ElectricalID_output;
-		Data.PID_GlobalConfig.thetaOffset = self->ElectricalID->output.ElectricalID_output.thetaOffset;
+			//Update Control-State-inputs
+			self->ControlState->input.ElectricalID_FOC_output = self->ElectricalID->output.ElectricalID_FOC_output;
+			self->ControlState->input.ElectricalID_output = self->ElectricalID->output.ElectricalID_output;
+			self->ControlState->input.enteredElectricalID = self->ElectricalID->output.enteredElectricalID;
+			self->ControlState->input.finishedElectricalID = self->ElectricalID->output.finishedElectricalID;
 
+			//Update Data struct with new output values
+			Data.PID_Controller_Parameters = self->ElectricalID->output.ElectricalID_FOC_output;
+			Data.PID_ElectricalID_Output = self->ElectricalID->output.ElectricalID_output;
+			Data.PID_GlobalConfig.thetaOffset = self->ElectricalID->output.ElectricalID_output.thetaOffset;
 
-	} else if (self->ControlState->output.GlobalConfig_out.ElectricalID == false && self->ElectricalID->output.enteredElectricalID == true) {
-		self->ElectricalID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-		uz_PID_ElectricalID_step(self->ElectricalID);
-	} else if (self->ControlState->output.GlobalConfig_out.Reset == true) {
-		self->ElectricalID->input.GlobalConfig_out.Reset = true;
-		uz_PID_ElectricalID_step(self->ElectricalID);
-	}
+		} else if (self->ControlState->output.GlobalConfig_out.ElectricalID == false && self->ElectricalID->output.enteredElectricalID == true) {
+			self->ElectricalID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
+			uz_PID_ElectricalID_step(self->ElectricalID);
+		} else if (self->ControlState->output.GlobalConfig_out.Reset == true) {
+			self->ElectricalID->input.GlobalConfig_out.Reset = true;
+			uz_PID_ElectricalID_step(self->ElectricalID);
+		}
 
-	//FluxMapID
-	if (self->ControlState->output.GlobalConfig_out.FluxMapID == true && self->ControlState->output.GlobalConfig_out.Reset == false && self->ControlState->output.ControlFlags.transNr == 4U) {
-		//Update State-Inputs
-		self->FluxMapID->input.ActualValues = Data.PID_ActualValues;
-		self->FluxMapID->input.FluxMapIDConfig = Data.PID_FluxMapID_Config;
-		self->FluxMapID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-		self->FluxMapID->input.ControlFlags = self->ControlState->output.ControlFlags;
+		//FluxMapID
+		if (self->ControlState->output.GlobalConfig_out.FluxMapID == true && self->ControlState->output.GlobalConfig_out.Reset == false
+		                && self->ControlState->output.ControlFlags.transNr == 4U) {
+			//Update State-Inputs
+			self->FluxMapID->input.ActualValues = Data.PID_ActualValues;
+			self->FluxMapID->input.FluxMapIDConfig = Data.PID_FluxMapID_Config;
+			self->FluxMapID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
+			self->FluxMapID->input.ControlFlags = self->ControlState->output.ControlFlags;
 
-		//Step the function
-		uz_PID_FluxMapID_step(self->FluxMapID);
+			//Step the function
+			uz_PID_FluxMapID_step(self->FluxMapID);
 
-		//Update Control-State-inputs
-		self->ControlState->input.enteredFluxMapID = self->FluxMapID->output.enteredFluxMapID;
-		self->ControlState->input.finishedFluxMapID = self->FluxMapID->output.finishedFluxMapID;
+			//Update Control-State-inputs
+			self->ControlState->input.enteredFluxMapID = self->FluxMapID->output.enteredFluxMapID;
+			self->ControlState->input.finishedFluxMapID = self->FluxMapID->output.finishedFluxMapID;
 
-		//Update Data struct with new output values
-		Data.PID_Controller_Parameters = self->FluxMapID->output.FluxMapID_FOC_output;
-		Data.PID_FluxMapID_Output = self->FluxMapID->output.FluxMapID_output;
-	} else if (self->ControlState->output.GlobalConfig_out.FluxMapID == false && self->FluxMapID->output.enteredFluxMapID == true) {
-		self->FluxMapID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-		uz_PID_FluxMapID_step(self->FluxMapID);
-	} else if (self->ControlState->output.GlobalConfig_out.Reset == true) {
-		self->FluxMapID->input.GlobalConfig_out.Reset = true;
-		uz_PID_FluxMapID_step(self->FluxMapID);
-	}
+			//Update Data struct with new output values
+			Data.PID_Controller_Parameters = self->FluxMapID->output.FluxMapID_FOC_output;
+			Data.PID_FluxMapID_Output = self->FluxMapID->output.FluxMapID_output;
+		} else if (self->ControlState->output.GlobalConfig_out.FluxMapID == false && self->FluxMapID->output.enteredFluxMapID == true) {
+			self->FluxMapID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
+			uz_PID_FluxMapID_step(self->FluxMapID);
+		} else if (self->ControlState->output.GlobalConfig_out.Reset == true) {
+			self->FluxMapID->input.GlobalConfig_out.Reset = true;
+			uz_PID_FluxMapID_step(self->FluxMapID);
+		}
 
-	// reset ACCEPT
-	if (self->ControlState->output.GlobalConfig_out.ACCEPT == true) {
-		self->ControlState->output.GlobalConfig_out.ACCEPT = false;
-		Data.PID_GlobalConfig.ACCEPT = false;
-	}
+		// reset ACCEPT
+		if (self->ControlState->output.GlobalConfig_out.ACCEPT == true) {
+			self->ControlState->output.GlobalConfig_out.ACCEPT = false;
+			Data.PID_GlobalConfig.ACCEPT = false;
+		}
 
-	// reset RESET-button
-	if (Data.PID_GlobalConfig.Reset == true) {
-		self->ControlState->output.GlobalConfig_out.ACCEPT = false;
-		Data.PID_GlobalConfig.Reset = false;
+		// reset RESET-button
+		if (Data.PID_GlobalConfig.Reset == true) {
+			self->ControlState->output.GlobalConfig_out.ACCEPT = false;
+			Data.PID_GlobalConfig.Reset = false;
+		}
 	}
 	return (Data);
 
@@ -210,6 +215,7 @@ uz_ParameterID_Data_t uz_ParameterID_initialize_data_structs(void) {
 	output.PID_GlobalConfig.PMSM_config.R_ph_Ohm = 0.085f;
 	output.PID_GlobalConfig.PMSM_config.Psi_PM_Vs = 0.0075f;
 	output.PID_GlobalConfig.PMSM_config.polePairs = 4.0f;
+	output.PID_GlobalConfig.PMSM_config.J_kg_m_squared = 3.24e-05f;
 	output.PID_GlobalConfig.ratCurrent = 8.0f;
 	output.PID_GlobalConfig.ratSpeed = 3000.0f;
 

@@ -102,9 +102,10 @@ int main(void)
 	struct uz_PI_Controller_config config_n = { .Kp = PID_Data.PID_GlobalConfig.Kp_n, .Ki = PID_Data.PID_GlobalConfig.Ki_n, .samplingTime_sec = 0.00005f, .upper_limit = 10.0f,
 	                .lower_limit = -10.0f };
 	struct uz_FOC_config config_FOC = { .config_PMSM = PID_Data.PID_GlobalConfig.PMSM_config, .config_id = config_id, .config_iq = config_iq };
-
-	struct uz_pmsmModel_config_t pmsm_config = { .base_address = XPAR_UZ_PMSM_MODEL_0_BASEADDR, .ip_core_frequency_Hz = 100000000, .simulate_mechanical_system = true, .r_1 = 2.1f, .L_d = 0.03f,
-	                .L_q = 0.05f, .psi_pm = 0.05f, .polepairs = 2.0f, .inertia = 0.001, .coulomb_friction_constant = 0.01f, .friction_coefficient = 0.001f };
+	struct uz_pmsmModel_config_t pmsm_config = { .base_address = XPAR_UZ_PMSM_MODEL_0_BASEADDR, .ip_core_frequency_Hz = 100000000, .simulate_mechanical_system = true, .r_1 =
+	                PID_Data.PID_GlobalConfig.PMSM_config.R_ph_Ohm, .L_d = PID_Data.PID_GlobalConfig.PMSM_config.Ld_Henry, .L_q = PID_Data.PID_GlobalConfig.PMSM_config.Lq_Henry, .psi_pm =
+	                PID_Data.PID_GlobalConfig.PMSM_config.Psi_PM_Vs, .polepairs = PID_Data.PID_GlobalConfig.PMSM_config.polePairs, .inertia = PID_Data.PID_GlobalConfig.PMSM_config.J_kg_m_squared,
+	                .coulomb_friction_constant = 0.01056f, .friction_coefficient = 0.00019f };
 
 	pmsm = uz_pmsmModel_init(pmsm_config);
 	FOC_instance = uz_FOC_init(config_FOC);

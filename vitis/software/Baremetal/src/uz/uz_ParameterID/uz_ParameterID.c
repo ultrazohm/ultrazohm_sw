@@ -74,8 +74,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 			self->ElectricalID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
 			uz_PID_ElectricalID_step(self->ElectricalID);
 		} else if (self->ControlState->output.GlobalConfig_out.Reset == true) {
-			self->ElectricalID->input.GlobalConfig_out.Reset = true;
-			uz_PID_ElectricalID_step(self->ElectricalID);
+
 		}
 
 		//FluxMapID
@@ -100,9 +99,6 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		} else if (self->ControlState->output.GlobalConfig_out.FluxMapID == false && self->FluxMapID->output.enteredFluxMapID == true) {
 			self->FluxMapID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
 			uz_PID_FluxMapID_step(self->FluxMapID);
-		} else if (self->ControlState->output.GlobalConfig_out.Reset == true) {
-			self->FluxMapID->input.GlobalConfig_out.Reset = true;
-			uz_PID_FluxMapID_step(self->FluxMapID);
 		}
 
 		// reset ACCEPT
@@ -113,8 +109,16 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 
 		// reset RESET-button
 		if (Data->PID_GlobalConfig.Reset == true) {
+			//Set the state-inputs reset to true
+			self->FluxMapID->input.GlobalConfig_out.Reset = true;
+			self->ElectricalID->input.GlobalConfig_out.Reset = true;
+			//Step the states to reset them
+			uz_PID_FluxMapID_step(self->FluxMapID);
+			uz_PID_ElectricalID_step(self->ElectricalID);
+			//reset the Reset-button
 			self->ControlState->output.GlobalConfig_out.Reset = false;
 			Data->PID_GlobalConfig.Reset = false;
+			uz_ParameterID_initialize_data_structs(Data);
 		}
 	}
 }

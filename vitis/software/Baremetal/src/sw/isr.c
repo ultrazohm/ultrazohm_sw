@@ -55,7 +55,8 @@ struct uz_dq_t i_reference_Ampere={
 		.q=0.0f
 };
 struct uz_dq_t dq_actual={0};
-
+struct uz_UVW_t actual_currents={0};
+float adc_scaling=9.5f/3.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -66,6 +67,13 @@ static void toggleLEDdependingOnReadyOrRunning(uint32_t i_count_1ms, uint32_t i_
 static void ReadAllADC();
 static void CheckForErrors();
 
+struct uz_wavegen_three_phase_config wavegen_config={
+.amplitude=0.2,
+.frequency_Hz=10,
+.offset=0.5
+};
+uz_wavegen_three_phase* wave;
+
 void ISR_Control(void *data)
 {
 	uz_SystemTime_ISR_Tic();
@@ -75,7 +83,9 @@ void ISR_Control(void *data)
 	ReadAllADC();
 	CheckForErrors();
 	update_speed_and_position_of_encoder_on_D5(&Global_Data); 	//Read out speed and theta angle
-
+	actual_currents.U=(Global_Data.aa.A1.me.ADC_A2-2.5f)*adc_scaling;
+	actual_currents.V=(Global_Data.aa.A1.me.ADC_A3-2.5f)*adc_scaling;
+	actual_currents.W=(Global_Data.aa.A1.me.ADC_A4-2.5f)*adc_scaling;
 	//Start: Control algorithm -------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)
 	{
@@ -84,12 +94,6 @@ void ISR_Control(void *data)
 	else if(Global_Data.cw.ControlReference == CurrentControl)
 	{
 		// add your current controller here
-		struct uz_UVW_t actual_currents={
-				.U=Global_Data.aa.A1.me.ADC_A2,
-				.V=Global_Data.aa.A1.me.ADC_A3,
-				.W=Global_Data.aa.A1.me.ADC_A4
-		};
-
 		dq_actual= uz_dq_transformation(actual_currents, Global_Data.av.theta_elec-5.638787f);
 		   struct uz_dq_t u_dq_Volts = uz_FOC_sample(FOC_instance, i_reference_Ampere, dq_actual, 24.0f, 0.0f);
 		   struct uz_UVW_t UVW=uz_dq_inverse_transformation(u_dq_Volts, Global_Data.av.theta_elec-5.638787f);
@@ -101,6 +105,10 @@ void ISR_Control(void *data)
 	else if(Global_Data.cw.ControlReference == TorqueControl)
 	{
 		// add your torque controller here
+		uz_wavegen_three_phase_sample(wave);
+		Global_Data.rasv.halfBridge1DutyCycle=uz_wavegen_three_phase_get_phaseU(wave);
+		Global_Data.rasv.halfBridge2DutyCycle=uz_wavegen_three_phase_get_phaseV(wave);
+		Global_Data.rasv.halfBridge3DutyCycle=uz_wavegen_three_phase_get_phaseW(wave);
 	}
 	//End: Control algorithm -------------------------------------------------------------------------------
 
@@ -133,7 +141,7 @@ void ISR_Control(void *data)
 int Initialize_ISR(){
 
 	int Status = 0;
-
+	wave=uz_wavegen_three_phase_init(wavegen_config);
 	   struct uz_PMSM_t config_PMSM = {
 	      .Ld_Henry = 0.0001f,
 	      .Lq_Henry = 0.0002f,
@@ -141,18 +149,18 @@ int Initialize_ISR(){
 	    };//these parameters are only needed if linear decoupling is selected
 	    struct uz_PI_Controller_config config_id = {
 	      .Kp = 10.0f,
-	      .Ki = 00.0f,
+	      .Ki = 10.0f,
 	      .samplingTime_sec = 0.00005f,
-	      .upper_limit = 10.0f,
-	      .lower_limit = -10.0f
+	      .upper_limit = 50.0f,
+	      .lower_limit = -50.0f
 	   };
 
 	   struct uz_PI_Controller_config config_iq = {
 	      .Kp = 10.0f,
-	      .Ki = 00.0f,
+	      .Ki = 1.0f,
 	      .samplingTime_sec = 0.00005f,
-	      .upper_limit = 10.0f,
-	      .lower_limit = -10.0f
+	      .upper_limit = 50.0f,
+	      .lower_limit = -50.0f
 	   };
 
 	   struct uz_FOC_config config_FOC = {

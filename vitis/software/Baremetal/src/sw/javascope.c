@@ -17,6 +17,7 @@
 #include "../defines.h"
 #include "../include/javascope.h"
 #include "xil_cache.h"
+#include "../uz/uz_FOC/uz_FOC.h"
 
 // IPI Messaging System R5 <-> A53
 #define IPI_A53toR5_MSG_LEN		3U
@@ -38,6 +39,8 @@ static float ISR_period_us;
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
+
+extern struct uz_UVW_t actual_currents;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -67,9 +70,9 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_ia] 			= &data->av.I_U;
-	js_ch_observable[JSO_ib] 			= &data->av.I_V;
-	js_ch_observable[JSO_ic] 			= &data->av.I_W;
+	js_ch_observable[JSO_ia] 			= &actual_currents.U;
+	js_ch_observable[JSO_ib] 			= &actual_currents.V;
+	js_ch_observable[JSO_ic] 			= &actual_currents.W;
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;
 	js_ch_observable[JSO_ub] 			= &data->av.U_V;
 	js_ch_observable[JSO_uc] 			= &data->av.U_W;

@@ -25,12 +25,6 @@
 #include "../uz_FOC/uz_FOC.h"
 #include "../uz_SpeedControl/uz_speedcontrol.h"
 
-typedef struct uz_ParameterID_t {
-	bool is_ready;
-	uz_PID_ControlState_t* ControlState;
-	uz_PID_ElectricalID_t* ElectricalID;
-	uz_PID_FluxMapID_t* FluxMapID;
-} uz_ParameterID_t;
 
 typedef struct uz_ParameterID_Data_t {
 	uz_PID_ActualValues_t PID_ActualValues;
@@ -43,9 +37,9 @@ typedef struct uz_ParameterID_Data_t {
 	uz_PID_Controller_Parameters_output_t PID_Controller_Parameters;
 } uz_ParameterID_Data_t;
 
-void uz_ParameterID_init(uz_ParameterID_t* self);
+void uz_ParameterID_init(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FluxMapID_t* FluxMapID);
 
-void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
+void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FluxMapID_t* FluxMapID, uz_ParameterID_Data_t* Data);
 
 //struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
 struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);

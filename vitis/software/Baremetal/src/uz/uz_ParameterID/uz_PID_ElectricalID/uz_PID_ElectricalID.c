@@ -23,6 +23,7 @@ void uz_PID_ElectricalID_init(uz_PID_ElectricalID_t *self) {
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
 	self->PtrToModelData->outputs = &self->output;
+	ElectricalID_initialize(self->PtrToModelData);
 }
 
 void uz_PID_ElectricalID_step(uz_PID_ElectricalID_t *self) {

@@ -22,6 +22,7 @@ void uz_PID_ControlState_init(uz_PID_ControlState_t *self) {
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
 	self->PtrToModelData->outputs = &self->output;
+	ControlState_initialize(self->PtrToModelData);
 }
 
 void uz_PID_ControlState_step(uz_PID_ControlState_t *self) {

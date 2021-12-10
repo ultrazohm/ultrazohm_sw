@@ -24,6 +24,7 @@ void uz_PID_FluxMapID_init(uz_PID_FluxMapID_t *self) {
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
 	self->PtrToModelData->outputs = &self->output;
+	FluxMapID_initialize(self->PtrToModelData);
 }
 
 void uz_PID_FluxMapID_step(uz_PID_FluxMapID_t *self) {

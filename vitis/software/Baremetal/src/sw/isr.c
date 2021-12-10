@@ -53,7 +53,9 @@ float sin1amp=1.0;
 extern DS_Data Global_Data;
 
 //Experimental Code
-extern uz_ParameterID_t ParameterID_instance;
+extern uz_PID_ElectricalID_t ElectricalID;
+extern uz_PID_ControlState_t ControlState;
+extern uz_PID_FluxMapID_t FluxMapID;
 extern uz_ParameterID_Data_t PID_Data;
 extern uz_pmsmModel_t *pmsm;
 extern uz_FOC* FOC_instance;
@@ -101,7 +103,7 @@ void ISR_Control(void *data)
 	PID_Data.PID_ActualValues.v_dq = uz_dq_transformation(PID_Data.PID_ActualValues.V_UVW, Global_Data.av.theta_elec);
 	PID_Data.PID_ActualValues.theta_m = Global_Data.av.theta_elec / PID_Data.PID_GlobalConfig.PMSM_config.polePairs;
 
-	uz_ParameterID_step(&ParameterID_instance, &PID_Data);
+	uz_ParameterID_step(&ControlState, &ElectricalID, &FluxMapID, &PID_Data);
 //	struct uz_DutyCycle_t PID_DutyCycle = uz_ParameterID_Controller(PID_Data, FOC_instance, SpeedControl_instance);
 	struct uz_dq_t PID_v_dq = uz_ParameterID_Controller(&PID_Data, FOC_instance, SpeedControl_instance);
 //	Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;

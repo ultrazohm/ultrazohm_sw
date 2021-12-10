@@ -19,9 +19,10 @@
 #include "xil_cache.h"
 
 
-//Variables for JavaScope
-static struct APU_to_RPU_t ControlData;
+// Debug - delete when finished
+struct APU_to_RPU_t ControlData_Debug;
 
+//Variables for JavaScope
 static float zerovalue = 0.0;
 static float *js_slowDataArray[JSSD_ENDMARKER];
 float *js_ch_observable[JSO_ENDMARKER];
@@ -57,9 +58,6 @@ int JavaScope_initalize(DS_Data* data)
 	{
 		js_slowDataArray[j] = &zerovalue;
 	}
-
-	ControlData.id =0;
-	ControlData.value =0;
 
 	// Store every observable signal into the Pointer-Array.
 	// With the JavaScope, signals can be displayed simultaneously
@@ -146,10 +144,12 @@ int JavaScope_initalize(DS_Data* data)
 }
 
 
-void js_fetchData()
-{
+
+void JavaScope_update(DS_Data* data){
+
 	// create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START
 	static struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
+	struct APU_to_RPU_t Received_Data_from_A53;
 
 	static int js_cnt_slowData=0;
 	int status;
@@ -179,17 +179,13 @@ void js_fetchData()
 	}
 
 	//Afterwards an acknowledge and a message from the APU can be read/checked, but we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
-	u32 ControlData_size = sizeof(ControlData);
-	struct APU_to_RPU_t* Received_Data_from_A53;
+	u32 ControlData_length = sizeof(Received_Data_from_A53)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 
-	status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, (u32*)Received_Data_from_A53, ControlData_size, XIPIPSU_BUF_TYPE_RESP);
+	status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, (u32*)(&Received_Data_from_A53), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
 
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("RPU: IPI reading from A53 failed\r\n");
 	}
-
-	ControlData.id 			= Received_Data_from_A53->id;
-	ControlData.value		= Received_Data_from_A53->value;
 
 	js_cnt_slowData++;
 	if (js_cnt_slowData >= JSSD_ENDMARKER){
@@ -200,12 +196,11 @@ void js_fetchData()
 	if(i_fetchDataLifeCheck > 10000){
 		i_fetchDataLifeCheck =0;
 	}
-}
 
-void JavaScope_update(DS_Data* data){
+	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);
 
-	js_fetchData();
-
-	ipc_Control_func(ControlData.id, ControlData.value, data);
-
+	if(Received_Data_from_A53.id != 0){
+		ControlData_Debug.id 		= Received_Data_from_A53.id;
+		ControlData_Debug.value		= Received_Data_from_A53.value;
+	}
 }

@@ -38,7 +38,58 @@ extern uint32_t js_status_BareToRTOS;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 {
+	/* Bit 0 - ui16_drv_enable */
+	if (data->cw.enableSystem == true) {
+		js_status_BareToRTOS |= 1 << 0;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 0);
+	}
+	/* Bit 1 - PIR_ENABLE */
+	if (data->cw.enableControl == true) {
+		js_status_BareToRTOS |= 1 << 1;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 1);
+	}
+	/* Bit 2 - IDENT_LQ */
+	if (data->pID.identLq == 1) {
+		js_status_BareToRTOS |= 1 << 2;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 2);
+	}
+	/* Bit 3 - CURRENT_CONTROL */
+	if (data->cw.ControlReference == CurrentControl){
+		js_status_BareToRTOS |= 1 << 3;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 3);
+	}
+	/* Bit 4 - SPEED_CONTROL */
+	if (data->cw.ControlReference == SpeedControl){
+		js_status_BareToRTOS |= 1 << 4;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 4);
+	}
+	/* Bit 5 - ADD VIBRATION */
+	if (data->pID.VibON == 1) {
+		js_status_BareToRTOS |= 1 << 5;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 5);
+	}
+	/* Bit 6 - IDorNOT */
+	//if (data->pID.MotorID == 1) {
+	if (data->cw.enableParameterID == true) {
+		js_status_BareToRTOS |= 1 << 6;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 6);
+	}
+	/* Bit 7 - identROnline */
+	if (data->pID.identR == 1) {
+		js_status_BareToRTOS |= 1 << 7;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 7);
+	}
 
+
+	// HANDLE RECEIVED MESSAGE
 	if ( msgId != 0)
 	{
 		//GENERAL VARIABLES
@@ -559,58 +610,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			data->pID.AdmitMechParamsFlag = true;
 
 	}
-
-	/* Bit 0 - ui16_drv_enable */
-		if (data->cw.enableSystem == true) {
-			js_status_BareToRTOS |= 1 << 0;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 0);
-		}
-		/* Bit 1 - PIR_ENABLE */
-		if (data->cw.enableControl == true) {
-			js_status_BareToRTOS |= 1 << 1;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 1);
-		}
-		/* Bit 2 - IDENT_LQ */
-		if (data->pID.identLq == 1) {
-			js_status_BareToRTOS |= 1 << 2;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 2);
-		}
-		/* Bit 3 - CURRENT_CONTROL */
-		if (data->cw.ControlReference == CurrentControl){
-			js_status_BareToRTOS |= 1 << 3;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 3);
-		}
-		/* Bit 4 - SPEED_CONTROL */
-		if (data->cw.ControlReference == SpeedControl){
-			js_status_BareToRTOS |= 1 << 4;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 4);
-		}
-		/* Bit 5 - ADD VIBRATION */
-		if (data->pID.VibON == 1) {
-			js_status_BareToRTOS |= 1 << 5;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 5);
-		}
-		/* Bit 6 - IDorNOT */
-		//if (data->pID.MotorID == 1) {
-		if (data->cw.enableParameterID == true) {
-			js_status_BareToRTOS |= 1 << 6;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 6);
-		}
-		/* Bit 7 - identROnline */
-		if (data->pID.identR == 1) {
-			js_status_BareToRTOS |= 1 << 7;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 7);
-		}
-
-
 
 }
 

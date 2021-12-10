@@ -110,7 +110,6 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 			//reset the Reset-button
 			ControlState->output.GlobalConfig_out.Reset = false;
 			Data->PID_GlobalConfig.Reset = false;
-			uz_ParameterID_initialize_data_structs(Data);
 		}
 	}
 }

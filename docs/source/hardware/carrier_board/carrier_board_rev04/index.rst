@@ -1,3 +1,6 @@
+.. _carrier_board_rev4:
+
+
 ===================
 Carrier Board Rev04
 ===================

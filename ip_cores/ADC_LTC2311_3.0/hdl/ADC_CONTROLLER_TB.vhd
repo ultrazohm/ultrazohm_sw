@@ -51,7 +51,8 @@ constant TEST_CLK_DIV_WIDTH         : natural := 16;
 constant TEST_RES_MSB               : natural := 34;
 constant TEST_RES_LSB               : natural := 0;
 constant TEST_CLK_DIV               : integer := 0;
-constant TEST_DELAY                 : integer := 0;
+constant TEST_DELAY                 : integer := 2;
+constant TEST_SAMPLE_TIME           : integer := 0;
 
 -- values
 constant RAW_VALUE      : integer := 200;
@@ -59,13 +60,14 @@ constant OFFSET_0       : integer := 150;
 constant CONVERSION_0   : integer := 10;
 
 constant OFFSET_1       : integer := 120;
-constant CONVERSION_1   : integer := 5;
+constant CONVERSION_1   : integer := -5;
 
-constant SAMPLES        : natural := 2;
+constant SAMPLES        : natural := 4;
 
 signal S_RX_DATA        : std_logic_vector((TEST_CHANNELS * TEST_DATA_WIDTH) - 1 downto 0) := (others => '0');
 signal S_RESULT         : std_logic_vector((TEST_CHANNELS * (TEST_RES_MSB - TEST_RES_LSB + 1)) - 1 downto 0);
 signal S_OFF_CONV       : std_logic_vector(31 downto 0);
+signal S_SAMPLE_COUNTER : std_logic_vector(31 downto 0);
 
 signal S_CPHA, S_CPOL, S_SCLK, S_SCLK_IN, S_SS_OUT_N, S_SS_IN_N, S_BUSY : std_logic := '0';
 
@@ -74,7 +76,7 @@ signal S_CLK_DIV                        : std_logic_vector(TEST_CLK_DIV_WIDTH - 
 signal S_PRE_DELAY, S_POST_DELAY        : std_logic_vector(TEST_DELAY_WIDTH - 1 downto 0);
 
 -- control signals
-signal S_SET_CONVERSION, S_SET_OFFSET, S_ENABLE, S_SI_VALID, S_RAW_VALID, S_MANUAL, S_SET_SAMPLES : std_logic := '0';
+signal S_SET_CONVERSION, S_SET_OFFSET, S_ENABLE, S_SI_VALID, S_RAW_VALID, S_MANUAL, S_SET_SAMPLES, S_SET_SAMPLE_TIME : std_logic := '0';
 signal S_RESET_N : std_logic := '1';
 signal S_CLK     : std_logic := '1';
 signal S_CHANNEL_SELECT : std_logic_vector(31 downto 0);
@@ -126,6 +128,7 @@ component ADC_CONTROLLER is
         SET_CONVERSION  : in std_logic;
         SET_OFFSET      : in std_logic;
         SET_SAMPLES     : in std_logic;
+        SET_SAMPLE_TIME : in std_logic;
         SI_VALID        : out std_logic;
         RAW_VALID       : out std_logic;
         BUSY            : out std_logic;
@@ -134,7 +137,8 @@ component ADC_CONTROLLER is
         VALUE           : in std_logic_vector(31 downto 0);           -- input for conversion or offset value
         CHANNEL_SELECT  : in std_logic_vector(31 downto 0); -- selection which channels shall be updated with conversion factor or offset
         SI_VALUE        : out std_logic_vector((CHANNELS * (RES_MSB - RES_LSB + 1)) - 1 downto 0);
-        RAW_VALUE       : out std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0)
+        RAW_VALUE       : out std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0);
+        SAMPLE_COUNTER  : out std_logic_vector(31 downto 0)
         
     );
 end component ADC_CONTROLLER;
@@ -177,6 +181,7 @@ dut: ADC_CONTROLLER
         SET_CONVERSION      => S_SET_CONVERSION,
         SET_OFFSET          => S_SET_OFFSET,
         SET_SAMPLES         => S_SET_SAMPLES,
+        SET_SAMPLE_TIME     => S_SET_SAMPLE_TIME,
         SI_VALID            => S_SI_VALID,
         RAW_VALID           => S_RAW_VALID,
         BUSY                => S_BUSY,
@@ -185,7 +190,8 @@ dut: ADC_CONTROLLER
         VALUE               => S_OFF_CONV,
         CHANNEL_SELECT      => S_CHANNEL_SELECT,
         SI_VALUE            => S_RESULT,
-        RAW_VALUE           => S_RX_DATA
+        RAW_VALUE           => S_RX_DATA,
+        SAMPLE_COUNTER      => S_SAMPLE_COUNTER
         
     );
 
@@ -198,9 +204,10 @@ stimulus : process begin
     S_PRE_DELAY <= std_logic_vector(to_unsigned(TEST_DELAY, S_PRE_DELAY'length));
     S_POST_DELAY <= std_logic_vector(to_unsigned(TEST_DELAY, S_POST_DELAY'length));
     S_CLK_DIV <= std_logic_vector(to_unsigned(TEST_CLK_DIV, S_CLK_DIV'length));
-       
     -- init test tx vector
-    S_TX_DATA <= std_logic_vector(to_unsigned(RAW_VALUE, S_TX_DATA'length));
+    S_TX_DATA <= std_logic_vector(to_signed(RAW_VALUE, S_TX_DATA'length));
+    wait for 2 * CLOCK_PERIOD;
+    S_TX_DATA <= S_TX_DATA(TEST_DATA_WIDTH - 1) & S_TX_DATA(TEST_DATA_WIDTH - 1 downto 0);
     
     wait for 2 * CLOCK_PERIOD;
     S_RESET_N <= '1';
@@ -237,33 +244,39 @@ stimulus : process begin
     wait for CLOCK_PERIOD;
     S_SET_SAMPLES <= '0';
     
+    -- set minimum sample time
+    S_OFF_CONV <= std_logic_vector(to_signed(TEST_SAMPLE_TIME, S_OFF_CONV'length));
+    S_SET_SAMPLE_TIME <= '1';
     wait for CLOCK_PERIOD;
+    S_SET_SAMPLES <= '0';
     
-    -- test if SS_N signal can be controlled manually
-    S_MANUAL <= '1';
-    S_SS_IN_N <= '0';
-    wait for CLOCK_PERIOD * 2;
-    S_SS_IN_N <= '1';
-    wait for CLOCK_PERIOD * 2;
-    S_MANUAL <= '0';
-    wait for CLOCK_PERIOD * 2;
-    -- start transfer
-    S_ENABLE <= '1';
-    wait for CLOCK_PERIOD;
-    S_ENABLE <= '0';
-    wait for 4 * (CLOCK_PERIOD * (TEST_CLK_DIV + 2) * TEST_DATA_WIDTH
-           + CLOCK_PERIOD * (TEST_DELAY + 1));
-    -- check if SS_N signal can not be controlled manually during transfer
-    S_SS_IN_N <= '0';
     wait for CLOCK_PERIOD;
     -- start transfer
     S_ENABLE <= '1';
-    wait for CLOCK_PERIOD;
-    S_ENABLE <= '0';
-    wait for CLOCK_PERIOD * 2;
-    S_SS_IN_N <= '1';
-    wait for 8 * (CLOCK_PERIOD * (TEST_CLK_DIV + 2) * TEST_DATA_WIDTH
-           + CLOCK_PERIOD * (TEST_DELAY + 1));
+--    wait for CLOCK_PERIOD;
+--    S_ENABLE <= '0';
+--    wait for 4 * (CLOCK_PERIOD * (TEST_CLK_DIV + 2) * TEST_DATA_WIDTH
+--           + CLOCK_PERIOD * (TEST_DELAY + 1));
+--    -- check if SS_N signal can not be controlled manually during transfer
+--    S_SS_IN_N <= '0';
+--    wait for CLOCK_PERIOD;
+--    -- start transfer
+--    S_ENABLE <= '1';
+--    wait for CLOCK_PERIOD;
+--    S_ENABLE <= '0';
+--    wait for CLOCK_PERIOD * 2;
+--    S_SS_IN_N <= '1';
+--    wait for 8 * (CLOCK_PERIOD * (TEST_CLK_DIV + 2) * TEST_DATA_WIDTH
+--           + CLOCK_PERIOD * (TEST_DELAY + 1));
+      wait for 20us;
+--     test if SS_N signal can be controlled manually
+--    S_MANUAL <= '1';
+--    S_SS_IN_N <= '0';
+--    wait for CLOCK_PERIOD * 2;
+--    S_SS_IN_N <= '1';
+--    wait for CLOCK_PERIOD * 2;
+--    S_MANUAL <= '0';
+--    wait for CLOCK_PERIOD * 2;
     report "Simulation ended" severity error;
 
 end process stimulus;
@@ -271,23 +284,25 @@ end process stimulus;
 
 spi_slave : process (S_SCLK, S_SS_OUT_N, S_MISO)
             begin
-    -- generate new output value on falling edge
     if falling_edge(S_SS_OUT_N) then
         S_MISO <= (others => S_TX_DATA(S_TX_BIT_COUNT)) after (DCNVSDOV + 2 * PCB_DEL);
     end if;
     
+    -- generate new output value on falling edge
     if falling_edge(S_SCLK) then
         S_MISO <= (others => 'X') after (HSDO + 2 * PCB_DEL);
-        S_TX_BIT_COUNT <= S_TX_BIT_COUNT - 1;
+        if (S_TX_BIT_COUNT > 0) then
+            S_TX_BIT_COUNT <= S_TX_BIT_COUNT - 1;
+        end if;
     end if;
-    
     if S_MISO(0) = 'X' then
         S_MISO <= (others => S_TX_DATA(S_TX_BIT_COUNT)) after (DSCKSDOV - HSDO);
-    if S_TX_BIT_COUNT <= 0 then
-        S_TX_BIT_COUNT <= TEST_DATA_WIDTH - 1;
-    end if;
     end if;
     
+    -- reset bit counter for next transmission
+    if rising_edge(S_SS_OUT_N) then
+        S_TX_BIT_COUNT <= TEST_DATA_WIDTH;
+    end if;
 end process spi_slave;
 
 end Behavioral;

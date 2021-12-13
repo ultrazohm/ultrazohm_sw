@@ -108,6 +108,7 @@ typedef struct {
 
 typedef struct {
   uz_PMSM_t PMSM_config;
+	boolean_T enableParameterID;
   boolean_T Reset;
   real32_T Kp_id;
   real32_T Kp_iq;

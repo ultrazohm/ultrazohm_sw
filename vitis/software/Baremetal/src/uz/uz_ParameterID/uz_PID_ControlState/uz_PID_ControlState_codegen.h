@@ -108,6 +108,7 @@ typedef struct {
 
 typedef struct {
   uz_PMSM_t PMSM_config;
+	boolean_T enableParameterID;
   boolean_T Reset;
   real32_T Kp_id;
   real32_T Kp_iq;
@@ -156,6 +157,7 @@ typedef struct {
 	uint16_T finishedTwoMassID_loc; /* '<Root>/ControlState' */
 	uint16_T finishedFluxMapID_loc; /* '<Root>/ControlState' */
   uint8_T is_active_c8_ControlState;   /* '<Root>/ControlState' */
+	uint8_T is_c8_ControlState; /* '<Root>/ControlState' */
   uint8_T is_ControlState;             /* '<Root>/ControlState' */
 } DW_ControlState_t;
 
@@ -223,5 +225,4 @@ extern void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M);
  *
  * [EOF]
  */
-
 #endif

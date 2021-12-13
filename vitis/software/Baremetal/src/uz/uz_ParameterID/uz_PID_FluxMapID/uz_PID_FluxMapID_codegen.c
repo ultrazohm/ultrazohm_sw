@@ -34,12 +34,207 @@
 #define IN_initAMM                     ((uint8_T)6U)
 #define IN_waitForCollectToFinish      ((uint8_T)7U)
 #define IN_whatsNext                   ((uint8_T)8U)
+#define NumBitsPerChar                 8U
 
 /* Forward declaration for local functions */
 static void initParams(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFluxMapID_Y, DW_FluxMapID_t *rtFluxMapID_DW);
 static void RefreshDataRegister(DW_FluxMapID_t *rtFluxMapID_DW);
 static real32_T identRes(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFluxMapID_Y, DW_FluxMapID_t *rtFluxMapID_DW);
 static void enter_atomic_AMMnewRef(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFluxMapID_Y, DW_FluxMapID_t *rtFluxMapID_DW);
+static real_T rtGetNaN(void);
+static real32_T rtGetNaNF(void);
+extern real_T rtInf;
+extern real_T rtMinusInf;
+extern real_T rtNaN;
+extern real32_T rtInfF;
+extern real32_T rtMinusInfF;
+extern real32_T rtNaNF;
+static void rt_InitInfAndNaN(size_t realSize);
+static boolean_T rtIsInf(real_T value);
+static boolean_T rtIsInfF(real32_T value);
+static boolean_T rtIsNaN(real_T value);
+static boolean_T rtIsNaNF(real32_T value);
+typedef struct {
+	struct {
+		uint32_T wordH;
+		uint32_T wordL;
+	} words;
+} BigEndianIEEEDouble;
+
+typedef struct {
+	struct {
+		uint32_T wordL;
+		uint32_T wordH;
+	} words;
+} LittleEndianIEEEDouble;
+
+typedef struct {
+	union {
+		real32_T wordLreal;
+		uint32_T wordLuint;
+	} wordL;
+} IEEESingle;
+
+real_T rtInf;
+real_T rtMinusInf;
+real_T rtNaN;
+real32_T rtInfF;
+real32_T rtMinusInfF;
+real32_T rtNaNF;
+static real_T rtGetInf(void);
+static real32_T rtGetInfF(void);
+static real_T rtGetMinusInf(void);
+static real32_T rtGetMinusInfF(void);
+
+/*
+ * Initialize rtNaN needed by the generated code.
+ * NaN is initialized as non-signaling. Assumes IEEE.
+ */
+static real_T rtGetNaN(void) {
+	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+	real_T nan = 0.0;
+	if (bitsPerReal == 32U) {
+		nan = rtGetNaNF();
+	} else {
+		union {
+			LittleEndianIEEEDouble bitVal;
+			real_T fltVal;
+		} tmpVal;
+
+		tmpVal.bitVal.words.wordH = 0xFFF80000U;
+		tmpVal.bitVal.words.wordL = 0x00000000U;
+		nan = tmpVal.fltVal;
+	}
+
+	return nan;
+}
+
+/*
+ * Initialize rtNaNF needed by the generated code.
+ * NaN is initialized as non-signaling. Assumes IEEE.
+ */
+static real32_T rtGetNaNF(void) {
+	IEEESingle nanF = { { 0.0F } };
+
+	nanF.wordL.wordLuint = 0xFFC00000U;
+	return nanF.wordL.wordLreal;
+}
+
+/*
+ * Initialize the rtInf, rtMinusInf, and rtNaN needed by the
+ * generated code. NaN is initialized as non-signaling. Assumes IEEE.
+ */
+static void rt_InitInfAndNaN(size_t realSize) {
+	(void) (realSize);
+	rtNaN = rtGetNaN();
+	rtNaNF = rtGetNaNF();
+	rtInf = rtGetInf();
+	rtInfF = rtGetInfF();
+	rtMinusInf = rtGetMinusInf();
+	rtMinusInfF = rtGetMinusInfF();
+}
+
+/* Test if value is infinite */
+static boolean_T rtIsInf(real_T value) {
+	return (boolean_T) ((value == rtInf || value == rtMinusInf) ? 1U : 0U);
+}
+
+/* Test if single-precision value is infinite */
+static boolean_T rtIsInfF(real32_T value) {
+	return (boolean_T) (((value) == rtInfF || (value) == rtMinusInfF) ? 1U : 0U);
+}
+
+/* Test if value is not a number */
+static boolean_T rtIsNaN(real_T value) {
+	boolean_T result = (boolean_T) 0;
+	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+	if (bitsPerReal == 32U) {
+		result = rtIsNaNF((real32_T) value);
+	} else {
+		union {
+			LittleEndianIEEEDouble bitVal;
+			real_T fltVal;
+		} tmpVal;
+
+		tmpVal.fltVal = value;
+		result = (boolean_T) ((tmpVal.bitVal.words.wordH & 0x7FF00000) == 0x7FF00000 && ((tmpVal.bitVal.words.wordH & 0x000FFFFF) != 0 || (tmpVal.bitVal.words.wordL != 0)));
+	}
+
+	return result;
+}
+
+/* Test if single-precision value is not a number */
+static boolean_T rtIsNaNF(real32_T value) {
+	IEEESingle tmp;
+	tmp.wordL.wordLreal = value;
+	return (boolean_T) ((tmp.wordL.wordLuint & 0x7F800000) == 0x7F800000 && (tmp.wordL.wordLuint & 0x007FFFFF) != 0);
+}
+
+/*
+ * Initialize rtInf needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+static real_T rtGetInf(void) {
+	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+	real_T inf = 0.0;
+	if (bitsPerReal == 32U) {
+		inf = rtGetInfF();
+	} else {
+		union {
+			LittleEndianIEEEDouble bitVal;
+			real_T fltVal;
+		} tmpVal;
+
+		tmpVal.bitVal.words.wordH = 0x7FF00000U;
+		tmpVal.bitVal.words.wordL = 0x00000000U;
+		inf = tmpVal.fltVal;
+	}
+
+	return inf;
+}
+
+/*
+ * Initialize rtInfF needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+static real32_T rtGetInfF(void) {
+	IEEESingle infF;
+	infF.wordL.wordLuint = 0x7F800000U;
+	return infF.wordL.wordLreal;
+}
+
+/*
+ * Initialize rtMinusInf needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+static real_T rtGetMinusInf(void) {
+	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+	real_T minf = 0.0;
+	if (bitsPerReal == 32U) {
+		minf = rtGetMinusInfF();
+	} else {
+		union {
+			LittleEndianIEEEDouble bitVal;
+			real_T fltVal;
+		} tmpVal;
+
+		tmpVal.bitVal.words.wordH = 0xFFF00000U;
+		tmpVal.bitVal.words.wordL = 0x00000000U;
+		minf = tmpVal.fltVal;
+	}
+
+	return minf;
+}
+
+/*
+ * Initialize rtMinusInfF needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+static real32_T rtGetMinusInfF(void) {
+	IEEESingle minfF;
+	minfF.wordL.wordLuint = 0xFF800000U;
+	return minfF.wordL.wordLreal;
+}
 
 /*
  * Function for Chart: '<Root>/FluxMapID'
@@ -357,8 +552,8 @@ static real32_T identRes(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFl
 static void enter_atomic_AMMnewRef(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t *rtFluxMapID_Y, DW_FluxMapID_t *rtFluxMapID_DW)
 {
 	real32_T q;
-  real32_T r;
-	real32_T z;
+	real32_T x;
+	real32_T z_tmp;
 	uint32_T qY;
 	boolean_T rEQ0;
 
@@ -369,42 +564,47 @@ static void enter_atomic_AMMnewRef(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMap
 
 	/* Inport: '<Root>/FluxMapIDConfig' */
 	/* '<S1>:583:5' if((FluxMapIDConfig.IDstart + single(AMMn) * FluxMapIDConfig.IDstepsize) <= FluxMapIDConfig.IDstop) */
-	q = (real32_T) rtFluxMapID_DW->AMMn * rtFluxMapID_U->FluxMapIDConfig.IDstepsize + rtFluxMapID_U->FluxMapIDConfig.IDstart;
-	if (q <= rtFluxMapID_U->FluxMapIDConfig.IDstop) {
+	z_tmp = (real32_T) rtFluxMapID_DW->AMMn * rtFluxMapID_U->FluxMapIDConfig.IDstepsize + rtFluxMapID_U->FluxMapIDConfig.IDstart;
+	if (z_tmp <= rtFluxMapID_U->FluxMapIDConfig.IDstop) {
 		/* '<S1>:583:6' i_d_ref_AMM = single(FluxMapIDConfig.IDstart + single(AMMn) * FluxMapIDConfig.IDstepsize); */
-		rtFluxMapID_DW->i_d_ref_AMM = q;
+		rtFluxMapID_DW->i_d_ref_AMM = z_tmp;
 
 		/* '<S1>:583:7' if(mod(single(AMMn),((abs(FluxMapIDConfig.IDstop-FluxMapIDConfig.IDstart))/FluxMapIDConfig.IDstepsize)+1) == 0) */
-		q = fabsf(rtFluxMapID_U->FluxMapIDConfig.IDstop - rtFluxMapID_U->FluxMapIDConfig.IDstart);
-		z = q / rtFluxMapID_U->FluxMapIDConfig.IDstepsize;
-		r = (real32_T) rtFluxMapID_DW->AMMn;
-		if (z + 1.0F == 0.0F) {
+		z_tmp = fabsf(rtFluxMapID_U->FluxMapIDConfig.IDstop - rtFluxMapID_U->FluxMapIDConfig.IDstart) / rtFluxMapID_U->FluxMapIDConfig.IDstepsize;
+		x = (real32_T) rtFluxMapID_DW->AMMn;
+		if (z_tmp + 1.0F == 0.0F) {
 			if (rtFluxMapID_DW->AMMn == 0.0F) {
-				r = z + 1.0F;
-      }
+				x = z_tmp + 1.0F;
+			}
+		} else if (rtIsNaNF(z_tmp + 1.0F)) {
+			x = (rtNaNF);
 		} else if (rtFluxMapID_DW->AMMn == 0.0F) {
-			r = 0.0F / (z + 1.0F);
+			x = 0.0F / (z_tmp + 1.0F);
+		} else if (rtIsInfF(z_tmp + 1.0F)) {
+			if (z_tmp + 1.0F < 0.0F) {
+				x = z_tmp + 1.0F;
+      }
 		} else {
-			r = fmodf((real32_T) rtFluxMapID_DW->AMMn, z + 1.0F);
-			rEQ0 = (r == 0.0F);
-			if ((!rEQ0) && (z + 1.0F > floorf(z + 1.0F))) {
-				q = fabsf((real32_T) rtFluxMapID_DW->AMMn / (q / rtFluxMapID_U->FluxMapIDConfig.IDstepsize + 1.0F));
-				rEQ0 = (fabsf(q - floorf(q + 0.5F)) <= 1.1920929E-7F * q);
+			x = fmodf((real32_T) rtFluxMapID_DW->AMMn, z_tmp + 1.0F);
+			rEQ0 = (x == 0.0F);
+			if ((!rEQ0) && (z_tmp + 1.0F > floorf(z_tmp + 1.0F))) {
+				q = fabsf((real32_T) rtFluxMapID_DW->AMMn / (z_tmp + 1.0F));
+				rEQ0 = !(fabsf(q - floorf(q + 0.5F)) > 1.1920929E-7F * q);
       }
 
 			if (rEQ0) {
-				r = 0.0F;
-			} else if (z + 1.0F < 0.0F) {
-				r += z + 1.0F;
+				x = (z_tmp + 1.0F) * 0.0F;
+			} else if (z_tmp + 1.0F < 0.0F) {
+				x += z_tmp + 1.0F;
       }
     }
 
-		if (r == 0.0F) {
+		if (x == 0.0F) {
 			/* '<S1>:583:8' if((FluxMapIDConfig.IQstart + single(AMMj) * FluxMapIDConfig.IQstepsize) <= FluxMapIDConfig.IQstop) */
-			q = (real32_T) rtFluxMapID_DW->AMMj * rtFluxMapID_U->FluxMapIDConfig.IQstepsize + rtFluxMapID_U->FluxMapIDConfig.IQstart;
-			if (q <= rtFluxMapID_U->FluxMapIDConfig.IQstop) {
+			z_tmp = (real32_T) rtFluxMapID_DW->AMMj * rtFluxMapID_U->FluxMapIDConfig.IQstepsize + rtFluxMapID_U->FluxMapIDConfig.IQstart;
+			if (z_tmp <= rtFluxMapID_U->FluxMapIDConfig.IQstop) {
 				/* '<S1>:583:9' i_q_ref_AMM = single(FluxMapIDConfig.IQstart + single(AMMj) * FluxMapIDConfig.IQstepsize); */
-				rtFluxMapID_DW->i_q_ref_AMM = q;
+				rtFluxMapID_DW->i_q_ref_AMM = z_tmp;
 
 				/* '<S1>:583:10' AMMj = AMMj + 1; */
 				qY = rtFluxMapID_DW->AMMj + /*MW:OvSatOk*/1U;
@@ -463,8 +663,9 @@ void FluxMapID_step(RT_MODEL_FluxMapID_t * const rtFluxMapID_M)
 	} else if (rtFluxMapID_DW->is_c16_FluxMapID == IN_AMMstate) {
 		/* During 'AMMstate': '<S1>:590' */
 		/* '<S1>:667:1' sf_internal_predicateOutput = GlobalConfig.Reset==1 || GlobalConfig.FluxMapID==0.... */
-		/* '<S1>:667:2' || FluxMapIDConfig.start_FM_ID==0; */
-		if (rtFluxMapID_U->GlobalConfig_out.Reset || (!rtFluxMapID_U->GlobalConfig_out.FluxMapID) || (!rtFluxMapID_U->FluxMapIDConfig.start_FM_ID)) {
+		/* '<S1>:667:2' || FluxMapIDConfig.start_FM_ID==0 || GlobalConfig.enableParameterID==0; */
+		if (rtFluxMapID_U->GlobalConfig_out.Reset || (!rtFluxMapID_U->GlobalConfig_out.FluxMapID) || (!rtFluxMapID_U->FluxMapIDConfig.start_FM_ID)
+		                || (!rtFluxMapID_U->GlobalConfig_out.enableParameterID)) {
 			/* Outport: '<Root>/enteredFluxMapID' */
 			/* Transition: '<S1>:667' */
 			/* '<S1>:667:3' enteredFluxMapID=boolean(0) */
@@ -944,6 +1145,9 @@ void FluxMapID_initialize(RT_MODEL_FluxMapID_t * const rtFluxMapID_M)
 	ExtU_FluxMapID_t *rtFluxMapID_U = (ExtU_FluxMapID_t *) rtFluxMapID_M->inputs;
 
   /* Registration code */
+
+	/* initialize non-finites */
+	rt_InitInfAndNaN(sizeof(real_T));
 
   /* states (dwork) */
 	(void) memset((void *) rtFluxMapID_DW, 0, sizeof(DW_FluxMapID_t));

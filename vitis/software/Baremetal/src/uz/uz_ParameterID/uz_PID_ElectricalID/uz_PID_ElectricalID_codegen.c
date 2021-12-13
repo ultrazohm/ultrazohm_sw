@@ -45,8 +45,9 @@
 #define IN_stepResponse_q              ((uint8_T)17U)
 #define IN_stop                        ((uint8_T)18U)
 #define IN_waitState                   ((uint8_T)19U)
+#define NumBitsPerChar                 8U
 
-extern real32_T rt_hypotf(real32_T u0, real32_T u1);
+extern real32_T rt_hypotf_snf(real32_T u0, real32_T u1);
 
 /* Forward declaration for local functions */
 static void initParams(ExtY_ElectricalID_t *rtElectricalID_Y, DW_ElectricalID_t *
@@ -56,6 +57,7 @@ static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
   *rtElectricalID_U, ExtY_ElectricalID_t *rtElectricalID_Y, DW_ElectricalID_t
   *rtElectricalID_DW);
 static void RefreshDataRegister(DW_ElectricalID_t *rtElectricalID_DW);
+static real32_T minimum(const real32_T x[5]);
 static void DutyCycle_mod(const real32_T om_reg_in[5], ExtU_ElectricalID_t
   *rtElectricalID_U, DW_ElectricalID_t *rtElectricalID_DW);
 static void TurnMotor(ExtU_ElectricalID_t *rtElectricalID_U, ExtY_ElectricalID_t
@@ -81,6 +83,200 @@ static void exit_internal_ElectricalID(ExtU_ElectricalID_t *rtElectricalID_U,
   ExtY_ElectricalID_t *rtElectricalID_Y, DW_ElectricalID_t *rtElectricalID_DW);
 static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
   ExtY_ElectricalID_t *rtElectricalID_Y, DW_ElectricalID_t *rtElectricalID_DW);
+extern real_T rtInf;
+extern real_T rtMinusInf;
+extern real_T rtNaN;
+extern real32_T rtInfF;
+extern real32_T rtMinusInfF;
+extern real32_T rtNaNF;
+static void rt_InitInfAndNaN(size_t realSize);
+static boolean_T rtIsInf(real_T value);
+static boolean_T rtIsInfF(real32_T value);
+static boolean_T rtIsNaN(real_T value);
+static boolean_T rtIsNaNF(real32_T value);
+typedef struct {
+	struct {
+		uint32_T wordH;
+		uint32_T wordL;
+	} words;
+} BigEndianIEEEDouble;
+
+typedef struct {
+	struct {
+		uint32_T wordL;
+		uint32_T wordH;
+	} words;
+} LittleEndianIEEEDouble;
+
+typedef struct {
+	union {
+		real32_T wordLreal;
+		uint32_T wordLuint;
+	} wordL;
+} IEEESingle;
+
+real_T rtInf;
+real_T rtMinusInf;
+real_T rtNaN;
+real32_T rtInfF;
+real32_T rtMinusInfF;
+real32_T rtNaNF;
+static real_T rtGetInf(void);
+static real32_T rtGetInfF(void);
+static real_T rtGetMinusInf(void);
+static real32_T rtGetMinusInfF(void);
+static real_T rtGetNaN(void);
+static real32_T rtGetNaNF(void);
+
+/*
+ * Initialize the rtInf, rtMinusInf, and rtNaN needed by the
+ * generated code. NaN is initialized as non-signaling. Assumes IEEE.
+ */
+static void rt_InitInfAndNaN(size_t realSize) {
+	(void) (realSize);
+	rtNaN = rtGetNaN();
+	rtNaNF = rtGetNaNF();
+	rtInf = rtGetInf();
+	rtInfF = rtGetInfF();
+	rtMinusInf = rtGetMinusInf();
+	rtMinusInfF = rtGetMinusInfF();
+}
+
+/* Test if value is infinite */
+static boolean_T rtIsInf(real_T value) {
+	return (boolean_T) ((value == rtInf || value == rtMinusInf) ? 1U : 0U);
+}
+
+/* Test if single-precision value is infinite */
+static boolean_T rtIsInfF(real32_T value) {
+	return (boolean_T) (((value) == rtInfF || (value) == rtMinusInfF) ? 1U : 0U);
+}
+
+/* Test if value is not a number */
+static boolean_T rtIsNaN(real_T value) {
+	boolean_T result = (boolean_T) 0;
+	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+	if (bitsPerReal == 32U) {
+		result = rtIsNaNF((real32_T) value);
+	} else {
+		union {
+			LittleEndianIEEEDouble bitVal;
+			real_T fltVal;
+		} tmpVal;
+
+		tmpVal.fltVal = value;
+		result = (boolean_T) ((tmpVal.bitVal.words.wordH & 0x7FF00000) == 0x7FF00000 && ((tmpVal.bitVal.words.wordH & 0x000FFFFF) != 0 || (tmpVal.bitVal.words.wordL != 0)));
+	}
+
+	return result;
+}
+
+/* Test if single-precision value is not a number */
+static boolean_T rtIsNaNF(real32_T value) {
+	IEEESingle tmp;
+	tmp.wordL.wordLreal = value;
+	return (boolean_T) ((tmp.wordL.wordLuint & 0x7F800000) == 0x7F800000 && (tmp.wordL.wordLuint & 0x007FFFFF) != 0);
+}
+
+/*
+ * Initialize rtInf needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+static real_T rtGetInf(void) {
+	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+	real_T inf = 0.0;
+	if (bitsPerReal == 32U) {
+		inf = rtGetInfF();
+	} else {
+		union {
+			LittleEndianIEEEDouble bitVal;
+			real_T fltVal;
+		} tmpVal;
+
+		tmpVal.bitVal.words.wordH = 0x7FF00000U;
+		tmpVal.bitVal.words.wordL = 0x00000000U;
+		inf = tmpVal.fltVal;
+	}
+
+	return inf;
+}
+
+/*
+ * Initialize rtInfF needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+static real32_T rtGetInfF(void) {
+	IEEESingle infF;
+	infF.wordL.wordLuint = 0x7F800000U;
+	return infF.wordL.wordLreal;
+}
+
+/*
+ * Initialize rtMinusInf needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+static real_T rtGetMinusInf(void) {
+	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+	real_T minf = 0.0;
+	if (bitsPerReal == 32U) {
+		minf = rtGetMinusInfF();
+	} else {
+		union {
+			LittleEndianIEEEDouble bitVal;
+			real_T fltVal;
+		} tmpVal;
+
+		tmpVal.bitVal.words.wordH = 0xFFF00000U;
+		tmpVal.bitVal.words.wordL = 0x00000000U;
+		minf = tmpVal.fltVal;
+	}
+
+	return minf;
+}
+
+/*
+ * Initialize rtMinusInfF needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+static real32_T rtGetMinusInfF(void) {
+	IEEESingle minfF;
+	minfF.wordL.wordLuint = 0xFF800000U;
+	return minfF.wordL.wordLreal;
+}
+
+/*
+ * Initialize rtNaN needed by the generated code.
+ * NaN is initialized as non-signaling. Assumes IEEE.
+ */
+static real_T rtGetNaN(void) {
+	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+	real_T nan = 0.0;
+	if (bitsPerReal == 32U) {
+		nan = rtGetNaNF();
+	} else {
+		union {
+			LittleEndianIEEEDouble bitVal;
+			real_T fltVal;
+		} tmpVal;
+
+		tmpVal.bitVal.words.wordH = 0xFFF80000U;
+		tmpVal.bitVal.words.wordL = 0x00000000U;
+		nan = tmpVal.fltVal;
+	}
+
+	return nan;
+}
+
+/*
+ * Initialize rtNaNF needed by the generated code.
+ * NaN is initialized as non-signaling. Assumes IEEE.
+ */
+static real32_T rtGetNaNF(void) {
+	IEEESingle nanF = { { 0.0F } };
+
+	nanF.wordL.wordLuint = 0xFFC00000U;
+	return nanF.wordL.wordLreal;
+}
 
 /*
  * Function for Chart: '<Root>/ElectricalID'
@@ -479,6 +675,44 @@ static void RefreshDataRegister(DW_ElectricalID_t *rtElectricalID_DW)
   rtElectricalID_DW->omega_register[1] = rtElectricalID_DW->omega_register[0];
 }
 
+/* Function for Chart: '<Root>/ElectricalID' */
+static real32_T minimum(const real32_T x[5]) {
+	int32_T idx;
+	int32_T k;
+	real32_T ex;
+	boolean_T exitg1;
+	if (!rtIsNaNF(x[0])) {
+		idx = 1;
+	} else {
+		idx = 0;
+		k = 2;
+		exitg1 = false;
+		while ((!exitg1) && (k < 6)) {
+			if (!rtIsNaNF(x[k - 1])) {
+				idx = k;
+				exitg1 = true;
+			} else {
+				k++;
+			}
+		}
+	}
+
+	if (idx == 0) {
+		ex = x[0];
+	} else {
+		ex = x[idx - 1];
+		while (idx + 1 <= 5) {
+			if (ex > x[idx]) {
+				ex = x[idx];
+			}
+
+			idx++;
+		}
+	}
+
+	return ex;
+}
+
 /*
  * Function for Chart: '<Root>/ElectricalID'
  * function DutyCycle_mod(om_reg_in)
@@ -486,9 +720,12 @@ static void RefreshDataRegister(DW_ElectricalID_t *rtElectricalID_DW)
 static void DutyCycle_mod(const real32_T om_reg_in[5], ExtU_ElectricalID_t
   *rtElectricalID_U, DW_ElectricalID_t *rtElectricalID_DW)
 {
+	int32_T b_k;
+	int32_T idx;
   real32_T ex;
   real32_T mean_om_reg;
   real32_T tmp;
+	boolean_T exitg1;
 
   /* MATLAB Function 'DutyCycle_mod': '<S1>:769' */
   /* '<S1>:769:2' mean_om_reg=mean(om_reg_in); */
@@ -512,62 +749,41 @@ static void DutyCycle_mod(const real32_T om_reg_in[5], ExtU_ElectricalID_t
       /* (currently 5% of rated speed) */
       /* '<S1>:769:12' if((mean_om_reg+(0.05*(GlobalConfig.ratSpeed*2*pi)/60))>=max(om_reg_in)&& ... */
       /* '<S1>:769:13'              (mean_om_reg-(0.05*(GlobalConfig.ratSpeed*2*pi)/60))<=min(om_reg_in)&&min(om_reg_in)~=0) */
-      ex = om_reg_in[0];
-      if (om_reg_in[0] < om_reg_in[1]) {
-        ex = om_reg_in[1];
+			if (!rtIsNaNF(om_reg_in[0])) {
+				idx = 1;
+			} else {
+				idx = 0;
+				b_k = 2;
+				exitg1 = false;
+				while ((!exitg1) && (b_k < 6)) {
+					if (!rtIsNaNF(om_reg_in[b_k - 1])) {
+						idx = b_k;
+						exitg1 = true;
+					} else {
+						b_k++;
+					}
+				}
       }
 
-      if (ex < om_reg_in[2]) {
-        ex = om_reg_in[2];
-      }
+			if (idx == 0) {
+				ex = om_reg_in[0];
+			} else {
+				ex = om_reg_in[idx - 1];
+				while (idx + 1 <= 5) {
+					if (ex < om_reg_in[idx]) {
+						ex = om_reg_in[idx];
+					}
 
-      if (ex < om_reg_in[3]) {
-        ex = om_reg_in[3];
-      }
-
-      if (ex < om_reg_in[4]) {
-        ex = om_reg_in[4];
+					idx++;
+				}
       }
 
       tmp = rtElectricalID_U->GlobalConfig_out.ratSpeed * 2.0F * 3.14159274F *
         0.05F / 60.0F;
       if (tmp + mean_om_reg >= ex) {
-        ex = om_reg_in[0];
-        if (om_reg_in[0] > om_reg_in[1]) {
-          ex = om_reg_in[1];
-        }
-
-        if (ex > om_reg_in[2]) {
-          ex = om_reg_in[2];
-        }
-
-        if (ex > om_reg_in[3]) {
-          ex = om_reg_in[3];
-        }
-
-        if (ex > om_reg_in[4]) {
-          ex = om_reg_in[4];
-        }
-
+				ex = minimum(om_reg_in);
         if (mean_om_reg - tmp <= ex) {
-          mean_om_reg = om_reg_in[0];
-          if (om_reg_in[0] > om_reg_in[1]) {
-            mean_om_reg = om_reg_in[1];
-          }
-
-          if (mean_om_reg > om_reg_in[2]) {
-            mean_om_reg = om_reg_in[2];
-          }
-
-          if (mean_om_reg > om_reg_in[3]) {
-            mean_om_reg = om_reg_in[3];
-          }
-
-          if (mean_om_reg > om_reg_in[4]) {
-            mean_om_reg = om_reg_in[4];
-          }
-
-          if (mean_om_reg != 0.0F) {
+					if (ex != 0.0F) {
             /* '<S1>:769:15' om_con=boolean(1); */
             rtElectricalID_DW->om_con = true;
           } else {
@@ -649,7 +865,6 @@ static void evaluate_Turn_DC(ExtU_ElectricalID_t *rtElectricalID_U,
   ExtY_ElectricalID_t *rtElectricalID_Y, DW_ElectricalID_t *rtElectricalID_DW)
 {
   int32_T k;
-  real32_T c_y[5];
   real32_T tmp;
   uint32_T y;
 
@@ -741,10 +956,10 @@ static void evaluate_Turn_DC(ExtU_ElectricalID_t *rtElectricalID_U,
         /* after 2s omega will be evaluated */
         /* '<S1>:379:21' DutyCycle_mod(abs(omega_register)); */
         for (k = 0; k < 5; k++) {
-          c_y[k] = fabsf(rtElectricalID_DW->omega_register[k]);
+					rtElectricalID_DW->c_y[k] = fabsf(rtElectricalID_DW->omega_register[k]);
         }
 
-        DutyCycle_mod(c_y, rtElectricalID_U, rtElectricalID_DW);
+				DutyCycle_mod(rtElectricalID_DW->c_y, rtElectricalID_U, rtElectricalID_DW);
       }
     }
 
@@ -900,20 +1115,19 @@ static void measure_psiPM(ExtU_ElectricalID_t *rtElectricalID_U,
   /* End of Outport: '<Root>/ElectricalID_output' */
 }
 
-real32_T rt_hypotf(real32_T u0, real32_T u1)
+real32_T rt_hypotf_snf(real32_T u0, real32_T u1)
 {
   real32_T a;
-  real32_T b;
   real32_T y;
   a = fabsf(u0);
-  b = fabsf(u1);
-  if (a < b) {
-    a /= b;
-    y = sqrtf(a * a + 1.0F) * b;
-  } else if (a > b) {
-    b /= a;
-    y = sqrtf(b * b + 1.0F) * a;
-  } else {
+	y = fabsf(u1);
+	if (a < y) {
+		a /= y;
+		y *= sqrtf(a * a + 1.0F);
+	} else if (a > y) {
+		y /= a;
+		y = sqrtf(y * y + 1.0F) * a;
+	} else if (!rtIsNaNF(y)) {
     y = a * 1.41421354F;
   }
 
@@ -934,6 +1148,7 @@ static void goertzel(ExtU_ElectricalID_t *rtElectricalID_U, ExtY_ElectricalID_t 
   real32_T r;
   real32_T s0;
   real32_T s2;
+	real32_T sgnbi;
 
   /* MATLAB Function 'goertzel': '<S1>:350' */
   /*  calculate momentum from i_q */
@@ -1025,75 +1240,77 @@ static void goertzel(ExtU_ElectricalID_t *rtElectricalID_U, ExtY_ElectricalID_t 
   if (Xg_im == 0.0F) {
     if (ai == 0.0F) {
       s0 = s2 / Xg_re;
-      Xg_im = 0.0F;
+			s2 = 0.0F;
     } else if (s2 == 0.0F) {
       s0 = 0.0F;
-      Xg_im = ai / Xg_re;
+			s2 = ai / Xg_re;
     } else {
       s0 = s2 / Xg_re;
-      Xg_im = ai / Xg_re;
+			s2 = ai / Xg_re;
     }
   } else if (Xg_re == 0.0F) {
     if (s2 == 0.0F) {
       s0 = ai / Xg_im;
-      Xg_im = 0.0F;
+			s2 = 0.0F;
     } else if (ai == 0.0F) {
       s0 = 0.0F;
-      Xg_im = -(s2 / Xg_im);
+			s2 = -(s2 / Xg_im);
     } else {
       s0 = ai / Xg_im;
-      Xg_im = -(s2 / Xg_im);
+			s2 = -(s2 / Xg_im);
     }
   } else {
     r = fabsf(Xg_re);
     s0 = fabsf(Xg_im);
     if (r > s0) {
       r = Xg_im / Xg_re;
-      Xg_im = r * Xg_im + Xg_re;
-      s0 = (r * ai + s2) / Xg_im;
-      Xg_im = (ai - r * s2) / Xg_im;
+			Xg_re += r * Xg_im;
+			s0 = (r * ai + s2) / Xg_re;
+			s2 = (ai - r * s2) / Xg_re;
     } else if (s0 == r) {
       Xg_re = Xg_re > 0.0F ? 0.5F : -0.5F;
-      Xg_im = Xg_im > 0.0F ? 0.5F : -0.5F;
-      s0 = (s2 * Xg_re + ai * Xg_im) / r;
-      Xg_im = (ai * Xg_re - s2 * Xg_im) / r;
+			sgnbi = Xg_im > 0.0F ? 0.5F : -0.5F;
+			s0 = (s2 * Xg_re + ai * sgnbi) / r;
+			s2 = (ai * Xg_re - s2 * sgnbi) / r;
     } else {
       r = Xg_re / Xg_im;
-      Xg_im += r * Xg_re;
-      s0 = (r * s2 + ai) / Xg_im;
-      Xg_im = (r * ai - s2) / Xg_im;
+			Xg_re = r * Xg_re + Xg_im;
+			s0 = (r * s2 + ai) / Xg_re;
+			s2 = (r * ai - s2) / Xg_re;
     }
   }
 
-  Xg_im = (0.0F - Xg_im) * 2.0F * 3.14159274F * 40.0F;
-  s2 = 2.0F * s0 * 3.14159274F * 40.0F;
+	Xg_im = (s0 * 0.0F - s2) * 2.0F * 3.14159274F * 40.0F;
+	s2 = (s2 * 0.0F + s0) * 2.0F * 3.14159274F * 40.0F;
   if (s2 == 0.0F) {
-    s0 = 1.0F / Xg_im;
+		Xg_im = 1.0F / Xg_im;
+		s2 = 0.0F;
+	} else if (Xg_im == 0.0F) {
     Xg_im = 0.0F;
-  } else if (Xg_im == 0.0F) {
-    s0 = 0.0F;
-    Xg_im = -(1.0F / s2);
+		s2 = -(1.0F / s2);
   } else {
     r = fabsf(Xg_im);
     s0 = fabsf(s2);
     if (r > s0) {
       r = s2 / Xg_im;
-      Xg_im += r * s2;
-      s0 = 1.0F / Xg_im;
-      Xg_im = (0.0F - r) / Xg_im;
+			Xg_re = r * s2 + Xg_im;
+			Xg_im = (r * 0.0F + 1.0F) / Xg_re;
+			s2 = (0.0F - r) / Xg_re;
     } else if (s0 == r) {
-      s0 = (Xg_im > 0.0F ? 0.5F : -0.5F) / r;
-      Xg_im = (0.0F - (s2 > 0.0F ? 0.5F : -0.5F)) / r;
+			Xg_re = Xg_im > 0.0F ? 0.5F : -0.5F;
+			sgnbi = s2 > 0.0F ? 0.5F : -0.5F;
+			Xg_im = (0.0F * sgnbi + Xg_re) / r;
+			s2 = (0.0F * Xg_re - sgnbi) / r;
     } else {
       r = Xg_im / s2;
-      Xg_im = r * Xg_im + s2;
-      s0 = r / Xg_im;
-      Xg_im = -1.0F / Xg_im;
+			Xg_re = r * Xg_im + s2;
+			Xg_im = r / Xg_re;
+			s2 = (r * 0.0F - 1.0F) / Xg_re;
     }
   }
 
   /* Outport: '<Root>/ElectricalID_output' */
-	rtElectricalID_Y->ElectricalID_output.PMSM_parameters.J_kg_m_squared = rt_hypotf(s0, Xg_im);
+	rtElectricalID_Y->ElectricalID_output.PMSM_parameters.J_kg_m_squared = rt_hypotf_snf(Xg_im, s2);
 
   /* without damping */
 }
@@ -1948,12 +2165,14 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 
   /* Inport: '<Root>/GlobalConfig' */
   /* During 'ElectricalID': '<S1>:761' */
-  /* '<S1>:901:1' sf_internal_predicateOutput = GlobalConfig.Reset==1 || GlobalConfig.ElectricalID==0; */
+	/* '<S1>:901:1' sf_internal_predicateOutput = GlobalConfig.Reset==1 || GlobalConfig.ElectricalID==0 ||.... */
+	/* '<S1>:901:2'  GlobalConfig.enableParameterID==0; */
+	/* . */
   if (rtElectricalID_U->GlobalConfig_out.Reset ||
-      (!rtElectricalID_U->GlobalConfig_out.ElectricalID)) {
+      (!rtElectricalID_U->GlobalConfig_out.ElectricalID) || (!rtElectricalID_U->GlobalConfig_out.enableParameterID)) {
     /* Outport: '<Root>/enteredElectricalID' */
     /* Transition: '<S1>:901' */
-    /* '<S1>:901:2' enteredElectricalID=boolean(0) */
+		/* '<S1>:901:3' enteredElectricalID=boolean(0) */
     rtElectricalID_Y->enteredElectricalID = false;
     exit_internal_ElectricalID(rtElectricalID_U, rtElectricalID_Y,
       rtElectricalID_DW);
@@ -2761,6 +2980,9 @@ void ElectricalID_initialize(RT_MODEL_ElectricalID_t *const rtElectricalID_M)
     rtElectricalID_M->inputs;
 
   /* Registration code */
+
+	/* initialize non-finites */
+	rt_InitInfAndNaN(sizeof(real_T));
 
   /* states (dwork) */
   (void) memset((void *)rtElectricalID_DW, 0,

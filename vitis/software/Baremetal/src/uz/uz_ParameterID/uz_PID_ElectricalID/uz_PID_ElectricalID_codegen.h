@@ -101,6 +101,7 @@ typedef struct {
 
 typedef struct {
   uz_PMSM_t PMSM_config;
+	boolean_T enableParameterID;
   boolean_T Reset;
   real32_T Kp_id;
   real32_T Kp_iq;
@@ -196,6 +197,7 @@ typedef struct {
   real32_T fv3[2];
   real32_T fv4[4];
   real32_T fv5[2];
+	real32_T c_y[5];
   real32_T e;                          /* '<Root>/ElectricalID' */
   real32_T lambda;                     /* '<Root>/ElectricalID' */
 	real32_T V0; /* '<Root>/ElectricalID' */

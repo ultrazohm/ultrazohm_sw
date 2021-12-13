@@ -182,6 +182,7 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data) {
 	//Initialize Global-Config
 	Data->PID_GlobalConfig.ACCEPT = false;
 	Data->PID_GlobalConfig.Reset = false;
+	Data->PID_GlobalConfig.enableParameterID = false;
 	Data->PID_GlobalConfig.ElectricalID = false;
 	Data->PID_GlobalConfig.FluxMapID = false;
 	Data->PID_GlobalConfig.FrictionID = false;

@@ -581,9 +581,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			break; 
 
 		//Goertzel Amplitude
-		case( 0x613 + MOTORCONTROL_OFFSET_bits):
-			data->pID.goertzlAmp = value * 0.1;
-			break;
+	//	case( 0x613 + MOTORCONTROL_OFFSET_bits):
+	//		data->pID.goertzlAmp = value * 0.1;
+	//		break;
 
 		//Gebhardt Offline ID
 		case( 0x610+MOTORCONTROL_OFFSET_bits):

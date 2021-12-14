@@ -61,7 +61,7 @@ extern "C" {
 typedef struct		// status + time + 20 elements (32bit) + 32 bit
 {
 	uint32_t status;
-	uint32_t slowDataContent[NETWORK_SEND_FIELD_SIZE];
+	float slowDataContent[NETWORK_SEND_FIELD_SIZE];
 	float val_01[NETWORK_SEND_FIELD_SIZE];
     float val_02[NETWORK_SEND_FIELD_SIZE];
     float val_03[NETWORK_SEND_FIELD_SIZE];

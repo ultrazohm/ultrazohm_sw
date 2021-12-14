@@ -48,6 +48,7 @@ XTmrCtr Timer_Interrupt;
 
 //Initialize the WDTTB structure
 XWdtTb *WdtTbInstancePtr;
+int isr_failures;
 
 
 float sin1amp=1.0;
@@ -74,9 +75,6 @@ void ISR_Control(void *data)
 	//  Ensure that the source of the current interrupt is cleared: TESTED, AND NOT NECESARY
 	//	and enable Nested Interrupts: TESTED, NECESARY
 	Xil_EnableNestedInterrupts();
-
-	/* RE Start the SYSTEM WDT device. */
-//	XWdtPs_Restart();
 
 	/* Restart the AXI IP watch dog timer: kick forward */
 	WdtTb_Restart(WdtTbInstancePtr);
@@ -346,8 +344,8 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	//XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
 
 
-//	TODO: DELETE GET and xil_printf()
-//	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
+//	TODO: DELETE xil_printf()
+	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
 //	xil_printf("OLD Timer Prio is %d, level is %d\r\n",prio, trigger);
 	prio = 15;
 	trigger = 0b11;

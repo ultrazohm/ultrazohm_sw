@@ -4,7 +4,8 @@
 AXI Watch Dog Timer Time Based IP
 =================================
 
-Due to the lack of precision in the System Watchdog Timer. Set in a minimum of one millisecond in the `Zynq UltraScale+: technical reference manual <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf>`_, chapter 14, page 361: Variable timeout period, from 1 ms to 30 seconds using a 100 MHz clock. Although, testing has resulted in 350 microseconds.
+The lack of precision in the System Watchdog Timer which is set in a minimum of one millisecond as can be checked in the `Zynq UltraScale+: technical reference manual <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf>`_, chapter 14, page 361:
+Variable timeout period, from 1 ms to 30 seconds using a 100 MHz clock. Although, testing has resulted in 350 microseconds.
 Given this poor resolution we decide to integrate the `IP provided by Xilinx <https://www.xilinx.com/support/documentation/ip_documentation/axi_timebase_wdt/v3_0/pg128-axi-timebase-wdt.pdf>`_.
 
 Here we have the IP Block design and its components.

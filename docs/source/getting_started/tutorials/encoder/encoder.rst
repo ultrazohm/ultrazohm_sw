@@ -37,5 +37,5 @@ Read out Encoder
 Updated information
 *******************
 
-``js_ptr_arr[JSO_Theta_el] = &data->av.theta_elec`` and ``js_ptr_arr[JSO_theta_mech] = &data->av.theta_mech`` are now in the ``javascope.c`` instead of the ``isr.c``. The rest remains unchanged. 
+``js_ch_observable[JSO_Theta_el] = &data->av.theta_elec`` and ``js_ch_observable[JSO_theta_mech] = &data->av.theta_mech`` are now in the ``javascope.c`` instead of the ``isr.c``. The rest remains unchanged. 
 

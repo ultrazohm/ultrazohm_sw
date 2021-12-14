@@ -39,19 +39,19 @@ The UltraZohm has to be connected to a PC by Ethernet and USB (JTAG-Programmer).
 Visualize the life check
 ************************
 
-The ISR's life check variable (lifecheck) is written to the Javascope struct ``js_ptr_arr`` to display it in the Javascope GUI.
+The ISR's life check variable (lifecheck) is written to the Javascope struct ``js_ch_observable`` to display it in the Javascope GUI.
 
 .. code-block:: c
 
-    js_ptr_arr[JSO_SineWave1] = &lifecheck;
+    js_ch_observable[JSO_SineWave1] = &lifecheck;
     
-Change the variables around, so that the life check will be written to ``js_ptr_arr[JSO_Sawtooth1]`` instead.
+Change the variables around, so that the life check will be written to ``js_ch_observable[JSO_Sawtooth1]`` instead.
 
 .. code-block:: c
     
-    js_ptr_arr[JSO_Sawtooth1] 	= &lifecheck;
-    js_ptr_arr[JSO_SineWave1]   = &ISRExecutionTime;
-    js_ptr_arr[JSO_SineWave2]   = &isr_period_us;
+    js_ch_observable[JSO_Sawtooth1] 	= &lifecheck;
+    js_ch_observable[JSO_SineWave1]   = &ISRExecutionTime;
+    js_ch_observable[JSO_SineWave2]   = &isr_period_us;
 
 Program the UltraZohm and start the debug session (debug-icon).
 Start all PS-cores and add ``lifecheck`` to the expressions.
@@ -69,7 +69,7 @@ Visualize sine wave
 *******************
 
 The next step is to add a sine wave and display it on the Javascope.
-In the ``javascope.c`` of the R5 the struct ``js_ptr_arr[JSO_SineWave1]`` already exists, which we can use.  
+In the ``javascope.c`` of the R5 the struct ``js_ch_observable[JSO_SineWave1]`` already exists, which we can use.  
 
 Declare a new variable ``test_js_sinewave1``.
 
@@ -77,11 +77,11 @@ Declare a new variable ``test_js_sinewave1``.
 
    float test_js_sinewave1=0.0;
    
-Assign the variable ``test_js_sinewave1`` to the Javascope struct ``js_ptr_arr``:
+Assign the variable ``test_js_sinewave1`` to the Javascope struct ``js_ch_observable``:
 
 .. code-block:: c
 
-   js_ptr_arr[JSO_SineWave1]=&test_js_sinewave1;
+   js_ch_observable[JSO_SineWave1]=&test_js_sinewave1;
 
 Add the following code to the ``JavaScope_update()`` function in the ``javascope.c``. ``uz_SystemTime_GetUptimeInMs`` counts up every 1 millisecond and can be used as the counter:
 

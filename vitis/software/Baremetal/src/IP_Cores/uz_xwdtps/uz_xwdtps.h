@@ -36,15 +36,16 @@
 /***************************** Include Files *********************************/
 
 #include "xparameters.h"
-#include "xwdtps.h"
+
 #include "xscugic.h"
 #include "xil_exception.h"
 #include "xil_printf.h"
 
-
-#define ENABLE_WDT_INT
-
-
+// ENABLE OR DISABLE the code of the library. For example if the WD System timers not defined in Vivado Project
+//#define ENABLE_WDT_INT
+#ifdef ENABLE_WDT_INT
+#include "xwdtps.h"
+#endif
 /************************** Constant Definitions *****************************/
 
 /*
@@ -111,7 +112,10 @@ void WdtDisableIntrSystem(XScuGic *IntcInstancePtr);
 
 /************************** Variable Definitions *****************************/
 
+#ifdef ENABLE_WDT_INT
 XWdtPs WdtInstance;		/* Instance of WatchDog Timer */
+#endif
+
 XScuGic IntcInstance;		/* Instance of the Interrupt Controller */
 
 volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */

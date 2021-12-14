@@ -548,18 +548,20 @@ void WdtDisableIntrSystem(XScuGic *IntcInstancePtr)
 }
 #else /* ENABLE_WDT_INT */
 
-u32 WdtPsIntrPolled(u32 ExpiredTimeDelta) { }
+u32 WdtPsIntrPolled(u32 ExpiredTimeDelta) {}
 
 void XWdtPs_Restart() {}
 
-int WdtPsInit(XWdtPs * WdtInstancePtr, u16 WdtDeviceId, u32 Timeout){ }
+int WdtPsInit(u32 Timeout){}
 
-int WdtPsIntrExample(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr){ }
+int WdtPsIntrExample(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr){}
 
-void WdtIntrHandler(void *CallBackRef){ }
+void WdtIntrHandler(void *CallBackRef){}
 
-int WdtSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr){ }
+int WdtSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr){}
 
-void WdtDisableIntrSystem(XScuGic *IntcInstancePtr){ }
+void WdtDisableIntrSystem(XScuGic *IntcInstancePtr){}
+
+
 
 #endif /* ENABLE_WDT_INT */

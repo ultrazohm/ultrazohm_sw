@@ -67,83 +67,83 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			data->er.pwmFrequencyError = true;
 			break;
 
-		case( 204): // SELECT_DATA_CH1_bits
+		case( 201): // SELECT_DATA_CH1_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[0] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 205): // SELECT_DATA_CH2_bits
+		case( 202): // SELECT_DATA_CH2_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[1] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 206): // SELECT_DATA_CH3_bits
+		case( 203): // SELECT_DATA_CH3_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[2] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 207): // SELECT_DATA_CH4_bits
+		case( 204): // SELECT_DATA_CH4_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[3] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 208): // SELECT_DATA_CH5_bits
+		case( 205): // SELECT_DATA_CH5_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[4] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 209): // SELECT_DATA_CH6_bits
+		case( 206): // SELECT_DATA_CH6_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[5] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 210): // SELECT_DATA_CH7_bits
+		case( 207): // SELECT_DATA_CH7_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[6] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 211): // SELECT_DATA_CH8_bits
+		case( 208): // SELECT_DATA_CH8_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[7] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 212): // SELECT_DATA_CH9_bits
+		case( 209): // SELECT_DATA_CH9_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[8] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 213): // SELECT_DATA_CH10_bits
+		case( 210): // SELECT_DATA_CH10_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[9] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 214): // SELECT_DATA_CH11_bits
+		case( 211): // SELECT_DATA_CH11_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[10] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 215): // SELECT_DATA_CH12_bits
+		case( 212): // SELECT_DATA_CH12_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[11] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 216): // SELECT_DATA_CH13_bits
+		case( 213): // SELECT_DATA_CH13_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[12] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 217): // SELECT_DATA_CH14_bits
+		case( 214): // SELECT_DATA_CH14_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[13] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 218): // SELECT_DATA_CH15_bits
+		case( 215): // SELECT_DATA_CH15_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[14] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 219): // SELECT_DATA_CH16_bits
+		case( 216): // SELECT_DATA_CH16_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[15] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 220): // SELECT_DATA_CH17_bits
+		case( 217): // SELECT_DATA_CH17_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[16] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 221): // SELECT_DATA_CH18_bits
+		case( 218): // SELECT_DATA_CH18_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[17] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 222): // SELECT_DATA_CH19_bits
+		case( 219): // SELECT_DATA_CH19_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[18] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 223): // SELECT_DATA_CH20_bits
+		case( 220): // SELECT_DATA_CH20_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[19] = js_ch_observable[(uint32_t)value];	}
 			break;
 

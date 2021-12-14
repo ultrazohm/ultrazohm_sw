@@ -27,6 +27,7 @@
 /***************************** Include Files *********************************/
 
 #include "xparameters.h"
+#include <stdint.h>
 #include "xwdttb.h"
 
 /************************** Enabling Module  *****************************/
@@ -118,7 +119,7 @@ XWdtTb *uz_WdtTb_init();
 *
 * @return	XWdtTb pointer to the initialized WDTTB driver.
 */
-XWdtTb *uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId);
+XWdtTb *uz_WdtTb_init_device(uint32_t CounterValue, uint16_t WdtTbDeviceId);
 
 /**
 * @brief This function tests the functioning of the Window Watchdog

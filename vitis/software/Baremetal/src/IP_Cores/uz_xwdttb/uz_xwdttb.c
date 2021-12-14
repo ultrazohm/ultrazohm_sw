@@ -62,7 +62,7 @@ volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
 * @note		None.
 *
 ******************************************************************************/
-static int WdtTbInit(XWdtTb *WdtTbInstancePtr, u32 CounterValue, u16 WdtTbDeviceId) {
+static int WdtTbInit(XWdtTb *WdtTbInstancePtr, uint32_t CounterValue, uint16_t WdtTbDeviceId) {
 	int Status;
 	XWdtTb_Config *Config;
 
@@ -120,7 +120,7 @@ static int WdtTbInit(XWdtTb *WdtTbInstancePtr, u32 CounterValue, u16 WdtTbDevice
 	return XST_SUCCESS;
 }
 
-static XWdtTb *uz_WdtTb_allocation(u32 CounterValue, u16 WdtTbDeviceId)
+static XWdtTb *uz_WdtTb_allocation(uint32_t CounterValue, uint16_t WdtTbDeviceId)
 {
     uz_assert(instance_counter < UZ_WDTTB_MAX_INSTANCES);
 
@@ -157,7 +157,7 @@ XWdtTb *uz_WdtTb_init()
 
 /*****************************************************************************/
 
-XWdtTb *uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId)
+XWdtTb *uz_WdtTb_init_device(uint32_t CounterValue, uint16_t WdtTbDeviceId)
 {
     XWdtTb *self = uz_WdtTb_allocation(CounterValue, WdtTbDeviceId);
     return (self);
@@ -322,7 +322,7 @@ int WinWdtIntrExample(XWdtTb *WdtTbInstancePtr) {}
 
 XWdtTb *uz_WdtTb_init(){}
 
-XWdtTb *uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId) {}
+XWdtTb *uz_WdtTb_init_device(uint32_t CounterValue, uint16_t WdtTbDeviceId) {}
 
 void WdtTbIntrHandler(void *CallBackRef);
 

@@ -27,6 +27,7 @@
 /***************************** Include Files *********************************/
 
 #include "xparameters.h"
+#include <stdint.h>
 #include "xwdttb.h"
 
 /************************** Enabling Module  *****************************/
@@ -50,14 +51,15 @@
  * WIN_WDT_BSS_COUNT	Byte selected of the counter. Possible values: 0,1,2,3
  * WIN_WDT_SBC_COUNT	Value to the selected byte. When selected byte of the counter equals this value and the rest of bits are 0, the INT is activated.
  *
- * Wit the nexte values we have:
- * 9*2^10 = 10.000 clock ticks => 100 microsec to launch the Interruption
- * 54*2^10 = more than 500 micro secs to execute the handler function (and restart the WD timer inside the Second Win if we wan to resume normal execution)
+ * With the next values we have:
+ * 0x2710 = 10.000 clock ticks => 100 microsec to launch the Interruption
+ * We establish the interruption point in the value of the counter: 0x0000FF00
+ * to have enough time execute the handler function (and restart the WD timer inside the Second Win if we wan to resume normal execution)
  *
- * Giving a total Secon Window Size of 63*2^10
+ * so we add the clocks needed to the int point: 0x0000FF00 + 0x2710 =  0x00012610 Total Second Window Size
  * */
-#define WIN_WDT_SW_COUNT	0x0000FC00	/**< 63*2^10 INITIAL COUNTER VALUE*/
-#define WIN_WDT_SBC_COUNT	0xD8		/**< Selected byte count */
+#define WIN_WDT_SW_COUNT	0x00012610	/**< INITIAL COUNTER VALUE*/
+#define WIN_WDT_SBC_COUNT	0xFF		/**< Selected byte count */
 #define WIN_WDT_BSS_COUNT	1		/**< Byte segment selected */
 
 // ORIGINAL VALUES FOR THE EXAMPLE
@@ -118,7 +120,7 @@ XWdtTb *uz_WdtTb_init();
 *
 * @return	XWdtTb pointer to the initialized WDTTB driver.
 */
-XWdtTb *uz_WdtTb_init_device(u32 CounterValue, u16 WdtTbDeviceId);
+XWdtTb *uz_WdtTb_init_device(uint32_t CounterValue, uint16_t WdtTbDeviceId);
 
 /**
 * @brief This function tests the functioning of the Window Watchdog

@@ -27,10 +27,6 @@ the chosen working mode will be the Window mode. More complex, and with extended
 Driver function reference
 =========================
 
-.. doxygentypedef:: u16
-
-.. doxygentypedef:: u32
-
 .. doxygenstruct:: XWdtTb
 
 .. doxygenfunction:: WdtTb_Start

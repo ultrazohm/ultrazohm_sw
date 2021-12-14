@@ -220,6 +220,7 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data) {
 	Data->PID_GlobalConfig.PMSM_config.Psi_PM_Vs = 0.0075f;
 	Data->PID_GlobalConfig.PMSM_config.polePairs = 4.0f;
 	Data->PID_GlobalConfig.PMSM_config.J_kg_m_squared = 3.24e-05f;
+	Data->PID_GlobalConfig.PMSM_config.I_max_Ampere = 15.0f;
 	Data->PID_GlobalConfig.ratCurrent = 8.0f;
 	Data->PID_GlobalConfig.ratSpeed = 3000.0f;
 
@@ -231,7 +232,7 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data) {
 	Data->PID_ElectricalID_Config.n_ref_measurement = 0.0f;
 
 	//Initialize FluxMapID-Config
-	Data->PID_FluxMapID_Config.AMMsampleTime = 0.0f;
+	Data->PID_FluxMapID_Config.AMMsampleTime = 10.0f;
 	Data->PID_FluxMapID_Config.IDstart = 0.0f;
 	Data->PID_FluxMapID_Config.IDstepsize = 0.0f;
 	Data->PID_FluxMapID_Config.IDstop = 0.0f;

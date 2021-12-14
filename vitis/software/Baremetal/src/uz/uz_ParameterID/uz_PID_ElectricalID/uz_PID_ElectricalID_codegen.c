@@ -52,6 +52,7 @@ extern real32_T rt_hypotf_snf(real32_T u0, real32_T u1);
 /* Forward declaration for local functions */
 static void initParams(ExtY_ElectricalID_t *rtElectricalID_Y, DW_ElectricalID_t *
   rtElectricalID_DW);
+static void reset_FOC_output(ExtY_ElectricalID_t *rtElectricalID_Y);
 static void resetParams_LM(DW_ElectricalID_t *rtElectricalID_DW);
 static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
   *rtElectricalID_U, ExtY_ElectricalID_t *rtElectricalID_Y, DW_ElectricalID_t
@@ -494,6 +495,66 @@ static void initParams(ExtY_ElectricalID_t *rtElectricalID_Y, DW_ElectricalID_t 
 
 	/* '<S1>:88:91' psiOverJ                = single(5000); */
   rtElectricalID_DW->psiOverJ = 5000.0F;
+}
+
+/*
+ * Function for Chart: '<Root>/ElectricalID'
+ * function reset_FOC_output
+ * Outputs
+ */
+static void reset_FOC_output(ExtY_ElectricalID_t *rtElectricalID_Y) {
+	/* Outport: '<Root>/ElectricalID_FOC_output' */
+	/* MATLAB Function 'reset_FOC_output': '<S1>:920' */
+	/* '<S1>:920:4' ElectricalID_FOC_output.Ki_n_out    = single(0.0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.Ki_n_out = 0.0F;
+
+	/* '<S1>:920:5' ElectricalID_FOC_output.Ki_iq_out   = single(0.0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.Ki_iq_out = 0.0F;
+
+	/* '<S1>:920:6' ElectricalID_FOC_output.Ki_id_out   = single(0.0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.Ki_id_out = 0.0F;
+
+	/* '<S1>:920:7' ElectricalID_FOC_output.Kp_n_out 	= single(0.0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.Kp_n_out = 0.0F;
+
+	/* '<S1>:920:8' ElectricalID_FOC_output.Kp_iq_out 	= single(0.0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.Kp_iq_out = 0.0F;
+
+	/* '<S1>:920:9' ElectricalID_FOC_output.Kp_id_out 	= single(0.0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.Kp_id_out = 0.0F;
+
+	/* '<S1>:920:10' ElectricalID_FOC_output.n_ref_FOC = single(0.0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.n_ref_FOC = 0.0F;
+
+	/* '<S1>:920:11' ElectricalID_FOC_output.PRBS_out = single(0.0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.PRBS_out = 0.0F;
+
+	/* '<S1>:920:12' ElectricalID_FOC_output.i_dq_ref.d = single(0.0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.i_dq_ref.d = 0.0F;
+
+	/* '<S1>:920:13' ElectricalID_FOC_output.i_dq_ref.q = single(0.0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.i_dq_ref.q = 0.0F;
+
+	/* '<S1>:920:14' ElectricalID_FOC_output.i_dq_ref.zero = single(0.0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.i_dq_ref.zero = 0.0F;
+
+	/* '<S1>:920:15' ElectricalID_FOC_output.enableFOC_speed = boolean(0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.enableFOC_speed = false;
+
+	/* '<S1>:920:16' ElectricalID_FOC_output.enableFOC_current = boolean(0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.enableFOC_current = false;
+
+	/* '<S1>:920:17' ElectricalID_FOC_output.VibOn_out = boolean(0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.VibOn_out = false;
+
+	/* '<S1>:920:18' ElectricalID_FOC_output.VibFreq_out = uint16(0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.VibFreq_out = 0U;
+
+	/* '<S1>:920:19' ElectricalID_FOC_output.VibAmp_out = single(0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.VibAmp_out = 0.0F;
+
+	/* '<S1>:920:20' ElectricalID_FOC_output.resetIntegrator = boolean(0); */
+	rtElectricalID_Y->ElectricalID_FOC_output.resetIntegrator = false;
 }
 
 /*
@@ -2141,12 +2202,8 @@ static void exit_internal_ElectricalID(ExtU_ElectricalID_t *rtElectricalID_U,
 		/* '<S1>:428:17' enteredElectricalID=boolean(0); */
     rtElectricalID_Y->enteredElectricalID = false;
 
-    /* Outport: '<Root>/ElectricalID_FOC_output' */
-		/* '<S1>:428:18' ElectricalID_FOC_output.enableFOC_speed=boolean(0); */
-    rtElectricalID_Y->ElectricalID_FOC_output.enableFOC_speed = false;
-
-		/* '<S1>:428:19' ElectricalID_FOC_output.resetIntegrator=boolean(0); */
-    rtElectricalID_Y->ElectricalID_FOC_output.resetIntegrator = false;
+		/* '<S1>:428:18' reset_FOC_output; */
+		reset_FOC_output(rtElectricalID_Y);
     rtElectricalID_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
     break;
 
@@ -2170,10 +2227,10 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 	/* . */
   if (rtElectricalID_U->GlobalConfig_out.Reset ||
       (!rtElectricalID_U->GlobalConfig_out.ElectricalID) || (!rtElectricalID_U->GlobalConfig_out.enableParameterID)) {
-    /* Outport: '<Root>/enteredElectricalID' */
     /* Transition: '<S1>:901' */
-		/* '<S1>:901:3' enteredElectricalID=boolean(0) */
-    rtElectricalID_Y->enteredElectricalID = false;
+		/* '<S1>:901:3' enteredElectricalID=boolean(0); */
+		/* '<S1>:901:3' initParams; */
+		initParams(rtElectricalID_Y, rtElectricalID_DW);
     exit_internal_ElectricalID(rtElectricalID_U, rtElectricalID_Y,
       rtElectricalID_DW);
     rtElectricalID_DW->is_c3_ElectricalID = IN_Waiting;
@@ -2841,12 +2898,8 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
 			/* '<S1>:428:17' enteredElectricalID=boolean(0); */
       rtElectricalID_Y->enteredElectricalID = false;
 
-      /* Outport: '<Root>/ElectricalID_FOC_output' */
-			/* '<S1>:428:18' ElectricalID_FOC_output.enableFOC_speed=boolean(0); */
-      rtElectricalID_Y->ElectricalID_FOC_output.enableFOC_speed = false;
-
-			/* '<S1>:428:19' ElectricalID_FOC_output.resetIntegrator=boolean(0); */
-      rtElectricalID_Y->ElectricalID_FOC_output.resetIntegrator = false;
+			/* '<S1>:428:18' reset_FOC_output; */
+			reset_FOC_output(rtElectricalID_Y);
       rtElectricalID_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
       rtElectricalID_DW->is_c3_ElectricalID = IN_Waiting;
 

@@ -64,8 +64,10 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 		} else if (ControlState->output.GlobalConfig_out.ElectricalID == false && ElectricalID->output.enteredElectricalID == true) {
 			ElectricalID->input.GlobalConfig_out = ControlState->output.GlobalConfig_out;
 			uz_PID_ElectricalID_step(ElectricalID);
-		} else if (ControlState->output.GlobalConfig_out.Reset == true) {
-
+			Data->PID_ElectricalID_Output = ElectricalID->output.ElectricalID_output;
+			Data->PID_Controller_Parameters = ElectricalID->output.ElectricalID_FOC_output;
+			ControlState->input.enteredElectricalID = ElectricalID->output.enteredElectricalID;
+			ControlState->input.finishedElectricalID = ElectricalID->output.finishedElectricalID;
 		}
 
 		//FluxMapID
@@ -89,6 +91,10 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 		} else if (ControlState->output.GlobalConfig_out.FluxMapID == false && FluxMapID->output.enteredFluxMapID == true) {
 			FluxMapID->input.GlobalConfig_out = ControlState->output.GlobalConfig_out;
 			uz_PID_FluxMapID_step(FluxMapID);
+			Data->PID_Controller_Parameters = FluxMapID->output.FluxMapID_FOC_output;
+			Data->PID_FluxMapID_Output = FluxMapID->output.FluxMapID_output;
+			ControlState->input.enteredFluxMapID = FluxMapID->output.enteredFluxMapID;
+			ControlState->input.finishedFluxMapID = FluxMapID->output.finishedFluxMapID;
 		}
 	}
 	// reset ACCEPT
@@ -105,6 +111,15 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 		//Step the states to reset them
 		uz_PID_FluxMapID_step(FluxMapID);
 		uz_PID_ElectricalID_step(ElectricalID);
+		//Reset the output
+		ControlState->input.enteredFluxMapID = FluxMapID->output.enteredFluxMapID;
+		ControlState->input.finishedFluxMapID = FluxMapID->output.finishedFluxMapID;
+		Data->PID_Controller_Parameters = FluxMapID->output.FluxMapID_FOC_output;
+		Data->PID_FluxMapID_Output = FluxMapID->output.FluxMapID_output;
+		Data->PID_ElectricalID_Output = ElectricalID->output.ElectricalID_output;
+		Data->PID_Controller_Parameters = ElectricalID->output.ElectricalID_FOC_output;
+		ControlState->input.enteredElectricalID = ElectricalID->output.enteredElectricalID;
+		ControlState->input.finishedElectricalID = ElectricalID->output.finishedElectricalID;
 		//reset the Reset-button
 		ControlState->output.GlobalConfig_out.Reset = false;
 		Data->PID_GlobalConfig.Reset = false;

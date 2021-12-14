@@ -16,20 +16,14 @@
 #include "../main.h"
 #include "../defines.h"
 #include "../include/javascope.h"
+#include "../include/ipc_ARM.h"
 #include "xil_cache.h"
-
-
-// Debug - delete when finished
-struct APU_to_RPU_t ControlData_Debug;
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
 static float *js_slowDataArray[JSSD_ENDMARKER];
 float *js_ch_observable[JSO_ENDMARKER];
 float *js_ch_selected[JS_CHANNELS];
-
-//Initialize the Interrupt structure
-extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 static float lifecheck;
 static float ISR_execution_time_us;
@@ -40,22 +34,23 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
+//Initialize the Interrupt structure
+extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
+
+
 int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
 	//Initialize all variables with zero
-	for (int j=0; j<JSO_ENDMARKER; j++)
-	{
+	for (int j=0; j<JSO_ENDMARKER; j++){
 		js_ch_observable[j] = &zerovalue;
 	}
 
-	for(int j=0; j<JS_CHANNELS; j++)
-	{
+	for(int j=0; j<JS_CHANNELS; j++){
 		js_ch_selected[j] = &zerovalue;
 	}
 
-	for (int j=0; j<JSSD_ENDMARKER; j++)
-	{
+	for (int j=0; j<JSSD_ENDMARKER; j++){
 		js_slowDataArray[j] = &zerovalue;
 	}
 
@@ -89,6 +84,7 @@ int JavaScope_initalize(DS_Data* data)
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
+	// Only float is allowed!
 	js_slowDataArray[JSSD_FLOAT_FreqReadback] 		  	= &(data->rasv.referenceFrequency);
 	js_slowDataArray[JSSD_FLOAT_ADCconvFactorReadback] 	= &(data->mrp.ADCconvFactorReadback);
 	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline]         	= &(data->pID.Offline_Psi_PM);
@@ -139,7 +135,6 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 
-
 	return Status;
 }
 
@@ -148,7 +143,7 @@ int JavaScope_initalize(DS_Data* data)
 void JavaScope_update(DS_Data* data){
 
 	// create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START
-	static struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
+	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
 	struct APU_to_RPU_t Received_Data_from_A53;
 
 	static int js_cnt_slowData=0;
@@ -178,9 +173,9 @@ void JavaScope_update(DS_Data* data){
 		xil_printf("RPU: IPI Trigger failed\r\n");
 	}
 
-	//Afterwards an acknowledge and a message from the APU can be read/checked, but we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
 	u32 ControlData_length = sizeof(Received_Data_from_A53)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 
+	//Afterwards an acknowledge and a message from the APU can be read/checked, but we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
 	status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, (u32*)(&Received_Data_from_A53), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
 
 	if(status != (u32)XST_SUCCESS) {
@@ -199,8 +194,4 @@ void JavaScope_update(DS_Data* data){
 
 	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);
 
-	if(Received_Data_from_A53.id != 0){
-		ControlData_Debug.id 		= Received_Data_from_A53.id;
-		ControlData_Debug.value		= Received_Data_from_A53.value;
-	}
 }

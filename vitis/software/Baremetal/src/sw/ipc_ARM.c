@@ -13,85 +13,29 @@
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
-#include "../include/ipc_ARM.h"
 #include <string.h>
-
-#include "../include/javascope.h"
 #include "../main.h"
+#include "../include/ipc_ARM.h"
 
 
 #define SCOPE_OFFSET_bits 0x00
 #define MOTORCONTROL_OFFSET_bits 1000
 
-uint16_t 	i_ISR_IPC_LifeCheck=0;
-uint32_t ADCconvFactor_Hbytes = 0;
-uint32_t ADCconvFactor_Lbytes = 0;
-uint16_t ADCconvFactorReadRequest	= 0;
-float ADCconvFactorReadback = 0.0;
-
-
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
-extern float sin1amp;
+
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 {
-	/* Bit 0 - ui16_drv_enable */
-	if (data->cw.enableSystem == true) {
-		js_status_BareToRTOS |= 1 << 0;
-	} else {
-		js_status_BareToRTOS &= ~(1 << 0);
-	}
-	/* Bit 1 - PIR_ENABLE */
-	if (data->cw.enableControl == true) {
-		js_status_BareToRTOS |= 1 << 1;
-	} else {
-		js_status_BareToRTOS &= ~(1 << 1);
-	}
-	/* Bit 2 - IDENT_LQ */
-	if (data->pID.identLq == 1) {
-		js_status_BareToRTOS |= 1 << 2;
-	} else {
-		js_status_BareToRTOS &= ~(1 << 2);
-	}
-	/* Bit 3 - CURRENT_CONTROL */
-	if (data->cw.ControlReference == CurrentControl){
-		js_status_BareToRTOS |= 1 << 3;
-	} else {
-		js_status_BareToRTOS &= ~(1 << 3);
-	}
-	/* Bit 4 - SPEED_CONTROL */
-	if (data->cw.ControlReference == SpeedControl){
-		js_status_BareToRTOS |= 1 << 4;
-	} else {
-		js_status_BareToRTOS &= ~(1 << 4);
-	}
-	/* Bit 5 - ADD VIBRATION */
-	if (data->pID.VibON == 1) {
-		js_status_BareToRTOS |= 1 << 5;
-	} else {
-		js_status_BareToRTOS &= ~(1 << 5);
-	}
-	/* Bit 6 - IDorNOT */
-	//if (data->pID.MotorID == 1) {
-	if (data->cw.enableParameterID == true) {
-		js_status_BareToRTOS |= 1 << 6;
-	} else {
-		js_status_BareToRTOS &= ~(1 << 6);
-	}
-	/* Bit 7 - identROnline */
-	if (data->pID.identR == 1) {
-		js_status_BareToRTOS |= 1 << 7;
-	} else {
-		js_status_BareToRTOS &= ~(1 << 7);
-	}
-
-
 	// HANDLE RECEIVED MESSAGE
 	if ( msgId != 0)
 	{
+		uint32_t ADCconvFactor_Hbytes = 0;
+		uint32_t ADCconvFactor_Lbytes = 0;
+		uint32_t ADCconvFactorReadRequest = 0;
+
 		//GENERAL VARIABLES
 		switch (msgId){
 		case 1:
@@ -110,10 +54,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 				data->rasv.referenceFrequency = 0;
 			else
 				data->rasv.referenceFrequency = value;
-			break;
-
-		case( 17):
-			sin1amp = (float)value;
 			break;
 
 		case( 21): // Reference Current Control Angle
@@ -689,18 +629,60 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			break;
 
 		default:
-			uz_printf("Unknown JavaScope Message\n");
+			uz_assert_false(true); // unknown command -> throw error
 		}
 	}
-}
 
-// this ISR is never called, because the interrupt "INTC_IPC_Shared_INTERRUPT_ID" is send private for cpu1, so cpu0 do not see/recognize this interrupt and can not call the "Transfer_ipc_Intr_Handler"
-void Transfer_ipc_Intr_Handler(void *data)
-{
-	i_ISR_IPC_LifeCheck++; //LiveCheck
-	if(i_ISR_IPC_LifeCheck > 2500){
-		i_ISR_IPC_LifeCheck =0;
-		//xil_printf("var_mess new period\r\n");
+	/* Bit 0 - ui16_drv_enable */
+	if (data->cw.enableSystem == true) {
+		js_status_BareToRTOS |= 1 << 0;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 0);
+	}
+	/* Bit 1 - PIR_ENABLE */
+	if (data->cw.enableControl == true) {
+		js_status_BareToRTOS |= 1 << 1;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 1);
+	}
+	/* Bit 2 - IDENT_LQ */
+	if (data->pID.identLq == 1) {
+		js_status_BareToRTOS |= 1 << 2;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 2);
+	}
+	/* Bit 3 - CURRENT_CONTROL */
+	if (data->cw.ControlReference == CurrentControl){
+		js_status_BareToRTOS |= 1 << 3;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 3);
+	}
+	/* Bit 4 - SPEED_CONTROL */
+	if (data->cw.ControlReference == SpeedControl){
+		js_status_BareToRTOS |= 1 << 4;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 4);
+	}
+	/* Bit 5 - ADD VIBRATION */
+	if (data->pID.VibON == 1) {
+		js_status_BareToRTOS |= 1 << 5;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 5);
+	}
+	/* Bit 6 - IDorNOT */
+	//if (data->pID.MotorID == 1) {
+	if (data->cw.enableParameterID == true) {
+		js_status_BareToRTOS |= 1 << 6;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 6);
+	}
+	/* Bit 7 - identROnline */
+	if (data->pID.identR == 1) {
+		js_status_BareToRTOS |= 1 << 7;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 7);
 	}
 
+
 }
+

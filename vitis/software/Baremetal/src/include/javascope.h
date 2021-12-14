@@ -16,8 +16,6 @@
 #ifndef INCLUDE_JAVASCOPE_H_
 #define INCLUDE_JAVASCOPE_H_
 
-#include "ipc_ARM.h"
-#include "../uz/uz_SystemTime/uz_SystemTime.h"
 #include "APU_RPU_shared.h"
 
 // Do not change the first (zero) and last (end) entries.
@@ -118,7 +116,5 @@ enum JS_SlowData {
 
 int JavaScope_initalize(DS_Data* data);
 void JavaScope_update(DS_Data* data);
-
-void js_fetchData();
 
 #endif /* INCLUDE_JAVASCOPE_H_ */

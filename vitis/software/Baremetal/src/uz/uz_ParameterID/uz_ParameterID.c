@@ -26,8 +26,6 @@ void uz_ParameterID_init(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 	uz_PID_FluxMapID_init(FluxMapID);
 }
 
-uz_PID_GlobalConfig_t PID_GlobalConfig;
-
 void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FluxMapID_t* FluxMapID, uz_ParameterID_Data_t* Data) {
 	//Update Control-State inputs, which are not depended on other states
 	ControlState->input.GlobalConfig_in = Data->PID_GlobalConfig;
@@ -39,7 +37,7 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 	Data->PID_ControlFlags = ControlState->output.ControlFlags;
 
 	//All Offline states
-	if (ControlState->output.ControlFlags.finished_all_Offline_states == true) {
+	if (ControlState->output.ControlFlags.finished_all_Offline_states == false) {
 
 		//ElectricalID
 		if (ControlState->output.GlobalConfig_out.ElectricalID == true && ControlState->output.GlobalConfig_out.Reset == false && ControlState->output.ControlFlags.transNr == 1U) {

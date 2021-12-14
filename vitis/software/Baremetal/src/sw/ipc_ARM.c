@@ -426,9 +426,9 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 			PID_Data.PID_GlobalConfig.Reset = true;
 		//MOTOR_ID
 		else if (msgId == 0x101 + MOTORCONTROL_OFFSET_bits)
-			data->pID.MotorID = (MotorID_Method)value;
+			PID_Data.PID_GlobalConfig.enableParameterID = true;
 		else if (msgId == 0x102 + MOTORCONTROL_OFFSET_bits)
-			data->cw.enableParameterID = (_Bool)value;
+			PID_Data.PID_GlobalConfig.enableParameterID = false;
 		//ELECTRICALID
 		else if (msgId == 0x120 + MOTORCONTROL_OFFSET_bits)
 			PID_Data.PID_GlobalConfig.ElectricalID = true;

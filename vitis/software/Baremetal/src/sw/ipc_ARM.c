@@ -274,7 +274,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 					data->mrp.ADCconvFactorReadback = data->mrp.ADCConversionFactorTmp;
 					break;
 				default:
-					ADCconvFactorReadback = 0.999;
+					uz_assert_false(true); // unknown command -> throw error
 					break;
 			}
 			break;

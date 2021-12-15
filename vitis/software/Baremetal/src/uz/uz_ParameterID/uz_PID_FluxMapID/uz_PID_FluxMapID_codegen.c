@@ -864,8 +864,8 @@ void FluxMapID_step(RT_MODEL_FluxMapID_t * const rtFluxMapID_M)
 
 			case IN_AMMcompleted:
 				/* During 'AMMcompleted': '<S1>:592' */
-				/* '<S1>:674:1' sf_internal_predicateOutput = after(0.1,sec); */
-				if (rtFluxMapID_DW->temporalCounter_i1 >= 1000U) {
+				/* '<S1>:674:1' sf_internal_predicateOutput = after(1.0,sec); */
+				if (rtFluxMapID_DW->temporalCounter_i1 >= 10000U) {
 					/* Outport: '<Root>/finishedFluxMapID' */
 					/* Transition: '<S1>:674' */
 					/* Exit 'AMMcompleted': '<S1>:592' */
@@ -908,7 +908,7 @@ void FluxMapID_step(RT_MODEL_FluxMapID_t * const rtFluxMapID_M)
 				} else {
 					/* '<S1>:592:12' FluxMapID_FOC_output.resetIntegrator=boolean(1); */
 					rtFluxMapID_Y->FluxMapID_FOC_output.resetIntegrator = true;
-        }
+				}
 				break;
 
 			case IN_AMMcooling:

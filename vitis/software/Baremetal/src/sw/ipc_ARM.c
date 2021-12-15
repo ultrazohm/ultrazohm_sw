@@ -413,7 +413,7 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 
 		//online Rs measuring and temp calculation
 		else if (msgId == 0x510 + MOTORCONTROL_OFFSET_bits)
-			data->mrp.motorStatorResistance = value * 0.001;
+			PID_Data.PID_FluxMapID_Config.R_s_ref = value * 0.001;
 		else if (msgId == 0x511 + MOTORCONTROL_OFFSET_bits)
 			PID_Data.PID_FluxMapID_Config.Temp_ref = value * 0.01;
 

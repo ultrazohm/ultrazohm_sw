@@ -36,6 +36,10 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 	//Update Data-Struct with Control-State outputs
 	Data->PID_ControlFlags = ControlState->output.ControlFlags;
 
+	if (ControlState->output.GlobalConfig_out.ACCEPT == true) {
+		Data->PID_ElectricalID_Output.PWM_Switch_0 = 2.0f;
+	}
+
 	//All Offline states
 	if (ControlState->output.ControlFlags.finished_all_Offline_states == false) {
 
@@ -232,7 +236,7 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data) {
 	Data->PID_ElectricalID_Config.n_ref_measurement = 0.0f;
 
 	//Initialize FluxMapID-Config
-	Data->PID_FluxMapID_Config.AMMsampleTime = 10.0f;
+	Data->PID_FluxMapID_Config.AMMsampleTime = 2.0f;
 	Data->PID_FluxMapID_Config.IDstart = 0.0f;
 	Data->PID_FluxMapID_Config.IDstepsize = 0.0f;
 	Data->PID_FluxMapID_Config.IDstop = 0.0f;

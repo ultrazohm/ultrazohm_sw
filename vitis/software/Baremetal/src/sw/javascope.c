@@ -78,8 +78,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ua] = &PID_Data.PID_ActualValues.V_UVW.U;
 	js_ch_observable[JSO_ib] = &PID_Data.PID_ActualValues.V_UVW.V;
 	js_ch_observable[JSO_ic] = &PID_Data.PID_ActualValues.V_UVW.W;
-	js_ch_observable[JSO_iq] = &PID_Data.PID_ActualValues.i_dq.d;
-	js_ch_observable[JSO_id] = &PID_Data.PID_ActualValues.i_dq.q;
+	js_ch_observable[JSO_iq] = &PID_Data.PID_ActualValues.i_dq.q;
+	js_ch_observable[JSO_id] = &PID_Data.PID_ActualValues.i_dq.d;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_Wtemp]			= &data->pID.WindingTemp;
@@ -87,7 +87,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_uq] = &PID_Data.PID_ActualValues.v_dq.q;
 	js_ch_observable[JSO_Ld_mH]			= &data->pID.Online_Ld;
 	js_ch_observable[JSO_Lq_mH]			= &data->pID.Online_Lq;
-	js_ch_observable[JSO_Rs_mOhm]		= &data->pID.Online_Rs;
+	js_ch_observable[JSO_Rs_mOhm] = &PID_Data.PID_FluxMapID_Output.R_s * 1000.0f;
 	js_ch_observable[JSO_PsiPM_mVs]		= &data->pID.Online_Psi_PM;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;

@@ -245,9 +245,8 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 	XScuGic_SetPriorityTriggerType(IntcInstancePtr, WDTTB_IRPT_INTR,
 			Priority, Trigger);
 
-	XScuGic_GetPriorityTriggerType(IntcInstancePtr, WDTTB_IRPT_INTR,
-													&Priority, &Trigger);
 	//	DEBUG INFO
+    //  XScuGic_GetPriorityTriggerType(IntcInstancePtr, WDTTB_IRPT_INTR, &Priority, &Trigger);
 	//	xil_printf("WdtTbSetupIntrSystem: Wd Prio is %d, level is %d\r\n",Priority, Trigger);
 
 	/*

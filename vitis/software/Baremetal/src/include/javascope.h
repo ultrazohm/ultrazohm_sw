@@ -51,7 +51,7 @@ enum JS_OberservableData {
 	JSO_ENDMARKER
 };
 
-// slowData Naming Convention: Use INT or FLOAT to automatically identify Data Type in Java.
+// slowData Naming Convention: Use JSSD_FLOAT_ as prefix
 // Do not change the first (zero) and last (end) entries.
 enum JS_SlowData {
 	JSSD_ZEROVALUE=0,

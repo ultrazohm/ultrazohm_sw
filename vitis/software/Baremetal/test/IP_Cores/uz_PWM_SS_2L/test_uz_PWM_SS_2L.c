@@ -35,14 +35,14 @@ void test_uz_PWM_SS_2L_set_pwm_mode(void)
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
-        .min_pulse_width = 0.01,
-        .PWM_freq_Hz = 100e6,
+        .min_pulse_width = 0.01f,
+        .PWM_freq_Hz = 100e6f,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
         .use_external_counter = false,
-        .init_dutyCyc_A = 0.0,
-        .init_dutyCyc_B = 0.0,
-        .init_dutyCyc_C = 0.0
+        .init_dutyCyc_A = 0.0f,
+        .init_dutyCyc_B = 0.0f,
+        .init_dutyCyc_C = 0.0f
     };
 
     uz_PWM_SS_2L_hw_SetStatus_Expect(config.base_address, config.PWM_en); 
@@ -71,14 +71,14 @@ void test_uz_PWM_SS_2L_set_tristate(void)
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
-        .min_pulse_width = 0.01,
-        .PWM_freq_Hz = 100e6,
+        .min_pulse_width = 0.01f,
+        .PWM_freq_Hz = 100e6f,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
         .use_external_counter = false,
-        .init_dutyCyc_A = 0.0,
-        .init_dutyCyc_B = 0.0,
-        .init_dutyCyc_C = 0.0
+        .init_dutyCyc_A = 0.0f,
+        .init_dutyCyc_B = 0.0f,
+        .init_dutyCyc_C = 0.0f
     };
 
     uz_PWM_SS_2L_hw_SetStatus_Expect(config.base_address, config.PWM_en); 
@@ -111,14 +111,14 @@ void test_uz_PWM_SS_2L_set_duty_cycle(void)
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
-        .min_pulse_width = 0.01,
-        .PWM_freq_Hz = 100e6,
+        .min_pulse_width = 0.01f,
+        .PWM_freq_Hz = 100e6f,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
         .use_external_counter = false,
-        .init_dutyCyc_A = 0.0,
-        .init_dutyCyc_B = 0.0,
-        .init_dutyCyc_C = 0.0
+        .init_dutyCyc_A = 0.0f,
+        .init_dutyCyc_B = 0.0f,
+        .init_dutyCyc_C = 0.0f
     };
 
     uz_PWM_SS_2L_hw_SetStatus_Expect(config.base_address, config.PWM_en); 
@@ -133,9 +133,9 @@ void test_uz_PWM_SS_2L_set_duty_cycle(void)
 
     uz_PWM_SS_2L_t *self = uz_PWM_SS_2L_init(config);
 
-    float dutyCyc_A = 0.5;
-    float dutyCyc_B = 0.5;   
-    float dutyCyc_C = 0.5;
+    float dutyCyc_A = 0.5f;
+    float dutyCyc_B = 0.5f;   
+    float dutyCyc_C = 0.5f;
     uz_PWM_SS_2L_hw_SetDutyCycle_Expect(self->config.base_address, dutyCyc_A, dutyCyc_B, dutyCyc_C);
     uz_PWM_SS_2L_set_duty_cycle(self, dutyCyc_A, dutyCyc_B, dutyCyc_C);
 }
@@ -148,14 +148,14 @@ void test_uz_PWM_SS_2L_init(void)
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
-        .min_pulse_width = 0.01,
-        .PWM_freq_Hz = 100e6,
+        .min_pulse_width = 0.01f,
+        .PWM_freq_Hz = 100e6f,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
         .use_external_counter = false,
-        .init_dutyCyc_A = 0.0,
-        .init_dutyCyc_B = 0.0,
-        .init_dutyCyc_C = 0.0
+        .init_dutyCyc_A = 0.0f,
+        .init_dutyCyc_B = 0.0f,
+        .init_dutyCyc_C = 0.0f
     };
 
     uz_PWM_SS_2L_hw_SetStatus_Expect(config.base_address, config.PWM_en);

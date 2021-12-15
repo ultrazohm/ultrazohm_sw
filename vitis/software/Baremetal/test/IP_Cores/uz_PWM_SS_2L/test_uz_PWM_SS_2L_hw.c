@@ -90,7 +90,7 @@ void test_uz_PWM_SS_2L_hw_SetStatus_with_zero_base_address(void)
 
     void test_uz_PWM_SS_2L_hw_SetMode_with_invalid_negative_mode(void)
     {
-        uint32_t PWM_mode = -1; // Since PWM_mode is of unsigned integer type with 32 bit, PWM_mode is set to (2^32)-1, which the asserts should catch with out of range
+        uint32_t PWM_mode = 212314U; // random big number that is out of range
         TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetMode(TEST_BASE_ADDRESS,PWM_mode));
     }
 
@@ -110,7 +110,7 @@ void test_uz_PWM_SS_2L_hw_SetStatus_with_zero_base_address(void)
     {
         uint32_t ip_clk_frequency_Hz = 100000000U;
         float PWM_freq_Hz = 100e3f;
-        int32_t PWM_Scal_f_carrier_expected_Q26 = 134217; // equals Q26 value-1 of 100e3/(100e6*0.5)
+        uint32_t PWM_Scal_f_carrier_expected_Q26 = 134217; // equals Q26 value-1 of 100e3/(100e6*0.5)
         float PWM_Scal_T_carrier_expected = 500.0f;
         uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + Scal_f_carrier_AXI_Data_PWM_and_SS_control_V4_ip, PWM_Scal_f_carrier_expected_Q26);
         uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + Scal_T_carrier_AXI_Data_PWM_and_SS_control_V4_ip, (uint32_t)PWM_Scal_T_carrier_expected);
@@ -127,7 +127,7 @@ void test_uz_PWM_SS_2L_hw_SetStatus_with_zero_base_address(void)
     void test_uz_PWM_SS_2L_hw_set_min_pulse_width(void)
     {
         float min_pulse_width_percent = 0.01001f;
-        int32_t min_pulse_width_percent_Q12_expected = 41; //41 equals Q12 value of 0.01001
+        uint32_t min_pulse_width_percent_Q12_expected = 41; //41 equals Q12 value of 0.01001
         uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + PWM_min_pulse_width_AXI_Data_PWM_and_SS_control_V4_ip, min_pulse_width_percent_Q12_expected);
         uz_PWM_SS_2L_hw_SetMinimumPulseWidth(TEST_BASE_ADDRESS, min_pulse_width_percent);
     }

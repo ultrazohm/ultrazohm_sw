@@ -6,18 +6,20 @@
 
 # single-ended FPGA pins with 1.8V signal level
 
+############### DEPRECATED ######################
+
 #SPI_CS (single-ended) = B64_T2
-set_property PACKAGE_PIN AG4 [get_ports SPI_CS]
+set_property PACKAGE_PIN AG4 [get_ports {SPI_CS[0]}]
 #ADC_ConvStart for LVDS = B64_T3
-set_property PACKAGE_PIN AJ1 [get_ports ADC_ConvStart]
+set_property PACKAGE_PIN AJ1 [get_ports {ADC_ConvStart[0]}]
 #SPI_MOSI (single-ended) = B64_T1
-set_property PACKAGE_PIN AG9 [get_ports SPI_MOSI]
+set_property PACKAGE_PIN AG9 [get_ports {SPI_MOSI[0]}]
 #SPI_SCK (single-ended) = B64_T0
-set_property PACKAGE_PIN AH11 [get_ports SPI_SCK]
+set_property PACKAGE_PIN AH11 [get_ports {SPI_SCK[0]}]
 
 
 ##Free/reserve = B66_L23_N
-set_property PACKAGE_PIN L11 [get_ports Reserve]
+set_property PACKAGE_PIN L11 [get_ports {Reserve[0]}]
 
 ##Collective_Fault = B66_L23_P
 #set_property PACKAGE_PIN L12 [get_ports Collective_Fault]
@@ -33,21 +35,22 @@ set_property PACKAGE_PIN L11 [get_ports Reserve]
 ##Set voltage level
 ##Set Pin in CMOS-Level
 #SPI_CS (single-ended)
-set_property IOSTANDARD LVCMOS18 [get_ports SPI_CS]
+set_property IOSTANDARD LVCMOS18 [get_ports {SPI_CS[0]}]
 #ADC_ConvStart for LVDS
-set_property IOSTANDARD LVCMOS18 [get_ports ADC_ConvStart]
+set_property IOSTANDARD LVCMOS18 [get_ports {ADC_ConvStart[0]}]
 #SPI_MOSI (single-ended)
-set_property IOSTANDARD LVCMOS18 [get_ports SPI_MOSI]
+set_property IOSTANDARD LVCMOS18 [get_ports {SPI_MOSI[0]}]
 #SPI_SCK (single-ended)
-set_property IOSTANDARD LVCMOS18 [get_ports SPI_SCK]
+set_property IOSTANDARD LVCMOS18 [get_ports {SPI_SCK[0]}]
 
 ##Free/reserve = B66_L23_N
-set_property IOSTANDARD LVCMOS18 [get_ports Reserve]
+set_property IOSTANDARD LVCMOS18 [get_ports {Reserve[0]}]
 ##Collective_Fault = B66_L23_P
 #set_property IOSTANDARD LVCMOS18 [get_ports Collective_Fault]
 ##I2C_shared_SDA = B66_L22_N
 #set_property IOSTANDARD LVCMOS18 [get_ports I2C_shared_SDA]
 ##I2C_shared_SCL = B66_L22_P
 #set_property IOSTANDARD LVCMOS18 [get_ports I2C_shared_SCL]
+
 
 

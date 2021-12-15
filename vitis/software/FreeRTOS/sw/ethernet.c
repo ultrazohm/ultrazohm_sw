@@ -28,7 +28,6 @@
 
 extern QueueHandle_t js_queue;
 extern struct APU_to_RPU_t ControlData;
-struct APU_to_RPU_t* Received_Data;
 
 int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
@@ -56,6 +55,7 @@ void process_request_thread(void *p)
 	struct javascope_data_t javascope_data_sending = {0};
 	NetworkSendStruct nwsend = {0};
 	char recv_buf[2048] = {0};
+	struct APU_to_RPU_t* Received_Data;
 
 	int clientfd = (int)p;
 	int nread = 0;
@@ -126,13 +126,9 @@ void process_request_thread(void *p)
 			}
 			//asm(" nop");
 			if ( nread == sizeof(ControlData) ){
-
-				Received_Data = ((struct APU_to_RPU_t*)recv_buf); // cast received bytes to u32_t
-
-				//if (recv_buf[0] != 0){
-					ControlData.id 		= Received_Data->id;
-					ControlData.value 	= Received_Data->value;
-				//}
+				Received_Data = ((struct APU_to_RPU_t*)recv_buf); // cast received bytes
+				ControlData.id 		= Received_Data->id;
+				ControlData.value 	= Received_Data->value;
 			}
 
 			// break if client closed connection /

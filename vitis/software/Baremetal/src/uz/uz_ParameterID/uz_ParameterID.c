@@ -26,7 +26,7 @@ void uz_ParameterID_init(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 	uz_PID_FluxMapID_init(FluxMapID);
 }
 
-void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FluxMapID_t* FluxMapID, uz_ParameterID_Data_t* Data) {
+void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID, uz_ParameterID_Data_t* Data) {
 	//Update Control-State inputs, which are not depended on other states
 	ControlState->input.GlobalConfig_in = Data->PID_GlobalConfig;
 
@@ -74,7 +74,33 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 			ControlState->input.finishedElectricalID = ElectricalID->output.finishedElectricalID;
 		}
 
-		//FluxMapID
+		//FrictionID
+		if (ControlState->output.GlobalConfig_out.FrictionID == true && ControlState->output.GlobalConfig_out.Reset == false && ControlState->output.ControlFlags.transNr == 3U) {
+			FrictionID->input.ActualValues = Data->PID_ActualValues;
+			FrictionID->input.FrictionConfigID = Data->PID_FrictionID_Config;
+			FrictionID->input.GlobalConfig_out = ControlState->output.GlobalConfig_out;
+			FrictionID->input.ControlFlags = ControlState->output.ControlFlags;
+
+			//Step the function
+			uz_PID_FrictionID_step(FrictionID);
+
+			//Update Control-State-inputs
+			ControlState->input.enteredFrictionID = FrictionID->output.enteredFrictionID;
+			ControlState->input.finishedFrictionID = FrictionID->output.finishedFrictionID;
+
+			//Update Data struct with new output values
+			Data->PID_Controller_Parameters = FrictionID->output.FrictionID_FOC_output;
+			Data->PID_FrictionID_Output = FrictionID->output.FrictionID_output;
+		} else if (ControlState->output.GlobalConfig_out.FrictionID == false && FrictionID->output.enteredFrictionID == true) {
+			FrictionID->input.GlobalConfig_out = ControlState->output.GlobalConfig_out;
+			uz_PID_FrictionID_step(FrictionID);
+			Data->PID_Controller_Parameters = FrictionID->output.FrictionID_FOC_output;
+			Data->PID_FrictionID_Output = FrictionID->output.FrictionID_output;
+			ControlState->input.enteredFrictionID = FrictionID->output.enteredFrictionID;
+			ControlState->input.finishedFrictionID = FrictionID->output.finishedFrictionID;
+		}
+
+			//FluxMapID
 		if (ControlState->output.GlobalConfig_out.FluxMapID == true && ControlState->output.GlobalConfig_out.Reset == false && ControlState->output.ControlFlags.transNr == 4U) {
 			//Update State-Inputs
 			FluxMapID->input.ActualValues = Data->PID_ActualValues;
@@ -112,18 +138,23 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 		//Set the state-inputs reset to true
 		FluxMapID->input.GlobalConfig_out.Reset = true;
 		ElectricalID->input.GlobalConfig_out.Reset = true;
+		FrictionID->input.GlobalConfig_out.Reset = true;
 		//Step the states to reset them
 		uz_PID_FluxMapID_step(FluxMapID);
 		uz_PID_ElectricalID_step(ElectricalID);
-		//Reset the output
+		uz_PID_FrictionID_step(FrictionID);
+		//Reset the control outputs
 		ControlState->input.enteredFluxMapID = FluxMapID->output.enteredFluxMapID;
 		ControlState->input.finishedFluxMapID = FluxMapID->output.finishedFluxMapID;
+		ControlState->input.enteredElectricalID = ElectricalID->output.enteredElectricalID;
+		ControlState->input.finishedElectricalID = ElectricalID->output.finishedElectricalID;
+		ControlState->input.enteredFrictionID = FrictionID->output.enteredFrictionID;
+		ControlState->input.finishedFrictionID = FrictionID->output.finishedFrictionID;
+		//Reset data outputs
 		Data->PID_Controller_Parameters = FluxMapID->output.FluxMapID_FOC_output;
 		Data->PID_FluxMapID_Output = FluxMapID->output.FluxMapID_output;
 		Data->PID_ElectricalID_Output = ElectricalID->output.ElectricalID_output;
-		Data->PID_Controller_Parameters = ElectricalID->output.ElectricalID_FOC_output;
-		ControlState->input.enteredElectricalID = ElectricalID->output.enteredElectricalID;
-		ControlState->input.finishedElectricalID = ElectricalID->output.finishedElectricalID;
+		Data->PID_FrictionID_Output = FrictionID->output.FrictionID_output;
 		//reset the Reset-button
 		ControlState->output.GlobalConfig_out.Reset = false;
 		Data->PID_GlobalConfig.Reset = false;

@@ -19,11 +19,11 @@
 #include <math.h>
 #include "../uz_HAL.h"
 #include <stdbool.h>
-#include "uz_PID_ControlState/uz_PID_ControlState.h"
-#include "uz_PID_ElectricalID/uz_PID_ElectricalID.h"
-#include "uz_PID_FluxMapID/uz_PID_FluxMapID.h"
 #include "../uz_FOC/uz_FOC.h"
 #include "../uz_SpeedControl/uz_speedcontrol.h"
+#include "ControlState/uz_PID_ControlState.h"
+#include "ElectricalID/uz_PID_ElectricalID.h"
+#include "FluxMapID/uz_PID_FluxMapID.h"
 
 
 typedef struct uz_ParameterID_Data_t {

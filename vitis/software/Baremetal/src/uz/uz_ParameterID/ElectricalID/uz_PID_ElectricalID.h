@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#include "../../uz_global_configuration.h"
-#include "uz_PID_ElectricalID.h"
-#if UZ_PARAMETERID_ACTIVE > 0U
-#include "../../uz_HAL.h"
+#include <stdbool.h>
+#include "../ElectricalID/uz_PID_ElectricalID_codegen.h"
 
-void uz_PID_ElectricalID_init(uz_PID_ElectricalID_t *self) {
-	self->PtrToModelData = &self->modelData;
-	self->PtrToModelData->dwork = &self->rtDW;
-	self->PtrToModelData->inputs = &self->input;
-	self->PtrToModelData->outputs = &self->output;
-	ElectricalID_initialize(self->PtrToModelData);
-}
+typedef struct {
+	ExtY_ElectricalID_t output;
+	ExtU_ElectricalID_t input;
+	DW_ElectricalID_t rtDW; /* Observable states */
+	RT_MODEL_ElectricalID_t modelData;
+	RT_MODEL_ElectricalID_t *PtrToModelData;
+} uz_PID_ElectricalID_t;
 
-void uz_PID_ElectricalID_step(uz_PID_ElectricalID_t *self) {
-	ElectricalID_step(self->PtrToModelData);
-}
-
-#endif
+void uz_PID_ElectricalID_init(uz_PID_ElectricalID_t *self);
+void uz_PID_ElectricalID_step(uz_PID_ElectricalID_t *self);

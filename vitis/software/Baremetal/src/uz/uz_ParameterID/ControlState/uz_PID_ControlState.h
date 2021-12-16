@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#include "uz_PID_ControlState_codegen.h"
 #include "../../uz_HAL.h"
 #include <stdbool.h>
+#include "../ControlState/uz_PID_ControlState_codegen.h"
 
 typedef struct {
 	ExtY_ControlState_t output;

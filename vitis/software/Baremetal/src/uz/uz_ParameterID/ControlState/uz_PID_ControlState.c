@@ -15,7 +15,7 @@
  ******************************************************************************/
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_ACTIVE > 0U
-#include "uz_PID_ControlState.h"
+#include "../ControlState/uz_PID_ControlState.h"
 
 void uz_PID_ControlState_init(uz_PID_ControlState_t *self) {
 	self->PtrToModelData = &self->modelData;

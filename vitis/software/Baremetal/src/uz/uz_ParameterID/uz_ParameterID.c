@@ -148,7 +148,8 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 			} else {
 				i_SpeedControl_reference_Ampere.q += Data->PID_Controller_Parameters.PRBS_out;
 			}
-		} else if (Data->PID_Controller_Parameters.enableFOC_current || Data->PID_Controller_Parameters.enableFOC_speed == true) {
+	}
+	if (Data->PID_Controller_Parameters.enableFOC_current || Data->PID_Controller_Parameters.enableFOC_speed == true) {
 			//Change, if desired, the current controller here
 			if (Data->PID_Controller_Parameters.enableFOC_current == true) {
 				//If CurrentControl is active, use input reference currents
@@ -160,7 +161,8 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 			}
 			uz_UVW_t V_UVW_Volts = uz_dq_inverse_transformation(v_dq_Volts, Data->PID_ActualValues.theta_el);
 			output_DutyCycle = uz_FOC_generate_DutyCycles(V_UVW_Volts, Data->PID_ActualValues.V_DC);
-		} else if (Data->PID_Controller_Parameters.resetIntegrator == true) {
+	}
+	if (Data->PID_Controller_Parameters.resetIntegrator == true) {
 			uz_FOC_reset(FOC_instance);
 			uz_SpeedControl_reset(Speed_instance);
 			output_DutyCycle.DutyCycle_U = 0.0f;
@@ -172,9 +174,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 				uz_FOC_set_decoupling_method(FOC_instance, no_decoupling);
 			} else if (Data->PID_Controller_Parameters.activeState == 170U) {
 				uz_FOC_set_PMSM_parameters(FOC_instance, Data->PID_ElectricalID_Output.PMSM_parameters);
-				uz_PI_Controller_set_Ki(Speed_instance, Data->PID_Controller_Parameters.Ki_n_out);
-				uz_PI_Controller_set_Kp(Speed_instance, Data->PID_Controller_Parameters.Kp_n_out);
-				uz_FOC_set_decoupling_method(FOC_instance, linear_decoupling);
+			uz_FOC_set_decoupling_method(FOC_instance, linear_decoupling);
 			} else if (Data->PID_Controller_Parameters.activeState >= 110 && Data->PID_Controller_Parameters.activeState <= 143) {
 				PWM_SS_SetTriState(Data->PID_ElectricalID_Output.enable_TriState[0], Data->PID_ElectricalID_Output.enable_TriState[1],
 				                Data->PID_ElectricalID_Output.enable_TriState[2]);
@@ -182,12 +182,12 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 				output_DutyCycle.DutyCycle_V = Data->PID_ElectricalID_Output.PWM_Switch_2;
 				output_DutyCycle.DutyCycle_W = Data->PID_ElectricalID_Output.PWM_Switch_4;
 			}
-			uz_FOC_set_Kp_id(FOC_instance, Data->PID_Controller_Parameters.Kp_id_out);
-			uz_FOC_set_Kp_iq(FOC_instance, Data->PID_Controller_Parameters.Kp_iq_out);
-			uz_FOC_set_Ki_id(FOC_instance, Data->PID_Controller_Parameters.Ki_id_out);
-			uz_FOC_set_Ki_iq(FOC_instance, Data->PID_Controller_Parameters.Ki_iq_out);
-			uz_PI_Controller_set_Ki(Speed_instance, Data->PID_Controller_Parameters.Ki_n_out);
-			uz_PI_Controller_set_Kp(Speed_instance, Data->PID_Controller_Parameters.Kp_n_out);
+		uz_FOC_set_Kp_id(FOC_instance, Data->PID_Controller_Parameters.Kp_id_out);
+		uz_FOC_set_Kp_iq(FOC_instance, Data->PID_Controller_Parameters.Kp_iq_out);
+		uz_FOC_set_Ki_id(FOC_instance, Data->PID_Controller_Parameters.Ki_id_out);
+		uz_FOC_set_Ki_iq(FOC_instance, Data->PID_Controller_Parameters.Ki_iq_out);
+		uz_PI_Controller_set_Ki(Speed_instance, Data->PID_Controller_Parameters.Ki_n_out);
+		uz_PI_Controller_set_Kp(Speed_instance, Data->PID_Controller_Parameters.Kp_n_out);
 		}
 		//return (output_DutyCycle);
 		return (v_dq_Volts);

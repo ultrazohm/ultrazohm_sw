@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#include "uz_PID_FluxMapID.h"
+#include "../FluxMapID/uz_PID_FluxMapID.h"
 
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_ACTIVE > 0U

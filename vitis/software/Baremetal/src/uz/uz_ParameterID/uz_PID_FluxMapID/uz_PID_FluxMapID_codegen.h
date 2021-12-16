@@ -178,6 +178,7 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_FluxMapID_output_t_
 
 typedef struct {
+	boolean_T external_Measurement_Flag;
 	real32_T R_s;
 	real32_T WindingTemp;
 } uz_PID_FluxMapID_output_t;
@@ -198,6 +199,8 @@ typedef struct {
 	real32_T id2_counter; /* '<Root>/FluxMapID' */
 	real32_T vd1_counter; /* '<Root>/FluxMapID' */
 	real32_T id1_counter; /* '<Root>/FluxMapID' */
+	real32_T IQstepsize_loc; /* '<Root>/FluxMapID' */
+	real32_T IDstepsize_loc; /* '<Root>/FluxMapID' */
 	uint32_T counter; /* '<Root>/FluxMapID' */
 	uint32_T AMMj; /* '<Root>/FluxMapID' */
 	uint32_T AMMn; /* '<Root>/FluxMapID' */

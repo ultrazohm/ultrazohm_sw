@@ -208,7 +208,7 @@ void JavaScope_update(DS_Data* data){
 	js_slowDataArray[JSSD_FLOAT_Ld_Online].f	= data->pID.Online_Ld;
 	js_slowDataArray[JSSD_FLOAT_Lq_Online].f	= data->pID.Online_Lq;
 	js_slowDataArray[JSSD_FLOAT_PsiPM_Online].f	= data->pID.Online_Psi_PM;
-	js_slowDataArray[JSSD_FLOAT_Rs_Online].f = PID_Data.PID_FluxMapID_Output.R_s;
+	js_slowDataArray[JSSD_FLOAT_Rs_Online].f = data->pID.Online_Rs;
 	js_slowDataArray[JSSD_FLOAT_n_FluxPoints].f	= data->pID.n_FluxPoints;
 	js_slowDataArray[JSSD_FLOAT_Ld].f 			= data->mrp.motorDirectInductance;
 	js_slowDataArray[JSSD_FLOAT_Lq].f 			= data->mrp.motorQuadratureInductance;

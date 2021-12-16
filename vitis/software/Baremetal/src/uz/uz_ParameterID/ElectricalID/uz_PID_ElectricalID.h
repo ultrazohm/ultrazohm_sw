@@ -14,7 +14,8 @@
  * limitations under the License.
  ******************************************************************************/
 #include <stdbool.h>
-#include "../ElectricalID/uz_PID_ElectricalID_codegen.h"
+
+#include "ElectricalID_codegen.h"
 
 typedef struct {
 	ExtY_ElectricalID_t output;

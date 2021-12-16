@@ -19,7 +19,7 @@
  * Validation result: Passed (10), Warnings (2), Error (0)
  */
 
-#include "../ElectricalID/uz_PID_ElectricalID_codegen.h"
+#include "ElectricalID_codegen.h"
 #if UZ_PARAMETERID_ACTIVE > 0U
 
 /* Named constants for Chart: '<Root>/ElectricalID' */

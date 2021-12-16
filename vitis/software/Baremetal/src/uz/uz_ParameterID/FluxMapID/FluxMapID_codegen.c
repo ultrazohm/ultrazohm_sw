@@ -19,7 +19,7 @@
  * Validation result: Passed (9), Warnings (3), Error (0)
  */
 
-#include "../FluxMapID/uz_PID_FluxMapID_codegen.h"
+#include "FluxMapID_codegen.h"
 #if UZ_PARAMETERID_ACTIVE > 0U
 
 /* Named constants for Chart: '<Root>/FluxMapID' */

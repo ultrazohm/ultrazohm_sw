@@ -23,7 +23,7 @@
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_ACTIVE > 0U
 
-#include "../ControlState/uz_PID_ControlState_codegen.h"
+#include "ControlState_codegen.h"
 
 /* Named constants for Chart: '<Root>/ControlState' */
 #define IN_ControlState                ((uint8_T)1U)

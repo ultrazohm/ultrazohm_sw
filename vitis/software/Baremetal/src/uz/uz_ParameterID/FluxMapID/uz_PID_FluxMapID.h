@@ -15,7 +15,7 @@
  ******************************************************************************/
 #include <stdbool.h>
 
-#include "../FluxMapID/uz_PID_FluxMapID_codegen.h"
+#include "FluxMapID_codegen.h"
 
 typedef struct {
 	ExtY_FluxMapID_t output;

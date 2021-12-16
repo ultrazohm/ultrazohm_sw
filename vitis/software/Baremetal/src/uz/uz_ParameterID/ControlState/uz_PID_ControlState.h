@@ -15,7 +15,7 @@
  ******************************************************************************/
 #include "../../uz_HAL.h"
 #include <stdbool.h>
-#include "../ControlState/uz_PID_ControlState_codegen.h"
+#include "ControlState_codegen.h"
 
 typedef struct {
 	ExtY_ControlState_t output;

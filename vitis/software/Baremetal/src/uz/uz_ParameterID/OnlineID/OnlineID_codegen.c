@@ -32,6 +32,7 @@
 #define IN_RefreshDataRegister         ((uint8_T)3U)
 #define IN_TempPsiCalcState            ((uint8_T)4U)
 #define IN_Waiting                     ((uint8_T)2U)
+#define NumBitsPerChar                 8U
 
 const uz_PID_OnlineID_output_t OnlineID_rtZuz_PID_OnlineID_output_t = {
   0.0F,                                /* id_out */
@@ -131,12 +132,209 @@ static boolean_T Break(const real32_T iq_reg_alt[50], const real32_T id_reg_alt
 static void enter_atomic_PsiCalcState(ExtU_OnlineID_t *rtOnlineID_U,
   ExtY_OnlineID_t *rtOnlineID_Y, DW_OnlineID_t *rtOnlineID_DW);
 static void RefreshDataRegister_i(DW_OnlineID_t *rtOnlineID_DW);
+static real32_T maximum(const real32_T x[50]);
+static real32_T minimum(const real32_T x[50]);
+static real32_T minimum_p(const real32_T x[5]);
 static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
   id_reg_in[50], const real32_T om_reg_in[5], uint32_T timer, boolean_T
   *allow_measurement, boolean_T *om_con, boolean_T *iq_con, boolean_T *id_con,
   boolean_T *i_val, ExtU_OnlineID_t *rtOnlineID_U);
 static void RefreshDataRegister(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
   *rtOnlineID_Y, DW_OnlineID_t *rtOnlineID_DW);
+extern real_T rtInf;
+extern real_T rtMinusInf;
+extern real_T rtNaN;
+extern real32_T rtInfF;
+extern real32_T rtMinusInfF;
+extern real32_T rtNaNF;
+static void rt_InitInfAndNaN(size_t realSize);
+static boolean_T rtIsInf(real_T value);
+static boolean_T rtIsInfF(real32_T value);
+static boolean_T rtIsNaN(real_T value);
+static boolean_T rtIsNaNF(real32_T value);
+typedef struct {
+	struct {
+		uint32_T wordH;
+		uint32_T wordL;
+	} words;
+} BigEndianIEEEDouble;
+
+typedef struct {
+	struct {
+		uint32_T wordL;
+		uint32_T wordH;
+	} words;
+} LittleEndianIEEEDouble;
+
+typedef struct {
+	union {
+		real32_T wordLreal;
+		uint32_T wordLuint;
+	} wordL;
+} IEEESingle;
+
+real_T rtInf;
+real_T rtMinusInf;
+real_T rtNaN;
+real32_T rtInfF;
+real32_T rtMinusInfF;
+real32_T rtNaNF;
+static real_T rtGetInf(void);
+static real32_T rtGetInfF(void);
+static real_T rtGetMinusInf(void);
+static real32_T rtGetMinusInfF(void);
+static real_T rtGetNaN(void);
+static real32_T rtGetNaNF(void);
+
+/*
+ * Initialize the rtInf, rtMinusInf, and rtNaN needed by the
+ * generated code. NaN is initialized as non-signaling. Assumes IEEE.
+ */
+static void rt_InitInfAndNaN(size_t realSize) {
+	(void) (realSize);
+	rtNaN = rtGetNaN();
+	rtNaNF = rtGetNaNF();
+	rtInf = rtGetInf();
+	rtInfF = rtGetInfF();
+	rtMinusInf = rtGetMinusInf();
+	rtMinusInfF = rtGetMinusInfF();
+}
+
+/* Test if value is infinite */
+static boolean_T rtIsInf(real_T value) {
+	return (boolean_T) ((value == rtInf || value == rtMinusInf) ? 1U : 0U);
+}
+
+/* Test if single-precision value is infinite */
+static boolean_T rtIsInfF(real32_T value) {
+	return (boolean_T) (((value) == rtInfF || (value) == rtMinusInfF) ? 1U : 0U);
+}
+
+/* Test if value is not a number */
+static boolean_T rtIsNaN(real_T value) {
+	boolean_T result = (boolean_T) 0;
+	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+	if (bitsPerReal == 32U) {
+		result = rtIsNaNF((real32_T) value);
+	} else {
+		union {
+			LittleEndianIEEEDouble bitVal;
+			real_T fltVal;
+		} tmpVal;
+
+		tmpVal.fltVal = value;
+		result = (boolean_T) ((tmpVal.bitVal.words.wordH & 0x7FF00000) == 0x7FF00000 && ((tmpVal.bitVal.words.wordH & 0x000FFFFF) != 0 || (tmpVal.bitVal.words.wordL != 0)));
+	}
+
+	return result;
+}
+
+/* Test if single-precision value is not a number */
+static boolean_T rtIsNaNF(real32_T value) {
+	IEEESingle tmp;
+	tmp.wordL.wordLreal = value;
+	return (boolean_T) ((tmp.wordL.wordLuint & 0x7F800000) == 0x7F800000 && (tmp.wordL.wordLuint & 0x007FFFFF) != 0);
+}
+
+/*
+ * Initialize rtInf needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+static real_T rtGetInf(void) {
+	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+	real_T inf = 0.0;
+	if (bitsPerReal == 32U) {
+		inf = rtGetInfF();
+	} else {
+		union {
+			LittleEndianIEEEDouble bitVal;
+			real_T fltVal;
+		} tmpVal;
+
+		tmpVal.bitVal.words.wordH = 0x7FF00000U;
+		tmpVal.bitVal.words.wordL = 0x00000000U;
+		inf = tmpVal.fltVal;
+	}
+
+	return inf;
+}
+
+/*
+ * Initialize rtInfF needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+static real32_T rtGetInfF(void) {
+	IEEESingle infF;
+	infF.wordL.wordLuint = 0x7F800000U;
+	return infF.wordL.wordLreal;
+}
+
+/*
+ * Initialize rtMinusInf needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+static real_T rtGetMinusInf(void) {
+	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+	real_T minf = 0.0;
+	if (bitsPerReal == 32U) {
+		minf = rtGetMinusInfF();
+	} else {
+		union {
+			LittleEndianIEEEDouble bitVal;
+			real_T fltVal;
+		} tmpVal;
+
+		tmpVal.bitVal.words.wordH = 0xFFF00000U;
+		tmpVal.bitVal.words.wordL = 0x00000000U;
+		minf = tmpVal.fltVal;
+	}
+
+	return minf;
+}
+
+/*
+ * Initialize rtMinusInfF needed by the generated code.
+ * Inf is initialized as non-signaling. Assumes IEEE.
+ */
+static real32_T rtGetMinusInfF(void) {
+	IEEESingle minfF;
+	minfF.wordL.wordLuint = 0xFF800000U;
+	return minfF.wordL.wordLreal;
+}
+
+/*
+ * Initialize rtNaN needed by the generated code.
+ * NaN is initialized as non-signaling. Assumes IEEE.
+ */
+static real_T rtGetNaN(void) {
+	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+	real_T nan = 0.0;
+	if (bitsPerReal == 32U) {
+		nan = rtGetNaNF();
+	} else {
+		union {
+			LittleEndianIEEEDouble bitVal;
+			real_T fltVal;
+		} tmpVal;
+
+		tmpVal.bitVal.words.wordH = 0xFFF80000U;
+		tmpVal.bitVal.words.wordL = 0x00000000U;
+		nan = tmpVal.fltVal;
+	}
+
+	return nan;
+}
+
+/*
+ * Initialize rtNaNF needed by the generated code.
+ * NaN is initialized as non-signaling. Assumes IEEE.
+ */
+static real32_T rtGetNaNF(void) {
+	IEEESingle nanF = { { 0.0F } };
+
+	nanF.wordL.wordLuint = 0xFFC00000U;
+	return nanF.wordL.wordLreal;
+}
 
 /*
  * Function for Chart: '<Root>/OnlineID'
@@ -904,7 +1102,7 @@ static void identParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
     if ((Ld_check > 0.0F) && (Ld_check < 1.0F)) {
       /* Inport: '<Root>/OnlineIDConfig' */
       /* '<S1>:101:64' if(OnlineIDConfig.AverageTransParams==1) */
-      if (rtOnlineID_U->OnlineIDConfig.AverageTransParams == 1) {
+			if (rtOnlineID_U->OnlineIDConfig.AverageTransParams) {
         /* '<S1>:101:65' if(LinPara_ident_outside==1 && counter_ausserhalb==1) */
         if (rtOnlineID_DW->LinPara_ident_outside &&
             (rtOnlineID_DW->counter_ausserhalb == 1)) {
@@ -964,7 +1162,7 @@ static void identParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
     if ((Lq_check > 0.0F) && (Lq_check < 1.0F)) {
       /* Inport: '<Root>/OnlineIDConfig' */
       /* '<S1>:101:88' if(OnlineIDConfig.AverageTransParams==1) */
-      if (rtOnlineID_U->OnlineIDConfig.AverageTransParams == 1) {
+			if (rtOnlineID_U->OnlineIDConfig.AverageTransParams) {
         /* '<S1>:101:89' if(LinPara_ident_outside==1 && counter_ausserhalb==1) */
         if (rtOnlineID_DW->LinPara_ident_outside &&
             (rtOnlineID_DW->counter_ausserhalb == 1)) {
@@ -1024,7 +1222,7 @@ static void identParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
     if ((psipm_check > 0.0F) && (psipm_check < 1.0F)) {
       /* Inport: '<Root>/OnlineIDConfig' */
       /* '<S1>:101:112' if(OnlineIDConfig.AverageTransParams==1) */
-      if (rtOnlineID_U->OnlineIDConfig.AverageTransParams == 1) {
+			if (rtOnlineID_U->OnlineIDConfig.AverageTransParams) {
         /* '<S1>:101:113' if(LinPara_ident_outside==1 && counter_ausserhalb==1) */
         if (rtOnlineID_DW->LinPara_ident_outside &&
             (rtOnlineID_DW->counter_ausserhalb == 1)) {
@@ -1087,7 +1285,7 @@ static void identParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
     if ((R_check > 0.0F) && (R_check < 1000.0F)) {
       /* Inport: '<Root>/OnlineIDConfig' */
       /* '<S1>:101:137' if(OnlineIDConfig.AverageTransParams==1) */
-      if (rtOnlineID_U->OnlineIDConfig.AverageTransParams == 1) {
+			if (rtOnlineID_U->OnlineIDConfig.AverageTransParams) {
         /* '<S1>:101:138' if(LinPara_ident_outside==1 && counter_ausserhalb==1) */
         if (rtOnlineID_DW->LinPara_ident_outside &&
             (rtOnlineID_DW->counter_ausserhalb == 1)) {
@@ -1491,6 +1689,120 @@ static void RefreshDataRegister_i(DW_OnlineID_t *rtOnlineID_DW)
   }
 }
 
+/* Function for Chart: '<Root>/OnlineID' */
+static real32_T maximum(const real32_T x[50]) {
+	int32_T idx;
+	int32_T k;
+	real32_T ex;
+	boolean_T exitg1;
+	if (!rtIsNaNF(x[0])) {
+		idx = 1;
+	} else {
+		idx = 0;
+		k = 2;
+		exitg1 = false;
+		while ((!exitg1) && (k < 51)) {
+			if (!rtIsNaNF(x[k - 1])) {
+				idx = k;
+				exitg1 = true;
+			} else {
+				k++;
+			}
+		}
+	}
+
+	if (idx == 0) {
+		ex = x[0];
+	} else {
+		ex = x[idx - 1];
+		while (idx + 1 <= 50) {
+			if (ex < x[idx]) {
+				ex = x[idx];
+			}
+
+			idx++;
+		}
+	}
+
+	return ex;
+}
+
+/* Function for Chart: '<Root>/OnlineID' */
+static real32_T minimum(const real32_T x[50]) {
+	int32_T idx;
+	int32_T k;
+	real32_T ex;
+	boolean_T exitg1;
+	if (!rtIsNaNF(x[0])) {
+		idx = 1;
+	} else {
+		idx = 0;
+		k = 2;
+		exitg1 = false;
+		while ((!exitg1) && (k < 51)) {
+			if (!rtIsNaNF(x[k - 1])) {
+				idx = k;
+				exitg1 = true;
+			} else {
+				k++;
+			}
+		}
+	}
+
+	if (idx == 0) {
+		ex = x[0];
+	} else {
+		ex = x[idx - 1];
+		while (idx + 1 <= 50) {
+			if (ex > x[idx]) {
+				ex = x[idx];
+			}
+
+			idx++;
+		}
+	}
+
+	return ex;
+}
+
+/* Function for Chart: '<Root>/OnlineID' */
+static real32_T minimum_p(const real32_T x[5]) {
+	int32_T idx;
+	int32_T k;
+	real32_T ex;
+	boolean_T exitg1;
+	if (!rtIsNaNF(x[0])) {
+		idx = 1;
+	} else {
+		idx = 0;
+		k = 2;
+		exitg1 = false;
+		while ((!exitg1) && (k < 6)) {
+			if (!rtIsNaNF(x[k - 1])) {
+				idx = k;
+				exitg1 = true;
+			} else {
+				k++;
+			}
+		}
+	}
+
+	if (idx == 0) {
+		ex = x[0];
+	} else {
+		ex = x[idx - 1];
+		while (idx + 1 <= 5) {
+			if (ex > x[idx]) {
+				ex = x[idx];
+			}
+
+			idx++;
+		}
+	}
+
+	return ex;
+}
+
 /*
  * Function for Chart: '<Root>/OnlineID'
  * function [allow_measurement, om_con,iq_con,id_con,i_val]=CheckSteadyState(iq_reg_in,id_reg_in,om_reg_in,timer)
@@ -1500,13 +1812,14 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
   *allow_measurement, boolean_T *om_con, boolean_T *iq_con, boolean_T *id_con,
   boolean_T *i_val, ExtU_OnlineID_t *rtOnlineID_U)
 {
-  int32_T k;
+	int32_T d_k;
+	int32_T idx;
   real32_T ex;
   real32_T mean_id_reg;
   real32_T mean_iq_reg;
-  real32_T mean_iq_reg_tmp;
   real32_T mean_om_reg;
   real32_T tmp;
+	boolean_T exitg1;
 
   /* MATLAB Function 'CheckSteadyState': '<S1>:182' */
   /* '<S1>:182:3' mean_om_reg=mean(om_reg_in); */
@@ -1518,17 +1831,9 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
 
   /* '<S1>:182:5' mean_iq_reg=mean(iq_reg_in); */
   mean_iq_reg = iq_reg_in[0];
-
-  /* '<S1>:182:7' if((mean_iq_reg+(OnlineIDConfig.dev_curr*GlobalConfig.ratCurrent))>=max(iq_reg_in)... */
-  /* '<S1>:182:8'         &&(mean_iq_reg-(OnlineIDConfig.dev_curr*GlobalConfig.ratCurrent))<=min(iq_reg_in)&&min(iq_reg_in)~=0) */
-  ex = iq_reg_in[0];
-  for (k = 0; k < 49; k++) {
-    mean_id_reg += id_reg_in[k + 1];
-    mean_iq_reg_tmp = iq_reg_in[k + 1];
-    mean_iq_reg += mean_iq_reg_tmp;
-    if (ex < mean_iq_reg_tmp) {
-      ex = mean_iq_reg_tmp;
-    }
+	for (idx = 0; idx < 49; idx++) {
+		mean_id_reg += id_reg_in[idx + 1];
+		mean_iq_reg += iq_reg_in[idx + 1];
   }
 
   mean_id_reg /= 50.0F;
@@ -1537,26 +1842,13 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
   /* Inport: '<Root>/OnlineIDConfig' incorporates:
    *  Inport: '<Root>/GlobalConfig'
    */
-  mean_iq_reg_tmp = rtOnlineID_U->OnlineIDConfig.dev_curr *
+	/* '<S1>:182:7' if((mean_iq_reg+(OnlineIDConfig.dev_curr*GlobalConfig.ratCurrent))>=max(iq_reg_in)... */
+	/* '<S1>:182:8'         &&(mean_iq_reg-(OnlineIDConfig.dev_curr*GlobalConfig.ratCurrent))<=min(iq_reg_in)&&min(iq_reg_in)~=0) */
+	tmp = rtOnlineID_U->OnlineIDConfig.dev_curr *
     rtOnlineID_U->GlobalConfig_out.ratCurrent;
-  if (mean_iq_reg_tmp + mean_iq_reg >= ex) {
-    ex = iq_reg_in[0];
-    for (k = 0; k < 49; k++) {
-      tmp = iq_reg_in[k + 1];
-      if (ex > tmp) {
-        ex = tmp;
-      }
-    }
-
-    if (mean_iq_reg - mean_iq_reg_tmp <= ex) {
-      ex = iq_reg_in[0];
-      for (k = 0; k < 49; k++) {
-        tmp = iq_reg_in[k + 1];
-        if (ex > tmp) {
-          ex = tmp;
-        }
-      }
-
+	if (tmp + mean_iq_reg >= maximum(iq_reg_in)) {
+		ex = minimum(iq_reg_in);
+		if (mean_iq_reg - tmp <= ex) {
       if (ex != 0.0F) {
         /* '<S1>:182:9' iq_con=boolean(1); */
         *iq_con = true;
@@ -1578,32 +1870,9 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
 
   /* '<S1>:182:14' if((mean_id_reg+(OnlineIDConfig.dev_curr*GlobalConfig.ratCurrent))>=max(id_reg_in)... */
   /* '<S1>:182:15'         &&(mean_id_reg-(OnlineIDConfig.dev_curr*GlobalConfig.ratCurrent))<=min(id_reg_in)&&min(id_reg_in)~=0) */
-  ex = id_reg_in[0];
-  for (k = 0; k < 49; k++) {
-    tmp = id_reg_in[k + 1];
-    if (ex < tmp) {
-      ex = tmp;
-    }
-  }
-
-  if (mean_iq_reg_tmp + mean_id_reg >= ex) {
-    ex = id_reg_in[0];
-    for (k = 0; k < 49; k++) {
-      tmp = id_reg_in[k + 1];
-      if (ex > tmp) {
-        ex = tmp;
-      }
-    }
-
-    if (mean_id_reg - mean_iq_reg_tmp <= ex) {
-      ex = id_reg_in[0];
-      for (k = 0; k < 49; k++) {
-        mean_iq_reg_tmp = id_reg_in[k + 1];
-        if (ex > mean_iq_reg_tmp) {
-          ex = mean_iq_reg_tmp;
-        }
-      }
-
+	if (tmp + mean_id_reg >= maximum(id_reg_in)) {
+		ex = minimum(id_reg_in);
+		if (mean_id_reg - tmp <= ex) {
       if (ex != 0.0F) {
         /* '<S1>:182:16' id_con=boolean(1); */
         *id_con = true;
@@ -1634,62 +1903,41 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
       /* Drehzahlgrenzwerte in rad/sec */
       /* '<S1>:182:22' if((mean_om_reg+((OnlineIDConfig.dev_omega*GlobalConfig.ratSpeed*2*pi)/60))>=max(om_reg_in)... */
       /* '<S1>:182:23'         &&(mean_om_reg-((OnlineIDConfig.dev_omega*GlobalConfig.ratSpeed*2*pi)/60))<=min(om_reg_in)&&min(om_reg_in)~=0) */
-      ex = om_reg_in[0];
-      if (om_reg_in[0] < om_reg_in[1]) {
-        ex = om_reg_in[1];
+			if (!rtIsNaNF(om_reg_in[0])) {
+				idx = 1;
+			} else {
+				idx = 0;
+				d_k = 2;
+				exitg1 = false;
+				while ((!exitg1) && (d_k < 6)) {
+					if (!rtIsNaNF(om_reg_in[d_k - 1])) {
+						idx = d_k;
+						exitg1 = true;
+					} else {
+						d_k++;
+					}
+				}
       }
 
-      if (ex < om_reg_in[2]) {
-        ex = om_reg_in[2];
+			if (idx == 0) {
+				ex = om_reg_in[0];
+			} else {
+				ex = om_reg_in[idx - 1];
+				while (idx + 1 <= 5) {
+					if (ex < om_reg_in[idx]) {
+						ex = om_reg_in[idx];
+					}
+
+					idx++;
+				}
       }
 
-      if (ex < om_reg_in[3]) {
-        ex = om_reg_in[3];
-      }
-
-      if (ex < om_reg_in[4]) {
-        ex = om_reg_in[4];
-      }
-
-      mean_iq_reg_tmp = rtOnlineID_U->OnlineIDConfig.dev_omega *
+			tmp = rtOnlineID_U->OnlineIDConfig.dev_omega *
         rtOnlineID_U->GlobalConfig_out.ratSpeed * 2.0F * 3.14159274F / 60.0F;
-      if (mean_iq_reg_tmp + mean_om_reg >= ex) {
-        ex = om_reg_in[0];
-        if (om_reg_in[0] > om_reg_in[1]) {
-          ex = om_reg_in[1];
-        }
-
-        if (ex > om_reg_in[2]) {
-          ex = om_reg_in[2];
-        }
-
-        if (ex > om_reg_in[3]) {
-          ex = om_reg_in[3];
-        }
-
-        if (ex > om_reg_in[4]) {
-          ex = om_reg_in[4];
-        }
-
-        if (mean_om_reg - mean_iq_reg_tmp <= ex) {
-          mean_om_reg = om_reg_in[0];
-          if (om_reg_in[0] > om_reg_in[1]) {
-            mean_om_reg = om_reg_in[1];
-          }
-
-          if (mean_om_reg > om_reg_in[2]) {
-            mean_om_reg = om_reg_in[2];
-          }
-
-          if (mean_om_reg > om_reg_in[3]) {
-            mean_om_reg = om_reg_in[3];
-          }
-
-          if (mean_om_reg > om_reg_in[4]) {
-            mean_om_reg = om_reg_in[4];
-          }
-
-          if (mean_om_reg != 0.0F) {
+			if (tmp + mean_om_reg >= ex) {
+				ex = minimum_p(om_reg_in);
+				if (mean_om_reg - tmp <= ex) {
+					if (ex != 0.0F) {
             /* '<S1>:182:24' om_con=boolean(1); */
             *om_con = true;
           } else {
@@ -1906,9 +2154,9 @@ static void RefreshDataRegister(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
 
     /* Inport: '<Root>/OnlineIDConfig' */
     if (((!rtOnlineID_DW->LinPara_ident_outside) &&
-         (rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside == 0) && tmp_0 &&
+         (!rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside) && tmp_0 &&
          rtOnlineID_DW->omega_const && rtOnlineID_DW->iq_const) ||
-        ((rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside == 1) && tmp_0 &&
+        (rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside && tmp_0 &&
          rtOnlineID_DW->omega_const && rtOnlineID_DW->iq_const)) {
       /* Transition: '<S1>:378' */
       /* Transition: '<S1>:331' */
@@ -2083,8 +2331,6 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
   DW_OnlineID_t *rtOnlineID_DW = rtOnlineID_M->dwork;
   ExtU_OnlineID_t *rtOnlineID_U = (ExtU_OnlineID_t *) rtOnlineID_M->inputs;
   ExtY_OnlineID_t *rtOnlineID_Y = (ExtY_OnlineID_t *) rtOnlineID_M->outputs;
-  int32_T k;
-  real32_T temp_diff;
   real32_T tmp;
   uint32_T qY;
   boolean_T c_sf_internal_predicateOutput;
@@ -2160,13 +2406,11 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
           /* '<S1>:113:2'  || LinPara_ident_outside==0 && OnlineIDConfig.allowPsiCalcOutside==0 &&.... */
           /* '<S1>:113:3'  counter==uint32((1.2/GlobalConfig.sampleTimeISR)+1); */
           guard3 = false;
-          if (rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside == 1) {
-            temp_diff = roundf(1.2F /
-                               rtOnlineID_U->GlobalConfig_out.sampleTimeISR +
-                               1.0F);
-            if (temp_diff < 4.2949673E+9F) {
-              if (temp_diff >= 0.0F) {
-                qY = (uint32_T)temp_diff;
+					if (rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside) {
+						rtOnlineID_DW->temp_diff = roundf(1.2F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR + 1.0F);
+						if (rtOnlineID_DW->temp_diff < 4.2949673E+9F) {
+							if (rtOnlineID_DW->temp_diff >= 0.0F) {
+								qY = (uint32_T) rtOnlineID_DW->temp_diff;
               } else {
                 qY = 0U;
               }
@@ -2185,13 +2429,11 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
 
           if (guard3) {
             if ((!rtOnlineID_DW->LinPara_ident_outside) &&
-                (rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside == 0)) {
-              temp_diff = roundf(1.2F /
-                                 rtOnlineID_U->GlobalConfig_out.sampleTimeISR +
-                                 1.0F);
-              if (temp_diff < 4.2949673E+9F) {
-                if (temp_diff >= 0.0F) {
-                  qY = (uint32_T)temp_diff;
+                (!rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside)) {
+							rtOnlineID_DW->temp_diff = roundf(1.2F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR + 1.0F);
+							if (rtOnlineID_DW->temp_diff < 4.2949673E+9F) {
+								if (rtOnlineID_DW->temp_diff >= 0.0F) {
+									qY = (uint32_T) rtOnlineID_DW->temp_diff;
                 } else {
                   qY = 0U;
                 }
@@ -2220,14 +2462,12 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
 
             /* '<S1>:375:1' sf_internal_predicateOutput = OnlineIDConfig.allowPsiCalcOutside==0 && LinPara_ident_outside==1.... */
             /* '<S1>:375:2'  && counter==uint32((1.2/GlobalConfig.sampleTimeISR)+1); */
-          } else if ((rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside == 0) &&
+					} else if ((!rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside) &&
                      rtOnlineID_DW->LinPara_ident_outside) {
-            temp_diff = roundf(1.2F /
-                               rtOnlineID_U->GlobalConfig_out.sampleTimeISR +
-                               1.0F);
-            if (temp_diff < 4.2949673E+9F) {
-              if (temp_diff >= 0.0F) {
-                qY = (uint32_T)temp_diff;
+						rtOnlineID_DW->temp_diff = roundf(1.2F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR + 1.0F);
+						if (rtOnlineID_DW->temp_diff < 4.2949673E+9F) {
+							if (rtOnlineID_DW->temp_diff >= 0.0F) {
+								qY = (uint32_T) rtOnlineID_DW->temp_diff;
               } else {
                 qY = 0U;
               }
@@ -2259,18 +2499,17 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
           rtOnlineID_Y->OnlineID_output.activeState = 504U;
 
           /* '<S1>:201:5' temp_diff=abs(OnlineID_output.Wtemp-OnlineIDConfig.Temp_ref); */
-          temp_diff = fabsf(rtOnlineID_Y->OnlineID_output.Wtemp -
-                            rtOnlineID_U->OnlineIDConfig.Temp_ref);
+					rtOnlineID_DW->temp_diff = fabsf(rtOnlineID_Y->OnlineID_output.Wtemp - rtOnlineID_U->OnlineIDConfig.Temp_ref);
 
           /* '<S1>:201:6' delta_psi=abs(OnlineID_output.psi_pm_out-GlobalConfig.PMSM_config.Psi_PM_Vs); */
           /* '<S1>:201:7' if(temp_diff>0&&temp_diff<99) */
-          if ((temp_diff > 0.0F) && (temp_diff < 99.0F)) {
+					if ((rtOnlineID_DW->temp_diff > 0.0F) && (rtOnlineID_DW->temp_diff < 99.0F)) {
             /* '<S1>:201:8' OnlineID_output.delta_psi(1+floor(temp_diff),2)= OnlineID_output.delta_psi(1+floor(temp_diff),2)+1; */
-            k = (int32_T)floorf(temp_diff);
-            rtOnlineID_Y->OnlineID_output.delta_psi[k + 100]++;
+						rtOnlineID_DW->k = (int32_T) floorf(rtOnlineID_DW->temp_diff);
+						rtOnlineID_Y->OnlineID_output.delta_psi[rtOnlineID_DW->k + 100]++;
 
             /* '<S1>:201:9' OnlineID_output.delta_psi(1+floor(temp_diff),1)= OnlineID_output.delta_psi(1+floor(temp_diff),1)+delta_psi; */
-            rtOnlineID_Y->OnlineID_output.delta_psi[k] += fabsf
+						rtOnlineID_Y->OnlineID_output.delta_psi[rtOnlineID_DW->k] += fabsf
               (rtOnlineID_Y->OnlineID_output.psi_pm_out -
                rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs);
           }
@@ -2332,8 +2571,8 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
 
         /* averages iq over 100 and omege over 200 measuring points */
         /* '<S1>:106:39' if(mod(counter,uint32(0.01/GlobalConfig.sampleTimeISR))==0) */
-        temp_diff = 0.01F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR;
-        tmp = roundf(temp_diff);
+				rtOnlineID_DW->temp_diff = 0.01F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR;
+				tmp = roundf(rtOnlineID_DW->temp_diff);
         if (tmp < 4.2949673E+9F) {
           if (tmp >= 0.0F) {
             qY = (uint32_T)tmp;
@@ -2355,10 +2594,10 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
           RefreshDataRegister_i1(rtOnlineID_DW);
 
           /* '<S1>:106:41' iq_register_neu(1,1)=iq_sum/(0.01/GlobalConfig.sampleTimeISR); */
-          rtOnlineID_DW->iq_register_neu[0] = rtOnlineID_DW->iq_sum / temp_diff;
+					rtOnlineID_DW->iq_register_neu[0] = rtOnlineID_DW->iq_sum / rtOnlineID_DW->temp_diff;
 
           /* '<S1>:106:42' id_register_neu(1,1)=id_sum/(0.01/GlobalConfig.sampleTimeISR); */
-          rtOnlineID_DW->id_register_neu[0] = rtOnlineID_DW->id_sum / temp_diff;
+					rtOnlineID_DW->id_register_neu[0] = rtOnlineID_DW->id_sum / rtOnlineID_DW->temp_diff;
 
           /* '<S1>:106:43' iq_sum=single(0); */
           rtOnlineID_DW->iq_sum = 0.0F;
@@ -2367,8 +2606,8 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
           rtOnlineID_DW->id_sum = 0.0F;
 
           /* '<S1>:106:45' if(mod(counter,uint32(0.02/GlobalConfig.sampleTimeISR))==0) */
-          temp_diff = 0.02F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR;
-          tmp = roundf(temp_diff);
+					rtOnlineID_DW->temp_diff = 0.02F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR;
+					tmp = roundf(rtOnlineID_DW->temp_diff);
           if (tmp < 4.2949673E+9F) {
             if (tmp >= 0.0F) {
               qY = (uint32_T)tmp;
@@ -2388,17 +2627,17 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
           if (qY == 0U) {
             /* '<S1>:106:46' omega_register_neu(1,1)=omega_sum/(0.02/GlobalConfig.sampleTimeISR); */
             rtOnlineID_DW->omega_register_neu[0] = rtOnlineID_DW->omega_sum /
-              temp_diff;
+              rtOnlineID_DW->temp_diff;
 
             /* '<S1>:106:47' omega_sum=single(0); */
             rtOnlineID_DW->omega_sum = 0.0F;
           }
 
           /* '<S1>:106:49' if(mod(counter,uint32(0.1/GlobalConfig.sampleTimeISR))==0) */
-          temp_diff = roundf(0.1F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR);
-          if (temp_diff < 4.2949673E+9F) {
-            if (temp_diff >= 0.0F) {
-              qY = (uint32_T)temp_diff;
+					rtOnlineID_DW->temp_diff = roundf(0.1F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR);
+					if (rtOnlineID_DW->temp_diff < 4.2949673E+9F) {
+						if (rtOnlineID_DW->temp_diff >= 0.0F) {
+							qY = (uint32_T) rtOnlineID_DW->temp_diff;
             } else {
               qY = 0U;
             }
@@ -2415,22 +2654,22 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
           if (qY == 0U) {
             /* checks every 0.1s if current omega and iq is too different from the old one */
             /* '<S1>:106:50' [stop_ident] = Break(abs(iq_register_alt),abs(id_register_alt),abs(omega_register_alt),abs(iq_register_neu),abs(id_register_neu),abs(omega_register_neu)); */
-            for (k = 0; k < 50; k++) {
-              rtOnlineID_DW->d_y[k] = fabsf(rtOnlineID_DW->iq_register_alt[k]);
-              rtOnlineID_DW->e_y[k] = fabsf(rtOnlineID_DW->id_register_alt[k]);
+						for (rtOnlineID_DW->k = 0; rtOnlineID_DW->k < 50; rtOnlineID_DW->k++) {
+							rtOnlineID_DW->d_y[rtOnlineID_DW->k] = fabsf(rtOnlineID_DW->iq_register_alt[rtOnlineID_DW->k]);
+							rtOnlineID_DW->e_y[rtOnlineID_DW->k] = fabsf(rtOnlineID_DW->id_register_alt[rtOnlineID_DW->k]);
             }
 
-            for (k = 0; k < 5; k++) {
-              rtOnlineID_DW->f_y[k] = fabsf(rtOnlineID_DW->omega_register_alt[k]);
+						for (rtOnlineID_DW->k = 0; rtOnlineID_DW->k < 5; rtOnlineID_DW->k++) {
+							rtOnlineID_DW->f_y[rtOnlineID_DW->k] = fabsf(rtOnlineID_DW->omega_register_alt[rtOnlineID_DW->k]);
             }
 
-            for (k = 0; k < 10; k++) {
-              rtOnlineID_DW->g_y[k] = fabsf(rtOnlineID_DW->iq_register_neu[k]);
-              rtOnlineID_DW->h_y[k] = fabsf(rtOnlineID_DW->id_register_neu[k]);
+						for (rtOnlineID_DW->k = 0; rtOnlineID_DW->k < 10; rtOnlineID_DW->k++) {
+							rtOnlineID_DW->g_y[rtOnlineID_DW->k] = fabsf(rtOnlineID_DW->iq_register_neu[rtOnlineID_DW->k]);
+							rtOnlineID_DW->h_y[rtOnlineID_DW->k] = fabsf(rtOnlineID_DW->id_register_neu[rtOnlineID_DW->k]);
             }
 
-            for (k = 0; k < 5; k++) {
-              rtOnlineID_DW->i_y[k] = fabsf(rtOnlineID_DW->omega_register_neu[k]);
+						for (rtOnlineID_DW->k = 0; rtOnlineID_DW->k < 5; rtOnlineID_DW->k++) {
+							rtOnlineID_DW->i_y[rtOnlineID_DW->k] = fabsf(rtOnlineID_DW->omega_register_neu[rtOnlineID_DW->k]);
             }
 
             rtOnlineID_DW->stop_ident = Break(rtOnlineID_DW->d_y,
@@ -2477,6 +2716,9 @@ void OnlineID_initialize(RT_MODEL_OnlineID_t *const rtOnlineID_M)
   ExtU_OnlineID_t *rtOnlineID_U = (ExtU_OnlineID_t *) rtOnlineID_M->inputs;
 
   /* Registration code */
+
+	/* initialize non-finites */
+	rt_InitInfAndNaN(sizeof(real_T));
 
   /* states (dwork) */
   (void) memset((void *)rtOnlineID_DW, 0,

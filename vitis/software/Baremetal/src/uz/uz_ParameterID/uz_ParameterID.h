@@ -16,6 +16,7 @@
 #ifndef UZ_PARAMETERID_H
 #define UZ_PARAMETERID_H
 
+#include "../../globalData.h"
 #include <math.h>
 #include "../uz_HAL.h"
 #include <stdbool.h>
@@ -25,6 +26,7 @@
 #include "ElectricalID/uz_PID_ElectricalID.h"
 #include "FluxMapID/uz_PID_FluxMapID.h"
 #include "FrictionID/uz_PID_FrictionID.h"
+#include "OnlineID/uz_PID_OnlineID.h"
 
 
 typedef struct uz_ParameterID_Data_t {
@@ -34,18 +36,21 @@ typedef struct uz_ParameterID_Data_t {
 	uz_PID_ElectricalIDConfig_t PID_ElectricalID_Config;
 	uz_PID_FrictionIDConfig_t PID_FrictionID_Config;
 	uz_PID_FluxMapIDConfig_t PID_FluxMapID_Config;
+	uz_PID_OnlineIDConfig_t PID_OnlineID_Config;
 	uz_PID_ElectricalID_output_t PID_ElectricalID_Output;
 	uz_PID_FrictionID_output_t PID_FrictionID_Output;
 	uz_PID_FluxMapID_output_t PID_FluxMapID_Output;
+	uz_PID_OnlineID_output_t PID_OnlineID_Output;
 	uz_PID_Controller_Parameters_output_t PID_Controller_Parameters;
 } uz_ParameterID_Data_t;
 
-void uz_ParameterID_init(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID);
+void uz_ParameterID_init(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID, uz_PID_OnlineID_t* OnlineID);
 
-void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID, uz_ParameterID_Data_t* Data);
+void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID, uz_PID_OnlineID_t* OnlineID,
+                uz_ParameterID_Data_t* Data);
 
 //struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
-struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
+struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance, ControlReference ControlRef);
 
 void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data);
 

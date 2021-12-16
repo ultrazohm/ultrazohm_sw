@@ -58,6 +58,7 @@ extern uz_PID_ElectricalID_t ElectricalID;
 extern uz_PID_ControlState_t ControlState;
 extern uz_PID_FrictionID_t FrictionID;
 extern uz_PID_FluxMapID_t FluxMapID;
+extern uz_PID_OnlineID_t OnlineID;
 extern uz_ParameterID_Data_t PID_Data;
 extern uz_pmsmModel_t *pmsm;
 extern uz_FOC* FOC_instance;
@@ -107,9 +108,9 @@ void ISR_Control(void *data)
 	//PID_Data.PID_ActualValues.v_dq = uz_dq_transformation(PID_Data.PID_ActualValues.V_UVW, Global_Data.av.theta_elec);
 	PID_Data.PID_ActualValues.theta_m = Global_Data.av.theta_elec / PID_Data.PID_GlobalConfig.PMSM_config.polePairs;
 
-	uz_ParameterID_step(&ControlState, &ElectricalID, &FrictionID, &FluxMapID, &PID_Data);
+	uz_ParameterID_step(&ControlState, &ElectricalID, &FrictionID, &FluxMapID, &OnlineID, &PID_Data);
 //	struct uz_DutyCycle_t PID_DutyCycle = uz_ParameterID_Controller(PID_Data, FOC_instance, SpeedControl_instance);
-	PID_v_dq = uz_ParameterID_Controller(&PID_Data, FOC_instance, SpeedControl_instance);
+	PID_v_dq = uz_ParameterID_Controller(&PID_Data, FOC_instance, SpeedControl_instance, Global_Data.cw.ControlReference);
 //	Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;
 //	Global_Data.rasv.halfBridge2DutyCycle = PID_DutyCycle.DutyCycle_V;
 //	Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;

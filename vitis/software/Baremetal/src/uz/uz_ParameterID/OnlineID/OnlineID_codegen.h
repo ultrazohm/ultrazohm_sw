@@ -75,10 +75,10 @@ typedef struct {
   real32_T dev_omega;
   real32_T dev_curr;
   real32_T identRAmp;
-  uint8_T AverageTransParams;
+	boolean_T AverageTransParams;
   real32_T nom_factor;
   real32_T Rs_time;
-  uint8_T allowPsiCalcOutside;
+	boolean_T allowPsiCalcOutside;
   real32_T min_n_ratio;
   real32_T max_n_ratio;
 } uz_PID_OnlineIDConfig_t;
@@ -221,6 +221,8 @@ typedef struct {
   real32_T Ld_old_outside;             /* '<Root>/OnlineID' */
   real32_T Lq_old_outside;             /* '<Root>/OnlineID' */
   real32_T PsiPm_old_outside;          /* '<Root>/OnlineID' */
+	real32_T temp_diff;
+	int32_T k;
   uint32_T counter;                    /* '<Root>/OnlineID' */
   uint32_T counter_time;               /* '<Root>/OnlineID' */
   uint16_T counter_ausserhalb;         /* '<Root>/OnlineID' */

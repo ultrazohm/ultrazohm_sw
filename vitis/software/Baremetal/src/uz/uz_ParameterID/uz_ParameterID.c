@@ -20,14 +20,17 @@
 
 #if UZ_PARAMETERID_ACTIVE > 0U
 
-void uz_ParameterID_init(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID) {
+void uz_ParameterID_init(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID, uz_PID_OnlineID_t* OnlineID) {
 	uz_PID_ControlState_init(ControlState);
 	uz_PID_ElectricalID_init(ElectricalID);
 	uz_PID_FrictionID_init(FrictionID);
 	uz_PID_FluxMapID_init(FluxMapID);
+	uz_PID_OnlineID_init(OnlineID);
+
 }
 
-void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID, uz_ParameterID_Data_t* Data) {
+void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID, uz_PID_OnlineID_t* OnlineID,
+                uz_ParameterID_Data_t* Data) {
 	//Update Control-State inputs, which are not depended on other states
 	ControlState->input.GlobalConfig_in = Data->PID_GlobalConfig;
 
@@ -124,6 +127,20 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 			ControlState->input.finishedFluxMapID = FluxMapID->output.finishedFluxMapID;
 		}
 	}
+	if (ControlState->output.ControlFlags.enableOnlineID == true || ControlState->output.GlobalConfig_out.Reset == true || Data->PID_OnlineID_Config.OnlineID_Reset == true) {
+		//Update State-Inputs
+		OnlineID->input.ActualValues = Data->PID_ActualValues;
+		OnlineID->input.ControlFlags = ControlState->output.ControlFlags;
+		OnlineID->input.GlobalConfig_out = ControlState->output.GlobalConfig_out;
+		OnlineID->input.OnlineIDConfig = Data->PID_OnlineID_Config;
+
+		//Step the function
+		uz_PID_OnlineID_step(OnlineID);
+
+		//Update Data struct with new output values
+		Data->PID_OnlineID_Output = OnlineID->output.OnlineID_output;
+
+	}
 	// reset ACCEPT
 	if (ControlState->output.GlobalConfig_out.ACCEPT == true) {
 		ControlState->output.GlobalConfig_out.ACCEPT = false;
@@ -159,14 +176,15 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 }
 
 //struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance) {
-struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance) {
+struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance, ControlReference ControlRef) {
 		struct uz_DutyCycle_t output_DutyCycle = { 0 };
 		uz_dq_t v_dq_Volts = { 0 };
 		uz_dq_t i_SpeedControl_reference_Ampere = { 0 };
+	bool ext_clamping = false;
 
 		if (Data->PID_Controller_Parameters.enableFOC_speed == true) {
 			//Change, if desired, the speed controller here
-			bool ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
+		ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
 			i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->PID_ActualValues.omega_el, Data->PID_Controller_Parameters.n_ref_FOC,
 			                Data->PID_ActualValues.V_DC, Data->PID_Controller_Parameters.i_dq_ref.d, Data->PID_GlobalConfig.PMSM_config, ext_clamping);
 			//Create sine excitation for J-Identification
@@ -197,11 +215,11 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 			output_DutyCycle.DutyCycle_V = 0.0f;
 			output_DutyCycle.DutyCycle_W = 0.0f;
 		}
-		if (Data->PID_GlobalConfig.ElectricalID == true) {
-			if (Data->PID_Controller_Parameters.activeState == 144U) {
-				uz_FOC_set_decoupling_method(FOC_instance, no_decoupling);
-			} else if (Data->PID_Controller_Parameters.activeState == 170U) {
-				uz_FOC_set_PMSM_parameters(FOC_instance, Data->PID_ElectricalID_Output.PMSM_parameters);
+	if (Data->PID_GlobalConfig.ElectricalID == true) {
+		if (Data->PID_Controller_Parameters.activeState == 144U) {
+			uz_FOC_set_decoupling_method(FOC_instance, no_decoupling);
+		} else if (Data->PID_Controller_Parameters.activeState == 170U) {
+			uz_FOC_set_PMSM_parameters(FOC_instance, Data->PID_ElectricalID_Output.PMSM_parameters);
 			uz_FOC_set_decoupling_method(FOC_instance, linear_decoupling);
 			} else if (Data->PID_Controller_Parameters.activeState >= 110 && Data->PID_Controller_Parameters.activeState <= 143) {
 				PWM_SS_SetTriState(Data->PID_ElectricalID_Output.enable_TriState[0], Data->PID_ElectricalID_Output.enable_TriState[1],
@@ -217,6 +235,26 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 		uz_PI_Controller_set_Ki(Speed_instance, Data->PID_Controller_Parameters.Ki_n_out);
 		uz_PI_Controller_set_Kp(Speed_instance, Data->PID_Controller_Parameters.Kp_n_out);
 		}
+
+	if (Data->PID_ControlFlags.finished_all_Offline_states == true) {
+		if (Data->PID_ControlFlags.enableOnlineID == true) {
+			Data->PID_GlobalConfig.i_dq_ref.d += Data->PID_OnlineID_Output.id_out;
+		} else {
+			Data->PID_GlobalConfig.i_dq_ref.d += 0.0f;
+		}
+		if (ControlRef == CurrentControl) {
+			v_dq_Volts = uz_FOC_sample(FOC_instance, Data->PID_GlobalConfig.i_dq_ref, Data->PID_ActualValues.i_dq, Data->PID_ActualValues.V_DC, Data->PID_ActualValues.omega_el);
+		} else if (ControlRef == SpeedControl) {
+			ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
+			i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->PID_ActualValues.omega_el, Data->PID_GlobalConfig.n_ref, Data->PID_ActualValues.V_DC,
+			                Data->PID_GlobalConfig.i_dq_ref.d, Data->PID_GlobalConfig.PMSM_config, ext_clamping);
+			v_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data->PID_ActualValues.i_dq, Data->PID_ActualValues.V_DC, Data->PID_ActualValues.omega_el);
+		} else {
+			v_dq_Volts.d = 0.0f;
+			v_dq_Volts.q = 0.0f;
+			v_dq_Volts.zero = 0.0f;
+		}
+	}
 		//return (output_DutyCycle);
 		return (v_dq_Volts);
 	}
@@ -285,6 +323,19 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data) {
 	Data->PID_FrictionID_Config.eta = 0.0f;
 	Data->PID_FrictionID_Config.maxCurrent = 0.0f;
 	Data->PID_FrictionID_Config.n_eva_max = 0.0f;
+
+	//Inintialize OnlineID-Config
+	Data->PID_OnlineID_Config.AverageTransParams = false;
+	Data->PID_OnlineID_Config.OnlineID_Reset = false;
+	Data->PID_OnlineID_Config.Rs_time = 0.0f;
+	Data->PID_OnlineID_Config.Temp_ref = 0.0f;
+	Data->PID_OnlineID_Config.allowPsiCalcOutside = false;
+	Data->PID_OnlineID_Config.dev_curr = 0.0f;
+	Data->PID_OnlineID_Config.dev_omega = 0.0f;
+	Data->PID_OnlineID_Config.identRAmp = 0.0f;
+	Data->PID_OnlineID_Config.max_n_ratio = 0.0f;
+	Data->PID_OnlineID_Config.min_n_ratio = 0.0f;
+	Data->PID_OnlineID_Config.nom_factor = 0.0f;
 }
 
 #endif

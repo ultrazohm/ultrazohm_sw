@@ -276,6 +276,15 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data) {
 	Data->PID_FluxMapID_Config.identR = false;
 	Data->PID_FluxMapID_Config.identRAmp = 0.0f;
 	Data->PID_FluxMapID_Config.start_FM_ID = false;
+
+	//Initialize FrictionID-Config
+	Data->PID_FrictionID_Config.BrkCount = 0.0f;
+	Data->PID_FrictionID_Config.N_Brk = 0.0f;
+	Data->PID_FrictionID_Config.N_Visco = 0.0f;
+	Data->PID_FrictionID_Config.StepScale = 0.0f;
+	Data->PID_FrictionID_Config.eta = 0.0f;
+	Data->PID_FrictionID_Config.maxCurrent = 0.0f;
+	Data->PID_FrictionID_Config.n_eva_max = 0.0f;
 }
 
 #endif

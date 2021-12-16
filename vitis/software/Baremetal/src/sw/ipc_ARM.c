@@ -274,7 +274,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 					data->mrp.ADCconvFactorReadback = data->mrp.ADCConversionFactorTmp;
 					break;
 				default:
-					uz_assert_false(true); // unknown command -> throw error
+					uz_assert(0); // unknown command -> throw error
 					break;
 			}
 			break;
@@ -624,12 +624,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 		case( 0x661+MOTORCONTROL_OFFSET_bits):
 			data->pID.AdmitParamsFlag = true;
 			break;
+
 		case( 0x662+MOTORCONTROL_OFFSET_bits):
 			data->pID.AdmitMechParamsFlag = true;
 			break;
 
 		default:
-			uz_assert_false(true); // unknown command -> throw error
+			uz_assert(0); // unknown command -> throw error
 		}
 	}
 

@@ -552,6 +552,10 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
 					if (rtControlState_Y->ControlFlags.finished_all_Offline_states && rtControlState_U->GlobalConfig_in.OnlineID) {
 						/* '<S1>:605:8' ControlFlags.enableOnlineID=boolean(1); */
 						rtControlState_Y->ControlFlags.enableOnlineID = true;
+					} else if (rtControlState_Y->ControlFlags.finished_all_Offline_states && (!rtControlState_U->GlobalConfig_in.OnlineID)) {
+						/* '<S1>:605:9' elseif (ControlFlags.finished_all_Offline_states == 1 && GlobalConfig_in.OnlineID==0) */
+						/* '<S1>:605:10' ControlFlags.enableOnlineID=boolean(0); */
+						rtControlState_Y->ControlFlags.enableOnlineID = false;
 					}
 				}
 				break;

@@ -17,16 +17,16 @@
 #if UZ_PARAMETERID_ACTIVE > 0U
 #include "uz_PID_FluxMapID.h"
 
-void uz_PID_FrictionID_init(uz_PID_FluxMapID_t *self) {
+void uz_PID_FluxMapID_init(uz_PID_FluxMapID_t *self) {
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
 	self->PtrToModelData->outputs = &self->output;
-	FrictionID_initialize(self->PtrToModelData);
+	FluxMapID_initialize(self->PtrToModelData);
 }
 
-void uz_PID_FrictionID_step(uz_PID_FluxMapID_t *self) {
-	FrictionID_step(self->PtrToModelData);
+void uz_PID_FluxMapID_step(uz_PID_FluxMapID_t *self) {
+	FluxMapID_step(self->PtrToModelData);
 }
 
 #endif

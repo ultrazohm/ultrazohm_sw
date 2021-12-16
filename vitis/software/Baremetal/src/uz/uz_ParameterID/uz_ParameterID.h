@@ -24,6 +24,7 @@
 #include "ControlState/uz_PID_ControlState.h"
 #include "ElectricalID/uz_PID_ElectricalID.h"
 #include "FluxMapID/uz_PID_FluxMapID.h"
+#include "FrictionID/uz_PID_FrictionID.h"
 
 
 typedef struct uz_ParameterID_Data_t {
@@ -31,8 +32,10 @@ typedef struct uz_ParameterID_Data_t {
 	uz_PID_ControlFlags_t PID_ControlFlags;
 	uz_PID_GlobalConfig_t PID_GlobalConfig;
 	uz_PID_ElectricalIDConfig_t PID_ElectricalID_Config;
+	uz_PID_FrictionIDConfig_t PID_FrictionID_Config;
 	uz_PID_FluxMapIDConfig_t PID_FluxMapID_Config;
 	uz_PID_ElectricalID_output_t PID_ElectricalID_Output;
+	uz_PID_FrictionID_output_t PID_FrictionID_Output;
 	uz_PID_FluxMapID_output_t PID_FluxMapID_Output;
 	uz_PID_Controller_Parameters_output_t PID_Controller_Parameters;
 } uz_ParameterID_Data_t;

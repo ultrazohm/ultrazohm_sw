@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#include "../ElectricalID/uz_PID_ElectricalID.h"
-
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_ACTIVE > 0U
-#include "../../uz_HAL.h"
+#include "uz_PID_ElectricalID.h"
 
 void uz_PID_ElectricalID_init(uz_PID_ElectricalID_t *self) {
 	self->PtrToModelData = &self->modelData;

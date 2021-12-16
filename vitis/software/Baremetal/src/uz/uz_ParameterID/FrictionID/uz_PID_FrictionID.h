@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID_ACTIVE > 0U
-#include "uz_PID_ControlState.h"
+#include <stdbool.h>
 
-void uz_PID_ControlState_init(uz_PID_ControlState_t *self) {
-	self->PtrToModelData = &self->modelData;
-	self->PtrToModelData->dwork = &self->rtDW;
-	self->PtrToModelData->inputs = &self->input;
-	self->PtrToModelData->outputs = &self->output;
-	ControlState_initialize(self->PtrToModelData);
-}
+#include "FrictionID_codegen.h"
 
-void uz_PID_ControlState_step(uz_PID_ControlState_t *self) {
-	ControlState_step(self->PtrToModelData);
-}
-#endif
+typedef struct {
+	ExtY_FrictionID_t output;
+	ExtU_FrictionID_t input;
+	DW_FrictionID_t rtDW; /* Observable states */
+	RT_MODEL_FrictionID_t modelData;
+	RT_MODEL_FrictionID_t *PtrToModelData;
+} uz_PID_FrictionID_t;
+
+void uz_PID_FrictionID_init(uz_PID_FrictionID_t *self);
+void uz_PID_FrictionID_step(uz_PID_FrictionID_t *self);

@@ -15,17 +15,18 @@
  ******************************************************************************/
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_ACTIVE > 0U
-#include "uz_PID_ControlState.h"
+#include "uz_PID_FrictionID.h"
 
-void uz_PID_ControlState_init(uz_PID_ControlState_t *self) {
+void uz_PID_FluxMapID_init(uz_PID_FrictionID_t *self) {
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
 	self->PtrToModelData->outputs = &self->output;
-	ControlState_initialize(self->PtrToModelData);
+	FluxMapID_initialize(self->PtrToModelData);
 }
 
-void uz_PID_ControlState_step(uz_PID_ControlState_t *self) {
-	ControlState_step(self->PtrToModelData);
+void uz_PID_FluxMapID_step(uz_PID_FrictionID_t *self) {
+	FluxMapID_step(self->PtrToModelData);
 }
+
 #endif

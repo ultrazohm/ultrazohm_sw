@@ -40,7 +40,7 @@ typedef struct uz_ParameterID_Data_t {
 	uz_PID_Controller_Parameters_output_t PID_Controller_Parameters;
 } uz_ParameterID_Data_t;
 
-void uz_ParameterID_init(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FluxMapID_t* FluxMapID);
+void uz_ParameterID_init(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID);
 
 void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID, uz_ParameterID_Data_t* Data);
 

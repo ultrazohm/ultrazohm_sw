@@ -20,9 +20,10 @@
 
 #if UZ_PARAMETERID_ACTIVE > 0U
 
-void uz_ParameterID_init(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FluxMapID_t* FluxMapID) {
+void uz_ParameterID_init(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID) {
 	uz_PID_ControlState_init(ControlState);
 	uz_PID_ElectricalID_init(ElectricalID);
+	uz_PID_FrictionID_init(FrictionID);
 	uz_PID_FluxMapID_init(FluxMapID);
 }
 
@@ -35,10 +36,6 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 
 	//Update Data-Struct with Control-State outputs
 	Data->PID_ControlFlags = ControlState->output.ControlFlags;
-
-	if (ControlState->output.GlobalConfig_out.ACCEPT == true) {
-		Data->PID_ElectricalID_Output.PWM_Switch_0 = 2.0f;
-	}
 
 	//All Offline states
 	if (ControlState->output.ControlFlags.finished_all_Offline_states == false) {
@@ -100,7 +97,7 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 			ControlState->input.finishedFrictionID = FrictionID->output.finishedFrictionID;
 		}
 
-			//FluxMapID
+		//FluxMapID
 		if (ControlState->output.GlobalConfig_out.FluxMapID == true && ControlState->output.GlobalConfig_out.Reset == false && ControlState->output.ControlFlags.transNr == 4U) {
 			//Update State-Inputs
 			FluxMapID->input.ActualValues = Data->PID_ActualValues;

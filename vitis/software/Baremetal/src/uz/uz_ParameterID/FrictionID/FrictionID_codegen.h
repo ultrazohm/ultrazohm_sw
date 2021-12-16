@@ -173,7 +173,6 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_FrictionID_output_t_
 
 typedef struct {
-  uint16_T activeState;
   real32_T BrkTorque;
   real32_T CoulTorque;
   real32_T ViscoTorque;

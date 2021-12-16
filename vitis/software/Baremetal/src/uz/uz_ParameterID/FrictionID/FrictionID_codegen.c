@@ -126,19 +126,19 @@ static void exit_atomic_BreakawayTorqueEsti(ExtU_FrictionID_t *rtFrictionID_U,
 {
   int32_T k;
   real32_T ex;
-  real32_T tmp;
+	real32_T tmp;
 
   /* Exit 'BreakawayTorqueEstimation': '<S1>:492' */
   /* '<S1>:492:17' i_Brk=max(Ustep); */
-  ex = rtFrictionID_DW->Ustep[0];
-  for (k = 0; k < 102; k++) {
-    tmp = rtFrictionID_DW->Ustep[k + 1];
-    if (ex < tmp) {
-      ex = tmp;
+	ex = rtFrictionID_DW->Ustep[0];
+	for (k = 0; k < 102; k++) {
+		tmp = rtFrictionID_DW->Ustep[k + 1];
+		if (ex < tmp) {
+			ex = tmp;
     }
   }
 
-  rtFrictionID_DW->i_Brk = ex;
+	rtFrictionID_DW->i_Brk = ex;
 
   /* Outport: '<Root>/FrictionID_output' incorporates:
    *  Inport: '<Root>/GlobalConfig'
@@ -1038,7 +1038,6 @@ void FrictionID_initialize(RT_MODEL_FrictionID_t *const rtFrictionID_M)
   rtFrictionID_Y->FrictionID_FOC_output.Ki_id_out = 0.0F;
   rtFrictionID_Y->FrictionID_FOC_output.Ki_iq_out = 0.0F;
   rtFrictionID_Y->FrictionID_FOC_output.Ki_n_out = 0.0F;
-  rtFrictionID_Y->FrictionID_output.activeState = 0U;
   rtFrictionID_Y->FrictionID_output.BrkTorque = 0.0F;
   rtFrictionID_Y->FrictionID_output.CoulTorque = 0.0F;
   rtFrictionID_Y->FrictionID_output.ViscoTorque = 0.0F;

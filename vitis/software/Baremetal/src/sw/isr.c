@@ -45,7 +45,6 @@ XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible 
 //Initialize the Timer structure
 XTmrCtr Timer_Interrupt;
 
-float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
 

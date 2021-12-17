@@ -16,9 +16,10 @@
 #ifndef IPC_H_
 #define IPC_H_
 
-#include <stdint.h>
 #include "../globalData.h"
+#include "javascope.h"
 
-void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data);
+void ipc_Control_func(uint32_t msgId, float value, DS_Data* data);
+
 
 #endif /* IPC_H_ */

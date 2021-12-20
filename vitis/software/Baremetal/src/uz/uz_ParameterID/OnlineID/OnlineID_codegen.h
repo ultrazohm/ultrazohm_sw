@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'OnlineID'.
  *
- * Model version                  : 2.349
+ * Model version                  : 2.371
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Thu Dec 16 11:59:25 2021
+ * C/C++ source code generated on : Mon Dec 20 12:50:35 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (10), Warnings (2), Error (0)
+ * Validation result: All passed
  */
 
 #include "../../uz_global_configuration.h"
@@ -183,15 +183,15 @@ typedef struct {
   real32_T omega_register_neu[5];      /* '<Root>/OnlineID' */
   real32_T id_register_alt[50];        /* '<Root>/OnlineID' */
   real32_T id_register_neu[10];        /* '<Root>/OnlineID' */
-  real32_T d_y[50];
-  real32_T e_y[50];
-  real32_T c_y[50];
-  real32_T d_y_m[50];
-  real32_T g_y[10];
-  real32_T h_y[10];
+	real32_T y[50];
+	real32_T b_y[50];
+	real32_T y_m[50];
+	real32_T b_y_c[50];
+	real32_T d_y[10];
+	real32_T e_y[10];
+	real32_T c_y[5];
   real32_T f_y[5];
-  real32_T i_y[5];
-  real32_T e_y_c[5];
+	real32_T c_y_k[5];
   real32_T breakback;                  /* '<Root>/OnlineID' */
   real32_T i_d_R_online;               /* '<Root>/OnlineID' */
   real32_T omega_sum;                  /* '<Root>/OnlineID' */
@@ -221,8 +221,6 @@ typedef struct {
   real32_T Ld_old_outside;             /* '<Root>/OnlineID' */
   real32_T Lq_old_outside;             /* '<Root>/OnlineID' */
   real32_T PsiPm_old_outside;          /* '<Root>/OnlineID' */
-	real32_T temp_diff;
-	int32_T k;
   uint32_T counter;                    /* '<Root>/OnlineID' */
   uint32_T counter_time;               /* '<Root>/OnlineID' */
   uint16_T counter_ausserhalb;         /* '<Root>/OnlineID' */
@@ -260,9 +258,6 @@ struct tag_RTM_OnlineID_t {
   ExtY_OnlineID_t *outputs;
   DW_OnlineID_t *dwork;
 };
-
-/* External data declarations for dependent source files */
-extern const uz_PID_OnlineID_output_t OnlineID_rtZuz_PID_OnlineID_output_t;/* uz_PID_OnlineID_output_t ground */
 
 /* Model entry point functions */
 extern void OnlineID_initialize(RT_MODEL_OnlineID_t *const rtOnlineID_M);

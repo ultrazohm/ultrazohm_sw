@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'OnlineID'.
  *
- * Model version                  : 2.349
+ * Model version                  : 2.371
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Thu Dec 16 11:59:25 2021
+ * C/C++ source code generated on : Mon Dec 20 12:50:35 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (10), Warnings (2), Error (0)
+ * Validation result: All passed
  */
 
 #include "../../uz_global_configuration.h"
@@ -32,90 +32,6 @@
 #define IN_RefreshDataRegister         ((uint8_T)3U)
 #define IN_TempPsiCalcState            ((uint8_T)4U)
 #define IN_Waiting                     ((uint8_T)2U)
-#define NumBitsPerChar                 8U
-
-const uz_PID_OnlineID_output_t OnlineID_rtZuz_PID_OnlineID_output_t = {
-  0.0F,                                /* id_out */
-  0.0F,                                /* Rph_out */
-  0.0F,                                /* Wtemp */
-
-  {
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F }
-  ,                                    /* psi_array */
-  false,                               /* IdControlFlag */
-  0.0F,                                /* iq_mean_out */
-  0.0F,                                /* id_mean_out */
-
-  {
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 0.0F, 0.0F, 0.0F, 0.0F }
-  ,                                    /* delta_psi */
-  0U,                                  /* activeState */
-  0.0F,                                /* psi_pm_out */
-  0.0F,                                /* Ld_out */
-  0.0F,                                /* Lq_out */
-  false                                /* clean_array_flag */
-} ;                                    /* uz_PID_OnlineID_output_t ground */
 
 /* Forward declaration for local functions */
 static void InitParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
@@ -132,209 +48,12 @@ static boolean_T Break(const real32_T iq_reg_alt[50], const real32_T id_reg_alt
 static void enter_atomic_PsiCalcState(ExtU_OnlineID_t *rtOnlineID_U,
   ExtY_OnlineID_t *rtOnlineID_Y, DW_OnlineID_t *rtOnlineID_DW);
 static void RefreshDataRegister_i(DW_OnlineID_t *rtOnlineID_DW);
-static real32_T maximum(const real32_T x[50]);
-static real32_T minimum(const real32_T x[50]);
-static real32_T minimum_p(const real32_T x[5]);
 static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
   id_reg_in[50], const real32_T om_reg_in[5], uint32_T timer, boolean_T
   *allow_measurement, boolean_T *om_con, boolean_T *iq_con, boolean_T *id_con,
   boolean_T *i_val, ExtU_OnlineID_t *rtOnlineID_U);
 static void RefreshDataRegister(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
   *rtOnlineID_Y, DW_OnlineID_t *rtOnlineID_DW);
-extern real_T rtInf;
-extern real_T rtMinusInf;
-extern real_T rtNaN;
-extern real32_T rtInfF;
-extern real32_T rtMinusInfF;
-extern real32_T rtNaNF;
-static void rt_InitInfAndNaN(size_t realSize);
-static boolean_T rtIsInf(real_T value);
-static boolean_T rtIsInfF(real32_T value);
-static boolean_T rtIsNaN(real_T value);
-static boolean_T rtIsNaNF(real32_T value);
-typedef struct {
-	struct {
-		uint32_T wordH;
-		uint32_T wordL;
-	} words;
-} BigEndianIEEEDouble;
-
-typedef struct {
-	struct {
-		uint32_T wordL;
-		uint32_T wordH;
-	} words;
-} LittleEndianIEEEDouble;
-
-typedef struct {
-	union {
-		real32_T wordLreal;
-		uint32_T wordLuint;
-	} wordL;
-} IEEESingle;
-
-real_T rtInf;
-real_T rtMinusInf;
-real_T rtNaN;
-real32_T rtInfF;
-real32_T rtMinusInfF;
-real32_T rtNaNF;
-static real_T rtGetInf(void);
-static real32_T rtGetInfF(void);
-static real_T rtGetMinusInf(void);
-static real32_T rtGetMinusInfF(void);
-static real_T rtGetNaN(void);
-static real32_T rtGetNaNF(void);
-
-/*
- * Initialize the rtInf, rtMinusInf, and rtNaN needed by the
- * generated code. NaN is initialized as non-signaling. Assumes IEEE.
- */
-static void rt_InitInfAndNaN(size_t realSize) {
-	(void) (realSize);
-	rtNaN = rtGetNaN();
-	rtNaNF = rtGetNaNF();
-	rtInf = rtGetInf();
-	rtInfF = rtGetInfF();
-	rtMinusInf = rtGetMinusInf();
-	rtMinusInfF = rtGetMinusInfF();
-}
-
-/* Test if value is infinite */
-static boolean_T rtIsInf(real_T value) {
-	return (boolean_T) ((value == rtInf || value == rtMinusInf) ? 1U : 0U);
-}
-
-/* Test if single-precision value is infinite */
-static boolean_T rtIsInfF(real32_T value) {
-	return (boolean_T) (((value) == rtInfF || (value) == rtMinusInfF) ? 1U : 0U);
-}
-
-/* Test if value is not a number */
-static boolean_T rtIsNaN(real_T value) {
-	boolean_T result = (boolean_T) 0;
-	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-	if (bitsPerReal == 32U) {
-		result = rtIsNaNF((real32_T) value);
-	} else {
-		union {
-			LittleEndianIEEEDouble bitVal;
-			real_T fltVal;
-		} tmpVal;
-
-		tmpVal.fltVal = value;
-		result = (boolean_T) ((tmpVal.bitVal.words.wordH & 0x7FF00000) == 0x7FF00000 && ((tmpVal.bitVal.words.wordH & 0x000FFFFF) != 0 || (tmpVal.bitVal.words.wordL != 0)));
-	}
-
-	return result;
-}
-
-/* Test if single-precision value is not a number */
-static boolean_T rtIsNaNF(real32_T value) {
-	IEEESingle tmp;
-	tmp.wordL.wordLreal = value;
-	return (boolean_T) ((tmp.wordL.wordLuint & 0x7F800000) == 0x7F800000 && (tmp.wordL.wordLuint & 0x007FFFFF) != 0);
-}
-
-/*
- * Initialize rtInf needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real_T rtGetInf(void) {
-	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-	real_T inf = 0.0;
-	if (bitsPerReal == 32U) {
-		inf = rtGetInfF();
-	} else {
-		union {
-			LittleEndianIEEEDouble bitVal;
-			real_T fltVal;
-		} tmpVal;
-
-		tmpVal.bitVal.words.wordH = 0x7FF00000U;
-		tmpVal.bitVal.words.wordL = 0x00000000U;
-		inf = tmpVal.fltVal;
-	}
-
-	return inf;
-}
-
-/*
- * Initialize rtInfF needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real32_T rtGetInfF(void) {
-	IEEESingle infF;
-	infF.wordL.wordLuint = 0x7F800000U;
-	return infF.wordL.wordLreal;
-}
-
-/*
- * Initialize rtMinusInf needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real_T rtGetMinusInf(void) {
-	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-	real_T minf = 0.0;
-	if (bitsPerReal == 32U) {
-		minf = rtGetMinusInfF();
-	} else {
-		union {
-			LittleEndianIEEEDouble bitVal;
-			real_T fltVal;
-		} tmpVal;
-
-		tmpVal.bitVal.words.wordH = 0xFFF00000U;
-		tmpVal.bitVal.words.wordL = 0x00000000U;
-		minf = tmpVal.fltVal;
-	}
-
-	return minf;
-}
-
-/*
- * Initialize rtMinusInfF needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real32_T rtGetMinusInfF(void) {
-	IEEESingle minfF;
-	minfF.wordL.wordLuint = 0xFF800000U;
-	return minfF.wordL.wordLreal;
-}
-
-/*
- * Initialize rtNaN needed by the generated code.
- * NaN is initialized as non-signaling. Assumes IEEE.
- */
-static real_T rtGetNaN(void) {
-	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-	real_T nan = 0.0;
-	if (bitsPerReal == 32U) {
-		nan = rtGetNaNF();
-	} else {
-		union {
-			LittleEndianIEEEDouble bitVal;
-			real_T fltVal;
-		} tmpVal;
-
-		tmpVal.bitVal.words.wordH = 0xFFF80000U;
-		tmpVal.bitVal.words.wordL = 0x00000000U;
-		nan = tmpVal.fltVal;
-	}
-
-	return nan;
-}
-
-/*
- * Initialize rtNaNF needed by the generated code.
- * NaN is initialized as non-signaling. Assumes IEEE.
- */
-static real32_T rtGetNaNF(void) {
-	IEEESingle nanF = { { 0.0F } };
-
-	nanF.wordL.wordLuint = 0xFFC00000U;
-	return nanF.wordL.wordLreal;
-}
 
 /*
  * Function for Chart: '<Root>/OnlineID'
@@ -865,168 +584,65 @@ static void identParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
   real32_T Lq_check;
   real32_T R_check;
   real32_T psipm_check;
-  uint32_T tmp;
-  boolean_T tmp_0;
+	boolean_T tmp;
 
-  /* Inport: '<Root>/GlobalConfig' */
   /* MATLAB Function 'identParams': '<S1>:101' */
-  /* '<S1>:101:4' if(counter <= uint32(0.6/GlobalConfig.sampleTimeISR)) */
-  R_check = 0.6F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR;
-  Lq_check = roundf(R_check);
-  if (Lq_check < 4.2949673E+9F) {
-    if (Lq_check >= 0.0F) {
-      tmp = (uint32_T)Lq_check;
-    } else {
-      tmp = 0U;
-    }
-  } else {
-    tmp = MAX_uint32_T;
-  }
-
-  if (rtOnlineID_DW->counter <= tmp) {
+	/* '<S1>:101:4' if(counter <= 12000) */
+	if (rtOnlineID_DW->counter <= 12000U) {
     /* Inport: '<Root>/OnlineIDConfig' */
     /* '<S1>:101:5' i_d_R_online = single(+OnlineIDConfig.identRAmp); */
     rtOnlineID_DW->i_d_R_online = rtOnlineID_U->OnlineIDConfig.identRAmp;
 
-    /* Inport: '<Root>/GlobalConfig' */
-    /* '<S1>:101:6' if(counter >= uint32((0.5/GlobalConfig.sampleTimeISR)-1) && counter < uint32((0.6/GlobalConfig.sampleTimeISR)-1)) */
-    psipm_check = roundf(0.5F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR -
-                         1.0F);
-    if (psipm_check < 4.2949673E+9F) {
-      if (psipm_check >= 0.0F) {
-        tmp = (uint32_T)psipm_check;
-      } else {
-        tmp = 0U;
-      }
-    } else {
-      tmp = MAX_uint32_T;
-    }
+		/* '<S1>:101:6' if(counter >= 9999 && counter < 11999) */
+		if ((rtOnlineID_DW->counter >= 9999U) && (rtOnlineID_DW->counter < 11999U)) {
+			/* Inport: '<Root>/ActualValues' */
+			/* '<S1>:101:7' Vd1counter = Vd1counter+ActualValues.v_dq.d; */
+			rtOnlineID_DW->Vd1counter += rtOnlineID_U->ActualValues.v_dq.d;
 
-    if (rtOnlineID_DW->counter >= tmp) {
-      R_check = roundf(R_check - 1.0F);
-      if (R_check < 4.2949673E+9F) {
-        if (R_check >= 0.0F) {
-          tmp = (uint32_T)R_check;
-        } else {
-          tmp = 0U;
-        }
-      } else {
-        tmp = MAX_uint32_T;
-      }
+			/* '<S1>:101:8' Vq1counter = Vq1counter+ActualValues.v_dq.q; */
+			rtOnlineID_DW->Vq1counter += rtOnlineID_U->ActualValues.v_dq.q;
 
-      if (rtOnlineID_DW->counter < tmp) {
-        /* Inport: '<Root>/ActualValues' */
-        /* '<S1>:101:7' Vd1counter = Vd1counter+ActualValues.v_dq.d; */
-        rtOnlineID_DW->Vd1counter += rtOnlineID_U->ActualValues.v_dq.d;
+			/* '<S1>:101:9' id1counter = id1counter+ActualValues.i_dq.d; */
+			rtOnlineID_DW->id1counter += rtOnlineID_U->ActualValues.i_dq.d;
 
-        /* '<S1>:101:8' Vq1counter = Vq1counter+ActualValues.v_dq.q; */
-        rtOnlineID_DW->Vq1counter += rtOnlineID_U->ActualValues.v_dq.q;
+			/* '<S1>:101:10' iq1counter = iq1counter+ActualValues.i_dq.q; */
+			rtOnlineID_DW->iq1counter += rtOnlineID_U->ActualValues.i_dq.q;
 
-        /* '<S1>:101:9' id1counter = id1counter+ActualValues.i_dq.d; */
-        rtOnlineID_DW->id1counter += rtOnlineID_U->ActualValues.i_dq.d;
-
-        /* '<S1>:101:10' iq1counter = iq1counter+ActualValues.i_dq.q; */
-        rtOnlineID_DW->iq1counter += rtOnlineID_U->ActualValues.i_dq.q;
-
-        /* '<S1>:101:11' omega1counter = omega1counter+ActualValues.omega_el; */
-        rtOnlineID_DW->omega1counter += rtOnlineID_U->ActualValues.omega_el;
-      }
+			/* '<S1>:101:11' omega1counter = omega1counter+ActualValues.omega_el; */
+			rtOnlineID_DW->omega1counter += rtOnlineID_U->ActualValues.omega_el;
     }
   }
 
   /*  negative halfperiod        */
-  /* '<S1>:101:16' if(counter > uint32(0.6/GlobalConfig.sampleTimeISR) && counter < uint32(1.2/GlobalConfig.sampleTimeISR)) */
-  if (Lq_check < 4.2949673E+9F) {
-    if (Lq_check >= 0.0F) {
-      tmp = (uint32_T)Lq_check;
-    } else {
-      tmp = 0U;
-    }
-  } else {
-    tmp = MAX_uint32_T;
-  }
+	/* '<S1>:101:16' if(counter > 12000 && counter < 24000) */
+	if ((rtOnlineID_DW->counter > 12000U) && (rtOnlineID_DW->counter < 24000U)) {
+		/* Inport: '<Root>/OnlineIDConfig' */
+		/* '<S1>:101:17' i_d_R_online = single(-OnlineIDConfig.identRAmp); */
+		rtOnlineID_DW->i_d_R_online = -rtOnlineID_U->OnlineIDConfig.identRAmp;
 
-  if (rtOnlineID_DW->counter > tmp) {
-    /* Inport: '<Root>/GlobalConfig' */
-    R_check = 1.2F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR;
-    Lq_check = roundf(R_check);
-    if (Lq_check < 4.2949673E+9F) {
-      if (Lq_check >= 0.0F) {
-        tmp = (uint32_T)Lq_check;
-      } else {
-        tmp = 0U;
-      }
-    } else {
-      tmp = MAX_uint32_T;
-    }
+		/* '<S1>:101:18' if(counter >= 21999 && counter < 23999) */
+		if ((rtOnlineID_DW->counter >= 21999U) && (rtOnlineID_DW->counter < 23999U)) {
+			/* Inport: '<Root>/ActualValues' */
+			/* '<S1>:101:19' Vd2counter = Vd2counter+ActualValues.v_dq.d; */
+			rtOnlineID_DW->Vd2counter += rtOnlineID_U->ActualValues.v_dq.d;
 
-    if (rtOnlineID_DW->counter < tmp) {
-      /* Inport: '<Root>/OnlineIDConfig' */
-      /* '<S1>:101:17' i_d_R_online = single(-OnlineIDConfig.identRAmp); */
-      rtOnlineID_DW->i_d_R_online = -rtOnlineID_U->OnlineIDConfig.identRAmp;
+			/* '<S1>:101:20' Vq2counter = Vq2counter+ActualValues.v_dq.q; */
+			rtOnlineID_DW->Vq2counter += rtOnlineID_U->ActualValues.v_dq.q;
 
-      /* Inport: '<Root>/GlobalConfig' */
-      /* '<S1>:101:18' if(counter >= uint32((1.1/GlobalConfig.sampleTimeISR)-1) && counter < uint32((1.2/GlobalConfig.sampleTimeISR)-1)) */
-      Lq_check = roundf(1.1F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR -
-                        1.0F);
-      if (Lq_check < 4.2949673E+9F) {
-        if (Lq_check >= 0.0F) {
-          tmp = (uint32_T)Lq_check;
-        } else {
-          tmp = 0U;
-        }
-      } else {
-        tmp = MAX_uint32_T;
-      }
+			/* '<S1>:101:21' id2counter = id2counter+ActualValues.i_dq.d; */
+			rtOnlineID_DW->id2counter += rtOnlineID_U->ActualValues.i_dq.d;
 
-      if (rtOnlineID_DW->counter >= tmp) {
-        R_check = roundf(R_check - 1.0F);
-        if (R_check < 4.2949673E+9F) {
-          if (R_check >= 0.0F) {
-            tmp = (uint32_T)R_check;
-          } else {
-            tmp = 0U;
-          }
-        } else {
-          tmp = MAX_uint32_T;
-        }
+			/* '<S1>:101:22' iq2counter = iq2counter+ActualValues.i_dq.q; */
+			rtOnlineID_DW->iq2counter += rtOnlineID_U->ActualValues.i_dq.q;
 
-        if (rtOnlineID_DW->counter < tmp) {
-          /* Inport: '<Root>/ActualValues' */
-          /* '<S1>:101:19' Vd2counter = Vd2counter+ActualValues.v_dq.d; */
-          rtOnlineID_DW->Vd2counter += rtOnlineID_U->ActualValues.v_dq.d;
-
-          /* '<S1>:101:20' Vq2counter = Vq2counter+ActualValues.v_dq.q; */
-          rtOnlineID_DW->Vq2counter += rtOnlineID_U->ActualValues.v_dq.q;
-
-          /* '<S1>:101:21' id2counter = id2counter+ActualValues.i_dq.d; */
-          rtOnlineID_DW->id2counter += rtOnlineID_U->ActualValues.i_dq.d;
-
-          /* '<S1>:101:22' iq2counter = iq2counter+ActualValues.i_dq.q; */
-          rtOnlineID_DW->iq2counter += rtOnlineID_U->ActualValues.i_dq.q;
-
-          /* '<S1>:101:23' omega2counter= omega2counter+ActualValues.omega_el; */
-          rtOnlineID_DW->omega2counter += rtOnlineID_U->ActualValues.omega_el;
-        }
-      }
+			/* '<S1>:101:23' omega2counter= omega2counter+ActualValues.omega_el; */
+			rtOnlineID_DW->omega2counter += rtOnlineID_U->ActualValues.omega_el;
     }
   }
 
-  /* Inport: '<Root>/GlobalConfig' */
   /*     Averaging    halfperiods */
-  /* '<S1>:101:28' if(counter == uint32(1.2/GlobalConfig.sampleTimeISR)) */
-  R_check = roundf(1.2F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR);
-  if (R_check < 4.2949673E+9F) {
-    if (R_check >= 0.0F) {
-      tmp = (uint32_T)R_check;
-    } else {
-      tmp = 0U;
-    }
-  } else {
-    tmp = MAX_uint32_T;
-  }
-
-  if (rtOnlineID_DW->counter == tmp) {
+	/* '<S1>:101:28' if(counter == 24000) */
+	if (rtOnlineID_DW->counter == 24000U) {
     /* Inport: '<Root>/GlobalConfig' */
     /* '<S1>:101:29' Vq1counter=Vq1counter/(0.1/GlobalConfig.sampleTimeISR); */
     R_check = 0.1F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR;
@@ -1131,8 +747,8 @@ static void identParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
         }
 
         /* '<S1>:101:75' if(LinPara_ident_outside==0 && counter_innerhalb==1) */
-        tmp_0 = !rtOnlineID_DW->LinPara_ident_outside;
-        if (tmp_0 && (rtOnlineID_DW->counter_innerhalb == 1)) {
+				tmp = !rtOnlineID_DW->LinPara_ident_outside;
+				if (tmp && (rtOnlineID_DW->counter_innerhalb == 1)) {
           /* '<S1>:101:76' Ld_veryold=Ld_old; */
           rtOnlineID_DW->Ld_veryold = rtOnlineID_DW->Ld_old;
 
@@ -1143,7 +759,7 @@ static void identParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
           /* '<S1>:101:78' OnlineID_output.Ld_out=(Ld_check+Ld_old+Ld_veryold)/single(3.0); */
           rtOnlineID_Y->OnlineID_output.Ld_out = ((Ld_check +
             rtOnlineID_DW->Ld_old) + rtOnlineID_DW->Ld_veryold) / 3.0F;
-        } else if (tmp_0 && (rtOnlineID_DW->counter_innerhalb == 0)) {
+				} else if (tmp && (rtOnlineID_DW->counter_innerhalb == 0)) {
           /* Outport: '<Root>/OnlineID_output' */
           /* '<S1>:101:79' elseif(LinPara_ident_outside==0 && counter_innerhalb==0) */
           /* '<S1>:101:80' OnlineID_output.Ld_out=(Ld_check+Ld_old+Ld_veryold)/single(3.0); */
@@ -1191,8 +807,8 @@ static void identParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
         }
 
         /* '<S1>:101:99' if(LinPara_ident_outside==0 && counter_innerhalb==1) */
-        tmp_0 = !rtOnlineID_DW->LinPara_ident_outside;
-        if (tmp_0 && (rtOnlineID_DW->counter_innerhalb == 1)) {
+				tmp = !rtOnlineID_DW->LinPara_ident_outside;
+				if (tmp && (rtOnlineID_DW->counter_innerhalb == 1)) {
           /* '<S1>:101:100' Lq_veryold=Lq_old; */
           rtOnlineID_DW->Lq_veryold = rtOnlineID_DW->Lq_old;
 
@@ -1203,7 +819,7 @@ static void identParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
           /* '<S1>:101:102' OnlineID_output.Lq_out=(Lq_check+Lq_old+Lq_veryold)/single(3.0); */
           rtOnlineID_Y->OnlineID_output.Lq_out = ((Lq_check +
             rtOnlineID_DW->Lq_old) + rtOnlineID_DW->Lq_veryold) / 3.0F;
-        } else if (tmp_0 && (rtOnlineID_DW->counter_innerhalb == 0)) {
+				} else if (tmp && (rtOnlineID_DW->counter_innerhalb == 0)) {
           /* Outport: '<Root>/OnlineID_output' */
           /* '<S1>:101:103' elseif(LinPara_ident_outside==0 && counter_innerhalb==0) */
           /* '<S1>:101:104' OnlineID_output.Lq_out=(Lq_check+Lq_old+Lq_veryold)/single(3.0); */
@@ -1253,8 +869,8 @@ static void identParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
         }
 
         /* '<S1>:101:123' if(LinPara_ident_outside==0 && counter_innerhalb==1) */
-        tmp_0 = !rtOnlineID_DW->LinPara_ident_outside;
-        if (tmp_0 && (rtOnlineID_DW->counter_innerhalb == 1)) {
+				tmp = !rtOnlineID_DW->LinPara_ident_outside;
+				if (tmp && (rtOnlineID_DW->counter_innerhalb == 1)) {
           /* Average over 3 iterations */
           /* '<S1>:101:125' PsiPm_veryold=PsiPm_old; */
           rtOnlineID_DW->PsiPm_veryold = rtOnlineID_DW->PsiPm_old;
@@ -1266,7 +882,7 @@ static void identParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
           /* '<S1>:101:127' OnlineID_output.psi_pm_out=(psipm_check+PsiPm_old+PsiPm_veryold)/single(3.0); */
           rtOnlineID_Y->OnlineID_output.psi_pm_out = ((psipm_check +
             rtOnlineID_DW->PsiPm_old) + rtOnlineID_DW->PsiPm_veryold) / 3.0F;
-        } else if (tmp_0 && (rtOnlineID_DW->counter_innerhalb == 0)) {
+				} else if (tmp && (rtOnlineID_DW->counter_innerhalb == 0)) {
           /* Outport: '<Root>/OnlineID_output' */
           /* '<S1>:101:128' elseif(LinPara_ident_outside==0 && counter_innerhalb==0) */
           /* '<S1>:101:129' OnlineID_output.psi_pm_out=(psipm_check+PsiPm_old+PsiPm_veryold)/single(3.0); */
@@ -1314,8 +930,8 @@ static void identParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
         }
 
         /* '<S1>:101:148' if(LinPara_ident_outside==0 && counter_innerhalb==1) */
-        tmp_0 = !rtOnlineID_DW->LinPara_ident_outside;
-        if (tmp_0 && (rtOnlineID_DW->counter_innerhalb == 1)) {
+				tmp = !rtOnlineID_DW->LinPara_ident_outside;
+				if (tmp && (rtOnlineID_DW->counter_innerhalb == 1)) {
           /* Average over 3 iterations */
           /* '<S1>:101:150' R_veryold=R_old; */
           rtOnlineID_DW->R_veryold = rtOnlineID_DW->R_old;
@@ -1327,7 +943,7 @@ static void identParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
           /* '<S1>:101:152' OnlineID_output.Rph_out=(R_check+R_old+R_veryold)/single(3.0); */
           rtOnlineID_Y->OnlineID_output.Rph_out = ((R_check +
             rtOnlineID_DW->R_old) + rtOnlineID_DW->R_veryold) / 3.0F;
-        } else if (tmp_0 && (rtOnlineID_DW->counter_innerhalb == 0)) {
+				} else if (tmp && (rtOnlineID_DW->counter_innerhalb == 0)) {
           /* Outport: '<Root>/OnlineID_output' */
           /* '<S1>:101:153' elseif(LinPara_ident_outside==0 && counter_innerhalb==0) */
           /* '<S1>:101:154' OnlineID_output.Rph_out=(R_check+R_old+R_veryold)/single(3.0); */
@@ -1375,8 +991,8 @@ static void RefreshDataRegister_i1(DW_OnlineID_t *rtOnlineID_DW)
   uint16_T k;
 
   /* MATLAB Function 'RefreshDataRegister': '<S1>:383' */
-  /* '<S1>:383:3' if(mod(counter,200)==0) */
-  if (rtOnlineID_DW->counter - rtOnlineID_DW->counter / 200U * 200U == 0U) {
+	/* '<S1>:383:3' if(mod(counter,400)==0) */
+	if (rtOnlineID_DW->counter - rtOnlineID_DW->counter / 400U * 400U == 0U) {
     /* '<S1>:383:4' m=length(omega_register_neu); */
     /* '<S1>:383:5' for k= uint16(0):uint16(m-2) */
     /* '<S1>:383:6' omega_register_neu(m-k)=omega_register_neu(m-(k+1)); */
@@ -1655,8 +1271,8 @@ static void RefreshDataRegister_i(DW_OnlineID_t *rtOnlineID_DW)
   uint16_T k;
 
   /* MATLAB Function 'RefreshDataRegister': '<S1>:48' */
-  /* '<S1>:48:3' if(mod(counter,1000)==0) */
-  if (rtOnlineID_DW->counter - rtOnlineID_DW->counter / 1000U * 1000U == 0U) {
+	/* '<S1>:48:3' if(mod(counter,2000)==0) */
+	if (rtOnlineID_DW->counter - rtOnlineID_DW->counter / 2000U * 2000U == 0U) {
     /* '<S1>:48:4' m=length(omega_register); */
     /* '<S1>:48:5' for k= uint16(0):uint16(m-2) */
     /* '<S1>:48:6' omega_register(m-k)=omega_register(m-(k+1)); */
@@ -1689,120 +1305,6 @@ static void RefreshDataRegister_i(DW_OnlineID_t *rtOnlineID_DW)
   }
 }
 
-/* Function for Chart: '<Root>/OnlineID' */
-static real32_T maximum(const real32_T x[50]) {
-	int32_T idx;
-	int32_T k;
-	real32_T ex;
-	boolean_T exitg1;
-	if (!rtIsNaNF(x[0])) {
-		idx = 1;
-	} else {
-		idx = 0;
-		k = 2;
-		exitg1 = false;
-		while ((!exitg1) && (k < 51)) {
-			if (!rtIsNaNF(x[k - 1])) {
-				idx = k;
-				exitg1 = true;
-			} else {
-				k++;
-			}
-		}
-	}
-
-	if (idx == 0) {
-		ex = x[0];
-	} else {
-		ex = x[idx - 1];
-		while (idx + 1 <= 50) {
-			if (ex < x[idx]) {
-				ex = x[idx];
-			}
-
-			idx++;
-		}
-	}
-
-	return ex;
-}
-
-/* Function for Chart: '<Root>/OnlineID' */
-static real32_T minimum(const real32_T x[50]) {
-	int32_T idx;
-	int32_T k;
-	real32_T ex;
-	boolean_T exitg1;
-	if (!rtIsNaNF(x[0])) {
-		idx = 1;
-	} else {
-		idx = 0;
-		k = 2;
-		exitg1 = false;
-		while ((!exitg1) && (k < 51)) {
-			if (!rtIsNaNF(x[k - 1])) {
-				idx = k;
-				exitg1 = true;
-			} else {
-				k++;
-			}
-		}
-	}
-
-	if (idx == 0) {
-		ex = x[0];
-	} else {
-		ex = x[idx - 1];
-		while (idx + 1 <= 50) {
-			if (ex > x[idx]) {
-				ex = x[idx];
-			}
-
-			idx++;
-		}
-	}
-
-	return ex;
-}
-
-/* Function for Chart: '<Root>/OnlineID' */
-static real32_T minimum_p(const real32_T x[5]) {
-	int32_T idx;
-	int32_T k;
-	real32_T ex;
-	boolean_T exitg1;
-	if (!rtIsNaNF(x[0])) {
-		idx = 1;
-	} else {
-		idx = 0;
-		k = 2;
-		exitg1 = false;
-		while ((!exitg1) && (k < 6)) {
-			if (!rtIsNaNF(x[k - 1])) {
-				idx = k;
-				exitg1 = true;
-			} else {
-				k++;
-			}
-		}
-	}
-
-	if (idx == 0) {
-		ex = x[0];
-	} else {
-		ex = x[idx - 1];
-		while (idx + 1 <= 5) {
-			if (ex > x[idx]) {
-				ex = x[idx];
-			}
-
-			idx++;
-		}
-	}
-
-	return ex;
-}
-
 /*
  * Function for Chart: '<Root>/OnlineID'
  * function [allow_measurement, om_con,iq_con,id_con,i_val]=CheckSteadyState(iq_reg_in,id_reg_in,om_reg_in,timer)
@@ -1812,14 +1314,13 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
   *allow_measurement, boolean_T *om_con, boolean_T *iq_con, boolean_T *id_con,
   boolean_T *i_val, ExtU_OnlineID_t *rtOnlineID_U)
 {
-	int32_T d_k;
-	int32_T idx;
+	int32_T k;
   real32_T ex;
   real32_T mean_id_reg;
   real32_T mean_iq_reg;
+	real32_T mean_iq_reg_tmp;
   real32_T mean_om_reg;
   real32_T tmp;
-	boolean_T exitg1;
 
   /* MATLAB Function 'CheckSteadyState': '<S1>:182' */
   /* '<S1>:182:3' mean_om_reg=mean(om_reg_in); */
@@ -1831,9 +1332,17 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
 
   /* '<S1>:182:5' mean_iq_reg=mean(iq_reg_in); */
   mean_iq_reg = iq_reg_in[0];
-	for (idx = 0; idx < 49; idx++) {
-		mean_id_reg += id_reg_in[idx + 1];
-		mean_iq_reg += iq_reg_in[idx + 1];
+
+	/* '<S1>:182:7' if((mean_iq_reg+(OnlineIDConfig.dev_curr*GlobalConfig.ratCurrent))>=max(iq_reg_in)... */
+	/* '<S1>:182:8'         &&(mean_iq_reg-(OnlineIDConfig.dev_curr*GlobalConfig.ratCurrent))<=min(iq_reg_in)&&min(iq_reg_in)~=0) */
+	ex = iq_reg_in[0];
+	for (k = 0; k < 49; k++) {
+		mean_id_reg += id_reg_in[k + 1];
+		mean_iq_reg_tmp = iq_reg_in[k + 1];
+		mean_iq_reg += mean_iq_reg_tmp;
+		if (ex < mean_iq_reg_tmp) {
+			ex = mean_iq_reg_tmp;
+		}
   }
 
   mean_id_reg /= 50.0F;
@@ -1842,13 +1351,26 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
   /* Inport: '<Root>/OnlineIDConfig' incorporates:
    *  Inport: '<Root>/GlobalConfig'
    */
-	/* '<S1>:182:7' if((mean_iq_reg+(OnlineIDConfig.dev_curr*GlobalConfig.ratCurrent))>=max(iq_reg_in)... */
-	/* '<S1>:182:8'         &&(mean_iq_reg-(OnlineIDConfig.dev_curr*GlobalConfig.ratCurrent))<=min(iq_reg_in)&&min(iq_reg_in)~=0) */
-	tmp = rtOnlineID_U->OnlineIDConfig.dev_curr *
+	mean_iq_reg_tmp = rtOnlineID_U->OnlineIDConfig.dev_curr *
     rtOnlineID_U->GlobalConfig_out.ratCurrent;
-	if (tmp + mean_iq_reg >= maximum(iq_reg_in)) {
-		ex = minimum(iq_reg_in);
-		if (mean_iq_reg - tmp <= ex) {
+	if (mean_iq_reg_tmp + mean_iq_reg >= ex) {
+		ex = iq_reg_in[0];
+		for (k = 0; k < 49; k++) {
+			tmp = iq_reg_in[k + 1];
+			if (ex > tmp) {
+				ex = tmp;
+			}
+		}
+
+		if (mean_iq_reg - mean_iq_reg_tmp <= ex) {
+			ex = iq_reg_in[0];
+			for (k = 0; k < 49; k++) {
+				tmp = iq_reg_in[k + 1];
+				if (ex > tmp) {
+					ex = tmp;
+				}
+			}
+
       if (ex != 0.0F) {
         /* '<S1>:182:9' iq_con=boolean(1); */
         *iq_con = true;
@@ -1870,9 +1392,32 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
 
   /* '<S1>:182:14' if((mean_id_reg+(OnlineIDConfig.dev_curr*GlobalConfig.ratCurrent))>=max(id_reg_in)... */
   /* '<S1>:182:15'         &&(mean_id_reg-(OnlineIDConfig.dev_curr*GlobalConfig.ratCurrent))<=min(id_reg_in)&&min(id_reg_in)~=0) */
-	if (tmp + mean_id_reg >= maximum(id_reg_in)) {
-		ex = minimum(id_reg_in);
-		if (mean_id_reg - tmp <= ex) {
+	ex = id_reg_in[0];
+	for (k = 0; k < 49; k++) {
+		tmp = id_reg_in[k + 1];
+		if (ex < tmp) {
+			ex = tmp;
+		}
+	}
+
+	if (mean_iq_reg_tmp + mean_id_reg >= ex) {
+		ex = id_reg_in[0];
+		for (k = 0; k < 49; k++) {
+			tmp = id_reg_in[k + 1];
+			if (ex > tmp) {
+				ex = tmp;
+			}
+		}
+
+		if (mean_id_reg - mean_iq_reg_tmp <= ex) {
+			ex = id_reg_in[0];
+			for (k = 0; k < 49; k++) {
+				mean_iq_reg_tmp = id_reg_in[k + 1];
+				if (ex > mean_iq_reg_tmp) {
+					ex = mean_iq_reg_tmp;
+				}
+			}
+
       if (ex != 0.0F) {
         /* '<S1>:182:16' id_con=boolean(1); */
         *id_con = true;
@@ -1903,41 +1448,62 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
       /* Drehzahlgrenzwerte in rad/sec */
       /* '<S1>:182:22' if((mean_om_reg+((OnlineIDConfig.dev_omega*GlobalConfig.ratSpeed*2*pi)/60))>=max(om_reg_in)... */
       /* '<S1>:182:23'         &&(mean_om_reg-((OnlineIDConfig.dev_omega*GlobalConfig.ratSpeed*2*pi)/60))<=min(om_reg_in)&&min(om_reg_in)~=0) */
-			if (!rtIsNaNF(om_reg_in[0])) {
-				idx = 1;
-			} else {
-				idx = 0;
-				d_k = 2;
-				exitg1 = false;
-				while ((!exitg1) && (d_k < 6)) {
-					if (!rtIsNaNF(om_reg_in[d_k - 1])) {
-						idx = d_k;
-						exitg1 = true;
-					} else {
-						d_k++;
-					}
-				}
+			ex = om_reg_in[0];
+			if (om_reg_in[0] < om_reg_in[1]) {
+				ex = om_reg_in[1];
+			}
+
+			if (ex < om_reg_in[2]) {
+				ex = om_reg_in[2];
       }
 
-			if (idx == 0) {
-				ex = om_reg_in[0];
-			} else {
-				ex = om_reg_in[idx - 1];
-				while (idx + 1 <= 5) {
-					if (ex < om_reg_in[idx]) {
-						ex = om_reg_in[idx];
-					}
+			if (ex < om_reg_in[3]) {
+				ex = om_reg_in[3];
+			}
 
-					idx++;
-				}
+			if (ex < om_reg_in[4]) {
+				ex = om_reg_in[4];
       }
 
-			tmp = rtOnlineID_U->OnlineIDConfig.dev_omega *
+			mean_iq_reg_tmp = rtOnlineID_U->OnlineIDConfig.dev_omega *
         rtOnlineID_U->GlobalConfig_out.ratSpeed * 2.0F * 3.14159274F / 60.0F;
-			if (tmp + mean_om_reg >= ex) {
-				ex = minimum_p(om_reg_in);
-				if (mean_om_reg - tmp <= ex) {
-					if (ex != 0.0F) {
+			if (mean_iq_reg_tmp + mean_om_reg >= ex) {
+				ex = om_reg_in[0];
+				if (om_reg_in[0] > om_reg_in[1]) {
+					ex = om_reg_in[1];
+				}
+
+				if (ex > om_reg_in[2]) {
+					ex = om_reg_in[2];
+				}
+
+				if (ex > om_reg_in[3]) {
+					ex = om_reg_in[3];
+				}
+
+				if (ex > om_reg_in[4]) {
+					ex = om_reg_in[4];
+				}
+
+				if (mean_om_reg - mean_iq_reg_tmp <= ex) {
+					mean_om_reg = om_reg_in[0];
+					if (om_reg_in[0] > om_reg_in[1]) {
+						mean_om_reg = om_reg_in[1];
+					}
+
+					if (mean_om_reg > om_reg_in[2]) {
+						mean_om_reg = om_reg_in[2];
+					}
+
+					if (mean_om_reg > om_reg_in[3]) {
+						mean_om_reg = om_reg_in[3];
+					}
+
+					if (mean_om_reg > om_reg_in[4]) {
+						mean_om_reg = om_reg_in[4];
+					}
+
+					if (mean_om_reg != 0.0F) {
             /* '<S1>:182:24' om_con=boolean(1); */
             *om_con = true;
           } else {
@@ -2019,10 +1585,9 @@ static void RefreshDataRegister(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
   *rtOnlineID_Y, DW_OnlineID_t *rtOnlineID_DW)
 {
   int32_T i;
-  real32_T tmp;
-  real32_T x;
+	real32_T iq_register_tmp;
   uint32_T qY;
-  boolean_T tmp_0;
+	boolean_T tmp;
 
   /* During 'RefreshDataRegister': '<S1>:37' */
   /* '<S1>:55:1' sf_internal_predicateOutput = allow_meas==1&&omega_const==1.... */
@@ -2037,111 +1602,102 @@ static void RefreshDataRegister(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
     /* '<S1>:106:3' OnlineID_output.activeState = uint16(502); */
     rtOnlineID_Y->OnlineID_output.activeState = 502U;
 
-    /* '<S1>:106:4' iq1counter=single(0); */
+		/* '<S1>:106:4' OnlineID_output.IdControlFlag=boolean(1); */
+		rtOnlineID_Y->OnlineID_output.IdControlFlag = true;
+
+		/* '<S1>:106:5' iq1counter=single(0); */
     rtOnlineID_DW->iq1counter = 0.0F;
 
-    /* '<S1>:106:5' iq2counter=single(0); */
+		/* '<S1>:106:6' iq2counter=single(0); */
     rtOnlineID_DW->iq2counter = 0.0F;
 
-    /* '<S1>:106:6' id1counter=single(0); */
+		/* '<S1>:106:7' id1counter=single(0); */
     rtOnlineID_DW->id1counter = 0.0F;
 
-    /* '<S1>:106:7' id2counter=single(0); */
+		/* '<S1>:106:8' id2counter=single(0); */
     rtOnlineID_DW->id2counter = 0.0F;
 
-    /* '<S1>:106:8' Vd1counter=single(0); */
+		/* '<S1>:106:9' Vd1counter=single(0); */
     rtOnlineID_DW->Vd1counter = 0.0F;
 
-    /* '<S1>:106:9' Vd2counter=single(0); */
+		/* '<S1>:106:10' Vd2counter=single(0); */
     rtOnlineID_DW->Vd2counter = 0.0F;
 
-    /* '<S1>:106:10' Vq1counter=single(0); */
+		/* '<S1>:106:11' Vq1counter=single(0); */
     rtOnlineID_DW->Vq1counter = 0.0F;
 
-    /* '<S1>:106:11' Vq2counter=single(0); */
+		/* '<S1>:106:12' Vq2counter=single(0); */
     rtOnlineID_DW->Vq2counter = 0.0F;
 
-    /* '<S1>:106:12' omega1counter=single(0); */
+		/* '<S1>:106:13' omega1counter=single(0); */
     rtOnlineID_DW->omega1counter = 0.0F;
 
-    /* '<S1>:106:13' omega2counter=single(0); */
+		/* '<S1>:106:14' omega2counter=single(0); */
     rtOnlineID_DW->omega2counter = 0.0F;
 
-    /* '<S1>:106:14' stop_ident=boolean(0); */
+		/* '<S1>:106:15' stop_ident=boolean(0); */
     rtOnlineID_DW->stop_ident = false;
 
-    /* '<S1>:106:15' omega_sum=single(0); */
+		/* '<S1>:106:16' omega_sum=single(0); */
     rtOnlineID_DW->omega_sum = 0.0F;
 
-    /* '<S1>:106:16' iq_sum=single(0); */
+		/* '<S1>:106:17' iq_sum=single(0); */
     rtOnlineID_DW->iq_sum = 0.0F;
 
-    /* '<S1>:106:17' counter=uint32(1); */
+		/* '<S1>:106:18' counter=uint32(1); */
     rtOnlineID_DW->counter = 1U;
 
     /* Inport: '<Root>/OnlineIDConfig' incorporates:
      *  Inport: '<Root>/GlobalConfig'
      */
-    /* '<S1>:106:18' if(counter_time>=uint32(OnlineIDConfig.Rs_time/GlobalConfig.sampleTimeISR) && i_valid==0) */
-    x = roundf(rtOnlineID_U->OnlineIDConfig.Rs_time /
-               rtOnlineID_U->GlobalConfig_out.sampleTimeISR);
-    if (x < 4.2949673E+9F) {
-      if (x >= 0.0F) {
-        qY = (uint32_T)x;
-      } else {
-        qY = 0U;
-      }
-    } else {
-      qY = MAX_uint32_T;
-    }
-
-    if (rtOnlineID_DW->counter_time >= qY) {
+		/* '<S1>:106:19' if(counter_time>=(OnlineIDConfig.Rs_time/GlobalConfig.sampleTimeISR) && i_valid==0) */
+		if ((real_T) rtOnlineID_DW->counter_time >= rtOnlineID_U->OnlineIDConfig.Rs_time / rtOnlineID_U->GlobalConfig_out.sampleTimeISR) {
       if (!rtOnlineID_DW->i_valid) {
         /* Sets variable to 1, if Rs will be identified */
-        /* '<S1>:106:19' LinPara_ident_outside=boolean(1); */
+				/* '<S1>:106:20' LinPara_ident_outside=boolean(1); */
         rtOnlineID_DW->LinPara_ident_outside = true;
 
         /*  outside the valid range */
       } else {
-        /* '<S1>:106:20' else */
-        /* '<S1>:106:21' LinPara_ident_outside=boolean(0); */
+				/* '<S1>:106:21' else */
+				/* '<S1>:106:22' LinPara_ident_outside=boolean(0); */
         rtOnlineID_DW->LinPara_ident_outside = false;
       }
     } else {
-      /* '<S1>:106:20' else */
-      /* '<S1>:106:21' LinPara_ident_outside=boolean(0); */
+			/* '<S1>:106:21' else */
+			/* '<S1>:106:22' LinPara_ident_outside=boolean(0); */
       rtOnlineID_DW->LinPara_ident_outside = false;
     }
 
-    /* '<S1>:106:23' if(i_valid==1) */
+		/* '<S1>:106:24' if(i_valid==1) */
     if (rtOnlineID_DW->i_valid) {
-      /* '<S1>:106:24' counter_time=uint32(0); */
+			/* '<S1>:106:25' counter_time=uint32(0); */
       rtOnlineID_DW->counter_time = 0U;
 
       /* Resets the timer, since the lin.Para. will be identified */
     }
 
     /* inside the valid range */
-    /* '<S1>:106:26' omega_register_alt=omega_register; */
+		/* '<S1>:106:27' omega_register_alt=omega_register; */
     for (i = 0; i < 5; i++) {
       rtOnlineID_DW->omega_register_alt[i] = rtOnlineID_DW->omega_register[i];
     }
 
-    /* '<S1>:106:27' id_register_alt=id_register; */
-    /* '<S1>:106:28' iq_register_alt=iq_register; */
+		/* '<S1>:106:28' id_register_alt=id_register; */
+		/* '<S1>:106:29' iq_register_alt=iq_register; */
     memcpy(&rtOnlineID_DW->id_register_alt[0], &rtOnlineID_DW->id_register[0],
            50U * sizeof(real32_T));
     memcpy(&rtOnlineID_DW->iq_register_alt[0], &rtOnlineID_DW->iq_register[0],
            50U * sizeof(real32_T));
 
     /* uses the old values of State501 as starting point */
-    /* '<S1>:106:29' omega_register_neu=single(zeros(5,1)); */
+		/* '<S1>:106:30' omega_register_neu=single(zeros(5,1)); */
     for (i = 0; i < 5; i++) {
       rtOnlineID_DW->omega_register_neu[i] = 0.0F;
     }
 
-    /* '<S1>:106:30' id_register_neu=single(zeros(10,1)); */
-    /* '<S1>:106:31' iq_register_neu=single(zeros(10,1)); */
+		/* '<S1>:106:31' id_register_neu=single(zeros(10,1)); */
+		/* '<S1>:106:32' iq_register_neu=single(zeros(10,1)); */
     for (i = 0; i < 10; i++) {
       rtOnlineID_DW->id_register_neu[i] = 0.0F;
       rtOnlineID_DW->iq_register_neu[i] = 0.0F;
@@ -2150,13 +1706,13 @@ static void RefreshDataRegister(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
     /* '<S1>:378:1' sf_internal_predicateOutput = LinPara_ident_outside==0 && OnlineIDConfig.allowPsiCalcOutside==0 .... */
     /* '<S1>:378:2' && allow_meas==0&&omega_const==1&&iq_const==1; */
     /* . */
-    tmp_0 = !rtOnlineID_DW->allow_meas;
+		tmp = !rtOnlineID_DW->allow_meas;
 
     /* Inport: '<Root>/OnlineIDConfig' */
     if (((!rtOnlineID_DW->LinPara_ident_outside) &&
-         (!rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside) && tmp_0 &&
+         (!rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside) && tmp &&
          rtOnlineID_DW->omega_const && rtOnlineID_DW->iq_const) ||
-        (rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside && tmp_0 &&
+        (rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside && tmp &&
          rtOnlineID_DW->omega_const && rtOnlineID_DW->iq_const)) {
       /* Transition: '<S1>:378' */
       /* Transition: '<S1>:331' */
@@ -2198,41 +1754,24 @@ static void RefreshDataRegister(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
       /* '<S1>:37:21' omega_sum=omega_sum+single(ActualValues.omega_m); */
       rtOnlineID_DW->omega_sum += rtOnlineID_U->ActualValues.omega_m;
 
-      /* Inport: '<Root>/GlobalConfig' */
-      /* '<S1>:37:22' if(mod(counter,uint32(0.01/GlobalConfig.sampleTimeISR))==0) */
-      x = 0.01F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR;
-      tmp = roundf(x);
-      if (tmp < 4.2949673E+9F) {
-        if (tmp >= 0.0F) {
-          qY = (uint32_T)tmp;
-        } else {
-          qY = 0U;
-        }
-      } else {
-        qY = MAX_uint32_T;
-      }
-
-      if (qY == 0U) {
-        qY = rtOnlineID_DW->counter;
-      } else {
-        qY = rtOnlineID_DW->counter - rtOnlineID_DW->counter / qY * qY;
-      }
-
-      if (qY == 0U) {
+			/* '<S1>:37:22' if(mod(counter,200)==0) */
+			if (rtOnlineID_DW->counter - rtOnlineID_DW->counter / 200U * 200U == 0U) {
         /* '<S1>:37:23' RefreshDataRegister; */
         RefreshDataRegister_i(rtOnlineID_DW);
 
+				/* Inport: '<Root>/GlobalConfig' */
         /* '<S1>:37:24' iq_register(1,1)=iq_sum/(0.01/GlobalConfig.sampleTimeISR); */
-        rtOnlineID_DW->iq_register[0] = rtOnlineID_DW->iq_sum / x;
+				iq_register_tmp = 0.01F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR;
+				rtOnlineID_DW->iq_register[0] = rtOnlineID_DW->iq_sum / iq_register_tmp;
 
         /* '<S1>:37:25' id_register(1,1)=id_sum/(0.01/GlobalConfig.sampleTimeISR); */
-        rtOnlineID_DW->id_register[0] = rtOnlineID_DW->id_sum / x;
+				rtOnlineID_DW->id_register[0] = rtOnlineID_DW->id_sum / iq_register_tmp;
 
         /* '<S1>:37:26' vd_register(1,1)=vd_sum/(0.01/GlobalConfig.sampleTimeISR); */
-        rtOnlineID_DW->vd_register[0] = rtOnlineID_DW->vd_sum / x;
+				rtOnlineID_DW->vd_register[0] = rtOnlineID_DW->vd_sum / iq_register_tmp;
 
         /* '<S1>:37:27' vq_register(1,1)=vq_sum/(0.01/GlobalConfig.sampleTimeISR); */
-        rtOnlineID_DW->vq_register[0] = rtOnlineID_DW->vq_sum / x;
+				rtOnlineID_DW->vq_register[0] = rtOnlineID_DW->vq_sum / iq_register_tmp;
 
         /* '<S1>:37:28' iq_sum=single(0); */
         rtOnlineID_DW->iq_sum = 0.0F;
@@ -2246,79 +1785,27 @@ static void RefreshDataRegister(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
         /* '<S1>:37:31' vq_sum=single(0); */
         rtOnlineID_DW->vq_sum = 0.0F;
 
-        /* Inport: '<Root>/GlobalConfig' */
-        /* '<S1>:37:32' if(mod(counter,uint32(0.1/GlobalConfig.sampleTimeISR))==0) */
-        x = 0.1F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR;
-        tmp = roundf(x);
-        if (tmp < 4.2949673E+9F) {
-          if (tmp >= 0.0F) {
-            qY = (uint32_T)tmp;
-          } else {
-            qY = 0U;
-          }
-        } else {
-          qY = MAX_uint32_T;
-        }
-
-        if (qY == 0U) {
-          qY = rtOnlineID_DW->counter;
-        } else {
-          qY = rtOnlineID_DW->counter - rtOnlineID_DW->counter / qY * qY;
-        }
-
-        if (qY == 0U) {
+				/* '<S1>:37:32' if(mod(counter,2000)==0) */
+				if (rtOnlineID_DW->counter - rtOnlineID_DW->counter / 2000U * 2000U == 0U) {
+					/* Inport: '<Root>/GlobalConfig' */
           /* '<S1>:37:33' omega_register(1,1)=omega_sum/(0.1/GlobalConfig.sampleTimeISR); */
-          rtOnlineID_DW->omega_register[0] = rtOnlineID_DW->omega_sum / x;
+					rtOnlineID_DW->omega_register[0] = rtOnlineID_DW->omega_sum / (0.1F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR);
 
           /* '<S1>:37:34' omega_sum=single(0); */
           rtOnlineID_DW->omega_sum = 0.0F;
-        }
 
-        /* '<S1>:37:36' [allow_meas,omega_const,iq_const,id_const,i_valid]=CheckSteadyState(abs(iq_register),abs(id_register),abs(omega_register),counter_time); */
-        for (i = 0; i < 50; i++) {
-          rtOnlineID_DW->c_y[i] = fabsf(rtOnlineID_DW->iq_register[i]);
-          rtOnlineID_DW->d_y_m[i] = fabsf(rtOnlineID_DW->id_register[i]);
-        }
-
-        for (i = 0; i < 5; i++) {
-          rtOnlineID_DW->e_y_c[i] = fabsf(rtOnlineID_DW->omega_register[i]);
-        }
-
-        CheckSteadyState(rtOnlineID_DW->c_y, rtOnlineID_DW->d_y_m,
-                         rtOnlineID_DW->e_y_c, rtOnlineID_DW->counter_time,
-                         &rtOnlineID_DW->allow_meas, &rtOnlineID_DW->omega_const,
-                         &rtOnlineID_DW->iq_const, &rtOnlineID_DW->id_const,
-                         &rtOnlineID_DW->i_valid, rtOnlineID_U);
-
-        /* [allow_meas] = Timer(i_valid, counter_time); */
-        /* '<S1>:37:38' if(omega_const==1&&iq_const==1) */
-        if (rtOnlineID_DW->omega_const && rtOnlineID_DW->iq_const) {
-          /* Outport: '<Root>/OnlineID_output' */
-          /* '<S1>:37:39' OnlineID_output.IdControlFlag=boolean(1); */
-          rtOnlineID_Y->OnlineID_output.IdControlFlag = true;
-
-          /* '<S1>:37:40' OnlineID_output.iq_mean_out=single(mean(iq_register)); */
-          x = rtOnlineID_DW->iq_register[0];
-          for (i = 0; i < 49; i++) {
-            x += rtOnlineID_DW->iq_register[i + 1];
+					/* '<S1>:37:35' [allow_meas,omega_const,iq_const,id_const,i_valid]=CheckSteadyState(abs(iq_register),abs(id_register),abs(omega_register),counter_time); */
+					for (i = 0; i < 50; i++) {
+						rtOnlineID_DW->y_m[i] = fabsf(rtOnlineID_DW->iq_register[i]);
+						rtOnlineID_DW->b_y_c[i] = fabsf(rtOnlineID_DW->id_register[i]);
           }
 
-          /* Outport: '<Root>/OnlineID_output' */
-          rtOnlineID_Y->OnlineID_output.iq_mean_out = x / 50.0F;
-
-          /* '<S1>:37:41' OnlineID_output.id_mean_out=single(mean(id_register)); */
-          x = rtOnlineID_DW->id_register[0];
-          for (i = 0; i < 49; i++) {
-            x += rtOnlineID_DW->id_register[i + 1];
+					for (i = 0; i < 5; i++) {
+						rtOnlineID_DW->c_y_k[i] = fabsf(rtOnlineID_DW->omega_register[i]);
           }
 
-          /* Outport: '<Root>/OnlineID_output' */
-          rtOnlineID_Y->OnlineID_output.id_mean_out = x / 50.0F;
-        } else {
-          /* Outport: '<Root>/OnlineID_output' */
-          /* '<S1>:37:42' else */
-          /* '<S1>:37:43' OnlineID_output.IdControlFlag=boolean(0); */
-          rtOnlineID_Y->OnlineID_output.IdControlFlag = false;
+					CheckSteadyState(rtOnlineID_DW->y_m, rtOnlineID_DW->b_y_c, rtOnlineID_DW->c_y_k, rtOnlineID_DW->counter_time, &rtOnlineID_DW->allow_meas,
+					                &rtOnlineID_DW->omega_const, &rtOnlineID_DW->iq_const, &rtOnlineID_DW->id_const, &rtOnlineID_DW->i_valid, rtOnlineID_U);
         }
       }
     }
@@ -2331,12 +1818,11 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
   DW_OnlineID_t *rtOnlineID_DW = rtOnlineID_M->dwork;
   ExtU_OnlineID_t *rtOnlineID_U = (ExtU_OnlineID_t *) rtOnlineID_M->inputs;
   ExtY_OnlineID_t *rtOnlineID_Y = (ExtY_OnlineID_t *) rtOnlineID_M->outputs;
-  real32_T tmp;
+	int32_T k;
+	real32_T temp_diff;
   uint32_T qY;
-  boolean_T c_sf_internal_predicateOutput;
   boolean_T guard1 = false;
-  boolean_T guard2 = false;
-  boolean_T guard3 = false;
+	boolean_T tmp;
 
   /* Chart: '<Root>/OnlineID' incorporates:
    *  Inport: '<Root>/ActualValues'
@@ -2375,10 +1861,10 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
       /* Exit Internal 'OnlineIDSuperState': '<S1>:39' */
       if (rtOnlineID_DW->is_OnlineIDSuperState == IN_CalcLinearParamsState) {
         /* Exit 'CalcLinearParamsState': '<S1>:106' */
-        /* '<S1>:106:54' OnlineID_output.id_out=single(0.0); */
+				/* '<S1>:106:55' OnlineID_output.id_out=single(0.0); */
         rtOnlineID_Y->OnlineID_output.id_out = 0.0F;
 
-        /* '<S1>:106:55' OnlineID_output.IdControlFlag=boolean(0); */
+				/* '<S1>:106:56' OnlineID_output.IdControlFlag=boolean(0); */
         rtOnlineID_Y->OnlineID_output.IdControlFlag = false;
         rtOnlineID_DW->is_OnlineIDSuperState = IN_NO_ACTIVE_CHILD;
       } else {
@@ -2393,96 +1879,114 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
       /* donothing */
     } else {
       guard1 = false;
-      guard2 = false;
       switch (rtOnlineID_DW->is_OnlineIDSuperState) {
        case IN_CalcLinearParamsState:
         /* During 'CalcLinearParamsState': '<S1>:106' */
         /* '<S1>:317:1' sf_internal_predicateOutput = stop_ident==1; */
         if (rtOnlineID_DW->stop_ident) {
           /* Transition: '<S1>:317' */
-          guard2 = true;
+					guard1 = true;
         } else {
-          /* '<S1>:113:1' sf_internal_predicateOutput = OnlineIDConfig.allowPsiCalcOutside==1 && counter==uint32((1.2/GlobalConfig.sampleTimeISR)+1).... */
+					/* '<S1>:113:1' sf_internal_predicateOutput = OnlineIDConfig.allowPsiCalcOutside==1 && counter==24001.... */
           /* '<S1>:113:2'  || LinPara_ident_outside==0 && OnlineIDConfig.allowPsiCalcOutside==0 &&.... */
-          /* '<S1>:113:3'  counter==uint32((1.2/GlobalConfig.sampleTimeISR)+1); */
-          guard3 = false;
-					if (rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside) {
-						rtOnlineID_DW->temp_diff = roundf(1.2F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR + 1.0F);
-						if (rtOnlineID_DW->temp_diff < 4.2949673E+9F) {
-							if (rtOnlineID_DW->temp_diff >= 0.0F) {
-								qY = (uint32_T) rtOnlineID_DW->temp_diff;
-              } else {
-                qY = 0U;
-              }
-            } else {
-              qY = MAX_uint32_T;
-            }
-
-            if (rtOnlineID_DW->counter == qY) {
-              c_sf_internal_predicateOutput = true;
-            } else {
-              guard3 = true;
-            }
-          } else {
-            guard3 = true;
-          }
-
-          if (guard3) {
-            if ((!rtOnlineID_DW->LinPara_ident_outside) &&
-                (!rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside)) {
-							rtOnlineID_DW->temp_diff = roundf(1.2F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR + 1.0F);
-							if (rtOnlineID_DW->temp_diff < 4.2949673E+9F) {
-								if (rtOnlineID_DW->temp_diff >= 0.0F) {
-									qY = (uint32_T) rtOnlineID_DW->temp_diff;
-                } else {
-                  qY = 0U;
-                }
-              } else {
-                qY = MAX_uint32_T;
-              }
-
-              c_sf_internal_predicateOutput = (rtOnlineID_DW->counter == qY);
-            } else {
-              c_sf_internal_predicateOutput = false;
-            }
-          }
-
+					/* '<S1>:113:3'  counter==24001; */
           /* . */
-          /* . */
-          if (c_sf_internal_predicateOutput) {
+					tmp = !rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside;
+					if ((rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside && (rtOnlineID_DW->counter == 24001U))
+					                || ((!rtOnlineID_DW->LinPara_ident_outside) && tmp && (rtOnlineID_DW->counter == 24001U))) {
             /* Transition: '<S1>:113' */
             /* Exit 'CalcLinearParamsState': '<S1>:106' */
-            /* '<S1>:106:54' OnlineID_output.id_out=single(0.0); */
+						/* '<S1>:106:55' OnlineID_output.id_out=single(0.0); */
             rtOnlineID_Y->OnlineID_output.id_out = 0.0F;
 
-            /* '<S1>:106:55' OnlineID_output.IdControlFlag=boolean(0); */
+						/* '<S1>:106:56' OnlineID_output.IdControlFlag=boolean(0); */
             rtOnlineID_Y->OnlineID_output.IdControlFlag = false;
             rtOnlineID_DW->is_OnlineIDSuperState = IN_PsiCalcState;
             enter_atomic_PsiCalcState(rtOnlineID_U, rtOnlineID_Y, rtOnlineID_DW);
 
             /* '<S1>:375:1' sf_internal_predicateOutput = OnlineIDConfig.allowPsiCalcOutside==0 && LinPara_ident_outside==1.... */
-            /* '<S1>:375:2'  && counter==uint32((1.2/GlobalConfig.sampleTimeISR)+1); */
-					} else if ((!rtOnlineID_U->OnlineIDConfig.allowPsiCalcOutside) &&
-                     rtOnlineID_DW->LinPara_ident_outside) {
-						rtOnlineID_DW->temp_diff = roundf(1.2F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR + 1.0F);
-						if (rtOnlineID_DW->temp_diff < 4.2949673E+9F) {
-							if (rtOnlineID_DW->temp_diff >= 0.0F) {
-								qY = (uint32_T) rtOnlineID_DW->temp_diff;
-              } else {
-                qY = 0U;
-              }
-            } else {
+						/* '<S1>:375:2'  && counter==24001; */
+					} else if (tmp && rtOnlineID_DW->LinPara_ident_outside && (rtOnlineID_DW->counter == 24001U)) {
+						/* Transition: '<S1>:375' */
+						guard1 = true;
+					} else {
+						/* '<S1>:106:34' OnlineID_output.id_out=i_d_R_online; */
+						rtOnlineID_Y->OnlineID_output.id_out = rtOnlineID_DW->i_d_R_online;
+
+						/* '<S1>:106:35' counter=counter+uint32(1); */
+						qY = rtOnlineID_DW->counter + /*MW:OvSatOk*/1U;
+						if (rtOnlineID_DW->counter + 1U < rtOnlineID_DW->counter) {
               qY = MAX_uint32_T;
             }
 
-            if (rtOnlineID_DW->counter == qY) {
-              /* Transition: '<S1>:375' */
-              guard2 = true;
-            } else {
-              guard1 = true;
+						rtOnlineID_DW->counter = qY;
+
+						/* '<S1>:106:36' identParams; */
+						identParams(rtOnlineID_U, rtOnlineID_Y, rtOnlineID_DW);
+
+						/* '<S1>:106:37' iq_sum=iq_sum+single(ActualValues.i_dq.q); */
+						rtOnlineID_DW->iq_sum += rtOnlineID_U->ActualValues.i_dq.q;
+
+						/* '<S1>:106:38' id_sum=id_sum+single(ActualValues.i_dq.d); */
+						rtOnlineID_DW->id_sum += rtOnlineID_U->ActualValues.i_dq.d;
+
+						/* '<S1>:106:39' omega_sum=omega_sum+single(ActualValues.omega_m); */
+						rtOnlineID_DW->omega_sum += rtOnlineID_U->ActualValues.omega_m;
+
+						/* averages iq over 100 and omega over 200 measuring points */
+						/* '<S1>:106:40' if(mod(counter,200)==0) */
+						if (rtOnlineID_DW->counter - rtOnlineID_DW->counter / 200U * 200U == 0U) {
+							/* '<S1>:106:41' RefreshDataRegister; */
+							RefreshDataRegister_i1(rtOnlineID_DW);
+
+							/* '<S1>:106:42' iq_register_neu(1,1)=iq_sum/(0.01/GlobalConfig.sampleTimeISR); */
+							temp_diff = 0.01F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR;
+							rtOnlineID_DW->iq_register_neu[0] = rtOnlineID_DW->iq_sum / temp_diff;
+
+							/* '<S1>:106:43' id_register_neu(1,1)=id_sum/(0.01/GlobalConfig.sampleTimeISR); */
+							rtOnlineID_DW->id_register_neu[0] = rtOnlineID_DW->id_sum / temp_diff;
+
+							/* '<S1>:106:44' iq_sum=single(0); */
+							rtOnlineID_DW->iq_sum = 0.0F;
+
+							/* '<S1>:106:45' id_sum=single(0); */
+							rtOnlineID_DW->id_sum = 0.0F;
+
+							/* '<S1>:106:46' if(mod(counter,400)==0) */
+							if (rtOnlineID_DW->counter - rtOnlineID_DW->counter / 400U * 400U == 0U) {
+								/* '<S1>:106:47' omega_register_neu(1,1)=omega_sum/(0.02/GlobalConfig.sampleTimeISR); */
+								rtOnlineID_DW->omega_register_neu[0] = rtOnlineID_DW->omega_sum / (0.02F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR);
+
+								/* '<S1>:106:48' omega_sum=single(0); */
+								rtOnlineID_DW->omega_sum = 0.0F;
+							}
+
+							/* '<S1>:106:50' if(mod(counter,2000)==0) */
+							if (rtOnlineID_DW->counter - rtOnlineID_DW->counter / 2000U * 2000U == 0U) {
+								/* checks every 0.1s if current omega and iq is too different from the old one */
+								/* '<S1>:106:51' [stop_ident] = Break(abs(iq_register_alt),abs(id_register_alt),abs(omega_register_alt),abs(iq_register_neu),abs(id_register_neu),abs(omega_register_neu)); */
+								for (k = 0; k < 50; k++) {
+									rtOnlineID_DW->y[k] = fabsf(rtOnlineID_DW->iq_register_alt[k]);
+									rtOnlineID_DW->b_y[k] = fabsf(rtOnlineID_DW->id_register_alt[k]);
+								}
+
+								for (k = 0; k < 5; k++) {
+									rtOnlineID_DW->c_y[k] = fabsf(rtOnlineID_DW->omega_register_alt[k]);
+								}
+
+								for (k = 0; k < 10; k++) {
+									rtOnlineID_DW->d_y[k] = fabsf(rtOnlineID_DW->iq_register_neu[k]);
+									rtOnlineID_DW->e_y[k] = fabsf(rtOnlineID_DW->id_register_neu[k]);
+								}
+
+								for (k = 0; k < 5; k++) {
+									rtOnlineID_DW->f_y[k] = fabsf(rtOnlineID_DW->omega_register_neu[k]);
+								}
+
+								rtOnlineID_DW->stop_ident = Break(rtOnlineID_DW->y, rtOnlineID_DW->b_y, rtOnlineID_DW->c_y, rtOnlineID_DW->d_y, rtOnlineID_DW->e_y,
+								                rtOnlineID_DW->f_y, rtOnlineID_U);
+							}
             }
-          } else {
-            guard1 = true;
           }
         }
         break;
@@ -2499,17 +2003,17 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
           rtOnlineID_Y->OnlineID_output.activeState = 504U;
 
           /* '<S1>:201:5' temp_diff=abs(OnlineID_output.Wtemp-OnlineIDConfig.Temp_ref); */
-					rtOnlineID_DW->temp_diff = fabsf(rtOnlineID_Y->OnlineID_output.Wtemp - rtOnlineID_U->OnlineIDConfig.Temp_ref);
+					temp_diff = fabsf(rtOnlineID_Y->OnlineID_output.Wtemp - rtOnlineID_U->OnlineIDConfig.Temp_ref);
 
           /* '<S1>:201:6' delta_psi=abs(OnlineID_output.psi_pm_out-GlobalConfig.PMSM_config.Psi_PM_Vs); */
           /* '<S1>:201:7' if(temp_diff>0&&temp_diff<99) */
-					if ((rtOnlineID_DW->temp_diff > 0.0F) && (rtOnlineID_DW->temp_diff < 99.0F)) {
+					if ((temp_diff > 0.0F) && (temp_diff < 99.0F)) {
             /* '<S1>:201:8' OnlineID_output.delta_psi(1+floor(temp_diff),2)= OnlineID_output.delta_psi(1+floor(temp_diff),2)+1; */
-						rtOnlineID_DW->k = (int32_T) floorf(rtOnlineID_DW->temp_diff);
-						rtOnlineID_Y->OnlineID_output.delta_psi[rtOnlineID_DW->k + 100]++;
+						k = (int32_T) floorf(temp_diff);
+						rtOnlineID_Y->OnlineID_output.delta_psi[k + 100]++;
 
             /* '<S1>:201:9' OnlineID_output.delta_psi(1+floor(temp_diff),1)= OnlineID_output.delta_psi(1+floor(temp_diff),1)+delta_psi; */
-						rtOnlineID_Y->OnlineID_output.delta_psi[rtOnlineID_DW->k] += fabsf
+						rtOnlineID_Y->OnlineID_output.delta_psi[k] += fabsf
               (rtOnlineID_Y->OnlineID_output.psi_pm_out -
                rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs);
           }
@@ -2534,149 +2038,15 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
         break;
       }
 
-      if (guard2) {
+			if (guard1) {
         /* Exit 'CalcLinearParamsState': '<S1>:106' */
-        /* '<S1>:106:54' OnlineID_output.id_out=single(0.0); */
+				/* '<S1>:106:55' OnlineID_output.id_out=single(0.0); */
         rtOnlineID_Y->OnlineID_output.id_out = 0.0F;
 
-        /* '<S1>:106:55' OnlineID_output.IdControlFlag=boolean(0); */
+				/* '<S1>:106:56' OnlineID_output.IdControlFlag=boolean(0); */
         rtOnlineID_Y->OnlineID_output.IdControlFlag = false;
         rtOnlineID_DW->is_OnlineIDSuperState = IN_RefreshDataRegister;
         enter_atomic_RefreshDataRegiste(rtOnlineID_Y, rtOnlineID_DW);
-      }
-
-      if (guard1) {
-        /* '<S1>:106:33' OnlineID_output.id_out=i_d_R_online; */
-        rtOnlineID_Y->OnlineID_output.id_out = rtOnlineID_DW->i_d_R_online;
-
-        /* '<S1>:106:34' counter=counter+uint32(1); */
-        qY = rtOnlineID_DW->counter + /*MW:OvSatOk*/ 1U;
-        if (rtOnlineID_DW->counter + 1U < rtOnlineID_DW->counter) {
-          qY = MAX_uint32_T;
-        }
-
-        rtOnlineID_DW->counter = qY;
-
-        /* '<S1>:106:35' identParams; */
-        identParams(rtOnlineID_U, rtOnlineID_Y, rtOnlineID_DW);
-
-        /* '<S1>:106:36' iq_sum=iq_sum+single(ActualValues.i_dq.q); */
-        rtOnlineID_DW->iq_sum += rtOnlineID_U->ActualValues.i_dq.q;
-
-        /* '<S1>:106:37' id_sum=id_sum+single(ActualValues.i_dq.d); */
-        rtOnlineID_DW->id_sum += rtOnlineID_U->ActualValues.i_dq.d;
-
-        /* '<S1>:106:38' omega_sum=omega_sum+single(ActualValues.omega_m); */
-        rtOnlineID_DW->omega_sum += rtOnlineID_U->ActualValues.omega_m;
-
-        /* averages iq over 100 and omege over 200 measuring points */
-        /* '<S1>:106:39' if(mod(counter,uint32(0.01/GlobalConfig.sampleTimeISR))==0) */
-				rtOnlineID_DW->temp_diff = 0.01F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR;
-				tmp = roundf(rtOnlineID_DW->temp_diff);
-        if (tmp < 4.2949673E+9F) {
-          if (tmp >= 0.0F) {
-            qY = (uint32_T)tmp;
-          } else {
-            qY = 0U;
-          }
-        } else {
-          qY = MAX_uint32_T;
-        }
-
-        if (qY == 0U) {
-          qY = rtOnlineID_DW->counter;
-        } else {
-          qY = rtOnlineID_DW->counter - rtOnlineID_DW->counter / qY * qY;
-        }
-
-        if (qY == 0U) {
-          /* '<S1>:106:40' RefreshDataRegister; */
-          RefreshDataRegister_i1(rtOnlineID_DW);
-
-          /* '<S1>:106:41' iq_register_neu(1,1)=iq_sum/(0.01/GlobalConfig.sampleTimeISR); */
-					rtOnlineID_DW->iq_register_neu[0] = rtOnlineID_DW->iq_sum / rtOnlineID_DW->temp_diff;
-
-          /* '<S1>:106:42' id_register_neu(1,1)=id_sum/(0.01/GlobalConfig.sampleTimeISR); */
-					rtOnlineID_DW->id_register_neu[0] = rtOnlineID_DW->id_sum / rtOnlineID_DW->temp_diff;
-
-          /* '<S1>:106:43' iq_sum=single(0); */
-          rtOnlineID_DW->iq_sum = 0.0F;
-
-          /* '<S1>:106:44' id_sum=single(0); */
-          rtOnlineID_DW->id_sum = 0.0F;
-
-          /* '<S1>:106:45' if(mod(counter,uint32(0.02/GlobalConfig.sampleTimeISR))==0) */
-					rtOnlineID_DW->temp_diff = 0.02F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR;
-					tmp = roundf(rtOnlineID_DW->temp_diff);
-          if (tmp < 4.2949673E+9F) {
-            if (tmp >= 0.0F) {
-              qY = (uint32_T)tmp;
-            } else {
-              qY = 0U;
-            }
-          } else {
-            qY = MAX_uint32_T;
-          }
-
-          if (qY == 0U) {
-            qY = rtOnlineID_DW->counter;
-          } else {
-            qY = rtOnlineID_DW->counter - rtOnlineID_DW->counter / qY * qY;
-          }
-
-          if (qY == 0U) {
-            /* '<S1>:106:46' omega_register_neu(1,1)=omega_sum/(0.02/GlobalConfig.sampleTimeISR); */
-            rtOnlineID_DW->omega_register_neu[0] = rtOnlineID_DW->omega_sum /
-              rtOnlineID_DW->temp_diff;
-
-            /* '<S1>:106:47' omega_sum=single(0); */
-            rtOnlineID_DW->omega_sum = 0.0F;
-          }
-
-          /* '<S1>:106:49' if(mod(counter,uint32(0.1/GlobalConfig.sampleTimeISR))==0) */
-					rtOnlineID_DW->temp_diff = roundf(0.1F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR);
-					if (rtOnlineID_DW->temp_diff < 4.2949673E+9F) {
-						if (rtOnlineID_DW->temp_diff >= 0.0F) {
-							qY = (uint32_T) rtOnlineID_DW->temp_diff;
-            } else {
-              qY = 0U;
-            }
-          } else {
-            qY = MAX_uint32_T;
-          }
-
-          if (qY == 0U) {
-            qY = rtOnlineID_DW->counter;
-          } else {
-            qY = rtOnlineID_DW->counter - rtOnlineID_DW->counter / qY * qY;
-          }
-
-          if (qY == 0U) {
-            /* checks every 0.1s if current omega and iq is too different from the old one */
-            /* '<S1>:106:50' [stop_ident] = Break(abs(iq_register_alt),abs(id_register_alt),abs(omega_register_alt),abs(iq_register_neu),abs(id_register_neu),abs(omega_register_neu)); */
-						for (rtOnlineID_DW->k = 0; rtOnlineID_DW->k < 50; rtOnlineID_DW->k++) {
-							rtOnlineID_DW->d_y[rtOnlineID_DW->k] = fabsf(rtOnlineID_DW->iq_register_alt[rtOnlineID_DW->k]);
-							rtOnlineID_DW->e_y[rtOnlineID_DW->k] = fabsf(rtOnlineID_DW->id_register_alt[rtOnlineID_DW->k]);
-            }
-
-						for (rtOnlineID_DW->k = 0; rtOnlineID_DW->k < 5; rtOnlineID_DW->k++) {
-							rtOnlineID_DW->f_y[rtOnlineID_DW->k] = fabsf(rtOnlineID_DW->omega_register_alt[rtOnlineID_DW->k]);
-            }
-
-						for (rtOnlineID_DW->k = 0; rtOnlineID_DW->k < 10; rtOnlineID_DW->k++) {
-							rtOnlineID_DW->g_y[rtOnlineID_DW->k] = fabsf(rtOnlineID_DW->iq_register_neu[rtOnlineID_DW->k]);
-							rtOnlineID_DW->h_y[rtOnlineID_DW->k] = fabsf(rtOnlineID_DW->id_register_neu[rtOnlineID_DW->k]);
-            }
-
-						for (rtOnlineID_DW->k = 0; rtOnlineID_DW->k < 5; rtOnlineID_DW->k++) {
-							rtOnlineID_DW->i_y[rtOnlineID_DW->k] = fabsf(rtOnlineID_DW->omega_register_neu[rtOnlineID_DW->k]);
-            }
-
-            rtOnlineID_DW->stop_ident = Break(rtOnlineID_DW->d_y,
-              rtOnlineID_DW->e_y, rtOnlineID_DW->f_y, rtOnlineID_DW->g_y,
-              rtOnlineID_DW->h_y, rtOnlineID_DW->i_y, rtOnlineID_U);
-          }
-        }
       }
     }
 
@@ -2711,115 +2081,24 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
 /* Model initialize function */
 void OnlineID_initialize(RT_MODEL_OnlineID_t *const rtOnlineID_M)
 {
-  DW_OnlineID_t *rtOnlineID_DW = rtOnlineID_M->dwork;
   ExtY_OnlineID_t *rtOnlineID_Y = (ExtY_OnlineID_t *) rtOnlineID_M->outputs;
-  ExtU_OnlineID_t *rtOnlineID_U = (ExtU_OnlineID_t *) rtOnlineID_M->inputs;
 
-  /* Registration code */
-
-	/* initialize non-finites */
-	rt_InitInfAndNaN(sizeof(real_T));
-
-  /* states (dwork) */
-  (void) memset((void *)rtOnlineID_DW, 0,
-                sizeof(DW_OnlineID_t));
-
-  /* external inputs */
-  (void)memset(rtOnlineID_U, 0, sizeof(ExtU_OnlineID_t));
-
-  /* external outputs */
-  rtOnlineID_Y->OnlineID_output = OnlineID_rtZuz_PID_OnlineID_output_t;
-
-  {
-    int32_T i;
-
-    /* SystemInitialize for Chart: '<Root>/OnlineID' incorporates:
-     *  Outport: '<Root>/OnlineID_output'
-     */
-    rtOnlineID_DW->is_OnlineIDSuperState = IN_NO_ACTIVE_CHILD;
-    rtOnlineID_DW->is_active_c5_OnlineID = 0U;
-    rtOnlineID_DW->is_c5_OnlineID = IN_NO_ACTIVE_CHILD;
-    rtOnlineID_DW->breakback = 0.0F;
-    rtOnlineID_DW->counter = 0U;
-    rtOnlineID_DW->i_d_R_online = 0.0F;
-    rtOnlineID_DW->omega_sum = 0.0F;
-    rtOnlineID_DW->id_sum = 0.0F;
-    rtOnlineID_DW->iq_sum = 0.0F;
-    rtOnlineID_DW->vq_sum = 0.0F;
-    rtOnlineID_DW->vd_sum = 0.0F;
-    rtOnlineID_DW->id1counter = 0.0F;
-    rtOnlineID_DW->id2counter = 0.0F;
-    rtOnlineID_DW->iq1counter = 0.0F;
-    rtOnlineID_DW->iq2counter = 0.0F;
-    rtOnlineID_DW->omega1counter = 0.0F;
-    rtOnlineID_DW->omega2counter = 0.0F;
-    rtOnlineID_DW->Vd1counter = 0.0F;
-    rtOnlineID_DW->Vd2counter = 0.0F;
-    rtOnlineID_DW->Vq1counter = 0.0F;
-    rtOnlineID_DW->Vq2counter = 0.0F;
-    rtOnlineID_DW->R_old = 0.0F;
-    rtOnlineID_DW->R_veryold = 0.0F;
-    rtOnlineID_DW->PsiPm_old = 0.0F;
-    rtOnlineID_DW->PsiPm_veryold = 0.0F;
-    rtOnlineID_DW->Ld_old = 0.0F;
-    rtOnlineID_DW->Ld_veryold = 0.0F;
-    rtOnlineID_DW->Lq_old = 0.0F;
-    rtOnlineID_DW->Lq_veryold = 0.0F;
-    for (i = 0; i < 5; i++) {
-      rtOnlineID_DW->omega_register[i] = 0.0F;
-    }
-
-    rtOnlineID_DW->omega_const = false;
-    rtOnlineID_DW->iq_const = false;
-    rtOnlineID_DW->id_const = false;
-    rtOnlineID_DW->counter_time = 0U;
-    rtOnlineID_DW->allow_meas = false;
-    rtOnlineID_DW->i_valid = false;
-    rtOnlineID_DW->LinPara_ident_outside = false;
-    rtOnlineID_DW->stop_ident = false;
-    memset(&rtOnlineID_DW->vd_register[0], 0, 50U * sizeof(real32_T));
-    memset(&rtOnlineID_DW->vq_register[0], 0, 50U * sizeof(real32_T));
-    memset(&rtOnlineID_DW->id_register[0], 0, 50U * sizeof(real32_T));
-    memset(&rtOnlineID_DW->iq_register[0], 0, 50U * sizeof(real32_T));
-    memset(&rtOnlineID_DW->iq_register_alt[0], 0, 50U * sizeof(real32_T));
-    for (i = 0; i < 10; i++) {
-      rtOnlineID_DW->iq_register_neu[i] = 0.0F;
-    }
-
-    for (i = 0; i < 5; i++) {
-      rtOnlineID_DW->omega_register_alt[i] = 0.0F;
-      rtOnlineID_DW->omega_register_neu[i] = 0.0F;
-    }
-
-    memset(&rtOnlineID_DW->id_register_alt[0], 0, 50U * sizeof(real32_T));
-    for (i = 0; i < 10; i++) {
-      rtOnlineID_DW->id_register_neu[i] = 0.0F;
-    }
-
-    rtOnlineID_DW->counter_ausserhalb = 0U;
-    rtOnlineID_DW->R_old_outside = 0.0F;
-    rtOnlineID_DW->counter_innerhalb = 0U;
-    rtOnlineID_DW->Ld_old_outside = 0.0F;
-    rtOnlineID_DW->Lq_old_outside = 0.0F;
-    rtOnlineID_DW->PsiPm_old_outside = 0.0F;
-    rtOnlineID_Y->OnlineID_output.id_out = 0.0F;
-    rtOnlineID_Y->OnlineID_output.Rph_out = 0.0F;
-    rtOnlineID_Y->OnlineID_output.Wtemp = 0.0F;
-    memset(&rtOnlineID_Y->OnlineID_output.psi_array[0], 0, 600U * sizeof
-           (real32_T));
-    rtOnlineID_Y->OnlineID_output.IdControlFlag = false;
-    rtOnlineID_Y->OnlineID_output.iq_mean_out = 0.0F;
-    rtOnlineID_Y->OnlineID_output.id_mean_out = 0.0F;
-    memset(&rtOnlineID_Y->OnlineID_output.delta_psi[0], 0, 200U * sizeof
-           (real32_T));
-    rtOnlineID_Y->OnlineID_output.activeState = 0U;
-    rtOnlineID_Y->OnlineID_output.psi_pm_out = 0.0F;
-    rtOnlineID_Y->OnlineID_output.Ld_out = 0.0F;
-    rtOnlineID_Y->OnlineID_output.Lq_out = 0.0F;
-    rtOnlineID_Y->OnlineID_output.clean_array_flag = false;
-
-    /* End of SystemInitialize for Chart: '<Root>/OnlineID' */
-  }
+	/* SystemInitialize for Chart: '<Root>/OnlineID' incorporates:
+	 *  Outport: '<Root>/OnlineID_output'
+	 */
+	rtOnlineID_Y->OnlineID_output.id_out = 0.0F;
+	rtOnlineID_Y->OnlineID_output.Rph_out = 0.0F;
+	rtOnlineID_Y->OnlineID_output.Wtemp = 0.0F;
+	memset(&rtOnlineID_Y->OnlineID_output.psi_array[0], 0, 600U * sizeof(real32_T));
+	rtOnlineID_Y->OnlineID_output.IdControlFlag = false;
+	rtOnlineID_Y->OnlineID_output.iq_mean_out = 0.0F;
+	rtOnlineID_Y->OnlineID_output.id_mean_out = 0.0F;
+	memset(&rtOnlineID_Y->OnlineID_output.delta_psi[0], 0, 200U * sizeof(real32_T));
+	rtOnlineID_Y->OnlineID_output.activeState = 0U;
+	rtOnlineID_Y->OnlineID_output.psi_pm_out = 0.0F;
+	rtOnlineID_Y->OnlineID_output.Ld_out = 0.0F;
+	rtOnlineID_Y->OnlineID_output.Lq_out = 0.0F;
+	rtOnlineID_Y->OnlineID_output.clean_array_flag = false;
 }
 
 /*

@@ -38,6 +38,8 @@ uint32_t js_status_BareToRTOS=0;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
+//Experimental code
+extern uz_ParameterID_Data_t PID_Data;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -88,18 +90,18 @@ int JavaScope_initalize(DS_Data* data)
 	// Only float is allowed!
 	js_slowDataArray[JSSD_FLOAT_FreqReadback] 		  	= &(data->rasv.referenceFrequency);
 	js_slowDataArray[JSSD_FLOAT_ADCconvFactorReadback] 	= &(data->mrp.ADCconvFactorReadback);
-	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline]         	= &(data->pID.Offline_Psi_PM);
-	js_slowDataArray[JSSD_FLOAT_Lq_Offline] 	        = &(data->pID.Offline_Lq);
-	js_slowDataArray[JSSD_FLOAT_Ld_Offline] 	        = &(data->pID.Offline_Ld);
-	js_slowDataArray[JSSD_FLOAT_Rs_Offline] 	        = &(data->pID.Offline_Rs);
-	js_slowDataArray[JSSD_FLOAT_polePairs] 		        = &(data->mrp.motorPolePairNumber);
+	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline] = &(PID_Data.PID_ElectricalID_Output.PMSM_parameters.Psi_PM_Vs);
+	js_slowDataArray[JSSD_FLOAT_Lq_Offline] = &(PID_Data.PID_ElectricalID_Output.PMSM_parameters.Lq_Henry);
+	js_slowDataArray[JSSD_FLOAT_Ld_Offline] = &(PID_Data.PID_ElectricalID_Output.PMSM_parameters.Ld_Henry);
+	js_slowDataArray[JSSD_FLOAT_Rs_Offline] = &(PID_Data.PID_ElectricalID_Output.PMSM_parameters.R_ph_Ohm);
+	js_slowDataArray[JSSD_FLOAT_polePairs] = &(PID_Data.PID_ElectricalID_Output.PMSM_parameters.polePairs);
+	js_slowDataArray[JSSD_FLOAT_J] = &(PID_Data.PID_ElectricalID_Output.PMSM_parameters.J_kg_m_squared);
+	js_slowDataArray[JSSD_FLOAT_activeState] = &(PID_Data.PID_Controller_Parameters.activeState);
 	js_slowDataArray[JSSD_FLOAT_J] 			         	= &(data->pID.Offline_motorRotorInertia);
-	js_slowDataArray[JSSD_FLOAT_activeState] 	        = &(data->pID.activeState);
-	js_slowDataArray[JSSD_FLOAT_J] 			         	= &(data->pID.Offline_motorRotorInertia);
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
+	js_slowDataArray[JSSD_FLOAT_u_d] = &(PID_Data.PID_ActualValues.v_dq.d);
+	js_slowDataArray[JSSD_FLOAT_u_q] = &(PID_Data.PID_ActualValues.v_dq.q);
+	js_slowDataArray[JSSD_FLOAT_i_d] = &(PID_Data.PID_ActualValues.i_dq.d);
+	js_slowDataArray[JSSD_FLOAT_i_q] = &(PID_Data.PID_ActualValues.i_dq.q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_encoderOffset]         	= &(data->mrp.incrementalEncoderOffset);
@@ -109,9 +111,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_measArray] 	         	= &(data->pID.Online_MessArray_Element);
 	js_slowDataArray[JSSD_FLOAT_i_est]		        	= &(data->pID.Online_i_est_Element);
 	js_slowDataArray[JSSD_FLOAT_ArrayControl]          	= &(data->pID.array_counter);
-	js_slowDataArray[JSSD_FLOAT_Stribtorque] 	        = &(data->pID.Offline_BreakawayTorque);
-	js_slowDataArray[JSSD_FLOAT_Coulombtorque]         	= &(data->pID.Offline_CoulombFriction);
-	js_slowDataArray[JSSD_FLOAT_Viscotorque] 	        = &(data->pID.Offline_ViscousFriction);
+	js_slowDataArray[JSSD_FLOAT_Stribtorque] = &(PID_Data.PID_FrictionID_Output.BrkTorque);
+	js_slowDataArray[JSSD_FLOAT_Coulombtorque] = &(PID_Data.PID_FrictionID_Output.CoulTorque);
+	js_slowDataArray[JSSD_FLOAT_Viscotorque] = &(PID_Data.PID_FrictionID_Output.ViscoTorque);
 	js_slowDataArray[JSSD_FLOAT_Rs] 			        = &(data->mrp.motorStatorResistance);
 	js_slowDataArray[JSSD_FLOAT_PsiPM] 		         	= &(data->mrp.motorFluxConstant);
 	js_slowDataArray[JSSD_FLOAT_TrainInertia]         	= &(data->pID.Offline_totalRotorInertia);
@@ -120,13 +122,13 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_d_est]		         	= &(data->pID.Offline_TwoMassSystemDamping);
 	js_slowDataArray[JSSD_FLOAT_c_0]			        = &(data->pID.Offline_TwoMassSystem_c_0);
 	js_slowDataArray[JSSD_FLOAT_I_rated]		        = &(data->mrp.motorNominalCurrent);
-	js_slowDataArray[JSSD_FLOAT_Wtemp]		         	= &(data->pID.WindingTemp);
+	js_slowDataArray[JSSD_FLOAT_Wtemp] = &(PID_Data.PID_OnlineID_Output.Wtemp);
 	js_slowDataArray[JSSD_FLOAT_FluxTempConst]         	= &(data->pID.FluxTempConst);
 	js_slowDataArray[JSSD_FLOAT_FluxTempError]         	= &(data->pID.FluxTempError);
-	js_slowDataArray[JSSD_FLOAT_Ld_Online]	         	= &(data->pID.Online_Ld);
-	js_slowDataArray[JSSD_FLOAT_Lq_Online]	         	= &(data->pID.Online_Lq);
-	js_slowDataArray[JSSD_FLOAT_PsiPM_Online]	        = &(data->pID.Online_Psi_PM);
-	js_slowDataArray[JSSD_FLOAT_Rs_Online]	         	= &(data->pID.Online_Rs);
+	js_slowDataArray[JSSD_FLOAT_Ld_Online] = &(PID_Data.PID_OnlineID_Output.Ld_out);
+	js_slowDataArray[JSSD_FLOAT_Lq_Online] = &(PID_Data.PID_OnlineID_Output.Lq_out);
+	js_slowDataArray[JSSD_FLOAT_PsiPM_Online] = &(PID_Data.PID_OnlineID_Output.psi_pm_out);
+	js_slowDataArray[JSSD_FLOAT_Rs_Online] = &(PID_Data.PID_OnlineID_Output.Rph_out);
 	js_slowDataArray[JSSD_FLOAT_n_FluxPoints]	        = &(data->pID.n_FluxPoints);
 	js_slowDataArray[JSSD_FLOAT_Ld] 			        = &(data->mrp.motorDirectInductance);
 	js_slowDataArray[JSSD_FLOAT_Lq] 			        = &(data->mrp.motorQuadratureInductance);

@@ -26,6 +26,7 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
+extern uz_ParameterID_Data_t PID_Data;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 {
@@ -150,19 +151,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 
 		case( 0x01+MOTORCONTROL_OFFSET_bits): // ConverterEnable
 			data->cw.enableSystem = true;
-			break; 
+			break;
 
 		case( 0x02+MOTORCONTROL_OFFSET_bits): // ConverterDisable
 			data->cw.enableSystem = false;
-			break; 
+			break;
 
 		case( 0x03+MOTORCONTROL_OFFSET_bits): // ControlEnable
 			data->cw.enableControl = true;
-			break; 
+			break;
 
 		case( 0x04+MOTORCONTROL_OFFSET_bits): // ControlDisable
 			data->cw.enableControl = false;
-			break; 
+			break;
 
 		case( 0x041+MOTORCONTROL_OFFSET_bits): // ResetError
 			data->er.communicationTimeoutOccured = true;
@@ -170,28 +171,28 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			data->er.maximumContinuousCurrentExceeded = true;
 			data->er.maximumShortTermCurrentReached = true;
 			data->er.pwmFrequencyError = true;
-			break; 
+			break;
 
 		case( 0x110+MOTORCONTROL_OFFSET_bits): // referenceTorque (1000 + 0x110 = 1272)
 			data->rasv.referenceTorque = (float)value * 0.001; //mNm
-			break; 
+			break;
 
 		case( 0x300+MOTORCONTROL_OFFSET_bits):
 			data->cw.rotorAngleEstimationMode= (rotorAngleEstimationMethod)value;
-			break; 
+			break;
 
 		case( 0x320+MOTORCONTROL_OFFSET_bits): //digital hall
 			if(value ==1){ data->cw.rotorAngleEstimationMode = hallSensors120Degree;}
 			else if(value ==2){ data->cw.rotorAngleEstimationMode = hallSensors180Degree;}
-			break; 
+			break;
 
 		case( 0x340+MOTORCONTROL_OFFSET_bits):
 			data->mrp.incrementalEncoderResolution = (float)value;
-			break; 
+			break;
 
 		case( 0x341+MOTORCONTROL_OFFSET_bits):
 			data->mrp.motorMaximumSpeed= (float)value;
-			break; 
+			break;
 
 		case( 0x342+MOTORCONTROL_OFFSET_bits):
 			data->mrp.incrementalEncoderOffset= (float)value;
@@ -200,58 +201,58 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 		//ADC
 		case( 0x350+MOTORCONTROL_OFFSET_bits):
 			ADCconvFactor_Hbytes = value;
-			break; 
+			break;
 
-		case( 0x351+MOTORCONTROL_OFFSET_bits): 
+		case( 0x351+MOTORCONTROL_OFFSET_bits):
 			ADCconvFactor_Lbytes = value;
 			data->mrp.ADCConversionFactorIph = ((ADCconvFactor_Hbytes << 16) | (ADCconvFactor_Lbytes & 0xFFFF))*1e-9;
-			break; 
-			
+			break;
+
 		case( 0x352+MOTORCONTROL_OFFSET_bits):
 			ADCconvFactor_Hbytes = value;
-			break; 
+			break;
 
-		case( 0x353+MOTORCONTROL_OFFSET_bits): 
+		case( 0x353+MOTORCONTROL_OFFSET_bits):
 			ADCconvFactor_Lbytes = value;
 			data->mrp.ADCConversionFactorVph = ((ADCconvFactor_Hbytes << 16) | (ADCconvFactor_Lbytes % 0xFFFF))*1e-9;
-			break; 
-			
+			break;
+
 		case( 0x354+MOTORCONTROL_OFFSET_bits):
 			ADCconvFactor_Hbytes = value;
-			break; 
+			break;
 
-		case( 0x355+MOTORCONTROL_OFFSET_bits): 
+		case( 0x355+MOTORCONTROL_OFFSET_bits):
 			ADCconvFactor_Lbytes = value;
 			data->mrp.ADCConversionFactorIdc = ((ADCconvFactor_Hbytes << 16) | (ADCconvFactor_Lbytes % 0xFFFF))*1e-9;
-			break; 
-			
+			break;
+
 		case( 0x356+MOTORCONTROL_OFFSET_bits):
 			ADCconvFactor_Hbytes = value;
-			break; 
+			break;
 
-		case( 0x357+MOTORCONTROL_OFFSET_bits): 
+		case( 0x357+MOTORCONTROL_OFFSET_bits):
 			ADCconvFactor_Lbytes = value;
 			data->mrp.ADCConversionFactorVdc = ((ADCconvFactor_Hbytes << 16) | (ADCconvFactor_Lbytes % 0xFFFF))*1e-9;
-			break; 
-			
+			break;
+
 		case( 0x358+MOTORCONTROL_OFFSET_bits):
 			ADCconvFactor_Hbytes = value;
-			break; 
+			break;
 
-		case( 0x359+MOTORCONTROL_OFFSET_bits): 
+		case( 0x359+MOTORCONTROL_OFFSET_bits):
 			ADCconvFactor_Lbytes = value;
 			data->mrp.ADCConversionFactorTrq = ((ADCconvFactor_Hbytes << 16) | (ADCconvFactor_Lbytes % 0xFFFF))*1e-9;
-			break; 
-			
+			break;
+
 		case( 0x360+MOTORCONTROL_OFFSET_bits):
 			ADCconvFactor_Hbytes = value;
-			break; 
+			break;
 
-		case( 0x361+MOTORCONTROL_OFFSET_bits): 
+		case( 0x361+MOTORCONTROL_OFFSET_bits):
 			ADCconvFactor_Lbytes = value;
 			data->mrp.ADCConversionFactorTmp = ((ADCconvFactor_Hbytes << 16) | (ADCconvFactor_Lbytes % 0xFFFF))*1e-9;
-			break; 
-			
+			break;
+
 		case( 0x369+MOTORCONTROL_OFFSET_bits):
 			ADCconvFactorReadRequest = value;
 			switch (ADCconvFactorReadRequest) {
@@ -308,26 +309,26 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 		case( 0x402 + MOTORCONTROL_OFFSET_bits):
 			data->ctrl.foc.cc.Kp_id = (float)value * 0.001;
 			break;
-			
+
 		case( 0x403 + MOTORCONTROL_OFFSET_bits):
 			data->ctrl.foc.cc.Tn_id = (float)value * 0.0001;
-			break; 
+			break;
 
 		case( 0x404 + MOTORCONTROL_OFFSET_bits):
 			data->ctrl.foc.cc.Kp_iq = (float)value * 0.001;
-			break; 
+			break;
 
 		case( 0x405 + MOTORCONTROL_OFFSET_bits):
 			data->ctrl.foc.cc.Tn_iq = (float)value * 0.0001;
-			break; 
+			break;
 
 		case( 0x406 + MOTORCONTROL_OFFSET_bits):
 			data->ctrl.foc.sc.Kp = (float)value * 0.001;
-			break; 
+			break;
 
 		case( 0x407 + MOTORCONTROL_OFFSET_bits):
 			data->ctrl.foc.sc.Tn = (float)value * 0.0001;
-			break; 
+			break;
 
 		case( 0x408 + MOTORCONTROL_OFFSET_bits):
 			data->ctrl.foc.cc.FOCFeedForward = (_Bool)value;
@@ -336,19 +337,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 		//MPC CONTROL
 		case( 0x421 + MOTORCONTROL_OFFSET_bits):
 			data->ctrl.mpc.fcs.lambda_dU = (float)value * 0.001;
-			break; 
+			break;
 
 		case( 0x422 + MOTORCONTROL_OFFSET_bits):
 			data->ctrl.mpc.fcs.lambda_2 = (float)value * 0.001;
-			break; 
+			break;
 
 		case( 0x423 + MOTORCONTROL_OFFSET_bits):
 			data->ctrl.mpc.fcs.lambda_3 = (float)value * 0.001;
-			break; 
+			break;
 
 		case( 0x424 + MOTORCONTROL_OFFSET_bits):
 			data->ctrl.mpc.fcs.lambda_4 = (float)value * 0.001;
-			break; 
+			break;
 
 		case( 0x425 + MOTORCONTROL_OFFSET_bits):
 			data->ctrl.mpc.fcs.bEnableVSP2CC = (_Bool)value;
@@ -357,7 +358,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 		//online Rs measuring and temp calculation
 		case( 0x510 + MOTORCONTROL_OFFSET_bits):
 			data->mrp.motorStatorResistance = value * 0.001;
-			break; 
+			break;
 
 		case( 0x511 + MOTORCONTROL_OFFSET_bits):
 			data->pID.Temp_ref = value * 0.01;
@@ -366,159 +367,192 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 		//Hoerner Offline ID
 		//ACCEPT
 		case( 5 + MOTORCONTROL_OFFSET_bits):
-			data->pID.accept = true;
+			PID_Data.PID_GlobalConfig.ACCEPT = true;
 			break;
-			
+
 		//RESET
 		case( 6 + MOTORCONTROL_OFFSET_bits):
-			data->pID.reset_Offl = true;
+			PID_Data.PID_GlobalConfig.Reset = true;
 			break;
-			
+
 		//MOTOR_ID
 		case( 0x101 + MOTORCONTROL_OFFSET_bits):
-			data->pID.MotorID = (MotorID_Method)value;
-			break; 
+			PID_Data.PID_GlobalConfig.enableParameterID = true;
+			break;
 
 		case( 0x102 + MOTORCONTROL_OFFSET_bits):
-			data->cw.enableParameterID = (_Bool)value;
+			PID_Data.PID_GlobalConfig.enableParameterID = false;
 			break;
-			
+
 		//IDENTLQ
 		case( 0x103 + MOTORCONTROL_OFFSET_bits):
-			data->pID.identLq = (uint16_t)value;
+			PID_Data.PID_ElectricalID_Config.identLq = (uint16_t) value;
 			break;
-			
+
 		//I_D_SAMPLETIMEISR
 		case( 0x105 + MOTORCONTROL_OFFSET_bits):
-			data->pID.sampleTimeISR = value * 0.000001;
+			PID_Data.PID_GlobalConfig.sampleTimeISR = value * 0.000001f;
 			break;
-			
+
 		//I_D_POLEPAIRS
 		case( 0x106 + MOTORCONTROL_OFFSET_bits):
-			data->mrp.motorPolePairNumber = value;
+			PID_Data.PID_GlobalConfig.PMSM_config.polePairs = value;
 			break;
-			
+
 		//I_D_DUTYCYC
 		case( 0x107 + MOTORCONTROL_OFFSET_bits):
-			data->pID.dutyCyc = value * 0.01;
+			PID_Data.PID_ElectricalID_Config.dutyCyc = value * 0.01f;
 			break;
-			
+
 		//I_D_NREFM
 		case( 0x108 + MOTORCONTROL_OFFSET_bits):
-			data->pID.n_ref_measurement = value;
+			PID_Data.PID_ElectricalID_Config.n_ref_measurement = value;
 			break;
-			
+
 		//I_D_NREFFOC
 		case( 0x109 + MOTORCONTROL_OFFSET_bits):
 			data->rasv.referenceSpeed = value;
+			PID_Data.PID_GlobalConfig.n_ref = value;
 			break;
 
 		//I_D_IDREF
 		case( 0x111 + MOTORCONTROL_OFFSET_bits):
-			data->rasv.referenceCurrent_id = value * 0.001;
-			break; 
+			data->rasv.referenceCurrent_id = value * 0.001f;
+			PID_Data.PID_GlobalConfig.i_dq_ref.d = value * 0.001f;
+			break;
 
 		//I_D_IQREF
 		case( 0x112 + MOTORCONTROL_OFFSET_bits):
-			data->rasv.referenceCurrent_iq = value * 0.001;
-			break; 
+			data->rasv.referenceCurrent_iq = value * 0.001f;
+			PID_Data.PID_GlobalConfig.i_dq_ref.q = value * 0.001f;
+			break;
 
+			//Goertzel Amplitude
+		case (0x113 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_ElectricalID_Config.goertzlAmp = value * 0.1f;
+			break;
+
+			//FrictionID
+		case (0x126 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_GlobalConfig.FrictionID = true;
+			break;
+		case (0x127 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_GlobalConfig.FrictionID = false;
+			break;
+		case (0x130 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_FrictionID_Config.n_eva_max = value;
+			break;
+		case (0x131 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_FrictionID_Config.N_Brk = value;
+			break;
+		case (0x132 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_FrictionID_Config.N_Visco = value;
+			break;
+		case (0x133 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_FrictionID_Config.StepScale = value * 0.01f;
+			break;
+		case (0x134 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_FrictionID_Config.BrkCount = value;
+			break;
+		case (0x135 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_FrictionID_Config.eta = value;
+			break;
 		//Ronline_ON
 		case( 0x190 + MOTORCONTROL_OFFSET_bits):
-			data->pID.identR = 1;
-			break; 
+			PID_Data.PID_FluxMapID_Config.identR = true;
+			break;
 
 		//Ronline_OFF
 		case( 0x191 + MOTORCONTROL_OFFSET_bits):
-			data->pID.identR = 0;
-			break; 
+			PID_Data.PID_FluxMapID_Config.identR = false;
+			break;
 
 		//identRAmp
 		case( 0x192 + MOTORCONTROL_OFFSET_bits):
-			data->pID.identRAmp = value * 0.01;
-			break; 
+			PID_Data.PID_FluxMapID_Config.identRAmp = value * 0.01f;
+			break;
 
 		//I_D_MaxCurrent_update
 		case( 0x193 + MOTORCONTROL_OFFSET_bits):
 			data->mrp.motorMaximumCurrentContinuousOperation = value * 0.1;
-			break; 
+			break;
 
 		//ID_Controlint
 		case( 0x194 + MOTORCONTROL_OFFSET_bits):
 			data->pID.controlArrCounter=value;
 		//Ident Encoder offsetcase( if(msgId == 0x195 + MOTORCONTROL_OFFSET_bits):
 			data->pID.offsetLock=0;
-			break; 
+			break;
 
 		//MapCounter
 		case( 0x197 + MOTORCONTROL_OFFSET_bits):
 			data->pID.ControlMapCounter=value;
-			break; 
+			break;
 
 		//AMM_ON
 		case( 0x201 + MOTORCONTROL_OFFSET_bits)://Automated Measuring Mode - Enter State
-			data->pID.AMM_ON = 1;
-			break; 
+			PID_Data.PID_FluxMapID_Config.start_FM_ID = true;
+			break;
 
 		//AMM_OFF
 		case( 0x202 + MOTORCONTROL_OFFSET_bits):
-			data->pID.AMM_ON = 0;
-			break; 
+			PID_Data.PID_FluxMapID_Config.start_FM_ID = false;
+			break;
 
 		//AMM_RUN_ON
 		case( 0x203 + MOTORCONTROL_OFFSET_bits)://Automated Measuring Mode - Run Automated Measuring
 			data->pID.AMM_RUN = 1;
-			break; 
+			break;
 
 		//AMM_RUN_OFF
 		case( 0x204 + MOTORCONTROL_OFFSET_bits)://Automated Measuring Mode - Shut Down Automated Measuring
 			data->pID.AMM_RUN = 0;
-			break; 
+			break;
 
 		//LOG_INTERVALS
 		case( 0x205 + MOTORCONTROL_OFFSET_bits):
 			data->pID.LogIntervals = value * 0.001;
-			break; 
+			break;
 
 		//NUMBER_OF_MEASURES
 		case( 0x206 + MOTORCONTROL_OFFSET_bits):
 			data->pID.NumberOfSamples = value;
-			break; 
+			break;
 
 		//SETTLING_TIME
 		case( 0x207 + MOTORCONTROL_OFFSET_bits):
 			data->pID.settlingTime = value;
-			break; 
+			break;
 
 		//IDstart
 		case( 0x210 + MOTORCONTROL_OFFSET_bits):
-			data->pID.IDstart = value * 0.001;
-			break; 
+			PID_Data.PID_FluxMapID_Config.IDstart = value * 0.001f;
+			break;
 
 		//IDstop
 		case( 0x211 + MOTORCONTROL_OFFSET_bits):
-			data->pID.IDstop = value * 0.001;
-			break; 
+			PID_Data.PID_FluxMapID_Config.IDstop = value * 0.001f;
+			break;
 
 		//IDstepsize
 		case( 0x212 + MOTORCONTROL_OFFSET_bits):
-			data->pID.IDstepsize = value * 0.001;
-			break; 
+			PID_Data.PID_FluxMapID_Config.IDstepsize = value * 0.001f;
+			break;
 
 		//IQstart
 		case( 0x213 + MOTORCONTROL_OFFSET_bits):
-			data->pID.IQstart = value * 0.001;
-			break; 
+			PID_Data.PID_FluxMapID_Config.IQstart = value * 0.001f;
+			break;
 
 		//IQstop
 		case( 0x214 + MOTORCONTROL_OFFSET_bits):
-			data->pID.IQstop = value * 0.001;
-			break; 
+			PID_Data.PID_FluxMapID_Config.IQstop = value * 0.001f;
+			break;
 
 		//IQstepsize
 		case( 0x215 + MOTORCONTROL_OFFSET_bits):
-			data->pID.IQstepsize = value * 0.001;
-			break; 
+			PID_Data.PID_FluxMapID_Config.IQstepsize = value * 0.001f;
+			break;
 
 		//Goertzel Amplitude
 	//	case( 0x613 + MOTORCONTROL_OFFSET_bits):
@@ -528,105 +562,106 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 		//Gebhardt Offline ID
 		case( 0x610+MOTORCONTROL_OFFSET_bits):
 			data->pID.eta_omega_Reib = value *0.01;
-			break; 
+			break;
 
 		case( 0x611+MOTORCONTROL_OFFSET_bits):
 			data->pID.N_Brk = value *1;
-			break; 
+			break;
 
 		case( 0x612+MOTORCONTROL_OFFSET_bits):
 			data->pID.N_visco = value *1;
-			break; 
+			break;
 
 		case( 0x613+MOTORCONTROL_OFFSET_bits):
 			data->pID.n_visco_max = value *1;
-			break; 
+			break;
 
 		case( 0x614+MOTORCONTROL_OFFSET_bits):
 			data->mrp.motorNominalCurrent= value *0.1;
-			break; 
+			break;
 
 		case( 0x615+MOTORCONTROL_OFFSET_bits):
 			data->pID.f_min = value;
-			break; 
+			break;
 
 		case( 0x616+MOTORCONTROL_OFFSET_bits):
 			data->pID.f_max = value;
-			break; 
+			break;
 
 		case( 0x617+MOTORCONTROL_OFFSET_bits):
 			data->mrp.motorFluxConstant = value *0.0001;
-			break; 
+			break;
 
 		case( 0x618+MOTORCONTROL_OFFSET_bits):
 			data->pID.ScaleTorquePRBS=value*0.1;
-			break; 
+			break;
 
 		case( 0x619+MOTORCONTROL_OFFSET_bits):
 			data->pID.Brk_Count = value *1;
-			break; 
+			break;
 
 		case( 0x620+MOTORCONTROL_OFFSET_bits):
 			data->pID.StepScale= value *0.00001;
-			break; 
+			break;
 
 		case( 0x621+MOTORCONTROL_OFFSET_bits):
 			data->pID.d_TMS_start = value *0.0001;
+			break;
 
 		//Gebhardt Online ID
-		case( 0x650+MOTORCONTROL_OFFSET_bits):
-			data->pID.bEnableOnlineID = true;
-			break; 
+		case (0x128 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_GlobalConfig.OnlineID = true;
+			break;
 
-		case( 0x651+MOTORCONTROL_OFFSET_bits):
-			data->pID.bCalcPsi = true;
-			break; 
+		case (0x129 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_GlobalConfig.OnlineID = false;
+			break;
 
-		case( 0x652+MOTORCONTROL_OFFSET_bits):
-			data->pID.ResetOnline = 1;
-			break; 
+		case (0x146 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_OnlineID_Config.OnlineID_Reset = true;
+			break;
 
-		case( 0x653+MOTORCONTROL_OFFSET_bits):
+		case (0x147 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_OnlineID_Config.OnlineID_Reset = false;
+			break;
+
+		case (0x137 + MOTORCONTROL_OFFSET_bits):
 			data->pID.q_current_steps = value;
 			data->pID.eta_curr = (data->pID.max_res_ref_current/data->pID.q_current_steps )*sqrt(2)*0.5;
 			break;
 
-		case( 0x654+MOTORCONTROL_OFFSET_bits):
+		case (0x136 + MOTORCONTROL_OFFSET_bits):
 			data->pID.d_current_steps = value;
 			data->pID.eta_curr = (data->pID.max_res_ref_current/data->pID.q_current_steps )*sqrt(2)*0.5;
 			break;
 
-		case( 0x655+MOTORCONTROL_OFFSET_bits):
+		case (0x138 + MOTORCONTROL_OFFSET_bits):
 			data->pID.max_res_ref_current = value;
 			data->pID.eta_curr = (data->pID.max_res_ref_current/data->pID.q_current_steps )*sqrt(2)*0.5;
 			break;
 
-		case( 0x656+MOTORCONTROL_OFFSET_bits):
-			data->pID.Temp_ref= value;
+		case (0x139 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_OnlineID_Config.Temp_ref = value;
 			break;
 
-		case( 0x657+MOTORCONTROL_OFFSET_bits):
+		case (0x140 + MOTORCONTROL_OFFSET_bits):
 			data->mrp.motorStatorResistance = value*0.001;
 			break;
 
-		case( 0x658+MOTORCONTROL_OFFSET_bits):
-			data->pID.bEnableAutoCurrentControl = true;
+		case (0x141 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_OnlineID_Config.min_n_ratio = value;
 			break;
 
-		case( 0x659+MOTORCONTROL_OFFSET_bits):
-			data->pID.bEnableOnlineID = false;
+		case (0x142 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_OnlineID_Config.max_n_ratio = value;
 			break;
 
-		case( 0x660+MOTORCONTROL_OFFSET_bits):
-			data->pID.bEnableAutoCurrentControl = false;
+		case (0x143 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_OnlineID_Config.nom_factor = value * 0.001f;
 			break;
 
-		case( 0x661+MOTORCONTROL_OFFSET_bits):
-			data->pID.AdmitParamsFlag = true;
-			break;
-
-		case( 0x662+MOTORCONTROL_OFFSET_bits):
-			data->pID.AdmitMechParamsFlag = true;
+		case (0x144 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_OnlineID_Config.Rs_time = value;
 			break;
 
 		default:
@@ -647,7 +682,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 		js_status_BareToRTOS &= ~(1 << 1);
 	}
 	/* Bit 2 - IDENT_LQ */
-	if (data->pID.identLq == 1) {
+	if (PID_Data.PID_ElectricalID_Config.identLq == true) {
 		js_status_BareToRTOS |= 1 << 2;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 2);
@@ -672,13 +707,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 	}
 	/* Bit 6 - IDorNOT */
 	//if (data->pID.MotorID == 1) {
-	if (data->cw.enableParameterID == true) {
+	if (PID_Data.PID_FluxMapID_Config.start_FM_ID == true) {
 		js_status_BareToRTOS |= 1 << 6;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 6);
 	}
 	/* Bit 7 - identROnline */
-	if (data->pID.identR == 1) {
+	if (PID_Data.PID_FluxMapID_Config.identR == true) {
 		js_status_BareToRTOS |= 1 << 7;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 7);

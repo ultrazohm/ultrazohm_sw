@@ -353,10 +353,10 @@ Vitis
     // With the JavaScope, 4 signals can be displayed simultaneously
     // Changing between the observable signals is possible at runtime in the JavaScope.
     // the addresses in Global_Data do not change during runtime, this can be done in the init
-    js_ptr_arr[JSO_i_q] = &pmsm_outputs.i_q_A;
-    js_ptr_arr[JSO_i_d] = &pmsm_outputs.i_d_A;
-    js_ptr_arr[JSO_omega] = &pmsm_outputs.omega_mech_1_s;
-    js_ptr_arr[JSO_u_d] = &pmsm_inputs.v_d_V;
+    js_ch_observable[JSO_i_q] = &pmsm_outputs.i_q_A;
+    js_ch_observable[JSO_i_d] = &pmsm_outputs.i_d_A;
+    js_ch_observable[JSO_omega] = &pmsm_outputs.omega_mech_1_s;
+    js_ch_observable[JSO_u_d] = &pmsm_inputs.u_d_V;
     return Status;
     }
 

@@ -64,11 +64,6 @@
 #define  CURRENT_BUF_SIZE 					6
 #define  CURRENT_BUF_SIZE_INVERS 			1/CURRENT_BUF_SIZE
 
-// ========== JavaScope-Ethernet =========================================================================
-//Defines for JavaScope (4 or 2 channels)
-#define chJavaScope			4
-//#define chJavaScope		2
-
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

@@ -629,6 +629,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			data->pID.AdmitMechParamsFlag = true;
 			break;
 
+		case(0xFFFF):
+			// this is triggered if the IPI message buffer is read without being written once before (i.e. at startup)
+			break;
+
 		default:
 			uz_assert(0); // unknown command -> throw error
 		}

@@ -174,7 +174,6 @@ importsources -name Baremetal -path $filename_Baremetal -soft-link
 # add shared folder 
 importsources -name Baremetal -path $SHARED_FOLDER -soft-link
 # then the linker script is copied to the folder with a hard copy due to compilation errors otherwise - note that the sequence (first link the file, then copy the linker script is important due to -soft-link deleting the linker script otherwise
-importsources -name Baremetal -path $filename_Baremetal/lscript.ld -linker-script 
 
 #add math library to linker option
 app config -name Baremetal -add  libraries m
@@ -195,7 +194,6 @@ puts stdout $filename_FreeRTOS
 
 importsources -name FreeRTOS -path $filename_FreeRTOS -soft-link
 importsources -name FreeRTOS -path $SHARED_FOLDER -soft-link
-importsources -name FreeRTOS -path $filename_FreeRTOS/lscript.ld -linker-script
 
 # add shared folder to build directory
 # this is a bit of hack, since it is not possible to add a compiler directory using the TCL script

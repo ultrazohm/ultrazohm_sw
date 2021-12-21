@@ -164,16 +164,16 @@ platform generate
 #Application Baremetal R5_0
 #####################################################
 puts "Info:(UltraZohm) create Baremetal Application"
-# application 
+# create application 
 app create -name Baremetal -template {Empty Application} -platform $PLATFORM_NAME -domain Baremetal_domain
 
 puts "Info:(UltraZohm) import Baremetal Application sources"
-#import sources to baremetal project
+# import sources to baremetal project
 # first the source files are linked
 importsources -name Baremetal -path $filename_Baremetal -soft-link
 # add shared folder 
 importsources -name Baremetal -path $SHARED_FOLDER -soft-link
-# linker script is a soft-link to the Baremetal/src folder
+# link to linker-script instead of copying it
 app config -name Baremetal -set linker-script $filename_Baremetal/lscript.ld
 
 #add math library to linker option
@@ -183,17 +183,19 @@ app config -name Baremetal -add  libraries m
 #Application FreeRTOS A53_0
 ####################################################
 puts "Info:(UltraZohm) create FreeRTOS Application"
-#create freertos app 
+#create application 
 app create -name FreeRTOS -template {Empty Application} -platform $PLATFORM_NAME -domain FreeRTOS_domain
 
 puts "Info:(UltraZohm) import FreeRTOS Application sources"
 #import sources to freertos project
 
-puts "Path to FreeRTOS:"
+puts "Path to FreeRTOS source files:"
 puts stdout $filename_FreeRTOS
 
+# first the source files are linked
 importsources -name FreeRTOS -path $filename_FreeRTOS -soft-link
 importsources -name FreeRTOS -path $SHARED_FOLDER -soft-link
+#link to linker-script instead of copying it
 app config -name FreeRTOS -set linker-script $filename_FreeRTOS/lscript.ld
 
 # add shared folder to build directory

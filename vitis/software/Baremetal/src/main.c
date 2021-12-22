@@ -29,6 +29,7 @@ _Bool bInit = false;
 DS_Data Global_Data;
 
 //ParameterID Code
+uz_ParameterID_t* ParameterID = NULL;
 uz_PID_ElectricalID_t ElectricalID;
 uz_PID_ControlState_t ControlState;
 uz_PID_FluxMapID_t FluxMapID;
@@ -88,9 +89,10 @@ int main(void)
 	Initialize_ARMController(&Global_Data);
 
 	//Experimental Code
-	uz_ParameterID_init(&ControlState, &ElectricalID, &TwoMassID, &FrictionID, &FluxMapID, &OnlineID);
-	uz_ParameterID_initialize_data_structs(&PID_Data, &OnlineID);
-
+	ParameterID = uz_ParameterID_init(&ControlState, &ElectricalID, &TwoMassID, &FrictionID, &FluxMapID, &OnlineID);
+//	uz_ParameterID_init(&ControlState, &ElectricalID, &TwoMassID, &FrictionID, &FluxMapID, &OnlineID);
+	uz_ParameterID_initialize_data_structs(&PID_Data, ParameterID);
+//
 	config_PMSM.R_ph_Ohm = PID_Data.PID_GlobalConfig.PMSM_config.R_ph_Ohm;
 	config_PMSM.Ld_Henry = PID_Data.PID_GlobalConfig.PMSM_config.Ld_Henry;
 	config_PMSM.Lq_Henry = PID_Data.PID_GlobalConfig.PMSM_config.Lq_Henry;
@@ -98,12 +100,12 @@ int main(void)
 	config_PMSM.polePairs = PID_Data.PID_GlobalConfig.PMSM_config.polePairs;
 	config_PMSM.I_max_Ampere = Global_Data.mrp.motorMaximumCurrentContinuousOperation;
 
-	struct uz_PI_Controller_config config_id = { .Kp = PID_Data.PID_GlobalConfig.Kp_id, .Ki = PID_Data.PID_GlobalConfig.Ki_id, .samplingTime_sec = 0.00005f,
-	                .upper_limit = 15.0f, .lower_limit = -15.0f };
-	struct uz_PI_Controller_config config_iq = { .Kp = PID_Data.PID_GlobalConfig.Kp_iq, .Ki = PID_Data.PID_GlobalConfig.Ki_iq, .samplingTime_sec = 0.00005f,
-	                .upper_limit = 15.0f, .lower_limit = -15.0f };
-	struct uz_PI_Controller_config config_n = { .Kp = PID_Data.PID_GlobalConfig.Kp_n, .Ki = PID_Data.PID_GlobalConfig.Ki_n, .samplingTime_sec = 0.00005f, .upper_limit = 10.0f,
-	                .lower_limit = -10.0f };
+	struct uz_PI_Controller_config config_id = { .Kp = PID_Data.PID_GlobalConfig.Kp_id, .Ki = PID_Data.PID_GlobalConfig.Ki_id, .samplingTime_sec = 0.00005f, .upper_limit = 15.0f, .lower_limit =
+	                -15.0f };
+	struct uz_PI_Controller_config config_iq = { .Kp = PID_Data.PID_GlobalConfig.Kp_iq, .Ki = PID_Data.PID_GlobalConfig.Ki_iq, .samplingTime_sec = 0.00005f, .upper_limit = 15.0f, .lower_limit =
+	                -15.0f };
+	struct uz_PI_Controller_config config_n = { .Kp = PID_Data.PID_GlobalConfig.Kp_n, .Ki = PID_Data.PID_GlobalConfig.Ki_n, .samplingTime_sec = 0.00005f, .upper_limit = 10.0f, .lower_limit =
+	                -10.0f };
 	struct uz_FOC_config config_FOC = { .config_PMSM = PID_Data.PID_GlobalConfig.PMSM_config, .config_id = config_id, .config_iq = config_iq };
 	struct uz_pmsmModel_config_t pmsm_config = { .base_address = XPAR_UZ_PMSM_MODEL_0_BASEADDR, .ip_core_frequency_Hz = 100000000, .simulate_mechanical_system = true, .r_1 =
 	                PID_Data.PID_GlobalConfig.PMSM_config.R_ph_Ohm, .L_d = PID_Data.PID_GlobalConfig.PMSM_config.Ld_Henry, .L_q = PID_Data.PID_GlobalConfig.PMSM_config.Lq_Henry, .psi_pm =

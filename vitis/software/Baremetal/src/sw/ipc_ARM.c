@@ -572,6 +572,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 
 		case( 0x621+MOTORCONTROL_OFFSET_bits):
 			data->pID.d_TMS_start = value *0.0001;
+			break;
 
 		//Gebhardt Online ID
 		case( 0x650+MOTORCONTROL_OFFSET_bits):

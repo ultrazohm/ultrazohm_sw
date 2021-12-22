@@ -40,6 +40,7 @@ uz_PI_Controller* SpeedControl_instance = NULL;
 uz_FOC* FOC_instance_SC = NULL;
 struct uz_PMSM_t config_PMSM = { 0 };
 uz_pmsmModel_t *pmsm = NULL;
+uz_PID_OnlineID_output_t* PID_OnlineID_output = { 0 };
 
 static void uz_assertCallback(const char8 *file, s32 line) {
 	extern XScuGic INTCInst;
@@ -85,12 +86,9 @@ int main(void)
 	// Initialize the ARM control algorithm
 	Initialize_ARMController(&Global_Data);
 
-	//Initialize the Soft-Oscilloscope ("JavaScope")
-	JavaScope_initalize(&Global_Data);
-
 	//Experimental Code
-	uz_ParameterID_initialize_data_structs(&PID_Data);
 	uz_ParameterID_init(&ControlState, &ElectricalID, &FrictionID, &FluxMapID, &OnlineID);
+	uz_ParameterID_initialize_data_structs(&PID_Data, &OnlineID);
 
 	config_PMSM.R_ph_Ohm = PID_Data.PID_GlobalConfig.PMSM_config.R_ph_Ohm;
 	config_PMSM.Ld_Henry = PID_Data.PID_GlobalConfig.PMSM_config.Ld_Henry;
@@ -106,7 +104,7 @@ int main(void)
 	struct uz_PI_Controller_config config_n = { .Kp = PID_Data.PID_GlobalConfig.Kp_n, .Ki = PID_Data.PID_GlobalConfig.Ki_n, .samplingTime_sec = 0.00005f, .upper_limit = 10.0f,
 	                .lower_limit = -10.0f };
 	struct uz_FOC_config config_FOC = { .config_PMSM = PID_Data.PID_GlobalConfig.PMSM_config, .config_id = config_id, .config_iq = config_iq };
-	struct uz_pmsmModel_config_t pmsm_config = { .base_address = XPAR_UZ_PMSM_MODEL_0_BASEADDR, .ip_core_frequency_Hz = 100000000, .simulate_mechanical_system = false, .r_1 =
+	struct uz_pmsmModel_config_t pmsm_config = { .base_address = XPAR_UZ_PMSM_MODEL_0_BASEADDR, .ip_core_frequency_Hz = 100000000, .simulate_mechanical_system = true, .r_1 =
 	                PID_Data.PID_GlobalConfig.PMSM_config.R_ph_Ohm, .L_d = PID_Data.PID_GlobalConfig.PMSM_config.Ld_Henry, .L_q = PID_Data.PID_GlobalConfig.PMSM_config.Lq_Henry, .psi_pm =
 	                PID_Data.PID_GlobalConfig.PMSM_config.Psi_PM_Vs, .polepairs = PID_Data.PID_GlobalConfig.PMSM_config.polePairs, .inertia = PID_Data.PID_GlobalConfig.PMSM_config.J_kg_m_squared,
 	                .coulomb_friction_constant = 0.01056f, .friction_coefficient = 0.00019f };
@@ -115,6 +113,9 @@ int main(void)
 	FOC_instance = uz_FOC_init(config_FOC);
 	SpeedControl_instance = uz_SpeedControl_init(config_n);
 	FOC_instance_SC = uz_FOC_init(config_FOC);
+
+	//Initialize the Soft-Oscilloscope ("JavaScope")
+	JavaScope_initalize(&Global_Data);
 
 	// Initialize the Interrupts
 	Initialize_ISR();

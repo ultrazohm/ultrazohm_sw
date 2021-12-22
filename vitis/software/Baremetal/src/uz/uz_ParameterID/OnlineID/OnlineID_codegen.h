@@ -153,36 +153,36 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_OnlineID_output_t_
 
 typedef struct {
-  real32_T id_out;
-  real32_T Rph_out;
-  real32_T Wtemp;
-  real32_T psi_array[600];
-  boolean_T IdControlFlag;
-  real32_T iq_mean_out;
-  real32_T id_mean_out;
-  real32_T delta_psi[200];
-  uint16_T activeState;
-  real32_T psi_pm_out;
-  real32_T Ld_out;
-  real32_T Lq_out;
-  boolean_T clean_array_flag;
+	real32_T id_out;
+	real32_T Rph_out;
+	real32_T Wtemp;
+	real32_T psi_array[600];
+	boolean_T IdControlFlag;
+	real32_T iq_mean_out;
+	real32_T id_mean_out;
+	real32_T delta_psi[200];
+	uint16_T activeState;
+	real32_T psi_pm_out;
+	real32_T Ld_out;
+	real32_T Lq_out;
+	boolean_T clean_array_flag;
 } uz_PID_OnlineID_output_t;
 
 #endif
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  real32_T omega_register[5];          /* '<Root>/OnlineID' */
-  real32_T vd_register[50];            /* '<Root>/OnlineID' */
-  real32_T vq_register[50];            /* '<Root>/OnlineID' */
-  real32_T id_register[50];            /* '<Root>/OnlineID' */
-  real32_T iq_register[50];            /* '<Root>/OnlineID' */
-  real32_T iq_register_alt[50];        /* '<Root>/OnlineID' */
-  real32_T iq_register_neu[10];        /* '<Root>/OnlineID' */
-  real32_T omega_register_alt[5];      /* '<Root>/OnlineID' */
-  real32_T omega_register_neu[5];      /* '<Root>/OnlineID' */
-  real32_T id_register_alt[50];        /* '<Root>/OnlineID' */
-  real32_T id_register_neu[10];        /* '<Root>/OnlineID' */
+	real32_T omega_register[5]; /* '<Root>/OnlineID' */
+	real32_T vd_register[50]; /* '<Root>/OnlineID' */
+	real32_T vq_register[50]; /* '<Root>/OnlineID' */
+	real32_T id_register[50]; /* '<Root>/OnlineID' */
+	real32_T iq_register[50]; /* '<Root>/OnlineID' */
+	real32_T iq_register_alt[50]; /* '<Root>/OnlineID' */
+	real32_T iq_register_neu[10]; /* '<Root>/OnlineID' */
+	real32_T omega_register_alt[5]; /* '<Root>/OnlineID' */
+	real32_T omega_register_neu[5]; /* '<Root>/OnlineID' */
+	real32_T id_register_alt[50]; /* '<Root>/OnlineID' */
+	real32_T id_register_neu[10]; /* '<Root>/OnlineID' */
 	real32_T y[50];
 	real32_T b_y[50];
 	real32_T y_m[50];
@@ -190,57 +190,57 @@ typedef struct {
 	real32_T d_y[10];
 	real32_T e_y[10];
 	real32_T c_y[5];
-  real32_T f_y[5];
+	real32_T f_y[5];
 	real32_T c_y_k[5];
-  real32_T breakback;                  /* '<Root>/OnlineID' */
-  real32_T i_d_R_online;               /* '<Root>/OnlineID' */
-  real32_T omega_sum;                  /* '<Root>/OnlineID' */
-  real32_T id_sum;                     /* '<Root>/OnlineID' */
-  real32_T iq_sum;                     /* '<Root>/OnlineID' */
-  real32_T vq_sum;                     /* '<Root>/OnlineID' */
-  real32_T vd_sum;                     /* '<Root>/OnlineID' */
-  real32_T id1counter;                 /* '<Root>/OnlineID' */
-  real32_T id2counter;                 /* '<Root>/OnlineID' */
-  real32_T iq1counter;                 /* '<Root>/OnlineID' */
-  real32_T iq2counter;                 /* '<Root>/OnlineID' */
-  real32_T omega1counter;              /* '<Root>/OnlineID' */
-  real32_T omega2counter;              /* '<Root>/OnlineID' */
-  real32_T Vd1counter;                 /* '<Root>/OnlineID' */
-  real32_T Vd2counter;                 /* '<Root>/OnlineID' */
-  real32_T Vq1counter;                 /* '<Root>/OnlineID' */
-  real32_T Vq2counter;                 /* '<Root>/OnlineID' */
-  real32_T R_old;                      /* '<Root>/OnlineID' */
-  real32_T R_veryold;                  /* '<Root>/OnlineID' */
-  real32_T PsiPm_old;                  /* '<Root>/OnlineID' */
-  real32_T PsiPm_veryold;              /* '<Root>/OnlineID' */
-  real32_T Ld_old;                     /* '<Root>/OnlineID' */
-  real32_T Ld_veryold;                 /* '<Root>/OnlineID' */
-  real32_T Lq_old;                     /* '<Root>/OnlineID' */
-  real32_T Lq_veryold;                 /* '<Root>/OnlineID' */
-  real32_T R_old_outside;              /* '<Root>/OnlineID' */
-  real32_T Ld_old_outside;             /* '<Root>/OnlineID' */
-  real32_T Lq_old_outside;             /* '<Root>/OnlineID' */
-  real32_T PsiPm_old_outside;          /* '<Root>/OnlineID' */
-  uint32_T counter;                    /* '<Root>/OnlineID' */
-  uint32_T counter_time;               /* '<Root>/OnlineID' */
-  uint16_T counter_ausserhalb;         /* '<Root>/OnlineID' */
-  uint16_T counter_innerhalb;          /* '<Root>/OnlineID' */
-  uint8_T is_active_c5_OnlineID;       /* '<Root>/OnlineID' */
-  uint8_T is_c5_OnlineID;              /* '<Root>/OnlineID' */
-  uint8_T is_OnlineIDSuperState;       /* '<Root>/OnlineID' */
-  boolean_T omega_const;               /* '<Root>/OnlineID' */
-  boolean_T iq_const;                  /* '<Root>/OnlineID' */
-  boolean_T id_const;                  /* '<Root>/OnlineID' */
-  boolean_T allow_meas;                /* '<Root>/OnlineID' */
-  boolean_T i_valid;                   /* '<Root>/OnlineID' */
-  boolean_T LinPara_ident_outside;     /* '<Root>/OnlineID' */
-  boolean_T stop_ident;                /* '<Root>/OnlineID' */
+	real32_T breakback; /* '<Root>/OnlineID' */
+	real32_T i_d_R_online; /* '<Root>/OnlineID' */
+	real32_T omega_sum; /* '<Root>/OnlineID' */
+	real32_T id_sum; /* '<Root>/OnlineID' */
+	real32_T iq_sum; /* '<Root>/OnlineID' */
+	real32_T vq_sum; /* '<Root>/OnlineID' */
+	real32_T vd_sum; /* '<Root>/OnlineID' */
+	real32_T id1counter; /* '<Root>/OnlineID' */
+	real32_T id2counter; /* '<Root>/OnlineID' */
+	real32_T iq1counter; /* '<Root>/OnlineID' */
+	real32_T iq2counter; /* '<Root>/OnlineID' */
+	real32_T omega1counter; /* '<Root>/OnlineID' */
+	real32_T omega2counter; /* '<Root>/OnlineID' */
+	real32_T Vd1counter; /* '<Root>/OnlineID' */
+	real32_T Vd2counter; /* '<Root>/OnlineID' */
+	real32_T Vq1counter; /* '<Root>/OnlineID' */
+	real32_T Vq2counter; /* '<Root>/OnlineID' */
+	real32_T R_old; /* '<Root>/OnlineID' */
+	real32_T R_veryold; /* '<Root>/OnlineID' */
+	real32_T PsiPm_old; /* '<Root>/OnlineID' */
+	real32_T PsiPm_veryold; /* '<Root>/OnlineID' */
+	real32_T Ld_old; /* '<Root>/OnlineID' */
+	real32_T Ld_veryold; /* '<Root>/OnlineID' */
+	real32_T Lq_old; /* '<Root>/OnlineID' */
+	real32_T Lq_veryold; /* '<Root>/OnlineID' */
+	real32_T R_old_outside; /* '<Root>/OnlineID' */
+	real32_T Ld_old_outside; /* '<Root>/OnlineID' */
+	real32_T Lq_old_outside; /* '<Root>/OnlineID' */
+	real32_T PsiPm_old_outside; /* '<Root>/OnlineID' */
+	uint32_T counter; /* '<Root>/OnlineID' */
+	uint32_T counter_time; /* '<Root>/OnlineID' */
+	uint16_T counter_ausserhalb; /* '<Root>/OnlineID' */
+	uint16_T counter_innerhalb; /* '<Root>/OnlineID' */
+	uint8_T is_active_c5_OnlineID; /* '<Root>/OnlineID' */
+	uint8_T is_c5_OnlineID; /* '<Root>/OnlineID' */
+	uint8_T is_OnlineIDSuperState; /* '<Root>/OnlineID' */
+	boolean_T omega_const; /* '<Root>/OnlineID' */
+	boolean_T iq_const; /* '<Root>/OnlineID' */
+	boolean_T id_const; /* '<Root>/OnlineID' */
+	boolean_T allow_meas; /* '<Root>/OnlineID' */
+	boolean_T i_valid; /* '<Root>/OnlineID' */
+	boolean_T LinPara_ident_outside; /* '<Root>/OnlineID' */
+	boolean_T stop_ident; /* '<Root>/OnlineID' */
 } DW_OnlineID_t;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  boolean_T array_cleaned_flag;        /* '<Root>/array_cleaned_flag' */
-  real32_T psi_array_out[600];         /* '<Root>/cleaned_psi_array' */
+	boolean_T array_cleaned_flag; /* '<Root>/array_cleaned_flag' */
+	real32_T psi_array_out[600]; /* '<Root>/cleaned_psi_array' */
   uz_PID_OnlineIDConfig_t OnlineIDConfig;/* '<Root>/OnlineIDConfig' */
   uz_PID_ActualValues_t ActualValues;  /* '<Root>/ActualValues' */
   uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
@@ -249,13 +249,13 @@ typedef struct {
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  uz_PID_OnlineID_output_t OnlineID_output;/* '<Root>/OnlineID_output' */
+	uz_PID_OnlineID_output_t OnlineID_output;/* '<Root>/OnlineID_output' */
 } ExtY_OnlineID_t;
 
 /* Real-time Model Data Structure */
 struct tag_RTM_OnlineID_t {
   ExtU_OnlineID_t *inputs;
-  ExtY_OnlineID_t *outputs;
+	ExtY_OnlineID_t *outputs;
   DW_OnlineID_t *dwork;
 };
 

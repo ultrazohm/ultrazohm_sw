@@ -40,7 +40,7 @@ typedef struct uz_ParameterID_Data_t {
 	uz_PID_ElectricalID_output_t PID_ElectricalID_Output;
 	uz_PID_FrictionID_output_t PID_FrictionID_Output;
 	uz_PID_FluxMapID_output_t PID_FluxMapID_Output;
-	uz_PID_OnlineID_output_t PID_OnlineID_Output;
+	uz_PID_OnlineID_output_t* PID_OnlineID_Output;
 	uz_PID_Controller_Parameters_output_t PID_Controller_Parameters;
 } uz_ParameterID_Data_t;
 
@@ -52,7 +52,7 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 //struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
 struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance, ControlReference ControlRef);
 
-void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data);
+void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_PID_OnlineID_t* OnlineID);
 
 
 

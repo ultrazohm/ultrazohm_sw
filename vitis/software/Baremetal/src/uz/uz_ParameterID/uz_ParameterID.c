@@ -138,7 +138,8 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 		uz_PID_OnlineID_step(OnlineID);
 
 		//Update Data struct with new output values
-		Data->PID_OnlineID_Output = OnlineID->output.OnlineID_output;
+		//Data->PID_OnlineID_Output = &OnlineID->output.OnlineID_output;
+		Data->PID_Controller_Parameters.activeState = OnlineID->output.OnlineID_output.activeState;
 
 	}
 	// reset ACCEPT
@@ -238,7 +239,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 
 	if (Data->PID_ControlFlags.finished_all_Offline_states == true) {
 		if (Data->PID_ControlFlags.enableOnlineID == true) {
-			Data->PID_GlobalConfig.i_dq_ref.d += Data->PID_OnlineID_Output.id_out;
+			Data->PID_GlobalConfig.i_dq_ref.d += Data->PID_OnlineID_Output->id_out;
 		} else {
 			Data->PID_GlobalConfig.i_dq_ref.d += 0.0f;
 		}
@@ -247,7 +248,8 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 		} else if (ControlRef == SpeedControl) {
 			ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
 			i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->PID_ActualValues.omega_el, Data->PID_GlobalConfig.n_ref, Data->PID_ActualValues.V_DC,
-			                Data->PID_GlobalConfig.i_dq_ref.d, Data->PID_GlobalConfig.PMSM_config, ext_clamping);
+			                Data->PID_OnlineID_Output->id_out,
+			                Data->PID_GlobalConfig.PMSM_config, ext_clamping);
 			v_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data->PID_ActualValues.i_dq, Data->PID_ActualValues.V_DC, Data->PID_ActualValues.omega_el);
 		} else {
 			v_dq_Volts.d = 0.0f;
@@ -259,7 +261,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 		return (v_dq_Volts);
 	}
 
-void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data) {
+void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_PID_OnlineID_t* OnlineID) {
 
 	//Initialize Global-Config
 	Data->PID_GlobalConfig.ACCEPT = false;
@@ -330,12 +332,25 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data) {
 	Data->PID_OnlineID_Config.Rs_time = 0.0f;
 	Data->PID_OnlineID_Config.Temp_ref = 0.0f;
 	Data->PID_OnlineID_Config.allowPsiCalcOutside = false;
-	Data->PID_OnlineID_Config.dev_curr = 0.0f;
-	Data->PID_OnlineID_Config.dev_omega = 0.0f;
-	Data->PID_OnlineID_Config.identRAmp = 0.0f;
+	Data->PID_OnlineID_Config.dev_curr = 0.05f;
+	Data->PID_OnlineID_Config.dev_omega = 0.05f;
+	Data->PID_OnlineID_Config.identRAmp = 2.0f;
 	Data->PID_OnlineID_Config.max_n_ratio = 0.0f;
 	Data->PID_OnlineID_Config.min_n_ratio = 0.0f;
 	Data->PID_OnlineID_Config.nom_factor = 0.0f;
-}
 
+	Data->PID_OnlineID_Output = &OnlineID->output.OnlineID_output;
+	Data->PID_OnlineID_Output->IdControlFlag = false;
+	Data->PID_OnlineID_Output->Ld_out = 0.0f;
+	Data->PID_OnlineID_Output->Lq_out = 0.0f;
+	Data->PID_OnlineID_Output->Rph_out = 0.0f;
+	Data->PID_OnlineID_Output->Wtemp = 0.0f;
+	Data->PID_OnlineID_Output->activeState = 0U;
+	Data->PID_OnlineID_Output->clean_array_flag = false;
+	Data->PID_OnlineID_Output->id_mean_out = 0.0f;
+	Data->PID_OnlineID_Output->id_out = 0.0f;
+	Data->PID_OnlineID_Output->iq_mean_out = 0.0f;
+	Data->PID_OnlineID_Output->psi_pm_out = 0.0f;
+
+}
 #endif

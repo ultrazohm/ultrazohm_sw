@@ -113,7 +113,6 @@ void ISR_Control(void *data)
 //	Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;
 //	Global_Data.rasv.halfBridge2DutyCycle = PID_DutyCycle.DutyCycle_V;
 //	Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;
-
 	uz_pmsmModel_trigger_input_strobe(pmsm);
 	uz_pmsmModel_trigger_output_strobe(pmsm);
 	pmsm_outputs = uz_pmsmModel_get_outputs(pmsm);

@@ -384,6 +384,32 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			PID_Data.PID_GlobalConfig.enableParameterID = false;
 			break;
 
+		case (0x120 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_GlobalConfig.ElectricalID = true;
+			break;
+
+		case (0x121 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_GlobalConfig.ElectricalID = false;
+			break;
+
+		case (0x122 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_GlobalConfig.FluxMapID = true;
+			break;
+
+		case (0x123 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_GlobalConfig.FluxMapID = false;
+			break;
+
+		case (0x124 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_GlobalConfig.TwoMassID = true;
+			break;
+
+		case (0x125 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_GlobalConfig.TwoMassID = false;
+			break;
+
+
+
 		//IDENTLQ
 		case( 0x103 + MOTORCONTROL_OFFSET_bits):
 			PID_Data.PID_ElectricalID_Config.identLq = (uint16_t) value;
@@ -665,7 +691,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			break;
 
 		default:
-			uz_assert(0); // unknown command -> throw error
+			break;
+			//uz_assert(0); // unknown command -> throw error
 		}
 	}
 

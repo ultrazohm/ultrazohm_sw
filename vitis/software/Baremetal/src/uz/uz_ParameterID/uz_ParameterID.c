@@ -20,16 +20,19 @@
 
 #if UZ_PARAMETERID_ACTIVE > 0U
 
-void uz_ParameterID_init(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID, uz_PID_OnlineID_t* OnlineID) {
+void uz_ParameterID_init(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_TwoMassID_t* TwoMassID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID,
+                uz_PID_OnlineID_t* OnlineID) {
 	uz_PID_ControlState_init(ControlState);
 	uz_PID_ElectricalID_init(ElectricalID);
+	uz_PID_TwoMassID_init(TwoMassID);
 	uz_PID_FrictionID_init(FrictionID);
 	uz_PID_FluxMapID_init(FluxMapID);
 	uz_PID_OnlineID_init(OnlineID);
 
 }
 
-void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID, uz_PID_OnlineID_t* OnlineID,
+void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_TwoMassID_t* TwoMassID, uz_PID_FrictionID_t* FrictionID, uz_PID_FluxMapID_t* FluxMapID,
+                uz_PID_OnlineID_t* OnlineID,
                 uz_ParameterID_Data_t* Data) {
 	//Update Control-State inputs, which are not depended on other states
 	ControlState->input.GlobalConfig_in = Data->PID_GlobalConfig;
@@ -72,6 +75,32 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 			Data->PID_Controller_Parameters = ElectricalID->output.ElectricalID_FOC_output;
 			ControlState->input.enteredElectricalID = ElectricalID->output.enteredElectricalID;
 			ControlState->input.finishedElectricalID = ElectricalID->output.finishedElectricalID;
+		}
+
+		//TwoMassID
+		if (ControlState->output.GlobalConfig_out.TwoMassID == true && ControlState->output.GlobalConfig_out.Reset == false && ControlState->output.ControlFlags.transNr == 2U) {
+			TwoMassID->input.ActualValues = Data->PID_ActualValues;
+			TwoMassID->input.TwoMassIDConfig = Data->PID_TwoMassID_Config;
+			TwoMassID->input.GlobalConfig_out = ControlState->output.GlobalConfig_out;
+			TwoMassID->input.ControlFlags = ControlState->output.ControlFlags;
+
+			//Step the function
+			uz_PID_TwoMassID_step(TwoMassID);
+
+			//Update Control-State-inputs
+			ControlState->input.enteredTwoMassID = TwoMassID->output.enteredTwoMassID;
+			ControlState->input.finishedTwoMassID = TwoMassID->output.finishedTwoMassID;
+
+			//Update Data struct with new output values
+			Data->PID_Controller_Parameters = TwoMassID->output.TwoMassID_FOC_output;
+			Data->PID_TwoMassID_Output = TwoMassID->output.TwoMassID_output;
+		} else if (ControlState->output.GlobalConfig_out.TwoMassID == false && TwoMassID->output.enteredTwoMassID == true) {
+			TwoMassID->input.GlobalConfig_out = ControlState->output.GlobalConfig_out;
+			uz_PID_TwoMassID_step(TwoMassID);
+			Data->PID_Controller_Parameters = TwoMassID->output.TwoMassID_FOC_output;
+			Data->PID_TwoMassID_Output = TwoMassID->output.TwoMassID_output;
+			ControlState->input.enteredTwoMassID = TwoMassID->output.enteredTwoMassID;
+			ControlState->input.finishedTwoMassID = TwoMassID->output.finishedTwoMassID;
 		}
 
 		//FrictionID
@@ -154,10 +183,12 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 		FluxMapID->input.GlobalConfig_out.Reset = true;
 		ElectricalID->input.GlobalConfig_out.Reset = true;
 		FrictionID->input.GlobalConfig_out.Reset = true;
+		TwoMassID->input.GlobalConfig_out.Reset = true;
 		//Step the states to reset them
 		uz_PID_FluxMapID_step(FluxMapID);
 		uz_PID_ElectricalID_step(ElectricalID);
 		uz_PID_FrictionID_step(FrictionID);
+		uz_PID_TwoMassID_step(TwoMassID);
 		//Reset the control outputs
 		ControlState->input.enteredFluxMapID = FluxMapID->output.enteredFluxMapID;
 		ControlState->input.finishedFluxMapID = FluxMapID->output.finishedFluxMapID;
@@ -165,11 +196,14 @@ void uz_ParameterID_step(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalI
 		ControlState->input.finishedElectricalID = ElectricalID->output.finishedElectricalID;
 		ControlState->input.enteredFrictionID = FrictionID->output.enteredFrictionID;
 		ControlState->input.finishedFrictionID = FrictionID->output.finishedFrictionID;
+		ControlState->input.enteredTwoMassID = TwoMassID->output.enteredTwoMassID;
+		ControlState->input.finishedTwoMassID = TwoMassID->output.finishedTwoMassID;
 		//Reset data outputs
 		Data->PID_Controller_Parameters = FluxMapID->output.FluxMapID_FOC_output;
 		Data->PID_FluxMapID_Output = FluxMapID->output.FluxMapID_output;
 		Data->PID_ElectricalID_Output = ElectricalID->output.ElectricalID_output;
 		Data->PID_FrictionID_Output = FrictionID->output.FrictionID_output;
+		Data->PID_TwoMassID_Output = TwoMassID->output.TwoMassID_output;
 		//reset the Reset-button
 		ControlState->output.GlobalConfig_out.Reset = false;
 		Data->PID_GlobalConfig.Reset = false;
@@ -196,7 +230,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 				i_SpeedControl_reference_Ampere.q += Data->PID_Controller_Parameters.PRBS_out;
 			}
 	}
-	if (Data->PID_Controller_Parameters.enableFOC_current || Data->PID_Controller_Parameters.enableFOC_speed == true) {
+	if (Data->PID_Controller_Parameters.enableFOC_current == true || Data->PID_Controller_Parameters.enableFOC_speed == true) {
 			//Change, if desired, the current controller here
 			if (Data->PID_Controller_Parameters.enableFOC_current == true) {
 				//If CurrentControl is active, use input reference currents
@@ -238,7 +272,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 		}
 
 	if (Data->PID_ControlFlags.finished_all_Offline_states == true) {
-		if (Data->PID_ControlFlags.enableOnlineID == true) {
+		if (Data->PID_OnlineID_Output->IdControlFlag == true) {
 			Data->PID_GlobalConfig.i_dq_ref.d += Data->PID_OnlineID_Output->id_out;
 		} else {
 			Data->PID_GlobalConfig.i_dq_ref.d += 0.0f;
@@ -248,7 +282,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 		} else if (ControlRef == SpeedControl) {
 			ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
 			i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->PID_ActualValues.omega_el, Data->PID_GlobalConfig.n_ref, Data->PID_ActualValues.V_DC,
-			                Data->PID_OnlineID_Output->id_out,
+			                Data->PID_GlobalConfig.i_dq_ref.d,
 			                Data->PID_GlobalConfig.PMSM_config, ext_clamping);
 			v_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data->PID_ActualValues.i_dq, Data->PID_ActualValues.V_DC, Data->PID_ActualValues.omega_el);
 		} else {
@@ -323,7 +357,7 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_PID_
 	Data->PID_FrictionID_Config.N_Visco = 0.0f;
 	Data->PID_FrictionID_Config.StepScale = 0.0f;
 	Data->PID_FrictionID_Config.eta = 0.0f;
-	Data->PID_FrictionID_Config.maxCurrent = 0.0f;
+	Data->PID_FrictionID_Config.maxCurrent = 10.0f;
 	Data->PID_FrictionID_Config.n_eva_max = 0.0f;
 
 	//Inintialize OnlineID-Config

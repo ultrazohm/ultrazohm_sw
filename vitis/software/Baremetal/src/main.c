@@ -34,6 +34,7 @@ uz_PID_ControlState_t ControlState;
 uz_PID_FluxMapID_t FluxMapID;
 uz_PID_FrictionID_t FrictionID;
 uz_PID_OnlineID_t OnlineID;
+uz_PID_TwoMassID_t TwoMassID;
 uz_ParameterID_Data_t PID_Data = { 0 };
 uz_FOC* FOC_instance = NULL;
 uz_PI_Controller* SpeedControl_instance = NULL;
@@ -87,7 +88,7 @@ int main(void)
 	Initialize_ARMController(&Global_Data);
 
 	//Experimental Code
-	uz_ParameterID_init(&ControlState, &ElectricalID, &FrictionID, &FluxMapID, &OnlineID);
+	uz_ParameterID_init(&ControlState, &ElectricalID, &TwoMassID, &FrictionID, &FluxMapID, &OnlineID);
 	uz_ParameterID_initialize_data_structs(&PID_Data, &OnlineID);
 
 	config_PMSM.R_ph_Ohm = PID_Data.PID_GlobalConfig.PMSM_config.R_ph_Ohm;

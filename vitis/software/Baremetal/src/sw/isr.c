@@ -27,10 +27,11 @@
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
-
+#include "../IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
 #include "../uz/uz_FOC/uz_FOC.h"
+#include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
 //Initialize the variables for the ADC measurement
 uint32_t 	ADC_RAW_Sum_1 = 0.0;
@@ -50,13 +51,18 @@ float sin1amp=1.0;
 extern DS_Data Global_Data;
 
 uz_FOC* FOC_instance;
+uz_FOC* FOC_instance_second_machine;
 struct uz_dq_t i_reference_Ampere={
 		.d=0.0f,
 		.q=0.0f
 };
+
+struct uz_dq_t i_reference_Ampere_second={0};
 struct uz_dq_t dq_actual={0};
 struct uz_UVW_t actual_currents={0};
+struct uz_UVW_t actual_currents_second_inverter={0};
 float adc_scaling=9.5f/3.0f;
+float adc_scaling_second_inverter=5.1f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -74,6 +80,11 @@ struct uz_wavegen_three_phase_config wavegen_config={
 };
 uz_wavegen_three_phase* wave;
 
+extern uz_PWM_SS_2L_t* PWM_SS_2L_instance_1;
+struct uz_DutyCycle_t dutycycle_second_inverter={0};
+float theta_el_second_inverter=0.0f;
+extern uz_incrementalEncoder_t* encoder_D4;
+
 void ISR_Control(void *data)
 {
 	uz_SystemTime_ISR_Tic();
@@ -83,9 +94,17 @@ void ISR_Control(void *data)
 	ReadAllADC();
 	CheckForErrors();
 	update_speed_and_position_of_encoder_on_D5(&Global_Data); 	//Read out speed and theta angle
+
+	theta_el_second_inverter=uz_incrementalEncoder_get_theta_el(encoder_D4);
+	theta_el_second_inverter=fmodf(theta_el_second_inverter*3.0f,2*M_PI);
+	// Offset machine 2 (right): 3.288787, 3.718343, 3.828790 = 3.75
+
 	actual_currents.U=(Global_Data.aa.A1.me.ADC_A2-2.5f)*adc_scaling;
 	actual_currents.V=(Global_Data.aa.A1.me.ADC_A3-2.5f)*adc_scaling;
 	actual_currents.W=(Global_Data.aa.A1.me.ADC_A4-2.5f)*adc_scaling;
+	actual_currents_second_inverter.U=(Global_Data.aa.A1.me.ADC_B6-2.5f)*adc_scaling_second_inverter;
+	actual_currents_second_inverter.V=(Global_Data.aa.A1.me.ADC_B7-2.5f)*adc_scaling_second_inverter;
+	actual_currents_second_inverter.W=(Global_Data.aa.A1.me.ADC_B8-2.5f)*adc_scaling_second_inverter;
 	//Start: Control algorithm -------------------------------------------------------------------------------
 	if (Global_Data.cw.ControlReference == SpeedControl)
 	{
@@ -94,13 +113,21 @@ void ISR_Control(void *data)
 	else if(Global_Data.cw.ControlReference == CurrentControl)
 	{
 		// add your current controller here
-		dq_actual= uz_dq_transformation(actual_currents, Global_Data.av.theta_elec-5.638787f);
+		dq_actual= uz_dq_transformation(actual_currents, Global_Data.av.theta_elec-5.638787f); // 5.565156 // 0.3497429 // 0.3129272 // 5.878087 // 5.767640 // 5.804456
 		   struct uz_dq_t u_dq_Volts = uz_FOC_sample(FOC_instance, i_reference_Ampere, dq_actual, 24.0f, 0.0f);
 		   struct uz_UVW_t UVW=uz_dq_inverse_transformation(u_dq_Volts, Global_Data.av.theta_elec-5.638787f);
 		   struct uz_DutyCycle_t output = uz_FOC_generate_DutyCycles(UVW, 24.0f);
 		   Global_Data.rasv.halfBridge1DutyCycle=output.DutyCycle_U;
 		   Global_Data.rasv.halfBridge2DutyCycle=output.DutyCycle_V;
 		   Global_Data.rasv.halfBridge3DutyCycle=output.DutyCycle_W;
+
+
+			// 2. machine (right)
+			dq_actual= uz_dq_transformation(actual_currents_second_inverter, theta_el_second_inverter-3.5f); // 5.565156 // 0.3497429 // 0.3129272 // 5.878087 // 5.767640 // 5.804456
+			u_dq_Volts = uz_FOC_sample(FOC_instance_second_machine, i_reference_Ampere_second, dq_actual, 24.0f, 0.0f);
+			UVW=uz_dq_inverse_transformation(u_dq_Volts, theta_el_second_inverter-3.5f);
+			dutycycle_second_inverter = uz_FOC_generate_DutyCycles(UVW, 24.0f);
+
 	}
 	else if(Global_Data.cw.ControlReference == TorqueControl)
 	{
@@ -116,7 +143,7 @@ void ISR_Control(void *data)
 	PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
-
+	uz_PWM_SS_2L_set_duty_cycle(PWM_SS_2L_instance_1, dutycycle_second_inverter.DutyCycle_U,dutycycle_second_inverter.DutyCycle_V,dutycycle_second_inverter.DutyCycle_W);
 	// Set duty cycles for three-level modulator
 	PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 					Global_Data.rasv.halfBridge2DutyCycle,
@@ -149,7 +176,7 @@ int Initialize_ISR(){
 	    };//these parameters are only needed if linear decoupling is selected
 	    struct uz_PI_Controller_config config_id = {
 	      .Kp = 10.0f,
-	      .Ki = 10.0f,
+	      .Ki = 0.0f,
 	      .samplingTime_sec = 0.00005f,
 	      .upper_limit = 50.0f,
 	      .lower_limit = -50.0f
@@ -157,7 +184,7 @@ int Initialize_ISR(){
 
 	   struct uz_PI_Controller_config config_iq = {
 	      .Kp = 10.0f,
-	      .Ki = 1.0f,
+	      .Ki = 0.0f,
 	      .samplingTime_sec = 0.00005f,
 	      .upper_limit = 50.0f,
 	      .lower_limit = -50.0f
@@ -171,6 +198,7 @@ int Initialize_ISR(){
 	   };
 
 	   FOC_instance = uz_FOC_init(config_FOC);
+	   FOC_instance_second_machine = uz_FOC_init(config_FOC);
 
 	// Initialize interrupt controller for the IPI -> Initialize RPU IPI
 	Status = Rpu_IpiInit(INTERRUPT_ID_IPI);

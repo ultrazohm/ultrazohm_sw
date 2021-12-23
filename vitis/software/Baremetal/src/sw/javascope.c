@@ -41,7 +41,7 @@ uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
 extern struct uz_UVW_t actual_currents;
-
+extern struct uz_UVW_t actual_currents_second_inverter;
 int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
@@ -70,9 +70,9 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_ia] 			= &actual_currents.U;
-	js_ch_observable[JSO_ib] 			= &actual_currents.V;
-	js_ch_observable[JSO_ic] 			= &actual_currents.W;
+	js_ch_observable[JSO_ia] 			= &actual_currents_second_inverter.U;
+	js_ch_observable[JSO_ib] 			= &actual_currents_second_inverter.V;
+	js_ch_observable[JSO_ic] 			= &actual_currents_second_inverter.W;
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;
 	js_ch_observable[JSO_ub] 			= &data->av.U_V;
 	js_ch_observable[JSO_uc] 			= &data->av.U_W;

@@ -25,5 +25,6 @@
 
 void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber);  // Init Encoder
 void update_speed_and_position_of_encoder_on_D5(DS_Data *const data);	// update speed and position in global data struct
+void initialize_incremental_encoder_ipcore_on_D4(float incrementalEncoderResolution, float motorPolePairNumber);
 
 #endif /* ENCODER_H_ */

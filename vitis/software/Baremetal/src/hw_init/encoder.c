@@ -21,6 +21,7 @@
 
 // Declares pointer to instance on file scope. DO NOT DO THIS! Just done here to be compatible to the rest of the legacy code in this file!
 static uz_incrementalEncoder_t* encoder_D5;
+uz_incrementalEncoder_t* encoder_D4;
 
 //----------------------------------------------------
 // INITIALIZE & SET THE ENCODER
@@ -40,6 +41,18 @@ void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolut
 	};
 	encoder_D5=uz_incrementalEncoder_init(encoder_D5_config);
 }
+
+void initialize_incremental_encoder_ipcore_on_D4(float incrementalEncoderResolution, float motorPolePairNumber){
+	struct uz_incrementalEncoder_config encoder_D4_config={
+		.base_address=XPAR_INCREENCODER_V24_IP_1_BASEADDR,
+		.ip_core_frequency_Hz=50000000U,
+		.line_number_per_turn_mech=incrementalEncoderResolution,
+		.OmegaPerOverSample_in_rpm=OMEGA_PER_OVER_SAMPLE_RPM,
+		.drive_pole_pair=motorPolePairNumber
+	};
+	encoder_D4=uz_incrementalEncoder_init(encoder_D4_config);
+}
+
 
 void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update speed and position in global data struct
 	data->av.theta_elec=uz_incrementalEncoder_get_theta_el(encoder_D5);

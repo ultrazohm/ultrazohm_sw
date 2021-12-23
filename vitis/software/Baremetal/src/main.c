@@ -18,6 +18,8 @@
 #include "uz/uz_global_configuration.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
 #include "include/uz_adcLtc2311_ip_core_init.h"
+
+#include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -28,13 +30,31 @@ DS_Data Global_Data;
 
 static void uz_assertCallback(const char8 *file, s32 line)
 {
-	extern XScuGic INTCInst;
+	//extern XScuGic INTCInst;
 	uz_printf("\r\nAssertion in file %s on line %d\r\n", file, line);
 	uz_led_set_errorLED_on();
 	uz_led_set_readyLED_off();
 	uz_led_set_runningLED_off();
 	ErrorHandling(&Global_Data);
 }
+
+struct uz_PWM_SS_2L_config_t config_second_inverter = {
+        .base_address= XPAR_PWM_AND_SS_CONTROL_V_0_BASEADDR,
+        .ip_clk_frequency_Hz=100000000,
+        .Tristate_HB1 = false,
+        .Tristate_HB2 = false,
+        .Tristate_HB3 = false,
+        .min_pulse_width = 0.01f,
+        .PWM_freq_Hz = 20e3f,
+        .PWM_mode = normalized_input_via_AXI,
+        .PWM_en = true,
+        .use_external_counter = false,
+        .init_dutyCyc_A = 0.0f,
+        .init_dutyCyc_B = 0.0f,
+        .init_dutyCyc_C = 0.0f
+};
+
+uz_PWM_SS_2L_t* PWM_SS_2L_instance_1;
 
 int main(void)
 {
@@ -54,9 +74,13 @@ int main(void)
 	// Initialize Park-Transformation 123 to dq
 
 	uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
+	uz_interlockDeadtime2L_handle deadtime_second_inverter=uz_interlockDeadtime2L_staticAllocator_second_inverter();
+
 	uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
+	uz_interlockDeadtime2L_set_enable_output(deadtime_second_inverter, true);
 	//Initialize PWM and switch signal control
 	PWM_SS_Initialize(&Global_Data); // two-level modulator
+	PWM_SS_2L_instance_1 = uz_PWM_SS_2L_init(config_second_inverter); // two-level modulator of 2. inverter
 	PWM_3L_Initialize(&Global_Data); // three-level modulator
 
 	// Initialize Timer in order to Trigger the ISRs
@@ -64,7 +88,7 @@ int main(void)
 	uz_SystemTime_init();
 	// Initialize the incremental encoder
 	initialize_incremental_encoder_ipcore_on_D5(Global_Data.mrp.incrementalEncoderResolution, Global_Data.mrp.motorPolePairNumber);
-
+	initialize_incremental_encoder_ipcore_on_D4(Global_Data.mrp.incrementalEncoderResolution,Global_Data.mrp.motorPolePairNumber);
 	// Initialize the FPGA control algorithm
 	Initialize_FPGAController(&Global_Data);
 

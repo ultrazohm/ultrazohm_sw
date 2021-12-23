@@ -97,7 +97,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_polePairs] = &(PID_Data.PID_ElectricalID_Output.PMSM_parameters.polePairs);
 	js_slowDataArray[JSSD_FLOAT_J] = &(PID_Data.PID_ElectricalID_Output.PMSM_parameters.J_kg_m_squared);
 	js_slowDataArray[JSSD_FLOAT_activeState] = &(PID_Data.PID_Controller_Parameters.activeState);
-	js_slowDataArray[JSSD_FLOAT_J] 			         	= &(data->pID.Offline_motorRotorInertia);
+	js_slowDataArray[JSSD_FLOAT_J] = &(PID_Data.PID_TwoMassID_Output.rotorInertia);
 	js_slowDataArray[JSSD_FLOAT_u_d] = &(PID_Data.PID_ActualValues.v_dq.d);
 	js_slowDataArray[JSSD_FLOAT_u_q] = &(PID_Data.PID_ActualValues.v_dq.q);
 	js_slowDataArray[JSSD_FLOAT_i_d] = &(PID_Data.PID_ActualValues.i_dq.d);
@@ -116,11 +116,11 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Viscotorque] = &(PID_Data.PID_FrictionID_Output.ViscoTorque);
 	js_slowDataArray[JSSD_FLOAT_Rs] 			        = &(data->mrp.motorStatorResistance);
 	js_slowDataArray[JSSD_FLOAT_PsiPM] 		         	= &(data->mrp.motorFluxConstant);
-	js_slowDataArray[JSSD_FLOAT_TrainInertia]         	= &(data->pID.Offline_totalRotorInertia);
-	js_slowDataArray[JSSD_FLOAT_LoadInertia] 	        = &(data->pID.Offline_loadRotorInertia);
-	js_slowDataArray[JSSD_FLOAT_c_est]		         	= &(data->pID.Offline_TwoMassSystemStiffness);
-	js_slowDataArray[JSSD_FLOAT_d_est]		         	= &(data->pID.Offline_TwoMassSystemDamping);
-	js_slowDataArray[JSSD_FLOAT_c_0]			        = &(data->pID.Offline_TwoMassSystem_c_0);
+	js_slowDataArray[JSSD_FLOAT_TrainInertia] = &(PID_Data.PID_TwoMassID_Output.TrainInertia);
+	js_slowDataArray[JSSD_FLOAT_LoadInertia] = &(PID_Data.PID_TwoMassID_Output.LoadInertia);
+	js_slowDataArray[JSSD_FLOAT_c_est] = &(PID_Data.PID_TwoMassID_Output.c_est_out);
+	js_slowDataArray[JSSD_FLOAT_d_est] = &(PID_Data.PID_TwoMassID_Output.d_est_out);
+	js_slowDataArray[JSSD_FLOAT_c_0] = &(PID_Data.PID_TwoMassID_Output.c_0_out);
 	js_slowDataArray[JSSD_FLOAT_I_rated]		        = &(data->mrp.motorNominalCurrent);
 	js_slowDataArray[JSSD_FLOAT_Wtemp] = &(PID_Data.PID_OnlineID_Output->Wtemp);
 	js_slowDataArray[JSSD_FLOAT_FluxTempConst]         	= &(data->pID.FluxTempConst);

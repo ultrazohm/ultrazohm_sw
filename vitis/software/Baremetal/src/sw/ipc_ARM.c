@@ -690,6 +690,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			PID_Data.PID_OnlineID_Config.Rs_time = value;
 			break;
 
+			//TwoMassID
+		case (0x151 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_TwoMassID_Config.ScaleTorquePRBS = value;
+			break;
+
+		case (0x152 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_TwoMassID_Config.d_TMS_start = value;
+			break;
+
+		case (0x153 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_TwoMassID_Config.n_ref_measurement = value;
+			break;
+
+		case (0x154 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_TwoMassID_Config.f_min = value;
+			break;
+
+		case (0x155 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_TwoMassID_Config.f_max = value;
+			break;
+
 		default:
 			break;
 			//uz_assert(0); // unknown command -> throw error

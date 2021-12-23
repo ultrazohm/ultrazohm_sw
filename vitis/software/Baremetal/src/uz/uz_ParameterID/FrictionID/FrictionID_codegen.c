@@ -25,6 +25,29 @@
 
 #include "FrictionID_codegen.h"
 
+/*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
+ * File: FrictionID.c
+ *
+ * Code generated for Simulink model 'FrictionID'.
+ *
+ * Model version                  : 2.381
+ * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
+ * C/C++ source code generated on : Thu Dec 23 12:00:40 2021
+ *
+ * Target selection: ert.tlc
+ * Embedded hardware selection: ARM Compatible->ARM Cortex-R
+ * Code generation objectives:
+ *    1. Execution efficiency
+ *    2. Traceability
+ * Validation result: Passed (11), Warning (1), Error (0)
+ */
+
+#include "FrictionID_codegen.h"
+
 /* Named constants for Chart: '<Root>/FrictionID' */
 #define IN_BreakawayTorqueEstimation   ((uint8_T)1U)
 #define IN_CoulombFrictionTorqueEstimat ((uint8_T)2U)
@@ -126,19 +149,19 @@ static void exit_atomic_BreakawayTorqueEsti(ExtU_FrictionID_t *rtFrictionID_U,
 {
   int32_T k;
   real32_T ex;
-	real32_T tmp;
+  real32_T tmp;
 
   /* Exit 'BreakawayTorqueEstimation': '<S1>:492' */
   /* '<S1>:492:17' i_Brk=max(Ustep); */
-	ex = rtFrictionID_DW->Ustep[0];
-	for (k = 0; k < 102; k++) {
-		tmp = rtFrictionID_DW->Ustep[k + 1];
-		if (ex < tmp) {
-			ex = tmp;
+  ex = rtFrictionID_DW->Ustep[0];
+  for (k = 0; k < 102; k++) {
+    tmp = rtFrictionID_DW->Ustep[k + 1];
+    if (ex < tmp) {
+      ex = tmp;
     }
   }
 
-	rtFrictionID_DW->i_Brk = ex;
+  rtFrictionID_DW->i_Brk = ex;
 
   /* Outport: '<Root>/FrictionID_output' incorporates:
    *  Inport: '<Root>/GlobalConfig'
@@ -465,14 +488,14 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
 
       /* '<S1>:612:1' sf_internal_predicateOutput = GlobalConfig.Reset==1; */
     } else if (rtFrictionID_U->GlobalConfig_out.Reset) {
-      /* Outport: '<Root>/finishedFrictionID' */
+      /* Outport: '<Root>/enteredFrictionID' */
       /* Transition: '<S1>:612' */
       /* '<S1>:612:1' finishedFrictionID=boolean(0); */
-      rtFrictionID_Y->finishedFrictionID = false;
-
-      /* Outport: '<Root>/enteredFrictionID' */
       /* '<S1>:612:2' enteredFrictionID=boolean(0); */
       rtFrictionID_Y->enteredFrictionID = false;
+
+      /* '<S1>:612:3' initParams; */
+      initParams(rtFrictionID_U, rtFrictionID_Y, rtFrictionID_DW);
       rtFrictionID_DW->is_c7_FrictionID = IN_Waiting;
 
       /* Entry 'Waiting': '<S1>:594' */
@@ -961,60 +984,8 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
 /* Model initialize function */
 void FrictionID_initialize(RT_MODEL_FrictionID_t *const rtFrictionID_M)
 {
-  DW_FrictionID_t *rtFrictionID_DW = rtFrictionID_M->dwork;
   ExtY_FrictionID_t *rtFrictionID_Y = (ExtY_FrictionID_t *)
     rtFrictionID_M->outputs;
-  ExtU_FrictionID_t *rtFrictionID_U = (ExtU_FrictionID_t *)
-    rtFrictionID_M->inputs;
-
-  /* Registration code */
-
-  /* states (dwork) */
-  (void) memset((void *)rtFrictionID_DW, 0,
-                sizeof(DW_FrictionID_t));
-
-  /* external inputs */
-  (void)memset(rtFrictionID_U, 0, sizeof(ExtU_FrictionID_t));
-
-  /* external outputs */
-  (void) memset((void *)rtFrictionID_Y, 0,
-                sizeof(ExtY_FrictionID_t));
-
-  /* SystemInitialize for Chart: '<Root>/FrictionID' */
-  rtFrictionID_DW->is_frictionID = IN_NO_ACTIVE_CHILD;
-  rtFrictionID_DW->is_BreakawayTorqueEstimation = IN_NO_ACTIVE_CHILD;
-  rtFrictionID_DW->is_CoulombFrictionTorqueEstimat = IN_NO_ACTIVE_CHILD;
-  rtFrictionID_DW->temporalCounter_i1 = 0U;
-  rtFrictionID_DW->is_active_c7_FrictionID = 0U;
-  rtFrictionID_DW->is_c7_FrictionID = IN_NO_ACTIVE_CHILD;
-  rtFrictionID_DW->counter = 0U;
-  memset(&rtFrictionID_DW->measArray2[0], 0, sizeof(real32_T) << 12U);
-  memset(&rtFrictionID_DW->Ustep[0], 0, 103U * sizeof(real32_T));
-  rtFrictionID_DW->delay = 0.0F;
-  rtFrictionID_DW->i_Brk = 0.0F;
-  rtFrictionID_DW->i_eva = 0.0F;
-  rtFrictionID_DW->i_eva_step = 0.0F;
-  rtFrictionID_DW->mean_count = 0.0F;
-  rtFrictionID_DW->meas_count = 0U;
-  rtFrictionID_DW->meas_sum[0] = 0.0F;
-  rtFrictionID_DW->meas_sum[1] = 0.0F;
-  rtFrictionID_DW->nextstate = 0U;
-  rtFrictionID_DW->omega_Brk = 0.0F;
-  rtFrictionID_DW->switcher = false;
-  memset(&rtFrictionID_DW->i_est[0], 0, sizeof(real32_T) << 11U);
-  memset(&rtFrictionID_DW->measArray1[0], 0, sizeof(real32_T) << 10U);
-  rtFrictionID_DW->n_eva_step = 0.0F;
-  rtFrictionID_DW->n_eva = 0.0F;
-
-  /* SystemInitialize for Outport: '<Root>/finishedFrictionID' incorporates:
-   *  Chart: '<Root>/FrictionID'
-   */
-  rtFrictionID_Y->finishedFrictionID = false;
-
-  /* SystemInitialize for Outport: '<Root>/enteredFrictionID' incorporates:
-   *  Chart: '<Root>/FrictionID'
-   */
-  rtFrictionID_Y->enteredFrictionID = false;
 
   /* SystemInitialize for Chart: '<Root>/FrictionID' incorporates:
    *  Outport: '<Root>/FrictionID_FOC_output'

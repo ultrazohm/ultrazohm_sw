@@ -70,18 +70,18 @@ typedef struct tag_RTM_FluxMapID_t RT_MODEL_FluxMapID_t;
 #define DEFINED_TYPEDEF_FOR_uz_PID_FluxMapIDConfig_t_
 
 typedef struct {
-	real32_T AMMsampleTime;
-	real32_T IDstart;
-	real32_T IDstepsize;
-	real32_T IDstop;
-	real32_T IQstart;
-	real32_T IQstepsize;
-	real32_T IQstop;
-	real32_T R_s_ref;
-	real32_T Temp_ref;
-	boolean_T start_FM_ID;
-	boolean_T identR;
-	real32_T identRAmp;
+  real32_T AMMsampleTime;
+  real32_T IDstart;
+  real32_T IDstepsize;
+  real32_T IDstop;
+  real32_T IQstart;
+  real32_T IQstepsize;
+  real32_T IQstop;
+  real32_T R_s_ref;
+  real32_T Temp_ref;
+  boolean_T start_FM_ID;
+  boolean_T identR;
+  real32_T identRAmp;
 } uz_PID_FluxMapIDConfig_t;
 
 #endif
@@ -90,15 +90,15 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
 
 typedef struct {
-	uz_UVW_t V_UVW;
+  uz_UVW_t V_UVW;
   uz_UVW_t I_UVW;
   uz_dq_t i_dq;
-	uz_dq_t v_dq;
+  uz_dq_t v_dq;
   real32_T omega_m;
   real32_T omega_el;
   real32_T theta_m;
-	real32_T theta_el;
-	real32_T V_DC;
+  real32_T theta_el;
+  real32_T V_DC;
 } uz_PID_ActualValues_t;
 
 #endif
@@ -108,7 +108,7 @@ typedef struct {
 
 typedef struct {
   uz_PMSM_t PMSM_config;
-	boolean_T enableParameterID;
+  boolean_T enableParameterID;
   boolean_T Reset;
   real32_T Kp_id;
   real32_T Kp_iq;
@@ -129,8 +129,8 @@ typedef struct {
   real32_T VibAmp;
   boolean_T VibOn;
   uint16_T VibFreq;
-	uz_dq_t i_dq_ref;
-	real32_T n_ref;
+  uz_dq_t i_dq_ref;
+  real32_T n_ref;
 } uz_PID_GlobalConfig_t;
 
 #endif
@@ -145,7 +145,7 @@ typedef struct {
   boolean_T startFluxMapID;
   uint16_T transNr;
   boolean_T enableOnlineID;
-	boolean_T finished_all_Offline_states;
+  boolean_T finished_all_Offline_states;
 } uz_PID_ControlFlags_t;
 
 #endif
@@ -154,7 +154,7 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_Controller_Parameters_output_t_
 
 typedef struct {
-	uz_dq_t i_dq_ref;
+  uz_dq_t i_dq_ref;
   uint16_T activeState;
   real32_T n_ref_FOC;
   boolean_T enableFOC_speed;
@@ -178,42 +178,42 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_FluxMapID_output_t_
 
 typedef struct {
-	boolean_T external_Measurement_Flag;
-	real32_T R_s;
-	real32_T WindingTemp;
+  boolean_T external_Measurement_Flag;
+  real32_T R_s;
+  real32_T WindingTemp;
 } uz_PID_FluxMapID_output_t;
 
 #endif
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-	real32_T R_s_array[50]; /* '<Root>/FluxMapID' */
-	real32_T vd2_counter; /* '<Root>/FluxMapID' */
-	real32_T i_d_ref_AMM; /* '<Root>/FluxMapID' */
-	real32_T i_d_ref_AMM_loc; /* '<Root>/FluxMapID' */
-	real32_T i_q_ref_AMM; /* '<Root>/FluxMapID' */
-	real32_T i_q_ref_AMM_loc; /* '<Root>/FluxMapID' */
-	real32_T NumberOfIDpoints; /* '<Root>/FluxMapID' */
-	real32_T NumberOfPoints; /* '<Root>/FluxMapID' */
-	real32_T i_d_R_online; /* '<Root>/FluxMapID' */
-	real32_T id2_counter; /* '<Root>/FluxMapID' */
-	real32_T vd1_counter; /* '<Root>/FluxMapID' */
-	real32_T id1_counter; /* '<Root>/FluxMapID' */
-	real32_T IQstepsize_loc; /* '<Root>/FluxMapID' */
-	real32_T IDstepsize_loc; /* '<Root>/FluxMapID' */
-	uint32_T counter; /* '<Root>/FluxMapID' */
-	uint32_T AMMj; /* '<Root>/FluxMapID' */
-	uint32_T AMMn; /* '<Root>/FluxMapID' */
-	uint32_T repetitionCounter; /* '<Root>/FluxMapID' */
-	uint32_T temporalCounter_i1; /* '<Root>/FluxMapID' */
-	uint8_T is_active_c16_FluxMapID; /* '<Root>/FluxMapID' */
-	uint8_T is_c16_FluxMapID; /* '<Root>/FluxMapID' */
-	uint8_T is_AMMstate; /* '<Root>/FluxMapID' */
+  real32_T R_s_array[50];              /* '<Root>/FluxMapID' */
+  real32_T vd2_counter;                /* '<Root>/FluxMapID' */
+  real32_T i_d_ref_AMM;                /* '<Root>/FluxMapID' */
+  real32_T i_d_ref_AMM_loc;            /* '<Root>/FluxMapID' */
+  real32_T i_q_ref_AMM;                /* '<Root>/FluxMapID' */
+  real32_T i_q_ref_AMM_loc;            /* '<Root>/FluxMapID' */
+  real32_T NumberOfIDpoints;           /* '<Root>/FluxMapID' */
+  real32_T NumberOfPoints;             /* '<Root>/FluxMapID' */
+  real32_T i_d_R_online;               /* '<Root>/FluxMapID' */
+  real32_T id2_counter;                /* '<Root>/FluxMapID' */
+  real32_T vd1_counter;                /* '<Root>/FluxMapID' */
+  real32_T id1_counter;                /* '<Root>/FluxMapID' */
+  real32_T IQstepsize_loc;             /* '<Root>/FluxMapID' */
+  real32_T IDstepsize_loc;             /* '<Root>/FluxMapID' */
+  uint32_T counter;                    /* '<Root>/FluxMapID' */
+  uint32_T AMMj;                       /* '<Root>/FluxMapID' */
+  uint32_T AMMn;                       /* '<Root>/FluxMapID' */
+  uint32_T repetitionCounter;          /* '<Root>/FluxMapID' */
+  uint32_T temporalCounter_i1;         /* '<Root>/FluxMapID' */
+  uint8_T is_active_c16_FluxMapID;     /* '<Root>/FluxMapID' */
+  uint8_T is_c16_FluxMapID;            /* '<Root>/FluxMapID' */
+  uint8_T is_AMMstate;                 /* '<Root>/FluxMapID' */
 } DW_FluxMapID_t;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-	uz_PID_FluxMapIDConfig_t FluxMapIDConfig;/* '<Root>/FluxMapIDConfig' */
+  uz_PID_FluxMapIDConfig_t FluxMapIDConfig;/* '<Root>/FluxMapIDConfig' */
   uz_PID_ActualValues_t ActualValues;  /* '<Root>/ActualValues' */
   uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
   uz_PID_ControlFlags_t ControlFlags;  /* '<Root>/ControlFlags' */
@@ -221,22 +221,22 @@ typedef struct {
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-	boolean_T finishedFluxMapID; /* '<Root>/finishedFluxMapID' */
-	boolean_T enteredFluxMapID; /* '<Root>/enteredFluxMapID' */
-	uz_PID_Controller_Parameters_output_t FluxMapID_FOC_output;/* '<Root>/FluxMapID_FOC_output' */
-	uz_PID_FluxMapID_output_t FluxMapID_output;/* '<Root>/FluxMapID_output' */
+  boolean_T finishedFluxMapID;         /* '<Root>/finishedFluxMapID' */
+  boolean_T enteredFluxMapID;          /* '<Root>/enteredFluxMapID' */
+  uz_PID_Controller_Parameters_output_t FluxMapID_FOC_output;/* '<Root>/FluxMapID_FOC_output' */
+  uz_PID_FluxMapID_output_t FluxMapID_output;/* '<Root>/FluxMapID_output' */
 } ExtY_FluxMapID_t;
 
 /* Real-time Model Data Structure */
 struct tag_RTM_FluxMapID_t {
-	ExtU_FluxMapID_t *inputs;
-	ExtY_FluxMapID_t *outputs;
-	DW_FluxMapID_t *dwork;
+  ExtU_FluxMapID_t *inputs;
+  ExtY_FluxMapID_t *outputs;
+  DW_FluxMapID_t *dwork;
 };
 
 /* Model entry point functions */
-extern void FluxMapID_initialize(RT_MODEL_FluxMapID_t * const rtFluxMapID_M);
-extern void FluxMapID_step(RT_MODEL_FluxMapID_t * const rtFluxMapID_M);
+extern void FluxMapID_initialize(RT_MODEL_FluxMapID_t *const rtFluxMapID_M);
+extern void FluxMapID_step(RT_MODEL_FluxMapID_t *const rtFluxMapID_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly

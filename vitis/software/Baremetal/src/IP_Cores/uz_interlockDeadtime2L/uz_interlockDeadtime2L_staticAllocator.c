@@ -5,8 +5,8 @@
 static uz_interlockDeadtime2L interlock_slotD1 = {
 		.base_address = XPAR_GATES_UZ_INTERLOCKDEADTIME_0_BASEADDR,
 		.clock_frequency_MHz = 100,
-		.deadtime_us = 0.100f,
-		.inverse_bottom_switch = false
+		.deadtime_us = 0.0f,
+		.inverse_bottom_switch = true
 };
 
 static uz_interlockDeadtime2L interlock_second_inverter= {

@@ -23,7 +23,6 @@
 #define SCOPE_OFFSET_bits 0x00
 #define MOTORCONTROL_OFFSET_bits 1000
 
-uint16_t 	i_ISR_IPC_LifeCheck=0;
 uint32_t ADCconvFactor_Hbytes = 0;
 uint32_t ADCconvFactor_Lbytes = 0;
 uint16_t ADCconvFactorReadRequest	= 0;
@@ -627,16 +626,5 @@ void ipc_Control_func(uint16_t msgId, uint16_t value, DS_Data* data)
 		}
 
 
-
-}
-
-// this ISR is never called, because the interrupt "INTC_IPC_Shared_INTERRUPT_ID" is send private for cpu1, so cpu0 do not see/recognize this interrupt and can not call the "Transfer_ipc_Intr_Handler"
-void Transfer_ipc_Intr_Handler(void *data)
-{
-	i_ISR_IPC_LifeCheck++; //LiveCheck
-	if(i_ISR_IPC_LifeCheck > 2500){
-		i_ISR_IPC_LifeCheck =0;
-		//xil_printf("var_mess new period\r\n");
-	}
 
 }

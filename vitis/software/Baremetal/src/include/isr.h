@@ -68,5 +68,6 @@ int Initialize_ISR(void);
 int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Tmr_Control_InstancePtr);	//Init Hardware for ISR
 u32 Rpu_IpiInit(u16 DeviceId);	//Init Hardware for IPI-ISR
 
+void Parse_Ipc_Message();
 
 #endif /* ISR_H_ */

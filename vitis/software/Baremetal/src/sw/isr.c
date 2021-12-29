@@ -50,6 +50,10 @@ float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
 
+_Bool bIpcInterrupt = false;
+
+enum JS_StateMachine_R5 R5_Javascope_State = JSSM_IDLE;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -95,13 +99,27 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
 
-
-	// Update JavaScope
-	JavaScope_update(&Global_Data);
+	switch(R5_Javascope_State){
+	case JSSM_IDLE:
+		// Update JavaScope
+		JavaScope_update(&Global_Data);
+		break;
+	case JSSM_WRITE:
+		// Update JavaScope
+		JavaScope_update(&Global_Data);
+		break;
+	case JSSM_BUSY_ARMED:
+		// Update JavaScope
+		JavaScope_update(&Global_Data);
+		break;
+	default:
+		break;
+	}
 
 	// Read the timer value at the very end of the ISR to minimize measurement error
 	// This has to be the last function executed in the ISR!
 	uz_SystemTime_ISR_Toc();
+//	xil_printf("RPU: ISR = %d us", uz_SystemTime_GetIsrExectionTimeInUs);
 }
 
 //==============================================================================================================================================================
@@ -117,23 +135,23 @@ int Initialize_ISR(){
 
 	// Initialize interrupt controller for the IPI -> Initialize RPU IPI
 	Status = Rpu_IpiInit(INTERRUPT_ID_IPI);
-		if(Status != XST_SUCCESS) {
-			xil_printf("RPU: Error: IPI initialization failed\r\n");
-			return XST_FAILURE;
-		}
+	if(Status != XST_SUCCESS) {
+		xil_printf("RPU: Error: IPI initialization failed\r\n");
+		return XST_FAILURE;
+	}
 
 	// Initialize interrupt controller for the GIC
 	Status = Rpu_GicInit(&INTCInst, INTERRUPT_ID_SCUG, &Timer_Interrupt);
-		if(Status != XST_SUCCESS) {
-			xil_printf("RPU: Error: GIC initialization failed\r\n");
-			return XST_FAILURE;
-		}
+	if(Status != XST_SUCCESS) {
+		xil_printf("RPU: Error: GIC initialization failed\r\n");
+		return XST_FAILURE;
+	}
 
 	// Initialize mux_axi to use correct interrupt for triggering the ADCs
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + IPCore_Enable_mux_axi_ip, 1); // enable IP core
 	Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
 
-return Status;
+	return Status;
 }
 
 //==============================================================================================================================================================
@@ -164,7 +182,7 @@ int Initialize_Timer(){
 
 //==============================================================================================================================================================
 //----------------------------------------------------
-// Rpu_GicInit() - This function initializes RPU GIC and connects
+// Rpu_GicInit() -  This function initializes RPU GIC and connects
 // 					interrupts with the associated handlers
 // @IntcInstPtr		Pointer to the GIC instance
 // @IntId			Interrupt ID to be connected and enabled
@@ -214,6 +232,12 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
 //	XScuGic_Enable(&INTCInst, INTC_ADC_Conv_INTERRUPT_ID);
 
+	// Make the connection between the IntId of the interrupt source and the
+	// associated handler that is to run when the interrupt is recognized.
+	status = XScuGic_Connect(IntcInstPtr, INTC_IPC_RPU0_INTERRUPT_ID, (Xil_ExceptionHandler)Transfer_ipc_Intr_Handler, &INTCInst_IPI);
+	if(status != XST_SUCCESS) return XST_FAILURE;
+
+	XScuGic_Enable(IntcInstPtr, INTC_IPC_RPU0_INTERRUPT_ID);
 
 	xil_printf("RPU: Rpu_GicInit: Done\r\n");
 	return XST_SUCCESS;
@@ -244,9 +268,7 @@ u32 Rpu_IpiInit(u16 DeviceId)
 			return XST_FAILURE;
 		}
 
-	XIpiPsu_InterruptEnable(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
-
-
+	XIpiPsu_InterruptEnable(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
 
 	xil_printf("RPU: RPU_IpiInit: Done\r\n");
 	return XST_SUCCESS;
@@ -259,14 +281,14 @@ static void toggleLEDdependingOnReadyOrRunning(uint32_t uptime_ms, uint32_t upti
 	}else{
 		uz_led_set_readyLED_off();
 	}
-}else{
-	if(uptime_sec % 2){
-		uz_led_set_readyLED_on();
 	}else{
-		uz_led_set_readyLED_off();
+		if(uptime_sec % 2){
+			uz_led_set_readyLED_on();
+		}else{
+			uz_led_set_readyLED_off();
+		}
 	}
 }
-};
 
 static void ReadAllADC(){
 	if (initADCdone == false) { // init not done, determine ADC offset
@@ -285,7 +307,7 @@ static void ReadAllADC(){
 	}else{
 		ADC_readCardALL(&Global_Data);
 	}
-};
+}
 
 static void CheckForErrors(){
 	//Error detection
@@ -306,6 +328,57 @@ static void CheckForErrors(){
 			Global_Data.ew.maximumShortTermCurrentReached = true; //Current error detected -> errors are handled directly herein
 		}
 	}
-};
+}
 
+void Transfer_ipc_Intr_Handler(void *data)
+{
+	bIpcInterrupt = true;
+	// Valid IPI. Clear the appropriate bit in the respective ISR
+	XIpiPsu_ClearInterruptStatus(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
+}
+
+void Parse_Ipc_Message(){
+	u32 status, respBuf[3] = {0};
+
+	status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, respBuf,3U, XIPIPSU_BUF_TYPE_RESP);
+	if(status == (u32)XST_SUCCESS) {
+		switch(respBuf[0]){
+		case JSCMD_NUM_CHANNELS:
+			if (R5_Javascope_State == JSSM_IDLE){
+				// update number of channels
+			}
+			break;
+		case JSCMD_WRITE:
+			switch(R5_Javascope_State) {
+			case JSSM_IDLE:
+				xil_printf("RPU: State Machine - IDLE to WRITE\r\n");
+				R5_Javascope_State = JSSM_WRITE;
+				//update memory address
+				break;
+			case JSSM_WRITE:
+				xil_printf("RPU: State Machine - WRITE to BUSY ARMED\r\n");
+				R5_Javascope_State = JSSM_BUSY_ARMED;
+				//update next memory address
+				break;
+			case JSSM_BUSY_ARMED:
+				//replace next memory address
+				break;
+			default:
+				break;
+			}
+			break;
+		case JSCMD_CANCEL:
+			if (R5_Javascope_State == JSSM_BUSY_ARMED){
+				// update number of channels
+			}
+			break;
+		case JSCMD_STOP:
+			xil_printf("RPU: State Machine: all to IDLE\r\n");
+			R5_Javascope_State = JSSM_IDLE;
+			break;
+		default:
+			break;
+		}
+	}
+}
 

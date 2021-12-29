@@ -38,6 +38,7 @@ static float ISR_period_us;
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
+float aux = 0.0;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -107,12 +108,16 @@ void js_fetchData()
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){
-		javascope_data->scope_ch[j] = *js_ch_selected[j];
+		javascope_data->scope_ch[j] = sin(aux) + j;
+		//javascope_data->scope_ch[j] = *js_ch_selected[j];
 	}
 	javascope_data->slowDataID 		= js_cnt_slowData;
 	javascope_data->slowDataContent = js_slowDataArray[js_cnt_slowData].u;
 	javascope_data->status 			= js_status_BareToRTOS;
-
+	aux += M_PI/100;
+	if(aux > 2*M_PI){
+		aux = 0.0;
+	}
 	// flush data cache of shared memory region to make sure shared memory is updated
 	Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
 

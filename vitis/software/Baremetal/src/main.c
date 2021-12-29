@@ -27,6 +27,7 @@ _Bool bInit = false;
 DS_Data Global_Data;
 extern XGpio Gpio_OUT; /* GPIO Device driver instance for the real GPIOs */
 
+extern _Bool bIpcInterrupt;
 
 static void uz_assertCallback(const char8 *file, s32 line) {
 	extern XScuGic INTCInst;
@@ -163,6 +164,12 @@ int main(void) {
 
 		if (bPlotData) {
 			plotData(&Global_Data);
+		}
+
+		/* IPC interrupt */
+		if (bIpcInterrupt) {
+			bIpcInterrupt = false;
+			Parse_Ipc_Message();
 		}
 
 		i_LifeCheck++; //LiveCheck for the main while-1 loop

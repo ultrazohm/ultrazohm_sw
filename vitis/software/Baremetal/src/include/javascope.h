@@ -124,6 +124,14 @@ union SlowData {
 };
 
 
+enum JS_StateMachine_R5
+{
+	JSSM_IDLE = 0,
+	JSSM_WRITE,
+	JSSM_BUSY_ARMED
+};
+
+
 int JavaScope_initalize(DS_Data* data);
 void JavaScope_update(DS_Data* data);
 

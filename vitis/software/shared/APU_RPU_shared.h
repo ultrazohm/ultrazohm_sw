@@ -20,3 +20,12 @@ struct javascope_data_t
 	uint32_t    slowDataID;
 	float       scope_ch[JS_CHANNELS];
 };
+
+enum JS_A53toR5_Commands
+{
+	JSCMD_NONE = 0,
+	JSCMD_NUM_CHANNELS,
+	JSCMD_WRITE,
+	JSCMD_CANCEL,
+	JSCMD_STOP
+};

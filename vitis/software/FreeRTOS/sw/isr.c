@@ -53,14 +53,15 @@ XScuGic_Config *IntcConfig;
 void Transfer_ipc_Intr_Handler(void *data)
 {
 	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START
-	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
+	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)js_mem_address;
 
 	int status;
-	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0,0,XST_SUCCESS};
+//	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0,0,XST_SUCCESS};
+	static u32 RespBuf[IPI_A53toR5_MSG_LEN] = {JSCMD_WRITE, 0, 0};
 	BaseType_t xHigherPriorityTaskWoken;
 
 	// flush cache of shared memory
-	Xil_DCacheFlushRange( MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
+	Xil_DCacheFlushRange(js_mem_address, JAVASCOPE_DATA_SIZE_2POW);
 
 	// if javascope connection is established
 	if(js_connection_established!=0)
@@ -75,12 +76,24 @@ void Transfer_ipc_Intr_Handler(void *data)
 		}
 	}
 
-	RespBuf[0] = (u32)ControlData.id;
-	RespBuf[1] = (u32)ControlData.value;
-	RespBuf[2] = (u32)ControlData.digInputs;
+//	RespBuf[0] = (u32)ControlData.id;
+//	RespBuf[1] = (u32)ControlData.value;
+//	RespBuf[2] = (u32)ControlData.digInputs;
+//
+//
+//	// Write message for acknowledge of the interrupt to RPU
+//	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, RespBuf, IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_RESP);
+//	RespBuf[0]++;
+//	if (RespBuf[0] > JSCMD_STOP){
+//		RespBuf[0] = JSCMD_NUM_CHANNELS;
+//	}
 
-	// Write message for acknowledge of the interrupt to RPU
-	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, RespBuf, IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_RESP);
+//	RespBuf[0] = JSCMD_WRITE;
+	RespBuf[1] = js_mem_address;
+//	RespBuf[2] = 0;
+
+	// Write message for acknowledge of the interrupt to RPU and command it to write new data
+	Send_Command_to_RPU(RespBuf, IPI_A53toR5_MSG_LEN);
 
 	// Valid IPI. Clear the appropriate bit in the respective ISR
 	XIpiPsu_ClearInterruptStatus(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
@@ -88,7 +101,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	i_LifeCheck_Transfer_ipc++;
 
 	if(i_LifeCheck_Transfer_ipc > 25000){
-		i_LifeCheck_Transfer_ipc =0;
+		i_LifeCheck_Transfer_ipc = 0;
 	}
 
 	// force context switch after ISR finishes -> switching to ethernet task
@@ -208,8 +221,21 @@ u32 Apu_IpiInit(XIpiPsu *IntcInst_IPI_Ptr,u16 DeviceId)
 			return XST_FAILURE;
 		}
 
+	// Enable reception of IPIs from R5
 	XIpiPsu_InterruptEnable(IntcInst_IPI_Ptr, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
 
 	xil_printf("APU: APU_IpiInit: Done\r\n");
 	return XST_SUCCESS;
+}
+
+
+void Send_Command_to_RPU(u32 *msgBuf, u8 msgLength){
+	u32 status;
+	// Write message with command and parameters
+	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, msgBuf, msgLength, XIPIPSU_BUF_TYPE_MSG);
+	// test interrupt
+	status = XIpiPsu_TriggerIpi(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
+	if(status != (u32)XST_SUCCESS) {
+		xil_printf("APU: IPI Trigger failed\r\n");
+	}
 }

@@ -52,6 +52,8 @@ extern DS_Data Global_Data;
 
 _Bool bIpcInterrupt = false;
 
+u32 js_mem_address;
+
 enum JS_StateMachine_R5 R5_Javascope_State = JSSM_IDLE;
 
 //==============================================================================================================================================================
@@ -101,13 +103,9 @@ void ISR_Control(void *data)
 
 	switch(R5_Javascope_State){
 	case JSSM_IDLE:
-		// Update JavaScope
-		JavaScope_update(&Global_Data);
+		// No need to update JavaScope since it is not connected
 		break;
 	case JSSM_WRITE:
-		// Update JavaScope
-		JavaScope_update(&Global_Data);
-		break;
 	case JSSM_BUSY_ARMED:
 		// Update JavaScope
 		JavaScope_update(&Global_Data);
@@ -268,6 +266,7 @@ u32 Rpu_IpiInit(u16 DeviceId)
 			return XST_FAILURE;
 		}
 
+	// Enable reception of IPIs from A53
 	XIpiPsu_InterruptEnable(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
 
 	xil_printf("RPU: RPU_IpiInit: Done\r\n");
@@ -337,12 +336,13 @@ void Transfer_ipc_Intr_Handler(void *data)
 	XIpiPsu_ClearInterruptStatus(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
 }
 
-void Parse_Ipc_Message(){
-	u32 status, respBuf[3] = {0};
+void Parse_Ipc_Message()
+{
+	u32 status, msgBuf[3] = {0};
 
-	status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, respBuf,3U, XIPIPSU_BUF_TYPE_RESP);
+	status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, msgBuf, IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_MSG);
 	if(status == (u32)XST_SUCCESS) {
-		switch(respBuf[0]){
+		switch(msgBuf[0]){
 		case JSCMD_NUM_CHANNELS:
 			if (R5_Javascope_State == JSSM_IDLE){
 				// update number of channels
@@ -353,15 +353,18 @@ void Parse_Ipc_Message(){
 			case JSSM_IDLE:
 				xil_printf("RPU: State Machine - IDLE to WRITE\r\n");
 				R5_Javascope_State = JSSM_WRITE;
-				//update memory address
+				// update current memory address
+				js_mem_address = msgBuf[1];
 				break;
 			case JSSM_WRITE:
 				xil_printf("RPU: State Machine - WRITE to BUSY ARMED\r\n");
 				R5_Javascope_State = JSSM_BUSY_ARMED;
 				//update next memory address
+				js_mem_address = msgBuf[1];
 				break;
 			case JSSM_BUSY_ARMED:
 				//replace next memory address
+				js_mem_address = msgBuf[1];
 				break;
 			default:
 				break;

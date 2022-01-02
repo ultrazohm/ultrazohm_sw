@@ -18,6 +18,8 @@
 
 #include "../main.h"
 
+extern u32 js_mem_address;
+
 void Transfer_ipc_Intr_Handler(void *baseaddr_p);						// ISR von Timer-Control
 u32 Rpu_IpiHandler(XIpiPsu *IpiInstPtr);
 int Initialize_InterruptHandler();

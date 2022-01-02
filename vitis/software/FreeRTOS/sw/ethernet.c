@@ -31,7 +31,7 @@ extern QueueHandle_t js_queue;
 
 int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
-
+u32 js_mem_address = MEM_SHARED_START;
 
 //==============================================================================================================================================================
 void print_echo_app_header()
@@ -59,6 +59,10 @@ void process_request_thread(void *p)
 	int clientfd = (int)p;
 	int nread = 0;
 	int nwrote = 0;
+	u32 msgBuf[IPI_A53toR5_MSG_LEN] = {JSCMD_WRITE, js_mem_address, 0};
+
+	// make RPU write control data in the shared memory
+	Send_Command_to_RPU(msgBuf, IPI_A53toR5_MSG_LEN);
 
 	xil_printf("APU: Javascope connected 0x%x\n", clientfd);
 	js_connection_established = clientfd;
@@ -146,7 +150,9 @@ void process_request_thread(void *p)
 			js_connection_established = 0;
 		}
 	}
-
+	msgBuf[0] = JSCMD_STOP;
+	msgBuf[1] = msgBuf[2] = 0;
+	Send_Command_to_RPU(msgBuf, IPI_A53toR5_MSG_LEN);
 	// close connection
 	close(clientfd);
 	js_connection_established = 0;

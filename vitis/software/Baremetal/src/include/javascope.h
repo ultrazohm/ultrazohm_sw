@@ -16,6 +16,7 @@
 #ifndef INCLUDE_JAVASCOPE_H_
 #define INCLUDE_JAVASCOPE_H_
 
+#include "../main.h"
 #include "ipc_ARM.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 #include "APU_RPU_shared.h"
@@ -131,6 +132,7 @@ enum JS_StateMachine_R5
 	JSSM_BUSY_ARMED
 };
 
+extern u32 js_mem_address;
 
 int JavaScope_initalize(DS_Data* data);
 void JavaScope_update(DS_Data* data);

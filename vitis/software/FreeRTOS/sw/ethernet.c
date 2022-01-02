@@ -23,6 +23,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "APU_RPU_shared.h"
+#include "../include/isr.h"
 
 #include "../main.h"
 

@@ -28,7 +28,7 @@ int Initialize_Interrupts(u16 DeviceId);		//Init Hardware for ISR
 u32 Apu_GicInit(XScuGic *IntcInstPtr, u32 IntId, Xil_ExceptionHandler Handler,void *PeriphInstPtr);
 u32 Apu_IpiInit(XIpiPsu *IntcInst_IPI_Ptr,u16 DeviceId);	//Init Hardware for IPI-ISR
 int InterruptSystemSetup(XScuGic *XScuGicInstancePtr);			// Init InterruptHandler for ISR
-
+void Send_Command_to_RPU(u32 *msgBuf, u8 msgLength);
 
 
 

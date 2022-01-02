@@ -18,9 +18,6 @@
 #include "../include/javascope.h"
 #include "xil_cache.h"
 
-// IPI Messaging System R5 <-> A53
-#define IPI_A53toR5_MSG_LEN		3U
-
 //Variables for JavaScope
 static Oszi_to_ARM_Data_shared_struct ControlData;
 

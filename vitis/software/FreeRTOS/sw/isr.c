@@ -27,7 +27,6 @@
 
 
 #define IPI_HEADER			0x1E0000 /* 1E - Target Module ID */
-#define IPI_A53toR5_MSG_LEN		3U
 
 Oszi_to_ARM_Data_shared_struct ControlData;
 

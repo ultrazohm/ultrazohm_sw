@@ -56,8 +56,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)js_mem_address;
 
 	int status;
-//	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0,0,XST_SUCCESS};
-	static u32 RespBuf[IPI_A53toR5_MSG_LEN] = {JSCMD_WRITE, 0, 0};
+	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0,0,XST_SUCCESS};
+	u32 msgBuf[IPI_A53toR5_MSG_LEN] = {JSCMD_WRITE, 0, 0};
 	BaseType_t xHigherPriorityTaskWoken;
 
 	// flush cache of shared memory
@@ -74,26 +74,18 @@ void Transfer_ipc_Intr_Handler(void *data)
 			js_queue_full++;
 			// xil_printf("OsziData_queue is full\r\n");
 		}
+
+		// Write message for acknowledge of the interrupt to RPU and command it to write new data
+		msgBuf[1] = js_mem_address;
+		Send_Command_to_RPU(msgBuf, IPI_A53toR5_MSG_LEN);
 	}
 
-//	RespBuf[0] = (u32)ControlData.id;
-//	RespBuf[1] = (u32)ControlData.value;
-//	RespBuf[2] = (u32)ControlData.digInputs;
-//
-//
-//	// Write message for acknowledge of the interrupt to RPU
-//	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, RespBuf, IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_RESP);
-//	RespBuf[0]++;
-//	if (RespBuf[0] > JSCMD_STOP){
-//		RespBuf[0] = JSCMD_NUM_CHANNELS;
-//	}
+	RespBuf[0] = (u32)ControlData.id;
+	RespBuf[1] = (u32)ControlData.value;
+	RespBuf[2] = (u32)ControlData.digInputs;
 
-//	RespBuf[0] = JSCMD_WRITE;
-	RespBuf[1] = js_mem_address;
-//	RespBuf[2] = 0;
-
-	// Write message for acknowledge of the interrupt to RPU and command it to write new data
-	Send_Command_to_RPU(RespBuf, IPI_A53toR5_MSG_LEN);
+	// Write message for acknowledge of the interrupt to RPU
+	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, RespBuf, IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_RESP);
 
 	// Valid IPI. Clear the appropriate bit in the respective ISR
 	XIpiPsu_ClearInterruptStatus(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
@@ -233,7 +225,10 @@ void Send_Command_to_RPU(u32 *msgBuf, u8 msgLength){
 	u32 status;
 	// Write message with command and parameters
 	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, msgBuf, msgLength, XIPIPSU_BUF_TYPE_MSG);
-	// test interrupt
+	if(status != (u32)XST_SUCCESS) {
+		xil_printf("APU: IPI Write Message failed\r\n");
+	}
+	// Trigger interrupt
 	status = XIpiPsu_TriggerIpi(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("APU: IPI Trigger failed\r\n");

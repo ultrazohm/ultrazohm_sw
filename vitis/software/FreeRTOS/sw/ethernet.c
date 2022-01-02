@@ -32,7 +32,7 @@ extern QueueHandle_t js_queue;
 
 int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
-u32 js_mem_address = MEM_SHARED_START;
+u32 js_mem_address = (u32)MEM_SHARED_START;
 
 //==============================================================================================================================================================
 void print_echo_app_header()
@@ -151,9 +151,11 @@ void process_request_thread(void *p)
 			js_connection_established = 0;
 		}
 	}
+	// Send command to RPU to stop writing data to shared memory
 	msgBuf[0] = JSCMD_STOP;
 	msgBuf[1] = msgBuf[2] = 0;
 	Send_Command_to_RPU(msgBuf, IPI_A53toR5_MSG_LEN);
+
 	// close connection
 	close(clientfd);
 	js_connection_established = 0;

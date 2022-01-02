@@ -168,8 +168,8 @@ int main(void) {
 
 		/* IPC interrupt */
 		if (bIpcInterrupt) {
-			bIpcInterrupt = false;
 			Parse_Ipc_Message();
+			bIpcInterrupt = false;
 		}
 
 		i_LifeCheck++; //LiveCheck for the main while-1 loop

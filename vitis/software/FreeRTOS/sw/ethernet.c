@@ -55,7 +55,7 @@ void process_request_thread(void *p)
 	struct javascope_data_t javascope_data_sending = {0};
 	NetworkSendStruct nwsend = {0};
 	char recv_buf[2048] = {0};
-	struct APU_to_RPU_t* Received_Data;
+	struct APU_to_RPU_t* Received_Data = {0};
 
 	int clientfd = (int)p;
 	int nread = 0;

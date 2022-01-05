@@ -21,12 +21,12 @@
     <booleanAttribute key="com.xilinx.sdk.tcf.debug.uiprogram.fpga" value="false"/>
     <stringAttribute key="com.xilinx.sdk.tcf.debug.uiproject.name" value="FreeRTOS"/>
     <stringAttribute key="com.xilinx.sdk.tcf.debug.uips.device" value="Auto Detect"/>
-    <booleanAttribute key="com.xilinx.sdk.tcf.debug.uips7.init" value="false"/>
+    <booleanAttribute key="com.xilinx.sdk.tcf.debug.uips7.init" value="true"/>
     <booleanAttribute key="com.xilinx.sdk.tcf.debug.uips7.post" value="false"/>
     <booleanAttribute key="com.xilinx.sdk.tcf.debug.uireset.apu" value="false"/>
     <booleanAttribute key="com.xilinx.sdk.tcf.debug.uireset.lock.step" value="false"/>
     <booleanAttribute key="com.xilinx.sdk.tcf.debug.uireset.rpu" value="false"/>
-    <booleanAttribute key="com.xilinx.sdk.tcf.debug.uireset.system" value="false"/>
+    <booleanAttribute key="com.xilinx.sdk.tcf.debug.uireset.system" value="true"/>
     <stringAttribute key="com.xilinx.sdk.tcf.debug.uitarget.peer" value="Local"/>
     <stringAttribute key="com.xilinx.sdx.sdsoc.debug.ui.active.build.config" value="Debug"/>
     <stringAttribute key="com.xilinx.sdx.sdsoc.debug.ui.application.type" value=""/>

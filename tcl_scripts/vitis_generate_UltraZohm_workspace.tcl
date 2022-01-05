@@ -72,8 +72,16 @@ set FOLDER_PATH [pwd]
 cd $WS_PATH
 
 set PLATFORM_NAME 	UltraZohm
-set XSA_FOLDER 		$FOLDER_PATH/vivado_exported_xsa
+set XSA_FOLDER 	[file join $FOLDER_PATH vivado_exported_xsa]
 set EXPORT_FOLDER [file join $FOLDER_PATH software]
+set SHARED_FOLDER [file join $EXPORT_FOLDER shared]
+
+
+set filename_Baremetal [file join $EXPORT_FOLDER Baremetal/src]
+set filename_FreeRTOS  [file join $EXPORT_FOLDER FreeRTOS]
+set filename_FSBL      [file join $EXPORT_FOLDER FSBL]
+set filename_FSBLelf   [file join $EXPORT_FOLDER BootImage]
+
 puts "Path to exports to be imported:"
 puts stdout $EXPORT_FOLDER
 
@@ -107,7 +115,7 @@ platform write
 bsp config lwip_dhcp true
 platform write 
 # increase heap size of freertos, to fix javascope glitches
-bsp config total_heap_size  20000000 
+bsp config total_heap_size  200000000
 platform write 
 
 puts "Info:(UltraZohm) regenerate FreeRTOS BSP"
@@ -156,18 +164,18 @@ platform generate
 #Application Baremetal R5_0
 #####################################################
 puts "Info:(UltraZohm) create Baremetal Application"
-# create application
+# create application 
 app create -name Baremetal -template {Empty Application} -platform $PLATFORM_NAME -domain Baremetal_domain
 
 puts "Info:(UltraZohm) import Baremetal Application sources"
-#import sources 
-set filename_Baremetal [file join $EXPORT_FOLDER Baremetal/src]
-puts "Path to Baremetal source files:"
-puts stdout $filename_Baremetal
+# import sources to baremetal project
 # first the source files are linked
 importsources -name Baremetal -path $filename_Baremetal -soft-link
-#link to linker-script instead of copying it
+# add shared folder 
+importsources -name Baremetal -path $SHARED_FOLDER -soft-link
+# link to linker-script instead of copying it
 app config -name Baremetal -set linker-script $filename_Baremetal/lscript.ld
+
 #add math library to linker option
 app config -name Baremetal -add  libraries m
 
@@ -175,19 +183,27 @@ app config -name Baremetal -add  libraries m
 #Application FreeRTOS A53_0
 ####################################################
 puts "Info:(UltraZohm) create FreeRTOS Application"
-# create application
+#create application 
 app create -name FreeRTOS -template {Empty Application} -platform $PLATFORM_NAME -domain FreeRTOS_domain
 
 puts "Info:(UltraZohm) import FreeRTOS Application sources"
 #import sources to freertos project
 
-set filename_FreeRTOS [file join $EXPORT_FOLDER FreeRTOS]
 puts "Path to FreeRTOS source files:"
 puts stdout $filename_FreeRTOS
+
 # first the source files are linked
 importsources -name FreeRTOS -path $filename_FreeRTOS -soft-link
+importsources -name FreeRTOS -path $SHARED_FOLDER -soft-link
 #link to linker-script instead of copying it
 app config -name FreeRTOS -set linker-script $filename_FreeRTOS/lscript.ld
+
+# add shared folder to build directory
+# this is a bit of hack, since it is not possible to add a compiler directory using the TCL script
+# we have to add it with -I"path" which results in the same
+# but in Vitis in the compiler settings, it is listed under miscellaneous instead of directories
+app config -name Baremetal compiler-misc -I"$SHARED_FOLDER"
+app config -name FreeRTOS compiler-misc -I"$SHARED_FOLDER"
 
 # set optimization level 
 app config -name FreeRTOS -set compiler-optimization {Optimize most (-O3)}
@@ -200,7 +216,6 @@ app config -name Baremetal -set compiler-optimization {Optimize more (-O2)}
 #app create -name FSBL -template {Zynq MP FSBL} -platform $PLATFORM_NAME -domain FSBL_domain
 ##app create -name FSBL -template {Empty Application} -platform $PLATFORM_NAME -domain FSBL_domain
 #
-#set filename_FSBL [file join $EXPORT_FOLDER FSBL]
 #puts "Path to FSBL:"
 #puts stdout $filename_FSBL
 #
@@ -211,7 +226,7 @@ app config -name Baremetal -set compiler-optimization {Optimize more (-O2)}
 
 puts "Info:(UltraZohm) add standard FSBL.elf"
 platform config -remove-boot-bsp
-platform config -fsbl-elf $FOLDER_PATH/software/FSBL.elf 
+platform config -fsbl-elf $filename_FSBLelf/FSBL.elf 
 platform write 
 
 #Clean all

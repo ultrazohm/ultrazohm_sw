@@ -103,3 +103,4 @@ set_property IOSTANDARD LVCMOS18 [get_ports Dig_27_Ch1]
 set_property IOSTANDARD LVCMOS18 [get_ports Dig_28_Ch1]
 set_property IOSTANDARD LVCMOS18 [get_ports Dig_29_Ch1]
 set_property IOSTANDARD LVCMOS18 [get_ports Dig_30_Ch1]
+

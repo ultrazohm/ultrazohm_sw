@@ -76,6 +76,7 @@ The online version (docs.ultrazohm.com) is always the documentation of the curre
     |   ├── requirements.txt
     |   └── Makefile
     ├── ip_core/
+    ├── javascope/
     ├── tcl_scripts/
     |   ├── vivado_export_xsa.tcl
     │   ├── vitis_generate_UltraZohm_workspace.tcl

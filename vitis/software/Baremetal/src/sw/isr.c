@@ -1,12 +1,12 @@
 /******************************************************************************
 * Copyright 2021 Eyke Liegmann, Tobias Schindler, Sebastian Wendel
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,17 +28,15 @@
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 
-
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
 
 
 //Initialize the variables for the ADC measurement
-u32 		XADC_Buf[RX_BUFFER_SIZE]; //Test ADC
-uint32_t 		ADC_RAW_Sum_1 = 0.0;
+uint32_t 	ADC_RAW_Sum_1 = 0.0;
 float 	ADC_RAW_Offset_1 = 0.0;
-int 		i_CountADCinit =0, MessOnce=0, CountCurrentError =0;
-_Bool     initADCdone = false;
+int 	i_CountADCinit =0, CountCurrentError =0;
+_Bool   initADCdone = false;
 
 //Initialize the Interrupt structure
 XScuGic INTCInst;  		//Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -47,7 +45,6 @@ XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible 
 //Initialize the Timer structure
 XTmrCtr Timer_Interrupt;
 
-float sin1amp=1.0;
 //Global variable structure
 extern DS_Data Global_Data;
 
@@ -281,7 +278,6 @@ static void ReadAllADC(){
 			initADCdone = true;
 			Global_Data.cw.ControlReference = CurrentControl; //default
 			Global_Data.cw.ControlMethod = fieldOrientedControl; //default
-			ADC_Clear_Offset();
 		}
 	}else{
 		ADC_readCardALL(&Global_Data);
@@ -295,7 +291,6 @@ static void CheckForErrors(){
 		if ((Global_Data.av.I_U > Global_Data.mrp.motorMaximumCurrentContinuousOperation) || (Global_Data.av.I_V > Global_Data.mrp.motorMaximumCurrentContinuousOperation) || (Global_Data.av.I_W > Global_Data.mrp.motorMaximumCurrentContinuousOperation)){
 			CountCurrentError++;
 			if(CountCurrentError > 10){ //Only if the error is available for at least 10 cycles
-		 // if(CountCurrentError > 20000){ //Only if the error is available for at least 2 seconds @100us ISR-cycle
 				Global_Data.ew.maximumContinuousCurrentExceeded = true; //Current error detected -> errors are handled in the main.c
 			}
 		}else{

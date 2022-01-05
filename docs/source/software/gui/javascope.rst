@@ -4,22 +4,21 @@
 JavaScope
 =========
 
+The JavaScope is located in the main ultrazohm_software repository in the folder  ``ultrazohm_sw\javascope``.
+The folder contains the following files
+
+- ``javascope_run.bat`` is the executable for Windows, start by double-clicking 
+- ``javascope.h`` is the same header file as in Baremetal project, modify this to add variables
+- ``OHMrichterGUI.jar`` is the binary build file of the JavaScope, the sources are in a separate repository
+- ``properties.ini`` is the configuration file that is loaded when starting the JavaScope
+- ``JS_plot_data.m`` is a Matlab script, that reads and plots the measurement data 
+- ``lib`` is the folder including the required Java libraries
+
+..	image:: ./images_javascope/folder_structure.jpg
+
+..	image:: ./images_javascope/folder_structure_linux.jpg
 
 
-Idea
-----
-
-..	image:: ./images_javascope/gui0.png
-
-1. In Blue is the executable Java File shown.
-
-2. In Red is the properties file, where the default values of the JavaScope can be defined.
-
-3. In Black is a copy from the ``javascope`` header file, which you can find in Vitis. If you add new variables for transmission in Vitis, just copy the ``javascope`` file from Vitis afterwards to this JavaScope folder.
-
-4. In pink is a log file which is generated after each execution of the Java file. In this file you can save the measurements.
-
-5. The lib folder includes Java libraries.
 
 
 	
@@ -124,21 +123,13 @@ The Setup Scope page is used to adjust the scope settings during operation.
 	 
     Do not forget to press the ``sendSelectData`` button always if you want to change them! 
 
-2. Each channel can have a specific precision.
-     
-	a. Changing the number format, allows the user to display the received values less or more accurate in the scope.
-	 
-	b. If the number format is chosen to small, an overflow occurs and the signal will displayed wrong.
-	 
-    Do not forget to press the ``sendPrecision`` button always if you want to change them!
-
-3. Each channel can have a specific scale factor.
+#. Each channel can have a specific scale factor.
      
 	a. The scale factor is comparable to the scale factor of an oscilloscope. It changes the value per grid unit.
 	 
     Do not forget to press the ``setScale`` button always if you want to change the scaling!
 
-4. Each channel can have a specific offset.
+#. Each channel can have a specific offset.
      
 	a. The offset factor is comparable to the offset factor of an oscilloscope. It allows to show just the change on the top of a signal.
 	 
@@ -149,13 +140,12 @@ Known issues
 ------------------------
 .. warning::
    * If the Java Scope is distorted or the font is not readable, this may is due to an old Java version. 
-   * If this is the case, just update you local Java version. 
+   * If this is the case, just update you local Java version, as described in the **Install** section.
 
 
 See also
 """""""""""""""
-* :download:`Java <https://www.java.com/de/download/>`
-* :download:`Java Scope on Bitbucket <https://bitbucket.org/ultrazohm/javascope_standalone/src/develop/>`
+
 
 Designed by
 """""""""""

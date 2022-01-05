@@ -61,3 +61,25 @@ The I/O ports D1_OUT[0..5] are routed to D1.
     :width: 500px
 
     I/O port D1_out[0..5] at X6 with DIG_IO_01.._06
+
+
+Default constraints of analog adapter cards A1, A2, A3
+******************************************************
+
+The following table lists the mapping in the default Vivado project (see :ref:`global_configuration`) of the carrier board with the ADC IP-Core (:ref:`ipCore_LTC2311_v3`) and the ADC adapter card (:ref:`Analog_LTC2311_16_v3`).
+
+.. csv-table:: A1 mapping
+    :file: a1_constraints.csv
+    :widths: 10 10 10
+    :header-rows: 1
+
+.. csv-table:: A2 mapping
+    :file: a2_constraints.csv
+    :widths: 10 10 10
+    :header-rows: 1
+
+.. csv-table:: A3 mapping
+    :file: a3_constraints.csv
+    :widths: 10 10 10
+    :header-rows: 1
+

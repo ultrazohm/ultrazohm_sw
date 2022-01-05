@@ -16,6 +16,12 @@
 
 
 #include "uz_speedcontrol.h"
+#include "../uz_HAL.h"
+#include "../uz_math_constants.h"
+#include "../uz_signals/uz_signals.h"
+#include <math.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
 static struct uz_dq_t uz_SpeedControl_field_weakening(struct uz_PMSM_t config_PMSM, float id_ref_Ampere, float omega_el_rad_per_sec, float V_dc_volts);
 static float uz_SpeedControl_decide_id_ref(float I_max, float id_ref_Ampere, float id_field_weakening_Ampere, bool fw_flag);
@@ -38,7 +44,7 @@ struct uz_dq_t uz_SpeedControl_sample(uz_PI_Controller* self, float omega_el_rad
     uz_assert(config_PMSM.Psi_PM_Vs >= 0.0f);
     uz_assert(V_dc_volts > 0.0f);
     struct uz_dq_t i_output_Ampere = {0};
-	float omega_el_ref_rad_per_sec = (n_ref_rpm * 2.0f * M_PI * config_PMSM.polePairs) / 60.0f;
+	float omega_el_ref_rad_per_sec = (n_ref_rpm * 2.0f * UZ_PIf * config_PMSM.polePairs) / 60.0f;
     struct uz_dq_t i_field_weakening_Ampere = uz_SpeedControl_field_weakening(config_PMSM, id_ref_Ampere, omega_el_rad_per_sec, V_dc_volts);
 	i_output_Ampere.d = i_field_weakening_Ampere.d;
     uz_PI_Controller_update_limits(self, i_field_weakening_Ampere.q, -i_field_weakening_Ampere.q);

@@ -22,19 +22,16 @@
 #include "xil_printf.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "APU_RPU_shared.h"
 
 #include "../main.h"
 
-extern ARM_to_Oszi_Data_shared_struct OsziData_Shadow;
-extern Oszi_to_ARM_Data_shared_struct ControlData;
+extern QueueHandle_t js_queue;
+extern struct APU_to_RPU_t ControlData;
 
-extern QueueHandle_t OsziData_queue;
-extern const int OSZI_QUEUE_RECEIVE_TICKS_WAIT;
+int js_connection_established = 0;
+int i_LifeCheck_process_Ethernet = 0;
 
-NetworkSendStruct nwsend;
-
-Xint16 i_LifeCheck_process_Ethernet =0, TransferSendAllowed=0;
-char recv_buf[2048];
 
 //==============================================================================================================================================================
 void print_echo_app_header()
@@ -55,76 +52,51 @@ void print_echo_app_header()
  *---------------------------------------------------------------------------*/
 void process_request_thread(void *p)
 {
+	struct javascope_data_t javascope_data_sending = {0};
+	NetworkSendStruct nwsend = {0};
+	char recv_buf[2048] = {0};
+	struct APU_to_RPU_t* Received_Data = {0};
+
 	int clientfd = (int)p;
-	int nread, nwrote;
-	int foo;
+	int nread = 0;
+	int nwrote = 0;
 
-	nwsend.status = 0x00;
-
-	for(foo=0; foo<NETWORK_SEND_FIELD_SIZE; foo++){
-		nwsend.slowDataContent[foo] = 0;
-		nwsend.val_01[foo] = 0;
-		nwsend.val_02[foo] = 0;
-		nwsend.val_03[foo] = 0;
-		nwsend.val_04[foo] = 0;
-		nwsend.val_05[foo] = 0;
-		nwsend.val_06[foo] = 0;
-		nwsend.val_07[foo] = 0;
-		nwsend.val_08[foo] = 0;
-		nwsend.val_09[foo] = 0;
-		nwsend.val_10[foo] = 0;
-		nwsend.val_11[foo] = 0;
-		nwsend.val_12[foo] = 0;
-		nwsend.val_13[foo] = 0;
-		nwsend.val_14[foo] = 0;
-		nwsend.val_15[foo] = 0;
-		nwsend.val_16[foo] = 0;
-		nwsend.val_17[foo] = 0;
-		nwsend.val_18[foo] = 0;
-		nwsend.val_19[foo] = 0;
-		nwsend.val_20[foo] = 0;
-		nwsend.slowDataID[foo] = 0;
-	}
-
-	xil_printf("tcpWorker: start clientfd = 0x%x\n", clientfd);
+	xil_printf("APU: Javascope connected 0x%x\n", clientfd);
+	js_connection_established = clientfd;
 
 	while (1) {
 
-		u32_t command=0;
-		u8_t i=0;
-
-		for (i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
+		for (size_t i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
 
 			// Take one element from queue
-			// xQueueReceive( QueueHandle_t,  *pvBuffer, xTicksToWait)
 			// The maximum amount of time the task should block waiting for an item to receive should the queue be empty at the time of the call.
-			xQueueReceive(OsziData_queue,&OsziData_Shadow, OSZI_QUEUE_RECEIVE_TICKS_WAIT);
+			xQueueReceive(js_queue, &javascope_data_sending, JS_QUEUE_RECEIVE_TICKS2WAIT);
 
-			nwsend.val_01[i] 	= OsziData_Shadow.val[0];
-			nwsend.val_02[i] 	= OsziData_Shadow.val[1];
-			nwsend.val_03[i] 	= OsziData_Shadow.val[2];
-			nwsend.val_04[i]  	= OsziData_Shadow.val[3];
-			nwsend.val_05[i]  	= OsziData_Shadow.val[4];
-			nwsend.val_06[i]  	= OsziData_Shadow.val[5];
-			nwsend.val_07[i] 	= OsziData_Shadow.val[6];
-			nwsend.val_08[i] 	= OsziData_Shadow.val[7];
-			nwsend.val_09[i] 	= OsziData_Shadow.val[8];
-			nwsend.val_10[i] 	= OsziData_Shadow.val[9];
-			nwsend.val_11[i]  	= OsziData_Shadow.val[10];
-			nwsend.val_12[i]  	= OsziData_Shadow.val[11];
-			nwsend.val_13[i]  	= OsziData_Shadow.val[12];
-			nwsend.val_14[i] 	= OsziData_Shadow.val[13];
-			nwsend.val_15[i] 	= OsziData_Shadow.val[14];
-			nwsend.val_16[i] 	= OsziData_Shadow.val[15];
-			nwsend.val_17[i] 	= OsziData_Shadow.val[16];
-			nwsend.val_18[i] 	= OsziData_Shadow.val[17];
-			nwsend.val_19[i] 	= OsziData_Shadow.val[18];
-			nwsend.val_20[i] 	= OsziData_Shadow.val[19];
-			nwsend.slowDataContent[i] 	= OsziData_Shadow.slowDataContent;
-			nwsend.slowDataID[i] 		= OsziData_Shadow.slowDataID;
+			// copy data into nwsend struct
+			nwsend.val_01[i] 	= javascope_data_sending.scope_ch[0];
+			nwsend.val_02[i] 	= javascope_data_sending.scope_ch[1];
+			nwsend.val_03[i] 	= javascope_data_sending.scope_ch[2];
+			nwsend.val_04[i]  	= javascope_data_sending.scope_ch[3];
+			nwsend.val_05[i]  	= javascope_data_sending.scope_ch[4];
+			nwsend.val_06[i]  	= javascope_data_sending.scope_ch[5];
+			nwsend.val_07[i] 	= javascope_data_sending.scope_ch[6];
+			nwsend.val_08[i] 	= javascope_data_sending.scope_ch[7];
+			nwsend.val_09[i] 	= javascope_data_sending.scope_ch[8];
+			nwsend.val_10[i] 	= javascope_data_sending.scope_ch[9];
+			nwsend.val_11[i]  	= javascope_data_sending.scope_ch[10];
+			nwsend.val_12[i]  	= javascope_data_sending.scope_ch[11];
+			nwsend.val_13[i]  	= javascope_data_sending.scope_ch[12];
+			nwsend.val_14[i] 	= javascope_data_sending.scope_ch[13];
+			nwsend.val_15[i] 	= javascope_data_sending.scope_ch[14];
+			nwsend.val_16[i] 	= javascope_data_sending.scope_ch[15];
+			nwsend.val_17[i] 	= javascope_data_sending.scope_ch[16];
+			nwsend.val_18[i] 	= javascope_data_sending.scope_ch[17];
+			nwsend.val_19[i] 	= javascope_data_sending.scope_ch[18];
+			nwsend.val_20[i] 	= javascope_data_sending.scope_ch[19];
+			nwsend.slowDataContent[i] 	= javascope_data_sending.slowDataContent;
+			nwsend.slowDataID[i] 		= javascope_data_sending.slowDataID;
 		}
-
-		nwsend.status = OsziData_Shadow.status_BareToRTOS;
+		nwsend.status = javascope_data_sending.status;
 
 		// At this point, Ethernet Package is full and ready to be sent
 		i_LifeCheck_process_Ethernet++;
@@ -135,42 +107,45 @@ void process_request_thread(void *p)
 		// write the data -> handle request /
 		// The data is sent here
 		if ((nwrote = write(clientfd, &nwsend, sizeof(nwsend))) < 0) {
-			xil_printf("%s: ERROR responding to client echo request. received = %d, written = %d\r\n",
+			xil_printf("APU: %s: ERROR responding to client echo request. received = %d, written = %d\r\n",
 			__FUNCTION__, nread, nwrote);
-			xil_printf("Closing socket %d\r\n", clientfd);
+			xil_printf("APU: Closing socket %d\r\n", clientfd);
+			js_connection_established = 0;
 			break;
 		}
-		asm(" nop");
+		asm("nop");
 
 		// read a max of RECV_BUF_SIZE bytes from socket /
 		if (nwrote > 0){
 			// read a max of RECV_BUF_SIZE bytes from socket /
-			if ((nread = read(clientfd, (char *)recv_buf, TCPPACKETSIZE)) < 0) {
-				xil_printf("%s: error reading from socket %d, closing socket\r\n", __FUNCTION__, clientfd);
+			nread = read(clientfd, (char *)recv_buf, TCPPACKETSIZE);
+			if (nread < 0) {
+				xil_printf("APU: %s: error reading from socket %d, closing Javascope socket\r\n", __FUNCTION__, clientfd);
+				js_connection_established = 0;
 				break;
 			}
 			//asm(" nop");
-			if (nread == 4){
-				command = *((u32_t*)recv_buf); // cast 4 bytes to Uint32
-				if (command != 0)
-				{
-					ControlData.id = (u16_t)command; 			// Erste 2 Bytes: Commands in Form von Flags/Nummern
-					ControlData.value = (s16_t)(command >> 16);	// Letzte 2 Bytes: Zahlenwert Uebergabe
-				}
+			if ( nread == sizeof(ControlData) ){
+				Received_Data = ((struct APU_to_RPU_t*)recv_buf); // cast received bytes
+				ControlData.id 		= Received_Data->id;
+				ControlData.value 	= Received_Data->value;
 			}
 
 			// break if client closed connection /
 			if (nread <= 0){
 				close(clientfd);
+				js_connection_established = 0;
 				break;
 			}
 		}else{
 			close(clientfd);
+			js_connection_established = 0;
 		}
 	}
 
 	// close connection
 	close(clientfd);
+	js_connection_established = 0;
 	vTaskDelete(NULL);
 }
 
@@ -184,7 +159,8 @@ void process_request_thread(void *p)
  *---------------------------------------------------------------------------*/
 void application_thread()
 {
-	int sock, new_clientfd;
+	int sock;
+	int new_clientfd;
 	struct sockaddr_in address, remote;
 	int size;
 

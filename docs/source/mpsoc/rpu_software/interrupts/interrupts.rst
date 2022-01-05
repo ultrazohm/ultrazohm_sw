@@ -18,9 +18,9 @@ The interrupt trigger is defined in ``uz_global_configuration.h``  by assigning 
 
     
 .. csv-table:: Trigger sources for interrupt
-
    :header: "#","Define name", "Interrupt trigger"
    :widths: 10,20, 20
+   
     "0","Interrupt_2L_max_min","Two-Level PWM Module at **minimum** and **maximum** value of the triangular carrier"
     "1","Interrupt_2L_min","Two-Level PWM Module at **minimum** value of the triangular carrier"
     "2","Interrupt_2L_max","Two-Level PWM Module at **maximum** value of the triangular carrier"

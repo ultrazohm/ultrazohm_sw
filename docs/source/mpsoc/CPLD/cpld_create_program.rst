@@ -47,7 +47,7 @@ Step-by-step
         d_29 pin 70;
 
 
-7. At the end of the file, there the section that defines the logic. In the simplest case, this is just an assignment, in the example below ``fpga_00`` is an input and assigned to the output ``d_00``, and vise-versa for pins ``d_29`` and ``fpga_29``. 
+7. At the end of the file, there is the section that defines the logic. In the simplest case, this is just an assignment, in the example below ``fpga_00`` is an input and assigned to the output ``d_00``, and vice-versa for pins ``d_29`` and ``fpga_29``. 
 
     .. code-block:: 
 
@@ -66,7 +66,7 @@ Step-by-step
         enable_signal = !fpga_26 & !fpga_27 & fpga_28 & fpga_29;
         d_11 = fpga_11 & enable_signal; 
 
-#. Use the following locig to create an interlocking functionality, e.g. for the upper and lower switch of a half-bridge. In this case, the output 
+#. Use the following logic to create an interlocking functionality, e.g. for the upper and lower switch of a half-bridge. In this case, the output 
    
   - ``d_00`` is high when ``fpga_00 = 1`` and ``fpga_01 = 0``
   - ``d_00`` is low in all other cases, e.g. if ``fpga_00 = 1`` and ``fpga_00 = 1``

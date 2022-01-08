@@ -32,7 +32,7 @@ extern QueueHandle_t js_queue;
 
 int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
-u32 js_mem_address = (u32)MEM_SHARED_START;
+u8 js_buff_index = 0;
 
 //==============================================================================================================================================================
 void print_echo_app_header()
@@ -60,7 +60,7 @@ void process_request_thread(void *p)
 	int clientfd = (int)p;
 	int nread = 0;
 	int nwrote = 0;
-	u32 msgBuf[IPI_A53toR5_MSG_LEN] = {JSCMD_WRITE, js_mem_address, 0};
+	u32 msgBuf[IPI_A53toR5_MSG_LEN] = {JSCMD_WRITE, js_mem_address[js_buff_index], 0};
 
 	// make RPU write control data in the shared memory
 	Send_Command_to_RPU(msgBuf, IPI_A53toR5_MSG_LEN);
@@ -101,6 +101,13 @@ void process_request_thread(void *p)
 			nwsend.val_20[i] 	= javascope_data_sending.scope_ch[19];
 			nwsend.slowDataContent[i] 	= javascope_data_sending.slowDataContent;
 			nwsend.slowDataID[i] 		= javascope_data_sending.slowDataID;
+
+//			for(int j=0; j<JS_CHANNELS; j++){
+//				if ((int)javascope_data_sending.scope_ch[j] < (int)(j-2)) {
+//					xil_printf("APU: VALOR ESTRANHO = %d ", (int)(javascope_data_sending.scope_ch[j]*100000));
+//					xil_printf("em j = %d\r\n", j);
+//				}
+//			}
 		}
 		nwsend.status = javascope_data_sending.status;
 

@@ -37,6 +37,8 @@ extern int js_connection_established;
 QueueHandle_t js_queue;
 int js_queue_full = 0;
 
+u32 js_mem_address[JS_NUM_BUFFERS] = {0xFFFF0000, 0xFFFF0080};
+
 int i_LifeCheck_Transfer_ipc;
 
 //Initialize the Interrupt structure
@@ -53,7 +55,7 @@ XScuGic_Config *IntcConfig;
 void Transfer_ipc_Intr_Handler(void *data)
 {
 	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START
-	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)js_mem_address;
+	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)js_mem_address[js_buff_index];
 
 	int status;
 	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0,0,XST_SUCCESS};
@@ -61,7 +63,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	BaseType_t xHigherPriorityTaskWoken;
 
 	// flush cache of shared memory
-	Xil_DCacheFlushRange(js_mem_address, JAVASCOPE_DATA_SIZE_2POW);
+	Xil_DCacheFlushRange(js_mem_address[js_buff_index], JAVASCOPE_DATA_SIZE_2POW);
 
 	// if javascope connection is established
 	if(js_connection_established!=0)
@@ -75,8 +77,15 @@ void Transfer_ipc_Intr_Handler(void *data)
 			// xil_printf("OsziData_queue is full\r\n");
 		}
 
+
+		//Update javascope current buffer
+		js_buff_index++;
+		if(js_buff_index == JS_NUM_BUFFERS){
+			js_buff_index = 0;
+		}
+
 		// Write message for acknowledge of the interrupt to RPU and command it to write new data
-		msgBuf[1] = js_mem_address;
+		msgBuf[1] = js_mem_address[js_buff_index];
 		Send_Command_to_RPU(msgBuf, IPI_A53toR5_MSG_LEN);
 	}
 
@@ -223,6 +232,7 @@ u32 Apu_IpiInit(XIpiPsu *IntcInst_IPI_Ptr,u16 DeviceId)
 
 void Send_Command_to_RPU(u32 *msgBuf, u8 msgLength){
 	u32 status;
+
 	// Write message with command and parameters
 	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, msgBuf, msgLength, XIPIPSU_BUF_TYPE_MSG);
 	if(status != (u32)XST_SUCCESS) {

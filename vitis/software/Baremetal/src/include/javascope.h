@@ -132,7 +132,12 @@ enum JS_StateMachine_R5
 	JSSM_BUSY_ARMED
 };
 
-extern u32 js_mem_address;
+struct js_shared_memory_addr{
+	u32 current_addr;
+	u32 next_addr;
+};
+
+extern struct js_shared_memory_addr js_mem_address;
 
 int JavaScope_initalize(DS_Data* data);
 void JavaScope_update(DS_Data* data);

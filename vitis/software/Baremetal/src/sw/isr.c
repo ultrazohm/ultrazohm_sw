@@ -52,7 +52,7 @@ extern DS_Data Global_Data;
 
 _Bool bIpcInterrupt = false;
 
-u32 js_mem_address;
+struct js_shared_memory_addr js_mem_address;
 
 enum JS_StateMachine_R5 R5_Javascope_State = JSSM_IDLE;
 
@@ -106,9 +106,15 @@ void ISR_Control(void *data)
 		// No need to update JavaScope since it is not connected
 		break;
 	case JSSM_WRITE:
+		// Update JavaScope
+		JavaScope_update(&Global_Data);
+		break;
 	case JSSM_BUSY_ARMED:
 		// Update JavaScope
 		JavaScope_update(&Global_Data);
+		// Update current memory address and change state to JSSM_WRITE
+		js_mem_address.current_addr = js_mem_address.next_addr;
+		R5_Javascope_State = JSSM_WRITE;
 		break;
 	default:
 		break;
@@ -354,17 +360,16 @@ void Parse_Ipc_Message()
 				xil_printf("RPU: State Machine - IDLE to WRITE\r\n");
 				R5_Javascope_State = JSSM_WRITE;
 				// update current memory address
-				js_mem_address = msgBuf[1];
+				js_mem_address.current_addr = msgBuf[1];
 				break;
 			case JSSM_WRITE:
-				xil_printf("RPU: State Machine - WRITE to BUSY ARMED\r\n");
 				R5_Javascope_State = JSSM_BUSY_ARMED;
 				//update next memory address
-				js_mem_address = msgBuf[1];
+				js_mem_address.next_addr = msgBuf[1];
 				break;
 			case JSSM_BUSY_ARMED:
 				//replace next memory address
-				js_mem_address = msgBuf[1];
+				js_mem_address.next_addr = msgBuf[1];
 				break;
 			default:
 				break;
@@ -372,7 +377,7 @@ void Parse_Ipc_Message()
 			break;
 		case JSCMD_CANCEL:
 			if (R5_Javascope_State == JSSM_BUSY_ARMED){
-				// update number of channels
+				// TODO
 			}
 			break;
 		case JSCMD_STOP:

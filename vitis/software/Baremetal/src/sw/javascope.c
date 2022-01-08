@@ -92,7 +92,7 @@ int JavaScope_initalize(DS_Data* data)
 void js_fetchData()
 {
 	// create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START
-	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)js_mem_address;
+	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)js_mem_address.current_addr;
 
 	static int js_cnt_slowData=0;
 	int status;
@@ -116,7 +116,7 @@ void js_fetchData()
 		aux = 0.0;
 	}
 	// flush data cache of shared memory region to make sure shared memory is updated
-	Xil_DCacheFlushRange(js_mem_address, JAVASCOPE_DATA_SIZE_2POW);
+	Xil_DCacheFlushRange(js_mem_address.current_addr, JAVASCOPE_DATA_SIZE_2POW);
 
 	//Send an interrupt to APU
 	status = XIpiPsu_TriggerIpi(&INTCInst_IPI,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);

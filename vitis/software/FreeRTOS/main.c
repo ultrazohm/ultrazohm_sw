@@ -31,6 +31,7 @@
 #include "main.h"
 #include "defines.h"
 #include "include/isr.h"
+#include "../include/xtime_l.h"
 
 size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;
@@ -250,16 +251,20 @@ int main_thread()
 		THREAD_STACKSIZE,
             DEFAULT_THREAD_PRIO);
 
-
+    uint64_t time_start, time_finish;
 #if LWIP_DHCP==1
     while (1) {
 
-	lifecheck_mainThread++;
-	if(lifecheck_mainThread > 2500){
-		lifecheck_mainThread =0;
-	}
+		lifecheck_mainThread++;
+		if(lifecheck_mainThread > 2500){
+			lifecheck_mainThread =0;
+		}
 
-	vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
+		time_start = Get_time_us();
+		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
+		time_finish = Get_time_us();
+		xil_printf("500ms = %lu us\r\n", (time_finish - time_start));
+
 		if (server_netif.ip_addr.addr) {
 			xil_printf("APU: DHCP request success\r\n");
 			print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));
@@ -366,4 +371,14 @@ void can_send_2(void)
 	can_frame_tx.data[1] = tick;
 
 	hal_can_send_frame_blocking(&can_frame_tx);
+}
+
+uint64_t Get_time_us()
+{
+	XTime tCur;
+
+	XTime_GetTime(&tCur);
+	tCur /= (COUNTS_PER_SECOND/1000000);
+	/* Return the time in micro-seconds. */
+	return tCur;
 }

@@ -126,6 +126,7 @@ int main_thread();
 void print_echo_app_header();
 void application_thread();
 void lwip_init();
+uint64_t Get_time_us();
 
 #if CAN_ACTIVE==1
 	void can_send_1(void); 		//CAN interface: Test function for CAN

@@ -32,10 +32,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 	// HANDLE RECEIVED MESSAGE
 	if ( msgId != 0)
 	{
-		uint32_t ADCconvFactor_Hbytes = 0;
-		uint32_t ADCconvFactor_Lbytes = 0;
-		uint32_t ADCconvFactorReadRequest = 0;
-
 		//GENERAL VARIABLES
 		switch (msgId){
 		case 1:
@@ -125,7 +121,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 		case( 220): // SELECT_DATA_CH20_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[19] = js_ch_observable[(uint32_t)value];	}
 			break;
-
 
 		case( 0x01+MOTORCONTROL_OFFSET_bits): // ConverterEnable
 			data->cw.enableSystem = true;

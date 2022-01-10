@@ -16,13 +16,6 @@ typedef struct
 	float theta_offset; //in rad/s
 } ParkTrans_struct;
 
-typedef struct
-{
-	uint16_t id;
-	uint16_t value;
-	uint16_t digInputs;
-} Oszi_to_ARM_Data_shared_struct;
-
 //========================
 typedef enum {
   sector_100 = 0,           //!< E2A = 1, E2B = 0, E2C = 0 //SW: Hall1 =1, Hall2 = 0, Hall3 = 0

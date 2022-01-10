@@ -39,18 +39,12 @@ uz_ParameterID_t* uz_ParameterID_init(void) {
 	uz_assert(self->is_ready == false);
 	instances_counter_ParameterID++;
 	self->is_ready = true;
-	uz_PID_ControlState_t* ControlState = uz_PID_ControlState_init();
-	uz_PID_ElectricalID_t* ElectricalID = uz_PID_ElectricalID_init();
-	uz_PID_TwoMassID_t* TwoMassID = uz_PID_TwoMassID_init();
-	uz_PID_FrictionID_t* FrictionID = uz_PID_FrictionID_init();
-	uz_PID_FluxMapID_t* FluxMapID = uz_PID_FluxMapID_init();
-	uz_PID_OnlineID_t* OnlineID = uz_PID_OnlineID_init();
-	self->ControlState = ControlState;
-	self->ElectricalID = ElectricalID;
-	self->TwoMassID = TwoMassID;
-	self->FrictionID = FrictionID;
-	self->FluxMapID = FluxMapID;
-	self->OnlineID = OnlineID;
+	self->ControlState = uz_PID_ControlState_init();
+	self->ElectricalID = uz_PID_ElectricalID_init();
+	self->TwoMassID = uz_PID_TwoMassID_init();
+	self->FrictionID = uz_PID_FrictionID_init();
+	self->FluxMapID = uz_PID_FluxMapID_init();
+	self->OnlineID = uz_PID_OnlineID_init();
 	return (self);
 }
 

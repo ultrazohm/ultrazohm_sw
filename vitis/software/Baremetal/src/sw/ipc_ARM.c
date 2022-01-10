@@ -711,6 +711,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			PID_Data.PID_TwoMassID_Config.f_max = value;
 			break;
 
+		case(0xFFFF):
+			// this is triggered if the IPI message buffer is read without being written once before (i.e. at startup)
+			break;
+
 		default:
 			break;
 			//uz_assert(0); // unknown command -> throw error

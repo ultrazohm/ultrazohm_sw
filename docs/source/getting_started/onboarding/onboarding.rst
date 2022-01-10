@@ -21,7 +21,7 @@ Please install all of them in the newest version, except for the Xilinx toolchai
 #. Install :ref:`Git`
 #. Install the :ref:`XilinxToolchain`
 #. Install :ref:`vscode_remote_container`
-#. Install latest `Java <https://java.com/de/>`_
+#. :ref:`install_java`
 
 Community & git
 ***************

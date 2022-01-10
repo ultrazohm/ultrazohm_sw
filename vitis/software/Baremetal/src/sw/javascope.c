@@ -147,10 +147,10 @@ void JavaScope_update(DS_Data* data){
 
 	// create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START
 	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
-	struct APU_to_RPU_t Received_Data_from_A53;
+	struct APU_to_RPU_t Received_Data_from_A53 = {0};
 
 	static int js_cnt_slowData=0;
-	int status;
+	int status = XST_SUCCESS;
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
 	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;

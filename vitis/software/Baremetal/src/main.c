@@ -89,8 +89,7 @@ int main(void)
 	Initialize_ARMController(&Global_Data);
 
 	//Experimental Code
-	ParameterID = uz_ParameterID_init(&ControlState, &ElectricalID, &TwoMassID, &FrictionID, &FluxMapID, &OnlineID);
-//	uz_ParameterID_init(&ControlState, &ElectricalID, &TwoMassID, &FrictionID, &FluxMapID, &OnlineID);
+	ParameterID = uz_ParameterID_init();
 	uz_ParameterID_initialize_data_structs(&PID_Data, ParameterID);
 //
 	config_PMSM.R_ph_Ohm = PID_Data.PID_GlobalConfig.PMSM_config.R_ph_Ohm;

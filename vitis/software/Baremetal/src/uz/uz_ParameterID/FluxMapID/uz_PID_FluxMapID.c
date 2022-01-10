@@ -17,12 +17,26 @@
 #if UZ_PARAMETERID_ACTIVE > 0U
 #include "uz_PID_FluxMapID.h"
 
-void uz_PID_FluxMapID_init(uz_PID_FluxMapID_t *self) {
+static size_t instances_counter_PID_FluxMapID = 0;
+
+static uz_PID_FluxMapID_t instances_PID_FluxMapID[UZ_PARAMETERID_ACTIVE] = { 0 };
+
+static uz_PID_FluxMapID_t* uz_PID_FluxMapID_allocation(void);
+
+static uz_PID_FluxMapID_t* uz_PID_FluxMapID_allocation(void) {
+	uz_assert(instances_counter_PID_FluxMapID < UZ_PARAMETERID_ACTIVE);
+	uz_PID_FluxMapID_t* self = &instances_PID_FluxMapID[instances_counter_PID_FluxMapID];
+	instances_counter_PID_FluxMapID++;
+	return (self);
+}
+uz_PID_FluxMapID_t* uz_PID_FluxMapID_init(void) {
+	uz_PID_FluxMapID_t* self = uz_PID_FluxMapID_allocation();
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
 	self->PtrToModelData->outputs = &self->output;
 	FluxMapID_initialize(self->PtrToModelData);
+	return (self);
 }
 
 void uz_PID_FluxMapID_step(uz_PID_FluxMapID_t *self) {

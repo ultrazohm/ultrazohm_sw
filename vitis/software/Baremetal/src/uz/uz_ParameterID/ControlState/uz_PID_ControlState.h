@@ -25,5 +25,5 @@ typedef struct {
 	RT_MODEL_ControlState_t *PtrToModelData;
 } uz_PID_ControlState_t;
 
-void uz_PID_ControlState_init(uz_PID_ControlState_t *self);
+uz_PID_ControlState_t* uz_PID_ControlState_init(void);
 void uz_PID_ControlState_step(uz_PID_ControlState_t *self);

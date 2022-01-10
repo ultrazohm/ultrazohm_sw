@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 #include <stdbool.h>
-
+#include "../../uz_HAL.h"
 #include "ElectricalID_codegen.h"
 
 typedef struct {
@@ -25,5 +25,5 @@ typedef struct {
 	RT_MODEL_ElectricalID_t *PtrToModelData;
 } uz_PID_ElectricalID_t;
 
-void uz_PID_ElectricalID_init(uz_PID_ElectricalID_t *self);
+uz_PID_ElectricalID_t* uz_PID_ElectricalID_init(void);
 void uz_PID_ElectricalID_step(uz_PID_ElectricalID_t *self);

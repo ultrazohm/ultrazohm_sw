@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 #include <stdbool.h>
-
+#include "../../uz_HAL.h"
 #include "TwoMassID_codegen.h"
 
 typedef struct {
@@ -25,5 +25,5 @@ typedef struct {
 	RT_MODEL_TwoMassID_t *PtrToModelData;
 } uz_PID_TwoMassID_t;
 
-void uz_PID_TwoMassID_init(uz_PID_TwoMassID_t *self);
+uz_PID_TwoMassID_t* uz_PID_TwoMassID_init(void);
 void uz_PID_TwoMassID_step(uz_PID_TwoMassID_t *self);

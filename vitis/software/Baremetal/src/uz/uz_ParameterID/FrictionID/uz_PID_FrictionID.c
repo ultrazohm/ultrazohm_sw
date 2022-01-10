@@ -17,12 +17,26 @@
 #if UZ_PARAMETERID_ACTIVE > 0U
 #include "uz_PID_FrictionID.h"
 
-void uz_PID_FrictionID_init(uz_PID_FrictionID_t *self) {
+static size_t instances_counter_PID_FrictionID = 0;
+
+static uz_PID_FrictionID_t instances_PID_FrictionID[UZ_PARAMETERID_ACTIVE] = { 0 };
+
+static uz_PID_FrictionID_t* uz_PID_FrictionID_allocation(void);
+
+static uz_PID_FrictionID_t* uz_PID_FrictionID_allocation(void) {
+	uz_assert(instances_counter_PID_FrictionID < UZ_PARAMETERID_ACTIVE);
+	uz_PID_FrictionID_t* self = &instances_PID_FrictionID[instances_counter_PID_FrictionID];
+	instances_counter_PID_FrictionID++;
+	return (self);
+}
+uz_PID_FrictionID_t* uz_PID_FrictionID_init(void) {
+	uz_PID_FrictionID_t* self = uz_PID_FrictionID_allocation();
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
 	self->PtrToModelData->outputs = &self->output;
 	FrictionID_initialize(self->PtrToModelData);
+	return (self);
 }
 
 void uz_PID_FrictionID_step(uz_PID_FrictionID_t *self) {

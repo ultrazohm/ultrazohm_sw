@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 #include <stdbool.h>
-
+#include "../../uz_HAL.h"
 #include "FrictionID_codegen.h"
 
 typedef struct {
@@ -25,5 +25,5 @@ typedef struct {
 	RT_MODEL_FrictionID_t *PtrToModelData;
 } uz_PID_FrictionID_t;
 
-void uz_PID_FrictionID_init(uz_PID_FrictionID_t *self);
+uz_PID_FrictionID_t* uz_PID_FrictionID_init(void);
 void uz_PID_FrictionID_step(uz_PID_FrictionID_t *self);

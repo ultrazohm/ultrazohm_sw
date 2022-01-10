@@ -17,12 +17,26 @@
 #if UZ_PARAMETERID_ACTIVE > 0U
 #include "uz_PID_TwoMassID.h"
 
-void uz_PID_TwoMassID_init(uz_PID_TwoMassID_t *self) {
+static size_t instances_counter_PID_TwoMassID = 0;
+
+static uz_PID_TwoMassID_t instances_PID_TwoMassID[UZ_PARAMETERID_ACTIVE] = { 0 };
+
+static uz_PID_TwoMassID_t* uz_PID_TwoMassID_allocation(void);
+
+static uz_PID_TwoMassID_t* uz_PID_TwoMassID_allocation(void) {
+	uz_assert(instances_counter_PID_TwoMassID < UZ_PARAMETERID_ACTIVE);
+	uz_PID_TwoMassID_t* self = &instances_PID_TwoMassID[instances_counter_PID_TwoMassID];
+	instances_counter_PID_TwoMassID++;
+	return (self);
+}
+uz_PID_TwoMassID_t* uz_PID_TwoMassID_init(void) {
+	uz_PID_TwoMassID_t* self = uz_PID_TwoMassID_allocation();
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
 	self->PtrToModelData->outputs = &self->output;
 	TwoMassID_initialize(self->PtrToModelData);
+	return (self);
 }
 
 void uz_PID_TwoMassID_step(uz_PID_TwoMassID_t *self) {

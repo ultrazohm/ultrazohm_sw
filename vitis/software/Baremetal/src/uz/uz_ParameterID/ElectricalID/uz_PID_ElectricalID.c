@@ -17,12 +17,26 @@
 #if UZ_PARAMETERID_ACTIVE > 0U
 #include "uz_PID_ElectricalID.h"
 
-void uz_PID_ElectricalID_init(uz_PID_ElectricalID_t *self) {
+static size_t instances_counter_PID_ElectricalID = 0;
+
+static uz_PID_ElectricalID_t instances_PID_ElectricalID[UZ_PARAMETERID_ACTIVE] = { 0 };
+
+static uz_PID_ElectricalID_t* uz_PID_ElectricalID_allocation(void);
+
+static uz_PID_ElectricalID_t* uz_PID_ElectricalID_allocation(void) {
+	uz_assert(instances_counter_PID_ElectricalID < UZ_PARAMETERID_ACTIVE);
+	uz_PID_ElectricalID_t* self = &instances_PID_ElectricalID[instances_counter_PID_ElectricalID];
+	instances_counter_PID_ElectricalID++;
+	return (self);
+}
+uz_PID_ElectricalID_t* uz_PID_ElectricalID_init(void) {
+	uz_PID_ElectricalID_t* self = uz_PID_ElectricalID_allocation();
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
 	self->PtrToModelData->outputs = &self->output;
 	ElectricalID_initialize(self->PtrToModelData);
+	return (self);
 }
 
 void uz_PID_ElectricalID_step(uz_PID_ElectricalID_t *self) {

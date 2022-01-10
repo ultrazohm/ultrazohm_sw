@@ -33,19 +33,18 @@ struct uz_ParameterID_t {
 static size_t instances_counter_ParameterID = 0;
 static uz_ParameterID_t instances_ParameterID[UZ_PARAMETERID_ACTIVE] = { 0 };
 
-uz_ParameterID_t* uz_ParameterID_init(uz_PID_ControlState_t* ControlState, uz_PID_ElectricalID_t *ElectricalID, uz_PID_TwoMassID_t* TwoMassID, uz_PID_FrictionID_t* FrictionID,
-                uz_PID_FluxMapID_t* FluxMapID, uz_PID_OnlineID_t* OnlineID) {
+uz_ParameterID_t* uz_ParameterID_init(void) {
 	uz_assert(instances_counter_ParameterID < UZ_PARAMETERID_ACTIVE);
 	uz_ParameterID_t* self = &instances_ParameterID[instances_counter_ParameterID];
 	uz_assert(self->is_ready == false);
 	instances_counter_ParameterID++;
 	self->is_ready = true;
-	uz_PID_ControlState_init(ControlState);
-	uz_PID_ElectricalID_init(ElectricalID);
-	uz_PID_TwoMassID_init(TwoMassID);
-	uz_PID_FrictionID_init(FrictionID);
-	uz_PID_FluxMapID_init(FluxMapID);
-	uz_PID_OnlineID_init(OnlineID);
+	uz_PID_ControlState_t* ControlState = uz_PID_ControlState_init();
+	uz_PID_ElectricalID_t* ElectricalID = uz_PID_ElectricalID_init();
+	uz_PID_TwoMassID_t* TwoMassID = uz_PID_TwoMassID_init();
+	uz_PID_FrictionID_t* FrictionID = uz_PID_FrictionID_init();
+	uz_PID_FluxMapID_t* FluxMapID = uz_PID_FluxMapID_init();
+	uz_PID_OnlineID_t* OnlineID = uz_PID_OnlineID_init();
 	self->ControlState = ControlState;
 	self->ElectricalID = ElectricalID;
 	self->TwoMassID = TwoMassID;

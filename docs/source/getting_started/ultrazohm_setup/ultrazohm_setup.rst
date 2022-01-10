@@ -34,12 +34,10 @@ Clone the UltraZohm Repositories
 ********************************
 
 - Create a folder ``ultrazohm``
-- Use git bash / terminal to clone the following Repositories
-- Replace ``$BitbucketUsername`` with your Bitbucket user name 
+- Use git bash / terminal to clone the repositories
 
 ::
 
-   git clone https://$BitbucketUsername@bitbucket.org/ultrazohm/cpld_lattice.git
    git clone https://bitbucket.org/ultrazohm/ultrazohm_sw.git
 
 
@@ -48,7 +46,6 @@ After executing the ``git clone`` commands, the following directory structure ex
 ::
 
   ./ultrazohm/
-      cpld_lattice
       ultrazohm_sw
 
 
@@ -167,8 +164,9 @@ A TCL script can be added to the Vivado icons to automate the process of exporti
 Generate the Vitis workspace
 ****************************
 
+- See pictures below for all steps!
 - Navigate to ``~/ultrazohm/ultrazohm_sw/vitis/software/Baremetal/src/uz``
-- Copy the file ``default_uz_global_configuration.h``
+- Copy the file ``default_uz_global_configuration.h`` (same folder)
 - Rename the file to ``uz_global_configuration.h``
 
 .. warning:: Do not rename the file directly! Copy the file and rename the copy!
@@ -179,7 +177,7 @@ Generate the Vitis workspace
 
 - Open Vitis or launch Vitis from Vivado (``Tools -> Launch Vitis IDE``)
 - Choose the workspace
-- Path: ``~/ultrazohm/ultrazohm_sw/vitis/workspace``
+- Path: ``~/ultrazohm_sw/vitis/workspace``
 - Open the XSCT Console in Vitis: ``Windows -> Show view... -> XSCT Console``
 - Type the following commands
 
@@ -217,8 +215,8 @@ Physical Setup of the UltraZohm
 
 .. image:: ./img_physical/physical_setup.png
 
-Debug
-*****
+Program (Debug)
+***************
 
 - Click on the red-marked windows to see the design view in Vivado
 - Click the arrow next to the debug-icon and choose ``Debug Configurations``
@@ -238,13 +236,15 @@ Javascope
 *********
 
 - Setup the network settings of the Ethernet adapter, which is connected to the UltraZohm
-- See :ref:`gui`
-- Start the Javascope
 
 ::
 
    IP: 192.168.1.1
    Subnet-Mask: 255.255.255.0
    Gateway: 192.168.1.233
+
+- See :ref:`gui`
+- Go to the folder
+- Start the Javascope
 
 .. image:: https://images2.imgbox.com/99/98/KSNpOtWT_o.gif

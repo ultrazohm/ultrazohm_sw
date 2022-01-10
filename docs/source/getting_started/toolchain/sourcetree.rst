@@ -1,15 +1,15 @@
 .. _Sourcetree:
 
-==========
-Sourcetree
-==========
+====================
+Sourcetree (git GUI)
+====================
 
-Sourcetree is a git GUI with great compatibility to Bitbucket <https://www.sourcetreeapp.com/>.
+`The Sourcetree application <https://www.sourcetreeapp.com/>`_ is a git GUI with great compatibility to Bitbucket.
 It is recommended to use Sourcetree for convenience and standardization in the community.
 If you are not familiar with Sourcetree please refer to the following resources:
 
-  * <https://confluence.atlassian.com/bitbucket/tutorial-learn-bitbucket-with-sourcetree-760120235.html>
-  * <https://confluence.atlassian.com/bitbucket/tutorial-learn-about-bitbucket-pull-requests-774243385.html>
+  * `Bitbucket General Tutorial <https://confluence.atlassian.com/bitbucket/tutorial-learn-bitbucket-with-sourcetree-760120235.html>`_
+  * `Bitbucket Pull Request Tutorial <https://confluence.atlassian.com/bitbucket/tutorial-learn-about-bitbucket-pull-requests-774243385.html>`_
 
 .. note::
 
@@ -86,7 +86,7 @@ Sourcetree known issues
 Sourcetree git-flow
 *******************
 
-We use the git-flow workflow as a branching model for the ``ultrazohm_sw`` repository <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>.
+We use the git-flow workflow as a branching model for the ``ultrazohm_sw`` `repository <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>`_.
 Git-flow is integrated in Sourcetree and straightforward for users.
 To use git-flow for the first time click the git-flow icon in Sourcetree.
 

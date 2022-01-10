@@ -40,14 +40,19 @@ static void uz_PID_TwoMassID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t*
 static void uz_PID_FluxMapID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 static void uz_PID_OnlineID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 
+static uz_ParameterID_t* uz_ParameterID_allocation(void);
 
-
-uz_ParameterID_t* uz_ParameterID_init(void) {
+static uz_ParameterID_t* uz_ParameterID_allocation(void) {
 	uz_assert(instances_counter_ParameterID < UZ_PARAMETERID_ACTIVE);
 	uz_ParameterID_t* self = &instances_ParameterID[instances_counter_ParameterID];
 	uz_assert(self->is_ready == false);
 	instances_counter_ParameterID++;
 	self->is_ready = true;
+	return (self);
+}
+
+uz_ParameterID_t* uz_ParameterID_init(void) {
+	uz_ParameterID_t* self = uz_ParameterID_allocation();
 	self->ControlState = uz_ControlState_init();
 	self->ElectricalID = uz_ElectricalID_init();
 	self->TwoMassID = uz_TwoMassID_init();
@@ -83,7 +88,6 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		if (self->ControlState->output.GlobalConfig_out.FrictionID == true && self->ControlState->output.GlobalConfig_out.Reset == false
 		                && self->ControlState->output.ControlFlags.transNr == 3U) {
 			uz_PID_FrictionID_step(self, Data);
-
 		} else if (self->ControlState->output.GlobalConfig_out.FrictionID == false && self->FrictionID->output.enteredFrictionID == true) {
 			uz_PID_FrictionID_step(self, Data);
 		}
@@ -101,13 +105,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		uz_PID_OnlineID_step(self, Data);
 	}
 
-	// reset ACCEPT
-	if (self->ControlState->output.GlobalConfig_out.ACCEPT == true) {
-		self->ControlState->output.GlobalConfig_out.ACCEPT = false;
-		Data->PID_GlobalConfig.ACCEPT = false;
-	}
-
-	// reset RESET-button
+	//RESET
 	if (Data->PID_GlobalConfig.Reset == true) {
 		uz_PID_ControlState_step(self, Data);
 		uz_PID_ElectricalID_step(self, Data);
@@ -119,6 +117,12 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		//reset the Reset-button
 		self->ControlState->output.GlobalConfig_out.Reset = false;
 		Data->PID_GlobalConfig.Reset = false;
+	}
+
+	// reset ACCEPT
+	if (self->ControlState->output.GlobalConfig_out.ACCEPT == true) {
+		self->ControlState->output.GlobalConfig_out.ACCEPT = false;
+		Data->PID_GlobalConfig.ACCEPT = false;
 	}
 }
 

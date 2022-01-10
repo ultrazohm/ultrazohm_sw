@@ -103,9 +103,7 @@ extern real32_T rtInfF;
 extern real32_T rtMinusInfF;
 extern real32_T rtNaNF;
 static void rt_InitInfAndNaN(size_t realSize);
-static boolean_T rtIsInf(real_T value);
 static boolean_T rtIsInfF(real32_T value);
-static boolean_T rtIsNaN(real_T value);
 static boolean_T rtIsNaNF(real32_T value);
 typedef struct {
   struct {
@@ -256,38 +254,10 @@ static void rt_InitInfAndNaN(size_t realSize)
   rtMinusInfF = rtGetMinusInfF();
 }
 
-/* Test if value is infinite */
-static boolean_T rtIsInf(real_T value)
-{
-  return (boolean_T)((value==rtInf || value==rtMinusInf) ? 1U : 0U);
-}
 
 /* Test if single-precision value is infinite */
-static boolean_T rtIsInfF(real32_T value)
-{
-  return (boolean_T)(((value)==rtInfF || (value)==rtMinusInfF) ? 1U : 0U);
-}
-
-/* Test if value is not a number */
-static boolean_T rtIsNaN(real_T value)
-{
-  boolean_T result = (boolean_T) 0;
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  if (bitsPerReal == 32U) {
-    result = rtIsNaNF((real32_T)value);
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.fltVal = value;
-    result = (boolean_T)((tmpVal.bitVal.words.wordH & 0x7FF00000) == 0x7FF00000 &&
-                         ( (tmpVal.bitVal.words.wordH & 0x000FFFFF) != 0 ||
-                          (tmpVal.bitVal.words.wordL != 0) ));
-  }
-
-  return result;
+static boolean_T rtIsInfF(real32_T value) {
+	return (boolean_T) (((value) == rtInfF || (value) == rtMinusInfF) ? 1U : 0U);
 }
 
 /* Test if single-precision value is not a number */

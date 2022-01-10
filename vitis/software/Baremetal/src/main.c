@@ -34,6 +34,13 @@ static void uz_assertCallback(const char8 *file, s32 line)
     ErrorHandling(&Global_Data);
 }
 
+#define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION 5000.0f
+#define UZ_D5_MOTOR_POLE_PAIR_NUMBER 4.0f
+#define UZ_ISR_FREQUENCY 10e3f
+float uz_isr_frequency_hz=UZ_ISR_FREQUENCY;
+float uz_isr_rate_s=1.0f/UZ_ISR_FREQUENCY;
+float uz_isr_samplerate_s=(1.0f/UZ_ISR_FREQUENCY)* (Interrupt_ISR_freq_factor);
+
 int main(void)
 {
 
@@ -61,7 +68,7 @@ int main(void)
     Initialize_Timer();
     uz_SystemTime_init();
     // Initialize the incremental encoder
-    initialize_incremental_encoder_ipcore_on_D5(Global_Data.mrp.incrementalEncoderResolution, Global_Data.mrp.motorPolePairNumber);
+    initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
 
     // Initialize the Soft-Oscilloscope ("JavaScope")
     JavaScope_initalize(&Global_Data);
@@ -182,16 +189,8 @@ void InitializeDataStructure(DS_Data *data)
 {
     // Control
     data->cw.ControlReference = CurrentControl;    // default because of Parameter ID
-    data->cw.ControlMethod = fieldOrientedControl; // default because of Parameter ID
     // Default control method
 
-    // Encoder
-    data->mrp.incrementalEncoderResolution = 5000.0;     //[Increments per turn] // Number of increments in the motor (necessary for the encoder)( the orange encoder has 2500 lines. This means 10000 edges with the two A and B lines)
-    data->mrp.incrementalEncoderOffset = 3.141592653589; //[rad]  // DOES NOT AFFECT theta_el in global data! Offset for the Park-Transformation IP-Core -> pi = 3.141592653589
-    data->mrp.motorMaximumSpeed = 6000.0;                //[rpm]
-    data->mrp.IncEncoderLPF_freq = 1000.0f;              // Filter for rotational speed
-    // Pole Pair as used by Encoder module
-    data->mrp.motorPolePairNumber = 4.0f;
 
     data->rasv.halfBridge1DutyCycle = 0.0;
     data->rasv.halfBridge2DutyCycle = 0.0;
@@ -226,13 +225,4 @@ void InitializeDataStructure(DS_Data *data)
     data->aa.A3.cf.ADC_B7 = 10;
     data->aa.A3.cf.ADC_B8 = 10;
 
-    // initalize PWM parameters
-    data->ctrl.pwmFrequency = 10e3; // PWM carrier frequency
-    data->ctrl.pwmPeriod = 1 / data->ctrl.pwmFrequency;
-
-    data->ctrl.samplingFrequency = data->ctrl.pwmFrequency * Interrupt_ISR_freq_factor;
-    data->ctrl.samplingPeriod = 1 / data->ctrl.samplingFrequency;
-
-    data->cw.switchingMode = DutyFromAXI; // PWM modulation
-    data->rasv.pwmMinPulseWidth = 0.01;   // PWM minimum on time in %
 }

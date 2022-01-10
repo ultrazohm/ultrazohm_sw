@@ -14,7 +14,7 @@
 ******************************************************************************/
 
 #include "../include/pwm.h"
-
+extern float uz_isr_frequency_hz;
 //----------------------------------------------------
 // INITIALIZE PWM AND SS (switching state) CONTROL MODULE
 //----------------------------------------------------
@@ -25,14 +25,14 @@ int PWM_SS_Initialize(DS_Data* data){
 	PWM_SS_SetStatus(PWM_ENABLE);
 
 	// Mode is set to 0, which is the Mode for switch signals from the PWM module with reference from AXI
-	PWM_SS_SetMode(data->cw.switchingMode);   // Input to the IP-Core
+	PWM_SS_SetMode(0);   // Input to the IP-Core
 
 	// PWM carrier signal frequency is set to e.g. 100 kHz
 	// PWM_SS_SetCarrierFrequency_Period(freq in Hz, period in us)
-	PWM_SS_SetCarrierFrequency(data->ctrl.pwmFrequency);
+	PWM_SS_SetCarrierFrequency(uz_isr_frequency_hz);
 
 	// PWM minimum pulse width is set between 0-1
-	PWM_SS_SetMinimumPulseWidth(data->rasv.pwmMinPulseWidth);
+	PWM_SS_SetMinimumPulseWidth(0.01f);
 
 	// Reference for modulation amplitude (Duty Cycle) u1-u3  ->  value range must be inside 0-1
 	PWM_SS_SetDutyCycle(data->rasv.halfBridge1DutyCycle,
@@ -110,26 +110,3 @@ void PWM_SS_SetTriState(int TriState_A, int TriState_B, int TriState_C){
 	Xil_Out32(PWM_SS_Con_TriState_HB3_REG, (int32_t)TriState_C);
 }
 
-
-void PWM_SS_Calculate_DutyCycle_open_loop_sin(DS_Data* data){
-
-	//Variables
-	static long sample =0;
-	float interrupt_freq = 	data->ctrl.samplingFrequency;
-	float sin_amplitude = 	data->rasv.open_loop_sin_amplitude * 0.5; // modulation index
-	float sin_frequency = 	data->rasv.open_loop_sin_frequency;
-
-	//Go back to 1st sample if end of sinewave is reached
-	if(sample >= interrupt_freq/sin_frequency - 1)
-		sample = 0;
-
-	//Calculate angle and increase sample
-	float angle = 2.0*M_PI*sin_frequency/interrupt_freq*((float)(sample));
-	//angle += phase; // add phase shift
-	sample++;
-
-	// write duty cycles to Global_Data struct, in ISR these values are written down to the FPGA registers
-	data->rasv.halfBridge1DutyCycle = 0.5 + sin_amplitude * sinf(angle);
-	data->rasv.halfBridge2DutyCycle = 0.5 + sin_amplitude * sinf(angle + 2*M_PI/3);
-	data->rasv.halfBridge3DutyCycle = 0.5 + sin_amplitude * sinf(angle + 4*M_PI/3);
-}

@@ -7,123 +7,12 @@
 // ========== Structures =========================================================================
 typedef struct
 {
-	float I_d;
-	float I_q;
-	float U_d;
-	float U_q;
-	float theta_elec;
-	float theta_mech;
-	float theta_offset; //in rad/s
-} ParkTrans_struct;
+	uint16_t id;
+	uint16_t value;
+	uint16_t digInputs;
+} Oszi_to_ARM_Data_shared_struct;
 
 
-//========================
-typedef enum {
-  sector_100 = 0,           //!< E2A = 1, E2B = 0, E2C = 0 //SW: Hall1 =1, Hall2 = 0, Hall3 = 0
-  sector_110,               //!< E2A = 1, E2B = 1, E2C = 0
-  sector_010,               //!< E2A = 0, E2B = 1, E2C = 0
-  sector_011,               //!< E2A = 0, E2B = 1, E2C = 1
-  sector_001,               //!< E2A = 0, E2B = 0, E2C = 1
-  sector_101,               //!< E2A = 1, E2B = 0, E2C = 1
-  initStateRotorSector,     //!< Initialization state
-  errorStateRotorSector     //!< Impossible hall signal combination
-} rotorSector;
-
-typedef enum {
-  noEvent = 0,            //!< Initialization state
-
-  	  	  	  	  	  	  //!< CounterClockwise rotation
-  event_010_011,          //!< sector_010 -> sector_011
-  event_011_001,          //!< sector_011 -> sector_001
-  event_001_101,          //!< sector_001 -> sector_101
-  event_101_100,          //!< sector_101 -> sector_100
-  event_100_110,          //!< sector_100 -> sector_110
-  event_110_010,          //!< sector_110 -> sector_010
-
-  	  	  	  	  	  	  //!< Clockwise rotation
-  event_011_010,          //!< sector_010 <- sector_011
-  event_001_011,          //!< sector_011 <- sector_001
-  event_101_001,          //!< sector_001 <- sector_101
-  event_100_101,          //!< sector_101 <- sector_100
-  event_110_100,          //!< sector_100 <- sector_110
-  event_010_110,          //!< sector_110 <- sector_010
-}  hallEvent;
-
-typedef enum {
-  scheme_zpm = 0,		// p=Halbbruecke auf Plus, m=Halbbrücke auf Minus, z=Halbbrücke in HighZ-Zustand
-  scheme_mpz,
-  scheme_mzp,
-  scheme_zmp,
-  scheme_pmz,
-  scheme_pzm,
-  initStateCommutationScheme, //!< Initialization state
-  clearedStateCommutationScheme,
-  errorStateCommutationScheme
-} commutationScheme;
-
-typedef enum {
-   scheme_zpz= 0,		// p=Halbbruecke auf Plus, z=Halbbrücke auf Minus (z=zero in diesem Fall?)
-   scheme_zpp,
-   scheme_zzp,
-   scheme_pzp,
-   scheme_pzz,
-   scheme_ppz,
-  initStateCommutationScheme180, //!< Initialization state
-  clearedStateCommutationScheme180,
-  errorStateCommutationScheme180
-} commutationScheme180; //SW: Standart für 180° Kommutierung wie es in Tabelle von Tobi Roth gefordert ist
-
-typedef enum {
-	Clockwise = 0,		//CW
-	CounterClockwise  	//CCW
-} senseOfRotation;
-
-typedef enum {
-  DirectTorqueControl =0,
-  fieldOrientedControl,     //!< sinusoidal commutation
-  ModelPredictiveControl,   //!< control MPC
-  sixStepCommutation,     	//!< six step commutation
-  halfBridgeControl         //!< control each half bridge separately
-} currentControlMethod;
-
-typedef enum {
-  TorqueControl =0,
-  CurrentControl,
-  SpeedControl,
-  PositionControl
-} ControlReference;
-
-typedef enum {
-	commutationAngle120 = 0,
-	commutationAngle180
-} sixStepCommutationMethod;
-
-typedef enum {
-	rotorSectorHallBased = 0,
-	rotorAngleHallBased,
-	rotorAngleVoltageCurrentBased
-} rotorAngleCalculationMethod;
-
-typedef enum
-{
-  analogHall = 0,				//
-  hallSensors120Degree,
-  HiperFace,					//
-  incrementalEncoder,			//
-  sensorless,
-  forcedAngle,					// ok
-  //sinCosEncoder,				// ### nicht mehr benötigt
-  //pwmPositionSensor,			// ### nicht mehr benötigt
-  //spiPositionSensor,			// ### nicht mehr benötigt
-  hallSensors180Degree			//
-} rotorAngleEstimationMethod;
-
-typedef enum
-{
-  noModulation = 0,			//for FCS-MPC
-  pwmModulation,
-  svmModulation
-}gatesignalsModulationMethod;
 
 typedef enum
 {
@@ -148,9 +37,6 @@ typedef struct _hallSensorVars_ {
 	uint32_t eCapCount;
 	uint32_t eCapCountArray[6];
 	uint32_t estimatedEcapCount;
-	hallEvent latestHallEvent;
-	rotorSector currentRotorSector;
-	rotorSector previousRotorSector;
 	float electricPositionObserved;
 	float iq_electricFrequencyObserved;
 	float loadTorqueObserved;
@@ -169,21 +55,14 @@ typedef struct _singleHallSensorVars_ {
 typedef struct _controlWord_ {	// 26 bits
 	_Bool enableSystem:1;
 	_Bool enableControl:1;
-	senseOfRotation rotationDirection:1;
-	currentControlMethod ControlMethod:5;
-	ControlReference ControlReference:3;
-	sixStepCommutationMethod sixStepCommutationMode:1;
 	//enableFlag enableClosedLoopCurrentControl:1;
 	_Bool enableMTPA:1;
-	rotorAngleEstimationMethod rotorAngleEstimationMode:5;
-	gatesignalsModulationMethod modulationMode:3;
 	SwitchingMethod switchingMode:3;
 	_Bool useCustomControllerParameters:1;
 	_Bool enableParameterID:1;
 } controlWord;
 
 typedef struct _statusWord_ { // 10 bits, combined status & warning word
-	senseOfRotation rotationDirection:1;
 	_Bool readyForSystemEnable:1;
 	_Bool currentControllerAntiWindUpActive:1;
 	_Bool speedControllerAntiWindUpActive:1;
@@ -386,7 +265,6 @@ typedef struct _rotorAngleEstimationVars_ {
 	float estimatedTorque;
 	float mechanicSpeedRpm;
 	float rotorAngle_pu_FAST;					// added PL 14.07.2017
-	rotorSector currentRotorSector_FAST;	// added PL 14.07.2017
 } rotorAngleEstimationVars;
 
 typedef struct _currentControllerVars_ {
@@ -443,14 +321,8 @@ typedef struct _sixStepCommutationVars_ {
 	int16_t phaseAdvanceSectors;
 	float dcLinkCurrent;
 	float iq_dcLinkCurrent;
-	commutationScheme currentScheme;
-	commutationScheme nextScheme;
-	commutationScheme180 currentScheme180;
-	commutationScheme180 nextScheme180;
 	speedControllerVars sc;
 	uint16_t sensorlessNoDoubleCommutationsCounter;
-	rotorSector sensorlessLastCommutatedSector;
-	rotorSector sensorlessNextSector;
 	int16_t phaseAdvanceSectorsNew;
 } sixStepCommutationVars;
 

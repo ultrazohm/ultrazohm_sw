@@ -38,7 +38,6 @@
 #include "include/gpio_axi.h"
 #include "include/pwm.h"
 #include "include/javascope.h"
-#include "include/control.h"
 #include "include/pwm_3L_driver.h"
 #include "IP_Cores/Trans_123_dq/dqTransform.h"
 

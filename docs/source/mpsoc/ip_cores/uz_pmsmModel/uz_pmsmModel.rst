@@ -316,7 +316,7 @@ Vitis
 	uz_pmsmModel_trigger_output_strobe(pmsm);
   pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
   pmsm_inputs.v_q_V=uz_wavegen_pulse(10.0f, 0.10f, 0.5f);
-  pmsm_inputs.v_d_V=-pmsm_inputs.u_q_V;
+  pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
   uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
   // [...]
   }
@@ -333,7 +333,7 @@ Vitis
     JSO_i_q,
     JSO_i_d,
     JSO_omega,
-    JSO_u_d,
+    JSO_v_d,
     JSO_ENDMARKER
   };
 
@@ -356,7 +356,7 @@ Vitis
     js_ch_observable[JSO_i_q] = &pmsm_outputs.i_q_A;
     js_ch_observable[JSO_i_d] = &pmsm_outputs.i_d_A;
     js_ch_observable[JSO_omega] = &pmsm_outputs.omega_mech_1_s;
-    js_ch_observable[JSO_u_d] = &pmsm_inputs.u_d_V;
+    js_ch_observable[JSO_v_d] = &pmsm_inputs.v_d_V;
     return Status;
     }
 

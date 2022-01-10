@@ -61,9 +61,6 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	//Control-State will always be stepped
 	uz_PID_ControlState_step(self->ControlState);
 
-	//Update Data-Struct with Control-State outputs
-	Data->PID_ControlFlags = self->ControlState->output.ControlFlags;
-
 	//All Offline states
 	if (self->ControlState->output.ControlFlags.finished_all_Offline_states == false) {
 
@@ -285,7 +282,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 		uz_PI_Controller_set_Kp(Speed_instance, Data->PID_Controller_Parameters.Kp_n_out);
 		}
 
-	if (Data->PID_ControlFlags.finished_all_Offline_states == true) {
+	if (Data->PID_ControlFlags->finished_all_Offline_states == true) {
 		if (Data->PID_OnlineID_Output->IdControlFlag == true) {
 			Data->PID_GlobalConfig.i_dq_ref.d += Data->PID_OnlineID_Output->id_out;
 		} else {
@@ -393,6 +390,7 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_Para
 	Data->PID_FluxMapID_Output = &ParameterID->FluxMapID->output.FluxMapID_output;
 	Data->PID_TwoMassID_Output = &ParameterID->TwoMassID->output.TwoMassID_output;
 	Data->PID_OnlineID_Output = &ParameterID->OnlineID->output.OnlineID_output;
+	Data->PID_ControlFlags = &ParameterID->ControlState->output.ControlFlags;
 
 
 }

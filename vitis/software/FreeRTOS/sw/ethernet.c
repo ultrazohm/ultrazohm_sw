@@ -62,6 +62,9 @@ void process_request_thread(void *p)
 	int nwrote = 0;
 	u32 msgBuf[IPI_A53toR5_MSG_LEN] = {JSCMD_WRITE, js_mem_address[js_buff_index], 0};
 
+	u64 time_start, total_time = 0;
+	u32 mean_time = 0;
+
 	// make RPU write control data in the shared memory
 	Send_Command_to_RPU(msgBuf, IPI_A53toR5_MSG_LEN);
 
@@ -71,6 +74,7 @@ void process_request_thread(void *p)
 	while (1) {
 
 		u32_t command=0;
+		time_start = Get_time_us();
 
 		for (size_t i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
 
@@ -102,19 +106,22 @@ void process_request_thread(void *p)
 			nwsend.slowDataContent[i] 	= javascope_data_sending.slowDataContent;
 			nwsend.slowDataID[i] 		= javascope_data_sending.slowDataID;
 
-//			for(int j=0; j<JS_CHANNELS; j++){
-//				if ((int)javascope_data_sending.scope_ch[j] < (int)(j-2)) {
-//					xil_printf("APU: VALOR ESTRANHO = %d ", (int)(javascope_data_sending.scope_ch[j]*100000));
-//					xil_printf("em j = %d\r\n", j);
-//				}
-//			}
+			// Send time to fill buffer as JSSD_INT_polePairs
+			if (nwsend.slowDataID[i] == 12){
+				nwsend.slowDataContent[i] = mean_time;
+			}
 		}
 		nwsend.status = javascope_data_sending.status;
+
+		total_time += (Get_time_us() - time_start);
 
 		// At this point, Ethernet Package is full and ready to be sent
 		i_LifeCheck_process_Ethernet++;
 		if(i_LifeCheck_process_Ethernet > 2500){
+			mean_time = total_time/i_LifeCheck_process_Ethernet;
+			xil_printf("APU: Fill Ethernet buffer = %u\r\n", mean_time);
 			i_LifeCheck_process_Ethernet =0;
+			total_time = 0;
 		}
 
 		// write the data -> handle request /

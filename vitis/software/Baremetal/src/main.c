@@ -30,19 +30,12 @@ DS_Data Global_Data;
 
 //ParameterID Code
 uz_ParameterID_t* ParameterID = NULL;
-uz_PID_ElectricalID_t ElectricalID;
-uz_PID_ControlState_t ControlState;
-uz_PID_FluxMapID_t FluxMapID;
-uz_PID_FrictionID_t FrictionID;
-uz_PID_OnlineID_t OnlineID;
-uz_PID_TwoMassID_t TwoMassID;
 uz_ParameterID_Data_t PID_Data = { 0 };
 uz_FOC* FOC_instance = NULL;
 uz_PI_Controller* SpeedControl_instance = NULL;
 uz_FOC* FOC_instance_SC = NULL;
 struct uz_PMSM_t config_PMSM = { 0 };
 uz_pmsmModel_t *pmsm = NULL;
-uz_PID_OnlineID_output_t* PID_OnlineID_output = { 0 };
 
 static void uz_assertCallback(const char8 *file, s32 line) {
 	extern XScuGic INTCInst;
@@ -91,7 +84,7 @@ int main(void)
 	//Experimental Code
 	ParameterID = uz_ParameterID_init();
 	uz_ParameterID_initialize_data_structs(&PID_Data, ParameterID);
-//
+
 	config_PMSM.R_ph_Ohm = PID_Data.PID_GlobalConfig.PMSM_config.R_ph_Ohm;
 	config_PMSM.Ld_Henry = PID_Data.PID_GlobalConfig.PMSM_config.Ld_Henry;
 	config_PMSM.Lq_Henry = PID_Data.PID_GlobalConfig.PMSM_config.Lq_Henry;

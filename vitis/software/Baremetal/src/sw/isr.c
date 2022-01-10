@@ -121,7 +121,7 @@ void ISR_Control(void *data)
 	pmsm_inputs.v_q_V = PID_v_dq.q;
 	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
 	Global_Data.av.mechanicalRotorSpeed = PID_Data.PID_ActualValues.omega_m / (2.0f * UZ_PIf ) * 60.0f;
-	Global_Data.pID.Online_Rs = (PID_Data.PID_FluxMapID_Output.R_s * 1000.0f);
+	Global_Data.pID.Online_Rs = (PID_Data.PID_FluxMapID_Output->R_s * 1000.0f);
 
 	//End ParameterID -------------------------------------------------------------------------------------------------------------------
 

@@ -25,5 +25,5 @@ typedef struct {
 	RT_MODEL_OnlineID_t *PtrToModelData;
 } uz_PID_OnlineID_t;
 
-uz_PID_OnlineID_t* uz_PID_OnlineID_init(void);
-void uz_PID_OnlineID_step(uz_PID_OnlineID_t *self);
+uz_PID_OnlineID_t* uz_OnlineID_init(void);
+void uz_OnlineID_step(uz_PID_OnlineID_t *self);

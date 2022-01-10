@@ -29,7 +29,7 @@ static uz_PID_TwoMassID_t* uz_PID_TwoMassID_allocation(void) {
 	instances_counter_PID_TwoMassID++;
 	return (self);
 }
-uz_PID_TwoMassID_t* uz_PID_TwoMassID_init(void) {
+uz_PID_TwoMassID_t* uz_TwoMassID_init(void) {
 	uz_PID_TwoMassID_t* self = uz_PID_TwoMassID_allocation();
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
@@ -39,7 +39,7 @@ uz_PID_TwoMassID_t* uz_PID_TwoMassID_init(void) {
 	return (self);
 }
 
-void uz_PID_TwoMassID_step(uz_PID_TwoMassID_t *self) {
+void uz_TwoMassID_step(uz_PID_TwoMassID_t *self) {
 	TwoMassID_step(self->PtrToModelData);
 }
 

@@ -25,5 +25,5 @@ typedef struct {
 	RT_MODEL_FluxMapID_t *PtrToModelData;
 } uz_PID_FluxMapID_t;
 
-uz_PID_FluxMapID_t* uz_PID_FluxMapID_init(void);
-void uz_PID_FluxMapID_step(uz_PID_FluxMapID_t *self);
+uz_PID_FluxMapID_t* uz_FluxMapID_init(void);
+void uz_FluxMapID_step(uz_PID_FluxMapID_t *self);

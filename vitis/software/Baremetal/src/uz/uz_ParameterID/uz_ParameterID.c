@@ -33,27 +33,32 @@ struct uz_ParameterID_t {
 static size_t instances_counter_ParameterID = 0;
 static uz_ParameterID_t instances_ParameterID[UZ_PARAMETERID_ACTIVE] = { 0 };
 
+static void uz_PID_ControlState_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
+static void uz_PID_ElectricalID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
+static void uz_PID_FrictionID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
+static void uz_PID_TwoMassID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
+static void uz_PID_FluxMapID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
+static void uz_PID_OnlineID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
+
+
+
 uz_ParameterID_t* uz_ParameterID_init(void) {
 	uz_assert(instances_counter_ParameterID < UZ_PARAMETERID_ACTIVE);
 	uz_ParameterID_t* self = &instances_ParameterID[instances_counter_ParameterID];
 	uz_assert(self->is_ready == false);
 	instances_counter_ParameterID++;
 	self->is_ready = true;
-	self->ControlState = uz_PID_ControlState_init();
-	self->ElectricalID = uz_PID_ElectricalID_init();
-	self->TwoMassID = uz_PID_TwoMassID_init();
-	self->FrictionID = uz_PID_FrictionID_init();
-	self->FluxMapID = uz_PID_FluxMapID_init();
-	self->OnlineID = uz_PID_OnlineID_init();
+	self->ControlState = uz_ControlState_init();
+	self->ElectricalID = uz_ElectricalID_init();
+	self->TwoMassID = uz_TwoMassID_init();
+	self->FrictionID = uz_FrictionID_init();
+	self->FluxMapID = uz_FluxMapID_init();
+	self->OnlineID = uz_OnlineID_init();
 	return (self);
 }
 
 void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
-	//Update Control-State inputs, which are not depended on other states
-	self->ControlState->input.GlobalConfig_in = Data->PID_GlobalConfig;
-
-	//Control-State will always be stepped
-	uz_PID_ControlState_step(self->ControlState);
+	uz_PID_ControlState_step(self, Data);
 
 	//All Offline states
 	if (self->ControlState->output.ControlFlags.finished_all_Offline_states == false) {
@@ -61,125 +66,41 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		//ElectricalID
 		if (self->ControlState->output.GlobalConfig_out.ElectricalID == true && self->ControlState->output.GlobalConfig_out.Reset == false
 		                && self->ControlState->output.ControlFlags.transNr == 1U) {
-			//Update State-Inputs
-			self->ElectricalID->input.ActualValues = Data->PID_ActualValues;
-			self->ElectricalID->input.ElectricalIDConfig = Data->PID_ElectricalID_Config;
-			self->ElectricalID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-			self->ElectricalID->input.ControlFlags = self->ControlState->output.ControlFlags;
-
-			//Step the function
-			uz_PID_ElectricalID_step(self->ElectricalID);
-
-			//Update Control-State-inputs
-			self->ControlState->input.ElectricalID_FOC_output = self->ElectricalID->output.ElectricalID_FOC_output;
-			self->ControlState->input.ElectricalID_output = self->ElectricalID->output.ElectricalID_output;
-			self->ControlState->input.enteredElectricalID = self->ElectricalID->output.enteredElectricalID;
-			self->ControlState->input.finishedElectricalID = self->ElectricalID->output.finishedElectricalID;
-
-			//Update Data struct with new output values
-			Data->PID_Controller_Parameters = self->ElectricalID->output.ElectricalID_FOC_output;
-			Data->PID_GlobalConfig.thetaOffset = self->ElectricalID->output.ElectricalID_output.thetaOffset;
-
+			uz_PID_ElectricalID_step(self, Data);
 		} else if (self->ControlState->output.GlobalConfig_out.ElectricalID == false && self->ElectricalID->output.enteredElectricalID == true) {
-			self->ElectricalID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-			uz_PID_ElectricalID_step(self->ElectricalID);
-			Data->PID_Controller_Parameters = self->ElectricalID->output.ElectricalID_FOC_output;
-			self->ControlState->input.enteredElectricalID = self->ElectricalID->output.enteredElectricalID;
-			self->ControlState->input.finishedElectricalID = self->ElectricalID->output.finishedElectricalID;
+			uz_PID_ElectricalID_step(self, Data);
 		}
 
 		//TwoMassID
 		if (self->ControlState->output.GlobalConfig_out.TwoMassID == true && self->ControlState->output.GlobalConfig_out.Reset == false
 		                && self->ControlState->output.ControlFlags.transNr == 2U) {
-			self->TwoMassID->input.ActualValues = Data->PID_ActualValues;
-			self->TwoMassID->input.TwoMassIDConfig = Data->PID_TwoMassID_Config;
-			self->TwoMassID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-			self->TwoMassID->input.ControlFlags = self->ControlState->output.ControlFlags;
-
-			//Step the function
-			uz_PID_TwoMassID_step(self->TwoMassID);
-
-			//Update Control-State-inputs
-			self->ControlState->input.enteredTwoMassID = self->TwoMassID->output.enteredTwoMassID;
-			self->ControlState->input.finishedTwoMassID = self->TwoMassID->output.finishedTwoMassID;
-
-			//Update Data struct with new output values
-			Data->PID_Controller_Parameters = self->TwoMassID->output.TwoMassID_FOC_output;
+			uz_PID_TwoMassID_step(self, Data);
 		} else if (self->ControlState->output.GlobalConfig_out.TwoMassID == false && self->TwoMassID->output.enteredTwoMassID == true) {
-			self->TwoMassID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-			uz_PID_TwoMassID_step(self->TwoMassID);
-			Data->PID_Controller_Parameters = self->TwoMassID->output.TwoMassID_FOC_output;
-			self->ControlState->input.enteredTwoMassID = self->TwoMassID->output.enteredTwoMassID;
-			self->ControlState->input.finishedTwoMassID = self->TwoMassID->output.finishedTwoMassID;
+			uz_PID_TwoMassID_step(self, Data);
 		}
 
 		//FrictionID
 		if (self->ControlState->output.GlobalConfig_out.FrictionID == true && self->ControlState->output.GlobalConfig_out.Reset == false
 		                && self->ControlState->output.ControlFlags.transNr == 3U) {
-			self->FrictionID->input.ActualValues = Data->PID_ActualValues;
-			self->FrictionID->input.FrictionConfigID = Data->PID_FrictionID_Config;
-			self->FrictionID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-			self->FrictionID->input.ControlFlags = self->ControlState->output.ControlFlags;
+			uz_PID_FrictionID_step(self, Data);
 
-			//Step the function
-			uz_PID_FrictionID_step(self->FrictionID);
-
-			//Update Control-State-inputs
-			self->ControlState->input.enteredFrictionID = self->FrictionID->output.enteredFrictionID;
-			self->ControlState->input.finishedFrictionID = self->FrictionID->output.finishedFrictionID;
-
-			//Update Data struct with new output values
-			Data->PID_Controller_Parameters = self->FrictionID->output.FrictionID_FOC_output;
 		} else if (self->ControlState->output.GlobalConfig_out.FrictionID == false && self->FrictionID->output.enteredFrictionID == true) {
-			self->FrictionID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-			uz_PID_FrictionID_step(self->FrictionID);
-			Data->PID_Controller_Parameters = self->FrictionID->output.FrictionID_FOC_output;
-			self->ControlState->input.enteredFrictionID = self->FrictionID->output.enteredFrictionID;
-			self->ControlState->input.finishedFrictionID = self->FrictionID->output.finishedFrictionID;
+			uz_PID_FrictionID_step(self, Data);
 		}
 
 		//FluxMapID
 		if (self->ControlState->output.GlobalConfig_out.FluxMapID == true && self->ControlState->output.GlobalConfig_out.Reset == false
 		                && self->ControlState->output.ControlFlags.transNr == 4U) {
-			//Update State-Inputs
-			self->FluxMapID->input.ActualValues = Data->PID_ActualValues;
-			self->FluxMapID->input.FluxMapIDConfig = Data->PID_FluxMapID_Config;
-			self->FluxMapID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-			self->FluxMapID->input.ControlFlags = self->ControlState->output.ControlFlags;
-
-			//Step the function
-			uz_PID_FluxMapID_step(self->FluxMapID);
-
-			//Update Control-State-inputs
-			self->ControlState->input.enteredFluxMapID = self->FluxMapID->output.enteredFluxMapID;
-			self->ControlState->input.finishedFluxMapID = self->FluxMapID->output.finishedFluxMapID;
-
-			//Update Data struct with new output values
-			Data->PID_Controller_Parameters = self->FluxMapID->output.FluxMapID_FOC_output;
+			uz_PID_FluxMapID_step(self, Data);
 		} else if (self->ControlState->output.GlobalConfig_out.FluxMapID == false && self->FluxMapID->output.enteredFluxMapID == true) {
-			self->FluxMapID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-			uz_PID_FluxMapID_step(self->FluxMapID);
-			Data->PID_Controller_Parameters = self->FluxMapID->output.FluxMapID_FOC_output;
-			self->ControlState->input.enteredFluxMapID = self->FluxMapID->output.enteredFluxMapID;
-			self->ControlState->input.finishedFluxMapID = self->FluxMapID->output.finishedFluxMapID;
+			uz_PID_FluxMapID_step(self, Data);
 		}
 	}
 	//OnlineID
 	if (self->ControlState->output.ControlFlags.enableOnlineID == true || self->ControlState->output.GlobalConfig_out.Reset == true || Data->PID_OnlineID_Config.OnlineID_Reset == true) {
-		//Update State-Inputs
-		self->OnlineID->input.ActualValues = Data->PID_ActualValues;
-		self->OnlineID->input.ControlFlags = self->ControlState->output.ControlFlags;
-		self->OnlineID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-		self->OnlineID->input.OnlineIDConfig = Data->PID_OnlineID_Config;
-
-		//Step the function
-		uz_PID_OnlineID_step(self->OnlineID);
-
-		//Update Data struct with new output values
-		//Data->PID_OnlineID_Output = &OnlineID->output.OnlineID_output;
-		Data->PID_Controller_Parameters.activeState = self->OnlineID->output.OnlineID_output.activeState;
-
+		uz_PID_OnlineID_step(self, Data);
 	}
+
 	// reset ACCEPT
 	if (self->ControlState->output.GlobalConfig_out.ACCEPT == true) {
 		self->ControlState->output.GlobalConfig_out.ACCEPT = false;
@@ -188,27 +109,12 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 
 	// reset RESET-button
 	if (Data->PID_GlobalConfig.Reset == true) {
-		//Set the state-inputs reset to true
-		self->FluxMapID->input.GlobalConfig_out.Reset = true;
-		self->ElectricalID->input.GlobalConfig_out.Reset = true;
-		self->FrictionID->input.GlobalConfig_out.Reset = true;
-		self->TwoMassID->input.GlobalConfig_out.Reset = true;
-		//Step the states to reset them
-		uz_PID_FluxMapID_step(self->FluxMapID);
-		uz_PID_ElectricalID_step(self->ElectricalID);
-		uz_PID_FrictionID_step(self->FrictionID);
-		uz_PID_TwoMassID_step(self->TwoMassID);
-		//Reset the control outputs
-		self->ControlState->input.enteredFluxMapID = self->FluxMapID->output.enteredFluxMapID;
-		self->ControlState->input.finishedFluxMapID = self->FluxMapID->output.finishedFluxMapID;
-		self->ControlState->input.enteredElectricalID = self->ElectricalID->output.enteredElectricalID;
-		self->ControlState->input.finishedElectricalID = self->ElectricalID->output.finishedElectricalID;
-		self->ControlState->input.enteredFrictionID = self->FrictionID->output.enteredFrictionID;
-		self->ControlState->input.finishedFrictionID = self->FrictionID->output.finishedFrictionID;
-		self->ControlState->input.enteredTwoMassID = self->TwoMassID->output.enteredTwoMassID;
-		self->ControlState->input.finishedTwoMassID = self->TwoMassID->output.finishedTwoMassID;
-		//Reset data outputs
-		Data->PID_Controller_Parameters = self->FluxMapID->output.FluxMapID_FOC_output;
+		uz_PID_ControlState_step(self, Data);
+		uz_PID_ElectricalID_step(self, Data);
+		uz_PID_TwoMassID_step(self, Data);
+		uz_PID_FrictionID_step(self, Data);
+		uz_PID_FluxMapID_step(self, Data);
+		uz_PID_OnlineID_step(self, Data);
 
 		//reset the Reset-button
 		self->ControlState->output.GlobalConfig_out.Reset = false;
@@ -299,6 +205,103 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 		//return (output_DutyCycle);
 		return (v_dq_Volts);
 	}
+
+static void uz_PID_ElectricalID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	//Update State-Inputs
+	self->ElectricalID->input.ActualValues = Data->PID_ActualValues;
+	self->ElectricalID->input.ElectricalIDConfig = Data->PID_ElectricalID_Config;
+	self->ElectricalID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
+	self->ElectricalID->input.ControlFlags = self->ControlState->output.ControlFlags;
+
+	//Step the function
+	uz_ElectricalID_step(self->ElectricalID);
+
+	//Update Control-State-inputs
+	self->ControlState->input.ElectricalID_FOC_output = self->ElectricalID->output.ElectricalID_FOC_output;
+	self->ControlState->input.ElectricalID_output = self->ElectricalID->output.ElectricalID_output;
+	self->ControlState->input.enteredElectricalID = self->ElectricalID->output.enteredElectricalID;
+	self->ControlState->input.finishedElectricalID = self->ElectricalID->output.finishedElectricalID;
+
+	//Update Data struct with new output values
+	Data->PID_Controller_Parameters = self->ElectricalID->output.ElectricalID_FOC_output;
+	Data->PID_GlobalConfig.thetaOffset = self->ElectricalID->output.ElectricalID_output.thetaOffset;
+}
+
+static void uz_PID_ControlState_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	//Update Control-State inputs, which are not depended on other states
+	self->ControlState->input.GlobalConfig_in = Data->PID_GlobalConfig;
+
+	//Control-State will always be stepped
+	uz_ControlState_step(self->ControlState);
+}
+
+static void uz_PID_FrictionID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	//Update State-Inputs
+	self->FrictionID->input.ActualValues = Data->PID_ActualValues;
+	self->FrictionID->input.FrictionConfigID = Data->PID_FrictionID_Config;
+	self->FrictionID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
+	self->FrictionID->input.ControlFlags = self->ControlState->output.ControlFlags;
+
+	//Step the function
+	uz_FrictionID_step(self->FrictionID);
+
+	//Update Control-State-inputs
+	self->ControlState->input.enteredFrictionID = self->FrictionID->output.enteredFrictionID;
+	self->ControlState->input.finishedFrictionID = self->FrictionID->output.finishedFrictionID;
+	//Update Data struct with new output values
+	Data->PID_Controller_Parameters = self->FrictionID->output.FrictionID_FOC_output;
+}
+
+static void uz_PID_TwoMassID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	//Update State-Inputs
+	self->TwoMassID->input.ActualValues = Data->PID_ActualValues;
+	self->TwoMassID->input.TwoMassIDConfig = Data->PID_TwoMassID_Config;
+	self->TwoMassID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
+	self->TwoMassID->input.ControlFlags = self->ControlState->output.ControlFlags;
+
+	//Step the function
+	uz_TwoMassID_step(self->TwoMassID);
+
+	//Update Control-State-inputs
+	self->ControlState->input.enteredTwoMassID = self->TwoMassID->output.enteredTwoMassID;
+	self->ControlState->input.finishedTwoMassID = self->TwoMassID->output.finishedTwoMassID;
+
+	//Update Data struct with new output values
+	Data->PID_Controller_Parameters = self->TwoMassID->output.TwoMassID_FOC_output;
+}
+
+static void uz_PID_FluxMapID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	//Update State-Inputs
+	self->FluxMapID->input.ActualValues = Data->PID_ActualValues;
+	self->FluxMapID->input.FluxMapIDConfig = Data->PID_FluxMapID_Config;
+	self->FluxMapID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
+	self->FluxMapID->input.ControlFlags = self->ControlState->output.ControlFlags;
+
+	//Step the function
+	uz_FluxMapID_step(self->FluxMapID);
+
+	//Update Control-State-inputs
+	self->ControlState->input.enteredFluxMapID = self->FluxMapID->output.enteredFluxMapID;
+	self->ControlState->input.finishedFluxMapID = self->FluxMapID->output.finishedFluxMapID;
+
+	//Update Data struct with new output values
+	Data->PID_Controller_Parameters = self->FluxMapID->output.FluxMapID_FOC_output;
+}
+
+static void uz_PID_OnlineID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	//Update State-Inputs
+	self->OnlineID->input.ActualValues = Data->PID_ActualValues;
+	self->OnlineID->input.ControlFlags = self->ControlState->output.ControlFlags;
+	self->OnlineID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
+	self->OnlineID->input.OnlineIDConfig = Data->PID_OnlineID_Config;
+
+	//Step the function
+	uz_OnlineID_step(self->OnlineID);
+
+	//Update Data struct with new output values
+	Data->PID_Controller_Parameters.activeState = self->OnlineID->output.OnlineID_output.activeState;
+}
+
 
 void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_ParameterID_t *ParameterID) {
 

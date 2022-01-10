@@ -30,7 +30,7 @@ static uz_PID_ControlState_t* uz_PID_ControlState_allocation(void) {
 	return (self);
 }
 
-uz_PID_ControlState_t* uz_PID_ControlState_init(void) {
+uz_PID_ControlState_t* uz_ControlState_init(void) {
 	uz_PID_ControlState_t* self = uz_PID_ControlState_allocation();
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
@@ -40,7 +40,7 @@ uz_PID_ControlState_t* uz_PID_ControlState_init(void) {
 	return (self);
 }
 
-void uz_PID_ControlState_step(uz_PID_ControlState_t *self) {
+void uz_ControlState_step(uz_PID_ControlState_t *self) {
 	ControlState_step(self->PtrToModelData);
 }
 #endif

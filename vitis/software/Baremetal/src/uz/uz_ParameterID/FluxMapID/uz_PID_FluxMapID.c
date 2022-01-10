@@ -29,7 +29,7 @@ static uz_PID_FluxMapID_t* uz_PID_FluxMapID_allocation(void) {
 	instances_counter_PID_FluxMapID++;
 	return (self);
 }
-uz_PID_FluxMapID_t* uz_PID_FluxMapID_init(void) {
+uz_PID_FluxMapID_t* uz_FluxMapID_init(void) {
 	uz_PID_FluxMapID_t* self = uz_PID_FluxMapID_allocation();
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
@@ -39,7 +39,7 @@ uz_PID_FluxMapID_t* uz_PID_FluxMapID_init(void) {
 	return (self);
 }
 
-void uz_PID_FluxMapID_step(uz_PID_FluxMapID_t *self) {
+void uz_FluxMapID_step(uz_PID_FluxMapID_t *self) {
 	FluxMapID_step(self->PtrToModelData);
 }
 

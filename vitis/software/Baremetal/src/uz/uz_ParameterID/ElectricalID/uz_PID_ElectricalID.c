@@ -29,7 +29,7 @@ static uz_PID_ElectricalID_t* uz_PID_ElectricalID_allocation(void) {
 	instances_counter_PID_ElectricalID++;
 	return (self);
 }
-uz_PID_ElectricalID_t* uz_PID_ElectricalID_init(void) {
+uz_PID_ElectricalID_t* uz_ElectricalID_init(void) {
 	uz_PID_ElectricalID_t* self = uz_PID_ElectricalID_allocation();
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
@@ -39,7 +39,7 @@ uz_PID_ElectricalID_t* uz_PID_ElectricalID_init(void) {
 	return (self);
 }
 
-void uz_PID_ElectricalID_step(uz_PID_ElectricalID_t *self) {
+void uz_ElectricalID_step(uz_PID_ElectricalID_t *self) {
 	ElectricalID_step(self->PtrToModelData);
 }
 

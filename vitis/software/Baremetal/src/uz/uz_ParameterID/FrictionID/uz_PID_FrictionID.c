@@ -29,7 +29,7 @@ static uz_PID_FrictionID_t* uz_PID_FrictionID_allocation(void) {
 	instances_counter_PID_FrictionID++;
 	return (self);
 }
-uz_PID_FrictionID_t* uz_PID_FrictionID_init(void) {
+uz_PID_FrictionID_t* uz_FrictionID_init(void) {
 	uz_PID_FrictionID_t* self = uz_PID_FrictionID_allocation();
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
@@ -39,7 +39,7 @@ uz_PID_FrictionID_t* uz_PID_FrictionID_init(void) {
 	return (self);
 }
 
-void uz_PID_FrictionID_step(uz_PID_FrictionID_t *self) {
+void uz_FrictionID_step(uz_PID_FrictionID_t *self) {
 	FrictionID_step(self->PtrToModelData);
 }
 

@@ -25,5 +25,5 @@ typedef struct {
 	RT_MODEL_FrictionID_t *PtrToModelData;
 } uz_PID_FrictionID_t;
 
-uz_PID_FrictionID_t* uz_PID_FrictionID_init(void);
-void uz_PID_FrictionID_step(uz_PID_FrictionID_t *self);
+uz_PID_FrictionID_t* uz_FrictionID_init(void);
+void uz_FrictionID_step(uz_PID_FrictionID_t *self);

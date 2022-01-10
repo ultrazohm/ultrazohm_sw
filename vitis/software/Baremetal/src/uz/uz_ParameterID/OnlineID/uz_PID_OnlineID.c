@@ -29,7 +29,7 @@ static uz_PID_OnlineID_t* uz_PID_OnlineID_allocation(void) {
 	instances_counter_PID_OnlineID++;
 	return (self);
 }
-uz_PID_OnlineID_t* uz_PID_OnlineID_init(void) {
+uz_PID_OnlineID_t* uz_OnlineID_init(void) {
 	uz_PID_OnlineID_t* self = uz_PID_OnlineID_allocation();
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
@@ -39,7 +39,7 @@ uz_PID_OnlineID_t* uz_PID_OnlineID_init(void) {
 	return (self);
 }
 
-void uz_PID_OnlineID_step(uz_PID_OnlineID_t *self) {
+void uz_OnlineID_step(uz_PID_OnlineID_t *self) {
 	OnlineID_step(self->PtrToModelData);
 }
 

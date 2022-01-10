@@ -25,5 +25,5 @@ typedef struct {
 	RT_MODEL_TwoMassID_t *PtrToModelData;
 } uz_PID_TwoMassID_t;
 
-uz_PID_TwoMassID_t* uz_PID_TwoMassID_init(void);
-void uz_PID_TwoMassID_step(uz_PID_TwoMassID_t *self);
+uz_PID_TwoMassID_t* uz_TwoMassID_init(void);
+void uz_TwoMassID_step(uz_PID_TwoMassID_t *self);

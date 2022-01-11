@@ -1,4 +1,4 @@
-_ r5_statemachine:
+.. _r5_statemachine:
 
 ================
 R5 state machine

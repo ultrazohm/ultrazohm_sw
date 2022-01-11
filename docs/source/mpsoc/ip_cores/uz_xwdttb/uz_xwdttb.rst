@@ -4,11 +4,11 @@
 AXI Watch Dog Timer Time Based IP
 =================================
 
-The lack of precision in the System Watchdog Timer which is set in a minimum of one millisecond as can be checked in the Zynq UltraScale+: technical reference manual [#UG1085]_, chapter 14, page 361:
-Variable timeout period, from 1 ms to 30 seconds using a 100 MHz clock. Although, testing has resulted in 350 microseconds.
-Given this poor resolution we decide to integrate the IP provided by Xilinx [#PG128]_.
+Introduction
+============
 
-Here we have the IP Block design and its components.
+The lack of precision of the System Watchdog Timer leads as to use the IP provided by Xilinx [#PG128]_.  For more information about the System WDT (option discarded) see the Zynq UltraScale+: technical reference manual [#UG1085]_, chapter 14, page 361.
+Here we have the IP Block design and its components as it is defined in [#PG128]_.
 
 .. _XWDTTB_ModuleOverview:
 
@@ -18,7 +18,7 @@ Here we have the IP Block design and its components.
 
    Top view of the Module.
    
-The IP is divided in two main parts, the Timebase Timer and the Window DWT.
+The IP is divided in two main parts, the Timebase Timer and the Window WDT.
 This parts are attached with the two different working modes of the IP.
 
 - The Timebase working mode implements an incremental counter which after one expiration of the timeout interval, an interrupt is generated. But it does not allow as to have a precision with any desired value for the counter.

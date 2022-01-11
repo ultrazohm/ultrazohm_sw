@@ -1,0 +1,4 @@
+State, Ready_LED  , Running_LED, Error_LED, User_LED, Control_algorithm, Gate_signals,Enable System, Enable Control, Stop,Error,  Next state
+Idle, Blink slow  , Off, Off, Off, Off, Off,==1, x, x,!=1,  Running
+Idle, Blink slow  , Off, Off, Off, Off, Off,x, x, x,==1,  Error
+State, Ready_LED  , Running_LED, Error_LED, User_LED, Control_algorithm, Gate_signals,Enable System, Enable Control, Stop,Error,  Next state

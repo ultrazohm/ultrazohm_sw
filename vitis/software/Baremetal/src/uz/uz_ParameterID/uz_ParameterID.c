@@ -191,17 +191,18 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 	}
 
 	if (Data->PID_ControlFlags->finished_all_Offline_states == true) {
+		uz_dq_t Online_current_ref = Data->PID_GlobalConfig.i_dq_ref;
 		if (Data->PID_OnlineID_Output->IdControlFlag == true) {
-			Data->PID_GlobalConfig.i_dq_ref.d += Data->PID_OnlineID_Output->id_out;
+			Online_current_ref.d = Data->PID_GlobalConfig.i_dq_ref.d + Data->PID_OnlineID_Output->id_out;
 		} else {
-			Data->PID_GlobalConfig.i_dq_ref.d += 0.0f;
+			Online_current_ref.d = Data->PID_GlobalConfig.i_dq_ref.d;
 		}
 		if (ControlRef == CurrentControl) {
-			v_dq_Volts = uz_FOC_sample(FOC_instance, Data->PID_GlobalConfig.i_dq_ref, Data->PID_ActualValues.i_dq, Data->PID_ActualValues.V_DC, Data->PID_ActualValues.omega_el);
+			v_dq_Volts = uz_FOC_sample(FOC_instance, Online_current_ref, Data->PID_ActualValues.i_dq, Data->PID_ActualValues.V_DC, Data->PID_ActualValues.omega_el);
 		} else if (ControlRef == SpeedControl) {
 			ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
 			i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->PID_ActualValues.omega_el, Data->PID_GlobalConfig.n_ref, Data->PID_ActualValues.V_DC,
-			                Data->PID_OnlineID_Output->id_out,
+			                Online_current_ref.d,
 			                Data->PID_GlobalConfig.PMSM_config, ext_clamping);
 			v_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data->PID_ActualValues.i_dq, Data->PID_ActualValues.V_DC, Data->PID_ActualValues.omega_el);
 		} else {

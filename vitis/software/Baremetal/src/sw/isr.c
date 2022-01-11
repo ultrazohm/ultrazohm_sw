@@ -30,12 +30,6 @@
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
 
-// Initialize the variables for the ADC measurement
-uint32_t ADC_RAW_Sum_1 = 0.0;
-float ADC_RAW_Offset_1 = 0.0;
-int i_CountADCinit = 0, CountCurrentError = 0;
-_Bool initADCdone = false;
-
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -43,7 +37,6 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Initialize the Timer structure
 XTmrCtr Timer_Interrupt;
 
-float sin1amp = 1.0;
 // Global variable structure
 extern DS_Data Global_Data;
 
@@ -203,17 +196,9 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
     if (status != XST_SUCCESS)
         return XST_FAILURE;
 
-    // Connect ADC conversion interrupt to handler
-    //		status = XScuGic_Connect(&INTCInst,
-    //								INTC_ADC_Conv_INTERRUPT_ID,
-    //								(Xil_ExceptionHandler)Conv_ADC_Intr_Handler,
-    //								(void *)Conv_ADC_InstancePtr);
-    //		if(status != XST_SUCCESS) return XST_FAILURE;
-
     // Enable GPIO and timer interrupts in the controller
     XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
     XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
-    //	XScuGic_Enable(&INTCInst, INTC_ADC_Conv_INTERRUPT_ID);
 
     xil_printf("RPU: Rpu_GicInit: Done\r\n");
     return XST_SUCCESS;

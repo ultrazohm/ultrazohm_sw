@@ -21,24 +21,18 @@
 #include <stdbool.h>
 
 // Xilinx library functions
-#include "xgpiops.h"
-#include "xstatus.h"
-#include "xil_printf.h"
 #include "xscugic.h"									//Include for Interrupt handler (necessary for all GIC interrupts)
 #include "xipipsu.h"									//Include for Interrupt handler (necessary for all IPI interrupts)
-#include "xil_types.h" 								//Include for Datatypes
 #include "xtmrctr.h"									//Include of the Timer-Blocks
 
 // UltraZohm includes
 #include "globalData.h"
 #include "defines.h"
 #include "include/isr.h"
-#include "include/adc.h"
 #include "include/encoder.h"
 #include "include/gpio_axi.h"
 #include "include/javascope.h"
 #include "include/pwm_3L_driver.h"
-#include "IP_Cores/Trans_123_dq/dqTransform.h"
 
 #include "uz/uz_HAL.h"
 
@@ -49,14 +43,7 @@
 #include "uz/uz_MioGpio_mediator/uz_MioGpioMapping.h"
 
 #include "uz/uz_SystemTime/uz_SystemTime.h"
-#include "uz/uz_wavegen/uz_wavegen.h"
 
-//ADC define
-#define TX_BUFFER_SIZE						1
-#define RX_BUFFER_SIZE  					64
-//Defines for averaging the current from the ADC
-#define  CURRENT_BUF_SIZE 					6
-#define  CURRENT_BUF_SIZE_INVERS 			1/CURRENT_BUF_SIZE
 
 //----------------------------------------------------
 // FUNCTIONS

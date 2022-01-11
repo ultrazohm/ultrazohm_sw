@@ -37,7 +37,7 @@ extern "C" {
 // ========== JavaScope-Ethernet =========================================================================
 #define TCPPACKETSIZE 1460 //Maximum TCPPaketSize -> Default: 1460 -> Jumbo-Frames would enable a TCPPACKETSIZE of 8960
 #define TCPPORT 1000	   //Random chosen, but equivalent to the Concerto-OHMrichter
-#define NETWORK_SEND_FIELD_SIZE 15
+#define NETWORK_SEND_FIELD_SIZE 16
 //The IP-address, SubNet address-and StandartGateway-address are set in the main-thread in the main.c
 
 // ========== JavaScope-Queue =========================================================================

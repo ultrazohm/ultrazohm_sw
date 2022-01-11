@@ -20,7 +20,7 @@
 
 #if UZ_PARAMETERID_ACTIVE > 0U
 
-struct uz_ParameterID_t {
+typedef struct uz_ParameterID_t {
 	bool is_ready;
 	uz_PID_ControlState_t* ControlState;
 	uz_PID_ElectricalID_t *ElectricalID;
@@ -29,7 +29,7 @@ struct uz_ParameterID_t {
 	uz_PID_FluxMapID_t* FluxMapID;
 	uz_PID_OnlineID_t* OnlineID;
 
-};
+} uz_ParameterID_t;
 static size_t instances_counter_ParameterID = 0;
 static uz_ParameterID_t instances_ParameterID[UZ_PARAMETERID_ACTIVE] = { 0 };
 

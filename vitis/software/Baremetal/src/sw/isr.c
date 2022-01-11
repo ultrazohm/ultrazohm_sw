@@ -60,7 +60,7 @@ extern uz_FOC* FOC_instance;
 extern uz_PI_Controller* SpeedControl_instance;
 float i_d_soll = 0.0f;
 float i_q_soll = 0.0f;
-struct uz_pmsmModel_inputs_t pmsm_inputs = { .omega_mech_1_s = 50.0f, .v_d_V = 0.0f, .v_q_V = 0.0f, .load_torque = 0.0f };
+struct uz_pmsmModel_inputs_t pmsm_inputs = { .omega_mech_1_s = 52.3599f, .v_d_V = 0.0f, .v_q_V = 0.0f, .load_torque = 0.0f };
 struct uz_pmsmModel_outputs_t pmsm_outputs = { .i_d_A = 0.0f, .i_q_A = 0.0f, .torque_Nm = 0.0f, .omega_mech_1_s = 0.0f };
 struct uz_dq_t PID_v_dq = { 0 };
 

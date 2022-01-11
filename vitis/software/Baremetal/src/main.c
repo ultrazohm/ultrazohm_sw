@@ -42,8 +42,6 @@ float uz_isr_frequency_hz=UZ_ISR_FREQUENCY;
 float uz_isr_rate_s=1.0f/UZ_ISR_FREQUENCY;
 float uz_isr_samplerate_s=(1.0f/UZ_ISR_FREQUENCY)* (Interrupt_ISR_freq_factor);
 
-
-
 int main(void)
 {
     int status = UZ_SUCCESS;

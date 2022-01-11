@@ -54,7 +54,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 {
 	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START
 	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
-
+	int status;
 	BaseType_t xHigherPriorityTaskWoken;
 
 	// flush cache of shared memory

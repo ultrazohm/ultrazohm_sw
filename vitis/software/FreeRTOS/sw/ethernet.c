@@ -60,7 +60,7 @@ void process_request_thread(void *p)
 	int clientfd = (int)p;
 	int nread = 0;
 	int nwrote = 0;
-	u32 msgBuf[IPI_A53toR5_MSG_LEN] = {JSCMD_WRITE, js_mem_address[js_buff_index], 0};
+	u32 msgBuf[IPI_A53toR5_MSG_LEN] = {JSCMD_START, js_mem_address[js_buff_index], 0};
 
 	u64 time_start, total_time = 0;
 	u32 mean_time = 0;

@@ -108,6 +108,7 @@ void ISR_Control(void *data)
 	case JSSM_WRITE:
 		// Update JavaScope
 		JavaScope_update(&Global_Data);
+		R5_Javascope_State = JSSM_WAITING;
 		break;
 	case JSSM_BUSY_ARMED:
 		// Update JavaScope
@@ -354,10 +355,17 @@ void Parse_Ipc_Message()
 				// update number of channels
 			}
 			break;
+		case JSCMD_START:
+			if (R5_Javascope_State == JSSM_IDLE){
+				xil_printf("RPU: State Machine - START\r\n");
+				R5_Javascope_State = JSSM_WRITE;
+				// update current memory address
+				js_mem_address.current_addr = msgBuf[1];
+			}
+			break;
 		case JSCMD_WRITE:
 			switch(R5_Javascope_State) {
-			case JSSM_IDLE:
-				xil_printf("RPU: State Machine - IDLE to WRITE\r\n");
+			case JSSM_WAITING:
 				R5_Javascope_State = JSSM_WRITE;
 				// update current memory address
 				js_mem_address.current_addr = msgBuf[1];
@@ -375,13 +383,8 @@ void Parse_Ipc_Message()
 				break;
 			}
 			break;
-		case JSCMD_CANCEL:
-			if (R5_Javascope_State == JSSM_BUSY_ARMED){
-				// TODO
-			}
-			break;
 		case JSCMD_STOP:
-			xil_printf("RPU: State Machine: all to IDLE\r\n");
+			xil_printf("RPU: State Machine - STOP\r\n");
 			R5_Javascope_State = JSSM_IDLE;
 			break;
 		default:

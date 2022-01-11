@@ -129,7 +129,8 @@ enum JS_StateMachine_R5
 {
 	JSSM_IDLE = 0,
 	JSSM_WRITE,
-	JSSM_BUSY_ARMED
+	JSSM_BUSY_ARMED,
+	JSSM_WAITING
 };
 
 struct js_shared_memory_addr{

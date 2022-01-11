@@ -43,23 +43,6 @@ float uz_isr_rate_s=1.0f/UZ_ISR_FREQUENCY;
 float uz_isr_samplerate_s=(1.0f/UZ_ISR_FREQUENCY)* (Interrupt_ISR_freq_factor);
 
 
-struct uz_PWM_SS_2L_config_t config_1 = {
-        .base_address= XPAR_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR,
-        .ip_clk_frequency_Hz=100000000,
-        .Tristate_HB1 = false,
-        .Tristate_HB2 = false,
-        .Tristate_HB3 = false,
-        .min_pulse_width = 0.01f,
-        .PWM_freq_Hz = 10e3f,
-        .PWM_mode = normalized_input_via_AXI,
-        .PWM_en = true,
-        .use_external_counter = false,
-        .init_dutyCyc_A = 0.0f,
-        .init_dutyCyc_B = 0.0f,
-        .init_dutyCyc_C = 0.0f
-};
-
-uz_PWM_SS_2L_t* PWM_SS_2L_instance_1=NULL;
 
 int main(void)
 {
@@ -72,22 +55,18 @@ int main(void)
     // Initialize the global "Global_Data" structure -> the values can be overwritten afterwards from the Java-GUI -> this must be the first INIT-function, because it is required subsequently!
     InitializeDataStructure(&Global_Data);
     uz_adcLtc2311_ip_core_init();
-    Initialize_AXI_GPIO(); // Initialize the GPIOs which are connected over FPGA pins
+    Initialize_AXI_GPIO();
     uz_frontplane_button_and_led_init();
-
-    // Initialize Park-Transformation 123 to dq
 
     uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
     uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
-    // Initialize PWM and switch signal control
-PWM_SS_2L_instance_1 = uz_PWM_SS_2L_init(config_1);
+    initialize_pwm_2l_on_D1();
     PWM_3L_Initialize(&Global_Data); // three-level modulator
+    initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
 
     // Initialize Timer in order to Trigger the ISRs
     Initialize_Timer();
     uz_SystemTime_init();
-    // Initialize the incremental encoder
-    initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
 
     // Initialize the Soft-Oscilloscope ("JavaScope")
     JavaScope_initalize(&Global_Data);

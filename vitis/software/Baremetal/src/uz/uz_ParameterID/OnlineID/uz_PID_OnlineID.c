@@ -35,12 +35,18 @@ uz_PID_OnlineID_t* uz_OnlineID_init(void) {
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
 	self->PtrToModelData->outputs = &self->output;
+	self->CleanPsiArray = uz_CleanPsiArray_init();
+	self->InterpMeshGrid = uz_InterpMeshGrid_init();
 	OnlineID_initialize(self->PtrToModelData);
 	return (self);
 }
 
 void uz_OnlineID_step(uz_PID_OnlineID_t *self) {
 	OnlineID_step(self->PtrToModelData);
+}
+
+void uz_OnlineID_CalcPsiArray(uz_PID_OnlineID_t* self) {
+	uz_CleanPsiArray(self->CleanPsiArray);
 }
 
 #endif

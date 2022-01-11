@@ -215,6 +215,11 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 		return (v_dq_Volts);
 	}
 
+void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self) {
+	uz_OnlineID_CalcPsiArray(self->OnlineID);
+}
+
+
 static void uz_PID_ElectricalID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	//Update State-Inputs
 	self->ElectricalID->input.ActualValues = Data->PID_ActualValues;

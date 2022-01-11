@@ -16,6 +16,8 @@
 #include <stdbool.h>
 #include "../../uz_HAL.h"
 #include "OnlineID_codegen.h"
+#include "CleanPsiArray/uz_PID_CleanPsiArray.h"
+#include "InterpMeshGrid/uz_PID_InterpMeshGrid.h"
 
 typedef struct {
 	ExtY_OnlineID_t output;
@@ -23,7 +25,10 @@ typedef struct {
 	DW_OnlineID_t rtDW; /* Observable states */
 	RT_MODEL_OnlineID_t modelData;
 	RT_MODEL_OnlineID_t *PtrToModelData;
+	uz_PID_CleanPsiArray_t* CleanPsiArray;
+	uz_PID_InterpMeshGrid_t* InterpMeshGrid;
 } uz_PID_OnlineID_t;
 
 uz_PID_OnlineID_t* uz_OnlineID_init(void);
 void uz_OnlineID_step(uz_PID_OnlineID_t *self);
+void uz_OnlineID_CalcPsiArray(uz_PID_OnlineID_t* self);

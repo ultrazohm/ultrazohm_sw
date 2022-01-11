@@ -355,15 +355,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			data->ctrl.mpc.fcs.bEnableVSP2CC = (_Bool)value;
 			break;
 
-		//online Rs measuring and temp calculation
-		case( 0x510 + MOTORCONTROL_OFFSET_bits):
-			data->mrp.motorStatorResistance = value * 0.001;
-			break;
-
-		case( 0x511 + MOTORCONTROL_OFFSET_bits):
-			data->pID.Temp_ref = value * 0.01;
-			break;
-
 		//Hoerner Offline ID
 		//ACCEPT
 		case( 5 + MOTORCONTROL_OFFSET_bits):
@@ -580,10 +571,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			PID_Data.PID_FluxMapID_Config.IQstepsize = value * 0.001f;
 			break;
 
-		//Goertzel Amplitude
-	//	case( 0x613 + MOTORCONTROL_OFFSET_bits):
-	//		data->pID.goertzlAmp = value * 0.1;
-	//		break;
+		case (0x216 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_FluxMapID_Config.R_s_ref = value;
+			break;
+
+		case (0x217 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_FluxMapID_Config.Temp_ref = value;
+			break;
 
 		//Gebhardt Offline ID
 		case( 0x610+MOTORCONTROL_OFFSET_bits):
@@ -671,7 +665,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			break;
 
 		case (0x140 + MOTORCONTROL_OFFSET_bits):
-			data->mrp.motorStatorResistance = value*0.001;
+			data->mrp.motorStatorResistance = value;
 			break;
 
 		case (0x141 + MOTORCONTROL_OFFSET_bits):

@@ -178,13 +178,17 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 			output_DutyCycle.DutyCycle_V = Data->PID_ElectricalID_Output->PWM_Switch_2;
 			output_DutyCycle.DutyCycle_W = Data->PID_ElectricalID_Output->PWM_Switch_4;
 			}
-		uz_FOC_set_Kp_id(FOC_instance, Data->PID_Controller_Parameters.Kp_id_out);
-		uz_FOC_set_Kp_iq(FOC_instance, Data->PID_Controller_Parameters.Kp_iq_out);
-		uz_FOC_set_Ki_id(FOC_instance, Data->PID_Controller_Parameters.Ki_id_out);
-		uz_FOC_set_Ki_iq(FOC_instance, Data->PID_Controller_Parameters.Ki_iq_out);
+//		uz_FOC_set_Kp_id(FOC_instance, Data->PID_Controller_Parameters.Kp_id_out);
+//		uz_FOC_set_Kp_iq(FOC_instance, Data->PID_Controller_Parameters.Kp_iq_out);
+//		uz_FOC_set_Ki_id(FOC_instance, Data->PID_Controller_Parameters.Ki_id_out);
+//		uz_FOC_set_Ki_iq(FOC_instance, Data->PID_Controller_Parameters.Ki_iq_out);
+//		uz_PI_Controller_set_Ki(Speed_instance, Data->PID_Controller_Parameters.Ki_n_out);
+//		uz_PI_Controller_set_Kp(Speed_instance, Data->PID_Controller_Parameters.Kp_n_out);
+		}
+	if (Data->PID_GlobalConfig.TwoMassID == true) {
 		uz_PI_Controller_set_Ki(Speed_instance, Data->PID_Controller_Parameters.Ki_n_out);
 		uz_PI_Controller_set_Kp(Speed_instance, Data->PID_Controller_Parameters.Kp_n_out);
-		}
+	}
 
 	if (Data->PID_ControlFlags->finished_all_Offline_states == true) {
 		if (Data->PID_OnlineID_Output->IdControlFlag == true) {

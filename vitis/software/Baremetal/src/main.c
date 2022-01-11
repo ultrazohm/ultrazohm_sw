@@ -18,6 +18,7 @@
 #include "uz/uz_global_configuration.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
 #include "include/uz_adcLtc2311_ip_core_init.h"
+#include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 // Initialize the global variables
 int i_LifeCheck;
 
@@ -41,9 +42,27 @@ float uz_isr_frequency_hz=UZ_ISR_FREQUENCY;
 float uz_isr_rate_s=1.0f/UZ_ISR_FREQUENCY;
 float uz_isr_samplerate_s=(1.0f/UZ_ISR_FREQUENCY)* (Interrupt_ISR_freq_factor);
 
+
+struct uz_PWM_SS_2L_config_t config_1 = {
+        .base_address= XPAR_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR,
+        .ip_clk_frequency_Hz=100000000,
+        .Tristate_HB1 = false,
+        .Tristate_HB2 = false,
+        .Tristate_HB3 = false,
+        .min_pulse_width = 0.01f,
+        .PWM_freq_Hz = 10e3f,
+        .PWM_mode = normalized_input_via_AXI,
+        .PWM_en = true,
+        .use_external_counter = false,
+        .init_dutyCyc_A = 0.0f,
+        .init_dutyCyc_B = 0.0f,
+        .init_dutyCyc_C = 0.0f
+};
+
+uz_PWM_SS_2L_t* PWM_SS_2L_instance_1=NULL;
+
 int main(void)
 {
-
     int status = UZ_SUCCESS;
     Xil_AssertSetCallback((Xil_AssertCallback)uz_assertCallback);
     uz_printf("\r\n\r\n");
@@ -61,7 +80,7 @@ int main(void)
     uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
     uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
     // Initialize PWM and switch signal control
-    PWM_SS_Initialize(&Global_Data); // two-level modulator
+PWM_SS_2L_instance_1 = uz_PWM_SS_2L_init(config_1);
     PWM_3L_Initialize(&Global_Data); // three-level modulator
 
     // Initialize Timer in order to Trigger the ISRs

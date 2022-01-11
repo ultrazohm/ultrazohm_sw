@@ -20,7 +20,6 @@
 #include <math.h>
 #include <xtmrctr.h>
 #include "../include/javascope.h"
-#include "../include/pwm.h"
 #include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
 #include "../include/encoder.h"
@@ -57,6 +56,9 @@ extern DS_Data Global_Data;
 static void toggleLEDdependingOnReadyOrRunning(uint32_t i_count_1ms, uint32_t i_count_1s);
 static void ReadAllADC();
 
+#include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+extern uz_PWM_SS_2L_t* PWM_SS_2L_instance_1;
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic();
@@ -82,9 +84,7 @@ void ISR_Control(void *data)
     // End: Control algorithm -------------------------------------------------------------------------------
 
     // Set duty cycles for two-level modulator
-    PWM_SS_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+    uz_PWM_SS_2L_set_duty_cycle(PWM_SS_2L_instance_1,Global_Data.rasv.halfBridge1DutyCycle,Global_Data.rasv.halfBridge2DutyCycle,Global_Data.rasv.halfBridge3DutyCycle);
 
     // Set duty cycles for three-level modulator
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

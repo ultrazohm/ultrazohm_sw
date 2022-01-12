@@ -1,14 +1,21 @@
 .. _uz_xwdttb:
 
-=================================
-AXI Watch Dog Timer Time Based IP
-=================================
+===============
+Watch Dog Timer
+===============
+
+The main goal of the Watch Dog Timer (WDT) is to detect real-time violations, e.g. if the control routine on the R5 takes longer than the available control period. 
+In this case an interrupt is thrown that can be handled in the PS and PL.
+
 
 Introduction
 ============
 
-The lack of precision of the System Watchdog Timer leads as to use the IP provided by Xilinx [#PG128]_.  For more information about the System WDT (option discarded) see the Zynq UltraScale+: technical reference manual [#UG1085]_, chapter 14, page 361.
-Here we have the IP Block design and its components as it is defined in [#PG128]_.
+The Xilinx IP-core `AXI Timebase Watchdog Timer <https://www.xilinx.com/products/intellectual-property/axi_timebase_wdt.html>`_ [#PG128]_ forms the bases of this module.
+The IP offers two morking modes [#PG128]_:
+
+- The **Timebase WDT** working mode implements an incremental counter which after one expiration of the timeout interval, an interrupt is generated. However, it does not offer a resolution in the order of microseconds that is needed.
+- The **Window WDT** working mode is the chosen one. It offers extended functionality and the required resolution of the window length. 
 
 .. _XWDTTB_ModuleOverview:
 
@@ -17,19 +24,30 @@ Here we have the IP Block design and its components as it is defined in [#PG128]
    :align: center
 
    Top view of the Module.
-   
-The IP is divided in two main parts, the Timebase Timer and the Window WDT.
-This parts are attached with the two different working modes of the IP.
 
-- The Timebase working mode implements an incremental counter which after one expiration of the timeout interval, an interrupt is generated. But it does not allow as to have a precision with any desired value for the counter.
-- The Window working mode is the chosen one as we can see in the picture. More complex, and with extended functionality.
+Window working mode
+===================
 
-The Window working mode
-=======================
+The Window Watchdog Timer (WWDT) starts with an adjustable period called **close window**, followed by another period called **open window**.
+The WWDT has to be restarted within the **open window**. 
+If the WWDT is restarted outside of the open window time period, it generates a reset.
 
-A window watchdog timer (WWDT) starts with an adjustable period called "close (first) window time" followed by another period called "open (second) window time." The WWDT has to be restarted within the open window time. If software tries to restart WWDT outside of the open window time period, it generates a reset.
+.. figure:: ./wwdt_windows.jpg
+   :width: 800
+   :align: center
 
-Very important to set the interruption assertion point in time (as it can be read in the image):
+
+Register Description
+====================
+
+A brief summary of the most important registers are given below. 
+
+Function Control Register (FCR)
+*******************************
+
+The ``FCR`` (Function Control Register) defines the interruption assertion point in time in the second window, at which an interrupt is triggered. 
+This choice is made by a combination of  the ``SBC`` (Select Byte Count) and the ``BSS`` (Byte Segement Selection of Second Window Count).  
+An illustrative example is given in the next section. 
 
 .. _XWDTTB_FunctionControlRegister:
 
@@ -39,11 +57,18 @@ Very important to set the interruption assertion point in time (as it can be rea
 
    Function Control Register (FCR) fields to set INT point.
 
+First Window Count Register (FWR)
+*********************************
+This field provides the count value for the first window.
+FW Counter is a down counter and it starts from the programmed FWR value and ends at 0.
+First window continue. When completed, it is followed by the second window.
+This field can be set as 0. In this case, it achieves “close” window absent case.
+
 Second Window Count Register (SWR)
 **********************************
 This register provides the count value for the second window.
 SW Counter is a down counter and it starts with the programmed SWR value and ends at 0.
-SW[31:0] is used to place the interrupt assertion with the help of BSS[1:0] and SBC[7:0]. (See the FCR Register above)
+``SW[31:0]`` is used to place the interrupt assertion with the help of ``BSS[1:0]`` and ``SBC[7:0]``. (See the ``FCR`` Register above)
 Any good or bad event ends the second window. Absence of a good or bad event allows the second window timeout. This is considered a bad event.
 
 .. _XWDTTB_SecondWindowConstants:
@@ -56,8 +81,8 @@ Any good or bad event ends the second window. Absence of a good or bad event all
 
 So we split the second window in two parts (as can be seen in the next picture):
 
-- A: 0x2710 = 10.000 clock ticks => 100 microsec.
-- B: 0xFF00 = 65,280 clock ticks more than 650 micro secs to execute the handler function (enough time to resume execution or to save working state).
+- A: 0x2710 = 10,000 clock ticks => 100 microsec.
+- B: 0xFF00 = 65,280 clock ticks more than 650 microsec. to execute the handler function (enough time to resume execution or to save working state).
 
 .. _XWDTTB_SecondWindowTimingDiagram:
 
@@ -85,6 +110,11 @@ Driver function reference
 
 .. doxygenfunction:: WdtTbIntrHandler
 
+
+Additional information
+======================
+
+The lack of precision of the System Watchdog Timer leads as to use the IP provided by Xilinx.  For more information about the System WDT (option discarded) see the Zynq UltraScale+: technical reference manual [#UG1085]_, chapter 14, page 361.
 
 Sources
 =======

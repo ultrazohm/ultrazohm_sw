@@ -209,6 +209,13 @@ int main(void)
 			bNewControlMethodAvailable = false; //Reset the Flag in order to initialize the IP Cores and functions after a new control method arrives, only once!
 		}
 
+		if (PID_Data.PID_OnlineID_Output->clean_array == true) {
+			uz_ParameterID_CleanPsiArray(ParameterID, &PID_Data);
+		}
+		if (PID_Data.calculate_flux_maps == true) {
+			uz_ParameterID_CalcFluxMaps(ParameterID, &PID_Data);
+			PID_Data.calculate_flux_maps = false;
+		}
 		if (bPlotData)
 		{
 			plotData(&Global_Data);

@@ -684,6 +684,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			PID_Data.PID_OnlineID_Config.Rs_time = value;
 			break;
 
+		case (0x145 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.calculate_flux_maps = true;
+			break;
+
 			//TwoMassID
 		case (0x151 + MOTORCONTROL_OFFSET_bits):
 			PID_Data.PID_TwoMassID_Config.ScaleTorquePRBS = value;

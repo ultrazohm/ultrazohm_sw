@@ -217,13 +217,16 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 
 void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t* Data) {
 	self->OnlineID->CleanPsiArray->input.OnlineID_output = self->OnlineID->output.OnlineID_output;
-	self->OnlineID->CleanPsiArray->input.eta_c = 1.2f * 0.5f * sqrtf(0.5f);
+	self->OnlineID->CleanPsiArray->input.eta_c = 0.05f * Data->PID_GlobalConfig.ratCurrent;
 	uz_OnlineID_CleanPsiArray(self->OnlineID);
+	memcpy(self->OnlineID->input.cleaned_psi_array, self->OnlineID->CleanPsiArray->output.psi_array_out, sizeof(self->OnlineID->input.cleaned_psi_array));
+	self->OnlineID->input.OnlineIDConfig.array_cleaned = self->OnlineID->CleanPsiArray->output.array_cleaned_flag;
 }
 
 void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
-	memcpy(self->OnlineID->InterpMeshGrid->input.OnlineID_input.psi_array, self->OnlineID->CleanPsiArray->output.psi_array_out, sizeof(self->OnlineID->CleanPsiArray->output.psi_array_out));
+	memcpy(self->OnlineID->InterpMeshGrid->input.psi_array_in, self->OnlineID->CleanPsiArray->output.psi_array_out, sizeof(self->OnlineID->CleanPsiArray->output.psi_array_out));
 	self->OnlineID->InterpMeshGrid->input.i_rat = Data->PID_GlobalConfig.ratCurrent;
+	self->OnlineID->InterpMeshGrid->input.OnlineID_input = self->OnlineID->output.OnlineID_output;
 	uz_OnlineID_CalcFluxMaps(self->OnlineID);
 }
 
@@ -402,6 +405,7 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_Para
 	Data->PID_OnlineID_Config.max_n_ratio = 0.0f;
 	Data->PID_OnlineID_Config.min_n_ratio = 0.0f;
 	Data->PID_OnlineID_Config.nom_factor = 0.0f;
+	Data->PID_OnlineID_Config.array_cleaned = false;
 
 	//Inintialize Output data structs
 	Data->PID_ElectricalID_Output = &ParameterID->ElectricalID->output.ElectricalID_output;
@@ -410,7 +414,7 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_Para
 	Data->PID_TwoMassID_Output = &ParameterID->TwoMassID->output.TwoMassID_output;
 	Data->PID_OnlineID_Output = &ParameterID->OnlineID->output.OnlineID_output;
 	Data->PID_ControlFlags = &ParameterID->ControlState->output.ControlFlags;
-	Data->FluxMap_Data = &ParameterID->OnlineID->InterpMeshGrid->output;
+	Data->FluxMap_Data = &ParameterID->OnlineID->InterpMeshGrid->output.FluxMapData;
 
 
 }

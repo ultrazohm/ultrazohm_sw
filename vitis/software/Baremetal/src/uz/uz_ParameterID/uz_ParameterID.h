@@ -47,6 +47,7 @@ typedef struct uz_ParameterID_Data_t {
 	uz_PID_OnlineID_output_t* PID_OnlineID_Output;
 	uz_PID_Controller_Parameters_output_t PID_Controller_Parameters;
 	uz_PID_FluxMapsData_t* FluxMap_Data;
+	bool calculate_flux_maps;
 } uz_ParameterID_Data_t;
 
 uz_ParameterID_t* uz_ParameterID_init(void);

@@ -79,6 +79,7 @@ typedef struct {
   boolean_T allowPsiCalcOutside;
   real32_T min_n_ratio;
   real32_T max_n_ratio;
+	boolean_T array_cleaned;
 } uz_PID_OnlineIDConfig_t;
 
 #endif
@@ -163,7 +164,7 @@ typedef struct {
   real32_T psi_pm_out;
   real32_T Ld_out;
   real32_T Lq_out;
-  boolean_T clean_array_flag;
+	boolean_T clean_array;
 } uz_PID_OnlineID_output_t;
 
 #endif
@@ -237,8 +238,7 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  boolean_T array_cleaned_flag;        /* '<Root>/array_cleaned_flag' */
-  real32_T psi_array_out[600];         /* '<Root>/cleaned_psi_array' */
+	real32_T cleaned_psi_array[600]; /* '<Root>/cleaned_psi_array' */
   uz_PID_OnlineIDConfig_t OnlineIDConfig;/* '<Root>/OnlineIDConfig' */
   uz_PID_ActualValues_t ActualValues;  /* '<Root>/ActualValues' */
   uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */

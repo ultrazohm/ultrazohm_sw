@@ -270,8 +270,8 @@ static void InitParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
   rtOnlineID_Y->OnlineID_output.Lq_out =
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Lq_Henry;
 
-  /* '<S1>:241:82' OnlineID_output.clean_array_flag = boolean(0); */
-  rtOnlineID_Y->OnlineID_output.clean_array_flag = false;
+	/* '<S1>:241:82' OnlineID_output.clean_array = boolean(0); */
+	rtOnlineID_Y->OnlineID_output.clean_array = false;
 
   /* Inport: '<Root>/GlobalConfig' */
   /* '<S1>:241:84' OnlineID_output.psi_array(1,array_counter)=single(0.70*GlobalConfig.ratCurrent); */
@@ -1313,28 +1313,29 @@ static void enter_atomic_PsiCalcState(ExtU_OnlineID_t *rtOnlineID_U,
     rtOnlineID_Y->OnlineID_output.Wtemp = Wtemp_check;
   }
 
-  /* Inport: '<Root>/array_cleaned_flag' */
-  /* '<S1>:83:10' if(array_cleaned_flag==1) */
-  if (rtOnlineID_U->array_cleaned_flag) {
+	/* Inport: '<Root>/OnlineIDConfig' */
+	/* '<S1>:83:10' if(OnlineIDConfig.array_cleaned==1) */
+	if (rtOnlineID_U->OnlineIDConfig.array_cleaned) {
     /* Outport: '<Root>/OnlineID_output' incorporates:
      *  Inport: '<Root>/cleaned_psi_array'
      */
     /* '<S1>:83:11' OnlineID_output.psi_array=cleaned_psi_array; */
     memcpy(&rtOnlineID_Y->OnlineID_output.psi_array[0],
-           &rtOnlineID_U->psi_array_out[0], 600U * sizeof(real32_T));
+           &rtOnlineID_U->cleaned_psi_array[0], 600U * sizeof(real32_T));
+
+		/* '<S1>:83:12' OnlineID_output.clean_array = boolean(0); */
   }
 
-  /* End of Inport: '<Root>/array_cleaned_flag' */
-  /* '<S1>:83:13' array_counter=uint16(99); */
-  /* '<S1>:83:14' psi_d=1000*(mean(vq_register)-OnlineID_output.Rph_out*mean(iq_register))/(mean(omega_register)*GlobalConfig.PMSM_config.polePairs); */
+	/* '<S1>:83:14' array_counter=uint16(99); */
+	/* '<S1>:83:15' psi_d=1000*(mean(vq_register)-OnlineID_output.Rph_out*mean(iq_register))/(mean(omega_register)*GlobalConfig.PMSM_config.polePairs); */
   Wtemp_check = rtOnlineID_DW->vq_register[0];
   b_x = rtOnlineID_DW->iq_register[0];
 
-  /* '<S1>:83:15' psi_q=1000*(-1)*(mean(vd_register)-OnlineID_output.Rph_out*mean(id_register))/(mean(omega_register)*GlobalConfig.PMSM_config.polePairs); */
+	/* '<S1>:83:16' psi_q=1000*(-1)*(mean(vd_register)-OnlineID_output.Rph_out*mean(id_register))/(mean(omega_register)*GlobalConfig.PMSM_config.polePairs); */
   d_x = rtOnlineID_DW->vd_register[0];
   e_x = rtOnlineID_DW->id_register[0];
 
-  /* '<S1>:83:16' OnlineID_output.psi_array(1,array_counter)=mean(id_register); */
+	/* '<S1>:83:17' OnlineID_output.psi_array(1,array_counter)=mean(id_register); */
   g_x = rtOnlineID_DW->id_register[0];
   for (i = 0; i < 49; i++) {
     Wtemp_check += rtOnlineID_DW->vq_register[i + 1];
@@ -1348,7 +1349,7 @@ static void enter_atomic_PsiCalcState(ExtU_OnlineID_t *rtOnlineID_U,
   /* Outport: '<Root>/OnlineID_output' */
   rtOnlineID_Y->OnlineID_output.psi_array[588] = g_x / 50.0F;
 
-  /* '<S1>:83:17' OnlineID_output.psi_array(2,array_counter)=mean(iq_register); */
+	/* '<S1>:83:18' OnlineID_output.psi_array(2,array_counter)=mean(iq_register); */
   g_x = rtOnlineID_DW->iq_register[0];
   for (i = 0; i < 49; i++) {
     g_x += rtOnlineID_DW->iq_register[i + 1];
@@ -1357,7 +1358,7 @@ static void enter_atomic_PsiCalcState(ExtU_OnlineID_t *rtOnlineID_U,
   /* Outport: '<Root>/OnlineID_output' */
   rtOnlineID_Y->OnlineID_output.psi_array[589] = g_x / 50.0F;
 
-  /* '<S1>:83:18' OnlineID_output.psi_array(3,array_counter)=mean(omega_register); */
+	/* '<S1>:83:19' OnlineID_output.psi_array(3,array_counter)=mean(omega_register); */
   g_x = ((((rtOnlineID_DW->omega_register[0] + rtOnlineID_DW->omega_register[1])
            + rtOnlineID_DW->omega_register[2]) + rtOnlineID_DW->omega_register[3])
          + rtOnlineID_DW->omega_register[4]) / 5.0F;
@@ -1365,26 +1366,26 @@ static void enter_atomic_PsiCalcState(ExtU_OnlineID_t *rtOnlineID_U,
   /* Outport: '<Root>/OnlineID_output' */
   rtOnlineID_Y->OnlineID_output.psi_array[590] = g_x;
 
-  /* '<S1>:83:19' OnlineID_output.psi_array(4,array_counter)=OnlineID_output.Wtemp; */
+	/* '<S1>:83:20' OnlineID_output.psi_array(4,array_counter)=OnlineID_output.Wtemp; */
   rtOnlineID_Y->OnlineID_output.psi_array[591] =
     rtOnlineID_Y->OnlineID_output.Wtemp;
 
   /* Inport: '<Root>/GlobalConfig' */
-  /* '<S1>:83:20' OnlineID_output.psi_array(5,array_counter)=psi_d; */
+	/* '<S1>:83:21' OnlineID_output.psi_array(5,array_counter)=psi_d; */
   g_x *= rtOnlineID_U->GlobalConfig_out.PMSM_config.polePairs;
 
   /* Outport: '<Root>/OnlineID_output' */
   rtOnlineID_Y->OnlineID_output.psi_array[592] = (Wtemp_check / 50.0F - b_x /
     50.0F * rtOnlineID_Y->OnlineID_output.Rph_out) * 1000.0F / g_x;
 
-  /* '<S1>:83:21' OnlineID_output.psi_array(6,array_counter)=psi_q; */
+	/* '<S1>:83:22' OnlineID_output.psi_array(6,array_counter)=psi_q; */
   rtOnlineID_Y->OnlineID_output.psi_array[593] = (d_x / 50.0F - e_x / 50.0F *
     rtOnlineID_Y->OnlineID_output.Rph_out) * -1000.0F / g_x;
 
-  /* '<S1>:83:22' OnlineID_output.clean_array_flag=boolean(1); */
-  rtOnlineID_Y->OnlineID_output.clean_array_flag = true;
+	/* '<S1>:83:23' OnlineID_output.clean_array=boolean(1); */
+	rtOnlineID_Y->OnlineID_output.clean_array = true;
 
-  /* '<S1>:83:23' breakback=single(1); */
+	/* '<S1>:83:24' breakback=single(1); */
   rtOnlineID_DW->breakback = 1.0F;
 }
 
@@ -2413,7 +2414,7 @@ void OnlineID_initialize(RT_MODEL_OnlineID_t *const rtOnlineID_M)
   rtOnlineID_Y->OnlineID_output.psi_pm_out = 0.0F;
   rtOnlineID_Y->OnlineID_output.Ld_out = 0.0F;
   rtOnlineID_Y->OnlineID_output.Lq_out = 0.0F;
-  rtOnlineID_Y->OnlineID_output.clean_array_flag = false;
+	rtOnlineID_Y->OnlineID_output.clean_array = false;
 }
 
 /*

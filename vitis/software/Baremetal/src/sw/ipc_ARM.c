@@ -18,9 +18,6 @@
 #include "../include/ipc_ARM.h"
 
 
-#define SCOPE_OFFSET_bits 0x00
-#define MOTORCONTROL_OFFSET_bits 1000
-
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
@@ -34,11 +31,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 	{
 		//GENERAL VARIABLES
 		switch (msgId){
-		case 1:
-			// do something
-			break;
 
-		case( 2): // Stop
+		case( Stop): // Stop
 			data->cw.enableSystem = false;
 			data->cw.enableControl = false;
 			break;
@@ -122,21 +116,81 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[19] = js_ch_observable[(uint32_t)value];	}
 			break;
 
-		case( 0x01+MOTORCONTROL_OFFSET_bits): // ConverterEnable
+		case( Enable_System): // ConverterEnable
 			data->cw.enableSystem = true;
 			break; 
 
-		case( 0x02+MOTORCONTROL_OFFSET_bits): // ConverterDisable
+		case( Disable_System): // ConverterDisable
 			data->cw.enableSystem = false;
 			break; 
 
-		case( 0x03+MOTORCONTROL_OFFSET_bits): // ControlEnable
+		case( Enable_Control): // ControlEnable
 			data->cw.enableControl = true;
 			break; 
 
-		case( 0x04+MOTORCONTROL_OFFSET_bits): // ControlDisable
+		case( Disable_Control): // ControlDisable
 			data->cw.enableControl = false;
 			break; 
+
+		case( Set_Send_Field_1):
+
+			break;
+
+		case( Set_Send_Field_2):
+
+			break;
+
+		case( Set_Send_Field_3):
+
+			break;
+
+		case( Set_Send_Field_4):
+
+			break;
+
+		case( Set_Send_Field_5):
+
+			break;
+
+		case( Set_Send_Field_6):
+
+			break;
+
+		case ( My_Button_1):
+
+			break;
+
+		case ( My_Button_2):
+
+			break;
+
+		case ( My_Button_3):
+
+			break;
+
+		case ( My_Button_4):
+
+			break;
+
+		case ( My_Button_5):
+
+			break;
+
+		case ( My_Button_6):
+
+			break;
+
+		case ( My_Button_7):
+
+			break;
+
+		case ( My_Button_8):
+
+			break;
+
+		case ( Error_Reset):
+
+			break;
 
 		case(0xFFFF):
 			// this is triggered if the IPI message buffer is read without being written once before (i.e. at startup)
@@ -144,45 +198,50 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 
 		default:
 			break; // Default just breaks since now a lot of unused control worlds are sent from the javascope->a53 which are never handled here.
-			//uz_assert(0); // unknown command -> throw error
+			uz_assert(0); // unknown command -> throw error
 		}
 	}
 
-	/* Bit 0 - ui16_drv_enable */
+	// Feedback bits for controlling the status indicators in the GUI
+	/* Bit 0 - Enable_System */
 	if (data->cw.enableSystem == true) {
 		js_status_BareToRTOS |= 1 << 0;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 0);
 	}
-	/* Bit 1 - PIR_ENABLE */
+	/* Bit 1 - Enable_Control */
 	if (data->cw.enableControl == true) {
 		js_status_BareToRTOS |= 1 << 1;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 1);
 	}
-	/* Bit 2 - IDENT_LQ */
-	js_status_BareToRTOS &= ~(1 << 2);
+	/* Bit 2 - My_Button_1 */
+	//if ("your condition" == true) {
+	//	js_status_BareToRTOS &= ~(1 << 2);
+	//} else {
+	//	js_status_BareToRTOS &= ~(1 << 2);
+	//}
 
-	/* Bit 3 - CURRENT_CONTROL */
-	if (data->cw.ControlReference == CurrentControl){
-		js_status_BareToRTOS |= 1 << 3;
-	} else {
-		js_status_BareToRTOS &= ~(1 << 3);
-	}
-	/* Bit 4 - SPEED_CONTROL */
-	if (data->cw.ControlReference == SpeedControl){
-		js_status_BareToRTOS |= 1 << 4;
-	} else {
-		js_status_BareToRTOS &= ~(1 << 4);
-	}
-	/* Bit 5 - ADD VIBRATION */
-		js_status_BareToRTOS &= ~(1 << 5);
+	/* Bit 3 - My_Button_2 */
+	//js_status_BareToRTOS &= ~(1 << 3);
 
-	/* Bit 6 - IDorNOT */
-	//if (data->pID.MotorID == 1) {
-	js_status_BareToRTOS &= ~(1 << 6);
+	/* Bit 4 - My_Button_3 */
+	//js_status_BareToRTOS &= ~(1 << 4);
 
-	/* Bit 7 - identROnline */
-	js_status_BareToRTOS &= ~(1 << 7);
+	/* Bit 5 - My_Button_4 */
+	//js_status_BareToRTOS &= ~(1 << 5);
+
+	/* Bit 6 - My_Button_5 */
+	//js_status_BareToRTOS &= ~(1 << 6);
+
+	/* Bit 7 - My_Button_6 */
+	//js_status_BareToRTOS &= ~(1 << 7);
+
+	/* Bit 8 - My_Button_7 */
+	//js_status_BareToRTOS &= ~(1 << 8);
+
+	/* Bit 9 - My_Button_8 */
+	//js_status_BareToRTOS &= ~(1 << 9);
+
 }
 

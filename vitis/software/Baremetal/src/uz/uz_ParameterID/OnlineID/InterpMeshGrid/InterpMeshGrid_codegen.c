@@ -243,7 +243,7 @@ static void interpol_flux_scatter_psid(real32_T array[10300], const real32_T
 
   /* 'interpol_flux_scatter_psid:19' i1=single(0); */
   /* 'interpol_flux_scatter_psid:20' i2=single(0); */
-  rtInterpMeshGrid_DW->i2_f = -1;
+	rtInterpMeshGrid_DW->i2_g = -1;
 
   /* 'interpol_flux_scatter_psid:21' i3=single(0); */
   i3 = -1;
@@ -309,7 +309,7 @@ static void interpol_flux_scatter_psid(real32_T array[10300], const real32_T
       dis_gitter = array[103 * array_tmp + 3];
       if (fabsf(dis_gitter) < dis_gitter_alt) {
         /* 'interpol_flux_scatter_psid:70' i2=t; */
-        rtInterpMeshGrid_DW->i2_f = array_tmp;
+				rtInterpMeshGrid_DW->i2_g = array_tmp;
 
         /* 'interpol_flux_scatter_psid:71' e=array(4,t); */
         dis_gitter_alt = dis_gitter;
@@ -322,18 +322,18 @@ static void interpol_flux_scatter_psid(real32_T array[10300], const real32_T
     /* 'interpol_flux_scatter_psid:82' for(t=single(1):single(n_curr) */
     for (array_tmp = 0; array_tmp <= n_curr; array_tmp++) {
       /* 'interpol_flux_scatter_psid:83' if(t~=i1 && t~=i2) */
-      if ((array_tmp != k) && (array_tmp != rtInterpMeshGrid_DW->i2_f)) {
+			if ((array_tmp != k) && (array_tmp != rtInterpMeshGrid_DW->i2_g)) {
         /*  Calculate scalarproduct of every possible triangle and divide throuh */
         /*  norm of vectors to get cos() of angle */
         /* 'interpol_flux_scatter_psid:88' AB=[array(1,i2)-array(1,i1);array(2,i2)-array(2,i1);array(3,i2)-array(3,i1)]; */
         dis_gitter = array[103 * k];
-        rtInterpMeshGrid_DW->N_sum_p[0] = array[103 * rtInterpMeshGrid_DW->i2_f]
+				rtInterpMeshGrid_DW->N_sum_p[0] = array[103 * rtInterpMeshGrid_DW->i2_g]
           - dis_gitter;
         N_sum_tmp_0 = array[103 * k + 1];
-        rtInterpMeshGrid_DW->N_sum_p[1] = array[103 * rtInterpMeshGrid_DW->i2_f
+				rtInterpMeshGrid_DW->N_sum_p[1] = array[103 * rtInterpMeshGrid_DW->i2_g
           + 1] - N_sum_tmp_0;
         N_sum_tmp_1 = array[103 * k + 2];
-        rtInterpMeshGrid_DW->N_sum_p[2] = array[103 * rtInterpMeshGrid_DW->i2_f
+				rtInterpMeshGrid_DW->N_sum_p[2] = array[103 * rtInterpMeshGrid_DW->i2_g
           + 2] - N_sum_tmp_1;
 
         /* 'interpol_flux_scatter_psid:89' AC=[array(1,t)-array(1,i1);array(2,t)-array(2,i1);array(3,t)-array(3,i1)]; */
@@ -355,7 +355,7 @@ static void interpol_flux_scatter_psid(real32_T array[10300], const real32_T
     }
 
     /* find smallest cos() of angle because triangle should be as right-angled as */
-    /* possible and cos(90°)=0 */
+		/* possible and cos(90Â°)=0 */
     /* 'interpol_flux_scatter_psid:100' e=single(1e19); */
     dis_gitter_alt = 1.0E+19F;
 
@@ -374,13 +374,13 @@ static void interpol_flux_scatter_psid(real32_T array[10300], const real32_T
 
     /* create triangle vectors */
     /* 'interpol_flux_scatter_psid:110' AB=[array(1,i2)-array(1,i1); array(2,i2)-array(2,i1); array(3,i2)-array(3,i1)]; */
-    rtInterpMeshGrid_DW->N_sum_p[0] = array[103 * rtInterpMeshGrid_DW->i2_f] -
+		rtInterpMeshGrid_DW->N_sum_p[0] = array[103 * rtInterpMeshGrid_DW->i2_g] -
       array[103 * k];
     array_tmp = 103 * k + 1;
-    rtInterpMeshGrid_DW->N_sum_p[1] = array[103 * rtInterpMeshGrid_DW->i2_f + 1]
+		rtInterpMeshGrid_DW->N_sum_p[1] = array[103 * rtInterpMeshGrid_DW->i2_g + 1]
       - array[array_tmp];
     N_sum_tmp = 103 * k + 2;
-    rtInterpMeshGrid_DW->N_sum_p[2] = array[103 * rtInterpMeshGrid_DW->i2_f + 2]
+		rtInterpMeshGrid_DW->N_sum_p[2] = array[103 * rtInterpMeshGrid_DW->i2_g + 2]
       - array[N_sum_tmp];
 
     /* 'interpol_flux_scatter_psid:111' AC=[array(1,i3)-array(1,i1); array(2,i3)-array(2,i1); array(3,i3)-array(3,i1)]; */
@@ -437,8 +437,7 @@ static void interpol_flux_scatter_psid(real32_T array[10300], const real32_T
   /* optimize grid data  */
   /* repeat for every grid value */
   /* 'interpol_flux_scatter_psid:136' for(m=single(1):single(length(rangeX(1,:))) */
-  for (rtInterpMeshGrid_DW->i2_f = 0; rtInterpMeshGrid_DW->i2_f < 20;
-       rtInterpMeshGrid_DW->i2_f++) {
+	for (rtInterpMeshGrid_DW->i2_g = 0; rtInterpMeshGrid_DW->i2_g < 20; rtInterpMeshGrid_DW->i2_g++) {
     /* 'interpol_flux_scatter_psid:137' for(n=single(1):single(length(rangeY(1,:))) */
     for (i3 = 0; i3 < 20; i3++) {
       /* initialize variables     */
@@ -453,7 +452,7 @@ static void interpol_flux_scatter_psid(real32_T array[10300], const real32_T
         /* Calculate distance to grid data value */
         /* 'interpol_flux_scatter_psid:149' dis_gitter=( (array(1,k)-rangeX(m))^2+(array(2,k)-rangeY(n))^2  )^0.5; */
         N_sum_tmp_0 = array[103 * k];
-        dis_gitter = N_sum_tmp_0 - rangeX[rtInterpMeshGrid_DW->i2_f];
+				dis_gitter = N_sum_tmp_0 - rangeX[rtInterpMeshGrid_DW->i2_g];
         f_a_tmp = array[103 * k + 1];
         N_sum_tmp_1 = f_a_tmp - rangeY[i3];
         dis_gitter = sqrtf(dis_gitter * dis_gitter + N_sum_tmp_1 * N_sum_tmp_1);
@@ -491,7 +490,7 @@ static void interpol_flux_scatter_psid(real32_T array[10300], const real32_T
       /* 'interpol_flux_scatter_psid:174' for(t=single(1):single(n_curr) */
       for (k = 0; k <= n_curr; k++) {
         /* 'interpol_flux_scatter_psid:175' array(4,t)=( (rangeX(m) - array(1,t) )^2  +  ( rangeY(n)-array(2,t) )^2    )^0.5; */
-        dis_gitter = rangeX[rtInterpMeshGrid_DW->i2_f] - array[103 * k];
+				dis_gitter = rangeX[rtInterpMeshGrid_DW->i2_g] - array[103 * k];
         N_sum_tmp_1 = rangeY[i3] - array[103 * k + 1];
         array_tmp = 103 * k + 3;
         array[array_tmp] = sqrtf(dis_gitter * dis_gitter + N_sum_tmp_1 *
@@ -530,9 +529,10 @@ static void interpol_flux_scatter_psid(real32_T array[10300], const real32_T
       /* 'interpol_flux_scatter_psid:189' grid(n,m)=( dot(N_aver,OA)-N_aver(1)*rangeX(m)-N_aver(2)*rangeY(n))/( N_aver(3) ); */
       dis_gitter /= dis_gitter_alt;
       dis_gitter_alt = N_sum_tmp_1 / dis_gitter_alt;
-      grid[i3 + 20 * rtInterpMeshGrid_DW->i2_f] = ((((dis_gitter * OA_idx_0 +
+			grid[i3 + 20 * rtInterpMeshGrid_DW->i2_g] = ((((dis_gitter * OA_idx_0 +
         N_sum_tmp_0 * OA_idx_1) + dis_gitter_alt * OA_idx_2) - dis_gitter *
-        rangeX[rtInterpMeshGrid_DW->i2_f]) - N_sum_tmp_0 * rangeY[i3]) /
+        rangeX[rtInterpMeshGrid_DW->i2_g])
+			                - N_sum_tmp_0 * rangeY[i3]) /
         dis_gitter_alt;
     }
   }
@@ -544,8 +544,7 @@ static void interpol_flux_scatter_psid(real32_T array[10300], const real32_T
   /* 'interpol_flux_scatter_psid:197' for(m=single(1):single(length(rangeX(1,:))) */
   for (n_curr = 0; n_curr < 20; n_curr++) {
     /* 'interpol_flux_scatter_psid:198' for(n=single(1):single(length(rangeY(1,:))) */
-    for (rtInterpMeshGrid_DW->i2_f = 0; rtInterpMeshGrid_DW->i2_f < 20;
-         rtInterpMeshGrid_DW->i2_f++) {
+		for (rtInterpMeshGrid_DW->i2_g = 0; rtInterpMeshGrid_DW->i2_g < 20; rtInterpMeshGrid_DW->i2_g++) {
       /* 'interpol_flux_scatter_psid:199' grid_sum=single(0); */
       /* 'interpol_flux_scatter_psid:200' grid_count=single(0); */
       /* 'interpol_flux_scatter_psid:202' for(t=single(0):single(2) */
@@ -554,14 +553,14 @@ static void interpol_flux_scatter_psid(real32_T array[10300], const real32_T
       /* 'interpol_flux_scatter_psid:216' if(t+n<=length(rangeY(1,:))&&t~=0&&n-t>0&&t+m<=length(rangeX(1,:))&&m-t>0&&t~=0) */
       /* 'interpol_flux_scatter_psid:224' if(t==0) */
       /* 'interpol_flux_scatter_psid:225' grid_sum=grid_sum+grid_old(n,m); */
-      i3 = 20 * n_curr + rtInterpMeshGrid_DW->i2_f;
+			i3 = 20 * n_curr + rtInterpMeshGrid_DW->i2_g;
       dis_gitter_alt = rtInterpMeshGrid_DW->grid_old_k[i3];
 
       /* 'interpol_flux_scatter_psid:226' grid_count=grid_count+1; */
       dis_gitter = 1.0F;
 
       /* 'interpol_flux_scatter_psid:204' if(t+n<=length(rangeY(1,:))&&t~=0&&n-t>0) */
-      if ((rtInterpMeshGrid_DW->i2_f + 2 <= 20) && (rtInterpMeshGrid_DW->i2_f >
+			if ((rtInterpMeshGrid_DW->i2_g + 2 <= 20) && (rtInterpMeshGrid_DW->i2_g >
            0)) {
         /* 'interpol_flux_scatter_psid:205' grid_sum=grid_sum+grid_old(n+t,m); */
         /* 'interpol_flux_scatter_psid:206' grid_sum=grid_sum+grid_old(n-t,m); */
@@ -578,23 +577,24 @@ static void interpol_flux_scatter_psid(real32_T array[10300], const real32_T
         /* 'interpol_flux_scatter_psid:211' grid_sum=grid_sum+grid_old(n,m+t); */
         /* 'interpol_flux_scatter_psid:212' grid_sum=grid_sum+grid_old(n,m-t); */
         dis_gitter_alt = (rtInterpMeshGrid_DW->grid_old_k[(n_curr + 1) * 20 +
-                          rtInterpMeshGrid_DW->i2_f] + dis_gitter_alt) +
+                          rtInterpMeshGrid_DW->i2_g] + dis_gitter_alt)
+				                +
           rtInterpMeshGrid_DW->grid_old_k[(n_curr - 1) * 20 +
-          rtInterpMeshGrid_DW->i2_f];
+          rtInterpMeshGrid_DW->i2_g];
 
         /* 'interpol_flux_scatter_psid:213' grid_count=grid_count+2; */
         dis_gitter += 2.0F;
       }
 
       /* 'interpol_flux_scatter_psid:216' if(t+n<=length(rangeY(1,:))&&t~=0&&n-t>0&&t+m<=length(rangeX(1,:))&&m-t>0&&t~=0) */
-      if ((rtInterpMeshGrid_DW->i2_f + 2 <= 20) && (rtInterpMeshGrid_DW->i2_f >
+			if ((rtInterpMeshGrid_DW->i2_g + 2 <= 20) && (rtInterpMeshGrid_DW->i2_g >
            0) && (n_curr + 2 <= 20) && (n_curr > 0)) {
         /* 'interpol_flux_scatter_psid:217' grid_sum=grid_sum+grid_old(n+t,m+t); */
         /* 'interpol_flux_scatter_psid:218' grid_sum=grid_sum+grid_old(n+t,m-t); */
         /* 'interpol_flux_scatter_psid:219' grid_sum=grid_sum+grid_old(n-t,m-t); */
         /* 'interpol_flux_scatter_psid:220' grid_sum=grid_sum+grid_old(n-t,m+t); */
-        k = (n_curr - 1) * 20 + rtInterpMeshGrid_DW->i2_f;
-        array_tmp = (n_curr + 1) * 20 + rtInterpMeshGrid_DW->i2_f;
+				k = (n_curr - 1) * 20 + rtInterpMeshGrid_DW->i2_g;
+				array_tmp = (n_curr + 1) * 20 + rtInterpMeshGrid_DW->i2_g;
         dis_gitter_alt = (((rtInterpMeshGrid_DW->grid_old_k[array_tmp + 1] +
                             dis_gitter_alt) + rtInterpMeshGrid_DW->grid_old_k[k
                            + 1]) + rtInterpMeshGrid_DW->grid_old_k[k - 1]) +
@@ -606,7 +606,7 @@ static void interpol_flux_scatter_psid(real32_T array[10300], const real32_T
 
       /* 'interpol_flux_scatter_psid:224' if(t==0) */
       /* 'interpol_flux_scatter_psid:204' if(t+n<=length(rangeY(1,:))&&t~=0&&n-t>0) */
-      if ((rtInterpMeshGrid_DW->i2_f + 3 <= 20) && (rtInterpMeshGrid_DW->i2_f -
+			if ((rtInterpMeshGrid_DW->i2_g + 3 <= 20) && (rtInterpMeshGrid_DW->i2_g -
            1 > 0)) {
         /* 'interpol_flux_scatter_psid:205' grid_sum=grid_sum+grid_old(n+t,m); */
         /* 'interpol_flux_scatter_psid:206' grid_sum=grid_sum+grid_old(n-t,m); */
@@ -623,23 +623,24 @@ static void interpol_flux_scatter_psid(real32_T array[10300], const real32_T
         /* 'interpol_flux_scatter_psid:211' grid_sum=grid_sum+grid_old(n,m+t); */
         /* 'interpol_flux_scatter_psid:212' grid_sum=grid_sum+grid_old(n,m-t); */
         dis_gitter_alt = (rtInterpMeshGrid_DW->grid_old_k[(n_curr + 2) * 20 +
-                          rtInterpMeshGrid_DW->i2_f] + dis_gitter_alt) +
+                          rtInterpMeshGrid_DW->i2_g] + dis_gitter_alt)
+				                +
           rtInterpMeshGrid_DW->grid_old_k[(n_curr - 2) * 20 +
-          rtInterpMeshGrid_DW->i2_f];
+          rtInterpMeshGrid_DW->i2_g];
 
         /* 'interpol_flux_scatter_psid:213' grid_count=grid_count+2; */
         dis_gitter += 2.0F;
       }
 
       /* 'interpol_flux_scatter_psid:216' if(t+n<=length(rangeY(1,:))&&t~=0&&n-t>0&&t+m<=length(rangeX(1,:))&&m-t>0&&t~=0) */
-      if ((rtInterpMeshGrid_DW->i2_f + 3 <= 20) && (rtInterpMeshGrid_DW->i2_f -
+			if ((rtInterpMeshGrid_DW->i2_g + 3 <= 20) && (rtInterpMeshGrid_DW->i2_g -
            1 > 0) && (n_curr + 3 <= 20) && (n_curr - 1 > 0)) {
         /* 'interpol_flux_scatter_psid:217' grid_sum=grid_sum+grid_old(n+t,m+t); */
         /* 'interpol_flux_scatter_psid:218' grid_sum=grid_sum+grid_old(n+t,m-t); */
         /* 'interpol_flux_scatter_psid:219' grid_sum=grid_sum+grid_old(n-t,m-t); */
         /* 'interpol_flux_scatter_psid:220' grid_sum=grid_sum+grid_old(n-t,m+t); */
-        k = (n_curr - 2) * 20 + rtInterpMeshGrid_DW->i2_f;
-        array_tmp = (n_curr + 2) * 20 + rtInterpMeshGrid_DW->i2_f;
+				k = (n_curr - 2) * 20 + rtInterpMeshGrid_DW->i2_g;
+				array_tmp = (n_curr + 2) * 20 + rtInterpMeshGrid_DW->i2_g;
         dis_gitter_alt = (((rtInterpMeshGrid_DW->grid_old_k[array_tmp + 2] +
                             dis_gitter_alt) + rtInterpMeshGrid_DW->grid_old_k[k
                            + 2]) + rtInterpMeshGrid_DW->grid_old_k[k - 2]) +
@@ -816,7 +817,7 @@ static void interpol_flux_scatter_psiq(real32_T array[10300], const real32_T
 
     /* finde kleinstes Skalarprodukt */
     /* find smallest cos() of angle because triangle should be as right-angled as */
-    /* possible and cos(90°)=0 */
+		/* possible and cos(90Â°)=0 */
     /* 'interpol_flux_scatter_psiq:101' e=single(1e19); */
     dis_gitter_alt = 1.0E+19F;
 
@@ -1148,6 +1149,8 @@ void InterpMeshGrid_step(RT_MODEL_InterpMeshGrid_t *const rtInterpMeshGrid_M)
     rtInterpMeshGrid_M->outputs;
 
   /* MATLAB Function: '<Root>/InterpMeshGrid' incorporates:
+	 *  Inport: '<Root>/OnlineID_input'
+	 *  Inport: '<Root>/i_rat'
    *  Inport: '<Root>/psi_array_in'
    */
   /* Author Philipp Gebhardt */
@@ -1160,9 +1163,6 @@ void InterpMeshGrid_step(RT_MODEL_InterpMeshGrid_t *const rtInterpMeshGrid_M)
   /* ----------------------------------------------------------------------------------------------------------------------------------------- */
   /* initalising Outputs */
   /* ----------------------------------------------------------------------------------------------------------------------------------------- */
-  /* '<S1>:1:13' psi_temp_const=single(0.000001); */
-  rtInterpMeshGrid_DW->psi_temp_const = 1.0E-6F;
-
   /* '<S1>:1:14' psi_array=zeros(6,100); */
   /* '<S1>:1:15' psi_array=psi_array_in; */
   memcpy(&rtInterpMeshGrid_DW->psi_array_m[0], &rtInterpMeshGrid_U->
@@ -1171,120 +1171,106 @@ void InterpMeshGrid_step(RT_MODEL_InterpMeshGrid_t *const rtInterpMeshGrid_M)
   /* '<S1>:1:16' delta_psi=zeros(100,1); */
   memset(&rtInterpMeshGrid_DW->delta_psi[0], 0, 100U * sizeof(real_T));
 
-  /* '<S1>:1:17' psi_temp_error=single(0); */
-  /* '<S1>:1:19' psid_grid_out=single(zeros(20,20)); */
-  /* '<S1>:1:20' psiq_grid_out=single(zeros(20,20)); */
-  /* '<S1>:1:21' id_grid_out=single(zeros(20,20)); */
-  /* '<S1>:1:22' iq_grid_out=single(zeros(20,20)); */
-  /* '<S1>:1:23' rangepdX_out=single(zeros(1,20)); */
-  /* '<S1>:1:24' rangepqX_out=single(zeros(1,20)); */
-  /* '<S1>:1:25' rangeidX_out=single(zeros(1,20)); */
-  /* '<S1>:1:26' rangeiqX_out=single(zeros(1,20)); */
-  /* '<S1>:1:27' rangepdY_out=single(zeros(1,20)); */
-  /* '<S1>:1:28' rangepqY_out=single(zeros(1,20)); */
-  /* '<S1>:1:29' rangeidY_out=single(zeros(1,20)); */
-  /* '<S1>:1:30' rangeiqY_out=single(zeros(1,20)); */
-  /* '<S1>:1:32' rangepdX_in=single(zeros(1,20)); */
-  /* '<S1>:1:33' rangepdY_in=single(zeros(1,20)); */
-  /* '<S1>:1:34' rangepqX_in=single(zeros(1,20)); */
-  /* '<S1>:1:35' rangepqY_in=single(zeros(1,20)); */
-  /* '<S1>:1:36' rangeidX_in=single(zeros(1,20)); */
-  /* '<S1>:1:37' rangeidY_in=single(zeros(1,20)); */
-  /* '<S1>:1:38' rangeiqX_in=single(zeros(1,20)); */
-  /* '<S1>:1:39' rangeiqY_in=single(zeros(1,20)); */
+	/* '<S1>:1:18' FluxMapData.psid_grid=single(zeros(20,20)); */
+	/* '<S1>:1:19' FluxMapData.psiq_grid=single(zeros(20,20)); */
+	/* '<S1>:1:20' FluxMapData.id_grid=single(zeros(20,20)); */
+	/* '<S1>:1:21' FluxMapData.iq_grid=single(zeros(20,20)); */
+	/* '<S1>:1:22' FluxMapData.range_id_Y=single(zeros(1,20)); */
+	/* '<S1>:1:23' FluxMapData.range_psid_Y=single(zeros(1,20)); */
+	/* '<S1>:1:24' FluxMapData.range_psiq_Y=single(zeros(1,20)); */
+	/* '<S1>:1:25' FluxMapData.range_psid_X=single(zeros(1,20)); */
+	/* '<S1>:1:26' FluxMapData.range_psiq_X=single(zeros(1,20)); */
+	/* '<S1>:1:27' FluxMapData.range_iq_Y=single(zeros(1,20)); */
+	/* '<S1>:1:28' FluxMapData.range_iq_X=single(zeros(1,20)); */
+	/* '<S1>:1:29' FluxMapData.range_id_X=single(zeros(1,20)); */
+	/* '<S1>:1:30' FluxMapData.psi_temp_const=single(0.000001); */
+	rtInterpMeshGrid_DW->rtb_FluxMapData_psi_temp_const = 1.0E-6F;
+
+	/* '<S1>:1:31' FluxMapData.psi_temp_error=single(0); */
+	/* '<S1>:1:35' range_psid_X_in=single(zeros(1,20)); */
+	/* '<S1>:1:36' range_psid_Y_in=single(zeros(1,20)); */
+	/* '<S1>:1:37' range_psiq_X_in=single(zeros(1,20)); */
+	/* '<S1>:1:38' range_psiq_Y_in=single(zeros(1,20)); */
+	/* '<S1>:1:39' range_id_X_in=single(zeros(1,20)); */
+	/* '<S1>:1:40' range_id_Y_in=single(zeros(1,20)); */
+	/* '<S1>:1:41' range_iq_X_in=single(zeros(1,20)); */
+	/* '<S1>:1:42' range_iq_Y_in=single(zeros(1,20)); */
   /* initalise range of flux maps axis */
-  /* '<S1>:1:42' for t=single(0):single(19) */
+	/* '<S1>:1:46' for t=single(0):single(19) */
   for (rtInterpMeshGrid_DW->t = 0; rtInterpMeshGrid_DW->t < 20;
        rtInterpMeshGrid_DW->t++) {
-    /* MATLAB Function: '<Root>/InterpMeshGrid' incorporates:
-     *  Inport: '<Root>/i_rat'
-     *  Outport: '<Root>/rangepdX_out'
-     *  Outport: '<Root>/rangepdY_out'
-     *  Outport: '<Root>/rangepqX_out'
-     *  Outport: '<Root>/rangepqY_out'
-     */
-    /* '<S1>:1:43' rangepdX_in(t+1)=-3*i_rat+t*4*i_rat/19; */
-    rtInterpMeshGrid_DW->rangepdX_out_tmp = (real32_T)rtInterpMeshGrid_DW->t *
-      4.0F * rtInterpMeshGrid_U->i_rat / 19.0F + -3.0F *
+		/* '<S1>:1:47' range_psid_X_in(t+1)=-3*i_rat+t*4*i_rat/19; */
+		rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = (real32_T) rtInterpMeshGrid_DW->t * 4.0F * rtInterpMeshGrid_U->i_rat / 19.0F + -3.0F *
       rtInterpMeshGrid_U->i_rat;
-    rtInterpMeshGrid_Y->rangepdX_out[rtInterpMeshGrid_DW->t] =
-      rtInterpMeshGrid_DW->rangepdX_out_tmp;
+		rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->t] = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
 
-    /* '<S1>:1:44' rangepdY_in(t+1)=-3*i_rat+t*6*i_rat/19; */
-    rtInterpMeshGrid_DW->rangepdY_out_tmp = (real32_T)rtInterpMeshGrid_DW->t *
+		/* '<S1>:1:48' range_psid_Y_in(t+1)=-3*i_rat+t*6*i_rat/19; */
+		rtInterpMeshGrid_DW->range_psid_Y_in_tmp = (real32_T) rtInterpMeshGrid_DW->t *
       6.0F * rtInterpMeshGrid_U->i_rat / 19.0F + -3.0F *
       rtInterpMeshGrid_U->i_rat;
-    rtInterpMeshGrid_Y->rangepdY_out[rtInterpMeshGrid_DW->t] =
-      rtInterpMeshGrid_DW->rangepdY_out_tmp;
+		rtInterpMeshGrid_DW->range_psid_Y_in[rtInterpMeshGrid_DW->t] = rtInterpMeshGrid_DW->range_psid_Y_in_tmp;
 
-    /* '<S1>:1:45' rangepqX_in(t+1)=-3*i_rat+t*4*i_rat/19; */
-    rtInterpMeshGrid_Y->rangepqX_out[rtInterpMeshGrid_DW->t] =
-      rtInterpMeshGrid_DW->rangepdX_out_tmp;
+		/* '<S1>:1:49' range_psiq_X_in(t+1)=-3*i_rat+t*4*i_rat/19; */
+		rtInterpMeshGrid_DW->range_psiq_X_in[rtInterpMeshGrid_DW->t] = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
 
-    /* '<S1>:1:46' rangepqY_in(t+1)=-3*i_rat+t*6*i_rat/19; */
-    rtInterpMeshGrid_Y->rangepqY_out[rtInterpMeshGrid_DW->t] =
-      rtInterpMeshGrid_DW->rangepdY_out_tmp;
+		/* '<S1>:1:50' range_psiq_Y_in(t+1)=-3*i_rat+t*6*i_rat/19; */
+		rtInterpMeshGrid_DW->range_psiq_Y_in[rtInterpMeshGrid_DW->t] = rtInterpMeshGrid_DW->range_psid_Y_in_tmp;
   }
 
-  /* MATLAB Function: '<Root>/InterpMeshGrid' incorporates:
-   *  Inport: '<Root>/OnlineID_input'
-   */
   /* Calculate flux deviation from amout of measuring values and counter sum, */
   /* to average a big amount of measuring values  */
-  /* '<S1>:1:52' for t=single(1):single(100) */
+	/* '<S1>:1:56' for t=single(1):single(100) */
   for (rtInterpMeshGrid_DW->t = 0; rtInterpMeshGrid_DW->t < 100;
        rtInterpMeshGrid_DW->t++) {
-    /* '<S1>:1:53' if (OnlineID_input.delta_psi(t,2)>5) */
-    rtInterpMeshGrid_DW->rangepdX_out_tmp =
+		/* '<S1>:1:57' if (OnlineID_input.delta_psi(t,2)>5) */
+		rtInterpMeshGrid_DW->range_psid_X_in_tmp_f =
       rtInterpMeshGrid_U->OnlineID_input.delta_psi[rtInterpMeshGrid_DW->t + 100];
-    if (rtInterpMeshGrid_DW->rangepdX_out_tmp > 5.0F) {
-      /* '<S1>:1:54' delta_psi(t,1)=OnlineID_input.delta_psi(t,1)/OnlineID_input.delta_psi(t,2); */
+		if (rtInterpMeshGrid_DW->range_psid_X_in_tmp_f > 5.0F) {
+			/* '<S1>:1:58' delta_psi(t,1)=OnlineID_input.delta_psi(t,1)/OnlineID_input.delta_psi(t,2); */
       rtInterpMeshGrid_DW->delta_psi[rtInterpMeshGrid_DW->t] =
         rtInterpMeshGrid_U->OnlineID_input.delta_psi[rtInterpMeshGrid_DW->t] /
-        rtInterpMeshGrid_DW->rangepdX_out_tmp;
+        rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
     }
   }
 
-  /* Outport: '<Root>/psi_temp_error' incorporates:
+	/* Outport: '<Root>/FluxMapData' incorporates:
    *  MATLAB Function: '<Root>/InterpMeshGrid'
    */
   /* Calculate temperature constant with a regressionline, set second input "1" */
   /* to resist outliers greater than 30% (relative to their neighbours) */
-  /* '<S1>:1:61' [psi_temp_const_test,psi_temp_error]=regressionline(delta_psi,1); */
+	/* '<S1>:1:65' [psi_temp_const_test,FluxMapData.psi_temp_error]=regressionline(delta_psi,1); */
   regressionline(rtInterpMeshGrid_DW->delta_psi, 1.0,
-                 &rtInterpMeshGrid_DW->rangepdY_out_tmp,
-                 &rtInterpMeshGrid_Y->psi_temp_error);
+                 &rtInterpMeshGrid_DW->range_psid_Y_in_tmp, &rtInterpMeshGrid_Y->FluxMapData.psi_temp_error);
 
   /* MATLAB Function: '<Root>/InterpMeshGrid' incorporates:
    *  Inport: '<Root>/OnlineID_input'
    */
   /* check plausibility */
-  /* '<S1>:1:64' if(psi_temp_const_test>0&&psi_temp_const<10) */
-  if (rtInterpMeshGrid_DW->rangepdY_out_tmp > 0.0F) {
-    /* in mVs/°C */
-    /* '<S1>:1:65' psi_temp_const=psi_temp_const_test; */
-    rtInterpMeshGrid_DW->psi_temp_const = rtInterpMeshGrid_DW->rangepdY_out_tmp;
+	/* '<S1>:1:68' if(psi_temp_const_test>0&&FluxMapData.psi_temp_const<10) */
+	if (rtInterpMeshGrid_DW->range_psid_Y_in_tmp > 0.0F) {
+		/* in mVs/Â°C */
+		/* '<S1>:1:69' FluxMapData.psi_temp_const=psi_temp_const_test; */
+		rtInterpMeshGrid_DW->rtb_FluxMapData_psi_temp_const = rtInterpMeshGrid_DW->range_psid_Y_in_tmp;
   }
 
   /* correct temperature offset */
-  /* '<S1>:1:70' for k=single(1):single(100) */
+	/* '<S1>:1:74' for k=single(1):single(100) */
   /* Inter- and extrapolation of the flux maps  */
-  /* '<S1>:1:82' [rangepdX_out,rangepdY_out,psid_grid_out] = interpol_flux_scatter_psid ([psi_array(1,:);psi_array(2,:);psi_array(5,:);zeros(length(psi_array(1,:)))],rangepdX_in,rangepdY_in); */
+	/* '<S1>:1:86' [FluxMapData.range_psid_X,FluxMapData.range_psid_Y,FluxMapData.psid_grid] = interpol_flux_scatter_psid ([psi_array(1,:);psi_array(2,:);psi_array(5,:);zeros(length(psi_array(1,:)))],range_psid_X_in,range_psid_Y_in); */
   for (rtInterpMeshGrid_DW->t = 0; rtInterpMeshGrid_DW->t < 100;
        rtInterpMeshGrid_DW->t++) {
-    /* '<S1>:1:71' if(psi_array(3,k)~=0) */
+		/* '<S1>:1:75' if(psi_array(3,k)~=0) */
     if (rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->t + 2] != 0.0F)
     {
-      /* '<S1>:1:72' psi_array(5,k)=psi_array(5,k)+(psi_array(4,k)-OnlineID_input.Wtemp)*psi_temp_const; */
-      rtInterpMeshGrid_DW->psi_array_tmp = 6 * rtInterpMeshGrid_DW->t + 4;
-      rtInterpMeshGrid_DW->i = 6 * rtInterpMeshGrid_DW->t + 3;
-      rtInterpMeshGrid_DW->psi_array_m[rtInterpMeshGrid_DW->psi_array_tmp] +=
-        (rtInterpMeshGrid_DW->psi_array_m[rtInterpMeshGrid_DW->i] -
+			/* '<S1>:1:76' psi_array(5,k)=psi_array(5,k)+(psi_array(4,k)-OnlineID_input.Wtemp)*FluxMapData.psi_temp_const; */
+			rtInterpMeshGrid_DW->i = 6 * rtInterpMeshGrid_DW->t + 4;
+			rtInterpMeshGrid_DW->psi_array_tmp = 6 * rtInterpMeshGrid_DW->t + 3;
+			rtInterpMeshGrid_DW->psi_array_m[rtInterpMeshGrid_DW->i] += (rtInterpMeshGrid_DW->psi_array_m[rtInterpMeshGrid_DW->psi_array_tmp] -
          rtInterpMeshGrid_U->OnlineID_input.Wtemp) *
-        rtInterpMeshGrid_DW->psi_temp_const;
+        rtInterpMeshGrid_DW->rtb_FluxMapData_psi_temp_const;
 
-      /* '<S1>:1:73' psi_array(4,k)=OnlineID_input.Wtemp; */
-      rtInterpMeshGrid_DW->psi_array_m[rtInterpMeshGrid_DW->i] =
+			/* '<S1>:1:77' psi_array(4,k)=OnlineID_input.Wtemp; */
+			rtInterpMeshGrid_DW->psi_array_m[rtInterpMeshGrid_DW->psi_array_tmp] =
         rtInterpMeshGrid_U->OnlineID_input.Wtemp;
     }
 
@@ -1302,356 +1288,249 @@ void InterpMeshGrid_step(RT_MODEL_InterpMeshGrid_t *const rtInterpMeshGrid_M)
            100U * sizeof(real32_T));
   }
 
-  /* Outport: '<Root>/rangepdY_out' incorporates:
+	interpol_flux_scatter_psid(rtInterpMeshGrid_DW->psi_array, rtInterpMeshGrid_DW->range_psid_X_in, rtInterpMeshGrid_DW->range_psid_Y_in, rtInterpMeshGrid_DW->c, rtInterpMeshGrid_DW);
+
+	/* Outport: '<Root>/FluxMapData' incorporates:
    *  MATLAB Function: '<Root>/InterpMeshGrid'
-   *  Outport: '<Root>/rangepdX_out'
    */
-  interpol_flux_scatter_psid(rtInterpMeshGrid_DW->psi_array,
-    rtInterpMeshGrid_Y->rangepdX_out, rtInterpMeshGrid_Y->rangepdY_out,
-    rtInterpMeshGrid_DW->psid_grid_out, rtInterpMeshGrid_DW);
+	memcpy(&rtInterpMeshGrid_Y->FluxMapData.range_psid_X[0], &rtInterpMeshGrid_DW->range_psid_X_in[0], 20U * sizeof(real32_T));
 
   /* MATLAB Function: '<Root>/InterpMeshGrid' */
-  /* '<S1>:1:83' [rangepqX_out,rangepqY_out,psiq_grid_out] = interpol_flux_scatter_psiq ([psi_array(1,:);psi_array(2,:);psi_array(6,:);zeros(length(psi_array(1,:)))],rangepqX_in,rangepqY_in); */
-  for (rtInterpMeshGrid_DW->psi_array_tmp = 0;
-       rtInterpMeshGrid_DW->psi_array_tmp < 100;
-       rtInterpMeshGrid_DW->psi_array_tmp++) {
-    rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->psi_array_tmp] =
-      rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->psi_array_tmp];
-    rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->psi_array_tmp + 1]
-      = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->psi_array_tmp
-      + 1];
-    rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->psi_array_tmp + 2]
-      = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->psi_array_tmp
-      + 5];
+	memcpy(&rtInterpMeshGrid_DW->rtb_FluxMapData_psid_grid[0], &rtInterpMeshGrid_DW->c[0], 400U * sizeof(real32_T));
+
+	/* '<S1>:1:87' [FluxMapData.range_psiq_X,FluxMapData.range_psiq_Y,FluxMapData.psiq_grid] = interpol_flux_scatter_psiq ([psi_array(1,:);psi_array(2,:);psi_array(6,:);zeros(length(psi_array(1,:)))],range_psiq_X_in,range_psiq_Y_in); */
+	for (rtInterpMeshGrid_DW->i = 0; rtInterpMeshGrid_DW->i < 100; rtInterpMeshGrid_DW->i++) {
+		rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->i] = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->i];
+		rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->i + 1] = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->i + 1];
+		rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->i + 2] = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->i + 5];
   }
 
-  for (rtInterpMeshGrid_DW->psi_array_tmp = 0;
-       rtInterpMeshGrid_DW->psi_array_tmp < 100;
-       rtInterpMeshGrid_DW->psi_array_tmp++) {
-    memset(&rtInterpMeshGrid_DW->psi_array[rtInterpMeshGrid_DW->psi_array_tmp *
-           103 + 3], 0, 100U * sizeof(real32_T));
+	for (rtInterpMeshGrid_DW->i = 0; rtInterpMeshGrid_DW->i < 100; rtInterpMeshGrid_DW->i++) {
+		memset(&rtInterpMeshGrid_DW->psi_array[rtInterpMeshGrid_DW->i * 103 + 3], 0, 100U * sizeof(real32_T));
   }
 
-  /* Outport: '<Root>/rangepqY_out' incorporates:
+	interpol_flux_scatter_psiq(rtInterpMeshGrid_DW->psi_array, rtInterpMeshGrid_DW->range_psiq_X_in, rtInterpMeshGrid_DW->range_psiq_Y_in, rtInterpMeshGrid_DW->c, rtInterpMeshGrid_DW);
+
+	/* Outport: '<Root>/FluxMapData' incorporates:
    *  MATLAB Function: '<Root>/InterpMeshGrid'
-   *  Outport: '<Root>/rangepqX_out'
    */
-  interpol_flux_scatter_psiq(rtInterpMeshGrid_DW->psi_array,
-    rtInterpMeshGrid_Y->rangepqX_out, rtInterpMeshGrid_Y->rangepqY_out,
-    rtInterpMeshGrid_DW->psiq_grid_out, rtInterpMeshGrid_DW);
+	memcpy(&rtInterpMeshGrid_Y->FluxMapData.psiq_grid[0], &rtInterpMeshGrid_DW->c[0], 400U * sizeof(real32_T));
 
-  /* MATLAB Function: '<Root>/InterpMeshGrid' incorporates:
-   *  Outport: '<Root>/rangeidX_out'
-   *  Outport: '<Root>/rangeidY_out'
-   *  Outport: '<Root>/rangeiqX_out'
-   *  Outport: '<Root>/rangeiqY_out'
-   */
+	/* MATLAB Function: '<Root>/InterpMeshGrid' */
   /* initialise range of inverse flux maps axis */
-  /* '<S1>:1:86' for t=single(0):single(19) */
-  minimum(rtInterpMeshGrid_DW->psid_grid_out, rtInterpMeshGrid_DW->minval_tmp);
-  minimum(rtInterpMeshGrid_DW->psiq_grid_out, rtInterpMeshGrid_DW->minval_tmp_c);
+	/* '<S1>:1:90' for t=single(0):single(19) */
+	minimum(rtInterpMeshGrid_DW->rtb_FluxMapData_psid_grid, rtInterpMeshGrid_DW->range_psid_X_in_tmp);
+	minimum(rtInterpMeshGrid_DW->c, rtInterpMeshGrid_DW->range_psid_X_in_tmp_c);
   for (rtInterpMeshGrid_DW->t = 0; rtInterpMeshGrid_DW->t < 20;
        rtInterpMeshGrid_DW->t++) {
-    /* '<S1>:1:87' rangeidX_in(t+1)=min(min(psid_grid_out))+t*(max(max(psid_grid_out))-min(min(psid_grid_out)))/19; */
-    rtInterpMeshGrid_DW->rangepdY_out_tmp = rtInterpMeshGrid_DW->minval_tmp[0];
-    for (rtInterpMeshGrid_DW->b_k = 0; rtInterpMeshGrid_DW->b_k < 19;
-         rtInterpMeshGrid_DW->b_k++) {
-      rtInterpMeshGrid_DW->rangepdX_out_tmp = rtInterpMeshGrid_DW->
-        minval_tmp[rtInterpMeshGrid_DW->b_k + 1];
-      if (rtInterpMeshGrid_DW->rangepdY_out_tmp >
-          rtInterpMeshGrid_DW->rangepdX_out_tmp) {
-        rtInterpMeshGrid_DW->rangepdY_out_tmp =
-          rtInterpMeshGrid_DW->rangepdX_out_tmp;
+		/* '<S1>:1:91' range_id_X_in(t+1)=min(min(FluxMapData.psid_grid))+t*(max(max(FluxMapData.psid_grid))-min(min(FluxMapData.psid_grid)))/19; */
+		rtInterpMeshGrid_DW->range_psid_Y_in_tmp = rtInterpMeshGrid_DW->range_psid_X_in_tmp[0];
+		for (rtInterpMeshGrid_DW->psi_array_tmp = 0; rtInterpMeshGrid_DW->psi_array_tmp < 19; rtInterpMeshGrid_DW->psi_array_tmp++) {
+			rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->range_psid_X_in_tmp[rtInterpMeshGrid_DW->psi_array_tmp + 1];
+			if (rtInterpMeshGrid_DW->range_psid_Y_in_tmp > rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+				rtInterpMeshGrid_DW->range_psid_Y_in_tmp = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
       }
     }
 
-    for (rtInterpMeshGrid_DW->b_k = 0; rtInterpMeshGrid_DW->b_k < 20;
-         rtInterpMeshGrid_DW->b_k++) {
-      rtInterpMeshGrid_DW->minval[rtInterpMeshGrid_DW->b_k] =
-        rtInterpMeshGrid_DW->psid_grid_out[20 * rtInterpMeshGrid_DW->b_k];
+		for (rtInterpMeshGrid_DW->psi_array_tmp = 0; rtInterpMeshGrid_DW->psi_array_tmp < 20; rtInterpMeshGrid_DW->psi_array_tmp++) {
+			rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp] = rtInterpMeshGrid_DW->rtb_FluxMapData_psid_grid[20 * rtInterpMeshGrid_DW->psi_array_tmp];
       for (rtInterpMeshGrid_DW->i = 0; rtInterpMeshGrid_DW->i < 19;
            rtInterpMeshGrid_DW->i++) {
-        rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->
-          minval[rtInterpMeshGrid_DW->b_k];
-        rtInterpMeshGrid_DW->psi_array_tmp = (20 * rtInterpMeshGrid_DW->b_k +
-          rtInterpMeshGrid_DW->i) + 1;
-        if (rtInterpMeshGrid_DW->minval_c < rtInterpMeshGrid_DW->
-            psid_grid_out[rtInterpMeshGrid_DW->psi_array_tmp]) {
-          rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->
-            psid_grid_out[rtInterpMeshGrid_DW->psi_array_tmp];
+				rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp];
+				rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->rtb_FluxMapData_psid_grid[(20 * rtInterpMeshGrid_DW->psi_array_tmp + rtInterpMeshGrid_DW->i) + 1];
+				if (rtInterpMeshGrid_DW->range_psid_X_in_c < rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+					rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
         }
 
-        rtInterpMeshGrid_DW->minval[rtInterpMeshGrid_DW->b_k] =
-          rtInterpMeshGrid_DW->minval_c;
+				rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp] = rtInterpMeshGrid_DW->range_psid_X_in_c;
       }
     }
 
-    rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->minval[0];
-    rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->minval_tmp[0];
-    for (rtInterpMeshGrid_DW->b_k = 0; rtInterpMeshGrid_DW->b_k < 19;
-         rtInterpMeshGrid_DW->b_k++) {
-      rtInterpMeshGrid_DW->rangepdX_out_tmp = rtInterpMeshGrid_DW->
-        minval[rtInterpMeshGrid_DW->b_k + 1];
-      if (rtInterpMeshGrid_DW->minval_c < rtInterpMeshGrid_DW->rangepdX_out_tmp)
-      {
-        rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->rangepdX_out_tmp;
+		rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in[0];
+		rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->range_psid_X_in_tmp[0];
+		for (rtInterpMeshGrid_DW->psi_array_tmp = 0; rtInterpMeshGrid_DW->psi_array_tmp < 19; rtInterpMeshGrid_DW->psi_array_tmp++) {
+			rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp + 1];
+			if (rtInterpMeshGrid_DW->range_psid_X_in_c < rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+				rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
       }
 
-      rtInterpMeshGrid_DW->rangepdX_out_tmp = rtInterpMeshGrid_DW->
-        minval_tmp[rtInterpMeshGrid_DW->b_k + 1];
-      if (rtInterpMeshGrid_DW->c_ex > rtInterpMeshGrid_DW->rangepdX_out_tmp) {
-        rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->rangepdX_out_tmp;
+			rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->range_psid_X_in_tmp[rtInterpMeshGrid_DW->psi_array_tmp + 1];
+			if (rtInterpMeshGrid_DW->c_ex > rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+				rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
       }
     }
 
-    rtInterpMeshGrid_Y->rangeidX_out[rtInterpMeshGrid_DW->t] =
-      (rtInterpMeshGrid_DW->minval_c - rtInterpMeshGrid_DW->c_ex) * (real32_T)
-      rtInterpMeshGrid_DW->t / 19.0F + rtInterpMeshGrid_DW->rangepdY_out_tmp;
+		rtInterpMeshGrid_DW->range_id_X_in[rtInterpMeshGrid_DW->t] = (rtInterpMeshGrid_DW->range_psid_X_in_c - rtInterpMeshGrid_DW->c_ex) * (real32_T) rtInterpMeshGrid_DW->t / 19.0F
+		                + rtInterpMeshGrid_DW->range_psid_Y_in_tmp;
 
-    /* '<S1>:1:88' rangeidY_in(t+1)=min(min(psiq_grid_out))+t*(max(max(psiq_grid_out))-min(min(psiq_grid_out)))/19; */
-    rtInterpMeshGrid_DW->rangepdY_out_tmp = rtInterpMeshGrid_DW->minval_tmp_c[0];
-    for (rtInterpMeshGrid_DW->b_k = 0; rtInterpMeshGrid_DW->b_k < 19;
-         rtInterpMeshGrid_DW->b_k++) {
-      rtInterpMeshGrid_DW->rangepdX_out_tmp = rtInterpMeshGrid_DW->
-        minval_tmp_c[rtInterpMeshGrid_DW->b_k + 1];
-      if (rtInterpMeshGrid_DW->rangepdY_out_tmp >
-          rtInterpMeshGrid_DW->rangepdX_out_tmp) {
-        rtInterpMeshGrid_DW->rangepdY_out_tmp =
-          rtInterpMeshGrid_DW->rangepdX_out_tmp;
+		/* '<S1>:1:92' range_id_Y_in(t+1)=min(min(FluxMapData.psiq_grid))+t*(max(max(FluxMapData.psiq_grid))-min(min(FluxMapData.psiq_grid)))/19; */
+		rtInterpMeshGrid_DW->range_psid_Y_in_tmp = rtInterpMeshGrid_DW->range_psid_X_in_tmp_c[0];
+		for (rtInterpMeshGrid_DW->psi_array_tmp = 0; rtInterpMeshGrid_DW->psi_array_tmp < 19; rtInterpMeshGrid_DW->psi_array_tmp++) {
+			rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->range_psid_X_in_tmp_c[rtInterpMeshGrid_DW->psi_array_tmp + 1];
+			if (rtInterpMeshGrid_DW->range_psid_Y_in_tmp > rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+				rtInterpMeshGrid_DW->range_psid_Y_in_tmp = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
       }
     }
 
-    for (rtInterpMeshGrid_DW->b_k = 0; rtInterpMeshGrid_DW->b_k < 20;
-         rtInterpMeshGrid_DW->b_k++) {
-      rtInterpMeshGrid_DW->minval[rtInterpMeshGrid_DW->b_k] =
-        rtInterpMeshGrid_DW->psiq_grid_out[20 * rtInterpMeshGrid_DW->b_k];
+		for (rtInterpMeshGrid_DW->psi_array_tmp = 0; rtInterpMeshGrid_DW->psi_array_tmp < 20; rtInterpMeshGrid_DW->psi_array_tmp++) {
+			rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp] = rtInterpMeshGrid_DW->c[20 * rtInterpMeshGrid_DW->psi_array_tmp];
       for (rtInterpMeshGrid_DW->i = 0; rtInterpMeshGrid_DW->i < 19;
            rtInterpMeshGrid_DW->i++) {
-        rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->
-          minval[rtInterpMeshGrid_DW->b_k];
-        rtInterpMeshGrid_DW->rangepdX_out_tmp =
-          rtInterpMeshGrid_DW->psiq_grid_out[(20 * rtInterpMeshGrid_DW->b_k +
-          rtInterpMeshGrid_DW->i) + 1];
-        if (rtInterpMeshGrid_DW->minval_c <
-            rtInterpMeshGrid_DW->rangepdX_out_tmp) {
-          rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->rangepdX_out_tmp;
+				rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp];
+				rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->c[(20 * rtInterpMeshGrid_DW->psi_array_tmp + rtInterpMeshGrid_DW->i) + 1];
+				if (rtInterpMeshGrid_DW->range_psid_X_in_c < rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+					rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
         }
 
-        rtInterpMeshGrid_DW->minval[rtInterpMeshGrid_DW->b_k] =
-          rtInterpMeshGrid_DW->minval_c;
+				rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp] = rtInterpMeshGrid_DW->range_psid_X_in_c;
       }
     }
 
-    rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->minval[0];
-    rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->minval_tmp_c[0];
-    for (rtInterpMeshGrid_DW->b_k = 0; rtInterpMeshGrid_DW->b_k < 19;
-         rtInterpMeshGrid_DW->b_k++) {
-      rtInterpMeshGrid_DW->rangepdX_out_tmp = rtInterpMeshGrid_DW->
-        minval[rtInterpMeshGrid_DW->b_k + 1];
-      if (rtInterpMeshGrid_DW->minval_c < rtInterpMeshGrid_DW->rangepdX_out_tmp)
-      {
-        rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->rangepdX_out_tmp;
+		rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in[0];
+		rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->range_psid_X_in_tmp_c[0];
+		for (rtInterpMeshGrid_DW->psi_array_tmp = 0; rtInterpMeshGrid_DW->psi_array_tmp < 19; rtInterpMeshGrid_DW->psi_array_tmp++) {
+			rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp + 1];
+			if (rtInterpMeshGrid_DW->range_psid_X_in_c < rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+				rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
       }
 
-      rtInterpMeshGrid_DW->rangepdX_out_tmp = rtInterpMeshGrid_DW->
-        minval_tmp_c[rtInterpMeshGrid_DW->b_k + 1];
-      if (rtInterpMeshGrid_DW->c_ex > rtInterpMeshGrid_DW->rangepdX_out_tmp) {
-        rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->rangepdX_out_tmp;
+			rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->range_psid_X_in_tmp_c[rtInterpMeshGrid_DW->psi_array_tmp + 1];
+			if (rtInterpMeshGrid_DW->c_ex > rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+				rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
       }
     }
 
-    rtInterpMeshGrid_Y->rangeidY_out[rtInterpMeshGrid_DW->t] =
-      (rtInterpMeshGrid_DW->minval_c - rtInterpMeshGrid_DW->c_ex) * (real32_T)
-      rtInterpMeshGrid_DW->t / 19.0F + rtInterpMeshGrid_DW->rangepdY_out_tmp;
+		rtInterpMeshGrid_DW->range_id_Y_in[rtInterpMeshGrid_DW->t] = (rtInterpMeshGrid_DW->range_psid_X_in_c - rtInterpMeshGrid_DW->c_ex) * (real32_T) rtInterpMeshGrid_DW->t / 19.0F
+		                + rtInterpMeshGrid_DW->range_psid_Y_in_tmp;
 
-    /* '<S1>:1:89' rangeiqX_in(t+1)=min(min(psid_grid_out))+t*(max(max(psid_grid_out))-min(min(psid_grid_out)))/19; */
-    rtInterpMeshGrid_DW->rangepdY_out_tmp = rtInterpMeshGrid_DW->minval_tmp[0];
-    for (rtInterpMeshGrid_DW->b_k = 0; rtInterpMeshGrid_DW->b_k < 19;
-         rtInterpMeshGrid_DW->b_k++) {
-      rtInterpMeshGrid_DW->rangepdX_out_tmp = rtInterpMeshGrid_DW->
-        minval_tmp[rtInterpMeshGrid_DW->b_k + 1];
-      if (rtInterpMeshGrid_DW->rangepdY_out_tmp >
-          rtInterpMeshGrid_DW->rangepdX_out_tmp) {
-        rtInterpMeshGrid_DW->rangepdY_out_tmp =
-          rtInterpMeshGrid_DW->rangepdX_out_tmp;
+		/* '<S1>:1:93' range_iq_X_in(t+1)=min(min(FluxMapData.psid_grid))+t*(max(max(FluxMapData.psid_grid))-min(min(FluxMapData.psid_grid)))/19; */
+		rtInterpMeshGrid_DW->range_psid_Y_in_tmp = rtInterpMeshGrid_DW->range_psid_X_in_tmp[0];
+		for (rtInterpMeshGrid_DW->psi_array_tmp = 0; rtInterpMeshGrid_DW->psi_array_tmp < 19; rtInterpMeshGrid_DW->psi_array_tmp++) {
+			rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->range_psid_X_in_tmp[rtInterpMeshGrid_DW->psi_array_tmp + 1];
+			if (rtInterpMeshGrid_DW->range_psid_Y_in_tmp > rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+				rtInterpMeshGrid_DW->range_psid_Y_in_tmp = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
       }
     }
 
-    for (rtInterpMeshGrid_DW->b_k = 0; rtInterpMeshGrid_DW->b_k < 20;
-         rtInterpMeshGrid_DW->b_k++) {
-      rtInterpMeshGrid_DW->minval[rtInterpMeshGrid_DW->b_k] =
-        rtInterpMeshGrid_DW->psid_grid_out[20 * rtInterpMeshGrid_DW->b_k];
+		for (rtInterpMeshGrid_DW->psi_array_tmp = 0; rtInterpMeshGrid_DW->psi_array_tmp < 20; rtInterpMeshGrid_DW->psi_array_tmp++) {
+			rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp] = rtInterpMeshGrid_DW->rtb_FluxMapData_psid_grid[20 * rtInterpMeshGrid_DW->psi_array_tmp];
       for (rtInterpMeshGrid_DW->i = 0; rtInterpMeshGrid_DW->i < 19;
            rtInterpMeshGrid_DW->i++) {
-        rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->
-          minval[rtInterpMeshGrid_DW->b_k];
-        rtInterpMeshGrid_DW->psi_array_tmp = (20 * rtInterpMeshGrid_DW->b_k +
-          rtInterpMeshGrid_DW->i) + 1;
-        if (rtInterpMeshGrid_DW->minval_c < rtInterpMeshGrid_DW->
-            psid_grid_out[rtInterpMeshGrid_DW->psi_array_tmp]) {
-          rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->
-            psid_grid_out[rtInterpMeshGrid_DW->psi_array_tmp];
+				rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp];
+				rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->rtb_FluxMapData_psid_grid[(20 * rtInterpMeshGrid_DW->psi_array_tmp + rtInterpMeshGrid_DW->i) + 1];
+				if (rtInterpMeshGrid_DW->range_psid_X_in_c < rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+					rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
         }
 
-        rtInterpMeshGrid_DW->minval[rtInterpMeshGrid_DW->b_k] =
-          rtInterpMeshGrid_DW->minval_c;
+				rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp] = rtInterpMeshGrid_DW->range_psid_X_in_c;
       }
     }
 
-    rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->minval[0];
-    rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->minval_tmp[0];
-    for (rtInterpMeshGrid_DW->b_k = 0; rtInterpMeshGrid_DW->b_k < 19;
-         rtInterpMeshGrid_DW->b_k++) {
-      rtInterpMeshGrid_DW->rangepdX_out_tmp = rtInterpMeshGrid_DW->
-        minval[rtInterpMeshGrid_DW->b_k + 1];
-      if (rtInterpMeshGrid_DW->minval_c < rtInterpMeshGrid_DW->rangepdX_out_tmp)
-      {
-        rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->rangepdX_out_tmp;
+		rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in[0];
+		rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->range_psid_X_in_tmp[0];
+		for (rtInterpMeshGrid_DW->psi_array_tmp = 0; rtInterpMeshGrid_DW->psi_array_tmp < 19; rtInterpMeshGrid_DW->psi_array_tmp++) {
+			rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp + 1];
+			if (rtInterpMeshGrid_DW->range_psid_X_in_c < rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+				rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
       }
 
-      rtInterpMeshGrid_DW->rangepdX_out_tmp = rtInterpMeshGrid_DW->
-        minval_tmp[rtInterpMeshGrid_DW->b_k + 1];
-      if (rtInterpMeshGrid_DW->c_ex > rtInterpMeshGrid_DW->rangepdX_out_tmp) {
-        rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->rangepdX_out_tmp;
+			rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->range_psid_X_in_tmp[rtInterpMeshGrid_DW->psi_array_tmp + 1];
+			if (rtInterpMeshGrid_DW->c_ex > rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+				rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
       }
     }
 
-    rtInterpMeshGrid_Y->rangeiqX_out[rtInterpMeshGrid_DW->t] =
-      (rtInterpMeshGrid_DW->minval_c - rtInterpMeshGrid_DW->c_ex) * (real32_T)
-      rtInterpMeshGrid_DW->t / 19.0F + rtInterpMeshGrid_DW->rangepdY_out_tmp;
+		rtInterpMeshGrid_DW->range_iq_X_in[rtInterpMeshGrid_DW->t] = (rtInterpMeshGrid_DW->range_psid_X_in_c - rtInterpMeshGrid_DW->c_ex) * (real32_T) rtInterpMeshGrid_DW->t / 19.0F
+		                + rtInterpMeshGrid_DW->range_psid_Y_in_tmp;
 
-    /* '<S1>:1:90' rangeiqY_in(t+1)=min(min(psiq_grid_out))+t*(max(max(psiq_grid_out))-min(min(psiq_grid_out)))/19; */
-    rtInterpMeshGrid_DW->rangepdY_out_tmp = rtInterpMeshGrid_DW->minval_tmp_c[0];
-    for (rtInterpMeshGrid_DW->b_k = 0; rtInterpMeshGrid_DW->b_k < 19;
-         rtInterpMeshGrid_DW->b_k++) {
-      rtInterpMeshGrid_DW->rangepdX_out_tmp = rtInterpMeshGrid_DW->
-        minval_tmp_c[rtInterpMeshGrid_DW->b_k + 1];
-      if (rtInterpMeshGrid_DW->rangepdY_out_tmp >
-          rtInterpMeshGrid_DW->rangepdX_out_tmp) {
-        rtInterpMeshGrid_DW->rangepdY_out_tmp =
-          rtInterpMeshGrid_DW->rangepdX_out_tmp;
+		/* '<S1>:1:94' range_iq_Y_in(t+1)=min(min(FluxMapData.psiq_grid))+t*(max(max(FluxMapData.psiq_grid))-min(min(FluxMapData.psiq_grid)))/19; */
+		rtInterpMeshGrid_DW->range_psid_Y_in_tmp = rtInterpMeshGrid_DW->range_psid_X_in_tmp_c[0];
+		for (rtInterpMeshGrid_DW->psi_array_tmp = 0; rtInterpMeshGrid_DW->psi_array_tmp < 19; rtInterpMeshGrid_DW->psi_array_tmp++) {
+			rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->range_psid_X_in_tmp_c[rtInterpMeshGrid_DW->psi_array_tmp + 1];
+			if (rtInterpMeshGrid_DW->range_psid_Y_in_tmp > rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+				rtInterpMeshGrid_DW->range_psid_Y_in_tmp = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
       }
     }
 
-    for (rtInterpMeshGrid_DW->b_k = 0; rtInterpMeshGrid_DW->b_k < 20;
-         rtInterpMeshGrid_DW->b_k++) {
-      rtInterpMeshGrid_DW->minval[rtInterpMeshGrid_DW->b_k] =
-        rtInterpMeshGrid_DW->psiq_grid_out[20 * rtInterpMeshGrid_DW->b_k];
+		for (rtInterpMeshGrid_DW->psi_array_tmp = 0; rtInterpMeshGrid_DW->psi_array_tmp < 20; rtInterpMeshGrid_DW->psi_array_tmp++) {
+			rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp] = rtInterpMeshGrid_DW->c[20 * rtInterpMeshGrid_DW->psi_array_tmp];
       for (rtInterpMeshGrid_DW->i = 0; rtInterpMeshGrid_DW->i < 19;
            rtInterpMeshGrid_DW->i++) {
-        rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->
-          minval[rtInterpMeshGrid_DW->b_k];
-        rtInterpMeshGrid_DW->rangepdX_out_tmp =
-          rtInterpMeshGrid_DW->psiq_grid_out[(20 * rtInterpMeshGrid_DW->b_k +
-          rtInterpMeshGrid_DW->i) + 1];
-        if (rtInterpMeshGrid_DW->minval_c <
-            rtInterpMeshGrid_DW->rangepdX_out_tmp) {
-          rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->rangepdX_out_tmp;
+				rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp];
+				rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->c[(20 * rtInterpMeshGrid_DW->psi_array_tmp + rtInterpMeshGrid_DW->i) + 1];
+				if (rtInterpMeshGrid_DW->range_psid_X_in_c < rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+					rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
         }
 
-        rtInterpMeshGrid_DW->minval[rtInterpMeshGrid_DW->b_k] =
-          rtInterpMeshGrid_DW->minval_c;
+				rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp] = rtInterpMeshGrid_DW->range_psid_X_in_c;
       }
     }
 
-    rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->minval[0];
-    rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->minval_tmp_c[0];
-    for (rtInterpMeshGrid_DW->b_k = 0; rtInterpMeshGrid_DW->b_k < 19;
-         rtInterpMeshGrid_DW->b_k++) {
-      rtInterpMeshGrid_DW->rangepdX_out_tmp = rtInterpMeshGrid_DW->
-        minval[rtInterpMeshGrid_DW->b_k + 1];
-      if (rtInterpMeshGrid_DW->minval_c < rtInterpMeshGrid_DW->rangepdX_out_tmp)
-      {
-        rtInterpMeshGrid_DW->minval_c = rtInterpMeshGrid_DW->rangepdX_out_tmp;
+		rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in[0];
+		rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->range_psid_X_in_tmp_c[0];
+		for (rtInterpMeshGrid_DW->psi_array_tmp = 0; rtInterpMeshGrid_DW->psi_array_tmp < 19; rtInterpMeshGrid_DW->psi_array_tmp++) {
+			rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->range_psid_X_in[rtInterpMeshGrid_DW->psi_array_tmp + 1];
+			if (rtInterpMeshGrid_DW->range_psid_X_in_c < rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+				rtInterpMeshGrid_DW->range_psid_X_in_c = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
       }
 
-      rtInterpMeshGrid_DW->rangepdX_out_tmp = rtInterpMeshGrid_DW->
-        minval_tmp_c[rtInterpMeshGrid_DW->b_k + 1];
-      if (rtInterpMeshGrid_DW->c_ex > rtInterpMeshGrid_DW->rangepdX_out_tmp) {
-        rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->rangepdX_out_tmp;
+			rtInterpMeshGrid_DW->range_psid_X_in_tmp_f = rtInterpMeshGrid_DW->range_psid_X_in_tmp_c[rtInterpMeshGrid_DW->psi_array_tmp + 1];
+			if (rtInterpMeshGrid_DW->c_ex > rtInterpMeshGrid_DW->range_psid_X_in_tmp_f) {
+				rtInterpMeshGrid_DW->c_ex = rtInterpMeshGrid_DW->range_psid_X_in_tmp_f;
       }
     }
 
-    rtInterpMeshGrid_Y->rangeiqY_out[rtInterpMeshGrid_DW->t] =
-      (rtInterpMeshGrid_DW->minval_c - rtInterpMeshGrid_DW->c_ex) * (real32_T)
-      rtInterpMeshGrid_DW->t / 19.0F + rtInterpMeshGrid_DW->rangepdY_out_tmp;
+		rtInterpMeshGrid_DW->range_iq_Y_in[rtInterpMeshGrid_DW->t] = (rtInterpMeshGrid_DW->range_psid_X_in_c - rtInterpMeshGrid_DW->c_ex) * (real32_T) rtInterpMeshGrid_DW->t / 19.0F
+		                + rtInterpMeshGrid_DW->range_psid_Y_in_tmp;
   }
 
   /* Inter and extrapolate inverse flux maps */
-  /* '<S1>:1:94' [rangeidX_out,rangeidY_out,id_grid_out] = interpol_flux_scatter_psid ([psi_array(5,:);psi_array(6,:);psi_array(1,:);zeros(length(psi_array(1,:)))],rangeidX_in,rangeidY_in); */
-  for (rtInterpMeshGrid_DW->psi_array_tmp = 0;
-       rtInterpMeshGrid_DW->psi_array_tmp < 100;
-       rtInterpMeshGrid_DW->psi_array_tmp++) {
-    rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->psi_array_tmp] =
-      rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->psi_array_tmp +
-      4];
-    rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->psi_array_tmp + 1]
-      = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->psi_array_tmp
-      + 5];
-    rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->psi_array_tmp + 2]
-      = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->psi_array_tmp];
+	/* '<S1>:1:98' [FluxMapData.range_id_X,FluxMapData.range_id_Y,FluxMapData.id_grid] = interpol_flux_scatter_psid ([psi_array(5,:);psi_array(6,:);psi_array(1,:);zeros(length(psi_array(1,:)))],range_id_X_in,range_id_Y_in); */
+	for (rtInterpMeshGrid_DW->i = 0; rtInterpMeshGrid_DW->i < 100; rtInterpMeshGrid_DW->i++) {
+		rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->i] = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->i + 4];
+		rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->i + 1] = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->i + 5];
+		rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->i + 2] = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->i];
   }
 
-  for (rtInterpMeshGrid_DW->psi_array_tmp = 0;
-       rtInterpMeshGrid_DW->psi_array_tmp < 100;
-       rtInterpMeshGrid_DW->psi_array_tmp++) {
-    memset(&rtInterpMeshGrid_DW->psi_array[rtInterpMeshGrid_DW->psi_array_tmp *
-           103 + 3], 0, 100U * sizeof(real32_T));
+	for (rtInterpMeshGrid_DW->i = 0; rtInterpMeshGrid_DW->i < 100; rtInterpMeshGrid_DW->i++) {
+		memset(&rtInterpMeshGrid_DW->psi_array[rtInterpMeshGrid_DW->i * 103 + 3], 0, 100U * sizeof(real32_T));
   }
 
-  /* Outport: '<Root>/rangeidY_out' incorporates:
+	interpol_flux_scatter_psid(rtInterpMeshGrid_DW->psi_array, rtInterpMeshGrid_DW->range_id_X_in, rtInterpMeshGrid_DW->range_id_Y_in, rtInterpMeshGrid_DW->c, rtInterpMeshGrid_DW);
+
+	/* Outport: '<Root>/FluxMapData' incorporates:
    *  MATLAB Function: '<Root>/InterpMeshGrid'
-   *  Outport: '<Root>/id_grid_out'
-   *  Outport: '<Root>/rangeidX_out'
    */
-  interpol_flux_scatter_psid(rtInterpMeshGrid_DW->psi_array,
-    rtInterpMeshGrid_Y->rangeidX_out, rtInterpMeshGrid_Y->rangeidY_out,
-    rtInterpMeshGrid_Y->id_grid_out, rtInterpMeshGrid_DW);
+	memcpy(&rtInterpMeshGrid_Y->FluxMapData.id_grid[0], &rtInterpMeshGrid_DW->c[0], 400U * sizeof(real32_T));
 
   /* MATLAB Function: '<Root>/InterpMeshGrid' */
-  /* '<S1>:1:95' [rangeiqX_out,rangeiqY_out,iq_grid_out] = interpol_flux_scatter_psiq ([psi_array(5,:);psi_array(6,:);psi_array(2,:);zeros(length(psi_array(1,:)))],rangeiqX_in,rangeiqY_in); */
-  for (rtInterpMeshGrid_DW->psi_array_tmp = 0;
-       rtInterpMeshGrid_DW->psi_array_tmp < 100;
-       rtInterpMeshGrid_DW->psi_array_tmp++) {
-    rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->psi_array_tmp] =
-      rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->psi_array_tmp +
-      4];
-    rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->psi_array_tmp + 1]
-      = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->psi_array_tmp
-      + 5];
-    rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->psi_array_tmp + 2]
-      = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->psi_array_tmp
-      + 1];
+	/* '<S1>:1:99' [FluxMapData.range_iq_X,FluxMapData.range_iq_Y,FluxMapData.iq_grid] = interpol_flux_scatter_psiq ([psi_array(5,:);psi_array(6,:);psi_array(2,:);zeros(length(psi_array(1,:)))],range_iq_X_in,range_iq_Y_in); */
+	for (rtInterpMeshGrid_DW->i = 0; rtInterpMeshGrid_DW->i < 100; rtInterpMeshGrid_DW->i++) {
+		rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->i] = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->i + 4];
+		rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->i + 1] = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->i + 5];
+		rtInterpMeshGrid_DW->psi_array[103 * rtInterpMeshGrid_DW->i + 2] = rtInterpMeshGrid_DW->psi_array_m[6 * rtInterpMeshGrid_DW->i + 1];
   }
 
-  for (rtInterpMeshGrid_DW->psi_array_tmp = 0;
-       rtInterpMeshGrid_DW->psi_array_tmp < 100;
-       rtInterpMeshGrid_DW->psi_array_tmp++) {
-    memset(&rtInterpMeshGrid_DW->psi_array[rtInterpMeshGrid_DW->psi_array_tmp *
-           103 + 3], 0, 100U * sizeof(real32_T));
+	for (rtInterpMeshGrid_DW->i = 0; rtInterpMeshGrid_DW->i < 100; rtInterpMeshGrid_DW->i++) {
+		memset(&rtInterpMeshGrid_DW->psi_array[rtInterpMeshGrid_DW->i * 103 + 3], 0, 100U * sizeof(real32_T));
   }
 
-  /* Outport: '<Root>/rangeiqY_out' incorporates:
-   *  MATLAB Function: '<Root>/InterpMeshGrid'
-   *  Outport: '<Root>/iq_grid_out'
-   *  Outport: '<Root>/rangeiqX_out'
-   */
   interpol_flux_scatter_psiq(rtInterpMeshGrid_DW->psi_array,
-    rtInterpMeshGrid_Y->rangeiqX_out, rtInterpMeshGrid_Y->rangeiqY_out,
-    rtInterpMeshGrid_Y->iq_grid_out, rtInterpMeshGrid_DW);
+    rtInterpMeshGrid_DW->range_iq_X_in, rtInterpMeshGrid_DW->range_iq_Y_in, rtInterpMeshGrid_DW->c, rtInterpMeshGrid_DW);
 
-  /* Outport: '<Root>/psid_grid_out' */
-  memcpy(&rtInterpMeshGrid_Y->psid_grid_out[0],
-         &rtInterpMeshGrid_DW->psid_grid_out[0], 400U * sizeof(real32_T));
-
-  /* Outport: '<Root>/psiq_grid_out' */
-  memcpy(&rtInterpMeshGrid_Y->psiq_grid_out[0],
-         &rtInterpMeshGrid_DW->psiq_grid_out[0], 400U * sizeof(real32_T));
-
-  /* Outport: '<Root>/psi_temp_const' incorporates:
+	/* Outport: '<Root>/FluxMapData' incorporates:
    *  MATLAB Function: '<Root>/InterpMeshGrid'
    */
-  rtInterpMeshGrid_Y->psi_temp_const = rtInterpMeshGrid_DW->psi_temp_const;
+	memcpy(&rtInterpMeshGrid_Y->FluxMapData.psid_grid[0], &rtInterpMeshGrid_DW->rtb_FluxMapData_psid_grid[0], 400U * sizeof(real32_T));
+	memcpy(&rtInterpMeshGrid_Y->FluxMapData.iq_grid[0], &rtInterpMeshGrid_DW->c[0], 400U * sizeof(real32_T));
+	memcpy(&rtInterpMeshGrid_Y->FluxMapData.range_id_Y[0], &rtInterpMeshGrid_DW->range_id_Y_in[0], 20U * sizeof(real32_T));
+	memcpy(&rtInterpMeshGrid_Y->FluxMapData.range_psid_Y[0], &rtInterpMeshGrid_DW->range_psid_Y_in[0], 20U * sizeof(real32_T));
+	memcpy(&rtInterpMeshGrid_Y->FluxMapData.range_psiq_Y[0], &rtInterpMeshGrid_DW->range_psiq_Y_in[0], 20U * sizeof(real32_T));
+	memcpy(&rtInterpMeshGrid_Y->FluxMapData.range_psiq_X[0], &rtInterpMeshGrid_DW->range_psiq_X_in[0], 20U * sizeof(real32_T));
+	memcpy(&rtInterpMeshGrid_Y->FluxMapData.range_iq_Y[0], &rtInterpMeshGrid_DW->range_iq_Y_in[0], 20U * sizeof(real32_T));
+	memcpy(&rtInterpMeshGrid_Y->FluxMapData.range_iq_X[0], &rtInterpMeshGrid_DW->range_iq_X_in[0], 20U * sizeof(real32_T));
+	memcpy(&rtInterpMeshGrid_Y->FluxMapData.range_id_X[0], &rtInterpMeshGrid_DW->range_id_X_in[0], 20U * sizeof(real32_T));
+	rtInterpMeshGrid_Y->FluxMapData.psi_temp_const = rtInterpMeshGrid_DW->rtb_FluxMapData_psi_temp_const;
 }
 
 /* Model initialize function */

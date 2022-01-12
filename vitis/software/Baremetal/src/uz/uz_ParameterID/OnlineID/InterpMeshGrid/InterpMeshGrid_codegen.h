@@ -80,8 +80,30 @@ typedef struct {
   real32_T psi_pm_out;
   real32_T Ld_out;
   real32_T Lq_out;
-  boolean_T clean_array_flag;
+	boolean_T clean_array;
 } uz_PID_OnlineID_output_t;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_FluxMapsData_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_FluxMapsData_t_
+
+typedef struct {
+	real32_T psid_grid[400];
+	real32_T psiq_grid[400];
+	real32_T id_grid[400];
+	real32_T iq_grid[400];
+	real32_T range_id_Y[20];
+	real32_T range_psid_Y[20];
+	real32_T range_psiq_Y[20];
+	real32_T range_psid_X[20];
+	real32_T range_psiq_X[20];
+	real32_T range_iq_Y[20];
+	real32_T range_iq_X[20];
+	real32_T range_id_X[20];
+	real32_T psi_temp_const;
+	real32_T psi_temp_error;
+} uz_PID_FluxMapsData_t;
 
 #endif
 
@@ -90,30 +112,36 @@ typedef struct {
   real_T delta_psi[100];
   real32_T psi_array[10300];
   real32_T psi_array_m[600];
-	real32_T psid_grid_out[400]; /* '<Root>/InterpMeshGrid' */
-	real32_T psiq_grid_out[400]; /* '<Root>/InterpMeshGrid' */
+	real32_T c[400];
+	real32_T rtb_FluxMapData_psid_grid[400];
   real32_T grid_old[400];
   real32_T N[300];
-  real32_T minval[20];
-  real32_T minval_tmp[20];
-  real32_T minval_tmp_c[20];
+	real32_T range_psid_X_in[20];
+	real32_T range_psid_Y_in[20];
+	real32_T range_psiq_X_in[20];
+	real32_T range_psiq_Y_in[20];
+	real32_T range_id_X_in[20];
+	real32_T range_id_Y_in[20];
+	real32_T range_iq_X_in[20];
+	real32_T range_iq_Y_in[20];
+	real32_T range_psid_X_in_tmp[20];
+	real32_T range_psid_X_in_tmp_c[20];
   real32_T AC[3];
   real32_T N_sum[3];
   real32_T grid_old_k[400];
   real32_T N_c[300];
   real32_T AC_b[3];
   real32_T N_sum_p[3];
-  real32_T psi_temp_const;
   real32_T c_ex;
-  real32_T minval_c;
-  real32_T rangepdX_out_tmp;
-  real32_T rangepdY_out_tmp;
-  int32_T b_k;
+	real32_T rtb_FluxMapData_psi_temp_const;
+	real32_T range_psid_X_in_c;
+	real32_T range_psid_X_in_tmp_f;
+	real32_T range_psid_Y_in_tmp;
+	int32_T t;
   int32_T i;
-  int32_T t;
   int32_T psi_array_tmp;
   int32_T i2;
-  int32_T i2_f;
+	int32_T i2_g;
 } DW_InterpMeshGrid_t;
 
 /* External inputs (root inport signals with default storage) */
@@ -125,20 +153,7 @@ typedef struct {
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  real32_T rangepdX_out[20];           /* '<Root>/rangepdX_out' */
-  real32_T rangepqX_out[20];           /* '<Root>/rangepqX_out' */
-  real32_T rangeidX_out[20];           /* '<Root>/rangeidX_out' */
-  real32_T rangeiqX_out[20];           /* '<Root>/rangeiqX_out' */
-  real32_T rangepdY_out[20];           /* '<Root>/rangepdY_out' */
-  real32_T rangepqY_out[20];           /* '<Root>/rangepqY_out' */
-  real32_T rangeidY_out[20];           /* '<Root>/rangeidY_out' */
-  real32_T rangeiqY_out[20];           /* '<Root>/rangeiqY_out' */
-  real32_T psid_grid_out[400];         /* '<Root>/psid_grid_out' */
-  real32_T psiq_grid_out[400];         /* '<Root>/psiq_grid_out' */
-  real32_T id_grid_out[400];           /* '<Root>/id_grid_out' */
-  real32_T iq_grid_out[400];           /* '<Root>/iq_grid_out' */
-  real32_T psi_temp_const;             /* '<Root>/psi_temp_const' */
-  real32_T psi_temp_error;             /* '<Root>/psi_temp_error' */
+	uz_PID_FluxMapsData_t FluxMapData; /* '<Root>/FluxMapData' */
 } ExtY_InterpMeshGrid_t;
 
 /* Real-time Model Data Structure */

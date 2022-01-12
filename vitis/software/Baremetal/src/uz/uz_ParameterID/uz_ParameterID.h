@@ -46,7 +46,7 @@ typedef struct uz_ParameterID_Data_t {
 	uz_PID_FluxMapID_output_t *PID_FluxMapID_Output;
 	uz_PID_OnlineID_output_t* PID_OnlineID_Output;
 	uz_PID_Controller_Parameters_output_t PID_Controller_Parameters;
-	ExtY_InterpMeshGrid_t* FluxMap_Data;
+	uz_PID_FluxMapsData_t* FluxMap_Data;
 } uz_ParameterID_Data_t;
 
 uz_ParameterID_t* uz_ParameterID_init(void);

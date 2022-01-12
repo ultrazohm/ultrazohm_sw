@@ -215,11 +215,15 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 		return (v_dq_Volts);
 	}
 
-void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self) {
+void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t* Data) {
+	self->OnlineID->CleanPsiArray->input.OnlineID_output = self->OnlineID->output.OnlineID_output;
+	self->OnlineID->CleanPsiArray->input.eta_c = 1.2f * 0.5f * sqrtf(0.5f);
 	uz_OnlineID_CleanPsiArray(self->OnlineID);
 }
 
-void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self) {
+void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	memcpy(self->OnlineID->InterpMeshGrid->input.OnlineID_input.psi_array, self->OnlineID->CleanPsiArray->output.psi_array_out, sizeof(self->OnlineID->CleanPsiArray->output.psi_array_out));
+	self->OnlineID->InterpMeshGrid->input.i_rat = Data->PID_GlobalConfig.ratCurrent;
 	uz_OnlineID_CalcFluxMaps(self->OnlineID);
 }
 
@@ -406,6 +410,7 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_Para
 	Data->PID_TwoMassID_Output = &ParameterID->TwoMassID->output.TwoMassID_output;
 	Data->PID_OnlineID_Output = &ParameterID->OnlineID->output.OnlineID_output;
 	Data->PID_ControlFlags = &ParameterID->ControlState->output.ControlFlags;
+	Data->FluxMap_Data = &ParameterID->OnlineID->InterpMeshGrid->output;
 
 
 }

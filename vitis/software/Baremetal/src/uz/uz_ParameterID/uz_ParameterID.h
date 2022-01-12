@@ -46,6 +46,7 @@ typedef struct uz_ParameterID_Data_t {
 	uz_PID_FluxMapID_output_t *PID_FluxMapID_Output;
 	uz_PID_OnlineID_output_t* PID_OnlineID_Output;
 	uz_PID_Controller_Parameters_output_t PID_Controller_Parameters;
+	ExtY_InterpMeshGrid_t* FluxMap_Data;
 } uz_ParameterID_Data_t;
 
 uz_ParameterID_t* uz_ParameterID_init(void);
@@ -57,8 +58,8 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 
 void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_ParameterID_t *ParameterID);
 
-void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self);
-void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self);
+void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t* Data);
+void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 
 
 #endif // UZ_PARAMETERID_H

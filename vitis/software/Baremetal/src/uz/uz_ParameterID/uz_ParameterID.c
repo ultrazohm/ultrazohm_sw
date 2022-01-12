@@ -216,7 +216,11 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 	}
 
 void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self) {
-	uz_OnlineID_CalcPsiArray(self->OnlineID);
+	uz_OnlineID_CleanPsiArray(self->OnlineID);
+}
+
+void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self) {
+	uz_OnlineID_CalcFluxMaps(self->OnlineID);
 }
 
 

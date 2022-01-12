@@ -45,8 +45,12 @@ void uz_OnlineID_step(uz_PID_OnlineID_t *self) {
 	OnlineID_step(self->PtrToModelData);
 }
 
-void uz_OnlineID_CalcPsiArray(uz_PID_OnlineID_t* self) {
+void uz_OnlineID_CleanPsiArray(uz_PID_OnlineID_t* self) {
 	uz_CleanPsiArray(self->CleanPsiArray);
+}
+
+void uz_OnlineID_CalcFluxMaps(uz_PID_OnlineID_t* self) {
+	uz_InterpMeshGrid(self->InterpMeshGrid);
 }
 
 #endif

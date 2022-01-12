@@ -31,4 +31,5 @@ typedef struct {
 
 uz_PID_OnlineID_t* uz_OnlineID_init(void);
 void uz_OnlineID_step(uz_PID_OnlineID_t *self);
-void uz_OnlineID_CalcPsiArray(uz_PID_OnlineID_t* self);
+void uz_OnlineID_CleanPsiArray(uz_PID_OnlineID_t* self);
+void uz_OnlineID_CalcFluxMaps(uz_PID_OnlineID_t* self);

@@ -58,6 +58,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_ParameterID_t *ParameterID);
 
 void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self);
+void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self);
 
 
 #endif // UZ_PARAMETERID_H

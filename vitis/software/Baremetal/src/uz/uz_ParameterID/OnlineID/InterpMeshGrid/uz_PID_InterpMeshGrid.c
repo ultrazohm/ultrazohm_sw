@@ -21,7 +21,7 @@ static size_t instances_counter_PID_InterpMeshGrid = 0;
 
 static uz_PID_InterpMeshGrid_t instances_PID_InterpMeshGrid[UZ_PARAMETERID_ACTIVE] = { 0 };
 
-static uz_PID_InterpMeshGrid_t* uz_PID_InterpMeshGridy_allocation(void);
+static uz_PID_InterpMeshGrid_t* uz_PID_InterpMeshGrid_allocation(void);
 
 static uz_PID_InterpMeshGrid_t* uz_PID_InterpMeshGrid_allocation(void) {
 	uz_assert(instances_counter_PID_InterpMeshGrid < UZ_PARAMETERID_ACTIVE);

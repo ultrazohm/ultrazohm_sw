@@ -1,4 +1,13 @@
-State, Ready_LED  , Running_LED, Error_LED, User_LED, Control_algorithm, Gate_signals,Enable System, Enable Control, Stop,Error,  Next state
-Idle, Blink slow  , Off, Off, Off, Off, Off,==1, x, x,!=1,  Running
+State, Ready_LED  , Running_LED, Error_LED, User_LED, Controller, Outputs,Enable System, Enable Control, Stop button,Error,  Next state
+Setup assertions, Off , Off, Off, Off, Off, Off,x, x, x,x, Initialize platform
+Initialize platform, Off , Off, Off, Off, Off, Off,x, x, x,x, Initialize IP-Cores
+Initialize IP-Cores, Off , Off, Off, Off, Off, Off,x, x, x,x, Initialize Interrupt
+Initialize Interrupt, Off , Off, Off, Off, Off, Off,x, x, x,x, Idle
+Idle, Blink slow  , Off, Off, Off, Off, Off,==1, x, !=1,!=1,  Running
 Idle, Blink slow  , Off, Off, Off, Off, Off,x, x, x,==1,  Error
-State, Ready_LED  , Running_LED, Error_LED, User_LED, Control_algorithm, Gate_signals,Enable System, Enable Control, Stop,Error,  Next state
+Running, Blink fast  , Off, Off, Off, Off, On,x, ==1, !=1,!=1, Control
+Running, Blink fast  , Off, Off, Off, Off, On,x, x, x,==1, Error
+Running, Blink fast  , Off, Off, Off, Off, On,x, x, ==1,!=1, Idle
+Control, Blink fast , On, Off, Off, On, On,x, x, ==1,!=1, Idle
+Control, Blink fast , On, Off, Off, On, On,x, x, x,==1, Error
+Error, Off  , Off, On, Off, Off, Off,x, x, ==1,!=1, Idle

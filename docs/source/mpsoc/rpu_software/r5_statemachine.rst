@@ -12,9 +12,20 @@ After the initialization, there are four states:
 - Control
 - Error
 
+The different states are indicated by  the status of the LEDs on the front panel.
+The main difference between the states is that no output signals are routed througth the CPLD (*gate signals* are off) if the system is not in the state *Running* or *Control*.
+Likewise, the control algorithm in the ISR is not executed, if the system is not in the state *Control*.
+
+For simplification, the different steps of the initialization procedure are not shown in the state table.
+They are just executed one after the other.
+Note that the sequence matters, i.e., the state *Initialize Interrupt* has to be the last init state.
+The implicit state *assertion* is not shown.
+If in any state an execution is  triggered, the error state is executed once and the system is on hold and can only be used after a restart (power cycle).
+
+
 Table:
 
-.. csv-table:: table
+.. csv-table:: State table
     :file: r5_statemachine_table.csv
     :widths: 10 10 10 10 10 10 10 10 10 10 10 10
     :header-rows: 1

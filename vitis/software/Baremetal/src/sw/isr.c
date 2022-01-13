@@ -46,7 +46,6 @@ extern DS_Data Global_Data;
 // - triggered from PL
 // - start of the control period
 //----------------------------------------------------
-static void toggleLEDdependingOnReadyOrRunning(uint32_t i_count_1ms, uint32_t i_count_1s);
 static void ReadAllADC();
 
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
@@ -56,8 +55,6 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic();
     // Toggle the System-Ready LED in order to show a Life-Check on the front panel
-    toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(), uz_SystemTime_GetUptimeInSec());
-
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data); // Read out speed and theta angle
 
@@ -237,31 +234,7 @@ u32 Rpu_IpiInit(u16 DeviceId)
     return XST_SUCCESS;
 }
 
-static void toggleLEDdependingOnReadyOrRunning(uint32_t uptime_ms, uint32_t uptime_sec)
-{
-    if (Global_Data.cw.enableSystem)
-    {
-        if ((uptime_ms % 200) > 100)
-        {
-            uz_led_set_readyLED_on();
-        }
-        else
-        {
-            uz_led_set_readyLED_off();
-        }
-    }
-    else
-    {
-        if (uptime_sec % 2)
-        {
-            uz_led_set_readyLED_on();
-        }
-        else
-        {
-            uz_led_set_readyLED_off();
-        }
-    }
-};
+
 
 static void ReadAllADC()
 {

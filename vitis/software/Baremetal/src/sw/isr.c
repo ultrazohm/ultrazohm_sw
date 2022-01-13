@@ -103,12 +103,12 @@ void ISR_Control(void *data)
 
 	switch(R5_Javascope_State){
 	case JSSM_IDLE:
-		// No need to update JavaScope since it is not connected
+		// Waiting to receive command to write data to shared memory
 		break;
 	case JSSM_WRITE:
 		// Update JavaScope
 		if(JavaScope_update(&Global_Data) == 1){
-			R5_Javascope_State = JSSM_WAITING;
+			R5_Javascope_State = JSSM_IDLE;
 		}
 		break;
 	case JSSM_BUSY_ARMED:
@@ -357,17 +357,9 @@ void Parse_Ipc_Message()
 				// update number of channels
 			}
 			break;
-		case JSCMD_START:
-			if (R5_Javascope_State == JSSM_IDLE){
-				xil_printf("RPU: State Machine - START\r\n");
-				R5_Javascope_State = JSSM_WRITE;
-				// update current memory address
-				js_mem_address.current_addr = msgBuf[1];
-			}
-			break;
 		case JSCMD_WRITE:
 			switch(R5_Javascope_State) {
-			case JSSM_WAITING:
+			case JSSM_IDLE:
 				R5_Javascope_State = JSSM_WRITE;
 				// update current memory address
 				js_mem_address.current_addr = msgBuf[1];

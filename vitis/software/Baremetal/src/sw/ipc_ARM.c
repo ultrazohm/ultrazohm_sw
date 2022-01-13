@@ -364,6 +364,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 		//RESET
 		case( 6 + MOTORCONTROL_OFFSET_bits):
 			PID_Data.PID_GlobalConfig.Reset = true;
+			PID_Data.PID_GlobalConfig.ElectricalID = false;
+			PID_Data.PID_GlobalConfig.TwoMassID = false;
+			PID_Data.PID_GlobalConfig.FrictionID = false;
+			PID_Data.PID_GlobalConfig.FluxMapID = false;
+			PID_Data.PID_GlobalConfig.OnlineID = false;
 			break;
 
 		//MOTOR_ID
@@ -373,6 +378,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 
 		case( 0x102 + MOTORCONTROL_OFFSET_bits):
 			PID_Data.PID_GlobalConfig.enableParameterID = false;
+			PID_Data.PID_GlobalConfig.ElectricalID = false;
+			PID_Data.PID_GlobalConfig.TwoMassID = false;
+			PID_Data.PID_GlobalConfig.FrictionID = false;
+			PID_Data.PID_GlobalConfig.FluxMapID = false;
+			PID_Data.PID_GlobalConfig.OnlineID = false;
 			break;
 
 		case (0x120 + MOTORCONTROL_OFFSET_bits):

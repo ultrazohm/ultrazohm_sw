@@ -21,6 +21,7 @@
 #define JS_NUM_BUFFERS 2
 extern u32 js_mem_address[JS_NUM_BUFFERS];
 extern u8 js_buff_index;
+extern volatile u8 rxIpi;
 
 void Transfer_ipc_Intr_Handler(void *baseaddr_p);						// ISR von Timer-Control
 u32 Rpu_IpiHandler(XIpiPsu *IpiInstPtr);

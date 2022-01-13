@@ -141,8 +141,8 @@ struct js_shared_memory_addr{
 extern struct js_shared_memory_addr js_mem_address;
 
 int JavaScope_initalize(DS_Data* data);
-void JavaScope_update(DS_Data* data);
+u8 JavaScope_update(DS_Data* data);
 
-void js_fetchData();
+u8 js_fetchData();
 
 #endif /* INCLUDE_JAVASCOPE_H_ */

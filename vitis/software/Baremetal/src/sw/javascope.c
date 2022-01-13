@@ -35,7 +35,10 @@ static float ISR_period_us;
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
-float aux = 0.0;
+
+uint8_t js_data_array_index = 0;
+
+static struct javascope_data_t volatile * javascope_data;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -89,12 +92,14 @@ int JavaScope_initalize(DS_Data* data)
 }
 
 
-void js_fetchData()
+u8 js_fetchData()
 {
-	// create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START
-	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)js_mem_address.current_addr;
-
+	if (js_data_array_index == 0){
+		// initialize pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START
+		javascope_data = (struct javascope_data_t*)js_mem_address.current_addr;
+	}
 	static int js_cnt_slowData=0;
+	static float aux = 0.0;
 	int status;
 	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0};
 
@@ -111,41 +116,55 @@ void js_fetchData()
 	javascope_data->slowDataID 		= js_cnt_slowData;
 	javascope_data->slowDataContent = js_slowDataArray[js_cnt_slowData].u;
 	javascope_data->status 			= js_status_BareToRTOS;
+
 	aux += M_PI/100;
 	if(aux > 2*M_PI){
 		aux = 0.0;
 	}
-	// flush data cache of shared memory region to make sure shared memory is updated
-	Xil_DCacheFlushRange(js_mem_address.current_addr, JAVASCOPE_DATA_SIZE_2POW);
-
-	//Send an interrupt to APU
-	status = XIpiPsu_TriggerIpi(&INTCInst_IPI,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
-	if(status != (u32)XST_SUCCESS) {
-		xil_printf("RPU: IPI Trigger failed\r\n");
-	}
-
-	//Afterwards an acknowledge and a message from the APU can be read/checked, but we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
-	status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, RespBuf,IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_RESP);
-	if(status != (u32)XST_SUCCESS) {
-		xil_printf("RPU: IPI reading from A53 failed\r\n");
-	}
-
-	ControlData.id 			= (uint16_t)RespBuf[0];
-	ControlData.value 		= (uint16_t)RespBuf[1];
-	ControlData.digInputs 	= (uint16_t)RespBuf[2];
 
 	js_cnt_slowData++;
 	if (js_cnt_slowData >= JSSD_ENDMARKER){
 		js_cnt_slowData = 0;
 	}
 
+	javascope_data++;
+	js_data_array_index++;
+
 	i_fetchDataLifeCheck++; //LiveCheck
 	if(i_fetchDataLifeCheck > 10000){
 		i_fetchDataLifeCheck =0;
 	}
+
+	// all the samples were written in shared memory
+	if(js_data_array_index >= JS_DATA_ARRAY_SIZE){
+		// flush data cache of shared memory region to make sure shared memory is updated
+		Xil_DCacheFlushRange(js_mem_address.current_addr, JS_DATA_ARRAY_SIZE*JAVASCOPE_DATA_SIZE_2POW);
+
+		//Send an interrupt to APU
+		status = XIpiPsu_TriggerIpi(&INTCInst_IPI,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
+		if(status != (u32)XST_SUCCESS) {
+			xil_printf("RPU: IPI Trigger failed\r\n");
+		}
+
+		//Afterwards an acknowledge and a message from the APU can be read/checked, but we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
+		status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, RespBuf,IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_RESP);
+		if(status != (u32)XST_SUCCESS) {
+			xil_printf("RPU: IPI reading from A53 failed\r\n");
+		}
+
+		ControlData.id 			= (uint16_t)RespBuf[0];
+		ControlData.value 		= (uint16_t)RespBuf[1];
+		ControlData.digInputs 	= (uint16_t)RespBuf[2];
+
+		js_data_array_index = 0;
+
+		return 1;
+	}
+
+	return 0;
 }
 
-void JavaScope_update(DS_Data* data){
+u8 JavaScope_update(DS_Data* data){
 	static Oszi_to_ARM_Data_shared_struct ControlDataShadowBare;
 
 	 //In order to avoid unnecessary memory access, call only if something has changed!
@@ -212,7 +231,7 @@ void JavaScope_update(DS_Data* data){
 	js_slowDataArray[JSSD_FLOAT_Lq].f 			= data->mrp.motorQuadratureInductance;
 	js_slowDataArray[JSSD_FLOAT_totalRotorInertia].f 	= data->mrp.totalRotorInertia;
 
-	js_fetchData();
+	return js_fetchData();
 
 	// End JavaScope---------------------------------------------------------------------------------------
 

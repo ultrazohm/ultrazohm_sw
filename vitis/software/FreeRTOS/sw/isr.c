@@ -23,7 +23,6 @@
 #include "../include/isr.h"
 #include "../defines.h"
 #include "APU_RPU_shared.h"
-#include "xil_cache.h"
 
 
 #define IPI_HEADER			0x1E0000 /* 1E - Target Module ID */
@@ -37,7 +36,7 @@ extern int js_connection_established;
 QueueHandle_t js_queue;
 int js_queue_full = 0;
 
-u32 js_mem_address[JS_NUM_BUFFERS] = {0xFFFF0000, 0xFFFF0080};
+u32 js_mem_address[JS_NUM_BUFFERS] = {0xFFFF0000, 0xFFFF8000};
 
 int i_LifeCheck_Transfer_ipc;
 
@@ -54,38 +53,22 @@ XScuGic_Config *IntcConfig;
 // Standard isr interrupt from BareMetal -> frequency depends on the Software-interrupt from BareMetal
 void Transfer_ipc_Intr_Handler(void *data)
 {
-	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START
-	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)js_mem_address[js_buff_index];
-
 	int status;
 	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0,0,XST_SUCCESS};
 	u32 msgBuf[IPI_A53toR5_MSG_LEN] = {JSCMD_WRITE, 0, 0};
 	BaseType_t xHigherPriorityTaskWoken;
 
-	// flush cache of shared memory
-	Xil_DCacheFlushRange(js_mem_address[js_buff_index], JAVASCOPE_DATA_SIZE_2POW);
-
 	// if javascope connection is established
 	if(js_connection_established!=0)
 	{
-		// append sample to queue
-		size_t queue_status = xQueueSendToBackFromISR(js_queue, javascope_data, &xHigherPriorityTaskWoken);
-
-		if (queue_status == errQUEUE_FULL)
-		{
-			js_queue_full++;
-			// xil_printf("OsziData_queue is full\r\n");
-		}
-
-
-		//Update javascope current buffer
-		js_buff_index++;
-		if(js_buff_index == JS_NUM_BUFFERS){
-			js_buff_index = 0;
+		// Define javascope next buffer to send its address to RPU
+		u8 next_js_buff_index = js_buff_index + 1;
+		if(next_js_buff_index == JS_NUM_BUFFERS){
+			next_js_buff_index = 0;
 		}
 
 		// Write message for acknowledge of the interrupt to RPU and command it to write new data
-		msgBuf[1] = js_mem_address[js_buff_index];
+		msgBuf[1] = js_mem_address[next_js_buff_index];
 		Send_Command_to_RPU(msgBuf, IPI_A53toR5_MSG_LEN);
 	}
 
@@ -104,7 +87,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	if(i_LifeCheck_Transfer_ipc > 25000){
 		i_LifeCheck_Transfer_ipc = 0;
 	}
-
+	rxIpi = 1;
 	// force context switch after ISR finishes -> switching to ethernet task
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
@@ -148,13 +131,6 @@ int Initialize_ISR(){
 	Status = Apu_GicInit(&INTCipc, XPAR_XIPIPSU_0_INT_ID,(Xil_ExceptionHandler)Transfer_ipc_Intr_Handler, &INTCInst_IPI);
 	if(Status != XST_SUCCESS) {
 		xil_printf("APU: Error: GIC initialization failed\r\n");
-		return XST_FAILURE;
-	}
-
-	// create queue for buffering R5 interrupt -> ethernet thread
-	js_queue = xQueueCreate( JS_QUEUE_SIZE_ELEMENTS, sizeof(struct javascope_data_t) );
-	if (js_queue == NULL){
-		xil_printf("APU: Error: Queue creation failed\r\n");
 		return XST_FAILURE;
 	}
 

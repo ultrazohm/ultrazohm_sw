@@ -107,15 +107,17 @@ void ISR_Control(void *data)
 		break;
 	case JSSM_WRITE:
 		// Update JavaScope
-		JavaScope_update(&Global_Data);
-		R5_Javascope_State = JSSM_WAITING;
+		if(JavaScope_update(&Global_Data) == 1){
+			R5_Javascope_State = JSSM_WAITING;
+		}
 		break;
 	case JSSM_BUSY_ARMED:
 		// Update JavaScope
-		JavaScope_update(&Global_Data);
-		// Update current memory address and change state to JSSM_WRITE
-		js_mem_address.current_addr = js_mem_address.next_addr;
-		R5_Javascope_State = JSSM_WRITE;
+		if(JavaScope_update(&Global_Data) == 1){
+			// Update current memory address and change state to JSSM_WRITE
+			js_mem_address.current_addr = js_mem_address.next_addr;
+			R5_Javascope_State = JSSM_WRITE;
+		}
 		break;
 	default:
 		break;

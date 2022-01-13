@@ -24,6 +24,7 @@
 #include "task.h"
 #include "APU_RPU_shared.h"
 #include "../include/isr.h"
+#include "xil_cache.h"
 
 #include "../main.h"
 
@@ -33,6 +34,7 @@ extern QueueHandle_t js_queue;
 int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
 u8 js_buff_index = 0;
+volatile u8 rxIpi = 0;
 
 //==============================================================================================================================================================
 void print_echo_app_header()
@@ -53,7 +55,7 @@ void print_echo_app_header()
  *---------------------------------------------------------------------------*/
 void process_request_thread(void *p)
 {
-	struct javascope_data_t javascope_data_sending = {0};
+//	struct javascope_data_t javascope_data_sending[NETWORK_SEND_FIELD_SIZE] = {0};
 	NetworkSendStruct nwsend = {0};
 	char recv_buf[2048] = {0};
 
@@ -72,50 +74,60 @@ void process_request_thread(void *p)
 	js_connection_established = clientfd;
 
 	while (1) {
+		while(!rxIpi); // wait to receive an interrupt from R5
 
 		u32_t command=0;
 		time_start = Get_time_us();
+		// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START
+		struct javascope_data_t volatile * javascope_data = (struct javascope_data_t*)js_mem_address[js_buff_index];
+
+		// flush cache of shared memory
+		Xil_DCacheFlushRange(js_mem_address[js_buff_index], JS_DATA_ARRAY_SIZE*JAVASCOPE_DATA_SIZE_2POW);
+
+		//Update javascope current buffer
+		js_buff_index++;
+		if(js_buff_index == JS_NUM_BUFFERS){
+			js_buff_index = 0;
+		}
 
 		for (size_t i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
 
-			// Take one element from queue
-			// The maximum amount of time the task should block waiting for an item to receive should the queue be empty at the time of the call.
-			xQueueReceive(js_queue, &javascope_data_sending, JS_QUEUE_RECEIVE_TICKS2WAIT);
-
 			// copy data into nwsend struct
-			nwsend.val_01[i] 	= javascope_data_sending.scope_ch[0];
-			nwsend.val_02[i] 	= javascope_data_sending.scope_ch[1];
-			nwsend.val_03[i] 	= javascope_data_sending.scope_ch[2];
-			nwsend.val_04[i]  	= javascope_data_sending.scope_ch[3];
-			nwsend.val_05[i]  	= javascope_data_sending.scope_ch[4];
-			nwsend.val_06[i]  	= javascope_data_sending.scope_ch[5];
-			nwsend.val_07[i] 	= javascope_data_sending.scope_ch[6];
-			nwsend.val_08[i] 	= javascope_data_sending.scope_ch[7];
-			nwsend.val_09[i] 	= javascope_data_sending.scope_ch[8];
-			nwsend.val_10[i] 	= javascope_data_sending.scope_ch[9];
-			nwsend.val_11[i]  	= javascope_data_sending.scope_ch[10];
-			nwsend.val_12[i]  	= javascope_data_sending.scope_ch[11];
-			nwsend.val_13[i]  	= javascope_data_sending.scope_ch[12];
-			nwsend.val_14[i] 	= javascope_data_sending.scope_ch[13];
-			nwsend.val_15[i] 	= javascope_data_sending.scope_ch[14];
-			nwsend.val_16[i] 	= javascope_data_sending.scope_ch[15];
-			nwsend.val_17[i] 	= javascope_data_sending.scope_ch[16];
-			nwsend.val_18[i] 	= javascope_data_sending.scope_ch[17];
-			nwsend.val_19[i] 	= javascope_data_sending.scope_ch[18];
-			nwsend.val_20[i] 	= javascope_data_sending.scope_ch[19];
-			nwsend.slowDataContent[i] 	= javascope_data_sending.slowDataContent;
-			nwsend.slowDataID[i] 		= javascope_data_sending.slowDataID;
+			nwsend.val_01[i] 	= javascope_data->scope_ch[0];
+			nwsend.val_02[i] 	= javascope_data->scope_ch[1];
+			nwsend.val_03[i] 	= javascope_data->scope_ch[2];
+			nwsend.val_04[i]  	= javascope_data->scope_ch[3];
+			nwsend.val_05[i]  	= javascope_data->scope_ch[4];
+			nwsend.val_06[i]  	= javascope_data->scope_ch[5];
+			nwsend.val_07[i] 	= javascope_data->scope_ch[6];
+			nwsend.val_08[i] 	= javascope_data->scope_ch[7];
+			nwsend.val_09[i] 	= javascope_data->scope_ch[8];
+			nwsend.val_10[i] 	= javascope_data->scope_ch[9];
+			nwsend.val_11[i]  	= javascope_data->scope_ch[10];
+			nwsend.val_12[i]  	= javascope_data->scope_ch[11];
+			nwsend.val_13[i]  	= javascope_data->scope_ch[12];
+			nwsend.val_14[i] 	= javascope_data->scope_ch[13];
+			nwsend.val_15[i] 	= javascope_data->scope_ch[14];
+			nwsend.val_16[i] 	= javascope_data->scope_ch[15];
+			nwsend.val_17[i] 	= javascope_data->scope_ch[16];
+			nwsend.val_18[i] 	= javascope_data->scope_ch[17];
+			nwsend.val_19[i] 	= javascope_data->scope_ch[18];
+			nwsend.val_20[i] 	= javascope_data->scope_ch[19];
+			nwsend.slowDataContent[i] 	= javascope_data->slowDataContent;
+			nwsend.slowDataID[i] 		= javascope_data->slowDataID;
 
 			// Send time to fill buffer as JSSD_INT_polePairs
 			if (nwsend.slowDataID[i] == 12){
 				nwsend.slowDataContent[i] = mean_time;
 			}
+			javascope_data++;
 		}
-		nwsend.status = javascope_data_sending.status;
+		nwsend.status = javascope_data->status;
 
 		total_time += (Get_time_us() - time_start);
 
 		// At this point, Ethernet Package is full and ready to be sent
+		rxIpi = 0;
 		i_LifeCheck_process_Ethernet++;
 		if(i_LifeCheck_process_Ethernet > 2500){
 			mean_time = total_time/i_LifeCheck_process_Ethernet;

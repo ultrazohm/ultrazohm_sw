@@ -30,6 +30,7 @@ extern "C" {
 #include "xtmrctr.h"									//Include of the Timer-Blocks
 #include "math.h"										//Include for math operations
 #include <stdio.h>
+#include "APU_RPU_shared.h"
 
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024
@@ -37,7 +38,7 @@ extern "C" {
 // ========== JavaScope-Ethernet =========================================================================
 #define TCPPACKETSIZE 1460 //Maximum TCPPaketSize -> Default: 1460 -> Jumbo-Frames would enable a TCPPACKETSIZE of 8960
 #define TCPPORT 1000	   //Random chosen, but equivalent to the Concerto-OHMrichter
-#define NETWORK_SEND_FIELD_SIZE 16
+#define NETWORK_SEND_FIELD_SIZE JS_DATA_ARRAY_SIZE
 //The IP-address, SubNet address-and StandartGateway-address are set in the main-thread in the main.c
 
 // ========== JavaScope-Queue =========================================================================

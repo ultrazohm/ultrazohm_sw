@@ -11,6 +11,7 @@
 // update by hand when changing JS_CHANNELS
 // Bank 3 of OCM has 64 KB, thus a maximum of 2^16/32=2048 float values can be stored
 #define JAVASCOPE_DATA_SIZE_2POW  	128
+#define JS_DATA_ARRAY_SIZE          16
 
 // IPI Messaging System R5 <-> A53
 #define IPI_A53toR5_MSG_LEN		3U

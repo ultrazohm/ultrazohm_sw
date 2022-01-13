@@ -40,12 +40,14 @@ typedef struct uz_ParameterID_Data_t {
 	uz_PID_FrictionIDConfig_t PID_FrictionID_Config;
 	uz_PID_FluxMapIDConfig_t PID_FluxMapID_Config;
 	uz_PID_OnlineIDConfig_t PID_OnlineID_Config;
+	uz_PID_AutoRefCurrentsConfig_t PID_AutoRefCurrents_Config;
 	uz_PID_ElectricalID_output_t *PID_ElectricalID_Output;
 	uz_PID_TwoMassID_output_t *PID_TwoMassID_Output;
 	uz_PID_FrictionID_output_t *PID_FrictionID_Output;
 	uz_PID_FluxMapID_output_t *PID_FluxMapID_Output;
 	uz_PID_OnlineID_output_t* PID_OnlineID_Output;
 	uz_PID_Controller_Parameters_output_t PID_Controller_Parameters;
+	uz_dq_t AutoRefCurrents_Output;
 	uz_PID_FluxMapsData_t* FluxMap_Data;
 	bool calculate_flux_maps;
 } uz_ParameterID_Data_t;

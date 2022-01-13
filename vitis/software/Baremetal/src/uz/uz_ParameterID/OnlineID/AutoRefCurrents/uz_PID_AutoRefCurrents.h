@@ -14,25 +14,16 @@
  * limitations under the License.
  ******************************************************************************/
 #include <stdbool.h>
-#include "../../uz_HAL.h"
-#include "OnlineID_codegen.h"
-#include "CleanPsiArray/uz_PID_CleanPsiArray.h"
-#include "InterpMeshGrid/uz_PID_InterpMeshGrid.h"
-#include "AutoRefCurrents/uz_PID_AutoRefCurrents.h"
+#include "../../../uz_HAL.h"
+#include "AutoRefCurrents_codegen.h"
 
 typedef struct {
-	ExtY_OnlineID_t output;
-	ExtU_OnlineID_t input;
-	DW_OnlineID_t rtDW; /* Observable states */
-	RT_MODEL_OnlineID_t modelData;
-	RT_MODEL_OnlineID_t *PtrToModelData;
-	uz_PID_CleanPsiArray_t* CleanPsiArray;
-	uz_PID_InterpMeshGrid_t* InterpMeshGrid;
-	uz_PID_AutoRefCurrents_t* AutoRefCurrents;
-} uz_PID_OnlineID_t;
+	ExtY_AutoRefCurrents_t output;
+	ExtU_AutoRefCurrents_t input;
+	DW_AutoRefCurrents_t rtDW; /* Observable states */
+	RT_MODEL_AutoRefCurrents_t modelData;
+	RT_MODEL_AutoRefCurrents_t *PtrToModelData;
+} uz_PID_AutoRefCurrents_t;
 
-uz_PID_OnlineID_t* uz_OnlineID_init(void);
-void uz_OnlineID_step(uz_PID_OnlineID_t *self);
-void uz_OnlineID_CleanPsiArray(uz_PID_OnlineID_t* self);
-void uz_OnlineID_CalcFluxMaps(uz_PID_OnlineID_t* self);
-void uz_OnlineID_AutoRefCurrents(uz_PID_OnlineID_t* self);
+uz_PID_AutoRefCurrents_t* uz_AutoRefCurrents_init(void);
+void uz_AutoRefCurrents(uz_PID_AutoRefCurrents_t *self);

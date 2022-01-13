@@ -37,6 +37,7 @@ uz_PID_OnlineID_t* uz_OnlineID_init(void) {
 	self->PtrToModelData->outputs = &self->output;
 	self->CleanPsiArray = uz_CleanPsiArray_init();
 	self->InterpMeshGrid = uz_InterpMeshGrid_init();
+	self->AutoRefCurrents = uz_AutoRefCurrents_init();
 	OnlineID_initialize(self->PtrToModelData);
 	return (self);
 }
@@ -51,6 +52,10 @@ void uz_OnlineID_CleanPsiArray(uz_PID_OnlineID_t* self) {
 
 void uz_OnlineID_CalcFluxMaps(uz_PID_OnlineID_t* self) {
 	uz_InterpMeshGrid(self->InterpMeshGrid);
+}
+
+void uz_OnlineID_AutoRefCurrents(uz_PID_OnlineID_t* self) {
+	uz_AutoRefCurrents(self->AutoRefCurrents);
 }
 
 #endif

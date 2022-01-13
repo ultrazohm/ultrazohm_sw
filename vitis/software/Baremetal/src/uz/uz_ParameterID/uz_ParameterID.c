@@ -39,6 +39,7 @@ static void uz_PID_FrictionID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t
 static void uz_PID_TwoMassID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 static void uz_PID_FluxMapID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 static void uz_PID_OnlineID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
+static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 
 static uz_ParameterID_t* uz_ParameterID_allocation(void);
 
@@ -103,6 +104,9 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	//OnlineID
 	if (self->ControlState->output.ControlFlags.enableOnlineID == true || self->ControlState->output.GlobalConfig_out.Reset == true || Data->PID_OnlineID_Config.OnlineID_Reset == true) {
 		uz_PID_OnlineID_step(self, Data);
+		if (Data->PID_AutoRefCurrents_Config.enableCRS == true) {
+			uz_PID_AutoRefCurrents_step(self, Data);
+		}
 	}
 
 	//RESET
@@ -192,10 +196,19 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 
 	if (Data->PID_ControlFlags->finished_all_Offline_states == true) {
 		uz_dq_t Online_current_ref = Data->PID_GlobalConfig.i_dq_ref;
+		if (Data->PID_AutoRefCurrents_Config.enableCRS == true) {
+			Online_current_ref.q = Data->PID_GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
+		}
 		if (Data->PID_OnlineID_Output->IdControlFlag == true) {
 			Online_current_ref.d = Data->PID_GlobalConfig.i_dq_ref.d + Data->PID_OnlineID_Output->id_out;
+			if (Data->PID_AutoRefCurrents_Config.enableCRS == true) {
+				Online_current_ref.d = Data->PID_GlobalConfig.i_dq_ref.d + Data->PID_OnlineID_Output->id_out + Data->AutoRefCurrents_Output.d;
+			}
 		} else {
 			Online_current_ref.d = Data->PID_GlobalConfig.i_dq_ref.d;
+			if (Data->PID_AutoRefCurrents_Config.enableCRS == true) {
+				Online_current_ref.d = Data->PID_GlobalConfig.i_dq_ref.d + Data->AutoRefCurrents_Output.d;
+			}
 		}
 		if (ControlRef == CurrentControl) {
 			v_dq_Volts = uz_FOC_sample(FOC_instance, Online_current_ref, Data->PID_ActualValues.i_dq, Data->PID_ActualValues.V_DC, Data->PID_ActualValues.omega_el);
@@ -219,8 +232,13 @@ void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t*
 	self->OnlineID->CleanPsiArray->input.OnlineID_output = self->OnlineID->output.OnlineID_output;
 	self->OnlineID->CleanPsiArray->input.eta_c = 0.05f * Data->PID_GlobalConfig.ratCurrent;
 	uz_OnlineID_CleanPsiArray(self->OnlineID);
-	memcpy(self->OnlineID->input.cleaned_psi_array, self->OnlineID->CleanPsiArray->output.psi_array_out, sizeof(self->OnlineID->input.cleaned_psi_array));
+	if (Data->PID_OnlineID_Config.OnlineID_Reset == false) {
+		memcpy(self->OnlineID->input.cleaned_psi_array, self->OnlineID->CleanPsiArray->output.psi_array_out, sizeof(self->OnlineID->input.cleaned_psi_array));
+	} else {
+		memcpy(self->OnlineID->input.cleaned_psi_array, self->OnlineID->output.OnlineID_output.psi_array, sizeof(self->OnlineID->input.cleaned_psi_array));
+	}
 	Data->PID_OnlineID_Config.array_cleaned = self->OnlineID->CleanPsiArray->output.array_cleaned_flag;
+
 }
 
 void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
@@ -327,6 +345,18 @@ static void uz_PID_OnlineID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* 
 	Data->PID_Controller_Parameters.activeState = self->OnlineID->output.OnlineID_output.activeState;
 }
 
+static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	//Update State-Inputs
+	self->OnlineID->AutoRefCurrents->input.ActualValues = Data->PID_ActualValues;
+	self->OnlineID->AutoRefCurrents->input.AutoRefCurrentsConfig = Data->PID_AutoRefCurrents_Config;
+	self->OnlineID->AutoRefCurrents->input.GlobalConfig_out = Data->PID_GlobalConfig;
+
+	//Step the function
+	uz_OnlineID_AutoRefCurrents(self->OnlineID);
+
+	//Update Data struct with new output values
+	Data->AutoRefCurrents_Output = self->OnlineID->AutoRefCurrents->output.i_dq_ref;
+}
 
 void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_ParameterID_t *ParameterID) {
 

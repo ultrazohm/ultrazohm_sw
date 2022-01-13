@@ -496,12 +496,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 
 		//identRAmp
 		case( 0x192 + MOTORCONTROL_OFFSET_bits):
-			PID_Data.PID_FluxMapID_Config.identRAmp = value * 0.01f;
+			PID_Data.PID_FluxMapID_Config.identRAmp = value;
 			break;
 
 		//I_D_MaxCurrent_update
 		case( 0x193 + MOTORCONTROL_OFFSET_bits):
-			data->mrp.motorMaximumCurrentContinuousOperation = value * 0.1;
+			data->mrp.motorMaximumCurrentContinuousOperation = value * 0.1f;
 			break;
 
 		//ID_Controlint

@@ -56,7 +56,7 @@ int main(void)
     Initialize_AXI_GPIO();
     uz_frontplane_button_and_led_init();
     JavaScope_initalize(&Global_Data);
-    AXI2TCM_on();
+    uz_axigpio_enable_datamover();
     Initialize_ISR(); // Initialize the Interrupts and enable them - last line of code before infinite loop
 
     // Infinite loop
@@ -65,11 +65,6 @@ int main(void)
         ultrazohm_state_machine();
     }
     return (status);
-}
-
-void AXI2TCM_on()
-{
-    uz_axigpio_enable_datamover();
 }
 
 //==============================================================================================================================================================

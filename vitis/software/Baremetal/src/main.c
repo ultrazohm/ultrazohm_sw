@@ -70,10 +70,6 @@ int main(void)
 //==============================================================================================================================================================
 void InitializeDataStructure(DS_Data *data)
 {
-    // Control
-    data->cw.ControlReference = CurrentControl; // default because of Parameter ID
-    // Default control method
-
     data->rasv.halfBridge1DutyCycle = 0.0;
     data->rasv.halfBridge2DutyCycle = 0.0;
     data->rasv.halfBridge3DutyCycle = 0.0;

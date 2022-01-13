@@ -4,20 +4,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef enum {
-  TorqueControl =0,
-  CurrentControl,
-  SpeedControl,
-  PositionControl
-} ControlReference;
-
-typedef struct _controlWord_ {	// 26 bits
-	_Bool enableSystem:1;
-	_Bool enableControl:1;
-	ControlReference ControlReference:3;
-	_Bool enableParameterID:1;
-} controlWord;
-
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -99,18 +85,9 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge3DutyCycle;
 } referenceAndSetValues;
 
-typedef struct _debugVariables_ {
-	int sw1;
-	int sw2;
-	int sw3;
-} debugVariables;
-
-
 typedef struct _DS_Data_ {
-	controlWord cw;
 	referenceAndSetValues rasv;
 	actualValues av;
-	debugVariables dv;
 	AnalogAdapters aa;
 } DS_Data;
 

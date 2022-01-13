@@ -59,19 +59,6 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data); // Read out speed and theta angle
 
     // Start: Control algorithm -------------------------------------------------------------------------------
-    if (Global_Data.cw.ControlReference == SpeedControl)
-    {
-        // add your speed controller here
-    }
-    else if (Global_Data.cw.ControlReference == CurrentControl)
-    {
-        // add your current controller here
-    }
-    else if (Global_Data.cw.ControlReference == TorqueControl)
-    {
-        // add your torque controller here
-    }
-    // End: Control algorithm -------------------------------------------------------------------------------
 
     // Set duty cycles for two-level modulator
     uz_PWM_SS_2L_set_duty_cycle(PWM_SS_2L_instance_1,Global_Data.rasv.halfBridge1DutyCycle,Global_Data.rasv.halfBridge2DutyCycle,Global_Data.rasv.halfBridge3DutyCycle);
@@ -233,8 +220,6 @@ u32 Rpu_IpiInit(u16 DeviceId)
     xil_printf("RPU: RPU_IpiInit: Done\r\n");
     return XST_SUCCESS;
 }
-
-
 
 static void ReadAllADC()
 {

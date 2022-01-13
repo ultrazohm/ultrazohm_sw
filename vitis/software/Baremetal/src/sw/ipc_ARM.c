@@ -16,6 +16,8 @@
 #include <string.h>
 #include "../main.h"
 #include "../include/ipc_ARM.h"
+#include "../uz_platform_state_machine.h"
+#include <stdbool.h>
 
 
 extern float *js_ch_observable[JSO_ENDMARKER];
@@ -33,8 +35,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 		switch (msgId){
 
 		case( Stop): // Stop
-			data->cw.enableSystem = false;
-			data->cw.enableControl = false;
+			ultrazohm_state_machine_set_stop(true);
 			break;
 		case( 201): // SELECT_DATA_CH1_bits
 			if ( value >= 0 && value < JSO_ENDMARKER )	{js_ch_selected[0] = js_ch_observable[(uint32_t)value];	}
@@ -117,19 +118,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			break;
 
 		case( Enable_System): // ConverterEnable
-			data->cw.enableSystem = true;
+		ultrazohm_state_machine_set_enable_system(true);
 			break; 
 
 		case( Disable_System): // ConverterDisable
-			data->cw.enableSystem = false;
+			ultrazohm_state_machine_set_enable_system(false);
 			break; 
 
 		case( Enable_Control): // ControlEnable
-			data->cw.enableControl = true;
+			ultrazohm_state_machine_set_enable_control(true);
 			break; 
 
 		case( Disable_Control): // ControlDisable
-			data->cw.enableControl = false;
+			ultrazohm_state_machine_set_enable_control(false);
 			break; 
 
 		case( Set_Send_Field_1):
@@ -204,13 +205,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 
 	// Feedback bits for controlling the status indicators in the GUI
 	/* Bit 0 - Enable_System */
-	if (data->cw.enableSystem == true) {
+	if ( ultrazohm_state_machine_get_enable_system()) {
 		js_status_BareToRTOS |= 1 << 0;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 0);
 	}
 	/* Bit 1 - Enable_Control */
-	if (data->cw.enableControl == true) {
+	if (ultrazohm_state_machine_get_enable_control()) {
 		js_status_BareToRTOS |= 1 << 1;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 1);

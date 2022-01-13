@@ -76,6 +76,16 @@ bool ultrazohm_state_machine_is_control_state(void)
     return (ultrazohm_state.current_state == control);
 }
 
+bool ultrazohm_state_machine_get_enable_system(void)
+{
+    return ultrazohm_state.enable_system;
+}
+
+bool ultrazohm_state_machine_get_enable_control(void)
+{
+    return ultrazohm_state.enable_control;
+}
+
 void ultrazohm_state_machine_set_enable_system(bool enable_system)
 {
     ultrazohm_state.enable_system = enable_system;

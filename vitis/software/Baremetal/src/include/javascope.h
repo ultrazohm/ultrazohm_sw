@@ -115,6 +115,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_Wtemp_FMID,
 	JSSD_FLOAT_Psi_D_Map,
 	JSSD_FLOAT_Psi_Q_Map,
+	JSSD_FLOAT_Flux_MeasuringPoints,
 	JSSD_ENDMARKER
 };
 

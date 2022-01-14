@@ -245,6 +245,7 @@ void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t*
 		memcpy(self->OnlineID->input.cleaned_psi_array, self->OnlineID->output.OnlineID_output.psi_array, sizeof(self->OnlineID->input.cleaned_psi_array));
 	}
 	Data->PID_OnlineID_Config.array_cleaned = self->OnlineID->CleanPsiArray->output.array_cleaned_flag;
+	Data->FluxMap_MeasuringPoints = self->OnlineID->CleanPsiArray->output.n_flux_points;
 
 }
 

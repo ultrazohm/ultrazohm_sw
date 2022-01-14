@@ -53,6 +53,7 @@ typedef struct uz_ParameterID_Data_t {
 	int FluxMap_counter;
 	float Psi_D_pointer;
 	float Psi_Q_pointer;
+	float FluxMap_MeasuringPoints;
 } uz_ParameterID_Data_t;
 
 uz_ParameterID_t* uz_ParameterID_init(void);

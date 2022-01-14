@@ -141,6 +141,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Wtemp_FMID] = &(PID_Data.PID_FluxMapID_Output->WindingTemp);
 	js_slowDataArray[JSSD_FLOAT_Psi_D_Map] = &(PID_Data.Psi_D_pointer);
 	js_slowDataArray[JSSD_FLOAT_Psi_Q_Map] = &(PID_Data.Psi_Q_pointer);
+	js_slowDataArray[JSSD_FLOAT_Flux_MeasuringPoints] = &(PID_Data.FluxMap_MeasuringPoints);
 
 	return Status;
 }

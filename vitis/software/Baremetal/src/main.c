@@ -23,7 +23,45 @@
 
 #include "uz_assertion_configuration.h"
 // Initialize the global variables
-DS_Data Global_Data;
+DS_Data Global_Data={
+    .rasv={
+        .halfBridge1DutyCycle=0.0f,
+        .halfBridge2DutyCycle=0.0f,
+        .halfBridge3DutyCycle=0.0f
+    },
+    .aa={
+        .A1={
+            .cf.ADC_A1=10.0f,
+            .cf.ADC_A2=10.0f,
+            .cf.ADC_A3=10.0f,
+            .cf.ADC_A4=10.0f,
+            .cf.ADC_B5=10.0f,
+            .cf.ADC_B6=10.0f,
+            .cf.ADC_B7=10.0f,
+            .cf.ADC_B8=10.0f
+        },
+        .A2={
+            .cf.ADC_A1=10.0f,
+            .cf.ADC_A2=10.0f,
+            .cf.ADC_A3=10.0f,
+            .cf.ADC_A4=10.0f,
+            .cf.ADC_B5=10.0f,
+            .cf.ADC_B6=10.0f,
+            .cf.ADC_B7=10.0f,
+            .cf.ADC_B8=10.0f
+        },
+        .A3={
+            .cf.ADC_A1=10.0f,
+            .cf.ADC_A2=10.0f,
+            .cf.ADC_A3=10.0f,
+            .cf.ADC_A4=10.0f,
+            .cf.ADC_B5=10.0f,
+            .cf.ADC_B6=10.0f,
+            .cf.ADC_B7=10.0f,
+            .cf.ADC_B8=10.0f
+        }
+    }
+};
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION 5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER 4.0f
@@ -40,10 +78,7 @@ int main(void)
     uz_printf("Welcome to the UltraZohm\r\n");
     uz_printf("----------------------------------------\r\n");
 
-    // Initialize the global "Global_Data" structure -> the values can be overwritten afterwards from the Java-GUI -> this must be the first INIT-function, because it is required subsequently!
-    InitializeDataStructure(&Global_Data);
     uz_adcLtc2311_ip_core_init();
-
     uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
     uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
     initialize_pwm_2l_on_D1();
@@ -65,41 +100,4 @@ int main(void)
         ultrazohm_state_machine();
     }
     return (status);
-}
-
-//==============================================================================================================================================================
-void InitializeDataStructure(DS_Data *data)
-{
-    data->rasv.halfBridge1DutyCycle = 0.0;
-    data->rasv.halfBridge2DutyCycle = 0.0;
-    data->rasv.halfBridge3DutyCycle = 0.0;
-
-    // Initialize ADC conversion factors
-    //  Conversion Factor of 10, because the full input range of the ADC is +-5V = 10V range
-    data->aa.A1.cf.ADC_A1 = 10;
-    data->aa.A1.cf.ADC_A2 = 10;
-    data->aa.A1.cf.ADC_A3 = 10;
-    data->aa.A1.cf.ADC_A4 = 10;
-    data->aa.A1.cf.ADC_B5 = 10;
-    data->aa.A1.cf.ADC_B6 = 10;
-    data->aa.A1.cf.ADC_B7 = 10;
-    data->aa.A1.cf.ADC_B8 = 10;
-
-    data->aa.A2.cf.ADC_A1 = 10;
-    data->aa.A2.cf.ADC_A2 = 10;
-    data->aa.A2.cf.ADC_A3 = 10;
-    data->aa.A2.cf.ADC_A4 = 10;
-    data->aa.A2.cf.ADC_B5 = 10;
-    data->aa.A2.cf.ADC_B6 = 10;
-    data->aa.A2.cf.ADC_B7 = 10;
-    data->aa.A2.cf.ADC_B8 = 10;
-
-    data->aa.A3.cf.ADC_A1 = 10;
-    data->aa.A3.cf.ADC_A2 = 10;
-    data->aa.A3.cf.ADC_A3 = 10;
-    data->aa.A3.cf.ADC_A4 = 10;
-    data->aa.A3.cf.ADC_B5 = 10;
-    data->aa.A3.cf.ADC_B6 = 10;
-    data->aa.A3.cf.ADC_B7 = 10;
-    data->aa.A3.cf.ADC_B8 = 10;
 }

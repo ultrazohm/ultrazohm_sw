@@ -22,4 +22,9 @@
 #define  C_float_Strobe_uz_axi_testIP     0x210U  //strobe register for port C_float
 #define  C_fx_1_16_5_Data_uz_axi_testIP   0x260U  //data register for Outport C_fx_1_16_5
 
+#define  RESCON_Data_uz_axi_testIP        0x00U  //data register for RESCON
+#define  RESDAT_Data_uz_axi_testIP        0x04U  //data register for RESDAT
+#define  RESADR_Data_uz_axi_testIP        0x08U  //data register for RESADR
+#define  RESRDA_Data_uz_axi_testIP        0x0CU  //data register for RESADR
+
 #endif /* UZ_AXI_TESTIP_H_ */

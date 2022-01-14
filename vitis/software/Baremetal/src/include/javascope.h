@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Löhdefink
+* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Löhdefink, Michael Hoerner
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ enum JS_SlowData {
 
 // Determination of Button IDs via enum. When a button in the GUI is pressed,
 // the GUI sends an ID and a value. IDs of the buttons are the respective enum
-// numbers in the follwing enum.
+// numbers in the following enum.
 // Do not change the first (zero) and last (end) entries.
 // Do not change names! They are hard coupled within the GUI!
 enum gui_button_mapping {

@@ -5,7 +5,11 @@ Watch Dog Timer
 ===============
 
 The main goal of the Watch Dog Timer (WDT) is to detect real-time violations, e.g. if the control routine on the R5 takes longer than the available control period. 
-In this case an interrupt is thrown that can be handled in the PS and PL.
+In this case an interrupt is thrown that can be handled in the PS and PL. Component based on the Xilinx AXI Watchdog Timer (WDT) IP-core [#PG128]_:
+
+- 32-bit slave device on a AXI4-Lite interface
+- Window watchdog feature with programmable open and close windows
+- Additional features for better controllability such as Second Sequence Timer and Fail Counter
 
 
 Introduction
@@ -19,8 +23,8 @@ The IP offers two morking modes [#PG128]_:
 
 .. _XWDTTB_ModuleOverview:
 
-.. figure:: ./uz_xwdttb_module_components.bmp
-   :width: 800
+.. figure:: ./uz_xwdttb_module_components.png
+   :width: 609
    :align: center
 
    Top view of the Module.
@@ -52,7 +56,7 @@ An illustrative example is given in the next section.
 .. _XWDTTB_FunctionControlRegister:
 
 .. figure:: ./uz_xwdttb_FunctionControlRegister.png
-   :width: 800
+   :width: 634
    :align: center
 
    Function Control Register (FCR) fields to set INT point.
@@ -74,7 +78,7 @@ Any good or bad event ends the second window. Absence of a good or bad event all
 .. _XWDTTB_SecondWindowConstants:
 
 .. figure:: ./uz_xwdttb_SecondWindowConstants.png
-   :width: 800
+   :width: 586
    :align: center
 
    Second Window Constants in uz_xwdttb.h file to set INT point.
@@ -87,7 +91,7 @@ So we split the second window in two parts (as can be seen in the next picture):
 .. _XWDTTB_SecondWindowTimingDiagram:
 
 .. figure:: ./uz_xwdttb_SecondWindowTimingDiagram.png
-   :width: 800
+   :width: 510
    :align: center
 
    Second Window Timing Diagram.

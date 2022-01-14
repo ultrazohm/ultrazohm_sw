@@ -113,6 +113,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_totalRotorInertia,
 	JSSD_FLOAT_Rs_online_FMID,
 	JSSD_FLOAT_Wtemp_FMID,
+	JSSD_FLOAT_Psi_D_Map,
+	JSSD_FLOAT_Psi_Q_Map,
 	JSSD_ENDMARKER
 };
 

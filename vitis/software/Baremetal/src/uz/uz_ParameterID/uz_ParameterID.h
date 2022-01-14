@@ -50,6 +50,9 @@ typedef struct uz_ParameterID_Data_t {
 	uz_dq_t AutoRefCurrents_Output;
 	uz_PID_FluxMapsData_t* FluxMap_Data;
 	bool calculate_flux_maps;
+	int FluxMap_counter;
+	float Psi_D_pointer;
+	float Psi_Q_pointer;
 } uz_ParameterID_Data_t;
 
 uz_ParameterID_t* uz_ParameterID_init(void);

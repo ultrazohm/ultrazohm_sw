@@ -107,6 +107,13 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		if (Data->PID_AutoRefCurrents_Config.enableCRS == true) {
 			uz_PID_AutoRefCurrents_step(self, Data);
 		}
+		if (Data->FluxMap_counter < 400) {
+			Data->FluxMap_counter = Data->FluxMap_counter + 1;
+		} else {
+			Data->FluxMap_counter = 0;
+		}
+		Data->Psi_D_pointer = Data->FluxMap_Data->psid_grid[Data->FluxMap_counter];
+		Data->Psi_Q_pointer = Data->FluxMap_Data->psiq_grid[Data->FluxMap_counter];
 	}
 
 	//RESET
@@ -445,6 +452,11 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_Para
 	Data->PID_OnlineID_Output = &ParameterID->OnlineID->output.OnlineID_output;
 	Data->PID_ControlFlags = &ParameterID->ControlState->output.ControlFlags;
 	Data->FluxMap_Data = &ParameterID->OnlineID->InterpMeshGrid->output.FluxMapData;
+
+	Data->calculate_flux_maps = false;
+	Data->FluxMap_counter = 0.0f;
+	Data->Psi_D_pointer = 0.0f;
+	Data->Psi_Q_pointer = 0.0f;
 
 
 }

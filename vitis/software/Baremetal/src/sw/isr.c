@@ -26,7 +26,7 @@
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
-
+#include "../uz_platform_state_machine.h"
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
 
@@ -49,28 +49,24 @@ extern DS_Data Global_Data;
 static void ReadAllADC();
 
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-extern uz_PWM_SS_2L_t* PWM_SS_2L_instance_1;
+extern uz_PWM_SS_2L_t *PWM_SS_2L_instance_1;
 
 void ISR_Control(void *data)
 {
-    uz_SystemTime_ISR_Tic();
-    // Toggle the System-Ready LED in order to show a Life-Check on the front panel
+    uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data); // Read out speed and theta angle
+    update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    // Start: Control algorithm -------------------------------------------------------------------------------
-
-    // Set duty cycles for two-level modulator
-    uz_PWM_SS_2L_set_duty_cycle(PWM_SS_2L_instance_1,Global_Data.rasv.halfBridge1DutyCycle,Global_Data.rasv.halfBridge2DutyCycle,Global_Data.rasv.halfBridge3DutyCycle);
-
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
-
-    // Update JavaScope
+    // Start: Control algorithm - only if ultrazohm is in control state
+    if (ultrazohm_state_machine_is_control_state())
+    {
+        uz_PWM_SS_2L_set_duty_cycle(PWM_SS_2L_instance_1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+        // Set duty cycles for three-level modulator
+        PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+                            Global_Data.rasv.halfBridge2DutyCycle,
+                            Global_Data.rasv.halfBridge3DutyCycle);
+    }
     JavaScope_update(&Global_Data);
-
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

@@ -1,8 +1,4 @@
 State, Ready_LED  , Running_LED, Error_LED, User_LED, Controller, Outputs,Enable System, Enable Control, Stop button,Error,  Next state
-Setup assertions, Off , Off, Off, Off, Off, Off,x, x, x,x, Initialize platform
-Initialize platform, Off , Off, Off, Off, Off, Off,x, x, x,x, Initialize IP-Cores
-Initialize IP-Cores, Off , Off, Off, Off, Off, Off,x, x, x,x, Initialize Interrupt
-Initialize Interrupt, Off , Off, Off, Off, Off, Off,x, x, x,x, Idle
 Idle, Blink slow  , Off, Off, Off, Off, Off,==1, x, !=1,!=1,  Running
 Idle, Blink slow  , Off, Off, Off, Off, Off,x, x, x,==1,  Error
 Running, Blink fast  , Off, Off, Off, Off, On,x, ==1, !=1,!=1, Control

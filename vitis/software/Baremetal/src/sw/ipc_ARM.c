@@ -645,29 +645,37 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 
 		case (0x129 + MOTORCONTROL_OFFSET_bits):
 			PID_Data.PID_GlobalConfig.OnlineID = false;
+			PID_Data.PID_AutoRefCurrents_Config.enableCRS = false;
+			break;
+
+		case (0x136 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_AutoRefCurrents_Config.id_points = value;
+			break;
+
+		case (0x137 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_AutoRefCurrents_Config.iq_points = value;
+			break;
+
+		case (0x138 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_AutoRefCurrents_Config.max_current = value;
+			break;
+
+		case (0x149 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_AutoRefCurrents_Config.enableCRS = true;
+			break;
+
+		case (0x150 + MOTORCONTROL_OFFSET_bits):
+			PID_Data.PID_AutoRefCurrents_Config.enableCRS = false;
 			break;
 
 		case (0x146 + MOTORCONTROL_OFFSET_bits):
 			PID_Data.PID_OnlineID_Config.OnlineID_Reset = true;
+			PID_Data.PID_AutoRefCurrents_Config.Reset = true;
 			break;
 
 		case (0x147 + MOTORCONTROL_OFFSET_bits):
 			PID_Data.PID_OnlineID_Config.OnlineID_Reset = false;
-			break;
-
-		case (0x137 + MOTORCONTROL_OFFSET_bits):
-			data->pID.q_current_steps = value;
-			data->pID.eta_curr = (data->pID.max_res_ref_current/data->pID.q_current_steps )*sqrt(2)*0.5;
-			break;
-
-		case (0x136 + MOTORCONTROL_OFFSET_bits):
-			data->pID.d_current_steps = value;
-			data->pID.eta_curr = (data->pID.max_res_ref_current/data->pID.q_current_steps )*sqrt(2)*0.5;
-			break;
-
-		case (0x138 + MOTORCONTROL_OFFSET_bits):
-			data->pID.max_res_ref_current = value;
-			data->pID.eta_curr = (data->pID.max_res_ref_current/data->pID.q_current_steps )*sqrt(2)*0.5;
+			PID_Data.PID_AutoRefCurrents_Config.Reset = false;
 			break;
 
 		case (0x139 + MOTORCONTROL_OFFSET_bits):

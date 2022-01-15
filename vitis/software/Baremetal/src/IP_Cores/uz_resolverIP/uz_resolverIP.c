@@ -5,10 +5,14 @@
 #include "uz_resolverIP.h"
 #include "uz_resolverIP_hw.h"
 
+/**
+ * @brief Data type for object resolverIP
+ *
+ */
 struct uz_resolverIP_t {
-    bool is_ready;
-    struct uz_resolverIP_config_t config;
-    uz_resolverIP_mode mode;
+    bool is_ready;/**< Boolean that indicates successful initialization */
+    struct uz_resolverIP_config_t config;/**< Configuration struct with members seen below */
+    uz_resolverIP_mode mode;/**< enum that indicates current mode of AD2S1210 between Configuration Mode, Position Mode and Velocity Mode */
 };
 
 static size_t instance_counter = 0U;

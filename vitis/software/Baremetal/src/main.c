@@ -86,7 +86,7 @@ int main(void)
     // Infinite loop
     while (1)
     {
-        ultrazohm_state_machine();
+        ultrazohm_state_machine_step();
     }
     return (status);
 }

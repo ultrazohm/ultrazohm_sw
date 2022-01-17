@@ -46,7 +46,7 @@ static void idle_during(void);
 static void running_during(void);
 static void control_during(void);
 
-void ultrazohm_state_machine(void)
+void ultrazohm_state_machine_step(void)
 {
     poll_buttons();
     switch (ultrazohm_state.current_state)
@@ -104,7 +104,7 @@ void ultrazohm_state_machine_set_stop(bool stop)
 void ultrazohm_state_machine_set_error(bool error)
 {
     ultrazohm_state.error = error;
-    ultrazohm_state_machine(); // If the error bit is changed, execute the state machine again to enter the error state
+    ultrazohm_state_machine_step(); // If the error bit is changed, execute the state machine again to enter the error state
 }
 
 static void idle_entry(void)

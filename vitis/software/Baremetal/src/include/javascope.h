@@ -61,6 +61,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_FreqReadback,
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_ADCconvFactorReadback,
+	JSSD_FLOAT_Error_Code,
 	JSSD_FLOAT_Rs_Offline,
 	JSSD_FLOAT_Ld_Offline,
 	JSSD_FLOAT_Lq_Offline,
@@ -112,6 +113,36 @@ enum JS_SlowData {
 	JSSD_FLOAT_Lq,
 	JSSD_FLOAT_totalRotorInertia,
 	JSSD_ENDMARKER
+};
+
+// Determination of Button IDs via enum. When a button in the GUI is pressed,
+// the GUI sends an ID and a value. IDs of the buttons are the respective enum
+// numbers in the follwing enum.
+// Do not change the first (zero) and last (end) entries.
+// Do not change names! They are hard coupled within the GUI!
+enum gui_button_mapping {
+	GUI_BTN_ZEROVALUE=0,
+	Enable_System,
+	Disable_System,
+	Enable_Control,
+	Disable_Control,
+	Stop,
+	Set_Send_Field_1,
+	Set_Send_Field_2,
+	Set_Send_Field_3,
+	Set_Send_Field_4,
+	Set_Send_Field_5,
+	Set_Send_Field_6,
+	My_Button_1,
+	My_Button_2,
+	My_Button_3,
+	My_Button_4,
+	My_Button_5,
+	My_Button_6,
+	My_Button_7,
+	My_Button_8,
+	Error_Reset,
+	GUI_BTN_ENDMARKER
 };
 
 int JavaScope_initalize(DS_Data* data);

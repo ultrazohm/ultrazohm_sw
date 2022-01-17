@@ -38,11 +38,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 
 		//GENERAL VARIABLES
 		switch (msgId){
-		case 1:
-			// do something
-			break;
+//		case 1:
+//			// do something
+//			break;
 
-		case( 2): // Stop
+		case( Stop): // Stop
 			data->cw.enableSystem = false;
 			data->cw.enableControl = false;
 			break;
@@ -148,19 +148,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data* data)
 			break;
 
 
-		case( 0x01+MOTORCONTROL_OFFSET_bits): // ConverterEnable
+		case( Enable_System): // ConverterEnable
 			data->cw.enableSystem = true;
 			break; 
 
-		case( 0x02+MOTORCONTROL_OFFSET_bits): // ConverterDisable
+		case( Disable_System): // ConverterDisable
 			data->cw.enableSystem = false;
 			break; 
 
-		case( 0x03+MOTORCONTROL_OFFSET_bits): // ControlEnable
+		case( Enable_Control): // ControlEnable
 			data->cw.enableControl = true;
 			break; 
 
-		case( 0x04+MOTORCONTROL_OFFSET_bits): // ControlDisable
+		case( Disable_Control): // ControlDisable
 			data->cw.enableControl = false;
 			break; 
 

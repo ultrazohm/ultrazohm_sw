@@ -22,8 +22,9 @@
 ******************************************************************************/
 
 /***************************** Include Files *********************************/
+#include "uz_watchdog.h"
+
 #include "../../uz/uz_global_configuration.h"
-#include "uz_xwdttb.h"
 #include "../../uz/uz_HAL.h"
 
 #if (UZ_WDTTB_MAX_INSTANCES > 0U && UZ_WDTTB_MAX_INSTANCES <= XPAR_XWDTTB_NUM_INSTANCES)
@@ -62,7 +63,7 @@ volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
 * @note		None.
 *
 ******************************************************************************/
-static int WdtTbInit(XWdtTb *WdtTbInstancePtr, uint32_t CounterValue, uint16_t WdtTbDeviceId) {
+static int uz_watchdog_Init(XWdtTb *WdtTbInstancePtr, uint32_t CounterValue, uint16_t WdtTbDeviceId) {
 	int Status;
 	XWdtTb_Config *Config;
 
@@ -120,7 +121,7 @@ static int WdtTbInit(XWdtTb *WdtTbInstancePtr, uint32_t CounterValue, uint16_t W
 	return XST_SUCCESS;
 }
 
-static XWdtTb *uz_WdtTb_allocation(uint32_t CounterValue, uint16_t WdtTbDeviceId)
+static XWdtTb *uz_watchdog_allocation(uint32_t CounterValue, uint16_t WdtTbDeviceId)
 {
     uz_assert(instance_counter < UZ_WDTTB_MAX_INSTANCES);
 
@@ -128,7 +129,7 @@ static XWdtTb *uz_WdtTb_allocation(uint32_t CounterValue, uint16_t WdtTbDeviceId
 	 * Call the WDT init to initialize and set timer to the given timeout.
 	 * Both
 	 */
-	int Status = WdtTbInit(&instances[instance_counter], CounterValue, WdtTbDeviceId); // XPFW_WDT_EXPIRE_TIME for WDT PS
+	int Status = uz_watchdog_Init(&instances[instance_counter], CounterValue, WdtTbDeviceId); // XPFW_WDT_EXPIRE_TIME for WDT PS
 
 	if (Status != XST_SUCCESS) {
 		//DEBUG
@@ -149,23 +150,23 @@ static XWdtTb *uz_WdtTb_allocation(uint32_t CounterValue, uint16_t WdtTbDeviceId
 
 /************************** Public Functions ******************************/
 
-XWdtTb *uz_WdtTb_init()
+XWdtTb *uz_watchdog_init()
 {
-    XWdtTb *self = uz_WdtTb_allocation(WIN_WDT_SW_COUNT, WDTTB_DEVICE_ID);
+    XWdtTb *self = uz_watchdog_allocation(WIN_WDT_SW_COUNT, WDTTB_DEVICE_ID);
     return (self);
 }
 
 /*****************************************************************************/
 
-XWdtTb *uz_WdtTb_init_device(uint32_t CounterValue, uint16_t WdtTbDeviceId)
+XWdtTb *uz_watchdog_init_device(uint32_t CounterValue, uint16_t WdtTbDeviceId)
 {
-    XWdtTb *self = uz_WdtTb_allocation(CounterValue, WdtTbDeviceId);
+    XWdtTb *self = uz_watchdog_allocation(CounterValue, WdtTbDeviceId);
     return (self);
 }
 
 /*****************************************************************************/
 
-void WdtTb_Start(XWdtTb *WdtTbInstancePtr) {
+void uz_watchdog_Start(XWdtTb *WdtTbInstancePtr) {
 
 	/* Verify arguments. */
 	uz_assert(WdtTbInstancePtr != NULL);
@@ -198,7 +199,7 @@ void WdtTb_Start(XWdtTb *WdtTbInstancePtr) {
 
 /*****************************************************************************/
 
-void WdtTb_Restart(XWdtTb *WdtTbInstancePtr) {
+void uz_watchdog_Restart(XWdtTb *WdtTbInstancePtr) {
 	/* Verify arguments. */
 	uz_assert(WdtTbInstancePtr != NULL);
 	uz_assert(WdtTbInstancePtr->IsReady == XIL_COMPONENT_IS_READY);
@@ -209,7 +210,7 @@ void WdtTb_Restart(XWdtTb *WdtTbInstancePtr) {
 
 /*****************************************************************************/
 
-int WinWdtIntrExample(XWdtTb *WdtTbInstancePtr)
+int uz_watchdog_WinIntrExample(XWdtTb *WdtTbInstancePtr)
 {
 	/*
 	 * The Driver has to be properly initialized and the GIC interrupt system ALSO!
@@ -264,7 +265,7 @@ int WinWdtIntrExample(XWdtTb *WdtTbInstancePtr)
 
 /*****************************************************************************/
 
-void WdtTbIntrHandler(void *CallBackRef)
+void uz_watchdog_IntrHandler(void *CallBackRef)
 {
 
 	XWdtTb *WdtTbInstancePtr = (XWdtTb *)CallBackRef;
@@ -312,19 +313,19 @@ void WdtTbIntrHandler(void *CallBackRef)
 
 #else /* UZ_WDTTB_MAX_INSTANCES <= 0 */
 
-void WdtTb_Start(XWdtTb *WdtTbInstancePtr) {}
+void uz_watchdog_Start(XWdtTb *WdtTbInstancePtr) {}
 
-void WdtTb_Restart(XWdtTb *WdtTbInstancePtr) {}
-
-
-int WinWdtIntrExample(XWdtTb *WdtTbInstancePtr) {}
+void uz_watchdog_Restart(XWdtTb *WdtTbInstancePtr) {}
 
 
-XWdtTb *uz_WdtTb_init(){}
+int uz_watchdog_WinIntrExample(XWdtTb *WdtTbInstancePtr) {}
 
-XWdtTb *uz_WdtTb_init_device(uint32_t CounterValue, uint16_t WdtTbDeviceId) {}
 
-void WdtTbIntrHandler(void *CallBackRef);
+XWdtTb *uz_watchdog_init(){}
+
+XWdtTb *uz_watchdog_init_device(uint32_t CounterValue, uint16_t WdtTbDeviceId) {}
+
+void uz_watchdog_IntrHandler(void *CallBackRef);
 
 
 #endif /* UZ_WDTTB_MAX_INSTANCES <= 0 */

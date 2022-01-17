@@ -28,10 +28,10 @@
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 
-//Inclusion of WDT code
 #include "../Codegen/uz_codegen.h"
 
-#include "../IP_Cores/uz_xwdttb/uz_xwdttb.h"
+//Inclusion of Watch Dog Timer code
+#include "../IP_Cores/uz_watchdog/uz_watchdog.h"
 
 //Initialize the variables for the ADC measurement
 uint32_t 	ADC_RAW_Sum_1 = 0.0;
@@ -76,7 +76,7 @@ void ISR_Control(void *data)
 	Xil_EnableNestedInterrupts();
 
 	/* Restart the AXI IP watch dog timer: kick forward */
-	WdtTb_Restart(WdtTbInstancePtr);
+	uz_watchdog_Restart(WdtTbInstancePtr);
 
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
 	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
@@ -146,7 +146,7 @@ int Initialize_ISR(){
 	 * Call Init  the WDT setting timer to the default timeout and default configuration.
 	 * Obtain a WDT pointer initialized to use with the WDTTB API
 	 */
-	WdtTbInstancePtr = uz_WdtTb_init();
+	WdtTbInstancePtr = uz_watchdog_init();
 
 
 	// Initialize interrupt controller for the GIC
@@ -254,7 +254,7 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 	 * interrupt occurs for the device.
 	 */
 	Status = XScuGic_Connect(IntcInstancePtr, WDTTB_IRPT_INTR,
-				(Xil_ExceptionHandler)WdtTbIntrHandler,
+				(Xil_ExceptionHandler)uz_watchdog_IntrHandler,
 				WdtTbInstancePtr);
 	if (Status != XST_SUCCESS) {
 		return Status;
@@ -372,7 +372,7 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 
 
 //	Enable the WDT and launch first kick
-	WdtTb_Start(WdtTbInstancePtr);
+	uz_watchdog_Start(WdtTbInstancePtr);
 
 	xil_printf("RPU: Rpu_GicInit: Done\r\n");
 	return XST_SUCCESS;

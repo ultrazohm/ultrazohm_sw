@@ -21,4 +21,4 @@ IP Cores
     uz_pmsmModel/uz_pmsmModel
     uz_dataMover/uz_dataMover
     uz_dq_transformation/uz_dq_transformation
-    uz_xwdttb/uz_xwdttb
+    uz_watchdog/uz_watchdog

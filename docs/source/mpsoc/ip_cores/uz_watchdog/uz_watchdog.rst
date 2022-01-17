@@ -1,4 +1,4 @@
-.. _uz_xwdttb:
+.. _uz_watchdog:
 
 ===============
 Watch Dog Timer
@@ -23,7 +23,7 @@ The IP offers two morking modes [#PG128]_:
 
 .. _XWDTTB_ModuleOverview:
 
-.. figure:: ./uz_xwdttb_module_components.png
+.. figure:: ./uz_watchdog_module_components.png
    :width: 609
    :align: center
 
@@ -36,7 +36,7 @@ The Window Watchdog Timer (WWDT) starts with an adjustable period called **close
 The WWDT has to be restarted within the **open window**. 
 If the WWDT is restarted outside of the open window time period, it generates a reset.
 
-.. figure:: ./wwdt_windows.jpg
+.. figure:: ./uz_watchdog_windows.jpg
    :width: 800
    :align: center
 
@@ -55,7 +55,7 @@ An illustrative example is given in the next section.
 
 .. _XWDTTB_FunctionControlRegister:
 
-.. figure:: ./uz_xwdttb_FunctionControlRegister.png
+.. figure:: ./uz_watchdog_FunctionControlRegister.png
    :width: 634
    :align: center
 
@@ -77,11 +77,11 @@ Any good or bad event ends the second window. Absence of a good or bad event all
 
 .. _XWDTTB_SecondWindowConstants:
 
-.. figure:: ./uz_xwdttb_SecondWindowConstants.png
+.. figure:: ./uz_watchdog_SecondWindowConstants.png
    :width: 586
    :align: center
 
-   Second Window Constants in uz_xwdttb.h file to set INT point.
+   Second Window Constants in uz_watchdog.h file to set INT point.
 
 So we split the second window in two parts (as can be seen in the next picture):
 
@@ -90,7 +90,7 @@ So we split the second window in two parts (as can be seen in the next picture):
 
 .. _XWDTTB_SecondWindowTimingDiagram:
 
-.. figure:: ./uz_xwdttb_SecondWindowTimingDiagram.png
+.. figure:: ./uz_watchdog_SecondWindowTimingDiagram.png
    :width: 510
    :align: center
 
@@ -102,17 +102,17 @@ Driver function reference
 
 .. doxygenstruct:: XWdtTb
 
-.. doxygenfunction:: WdtTb_Start
+.. doxygenfunction:: uz_watchdog_Start
 
-.. doxygenfunction:: WdtTb_Restart
+.. doxygenfunction:: uz_watchdog_Restart
 
-.. doxygenfunction:: uz_WdtTb_init
+.. doxygenfunction:: uz_watchdog_init
 
-.. doxygenfunction:: uz_WdtTb_init_device
+.. doxygenfunction:: uz_watchdog_init_device
 
-.. doxygenfunction:: WinWdtIntrExample
+.. doxygenfunction:: uz_watchdog_WinIntrExample
 
-.. doxygenfunction:: WdtTbIntrHandler
+.. doxygenfunction:: uz_watchdog_IntrHandler
 
 
 Additional information

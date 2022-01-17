@@ -87,7 +87,7 @@
 * @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents
 *							the WDTTB driver. Initialized and ready
 */
-void WdtTb_Start(XWdtTb *WdtTbInstancePtr) ;
+void uz_watchdog_Start(XWdtTb *WdtTbInstancePtr) ;
 
 /**
 * @brief This function Restart the AXI IP watch dog timer: kick forward.
@@ -95,14 +95,14 @@ void WdtTb_Start(XWdtTb *WdtTbInstancePtr) ;
 * @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents
 *							the WDTTB driver. Initialized and ready
 */
-void WdtTb_Restart(XWdtTb *WdtTbInstancePtr) ;
+void uz_watchdog_Restart(XWdtTb *WdtTbInstancePtr) ;
 
 /**
  * @brief Initializes an instance of the WDTTB driver
  *
  * @return XWdtTb pointer to the initialized WDTTB driver.
  */
-XWdtTb *uz_WdtTb_init();
+XWdtTb *uz_watchdog_init();
 
 /**
 * @brief This function initializes and tests the functioning of the System
@@ -120,7 +120,7 @@ XWdtTb *uz_WdtTb_init();
 *
 * @return	XWdtTb pointer to the initialized WDTTB driver.
 */
-XWdtTb *uz_WdtTb_init_device(uint32_t CounterValue, uint16_t WdtTbDeviceId);
+XWdtTb *uz_watchdog_init_device(uint32_t CounterValue, uint16_t WdtTbDeviceId);
 
 /**
 * @brief This function tests the functioning of the Window Watchdog
@@ -146,7 +146,7 @@ XWdtTb *uz_WdtTb_init_device(uint32_t CounterValue, uint16_t WdtTbDeviceId);
 *		- XST_SUCCESS if interrupt example run successfully.
 *		- XST_FAILURE, if reset has occurred.
 */
-int WinWdtIntrExample(XWdtTb *WdtTbInstancePtr);
+int uz_watchdog_WinIntrExample(XWdtTb *WdtTbInstancePtr);
 
 /**
 * @brief This function is the Interrupt handler for the WDT Interrupt of the
@@ -163,7 +163,7 @@ int WinWdtIntrExample(XWdtTb *WdtTbInstancePtr);
 *
 * @return	None.
 */
-void WdtTbIntrHandler(void *CallBackRef);
+void uz_watchdog_IntrHandler(void *CallBackRef);
 
 
 #endif // UZ_XWDTTB_H

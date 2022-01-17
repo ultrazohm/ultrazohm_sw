@@ -59,8 +59,8 @@ typedef struct uz_ParameterID_Data_t {
 uz_ParameterID_t* uz_ParameterID_init(void);
 
 void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
+struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance, ControlReference ControlRef, uz_dq_t v_dq_Volts);
 
-//struct uz_DutyCycle_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
 struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance, ControlReference ControlRef);
 
 void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_ParameterID_t *ParameterID);

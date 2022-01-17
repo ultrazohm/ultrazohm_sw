@@ -63,6 +63,7 @@ float i_q_soll = 0.0f;
 struct uz_pmsmModel_inputs_t pmsm_inputs = { .omega_mech_1_s = 52.3599f, .v_d_V = 0.0f, .v_q_V = 0.0f, .load_torque = 0.0f };
 struct uz_pmsmModel_outputs_t pmsm_outputs = { .i_d_A = 0.0f, .i_q_A = 0.0f, .torque_Nm = 0.0f, .omega_mech_1_s = 0.0f };
 struct uz_dq_t PID_v_dq = { 0 };
+struct uz_DutyCycle_t PID_DutyCycle = { 0 };
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -90,38 +91,26 @@ void ISR_Control(void *data)
 	PID_Data.PID_ActualValues.I_UVW.U = (Global_Data.aa.A2.me.ADC_A2 - 2.5f) * (20.0f / 2.084f) / 3.0f;
 	PID_Data.PID_ActualValues.I_UVW.V = (Global_Data.aa.A2.me.ADC_A3 - 2.5f) * (20.0f / 2.084f) / 3.0f;
 	PID_Data.PID_ActualValues.I_UVW.W = (Global_Data.aa.A2.me.ADC_A4 - 2.5f) * (20.0f / 2.084f) / 3.0f;
-//	PID_Data.PID_ActualValues.V_DC = ((Global_Data.aa.A1.me.ADC_A1) * 20.05f) - 0.18f;
-	PID_Data.PID_ActualValues.V_DC = 24.0f;
+	PID_Data.PID_ActualValues.V_DC = ((Global_Data.aa.A1.me.ADC_A1) * 20.05f) - 0.18f;
 	PID_Data.PID_ActualValues.V_UVW.U = (Global_Data.aa.A1.me.ADC_A2 - 2.5f) * (20.0f / 2.084f) / 3.0f;
 	PID_Data.PID_ActualValues.V_UVW.V = (Global_Data.aa.A1.me.ADC_A3 - 2.5f) * (20.0f / 2.084f) / 3.0f;
 	PID_Data.PID_ActualValues.V_UVW.W = (Global_Data.aa.A1.me.ADC_A4 - 2.5f) * (20.0f / 2.084f) / 3.0f;
-	//PID_Data.PID_ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed;
+	PID_Data.PID_ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed;
 	PID_Data.PID_ActualValues.theta_el = Global_Data.av.theta_elec;
 
 	//Calculate missing ActualValues
-	//PID_Data.PID_ActualValues.i_dq = uz_dq_transformation(PID_Data.PID_ActualValues.I_UVW, Global_Data.av.theta_elec);
-	//PID_Data.PID_ActualValues.v_dq = uz_dq_transformation(PID_Data.PID_ActualValues.V_UVW, Global_Data.av.theta_elec);
+	PID_Data.PID_ActualValues.i_dq = uz_dq_transformation(PID_Data.PID_ActualValues.I_UVW, Global_Data.av.theta_elec);
+	PID_Data.PID_ActualValues.v_dq = uz_dq_transformation(PID_Data.PID_ActualValues.V_UVW, Global_Data.av.theta_elec);
 	PID_Data.PID_ActualValues.theta_m = Global_Data.av.theta_elec / PID_Data.PID_GlobalConfig.PMSM_config.polePairs;
 
 	uz_ParameterID_step(ParameterID, &PID_Data);
-//	struct uz_DutyCycle_t PID_DutyCycle = uz_ParameterID_Controller(PID_Data, FOC_instance, SpeedControl_instance);
 	PID_v_dq = uz_ParameterID_Controller(&PID_Data, FOC_instance, SpeedControl_instance, Global_Data.cw.ControlReference);
-//	Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;
-//	Global_Data.rasv.halfBridge2DutyCycle = PID_DutyCycle.DutyCycle_V;
-//	Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;
-	uz_pmsmModel_trigger_input_strobe(pmsm);
-	uz_pmsmModel_trigger_output_strobe(pmsm);
-	pmsm_outputs = uz_pmsmModel_get_outputs(pmsm);
-	PID_Data.PID_ActualValues.i_dq.d = pmsm_outputs.i_d_A;
-	PID_Data.PID_ActualValues.i_dq.q = pmsm_outputs.i_q_A;
-	PID_Data.PID_ActualValues.omega_m = pmsm_outputs.omega_mech_1_s;
-	PID_Data.PID_ActualValues.omega_el = pmsm_outputs.omega_mech_1_s * PID_Data.PID_GlobalConfig.PMSM_config.polePairs;
+	PID_DutyCycle = uz_ParameterID_generate_DutyCycle(&PID_Data, FOC_instance, SpeedControl_instance, Global_Data.cw.ControlReference, PID_v_dq);
+	Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;
+	Global_Data.rasv.halfBridge2DutyCycle = PID_DutyCycle.DutyCycle_V;
+	Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;
 	PID_Data.PID_ActualValues.v_dq = PID_v_dq;
-	pmsm_inputs.v_d_V = PID_v_dq.d;
-	pmsm_inputs.v_q_V = PID_v_dq.q;
-	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
 	Global_Data.av.mechanicalRotorSpeed = PID_Data.PID_ActualValues.omega_m / (2.0f * UZ_PIf ) * 60.0f;
-	Global_Data.pID.Online_Rs = (PID_Data.PID_FluxMapID_Output->R_s * 1000.0f);
 
 	//End ParameterID -------------------------------------------------------------------------------------------------------------------
 

@@ -26,9 +26,10 @@
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
-#include "../uz_platform_state_machine.h"
+#include "../include/uz_platform_state_machine.h"
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
+#include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -48,8 +49,6 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
-#include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-extern uz_PWM_SS_2L_t *PWM_SS_2L_instance_1;
 
 void ISR_Control(void *data)
 {
@@ -60,7 +59,7 @@ void ISR_Control(void *data)
     // Start: Control algorithm - only if ultrazohm is in control state
     if (ultrazohm_state_machine_is_control_state())
     {
-        uz_PWM_SS_2L_set_duty_cycle(PWM_SS_2L_instance_1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
         // Set duty cycles for three-level modulator
         PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                             Global_Data.rasv.halfBridge2DutyCycle,

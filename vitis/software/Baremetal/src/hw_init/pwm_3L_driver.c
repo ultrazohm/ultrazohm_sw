@@ -14,7 +14,7 @@
 ******************************************************************************/
 
 #include "../include/pwm_3L_driver.h"
-extern float uz_isr_frequency_hz;
+
 //----------------------------------------------------
 // INITIALIZE PWM (three-level) AND SS CONTROL MODULE
 //----------------------------------------------------
@@ -31,7 +31,7 @@ void PWM_3L_Initialize(DS_Data* data){
 	PWM_3L_SetMode(0);
 
 	// set PWM carrier frequency
-	PWM_3L_SetCarrierFrequency(uz_isr_frequency_hz);
+	PWM_3L_SetCarrierFrequency(data->av.pwm_frequency_hz);
 
 	// PWM minimum pulse width is set between 0-1
 	float pwmMinPulseWidth=0.01;

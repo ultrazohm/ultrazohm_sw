@@ -1,8 +1,9 @@
-#include "uz_platform_state_machine.h"
 #include <stdbool.h>
-#include "uz/uz_HAL.h"
-
 #include "xil_assert.h"
+
+#include "../uz/uz_HAL.h"
+#include "../include/uz_platform_state_machine.h"
+
 
 
 static void uz_assertCallback(const char8 *file, s32 line);

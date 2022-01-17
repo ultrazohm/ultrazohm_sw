@@ -15,13 +15,7 @@
 
 // Includes from own files
 #include "main.h"
-#include "uz_platform_state_machine.h"
-#include "uz/uz_global_configuration.h"
-#include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
-#include "include/uz_adcLtc2311_ip_core_init.h"
-#include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
-#include "uz_assertion_configuration.h"
 // Initialize the global variables
 DS_Data Global_Data={
     .rasv={
@@ -29,6 +23,8 @@ DS_Data Global_Data={
         .halfBridge2DutyCycle=0.0f,
         .halfBridge3DutyCycle=0.0f
     },
+    .av.pwm_frequency_hz=UZ_PWM_FREQUENCY,
+    .av.isr_samplerate_s= (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
     .aa={
         .A1={
             .cf.ADC_A1=10.0f,
@@ -63,13 +59,6 @@ DS_Data Global_Data={
     }
 };
 
-#define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION 5000.0f
-#define UZ_D5_MOTOR_POLE_PAIR_NUMBER 4.0f
-#define UZ_ISR_FREQUENCY 10e3f
-float uz_isr_frequency_hz = UZ_ISR_FREQUENCY;
-float uz_isr_rate_s = 1.0f / UZ_ISR_FREQUENCY;
-float uz_isr_samplerate_s = (1.0f / UZ_ISR_FREQUENCY) * (Interrupt_ISR_freq_factor);
-
 int main(void)
 {
     uz_assert_configuration(); // This has to be the first line of code in main.c
@@ -79,9 +68,9 @@ int main(void)
     uz_printf("----------------------------------------\r\n");
 
     uz_adcLtc2311_ip_core_init();
-    uz_interlockDeadtime2L_handle deadtime_slotd1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
-    uz_interlockDeadtime2L_set_enable_output(deadtime_slotd1, true);
-    initialize_pwm_2l_on_D1();
+    Global_Data.objects.deadtime_interlock_d1= uz_interlockDeadtime2L_staticAllocator_slotD1();
+    uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1, true);
+    Global_Data.objects.pwm_d1= initialize_pwm_2l_on_D1();
     PWM_3L_Initialize(&Global_Data); // three-level modulator
     initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
 

@@ -16,7 +16,7 @@
 #include <string.h>
 #include "../main.h"
 #include "../include/ipc_ARM.h"
-#include "../uz_platform_state_machine.h"
+#include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
 
 

@@ -1,11 +1,11 @@
-#include "uz_platform_state_machine.h"
+#include "../include/uz_platform_state_machine.h"
 
-#include "uz/uz_global_configuration.h"
-#include "uz/uz_SystemTime/uz_SystemTime.h"
-#include "uz/uz_LED/uz_LED_facade.h"
-#include "uz/uz_PushButton/uz_PushButton_facade.h"
-#include "include/gpio_axi.h"
-#include "uz_assertion_configuration.h"
+#include "../uz/uz_global_configuration.h"
+#include "../uz/uz_SystemTime/uz_SystemTime.h"
+#include "../uz/uz_LED/uz_LED_facade.h"
+#include "../uz/uz_PushButton/uz_PushButton_facade.h"
+#include "../include/gpio_axi.h"
+#include "../include/uz_assertion_configuration.h"
 
 typedef enum
 {
@@ -15,7 +15,7 @@ typedef enum
     error
 } platform_state_t;
 
-struct ultrazohm_state_t
+typedef struct
 {
     platform_state_t current_state;
     bool event_handled;
@@ -24,9 +24,9 @@ struct ultrazohm_state_t
     bool enable_control;
     bool stop;
     bool error;
-};
+} ultrazohm_state_t;
 
-struct ultrazohm_state_t ultrazohm_state = {
+ultrazohm_state_t ultrazohm_state = {
     .current_state = idle,
     .event_handled = true,
     .entry = true

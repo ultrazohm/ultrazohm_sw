@@ -3,7 +3,8 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-
+#include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -46,6 +47,8 @@ typedef struct _AnalogAdapters_ {
 } AnalogAdapters;
 
 typedef struct _actualValues_ {
+	float pwm_frequency_hz;
+	float isr_samplerate_s;
 	float I_L1; 		// Grid side current in A
 	float I_L2; 		// Grid side current in A
 	float I_L3; 		// Grid side current in A
@@ -85,10 +88,16 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge3DutyCycle;
 } referenceAndSetValues;
 
+typedef struct{
+	uz_PWM_SS_2L_t* pwm_d1;
+	uz_interlockDeadtime2L_handle deadtime_interlock_d1;
+}object_pointers_t;
+
 typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;
 	actualValues av;
 	AnalogAdapters aa;
+	object_pointers_t objects;
 } DS_Data;
 
 #endif

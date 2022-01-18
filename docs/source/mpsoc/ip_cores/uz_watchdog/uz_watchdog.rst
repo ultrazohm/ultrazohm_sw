@@ -10,8 +10,6 @@ In this case an interrupt is thrown that can be handled in the PS and PL. Compon
 - 32-bit slave device on a AXI4-Lite interface
 - Window watchdog feature with programmable open and close windows
 - Additional features for better controllability such as Second Sequence Timer and Fail Counter
-- New Line test1
-- New Line test2
 
 
 Introduction

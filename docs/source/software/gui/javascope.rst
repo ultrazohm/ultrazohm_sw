@@ -29,19 +29,19 @@ The GUI looks like this.
 
 ..	image:: ./images_javascope/gui1.png
 
-1. First, press the button 1 in order to connect your scope to the UltraZohm.
+1. First, press the ``connect`` button (1) in order to connect your scope to the UltraZohm.
 	
-2. You will see some moving signs at 2, if the connection was successful.
+2. You will see some moving signs at (2), if the connection was successful.
 	
-3. The JavaScope will be initialized by pressing the button 3.
+3. The JavaScope will be initialized by pressing ``initialize scope`` (3).
 	
-4. At next, press the button 4 in order to run the scope.
+4. At next, press the ``Run/Stop`` button (4) in order to run the scope.
 
-5. Go to the ``Setup Scope`` panel and press ``sendSelectData (all)`` to get the pre-selected values from the drop-down menus on the scope.
+5. Go to the ``Setup Scope`` panel and press ``sendSelectData (all)`` to get the pre-selected values from the drop-down menus on the scope. For changing the entries of the drop-down menus, see ``Customizing`` section.
 
 6. In the time based scope it is possible to debug up to 20 values by receiving data from the ISR (R5 processor).
 
-7. In the ``SlowData`` table it is possible to debug an almost endless number of values by receiving data from the ISR (R5 processor). However, this variables share one frame and are transfered in a chain. As more values are displayed, as longer it takes until they are updated.
+7. In the ``SlowData`` table it is possible to debug an almost endless number of values by receiving data from the ISR (R5 processor). However, this variables share one frame and are transfered in a chain. As more values are displayed, as longer it takes until they are updated. For changing the entries in the slow data table see ``Customizing`` section.
 
 
 Description of the buttons and pages
@@ -58,21 +58,21 @@ The Setup Scope page is used to adjust the scope settings during operation.
 
 1. Up to 20 channels, out of a predefined variable selection, can be chosen and displayed.
      	 
-	If other variables than the predefined ones are necessary, just change them in the ipc_ARM.c of the R5 processor.
+	If other variables than the predefined ones are necessary, just change them in the ipc_ARM.c of the R5 processor (see Customizing).
 	 
-    Do not forget to press the ``sendSelectData (all)`` button always if you want to change them! 
+    Do not forget to press the ``sendSelectData (all)`` button always after selecting signals from the drop-down menus if you want to change them! 
 
 #. Each channel can have a specific scale factor and an offset.
      
 	The scale factor is comparable to the scale factor of an oscilloscope. It changes the value per grid unit.
 	 
-    Do not forget to press the ``CHx`` button below the ``Set Scaling`` if you want to change the scaling! Scaling can also be adjusted by clicking the ``+`` and ``-`` buttons.
+    Do not forget to press the ``CHx`` button in the ``Set Scaling`` column if you want to change the scaling! Scaling can also be adjusted by clicking the ``+`` and ``-`` buttons.
 	
 	For setting offsets to the channels, type the offset value into the proper field and press the ``CHx`` button of the respective channel. The ``Scale All`` and ``Offset All`` buttons will update the respective settings for all 20 channels.
 
 #. SlowData Logger
 
-	As the name intends, this tool logs slow data into a log file. The logger needs a milliseconds timer sent from the R5 somewhere in slow data table in order to work. This timer variable has to be named ``JSSD_FLOAT_Milliseconds`` (exist by default).
+	As the name intends, this tool logs slow data into a log file. The logger needs a milliseconds timer sent from the R5 somewhere in slow data table in order to work. This timer variable has to be named ``JSSD_FLOAT_Milliseconds`` (exists by default).
 	The logger logs the variables that are selected for beeing displayed in the receive_field's. See section ``Customizing``.
 	
 	a. Press ``CREATE LOGFILE``
@@ -123,9 +123,9 @@ The control page is used to step through the state-machine of the system and for
 
 6. The ``mybuttons``
 
-	a. Besides the ``send_field`` values, there are 8 buttons available for the user. In ``ipc_ARM.c`` one can choose what should happen when pressing the buttons.
+	a. Besides the ``send_field`` values, there are 8 buttons available for the user. In ``ipc_ARM.c`` one can choose what happens when pressing the buttons.
 	
-	b. Below each button is a status indicator that can be triggered also in ``ipc_ARM.c`` if one likes to have a feedback for the button actions.
+	b. Below each button is a status indicator that can be triggered also in ``ipc_ARM.c`` if one likes to have a feedback for the button actions. See ``/* Bit 2 - My_Button_1 */`` in the right picture below for example usage.
 
 ..	figure:: ./images_javascope/buttons.png
      :align: center
@@ -147,8 +147,40 @@ left: further usage of the buttons, right: control of the status indicators of t
 
 Customizing
 -----------
+The GUI itself and the variables that are visualized can be customized by the user.
 
-For better usage and presentations, one might want to customize the slow data variables to be shown in the ``receive_field_x`` section as well as the description and physical units of ``send_field_x`` and ``receive_field_x`` entries in the control tab of the GUI.
+Add variables to the scope drop-down menus
+""""""""""""""""""""""""""""""""""""""""""
+For adding a variable to the drop-down menus of the 20 scope channels, two steps are required:
+
+	1. Open ``javascope.h`` (Vitis: ``Baremetal\src\include\``) and add the name that should appear in the drop-down menu into the enum ``JS_ObservableData`` inside ``javascope.h`` (see blue box in the middle picture below). Pay attention to the naming convention starting with ``JSO_``.
+	
+	2. Open ``javascope.c`` (Vitis: ``Baremetal\src\sw\``) and assign a pointer of the variable to be viewed in the scope to the new enum entry from step 1 (see red and blue boxes in the right picture below). 
+	
+	The GUI parses the enum ``JS_ObservableData`` at startup and your new variable will appear in the drop-down menu (see green box in the left picture below). This way the user can add an almost infinite number of observable variables to the list, where 20 of them can be seen in the GUI at the same time.
+
+..	image:: ./images_javascope/addscopevariable.png
+     :align: center
+
+
+Add variables to the slow data table
+""""""""""""""""""""""""""""""""""""
+For adding a variable to the slow data table, two steps are required:
+
+	1. Open ``javascope.h`` (Vitis: ``Baremetal\src\include\``) and add the name that should appear in the slow data table into the enum ``JS_SlowData`` inside ``javascope.h`` (see blue box in the middle picture below). Pay attention to the naming convention starting with ``JSSD_INT_`` or ``JSSD_FLOAT_``.
+	
+	2. Open ``javascope.c`` (Vitis: ``Baremetal\src\sw\``) and assign a variable to be viewed in the slow data table to the new enum entry from step 1 (see red and blue boxes in the right picture below). 
+	
+	The GUI parses the enum ``JS_SlowData`` at startup and your new variable will appear in the slow data table (see green box in the left picture below). This way the user can add an almost infinite number of slow data variables to the list. The longer the table, the slower it is updated, because the slow data are sent one after another with each scope data frame.
+
+..	image:: ./images_javascope/addslowdatavariable.png
+     :align: center
+
+
+Customize the Control tab in the GUI
+""""""""""""""""""""""""""""""""""""
+
+For better usability and presentations, one might want to customize the slow data variables to be shown in the ``receive_field_x`` section as well as the description and physical units of ``send_field_x`` and ``receive_field_x`` entries in the control tab of the GUI.
 All those can be customized in the ``javascope.h`` file. Towards the end of this file you will notice a commented out section that begins with ``/* Visualization Config for GUI */``. The text below is parsed by the GUI at startup 
 and configures some text and the slow data to be displayed in the ``receive_field`` section. As shown below, one can simply change the text strings to adopt the GUI for the user application.
 
@@ -157,7 +189,7 @@ and configures some text and the slow data to be displayed in the ``receive_fiel
 
 Selection which slow data values are displayed in the ``receive_field`` section works the same way. Simply copy the proper entries from the ``JS_SlowData`` enum into 
 the commented out enum at the end of the file ``javascope.h`` as shown below. The slow data values of the six ``JSSD_FLOAT_x`` entries that are above the ``JSSD_FLOAT_Error_Code`` will be displayed in the receive_fields 1 to 6 from top to bottom.
-The ``JSSD_FLOAT_Error_Code`` value is always mapped to the error code text filed of the GUI and should not be changed.
+The ``JSSD_FLOAT_Error_Code`` value is always mapped to the error code text field of the GUI and should not be changed.
 
 ..	image:: ./images_javascope/customizationslowdata.png
      :align: center

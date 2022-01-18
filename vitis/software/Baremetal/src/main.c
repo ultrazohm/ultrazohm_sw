@@ -62,11 +62,13 @@ DS_Data Global_Data={
 int main(void)
 {
     uz_assert_configuration(); // This has to be the first line of code in main.c
+    Initialize_AXI_GPIO(); // This has to be the second line of code in main.c since the assertion callback uses the AXI_GPIO to disable the system
+    uz_frontplane_button_and_led_init(); // This has to be the third line of code since the assertion callback uses the LEDs to indicate an error
+
     int status = UZ_SUCCESS;
     uz_printf("\r\n\r\n");
     uz_printf("Welcome to the UltraZohm\r\n");
     uz_printf("----------------------------------------\r\n");
-
     uz_adcLtc2311_ip_core_init();
     Global_Data.objects.deadtime_interlock_d1= uz_interlockDeadtime2L_staticAllocator_slotD1();
     uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1, true);
@@ -77,8 +79,6 @@ int main(void)
     // Initialize Timer in order to Trigger the ISRs
     Initialize_Timer();
     uz_SystemTime_init();
-    Initialize_AXI_GPIO();
-    uz_frontplane_button_and_led_init();
     JavaScope_initalize(&Global_Data);
     uz_axigpio_enable_datamover();
     Initialize_ISR(); // Initialize the Interrupts and enable them - last line of code before infinite loop

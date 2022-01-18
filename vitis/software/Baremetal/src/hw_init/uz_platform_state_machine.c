@@ -9,10 +9,10 @@
 
 typedef enum
 {
-    idle = 0,
-    running,
-    control,
-    error
+    idle_state = 0, // _state is used here to prevent name duplication with the flags
+    running_state,
+    control_state,
+    error_state
 } platform_state_t;
 
 typedef struct
@@ -22,12 +22,12 @@ typedef struct
     bool entry;
     bool enable_system;
     bool enable_control;
-    bool stop;
-    bool error;
+    bool stop_flag;
+    bool error_flag;
 } ultrazohm_state_t;
 
 ultrazohm_state_t ultrazohm_state = {
-    .current_state = idle,
+    .current_state = idle_state,
     .event_handled = true,
     .entry = true
 };
@@ -51,19 +51,19 @@ void ultrazohm_state_machine_step(void)
     poll_buttons();
     switch (ultrazohm_state.current_state)
     {
-    case idle:
+    case idle_state:
         idle_entry();
         idle_during();
         break;
-    case running:
+    case running_state:
         running_entry();
         running_during();
         break;
-    case control:
+    case control_state:
         control_entry();
         control_during();
         break;
-    case error:
+    case error_state:
         error_entry();
         break;
     default:
@@ -73,7 +73,7 @@ void ultrazohm_state_machine_step(void)
 
 bool ultrazohm_state_machine_is_control_state(void)
 {
-    return (ultrazohm_state.current_state == control);
+    return (ultrazohm_state.current_state == control_state);
 }
 
 bool ultrazohm_state_machine_get_enable_system(void)
@@ -98,12 +98,16 @@ void ultrazohm_state_machine_set_enable_control(bool enable_control)
 
 void ultrazohm_state_machine_set_stop(bool stop)
 {
-    ultrazohm_state.stop = stop;
+    ultrazohm_state.stop_flag = stop;
 }
 
 void ultrazohm_state_machine_set_error(bool error)
 {
-    ultrazohm_state.error = error;
+	if(error){
+	    ultrazohm_state.current_state = error_state; // if the error is set to true, directly change the current state to error and skip everything in the state machine
+	}
+	ultrazohm_state.error_flag=error;
+
     ultrazohm_state_machine_step(); // If the error bit is changed, execute the state machine again to enter the error state
 }
 
@@ -157,43 +161,43 @@ static void error_entry(void)
 static void idle_during(void)
 {
     ready_LED_blink_slow();
-    if (ultrazohm_state.enable_system & (!ultrazohm_state.error) & (!ultrazohm_state.stop))
+    if (ultrazohm_state.enable_system & (!ultrazohm_state.error_flag) & (!ultrazohm_state.stop_flag))
     {
-        ultrazohm_state_machine_switch_to_state(running);
+        ultrazohm_state_machine_switch_to_state(running_state);
     }
-    if (ultrazohm_state.error)
+    if (ultrazohm_state.error_flag)
     {
-        ultrazohm_state_machine_switch_to_state(error);
+        ultrazohm_state_machine_switch_to_state(error_state);
     }
 }
 
 static void running_during(void)
 {
     ready_LED_blink_fast();
-    if (ultrazohm_state.error)
+    if (ultrazohm_state.error_flag)
     {
-        ultrazohm_state_machine_switch_to_state(error);
+        ultrazohm_state_machine_switch_to_state(error_state);
     }
-    if (ultrazohm_state.stop & (!ultrazohm_state.error))
+    if (ultrazohm_state.stop_flag & (!ultrazohm_state.error_flag))
     {
-        ultrazohm_state_machine_switch_to_state(idle);
+        ultrazohm_state_machine_switch_to_state(idle_state);
     }
-    if (ultrazohm_state.enable_control & (!ultrazohm_state.error) & (!ultrazohm_state.stop))
+    if (ultrazohm_state.enable_control & (!ultrazohm_state.error_flag) & (!ultrazohm_state.stop_flag))
     {
-        ultrazohm_state_machine_switch_to_state(control);
+        ultrazohm_state_machine_switch_to_state(control_state);
     }
 }
 
 static void control_during(void)
 {
     ready_LED_blink_fast();
-    if (ultrazohm_state.error)
+    if (ultrazohm_state.error_flag)
     {
-        ultrazohm_state_machine_switch_to_state(error);
+        ultrazohm_state_machine_switch_to_state(error_state);
     }
-    if (ultrazohm_state.stop & (!ultrazohm_state.error))
+    if (ultrazohm_state.stop_flag & (!ultrazohm_state.error_flag))
     {
-        ultrazohm_state_machine_switch_to_state(idle);
+        ultrazohm_state_machine_switch_to_state(idle_state);
     }
 }
 
@@ -231,7 +235,7 @@ void poll_buttons(void)
 #if (UZ_HARDWARE_VERSION > 2U) // in CarrierBoard_v2 there are no buttons, therefore they are not polled.
     ultrazohm_state.enable_system = uz_GetPushButtonEnableSystem();
     ultrazohm_state.enable_control = uz_GetPushButtonEnableControl();
-    ultrazohm_state.stop = !(uz_GetPushButtonStop()); // If 0, stop is pressed
+    ultrazohm_state.stop_flag = !(uz_GetPushButtonStop()); // If 0, stop is pressed
 #endif
 #endif
 }

@@ -56,7 +56,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	int status;
 	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0,0,XST_SUCCESS};
 	u32 msgBuf[IPI_A53toR5_MSG_LEN] = {JSCMD_WRITE, 0, 0};
-	BaseType_t xHigherPriorityTaskWoken;
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
 	// if javascope connection is established
 	if(js_connection_established!=0)
@@ -78,7 +78,9 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	// Write message for acknowledge of the interrupt to RPU
 	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, RespBuf, IPI_A53toR5_MSG_LEN, XIPIPSU_BUF_TYPE_RESP);
-
+	if(status != (u32)XST_SUCCESS) {
+		xil_printf("APU: IPI Write Message failed\r\n");
+	}
 	// Valid IPI. Clear the appropriate bit in the respective ISR
 	XIpiPsu_ClearInterruptStatus(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
 
@@ -87,7 +89,9 @@ void Transfer_ipc_Intr_Handler(void *data)
 	if(i_LifeCheck_Transfer_ipc > 25000){
 		i_LifeCheck_Transfer_ipc = 0;
 	}
-	rxIpi = 1;
+
+	// Notify ethernet task that an interrupt from RPU was received
+	vTaskNotifyGiveFromISR(ethTaskHandle, &xHigherPriorityTaskWoken);
 	// force context switch after ISR finishes -> switching to ethernet task
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }

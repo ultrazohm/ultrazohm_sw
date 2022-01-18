@@ -34,7 +34,7 @@ extern QueueHandle_t js_queue;
 int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
 u8 js_buff_index = 0;
-volatile u8 rxIpi = 0;
+sys_thread_t ethTaskHandle;
 
 //==============================================================================================================================================================
 void print_echo_app_header()
@@ -66,6 +66,7 @@ void process_request_thread(void *p)
 
 	u64 time_start, total_time = 0;
 	u32 mean_time = 0;
+	const TickType_t xMaxBlockTime = pdMS_TO_TICKS(100);
 
 	// make RPU write control data in the shared memory
 	Send_Command_to_RPU(msgBuf, IPI_A53toR5_MSG_LEN);
@@ -74,7 +75,8 @@ void process_request_thread(void *p)
 	js_connection_established = clientfd;
 
 	while (1) {
-		while(!rxIpi); // wait to receive an interrupt from R5
+		// wait for an interrupt to be received from RPU
+		ulTaskNotifyTake(pdTRUE, xMaxBlockTime);
 
 		u32_t command=0;
 		time_start = Get_time_us();
@@ -127,7 +129,6 @@ void process_request_thread(void *p)
 		total_time += (Get_time_us() - time_start);
 
 		// At this point, Ethernet Package is full and ready to be sent
-		rxIpi = 0;
 		i_LifeCheck_process_Ethernet++;
 		if(i_LifeCheck_process_Ethernet > 2500){
 			mean_time = total_time/i_LifeCheck_process_Ethernet;
@@ -219,10 +220,10 @@ void application_thread()
 
 	while (1) {
 		if ((new_clientfd = lwip_accept(sock, (struct sockaddr *)&remote, (socklen_t *)&size)) > 0) {
-			sys_thread_new("echos", process_request_thread,
-				(void*)new_clientfd,
-				THREAD_STACKSIZE,
-				DEFAULT_THREAD_PRIO);
+			ethTaskHandle = sys_thread_new("echos", process_request_thread,
+								(void*)new_clientfd,
+								THREAD_STACKSIZE,
+								DEFAULT_THREAD_PRIO);
 		}
 	}
 }

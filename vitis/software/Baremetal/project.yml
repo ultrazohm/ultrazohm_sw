@@ -32,10 +32,17 @@
 :flags:
   :test:
     :compile:
-      :*:          # add '-Wall' to compilation of all files
+      :*:          # add '-Wall' to compilation of all files #- -Wsign-conversion https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
         - -Wall
         - -Wextra
         - -Wpedantic
+        - -Wconversion
+        - -Wdouble-promotion
+        - -Wswitch-default
+        - -Walloca
+        - -Wvla
+        - -Werror
+        
 
 :paths:
   :test:
@@ -72,6 +79,11 @@
     uint32:   UINT32
     int8:     INT8
     bool:     UINT8
+  :includes:
+    - "uz_struct_helper.h"
+  :unity_helper_path:
+    - "test/helper/uz_struct_helper.h"
+
 
 # Add -gcov to the plugins list to make sure of the gcov plugin
 # You will need to have gcov and gcovr both installed to make it work.

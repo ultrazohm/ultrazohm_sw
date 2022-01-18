@@ -2,8 +2,9 @@
 #include "uz_mux_axi_hwAddresses.h"
 #include "../../uz/uz_AXI.h"
 
-void  uz_mux_axi_hw_init(uint32_t base_address) {
+void  uz_mux_axi_hw_enable(uint32_t base_address) {
     uz_assert_not_zero(base_address);
+    uz_axi_write_uint32(base_address + IPCore_Enable_mux_axi_ip);
 }
 
 void uz_mux_axi_hw_set_mux(uint32_t base_address, uint32_t mux_selection) {

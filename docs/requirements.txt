@@ -1,4 +1,4 @@
-sphinx==3.5.4
+sphinx
 sphinx_rtd_theme
 sphinxcontrib-mermaid
 sphinxcontrib.yt

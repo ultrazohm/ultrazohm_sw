@@ -19,7 +19,6 @@ void setUp(void)
 }
 
 void test_uz_FOC_linear_decoupling_output_positive_omega(void){
-    setUp();
 	//Values for comparision from simulation
 	omega_el_rad_per_sec = 714.0f;
 	i_actual_Ampere.q = 1.0f;
@@ -30,7 +29,6 @@ void test_uz_FOC_linear_decoupling_output_positive_omega(void){
 }
 
 void test_uz_FOC_linear_decoupling_output_negative_omega(void){
-    setUp();
 	//Values for comparision from simulation
 	omega_el_rad_per_sec = -714.0f;
 	i_actual_Ampere.q = 1.0f;
@@ -41,7 +39,6 @@ void test_uz_FOC_linear_decoupling_output_negative_omega(void){
 }
 
 void test_uz_FOC_linear_decoupling_output_zero(void){
-    setUp();
 	//Values for comparision from simulation
 	omega_el_rad_per_sec = 0.0f;
 	i_actual_Ampere.q = 1.0f;

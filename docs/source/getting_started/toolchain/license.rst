@@ -16,7 +16,7 @@ There are three ways to get a valid license for Vivado:
 
 1. Purchase the license from Xilinx
 
-2. `Apply for the Xilinx donation Program for universities` <https://www.xilinx.com/support/university/donation-program.html>
+2. `Apply for the Xilinx donation Program for universities <https://www.xilinx.com/support/university/donation-program.html>`_
 
 3. Obtain a 30-day trial license
 

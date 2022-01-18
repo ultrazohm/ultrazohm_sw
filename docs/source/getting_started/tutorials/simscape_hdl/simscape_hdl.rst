@@ -112,9 +112,9 @@ Assign the GUI variables ``Sawtooth1``, ``SineWave1``, and ``SineWave2`` to the 
 
 .. code-block:: c
 
-    js_ptr_arr[JSO_Sawtooth1] = &sim_halfWaveRectifier->Vin;
-    js_ptr_arr[JSO_SineWave1] = &sim_halfWaveRectifier->IR;
-    js_ptr_arr[JSO_SineWave2] = &sim_halfWaveRectifier->Vdiode;
+    js_ch_observable[JSO_Sawtooth1] = &sim_halfWaveRectifier->Vin;
+    js_ch_observable[JSO_SineWave1] = &sim_halfWaveRectifier->IR;
+    js_ch_observable[JSO_SineWave2] = &sim_halfWaveRectifier->Vdiode;
 
 7. Set ``#define UZ_SIMSCAPEEXAMPLE_USE_IP 1`` in ``IP_Cores/uz_simscapeExample/uz_simscapeExample_staticAllocator.h``
 8. Build the project

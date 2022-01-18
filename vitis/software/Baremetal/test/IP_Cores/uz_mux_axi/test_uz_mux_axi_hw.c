@@ -17,7 +17,7 @@ void tearDown(void)
 
 void test_uz_mux_axi_init(void)
 {
-    TEST_ASSERT_FAIL_ASSERT(uz_mux_axi_hw_init(0));
+    TEST_ASSERT_FAIL_ASSERT(uz_mux_axi_hw_enable(0));
 }
 
 void test_uz_mux_axi_set_mux_with_zero_base_address(void)

@@ -43,6 +43,7 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t * const rtAutoRefCurrents_M
 	/* Chart: '<Root>/AutoRefCurrents' incorporates:
    *  Inport: '<Root>/ActualValues'
    *  Inport: '<Root>/AutoRefCurrentsConfig'
+	 *  Inport: '<Root>/ControlFlags'
    *  Inport: '<Root>/GlobalConfig'
    *  Outport: '<Root>/i_dq_ref'
    */
@@ -62,15 +63,16 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t * const rtAutoRefCurrents_M
 	} else if (rtAutoRefCurrents_DW->is_c10_AutoRefCurrents == IN_superstate) {
     /* During 'superstate': '<S1>:20' */
     /* '<S1>:32:1' sf_internal_predicateOutput = AutoRefCurrentsConfig.enableCRS==0 ||.... */
-    /* '<S1>:32:2'  AutoRefCurrentsConfig.Reset == 1; */
+		/* '<S1>:32:2'  AutoRefCurrentsConfig.Reset == 1 ||.... */
+		/* '<S1>:32:3' GlobalConfig.Reset==1; */
+		/* . */
     /* . */
-		if ((!rtAutoRefCurrents_U->AutoRefCurrentsConfig.enableCRS) || rtAutoRefCurrents_U->AutoRefCurrentsConfig.Reset) {
+		if ((!rtAutoRefCurrents_U->AutoRefCurrentsConfig.enableCRS) || rtAutoRefCurrents_U->AutoRefCurrentsConfig.Reset || rtAutoRefCurrents_U->GlobalConfig_out.Reset) {
       /* Transition: '<S1>:32' */
-      /* . */
-      /* '<S1>:32:3' i_dq_ref.d=single(0); */
+			/* '<S1>:32:4' i_dq_ref.d=single(0); */
 			rtAutoRefCurrents_Y->i_dq_ref.d = 0.0F;
 
-      /* '<S1>:32:3' i_dq_ref.q=single(0) */
+			/* '<S1>:32:4' i_dq_ref.q=single(0) */
 			rtAutoRefCurrents_Y->i_dq_ref.q = 0.0F;
 
       /* Exit Internal 'superstate': '<S1>:20' */
@@ -102,11 +104,9 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t * const rtAutoRefCurrents_M
 
         /* '<S1>:26:9' if((i_dq_ref.d*i_dq_ref.d+(imax*iqcount/AutoRefCurrentsConfig.iq_points)^2)^0.5<abs(imax)) */
 				idcount_tmp = rtAutoRefCurrents_DW->imax * rtAutoRefCurrents_DW->iqcount / rtAutoRefCurrents_U->AutoRefCurrentsConfig.iq_points;
-				tmp = fabsf(rtAutoRefCurrents_DW->imax);
-				if (sqrtf(rtAutoRefCurrents_Y->i_dq_ref.d * rtAutoRefCurrents_Y->i_dq_ref.d + idcount_tmp * idcount_tmp) <
-            tmp) {
+				if (sqrtf(rtAutoRefCurrents_Y->i_dq_ref.d * rtAutoRefCurrents_Y->i_dq_ref.d + idcount_tmp * idcount_tmp) < fabsf(rtAutoRefCurrents_DW->imax)) {
           /* '<S1>:26:10' i_dq_ref.q=imax*iqcount/AutoRefCurrentsConfig.iq_points; */
-					rtAutoRefCurrents_Y->i_dq_ref.q = rtAutoRefCurrents_DW->imax * rtAutoRefCurrents_DW->iqcount / rtAutoRefCurrents_U->AutoRefCurrentsConfig.iq_points;
+					rtAutoRefCurrents_Y->i_dq_ref.q = idcount_tmp;
         } else {
           /* '<S1>:26:11' else */
           /* '<S1>:26:12' iqcount=single(1); */
@@ -118,6 +118,7 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t * const rtAutoRefCurrents_M
 
         /* '<S1>:26:15' if((i_dq_ref.q*i_dq_ref.q+(imax*idcount/AutoRefCurrentsConfig.id_points)^2)^0.5<abs(imax)) */
 				idcount_tmp = rtAutoRefCurrents_DW->imax * rtAutoRefCurrents_DW->idcount / rtAutoRefCurrents_U->AutoRefCurrentsConfig.id_points;
+				tmp = fabsf(rtAutoRefCurrents_DW->imax);
 				if (sqrtf(rtAutoRefCurrents_Y->i_dq_ref.q * rtAutoRefCurrents_Y->i_dq_ref.q + idcount_tmp * idcount_tmp) <
             tmp) {
           /* '<S1>:26:16' i_dq_ref.d=-1*abs(imax)*idcount/AutoRefCurrentsConfig.id_points; */
@@ -168,9 +169,14 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t * const rtAutoRefCurrents_M
 
     /* During 'waitState': '<S1>:29' */
     /* '<S1>:31:1' sf_internal_predicateOutput = AutoRefCurrentsConfig.enableCRS==1 &&.... */
-    /* '<S1>:31:2' AutoRefCurrentsConfig.Reset==0; */
+		/* '<S1>:31:2' AutoRefCurrentsConfig.Reset==0 &&.... */
+		/* '<S1>:31:3'  GlobalConfig.Reset==0 && GlobalConfig.ACCEPT==1&& .... */
+		/* '<S1>:31:4' ControlFlags.finished_all_Offline_states==1; */
+		/* . */
+		/* . */
     /* . */
-	} else if (rtAutoRefCurrents_U->AutoRefCurrentsConfig.enableCRS && (!rtAutoRefCurrents_U->AutoRefCurrentsConfig.Reset)) {
+	} else if (rtAutoRefCurrents_U->AutoRefCurrentsConfig.enableCRS && (!rtAutoRefCurrents_U->AutoRefCurrentsConfig.Reset) && (!rtAutoRefCurrents_U->GlobalConfig_out.Reset)
+	                && rtAutoRefCurrents_U->GlobalConfig_out.ACCEPT && rtAutoRefCurrents_U->ControlFlags.finished_all_Offline_states) {
     /* Transition: '<S1>:31' */
 		rtAutoRefCurrents_DW->is_c10_AutoRefCurrents = IN_superstate;
 

@@ -127,6 +127,21 @@ typedef struct {
 
 #endif
 
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
+
+typedef struct {
+	boolean_T startFrictionID;
+	boolean_T startElectricalID;
+	boolean_T startTwoMassID;
+	boolean_T startFluxMapID;
+	uint16_T transNr;
+	boolean_T enableOnlineID;
+	boolean_T finished_all_Offline_states;
+} uz_PID_ControlFlags_t;
+
+#endif
+
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
 	real32_T iqcount; /* '<Root>/AutoRefCurrents' */
@@ -143,6 +158,7 @@ typedef struct {
   uz_PID_ActualValues_t ActualValues;  /* '<Root>/ActualValues' */
   uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
   uz_PID_AutoRefCurrentsConfig_t AutoRefCurrentsConfig;/* '<Root>/AutoRefCurrentsConfig' */
+	uz_PID_ControlFlags_t ControlFlags; /* '<Root>/ControlFlags' */
 } ExtU_AutoRefCurrents_t;
 
 /* External outputs (root outports fed by signals with default storage) */

@@ -124,6 +124,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		uz_PID_FrictionID_step(self, Data);
 		uz_PID_FluxMapID_step(self, Data);
 		uz_PID_OnlineID_step(self, Data);
+		uz_PID_AutoRefCurrents_step(self, Data);
 
 		//reset the Reset-button
 		self->ControlState->output.GlobalConfig_out.Reset = false;

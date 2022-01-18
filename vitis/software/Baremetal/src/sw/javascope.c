@@ -123,13 +123,13 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_c_0] = &(PID_Data.PID_TwoMassID_Output->c_0_out);
 	js_slowDataArray[JSSD_FLOAT_I_rated]		        = &(data->mrp.motorNominalCurrent);
 	js_slowDataArray[JSSD_FLOAT_Wtemp] = &(PID_Data.PID_OnlineID_Output->Wtemp);
-	js_slowDataArray[JSSD_FLOAT_FluxTempConst]         	= &(data->pID.FluxTempConst);
-	js_slowDataArray[JSSD_FLOAT_FluxTempError]         	= &(data->pID.FluxTempError);
+	js_slowDataArray[JSSD_FLOAT_FluxTempConst] = &(PID_Data.FluxMap_Data->psi_temp_const);
+	js_slowDataArray[JSSD_FLOAT_FluxTempError] = &(PID_Data.FluxMap_Data->psi_temp_error);
 	js_slowDataArray[JSSD_FLOAT_Ld_Online] = &(PID_Data.PID_OnlineID_Output->Ld_out);
 	js_slowDataArray[JSSD_FLOAT_Lq_Online] = &(PID_Data.PID_OnlineID_Output->Lq_out);
 	js_slowDataArray[JSSD_FLOAT_PsiPM_Online] = &(PID_Data.PID_OnlineID_Output->psi_pm_out);
 	js_slowDataArray[JSSD_FLOAT_Rs_Online] = &(PID_Data.PID_OnlineID_Output->Rph_out);
-	js_slowDataArray[JSSD_FLOAT_n_FluxPoints]	        = &(data->pID.n_FluxPoints);
+	js_slowDataArray[JSSD_FLOAT_n_FluxPoints] = &(PID_Data.FluxMap_MeasuringPoints);
 	js_slowDataArray[JSSD_FLOAT_Ld] 			        = &(data->mrp.motorDirectInductance);
 	js_slowDataArray[JSSD_FLOAT_Lq] 			        = &(data->mrp.motorQuadratureInductance);
 	js_slowDataArray[JSSD_FLOAT_totalRotorInertia] 	 	= &(data->mrp.totalRotorInertia);
@@ -141,7 +141,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Wtemp_FMID] = &(PID_Data.PID_FluxMapID_Output->WindingTemp);
 	js_slowDataArray[JSSD_FLOAT_Psi_D_Map] = &(PID_Data.Psi_D_pointer);
 	js_slowDataArray[JSSD_FLOAT_Psi_Q_Map] = &(PID_Data.Psi_Q_pointer);
-	js_slowDataArray[JSSD_FLOAT_Flux_MeasuringPoints] = &(PID_Data.FluxMap_MeasuringPoints);
+	js_slowDataArray[JSSD_FLOAT_FluxMapCounter] = &(PID_Data.FluxMap_counter);
 
 	return Status;
 }

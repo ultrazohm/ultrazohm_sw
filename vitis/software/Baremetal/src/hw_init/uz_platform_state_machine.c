@@ -115,6 +115,7 @@ static void idle_entry(void)
 {
     if (ultrazohm_state.entry)
     {
+    	uz_axigpio_disable_pwm_and_power_electronics();
         uz_led_set_errorLED_off();
         uz_led_set_runningLED_off();
         uz_led_set_userLED_off();

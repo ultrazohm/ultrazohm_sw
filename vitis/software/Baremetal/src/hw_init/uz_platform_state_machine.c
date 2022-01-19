@@ -45,6 +45,7 @@ static void error_entry(void);
 static void idle_during(void);
 static void running_during(void);
 static void control_during(void);
+static void error_during(void);
 
 void ultrazohm_state_machine_step(void)
 {
@@ -65,6 +66,7 @@ void ultrazohm_state_machine_step(void)
         break;
     case error_state:
         error_entry();
+        error_during();
         break;
     default:
         break;
@@ -103,7 +105,8 @@ void ultrazohm_state_machine_set_stop(bool stop)
 
 void ultrazohm_state_machine_set_error(bool error)
 {
-	if(error){
+	// Prevent setting error state multiple times
+	if(error & (!(ultrazohm_state.current_state == error_state) )){
 		ultrazohm_state_machine_switch_to_state(error_state); // if the error is set to true, directly change the current state to error and skip everything in the state machine
 	}
 	ultrazohm_state.error_flag=error;
@@ -115,6 +118,10 @@ static void idle_entry(void)
     if (ultrazohm_state.entry)
     {
     	uz_axigpio_disable_pwm_and_power_electronics();
+        ultrazohm_state.enable_control=false; // Resets the flags
+        ultrazohm_state.enable_system=false;
+        ultrazohm_state.stop_flag=false;
+        ultrazohm_state.error_flag=false;
         uz_led_set_errorLED_off();
         uz_led_set_runningLED_off();
         uz_led_set_userLED_off();
@@ -156,6 +163,12 @@ static void error_entry(void)
         uz_led_set_readyLED_off();
         ultrazohm_state_machine_event_handled();
     }
+}
+
+static void error_during(void){
+	if(ultrazohm_state.stop_flag){
+		ultrazohm_state_machine_switch_to_state(idle_state);
+	}
 }
 
 static void idle_during(void)

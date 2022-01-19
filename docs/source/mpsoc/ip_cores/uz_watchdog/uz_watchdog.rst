@@ -30,15 +30,50 @@ The IP offers two morking modes [#PG128]_:
    Top view of the Module.
 
 Window working mode
-===================
+*******************
 
 The Window Watchdog Timer (WWDT) starts with an adjustable period called **close window**, followed by another period called **open window**.
 The WWDT has to be restarted within the **open window**. 
 If the WWDT is restarted outside of the open window time period, it generates a reset.
 
-.. figure:: ./uz_watchdog_windows.jpg
-   :width: 800
+.. figure:: ./uz_watchdog_windows.png
+   :width: 510
    :align: center
+
+Integration in Baremetal project
+================================
+
+- **Inside the int Initialize_ISR()** function we have to invoke the initialization of the IP XWdtTb \*uz_watchdog_init() setting the timer to the default timeout and default configuration as it is explained in the API section (see below).
+- **Inside the int Rpu_GicInit()**  function we have to make the following changes to integrate the device:
+    1.	We have to change the priority of the system timer. In order to allow the interrupt preemption, meaning that the ISR_Control() function than handles the timing interruption can be interrupted itself, we have to modify these lines:
+	
+    -     XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
+    -     prio = 15;
+    -     trigger = 0b11;
+    -     XScuGic_SetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,prio,trigger);
+
+
+
+    2.	We have to initialize the interruption of the watchdog using a new private function added to the isr.c file: 
+	
+    - int WdtTbSetupIntrSystem(XScuGic_Config \*IntcConfig, XScuGic \*IntcInstancePtr). This function sets the INT Output signal through the GIC System. The GIC has to be previously set, using its functions (XScuGic_LookupConfig(), XScuGic_CfgInitialize() and Xil_Exception*() functions to initialize, register and enable the Interruption system. It is already done in the Initialize_ISR() and Rpu_GicInit() functions. A default handler is provided in our driver uz_watchdog.h. It counts the error and resumes normal execution. It should use the future uz_error_handler module to set the error and handle it properly
+
+
+
+    3.	We have to enable the WDT and launch first kick with:
+
+    - uz_watchdog_Start(WdtTbInstancePtr);
+	
+- And finally, **inside the ISR_Control()** function, we have to:
+    1.	Enable the preemption or the interruption nesting invoking
+
+    - Xil_EnableNestedInterrupts(); 
+
+
+    2.	Restart the WD Timer, to assure the time violation does not happen. It is done by calling the function:
+
+
+    - uz_watchdog_Restart(WdtTbInstancePtr);
 
 
 Register Description

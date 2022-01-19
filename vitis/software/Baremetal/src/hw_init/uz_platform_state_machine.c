@@ -104,10 +104,9 @@ void ultrazohm_state_machine_set_stop(bool stop)
 void ultrazohm_state_machine_set_error(bool error)
 {
 	if(error){
-	    ultrazohm_state.current_state = error_state; // if the error is set to true, directly change the current state to error and skip everything in the state machine
+		ultrazohm_state_machine_switch_to_state(error_state); // if the error is set to true, directly change the current state to error and skip everything in the state machine
 	}
 	ultrazohm_state.error_flag=error;
-
     ultrazohm_state_machine_step(); // If the error bit is changed, execute the state machine again to enter the error state
 }
 

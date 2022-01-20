@@ -83,19 +83,20 @@ void ISR_Control(void *data)
 
 	ReadAllADC();
 	CheckForErrors();
-	//update_speed_and_position_of_encoder_on_D5(&Global_Data); 	//Read out speed and theta angle
+	update_speed_and_position_of_encoder_on_D5(&Global_Data); 	//Read out speed and theta angle
 
 	//ParameterID------------------------------------------------------------------------------------------------------------------------
 
 	//Get values from ADCs
-	PID_Data.PID_ActualValues.I_UVW.U = (Global_Data.aa.A2.me.ADC_A2 - 2.5f) * (20.0f / 2.084f) / 3.0f;
-	PID_Data.PID_ActualValues.I_UVW.V = (Global_Data.aa.A2.me.ADC_A3 - 2.5f) * (20.0f / 2.084f) / 3.0f;
-	PID_Data.PID_ActualValues.I_UVW.W = (Global_Data.aa.A2.me.ADC_A4 - 2.5f) * (20.0f / 2.084f) / 3.0f;
+	PID_Data.PID_ActualValues.I_UVW.U = (Global_Data.aa.A1.me.ADC_A2 - 2.5f) * (20.0f / 2.084f) / 3.0f;
+	PID_Data.PID_ActualValues.I_UVW.V = (Global_Data.aa.A1.me.ADC_A3 - 2.5f) * (20.0f / 2.084f) / 3.0f;
+	PID_Data.PID_ActualValues.I_UVW.W = (Global_Data.aa.A1.me.ADC_A4 - 2.5f) * (20.0f / 2.084f) / 3.0f;
 	PID_Data.PID_ActualValues.V_DC = ((Global_Data.aa.A1.me.ADC_A1) * 20.05f) - 0.18f;
-	PID_Data.PID_ActualValues.V_UVW.U = (Global_Data.aa.A1.me.ADC_A2 - 2.5f) * (20.0f / 2.084f) / 3.0f;
-	PID_Data.PID_ActualValues.V_UVW.V = (Global_Data.aa.A1.me.ADC_A3 - 2.5f) * (20.0f / 2.084f) / 3.0f;
-	PID_Data.PID_ActualValues.V_UVW.W = (Global_Data.aa.A1.me.ADC_A4 - 2.5f) * (20.0f / 2.084f) / 3.0f;
-	PID_Data.PID_ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed;
+//	PID_Data.PID_ActualValues.V_DC = 24.0f;
+//	PID_Data.PID_ActualValues.V_UVW.U = (Global_Data.aa.A1.me.ADC_A2 - 2.5f) * (20.0f / 2.084f) / 3.0f;
+//	PID_Data.PID_ActualValues.V_UVW.V = (Global_Data.aa.A1.me.ADC_A3 - 2.5f) * (20.0f / 2.084f) / 3.0f;
+//	PID_Data.PID_ActualValues.V_UVW.W = (Global_Data.aa.A1.me.ADC_A4 - 2.5f) * (20.0f / 2.084f) / 3.0f;
+	PID_Data.PID_ActualValues.omega_m = (Global_Data.av.mechanicalRotorSpeed * 2.0f * UZ_PIf ) / 60.0f;
 	PID_Data.PID_ActualValues.theta_el = Global_Data.av.theta_elec;
 
 	//Calculate missing ActualValues

@@ -6,15 +6,6 @@
 #include "../uz/uz_PushButton/uz_PushButton_facade.h"
 #include "../include/gpio_axi.h"
 #include "../include/uz_assertion_configuration.h"
-
-typedef enum
-{
-    idle_state = 0, // _state is used here to prevent name duplication with the flags
-    running_state,
-    control_state,
-    error_state
-} platform_state_t;
-
 typedef struct
 {
     platform_state_t current_state;
@@ -29,8 +20,7 @@ typedef struct
 ultrazohm_state_t ultrazohm_state = {
     .current_state = idle_state,
     .event_handled = true,
-    .entry = true
-};
+    .entry = true};
 
 static void poll_buttons(void);
 static void ultrazohm_state_machine_switch_to_state(platform_state_t new_state);
@@ -105,11 +95,12 @@ void ultrazohm_state_machine_set_stop(bool stop)
 
 void ultrazohm_state_machine_set_error(bool error)
 {
-	// Prevent setting error state multiple times
-	if(error & (!(ultrazohm_state.current_state == error_state) )){
-		ultrazohm_state_machine_switch_to_state(error_state); // if the error is set to true, directly change the current state to error and skip everything in the state machine
-	}
-	ultrazohm_state.error_flag=error;
+    // Prevent setting error state multiple times
+    if (error & (!(ultrazohm_state.current_state == error_state)))
+    {
+        ultrazohm_state_machine_switch_to_state(error_state); // if the error is set to true, directly change the current state to error and skip everything in the state machine
+    }
+    ultrazohm_state.error_flag = error;
     ultrazohm_state_machine_step(); // If the error bit is changed, execute the state machine again to enter the error state
 }
 
@@ -117,11 +108,11 @@ static void idle_entry(void)
 {
     if (ultrazohm_state.entry)
     {
-    	uz_axigpio_disable_pwm_and_power_electronics();
-        ultrazohm_state.enable_control=false; // Resets the flags
-        ultrazohm_state.enable_system=false;
-        ultrazohm_state.stop_flag=false;
-        ultrazohm_state.error_flag=false;
+        uz_axigpio_disable_pwm_and_power_electronics();
+        ultrazohm_state.enable_control = false; // Resets the flags
+        ultrazohm_state.enable_system = false;
+        ultrazohm_state.stop_flag = false;
+        ultrazohm_state.error_flag = false;
         uz_led_set_errorLED_off();
         uz_led_set_runningLED_off();
         uz_led_set_userLED_off();
@@ -165,10 +156,12 @@ static void error_entry(void)
     }
 }
 
-static void error_during(void){
-	if(ultrazohm_state.stop_flag){
-		ultrazohm_state_machine_switch_to_state(idle_state);
-	}
+static void error_during(void)
+{
+    if (ultrazohm_state.stop_flag)
+    {
+        ultrazohm_state_machine_switch_to_state(idle_state);
+    }
 }
 
 static void idle_during(void)
@@ -265,4 +258,9 @@ static void ultrazohm_state_machine_switch_to_state(platform_state_t new_state)
     ultrazohm_state.event_handled = false;
     ultrazohm_state.entry = true;
     ultrazohm_state.current_state = new_state;
+}
+
+platform_state_t ultrazohm_state_machine_get_state(void)
+{
+    return (ultrazohm_state.current_state);
 }

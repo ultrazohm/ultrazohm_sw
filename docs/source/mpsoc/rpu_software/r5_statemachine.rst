@@ -64,6 +64,10 @@ The following table shows the complete state table.
 Software reference
 ==================
 
+.. doxygenenum:: platform_state_t
+
+.. doxygenfunction:: ultrazohm_state_machine_get_state
+
 .. doxygenfunction:: ultrazohm_state_machine_step
 
 .. doxygenfunction:: ultrazohm_state_machine_set_enable_system

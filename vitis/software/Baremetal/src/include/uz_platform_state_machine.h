@@ -2,6 +2,25 @@
 #include <stdbool.h>
 
 /**
+ * @brief Enum for the available states of the UltraZohm
+ * 
+ */
+typedef enum
+{
+    idle_state = 0, // _state is used here to prevent name duplication with the flags
+    running_state,
+    control_state,
+    error_state
+} platform_state_t;
+
+/**
+ * @brief Returns the current state of the ultrazohm
+ * 
+ * @return platform_state_t 
+ */
+platform_state_t ultrazohm_state_machine_get_state(void);
+
+/**
  * @brief Exectures the central state machine of the UltraZohm once
  * 
  */

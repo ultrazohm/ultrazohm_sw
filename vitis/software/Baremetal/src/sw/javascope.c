@@ -31,7 +31,7 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
-
+float activeState = 0;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
@@ -96,7 +96,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Rs_Offline] = &(PID_Data.PID_ElectricalID_Output->PMSM_parameters.R_ph_Ohm);
 	js_slowDataArray[JSSD_FLOAT_polePairs] = &(PID_Data.PID_ElectricalID_Output->PMSM_parameters.polePairs);
 	js_slowDataArray[JSSD_FLOAT_J] = &(PID_Data.PID_ElectricalID_Output->PMSM_parameters.J_kg_m_squared);
-	js_slowDataArray[JSSD_FLOAT_activeState] = &(PID_Data.PID_Controller_Parameters.activeState);
+	js_slowDataArray[JSSD_FLOAT_activeState] = &(activeState);
 	js_slowDataArray[JSSD_FLOAT_J] = &(PID_Data.PID_TwoMassID_Output->rotorInertia);
 	js_slowDataArray[JSSD_FLOAT_u_d] = &(PID_Data.PID_ActualValues.v_dq.d);
 	js_slowDataArray[JSSD_FLOAT_u_q] = &(PID_Data.PID_ActualValues.v_dq.q);
@@ -171,6 +171,7 @@ void JavaScope_update(DS_Data* data){
 	javascope_data->slowDataID 		= js_cnt_slowData;
 	javascope_data->slowDataContent = *js_slowDataArray[js_cnt_slowData];
 	javascope_data->status 			= js_status_BareToRTOS;
+	activeState = (float) PID_Data.PID_Controller_Parameters.activeState;
 
 	// flush data cache of shared memory region to make sure shared memory is updated
 	Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);

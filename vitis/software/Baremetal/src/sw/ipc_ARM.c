@@ -284,8 +284,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS &= ~(1 << 1);
 	}
 	/* Bit 2 - My_Button_1 */
-	// if ("your condition" == true) {
-	//	js_status_BareToRTOS &= ~(1 << 2);
+	// if (your condition == true) {
+	//	js_status_BareToRTOS |= (1 << 2);
 	// } else {
 	//	js_status_BareToRTOS &= ~(1 << 2);
 	// }

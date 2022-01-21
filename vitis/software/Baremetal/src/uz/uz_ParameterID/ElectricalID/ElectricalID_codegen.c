@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'ElectricalID'.
  *
- * Model version                  : 2.349
+ * Model version                  : 2.430
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Thu Dec 16 11:44:09 2021
+ * C/C++ source code generated on : Fri Jan 21 11:20:51 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (10), Warnings (2), Error (0)
+ * Validation result: Passed (11), Warning (1), Error (0)
  */
 
 #include "ElectricalID_codegen.h"
@@ -456,23 +456,20 @@ static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
   /* '<S1>:284:9' if (ElectricalIDConfig.identLq == 1) */
   if (rtElectricalID_U->ElectricalIDConfig.identLq) {
     /* Outport: '<Root>/ElectricalID_output' */
-    /* '<S1>:284:10' ElectricalID_output.PMSM_parameters.Lq_Henry = 0.00245; */
-    rtElectricalID_Y->ElectricalID_output.PMSM_parameters.Lq_Henry = 0.00245F;
-
-    /* '<S1>:284:11' Kp_iq_loc = ElectricalID_output.PMSM_parameters.Lq_Henry * bandwidthCurrentControl; */
+    /* '<S1>:284:10' Kp_iq_loc = ElectricalID_output.PMSM_parameters.Lq_Henry * bandwidthCurrentControl; */
     rtElectricalID_DW->Kp_iq_loc =
       rtElectricalID_Y->ElectricalID_output.PMSM_parameters.Lq_Henry *
       rtElectricalID_DW->bandwidthCurrentControl;
   } else {
     /* Outport: '<Root>/ElectricalID_output' */
-    /* '<S1>:284:12' elseif (ElectricalIDConfig.identLq == 0) */
-    /* '<S1>:284:13' ElectricalID_output.PMSM_parameters.Lq_Henry = .... */
-    /* '<S1>:284:14'         ElectricalID_output.PMSM_parameters.Ld_Henry; */
+    /* '<S1>:284:11' elseif (ElectricalIDConfig.identLq == 0) */
+    /* '<S1>:284:12' ElectricalID_output.PMSM_parameters.Lq_Henry = .... */
+    /* '<S1>:284:13'         ElectricalID_output.PMSM_parameters.Ld_Henry; */
     rtElectricalID_Y->ElectricalID_output.PMSM_parameters.Lq_Henry =
       rtElectricalID_Y->ElectricalID_output.PMSM_parameters.Ld_Henry;
 
     /* . */
-    /* '<S1>:284:15' Kp_iq_loc = Kp_id_loc; */
+    /* '<S1>:284:14' Kp_iq_loc = Kp_id_loc; */
     rtElectricalID_DW->Kp_iq_loc = Kp_id_loc;
   }
 
@@ -481,8 +478,8 @@ static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
   /* Outport: '<Root>/ElectricalID_output' incorporates:
    *  Inport: '<Root>/GlobalConfig'
    */
-  /* '<S1>:284:17' Kp_n_loc = Kp_iq_loc/(ElectricalID_output.PMSM_parameters.Lq_Henry*dampingFactor*.... */
-  /* '<S1>:284:18'     GlobalConfig.PMSM_config.polePairs*3.0/2.0*psiOverJ); */
+  /* '<S1>:284:16' Kp_n_loc = Kp_iq_loc/(ElectricalID_output.PMSM_parameters.Lq_Henry*dampingFactor*.... */
+  /* '<S1>:284:17'     GlobalConfig.PMSM_config.polePairs*3.0/2.0*psiOverJ); */
   rtElectricalID_DW->Kp_n_loc = rtElectricalID_DW->Kp_iq_loc /
     (rtElectricalID_Y->ElectricalID_output.PMSM_parameters.Lq_Henry *
      rtElectricalID_DW->dampingFactor *
@@ -490,10 +487,10 @@ static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
      rtElectricalID_DW->psiOverJ);
 
   /* . */
-  /* '<S1>:284:19' Ki_n_loc = (Kp_iq_loc * Kp_iq_loc)/( ElectricalID_output.PMSM_parameters.Lq_Henry *.... */
-  /* '<S1>:284:20'     ElectricalID_output.PMSM_parameters.Lq_Henry  * dampingFactor * dampingFactor * .... */
-  /* '<S1>:284:21'     dampingFactor * GlobalConfig.PMSM_config.polePairs... */
-  /* '<S1>:284:22'     *3.0/2.0*psiOverJ); */
+  /* '<S1>:284:18' Ki_n_loc = (Kp_iq_loc * Kp_iq_loc)/( ElectricalID_output.PMSM_parameters.Lq_Henry *.... */
+  /* '<S1>:284:19'     ElectricalID_output.PMSM_parameters.Lq_Henry  * dampingFactor * dampingFactor * .... */
+  /* '<S1>:284:20'     dampingFactor * GlobalConfig.PMSM_config.polePairs... */
+  /* '<S1>:284:21'     *3.0/2.0*psiOverJ); */
   rtElectricalID_DW->Ki_n_loc = rtElectricalID_DW->Kp_iq_loc *
     rtElectricalID_DW->Kp_iq_loc /
     (rtElectricalID_Y->ElectricalID_output.PMSM_parameters.Lq_Henry *
@@ -507,24 +504,24 @@ static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
   /* . */
   /* . */
   /* Output calculated values */
-  /* '<S1>:284:24' ElectricalID_FOC_output.Kp_id_out = Kp_id_loc; */
+  /* '<S1>:284:23' ElectricalID_FOC_output.Kp_id_out = Kp_id_loc; */
   rtElectricalID_Y->ElectricalID_FOC_output.Kp_id_out = Kp_id_loc;
 
-  /* '<S1>:284:25' ElectricalID_FOC_output.Ki_id_out = Ki_id_loc; */
+  /* '<S1>:284:24' ElectricalID_FOC_output.Ki_id_out = Ki_id_loc; */
   rtElectricalID_Y->ElectricalID_FOC_output.Ki_id_out = Ki_id_loc;
 
-  /* '<S1>:284:26' ElectricalID_FOC_output.Kp_iq_out = Kp_iq_loc; */
+  /* '<S1>:284:25' ElectricalID_FOC_output.Kp_iq_out = Kp_iq_loc; */
   rtElectricalID_Y->ElectricalID_FOC_output.Kp_iq_out =
     rtElectricalID_DW->Kp_iq_loc;
 
-  /* '<S1>:284:27' ElectricalID_FOC_output.Ki_iq_out = Ki_iq_loc; */
+  /* '<S1>:284:26' ElectricalID_FOC_output.Ki_iq_out = Ki_iq_loc; */
   rtElectricalID_Y->ElectricalID_FOC_output.Ki_iq_out = Ki_id_loc;
 
-  /* '<S1>:284:28' ElectricalID_FOC_output.Kp_n_out = Kp_n_loc; */
+  /* '<S1>:284:27' ElectricalID_FOC_output.Kp_n_out = Kp_n_loc; */
   rtElectricalID_Y->ElectricalID_FOC_output.Kp_n_out =
     rtElectricalID_DW->Kp_n_loc;
 
-  /* '<S1>:284:29' ElectricalID_FOC_output.Ki_n_out = single(Ki_n_loc); */
+  /* '<S1>:284:28' ElectricalID_FOC_output.Ki_n_out = single(Ki_n_loc); */
   rtElectricalID_Y->ElectricalID_FOC_output.Ki_n_out =
     rtElectricalID_DW->Ki_n_loc;
 }
@@ -726,11 +723,12 @@ static void evaluate_Turn_DC(ExtU_ElectricalID_t *rtElectricalID_U,
   uint32_T y;
 
   /* During 'evaluate_Turn_DC': '<S1>:379' */
-  /* '<S1>:383:1' sf_internal_predicateOutput = (after(1.0,sec)) && (om_con==1 || DC_manual == 1); */
-  if ((rtElectricalID_DW->temporalCounter_i1 >= 10000U) &&
-      (rtElectricalID_DW->om_con || rtElectricalID_DW->DC_manual)) {
+  /* '<S1>:383:1' sf_internal_predicateOutput = (after(1.0,sec)) && (om_con==1); */
+  if (((rtElectricalID_DW->temporalCounter_i1 >= 40000U) &&
+       rtElectricalID_DW->om_con) || rtElectricalID_DW->DC_manual) {
     /* Outport: '<Root>/ElectricalID_output' */
     /* Transition: '<S1>:383' */
+    /* Transition: '<S1>:921' */
     /* Exit 'evaluate_Turn_DC': '<S1>:379' */
     /* '<S1>:379:27' ElectricalID_output.PWM_Switch_0 = single(0); */
     rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 = 0.0F;
@@ -751,6 +749,7 @@ static void evaluate_Turn_DC(ExtU_ElectricalID_t *rtElectricalID_U,
     /* '<S1>:3:5' counter = uint32(1); */
     rtElectricalID_DW->counter = 1U;
   } else {
+    /* '<S1>:921:1' sf_internal_predicateOutput = DC_manual == 1; */
     /* '<S1>:379:13' if(DC_manual == 0) */
     if (!rtElectricalID_DW->DC_manual) {
       /* Inport: '<Root>/ActualValues' */
@@ -1007,35 +1006,18 @@ static void goertzel(ExtU_ElectricalID_t *rtElectricalID_U, ExtY_ElectricalID_t 
                      rtElectricalID_Y, DW_ElectricalID_t *rtElectricalID_DW)
 {
   int32_T k;
+  real32_T A;
+  real32_T B;
+  real32_T C_im;
+  real32_T C_re;
   real32_T Xg_im;
   real32_T Xg_re;
-  real32_T ai;
-  real32_T r;
   real32_T s0;
   real32_T s2;
 
   /* MATLAB Function 'goertzel': '<S1>:350' */
   /*  calculate momentum from i_q */
   /* '<S1>:350:6' for k=single(1):single(500) */
-  /*  goertzel */
-  /* '<S1>:350:11' k = single(2.0); */
-  /*  coefficient number of the spectrum (40Hz) */
-  /* '<S1>:350:12' N = 500; */
-  /*  length of input signal */
-  /* Precalculation of constants */
-  /* '<S1>:350:15' A = 2*pi*k/N; */
-  /* '<S1>:350:16' B = 2*cos(A); */
-  /* '<S1>:350:17' C = exp(-j*A); */
-  /* State variables */
-  /* '<S1>:350:19' s0 = single(0.0); */
-  /* '<S1>:350:20' s1 = single(0.0); */
-  r = 0.0F;
-
-  /* '<S1>:350:21' s2 = single(0.0); */
-  s2 = 0.0F;
-
-  /* Main loop for M */
-  /* '<S1>:350:24' for i = 1:N */
   for (k = 0; k < 500; k++) {
     /* Inport: '<Root>/GlobalConfig' incorporates:
      *  Outport: '<Root>/ElectricalID_output'
@@ -1045,134 +1027,171 @@ static void goertzel(ExtU_ElectricalID_t *rtElectricalID_U, ExtY_ElectricalID_t 
       rtElectricalID_U->GlobalConfig_out.PMSM_config.polePairs *
       rtElectricalID_Y->ElectricalID_output.PMSM_parameters.Psi_PM_Vs *
       rtElectricalID_DW->measArray1[k];
+  }
 
+  /* Inport: '<Root>/GlobalConfig' */
+  /*  goertzel */
+  /* '<S1>:350:11' ISR_factor = single(0.0001 / GlobalConfig.sampleTimeISR); */
+  /* Adjusts the k-factor for different ISR frequencys */
+  /* '<S1>:350:12' k = single(2.0 / ISR_factor); */
+  /*  coefficient number of the spectrum (40Hz) */
+  /* '<S1>:350:13' N = 500; */
+  /*  length of input signal */
+  /* Precalculation of constants */
+  /* '<S1>:350:16' A = 2*pi*k/N; */
+  A = 2.0F / (0.0001F / rtElectricalID_U->GlobalConfig_out.sampleTimeISR) *
+    6.28318548F / 500.0F;
+
+  /* '<S1>:350:17' B = 2*cos(A); */
+  B = 2.0F * cosf(A);
+
+  /* '<S1>:350:18' C = exp(-j*A); */
+  if (-A == 0.0F) {
+    C_re = 1.0F;
+    C_im = 0.0F;
+  } else {
+    C_re = cosf(-A);
+    C_im = sinf(-A);
+  }
+
+  /* State variables */
+  /* '<S1>:350:20' s0 = single(0.0); */
+  /* '<S1>:350:21' s1 = single(0.0); */
+  A = 0.0F;
+
+  /* '<S1>:350:22' s2 = single(0.0); */
+  s2 = 0.0F;
+
+  /* Main loop for M */
+  /* '<S1>:350:25' for i = 1:N */
+  for (k = 0; k < 500; k++) {
     /* N multiplications, 2N additions */
-    /* '<S1>:350:25' s0 = d(i) +B*s1-s2; */
-    s0 = (1.99936843F * r + rtElectricalID_DW->d[k]) - s2;
+    /* '<S1>:350:26' s0 = d(i) +B*s1-s2; */
+    s0 = (B * A + rtElectricalID_DW->d[k]) - s2;
 
     /* corresponds to (16) */
-    /* '<S1>:350:26' s2 = s1; */
-    s2 = r;
+    /* '<S1>:350:27' s2 = s1; */
+    s2 = A;
 
-    /* '<S1>:350:27' s1 = s0; */
-    r = s0;
+    /* '<S1>:350:28' s1 = s0; */
+    A = s0;
   }
 
   /* Finalizing calculations for M */
-  /* '<S1>:350:31' s0 = B*s1-s2; */
+  /* '<S1>:350:32' s0 = B*s1-s2; */
   /* corresponds to (16) with zero input; 1 multiplication and 1 addition */
-  /* '<S1>:350:32' Xg = s0-s1*C %corresponds to (17); 4 multiplications and 3 additions */
-  Xg_re = (1.99936843F * r - s2) - r * 0.999684215F;
-  Xg_im = 0.0F - r * -0.0251300968F;
+  /* '<S1>:350:33' Xg = s0-s1*C %corresponds to (17); 4 multiplications and 3 additions */
+  Xg_re = (B * A - s2) - A * C_re;
+  Xg_im = 0.0F - A * C_im;
 
   /* corresponds to (17); 4 multiplications and 3 additions */
   /* Reset state variables */
-  /* '<S1>:350:35' s0 = single(0.0); */
-  /* '<S1>:350:36' s1 = single(0.0); */
-  r = 0.0F;
+  /* '<S1>:350:36' s0 = single(0.0); */
+  /* '<S1>:350:37' s1 = single(0.0); */
+  A = 0.0F;
 
-  /* '<S1>:350:37' s2 = single(0.0); */
+  /* '<S1>:350:38' s2 = single(0.0); */
   s2 = 0.0F;
 
   /* Main loop for omega_m */
-  /* '<S1>:350:40' for i = 1:N */
+  /* '<S1>:350:41' for i = 1:N */
   for (k = 0; k < 500; k++) {
     /* N multiplications, 2N additions */
-    /* '<S1>:350:41' s0 = i_est(i) +B*s1-s2; */
-    s0 = (1.99936843F * r + rtElectricalID_DW->i_est[k]) - s2;
+    /* '<S1>:350:42' s0 = i_est(i) +B*s1-s2; */
+    s0 = (B * A + rtElectricalID_DW->i_est[k]) - s2;
 
     /* corresponds to (16) */
-    /* '<S1>:350:42' s2 = s1; */
-    s2 = r;
+    /* '<S1>:350:43' s2 = s1; */
+    s2 = A;
 
-    /* '<S1>:350:43' s1 = s0; */
-    r = s0;
+    /* '<S1>:350:44' s1 = s0; */
+    A = s0;
   }
 
   /* Finalizing calculations for omega_m */
-  /* '<S1>:350:47' s0 = B*s1-s2; */
+  /* '<S1>:350:48' s0 = B*s1-s2; */
   /* corresponds to (16) with zero input; 1 multiplication and 1 addition */
-  /* '<S1>:350:48' Yg = s0-s1*C %corresponds to (17); 4 multiplications and 3 additions */
+  /* '<S1>:350:49' Yg = s0-s1*C %corresponds to (17); 4 multiplications and 3 additions */
   /* corresponds to (17); 4 multiplications and 3 additions */
   /*  calculate value of transfer function  */
-  /* '<S1>:350:53' Gg = Yg/Xg; */
+  /* '<S1>:350:54' Gg = Yg/Xg; */
   /*  calculate J from Gg */
-  /* '<S1>:350:55' ElectricalID_output.PMSM_parameters.J_kg_m_squared = single(abs(1/(Gg*j*2*pi*40))); */
-  s2 = (1.99936843F * r - s2) - r * 0.999684215F;
-  ai = 0.0F - r * -0.0251300968F;
+  /* '<S1>:350:56' ElectricalID_output.PMSM_parameters.J_kg_m_squared = single(abs(1/(Gg*j*2*pi*40))); */
+  C_re = (B * A - s2) - A * C_re;
+  B = 0.0F - A * C_im;
   if (Xg_im == 0.0F) {
-    if (ai == 0.0F) {
-      s0 = s2 / Xg_re;
+    if (B == 0.0F) {
+      C_im = C_re / Xg_re;
       Xg_im = 0.0F;
-    } else if (s2 == 0.0F) {
-      s0 = 0.0F;
-      Xg_im = ai / Xg_re;
+    } else if (C_re == 0.0F) {
+      C_im = 0.0F;
+      Xg_im = B / Xg_re;
     } else {
-      s0 = s2 / Xg_re;
-      Xg_im = ai / Xg_re;
+      C_im = C_re / Xg_re;
+      Xg_im = B / Xg_re;
     }
   } else if (Xg_re == 0.0F) {
-    if (s2 == 0.0F) {
-      s0 = ai / Xg_im;
+    if (C_re == 0.0F) {
+      C_im = B / Xg_im;
       Xg_im = 0.0F;
-    } else if (ai == 0.0F) {
-      s0 = 0.0F;
-      Xg_im = -(s2 / Xg_im);
+    } else if (B == 0.0F) {
+      C_im = 0.0F;
+      Xg_im = -(C_re / Xg_im);
     } else {
-      s0 = ai / Xg_im;
-      Xg_im = -(s2 / Xg_im);
+      C_im = B / Xg_im;
+      Xg_im = -(C_re / Xg_im);
     }
   } else {
-    r = fabsf(Xg_re);
-    s0 = fabsf(Xg_im);
-    if (r > s0) {
-      r = Xg_im / Xg_re;
-      Xg_im = r * Xg_im + Xg_re;
-      s0 = (r * ai + s2) / Xg_im;
-      Xg_im = (ai - r * s2) / Xg_im;
-    } else if (s0 == r) {
+    A = fabsf(Xg_re);
+    C_im = fabsf(Xg_im);
+    if (A > C_im) {
+      A = Xg_im / Xg_re;
+      Xg_im = A * Xg_im + Xg_re;
+      C_im = (A * B + C_re) / Xg_im;
+      Xg_im = (B - A * C_re) / Xg_im;
+    } else if (C_im == A) {
       Xg_re = Xg_re > 0.0F ? 0.5F : -0.5F;
       Xg_im = Xg_im > 0.0F ? 0.5F : -0.5F;
-      s0 = (s2 * Xg_re + ai * Xg_im) / r;
-      Xg_im = (ai * Xg_re - s2 * Xg_im) / r;
+      C_im = (C_re * Xg_re + B * Xg_im) / A;
+      Xg_im = (B * Xg_re - C_re * Xg_im) / A;
     } else {
-      r = Xg_re / Xg_im;
-      Xg_im += r * Xg_re;
-      s0 = (r * s2 + ai) / Xg_im;
-      Xg_im = (r * ai - s2) / Xg_im;
+      A = Xg_re / Xg_im;
+      Xg_im += A * Xg_re;
+      C_im = (A * C_re + B) / Xg_im;
+      Xg_im = (A * B - C_re) / Xg_im;
     }
   }
 
   Xg_im = (0.0F - Xg_im) * 2.0F * 3.14159274F * 40.0F;
-  s2 = 2.0F * s0 * 3.14159274F * 40.0F;
-  if (s2 == 0.0F) {
-    s0 = 1.0F / Xg_im;
-    Xg_im = 0.0F;
+  Xg_re = 2.0F * C_im * 3.14159274F * 40.0F;
+  if (Xg_re == 0.0F) {
+    C_re = 1.0F / Xg_im;
+    C_im = 0.0F;
   } else if (Xg_im == 0.0F) {
-    s0 = 0.0F;
-    Xg_im = -(1.0F / s2);
+    C_re = 0.0F;
+    C_im = -(1.0F / Xg_re);
   } else {
-    r = fabsf(Xg_im);
-    s0 = fabsf(s2);
-    if (r > s0) {
-      r = s2 / Xg_im;
-      Xg_im += r * s2;
-      s0 = 1.0F / Xg_im;
-      Xg_im = (0.0F - r) / Xg_im;
-    } else if (s0 == r) {
-      s0 = (Xg_im > 0.0F ? 0.5F : -0.5F) / r;
-      Xg_im = (0.0F - (s2 > 0.0F ? 0.5F : -0.5F)) / r;
+    A = fabsf(Xg_im);
+    C_im = fabsf(Xg_re);
+    if (A > C_im) {
+      A = Xg_re / Xg_im;
+      Xg_im += A * Xg_re;
+      C_re = 1.0F / Xg_im;
+      C_im = (0.0F - A) / Xg_im;
+    } else if (C_im == A) {
+      C_re = (Xg_im > 0.0F ? 0.5F : -0.5F) / A;
+      C_im = (0.0F - (Xg_re > 0.0F ? 0.5F : -0.5F)) / A;
     } else {
-      r = Xg_im / s2;
-      Xg_im = r * Xg_im + s2;
-      s0 = r / Xg_im;
-      Xg_im = -1.0F / Xg_im;
+      A = Xg_im / Xg_re;
+      Xg_im = A * Xg_im + Xg_re;
+      C_re = A / Xg_im;
+      C_im = -1.0F / Xg_im;
     }
   }
 
   /* Outport: '<Root>/ElectricalID_output' */
   rtElectricalID_Y->ElectricalID_output.PMSM_parameters.J_kg_m_squared =
-    rt_hypotf(s0, Xg_im);
+    rt_hypotf(C_re, C_im);
 
   /* without damping */
 }
@@ -1235,7 +1254,7 @@ static void LM_algorithm(real32_T *L_est, real32_T *R_est, ExtU_ElectricalID_t
   /* '<S1>:92:6' R0 = single(0.001000); */
   /*  Widerstand in Ohm (0.01 ... 40 Ohm) */
   /* '<S1>:92:7' L0 = single(0.000005); */
-  /*  InduktivitÃ¤t in Henry (50ÂµH ... 50 mH) */
+  /*  Induktivität in Henry (50µH ... 50 mH) */
   /* '<S1>:92:9' R_est   = R0; */
   *R_est = 0.001F;
 
@@ -1314,14 +1333,14 @@ static void LM_algorithm(real32_T *L_est, real32_T *R_est, ExtU_ElectricalID_t
       }
     }
 
-    /*  DÃ¤mpfungsfaktor lambda auf Hesse-Matrix anwenden */
+    /*  Dämpfungsfaktor lambda auf Hesse-Matrix anwenden */
     /* '<S1>:92:49' H(1,1) = H(1,1) + lambda; */
     rtElectricalID_DW->H[0] += rtElectricalID_DW->lambda;
 
     /* '<S1>:92:50' H(2,2)=H(2,2)+lambda; */
     rtElectricalID_DW->H[3] += rtElectricalID_DW->lambda;
 
-    /*  Neue ParamterschÃ¤tzung berechnen */
+    /*  Neue Paramterschätzung berechnen */
     /* '<S1>:92:53' dp = -inv(H)*(J(1:1024,:)'*d(1:1024)); */
     inv(rtElectricalID_DW->H, rtElectricalID_DW->fv4);
     for (k = 0; k < 2; k++) {
@@ -1357,7 +1376,7 @@ static void LM_algorithm(real32_T *L_est, real32_T *R_est, ExtU_ElectricalID_t
       e_lm += rtElectricalID_DW->d[k] * rtElectricalID_DW->d[k];
     }
 
-    /*  Fallunterscheidung ob Fehler grÃ¶ÃŸer oder kleiner geworden ist */
+    /*  Fallunterscheidung ob Fehler größer oder kleiner geworden ist */
     /* '<S1>:92:66' if e_lm < e */
     if (e_lm < rtElectricalID_DW->e) {
       /* '<S1>:92:67' lambda = lambda/10; */
@@ -1570,7 +1589,7 @@ static void LM_algorithm_Lq(real32_T *L_est, ExtU_ElectricalID_t
   /* '<S1>:281:6' R0 = single(0.001000); */
   /*  Widerstand in Ohm (0.01 ... 40 Ohm) */
   /* '<S1>:281:7' L0 = single(0.000005); */
-  /*  InduktivitÃ¤t in Henry (50ÂµH ... 50 mH) */
+  /*  Induktivität in Henry (50µH ... 50 mH) */
   /* '<S1>:281:9' R_est   = R0; */
   R_est = 0.001F;
 
@@ -1649,14 +1668,14 @@ static void LM_algorithm_Lq(real32_T *L_est, ExtU_ElectricalID_t
       }
     }
 
-    /*  DÃ¤mpfungsfaktor lambda auf Hesse-Matrix anwenden */
+    /*  Dämpfungsfaktor lambda auf Hesse-Matrix anwenden */
     /* '<S1>:281:49' H(1,1) = H(1,1) + lambda; */
     rtElectricalID_DW->H[0] += rtElectricalID_DW->lambda;
 
     /* '<S1>:281:50' H(2,2)=H(2,2)+lambda; */
     rtElectricalID_DW->H[3] += rtElectricalID_DW->lambda;
 
-    /*  Neue ParamterschÃ¤tzung berechnen */
+    /*  Neue Paramterschätzung berechnen */
     /* '<S1>:281:53' dp = -inv(H)*(J(1:1024,:)'*d(1:1024)); */
     inv(rtElectricalID_DW->H, rtElectricalID_DW->fv2);
     for (k = 0; k < 2; k++) {
@@ -1692,7 +1711,7 @@ static void LM_algorithm_Lq(real32_T *L_est, ExtU_ElectricalID_t
       e_lm += rtElectricalID_DW->d[k] * rtElectricalID_DW->d[k];
     }
 
-    /*  Fallunterscheidung ob Fehler grÃ¶ÃŸer oder kleiner geworden ist */
+    /*  Fallunterscheidung ob Fehler größer oder kleiner geworden ist */
     /* '<S1>:281:66' if e_lm < e */
     if (e_lm < rtElectricalID_DW->e) {
       /* '<S1>:281:67' lambda = lambda/10; */
@@ -2068,7 +2087,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
         /* '<S1>:420:1' sf_internal_predicateOutput = (after(1.0,sec)) && (GlobalConfig.ACCEPT == 1 .... */
         /* '<S1>:420:2' && ElectricalIDConfig.identLq == 1); */
         /* . */
-      } else if ((rtElectricalID_DW->temporalCounter_i1 >= 10000U) &&
+      } else if ((rtElectricalID_DW->temporalCounter_i1 >= 40000U) &&
                  rtElectricalID_U->GlobalConfig_out.ACCEPT &&
                  rtElectricalID_U->ElectricalIDConfig.identLq) {
         /* Transition: '<S1>:420' */
@@ -2103,7 +2122,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
      case IN_Levenberg_Marquardt_q:
       /* During 'Levenberg_Marquardt_q': '<S1>:278' */
       /* '<S1>:295:1' sf_internal_predicateOutput = after(0.1,sec); */
-      if (rtElectricalID_DW->temporalCounter_i1 >= 1000U) {
+      if (rtElectricalID_DW->temporalCounter_i1 >= 4000U) {
         /* Transition: '<S1>:295' */
         /* Exit 'Levenberg_Marquardt_q': '<S1>:278' */
         rtElectricalID_DW->is_ElectricalID = IN_calculatePIcontroller;
@@ -2115,7 +2134,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
      case IN_alignRotor_d_off:
       /* During 'alignRotor_d_off': '<S1>:53' */
       /* '<S1>:411:1' sf_internal_predicateOutput = after(1.0, sec); */
-      if (rtElectricalID_DW->temporalCounter_i1 >= 10000U) {
+      if (rtElectricalID_DW->temporalCounter_i1 >= 40000U) {
         /* Outport: '<Root>/ElectricalID_output' incorporates:
          *  Inport: '<Root>/ActualValues'
          */
@@ -2149,7 +2168,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
      case IN_alignRotor_d_off1:
       /* During 'alignRotor_d_off1': '<S1>:417' */
       /* '<S1>:419:1' sf_internal_predicateOutput = after(1.0,sec); */
-      if (rtElectricalID_DW->temporalCounter_i1 >= 10000U) {
+      if (rtElectricalID_DW->temporalCounter_i1 >= 40000U) {
         /* Transition: '<S1>:419' */
         /* Exit 'alignRotor_d_off1': '<S1>:417' */
         rtElectricalID_DW->is_ElectricalID = IN_findDutyCycle;
@@ -2187,7 +2206,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
      case IN_alignRotor_d_off2:
       /* During 'alignRotor_d_off2': '<S1>:848' */
       /* '<S1>:849:1' sf_internal_predicateOutput = after(1.0,sec); */
-      if (rtElectricalID_DW->temporalCounter_i1 >= 10000U) {
+      if (rtElectricalID_DW->temporalCounter_i1 >= 40000U) {
         /* Transition: '<S1>:849' */
         /* Exit 'alignRotor_d_off2': '<S1>:848' */
         rtElectricalID_DW->is_ElectricalID = IN_stepResponse;
@@ -2209,7 +2228,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
      case IN_alignRotor_d_on:
       /* During 'alignRotor_d_on': '<S1>:3' */
       /* '<S1>:164:1' sf_internal_predicateOutput = after(1.0,sec); */
-      if (rtElectricalID_DW->temporalCounter_i1 >= 10000U) {
+      if (rtElectricalID_DW->temporalCounter_i1 >= 40000U) {
         /* Outport: '<Root>/ElectricalID_output' */
         /* Transition: '<S1>:164' */
         /* Exit 'alignRotor_d_on': '<S1>:3' */
@@ -2257,7 +2276,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
      case IN_alignRotor_d_on1:
       /* During 'alignRotor_d_on1': '<S1>:415' */
       /* '<S1>:418:1' sf_internal_predicateOutput = after(1.0,sec); */
-      if (rtElectricalID_DW->temporalCounter_i1 >= 10000U) {
+      if (rtElectricalID_DW->temporalCounter_i1 >= 40000U) {
         /* Outport: '<Root>/ElectricalID_output' */
         /* Transition: '<S1>:418' */
         /* Exit 'alignRotor_d_on1': '<S1>:415' */
@@ -2325,7 +2344,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
      case IN_alignRotor_q_on:
       /* During 'alignRotor_q_on': '<S1>:410' */
       /* '<S1>:413:1' sf_internal_predicateOutput = after(1.0,sec); */
-      if (rtElectricalID_DW->temporalCounter_i1 >= 10000U) {
+      if (rtElectricalID_DW->temporalCounter_i1 >= 40000U) {
         /* Outport: '<Root>/ElectricalID_output' */
         /* Transition: '<S1>:413' */
         /* Exit 'alignRotor_q_on': '<S1>:410' */
@@ -2417,7 +2436,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
      case IN_endState:
       /* During 'endState': '<S1>:356' */
       /* '<S1>:425:1' sf_internal_predicateOutput = after(1,sec); */
-      if (rtElectricalID_DW->temporalCounter_i1 >= 10000U) {
+      if (rtElectricalID_DW->temporalCounter_i1 >= 40000U) {
         /* Transition: '<S1>:425' */
         rtElectricalID_DW->is_ElectricalID = IN_waitState;
         rtElectricalID_DW->temporalCounter_i1 = 0U;
@@ -2660,7 +2679,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
      case IN_stop:
       /* During 'stop': '<S1>:361' */
       /* '<S1>:362:1' sf_internal_predicateOutput = after(1.0,sec); */
-      if (rtElectricalID_DW->temporalCounter_i1 >= 10000U) {
+      if (rtElectricalID_DW->temporalCounter_i1 >= 40000U) {
         /* Transition: '<S1>:362' */
         rtElectricalID_DW->is_ElectricalID = IN_rotorInertiaEstimation;
 
@@ -2711,7 +2730,7 @@ static void ElectricalID_c(ExtU_ElectricalID_t *rtElectricalID_U,
      default:
       /* During 'waitState': '<S1>:428' */
       /* '<S1>:905:1' sf_internal_predicateOutput = after(1.0,sec); */
-      if (rtElectricalID_DW->temporalCounter_i1 >= 10000U) {
+      if (rtElectricalID_DW->temporalCounter_i1 >= 40000U) {
         /* Outport: '<Root>/finishedElectricalID' */
         /* Transition: '<S1>:905' */
         /* Exit 'waitState': '<S1>:428' */
@@ -2754,7 +2773,7 @@ void ElectricalID_step(RT_MODEL_ElectricalID_t *const rtElectricalID_M)
    *  Inport: '<Root>/GlobalConfig'
    *  Outport: '<Root>/ElectricalID_FOC_output'
    */
-  if (rtElectricalID_DW->temporalCounter_i1 < 16383U) {
+  if (rtElectricalID_DW->temporalCounter_i1 < 65535U) {
     rtElectricalID_DW->temporalCounter_i1++;
   }
 

@@ -243,6 +243,11 @@ void poll_buttons(void)
     ultrazohm_state.enable_control = uz_GetPushButtonEnableControl();
     ultrazohm_state.stop_flag = !(uz_GetPushButtonStop()); // If 0, stop is pressed
 #endif
+#if (UZ_HARDWARE_VERSION == 2U) // in CarrierBoard_v2 there are no buttons, therefore they are not polled.
+    ultrazohm_state.enable_system = 0;
+    ultrazohm_state.enable_control = 0;
+    ultrazohm_state.stop_flag = 0; // If 0, stop is pressed
+#endif
 #endif
 }
 

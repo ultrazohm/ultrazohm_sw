@@ -30,11 +30,6 @@
 Oszi_to_ARM_Data_shared_struct ControlData;
 
 extern A53_Data Global_Data_A53;
-extern int js_connection_established;
-
-// Javascope Queue parameters
-QueueHandle_t js_queue;
-int js_queue_full = 0;
 
 u32 js_mem_address[JS_NUM_BUFFERS] = {0xFFFF0000, 0xFFFF8000};
 
@@ -54,23 +49,8 @@ XScuGic_Config *IntcConfig;
 void Transfer_ipc_Intr_Handler(void *data)
 {
 	int status;
-	u32 RespBuf[IPI_A53toR5_MSG_LEN] = {0,0,XST_SUCCESS};
-	u32 msgBuf[IPI_A53toR5_MSG_LEN] = {JSCMD_WRITE, 0, 0};
+	u32 RespBuf[IPI_A53toR5_MSG_LEN];
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
-	// if javascope connection is established
-	if(js_connection_established!=0)
-	{
-		// Define javascope next buffer to send its address to RPU
-		u8 next_js_buff_index = js_buff_index + 1;
-		if(next_js_buff_index == JS_NUM_BUFFERS){
-			next_js_buff_index = 0;
-		}
-
-		// Write message for acknowledge of the interrupt to RPU and command it to write new data
-		msgBuf[1] = js_mem_address[next_js_buff_index];
-		Send_Command_to_RPU(msgBuf, IPI_A53toR5_MSG_LEN);
-	}
 
 	RespBuf[0] = (u32)ControlData.id;
 	RespBuf[1] = (u32)ControlData.value;
@@ -208,7 +188,6 @@ u32 Apu_IpiInit(XIpiPsu *IntcInst_IPI_Ptr,u16 DeviceId)
 	xil_printf("APU: APU_IpiInit: Done\r\n");
 	return XST_SUCCESS;
 }
-
 
 void Send_Command_to_RPU(u32 *msgBuf, u8 msgLength){
 	u32 status;

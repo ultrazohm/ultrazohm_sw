@@ -29,7 +29,6 @@
 #include "../main.h"
 
 extern Oszi_to_ARM_Data_shared_struct ControlData;
-extern QueueHandle_t js_queue;
 
 int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
@@ -55,7 +54,6 @@ void print_echo_app_header()
  *---------------------------------------------------------------------------*/
 void process_request_thread(void *p)
 {
-//	struct javascope_data_t javascope_data_sending[NETWORK_SEND_FIELD_SIZE] = {0};
 	NetworkSendStruct nwsend = {0};
 	char recv_buf[2048] = {0};
 
@@ -85,12 +83,6 @@ void process_request_thread(void *p)
 
 		// flush cache of shared memory
 		Xil_DCacheFlushRange(js_mem_address[js_buff_index], JS_DATA_ARRAY_SIZE*JAVASCOPE_DATA_SIZE_2POW);
-
-		//Update javascope current buffer
-		js_buff_index++;
-		if(js_buff_index == JS_NUM_BUFFERS){
-			js_buff_index = 0;
-		}
 
 		for (size_t i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
 
@@ -127,6 +119,15 @@ void process_request_thread(void *p)
 		nwsend.status = javascope_data->status;
 
 		total_time += (Get_time_us() - time_start);
+
+		//Update javascope current buffer
+		js_buff_index++;
+		if(js_buff_index == JS_NUM_BUFFERS){
+			js_buff_index = 0;
+		}
+		// Write message for acknowledge of the interrupt to RPU and command it to write new data
+		msgBuf[1] = js_mem_address[js_buff_index];
+		Send_Command_to_RPU(msgBuf, IPI_A53toR5_MSG_LEN);
 
 		// At this point, Ethernet Package is full and ready to be sent
 		i_LifeCheck_process_Ethernet++;

@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Löhdefink
+* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Löhdefink, Michael Hoerner
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ enum JS_SlowData {
 
 // Determination of Button IDs via enum. When a button in the GUI is pressed,
 // the GUI sends an ID and a value. IDs of the buttons are the respective enum
-// numbers in the follwing enum.
+// numbers in the following enum.
 // Do not change the first (zero) and last (end) entries.
 // Do not change names! They are hard coupled within the GUI!
 enum gui_button_mapping {
@@ -144,6 +144,78 @@ enum gui_button_mapping {
 	Error_Reset,
 	GUI_BTN_ENDMARKER
 };
+
+
+/* Visualization Config for GUI*/
+// Leave it commented out as it is, the plain text below is parsed by the GUI!
+// Change entries according to your needs.
+/*
+// Description (printed text) for the send_fields top to bottom
+// Do not change the first (zero) and last (end) entries.
+enum send_field_description {
+	SND_FLD_ZEROVALUE=0,
+	send_field_1,
+	send_field_2,
+	send_field_3,
+	send_field_4,
+	send_field_5,
+	send_field_6,
+	SND_FLD_ENDMARKER
+};
+
+// Physical unit label (printed text) for the send_fields top to bottom
+// Do not change the first (zero) and last (end) entries.
+enum send_field_labels {
+	SND_LABELS_ZEROVALUE=0,
+	RPM,
+	Nm,
+	A,
+	A,
+	A,
+	A,
+	SND_LABELS_ENDMARKER
+};
+
+// Description (printed text) for the receive_fields top to bottom
+// Do not change the first (zero) and last (end) entries.
+enum receive_field_description {
+	RCV_FLD_ZEROVALUE=0,
+	receive_field_1,
+	receive_field_2,
+	receive_field_3,
+	receive_field_4,
+	receive_field_5,
+	receive_field_6,
+	RCV_FLD_ENDMARKER
+};
+
+// Physical unit label (printed text) for the receive_fields top to bottom
+// Do not change the first (zero) and last (end) entries.
+enum receive_field_labels {
+	RCV_LABELS_ZEROVALUE=0,
+	RPM,
+	Nm,
+	A,
+	A,
+	V,
+	V,
+	RCV_LABELS_ENDMARKER
+};
+
+// Slow Data values that are displayed in the receive_fields top to bottom
+// Do not change the first (zero) and last (end) entries.
+// Make sure that the signal names below are also present in the JS_SlowData enum!
+enum receive_field_slowData {
+	SLOWDAT_DISPLAY_ZEROVALUE=0,
+	JSSD_FLOAT_SecondsSinceSystemStart,
+	JSSD_FLOAT_ISR_ExecTime_us,
+	JSSD_FLOAT_ISR_Period_us,
+	JSSD_FLOAT_polePairs,
+	JSSD_FLOAT_Milliseconds,
+	JSSD_FLOAT_Ld,
+	JSSD_FLOAT_Error_Code,
+	SLOWDAT_DISPLAY_ENDMARKER
+};*/
 
 int JavaScope_initalize(DS_Data* data);
 void JavaScope_update(DS_Data* data);

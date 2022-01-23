@@ -46,11 +46,11 @@ The GUI looks like this.
 
 4. At next, press the ``Run/Stop`` button (4) in order to run the scope.
 
-5. Go to the ``Setup Scope`` panel and press ``sendSelectData (all)`` to get the pre-selected values from the drop-down menus on the scope. For changing the entries of the drop-down menus, see ``Customizing`` section.
+5. Go to the ``Setup Scope`` panel and press ``sendSelectData (all)`` to get the pre-selected values from the drop-down menus on the scope. For changing the entries of the drop-down menus, see :ref:`javascope_customizing`.
 
 6. In the time based scope it is possible to debug up to 20 values by receiving data from the ISR (R5 processor).
 
-7. In the ``SlowData`` table it is possible to debug an almost endless number of values by receiving data from the ISR (R5 processor). However, this variables share one frame and are transfered in a chain. As more values are displayed, as longer it takes until they are updated. For changing the entries in the slow data table see ``Customizing`` section.
+7. In the ``SlowData`` table it is possible to debug an almost endless number of values by receiving data from the ISR (R5 processor). However, this variables share one frame and are transfered in a chain. As more values are displayed, as longer it takes until they are updated. For changing the entries in the slow data table see :ref:`javascope_customizing`.
 
 
 Description of the buttons and pages
@@ -71,7 +71,7 @@ The Setup Scope page is used to adjust the scope settings during operation.
 
 1. Up to 20 channels, out of a predefined variable selection, can be chosen and displayed.
 
-   If other variables than the predefined ones are necessary, just change them in the ipc_ARM.c of the R5 processor (see Customizing).
+   If other variables than the predefined ones are necessary, just change them in the ipc_ARM.c of the R5 processor (see :ref:`javascope_customizing`).
    Do not forget to press the ``sendSelectData (all)`` button always after selecting signals from the drop-down menus if you want to change them! 
 
 #. Each channel can have a specific scale factor and an offset.
@@ -84,7 +84,7 @@ The Setup Scope page is used to adjust the scope settings during operation.
 #. SlowData Logger
 
    As the name intends, this tool logs slow data into a log file. The logger needs a milliseconds timer sent from the R5 somewhere in slow data table in order to work. This timer variable has to be named ``JSSD_FLOAT_Milliseconds`` (exists by default).
-   The logger logs the variables that are selected for beeing displayed in the receive_field's. See section ``Customizing``.
+   The logger logs the variables that are selected for beeing displayed in the receive_field's. See section on :ref:`javascope_customizing`.
 
    a. Press ``CREATE LOGFILE``
 
@@ -127,7 +127,7 @@ The control page is used to step through the state-machine of the system and for
 
    a. Here some user defined slow data values can be visualized more prominently than in the slow data table.
 
-   b. For selection which values are shown here, see section ``Customization``
+   b. For selection which values are shown here, see section :ref:`javascope_customizing`.
 
 5. The ``send_fields``
 
@@ -168,9 +168,11 @@ The control page is used to step through the state-machine of the system and for
 
 
 
+  ..  _javascope_customizing:
 
 Customizing
 -----------
+
 The GUI itself and the variables that are visualized can be customized by the user.
 
 Add variables to the scope drop-down menus
@@ -235,8 +237,8 @@ The ``JSSD_FLOAT_Error_Code`` value is always mapped to the error code text fiel
 Known issues
 ------------------------
 .. warning::
-   * If the Java Scope is distorted or the font is not readable, this may is due to an old Java version. 
-   * If this is the case, just update you local Java version, as described in the **Install** section.
+   * If the JavaScope is distorted or the font is not readable, this may is due to an old Java version. 
+   * If this is the case, just update you local Java version, as described in the section :ref:`install_java`.
 
 
 See also

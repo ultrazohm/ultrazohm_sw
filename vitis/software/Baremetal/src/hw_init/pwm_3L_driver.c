@@ -28,13 +28,14 @@ void PWM_3L_Initialize(DS_Data* data){
 	//0 = PWM with modulation amplitude via AXI
 	//1 = PWM with modulation amplitude via FPGA
 	//2 = Control signals via FPGA (e.g. FCS-MPC)
-	PWM_3L_SetMode(data->cw.switchingMode);
+	PWM_3L_SetMode(0);
 
 	// set PWM carrier frequency
-	PWM_3L_SetCarrierFrequency(data->ctrl.pwmFrequency);
+	PWM_3L_SetCarrierFrequency(data->av.pwm_frequency_hz);
 
 	// PWM minimum pulse width is set between 0-1
-	PWM_3L_SetMinimumPulseWidth(data->rasv.pwmMinPulseWidth);
+	float pwmMinPulseWidth=0.01;
+	PWM_3L_SetMinimumPulseWidth(pwmMinPulseWidth);
 
 	// Set zero duty cycles
 	PWM_3L_SetDutyCycle(data->rasv.halfBridge1DutyCycle,
@@ -100,26 +101,4 @@ void PWM_3L_SetTriState(int32_t TriState_A, int32_t TriState_B, int32_t TriState
 	Xil_Out32(PWM_3L_reg_TriStateC, (int32_t)TriState_C);
 }
 
-void PWM_3L_Calculate_DutyCycle_open_loop_sin(DS_Data* data){
 
-	//Variables
-	static long sample =0;
-	float interrupt_freq = 	data->ctrl.samplingFrequency;
-	float sin_amplitude = 	data->rasv.open_loop_sin_amplitude;
-	float sin_frequency = 	data->rasv.open_loop_sin_frequency;
-
-	//Go back to 1st sample if end of sinewave is reached
-	if(sample >= interrupt_freq/sin_frequency - 1)
-		sample = 0;
-
-	//Calculate angle and increase sample
-	float angle = 2.0*M_PI*sin_frequency/interrupt_freq*((float)(sample));
-	//angle += phase; // add phase shift
-	sample++;
-
-	// write duty cycles to Global_Data struct, in ISR these values are written down to the FPGA registers
-	data->rasv.halfBridge1DutyCycle = sin_amplitude * sinf(angle);
-	data->rasv.halfBridge2DutyCycle = sin_amplitude * sinf(angle + 2*M_PI/3);
-	data->rasv.halfBridge3DutyCycle = sin_amplitude * sinf(angle + 4*M_PI/3);
-
-}

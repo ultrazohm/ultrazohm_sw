@@ -36,10 +36,6 @@
 #define INTC_IPC_Shared_INTERRUPT_ID 	66U // see page 313 of ug1085
 
 //==============================================================================================================================================================
-//IP-Block for the Interrupt of end of ADC-conversion
-#define INTC_ADC_Conv_INTERRUPT_ID 		XPAR_FABRIC_XADC_WIZ_0_EOC_OUT_INTR
-
-//==============================================================================================================================================================
 
 // Parameter definitions
 #define INTERRUPT_ID_SCUG 				XPAR_SCUGIC_0_DEVICE_ID			/* SCUGIC device that Interrupt is connected to */

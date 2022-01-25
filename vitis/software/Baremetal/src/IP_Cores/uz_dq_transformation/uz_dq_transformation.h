@@ -5,7 +5,7 @@
 
 /**
  * @brief Object data type definition of the dq IP-Core driver
- * 
+ *
  */
 typedef struct uz_dqIPcore_t uz_dqIPcore_t;
 
@@ -16,8 +16,8 @@ struct uz_dqIPcore_config_t{
 };
 
 /**
- * @brief Initialize an instance of the driver for the dq-IP-Core 
- * 
+ * @brief Initialize an instance of the driver for the dq-IP-Core
+ *
  * @param config Configuration struct for the instance
  * @return uz_dqIPcore_t* Pointer to an initialized instance of the driver
  */
@@ -25,18 +25,18 @@ uz_dqIPcore_t* uz_dqIPcore_init(struct uz_dqIPcore_config_t config);
 
 /**
  * @brief Read the output currents id and iq from the IP-Core and return them
- * 
+ *
  * @param self Pointer to driver instance
- * @return struct uz_dq_t 
+ * @return uz_dq_t
  */
-struct uz_dq_t uz_dqIPcore_get_id_iq(uz_dqIPcore_t* self);
+uz_dq_t uz_dqIPcore_get_id_iq(uz_dqIPcore_t* self);
 
 /**
  * @brief Read the input currents i1, i2, and i3 from the IP-Core and return them
- * 
+ *
  * @param self Pointer to driver instance
- * @return struct uz_dq_t 
+ * @return uz_UVW_t
  */
-struct uz_UVW_t uz_dqIPcore_get_i_uvw(uz_dqIPcore_t* self);
+uz_UVW_t uz_dqIPcore_get_i_uvw(uz_dqIPcore_t* self);
 
 #endif // UZ_DQ_TRANSFORMATION_H

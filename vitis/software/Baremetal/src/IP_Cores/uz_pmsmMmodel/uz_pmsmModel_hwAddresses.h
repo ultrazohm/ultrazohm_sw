@@ -21,8 +21,8 @@
 #define  polepairs_Data_uz_pmsm_model             0x120  //data register for Inport polepairs
 #define  psi_pm_Data_uz_pmsm_model                0x124  //data register for Inport psi_pm
 #define  inputs_Data_uz_pmsm_model                0x130  //data register for Inport inputs, vector with 4 elements, address ends at 0x13C
-#define u_d_Data_uz_pmsm_model                    0x130
-#define u_q_Data_uz_pmsm_model                    0x130+0x4
+#define v_d_Data_uz_pmsm_model                    0x130
+#define v_q_Data_uz_pmsm_model                    0x130+0x4
 #define in_omega_mech_Data_uz_pmsm_model          0x130+0x8
 #define load_torque_Data_uz_pmsm_model            0x130+0xC
 #define  inputs_Strobe_uz_pmsm_model              0x140  //strobe register for port inputs

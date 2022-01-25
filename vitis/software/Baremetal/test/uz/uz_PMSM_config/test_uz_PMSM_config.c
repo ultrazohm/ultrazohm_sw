@@ -4,7 +4,7 @@
 #include "test_assert_with_exception.h"
 #include "uz_PMSM_config.h"
 
-struct uz_PMSM_t config = {0};
+uz_PMSM_t config = {0};
 void setUp(void)
 {
     config.R_ph_Ohm = 0.08f;

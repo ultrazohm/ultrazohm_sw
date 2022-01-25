@@ -41,7 +41,6 @@
         - -Wswitch-default
         - -Walloca
         - -Wvla
-        - -Werror
         
 
 :paths:

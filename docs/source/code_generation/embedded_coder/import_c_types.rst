@@ -23,7 +23,7 @@ This will create a bus object in your workspace with the appropriate types (i.e.
 Theses buses can then be used in your Simulink object as normal data type.
 
 .. warning:: For this to properly work all ``structs`` and ``enums``, which are used in the Simulink model, have to be ``typedef``. 
-             Otherwise Simulink generates bus objects with incompatible names, which, if code generated, are not compatible with the initially included header-file
+             Otherwise, Simulink generates bus objects with incompatible names, which, if code generated, are not compatible with the initially included header-file
              (i.e. using ``struct uz_dq_t`` in the header-file leads with code-generation to ``struct_uz_dq_t name`` instead of ``struct uz_dq_t name``. Using ``typedef`` fixes this).
 
 Example
@@ -35,11 +35,11 @@ Include the data types for the dq-transformation.
 
     Simulink.importExternalCTypes('uz_Transformation.h');
 
-In the simulink workspace the following bus objects will be created:
+In the Simulink workspace the following bus objects will be created:
 
 .. image:: bus_editor.png
 
-These buses can be i.e. used as an output for dq-reference currents.
+These buses can be used, e.g., as an output for dq-reference currents.
 
 .. image:: property_inspector.png
 

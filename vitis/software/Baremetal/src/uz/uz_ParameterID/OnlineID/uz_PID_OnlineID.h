@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+#include "../../uz_global_configuration.h"
+#if UZ_PARAMETERID_ACTIVE > 0U
 #include <stdbool.h>
 #include "../../uz_HAL.h"
 #include "OnlineID_codegen.h"
@@ -36,3 +38,5 @@ void uz_OnlineID_step(uz_PID_OnlineID_t *self);
 void uz_OnlineID_CleanPsiArray(uz_PID_OnlineID_t* self);
 void uz_OnlineID_CalcFluxMaps(uz_PID_OnlineID_t* self);
 void uz_OnlineID_AutoRefCurrents(uz_PID_OnlineID_t* self);
+
+#endif

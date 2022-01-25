@@ -16,6 +16,9 @@
 #ifndef UZ_PARAMETERID_H
 #define UZ_PARAMETERID_H
 
+#include "../uz_global_configuration.h"
+#if UZ_PARAMETERID_ACTIVE > 0U
+
 #include "../../globalData.h"
 #include <math.h>
 #include "../uz_HAL.h"
@@ -31,6 +34,9 @@
 
 typedef struct uz_ParameterID_t uz_ParameterID_t;
 
+enum uz_PID_Control_selection {
+	No_Control = 0, Current_Control, Speed_Control
+};
 typedef struct uz_ParameterID_Data_t {
 	uz_PID_ActualValues_t PID_ActualValues;
 	uz_PID_ControlFlags_t* PID_ControlFlags;
@@ -54,14 +60,15 @@ typedef struct uz_ParameterID_Data_t {
 	float Psi_D_pointer;
 	float Psi_Q_pointer;
 	float FluxMap_MeasuringPoints;
+	enum uz_PID_Control_selection PID_Control_Selection;
 } uz_ParameterID_Data_t;
 
 uz_ParameterID_t* uz_ParameterID_init(void);
 
 void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
-struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance, ControlReference ControlRef, uz_dq_t v_dq_Volts);
+struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance, uz_dq_t v_dq_Volts, uz_PWM_SS_2L_t* PWM_Module);
 
-struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance, ControlReference ControlRef);
+struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
 
 void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_ParameterID_t *ParameterID);
 
@@ -70,3 +77,5 @@ void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* 
 
 
 #endif // UZ_PARAMETERID_H
+
+#endif

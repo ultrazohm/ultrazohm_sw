@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+#include "../../uz_global_configuration.h"
+#if UZ_PARAMETERID_ACTIVE > 0U
 #include <stdbool.h>
 #include "../../uz_HAL.h"
 #include "FrictionID_codegen.h"
@@ -27,3 +29,4 @@ typedef struct {
 
 uz_PID_FrictionID_t* uz_FrictionID_init(void);
 void uz_FrictionID_step(uz_PID_FrictionID_t *self);
+#endif

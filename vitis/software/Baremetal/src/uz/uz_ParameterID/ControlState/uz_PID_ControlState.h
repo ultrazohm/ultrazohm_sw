@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+#include "../../uz_global_configuration.h"
+#if UZ_PARAMETERID_ACTIVE > 0U
 #include "../../uz_HAL.h"
 #include <stdbool.h>
 #include "ControlState_codegen.h"
@@ -27,3 +29,5 @@ typedef struct {
 
 uz_PID_ControlState_t* uz_ControlState_init(void);
 void uz_ControlState_step(uz_PID_ControlState_t *self);
+
+#endif

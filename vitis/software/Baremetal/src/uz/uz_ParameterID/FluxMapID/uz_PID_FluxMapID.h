@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+#include "../../uz_global_configuration.h"
+#if UZ_PARAMETERID_ACTIVE > 0U
 #include <stdbool.h>
 #include "../../uz_HAL.h"
 #include "FluxMapID_codegen.h"
@@ -27,3 +29,5 @@ typedef struct {
 
 uz_PID_FluxMapID_t* uz_FluxMapID_init(void);
 void uz_FluxMapID_step(uz_PID_FluxMapID_t *self);
+
+#endif

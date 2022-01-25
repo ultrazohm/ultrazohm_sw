@@ -16,7 +16,7 @@
 #include "uz_ParameterID.h"
 #include "../uz_global_configuration.h"
 #include "../uz_wavegen/uz_wavegen.h"
-#include "../../include/pwm.h"
+
 
 #if UZ_PARAMETERID_ACTIVE > 0U
 
@@ -138,15 +138,16 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	}
 }
 
-struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance, ControlReference ControlRef, uz_dq_t v_dq_Volts) {
+struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance, uz_dq_t v_dq_Volts, uz_PWM_SS_2L_t* PWM_Module) {
 	struct uz_DutyCycle_t output_DutyCycle = { 0 };
 	if (Data->PID_Controller_Parameters.activeState >= 110 && Data->PID_Controller_Parameters.activeState <= 143) {
-		PWM_SS_SetTriState(Data->PID_ElectricalID_Output->enable_TriState[0], Data->PID_ElectricalID_Output->enable_TriState[1], Data->PID_ElectricalID_Output->enable_TriState[2]);
+		uz_PWM_SS_2L_set_tristate(PWM_Module, Data->PID_ElectricalID_Output->enable_TriState[0], Data->PID_ElectricalID_Output->enable_TriState[1],
+		                Data->PID_ElectricalID_Output->enable_TriState[2]);
 		output_DutyCycle.DutyCycle_U = Data->PID_ElectricalID_Output->PWM_Switch_0;
 		output_DutyCycle.DutyCycle_V = Data->PID_ElectricalID_Output->PWM_Switch_2;
 		output_DutyCycle.DutyCycle_W = Data->PID_ElectricalID_Output->PWM_Switch_4;
 	} else if ((Data->PID_Controller_Parameters.enableFOC_current == true || Data->PID_Controller_Parameters.enableFOC_speed == true)
-	                || (Data->PID_ControlFlags->finished_all_Offline_states == true && (ControlRef == CurrentControl || ControlRef == SpeedControl))) {
+	                || (Data->PID_ControlFlags->finished_all_Offline_states == true && (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control))) {
 		uz_UVW_t V_UVW_Volts = uz_dq_inverse_transformation(v_dq_Volts, Data->PID_ActualValues.theta_el);
 		output_DutyCycle = uz_FOC_generate_DutyCycles(V_UVW_Volts, Data->PID_ActualValues.V_DC);
 	} else {
@@ -161,7 +162,7 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
 	}
 	return (output_DutyCycle);
 }
-struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance, ControlReference ControlRef) {
+struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance) {
 	uz_dq_t v_dq_Volts = { 0 };
 	uz_dq_t i_SpeedControl_reference_Ampere = { 0 };
 	bool ext_clamping = false;
@@ -228,13 +229,13 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 				Online_current_ref.q = Data->PID_GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
 			}
 		}
-		if (ControlRef == SpeedControl) {
+		if (Data->PID_Control_Selection == Speed_Control) {
 			ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
 			i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->PID_ActualValues.omega_el, Data->PID_GlobalConfig.n_ref, Data->PID_ActualValues.V_DC,
 			                Online_current_ref.d, Data->PID_GlobalConfig.PMSM_config, ext_clamping);
 
-		} else if (ControlRef == CurrentControl || ControlRef == SpeedControl) {
-			if (ControlRef == CurrentControl) {
+		} else if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
+			if (Data->PID_Control_Selection == Current_Control) {
 				v_dq_Volts = uz_FOC_sample(FOC_instance, Online_current_ref, Data->PID_ActualValues.i_dq, Data->PID_ActualValues.V_DC, Data->PID_ActualValues.omega_el);
 			} else {
 				v_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data->PID_ActualValues.i_dq, Data->PID_ActualValues.V_DC, Data->PID_ActualValues.omega_el);
@@ -471,6 +472,7 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_Para
 	Data->FluxMap_counter = 0.0f;
 	Data->Psi_D_pointer = 0.0f;
 	Data->Psi_Q_pointer = 0.0f;
+	Data->PID_Control_Selection = No_Control;
 
 
 }

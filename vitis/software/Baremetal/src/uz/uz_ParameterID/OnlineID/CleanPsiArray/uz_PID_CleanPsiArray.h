@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+#include "../../../uz_global_configuration.h"
+#if UZ_PARAMETERID_ACTIVE > 0U
 #include <stdbool.h>
 #include "../../../uz_HAL.h"
 #include "CleanPsiArray_codegen.h"
@@ -27,3 +29,5 @@ typedef struct {
 
 uz_PID_CleanPsiArray_t* uz_CleanPsiArray_init(void);
 void uz_CleanPsiArray(uz_PID_CleanPsiArray_t *self);
+
+#endif

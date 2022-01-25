@@ -14,6 +14,19 @@ typedef enum
 } platform_state_t;
 
 /**
+ * @brief struct for the states of the UltraZohm LEDs
+ *
+ */
+typedef struct
+{
+	bool readyLED;
+	bool runningLED;
+	bool errorLED;
+	bool userLED;
+} uz_led_states_t;
+
+
+/**
  * @brief Returns the current state of the ultrazohm
  * 
  * @return platform_state_t 

@@ -28,4 +28,6 @@ void uz_led_set_errorLED_off();
 void uz_led_set_userLED_on();
 void uz_led_set_userLED_off();
 
+bool uz_get_led_status(uz_statusLED *self);
+
 #endif

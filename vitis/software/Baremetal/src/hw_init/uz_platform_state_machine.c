@@ -22,6 +22,9 @@ ultrazohm_state_t ultrazohm_state = {
     .event_handled = true,
     .entry = true};
 
+
+uz_led_states_t uz_led_states;
+
 static void poll_buttons(void);
 static void ultrazohm_state_machine_switch_to_state(platform_state_t new_state);
 static void ultrazohm_state_machine_event_handled(void);
@@ -114,8 +117,11 @@ static void idle_entry(void)
         ultrazohm_state.stop_flag = false;
         ultrazohm_state.error_flag = false;
         uz_led_set_errorLED_off();
+        uz_led_states.errorLED = false;
         uz_led_set_runningLED_off();
+        uz_led_states.runningLED = false;
         uz_led_set_userLED_off();
+        uz_led_states.userLED = false;
         ultrazohm_state_machine_event_handled();
     }
 }
@@ -125,8 +131,11 @@ static void running_entry(void)
     if (ultrazohm_state.entry)
     {
         uz_led_set_errorLED_off();
+        uz_led_states.errorLED = false;
         uz_led_set_runningLED_off();
+        uz_led_states.runningLED = false;
         uz_led_set_userLED_off();
+        uz_led_states.userLED = false;
         uz_axigpio_enable_pwm_and_power_electronics();
         ultrazohm_state_machine_event_handled();
     }
@@ -137,8 +146,11 @@ static void control_entry(void)
     if (ultrazohm_state.entry)
     {
         uz_led_set_errorLED_off();
+        uz_led_states.errorLED = false;
         uz_led_set_runningLED_on();
+        uz_led_states.runningLED = true;
         uz_led_set_userLED_off();
+        uz_led_states.userLED = false;
         ultrazohm_state_machine_event_handled();
     }
 }
@@ -149,9 +161,13 @@ static void error_entry(void)
     {
         uz_axigpio_disable_pwm_and_power_electronics();
         uz_led_set_errorLED_on();
+        uz_led_states.errorLED = true;
         uz_led_set_runningLED_off();
+        uz_led_states.runningLED = false;
         uz_led_set_userLED_off();
+        uz_led_states.userLED = false;
         uz_led_set_readyLED_off();
+        uz_led_states.readyLED = false;
         ultrazohm_state_machine_event_handled();
     }
 }
@@ -213,10 +229,12 @@ static void ready_LED_blink_fast(void)
     if ((uptime_ms % 200) > 100)
     {
         uz_led_set_readyLED_on();
+        uz_led_states.readyLED = true;
     }
     else
     {
         uz_led_set_readyLED_off();
+        uz_led_states.readyLED = false;
     }
 }
 
@@ -226,10 +244,12 @@ static void ready_LED_blink_slow(void)
     if (uptime_sec % 2)
     {
         uz_led_set_readyLED_on();
+        uz_led_states.readyLED = true;
     }
     else
     {
         uz_led_set_readyLED_off();
+        uz_led_states.readyLED = false;
     }
 }
 

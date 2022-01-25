@@ -43,3 +43,9 @@ void uz_led_set_userLED_on() {
 void uz_led_set_userLED_off() {
 	uz_led_turn_off(&userLED);
 }
+
+bool uz_get_led_status(uz_statusLED *self){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return self->hw;
+}

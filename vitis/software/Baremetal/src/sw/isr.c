@@ -41,6 +41,14 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+//ParameterID
+extern uz_ParameterID_Data_t PID_Data;
+extern uz_ParameterID_t* ParameterID;
+extern uz_FOC* FOC_instance;
+extern uz_PI_Controller* SpeedControl_instance;
+struct uz_dq_t PID_v_dq = { 0 };
+struct uz_DutyCycle_t PID_DutyCycle = { 0 };
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -54,11 +62,33 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+	//Get values from ADCs
+	PID_Data.PID_ActualValues.I_UVW.U = (Global_Data.aa.A1.me.ADC_A2 - 2.5f) * (20.0f / 2.084f) / 3.0f;
+	PID_Data.PID_ActualValues.I_UVW.V = (Global_Data.aa.A1.me.ADC_A3 - 2.5f) * (20.0f / 2.084f) / 3.0f;
+	PID_Data.PID_ActualValues.I_UVW.W = (Global_Data.aa.A1.me.ADC_A4 - 2.5f) * (20.0f / 2.084f) / 3.0f;
+	PID_Data.PID_ActualValues.V_DC = ((Global_Data.aa.A1.me.ADC_A1) * 20.05f) - 0.18f;
+	PID_Data.PID_ActualValues.omega_m = (Global_Data.av.mechanicalRotorSpeed * 2.0f * UZ_PIf) / 60.0f;
+	PID_Data.PID_ActualValues.theta_el = Global_Data.av.theta_elec;
 
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
+	//Calculate missing ActualValues
+	PID_Data.PID_ActualValues.i_dq = uz_dq_transformation(PID_Data.PID_ActualValues.I_UVW, Global_Data.av.theta_elec);
+	PID_Data.PID_ActualValues.v_dq = uz_dq_transformation(PID_Data.PID_ActualValues.V_UVW, Global_Data.av.theta_elec);
+	PID_Data.PID_ActualValues.theta_m = Global_Data.av.theta_elec / PID_Data.PID_GlobalConfig.PMSM_config.polePairs;
+
+	platform_state_t current_state = ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+		uz_ParameterID_step(ParameterID, &PID_Data);
+		PID_v_dq = uz_ParameterID_Controller(&PID_Data, FOC_instance, SpeedControl_instance);
+		PID_DutyCycle = uz_ParameterID_generate_DutyCycle(&PID_Data, FOC_instance, SpeedControl_instance, PID_v_dq, Global_Data.objects.pwm_d1);
+		Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;
+		Global_Data.rasv.halfBridge2DutyCycle = PID_DutyCycle.DutyCycle_V;
+		Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;
+		PID_Data.PID_ActualValues.v_dq = PID_v_dq;
+	} else {
+		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     // Set duty cycles for three-level modulator

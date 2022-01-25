@@ -25,6 +25,9 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 
+//ParameterID
+extern uz_ParameterID_Data_t PID_Data;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -217,16 +220,16 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			break;
 
-		case (My_Button_1):
-
+		case (Enable_Current_Control):
+			PID_Data.PID_Control_Selection = Current_Control;
 			break;
 
-		case (My_Button_2):
-
+		case (Enable_Speed_Control):
+			PID_Data.PID_Control_Selection = Speed_Control;
 			break;
 
-		case (My_Button_3):
-
+		case (Disable_FOC_Control):
+			PID_Data.PID_Control_Selection = No_Control;
 			break;
 
 		case (My_Button_4):
@@ -253,9 +256,269 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			break;
 
+			//ParameterID
+
+		case (PID_Enable_System):
+			ultrazohm_state_machine_set_enable_system(true);
+			break;
+
+		case (PID_Enable_Control):
+			ultrazohm_state_machine_set_enable_control(true);
+			break;
+
+		case (PID_Enable_ParameterID):
+			PID_Data.PID_GlobalConfig.enableParameterID = true;
+			break;
+
+		case (PID_Disable_ParameterID):
+			PID_Data.PID_GlobalConfig.enableParameterID = false;
+			PID_Data.PID_GlobalConfig.ElectricalID = false;
+			PID_Data.PID_GlobalConfig.TwoMassID = false;
+			PID_Data.PID_GlobalConfig.FrictionID = false;
+			PID_Data.PID_GlobalConfig.FluxMapID = false;
+			PID_Data.PID_GlobalConfig.OnlineID = false;
+			break;
+
+		case (PID_Enable_ElectricalID):
+			PID_Data.PID_GlobalConfig.ElectricalID = true;
+			break;
+
+		case (PID_Disable_ElectricalID):
+			PID_Data.PID_GlobalConfig.ElectricalID = false;
+			break;
+
+		case (PID_Enable_FrictionID):
+			PID_Data.PID_GlobalConfig.FrictionID = true;
+			break;
+
+		case (PID_Disable_FrictionID):
+			PID_Data.PID_GlobalConfig.FrictionID = false;
+			break;
+
+		case (PID_Enable_TwoMassID):
+			PID_Data.PID_GlobalConfig.TwoMassID = true;
+			break;
+
+		case (PID_Disable_TwoMassID):
+			PID_Data.PID_GlobalConfig.TwoMassID = false;
+			break;
+
+		case (PID_Enable_FluxMapID):
+			PID_Data.PID_GlobalConfig.FluxMapID = true;
+			break;
+
+		case (PID_Disable_FluxMapID):
+			PID_Data.PID_GlobalConfig.FluxMapID = false;
+			break;
+
+		case (PID_Enable_OnlineID):
+			PID_Data.PID_GlobalConfig.OnlineID = true;
+			break;
+
+		case (PID_Disable_OnlineID):
+			PID_Data.PID_GlobalConfig.OnlineID = false;
+			PID_Data.PID_AutoRefCurrents_Config.enableCRS = false;
+			break;
+
+		case (PID_ACCEPT):
+			PID_Data.PID_GlobalConfig.ACCEPT = true;
+			break;
+
+		case (PID_RESET):
+			PID_Data.PID_GlobalConfig.Reset = true;
+			PID_Data.PID_GlobalConfig.ElectricalID = false;
+			PID_Data.PID_GlobalConfig.TwoMassID = false;
+			PID_Data.PID_GlobalConfig.FrictionID = false;
+			PID_Data.PID_GlobalConfig.FluxMapID = false;
+			PID_Data.PID_GlobalConfig.OnlineID = false;
+			break;
+
+		case (PID_EID_sampleTimeISR):
+			PID_Data.PID_GlobalConfig.sampleTimeISR = value * 0.000001f;
+			break;
+
+		case (PID_EID_n_ref_meas):
+			PID_Data.PID_ElectricalID_Config.n_ref_measurement = value;
+			break;
+
+		case (PID_EID_goertzl_Amp):
+			PID_Data.PID_ElectricalID_Config.goertzlAmp = value * 0.1f;
+			break;
+
+		case (PID_EID_polePairs):
+			PID_Data.PID_GlobalConfig.PMSM_config.polePairs = value;
+			break;
+
+		case (PID_EID_DutyCyc):
+			PID_Data.PID_ElectricalID_Config.dutyCyc = value * 0.01f;
+			break;
+
+		case (PID_EID_MaxContinousCurrent):
+			PID_Data.PID_GlobalConfig.PMSM_config.I_max_Ampere = value * 0.1f;
+			break;
+
+		case (PID_EID_Enable_IdentLQ):
+			PID_Data.PID_ElectricalID_Config.identLq = true;
+			break;
+
+		case (PID_EID_Disable_IdentLQ):
+			PID_Data.PID_ElectricalID_Config.identLq = false;
+			break;
+
+		case (PID_EID_Admit_Params):
+			break;
+
+		case (PID_FID_max_speed):
+			PID_Data.PID_FrictionID_Config.n_eva_max = value;
+			break;
+
+		case (PID_FID_N_Brk):
+			PID_Data.PID_FrictionID_Config.N_Brk = value;
+			break;
+
+		case (PID_FID_N_Visco):
+			PID_Data.PID_FrictionID_Config.N_Visco = value;
+			break;
+
+		case (PID_FID_s_step):
+			PID_Data.PID_FrictionID_Config.StepScale = value * 0.01f;
+			break;
+
+		case (PID_FID_Brk_Count):
+			PID_Data.PID_FrictionID_Config.BrkCount = value;
+			break;
+
+		case (PID_FID_eta_speed):
+			PID_Data.PID_FrictionID_Config.eta = value;
+			break;
+
+		case (PID_TMID_Scale_PRBS):
+			PID_Data.PID_TwoMassID_Config.ScaleTorquePRBS = value;
+			break;
+
+		case (PID_TMID_d_TMS_start):
+			PID_Data.PID_TwoMassID_Config.d_TMS_start = value;
+			break;
+
+		case (PID_TMID_n_ref):
+			PID_Data.PID_TwoMassID_Config.n_ref_measurement = value;
+			break;
+
+		case (PID_TMID_f_min):
+			PID_Data.PID_TwoMassID_Config.f_min = value;
+			break;
+
+		case (PID_TMID_f_max):
+			PID_Data.PID_TwoMassID_Config.f_max = value;
+			break;
+
+		case (PID_FMID_i_d_start):
+			PID_Data.PID_FluxMapID_Config.IDstart = value * 0.001f;
+			break;
+
+		case (PID_FMID_i_d_stop):
+			PID_Data.PID_FluxMapID_Config.IDstop = value * 0.001f;
+			break;
+
+		case (PID_FMID_i_d_step):
+			PID_Data.PID_FluxMapID_Config.IDstepsize = value * 0.001f;
+			break;
+
+		case (PID_FMID_i_q_start):
+			PID_Data.PID_FluxMapID_Config.IQstart = value * 0.001f;
+			break;
+
+		case (PID_FMID_i_q_stop):
+			PID_Data.PID_FluxMapID_Config.IQstop = value * 0.001f;
+			break;
+
+		case (PID_FMID_i_q_step):
+			PID_Data.PID_FluxMapID_Config.IQstepsize = value * 0.001f;
+			break;
+
+		case (PID_FMID_Rs_ref):
+			PID_Data.PID_FluxMapID_Config.R_s_ref = value;
+			break;
+
+		case (PID_FMID_Temp_ref):
+			PID_Data.PID_FluxMapID_Config.Temp_ref = value;
+			break;
+
+		case (PID_FMID_identRAmp):
+			PID_Data.PID_FluxMapID_Config.identRAmp = value;
+			break;
+
+		case (PID_FMID_enable_ident_R):
+			PID_Data.PID_FluxMapID_Config.identR = true;
+			break;
+
+		case (PID_FMID_disable_ident_R):
+			PID_Data.PID_FluxMapID_Config.identR = false;
+			break;
+
+		case (PID_FMID_enable_AMM):
+			PID_Data.PID_FluxMapID_Config.start_FM_ID = true;
+			break;
+
+		case (PID_FMID_disable_AMM):
+			PID_Data.PID_FluxMapID_Config.start_FM_ID = false;
+			break;
+
+		case (PID_OID_Refresh_Flux_Maps):
+			PID_Data.calculate_flux_maps = true;
+			break;
+
+		case (PID_OID_Reset_OnlineID):
+			PID_Data.PID_OnlineID_Config.OnlineID_Reset = true;
+			PID_Data.PID_AutoRefCurrents_Config.Reset = true;
+			break;
+
+		case (PID_OID_Enable_AutoCurrentControl):
+			PID_Data.PID_AutoRefCurrents_Config.enableCRS = true;
+			break;
+
+		case (PID_OID_Disable_AutoCurrentControl):
+			PID_Data.PID_AutoRefCurrents_Config.enableCRS = false;
+			break;
+
+		case (PID_OID_d_current_steps):
+			PID_Data.PID_AutoRefCurrents_Config.id_points = value;
+			break;
+
+		case (PID_OID_q_current_steps):
+			PID_Data.PID_AutoRefCurrents_Config.iq_points = value;
+			break;
+
+		case (PID_OID_max_current):
+			PID_Data.PID_AutoRefCurrents_Config.max_current = value;
+			break;
+
+		case (PID_OID_ref_temp):
+			PID_Data.PID_OnlineID_Config.Temp_ref = value;
+			break;
+
+		case (PID_OID_ref_Rs):
+			break;
+
+		case (PID_OID_max_speed):
+			PID_Data.PID_OnlineID_Config.max_n_ratio = value;
+			break;
+
+		case (PID_OID_min_speed):
+			PID_Data.PID_OnlineID_Config.min_n_ratio = value;
+			break;
+
+		case (PID_OID_Ident_range_factor):
+			PID_Data.PID_OnlineID_Config.nom_factor = value * 0.001f;
+			break;
+
+		case (PID_OID_max_ident_pause):
+			PID_Data.PID_OnlineID_Config.Rs_time = value;
+			break;
 		case (0xFFFF):
 			// this is triggered if the IPI message buffer is read without being written once before (i.e. at startup)
 			break;
+
 
 		default:
 			break;		  // Default just breaks since now a lot of unused control worlds are sent from the javascope->a53 which are never handled here.

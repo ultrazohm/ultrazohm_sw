@@ -31,6 +31,13 @@ DS_Data Global_Data = {
     }
 };
 
+//ParameterID Code
+uz_ParameterID_t* ParameterID = NULL;
+uz_ParameterID_Data_t PID_Data = { 0 };
+uz_FOC* FOC_instance = NULL;
+uz_PI_Controller* SpeedControl_instance = NULL;
+uz_FOC* FOC_instance_SC = NULL;
+
 enum init_chain
 {
     init_assertions = 0,
@@ -62,6 +69,18 @@ int main(void)
         case init_software:
             Initialize_Timer();
             uz_SystemTime_init();
+			ParameterID = uz_ParameterID_init();
+			uz_ParameterID_initialize_data_structs(&PID_Data, ParameterID);
+			struct uz_PI_Controller_config config_id = { .Kp = PID_Data.PID_GlobalConfig.Kp_id, .Ki = PID_Data.PID_GlobalConfig.Ki_id, .samplingTime_sec = 0.00005f, .upper_limit = 15.0f,
+			                .lower_limit = -15.0f };
+			struct uz_PI_Controller_config config_iq = { .Kp = PID_Data.PID_GlobalConfig.Kp_iq, .Ki = PID_Data.PID_GlobalConfig.Ki_iq, .samplingTime_sec = 0.00005f, .upper_limit = 15.0f,
+			                .lower_limit = -15.0f };
+			struct uz_PI_Controller_config config_n = { .Kp = PID_Data.PID_GlobalConfig.Kp_n, .Ki = PID_Data.PID_GlobalConfig.Ki_n, .samplingTime_sec = 0.00005f, .upper_limit = 10.0f,
+			                .lower_limit = -10.0f };
+			struct uz_FOC_config config_FOC = { .config_PMSM = PID_Data.PID_GlobalConfig.PMSM_config, .config_id = config_id, .config_iq = config_iq };
+			FOC_instance = uz_FOC_init(config_FOC);
+			SpeedControl_instance = uz_SpeedControl_init(config_n);
+			FOC_instance_SC = uz_FOC_init(config_FOC);
             JavaScope_initalize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
@@ -72,6 +91,8 @@ int main(void)
             Global_Data.objects.pwm_d1 = initialize_pwm_2l_on_D1();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+
+
             initialization_chain = print_msg;
             break;
         case print_msg:
@@ -91,6 +112,14 @@ int main(void)
         default:
             break;
         }
+
+		if (PID_Data.PID_OnlineID_Output->clean_array == true) {
+			uz_ParameterID_CleanPsiArray(ParameterID, &PID_Data);
+		}
+		if (PID_Data.calculate_flux_maps == true) {
+			uz_ParameterID_CalcFluxMaps(ParameterID, &PID_Data);
+			PID_Data.calculate_flux_maps = false;
+		}
     }
     return (status);
 }

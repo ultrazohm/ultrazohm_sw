@@ -53,6 +53,14 @@
 
 #include "include/pwm_init.h"
 
+//ParameterID-Code
+#include "uz/uz_ParameterID/uz_ParameterID.h"
+#include "uz/uz_FOC/uz_FOC.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
+#include "uz/uz_math_constants.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

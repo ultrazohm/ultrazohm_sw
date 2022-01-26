@@ -214,6 +214,7 @@ void uz_adcLtc2311_software_reset(uz_adcLtc2311_t* self);
 /**
  * @brief Trigger the selected SPI Masters.
  *
+ * @param self Pointer to driver instance
  * @param spi_masters If non zero, the argument is interpreted as a binary mask which masters shall be triggered.
  *                    If zero, the master_select value from @ref uz_adcLtc2311_config_t is considered instead.
  */
@@ -221,21 +222,29 @@ void uz_adcLtc2311_software_trigger(uz_adcLtc2311_t* self, uint32_t spi_masters)
 
 /**
  * @brief Enable the continuous sampling mode
+ * 
+ * @param self Pointer to driver instance
  */
 void uz_adcLtc2311_set_continuous_mode(uz_adcLtc2311_t* self);
 
 /**
  * @brief Enable the triggered sampling mode
+ * 
+ * @param self Pointer to driver instance
  */
 void uz_adcLtc2311_set_triggered_mode(uz_adcLtc2311_t* self);
 
 /**
  * @brief In triggered mode: The IP core is triggered by software via AXI
+ * 
+ * @param self Pointer to driver instance
  */
 void uz_adcLtc2311_set_software_trigger_mode(uz_adcLtc2311_t* self);
 
 /**
  * @brief In triggered mode: The IP core is triggered by hardware through the PL pin
+ * 
+ * @param self Pointer to driver instance
  */
 void uz_adcLtc2311_set_pl_trigger_mode(uz_adcLtc2311_t* self);
 
@@ -244,8 +253,7 @@ void uz_adcLtc2311_set_pl_trigger_mode(uz_adcLtc2311_t* self);
 /**
  * @brief Update the conversion factor of the indicated channels
  * 
- * @details
- * 
+ * @param self Pointer to driver instance 
  * 
  * @return UZ_FAILURE when the hardware did not acknowledge the update of the value within max_attempts. 
  *         Otherwise, the function returns UZ_SUCCESS.
@@ -255,6 +263,8 @@ uint32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t* self);
 /**
  * @brief Update the offset of the indicated channels
  * 
+ * @param self Pointer to driver instance
+ * 
  * @return UZ_FAILURE when the hardware did not acknowledge the update of the value within max_attempts. 
  *         Otherwise, the function returns UZ_SUCCESS.
  */
@@ -262,6 +272,8 @@ uint32_t uz_adcLtc2311_update_offset(uz_adcLtc2311_t* self);
 
 /**
  * @brief Update the samples per trigger event of the indicated channels
+ * 
+ * @param self Pointer to driver instance
  * 
  * @return UZ_FAILURE when the hardware did not acknowledge the update of the value within max_attempts. 
  *         Otherwise, the function returns UZ_SUCCESS.
@@ -271,6 +283,8 @@ uint32_t uz_adcLtc2311_update_samples(uz_adcLtc2311_t* self);
 /**
  * @brief Update the sample time of the indicated channels
  * 
+ * @param self Pointer to driver instance
+ * 
  * @return UZ_FAILURE when the hardware did not acknowledge the update of the value within max_attempts. 
  *         Otherwise, the function returns UZ_SUCCESS.
  */
@@ -278,6 +292,8 @@ uint32_t uz_adcLtc2311_update_sample_time(uz_adcLtc2311_t* self);
 
 /**
  * @brief Updates the global SPI configuration of the IP core.
+ * 
+ * @param self Pointer to driver instance
  */
 void uz_adcLtc2311_update_spi(uz_adcLtc2311_t* self);
 
@@ -295,6 +311,8 @@ void uz_adcLtc2311_update_spi(uz_adcLtc2311_t* self);
  * 
  * \#defines for the error_code variable in case of failure are located in the
  * uz_adcLtc2311.h file (public interface of this software module).
+ * 
+ * @param self Pointer to driver instance
  * 
  * @return UZ_FAILURE if the operation failed. Check the error_code from
  *         @ref uz_adcLtc2311_config_t for details. Otherwise, return value is
@@ -315,6 +333,8 @@ uint32_t uz_adcLtc2311_enter_nap_mode(uz_adcLtc2311_t* self);
  * \#defines for the error_code variable in case of failure are located in the
  * uz_adcLtc2311.h file (public interface of this software module).
  * 
+ * @param self Pointer to driver instance
+ * 
  * @return UZ_FAILURE if the operation failed. Check the error_code from
  *         @ref uz_adcLtc2311_config_t for details. Otherwise, return value is
  *         UZ_SUCCESS
@@ -333,6 +353,8 @@ uint32_t uz_adcLtc2311_leave_nap_mode(uz_adcLtc2311_t* self);
  * 
  * \#defines for the error_code variable in case of failure are located in the
  * uz_adcLtc2311.h file (public interface of this software module).
+ * 
+ * @param self Pointer to driver instance
  * 
  * @return UZ_FAILURE if the operation failed. Check the error_code from
  *         @ref uz_adcLtc2311_config_t for details. Otherwise, return value is
@@ -356,6 +378,8 @@ uint32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self);
  * \#defines for the error_code variable in case of failure are located in the
  * uz_adcLtc2311.h file (public interface of this software module).
  * 
+ * @param self Pointer to driver instance
+ * 
  * @return UZ_FAILURE if the operation failed. Check the error_code from
  *         @ref uz_adcLtc2311_config_t for details. Otherwise, return value is
  *         UZ_SUCCESS
@@ -372,6 +396,7 @@ void uz_adcLtc2311_set_offset(uz_adcLtc2311_t* self, int value);
 /**
  * @brief Set the number of samples taken per trigger event. Asserts that the value is in a valid range.
  * 
+ * @param self Pointer to driver instance
  * @param value Number of samples taken per trigger event. Min: 1 Max: (2^31)-1 = 2147483647
  */
 void uz_adcLtc2311_set_samples(uz_adcLtc2311_t* self, uint32_t value);
@@ -385,6 +410,7 @@ void uz_adcLtc2311_set_max_attempts(uz_adcLtc2311_t* self, uint32_t value);
  * In this period, the sample and hold capacitor of the ADC is charged. The appropriate time depends on the driving 
  * strength of the signal. Asserts that the value is in a valid range.
  * 
+ * @param self Pointer to driver instance
  * @param value Minimum number of system clock cycles that the SS_N signal stays high. Max: (2^31)-1 = 2147483647
  */
 void uz_adcLtc2311_set_sample_time(uz_adcLtc2311_t* self, uint32_t value);
@@ -393,6 +419,7 @@ void uz_adcLtc2311_set_sample_time(uz_adcLtc2311_t* self, uint32_t value);
 /**
  * @brief Asserts that not to many MSBs are set and that the value fits in the config register.
  * 
+ * @param self Pointer to driver instance
  * @param value Number of system clock cycles for the PRE_DELAY
  */
 void uz_adcLtc2311_set_pre_delay(uz_adcLtc2311_t* self, uint32_t value);
@@ -400,6 +427,7 @@ void uz_adcLtc2311_set_pre_delay(uz_adcLtc2311_t* self, uint32_t value);
 /**
  * @brief Asserts that not to many MSBs are set and that the value fits in the config register.
  * 
+ * @param self Pointer to driver instance
  * @param value Number of system clock cycles for the POST_DELAY
  */
 void uz_adcLtc2311_set_post_delay(uz_adcLtc2311_t* self, uint32_t value);
@@ -407,6 +435,7 @@ void uz_adcLtc2311_set_post_delay(uz_adcLtc2311_t* self, uint32_t value);
 /**
  * @brief Asserts that not to many MSBs are set and that the value fits in the config register.
  * 
+ * @param self Pointer to driver instance
  * @param value Clock devider to scale the SCLK signal
  */
 void uz_adcLtc2311_set_clk_div(uz_adcLtc2311_t* self, uint32_t value);
@@ -415,6 +444,7 @@ void uz_adcLtc2311_set_clk_div(uz_adcLtc2311_t* self, uint32_t value);
  * @brief Set the edge, on which edge the first bit is sampled. Must be the first edge (a.k.a. CPHA = 0) for the LTC2311.
  *        Asserts, that the value is 0.
  * 
+ * @param self Pointer to driver instance
  * @param value If 0, the first bit is sampled on the first edge of SCLK. If non 0, the first bit is sampled on the second
  *              edge of SCLK.
  */
@@ -424,6 +454,7 @@ void uz_adcLtc2311_set_cpha(uz_adcLtc2311_t* self, uint32_t value);
  * @brief Determines the IDLE state of SCLK. Must be the logic high (a.k.a. CPOL = 1) for the LTC2311.
  *        Asserts, that the value is non 0.
  * 
+ * @param self Pointer to driver instance
  * @param value If 0, the IDLE state of SCLK is 0. If non 0, the IDLE state of SCLK is 1.
  */
 void uz_adcLtc2311_set_cpol(uz_adcLtc2311_t* self, uint32_t value);
@@ -471,7 +502,7 @@ void uz_adcLtc2311_set_channel_config(uz_adcLtc2311_t* self, uint32_t master_sel
 /**
  * @brief Wrapper function to set the trigger mode for the driver instance.
  * 
- * @param self 
+ * @param self Pointer to driver instance
  * @param trigger_mode 
  */
 void uz_adcLtc2311_change_trigger_mode(uz_adcLtc2311_t *self, enum uz_adcLtc2311_trigger_mode trigger_mode);

@@ -185,7 +185,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Enable_Control): // ControlEnable
 			ultrazohm_state_machine_set_enable_control(true);
-		ultrazohm_state_machine_set_error(true);
+
 			break;
 
 		case (Set_Send_Field_1):
@@ -213,15 +213,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-
+			ultrazohm_state_machine_set_error(true);
 			break;
 
 		case (My_Button_2):
-
+			uz_led_set_userLED_on();
+			uz_led_states.userLED = true;
 			break;
 
 		case (My_Button_3):
-
+			uz_led_set_userLED_off();
+		uz_led_states.userLED = false;
 			break;
 
 		case (My_Button_4):

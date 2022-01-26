@@ -147,12 +147,12 @@ enum gui_button_mapping {
 
 
 /* Visualization Config for GUI*/
-// Leave it commented out as it is, the plain text below is parsed by the GUI!
+// LEAVE IT COMMENTED OUT AS IT IS, the plain text below is parsed by the GUI!
 // Change entries according to your needs.
 /*
 // Description (printed text) for the send_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
-enum send_field_description {
+
 	SND_FLD_ZEROVALUE=0,
 	send_field_1,
 	send_field_2,
@@ -161,11 +161,11 @@ enum send_field_description {
 	send_field_5,
 	send_field_6,
 	SND_FLD_ENDMARKER
-};
+
 
 // Physical unit label (printed text) for the send_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
-enum send_field_labels {
+
 	SND_LABELS_ZEROVALUE=0,
 	RPM,
 	Nm,
@@ -174,11 +174,11 @@ enum send_field_labels {
 	A,
 	A,
 	SND_LABELS_ENDMARKER
-};
+
 
 // Description (printed text) for the receive_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
-enum receive_field_description {
+
 	RCV_FLD_ZEROVALUE=0,
 	receive_field_1,
 	receive_field_2,
@@ -187,11 +187,11 @@ enum receive_field_description {
 	receive_field_5,
 	receive_field_6,
 	RCV_FLD_ENDMARKER
-};
+
 
 // Physical unit label (printed text) for the receive_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
-enum receive_field_labels {
+
 	RCV_LABELS_ZEROVALUE=0,
 	RPM,
 	Nm,
@@ -200,12 +200,12 @@ enum receive_field_labels {
 	V,
 	V,
 	RCV_LABELS_ENDMARKER
-};
+
 
 // Slow Data values that are displayed in the receive_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
 // Make sure that the signal names below are also present in the JS_SlowData enum!
-enum receive_field_slowData {
+
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
@@ -215,7 +215,7 @@ enum receive_field_slowData {
 	JSSD_FLOAT_Ld,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
-};*/
+*/
 
 int JavaScope_initalize(DS_Data* data);
 void JavaScope_update(DS_Data* data);

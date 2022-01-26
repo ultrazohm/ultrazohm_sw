@@ -223,7 +223,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_3):
 			uz_led_set_userLED_off();
-		uz_led_states.userLED = false;
+			uz_led_states.userLED = false;
 			break;
 
 		case (My_Button_4):

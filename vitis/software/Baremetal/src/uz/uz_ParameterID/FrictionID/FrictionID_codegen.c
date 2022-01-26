@@ -7,33 +7,6 @@
  *
  * Code generated for Simulink model 'FrictionID'.
  *
- * Model version                  : 2.349
- * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Thu Dec 16 11:56:52 2021
- *
- * Target selection: ert.tlc
- * Embedded hardware selection: ARM Compatible->ARM Cortex-R
- * Code generation objectives:
- *    1. Execution efficiency
- *    2. Traceability
- * Validation result: Passed (10), Warnings (2), Error (0)
- */
-
-#include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID_ACTIVE > 0U
-
-
-#include "FrictionID_codegen.h"
-
-/*
- * Academic License - for use in teaching, academic research, and meeting
- * course requirements at degree granting institutions only.  Not for
- * government, commercial, or other organizational use.
- *
- * File: FrictionID.c
- *
- * Code generated for Simulink model 'FrictionID'.
- *
  * Model version                  : 2.381
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
  * C/C++ source code generated on : Thu Dec 23 12:00:40 2021
@@ -45,6 +18,9 @@
  *    2. Traceability
  * Validation result: Passed (11), Warning (1), Error (0)
  */
+
+#include "../../uz_global_configuration.h"
+#if UZ_PARAMETERID_ACTIVE > 0U
 
 #include "FrictionID_codegen.h"
 
@@ -651,7 +627,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
           /* During 'waitstate': '<S1>:489' */
           /* '<S1>:490:1' sf_internal_predicateOutput = after(delay,sec); */
         } else if (rtFrictionID_DW->temporalCounter_i1 >= (uint32_T)ceil
-                   (rtFrictionID_DW->delay / 0.0001 - 1.0E-12)) {
+                   (rtFrictionID_DW->delay / 5.0E-5 - 5.0E-13)) {
           /* Transition: '<S1>:490' */
           rtFrictionID_DW->is_BreakawayTorqueEstimation = IN_increaseCurrent;
 
@@ -729,7 +705,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
           /* During 'DecreaseSpeed': '<S1>:488' */
           /* '<S1>:483:1' sf_internal_predicateOutput = after(delay,sec); */
           if (rtFrictionID_DW->temporalCounter_i1 >= (uint32_T)ceil
-              (rtFrictionID_DW->delay / 0.0001 - 1.0E-12)) {
+              (rtFrictionID_DW->delay / 5.0E-5 - 5.0E-13)) {
             /* Transition: '<S1>:483' */
             /* Exit 'DecreaseSpeed': '<S1>:488' */
             /* '<S1>:488:15' mean_count=1; */
@@ -879,7 +855,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
      case IN_ResetIntegrator1:
       /* During 'ResetIntegrator1': '<S1>:604' */
       /* '<S1>:607:1' sf_internal_predicateOutput = after(0.1,sec); */
-      if (rtFrictionID_DW->temporalCounter_i1 >= 1000U) {
+			if (rtFrictionID_DW->temporalCounter_i1 >= 2000U) {
         /* Transition: '<S1>:607' */
         /* Exit 'ResetIntegrator1': '<S1>:604' */
         /* '<S1>:604:7' FrictionID_FOC_output.enableFOC_current=boolean(0); */
@@ -950,7 +926,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
      default:
       /* During 'ResetIntegrator2': '<S1>:599' */
       /* '<S1>:600:1' sf_internal_predicateOutput = after(1.0,sec); */
-      if (rtFrictionID_DW->temporalCounter_i1 >= 10000U) {
+			if (rtFrictionID_DW->temporalCounter_i1 >= 20000U) {
         /* Outport: '<Root>/finishedFrictionID' */
         /* Transition: '<S1>:600' */
         /* Exit 'ResetIntegrator2': '<S1>:599' */

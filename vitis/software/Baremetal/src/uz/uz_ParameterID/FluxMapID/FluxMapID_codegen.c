@@ -723,7 +723,7 @@ void FluxMapID_step(RT_MODEL_FluxMapID_t *const rtFluxMapID_M)
         /* During 'AMMcollectData': '<S1>:607' */
         /* '<S1>:595:1' sf_internal_predicateOutput = after((FluxMapIDConfig.AMMsampleTime),sec); */
         if (rtFluxMapID_DW->temporalCounter_i1 >= (uint32_T)ceil
-            (rtFluxMapID_U->FluxMapIDConfig.AMMsampleTime / 0.0001 - 1.0E-12)) {
+            (rtFluxMapID_U->FluxMapIDConfig.AMMsampleTime / 5.0E-5 - 5.0E-13)) {
           /* Transition: '<S1>:595' */
           /* Exit 'AMMcollectData': '<S1>:607' */
           /* '<S1>:607:14' FluxMapID_output.external_Measurement_Flag=boolean(0); */
@@ -740,7 +740,7 @@ void FluxMapID_step(RT_MODEL_FluxMapID_t *const rtFluxMapID_M)
        case IN_AMMcompleted:
         /* During 'AMMcompleted': '<S1>:592' */
         /* '<S1>:674:1' sf_internal_predicateOutput = after(1.0,sec); */
-        if (rtFluxMapID_DW->temporalCounter_i1 >= 10000U) {
+				if (rtFluxMapID_DW->temporalCounter_i1 >= 20000U) {
           /* Outport: '<Root>/finishedFluxMapID' */
           /* Transition: '<S1>:674' */
           /* Exit 'AMMcompleted': '<S1>:592' */
@@ -823,7 +823,7 @@ void FluxMapID_step(RT_MODEL_FluxMapID_t *const rtFluxMapID_M)
        case IN_AMMnewRef:
         /* During 'AMMnewRef': '<S1>:583' */
         /* '<S1>:581:1' sf_internal_predicateOutput = after(3.0,sec); */
-        if (rtFluxMapID_DW->temporalCounter_i1 >= 30000U) {
+				if (rtFluxMapID_DW->temporalCounter_i1 >= 60000U) {
           /* Transition: '<S1>:581' */
           rtFluxMapID_DW->is_AMMstate = IN_AMMcollectData;
           rtFluxMapID_DW->temporalCounter_i1 = 0U;
@@ -912,7 +912,7 @@ void FluxMapID_step(RT_MODEL_FluxMapID_t *const rtFluxMapID_M)
        case IN_waitForCollectToFinish:
         /* During 'waitForCollectToFinish': '<S1>:601' */
         /* '<S1>:606:1' sf_internal_predicateOutput = after(3.0,sec); */
-        if (rtFluxMapID_DW->temporalCounter_i1 >= 30000U) {
+				if (rtFluxMapID_DW->temporalCounter_i1 >= 60000U) {
           /* Transition: '<S1>:606' */
           /* Exit 'waitForCollectToFinish': '<S1>:601' */
           rtFluxMapID_DW->is_AMMstate = IN_whatsNext;

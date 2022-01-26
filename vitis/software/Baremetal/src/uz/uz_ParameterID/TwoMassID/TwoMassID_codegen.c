@@ -8295,7 +8295,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
         }
       }
 
-			/*  Dämpfungsfaktor lambda auf Hesse-Matrix anwenden */
+			/*  Daempfungsfaktor lambda auf Hesse-Matrix anwenden */
       /* '<S1>:647:203' H(1,1) = H(1,1) + lambda; */
       rtTwoMassID_DW->H[0] += rtTwoMassID_DW->lambda;
 
@@ -8306,7 +8306,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
       /* coursor(itt,4)=Jac(1); */
       /* coursor(itt,5)=Jac(2); */
       /* coursor(itt,6)= det(H_0); */
-			/* Neue Paramterschätzung berechnen */
+			/* Neue Paramterschaetzung berechnen */
       /* '<S1>:647:211' dp = single(-inv(H)*(Jac')*d1(:)); */
       inv(rtTwoMassID_DW->H, rtTwoMassID_DW->fv, rtTwoMassID_DW);
       rtTwoMassID_DW->c_est_start_idx_0 = (-rtTwoMassID_DW->fv[0] *
@@ -8474,7 +8474,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
       /* coursor(itt,11)=d1;%e */
       /* coursor(itt,12)=d2;%e_lm */
       /* coursor(itt,13)=lambda; */
-			/*  Fallunterscheidung ob Fehler größer oder kleiner geworden ist */
+			/*  Fallunterscheidung ob Fehler groesser oder kleiner geworden ist */
       /* '<S1>:647:255' if ee_lm <= ee */
       guard1 = false;
       if (rtTwoMassID_DW->ee_lm <= rtTwoMassID_DW->ee) {
@@ -8516,7 +8516,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
           rtTwoMassID_DW->lambda *= 10.0F;
         }
 
-				/* Prüfen ob Abbruchbedingung erreicht */
+				/* Pruefen ob Abbruchbedingung erreicht */
         /* '<S1>:647:278' if ee<=500 */
         if (rtTwoMassID_DW->ee <= 500.0F) {
           /* '<S1>:647:279' ee */
@@ -8530,7 +8530,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
 
   /* '<S1>:647:286' if(UseLevMar==0) */
   if (UseLevMar == 0) {
-		/* Schätze Dämpfung über Amplitudengangwerte an f_res und f_Til */
+		/* Schaetze Daempfung ueber Amplitudengangwerte an f_res und f_Til */
     /* '<S1>:647:289' d_til =  abs((JL*(Tilgerfrequenz*2*pi)^2 - c_est+(c_est*(JM+JL)-JM*JL*(Tilgerfrequenz*2*pi)^2)*Tilgerfrequenz*2*pi*10^(Tilgerwert/20)*i)    /   ((10^(Tilgerwert/20))*(Tilgerfrequenz*2*pi)^2 *(JM+JL)  + Tilgerfrequenz*2*pi*i     )) */
     rtTwoMassID_DW->ar = rtTwoMassID_DW->c_est_start_idx_0_tmp -
       rtTwoMassID_DW->c_est;
@@ -8808,7 +8808,7 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
    *  Inport: '<Root>/TwoMassIDConfig'
    *  Outport: '<Root>/TwoMassID_FOC_output'
    */
-  if (rtTwoMassID_DW->temporalCounter_i1 < 16383U) {
+	if (rtTwoMassID_DW->temporalCounter_i1 < 32767U) {
     rtTwoMassID_DW->temporalCounter_i1++;
   }
 
@@ -9048,7 +9048,7 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
        case IN_TMS_Speed_State:
         /* During 'TMS_Speed_State': '<S1>:636' */
         /* '<S1>:657:1' sf_internal_predicateOutput = after(0.5,sec); */
-        if (rtTwoMassID_DW->temporalCounter_i1 >= 5000U) {
+				if (rtTwoMassID_DW->temporalCounter_i1 >= 10000U) {
           /* Transition: '<S1>:657' */
           /* Exit 'TMS_Speed_State': '<S1>:636' */
           rtTwoMassID_DW->is_TwoMassID = IN_TMS_Noise_State;
@@ -9080,7 +9080,7 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
        default:
         /* During 'TMS_calculate_state': '<S1>:648' */
         /* '<S1>:658:1' sf_internal_predicateOutput = after(1.0,sec); */
-        if (rtTwoMassID_DW->temporalCounter_i1 >= 10000U) {
+				if (rtTwoMassID_DW->temporalCounter_i1 >= 20000U) {
           /* Outport: '<Root>/finishedTwoMassID' */
           /* Transition: '<S1>:658' */
           /* Exit 'TMS_calculate_state': '<S1>:648' */

@@ -350,11 +350,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (PID_EID_DutyCyc):
-			PID_Data.PID_ElectricalID_Config.dutyCyc = value * 0.01f;
+			PID_Data.PID_ElectricalID_Config.dutyCyc = value;
 			break;
 
 		case (PID_EID_MaxContinousCurrent):
-			PID_Data.PID_GlobalConfig.PMSM_config.I_max_Ampere = value * 0.1f;
+			PID_Data.PID_GlobalConfig.PMSM_config.I_max_Ampere = value;
 			break;
 
 		case (PID_EID_Enable_IdentLQ):

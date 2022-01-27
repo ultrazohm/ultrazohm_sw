@@ -92,9 +92,9 @@ void ISR_Control(void *data)
 		Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;
 		PID_Data.PID_ActualValues.v_dq = PID_v_dq;
 	} else {
-		Global_Data.rasv.halfBridge1DutyCycle = 0.2f;
-		Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
-		Global_Data.rasv.halfBridge3DutyCycle = 0.8f;
+		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     // Set duty cycles for three-level modulator

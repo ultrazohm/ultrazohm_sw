@@ -221,15 +221,21 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Enable_Current_Control):
-			PID_Data.PID_Control_Selection = Current_Control;
+			if (ultrazohm_state_machine_get_state() == control_state) {
+				PID_Data.PID_Control_Selection = Current_Control;
+			}
 			break;
 
 		case (Enable_Speed_Control):
-			PID_Data.PID_Control_Selection = Speed_Control;
+			if (ultrazohm_state_machine_get_state() == control_state) {
+				PID_Data.PID_Control_Selection = Speed_Control;
+			}
 			break;
 
 		case (Disable_FOC_Control):
-			PID_Data.PID_Control_Selection = No_Control;
+			if (ultrazohm_state_machine_get_state() == control_state) {
+				PID_Data.PID_Control_Selection = No_Control;
+			}
 			break;
 
 		case (My_Button_4):
@@ -381,7 +387,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (PID_FID_s_step):
-			PID_Data.PID_FrictionID_Config.StepScale = value * 0.01f;
+			PID_Data.PID_FrictionID_Config.StepScale = value;
 			break;
 
 		case (PID_FID_Brk_Count):
@@ -413,27 +419,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (PID_FMID_i_d_start):
-			PID_Data.PID_FluxMapID_Config.IDstart = value * 0.001f;
+			PID_Data.PID_FluxMapID_Config.IDstart = value;
 			break;
 
 		case (PID_FMID_i_d_stop):
-			PID_Data.PID_FluxMapID_Config.IDstop = value * 0.001f;
+			PID_Data.PID_FluxMapID_Config.IDstop = value;
 			break;
 
 		case (PID_FMID_i_d_step):
-			PID_Data.PID_FluxMapID_Config.IDstepsize = value * 0.001f;
+			PID_Data.PID_FluxMapID_Config.IDstepsize = value;
 			break;
 
 		case (PID_FMID_i_q_start):
-			PID_Data.PID_FluxMapID_Config.IQstart = value * 0.001f;
+			PID_Data.PID_FluxMapID_Config.IQstart = value;
 			break;
 
 		case (PID_FMID_i_q_stop):
-			PID_Data.PID_FluxMapID_Config.IQstop = value * 0.001f;
+			PID_Data.PID_FluxMapID_Config.IQstop = value;
 			break;
 
 		case (PID_FMID_i_q_step):
-			PID_Data.PID_FluxMapID_Config.IQstepsize = value * 0.001f;
+			PID_Data.PID_FluxMapID_Config.IQstepsize = value;
 			break;
 
 		case (PID_FMID_Rs_ref):
@@ -509,7 +515,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (PID_OID_Ident_range_factor):
-			PID_Data.PID_OnlineID_Config.nom_factor = value * 0.001f;
+			PID_Data.PID_OnlineID_Config.nom_factor = value;
 			break;
 
 		case (PID_OID_max_ident_pause):
@@ -546,27 +552,47 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	{
 		js_status_BareToRTOS &= ~(1 << 1);
 	}
-	/* Bit 2 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 2);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 2);
-	// }
+	/* Bit 2 - Ident_Lq */
+	if (PID_Data.PID_ElectricalID_Config.identLq == true) {
+		js_status_BareToRTOS |= (1 << 2);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 2);
+	}
 
-	/* Bit 3 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 3);
+	/* Bit 3 - FluxMapID R-Online */
+	if (PID_Data.PID_FluxMapID_Config.identR == true) {
+		js_status_BareToRTOS |= (1 << 3);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 3);
+	}
 
-	/* Bit 4 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 4);
+	/* Bit 4 - FluxMapID start */
+	if (PID_Data.PID_FluxMapID_Config.start_FM_ID == true) {
+		js_status_BareToRTOS |= (1 << 4);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 4);
+	}
 
-	/* Bit 5 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 5);
+	/* Bit 5 - PID_FOC_CC */
+	if (PID_Data.PID_Control_Selection == Current_Control) {
+		js_status_BareToRTOS |= (1 << 5);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 5);
+	}
 
-	/* Bit 6 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 6);
+	/* Bit 6 - PID_FOC_SC */
+	if (PID_Data.PID_Control_Selection == Speed_Control) {
+		js_status_BareToRTOS |= (1 << 6);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 6);
+	}
 
-	/* Bit 7 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+	/* Bit 7 -PID_FOC_no_control */
+	if (PID_Data.PID_Control_Selection == No_Control) {
+		js_status_BareToRTOS |= (1 << 7);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 7);
+	}
 
 	/* Bit 8 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 8);

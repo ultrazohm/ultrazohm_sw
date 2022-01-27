@@ -38,6 +38,7 @@ static void ultrazohm_state_machine_event_handled(void);
 static void ready_LED_blink_slow(void);
 static void ready_LED_blink_fast(void);
 
+
 static void idle_entry(void);
 static void running_entry(void);
 static void control_entry(void);
@@ -49,7 +50,6 @@ static void error_during(void);
 
 void ultrazohm_state_machine_step(void)
 {
-    poll_buttons();
     switch (ultrazohm_state.current_state)
     {
     case idle_state:
@@ -71,6 +71,7 @@ void ultrazohm_state_machine_step(void)
     default:
         break;
     }
+    poll_buttons();
 }
 
 bool ultrazohm_state_machine_is_control_state(void)
@@ -103,6 +104,17 @@ void ultrazohm_state_machine_set_stop(bool stop)
     ultrazohm_state.stop_flag = stop;
 }
 
+void ultrazohm_state_machine_set_userLED(bool onoff)
+{
+	if(onoff==true) {
+		uz_led_set_userLED_on();
+		ultrazohm_state.uz_led_states.userLED = true;
+	} else {
+		uz_led_set_userLED_off();
+		ultrazohm_state.uz_led_states.userLED = false;
+	}
+}
+
 void ultrazohm_state_machine_set_error(bool error)
 {
     // Prevent setting error state multiple times
@@ -127,8 +139,6 @@ static void idle_entry(void)
         ultrazohm_state.uz_led_states.errorLED = false;
         uz_led_set_runningLED_off();
         ultrazohm_state.uz_led_states.runningLED = false;
-        uz_led_set_userLED_off();
-        ultrazohm_state.uz_led_states.userLED = false;
         ultrazohm_state_machine_event_handled();
     }
 }
@@ -141,8 +151,6 @@ static void running_entry(void)
         ultrazohm_state.uz_led_states.errorLED = false;
         uz_led_set_runningLED_off();
         ultrazohm_state.uz_led_states.runningLED = false;
-        uz_led_set_userLED_off();
-        ultrazohm_state.uz_led_states.userLED = false;
         uz_axigpio_enable_pwm_and_power_electronics();
         ultrazohm_state_machine_event_handled();
     }
@@ -156,8 +164,6 @@ static void control_entry(void)
         ultrazohm_state.uz_led_states.errorLED = false;
         uz_led_set_runningLED_on();
         ultrazohm_state.uz_led_states.runningLED = true;
-        uz_led_set_userLED_off();
-        ultrazohm_state.uz_led_states.userLED = false;
         ultrazohm_state_machine_event_handled();
     }
 }
@@ -305,4 +311,7 @@ bool ultrazohm_state_get_led_ready(void){
 }
 bool ultrazohm_state_get_led_error(void){
     return (ultrazohm_state.uz_led_states.errorLED);
+}
+bool ultrazohm_state_get_led_user(void){
+    return (ultrazohm_state.uz_led_states.userLED);
 }

@@ -49,6 +49,13 @@ void ultrazohm_state_machine_set_enable_control(bool enable_control);
 void ultrazohm_state_machine_set_stop(bool stop);
 
 /**
+ * @brief Sets the user LED
+ *
+ * @param onoff
+ */
+void ultrazohm_state_machine_set_userLED(bool onoff);
+
+/**
  * @brief Sets the input signal error of the state machine
  * 
  * @param error 
@@ -102,3 +109,11 @@ bool ultrazohm_state_get_led_ready(void);
  * @return false 
  */
 bool ultrazohm_state_get_led_error(void);
+
+/**
+ * @brief Returns the current state of the user led
+ *
+ * @return true
+ * @return false
+ */
+bool ultrazohm_state_get_led_user(void);

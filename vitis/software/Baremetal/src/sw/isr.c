@@ -64,8 +64,8 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 	//Get values from ADCs
 	PID_Data.PID_ActualValues.I_UVW.U = (Global_Data.aa.A1.me.ADC_B6 - 2.5f) * (20.0f / 2.084f) / 3.0f;
-	PID_Data.PID_ActualValues.I_UVW.V = (Global_Data.aa.A1.me.ADC_B7 - 2.5f) * (20.0f / 2.084f) / 3.0f;
-	PID_Data.PID_ActualValues.I_UVW.W = (Global_Data.aa.A1.me.ADC_B8 - 2.5f) * (20.0f / 2.084f) / 3.0f;
+	PID_Data.PID_ActualValues.I_UVW.V = (Global_Data.aa.A1.me.ADC_B8 - 2.5f) * (20.0f / 2.084f) / 3.0f;
+	PID_Data.PID_ActualValues.I_UVW.W = (Global_Data.aa.A1.me.ADC_B7 - 2.5f) * (20.0f / 2.084f) / 3.0f;
 	PID_Data.PID_ActualValues.V_DC = ((Global_Data.aa.A1.me.ADC_A1) * 20.05f) - 0.18f;
 	//PID_Data.PID_ActualValues.V_DC = 24.0f;
 	PID_Data.PID_ActualValues.V_UVW.U = Global_Data.aa.A1.me.ADC_A2;

@@ -221,19 +221,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Enable_Current_Control):
-			if (ultrazohm_state_machine_get_state() == control_state) {
+			if (ultrazohm_state_machine_get_state() != control_state) {
 				PID_Data.PID_Control_Selection = Current_Control;
 			}
 			break;
 
 		case (Enable_Speed_Control):
-			if (ultrazohm_state_machine_get_state() == control_state) {
+			if (ultrazohm_state_machine_get_state() != control_state) {
 				PID_Data.PID_Control_Selection = Speed_Control;
 			}
 			break;
 
 		case (Disable_FOC_Control):
-			if (ultrazohm_state_machine_get_state() == control_state) {
+			if (ultrazohm_state_machine_get_state() != control_state) {
 				PID_Data.PID_Control_Selection = No_Control;
 			}
 			break;

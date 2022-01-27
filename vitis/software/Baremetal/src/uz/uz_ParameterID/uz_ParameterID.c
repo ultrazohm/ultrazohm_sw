@@ -446,7 +446,7 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_Para
 	Data->PID_FrictionID_Config.n_eva_max = 0.0f;
 
 	//Inintialize OnlineID-Config
-	Data->PID_OnlineID_Config.AverageTransParams = false;
+	Data->PID_OnlineID_Config.AverageTransParams = true;
 	Data->PID_OnlineID_Config.OnlineID_Reset = false;
 	Data->PID_OnlineID_Config.Rs_time = 0.0f;
 	Data->PID_OnlineID_Config.Temp_ref = 0.0f;

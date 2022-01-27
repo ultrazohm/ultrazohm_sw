@@ -13,18 +13,6 @@ typedef enum
     error_state
 } platform_state_t;
 
-/**
- * @brief struct for the states of the UltraZohm LEDs
- *
- */
-typedef struct
-{
-	bool readyLED;
-	bool runningLED;
-	bool errorLED;
-	bool userLED;
-} uz_led_states_t;
-
 
 /**
  * @brief Returns the current state of the ultrazohm
@@ -90,3 +78,27 @@ bool ultrazohm_state_machine_get_enable_control(void);
  * @return false 
  */
 bool ultrazohm_state_machine_is_control_state(void);
+
+/**
+ * @brief Returns the current state of the running led
+ * 
+ * @return true 
+ * @return false 
+ */
+bool ultrazohm_state_get_led_running(void);
+
+/**
+ * @brief Returns the current state of the ready led
+ * 
+ * @return true 
+ * @return false 
+ */
+bool ultrazohm_state_get_led_ready(void);
+
+/**
+ * @brief Returns the current state of the error led
+ * 
+ * @return true 
+ * @return false 
+ */
+bool ultrazohm_state_get_led_error(void);

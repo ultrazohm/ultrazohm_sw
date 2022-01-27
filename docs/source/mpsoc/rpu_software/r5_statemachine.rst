@@ -83,3 +83,9 @@ Software reference
 .. doxygenfunction:: ultrazohm_state_machine_get_enable_control
 
 .. doxygenfunction:: ultrazohm_state_machine_is_control_state
+
+.. doxygenfunction:: ultrazohm_state_get_led_running
+
+.. doxygenfunction:: ultrazohm_state_get_led_ready
+
+.. doxygenfunction:: ultrazohm_state_get_led_error

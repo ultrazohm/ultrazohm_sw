@@ -19,8 +19,6 @@
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
 
-extern uz_led_states_t uz_led_states;
-
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
@@ -218,12 +216,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_2):
 			uz_led_set_userLED_on();
-			uz_led_states.userLED = true;
+			//uz_led_states.userLED = true;
 			break;
 
 		case (My_Button_3):
 			uz_led_set_userLED_off();
-			uz_led_states.userLED = false;
+			//uz_led_states.userLED = false;
 			break;
 
 		case (My_Button_4):
@@ -263,32 +261,32 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	platform_state_t current_state = ultrazohm_state_machine_get_state();
 	// Feedback bits for controlling the status indicators in the GUI
 	/* Bit 0 - Ready LED */
-	if (uz_led_states.readyLED == true) {
+	if (ultrazohm_state_get_led_ready) {
 	js_status_BareToRTOS |= 1 << 0;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 0);
 	}
 
 	/* Bit 1 - Running LED */
-	if (uz_led_states.runningLED == true) {
+	if (ultrazohm_state_get_led_running) {
 	js_status_BareToRTOS |= 1 << 1;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 1);
 	}
 
 	/* Bit 2 - Error LED */
-	if (uz_led_states.errorLED == true) {
+	if (ultrazohm_state_get_led_error) {
 		js_status_BareToRTOS |= 1 << 2;
 		} else {
 			js_status_BareToRTOS &= ~(1 << 2);
 		}
 
 	/* Bit 3 - User LED */
-	if (uz_led_states.userLED == true) {
-		js_status_BareToRTOS |= 1 << 3;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 3);
-		}
+//	if (user condition) {
+//		js_status_BareToRTOS |= 1 << 3;
+//		} else {
+//			js_status_BareToRTOS &= ~(1 << 3);
+//		}
 
 	/* Bit 4 - My_Button_1 */
 	// if (your condition == true) {

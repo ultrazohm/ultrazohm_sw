@@ -147,6 +147,14 @@ Reference
 
 .. doxygenfunction:: uz_matrix_apply_function_to_each_element
 
+.. doxygenfunction:: uz_matrix_get_max_value
+
+.. doxygenfunction:: uz_matrix_get_max_index
+
+.. doxygenfunction:: uz_matrix_transpose
+
+.. warning:: uz_matrix_transpose uses a `variable length array (VLA) <https://en.wikipedia.org/wiki/Variable-length_array>`_, which does not comply to the coding rules.
+
 Performance estimation
 ======================
 

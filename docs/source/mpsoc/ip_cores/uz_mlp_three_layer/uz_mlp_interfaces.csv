@@ -1,5 +1,5 @@
 Port Name,    Port Type,Data Type,Target Platform Interfaces,Function
-enable_nn,Input,bool,AXI,
+enable_nn,Input,bool,AXI, Triggers one feedforward pass of the network
 x1,Input,sfix32_En14,External,Network input from FPGA
 x2,Input,sfix32_En14,External,Network input from FPGA
 x3,Input,sfix32_En14,External,Network input from FPGA

@@ -19,8 +19,28 @@ bool uz_mlp_three_layer_hw_read_valid_output(uint32_t base_address);
 void uz_mlp_three_layer_hw_write_number_of_inputs(uint32_t base_address, uint32_t number_of_inputs);
 void uz_mlp_three_layer_hw_write_number_of_outputs(uint32_t base_address, uint32_t number_of_outputs);
 
-
+/**
+ * @brief This function writes the input values to the neural network and triggers the strobe register
+ *        The length of input_data determines how many input values are written to the network.
+ *        The minimum length is 2, the maximum length is 16
+ * 
+ * @param base_address Base address of the neural network IP-Core instance
+ * @param input_data Input data array
+ */
 void uz_mlp_three_layer_hw_write_input(uint32_t base_address, uz_array_float_t input_data);
+
+/**
+ * @brief This function triggers the output strobe and reads the output values of the neural network.
+ *        The function writes the output data to the uz_array that is supplied as an input to the function!
+ *        Depending on the length of output_data, either 2,4,6, or 8 outputs are read.
+ *        All other length lead to an assertion!
+ * 
+ * @param base_address Base address of the neural network IP-Core instance
+ * @param output_data Array to which the output is written to
+ */
+void uz_mlp_three_layer_hw_read_output(uint32_t base_address,uz_array_float_t output_data);
+
+
 
 
 #endif // UZ_MLP_THREE_LAYER_HW_H

@@ -273,201 +273,201 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (PID_Enable_ParameterID):
-			PID_Data.PID_GlobalConfig.enableParameterID = true;
+			PID_Data.GlobalConfig.enableParameterID = true;
 			break;
 
 		case (PID_Disable_ParameterID):
-			PID_Data.PID_GlobalConfig.enableParameterID = false;
-			PID_Data.PID_GlobalConfig.ElectricalID = false;
-			PID_Data.PID_GlobalConfig.TwoMassID = false;
-			PID_Data.PID_GlobalConfig.FrictionID = false;
-			PID_Data.PID_GlobalConfig.FluxMapID = false;
-			PID_Data.PID_GlobalConfig.OnlineID = false;
+			PID_Data.GlobalConfig.enableParameterID = false;
+			PID_Data.GlobalConfig.ElectricalID = false;
+			PID_Data.GlobalConfig.TwoMassID = false;
+			PID_Data.GlobalConfig.FrictionID = false;
+			PID_Data.GlobalConfig.FluxMapID = false;
+			PID_Data.GlobalConfig.OnlineID = false;
 			break;
 
 		case (PID_Enable_ElectricalID):
-			PID_Data.PID_GlobalConfig.ElectricalID = true;
+			PID_Data.GlobalConfig.ElectricalID = true;
 			break;
 
 		case (PID_Disable_ElectricalID):
-			PID_Data.PID_GlobalConfig.ElectricalID = false;
+			PID_Data.GlobalConfig.ElectricalID = false;
 			break;
 
 		case (PID_Enable_FrictionID):
-			PID_Data.PID_GlobalConfig.FrictionID = true;
+			PID_Data.GlobalConfig.FrictionID = true;
 			break;
 
 		case (PID_Disable_FrictionID):
-			PID_Data.PID_GlobalConfig.FrictionID = false;
+			PID_Data.GlobalConfig.FrictionID = false;
 			break;
 
 		case (PID_Enable_TwoMassID):
-			PID_Data.PID_GlobalConfig.TwoMassID = true;
+			PID_Data.GlobalConfig.TwoMassID = true;
 			break;
 
 		case (PID_Disable_TwoMassID):
-			PID_Data.PID_GlobalConfig.TwoMassID = false;
+			PID_Data.GlobalConfig.TwoMassID = false;
 			break;
 
 		case (PID_Enable_FluxMapID):
-			PID_Data.PID_GlobalConfig.FluxMapID = true;
+			PID_Data.GlobalConfig.FluxMapID = true;
 			break;
 
 		case (PID_Disable_FluxMapID):
-			PID_Data.PID_GlobalConfig.FluxMapID = false;
+			PID_Data.GlobalConfig.FluxMapID = false;
 			break;
 
 		case (PID_Enable_OnlineID):
-			PID_Data.PID_GlobalConfig.OnlineID = true;
+			PID_Data.GlobalConfig.OnlineID = true;
 			break;
 
 		case (PID_Disable_OnlineID):
-			PID_Data.PID_GlobalConfig.OnlineID = false;
-			PID_Data.PID_AutoRefCurrents_Config.enableCRS = false;
+			PID_Data.GlobalConfig.OnlineID = false;
+			PID_Data.AutoRefCurrents_Config.enableCRS = false;
 			break;
 
 		case (PID_ACCEPT):
-			PID_Data.PID_GlobalConfig.ACCEPT = true;
+			PID_Data.GlobalConfig.ACCEPT = true;
 			break;
 
 		case (PID_RESET):
-			PID_Data.PID_GlobalConfig.Reset = true;
-			PID_Data.PID_GlobalConfig.ElectricalID = false;
-			PID_Data.PID_GlobalConfig.TwoMassID = false;
-			PID_Data.PID_GlobalConfig.FrictionID = false;
-			PID_Data.PID_GlobalConfig.FluxMapID = false;
-			PID_Data.PID_GlobalConfig.OnlineID = false;
+			PID_Data.GlobalConfig.Reset = true;
+			PID_Data.GlobalConfig.ElectricalID = false;
+			PID_Data.GlobalConfig.TwoMassID = false;
+			PID_Data.GlobalConfig.FrictionID = false;
+			PID_Data.GlobalConfig.FluxMapID = false;
+			PID_Data.GlobalConfig.OnlineID = false;
 			break;
 
 		case (PID_EID_sampleTimeISR):
-			PID_Data.PID_GlobalConfig.sampleTimeISR = value * 0.000001f;
+			PID_Data.GlobalConfig.sampleTimeISR = value * 0.000001f;
 			break;
 
 		case (PID_EID_n_ref_meas):
-			PID_Data.PID_ElectricalID_Config.n_ref_measurement = value;
+			PID_Data.ElectricalID_Config.n_ref_measurement = value;
 			break;
 
 		case (PID_EID_goertzl_Amp):
-			PID_Data.PID_ElectricalID_Config.goertzlAmp = value * 0.1f;
+			PID_Data.ElectricalID_Config.goertzlAmp = value * 0.1f;
 			break;
 
 		case (PID_EID_polePairs):
-			PID_Data.PID_GlobalConfig.PMSM_config.polePairs = value;
+			PID_Data.GlobalConfig.PMSM_config.polePairs = value;
 			break;
 
 		case (PID_EID_DutyCyc):
-			PID_Data.PID_ElectricalID_Config.dutyCyc = value;
+			PID_Data.ElectricalID_Config.dutyCyc = value;
 			break;
 
 		case (PID_EID_MaxContinousCurrent):
-			PID_Data.PID_GlobalConfig.PMSM_config.I_max_Ampere = value;
+			PID_Data.GlobalConfig.PMSM_config.I_max_Ampere = value;
 			break;
 
 		case (PID_EID_Enable_IdentLQ):
-			PID_Data.PID_ElectricalID_Config.identLq = true;
+			PID_Data.ElectricalID_Config.identLq = true;
 			break;
 
 		case (PID_EID_Disable_IdentLQ):
-			PID_Data.PID_ElectricalID_Config.identLq = false;
+			PID_Data.ElectricalID_Config.identLq = false;
 			break;
 
 		case (PID_EID_Admit_Params):
 			break;
 
 		case (PID_FID_max_speed):
-			PID_Data.PID_FrictionID_Config.n_eva_max = value;
+			PID_Data.FrictionID_Config.n_eva_max = value;
 			break;
 
 		case (PID_FID_N_Brk):
-			PID_Data.PID_FrictionID_Config.N_Brk = value;
+			PID_Data.FrictionID_Config.N_Brk = value;
 			break;
 
 		case (PID_FID_N_Visco):
-			PID_Data.PID_FrictionID_Config.N_Visco = value;
+			PID_Data.FrictionID_Config.N_Visco = value;
 			break;
 
 		case (PID_FID_s_step):
-			PID_Data.PID_FrictionID_Config.StepScale = value;
+			PID_Data.FrictionID_Config.StepScale = value;
 			break;
 
 		case (PID_FID_Brk_Count):
-			PID_Data.PID_FrictionID_Config.BrkCount = value;
+			PID_Data.FrictionID_Config.BrkCount = value;
 			break;
 
 		case (PID_FID_eta_speed):
-			PID_Data.PID_FrictionID_Config.eta = value;
+			PID_Data.FrictionID_Config.eta = value;
 			break;
 
 		case (PID_TMID_Scale_PRBS):
-			PID_Data.PID_TwoMassID_Config.ScaleTorquePRBS = value;
+			PID_Data.TwoMassID_Config.ScaleTorquePRBS = value;
 			break;
 
 		case (PID_TMID_d_TMS_start):
-			PID_Data.PID_TwoMassID_Config.d_TMS_start = value;
+			PID_Data.TwoMassID_Config.d_TMS_start = value;
 			break;
 
 		case (PID_TMID_n_ref):
-			PID_Data.PID_TwoMassID_Config.n_ref_measurement = value;
+			PID_Data.TwoMassID_Config.n_ref_measurement = value;
 			break;
 
 		case (PID_TMID_f_min):
-			PID_Data.PID_TwoMassID_Config.f_min = value;
+			PID_Data.TwoMassID_Config.f_min = value;
 			break;
 
 		case (PID_TMID_f_max):
-			PID_Data.PID_TwoMassID_Config.f_max = value;
+			PID_Data.TwoMassID_Config.f_max = value;
 			break;
 
 		case (PID_FMID_i_d_start):
-			PID_Data.PID_FluxMapID_Config.IDstart = value;
+			PID_Data.FluxMapID_Config.IDstart = value;
 			break;
 
 		case (PID_FMID_i_d_stop):
-			PID_Data.PID_FluxMapID_Config.IDstop = value;
+			PID_Data.FluxMapID_Config.IDstop = value;
 			break;
 
 		case (PID_FMID_i_d_step):
-			PID_Data.PID_FluxMapID_Config.IDstepsize = value;
+			PID_Data.FluxMapID_Config.IDstepsize = value;
 			break;
 
 		case (PID_FMID_i_q_start):
-			PID_Data.PID_FluxMapID_Config.IQstart = value;
+			PID_Data.FluxMapID_Config.IQstart = value;
 			break;
 
 		case (PID_FMID_i_q_stop):
-			PID_Data.PID_FluxMapID_Config.IQstop = value;
+			PID_Data.FluxMapID_Config.IQstop = value;
 			break;
 
 		case (PID_FMID_i_q_step):
-			PID_Data.PID_FluxMapID_Config.IQstepsize = value;
+			PID_Data.FluxMapID_Config.IQstepsize = value;
 			break;
 
 		case (PID_FMID_Rs_ref):
-			PID_Data.PID_FluxMapID_Config.R_s_ref = value;
+			PID_Data.FluxMapID_Config.R_s_ref = value;
 			break;
 
 		case (PID_FMID_Temp_ref):
-			PID_Data.PID_FluxMapID_Config.Temp_ref = value;
+			PID_Data.FluxMapID_Config.Temp_ref = value;
 			break;
 
 		case (PID_FMID_identRAmp):
-			PID_Data.PID_FluxMapID_Config.identRAmp = value;
+			PID_Data.FluxMapID_Config.identRAmp = value;
 			break;
 
 		case (PID_FMID_enable_ident_R):
-			PID_Data.PID_FluxMapID_Config.identR = true;
+			PID_Data.FluxMapID_Config.identR = true;
 			break;
 
 		case (PID_FMID_disable_ident_R):
-			PID_Data.PID_FluxMapID_Config.identR = false;
+			PID_Data.FluxMapID_Config.identR = false;
 			break;
 
 		case (PID_FMID_enable_AMM):
-			PID_Data.PID_FluxMapID_Config.start_FM_ID = true;
+			PID_Data.FluxMapID_Config.start_FM_ID = true;
 			break;
 
 		case (PID_FMID_disable_AMM):
-			PID_Data.PID_FluxMapID_Config.start_FM_ID = false;
+			PID_Data.FluxMapID_Config.start_FM_ID = false;
 			break;
 
 		case (PID_OID_Refresh_Flux_Maps):
@@ -475,51 +475,51 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (PID_OID_Reset_OnlineID):
-			PID_Data.PID_OnlineID_Config.OnlineID_Reset = true;
-			PID_Data.PID_AutoRefCurrents_Config.Reset = true;
+			PID_Data.OnlineID_Config.OnlineID_Reset = true;
+			PID_Data.AutoRefCurrents_Config.Reset = true;
 			break;
 
 		case (PID_OID_Enable_AutoCurrentControl):
-			PID_Data.PID_AutoRefCurrents_Config.enableCRS = true;
+			PID_Data.AutoRefCurrents_Config.enableCRS = true;
 			break;
 
 		case (PID_OID_Disable_AutoCurrentControl):
-			PID_Data.PID_AutoRefCurrents_Config.enableCRS = false;
+			PID_Data.AutoRefCurrents_Config.enableCRS = false;
 			break;
 
 		case (PID_OID_d_current_steps):
-			PID_Data.PID_AutoRefCurrents_Config.id_points = value;
+			PID_Data.AutoRefCurrents_Config.id_points = value;
 			break;
 
 		case (PID_OID_q_current_steps):
-			PID_Data.PID_AutoRefCurrents_Config.iq_points = value;
+			PID_Data.AutoRefCurrents_Config.iq_points = value;
 			break;
 
 		case (PID_OID_max_current):
-			PID_Data.PID_AutoRefCurrents_Config.max_current = value;
+			PID_Data.AutoRefCurrents_Config.max_current = value;
 			break;
 
 		case (PID_OID_ref_temp):
-			PID_Data.PID_OnlineID_Config.Temp_ref = value;
+			PID_Data.OnlineID_Config.Temp_ref = value;
 			break;
 
 		case (PID_OID_ref_Rs):
 			break;
 
 		case (PID_OID_max_speed):
-			PID_Data.PID_OnlineID_Config.max_n_ratio = value;
+			PID_Data.OnlineID_Config.max_n_ratio = value;
 			break;
 
 		case (PID_OID_min_speed):
-			PID_Data.PID_OnlineID_Config.min_n_ratio = value;
+			PID_Data.OnlineID_Config.min_n_ratio = value;
 			break;
 
 		case (PID_OID_Ident_range_factor):
-			PID_Data.PID_OnlineID_Config.nom_factor = value;
+			PID_Data.OnlineID_Config.nom_factor = value;
 			break;
 
 		case (PID_OID_max_ident_pause):
-			PID_Data.PID_OnlineID_Config.Rs_time = value;
+			PID_Data.OnlineID_Config.Rs_time = value;
 			break;
 		case (0xFFFF):
 			// this is triggered if the IPI message buffer is read without being written once before (i.e. at startup)
@@ -553,21 +553,21 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS &= ~(1 << 1);
 	}
 	/* Bit 2 - Ident_Lq */
-	if (PID_Data.PID_ElectricalID_Config.identLq == true) {
+	if (PID_Data.ElectricalID_Config.identLq == true) {
 		js_status_BareToRTOS |= (1 << 2);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 2);
 	}
 
 	/* Bit 3 - FluxMapID R-Online */
-	if (PID_Data.PID_FluxMapID_Config.identR == true) {
+	if (PID_Data.FluxMapID_Config.identR == true) {
 		js_status_BareToRTOS |= (1 << 3);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 3);
 	}
 
 	/* Bit 4 - FluxMapID start */
-	if (PID_Data.PID_FluxMapID_Config.start_FM_ID == true) {
+	if (PID_Data.FluxMapID_Config.start_FM_ID == true) {
 		js_status_BareToRTOS |= (1 << 4);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 4);

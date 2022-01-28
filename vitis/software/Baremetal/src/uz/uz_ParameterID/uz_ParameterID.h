@@ -38,21 +38,21 @@ enum uz_PID_Control_selection {
 	No_Control = 0, Current_Control, Speed_Control
 };
 typedef struct uz_ParameterID_Data_t {
-	uz_PID_ActualValues_t PID_ActualValues;
-	uz_PID_ControlFlags_t* PID_ControlFlags;
-	uz_PID_GlobalConfig_t PID_GlobalConfig;
-	uz_PID_ElectricalIDConfig_t PID_ElectricalID_Config;
-	uz_PID_TwoMassIDConfig_t PID_TwoMassID_Config;
-	uz_PID_FrictionIDConfig_t PID_FrictionID_Config;
-	uz_PID_FluxMapIDConfig_t PID_FluxMapID_Config;
-	uz_PID_OnlineIDConfig_t PID_OnlineID_Config;
-	uz_PID_AutoRefCurrentsConfig_t PID_AutoRefCurrents_Config;
-	uz_PID_ElectricalID_output_t *PID_ElectricalID_Output;
-	uz_PID_TwoMassID_output_t *PID_TwoMassID_Output;
-	uz_PID_FrictionID_output_t *PID_FrictionID_Output;
-	uz_PID_FluxMapID_output_t *PID_FluxMapID_Output;
-	uz_PID_OnlineID_output_t* PID_OnlineID_Output;
-	uz_PID_Controller_Parameters_output_t PID_Controller_Parameters;
+	uz_PID_ActualValues_t ActualValues;
+	uz_PID_ControlFlags_t* ControlFlags;
+	uz_PID_GlobalConfig_t GlobalConfig;
+	uz_PID_ElectricalIDConfig_t ElectricalID_Config;
+	uz_PID_TwoMassIDConfig_t TwoMassID_Config;
+	uz_PID_FrictionIDConfig_t FrictionID_Config;
+	uz_PID_FluxMapIDConfig_t FluxMapID_Config;
+	uz_PID_OnlineIDConfig_t OnlineID_Config;
+	uz_PID_AutoRefCurrentsConfig_t AutoRefCurrents_Config;
+	uz_PID_ElectricalID_output_t *ElectricalID_Output;
+	uz_PID_TwoMassID_output_t *TwoMassID_Output;
+	uz_PID_FrictionID_output_t *FrictionID_Output;
+	uz_PID_FluxMapID_output_t *FluxMapID_Output;
+	uz_PID_OnlineID_output_t* OnlineID_Output;
+	uz_PID_Controller_Parameters_output_t Controller_Parameters;
 	uz_dq_t AutoRefCurrents_Output;
 	uz_PID_FluxMapsData_t* FluxMap_Data;
 	bool calculate_flux_maps;

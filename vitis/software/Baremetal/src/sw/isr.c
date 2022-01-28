@@ -63,22 +63,22 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 	//Get values from ADCs
-	PID_Data.PID_ActualValues.I_UVW.U = (Global_Data.aa.A1.me.ADC_B6 - 2.5f) * (20.0f / 2.084f) / 3.0f;
-	PID_Data.PID_ActualValues.I_UVW.V = (Global_Data.aa.A1.me.ADC_B8 - 2.5f) * (20.0f / 2.084f) / 3.0f;
-	PID_Data.PID_ActualValues.I_UVW.W = (Global_Data.aa.A1.me.ADC_B7 - 2.5f) * (20.0f / 2.084f) / 3.0f;
-	PID_Data.PID_ActualValues.V_DC = ((Global_Data.aa.A1.me.ADC_A1) * 20.05f) - 0.18f;
-	//PID_Data.PID_ActualValues.V_DC = 24.0f;
-	PID_Data.PID_ActualValues.V_UVW.U = Global_Data.aa.A1.me.ADC_A2;
-	PID_Data.PID_ActualValues.V_UVW.V = Global_Data.aa.A1.me.ADC_A3;
-	PID_Data.PID_ActualValues.V_UVW.W = Global_Data.aa.A1.me.ADC_A4;
+	PID_Data.ActualValues.I_UVW.U = (Global_Data.aa.A1.me.ADC_B6 - 2.5f) * (20.0f / 2.084f) / 3.0f;
+	PID_Data.ActualValues.I_UVW.V = (Global_Data.aa.A1.me.ADC_B8 - 2.5f) * (20.0f / 2.084f) / 3.0f;
+	PID_Data.ActualValues.I_UVW.W = (Global_Data.aa.A1.me.ADC_B7 - 2.5f) * (20.0f / 2.084f) / 3.0f;
+	PID_Data.ActualValues.V_DC = ((Global_Data.aa.A1.me.ADC_A1) * 20.05f) - 0.18f;
+	//PID_Data.ActualValues.V_DC = 24.0f;
+	PID_Data.ActualValues.V_UVW.U = Global_Data.aa.A1.me.ADC_A2;
+	PID_Data.ActualValues.V_UVW.V = Global_Data.aa.A1.me.ADC_A3;
+	PID_Data.ActualValues.V_UVW.W = Global_Data.aa.A1.me.ADC_A4;
 
-	PID_Data.PID_ActualValues.omega_m = (Global_Data.av.mechanicalRotorSpeed * 2.0f * UZ_PIf) / 60.0f;
-	PID_Data.PID_ActualValues.theta_el = Global_Data.av.theta_elec;
+	PID_Data.ActualValues.omega_m = (Global_Data.av.mechanicalRotorSpeed * 2.0f * UZ_PIf ) / 60.0f;
+	PID_Data.ActualValues.theta_el = Global_Data.av.theta_elec;
 
 	//Calculate missing ActualValues
-	PID_Data.PID_ActualValues.i_dq = uz_dq_transformation(PID_Data.PID_ActualValues.I_UVW, Global_Data.av.theta_elec);
-	PID_Data.PID_ActualValues.v_dq = uz_dq_transformation(PID_Data.PID_ActualValues.V_UVW, Global_Data.av.theta_elec);
-	PID_Data.PID_ActualValues.theta_m = Global_Data.av.theta_elec / PID_Data.PID_GlobalConfig.PMSM_config.polePairs;
+	PID_Data.ActualValues.i_dq = uz_dq_transformation(PID_Data.ActualValues.I_UVW, Global_Data.av.theta_elec);
+	PID_Data.ActualValues.v_dq = uz_dq_transformation(PID_Data.ActualValues.V_UVW, Global_Data.av.theta_elec);
+	PID_Data.ActualValues.theta_m = Global_Data.av.theta_elec / PID_Data.GlobalConfig.PMSM_config.polePairs;
 
 	uz_ParameterID_step(ParameterID, &PID_Data);
 
@@ -90,7 +90,7 @@ void ISR_Control(void *data)
 		Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;
 		Global_Data.rasv.halfBridge2DutyCycle = PID_DutyCycle.DutyCycle_V;
 		Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;
-		PID_Data.PID_ActualValues.v_dq = PID_v_dq;
+		PID_Data.ActualValues.v_dq = PID_v_dq;
 	} else {
 		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;

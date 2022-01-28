@@ -102,9 +102,9 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		}
 	}
 	//OnlineID
-	if (self->ControlState->output.ControlFlags.enableOnlineID == true || self->ControlState->output.GlobalConfig_out.Reset == true || Data->PID_OnlineID_Config.OnlineID_Reset == true) {
+	if (self->ControlState->output.ControlFlags.enableOnlineID == true || self->ControlState->output.GlobalConfig_out.Reset == true || Data->OnlineID_Config.OnlineID_Reset == true) {
 		uz_PID_OnlineID_step(self, Data);
-		if (Data->PID_AutoRefCurrents_Config.enableCRS == true) {
+		if (Data->AutoRefCurrents_Config.enableCRS == true) {
 			uz_PID_AutoRefCurrents_step(self, Data);
 		}
 		if (Data->FluxMap_counter < 400) {
@@ -117,7 +117,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	}
 
 	//RESET
-	if (Data->PID_GlobalConfig.Reset == true) {
+	if (Data->GlobalConfig.Reset == true) {
 		uz_PID_ControlState_step(self, Data);
 		uz_PID_ElectricalID_step(self, Data);
 		uz_PID_TwoMassID_step(self, Data);
@@ -128,34 +128,33 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 
 		//reset the Reset-button
 		self->ControlState->output.GlobalConfig_out.Reset = false;
-		Data->PID_GlobalConfig.Reset = false;
+		Data->GlobalConfig.Reset = false;
 	}
 
 	// reset ACCEPT
 	if (self->ControlState->output.GlobalConfig_out.ACCEPT == true) {
 		self->ControlState->output.GlobalConfig_out.ACCEPT = false;
-		Data->PID_GlobalConfig.ACCEPT = false;
+		Data->GlobalConfig.ACCEPT = false;
 	}
 }
 
 struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance, uz_dq_t v_dq_Volts, uz_PWM_SS_2L_t* PWM_Module) {
 	struct uz_DutyCycle_t output_DutyCycle = { 0 };
-	if (Data->PID_Controller_Parameters.activeState >= 110 && Data->PID_Controller_Parameters.activeState <= 143) {
-		uz_PWM_SS_2L_set_tristate(PWM_Module, Data->PID_ElectricalID_Output->enable_TriState[0], Data->PID_ElectricalID_Output->enable_TriState[1],
-		                Data->PID_ElectricalID_Output->enable_TriState[2]);
-		output_DutyCycle.DutyCycle_U = Data->PID_ElectricalID_Output->PWM_Switch_0;
-		output_DutyCycle.DutyCycle_V = Data->PID_ElectricalID_Output->PWM_Switch_2;
-		output_DutyCycle.DutyCycle_W = Data->PID_ElectricalID_Output->PWM_Switch_4;
-	} else if ((Data->PID_Controller_Parameters.enableFOC_current == true || Data->PID_Controller_Parameters.enableFOC_speed == true)
-	                || (Data->PID_ControlFlags->finished_all_Offline_states == true && (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control))) {
-		uz_UVW_t V_UVW_Volts = uz_dq_inverse_transformation(v_dq_Volts, Data->PID_ActualValues.theta_el);
-		output_DutyCycle = uz_FOC_generate_DutyCycles(V_UVW_Volts, Data->PID_ActualValues.V_DC);
+	if (Data->Controller_Parameters.activeState >= 110 && Data->Controller_Parameters.activeState <= 143) {
+		uz_PWM_SS_2L_set_tristate(PWM_Module, Data->ElectricalID_Output->enable_TriState[0], Data->ElectricalID_Output->enable_TriState[1], Data->ElectricalID_Output->enable_TriState[2]);
+		output_DutyCycle.DutyCycle_U = Data->ElectricalID_Output->PWM_Switch_0;
+		output_DutyCycle.DutyCycle_V = Data->ElectricalID_Output->PWM_Switch_2;
+		output_DutyCycle.DutyCycle_W = Data->ElectricalID_Output->PWM_Switch_4;
+	} else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
+	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control))) {
+		uz_UVW_t V_UVW_Volts = uz_dq_inverse_transformation(v_dq_Volts, Data->ActualValues.theta_el);
+		output_DutyCycle = uz_FOC_generate_DutyCycles(V_UVW_Volts, Data->ActualValues.V_DC);
 	} else {
 		output_DutyCycle.DutyCycle_U = 0.0f;
 		output_DutyCycle.DutyCycle_V = 0.0f;
 		output_DutyCycle.DutyCycle_W = 0.0f;
 	}
-	if (Data->PID_Controller_Parameters.resetIntegrator == true) {
+	if (Data->Controller_Parameters.resetIntegrator == true) {
 		output_DutyCycle.DutyCycle_U = 0.0f;
 		output_DutyCycle.DutyCycle_V = 0.0f;
 		output_DutyCycle.DutyCycle_W = 0.0f;
@@ -167,37 +166,37 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 	uz_dq_t i_SpeedControl_reference_Ampere = { 0 };
 	bool ext_clamping = false;
 
-	if (Data->PID_Controller_Parameters.enableFOC_speed == true) {
+	if (Data->Controller_Parameters.enableFOC_speed == true) {
 		//Change, if desired, the speed controller here
 		ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
-		i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->PID_ActualValues.omega_el, Data->PID_Controller_Parameters.n_ref_FOC, Data->PID_ActualValues.V_DC,
-		                Data->PID_Controller_Parameters.i_dq_ref.d, Data->PID_GlobalConfig.PMSM_config, ext_clamping);
+		i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->Controller_Parameters.n_ref_FOC, Data->ActualValues.V_DC,
+		                Data->Controller_Parameters.i_dq_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping);
 		//Create sine excitation for J-Identification
-		if (Data->PID_Controller_Parameters.VibOn_out == true) {
-			float sine_excitation = uz_wavegen_sine(Data->PID_Controller_Parameters.VibAmp_out, Data->PID_Controller_Parameters.VibFreq_out);
+		if (Data->Controller_Parameters.VibOn_out == true) {
+			float sine_excitation = uz_wavegen_sine(Data->Controller_Parameters.VibAmp_out, Data->Controller_Parameters.VibFreq_out);
 			i_SpeedControl_reference_Ampere.q += sine_excitation;
 		} else {
-			i_SpeedControl_reference_Ampere.q += Data->PID_Controller_Parameters.PRBS_out;
+			i_SpeedControl_reference_Ampere.q += Data->Controller_Parameters.PRBS_out;
 		}
 	}
-	if (Data->PID_Controller_Parameters.enableFOC_current == true || Data->PID_Controller_Parameters.enableFOC_speed == true) {
+	if (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true) {
 		//Change, if desired, the current controller here
-		if (Data->PID_Controller_Parameters.enableFOC_current == true) {
+		if (Data->Controller_Parameters.enableFOC_current == true) {
 			//If CurrentControl is active, use input reference currents
-			v_dq_Volts = uz_FOC_sample(FOC_instance, Data->PID_Controller_Parameters.i_dq_ref, Data->PID_ActualValues.i_dq, Data->PID_ActualValues.V_DC, Data->PID_ActualValues.omega_el);
-		} else if (Data->PID_Controller_Parameters.enableFOC_speed == true) {
+			v_dq_Volts = uz_FOC_sample(FOC_instance, Data->Controller_Parameters.i_dq_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		} else if (Data->Controller_Parameters.enableFOC_speed == true) {
 			//If SpeedControl is active, use reference currents from SpeedControl
-			v_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data->PID_ActualValues.i_dq, Data->PID_ActualValues.V_DC, Data->PID_ActualValues.omega_el);
+			v_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}
 	}
-	if (Data->PID_Controller_Parameters.resetIntegrator == true) {
+	if (Data->Controller_Parameters.resetIntegrator == true) {
 			uz_FOC_reset(FOC_instance);
 			uz_SpeedControl_reset(Speed_instance);
 		}
-	if (Data->PID_GlobalConfig.ElectricalID == true) {
-		if (Data->PID_Controller_Parameters.activeState == 144U) {
+	if (Data->GlobalConfig.ElectricalID == true) {
+		if (Data->Controller_Parameters.activeState == 144U) {
 			uz_FOC_set_decoupling_method(FOC_instance, no_decoupling);
-		} else if (Data->PID_Controller_Parameters.activeState == 170U) {
+		} else if (Data->Controller_Parameters.activeState == 170U) {
 //                      uz_FOC_set_PMSM_parameters(FOC_instance, Data->PID_ElectricalID_Output->PMSM_parameters);
 			uz_FOC_set_decoupling_method(FOC_instance, linear_decoupling);
 		}
@@ -208,37 +207,37 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 //		uz_PI_Controller_set_Ki(Speed_instance, Data->PID_Controller_Parameters.Ki_n_out);
 //		uz_PI_Controller_set_Kp(Speed_instance, Data->PID_Controller_Parameters.Kp_n_out);
 		}
-	if (Data->PID_GlobalConfig.TwoMassID == true && (Data->PID_Controller_Parameters.activeState == 220 || Data->PID_Controller_Parameters.activeState == 230)) {
+	if (Data->GlobalConfig.TwoMassID == true && (Data->Controller_Parameters.activeState == 220 || Data->Controller_Parameters.activeState == 230)) {
 		//uz_PI_Controller_set_Ki(Speed_instance, Data->PID_Controller_Parameters.Ki_n_out);
 		//uz_PI_Controller_set_Kp(Speed_instance, Data->PID_Controller_Parameters.Kp_n_out);
 	}
 
-	if (Data->PID_ControlFlags->finished_all_Offline_states == true) {
-		uz_dq_t Online_current_ref = Data->PID_GlobalConfig.i_dq_ref;
-		if (Data->PID_OnlineID_Output->IdControlFlag == true) {
+	if (Data->ControlFlags->finished_all_Offline_states == true) {
+		uz_dq_t Online_current_ref = Data->GlobalConfig.i_dq_ref;
+		if (Data->OnlineID_Output->IdControlFlag == true) {
 
-			if (Data->PID_AutoRefCurrents_Config.enableCRS == true) {
-				Online_current_ref.d = Data->PID_GlobalConfig.i_dq_ref.d + Data->PID_OnlineID_Output->id_out + Data->AutoRefCurrents_Output.d;
-				Online_current_ref.q = Data->PID_GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
+			if (Data->AutoRefCurrents_Config.enableCRS == true) {
+				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out + Data->AutoRefCurrents_Output.d;
+				Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
 			} else {
-				Online_current_ref.d = Data->PID_GlobalConfig.i_dq_ref.d + Data->PID_OnlineID_Output->id_out;
+				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out;
 			}
 		} else {
-			if (Data->PID_AutoRefCurrents_Config.enableCRS == true) {
-				Online_current_ref.d = Data->PID_GlobalConfig.i_dq_ref.d + Data->AutoRefCurrents_Output.d;
-				Online_current_ref.q = Data->PID_GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
+			if (Data->AutoRefCurrents_Config.enableCRS == true) {
+				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->AutoRefCurrents_Output.d;
+				Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
 			}
 		}
 		if (Data->PID_Control_Selection == Speed_Control) {
 			ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
-			i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->PID_ActualValues.omega_el, Data->PID_GlobalConfig.n_ref, Data->PID_ActualValues.V_DC,
-			                Online_current_ref.d, Data->PID_GlobalConfig.PMSM_config, ext_clamping);
+			i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->GlobalConfig.n_ref, Data->ActualValues.V_DC, Online_current_ref.d,
+			                Data->GlobalConfig.PMSM_config, ext_clamping);
 
 		} else if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
 			if (Data->PID_Control_Selection == Current_Control) {
-				v_dq_Volts = uz_FOC_sample(FOC_instance, Online_current_ref, Data->PID_ActualValues.i_dq, Data->PID_ActualValues.V_DC, Data->PID_ActualValues.omega_el);
+				v_dq_Volts = uz_FOC_sample(FOC_instance, Online_current_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 			} else {
-				v_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data->PID_ActualValues.i_dq, Data->PID_ActualValues.V_DC, Data->PID_ActualValues.omega_el);
+				v_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 			}
 		} else {
 			v_dq_Volts.d = 0.0f;
@@ -251,21 +250,21 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 
 void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t* Data) {
 	self->OnlineID->CleanPsiArray->input.OnlineID_output = self->OnlineID->output.OnlineID_output;
-	self->OnlineID->CleanPsiArray->input.eta_c = 0.05f * Data->PID_GlobalConfig.ratCurrent;
+	self->OnlineID->CleanPsiArray->input.eta_c = 0.05f * Data->GlobalConfig.ratCurrent;
 	uz_OnlineID_CleanPsiArray(self->OnlineID);
-	if (Data->PID_OnlineID_Config.OnlineID_Reset == false) {
+	if (Data->OnlineID_Config.OnlineID_Reset == false) {
 		memcpy(self->OnlineID->input.cleaned_psi_array, self->OnlineID->CleanPsiArray->output.psi_array_out, sizeof(self->OnlineID->input.cleaned_psi_array));
 	} else {
 		memcpy(self->OnlineID->input.cleaned_psi_array, self->OnlineID->output.OnlineID_output.psi_array, sizeof(self->OnlineID->input.cleaned_psi_array));
 	}
-	Data->PID_OnlineID_Config.array_cleaned = self->OnlineID->CleanPsiArray->output.array_cleaned_flag;
+	Data->OnlineID_Config.array_cleaned = self->OnlineID->CleanPsiArray->output.array_cleaned_flag;
 	Data->FluxMap_MeasuringPoints = self->OnlineID->CleanPsiArray->output.n_flux_points;
 
 }
 
 void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	memcpy(self->OnlineID->InterpMeshGrid->input.psi_array_in, self->OnlineID->CleanPsiArray->output.psi_array_out, sizeof(self->OnlineID->CleanPsiArray->output.psi_array_out));
-	self->OnlineID->InterpMeshGrid->input.i_rat = Data->PID_GlobalConfig.ratCurrent;
+	self->OnlineID->InterpMeshGrid->input.i_rat = Data->GlobalConfig.ratCurrent;
 	self->OnlineID->InterpMeshGrid->input.OnlineID_input = self->OnlineID->output.OnlineID_output;
 	uz_OnlineID_CalcFluxMaps(self->OnlineID);
 }
@@ -273,8 +272,8 @@ void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* 
 
 static void uz_PID_ElectricalID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	//Update State-Inputs
-	self->ElectricalID->input.ActualValues = Data->PID_ActualValues;
-	self->ElectricalID->input.ElectricalIDConfig = Data->PID_ElectricalID_Config;
+	self->ElectricalID->input.ActualValues = Data->ActualValues;
+	self->ElectricalID->input.ElectricalIDConfig = Data->ElectricalID_Config;
 	self->ElectricalID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
 	self->ElectricalID->input.ControlFlags = self->ControlState->output.ControlFlags;
 
@@ -288,13 +287,13 @@ static void uz_PID_ElectricalID_step(uz_ParameterID_t* self, uz_ParameterID_Data
 	self->ControlState->input.finishedElectricalID = self->ElectricalID->output.finishedElectricalID;
 
 	//Update Data struct with new output values
-	Data->PID_Controller_Parameters = self->ElectricalID->output.ElectricalID_FOC_output;
-	Data->PID_GlobalConfig.thetaOffset = self->ElectricalID->output.ElectricalID_output.thetaOffset;
+	Data->Controller_Parameters = self->ElectricalID->output.ElectricalID_FOC_output;
+	Data->GlobalConfig.thetaOffset = self->ElectricalID->output.ElectricalID_output.thetaOffset;
 }
 
 static void uz_PID_ControlState_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	//Update Control-State inputs, which are not depended on other states
-	self->ControlState->input.GlobalConfig_in = Data->PID_GlobalConfig;
+	self->ControlState->input.GlobalConfig_in = Data->GlobalConfig;
 
 	//Control-State will always be stepped
 	uz_ControlState_step(self->ControlState);
@@ -302,8 +301,8 @@ static void uz_PID_ControlState_step(uz_ParameterID_t* self, uz_ParameterID_Data
 
 static void uz_PID_FrictionID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	//Update State-Inputs
-	self->FrictionID->input.ActualValues = Data->PID_ActualValues;
-	self->FrictionID->input.FrictionConfigID = Data->PID_FrictionID_Config;
+	self->FrictionID->input.ActualValues = Data->ActualValues;
+	self->FrictionID->input.FrictionConfigID = Data->FrictionID_Config;
 	self->FrictionID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
 	self->FrictionID->input.ControlFlags = self->ControlState->output.ControlFlags;
 
@@ -314,13 +313,13 @@ static void uz_PID_FrictionID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t
 	self->ControlState->input.enteredFrictionID = self->FrictionID->output.enteredFrictionID;
 	self->ControlState->input.finishedFrictionID = self->FrictionID->output.finishedFrictionID;
 	//Update Data struct with new output values
-	Data->PID_Controller_Parameters = self->FrictionID->output.FrictionID_FOC_output;
+	Data->Controller_Parameters = self->FrictionID->output.FrictionID_FOC_output;
 }
 
 static void uz_PID_TwoMassID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	//Update State-Inputs
-	self->TwoMassID->input.ActualValues = Data->PID_ActualValues;
-	self->TwoMassID->input.TwoMassIDConfig = Data->PID_TwoMassID_Config;
+	self->TwoMassID->input.ActualValues = Data->ActualValues;
+	self->TwoMassID->input.TwoMassIDConfig = Data->TwoMassID_Config;
 	self->TwoMassID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
 	self->TwoMassID->input.ControlFlags = self->ControlState->output.ControlFlags;
 
@@ -332,13 +331,13 @@ static void uz_PID_TwoMassID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t*
 	self->ControlState->input.finishedTwoMassID = self->TwoMassID->output.finishedTwoMassID;
 
 	//Update Data struct with new output values
-	Data->PID_Controller_Parameters = self->TwoMassID->output.TwoMassID_FOC_output;
+	Data->Controller_Parameters = self->TwoMassID->output.TwoMassID_FOC_output;
 }
 
 static void uz_PID_FluxMapID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	//Update State-Inputs
-	self->FluxMapID->input.ActualValues = Data->PID_ActualValues;
-	self->FluxMapID->input.FluxMapIDConfig = Data->PID_FluxMapID_Config;
+	self->FluxMapID->input.ActualValues = Data->ActualValues;
+	self->FluxMapID->input.FluxMapIDConfig = Data->FluxMapID_Config;
 	self->FluxMapID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
 	self->FluxMapID->input.ControlFlags = self->ControlState->output.ControlFlags;
 
@@ -350,28 +349,28 @@ static void uz_PID_FluxMapID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t*
 	self->ControlState->input.finishedFluxMapID = self->FluxMapID->output.finishedFluxMapID;
 
 	//Update Data struct with new output values
-	Data->PID_Controller_Parameters = self->FluxMapID->output.FluxMapID_FOC_output;
+	Data->Controller_Parameters = self->FluxMapID->output.FluxMapID_FOC_output;
 }
 
 static void uz_PID_OnlineID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	//Update State-Inputs
-	self->OnlineID->input.ActualValues = Data->PID_ActualValues;
+	self->OnlineID->input.ActualValues = Data->ActualValues;
 	self->OnlineID->input.ControlFlags = self->ControlState->output.ControlFlags;
 	self->OnlineID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-	self->OnlineID->input.OnlineIDConfig = Data->PID_OnlineID_Config;
+	self->OnlineID->input.OnlineIDConfig = Data->OnlineID_Config;
 
 	//Step the function
 	uz_OnlineID_step(self->OnlineID);
 
 	//Update Data struct with new output values
-	Data->PID_Controller_Parameters.activeState = self->OnlineID->output.OnlineID_output.activeState;
+	Data->Controller_Parameters.activeState = self->OnlineID->output.OnlineID_output.activeState;
 }
 
 static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	//Update State-Inputs
-	self->OnlineID->AutoRefCurrents->input.ActualValues = Data->PID_ActualValues;
-	self->OnlineID->AutoRefCurrents->input.AutoRefCurrentsConfig = Data->PID_AutoRefCurrents_Config;
-	self->OnlineID->AutoRefCurrents->input.GlobalConfig_out = Data->PID_GlobalConfig;
+	self->OnlineID->AutoRefCurrents->input.ActualValues = Data->ActualValues;
+	self->OnlineID->AutoRefCurrents->input.AutoRefCurrentsConfig = Data->AutoRefCurrents_Config;
+	self->OnlineID->AutoRefCurrents->input.GlobalConfig_out = Data->GlobalConfig;
 
 	//Step the function
 	uz_OnlineID_AutoRefCurrents(self->OnlineID);
@@ -383,89 +382,89 @@ static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_D
 void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_ParameterID_t *ParameterID) {
 
 	//Initialize Global-Config
-	Data->PID_GlobalConfig.ACCEPT = false;
-	Data->PID_GlobalConfig.Reset = false;
-	Data->PID_GlobalConfig.enableParameterID = false;
-	Data->PID_GlobalConfig.ElectricalID = false;
-	Data->PID_GlobalConfig.FluxMapID = false;
-	Data->PID_GlobalConfig.FrictionID = false;
-	Data->PID_GlobalConfig.TwoMassID = false;
-	Data->PID_GlobalConfig.OnlineID = false;
-	Data->PID_GlobalConfig.VibAmp = 0.0f;
-	Data->PID_GlobalConfig.VibFreq = 0U;
-	Data->PID_GlobalConfig.VibOn = false;
-	Data->PID_GlobalConfig.thetaOffset = 0.0f;
-	Data->PID_GlobalConfig.sampleTimeISR = 50.0e-06f;
+	Data->GlobalConfig.ACCEPT = false;
+	Data->GlobalConfig.Reset = false;
+	Data->GlobalConfig.enableParameterID = false;
+	Data->GlobalConfig.ElectricalID = false;
+	Data->GlobalConfig.FluxMapID = false;
+	Data->GlobalConfig.FrictionID = false;
+	Data->GlobalConfig.TwoMassID = false;
+	Data->GlobalConfig.OnlineID = false;
+	Data->GlobalConfig.VibAmp = 0.0f;
+	Data->GlobalConfig.VibFreq = 0U;
+	Data->GlobalConfig.VibOn = false;
+	Data->GlobalConfig.thetaOffset = 0.0f;
+	Data->GlobalConfig.sampleTimeISR = 50.0e-06f;
 
 	//Initialize motor-related parameters inside Global-Config
 	//Motor Buehler 1.25.058.201
-	Data->PID_GlobalConfig.Ki_id = 158.8f;
-	Data->PID_GlobalConfig.Ki_iq = 158.8f;
-	Data->PID_GlobalConfig.Ki_n = 0.8f;
-	Data->PID_GlobalConfig.Kp_id = 0.54f;
-	Data->PID_GlobalConfig.Kp_iq = 0.54f;
-	Data->PID_GlobalConfig.Kp_n = 0.08f;
-	Data->PID_GlobalConfig.PMSM_config.Ld_Henry = 2.90e-04f;
-	Data->PID_GlobalConfig.PMSM_config.Lq_Henry = 3.00e-04f;
-	Data->PID_GlobalConfig.PMSM_config.R_ph_Ohm = 0.085f;
-	Data->PID_GlobalConfig.PMSM_config.Psi_PM_Vs = 0.0075f;
-	Data->PID_GlobalConfig.PMSM_config.polePairs = 4.0f;
-	Data->PID_GlobalConfig.PMSM_config.J_kg_m_squared = 3.24e-05f;
-	Data->PID_GlobalConfig.PMSM_config.I_max_Ampere = 15.0f;
-	Data->PID_GlobalConfig.ratCurrent = 8.0f;
-	Data->PID_GlobalConfig.ratSpeed = 3000.0f;
+	Data->GlobalConfig.Ki_id = 158.8f;
+	Data->GlobalConfig.Ki_iq = 158.8f;
+	Data->GlobalConfig.Ki_n = 0.8f;
+	Data->GlobalConfig.Kp_id = 0.54f;
+	Data->GlobalConfig.Kp_iq = 0.54f;
+	Data->GlobalConfig.Kp_n = 0.08f;
+	Data->GlobalConfig.PMSM_config.Ld_Henry = 2.90e-04f;
+	Data->GlobalConfig.PMSM_config.Lq_Henry = 3.00e-04f;
+	Data->GlobalConfig.PMSM_config.R_ph_Ohm = 0.085f;
+	Data->GlobalConfig.PMSM_config.Psi_PM_Vs = 0.0075f;
+	Data->GlobalConfig.PMSM_config.polePairs = 4.0f;
+	Data->GlobalConfig.PMSM_config.J_kg_m_squared = 3.24e-05f;
+	Data->GlobalConfig.PMSM_config.I_max_Ampere = 15.0f;
+	Data->GlobalConfig.ratCurrent = 8.0f;
+	Data->GlobalConfig.ratSpeed = 3000.0f;
 
 	//Initialize ElectricalID-Config
-	Data->PID_ElectricalID_Config.dutyCyc = 0.0f;
-	Data->PID_ElectricalID_Config.goertzlAmp = 0.0f;
-	Data->PID_ElectricalID_Config.identLq = false;
-	Data->PID_ElectricalID_Config.min_n_ratio = 80.0f;
-	Data->PID_ElectricalID_Config.n_ref_measurement = 0.0f;
+	Data->ElectricalID_Config.dutyCyc = 0.0f;
+	Data->ElectricalID_Config.goertzlAmp = 0.0f;
+	Data->ElectricalID_Config.identLq = false;
+	Data->ElectricalID_Config.min_n_ratio = 80.0f;
+	Data->ElectricalID_Config.n_ref_measurement = 0.0f;
 
 	//Initialize FluxMapID-Config
-	Data->PID_FluxMapID_Config.AMMsampleTime = 2.0f;
-	Data->PID_FluxMapID_Config.IDstart = 0.0f;
-	Data->PID_FluxMapID_Config.IDstepsize = 0.0f;
-	Data->PID_FluxMapID_Config.IDstop = 0.0f;
-	Data->PID_FluxMapID_Config.IQstart = 0.0f;
-	Data->PID_FluxMapID_Config.IQstepsize = 0.0f;
-	Data->PID_FluxMapID_Config.IQstop = 0.0f;
-	Data->PID_FluxMapID_Config.R_s_ref = 0.0f;
-	Data->PID_FluxMapID_Config.Temp_ref = 0.0f;
-	Data->PID_FluxMapID_Config.identR = false;
-	Data->PID_FluxMapID_Config.identRAmp = 0.0f;
-	Data->PID_FluxMapID_Config.start_FM_ID = false;
+	Data->FluxMapID_Config.AMMsampleTime = 2.0f;
+	Data->FluxMapID_Config.IDstart = 0.0f;
+	Data->FluxMapID_Config.IDstepsize = 0.0f;
+	Data->FluxMapID_Config.IDstop = 0.0f;
+	Data->FluxMapID_Config.IQstart = 0.0f;
+	Data->FluxMapID_Config.IQstepsize = 0.0f;
+	Data->FluxMapID_Config.IQstop = 0.0f;
+	Data->FluxMapID_Config.R_s_ref = 0.0f;
+	Data->FluxMapID_Config.Temp_ref = 0.0f;
+	Data->FluxMapID_Config.identR = false;
+	Data->FluxMapID_Config.identRAmp = 0.0f;
+	Data->FluxMapID_Config.start_FM_ID = false;
 
 	//Initialize FrictionID-Config
-	Data->PID_FrictionID_Config.BrkCount = 0.0f;
-	Data->PID_FrictionID_Config.N_Brk = 0.0f;
-	Data->PID_FrictionID_Config.N_Visco = 0.0f;
-	Data->PID_FrictionID_Config.StepScale = 0.0f;
-	Data->PID_FrictionID_Config.eta = 0.0f;
-	Data->PID_FrictionID_Config.maxCurrent = 10.0f;
-	Data->PID_FrictionID_Config.n_eva_max = 0.0f;
+	Data->FrictionID_Config.BrkCount = 0.0f;
+	Data->FrictionID_Config.N_Brk = 0.0f;
+	Data->FrictionID_Config.N_Visco = 0.0f;
+	Data->FrictionID_Config.StepScale = 0.0f;
+	Data->FrictionID_Config.eta = 0.0f;
+	Data->FrictionID_Config.maxCurrent = 10.0f;
+	Data->FrictionID_Config.n_eva_max = 0.0f;
 
 	//Inintialize OnlineID-Config
-	Data->PID_OnlineID_Config.AverageTransParams = true;
-	Data->PID_OnlineID_Config.OnlineID_Reset = false;
-	Data->PID_OnlineID_Config.Rs_time = 0.0f;
-	Data->PID_OnlineID_Config.Temp_ref = 0.0f;
-	Data->PID_OnlineID_Config.allowPsiCalcOutside = false;
-	Data->PID_OnlineID_Config.dev_curr = 0.05f;
-	Data->PID_OnlineID_Config.dev_omega = 0.05f;
-	Data->PID_OnlineID_Config.identRAmp = 2.0f;
-	Data->PID_OnlineID_Config.max_n_ratio = 0.0f;
-	Data->PID_OnlineID_Config.min_n_ratio = 0.0f;
-	Data->PID_OnlineID_Config.nom_factor = 0.0f;
-	Data->PID_OnlineID_Config.array_cleaned = false;
+	Data->OnlineID_Config.AverageTransParams = true;
+	Data->OnlineID_Config.OnlineID_Reset = false;
+	Data->OnlineID_Config.Rs_time = 0.0f;
+	Data->OnlineID_Config.Temp_ref = 0.0f;
+	Data->OnlineID_Config.allowPsiCalcOutside = false;
+	Data->OnlineID_Config.dev_curr = 0.05f;
+	Data->OnlineID_Config.dev_omega = 0.05f;
+	Data->OnlineID_Config.identRAmp = 2.0f;
+	Data->OnlineID_Config.max_n_ratio = 0.0f;
+	Data->OnlineID_Config.min_n_ratio = 0.0f;
+	Data->OnlineID_Config.nom_factor = 0.0f;
+	Data->OnlineID_Config.array_cleaned = false;
 
 	//Inintialize Output data structs
-	Data->PID_ElectricalID_Output = &ParameterID->ElectricalID->output.ElectricalID_output;
-	Data->PID_FrictionID_Output = &ParameterID->FrictionID->output.FrictionID_output;
-	Data->PID_FluxMapID_Output = &ParameterID->FluxMapID->output.FluxMapID_output;
-	Data->PID_TwoMassID_Output = &ParameterID->TwoMassID->output.TwoMassID_output;
-	Data->PID_OnlineID_Output = &ParameterID->OnlineID->output.OnlineID_output;
-	Data->PID_ControlFlags = &ParameterID->ControlState->output.ControlFlags;
+	Data->ElectricalID_Output = &ParameterID->ElectricalID->output.ElectricalID_output;
+	Data->FrictionID_Output = &ParameterID->FrictionID->output.FrictionID_output;
+	Data->FluxMapID_Output = &ParameterID->FluxMapID->output.FluxMapID_output;
+	Data->TwoMassID_Output = &ParameterID->TwoMassID->output.TwoMassID_output;
+	Data->OnlineID_Output = &ParameterID->OnlineID->output.OnlineID_output;
+	Data->ControlFlags = &ParameterID->ControlState->output.ControlFlags;
 	Data->FluxMap_Data = &ParameterID->OnlineID->InterpMeshGrid->output.FluxMapData;
 
 	Data->calculate_flux_maps = false;

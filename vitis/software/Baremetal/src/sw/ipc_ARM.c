@@ -582,8 +582,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS &= ~(1 << 7);
 	}
 
-	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+	/* Bit 8 -ParameterID active */
+	if (PID_Data.GlobalConfig.enableParameterID == true) {
+		uz_led_set_userLED_on();
+		js_status_BareToRTOS |= (1 << 8);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 8);
+		uz_led_set_userLED_off();
+	}
 
 	/* Bit 9 - My_Button_6 */
 	// js_status_BareToRTOS &= ~(1 << 9);

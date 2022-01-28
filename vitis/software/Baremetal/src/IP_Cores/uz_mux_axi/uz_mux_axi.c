@@ -46,4 +46,5 @@ void uz_mux_axi_set_n_th_interrupt(struct uz_mux_axi_t *self, uint32_t n_th_inte
     self->config.n_th_interrupt = n_th_interrupt;
     uz_mux_axi_hw_set_n_th_interrupt(self->config.base_address, n_th_interrupt);
 }
+
 #endif

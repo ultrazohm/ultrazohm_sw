@@ -16,6 +16,7 @@
  * 6 for Interrupt_timer_fcc
 */
 #define Interrupt_ISR_source_user_choice        2U
+#define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
@@ -36,6 +37,7 @@
 #define UZ_NN_MAX_INSTANCES                             0U
 #define UZ_PMSMMODEL_MAX_INSTANCES                      0U
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
+#define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -56,4 +58,5 @@
     #define UZ_PMSMMODEL_MAX_INSTANCES                      11U
     #define UZ_PLANTPT1_MAX_INSTANCES                       6U
     #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      11U
+    #define UZ_MUX_AXI_MAX_INSTANCES                        10U
 #endif

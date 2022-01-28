@@ -184,16 +184,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			ultrazohm_state_machine_set_enable_system(true);
 			break;
 
-		case (Disable_System): // ConverterDisable
-			ultrazohm_state_machine_set_enable_system(false);
-			break;
-
 		case (Enable_Control): // ControlEnable
 			ultrazohm_state_machine_set_enable_control(true);
-			break;
 
-		case (Disable_Control): // ControlDisable
-			ultrazohm_state_machine_set_enable_control(false);
 			break;
 
 		case (Set_Send_Field_1):
@@ -534,22 +527,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	platform_state_t current_state = ultrazohm_state_machine_get_state();
 	// Feedback bits for controlling the status indicators in the GUI
-	/* Bit 0 - Enable_System */
-	if (current_state == running_state)
-	{
-		js_status_BareToRTOS |= 1 << 0;
-	}
-	else
-	{
+	/* Bit 0 - Ready LED */
+	if (ultrazohm_state_get_led_ready()) {
+	js_status_BareToRTOS |= 1 << 0;
+	} else {
 		js_status_BareToRTOS &= ~(1 << 0);
 	}
-	/* Bit 1 - Enable_Control */
-	if (current_state==control_state)
-		{
-			js_status_BareToRTOS |= 1 << 1;
-		}
-	else
-	{
+
+	/* Bit 1 - Running LED */
+	if (ultrazohm_state_get_led_running()) {
+	js_status_BareToRTOS |= 1 << 1;
+	} else {
 		js_status_BareToRTOS &= ~(1 << 1);
 	}
 	/* Bit 2 - Ident_Lq */
@@ -594,9 +582,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS &= ~(1 << 7);
 	}
 
-	/* Bit 8 - My_Button_7 */
+	/* Bit 8 - My_Button_5 */
 	// js_status_BareToRTOS &= ~(1 << 8);
 
-	/* Bit 9 - My_Button_8 */
+	/* Bit 9 - My_Button_6 */
 	// js_status_BareToRTOS &= ~(1 << 9);
+
+	/* Bit 10 - My_Button_7 */
+	// js_status_BareToRTOS &= ~(1 << 10);
+
+	/* Bit 11 - My_Button_8 */
+	// js_status_BareToRTOS &= ~(1 << 11);
+
+
 }

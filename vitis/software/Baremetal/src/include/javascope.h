@@ -123,9 +123,7 @@ enum JS_SlowData {
 enum gui_button_mapping {
 	GUI_BTN_ZEROVALUE=0,
 	Enable_System,
-	Disable_System,
 	Enable_Control,
-	Disable_Control,
 	Stop,
 	Set_Send_Field_1,
 	Set_Send_Field_2,

@@ -181,16 +181,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			ultrazohm_state_machine_set_enable_system(true);
 			break;
 
-		case (Disable_System): // ConverterDisable
-			ultrazohm_state_machine_set_enable_system(false);
-			break;
-
 		case (Enable_Control): // ControlEnable
 			ultrazohm_state_machine_set_enable_control(true);
-			break;
 
-		case (Disable_Control): // ControlDisable
-			ultrazohm_state_machine_set_enable_control(false);
 			break;
 
 		case (Set_Send_Field_1):
@@ -218,15 +211,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-
+			ultrazohm_state_machine_set_error(true);
 			break;
 
 		case (My_Button_2):
-
+			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_3):
-
+			ultrazohm_state_machine_set_userLED(false);
 			break;
 
 		case (My_Button_4):
@@ -265,49 +258,61 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	platform_state_t current_state = ultrazohm_state_machine_get_state();
 	// Feedback bits for controlling the status indicators in the GUI
-	/* Bit 0 - Enable_System */
-	if (current_state == running_state)
-	{
-		js_status_BareToRTOS |= 1 << 0;
-	}
-	else
-	{
+	/* Bit 0 - Ready LED */
+	if (ultrazohm_state_get_led_ready()) {
+	js_status_BareToRTOS |= 1 << 0;
+	} else {
 		js_status_BareToRTOS &= ~(1 << 0);
 	}
-	/* Bit 1 - Enable_Control */
-	if (current_state==control_state)
-		{
-			js_status_BareToRTOS |= 1 << 1;
-		}
-	else
-	{
+
+	/* Bit 1 - Running LED */
+	if (ultrazohm_state_get_led_running()) {
+	js_status_BareToRTOS |= 1 << 1;
+	} else {
 		js_status_BareToRTOS &= ~(1 << 1);
 	}
-	/* Bit 2 - My_Button_1 */
+
+	/* Bit 2 - Error LED */
+	if (ultrazohm_state_get_led_error()) {
+		js_status_BareToRTOS |= 1 << 2;
+		} else {
+			js_status_BareToRTOS &= ~(1 << 2);
+		}
+
+	/* Bit 3 - User LED */
+	if (ultrazohm_state_get_led_user()) {
+		js_status_BareToRTOS |= 1 << 3;
+		} else {
+			js_status_BareToRTOS &= ~(1 << 3);
+		}
+
+	/* Bit 4 - My_Button_1 */
 	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 2);
+	//	js_status_BareToRTOS |= (1 << 4);
 	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 2);
+	//	js_status_BareToRTOS &= ~(1 << 4);
 	// }
 
-	/* Bit 3 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 3);
-
-	/* Bit 4 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 4);
-
-	/* Bit 5 - My_Button_4 */
+	/* Bit 5 - My_Button_2 */
 	// js_status_BareToRTOS &= ~(1 << 5);
 
-	/* Bit 6 - My_Button_5 */
+	/* Bit 6 - My_Button_3 */
 	// js_status_BareToRTOS &= ~(1 << 6);
 
-	/* Bit 7 - My_Button_6 */
+	/* Bit 7 - My_Button_4 */
 	// js_status_BareToRTOS &= ~(1 << 7);
 
-	/* Bit 8 - My_Button_7 */
+	/* Bit 8 - My_Button_5 */
 	// js_status_BareToRTOS &= ~(1 << 8);
 
-	/* Bit 9 - My_Button_8 */
+	/* Bit 9 - My_Button_6 */
 	// js_status_BareToRTOS &= ~(1 << 9);
+
+	/* Bit 10 - My_Button_7 */
+	// js_status_BareToRTOS &= ~(1 << 10);
+
+	/* Bit 11 - My_Button_8 */
+	// js_status_BareToRTOS &= ~(1 << 11);
+
+
 }

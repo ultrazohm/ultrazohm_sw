@@ -540,59 +540,71 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	} else {
 		js_status_BareToRTOS &= ~(1 << 1);
 	}
-	/* Bit 2 - Ident_Lq */
-	if (PID_Data.ElectricalID_Config.identLq == true) {
+
+	/* Bit 2 - ErrorLED */
+	if (ultrazohm_state_get_led_error()) {
 		js_status_BareToRTOS |= (1 << 2);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 2);
 	}
 
-	/* Bit 3 - FluxMapID R-Online */
-	if (PID_Data.FluxMapID_Config.identR == true) {
+	/* Bit 3 - UserLED */
+	if (ultrazohm_state_get_led_user()) {
 		js_status_BareToRTOS |= (1 << 3);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 3);
 	}
 
-	/* Bit 4 - FluxMapID start */
-	if (PID_Data.FluxMapID_Config.start_FM_ID == true) {
+	/* Bit 4 - Ident_Lq */
+	if (PID_Data.ElectricalID_Config.identLq == true) {
 		js_status_BareToRTOS |= (1 << 4);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 4);
 	}
 
-	/* Bit 5 - PID_FOC_CC */
-	if (PID_Data.PID_Control_Selection == Current_Control) {
+	/* Bit 5 - FluxMapID R-Online */
+	if (PID_Data.FluxMapID_Config.identR == true) {
 		js_status_BareToRTOS |= (1 << 5);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 5);
 	}
 
-	/* Bit 6 - PID_FOC_SC */
-	if (PID_Data.PID_Control_Selection == Speed_Control) {
+	/* Bit 6 - FluxMapID start */
+	if (PID_Data.FluxMapID_Config.start_FM_ID == true) {
 		js_status_BareToRTOS |= (1 << 6);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 6);
 	}
 
-	/* Bit 7 -PID_FOC_no_control */
-	if (PID_Data.PID_Control_Selection == No_Control) {
+	/* Bit 7 - PID_FOC_CC */
+	if (PID_Data.PID_Control_Selection == Current_Control) {
 		js_status_BareToRTOS |= (1 << 7);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 7);
 	}
 
-	/* Bit 8 -ParameterID active */
-	if (PID_Data.GlobalConfig.enableParameterID == true) {
-		uz_led_set_userLED_on();
+	/* Bit 7 - PID_FOC_SC */
+	if (PID_Data.PID_Control_Selection == Speed_Control) {
+		js_status_BareToRTOS |= (1 << 7);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 7);
+	}
+
+	/* Bit 8 -PID_FOC_no_control */
+	if (PID_Data.PID_Control_Selection == No_Control) {
 		js_status_BareToRTOS |= (1 << 8);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 8);
-		uz_led_set_userLED_off();
 	}
 
-	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	/* Bit 9 -ParameterID active */
+	if (PID_Data.GlobalConfig.enableParameterID == true) {
+		ultrazohm_state_machine_set_userLED(true);
+		js_status_BareToRTOS |= (1 << 9);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 9);
+		ultrazohm_state_machine_set_userLED(false);
+	}
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

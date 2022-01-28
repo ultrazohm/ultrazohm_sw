@@ -525,7 +525,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 	}
 
-	platform_state_t current_state = ultrazohm_state_machine_get_state();
 	// Feedback bits for controlling the status indicators in the GUI
 	/* Bit 0 - Ready LED */
 	if (ultrazohm_state_get_led_ready()) {
@@ -583,26 +582,26 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS &= ~(1 << 7);
 	}
 
-	/* Bit 7 - PID_FOC_SC */
+	/* Bit 8 - PID_FOC_SC */
 	if (PID_Data.PID_Control_Selection == Speed_Control) {
-		js_status_BareToRTOS |= (1 << 7);
-	} else {
-		js_status_BareToRTOS &= ~(1 << 7);
-	}
-
-	/* Bit 8 -PID_FOC_no_control */
-	if (PID_Data.PID_Control_Selection == No_Control) {
 		js_status_BareToRTOS |= (1 << 8);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 8);
 	}
 
-	/* Bit 9 -ParameterID active */
-	if (PID_Data.GlobalConfig.enableParameterID == true) {
-		ultrazohm_state_machine_set_userLED(true);
+	/* Bit 9 -PID_FOC_no_control */
+	if (PID_Data.PID_Control_Selection == No_Control) {
 		js_status_BareToRTOS |= (1 << 9);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 9);
+	}
+
+	/* Bit 10 -ParameterID active */
+	if (PID_Data.GlobalConfig.enableParameterID == true) {
+		ultrazohm_state_machine_set_userLED(true);
+		js_status_BareToRTOS |= (1 << 10);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 10);
 		ultrazohm_state_machine_set_userLED(false);
 	}
 

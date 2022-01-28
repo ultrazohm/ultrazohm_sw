@@ -33,6 +33,12 @@ uz_mux_axi_t* uz_mux_axi_init(struct uz_mux_axi_config_t config) {
     return (self);
 }
 
+void uz_mux_axi_enable(struct uz_mux_axi_t *self) {
+    uz_assert_not_zero_uint32(self->config.base_address);
+    uz_assert_not_zero(self->is_ready);
+    uz_mux_axi_hw_enable_IP_core(self->config.base_address);
+}
+
 void uz_mux_axi_set_mux(struct uz_mux_axi_t *self, uint32_t mux) {
     uz_assert_not_zero_uint32(self->config.base_address);
     uz_assert_not_zero(self->is_ready);

@@ -28,6 +28,13 @@ struct uz_mux_axi_config_t{
 uz_mux_axi_t* uz_mux_axi_init(struct uz_mux_axi_config_t config);
 
 /**
+ * @brief Enables the instance of the uz_mux_axi IP-Core
+ *
+ * @param self Pointer to IP-Core instance that was initialized with init function
+ */
+void uz_mux_axi_enable(struct uz_mux_axi_t *self);
+
+/**
  * @brief Sets the mux value (selects the interrupt source)
  *
  * @param self Pointer to IP-Core instance that was initialized with init function

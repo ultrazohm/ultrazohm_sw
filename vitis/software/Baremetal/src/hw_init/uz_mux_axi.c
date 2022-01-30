@@ -11,5 +11,8 @@ static struct uz_mux_axi_config_t uz_mux_axi_config = {
 };
 
 uz_mux_axi_t* initialize_uz_mux_axi(void){
+	uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
+	uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+	uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
 	return (uz_mux_axi_init(uz_mux_axi_config));
 }

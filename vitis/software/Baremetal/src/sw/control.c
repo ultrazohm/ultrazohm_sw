@@ -138,9 +138,9 @@ int Initialize_MotorRelatedParameters(DS_Data* data){
 	int Status = 0;
 
 	//General parameters which mainly depend on the system and not on the motor
-	data->mrp.motorMaximumCurrentShortTimeOperation= 12.5; 	// [A] maximum value which is measurable with the shunts from the K�brich-Board.
+	data->mrp.motorMaximumCurrentShortTimeOperation= 20; 	// [A] maximum value which is measurable with the shunts from the K�brich-Board.
 	data->mrp.motorMaximumDcLinkVoltage = 48.0; 			// [V] maximum value which is measurable with the K�brich-Board.
-	data->mrp.motorMaximumSpeed = 10000;					// [rpm] maximum speed which the encoder can detect.
+	data->mrp.motorMaximumSpeed = 2000;					// [rpm] maximum speed which the encoder can detect.
 
 	//	//Motor Buehler ??? (Comment strg+shift+/  Uncomment strg+shift+/)
 	//	data->mrp.motorMaximumCurrentContinuousOperation = 16.0; // [A]
@@ -153,7 +153,7 @@ int Initialize_MotorRelatedParameters(DS_Data* data){
 	//	data->mrp.motorFluxConstant = 0.0092; //[Vs] Psi_sinus
 
 	//Motor B�hler 1.25.058.401 (Comment strg+shift+/  Uncomment strg+shift+/)
-	data->mrp.motorMaximumCurrentContinuousOperation = 11.0; // [A]
+	data->mrp.motorMaximumCurrentContinuousOperation = 15.0; // [A]
 	data->mrp.FCS_MPC_Time_Period = 10.0000e-06; //FCS-IP-Core current control Period
 	data->mrp.motorDirectInductance = 2.00e-04; // [H] Identified-ID-Run: Ld= 191 uH (Motor+Mosfet+Leitung+Klemme) //Identified LCR-Meter: L_ph_ph= 410uH -> Ld= 205uH
 	data->mrp.motorQuadratureInductance = 2.00e-04; // [H]

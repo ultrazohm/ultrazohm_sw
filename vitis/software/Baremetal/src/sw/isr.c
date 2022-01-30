@@ -104,8 +104,8 @@ void ISR_Control(void *data)
 //	codegenInstance.input.theta_el = Global_Data.av.theta_elec_offset_compensated;
 //	codegenInstance.input.u_dc = Global_Data.av.U_ZK;
 
-	codegenInstance.input.PERIOD_k = 500;
-	codegenInstance.input.currentORspeedControl = 0;
+	codegenInstance.input.PERIOD_m = 500;
+	//codegenInstance.input.currentORspeedControl = 0;
 	codegenInstance.input.i_a1 = Global_Data.av.I_a1;
 	codegenInstance.input.i_b1 = Global_Data.av.I_b1;
 	codegenInstance.input.i_c1 = Global_Data.av.I_c1;
@@ -113,7 +113,10 @@ void ISR_Control(void *data)
 	codegenInstance.input.i_b2 = Global_Data.av.I_b2;
 	codegenInstance.input.i_c2 = Global_Data.av.I_c2;
 	codegenInstance.input.theta_el = Global_Data.av.theta_elec_offset_compensated;
-	codegenInstance.input.u_dc_d = Global_Data.av.U_ZK;
+	codegenInstance.input.n_RPM = Global_Data.av.mechanicalRotorSpeed;
+	codegenInstance.input.u_dc_k = Global_Data.av.U_ZK;
+
+	codegenInstance.input.iq_ref = Global_Data.rasv.referenceCurrent_id;
 
 	uz_codegen_step(&codegenInstance);
 
@@ -126,7 +129,7 @@ void ISR_Control(void *data)
 	phase_b = uz_wavegen_three_phase_get_phaseV(three_phase_test);
 	phase_c = uz_wavegen_three_phase_get_phaseW(three_phase_test);
 
-
+//
 //		Global_Data.rasv.halfBridge1DutyCycle = phase_a;
 //		Global_Data.rasv.halfBridge2DutyCycle = phase_b;
 //		Global_Data.rasv.halfBridge3DutyCycle = phase_c;
@@ -140,6 +143,8 @@ void ISR_Control(void *data)
 
 	Global_Data.av.I_d = codegenInstance.output.id;
 	Global_Data.av.I_q = codegenInstance.output.iq;
+	Global_Data.av.I_x = codegenInstance.output.ix;
+	Global_Data.av.I_y = codegenInstance.output.iy;
 	Global_Data.av.U_d = codegenInstance.output.ud_ctrl;
 	Global_Data.av.U_q = codegenInstance.output.uq_ctrl;
 	//Start: Control algorithm -------------------------------------------------------------------------------

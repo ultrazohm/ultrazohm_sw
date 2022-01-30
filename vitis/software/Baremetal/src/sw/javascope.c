@@ -95,6 +95,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_uc] 			= &data->av.U_W;
 	js_ptr_arr[JSO_iq] 			= &data->av.I_q;
 	js_ptr_arr[JSO_id] 			= &data->av.I_d;
+	js_ptr_arr[JSO_ix] 			= &data->av.I_x;
+	js_ptr_arr[JSO_iy] 			= &data->av.I_y;
 	js_ptr_arr[JSO_Theta_el] 	= &data->av.theta_elec;
 	js_ptr_arr[JSO_Theta_el_comp] 	= &data->av.theta_elec_offset_compensated;
 	js_ptr_arr[JSO_theta_mech] 	= &data->av.theta_mech;
@@ -194,7 +196,6 @@ void JavaScope_update(DS_Data* data){
 	js_slowDataArray[JSSD_INT_SecondsSinceSystemStart].i 	= uz_SystemTime_GetUptimeInSec();
 	js_slowDataArray[JSSD_FLOAT_uSecPerIsr].f 			 	= uz_SystemTime_GetIsrExectionTimeInUs();
 	js_slowDataArray[JSSD_FLOAT_Sine].f 					= uz_SystemTime_GetIsrPeriodInUs();
-	js_slowDataArray[JSSD_FLOAT_FreqReadback].f 			= data->rasv.referenceFrequency;
 	js_slowDataArray[JSSD_INT_Milliseconds].i 				= uz_SystemTime_GetUptimeInMs();
 	js_slowDataArray[JSSD_FLOAT_ADCconvFactorReadback].f = data->mrp.ADCconvFactorReadback;
 //	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline].f= data->pID.Offline_Psi_PM;
@@ -205,11 +206,11 @@ void JavaScope_update(DS_Data* data){
 //	js_slowDataArray[JSSD_FLOAT_J].f 			= data->pID.Offline_motorRotorInertia;
 //	js_slowDataArray[JSSD_INT_activeState].i 	= data->pID.activeState;
 //	js_slowDataArray[JSSD_FLOAT_J].f 			= data->pID.Offline_motorRotorInertia;
-//	js_slowDataArray[JSSD_FLOAT_u_d].f 			= data->av.U_d;
-//	js_slowDataArray[JSSD_FLOAT_u_q].f 			= data->av.U_q;
-//	js_slowDataArray[JSSD_FLOAT_i_d].f 			= data->av.I_d; //data->pID.ParameterID_I_d;	//
-//	js_slowDataArray[JSSD_FLOAT_i_q].f 			= data->av.I_q; //data->pID.ParameterID_I_q;	//
-//	js_slowDataArray[JSSD_FLOAT_speed].f 		= data->av.mechanicalRotorSpeed;
+	js_slowDataArray[JSSD_FLOAT_u_d].f 			= data->av.U_d;
+	js_slowDataArray[JSSD_FLOAT_u_q].f 			= data->av.U_q;
+	js_slowDataArray[JSSD_FLOAT_i_d].f 			= data->av.I_d; //data->pID.ParameterID_I_d;	//
+	js_slowDataArray[JSSD_FLOAT_i_q].f 			= data->av.I_q; //data->pID.ParameterID_I_q;	//
+	js_slowDataArray[JSSD_FLOAT_speed].f 		= data->av.mechanicalRotorSpeed;
 //	js_slowDataArray[JSSD_FLOAT_torque].f 		= data->av.mechanicalTorqueObserved;
 //	js_slowDataArray[JSSD_FLOAT_encoderOffset].f= data->mrp.incrementalEncoderOffset;
 //	js_slowDataArray[JSSD_FLOAT_u_d_ref].f 		= data->pID.Offline_ud_ref;

@@ -367,6 +367,8 @@ typedef struct _actualValues_ {
 	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
 	float I_d;
 	float I_q;
+	float I_x;
+	float I_y;
 	float U_d;
 	float U_q;
 	float theta_elec;
@@ -376,6 +378,7 @@ typedef struct _actualValues_ {
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	uint16_t activeState;
+	float Temp_H1_D4;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

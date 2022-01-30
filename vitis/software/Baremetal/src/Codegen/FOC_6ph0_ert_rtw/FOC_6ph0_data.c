@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_6ph0'.
  *
- * Model version                  : 7.38
+ * Model version                  : 7.43
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Oct 12 10:37:02 2021
+ * C/C++ source code generated on : Fri Nov 26 11:12:50 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R

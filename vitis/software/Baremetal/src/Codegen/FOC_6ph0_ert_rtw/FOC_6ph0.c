@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_6ph0'.
  *
- * Model version                  : 7.38
+ * Model version                  : 7.43
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Oct 12 10:37:02 2021
+ * C/C++ source code generated on : Fri Nov 26 11:12:50 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -25,17 +25,17 @@
 #define FOC_6ph_IN_FieldOrientedControl ((uint8_T)1U)
 
 /* Exported block parameters */
-real_T Kpd = 0.175;     /* Variable: Kpd 0.075398223686155036*0.5
+real_T Kpd = 1.1;     /* Variable: Kpd
                                         * Referenced by:
                                         *   '<S96>/Proportional Gain'
                                         *   '<S102>/P Copy'
                                         */
-real_T Kpn = 1.224610768327322;        /* Variable: Kpn
+real_T Kpn = 0.5;/*1.224610768327322;        /* Variable: Kpn
                                         * Referenced by:
                                         *   '<S46>/Proportional Gain'
                                         *   '<S52>/P Copy'
                                         */
-real_T Kpq = 0.175;      /* Variable: Kpq
+real_T Kpq = 1.1;      /* Variable: Kpq
                                         * Referenced by:
                                         *   '<S146>/Proportional Gain'
                                         *   '<S152>/P Copy'
@@ -49,13 +49,13 @@ real_T PERIOD = 500.0;                 /* Variable: PERIOD
                                         *   '<S2>/Gain6'
                                         *   '<S2>/Gain7'
                                         */
-real_T Tnd = 0.002;    /* Variable: Tnd
+real_T Tnd = 0.0008;    /* Variable: Tnd
                                         * Referenced by: '<S95>/Integral Gain'
                                         */
-real_T Tnn = 0.039788735772973829;     /* Variable: Tnn
+real_T Tnn = 9999;/*0.039788735772973829;     /* Variable: Tnn
                                         * Referenced by: '<S45>/Integral Gain'
                                         */
-real_T Tnq = 0.002;    /* Variable: Tnq
+real_T Tnq = 0.0008;    /* Variable: Tnq
                                         * Referenced by: '<S145>/Integral Gain'
                                         */
 real_T u_dc = 36.0;                    /* Variable: u_dc
@@ -575,7 +575,7 @@ void FOC_6ph0_step(RT_MODEL_FOC_6ph0_T *const FOC_6ph0_M)
   } else if (FOC_6ph0_DW->is_superState == 1) {
     /* Outputs for Function Call SubSystem: '<S1>/superState.FOC' */
     /* During 'FieldOrientedControl': '<S1>:4' */
-    /* '<S1>:4:6' [CMPA_1,CMPA_2,CMPA_3,CMPA_4,CMPA_5,CMPA_6,sector,id,iq,ud_ctrl,uq_ctrl] = FOC(u_dc,PERIOD,id_ref,iq_ref,i_a1,i_b1,i_c1,i_a2,i_b2,i_c2,u1,u2,u3,theta_el,currentORspeedControl, n_RPM, n_ref_RPM, activeState,Kr) */
+    /* '<S1>:4:6' [CMPA_1,CMPA_2,CMPA_3,CMPA_4,CMPA_5,CMPA_6,sector,id,iq,ix,iy,ud_ctrl,uq_ctrl] = FOC(u_dc,PERIOD,id_ref,iq_ref,i_a1,i_b1,i_c1,i_a2,i_b2,i_c2,u1,u2,u3,theta_el,currentORspeedControl, n_RPM, n_ref_RPM, activeState,Kr) */
     /* Simulink Function 'FOC': '<S1>:39' */
     if (FOC_6ph0_DW->superStateFOC_RESET_ELAPS_T) {
       superStateFOC_ELAPS_T = 0U;
@@ -898,8 +898,8 @@ void FOC_6ph0_step(RT_MODEL_FOC_6ph0_T *const FOC_6ph0_M)
      */
     FOC_6ph0_RZM_Traegerbasiert((real_T)(0.866025388F * rtb_Switch_f_idx_0 -
       -0.5F * rtb_Switch_f_idx_1), (real_T)(0.866025388F * rtb_Switch_f_idx_1 +
-      -0.5F * rtb_Switch_f_idx_0), (real_T)FOC_6ph0_U->u_dc_d, (real_T)
-      FOC_6ph0_U->PERIOD_k, &rtb_SignP, &rtb_CMP_W, &rtb_CMP_U, &rtb_sector);
+      -0.5F * rtb_Switch_f_idx_0), (real_T)FOC_6ph0_U->u_dc_k, (real_T)
+      FOC_6ph0_U->PERIOD_m, &rtb_SignP, &rtb_CMP_W, &rtb_CMP_U, &rtb_sector);
 
     /* Outport: '<Root>/CMPA_4' incorporates:
      *  Gain: '<S2>/Gain5'
@@ -925,8 +925,8 @@ void FOC_6ph0_step(RT_MODEL_FOC_6ph0_T *const FOC_6ph0_M)
      *  Inport: '<Root>/u_dc'
      */
     FOC_6ph0_RZM_Traegerbasiert((real_T)rtb_Switch_f_idx_0, (real_T)
-      rtb_Switch_f_idx_1, (real_T)FOC_6ph0_U->u_dc_d, (real_T)
-      FOC_6ph0_U->PERIOD_k, &rtb_CMP_U, &rtb_SignP, &rtb_CMP_W, &rtb_sector);
+      rtb_Switch_f_idx_1, (real_T)FOC_6ph0_U->u_dc_k, (real_T)
+      FOC_6ph0_U->PERIOD_m, &rtb_CMP_U, &rtb_SignP, &rtb_CMP_W, &rtb_sector);
 
     /* Outport: '<Root>/CMPA_2' incorporates:
      *  Gain: '<S2>/Gain3'
@@ -1274,6 +1274,16 @@ void FOC_6ph0_step(RT_MODEL_FOC_6ph0_T *const FOC_6ph0_M)
      */
     FOC_6ph0_Y->iq = Switch_idx_1;
 
+    /* Outport: '<Root>/ix' incorporates:
+     *  MATLAB Function: '<S2>/6ph_PMSM_30deg_VSD1'
+     */
+    FOC_6ph0_Y->ix = A[2];
+
+    /* Outport: '<Root>/iy' incorporates:
+     *  MATLAB Function: '<S2>/6ph_PMSM_30deg_VSD1'
+     */
+    FOC_6ph0_Y->iy = A[3];
+
     /* End of Outputs for SubSystem: '<S1>/superState.FOC' */
 
     /* During 'Init': '<S1>:1' */
@@ -1357,6 +1367,12 @@ void FOC_6ph0_initialize(RT_MODEL_FOC_6ph0_T *const FOC_6ph0_M)
 
   /* SystemInitialize for Outport: '<Root>/iq' */
   FOC_6ph0_Y->iq = 0.0F;
+
+  /* SystemInitialize for Outport: '<Root>/ix' */
+  FOC_6ph0_Y->ix = 0.0F;
+
+  /* SystemInitialize for Outport: '<Root>/iy' */
+  FOC_6ph0_Y->iy = 0.0F;
 
   /* SystemInitialize for Outport: '<Root>/ud_ctrl' */
   FOC_6ph0_Y->ud_ctrl = 0.0F;

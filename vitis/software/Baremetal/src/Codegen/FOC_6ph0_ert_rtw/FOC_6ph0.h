@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_6ph0'.
  *
- * Model version                  : 7.38
+ * Model version                  : 7.43
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Oct 12 10:37:02 2021
+ * C/C++ source code generated on : Fri Nov 26 11:12:50 2021
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -76,8 +76,8 @@ typedef struct {
 typedef struct {
   boolean_T RESET;                     /* '<Root>/RESET' */
   boolean_T NEXT;                      /* '<Root>/NEXT' */
-  real32_T u_dc_d;                     /* '<Root>/u_dc' */
-  uint16_T PERIOD_k;                   /* '<Root>/PERIOD' */
+  real32_T u_dc_k;                     /* '<Root>/u_dc' */
+  uint16_T PERIOD_m;                   /* '<Root>/PERIOD' */
   real32_T id_ref;                     /* '<Root>/id_ref' */
   real32_T iq_ref;                     /* '<Root>/iq_ref' */
   real32_T i_a1;                       /* '<Root>/i_a1' */
@@ -111,6 +111,8 @@ typedef struct {
   real_T CMPA_4;                       /* '<Root>/CMPA_4' */
   real32_T id;                         /* '<Root>/id' */
   real32_T iq;                         /* '<Root>/iq' */
+  real32_T ix;                         /* '<Root>/ix' */
+  real32_T iy;                         /* '<Root>/iy' */
   real32_T ud_ctrl;                    /* '<Root>/ud_ctrl' */
   real32_T uq_ctrl;                    /* '<Root>/uq_ctrl' */
 } ExtY_FOC_6ph0_T;
@@ -194,6 +196,7 @@ extern void FOC_6ph0_terminate(RT_MODEL_FOC_6ph0_T *const FOC_6ph0_M);
  * Block '<S2>/Constant8' : Unused code path elimination
  * Block '<S2>/Gain' : Unused code path elimination
  * Block '<S2>/RPM2omega_mech' : Unused code path elimination
+ * Block '<S2>/Scope' : Unused code path elimination
  * Block '<S2>/Data Type Conversion9' : Eliminate redundant data type conversion
  */
 

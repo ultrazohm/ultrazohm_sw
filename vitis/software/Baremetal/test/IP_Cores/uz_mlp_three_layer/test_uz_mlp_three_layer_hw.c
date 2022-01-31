@@ -15,6 +15,24 @@
 
 #define BASE_ADDRESS 0x0F0000000U // random hex value that represents a fictional base address
 
+// There are 8 output registers:
+// Output 1: 0x1A0 (axi_nn_output_Data_uz_mlp_three_layer)
+// Output 2: 0x1A4
+// Output 3: 0x1A8
+// Output 4: 0x1AC
+// Output 5: 0x1B0
+// Output 6: 0x1B4
+// Output 7: 0x1B8
+// Output 8: 0x1BC
+const uint32_t output_1_register_address = axi_nn_output_Data_uz_mlp_three_layer;
+const uint32_t output_2_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U;
+const uint32_t output_3_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U;
+const uint32_t output_4_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U;
+const uint32_t output_5_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U;
+const uint32_t output_6_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U;
+const uint32_t output_7_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U;
+const uint32_t output_8_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U;
+
 void setUp(void)
 {
 }
@@ -190,18 +208,8 @@ void test_uz_mlp_three_layer_read_output_two(void)
 
     // First trigger the strobe register, then read the data
     uz_axi_write_bool_Expect(BASE_ADDRESS + axi_nn_output_Strobe_uz_mlp_three_layer, true);
-    // There are 8 output registers:
-    // Output 1: 0x1A0 (axi_nn_output_Data_uz_mlp_three_layer)
-    // Output 2: 0x1A4
-    // Output 3: 0x1A8
-    // Output 4: 0x1AC
-    // Output 5: 0x1B0
-    // Output 6: 0x1B4
-    // Output 7: 0x1B8
-    // Output 8: 0x1BC
-    // If only two outputs are read, output 1 and output 4 are expected to be read
     uz_fixedpoint_axi_read_ExpectAndReturn(BASE_ADDRESS + axi_nn_output_Data_uz_mlp_three_layer, def, expected_output[0]);
-    uz_fixedpoint_axi_read_ExpectAndReturn(BASE_ADDRESS + 0x1B0, def, expected_output[1]);
+    uz_fixedpoint_axi_read_ExpectAndReturn(BASE_ADDRESS + output_5_register_address, def, expected_output[1]);
 
     uz_mlp_three_layer_hw_read_output(BASE_ADDRESS, output_data);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected_output, data, UZ_ARRAY_SIZE(expected_output));
@@ -222,23 +230,6 @@ void test_uz_mlp_three_layer_read_output_four(void)
 
     // First trigger the strobe register, then read the data
     uz_axi_write_bool_Expect(BASE_ADDRESS + axi_nn_output_Strobe_uz_mlp_three_layer, true);
-    // There are 8 output registers:
-    // Output 1: 0x1A0 (axi_nn_output_Data_uz_mlp_three_layer)
-    // Output 2: 0x1A4
-    // Output 3: 0x1A8
-    // Output 4: 0x1AC
-    // Output 5: 0x1B0
-    // Output 6: 0x1B4
-    // Output 7: 0x1B8
-    // Output 8: 0x1BC
-    const uint32_t output_1_register_address = axi_nn_output_Data_uz_mlp_three_layer;
-    const uint32_t output_2_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U;
-    const uint32_t output_3_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U;
-    const uint32_t output_4_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U;
-    const uint32_t output_5_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U;
-    const uint32_t output_6_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U;
-    const uint32_t output_7_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U;
-    const uint32_t output_8_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U;
     // If four outputs are read, output 1,2,4, and 5 expected to be read
     uz_fixedpoint_axi_read_ExpectAndReturn(BASE_ADDRESS + output_1_register_address, def, expected_output[0]);
     uz_fixedpoint_axi_read_ExpectAndReturn(BASE_ADDRESS + output_2_register_address, def, expected_output[1]);
@@ -264,23 +255,6 @@ void test_uz_mlp_three_layer_read_output_six(void)
 
     // First trigger the strobe register, then read the data
     uz_axi_write_bool_Expect(BASE_ADDRESS + axi_nn_output_Strobe_uz_mlp_three_layer, true);
-    // There are 8 output registers:
-    // Output 1: 0x1A0 (axi_nn_output_Data_uz_mlp_three_layer)
-    // Output 2: 0x1A4
-    // Output 3: 0x1A8
-    // Output 4: 0x1AC
-    // Output 5: 0x1B0
-    // Output 6: 0x1B4
-    // Output 7: 0x1B8
-    // Output 8: 0x1BC
-    const uint32_t output_1_register_address = axi_nn_output_Data_uz_mlp_three_layer;
-    const uint32_t output_2_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U;
-    const uint32_t output_3_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U;
-    const uint32_t output_4_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U;
-    const uint32_t output_5_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U;
-    const uint32_t output_6_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U;
-    const uint32_t output_7_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U;
-    const uint32_t output_8_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U;
     // If four outputs are read, output 1,2,3,4,5, and 6 expected to be read
     uz_fixedpoint_axi_read_ExpectAndReturn(BASE_ADDRESS + output_1_register_address, def, expected_output[0]);
     uz_fixedpoint_axi_read_ExpectAndReturn(BASE_ADDRESS + output_2_register_address, def, expected_output[1]);
@@ -308,23 +282,6 @@ void test_uz_mlp_three_layer_read_output_eight(void)
 
     // First trigger the strobe register, then read the data
     uz_axi_write_bool_Expect(BASE_ADDRESS + axi_nn_output_Strobe_uz_mlp_three_layer, true);
-    // There are 8 output registers:
-    // Output 1: 0x1A0 (axi_nn_output_Data_uz_mlp_three_layer)
-    // Output 2: 0x1A4
-    // Output 3: 0x1A8
-    // Output 4: 0x1AC
-    // Output 5: 0x1B0
-    // Output 6: 0x1B4
-    // Output 7: 0x1B8
-    // Output 8: 0x1BC
-    const uint32_t output_1_register_address = axi_nn_output_Data_uz_mlp_three_layer;
-    const uint32_t output_2_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U;
-    const uint32_t output_3_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U;
-    const uint32_t output_4_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U;
-    const uint32_t output_5_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U;
-    const uint32_t output_6_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U;
-    const uint32_t output_7_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U;
-    const uint32_t output_8_register_address = axi_nn_output_Data_uz_mlp_three_layer + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U + 0x4U;
     // If only two outputs are read, output 1 and output 4 are expected to be read
     uz_fixedpoint_axi_read_ExpectAndReturn(BASE_ADDRESS + output_1_register_address, def, expected_output[0]);
     uz_fixedpoint_axi_read_ExpectAndReturn(BASE_ADDRESS + output_2_register_address, def, expected_output[1]);

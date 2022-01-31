@@ -5,8 +5,12 @@
 #include "uz_signals.h"
 #include "test_assert_with_exception.h"
 
+struct uz_Filter_1st_config config = { 0 };
 void setUp(void)
 {
+    config.selection = LowPass;
+    config.cutoff_frequency_Hz = 200.0f;
+    config.sample_frequency_Hz = 20000.0f;
 }
 
 void tearDown(void)
@@ -79,6 +83,35 @@ void test_uz_signals_saturation_output(void){
     TEST_ASSERT_EQUAL_FLOAT(upper_limit, uz_signals_saturation(input, upper_limit, lower_limit)); 
     input = -0.7f;
     TEST_ASSERT_EQUAL_FLOAT(lower_limit, uz_signals_saturation(input, upper_limit, lower_limit)); 
+}
+
+void test_uz_signals_Filter_1st_init_assert_sample_Freq(void) {
+    config.sample_frequency_Hz = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_Filter_1st_init(config));
+    config.sample_frequency_Hz = -20.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_Filter_1st_init(config));
+}
+
+void test_uz_signals_Filter_1st_init_assert_cutoff_Freq(void) {
+    config.cutoff_frequency_Hz = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_Filter_1st_init(config));
+    config.cutoff_frequency_Hz = -20.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_Filter_1st_init(config));
+}
+
+void test_uz_signals_Filter_1st_init_assert_sample_Freq_higher_than_cutoff_Freq(void) {
+    config.cutoff_frequency_Hz = 10000.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_Filter_1st_init(config));
+    config.cutoff_frequency_Hz = 30000.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_Filter_1st_init(config));
+    //sample=20k->because of Nyquist–Shannon filter max 10k
+    config.cutoff_frequency_Hz = 9999.0f;
+    TEST_ASSERT_PASS_ASSERT(uz_Filter_1st_init(config));
+}
+
+void test_uz_signals_Filter_1st_sample_NULL_pointer(void) {
+    float input = 10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_signals_Filter_1st_sample(NULL, input));
 }
 
 #endif // TEST

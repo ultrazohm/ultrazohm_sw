@@ -101,6 +101,8 @@ float uz_signals_saturation(float input, float upper_limit, float lower_limit) {
 }
 
 float uz_signals_Filter_1st_sample(uz_Filter_1st_t* self, float input) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
 	float output = 0.0f;
 	if(self->config.selection == LowPass) {
 		output = self->old_output + self->alpha * (input - self->old_output);

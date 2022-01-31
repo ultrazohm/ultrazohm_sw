@@ -50,6 +50,7 @@ uz_Filter_1st_t* uz_Filter_1st_init(struct uz_Filter_1st_config config) {
 	uz_Filter_1st_t* self = uz_Filter_1st_allocation();
 	uz_assert(config.sample_frequency_Hz > 0.0f);
 	uz_assert(config.cutoff_frequency_Hz > 0.0f);
+	uz_assert(config.sample_frequency_Hz > (2.0f * config.cutoff_frequency_Hz));
 	self->RC = 1.0f / (self->config.cutoff_frequency_Hz * 2.0f * UZ_PIf );
 	self->dt = 1.0f / self->config.sample_frequency_Hz;
 	if (config.selection == LowPass) {

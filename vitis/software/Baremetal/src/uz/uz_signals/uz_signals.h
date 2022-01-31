@@ -51,6 +51,14 @@ float uz_signals_get_sign_of_value(float input);
 float uz_signals_saturation(float input, float upper_limit, float lower_limit);
 
 /**
+ * @brief Initialization of the filter 1st order object
+ * 
+ * @param config uz_Filter_1st_config configuration struct
+ * @return uz_Filter_1st_t* pointer instance
+ */
+uz_Filter_1st_t* uz_Filter_1st_init(struct uz_Filter_1st_config config);
+
+/**
  * @brief Function to filter an input signal with either an LowPass or HighPass filter
 	 *
  * @param self pointer instance of uz_Filter_1st_t

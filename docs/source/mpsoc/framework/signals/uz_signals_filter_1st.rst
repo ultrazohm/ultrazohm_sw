@@ -9,7 +9,10 @@
 .. doxygenstruct:: uz_Filter_1st_config
   :members:
 
+.. doxygenfunction:: uz_Filter_1st_init
+  
 .. doxygenfunction:: uz_signals_Filter_1st_sample
+
 
 Example
 =======

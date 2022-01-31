@@ -33,6 +33,9 @@ struct uz_wavegen_three_phase_config config_three = {
         .offset = 0.5f
 };
 
+struct uz_d_gan_inverter_outputs_t outs_of_D4;
+struct uz_d_gan_inverter_outputs_t outs_of_D3;
+
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -278,6 +281,8 @@ int main(void) {
 		uz_d_gan_inverter_update_states(uz_d_gan_inverter_inSocketD3);
 		Global_Data.da.D4 = uz_d_gan_inverter_inSocketD4;
 		Global_Data.da.D3 = uz_d_gan_inverter_inSocketD3;
+		Global_Data.outs_of_D4 = uz_d_gan_inverter_get_outputs(uz_d_gan_inverter_inSocketD4);
+		Global_Data.outs_of_D3 = uz_d_gan_inverter_get_outputs(uz_d_gan_inverter_inSocketD3);
 
 		// poll the buttons
 		Global_Data.dv.sw1 = uz_GetPushButtonEnableSystem();

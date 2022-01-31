@@ -683,6 +683,8 @@ typedef struct _DS_Data_ {
 	debugVariables dv;
 	AnalogAdapters aa;
 	DigitalAdapters da;
+	struct uz_d_gan_inverter_outputs_t outs_of_D4;
+	struct uz_d_gan_inverter_outputs_t outs_of_D3;
 } DS_Data;
 
 #endif

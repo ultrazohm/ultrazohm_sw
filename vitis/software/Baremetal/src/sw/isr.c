@@ -59,7 +59,6 @@ extern uz_codegen codegenInstance;
 extern uz_PWM_SS_2L_t *PWM_SS_2L_d4;
 extern uz_PWM_SS_2L_t *PWM_SS_2L_d3;
 
-
 extern uz_wavegen_three_phase *three_phase_test;
 
 //==============================================================================================================================================================

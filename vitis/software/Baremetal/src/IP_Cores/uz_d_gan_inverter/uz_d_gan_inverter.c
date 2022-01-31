@@ -84,4 +84,10 @@ void uz_d_gan_inverter_update_states(uz_d_gan_inverter_t *self) {
     self->outputs.GaN_ChipTempDegreesCelsius_H3 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(self->outputs.PWMdutyCycPerCent_H3);
     self->outputs.GaN_ChipTempDegreesCelsius_L3 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(self->outputs.PWMdutyCycPerCent_L3);
 }
+
+struct uz_d_gan_inverter_outputs_t uz_d_gan_inverter_get_outputs(uz_d_gan_inverter_t *self) {
+
+    return(self->outputs);
+}
+
 #endif

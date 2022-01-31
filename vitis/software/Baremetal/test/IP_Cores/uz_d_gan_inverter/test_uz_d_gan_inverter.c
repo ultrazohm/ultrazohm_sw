@@ -227,12 +227,12 @@ void test_uz_d_gan_inverter_OC_results(void)
         OC_L2_result[i] = test_instance->outputs.OC_L2;
         OC_H3_result[i] = test_instance->outputs.OC_H3;
         OC_L3_result[i] = test_instance->outputs.OC_L3;
-        // printf("OC_H1_result: %i, expected: %i, error: %i\n", OC_H1_result[i],OC_H1_ref_result[i],OC_H1_ref_result[i]-OC_H1_result[i]);
-        // printf("OC_L1_result: %i, expected: %i, error: %i\n", OC_L1_result[i],OC_L1_ref_result[i],OC_L1_ref_result[i]-OC_L1_result[i]);
-        // printf("OC_H2_result: %i, expected: %i, error: %i\n", OC_H2_result[i],OC_H2_ref_result[i],OC_H2_ref_result[i]-OC_H2_result[i]);
-        // printf("OC_L2_result: %i, expected: %i, error: %i\n", OC_L2_result[i],OC_L2_ref_result[i],OC_L2_ref_result[i]-OC_L2_result[i]);
-        // printf("OC_H3_result: %i, expected: %i, error: %i\n", OC_H3_result[i],OC_H3_ref_result[i],OC_H3_ref_result[i]-OC_H3_result[i]);
-        // printf("OC_L3_result: %i, expected: %i, error: %i\n", OC_L3_result[i],OC_L3_ref_result[i],OC_L3_ref_result[i]-OC_L3_result[i]);
+        printf("OC_H1_result: %i, expected: %i, error: %i\n", OC_H1_result[i],OC_H1_ref_result[i],OC_H1_ref_result[i]-OC_H1_result[i]);
+        printf("OC_L1_result: %i, expected: %i, error: %i\n", OC_L1_result[i],OC_L1_ref_result[i],OC_L1_ref_result[i]-OC_L1_result[i]);
+        printf("OC_H2_result: %i, expected: %i, error: %i\n", OC_H2_result[i],OC_H2_ref_result[i],OC_H2_ref_result[i]-OC_H2_result[i]);
+        printf("OC_L2_result: %i, expected: %i, error: %i\n", OC_L2_result[i],OC_L2_ref_result[i],OC_L2_ref_result[i]-OC_L2_result[i]);
+        printf("OC_H3_result: %i, expected: %i, error: %i\n", OC_H3_result[i],OC_H3_ref_result[i],OC_H3_ref_result[i]-OC_H3_result[i]);
+        printf("OC_L3_result: %i, expected: %i, error: %i\n", OC_L3_result[i],OC_L3_ref_result[i],OC_L3_ref_result[i]-OC_L3_result[i]);
         TEST_ASSERT_EQUAL_INT(OC_H1_ref_result[i],OC_H1_result[i]);
         TEST_ASSERT_EQUAL_INT(OC_L1_ref_result[i],OC_L1_result[i]);
         TEST_ASSERT_EQUAL_INT(OC_H2_ref_result[i],OC_H2_result[i]);

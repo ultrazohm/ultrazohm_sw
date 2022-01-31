@@ -32,5 +32,5 @@
     #define UZ_MYIP2_MAX_INSTANCES                  5U
     #define UZ_MYIP_MAX_INSTANCES                   5U
     #define UZ_PI_CONTROLLER_MAX_INSTANCES      30U
-	#define UZ_D_GAN_INVERTER_MAX_INSTANCES			4U
+	#define UZ_D_GAN_INVERTER_MAX_INSTANCES			40U
 #endif

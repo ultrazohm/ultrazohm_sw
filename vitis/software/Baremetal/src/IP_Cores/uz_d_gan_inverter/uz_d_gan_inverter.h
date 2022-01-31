@@ -75,4 +75,6 @@ uz_d_gan_inverter_t* uz_d_gan_inverter_init(struct uz_d_gan_inverter_config_t co
 
  void uz_d_gan_inverter_update_states(uz_d_gan_inverter_t *self);
 
+ struct uz_d_gan_inverter_outputs_t uz_d_gan_inverter_get_outputs(uz_d_gan_inverter_t *self);
+
 #endif // UZ_D_GAN_INVERTER_H

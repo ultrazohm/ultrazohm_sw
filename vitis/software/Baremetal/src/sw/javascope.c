@@ -90,6 +90,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_ia2] 			= &data->av.I_a2;
 	js_ptr_arr[JSO_ib2] 			= &data->av.I_b2;
 	js_ptr_arr[JSO_ic2] 			= &data->av.I_c2;
+	js_ptr_arr[JSO_Temp_D4_H1]		=&data->outs_of_D4.GaN_ChipTempDegreesCelsius_H1;
+	js_ptr_arr[JSO_Temp_D3_H1]		=&data->outs_of_D3.GaN_ChipTempDegreesCelsius_H1;
+	js_ptr_arr[JSO_Temp_D4_H2]		=&data->outs_of_D4.GaN_ChipTempDegreesCelsius_H2;
+	js_ptr_arr[JSO_Temp_D3_H2]		=&data->outs_of_D3.GaN_ChipTempDegreesCelsius_H2;
+	js_ptr_arr[JSO_Temp_D4_H3]		=&data->outs_of_D4.GaN_ChipTempDegreesCelsius_H3;
+	js_ptr_arr[JSO_Temp_D3_H3]		=&data->outs_of_D3.GaN_ChipTempDegreesCelsius_H3;
 	js_ptr_arr[JSO_ua] 			= &data->av.U_U;
 	js_ptr_arr[JSO_ub] 			= &data->av.U_V;
 	js_ptr_arr[JSO_uc] 			= &data->av.U_W;
@@ -198,6 +204,12 @@ void JavaScope_update(DS_Data* data){
 	js_slowDataArray[JSSD_FLOAT_Sine].f 					= uz_SystemTime_GetIsrPeriodInUs();
 	js_slowDataArray[JSSD_INT_Milliseconds].i 				= uz_SystemTime_GetUptimeInMs();
 	js_slowDataArray[JSSD_FLOAT_ADCconvFactorReadback].f = data->mrp.ADCconvFactorReadback;
+	js_slowDataArray[JSSD_FLOAT_Temp_D4_H1].f			= data->outs_of_D4.GaN_ChipTempDegreesCelsius_H1;
+	js_slowDataArray[JSSD_FLOAT_Temp_D3_H1].f			= data->outs_of_D3.GaN_ChipTempDegreesCelsius_H1;
+	js_slowDataArray[JSSD_FLOAT_Temp_D4_H2].f			= data->outs_of_D4.GaN_ChipTempDegreesCelsius_H2;
+	js_slowDataArray[JSSD_FLOAT_Temp_D3_H2].f			= data->outs_of_D3.GaN_ChipTempDegreesCelsius_H2;
+	js_slowDataArray[JSSD_FLOAT_Temp_D4_H3].f			= data->outs_of_D4.GaN_ChipTempDegreesCelsius_H3;
+	js_slowDataArray[JSSD_FLOAT_Temp_D3_H3].f			= data->outs_of_D3.GaN_ChipTempDegreesCelsius_H3;
 //	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline].f= data->pID.Offline_Psi_PM;
 //	js_slowDataArray[JSSD_FLOAT_Lq_Offline].f 	= data->pID.Offline_Lq;
 //	js_slowDataArray[JSSD_FLOAT_Ld_Offline].f 	= data->pID.Offline_Ld;

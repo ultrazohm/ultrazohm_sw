@@ -30,6 +30,9 @@ uz_mux_axi_t* uz_mux_axi_init(struct uz_mux_axi_config_t config) {
     uz_mux_axi_t* self = uz_mux_axi_allocation();
     self->config=config;
     uz_assert_not_zero(self->is_ready);
+    uz_mux_axi_enable(self);
+    uz_mux_axi_set_mux(self, self->config.mux);
+    uz_mux_axi_set_n_th_interrupt(self, self->config.n_th_interrupt);
     return (self);
 }
 

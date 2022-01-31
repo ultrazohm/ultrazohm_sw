@@ -27,9 +27,8 @@
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 #include "../include/uz_platform_state_machine.h"
-#include "../include/uz_mux_axi.h"
-// Include for code-gen
 #include "../Codegen/uz_codegen.h"
+#include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
 // Initialize the Interrupt structure

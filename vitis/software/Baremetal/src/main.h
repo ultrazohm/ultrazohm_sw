@@ -27,7 +27,6 @@
 #include "include/uz_platform_state_machine.h"
 #include "uz/uz_global_configuration.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
-#include "include/uz_mux_axi.h"
 #include "include/uz_adcLtc2311_ip_core_init.h"
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "include/uz_assertion_configuration.h"
@@ -40,6 +39,7 @@
 #include "include/encoder.h"
 #include "include/gpio_axi.h"
 #include "include/javascope.h"
+#include "include/mux_axi.h"
 #include "include/pwm_3L_driver.h"
 
 #include "uz/uz_HAL.h"

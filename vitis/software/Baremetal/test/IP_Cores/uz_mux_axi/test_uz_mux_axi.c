@@ -30,15 +30,21 @@ void tearDown(void)
 
 void test_uz_mux_axi_set_n_th_interrupt(void)
 {  
+    uz_mux_axi_hw_enable_IP_core_Expect(TEST_BASE_ADDRESS);
+    uz_mux_axi_hw_set_mux_Expect(TEST_BASE_ADDRESS,config.mux);
     uz_mux_axi_hw_set_n_th_interrupt_Expect(TEST_BASE_ADDRESS, config.n_th_interrupt);
     uz_mux_axi_t *instance = uz_mux_axi_init(config);
+    uz_mux_axi_hw_set_n_th_interrupt_Expect(TEST_BASE_ADDRESS, config.n_th_interrupt);
     uz_mux_axi_set_n_th_interrupt(instance, config.n_th_interrupt);
 }
 
 void test_uz_mux_axi_set_mux(void)
 {    
+    uz_mux_axi_hw_enable_IP_core_Expect(TEST_BASE_ADDRESS);
     uz_mux_axi_hw_set_mux_Expect(TEST_BASE_ADDRESS, config.mux);
+    uz_mux_axi_hw_set_n_th_interrupt_Expect(TEST_BASE_ADDRESS, config.n_th_interrupt);
     uz_mux_axi_t *instance = uz_mux_axi_init(config);
+    uz_mux_axi_hw_set_mux_Expect(TEST_BASE_ADDRESS, config.mux);
     uz_mux_axi_set_mux(instance, config.mux);
 }
 

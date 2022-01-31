@@ -1,6 +1,7 @@
 #include "uz_PMSM_config.h"
+#include "../uz_HAL.h"
 
-void uz_PMSM_config_assert(struct uz_PMSM_t config){
+void uz_PMSM_config_assert(uz_PMSM_t config){
     uz_assert(config.R_ph_Ohm > 0.0f);
     uz_assert(config.Ld_Henry > 0.0f);
 	uz_assert(config.Lq_Henry > 0.0f);

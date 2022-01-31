@@ -26,8 +26,8 @@
 
 #include "../main.h"
 
-extern Oszi_to_ARM_Data_shared_struct ControlData;
 extern QueueHandle_t js_queue;
+extern struct APU_to_RPU_t ControlData;
 
 int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
@@ -55,6 +55,7 @@ void process_request_thread(void *p)
 	struct javascope_data_t javascope_data_sending = {0};
 	NetworkSendStruct nwsend = {0};
 	char recv_buf[2048] = {0};
+	struct APU_to_RPU_t* Received_Data = {0};
 
 	int clientfd = (int)p;
 	int nread = 0;
@@ -64,8 +65,6 @@ void process_request_thread(void *p)
 	js_connection_established = clientfd;
 
 	while (1) {
-
-		u32_t command=0;
 
 		for (size_t i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
 
@@ -114,7 +113,7 @@ void process_request_thread(void *p)
 			js_connection_established = 0;
 			break;
 		}
-		asm(" nop");
+		asm("nop");
 
 		// read a max of RECV_BUF_SIZE bytes from socket /
 		if (nwrote > 0){
@@ -126,13 +125,10 @@ void process_request_thread(void *p)
 				break;
 			}
 			//asm(" nop");
-			if (nread == 4){
-				command = *((u32_t*)recv_buf); // cast 4 bytes to Uint32
-				if (command != 0)
-				{
-					ControlData.id = (u16_t)command; 			// Erste 2 Bytes: Commands in Form von Flags/Nummern
-					ControlData.value = (s16_t)(command >> 16);	// Letzte 2 Bytes: Zahlenwert Uebergabe
-				}
+			if ( nread == sizeof(ControlData) ){
+				Received_Data = ((struct APU_to_RPU_t*)recv_buf); // cast received bytes
+				ControlData.id 		= Received_Data->id;
+				ControlData.value 	= Received_Data->value;
 			}
 
 			// break if client closed connection /

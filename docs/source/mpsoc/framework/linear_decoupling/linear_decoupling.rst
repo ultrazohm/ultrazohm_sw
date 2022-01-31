@@ -32,8 +32,8 @@ Calculates the values for a linear decoupling according to the following formula
 
 .. math::
 
-    u_{d,decoup} &= -\omega_{el} \cdot L_q \cdot i_q \\
-    u_{q,decoup} &= \omega_{el} \cdot (L_d \cdot i_d + \psi_{PM})
+    v_{d,decoup} &= -\omega_{el} \cdot L_q \cdot i_q \\
+    v_{q,decoup} &= \omega_{el} \cdot (L_d \cdot i_d + \psi_{PM})
 
 This function is already included in the :ref:`uz_FOC`, but it can be used independently for any other purpose.
 
@@ -70,5 +70,5 @@ This function is already included in the :ref:`uz_FOC`, but it can be used indep
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm]at($(Multiply1.south)+(3,-0.5)$)(output){uz\_dq\_t};
   \draw[-latex](Multiply1.east) -| (output.north);
   \draw[-latex](Multiply2.east) -| (output.south);
-  \node at ($(Multiply1.east)+(0.8,0.25)$){$u_{d,decoup}$};
-  \node at ($(Multiply2.east)+(0.8,-0.25)$){$u_{q,decoup}$};
+  \node at ($(Multiply1.east)+(0.8,0.25)$){$v_{d,decoup}$};
+  \node at ($(Multiply2.east)+(0.8,-0.25)$){$v_{q,decoup}$};

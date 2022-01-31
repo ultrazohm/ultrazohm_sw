@@ -379,6 +379,13 @@ static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_D
 	Data->AutoRefCurrents_Output = self->OnlineID->AutoRefCurrents->output.i_dq_ref;
 }
 
+void uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float C_times_R) {
+	Data->ActualValues.V_UVW.U = Data->ActualValues.V_UVW.U * sqrtf(1.0f + powf(Data->ActualValues.omega_el * C_times_R, 2.0f));
+	Data->ActualValues.V_UVW.V = Data->ActualValues.V_UVW.V * sqrtf(1.0f + powf(Data->ActualValues.omega_el * C_times_R, 2.0f));
+	Data->ActualValues.V_UVW.W = Data->ActualValues.V_UVW.W * sqrtf(1.0f + powf(Data->ActualValues.omega_el * C_times_R, 2.0f));
+	Data->ActualValues.theta_el -= atanf(Data->ActualValues.omega_el * C_times_R);
+}
+
 void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_ParameterID_t *ParameterID) {
 
 	//Initialize Global-Config

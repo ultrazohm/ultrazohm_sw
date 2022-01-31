@@ -75,6 +75,10 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_Para
 void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t* Data);
 void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 
+//only for testing, delete for merge
+void uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float C_times_R);
+
+
 
 #endif // UZ_PARAMETERID_H
 

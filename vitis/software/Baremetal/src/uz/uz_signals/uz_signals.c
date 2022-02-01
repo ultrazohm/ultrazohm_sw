@@ -28,6 +28,7 @@ typedef struct uz_Filter_1st_t {
 	float RC;
 	float old_output;
 	float old_input;
+	bool first_step;
 } uz_Filter_1st_t;
 
 static size_t uz_Filter_1st_instance_counter = 0U;
@@ -51,8 +52,8 @@ uz_Filter_1st_t* uz_Filter_1st_init(struct uz_Filter_1st_config config) {
 	uz_assert(config.sample_frequency_Hz > 0.0f);
 	uz_assert(config.cutoff_frequency_Hz > 0.0f);
 	uz_assert(config.sample_frequency_Hz > (2.0f * config.cutoff_frequency_Hz));
-	self->RC = 1.0f / (self->config.cutoff_frequency_Hz * 2.0f * UZ_PIf );
-	self->dt = 1.0f / self->config.sample_frequency_Hz;
+	self->RC = 1.0f / (config.cutoff_frequency_Hz * 2.0f * UZ_PIf );
+	self->dt = 1.0f / config.sample_frequency_Hz;
 	if (config.selection == LowPass) {
 		self->alpha = self->dt / (self->RC + self->dt);
 	} else if (config.selection == HighPass) {
@@ -105,10 +106,33 @@ float uz_signals_Filter_1st_sample(uz_Filter_1st_t* self, float input) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	float output = 0.0f;
+	if (!self->first_step) {
+		self->old_output = input;
+		self->first_step = true;
+	}
 	if(self->config.selection == LowPass) {
 		output = self->old_output + self->alpha * (input - self->old_output);
 	} else {
 		output = self->alpha * (self->old_output + input - self->old_input);
+	}
+	self->old_output = output;
+	self->old_input = input;
+	return (output);
+}
+
+float uz_signals_Filter_1st_reverse_sample(uz_Filter_1st_t* self, float input) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	float output = 0.0f;
+	if (!self->first_step) {
+		self->old_output = input;
+		self->old_input = input;
+		self->first_step = true;
+	}
+	if(self->config.selection == LowPass) {
+		output = (input - (1.0f - self->alpha) * self->old_input) / self->alpha;
+	} else {
+		output = input / self->alpha - self->old_output + self->old_input;
 	}
 	self->old_output = output;
 	self->old_input = input;

@@ -81,16 +81,15 @@ Parallel calculation
 ====================
 
 The calculation of the network is split up and done in parallel to speed it up.
-The split up is done on a neuron basis in each layer, i.e., with a parallelization of 4, the layer uses four parallel MAC units.
-These calculate 1/4 of the output independent of each other.
+The split up is done on a neuron basis in each layer, i.e., with a parallelization of 4, four DSP slices are used and each DSP calculates 1/4 of the output vector independent of each other.
 
-Example:
+Example with four inputs, parallelization of four, and eight neurons:
 
 .. math::
 
     x &=\begin{bmatrix} 1 & 2 & 3 & 4 \end{bmatrix} \\
     w &=\begin{bmatrix}  \color{red} 1 &  \color{red} 2 & 3 & 4 & \color{green}5 & \color{green}6 & 7 & 8\\ \color{red} 9 & \color{red} 10 & 11 & 12 & \color{green}13 &\color{green} 14 & 15 & 16  \\  \color{red}17 &  \color{red}18 & 19 & 20 & \color{green}21 & \color{green}22 & 23 & 24 \\  \color{red}25 &  \color{red}26 & 27 & 28 & \color{green} 29 & \color{green}30 & 31 & 32 \end{bmatrix} \\
-    b &=\begin{bmatrix} 1 & 2 & 3 & 4 \end{bmatrix}
+    b &=\begin{bmatrix} 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 \end{bmatrix}
 
 The multiplication :math:`xw` is split up by splitting :math:`w` into 4 parts.
 
@@ -99,21 +98,75 @@ The multiplication :math:`xw` is split up by splitting :math:`w` into 4 parts.
     w_1 &= \begin{bmatrix}  \color{red}1 &  \color{red}2 \\  \color{red}9 &  \color{red}10 \\  \color{red}17 &  \color{red}18 \\  \color{red}25 &  \color{red}26 \end{bmatrix} \\
     w_2 &= \begin{bmatrix} 3 & 4 \\ 11 & 12 \\ 19 & 20 \\ 27 & 28 \end{bmatrix} \\
     w_3 &= \begin{bmatrix} \color{green} 5 & \color{green}6 \\ \color{green}13 &\color{green} 14 \\ \color{green}21 & \color{green}22 \\ \color{green}29 &\color{green} 30 \end{bmatrix} \\
-    w_4 &= \begin{bmatrix} 7 & 8 \\ 15 & 16 \\ 23 & 24 \\ 31 & 32 \end{bmatrix} \\
+    w_4 &= \begin{bmatrix} 7 & 8 \\ 15 & 16 \\ 23 & 24 \\ 31 & 32 \end{bmatrix} 
+
+The bias is split up by splitting :math:`b` into 4 parts.
+
+.. math::
+
+    b_1 &= \begin{bmatrix}  \color{red}1 &  \color{red}2  \end{bmatrix} \\
+    b_2 &= \begin{bmatrix} 3 & 4 \end{bmatrix} \\
+    b_3 &= \begin{bmatrix} \color{green} 5 & \color{green}6  \end{bmatrix} \\
+    b_4 &= \begin{bmatrix} 7 & 8 \end{bmatrix} 
 
 The results are calculated by:
 
 .. math::
 
-    y_1 &= x w_1=\begin{bmatrix} 170  & 180 \end{bmatrix}\\ 
-    y_2 &= x w_2=\begin{bmatrix} 190  & 200 \end{bmatrix}\\
-    y_3 &= x w_3=\begin{bmatrix} 210  & 220 \end{bmatrix}\\
-    y_4 &= x w_4=\begin{bmatrix} 230  & 240 \end{bmatrix} \\
-    y &= \begin{bmatrix} 170 & 180 & 190 & 200 & 210 & 220 & 230 & 240 \end{bmatrix}
+    y_1 &= x w_1 + b_1=\begin{bmatrix} 171  & 182 \end{bmatrix}\\ 
+    y_2 &= x w_2 + b_2=\begin{bmatrix} 193  & 204 \end{bmatrix}\\
+    y_3 &= x w_3 + b_3=\begin{bmatrix} 215  & 226 \end{bmatrix}\\
+    y_4 &= x w_4 + b_4=\begin{bmatrix} 237  & 248 \end{bmatrix} \\
+    y &= \begin{bmatrix} 171 & 182 & 193 & 204 & 215 & 226 & 237 & 248 \end{bmatrix}
+
+The weight parameters are written to block RAM (BRAM) in the IP-Core for each layer with the following memory layout:
+
+.. math::
+
+    w =\begin{bmatrix}  1 & 2 & 3 & 4 & 5 & 6 & 7 & 8\\  9 &  10 & 11 & 12 & 13 & 14 & 15 & 16  \\  17 &  18 & 19 & 20 & 21 & 22 & 23 & 24 \\ 25 & 26 & 27 & 28 & 29 & 30 & 31 & 32 \end{bmatrix}
+
+.. math::
+
+    w =\begin{bmatrix}  1& 9& 17& 25& 2& 10& 18& 26& 3& 11& 19& 27& 4& 12& 20& 28& 5& 13& 21& 29& 6& 14& 22& 30& 7& 15& 23& 31& 8& 16& 24& 32 \end{bmatrix}
+
+The bias parameters are written to block RAM (BRAM) in the IP-Core for each layer with the following memory layout:
+
+.. math::
+
+    w =\begin{bmatrix}  1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 \end{bmatrix}
+
+Due to the parallelization, the matrix is split, e.g., into four parts for four parallel DSPs:
+
+.. math::
+
+    w_1 &= \begin{bmatrix} 1 & 9 & 17 & 25 & 2 & 10 & 18 & 26 \end{bmatrix} \\
+    w_2 &= \begin{bmatrix} 3 & 11 & 19 & 27 &4 & 12 & 20 & 28\end{bmatrix} \\
+    w_3 &= \begin{bmatrix} 5 & 13 & 21 & 29 & 6 &14 & 22 &30 \end{bmatrix} \\
+    w_4 &= \begin{bmatrix} 7 & 15 & 23 &31 & 8 & 16 & 24 & 32\end{bmatrix} 
+
+
+.. note:: This ordering is the transposed definition compared to what is used in :ref:`matrix_math` to match the hardware setup of the IP-Core. Thus, a matrix of type ``uz_matrix_t`` has to be transposed.
+
 
 Write parameters to network
 ===========================
 
+To write parameters to the BRAM of the IP-Core the following mechanism is used:
+
+- Write the number of the layer (one-based, input is 1, first hidden layer is 2, output layer is 4)
+- Write data
+- Write address (bias is zero-based, weights are one-based)
+- Write to enable the number of parallel PCU that shall be set (one-based!)
+
+For bias:
+
+- Write the address to ``axi_bias_addr``, the address of the bias is zero-based!
+- Write the data to ``axi_bias``
+- Write the number of the parallel DSP to ``axi_write_bias_enable`` (one-based)
+
+For weights:
+
+- Address is one-based!
 
 
 Usage

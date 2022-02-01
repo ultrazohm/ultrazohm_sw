@@ -92,7 +92,7 @@ The Setup Scope page is used to adjust the scope settings during operation.
 Control page
 """"""""""""
 
-The control page is used to step through the state-machine of the system and for setting commands and reference values. In addition, some slow data can be visualized.
+The control page is used to step through the state-machine of the system and for setting commands and reference values. All buttons and LEDs of the front panel are mirrored in the GUI. In addition, some slow data can be visualized.
 
   ..  _javascope_control:
 
@@ -106,27 +106,29 @@ The control page is used to step through the state-machine of the system and for
 
    a. It sets the system state to enable which mainly enables IO and PWM pins.
 
-   b. When the enable is confirmed by the R5 of the UltraZohm, a green status indicator next to the button will show the state of the system.
+   b. When the enable is confirmed by the R5 of the UltraZohm, the ``Ready`` LED on the front panel as well as its mirrored twin in the GUI will blink faster.
 
 2. The ``Enable Control`` button has the same functionality as the hardware button on the main front panel.
 
    a. It sets the system state to enable control which mainly executes a part of the ISR of the R5 where the user should place its real-time application code.
 
-   b. When the enable is confirmed by the R5 of the UltraZohm, a green status indicator next to the button will show the state of the system.
+   b. When the enable is confirmed by the R5 of the UltraZohm, the ``Running`` LED on the front panel as well as its mirrored twin in the GUI will turn on in addition to the blinking ``Ready`` LED.
 
 3. The ``STOP`` button has the same functionality as the hardware button on the main front panel.
 
    a. It disables the control and system enable states. IOs and PWM are deactivated and the real-time application code in the ISR is no longer executed.
 
-   b. From the disappearing green status indicators left of the button it can be seen that the stop command was confirmed by the R5.
+   b. From returning to the slow blinking of the ``Ready`` LED and turning off of the ``Running`` LED it can be seen that the stop command was confirmed by the R5.
 
-4. The ``receive_fields``
+4. The four LEDs mirror the LEDs of the front panel and always show the same state as the real LEDs do. In the case of an ``assert`` event in the UltraZohm no data is transfered anymore to the GUI. In this case the ``Error`` LED will only be seen on the real hardware front panel.
+
+5. The ``receive_fields``
 
    a. Here some user-defined slow data values can be visualized more prominently than in the slow data table.
 
    b. For selection which values are shown here, see section :ref:`javascope_customizing`.
 
-5. The ``send_fields``
+6. The ``send_fields``
 
    a. Six values are available that can be used as references or set points for the user application.
 
@@ -139,11 +141,11 @@ The control page is used to step through the state-machine of the system and for
 
       Part of ``ipc_ARM.c`` where ``send_field_x`` values are received
 
-6. The ``mybuttons``
+7. The ``mybuttons``
 
    a. Besides the ``send_field`` values, there are 8 buttons available for the user. In ``ipc_ARM.c`` one can choose what happens when pressing the buttons.
 
-   b. Below each button is a status indicator that can be triggered also in ``ipc_ARM.c`` if one likes to have feedback for the button actions. See ``/* Bit 2 - My_Button_1 */`` in the right picture below for example usage.
+   b. Below each button is a status indicator that can be triggered also in ``ipc_ARM.c`` if one likes to have feedback for the button actions. See ``/* Bit 4 - My_Button_1 */`` in the right picture below for example usage.
 
   ..  _javascope_mybuttons:
 
@@ -153,7 +155,7 @@ The control page is used to step through the state-machine of the system and for
       left: further usage of the buttons, right: control of the status indicators of the buttons
 
 
-7. The ``Error Reset`` can be used to reset errors that occurred.
+8. The ``Error Reset`` can be used to reset errors that occurred.
 
 
    a. What happens when pressing ``Error Reset`` can also be programmed in ``ipc_ARM.c``

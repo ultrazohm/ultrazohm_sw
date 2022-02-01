@@ -13,6 +13,7 @@ typedef enum
     error_state
 } platform_state_t;
 
+
 /**
  * @brief Returns the current state of the ultrazohm
  * 
@@ -48,6 +49,13 @@ void ultrazohm_state_machine_set_enable_control(bool enable_control);
 void ultrazohm_state_machine_set_stop(bool stop);
 
 /**
+ * @brief Sets the user LED
+ *
+ * @param onoff
+ */
+void ultrazohm_state_machine_set_userLED(bool onoff);
+
+/**
  * @brief Sets the input signal error of the state machine
  * 
  * @param error 
@@ -77,3 +85,35 @@ bool ultrazohm_state_machine_get_enable_control(void);
  * @return false 
  */
 bool ultrazohm_state_machine_is_control_state(void);
+
+/**
+ * @brief Returns the current state of the running led
+ * 
+ * @return true 
+ * @return false 
+ */
+bool ultrazohm_state_get_led_running(void);
+
+/**
+ * @brief Returns the current state of the ready led
+ * 
+ * @return true 
+ * @return false 
+ */
+bool ultrazohm_state_get_led_ready(void);
+
+/**
+ * @brief Returns the current state of the error led
+ * 
+ * @return true 
+ * @return false 
+ */
+bool ultrazohm_state_get_led_error(void);
+
+/**
+ * @brief Returns the current state of the user led
+ *
+ * @return true
+ * @return false
+ */
+bool ultrazohm_state_get_led_user(void);

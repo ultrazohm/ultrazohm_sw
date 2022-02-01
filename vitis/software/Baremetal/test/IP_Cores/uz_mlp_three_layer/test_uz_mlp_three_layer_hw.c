@@ -86,15 +86,15 @@ void test_uz_mlp_three_layer_hw_write_bias_address(void)
 
 void test_uz_mlp_three_layer_hw_write_enable_bias(void)
 {
-    bool write_bias = true;
-    uz_axi_write_bool_Expect(BASE_ADDRESS + axi_wrEnBias_Data_uz_mlp_three_layer, write_bias);
+    uint32_t write_bias = 8U;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + axi_wrEnBias_Data_uz_mlp_three_layer, write_bias);
     uz_mlp_three_layer_hw_write_enable_bias(BASE_ADDRESS, write_bias);
 }
 
 void test_uz_mlp_three_layer_hw_write_enable_weight(void)
 {
-    bool write_weight = true;
-    uz_axi_write_bool_Expect(BASE_ADDRESS + axi_wrEnWeights_Data_uz_mlp_three_layer, write_weight);
+    uint32_t write_weight = 3U;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + axi_wrEnWeights_Data_uz_mlp_three_layer, write_weight);
     uz_mlp_three_layer_hw_write_enable_weights(BASE_ADDRESS, write_weight);
 }
 

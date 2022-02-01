@@ -56,4 +56,5 @@
     #define UZ_PMSMMODEL_MAX_INSTANCES                      11U
     #define UZ_PLANTPT1_MAX_INSTANCES                       6U
     #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      11U
+    #define UZ_MLP_THREE_LAYER_IP_MAX_INSTANCES             10U
 #endif

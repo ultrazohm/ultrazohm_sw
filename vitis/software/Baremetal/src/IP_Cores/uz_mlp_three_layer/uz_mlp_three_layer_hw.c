@@ -7,17 +7,6 @@
 #define MAX_VALUE_10_BIT 1024U
 #define MAX_VALUE_8_BIT 256U
 
-// Since the outputs are
-static const uint32_t output_offset_addresses[8] = {
-    axi_nn_output_Data_uz_mlp_three_layer + (0U * 0x4U),
-    axi_nn_output_Data_uz_mlp_three_layer + (1U * 0x4U),
-    axi_nn_output_Data_uz_mlp_three_layer + (2U * 0x4U),
-    axi_nn_output_Data_uz_mlp_three_layer + (3U * 0x4U),
-    axi_nn_output_Data_uz_mlp_three_layer + (4U * 0x4U),
-    axi_nn_output_Data_uz_mlp_three_layer + (5U * 0x4U),
-    axi_nn_output_Data_uz_mlp_three_layer + (6U * 0x4U),
-    axi_nn_output_Data_uz_mlp_three_layer + (7U * 0x4U)};
-
 void uz_mlp_three_layer_hw_write_enable_nn(uint32_t base_address, bool trigger_conversion)
 {
     uz_assert_not_zero_uint32(base_address);

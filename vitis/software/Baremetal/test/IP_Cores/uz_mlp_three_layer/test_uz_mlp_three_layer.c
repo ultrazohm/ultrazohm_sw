@@ -3,6 +3,7 @@
 #include "unity.h"
 
 #include "uz_mlp_three_layer.h"
+#include "mock_uz_mlp_three_layer_hw.h"
 #include "uz_matrix.h"
 void setUp(void)
 {
@@ -51,14 +52,24 @@ float b_4[NUMBER_OF_OUTPUTS] = {
 };
 float y_4[NUMBER_OF_OUTPUTS] = {0};
 
+#define BASE_ADDRESS 0xF0000000
+struct uz_mlp_three_layer_ip_config_t config = {
+    .base_address = BASE_ADDRESS};
+
+uz_mlp_three_layer_ip_t *successful_init(void);
+uz_mlp_three_layer_ip_t *successful_init(void)
+{
+    uz_mlp_three_layer_ip_t *test = UZ_MLP_THREE_LAYER_IP_init(config);
+    return (test);
+};
+
 void test_uz_mlp_three_layer_write_bias_to_layer(void)
 {
-    const uint32_t parallel_pcu=4U;
-    const uint32_t layer=1U;
-    uz_matrix_t* layer1_weights=uz_matrix_init(&w_1[0],UZ_MATRIX_SIZE(w_1), size_t rows, size_t columns);
-
-
-
+    successful_init();
+    // const uint32_t parallel_pcu = 4U;
+    // const uint32_t layer = 1U;
+    // uz_matrix_t *layer1_bias = uz_matrix_init(&b_1[0], UZ_MATRIX_SIZE(b_1), size_t rows, size_t columns);
+    // uz_mlp_three_layer_write_bias(parallel_pcu,layer_)
 }
 
 #endif // TEST

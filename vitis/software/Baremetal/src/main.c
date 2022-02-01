@@ -279,10 +279,19 @@ int main(void) {
 		//Get Data From UZ_D_GaN_Inverter
 		uz_d_gan_inverter_update_states(uz_d_gan_inverter_inSocketD4);
 		uz_d_gan_inverter_update_states(uz_d_gan_inverter_inSocketD3);
+
+
+
 		Global_Data.da.D4 = uz_d_gan_inverter_inSocketD4;
 		Global_Data.da.D3 = uz_d_gan_inverter_inSocketD3;
 		Global_Data.outs_of_D4 = uz_d_gan_inverter_get_outputs(uz_d_gan_inverter_inSocketD4);
 		Global_Data.outs_of_D3 = uz_d_gan_inverter_get_outputs(uz_d_gan_inverter_inSocketD3);
+
+		// low-pass filter of mechanical speed
+		static float temp_lpf_mem_in = 0.0f;
+		static float temp_lpf_mem_out = 0.0f;
+		Global_Data.GaN_ChipTempDegreesCelsius_H1_filt = LPF1(	Global_Data.outs_of_D4.GaN_ChipTempDegreesCelsius_H1, &temp_lpf_mem_in, &temp_lpf_mem_out,
+														Global_Data.ctrl.samplingFrequency, 100);
 
 		// poll the buttons
 		Global_Data.dv.sw1 = uz_GetPushButtonEnableSystem();

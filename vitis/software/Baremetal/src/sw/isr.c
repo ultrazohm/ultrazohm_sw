@@ -81,7 +81,6 @@ void ISR_Control(void *data)
 	CheckForErrors();
 	Encoder_UpdateSpeedPosition(&Global_Data); 	//Read out speed and theta angle
 
-
 	//assign eletrical angle and compensate offset
 	Global_Data.av.theta_elec_offset_compensated = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
 

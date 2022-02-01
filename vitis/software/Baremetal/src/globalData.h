@@ -685,6 +685,7 @@ typedef struct _DS_Data_ {
 	DigitalAdapters da;
 	struct uz_d_gan_inverter_outputs_t outs_of_D4;
 	struct uz_d_gan_inverter_outputs_t outs_of_D3;
+	float GaN_ChipTempDegreesCelsius_H1_filt;
 } DS_Data;
 
 #endif

@@ -1,0 +1,13 @@
+open_system('gm_UZ_D_GaN_Inverter');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'lightblue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection_instance1', 'user2');
+annotate_port('gm_UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection_instance1', 0, 1, 'cp : 5.332 ns');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'blue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection_instance1/HDL Reciprocal', 'user1');
+annotate_port('gm_UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection_instance1/HDL Reciprocal', 0, 1, 'cp : 5.332 ns');

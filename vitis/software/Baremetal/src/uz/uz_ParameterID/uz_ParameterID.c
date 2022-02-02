@@ -228,16 +228,19 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 				Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
 			}
 		}
-		if (Data->PID_Control_Selection == Speed_Control) {
-			ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
-			i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->GlobalConfig.n_ref, Data->ActualValues.V_DC, Online_current_ref.d,
-			                Data->GlobalConfig.PMSM_config, ext_clamping);
+		if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
+			if (Data->PID_Control_Selection == Speed_Control) {
+				ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
+				i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->GlobalConfig.n_ref, Data->ActualValues.V_DC,
+				                Online_current_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping);
 
-		} else if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
-			if (Data->PID_Control_Selection == Current_Control) {
-				v_dq_Volts = uz_FOC_sample(FOC_instance, Online_current_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-			} else {
-				v_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+			}
+			if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
+				if (Data->PID_Control_Selection == Current_Control) {
+					v_dq_Volts = uz_FOC_sample(FOC_instance, Online_current_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+				} else {
+					v_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+				}
 			}
 		} else {
 			v_dq_Volts.d = 0.0f;
@@ -379,11 +382,11 @@ static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_D
 	Data->AutoRefCurrents_Output = self->OnlineID->AutoRefCurrents->output.i_dq_ref;
 }
 
-void uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float C_times_R) {
-	Data->ActualValues.V_UVW.U = Data->ActualValues.V_UVW.U * sqrtf(1.0f + powf(Data->ActualValues.omega_el * C_times_R, 2.0f));
-	Data->ActualValues.V_UVW.V = Data->ActualValues.V_UVW.V * sqrtf(1.0f + powf(Data->ActualValues.omega_el * C_times_R, 2.0f));
-	Data->ActualValues.V_UVW.W = Data->ActualValues.V_UVW.W * sqrtf(1.0f + powf(Data->ActualValues.omega_el * C_times_R, 2.0f));
-	Data->ActualValues.theta_el -= atanf(Data->ActualValues.omega_el * C_times_R);
+void uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {
+	Data->ActualValues.V_UVW.U = Data->ActualValues.V_UVW.U * sqrtf(1.0f + powf(Data->ActualValues.omega_el * RC, 2.0f));
+	Data->ActualValues.V_UVW.V = Data->ActualValues.V_UVW.V * sqrtf(1.0f + powf(Data->ActualValues.omega_el * RC, 2.0f));
+	Data->ActualValues.V_UVW.W = Data->ActualValues.V_UVW.W * sqrtf(1.0f + powf(Data->ActualValues.omega_el * RC, 2.0f));
+	Data->ActualValues.theta_el -= atanf(Data->ActualValues.omega_el * RC);
 }
 
 void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_ParameterID_t *ParameterID) {

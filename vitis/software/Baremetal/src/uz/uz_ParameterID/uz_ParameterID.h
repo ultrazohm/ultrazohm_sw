@@ -76,7 +76,7 @@ void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t*
 void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 
 //only for testing, delete for merge
-void uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float C_times_R);
+void uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC);
 
 
 

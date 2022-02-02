@@ -379,6 +379,9 @@ typedef struct _actualValues_ {
 	uint32_t  heartbeatframe_content;
 	uint16_t activeState;
 	float Temp_H1_D4;
+	float highticks_H1;
+	float lowticks_H1;
+	float periodticks_H1;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

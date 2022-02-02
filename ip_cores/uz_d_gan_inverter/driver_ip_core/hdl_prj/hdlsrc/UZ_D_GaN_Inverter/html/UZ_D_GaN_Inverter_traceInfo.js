@@ -1,37 +1,29 @@
 function RTW_Sid2UrlHash() {
 	this.urlHashMap = new Array();
 	/* <S5>/Bit Slice GaN_Temp1 */
-	this.urlHashMap["UZ_D_GaN_Inverter:656"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:213";
+	this.urlHashMap["UZ_D_GaN_Inverter:656"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:656";
 	/* <S5>/Bit Slice GaN_Temp2 */
-	this.urlHashMap["UZ_D_GaN_Inverter:658"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:215";
+	this.urlHashMap["UZ_D_GaN_Inverter:658"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:658";
 	/* <S5>/Bit Slice GaN_Temp3 */
-	this.urlHashMap["UZ_D_GaN_Inverter:659"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:217";
+	this.urlHashMap["UZ_D_GaN_Inverter:659"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:659";
 	/* <S5>/Bit Slice GaN_Temp4 */
-	this.urlHashMap["UZ_D_GaN_Inverter:660"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:219";
+	this.urlHashMap["UZ_D_GaN_Inverter:660"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:660";
 	/* <S5>/Bit Slice GaN_Temp5 */
-	this.urlHashMap["UZ_D_GaN_Inverter:661"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:221";
+	this.urlHashMap["UZ_D_GaN_Inverter:661"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:661";
 	/* <S5>/Bit Slice GaN_Temp6 */
-	this.urlHashMap["UZ_D_GaN_Inverter:662"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:223";
+	this.urlHashMap["UZ_D_GaN_Inverter:662"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:662";
 	/* <S5>/Delay */
-	this.urlHashMap["UZ_D_GaN_Inverter:406"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:249,250,251,252,253,254,255,256,257,258,259,261";
+	this.urlHashMap["UZ_D_GaN_Inverter:406"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:406";
 	/* <S5>/Delay1 */
-	this.urlHashMap["UZ_D_GaN_Inverter:689"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:267,268,269,270,271,272,273,274,275,276,277,279";
+	this.urlHashMap["UZ_D_GaN_Inverter:689"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:689";
 	/* <S5>/Delay2 */
-	this.urlHashMap["UZ_D_GaN_Inverter:690"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:285,286,287,288,289,290,291,292,293,294,295,297";
+	this.urlHashMap["UZ_D_GaN_Inverter:690"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:690";
 	/* <S5>/Delay3 */
-	this.urlHashMap["UZ_D_GaN_Inverter:691"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:301,302,303,304,305,306,307,308,309,310,311,313";
-	/* <S5>/Demux */
-	this.urlHashMap["UZ_D_GaN_Inverter:647"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:317";
-	/* <S5>/Demux1 */
-	this.urlHashMap["UZ_D_GaN_Inverter:651"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:319";
-	/* <S5>/Demux2 */
-	this.urlHashMap["UZ_D_GaN_Inverter:652"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:321";
-	/* <S5>/Demux3 */
-	this.urlHashMap["UZ_D_GaN_Inverter:653"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:323";
-	/* <S5>/Mux */
-	this.urlHashMap["UZ_D_GaN_Inverter:643"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:225,226,227,228,229,230";
+	this.urlHashMap["UZ_D_GaN_Inverter:691"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:691";
+	/* <S5>/Delay4 */
+	this.urlHashMap["UZ_D_GaN_Inverter:765"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:765";
 	/* <S5>/PWMdutyFreqDetection */
-	this.urlHashMap["UZ_D_GaN_Inverter:639"] = "UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd:232,233,234,235,236,237,238,239,240,241,242,243";
+	this.urlHashMap["UZ_D_GaN_Inverter:639"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:639";
 	/* <S42>/DTProp1 */
 	this.urlHashMap["UZ_D_GaN_Inverter:656:1698"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:656:1698";
 	/* <S42>/Reinterp_As_Unsigned_Integer */
@@ -56,48 +48,48 @@ function RTW_Sid2UrlHash() {
 	this.urlHashMap["UZ_D_GaN_Inverter:662:1698"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:662:1698";
 	/* <S47>/Reinterp_As_Unsigned_Integer */
 	this.urlHashMap["UZ_D_GaN_Inverter:662:1700"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:662:1700";
-	/* <S48>/Compare
-To Constant */
-	this.urlHashMap["UZ_D_GaN_Inverter:433"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:228,229";
-	/* <S48>/Compare
-To Constant1 */
-	this.urlHashMap["UZ_D_GaN_Inverter:434"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:162,163";
-	/* <S48>/Delay1 */
-	this.urlHashMap["UZ_D_GaN_Inverter:744"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:336,337,338,339,340,341,342,343,344,345";
+	/* <S48>/Constant */
+	this.urlHashMap["UZ_D_GaN_Inverter:760"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:760";
 	/* <S48>/Delay17 */
-	this.urlHashMap["UZ_D_GaN_Inverter:435"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:169,170,171,172,173,174,175,176,177,178";
+	this.urlHashMap["UZ_D_GaN_Inverter:435"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:435";
 	/* <S48>/Delay18 */
-	this.urlHashMap["UZ_D_GaN_Inverter:436"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:185,186,187,188,189,190,191,192,193,194";
+	this.urlHashMap["UZ_D_GaN_Inverter:436"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:436";
 	/* <S48>/Delay19 */
-	this.urlHashMap["UZ_D_GaN_Inverter:437"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:239,240,241,242,243,244,245,246,247,248";
+	this.urlHashMap["UZ_D_GaN_Inverter:437"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:437";
 	/* <S48>/Delay2 */
-	this.urlHashMap["UZ_D_GaN_Inverter:745"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:283,284,285,286,287,288,289,290,291,292,293,295";
+	this.urlHashMap["UZ_D_GaN_Inverter:745"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:745";
 	/* <S48>/Delay3 */
-	this.urlHashMap["UZ_D_GaN_Inverter:746"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:265,266,267,268,269,270,271,272,273,274,275,277";
+	this.urlHashMap["UZ_D_GaN_Inverter:746"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:746";
 	/* <S48>/Delay4 */
-	this.urlHashMap["UZ_D_GaN_Inverter:747"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:211,212,213,214,215,216,217,218,219,220,221,223";
-	/* <S48>/Detect Fall
-Nonpositive */
-	this.urlHashMap["UZ_D_GaN_Inverter:438"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:123,124,125,126,127,128,129";
-	/* <S48>/Detect Rise
-Positive */
-	this.urlHashMap["UZ_D_GaN_Inverter:439"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:115,116,117,118,119,120,121";
+	this.urlHashMap["UZ_D_GaN_Inverter:747"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:747";
+	/* <S48>/Delay5 */
+	this.urlHashMap["UZ_D_GaN_Inverter:754"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:754";
 	/* <S48>/For Each */
 	this.urlHashMap["UZ_D_GaN_Inverter:641"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:641";
 	/* <S48>/Gain */
-	this.urlHashMap["UZ_D_GaN_Inverter:440"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:332,333,334";
-	/* <S48>/HDL Counter */
-	this.urlHashMap["UZ_D_GaN_Inverter:441"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158";
+	this.urlHashMap["UZ_D_GaN_Inverter:440"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:440";
 	/* <S48>/HDL Reciprocal */
-	this.urlHashMap["UZ_D_GaN_Inverter:442"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:131,132,133,134,135,136,137";
+	this.urlHashMap["UZ_D_GaN_Inverter:442"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:442";
 	/* <S48>/Product */
-	this.urlHashMap["UZ_D_GaN_Inverter:443"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:315,316";
+	this.urlHashMap["UZ_D_GaN_Inverter:443"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:443";
+	/* <S48>/Scope */
+	this.urlHashMap["UZ_D_GaN_Inverter:751"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:751";
 	/* <S48>/Sum */
-	this.urlHashMap["UZ_D_GaN_Inverter:444"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:281";
+	this.urlHashMap["UZ_D_GaN_Inverter:444"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:444";
 	/* <S48>/Switch */
-	this.urlHashMap["UZ_D_GaN_Inverter:445"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:182,183";
+	this.urlHashMap["UZ_D_GaN_Inverter:445"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:445";
 	/* <S48>/Switch1 */
-	this.urlHashMap["UZ_D_GaN_Inverter:446"] = "UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd:236,237";
+	this.urlHashMap["UZ_D_GaN_Inverter:446"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:446";
+	/* <S48>/Switch2 */
+	this.urlHashMap["UZ_D_GaN_Inverter:753"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:753";
+	/* <S48>/Switch3 */
+	this.urlHashMap["UZ_D_GaN_Inverter:755"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:755";
+	/* <S48>/Switch4 */
+	this.urlHashMap["UZ_D_GaN_Inverter:757"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:757";
+	/* <S48>/Switch5 */
+	this.urlHashMap["UZ_D_GaN_Inverter:758"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:758";
+	/* <S48>/Switch6 */
+	this.urlHashMap["UZ_D_GaN_Inverter:759"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:759";
 	/* <S48>/duty cycle in % */
 	this.urlHashMap["UZ_D_GaN_Inverter:447"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:447";
 	/* <S48>/high time in counts */
@@ -163,21 +155,17 @@ Positive */
 	/* <S56>/Constant */
 	this.urlHashMap["UZ_D_GaN_Inverter:434:3"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:434:3";
 	/* <S57>/Delay Input1 */
-	this.urlHashMap["UZ_D_GaN_Inverter:438:2"] = "UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive.vhd:49,50,51,52,53,54,55,56,57,58";
+	this.urlHashMap["UZ_D_GaN_Inverter:438:2"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:438:2";
 	/* <S57>/FixPt
 Relational
 Operator */
-	this.urlHashMap["UZ_D_GaN_Inverter:438:3"] = "UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive.vhd:62,63";
-	/* <S57>/Nonpositive */
-	this.urlHashMap["UZ_D_GaN_Inverter:438:4"] = "UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive.vhd:45,46";
+	this.urlHashMap["UZ_D_GaN_Inverter:438:3"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:438:3";
 	/* <S58>/Delay Input1 */
-	this.urlHashMap["UZ_D_GaN_Inverter:439:2"] = "UZ_D_GaN_Inverter_src_Detect_Rise_Positive.vhd:49,50,51,52,53,54,55,56,57,58";
+	this.urlHashMap["UZ_D_GaN_Inverter:439:2"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:439:2";
 	/* <S58>/FixPt
 Relational
 Operator */
-	this.urlHashMap["UZ_D_GaN_Inverter:439:3"] = "UZ_D_GaN_Inverter_src_Detect_Rise_Positive.vhd:62,63";
-	/* <S58>/Positive */
-	this.urlHashMap["UZ_D_GaN_Inverter:439:4"] = "UZ_D_GaN_Inverter_src_Detect_Rise_Positive.vhd:45,46";
+	this.urlHashMap["UZ_D_GaN_Inverter:439:3"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:439:3";
 	/* <S59>/Constant */
 	this.urlHashMap["UZ_D_GaN_Inverter:441:212"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:441:212";
 	/* <S59>/Count_reg */
@@ -211,8 +199,6 @@ Operator */
 	this.urlHashMap["UZ_D_GaN_Inverter:441:35"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:441:35";
 	/* <S59>/const_dir */
 	this.urlHashMap["UZ_D_GaN_Inverter:441:36"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:441:36";
-	/* <S59>/const_enb */
-	this.urlHashMap["UZ_D_GaN_Inverter:441:209"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:441:209";
 	/* <S59>/const_load */
 	this.urlHashMap["UZ_D_GaN_Inverter:441:38"] = "msg=rtwMsg_notTraceable&block=UZ_D_GaN_Inverter:441:38";
 	/* <S59>/const_load_val */
@@ -272,6 +258,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["UZ_D_GaN_Inverter:236"] = {rtwname: "<S5>/I_DIAG"};
 	this.rtwnameHashMap["<S5>/AXI_PWM_Enable"] = {sid: "UZ_D_GaN_Inverter:400"};
 	this.sidHashMap["UZ_D_GaN_Inverter:400"] = {rtwname: "<S5>/AXI_PWM_Enable"};
+	this.rtwnameHashMap["<S5>/AXI_en_in"] = {sid: "UZ_D_GaN_Inverter:764"};
+	this.sidHashMap["UZ_D_GaN_Inverter:764"] = {rtwname: "<S5>/AXI_en_in"};
 	this.rtwnameHashMap["<S5>/Bit Slice GaN_Temp1"] = {sid: "UZ_D_GaN_Inverter:656"};
 	this.sidHashMap["UZ_D_GaN_Inverter:656"] = {rtwname: "<S5>/Bit Slice GaN_Temp1"};
 	this.rtwnameHashMap["<S5>/Bit Slice GaN_Temp2"] = {sid: "UZ_D_GaN_Inverter:658"};
@@ -292,6 +280,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["UZ_D_GaN_Inverter:690"] = {rtwname: "<S5>/Delay2"};
 	this.rtwnameHashMap["<S5>/Delay3"] = {sid: "UZ_D_GaN_Inverter:691"};
 	this.sidHashMap["UZ_D_GaN_Inverter:691"] = {rtwname: "<S5>/Delay3"};
+	this.rtwnameHashMap["<S5>/Delay4"] = {sid: "UZ_D_GaN_Inverter:765"};
+	this.sidHashMap["UZ_D_GaN_Inverter:765"] = {rtwname: "<S5>/Delay4"};
 	this.rtwnameHashMap["<S5>/Demux"] = {sid: "UZ_D_GaN_Inverter:647"};
 	this.sidHashMap["UZ_D_GaN_Inverter:647"] = {rtwname: "<S5>/Demux"};
 	this.rtwnameHashMap["<S5>/Demux1"] = {sid: "UZ_D_GaN_Inverter:651"};
@@ -302,6 +292,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["UZ_D_GaN_Inverter:653"] = {rtwname: "<S5>/Demux3"};
 	this.rtwnameHashMap["<S5>/Mux"] = {sid: "UZ_D_GaN_Inverter:643"};
 	this.sidHashMap["UZ_D_GaN_Inverter:643"] = {rtwname: "<S5>/Mux"};
+	this.rtwnameHashMap["<S5>/Mux1"] = {sid: "UZ_D_GaN_Inverter:771"};
+	this.sidHashMap["UZ_D_GaN_Inverter:771"] = {rtwname: "<S5>/Mux1"};
 	this.rtwnameHashMap["<S5>/PWMdutyFreqDetection"] = {sid: "UZ_D_GaN_Inverter:639"};
 	this.sidHashMap["UZ_D_GaN_Inverter:639"] = {rtwname: "<S5>/PWMdutyFreqDetection"};
 	this.rtwnameHashMap["<S5>/AXI_Gan_Temp_1_period"] = {sid: "UZ_D_GaN_Inverter:10"};
@@ -422,12 +414,14 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["UZ_D_GaN_Inverter:662:1701"] = {rtwname: "<S47>/y"};
 	this.rtwnameHashMap["<S48>/In1"] = {sid: "UZ_D_GaN_Inverter:640"};
 	this.sidHashMap["UZ_D_GaN_Inverter:640"] = {rtwname: "<S48>/In1"};
+	this.rtwnameHashMap["<S48>/en_in_AXI"] = {sid: "UZ_D_GaN_Inverter:763"};
+	this.sidHashMap["UZ_D_GaN_Inverter:763"] = {rtwname: "<S48>/en_in_AXI"};
 	this.rtwnameHashMap["<S48>/Compare To Constant"] = {sid: "UZ_D_GaN_Inverter:433"};
 	this.sidHashMap["UZ_D_GaN_Inverter:433"] = {rtwname: "<S48>/Compare To Constant"};
 	this.rtwnameHashMap["<S48>/Compare To Constant1"] = {sid: "UZ_D_GaN_Inverter:434"};
 	this.sidHashMap["UZ_D_GaN_Inverter:434"] = {rtwname: "<S48>/Compare To Constant1"};
-	this.rtwnameHashMap["<S48>/Delay1"] = {sid: "UZ_D_GaN_Inverter:744"};
-	this.sidHashMap["UZ_D_GaN_Inverter:744"] = {rtwname: "<S48>/Delay1"};
+	this.rtwnameHashMap["<S48>/Constant"] = {sid: "UZ_D_GaN_Inverter:760"};
+	this.sidHashMap["UZ_D_GaN_Inverter:760"] = {rtwname: "<S48>/Constant"};
 	this.rtwnameHashMap["<S48>/Delay17"] = {sid: "UZ_D_GaN_Inverter:435"};
 	this.sidHashMap["UZ_D_GaN_Inverter:435"] = {rtwname: "<S48>/Delay17"};
 	this.rtwnameHashMap["<S48>/Delay18"] = {sid: "UZ_D_GaN_Inverter:436"};
@@ -440,6 +434,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["UZ_D_GaN_Inverter:746"] = {rtwname: "<S48>/Delay3"};
 	this.rtwnameHashMap["<S48>/Delay4"] = {sid: "UZ_D_GaN_Inverter:747"};
 	this.sidHashMap["UZ_D_GaN_Inverter:747"] = {rtwname: "<S48>/Delay4"};
+	this.rtwnameHashMap["<S48>/Delay5"] = {sid: "UZ_D_GaN_Inverter:754"};
+	this.sidHashMap["UZ_D_GaN_Inverter:754"] = {rtwname: "<S48>/Delay5"};
 	this.rtwnameHashMap["<S48>/Detect Fall Nonpositive"] = {sid: "UZ_D_GaN_Inverter:438"};
 	this.sidHashMap["UZ_D_GaN_Inverter:438"] = {rtwname: "<S48>/Detect Fall Nonpositive"};
 	this.rtwnameHashMap["<S48>/Detect Rise Positive"] = {sid: "UZ_D_GaN_Inverter:439"};
@@ -454,12 +450,24 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["UZ_D_GaN_Inverter:442"] = {rtwname: "<S48>/HDL Reciprocal"};
 	this.rtwnameHashMap["<S48>/Product"] = {sid: "UZ_D_GaN_Inverter:443"};
 	this.sidHashMap["UZ_D_GaN_Inverter:443"] = {rtwname: "<S48>/Product"};
+	this.rtwnameHashMap["<S48>/Scope"] = {sid: "UZ_D_GaN_Inverter:751"};
+	this.sidHashMap["UZ_D_GaN_Inverter:751"] = {rtwname: "<S48>/Scope"};
 	this.rtwnameHashMap["<S48>/Sum"] = {sid: "UZ_D_GaN_Inverter:444"};
 	this.sidHashMap["UZ_D_GaN_Inverter:444"] = {rtwname: "<S48>/Sum"};
 	this.rtwnameHashMap["<S48>/Switch"] = {sid: "UZ_D_GaN_Inverter:445"};
 	this.sidHashMap["UZ_D_GaN_Inverter:445"] = {rtwname: "<S48>/Switch"};
 	this.rtwnameHashMap["<S48>/Switch1"] = {sid: "UZ_D_GaN_Inverter:446"};
 	this.sidHashMap["UZ_D_GaN_Inverter:446"] = {rtwname: "<S48>/Switch1"};
+	this.rtwnameHashMap["<S48>/Switch2"] = {sid: "UZ_D_GaN_Inverter:753"};
+	this.sidHashMap["UZ_D_GaN_Inverter:753"] = {rtwname: "<S48>/Switch2"};
+	this.rtwnameHashMap["<S48>/Switch3"] = {sid: "UZ_D_GaN_Inverter:755"};
+	this.sidHashMap["UZ_D_GaN_Inverter:755"] = {rtwname: "<S48>/Switch3"};
+	this.rtwnameHashMap["<S48>/Switch4"] = {sid: "UZ_D_GaN_Inverter:757"};
+	this.sidHashMap["UZ_D_GaN_Inverter:757"] = {rtwname: "<S48>/Switch4"};
+	this.rtwnameHashMap["<S48>/Switch5"] = {sid: "UZ_D_GaN_Inverter:758"};
+	this.sidHashMap["UZ_D_GaN_Inverter:758"] = {rtwname: "<S48>/Switch5"};
+	this.rtwnameHashMap["<S48>/Switch6"] = {sid: "UZ_D_GaN_Inverter:759"};
+	this.sidHashMap["UZ_D_GaN_Inverter:759"] = {rtwname: "<S48>/Switch6"};
 	this.rtwnameHashMap["<S48>/duty cycle in %"] = {sid: "UZ_D_GaN_Inverter:447"};
 	this.sidHashMap["UZ_D_GaN_Inverter:447"] = {rtwname: "<S48>/duty cycle in %"};
 	this.rtwnameHashMap["<S48>/high time in counts"] = {sid: "UZ_D_GaN_Inverter:449"};
@@ -586,6 +594,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["UZ_D_GaN_Inverter:439:5"] = {rtwname: "<S58>/Y"};
 	this.rtwnameHashMap["<S59>/rst"] = {sid: "UZ_D_GaN_Inverter:441:233"};
 	this.sidHashMap["UZ_D_GaN_Inverter:441:233"] = {rtwname: "<S59>/rst"};
+	this.rtwnameHashMap["<S59>/enb"] = {sid: "UZ_D_GaN_Inverter:441:234"};
+	this.sidHashMap["UZ_D_GaN_Inverter:441:234"] = {rtwname: "<S59>/enb"};
 	this.rtwnameHashMap["<S59>/Add_wrap"] = {sid: "UZ_D_GaN_Inverter:441:1"};
 	this.sidHashMap["UZ_D_GaN_Inverter:441:1"] = {rtwname: "<S59>/Add_wrap"};
 	this.rtwnameHashMap["<S59>/Constant"] = {sid: "UZ_D_GaN_Inverter:441:212"};
@@ -626,8 +636,6 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["UZ_D_GaN_Inverter:441:35"] = {rtwname: "<S59>/Switch_type"};
 	this.rtwnameHashMap["<S59>/const_dir"] = {sid: "UZ_D_GaN_Inverter:441:36"};
 	this.sidHashMap["UZ_D_GaN_Inverter:441:36"] = {rtwname: "<S59>/const_dir"};
-	this.rtwnameHashMap["<S59>/const_enb"] = {sid: "UZ_D_GaN_Inverter:441:209"};
-	this.sidHashMap["UZ_D_GaN_Inverter:441:209"] = {rtwname: "<S59>/const_enb"};
 	this.rtwnameHashMap["<S59>/const_load"] = {sid: "UZ_D_GaN_Inverter:441:38"};
 	this.sidHashMap["UZ_D_GaN_Inverter:441:38"] = {rtwname: "<S59>/const_load"};
 	this.rtwnameHashMap["<S59>/const_load_val"] = {sid: "UZ_D_GaN_Inverter:441:39"};

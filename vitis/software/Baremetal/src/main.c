@@ -111,12 +111,12 @@ int main(void) {
 	JavaScope_initalize(&Global_Data);
 
     struct uz_d_gan_inverter_config_t config_D4_GaN = {
-        .base_address = XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR,
+        .base_address = XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR,
         .ip_clk_frequency_Hz = 1000000,
     };
 
     struct uz_d_gan_inverter_config_t config_D3_GaN = {
-        .base_address = XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_0_BASEADDR,
+        .base_address = XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_1_BASEADDR,
         .ip_clk_frequency_Hz = 1000000,
     };
 
@@ -322,13 +322,13 @@ int main(void) {
 			if (Global_Data.cw.enableSystem == false) {
 				turnPowerElectronicsOff(&Global_Data); //Switch power converter off
 				//Set Data To UZ_D_GaN_Inverter
-				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR, false);
-				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_0_BASEADDR, false);
+				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR, false);
+				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_1_BASEADDR, false);
 			} else if ((Global_Data.cw.enableSystem == true) && bInit == false) { //Call this function only once. If there was an error, "enableSystem " must be reseted!
 				bInit = turnPowerElectronicsOn(&Global_Data); //Switch power converter on
 				//Set Data To UZ_D_GaN_Inverter
-				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR, true);
-				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_0_BASEADDR, true);
+				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR, true);
+				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_1_BASEADDR, true);
 			}
 
 			if (Global_Data.cw.enableControl == true) {

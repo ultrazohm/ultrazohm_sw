@@ -5,7 +5,7 @@ High-level Resource Utilization Report for UZ_D_GaN_Inverter
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiply_2_1');hdlTableShrink(this, 'Adder_2_1');hdlTableShrink(this, 'Adder_2_3');hdlTableShrink(this, 'Subtractor_2_1');hdlTableShrink(this, 'Register_2_1');hdlTableShrink(this, 'Multiplexer_2_1');hdlTableShrink(this, 'Multiplexer_2_2');hdlTableShrink(this, 'Multiplexer_2_3');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiply_2_1');hdlTableShrink(this, 'Adder_2_1');hdlTableShrink(this, 'Adder_2_3');hdlTableShrink(this, 'Subtractor_2_1');hdlTableShrink(this, 'Register_2_1');hdlTableShrink(this, 'Multiplexer_2_1');hdlTableShrink(this, 'Multiplexer_2_2');hdlTableShrink(this, 'Multiplexer_2_3');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-964
+1271
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-23816
+28587
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-228
+288
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-812
+813
 </td>
 
 </tr>
@@ -246,25 +246,40 @@ UZ_D_GaN_Inverter
 
 </h5>
 <h5>
-Registers (112)
+Registers (113)
 </h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
 <span style="font-family:monospace">
+1-bit Register 							: 29
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:765')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
 6-bit Register 							: 56
 </span>
 <br /><span style="font-family:monospace">
 4-bit Register 							: 28
 </span>
-<br /><span style="font-family:monospace">
-1-bit Register 							: 28
-</span>
 <br /><h5>
-Number of I/O Bits (812)
+Number of I/O Bits (813)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 26
+Number of Input Bits: 27
 </span>
 <span name="Input_Port" id="Input_Port">
 <ul>
@@ -307,6 +322,12 @@ AXI_PWM_Enable
 </a>
 : 1 bit
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:764')" name="code2model" class="code2model">
+AXI_en_in
+</a>
+: 1 bit
+</li>
 
 </ul>
 
@@ -318,7 +339,7 @@ AXI_PWM_Enable
 Number of Output Bits: 786
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="1f4bae57-3f9c-4a96-a786-73c8af65cd0f" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="6c2ae8c2-e491-4ebb-9603-83ed34e365dc" dataCollapse="off">
 <li>
 ce_out: 1 bit
 </li>
@@ -492,7 +513,7 @@ PWM_EN
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '1f4bae57-3f9c-4a96-a786-73c8af65cd0f')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '6c2ae8c2-e491-4ebb-9603-83ed34e365dc')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -588,13 +609,13 @@ Sum
 33x33-bit Subtractor 							: 18
 </span>
 <br /><h5>
-Registers (840)
+Registers (1146)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_2_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-32-bit Register 							: 720
+32-bit Register 							: 864
 </span>
 <span name="Register_2_1" id="Register_2_1">
 <ul>
@@ -611,8 +632,8 @@ Delay17
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:744')" name="code2model" class="code2model">
-Delay1
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:754')" name="code2model" class="code2model">
+Delay5
 </a>
 
 </li>
@@ -621,25 +642,39 @@ Delay1
 
 </span>
 <br /><span style="font-family:monospace">
-1-bit Register 							: 78
+1-bit Register 							: 240
 </span>
 <br /><span style="font-family:monospace">
 5-bit Register 							: 42
 </span>
 <br /><h5>
-Multiplexers (204)
+Multiplexers (264)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_2_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-32-bit 3-to-1 Multiplexer 							: 6
+1-bit 2-to-1 Multiplexer 							: 66
 </span>
 <span name="Multiplexer_2_1" id="Multiplexer_2_1">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:441')" name="code2model" class="code2model">
-HDL Counter
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:753')" name="code2model" class="code2model">
+Switch2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:433')" name="code2model" class="code2model">
+Compare
+To Constant
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:434')" name="code2model" class="code2model">
+Compare
+To Constant1
 </a>
 
 </li>
@@ -651,19 +686,13 @@ HDL Counter
 [+]
 </span>
 <span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 30
+32-bit 3-to-1 Multiplexer 							: 6
 </span>
 <span name="Multiplexer_2_2" id="Multiplexer_2_2">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:434')" name="code2model" class="code2model">
-Compare To Constant1
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:433')" name="code2model" class="code2model">
-Compare To Constant
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:441')" name="code2model" class="code2model">
+HDL Counter
 </a>
 
 </li>
@@ -675,7 +704,7 @@ Compare To Constant
 [+]
 </span>
 <span style="font-family:monospace">
-32-bit 2-to-1 Multiplexer 							: 78
+32-bit 2-to-1 Multiplexer 							: 102
 </span>
 <span name="Multiplexer_2_3" id="Multiplexer_2_3">
 <ul>
@@ -686,8 +715,32 @@ Switch
 
 </li>
 <li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:759')" name="code2model" class="code2model">
+Switch6
+</a>
+
+</li>
+<li>
 <a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:446')" name="code2model" class="code2model">
 Switch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:758')" name="code2model" class="code2model">
+Switch5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:757')" name="code2model" class="code2model">
+Switch4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:755')" name="code2model" class="code2model">
+Switch3
 </a>
 
 </li>

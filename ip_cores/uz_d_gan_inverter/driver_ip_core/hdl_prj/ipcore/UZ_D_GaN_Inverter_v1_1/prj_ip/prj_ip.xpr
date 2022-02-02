@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/GIT/UltraZohm/software/ultrazohm_sw/ip_cores/uz_d_gan_inverter/driver_ip_core/hdl_prj/ipcore/UZ_D_GaN_Inverter_v1_1/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="206581df53094390b6394a2a737a65fd"/>
+    <Option Name="Id" Val="46c5ab70812a4b7eb5ec9413f300c405"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -97,13 +97,13 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

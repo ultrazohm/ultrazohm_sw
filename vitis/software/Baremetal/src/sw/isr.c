@@ -71,8 +71,8 @@ void ISR_Control(void *data)
 	PID_Data.ActualValues.V_DC = ((Global_Data.aa.A1.me.ADC_A1) * 20.05f) - 0.18f;
 	//PID_Data.ActualValues.V_DC = 24.0f;
 	PID_Data.ActualValues.V_UVW.U = Global_Data.aa.A1.me.ADC_A2 * 20.098196393f - 0.135f;
-	PID_Data.ActualValues.V_UVW.V = Global_Data.aa.A1.me.ADC_A3 * 20.098196393f - 0.135f;
-	PID_Data.ActualValues.V_UVW.W = Global_Data.aa.A1.me.ADC_A4 * 20.098196393f - 0.135f;
+	PID_Data.ActualValues.V_UVW.V = Global_Data.aa.A1.me.ADC_A4 * 20.098196393f - 0.135f;
+	PID_Data.ActualValues.V_UVW.W = Global_Data.aa.A1.me.ADC_A3 * 20.098196393f - 0.135f;
 
 	PID_Data.ActualValues.omega_m = (Global_Data.av.mechanicalRotorSpeed * 2.0f * UZ_PIf ) / 60.0f;
 	PID_Data.ActualValues.omega_el = PID_Data.ActualValues.omega_m * PID_Data.GlobalConfig.PMSM_config.polePairs;

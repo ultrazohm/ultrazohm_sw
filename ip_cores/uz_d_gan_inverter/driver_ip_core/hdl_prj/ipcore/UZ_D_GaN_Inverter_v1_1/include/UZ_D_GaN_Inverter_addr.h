@@ -1,7 +1,7 @@
 /*
  * File Name:         hdl_prj\ipcore\UZ_D_GaN_Inverter_v1_1\include\UZ_D_GaN_Inverter_addr.h
  * Description:       C Header File
- * Created:           2022-02-02 11:26:41
+ * Created:           2022-02-02 16:16:42
 */
 
 #ifndef UZ_D_GAN_INVERTER_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_UZ_D_GaN_Inverter                   0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_UZ_D_GaN_Inverter                  0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_UZ_D_GaN_Inverter               0x8  //contains unique IP timestamp (yymmddHHMM): 2202021126
+#define  IPCore_Timestamp_UZ_D_GaN_Inverter               0x8  //contains unique IP timestamp (yymmddHHMM): 2202021616
 #define  AXI_en_in_Data_UZ_D_GaN_Inverter                 0x100  //data register for Inport AXI_en_in
 #define  AXI_Gan_Temp_1_period_Data_UZ_D_GaN_Inverter     0x104  //data register for Outport AXI_Gan_Temp_1_period
 #define  AXI_Gan_Temp_1_hightime_Data_UZ_D_GaN_Inverter   0x108  //data register for Outport AXI_Gan_Temp_1_hightime

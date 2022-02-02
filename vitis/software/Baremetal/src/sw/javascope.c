@@ -96,6 +96,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_Temp_D3_H2]		=&data->outs_of_D3.GaN_ChipTempDegreesCelsius_H2;
 	js_ptr_arr[JSO_Temp_D4_H3]		=&data->outs_of_D4.GaN_ChipTempDegreesCelsius_H3;
 	js_ptr_arr[JSO_Temp_D3_H3]		=&data->outs_of_D3.GaN_ChipTempDegreesCelsius_H3;
+	js_ptr_arr[JSO_highticks_H1]	=&data->av.highticks_H1;
+	js_ptr_arr[JSO_lowticks_H1]	=&data->av.lowticks_H1;
+	js_ptr_arr[JSO_periodticks_H1]	=&data->av.periodticks_H1;
 	js_ptr_arr[JSO_ua] 			= &data->av.U_U;
 	js_ptr_arr[JSO_ub] 			= &data->av.U_V;
 	js_ptr_arr[JSO_uc] 			= &data->av.U_W;

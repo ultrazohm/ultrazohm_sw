@@ -190,15 +190,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+			PID_Data.GlobalConfig.n_ref = value;
 			break;
 
 		case (Set_Send_Field_2):
-
+			PID_Data.GlobalConfig.i_dq_ref.d = value;
 			break;
 
 		case (Set_Send_Field_3):
-
+			PID_Data.GlobalConfig.i_dq_ref.q = value;
 			break;
 
 		case (Set_Send_Field_4):

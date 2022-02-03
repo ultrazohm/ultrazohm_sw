@@ -1,13 +1,13 @@
 /******************************************************************************
 * Copyright Contributors to the UltraZohm project.
 * Copyright 2021 Dennis Hufnagel
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -67,6 +67,7 @@ static uz_dq_t uz_SpeedControl_field_weakening(uz_PMSM_t config_PMSM, float id_r
     } else {
 	    fw_flag = false;
     }
+	uz_signals_saturation(id_ref_Ampere, config_PMSM.I_max_Ampere, -config_PMSM.I_max_Ampere);
 	output.d = uz_SpeedControl_decide_id_ref(config_PMSM.I_max_Ampere * 0.95f, id_ref_Ampere, output.d, fw_flag);
     float iq_max = sqrtf(powf(config_PMSM.I_max_Ampere, 2.0f) - powf(output.d, 2.0f));
     if( (output.q > iq_max) || (fw_flag == false) ) {

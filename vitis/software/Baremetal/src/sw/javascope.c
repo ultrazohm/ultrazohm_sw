@@ -71,8 +71,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_uc] = &PID_Data.ActualValues.V_UVW.W;
 	js_ch_observable[JSO_iq] = &PID_Data.ActualValues.i_dq.q;
 	js_ch_observable[JSO_id] = &PID_Data.ActualValues.i_dq.d;
-	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
-	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
+	js_ch_observable[JSO_Theta_el] = &PID_Data.ActualValues.theta_el;
+	js_ch_observable[JSO_theta_mech] = &PID_Data.ActualValues.theta_m;
 	js_ch_observable[JSO_ud] = &PID_Data.ActualValues.v_dq.d;
 	js_ch_observable[JSO_uq] = &PID_Data.ActualValues.v_dq.q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;

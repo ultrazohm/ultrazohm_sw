@@ -51,6 +51,8 @@ struct uz_DutyCycle_t PID_DutyCycle = { 0 };
 float theta_offset = 0.025f;
 //C=100nF R_series=95.3kOhm R_parallel=4.99kOhm
 float RC = (95300.0f * 4990.0f * 0.0000001f) / (95300.0f + 4990.0f);
+float theta_el_test = 0.0f;
+uz_UVW_t V_UVW_test = { 0 };
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -78,6 +80,8 @@ void ISR_Control(void *data)
 	PID_Data.ActualValues.omega_m = (Global_Data.av.mechanicalRotorSpeed * 2.0f * UZ_PIf ) / 60.0f;
 	PID_Data.ActualValues.omega_el = PID_Data.ActualValues.omega_m * PID_Data.GlobalConfig.PMSM_config.polePairs;
 	PID_Data.ActualValues.theta_el = Global_Data.av.theta_elec - theta_offset;
+	theta_el_test = PID_Data.ActualValues.theta_el;
+	V_UVW_test = PID_Data.ActualValues.V_UVW;
 
 	//Calculate missing ActualValues
 	uz_ParameterID_correct_LP1_filter(&PID_Data, RC);
@@ -87,15 +91,12 @@ void ISR_Control(void *data)
 
 	uz_ParameterID_step(ParameterID, &PID_Data);
 
-	if (ultrazohm_state_machine_get_state() == control_state)
-    {
-
+	if (ultrazohm_state_machine_get_state() == control_state) {
 		PID_v_dq = uz_ParameterID_Controller(&PID_Data, FOC_instance, SpeedControl_instance);
 		PID_DutyCycle = uz_ParameterID_generate_DutyCycle(&PID_Data, FOC_instance, SpeedControl_instance, PID_v_dq, Global_Data.objects.pwm_d1);
 		Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;
 		Global_Data.rasv.halfBridge2DutyCycle = PID_DutyCycle.DutyCycle_V;
 		Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;
-		PID_Data.ActualValues.v_dq = PID_v_dq;
 	} else {
 		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;

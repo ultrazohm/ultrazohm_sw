@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/GIT/UltraZohm/software/ultrazohm_sw/ip_cores/uz_d_gan_inverter/driver_ip_core/hdl_prj/ipcore/UZ_D_GaN_Inverter_v1_1/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="a98d78ba278f4b44bf05d6aa6d9dcb49"/>
+    <Option Name="Id" Val="e68903a52ec64b738604f45673fd6f52"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -97,31 +97,13 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_Subsystem.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive1.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal_core.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_HDL_Reciprocal.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/UZ_D_GaN_Inverter_src_Detect_Rise_Positive1.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

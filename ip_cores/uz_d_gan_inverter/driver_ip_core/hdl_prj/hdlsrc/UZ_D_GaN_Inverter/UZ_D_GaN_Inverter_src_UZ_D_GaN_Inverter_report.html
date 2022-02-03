@@ -48,8 +48,8 @@
  <div class="page_container"><div class="content_frame">
 <h1>HDL Code Generation Check Report for 'UZ_D_GaN_Inverter/UZ_D_GaN_Inverter'
 <a href="matlab:open_system('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter');">open model 'UZ_D_GaN_Inverter/UZ_D_GaN_Inverter'</a><BR>
-Generated on 2022-02-02 16:16:36</h1>
-<H2>HDL check for 'UZ_D_GaN_Inverter' complete with 0 errors, 2 warnings, and 7 messages.</H2><BR>
+Generated on 2022-02-03 16:01:41</h1>
+<H2>HDL check for 'UZ_D_GaN_Inverter' complete with 0 errors, 2 warnings, and 4 messages.</H2><BR>
 <H3>The following table describes blocks for which errors, warnings or messages were reported.</H3><BR>
 <TABLE>
 <TR><TD> <B>Simulink Blocks and resources</B> </TD><TD> <B>Level</B> </TD><TD> <B>Description</B> </TD></TR><TR bgcolor="#F0F0F0"><TD>
@@ -65,42 +65,24 @@ Generated on 2022-02-02 16:16:36</h1>
 <TD>SynthesisToolSpeedValue not specified. Using default values, SynthesisToolSpeedValue=-1, for critical path estimation.</TD>
 </TR>
 <TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcoder:validate:LatencyMismatch" href="matlab:hilite(get_param(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]),'object'),'none');hilite_system(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114 47 85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114 47 80 87 77 100 117 116 121 70 114 101 113 68 101 116 101 99 116 105 111 110 47 72 68 76 32 82 101 99 105 112 114 111 99 97 108]))">UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection/HDL Reciprocal</a>
-</TD>
-<TD>Message</TD>
-<TD>After HDL code generation, fixed-point block HDL Reciprocal can have additional latency when compared to the Simulink model. For details, view the generated model.</TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcoder:validate:NumericsMismatch" href="matlab:hilite(get_param(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]),'object'),'none');hilite_system(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114 47 85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114 47 80 87 77 100 117 116 121 70 114 101 113 68 101 116 101 99 116 105 111 110 47 72 68 76 32 82 101 99 105 112 114 111 99 97 108]))">UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection/HDL Reciprocal</a>
-</TD>
-<TD>Message</TD>
-<TD>After HDL code generation, block HDL Reciprocal can have numeric differences when compared to the Simulink model. For details, view the generated model. Consider using ULPSetting in testbench panel to accomadate the change.</TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcoder:validate:ValidationNumericMismatch" href="matlab:hilite(get_param(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]),'object'),'none');hilite_system(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114 47 85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114 47 80 87 77 100 117 116 121 70 114 101 113 68 101 116 101 99 116 105 111 110 47 72 68 76 32 82 101 99 105 112 114 111 99 97 108]))">UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection/HDL Reciprocal</a>
-</TD>
-<TD>Message</TD>
-<TD>'HDL Reciprocal' introduces a delay before the block in the generated model. This may introduce simulation mismatch in the initial cycles of the generated validation model.</TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:workflow:AdaptivePipelineOffMessage" href="matlab:hilite(get_param(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]),'object'),'none');open_system(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]))">UZ_D_GaN_Inverter</a>
 </TD>
 <TD>Message</TD>
 <TD><a href="matlab:configset.internal.open('UZ_D_GaN_Inverter','AdaptivePipelining')">'AdaptivePipelining'</a> is set to 'Off' for the model. 'AdaptivePipelining' inserts pipeline registers at input or output or both ports of certain blocks to create patterns that efficiently map blocks to DSP units on the target FPGA device. To enable adaptive pipelining, please set the option to 'On'.</TD>
 </TR>
-<TR bgcolor="#F0F0F0"><TD>
+<TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:workflow:LUTMapToRAMOffMessage" href="matlab:hilite(get_param(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]),'object'),'none');open_system(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]))">UZ_D_GaN_Inverter</a>
 </TD>
 <TD>Message</TD>
 <TD><a href="matlab:configset.internal.open('UZ_D_GaN_Inverter','LUTMapToRAM')">'LUTMapToRAM'</a> is set to 'On' for the model. This option is used to map lookup tables to a block RAM in hardware.  To disable pipeline insertion for mapping lookup tables to RAM, please set the option to 'Off'.</TD>
 </TR>
-<TR bgcolor="#FFFFFF"><TD>
+<TR bgcolor="#F0F0F0"><TD>
 <a alt="hdlcoder:hdldisp:GeneratingCPEHiliteScript" href="matlab:run('hdl_prj\hdlsrc\UZ_D_GaN_Inverter\criticalPathEstimated')">hdl_prj\hdlsrc\UZ_D_GaN_Inverter\criticalPathEstimated.m</a>
 </TD>
 <TD>Message</TD>
 <TD>Estimated critical path for design: <a href="matlab:run('hdl_prj\hdlsrc\UZ_D_GaN_Inverter\criticalPathEstimated')">hdl_prj\hdlsrc\UZ_D_GaN_Inverter\criticalPathEstimated.m</a></TD>
 </TR>
-<TR bgcolor="#F0F0F0"><TD>
+<TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:hdldisp:GeneratingBlocksWithNoCharacterizationHighlightScript" href="matlab:run('hdl_prj\hdlsrc\UZ_D_GaN_Inverter\highlightCriticalPathEstimationOffendingBlocks')">hdl_prj\hdlsrc\UZ_D_GaN_Inverter\highlightCriticalPathEstimationOffendingBlocks.m</a>
 </TD>
 <TD>Message</TD>

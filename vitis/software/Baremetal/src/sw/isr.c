@@ -48,11 +48,9 @@ extern uz_FOC* FOC_instance;
 extern uz_PI_Controller* SpeedControl_instance;
 struct uz_dq_t PID_v_dq = { 0 };
 struct uz_DutyCycle_t PID_DutyCycle = { 0 };
-float theta_offset = 0.025f;
+float theta_offset = 0.029f;
 //C=100nF R_series=95.3kOhm R_parallel=4.99kOhm
 float RC = (95300.0f * 4990.0f * 0.0000001f) / (95300.0f + 4990.0f);
-float theta_el_test = 0.0f;
-uz_UVW_t V_UVW_test = { 0 };
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -80,13 +78,11 @@ void ISR_Control(void *data)
 	PID_Data.ActualValues.omega_m = (Global_Data.av.mechanicalRotorSpeed * 2.0f * UZ_PIf ) / 60.0f;
 	PID_Data.ActualValues.omega_el = PID_Data.ActualValues.omega_m * PID_Data.GlobalConfig.PMSM_config.polePairs;
 	PID_Data.ActualValues.theta_el = Global_Data.av.theta_elec - theta_offset;
-	theta_el_test = PID_Data.ActualValues.theta_el;
-	V_UVW_test = PID_Data.ActualValues.V_UVW;
 
 	//Calculate missing ActualValues
 	uz_ParameterID_correct_LP1_filter(&PID_Data, RC);
-	PID_Data.ActualValues.i_dq = uz_dq_transformation(PID_Data.ActualValues.I_UVW, Global_Data.av.theta_elec);
-	PID_Data.ActualValues.v_dq = uz_dq_transformation(PID_Data.ActualValues.V_UVW, Global_Data.av.theta_elec);
+	PID_Data.ActualValues.i_dq = uz_dq_transformation(PID_Data.ActualValues.I_UVW, PID_Data.ActualValues.theta_el);
+	PID_Data.ActualValues.v_dq = uz_dq_transformation(PID_Data.ActualValues.V_UVW, PID_Data.ActualValues.theta_el);
 	PID_Data.ActualValues.theta_m = Global_Data.av.theta_elec / PID_Data.GlobalConfig.PMSM_config.polePairs;
 
 	uz_ParameterID_step(ParameterID, &PID_Data);

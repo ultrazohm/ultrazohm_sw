@@ -25,8 +25,8 @@ static uz_mux_axi_t* uz_mux_axi_allocation(void){
 }
 
 uz_mux_axi_t* uz_mux_axi_init(struct uz_mux_axi_config_t config) {
-    uz_assert(0U != config.base_address);
-    uz_assert(0U != config.ip_clk_frequency_Hz);
+    uz_assert_not_zero_uint32(config.base_address);
+    uz_assert_not_zero_uint32(config.ip_clk_frequency_Hz);
     uz_mux_axi_t* self = uz_mux_axi_allocation();
     self->config=config;
     uz_assert_not_zero(self->is_ready);

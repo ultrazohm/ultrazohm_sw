@@ -20,7 +20,7 @@ Interrupt sources
 =================
 
 - The user selects the trigger source for ADC triggering via the ``#define`` ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` in ``uz_global_configuration.h``
-- The selected trigger source also triggers the ISR in the R5 processor
+- The selected trigger source also triggers the ISR in the R5 processor (see also :ref:`r5_interrupts`)
 - Below, as well as in ``uz_global_configuration.h``, the user will find the valid interrupt source options:
 
 .. code-block:: c

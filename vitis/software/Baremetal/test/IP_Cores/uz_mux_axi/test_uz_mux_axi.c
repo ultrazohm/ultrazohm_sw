@@ -59,5 +59,4 @@ void test_uz_mux_axi_init_with_zero_ip_clk(void)
     config.ip_clk_frequency_Hz=0;
     TEST_ASSERT_FAIL_ASSERT(uz_mux_axi_init(config));
 }
-
 #endif // TEST

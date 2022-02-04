@@ -89,7 +89,6 @@ function RTW_SidParentMap() {
     this.sidParentMap["UZ_D_GaN_Inverter:760"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:785"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:786"] = "UZ_D_GaN_Inverter:639";
-    this.sidParentMap["UZ_D_GaN_Inverter:811"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:772"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:813"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:814"] = "UZ_D_GaN_Inverter:639";
@@ -122,6 +121,8 @@ function RTW_SidParentMap() {
     this.sidParentMap["UZ_D_GaN_Inverter:790"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:822"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:443"] = "UZ_D_GaN_Inverter:639";
+    this.sidParentMap["UZ_D_GaN_Inverter:836"] = "UZ_D_GaN_Inverter:639";
+    this.sidParentMap["UZ_D_GaN_Inverter:834"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:751"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:823"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:806"] = "UZ_D_GaN_Inverter:639";
@@ -142,12 +143,14 @@ function RTW_SidParentMap() {
     this.sidParentMap["UZ_D_GaN_Inverter:791"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:830"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:447"] = "UZ_D_GaN_Inverter:639";
+    this.sidParentMap["UZ_D_GaN_Inverter:837"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:449"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:827"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:450"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:828"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:829"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:448"] = "UZ_D_GaN_Inverter:639";
+    this.sidParentMap["UZ_D_GaN_Inverter:833"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:642"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:644"] = "UZ_D_GaN_Inverter:639";
     this.sidParentMap["UZ_D_GaN_Inverter:645"] = "UZ_D_GaN_Inverter:639";
@@ -219,7 +222,7 @@ function RTW_SidParentMap() {
     this.sidParentMap["UZ_D_GaN_Inverter:821:34"] = "UZ_D_GaN_Inverter:821";
     this.sidParentMap["UZ_D_GaN_Inverter:821:35"] = "UZ_D_GaN_Inverter:821";
     this.sidParentMap["UZ_D_GaN_Inverter:821:36"] = "UZ_D_GaN_Inverter:821";
-    this.sidParentMap["UZ_D_GaN_Inverter:821:235"] = "UZ_D_GaN_Inverter:821";
+    this.sidParentMap["UZ_D_GaN_Inverter:821:209"] = "UZ_D_GaN_Inverter:821";
     this.sidParentMap["UZ_D_GaN_Inverter:821:38"] = "UZ_D_GaN_Inverter:821";
     this.sidParentMap["UZ_D_GaN_Inverter:821:39"] = "UZ_D_GaN_Inverter:821";
     this.sidParentMap["UZ_D_GaN_Inverter:821:221"] = "UZ_D_GaN_Inverter:821";

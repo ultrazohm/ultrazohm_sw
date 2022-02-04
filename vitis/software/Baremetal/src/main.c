@@ -277,15 +277,15 @@ int main(void) {
 	while (1) {
 
 		//Get Data From UZ_D_GaN_Inverter
-		Xil_Out32(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR + 0x100, 0);
-		Xil_Out32(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_1_BASEADDR + 0x100, 0);
+//		Xil_Out32(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR + 0x100, 0);
+//		Xil_Out32(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_1_BASEADDR + 0x100, 0);
 		uz_d_gan_inverter_update_states(uz_d_gan_inverter_inSocketD4);
 		uz_d_gan_inverter_update_states(uz_d_gan_inverter_inSocketD3);
 		Global_Data.av.highticks_H1 = uz_d_gan_inverter_get_PWMhightimeTicks_H1(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR);
 		Global_Data.av.lowticks_H1 = uz_d_gan_inverter_get_PWMlowtimeTicks_H1(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR);
 		Global_Data.av.periodticks_H1 = uz_d_gan_inverter_get_PWMFreqTicks_H1(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR);
-		Xil_Out32(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR + 0x100, 1);
-		Xil_Out32(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_1_BASEADDR + 0x100, 1);
+//		Xil_Out32(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR + 0x100, 1);
+//		Xil_Out32(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_1_BASEADDR + 0x100, 1);
 
 		Global_Data.da.D4 = uz_d_gan_inverter_inSocketD4;
 		Global_Data.da.D3 = uz_d_gan_inverter_inSocketD3;

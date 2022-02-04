@@ -2,5 +2,9 @@ vlib work
 vcom  UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter_pkg.vhd
 vcom  UZ_D_GaN_Inverter_src_Detect_Rise_Positive1.vhd
 vcom  UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive1.vhd
+vcom  UZ_D_GaN_Inverter_src_NewtonPolynomialIVStage.vhd
+vcom  UZ_D_GaN_Inverter_src_Reciprocal_iv.vhd
+vcom  UZ_D_GaN_Inverter_src_Reciprocal_core.vhd
+vcom  UZ_D_GaN_Inverter_src_Reciprocal.vhd
 vcom  UZ_D_GaN_Inverter_src_PWMdutyFreqDetection.vhd
 vcom  UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter.vhd

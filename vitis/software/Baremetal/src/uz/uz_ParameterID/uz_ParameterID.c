@@ -207,9 +207,10 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 //		uz_PI_Controller_set_Ki(Speed_instance, Data->PID_Controller_Parameters.Ki_n_out);
 //		uz_PI_Controller_set_Kp(Speed_instance, Data->PID_Controller_Parameters.Kp_n_out);
 		}
-	if (Data->GlobalConfig.TwoMassID == true && (Data->Controller_Parameters.activeState == 220 || Data->Controller_Parameters.activeState == 230)) {
-		//uz_PI_Controller_set_Ki(Speed_instance, Data->PID_Controller_Parameters.Ki_n_out);
-		//uz_PI_Controller_set_Kp(Speed_instance, Data->PID_Controller_Parameters.Kp_n_out);
+	if ((Data->GlobalConfig.TwoMassID == true && (Data->Controller_Parameters.activeState == 220 || Data->Controller_Parameters.activeState == 230))
+	                || (Data->GlobalConfig.ElectricalID == true && (Data->Controller_Parameters.activeState == 160 || Data->Controller_Parameters.activeState == 161))) {
+		uz_PI_Controller_set_Ki(Speed_instance, Data->Controller_Parameters.Ki_n_out);
+		uz_PI_Controller_set_Kp(Speed_instance, Data->Controller_Parameters.Kp_n_out);
 	}
 
 	if (Data->ControlFlags->finished_all_Offline_states == true) {
@@ -383,9 +384,10 @@ static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_D
 }
 
 void uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {
-	Data->ActualValues.V_UVW.U = Data->ActualValues.V_UVW.U * sqrtf(1.0f + powf(Data->ActualValues.omega_el * RC, 2.0f));
-	Data->ActualValues.V_UVW.V = Data->ActualValues.V_UVW.V * sqrtf(1.0f + powf(Data->ActualValues.omega_el * RC, 2.0f));
-	Data->ActualValues.V_UVW.W = Data->ActualValues.V_UVW.W * sqrtf(1.0f + powf(Data->ActualValues.omega_el * RC, 2.0f));
+	float factor = sqrtf(1.0f + powf((Data->ActualValues.omega_el * RC), 2.0f));
+	Data->ActualValues.V_UVW.U = Data->ActualValues.V_UVW.U * factor;
+	Data->ActualValues.V_UVW.V = Data->ActualValues.V_UVW.V * factor;
+	Data->ActualValues.V_UVW.W = Data->ActualValues.V_UVW.W * factor;
 	Data->ActualValues.theta_el -= atanf(Data->ActualValues.omega_el * RC);
 }
 

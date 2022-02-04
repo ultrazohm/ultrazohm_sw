@@ -90,7 +90,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ptr_arr[JSO_ia2] 			= &data->av.I_a2;
 	js_ptr_arr[JSO_ib2] 			= &data->av.I_b2;
 	js_ptr_arr[JSO_ic2] 			= &data->av.I_c2;
-	js_ptr_arr[JSO_Temp_D4_H1]		=&data->GaN_ChipTempDegreesCelsius_H1_filt;
+	js_ptr_arr[JSO_Temp_D4_H1]		=&data->outs_of_D4.GaN_ChipTempDegreesCelsius_H1;
 	js_ptr_arr[JSO_Temp_D3_H1]		=&data->outs_of_D3.GaN_ChipTempDegreesCelsius_H1;
 	js_ptr_arr[JSO_Temp_D4_H2]		=&data->outs_of_D4.GaN_ChipTempDegreesCelsius_H2;
 	js_ptr_arr[JSO_Temp_D3_H2]		=&data->outs_of_D3.GaN_ChipTempDegreesCelsius_H2;

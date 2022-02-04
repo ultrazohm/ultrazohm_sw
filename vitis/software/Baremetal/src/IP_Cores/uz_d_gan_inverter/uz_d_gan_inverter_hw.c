@@ -18,10 +18,10 @@ uint32_t uz_d_gan_inverter_get_PWMlowtimeTicks_H1(uint32_t base_address){
     return(uz_axi_read_uint32(base_address + AXI_Gan_Temp_1_lowtime_Data_UZ_D_GaN_Inverter));
 }
 
-float uz_d_gan_inverter_get_PWMdutyCycPerCent_H1(uint32_t base_address){
+float uz_d_gan_inverter_get_PWMdutyCycNormalized_H1(uint32_t base_address){
 	uint32_t axi_read_tempAsDutyCyc;
 	axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Gan_Temp_1_dutycyc_Data_UZ_D_GaN_Inverter);
-	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,24));
+	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,31));
 }
 
 uint32_t uz_d_gan_inverter_get_PWMFreqTicks_L1(uint32_t base_address){
@@ -39,10 +39,10 @@ uint32_t uz_d_gan_inverter_get_PWMlowtimeTicks_L1(uint32_t base_address){
     return(uz_axi_read_uint32(base_address + AXI_Gan_Temp_2_lowtime_Data_UZ_D_GaN_Inverter));
 }
 
-float uz_d_gan_inverter_get_PWMdutyCycPerCent_L1(uint32_t base_address){
+float uz_d_gan_inverter_get_PWMdutyCycNormalized_L1(uint32_t base_address){
     uint32_t axi_read_tempAsDutyCyc;
 	axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Gan_Temp_2_dutycyc_Data_UZ_D_GaN_Inverter);
-	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,24));
+	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,31));
 }
 
 uint32_t uz_d_gan_inverter_get_PWMFreqTicks_H2(uint32_t base_address){
@@ -60,10 +60,10 @@ uint32_t uz_d_gan_inverter_get_PWMlowtimeTicks_H2(uint32_t base_address){
     return(uz_axi_read_uint32(base_address + AXI_Gan_Temp_3_lowtime_Data_UZ_D_GaN_Inverter));
 }
 
-float uz_d_gan_inverter_get_PWMdutyCycPerCent_H2(uint32_t base_address){
+float uz_d_gan_inverter_get_PWMdutyCycNormalized_H2(uint32_t base_address){
 	uint32_t axi_read_tempAsDutyCyc;
 	axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Gan_Temp_3_dutycyc_Data_UZ_D_GaN_Inverter);
-	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,24));
+	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,31));
 }
 
 uint32_t uz_d_gan_inverter_get_PWMFreqTicks_L2(uint32_t base_address){
@@ -81,10 +81,10 @@ uint32_t uz_d_gan_inverter_get_PWMlowtimeTicks_L2(uint32_t base_address){
     return(uz_axi_read_uint32(base_address + AXI_Gan_Temp_4_lowtime_Data_UZ_D_GaN_Inverter));
 }
 
-float uz_d_gan_inverter_get_PWMdutyCycPerCent_L2(uint32_t base_address){
+float uz_d_gan_inverter_get_PWMdutyCycNormalized_L2(uint32_t base_address){
     uint32_t axi_read_tempAsDutyCyc;
 	axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Gan_Temp_4_dutycyc_Data_UZ_D_GaN_Inverter);
-	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,24));
+	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,31));
 }
 
 uint32_t uz_d_gan_inverter_get_PWMFreqTicks_H3(uint32_t base_address){
@@ -102,10 +102,10 @@ uint32_t uz_d_gan_inverter_get_PWMlowtimeTicks_H3(uint32_t base_address){
     return(uz_axi_read_uint32(base_address + AXI_Gan_Temp_5_lowtime_Data_UZ_D_GaN_Inverter));
 }
 
-float uz_d_gan_inverter_get_PWMdutyCycPerCent_H3(uint32_t base_address){
+float uz_d_gan_inverter_get_PWMdutyCycNormalized_H3(uint32_t base_address){
 	uint32_t axi_read_tempAsDutyCyc;
 	axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Gan_Temp_5_dutycyc_Data_UZ_D_GaN_Inverter);
-	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,24));
+	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,31));
 }
 
 uint32_t uz_d_gan_inverter_get_PWMFreqTicks_L3(uint32_t base_address){
@@ -123,10 +123,10 @@ uint32_t uz_d_gan_inverter_get_PWMlowtimeTicks_L3(uint32_t base_address){
     return(uz_axi_read_uint32(base_address + AXI_Gan_Temp_6_lowtime_Data_UZ_D_GaN_Inverter));
 }
 
-float uz_d_gan_inverter_get_PWMdutyCycPerCent_L3(uint32_t base_address){
+float uz_d_gan_inverter_get_PWMdutyCycNormalized_L3(uint32_t base_address){
     uint32_t axi_read_tempAsDutyCyc;
 	axi_read_tempAsDutyCyc = uz_axi_read_uint32(base_address + AXI_Gan_Temp_6_dutycyc_Data_UZ_D_GaN_Inverter);
-	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,24));
+	return(uz_convert_sfixed_to_float(axi_read_tempAsDutyCyc,31));
 }
 
 uint32_t uz_d_gan_inverter_get_OC_GaN(uint32_t base_address) {

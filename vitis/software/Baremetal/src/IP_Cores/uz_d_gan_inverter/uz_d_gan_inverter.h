@@ -23,12 +23,12 @@ struct uz_d_gan_inverter_config_t{
  *
  */
 struct uz_d_gan_inverter_outputs_t{
-    float PWMdutyCycPerCent_H1;
-    float PWMdutyCycPerCent_L1;
-    float PWMdutyCycPerCent_H2;
-    float PWMdutyCycPerCent_L2;
-    float PWMdutyCycPerCent_H3;
-    float PWMdutyCycPerCent_L3;
+    float PWMdutyCycNormalized_H1;
+    float PWMdutyCycNormalized_L1;
+    float PWMdutyCycNormalized_H2;
+    float PWMdutyCycNormalized_L2;
+    float PWMdutyCycNormalized_H3;
+    float PWMdutyCycNormalized_L3;
     float GaN_ChipTempDegreesCelsius_H1; /**< Chip temperature of GaN H1 in degrees celsius */
     float GaN_ChipTempDegreesCelsius_L1; /**< Chip temperature of GaN L1 in degrees celsius */
     float GaN_ChipTempDegreesCelsius_H2; /**< Chip temperature of GaN H2 in degrees celsius */
@@ -67,11 +67,11 @@ uz_d_gan_inverter_t* uz_d_gan_inverter_init(struct uz_d_gan_inverter_config_t co
 /**
  * @brief Calculates chip temperature from duty cycle 
  *
- * @param dutyCyclePerCent is the measured duty cycle of the 
+ * @param dutyCycleNormalized is the measured duty cycle of the
  *        PWM temperature signal
  * @return float value of chip temperature in degrees celsius
  */
- float uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(float dutyCyclePerCent);
+ float uz_d_gan_inverter_PWMdutyCycNormalized_to_DegreesCelsius(float dutyCycleNormalized);
 
  void uz_d_gan_inverter_update_states(uz_d_gan_inverter_t *self);
 

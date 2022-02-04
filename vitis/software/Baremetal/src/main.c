@@ -111,22 +111,22 @@ int main(void) {
 	JavaScope_initalize(&Global_Data);
 
     struct uz_d_gan_inverter_config_t config_D4_GaN = {
-        .base_address = XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR,
+        .base_address = XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR,
         .ip_clk_frequency_Hz = 1000000,
     };
 
     struct uz_d_gan_inverter_config_t config_D3_GaN = {
-        .base_address = XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_1_BASEADDR,
+        .base_address = XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_0_BASEADDR,
         .ip_clk_frequency_Hz = 1000000,
     };
 
     struct uz_d_gan_inverter_outputs_t outputs_D4 = {
-        .PWMdutyCycPerCent_H1 = 0.0,
-        .PWMdutyCycPerCent_L1 = 0.0,
-        .PWMdutyCycPerCent_H2 = 0.0,
-        .PWMdutyCycPerCent_L2 = 0.0,
-        .PWMdutyCycPerCent_H3 = 0.0,
-        .PWMdutyCycPerCent_L3 = 0.0,
+        .PWMdutyCycNormalized_H1 = 0.0,
+        .PWMdutyCycNormalized_L1 = 0.0,
+        .PWMdutyCycNormalized_H2 = 0.0,
+        .PWMdutyCycNormalized_L2 = 0.0,
+        .PWMdutyCycNormalized_H3 = 0.0,
+        .PWMdutyCycNormalized_L3 = 0.0,
         .GaN_ChipTempDegreesCelsius_H1 = 0.0,
         .GaN_ChipTempDegreesCelsius_L1 = 0.0,
         .GaN_ChipTempDegreesCelsius_H2 = 0.0,
@@ -155,12 +155,12 @@ int main(void) {
     };
 
     struct uz_d_gan_inverter_outputs_t outputs_D3 = {
-        .PWMdutyCycPerCent_H1 = 0.0,
-        .PWMdutyCycPerCent_L1 = 0.0,
-        .PWMdutyCycPerCent_H2 = 0.0,
-        .PWMdutyCycPerCent_L2 = 0.0,
-        .PWMdutyCycPerCent_H3 = 0.0,
-        .PWMdutyCycPerCent_L3 = 0.0,
+        .PWMdutyCycNormalized_H1 = 0.0,
+        .PWMdutyCycNormalized_L1 = 0.0,
+        .PWMdutyCycNormalized_H2 = 0.0,
+        .PWMdutyCycNormalized_L2 = 0.0,
+        .PWMdutyCycNormalized_H3 = 0.0,
+        .PWMdutyCycNormalized_L3 = 0.0,
         .GaN_ChipTempDegreesCelsius_H1 = 0.0,
         .GaN_ChipTempDegreesCelsius_L1 = 0.0,
         .GaN_ChipTempDegreesCelsius_H2 = 0.0,
@@ -281,9 +281,9 @@ int main(void) {
 //		Xil_Out32(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_1_BASEADDR + 0x100, 0);
 		uz_d_gan_inverter_update_states(uz_d_gan_inverter_inSocketD4);
 		uz_d_gan_inverter_update_states(uz_d_gan_inverter_inSocketD3);
-		Global_Data.av.highticks_H1 = uz_d_gan_inverter_get_PWMhightimeTicks_H1(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR);
-		Global_Data.av.lowticks_H1 = uz_d_gan_inverter_get_PWMlowtimeTicks_H1(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR);
-		Global_Data.av.periodticks_H1 = uz_d_gan_inverter_get_PWMFreqTicks_H1(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR);
+		Global_Data.av.highticks_H1 = uz_d_gan_inverter_get_PWMhightimeTicks_H1(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR);
+		Global_Data.av.lowticks_H1 = uz_d_gan_inverter_get_PWMlowtimeTicks_H1(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR);
+		Global_Data.av.periodticks_H1 = uz_d_gan_inverter_get_PWMFreqTicks_H1(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR);
 //		Xil_Out32(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR + 0x100, 1);
 //		Xil_Out32(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_1_BASEADDR + 0x100, 1);
 
@@ -292,11 +292,6 @@ int main(void) {
 		Global_Data.outs_of_D4 = uz_d_gan_inverter_get_outputs(uz_d_gan_inverter_inSocketD4);
 		Global_Data.outs_of_D3 = uz_d_gan_inverter_get_outputs(uz_d_gan_inverter_inSocketD3);
 
-		// low-pass filter of mechanical speed
-		static float temp_lpf_mem_in = 0.0f;
-		static float temp_lpf_mem_out = 0.0f;
-		Global_Data.GaN_ChipTempDegreesCelsius_H1_filt = LPF1(	Global_Data.outs_of_D4.GaN_ChipTempDegreesCelsius_H1, &temp_lpf_mem_in, &temp_lpf_mem_out,
-														Global_Data.ctrl.samplingFrequency, 0.1);
 
 		// poll the buttons
 		Global_Data.dv.sw1 = uz_GetPushButtonEnableSystem();
@@ -327,13 +322,13 @@ int main(void) {
 			if (Global_Data.cw.enableSystem == false) {
 				turnPowerElectronicsOff(&Global_Data); //Switch power converter off
 				//Set Data To UZ_D_GaN_Inverter
-				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR, false);
-				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_1_BASEADDR, false);
+				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR, false);
+				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_0_BASEADDR, false);
 			} else if ((Global_Data.cw.enableSystem == true) && bInit == false) { //Call this function only once. If there was an error, "enableSystem " must be reseted!
 				bInit = turnPowerElectronicsOn(&Global_Data); //Switch power converter on
 				//Set Data To UZ_D_GaN_Inverter
-				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_1_BASEADDR, true);
-				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_1_BASEADDR, true);
+				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR, true);
+				uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_D_GAN_INVERTER1_UZ_D_GAN_INVERTER_0_BASEADDR, true);
 			}
 
 			if (Global_Data.cw.enableControl == true) {

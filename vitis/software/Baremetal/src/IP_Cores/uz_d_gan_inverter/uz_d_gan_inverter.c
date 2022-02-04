@@ -34,9 +34,9 @@ uz_d_gan_inverter_t* uz_d_gan_inverter_init(struct uz_d_gan_inverter_config_t co
     return(self);
 }
 
-float uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(float dutyCyclePerCent) {
+float uz_d_gan_inverter_PWMdutyCycNormalized_to_DegreesCelsius(float dutyCycleNormalized) {
     // linear regression of duty cycle to temperature function
-    return(dutyCyclePerCent*1.6235+20.107);
+    return(100.0f*dutyCycleNormalized*1.6235+20.107);
 }
 
 void uz_d_gan_inverter_update_states(uz_d_gan_inverter_t *self) {
@@ -69,20 +69,20 @@ void uz_d_gan_inverter_update_states(uz_d_gan_inverter_t *self) {
     self->outputs.I3_DIAG = (((self->outputs.I_DIAG) & 0x08) >> 3);    
 
     //get duty cycle information of each switch containing the chip temperature information
-    self->outputs.PWMdutyCycPerCent_H1 = uz_d_gan_inverter_get_PWMdutyCycPerCent_H1(self->config.base_address);
-    self->outputs.PWMdutyCycPerCent_L1 = uz_d_gan_inverter_get_PWMdutyCycPerCent_L1(self->config.base_address);
-    self->outputs.PWMdutyCycPerCent_H2 = uz_d_gan_inverter_get_PWMdutyCycPerCent_H2(self->config.base_address);
-    self->outputs.PWMdutyCycPerCent_L2 = uz_d_gan_inverter_get_PWMdutyCycPerCent_L2(self->config.base_address);
-    self->outputs.PWMdutyCycPerCent_H3 = uz_d_gan_inverter_get_PWMdutyCycPerCent_H3(self->config.base_address);
-    self->outputs.PWMdutyCycPerCent_L3 = uz_d_gan_inverter_get_PWMdutyCycPerCent_L3(self->config.base_address);
+    self->outputs.PWMdutyCycNormalized_H1 = uz_d_gan_inverter_get_PWMdutyCycNormalized_H1(self->config.base_address);
+    self->outputs.PWMdutyCycNormalized_L1 = uz_d_gan_inverter_get_PWMdutyCycNormalized_L1(self->config.base_address);
+    self->outputs.PWMdutyCycNormalized_H2 = uz_d_gan_inverter_get_PWMdutyCycNormalized_H2(self->config.base_address);
+    self->outputs.PWMdutyCycNormalized_L2 = uz_d_gan_inverter_get_PWMdutyCycNormalized_L2(self->config.base_address);
+    self->outputs.PWMdutyCycNormalized_H3 = uz_d_gan_inverter_get_PWMdutyCycNormalized_H3(self->config.base_address);
+    self->outputs.PWMdutyCycNormalized_L3 = uz_d_gan_inverter_get_PWMdutyCycNormalized_L3(self->config.base_address);
 
     //calculate chip temperatures in degrees celsius from the duty cycle information
-    self->outputs.GaN_ChipTempDegreesCelsius_H1 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(self->outputs.PWMdutyCycPerCent_H1);
-    self->outputs.GaN_ChipTempDegreesCelsius_L1 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(self->outputs.PWMdutyCycPerCent_L1);
-    self->outputs.GaN_ChipTempDegreesCelsius_H2 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(self->outputs.PWMdutyCycPerCent_H2);
-    self->outputs.GaN_ChipTempDegreesCelsius_L2 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(self->outputs.PWMdutyCycPerCent_L2);
-    self->outputs.GaN_ChipTempDegreesCelsius_H3 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(self->outputs.PWMdutyCycPerCent_H3);
-    self->outputs.GaN_ChipTempDegreesCelsius_L3 = uz_d_gan_inverter_PWMdutyCycPerCent_to_DegreesCelsius(self->outputs.PWMdutyCycPerCent_L3);
+    self->outputs.GaN_ChipTempDegreesCelsius_H1 = uz_d_gan_inverter_PWMdutyCycNormalized_to_DegreesCelsius(self->outputs.PWMdutyCycNormalized_H1);
+    self->outputs.GaN_ChipTempDegreesCelsius_L1 = uz_d_gan_inverter_PWMdutyCycNormalized_to_DegreesCelsius(self->outputs.PWMdutyCycNormalized_L1);
+    self->outputs.GaN_ChipTempDegreesCelsius_H2 = uz_d_gan_inverter_PWMdutyCycNormalized_to_DegreesCelsius(self->outputs.PWMdutyCycNormalized_H2);
+    self->outputs.GaN_ChipTempDegreesCelsius_L2 = uz_d_gan_inverter_PWMdutyCycNormalized_to_DegreesCelsius(self->outputs.PWMdutyCycNormalized_L2);
+    self->outputs.GaN_ChipTempDegreesCelsius_H3 = uz_d_gan_inverter_PWMdutyCycNormalized_to_DegreesCelsius(self->outputs.PWMdutyCycNormalized_H3);
+    self->outputs.GaN_ChipTempDegreesCelsius_L3 = uz_d_gan_inverter_PWMdutyCycNormalized_to_DegreesCelsius(self->outputs.PWMdutyCycNormalized_L3);
 }
 
 struct uz_d_gan_inverter_outputs_t uz_d_gan_inverter_get_outputs(uz_d_gan_inverter_t *self) {

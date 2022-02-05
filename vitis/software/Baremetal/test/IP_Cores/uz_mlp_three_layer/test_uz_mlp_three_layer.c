@@ -52,6 +52,10 @@ float b_4[NUMBER_OF_OUTPUTS] = {
 };
 float y_4[NUMBER_OF_OUTPUTS] = {0};
 
+float w_data[32] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 32};
+float x_data[4] = {1, 2, 3, 4};
+float bias_data[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+
 #define BASE_ADDRESS 0xF0000000
 struct uz_mlp_three_layer_ip_config_t config = {
     .base_address = BASE_ADDRESS};
@@ -65,11 +69,67 @@ uz_mlp_three_layer_ip_t *successful_init(void)
 
 void test_uz_mlp_three_layer_write_bias_to_layer(void)
 {
-    successful_init();
+    uz_mlp_three_layer_ip_t *test_instance = successful_init();
+    uz_matrix_t *bias_matrix = uz_matrix_init(bias_data, UZ_MATRIX_SIZE(bias_data), 1, UZ_MATRIX_SIZE(bias_data));
+
     // const uint32_t parallel_pcu = 4U;
     // const uint32_t layer = 1U;
     // uz_matrix_t *layer1_bias = uz_matrix_init(&b_1[0], UZ_MATRIX_SIZE(b_1), size_t rows, size_t columns);
     // uz_mlp_three_layer_write_bias(parallel_pcu,layer_)
+
+    // Expect with PCU=4
+    uz_mlp_three_layer_hw_write_layerNr_Expect(BASE_ADDRESS, 1);
+
+// Data 1
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 0);
+    uz_mlp_three_layer_hw_write_bias_data_Expect(BASE_ADDRESS, bias_data[0]);
+    uz_mlp_three_layer_hw_write_bias_address_Expect(BASE_ADDRESS, 0);
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 1);
+// Data 2
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 0);
+    uz_mlp_three_layer_hw_write_bias_data_Expect(BASE_ADDRESS, bias_data[1]);
+    uz_mlp_three_layer_hw_write_bias_address_Expect(BASE_ADDRESS, 1);
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 1);
+// Data 3 - this is the second pcu
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 0);
+    uz_mlp_three_layer_hw_write_bias_data_Expect(BASE_ADDRESS, bias_data[2]);
+    uz_mlp_three_layer_hw_write_bias_address_Expect(BASE_ADDRESS, 0);
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 2);
+// Data 4- this is the second pcu
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 0);
+    uz_mlp_three_layer_hw_write_bias_data_Expect(BASE_ADDRESS, bias_data[3]);
+    uz_mlp_three_layer_hw_write_bias_address_Expect(BASE_ADDRESS, 1);
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 2);
+// Data 5 - this is the third pcu
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 0);
+    uz_mlp_three_layer_hw_write_bias_data_Expect(BASE_ADDRESS, bias_data[4]);
+    uz_mlp_three_layer_hw_write_bias_address_Expect(BASE_ADDRESS, 0);
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 3);
+// Data 6- this is the third pcu
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 0);
+    uz_mlp_three_layer_hw_write_bias_data_Expect(BASE_ADDRESS, bias_data[5]);
+    uz_mlp_three_layer_hw_write_bias_address_Expect(BASE_ADDRESS, 1);
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 3);
+// Data 7 - this is the fourth pcu
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 0);
+    uz_mlp_three_layer_hw_write_bias_data_Expect(BASE_ADDRESS, bias_data[6]);
+    uz_mlp_three_layer_hw_write_bias_address_Expect(BASE_ADDRESS, 0);
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 4);
+// Data 8- this is the fourth pcu
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 0);
+    uz_mlp_three_layer_hw_write_bias_data_Expect(BASE_ADDRESS, bias_data[7]);
+    uz_mlp_three_layer_hw_write_bias_address_Expect(BASE_ADDRESS, 1);
+    uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 4);
+
+
+    uz_mlp_three_layer_write_bias(test_instance, 4U, bias_matrix, 1);
+
+
+
 }
+
+// Expect:
+// uz_mlp_three_layer_hw_write_weight_data is called with 1,9,17,25,2,10,18,26
+//
 
 #endif // TEST

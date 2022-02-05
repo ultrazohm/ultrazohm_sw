@@ -144,7 +144,6 @@ Due to the parallelization, the matrix is split, e.g., into four parts for four 
     w_3 &= \begin{bmatrix} 5 & 13 & 21 & 29 & 6 &14 & 22 &30 \end{bmatrix} \\
     w_4 &= \begin{bmatrix} 7 & 15 & 23 &31 & 8 & 16 & 24 & 32\end{bmatrix} 
 
-
 .. note:: This ordering is the transposed definition compared to what is used in :ref:`matrix_math` to match the hardware setup of the IP-Core. Thus, a matrix of type ``uz_matrix_t`` has to be transposed.
 
 
@@ -153,10 +152,11 @@ Write parameters to network
 
 To write parameters to the BRAM of the IP-Core the following mechanism is used:
 
+- Write a zero to ``axi_wrEnBias`` to prevent writes to the wrong address
 - Write the number of the layer (one-based, input is 1, first hidden layer is 2, output layer is 4)
 - Write data
 - Write address (bias is zero-based, weights are one-based)
-- Write to enable the number of parallel PCU that shall be set (one-based!)
+- Write to enable the number of parallel PCU that shall be set (one-based!) (``axi_wrEnBias``)
 
 For bias:
 

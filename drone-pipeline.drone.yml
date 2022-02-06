@@ -27,9 +27,9 @@ steps:
  - name: Ceedling unit tests
    image: ultrazohm/ultrazohm_remote_container
    commands:
-   - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
-   - cd vitis/software/Baremetal
-   - ceedling test:all
+   - /bin/bash mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
+   - /bin/bash cd vitis/software/Baremetal
+   - /bin/bash ceedling test:all
 
 # pipeline step just opens the vivado project
  - name: Vivado open project

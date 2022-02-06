@@ -22,6 +22,5 @@ RUN wget -O ~/vsls-reqs https://aka.ms/vsls-linux-prereq-script && chmod +x ~/vs
 RUN wget https://github.com/danmar/cppcheck/archive/refs/tags/2.4.1.tar.gz && tar -xvf 2.4.1.tar.gz && cd cppcheck-2.4.1 && make SRCDIR=build CFGDIR=/usr/bin/cfg HAVE_RULES=yes install FILESDIR=/etc/cppcheck
 
 
-ENV PYTHONUSERBASE=/workspace/.pip-modules
-ENV PATH=$PYTHONUSERBASE/bin:$PATH
+
 ENV PIP_USER=yes

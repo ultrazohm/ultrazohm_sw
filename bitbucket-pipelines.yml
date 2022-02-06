@@ -10,45 +10,15 @@ clone:
 pipelines:
   #branches:
   #  develop:
-   default:
-    - step:
-       name: docs
-       image: ultrazohm/ultrazohm_remote_container
-       script: # Modify the commands below to build your repository.
-        - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
-        - cd docs
-        - python -m pip install -U pip
-        - pip install -r requirements.txt
-        - pip list
-        - make doxygen
-        - make html SPHINXOPTS="-W --keep-going -n"
-        - cd build
-        - ls
-    - step:
-       name: Ceedling unit tests
-       image: ultrazohm/ultrazohm_remote_container
-       script:
-        - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
-        - cd vitis/software/Baremetal
-        - ceedling test:all
    branches:
      develop:
         - step:
            name: docs
+           image: ultrazohm/ultrazohm_remote_container
            script: # Modify the commands below to build your repository.
-            - apt-get update && apt-get -y install --no-install-recommends texlive
-            - apt-get -y install --no-install-recommends texlive-latex-extra
-            - apt-get -y install --no-install-recommends texlive-pictures
-            - apt-get -y install --no-install-recommends texlive-science
-            - apt-get -y install --no-install-recommends ghostscript
-            - apt-get -y install --no-install-recommends doxygen
             - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
             - cd docs
-            - python -m pip install -U pip
-            - pip install -r requirements.txt
-            - pip list
-            - make doxygen
-            - make html SPHINXOPTS="-W --keep-going -n"
+            - make docs
             - cd build
             - ls
         - step:

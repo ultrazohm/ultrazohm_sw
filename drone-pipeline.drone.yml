@@ -12,6 +12,23 @@ platform:
   arch: amd64
 
 steps:
+
+ - name: docs
+   image: ultrazohm/ultrazohm_remote_container
+   commands: # Modify the commands below to build your repository.
+   - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
+   - cd docs
+   - make docs
+   - cd build
+   - ls
+  
+ - name: Ceedling unit tests
+   image: ultrazohm/ultrazohm_remote_container
+   commands:
+   - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
+   - cd vitis/software/Baremetal
+   - ceedling test:all
+
 # pipeline step just opens the vivado project
  - name: Vivado open project
    image: vivado:2020.1

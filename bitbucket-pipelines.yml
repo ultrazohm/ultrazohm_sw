@@ -7,10 +7,25 @@ image: python:3.9.7
 clone:
   lfs: true
 
+
 pipelines:
   #branches:
   #  develop:
    branches:
+     default:
+        - step:
+           name: build and push docker
+           script:
+            - export BITBUCKET_COMMIT_SHORT="${BITBUCKET_COMMIT::7}" # https://community.atlassian.com/t5/Bitbucket-questions/BITBUCKET-COMMIT-variable-short-7digits-in-pipelines/qaq-p/752782
+            - echo $BITBUCKET_COMMIT_SHORT
+            - cd .devcontainer
+            - ls
+            - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
+            - docker build -t ultrazohm/ultrazohm_remote_container:BITBUCKET_COMMIT_SHORT .
+            - docker push ultrazohm/ultrazohm_remote_container:$BITBUCKET_COMMIT_SHORT
+           services:
+            - docker
+
      develop:
         - step:
            name: docs

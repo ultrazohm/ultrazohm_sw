@@ -20,8 +20,8 @@ pipelines:
             - cd .devcontainer
             - ls
             - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
-            - docker build -t ultrazohm/ultrazohm_remote_container:BITBUCKET_COMMIT_SHORT .
-            - docker push ultrazohm/ultrazohm_remote_container:BITBUCKET_COMMIT_SHORT
+            - docker build -t ultrazohm/ultrazohm_remote_container:$BITBUCKET_COMMIT_SHORT .
+            - docker push ultrazohm/ultrazohm_remote_container:$BITBUCKET_COMMIT_SHORT
            services:
             - docker
 

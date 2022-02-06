@@ -18,6 +18,8 @@ steps:
    commands: # Modify the commands below to build your repository.
    - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
    - cd docs
+   - pip install -r requirements.txt
+   - pip list
    - make docs
    - cd build
    - ls

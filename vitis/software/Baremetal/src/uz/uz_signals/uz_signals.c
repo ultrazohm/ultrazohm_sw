@@ -106,17 +106,21 @@ float uz_signals_Filter_1st_sample(uz_Filter_1st_t* self, float input) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	float output = 0.0f;
-	if (!self->first_step) {
-		self->old_output = input;
-		self->first_step = true;
-	}
-	if(self->config.selection == LowPass) {
-		output = self->old_output + self->alpha * (input - self->old_output);
+
+	if(self->first_step) {
+		if(self->config.selection == LowPass && self->first_step) {
+			output = self->old_output + self->alpha * (input - self->old_output);
+		} else if(self->config.selection == HighPass && self->first_step) {
+			output = self->alpha * (self->old_output + input - self->old_input);
+		}
+		self->old_output = output;
+		self->old_input = input;
 	} else {
-		output = self->alpha * (self->old_output + input - self->old_input);
-	}
-	self->old_output = output;
-	self->old_input = input;
+		self->old_output = input;
+		self->old_input = input;
+		self->first_step = true;
+		output = input;
+	}	
 	return (output);
 }
 
@@ -124,17 +128,19 @@ float uz_signals_Filter_1st_reverse_sample(uz_Filter_1st_t* self, float input) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	float output = 0.0f;
-	if (!self->first_step) {
+	if(self->first_step) {
+		if(self->config.selection == LowPass && self->first_step) {
+			output = (input - self->old_input) / self->alpha + self->old_input;
+		} else if(self->config.selection == HighPass && self->first_step) {
+			output = input / self->alpha + self->old_output - self->old_input;
+		}
+		self->old_output = output;
+		self->old_input = input;
+	} else {
 		self->old_output = input;
 		self->old_input = input;
 		self->first_step = true;
+		output = input;
 	}
-	if(self->config.selection == LowPass) {
-		output = (input - (1.0f - self->alpha) * self->old_input) / self->alpha;
-	} else {
-		output = input / self->alpha - self->old_output + self->old_input;
-	}
-	self->old_output = output;
-	self->old_input = input;
 	return (output);
 }

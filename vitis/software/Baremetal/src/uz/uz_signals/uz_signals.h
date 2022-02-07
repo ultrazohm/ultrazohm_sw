@@ -66,4 +66,13 @@ uz_Filter_1st_t* uz_Filter_1st_init(struct uz_Filter_1st_config config);
  * @return float filtered signal
  */
 float uz_signals_Filter_1st_sample(uz_Filter_1st_t* self, float input);
+
+/**
+ * @brief Function to reverse the filter of the input signal with either an LowPass or HighPass filter
+	 *
+ * @param self pointer instance of uz_Filter_1st_t
+ * @param input filtered signal
+ * @return float unfiltered signal
+ */
+float uz_signals_Filter_1st_reverse_sample(uz_Filter_1st_t* self, float input);
 #endif // UZ_SIGNALS_H

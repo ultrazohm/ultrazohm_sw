@@ -40,6 +40,7 @@ static void uz_PID_TwoMassID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t*
 static void uz_PID_FluxMapID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 static void uz_PID_OnlineID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
+static void uz_PID_FOC_output_set_zero(uz_ParameterID_Data_t* Data);
 
 static uz_ParameterID_t* uz_ParameterID_allocation(void);
 
@@ -115,6 +116,29 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		Data->Psi_D_pointer = Data->FluxMap_Data->psid_grid[Data->FluxMap_counter];
 		Data->Psi_Q_pointer = Data->FluxMap_Data->psiq_grid[Data->FluxMap_counter];
 	}
+	switch (self->ControlState->output.ControlFlags.transNr) {
+
+	case 1U:
+		Data->Controller_Parameters = self->ElectricalID->output.ElectricalID_FOC_output;
+		break;
+
+	case 2U:
+		Data->Controller_Parameters = self->TwoMassID->output.TwoMassID_FOC_output;
+		break;
+
+	case 3U:
+		Data->Controller_Parameters = self->FrictionID->output.FrictionID_FOC_output;
+		break;
+
+	case 4U:
+		Data->Controller_Parameters = self->FluxMapID->output.FluxMapID_FOC_output;
+		break;
+
+	default:
+		uz_PID_FOC_output_set_zero(Data);
+		break;
+	}
+
 
 	//RESET
 	if (Data->GlobalConfig.Reset == true) {
@@ -291,7 +315,6 @@ static void uz_PID_ElectricalID_step(uz_ParameterID_t* self, uz_ParameterID_Data
 	self->ControlState->input.finishedElectricalID = self->ElectricalID->output.finishedElectricalID;
 
 	//Update Data struct with new output values
-	Data->Controller_Parameters = self->ElectricalID->output.ElectricalID_FOC_output;
 	Data->GlobalConfig.thetaOffset = self->ElectricalID->output.ElectricalID_output.thetaOffset;
 }
 
@@ -316,8 +339,6 @@ static void uz_PID_FrictionID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t
 	//Update Control-State-inputs
 	self->ControlState->input.enteredFrictionID = self->FrictionID->output.enteredFrictionID;
 	self->ControlState->input.finishedFrictionID = self->FrictionID->output.finishedFrictionID;
-	//Update Data struct with new output values
-	Data->Controller_Parameters = self->FrictionID->output.FrictionID_FOC_output;
 }
 
 static void uz_PID_TwoMassID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
@@ -333,9 +354,6 @@ static void uz_PID_TwoMassID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t*
 	//Update Control-State-inputs
 	self->ControlState->input.enteredTwoMassID = self->TwoMassID->output.enteredTwoMassID;
 	self->ControlState->input.finishedTwoMassID = self->TwoMassID->output.finishedTwoMassID;
-
-	//Update Data struct with new output values
-	Data->Controller_Parameters = self->TwoMassID->output.TwoMassID_FOC_output;
 }
 
 static void uz_PID_FluxMapID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
@@ -351,9 +369,6 @@ static void uz_PID_FluxMapID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t*
 	//Update Control-State-inputs
 	self->ControlState->input.enteredFluxMapID = self->FluxMapID->output.enteredFluxMapID;
 	self->ControlState->input.finishedFluxMapID = self->FluxMapID->output.finishedFluxMapID;
-
-	//Update Data struct with new output values
-	Data->Controller_Parameters = self->FluxMapID->output.FluxMapID_FOC_output;
 }
 
 static void uz_PID_OnlineID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
@@ -381,6 +396,26 @@ static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_D
 
 	//Update Data struct with new output values
 	Data->AutoRefCurrents_Output = self->OnlineID->AutoRefCurrents->output.i_dq_ref;
+}
+
+static void uz_PID_FOC_output_set_zero(uz_ParameterID_Data_t* Data) {
+	Data->Controller_Parameters.Ki_id_out = 0.0f;
+	Data->Controller_Parameters.Ki_iq_out = 0.0f;
+	Data->Controller_Parameters.Ki_n_out = 0.0f;
+	Data->Controller_Parameters.Kp_id_out = 0.0f;
+	Data->Controller_Parameters.Kp_iq_out = 0.0f;
+	Data->Controller_Parameters.Kp_n_out = 0.0f;
+	Data->Controller_Parameters.PRBS_out = 0.0f;
+	Data->Controller_Parameters.VibAmp_out = 0.0f;
+	Data->Controller_Parameters.VibFreq_out = 0U;
+	Data->Controller_Parameters.VibOn_out = false;
+	Data->Controller_Parameters.enableFOC_current = false;
+	Data->Controller_Parameters.enableFOC_speed = false;
+	Data->Controller_Parameters.i_dq_ref.d = 0.0f;
+	Data->Controller_Parameters.i_dq_ref.q = 0.0f;
+	Data->Controller_Parameters.i_dq_ref.zero = 0.0f;
+	Data->Controller_Parameters.n_ref_FOC = 0.0f;
+	Data->Controller_Parameters.resetIntegrator = false;
 }
 
 void uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {

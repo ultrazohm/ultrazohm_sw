@@ -4,8 +4,8 @@
 Mux Axi / ISR Trigger Control
 =============================
 
-- Selects the PWM counter event, that triggers ADC and the interrupt in the R5 processor
-- Selects ADC/ISR trigger ratio: trigger the ISR in the R5 every n_th ADC trigger event ``(n = 1,2,3,...)``
+- Selects the PWM counter event that triggers ADC and the interrupt of the R5 processor
+- Selects ADC/ISR trigger ratio: trigger the ISR in the R5 every n-th ADC trigger event ``(n = 1,2,3,...)``
 
 
 PWM counter events
@@ -19,7 +19,7 @@ PWM counter events
 Interrupt sources
 =================
 
-- The user selects the trigger source for ADC triggering via the ``#define`` ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` in ``uz_global_configuration.h``
+- The user selects the trigger source for ADC triggering via the ``#define`` ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` in ``uz_global_configuration.h`` (see :ref:`_global_configuration`)
 - The selected trigger source also triggers the ISR in the R5 processor (see also :ref:`r5_interrupts`)
 - Below, as well as in ``uz_global_configuration.h``, the user will find the valid interrupt source options:
 
@@ -40,7 +40,7 @@ Interrupt sources
 ADC/ISR trigger ratio
 =====================
 
-- If necessary, the user can chose an integer multiple ratio between ADC and ISR triggering
+- If necessary, the user can choose an integer multiple ratio between ADC and ISR triggering
 - This is done by setting the ``INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE`` ``#define`` in ``uz_global_configuration.h``
 
 Example
@@ -58,11 +58,11 @@ The user wants to have a PWM frequency of 100 kHz and an ISR frequency of 20 kHz
       :width: 800
       :align: center
    
-      Resulting trigger ratio from example above
+      Resulting trigger ratio from the example above
 
 
 .. warning::
-   * Trigger ratios others than ``1`` were only tested with trigger source ``Interrupt_2L_min``
+   * Trigger ratios other than ``1`` were only tested with trigger source ``Interrupt_2L_min``
    * Especially when using trigger sources with two ADC trigger events (e.g. ``Interrupt_2L_max_min``), the user has to take care of the resulting ADC/ISR trigger ratio
 
 IP-Core
@@ -94,7 +94,7 @@ Software driver
 ===============
 
 The software driver is initialized by default. The user just has to select the mux and the interrupt ratio ``#define`` in ``uz_global_configuration.h``
-The IP-Core is intialized at the startup of the system. The software driver is not intended to change the settings at runtime.
+The IP-Core is initialized at the startup of the system. The software driver is not intended to change the settings at runtime.
 
 Reference
 =========

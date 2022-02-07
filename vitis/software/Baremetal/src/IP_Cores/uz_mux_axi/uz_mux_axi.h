@@ -16,7 +16,7 @@ struct uz_mux_axi_config_t{
     uint32_t base_address; /**< Base address of the IP-Core */
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
     uint32_t mux; /**< Select value for the mux */
-    uint32_t n_th_interrupt; /**< Trigger ratio of adc_interrupt/isr_interrupt */
+    uint32_t n_th_interrupt; /**< Trigger ratio of adc_interrupt/isr_interrupt between 1 and 255 */
 };
 
 /**

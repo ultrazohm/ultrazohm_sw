@@ -114,7 +114,7 @@ void test_uz_signals_Filter_1st_sample_NULL_pointer(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_signals_Filter_1st_sample(NULL, input));
 }
 
-void test_uz_signals_Filter_1st_sample_NULL_pointer(void) {
+void test_uz_signals_Filter_1st_reverse_sample_NULL_pointer(void) {
     float input = 10.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_signals_Filter_1st_reverse_sample(NULL, input));
 }

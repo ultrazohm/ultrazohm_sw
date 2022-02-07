@@ -2,6 +2,6 @@
 interrupts_in,Input,uint8,External Signal,,,interrupt input vector
 interrupt_out_adc,Output,bool,External Signal,,,ADC trigger signal
 interrupt_out_isr,Output,bool,External Signal,,,ISR trigger signal
-select_out,Output,ufix4,External Signal,,,selected mux number
-select_AXI,Input,uint32,AXI4-Lite,,,mux selector
-select_n_th_adc_interrupt,Input,uint32,AXI4-Lite,,,ADC/ISR trogger ratio
+select_out,Output,ufix4,External Signal,0-7,,selected mux number
+select_AXI,Input,uint32,AXI4-Lite,0-7,,mux selector
+select_n_th_adc_interrupt,Input,uint32,AXI4-Lite,1-255,,ADC/ISR trigger ratio

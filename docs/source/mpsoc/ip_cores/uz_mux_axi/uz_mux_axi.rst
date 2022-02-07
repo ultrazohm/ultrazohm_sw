@@ -19,7 +19,7 @@ PWM counter events
 Interrupt sources
 =================
 
-- The user selects the trigger source for ADC triggering via the ``#define`` ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` in ``uz_global_configuration.h`` (see :ref:`_global_configuration`)
+- The user selects the trigger source for ADC triggering via the ``#define`` ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` in ``uz_global_configuration.h`` (see :ref:`global_configuration`)
 - The selected trigger source also triggers the ISR in the R5 processor (see also :ref:`r5_interrupts`)
 - Below, as well as in ``uz_global_configuration.h``, the user will find the valid interrupt source options:
 
@@ -48,17 +48,29 @@ Example
 
 The user wants to have a PWM frequency of 100 kHz and an ISR frequency of 20 kHz:
 
-- The user selects the PWM frequency of 100 kHz: ``UZ_PWM_FREQUENCY`` ``#define`` is set to ``100.0e3f`` in ``uz_global_configuration.h``
-- The trigger source is ``Interrupt_2L_min``: ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` ``#define`` is set to ``1`` in ``uz_global_configuration.h``
-- The trigger ratio is set to 5 (100 kHz/20 kHz = 5): ``INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE`` ``#define`` is set to ``5`` in ``uz_global_configuration.h``
+- The user selects the PWM frequency of 100 kHz: the define ``UZ_PWM_FREQUENCY`` is set to ``100.0e3f`` in ``uz_global_configuration.h``
+- The trigger source is ``Interrupt_2L_min``: the define ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` is set to ``1U`` in ``uz_global_configuration.h``
+- The trigger ratio is set to 5 (100 kHz/20 kHz = 5): the define ``INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE`` is set to ``5U`` in ``uz_global_configuration.h``
+
+.. code-block:: c
+   :caption: Settings in uz_global_configuration.h for the example
+
+   #define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
+   #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE  5U
+   
+   #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
+   #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
+   #define UZ_PWM_FREQUENCY                        10.0e3f
+
+These settings result in the behavior depicted in :numref:`example_trigger_picture` (ADC interrupt in the upper subplot, interrupt of R5 in the lower subplot):
 
 .. _example_trigger_picture:
 
-   .. figure:: img/adc_to_isr_ratio.png
-      :width: 800
-      :align: center
-   
-      Resulting trigger ratio from the example above
+.. figure:: img/adc_to_isr_ratio.png
+   :width: 800
+   :align: center
+
+   Resulting trigger ratio from the example above
 
 
 .. warning::
@@ -68,8 +80,9 @@ The user wants to have a PWM frequency of 100 kHz and an ISR frequency of 20 kHz
 IP-Core
 =======
 
-Interfaces of the IP-Core:
-
+The IP-Core takes up to 8 different interrupt sources as inputs (external port ``interrupts_in``).
+One of these inputs is selected by AXI configuration and routed directly routed to the ``interrupt_out_adc`` external port. 
+Additionally, all interrupt sources of ``interrupts_in`` are coupled with an internal counter that routes the signal of ``interrupts_in`` to ``interrupt_out_isr`` every n-th time the ``interrupt_out_adc`` signal is high.
 Table :ref:`ipCore_uz_mux_axi_interfaces` lists all input and output ports (AXI and external port) that are present in the IP-Core.
 
 .. _ipCore_uz_mux_axi_interfaces:
@@ -79,15 +92,15 @@ Table :ref:`ipCore_uz_mux_axi_interfaces` lists all input and output ports (AXI 
    :widths: 50 50 50 50 50 50 200
    :header-rows: 1
 
-Picture of the IP-Core embedded in the block design:
+:numref:`ip_core_vivado_picture` of the IP-Core embedded in the block design:
 
 .. _ip_core_vivado_picture:
 
-   .. figure:: img/ipcore.png
-      :width: 800
-      :align: center
-   
-      IP-Core in the default Vivado block design.
+.. figure:: img/ipcore.png
+   :width: 800
+   :align: center
+
+   IP-Core in the default Vivado block design.
 
 
 Software driver

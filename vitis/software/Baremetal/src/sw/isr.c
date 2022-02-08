@@ -47,7 +47,9 @@ XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible 
 XTmrCtr Timer_Interrupt;
 
 //Initialize the WDTTB structure
-XWdtTb *WdtTbInstancePtr;
+uz_watchdog_ip_t *WdtTbInstancePtr;
+
+int isr_failures;
 
 
 float sin1amp=1.0;
@@ -76,7 +78,7 @@ void ISR_Control(void *data)
 	Xil_EnableNestedInterrupts();
 
 	/* Restart the AXI IP watch dog timer: kick forward */
-	uz_watchdog_Restart(WdtTbInstancePtr);
+	uz_watchdog_ip_restart(WdtTbInstancePtr);
 
 	// Toggle the System-Ready LED in order to show a Life-Check on the front panel
 	toggleLEDdependingOnReadyOrRunning(uz_SystemTime_GetUptimeInMs(),uz_SystemTime_GetUptimeInSec());
@@ -110,6 +112,13 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge2DutyCycle,
 					Global_Data.rasv.halfBridge3DutyCycle);
 
+
+	// // TODO: QUITAR TEST: to trigger the time violation of ISR or system hang and the reset
+	// // Launch the test every 1000 invocations
+	if (((uz_SystemTime_GetInterruptCounter()%1000) == 0)) {
+	uz_sleep_useconds(100);
+	}
+
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
 
@@ -120,6 +129,11 @@ void ISR_Control(void *data)
 	// Read the timer value at the very end of the ISR to minimize measurement error
 	// This has to be the last function executed in the ISR!
 	uz_SystemTime_ISR_Toc();
+
+	// TODO: QUITAR  Execution time must be less than the period
+	if ((uz_SystemTime_GetIsrDirectExectionTimeInUs() * 1e-6) > Global_Data.ctrl.pwmPeriod){
+		isr_failures++; //  Xil_Assert(__FILE__, __LINE__);// change the instruction for testing
+	}
 
 }
 
@@ -146,7 +160,12 @@ int Initialize_ISR(){
 	 * Call Init  the WDT setting timer to the default timeout and default configuration.
 	 * Obtain a WDT pointer initialized to use with the WDTTB API
 	 */
-	WdtTbInstancePtr = uz_watchdog_init();
+
+	struct uz_watchdog_ip_config_t config={
+		.CounterValue=WIN_WDT_SW_COUNT,
+		.WdtTbDeviceId=WDTTB_DEVICE_ID
+	};
+	WdtTbInstancePtr = uz_watchdog_ip_init(config);
 
 
 	// Initialize interrupt controller for the GIC
@@ -372,7 +391,7 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 
 
 //	Enable the WDT and launch first kick
-	uz_watchdog_Start(WdtTbInstancePtr);
+	uz_watchdog_ip_start(WdtTbInstancePtr);
 
 	xil_printf("RPU: Rpu_GicInit: Done\r\n");
 	return XST_SUCCESS;

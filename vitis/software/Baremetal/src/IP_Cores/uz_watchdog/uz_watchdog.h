@@ -1,3 +1,4 @@
+#pragma once
 #ifndef UZ_XWDTTB_H
 #define UZ_XWDTTB_H
 
@@ -28,7 +29,7 @@
 
 #include "xparameters.h"
 #include <stdint.h>
-#include "xwdttb.h"
+
 
 /************************** Enabling Module  *****************************/
 // Go to "../../uz/uz_global_configuration.h" and set UZ_WDTTB_MAX_INSTANCES to 0U (0 instances)
@@ -69,9 +70,25 @@
 //#define WIN_WDT_BSS_COUNT	2		/**< Byte segment selected */
 
 
-
 /**************************** Type Definitions *******************************/
-#define HANDLER_CALLED  0xFFFFFFFF
+
+typedef struct uz_watchdog_ip_t uz_watchdog_ip_t;
+
+
+/** @struct uz_watchdog_ip_config_t
+ *  @brief This structure is used to initialize the WatchDog Timer IP driver
+ *  @var uz_watchdog_ip_config_t::CounterValue
+ *  Member 'CounterValue' contains the initial value for the counter in number of tics.
+ * 					Watchdog timeout is therefore CounterValue * Tcycle
+ *  @var uz_watchdog_ip_config_t::WdtTbDeviceId
+ *  Member 'WdtTbDeviceId' contains is the Device ID of the WdtTb Device and is
+ *		typically XPAR_<WDTTB_instance>_DEVICE_ID value from
+ *		xparameters.h.
+ */
+struct uz_watchdog_ip_config_t {
+  uint32_t CounterValue;
+  uint16_t WdtTbDeviceId;
+};
 
 
 /************************** Function Prototypes ******************************/
@@ -87,7 +104,7 @@
 * @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents
 *							the WDTTB driver. Initialized and ready
 */
-void uz_watchdog_Start(XWdtTb *WdtTbInstancePtr) ;
+void uz_watchdog_ip_start(uz_watchdog_ip_t *WdtTbInstancePtr) ;
 
 /**
 * @brief This function Restart the AXI IP watch dog timer: kick forward.
@@ -95,32 +112,19 @@ void uz_watchdog_Start(XWdtTb *WdtTbInstancePtr) ;
 * @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents
 *							the WDTTB driver. Initialized and ready
 */
-void uz_watchdog_Restart(XWdtTb *WdtTbInstancePtr) ;
+void uz_watchdog_ip_restart(uz_watchdog_ip_t *WdtTbInstancePtr) ;
 
 /**
- * @brief Initializes an instance of the WDTTB driver
- *
- * @return XWdtTb pointer to the initialized WDTTB driver.
- */
-XWdtTb *uz_watchdog_init();
-
-/**
-* @brief This function initializes and tests the functioning of the System
-*        WatchDog Timer driver and sets the inital value to the counter.
+* @brief This function initializes the WatchDog Timer IP driver and sets the inital value to the counter.
 *        This is the total size for The Second Window (Open). The closed
 *        Window is not used (0 value for its counter). The rest of the
 *        optional functions: FC, SST and SIGNATURE are disabled.
 *
-* @param	CounterValue - Initial value for the counter in number of tics.
-* 					Watchdog timeout is therefore CounterValue * Tcycle,
-* 					and Tcycle = 10 ns with a 100MH processor.
-* @param	WdtTbDeviceId is the Device ID of the WdtTb Device and is
-*		typically XPAR_<WDTTB_instance>_DEVICE_ID value from
-*		xparameters.h.
+* @param	watchdog_config - Config structure with DeviceID and second window size.
 *
-* @return	XWdtTb pointer to the initialized WDTTB driver.
+* @return	uz_watchdog_ip_t pointer to the initialized WDTTB driver.
 */
-XWdtTb *uz_watchdog_init_device(uint32_t CounterValue, uint16_t WdtTbDeviceId);
+uz_watchdog_ip_t* uz_watchdog_ip_init(struct uz_watchdog_ip_config_t watchdog_config);
 
 /**
 * @brief This function tests the functioning of the Window Watchdog
@@ -146,7 +150,7 @@ XWdtTb *uz_watchdog_init_device(uint32_t CounterValue, uint16_t WdtTbDeviceId);
 *		- XST_SUCCESS if interrupt example run successfully.
 *		- XST_FAILURE, if reset has occurred.
 */
-int uz_watchdog_WinIntrExample(XWdtTb *WdtTbInstancePtr);
+int uz_watchdog_WinIntrExample(uz_watchdog_ip_t *WdtTbInstancePtr);
 
 /**
 * @brief This function is the Interrupt handler for the WDT Interrupt of the

@@ -73,11 +73,11 @@ References
 * :download:`Assembly Drawing Rev05 <LTC2311_16_Rev05/ASM_UZ_A_LTC2311_Standard_Rev05.pdf>`
 * :download:`Schematic Rev06 <LTC2311_16_Rev06/SCH_UZ_A_LTC2311_Standard_Rev06.pdf>`
 * :download:`Assembly Drawing Rev06 <LTC2311_16_Rev06/ASM_UZ_A_LTC2311_Standard_Rev06.pdf>`
-* :download:`LTSpice simulation <LTC2311_16_Rev05/ltspice_LTC2311_Rev05.zip>`
+* :download:`LTSpice simulation Rev05 & Rev06 <LTC2311_16_Rev05/ltspice_LTC2311_Rev05.zip>`
 * See IP-Core :ref:`ipCore_LTC2311_v3`
 * :ref:`Analog_LTC2311_16_pinout`
 * :ref:`Analog_LTC2311_16_meas_modes`
-* .. [LTC2311_datasheet] `Data sheet ADC LTC2311-16 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_
+* `Data sheet ADC LTC2311-16 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_
 
 
 Designed by 

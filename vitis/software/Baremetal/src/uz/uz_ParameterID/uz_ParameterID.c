@@ -115,6 +115,8 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		}
 		Data->Psi_D_pointer = Data->FluxMap_Data->psid_grid[Data->FluxMap_counter];
 		Data->Psi_Q_pointer = Data->FluxMap_Data->psiq_grid[Data->FluxMap_counter];
+	} else {
+		Data->OnlineID_Output->IdControlFlag = false;
 	}
 	switch (self->ControlState->output.ControlFlags.transNr) {
 
@@ -153,6 +155,9 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		//reset the Reset-button
 		self->ControlState->output.GlobalConfig_out.Reset = false;
 		Data->GlobalConfig.Reset = false;
+	}
+	if (Data->OnlineID_Config.OnlineID_Reset) {
+		Data->OnlineID_Config.OnlineID_Reset = false;
 	}
 
 	// reset ACCEPT
@@ -465,7 +470,7 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_Para
 	Data->ElectricalID_Config.dutyCyc = 0.0f;
 	Data->ElectricalID_Config.goertzlAmp = 0.0f;
 	Data->ElectricalID_Config.identLq = false;
-	Data->ElectricalID_Config.min_n_ratio = 80.0f;
+	Data->ElectricalID_Config.min_n_ratio = 0.025f;
 	Data->ElectricalID_Config.n_ref_measurement = 0.0f;
 
 	//Initialize FluxMapID-Config

@@ -135,15 +135,16 @@ So we split the second window in two parts (as can be seen in the next picture):
 Driver function reference
 =========================
 
-.. doxygenstruct:: XWdtTb
+.. doxygentypedef:: uz_watchdog_ip_t
 
-.. doxygenfunction:: uz_watchdog_Start
+.. doxygenstruct:: uz_watchdog_ip_config_t
+  :members:
 
-.. doxygenfunction:: uz_watchdog_Restart
+.. doxygenfunction:: uz_watchdog_ip_start
 
-.. doxygenfunction:: uz_watchdog_init
+.. doxygenfunction:: uz_watchdog_ip_restart
 
-.. doxygenfunction:: uz_watchdog_init_device
+.. doxygenfunction:: uz_watchdog_ip_init
 
 .. doxygenfunction:: uz_watchdog_WinIntrExample
 

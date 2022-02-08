@@ -21,6 +21,7 @@
 *
 ******************************************************************************/
 
+
 /***************************** Include Files *********************************/
 #include "uz_watchdog.h"
 #include "xwdttb.h"
@@ -133,7 +134,7 @@ static int uz_watchdog_XilinxInit(XWdtTb *WdtTbInstancePtr, uint32_t CounterValu
 
 static uz_watchdog_ip_t *uz_watchdog_allocation(uint32_t CounterValue, uint16_t WdtTbDeviceId)
 {
-    uz_assert(instance_counter < UZ_WDTTB_MAX_INSTANCES);
+	uz_assert(instance_counter < UZ_WDTTB_MAX_INSTANCES);
     uz_watchdog_ip_t *self = &instances[instance_counter];
     uz_assert_false(self->is_ready);
 
@@ -152,6 +153,23 @@ static uz_watchdog_ip_t *uz_watchdog_allocation(uint32_t CounterValue, uint16_t 
 	uz_assert(&(self->xilinxWdtIP) != NULL);
     uz_assert(self != NULL);
 
+#ifdef TEST
+	XWdtTb_Config conf =
+	{
+		XPAR_WDTTB_0_DEVICE_ID,
+		XPAR_WDTTB_0_BASEADDR,
+		XPAR_WDTTB_0_ENABLE_WINDOW_WDT,
+		XPAR_WDTTB_0_MAX_COUNT_WIDTH,
+		XPAR_WDTTB_0_SST_COUNT_WIDTH,
+		XPAR_WDTTB_0_IS_PL
+	};
+
+	XWdtTb testWdtTb = {
+    .Config = conf,        /**< Hardware Configuration */
+    .IsReady = XIL_COMPONENT_IS_READY,          /**< Device is initialized and ready */
+   };
+   self->xilinxWdtIP = testWdtTb;
+#endif
 #ifndef TEST
 // The real initialization and readyness is done by xilinx driver.
 // Not done if we are mocking the driver under TEST.
@@ -167,7 +185,7 @@ static uz_watchdog_ip_t *uz_watchdog_allocation(uint32_t CounterValue, uint16_t 
 uz_watchdog_ip_t* uz_watchdog_ip_init(struct uz_watchdog_ip_config_t watchdog_config)
 {
 	uz_assert_not_zero(watchdog_config.CounterValue);
-	uz_assert_not_zero(watchdog_config.WdtTbDeviceId);
+	// uz_assert_not_zero(watchdog_config.WdtTbDeviceId);
 	uz_watchdog_ip_t *self = uz_watchdog_allocation(watchdog_config.CounterValue, watchdog_config.WdtTbDeviceId);
 	self->watchdog_config=watchdog_config;
     return (self);
@@ -181,7 +199,6 @@ void uz_watchdog_ip_start(uz_watchdog_ip_t *WdtTbInstancePtr) {
 	uz_assert(WdtTbInstancePtr != NULL);
 	uz_assert(WdtTbInstancePtr->is_ready);
 	uz_assert(WdtTbInstancePtr->xilinxWdtIP.IsReady == XIL_COMPONENT_IS_READY);
-
 //	/* Stop the timer, disabling the WDTTB, writing 0 in bit WEN */
 //	XWdtTb_Stop(&WdtTbInstancePtr);
 

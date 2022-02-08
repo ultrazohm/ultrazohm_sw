@@ -113,12 +113,6 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge3DutyCycle);
 
 
-	// // TODO: QUITAR TEST: to trigger the time violation of ISR or system hang and the reset
-	// // Launch the test every 1000 invocations
-	if (((uz_SystemTime_GetInterruptCounter()%1000) == 0)) {
-	uz_sleep_useconds(100);
-	}
-
 	// Update JavaScope
 	JavaScope_update(&Global_Data);
 
@@ -129,11 +123,6 @@ void ISR_Control(void *data)
 	// Read the timer value at the very end of the ISR to minimize measurement error
 	// This has to be the last function executed in the ISR!
 	uz_SystemTime_ISR_Toc();
-
-	// TODO: QUITAR  Execution time must be less than the period
-	if ((uz_SystemTime_GetIsrDirectExectionTimeInUs() * 1e-6) > Global_Data.ctrl.pwmPeriod){
-		isr_failures++; //  Xil_Assert(__FILE__, __LINE__);// change the instruction for testing
-	}
 
 }
 
@@ -347,16 +336,11 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 //	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
 	//XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
 
-
-//	TODO: DELETE xil_printf()
 	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
-//	xil_printf("OLD Timer Prio is %d, level is %d\r\n",prio, trigger);
 	prio = 15;
 	trigger = 0b11;
 	XScuGic_SetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,prio,trigger);
 //	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
-//	xil_printf("NEW Timer Prio is %d, level is %d\r\n",prio, trigger);
-
 
 	// Make the connection between the IntId of the interrupt source and the
 	// associated handler that is to run when the interrupt is recognized.

@@ -1,7 +1,7 @@
-.. _Analog_LTC2311_16_v3:
+.. _Analog_LTC2311_16_Rev05:
 
 =======================
-Analog LTC2311-16 3vXX
+Analog LTC2311-16 Rev05
 =======================
 
 * Measurement of 8 differential signals
@@ -12,7 +12,6 @@ Analog LTC2311-16 3vXX
 * ADCs are triggered in groups of 4
 * Usage of up to three cards possible
 
-.. image:: LTC2311_16_v3/LTC2311_16_v3_PCB.jpg
 
 Pinout
 ------
@@ -48,45 +47,15 @@ ADC 3           3                                6
 ADC 4           1                                2                          
 =========      ==========================    ==========================     
 
-Diagrams
---------
-
-**Block diagram**
-
-.. image:: LTC2311_16_v3/block_diagram.jpg
-
-**Schematic excerpt** 
-
-.. image:: LTC2311_16_v3/schematic_colored_blocks.jpg
-
-**PCB colored**
-
-.. image:: LTC2311_16_v3/pcb_colored_blocks.jpg
-
-**From left to right**
-
-Notice that the picture of the PCB is flipped to match the orientation of the block diagram and schematic. 
-
-================        ===========================================================================
- Color                   Functionality
-================        ===========================================================================
-light green             Analog inputs on RJ45 
-dark green              Input protection (ESD diodes)
-yellow                  Measurement shunt resistor (optional, not populated)
-pink                    Voltage follower to increase input impedance and avoid loading the sensor
-orange                  Differential OpAmp to scale and filter signals
-red                     Anti-aliasing filter and ADC
-dark blue               Inverting buck-boost converter for -5V
-light blue              Buck converter for +5V
-purple                  Buffer for CNV signal coming from the FPGA
-================        ===========================================================================
 
 Filters
 -------
-1. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter (red) is formed by the capacitors :math:`C_\mathrm{Diff}` and :math:`C_\mathrm{CM}`. They create a first order low-pass filter with the series resistors :math:`{R_0}` with 
+1. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter is formed by the capacitors 
+:math:`C_\mathrm{Diff}` and :math:`C_\mathrm{CM}`. They create a first order low-pass filter with the series resistors :math:`{R_0}` with 
 
 .. math:: 
-   f_\mathrm{aliasing,-3dB}=\frac{1}{2 \pi R_0 (2 C_\mathrm{Diff} + C_\mathrm{CM} ) } = \frac{1}{2\pi\ 24.9\,\Omega \cdot (2\cdot16\,\mathrm{nF}  + 12\,\mathrm{nF}) } = 145\, \mathrm{kHz} \,\,.
+   f_\mathrm{aliasing,-3dB}=  \frac{1}{2 \pi R_0 (2 C_\mathrm{Diff} + C_\mathrm{CM} ) } = 
+                              \frac{1}{2\pi\ 10\,\Omega \cdot (2\cdot1\,\mathrm{nF}  + 1\,\mathrm{nF}) } = 5.3\, \mathrm{MHz} \,\,.
 
 2. Additionally, :math:`C_\mathrm{f}` and :math:`R_\mathrm{f}` form an active first-order low-pass filter, with 
 
@@ -100,12 +69,6 @@ The resulting transfer function of the signal conditioning stage, i.e., from the
 
 .. image:: LTC2311_16_v3/Bode_152kHzOutput_LT6203.jpg
 
-
-Measurement accuracy
---------------------
-The signal conditioning stage of the adapter card is validated with a 6 1/2 digit multimeter yielding the following results. This suggests that a measurement error below 2mV can be expected over the full input range.
-
-.. image:: LTC2311_16_v3/measurement_accuracy.png
 
 
 Before first use
@@ -126,9 +89,9 @@ Before first use
 :math:`{R_f}`                    :math:`{1\,\mathrm{k\Omega}}`
 :math:`{R_g}`                    :math:`{1\,\mathrm{k\Omega}}`
 :math:`{C_f}`                    :math:`{56\,\mathrm{pF}}` 
-:math:`{R_0}`                    :math:`{24.9\,\mathrm{\Omega}}` 
-:math:`{C_\mathrm{CM}}`          :math:`{12\,\mathrm{nF}}` 
-:math:`{C_\mathrm{Diff}}`        :math:`{16\,\mathrm{nF}}` 
+:math:`{R_0}`                    :math:`{10\,\mathrm{\Omega}}` 
+:math:`{C_\mathrm{CM}}`          :math:`{1\,\mathrm{nF}}` 
+:math:`{C_\mathrm{Diff}}`        :math:`{1\,\mathrm{nF}}` 
 ==========================       =====================================
 
 .. note :: 
@@ -203,18 +166,6 @@ When sizing the resistor, keep in mind that there are two times 100R in series w
    :width: 600
 
    Assembly of R22 and R42 as shunt resistor for current based sensors
-
-Known issues
-------------
-* The buffer ICs (U5, U12) have the wrong supply voltage. 3V3 instead of 1V8 was connected. These ICs are used to buffer the CNV pin for the ADC due to their high fanout. This was fixed by not placing L7 (disconnects 3V3) and adding a bodge wire for supplying the IC with 2V5 from OVCC.
-
-.. figure:: LTC2311_16_v3/ADC_jumper_wire_foto.jpg
-   :height: 400
-
-   Manual patch for the buffer IC as used in all v3 boards
-
-* The formula to calculate the cut-off frequency printed on the back of the PCBs has a typo. The correct formula is stated above, in the sub-section Filters. 
-
 
 
 

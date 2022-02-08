@@ -53,7 +53,7 @@ void tearDown(void)
 }
 
 
-void expected_init_functions(void)
+static inline void expected_init_functions(void)
 {  
     XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
     XWdtTb_CfgInitialize_IgnoreAndReturn(XST_SUCCESS);

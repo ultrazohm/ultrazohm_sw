@@ -1,51 +1,17 @@
 .. _Analog_LTC2311_16_Rev05:
 
-=======================
-Analog LTC2311-16 Rev05
-=======================
-
-* Measurement of 8 differential signals
-* Sampling rate of up to 5 MSPS
-* Resolution of 16 bit
-* Input range is +-5V 
-* ADC `LTC2311-16 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_
-* ADCs are triggered in groups of 4
-* Usage of up to three cards possible
+=================================
+Analog LTC2311-16 Rev05 and Rev06
+=================================
 
 
-Pinout
-------
-The pinout of the RJ45 ethernet plug is **NOT** intuitive, as shown in :numref:`rj45pinout`. 
-
-.. _rj45pinout:
-
-.. figure:: LTC2311_16_v3/rj45_pinout.png
-   :width: 700
-
-   Pinout of the ADC ethernet port.
-
-.. note::
-
-   Note that :numref:`rj45pinout` shows an ethernet cable according to **T568B**!
-
-
-We provide a breakout board for the RJ45 cable that matches the ADC card. **P** is the positive analog input, **N** the negative.
-
-.. image:: LTC2311_16_v3/adc_breakout_PN.png
-   :width: 400
-
-The pairs of the RJ45 ethernet connector map to the ADCs as follows:
-
-=========      ==========================    ==========================    
-Connected                         Pin on RJ45                            
----------      -------------------------------------------------------- 
- ADC              :math:`V_\mathrm{in,p}`       :math:`V_\mathrm{in,n}`       
-=========      ==========================    ==========================    
-ADC 1           7                                8                        
-ADC 2           4                                5                          
-ADC 3           3                                6                          
-ADC 4           1                                2                          
-=========      ==========================    ==========================     
+Changes compared to previous version
+------------------------------------
+* switched to single channel differential op-amp THS4561
+* negative rail of differential op-amp THS4561 is supplied with small negative voltage to allow true voltage swing from 0 to 5V driving the ADC 
+* adapted filter design for higher frequency to avoid influence of kick-back voltage at high sampling rates 
+* power rails are generated from LDOs 
+* For Rev06: Due to chip shortage, the LMK1C1104 is not available. Therefore it was replaced by the LMK1C1108 which distributes the conversion signal (CNV) to all eight ADCs. Besides this, it is identical to Rev05. 
 
 
 Filters
@@ -67,13 +33,12 @@ Filters
 
 The resulting transfer function of the signal conditioning stage, i.e., from the RJ45 input connectors to the :math:`V_\mathrm{ADC,in}` (including the buffer and filter stages up to the point where the signal enters the ADC), is measured with the Bode100. The resulting bode plot is depicted below. 
 
-.. image:: LTC2311_16_v3/Bode_152kHzOutput_LT6203.jpg
+.. image:: LTC2311_16_Rev05/Bode_2MHz.jpg
 
 
-
-Before first use
-----------------
-1. For all types of measurements, it is recommended to adjust the gains of the differential operational amplifier (orange) to utilize the full input range of the ADC, i.e., :math:`{\pm 5}` V. Initially, the gain is set to
+Adjust measurement gains 
+------------------------
+For all types of measurements, described in :ref:`Analog_LTC2311_16_meas_modes`, it is recommended to adjust the gains of the differential operational amplifier to utilize the full input range of the ADC, i.e., :math:`{\pm 5}` V. Initially, the gain is set to
 
 .. math:: 
 
@@ -98,91 +63,25 @@ Before first use
    You can also use the LTSpice simulation to find the correct gains and filter values for your setup. The simulation files are attached at the end of this document. 
 
 
-Measurement modes
------------------
-There are four ways to measure an analog signal with this adapter card
-
-* Fully differential
-* Single-ended with reference to an offset voltage (bipolar)
-* Single-ended with reference to ground potential (unipolar)
-* Current signal with a shunt resistor 
-
-.. figure::  LTC2311_16_v3/measurement_variants.png
-   :width: 250
-
-   Different input voltage forms for measurement [LTC2311_datasheet]_
-
-In all cases, the input range is **+-5V**.
-
-1. Fully differential measurement
-"""""""""""""""""""""""""""""""""
-In_P and In_N are fully differential signals, meaning they inverted signals with a common-mode offset of 2.5V e.g. 
-
-* For 0V input voltage, both In_P and In_N are 2.5V
-* For +1V input voltage, In_P is 3V and In_N is 2V
-* For -3V input voltage, In_P is 1V and In_N is 3V 
-
-.. figure:: LTC2311_16_v2/differential_signal.png
-   :width: 500
-
-   Fully differential measurement input [LTC2311_datasheet]_
-
-This will yield the highest signal to noise ratio (SNR) even when using longer cables. For longer cables, it is recommended to use a differential line driver on the sensing board of this form:
-
-.. figure:: LTC2311_16_v2/differential_signal_over_cable.png
-   :width: 500
-
-   Signal termination with differential signal over cable [LTC2311_datasheet]_
-
-
-2. Single-ended measurement with reference to an offset voltage
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-The negative input In_N is set to a fixed offset voltage, e.g. 2.5V which is often provided by the current sensor. The positive input may vary between 0V to 5V. 
-Note that in this case, only 15 bits of the 16-bit ADC are used because the gain of the differential OpAmp is initially set to 1. To overcome this, adjust the gains as described before.
-
-.. note ::
-   Both voltages should be transferred over the same twisted-pair cable as the positive input In_P, to get the same common-mode noise on both lines, which is then rejected by the differential amplifier. 
-
-.. figure:: LTC2311_16_v2/single_ended_to_Vcm.png
-   :width: 350
-
-   Single-ended with offset voltage [LTC2311_datasheet]_
-
-3. Single-ended measurement with reference to ground potential
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-The negative input In_N is set to ground which is preferably transferred over the same cable as the measurement singal In_P 
-
-.. figure:: LTC2311_16_v2/single_ended_to_GND.png
-   :width: 350
-
-   Usage of the ADC in single ended mode [LTC2311_datasheet]_
-
-4. Current signal using the shunt resistor R22, R42
-"""""""""""""""""""""""""""""""""""""""""""""""""""
-A resistor (package 1206) can be placed between In_P and In_N to terminate a current signal and turn it into a voltage signal that can be measured with this circuit. In this case the voltage follower is absolutely necessary to avoid an undesired current flow into the differential amplifier. 
-When sizing the resistor, keep in mind that there are two times 100R in series with the input (e.g., R65 and R66). These should be replaced with 0R. 
-
-.. figure:: LTC2311_16_v3/current_mode_measurement.jpg
-   :width: 600
-
-   Assembly of R22 and R42 as shunt resistor for current based sensors
-
-
-
 Compatibility 
 -------------
 * Slots A1 to A3 can be used without limitations
 
 References
 -------------
-* :download:`Schematic 3v03 <LTC2311_16_v3/SCH_ADC_LTC2311_16_3v03.pdf>`
-* :download:`Assembly Drawing 3v03 <LTC2311_16_v3/ASM_ADC_LTC2311_16_3v03.pdf>`
-* :download:`LTSpice simulation <LTC2311_16_v3/UZ_ADC_LTC2311-16_3v3_LTSpice.zip>`
-* See IP-Core :ref:`ipCore_LTC23`
+* :download:`Schematic Rev05 <LTC2311_16_Rev05/SCH_UZ_A_LTC2311_Standard_Rev05.pdf>`
+* :download:`Assembly Drawing Rev05 <LTC2311_16_Rev05/ASM_UZ_A_LTC2311_Standard_Rev05.pdf>`
+* :download:`Schematic Rev06 <LTC2311_16_Rev06/SCH_UZ_A_LTC2311_Standard_Rev06.pdf>`
+* :download:`Assembly Drawing Rev06 <LTC2311_16_Rev06/ASM_UZ_A_LTC2311_Standard_Rev06.pdf>`
+* :download:`LTSpice simulation <LTC2311_16_Rev05/ltspice_LTC2311_Rev05.zip>`
+* See IP-Core :ref:`ipCore_LTC2311_v3`
+* :ref:`Analog_LTC2311_16_pinout`
+* :ref:`Analog_LTC2311_16_meas_modes`
 * .. [LTC2311_datasheet] `Data sheet ADC LTC2311-16 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_
+
 
 Designed by 
 """""""""""
-Simon Lukas (TUM), Eyke Liegmann (TUM) in 09/2020
+Eyke Liegmann (TUM) in 09/2021
 
 

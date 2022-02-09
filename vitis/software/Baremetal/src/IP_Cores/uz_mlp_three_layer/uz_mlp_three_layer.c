@@ -44,16 +44,17 @@ void uz_mlp_three_layer_write_bias(uz_mlp_three_layer_ip_t *self, uint32_t paral
     // Middle loop over data with columns:number_of_columns/number_of_parallel_pcu
     // Inner loop over data with rows:number_of_rows
     size_t columns = uz_matrix_get_number_of_columns(bias);
+    size_t columns_per_pcu=columns/parallel_pcu;
     uz_mlp_three_layer_hw_write_layerNr(self->base_address, layer);
-    for (size_t pcu = 1; pcu <= parallel_pcu; pcu++)
+    for (size_t pcu = 0U; pcu < parallel_pcu; pcu++)
     {
-        for (size_t i = 0; i < columns; i++)
+        for (size_t i = 0U; i < columns_per_pcu; i++)
         {
             uz_mlp_three_layer_hw_write_enable_bias(self->base_address, 0U); // Write zero to disable write enable for all BRAM
-            float bias_value = uz_matrix_get_element_zero_based(bias, 0U, i);
+            float bias_value = uz_matrix_get_element_zero_based(bias, 0U, i+(pcu*columns_per_pcu));
             uz_mlp_three_layer_hw_write_bias_data(self->base_address, bias_value);
             uz_mlp_three_layer_hw_write_bias_address(self->base_address, i);
-            uz_mlp_three_layer_hw_write_enable_bias(self->base_address, pcu);
+            uz_mlp_three_layer_hw_write_enable_bias(self->base_address, (pcu+1U) ); // PCU is one based
         }
     }
 }

@@ -121,11 +121,7 @@ void test_uz_mlp_three_layer_write_bias_to_layer(void)
     uz_mlp_three_layer_hw_write_bias_address_Expect(BASE_ADDRESS, 1);
     uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 4);
 
-
     uz_mlp_three_layer_write_bias(test_instance, 4U, bias_matrix, 1);
-
-
-
 }
 
 // Expect:

@@ -158,7 +158,7 @@ void uz_resolverIP_setLOSThresh(uz_resolverIP_t* self, float thresh){
     uz_assert(thresh <= 4.82f);
 	uz_assert(thresh >= 0.f);
 
-	int32_t addr = 0x88;
+	int32_t addr = LOS_THRESHOLD_REG_ADR;
 
 	int32_t val = (int) (thresh/0.038f) ;
 	uz_assert(val <= 127);
@@ -170,7 +170,7 @@ void uz_resolverIP_setLOSThresh(uz_resolverIP_t* self, float thresh){
 float uz_resolverIP_getLOSThresh(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
 
-	int32_t addr = 0x88;
+	int32_t addr = LOS_THRESHOLD_REG_ADR;
 	int32_t val = uz_resolverIP_readRegister(self, addr);
 
 	uz_assert(val <= 127);
@@ -192,7 +192,7 @@ void uz_resolverIP_setDOSOverrangeThresh(uz_resolverIP_t* self, float thresh){
 	uz_assert(thresh <= 4.82f);
 	uz_assert(thresh >= 0.f);
 
-	int32_t addr = 0x89;
+	int32_t addr = DOS_OVERRANGE_REG_ADR;
 
 	int32_t val = (int) (thresh/0.038f) ;
 	uz_assert(val <= 127);
@@ -204,7 +204,7 @@ void uz_resolverIP_setDOSOverrangeThresh(uz_resolverIP_t* self, float thresh){
 float uz_resolverIP_getDOSOverrangeThresh(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
     
-	int32_t addr = 0x89;
+	int32_t addr = DOS_OVERRANGE_REG_ADR;
 	int32_t val = uz_resolverIP_readRegister(self, addr);
 
 	uz_assert(val <= 127);
@@ -224,7 +224,7 @@ void uz_resolverIP_setDOSMismatchThresh(uz_resolverIP_t* self, float thresh){
 	uz_assert(thresh <= 4.82f);
 	uz_assert(thresh >= 0.f);
 
-	int32_t addr = 0x8A;
+	int32_t addr = DOS_MISMATCH_REG_ADR;
 
 	int32_t val = (int) (thresh/0.038f) ;
 	uz_assert(val <= 127);
@@ -236,7 +236,7 @@ void uz_resolverIP_setDOSMismatchThresh(uz_resolverIP_t* self, float thresh){
 float uz_resolverIP_getDOSMismatchThresh(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
     
-	int32_t addr = 0x8A;
+	int32_t addr = DOS_MISMATCH_REG_ADR;
 	int32_t val = uz_resolverIP_readRegister(self, addr);
 
 	uz_assert(val <= 127);
@@ -259,7 +259,7 @@ void uz_resolverIP_setDOSResetMin(uz_resolverIP_t* self, float min){
 	uz_assert(min >= 0.f);
 
 
-	int32_t addrMin = 0x8B;
+	int32_t addrMin = DOS_RESET_MIN_REG_ADR;
 
 	int32_t valMin = (int) (min/0.038f);
 	uz_assert(valMin <= 127);
@@ -271,7 +271,7 @@ void uz_resolverIP_setDOSResetMin(uz_resolverIP_t* self, float min){
 float uz_resolverIP_getDOSResetMin(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
     
-	int32_t addrMin = 0x8B;
+	int32_t addrMin = DOS_RESET_MIN_REG_ADR;
 
 	int32_t valMin = uz_resolverIP_readRegister(self, addrMin);
 
@@ -295,7 +295,7 @@ void uz_resolverIP_setDOSResetMax(uz_resolverIP_t* self, float max){
 	uz_assert(max >= 0.f);
 
 
-	int32_t addrMax = 0x8C;
+	int32_t addrMax = DOS_RESET_MAX_REG_ADR;
 
 
 	int32_t valMax = (int) (max/0.038f) ;
@@ -308,7 +308,7 @@ void uz_resolverIP_setDOSResetMax(uz_resolverIP_t* self, float max){
 float uz_resolverIP_getDOSResetMax(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
     
-	int32_t addrMax = 0x8C;
+	int32_t addrMax = DOS_RESET_MAX_REG_ADR;
 
 	int32_t valMax = uz_resolverIP_readRegister(self, addrMax);
 
@@ -361,7 +361,7 @@ void uz_resolverIP_setLOTHighThresh(uz_resolverIP_t* self, float thresh){
 	uz_assert(thresh <= rangeMax);
 	uz_assert(thresh >= rangeMin);
 
-	int32_t addr = 0x8DU;
+	int32_t addr = LOT_HIGH_THRESH_REG_ADR;
 
 	int32_t val = (int32_t) (thresh/LSBsize) ;
 	uz_assert(val <= 127);
@@ -401,7 +401,7 @@ float uz_resolverIP_getLOTHighThresh(uz_resolverIP_t* self){
             uz_assert(false);
 	}
 
-	int32_t addr = 0x8D;
+	int32_t addr = LOT_HIGH_THRESH_REG_ADR;
 	int32_t val = uz_resolverIP_readRegister(self, addr);
 
 	uz_assert(val <= 127);
@@ -452,7 +452,7 @@ void uz_resolverIP_setLOTLowThresh(uz_resolverIP_t* self, float thresh){
 	uz_assert(thresh <= rangeMax);
 	uz_assert(thresh >= rangeMin);
 
-	int32_t addr = 0x8E;
+	int32_t addr = LOT_LOW_THRESH_REG_ADR;
 
 	int32_t val = (int32_t) (thresh/LSBsize) ;
 	uz_assert(val <= 127);
@@ -492,7 +492,7 @@ float uz_resolverIP_getLOTLowThresh(uz_resolverIP_t* self){
             uz_assert(false);
 	}
 
-	int32_t addr = 0x8E;
+	int32_t addr = LOT_LOW_THRESH_REG_ADR;
 	int32_t val = uz_resolverIP_readRegister(self, addr);
 
 	uz_assert(val <= 127);
@@ -514,7 +514,7 @@ void uz_resolverIP_setExcitationFrequency(uz_resolverIP_t* self, float excFreq){
 	uz_assert(excFreq <= 20000.f);
 	uz_assert(excFreq >= 2000.f);
 
-	int32_t addr = 0x91;
+	int32_t addr = EXIT_FREQ_REG_ADR;
 
 	int32_t fCW = (int32_t) (excFreq*(1<<15)/self->config.freq_clockin);
 	uz_assert(fCW <= 0x50);
@@ -527,7 +527,7 @@ float uz_resolverIP_getExcitationFrequency(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
     
 
-	int32_t addr = 0x91;
+	int32_t addr = EXIT_FREQ_REG_ADR;
 	int32_t val = uz_resolverIP_readRegister(self, addr);
 
 	uz_assert(val <= 0x50);
@@ -549,7 +549,7 @@ void uz_resolverIP_setCTRLReg(uz_resolverIP_t* self, int32_t register_value){
 	uz_assert(register_value <= 0xFF);
 	uz_assert(register_value >= 0x00);
 
-	int32_t addr = 0x92;
+	int32_t addr = CONTROL_REG_ADR;
 
 	uz_resolverIP_writeRegister(self, addr, register_value);
 }
@@ -557,7 +557,7 @@ void uz_resolverIP_setCTRLReg(uz_resolverIP_t* self, int32_t register_value){
 int32_t uz_resolverIP_getCTRLReg(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
     
-	int32_t addr = 0x92;
+	int32_t addr = CONTROL_REG_ADR;
 	int32_t register_value = uz_resolverIP_readRegister(self, addr);
 
 	uz_assert(register_value <= 0xFF);
@@ -570,7 +570,7 @@ int32_t uz_resolverIP_getCTRLReg(uz_resolverIP_t* self){
 void uz_resolverIP_resetSoftware(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
     
-	int32_t addr = 0xF0;
+	int32_t addr = SOFTWARE_RST_REG_ADR;
 
 	uz_resolverIP_writeRegister(self, addr, 0x00);
 
@@ -580,7 +580,7 @@ void uz_resolverIP_resetSoftware(uz_resolverIP_t* self){
 int32_t uz_resolverIP_getFLTRegister(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
     
-	int32_t addr = 0xFF;
+	int32_t addr = FAULT_REG_ADR;
 
 	int32_t register_value = uz_resolverIP_readRegister(self, addr);
 

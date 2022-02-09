@@ -11,8 +11,8 @@
 #include <math.h>
 
 struct uz_FOC_config config = {0};
-struct uz_dq_t i_actual_Ampere = {0};
-struct uz_dq_t i_reference_Ampere = {0};
+uz_dq_t i_actual_Ampere = {0};
+uz_dq_t i_reference_Ampere = {0};
 float omega_el_rad_per_sec = 0.0f;
 float V_dc_volts = 0.0f;
 
@@ -92,7 +92,7 @@ void test_uz_FOC_sample_output(void){
         i_actual_Ampere.q = values_iq[i];
         i_actual_Ampere.d = values_id[i];
         omega_el_rad_per_sec = values_omega[i];
-        struct uz_dq_t output = uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        uz_dq_t output = uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
 		TEST_ASSERT_FLOAT_WITHIN(1e-02f, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02f, uq_out[i], output.q);
     }
@@ -102,7 +102,7 @@ void test_uz_FOC_sample_UVW_output(void) {
     //Values for comparision from simulation
     uz_FOC* instance = uz_FOC_init(config);
     float theta_el_rad = (float)M_PI;
-    struct uz_UVW_t output = uz_FOC_sample_UVW(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
+    uz_UVW_t output = uz_FOC_sample_UVW(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f,-6.75f,output.U);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f,-2.4707f,output.V);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f,9.2207f,output.W);
@@ -127,7 +127,7 @@ void test_uz_FOC_sample_output_SVLimitation_active(void){
         i_actual_Ampere.q = values_iq[i];
         i_actual_Ampere.d = values_id[i];
         omega_el_rad_per_sec = values_omega[i];
-        struct uz_dq_t output = uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        uz_dq_t output = uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
 		TEST_ASSERT_FLOAT_WITHIN(1e-02f, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02f, uq_out[i], output.q);
     }
@@ -145,7 +145,7 @@ void test_uz_FOC_reset(void){
         i_actual_Ampere.q = values_iq[i];
         i_actual_Ampere.d = values_id[i];
         omega_el_rad_per_sec = values_omega[i];
-        struct uz_dq_t output = uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        uz_dq_t output = uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
 		TEST_ASSERT_FLOAT_WITHIN(1e-02f, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02f, uq_out[i], output.q);
     }
@@ -154,7 +154,7 @@ void test_uz_FOC_reset(void){
         i_actual_Ampere.q = values_iq[i];
         i_actual_Ampere.d = values_id[i];
         omega_el_rad_per_sec = values_omega[i];
-        struct uz_dq_t output = uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        uz_dq_t output = uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
 		TEST_ASSERT_FLOAT_WITHIN(1e-02f, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02f, uq_out[i], output.q);
     }
@@ -162,7 +162,7 @@ void test_uz_FOC_reset(void){
 
 void test_uz_FOC_set_Kp_and_Ki_id(void){
     //Tests, if the new values are properly written into the FOC instance
-    struct uz_dq_t output = {0};
+    uz_dq_t output = {0};
     //Values for comparision from simulation
     uz_FOC* instance = uz_FOC_init(config);
     for(int i=0;i<11;i++){
@@ -182,7 +182,7 @@ void test_uz_FOC_set_Kp_and_Ki_id(void){
 
 void test_uz_FOC_set_Kp_and_Ki_iq(void){
     //Tests, if the new values are properly written into the FOC instance
-    struct uz_dq_t output = {0};
+    uz_dq_t output = {0};
     //Values for comparision from simulation
     uz_FOC* instance = uz_FOC_init(config);
     for(int i=0;i<11;i++){
@@ -198,6 +198,33 @@ void test_uz_FOC_set_Kp_and_Ki_iq(void){
     }
     TEST_ASSERT_FLOAT_WITHIN(1e-02, 6.83f, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-02, 0.0f, output.q);
+}
+
+void test_uz_FOC_set_PMSM_parameters(void) {
+    uz_dq_t output = { 0 };
+    //sets the output of the Pi-Controllers 0
+    config.config_id.Ki = 0.0f;
+    config.config_id.Kp = 0.0f;
+    config.config_iq.Ki = 0.0f;
+    config.config_iq.Kp = 0.0f;
+    uz_FOC* instance = uz_FOC_init(config);
+
+    //Check outputs from the linear decoupling
+    i_actual_Ampere.q = 4.0f;
+    i_actual_Ampere.d = 4.0f;
+    omega_el_rad_per_sec = 500.0f;
+    output = uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+    TEST_ASSERT_EQUAL_FLOAT(-0.54f, output.d);
+    TEST_ASSERT_EQUAL_FLOAT(4.64f, output.q);
+    //Set params of linear decoupling to 0
+    config.config_PMSM.Ld_Henry = 0.0001f;
+    config.config_PMSM.Lq_Henry = 0.0001f;
+    config.config_PMSM.Psi_PM_Vs = 0.0f;
+    uz_FOC_set_PMSM_parameters(instance, config.config_PMSM);
+    output = uz_FOC_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+    //Check, if the output is changed
+    TEST_ASSERT_EQUAL_FLOAT(-0.2f, output.d);
+    TEST_ASSERT_EQUAL_FLOAT(0.2f, output.q);
 }
 
 void test_uz_FOC_get_ext_clamping_NULL(void){

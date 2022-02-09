@@ -142,4 +142,29 @@ void uz_matrix_multiply_by_scalar(uz_matrix_t *const A, float scalar);
  */
 void uz_matrix_apply_function_to_each_element(uz_matrix_t *const A, float(*f)(float) );
 
+
+/**
+ * @brief Retruns the value of the biggest element of the matrix
+ * 
+ * @param A 
+ * @return float 
+ */
+float uz_matrix_get_max_value(uz_matrix_t const*const A);
+
+/**
+ * @brief Returns the index at which position the biggest value is located in the matrix A
+ * 
+ * @param A 
+ * @return size_t 
+ */
+size_t uz_matrix_get_max_index(uz_matrix_t const*const A);
+
+/**
+ * @brief Transposes the matrix A
+ * 
+ * @param A 
+ */
+void uz_matrix_transpose(uz_matrix_t* A);
+
+
 #endif // UZ_MATRIX_H

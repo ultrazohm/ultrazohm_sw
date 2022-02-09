@@ -52,11 +52,27 @@ void tearDown(void)
 {
 }
 
-// Private function declaration
-void expected_init_functions(void);
-// Private function definition
-inline void expected_init_functions(void)
+// // Private function declaration
+// void expected_init_functions(void);
+// // Private function definition
+// inline void expected_init_functions(void)
+// {  
+//     XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
+//     XWdtTb_CfgInitialize_IgnoreAndReturn(XST_SUCCESS);
+//     XWdtTb_ConfigureWDTMode_IgnoreAndReturn(XST_SUCCESS);
+//     XWdtTb_SelfTest_IgnoreAndReturn(XST_SUCCESS);
+//     XWdtTb_SetRegSpaceAccessMode_Ignore();
+//     XWdtTb_SetWindowCount_Ignore();
+//     XWdtTb_SetByteCount_Ignore();
+//     XWdtTb_SetByteSegment_Ignore();
+//     XWdtTb_DisableSst_Ignore();
+//     XWdtTb_DisablePsm_Ignore();
+//     XWdtTb_DisableFailCounter_Ignore(); 
+// }
+
+void test_uz_watchdog_initialization(void)
 {  
+    // expected_init_functions();
     XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
     XWdtTb_CfgInitialize_IgnoreAndReturn(XST_SUCCESS);
     XWdtTb_ConfigureWDTMode_IgnoreAndReturn(XST_SUCCESS);
@@ -67,12 +83,7 @@ inline void expected_init_functions(void)
     XWdtTb_SetByteSegment_Ignore();
     XWdtTb_DisableSst_Ignore();
     XWdtTb_DisablePsm_Ignore();
-    XWdtTb_DisableFailCounter_Ignore(); 
-}
-
-void test_uz_watchdog_initialization(void)
-{  
-    expected_init_functions();
+    XWdtTb_DisableFailCounter_Ignore();
     // Invoke the function to test if it does whats Expected 
 	WdtTbInstancePtr = uz_watchdog_ip_init(config);
   
@@ -80,7 +91,18 @@ void test_uz_watchdog_initialization(void)
 
 void test_uz_watchdog_start(void)
 {
-   expected_init_functions();
+//    expected_init_functions();
+    XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
+    XWdtTb_CfgInitialize_IgnoreAndReturn(XST_SUCCESS);
+    XWdtTb_ConfigureWDTMode_IgnoreAndReturn(XST_SUCCESS);
+    XWdtTb_SelfTest_IgnoreAndReturn(XST_SUCCESS);
+    XWdtTb_SetRegSpaceAccessMode_Ignore();
+    XWdtTb_SetWindowCount_Ignore();
+    XWdtTb_SetByteCount_Ignore();
+    XWdtTb_SetByteSegment_Ignore();
+    XWdtTb_DisableSst_Ignore();
+    XWdtTb_DisablePsm_Ignore();
+    XWdtTb_DisableFailCounter_Ignore();
    WdtTbInstancePtr = uz_watchdog_ip_init(config);
 
     XWdtTb_SetRegSpaceAccessMode_Expect(&testWdtTb, 1);
@@ -118,7 +140,18 @@ void test_uz_watchdog_start_fail_assert_if_null(void)
 
 void test_uz_watchdog_restart(void)
 {
-    expected_init_functions();
+    // expected_init_functions();
+    XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
+    XWdtTb_CfgInitialize_IgnoreAndReturn(XST_SUCCESS);
+    XWdtTb_ConfigureWDTMode_IgnoreAndReturn(XST_SUCCESS);
+    XWdtTb_SelfTest_IgnoreAndReturn(XST_SUCCESS);
+    XWdtTb_SetRegSpaceAccessMode_Ignore();
+    XWdtTb_SetWindowCount_Ignore();
+    XWdtTb_SetByteCount_Ignore();
+    XWdtTb_SetByteSegment_Ignore();
+    XWdtTb_DisableSst_Ignore();
+    XWdtTb_DisablePsm_Ignore();
+    XWdtTb_DisableFailCounter_Ignore();
     WdtTbInstancePtr = uz_watchdog_ip_init(config);
   
     XWdtTb_RestartWdt_Expect(&testWdtTb);
@@ -145,7 +178,18 @@ void test_uz_watchdog_restart_fail_assert_if_null(void)
 
 void test_uz_watchdog_WdtTbIntrHandler_goodevent(void)
 {
-    expected_init_functions();
+    // expected_init_functions();
+    XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
+    XWdtTb_CfgInitialize_IgnoreAndReturn(XST_SUCCESS);
+    XWdtTb_ConfigureWDTMode_IgnoreAndReturn(XST_SUCCESS);
+    XWdtTb_SelfTest_IgnoreAndReturn(XST_SUCCESS);
+    XWdtTb_SetRegSpaceAccessMode_Ignore();
+    XWdtTb_SetWindowCount_Ignore();
+    XWdtTb_SetByteCount_Ignore();
+    XWdtTb_SetByteSegment_Ignore();
+    XWdtTb_DisableSst_Ignore();
+    XWdtTb_DisablePsm_Ignore();
+    XWdtTb_DisableFailCounter_Ignore();
     WdtTbInstancePtr = uz_watchdog_ip_init(config);
   
     XWdtTb_RestartWdt_Expect(&testWdtTb);
@@ -158,7 +202,18 @@ void test_uz_watchdog_WdtTbIntrHandler_goodevent(void)
 
 void test_uz_watchdog_WdtTbIntrHandler_badevent(void)
 {
-    expected_init_functions();
+    // expected_init_functions();
+    XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
+    XWdtTb_CfgInitialize_IgnoreAndReturn(XST_SUCCESS);
+    XWdtTb_ConfigureWDTMode_IgnoreAndReturn(XST_SUCCESS);
+    XWdtTb_SelfTest_IgnoreAndReturn(XST_SUCCESS);
+    XWdtTb_SetRegSpaceAccessMode_Ignore();
+    XWdtTb_SetWindowCount_Ignore();
+    XWdtTb_SetByteCount_Ignore();
+    XWdtTb_SetByteSegment_Ignore();
+    XWdtTb_DisableSst_Ignore();
+    XWdtTb_DisablePsm_Ignore();
+    XWdtTb_DisableFailCounter_Ignore();
     WdtTbInstancePtr = uz_watchdog_ip_init(config);
   
     XWdtTb_RestartWdt_Expect(&testWdtTb);

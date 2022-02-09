@@ -1,0 +1,4 @@
+mux_axi/mux_axi/Subsystem1/Detect Fall Nonpositive2 --> mux_axi_ip_src_Detect_Fall_Nonpositive2
+mux_axi/mux_axi/Subsystem1/Detect Rise Positive --> mux_axi_ip_src_Detect_Rise_Positive
+mux_axi/mux_axi/Subsystem1 --> mux_axi_ip_src_Subsystem1
+mux_axi/mux_axi --> mux_axi_ip_src_mux_axi

@@ -6,7 +6,6 @@ Analog LTC2311-16 3v01
 
 .. image:: LTC2311_16_v3/LTC2311_16_v3_PCB.jpg
 
-   
 
 Diagrams
 --------
@@ -43,6 +42,7 @@ purple                  Buffer for CNV signal coming from the FPGA
 
 Filters
 -------
+
 1. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter (red) is formed by the capacitors :math:`C_\mathrm{Diff}` and :math:`C_\mathrm{CM}`. They create a first order low-pass filter with the series resistors :math:`{R_0}` with 
 
 .. math:: 
@@ -63,6 +63,7 @@ The resulting transfer function of the signal conditioning stage, i.e., from the
 
 Measurement accuracy
 --------------------
+
 The signal conditioning stage of the adapter card is validated with a 6 1/2 digit multimeter yielding the following results. This suggests that a measurement error below 2mV can be expected over the full input range.
 
 .. image:: LTC2311_16_v3/measurement_accuracy.png
@@ -70,6 +71,7 @@ The signal conditioning stage of the adapter card is validated with a 6 1/2 digi
 
 Adjust measurement gains 
 ------------------------
+
 For all types of measurements, described in :ref:`Analog_LTC2311_16_meas_modes`, it is recommended to adjust the gains of the differential operational amplifier (orange) to utilize the full input range of the ADC, i.e., :math:`{\pm 5}` V. Initially, the gain is set to
 
 .. math:: 
@@ -95,13 +97,14 @@ For all types of measurements, described in :ref:`Analog_LTC2311_16_meas_modes`,
    You can also use the LTSpice simulation to find the correct gains and filter values for your setup. The simulation files are attached at the end of this document. 
 
 
-
 Compatibility 
 -------------
+
 * Slots A1 to A3 can be used without limitations
 
 References
--------------
+----------
+
 * :download:`Schematic 3v03 <LTC2311_16_v3/SCH_ADC_LTC2311_16_3v03.pdf>`
 * :download:`Assembly Drawing 3v03 <LTC2311_16_v3/ASM_ADC_LTC2311_16_3v03.pdf>`
 * :download:`LTSpice simulation <LTC2311_16_v3/UZ_ADC_LTC2311-16_3v3_LTSpice.zip>`
@@ -110,6 +113,7 @@ References
 
 Designed by 
 """""""""""
+
 Simon Lukas (TUM), Eyke Liegmann (TUM) in 09/2020
 
 

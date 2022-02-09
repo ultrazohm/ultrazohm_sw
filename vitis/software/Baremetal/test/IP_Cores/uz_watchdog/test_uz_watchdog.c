@@ -52,8 +52,10 @@ void tearDown(void)
 {
 }
 
-
-static inline void expected_init_functions(void)
+// Private function declaration
+void expected_init_functions(void);
+// Private function definition
+inline void expected_init_functions(void)
 {  
     XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
     XWdtTb_CfgInitialize_IgnoreAndReturn(XST_SUCCESS);

@@ -72,6 +72,7 @@ pipelines:
            script:
             - apk add git-lfs
             - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
+            - git lfs fetch --all
             - git push --all mirrorOrigin
      main:
       - step:
@@ -113,4 +114,5 @@ pipelines:
          script:
           - apk add git-lfs
           - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
+          - git lfs fetch --all
           - git push --all mirrorOrigin

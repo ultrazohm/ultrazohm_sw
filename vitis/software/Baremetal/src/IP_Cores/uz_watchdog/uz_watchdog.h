@@ -5,7 +5,7 @@
 /*****************************************************************************/
 /**
 *
-* @file uz_xwdttb.h
+* @file uz_watchdog.h
 *
 * This file contains the functions to initialize the TimeBase Watchdog Timer Device
 * (WdtTb) driver and hardware device and a design example using the using interrupt
@@ -20,7 +20,8 @@
 * <pre>
 * Ver   Who  Date     Changes
 * ----- ---- -------- ---------------------------------------------------------
-* 1.0   David Ken  03/11/21 First release
+* 1.0   David Ken  03/11/21 First draft
+* 1.0   David Ken  09/02/22 First version
 * </pre>
 *
 ******************************************************************************/
@@ -95,7 +96,7 @@ struct uz_watchdog_ip_config_t {
 
 /**
 * @brief This function STARTs the System WatchDog Timer to the initial
-*        value to the counter.Generates a good event if executed inside
+*        value to the counter. Generates a good event if executed inside
 *        the Second Window, or OPEN Window.
 *        The WDT Start is accomplished by enabling the IP Core
 *        writing WEN bit =1. And granting write access to the IP
@@ -125,32 +126,6 @@ void uz_watchdog_ip_restart(uz_watchdog_ip_t *WdtTbInstancePtr) ;
 * @return	uz_watchdog_ip_t pointer to the initialized WDTTB driver.
 */
 uz_watchdog_ip_t* uz_watchdog_ip_init(struct uz_watchdog_ip_config_t watchdog_config);
-
-/**
-* @brief This function tests the functioning of the Window Watchdog
-*        Timer in the interrupt mode.
-*
-*        This function waits for interrupt programmed point in
-*        second window. If the interrupt has occurred, interrupt
-*        handler sets a flag and restarts the timer. This function
-*        then clears the interrupt, flag and waits for second
-*        interrupt to occur and continue waiting for second
-*        interrupt as mentioned above.
-*
-*        This function assumes that the reset output of the Window
-*        Watchdog Timer is not connected to the reset of the processor.
-*        The function allows the Window Watchdog Timer to timeout such
-*        that a reset will occur if it is connected.
-*
-*        The Driver has to be properly initialized and the GIC interrupt system ALSO!
-*
-* @param	WdtTbInstancePtr is a pointer to the instance of WdtTb driver.
-*
-* @return
-*		- XST_SUCCESS if interrupt example run successfully.
-*		- XST_FAILURE, if reset has occurred.
-*/
-int uz_watchdog_WinIntrExample(uz_watchdog_ip_t *WdtTbInstancePtr);
 
 /**
 * @brief This function is the Interrupt handler for the WDT Interrupt of the

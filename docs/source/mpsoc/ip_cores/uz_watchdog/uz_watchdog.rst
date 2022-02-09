@@ -146,8 +146,6 @@ Driver function reference
 
 .. doxygenfunction:: uz_watchdog_ip_init
 
-.. doxygenfunction:: uz_watchdog_WinIntrExample
-
 .. doxygenfunction:: uz_watchdog_IntrHandler
 
 

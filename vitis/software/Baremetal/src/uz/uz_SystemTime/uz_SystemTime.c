@@ -58,6 +58,7 @@ static void uz_SystemTime_update() {
 
 void uz_SystemTime_ISR_Tic() {
 	uz_assert(timingR5.IsReady);
+	uz_assert_false(timingR5.TicTocLock);
 	timingR5.timestamp_ISR_start = uz_AxiTimer64Bit_ReadValue64Bit();
 	uz_SystemTime_update();
 	timingR5.TicTocLock = true;

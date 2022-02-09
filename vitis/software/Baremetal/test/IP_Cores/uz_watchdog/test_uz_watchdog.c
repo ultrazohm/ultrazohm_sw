@@ -85,8 +85,15 @@ void test_uz_watchdog_initialization(void)
     XWdtTb_DisablePsm_Ignore();
     XWdtTb_DisableFailCounter_Ignore();
     // Invoke the function to test if it does whats Expected 
-	WdtTbInstancePtr = uz_watchdog_ip_init(config);
-  
+	WdtTbInstancePtr = uz_watchdog_ip_init(config); 
+}
+
+void test_uz_watchdog_fail_assert_if_window_size_is_zero(void)
+{
+    struct uz_watchdog_ip_config_t bad_config={
+        .WdtTbDeviceId=WDTTB_DEVICE_ID
+    };
+    TEST_ASSERT_FAIL_ASSERT(uz_watchdog_ip_init(bad_config) );
 }
 
 void test_uz_watchdog_start(void)
@@ -103,34 +110,19 @@ void test_uz_watchdog_start(void)
     XWdtTb_DisableSst_Ignore();
     XWdtTb_DisablePsm_Ignore();
     XWdtTb_DisableFailCounter_Ignore();
-   WdtTbInstancePtr = uz_watchdog_ip_init(config);
+    WdtTbInstancePtr = uz_watchdog_ip_init(config);
 
     XWdtTb_SetRegSpaceAccessMode_Expect(&testWdtTb, 1);
-    // XWdtTb_SetRegSpaceAccessMode_Ignore();
 
     // XWdtTb_AlwaysEnable_Expect(&testWdtTb);
     // XWdtTb_EnableExtraProtection_Expect(&testWdtTb);
 
     XWdtTb_Start_Expect(&testWdtTb);
-    // XWdtTb_Start_Ignore();
 
-    XWdtTb_SetRegSpaceAccessMode_Expect(&testWdtTb, 1);  
-    // XWdtTb_SetRegSpaceAccessMode_Ignore();                      
+    XWdtTb_SetRegSpaceAccessMode_Expect(&testWdtTb, 1);                     
     // Invoke the function to test if it does whats Expected                                     
     uz_watchdog_ip_start(WdtTbInstancePtr);
 }
-
-// void test_uz_watchdog_start_fail_assert_if_not_ready(void)
-// {
-    
-//     expected_init_functions();
-//     WdtTbInstancePtr = uz_watchdog_ip_init(config);
-
-//     WdtTbInstancePtr->xilinxWdtIP.IsReady = 0; // Not ready // Not access to internal structure!
-
-//     // Invoke the function to test if it does whats Expected                                     
-//     TEST_ASSERT_FAIL_ASSERT(uz_watchdog_ip_start(WdtTbInstancePtr));
-// }
 
 void test_uz_watchdog_start_fail_assert_if_null(void)
 {
@@ -155,20 +147,10 @@ void test_uz_watchdog_restart(void)
     WdtTbInstancePtr = uz_watchdog_ip_init(config);
   
     XWdtTb_RestartWdt_Expect(&testWdtTb);
-    // XWdtTb_RestartWdt_Ignore();
                                             
     // Invoke the function to test if it does whats Expected                                     
     uz_watchdog_ip_restart(WdtTbInstancePtr);
 }
-
-// void test_uz_watchdog_restart_fail_assert_if_not_ready(void)
-// {
-
-//     WdtTbInstancePtr = uz_watchdog_ip_init(config);
-    
-//     // Invoke the function to test if it does whats Expected                                     
-//     TEST_ASSERT_FAIL_ASSERT(uz_watchdog_ip_restart(WdtTbInstancePtr));
-// }
 
 void test_uz_watchdog_restart_fail_assert_if_null(void)
 {
@@ -224,16 +206,6 @@ void test_uz_watchdog_WdtTbIntrHandler_badevent(void)
     // Invoke the function to test if it does whats Expected                                     
     uz_watchdog_IntrHandler(WdtTbInstancePtr);
 }
-
-// void test_uz_watchdog_WdtTbIntrHandler_fail_assert_if_not_ready(void)
-// {
-
-//     expected_init_functions();
-//     WdtTbInstancePtr = uz_watchdog_ip_init(config);
-    
-//     // Invoke the function to test if it does whats Expected                                     
-//     TEST_ASSERT_FAIL_ASSERT(uz_watchdog_IntrHandler(WdtTbInstancePtr));
-// }
 
 void test_uz_watchdog_WdtTbIntrHandler_fail_assert_if_null(void)
 {

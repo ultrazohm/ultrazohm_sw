@@ -46,10 +46,8 @@ XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible 
 //Initialize the Timer structure
 XTmrCtr Timer_Interrupt;
 
-//Initialize the WDTTB structure
+//Initialize the Watchdog structure
 uz_watchdog_ip_t *WdtTbInstancePtr;
-
-int isr_failures;
 
 
 float sin1amp=1.0;
@@ -123,7 +121,6 @@ void ISR_Control(void *data)
 	// Read the timer value at the very end of the ISR to minimize measurement error
 	// This has to be the last function executed in the ISR!
 	uz_SystemTime_ISR_Toc();
-
 }
 
 //==============================================================================================================================================================
@@ -331,16 +328,12 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 	// setting interrupt trigger sensitivity
 	// b01	Active HIGH level sensitive
 	// b11 	Rising edge sensitive
-	// XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
-//	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
-//	XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
-	//XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
+	// b01  active-high - default case
 
 	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
 	prio = 15;
 	trigger = 0b11;
 	XScuGic_SetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,prio,trigger);
-//	XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
 
 	// Make the connection between the IntId of the interrupt source and the
 	// associated handler that is to run when the interrupt is recognized.
@@ -356,7 +349,6 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
 //								(Xil_ExceptionHandler)Conv_ADC_Intr_Handler,
 //								(void *)Conv_ADC_InstancePtr);
 //		if(status != XST_SUCCESS) return XST_FAILURE;
-
 
 
 	/*

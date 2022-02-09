@@ -1,7 +1,7 @@
 /*****************************************************************************/
 /**
 *
-* @file uz_xwdttb.c
+* @file uz_watchdog.c
 *
 * This file contains the functions to initialize the TimeBase Watchdog Timer Device
 * (WdtTb) driver and hardware device and a design example using the using interrupt
@@ -30,9 +30,7 @@
 
 #if (UZ_WDTTB_MAX_INSTANCES > 0U && UZ_WDTTB_MAX_INSTANCES <= XPAR_XWDTTB_NUM_INSTANCES)
 
-/************************** Constant Definitions *****************************/
-
-#define HANDLER_CALLED  0xFFFFFFFF
+/************************** IP structure definition *****************************/
 
 struct uz_watchdog_ip_t {
     bool is_ready;
@@ -140,7 +138,6 @@ static uz_watchdog_ip_t *uz_watchdog_allocation(uint32_t CounterValue, uint16_t 
 
     /*
 	 * Call the WDT init to initialize and set timer to the given timeout.
-	 * Both
 	 */
 	int Status = uz_watchdog_XilinxInit(&(self->xilinxWdtIP), CounterValue, WdtTbDeviceId); // XPFW_WDT_EXPIRE_TIME for WDT PS
 
@@ -154,6 +151,7 @@ static uz_watchdog_ip_t *uz_watchdog_allocation(uint32_t CounterValue, uint16_t 
     uz_assert(self != NULL);
 
 #ifdef TEST
+    /**< For testing purposes we define a fake component  */
 	XWdtTb_Config conf =
 	{
 		XPAR_WDTTB_0_DEVICE_ID,
@@ -185,7 +183,6 @@ static uz_watchdog_ip_t *uz_watchdog_allocation(uint32_t CounterValue, uint16_t 
 uz_watchdog_ip_t* uz_watchdog_ip_init(struct uz_watchdog_ip_config_t watchdog_config)
 {
 	uz_assert_not_zero(watchdog_config.CounterValue);
-	// uz_assert_not_zero(watchdog_config.WdtTbDeviceId);
 	uz_watchdog_ip_t *self = uz_watchdog_allocation(watchdog_config.CounterValue, watchdog_config.WdtTbDeviceId);
 	self->watchdog_config=watchdog_config;
     return (self);
@@ -199,26 +196,15 @@ void uz_watchdog_ip_start(uz_watchdog_ip_t *WdtTbInstancePtr) {
 	uz_assert(WdtTbInstancePtr != NULL);
 	uz_assert(WdtTbInstancePtr->is_ready);
 	uz_assert(WdtTbInstancePtr->xilinxWdtIP.IsReady == XIL_COMPONENT_IS_READY);
-//	/* Stop the timer, disabling the WDTTB, writing 0 in bit WEN */
-//	XWdtTb_Stop(&WdtTbInstancePtr);
 
 
 	/* Write a 1 to Set register space to writable */
 	XWdtTb_SetRegSpaceAccessMode(&(WdtTbInstancePtr->xilinxWdtIP), 1);
 
-	// /*
-	//  * Set the AEN bit (to enable protection against accidental clearing)
-	//  * and to avoid disable (WEN = 0) ==>> XWdtTb_Stop() NOT POSSIBLE
-	//  * BUT when Second Window times out, and bad even occurs and RESET is produced ANYWAY (and IP CORE STOPS RUNNING)
-	//  */
-	//  XWdtTb_AlwaysEnable(WdtTbInstancePtr);
-	//  XWdtTb_EnableExtraProtection(WdtTbInstancePtr);
-
 	/*
 	 * Start the watchdog timer as a normal application would (WEN bit = 1)
 	 */
 	XWdtTb_Start(&(WdtTbInstancePtr->xilinxWdtIP));
-//	WdtExpired = FALSE;
 
 	/* After enabled, write enabled auto clears, so we have to write a 1 to Set register space to writable */
 	XWdtTb_SetRegSpaceAccessMode(&(WdtTbInstancePtr->xilinxWdtIP), 1);
@@ -238,6 +224,30 @@ void uz_watchdog_ip_restart(uz_watchdog_ip_t *WdtTbInstancePtr) {
 
 /*****************************************************************************/
 
+/**
+* @brief This function tests the functioning of the Window Watchdog
+*        Timer in the interrupt mode.
+*
+*        This function waits for interrupt programmed point in
+*        second window. If the interrupt has occurred, interrupt
+*        handler sets a flag and restarts the timer. This function
+*        then clears the interrupt, flag and waits for second
+*        interrupt to occur and continue waiting for second
+*        interrupt as mentioned above.
+*
+*        This function assumes that the reset output of the Window
+*        Watchdog Timer is not connected to the reset of the processor.
+*        The function allows the Window Watchdog Timer to timeout such
+*        that a reset will occur if it is connected.
+*
+*        The Driver has to be properly initialized and the GIC interrupt system ALSO!
+*
+* @param	WdtTbInstancePtr is a pointer to the instance of WdtTb driver.
+*
+* @return
+*		- XST_SUCCESS if interrupt example run successfully.
+*		- XST_FAILURE, if reset has occurred.
+*/
 int uz_watchdog_WinIntrExample(uz_watchdog_ip_t *WdtTbInstancePtr)
 {
 	/*
@@ -347,14 +357,8 @@ void uz_watchdog_ip_start(uz_watchdog_ip_t *WdtTbInstancePtr) {}
 
 void uz_watchdog_ip_restart(uz_watchdog_ip_t *WdtTbInstancePtr) {}
 
-
-int uz_watchdog_WinIntrExample(uz_watchdog_ip_t *WdtTbInstancePtr) {}
-
-
 uz_watchdog_ip_t* uz_watchdog_ip_init(struct uz_watchdog_ip_config_t watchdog_config) {}
 
-
-void uz_watchdog_IntrHandler(void *CallBackRef);
-
+void uz_watchdog_IntrHandler(void *CallBackRef) {}
 
 #endif /* UZ_WDTTB_MAX_INSTANCES <= 0 */

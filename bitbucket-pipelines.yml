@@ -7,48 +7,36 @@ image: python:3.9.7
 clone:
   lfs: true
 
+
 pipelines:
   #branches:
   #  develop:
    default:
-    - step:
-       name: docs
-       image: ultrazohm/ultrazohm_remote_container
-       script: # Modify the commands below to build your repository.
-        - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
-        - cd docs
-        - python -m pip install -U pip
-        - pip install -r requirements.txt
-        - pip list
-        - make doxygen
-        - make html SPHINXOPTS="-W --keep-going -n"
-        - cd build
-        - ls
-    - step:
-       name: Ceedling unit tests
-       image: ultrazohm/ultrazohm_remote_container
-       script:
-        - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
-        - cd vitis/software/Baremetal
-        - ceedling test:all
+        - step:
+           name: build and push docker
+           script:
+            - export BITBUCKET_COMMIT_SHORT="${BITBUCKET_COMMIT::7}" # https://community.atlassian.com/t5/Bitbucket-questions/BITBUCKET-COMMIT-variable-short-7digits-in-pipelines/qaq-p/752782
+            - echo $BITBUCKET_COMMIT_SHORT
+            - cd .devcontainer
+            - ls
+            - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
+            - docker build -t ultrazohm/ultrazohm_remote_container:$BITBUCKET_COMMIT_SHORT .
+            - docker push ultrazohm/ultrazohm_remote_container:$BITBUCKET_COMMIT_SHORT
+           services:
+            - docker
+
    branches:
+
      develop:
         - step:
            name: docs
+           image: ultrazohm/ultrazohm_remote_container
            script: # Modify the commands below to build your repository.
-            - apt-get update && apt-get -y install --no-install-recommends texlive
-            - apt-get -y install --no-install-recommends texlive-latex-extra
-            - apt-get -y install --no-install-recommends texlive-pictures
-            - apt-get -y install --no-install-recommends texlive-science
-            - apt-get -y install --no-install-recommends ghostscript
-            - apt-get -y install --no-install-recommends doxygen
             - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
             - cd docs
-            - python -m pip install -U pip
             - pip install -r requirements.txt
             - pip list
-            - make doxygen
-            - make html SPHINXOPTS="-W --keep-going -n"
+            - make docs
             - cd build
             - ls
         - step:

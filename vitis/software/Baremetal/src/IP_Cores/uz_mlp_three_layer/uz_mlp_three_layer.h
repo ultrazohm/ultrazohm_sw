@@ -13,6 +13,7 @@ struct uz_mlp_three_layer_ip_config_t{
 
 uz_mlp_three_layer_ip_t* UZ_MLP_THREE_LAYER_IP_init(struct uz_mlp_three_layer_ip_config_t config);
 void uz_mlp_three_layer_write_bias(uz_mlp_three_layer_ip_t* self,uint32_t parallel_pcu, uz_matrix_t *bias, uint32_t layer);
+void uz_mlp_three_layer_write_weights(uz_mlp_three_layer_ip_t* self,uint32_t parallel_pcu, uz_matrix_t *weights, uint32_t layer);
 
 
 

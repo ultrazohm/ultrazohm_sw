@@ -15,6 +15,11 @@
 
 // Includes from own files
 #include "main.h"
+#include "xparameters.h"
+#include "IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer_hw.h"
+#include "uz/uz_fixedpoint/uz_fixedpoint.h"
+#include "uz/uz_array/uz_array.h"
+
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -42,6 +47,13 @@ enum init_chain
     infinite_loop
 };
 enum init_chain initialization_chain = init_assertions;
+
+float data[8] = {8,8,8,8};
+uz_array_float_t output_data = {
+    .length = UZ_ARRAY_SIZE(data),
+    .data = &data[0]};
+
+uint32_t test[8]={5,5,5,5,5,5,5,5};
 
 int main(void)
 {
@@ -72,6 +84,11 @@ int main(void)
             Global_Data.objects.pwm_d1 = initialize_pwm_2l_on_D1();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+
+            // XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR
+            uz_mlp_three_layer_hw_write_number_of_inputs(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR, 13);
+            uz_mlp_three_layer_hw_write_number_of_outputs(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR, 2);
+            uz_mlp_three_layer_hw_write_use_axi_input(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR,true);
             initialization_chain = print_msg;
             break;
         case print_msg:

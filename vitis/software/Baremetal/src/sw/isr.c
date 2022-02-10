@@ -30,7 +30,8 @@
 // Include for code-gen
 #include "../Codegen/uz_codegen.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-
+#include "../uz/uz_nn/uz_nn.h"
+#include "../uz/uz_matrix/uz_matrix.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -38,9 +39,92 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Initialize the Timer structure
 XTmrCtr Timer_Interrupt;
 
+
+#define NUMBER_OF_INPUTS 13
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+
+float x[NUMBER_OF_INPUTS] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
+float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "layer1_weights.csv"
+};
+float b_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "layer1_bias.csv"
+};
+float y_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+float w_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "layer2_weights.csv"
+};
+float b_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "layer2_bias.csv"
+};
+float y_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+
+float w_3[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "layer3_weights.csv"
+};
+float b_3[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "layer3_bias.csv"
+};
+float y_3[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+
+float w_4[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "layer4_weights.csv"
+};
+float b_4[NUMBER_OF_OUTPUTS] = {
+#include "layer4_bias.csv"
+};
+float y_4[NUMBER_OF_OUTPUTS] = {0};
+
+struct uz_nn_layer_config config[4] = {
+[0] = {
+    .activation_function = ReLU,
+    .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+    .number_of_inputs = NUMBER_OF_INPUTS,
+    .length_of_weights = UZ_MATRIX_SIZE(w_1),
+    .length_of_bias = UZ_MATRIX_SIZE(b_1),
+    .length_of_output = UZ_MATRIX_SIZE(y_1),
+    .weights = w_1,
+    .bias = b_1,
+    .output = y_1},
+[1] = {.activation_function = ReLU,
+        .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+        .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+        .length_of_weights = UZ_MATRIX_SIZE(w_2),
+        .length_of_bias = UZ_MATRIX_SIZE(b_2),
+        .length_of_output = UZ_MATRIX_SIZE(y_2),
+        .weights = w_2,
+        .bias = b_2,
+        .output = y_2},
+		[2] = {.activation_function = ReLU,
+		        .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+		        .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+		        .length_of_weights = UZ_MATRIX_SIZE(w_3),
+		        .length_of_bias = UZ_MATRIX_SIZE(b_3),
+		        .length_of_output = UZ_MATRIX_SIZE(y_3),
+		        .weights = w_3,
+		        .bias = b_3,
+		        .output = y_3},
+[3] = {.activation_function = linear,
+       .number_of_neurons = NUMBER_OF_OUTPUTS,
+       .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+       .length_of_weights = UZ_MATRIX_SIZE(w_4),
+       .length_of_bias = UZ_MATRIX_SIZE(b_4),
+       .length_of_output = UZ_MATRIX_SIZE(y_4),
+       .weights = w_4,
+       .bias = b_4,
+       .output = y_4}
+};
+
+uz_matrix_t* input;
+uz_nn_t *software_nn;
+
+
 // Global variable structure
 extern DS_Data Global_Data;
-
+#include "xparameters.h"
+#include "../IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer_hw.h"
+#include "../IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer.h"
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -48,6 +132,12 @@ extern DS_Data Global_Data;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
+extern uz_array_float_t output_data;
+float input_raw_data[13]={1.0f,2.0f,3.0f,4.0f,5.0f,6.0f,7.0f,8.0f,9.0f,10.0f,11.0f,12.0f,13.0f};
+uz_array_float_t input_data={
+		.data=&x[0],
+		.length=UZ_ARRAY_SIZE(x)
+};
 
 void ISR_Control(void *data)
 {
@@ -60,11 +150,20 @@ void ISR_Control(void *data)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     }
+  //  uz_mlp_three_layer_hw_write_input(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR, input_data);
+    uz_mlp_three_layer_hw_write_input_unsafe(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR, input_data);
+    uz_mlp_three_layer_hw_write_enable_nn(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR,true);
+    uz_mlp_three_layer_hw_write_enable_nn(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR,false);
+    while(!(uz_mlp_three_layer_hw_read_valid_output(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR) )){
+    	// do nothing while output is not valid
+    }
+    uz_mlp_three_layer_hw_read_output_unsafe(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR,output_data);
+    uz_nn_ff(software_nn,input);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+  //  PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+  //                      Global_Data.rasv.halfBridge2DutyCycle,
+   //                     Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
@@ -79,8 +178,36 @@ void ISR_Control(void *data)
 //----------------------------------------------------
 int Initialize_ISR()
 {
-
+	struct uz_mlp_three_layer_ip_config_t mlp_ip_config = {
+	    .base_address =XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR };
     int Status = 0;
+    uz_mlp_three_layer_ip_t *mlp_ip = UZ_MLP_THREE_LAYER_IP_init(mlp_ip_config );
+
+
+    input=uz_matrix_init(x,UZ_MATRIX_SIZE(x),1,UZ_MATRIX_SIZE(x));
+    software_nn = uz_nn_init(config, 4);
+
+    uz_matrix_t* bias_1=uz_nn_get_bias_matrix(software_nn, 1);
+    uz_matrix_t* weigth_1=uz_nn_get_weight_matrix(software_nn, 1);
+
+    uz_matrix_t* bias_2=uz_nn_get_bias_matrix(software_nn, 2);
+    uz_matrix_t* weigth_2=uz_nn_get_weight_matrix(software_nn, 2);
+
+    uz_matrix_t* bias_3=uz_nn_get_bias_matrix(software_nn, 3);
+    uz_matrix_t* weigth_3=uz_nn_get_weight_matrix(software_nn, 3);
+
+    uz_matrix_t* bias_4=uz_nn_get_bias_matrix(software_nn, 4);
+    uz_matrix_t* weigth_4=uz_nn_get_weight_matrix(software_nn, 4);
+
+    uz_mlp_three_layer_write_bias(mlp_ip, 4U, bias_1, 1);
+    uz_mlp_three_layer_write_bias(mlp_ip, 8U, bias_2, 2);
+    uz_mlp_three_layer_write_bias(mlp_ip, 8U, bias_3, 3);
+    uz_mlp_three_layer_write_bias(mlp_ip, 2U, bias_4, 4);
+
+    uz_mlp_three_layer_write_weights(mlp_ip,4U,weigth_1,1U);
+    uz_mlp_three_layer_write_weights(mlp_ip,8U,weigth_2,2U);
+    uz_mlp_three_layer_write_weights(mlp_ip,8U,weigth_3,3U);
+    uz_mlp_three_layer_write_weights(mlp_ip,2U,weigth_4,4U);
 
     // Initialize interrupt controller for the IPI -> Initialize RPU IPI
     Status = Rpu_IpiInit(INTERRUPT_ID_IPI);

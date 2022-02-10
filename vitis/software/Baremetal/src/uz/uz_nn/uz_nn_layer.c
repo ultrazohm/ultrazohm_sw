@@ -98,6 +98,16 @@ uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)
     return (self->output);
 }
 
+uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return self->bias;
+}
+uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return self->weights;
+}
 
 
 #endif

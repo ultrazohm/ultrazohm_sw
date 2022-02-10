@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 ******************************************************************************/
-#include "Regelung_ert_rtw/Regelung.h"
+#include "FOC_komplex_ert_rtw/FOC_komplex.h"
 
 typedef struct{
 	ExtY output;

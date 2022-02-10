@@ -12,6 +12,7 @@ struct uz_mlp_three_layer_ip_t
     uint32_t base_address;
 };
 
+
 static size_t instance_counter = 0U;
 static uz_mlp_three_layer_ip_t instances[UZ_MLP_THREE_LAYER_IP_MAX_INSTANCES] = {0};
 
@@ -67,9 +68,9 @@ void uz_mlp_three_layer_write_weights(uz_mlp_three_layer_ip_t *self, uint32_t pa
     size_t rows = uz_matrix_get_number_of_rows(weights);
     size_t columns_per_pcu = columns / parallel_pcu;
     uz_mlp_three_layer_hw_write_layerNr(self->base_address, layer);
-    size_t address = 0U;
     for (size_t pcu = 0U; pcu < parallel_pcu; pcu++)
     {
+    size_t address = 0U;
         for (size_t k = 0U; k < columns_per_pcu; k++)
         {
             for (size_t i = 0U; i < rows; i++)

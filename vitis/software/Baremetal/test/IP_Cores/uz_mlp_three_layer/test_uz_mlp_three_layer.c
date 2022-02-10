@@ -158,62 +158,62 @@ void test_uz_mlp_three_layer_write_weights_to_layer(void)
 
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 0U);
     uz_mlp_three_layer_hw_write_weight_data_Expect(BASE_ADDRESS, w_data_short_expect[4]);
-    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 5U);
+    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 1U);
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 2U);
 
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 0U);
     uz_mlp_three_layer_hw_write_weight_data_Expect(BASE_ADDRESS, w_data_short_expect[5]);
-    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 6U);
+    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 2U);
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 2U);
 
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 0U);
     uz_mlp_three_layer_hw_write_weight_data_Expect(BASE_ADDRESS, w_data_short_expect[6]);
-    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 7U);
+    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 3U);
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 2U);
 
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 0U);
     uz_mlp_three_layer_hw_write_weight_data_Expect(BASE_ADDRESS, w_data_short_expect[7]);
-    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 8U);
+    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 4U);
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 2U);
 
         uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 0U);
     uz_mlp_three_layer_hw_write_weight_data_Expect(BASE_ADDRESS, w_data_short_expect[8]);
-    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 9U);
+    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 1U);
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 3U);
 
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 0U);
     uz_mlp_three_layer_hw_write_weight_data_Expect(BASE_ADDRESS, w_data_short_expect[9]);
-    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 10U);
+    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 2U);
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 3U);
 
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 0U);
     uz_mlp_three_layer_hw_write_weight_data_Expect(BASE_ADDRESS, w_data_short_expect[10]);
-    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 11U);
+    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 3U);
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 3U);
 
         uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 0U);
     uz_mlp_three_layer_hw_write_weight_data_Expect(BASE_ADDRESS, w_data_short_expect[11]);
-    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 12U);
+    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 4U);
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 3U);
 
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 0U);
     uz_mlp_three_layer_hw_write_weight_data_Expect(BASE_ADDRESS, w_data_short_expect[12]);
-    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 13U);
+    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 1U);
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 4U);
 
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 0U);
     uz_mlp_three_layer_hw_write_weight_data_Expect(BASE_ADDRESS, w_data_short_expect[13]);
-    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 14U);
+    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 2U);
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 4U);
 
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 0U);
     uz_mlp_three_layer_hw_write_weight_data_Expect(BASE_ADDRESS, w_data_short_expect[14]);
-    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 15U);
+    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 3U);
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 4U);
 
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 0U);
     uz_mlp_three_layer_hw_write_weight_data_Expect(BASE_ADDRESS, w_data_short_expect[15]);
-    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 16U);
+    uz_mlp_three_layer_hw_write_weight_address_Expect(BASE_ADDRESS, 4U);
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 4U);
 
 

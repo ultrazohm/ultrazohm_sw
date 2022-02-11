@@ -78,10 +78,10 @@
       "A2_ADC_LTC2311": "",
       "A3_ADC_LTC2311": "",
       "smartconnect_1": "",
-      "uz_mlp_three_layer_0": "",
       "ila_0": "",
       "ila_1": "",
-      "vio_0": ""
+      "vio_0": "",
+      "uz_mlp_three_layer_0": ""
     },
     "ports": {
       "Dig_09_Ch5": {
@@ -535,16 +535,16 @@
               "Counter_f_sw_V2_ip_0/AXI4_Lite"
             ]
           },
-          "S00_AXI_1": {
-            "interface_ports": [
-              "S00_AXI",
-              "uz_interlockDeadtime_0/AXI4"
-            ]
-          },
           "AXI4_Lite_1": {
             "interface_ports": [
               "AXI4_Lite",
               "PWM_and_SS_control_V_0/AXI4_Lite"
+            ]
+          },
+          "S00_AXI_1": {
+            "interface_ports": [
+              "S00_AXI",
+              "uz_interlockDeadtime_0/AXI4"
             ]
           }
         },
@@ -5100,16 +5100,16 @@
           }
         },
         "interface_nets": {
-          "AXI4_Lite_1": {
-            "interface_ports": [
-              "AXI4_Lite",
-              "mux_axi_ip_0/AXI4_Lite"
-            ]
-          },
           "smartconnect_0_M11_AXI": {
             "interface_ports": [
               "S_AXI",
               "Trigger_f_cc/S_AXI"
+            ]
+          },
+          "AXI4_Lite_1": {
+            "interface_ports": [
+              "AXI4_Lite",
+              "mux_axi_ip_0/AXI4_Lite"
             ]
           }
         },
@@ -5689,10 +5689,6 @@
           }
         }
       },
-      "uz_mlp_three_layer_0": {
-        "vlnv": "user.org:ip:uz_mlp_three_layer:1.0",
-        "xci_name": "zusys_uz_mlp_three_layer_0_0"
-      },
       "ila_0": {
         "vlnv": "xilinx.com:ip:ila:6.2",
         "xci_name": "zusys_ila_0_4",
@@ -5722,10 +5718,16 @@
             "value": "Native"
           },
           "C_NUM_OF_PROBES": {
-            "value": "11"
+            "value": "14"
           },
           "C_PROBE10_WIDTH": {
             "value": "32"
+          },
+          "C_PROBE11_WIDTH": {
+            "value": "32"
+          },
+          "C_PROBE12_WIDTH": {
+            "value": "10"
           },
           "C_PROBE3_WIDTH": {
             "value": "32"
@@ -5773,9 +5775,20 @@
             "value": "32"
           }
         }
+      },
+      "uz_mlp_three_layer_0": {
+        "vlnv": "user.org:ip:uz_mlp_three_layer:2.0",
+        "xci_name": "zusys_uz_mlp_three_layer_0_2"
       }
     },
     "interface_nets": {
+      "smartconnect_1_M01_AXI": {
+        "interface_ports": [
+          "smartconnect_1/M01_AXI",
+          "uz_mlp_three_layer_0/AXI4",
+          "ila_0/SLOT_0_AXI"
+        ]
+      },
       "smartconnect_0_M02_AXI": {
         "interface_ports": [
           "A3_ADC_LTC2311/S00_AXI",
@@ -5870,13 +5883,6 @@
         "interface_ports": [
           "smartconnect_1/M00_AXI",
           "uz_axi_testIP_0/AXI4"
-        ]
-      },
-      "smartconnect_1_M01_AXI": {
-        "interface_ports": [
-          "smartconnect_1/M01_AXI",
-          "uz_mlp_three_layer_0/AXI4",
-          "ila_0/SLOT_0_AXI"
         ]
       }
     },
@@ -6152,11 +6158,11 @@
           "A2_ADC_LTC2311/s00_axi_aclk",
           "A3_ADC_LTC2311/s00_axi_aclk",
           "smartconnect_1/aclk",
-          "uz_mlp_three_layer_0/IPCORE_CLK",
-          "uz_mlp_three_layer_0/AXI4_ACLK",
           "ila_0/clk",
           "ila_1/clk",
-          "vio_0/clk"
+          "vio_0/clk",
+          "uz_mlp_three_layer_0/IPCORE_CLK",
+          "uz_mlp_three_layer_0/AXI4_ACLK"
         ]
       },
       "ADC_LTC2311_1_RAW_VALUE": {
@@ -6247,24 +6253,6 @@
           "adc_debug/probe7"
         ]
       },
-      "uz_mlp_three_layer_0_layer2_rdy": {
-        "ports": [
-          "uz_mlp_three_layer_0/layer2_rdy",
-          "ila_1/probe0"
-        ]
-      },
-      "uz_mlp_three_layer_0_finished": {
-        "ports": [
-          "uz_mlp_three_layer_0/finished",
-          "ila_1/probe1"
-        ]
-      },
-      "uz_mlp_three_layer_0_valid_output": {
-        "ports": [
-          "uz_mlp_three_layer_0/valid_output",
-          "ila_1/probe2"
-        ]
-      },
       "Net": {
         "ports": [
           "vio_0/probe_out0",
@@ -6293,6 +6281,24 @@
           "uz_mlp_three_layer_0/x4"
         ]
       },
+      "uz_mlp_three_layer_0_layer2_rdy": {
+        "ports": [
+          "uz_mlp_three_layer_0/layer2_rdy",
+          "ila_1/probe0"
+        ]
+      },
+      "uz_mlp_three_layer_0_finished": {
+        "ports": [
+          "uz_mlp_three_layer_0/finished",
+          "ila_1/probe1"
+        ]
+      },
+      "uz_mlp_three_layer_0_valid_output": {
+        "ports": [
+          "uz_mlp_three_layer_0/valid_output",
+          "ila_1/probe2"
+        ]
+      },
       "uz_mlp_three_layer_0_out_rsvd": {
         "ports": [
           "uz_mlp_three_layer_0/out_rsvd",
@@ -6305,16 +6311,34 @@
           "ila_1/probe8"
         ]
       },
-      "uz_mlp_three_layer_0_out2": {
+      "uz_mlp_three_layer_0_out4": {
         "ports": [
-          "uz_mlp_three_layer_0/out2",
+          "uz_mlp_three_layer_0/out4",
           "ila_1/probe9"
         ]
       },
-      "uz_mlp_three_layer_0_out3": {
+      "uz_mlp_three_layer_0_out5": {
         "ports": [
-          "uz_mlp_three_layer_0/out3",
+          "uz_mlp_three_layer_0/out5",
           "ila_1/probe10"
+        ]
+      },
+      "uz_mlp_three_layer_0_biasWriteEnable": {
+        "ports": [
+          "uz_mlp_three_layer_0/biasWriteEnable",
+          "ila_1/probe13"
+        ]
+      },
+      "uz_mlp_three_layer_0_biasWriteAddr": {
+        "ports": [
+          "uz_mlp_three_layer_0/biasWriteAddr",
+          "ila_1/probe12"
+        ]
+      },
+      "uz_mlp_three_layer_0_biasData": {
+        "ports": [
+          "uz_mlp_three_layer_0/biasData",
+          "ila_1/probe11"
         ]
       }
     },

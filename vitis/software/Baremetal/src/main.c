@@ -28,8 +28,8 @@
 #include "uz/uz_wavegen/uz_wavegen.h"
 
 struct uz_wavegen_three_phase_config config_three = {
-        .amplitude = 0.2f,
-        .frequency_Hz = 1.0f,
+        .amplitude = 0.1f,
+        .frequency_Hz = 10.0f,
         .offset = 0.5f
 };
 

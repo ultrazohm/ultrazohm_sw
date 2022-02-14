@@ -115,4 +115,45 @@ void test_uz_matrix_apply_function_to_each_element(void){
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected,A_data,UZ_MATRIX_SIZE(expected));
 }
 
+void test_uz_matrix_get_max_element_value(void){
+    float A_data[9]={1.0f, 3.0f, 5.0f, 9.0f, 1.0f, 1.0f, 1.0f, 2.0f,6.0f};
+    float expected_maximum=9.0f;
+    uz_matrix_t* A=uz_matrix_init(A_data,UZ_MATRIX_SIZE(A_data),1,9);
+    float actual=uz_matrix_get_max_value(A);
+    TEST_ASSERT_EQUAL_FLOAT(expected_maximum,actual);
+}
+
+void test_uz_matrix_get_max_index(void){
+    float A_data[9]={1.0f, 3.0f, 5.0f, 9.0f, 1.0f, 1.0f, 1.0f, 2.0f,6.0f};
+    size_t expected_maximum=3U;
+    uz_matrix_t* A=uz_matrix_init(A_data,UZ_MATRIX_SIZE(A_data),1,9);
+    size_t actual=uz_matrix_get_max_index(A);
+    TEST_ASSERT_EQUAL_UINT32(expected_maximum,actual);
+}
+
+
+void test_uz_matrix_transpose(void){
+    size_t rows=3;
+    size_t columns=5;
+    float A_data[15]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+    // Initial 3x5
+    // 1  2  3  4  5
+    // 6  7  8  9  10
+    // 11 12 13 14 15
+
+    float expected[15]={1, 6, 11,2,7,12,3,8,13,4,9,14,5,10,15};
+    // Transposed 5x3
+    // 1 6 11
+    // 2 7 12
+    // 3 8 13
+    // 4 9 14
+    // 5 10 15
+
+
+    uz_matrix_t* A=uz_matrix_init(A_data,UZ_MATRIX_SIZE(A_data),rows,columns);
+    uz_matrix_transpose(A);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected,A_data,UZ_MATRIX_SIZE(expected));
+
+}
+
 #endif // TEST

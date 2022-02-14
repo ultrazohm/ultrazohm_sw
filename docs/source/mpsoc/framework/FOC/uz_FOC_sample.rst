@@ -21,9 +21,9 @@ Example
      float theta_el_rad = 1.2f;
      struct uz_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
      struct uz_dq_t i_reference_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-     struct uz_dq_t u_dq_Volts = uz_FOC_sample(FOC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+     struct uz_dq_t v_dq_Volts = uz_FOC_sample(FOC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
      //Alternatively the sample function can output the UVW-values
-     struct uz_UVW_t u_UVW_Volts = uz_FOC_sample_UVW(FOC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
+     struct uz_UVW_t v_UVW_Volts = uz_FOC_sample_UVW(FOC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
   }
 
 Description
@@ -50,7 +50,7 @@ The decoupling function can be deactivated in the :ref:`FOC configuration struct
   \node[font=\footnotesize] (input_dq_ref) at ($(FOC_sample.west)+(0.7,1.55)$) {uz\_dq\_t};
   \node[font=\footnotesize] (input_dq_meas) at ($(FOC_sample.west)+(0.7,0.25)$) {uz\_dq\_t};
   \node[font=\footnotesize] (input_omega) at ($(FOC_sample.west)+(0.7,-4)$) {$\omega_{el}$};
-  \node[font=\footnotesize] (input_Uzk) at ($(FOC_sample.west)+(0.7,-5)$) {$U_{zk}$};
+  \node[font=\footnotesize] (input_Uzk) at ($(FOC_sample.west)+(0.7,-5)$) {$V_{DC}$};
   \node[font=\footnotesize] (input_FOC) at ($(FOC_sample.west)+(0.75,3.05)$) {uz\_FOC*};
     \node[font=\footnotesize] (output_dq)at ($(FOC_sample.east)+(-0.6,0.85)$) {uz\_dq\_t};
   \node[font=\large] at ($(FOC_sample.south)+(0,-0.5)$) {uz\_FOC\_sample};
@@ -119,7 +119,7 @@ The decoupling function can be deactivated in the :ref:`FOC configuration struct
   \node[font=\footnotesize] at ($(SVL.west)+(0.65,0.6)$) {uz\_dq\_t};
   \node[font=\footnotesize] at ($(SVL.west)+(0.6,0)$) {$\omega_{el}$};
   \node[font=\footnotesize] at ($(SVL.west)+(1.1,-0.6)$) {ext\_clamping};
-  \node[font=\footnotesize] at ($(SVL.west)+(0.6,-1.3)$) {$U_{zk}$};
+  \node[font=\footnotesize] at ($(SVL.west)+(0.6,-1.3)$) {$V_{DC}$};
   \node[font=\footnotesize] at ($(SVL.east)+(-0.5,-0.6)$) {uz\_dq};
   \node[font=\footnotesize] at ($(SVL.east)+(-0.95,0.6)$) {ext\_clamping};
   \node[] at (0,2.2) {Space Vector Limitation};
@@ -173,7 +173,7 @@ The decoupling function can be deactivated in the :ref:`FOC configuration struct
   \draw[-latex](input_dq2.east) -- ($(FOC_sample.west)+(0,1.55)$);
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm] at ($(input_dq_meas.west)+(-3,0)$) (input_dq3){input-dq-currents};
   \draw[-latex](input_dq3.east) -- ($(FOC_sample.west)+(0,0.25)$);
-  \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm] at ($(input_Uzk.west)+(-3,0)$) (input_Uzk2){input-$U_{zk}$};
+  \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm] at ($(input_Uzk.west)+(-3,0)$) (input_Uzk2){input-$V_{DC}$};
   \draw[-latex](input_Uzk2.east) -- ($(FOC_sample.west)+(0,-5)$);
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm] at ($(input_omega.west)+(-3,0)$) (input_omega2){input-$\omega_{el}$};
   \draw[-latex](input_omega2.east) -- ($(FOC_sample.west)+(0,-4)$);

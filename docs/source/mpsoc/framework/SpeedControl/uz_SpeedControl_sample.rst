@@ -35,12 +35,12 @@ This function includes a field weakening calculator. The ``id_ref`` current ther
 
 .. math::
 
-  U_{SV,max} &= \sqrt{\frac{U_{zk}}{\sqrt{3}}}\cdot 0.95\\
-  \omega_c &= \frac{-R_{ph} \cdot \psi_{PM} \cdot I_{max} + \sqrt{R_{ph}^2 \cdot \psi_{PM}^2 \cdot I_{max}^2- (I_{max}^2 - R_{ph}^2) - U_{SV,max}^2}}{I_{max}^2 \cdot L_q^2 + \psi_{PM}^2}\\
+  V_{SV,max} &= \sqrt{\frac{V_{DC}}{\sqrt{3}}}\cdot 0.95\\
+  \omega_c &= \frac{-R_{ph} \cdot \psi_{PM} \cdot I_{max} + \sqrt{R_{ph}^2 \cdot \psi_{PM}^2 \cdot I_{max}^2- (I_{max}^2 - R_{ph}^2) - V_{SV,max}^2}}{I_{max}^2 \cdot L_q^2 + \psi_{PM}^2}\\
   I_d &= \frac{\psi_{PM}}{L_d}\cdot(1- \frac{\omega_c}{\omega_{el}})\\
   a &= R_{ph}^2 + \omega_{el}^2 \cdot L_q^2\\
   b &= 2 \cdot R_{ph}^2 \omega_{el}^2 \cdot \psi_{PM}^2\\
-  c &= I_d^2 \cdot R_{ph}^2 - U_{SV,max}^2 + \omega_{el}^2 \cdot (\psi_{PM}^2 + L_d^2 \cdot I_d^2 + 2\cdot \psi_{PM} \cdot L_d \cdot I_d)\\
+  c &= I_d^2 \cdot R_{ph}^2 - V_{DC,max}^2 + \omega_{el}^2 \cdot (\psi_{PM}^2 + L_d^2 \cdot I_d^2 + 2\cdot \psi_{PM} \cdot L_d \cdot I_d)\\
   I_{q,limit} &= \frac{-b + \sqrt{b^2 - 4\cdot a \cdot c}}{2\cdot a}
 
 If the machine is not in the field weakening territory, the input ``id_ref_Ampere`` current will be used. 
@@ -61,7 +61,7 @@ The limits of the saturation inside the include PI-Controller will be adjusted w
   \node[font=\footnotesize] (CC_ext) at ($(FOC_speed.west)+(1.13,-2.65)$) {ext\_clamping};
   \node[font=\footnotesize] (SC_actual) at ($(FOC_speed.west)+(1.8,-2.05)$) {omega\_el\_rad\_per\_sec};
   \node[font=\footnotesize] (SC_id) at ($(FOC_speed.west)+(1.3,1.8)$) {id\_ref\_Ampere};
-  \node[font=\footnotesize] (SC_Uzk) at ($(FOC_speed.west)+(1.06,2.4)$) {U\_zk\_Volts};
+  \node[font=\footnotesize] (SC_Uzk) at ($(FOC_speed.west)+(1.06,2.4)$) {V\_DC\_Volts};
   \node[] at ($(FOC_speed.south)+(0.0,-0.3)$) {uz\_SpeedControl\_sample};
   \begin{scope}[shift={(4,-1.75)}]
   \node[draw, rectangle, minimum height=2.3cm, minimum width = 4cm, fill=lightgray] (n_PIController) at (0,0) {};
@@ -76,7 +76,7 @@ The limits of the saturation inside the include PI-Controller will be adjusted w
   \node[draw, rectangle, minimum height=2.3cm, minimum width = 4cm, fill=lightgray] (FW) at (0,0) {};
   \node[font=\footnotesize] at ($(FW.west)+(1.1,-0.3)$) {config\_PMSM};
   \node[font=\footnotesize] at ($(FW.west)+(1.7,-0.9)$) {omega\_el\_rad\_per\_sec};
-  \node[font=\footnotesize] at ($(FW.west)+(1.08,0.9)$) {U\_zk\_Volts};
+  \node[font=\footnotesize] at ($(FW.west)+(1.08,0.9)$) {V\_DC\_Volts};
   \node[font=\footnotesize] at ($(FW.west)+(1.2,0.3)$) {id\_ref\_Ampere};
   \node[font=\footnotesize] at ($(FW.east)+(-0.6,0.3)$) {id\_fw};
   \node[font=\footnotesize] at ($(FW.east)+(-0.6,-0.3)$) {iq\_limit};
@@ -119,5 +119,5 @@ The limits of the saturation inside the include PI-Controller will be adjusted w
   \draw[-latex](input_actual.east) -- ($(SC_actual.west)+(-0.15,0)$);
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.4cm,font=\footnotesize] at ($(SC_id.west)+(-3,0)$) (input_id){id\_ref\_Ampere};
   \draw[-latex](input_id.east) -- ($(SC_id.west)+(-0.15,0)$);
-  \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.4cm,font=\footnotesize] at ($(SC_Uzk.west)+(-3,0)$) (input_Uzk){U\_zk\_Volts};
+  \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.4cm,font=\footnotesize] at ($(SC_Uzk.west)+(-3,0)$) (input_Uzk){V\_DC\_Volts};
   \draw[-latex](input_Uzk.east) -- ($(SC_Uzk.west)+(-0.15,0)$);

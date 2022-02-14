@@ -1,0 +1,5 @@
+#Tue Jan 11 09:54:12 CET 2022
+\!/=
+/instance/org.eclipse.ui.workbench/org.eclipse.ui.commands=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<org.eclipse.ui.commands>\r\n<keyBinding commandId\="org.eclipse.ui.project.buildProject" contextId\="org.eclipse.ui.contexts.window" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="ALT+1"/>\r\n</org.eclipse.ui.commands>
+@org.eclipse.ui.workbench=3.111.0.v20180524-1156
+file_export_version=3.0

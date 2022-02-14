@@ -34,7 +34,8 @@
 		"jeff-hykin.better-cpp-syntax",
 		"atlassian.atlascode",
 		"cschlosser.doxdocgen",
-		"mhutchie.git-graph"
+		"mhutchie.git-graph",
+        "mechatroner.rainbow-csv"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

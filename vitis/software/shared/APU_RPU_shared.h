@@ -16,7 +16,13 @@
 struct javascope_data_t
 {
 	uint32_t    status;
-	uint32_t    slowDataContent;
+	float	    slowDataContent;
 	uint32_t    slowDataID;
 	float       scope_ch[JS_CHANNELS];
+};
+
+struct APU_to_RPU_t
+{
+	uint32_t id;
+	float value;
 };

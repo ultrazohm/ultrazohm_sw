@@ -58,8 +58,10 @@ uz_PWM_SS_2L_t* uz_PWM_SS_2L_init(struct uz_PWM_SS_2L_config_t config);
  *        uz_PWM_SS_2L_t instance and writes the configuration to the IP-core
  * 
  * @param self Instance of uz_PWM_SS_2L
+ * @param dutyCyc_A DutyCycle for Phase A
+ * @param dutyCyc_B DutyCycle for Phase B
+ * @param dutyCyc_C DutyCycle for Phase C
  */
-
 void uz_PWM_SS_2L_set_duty_cycle(struct uz_PWM_SS_2L_t *self, float dutyCyc_A, float dutyCyc_B, float dutyCyc_C);
 
 /**

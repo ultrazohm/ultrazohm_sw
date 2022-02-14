@@ -41,9 +41,11 @@ For the lowpass filter:
 
 .. math:: 
 
-    \alpha &= \frac{dt}{dt + RC}
+    \alpha = \frac{dt}{dt + RC}
 
-    y[i] &= y[i-1] + \alpha \cdot (x[i] - y[i-1])
+.. math::    
+
+    y[i] = y[i-1] + \alpha \cdot (x[i] - y[i-1])
 
 And for the lowpass-reverse filter:
 
@@ -55,9 +57,11 @@ For the highpass filter:
 
 .. math:: 
 
-    \alpha &= \frac{RC}{dt + RC}
+    \alpha = \frac{RC}{dt + RC}
 
-    y[i] &= \alpha \cdot (y[i-1] + x[i] - x[i-1])
+.. math:: 
+
+    y[i] = \alpha \cdot (y[i-1] + x[i] - x[i-1])
    
 And for the highpass-reverse filter:
 

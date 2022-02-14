@@ -5903,7 +5903,6 @@
           "A2_ADC_LTC2311/s00_axi_aresetn",
           "A3_ADC_LTC2311/s00_axi_aresetn",
           "smartconnect_1/aresetn",
-          "uz_mlp_three_layer_0/IPCORE_RESETN",
           "uz_mlp_three_layer_0/AXI4_ARESETN"
         ]
       },
@@ -5923,7 +5922,8 @@
           "proc_sys_reset_50MHz/slowest_sync_clk",
           "smartconnect_0/aclk2",
           "IncreEncoder_V24_ip_0/IPCORE_CLK",
-          "IncreEncoder_V24_ip_0/AXI4_Lite_ACLK"
+          "IncreEncoder_V24_ip_0/AXI4_Lite_ACLK",
+          "uz_mlp_three_layer_0/IPCORE_CLK"
         ]
       },
       "zynq_ultra_ps_e_0_pl_clk2": {
@@ -5973,7 +5973,8 @@
         "ports": [
           "proc_sys_reset_50MHz/peripheral_aresetn",
           "IncreEncoder_V24_ip_0/IPCORE_RESETN",
-          "IncreEncoder_V24_ip_0/AXI4_Lite_ARESETN"
+          "IncreEncoder_V24_ip_0/AXI4_Lite_ARESETN",
+          "uz_mlp_three_layer_0/IPCORE_RESETN"
         ]
       },
       "xlconcat_0_dout": {
@@ -6161,7 +6162,6 @@
           "ila_0/clk",
           "ila_1/clk",
           "vio_0/clk",
-          "uz_mlp_three_layer_0/IPCORE_CLK",
           "uz_mlp_three_layer_0/AXI4_ACLK"
         ]
       },

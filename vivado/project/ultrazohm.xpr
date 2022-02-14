@@ -212,8 +212,8 @@
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_1_1/zusys_ila_1_1.xci">
           <Proxy FileSetName="zusys_ila_1_1"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_mlp_three_layer_0_0/zusys_uz_mlp_three_layer_0_0.xci">
-          <Proxy FileSetName="zusys_uz_mlp_three_layer_0_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_mlp_three_layer_0_1/zusys_uz_mlp_three_layer_0_1.xci">
+          <Proxy FileSetName="zusys_uz_mlp_three_layer_0_1"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PPRDIR/../zusys/hdl/zusys_wrapper.vhd">
@@ -676,9 +676,9 @@
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_uz_mlp_three_layer_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_uz_mlp_three_layer_0_0">
+    <FileSet Name="zusys_uz_mlp_three_layer_0_1" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_uz_mlp_three_layer_0_1">
       <Config>
-        <Option Name="TopModule" Val="zusys_uz_mlp_three_layer_0_0"/>
+        <Option Name="TopModule" Val="zusys_uz_mlp_three_layer_0_1"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
@@ -708,9 +708,11 @@
     </Simulator>
   </Simulators>
   <Runs Version="1" Minor="11">
-    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="true" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true">
+    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="true" WriteIncrSynthDcp="true" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2017"/>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2017">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -1120,7 +1122,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_uz_mlp_three_layer_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_uz_mlp_three_layer_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_mlp_three_layer_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_uz_mlp_three_layer_0_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_uz_mlp_three_layer_0_1_synth_1" Type="Ft3:Synth" SrcSet="zusys_uz_mlp_three_layer_0_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_mlp_three_layer_0_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_uz_mlp_three_layer_0_1_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020">
           <Desc>Vivado Synthesis Defaults</Desc>
@@ -1134,7 +1136,9 @@
     </Run>
     <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="constrs_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/impl_1" SynthRun="synth_1" IncludeInArchive="true" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
@@ -1832,7 +1836,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_uz_mlp_three_layer_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_mlp_three_layer_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_uz_mlp_three_layer_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_uz_mlp_three_layer_0_1_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_mlp_three_layer_0_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_uz_mlp_three_layer_0_1_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020">
           <Desc>Default settings for Implementation.</Desc>

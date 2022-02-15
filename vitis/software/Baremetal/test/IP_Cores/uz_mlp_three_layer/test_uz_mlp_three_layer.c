@@ -13,44 +13,44 @@ void tearDown(void)
 {
 }
 
-// #define NUMBER_OF_INPUTS 13U
-// #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 64U
-// #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 64U
-// #define NUMBER_OF_NEURONS_IN_THIRD_LAYER 64U
-// #define NUMBER_OF_OUTPUTS 2
-// #define NUMBER_OF_HIDDEN_LAYER 3
+#define NUMBER_OF_INPUTS 13U
+#define NUMBER_OF_NEURONS_IN_FIRST_LAYER 64U
+#define NUMBER_OF_NEURONS_IN_SECOND_LAYER 64U
+#define NUMBER_OF_NEURONS_IN_THIRD_LAYER 64U
+#define NUMBER_OF_OUTPUTS 4
+#define NUMBER_OF_HIDDEN_LAYER 3
 
-// float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
-// #include "layer1_weights.csv"
-// };
-// float b_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
-// #include "layer1_bias.csv"
-// };
-// float y_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
+float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+#include "layer1_weights.csv"
+};
+float b_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+#include "layer1_bias.csv"
+};
+float y_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 
-// float w_2[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
-// #include "layer2_weights.csv"
-// };
-// float b_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
-// #include "layer2_bias.csv"
-// };
-// float y_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
+float w_2[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+#include "layer2_weights.csv"
+};
+float b_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+#include "layer2_bias.csv"
+};
+float y_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 
-// float w_3[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
-// #include "layer2_weights.csv"
-// };
-// float b_3[NUMBER_OF_NEURONS_IN_THIRD_LAYER] = {
-// #include "layer3_bias.csv"
-// };
-// float y_3[NUMBER_OF_NEURONS_IN_THIRD_LAYER] = {0};
+float w_3[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+#include "layer2_weights.csv"
+};
+float b_3[NUMBER_OF_NEURONS_IN_THIRD_LAYER] = {
+#include "layer3_bias.csv"
+};
+float y_3[NUMBER_OF_NEURONS_IN_THIRD_LAYER] = {0};
 
-// float w_4[NUMBER_OF_NEURONS_IN_THIRD_LAYER * NUMBER_OF_OUTPUTS] = {
-// #include "layer4_weights.csv"
-// };
-// float b_4[NUMBER_OF_OUTPUTS] = {
-// #include "layer4_bias.csv"
-// };
-// float y_4[NUMBER_OF_OUTPUTS] = {0};
+float w_4[NUMBER_OF_NEURONS_IN_THIRD_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "layer4_weights.csv"
+};
+float b_4[NUMBER_OF_OUTPUTS] = {
+#include "layer4_bias.csv"
+};
+float y_4[NUMBER_OF_OUTPUTS] = {0};
 
 float w_data[32] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 32, 32};
 float w_data_short[16] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
@@ -69,9 +69,11 @@ struct uz_mlp_three_layer_ip_config_t config = {
 uz_mlp_three_layer_ip_t *successful_init(void);
 uz_mlp_three_layer_ip_t *successful_init(void)
 {
-    uz_mlp_three_layer_ip_t *test = UZ_MLP_THREE_LAYER_IP_init(config);
+    uz_mlp_three_layer_ip_t *test = uz_mlp_three_layer_ip_init(config);
     return (test);
 }
+
+
 
 void test_uz_mlp_three_layer_write_bias_to_layer(void)
 {

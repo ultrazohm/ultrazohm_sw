@@ -128,11 +128,17 @@ void uz_mlp_three_layer_hw_write_input_unsafe(uint32_t base_address, uz_array_fl
     // The additional input values that are written from the buffer to the IP-Core that are not set to data of input_data is just ignored by the IP-Core
     if (input_data.length < 9)
     {
+#pragma GCC diagnostic push // http://gcc.gnu.org/onlinedocs/gcc/Diagnostic-Pragmas.html
+#pragma GCC diagnostic ignored "-Wint-to-pointer-cast" // base address is uint32_t, axi_x_input is unsigned int, void is 4 or 8 byte depending if the code runs in the test environment or UZ - thus suppress this warning
         memcpy((void *)(base_address + axi_x_input_Data_uz_mlp_three_layer), &mlp_buffer[0], 8 * sizeof(int32_t));
+#pragma GCC diagnostic pop
     }
     else
     {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wint-to-pointer-cast"
         memcpy((void *)(base_address + axi_x_input_Data_uz_mlp_three_layer), &mlp_buffer[0], 16 * sizeof(int32_t));
+#pragma GCC diagnostic pop
     }
     uz_axi_write_bool(base_address + axi_x_input_Strobe_uz_mlp_three_layer, true);
 }
@@ -174,7 +180,10 @@ void uz_mlp_three_layer_hw_read_output_unsafe(uint32_t base_address, uz_array_fl
         .integer_bits = 18};
     uz_axi_write_bool(base_address + axi_nn_output_Strobe_uz_mlp_three_layer, true);
     int32_t mlp_buffer[MLP_LENGTH_OF_OUTPUT_VECTOR] = {0};
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wint-to-pointer-cast" 
     memcpy(&mlp_buffer[0], (void *)(base_address + axi_nn_output_Data_uz_mlp_three_layer), MLP_LENGTH_OF_OUTPUT_VECTOR * sizeof(int32_t));
+#pragma GCC diagnostic pop
 
     // Copy+paste every entry is about 0.1us-0.2us faster than a for loop
     switch (output_data.length)

@@ -28,7 +28,7 @@ static uz_mlp_three_layer_ip_t *UZ_MLP_THREE_LAYER_IP_allocation(void)
     return (self);
 }
 
-uz_mlp_three_layer_ip_t *UZ_MLP_THREE_LAYER_IP_init(struct uz_mlp_three_layer_ip_config_t config)
+uz_mlp_three_layer_ip_t *uz_mlp_three_layer_ip_init(struct uz_mlp_three_layer_ip_config_t config)
 {
     uz_mlp_three_layer_ip_t *self = UZ_MLP_THREE_LAYER_IP_allocation();
     uz_assert_not_zero_uint32(config.base_address);

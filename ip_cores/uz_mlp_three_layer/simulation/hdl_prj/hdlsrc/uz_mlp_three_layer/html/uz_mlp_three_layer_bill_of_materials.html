@@ -1,0 +1,3356 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for uz_mlp_three_layer
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'RAM_5_1');hdlTableShrink(this, 'RAM_6_1');hdlTableShrink(this, 'RAM_7_1');hdlTableShrink(this, 'RAM_8_1');hdlTableShrink(this, 'RAM_9_1');hdlTableShrink(this, 'RAM_10_1');hdlTableShrink(this, 'RAM_11_1');hdlTableShrink(this, 'RAM_12_1');hdlTableShrink(this, 'RAM_17_1');hdlTableShrink(this, 'RAM_18_1');hdlTableShrink(this, 'RAM_19_1');hdlTableShrink(this, 'RAM_20_1');hdlTableShrink(this, 'RAM_21_1');hdlTableShrink(this, 'RAM_22_1');hdlTableShrink(this, 'RAM_23_1');hdlTableShrink(this, 'RAM_24_1');hdlTableShrink(this, 'Adder_27_1');hdlTableShrink(this, 'Register_27_1');hdlTableShrink(this, 'Register_27_2');hdlTableShrink(this, 'Multiplexer_27_1');hdlTableShrink(this, 'Multiplexer_27_2');hdlTableShrink(this, 'RAM_29_1');hdlTableShrink(this, 'RAM_30_1');hdlTableShrink(this, 'RAM_31_1');hdlTableShrink(this, 'RAM_32_1');hdlTableShrink(this, 'Multiplexer_33_1');hdlTableShrink(this, 'Register_34_1');hdlTableShrink(this, 'Multiplexer_34_1');hdlTableShrink(this, 'Register_35_1');hdlTableShrink(this, 'Multiplexer_35_1');hdlTableShrink(this, 'Register_36_1');hdlTableShrink(this, 'Multiplexer_36_1');hdlTableShrink(this, 'Register_37_1');hdlTableShrink(this, 'Multiplexer_37_1');hdlTableShrink(this, 'Register_38_1');hdlTableShrink(this, 'Multiplexer_38_1');hdlTableShrink(this, 'Register_39_1');hdlTableShrink(this, 'Multiplexer_39_1');hdlTableShrink(this, 'Register_40_1');hdlTableShrink(this, 'Multiplexer_40_1');hdlTableShrink(this, 'Register_41_1');hdlTableShrink(this, 'Multiplexer_41_1');hdlTableShrink(this, 'RAM_42_1');hdlTableShrink(this, 'RAM_43_1');hdlTableShrink(this, 'Adder_44_1');hdlTableShrink(this, 'Register_44_1');hdlTableShrink(this, 'Register_44_2');hdlTableShrink(this, 'Multiplexer_44_1');hdlTableShrink(this, 'Multiplexer_44_2');hdlTableShrink(this, 'Multiplexer_44_3');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for uz_mlp_three_layer
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+22
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+80
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+137
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+1374
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+64
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+302
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+1717
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:102')" name="code2model" class="code2model">
+uz_mlp_three_layer
+</a>
+
+</h5>
+<h5>
+Registers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:10')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (6)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 16-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_1_1" id="Multiplexer_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9479')" name="code2model" class="code2model">
+Multiport Switch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:25')" name="code2model" class="code2model">
+Multiport Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_1_2" id="Multiplexer_1_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9480')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 3
+</span>
+<span name="Multiplexer_1_3" id="Multiplexer_1_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9490')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Number of I/O Bits (1717)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 1158
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul class="SystemdefinedCollapse" id="1682c596-3dd0-4962-9361-13e56c98d7c3" dataCollapse="off">
+<li>
+clk: 1 bit
+</li>
+<li>
+reset: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:103')" name="code2model" class="code2model">
+enable_nn
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9510')" name="code2model" class="code2model">
+axi_enable_nn
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:104')" name="code2model" class="code2model">
+x1
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:105')" name="code2model" class="code2model">
+x2
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:106')" name="code2model" class="code2model">
+x3
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:107')" name="code2model" class="code2model">
+x4
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:108')" name="code2model" class="code2model">
+x5
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9467')" name="code2model" class="code2model">
+x6
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9468')" name="code2model" class="code2model">
+x7
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9469')" name="code2model" class="code2model">
+x8
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9470')" name="code2model" class="code2model">
+x9
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9471')" name="code2model" class="code2model">
+x10
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9472')" name="code2model" class="code2model">
+x11
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9473')" name="code2model" class="code2model">
+x12
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9474')" name="code2model" class="code2model">
+x13
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9475')" name="code2model" class="code2model">
+x14
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9476')" name="code2model" class="code2model">
+x15
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9477')" name="code2model" class="code2model">
+x16
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7738')" name="code2model" class="code2model">
+axi_bias
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7739')" name="code2model" class="code2model">
+axi_weight
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7740')" name="code2model" class="code2model">
+axi_bias_addr
+</a>
+: 10 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7741')" name="code2model" class="code2model">
+axi_weight_addr
+</a>
+: 10 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7751')" name="code2model" class="code2model">
+axi_wrEnBias
+</a>
+: 8 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7752')" name="code2model" class="code2model">
+axi_wrEnWeights
+</a>
+: 8 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8034')" name="code2model" class="code2model">
+axi_layerNr
+</a>
+: 8 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9481')" name="code2model" class="code2model">
+use_axi_input
+</a>
+: 1 bit
+</li>
+<li>
+axi_x_input_0: 32 bits
+</li>
+<li>
+axi_x_input_1: 32 bits
+</li>
+<li>
+axi_x_input_2: 32 bits
+</li>
+<li>
+axi_x_input_3: 32 bits
+</li>
+<li>
+axi_x_input_4: 32 bits
+</li>
+<li>
+axi_x_input_5: 32 bits
+</li>
+<li>
+axi_x_input_6: 32 bits
+</li>
+<li>
+axi_x_input_7: 32 bits
+</li>
+<li>
+axi_x_input_8: 32 bits
+</li>
+<li>
+axi_x_input_9: 32 bits
+</li>
+<li>
+axi_x_input_10: 32 bits
+</li>
+<li>
+axi_x_input_11: 32 bits
+</li>
+<li>
+axi_x_input_12: 32 bits
+</li>
+<li>
+axi_x_input_13: 32 bits
+</li>
+<li>
+axi_x_input_14: 32 bits
+</li>
+<li>
+axi_x_input_15: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9500')" name="code2model" class="code2model">
+axi_number_of_inputs
+</a>
+: 10 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9507')" name="code2model" class="code2model">
+axi_output_number_configuration
+</a>
+: 10 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '1682c596-3dd0-4962-9361-13e56c98d7c3')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 559
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul class="SystemdefinedCollapse" id="f991b6ba-678a-4ffd-a535-b558a5b80fb2" dataCollapse="off">
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:114')" name="code2model" class="code2model">
+finished
+</a>
+: 1 bit
+</li>
+<li>
+out_rsvd: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:5340')" name="code2model" class="code2model">
+out1
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:5341')" name="code2model" class="code2model">
+out2
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:5342')" name="code2model" class="code2model">
+out3
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:5343')" name="code2model" class="code2model">
+out4
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:5344')" name="code2model" class="code2model">
+out5
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:5345')" name="code2model" class="code2model">
+out6
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:5346')" name="code2model" class="code2model">
+out7
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9442')" name="code2model" class="code2model">
+biasData
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9443')" name="code2model" class="code2model">
+biasWriteAddr
+</a>
+: 10 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9444')" name="code2model" class="code2model">
+biasWriteEnable
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9462')" name="code2model" class="code2model">
+valid_output
+</a>
+: 1 bit
+</li>
+<li>
+axi_nn_output_0: 32 bits
+</li>
+<li>
+axi_nn_output_1: 32 bits
+</li>
+<li>
+axi_nn_output_2: 32 bits
+</li>
+<li>
+axi_nn_output_3: 32 bits
+</li>
+<li>
+axi_nn_output_4: 32 bits
+</li>
+<li>
+axi_nn_output_5: 32 bits
+</li>
+<li>
+axi_nn_output_6: 32 bits
+</li>
+<li>
+axi_nn_output_7: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9488')" name="code2model" class="code2model">
+axi_valid_output
+</a>
+: 1 bit
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'f991b6ba-678a-4ffd-a535-b558a5b80fb2')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9404')" name="code2model" class="code2model">
+reluLayer_8Parallel1
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+10-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit 8-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9420')" name="code2model" class="code2model">
+StateMachines1
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (2)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><h5>
+Registers (9)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 7
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+10-bit 3-to-1 Multiplexer 							: 2
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9420:174')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (2)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9532')" name="code2model" class="code2model">
+MAC8
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_5_1" id="RAM_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9532:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9532:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9532:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9417')" name="code2model" class="code2model">
+MAC7
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_6_1" id="RAM_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9417:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9417:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9417:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9416')" name="code2model" class="code2model">
+MAC6
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_7_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_7_1" id="RAM_7_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9416:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9416:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9416:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9415')" name="code2model" class="code2model">
+MAC5
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_8_1" id="RAM_8_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9415:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9415:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9415:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9414')" name="code2model" class="code2model">
+MAC4
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_9_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_9_1" id="RAM_9_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9414:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9414:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9414:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9413')" name="code2model" class="code2model">
+MAC3
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (3)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 2
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_10_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_10_1" id="RAM_10_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9413:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9413:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9413:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9411')" name="code2model" class="code2model">
+MAC1
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_11_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_11_1" id="RAM_11_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9411:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9411:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9411:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9410')" name="code2model" class="code2model">
+MAC
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_12_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_12_1" id="RAM_12_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9410:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9410:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9410:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8981')" name="code2model" class="code2model">
+reluLayer_8Parallel
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+10-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit 8-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Multiply-instantiated Identical User-defined blocks  2 :   <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9418')" name="code2model" class="code2model">
+MATLAB Function1
+</a>
+, <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8995')" name="code2model" class="code2model">
+MATLAB Function1
+</a>
+
+</h5>
+<h5>
+Multiplexers (14)
+</h5>
+<span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 14
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8997')" name="code2model" class="code2model">
+StateMachines1
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (2)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><h5>
+Registers (9)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 7
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+10-bit 3-to-1 Multiplexer 							: 2
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8997:174')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (2)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8994')" name="code2model" class="code2model">
+MAC7
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_17_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_17_1" id="RAM_17_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8994:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8994:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8994:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8993')" name="code2model" class="code2model">
+MAC6
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_18_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_18_1" id="RAM_18_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8993:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8993:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8993:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8992')" name="code2model" class="code2model">
+MAC5
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_19_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_19_1" id="RAM_19_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8992:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8992:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8992:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8991')" name="code2model" class="code2model">
+MAC4
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_20_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_20_1" id="RAM_20_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8991:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8991:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8991:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8990')" name="code2model" class="code2model">
+MAC3
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (3)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 2
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_21_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_21_1" id="RAM_21_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8990:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8990:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8990:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9514')" name="code2model" class="code2model">
+MAC2
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_22_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_22_1" id="RAM_22_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9514:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9514:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9514:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8988')" name="code2model" class="code2model">
+MAC1
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_23_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_23_1" id="RAM_23_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8988:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8988:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8988:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8987')" name="code2model" class="code2model">
+MAC
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (3)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_24_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_24_1" id="RAM_24_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8987:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8987:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8987:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8964')" name="code2model" class="code2model">
+reluLayer_4Parallel
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+10-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit 4-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for User-defined block:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8974')" name="code2model" class="code2model">
+MATLAB Function
+</a>
+
+</h5>
+<h5>
+Multiplexers (3)
+</h5>
+<span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 3
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8976')" name="code2model" class="code2model">
+StateMachines1
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_27_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<span name="Adder_27_1" id="Adder_27_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8976:178')" name="code2model" class="code2model">
+perceptron_counter1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8976:175')" name="code2model" class="code2model">
+index_counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (7)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_27_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 2
+</span>
+<span name="Register_27_1" id="Register_27_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8976:172')" name="code2model" class="code2model">
+Delay3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8976:173')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_27_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+10-bit Register 							: 5
+</span>
+<span name="Register_27_2" id="Register_27_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8976:171')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8976:178')" name="code2model" class="code2model">
+perceptron_counter1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8976:175')" name="code2model" class="code2model">
+index_counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_27_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_27_1" id="Multiplexer_27_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8976:170')" name="code2model" class="code2model">
+Compare
+To Constant1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_27_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_27_2" id="Multiplexer_27_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8976:178')" name="code2model" class="code2model">
+perceptron_counter1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8976:175')" name="code2model" class="code2model">
+index_counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8976:174')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (2)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9368')" name="code2model" class="code2model">
+MAC3
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (5)
+</h5>
+<span style="font-family:monospace">
+20x20-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (3)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 2
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_29_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_29_1" id="RAM_29_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9368:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9368:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9368:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9367')" name="code2model" class="code2model">
+MAC2
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (5)
+</h5>
+<span style="font-family:monospace">
+20x20-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_30_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_30_1" id="RAM_30_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9367:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9367:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9367:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9366')" name="code2model" class="code2model">
+MAC1
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (5)
+</h5>
+<span style="font-family:monospace">
+20x20-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_31_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_31_1" id="RAM_31_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9366:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9366:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9366:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8970')" name="code2model" class="code2model">
+MAC
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (5)
+</h5>
+<span style="font-family:monospace">
+20x20-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_32_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 3
+</span>
+<span name="RAM_32_1" id="RAM_32_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8970:152')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8970:154')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8970:153')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7374')" name="code2model" class="code2model">
+parallelOutput
+</a>
+
+</h5>
+<h5>
+Multiplexers (8)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_33_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 8
+</span>
+<span name="Multiplexer_33_1" id="Multiplexer_33_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7378')" name="code2model" class="code2model">
+Compare
+To Constant
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7379')" name="code2model" class="code2model">
+Compare
+To Constant2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7380')" name="code2model" class="code2model">
+Compare
+To Constant3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7381')" name="code2model" class="code2model">
+Compare
+To Constant4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7382')" name="code2model" class="code2model">
+Compare
+To Constant5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7383')" name="code2model" class="code2model">
+Compare
+To Constant6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7384')" name="code2model" class="code2model">
+Compare
+To Constant7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7385')" name="code2model" class="code2model">
+Compare
+To Constant8
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7443')" name="code2model" class="code2model">
+holdValue7
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_34_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_34_1" id="Register_34_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7446')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_34_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_34_1" id="Multiplexer_34_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7447')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7436')" name="code2model" class="code2model">
+holdValue6
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_35_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_35_1" id="Register_35_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7439')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_35_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_35_1" id="Multiplexer_35_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7440')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7429')" name="code2model" class="code2model">
+holdValue5
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_36_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_36_1" id="Register_36_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7432')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_36_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_36_1" id="Multiplexer_36_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7433')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7422')" name="code2model" class="code2model">
+holdValue4
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_37_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_37_1" id="Register_37_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7425')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_37_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_37_1" id="Multiplexer_37_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7426')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7415')" name="code2model" class="code2model">
+holdValue3
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_38_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_38_1" id="Register_38_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7418')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_38_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_38_1" id="Multiplexer_38_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7419')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7408')" name="code2model" class="code2model">
+holdValue2
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_39_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_39_1" id="Register_39_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7411')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_39_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_39_1" id="Multiplexer_39_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7412')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7401')" name="code2model" class="code2model">
+holdValue1
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_40_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_40_1" id="Register_40_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7404')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_40_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_40_1" id="Multiplexer_40_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7405')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7394')" name="code2model" class="code2model">
+holdValue
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_41_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<span name="Register_41_1" id="Register_41_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7397')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_41_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_41_1" id="Multiplexer_41_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7398')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8596')" name="code2model" class="code2model">
+Subsystem8
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (2)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><h5>
+RAMs (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_42_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 2
+</span>
+<span name="RAM_42_1" id="RAM_42_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8613')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8615')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (7)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8626')" name="code2model" class="code2model">
+Subsystem1
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (2)
+</h5>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+65x65-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (3)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 2
+</span>
+<br /><h5>
+RAMs (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'RAM_43_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1024x32-bit RAM 							: 2
+</span>
+<span name="RAM_43_1" id="RAM_43_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8643')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8645')" name="code2model" class="code2model">
+SimpleDualPortRAM_generic
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (7)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7247')" name="code2model" class="code2model">
+StateMachines
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_44_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+10x10-bit Adder 							: 2
+</span>
+<span name="Adder_44_1" id="Adder_44_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7258')" name="code2model" class="code2model">
+index_counter
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7261')" name="code2model" class="code2model">
+perceptron_counter1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (8)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_44_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 2
+</span>
+<span name="Register_44_1" id="Register_44_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7254')" name="code2model" class="code2model">
+Delay3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7255')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_44_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+10-bit Register 							: 6
+</span>
+<span name="Register_44_2" id="Register_44_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7258')" name="code2model" class="code2model">
+index_counter
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7253')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7261')" name="code2model" class="code2model">
+perceptron_counter1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_44_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_44_1" id="Multiplexer_44_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7251')" name="code2model" class="code2model">
+Compare
+To Constant
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_44_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+10-bit 3-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_44_2" id="Multiplexer_44_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7258')" name="code2model" class="code2model">
+index_counter
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_44_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_44_3" id="Multiplexer_44_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7261')" name="code2model" class="code2model">
+perceptron_counter1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Multiply-instantiated Identical User-defined blocks  4 :   <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9420:177')" name="code2model" class="code2model">
+mac_control
+</a>
+, <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8997:177')" name="code2model" class="code2model">
+mac_control
+</a>
+, <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8976:177')" name="code2model" class="code2model">
+mac_control
+</a>
+, <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7260')" name="code2model" class="code2model">
+mac_control
+</a>
+
+</h5>
+<h5>
+Registers (32)
+</h5>
+<span style="font-family:monospace">
+4-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 28
+</span>
+<br /><h5>
+Multiplexers (32)
+</h5>
+<span style="font-family:monospace">
+4-bit 8-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+1-bit 6-to-1 Multiplexer 							: 8
+</span>
+<br /><span style="font-family:monospace">
+1-bit 7-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+1-bit 4-to-1 Multiplexer 							: 8
+</span>
+<br /><p><hr /></p><h5>
+Report for Multiply-instantiated Identical User-defined blocks  4 :   <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9420:176')" name="code2model" class="code2model">
+layer_control
+</a>
+, <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8997:176')" name="code2model" class="code2model">
+layer_control
+</a>
+, <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:8976:176')" name="code2model" class="code2model">
+layer_control
+</a>
+, <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7259')" name="code2model" class="code2model">
+layer_control
+</a>
+
+</h5>
+<h5>
+Registers (24)
+</h5>
+<span style="font-family:monospace">
+4-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 20
+</span>
+<br /><h5>
+Multiplexers (28)
+</h5>
+<span style="font-family:monospace">
+4-bit 9-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+1-bit 5-to-1 Multiplexer 							: 8
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+1-bit 4-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+1-bit 3-to-1 Multiplexer 							: 8
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:7256')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (2)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9461')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (2)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

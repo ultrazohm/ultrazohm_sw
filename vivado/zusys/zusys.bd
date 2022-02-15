@@ -529,12 +529,6 @@
           }
         },
         "interface_nets": {
-          "S00_AXI_1": {
-            "interface_ports": [
-              "S00_AXI",
-              "uz_interlockDeadtime_0/AXI4"
-            ]
-          },
           "Conn1": {
             "interface_ports": [
               "AXI4_Lite1",
@@ -545,6 +539,12 @@
             "interface_ports": [
               "AXI4_Lite",
               "PWM_and_SS_control_V_0/AXI4_Lite"
+            ]
+          },
+          "S00_AXI_1": {
+            "interface_ports": [
+              "S00_AXI",
+              "uz_interlockDeadtime_0/AXI4"
             ]
           }
         },
@@ -5766,10 +5766,16 @@
       },
       "uz_mlp_three_layer_0": {
         "vlnv": "user.org:ip:uz_mlp_three_layer:3.0",
-        "xci_name": "zusys_uz_mlp_three_layer_0_1"
+        "xci_name": "zusys_uz_mlp_three_layer_0_2"
       }
     },
     "interface_nets": {
+      "smartconnect_0_M11_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M11_AXI",
+          "Interrupt/S_AXI"
+        ]
+      },
       "AXI4_Lite_1": {
         "interface_ports": [
           "Interrupt/AXI4_Lite",
@@ -5865,12 +5871,6 @@
         "interface_ports": [
           "zynq_ultra_ps_e_0/S_AXI_LPD",
           "DataMover/M00_AXI"
-        ]
-      },
-      "smartconnect_0_M11_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M11_AXI",
-          "Interrupt/S_AXI"
         ]
       }
     },
@@ -6265,52 +6265,52 @@
           "uz_mlp_three_layer_0/x4"
         ]
       },
-      "uz_mlp_three_layer_0_layer2_rdy": {
+      "uz_mlp_three_layer_0_out_rsvd": {
         "ports": [
-          "uz_mlp_three_layer_0/layer2_rdy",
-          "ila_1/probe0"
+          "uz_mlp_three_layer_0/out_rsvd",
+          "ila_1/probe2"
         ]
       },
       "uz_mlp_three_layer_0_finished": {
         "ports": [
           "uz_mlp_three_layer_0/finished",
-          "ila_1/probe1"
+          "ila_1/probe0"
+        ]
+      },
+      "uz_mlp_three_layer_0_out1": {
+        "ports": [
+          "uz_mlp_three_layer_0/out1",
+          "ila_1/probe3"
+        ]
+      },
+      "uz_mlp_three_layer_0_out5": {
+        "ports": [
+          "uz_mlp_three_layer_0/out5",
+          "ila_1/probe4"
+        ]
+      },
+      "uz_mlp_three_layer_0_out6": {
+        "ports": [
+          "uz_mlp_three_layer_0/out6",
+          "ila_1/probe5"
+        ]
+      },
+      "uz_mlp_three_layer_0_biasWriteAddr": {
+        "ports": [
+          "uz_mlp_three_layer_0/biasWriteAddr",
+          "ila_1/probe6"
         ]
       },
       "uz_mlp_three_layer_0_valid_output": {
         "ports": [
           "uz_mlp_three_layer_0/valid_output",
-          "ila_1/probe2"
-        ]
-      },
-      "uz_mlp_three_layer_0_debug_bias_out1": {
-        "ports": [
-          "uz_mlp_three_layer_0/debug_bias_out1",
-          "ila_1/probe3"
-        ]
-      },
-      "uz_mlp_three_layer_0_debug_bias_out": {
-        "ports": [
-          "uz_mlp_three_layer_0/debug_bias_out",
-          "ila_1/probe4"
-        ]
-      },
-      "uz_mlp_three_layer_0_debug_bias_data_in": {
-        "ports": [
-          "uz_mlp_three_layer_0/debug_bias_data_in",
-          "ila_1/probe5"
-        ]
-      },
-      "uz_mlp_three_layer_0_debug_bias_wr_addr": {
-        "ports": [
-          "uz_mlp_three_layer_0/debug_bias_wr_addr",
-          "ila_1/probe6"
-        ]
-      },
-      "uz_mlp_three_layer_0_debug_bias_wr_en": {
-        "ports": [
-          "uz_mlp_three_layer_0/debug_bias_wr_en",
           "ila_1/probe7"
+        ]
+      },
+      "uz_mlp_three_layer_0_biasWriteEnable": {
+        "ports": [
+          "uz_mlp_three_layer_0/biasWriteEnable",
+          "ila_1/probe1"
         ]
       }
     },

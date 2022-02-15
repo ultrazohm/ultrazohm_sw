@@ -89,7 +89,7 @@ void ISR_Control(void *data)
 
 	if (ultrazohm_state_machine_get_state() == control_state) {
 		PID_v_dq = uz_ParameterID_Controller(&PID_Data, FOC_instance, SpeedControl_instance);
-		PID_DutyCycle = uz_ParameterID_generate_DutyCycle(&PID_Data, FOC_instance, SpeedControl_instance, PID_v_dq, Global_Data.objects.pwm_d1);
+		PID_DutyCycle = uz_ParameterID_generate_DutyCycle(&PID_Data, PID_v_dq, Global_Data.objects.pwm_d1);
 		Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;
 		Global_Data.rasv.halfBridge2DutyCycle = PID_DutyCycle.DutyCycle_V;
 		Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;

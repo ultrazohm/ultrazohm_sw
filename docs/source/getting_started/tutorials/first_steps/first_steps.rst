@@ -45,8 +45,9 @@ See :ref:`javascope_customizing` for details regarding the customization of the 
 Navigate to ``javascope.h`` in ``src/include/`` inside Vitis.
 Add the following to the ``enum JS_OberservableData``:
 
-.. code-block:: c-code
-
+.. code-block:: c
+   :emphasize-lines: 4,5,6
+   :linenos:
 
    // Do not change the first (zero) and last (end) entries.
    enum JS_OberservableData {

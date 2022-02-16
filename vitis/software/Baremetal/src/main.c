@@ -18,7 +18,7 @@
 #include "uz/uz_global_configuration.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
 #include "include/uz_adcLtc2311_ip_core_init.h"
-#include "IP_Cores/uz_MlpHls/uz_MlpHls.h"
+#include "include/uz_mlpBgdHls_testbench.h"
 //Initialize the global variables
 int i_LifeCheck;
 
@@ -52,7 +52,7 @@ int main(void)
 	Initialize_AXI_GPIO(); // Initialize the GPIOs which are connected over FPGA pins
 	uz_frontplane_button_and_led_init();
 
-	uz_MlpHlsTestbench();
+	uz_mlpHlsTestbench();
 
 	// Initialize Park-Transformation 123 to dq
 

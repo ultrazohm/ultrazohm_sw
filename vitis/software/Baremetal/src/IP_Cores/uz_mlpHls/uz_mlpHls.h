@@ -4,13 +4,9 @@
 // includes
 #include "xil_types.h"
 #include "xmlp.h"
+#include "xparameters.h"
 
 // defines
-#define MLP_HLS_PARAMETER_BASE_ADDRESS 0x20100U
-#define MLP_HLS_PARAMETER_MEMORY_OFFSET_PL 0xFFE00000U
-
-// typedefs
-typedef struct uz_mlpHls_t uz_mlpHls_t;
 
 // structs
 struct uz_mlpHls_config_t
@@ -33,7 +29,10 @@ struct uz_mlpHls_config_t
 	u32 parEntries;
 };
 
+typedef struct uz_mlpHls_t uz_mlpHls_t;
+
 // function declarations
-void uz_MlpHlsTestbench(void);
+uz_mlpHls_t *uz_mlpInit(struct uz_mlpHls_config_t config);
+XMlp *uz_mlpHls_getXilInstance(uz_mlpHls_t *instance);
 
 #endif

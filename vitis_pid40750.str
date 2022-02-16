@@ -1,0 +1,93 @@
+/*
+
+Xilinx Vitis v2020.1.0 (64-bit) [Major: 2020, Minor: 1]
+SW Build 2902540 on Wed May 27 19:55:13 MDT 2020
+
+Process ID (PID): 40750
+License: Customer
+
+Current time: 	Tue Jan 18 17:09:00 EET 2022
+Time zone: 	Eastern European Standard Time (Europe/Helsinki)
+
+OS: Ubuntu
+OS Version: 5.11.0-46-generic
+OS Architecture: amd64
+Available processors (cores): 12
+
+Display: :1
+Screen size: 1600x900
+Available screens: 1
+Available disk space: 57 GB
+
+Java version: 	9.0.4 64-bit
+Java home: 	/opt/Xilinx/Vitis/2020.1/tps/lnx64/jre9.0.4
+Java executable location: 	/opt/Xilinx/Vitis/2020.1/tps/lnx64/jre9.0.4/bin/java
+Java initial memory (-Xms): 	64 MB
+Java maximum memory (-Xmx):	 4 GB
+
+Java library paths: /opt/Xilinx/Vitis/2020.1/lib/lnx64.o/Ubuntu:/opt/Xilinx/Vitis/2020.1/lib/lnx64.o:/opt/Xilinx/Vitis/2020.1/tps/lnx64/jre9.0.4/lib/:/opt/Xilinx/Vitis/2020.1/tps/lnx64/jre9.0.4/lib//server:/opt/Xilinx/Vitis/2020.1/lib/lnx64.o:/opt/Xilinx/Vitis/2020.1/lib/lnx64.o/Ubuntu:/opt/Xilinx/Vitis/2020.1/lib/lnx64.o:/opt/xilinx/xrt/lib::/opt/Xilinx/Vitis/2020.1/bin/../lnx64/tools/dot/lib:/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib
+
+Java class paths: /opt/Xilinx/Vitis/2020.1/eclipse/lnx64.o//plugins/org.eclipse.equinox.launcher_1.5.0.v20180512-1130.jar
+LD_LIBRARY_PATH: /opt/Xilinx/Vitis
+
+User name: 	thilo
+User home directory: /home/thilo
+User working directory: /home/thilo/ultrazohm/ultrazohm_sw
+User country: 	US
+User language: 	en
+User locale: 	en_US
+
+RDI_BASEROOT: /opt/Xilinx/Vitis
+HDI_APPROOT: /opt/Xilinx/Vitis/2020.1
+RDI_DATADIR: /opt/Xilinx/Vitis/2020.1/data
+RDI_BINDIR: /opt/Xilinx/Vitis/2020.1/bin
+
+Vitis preferences directory: /home/thilo/.Xilinx/Vitis/2020.1/
+Vitis workspace directory: /home/thilo/ultrazohm/ultrazohm_sw/vitis/workspace
+Vitis workspace log file location: /home/thilo/ultrazohm/ultrazohm_sw/vitis/workspace/.metadata/.log
+Engine tmp dir: 	
+
+Xilinx Environment Variables
+----------------------------
+XILINX_DSP: 
+XILINX_HLS: /opt/Xilinx/Vitis/2020.1
+XILINX_PLANAHEAD: /opt/Xilinx/Vitis/2020.1
+XILINX_SDK: /opt/Xilinx/Vitis/2020.1
+XILINX_VITIS: /opt/Xilinx/Vitis/2020.1
+XILINX_VIVADO: /opt/Xilinx//Vivado/2020.1
+XILINX_VIVADO_HLS: /opt/Xilinx/Vivado/2020.1
+XILINX_XRT: /opt/xilinx/xrt
+_RDI_DONT_SET_XILINX_AS_PATH: True
+
+
+Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+selectTree("Debug", "Baremetal_system > Baremetal", "Debug", "LaunchView", "Tree");
+selectToolBarButton("Debug", "Baremetal", "WorkbenchWindow", "ToolItem.DEBUG");
+selectToolBarButton("Design", "Baremetal", "WorkbenchWindow", "ToolItem.DESIGN");
+selectTree("lscript.ld", "Baremetal_system > Baremetal > src", EventType.DOUBLE_CLICK, "Explorer", "ProjectExplorer", "Tree");
+selectTable("psu_r5_ddr_0_MEM_0", "lscript.ld", "LscriptEditor", "TableViewer.MemoryRangeContentProvider");
+selectTable(".text", "lscript.ld", "LscriptEditor", "TableViewer.MemRangeSectionContentProvider");
+activateView("Source", "CTabItem", "SOURCE");
+setText("/**************************************************", "Find/Replace", "FindReplaceDialog", "StyledText");
+selectButton("Find", "Find/Replace", "FindReplaceDialog", "Button.FIND");
+setCombo("heap", "Find/Replace", "FindReplaceDialog", "Combo.FIND");
+selectButton("Close", "Find/Replace", "FindReplaceDialog", "Button.CLOSE");
+setText("/**************************************************", "Find/Replace", "FindReplaceDialog", "StyledText");
+selectButton("Find", "Find/Replace", "FindReplaceDialog", "Button.FIND");
+selectButton("Find", "Find/Replace", "FindReplaceDialog", "Button.FIND");
+selectButton("Find", "Find/Replace", "FindReplaceDialog", "Button.FIND");
+selectButton("Find", "Find/Replace", "FindReplaceDialog", "Button.FIND");
+selectButton("Close", "Find/Replace", "FindReplaceDialog", "Button.CLOSE");
+activateView("Summary", "CTabItem", "SUMMARY");
+selectTable(".heap", "lscript.ld", "LscriptEditor", "TableViewer.MemRangeSectionContentProvider");
+selectTable(".tdata", "lscript.ld", "LscriptEditor", "TableViewer.MemRangeSectionContentProvider");
+selectTable(".heap", "lscript.ld", "LscriptEditor", "TableViewer.MemRangeSectionContentProvider");
+selectTable(".bss", "lscript.ld", "LscriptEditor", "TableViewer.MemRangeSectionContentProvider");
+selectButton("Dont Save", "Save Resource", "Button", "DONT_SAVE");
+selectButton("Exit", "Confirm Exit", "MessageDialogWithToggle", "Button.EXIT");
+// Exiting Xilinx Vitis with a status code '0' at 1/18/22, 6:25:22 PM EET
+// Elapsed time: 01:16:22
+

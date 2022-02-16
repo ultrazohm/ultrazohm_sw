@@ -1,176 +1,193 @@
+#include "../../uz/uz_global_configuration.h"
 #include "../../Cranium/src/cranium.h"
-#include "xmultilayerperceptrondecoupled.h"
-#include "xparameters.h"
-#include "xil_types.h"
-#include <stdlib.h>
-#include <math.h>
 #include "uz_MlpHls.h"
+#include "uz_MlpHlsPrivate.h"
 #include "../../uz/uz_HAL.h"
 
-//static const u32 PARAMETER_MEMORY = 0x20100U;
-//static const u32 PARAMETER_MEMORY_OFFSET_PL = 0xFFE00000U;
+// xilinx
+#include "xparameters.h"
+#include "xil_types.h"
+#include "xstatus.h"
 
-static const unsigned N = 32; //  Rows of A aka weight Matrix
-static const unsigned K = N;  //  Cols of A and Rows of Input Vector
+// IP core drivers
+#include "xmlp.h"
+#include "xbgd.h"
 
-static const unsigned int KInput = 8;
-static const unsigned int NOutput = 8;
-static const unsigned int NumberOfHidden = 3;
+// system includes
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
 
-//static const u32 weightOffset = (N * KInput + (NumberOfHidden - 1) * N * K
-//		+ NOutput * K) * sizeof(float);
-//static const u32 biasOffset = (NumberOfHidden * N + NOutput) * sizeof(float);
-//static const u32 inputOffset = KInput * sizeof(float);
-//
-//static float *weightMemory = (float *) PARAMETER_MEMORY;
-//static float *biasMemory = (float *) (PARAMETER_MEMORY + weightOffset);
-//static float *inputBuffer = (float *) (PARAMETER_MEMORY + weightOffset
-//		+ biasOffset);
-//static float *outputBuffer = (float *) (PARAMETER_MEMORY + weightOffset
-//		+ biasOffset + inputOffset);
+struct uz_mlpHls_t
+{
+	XMlp xilInstance;
+	struct uz_mlpHls_config_t config;
+};
 
-void extractCraniumWeights(float *hiddenWeightMemory, float *inputWeightMemory,
-		float *outputWeightMemory, float *hiddenBiasMemory,
-		float *outputBiasMemory, Network *net);
+static const u32 N = 16; //  Rows of A aka weight Matrix
+static const u32 K = N;  //  Cols of A and Rows of Input Vector
+static const u32 KInput = 16;
+static const u32 NOutput = 10;
+static const u32 NumberOfHidden = 2;
 
-void uz_MlpHlsTestbench(void) {
-	srand((unsigned int) 2);
+static size_t instance_counter = 0U;
+static uz_mlpHls_t instances[XPAR_XMLP_NUM_INSTANCES] =
+{ 0 };
 
-	XMultilayerperceptrondecoupled testInstance = { .Configuration_BaseAddress =
-	XPAR_MULTILAYERPERCEPTRON_1_S_AXI_CONFIGURATION_BASEADDR,
-			.Control_BaseAddress =
-			XPAR_MULTILAYERPERCEPTRON_1_S_AXI_CONTROL_BASEADDR };
+static uz_mlpHls_t *uz_mlpHls_allocation(void);
 
-	XMultilayerperceptrondecoupled_Initialize(&testInstance,
-	XPAR_MULTILAYERPERCEPTRON_1_DEVICE_ID);
+static uz_mlpHls_t *uz_mlpHls_allocation(void)
+{
+	uz_assert(instance_counter < XPAR_XMLP_NUM_INSTANCES);
+	uz_mlpHls_t *self = &instances[instance_counter];
+	instance_counter++;
+	return (self);
+}
 
-	const u32 PARAMETER_MEMORY = 0x20100U;
-	const u32 PARAMETER_MEMORY_OFFSET_PL = 0xFFE00000U;
-
-	const u32 weightOffset = (N * KInput + (NumberOfHidden - 1) * N * K
-			+ NOutput * K) * sizeof(float);
-	const u32 biasOffset = (NumberOfHidden * N + NOutput) * sizeof(float);
-	const u32 inputOffset = KInput * sizeof(float);
-
-	float *weightMemory = (float *) PARAMETER_MEMORY;
-	float *biasMemory = (float *) (PARAMETER_MEMORY + weightOffset);
-	float *inputBuffer =
-			(float *) (PARAMETER_MEMORY + weightOffset + biasOffset);
-	float *outputBuffer = (float *) (PARAMETER_MEMORY + weightOffset
-			+ biasOffset + inputOffset);
-
+static Network *configureCranium(void)
+{
 	Activation hiddenActivation[NumberOfHidden];
 	size_t hiddenSize[NumberOfHidden];
-	Matrix *inputCran = createMatrix(1, KInput, inputBuffer);
 
-	for (unsigned int i = 0; i < NumberOfHidden; i++) {
+	for (unsigned int i = 0; i < NumberOfHidden; i++)
+	{
 		hiddenActivation[i] = sigmoid;
 		hiddenSize[i] = N;
 	}
 
-	Network *net = createNetwork(KInput, NumberOfHidden, hiddenSize,
-			hiddenActivation, NOutput, sigmoid);
+	Network *net = createNetwork(KInput, NumberOfHidden, hiddenSize, hiddenActivation, NOutput,
+			linear);
+
+	return net;
+}
+
+uz_mlpHls_t *uz_mlpInit(struct uz_mlpHls_config_t config)
+{
+	uz_assert_not_zero(config.weightMemoryAddress);
+	uz_assert_not_zero(config.biasMemoryAddress);
+	uz_assert_not_zero(config.inputAddress);
+	uz_assert_not_zero(config.outputAddress);
+	uz_assert_not_zero(config.layerOutputAddress);
+
+	uz_assert(config.numberHiddenLayers > 0);
+	uz_assert(config.parEntries > 0);
+	uz_assert(config.numberInputs % config.parEntries == 0);
+	uz_assert(config.numberInputs > 0);
+	uz_assert(config.numberNeurons % config.parEntries == 0);
+	uz_assert(config.numberNeurons > 0);
+	uz_assert(config.numberOutputs > 0);
+
+	XMlp xilInstance;
+	uz_assert(XMlp_Initialize(&xilInstance, config.deviceId) == XST_SUCCESS);
+
+	uz_mlpHls_t *instance = uz_mlpHls_allocation();
+	instance->xilInstance = xilInstance;
+	instance->config = config;
+	XMlp *xilPtr = &instance->xilInstance;
+
+	XMlp_Set_axiWeightInput(xilPtr, config.weightMemoryAddress);
+	XMlp_Set_axiBiasInput(xilPtr, config.biasMemoryAddress);
+	XMlp_Set_input_r(xilPtr, config.inputAddress);
+	XMlp_Set_output_r(xilPtr, config.outputAddress);
+	XMlp_Set_axiLayerOutput(xilPtr, config.layerOutputAddress);
+
+	XMlp_Set_loadParameters(xilPtr, config.loadParameters);
+	XMlp_Set_exportLayers(xilPtr, config.exportLayers);
+	XMlp_Set_numberInputs(xilPtr, config.numberInputs);
+	XMlp_Set_numberOutputs(xilPtr, config.numberOutputs);
+	XMlp_Set_numberLayers(xilPtr, config.numberHiddenLayers);
+	XMlp_Set_numberNeurons(xilPtr, config.numberNeurons);
+
+	return instance;
+}
+
+void uz_MlpHlsTestbench(void)
+{
+	srand((unsigned int) 2);
+
+	const u32 ParameterBaseAddress = MLP_HLS_PARAMETER_BASE_ADDRESS;
+	const u32 weightOffset = (N * KInput + (NumberOfHidden - 1) * N * K + NOutput * K)
+			* sizeof(float);
+	const u32 biasOffset = (NumberOfHidden * N + NOutput) * sizeof(float);
+	const u32 inputOffset = KInput * sizeof(float);
+	const u32 outputOffset = NOutput * sizeof(float);
+	const u32 layerBufferSize = (KInput + NumberOfHidden * N + NOutput);
+
+	Network *net = configureCranium();
+
+	float *weightMemory = (float *) ParameterBaseAddress;
+	float *biasMemory = (float *) (ParameterBaseAddress + weightOffset);
+	float *inputBuffer = (float *) (ParameterBaseAddress + weightOffset + biasOffset);
+	float *outputBuffer = (float *) (ParameterBaseAddress + weightOffset + biasOffset + inputOffset);
+	float *layerBuffer = (float *) (ParameterBaseAddress + weightOffset + biasOffset + inputOffset
+			+ outputOffset);
+	Matrix *inputCran = createMatrix(1, KInput, inputBuffer);
 
 	extractCraniumWeights(&weightMemory[N * KInput], weightMemory,
-			&weightMemory[N * KInput + (NumberOfHidden - 1) * N * K],
-			biasMemory, &biasMemory[NumberOfHidden * N], net);
+			&weightMemory[N * KInput + (NumberOfHidden - 1) * N * K], biasMemory,
+			&biasMemory[NumberOfHidden * N], net);
 
 	float *resultReference;
-	while (1) {
 
-		for (unsigned int i = 0; i < KInput; i++) {
+	struct uz_mlpHls_config_t mlpConfig =
+	{
+			.weightMemoryAddress = (u64) ((u32) weightMemory + MLP_HLS_PARAMETER_MEMORY_OFFSET_PL),
+			.biasMemoryAddress = (u64) ((u32) biasMemory + MLP_HLS_PARAMETER_MEMORY_OFFSET_PL),
+			.inputAddress = (u64) ((u32) inputBuffer + MLP_HLS_PARAMETER_MEMORY_OFFSET_PL),
+			.outputAddress = (u64) ((u32) outputBuffer + MLP_HLS_PARAMETER_MEMORY_OFFSET_PL),
+			.layerOutputAddress = (u64) ((u32) layerBuffer + MLP_HLS_PARAMETER_MEMORY_OFFSET_PL),
+			.deviceId = XPAR_MLP_MLP_DEVICE_ID,
+			.loadParameters = 1,
+			.exportLayers = 1,
+			.numberHiddenLayers = NumberOfHidden,
+			.numberInputs = KInput,
+			.numberOutputs = NOutput,
+			.numberNeurons = N,
+			.parEntries = 16 };
+
+	uz_mlpHls_t *testInstance = uz_mlpInit(mlpConfig);
+	while (1)
+	{
+
+		for (unsigned int i = 0; i < KInput; i++)
+		{
 			inputBuffer[i] = ((float) (rand() % 100)) / 100.0;
 		}
 
 		forwardPass(net, inputCran);
 		resultReference = getOuput(net)->data;
 
-		u64 address;
-		address = (u64) ((u32) weightMemory + PARAMETER_MEMORY_OFFSET_PL);
-		XMultilayerperceptrondecoupled_Set_axiWeightInput(&testInstance,
-				address);
-		address = 0;
-		address = XMultilayerperceptrondecoupled_Get_axiWeightInput(
-				&testInstance);
+		XMlp_Start(&testInstance->xilInstance);
 
-		address = (u64) ((u32) biasMemory + PARAMETER_MEMORY_OFFSET_PL);
-		XMultilayerperceptrondecoupled_Set_axiBiasInput(&testInstance, address);
-
-		address = (u64) ((u32) inputBuffer + PARAMETER_MEMORY_OFFSET_PL);
-		XMultilayerperceptrondecoupled_Set_input_r(&testInstance, address);
-
-		address = (u64) ((u32) outputBuffer + PARAMETER_MEMORY_OFFSET_PL);
-		XMultilayerperceptrondecoupled_Set_output_r(&testInstance, address);
-
-		XMultilayerperceptrondecoupled_Set_loadParameters(&testInstance,
-				(u32) 1);
-		XMultilayerperceptrondecoupled_Set_exportLayers(&testInstance, (u32) 0);
-		XMultilayerperceptrondecoupled_Set_numberInputs(&testInstance,
-				(u32) KInput);
-		XMultilayerperceptrondecoupled_Set_numberOutputs(&testInstance,
-				(u32) NOutput);
-		XMultilayerperceptrondecoupled_Set_numberLayers(&testInstance,
-				(u32) NumberOfHidden);
-		XMultilayerperceptrondecoupled_Set_numberNeurons(&testInstance,
-				(u32) N);
-
-		XMultilayerperceptrondecoupled_Start(&testInstance);
-
-		while (XMultilayerperceptrondecoupled_IsIdle(&testInstance) == 0) {
+		while (XMlp_IsIdle(&testInstance->xilInstance) == 0)
+		{
 			;
 		}
 
 		// check results
 
 		const float precision = 1e-3;
-		for (unsigned int i = 0; i < NOutput; i++) {
+		for (unsigned int i = 0; i < NOutput; i++)
+		{
 			float error = fabs(resultReference[i] - outputBuffer[i]);
-			uz_assert(error < precision);
+			if (error > precision)
+				uz_printf("Error at output entry %d", i);
+			//uz_assert(error < precision);
 		}
 	}
-
 	destroyNetwork(net);
+}
+
+void uz_BgdHlsTestbench(void)
+{
 
 }
 
-void extractCraniumWeights(float *hiddenWeightMemory, float *inputWeightMemory,
-		float *outputWeightMemory, float *hiddenBiasMemory,
-		float *outputBiasMemory, Network *net) {
-
-	Matrix *inputTransp = createMatrixZeroes(N, KInput);
-	transposeInto(net->connections[0]->weights, inputTransp);
-	for (unsigned int i = 0; i < N * KInput; i++) {
-		inputWeightMemory[i] = inputTransp->data[i];
-	}
-
-	destroyMatrix(inputTransp);
-
-	for (unsigned int i = 0; i < NumberOfHidden; i++) {
-		if (i < NumberOfHidden - 1) {
-			Matrix *weightTransp = createMatrixZeroes(N, K);
-			transposeInto(net->connections[i + 1]->weights, weightTransp);
-			for (unsigned int j = 0; j < N * K; j++) {
-				hiddenWeightMemory[i * N * K + j] = weightTransp->data[j];
-			}
-			destroyMatrix(weightTransp);
-		}
-
-		for (unsigned int j = 0; j < N; j++) {
-			hiddenBiasMemory[i * N + j] = net->connections[i]->bias->data[j];
-		}
-	}
-
-	Matrix *outputTransp = createMatrixZeroes(NOutput, K);
-	transposeInto(net->connections[NumberOfHidden]->weights, outputTransp);
-
-	for (unsigned int i = 0; i < NOutput * K; i++) {
-		outputWeightMemory[i] = outputTransp->data[i];
-	}
-
-	destroyMatrix(outputTransp);
-
-	for (unsigned int i = 0; i < NOutput; i++) {
-		outputBiasMemory[i] = net->connections[NumberOfHidden]->bias->data[i];
-	}
+void uz_mlpBgdHlsTestbench(bool testMlp, bool testBgd)
+{
+	if (testMlp)
+		uz_MlpHlsTestbench();
+	if (testBgd)
+		uz_BgdHlsTestbench();
 }
 

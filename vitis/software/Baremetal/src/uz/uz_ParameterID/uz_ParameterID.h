@@ -103,7 +103,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_dq_t v_dq_Volts, uz_PWM_SS_2L_t* PWM_Module);
 
 /**
- * @brief Exemplary control algorithm for the use of the ParamterID.  
+ * @brief Exemplary control algorithm (FOC) for the use of the ParamterID.  
  * This is meant as an example function, to ease the initial setup of the ParameterID. This function is however not essential to the ParamterID itself and can be replaced at will.
  * 
  * @param Data pointer to uz_ParameterID_Data_t struct

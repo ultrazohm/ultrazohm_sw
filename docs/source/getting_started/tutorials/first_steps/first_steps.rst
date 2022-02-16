@@ -39,6 +39,31 @@ The UltraZohm has to be connected to a PC by Ethernet and USB (JTAG-Programmer).
 Visualize the life check
 ************************
 
+In the first step, a variable of the R5 processor is visualized in the javascope.
+See :ref:`javascope_customizing` for details regarding the customization of the GUI.
+
+Navigate to ``javascope.h`` in ``src/include/`` inside Vitis.
+Add the following to the ``enum JS_OberservableData``:
+
+.. code-block:: c-code
+
+
+   // Do not change the first (zero) and last (end) entries.
+   enum JS_OberservableData {
+      JSO_ZEROVALUE=0,
+      JSO_Sawtooth1,
+      JSO_SineWave1,
+      JSO_SineWave2,
+      JSO_ISR_ExecTime_us,
+      JSO_ISR_Period_us,
+      JSO_lifecheck,
+       // ..
+       JSO_ENDMARKER
+   };
+
+
+Note that all added new entries in JS_OberservableData have to be between ``JSO_ZEROVALUE`` and ``JSO_ENDMARKER``.
+
 The ISR's life check variable (lifecheck) is written to the Javascope struct ``js_ch_observable`` to display it in the Javascope GUI.
 
 .. code-block:: c
@@ -50,8 +75,8 @@ Change the variables around, so that the life check will be written to ``js_ch_o
 .. code-block:: c
     
     js_ch_observable[JSO_Sawtooth1] 	= &lifecheck;
-    js_ch_observable[JSO_SineWave1]   = &ISRExecutionTime;
-    js_ch_observable[JSO_SineWave2]   = &isr_period_us;
+    js_ch_observable[JSO_SineWave1]   = &ISR_execution_time_us;
+    js_ch_observable[JSO_SineWave2]   = &ISR_period_us;
 
 Program the UltraZohm and start the debug session (debug-icon).
 Start all PS-cores and add ``lifecheck`` to the expressions.

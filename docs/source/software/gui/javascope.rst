@@ -167,12 +167,13 @@ The control page is used to step through the state-machine of the system and for
 
 
 
-  ..  _javascope_customizing:
+..  _javascope_customizing:
 
 Customizing
 -----------
 
 The GUI itself and the variables that are visualized can be customized by the user.
+
 
 Add variables to the scope drop-down menus
 """"""""""""""""""""""""""""""""""""""""""

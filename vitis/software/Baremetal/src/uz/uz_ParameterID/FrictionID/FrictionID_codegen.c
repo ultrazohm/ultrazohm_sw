@@ -510,7 +510,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
       if (rtFrictionID_DW->is_CoulombFrictionTorqueEstimat == IN_DecreaseSpeed)
       {
         /* Exit 'DecreaseSpeed': '<S1>:488' */
-        /* '<S1>:488:15' mean_count=1; */
+        /* '<S1>:488:11' mean_count=1; */
         rtFrictionID_DW->mean_count = 1.0F;
         rtFrictionID_DW->is_CoulombFrictionTorqueEstimat = IN_NO_ACTIVE_CHILD;
       } else {
@@ -665,14 +665,14 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
 
      case IN_CoulombFrictionTorqueEstimat:
       /* During 'CoulombFrictionTorqueEstimation': '<S1>:487' */
-      /* '<S1>:451:1' sf_internal_predicateOutput = nextstate>=2; */
-      if (rtFrictionID_DW->nextstate >= 2) {
+      /* '<S1>:451:1' sf_internal_predicateOutput = n_eva==0; */
+      if (rtFrictionID_DW->n_eva == 0.0F) {
         /* Transition: '<S1>:451' */
         /* Exit Internal 'CoulombFrictionTorqueEstimation': '<S1>:487' */
         if (rtFrictionID_DW->is_CoulombFrictionTorqueEstimat == IN_DecreaseSpeed)
         {
           /* Exit 'DecreaseSpeed': '<S1>:488' */
-          /* '<S1>:488:15' mean_count=1; */
+          /* '<S1>:488:11' mean_count=1; */
           rtFrictionID_DW->mean_count = 1.0F;
           rtFrictionID_DW->is_CoulombFrictionTorqueEstimat = IN_NO_ACTIVE_CHILD;
         } else {
@@ -708,7 +708,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
               (rtFrictionID_DW->delay / 5.0E-5 - 5.0E-13)) {
             /* Transition: '<S1>:483' */
             /* Exit 'DecreaseSpeed': '<S1>:488' */
-            /* '<S1>:488:15' mean_count=1; */
+            /* '<S1>:488:11' mean_count=1; */
             rtFrictionID_DW->mean_count = 1.0F;
             rtFrictionID_DW->is_CoulombFrictionTorqueEstimat =
               IN_SmoothingCurrentAndOmega;
@@ -767,24 +767,6 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
 
             /* '<S1>:488:8' n_eva=n_eva-(n_eva_step); */
             rtFrictionID_DW->n_eva -= rtFrictionID_DW->n_eva_step;
-
-            /* '<S1>:488:9' nextstate=uint16(0); */
-            rtFrictionID_DW->nextstate = 0U;
-          }
-
-          /* '<S1>:488:11' if(abs(ActualValues.omega_m)<=omega_Brk&&counter>2) */
-          if ((fabsf(rtFrictionID_U->ActualValues.omega_m) <=
-               rtFrictionID_DW->omega_Brk) && (rtFrictionID_DW->counter > 2U)) {
-            /* '<S1>:488:12' n_eva=single(0); */
-            rtFrictionID_DW->n_eva = 0.0F;
-
-            /* '<S1>:488:13' nextstate=nextstate+1; */
-            qY = rtFrictionID_DW->nextstate + 1U;
-            if (rtFrictionID_DW->nextstate + 1U > 65535U) {
-              qY = 65535U;
-            }
-
-            rtFrictionID_DW->nextstate = (uint16_T)qY;
           }
         } else {
           /* '<S1>:486:6' if(meas_count==uint32(0.02/GlobalConfig.sampleTimeISR)) */
@@ -855,7 +837,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
      case IN_ResetIntegrator1:
       /* During 'ResetIntegrator1': '<S1>:604' */
       /* '<S1>:607:1' sf_internal_predicateOutput = after(0.1,sec); */
-			if (rtFrictionID_DW->temporalCounter_i1 >= 2000U) {
+      if (rtFrictionID_DW->temporalCounter_i1 >= 2000U) {
         /* Transition: '<S1>:607' */
         /* Exit 'ResetIntegrator1': '<S1>:604' */
         /* '<S1>:604:7' FrictionID_FOC_output.enableFOC_current=boolean(0); */
@@ -926,7 +908,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
      default:
       /* During 'ResetIntegrator2': '<S1>:599' */
       /* '<S1>:600:1' sf_internal_predicateOutput = after(1.0,sec); */
-			if (rtFrictionID_DW->temporalCounter_i1 >= 20000U) {
+      if (rtFrictionID_DW->temporalCounter_i1 >= 20000U) {
         /* Outport: '<Root>/finishedFrictionID' */
         /* Transition: '<S1>:600' */
         /* Exit 'ResetIntegrator2': '<S1>:599' */

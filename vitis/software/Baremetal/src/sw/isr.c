@@ -37,12 +37,10 @@
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
->>>>>>> develop
 
 // Initialize the Timer structure
 XTmrCtr Timer_Interrupt;
 
-<<<<<<< HEAD
 //Initialize the Watchdog structure
 uz_watchdog_ip_t *WdtTbInstancePtr;
 
@@ -84,6 +82,13 @@ void ISR_Control(void *data)
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
+
+    // // TODO: QUITAR TEST: to trigger the time violation of ISR or system hang and the reset
+    // // Launch the test every 1000 invocations!!!
+    if (((uz_SystemTime_GetInterruptCounter()%1000) == 0)) {
+    	uz_sleep_useconds(100);
+    }
+
     JavaScope_update(&Global_Data);
 
 	// Before exiting the Interrupt handler, the Nested Interrupts must be disabled

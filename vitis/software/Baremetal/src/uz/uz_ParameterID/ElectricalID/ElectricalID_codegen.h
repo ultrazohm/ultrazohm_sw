@@ -69,12 +69,16 @@ typedef struct tag_RTM_ElectricalID_t RT_MODEL_ElectricalID_t;
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_ElectricalIDConfig_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_ElectricalIDConfig_t_
 
+/**
+ * @brief configuration struct for ElectricalID specific settings
+ * 
+ */
 typedef struct {
-  real32_T dutyCyc;
-  real32_T n_ref_measurement;
-  boolean_T identLq;
-  real32_T goertzlAmp;
-  real32_T min_n_ratio;
+  real32_T dutyCyc; /**< manual input for DutyCycle during identification of thetaOffset, Ld and Lq. If the value is left at 0.0f, the DutyCycle will be identified automatically. */
+  real32_T n_ref_measurement; /**< reference speed for identification of Psi_PM */
+  boolean_T identLq; /**< flag to enable identification of Lq. If false, Lq=Ld */
+  real32_T goertzlAmp; /**< amplitude for vibration to identify J */
+  real32_T min_n_ratio; /**< minimal ratio of rated speed for automatic DutyCycle identification. i.e. 0.025f @3000rpm rated speed -> 75rpm. If this value is reached, the algorithm assumes the DutyCycle is strong enough to properly turn the rotor. */
 } uz_PID_ElectricalIDConfig_t;
 
 #endif
@@ -82,16 +86,20 @@ typedef struct {
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
 
+/**
+ * @brief struct for the measured values which are needed for the ParameterID
+ * 
+ */
 typedef struct {
-  uz_UVW_t V_UVW;
-  uz_UVW_t I_UVW;
-  uz_dq_t i_dq;
-  uz_dq_t v_dq;
-  real32_T omega_m;
-  real32_T omega_el;
-  real32_T theta_m;
-  real32_T theta_el;
-  real32_T V_DC;
+  uz_UVW_t V_UVW; /**< measured three-phase voltages */ 
+  uz_UVW_t I_UVW; /**< measured three-phase currents */ 
+  uz_dq_t i_dq; /**< measured dq voltages */ 
+  uz_dq_t v_dq; /**< measured dq currents */ 
+  real32_T omega_m; /**< measured mechanical omega */ 
+  real32_T omega_el; /**< measured electrical omega */ 
+  real32_T theta_m; /**< measured mechanical theta */ 
+  real32_T theta_el; /**< measured electrical theta */ 
+  real32_T V_DC; /**< measured DC-link voltage */ 
 } uz_PID_ActualValues_t;
 
 #endif
@@ -99,31 +107,35 @@ typedef struct {
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
 
+/**
+ * @brief Global configuration struct for general settings of the ParameterID 
+ * 
+ */
 typedef struct {
-  uz_PMSM_t PMSM_config;
-  boolean_T enableParameterID;
-  boolean_T Reset;
-  real32_T Kp_id;
-  real32_T Kp_iq;
-  real32_T Kp_n;
-  real32_T Ki_id;
-  real32_T Ki_iq;
-  real32_T Ki_n;
-  boolean_T ElectricalID;
-  boolean_T FrictionID;
-  boolean_T TwoMassID;
-  boolean_T FluxMapID;
-  boolean_T OnlineID;
-  real32_T thetaOffset;
-  boolean_T ACCEPT;
-  real32_T sampleTimeISR;
-  real32_T ratCurrent;
-  real32_T ratSpeed;
-  real32_T VibAmp;
-  boolean_T VibOn;
-  uint16_T VibFreq;
-  uz_dq_t i_dq_ref;
-  real32_T n_ref;
+  uz_PMSM_t PMSM_config; /**< motor related parameters. Is needed, if ElectricalID should not be executed */ 
+  boolean_T enableParameterID; /**< flag to enable the entire ParameterID */ 
+  boolean_T Reset; /**< flag to Reset the entire ParameterID*/ 
+  real32_T Kp_id; /**< value for Kp_id, which is needed, if ElectricalID should not be executed. Can be left at 0, if no FOC control algorithm is used */ 
+  real32_T Kp_iq; /**< value for Kp_iq, which is needed, if ElectricalID should not be executed. Can be left at 0, if no FOC control algorithm is used */ 
+  real32_T Kp_n; /**< value for Kp_n, which is needed, if ElectricalID should not be executed. Can be left at 0, if no FOC control algorithm is used */ 
+  real32_T Ki_id; /**< value for Ki_id, which is needed, if ElectricalID should not be executed. Can be left at 0, if no FOC control algorithm is used */ 
+  real32_T Ki_iq; /**< value for Ki_iq, which is needed, if ElectricalID should not be executed. Can be left at 0, if no FOC control algorithm is used */ 
+  real32_T Ki_n; /**< value for Ki_n, which is needed, if ElectricalID should not be executed. Can be left at 0, if no FOC control algorithm is used */ 
+  boolean_T ElectricalID; /**< flag to enable ElectricalID */
+  boolean_T FrictionID; /**< flag to enable FrictionID */
+  boolean_T TwoMassID; /**< flag to enable TwoMassID */
+  boolean_T FluxMapID; /**< flag to enable FluxMapID */
+  boolean_T OnlineID; /**< flag to enable OnlineID */
+  real32_T thetaOffset; 
+  boolean_T ACCEPT; /**< flag for the ACCEPT button  */
+  real32_T sampleTimeISR; /**< sampleTime of the ISR. i.e. sampleTime of the function call uz_ParameterID_step */
+  real32_T ratCurrent; /**< rated current of the motor */
+  real32_T ratSpeed; /**< rated speed of the motor */
+  real32_T VibAmp; /**< max current amplitude for vibration */
+  boolean_T VibOn; /**< flag to activate the vibration */
+  uint16_T VibFreq; /**< frequency of the vibration */ 
+  uz_dq_t i_dq_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
+  real32_T n_ref; /**< Not needed for ID-states. Can be used to transmit reference speed to a control algorithm. */
 } uz_PID_GlobalConfig_t;
 
 #endif

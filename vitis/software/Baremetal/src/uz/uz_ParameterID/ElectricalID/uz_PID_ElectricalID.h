@@ -19,7 +19,11 @@
 #include "../../uz_HAL.h"
 #include "ElectricalID_codegen.h"
 
-typedef struct {
+/**
+ * @brief Object definition for uz_PID_ElectricalID_t
+ * 
+ */
+typedef struct uz_PID_ElectricalID_t{
 	ExtY_ElectricalID_t output;
 	ExtU_ElectricalID_t input;
 	DW_ElectricalID_t rtDW; /* Observable states */
@@ -27,7 +31,18 @@ typedef struct {
 	RT_MODEL_ElectricalID_t *PtrToModelData;
 } uz_PID_ElectricalID_t;
 
+/**
+ * @brief Initializes the uz_PID_ElectricalID_t object
+ * 
+ * @return uz_PID_ElectricalID_t* pointer to instance
+ */
 uz_PID_ElectricalID_t* uz_ElectricalID_init(void);
+
+/**
+ * @brief steps the ElectricalID state once
+ * 
+ * @param self pointer to uz_PID_ElectricalID_t* object
+ */
 void uz_ElectricalID_step(uz_PID_ElectricalID_t *self);
 
 #endif

@@ -143,14 +143,18 @@ typedef struct {
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
 
+/**
+ * @brief struct which contains the enable state flags
+ * 
+ */
 typedef struct {
-  boolean_T startFrictionID;
-  boolean_T startElectricalID;
-  boolean_T startTwoMassID;
-  boolean_T startFluxMapID;
-  uint16_T transNr;
-  boolean_T enableOnlineID;
-  boolean_T finished_all_Offline_states;
+  boolean_T startFrictionID; /**< flag to start FrictionID */
+  boolean_T startElectricalID; /**< flag to start ElectricalID */
+  boolean_T startTwoMassID; /**< flag to start TwoMassID */
+  boolean_T startFluxMapID; /**< flag to start FluxMapID */
+  uint16_T transNr; /**< transistion number. 1 transistion number corresponds to one ID-state */
+  boolean_T enableOnlineID; /**< flag to start OnlineID */
+  boolean_T finished_all_Offline_states; /**< flag to signal, that all oOffline-ID state are finished */
 } uz_PID_ControlFlags_t;
 
 #endif
@@ -158,23 +162,27 @@ typedef struct {
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_Controller_Parameters_output_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_Controller_Parameters_output_t_
 
+/**
+ * @brief struct with config values for a control algorithm
+ * 
+ */
 typedef struct {
-  uz_dq_t i_dq_ref;
-  uint16_T activeState;
-  real32_T n_ref_FOC;
-  boolean_T enableFOC_speed;
-  boolean_T enableFOC_current;
-  boolean_T VibOn_out;
-  real32_T VibAmp_out;
-  uint16_T VibFreq_out;
-  boolean_T resetIntegrator;
-  real32_T PRBS_out;
-  real32_T Kp_id_out;
-  real32_T Kp_iq_out;
-  real32_T Kp_n_out;
-  real32_T Ki_id_out;
-  real32_T Ki_iq_out;
-  real32_T Ki_n_out;
+  uz_dq_t i_dq_ref; /**< reference currents for current controller */
+  uint16_T activeState; /**< activeState of the ID-states */
+  real32_T n_ref_FOC; /**< reference speed for the speed controller */
+  boolean_T enableFOC_speed; /**<flag to enable speed controller */
+  boolean_T enableFOC_current; /**<flag to enable current controller */
+  boolean_T VibOn_out; /**<flag to enable vibration */
+  real32_T VibAmp_out; /**<amplitude of sine vibration */
+  uint16_T VibFreq_out; /**<frequency of sine vibration */
+  boolean_T resetIntegrator; /**<flag to reset the integrators used in the control algorithm */
+  real32_T PRBS_out; /**<excitation for TwoMassID */ 
+  real32_T Kp_id_out; /**<Kp_id for FOC control. Can be ignored, if another control algorithm is used */
+  real32_T Kp_iq_out; /**<Kp_iq for FOC control. Can be ignored, if another control algorithm is used */
+  real32_T Kp_n_out; /**<Kp_n for FOC control. Can be ignored, if another control algorithm is used */
+  real32_T Ki_id_out; /**<Ki_id for FOC control. Can be ignored, if another control algorithm is used */
+  real32_T Ki_iq_out; /**<Ki_iq for FOC control. Can be ignored, if another control algorithm is used */
+  real32_T Ki_n_out; /**<Ki_n for FOC control. Can be ignored, if another control algorithm is used */
 } uz_PID_Controller_Parameters_output_t;
 
 #endif

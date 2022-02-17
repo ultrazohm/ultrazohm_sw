@@ -54,7 +54,7 @@ enum JS_OberservableData {
 // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
 // Do not change the first (zero) and last (end) entries.
 enum JS_SlowData {
-	JSSD_ZEROVALUE = 0,
+	JSSD_ZEROVALUE=0,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
@@ -118,7 +118,7 @@ enum JS_SlowData {
 // Do not change the first (zero) and last (end) entries.
 // Do not change names! They are hard coupled within the GUI!
 enum gui_button_mapping {
-	GUI_BTN_ZEROVALUE = 0,
+	GUI_BTN_ZEROVALUE=0,
 	Enable_System,
 	Enable_Control,
 	Stop,

@@ -339,7 +339,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (PID_EID_goertzl_Amp):
-			PID_Data.ElectricalID_Config.goertzlAmp = value * 0.1f;
+			PID_Data.ElectricalID_Config.goertzlAmp = value;
 			break;
 
 		case (PID_EID_polePairs):

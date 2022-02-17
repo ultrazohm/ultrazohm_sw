@@ -470,7 +470,7 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_Para
 	Data->ElectricalID_Config.dutyCyc = 0.0f;
 	Data->ElectricalID_Config.goertzlAmp = 0.0f;
 	Data->ElectricalID_Config.identLq = false;
-	Data->ElectricalID_Config.min_n_ratio = 0.025f;
+	Data->ElectricalID_Config.min_n_ratio = 0.015f;
 	Data->ElectricalID_Config.n_ref_measurement = 0.0f;
 
 	//Initialize FluxMapID-Config

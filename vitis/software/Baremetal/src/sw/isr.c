@@ -48,7 +48,7 @@ extern uz_FOC* FOC_instance;
 extern uz_PI_Controller* SpeedControl_instance;
 struct uz_dq_t PID_v_dq = { 0 };
 struct uz_DutyCycle_t PID_DutyCycle = { 0 };
-float theta_offset = 0.029f;
+float theta_offset = 0.03f;
 //C=484nF R_series=5.6kOhm R_parallel=1.3kOhm
 float RC = (5600.0f * 1300.0f * 0.000000484f) / (5600.0f + 1300.0f);
 

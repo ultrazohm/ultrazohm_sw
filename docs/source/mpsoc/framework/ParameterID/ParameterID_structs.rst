@@ -17,4 +17,4 @@ Structs for ParameterID_Data
 .. doxygenstruct:: uz_PID_Controller_Parameters_output_t
   :members:
 .. doxygenstruct:: uz_PID_FluxMapsData_t
-
+.. doxygenstruct:: uz_PID_AutoRefCurrentsConfig_t

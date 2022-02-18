@@ -19,7 +19,7 @@
 #include "../../../uz_HAL.h"
 #include "AutoRefCurrents_codegen.h"
 
-typedef struct {
+typedef struct uz_PID_AutoRefCurrents_t{
 	ExtY_AutoRefCurrents_t output;
 	ExtU_AutoRefCurrents_t input;
 	DW_AutoRefCurrents_t rtDW; /* Observable states */

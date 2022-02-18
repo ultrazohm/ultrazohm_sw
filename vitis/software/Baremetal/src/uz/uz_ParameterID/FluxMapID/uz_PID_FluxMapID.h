@@ -19,7 +19,11 @@
 #include "../../uz_HAL.h"
 #include "FluxMapID_codegen.h"
 
-typedef struct {
+/**
+ * @brief Object definition for uz_PID_ElectricalID_t
+ * 
+ */
+typedef struct uz_PID_FluxMapID_t{
 	ExtY_FluxMapID_t output;
 	ExtU_FluxMapID_t input;
 	DW_FluxMapID_t rtDW; /* Observable states */
@@ -27,7 +31,18 @@ typedef struct {
 	RT_MODEL_FluxMapID_t *PtrToModelData;
 } uz_PID_FluxMapID_t;
 
+/**
+ * @brief Initializes the uz_PID_FluxMapID_t object
+ * 
+ * @return uz_PID_FluxMapID_t* pointer to object
+ */
 uz_PID_FluxMapID_t* uz_FluxMapID_init(void);
+
+/**
+ * @brief steps the FluxMapID state once
+ * 
+ * @param self pointer to uz_PID_FluxMapID_t object
+ */
 void uz_FluxMapID_step(uz_PID_FluxMapID_t *self);
 
 #endif

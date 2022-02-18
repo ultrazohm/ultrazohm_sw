@@ -34,7 +34,7 @@ typedef struct uz_PID_ElectricalID_t{
 /**
  * @brief Initializes the uz_PID_ElectricalID_t object
  * 
- * @return uz_PID_ElectricalID_t* pointer to instance
+ * @return uz_PID_ElectricalID_t* pointer to object
  */
 uz_PID_ElectricalID_t* uz_ElectricalID_init(void);
 

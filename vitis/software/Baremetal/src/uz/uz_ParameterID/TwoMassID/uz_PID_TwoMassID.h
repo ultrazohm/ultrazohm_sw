@@ -19,7 +19,11 @@
 #include "../../uz_HAL.h"
 #include "TwoMassID_codegen.h"
 
-typedef struct {
+/**
+ * @brief Object definition for uz_PID_TwoMassID_t
+ * 
+ */
+typedef struct uz_PID_TwoMassID_t{
 	ExtY_TwoMassID_t output;
 	ExtU_TwoMassID_t input;
 	DW_TwoMassID_t rtDW; /* Observable states */
@@ -27,7 +31,18 @@ typedef struct {
 	RT_MODEL_TwoMassID_t *PtrToModelData;
 } uz_PID_TwoMassID_t;
 
+/**
+ * @brief Initializes the uz_PID_TwoMassID_t object
+ * 
+ * @return uz_PID_TwoMassID_t* pointer to object
+ */
 uz_PID_TwoMassID_t* uz_TwoMassID_init(void);
+
+/**
+ * @brief steps the TwoMassID state once
+ * 
+ * @param self pointer to uz_PID_TwoMassID_t object
+ */
 void uz_TwoMassID_step(uz_PID_TwoMassID_t *self);
 
 #endif

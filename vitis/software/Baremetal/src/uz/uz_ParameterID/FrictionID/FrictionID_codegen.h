@@ -69,14 +69,18 @@ typedef struct tag_RTM_FrictionID_t RT_MODEL_FrictionID_t;
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_FrictionIDConfig_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_FrictionIDConfig_t_
 
+/**
+ * @brief configuration struct for FrictionID specific settings
+ * 
+ */
 typedef struct {
-  real32_T BrkCount;
-  real32_T N_Brk;
-  real32_T N_Visco;
-  real32_T StepScale;
-  real32_T n_eva_max;
-  real32_T eta;
-  real32_T maxCurrent;
+  real32_T BrkCount; /**< amount of unique breakaway attempts */
+  real32_T N_Brk; /**< amount of breakaway identification values */
+  real32_T N_Visco; /**< amount of viscous friction identification values */
+  real32_T StepScale; /**< scales the steps for breakaway torque. Factor in % of rated current of the motor. Should be chosen as small as possible */
+  real32_T n_eva_max; /**< maximum measuring speed in rpm*/
+  real32_T eta; /**< steady state speed threshold in percent */
+  real32_T maxCurrent; /**< max current for identification */
 } uz_PID_FrictionIDConfig_t;
 
 #endif
@@ -171,10 +175,14 @@ typedef struct {
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_FrictionID_output_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_FrictionID_output_t_
 
+/**
+ * @brief output struct of FrictionID
+ * 
+ */
 typedef struct {
-  real32_T BrkTorque;
-  real32_T CoulTorque;
-  real32_T ViscoTorque;
+  real32_T BrkTorque; /**< identified breakaway torque in Nm */
+  real32_T CoulTorque; /**< identified coloumb torque in Nm */
+  real32_T ViscoTorque; /**< identified viscous friction in Nms/rad */
 } uz_PID_FrictionID_output_t;
 
 #endif

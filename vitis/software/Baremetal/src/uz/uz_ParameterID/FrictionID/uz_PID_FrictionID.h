@@ -19,7 +19,11 @@
 #include "../../uz_HAL.h"
 #include "FrictionID_codegen.h"
 
-typedef struct {
+/**
+ * @brief Object definition for uz_PID_FrictionID_t
+ * 
+ */
+typedef struct uz_PID_FrictionID_t{
 	ExtY_FrictionID_t output;
 	ExtU_FrictionID_t input;
 	DW_FrictionID_t rtDW; /* Observable states */
@@ -27,6 +31,17 @@ typedef struct {
 	RT_MODEL_FrictionID_t *PtrToModelData;
 } uz_PID_FrictionID_t;
 
+/**
+ * @brief Initializes the uz_PID_FrictionID_t object
+ * 
+ * @return uz_PID_FrictionID_t* pointer to object
+ */
 uz_PID_FrictionID_t* uz_FrictionID_init(void);
+
+/**
+ * @brief steps the FrictionID state once
+ * 
+ * @param self pointer to uz_PID_FrictionID_t object
+ */
 void uz_FrictionID_step(uz_PID_FrictionID_t *self);
 #endif

@@ -108,7 +108,6 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_LoadInertia] = &(PID_Data.TwoMassID_Output->LoadInertia);
 	js_slowDataArray[JSSD_FLOAT_c_est] = &(PID_Data.TwoMassID_Output->c_est_out);
 	js_slowDataArray[JSSD_FLOAT_d_est] = &(PID_Data.TwoMassID_Output->d_est_out);
-	js_slowDataArray[JSSD_FLOAT_c_0] = &(PID_Data.TwoMassID_Output->c_0_out);
 	js_slowDataArray[JSSD_FLOAT_I_rated] = &(PID_Data.GlobalConfig.ratCurrent);
 	js_slowDataArray[JSSD_FLOAT_totalRotorInertia] = &(PID_Data.TwoMassID_Output->rotorInertia);
 	js_slowDataArray[JSSD_FLOAT_Wtemp] = &(PID_Data.OnlineID_Output->Wtemp);

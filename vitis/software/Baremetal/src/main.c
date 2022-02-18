@@ -52,7 +52,7 @@ int main(void)
 	Initialize_AXI_GPIO(); // Initialize the GPIOs which are connected over FPGA pins
 	uz_frontplane_button_and_led_init();
 
-	uz_mlpHlsTestbench();
+	uz_mlpBgdHls_testbench(true, false);
 
 	// Initialize Park-Transformation 123 to dq
 

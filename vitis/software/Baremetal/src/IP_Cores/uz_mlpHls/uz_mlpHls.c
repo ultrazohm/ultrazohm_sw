@@ -6,7 +6,6 @@
 
 // IP core drivers
 #include "xmlp.h"
-#include "xbgd.h"
 
 struct uz_mlpHls_t
 {

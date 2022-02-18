@@ -46,7 +46,10 @@
 // Constants for the GIC driver management
 #define INTC_DEVICE_ID         XPAR_SCUGIC_SINGLE_DEVICE_ID
 #define WDTTB_IRPT_INTR       XPAR_FABRIC_WDTTB_0_VEC_ID
-
+// We take as reference the Timer_up_time included in the UZ. (100000000U HZ)
+#define WDTTB_AXI_CLOCK_FREQ_HZ		XPAR_TIMER_UPTIME_64BIT_CLOCK_FREQ_HZ
+// Security Margin in micro seconds
+#define WDTTB_SECURITY_MARGIN_US		10
 /* How to set the second Window Size and the Interruption Point.
  * ------------------------------------------------------------
  * WIN_WDT_SW_COUNT		Second Window Size (Initial counter value)

@@ -41,6 +41,7 @@ static void uz_PID_FluxMapID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t*
 static void uz_PID_OnlineID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 static void uz_PID_FOC_output_set_zero(uz_ParameterID_Data_t* Data);
+static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_ParameterID_Data_t *Data);
 
 static uz_ParameterID_t* uz_ParameterID_allocation(void);
 
@@ -53,7 +54,7 @@ static uz_ParameterID_t* uz_ParameterID_allocation(void) {
 	return (self);
 }
 
-uz_ParameterID_t* uz_ParameterID_init(void) {
+uz_ParameterID_t* uz_ParameterID_init(uz_ParameterID_Data_t *Data) {
 	uz_ParameterID_t* self = uz_ParameterID_allocation();
 	self->ControlState = uz_ControlState_init();
 	self->ElectricalID = uz_ElectricalID_init();
@@ -61,6 +62,7 @@ uz_ParameterID_t* uz_ParameterID_init(void) {
 	self->FrictionID = uz_FrictionID_init();
 	self->FluxMapID = uz_FluxMapID_init();
 	self->OnlineID = uz_OnlineID_init();
+	uz_ParameterID_initialize_data_structs(self, Data);
 	return (self);
 }
 
@@ -431,7 +433,7 @@ void uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {
 	Data->ActualValues.theta_el -= atanf(Data->ActualValues.omega_el * RC);
 }
 
-void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_ParameterID_t *ParameterID) {
+static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_ParameterID_Data_t *Data) {
 
 	//Initialize Global-Config
 	Data->GlobalConfig.ACCEPT = false;
@@ -511,13 +513,13 @@ void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_Para
 	Data->OnlineID_Config.array_cleaned = false;
 
 	//Inintialize Output data structs
-	Data->ElectricalID_Output = &ParameterID->ElectricalID->output.ElectricalID_output;
-	Data->FrictionID_Output = &ParameterID->FrictionID->output.FrictionID_output;
-	Data->FluxMapID_Output = &ParameterID->FluxMapID->output.FluxMapID_output;
-	Data->TwoMassID_Output = &ParameterID->TwoMassID->output.TwoMassID_output;
-	Data->OnlineID_Output = &ParameterID->OnlineID->output.OnlineID_output;
-	Data->ControlFlags = &ParameterID->ControlState->output.ControlFlags;
-	Data->FluxMap_Data = &ParameterID->OnlineID->InterpMeshGrid->output.FluxMapData;
+	Data->ElectricalID_Output = &self->ElectricalID->output.ElectricalID_output;
+	Data->FrictionID_Output = &self->FrictionID->output.FrictionID_output;
+	Data->FluxMapID_Output = &self->FluxMapID->output.FluxMapID_output;
+	Data->TwoMassID_Output = &self->TwoMassID->output.TwoMassID_output;
+	Data->OnlineID_Output = &self->OnlineID->output.OnlineID_output;
+	Data->ControlFlags = &self->ControlState->output.ControlFlags;
+	Data->FluxMap_Data = &self->OnlineID->InterpMeshGrid->output.FluxMapData;
 
 	Data->calculate_flux_maps = false;
 	Data->FluxMap_counter = 0.0f;

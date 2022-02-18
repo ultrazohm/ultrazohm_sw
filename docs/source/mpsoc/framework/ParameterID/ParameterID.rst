@@ -16,7 +16,6 @@ ParameterID
 .. doxygenfunction:: uz_ParameterID_step
 .. doxygenfunction:: uz_ParameterID_generate_DutyCycle
 .. doxygenfunction:: uz_ParameterID_Controller
-.. doxygenfunction:: uz_ParameterID_initialize_data_structs
 .. doxygenfunction:: uz_ParameterID_CleanPsiArray
 .. doxygenfunction:: uz_ParameterID_CalcFluxMaps
 

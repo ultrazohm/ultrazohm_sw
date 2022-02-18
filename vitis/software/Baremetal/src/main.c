@@ -69,8 +69,7 @@ int main(void)
         case init_software:
             Initialize_Timer();
             uz_SystemTime_init();
-			ParameterID = uz_ParameterID_init();
-			uz_ParameterID_initialize_data_structs(&PID_Data, ParameterID);
+			ParameterID = uz_ParameterID_init(&PID_Data);
 			struct uz_PI_Controller_config config_id = { .Kp = PID_Data.GlobalConfig.Kp_id, .Ki = PID_Data.GlobalConfig.Ki_id, .samplingTime_sec = 0.00005f, .upper_limit = 15.0f,
 			                .lower_limit = -15.0f };
 			struct uz_PI_Controller_config config_iq = { .Kp = PID_Data.GlobalConfig.Kp_iq, .Ki = PID_Data.GlobalConfig.Ki_iq, .samplingTime_sec = 0.00005f, .upper_limit = 15.0f,

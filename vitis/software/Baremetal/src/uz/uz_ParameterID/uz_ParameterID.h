@@ -79,9 +79,10 @@ typedef struct uz_ParameterID_Data_t {
 /**
  * @brief Initializes the uz_ParameterID_t object and its sub-objects
  * 
- * @return uz_ParameterID_t* pointer to object
+ * @param Data pointer to uz_ParameterID_Data_t struct
+ * @return uz_ParameterID_t* pointer to uz_ParameterID_t object
  */
-uz_ParameterID_t* uz_ParameterID_init(void);
+uz_ParameterID_t* uz_ParameterID_init(uz_ParameterID_Data_t *Data);
 
 /**
  * @brief steps the ParameterID once and updates the output values of the ID-states
@@ -112,14 +113,6 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
  * @return struct uz_dq_t reference voltages of controller
  */
 struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
-
-/**
- * @brief Initializes the uz_ParameterID_Data_t used to communicate with the encapsuled ParamterID. This must be called after 
- * 
- * @param Data pointer to uz_ParameterID_Data_t struct
- * @param ParameterID pointer to uz_ParameterID_t object
- */
-void uz_ParameterID_initialize_data_structs(uz_ParameterID_Data_t *Data, uz_ParameterID_t *ParameterID);
 
 /**
  * @brief This function is cleaning the array storing the measurement values, which always consits of a d-q-current combination a winding temperature and a speed value such as a d-q-flux combination

@@ -69,13 +69,17 @@ typedef struct tag_RTM_TwoMassID_t RT_MODEL_TwoMassID_t;
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_TwoMassIDConfig_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_TwoMassIDConfig_t_
 
+/**
+ * @brief configuration struct for TwoMassID specific settings
+ * 
+ */
 typedef struct {
-  real32_T ScaleTorquePRBS;
-  real32_T n_ref_measurement;
-  uint16_T f_max;
-  uint16_T f_min;
-  uint8_T UseLbMq;
-  real32_T d_TMS_start;
+  real32_T ScaleTorquePRBS; /**< current amplitude of PRBS excitation */
+  real32_T n_ref_measurement; /** reference speed for identification */
+  uint16_T f_max; /**< maximum evaluation frequency */
+  uint16_T f_min; /**< minimum evaluation frequency */
+  uint8_T UseLbMq; /**< flag to use Levenberg Marquardt Algorithm */
+  real32_T d_TMS_start; /**< inital damping value for LM-algorithm */
 } uz_PID_TwoMassIDConfig_t;
 
 #endif
@@ -115,7 +119,6 @@ typedef struct {
   boolean_T TwoMassID;
   boolean_T FluxMapID;
   boolean_T OnlineID;
-  real32_T thetaOffset;
   boolean_T ACCEPT;
   real32_T sampleTimeISR;
   real32_T ratCurrent;
@@ -171,14 +174,16 @@ typedef struct {
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_TwoMassID_output_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_TwoMassID_output_t_
 
+/**
+ * @brief output struct of TwoMassID
+ * 
+ */
 typedef struct {
-  real32_T c_0_out;
-  real32_T c_est_out;
-  real32_T d_est_out;
-  real32_T c_max;
-  real32_T LoadInertia;
-  real32_T TrainInertia;
-  real32_T rotorInertia;
+  real32_T c_est_out; /**< identified TMS stiffness in Nm/rad */
+  real32_T d_est_out; /**< identified TMS damping in Nms/rad */
+  real32_T LoadInertia; /**< identified inertia of the load in kgm² */
+  real32_T TrainInertia; /**< identified inertia of the total system in kgm² */
+  real32_T rotorInertia; /**< identified inertia of the motor in kgm² */
 } uz_PID_TwoMassID_output_t;
 
 #endif

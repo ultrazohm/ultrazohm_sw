@@ -257,32 +257,37 @@ static void rt_InitInfAndNaN(size_t realSize)
 }
 
 /* Test if value is infinite */
-static boolean_T rtIsInf(real_T value) {
-	return (boolean_T) ((value == rtInf || value == rtMinusInf) ? 1U : 0U);
+static boolean_T rtIsInf(real_T value)
+{
+  return (boolean_T)((value==rtInf || value==rtMinusInf) ? 1U : 0U);
 }
 
 /* Test if single-precision value is infinite */
-static boolean_T rtIsInfF(real32_T value) {
-	return (boolean_T) (((value) == rtInfF || (value) == rtMinusInfF) ? 1U : 0U);
+static boolean_T rtIsInfF(real32_T value)
+{
+  return (boolean_T)(((value)==rtInfF || (value)==rtMinusInfF) ? 1U : 0U);
 }
 
 /* Test if value is not a number */
-static boolean_T rtIsNaN(real_T value) {
-	boolean_T result = (boolean_T) 0;
-	size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-	if (bitsPerReal == 32U) {
-		result = rtIsNaNF((real32_T) value);
-	} else {
-		union {
-			LittleEndianIEEEDouble bitVal;
-			real_T fltVal;
-		} tmpVal;
+static boolean_T rtIsNaN(real_T value)
+{
+  boolean_T result = (boolean_T) 0;
+  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+  if (bitsPerReal == 32U) {
+    result = rtIsNaNF((real32_T)value);
+  } else {
+    union {
+      LittleEndianIEEEDouble bitVal;
+      real_T fltVal;
+    } tmpVal;
 
-		tmpVal.fltVal = value;
-		result = (boolean_T) ((tmpVal.bitVal.words.wordH & 0x7FF00000) == 0x7FF00000 && ((tmpVal.bitVal.words.wordH & 0x000FFFFF) != 0 || (tmpVal.bitVal.words.wordL != 0)));
-	}
+    tmpVal.fltVal = value;
+    result = (boolean_T)((tmpVal.bitVal.words.wordH & 0x7FF00000) == 0x7FF00000 &&
+                         ( (tmpVal.bitVal.words.wordH & 0x000FFFFF) != 0 ||
+                          (tmpVal.bitVal.words.wordL != 0) ));
+  }
 
-	return result;
+  return result;
 }
 
 /* Test if single-precision value is not a number */
@@ -7379,30 +7384,24 @@ static void initParams(ExtU_TwoMassID_t *rtTwoMassID_U, ExtY_TwoMassID_t
     rtTwoMassID_U->GlobalConfig_out.Ki_n;
 
   /* Outport: '<Root>/TwoMassID_output' */
-  /* '<S1>:686:29' TwoMassID_output.c_0_out                = single(0.0); */
-  rtTwoMassID_Y->TwoMassID_output.c_0_out = 0.0F;
-
-  /* '<S1>:686:30' TwoMassID_output.c_est_out              = single(0.0); */
+  /* '<S1>:686:29' TwoMassID_output.c_est_out              = single(0.0); */
   rtTwoMassID_Y->TwoMassID_output.c_est_out = 0.0F;
 
-  /* '<S1>:686:31' TwoMassID_output.d_est_out              = single(0.0); */
+  /* '<S1>:686:30' TwoMassID_output.d_est_out              = single(0.0); */
   rtTwoMassID_Y->TwoMassID_output.d_est_out = 0.0F;
 
   /* Outport: '<Root>/TwoMassID_FOC_output' */
-  /* '<S1>:686:32' TwoMassID_FOC_output.activeState            = uint16(0); */
+  /* '<S1>:686:31' TwoMassID_FOC_output.activeState            = uint16(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.activeState = 0U;
 
   /* Outport: '<Root>/TwoMassID_output' */
-  /* '<S1>:686:33' TwoMassID_output.c_max                  = single(0.0); */
-  rtTwoMassID_Y->TwoMassID_output.c_max = 0.0F;
-
-  /* '<S1>:686:34' TwoMassID_output.LoadInertia            = single(0.0); */
+  /* '<S1>:686:32' TwoMassID_output.LoadInertia            = single(0.0); */
   rtTwoMassID_Y->TwoMassID_output.LoadInertia = 0.0F;
 
-  /* '<S1>:686:35' TwoMassID_output.TrainInertia           = single(0.0); */
+  /* '<S1>:686:33' TwoMassID_output.TrainInertia           = single(0.0); */
   rtTwoMassID_Y->TwoMassID_output.TrainInertia = 0.0F;
 
-  /* '<S1>:686:36' TwoMassID_output.rotorInertia           = single(0.0); */
+  /* '<S1>:686:34' TwoMassID_output.rotorInertia           = single(0.0); */
   rtTwoMassID_Y->TwoMassID_output.rotorInertia = 0.0F;
 }
 
@@ -8295,7 +8294,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
         }
       }
 
-			/*  Daempfungsfaktor lambda auf Hesse-Matrix anwenden */
+      /*  Daempfungsfaktor lambda auf Hesse-Matrix anwenden */
       /* '<S1>:647:203' H(1,1) = H(1,1) + lambda; */
       rtTwoMassID_DW->H[0] += rtTwoMassID_DW->lambda;
 
@@ -8306,7 +8305,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
       /* coursor(itt,4)=Jac(1); */
       /* coursor(itt,5)=Jac(2); */
       /* coursor(itt,6)= det(H_0); */
-			/* Neue Paramterschaetzung berechnen */
+      /* Neue Paramterschaetzung berechnen */
       /* '<S1>:647:211' dp = single(-inv(H)*(Jac')*d1(:)); */
       inv(rtTwoMassID_DW->H, rtTwoMassID_DW->fv, rtTwoMassID_DW);
       rtTwoMassID_DW->c_est_start_idx_0 = (-rtTwoMassID_DW->fv[0] *
@@ -8474,7 +8473,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
       /* coursor(itt,11)=d1;%e */
       /* coursor(itt,12)=d2;%e_lm */
       /* coursor(itt,13)=lambda; */
-			/*  Fallunterscheidung ob Fehler groesser oder kleiner geworden ist */
+      /*  Fallunterscheidung ob Fehler groesser oder kleiner geworden ist */
       /* '<S1>:647:255' if ee_lm <= ee */
       guard1 = false;
       if (rtTwoMassID_DW->ee_lm <= rtTwoMassID_DW->ee) {
@@ -8516,7 +8515,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
           rtTwoMassID_DW->lambda *= 10.0F;
         }
 
-				/* Pruefen ob Abbruchbedingung erreicht */
+        /* Pruefen ob Abbruchbedingung erreicht */
         /* '<S1>:647:278' if ee<=500 */
         if (rtTwoMassID_DW->ee <= 500.0F) {
           /* '<S1>:647:279' ee */
@@ -8530,7 +8529,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
 
   /* '<S1>:647:286' if(UseLevMar==0) */
   if (UseLevMar == 0) {
-		/* Schaetze Daempfung ueber Amplitudengangwerte an f_res und f_Til */
+    /* Schaetze Daempfung ueber Amplitudengangwerte an f_res und f_Til */
     /* '<S1>:647:289' d_til =  abs((JL*(Tilgerfrequenz*2*pi)^2 - c_est+(c_est*(JM+JL)-JM*JL*(Tilgerfrequenz*2*pi)^2)*Tilgerfrequenz*2*pi*10^(Tilgerwert/20)*i)    /   ((10^(Tilgerwert/20))*(Tilgerfrequenz*2*pi)^2 *(JM+JL)  + Tilgerfrequenz*2*pi*i     )) */
     rtTwoMassID_DW->ar = rtTwoMassID_DW->c_est_start_idx_0_tmp -
       rtTwoMassID_DW->c_est;
@@ -8765,9 +8764,7 @@ static void enter_atomic_TMS_calculate_stat(ExtU_TwoMassID_t *rtTwoMassID_U,
            rtTwoMassID_DW);
 
   /* Outport: '<Root>/TwoMassID_output' */
-  /* '<S1>:648:16' TwoMassID_output.c_0_out=LbMq(1,1); */
-  rtTwoMassID_Y->TwoMassID_output.c_0_out = rtTwoMassID_DW->LbMq[0];
-
+  /* '<S1>:648:16' c_0_out=single(LbMq(1,1)); */
   /* '<S1>:648:17' TwoMassID_output.c_est_out=LbMq(2,1); */
   rtTwoMassID_Y->TwoMassID_output.c_est_out = rtTwoMassID_DW->LbMq[1];
 
@@ -8785,11 +8782,7 @@ static void enter_atomic_TMS_calculate_stat(ExtU_TwoMassID_t *rtTwoMassID_U,
     rtTwoMassID_Y->TwoMassID_output.rotorInertia +
     rtTwoMassID_Y->TwoMassID_output.LoadInertia;
 
-  /* '<S1>:648:22' TwoMassID_output.c_max=single(TwoMassID_output.TrainInertia*4*3.14*3.14*500*500); */
-  rtTwoMassID_Y->TwoMassID_output.c_max =
-    rtTwoMassID_Y->TwoMassID_output.TrainInertia * 4.0F * 3.14F * 3.14F * 500.0F
-    * 500.0F;
-
+  /* '<S1>:648:22' c_max=single(TwoMassID_output.TrainInertia*4*3.14*3.14*500*500); */
   /* '<S1>:648:23' counter=0; */
   rtTwoMassID_DW->counter = 0U;
 }
@@ -8808,7 +8801,7 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
    *  Inport: '<Root>/TwoMassIDConfig'
    *  Outport: '<Root>/TwoMassID_FOC_output'
    */
-	if (rtTwoMassID_DW->temporalCounter_i1 < 32767U) {
+  if (rtTwoMassID_DW->temporalCounter_i1 < 32767U) {
     rtTwoMassID_DW->temporalCounter_i1++;
   }
 
@@ -9048,7 +9041,7 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
        case IN_TMS_Speed_State:
         /* During 'TMS_Speed_State': '<S1>:636' */
         /* '<S1>:657:1' sf_internal_predicateOutput = after(0.5,sec); */
-				if (rtTwoMassID_DW->temporalCounter_i1 >= 10000U) {
+        if (rtTwoMassID_DW->temporalCounter_i1 >= 10000U) {
           /* Transition: '<S1>:657' */
           /* Exit 'TMS_Speed_State': '<S1>:636' */
           rtTwoMassID_DW->is_TwoMassID = IN_TMS_Noise_State;
@@ -9080,7 +9073,7 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
        default:
         /* During 'TMS_calculate_state': '<S1>:648' */
         /* '<S1>:658:1' sf_internal_predicateOutput = after(1.0,sec); */
-				if (rtTwoMassID_DW->temporalCounter_i1 >= 20000U) {
+        if (rtTwoMassID_DW->temporalCounter_i1 >= 20000U) {
           /* Outport: '<Root>/finishedTwoMassID' */
           /* Transition: '<S1>:658' */
           /* Exit 'TMS_calculate_state': '<S1>:648' */
@@ -9223,10 +9216,8 @@ void TwoMassID_initialize(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_n_out = 0.0F;
 
   /* SystemInitialize for Outport: '<Root>/TwoMassID_output' */
-  rtTwoMassID_Y->TwoMassID_output.c_0_out = 0.0F;
   rtTwoMassID_Y->TwoMassID_output.c_est_out = 0.0F;
   rtTwoMassID_Y->TwoMassID_output.d_est_out = 0.0F;
-  rtTwoMassID_Y->TwoMassID_output.c_max = 0.0F;
   rtTwoMassID_Y->TwoMassID_output.LoadInertia = 0.0F;
   rtTwoMassID_Y->TwoMassID_output.TrainInertia = 0.0F;
   rtTwoMassID_Y->TwoMassID_output.rotorInertia = 0.0F;

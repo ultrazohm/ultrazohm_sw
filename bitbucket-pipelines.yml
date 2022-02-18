@@ -11,7 +11,9 @@ clone:
 pipelines:
   #branches:
   #  develop:
-   default:
+   branches:
+
+     develop:
         - step:
            name: build and push docker
            script:
@@ -24,10 +26,6 @@ pipelines:
             - docker push ultrazohm/ultrazohm_remote_container:$BITBUCKET_COMMIT_SHORT
            services:
             - docker
-
-   branches:
-
-     develop:
         - step:
            name: docs
            image: ultrazohm/ultrazohm_remote_container

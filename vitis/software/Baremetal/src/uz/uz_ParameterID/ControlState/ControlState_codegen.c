@@ -422,6 +422,10 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
       /* '<S1>:39:14' GlobalConfig_out.OnlineID = GlobalConfig_in.OnlineID; */
       rtControlState_Y->GlobalConfig_out.OnlineID =
         rtControlState_U->GlobalConfig_in.OnlineID;
+
+      /* '<S1>:39:15' GlobalConfig_out.sampleTimeISR = GlobalConfig_in.sampleTimeISR; */
+      rtControlState_Y->GlobalConfig_out.sampleTimeISR =
+        rtControlState_U->GlobalConfig_in.sampleTimeISR;
       switch (rtControlState_DW->is_ControlState) {
        case IN_activateElectricalID:
         /* During 'activateElectricalID': '<S1>:617' */

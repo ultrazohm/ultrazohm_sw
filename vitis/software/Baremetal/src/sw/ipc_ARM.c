@@ -495,6 +495,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (PID_OID_ref_Rs):
+			PID_Data.GlobalConfig.PMSM_config.R_ph_Ohm = value;
 			break;
 
 		case (PID_OID_max_speed):

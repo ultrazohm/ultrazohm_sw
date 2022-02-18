@@ -19,26 +19,28 @@
 #define TRAINING_SAMPLES 2000U
 #define BATCH_SIZE 20U
 #define LEARNING_RATE 3.0f
-#define NOUTPUT 16U
-#define KINPUT 784U
+#define NUMBER_OUTPUTS 16U
+#define NUMBER_INPUTS 784U
+#define NUMBER_HIDDEN 2U
+#define NUMBER_NEURONS 16U
 
 // compiler defines
-//#define TEST_TRAINING
+#define TEST_TRAINING
 
 static const u32 N = 16; //  Rows of A aka weight Matrix
 static const u32 K = N;  //  Cols of A and Rows of Input Vector
-static const u32 KInput = KINPUT;
-static const u32 NOutput = NOUTPUT;
+static const u32 KInput = NUMBER_INPUTS;
+static const u32 NOutput = NUMBER_OUTPUTS;
 static const u32 NumberOfHidden = 2;
 
 // input data and classes for training
 #ifdef TEST_TRAINING
-static const float uz_bgdHls_trainingData[KINPUT * TRAINING_SAMPLES] =
+static float uz_bgdHls_trainingData[NUMBER_INPUTS * TRAINING_SAMPLES] =
 {
 #include "uz_mlpBgdHls_trainingData/mnist_data.csv"
 		};
 
-static const float uz_mlpHls_trainingClasses[NOUTPUT * TRAINING_SAMPLES] =
+static float uz_bgdHls_trainingClasses[NUMBER_OUTPUTS * TRAINING_SAMPLES] =
 {
 #include "uz_mlpBgdHls_trainingData/mnist_labels.csv"
 		};
@@ -47,8 +49,8 @@ static const float uz_mlpHls_trainingClasses[NOUTPUT * TRAINING_SAMPLES] =
 static void mlpProcessSamples(XMlp *instance, float *inputValues, float *layerOutput,
 		size_t samples, size_t layerBufferSize, size_t features)
 {
-	u64 inputAddress = (u64) ((u32) inputValues);
-	u64 layerOutputAddress = (u64) ((u32) layerOutput);
+	u64 inputAddress = (u64) ((u32) inputValues + MLP_HLS_PARAMETER_MEMORY_OFFSET_PL);
+	u64 layerOutputAddress = (u64) ((u32) layerOutput + MLP_HLS_PARAMETER_MEMORY_OFFSET_PL);
 
 	XMlp_Set_input_r(instance, inputAddress);
 	XMlp_Set_axiLayerOutput(instance, layerOutputAddress);
@@ -181,10 +183,63 @@ static void uz_mlpHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 	destroyNetwork(referenceImpl);
 }
 
-static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstanceMlp,
-		uz_bgdHls_t *testInstanceBgd)
+static float **createCraniumInputArray(const float *values, size_t rows, size_t cols)
 {
+	float **craniumInput = (float **) malloc(rows * sizeof(float *));
 
+	for (size_t i = 0; i < rows; i++)
+	{
+		craniumInput[i] = &values[i * cols];
+	}
+
+	return craniumInput;
+}
+
+static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstanceMlp,
+		uz_bgdHls_t *testInstanceBgd, float *layerOutput, size_t layerBufferSize)
+{
+	uz_assert(TRAINING_SAMPLES % BATCH_SIZE == 0);
+	u32 maxIter = TRAINING_SAMPLES / BATCH_SIZE;
+	float **craniumInput = createCraniumInputArray(uz_bgdHls_trainingData, TRAINING_SAMPLES,
+	NUMBER_INPUTS);
+	float **craniumClasses = createCraniumInputArray(uz_bgdHls_trainingClasses, TRAINING_SAMPLES,
+	NUMBER_OUTPUTS);
+
+	DataSet *cranTrainingData = createDataSet(TRAINING_SAMPLES, NUMBER_INPUTS, craniumInput);
+	DataSet *cranTrainingClasses = createDataSet(TRAINING_SAMPLES, NUMBER_OUTPUTS, craniumClasses);
+
+	ParameterSet params;
+	params.network = referenceImpl;
+	params.data = cranTrainingData;
+	params.classes = cranTrainingClasses;
+	params.lossFunction = MEAN_SQUARED_ERROR;
+	params.batchSize = BATCH_SIZE;
+	params.learningRate = LEARNING_RATE;
+	params.searchTime = 0;
+	params.regularizationStrength = 0;
+	params.momentumFactor = 0;
+	params.maxIters = TRAINING_SAMPLES;
+	params.shuffle = 0;
+	params.verbose = 0;
+	optimize(params);
+
+	XBgd *xilInstanceBgd = uz_bgdHls_getXilInstance(testInstanceBgd);
+	XMlp *xilInstanceMlp = uz_mlpHls_getXilInstance(testInstanceMlp);
+	XBgd_Set_loadParameters(xilInstanceBgd, (u32) 1);
+	for (size_t iter = 0; iter < maxIter; iter++)
+	{
+		float *inputValues = &uz_bgdHls_trainingData[iter * BATCH_SIZE * NUMBER_INPUTS];
+		mlpProcessSamples(xilInstanceMlp, inputValues, layerOutput, BATCH_SIZE, layerBufferSize,
+		NUMBER_INPUTS);
+
+		XBgd_Start(xilInstanceBgd);
+		while (XBgd_IsIdle(xilInstanceBgd) == 0)
+			;
+		if (iter == 0)
+		{
+			XBgd_Set_loadParameters(xilInstanceBgd, (u32) 0);
+		}
+	}
 }
 
 int uz_mlpBgdHls_testbench(bool testMlp, bool testBgd)
@@ -227,11 +282,15 @@ int uz_mlpBgdHls_testbench(bool testMlp, bool testBgd)
 			.numberNeurons = N,
 			.parEntries = 16 };
 
+	uz_mlpHls_t *testInstanceMlp = uz_mlpInit(mlpConfig);
+	if (testMlp)
+		uz_mlpHlsTestbench(net, testInstanceMlp, inputBuffer, outputBuffer);
+
 #ifdef TEST_TRAINING
 	struct uz_bgdHls_config_t bgdConfig =
 	{
 			.mlpResultsMemoryAddress = mlpConfig.layerOutputAddress,
-			.classesMemoryAddress = (u64) ((u32) uz_mlpHls_trainingClasses),
+			.classesMemoryAddress = (u64) ((u32) uz_bgdHls_trainingClasses),
 			.weightInputMemoryAddress = mlpConfig.weightMemoryAddress,
 			.biasInputMemoryAddress = mlpConfig.biasMemoryAddress,
 			.weightOutputMemoryAddress = mlpConfig.weightMemoryAddress,
@@ -245,12 +304,10 @@ int uz_mlpBgdHls_testbench(bool testMlp, bool testBgd)
 			.learningRate = LEARNING_RATE,
 			.parEntries = mlpConfig.parEntries,
 			.deviceId = XPAR_MLP_BGD_DEVICE_ID };
-	// uz_bgdHls_t *testInstanceBgd = uz_bgdInit(bgdConfig);
-#endif
 
-	uz_mlpHls_t *testInstanceMlp = uz_mlpInit(mlpConfig);
-	if (testMlp)
-		uz_mlpHlsTestbench(net, testInstanceMlp, inputBuffer, outputBuffer);
+	uz_bgdHls_t *testInstanceBgd = uz_bgdInit(bgdConfig);
+	uz_bgdHlsTestbench(net, testInstanceMlp, testInstanceBgd, layerBuffer, layerBufferSize);
+#endif
 
 	return UZ_SUCCESS;
 }

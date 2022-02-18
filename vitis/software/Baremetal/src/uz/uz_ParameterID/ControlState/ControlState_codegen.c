@@ -435,10 +435,6 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
           /* '<S1>:624:3' ControlFlags.startElectricalID=boolean(0); */
           rtControlState_Y->ControlFlags.startElectricalID = false;
 
-          /* '<S1>:624:4' GlobalConfig_out.thetaOffset=ElectricalID_output.thetaOffset; */
-          rtControlState_Y->GlobalConfig_out.thetaOffset =
-            rtControlState_U->ElectricalID_output.thetaOffset;
-
           /* '<S1>:718:1' sf_internal_predicateOutput = GlobalConfig_in.ElectricalID==0; */
         } else if (!rtControlState_U->GlobalConfig_in.ElectricalID) {
           /* Transition: '<S1>:718' */
@@ -540,10 +536,6 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
           /* '<S1>:617:3' ControlFlags.startElectricalID=boolean(1); */
           rtControlState_Y->ControlFlags.startElectricalID = true;
 
-          /* '<S1>:617:4' GlobalConfig_out.thetaOffset=ElectricalID_output.thetaOffset; */
-          rtControlState_Y->GlobalConfig_out.thetaOffset =
-            rtControlState_U->ElectricalID_output.thetaOffset;
-
           /* '<S1>:682:1' sf_internal_predicateOutput = ControlFlags.transNr==4 && finishedFluxMapID_loc==0; */
         } else if ((rtControlState_Y->ControlFlags.transNr == 4) &&
                    (rtControlState_DW->finishedFluxMapID_loc == 0)) {
@@ -620,57 +612,53 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
 
           /* Entry 'decideMotorID': '<S1>:605' */
         } else {
-          /* '<S1>:624:6' GlobalConfig_out.thetaOffset=ElectricalID_output.thetaOffset; */
-          rtControlState_Y->GlobalConfig_out.thetaOffset =
-            rtControlState_U->ElectricalID_output.thetaOffset;
-
-          /* '<S1>:624:7' GlobalConfig_out.PMSM_config.Ld_Henry=ElectricalID_output.PMSM_parameters.Ld_Henry; */
+          /* '<S1>:624:5' GlobalConfig_out.PMSM_config.Ld_Henry=ElectricalID_output.PMSM_parameters.Ld_Henry; */
           rtControlState_Y->GlobalConfig_out.PMSM_config.Ld_Henry =
             rtControlState_U->ElectricalID_output.PMSM_parameters.Ld_Henry;
 
-          /* '<S1>:624:8' GlobalConfig_out.PMSM_config.Lq_Henry=ElectricalID_output.PMSM_parameters.Lq_Henry; */
+          /* '<S1>:624:6' GlobalConfig_out.PMSM_config.Lq_Henry=ElectricalID_output.PMSM_parameters.Lq_Henry; */
           rtControlState_Y->GlobalConfig_out.PMSM_config.Lq_Henry =
             rtControlState_U->ElectricalID_output.PMSM_parameters.Lq_Henry;
 
-          /* '<S1>:624:9' GlobalConfig_out.PMSM_config.R_ph_Ohm=ElectricalID_output.PMSM_parameters.R_ph_Ohm; */
+          /* '<S1>:624:7' GlobalConfig_out.PMSM_config.R_ph_Ohm=ElectricalID_output.PMSM_parameters.R_ph_Ohm; */
           rtControlState_Y->GlobalConfig_out.PMSM_config.R_ph_Ohm =
             rtControlState_U->ElectricalID_output.PMSM_parameters.R_ph_Ohm;
 
-          /* '<S1>:624:10' GlobalConfig_out.PMSM_config.Psi_PM_Vs=ElectricalID_output.PMSM_parameters.Psi_PM_Vs; */
+          /* '<S1>:624:8' GlobalConfig_out.PMSM_config.Psi_PM_Vs=ElectricalID_output.PMSM_parameters.Psi_PM_Vs; */
           rtControlState_Y->GlobalConfig_out.PMSM_config.Psi_PM_Vs =
             rtControlState_U->ElectricalID_output.PMSM_parameters.Psi_PM_Vs;
 
-          /* '<S1>:624:11' GlobalConfig_out.PMSM_config.polePairs=ElectricalID_output.PMSM_parameters.polePairs; */
+          /* '<S1>:624:9' GlobalConfig_out.PMSM_config.polePairs=ElectricalID_output.PMSM_parameters.polePairs; */
           rtControlState_Y->GlobalConfig_out.PMSM_config.polePairs =
             rtControlState_U->ElectricalID_output.PMSM_parameters.polePairs;
 
-          /* '<S1>:624:12' GlobalConfig_out.PMSM_config.J_kg_m_squared=.... */
-          /* '<S1>:624:13'     ElectricalID_output.PMSM_parameters.J_kg_m_squared; */
+          /* '<S1>:624:10' GlobalConfig_out.PMSM_config.J_kg_m_squared=.... */
+          /* '<S1>:624:11'     ElectricalID_output.PMSM_parameters.J_kg_m_squared; */
           rtControlState_Y->GlobalConfig_out.PMSM_config.J_kg_m_squared =
             rtControlState_U->ElectricalID_output.PMSM_parameters.J_kg_m_squared;
 
           /* . */
-          /* '<S1>:624:14' GlobalConfig_out.Kp_id=ElectricalID_FOC_output.Kp_id_out; */
+          /* '<S1>:624:12' GlobalConfig_out.Kp_id=ElectricalID_FOC_output.Kp_id_out; */
           rtControlState_Y->GlobalConfig_out.Kp_id =
             rtControlState_U->ElectricalID_FOC_output.Kp_id_out;
 
-          /* '<S1>:624:15' GlobalConfig_out.Kp_iq=ElectricalID_FOC_output.Kp_iq_out; */
+          /* '<S1>:624:13' GlobalConfig_out.Kp_iq=ElectricalID_FOC_output.Kp_iq_out; */
           rtControlState_Y->GlobalConfig_out.Kp_iq =
             rtControlState_U->ElectricalID_FOC_output.Kp_iq_out;
 
-          /* '<S1>:624:16' GlobalConfig_out.Kp_n=ElectricalID_FOC_output.Kp_n_out; */
+          /* '<S1>:624:14' GlobalConfig_out.Kp_n=ElectricalID_FOC_output.Kp_n_out; */
           rtControlState_Y->GlobalConfig_out.Kp_n =
             rtControlState_U->ElectricalID_FOC_output.Kp_n_out;
 
-          /* '<S1>:624:17' GlobalConfig_out.Ki_id=ElectricalID_FOC_output.Ki_id_out; */
+          /* '<S1>:624:15' GlobalConfig_out.Ki_id=ElectricalID_FOC_output.Ki_id_out; */
           rtControlState_Y->GlobalConfig_out.Ki_id =
             rtControlState_U->ElectricalID_FOC_output.Ki_id_out;
 
-          /* '<S1>:624:18' GlobalConfig_out.Ki_iq=ElectricalID_FOC_output.Ki_iq_out; */
+          /* '<S1>:624:16' GlobalConfig_out.Ki_iq=ElectricalID_FOC_output.Ki_iq_out; */
           rtControlState_Y->GlobalConfig_out.Ki_iq =
             rtControlState_U->ElectricalID_FOC_output.Ki_iq_out;
 
-          /* '<S1>:624:19' GlobalConfig_out.Ki_n=ElectricalID_FOC_output.Ki_n_out; */
+          /* '<S1>:624:17' GlobalConfig_out.Ki_n=ElectricalID_FOC_output.Ki_n_out; */
           rtControlState_Y->GlobalConfig_out.Ki_n =
             rtControlState_U->ElectricalID_FOC_output.Ki_n_out;
         }
@@ -860,7 +848,6 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
   rtControlState_Y->GlobalConfig_out.TwoMassID = false;
   rtControlState_Y->GlobalConfig_out.FluxMapID = false;
   rtControlState_Y->GlobalConfig_out.OnlineID = false;
-  rtControlState_Y->GlobalConfig_out.thetaOffset = 0.0F;
   rtControlState_Y->GlobalConfig_out.ACCEPT = false;
   rtControlState_Y->GlobalConfig_out.sampleTimeISR = 0.0F;
   rtControlState_Y->GlobalConfig_out.ratCurrent = 0.0F;

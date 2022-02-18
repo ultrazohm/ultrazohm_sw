@@ -321,8 +321,6 @@ static void uz_PID_ElectricalID_step(uz_ParameterID_t* self, uz_ParameterID_Data
 	self->ControlState->input.enteredElectricalID = self->ElectricalID->output.enteredElectricalID;
 	self->ControlState->input.finishedElectricalID = self->ElectricalID->output.finishedElectricalID;
 
-	//Update Data struct with new output values
-	Data->GlobalConfig.thetaOffset = self->ElectricalID->output.ElectricalID_output.thetaOffset;
 }
 
 static void uz_PID_ControlState_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
@@ -447,7 +445,6 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->GlobalConfig.VibAmp = 0.0f;
 	Data->GlobalConfig.VibFreq = 0U;
 	Data->GlobalConfig.VibOn = false;
-	Data->GlobalConfig.thetaOffset = 0.0f;
 	Data->GlobalConfig.sampleTimeISR = 50.0e-06f;
 
 	//Initialize motor-related parameters inside Global-Config

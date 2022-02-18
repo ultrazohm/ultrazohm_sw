@@ -121,7 +121,6 @@ typedef struct {
   boolean_T TwoMassID;
   boolean_T FluxMapID;
   boolean_T OnlineID;
-  real32_T thetaOffset;
   boolean_T ACCEPT;
   real32_T sampleTimeISR;
   real32_T ratCurrent;

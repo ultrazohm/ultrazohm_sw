@@ -69,19 +69,23 @@ typedef struct tag_RTM_FluxMapID_t RT_MODEL_FluxMapID_t;
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_FluxMapIDConfig_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_FluxMapIDConfig_t_
 
+/**
+ * @brief configuration struct for FluxMapID specific settings
+ * 
+ */
 typedef struct {
-  real32_T AMMsampleTime;
-  real32_T IDstart;
-  real32_T IDstepsize;
-  real32_T IDstop;
-  real32_T IQstart;
-  real32_T IQstepsize;
-  real32_T IQstop;
-  real32_T R_s_ref;
-  real32_T Temp_ref;
-  boolean_T start_FM_ID;
-  boolean_T identR;
-  real32_T identRAmp;
+  real32_T AMMsampleTime; /**<settling time needed to collect all data in seconds */
+  real32_T IDstart; /**< start point of the id-steps */
+  real32_T IDstepsize; /**< stepsize of the id-steps */
+  real32_T IDstop; /**< end point of the id-steps */
+  real32_T IQstart; /**< start point of the iq-steps */
+  real32_T IQstepsize; /**< stepsize of the iq-steps */
+  real32_T IQstop; /**< end point of the iq-stops */
+  real32_T R_s_ref; /**< reference resistance for online identification in Ohm*/
+  real32_T Temp_ref; /**< reference temperature, at which the reference resistance was measured */
+  boolean_T start_FM_ID; /**< flag to enable the automatic current control */
+  boolean_T identR; /**< flag to enable online identification */
+  real32_T identRAmp; /**< amplitude of the d-current injection signal for online identification of Rs in Amps */
 } uz_PID_FluxMapIDConfig_t;
 
 #endif
@@ -121,7 +125,6 @@ typedef struct {
   boolean_T TwoMassID;
   boolean_T FluxMapID;
   boolean_T OnlineID;
-  real32_T thetaOffset;
   boolean_T ACCEPT;
   real32_T sampleTimeISR;
   real32_T ratCurrent;
@@ -177,10 +180,14 @@ typedef struct {
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_FluxMapID_output_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_FluxMapID_output_t_
 
+/**
+ * @brief output struct of FluxMapID
+ * 
+ */
 typedef struct {
-  boolean_T external_Measurement_Flag;
-  real32_T R_s;
-  real32_T WindingTemp;
+  boolean_T external_Measurement_Flag; /**< trigger to signal, when an external measurement equipment should measure */
+  real32_T R_s; /**< identified online resistance in ohm */
+  real32_T WindingTemp; /**< identified winding temperature of the stator */
 } uz_PID_FluxMapID_output_t;
 
 #endif

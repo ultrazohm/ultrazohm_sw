@@ -126,7 +126,6 @@ typedef struct {
   boolean_T TwoMassID; /**< flag to enable TwoMassID */
   boolean_T FluxMapID; /**< flag to enable FluxMapID */
   boolean_T OnlineID; /**< flag to enable OnlineID */
-  real32_T thetaOffset; 
   boolean_T ACCEPT; /**< flag for the ACCEPT button  */
   real32_T sampleTimeISR; /**< sampleTime of the ISR. i.e. sampleTime of the function call uz_ParameterID_step */
   real32_T ratCurrent; /**< rated current of the motor */
@@ -190,13 +189,17 @@ typedef struct {
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_ElectricalID_output_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_ElectricalID_output_t_
 
+/**
+ * @brief output struct of ElectricalID
+ * 
+ */
 typedef struct {
-  real32_T PWM_Switch_0;
-  real32_T PWM_Switch_2;
-  real32_T PWM_Switch_4;
-  boolean_T enable_TriState[3];
-  real32_T thetaOffset;
-  uz_PMSM_t PMSM_parameters;
+  real32_T PWM_Switch_0; /**< DutyCycle for PWM Switch 0 (only needed from the start of ElectricalID, until Ld and Lq have been identified) */
+  real32_T PWM_Switch_2; /**< DutyCycle for PWM Switch 2 (only needed from the start of ElectricalID, until Ld and Lq have been identified) */
+  real32_T PWM_Switch_4; /**< DutyCycle for PWM Switch 4 (only needed from the start of ElectricalID, until Ld and Lq have been identified) */
+  boolean_T enable_TriState[3]; /**< array to signal which halfbridge of the inverter should be in tristate mode. true signals, that the halfbridge should be in tristate mode. (only needed from the start of ElectricalID, until Ld and Lq have been identified) */
+  real32_T thetaOffset; /**< determined offset of theta in rad */
+  uz_PMSM_t PMSM_parameters; /**< identified motor parameters */
 } uz_PID_ElectricalID_output_t;
 
 #endif

@@ -2838,7 +2838,7 @@
                                 "portIndex": 7,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/Interrupt/Interrupt_muxed",
+                                        "name": "zusys_i/Interrupt/mux_axi_ip_1_interrupt_out_adc",
                                         "isBus": false
                                     }
                                 ]
@@ -2854,20 +2854,20 @@
                                 "portIndex": 8,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/Interrupt/mux_axi_ip_0_select_out",
+                                        "name": "zusys_i/Interrupt/mux_axi_ip_1_select_out",
                                         "isBus": true,
                                         "subnets": [
                                             {
-                                                "name": "zusys_i/Interrupt/mux_axi_ip_0_select_out[3]"
+                                                "name": "zusys_i/Interrupt/mux_axi_ip_1_select_out[3]"
                                             },
                                             {
-                                                "name": "zusys_i/Interrupt/mux_axi_ip_0_select_out[2]"
+                                                "name": "zusys_i/Interrupt/mux_axi_ip_1_select_out[2]"
                                             },
                                             {
-                                                "name": "zusys_i/Interrupt/mux_axi_ip_0_select_out[1]"
+                                                "name": "zusys_i/Interrupt/mux_axi_ip_1_select_out[1]"
                                             },
                                             {
-                                                "name": "zusys_i/Interrupt/mux_axi_ip_0_select_out[0]"
+                                                "name": "zusys_i/Interrupt/mux_axi_ip_1_select_out[0]"
                                             }
                                         ]
                                     }
@@ -2923,7 +2923,7 @@
                     },
                     {
                         "type": "ILA_V3",
-                        "name": "zusys_i/MLP/ila_mlp",
+                        "name": "zusys_i/adc_debug/ila_0",
                         "spec": "labtools_ila_v6",
                         "ipName": "ila",
                         "core_location": {
@@ -2931,57 +2931,11 @@
                             "slave_index": 9,
                             "bscan_switch_index": 0
                         },
-                        "uuid": "E08DBA3AFDE754E0AA751F9450F983F1",
-                        "pins": [
-                            {
-                                "name": "probe0",
-                                "id": 80,
-                                "type": "DATA_TRIGGER",
-                                "direction": "IN",
-                                "isVector": false,
-                                "leftIndex": 0,
-                                "rightIndex": 0,
-                                "portIndex": 0,
-                                "nets": [
-                                    {
-                                        "name": "zusys_i/MLP/MLP_0_ap_done",
-                                        "isBus": false
-                                    }
-                                ]
-                            },
-                            {
-                                "name": "probe1",
-                                "id": 81,
-                                "type": "DATA_TRIGGER",
-                                "direction": "IN",
-                                "isVector": false,
-                                "leftIndex": 0,
-                                "rightIndex": 0,
-                                "portIndex": 1,
-                                "nets": [
-                                    {
-                                        "name": "zusys_i/MLP/BGD_interrupt",
-                                        "isBus": false
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "type": "ILA_V3",
-                        "name": "zusys_i/adc_debug/ila_0",
-                        "spec": "labtools_ila_v6",
-                        "ipName": "ila",
-                        "core_location": {
-                            "user_chain": 1,
-                            "slave_index": 10,
-                            "bscan_switch_index": 0
-                        },
                         "uuid": "C0E6099118DB5F54870030513C9CAEAC",
                         "pins": [
                             {
                                 "name": "probe0",
-                                "id": 82,
+                                "id": 80,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3047,7 +3001,7 @@
                             },
                             {
                                 "name": "probe1",
-                                "id": 83,
+                                "id": 81,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3113,7 +3067,7 @@
                             },
                             {
                                 "name": "probe2",
-                                "id": 84,
+                                "id": 82,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3179,7 +3133,7 @@
                             },
                             {
                                 "name": "probe3",
-                                "id": 85,
+                                "id": 83,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3245,7 +3199,7 @@
                             },
                             {
                                 "name": "probe4",
-                                "id": 86,
+                                "id": 84,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3261,7 +3215,7 @@
                             },
                             {
                                 "name": "probe5",
-                                "id": 87,
+                                "id": 85,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3277,7 +3231,7 @@
                             },
                             {
                                 "name": "probe6",
-                                "id": 88,
+                                "id": 86,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3391,7 +3345,7 @@
                             },
                             {
                                 "name": "probe7",
-                                "id": 89,
+                                "id": 87,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3407,7 +3361,7 @@
                             },
                             {
                                 "name": "probe8",
-                                "id": 90,
+                                "id": 88,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3530,7 +3484,7 @@
                             },
                             {
                                 "name": "probe9",
-                                "id": 91,
+                                "id": 89,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3653,7 +3607,7 @@
                             },
                             {
                                 "name": "probe10",
-                                "id": 92,
+                                "id": 90,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3776,7 +3730,7 @@
                             },
                             {
                                 "name": "probe11",
-                                "id": 93,
+                                "id": 91,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3906,14 +3860,14 @@
                         "ipName": "ila",
                         "core_location": {
                             "user_chain": 1,
-                            "slave_index": 11,
+                            "slave_index": 10,
                             "bscan_switch_index": 0
                         },
                         "uuid": "70251CD50DB350AAA1EDC3281D6D9970",
                         "pins": [
                             {
                                 "name": "probe0",
-                                "id": 94,
+                                "id": 92,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3929,7 +3883,7 @@
                             },
                             {
                                 "name": "probe1",
-                                "id": 95,
+                                "id": 93,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3945,7 +3899,7 @@
                             },
                             {
                                 "name": "probe2",
-                                "id": 96,
+                                "id": 94,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3961,7 +3915,7 @@
                             },
                             {
                                 "name": "probe3",
-                                "id": 97,
+                                "id": 95,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -4051,7 +4005,7 @@
                             },
                             {
                                 "name": "probe4",
-                                "id": 98,
+                                "id": 96,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -4141,7 +4095,7 @@
                             },
                             {
                                 "name": "probe5",
-                                "id": 99,
+                                "id": 97,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -4157,7 +4111,7 @@
                             },
                             {
                                 "name": "probe6",
-                                "id": 100,
+                                "id": 98,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -4223,7 +4177,7 @@
                             },
                             {
                                 "name": "probe7",
-                                "id": 101,
+                                "id": 99,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -4296,14 +4250,14 @@
                         "ipName": "vio",
                         "core_location": {
                             "user_chain": 1,
-                            "slave_index": 12,
+                            "slave_index": 11,
                             "bscan_switch_index": 0
                         },
                         "uuid": "D78E6252BB1B53A8AC58618A5F26429C",
                         "pins": [
                             {
                                 "name": "probe_out0",
-                                "id": 102,
+                                "id": 100,
                                 "type": "DATA",
                                 "direction": "OUT",
                                 "isVector": true,

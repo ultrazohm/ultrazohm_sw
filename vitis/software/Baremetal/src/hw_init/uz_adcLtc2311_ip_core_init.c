@@ -37,9 +37,9 @@ void uz_adcLtc2311_ip_core_init(void)
         .max_attempts = 10U};
 
     // Apply the same configurations to all instances
-    uz_adcLtc2311_t *test_instance = uz_adcLtc2311_init(default_configuration);
+    uz_adcLtc2311_init(default_configuration);
     default_configuration.base_address = XPAR_A2_ADC_LTC2311_S00_AXI_BASEADDR;
-    uz_adcLtc2311_t *test_instance_2 = uz_adcLtc2311_init(default_configuration);
+    uz_adcLtc2311_init(default_configuration);
     default_configuration.base_address = XPAR_A3_ADC_LTC2311_S00_AXI_BASEADDR;
-    uz_adcLtc2311_t *test_instance_3 = uz_adcLtc2311_init(default_configuration);
+    uz_adcLtc2311_init(default_configuration);
 }

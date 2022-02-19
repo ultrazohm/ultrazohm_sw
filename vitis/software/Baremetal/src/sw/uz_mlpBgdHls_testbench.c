@@ -9,11 +9,9 @@
 
 // system includes
 #include <stddef.h>
+#include <stdbool.h>
 
 // Xilinx includes
-#include "xmlp.h"
-#include "xbgd.h"
-#include "xparameters.h"
 
 // defines
 #define TRAINING_SAMPLES 2000U
@@ -241,13 +239,6 @@ static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 		{
 			XBgd_Set_loadParameters(xilInstanceBgd, (u32) 0);
 		}
-	}
-
-	// check accuracy of hardware implementation
-	for (size_t i = 0; i < TRAINING_SAMPLES; i++)
-	{
-		u64 inputValues = (u64) ((u32) &uz_bgdHls_trainingData[iter * NUMBER_INPUTS]
-				+ MLP_HLS_PARAMETER_MEMORY_OFFSET_PL);
 	}
 }
 

@@ -1,10 +1,12 @@
+#include "xparameters.h"
+#if XPAR_XMLP_NUM_INSTANCES > 0
 #include "../../uz/uz_global_configuration.h"
 #include "uz_mlpHls.h"
 #include "../../uz/uz_HAL.h"
 
 // xilinx
 #include "xstatus.h"
-#include "xparameters.h"
+#include "xmlp.h"
 
 #define UZ_MLPHLS_PL_ADDRESS(R5_ADDRESS) ((R5_ADDRESS) + (UZ_MEMORY_OFFSET_PL))
 #define UZ_MLPHLS_R5_ADDRESS(PL_ADDRESS) ((PL_ADDRESS) - (UZ_MEMORY_OFFSET_PL))
@@ -38,6 +40,7 @@ static void uz_mlpHls_updateLayerBufferSize(struct uz_mlpHls_config_t *config)
 
 uz_mlpHls_t *uz_mlpHls_init(struct uz_mlpHls_config_t config)
 {
+	uz_assert_not_zero(config.parEntries);
 	XMlp xilInstance;
 	uz_assert(XMlp_Initialize(&xilInstance, config.deviceId) == XST_SUCCESS);
 
@@ -247,3 +250,5 @@ u16 uz_mlpHls_getDeviceId(uz_mlpHls_t *instance)
 	uz_assert_not_NULL(instance);
 	return instance->config.deviceId;
 }
+
+#endif

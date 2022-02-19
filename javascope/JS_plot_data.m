@@ -5,6 +5,9 @@ format compact
 
 %% settings
 save_all_logged_data = 0; 
+plot_all_channels = 1;
+rename_channels_manually = 0;
+import_data_to_simulink_datainspector = 1;
 
 %% import latest csv
 Logfile_list = dir('Log_*.csv');
@@ -47,61 +50,81 @@ n_samples_full = size(log.time,1);
 log.time(:) = log.time - log.time(1);
 
 %% Plot all channels
-for ch = 1:num_channels
-    figure(ch)
-%     hold on
-    plot_command = ['plot(log.',channel_names{ch+1},');']; 
-    eval(plot_command)
-    title(variable_names{ch+1}, 'Interpreter', 'none') %first entry is the time stamp
+if(plot_all_channels ~= 0)
+    for ch = 1:num_channels
+        figure(ch)
+    %     hold on
+        plot_command = ['plot(log.',channel_names{ch+1},');']; 
+        eval(plot_command)
+        title(variable_names{ch+1}, 'Interpreter', 'none') %first entry is the time stamp
+    end
 end
 
 %% Useful subplots with synchronized x-axis zoom
 nplots = 4; %choose how many plots in one figure
-for plots = 1:ceil(num_channels/nplots)
-    figure(100+plots)
-    tiledlayout(nplots,1)
-    
-    for plot_ch=1:nplots
-        ax(plot_ch) = nexttile;
-        hold on
-        ch = plot_ch + nplots*(plots-1);
-        if(ch>num_channels)
-            break
+
+if(plot_all_channels ~= 0)
+    for plots = 1:ceil(num_channels/nplots)
+        figure(100+plots)
+        tiledlayout(nplots,1)
+
+        for plot_ch=1:nplots
+            ax(plot_ch) = nexttile;
+            hold on
+            ch = plot_ch + nplots*(plots-1);
+            if(ch>num_channels)
+                break
+            end
+            plot_command = ['plot(log.',channel_names{ch+1},');'];        
+            eval(plot_command)
+            title(variable_names{ch+1}, 'Interpreter', 'none') %first entry is the time stamp
         end
-        plot_command = ['plot(log.',channel_names{ch+1},');'];        
-        eval(plot_command)
-        title(variable_names{ch+1}, 'Interpreter', 'none') %first entry is the time stamp
+        %synochronize x-axis zoom
+        linkaxes(ax,'x')
     end
-    %synochronize x-axis zoom
-    linkaxes(ax,'x')
+end
+%% rename channels - if needed - done manually by user!
+if (rename_channels_manually ~= 0)
+    log = renamevars(log, "CH1",  "CH1" );
+    log = renamevars(log, "CH2",  "CH2" );
+    log = renamevars(log, "CH3",  "CH3" );
+    log = renamevars(log, "CH4",  "CH4" );
+    log = renamevars(log, "CH5",  "CH5" );
+    log = renamevars(log, "CH6",  "CH6" );
+    log = renamevars(log, "CH7",  "CH7" );
+    log = renamevars(log, "CH8",  "CH8" );
+    log = renamevars(log, "CH9",  "CH9" );
+    log = renamevars(log, "CH10", "CH10");
+    log = renamevars(log, "CH11", "CH11");
+    log = renamevars(log, "CH12", "CH12");
+    log = renamevars(log, "CH13", "CH13");
+    log = renamevars(log, "CH14", "CH14");
+    log = renamevars(log, "CH15", "CH15");
+    log = renamevars(log, "CH16", "CH16");
+    log = renamevars(log, "CH17", "CH17");
+    log = renamevars(log, "CH18", "CH18");
+    log = renamevars(log, "CH19", "CH19");
+    log = renamevars(log, "CH20", "CH20");
+    channel_names  = log.Properties.VariableNames;
 end
 
-%% rename channels - if needed - done manually by user!
-log = renamevars(log, "CH1",  "CH1" );
-log = renamevars(log, "CH2",  "CH2" );
-log = renamevars(log, "CH3",  "CH3" );
-log = renamevars(log, "CH4",  "CH4" );
-log = renamevars(log, "CH5",  "CH5" );
-log = renamevars(log, "CH6",  "CH6" );
-log = renamevars(log, "CH7",  "CH7" );
-log = renamevars(log, "CH8",  "CH8" );
-log = renamevars(log, "CH9",  "CH9" );
-log = renamevars(log, "CH10", "CH10");
-log = renamevars(log, "CH11", "CH11");
-log = renamevars(log, "CH12", "CH12");
-log = renamevars(log, "CH13", "CH13");
-log = renamevars(log, "CH14", "CH14");
-log = renamevars(log, "CH15", "CH15");
-log = renamevars(log, "CH16", "CH16");
-log = renamevars(log, "CH17", "CH17");
-log = renamevars(log, "CH18", "CH18");
-log = renamevars(log, "CH19", "CH19");
-log = renamevars(log, "CH20", "CH20");
-
-channel_names  = log.Properties.VariableNames;
-
 %% saving data in compressed mat file format
-file_name_log = file_name(1:end-4)
+file_name_log = file_name(1:end-4);
+
 if (save_all_logged_data ~= 0)
     save(file_name_log,'log','variable_names','channel_names','-v7.3')
 end
+
+%% Import Data into Simulink Data Inspector
+if(import_data_to_simulink_datainspector ~= 0)
+    
+    runID = Simulink.sdi.createRun(file_name_log);
+    for ch = 1:num_channels
+        createTimeSeries_ChN = ['Series = timeseries(log.',channel_names{ch+1},', log.time);'];
+        eval(createTimeSeries_ChN);
+        Series.Name = variable_names{ch+1};
+        Simulink.sdi.addToRun(runID,'vars',Series);
+    end
+    Simulink.sdi.view
+end
+

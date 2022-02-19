@@ -13,26 +13,27 @@ Nr, Rule, Example, Comment
 13, Declare all functions with a function prototype,,
 14, Function prototype for functions without arguments need ``void`` as parameter, ``void foo(void)``, The function declaration ``void foo()`` allows to pass a variable number of arguments without a compiler warning
 15, Use typedef only for ``struct`` and ``enum``, ``typedef struct uz_myIp uz_myIp;``,
-16, Use defined width types from ``<stdint.h>``, ``int32_t; uint32_t``, Only use fixed width integers if they are required; for example for hardware mapped registers. Data width below 32-bit is not useful in most cases
-17, Use ``static`` for all functions that are only used in their translation unit (the .c file), ``static float private_function_foo(float x);``, Behaves as "private function" (only usable in the translation unit) and `gcc inlines these functions if they are only called once with -O1 <https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html>`_
-18, Use ``bool`` from <stdbool.h>,, "Useful for hardware/ip-cores that are off or on,  enable signals, valid/reay signals"
-19, Use `float` versions of math functions when using ``float``, ``sinf()``,
-20, Use ``NULL`` to check for null pointers, Complaint: ``uz_assert_not_null(ptr)``,
-21, Check function arguments for validity,, Use assertions to communicate intend to the user of what the limits of function arguments are 
-22, Only one exit at the end of a function, no multiple ``return``, Requirement of MISRA [#misra]_ 
-23, "No unused code,  variables, ``typedef``, macros",,
-24, No use of the comma operator, "Non-complaint: ``int a, b, c;``", Forbidden by MISRA [#misra]_ 
-25, Do not compare for equality with ``float``,, Modern C [#modernC]_ takeaway 1.5.7.18
-26, No ``goto``,, Forbidden by MISRA rule 15.1 [#misra]_ 
-27, No recursion,, Forbidden by MISRA rule 17.2 [#misra]_ 
-28, No ``union``,, Forbidden by MISRA rule 19.2 [#misra]_ 
-29, No octal constants, Non-complaint: ``int i = 0042;``,
-30, No typecast,, Leads to bugs since the compailer can not help with types after the cast [#modernC]_
-31, No pointer arithmetic, "Non-complaint: ``int *ptr; ptr++;``", Forbidden by MISRA rule 18.4 [#misra]_
-32, No ``pointer pointer``, Non-complaint: ``int **ptrptr;``, Can be used in special cases - only use if really necessary 
-33, No ``pointer pointer pointer``, Non-complaint: ``int ***ptr``, Forbidden by MISRA rule 18.5 [#misra]_ 
-34, No pointer to automatic storage objects, Non-Complaint (`link to godbolt <https://www.godbolt.org/z/hEYPGs188>`_): ``int* foo(void){int x=0; return (&x);}``, Automatic storage objects such as local variables of functions are allocated on the stack and not persistent and should not be leaked outside of their local scope by pointers
-35, No dynamic memory allocation, Non-complaint: ``malloc`` and friends, Forbidden by MISRA rule 21.3 [#misra]_ 
-36, Define loop variable in the initial part of the for loop, , Modern C [#modernC]_ takeaway 0.2.42
+16, Use typedef for ``struct`` and ``enum`` wich are used in an interface,,
+17, Use defined width types from ``<stdint.h>``, ``int32_t; uint32_t``, Only use fixed width integers if they are required; for example for hardware mapped registers. Data width below 32-bit is not useful in most cases
+18, Use ``static`` for all functions that are only used in their translation unit (the .c file), ``static float private_function_foo(float x);``, Behaves as "private function" (only usable in the translation unit) and `gcc inlines these functions if they are only called once with -O1 <https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html>`_
+19, Use ``bool`` from <stdbool.h>,, "Useful for hardware/ip-cores that are off or on,  enable signals, valid/reay signals"
+20, Use `float` versions of math functions when using ``float``, ``sinf()``,
+21, Use ``NULL`` to check for null pointers, Complaint: ``uz_assert_not_null(ptr)``,
+22, Check function arguments for validity,, Use assertions to communicate intend to the user of what the limits of function arguments are 
+23, Only one exit at the end of a function, no multiple ``return``, Requirement of MISRA [#misra]_ 
+24, "No unused code,  variables, ``typedef``, macros",,
+25, No use of the comma operator, "Non-complaint: ``int a, b, c;``", Forbidden by MISRA [#misra]_ 
+26, Do not compare for equality with ``float``,, Modern C [#modernC]_ takeaway 1.5.7.18
+27, No ``goto``,, Forbidden by MISRA rule 15.1 [#misra]_ 
+28, No recursion,, Forbidden by MISRA rule 17.2 [#misra]_ 
+29, No ``union``,, Forbidden by MISRA rule 19.2 [#misra]_ 
+30, No octal constants, Non-complaint: ``int i = 0042;``,
+31, No typecast,, Leads to bugs since the compailer can not help with types after the cast [#modernC]_
+32, No pointer arithmetic, "Non-complaint: ``int *ptr; ptr++;``", Forbidden by MISRA rule 18.4 [#misra]_
+33, No ``pointer pointer``, Non-complaint: ``int **ptrptr;``, Can be used in special cases - only use if really necessary 
+34, No ``pointer pointer pointer``, Non-complaint: ``int ***ptr``, Forbidden by MISRA rule 18.5 [#misra]_ 
+35, No pointer to automatic storage objects, Non-Complaint (`link to godbolt <https://www.godbolt.org/z/hEYPGs188>`_): ``int* foo(void){int x=0; return (&x);}``, Automatic storage objects such as local variables of functions are allocated on the stack and not persistent and should not be leaked outside of their local scope by pointers
+36, No dynamic memory allocation, Non-complaint: ``malloc`` and friends, Forbidden by MISRA rule 21.3 [#misra]_ 
+37, Define loop variable in the initial part of the for loop, , Modern C [#modernC]_ takeaway 0.2.42
 38, Do not hide pointers in a typedef, , Modern C [#modernC]_ takeaway 2.11.2.1
 39, Favor *pure* functions for small tasks if possible, The return value of a *pure* functions only depend on the input arguments without any side effects of dependencies (e.g. ``sinf(x)``), Modern C [#modernC]_ takeaway 2.10.2.7

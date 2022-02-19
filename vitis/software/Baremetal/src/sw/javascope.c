@@ -11,7 +11,7 @@
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
-******************************************************************************/
+*******************************************************************************/
 
 #include "../main.h"
 #include "../defines.h"
@@ -69,13 +69,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_id] 			= &data->av.I_d;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
-	js_ch_observable[JSO_Wtemp]			= &data->pID.WindingTemp;
 	js_ch_observable[JSO_ud]			= &data->av.U_d;
 	js_ch_observable[JSO_uq]			= &data->av.U_q;
-	js_ch_observable[JSO_Ld_mH]			= &data->pID.Online_Ld;
-	js_ch_observable[JSO_Lq_mH]			= &data->pID.Online_Lq;
-	js_ch_observable[JSO_Rs_mOhm]		= &data->pID.Online_Rs;
-	js_ch_observable[JSO_PsiPM_mVs]		= &data->pID.Online_Psi_PM;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -85,51 +80,12 @@ int JavaScope_initalize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_FreqReadback] 		  	= &(data->rasv.referenceFrequency);
-	js_slowDataArray[JSSD_FLOAT_ADCconvFactorReadback] 	= &(data->mrp.ADCconvFactorReadback);
-	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline]         	= &(data->pID.Offline_Psi_PM);
-	js_slowDataArray[JSSD_FLOAT_Lq_Offline] 	        = &(data->pID.Offline_Lq);
-	js_slowDataArray[JSSD_FLOAT_Ld_Offline] 	        = &(data->pID.Offline_Ld);
-	js_slowDataArray[JSSD_FLOAT_Rs_Offline] 	        = &(data->pID.Offline_Rs);
-	js_slowDataArray[JSSD_FLOAT_polePairs] 		        = &(data->mrp.motorPolePairNumber);
-	js_slowDataArray[JSSD_FLOAT_J] 			         	= &(data->pID.Offline_motorRotorInertia);
-	js_slowDataArray[JSSD_FLOAT_activeState] 	        = &(data->pID.activeState);
-	js_slowDataArray[JSSD_FLOAT_J] 			         	= &(data->pID.Offline_motorRotorInertia);
 	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
 	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
-	js_slowDataArray[JSSD_FLOAT_encoderOffset]         	= &(data->mrp.incrementalEncoderOffset);
-	js_slowDataArray[JSSD_FLOAT_u_d_ref] 		        = &(data->pID.Offline_ud_ref);
-	js_slowDataArray[JSSD_FLOAT_u_q_ref] 		        = &(data->pID.Offline_uq_ref);
-	js_slowDataArray[JSSD_FLOAT_ArrayCounter]           = &(data->pID.array_counter);
-	js_slowDataArray[JSSD_FLOAT_measArray] 	         	= &(data->pID.Online_MessArray_Element);
-	js_slowDataArray[JSSD_FLOAT_i_est]		        	= &(data->pID.Online_i_est_Element);
-	js_slowDataArray[JSSD_FLOAT_ArrayControl]          	= &(data->pID.array_counter);
-	js_slowDataArray[JSSD_FLOAT_Stribtorque] 	        = &(data->pID.Offline_BreakawayTorque);
-	js_slowDataArray[JSSD_FLOAT_Coulombtorque]         	= &(data->pID.Offline_CoulombFriction);
-	js_slowDataArray[JSSD_FLOAT_Viscotorque] 	        = &(data->pID.Offline_ViscousFriction);
-	js_slowDataArray[JSSD_FLOAT_Rs] 			        = &(data->mrp.motorStatorResistance);
-	js_slowDataArray[JSSD_FLOAT_PsiPM] 		         	= &(data->mrp.motorFluxConstant);
-	js_slowDataArray[JSSD_FLOAT_TrainInertia]         	= &(data->pID.Offline_totalRotorInertia);
-	js_slowDataArray[JSSD_FLOAT_LoadInertia] 	        = &(data->pID.Offline_loadRotorInertia);
-	js_slowDataArray[JSSD_FLOAT_c_est]		         	= &(data->pID.Offline_TwoMassSystemStiffness);
-	js_slowDataArray[JSSD_FLOAT_d_est]		         	= &(data->pID.Offline_TwoMassSystemDamping);
-	js_slowDataArray[JSSD_FLOAT_c_0]			        = &(data->pID.Offline_TwoMassSystem_c_0);
-	js_slowDataArray[JSSD_FLOAT_I_rated]		        = &(data->mrp.motorNominalCurrent);
-	js_slowDataArray[JSSD_FLOAT_Wtemp]		         	= &(data->pID.WindingTemp);
-	js_slowDataArray[JSSD_FLOAT_FluxTempConst]         	= &(data->pID.FluxTempConst);
-	js_slowDataArray[JSSD_FLOAT_FluxTempError]         	= &(data->pID.FluxTempError);
-	js_slowDataArray[JSSD_FLOAT_Ld_Online]	         	= &(data->pID.Online_Ld);
-	js_slowDataArray[JSSD_FLOAT_Lq_Online]	         	= &(data->pID.Online_Lq);
-	js_slowDataArray[JSSD_FLOAT_PsiPM_Online]	        = &(data->pID.Online_Psi_PM);
-	js_slowDataArray[JSSD_FLOAT_Rs_Online]	         	= &(data->pID.Online_Rs);
-	js_slowDataArray[JSSD_FLOAT_n_FluxPoints]	        = &(data->pID.n_FluxPoints);
-	js_slowDataArray[JSSD_FLOAT_Ld] 			        = &(data->mrp.motorDirectInductance);
-	js_slowDataArray[JSSD_FLOAT_Lq] 			        = &(data->mrp.motorQuadratureInductance);
-	js_slowDataArray[JSSD_FLOAT_totalRotorInertia] 	 	= &(data->mrp.totalRotorInertia);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

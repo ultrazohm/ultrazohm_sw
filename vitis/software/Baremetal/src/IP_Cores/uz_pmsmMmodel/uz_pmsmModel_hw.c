@@ -48,16 +48,16 @@ void uz_pmsmModel_hw_write_omega_mech(uint32_t base_address, float omega_mech)
     uz_axi_write_float(base_address + in_omega_mech_Data_uz_pmsm_model, omega_mech);
 }
 
-void uz_pmsmModel_hw_write_u_q(uint32_t base_address, float u_q)
+void uz_pmsmModel_hw_write_v_q(uint32_t base_address, float v_q)
 {
     uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address + u_q_Data_uz_pmsm_model, u_q);
+    uz_axi_write_float(base_address + v_q_Data_uz_pmsm_model, v_q);
 }
 
-void uz_pmsmModel_hw_write_u_d(uint32_t base_address, float u_d)
+void uz_pmsmModel_hw_write_v_d(uint32_t base_address, float v_d)
 {
     uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address + u_d_Data_uz_pmsm_model, u_d);
+    uz_axi_write_float(base_address + v_d_Data_uz_pmsm_model, v_d);
 }
 
 void uz_pmsmModel_hw_write_friction_coefficient(uint32_t base_address, float mu)

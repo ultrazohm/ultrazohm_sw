@@ -47,8 +47,8 @@ struct uz_pmsmModel_outputs_t
  */
 struct uz_pmsmModel_inputs_t
 {
-    float u_d_V; /**< Voltage in d-axis in V */
-    float u_q_V; /**< Voltage in q-axis in V */
+    float v_d_V; /**< Voltage in d-axis in V */
+    float v_q_V; /**< Voltage in q-axis in V */
     float omega_mech_1_s; /**< Rotational speed of PMSM in 1/s */
     float load_torque; /**< Applied load torque in Nm */
 };

@@ -1,0 +1,93 @@
+.. _Analog_LTC2311_16_Rev05:
+
+=================================
+Analog LTC2311-16 Rev05 and Rev06
+=================================
+
+
+Changes compared to the previous version
+----------------------------------------
+
+* switched to single-channel differential op-amp THS4561
+* negative rail of differential op-amp THS4561 is supplied with small negative voltage to allow true voltage swing from 0 to 5V driving the ADC 
+* adapted filter design for higher frequency to avoid the influence of kick-back voltage at high sampling rates 
+* power rails are generated from LDOs 
+* For Rev06: Due to chip shortage, the LMK1C1104 is not available. Therefore it was replaced by the LMK1C1108 which distributes the conversion signal (CNV) to all eight ADCs. Besides this, it is identical to Rev05. 
+
+
+Filters
+-------
+
+1. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter is formed by the capacitors 
+:math:`C_\mathrm{Diff}` and :math:`C_\mathrm{CM}`. They create a first-order low-pass filter with the series resistors :math:`{R_0}` with 
+
+.. math:: 
+   f_\mathrm{aliasing,-3dB}=  \frac{1}{2 \pi R_0 (2 C_\mathrm{Diff} + C_\mathrm{CM} ) } = 
+                              \frac{1}{2\pi\ 10\,\Omega \cdot (2\cdot1\,\mathrm{nF}  + 1\,\mathrm{nF}) } = 5.3\, \mathrm{MHz} \,\,.
+
+2. Additionally, :math:`C_\mathrm{f}` and :math:`R_\mathrm{f}` form an active first-order low-pass filter, with 
+
+.. math:: 
+   f_\mathrm{DiffOp,-3dB} = \frac{1}{2\pi R_f C_f} \approx \, 3 \mathrm{MHz}
+
+.. image:: LTC2311_16_v3/op_amp_schematic.jpg
+   :width: 800
+
+The resulting transfer function of the signal conditioning stage, i.e., from the RJ45 input connectors to the :math:`V_\mathrm{ADC,in}` (including the buffer and filter stages up to the point where the signal enters the ADC), is measured with the Bode100. The resulting bode plot is depicted below. 
+
+.. image:: LTC2311_16_Rev05/Bode_2MHz.jpg
+
+
+Adjust measurement gains 
+------------------------
+
+For all types of measurements, described in :ref:`Analog_LTC2311_16_meas_modes`, it is recommended to adjust the gains of the differential operational amplifier to utilize the full input range of the ADC, i.e., :math:`{\pm 5}` V. Initially, the gain is set to
+
+.. math:: 
+
+   g=\frac{R_f}{R_g} = \frac{1\,\mathrm{k\Omega}}{1\,\mathrm{k\Omega}} = 1 \,\,. 
+
+.. note ::
+   **Use a high precision resistor to set the gains**, i.e., 0.1% or better. 
+
+
+**The pre-assembled values are**
+
+==========================       =====================================
+:math:`{R_f}`                    :math:`{1\,\mathrm{k\Omega}}`
+:math:`{R_g}`                    :math:`{1\,\mathrm{k\Omega}}`
+:math:`{C_f}`                    :math:`{56\,\mathrm{pF}}` 
+:math:`{R_0}`                    :math:`{10\,\mathrm{\Omega}}` 
+:math:`{C_\mathrm{CM}}`          :math:`{1\,\mathrm{nF}}` 
+:math:`{C_\mathrm{Diff}}`        :math:`{1\,\mathrm{nF}}` 
+==========================       =====================================
+
+.. note :: 
+   You can also use the LTSpice simulation to find the correct gains and filter values for your setup. The simulation files are attached at the end of this document. 
+
+
+Compatibility 
+-------------
+
+* Slots A1 to A3 can be used without limitations
+
+References
+----------
+
+* :download:`Schematic Rev05 <LTC2311_16_Rev05/SCH_UZ_A_LTC2311_Standard_Rev05.pdf>`
+* :download:`Assembly Drawing Rev05 <LTC2311_16_Rev05/ASM_UZ_A_LTC2311_Standard_Rev05.pdf>`
+* :download:`Schematic Rev06 <LTC2311_16_Rev06/SCH_UZ_A_LTC2311_Standard_Rev06.pdf>`
+* :download:`Assembly Drawing Rev06 <LTC2311_16_Rev06/ASM_UZ_A_LTC2311_Standard_Rev06.pdf>`
+* :download:`LTSpice simulation Rev05 & Rev06 <LTC2311_16_Rev05/ltspice_LTC2311_Rev05.zip>`
+* See IP-Core :ref:`ipCore_LTC2311_v3`
+* :ref:`Analog_LTC2311_16_pinout`
+* :ref:`Analog_LTC2311_16_meas_modes`
+* `Data sheet ADC LTC2311-16 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_
+
+
+Designed by 
+"""""""""""
+
+Eyke Liegmann (TUM) in 09/2021
+
+

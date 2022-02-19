@@ -10,3 +10,4 @@ RPU Software
 
     interrupts/interrupts
     datamover_r5
+    r5_statemachine

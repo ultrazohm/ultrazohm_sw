@@ -68,3 +68,9 @@ u32 uz_bgdHls_getBatchSize(uz_bgdHls_t *instance);
 float uz_bgdHls_getLearningRate(uz_bgdHls_t *instance);
 u32 uz_bgdHls_getLayerBufferSize(uz_bgdHls_t *instance);
 u32 uz_bgdHls_getBatchBufferSize(uz_bgdHls_t *instance);
+
+// control functions
+void uz_bgdHls_start(uz_bgdHls_t *instance);
+bool uz_bgdHls_isIdle(uz_bgdHls_t *instance);
+bool uz_bgdHls_isReady(uz_bgdHls_t *instance);
+bool uz_bgdHls_isDone(uz_bgdHls_t *instance);

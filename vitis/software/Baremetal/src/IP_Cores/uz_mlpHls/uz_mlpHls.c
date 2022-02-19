@@ -57,7 +57,7 @@ uz_mlpHls_t *uz_mlpHls_init(struct uz_mlpHls_config_t config)
 	uz_mlpHls_setNumberNeurons(instance, config.numberNeurons);
 	uz_mlpHls_setNumberHiddenLayers(instance, config.numberHiddenLayers);
 	uz_mlpHls_setNumberInputs(instance, config.numberInputs);
-	uz_mlpHls_setNumberOuputs(instance, config.numberOutputs);
+	uz_mlpHls_setNumberOutputs(instance, config.numberOutputs);
 	uz_mlpHls_setLoadParameters(instance, config.loadParameters);
 	uz_mlpHls_setExportLayers(instance, config.exportLayers);
 
@@ -249,6 +249,48 @@ u16 uz_mlpHls_getDeviceId(uz_mlpHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
 	return instance->config.deviceId;
+}
+
+void uz_mlpHls_start(uz_mlpHls_t *instance)
+{
+	uz_assert_not_NULL(instance);
+	XMlp_Start(&instance->xilInstance);
+}
+
+bool uz_mlpHls_isIdle(uz_mlpHls_t *instance)
+{
+	uz_assert_not_NULL(instance);
+	bool return_value;
+	if(XMlp_IsIdle(&instance->xilInstance) != 0)
+		return_value = true;
+	else
+		return_value = false;
+
+	return return_value;
+}
+
+bool uz_mlpHls_isReady(uz_mlpHls_t *instance)
+{
+	uz_assert_not_NULL(instance);
+	bool return_value;
+	if(XMlp_IsReady(&instance->xilInstance) != 0)
+		return_value = true;
+	else
+		return_value = false;
+
+	return return_value;
+}
+
+bool uz_mlpHls_isDone(uz_mlpHls_t *instance)
+{
+	uz_assert_not_NULL(instance);
+	bool return_value;
+	if(XMlp_IsDone(&instance->xilInstance) != 0)
+		return_value = true;
+	else
+		return_value = false;
+
+	return return_value;
 }
 
 #endif

@@ -278,4 +278,46 @@ u32 uz_bgdHls_getBatchBufferSize(uz_bgdHls_t *instance)
 	return instance->config.batchBufferSize;
 }
 
+void uz_bgdHls_start(uz_bgdHls_t *instance)
+{
+	uz_assert_not_NULL(instance);
+	XBgd_Start(&instance->xilInstance);
+}
+
+bool uz_bgdHls_isIdle(uz_bgdHls_t *instance)
+{
+	uz_assert_not_NULL(instance);
+	bool return_value;
+	if(XBgd_IsIdle(&instance->xilInstance) != 0)
+		return_value = true;
+	else
+		return_value = false;
+
+	return return_value;
+}
+
+bool uz_bgdHls_isReady(uz_bgdHls_t *instance)
+{
+	uz_assert_not_NULL(instance);
+	bool return_value;
+	if(XBgd_IsReady(&instance->xilInstance) != 0)
+		return_value = true;
+	else
+		return_value = false;
+
+	return return_value;
+}
+
+bool uz_bgdHls_isDone(uz_bgdHls_t *instance)
+{
+	uz_assert_not_NULL(instance);
+	bool return_value;
+	if(XBgd_IsDone(&instance->xilInstance) != 0)
+		return_value = true;
+	else
+		return_value = false;
+
+	return return_value;
+}
+
 #endif

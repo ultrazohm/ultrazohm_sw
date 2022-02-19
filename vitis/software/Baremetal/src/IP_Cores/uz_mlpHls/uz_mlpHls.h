@@ -63,4 +63,10 @@ u32 uz_mlpHls_getParEntries(uz_mlpHls_t *instance);
 u32 uz_mlpHls_getLayerBufferSize(uz_mlpHls_t *instance);
 u16 uz_mlpHls_getDeviceId(uz_mlpHls_t *instance);
 
+// control functions
+void uz_mlpHls_start(uz_mlpHls_t *instance);
+bool uz_mlpHls_isIdle(uz_mlpHls_t *instance);
+bool uz_mlpHls_isReady(uz_mlpHls_t *instance);
+bool uz_mlpHls_isDone(uz_mlpHls_t *instance);
+
 #endif

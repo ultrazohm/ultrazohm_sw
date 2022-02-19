@@ -223,6 +223,8 @@ static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 	params.verbose = 0;
 	optimize(params);
 
+	float cranAccuracy = accuracy(referenceImpl, cranTrainingData, cranTrainingClasses);
+
 	XBgd *xilInstanceBgd = uz_bgdHls_getXilInstance(testInstanceBgd);
 	XMlp *xilInstanceMlp = uz_mlpHls_getXilInstance(testInstanceMlp);
 	XBgd_Set_loadParameters(xilInstanceBgd, (u32) 1);
@@ -239,6 +241,13 @@ static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 		{
 			XBgd_Set_loadParameters(xilInstanceBgd, (u32) 0);
 		}
+	}
+
+	// check accuracy of hardware implementation
+	for (size_t i = 0; i < TRAINING_SAMPLES; i++)
+	{
+		u64 inputValues = (u64) ((u32) &uz_bgdHls_trainingData[iter * NUMBER_INPUTS]
+				+ MLP_HLS_PARAMETER_MEMORY_OFFSET_PL);
 	}
 }
 
@@ -282,7 +291,7 @@ int uz_mlpBgdHls_testbench(bool testMlp, bool testBgd)
 			.numberNeurons = N,
 			.parEntries = 16 };
 
-	uz_mlpHls_t *testInstanceMlp = uz_mlpInit(mlpConfig);
+	uz_mlpHls_t *testInstanceMlp = uz_mlpHls_init(mlpConfig);
 	if (testMlp)
 		uz_mlpHlsTestbench(net, testInstanceMlp, inputBuffer, outputBuffer);
 
@@ -305,7 +314,7 @@ int uz_mlpBgdHls_testbench(bool testMlp, bool testBgd)
 			.parEntries = mlpConfig.parEntries,
 			.deviceId = XPAR_MLP_BGD_DEVICE_ID };
 
-	uz_bgdHls_t *testInstanceBgd = uz_bgdInit(bgdConfig);
+	uz_bgdHls_t *testInstanceBgd = uz_bgdHls_init(bgdConfig);
 	uz_bgdHlsTestbench(net, testInstanceMlp, testInstanceBgd, layerBuffer, layerBufferSize);
 #endif
 

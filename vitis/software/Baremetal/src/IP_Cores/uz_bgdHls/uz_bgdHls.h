@@ -23,6 +23,7 @@ struct uz_bgdHls_config_t
 	u32 numberOutputs;
 	u32 numberHiddenLayers;
 	u32 numberNeurons;
+	u32 layerBufferSize;
 	u32 loadParameters;
 	u32 batchSize;
 	float learningRate;
@@ -34,5 +35,5 @@ struct uz_bgdHls_config_t
 typedef struct uz_bgdHls_t uz_bgdHls_t;
 
 // function declarations
-uz_bgdHls_t *uz_bgdInit(struct uz_bgdHls_config_t config);
+uz_bgdHls_t *uz_bgdHls_init(struct uz_bgdHls_config_t config);
 XBgd *uz_bgdHls_getXilInstance(uz_bgdHls_t *instance);

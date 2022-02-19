@@ -27,7 +27,14 @@ static uz_bgdHls_t *uz_bgdHls_allocation(void)
 	return (self);
 }
 
-uz_bgdHls_t *uz_bgdInit(struct uz_bgdHls_config_t config)
+static void uz_bgdHls_updateLayerBufferSize(struct uz_bgdHls_config_t *config)
+{
+	uz_assert_not_NULL(config);
+	config->layerBufferSize = config->numberInputs
+			+ config->numberHiddenLayers * config->numberNeurons + config->numberOutputs;
+}
+
+uz_bgdHls_t *uz_bgdHls_init(struct uz_bgdHls_config_t config)
 {
 	uz_assert_not_zero(config.mlpResultsMemoryAddress);
 	uz_assert_not_zero(config.classesMemoryAddress);
@@ -52,6 +59,7 @@ uz_bgdHls_t *uz_bgdInit(struct uz_bgdHls_config_t config)
 	uz_bgdHls_t *instance = uz_bgdHls_allocation();
 	instance->xilInstance = xilInstance;
 	instance->config = config;
+	uz_bgdHls_updateLayerBufferSize(&instance->config);
 	XBgd *xilPtr = &instance->xilInstance;
 
 	XBgd_Set_axiMlpResultsInput(xilPtr, config.mlpResultsMemoryAddress);
@@ -68,7 +76,7 @@ uz_bgdHls_t *uz_bgdInit(struct uz_bgdHls_config_t config)
 	XBgd_Set_loadParameters(xilPtr, config.loadParameters);
 	XBgd_Set_batchSize(xilPtr, config.batchSize);
 	// this cast is necessary see Xilinx UG1399 p. 208
-	XBgd_Set_learningRate(xilPtr, *((u32*)&config.learningRate));
+	XBgd_Set_learningRate(xilPtr, *((u32*) &config.learningRate));
 
 	return instance;
 }

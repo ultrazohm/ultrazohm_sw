@@ -176,13 +176,13 @@ u64 uz_mlpHls_getWeightAddress(uz_mlpHls_t *instance)
 u64 uz_mlpHls_getBiasAddress(uz_mlpHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
-	return UZ_MLPHLS_R5_ADDRESS(instance->config.weightMemoryAddress);
+	return UZ_MLPHLS_R5_ADDRESS(instance->config.biasMemoryAddress);
 }
 
 u64 uz_mlpHls_getInputAddress(uz_mlpHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
-	return UZ_MLPHLS_R5_ADDRESS(instance->config.biasMemoryAddress);
+	return UZ_MLPHLS_R5_ADDRESS(instance->config.inputAddress);
 }
 
 u64 uz_mlpHls_getOutputAddress(uz_mlpHls_t *instance)
@@ -230,7 +230,7 @@ bool uz_mlpHls_getLoadParameter(uz_mlpHls_t *instance)
 bool uz_mlpHls_getExportLayers(uz_mlpHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
-	return instance->config.loadParameters;
+	return instance->config.exportLayers;
 }
 
 u32 uz_mlpHls_getParEntries(uz_mlpHls_t *instance)

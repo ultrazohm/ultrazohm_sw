@@ -29,7 +29,7 @@
 #define OUTPUT_ACTIVATION linear
 
 // compiler defines
-#define TEST_TRAINING
+//#define TEST_TRAINING
 
 // input data and classes for training
 #ifdef TEST_TRAINING
@@ -43,29 +43,6 @@ static float uz_bgdHls_trainingClasses[NUMBER_OUTPUTS * TRAINING_SAMPLES] =
 #include "uz_mlpBgdHls_trainingData/mnist_labels.csv"
 		};
 #endif
-
-static void mlpProcessBatch(uz_mlpHls_t *mlpInstance, uz_bgdHls_t *bgdInstance)
-{
-	u64 inputAddress = uz_mlpHls_getInputAddress(mlpInstance);
-	u64 layerOutputAddress = uz_mlpHls_getLayerOutputAddress(mlpInstance);
-
-	uz_mlpHls_setLoadParameters(mlpInstance, true);
-	uz_mlpHls_setExportLayers(mlpInstance, true);
-	uz_mlpHls_start(mlpInstance);
-	while (uz_mlpHls_isIdle(mlpInstance) == false)
-		;
-	uz_mlpHls_setLoadParameters(mlpInstance, false);
-	for (size_t i = 1; i < uz_bgdHls_getBatchSize(bgdInstance); i++)
-	{
-		inputAddress += uz_mlpHls_getNumberInputs(mlpInstance) * sizeof(float);
-		layerOutputAddress += uz_mlpHls_getLayerBufferSize(mlpInstance) * sizeof(float);
-		uz_mlpHls_setInputAddress(mlpInstance, inputAddress);
-		uz_mlpHls_setLayerOutputAddress(mlpInstance, layerOutputAddress);
-		uz_mlpHls_start(mlpInstance);
-		while (uz_mlpHls_isIdle(mlpInstance) == false)
-			;
-	}
-}
 
 static void extractCraniumWeights(float *hiddenWeightMemory, float *inputWeightMemory,
 		float *outputWeightMemory, float *hiddenBiasMemory, float *outputBiasMemory, Network *net)
@@ -162,6 +139,31 @@ static void uz_mlpHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 	destroyNetwork(referenceImpl);
 }
 
+#ifdef TEST_TRAINING
+
+static void mlpProcessBatch(uz_mlpHls_t *mlpInstance, uz_bgdHls_t *bgdInstance)
+{
+	u64 inputAddress = uz_mlpHls_getInputAddress(mlpInstance);
+	u64 layerOutputAddress = uz_mlpHls_getLayerOutputAddress(mlpInstance);
+
+	uz_mlpHls_setLoadParameters(mlpInstance, true);
+	uz_mlpHls_setExportLayers(mlpInstance, true);
+	uz_mlpHls_start(mlpInstance);
+	while (uz_mlpHls_isIdle(mlpInstance) == false)
+		;
+	uz_mlpHls_setLoadParameters(mlpInstance, false);
+	for (size_t i = 1; i < uz_bgdHls_getBatchSize(bgdInstance); i++)
+	{
+		inputAddress += uz_mlpHls_getNumberInputs(mlpInstance) * sizeof(float);
+		layerOutputAddress += uz_mlpHls_getLayerBufferSize(mlpInstance) * sizeof(float);
+		uz_mlpHls_setInputAddress(mlpInstance, inputAddress);
+		uz_mlpHls_setLayerOutputAddress(mlpInstance, layerOutputAddress);
+		uz_mlpHls_start(mlpInstance);
+		while (uz_mlpHls_isIdle(mlpInstance) == false)
+			;
+	}
+}
+
 static float **createCraniumInputArray(float *values, size_t rows, size_t cols)
 {
 	float **craniumInput = (float **) malloc(rows * sizeof(float *));
@@ -238,6 +240,8 @@ static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 		}
 	}
 }
+
+#endif
 
 int uz_mlpBgdHls_testbench()
 {

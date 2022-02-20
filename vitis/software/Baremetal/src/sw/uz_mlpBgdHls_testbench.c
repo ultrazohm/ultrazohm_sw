@@ -29,7 +29,7 @@
 #define OUTPUT_ACTIVATION linear
 
 // compiler defines
-//#define TEST_TRAINING
+#define TEST_TRAINING
 
 // input data and classes for training
 #ifdef TEST_TRAINING
@@ -107,36 +107,31 @@ static void uz_mlpHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 	float *outputBuffer = (float *) ((u32) uz_mlpHls_getOutputAddress(testInstance));
 	Matrix *inputCran = createMatrix(1, uz_mlpHls_getNumberInputs(testInstance), inputBuffer);
 	float *resultReference;
-	while (1)
+	for (unsigned int i = 0; i < uz_mlpHls_getNumberInputs(testInstance); i++)
 	{
-
-		for (unsigned int i = 0; i < uz_mlpHls_getNumberInputs(testInstance); i++)
-		{
-			inputBuffer[i] = ((float) (rand() % 100)) / 100.0;
-		}
-
-		forwardPass(referenceImpl, inputCran);
-		resultReference = getOuput(referenceImpl)->data;
-
-		uz_mlpHls_start(testInstance);
-
-		while (uz_mlpHls_isIdle(testInstance) == false)
-		{
-			;
-		}
-
-		// check results
-
-		const float precision = 1e-3;
-		for (unsigned int i = 0; i < uz_mlpHls_getNumberOutputs(testInstance); i++)
-		{
-			float error = fabs(resultReference[i] - outputBuffer[i]);
-			if (error > precision)
-				uz_printf("Error at output entry %d", i);
-			//uz_assert(error < precision);
-		}
+		inputBuffer[i] = ((float) (rand() % 100)) / 100.0;
 	}
-	destroyNetwork(referenceImpl);
+
+	forwardPass(referenceImpl, inputCran);
+	resultReference = getOuput(referenceImpl)->data;
+
+	uz_mlpHls_start(testInstance);
+
+	while (uz_mlpHls_isIdle(testInstance) == false)
+	{
+		;
+	}
+
+	// check results
+
+	const float precision = 1e-3;
+	for (unsigned int i = 0; i < uz_mlpHls_getNumberOutputs(testInstance); i++)
+	{
+		float error = fabs(resultReference[i] - outputBuffer[i]);
+		if (error > precision)
+			uz_printf("Error at output entry %d", i);
+		//uz_assert(error < precision);
+	}
 }
 
 #ifdef TEST_TRAINING
@@ -174,6 +169,49 @@ static float **createCraniumInputArray(float *values, size_t rows, size_t cols)
 	}
 
 	return craniumInput;
+}
+
+static u32 uz_mlpHls_predict(uz_mlpHls_t *testInstanceMlp)
+{
+	float *outputBuffer = (float*) ((u32) uz_mlpHls_getOutputAddress(testInstanceMlp));
+	u32 max = 0;
+	for (u32 i = 0; i < uz_mlpHls_getNumberOutputs(testInstanceMlp); i++)
+	{
+		if (outputBuffer[i] > max)
+			max = i;
+	}
+	return max;
+}
+
+static float uz_bgdHls_accuracy(uz_mlpHls_t *testInstanceMlp)
+{
+	u64 inputAddress = uz_mlpHls_getInputAddress(testInstanceMlp);
+	u32 prediction;
+	float numCorrect = 0;
+	const u32 numberOutputs = uz_mlpHls_getNumberOutputs(testInstanceMlp);
+	uz_mlpHls_setLoadParameters(testInstanceMlp, true);
+	uz_mlpHls_setExportLayers(testInstanceMlp, false);
+	uz_mlpHls_start(testInstanceMlp);
+	while (uz_mlpHls_isIdle(testInstanceMlp) == false)
+		;
+	uz_mlpHls_setLoadParameters(testInstanceMlp, false);
+	prediction = uz_mlpHls_predict(testInstanceMlp);
+	if (uz_bgdHls_trainingClasses[prediction] == 1)
+		numCorrect++;
+	for (size_t i = 1; i < TRAINING_SAMPLES; i++)
+	{
+		inputAddress += i * uz_mlpHls_getNumberInputs(testInstanceMlp) * sizeof(float);
+		uz_mlpHls_setInputAddress(testInstanceMlp, inputAddress);
+		uz_mlpHls_start(testInstanceMlp);
+		while (uz_mlpHls_isIdle(testInstanceMlp) == false)
+			;
+		prediction = uz_mlpHls_predict(testInstanceMlp);
+
+		if (uz_bgdHls_trainingClasses[i * numberOutputs + prediction] == 1)
+			numCorrect++;
+	}
+
+	return numCorrect / TRAINING_SAMPLES;
 }
 
 static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstanceMlp,
@@ -219,10 +257,10 @@ static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 	params.maxIters = TRAINING_SAMPLES;
 	params.shuffle = 0;
 	params.verbose = 0;
-	optimize(params);
+	//optimize(params);
 
-	float cranAccuracy = accuracy(referenceImpl, cranTrainingData, cranTrainingClasses);
-	uz_printf("Accuracy of Cranium optimization %f \n", cranAccuracy);
+	//float cranAccuracy = accuracy(referenceImpl, cranTrainingData, cranTrainingClasses);
+	//uz_printf("Accuracy of Cranium optimization %f \n", cranAccuracy);
 
 	uz_bgdHls_setLoadParameters(testInstanceBgd, true);
 	for (size_t iter = 0; iter < maxIter; iter++)
@@ -239,6 +277,11 @@ static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 			uz_bgdHls_setLoadParameters(testInstanceBgd, false);
 		}
 	}
+
+	uz_mlpHls_setInputAddress(testInstanceMlp, (u64) ((u32) uz_bgdHls_trainingData));
+	float uzBgdAccuracy = uz_bgdHls_accuracy(testInstanceMlp);
+	uz_printf("Accuracy of UZ BGD optimization %f \n", uzBgdAccuracy);
+
 }
 
 #endif

@@ -5,9 +5,10 @@ format compact
 
 %% settings
 save_all_logged_data = 0; 
-plot_all_channels = 1;
+plot_all_channels = 0;
 rename_channels_manually = 0;
 import_data_to_simulink_datainspector = 1;
+overwrite_data_in_simulink_datainspector = 0;
 
 %% import latest csv
 Logfile_list = dir('Log_*.csv');
@@ -118,13 +119,34 @@ end
 %% Import Data into Simulink Data Inspector
 if(import_data_to_simulink_datainspector ~= 0)
     
-    runID = Simulink.sdi.createRun(file_name_log);
-    for ch = 1:num_channels
-        createTimeSeries_ChN = ['Series = timeseries(log.',channel_names{ch+1},', log.time);'];
-        eval(createTimeSeries_ChN);
-        Series.Name = variable_names{ch+1};
-        Simulink.sdi.addToRun(runID,'vars',Series);
+    % check if run has already been imported
+    run_already_imported = 0;
+    openRunIDs = Simulink.sdi.getAllRunIDs;
+    for runs = 1:size(openRunIDs,1)
+        currentRun = Simulink.sdi.getRun(openRunIDs(runs));
+        if(currentRun.Name == file_name_log)
+            if (overwrite_data_in_simulink_datainspector == 1)
+                run_already_imported = 0;
+                Simulink.sdi.deleteRun(openRunIDs(runs))
+                disp('Your run has already been imported and is overwritten.')
+            else
+                run_already_imported = 1;
+                disp('Your run has already been imported and is not imported again.')
+            end
+        end
+    end
+    
+    % import run to data inspector
+    if run_already_imported == 0
+        runID = Simulink.sdi.createRun(file_name_log);
+        for ch = 1:num_channels
+            createTimeSeries_ChN = ['Series = timeseries(log.',channel_names{ch+1},', log.time);'];
+            eval(createTimeSeries_ChN);
+            Series.Name = variable_names{ch+1};
+            Simulink.sdi.addToRun(runID,'vars',Series);
+        end
     end
     Simulink.sdi.view
+    
 end
 

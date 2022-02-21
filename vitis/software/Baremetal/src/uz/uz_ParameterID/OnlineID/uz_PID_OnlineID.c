@@ -54,8 +54,8 @@ void uz_OnlineID_CalcFluxMaps(uz_PID_OnlineID_t* self) {
 	uz_InterpMeshGrid(self->InterpMeshGrid);
 }
 
-void uz_OnlineID_AutoRefCurrents(uz_PID_OnlineID_t* self) {
-	uz_AutoRefCurrents(self->AutoRefCurrents);
+void uz_OnlineID_AutoRefCurrents_step(uz_PID_OnlineID_t* self) {
+	uz_AutoRefCurrents_step(self->AutoRefCurrents);
 }
 
 #endif

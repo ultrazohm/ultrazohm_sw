@@ -19,6 +19,10 @@
 #include "../../../uz_HAL.h"
 #include "AutoRefCurrents_codegen.h"
 
+/**
+ * @brief object definition for uz_PID_AutoRefCurrents_t
+ * 
+ */
 typedef struct uz_PID_AutoRefCurrents_t{
 	ExtY_AutoRefCurrents_t output;
 	ExtU_AutoRefCurrents_t input;
@@ -26,8 +30,18 @@ typedef struct uz_PID_AutoRefCurrents_t{
 	RT_MODEL_AutoRefCurrents_t modelData;
 	RT_MODEL_AutoRefCurrents_t *PtrToModelData;
 } uz_PID_AutoRefCurrents_t;
-
+/**
+ * @brief Initializes the uz_PID_AutoRefCurrents_t object
+ * 
+ * @return uz_PID_AutoRefCurrents_t* pointer to object
+ */
 uz_PID_AutoRefCurrents_t* uz_AutoRefCurrents_init(void);
-void uz_AutoRefCurrents(uz_PID_AutoRefCurrents_t *self);
+
+/**
+ * @brief steps the AutoRefCurrent state once
+ * 
+ * @param self pointer to object
+ */
+void uz_AutoRefCurrents_step(uz_PID_AutoRefCurrents_t *self);
 
 #endif

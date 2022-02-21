@@ -71,6 +71,6 @@ void uz_OnlineID_CalcFluxMaps(uz_PID_OnlineID_t* self);
  * 
  * @param self pointer to uz_PID_OnlineID_t object
  */
-void uz_OnlineID_AutoRefCurrents(uz_PID_OnlineID_t* self);
+void uz_OnlineID_AutoRefCurrents_step(uz_PID_OnlineID_t* self);
 
 #endif

@@ -39,7 +39,7 @@ uz_PID_AutoRefCurrents_t* uz_AutoRefCurrents_init(void) {
 	return (self);
 }
 
-void uz_AutoRefCurrents(uz_PID_AutoRefCurrents_t *self) {
+void uz_AutoRefCurrents_step(uz_PID_AutoRefCurrents_t *self) {
 	AutoRefCurrents_step(self->PtrToModelData);
 }
 

@@ -397,7 +397,7 @@ static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_D
 	self->OnlineID->AutoRefCurrents->input.GlobalConfig_out = Data->GlobalConfig;
 
 	//Step the function
-	uz_OnlineID_AutoRefCurrents(self->OnlineID);
+	uz_OnlineID_AutoRefCurrents_step(self->OnlineID);
 
 	//Update Data struct with new output values
 	Data->AutoRefCurrents_Output = self->OnlineID->AutoRefCurrents->output.i_dq_ref;

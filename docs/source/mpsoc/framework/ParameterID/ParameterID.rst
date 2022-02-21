@@ -7,11 +7,6 @@ ParameterID
 .. doxygentypedef:: uz_ParameterID_t
 
 
-.. doxygenenum:: uz_PID_Control_selection
-
-.. doxygenstruct:: uz_ParameterID_Data_t
-  :members: 
-
 .. doxygenfunction:: uz_ParameterID_init
 .. doxygenfunction:: uz_ParameterID_step
 .. doxygenfunction:: uz_ParameterID_generate_DutyCycle
@@ -24,13 +19,28 @@ ParameterID
 .. doxygentypedef:: uint16_T
 .. doxygentypedef:: uint8_T
   
-structs
-=======
+Global structs
+==============
 
 The following structs are all shared between the different ID-states.
 
 ..  toctree::
     :maxdepth: 1
-    :glob:
-  
-    *
+    
+    Global_structs/ParameterID_structs
+
+Stateflows
+==========
+
+The following structs are all shared between the different ID-states.
+
+..  toctree::
+    :maxdepth: 1
+    
+    stateflows/uz_AutoRefCurrents
+    stateflows/uz_ElectricalID
+    stateflows/uz_FluxMapID
+    stateflows/uz_FrictionID
+    stateflows/uz_OnlineID
+    stateflows/uz_TwoMassID
+    

@@ -116,12 +116,16 @@ typedef struct {
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_AutoRefCurrentsConfig_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_AutoRefCurrentsConfig_t_
 
+/**
+ * @brief configuration struct for AutoRefCurrents config specific settings
+ * 
+ */
 typedef struct {
-  boolean_T enableCRS;
-  boolean_T Reset;
-  real32_T iq_points;
-  real32_T id_points;
-  real32_T max_current;
+  boolean_T enableCRS; /**< flag to enable the state */ 
+  boolean_T Reset; /**< flag to reset the state */
+  real32_T iq_points; /**< amount of iq-points that will be cycled through */
+  real32_T id_points; /**< amount of id-points that will be cycled through */
+  real32_T max_current; /**< max combined current for the generator */
 } uz_PID_AutoRefCurrentsConfig_t;
 
 #endif

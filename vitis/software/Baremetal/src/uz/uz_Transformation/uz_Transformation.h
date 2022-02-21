@@ -34,7 +34,7 @@ typedef struct uz_UVW_t{
  * @brief Struct for the variables of an alpha-beta 9 phase system
  * 
  */
-struct uz_alphabeta_9ph_t{
+typedef struct uz_alphabeta_9ph_t{
     float alpha;        /**< Amplitude of the alpha component */ 
     float beta;         /**< Amplitude of the beta component */ 
     float o1;           /**< Amplitude of the o1 component */ 
@@ -44,26 +44,26 @@ struct uz_alphabeta_9ph_t{
     float x2;           /**< Amplitude of the x2 component */
     float y2;           /**< Amplitude of the y2 component */
     float zero;         /**< Amplitude of the zero component */
-};
+}uz_alphabeta_9ph_t;
 
 /**
  * @brief Struct for the variables of an alpha-beta 6 phase system
  * 
  */
-struct uz_alphabeta_6ph_t{
+typedef struct uz_alphabeta_6ph_t{
     float alpha;        /**< Amplitude of the alpha component */ 
     float beta;         /**< Amplitude of the beta component */ 
     float o1;           /**< Amplitude of the o1 component */ 
     float o2;           /**< Amplitude of the o2 component */
     float x1;           /**< Amplitude of the x1 component */
     float y1;           /**< Amplitude of the y1 component */
-};
+}uz_alphabeta_6ph_t;
 
 /**
  * @brief Struct for the variables of a nine-phase-System
  * 
  */
-struct uz_abc_9ph_t{
+typedef struct uz_abc_9ph_t{
     float a1;        /**< Amplitude of the a1 phase */ 
     float b1;        /**< Amplitude of the b1 phase */ 
     float c1;        /**< Amplitude of the c1 phase */ 
@@ -73,20 +73,20 @@ struct uz_abc_9ph_t{
     float a3;        /**< Amplitude of the a3 phase */ 
     float b3;        /**< Amplitude of the b3 phase */ 
     float c3;        /**< Amplitude of the c3 phase */ 
-};
+}uz_abc_9ph_t;
 
 /**
  * @brief Struct for the variables of a six-phase-System
  * 
  */
-struct uz_abc_6ph_t{
+typedef struct uz_abc_6ph_t{
     float a1;        /**< Amplitude of the a1 phase */ 
     float b1;        /**< Amplitude of the b1 phase */ 
     float c1;        /**< Amplitude of the c1 phase */ 
     float a2;        /**< Amplitude of the a2 phase */ 
     float b2;        /**< Amplitude of the b2 phase */ 
     float c2;        /**< Amplitude of the c2 phase */ 
-};
+}uz_abc_6ph_t;
 
 /**
  * @brief Calculates the dq0-components from the UVW-Phases
@@ -155,7 +155,7 @@ uz_alphabeta_t uz_dq_to_ab_inverse_transformation(uz_dq_t input, float theta_el_
  * @param input uz_abc_9ph_t
  * @return struct uz_alphabeta_9ph_t Outputs the calculated alpha-beta-gamma-components
  */
-struct uz_alphabeta_9ph_t uz_9ph_clarke_transformation(struct uz_abc_9ph_t input);
+uz_alphabeta_9ph_t uz_9ph_clarke_transformation(uz_abc_9ph_t input);
 
 /**
  * @brief Calculates the abc-phases from the alpha-beta-gamma-components
@@ -163,7 +163,7 @@ struct uz_alphabeta_9ph_t uz_9ph_clarke_transformation(struct uz_abc_9ph_t input
  * @param input uz_alphabeta_9ph_t struct
  * @return struct uz_Uabc_t Outputs the calculated abc-phases
  */
-struct uz_abc_9ph_t uz_9ph_clarke_inverse_transformation(struct uz_alphabeta_9ph_t input);
+uz_abc_9ph_t uz_9ph_clarke_inverse_transformation(uz_alphabeta_9ph_t input);
 
 /**
  * @brief Calculates the alpha-beta-gamma-components from the six phase abc-phases
@@ -171,7 +171,7 @@ struct uz_abc_9ph_t uz_9ph_clarke_inverse_transformation(struct uz_alphabeta_9ph
  * @param input uz_abc_6ph_t
  * @return struct uz_alphabeta_9ph_t Outputs the calculated alpha-beta-gamma-components
  */
-struct uz_alphabeta_6ph_t uz_6ph_clarke_transformation(struct uz_abc_6ph_t input);
+uz_alphabeta_6ph_t uz_6ph_clarke_transformation(uz_abc_6ph_t input);
 
 /**
  * @brief Calculates the abc-phases from the alpha-beta-gamma-components
@@ -179,7 +179,7 @@ struct uz_alphabeta_6ph_t uz_6ph_clarke_transformation(struct uz_abc_6ph_t input
  * @param input uz_alphabeta_6ph_t struct
  * @return struct uz_abc_t Outputs the calculated abc-phases
  */
-struct uz_abc_6ph_t uz_6ph_clarke_inverse_transformation(struct uz_alphabeta_6ph_t input);
+uz_abc_6ph_t uz_6ph_clarke_inverse_transformation(uz_alphabeta_6ph_t input);
 
 
 #endif // UZ_TRANSFORMATION_H

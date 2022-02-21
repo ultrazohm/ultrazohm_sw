@@ -28,8 +28,6 @@
 #include "../../uz/uz_global_configuration.h"
 #include "../../uz/uz_HAL.h"
 
-#if (UZ_WDTTB_MAX_INSTANCES > 0U && UZ_WDTTB_MAX_INSTANCES <= XPAR_XWDTTB_NUM_INSTANCES)
-
 /************************** IP structure definition *****************************/
 
 struct uz_watchdog_ip_t {
@@ -49,7 +47,6 @@ volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
 //XScuGic_Config *TempConfig;
 
 /************************** Function Definitions ******************************/
-
 
 /************************** Private Functions ******************************/
 
@@ -183,6 +180,7 @@ static uz_watchdog_ip_t *uz_watchdog_allocation(uint32_t CounterValue, uint16_t 
 uz_watchdog_ip_t* uz_watchdog_ip_init(struct uz_watchdog_ip_config_t watchdog_config)
 {
 	uz_assert_not_zero(watchdog_config.CounterValue);
+//	xil_printf("WDT: CounterValue is %d\r\n",watchdog_config.CounterValue);
 	uz_watchdog_ip_t *self = uz_watchdog_allocation(watchdog_config.CounterValue, watchdog_config.WdtTbDeviceId);
 	self->watchdog_config=watchdog_config;
     return (self);
@@ -349,16 +347,3 @@ void uz_watchdog_IntrHandler(void *CallBackRef)
 
 
 }
-
-
-#else /* UZ_WDTTB_MAX_INSTANCES <= 0 */
-
-void uz_watchdog_ip_start(uz_watchdog_ip_t *WdtTbInstancePtr) {}
-
-void uz_watchdog_ip_restart(uz_watchdog_ip_t *WdtTbInstancePtr) {}
-
-uz_watchdog_ip_t* uz_watchdog_ip_init(struct uz_watchdog_ip_config_t watchdog_config) {}
-
-void uz_watchdog_IntrHandler(void *CallBackRef) {}
-
-#endif /* UZ_WDTTB_MAX_INSTANCES <= 0 */

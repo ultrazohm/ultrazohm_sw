@@ -5123,16 +5123,16 @@
           }
         },
         "interface_nets": {
-          "smartconnect_0_M11_AXI": {
-            "interface_ports": [
-              "S_AXI",
-              "Trigger_f_cc/S_AXI"
-            ]
-          },
           "AXI4_Lite_1": {
             "interface_ports": [
               "AXI4_Lite",
               "mux_axi_ip_1/AXI4_Lite"
+            ]
+          },
+          "smartconnect_0_M11_AXI": {
+            "interface_ports": [
+              "S_AXI",
+              "Trigger_f_cc/S_AXI"
             ]
           }
         },
@@ -5705,22 +5705,28 @@
       }
     },
     "interface_nets": {
-      "smartconnect_0_M13_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M13_AXI",
-          "axi_timebase_wdt_0/S_AXI"
-        ]
-      },
-      "AXI2TCM_0_M00_AXI": {
-        "interface_ports": [
-          "zynq_ultra_ps_e_0/S_AXI_LPD",
-          "DataMover/M00_AXI"
-        ]
-      },
       "smartconnect_0_M02_AXI": {
         "interface_ports": [
           "A3_ADC_LTC2311/S00_AXI",
           "smartconnect_0/M02_AXI"
+        ]
+      },
+      "smartconnect_0_M08_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M08_AXI",
+          "Gates/AXI4_Lite"
+        ]
+      },
+      "smartconnect_0_M07_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M07_AXI",
+          "Gates/S00_AXI"
+        ]
+      },
+      "smartconnect_0_M13_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M13_AXI",
+          "axi_timebase_wdt_0/S_AXI"
         ]
       },
       "smartconnect_0_M06_AXI": {
@@ -5735,12 +5741,6 @@
           "IncreEncoder_V24_ip_0/AXI4_Lite"
         ]
       },
-      "smartconnect_0_M11_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M11_AXI",
-          "Interrupt/S_AXI"
-        ]
-      },
       "smartconnect_1_M00_AXI": {
         "interface_ports": [
           "smartconnect_1/M00_AXI",
@@ -5751,18 +5751,6 @@
         "interface_ports": [
           "smartconnect_1/S00_AXI",
           "smartconnect_0/M10_AXI"
-        ]
-      },
-      "smartconnect_0_M00_AXI": {
-        "interface_ports": [
-          "A1_ADC_LTC2311/S00_AXI",
-          "smartconnect_0/M00_AXI"
-        ]
-      },
-      "smartconnect_0_M08_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M08_AXI",
-          "Gates/AXI4_Lite"
         ]
       },
       "AXI4_Lite1_1": {
@@ -5783,10 +5771,22 @@
           "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
         ]
       },
-      "smartconnect_0_M07_AXI": {
+      "AXI2TCM_0_M00_AXI": {
         "interface_ports": [
-          "smartconnect_0/M07_AXI",
-          "Gates/S00_AXI"
+          "zynq_ultra_ps_e_0/S_AXI_LPD",
+          "DataMover/M00_AXI"
+        ]
+      },
+      "smartconnect_0_M11_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M11_AXI",
+          "Interrupt/S_AXI"
+        ]
+      },
+      "smartconnect_0_M00_AXI": {
+        "interface_ports": [
+          "A1_ADC_LTC2311/S00_AXI",
+          "smartconnect_0/M00_AXI"
         ]
       },
       "AXI4_Lite_1": {
@@ -5795,16 +5795,16 @@
           "smartconnect_0/M04_AXI"
         ]
       },
-      "smartconnect_0_M05_AXI": {
-        "interface_ports": [
-          "timer_uptime_64bit/S_AXI",
-          "smartconnect_0/M05_AXI"
-        ]
-      },
       "smartconnect_0_M01_AXI": {
         "interface_ports": [
           "A2_ADC_LTC2311/S00_AXI",
           "smartconnect_0/M01_AXI"
+        ]
+      },
+      "smartconnect_0_M05_AXI": {
+        "interface_ports": [
+          "timer_uptime_64bit/S_AXI",
+          "smartconnect_0/M05_AXI"
         ]
       }
     },

@@ -46,10 +46,15 @@
 // Constants for the GIC driver management
 #define INTC_DEVICE_ID         XPAR_SCUGIC_SINGLE_DEVICE_ID
 #define WDTTB_IRPT_INTR       XPAR_FABRIC_WDTTB_0_VEC_ID
+
+
 // We take as reference the Timer_up_time included in the UZ. (100000000U HZ)
 #define WDTTB_AXI_CLOCK_FREQ_HZ		XPAR_TIMER_UPTIME_64BIT_CLOCK_FREQ_HZ
-// Security Margin in micro seconds
-#define WDTTB_SECURITY_MARGIN_US		10
+
+// Security Margin in micro seconds. Tested, only one is needed (adds 100 to the wdt counter, with the AXI frec at 100MHz)
+#define WDTTB_SECURITY_MARGIN_US		1
+
+
 /* How to set the second Window Size and the Interruption Point.
  * ------------------------------------------------------------
  * WIN_WDT_SW_COUNT		Second Window Size (Initial counter value)
@@ -66,6 +71,15 @@
 #define WIN_WDT_SW_COUNT	0x00012610	/**< INITIAL COUNTER VALUE*/
 #define WIN_WDT_SBC_COUNT	0xFF		/**< Selected byte count */
 #define WIN_WDT_BSS_COUNT	1		/**< Byte segment selected */
+
+#define WIN_WDT_SBC_COUNT_SHIFTED	0x0000FF00
+
+// calculate the period in microseconds adding a security margin
+#define WDTTB_PERIOD_US    ((1.0f/(UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor)*1e6f) + WDTTB_SECURITY_MARGIN_US)
+
+// cycles_per_us = WDTTB_AXI_CLOCK_FREQ_HZ * 1e-6   // for 100 MHz->10ns; 10ns * 100 = 1us
+// cycles_per_period times cycles_per_us   and  we add the base or shift as it is requested by the specification
+#define WDTTB_CYCLES_PER_PERIOD ((((uint32_t) WDTTB_PERIOD_US) * (WDTTB_AXI_CLOCK_FREQ_HZ * 1e-6)) + WIN_WDT_SBC_COUNT_SHIFTED)
 
 // ORIGINAL VALUES FOR THE EXAMPLE
 //#define WIN_WDT_SW_COUNT	0xF00000	/**< Number of clock cycles for

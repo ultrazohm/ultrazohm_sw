@@ -44,7 +44,6 @@ XTmrCtr Timer_Interrupt;
 //Initialize the Watchdog structure
 uz_watchdog_ip_t *WdtTbInstancePtr;
 
-
 //float sin1amp=1.0;
 
 // Global variable structure
@@ -83,12 +82,6 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
 
-    // // TODO: QUITAR TEST: to trigger the time violation of ISR or system hang and the reset
-    // // Launch the test every 1000 invocations!!!
-    if (((uz_SystemTime_GetInterruptCounter()%1000) == 0)) {
-    	uz_sleep_useconds(100);
-    }
-
     JavaScope_update(&Global_Data);
 
 	// Before exiting the Interrupt handler, the Nested Interrupts must be disabled
@@ -121,24 +114,8 @@ int Initialize_ISR()
 	 * Call Init  the WDT setting timer to the default timeout and default configuration.
 	 * Obtain a WDT pointer initialized to use with the WDTTB API
 	 */
-    // calculate period in microseconds
-    float period_us = 1.0f/(UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor)*1e6f;
-    xil_printf("RPU: period_us is %f\r\n",period_us);
-
-    // Test with possible margin in micro seconds:
-//    period_us = period_us + WDTTB_SECURITY_MARGIN_US;
-
-    uint32_t cycles_per_us = WDTTB_AXI_CLOCK_FREQ_HZ * 1e-6; // for 100 MHz->10ns; 10ns * 100 = 1us
-    xil_printf("RPU: cycles_per_us is %d\r\n",cycles_per_us);
-
-    uint32_t cycles_per_period = ((uint32_t) period_us) * cycles_per_us;
-    xil_printf("RPU: cycles_per_period is %d\r\n",cycles_per_period);
-
-    uint32_t win_size = cycles_per_period + 0x0000FF00; // Final window size
-    xil_printf("RPU: NEW CounterValue (win_size) is %d\r\n",win_size);
-
 	struct uz_watchdog_ip_config_t config={
-		.CounterValue=win_size,
+		.CounterValue=WDTTB_CYCLES_PER_PERIOD,
 		.WdtTbDeviceId=WDTTB_DEVICE_ID
 	};
 	WdtTbInstancePtr = uz_watchdog_ip_init(config);

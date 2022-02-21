@@ -31,7 +31,7 @@ typedef struct uz_UVW_t{
 }uz_UVW_t;
 
 /**
- * @brief Struct for the variables of an alpha-beta 9 phase system
+ * @brief Struct for the variables of an alpha-beta nine-phase system
  * 
  */
 typedef struct uz_alphabeta_9ph_t{
@@ -47,7 +47,7 @@ typedef struct uz_alphabeta_9ph_t{
 }uz_alphabeta_9ph_t;
 
 /**
- * @brief Struct for the variables of an alpha-beta 6 phase system
+ * @brief Struct for the variables of an alpha-beta six-phase system
  * 
  */
 typedef struct uz_alphabeta_6ph_t{
@@ -60,7 +60,7 @@ typedef struct uz_alphabeta_6ph_t{
 }uz_alphabeta_6ph_t;
 
 /**
- * @brief Struct for the variables of a nine-phase-System
+ * @brief Struct for the natural variables of a nine-phase system
  * 
  */
 typedef struct uz_abc_9ph_t{
@@ -76,7 +76,7 @@ typedef struct uz_abc_9ph_t{
 }uz_abc_9ph_t;
 
 /**
- * @brief Struct for the variables of a six-phase-System
+ * @brief Struct for the natural variables of a six-phase system
  * 
  */
 typedef struct uz_abc_6ph_t{
@@ -123,29 +123,30 @@ uz_alphabeta_t uz_clarke_transformation(uz_UVW_t input);
 uz_UVW_t uz_clarke_inverse_transformation(uz_alphabeta_t input);
 
 /**
- * @brief Calculates the dq0-components from the alpha-beta components
+ * @brief 1D array multiplication ([a, b, c] * [x; y; z] = [a*x + b*y + c*z])
  * 
- * @param matrixval linematrix containing the values of the transformation matrix
- * @param electricval electrical values (either alpha bete or abc) input as array
- * @return float that is the return value for alpha beta transformation or inverse transformation depending on linematrix
+ * @param line line that should be used from the 2D matrixval array (starting from 0)
+ * @param matrixval 2D array containing the values of the transformation matrix
+ * @param val array of values (either alpha beta or abc) that will be transformed
+ * @return float that is the return value for alpha beta transformation or inverse transformation depending on matrixval
  */
-float uz_9ph_arraymul(int line, float matrixval[9][9], float electricval[9]);
+float uz_9ph_arraymul(int line, float matrixval[9][9], float val[9]);
 
 /**
- * @brief Calculates the dq0-components from the alpha-beta components
+ * @brief Calculates the dq-components from the alpha-beta components, input.gamma will not be used and output.zero is set to 0
  * 
- * @param input uz_alphabeta_t struct where gamma is unused
- * @param theta_el_rad electrical theta in rad
- * @return struct uz_dq_t Outputs the calculated dq0-components
+ * @param input uz_alphabeta_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @return uz_dq_t outputs the calculated dq-components
  */
 uz_dq_t uz_ab_to_dq_transformation(uz_alphabeta_t input, float theta_el_rad);
 
 /**
- * @brief Calculates the alpha-beta components from the dq0-components, ignoring the zero component
+ * @brief Calculates the alpha-beta components from the dq-components, input.zero will not be used and output.gamma is set to 0
  * 
  * @param input uz_dq struct
  * @param theta_el_rad electrical theta in rad
- * @return struct uz_alphabeta_t Outputs the calculated UVW-phases
+ * @return uz_alphabeta_t outputs the calculated alpha/beta values
  */
 uz_alphabeta_t uz_dq_to_ab_inverse_transformation(uz_dq_t input, float theta_el_rad);
 
@@ -153,12 +154,12 @@ uz_alphabeta_t uz_dq_to_ab_inverse_transformation(uz_dq_t input, float theta_el_
  * @brief Calculates the alpha-beta-gamma-components from the nine phase abc-phases
  * 
  * @param input uz_abc_9ph_t
- * @return struct uz_alphabeta_9ph_t Outputs the calculated alpha-beta-gamma-components
+ * @return uz_alphabeta_9ph_t Outputs the calculated stationary reference frame components
  */
 uz_alphabeta_9ph_t uz_9ph_clarke_transformation(uz_abc_9ph_t input);
 
 /**
- * @brief Calculates the abc-phases from the alpha-beta-gamma-components
+ * @brief Calculates the abc-phases from the stationary reference frame components
  * 
  * @param input uz_alphabeta_9ph_t struct
  * @return struct uz_Uabc_t Outputs the calculated abc-phases
@@ -169,12 +170,12 @@ uz_abc_9ph_t uz_9ph_clarke_inverse_transformation(uz_alphabeta_9ph_t input);
  * @brief Calculates the alpha-beta-gamma-components from the six phase abc-phases
  * 
  * @param input uz_abc_6ph_t
- * @return struct uz_alphabeta_9ph_t Outputs the calculated alpha-beta-gamma-components
+ * @return struct uz_alphabeta_9ph_t Outputs the calculated stationary reference frame components
  */
 uz_alphabeta_6ph_t uz_6ph_clarke_transformation(uz_abc_6ph_t input);
 
 /**
- * @brief Calculates the abc-phases from the alpha-beta-gamma-components
+ * @brief Calculates the abc-phases from the stationary reference frame components
  * 
  * @param input uz_alphabeta_6ph_t struct
  * @return struct uz_abc_t Outputs the calculated abc-phases

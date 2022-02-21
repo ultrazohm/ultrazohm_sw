@@ -189,32 +189,52 @@ The dq and values can then be read from the struct. The inverse transformation f
 Adding transformations
 **********************
 When adding a new transformation for systems with other amounts of phases one must know if the principle of the existing VSD transformation can be used.
-If this is the case, the two functions for the multiphase Clarke transformation and inverse transformation can be copied. 
-For different amount of phases the arraysizes will need to be adapted as well as the input/output structs.
-The writing to the output structs also needs to be adapted.
-For the two dimensional vsd_struct containing the transformation matrix, a Matlab script can be used.
+If this is the case, go through the following steps:
+1. Copy the functions uz_9ph_clarke_transformation, uz_9ph_clarke_inverse_transformation and uz_9ph_arraymul and rename them accordingly (e.g. uz_6ph_arraymul).
+2. Create the structs uz_alphabeta_9ph_t and uz_abc_9ph_t for the newly added phase system.
+3. In uz_9ph_arraymul adapt the expected array dimensions and limit of the for-loop to your amount of phases (everywhere where there is a 9).
+4. Do the same with the clarke transformation functions and change the structs to your newly created ones. For the VSD transformation, the Matlab script (see below) can be used.
+5. Adapt the input/output writing accordingly.
+
+To use the Matlab script that outputs the VSD matrix in C code, the variable "n" must be changed to the target amount of phases.
+The placeholder "VSD_MATRIX" should be replaced with the Matlab variable that holds the VSD matrix (e.g. from you workspace).
+The factor for amplitudeinvariance will be multiplied afterwards so the user should not apply it to you VSD matrix by himself.
+
 
 .. code-block:: matlab
   :caption: Matlab script
 
   %% VSD matrix
   n = 9;
-  z = single(2/n*YOURMATRIX);
+  z = single(2/n*VSD_MATRIX);
   invz = inv(z);
 
   %% print code for normal matrix
+  fprintf('\nTransformation Matrix:\n');
   printcode(z,n);
 
   %% print code for inverse matrix
+  fprintf('\nInverse Transformation Matrix:\n');
   printcode(invz,n);
 
   %% function printcode function declare: print c code for matrix to 2D array
   function printcode(matrix,phases)
+    fprintf('float vsd_mat[%d][%d] = \n{\n',phases,phases);
     for y = (0:(phases-1))
+      fprintf('    { ');
       for x = (0:(phases-1))
-        fprintf('vsd_mat[%d][%d] = %.7ff;\n',y,x,matrix(y+1,x+1));
+        fprintf('%.7ff',matrix(y+1,x+1));
+        if x<(phases-1)
+          fprintf(', ');
+        end
       end
+    if y<(phases-1)
+      fprintf(' },\n');
+    else
+      fprintf(' }\n');
     end
+  end
+  fprintf('};\n');
   end
 
 Functions and structs for ninephase VSD transformation
@@ -243,7 +263,10 @@ The ninephase VSD transformation works like the following equations show:
 	  cos(7*0*\frac{\pi}{9}) & cos(7*6*\frac{\pi}{9}) & cos(7*12*\frac{\pi}{9}) & cos(7*1*\frac{\pi}{9}) & cos(7*7*\frac{\pi}{9}) & cos(7*13*\frac{\pi}{9}) & cos(7*2*\frac{\pi}{9}) & cos(7*8*\frac{\pi}{9}) & cos(7*14*\frac{\pi}{9}) \\
 	  sin(7*0*\frac{\pi}{9}) & sin(7*6*\frac{\pi}{9}) & sin(7*12*\frac{\pi}{9}) & sin(7*1*\frac{\pi}{9}) & sin(7*7*\frac{\pi}{9}) & sin(7*13*\frac{\pi}{9}) & sin(7*2*\frac{\pi}{9}) & sin(7*8*\frac{\pi}{9}) & sin(7*14*\frac{\pi}{9}) \\
 	  \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} \\
-	\end{bmatrix} \\
+	\end{bmatrix}
+
+.. math::
+
   \begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{o_1} \\ X_{o_2} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{zero} \end{bmatrix} = 
   \begin{bmatrix} C \end{bmatrix}*\begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2} \\ X_{a_3} \\ X_{b_3} \\ X_{c_3} \end{bmatrix}
 
@@ -258,5 +281,30 @@ The inverse transformation uses the inverse of the before shown matrix.
 
 .. doxygenfunction:: uz_9ph_arraymul
 
-The function implements a matrix multiplication for a linevector with a rowvector. 
-It hast to be implemented explicitly for each amount of phases. ADDITION: ADD IN MATLAB SKRIPT
+.. doxygenfunction:: uz_ab_to_dq_transformation
+
+This transformation and its inverse need to be created even tho there was already an existing Park tranformation.
+The existing Park transformation function actually integrated the threephase Clarke transformaion so it is not usable in the multiphase case.
+
+.. math::
+
+  \begin{bmatrix} X_{d} \\ X_{q} \end{bmatrix} =
+  \begin{bmatrix} 
+  cos(\theta_{el}) & sin(\theta_{el}) \\
+  -sin(\theta_{el}) & cos(\theta_{el}) 
+  \end{bmatrix}
+  \begin{bmatrix} X_{\alpha} \\ X_{\beta} \end{bmatrix} \\
+  X_{zero} = 0;
+
+.. doxygenfunction:: uz_dq_to_ab_inverse_transformation
+
+.. math::
+
+  \begin{bmatrix} X_{\alpha} \\ X_{\beta} \end{bmatrix} =
+  \begin{bmatrix} 
+  cos(\theta_{el}) & -sin(\theta_{el}) \\
+  sin(\theta_{el}) & cos(\theta_{el}) 
+  \end{bmatrix}
+  \begin{bmatrix} X_{d} \\ X_{q} \end{bmatrix} \\
+  X_{\gamma} = 0;
+  

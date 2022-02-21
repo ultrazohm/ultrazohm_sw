@@ -161,7 +161,7 @@ void test_uz_ab_to_dq_transformation_output_positive_theta(void){
     uz_dq_t output = uz_ab_to_dq_transformation(alphabeta_multiphase_test, theta_el_rad);
     TEST_ASSERT_FLOAT_WITHIN (1e-06, 2.995809f, output.d);
     TEST_ASSERT_FLOAT_WITHIN (1e-06, 2.006272f, output.q);
-    TEST_ASSERT_EQUAL_FLOAT (-999999.0f, output.zero);
+    TEST_ASSERT_EQUAL_FLOAT (0.0f, output.zero);
 }
 
 // test dq0 negative theta
@@ -173,7 +173,7 @@ void test_uz_ab_to_dq_transformation_output_negative_theta(void){
     uz_dq_t output = uz_ab_to_dq_transformation(alphabeta_multiphase_test, theta_el_rad);
     TEST_ASSERT_FLOAT_WITHIN (1e-06, 0.699709f, output.d);
     TEST_ASSERT_FLOAT_WITHIN (1e-06, 3.537005f, output.q);
-    TEST_ASSERT_EQUAL_FLOAT (-999999.0f, output.zero);
+    TEST_ASSERT_EQUAL_FLOAT (0.0f, output.zero);
 }
 
 // test inverse dq0 positive theta
@@ -185,7 +185,7 @@ void test_uz_dq_to_ab_inverse_transformation_positive_theta(void){
     uz_alphabeta_t output = uz_dq_to_ab_inverse_transformation(dq_multiphase_test, theta_el_rad);
     TEST_ASSERT_FLOAT_WITHIN (1e-06, 2.323297f, output.alpha);
     TEST_ASSERT_FLOAT_WITHIN (1e-06, 7.456694f, output.beta);
-    TEST_ASSERT_EQUAL_FLOAT (-999999.0f, output.gamma);
+    TEST_ASSERT_EQUAL_FLOAT (0.0f, output.gamma);
 }
 
 // test inverse dq0 negative theta
@@ -197,7 +197,7 @@ void test_uz_dq_to_ab_inverse_transformation_negative_theta(void){
     uz_alphabeta_t output = uz_dq_to_ab_inverse_transformation(dq_multiphase_test, theta_el_rad);
     TEST_ASSERT_FLOAT_WITHIN (1e-05, 6.915498f, output.alpha);
     TEST_ASSERT_FLOAT_WITHIN (1e-05, 3.62986f, output.beta);
-    TEST_ASSERT_EQUAL_FLOAT (-999999.0f, output.gamma);
+    TEST_ASSERT_EQUAL_FLOAT (0.0f, output.gamma);
 }
 
 #endif // TEST

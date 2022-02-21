@@ -283,8 +283,8 @@ The inverse transformation uses the inverse of the before shown matrix.
 
 .. doxygenfunction:: uz_ab_to_dq_transformation
 
-This transformation and its inverse need to be created even tho there was already an existing Park tranformation.
-The existing Park transformation function actually integrated the threephase Clarke transformaion so it is not usable in the multiphase case.
+This transformation and its inverse need to be created even tho there was already an existing Park transformation.
+The existing Park transformation function actually integrated the threephase Clarke transformation so it is not usable in the multiphase case.
 
 .. math::
 
@@ -307,4 +307,4 @@ The existing Park transformation function actually integrated the threephase Cla
   \end{bmatrix}
   \begin{bmatrix} X_{d} \\ X_{q} \end{bmatrix} \\
   X_{\gamma} = 0;
-  
+

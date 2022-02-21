@@ -36,7 +36,7 @@ uz_ParameterID_t* ParameterID = NULL;
 uz_ParameterID_Data_t PID_Data = { 0 };
 uz_FOC* FOC_instance = NULL;
 uz_PI_Controller* SpeedControl_instance = NULL;
-uz_FOC* FOC_instance_SC = NULL;
+
 
 enum init_chain
 {
@@ -79,7 +79,6 @@ int main(void)
 			struct uz_FOC_config config_FOC = { .config_PMSM = PID_Data.GlobalConfig.PMSM_config, .config_id = config_id, .config_iq = config_iq };
 			FOC_instance = uz_FOC_init(config_FOC);
 			SpeedControl_instance = uz_SpeedControl_init(config_n);
-			FOC_instance_SC = uz_FOC_init(config_FOC);
             JavaScope_initalize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;

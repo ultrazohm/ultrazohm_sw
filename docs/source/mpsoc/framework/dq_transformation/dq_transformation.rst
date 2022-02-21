@@ -174,7 +174,7 @@ The struct can then be given to the transformation function which will return a 
 As it is common to transform only the αβ components to the rotating reference frame, those two must be written into the threephase uz_alphabeta_t struct and be given to the dq transformation function.
 As commonly known, the electrical angle is also necessary. 
 Note that the gamma and the zero values in the uz_alphabeta_t and uz_dq_t struct will not be read from or written to.
-They will be set to -999999.0f.
+They will be set to 0.0f.
 The dq and values can then be read from the struct. The inverse transformation follows the same principle.
 
 .. code-block:: c
@@ -190,11 +190,17 @@ Adding transformations
 **********************
 When adding a new transformation for systems with other amounts of phases one must know if the principle of the existing VSD transformation can be used.
 If this is the case, go through the following steps:
+
 1. Copy the functions uz_9ph_clarke_transformation, uz_9ph_clarke_inverse_transformation and uz_9ph_arraymul and rename them accordingly (e.g. uz_6ph_arraymul).
+
 2. Create the structs uz_alphabeta_9ph_t and uz_abc_9ph_t for the newly added phase system.
+
 3. In uz_9ph_arraymul adapt the expected array dimensions and limit of the for-loop to your amount of phases (everywhere where there is a 9).
+
 4. Do the same with the clarke transformation functions and change the structs to your newly created ones. For the VSD transformation, the Matlab script (see below) can be used.
+
 5. Adapt the input/output writing accordingly.
+
 
 To use the Matlab script that outputs the VSD matrix in C code, the variable "n" must be changed to the target amount of phases.
 The placeholder "VSD_MATRIX" should be replaced with the Matlab variable that holds the VSD matrix (e.g. from you workspace).

@@ -1,18 +1,18 @@
 /******************************************************************************
- * Copyright 2021 Dennis Hufnagel
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
+* Copyright Contributors to the UltraZohm project.
+* Copyright 2022 Dennnis Hufnagel 
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and limitations under the License.
+******************************************************************************/
 #include "uz_ParameterID.h"
 #include "../uz_global_configuration.h"
 #include "../uz_wavegen/uz_wavegen.h"
@@ -523,7 +523,6 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->Psi_D_pointer = 0.0f;
 	Data->Psi_Q_pointer = 0.0f;
 	Data->PID_Control_Selection = No_Control;
-
-
 }
+
 #endif

@@ -4,6 +4,8 @@
 Structs for ParameterID_Data
 ============================
 
+Explains the global structs, which are not specific to one individual
+
 .. doxygenenum:: uz_PID_Control_selection
 
 .. doxygenstruct:: uz_ParameterID_Data_t

@@ -133,7 +133,7 @@ uz_3ph_uvw_t uz_transformation_3ph_alphabeta_to_abc(uz_3ph_alphabeta_t input);
 float uz_9ph_arraymul(int line, float matrixval[9][9], float val[9]);
 
 /**
- * @brief Calculates the dq-components from the alpha-beta components, input.gamma will not be used and output.zero is set to 0
+ * @brief Calculates the dq-components from the alpha-beta components
  * 
  * @param input uz_alphabeta_t struct
  * @param theta_el_rad electrical rotor angle in rad
@@ -142,13 +142,13 @@ float uz_9ph_arraymul(int line, float matrixval[9][9], float val[9]);
 uz_3ph_dq_t uz_transformation_3ph_alphabeta_to_dq(uz_3ph_alphabeta_t input, float theta_el_rad);
 
 /**
- * @brief Calculates the alpha-beta components from the dq-components, input.zero will not be used and output.gamma is set to 0
+ * @brief Calculates the alpha-beta components from the dq-components
  * 
  * @param input uz_dq struct
  * @param theta_el_rad electrical theta in rad
  * @return uz_alphabeta_t outputs the calculated alpha/beta values
  */
-uz_3ph_alphabeta_t uz_transformation_dq_to_alphabeta(uz_3ph_dq_t input, float theta_el_rad);
+uz_3ph_alphabeta_t uz_transformation_3ph_dq_to_alphabeta(uz_3ph_dq_t input, float theta_el_rad);
 
 /**
  * @brief Calculates the alpha-beta-gamma-components from the nine phase abc-phases

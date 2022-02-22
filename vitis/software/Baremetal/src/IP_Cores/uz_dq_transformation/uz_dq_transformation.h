@@ -29,7 +29,7 @@ uz_dqIPcore_t* uz_dqIPcore_init(struct uz_dqIPcore_config_t config);
  * @param self Pointer to driver instance
  * @return uz_dq_t
  */
-uz_dq_t uz_dqIPcore_get_id_iq(uz_dqIPcore_t* self);
+uz_3ph_dq_t uz_dqIPcore_get_id_iq(uz_dqIPcore_t* self);
 
 /**
  * @brief Read the input currents i1, i2, and i3 from the IP-Core and return them
@@ -37,6 +37,6 @@ uz_dq_t uz_dqIPcore_get_id_iq(uz_dqIPcore_t* self);
  * @param self Pointer to driver instance
  * @return uz_UVW_t
  */
-uz_UVW_t uz_dqIPcore_get_i_uvw(uz_dqIPcore_t* self);
+uz_3ph_uvw_t uz_dqIPcore_get_i_uvw(uz_dqIPcore_t* self);
 
 #endif // UZ_DQ_TRANSFORMATION_H

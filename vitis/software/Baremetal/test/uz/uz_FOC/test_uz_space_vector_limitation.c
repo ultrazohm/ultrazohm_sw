@@ -6,8 +6,8 @@
 #include "test_assert_with_exception.h"
 #include "uz_space_vector_limitation.h"
 
-uz_dq_t u_input_Volts = {0};
-uz_dq_t i_actual_Ampere = {0};
+uz_3ph_dq_t u_input_Volts = {0};
+uz_3ph_dq_t i_actual_Ampere = {0};
 float V_dc_volts = 0.0f;
 float omega_el_rad_per_sec = 0.0f;
 bool ext_clamping = false;
@@ -51,7 +51,7 @@ void test_uz_FOC_SpaceVector_Limitation_output(void){
         omega_el_rad_per_sec = values_omega[i];
         u_input_Volts.d = ud_in[i];
         u_input_Volts.q = uq_in[i];
-        uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+        uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 		TEST_ASSERT_FLOAT_WITHIN(1e-02, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02, uq_out[i], output.q);
     }
@@ -72,7 +72,7 @@ void test_uz_FOC_SpaceVector_Limitation_output_transition_to_limit(void){
         omega_el_rad_per_sec = values_omega[i];
         u_input_Volts.d = ud_in[i];
         u_input_Volts.q = uq_in[i];
-        uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+        uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 		TEST_ASSERT_FLOAT_WITHIN(1e-03, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02, uq_out[i], output.q);
         TEST_ASSERT_EQUAL_INT(output_ref[i], ext_clamping);
@@ -94,7 +94,7 @@ void test_uz_FOC_SpaceVector_Limitation_output_limited(void){
         omega_el_rad_per_sec = values_omega[i];
         u_input_Volts.d = ud_in[i];
         u_input_Volts.q = uq_in[i];
-        uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+        uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 		TEST_ASSERT_FLOAT_WITHIN(1e-03, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02, uq_out[i], output.q);
         TEST_ASSERT_EQUAL_INT(output_ref[i], ext_clamping);
@@ -110,7 +110,7 @@ void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_d_axis_prio(void){
     omega_el_rad_per_sec = 100.0f;
     u_input_Volts.d = 5.0f;
     u_input_Volts.q = 8.0f;
-    uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+    uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.1096966, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.0360555f, output.q);
 }
@@ -124,7 +124,7 @@ void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_q_axis_prio(void){
     omega_el_rad_per_sec = -100.0f;
     u_input_Volts.d = 5.0f;
     u_input_Volts.q = 8.0f;
-    uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+    uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.0360555f, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.1096966f, output.q);
 }
@@ -139,7 +139,7 @@ void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_d_axis_prio_95(void){
     omega_el_rad_per_sec = 100.0f;
     u_input_Volts.d = 0.1f;
     u_input_Volts.q = 8.0f;
-    uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+    uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.1, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.057735f, output.q);
 }
@@ -154,7 +154,7 @@ void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_q_axis_prio_95(void){
     omega_el_rad_per_sec = -100.0f;
     u_input_Volts.d = 5.0f;
     u_input_Volts.q = 0.1f;
-    uz_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+    uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.057735f, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.1, output.q);
 }

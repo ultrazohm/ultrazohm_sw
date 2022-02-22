@@ -44,7 +44,7 @@ void test_uz_dq_transformation_read_idq(void)
    float iq_expected = 12.125f; 
    uz_dqTransformation_hw_get_iq_ExpectAndReturn(config.base_address, iq_expected);
 
-   uz_dq_t currents = uz_dqIPcore_get_id_iq(test_instance);
+   uz_3ph_dq_t currents = uz_dqIPcore_get_id_iq(test_instance);
    
    TEST_ASSERT_EQUAL_FLOAT(currents.d, id_expected);
    TEST_ASSERT_EQUAL_FLOAT(currents.q, iq_expected);
@@ -64,7 +64,7 @@ void test_uz_dq_transformation_read_i_uvw(void)
    float iw_expected = 13.125f; 
    uz_dqTransformation_hw_get_i3_ExpectAndReturn(config.base_address, iw_expected);
 
-   struct uz_UVW_t currents = uz_dqIPcore_get_i_uvw(test_instance);
+   struct uz_3ph_uvw_t currents = uz_dqIPcore_get_i_uvw(test_instance);
    
    TEST_ASSERT_EQUAL_FLOAT(currents.U, iu_expected);
    TEST_ASSERT_EQUAL_FLOAT(currents.V, iv_expected);

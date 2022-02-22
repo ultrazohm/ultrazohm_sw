@@ -18,43 +18,43 @@
 #include "uz_Transformation.h"
 #include "../uz_HAL.h"
 #include <math.h>
-uz_dq_t uz_dq_transformation(uz_UVW_t input, float theta_el_rad)
+uz_3ph_dq_t uz_transformation_3ph_abc_to_dq(uz_3ph_uvw_t input, float theta_el_rad)
 {
-    uz_alphabeta_t ab = uz_clarke_transformation(input);
+    uz_3ph_alphabeta_t ab = uz_transformation_3ph_abc_to_alphabeta(input);
     float sin_coefficent = sinf(theta_el_rad);
     float cos_coefficent = cosf(theta_el_rad);
-    uz_dq_t output = {
+    uz_3ph_dq_t output = {
         .d = (cos_coefficent * ab.alpha) + (sin_coefficent * ab.beta),
         .q = (-sin_coefficent * ab.alpha) + (cos_coefficent * ab.beta),
         .zero = ab.gamma};
     return (output);
 }
 
-uz_UVW_t uz_dq_inverse_transformation(uz_dq_t input, float theta_el_rad)
+uz_3ph_uvw_t uz_transformation_3ph_dq_to_abc(uz_3ph_dq_t input, float theta_el_rad)
 {
 
     float sin_coefficent = sinf(theta_el_rad);
     float cos_coefficent = cosf(theta_el_rad);
-    uz_alphabeta_t ab = {
+    uz_3ph_alphabeta_t ab = {
         .alpha = (cos_coefficent * input.d) - (sin_coefficent * input.q),
         .beta = (sin_coefficent * input.d) + (cos_coefficent * input.q),
         .gamma = input.zero};
-    uz_UVW_t output = uz_clarke_inverse_transformation(ab);
+    uz_3ph_uvw_t output = uz_transformation_3ph_alphabeta_to_abc(ab);
     return (output);
 }
 
-uz_alphabeta_t uz_clarke_transformation(uz_UVW_t input)
+uz_3ph_alphabeta_t uz_transformation_3ph_abc_to_alphabeta(uz_3ph_uvw_t input)
 {
-    uz_alphabeta_t output = {
+    uz_3ph_alphabeta_t output = {
         .alpha = (2.0f / 3.0f) * (input.U - (input.V / 2.0f) - (input.W / 2.0f)),
         .beta = (2.0f / 3.0f) * ((input.V * (sqrtf(3.0f) / 2.0f)) - (input.W * (sqrtf(3.0f) / 2.0f))),
         .gamma = (1.0f / 3.0f) * (input.U + input.V + input.W)};
     return (output);
 }
 
-uz_UVW_t uz_clarke_inverse_transformation(uz_alphabeta_t input)
+uz_3ph_uvw_t uz_transformation_3ph_alphabeta_to_abc(uz_3ph_alphabeta_t input)
 {
-    uz_UVW_t output = {
+    uz_3ph_uvw_t output = {
         .U = input.alpha + input.gamma,
         .V = (input.alpha * (-1.0f / 2.0f)) + (input.beta * (sqrtf(3.0f) / 2.0f)) + input.gamma,
         .W = (input.alpha * (-1.0f / 2.0f)) + (input.beta * (-sqrtf(3.0f) / 2.0f)) + input.gamma};
@@ -69,9 +69,9 @@ float uz_9ph_arraymul(int line, float matrixval[9][9], float val[9])
     return output;
 }
 
-uz_alphabeta_9ph_t uz_9ph_clarke_transformation(uz_abc_9ph_t input)
+uz_9ph_alphabeta_t uz_transformation_9ph_abc_to_alphabeta(uz_9ph_abc_t input)
 {
-    uz_alphabeta_9ph_t output = {0};
+    uz_9ph_alphabeta_t output = {0};
     float val[9] = {0.0f};
 
     // VSD matrix from Matlab script, see Docs
@@ -111,9 +111,9 @@ uz_alphabeta_9ph_t uz_9ph_clarke_transformation(uz_abc_9ph_t input)
     return (output);
 }
 
-uz_abc_9ph_t uz_9ph_clarke_inverse_transformation(uz_alphabeta_9ph_t input)
+uz_9ph_abc_t uz_transformation_9ph_alphabeta_to_abc(uz_9ph_alphabeta_t input)
 {
-    uz_abc_9ph_t output = {0};
+    uz_9ph_abc_t output = {0};
     float val[9] = {0.0f};
 
     // VSD matrix from Matlab script, see Docs
@@ -153,11 +153,11 @@ uz_abc_9ph_t uz_9ph_clarke_inverse_transformation(uz_alphabeta_9ph_t input)
     return (output);
 }
 
-uz_dq_t uz_ab_to_dq_transformation(uz_alphabeta_t input, float theta_el_rad)
+uz_3ph_dq_t uz_transformation_3ph_alphabeta_to_dq(uz_3ph_alphabeta_t input, float theta_el_rad)
 {
     float cos_theta = 0.0f;
     float sin_theta = 0.0f;
-    uz_dq_t output = {0};
+    uz_3ph_dq_t output = {0};
     cos_theta = cosf(theta_el_rad);
     sin_theta = sinf(theta_el_rad);
     output.d = cos_theta * input.alpha + sin_theta * input.beta;
@@ -166,11 +166,11 @@ uz_dq_t uz_ab_to_dq_transformation(uz_alphabeta_t input, float theta_el_rad)
     return output;
 }
 
-uz_alphabeta_t uz_dq_to_ab_inverse_transformation(uz_dq_t input, float theta_el_rad)
+uz_3ph_alphabeta_t uz_transformation_dq_to_alphabeta(uz_3ph_dq_t input, float theta_el_rad)
 {
     float cos_theta = 0.0f;
     float sin_theta = 0.0f;
-    uz_alphabeta_t output = {0};
+    uz_3ph_alphabeta_t output = {0};
     cos_theta = cosf(theta_el_rad);
     sin_theta = sinf(theta_el_rad);
     output.alpha = cos_theta * input.d - sin_theta * input.q;

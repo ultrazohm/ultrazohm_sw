@@ -6,6 +6,8 @@
 
 #define MAX_VALUE_10_BIT 1024U
 #define MAX_VALUE_8_BIT 256U
+#define MLP_LENGTH_OF_OUTPUT_VECTOR 8U
+
 
 void uz_mlp_three_layer_hw_write_enable_nn(uint32_t base_address, bool trigger_conversion)
 {
@@ -166,8 +168,6 @@ void uz_mlp_three_layer_hw_read_output(uint32_t base_address, uz_array_float_t o
         output_data.data[(output_data.length / 2U) + i] = uz_fixedpoint_axi_read(base_address + offset_address, fixedpoint_definition);
     }
 }
-
-#define MLP_LENGTH_OF_OUTPUT_VECTOR 8U
 
 void uz_mlp_three_layer_hw_read_output_unsafe(uint32_t base_address, uz_array_float_t output_data)
 {

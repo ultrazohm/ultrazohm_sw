@@ -124,14 +124,14 @@ Usage
 Known issues in WSL
 -------------------
 
-.. note:: If you have issues with your git credentials in WSL, it is possible to link you WSL git installation to the windows git credential manager. As explained here, https://stackoverflow.com/questions/45925964/how-to-use-git-credential-store-on-wsl-ubuntu-on-windows, run this command in your wsl terminal 
+.. note:: If you have issues with your git credentials in WSL, it is possible to link your WSL git installation to the windows git credential manager. As explained here: https://stackoverflow.com/questions/45925964/how-to-use-git-credential-store-on-wsl-ubuntu-on-windows Run this command in your wsl terminal.
 
     .. code-block:: console
 
         git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-manager-core.exe"
     
     
-.. note:: On some machines during the error ``error: RPC failed; curl 56 GnuTLS recv error (-24): Decryption has failed.`` appears during ``git clone`` when connected via WiFi. This can be related to an out-of-date wifi driver https://github.com/microsoft/WSL/issues/4253#issuecomment-799902628. If updating the driver does not solve the issue, try to connect via VPN or LAN as a workaround. 
+.. note:: On some machines the error ``error: RPC failed; curl 56 GnuTLS recv error (-24): Decryption has failed`` appears during ``git clone`` when connected via WiFi. This can be related to an out-of-date wifi driver https://github.com/microsoft/WSL/issues/4253#issuecomment-799902628. If updating the driver does not solve the issue, try to connect via VPN or LAN as a workaround. 
 
 
 Usage

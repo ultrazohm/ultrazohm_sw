@@ -124,7 +124,7 @@ if(import_data_to_simulink_datainspector ~= 0)
     openRunIDs = Simulink.sdi.getAllRunIDs;
     for runs = 1:size(openRunIDs,1)
         currentRun = Simulink.sdi.getRun(openRunIDs(runs));
-        if(currentRun.Name == file_name_log)
+        if(strcmp(currentRun.Name,file_name_log))
             if (overwrite_data_in_simulink_datainspector == 1)
                 run_already_imported = 0;
                 Simulink.sdi.deleteRun(openRunIDs(runs))

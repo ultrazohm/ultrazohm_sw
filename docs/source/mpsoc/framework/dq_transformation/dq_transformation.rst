@@ -21,19 +21,19 @@ Variables structs
 
 These structs are needed to hand over the input values and get the output values of the functions.
     
-.. doxygenstruct:: uz_UVW_t
+.. doxygenstruct:: uz_3ph_uvw_t
   :members:
 
-.. doxygenstruct:: uz_dq_t
+.. doxygenstruct:: uz_3ph_dq_t
   :members:
 
-.. doxygenstruct:: uz_alphabeta_t
+.. doxygenstruct:: uz_3ph_alphabeta_t
   :members:
 
 dq-Transformation
 *****************
 
-.. doxygenfunction:: uz_dq_transformation
+.. doxygenfunction:: uz_transformation_3ph_abc_to_dq
 
 This uses the Park transformation to transform a three-phase (uvw) signal to a dq0 rotating reference frame. 
 ``X`` is a placeholder and can be replaced by either ``U``, ``I`` or any other applicable unit. 
@@ -60,7 +60,7 @@ The d-Axis has to be aligned with the U-phase.
 inverse dq-Transformation
 *************************
 
-.. doxygenfunction:: uz_dq_inverse_transformation
+.. doxygenfunction:: uz_transformation_3ph_dq_to_abc
 
 This uses the inverse Park transformation to transform a dq0 rotating reference frame to a three-phase (uvw) signal. 
 ``X`` is a placeholder and can be replaced by either ``U``, ``I`` or any other applicable unit. 
@@ -87,7 +87,7 @@ The d-Axis has to be aligned with the U-phase.
 clarke-Transformation
 *********************
 
-.. doxygenfunction:: uz_clarke_transformation
+.. doxygenfunction:: uz_transformation_3ph_abc_to_alphabeta
 
 The clarke transformation converts the time-domain components of a three-phase system in an uvw reference frame to components in a stationary αβγ reference frame. 
 ``X`` is a placeholder and can be replaced by either ``U``, ``I`` or any other applicable unit.
@@ -113,7 +113,7 @@ The clarke transformation converts the time-domain components of a three-phase s
 inverse clarke-Transformation
 *****************************
 
-.. doxygenfunction:: uz_clarke_inverse_transformation
+.. doxygenfunction:: uz_transformation_3ph_alphabeta_to_abc
   
 The inverse clarke transformation converts the components in a stationary αβγ reference frame to the time-domain components of a three-phase system in an uvw reference frame. 
 ``X`` is a placeholder and can be replaced by either ``U``, ``I`` or any other applicable unit.
@@ -139,8 +139,10 @@ The inverse clarke transformation converts the components in a stationary αβγ
 
 Multiphase systems
 ==================
+
 Example usage of the ninephase transformation
 *********************************************
+
 The existing functions offer the possibility to convert ninephase asymetrical systems into a the stationary reference frame (αβ).
 Afterwards a Park transformation can be applied to transform into the rotating reference frame.
 The inverse transformations are also available.
@@ -169,7 +171,7 @@ The struct can then be given to the transformation function which will return a 
 .. code-block:: c
   :caption: VSD transformation
 
-  stationary_values = uz_9ph_clarke_transformation(natural_values);
+  stationary_values = uz_transformation_9ph_alphabeta_to_abc(natural_values);
 
 As it is common to transform only the αβ components to the rotating reference frame, those two must be written into the threephase uz_alphabeta_t struct and be given to the dq transformation function.
 As commonly known, the electrical angle is also necessary. 
@@ -191,7 +193,7 @@ Adding transformations
 When adding a new transformation for systems with other amounts of phases one must know if the principle of the existing VSD transformation can be used.
 If this is the case, go through the following steps:
 
-1. Copy the functions uz_9ph_clarke_transformation, uz_9ph_clarke_inverse_transformation and uz_9ph_arraymul and rename them accordingly (e.g. uz_6ph_arraymul).
+1. Copy the functions uz_9ph_clarke_transformation, uz_transformation_9ph_alphabeta_to_abc and uz_9ph_arraymul and rename them accordingly (e.g. uz_6ph_arraymul).
 
 2. Create the structs uz_alphabeta_9ph_t and uz_abc_9ph_t for the newly added phase system.
 
@@ -245,13 +247,14 @@ The factor for amplitudeinvariance will be multiplied afterwards so the user sho
 
 Functions and structs for ninephase VSD transformation
 ******************************************************
-.. doxygenstruct:: uz_abc_9ph_t
+
+.. doxygenstruct:: uz_9ph_abc_t
   :members:
 
-.. doxygenstruct:: uz_alphabeta_9ph_t
+.. doxygenstruct:: uz_9ph_alphabeta_t
   :members:
 
-.. doxygenfunction:: uz_9ph_clarke_transformation
+.. doxygenfunction:: uz_transformation_9ph_abc_to_alphabeta
 
 The ninephase VSD transformation works like the following equations show:
 
@@ -276,7 +279,7 @@ The ninephase VSD transformation works like the following equations show:
   \begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{o_1} \\ X_{o_2} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{zero} \end{bmatrix} = 
   \begin{bmatrix} C \end{bmatrix}*\begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2} \\ X_{a_3} \\ X_{b_3} \\ X_{c_3} \end{bmatrix}
 
-.. doxygenfunction:: uz_9ph_clarke_inverse_transformation
+.. doxygenfunction:: uz_transformation_9ph_alphabeta_to_abc
 
 The inverse transformation uses the inverse of the before shown matrix.
 
@@ -287,7 +290,7 @@ The inverse transformation uses the inverse of the before shown matrix.
 
 .. doxygenfunction:: uz_9ph_arraymul
 
-.. doxygenfunction:: uz_ab_to_dq_transformation
+.. doxygenfunction:: uz_transformation_3ph_alphabeta_to_dq
 
 This transformation and its inverse need to be created even tho there was already an existing Park transformation.
 The existing Park transformation function actually integrated the threephase Clarke transformation so it is not usable in the multiphase case.
@@ -302,7 +305,7 @@ The existing Park transformation function actually integrated the threephase Cla
   \begin{bmatrix} X_{\alpha} \\ X_{\beta} \end{bmatrix} \\
   X_{zero} = 0;
 
-.. doxygenfunction:: uz_dq_to_ab_inverse_transformation
+.. doxygenfunction:: uz_transformation_3ph_dq_to_alphabeta
 
 .. math::
 

@@ -18,31 +18,23 @@
 #include "uz_Transformation.h"
 #include "../uz_HAL.h"
 #include <math.h>
+
+// abc -> dq & reverse
 uz_3ph_dq_t uz_transformation_3ph_abc_to_dq(uz_3ph_uvw_t input, float theta_el_rad)
 {
     uz_3ph_alphabeta_t ab = uz_transformation_3ph_abc_to_alphabeta(input);
-    float sin_coefficent = sinf(theta_el_rad);
-    float cos_coefficent = cosf(theta_el_rad);
-    uz_3ph_dq_t output = {
-        .d = (cos_coefficent * ab.alpha) + (sin_coefficent * ab.beta),
-        .q = (-sin_coefficent * ab.alpha) + (cos_coefficent * ab.beta),
-        .zero = ab.gamma};
+    uz_3ph_dq_t output= uz_transformation_3ph_alphabeta_to_dq(ab,theta_el_rad);
     return (output);
 }
 
 uz_3ph_uvw_t uz_transformation_3ph_dq_to_abc(uz_3ph_dq_t input, float theta_el_rad)
 {
-
-    float sin_coefficent = sinf(theta_el_rad);
-    float cos_coefficent = cosf(theta_el_rad);
-    uz_3ph_alphabeta_t ab = {
-        .alpha = (cos_coefficent * input.d) - (sin_coefficent * input.q),
-        .beta = (sin_coefficent * input.d) + (cos_coefficent * input.q),
-        .gamma = input.zero};
+    uz_3ph_alphabeta_t ab = uz_transformation_dq_to_alphabeta(input,theta_el_rad);
     uz_3ph_uvw_t output = uz_transformation_3ph_alphabeta_to_abc(ab);
     return (output);
 }
 
+// abc -> alphabeta & reverse
 uz_3ph_alphabeta_t uz_transformation_3ph_abc_to_alphabeta(uz_3ph_uvw_t input)
 {
     uz_3ph_alphabeta_t output = {
@@ -61,14 +53,31 @@ uz_3ph_uvw_t uz_transformation_3ph_alphabeta_to_abc(uz_3ph_alphabeta_t input)
     return (output);
 }
 
-float uz_9ph_arraymul(int line, float matrixval[9][9], float val[9])
+// alphabeta -> dq & reverse
+uz_3ph_dq_t uz_transformation_3ph_alphabeta_to_dq(uz_3ph_alphabeta_t input, float theta_el_rad)
 {
-    float output = 0.0f;
-    for (int i = 0; i < 9; i++)
-        output = output + matrixval[line][i] * val[i];
+    float sin_coefficient = sinf(theta_el_rad);
+    float cos_coefficient = cosf(theta_el_rad);
+    uz_3ph_dq_t output = {
+        .d = (cos_coefficient * input.alpha) + (sin_coefficient * input.beta),
+        .q = (-sin_coefficient * input.alpha) + (cos_coefficient * input.beta),
+        .zero = input.gamma};
     return output;
 }
 
+uz_3ph_alphabeta_t uz_transformation_dq_to_alphabeta(uz_3ph_dq_t input, float theta_el_rad)
+{
+    float sin_coefficient = sinf(theta_el_rad);
+    float cos_coefficient = cosf(theta_el_rad);
+    uz_3ph_alphabeta_t ab = {
+        .alpha = (cos_coefficient * input.d) - (sin_coefficient * input.q),
+        .beta = (sin_coefficient * input.d) + (cos_coefficient * input.q),
+        .gamma = input.zero};
+    return ab;
+}
+
+
+// 9 phase
 uz_9ph_alphabeta_t uz_transformation_9ph_abc_to_alphabeta(uz_9ph_abc_t input)
 {
     uz_9ph_alphabeta_t output = {0};
@@ -153,28 +162,11 @@ uz_9ph_abc_t uz_transformation_9ph_alphabeta_to_abc(uz_9ph_alphabeta_t input)
     return (output);
 }
 
-uz_3ph_dq_t uz_transformation_3ph_alphabeta_to_dq(uz_3ph_alphabeta_t input, float theta_el_rad)
-{
-    float cos_theta = 0.0f;
-    float sin_theta = 0.0f;
-    uz_3ph_dq_t output = {0};
-    cos_theta = cosf(theta_el_rad);
-    sin_theta = sinf(theta_el_rad);
-    output.d = cos_theta * input.alpha + sin_theta * input.beta;
-    output.q = cos_theta * input.beta - sin_theta * input.alpha;
-    output.zero = 0.0f;
-    return output;
-}
 
-uz_3ph_alphabeta_t uz_transformation_dq_to_alphabeta(uz_3ph_dq_t input, float theta_el_rad)
+float uz_9ph_arraymul(int line, float matrixval[9][9], float val[9])
 {
-    float cos_theta = 0.0f;
-    float sin_theta = 0.0f;
-    uz_3ph_alphabeta_t output = {0};
-    cos_theta = cosf(theta_el_rad);
-    sin_theta = sinf(theta_el_rad);
-    output.alpha = cos_theta * input.d - sin_theta * input.q;
-    output.beta = sin_theta * input.d + cos_theta * input.q;
-    output.gamma = 0.0f;
+    float output = 0.0f;
+    for (int i = 0; i < 9; i++)
+        output = output + matrixval[line][i] * val[i];
     return output;
 }

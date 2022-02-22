@@ -27,15 +27,10 @@ Using ``memcpy`` is therefore not performant enough.
 Actual values struct
 ====================
 
+This struct carries all the measurement data needed for the ParameterID. They are passed to the ParameterID object through the :ref:`ParameterID_Data struct<uz_ParameterID_Data_struct>`. 
+Some states may not need every measurement value listed below. For further details on this, check the individual pages of the existing :ref:`uz_PID_ID_states`.
+
 .. doxygenstruct:: uz_PID_ActualValues_t
-  :members:
-
-.. _uz_Control_flags_struct:
-
-Control flags struct
-====================
-
-.. doxygenstruct:: uz_PID_ControlFlags_t
   :members:
 
 .. _uz_Global_config_struct:
@@ -45,6 +40,14 @@ Global config struct
 
 .. doxygenstruct:: uz_PID_GlobalConfig_t
   :members: 
+
+.. _uz_Control_flags_struct:
+
+Control flags struct
+====================
+
+.. doxygenstruct:: uz_PID_ControlFlags_t
+  :members:
 
 .. _uz_Controller_parameters_struct:
 

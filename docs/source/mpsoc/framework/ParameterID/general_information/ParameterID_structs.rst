@@ -13,6 +13,12 @@ Explains the global structs, which are not specific to one individual
 Global ParameterID Data struct
 ==============================
 
+This struct is used to communicate with the ParameterID object. It is therefore intended as the data-out- and -input of the ParameterID.
+The ParameterID will check for updated config-values during runtime and adjust itself accordingly.
+During each step of the ParameterID the members of each output-struct are automatically updated to the latest values. 
+In order to safe execution time the output-structs of the ``ID-states`` are realized as pointers, since some ``ID-states`` have large arrays as part of their output-struct. 
+Using ``memcpy`` is therefore not performant enough. 
+
 .. doxygenstruct:: uz_ParameterID_Data_t
   :members: 
 

@@ -27,7 +27,7 @@ Setup
 
 The performance of using the remote container in VSCode on Windows is relatively slow. To speed this up significantly we will setup up the remote container and VSCode to run directly in the WSL2.
 
-.. note:: For Windows user this is highly recommended. Running VSCode on Windows all unit tests took over **10 minutes**. On Ubuntu it took **8.2 seconds**.
+.. note:: For Windows users, this is highly recommended. Running VSCode on Windows all unit tests took over **10 minutes**. On Ubuntu, it took **8.2 seconds**.
 
 
 #. Install the programs listed in the prerequisites.
@@ -104,7 +104,7 @@ Usage
     
     .. image:: open_vscode.png
 
-#. VSCode will start. A prompt will pop up asking, if the folder should be reopened in Container. Accept this.
+#. VSCode will start. A prompt will pop up asking if the folder should be reopened in Container. Accept this.
 
     .. image::  reopen_container.png
 
@@ -159,7 +159,7 @@ In VS Code:
 - ``cd docs``
 - ``make livehtml``
 - A new browser window opens with a live preview of the documentation opens
-- If you change the documentation an save, the live preview rebuilds automatically
+- If you change the documentation and save it, the live preview rebuilds automatically
 - Alternative: use ``make clean html`` to build manually
 
 .. figure:: container_livehtml.gif
@@ -188,7 +188,7 @@ Alternatives
 Podman instead of Docker
 ------------------------
 
-Using remote container with Docker might lead to unwanted problems with file permissions on Linux and Docker runs as root by default.
+Using the remote container with Docker might lead to unwanted problems with file permissions on Linux and Docker runs as root by default.
 `Podman <https://github.com/containers/podman>`_ can be used as a rootless alternative to Docker.
 
 - `Podman installation <https://podman.io/getting-started/installation>`_

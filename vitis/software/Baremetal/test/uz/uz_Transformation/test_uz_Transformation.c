@@ -182,7 +182,7 @@ void test_uz_dq_to_ab_inverse_transformation_positive_theta(void){
     dq_multiphase_test.q  = 6.0f;
     dq_multiphase_test.zero = 4.0f;
     float theta_el_rad = UZ_PIf / 8.0f;
-    uz_3ph_alphabeta_t output = uz_transformation_dq_to_alphabeta(dq_multiphase_test, theta_el_rad);
+    uz_3ph_alphabeta_t output = uz_transformation_3ph_dq_to_alphabeta(dq_multiphase_test, theta_el_rad);
     TEST_ASSERT_FLOAT_WITHIN (1e-06, 2.323297f, output.alpha);
     TEST_ASSERT_FLOAT_WITHIN (1e-06, 7.456694f, output.beta);
     TEST_ASSERT_EQUAL_FLOAT (4.0f, output.gamma);
@@ -194,7 +194,7 @@ void test_uz_dq_to_ab_inverse_transformation_negative_theta(void){
     dq_multiphase_test.q  = 6.0f;
     dq_multiphase_test.zero = 4.0f;
     float theta_el_rad = -1* UZ_PIf / 8.0f;
-    uz_3ph_alphabeta_t output = uz_transformation_dq_to_alphabeta(dq_multiphase_test, theta_el_rad);
+    uz_3ph_alphabeta_t output = uz_transformation_3ph_dq_to_alphabeta(dq_multiphase_test, theta_el_rad);
     TEST_ASSERT_FLOAT_WITHIN (1e-05, 6.915498f, output.alpha);
     TEST_ASSERT_FLOAT_WITHIN (1e-05, 3.62986f, output.beta);
     TEST_ASSERT_EQUAL_FLOAT (4.0f, output.gamma);

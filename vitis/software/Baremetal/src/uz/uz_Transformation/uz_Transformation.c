@@ -29,7 +29,7 @@ uz_3ph_dq_t uz_transformation_3ph_abc_to_dq(uz_3ph_uvw_t input, float theta_el_r
 
 uz_3ph_uvw_t uz_transformation_3ph_dq_to_abc(uz_3ph_dq_t input, float theta_el_rad)
 {
-    uz_3ph_alphabeta_t ab = uz_transformation_dq_to_alphabeta(input,theta_el_rad);
+    uz_3ph_alphabeta_t ab = uz_transformation_3ph_dq_to_alphabeta(input,theta_el_rad);
     uz_3ph_uvw_t output = uz_transformation_3ph_alphabeta_to_abc(ab);
     return (output);
 }
@@ -65,7 +65,7 @@ uz_3ph_dq_t uz_transformation_3ph_alphabeta_to_dq(uz_3ph_alphabeta_t input, floa
     return output;
 }
 
-uz_3ph_alphabeta_t uz_transformation_dq_to_alphabeta(uz_3ph_dq_t input, float theta_el_rad)
+uz_3ph_alphabeta_t uz_transformation_3ph_dq_to_alphabeta(uz_3ph_dq_t input, float theta_el_rad)
 {
     float sin_coefficient = sinf(theta_el_rad);
     float cos_coefficient = cosf(theta_el_rad);

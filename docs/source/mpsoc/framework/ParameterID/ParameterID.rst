@@ -55,7 +55,7 @@ Setup
      SpeedControl_instance = uz_SpeedControl_init(config_n);
   }
 
-During this step, the struct of the type ``uz_ParameterID_Data_t`` is initialized as well. This struct carrys, among other things, the configuration values of the ParameterID.
+During this step, the struct of the type ``uz_ParameterID_Data_t`` is initialized as well. This struct carries, among other things, the configuration values of the ParameterID.
 To ease the setup of the ParameterID, this struct is initialized with default values. 
 To configure the ParameterID to your needs, change the values inside the ``uz_ParameterID_initialize_data_structs`` function. 
 Especially the configuration of the motor-related parameters is important. If they are not known, they can be left at 0.0f. In this case however, these parameters have to be identified first by using the :ref:`uz_ElectricalID` state. 

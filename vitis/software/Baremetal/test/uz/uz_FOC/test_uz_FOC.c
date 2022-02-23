@@ -102,16 +102,16 @@ void test_uz_FOC_sample_UVW_output(void) {
     //Values for comparision from simulation
     uz_FOC* instance = uz_FOC_init(config);
     float theta_el_rad = (float)M_PI;
-    uz_3ph_uvw_t output = uz_FOC_sample_UVW(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03f,-6.75f,output.U);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03f,-2.4707f,output.V);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03f,9.2207f,output.W);
+    uz_3ph_abc_t output = uz_FOC_sample_UVW(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f,-6.75f,output.a);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f,-2.4707f,output.b);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f,9.2207f,output.c);
     theta_el_rad = (float)M_PI * 1.5f;
     uz_FOC_reset(instance);
     output = uz_FOC_sample_UVW(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
-    TEST_ASSERT_FLOAT_WITHIN(1e-02,6.75f,output.U);
-    TEST_ASSERT_FLOAT_WITHIN(1e-02,-9.2207f,output.V);
-    TEST_ASSERT_FLOAT_WITHIN(1e-02,2.4707f,output.W);
+    TEST_ASSERT_FLOAT_WITHIN(1e-02,6.75f,output.a);
+    TEST_ASSERT_FLOAT_WITHIN(1e-02,-9.2207f,output.b);
+    TEST_ASSERT_FLOAT_WITHIN(1e-02,2.4707f,output.c);
 }
 
 void test_uz_FOC_sample_output_SVLimitation_active(void){
@@ -248,7 +248,7 @@ void test_uz_FOC_get_ext_clamping_output(void){
 }
 
 void test_uz_FOC_generate_DutyCycles_output(void) {
-    struct uz_3ph_uvw_t UVW = {10.0f, 0.0f, -6.0f};
+    struct uz_3ph_abc_t UVW = {.a=10.0f, .b=0.0f, .c=-6.0f};
     struct uz_DutyCycle_t output = uz_FOC_generate_DutyCycles(UVW, V_dc_volts);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f, 0.91667f, output.DutyCycle_U);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f, 0.5f, output.DutyCycle_V);
@@ -256,7 +256,7 @@ void test_uz_FOC_generate_DutyCycles_output(void) {
 }
 
 void test_uz_FOC_generate_DutyCycles_limit(void) {
-    struct uz_3ph_uvw_t UVW = {.U = 30.0f, .V = 35.32f, .W = -25.0f};
+    struct uz_3ph_abc_t UVW = {.a = 30.0f, .b = 35.32f, .c = -25.0f};
     struct uz_DutyCycle_t output = uz_FOC_generate_DutyCycles(UVW, V_dc_volts);
     TEST_ASSERT_EQUAL_FLOAT(1.0f, output.DutyCycle_U);
     TEST_ASSERT_EQUAL_FLOAT(1.0f, output.DutyCycle_V);

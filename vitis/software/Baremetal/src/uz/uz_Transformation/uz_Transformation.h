@@ -24,11 +24,11 @@ typedef struct uz_3ph_alphabeta_t{
  * @brief Struct for the variables of a three-phase-System
  * 
  */
-typedef struct uz_3ph_uvw_t{
-    float U;        /**< Amplitude of the U phase */ 
-    float V;        /**< Amplitude of the V phase */ 
-    float W;        /**< Amplitude of the W phase */ 
-}uz_3ph_uvw_t;
+typedef struct uz_3ph_abc_t{
+    float a;        /**< Amplitude of the a phase (U) */ 
+    float b;        /**< Amplitude of the b phase (V) */ 
+    float c;        /**< Amplitude of the c phase (W) */ 
+}uz_3ph_abc_t;
 
 /**
  * @brief Struct for the variables of an alpha-beta nine-phase system
@@ -95,7 +95,7 @@ typedef struct uz_6ph_abc_t{
  * @param theta_el_rad electrical theta in rad
  * @return uz_dq_t Outputs the calculated dq0-components
  */
-uz_3ph_dq_t uz_transformation_3ph_abc_to_dq(uz_3ph_uvw_t input, float theta_el_rad);
+uz_3ph_dq_t uz_transformation_3ph_abc_to_dq(uz_3ph_abc_t input, float theta_el_rad);
 
 /**
  * @brief Calculates the UVW-Phases from the dq0-components  
@@ -104,7 +104,7 @@ uz_3ph_dq_t uz_transformation_3ph_abc_to_dq(uz_3ph_uvw_t input, float theta_el_r
  * @param theta_el_rad electrical theta in rad
  * @return uz_UVW_t Outputs the calculated UVW-phases
  */
-uz_3ph_uvw_t uz_transformation_3ph_dq_to_abc(uz_3ph_dq_t input, float theta_el_rad);
+uz_3ph_abc_t uz_transformation_3ph_dq_to_abc(uz_3ph_dq_t input, float theta_el_rad);
 
 /**
  * @brief Calculates the alpha-beta-gamma-components from the UVW-phases
@@ -112,7 +112,7 @@ uz_3ph_uvw_t uz_transformation_3ph_dq_to_abc(uz_3ph_dq_t input, float theta_el_r
  * @param input uz_UVW struct
  * @return uz_alphabeta Outputs the calculated alpha-beta-gamma-components
  */
-uz_3ph_alphabeta_t uz_transformation_3ph_abc_to_alphabeta(uz_3ph_uvw_t input);
+uz_3ph_alphabeta_t uz_transformation_3ph_abc_to_alphabeta(uz_3ph_abc_t input);
 
 /**
  * @brief Calculates the UVW-phases from the alpha-beta-gamma-components
@@ -120,7 +120,7 @@ uz_3ph_alphabeta_t uz_transformation_3ph_abc_to_alphabeta(uz_3ph_uvw_t input);
  * @param input uz_alphabeta struct
  * @return uz_UVW_t Outputs the calculated UVW-phases
  */
-uz_3ph_uvw_t uz_transformation_3ph_alphabeta_to_abc(uz_3ph_alphabeta_t input);
+uz_3ph_abc_t uz_transformation_3ph_alphabeta_to_abc(uz_3ph_alphabeta_t input);
 
 /**
  * @brief 1D array multiplication ([a, b, c] * [x; y; z] = [a*x + b*y + c*z])

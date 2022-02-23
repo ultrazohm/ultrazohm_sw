@@ -37,6 +37,6 @@ uz_3ph_dq_t uz_dqIPcore_get_id_iq(uz_dqIPcore_t* self);
  * @param self Pointer to driver instance
  * @return uz_UVW_t
  */
-uz_3ph_uvw_t uz_dqIPcore_get_i_uvw(uz_dqIPcore_t* self);
+uz_3ph_abc_t uz_dqIPcore_get_i_uvw(uz_dqIPcore_t* self);
 
 #endif // UZ_DQ_TRANSFORMATION_H

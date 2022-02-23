@@ -6,7 +6,7 @@
 #include "uz_math_constants.h"
 #include "uz_Transformation.h"
 
-uz_3ph_uvw_t UVW_system = {0}; 
+uz_3ph_abc_t UVW_system = {0}; 
 uz_3ph_dq_t dq_system = {0};
 uz_3ph_alphabeta_t alphabeta_system = {0};
 
@@ -17,9 +17,9 @@ uz_3ph_dq_t dq_multiphase_test = {0};
 
 void setUp(void)
 {
-    UVW_system.U = 0.0f;
-    UVW_system.V = 0.0f;
-    UVW_system.W = 0.0f;
+    UVW_system.a = 0.0f;
+    UVW_system.b = 0.0f;
+    UVW_system.c = 0.0f;
     dq_system.d = 0.0f;
     dq_system.q = 0.0f;
     dq_system.zero = 0.0f;
@@ -30,9 +30,9 @@ void setUp(void)
 
 // Testfunctions threephase
 void test_uz_dq_Transformation_output_positive_theta(void){
-    UVW_system.U = 1.0f;
-    UVW_system.V = -(1.0f / 2.0f);
-    UVW_system.W = -(1.0f / 2.0f);
+    UVW_system.a = 1.0f;
+    UVW_system.b = -(1.0f / 2.0f);
+    UVW_system.c = -(1.0f / 2.0f);
     float theta_el_rad = UZ_PIf / 2.0f;
     uz_3ph_dq_t output = uz_transformation_3ph_abc_to_dq(UVW_system, theta_el_rad);
     TEST_ASSERT_FLOAT_WITHIN (1e-06, 0.0f, output.d);
@@ -41,9 +41,9 @@ void test_uz_dq_Transformation_output_positive_theta(void){
 }
 
 void test_uz_dq_Transformation_output_negative_theta(void){
-    UVW_system.U = 1.0f;
-    UVW_system.V = -(1.0f / 2.0f);
-    UVW_system.W = -(1.0f / 2.0f);
+    UVW_system.a = 1.0f;
+    UVW_system.b = -(1.0f / 2.0f);
+    UVW_system.c = -(1.0f / 2.0f);
     float theta_el_rad = -1.0f * (UZ_PIf / 2.0f);
     uz_3ph_dq_t output = uz_transformation_3ph_abc_to_dq(UVW_system, theta_el_rad);
     TEST_ASSERT_FLOAT_WITHIN (1e-06, 0.0f, output.d);
@@ -55,33 +55,33 @@ void test_uz_inverse_dq_Transformation_output_positive_theta(void){
     dq_system.d = 0.0f;
     dq_system.q = -1.0f;
     float theta_el_rad = UZ_PIf / 2.0f;
-    uz_3ph_uvw_t output = uz_transformation_3ph_dq_to_abc(dq_system, theta_el_rad);
-    TEST_ASSERT_EQUAL_FLOAT(1.0f, output.U);
-    TEST_ASSERT_EQUAL_FLOAT(-0.5f, output.V);
-    TEST_ASSERT_EQUAL_FLOAT(-0.5f, output.W);
+    uz_3ph_abc_t output = uz_transformation_3ph_dq_to_abc(dq_system, theta_el_rad);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f, output.a);
+    TEST_ASSERT_EQUAL_FLOAT(-0.5f, output.b);
+    TEST_ASSERT_EQUAL_FLOAT(-0.5f, output.c);
 }
 
 void test_uz_inverse_dq_Transformation_output_negative_theta(void){
     dq_system.d = 0.0f;
     dq_system.q = -1.0f;
     float theta_el_rad = -1.0f * (UZ_PIf / 2.0f);
-    uz_3ph_uvw_t output = uz_transformation_3ph_dq_to_abc(dq_system, theta_el_rad);
-    TEST_ASSERT_EQUAL_FLOAT(-1.0f, output.U);
-    TEST_ASSERT_EQUAL_FLOAT(0.5f, output.V);
-    TEST_ASSERT_EQUAL_FLOAT(0.5f, output.W);
+    uz_3ph_abc_t output = uz_transformation_3ph_dq_to_abc(dq_system, theta_el_rad);
+    TEST_ASSERT_EQUAL_FLOAT(-1.0f, output.a);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, output.b);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, output.c);
 }
 
 void test_uz_clarke_Transformation_output(void){
-    UVW_system.U = 1.0f;
-    UVW_system.V = -(1.0f / 2.0f);
-    UVW_system.W = -(1.0f / 2.0f);
+    UVW_system.a = 1.0f;
+    UVW_system.b = -(1.0f / 2.0f);
+    UVW_system.c = -(1.0f / 2.0f);
     uz_3ph_alphabeta_t output = uz_transformation_3ph_abc_to_alphabeta(UVW_system);
     TEST_ASSERT_EQUAL_FLOAT(1.0f, output.alpha);
     TEST_ASSERT_EQUAL_FLOAT(0.0f, output.beta);
     TEST_ASSERT_EQUAL_FLOAT(0.0f, output.gamma);
-    UVW_system.U = sqrtf(3.0f) / 2.0f;
-    UVW_system.V = 0.0f;
-    UVW_system.W = -1.0f * (sqrtf(3.0f) / 2.0f);
+    UVW_system.a = sqrtf(3.0f) / 2.0f;
+    UVW_system.b = 0.0f;
+    UVW_system.c = -1.0f * (sqrtf(3.0f) / 2.0f);
     output = uz_transformation_3ph_abc_to_alphabeta(UVW_system);
     TEST_ASSERT_FLOAT_WITHIN(1e-07, 0.8660254, output.alpha);
     TEST_ASSERT_EQUAL_FLOAT(0.5f, output.beta);
@@ -91,16 +91,16 @@ void test_uz_clarke_Transformation_output(void){
 void test_uz_inverse_clarke_Transformation_output(void){
     alphabeta_system.alpha = 1.0f;
     alphabeta_system.beta = 0.0f;
-    uz_3ph_uvw_t output = uz_transformation_3ph_alphabeta_to_abc(alphabeta_system);
-    TEST_ASSERT_EQUAL_FLOAT(1.0f, output.U);
-    TEST_ASSERT_EQUAL_FLOAT(-0.5f, output.V);
-    TEST_ASSERT_EQUAL_FLOAT(-0.5f, output.W);
+    uz_3ph_abc_t output = uz_transformation_3ph_alphabeta_to_abc(alphabeta_system);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f, output.a);
+    TEST_ASSERT_EQUAL_FLOAT(-0.5f, output.b);
+    TEST_ASSERT_EQUAL_FLOAT(-0.5f, output.c);
     alphabeta_system.alpha = 0.8660254f;
     alphabeta_system.beta = 0.5f;
     output = uz_transformation_3ph_alphabeta_to_abc(alphabeta_system);
-    TEST_ASSERT_EQUAL_FLOAT(sqrtf(3.0f) / 2.0f, output.U);
-    TEST_ASSERT_EQUAL_FLOAT(0.f, output.V);
-    TEST_ASSERT_EQUAL_FLOAT(-1.0f * (sqrtf(3.0f) / 2.0f), output.W);
+    TEST_ASSERT_EQUAL_FLOAT(sqrtf(3.0f) / 2.0f, output.a);
+    TEST_ASSERT_EQUAL_FLOAT(0.f, output.b);
+    TEST_ASSERT_EQUAL_FLOAT(-1.0f * (sqrtf(3.0f) / 2.0f), output.c);
 }
 
 // Testfunctions ninephase

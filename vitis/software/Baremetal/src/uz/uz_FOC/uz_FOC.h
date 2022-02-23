@@ -79,7 +79,7 @@ uz_3ph_dq_t uz_FOC_sample(uz_FOC* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_d
  * @param theta_el_rad electrical theta in rad
  * @return uz_UVW_t Output UVW-voltage struct
  */
-uz_3ph_uvw_t uz_FOC_sample_UVW(uz_FOC* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad);
+uz_3ph_abc_t uz_FOC_sample_UVW(uz_FOC* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad);
 /**
  * @brief Resets the FOC and the integrators of the PI-Controllers
  *
@@ -152,5 +152,5 @@ bool uz_FOC_get_ext_clamping(uz_FOC* self);
  * @param V_dc_volts DC link voltage. Must be greater than 0.0f
  * @return struct uz_DutyCycle_t outputs the corresponding DutyCycle for each phase
  */
-struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(uz_3ph_uvw_t input, float V_dc_volts);
+struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(uz_3ph_abc_t input, float V_dc_volts);
 #endif // UZ_FOC_H

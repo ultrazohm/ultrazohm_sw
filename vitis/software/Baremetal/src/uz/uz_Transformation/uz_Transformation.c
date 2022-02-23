@@ -23,36 +23,36 @@
 float uz_9ph_arraymul(int line, float const matrixval[9][9], float const val[9]);
 
 // abc -> dq & reverse
-uz_3ph_dq_t uz_transformation_3ph_abc_to_dq(uz_3ph_uvw_t input, float theta_el_rad)
+uz_3ph_dq_t uz_transformation_3ph_abc_to_dq(uz_3ph_abc_t input, float theta_el_rad)
 {
     uz_3ph_alphabeta_t ab = uz_transformation_3ph_abc_to_alphabeta(input);
     uz_3ph_dq_t output= uz_transformation_3ph_alphabeta_to_dq(ab,theta_el_rad);
     return (output);
 }
 
-uz_3ph_uvw_t uz_transformation_3ph_dq_to_abc(uz_3ph_dq_t input, float theta_el_rad)
+uz_3ph_abc_t uz_transformation_3ph_dq_to_abc(uz_3ph_dq_t input, float theta_el_rad)
 {
     uz_3ph_alphabeta_t ab = uz_transformation_3ph_dq_to_alphabeta(input,theta_el_rad);
-    uz_3ph_uvw_t output = uz_transformation_3ph_alphabeta_to_abc(ab);
+    uz_3ph_abc_t output = uz_transformation_3ph_alphabeta_to_abc(ab);
     return (output);
 }
 
 // abc -> alphabeta & reverse
-uz_3ph_alphabeta_t uz_transformation_3ph_abc_to_alphabeta(uz_3ph_uvw_t input)
+uz_3ph_alphabeta_t uz_transformation_3ph_abc_to_alphabeta(uz_3ph_abc_t input)
 {
     uz_3ph_alphabeta_t output = {
-        .alpha = (2.0f / 3.0f) * (input.U - (input.V / 2.0f) - (input.W / 2.0f)),
-        .beta = (2.0f / 3.0f) * ((input.V * (sqrtf(3.0f) / 2.0f)) - (input.W * (sqrtf(3.0f) / 2.0f))),
-        .gamma = (1.0f / 3.0f) * (input.U + input.V + input.W)};
+        .alpha = (2.0f / 3.0f) * (input.a - (input.b / 2.0f) - (input.c / 2.0f)),
+        .beta = (2.0f / 3.0f) * ((input.b * (sqrtf(3.0f) / 2.0f)) - (input.c * (sqrtf(3.0f) / 2.0f))),
+        .gamma = (1.0f / 3.0f) * (input.a + input.b + input.c)};
     return (output);
 }
 
-uz_3ph_uvw_t uz_transformation_3ph_alphabeta_to_abc(uz_3ph_alphabeta_t input)
+uz_3ph_abc_t uz_transformation_3ph_alphabeta_to_abc(uz_3ph_alphabeta_t input)
 {
-    uz_3ph_uvw_t output = {
-        .U = input.alpha + input.gamma,
-        .V = (input.alpha * (-1.0f / 2.0f)) + (input.beta * (sqrtf(3.0f) / 2.0f)) + input.gamma,
-        .W = (input.alpha * (-1.0f / 2.0f)) + (input.beta * (-sqrtf(3.0f) / 2.0f)) + input.gamma};
+    uz_3ph_abc_t output = {
+        .a = input.alpha + input.gamma,
+        .b = (input.alpha * (-1.0f / 2.0f)) + (input.beta * (sqrtf(3.0f) / 2.0f)) + input.gamma,
+        .c = (input.alpha * (-1.0f / 2.0f)) + (input.beta * (-sqrtf(3.0f) / 2.0f)) + input.gamma};
     return (output);
 }
 

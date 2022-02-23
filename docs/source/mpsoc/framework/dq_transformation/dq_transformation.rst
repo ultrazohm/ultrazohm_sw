@@ -21,7 +21,7 @@ Variables structs
 
 These structs are needed to hand over the input values and get the output values of the functions.
     
-.. doxygenstruct:: uz_3ph_uvw_t
+.. doxygenstruct:: uz_3ph_abc_t
   :members:
 
 .. doxygenstruct:: uz_3ph_dq_t

@@ -37,13 +37,13 @@ typedef struct uz_3ph_abc_t{
 typedef struct uz_9ph_alphabeta_t{
     float alpha;        /**< Amplitude of the alpha component */ 
     float beta;         /**< Amplitude of the beta component */ 
-    float o1;           /**< Amplitude of the o1 component */ 
-    float o2;           /**< Amplitude of the o2 component */
+    float z1;           /**< Amplitude of the z1 component */ 
+    float z2;           /**< Amplitude of the z2 component */
     float x1;           /**< Amplitude of the x1 component */
     float y1;           /**< Amplitude of the y1 component */
     float x2;           /**< Amplitude of the x2 component */
     float y2;           /**< Amplitude of the y2 component */
-    float zero;         /**< Amplitude of the zero component */
+    float z3;           /**< Amplitude of the z3 component */
 }uz_9ph_alphabeta_t;
 
 /**
@@ -53,8 +53,8 @@ typedef struct uz_9ph_alphabeta_t{
 typedef struct uz_6ph_alphabeta_t{
     float alpha;        /**< Amplitude of the alpha component */ 
     float beta;         /**< Amplitude of the beta component */ 
-    float o1;           /**< Amplitude of the o1 component */ 
-    float o2;           /**< Amplitude of the o2 component */
+    float z1;           /**< Amplitude of the z1 component */ 
+    float z2;           /**< Amplitude of the z2 component */
     float x1;           /**< Amplitude of the x1 component */
     float y1;           /**< Amplitude of the y1 component */
 }uz_6ph_alphabeta_t;

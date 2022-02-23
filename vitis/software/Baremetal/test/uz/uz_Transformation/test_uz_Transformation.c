@@ -120,26 +120,26 @@ void test_uz_9ph_clarke_transformation_output(void){
     uz_9ph_alphabeta_t output = uz_transformation_9ph_abc_to_alphabeta(ninephase_abc);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.7124f, output.alpha);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.8490f, output.beta);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,  0.3333f, output.o1);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,  7.5056f, output.o2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  0.3333f, output.z1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  7.5056f, output.z2);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.0859f, output.x1);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.2361f, output.y1);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.2017f, output.x2);
     TEST_ASSERT_FLOAT_WITHIN(1e-03,  0.0356f, output.y2);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,  5.0000f, output.zero);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  5.0000f, output.z3);
 }
 
 // test inverse vsd output
 void test_uz_9ph_clarke_inverse_transformation_output(void){
     ninephase_alphabeta.alpha = -1.0f;
     ninephase_alphabeta.beta = -2.0f;
-    ninephase_alphabeta.o1 = -3.0f;
-    ninephase_alphabeta.o2 = -4.0f;
+    ninephase_alphabeta.z1 = -3.0f;
+    ninephase_alphabeta.z2 = -4.0f;
     ninephase_alphabeta.x1 = -5.0f;
     ninephase_alphabeta.y1 = -6.0f;
     ninephase_alphabeta.x2 = -7.0f;
     ninephase_alphabeta.y2 = -8.0f;
-    ninephase_alphabeta.zero = -9.0f;    
+    ninephase_alphabeta.z3 = -9.0f;    
     uz_9ph_abc_t output = uz_transformation_9ph_alphabeta_to_abc(ninephase_alphabeta);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -33.0718f, output.a1);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -17.0359f, output.b1);

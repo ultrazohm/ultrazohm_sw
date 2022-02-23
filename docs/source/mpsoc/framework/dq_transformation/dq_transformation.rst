@@ -154,16 +154,16 @@ To use the ninephase transformation, one must create a struct for the natural ph
   // declare necessary structs and variables
   uz_9ph_abc_t natural_values = {0};             // holds the natural values
   uz_9ph_alphabeta_t stationary_values = {0};    // holds the stationary reference frame values
-  uz_3ph_alphabeta_t alphabeta = {0};                       // used to give only alpha and beta to the Park transformation
-  uz_3ph_dq_t rotating_dq = {0};                            // holds the results of the Park transformation
-  float d_current = 0.0f;                               // example variable, used to process the dq values in the following code
-  float q_current = 0.0f;                               // example variable, used to process the dq values in the following code
-  float theta_el = 0.0f;                                // electric rotor angle
+  uz_3ph_alphabeta_t alphabeta = {0};            // used to give only alpha and beta to the Park transformation
+  uz_3ph_dq_t rotating_dq = {0};                 // holds the results of the Park transformation
+  float d_current = 0.0f;                        // example variable, used to process the dq values in the following code
+  float q_current = 0.0f;                        // example variable, used to process the dq values in the following code
+  float theta_el = 0.0f;                         // electric rotor angle
 
   ...
 
   // assert example values
-  natural_values.a1 =  1.0f;                            // example value for phase a1, store your real values here
+  natural_values.a1 =  1.0f;                     // example value for phase a1, store your real values here
   natural_values.b1 = -0.5f;
   //...
   natural_values.c3 = -0.5f;
@@ -207,6 +207,7 @@ If this is the case, go through the following steps:
 To use the Matlab script that outputs the VSD matrix in C code, the variable "n" must be changed to the target amount of phases.
 The placeholder "VSD_MATRIX" should be replaced with the Matlab variable that holds the VSD matrix (e.g. from you workspace).
 The factor for amplitudeinvariance will be multiplied afterwards so the user should not apply it to you VSD matrix by himself.
+The creation of a transformation matrix with this method was presented in [[#Zoric_paper]_].
 
 
 .. code-block:: matlab
@@ -254,6 +255,8 @@ Functions and structs for ninephase VSD transformation
 .. doxygenstruct:: uz_9ph_alphabeta_t
   :members:
 
+Naming of the subspaces according to [[#Zabaleta_diss]_].
+
 .. doxygenfunction:: uz_transformation_9ph_abc_to_alphabeta
 
 The ninephase VSD transformation works like the following equations show:
@@ -279,6 +282,8 @@ The ninephase VSD transformation works like the following equations show:
   \begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{o_1} \\ X_{o_2} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{zero} \end{bmatrix} = 
   \begin{bmatrix} C \end{bmatrix}*\begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2} \\ X_{a_3} \\ X_{b_3} \\ X_{c_3} \end{bmatrix}
 
+Transformation matrix according to [[#Rockhill_gerneral]_][[#Rockhill_ninephase]_].
+
 .. doxygenfunction:: uz_transformation_9ph_alphabeta_to_abc
 
 The inverse transformation uses the inverse of the before shown matrix.
@@ -290,9 +295,6 @@ The inverse transformation uses the inverse of the before shown matrix.
 
 
 .. doxygenfunction:: uz_transformation_3ph_alphabeta_to_dq
-
-This transformation and its inverse need to be created even tho there was already an existing Park transformation.
-The existing Park transformation function actually integrated the threephase Clarke transformation so it is not usable in the multiphase case.
 
 .. math::
 
@@ -316,3 +318,9 @@ The existing Park transformation function actually integrated the threephase Cla
   \begin{bmatrix} X_{d} \\ X_{q} \end{bmatrix} \\
   X_{\gamma} = 0;
 
+Sources
+-------
+.. [#Zoric_paper] I. Zoric, M. Jones and E. Levi, "Vector space decomposition algorithm for asymmetrical multiphase machines," 2017 International Symposium on Power Electronics (Ee), 2017, pp. 1-6, doi: 10.1109/PEE.2017.8171682.
+.. [#Zabaleta_diss] M. Zabaleta, "Permament Magnet Multiphase Machine Modeling and Control for MV Wind Energy Applications", Dissertation, Liverpool John Moores University, 2018, doi: 10.24377/LJMU.t.00008818.
+.. [#Rockhill_gerneral] A. A. Rockhill and T. A. Lipo, "A generalized transformation methodology for polyphase electric machines and networks," 2015 IEEE International Electric Machines & Drives Conference (IEMDC), 2015, pp. 27-34, doi: 10.1109/IEMDC.2015.7409032.
+.. [#Rockhill_ninephase] A. A. Rockhill and T. A. Lipo, "A simplified model of a nine phase synchronous machine using vector space decomposition," 2009 IEEE Power Electronics and Machines in Wind Applications, 2009, pp. 1-5, doi: 10.1109/PEMWA.2009.5208335.

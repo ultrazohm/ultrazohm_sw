@@ -113,13 +113,13 @@ uz_9ph_alphabeta_t uz_transformation_9ph_abc_to_alphabeta(uz_9ph_abc_t input)
     // apply transformation matrix
     output.alpha = uz_9ph_arraymul(0, vsd_mat, val);
     output.beta = uz_9ph_arraymul(1, vsd_mat, val);
-    output.o1 = uz_9ph_arraymul(2, vsd_mat, val);
-    output.o2 = uz_9ph_arraymul(3, vsd_mat, val);
+    output.z1 = uz_9ph_arraymul(2, vsd_mat, val);
+    output.z2 = uz_9ph_arraymul(3, vsd_mat, val);
     output.x1 = uz_9ph_arraymul(4, vsd_mat, val);
     output.y1 = uz_9ph_arraymul(5, vsd_mat, val);
     output.x2 = uz_9ph_arraymul(6, vsd_mat, val);
     output.y2 = uz_9ph_arraymul(7, vsd_mat, val);
-    output.zero = uz_9ph_arraymul(8, vsd_mat, val);
+    output.z3 = uz_9ph_arraymul(8, vsd_mat, val);
     return (output);
 }
 
@@ -144,13 +144,13 @@ uz_9ph_abc_t uz_transformation_9ph_alphabeta_to_abc(uz_9ph_alphabeta_t input)
     // write values of abc struct to array for easier usage
     val[0] = input.alpha;
     val[1] = input.beta;
-    val[2] = input.o1;
-    val[3] = input.o2;
+    val[2] = input.z1;
+    val[3] = input.z2;
     val[4] = input.x1;
     val[5] = input.y1;
     val[6] = input.x2;
     val[7] = input.y2;
-    val[8] = input.zero;
+    val[8] = input.z3;
 
     // apply transformation matrix
     output.a1 = uz_9ph_arraymul(0, vsd_mat, val);

@@ -152,13 +152,15 @@ To use the ninephase transformation, one must create a struct for the natural ph
   :caption: Declarations
   
   // declare necessary structs and variables
-  struct uz_abc_9ph_t natural_values = {0};             // holds the natural values
-  struct uz_alphabeta_9ph_t stationary_values = {0};    // holds the stationary reference frame values
-  uz_alphabeta_t alphabeta = {0};                       // used to give only α and β to the Park transformation
-  uz_dq_t rotating_dq = {0};                            // holds the results of the Park transformation
+  uz_9ph_abc_t natural_values = {0};             // holds the natural values
+  uz_9ph_alphabeta_t stationary_values = {0};    // holds the stationary reference frame values
+  uz_3ph_alphabeta_t alphabeta = {0};                       // used to give only alpha and beta to the Park transformation
+  uz_3ph_dq_t rotating_dq = {0};                            // holds the results of the Park transformation
   float d_current = 0.0f;                               // example variable, used to process the dq values in the following code
   float q_current = 0.0f;                               // example variable, used to process the dq values in the following code
   float theta_el = 0.0f;                                // electric rotor angle
+
+  ...
 
   // assert example values
   natural_values.a1 =  1.0f;                            // example value for phase a1, store your real values here
@@ -171,12 +173,10 @@ The struct can then be given to the transformation function which will return a 
 .. code-block:: c
   :caption: VSD transformation
 
-  stationary_values = uz_transformation_9ph_alphabeta_to_abc(natural_values);
+  stationary_values = uz_transformation_9ph_abc_to_alphabeta(natural_values);
 
 As it is common to transform only the αβ components to the rotating reference frame, those two must be written into the threephase uz_alphabeta_t struct and be given to the dq transformation function.
 As commonly known, the electrical angle is also necessary. 
-Note that the gamma and the zero values in the uz_alphabeta_t and uz_dq_t struct will not be read from or written to.
-They will be set to 0.0f.
 The dq and values can then be read from the struct. The inverse transformation follows the same principle.
 
 .. code-block:: c
@@ -288,7 +288,6 @@ The inverse transformation uses the inverse of the before shown matrix.
   \begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2} \\ X_{a_3} \\ X_{b_3} \\ X_{c_3} \end{bmatrix} = 
   \begin{bmatrix} C \end{bmatrix}^{-1}*\begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{o_1} \\ X_{o_2} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{zero} \end{bmatrix}
 
-.. doxygenfunction:: uz_9ph_arraymul
 
 .. doxygenfunction:: uz_transformation_3ph_alphabeta_to_dq
 
@@ -303,7 +302,7 @@ The existing Park transformation function actually integrated the threephase Cla
   -sin(\theta_{el}) & cos(\theta_{el}) 
   \end{bmatrix}
   \begin{bmatrix} X_{\alpha} \\ X_{\beta} \end{bmatrix} \\
-  X_{zero} = 0;
+  X_{zero} = X_{gamma};
 
 .. doxygenfunction:: uz_transformation_3ph_dq_to_alphabeta
 

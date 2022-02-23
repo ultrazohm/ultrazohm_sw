@@ -122,15 +122,7 @@ uz_3ph_alphabeta_t uz_transformation_3ph_abc_to_alphabeta(uz_3ph_abc_t input);
  */
 uz_3ph_abc_t uz_transformation_3ph_alphabeta_to_abc(uz_3ph_alphabeta_t input);
 
-/**
- * @brief 1D array multiplication ([a, b, c] * [x; y; z] = [a*x + b*y + c*z])
- * 
- * @param line line that should be used from the 2D matrixval array (starting from 0)
- * @param matrixval 2D array containing the values of the transformation matrix
- * @param val array of values (either alpha beta or abc) that will be transformed
- * @return float that is the return value for alpha beta transformation or inverse transformation depending on matrixval
- */
-float uz_9ph_arraymul(int line, float matrixval[9][9], float val[9]);
+
 
 /**
  * @brief Calculates the dq-components from the alpha-beta components

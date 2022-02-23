@@ -3,7 +3,7 @@
 #include "uz_nn_layer.h"
 
 /**
- * @brief Arbitrarily defined maximum number of layers for the module. Affect alls instances of the module.
+ * @brief Arbitrarily defined maximum number of layers for the module. Affect all instances of the module.
  * 
  */
 #define UZ_NN_MAX_LAYER 10U
@@ -42,6 +42,8 @@ uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self);
 
 uz_matrix_t* uz_nn_get_bias_matrix(uz_nn_t const*const self, size_t layer);
 uz_matrix_t* uz_nn_get_weight_matrix(uz_nn_t const*const self, size_t layer);
-
+size_t uz_nn_get_number_of_layer(uz_nn_t const*const self);
+size_t uz_nn_get_number_of_inputs(uz_nn_t const*const self);
+size_t uz_nn_get_number_of_outputs(uz_nn_t const*const self);
 
 #endif // UZ_NN_H

@@ -72,14 +72,12 @@ typedef struct {
   real32_T Wtemp;
   real32_T psi_array[600];
   boolean_T IdControlFlag;
-  real32_T iq_mean_out;
-  real32_T id_mean_out;
   real32_T delta_psi[200];
   uint16_T activeState;
   real32_T psi_pm_out;
   real32_T Ld_out;
   real32_T Lq_out;
-  boolean_T clean_array_flag;
+  boolean_T clean_array;
 } uz_PID_OnlineID_output_t;
 
 #endif

@@ -19,6 +19,9 @@
 #include "../uz_HAL.h"
 #include <math.h>
 
+// not declared as static because tests showed better performance without static declaration
+float uz_9ph_arraymul(int line, float const matrixval[9][9], float const val[9]);
+
 // abc -> dq & reverse
 uz_3ph_dq_t uz_transformation_3ph_abc_to_dq(uz_3ph_uvw_t input, float theta_el_rad)
 {
@@ -84,7 +87,7 @@ uz_9ph_alphabeta_t uz_transformation_9ph_abc_to_alphabeta(uz_9ph_abc_t input)
     float val[9] = {0.0f};
 
     // VSD matrix from Matlab script, see Docs
-    float vsd_mat[9][9] =
+    float const vsd_mat[9][9] =
         {
             {0.2222222f, -0.1111111f, -0.1111111f, 0.2088206f, -0.1702321f, -0.0385885f, 0.1702321f, -0.2088206f, 0.0385885f},
             {0.0000000f, 0.1924501f, -0.1924501f, 0.0760045f, 0.1428417f, -0.2188462f, 0.1428417f, 0.0760045f, -0.2188462f},
@@ -126,7 +129,7 @@ uz_9ph_abc_t uz_transformation_9ph_alphabeta_to_abc(uz_9ph_alphabeta_t input)
     float val[9] = {0.0f};
 
     // VSD matrix from Matlab script, see Docs
-    float vsd_mat[9][9] =
+    float const vsd_mat[9][9] =
         {
             {1.0000000f, 0.0000002f, -0.0000002f, -1.7320511f, 0.9999998f, 0.0000001f, 1.0000000f, -0.0000000f, 3.0000005f},
             {-0.5000001f, 0.8660257f, 0.0000000f, -1.7320509f, -0.5000000f, -0.8660253f, -0.4999999f, 0.8660253f, 3.0000000f},
@@ -162,8 +165,8 @@ uz_9ph_abc_t uz_transformation_9ph_alphabeta_to_abc(uz_9ph_alphabeta_t input)
     return (output);
 }
 
-
-float uz_9ph_arraymul(int line, float matrixval[9][9], float val[9])
+// 1D array multiplication ([a, b, c] * [x; y; z] = [a*x + b*y + c*z])
+float uz_9ph_arraymul(int line, float const matrixval[9][9], float const val[9])
 {
     float output = 0.0f;
     for (int i = 0; i < 9; i++)

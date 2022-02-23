@@ -131,6 +131,15 @@ So we split the second window in two parts (as can be seen in the next picture):
 
    Second Window Timing Diagram.
 
+Instead of using a fixed amount of clock ticks for the second window (as can be seen with the previous constant). We have added in the last version two more constants that define the window size as a function of the UZ_PWM_FREQUENCY and Interrupt_ISR_freq_factor).
+
+.. _XWDTTB_SecondWindowConstants_v2:
+
+.. figure:: ./uz_watchdog_SecondWindowConstants2.png
+   :width: 586
+   :align: center
+
+   Second Window Constants upgraded in uz_watchdog.h file to set INT point.
 
 Driver function reference
 =========================

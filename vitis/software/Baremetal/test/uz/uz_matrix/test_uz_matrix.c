@@ -2,7 +2,7 @@
 
 #include "unity.h"
 #include "test_assert_with_exception.h"
-#include <stdlib.h>
+#include "uz_matrix_init_helper.h"
 
 #include "uz_matrix.h"
 #include "uz_nn_activation_functions.h" // used for uz_matrix_apply_function_to_each_element test
@@ -14,8 +14,6 @@ void setUp(void)
 void tearDown(void)
 {
 }
-
-uz_matrix_t *init_array_test_helper(float* data, size_t rows,size_t columns);
 
 void test_uz_matrix_init_1d_vector(void)
 {
@@ -75,7 +73,6 @@ void test_uz_matrix_add_scalar_(void)
     size_t rows = 3U;
     size_t columns = 3U;
     float mat[9] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
-
     uz_matrix_t* matrix=init_array_test_helper(mat,rows,columns);
 
     float scalar = 1.1f;
@@ -89,7 +86,6 @@ void test_uz_matrix_multiply_by_scalar(void)
     size_t rows = 3U;
     size_t columns = 3U;
     float mat[9] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
-
     uz_matrix_t* matrix=init_array_test_helper(mat,rows,columns);
 
     float scalar = 1.1f;
@@ -129,7 +125,6 @@ void test_uz_matrix_apply_function_to_each_element(void)
     fcn_pointer = &uz_nn_activation_function_relu;
     float A_data[5] = {1.0f, -1.0f, 2.0f, -2.0f, 5.0f};
     float expected[5] = {1.0f, 0.0f, 2.0f, 0.0f, 5.0f}; // Relu function just sets every element that is negative to zero
-
     uz_matrix_t* A=init_array_test_helper(A_data,1,5);
 
     uz_matrix_apply_function_to_each_element(A, fcn_pointer);
@@ -179,14 +174,6 @@ void test_uz_matrix_transpose(void)
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected, A_data, UZ_MATRIX_SIZE(expected));
 }
 
-uz_matrix_t *init_array_test_helper(float* data, size_t rows,size_t columns)
-{
-    uz_matrix_t *pointer_to_matrix = malloc(sizeof(uz_matrix_t));
-    pointer_to_matrix->columns=columns;
-    pointer_to_matrix->rows=rows;
-    pointer_to_matrix->data=data;
-    pointer_to_matrix->is_ready=true;
-    return pointer_to_matrix;
-}
+
 
 #endif // TEST

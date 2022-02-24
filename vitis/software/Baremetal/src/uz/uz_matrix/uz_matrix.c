@@ -15,14 +15,12 @@
 ******************************************************************************/
 
 #include "../uz_global_configuration.h"
-#if UZ_MATRIX_MAX_INSTANCES > 0
 #include "uz_matrix.h"
 #include "../uz_HAL.h"
 #include <stdbool.h>
 #include <string.h> // for memcpy
 
-
-
+#if UZ_MATRIX_MAX_INSTANCES > 0
 static size_t instance_counter = 0U;
 static uz_matrix_t instances[UZ_MATRIX_MAX_INSTANCES] = {0};
 
@@ -51,6 +49,24 @@ uz_matrix_t *uz_matrix_init(float *data, size_t length_of_data, size_t rows, siz
     self->data = data;
     return (self);
 }
+#endif
+
+
+uz_matrix_t *uz_matrix_init_without_allocation(uz_matrix_t *self,float *data, size_t length_of_data, size_t rows, size_t columns)
+{
+    uz_assert_not_NULL(self);
+    uz_assert_false(self->is_ready);
+    uz_assert_not_zero_unsigned_int(rows);
+    uz_assert_not_zero_unsigned_int(columns);
+    uz_assert(length_of_data == (rows * columns));
+    self->is_ready = true;
+    self->rows = rows;
+    self->columns = columns;
+    self->data = data;
+    return (self);
+}
+
+
 
 size_t uz_matrix_get_number_of_rows(uz_matrix_t const *const self)
 {
@@ -300,4 +316,3 @@ void uz_matrix_transpose(uz_matrix_t *A)
     }
 }
 
-#endif

@@ -28,7 +28,7 @@ struct uz_matrix_t
 typedef struct uz_matrix_t uz_matrix_t;
 
 
-uz_matrix_t *uz_matrix_init_without_allocation(uz_matrix_t *self,float *data, size_t length_of_data, size_t rows, size_t columns);
+uz_matrix_t *uz_matrix_init(uz_matrix_t *self,float *data, size_t length_of_data, size_t rows, size_t columns);
 
 /**
  * @brief Initializes one matrix and allocates memory for it from the static allocator.
@@ -39,7 +39,7 @@ uz_matrix_t *uz_matrix_init_without_allocation(uz_matrix_t *self,float *data, si
  * @param columns Number of columns of the matrix
  * @return Pointer to the allocated matrix instance 
  */
-uz_matrix_t* uz_matrix_init(float* data,size_t length_of_data, size_t rows, size_t columns);
+//uz_matrix_t* uz_matrix_init(float* data,size_t length_of_data, size_t rows, size_t columns);
 
 /**
  * @brief Returns the number of rows of the given uz_matrix

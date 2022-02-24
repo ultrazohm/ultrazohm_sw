@@ -1,18 +1,18 @@
 /******************************************************************************
-* Copyright Contributors to the UltraZohm project.
-* Copyright 2021 Tobias Schindler
-* 
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* 
-*     http://www.apache.org/licenses/LICENSE-2.0
-* 
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and limitations under the License.
-******************************************************************************/
+ * Copyright Contributors to the UltraZohm project.
+ * Copyright 2021 Tobias Schindler
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations under the License.
+ ******************************************************************************/
 
 #include "../uz_global_configuration.h"
 #include "uz_matrix.h"
@@ -20,38 +20,7 @@
 #include <stdbool.h>
 #include <string.h> // for memcpy
 
-#if UZ_MATRIX_MAX_INSTANCES > 0
-static size_t instance_counter = 0U;
-static uz_matrix_t instances[UZ_MATRIX_MAX_INSTANCES] = {0};
-
-static uz_matrix_t *uz_matrix_allocation(void);
-
-static uz_matrix_t *uz_matrix_allocation(void)
-{
-    uz_assert(instance_counter < UZ_MATRIX_MAX_INSTANCES);
-    uz_matrix_t *self = &instances[instance_counter];
-    uz_assert(self->length_of_data==0);
-    instance_counter++;
-    return (self);
-}
-
-uz_matrix_t *uz_matrix_init(float *data, size_t length_of_data, size_t rows, size_t columns)
-{
-    uz_assert_not_NULL(data);
-    uz_assert_not_zero_unsigned_int(rows);
-    uz_assert_not_zero_unsigned_int(columns);
-    uz_assert(length_of_data == (rows * columns));
-    uz_matrix_t *self = uz_matrix_allocation();
-    self->length_of_data = length_of_data;
-    self->rows = rows;
-    self->columns = columns;
-    self->data = data;
-    return (self);
-}
-#endif
-
-
-uz_matrix_t *uz_matrix_init_without_allocation(uz_matrix_t *self,float *data, size_t length_of_data, size_t rows, size_t columns)
+uz_matrix_t *uz_matrix_init(uz_matrix_t *self, float *data, size_t length_of_data, size_t rows, size_t columns)
 {
     uz_assert_not_NULL(self);
     uz_assert_false(self->length_of_data);
@@ -64,8 +33,6 @@ uz_matrix_t *uz_matrix_init_without_allocation(uz_matrix_t *self,float *data, si
     self->data = data;
     return (self);
 }
-
-
 
 size_t uz_matrix_get_number_of_rows(uz_matrix_t const *const self)
 {
@@ -314,4 +281,3 @@ void uz_matrix_transpose(uz_matrix_t *A)
         }
     }
 }
-

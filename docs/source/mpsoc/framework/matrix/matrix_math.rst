@@ -47,7 +47,7 @@ The following matrix definition with the number of columns :math:`n` and number 
 Dimensions
 ==========
 
-A pointer to the actual data array has to be supplied as the first argument to ``uz_matrix_init``.
+A pointer to the actual data array has to be supplied ``uz_matrix_init``.
 The array has to be of length :math:`m \times n`.
 The dimension :math:`n` (``columns``) can be one to generate a column vector :math:`m \times 1`.
 
@@ -119,11 +119,12 @@ To initialize the following :math:`3 \times 3` matrix:
 
     // declare data array static outside of a function to ensure static storage duration and file scope. 
     static float mat[9]={1,2,3,4,5,6,7,8,9};
+    struct uz_matrix_t input_matrix = {0};
 
     void uz_matrix_init_3_times_3_matrix(void){
         int rows=3; // Row and columns can be automatic storage duration since they are not required after initialization (stored in the module)
         int columns=3;
-        uz_matrix_t* my_matrix=uz_matrix_init(mat,UZ_MATRIX_SIZE(mat),rows,columns);
+        uz_matrix_t* my_matrix=uz_matrix_init(input_matrix,mat,UZ_MATRIX_SIZE(mat),rows,columns);
     }
 
 Reference

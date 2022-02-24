@@ -3,6 +3,15 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+
+struct uz_matrix_t
+{
+    bool is_ready;
+    size_t rows;
+    size_t columns;
+    float *data;
+};
+
 /**
  * @brief Standard macro to get the size of supplied matrix data at compile time.
  *        See:

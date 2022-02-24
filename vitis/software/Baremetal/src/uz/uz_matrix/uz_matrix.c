@@ -21,13 +21,7 @@
 #include <stdbool.h>
 #include <string.h> // for memcpy
 
-struct uz_matrix_t
-{
-    bool is_ready;
-    size_t rows;
-    size_t columns;
-    float *data;
-};
+
 
 static size_t instance_counter = 0U;
 static uz_matrix_t instances[UZ_MATRIX_MAX_INSTANCES] = {0};

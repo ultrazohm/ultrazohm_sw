@@ -564,7 +564,6 @@ void test_uz_mlp_three_layer_write_bias_to_layer_long(void)
     uz_mlp_three_layer_hw_write_bias_data_Expect(BASE_ADDRESS, bias_data_long[62]);
     uz_mlp_three_layer_hw_write_bias_address_Expect(BASE_ADDRESS, 6);
     uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 8);
-    uz_array_float_t output_data;
     uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 0);
 
     uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 0);
@@ -723,16 +722,12 @@ void test_uz_mlp_three_layer_calculate_forward_pass()
 {
 
     uz_mlp_three_layer_ip_t *test_instance = successful_init();
-    uz_matrix_t *input = uz_matrix_init(x, UZ_MATRIX_SIZE(x), 1, UZ_MATRIX_SIZE(x));
-
     uz_array_float_t input_data = {
         .data = &x[0],
         .length = UZ_ARRAY_SIZE(x)};
-
     uz_array_float_t output_data = {
         .data = &y_4[0],
         .length = UZ_ARRAY_SIZE(y_4)};
-
     uz_mlp_three_layer_hw_write_input_Expect(BASE_ADDRESS, input_data);
     uz_mlp_three_layer_hw_write_enable_nn_Expect(BASE_ADDRESS, true);
     uz_mlp_three_layer_hw_write_enable_nn_Expect(BASE_ADDRESS, false);

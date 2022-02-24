@@ -20,7 +20,7 @@ void test_uz_matrix_init_1d_vector(void)
     size_t rows = 1U;
     size_t columns = 3U;
     float test_vector[3] = {1.0f, 2.0f, 3.0f};
-    uz_matrix_init(test_vector, UZ_MATRIX_SIZE(test_vector), rows, columns);
+    init_array_test_helper(test_vector, UZ_MATRIX_SIZE(test_vector), rows, columns);
 }
 
 void test_uz_matrix_init_wrong_data_dimension(void)
@@ -28,7 +28,7 @@ void test_uz_matrix_init_wrong_data_dimension(void)
     size_t rows = 3U;
     size_t columns = 3U;
     float mat[6] = {0}; // Mat needs to be of length 9, thus a assertion fires in the test
-    TEST_ASSERT_FAIL_ASSERT(uz_matrix_init(mat, UZ_MATRIX_SIZE(mat), rows, columns));
+    TEST_ASSERT_FAIL_ASSERT(init_array_test_helper(mat, UZ_MATRIX_SIZE(mat), rows, columns));
 }
 
 void test_uz_matrix_init_zero_rows(void)
@@ -36,7 +36,7 @@ void test_uz_matrix_init_zero_rows(void)
     size_t rows = 0U;
     size_t columns = 3U;
     float mat[5] = {0};
-    TEST_ASSERT_FAIL_ASSERT(uz_matrix_init(mat, UZ_MATRIX_SIZE(mat), rows, columns));
+    TEST_ASSERT_FAIL_ASSERT(init_array_test_helper(mat, UZ_MATRIX_SIZE(mat), rows, columns));
 }
 
 void test_uz_matrix_init_zero_columns(void)
@@ -44,7 +44,7 @@ void test_uz_matrix_init_zero_columns(void)
     size_t rows = 3U;
     size_t columns = 0U;
     float mat[5] = {0};
-    TEST_ASSERT_FAIL_ASSERT(uz_matrix_init(mat, UZ_MATRIX_SIZE(mat), rows, columns));
+    TEST_ASSERT_FAIL_ASSERT(init_array_test_helper(mat, UZ_MATRIX_SIZE(mat), rows, columns));
 }
 
 void test_uz_matrix_init_3_times_3_matrix(void)
@@ -52,7 +52,7 @@ void test_uz_matrix_init_3_times_3_matrix(void)
     size_t rows = 3U;
     size_t columns = 3U;
     float mat[9] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8, 9};
-    uz_matrix_init(mat, UZ_MATRIX_SIZE(mat), rows, columns);
+    init_array_test_helper(mat, UZ_MATRIX_SIZE(mat), rows, columns);
 }
 
 void test_uz_matrix_get_number_of_rows_and_columns(void)
@@ -60,7 +60,7 @@ void test_uz_matrix_get_number_of_rows_and_columns(void)
     size_t rows = 3U;
     size_t columns = 2U;
     float mat[6] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f};
-    uz_matrix_t* matrix=init_array_test_helper(mat,rows,columns);
+    uz_matrix_t* matrix=init_array_test_helper(mat,UZ_MATRIX_SIZE(mat),rows,columns);
 
     size_t number_of_rows = uz_matrix_get_number_of_rows(matrix);
     size_t number_of_columns = uz_matrix_get_number_of_columns(matrix);
@@ -73,7 +73,7 @@ void test_uz_matrix_add_scalar_(void)
     size_t rows = 3U;
     size_t columns = 3U;
     float mat[9] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
-    uz_matrix_t* matrix=init_array_test_helper(mat,rows,columns);
+    uz_matrix_t* matrix=init_array_test_helper(mat,UZ_MATRIX_SIZE(mat),rows,columns);
 
     float scalar = 1.1f;
     uz_matrix_add_scalar(matrix, scalar);
@@ -86,7 +86,7 @@ void test_uz_matrix_multiply_by_scalar(void)
     size_t rows = 3U;
     size_t columns = 3U;
     float mat[9] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
-    uz_matrix_t* matrix=init_array_test_helper(mat,rows,columns);
+    uz_matrix_t* matrix=init_array_test_helper(mat,UZ_MATRIX_SIZE(mat),rows,columns);
 
     float scalar = 1.1f;
     uz_matrix_multiply_by_scalar(matrix, scalar);
@@ -111,9 +111,9 @@ void test_uz_matrix_multiply_3_times_2(void)
     float C_data[9] = {0};
     float C_expected[9] = {5.0f, 11.0f, 17.0f, 11.0f, 25.0f, 39.0f, 17.0f, 39.0f, 61.0f};
 
-    uz_matrix_t* A=init_array_test_helper(A_data,3,2);
-    uz_matrix_t* B=init_array_test_helper(B_data,2,3);
-    uz_matrix_t* C=init_array_test_helper(C_data,3,3);
+    uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),3,2);
+    uz_matrix_t* B=init_array_test_helper(B_data,UZ_MATRIX_SIZE(B_data),2,3);
+    uz_matrix_t* C=init_array_test_helper(C_data,UZ_MATRIX_SIZE(C_data),3,3);
 
     uz_matrix_multiply(A, B, C);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(C_expected, C_data, UZ_MATRIX_SIZE(C_expected));
@@ -125,7 +125,7 @@ void test_uz_matrix_apply_function_to_each_element(void)
     fcn_pointer = &uz_nn_activation_function_relu;
     float A_data[5] = {1.0f, -1.0f, 2.0f, -2.0f, 5.0f};
     float expected[5] = {1.0f, 0.0f, 2.0f, 0.0f, 5.0f}; // Relu function just sets every element that is negative to zero
-    uz_matrix_t* A=init_array_test_helper(A_data,1,5);
+    uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),1,5);
 
     uz_matrix_apply_function_to_each_element(A, fcn_pointer);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected, A_data, UZ_MATRIX_SIZE(expected));
@@ -135,7 +135,7 @@ void test_uz_matrix_get_max_element_value(void)
 {
     float A_data[9] = {1.0f, 3.0f, 5.0f, 9.0f, 1.0f, 1.0f, 1.0f, 2.0f, 6.0f};
     float expected_maximum = 9.0f;
-    uz_matrix_t* A=init_array_test_helper(A_data,1,9);
+    uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),1,9);
 
     float actual = uz_matrix_get_max_value(A);
     TEST_ASSERT_EQUAL_FLOAT(expected_maximum, actual);
@@ -145,7 +145,7 @@ void test_uz_matrix_get_max_index(void)
 {
     float A_data[9] = {1.0f, 3.0f, 5.0f, 9.0f, 1.0f, 1.0f, 1.0f, 2.0f, 6.0f};
     size_t expected_maximum = 3U;
-    uz_matrix_t* A=init_array_test_helper(A_data,1,9);
+    uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),1,9);
 
     size_t actual = uz_matrix_get_max_index(A);
     TEST_ASSERT_EQUAL_UINT32(expected_maximum, actual);
@@ -168,7 +168,7 @@ void test_uz_matrix_transpose(void)
     // 3 8 13
     // 4 9 14
     // 5 10 15
-    uz_matrix_t* A=init_array_test_helper(A_data,rows,columns);
+    uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),rows,columns);
 
     uz_matrix_transpose(A);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected, A_data, UZ_MATRIX_SIZE(expected));

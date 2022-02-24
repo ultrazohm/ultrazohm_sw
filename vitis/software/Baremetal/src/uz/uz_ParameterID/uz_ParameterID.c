@@ -264,7 +264,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 			if (Data->PID_Control_Selection == Speed_Control) {
 				ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
 				i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->GlobalConfig.n_ref, Data->ActualValues.V_DC,
-				                Online_current_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping);
+				                0.0f, Data->GlobalConfig.PMSM_config, ext_clamping);
 
 			}
 			if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
@@ -423,12 +423,13 @@ static void uz_PID_FOC_output_set_zero(uz_ParameterID_Data_t* Data) {
 	Data->Controller_Parameters.resetIntegrator = false;
 }
 
-void uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {
+float uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {
 	float factor = sqrtf(1.0f + powf((Data->ActualValues.omega_el * RC), 2.0f));
 	Data->ActualValues.V_UVW.U = Data->ActualValues.V_UVW.U * factor;
 	Data->ActualValues.V_UVW.V = Data->ActualValues.V_UVW.V * factor;
 	Data->ActualValues.V_UVW.W = Data->ActualValues.V_UVW.W * factor;
-	Data->ActualValues.theta_el -= atanf(Data->ActualValues.omega_el * RC);
+	float theta_el_corr =Data->ActualValues.theta_el - atanf(Data->ActualValues.omega_el * RC);
+	return(theta_el_corr);
 }
 
 static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_ParameterID_Data_t *Data) {

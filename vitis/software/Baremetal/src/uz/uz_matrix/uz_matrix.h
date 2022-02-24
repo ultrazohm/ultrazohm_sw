@@ -6,7 +6,7 @@
 
 struct uz_matrix_t
 {
-    bool is_ready;
+    size_t length_of_data;
     size_t rows;
     size_t columns;
     float *data;

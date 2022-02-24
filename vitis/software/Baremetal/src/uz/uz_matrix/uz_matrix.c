@@ -30,9 +30,8 @@ static uz_matrix_t *uz_matrix_allocation(void)
 {
     uz_assert(instance_counter < UZ_MATRIX_MAX_INSTANCES);
     uz_matrix_t *self = &instances[instance_counter];
-    uz_assert_false(self->is_ready);
+    uz_assert(self->length_of_data==0);
     instance_counter++;
-    self->is_ready = true;
     return (self);
 }
 
@@ -43,7 +42,7 @@ uz_matrix_t *uz_matrix_init(float *data, size_t length_of_data, size_t rows, siz
     uz_assert_not_zero_unsigned_int(columns);
     uz_assert(length_of_data == (rows * columns));
     uz_matrix_t *self = uz_matrix_allocation();
-    self->is_ready = true;
+    self->length_of_data = length_of_data;
     self->rows = rows;
     self->columns = columns;
     self->data = data;
@@ -55,11 +54,11 @@ uz_matrix_t *uz_matrix_init(float *data, size_t length_of_data, size_t rows, siz
 uz_matrix_t *uz_matrix_init_without_allocation(uz_matrix_t *self,float *data, size_t length_of_data, size_t rows, size_t columns)
 {
     uz_assert_not_NULL(self);
-    uz_assert_false(self->is_ready);
+    uz_assert_false(self->length_of_data);
     uz_assert_not_zero_unsigned_int(rows);
     uz_assert_not_zero_unsigned_int(columns);
     uz_assert(length_of_data == (rows * columns));
-    self->is_ready = true;
+    self->length_of_data = length_of_data;
     self->rows = rows;
     self->columns = columns;
     self->data = data;
@@ -71,14 +70,14 @@ uz_matrix_t *uz_matrix_init_without_allocation(uz_matrix_t *self,float *data, si
 size_t uz_matrix_get_number_of_rows(uz_matrix_t const *const self)
 {
     uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
+    uz_assert(self->length_of_data);
     return (self->rows);
 }
 
 size_t uz_matrix_get_number_of_columns(uz_matrix_t const *const self)
 {
     uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
+    uz_assert(self->length_of_data);
     return (self->columns);
 }
 
@@ -87,9 +86,9 @@ void uz_matrix_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const
     uz_assert_not_NULL(A);
     uz_assert_not_NULL(B);
     uz_assert_not_NULL(C_out);
-    uz_assert(A->is_ready);
-    uz_assert(B->is_ready);
-    uz_assert(C_out->is_ready);
+    uz_assert(A->length_of_data);
+    uz_assert(B->length_of_data);
+    uz_assert(C_out->length_of_data);
     uz_assert(A->columns == B->columns);
     uz_assert(A->columns == C_out->columns);
     uz_assert(A->rows == B->rows);
@@ -107,7 +106,7 @@ void uz_matrix_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const
 float uz_matrix_get_element_zero_based(uz_matrix_t const *const A, size_t row, size_t column)
 {
     uz_assert_not_NULL(A);
-    uz_assert(A->is_ready);
+    uz_assert(A->length_of_data);
     uz_assert(row <= A->rows);
     uz_assert(column <= A->columns);
     return (A->data[(row * A->columns) + column]);
@@ -116,7 +115,7 @@ float uz_matrix_get_element_zero_based(uz_matrix_t const *const A, size_t row, s
 void uz_matrix_set_element_zero_based(uz_matrix_t *const A, float x, size_t row, size_t column)
 {
     uz_assert_not_NULL(A);
-    uz_assert(A->is_ready);
+    uz_assert(A->length_of_data);
     uz_assert(row <= A->rows);
     uz_assert(column <= A->columns);
     A->data[(row * A->columns) + column] = x;
@@ -127,9 +126,9 @@ void uz_matrix_sum(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_ma
     uz_assert_not_NULL(A);
     uz_assert_not_NULL(B);
     uz_assert_not_NULL(C_out);
-    uz_assert(A->is_ready);
-    uz_assert(B->is_ready);
-    uz_assert(C_out->is_ready);
+    uz_assert(A->length_of_data);
+    uz_assert(B->length_of_data);
+    uz_assert(C_out->length_of_data);
     uz_assert(A->columns == B->columns);
     uz_assert(A->columns == C_out->columns);
     uz_assert(A->rows == B->rows);
@@ -148,8 +147,8 @@ float uz_matrix_dot_product(uz_matrix_t const *const A, uz_matrix_t const *const
 {
     uz_assert_not_NULL(A);
     uz_assert_not_NULL(B);
-    uz_assert(A->is_ready);
-    uz_assert(B->is_ready);
+    uz_assert(A->length_of_data);
+    uz_assert(B->length_of_data);
     uz_assert(A->columns == B->columns);
     uz_assert(A->rows == 1U);
     uz_assert(B->rows == 1U);
@@ -169,9 +168,9 @@ void uz_matrix_multiply(uz_matrix_t const *const A, uz_matrix_t const *const B, 
     uz_assert_not_NULL(A);
     uz_assert_not_NULL(B);
     uz_assert_not_NULL(C_out);
-    uz_assert(A->is_ready);
-    uz_assert(B->is_ready);
-    uz_assert(C_out->is_ready);
+    uz_assert(A->length_of_data);
+    uz_assert(B->length_of_data);
+    uz_assert(C_out->length_of_data);
     // C= A * B
     // number of columns in A must b equal to rows of B
     uz_assert(A->columns == B->rows);
@@ -201,7 +200,7 @@ void uz_matrix_multiply(uz_matrix_t const *const A, uz_matrix_t const *const B, 
 void uz_matrix_set_zero(uz_matrix_t *const A)
 {
     uz_assert_not_NULL(A);
-    uz_assert(A->is_ready);
+    uz_assert(A->length_of_data);
     for (size_t row = 0; row < A->rows; row++)
     {
         for (size_t column = 0; column < A->columns; column++)
@@ -215,8 +214,8 @@ void uz_matrix_add(uz_matrix_t const *const A, uz_matrix_t *const C_out)
 {
     uz_assert_not_NULL(A);
     uz_assert_not_NULL(C_out);
-    uz_assert(A->is_ready);
-    uz_assert(C_out->is_ready);
+    uz_assert(A->length_of_data);
+    uz_assert(C_out->length_of_data);
     uz_assert(A->columns == C_out->columns);
     uz_assert(A->rows == C_out->rows);
     for (size_t row = 0; row < A->rows; row++)
@@ -231,7 +230,7 @@ void uz_matrix_add(uz_matrix_t const *const A, uz_matrix_t *const C_out)
 void uz_matrix_add_scalar(uz_matrix_t *const A, float scalar)
 {
     uz_assert_not_NULL(A);
-    uz_assert(A->is_ready);
+    uz_assert(A->length_of_data);
     for (size_t i = 0; i < (A->rows * A->columns); i++)
     {
         A->data[i] += scalar;
@@ -241,7 +240,7 @@ void uz_matrix_add_scalar(uz_matrix_t *const A, float scalar)
 void uz_matrix_multiply_by_scalar(uz_matrix_t *const A, float scalar)
 {
     uz_assert_not_NULL(A);
-    uz_assert(A->is_ready);
+    uz_assert(A->length_of_data);
     for (size_t i = 0; i < (A->rows * A->columns); i++)
     {
         A->data[i] = A->data[i] * scalar;
@@ -252,7 +251,7 @@ void uz_matrix_apply_function_to_each_element(uz_matrix_t *const A, float (*f)(f
 {
     uz_assert_not_NULL(A);
     uz_assert_not_NULL(f);
-    uz_assert(A->is_ready);
+    uz_assert(A->length_of_data);
     for (size_t i = 0; i < (A->rows * A->columns); i++)
     {
         A->data[i] = f(A->data[i]);
@@ -262,7 +261,7 @@ void uz_matrix_apply_function_to_each_element(uz_matrix_t *const A, float (*f)(f
 float uz_matrix_get_max_value(uz_matrix_t const *const A)
 {
     uz_assert_not_NULL(A);
-    uz_assert(A->is_ready);
+    uz_assert(A->length_of_data);
     size_t length_of_data = A->columns * A->rows;
     float maximum_value = A->data[0U]; // Set maximum arbitrarily to first element to initialize the variable
     for (size_t i = 1U; i < length_of_data; i++)
@@ -278,7 +277,7 @@ float uz_matrix_get_max_value(uz_matrix_t const *const A)
 size_t uz_matrix_get_max_index(uz_matrix_t const *const A)
 {
     uz_assert_not_NULL(A);
-    uz_assert(A->is_ready);
+    uz_assert(A->length_of_data);
     size_t length_of_data = A->columns * A->rows;
     float maximum_value = A->data[0U]; // Set maximum arbitrarily to first element to initialize the variable
     size_t max_index = 0U;
@@ -296,7 +295,7 @@ size_t uz_matrix_get_max_index(uz_matrix_t const *const A)
 void uz_matrix_transpose(uz_matrix_t *A)
 {
     uz_assert_not_NULL(A);
-    uz_assert(A->is_ready);
+    uz_assert(A->length_of_data);
     uz_assert((A->rows * A->columns) > 0U); // Guard for VLA
     size_t old_rows = A->rows;
     size_t old_columns = A->columns;

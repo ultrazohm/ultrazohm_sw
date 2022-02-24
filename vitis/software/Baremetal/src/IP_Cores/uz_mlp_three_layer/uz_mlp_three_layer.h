@@ -5,12 +5,14 @@
 #include "../../uz/uz_matrix/uz_matrix.h"
 #include "../../uz/uz_array/uz_array.h"
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef struct uz_mlp_three_layer_ip_t uz_mlp_three_layer_ip_t;
 
 struct uz_mlp_three_layer_ip_config_t
 {
     uint32_t base_address;
+    bool use_axi_input;
     uz_nn_t *software_network;
 };
 
@@ -20,4 +22,8 @@ void uz_mlp_three_layer_write_weights(uz_mlp_three_layer_ip_t *self, uint32_t pa
 
 void uz_mlp_three_layer_set_parameters(uz_mlp_three_layer_ip_t *self);
 void uz_mlp_three_layer_calculate_forward_pass(uz_mlp_three_layer_ip_t *self, uz_array_float_t input_data, uz_array_float_t output_data);
+void uz_mlp_three_layer_use_axi_input(uz_mlp_three_layer_ip_t *self,bool use_axi_input);
+
+
+
 #endif // UZ_MLP_THREE_LAYER_H

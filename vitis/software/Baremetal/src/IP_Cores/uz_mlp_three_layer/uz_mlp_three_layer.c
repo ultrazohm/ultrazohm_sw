@@ -31,7 +31,13 @@ uz_mlp_three_layer_ip_t *uz_mlp_three_layer_ip_init(struct uz_mlp_three_layer_ip
 {
     uz_mlp_three_layer_ip_t *self = UZ_MLP_THREE_LAYER_IP_allocation();
     uz_assert_not_zero_uint32(config.base_address);
+    uz_assert_not_NULL(config.software_network);
     self->config = config;
+    uint32_t number_of_inputs=(uint32_t)uz_nn_get_number_of_inputs(self->config.software_network);
+    uint32_t number_of_outputs=(uint32_t)uz_nn_get_number_of_outputs(self->config.software_network);
+    uz_mlp_three_layer_hw_write_number_of_inputs(self->config.base_address, number_of_inputs);
+    uz_mlp_three_layer_hw_write_number_of_outputs(self->config.base_address, number_of_outputs);
+    uz_mlp_three_layer_use_axi_input(self,self->config.use_axi_input);
     return (self);
 }
 
@@ -125,6 +131,14 @@ void uz_mlp_three_layer_calculate_forward_pass(uz_mlp_three_layer_ip_t *self, uz
         // do nothing while output is not valid
     }
     uz_mlp_three_layer_hw_read_output(self->config.base_address, output_data);
+}
+
+
+void uz_mlp_three_layer_use_axi_input(uz_mlp_three_layer_ip_t *self,bool use_axi_input){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->config.use_axi_input=use_axi_input;
+    uz_mlp_three_layer_hw_write_use_axi_input(self->config.base_address, self->config.use_axi_input);
 }
 
 #endif

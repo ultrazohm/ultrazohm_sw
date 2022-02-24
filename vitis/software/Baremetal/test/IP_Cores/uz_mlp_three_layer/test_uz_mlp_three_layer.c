@@ -87,12 +87,16 @@ float bias_data_long[64] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1
 
 struct uz_mlp_three_layer_ip_config_t config = {
     .base_address = BASE_ADDRESS,
+    .use_axi_input=true,
     .software_network = NULL};
 
 uz_mlp_three_layer_ip_t *successful_init(void);
 uz_mlp_three_layer_ip_t *successful_init(void)
 {
     config.software_network = uz_nn_init(software_nn_config, 4);
+    uz_mlp_three_layer_hw_write_number_of_inputs_Expect(BASE_ADDRESS,NUMBER_OF_INPUTS);
+    uz_mlp_three_layer_hw_write_number_of_outputs_Expect(BASE_ADDRESS,NUMBER_OF_OUTPUTS);
+    uz_mlp_three_layer_hw_write_use_axi_input_Expect(BASE_ADDRESS,config.use_axi_input);
     uz_mlp_three_layer_ip_t *test = uz_mlp_three_layer_ip_init(config);
     return (test);
 }
@@ -746,6 +750,13 @@ void test_uz_mlp_three_layer_calculate_forward_pass()
     uz_mlp_three_layer_hw_read_output_Expect(BASE_ADDRESS, output_data);
 
     uz_mlp_three_layer_calculate_forward_pass(test_instance, input_data, output_data);
+}
+
+void test_uz_mlp_three_layer_set_axi_input_true()
+{
+    uz_mlp_three_layer_ip_t *test_instance = successful_init();
+    uz_mlp_three_layer_hw_write_use_axi_input_Expect(BASE_ADDRESS,true);
+    uz_mlp_three_layer_use_axi_input(test_instance,true);
 }
 
 #endif // TEST111150

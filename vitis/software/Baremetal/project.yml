@@ -40,7 +40,6 @@
         - -Wdouble-promotion
         - -Wswitch-default
         - -Walloca
-        - -Werror
 
 :paths:
   :test:

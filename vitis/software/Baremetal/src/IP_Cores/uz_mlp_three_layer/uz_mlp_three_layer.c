@@ -48,15 +48,15 @@ void uz_mlp_three_layer_write_bias(uz_mlp_three_layer_ip_t *self, uint32_t paral
     // Outer loop over number_of_parallel_pcu
     // Middle loop over data with columns:number_of_columns/number_of_parallel_pcu
     // Inner loop over data with rows:number_of_rows
-    size_t columns = uz_matrix_get_number_of_columns(bias);
-    size_t columns_per_pcu = columns / parallel_pcu;
+    uint32_t columns = uz_matrix_get_number_of_columns(bias);
+    uint32_t columns_per_pcu = columns / parallel_pcu;
     uz_mlp_three_layer_hw_write_layerNr(self->config.base_address, layer);
-    for (size_t pcu = 0U; pcu < parallel_pcu; pcu++)
+    for (uint32_t pcu = 0U; pcu < parallel_pcu; pcu++)
     {
-        for (size_t i = 0U; i < columns_per_pcu; i++)
+        for (uint32_t i = 0U; i < columns_per_pcu; i++)
         {
             uz_mlp_three_layer_hw_write_enable_bias(self->config.base_address, 0U); // Write zero to disable write enable for all BRAM
-            size_t abs_value = i + (pcu * columns_per_pcu);
+            uint32_t abs_value = i + (pcu * columns_per_pcu);
             float bias_value = uz_matrix_get_element_zero_based(bias, 0U, abs_value);
             uz_mlp_three_layer_hw_write_bias_data(self->config.base_address, bias_value);
             uz_mlp_three_layer_hw_write_bias_address(self->config.base_address, (uint32_t)i);
@@ -71,20 +71,20 @@ void uz_mlp_three_layer_write_weights(uz_mlp_three_layer_ip_t *self, uint32_t pa
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    size_t columns = uz_matrix_get_number_of_columns(weights);
-    size_t rows = uz_matrix_get_number_of_rows(weights);
-    size_t columns_per_pcu = columns / parallel_pcu;
+    uint32_t columns = uz_matrix_get_number_of_columns(weights);
+    uint32_t rows = uz_matrix_get_number_of_rows(weights);
+    uint32_t columns_per_pcu = columns / parallel_pcu;
     uz_mlp_three_layer_hw_write_layerNr(self->config.base_address, layer);
-    for (size_t pcu = 0U; pcu < parallel_pcu; pcu++)
+    for (uint32_t pcu = 0U; pcu < parallel_pcu; pcu++)
     {
         uint32_t address = 0U;
-        for (size_t k = 0U; k < columns_per_pcu; k++)
+        for (uint32_t k = 0U; k < columns_per_pcu; k++)
         {
-            for (size_t i = 0U; i < rows; i++)
+            for (uint32_t i = 0U; i < rows; i++)
             {
                 uz_mlp_three_layer_hw_write_enable_weights(self->config.base_address, 0U); // Write zero to disable write enable for all BRAM
-                size_t row = i;
-                size_t column = k + (pcu * columns_per_pcu);
+                uint32_t row = i;
+                uint32_t column = k + (pcu * columns_per_pcu);
                 float weight_value = uz_matrix_get_element_zero_based(weights, row, column);
                 uz_mlp_three_layer_hw_write_weight_data(self->config.base_address, weight_value);
                 address++;

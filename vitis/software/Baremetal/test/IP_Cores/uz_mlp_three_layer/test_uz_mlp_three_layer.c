@@ -87,16 +87,16 @@ float bias_data_long[64] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1
 
 struct uz_mlp_three_layer_ip_config_t config = {
     .base_address = BASE_ADDRESS,
-    .use_axi_input=true,
+    .use_axi_input = true,
     .software_network = NULL};
 
 uz_mlp_three_layer_ip_t *successful_init(void);
 uz_mlp_three_layer_ip_t *successful_init(void)
 {
     config.software_network = uz_nn_init(software_nn_config, 4);
-    uz_mlp_three_layer_hw_write_number_of_inputs_Expect(BASE_ADDRESS,NUMBER_OF_INPUTS);
-    uz_mlp_three_layer_hw_write_number_of_outputs_Expect(BASE_ADDRESS,NUMBER_OF_OUTPUTS);
-    uz_mlp_three_layer_hw_write_use_axi_input_Expect(BASE_ADDRESS,config.use_axi_input);
+    uz_mlp_three_layer_hw_write_number_of_inputs_Expect(BASE_ADDRESS, NUMBER_OF_INPUTS);
+    uz_mlp_three_layer_hw_write_number_of_outputs_Expect(BASE_ADDRESS, NUMBER_OF_OUTPUTS);
+    uz_mlp_three_layer_hw_write_use_axi_input_Expect(BASE_ADDRESS, config.use_axi_input);
     uz_mlp_three_layer_ip_t *test = uz_mlp_three_layer_ip_init(config);
     return (test);
 }
@@ -104,7 +104,8 @@ uz_mlp_three_layer_ip_t *successful_init(void)
 void test_uz_mlp_three_layer_write_bias_to_layer(void)
 {
     uz_mlp_three_layer_ip_t *test_instance = successful_init();
-    uz_matrix_t *bias_matrix = uz_matrix_init(bias_data, UZ_MATRIX_SIZE(bias_data), 1, UZ_MATRIX_SIZE(bias_data));
+    struct uz_matrix_t bias_struct = {0};
+    uz_matrix_t *bias_matrix = uz_matrix_init(&bias_struct, bias_data, UZ_MATRIX_SIZE(bias_data), 1, UZ_MATRIX_SIZE(bias_data));
 
     // const uint32_t parallel_pcu = 4U;
     // const uint32_t layer = 1U;
@@ -176,7 +177,8 @@ void test_uz_mlp_three_layer_write_bias_to_layer(void)
 void test_uz_mlp_three_layer_write_bias_to_layer_long(void)
 {
     uz_mlp_three_layer_ip_t *test_instance = successful_init();
-    uz_matrix_t *bias_matrix = uz_matrix_init(bias_data_long, UZ_MATRIX_SIZE(bias_data_long), 1, UZ_MATRIX_SIZE(bias_data_long));
+    struct uz_matrix_t bias_struct = {0};
+    uz_matrix_t *bias_matrix = uz_matrix_init(&bias_struct, bias_data_long, UZ_MATRIX_SIZE(bias_data_long), 1, UZ_MATRIX_SIZE(bias_data_long));
 
     // Expect with PCU=8
     uz_mlp_three_layer_hw_write_layerNr_Expect(BASE_ADDRESS, 3);
@@ -586,7 +588,8 @@ void test_uz_mlp_three_layer_write_weights_to_layer(void)
     //
     // w= [1  2  3  4  5  6  7  8]
     //    [9 10 11 12 13 14 15 16]
-    uz_matrix_t *weight_matrix = uz_matrix_init(w_data_short, UZ_MATRIX_SIZE(w_data_short), 2U, 8U);
+        struct uz_matrix_t w_struct={0};
+    uz_matrix_t *weight_matrix = uz_matrix_init(&w_struct,w_data_short, UZ_MATRIX_SIZE(w_data_short), 2U, 8U);
     uz_mlp_three_layer_hw_write_layerNr_Expect(BASE_ADDRESS, 1U);
 
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 0U);
@@ -755,8 +758,8 @@ void test_uz_mlp_three_layer_calculate_forward_pass()
 void test_uz_mlp_three_layer_set_axi_input_true()
 {
     uz_mlp_three_layer_ip_t *test_instance = successful_init();
-    uz_mlp_three_layer_hw_write_use_axi_input_Expect(BASE_ADDRESS,true);
-    uz_mlp_three_layer_use_axi_input(test_instance,true);
+    uz_mlp_three_layer_hw_write_use_axi_input_Expect(BASE_ADDRESS, true);
+    uz_mlp_three_layer_use_axi_input(test_instance, true);
 }
 
 #endif // TEST111150

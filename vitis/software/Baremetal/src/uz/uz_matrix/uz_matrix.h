@@ -30,32 +30,31 @@ struct uz_matrix_t
  */
 typedef struct uz_matrix_t uz_matrix_t;
 
-
+/**
+ * @brief Initialize an uz_matrix
+ * 
+ * @param self Pointer to the instance
+ * @param data Pointer to the data
+ * @param length_of_data Number of data elements calculated by UZ_MATRIX_SIZE makro
+ * @param rows Number of rows
+ * @param columns Number of columns
+ * @return uz_matrix_t* Returns an pointer to the instance that was passed
+ */
 uz_matrix_t *uz_matrix_init(uz_matrix_t *self,float *data, size_t length_of_data, size_t rows, size_t columns);
 
-/**
- * @brief Initializes one matrix and allocates memory for it from the static allocator.
- * 
- * @param data Pointer to array with length rows*columns.
- * @param length_of_data Length of data calculated with UZ_MATRIX_SIZE macro
- * @param rows Number of rows of the matrix
- * @param columns Number of columns of the matrix
- * @return Pointer to the allocated matrix instance 
- */
-//uz_matrix_t* uz_matrix_init(float* data,size_t length_of_data, size_t rows, size_t columns);
 
 /**
  * @brief Returns the number of rows of the given uz_matrix
  * 
- * @param self 
- * @return size_t 
+ * @param self Pointer to a uz_matrix_t instance 
+ * @return size_t
  */
 size_t uz_matrix_get_number_of_rows(uz_matrix_t const*const self);
 
 /**
  * @brief Returns the number of columns of the given uz_matrix
  * 
- * @param self 
+ * @param self Pointer to a uz_matrix_t instance 
  * @return size_t 
  */
 size_t uz_matrix_get_number_of_columns(uz_matrix_t const*const self);
@@ -91,8 +90,8 @@ void uz_matrix_set_element_zero_based(uz_matrix_t *const A,float x,size_t row, s
 /**
  * @brief Calculates the "real" matrix multiplication C_out=A * B
  * 
- * @param A 
- * @param B 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param B Pointer to a uz_matrix_t instance 
  * @param C_out Result of the multiplication is written to C_out
  */
 void uz_matrix_multiply(uz_matrix_t const*const A, uz_matrix_t const*const B, uz_matrix_t* const C_out);
@@ -100,8 +99,8 @@ void uz_matrix_multiply(uz_matrix_t const*const A, uz_matrix_t const*const B, uz
 /**
  * @brief Calculates the elementwise product C_out= A .* B of all elements of the matrix A and B (also called Hadamard-Product)
  * 
- * @param A 
- * @param B 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param B Pointer to a uz_matrix_t instance 
  * @param C_out Result of the elementwise product is written to C_out
  */
 void uz_matrix_elementwise_product(uz_matrix_t const*const A, uz_matrix_t const*const B, uz_matrix_t* const C_out);
@@ -119,8 +118,8 @@ float uz_matrix_dot_product(uz_matrix_t const*const A, uz_matrix_t const*const B
 /**
  * @brief Calculates C_out = A + B
  * 
- * @param A 
- * @param B 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param B Pointer to a uz_matrix_t instance 
  * @param C_out Sum of A and B is written to C_out
  */
 void uz_matrix_sum(uz_matrix_t const*const A, uz_matrix_t const*const B, uz_matrix_t *const C_out);
@@ -128,7 +127,7 @@ void uz_matrix_sum(uz_matrix_t const*const A, uz_matrix_t const*const B, uz_matr
 /**
  * @brief Calculates C_out += A
  * 
- * @param A 
+ * @param A Pointer to a uz_matrix_t instance 
  * @param C_out Adds the values of A to C_out
  */
 void uz_matrix_add(uz_matrix_t const*const A, uz_matrix_t *const C_out);
@@ -144,15 +143,15 @@ void uz_matrix_add_scalar(uz_matrix_t *const A, float scalar);
 /**
  * @brief Multiplies all elements of the matrix A by a scalar
  * 
- * @param A 
- * @param scalar 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param scalar Scalar value with which each element of A is multiplied
  */
 void uz_matrix_multiply_by_scalar(uz_matrix_t *const A, float scalar);
 
 /**
  * @brief Applies a function f, that is passed as a function pointer, to each of the elements 
  * 
- * @param A 
+ * @param A Pointer to a uz_matrix_t instance 
  * @param f Function pointer, function has to accept one float as argument and return one float
  */
 void uz_matrix_apply_function_to_each_element(uz_matrix_t *const A, float(*f)(float) );
@@ -161,7 +160,7 @@ void uz_matrix_apply_function_to_each_element(uz_matrix_t *const A, float(*f)(fl
 /**
  * @brief Retruns the value of the biggest element of the matrix
  * 
- * @param A 
+ * @param A Pointer to a uz_matrix_t instance 
  * @return float 
  */
 float uz_matrix_get_max_value(uz_matrix_t const*const A);
@@ -169,7 +168,7 @@ float uz_matrix_get_max_value(uz_matrix_t const*const A);
 /**
  * @brief Returns the index at which position the biggest value is located in the matrix A
  * 
- * @param A 
+ * @param A Pointer to a uz_matrix_t instance 
  * @return size_t 
  */
 size_t uz_matrix_get_max_index(uz_matrix_t const*const A);
@@ -177,7 +176,7 @@ size_t uz_matrix_get_max_index(uz_matrix_t const*const A);
 /**
  * @brief Transposes the matrix A
  * 
- * @param A 
+ * @param A Pointer to a uz_matrix_t instance 
  */
 void uz_matrix_transpose(uz_matrix_t* A);
 

@@ -3,13 +3,16 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-
+/**
+ * @brief Struct for the matrix
+ * 
+ */
 struct uz_matrix_t
 {
-    size_t length_of_data;
-    size_t rows;
-    size_t columns;
-    float *data;
+    size_t length_of_data; /**< Number of data elements in the matrix, has to be calculated with UZ_MATRIX_SIZE */
+    size_t rows; /**< Number of rows of the matrix */
+    size_t columns; /**< Number of columns of the matrix*/
+    float *data; /**< Pointer to the actual data array*/
 };
 
 /**
@@ -22,7 +25,7 @@ struct uz_matrix_t
     ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
 
 /**
- * @brief Object data type definition of the uz_matrix
+ * @brief Typedef for uz_matrix_t struct
  * 
  */
 typedef struct uz_matrix_t uz_matrix_t;
@@ -33,7 +36,7 @@ uz_matrix_t *uz_matrix_init(uz_matrix_t *self,float *data, size_t length_of_data
 /**
  * @brief Initializes one matrix and allocates memory for it from the static allocator.
  * 
- * @param data Pointer to array with length rows*colums.
+ * @param data Pointer to array with length rows*columns.
  * @param length_of_data Length of data calculated with UZ_MATRIX_SIZE macro
  * @param rows Number of rows of the matrix
  * @param columns Number of columns of the matrix

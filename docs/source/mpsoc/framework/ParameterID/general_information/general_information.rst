@@ -44,6 +44,24 @@ The ``ControlState`` is the brain of the ParameterID and controls the system, by
 The individual ``ID-states`` are completely independent of each other. They only directly communicate with the ``ControlState``. 
 The :ref:`uz_ParameterID_Data_t struct<uz_ParameterID_Data_struct>` is used to communicate with the ParameterID. It includes all necessary in- and outputs.  
 
+On top of that the ``ID-states`` inside the ParameterID are separated into two different groups:
+
+* OfflineID states
+  
+    OfflineID states represents identification stateflows, which are to be used before the general operation of the motor is started. 
+    They can not be executed in parallel to the general motor operation, because they take active control of the machine. 
+    They, for example, tell the external control-algorithm which reference currents or speeds it is supposed to target. 
+    Thus only one OfflineID-state can be active at the same time.
+  
+* OnlineID states
+
+    OnlineID states represents identification stateflows, which are used during the general operation of the motor. 
+    They are designed as an observer of some sorts of the machine. 
+    This means, they use all existing measurement during normal operation and identify their parameters this way. 
+    They therefore don't have to actively control the machine. Thus they can operate parallel to the general operation of the motor. 
+
+
+
 .. _PID_signalflow:
 
 Signalflow in the ParameterID
@@ -54,8 +72,7 @@ Signalflow in the ParameterID
 
   \begin{tikzpicture}[auto, node distance=2.5cm,>=latex']
   \tikzstyle{block} = [draw, fill=black!10, rectangle, rounded corners, minimum height=3em, minimum width=3em]
-  \node(PID) {\Large{\textbf{ParameterID}}};
-  \node[block,fill=green!10,name=ControlS, below left= 1.5cm and 1cm of PID,drop shadow,minimum height=6.5cm] {ControlState};
+  \node[block,fill=green!10,name=ControlS,drop shadow,minimum height=6.5cm] {ControlState};
   \node[block,fill=yellow!20,name=state1, right = 6cm of ControlS,drop shadow,align=center,minimum height=6.5cm,minimum width=4cm] {Identification\\state \textbf{X}};
   \node[block,name=GlobalCin, left= 0.5cm of ControlS,drop shadow,minimum width=2cm, align=center] {GlobalConfig\_in\\ \tiny{uz\_GlobalConfig\_t}};
   \node[block,name=GlobalCout, above right= -1.25cm and 1.5cm of ControlS,drop shadow,minimum width=3.5cm, align=center] {GlobalConfig\_out\\ \tiny{uz\_GlobalConfig\_t}};
@@ -64,12 +81,14 @@ Signalflow in the ParameterID
   \node[block,name=ActValues, above right= -6.5cm and 1.5cm of ControlS,drop shadow,minimum width=3.5cm, align=center] {ActualValues\\ \tiny{uz\_ActualValues\_t}};
   \node[block,name=input, left= 2cm of GlobalCin,drop shadow,minimum width=2cm, align=center] {input\\ \tiny{uz\_ParameterID\_Data\_t}};
   \begin{scope}[on background layer]
-  \node[draw,fill=blue!10,name=ParameterID,rounded corners,fit=(PID) (ControlS)(GlobalCin) (state1),inner sep=5pt,minimum width=18cm,minimum height=10.5cm] {};
+  \node[draw,fill=blue!10,name=ParameterID,rounded corners,fit=(ControlS)(GlobalCin) (state1),inner sep=5pt,minimum width=18cm,minimum height=10.5cm] {};
   \end{scope}
   \node[block,name=output, right= 1cm of ParameterID,drop shadow,minimum width=2cm, align=center] {output\\ \tiny{uz\_ParameterID\_Data\_t}};
   \node[block,name=stateoutput, below= -5.5cm of state1,drop shadow,minimum width=2cm, align=center] {individual output\\ \tiny{uz\_StateID\_output\_t}};
   \node[block,name=FOCoutput, below= -2.5cm of state1,drop shadow,minimum width=2cm, align=center] {Controller output\\ \tiny{uz\_PID\_Controller}\\ \tiny{   \_Parameters\_output\_t}};
-  \node[above  =0.6cm of GlobalCout](ACK){acknowledgement flags};
+  \node[above  =1.2cm of GlobalCout](entered){enteredStateID};
+  \node[above  =0.2cm of GlobalCout](finished){finishedStateID};
+  \node[above  =0.2cm of ParameterID](finished){\large{\textbf{ParameterID}}};
   \draw[->](input.east) -- (GlobalCin.west);
   \draw[->](GlobalCin.east) -- (ControlS.west);
   \node [circle,fill,inner sep=1pt] at ([xshift=-0.5cm]GlobalCin.west){};
@@ -86,7 +105,8 @@ Signalflow in the ParameterID
   \draw[-](stateoutput.east) -| ([xshift=-1.5cm]output.west);
   \draw[-](FOCoutput.east) -| ([xshift=-1.5cm]output.west);
   \draw[->]([xshift=-1.5cm]output.west) -- (output.west);
-  \draw[->](state1.north) |- ([xshift = -1cm, yshift = 4cm]ControlS.west) |- ([yshift = 2cm]ControlS.west);
+  \draw[->]([xshift=-0.3cm]state1.north) |- ([xshift = -0.5cm, yshift = 3.5cm]ControlS.west) |- ([yshift = 2.5cm]ControlS.west);
+  \draw[->]([xshift=0.3cm]state1.north) |- ([xshift = -1cm, yshift = 4.5cm]ControlS.west) |- ([yshift = 2cm]ControlS.west);
   \node [circle,fill,inner sep=1pt] at ([xshift=-1.5cm]output.west) {};
   \end{tikzpicture}
 
@@ -97,6 +117,8 @@ These are the following:
   * :ref:`GlobalConfig struct<uz_Global_config_struct>`, which carries general configuration variables, which affect multiple or all states 
   * :ref:`ControlFlags struct<uz_Control_flags_struct>`, which carries all flags to enable and disable the individual states
    
-On top of that, each unique ``ID-state`` has its own individual structs:
+On top of that, each unique ``ID-state`` has its own individual structs and signals:
   * ``uz_StateIDConfig_t`` (i.e. for ElectricalID :ref:`uz_ElectricalIDConfig_t<uz_PID_ElectricalIDConfig>`), which is meant for all configuration values, which are unique to this specific ``ID-state``.
   * ``uz_StateID_output_t`` (i.e. for ElectricalID :ref:`uz_ElectricalID_output_t<uz_PID_ElectricalIDoutput>`), which is meant for the identified output variables and supporting variables
+  * ``enteredStateID`` flag, which signals that the state has been entered
+  * ``finishedStateID`` flag, which signals that the ``ID-state`` is finished and another can be started

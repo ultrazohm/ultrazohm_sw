@@ -71,19 +71,19 @@ void test_uz_nn_ff(void)
 
 void test_uz_nn_get_number_of_layer(void){
     uz_nn_t *test = uz_nn_init(config, 3);
-    size_t number_of_layer=uz_nn_get_number_of_layer(test);
+    uint32_t number_of_layer=uz_nn_get_number_of_layer(test);
     TEST_ASSERT_EQUAL(number_of_layer,3);
 }
 
 void test_uz_nn_get_number_of_inputs(void){
     uz_nn_t *test = uz_nn_init(config, 3);
-    size_t number_of_inputs=uz_nn_get_number_of_inputs(test);
+    uint32_t number_of_inputs=uz_nn_get_number_of_inputs(test);
     TEST_ASSERT_EQUAL(number_of_inputs,NUMBER_OF_INPUTS);
 }
 
 void test_uz_nn_get_number_of_outputs(void){
     uz_nn_t *test = uz_nn_init(config, 3);
-    size_t number_of_outputs=uz_nn_get_number_of_outputs(test);
+    uint32_t number_of_outputs=uz_nn_get_number_of_outputs(test);
     TEST_ASSERT_EQUAL(number_of_outputs,NUMBER_OF_OUTPUTS);
 }
 

@@ -5,14 +5,14 @@
 #include "uz_mlp_three_layer_hw.h"
 #include <stdbool.h>
 #include "../../uz/uz_HAL.h"
-
+#include "../../uz/uz_array/uz_array.h"
 struct uz_mlp_three_layer_ip_t
 {
     bool is_ready;
     struct uz_mlp_three_layer_ip_config_t config;
 };
 
-static size_t instance_counter = 0U;
+static uint32_t instance_counter = 0U;
 static uz_mlp_three_layer_ip_t instances[UZ_MLP_THREE_LAYER_IP_MAX_INSTANCES] = {0};
 
 static uz_mlp_three_layer_ip_t *UZ_MLP_THREE_LAYER_IP_allocation(void);
@@ -121,8 +121,8 @@ void uz_mlp_three_layer_set_parameters(uz_mlp_three_layer_ip_t *self)
     uz_mlp_three_layer_write_weights(self, 2U, weight_4, 4U);
 }
 
-void uz_mlp_three_layer_calculate_forward_pass(uz_mlp_three_layer_ip_t *self, uz_array_float_t input_data, uz_array_float_t output_data)
-{
+void uz_mlp_three_layer_calculate_forward_pass(uz_mlp_three_layer_ip_t *self, uz_matrix_t* input_data, uz_matrix_t* output_data)
+{   
     uz_mlp_three_layer_hw_write_input(self->config.base_address, input_data);
     uz_mlp_three_layer_hw_write_enable_nn(self->config.base_address, true);
     uz_mlp_three_layer_hw_write_enable_nn(self->config.base_address, false);

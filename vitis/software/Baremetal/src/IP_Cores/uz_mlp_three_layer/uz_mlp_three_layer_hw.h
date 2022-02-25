@@ -2,7 +2,7 @@
 #define UZ_MLP_THREE_LAYER_HW_H
 
 #include "uz_mlp_three_layer_addr.h"
-#include "../../uz/uz_array/uz_array.h"
+#include "../../uz/uz_matrix/uz_matrix.h"
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -29,7 +29,7 @@ void uz_mlp_three_layer_hw_write_number_of_outputs(uint32_t base_address, uint32
  * @param base_address Base address of the neural network IP-Core instance
  * @param input_data Input data array
  */
-void uz_mlp_three_layer_hw_write_input(uint32_t base_address, uz_array_float_t input_data);
+void uz_mlp_three_layer_hw_write_input(uint32_t base_address, uz_matrix_t* input_data);
 
 /**
  * @brief This function triggers the output strobe and reads the output values of the neural network.
@@ -41,7 +41,7 @@ void uz_mlp_three_layer_hw_write_input(uint32_t base_address, uz_array_float_t i
  * @param base_address Base address of the neural network IP-Core instance
  * @param output_data Array to which the output is written to
  */
-void uz_mlp_three_layer_hw_read_output(uint32_t base_address,uz_array_float_t output_data);
+void uz_mlp_three_layer_hw_read_output(uint32_t base_address,uz_matrix_t* output_data);
 
 /**
  * @brief This function triggers the output strobe and reads the output values of the neural network using unsafe methods.
@@ -52,7 +52,7 @@ void uz_mlp_three_layer_hw_read_output(uint32_t base_address,uz_array_float_t ou
  * @param base_address 
  * @param output_data 
  */
-void uz_mlp_three_layer_hw_read_output_unsafe(uint32_t base_address, uz_array_float_t output_data);
+void uz_mlp_three_layer_hw_read_output_unsafe(uint32_t base_address, uz_matrix_t* output_data);
 
 // Takes 6 us for <9 input values
 // Takes 11 us for >9 <17 values
@@ -66,6 +66,6 @@ void uz_mlp_three_layer_hw_read_output_unsafe(uint32_t base_address, uz_array_fl
  * @param base_address 
  * @param input_data 
  */
-void uz_mlp_three_layer_hw_write_input_unsafe(uint32_t base_address, uz_array_float_t input_data);
+void uz_mlp_three_layer_hw_write_input_unsafe(uint32_t base_address, uz_matrix_t* input_data);
 
 #endif // UZ_MLP_THREE_LAYER_HW_H

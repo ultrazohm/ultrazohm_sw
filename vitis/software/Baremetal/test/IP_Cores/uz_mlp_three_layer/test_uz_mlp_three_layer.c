@@ -729,13 +729,12 @@ void test_uz_mlp_three_layer_calculate_forward_pass()
 {
 
     uz_mlp_three_layer_ip_t *test_instance = successful_init();
-    uz_array_float_t input_data = {
-        .data = &x[0],
-        .length = UZ_ARRAY_SIZE(x)};
-    uz_array_float_t output_data = {
-        .data = &y_4[0],
-        .length = UZ_ARRAY_SIZE(y_4)};
-    uz_mlp_three_layer_hw_write_input_Expect(BASE_ADDRESS, input_data);
+    struct uz_matrix_t input_data = {0};
+    struct uz_matrix_t output_data = {0};
+    uz_matrix_t* p_input_data= uz_matrix_init(&input_data,x,UZ_MATRIX_SIZE(x),1,UZ_MATRIX_SIZE(x));
+    uz_matrix_t* p_output_data= uz_matrix_init(&output_data,x,UZ_MATRIX_SIZE(x),1,UZ_MATRIX_SIZE(x));
+
+    uz_mlp_three_layer_hw_write_input_Expect(BASE_ADDRESS, p_input_data);
     uz_mlp_three_layer_hw_write_enable_nn_Expect(BASE_ADDRESS, true);
     uz_mlp_three_layer_hw_write_enable_nn_Expect(BASE_ADDRESS, false);
     uz_mlp_three_layer_hw_read_valid_output_ExpectAndReturn(BASE_ADDRESS, false); // Expects that the function is called multiple times and returns true at the 3. call
@@ -750,9 +749,9 @@ void test_uz_mlp_three_layer_calculate_forward_pass()
     // foo_ReturnThruPtr_b(&baz);
     //
     // bar()
-    uz_mlp_three_layer_hw_read_output_Expect(BASE_ADDRESS, output_data);
+    uz_mlp_three_layer_hw_read_output_Expect(BASE_ADDRESS, p_output_data);
 
-    uz_mlp_three_layer_calculate_forward_pass(test_instance, input_data, output_data);
+    uz_mlp_three_layer_calculate_forward_pass(test_instance, p_input_data, p_output_data);
 }
 
 void test_uz_mlp_three_layer_set_axi_input_true()

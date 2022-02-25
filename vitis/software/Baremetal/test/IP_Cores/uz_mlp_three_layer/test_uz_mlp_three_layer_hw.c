@@ -7,11 +7,11 @@
 #include <stdint.h>
 #include "test_assert_with_exception.h"
 #include "mock_uz_fixedpoint.h"
-#include "uz_array.h"
 #include "test_assert_with_exception.h"
 #include "mock_uz_AXI.h" // Tells Ceedling to create mock versions of the functions in uz_AXI (e.g., _Expect)
 #include "uz_mlp_three_layer_addr.h"
 #include "uz_struct_helper.h"
+#include "uz_matrix.h"
 
 #define BASE_ADDRESS 0x0F0000000U // random hex value that represents a fictional base address
 
@@ -161,9 +161,9 @@ void test_uz_mlp_three_layer_hw_write_input(void)
         .integer_bits = 18};
 
     float data[4] = {1, 2, 3, 4};
-    uz_array_float_t input_data = {
-        .length = UZ_ARRAY_SIZE(data),
-        .data = &data[0]};
+    struct uz_matrix_t input={0};
+    uz_matrix_t* input_data=uz_matrix_init(&input,data,UZ_MATRIX_SIZE(data),1,UZ_MATRIX_SIZE(data));
+
     // The input are up to 16 values, each register for the values has to add +0x4
     uz_fixedpoint_axi_write_Expect(BASE_ADDRESS + axi_x_input_Data_uz_mlp_three_layer, data[0], def);
     uz_fixedpoint_axi_write_Expect(BASE_ADDRESS + axi_x_input_Data_uz_mlp_three_layer + 0x4U, data[1], def);
@@ -178,18 +178,18 @@ void test_uz_mlp_three_layer_hw_write_input(void)
 void test_uz_mlp_three_layer_hw_write_input_fail_only_one_input(void)
 {
     float data[1] = {1};
-    uz_array_float_t input_data = {
-        .length = UZ_ARRAY_SIZE(data),
-        .data = &data[0]};
+    struct uz_matrix_t input={0};
+    uz_matrix_t* input_data=uz_matrix_init(&input,data,UZ_MATRIX_SIZE(data),1,UZ_MATRIX_SIZE(data));
+
     TEST_ASSERT_FAIL_ASSERT(uz_mlp_three_layer_hw_write_input(BASE_ADDRESS, input_data));
 }
 
 void test_uz_mlp_three_layer_hw_write_input_fail_too_many_inputs(void)
 {
     float data[17] = {0};
-    uz_array_float_t input_data = {
-        .length = UZ_ARRAY_SIZE(data),
-        .data = &data[0]};
+    struct uz_matrix_t input={0};
+    uz_matrix_t* input_data=uz_matrix_init(&input,data,UZ_MATRIX_SIZE(data),1,UZ_MATRIX_SIZE(data));
+
     TEST_ASSERT_FAIL_ASSERT(uz_mlp_three_layer_hw_write_input(BASE_ADDRESS, input_data));
 }
 
@@ -197,9 +197,9 @@ void test_uz_mlp_three_layer_read_output_two(void)
 {
     float expected_output[2] = {1.1f, 1.3f};
     float data[2] = {0};
-    uz_array_float_t output_data = {
-        .length = UZ_ARRAY_SIZE(data),
-        .data = &data[0]};
+
+    struct uz_matrix_t output = {0};
+    uz_matrix_t *output_data = uz_matrix_init(&output, data, UZ_MATRIX_SIZE(data), 1, UZ_MATRIX_SIZE(data));
 
     struct uz_fixedpoint_definition_t def = {
         .is_signed = true,
@@ -212,16 +212,15 @@ void test_uz_mlp_three_layer_read_output_two(void)
     uz_fixedpoint_axi_read_ExpectAndReturn(BASE_ADDRESS + output_5_register_address, def, expected_output[1]);
 
     uz_mlp_three_layer_hw_read_output(BASE_ADDRESS, output_data);
-    TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected_output, data, UZ_ARRAY_SIZE(expected_output));
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected_output, data, UZ_MATRIX_SIZE(expected_output));
 }
 
 void test_uz_mlp_three_layer_read_output_four(void)
 {
     float expected_output[4] = {1.1f, 1.3f, 2.3f, 13.2f};
     float data[4] = {0};
-    uz_array_float_t output_data = {
-        .length = UZ_ARRAY_SIZE(data),
-        .data = &data[0]};
+    struct uz_matrix_t output = {0};
+    uz_matrix_t *output_data = uz_matrix_init(&output, data, UZ_MATRIX_SIZE(data), 1, UZ_MATRIX_SIZE(data));
 
     struct uz_fixedpoint_definition_t def = {
         .is_signed = true,
@@ -237,16 +236,15 @@ void test_uz_mlp_three_layer_read_output_four(void)
     uz_fixedpoint_axi_read_ExpectAndReturn(BASE_ADDRESS + output_6_register_address, def, expected_output[3]);
 
     uz_mlp_three_layer_hw_read_output(BASE_ADDRESS, output_data);
-    TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected_output, data, UZ_ARRAY_SIZE(expected_output));
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected_output, data, UZ_MATRIX_SIZE(expected_output));
 }
 
 void test_uz_mlp_three_layer_read_output_six(void)
 {
     float expected_output[6] = {1.1f, 1.3f, 2.3f, 13.2f, 12312.1233f, 3.2f};
     float data[6] = {0};
-    uz_array_float_t output_data = {
-        .length = UZ_ARRAY_SIZE(data),
-        .data = &data[0]};
+    struct uz_matrix_t output = {0};
+    uz_matrix_t *output_data = uz_matrix_init(&output, data, UZ_MATRIX_SIZE(data), 1, UZ_MATRIX_SIZE(data));
 
     struct uz_fixedpoint_definition_t def = {
         .is_signed = true,
@@ -264,16 +262,15 @@ void test_uz_mlp_three_layer_read_output_six(void)
     uz_fixedpoint_axi_read_ExpectAndReturn(BASE_ADDRESS + output_7_register_address, def, expected_output[5]);
 
     uz_mlp_three_layer_hw_read_output(BASE_ADDRESS, output_data);
-    TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected_output, data, UZ_ARRAY_SIZE(expected_output));
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected_output, data, UZ_MATRIX_SIZE(expected_output));
 }
 
 void test_uz_mlp_three_layer_read_output_eight(void)
 {
     float expected_output[8] = {1.1f, 1.3f, 2.3f, 13.2f, 12312.1233f, 3.2f, 71.1f, 123.1f};
     float data[8] = {0};
-    uz_array_float_t output_data = {
-        .length = UZ_ARRAY_SIZE(data),
-        .data = &data[0]};
+    struct uz_matrix_t output = {0};
+    uz_matrix_t *output_data = uz_matrix_init(&output, data, UZ_MATRIX_SIZE(data), 1, UZ_MATRIX_SIZE(data));
 
     struct uz_fixedpoint_definition_t def = {
         .is_signed = true,
@@ -293,7 +290,7 @@ void test_uz_mlp_three_layer_read_output_eight(void)
     uz_fixedpoint_axi_read_ExpectAndReturn(BASE_ADDRESS + output_8_register_address, def, expected_output[7]);
 
     uz_mlp_three_layer_hw_read_output(BASE_ADDRESS, output_data);
-    TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected_output, data, UZ_ARRAY_SIZE(expected_output));
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected_output, data, UZ_MATRIX_SIZE(expected_output));
 }
 
 #endif // TEST

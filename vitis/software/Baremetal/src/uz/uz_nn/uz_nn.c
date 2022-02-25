@@ -78,34 +78,34 @@ uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self)
     return uz_nn_layer_get_output_data(self->layer[(self->number_of_layer - 1U)]);
 }
 
-uz_matrix_t *uz_nn_get_bias_matrix(uz_nn_t const *const self, size_t layer)
+uz_matrix_t *uz_nn_get_bias_matrix(uz_nn_t const *const self, uint32_t layer)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return uz_nn_layer_get_bias_matrix(self->layer[layer - 1]);
 }
-uz_matrix_t *uz_nn_get_weight_matrix(uz_nn_t const *const self, size_t layer)
+uz_matrix_t *uz_nn_get_weight_matrix(uz_nn_t const *const self, uint32_t layer)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return uz_nn_layer_get_weight_matrix(self->layer[layer - 1]);
 }
 
-size_t uz_nn_get_number_of_layer(uz_nn_t const *const self)
+uint32_t uz_nn_get_number_of_layer(uz_nn_t const *const self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return self->number_of_layer;
 }
 
-size_t uz_nn_get_number_of_inputs(uz_nn_t const *const self)
+uint32_t uz_nn_get_number_of_inputs(uz_nn_t const *const self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return self->number_of_inputs;
 }
 
-size_t uz_nn_get_number_of_outputs(uz_nn_t const *const self)
+uint32_t uz_nn_get_number_of_outputs(uz_nn_t const *const self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);

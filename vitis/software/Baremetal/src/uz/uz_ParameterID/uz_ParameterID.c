@@ -200,7 +200,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 		//Change, if desired, the speed controller here
 		ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
 		i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->Controller_Parameters.n_ref_FOC, Data->ActualValues.V_DC,
-		                Data->Controller_Parameters.i_dq_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping, &limit);
+		                Data->Controller_Parameters.i_dq_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping);
 		//Create sine excitation for J-Identification
 		if (Data->Controller_Parameters.VibOn_out == true) {
 			float sine_excitation = uz_wavegen_sine(Data->Controller_Parameters.VibAmp_out, Data->Controller_Parameters.VibFreq_out);
@@ -263,7 +263,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 			if (Data->PID_Control_Selection == Speed_Control) {
 				ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
 				i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->GlobalConfig.n_ref, Data->ActualValues.V_DC,
-				                Online_current_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping,&limit);
+				                Online_current_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping);
 
 			}
 			if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {

@@ -4244,20 +4244,642 @@
                         ]
                     },
                     {
+                        "type": "ILA_V3",
+                        "name": "zusys_i/ila_puconv",
+                        "spec": "labtools_ila_v6",
+                        "ipName": "ila",
+                        "core_location": {
+                            "user_chain": 1,
+                            "slave_index": 11,
+                            "bscan_switch_index": 0
+                        },
+                        "uuid": "5E99A45CDE8B58AC930E439D2CB5B86A",
+                        "pins": [
+                            {
+                                "name": "probe0",
+                                "id": 100,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 17,
+                                "portIndex": 0,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_pu_con_ip_0_out1",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[17]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[16]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[15]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[14]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[13]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[12]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[11]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[10]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[9]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[8]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out1[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe1",
+                                "id": 101,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 17,
+                                "portIndex": 1,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_pu_con_ip_0_out2",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[17]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[16]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[15]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[14]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[13]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[12]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[11]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[10]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[9]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[8]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out2[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe2",
+                                "id": 102,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 17,
+                                "portIndex": 2,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_pu_con_ip_0_out3",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[17]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[16]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[15]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[14]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[13]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[12]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[11]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[10]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[9]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[8]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out3[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 103,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 17,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_pu_con_ip_0_out4",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[17]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[16]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[15]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[14]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[13]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[12]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[11]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[10]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[9]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[8]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out4[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 104,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 17,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_pu_con_ip_0_out5",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[17]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[16]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[15]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[14]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[13]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[12]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[11]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[10]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[9]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[8]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out5[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe5",
+                                "id": 105,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 17,
+                                "portIndex": 5,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_pu_con_ip_0_out6",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[17]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[16]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[15]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[14]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[13]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[12]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[11]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[10]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[9]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[8]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out6[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe6",
+                                "id": 106,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 17,
+                                "portIndex": 6,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_pu_con_ip_0_out7",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[17]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[16]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[15]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[14]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[13]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[12]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[11]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[10]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[9]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[8]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out7[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe7",
+                                "id": 107,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 17,
+                                "portIndex": 7,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_pu_con_ip_0_out8",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[17]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[16]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[15]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[14]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[13]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[12]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[11]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[10]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[9]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[8]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_pu_con_ip_0_out8[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe8",
+                                "id": 108,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 8,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/A1_ADC_LTC2311_SI_VALID",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe9",
+                                "id": 109,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 9,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/pu_valid_1",
+                                        "isBus": false
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "type": "VIO_V2",
                         "name": "zusys_i/vio_D34_test",
                         "spec": "labtools_vio_v3",
                         "ipName": "vio",
                         "core_location": {
                             "user_chain": 1,
-                            "slave_index": 11,
+                            "slave_index": 12,
                             "bscan_switch_index": 0
                         },
                         "uuid": "D78E6252BB1B53A8AC58618A5F26429C",
                         "pins": [
                             {
                                 "name": "probe_out0",
-                                "id": 100,
+                                "id": 110,
                                 "type": "DATA",
                                 "direction": "OUT",
                                 "isVector": true,

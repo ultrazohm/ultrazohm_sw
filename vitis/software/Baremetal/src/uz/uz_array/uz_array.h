@@ -10,7 +10,7 @@
  *        - https://stackoverflow.com/questions/1598773/is-there-a-standard-function-in-c-that-would-return-the-length-of-an-array/1598827#1598827
  */
 #define UZ_ARRAY_SIZE(x) \
-    ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
+    ((sizeof(x)/sizeof(0[x])) / ((uint32_t)(!(sizeof(x) % sizeof(0[x])))))
 
 /**
  * @brief Array of floats with length to pass and receive from functions.
@@ -18,7 +18,7 @@
  */
 typedef struct uz_array_float_t
 {
-    size_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
+    uint32_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
     float *data; /**< pointer to data */
 }uz_array_float_t;
 
@@ -28,7 +28,7 @@ typedef struct uz_array_float_t
  */
 typedef struct uz_array_uint32_t
 {
-    size_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
+    uint32_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
     uint32_t *data;  /**< pointer to data */
 }uz_array_uint32_t;
 
@@ -38,7 +38,7 @@ typedef struct uz_array_uint32_t
  */
 typedef struct uz_array_int32_t
 {
-    size_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
+    uint32_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
     int32_t *data;  /**< pointer to data */
 }uz_array_int32_t;
 
@@ -48,7 +48,7 @@ typedef struct uz_array_int32_t
  */
 typedef struct uz_array_int16_t
 {
-    size_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
+    uint32_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
     int16_t *data;  /**< pointer to data */
 }uz_array_int16_t;
 
@@ -58,7 +58,7 @@ typedef struct uz_array_int16_t
  */
 typedef struct uz_array_uint16_t
 {
-    size_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
+    uint32_t length; /**< length of the vector - use UZ_ARRAY_SIZE makro to determine */
     uint16_t *data;  /**< pointer to data */
 }uz_array_uint16_t;
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="com.xilinx.sdx.sdsoc.debug.launch.SdsTcfLaunchDelegate">
-    <booleanAttribute key="com.xilinx.sdk.tcf.debug.ui.breakpoint.main" value="true"/>
+    <booleanAttribute key="com.xilinx.sdk.tcf.debug.ui.breakpoint.main" value="false"/>
     <stringAttribute key="com.xilinx.sdk.tcf.debug.ui.exec.script" value="false"/>
     <stringAttribute key="com.xilinx.sdk.tcf.debug.ui.exec.script.location" value=""/>
     <stringAttribute key="com.xilinx.sdk.tcf.debug.ui.fsbl_exit_function" value="XFsbl_Exit"/>

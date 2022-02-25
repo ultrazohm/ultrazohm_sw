@@ -27,8 +27,8 @@
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 #include "../include/uz_platform_state_machine.h"
-// Include for code-gen
 #include "../Codegen/uz_codegen.h"
+#include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_nn/uz_nn.h"
 #include "../uz/uz_matrix/uz_matrix.h"
@@ -225,9 +225,11 @@ int Initialize_ISR()
         return XST_FAILURE;
     }
 
-    // Initialize mux_axi to use correct interrupt for triggering the ADCs
-    Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + IPCore_Enable_mux_axi_ip, 1);                                  // enable IP core
-    Xil_Out32(XPAR_INTERRUPT_MUX_AXI_IP_0_BASEADDR + select_AXI_Data_mux_axi_ip, Interrupt_ISR_source_user_choice); // write selector
+    // Enable uz_mux_axi for triggering the ADCs and the ISR
+//    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
+//    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+//    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+    //uz_mux_axi_enable(Global_Data.objects.mux_axi);
 
     return Status;
 }

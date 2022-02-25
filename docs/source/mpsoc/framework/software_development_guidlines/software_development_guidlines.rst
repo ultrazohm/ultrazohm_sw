@@ -254,7 +254,7 @@ A local memory pool (file scope) is allocated in the implementation and pointers
     bool is_ready;
    };
    
-   static size_t instance_counter = 0U;
+   static uint32_t instance_counter = 0U;
    static myIP_t instances[myIP_MAX_INSTANCES] = { 0 };
    
    static myIP_t* uz_wavegen_allocation(void);

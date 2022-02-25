@@ -30,7 +30,7 @@ struct uz_wavegen_chirp {
 	float transition_angle;
 	struct uz_wavegen_chirp_config config;
 };
-static size_t instance_counter = 0U;
+static uint32_t instance_counter = 0U;
 static uz_wavegen_chirp instances[UZ_WAVEGEN_CHIRP_MAX_INSTANCES] = { 0 };
 
 static uz_wavegen_chirp* uz_wavegen_allocation(void);

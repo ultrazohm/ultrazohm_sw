@@ -20,7 +20,7 @@
 			"	bool is_ready;",
 			"};",
 			"",
-			"static size_t instance_counter = 0U;",
+			"static uint32_t instance_counter = 0U;",
 			"static $1_t instances[${1/(.*)/${1:/upcase}/}_MAX_INSTANCES] = { 0 };",
 			"",
 			"static $1_t* $1_allocation(void);",

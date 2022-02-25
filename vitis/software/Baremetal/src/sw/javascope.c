@@ -41,7 +41,8 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 extern uz_ParameterID_Data_t PID_Data;
 float activeState = 0;
 float FluxMapCounter = 0;
-
+extern float limit;
+extern float test_array[400];
 int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
@@ -75,9 +76,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_theta_mech] = &PID_Data.ActualValues.theta_m;
 	js_ch_observable[JSO_ud] = &PID_Data.ActualValues.v_dq.d;
 	js_ch_observable[JSO_uq] = &PID_Data.ActualValues.v_dq.q;
-	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
+	js_ch_observable[JSO_ISR_ExecTime_us] = &limit;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
-	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+	js_ch_observable[JSO_ISR_Period_us]	= &FluxMapCounter;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -154,6 +155,8 @@ void JavaScope_update(DS_Data* data){
 	javascope_data->status 			= js_status_BareToRTOS;
 	activeState = (float) PID_Data.Controller_Parameters.activeState;
 	FluxMapCounter = (float) PID_Data.FluxMap_counter;
+	PID_Data.Psi_D_pointer = test_array[PID_Data.FluxMap_counter];
+	PID_Data.Psi_Q_pointer = test_array[PID_Data.FluxMap_counter];
 
 	// flush data cache of shared memory region to make sure shared memory is updated
 	Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);

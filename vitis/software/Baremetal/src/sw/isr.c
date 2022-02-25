@@ -51,7 +51,6 @@ struct uz_DutyCycle_t PID_DutyCycle = { 0 };
 float theta_offset = 0.03f;
 //C=484nF R_series=5.6kOhm R_parallel=1.3kOhm
 float RC = (5600.0f * 1300.0f * 0.000000484f) / (5600.0f + 1300.0f);
-
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -80,9 +79,9 @@ void ISR_Control(void *data)
 	PID_Data.ActualValues.theta_el = Global_Data.av.theta_elec - theta_offset;
 
 	//Calculate missing ActualValues
-	uz_ParameterID_correct_LP1_filter(&PID_Data, RC);
+	float theta_el_corr = uz_ParameterID_correct_LP1_filter(&PID_Data, RC);
 	PID_Data.ActualValues.i_dq = uz_dq_transformation(PID_Data.ActualValues.I_UVW, PID_Data.ActualValues.theta_el);
-	PID_Data.ActualValues.v_dq = uz_dq_transformation(PID_Data.ActualValues.V_UVW, PID_Data.ActualValues.theta_el);
+	PID_Data.ActualValues.v_dq = uz_dq_transformation(PID_Data.ActualValues.V_UVW, theta_el_corr);
 	PID_Data.ActualValues.theta_m = Global_Data.av.theta_elec / PID_Data.GlobalConfig.PMSM_config.polePairs;
 
 	uz_ParameterID_step(ParameterID, &PID_Data);

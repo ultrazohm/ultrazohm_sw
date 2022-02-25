@@ -44,7 +44,8 @@ static void uz_PID_FOC_output_set_zero(uz_ParameterID_Data_t* Data);
 static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_ParameterID_Data_t *Data);
 
 static uz_ParameterID_t* uz_ParameterID_allocation(void);
-
+extern float limit;
+extern float test_array[400];
 static uz_ParameterID_t* uz_ParameterID_allocation(void) {
 	uz_assert(instances_counter_ParameterID < UZ_PARAMETERID_ACTIVE);
 	uz_ParameterID_t* self = &instances_ParameterID[instances_counter_ParameterID];
@@ -115,8 +116,6 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		} else {
 			Data->FluxMap_counter = 0;
 		}
-		Data->Psi_D_pointer = Data->FluxMap_Data->psid_grid[Data->FluxMap_counter];
-		Data->Psi_Q_pointer = Data->FluxMap_Data->psiq_grid[Data->FluxMap_counter];
 	} else {
 		Data->OnlineID_Output->IdControlFlag = false;
 	}
@@ -201,7 +200,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 		//Change, if desired, the speed controller here
 		ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
 		i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->Controller_Parameters.n_ref_FOC, Data->ActualValues.V_DC,
-		                Data->Controller_Parameters.i_dq_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping);
+		                Data->Controller_Parameters.i_dq_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping, &limit);
 		//Create sine excitation for J-Identification
 		if (Data->Controller_Parameters.VibOn_out == true) {
 			float sine_excitation = uz_wavegen_sine(Data->Controller_Parameters.VibAmp_out, Data->Controller_Parameters.VibFreq_out);
@@ -264,7 +263,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 			if (Data->PID_Control_Selection == Speed_Control) {
 				ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
 				i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->GlobalConfig.n_ref, Data->ActualValues.V_DC,
-				                0.0f, Data->GlobalConfig.PMSM_config, ext_clamping);
+				                Online_current_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping,&limit);
 
 			}
 			if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
@@ -394,7 +393,8 @@ static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_D
 	//Update State-Inputs
 	self->OnlineID->AutoRefCurrents->input.ActualValues = Data->ActualValues;
 	self->OnlineID->AutoRefCurrents->input.AutoRefCurrentsConfig = Data->AutoRefCurrents_Config;
-	self->OnlineID->AutoRefCurrents->input.GlobalConfig_out = Data->GlobalConfig;
+	self->OnlineID->AutoRefCurrents->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
+	self->OnlineID->AutoRefCurrents->input.ControlFlags = self->ControlState->output.ControlFlags;
 
 	//Step the function
 	uz_OnlineID_AutoRefCurrents_step(self->OnlineID);

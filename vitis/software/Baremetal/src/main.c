@@ -36,7 +36,8 @@ uz_ParameterID_t* ParameterID = NULL;
 uz_ParameterID_Data_t PID_Data = { 0 };
 uz_FOC* FOC_instance = NULL;
 uz_PI_Controller* SpeedControl_instance = NULL;
-
+float limit = 0.0f;
+float test_array[400] = {0};
 
 enum init_chain
 {
@@ -91,7 +92,9 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
 
-
+            for(int i=0;i<400;i++) {
+            	test_array[i]=i;
+            }
             initialization_chain = print_msg;
             break;
         case print_msg:

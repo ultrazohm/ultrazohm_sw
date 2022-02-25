@@ -60,4 +60,5 @@
     #define UZ_PLANTPT1_MAX_INSTANCES                       6U
     #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      11U
     #define UZ_FILTER_1ST_ORDER_INSTANCES                   20U
+    #define UZ_MUX_AXI_MAX_INSTANCES                        10U
 #endif

@@ -41,10 +41,10 @@ XTmrCtr Timer_Interrupt;
 
 
 #define NUMBER_OF_INPUTS 13
-#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_OUTPUTS 4
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
 
-float x[NUMBER_OF_INPUTS] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
+float x[NUMBER_OF_INPUTS] = {5,5,5,5,5,5,5,5,5,5,5,5,5};
 float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
 #include "layer1_weights.csv"
 };
@@ -133,7 +133,7 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 extern uz_array_float_t output_data;
-float input_raw_data[13]={1.0f,2.0f,3.0f,4.0f,5.0f,6.0f,7.0f,8.0f,9.0f,10.0f,11.0f,12.0f,13.0f};
+float input_raw_data[13]={1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
 uz_array_float_t input_data={
 		.data=&x[0],
 		.length=UZ_ARRAY_SIZE(x)
@@ -150,7 +150,7 @@ void ISR_Control(void *data)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     }
-  //  uz_mlp_three_layer_hw_write_input(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR, input_data);
+   // uz_mlp_three_layer_hw_write_input(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR, input_data);
     uz_mlp_three_layer_hw_write_input_unsafe(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR, input_data);
     uz_mlp_three_layer_hw_write_enable_nn(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR,true);
     uz_mlp_three_layer_hw_write_enable_nn(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR,false);
@@ -158,7 +158,7 @@ void ISR_Control(void *data)
     	// do nothing while output is not valid
     }
     uz_mlp_three_layer_hw_read_output_unsafe(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR,output_data);
-    uz_nn_ff(software_nn,input);
+   // uz_nn_ff(software_nn,input);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     // Set duty cycles for three-level modulator
   //  PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
@@ -181,7 +181,7 @@ int Initialize_ISR()
 	struct uz_mlp_three_layer_ip_config_t mlp_ip_config = {
 	    .base_address =XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR };
     int Status = 0;
-    uz_mlp_three_layer_ip_t *mlp_ip = UZ_MLP_THREE_LAYER_IP_init(mlp_ip_config );
+    uz_mlp_three_layer_ip_t *mlp_ip = uz_mlp_three_layer_ip_init(mlp_ip_config );
 
 
     input=uz_matrix_init(x,UZ_MATRIX_SIZE(x),1,UZ_MATRIX_SIZE(x));

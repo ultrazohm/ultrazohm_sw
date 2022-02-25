@@ -87,7 +87,7 @@ int main(void)
 
             // XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR
             uz_mlp_three_layer_hw_write_number_of_inputs(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR, 13);
-            uz_mlp_three_layer_hw_write_number_of_outputs(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR, 2);
+            uz_mlp_three_layer_hw_write_number_of_outputs(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR, 4);
             uz_mlp_three_layer_hw_write_use_axi_input(XPAR_UZ_MLP_THREE_LAYER_0_BASEADDR,true);
             initialization_chain = print_msg;
             break;

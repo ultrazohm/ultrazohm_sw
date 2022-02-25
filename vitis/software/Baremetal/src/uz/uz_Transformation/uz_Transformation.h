@@ -91,43 +91,41 @@ typedef struct uz_6ph_abc_t{
 /**
  * @brief Calculates the dq0-components from the UVW-Phases
  * 
- * @param input uz_UVW struct
- * @param theta_el_rad electrical theta in rad
- * @return uz_dq_t Outputs the calculated dq0-components
+ * @param input uz_3ph_abc_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @return uz_3ph_dq_t Outputs the calculated dq0-components
  */
 uz_3ph_dq_t uz_transformation_3ph_abc_to_dq(uz_3ph_abc_t input, float theta_el_rad);
 
 /**
- * @brief Calculates the UVW-Phases from the dq0-components  
+ * @brief Calculates the abc-phases from the dq0-components  
  * 
- * @param input uz_dq struct
- * @param theta_el_rad electrical theta in rad
- * @return uz_UVW_t Outputs the calculated UVW-phases
+ * @param input uz_3ph_dq_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @return uz_3ph_abc_t Outputs the calculated abc-phases
  */
 uz_3ph_abc_t uz_transformation_3ph_dq_to_abc(uz_3ph_dq_t input, float theta_el_rad);
 
 /**
- * @brief Calculates the alpha-beta-gamma-components from the UVW-phases
+ * @brief Calculates the alpha-beta-gamma-components from the abc-phases
  * 
- * @param input uz_UVW struct
- * @return uz_alphabeta Outputs the calculated alpha-beta-gamma-components
+ * @param input uz_3ph_abc_t struct
+ * @return uz_3ph_alphabeta_t Outputs the calculated alpha-beta-gamma-components
  */
 uz_3ph_alphabeta_t uz_transformation_3ph_abc_to_alphabeta(uz_3ph_abc_t input);
 
 /**
- * @brief Calculates the UVW-phases from the alpha-beta-gamma-components
+ * @brief Calculates the abc-phases from the alpha-beta-gamma-components
  * 
- * @param input uz_alphabeta struct
- * @return uz_UVW_t Outputs the calculated UVW-phases
+ * @param input uz_3ph_alphabeta_t struct
+ * @return uz_3ph_abc_t Outputs the calculated abc-phases
  */
 uz_3ph_abc_t uz_transformation_3ph_alphabeta_to_abc(uz_3ph_alphabeta_t input);
 
-
-
 /**
- * @brief Calculates the dq-components from the alpha-beta components
+ * @brief Calculates the dq0-components from the alpha-beta-gamma-components
  * 
- * @param input uz_alphabeta_t struct
+ * @param input uz_3ph_alphabeta_t struct
  * @param theta_el_rad electrical rotor angle in rad
  * @return uz_dq_t outputs the calculated dq-components
  */
@@ -136,41 +134,41 @@ uz_3ph_dq_t uz_transformation_3ph_alphabeta_to_dq(uz_3ph_alphabeta_t input, floa
 /**
  * @brief Calculates the alpha-beta components from the dq-components
  * 
- * @param input uz_dq struct
- * @param theta_el_rad electrical theta in rad
- * @return uz_alphabeta_t outputs the calculated alpha/beta values
+ * @param input uz_3ph_dq_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @return uz_3ph_alphabeta_t outputs the calculated alpha-beta-gamma-components
  */
 uz_3ph_alphabeta_t uz_transformation_3ph_dq_to_alphabeta(uz_3ph_dq_t input, float theta_el_rad);
 
 /**
  * @brief Calculates the alpha-beta-gamma-components from the nine phase abc-phases
  * 
- * @param input uz_abc_9ph_t
- * @return uz_alphabeta_9ph_t Outputs the calculated stationary reference frame components
+ * @param input uz_9ph_abc_t
+ * @return uz_9ph_alphabeta_t Outputs the calculated stationary reference frame components
  */
 uz_9ph_alphabeta_t uz_transformation_9ph_abc_to_alphabeta(uz_9ph_abc_t input);
 
 /**
  * @brief Calculates the abc-phases from the stationary reference frame components
  * 
- * @param input uz_alphabeta_9ph_t struct
- * @return struct uz_Uabc_t Outputs the calculated abc-phases
+ * @param input uz_9ph_alphabeta_t struct
+ * @return uz_9ph_abc_t Outputs the calculated abc-phases
  */
 uz_9ph_abc_t uz_transformation_9ph_alphabeta_to_abc(uz_9ph_alphabeta_t input);
 
 /**
  * @brief Calculates the alpha-beta-gamma-components from the six phase abc-phases
  * 
- * @param input uz_abc_6ph_t
- * @return struct uz_alphabeta_9ph_t Outputs the calculated stationary reference frame components
+ * @param input uz_6ph_abc_t struct
+ * @return uz_6ph_alphabeta_t Outputs the calculated stationary reference frame components
  */
 uz_6ph_alphabeta_t uz_transformation_6ph_abc_to_alphabeta(uz_6ph_abc_t input);
 
 /**
  * @brief Calculates the abc-phases from the stationary reference frame components
  * 
- * @param input uz_alphabeta_6ph_t struct
- * @return struct uz_abc_t Outputs the calculated abc-phases
+ * @param input uz_6ph_alphabeta_t struct
+ * @return struct uz_6ph_abc_t Outputs the calculated abc-phases
  */
 uz_6ph_abc_t uz_transformation_6ph_alphabeta_to_abc(uz_6ph_alphabeta_t input);
 

@@ -1,17 +1,22 @@
-.. _dq_transformation:
+.. _uz_transformation:
 
-=================
-dq-Transformation
-=================
+==============
+Transformation
+==============
 
 The following amplitude invariant coordinate transformations are incorporated in this module. 
 All of them are general purpose. 
 This means, that they can be used to either transform voltages, currents or any other applicable unit. 
+Transformations for multiphase system do exist as well.
 
-* dq-Transformation
-* inverse dq-Transformation
-* clarke-Transformation
-* inverse clarke-Transformation
+* :ref:`dq_transformation`  
+* :ref:`inverse_dq_transformation`
+* :ref:`clarke_transformation`
+* :ref:`inverse_clarke_transformation`
+* :ref:`alphabeta_dq_transformation`
+* :ref:`dq_alphabeta_transformation`
+* :ref:`9ph_abc_to_alphabeta`
+* :ref:`9ph_alphabeta_to_abc`
 
 Threephase systems
 ==================
@@ -30,14 +35,19 @@ These structs are needed to hand over the input values and get the output values
 .. doxygenstruct:: uz_3ph_alphabeta_t
   :members:
 
-dq-Transformation
-*****************
+Transformation functions
+************************
+
+.. _dq_transformation:
+
+abc to dq0 transformation
+-------------------------
 
 .. doxygenfunction:: uz_transformation_3ph_abc_to_dq
 
-This uses the Park transformation to transform a three-phase (uvw) signal to a dq0 rotating reference frame. 
+This uses the Park transformation to transform a three-phase (abc) signal to a dq0 rotating reference frame. 
 ``X`` is a placeholder and can be replaced by either ``U``, ``I`` or any other applicable unit. 
-The d-Axis has to be aligned with the U-phase.
+The d-Axis has to be aligned with the A-phase.
 
 .. math::
 
@@ -57,14 +67,16 @@ The d-Axis has to be aligned with the U-phase.
   X_W \\
   \end{bmatrix}
 
-inverse dq-Transformation
-*************************
+.. _inverse_dq_transformation:
+
+dq0 to abc transformation
+-------------------------
 
 .. doxygenfunction:: uz_transformation_3ph_dq_to_abc
 
-This uses the inverse Park transformation to transform a dq0 rotating reference frame to a three-phase (uvw) signal. 
+This uses the inverse Park transformation to transform a dq0 rotating reference frame to a three-phase (abc) signal. 
 ``X`` is a placeholder and can be replaced by either ``U``, ``I`` or any other applicable unit. 
-The d-Axis has to be aligned with the U-phase.
+The d-Axis has to be aligned with the A-phase.
   
 .. math::
   
@@ -84,12 +96,14 @@ The d-Axis has to be aligned with the U-phase.
     X_0 \\
   \end{bmatrix}
 
-clarke-Transformation
-*********************
+.. _clarke_transformation:
+
+abc to αβγ transformation
+-------------------------
 
 .. doxygenfunction:: uz_transformation_3ph_abc_to_alphabeta
 
-The clarke transformation converts the time-domain components of a three-phase system in an uvw reference frame to components in a stationary αβγ reference frame. 
+The clarke transformation converts the time-domain components of a three-phase system in an abc reference frame to components in a stationary αβγ reference frame. 
 ``X`` is a placeholder and can be replaced by either ``U``, ``I`` or any other applicable unit.
   
 .. math::
@@ -109,12 +123,14 @@ The clarke transformation converts the time-domain components of a three-phase s
     X_V \\
     X_W \\
   \end{bmatrix}
-  
-inverse clarke-Transformation
-*****************************
+
+.. _inverse_clarke_transformation:
+
+αβγ to abc transformation
+-------------------------
 
 .. doxygenfunction:: uz_transformation_3ph_alphabeta_to_abc
-  
+ 
 The inverse clarke transformation converts the components in a stationary αβγ reference frame to the time-domain components of a three-phase system in an uvw reference frame. 
 ``X`` is a placeholder and can be replaced by either ``U``, ``I`` or any other applicable unit.
     
@@ -136,15 +152,116 @@ The inverse clarke transformation converts the components in a stationary αβγ
   X_{\gamma} \\
   \end{bmatrix}
 
+.. _alphabeta_dq_transformation:
+
+αβγ to dq0 transformation 
+-------------------------
+
+.. doxygenfunction:: uz_transformation_3ph_alphabeta_to_dq
+
+This function converts the stationary αβγ reference frame components into the dq0 rotating reference frame. 
+``X`` is a placeholder and can be replaced by either ``U``, ``I`` or any other applicable unit. 
+The d-Axis has to be aligned with the A-phase.
+
+.. math::
+
+  \begin{bmatrix} X_{d} \\ X_{q} \\ X_{0} \end{bmatrix} =
+  \begin{bmatrix} 
+  cos(\theta_{el}) & sin(\theta_{el}) & 0\\
+  -sin(\theta_{el}) & cos(\theta_{el}) & 0 \\
+  0 & 0 & 1
+  \end{bmatrix}
+  \begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{\gamma} \end{bmatrix} \\
+
+.. _dq_alphabeta_transformation:
+
+dq0 to αβγ transformation 
+-------------------------
+
+.. doxygenfunction:: uz_transformation_3ph_dq_to_alphabeta
+
+This function converts the dq0 rotating reference frame  omponents into the stationary αβγ reference frame. 
+``X`` is a placeholder and can be replaced by either ``U``, ``I`` or any other applicable unit. 
+The d-Axis has to be aligned with the A-phase.
+
+.. math::
+
+  \begin{bmatrix} X_{\alpha} \\ X_{\beta} \\  X_{\gamma} \end{bmatrix} =
+  \begin{bmatrix} 
+  cos(\theta_{el}) & -sin(\theta_{el}) & 0\\
+  sin(\theta_{el}) & cos(\theta_{el}) & 0 \\
+  0 & 0 & 1
+  \end{bmatrix}
+  \begin{bmatrix} X_{d} \\ X_{q} \\ X_{0} \end{bmatrix} \\
 
 Multiphase systems
 ==================
 
+structs for ninephase VSD transformation
+****************************************
+
+.. doxygenstruct:: uz_9ph_abc_t
+  :members:
+
+.. doxygenstruct:: uz_9ph_alphabeta_t
+  :members:
+
+Naming of the subspaces according to [[#Zabaleta_diss]_].
+
+Functions for ninephase VSD systems transformation
+**************************************************
+
+.. _9ph_abc_to_alphabeta:
+
+9ph-abc to 9ph-αβγ transformation 
+---------------------------------
+
+.. doxygenfunction:: uz_transformation_9ph_abc_to_alphabeta
+
+The ninephase VSD transformation works like the following equations show:
+
+.. math::
+  
+  \begin{bmatrix} C \end{bmatrix}=
+	\frac{2}{9}
+	\begin{bmatrix}
+		cos(1\cdot 0\cdot\frac{\pi}{9}) & cos(1\cdot 6\cdot\frac{\pi}{9}) & cos(1\cdot 12\cdot\frac{\pi}{9}) & cos(1\cdot 1\cdot\frac{\pi}{9}) & cos(1\cdot 7\cdot\frac{\pi}{9}) & cos(1\cdot 13\cdot\frac{\pi}{9}) & cos(1\cdot 2\cdot\frac{\pi}{9}) & cos(1\cdot 8\cdot\frac{\pi}{9}) & cos(1\cdot 14\cdot\frac{\pi}{9}) &\\
+		sin(1\cdot 0\cdot\frac{\pi}{9}) & sin(1\cdot 6\cdot\frac{\pi}{9}) & sin(1\cdot 12\cdot\frac{\pi}{9}) & sin(1\cdot 1\cdot\frac{\pi}{9}) & sin(1\cdot 7\cdot\frac{\pi}{9}) & sin(1\cdot 13\cdot\frac{\pi}{9}) & sin(1\cdot 2\cdot\frac{\pi}{9}) & sin(1\cdot 8\cdot\frac{\pi}{9}) & sin(1\cdot 14\cdot\frac{\pi}{9}) \\
+    cos(3\cdot 0\cdot\frac{\pi}{9}) & cos(3\cdot 6\cdot\frac{\pi}{9}) & cos(3\cdot 12\cdot\frac{\pi}{9}) & cos(3\cdot 1\cdot\frac{\pi}{9}) & cos(3\cdot 7\cdot\frac{\pi}{9}) & cos(3\cdot 13\cdot\frac{\pi}{9}) & cos(3\cdot 2\cdot\frac{\pi}{9}) & cos(3\cdot 8\cdot\frac{\pi}{9}) & cos(3\cdot 14\cdot\frac{\pi}{9}) \\
+	  sin(3\cdot 0\cdot\frac{\pi}{9}) & sin(3\cdot 6\cdot\frac{\pi}{9}) & sin(3\cdot 12\cdot\frac{\pi}{9}) & sin(3\cdot 1\cdot\frac{\pi}{9}) & sin(3\cdot 7\cdot\frac{\pi}{9}) & sin(3\cdot 13\cdot\frac{\pi}{9}) & sin(3\cdot 2\cdot\frac{\pi}{9}) & sin(3\cdot 8\cdot\frac{\pi}{9}) & sin(3\cdot 14\cdot\frac{\pi}{9}) \\
+	  cos(5\cdot 0\cdot\frac{\pi}{9}) & cos(5\cdot 6\cdot\frac{\pi}{9}) & cos(5\cdot 12\cdot\frac{\pi}{9}) & cos(5\cdot 1\cdot\frac{\pi}{9}) & cos(5\cdot 7\cdot\frac{\pi}{9}) & cos(5\cdot 13\cdot\frac{\pi}{9}) & cos(5\cdot 2\cdot\frac{\pi}{9}) & cos(5\cdot 8\cdot\frac{\pi}{9}) & cos(5\cdot 14\cdot\frac{\pi}{9}) \\
+	  sin(5\cdot 0\cdot\frac{\pi}{9}) & sin(5\cdot 6\cdot\frac{\pi}{9}) & sin(5\cdot 12\cdot\frac{\pi}{9}) & sin(5\cdot 1\cdot\frac{\pi}{9}) & sin(5\cdot 7\cdot\frac{\pi}{9}) & sin(5\cdot 13\cdot\frac{\pi}{9}) & sin(5\cdot 2\cdot\frac{\pi}{9}) & sin(5\cdot 8\cdot\frac{\pi}{9}) & sin(5\cdot 14\cdot\frac{\pi}{9}) \\
+	  cos(7\cdot 0\cdot\frac{\pi}{9}) & cos(7\cdot 6\cdot\frac{\pi}{9}) & cos(7\cdot 12\cdot\frac{\pi}{9}) & cos(7\cdot 1\cdot\frac{\pi}{9}) & cos(7\cdot 7\cdot\frac{\pi}{9}) & cos(7\cdot 13\cdot\frac{\pi}{9}) & cos(7\cdot 2\cdot\frac{\pi}{9}) & cos(7\cdot 8\cdot\frac{\pi}{9}) & cos(7\cdot 14\cdot\frac{\pi}{9}) \\
+	  sin(7\cdot 0\cdot\frac{\pi}{9}) & sin(7\cdot 6\cdot\frac{\pi}{9}) & sin(7\cdot 12\cdot\frac{\pi}{9}) & sin(7\cdot 1\cdot\frac{\pi}{9}) & sin(7\cdot 7\cdot\frac{\pi}{9}) & sin(7\cdot 13\cdot\frac{\pi}{9}) & sin(7\cdot 2\cdot\frac{\pi}{9}) & sin(7\cdot 8\cdot\frac{\pi}{9}) & sin(7\cdot 14\cdot\frac{\pi}{9}) \\
+	  \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} \\
+	\end{bmatrix}
+
+.. math::
+
+  \begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{o_1} \\ X_{o_2} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{zero} \end{bmatrix} = 
+  \begin{bmatrix} C \end{bmatrix}\cdot\begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2} \\ X_{a_3} \\ X_{b_3} \\ X_{c_3} \end{bmatrix}
+
+Transformation matrix according to [[#Rockhill_gerneral]_][[#Rockhill_ninephase]_].
+
+.. _9ph_alphabeta_to_abc:
+
+9ph-αβγ to 9ph-abc transformation 
+---------------------------------
+
+.. doxygenfunction:: uz_transformation_9ph_alphabeta_to_abc
+
+The inverse transformation uses the inverse of the before shown matrix.
+
+.. math::
+
+  \begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2} \\ X_{a_3} \\ X_{b_3} \\ X_{c_3} \end{bmatrix} = 
+  \begin{bmatrix} C \end{bmatrix}^{-1}\cdot\begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{o_1} \\ X_{o_2} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{zero} \end{bmatrix}
+
 Example usage of the ninephase transformation
 *********************************************
 
-The existing functions offer the possibility to convert ninephase asymetrical systems into a the stationary reference frame (αβ).
-Afterwards a Park transformation can be applied to transform into the rotating reference frame.
+The existing functions offer the possibility to convert ninephase asymmetrical systems into a the stationary reference frame (αβ).
+Afterwards a Park transformation can be applied to transform them into the rotating reference frame.
 The inverse transformations are also available.
 To use the ninephase transformation, one must create a struct for the natural phase domain values.
 
@@ -175,7 +292,7 @@ The struct can then be given to the transformation function which will return a 
 
   stationary_values = uz_transformation_9ph_abc_to_alphabeta(natural_values);
 
-As it is common to transform only the αβ components to the rotating reference frame, those two must be written into the threephase uz_alphabeta_t struct and be given to the dq transformation function.
+As it is common to transform only the αβ components to the rotating reference frame, those two must be written into the threephase ``uz_3ph_alphabeta_t`` struct and be given to the dq transformation function.
 As commonly known, the electrical angle is also necessary. 
 The dq and values can then be read from the struct. The inverse transformation follows the same principle.
 
@@ -190,7 +307,7 @@ The dq and values can then be read from the struct. The inverse transformation f
 
 Adding transformations
 **********************
-When adding a new transformation for systems with other amounts of phases one must know if the principle of the existing VSD transformation can be used.
+When adding a new transformation for systems with different amounts of phases one must know if the principle of the existing VSD transformation can be used.
 If this is the case, go through the following steps:
 
 1. Copy the functions uz_9ph_clarke_transformation, uz_transformation_9ph_alphabeta_to_abc and uz_9ph_arraymul and rename them accordingly (e.g. uz_6ph_arraymul).
@@ -206,7 +323,7 @@ If this is the case, go through the following steps:
 
 To use the Matlab script that outputs the VSD matrix in C code, the variable "n" must be changed to the target amount of phases.
 The placeholder "VSD_MATRIX" should be replaced with the Matlab variable that holds the VSD matrix (e.g. from you workspace).
-The factor for amplitudeinvariance will be multiplied afterwards so the user should not apply it to you VSD matrix by himself.
+The factor for *amplitude invariance* will be multiplied afterwards so the user should not apply it to you VSD matrix by himself.
 The creation of a transformation matrix with this method was presented in [[#Zoric_paper]_].
 
 
@@ -245,78 +362,6 @@ The creation of a transformation matrix with this method was presented in [[#Zor
   end
   fprintf('};\n');
   end
-
-Functions and structs for ninephase VSD transformation
-******************************************************
-
-.. doxygenstruct:: uz_9ph_abc_t
-  :members:
-
-.. doxygenstruct:: uz_9ph_alphabeta_t
-  :members:
-
-Naming of the subspaces according to [[#Zabaleta_diss]_].
-
-.. doxygenfunction:: uz_transformation_9ph_abc_to_alphabeta
-
-The ninephase VSD transformation works like the following equations show:
-
-.. math::
-  
-  \begin{bmatrix} C \end{bmatrix}=
-	\frac{2}{9}*
-	\begin{bmatrix}
-		cos(1*0*\frac{\pi}{9}) & cos(1*6*\frac{\pi}{9}) & cos(1*12*\frac{\pi}{9}) & cos(1*1*\frac{\pi}{9}) & cos(1*7*\frac{\pi}{9}) & cos(1*13*\frac{\pi}{9}) & cos(1*2*\frac{\pi}{9}) & cos(1*8*\frac{\pi}{9}) & cos(1*14*\frac{\pi}{9}) &\\
-		sin(1*0*\frac{\pi}{9}) & sin(1*6*\frac{\pi}{9}) & sin(1*12*\frac{\pi}{9}) & sin(1*1*\frac{\pi}{9}) & sin(1*7*\frac{\pi}{9}) & sin(1*13*\frac{\pi}{9}) & sin(1*2*\frac{\pi}{9}) & sin(1*8*\frac{\pi}{9}) & sin(1*14*\frac{\pi}{9}) \\
-    cos(3*0*\frac{\pi}{9}) & cos(3*6*\frac{\pi}{9}) & cos(3*12*\frac{\pi}{9}) & cos(3*1*\frac{\pi}{9}) & cos(3*7*\frac{\pi}{9}) & cos(3*13*\frac{\pi}{9}) & cos(3*2*\frac{\pi}{9}) & cos(3*8*\frac{\pi}{9}) & cos(3*14*\frac{\pi}{9}) \\
-	  sin(3*0*\frac{\pi}{9}) & sin(3*6*\frac{\pi}{9}) & sin(3*12*\frac{\pi}{9}) & sin(3*1*\frac{\pi}{9}) & sin(3*7*\frac{\pi}{9}) & sin(3*13*\frac{\pi}{9}) & sin(3*2*\frac{\pi}{9}) & sin(3*8*\frac{\pi}{9}) & sin(3*14*\frac{\pi}{9}) \\
-	  cos(5*0*\frac{\pi}{9}) & cos(5*6*\frac{\pi}{9}) & cos(5*12*\frac{\pi}{9}) & cos(5*1*\frac{\pi}{9}) & cos(5*7*\frac{\pi}{9}) & cos(5*13*\frac{\pi}{9}) & cos(5*2*\frac{\pi}{9}) & cos(5*8*\frac{\pi}{9}) & cos(5*14*\frac{\pi}{9}) \\
-	  sin(5*0*\frac{\pi}{9}) & sin(5*6*\frac{\pi}{9}) & sin(5*12*\frac{\pi}{9}) & sin(5*1*\frac{\pi}{9}) & sin(5*7*\frac{\pi}{9}) & sin(5*13*\frac{\pi}{9}) & sin(5*2*\frac{\pi}{9}) & sin(5*8*\frac{\pi}{9}) & sin(5*14*\frac{\pi}{9}) \\
-	  cos(7*0*\frac{\pi}{9}) & cos(7*6*\frac{\pi}{9}) & cos(7*12*\frac{\pi}{9}) & cos(7*1*\frac{\pi}{9}) & cos(7*7*\frac{\pi}{9}) & cos(7*13*\frac{\pi}{9}) & cos(7*2*\frac{\pi}{9}) & cos(7*8*\frac{\pi}{9}) & cos(7*14*\frac{\pi}{9}) \\
-	  sin(7*0*\frac{\pi}{9}) & sin(7*6*\frac{\pi}{9}) & sin(7*12*\frac{\pi}{9}) & sin(7*1*\frac{\pi}{9}) & sin(7*7*\frac{\pi}{9}) & sin(7*13*\frac{\pi}{9}) & sin(7*2*\frac{\pi}{9}) & sin(7*8*\frac{\pi}{9}) & sin(7*14*\frac{\pi}{9}) \\
-	  \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} \\
-	\end{bmatrix}
-
-.. math::
-
-  \begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{o_1} \\ X_{o_2} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{zero} \end{bmatrix} = 
-  \begin{bmatrix} C \end{bmatrix}*\begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2} \\ X_{a_3} \\ X_{b_3} \\ X_{c_3} \end{bmatrix}
-
-Transformation matrix according to [[#Rockhill_gerneral]_][[#Rockhill_ninephase]_].
-
-.. doxygenfunction:: uz_transformation_9ph_alphabeta_to_abc
-
-The inverse transformation uses the inverse of the before shown matrix.
-
-.. math::
-
-  \begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2} \\ X_{a_3} \\ X_{b_3} \\ X_{c_3} \end{bmatrix} = 
-  \begin{bmatrix} C \end{bmatrix}^{-1}*\begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{o_1} \\ X_{o_2} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{zero} \end{bmatrix}
-
-
-.. doxygenfunction:: uz_transformation_3ph_alphabeta_to_dq
-
-.. math::
-
-  \begin{bmatrix} X_{d} \\ X_{q} \end{bmatrix} =
-  \begin{bmatrix} 
-  cos(\theta_{el}) & sin(\theta_{el}) \\
-  -sin(\theta_{el}) & cos(\theta_{el}) 
-  \end{bmatrix}
-  \begin{bmatrix} X_{\alpha} \\ X_{\beta} \end{bmatrix} \\
-  X_{zero} = X_{gamma};
-
-.. doxygenfunction:: uz_transformation_3ph_dq_to_alphabeta
-
-.. math::
-
-  \begin{bmatrix} X_{\alpha} \\ X_{\beta} \end{bmatrix} =
-  \begin{bmatrix} 
-  cos(\theta_{el}) & -sin(\theta_{el}) \\
-  sin(\theta_{el}) & cos(\theta_{el}) 
-  \end{bmatrix}
-  \begin{bmatrix} X_{d} \\ X_{q} \end{bmatrix} \\
-  X_{\gamma} = 0;
 
 Sources
 -------

@@ -46,18 +46,6 @@ typedef struct uz_9ph_alphabeta_t{
     float z3;           /**< Amplitude of the z3 component */
 }uz_9ph_alphabeta_t;
 
-/**
- * @brief Struct for the variables of an alpha-beta six-phase system
- * 
- */
-typedef struct uz_6ph_alphabeta_t{
-    float alpha;        /**< Amplitude of the alpha component */ 
-    float beta;         /**< Amplitude of the beta component */ 
-    float z1;           /**< Amplitude of the z1 component */ 
-    float z2;           /**< Amplitude of the z2 component */
-    float x1;           /**< Amplitude of the x1 component */
-    float y1;           /**< Amplitude of the y1 component */
-}uz_6ph_alphabeta_t;
 
 /**
  * @brief Struct for the natural variables of a nine-phase system
@@ -79,14 +67,6 @@ typedef struct uz_9ph_abc_t{
  * @brief Struct for the natural variables of a six-phase system
  * 
  */
-typedef struct uz_6ph_abc_t{
-    float a1;        /**< Amplitude of the a1 phase */ 
-    float b1;        /**< Amplitude of the b1 phase */ 
-    float c1;        /**< Amplitude of the c1 phase */ 
-    float a2;        /**< Amplitude of the a2 phase */ 
-    float b2;        /**< Amplitude of the b2 phase */ 
-    float c2;        /**< Amplitude of the c2 phase */ 
-}uz_6ph_abc_t;
 
 /**
  * @brief Calculates the dq0-components from the UVW-Phases
@@ -155,22 +135,5 @@ uz_9ph_alphabeta_t uz_transformation_9ph_abc_to_alphabeta(uz_9ph_abc_t input);
  * @return uz_9ph_abc_t Outputs the calculated abc-phases
  */
 uz_9ph_abc_t uz_transformation_9ph_alphabeta_to_abc(uz_9ph_alphabeta_t input);
-
-/**
- * @brief Calculates the alpha-beta-gamma-components from the six phase abc-phases
- * 
- * @param input uz_6ph_abc_t struct
- * @return uz_6ph_alphabeta_t Outputs the calculated stationary reference frame components
- */
-uz_6ph_alphabeta_t uz_transformation_6ph_abc_to_alphabeta(uz_6ph_abc_t input);
-
-/**
- * @brief Calculates the abc-phases from the stationary reference frame components
- * 
- * @param input uz_6ph_alphabeta_t struct
- * @return struct uz_6ph_abc_t Outputs the calculated abc-phases
- */
-uz_6ph_abc_t uz_transformation_6ph_alphabeta_to_abc(uz_6ph_alphabeta_t input);
-
 
 #endif // UZ_TRANSFORMATION_H

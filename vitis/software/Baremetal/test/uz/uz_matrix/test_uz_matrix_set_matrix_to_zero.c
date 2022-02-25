@@ -14,8 +14,8 @@ void tearDown(void)
 }
 
 void test_uz_matrix_set_matrix_to_zero(void){
-    size_t rows=2;
-    size_t columns=2;
+    uint32_t rows=2;
+    uint32_t columns=2;
     float A_data[4]={1,2,3,4};
     uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),rows, columns );
     uz_matrix_set_zero(A);

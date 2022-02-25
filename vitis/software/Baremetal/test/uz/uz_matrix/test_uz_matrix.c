@@ -17,61 +17,61 @@ void tearDown(void)
 
 void test_uz_matrix_init_1d_vector(void)
 {
-    size_t rows = 1U;
-    size_t columns = 3U;
+    uint32_t rows = 1U;
+    uint32_t columns = 3U;
     float test_vector[3] = {1.0f, 2.0f, 3.0f};
     init_array_test_helper(test_vector, UZ_MATRIX_SIZE(test_vector), rows, columns);
 }
 
 void test_uz_matrix_init_wrong_data_dimension(void)
 {
-    size_t rows = 3U;
-    size_t columns = 3U;
+    uint32_t rows = 3U;
+    uint32_t columns = 3U;
     float mat[6] = {0}; // Mat needs to be of length 9, thus a assertion fires in the test
     TEST_ASSERT_FAIL_ASSERT(init_array_test_helper(mat, UZ_MATRIX_SIZE(mat), rows, columns));
 }
 
 void test_uz_matrix_init_zero_rows(void)
 {
-    size_t rows = 0U;
-    size_t columns = 3U;
+    uint32_t rows = 0U;
+    uint32_t columns = 3U;
     float mat[5] = {0};
     TEST_ASSERT_FAIL_ASSERT(init_array_test_helper(mat, UZ_MATRIX_SIZE(mat), rows, columns));
 }
 
 void test_uz_matrix_init_zero_columns(void)
 {
-    size_t rows = 3U;
-    size_t columns = 0U;
+    uint32_t rows = 3U;
+    uint32_t columns = 0U;
     float mat[5] = {0};
     TEST_ASSERT_FAIL_ASSERT(init_array_test_helper(mat, UZ_MATRIX_SIZE(mat), rows, columns));
 }
 
 void test_uz_matrix_init_3_times_3_matrix(void)
 {
-    size_t rows = 3U;
-    size_t columns = 3U;
+    uint32_t rows = 3U;
+    uint32_t columns = 3U;
     float mat[9] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8, 9};
     init_array_test_helper(mat, UZ_MATRIX_SIZE(mat), rows, columns);
 }
 
 void test_uz_matrix_get_number_of_rows_and_columns(void)
 {
-    size_t rows = 3U;
-    size_t columns = 2U;
+    uint32_t rows = 3U;
+    uint32_t columns = 2U;
     float mat[6] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f};
     uz_matrix_t* matrix=init_array_test_helper(mat,UZ_MATRIX_SIZE(mat),rows,columns);
 
-    size_t number_of_rows = uz_matrix_get_number_of_rows(matrix);
-    size_t number_of_columns = uz_matrix_get_number_of_columns(matrix);
+    uint32_t number_of_rows = uz_matrix_get_number_of_rows(matrix);
+    uint32_t number_of_columns = uz_matrix_get_number_of_columns(matrix);
     TEST_ASSERT_EQUAL_INT(rows, number_of_rows);
     TEST_ASSERT_EQUAL_INT(columns, number_of_columns);
 }
 
 void test_uz_matrix_add_scalar_(void)
 {
-    size_t rows = 3U;
-    size_t columns = 3U;
+    uint32_t rows = 3U;
+    uint32_t columns = 3U;
     float mat[9] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
     uz_matrix_t* matrix=init_array_test_helper(mat,UZ_MATRIX_SIZE(mat),rows,columns);
 
@@ -83,8 +83,8 @@ void test_uz_matrix_add_scalar_(void)
 
 void test_uz_matrix_multiply_by_scalar(void)
 {
-    size_t rows = 3U;
-    size_t columns = 3U;
+    uint32_t rows = 3U;
+    uint32_t columns = 3U;
     float mat[9] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f};
     uz_matrix_t* matrix=init_array_test_helper(mat,UZ_MATRIX_SIZE(mat),rows,columns);
 
@@ -144,17 +144,17 @@ void test_uz_matrix_get_max_element_value(void)
 void test_uz_matrix_get_max_index(void)
 {
     float A_data[9] = {1.0f, 3.0f, 5.0f, 9.0f, 1.0f, 1.0f, 1.0f, 2.0f, 6.0f};
-    size_t expected_maximum = 3U;
+    uint32_t expected_maximum = 3U;
     uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),1,9);
 
-    size_t actual = uz_matrix_get_max_index(A);
+    uint32_t actual = uz_matrix_get_max_index(A);
     TEST_ASSERT_EQUAL_UINT32(expected_maximum, actual);
 }
 
 void test_uz_matrix_transpose(void)
 {
-    size_t rows = 3;
-    size_t columns = 5;
+    uint32_t rows = 3;
+    uint32_t columns = 5;
     float A_data[15] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
     // Initial 3x5
     // 1  2  3  4  5

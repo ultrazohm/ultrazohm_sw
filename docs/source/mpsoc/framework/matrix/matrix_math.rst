@@ -173,7 +173,7 @@ The following performance is measured when the functions are called in the, expe
     void ISR_Control(void *data)
     {
     	uz_SystemTime_ISR_Tic();
-    	for(size_t i=0U;i<10;i++){
+    	for(uint32_t i=0U;i<10;i++){
     		function_under_test(A,B,C ); //
     	}
     	uz_SystemTime_ISR_Toc();

@@ -10,7 +10,7 @@ struct uz_mux_axi_t {
     struct uz_mux_axi_config_t config;
 };
 
-static size_t instance_counter = 0U;
+static uint32_t instance_counter = 0U;
 static uz_mux_axi_t instances[UZ_MUX_AXI_MAX_INSTANCES] = { 0 };
 
 static uz_mux_axi_t* uz_mux_axi_allocation(void);

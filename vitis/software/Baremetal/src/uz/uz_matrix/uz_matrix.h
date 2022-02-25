@@ -1,6 +1,7 @@
 #ifndef UZ_MATRIX_H
 #define UZ_MATRIX_H
 #include <stddef.h>
+#include <stdint.h>
 #include <stdbool.h>
 
 /**
@@ -9,9 +10,9 @@
  */
 struct uz_matrix_t
 {
-    size_t length_of_data; /**< Number of data elements in the matrix, has to be calculated with UZ_MATRIX_SIZE */
-    size_t rows; /**< Number of rows of the matrix */
-    size_t columns; /**< Number of columns of the matrix*/
+    uint32_t length_of_data; /**< Number of data elements in the matrix, has to be calculated with UZ_MATRIX_SIZE */
+    uint32_t rows; /**< Number of rows of the matrix */
+    uint32_t columns; /**< Number of columns of the matrix*/
     float *data; /**< Pointer to the actual data array*/
 };
 
@@ -22,7 +23,7 @@ struct uz_matrix_t
  *        - https://stackoverflow.com/questions/1598773/is-there-a-standard-function-in-c-that-would-return-the-length-of-an-array/1598827#1598827
  */
 #define UZ_MATRIX_SIZE(x) \
-    ((sizeof(x)/sizeof(0[x])) / ((size_t)(!(sizeof(x) % sizeof(0[x])))))
+    ((sizeof(x)/sizeof(0[x])) / ((uint32_t)(!(sizeof(x) % sizeof(0[x])))))
 
 /**
  * @brief Typedef for uz_matrix_t struct
@@ -40,24 +41,24 @@ typedef struct uz_matrix_t uz_matrix_t;
  * @param columns Number of columns
  * @return uz_matrix_t* Returns an pointer to the instance that was passed
  */
-uz_matrix_t *uz_matrix_init(uz_matrix_t *self,float *data, size_t length_of_data, size_t rows, size_t columns);
+uz_matrix_t *uz_matrix_init(uz_matrix_t *self,float *data, uint32_t length_of_data, uint32_t rows, uint32_t columns);
 
 
 /**
  * @brief Returns the number of rows of the given uz_matrix
  * 
  * @param self Pointer to a uz_matrix_t instance 
- * @return size_t
+ * @return uint32_t
  */
-size_t uz_matrix_get_number_of_rows(uz_matrix_t const*const self);
+uint32_t uz_matrix_get_number_of_rows(uz_matrix_t const*const self);
 
 /**
  * @brief Returns the number of columns of the given uz_matrix
  * 
  * @param self Pointer to a uz_matrix_t instance 
- * @return size_t 
+ * @return uint32_t 
  */
-size_t uz_matrix_get_number_of_columns(uz_matrix_t const*const self);
+uint32_t uz_matrix_get_number_of_columns(uz_matrix_t const*const self);
 
 /**
  * @brief Set all elements of the matrix A to zero
@@ -74,7 +75,7 @@ void uz_matrix_set_zero(uz_matrix_t * const A);
  * @param column Column of element
  * @return float 
  */
-float uz_matrix_get_element_zero_based(uz_matrix_t const*const A,size_t row, size_t column);
+float uz_matrix_get_element_zero_based(uz_matrix_t const*const A,uint32_t row, uint32_t column);
 
 /**
  * @brief Set the element row x column of matrix A with zero based indexing.
@@ -84,7 +85,7 @@ float uz_matrix_get_element_zero_based(uz_matrix_t const*const A,size_t row, siz
  * @param row Row of element to set
  * @param column Column of element to set
  */
-void uz_matrix_set_element_zero_based(uz_matrix_t *const A,float x,size_t row, size_t column);
+void uz_matrix_set_element_zero_based(uz_matrix_t *const A,float x,uint32_t row, uint32_t column);
 
 
 /**
@@ -169,9 +170,9 @@ float uz_matrix_get_max_value(uz_matrix_t const*const A);
  * @brief Returns the index at which position the biggest value is located in the matrix A
  * 
  * @param A Pointer to a uz_matrix_t instance 
- * @return size_t 
+ * @return uint32_t 
  */
-size_t uz_matrix_get_max_index(uz_matrix_t const*const A);
+uint32_t uz_matrix_get_max_index(uz_matrix_t const*const A);
 
 /**
  * @brief Transposes the matrix A

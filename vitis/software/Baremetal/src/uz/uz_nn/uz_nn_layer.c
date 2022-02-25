@@ -21,7 +21,7 @@
 #include <stdbool.h>
 struct uz_nn_layer_t
 {
-    size_t number_of_neurons;
+    uint32_t number_of_neurons;
     uz_matrix_t *weights;
     uz_matrix_t *bias;
     uz_matrix_t *output;
@@ -33,7 +33,7 @@ struct uz_nn_layer_t
     bool is_ready;
 };
 
-static size_t instance_counter = 0U;
+static uint32_t instance_counter = 0U;
 static uz_nn_layer_t instances[UZ_NN_LAYER_MAX_INSTANCES] = {0};
 
 static uz_nn_layer_t *uz_nn_layer_allocation(void);

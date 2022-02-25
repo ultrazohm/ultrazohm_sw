@@ -14,7 +14,7 @@ struct uz_wavegen_three_phase {
 	struct uz_wavegen_three_phase_config config;
 };
 
-static size_t instance_counter = 0u;
+static uint32_t instance_counter = 0u;
 static uz_wavegen_three_phase instances[UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES] = { 0 };
 
 uz_wavegen_three_phase* uz_wavegen_three_phase_init(struct uz_wavegen_three_phase_config config) {

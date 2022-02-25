@@ -61,7 +61,7 @@ void test_uz_nn_layer_matrix_multiply_zero_bias(void)
 
     uz_nn_layer_ff(layer, input);
     uz_matrix_t *result = uz_nn_layer_get_output_data(layer);
-    for (size_t i = 0U; i < 4U; i++)
+    for (uint32_t i = 0U; i < 4U; i++)
     {
         TEST_ASSERT_EQUAL_FLOAT(expected[i], uz_matrix_get_element_zero_based(result, 0, i));
     }
@@ -87,7 +87,7 @@ void test_uz_nn_layer_matrix_multiply_with_bias(void)
     uz_matrix_t *input = uz_matrix_init(&input_matrix, x, UZ_MATRIX_SIZE(x), 1, NUMBER_OF_INPUTS);
     uz_nn_layer_ff(layer, input);
     uz_matrix_t *result = uz_nn_layer_get_output_data(layer);
-    for (size_t i = 0U; i < 4U; i++)
+    for (uint32_t i = 0U; i < 4U; i++)
     {
         TEST_ASSERT_EQUAL_FLOAT(expected[i], uz_matrix_get_element_zero_based(result, 0, i));
     }
@@ -113,7 +113,7 @@ void test_uz_nn_layer_ff_relu(void)
     uz_matrix_t *input = uz_matrix_init(&input_matrix, x, UZ_MATRIX_SIZE(x), 1, NUMBER_OF_INPUTS);
     uz_nn_layer_ff(layer, input);
     uz_matrix_t *result = uz_nn_layer_get_output_data(layer);
-    for (size_t i = 0U; i < 4U; i++)
+    for (uint32_t i = 0U; i < 4U; i++)
     {
         TEST_ASSERT_EQUAL_FLOAT(expected[i], uz_matrix_get_element_zero_based(result, 0, i));
     }

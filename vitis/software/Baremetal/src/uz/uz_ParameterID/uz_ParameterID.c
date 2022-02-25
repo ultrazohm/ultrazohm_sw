@@ -112,7 +112,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 			uz_PID_AutoRefCurrents_step(self, Data);
 		}
 		if (Data->FluxMap_counter < 400) {
-			Data->FluxMap_counter = Data->FluxMap_counter + 1;
+			Data->FluxMap_counter += 1;
 		} else {
 			Data->FluxMap_counter = 0;
 		}
@@ -430,6 +430,23 @@ float uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {
 	Data->ActualValues.V_UVW.W = Data->ActualValues.V_UVW.W * factor;
 	float theta_el_corr =Data->ActualValues.theta_el - atanf(Data->ActualValues.omega_el * RC);
 	return(theta_el_corr);
+}
+
+void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter){
+	*activeState = (float) Data->Controller_Parameters.activeState;
+	*FluxMapCounter = (float) Data->FluxMap_counter;
+	int PsiD_counter = Data->FluxMap_counter -1U;
+	int PsiQ_counter = Data->FluxMap_counter -2U;
+	if(PsiD_counter == -1U) {
+		PsiD_counter = 399U;
+	}
+	if(PsiQ_counter == -1U) {
+		PsiQ_counter = 399U;
+	} else if(PsiQ_counter == -2U) {
+		PsiQ_counter = 398U;
+	}
+	Data->Psi_D_pointer = test_array[PsiD_counter];
+	Data->Psi_Q_pointer = test_array[PsiQ_counter];
 }
 
 static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_ParameterID_Data_t *Data) {

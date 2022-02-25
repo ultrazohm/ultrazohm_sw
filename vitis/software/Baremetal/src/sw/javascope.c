@@ -121,9 +121,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_n_FluxPoints] = &(PID_Data.FluxMap_MeasuringPoints);
 	js_slowDataArray[JSSD_FLOAT_Rs_online_FMID] = &(PID_Data.FluxMapID_Output->R_s);
 	js_slowDataArray[JSSD_FLOAT_Wtemp_FMID] = &(PID_Data.FluxMapID_Output->WindingTemp);
+	js_slowDataArray[JSSD_FLOAT_MapCounter] = &(FluxMapCounter);
 	js_slowDataArray[JSSD_FLOAT_psidMap] = &(PID_Data.Psi_D_pointer);
 	js_slowDataArray[JSSD_FLOAT_psiqMap] = &(PID_Data.Psi_Q_pointer);
-	js_slowDataArray[JSSD_FLOAT_MapCounter] = &(FluxMapCounter);
 
 	return Status;
 }
@@ -153,10 +153,7 @@ void JavaScope_update(DS_Data* data){
 	javascope_data->slowDataID 		= js_cnt_slowData;
 	javascope_data->slowDataContent = *js_slowDataArray[js_cnt_slowData];
 	javascope_data->status 			= js_status_BareToRTOS;
-	activeState = (float) PID_Data.Controller_Parameters.activeState;
-	FluxMapCounter = (float) PID_Data.FluxMap_counter;
-	PID_Data.Psi_D_pointer = test_array[PID_Data.FluxMap_counter];
-	PID_Data.Psi_Q_pointer = test_array[PID_Data.FluxMap_counter];
+	uz_ParameterID_update_transmit_values(&PID_Data, &activeState, &FluxMapCounter);
 
 	// flush data cache of shared memory region to make sure shared memory is updated
 	Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);

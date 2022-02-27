@@ -28,9 +28,6 @@
 #define HIDDEN_ACTIVATION sigmoid
 #define OUTPUT_ACTIVATION linear
 
-// compiler defines
-#define TEST_TRAINING
-
 // input data and classes for training
 #ifdef TEST_TRAINING
 //static float uz_bgdHls_trainingData[NUMBER_INPUTS * TRAINING_SAMPLES] =
@@ -44,22 +41,26 @@
 //		};
 #endif
 
-static void extractCraniumWeights(float *hiddenWeightMemory, float *inputWeightMemory,
-		float *outputWeightMemory, float *hiddenBiasMemory, float *outputBiasMemory, Network *net)
+static void initMlpWithReference(Network *net, uz_mlpHls_t *testInstanceMlp)
 {
+	float *weightPointer = (float *) ((u32) uz_mlpHls_getWeightAddress(testInstanceMlp));
+	float *biasPointer = (float *) ((u32) uz_mlpHls_getBiasAddress(testInstanceMlp));
+	const u32 numberNeurons = uz_mlpHls_getNumberNeurons(testInstanceMlp);
+	const u32 numberInputs = uz_mlpHls_getNumberInputs(testInstanceMlp);
 	size_t newRows, newCols;
+
 	newRows = net->connections[0]->weights->cols;
 	newCols = net->connections[0]->weights->rows;
 	Matrix *inputTransp = createMatrixZeroes(newRows, newCols);
 	transposeInto(net->connections[0]->weights, inputTransp);
-	for (unsigned int i = 0; i < newCols * newRows; i++)
+	for (size_t i = 0; i < newCols * newRows; i++)
 	{
-		inputWeightMemory[i] = inputTransp->data[i];
+		weightPointer[i] = inputTransp->data[i];
 	}
-
 	destroyMatrix(inputTransp);
+	weightPointer += numberNeurons * numberInputs;
 
-	for (unsigned int i = 0; i < net->numConnections - 1; i++)
+	for (size_t i = 0; i < net->numConnections - 1; i++)
 	{
 		if (i < net->numConnections - 2)
 		{
@@ -67,18 +68,20 @@ static void extractCraniumWeights(float *hiddenWeightMemory, float *inputWeightM
 			newCols = net->connections[i + 1]->weights->rows;
 			Matrix *weightTransp = createMatrixZeroes(newRows, newCols);
 			transposeInto(net->connections[i + 1]->weights, weightTransp);
-			for (unsigned int j = 0; j < newRows * newCols; j++)
+			for (size_t j = 0; j < newRows * newCols; j++)
 			{
-				hiddenWeightMemory[i * newRows * newCols + j] = weightTransp->data[j];
+				weightPointer[j] = weightTransp->data[j];
 			}
 			destroyMatrix(weightTransp);
+			weightPointer += numberNeurons * numberNeurons;
 		}
 
 		newRows = net->connections[i]->bias->cols * net->connections[i]->bias->rows;
-		for (unsigned int j = 0; j < newRows; j++)
+		for (size_t j = 0; j < newRows; j++)
 		{
-			hiddenBiasMemory[i * newRows + j] = net->connections[i]->bias->data[j];
+			biasPointer[j] = net->connections[i]->bias->data[j];
 		}
+		biasPointer += numberNeurons;
 	}
 
 	newRows = net->connections[net->numConnections - 1]->weights->cols;
@@ -86,18 +89,18 @@ static void extractCraniumWeights(float *hiddenWeightMemory, float *inputWeightM
 	Matrix *outputTransp = createMatrixZeroes(newRows, newCols);
 	transposeInto(net->connections[net->numConnections - 1]->weights, outputTransp);
 
-	for (unsigned int i = 0; i < newRows * newCols; i++)
+	for (size_t i = 0; i < newRows * newCols; i++)
 	{
-		outputWeightMemory[i] = outputTransp->data[i];
+		weightPointer[i] = outputTransp->data[i];
 	}
 
 	destroyMatrix(outputTransp);
 
 	newRows = net->connections[net->numConnections - 1]->bias->cols
 			* net->connections[net->numConnections - 1]->bias->rows;
-	for (unsigned int i = 0; i < newRows; i++)
+	for (size_t i = 0; i < newRows; i++)
 	{
-		outputBiasMemory[i] = net->connections[net->numConnections - 1]->bias->data[i];
+		biasPointer[i] = net->connections[net->numConnections - 1]->bias->data[i];
 	}
 }
 
@@ -105,33 +108,36 @@ static void uz_mlpHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 {
 	float *inputBuffer = (float *) ((u32) uz_mlpHls_getInputAddress(testInstance));
 	float *outputBuffer = (float *) ((u32) uz_mlpHls_getOutputAddress(testInstance));
-	Matrix *inputCran = createMatrix(1, uz_mlpHls_getNumberInputs(testInstance), inputBuffer);
+	float *cranData = (float *)malloc(uz_mlpHls_getNumberInputs(testInstance) * sizeof(float));
 	float *resultReference;
-	for (unsigned int i = 0; i < uz_mlpHls_getNumberInputs(testInstance); i++)
+	for (size_t i = 0; i < uz_mlpHls_getNumberInputs(testInstance); i++)
 	{
 		inputBuffer[i] = ((float) (rand() % 100)) / 100.0;
+		inputCran[i] = inputBuffer[i];
 	}
+
+	Matrix *inputCran = createMatrix(1, uz_mlpHls_getNumberInputs(testInstance), cranData);
 
 	forwardPass(referenceImpl, inputCran);
 	resultReference = getOuput(referenceImpl)->data;
 
 	uz_mlpHls_start(testInstance);
-
 	while (uz_mlpHls_isIdle(testInstance) == false)
 	{
 		;
 	}
 
 	// check results
-
 	const float precision = 1e-3;
-	for (unsigned int i = 0; i < uz_mlpHls_getNumberOutputs(testInstance); i++)
+	for (size_t i = 0; i < uz_mlpHls_getNumberOutputs(testInstance); i++)
 	{
 		float error = fabs(resultReference[i] - outputBuffer[i]);
 		if (error > precision)
 			uz_printf("Error at output entry %d", i);
 		uz_assert(error < precision);
 	}
+
+	destroyMatrix(inputCran);
 }
 
 static void mlpProcessBatch(uz_mlpHls_t *mlpInstance, uz_bgdHls_t *bgdInstance)
@@ -393,7 +399,6 @@ int uz_mlpBgdHls_testbench()
 
 	// init reference implementation
 	const u32 numberHiddenLayers = uz_mlpHls_getNumberHiddenLayers(testInstanceMlp);
-	const u32 numberNeurons = uz_mlpHls_getNumberNeurons(testInstanceMlp);
 	const u32 numberInputs = uz_mlpHls_getNumberInputs(testInstanceMlp);
 	const u32 numberOutputs = uz_mlpHls_getNumberOutputs(testInstanceMlp);
 
@@ -408,13 +413,8 @@ int uz_mlpBgdHls_testbench()
 	Network *net = createNetwork(numberInputs, numberHiddenLayers, hiddenSize, hiddenActivation,
 			numberOutputs, OUTPUT_ACTIVATION);
 
-	float *weightMemory = (float *) ((u32) uz_mlpHls_getWeightAddress(testInstanceMlp));
-	float *biasMemory = (float *) ((u32) uz_mlpHls_getBiasAddress(testInstanceMlp));
-
-	extractCraniumWeights(&weightMemory[numberNeurons * numberInputs], weightMemory,
-			&weightMemory[numberNeurons * (numberInputs + (numberHiddenLayers - 1) * numberNeurons)],
-			biasMemory, &biasMemory[numberHiddenLayers * numberNeurons], net);
-
+	// initialize parameters of HW implementation and start the MLP testbench
+	initMlpWithReference(net, testInstanceMlp);
 	uz_mlpHlsTestbench(net, testInstanceMlp);
 
 	struct uz_bgdHls_config_t bgdConfig =

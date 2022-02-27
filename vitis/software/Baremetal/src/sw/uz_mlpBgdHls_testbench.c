@@ -15,14 +15,14 @@
 #include "xparameters.h"
 
 // defines
-#define TRAINING_SAMPLES 2000U
-#define BATCH_SIZE 20U
-#define LEARNING_RATE 3.0f
-#define NUMBER_OUTPUTS 16U
-#define NUMBER_INPUTS 784U
+#define BATCH_SIZE 16U
+#define LEARNING_RATE 0.5f
+#define NUMBER_OUTPUTS 4U
+#define NUMBER_INPUTS 4U
 #define NUMBER_HIDDEN 2U
-#define NUMBER_NEURONS 16U
-#define PAR_ENTRIES 16U
+#define NUMBER_NEURONS 4U
+#define PAR_ENTRIES 4U
+#define EPOCHS 1000
 
 // reference implementation
 #define HIDDEN_ACTIVATION sigmoid
@@ -33,15 +33,15 @@
 
 // input data and classes for training
 #ifdef TEST_TRAINING
-static float uz_bgdHls_trainingData[NUMBER_INPUTS * TRAINING_SAMPLES] =
-{
-#include "uz_mlpBgdHls_trainingData/mnist_data.csv"
-		};
-
-static float uz_bgdHls_trainingClasses[NUMBER_OUTPUTS * TRAINING_SAMPLES] =
-{
-#include "uz_mlpBgdHls_trainingData/mnist_labels.csv"
-		};
+//static float uz_bgdHls_trainingData[NUMBER_INPUTS * TRAINING_SAMPLES] =
+//{
+//#include "uz_mlpBgdHls_trainingData/mnist_data.csv"
+//		};
+//
+//static float uz_bgdHls_trainingClasses[NUMBER_OUTPUTS * TRAINING_SAMPLES] =
+//{
+//#include "uz_mlpBgdHls_trainingData/mnist_labels.csv"
+//		};
 #endif
 
 static void extractCraniumWeights(float *hiddenWeightMemory, float *inputWeightMemory,
@@ -130,16 +130,15 @@ static void uz_mlpHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 		float error = fabs(resultReference[i] - outputBuffer[i]);
 		if (error > precision)
 			uz_printf("Error at output entry %d", i);
-		//uz_assert(error < precision);
+		uz_assert(error < precision);
 	}
 }
-
-#ifdef TEST_TRAINING
 
 static void mlpProcessBatch(uz_mlpHls_t *mlpInstance, uz_bgdHls_t *bgdInstance)
 {
 	u64 inputAddress = uz_mlpHls_getInputAddress(mlpInstance);
 	u64 layerOutputAddress = uz_mlpHls_getLayerOutputAddress(mlpInstance);
+	const u64 origLayerOutputAddress = layerOutputAddress;
 
 	uz_mlpHls_setLoadParameters(mlpInstance, true);
 	uz_mlpHls_setExportLayers(mlpInstance, true);
@@ -157,18 +156,67 @@ static void mlpProcessBatch(uz_mlpHls_t *mlpInstance, uz_bgdHls_t *bgdInstance)
 		while (uz_mlpHls_isIdle(mlpInstance) == false)
 			;
 	}
+	uz_mlpHls_setLayerOutputAddress(mlpInstance, origLayerOutputAddress);
 }
 
-static float **createCraniumInputArray(float *values, size_t rows, size_t cols)
+static bool uz_mlpBgdHls_xorArray(float * inputValues, size_t size)
 {
-	float **craniumInput = (float **) malloc(rows * sizeof(float *));
-
-	for (size_t i = 0; i < rows; i++)
+	bool return_value = true;
+	size_t numberOnes = 0;
+	for (size_t i = 0; i < size; i++)
 	{
-		craniumInput[i] = &values[i * cols];
+		if (inputValues[i] != 0)
+			numberOnes++;
+	}
+	if (numberOnes == 1)
+		return_value = true;
+	else
+		return_value = false;
+
+	return return_value;
+}
+
+static void createXorTrainingData(uz_bgdHls_t *testInstanceBgd)
+{
+	const u32 numberInputs = uz_bgdHls_getNumberInputs(testInstanceBgd);
+	const u32 numberOutputs = uz_bgdHls_getNumberOutputs(testInstanceBgd);
+	const u32 numberTrainingSamples = 1 << numberInputs;
+	uz_assert(numberTrainingSamples <= uz_bgdHls_getNumberTrainingSamples(testInstanceBgd));
+	uz_bgdHls_setNumberTrainingSamples(testInstanceBgd, numberTrainingSamples);
+	float *trainingData = (float *) ((u32) uz_bgdHls_getTrainingDataAddress(testInstanceBgd));
+	float *classes = (float *) ((u32) uz_bgdHls_getClassesDataAddress(testInstanceBgd));
+
+	// create truth table
+	for (size_t i = 0; i < numberInputs; i++)
+	{
+		size_t range = numberTrainingSamples / (1 << (i + 1));
+		float value = 1;
+		for (size_t j = 0; j < numberTrainingSamples; j++)
+		{
+			if ((j % range) == 0)
+				value = value != 0 ? 0 : 1;
+			trainingData[j * numberInputs + i] = value;
+		}
 	}
 
-	return craniumInput;
+	// xor truth table
+	for (size_t i = 0; i < numberTrainingSamples; i++)
+	{
+		if (uz_mlpBgdHls_xorArray(&trainingData[i * numberInputs], numberInputs))
+		{
+			classes[i * numberOutputs] = 1;
+			classes[i * numberOutputs + 1] = 0;
+		}
+		else
+		{
+			classes[i * numberOutputs] = 0;
+			classes[i * numberOutputs + 1] = 1;
+		}
+		for (size_t j = 2; j < numberOutputs; j++)
+		{
+			classes[i * numberOutputs + j] = 0;
+		}
+	}
 }
 
 static u32 uz_mlpHls_predict(uz_mlpHls_t *testInstanceMlp)
@@ -177,18 +225,22 @@ static u32 uz_mlpHls_predict(uz_mlpHls_t *testInstanceMlp)
 	u32 max = 0;
 	for (u32 i = 0; i < uz_mlpHls_getNumberOutputs(testInstanceMlp); i++)
 	{
-		if (outputBuffer[i] > max)
+		if (outputBuffer[i] > outputBuffer[max])
 			max = i;
 	}
 	return max;
 }
 
-static float uz_bgdHls_accuracy(uz_mlpHls_t *testInstanceMlp)
+static float uz_bgdHls_accuracy(uz_mlpHls_t *testInstanceMlp, uz_bgdHls_t *testInstanceBgd)
 {
-	u64 inputAddress = uz_mlpHls_getInputAddress(testInstanceMlp);
+	const u32 numberOutputs = uz_mlpHls_getNumberOutputs(testInstanceMlp);
+	const u32 numberInputs = uz_mlpHls_getNumberInputs(testInstanceMlp);
+	const u32 numberTrainingSamples = uz_bgdHls_getNumberTrainingSamples(testInstanceBgd);
+
+	u64 inputAddress = uz_bgdHls_getTrainingDataAddress(testInstanceBgd);
+	const float *classes = (float *) ((u32) uz_bgdHls_getClassesDataAddress(testInstanceBgd));
 	u32 prediction;
 	float numCorrect = 0;
-	const u32 numberOutputs = uz_mlpHls_getNumberOutputs(testInstanceMlp);
 	uz_mlpHls_setLoadParameters(testInstanceMlp, true);
 	uz_mlpHls_setExportLayers(testInstanceMlp, false);
 	uz_mlpHls_start(testInstanceMlp);
@@ -196,53 +248,60 @@ static float uz_bgdHls_accuracy(uz_mlpHls_t *testInstanceMlp)
 		;
 	uz_mlpHls_setLoadParameters(testInstanceMlp, false);
 	prediction = uz_mlpHls_predict(testInstanceMlp);
-	if (uz_bgdHls_trainingClasses[prediction] == 1)
+	if (classes[prediction] == 1)
 		numCorrect++;
-	for (size_t i = 1; i < TRAINING_SAMPLES; i++)
+	for (size_t i = 1; i < numberTrainingSamples; i++)
 	{
-		inputAddress += i * uz_mlpHls_getNumberInputs(testInstanceMlp) * sizeof(float);
+		inputAddress += numberInputs * sizeof(float);
 		uz_mlpHls_setInputAddress(testInstanceMlp, inputAddress);
 		uz_mlpHls_start(testInstanceMlp);
 		while (uz_mlpHls_isIdle(testInstanceMlp) == false)
 			;
 		prediction = uz_mlpHls_predict(testInstanceMlp);
 
-		if (uz_bgdHls_trainingClasses[i * numberOutputs + prediction] == 1)
+		if (classes[i * numberOutputs + prediction] == 1)
 			numCorrect++;
 	}
 
-	return numCorrect / TRAINING_SAMPLES;
+	return (numCorrect / ((float) numberTrainingSamples));
 }
 
 static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstanceMlp,
 		uz_bgdHls_t *testInstanceBgd)
 {
+	createXorTrainingData(testInstanceBgd);
 	const u32 batchSize = uz_bgdHls_getBatchSize(testInstanceBgd);
 	const u32 numberInputs = uz_mlpHls_getNumberInputs(testInstanceMlp);
 	const u32 numberOutputs = uz_mlpHls_getNumberOutputs(testInstanceMlp);
+	const u32 numberTrainingSamples = uz_bgdHls_getNumberTrainingSamples(testInstanceBgd);
+	const u64 trainingDataBaseAddress = uz_bgdHls_getTrainingDataAddress(testInstanceBgd);
+	const u64 classesBaseAddress = uz_bgdHls_getClassesDataAddress(testInstanceBgd);
 
-	uz_assert(TRAINING_SAMPLES % batchSize == 0);
-	uz_assert(
-			uz_mlpHls_getNumberInputs(testInstanceMlp)
-					== uz_bgdHls_getNumberInputs(testInstanceBgd));
-	uz_assert(
-			uz_mlpHls_getNumberOutputs(testInstanceMlp)
-					== uz_bgdHls_getNumberOutputs(testInstanceBgd));
-	uz_assert(
-			uz_mlpHls_getNumberNeurons(testInstanceMlp)
-					== uz_bgdHls_getNumberNeurons(testInstanceBgd));
-	uz_assert(
-			uz_mlpHls_getNumberHiddenLayers(testInstanceMlp)
-					== uz_bgdHls_getNumberHiddenLayers(testInstanceBgd));
+	u32 batches = numberTrainingSamples / batchSize;
+	float **craniumTrainingData = (float **) malloc(numberTrainingSamples * sizeof(float *));
+	float **craniumClassesData = (float **) malloc(numberTrainingSamples * sizeof(float *));
+	float *trainingDataFloat = (float *) ((u32) trainingDataBaseAddress);
+	float *classesFloat = (float *) ((u32) classesBaseAddress);
+	// copy training data because cranium will free the allocated memory
+	// when calling the function destroyDataSet(...)
+	for (size_t i = 0; i < numberTrainingSamples; i++)
+	{
+		craniumTrainingData[i] = (float *) malloc(numberInputs * sizeof(float));
+		for (size_t j = 0; j < numberInputs; j++)
+		{
+			craniumTrainingData[i][j] = trainingDataFloat[i * numberInputs + j];
+		}
+		craniumClassesData[i] = (float *) malloc(numberOutputs * sizeof(float));
+		for (size_t j = 0; j < numberOutputs; j++)
+		{
+			craniumClassesData[i][j] = classesFloat[i * numberOutputs + j];
+		}
+	}
 
-	u32 maxIter = TRAINING_SAMPLES / batchSize;
-	float **craniumInput = createCraniumInputArray(uz_bgdHls_trainingData, TRAINING_SAMPLES,
-			numberInputs);
-	float **craniumClasses = createCraniumInputArray(uz_bgdHls_trainingClasses, TRAINING_SAMPLES,
-			numberOutputs);
-
-	DataSet *cranTrainingData = createDataSet(TRAINING_SAMPLES, numberInputs, craniumInput);
-	DataSet *cranTrainingClasses = createDataSet(TRAINING_SAMPLES, numberOutputs, craniumClasses);
+	DataSet *cranTrainingData = createDataSet(numberTrainingSamples, numberInputs,
+			craniumTrainingData);
+	DataSet *cranTrainingClasses = createDataSet(numberTrainingSamples, numberOutputs,
+			craniumClassesData);
 
 	ParameterSet params;
 	params.network = referenceImpl;
@@ -254,48 +313,64 @@ static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 	params.searchTime = 0;
 	params.regularizationStrength = 0;
 	params.momentumFactor = 0;
-	params.maxIters = TRAINING_SAMPLES;
+	params.maxIters = (int) (EPOCHS * batches);
 	params.shuffle = 0;
 	params.verbose = 0;
-	//optimize(params);
+	optimize(params);
 
-	//float cranAccuracy = accuracy(referenceImpl, cranTrainingData, cranTrainingClasses);
-	//uz_printf("Accuracy of Cranium optimization %f \n", cranAccuracy);
+	float cranAccuracy = accuracy(referenceImpl, cranTrainingData, cranTrainingClasses);
+	uz_printf("Accuracy of Cranium optimization %f \n", cranAccuracy);
 
-	uz_bgdHls_setLoadParameters(testInstanceBgd, true);
-	for (size_t iter = 0; iter < maxIter; iter++)
+	destroyDataSet(cranTrainingClasses);
+	destroyDataSet(cranTrainingData);
+
+	while (1)
 	{
-		u64 inputValues = (u64) ((u32) &uz_bgdHls_trainingData[iter * batchSize * numberInputs]);
-		uz_mlpHls_setInputAddress(testInstanceMlp, inputValues);
-		mlpProcessBatch(testInstanceMlp, testInstanceBgd);
-
-		uz_bgdHls_start(testInstanceBgd);
-		while (uz_bgdHls_isIdle(testInstanceBgd) == false)
-			;
-		if (iter == 0)
+		float uzBgdAccuracy;
+		uz_bgdHls_setLoadParameters(testInstanceBgd, true);
+		for (size_t epoch = 0; epoch < EPOCHS; epoch++)
 		{
-			uz_bgdHls_setLoadParameters(testInstanceBgd, false);
+			u64 inputValues = trainingDataBaseAddress;
+			u64 classes = classesBaseAddress;
+			for (size_t iter = 0; iter < batches; iter++)
+			{
+				uz_mlpHls_setInputAddress(testInstanceMlp, inputValues);
+				uz_bgdHls_setClassesAddress(testInstanceBgd, classes);
+				mlpProcessBatch(testInstanceMlp, testInstanceBgd);
+				uz_bgdHls_start(testInstanceBgd);
+				while (uz_bgdHls_isIdle(testInstanceBgd) == false)
+					;
+				if (iter == 0)
+				{
+					uz_bgdHls_setLoadParameters(testInstanceBgd, false);
+				}
+
+				classes += batchSize * numberOutputs * sizeof(float);
+				inputValues += batchSize * numberInputs * sizeof(float);
+			}
+
+			uz_mlpHls_setInputAddress(testInstanceMlp, trainingDataBaseAddress);
+			uz_bgdHls_setClassesAddress(testInstanceBgd, classesBaseAddress);
+			uzBgdAccuracy = uz_bgdHls_accuracy(testInstanceMlp, testInstanceBgd);
+			uz_printf("Accuracy of UZ BGD optimization in epoch %d is %f \n", epoch, uzBgdAccuracy);
 		}
+
+		uzBgdAccuracy = uz_bgdHls_accuracy(testInstanceMlp, testInstanceBgd);
+		uz_printf("Accuracy of UZ BGD optimization %f \n", uzBgdAccuracy);
 	}
 
-	uz_mlpHls_setInputAddress(testInstanceMlp, (u64) ((u32) uz_bgdHls_trainingData));
-	float uzBgdAccuracy = uz_bgdHls_accuracy(testInstanceMlp);
-	uz_printf("Accuracy of UZ BGD optimization %f \n", uzBgdAccuracy);
-
 }
-
-#endif
 
 int uz_mlpBgdHls_testbench()
 {
 	srand((unsigned int) 2);
-
-	const u32 weightOffset =
+	// determine addresses for parameters and init MLP
+	const u64 weightOffset =
 			((NUMBER_INPUTS + (NUMBER_HIDDEN - 1) * NUMBER_NEURONS + NUMBER_OUTPUTS)
 					* NUMBER_NEURONS) * sizeof(float);
-	const u32 biasOffset = (NUMBER_HIDDEN * NUMBER_NEURONS + NUMBER_OUTPUTS) * sizeof(float);
-	const u32 inputOffset = NUMBER_INPUTS * sizeof(float);
-	const u32 outputOffset = NUMBER_OUTPUTS * sizeof(float);
+	const u64 biasOffset = (NUMBER_HIDDEN * NUMBER_NEURONS + NUMBER_OUTPUTS) * sizeof(float);
+	const u64 inputOffset = NUMBER_INPUTS * sizeof(float);
+	const u64 outputOffset = NUMBER_OUTPUTS * sizeof(float);
 
 	struct uz_mlpHls_config_t mlpConfig =
 	{
@@ -316,6 +391,7 @@ int uz_mlpBgdHls_testbench()
 			.parEntries = PAR_ENTRIES };
 	uz_mlpHls_t *testInstanceMlp = uz_mlpHls_init(mlpConfig);
 
+	// init reference implementation
 	const u32 numberHiddenLayers = uz_mlpHls_getNumberHiddenLayers(testInstanceMlp);
 	const u32 numberNeurons = uz_mlpHls_getNumberNeurons(testInstanceMlp);
 	const u32 numberInputs = uz_mlpHls_getNumberInputs(testInstanceMlp);
@@ -341,11 +417,10 @@ int uz_mlpBgdHls_testbench()
 
 	uz_mlpHlsTestbench(net, testInstanceMlp);
 
-#ifdef TEST_TRAINING
 	struct uz_bgdHls_config_t bgdConfig =
 	{
 			.mlpResultsMemoryAddress = uz_mlpHls_getLayerOutputAddress(testInstanceMlp),
-			.classesMemoryAddress = (u64) ((u32) uz_bgdHls_trainingClasses),
+			.classesMemoryAddress = 1, // to avoid assert will be changed later
 			.weightInputMemoryAddress = uz_mlpHls_getWeightAddress(testInstanceMlp),
 			.biasInputMemoryAddress = uz_mlpHls_getBiasAddress(testInstanceMlp),
 			.weightOutputMemoryAddress = uz_mlpHls_getWeightAddress(testInstanceMlp),
@@ -358,11 +433,22 @@ int uz_mlpBgdHls_testbench()
 			.batchSize = BATCH_SIZE,
 			.learningRate = LEARNING_RATE,
 			.parEntries = uz_mlpHls_getParEntries(testInstanceMlp),
-			.deviceId = XPAR_MLP_BGD_DEVICE_ID };
+			.deviceId = XPAR_MLP_BGD_DEVICE_ID,
+			.numberTrainingSamples = (1 << uz_mlpHls_getNumberInputs(testInstanceMlp)) };
 
 	uz_bgdHls_t *testInstanceBgd = uz_bgdHls_init(bgdConfig);
+	u64 trainingData = uz_mlpHls_getLayerOutputAddress(testInstanceMlp)
+			+ uz_bgdHls_getBatchBufferSize(testInstanceBgd) * sizeof(float);
+	u64 classes = trainingData
+			+ uz_bgdHls_getNumberTrainingSamples(testInstanceBgd)
+					* uz_mlpHls_getNumberInputs(testInstanceMlp) * sizeof(float);
+
+	uz_bgdHls_setTrainingDataAddress(testInstanceBgd, trainingData);
+	uz_bgdHls_setClassesDataAddress(testInstanceBgd, classes);
 	uz_bgdHlsTestbench(net, testInstanceMlp, testInstanceBgd);
-#endif
+
+	// clean up
+	destroyNetwork(net);
 
 	return UZ_SUCCESS;
 }

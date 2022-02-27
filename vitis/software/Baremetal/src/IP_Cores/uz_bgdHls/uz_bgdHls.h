@@ -17,6 +17,8 @@ struct uz_bgdHls_config_t
 	u64 biasInputMemoryAddress;
 	u64 weightOutputMemoryAddress;
 	u64 biasOutputMemoryAddress;
+	u64 trainingDataAddress;
+	u64 classesDataAddress;
 
 	u32 numberInputs;
 	u32 numberOutputs;
@@ -27,6 +29,7 @@ struct uz_bgdHls_config_t
 	u32 batchSize;
 	u32 batchBufferSize;
 	float learningRate;
+	u32 numberTrainingSamples;
 
 	u32 parEntries;
 };
@@ -44,6 +47,8 @@ void uz_bgdHls_setWeightInputAddress(uz_bgdHls_t *instance, u64 address);
 void uz_bgdHls_setBiasInputAddress(uz_bgdHls_t *instance, u64 address);
 void uz_bgdHls_setWeightOutputAddress(uz_bgdHls_t *instance, u64 address);
 void uz_bgdHls_setBiasOutputAddress(uz_bgdHls_t *instance, u64 address);
+void uz_bgdHls_setTrainingDataAddress(uz_bgdHls_t *instance, u64 address);
+void uz_bgdHls_setClassesDataAddress(uz_bgdHls_t *instance, u64 address);
 void uz_bgdHls_setNumberInputs(uz_bgdHls_t *instance, u32 value);
 void uz_bgdHls_setNumberOutputs(uz_bgdHls_t *instance, u32 value);
 void uz_bgdHls_setNumberHiddenLayers(uz_bgdHls_t *instance, u32 value);
@@ -51,6 +56,7 @@ void uz_bgdHls_setNumberNeurons(uz_bgdHls_t *instance, u32 value);
 void uz_bgdHls_setLoadParameters(uz_bgdHls_t *instance, bool value);
 void uz_bgdHls_setBatchSize(uz_bgdHls_t *instance, u32 value);
 void uz_bgdHls_setLearningRate(uz_bgdHls_t *instance, float value);
+void uz_bgdHls_setNumberTrainingSamples(uz_bgdHls_t *instance, u32 value);
 
 // get functions
 u64 uz_bgdHls_getMlpResultsAddress(uz_bgdHls_t *instance);
@@ -59,6 +65,8 @@ u64 uz_bgdHls_getWeightInputAddress(uz_bgdHls_t *instance);
 u64 uz_bgdHls_getBiasInputAddress(uz_bgdHls_t *instance);
 u64 uz_bgdHls_getWeightOutputAddress(uz_bgdHls_t *instance);
 u64 uz_bgdHls_getBiasOutputAddress(uz_bgdHls_t *instance);
+u64 uz_bgdHls_getTrainingDataAddress(uz_bgdHls_t *instance);
+u64 uz_bgdHls_getClassesDataAddress(uz_bgdHls_t *instance);
 u32 uz_bgdHls_getNumberInputs(uz_bgdHls_t *instance);
 u32 uz_bgdHls_getNumberOutputs(uz_bgdHls_t *instance);
 u32 uz_bgdHls_getNumberHiddenLayers(uz_bgdHls_t *instance);
@@ -68,6 +76,7 @@ u32 uz_bgdHls_getBatchSize(uz_bgdHls_t *instance);
 float uz_bgdHls_getLearningRate(uz_bgdHls_t *instance);
 u32 uz_bgdHls_getLayerBufferSize(uz_bgdHls_t *instance);
 u32 uz_bgdHls_getBatchBufferSize(uz_bgdHls_t *instance);
+u32 uz_bgdHls_getNumberTrainingSamples(uz_bgdHls_t *instance);
 
 // control functions
 void uz_bgdHls_start(uz_bgdHls_t *instance);

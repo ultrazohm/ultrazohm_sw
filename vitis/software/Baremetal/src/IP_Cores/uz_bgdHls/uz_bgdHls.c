@@ -35,7 +35,8 @@ static void uz_bgdHls_updateBufferSizes(struct uz_bgdHls_config_t *config)
 {
 	uz_assert_not_NULL(config);
 	config->layerBufferSize = config->numberInputs
-			+ config->numberHiddenLayers * config->numberNeurons + config->numberOutputs;
+			+ config->numberHiddenLayers * config->numberNeurons
+			+ config->numberOutputs;
 	config->batchBufferSize = config->layerBufferSize * config->batchSize;
 }
 
@@ -53,7 +54,8 @@ uz_bgdHls_t *uz_bgdHls_init(struct uz_bgdHls_config_t config)
 	uz_bgdHls_setClassesAddress(instance, config.classesMemoryAddress);
 	uz_bgdHls_setWeightInputAddress(instance, config.weightInputMemoryAddress);
 	uz_bgdHls_setBiasInputAddress(instance, config.biasInputMemoryAddress);
-	uz_bgdHls_setWeightOutputAddress(instance, config.weightOutputMemoryAddress);
+	uz_bgdHls_setWeightOutputAddress(instance,
+			config.weightOutputMemoryAddress);
 	uz_bgdHls_setBiasOutputAddress(instance, config.biasOutputMemoryAddress);
 
 	uz_bgdHls_setNumberInputs(instance, config.numberInputs);
@@ -182,10 +184,32 @@ void uz_bgdHls_setBatchSize(uz_bgdHls_t *instance, u32 value)
 void uz_bgdHls_setLearningRate(uz_bgdHls_t *instance, float value)
 {
 	uz_assert_not_NULL(instance);
-	uz_assert_not_zero(value);
 	instance->config.learningRate = value;
 	// this cast is necessary see Xilinx UG1399 p. 208
-	XBgd_Set_learningRate(&instance->xilInstance, *((u32*) &instance->config.learningRate));
+	XBgd_Set_learningRate(&instance->xilInstance,
+			*((u32*) &instance->config.learningRate));
+}
+
+void uz_bgdHls_setNumberTrainingSamples(uz_bgdHls_t *instance, u32 value)
+{
+	uz_assert_not_NULL(instance);
+	uz_assert_not_zero(value);
+	uz_assert(value % instance->config.batchSize == 0);
+	instance->config.numberTrainingSamples = value;
+}
+
+void uz_bgdHls_setTrainingDataAddress(uz_bgdHls_t *instance, u64 address)
+{
+	uz_assert_not_NULL(instance);
+	uz_assert_not_zero(address);
+	instance->config.trainingDataAddress = address;
+}
+
+void uz_bgdHls_setClassesDataAddress(uz_bgdHls_t *instance, u64 address)
+{
+	uz_assert_not_NULL(instance);
+	uz_assert_not_zero(address);
+	instance->config.classesDataAddress = address;
 }
 
 u64 uz_bgdHls_getMlpResultsAddress(uz_bgdHls_t *instance)
@@ -224,6 +248,18 @@ u64 uz_bgdHls_getBiasOutputAddress(uz_bgdHls_t *instance)
 	return UZ_BGDHLS_R5_ADDRESS(instance->config.biasOutputMemoryAddress);
 }
 
+u64 uz_bgdHls_getTrainingDataAddress(uz_bgdHls_t *instance)
+{
+	uz_assert_not_NULL(instance);
+	return instance->config.trainingDataAddress;
+}
+
+u64 uz_bgdHls_getClassesDataAddress(uz_bgdHls_t *instance)
+{
+	uz_assert_not_NULL(instance);
+	return instance->config.classesDataAddress;
+}
+
 u32 uz_bgdHls_getNumberInputs(uz_bgdHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
@@ -248,6 +284,12 @@ u32 uz_bgdHls_getNumberNeurons(uz_bgdHls_t *instance)
 	return instance->config.numberNeurons;
 }
 
+u32 uz_bgdHls_getNumberTrainingSamples(uz_bgdHls_t *instance)
+{
+	uz_assert_not_NULL(instance);
+	return instance->config.numberTrainingSamples;
+}
+
 bool uz_bgdHls_getLoadParameters(uz_bgdHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
@@ -263,7 +305,8 @@ u32 uz_bgdHls_getBatchSize(uz_bgdHls_t *instance)
 float uz_bgdHls_getLearningRate(uz_bgdHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
-	return instance->config.learningRate;
+	u32 learningRate = XBgd_Get_learningRate(&instance->xilInstance);
+	return *((float*) &learningRate);
 }
 
 u32 uz_bgdHls_getLayerBufferSize(uz_bgdHls_t *instance)
@@ -288,7 +331,7 @@ bool uz_bgdHls_isIdle(uz_bgdHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
 	bool return_value;
-	if(XBgd_IsIdle(&instance->xilInstance) != 0)
+	if (XBgd_IsIdle(&instance->xilInstance) != 0)
 		return_value = true;
 	else
 		return_value = false;
@@ -300,7 +343,7 @@ bool uz_bgdHls_isReady(uz_bgdHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
 	bool return_value;
-	if(XBgd_IsReady(&instance->xilInstance) != 0)
+	if (XBgd_IsReady(&instance->xilInstance) != 0)
 		return_value = true;
 	else
 		return_value = false;
@@ -312,7 +355,7 @@ bool uz_bgdHls_isDone(uz_bgdHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
 	bool return_value;
-	if(XBgd_IsDone(&instance->xilInstance) != 0)
+	if (XBgd_IsDone(&instance->xilInstance) != 0)
 		return_value = true;
 	else
 		return_value = false;

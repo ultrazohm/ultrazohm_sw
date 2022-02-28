@@ -255,6 +255,7 @@ typedef struct {
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
   uz_PID_OnlineID_output_t OnlineID_output;/* '<Root>/OnlineID_output' */
+  boolean_T enteredOnlineID;           /* '<Root>/enteredOnlineID' */
 } ExtY_OnlineID_t;
 
 /* Real-time Model Data Structure */

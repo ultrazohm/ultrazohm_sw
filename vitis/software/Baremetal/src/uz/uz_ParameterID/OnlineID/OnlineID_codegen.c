@@ -70,205 +70,209 @@ static void InitParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
   real32_T tmp_0;
 
   /* MATLAB Function 'InitParams': '<S1>:241' */
-  /* '<S1>:241:4' vd_sum=single(0); */
+  /* '<S1>:241:4' vd_sum                              = single(0); */
   rtOnlineID_DW->vd_sum = 0.0F;
 
-  /* '<S1>:241:5' vq_sum=single(0); */
+  /* '<S1>:241:5' vq_sum                              = single(0); */
   rtOnlineID_DW->vq_sum = 0.0F;
 
-  /* '<S1>:241:6' id_sum=single(0); */
+  /* '<S1>:241:6' id_sum                              = single(0); */
   rtOnlineID_DW->id_sum = 0.0F;
 
-  /* '<S1>:241:7' iq_sum=single(0); */
+  /* '<S1>:241:7' iq_sum                              = single(0); */
   rtOnlineID_DW->iq_sum = 0.0F;
 
-  /* '<S1>:241:8' omega_sum=single(0); */
+  /* '<S1>:241:8' omega_sum                           = single(0); */
   rtOnlineID_DW->omega_sum = 0.0F;
 
-  /* '<S1>:241:9' id_register=single(zeros(50,1)); */
-  /* '<S1>:241:10' iq_register=single(zeros(50,1)); */
-  /* '<S1>:241:11' vd_register=single(zeros(50,1)); */
-  /* '<S1>:241:12' vq_register=single(zeros(50,1)); */
+  /* '<S1>:241:9' id_register                         = single(zeros(50,1)); */
+  /* '<S1>:241:10' iq_register                         = single(zeros(50,1)); */
+  /* '<S1>:241:11' vd_register                         = single(zeros(50,1)); */
+  /* '<S1>:241:12' vq_register                         = single(zeros(50,1)); */
   memset(&rtOnlineID_DW->id_register[0], 0, 50U * sizeof(real32_T));
   memset(&rtOnlineID_DW->iq_register[0], 0, 50U * sizeof(real32_T));
   memset(&rtOnlineID_DW->vd_register[0], 0, 50U * sizeof(real32_T));
   memset(&rtOnlineID_DW->vq_register[0], 0, 50U * sizeof(real32_T));
 
-  /* '<S1>:241:13' id_const=boolean(0); */
+  /* '<S1>:241:13' id_const                            = boolean(0); */
   rtOnlineID_DW->id_const = false;
 
-  /* '<S1>:241:14' iq_const=boolean(0); */
+  /* '<S1>:241:14' iq_const                            = boolean(0); */
   rtOnlineID_DW->iq_const = false;
 
-  /* '<S1>:241:15' omega_const=boolean(0); */
+  /* '<S1>:241:15' omega_const                         = boolean(0); */
   rtOnlineID_DW->omega_const = false;
 
   /* Calculation if linearParams will be identified */
-  /* '<S1>:241:18' allow_meas=boolean(0); */
+  /* '<S1>:241:18' allow_meas                          = boolean(0); */
   rtOnlineID_DW->allow_meas = false;
 
-  /* '<S1>:241:19' counter_time=uint32(0); */
+  /* '<S1>:241:19' counter_time                        = uint32(0); */
   rtOnlineID_DW->counter_time = 0U;
 
-  /* '<S1>:241:20' LinPara_ident_outside=boolean(1); */
+  /* '<S1>:241:20' LinPara_ident_outside               = boolean(1); */
   rtOnlineID_DW->LinPara_ident_outside = true;
 
-  /* '<S1>:241:21' i_valid=boolean(0); */
+  /* '<S1>:241:21' i_valid                             = boolean(0); */
   rtOnlineID_DW->i_valid = false;
 
-  /* '<S1>:241:22' counter_ausserhalb=uint16(0); */
+  /* '<S1>:241:22' counter_ausserhalb                  = uint16(0); */
   rtOnlineID_DW->counter_ausserhalb = 0U;
 
-  /* '<S1>:241:23' counter_innerhalb=uint16(0); */
+  /* '<S1>:241:23' counter_innerhalb                   = uint16(0); */
   rtOnlineID_DW->counter_innerhalb = 0U;
 
-  /* '<S1>:241:26' iq1counter=single(0); */
+  /* '<S1>:241:26' iq1counter                          = single(0); */
   rtOnlineID_DW->iq1counter = 0.0F;
 
-  /* '<S1>:241:27' iq2counter=single(0); */
+  /* '<S1>:241:27' iq2counter                          = single(0); */
   rtOnlineID_DW->iq2counter = 0.0F;
 
-  /* '<S1>:241:28' id1counter=single(0); */
+  /* '<S1>:241:28' id1counter                          = single(0); */
   rtOnlineID_DW->id1counter = 0.0F;
 
-  /* '<S1>:241:29' id2counter=single(0); */
+  /* '<S1>:241:29' id2counter                          = single(0); */
   rtOnlineID_DW->id2counter = 0.0F;
 
-  /* '<S1>:241:30' Vd1counter=single(0); */
+  /* '<S1>:241:30' Vd1counter                          = single(0); */
   rtOnlineID_DW->Vd1counter = 0.0F;
 
-  /* '<S1>:241:31' Vd2counter=single(0); */
+  /* '<S1>:241:31' Vd2counter                          = single(0); */
   rtOnlineID_DW->Vd2counter = 0.0F;
 
-  /* '<S1>:241:32' omega1counter=single(0); */
+  /* '<S1>:241:32' omega1counter                       = single(0); */
   rtOnlineID_DW->omega1counter = 0.0F;
 
-  /* '<S1>:241:33' omega2counter=single(0); */
+  /* '<S1>:241:33' omega2counter                       = single(0); */
   rtOnlineID_DW->omega2counter = 0.0F;
 
-  /* '<S1>:241:34' omega_register=single(zeros(5,1)); */
+  /* '<S1>:241:34' omega_register                      = single(zeros(5,1)); */
   for (i = 0; i < 5; i++) {
     rtOnlineID_DW->omega_register[i] = 0.0F;
   }
 
   /* Inport: '<Root>/GlobalConfig' */
   /* Psi Calculation */
-  /* '<S1>:241:38' array_counter=uint16(1); */
-  /* '<S1>:241:39' psi_d=single(0); */
-  /* '<S1>:241:40' psi_q=single(0); */
-  /* '<S1>:241:41' R_old=single(GlobalConfig.PMSM_config.R_ph_Ohm); */
+  /* '<S1>:241:38' array_counter                       = uint16(1); */
+  /* '<S1>:241:39' psi_d                               = single(0); */
+  /* '<S1>:241:40' psi_q                               = single(0); */
+  /* '<S1>:241:41' R_old                               = single(GlobalConfig.PMSM_config.R_ph_Ohm); */
   rtOnlineID_DW->R_old = rtOnlineID_U->GlobalConfig_out.PMSM_config.R_ph_Ohm;
 
-  /* '<S1>:241:42' R_veryold=single(GlobalConfig.PMSM_config.R_ph_Ohm); */
+  /* '<S1>:241:42' R_veryold                           = single(GlobalConfig.PMSM_config.R_ph_Ohm); */
   rtOnlineID_DW->R_veryold = rtOnlineID_U->GlobalConfig_out.PMSM_config.R_ph_Ohm;
 
   /* %% */
-  /* '<S1>:241:44' R_old_outside=single(GlobalConfig.PMSM_config.R_ph_Ohm); */
+  /* '<S1>:241:44' R_old_outside                       = single(GlobalConfig.PMSM_config.R_ph_Ohm); */
   rtOnlineID_DW->R_old_outside =
     rtOnlineID_U->GlobalConfig_out.PMSM_config.R_ph_Ohm;
 
-  /* '<S1>:241:45' R_veryold_outside=single(GlobalConfig.PMSM_config.R_ph_Ohm); */
-  /* '<S1>:241:46' Ld_veryold_outside=single(GlobalConfig.PMSM_config.Psi_PM_Vs); */
-  /* '<S1>:241:47' Ld_old_outside=single(GlobalConfig.PMSM_config.Ld_Henry); */
+  /* '<S1>:241:45' R_veryold_outside                   = single(GlobalConfig.PMSM_config.R_ph_Ohm); */
+  /* '<S1>:241:46' Ld_veryold_outside                  = single(GlobalConfig.PMSM_config.Psi_PM_Vs); */
+  /* '<S1>:241:47' Ld_old_outside                      = single(GlobalConfig.PMSM_config.Ld_Henry); */
   rtOnlineID_DW->Ld_old_outside =
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Ld_Henry;
 
-  /* '<S1>:241:48' Lq_veryold_outside=single(GlobalConfig.PMSM_config.Lq_Henry); */
-  /* '<S1>:241:49' Lq_old_outside=single(GlobalConfig.PMSM_config.Lq_Henry); */
+  /* '<S1>:241:48' Lq_veryold_outside                  = single(GlobalConfig.PMSM_config.Lq_Henry); */
+  /* '<S1>:241:49' Lq_old_outside                      = single(GlobalConfig.PMSM_config.Lq_Henry); */
   rtOnlineID_DW->Lq_old_outside =
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Lq_Henry;
 
-  /* '<S1>:241:50' PsiPm_veryold_outside=single(GlobalConfig.PMSM_config.Psi_PM_Vs); */
-  /* '<S1>:241:51' PsiPm_old_outside=single(GlobalConfig.PMSM_config.Psi_PM_Vs); */
+  /* '<S1>:241:50' PsiPm_veryold_outside               = single(GlobalConfig.PMSM_config.Psi_PM_Vs); */
+  /* '<S1>:241:51' PsiPm_old_outside                   = single(GlobalConfig.PMSM_config.Psi_PM_Vs); */
   rtOnlineID_DW->PsiPm_old_outside =
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs;
 
   /* %% */
-  /* '<S1>:241:53' accel=single(0); */
-  /* '<S1>:241:54' i_d_R_online=single(0); */
+  /* '<S1>:241:53' accel                               = single(0); */
+  /* '<S1>:241:54' i_d_R_online                        = single(0); */
   rtOnlineID_DW->i_d_R_online = 0.0F;
 
   /* Inport: '<Root>/GlobalConfig' */
-  /* '<S1>:241:55' UpdateFluxFlag=boolean(0); */
-  /* '<S1>:241:56' psi_temp_const=single(0.0000001); */
-  /* '<S1>:241:57' Wtemp_check=single(0); */
-  /* '<S1>:241:58' PsiPm_old=single(GlobalConfig.PMSM_config.Psi_PM_Vs); */
+  /* '<S1>:241:55' UpdateFluxFlag                      = boolean(0); */
+  /* '<S1>:241:56' psi_temp_const                      = single(0.0000001); */
+  /* '<S1>:241:57' Wtemp_check                         = single(0); */
+  /* '<S1>:241:58' PsiPm_old                           = single(GlobalConfig.PMSM_config.Psi_PM_Vs); */
   rtOnlineID_DW->PsiPm_old =
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs;
 
-  /* '<S1>:241:59' PsiPm_veryold=single(GlobalConfig.PMSM_config.Psi_PM_Vs); */
+  /* '<S1>:241:59' PsiPm_veryold                       = single(GlobalConfig.PMSM_config.Psi_PM_Vs); */
   rtOnlineID_DW->PsiPm_veryold =
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs;
 
-  /* '<S1>:241:60' Ld_old=single(GlobalConfig.PMSM_config.Ld_Henry); */
+  /* '<S1>:241:60' Ld_old                              = single(GlobalConfig.PMSM_config.Ld_Henry); */
   rtOnlineID_DW->Ld_old = rtOnlineID_U->GlobalConfig_out.PMSM_config.Ld_Henry;
 
-  /* '<S1>:241:61' Ld_veryold=single(GlobalConfig.PMSM_config.Ld_Henry); */
+  /* '<S1>:241:61' Ld_veryold                          = single(GlobalConfig.PMSM_config.Ld_Henry); */
   rtOnlineID_DW->Ld_veryold =
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Ld_Henry;
 
-  /* '<S1>:241:62' Lq_old=single(GlobalConfig.PMSM_config.Lq_Henry); */
+  /* '<S1>:241:62' Lq_old                              = single(GlobalConfig.PMSM_config.Lq_Henry); */
   rtOnlineID_DW->Lq_old = rtOnlineID_U->GlobalConfig_out.PMSM_config.Lq_Henry;
 
-  /* '<S1>:241:63' Lq_veryold=single(GlobalConfig.PMSM_config.Lq_Henry); */
+  /* '<S1>:241:63' Lq_veryold                          = single(GlobalConfig.PMSM_config.Lq_Henry); */
   rtOnlineID_DW->Lq_veryold =
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Lq_Henry;
+
+  /* Outport: '<Root>/enteredOnlineID' */
+  /* Outputs */
+  /* '<S1>:241:66' enteredOnlineID=boolean(0); */
+  rtOnlineID_Y->enteredOnlineID = false;
 
   /* Outport: '<Root>/OnlineID_output' incorporates:
    *  Inport: '<Root>/GlobalConfig'
    */
-  /* Outputs */
-  /* '<S1>:241:66' OnlineID_output.id_out                  = single(0.0); */
+  /* '<S1>:241:67' OnlineID_output.id_out              = single(0.0); */
   rtOnlineID_Y->OnlineID_output.id_out = 0.0F;
 
-  /* '<S1>:241:67' OnlineID_output.Rph_out = single(GlobalConfig.PMSM_config.R_ph_Ohm); */
+  /* '<S1>:241:68' OnlineID_output.Rph_out             = single(GlobalConfig.PMSM_config.R_ph_Ohm); */
   rtOnlineID_Y->OnlineID_output.Rph_out =
     rtOnlineID_U->GlobalConfig_out.PMSM_config.R_ph_Ohm;
 
-  /* '<S1>:241:68' OnlineID_output.Wtemp = single(20.0); */
+  /* '<S1>:241:69' OnlineID_output.Wtemp               = single(20.0); */
   rtOnlineID_Y->OnlineID_output.Wtemp = 20.0F;
 
-  /* '<S1>:241:69' OnlineID_output.psi_array = single(zeros(6,100)); */
+  /* '<S1>:241:70' OnlineID_output.psi_array           = single(zeros(6,100)); */
   memset(&rtOnlineID_Y->OnlineID_output.psi_array[0], 0, 600U * sizeof(real32_T));
 
-  /* '<S1>:241:70' OnlineID_output.IdControlFlag= boolean(0); */
+  /* '<S1>:241:71' OnlineID_output.IdControlFlag       = boolean(0); */
   rtOnlineID_Y->OnlineID_output.IdControlFlag = false;
 
-  /* '<S1>:241:71' OnlineID_output.delta_psi = single(zeros(100,2)); */
+  /* '<S1>:241:72' OnlineID_output.delta_psi           = single(zeros(100,2)); */
   memset(&rtOnlineID_Y->OnlineID_output.delta_psi[0], 0, 200U * sizeof(real32_T));
 
-  /* '<S1>:241:72' OnlineID_output.delta_psi(7,1)=0.07; */
+  /* '<S1>:241:73' OnlineID_output.delta_psi(7,1)      = 0.07; */
   rtOnlineID_Y->OnlineID_output.delta_psi[6] = 0.07F;
 
-  /* '<S1>:241:73' OnlineID_output.delta_psi(7,2)=1; */
+  /* '<S1>:241:74' OnlineID_output.delta_psi(7,2)      = 1; */
   rtOnlineID_Y->OnlineID_output.delta_psi[106] = 1.0F;
 
-  /* '<S1>:241:74' OnlineID_output.delta_psi(9,1)=0.09; */
+  /* '<S1>:241:75' OnlineID_output.delta_psi(9,1)      = 0.09; */
   rtOnlineID_Y->OnlineID_output.delta_psi[8] = 0.09F;
 
-  /* '<S1>:241:75' OnlineID_output.delta_psi(9,2)=1; */
+  /* '<S1>:241:76' OnlineID_output.delta_psi(9,2)      = 1; */
   rtOnlineID_Y->OnlineID_output.delta_psi[108] = 1.0F;
 
-  /* '<S1>:241:76' OnlineID_output.activeState =uint16(0); */
+  /* '<S1>:241:77' OnlineID_output.activeState         = uint16(0); */
   rtOnlineID_Y->OnlineID_output.activeState = 0U;
 
-  /* '<S1>:241:77' OnlineID_output.psi_pm_out = single(GlobalConfig.PMSM_config.Psi_PM_Vs); */
+  /* '<S1>:241:78' OnlineID_output.psi_pm_out          = single(GlobalConfig.PMSM_config.Psi_PM_Vs); */
   rtOnlineID_Y->OnlineID_output.psi_pm_out =
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs;
 
-  /* '<S1>:241:78' OnlineID_output.Ld_out = single(GlobalConfig.PMSM_config.Ld_Henry); */
+  /* '<S1>:241:79' OnlineID_output.Ld_out              = single(GlobalConfig.PMSM_config.Ld_Henry); */
   rtOnlineID_Y->OnlineID_output.Ld_out =
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Ld_Henry;
 
-  /* '<S1>:241:79' OnlineID_output.Lq_out = single(GlobalConfig.PMSM_config.Lq_Henry); */
+  /* '<S1>:241:80' OnlineID_output.Lq_out              = single(GlobalConfig.PMSM_config.Lq_Henry); */
   rtOnlineID_Y->OnlineID_output.Lq_out =
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Lq_Henry;
 
-  /* '<S1>:241:80' OnlineID_output.clean_array = boolean(0); */
+  /* '<S1>:241:81' OnlineID_output.clean_array         = boolean(0); */
   rtOnlineID_Y->OnlineID_output.clean_array = false;
 
   /* Inport: '<Root>/GlobalConfig' */
-  /* '<S1>:241:82' OnlineID_output.psi_array(1,array_counter)=single(0.70*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:83' OnlineID_output.psi_array(1,array_counter)=single(0.70*GlobalConfig.ratCurrent); */
   tmp = 0.7F * rtOnlineID_U->GlobalConfig_out.ratCurrent;
 
   /* Outport: '<Root>/OnlineID_output' incorporates:
@@ -277,35 +281,35 @@ static void InitParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
    */
   rtOnlineID_Y->OnlineID_output.psi_array[0] = tmp;
 
-  /* '<S1>:241:83' OnlineID_output.psi_array(2,array_counter)=single(0.7*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:84' OnlineID_output.psi_array(2,array_counter)=single(0.7*GlobalConfig.ratCurrent); */
   rtOnlineID_Y->OnlineID_output.psi_array[1] = tmp;
 
-  /* '<S1>:241:84' OnlineID_output.psi_array(3,array_counter)=single(50); */
+  /* '<S1>:241:85' OnlineID_output.psi_array(3,array_counter)=single(50); */
   rtOnlineID_Y->OnlineID_output.psi_array[2] = 50.0F;
 
-  /* '<S1>:241:85' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
+  /* '<S1>:241:86' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
   rtOnlineID_Y->OnlineID_output.psi_array[3] =
     rtOnlineID_U->OnlineIDConfig.Temp_ref;
 
-  /* '<S1>:241:86' OnlineID_output.psi_array(5,array_counter)=single(1000*(0.7*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)); */
+  /* '<S1>:241:87' OnlineID_output.psi_array(5,array_counter)=single(1000*(0.7*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)); */
   rtOnlineID_Y->OnlineID_output.psi_array[4] = (tmp *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Ld_Henry +
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs) * 1000.0F;
 
-  /* '<S1>:241:87' OnlineID_output.psi_array(6,array_counter)=single(1000*(0.7*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)); */
+  /* '<S1>:241:88' OnlineID_output.psi_array(6,array_counter)=single(1000*(0.7*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)); */
   rtOnlineID_Y->OnlineID_output.psi_array[5] = tmp *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Lq_Henry * 1000.0F;
 
   /* Inport: '<Root>/GlobalConfig' */
-  /* '<S1>:241:88' array_counter=array_counter+1; */
-  /* '<S1>:241:89' OnlineID_output.psi_array(1,array_counter)=single(-0.75*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:89' array_counter=array_counter+1; */
+  /* '<S1>:241:90' OnlineID_output.psi_array(1,array_counter)=single(-0.75*GlobalConfig.ratCurrent); */
   tmp = -0.75F * rtOnlineID_U->GlobalConfig_out.ratCurrent;
 
   /* Outport: '<Root>/OnlineID_output' */
   rtOnlineID_Y->OnlineID_output.psi_array[6] = tmp;
 
   /* Inport: '<Root>/GlobalConfig' */
-  /* '<S1>:241:90' OnlineID_output.psi_array(2,array_counter)=single(0.75*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:91' OnlineID_output.psi_array(2,array_counter)=single(0.75*GlobalConfig.ratCurrent); */
   tmp_0 = 0.75F * rtOnlineID_U->GlobalConfig_out.ratCurrent;
 
   /* Outport: '<Root>/OnlineID_output' incorporates:
@@ -314,25 +318,25 @@ static void InitParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
    */
   rtOnlineID_Y->OnlineID_output.psi_array[7] = tmp_0;
 
-  /* '<S1>:241:91' OnlineID_output.psi_array(3,array_counter)=single(50); */
+  /* '<S1>:241:92' OnlineID_output.psi_array(3,array_counter)=single(50); */
   rtOnlineID_Y->OnlineID_output.psi_array[8] = 50.0F;
 
-  /* '<S1>:241:92' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
+  /* '<S1>:241:93' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
   rtOnlineID_Y->OnlineID_output.psi_array[9] =
     rtOnlineID_U->OnlineIDConfig.Temp_ref;
 
-  /* '<S1>:241:93' OnlineID_output.psi_array(5,array_counter)=single(1000*(-0.75*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)); */
+  /* '<S1>:241:94' OnlineID_output.psi_array(5,array_counter)=single(1000*(-0.75*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)); */
   rtOnlineID_Y->OnlineID_output.psi_array[10] = (tmp *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Ld_Henry +
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs) * 1000.0F;
 
-  /* '<S1>:241:94' OnlineID_output.psi_array(6,array_counter)=single(1000*(0.75*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)); */
+  /* '<S1>:241:95' OnlineID_output.psi_array(6,array_counter)=single(1000*(0.75*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)); */
   rtOnlineID_Y->OnlineID_output.psi_array[11] = tmp_0 *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Lq_Henry * 1000.0F;
 
   /* Inport: '<Root>/GlobalConfig' */
-  /* '<S1>:241:95' array_counter=array_counter+1; */
-  /* '<S1>:241:96' OnlineID_output.psi_array(1,array_counter)=single(-0.65*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:96' array_counter=array_counter+1; */
+  /* '<S1>:241:97' OnlineID_output.psi_array(1,array_counter)=single(-0.65*GlobalConfig.ratCurrent); */
   tmp = -0.65F * rtOnlineID_U->GlobalConfig_out.ratCurrent;
 
   /* Outport: '<Root>/OnlineID_output' incorporates:
@@ -341,35 +345,35 @@ static void InitParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
    */
   rtOnlineID_Y->OnlineID_output.psi_array[12] = tmp;
 
-  /* '<S1>:241:97' OnlineID_output.psi_array(2,array_counter)=single(-0.65*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:98' OnlineID_output.psi_array(2,array_counter)=single(-0.65*GlobalConfig.ratCurrent); */
   rtOnlineID_Y->OnlineID_output.psi_array[13] = tmp;
 
-  /* '<S1>:241:98' OnlineID_output.psi_array(3,array_counter)=single(50); */
+  /* '<S1>:241:99' OnlineID_output.psi_array(3,array_counter)=single(50); */
   rtOnlineID_Y->OnlineID_output.psi_array[14] = 50.0F;
 
-  /* '<S1>:241:99' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
+  /* '<S1>:241:100' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
   rtOnlineID_Y->OnlineID_output.psi_array[15] =
     rtOnlineID_U->OnlineIDConfig.Temp_ref;
 
-  /* '<S1>:241:100' OnlineID_output.psi_array(5,array_counter)=single(1000*(-0.65*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)); */
+  /* '<S1>:241:101' OnlineID_output.psi_array(5,array_counter)=single(1000*(-0.65*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)); */
   rtOnlineID_Y->OnlineID_output.psi_array[16] = (tmp *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Ld_Henry +
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs) * 1000.0F;
 
-  /* '<S1>:241:101' OnlineID_output.psi_array(6,array_counter)=single(1000*(-0.65*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)); */
+  /* '<S1>:241:102' OnlineID_output.psi_array(6,array_counter)=single(1000*(-0.65*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)); */
   rtOnlineID_Y->OnlineID_output.psi_array[17] = tmp *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Lq_Henry * 1000.0F;
 
   /* Inport: '<Root>/GlobalConfig' */
-  /* '<S1>:241:102' array_counter=array_counter+1; */
-  /* '<S1>:241:103' OnlineID_output.psi_array(1,array_counter)=single(0.6*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:103' array_counter=array_counter+1; */
+  /* '<S1>:241:104' OnlineID_output.psi_array(1,array_counter)=single(0.6*GlobalConfig.ratCurrent); */
   tmp = 0.6F * rtOnlineID_U->GlobalConfig_out.ratCurrent;
 
   /* Outport: '<Root>/OnlineID_output' */
   rtOnlineID_Y->OnlineID_output.psi_array[18] = tmp;
 
   /* Inport: '<Root>/GlobalConfig' */
-  /* '<S1>:241:104' OnlineID_output.psi_array(2,array_counter)=single(-0.6*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:105' OnlineID_output.psi_array(2,array_counter)=single(-0.6*GlobalConfig.ratCurrent); */
   tmp_0 = -0.6F * rtOnlineID_U->GlobalConfig_out.ratCurrent;
 
   /* Outport: '<Root>/OnlineID_output' incorporates:
@@ -378,26 +382,26 @@ static void InitParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
    */
   rtOnlineID_Y->OnlineID_output.psi_array[19] = tmp_0;
 
-  /* '<S1>:241:105' OnlineID_output.psi_array(3,array_counter)=single(50); */
+  /* '<S1>:241:106' OnlineID_output.psi_array(3,array_counter)=single(50); */
   rtOnlineID_Y->OnlineID_output.psi_array[20] = 50.0F;
 
-  /* '<S1>:241:106' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
+  /* '<S1>:241:107' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
   rtOnlineID_Y->OnlineID_output.psi_array[21] =
     rtOnlineID_U->OnlineIDConfig.Temp_ref;
 
-  /* '<S1>:241:107' OnlineID_output.psi_array(5,array_counter)=single(1000*(0.6*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)); */
+  /* '<S1>:241:108' OnlineID_output.psi_array(5,array_counter)=single(1000*(0.6*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)); */
   rtOnlineID_Y->OnlineID_output.psi_array[22] = (tmp *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Ld_Henry +
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs) * 1000.0F;
 
-  /* '<S1>:241:108' OnlineID_output.psi_array(6,array_counter)=single(1000*(-0.6*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)); */
+  /* '<S1>:241:109' OnlineID_output.psi_array(6,array_counter)=single(1000*(-0.6*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)); */
   rtOnlineID_Y->OnlineID_output.psi_array[23] = tmp_0 *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Lq_Henry * 1000.0F;
 
   /* Inport: '<Root>/GlobalConfig' */
-  /* '<S1>:241:109' array_counter=array_counter+1; */
+  /* '<S1>:241:110' array_counter=array_counter+1; */
   /*   */
-  /* '<S1>:241:111' OnlineID_output.psi_array(1,array_counter)=single(0.30*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:112' OnlineID_output.psi_array(1,array_counter)=single(0.30*GlobalConfig.ratCurrent); */
   tmp = 0.3F * rtOnlineID_U->GlobalConfig_out.ratCurrent;
 
   /* Outport: '<Root>/OnlineID_output' incorporates:
@@ -406,35 +410,35 @@ static void InitParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
    */
   rtOnlineID_Y->OnlineID_output.psi_array[24] = tmp;
 
-  /* '<S1>:241:112' OnlineID_output.psi_array(2,array_counter)=single(0.3*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:113' OnlineID_output.psi_array(2,array_counter)=single(0.3*GlobalConfig.ratCurrent); */
   rtOnlineID_Y->OnlineID_output.psi_array[25] = tmp;
 
-  /* '<S1>:241:113' OnlineID_output.psi_array(3,array_counter)=single(50); */
+  /* '<S1>:241:114' OnlineID_output.psi_array(3,array_counter)=single(50); */
   rtOnlineID_Y->OnlineID_output.psi_array[26] = 50.0F;
 
-  /* '<S1>:241:114' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
+  /* '<S1>:241:115' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
   rtOnlineID_Y->OnlineID_output.psi_array[27] =
     rtOnlineID_U->OnlineIDConfig.Temp_ref;
 
-  /* '<S1>:241:115' OnlineID_output.psi_array(5,array_counter)=single(0.3*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)*1000; */
+  /* '<S1>:241:116' OnlineID_output.psi_array(5,array_counter)=single(0.3*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)*1000; */
   rtOnlineID_Y->OnlineID_output.psi_array[28] = (tmp *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Ld_Henry +
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs) * 1000.0F;
 
-  /* '<S1>:241:116' OnlineID_output.psi_array(6,array_counter)=single(0.3*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)*1000; */
+  /* '<S1>:241:117' OnlineID_output.psi_array(6,array_counter)=single(0.3*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)*1000; */
   rtOnlineID_Y->OnlineID_output.psi_array[29] = tmp *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Lq_Henry * 1000.0F;
 
   /* Inport: '<Root>/GlobalConfig' */
-  /* '<S1>:241:117' array_counter=array_counter+1; */
-  /* '<S1>:241:118' OnlineID_output.psi_array(1,array_counter)=single(-0.35*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:118' array_counter=array_counter+1; */
+  /* '<S1>:241:119' OnlineID_output.psi_array(1,array_counter)=single(-0.35*GlobalConfig.ratCurrent); */
   tmp = -0.35F * rtOnlineID_U->GlobalConfig_out.ratCurrent;
 
   /* Outport: '<Root>/OnlineID_output' */
   rtOnlineID_Y->OnlineID_output.psi_array[30] = tmp;
 
   /* Inport: '<Root>/GlobalConfig' */
-  /* '<S1>:241:119' OnlineID_output.psi_array(2,array_counter)=single(0.35*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:120' OnlineID_output.psi_array(2,array_counter)=single(0.35*GlobalConfig.ratCurrent); */
   tmp_0 = 0.35F * rtOnlineID_U->GlobalConfig_out.ratCurrent;
 
   /* Outport: '<Root>/OnlineID_output' incorporates:
@@ -443,25 +447,25 @@ static void InitParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
    */
   rtOnlineID_Y->OnlineID_output.psi_array[31] = tmp_0;
 
-  /* '<S1>:241:120' OnlineID_output.psi_array(3,array_counter)=single(50); */
+  /* '<S1>:241:121' OnlineID_output.psi_array(3,array_counter)=single(50); */
   rtOnlineID_Y->OnlineID_output.psi_array[32] = 50.0F;
 
-  /* '<S1>:241:121' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
+  /* '<S1>:241:122' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
   rtOnlineID_Y->OnlineID_output.psi_array[33] =
     rtOnlineID_U->OnlineIDConfig.Temp_ref;
 
-  /* '<S1>:241:122' OnlineID_output.psi_array(5,array_counter)=single(-0.35*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)*1000; */
+  /* '<S1>:241:123' OnlineID_output.psi_array(5,array_counter)=single(-0.35*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)*1000; */
   rtOnlineID_Y->OnlineID_output.psi_array[34] = (tmp *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Ld_Henry +
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs) * 1000.0F;
 
-  /* '<S1>:241:123' OnlineID_output.psi_array(6,array_counter)=single(0.35*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)*1000; */
+  /* '<S1>:241:124' OnlineID_output.psi_array(6,array_counter)=single(0.35*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)*1000; */
   rtOnlineID_Y->OnlineID_output.psi_array[35] = tmp_0 *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Lq_Henry * 1000.0F;
 
   /* Inport: '<Root>/GlobalConfig' */
-  /* '<S1>:241:124' array_counter=array_counter+1; */
-  /* '<S1>:241:125' OnlineID_output.psi_array(1,array_counter)=single(-0.25*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:125' array_counter=array_counter+1; */
+  /* '<S1>:241:126' OnlineID_output.psi_array(1,array_counter)=single(-0.25*GlobalConfig.ratCurrent); */
   tmp = -0.25F * rtOnlineID_U->GlobalConfig_out.ratCurrent;
 
   /* Outport: '<Root>/OnlineID_output' incorporates:
@@ -470,35 +474,35 @@ static void InitParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
    */
   rtOnlineID_Y->OnlineID_output.psi_array[36] = tmp;
 
-  /* '<S1>:241:126' OnlineID_output.psi_array(2,array_counter)=single(-0.25*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:127' OnlineID_output.psi_array(2,array_counter)=single(-0.25*GlobalConfig.ratCurrent); */
   rtOnlineID_Y->OnlineID_output.psi_array[37] = tmp;
 
-  /* '<S1>:241:127' OnlineID_output.psi_array(3,array_counter)=single(50); */
+  /* '<S1>:241:128' OnlineID_output.psi_array(3,array_counter)=single(50); */
   rtOnlineID_Y->OnlineID_output.psi_array[38] = 50.0F;
 
-  /* '<S1>:241:128' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
+  /* '<S1>:241:129' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
   rtOnlineID_Y->OnlineID_output.psi_array[39] =
     rtOnlineID_U->OnlineIDConfig.Temp_ref;
 
-  /* '<S1>:241:129' OnlineID_output.psi_array(5,array_counter)=single(-0.25*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)*1000; */
+  /* '<S1>:241:130' OnlineID_output.psi_array(5,array_counter)=single(-0.25*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)*1000; */
   rtOnlineID_Y->OnlineID_output.psi_array[40] = (tmp *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Ld_Henry +
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs) * 1000.0F;
 
-  /* '<S1>:241:130' OnlineID_output.psi_array(6,array_counter)=single(-0.25*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)*1000; */
+  /* '<S1>:241:131' OnlineID_output.psi_array(6,array_counter)=single(-0.25*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)*1000; */
   rtOnlineID_Y->OnlineID_output.psi_array[41] = tmp *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Lq_Henry * 1000.0F;
 
   /* Inport: '<Root>/GlobalConfig' */
-  /* '<S1>:241:131' array_counter=array_counter+1; */
-  /* '<S1>:241:132' OnlineID_output.psi_array(1,array_counter)=single(0.2*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:132' array_counter=array_counter+1; */
+  /* '<S1>:241:133' OnlineID_output.psi_array(1,array_counter)=single(0.2*GlobalConfig.ratCurrent); */
   tmp = 0.2F * rtOnlineID_U->GlobalConfig_out.ratCurrent;
 
   /* Outport: '<Root>/OnlineID_output' */
   rtOnlineID_Y->OnlineID_output.psi_array[42] = tmp;
 
   /* Inport: '<Root>/GlobalConfig' */
-  /* '<S1>:241:133' OnlineID_output.psi_array(2,array_counter)=single(-0.2*GlobalConfig.ratCurrent); */
+  /* '<S1>:241:134' OnlineID_output.psi_array(2,array_counter)=single(-0.2*GlobalConfig.ratCurrent); */
   tmp_0 = -0.2F * rtOnlineID_U->GlobalConfig_out.ratCurrent;
 
   /* Outport: '<Root>/OnlineID_output' incorporates:
@@ -507,23 +511,23 @@ static void InitParams(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
    */
   rtOnlineID_Y->OnlineID_output.psi_array[43] = tmp_0;
 
-  /* '<S1>:241:134' OnlineID_output.psi_array(3,array_counter)=single(50); */
+  /* '<S1>:241:135' OnlineID_output.psi_array(3,array_counter)=single(50); */
   rtOnlineID_Y->OnlineID_output.psi_array[44] = 50.0F;
 
-  /* '<S1>:241:135' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
+  /* '<S1>:241:136' OnlineID_output.psi_array(4,array_counter)=OnlineIDConfig.Temp_ref; */
   rtOnlineID_Y->OnlineID_output.psi_array[45] =
     rtOnlineID_U->OnlineIDConfig.Temp_ref;
 
-  /* '<S1>:241:136' OnlineID_output.psi_array(5,array_counter)=single(0.2*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)*1000; */
+  /* '<S1>:241:137' OnlineID_output.psi_array(5,array_counter)=single(0.2*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Ld_Henry+GlobalConfig.PMSM_config.Psi_PM_Vs)*1000; */
   rtOnlineID_Y->OnlineID_output.psi_array[46] = (tmp *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Ld_Henry +
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs) * 1000.0F;
 
-  /* '<S1>:241:137' OnlineID_output.psi_array(6,array_counter)=single(-0.2*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)*1000; */
+  /* '<S1>:241:138' OnlineID_output.psi_array(6,array_counter)=single(-0.2*GlobalConfig.ratCurrent*GlobalConfig.PMSM_config.Lq_Henry)*1000; */
   rtOnlineID_Y->OnlineID_output.psi_array[47] = tmp_0 *
     rtOnlineID_U->GlobalConfig_out.PMSM_config.Lq_Henry * 1000.0F;
 
-  /* '<S1>:241:138' array_counter=array_counter+1; */
+  /* '<S1>:241:139' array_counter=array_counter+1; */
 }
 
 /* Function for Chart: '<Root>/OnlineID' */
@@ -2376,7 +2380,11 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
     /* '<S1>:39:3' InitParams; */
     InitParams(rtOnlineID_U, rtOnlineID_Y, rtOnlineID_DW);
 
-    /* '<S1>:39:4' OnlineID_output.activeState=uint16(500); */
+    /* Outport: '<Root>/enteredOnlineID' */
+    /* '<S1>:39:4' enteredOnlineID=boolean(1); */
+    rtOnlineID_Y->enteredOnlineID = true;
+
+    /* '<S1>:39:5' OnlineID_output.activeState=uint16(500); */
     rtOnlineID_Y->OnlineID_output.activeState = 500U;
 
     /* Entry Internal 'OnlineIDSuperState': '<S1>:39' */

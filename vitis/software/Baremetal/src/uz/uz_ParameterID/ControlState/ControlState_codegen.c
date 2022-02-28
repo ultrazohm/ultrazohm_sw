@@ -260,6 +260,7 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
    *  Inport: '<Root>/enteredElectricalID'
    *  Inport: '<Root>/enteredFluxMapID'
    *  Inport: '<Root>/enteredFrictionID'
+   *  Inport: '<Root>/enteredOnlineID'
    *  Inport: '<Root>/enteredTwoMassID'
    *  Inport: '<Root>/finishedElectricalID'
    *  Inport: '<Root>/finishedFluxMapID'
@@ -579,14 +580,16 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
             decideIDstates(rtControlState_U, rtControlState_Y, rtControlState_DW);
           }
 
-          /* '<S1>:605:7' if(ControlFlags.finished_all_Offline_states == 1 && GlobalConfig_in.OnlineID==1) */
+          /* '<S1>:605:7' if(ControlFlags.finished_all_Offline_states == 1 && GlobalConfig_in.OnlineID==1 && enteredOnlineID==0) */
           if (rtControlState_Y->ControlFlags.finished_all_Offline_states &&
-              rtControlState_U->GlobalConfig_in.OnlineID) {
+              rtControlState_U->GlobalConfig_in.OnlineID &&
+              (!rtControlState_U->enteredOnlineID)) {
             /* '<S1>:605:8' ControlFlags.enableOnlineID=boolean(1); */
             rtControlState_Y->ControlFlags.enableOnlineID = true;
           } else if (rtControlState_Y->ControlFlags.finished_all_Offline_states &&
-                     (!rtControlState_U->GlobalConfig_in.OnlineID)) {
-            /* '<S1>:605:9' elseif (ControlFlags.finished_all_Offline_states == 1 && GlobalConfig_in.OnlineID==0) */
+                     (!rtControlState_U->GlobalConfig_in.OnlineID) &&
+                     rtControlState_U->enteredOnlineID) {
+            /* '<S1>:605:9' elseif (ControlFlags.finished_all_Offline_states == 1 && GlobalConfig_in.OnlineID==0 && enteredOnlineID==1) */
             /* '<S1>:605:10' ControlFlags.enableOnlineID=boolean(0); */
             rtControlState_Y->ControlFlags.enableOnlineID = false;
           }
@@ -877,5 +880,6 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
  *
  * [EOF]
  */
+
 
 #endif

@@ -10,6 +10,7 @@ This page explains the general structure of the ParamterID and how to use it.
 
 Overwiew
 ========
+.. _PID_overview_schematic:
 
 .. tikz:: Schematic overview of the ParameterID signalflow
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
@@ -24,8 +25,9 @@ Overwiew
   \begin{scope}[on background layer]
   \node[draw,fill=blue!10,name=ParameterID,rounded corners,fit=(PID) (ControlS) (state3),inner sep=5pt,minimum width=7cm] {};
   \end{scope}
-  \node[block,name=input, left= 1.5cm of ControlS,drop shadow,minimum width=2cm, align=center] {input\\ \tiny{uz\_ParameterID\_Data\_t}};
-  \node[block,name=output, right= 1.5cm of state2,drop shadow,minimum width=2cm, align=center] {output\\ \tiny{uz\_ParameterID\_Data\_t}};
+  \node[block,name=input, left= 0.75cm of ControlS,drop shadow,minimum width=2cm, align=center] {input\\ \tiny{uz\_ParameterID\_Data\_t}};
+  \node[block,name=output, right= 0.75cm of state2,drop shadow,minimum width=2cm, align=center] {output\\ \tiny{uz\_ParameterID\_Data\_t}};
+  \node[block,fill=orange!10,name=Controller, right=0.5 cm of output,drop shadow,minimum height=4cm,align=center] {independent\\external\\Controller\\(i.e. FOC)};
   \draw[->] ([yshift=-0.3cm]state1.west) -- ([yshift=1.081cm]ControlS.east);
   \draw[<-] ([yshift=0.3cm]state1.west) -- ([yshift=1.681cm]ControlS.east);
   \draw[->] ([yshift=-0.3cm]state2.west) -- ([yshift=-0.3cm]ControlS.east);
@@ -36,6 +38,7 @@ Overwiew
   \draw[-](state1.east) -| ([xshift=0.2cm]state2.east);
   \draw[-](state3.east) -| ([xshift=0.2cm]state2.east);
   \draw[->](state2.east) -- (output.west);
+  \draw[->](output.east) -- (Controller.west);
   \node [circle,fill,inner sep=1pt] at ($(state2.east)+(0.2cm,0)$){};
   \end{tikzpicture}
 
@@ -43,7 +46,8 @@ The ParameterID encapsules a ``ControlState`` and all subsequent ``Identificatio
 The ``ControlState`` is the brain of the ParameterID and controls the system, by determining which ``ID-state`` is entered next, based on the user-request and the acknowledgement flags of other states.
 The individual ``ID-states`` are completely independent of each other. They only directly communicate with the ``ControlState``. 
 The :ref:`uz_ParameterID_Data_t struct<uz_ParameterID_Data_struct>` is used to communicate with the ParameterID. It includes all necessary in- and outputs.  
-
+The ParameterID operates independently of a underlying control algorithm and therefore is indifferent to what specific type the controller is.
+This means, that the ParameterID outputs reference values which the controller then can use to control the hardware.
 On top of that the ``ID-states`` inside the ParameterID are separated into two different groups:
 
 * OfflineID states
@@ -120,5 +124,37 @@ These are the following:
 On top of that, each unique ``ID-state`` has its own individual structs and signals:
   * ``uz_StateIDConfig_t`` (i.e. for ElectricalID :ref:`uz_ElectricalIDConfig_t<uz_PID_ElectricalIDConfig>`), which is meant for all configuration values, which are unique to this specific ``ID-state``.
   * ``uz_StateID_output_t`` (i.e. for ElectricalID :ref:`uz_ElectricalID_output_t<uz_PID_ElectricalIDoutput>`), which is meant for the identified output variables and supporting variables
-  * ``enteredStateID`` flag, which signals that the state has been entered
-  * ``finishedStateID`` flag, which signals that the ``ID-state`` is finished and another can be started
+  * ``enteredStateID`` flag for OfflineID- and OnlineID-states, which signals that the state has been entered
+  * ``finishedStateID`` flag for OfflineID-states, which signals that the ``ID-state`` is finished and another can be started
+  
+OnlineID-states do not necessarily have a ``finishedStateID`` flag, since they can be designed as an infinite loop.  
+
+Functions
+=========
+
+.. doxygenfunction:: uz_ParameterID_init
+
+This function inits the ParameterID itself and all subsequent states. 
+Even though not all states my be used by the user, they will be initialized anyway. 
+This is done to ensure data integrity and to guarantee, that every member of the :ref:`uz_ParameterID_Data_struct` is declared. 
+Furthermore the :ref:`uz_ParameterID_Data_struct` itself is initialized here as well.  
+
+.. doxygenfunction:: uz_ParameterID_step
+
+This function steps the ParameterID once per cycle. It implements everything necessary shown in the blue block in :numref:`PID_overview_schematic`. 
+To eliminate unnecessary function calls and improve the execution time of this function, only the :ref:`uz_ControlState` will always be stepped. 
+Every other ``ID-state`` is guarded behind if-statements. Furthermore it determines, which :ref:`uz_Controller_parameters_struct` will be written to the output. 
+
+.. doxygenfunction:: uz_ParameterID_generate_DutyCycle
+.. doxygenfunction:: uz_ParameterID_Controller
+.. doxygenfunction:: uz_ParameterID_CleanPsiArray
+.. doxygenfunction:: uz_ParameterID_CalcFluxMaps
+
+References
+==========
+
+.. doxygentypedef:: uz_ParameterID_t
+.. doxygentypedef:: real32_T
+.. doxygentypedef:: boolean_T
+.. doxygentypedef:: uint16_T
+.. doxygentypedef:: uint8_T

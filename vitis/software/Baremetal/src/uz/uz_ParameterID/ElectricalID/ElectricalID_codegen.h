@@ -127,7 +127,7 @@ typedef struct {
   boolean_T FluxMapID; /**< flag to enable FluxMapID */
   boolean_T OnlineID; /**< flag to enable OnlineID */
   boolean_T ACCEPT; /**< flag for the ACCEPT button  */
-  real32_T sampleTimeISR; /**< sampleTime of the ISR. i.e. sampleTime of the function call uz_ParameterID_step */
+  real32_T sampleTimeISR; /**< sampleTime of the ISR. i.e. sampleTime of the function call uz_ParameterID_step. Very important parameter */
   real32_T ratCurrent; /**< rated current of the motor */
   real32_T ratSpeed; /**< rated speed of the motor */
   real32_T VibAmp; /**< max current amplitude for vibration */
@@ -153,7 +153,7 @@ typedef struct {
   boolean_T startFluxMapID; /**< flag to start FluxMapID */
   uint16_T transNr; /**< transistion number. 1 transistion number corresponds to one ID-state */
   boolean_T enableOnlineID; /**< flag to start OnlineID */
-  boolean_T finished_all_Offline_states; /**< flag to signal, that all oOffline-ID state are finished */
+  boolean_T finished_all_Offline_states; /**< flag to signal, that all OfflineID-state are finished and OnlineID-state can be started*/
 } uz_PID_ControlFlags_t;
 
 #endif

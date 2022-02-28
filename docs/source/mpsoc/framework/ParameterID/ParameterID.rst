@@ -62,7 +62,7 @@ Especially the configuration of the motor-related parameters is important. If th
 The ID-state specific configuration values can later be configured via the uz_GUI. 
 
 .. literalinclude:: ../../../../../vitis/software/Baremetal/src/uz/uz_ParameterID/uz_ParameterID.c
-    :lines: 434-526
+    :lines: 452-544
     :linenos:
     :language: c
 
@@ -183,27 +183,10 @@ Listed are the individual states which are part of the ParameterID.
 ..  toctree::
     :maxdepth: 1
     
-    stateflows/uz_AutoRefCurrents
+    stateflows/uz_ControlState
     stateflows/uz_ElectricalID
     stateflows/uz_FluxMapID
     stateflows/uz_FrictionID
     stateflows/uz_OnlineID
     stateflows/uz_TwoMassID
-
-References
-==========
-
-.. doxygentypedef:: uz_ParameterID_t
-
-
-.. doxygenfunction:: uz_ParameterID_init
-.. doxygenfunction:: uz_ParameterID_step
-.. doxygenfunction:: uz_ParameterID_generate_DutyCycle
-.. doxygenfunction:: uz_ParameterID_Controller
-.. doxygenfunction:: uz_ParameterID_CleanPsiArray
-.. doxygenfunction:: uz_ParameterID_CalcFluxMaps
-
-.. doxygentypedef:: real32_T
-.. doxygentypedef:: boolean_T
-.. doxygentypedef:: uint16_T
-.. doxygentypedef:: uint8_T
+    stateflows/uz_AutoRefCurrents

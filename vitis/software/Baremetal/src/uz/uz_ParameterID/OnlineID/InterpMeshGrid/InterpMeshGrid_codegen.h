@@ -88,21 +88,25 @@ typedef struct {
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_FluxMapsData_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_FluxMapsData_t_
 
+/**
+ * @brief struct which contains the calculated fluxmaps of the OnlineID state
+ *
+ */
 typedef struct {
-	real32_T psid_grid[400];
-	real32_T psiq_grid[400];
-	real32_T id_grid[400];
-	real32_T iq_grid[400];
-	real32_T range_id_Y[20];
-	real32_T range_psid_Y[20];
-	real32_T range_psiq_Y[20];
-	real32_T range_psid_X[20];
-	real32_T range_psiq_X[20];
-	real32_T range_iq_Y[20];
-	real32_T range_iq_X[20];
-	real32_T range_id_X[20];
-	real32_T psi_temp_const;
-	real32_T psi_temp_error;
+	real32_T psid_grid[400]; /**< array of calculated values for Psi_D fluxmap*/
+	real32_T psiq_grid[400]; /**< array of calculated values for Psi_Q fluxmap */
+	real32_T id_grid[400]; /**< array of calculated values for i_d inverse fluxmap*/
+	real32_T iq_grid[400]; /**< array of calculated values for i_q inverse fluxmap*/
+	real32_T range_id_Y[20]; /**< y-values for i_d inverse fluxmap*/
+	real32_T range_psid_Y[20]; /**< y-values for Psi_D fluxmap*/
+	real32_T range_psiq_Y[20]; /**< y-values for Psi_Q fluxmap*/
+	real32_T range_psid_X[20]; /**< x-values for Psi_D fluxmap*/
+	real32_T range_psiq_X[20]; /**< x-values for Psi_Q fluxmap*/
+	real32_T range_iq_Y[20]; /**< y-values for i_q inverse fluxmap*/
+	real32_T range_iq_X[20]; /**< x-values for i_q inverse fluxmap*/
+	real32_T range_id_X[20]; /**< x-values for i_d inverse fluxmap*/
+	real32_T psi_temp_const; /**< estimated temperature constant of psi_pm*/
+	real32_T psi_temp_error; /**< estimated error of psi_pm because of heat losses of the magnets */
 } uz_PID_FluxMapsData_t;
 
 #endif

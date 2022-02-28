@@ -38,6 +38,9 @@ Some states may not need every measurement value listed below. For further detai
 Global config struct
 ====================
 
+This struct carries all configuration values of the ParameterID which affect multiple state. It consists of request-flags for the individual ``ID-states``, initial controller-configuration and motor configuration values,
+ACCEPT and RESET flags, etc. Depending on the setup, some configuration values can be left at 0. For further information check each struct members description.
+
 .. doxygenstruct:: uz_PID_GlobalConfig_t
   :members: 
 
@@ -45,6 +48,8 @@ Global config struct
 
 Control flags struct
 ====================
+
+This struct carries the enable signals for the individual ``ID-states``. 
 
 .. doxygenstruct:: uz_PID_ControlFlags_t
   :members:
@@ -54,6 +59,9 @@ Control flags struct
 Controller parameters struct
 ============================
 
+This struct bundles all the necessary commands and values for the external control algorithm. 
+Some variables are geared towards an FOC-controller and therefore can be ignored, if another control algorithm is used.
+
 .. doxygenstruct:: uz_PID_Controller_Parameters_output_t
   :members:
 
@@ -62,4 +70,8 @@ Controller parameters struct
 FluxMap data struct
 ===================
 
+This struct bundles all necessary information for the fluxmaps of the OnlineID state.
+
 .. doxygenstruct:: uz_PID_FluxMapsData_t
+  :members:
+

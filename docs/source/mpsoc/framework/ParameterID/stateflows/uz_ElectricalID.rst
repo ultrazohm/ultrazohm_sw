@@ -4,6 +4,11 @@
 ElectricalID
 ============
 
+This state includes an automated identification process for typical parameters of a PMSM. 
+This includes the identification of the polepairs, theta_offset of a incremental encoder, Rs, Ld, Lq, Psi_PM and J. 
+The control parameters of a FOC will be calculated with the identified parameters and are therefore tuned for the used machine. 
+This state requires some sort of speed control.
+
 ElectricalID object
 ====================
 

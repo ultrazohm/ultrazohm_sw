@@ -19,7 +19,11 @@
 #include <stdbool.h>
 #include "ControlState_codegen.h"
 
-typedef struct {
+/**
+ * @brief Object definition for uz_PID_ControlState_t
+ *
+ */
+typedef struct uz_PID_ControlState_t{
 	ExtY_ControlState_t output;
 	ExtU_ControlState_t input;
 	DW_ControlState_t rtDW; /* Observable states */
@@ -27,7 +31,18 @@ typedef struct {
 	RT_MODEL_ControlState_t *PtrToModelData;
 } uz_PID_ControlState_t;
 
+/**
+ * @brief Initializes the uz_PID_ControlState_t object
+ *
+ * @return uz_PID_ControlState_t* pointer to object
+ */
 uz_PID_ControlState_t* uz_ControlState_init(void);
+
+/**
+ * @brief steps the uz_PID_ControlState_t state once
+ *
+ * @param self pointer to uz_PID_ControlState_t* object
+ */
 void uz_ControlState_step(uz_PID_ControlState_t *self);
 
 #endif

@@ -30,7 +30,7 @@ struct uz_PI_Controller {
 	struct uz_PI_Controller_config config;
 };
 
-static size_t instances_counter_PI_Controller = 0;
+static uint32_t instances_counter_PI_Controller = 0;
 static uz_PI_Controller instances_PI_Controller[UZ_PI_CONTROLLER_MAX_INSTANCES] = { 0 };
 static uz_PI_Controller* uz_PI_Controller_allocation(void);
 

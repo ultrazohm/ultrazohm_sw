@@ -15,7 +15,7 @@ struct uz_adcLtc2311_t
     struct uz_adcLtc2311_config_t config;
 };
 
-static size_t instance_counter = 0U;
+static uint32_t instance_counter = 0U;
 static uz_adcLtc2311_t instances[UZ_ADCLTC2311_MAX_INSTANCES] = {0};
 
 static uz_adcLtc2311_t *uz_adcLtc2311_allocation(void);

@@ -18,8 +18,8 @@ uz_axiTestIP_handle uz_axiTestIP_staticAllocator(void) {
 float Aff[4]={1,2,3,4};
 float Cff[4]={100,100,100,100};
 
-static void uz_readMultipleFloatFromAxi(float *PointerToDataOnPS, uintptr_t ReadFromAXIAddr, size_t numberOfElements);
-static void uz_writeMultipleFloatToAxi(const float *SourcePointer, uintptr_t writeToAXIAddr, size_t numberOfElements);
+static void uz_readMultipleFloatFromAxi(float *PointerToDataOnPS, uintptr_t ReadFromAXIAddr, uint32_t numberOfElements);
+static void uz_writeMultipleFloatToAxi(const float *SourcePointer, uintptr_t writeToAXIAddr, uint32_t numberOfElements);
 void uz_axiTestIP_testbench() {
 	int32_t A = 100;
 	int32_t B = 150;
@@ -63,11 +63,11 @@ void uz_axiTestIP_testbench() {
 	}
 }
 
-static void uz_readMultipleFloatFromAxi(float *PointerToDataOnPS, uintptr_t ReadFromAXIAddr, size_t numberOfElements){
+static void uz_readMultipleFloatFromAxi(float *PointerToDataOnPS, uintptr_t ReadFromAXIAddr, uint32_t numberOfElements){
     memcpy( PointerToDataOnPS, (void *)ReadFromAXIAddr,numberOfElements*sizeof(float) );
 }
 
-static void uz_writeMultipleFloatToAxi(const float *SourcePointer, uintptr_t writeToAXIAddr, size_t numberOfElements){
+static void uz_writeMultipleFloatToAxi(const float *SourcePointer, uintptr_t writeToAXIAddr, uint32_t numberOfElements){
     memcpy( (void *)writeToAXIAddr, SourcePointer,numberOfElements*sizeof(float) );
 }
 

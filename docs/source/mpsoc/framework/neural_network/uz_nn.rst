@@ -108,7 +108,8 @@ The following shows an example initialization of a ``uz_nn`` that implements the
 
     void test_uz_nn_ff(void)
     {
-        uz_matrix_t* input=uz_matrix_init(x,UZ_MATRIX_SIZE(x),1,2);
+        struct uz_matrix_t input_matrix={0};
+        uz_matrix_t* input=uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1,2);
         uz_nn_t *test = uz_nn_init(config, 3);
         uz_nn_ff(test,input);
         float expected_result_first_layer[3]={10, 14, 18};

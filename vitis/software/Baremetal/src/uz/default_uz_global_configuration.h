@@ -32,7 +32,6 @@
 #define UZ_FOC_MAX_INSTANCES                            2U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      3U
-#define UZ_MATRIX_MAX_INSTANCES                         0U
 #define UZ_NN_LAYER_MAX_INSTANCES                       0U
 #define UZ_NN_MAX_INSTANCES                             0U
 #define UZ_PMSMMODEL_MAX_INSTANCES                      0U
@@ -51,7 +50,6 @@
     #define UZ_PI_CONTROLLER_MAX_INSTANCES                  100U
     #define UZ_FOC_MAX_INSTANCES                            100U
     #define UZ_INCREMENTALENCODER_MAX_INSTANCES             5U
-    #define UZ_MATRIX_MAX_INSTANCES                         201U
     #define UZ_NN_LAYER_MAX_INSTANCES                       100U
     #define UZ_NN_MAX_INSTANCES                             10U
 	#define UZ_PWM_SS_2L_MAX_INSTANCES                      50U

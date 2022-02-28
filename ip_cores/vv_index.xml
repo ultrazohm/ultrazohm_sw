@@ -1977,7 +1977,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112392466">
+		<CoreRevision value="2112396747">
 		</CoreRevision>
 		<ComponentPath value="uz_pu_conversion/hdl_prj/ipcore/uz_pu_con_ip_v1_0/component.xml">
 		</ComponentPath>

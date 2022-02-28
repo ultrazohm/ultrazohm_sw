@@ -5,6 +5,7 @@ OnlineID
 ========
 
 This stateflow is used to detect special transient states and to gather measuring data in these states. 
+It is based on [[#Gebhardt_Masterthesis]_ , [#Hufnagel_Masterthesis]_ ] and has been modified to fit into the ParameterID library of the UltraZohm.
 It functions as an indefinite loop and continuously identifies its parameters. 
 This is done to identify the parameters of the linear pmsm model. 
 This includes Rs, Ld, Lq and Psi_PM. The flux maps can be identified aswell. 
@@ -27,3 +28,8 @@ It gives out reference currents of a circular determined current map to quickly 
 .. doxygenfunction:: uz_OnlineID_init
 .. doxygenfunction:: uz_OnlineID_step
 
+Sources
+-------
+
+.. [#Gebhardt_Masterthesis] Automatisierte Online-Identifikation von Systemparametern permanenterregter Synchronmaschinen zur Nachführung im geregelten Betrieb, Philipp Gebhardt, 2020
+.. [#Hufnagel_Masterthesis] Optimierte Online-Identifizierung von Flusskennfeldernbei nichtlinearen PMSM über einen weiten Betriebsbereich, Dennis Hufnagel, 2021

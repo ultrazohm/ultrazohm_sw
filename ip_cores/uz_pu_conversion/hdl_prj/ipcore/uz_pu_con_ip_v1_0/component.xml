@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>1b826142</spirit:value>
+            <spirit:value>d00fd976</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>1b826142</spirit:value>
+            <spirit:value>d00fd976</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -348,7 +348,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>in_rsvd</spirit:name>
+        <spirit:name>in0</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
@@ -1091,7 +1091,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>out_rsvd</spirit:name>
+        <spirit:name>out0</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
@@ -1785,14 +1785,6 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pu_con_ip_src_uz_pu_conversion_pkg.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pu_con_ip_src_uz_pu_conversion_tc.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/vhdl/uz_pu_con_ip_src_uz_pu_conversion.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1803,7 +1795,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_pu_con_ip.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_6f5797bb</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_7aceae14</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1825,16 +1817,6 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_pu_con_ip_axi_lite.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pu_con_ip_src_uz_pu_conversion_pkg.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pu_con_ip_src_uz_pu_conversion_tc.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1907,15 +1889,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pu_con_ip</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112392466</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-02-25T14:06:55Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112396747</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-02-28T13:27:48Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="3ff56323"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="35661084"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="6e30f1dc"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="207da0a1"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="e73b4467"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

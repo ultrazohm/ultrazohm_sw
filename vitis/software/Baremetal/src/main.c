@@ -73,6 +73,13 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+
+            //debug
+            uz_axi_write_uint32(XPAR_UZ_PU_CON_IP_0_BASEADDR + 0x104, 26214); //26214 = 0.1f (Q18)
+            uz_axi_write_uint32(XPAR_UZ_PU_CON_IP_0_BASEADDR + 0x108, 2621); //2621 = 0.01f (Q18)
+            uz_axi_write_uint32(XPAR_UZ_PU_CON_IP_0_BASEADDR + 0x10C, 262); //262 = 0.001f (Q18)
+
+
             initialization_chain = print_msg;
             break;
         case print_msg:

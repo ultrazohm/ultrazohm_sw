@@ -17,7 +17,7 @@
 #if UZ_PARAMETERID_ACTIVE > 0U
 #include "uz_PID_OnlineID.h"
 
-static size_t instances_counter_PID_OnlineID = 0;
+static uint32_t instances_counter_PID_OnlineID = 0;
 
 static uz_PID_OnlineID_t instances_PID_OnlineID[UZ_PARAMETERID_ACTIVE] = { 0 };
 

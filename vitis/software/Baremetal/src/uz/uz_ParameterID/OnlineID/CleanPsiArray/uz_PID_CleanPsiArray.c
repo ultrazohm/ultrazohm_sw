@@ -17,7 +17,7 @@
 #if UZ_PARAMETERID_ACTIVE > 0U
 #include "uz_PID_CleanPsiArray.h"
 
-static size_t instances_counter_PID_CleanPsiArray = 0;
+static uint32_t instances_counter_PID_CleanPsiArray = 0;
 
 static uz_PID_CleanPsiArray_t instances_PID_CleanPsiArray[UZ_PARAMETERID_ACTIVE] = { 0 };
 

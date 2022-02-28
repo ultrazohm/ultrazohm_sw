@@ -30,7 +30,7 @@ typedef struct uz_ParameterID_t {
 	uz_PID_OnlineID_t* OnlineID;
 
 } uz_ParameterID_t;
-static size_t instances_counter_ParameterID = 0;
+static uint32_t instances_counter_ParameterID = 0;
 static uz_ParameterID_t instances_ParameterID[UZ_PARAMETERID_ACTIVE] = { 0 };
 
 static void uz_PID_ControlState_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);

@@ -17,7 +17,7 @@
 #if UZ_PARAMETERID_ACTIVE > 0U
 #include "uz_PID_ElectricalID.h"
 
-static size_t instances_counter_PID_ElectricalID = 0;
+static uint32_t instances_counter_PID_ElectricalID = 0;
 
 static uz_PID_ElectricalID_t instances_PID_ElectricalID[UZ_PARAMETERID_ACTIVE] = { 0 };
 

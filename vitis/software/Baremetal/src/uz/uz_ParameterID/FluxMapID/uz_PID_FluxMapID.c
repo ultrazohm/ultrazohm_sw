@@ -17,7 +17,7 @@
 #if UZ_PARAMETERID_ACTIVE > 0U
 #include "uz_PID_FluxMapID.h"
 
-static size_t instances_counter_PID_FluxMapID = 0;
+static uint32_t instances_counter_PID_FluxMapID = 0;
 
 static uz_PID_FluxMapID_t instances_PID_FluxMapID[UZ_PARAMETERID_ACTIVE] = { 0 };
 

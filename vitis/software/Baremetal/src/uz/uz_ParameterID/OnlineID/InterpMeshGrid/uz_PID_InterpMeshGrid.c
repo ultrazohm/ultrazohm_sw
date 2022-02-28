@@ -17,7 +17,7 @@
 #if UZ_PARAMETERID_ACTIVE > 0U
 #include "uz_PID_InterpMeshGrid.h"
 
-static size_t instances_counter_PID_InterpMeshGrid = 0;
+static uint32_t instances_counter_PID_InterpMeshGrid = 0;
 
 static uz_PID_InterpMeshGrid_t instances_PID_InterpMeshGrid[UZ_PARAMETERID_ACTIVE] = { 0 };
 

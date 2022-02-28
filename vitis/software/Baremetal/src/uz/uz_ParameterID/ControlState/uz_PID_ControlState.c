@@ -17,7 +17,7 @@
 #if UZ_PARAMETERID_ACTIVE > 0U
 #include "uz_PID_ControlState.h"
 
-static size_t instances_counter_PID_ControlState = 0;
+static uint32_t instances_counter_PID_ControlState = 0;
 
 static uz_PID_ControlState_t instances_PID_ControlState[UZ_PARAMETERID_ACTIVE] = { 0 };
 

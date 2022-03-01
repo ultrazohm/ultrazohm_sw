@@ -44,8 +44,7 @@ static void uz_PID_FOC_output_set_zero(uz_ParameterID_Data_t* Data);
 static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_ParameterID_Data_t *Data);
 
 static uz_ParameterID_t* uz_ParameterID_allocation(void);
-extern float limit;
-extern float test_array[400];
+
 static uz_ParameterID_t* uz_ParameterID_allocation(void) {
 	uz_assert(instances_counter_ParameterID < UZ_PARAMETERID_ACTIVE);
 	uz_ParameterID_t* self = &instances_ParameterID[instances_counter_ParameterID];
@@ -156,6 +155,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		//reset the Reset-button
 		self->ControlState->output.GlobalConfig_out.Reset = false;
 		Data->GlobalConfig.Reset = false;
+		self->OnlineID->AutoRefCurrents->input.AutoRefCurrentsConfig.Reset = false;
 	}
 	if (Data->OnlineID_Config.OnlineID_Reset) {
 		Data->OnlineID_Config.OnlineID_Reset = false;
@@ -223,19 +223,19 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 			uz_FOC_reset(FOC_instance);
 			uz_SpeedControl_reset(Speed_instance);
 		}
-	if (Data->GlobalConfig.ElectricalID == true) {
+	if (Data->ControlFlags->transNr == 1U) {
 		if (Data->Controller_Parameters.activeState == 144U) {
 			uz_FOC_set_decoupling_method(FOC_instance, no_decoupling);
 		} else if (Data->Controller_Parameters.activeState == 170U) {
 //                      uz_FOC_set_PMSM_parameters(FOC_instance, Data->PID_ElectricalID_Output->PMSM_parameters);
 			uz_FOC_set_decoupling_method(FOC_instance, linear_decoupling);
 		}
-//		uz_FOC_set_Kp_id(FOC_instance, Data->PID_Controller_Parameters.Kp_id_out);
-//		uz_FOC_set_Kp_iq(FOC_instance, Data->PID_Controller_Parameters.Kp_iq_out);
-//		uz_FOC_set_Ki_id(FOC_instance, Data->PID_Controller_Parameters.Ki_id_out);
-//		uz_FOC_set_Ki_iq(FOC_instance, Data->PID_Controller_Parameters.Ki_iq_out);
-//		uz_PI_Controller_set_Ki(Speed_instance, Data->PID_Controller_Parameters.Ki_n_out);
-//		uz_PI_Controller_set_Kp(Speed_instance, Data->PID_Controller_Parameters.Kp_n_out);
+		uz_FOC_set_Kp_id(FOC_instance, Data->Controller_Parameters.Kp_id_out);
+		uz_FOC_set_Kp_iq(FOC_instance, Data->Controller_Parameters.Kp_iq_out);
+		uz_FOC_set_Ki_id(FOC_instance, Data->Controller_Parameters.Ki_id_out);
+		uz_FOC_set_Ki_iq(FOC_instance, Data->Controller_Parameters.Ki_iq_out);
+		uz_PI_Controller_set_Ki(Speed_instance, Data->Controller_Parameters.Ki_n_out);
+		uz_PI_Controller_set_Kp(Speed_instance, Data->Controller_Parameters.Kp_n_out);
 		}
 	if ((Data->GlobalConfig.TwoMassID == true && (Data->Controller_Parameters.activeState == 220 || Data->Controller_Parameters.activeState == 230))
 	                || (Data->GlobalConfig.ElectricalID == true && (Data->Controller_Parameters.activeState == 160 || Data->Controller_Parameters.activeState == 161))) {
@@ -284,7 +284,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 
 void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t* Data) {
 	self->OnlineID->CleanPsiArray->input.OnlineID_output = self->OnlineID->output.OnlineID_output;
-	self->OnlineID->CleanPsiArray->input.eta_c = 0.05f * Data->GlobalConfig.ratCurrent;
+	self->OnlineID->CleanPsiArray->input.eta_c = 0.025f * Data->GlobalConfig.ratCurrent;
 	uz_OnlineID_CleanPsiArray(self->OnlineID);
 	if (Data->OnlineID_Config.OnlineID_Reset == false) {
 		memcpy(self->OnlineID->input.cleaned_psi_array, self->OnlineID->CleanPsiArray->output.psi_array_out, sizeof(self->OnlineID->input.cleaned_psi_array));
@@ -436,17 +436,23 @@ void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *a
 	*activeState = (float) Data->Controller_Parameters.activeState;
 	*FluxMapCounter = (float) Data->FluxMap_counter;
 	int PsiD_counter = Data->FluxMap_counter -1U;
-	int PsiQ_counter = Data->FluxMap_counter -2U;
+	int PsiQ_counter = Data->FluxMap_counter - 2U;
 	if(PsiD_counter == -1U) {
 		PsiD_counter = 399U;
 	}
 	if(PsiQ_counter == -1U) {
-		PsiQ_counter = 399U;
-	} else if(PsiQ_counter == -2U) {
-		PsiQ_counter = 398U;
+		PsiQ_counter = 0U;
 	}
-	Data->Psi_D_pointer = test_array[PsiD_counter];
-	Data->Psi_Q_pointer = test_array[PsiQ_counter];
+	if(PsiQ_counter == -2U) {
+		PsiQ_counter = 399U;
+	}
+	if(PsiD_counter <= 399U) {
+	    Data->Psi_D_pointer = Data->FluxMap_Data->psid_grid[PsiD_counter];
+
+	}
+	if(PsiQ_counter <= 399U) {
+	    Data->Psi_Q_pointer =  Data->FluxMap_Data->psiq_grid[PsiQ_counter];
+	}
 }
 
 static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_ParameterID_Data_t *Data) {

@@ -41,8 +41,7 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 extern uz_ParameterID_Data_t PID_Data;
 float activeState = 0;
 float FluxMapCounter = 0;
-extern float limit;
-extern float test_array[400];
+
 int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
@@ -76,7 +75,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_theta_mech] = &PID_Data.ActualValues.theta_m;
 	js_ch_observable[JSO_ud] = &PID_Data.ActualValues.v_dq.d;
 	js_ch_observable[JSO_uq] = &PID_Data.ActualValues.v_dq.q;
-	js_ch_observable[JSO_ISR_ExecTime_us] = &limit;
+	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &FluxMapCounter;
 

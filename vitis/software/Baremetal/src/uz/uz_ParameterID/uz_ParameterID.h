@@ -67,6 +67,7 @@ typedef struct uz_ParameterID_Data_t {
 	uz_PID_FluxMapsData_t* FluxMap_Data; /**<Storage for calculated OnlineID FluxMaps*/
 	bool calculate_flux_maps; /**<status bool to signal, that the OnlineID FluxMaps should be calculated */
 	int FluxMap_counter; /**<counter to transmit FluxMaps 1by1 to the uz_GUI */
+	int FluxMap_Control_counter; /**<control counter from the GUI to sync the FluxMaps counter */
 	float Psi_D_pointer; /**<current value of the FluxMap array corresponding to the value of the FluxMap_counter*/
 	float Psi_Q_pointer; /**<current value of the FluxMap array corresponding to the value of the FluxMap_counter*/
 	float FluxMap_MeasuringPoints; /**<amount of unique measuring points for the FluxMaps */

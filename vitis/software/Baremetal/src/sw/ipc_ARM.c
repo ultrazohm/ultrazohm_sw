@@ -513,6 +513,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (PID_OID_max_ident_pause):
 			PID_Data.OnlineID_Config.Rs_time = value;
 			break;
+
+		case (PID_OID_Fluxmap_Control_counter):
+			PID_Data.FluxMap_Control_counter = value;
+			break;
+
 		case (0xFFFF):
 			// this is triggered if the IPI message buffer is read without being written once before (i.e. at startup)
 			break;

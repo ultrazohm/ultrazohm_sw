@@ -123,7 +123,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_MapCounter] = &(FluxMapCounter);
 	js_slowDataArray[JSSD_FLOAT_psidMap] = &(PID_Data.Psi_D_pointer);
 	js_slowDataArray[JSSD_FLOAT_psiqMap] = &(PID_Data.Psi_Q_pointer);
-
+	js_slowDataArray[JSSD_FLOAT_MapControlCounter] = &(FluxMapCounter);
 	return Status;
 }
 

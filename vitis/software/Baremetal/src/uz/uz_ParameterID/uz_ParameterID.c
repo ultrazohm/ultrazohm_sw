@@ -110,9 +110,9 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		if (Data->AutoRefCurrents_Config.enableCRS == true) {
 			uz_PID_AutoRefCurrents_step(self, Data);
 		}
-		if (Data->FluxMap_counter < 400) {
+		if (Data->FluxMap_counter < 400 && (Data->FluxMap_counter == Data->FluxMap_Control_counter)) {
 			Data->FluxMap_counter += 1;
-		} else {
+		} else if (Data->FluxMap_counter == 400){
 			Data->FluxMap_counter = 0;
 		}
 	} else {
@@ -435,24 +435,9 @@ float uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {
 void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter){
 	*activeState = (float) Data->Controller_Parameters.activeState;
 	*FluxMapCounter = (float) Data->FluxMap_counter;
-	int PsiD_counter = Data->FluxMap_counter -1U;
-	int PsiQ_counter = Data->FluxMap_counter - 2U;
-	if(PsiD_counter == -1U) {
-		PsiD_counter = 399U;
-	}
-	if(PsiQ_counter == -1U) {
-		PsiQ_counter = 0U;
-	}
-	if(PsiQ_counter == -2U) {
-		PsiQ_counter = 399U;
-	}
-	if(PsiD_counter <= 399U) {
-	    Data->Psi_D_pointer = Data->FluxMap_Data->psid_grid[PsiD_counter];
+    Data->Psi_D_pointer = Data->FluxMap_Data->psid_grid[Data->FluxMap_counter];
+	Data->Psi_Q_pointer =  Data->FluxMap_Data->psiq_grid[Data->FluxMap_counter];
 
-	}
-	if(PsiQ_counter <= 399U) {
-	    Data->Psi_Q_pointer =  Data->FluxMap_Data->psiq_grid[PsiQ_counter];
-	}
 }
 
 static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_ParameterID_Data_t *Data) {

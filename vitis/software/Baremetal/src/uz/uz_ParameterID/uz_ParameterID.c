@@ -156,9 +156,11 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		self->ControlState->output.GlobalConfig_out.Reset = false;
 		Data->GlobalConfig.Reset = false;
 		self->OnlineID->AutoRefCurrents->input.AutoRefCurrentsConfig.Reset = false;
+		Data->AutoRefCurrents_Config.Reset = false;
 	}
 	if (Data->OnlineID_Config.OnlineID_Reset) {
 		Data->OnlineID_Config.OnlineID_Reset = false;
+		Data->AutoRefCurrents_Config.Reset = false;
 	}
 
 	// reset ACCEPT
@@ -284,7 +286,7 @@ struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FO
 
 void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t* Data) {
 	self->OnlineID->CleanPsiArray->input.OnlineID_output = self->OnlineID->output.OnlineID_output;
-	self->OnlineID->CleanPsiArray->input.eta_c = 0.025f * Data->GlobalConfig.ratCurrent;
+	self->OnlineID->CleanPsiArray->input.eta_c = 0.01f * Data->GlobalConfig.ratCurrent;
 	uz_OnlineID_CleanPsiArray(self->OnlineID);
 	if (Data->OnlineID_Config.OnlineID_Reset == false) {
 		memcpy(self->OnlineID->input.cleaned_psi_array, self->OnlineID->CleanPsiArray->output.psi_array_out, sizeof(self->OnlineID->input.cleaned_psi_array));

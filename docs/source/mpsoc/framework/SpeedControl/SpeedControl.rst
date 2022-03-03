@@ -12,10 +12,15 @@ It can not control a machine on its own.
 Setup
 =====
 
+.. doxygentypedef:: uz_SpeedControl_t
+
 .. _uz_SpeedControl_config:
 
 Configuration
 -------------
+
+.. doxygenstruct:: uz_SpeedControl_config
+  :members:
 
 In order to configure the SpeedControl check the :ref:`configuration section of the PI-Controller <uz_piController_config>` for further information.
 Some values of the :ref:`uz_PMSM_t struct <uz_PMSM_config>` have to be initialized as well.

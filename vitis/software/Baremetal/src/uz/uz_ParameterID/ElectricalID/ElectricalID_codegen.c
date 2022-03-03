@@ -293,8 +293,8 @@ static void initParams(ExtY_ElectricalID_t *rtElectricalID_Y, DW_ElectricalID_t 
 
   /* 0.060 */
   /*  variables for controller calculation */
-  /* '<S1>:88:90' bandwidthCurrentControl = single(2000); */
-  rtElectricalID_DW->bandwidthCurrentControl = 2000.0F;
+  /* '<S1>:88:90' bandwidthCurrentControl = single(1000); */
+  rtElectricalID_DW->bandwidthCurrentControl = 1000.0F;
 
   /* '<S1>:88:91' dampingFactor           = single(10.0); */
   rtElectricalID_DW->dampingFactor = 10.0F;

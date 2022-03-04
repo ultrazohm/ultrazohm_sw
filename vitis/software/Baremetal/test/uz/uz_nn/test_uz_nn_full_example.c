@@ -63,7 +63,8 @@ void tearDown(void)
 
 void test_uz_nn_ff_full_net(void)
 {
-    uz_matrix_t* input=uz_matrix_init(x,UZ_MATRIX_SIZE(x),1,13);
+    struct uz_matrix_t x_matrix={0};
+    uz_matrix_t* input=uz_matrix_init(&x_matrix, x,UZ_MATRIX_SIZE(x),1,13);
     uz_nn_t *test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER );
     uz_nn_ff(test,input);
     float expected_result=-16.9714f; // 

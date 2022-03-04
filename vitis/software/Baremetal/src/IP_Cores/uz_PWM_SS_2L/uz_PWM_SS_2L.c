@@ -12,7 +12,7 @@ struct uz_PWM_SS_2L_t {
     struct uz_PWM_SS_2L_config_t config;
 };
 
-static size_t instance_counter = 0U;
+static uint32_t instance_counter = 0U;
 static uz_PWM_SS_2L_t instances[UZ_PWM_SS_2L_MAX_INSTANCES] = { 0 };
 
 static uz_PWM_SS_2L_t* uz_PWM_SS_2L_allocation(void);

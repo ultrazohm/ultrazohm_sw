@@ -9,7 +9,7 @@ struct uz_dqIPcore_t {
     struct uz_dqIPcore_config_t config;
 };
 
-static size_t instance_counter = 0U;
+static uint32_t instance_counter = 0U;
 static uz_dqIPcore_t instances[UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES] = { 0 };
 
 static uz_dqIPcore_t* uz_dqIPcore_allocation(void);

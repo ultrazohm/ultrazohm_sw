@@ -120,7 +120,8 @@ The following shows an example initialization and feedforward calculation of one
 
     void test_uz_nn_layer_ff_relu(void)
     {
-        uz_matrix_t *input = uz_matrix_init(x, UZ_MATRIX_SIZE(x), 1, NUMBER_OF_INPUTS);
+        struct uz_matrix_t input_matrix={0};
+        uz_matrix_t *input = uz_matrix_init(&input_matrix,x, UZ_MATRIX_SIZE(x), 1, NUMBER_OF_INPUTS);
         float b0[4] = {1, -2, 3, -4};
         struct uz_nn_layer_config config = {
             .activation_function = ReLU,
@@ -138,7 +139,7 @@ The following shows an example initialization and feedforward calculation of one
         float expected[4] = {12.9105, 5.5267 , 0.0 , 6.6521};
         uz_nn_layer_ff(layer, input);
         uz_matrix_t *result = uz_nn_layer_get_output_data(layer);
-        for (size_t i = 0; i < 4; i++)
+        for (uint32_t i = 0; i < 4; i++)
         {
         TEST_ASSERT_EQUAL_FLOAT(expected[i], uz_matrix_get_element_zero_based(result, 0, i));
         }

@@ -42,9 +42,17 @@ uz_SpeedControl_t* uz_SpeedControl_init(struct uz_SpeedControl_config config);
 uz_dq_t uz_SpeedControl_sample(uz_SpeedControl_t* self, float omega_el_rad_per_sec, float n_ref_rpm, float V_dc_volts, float id_ref_Ampere, uz_PMSM_t config_PMSM, bool ext_clamping);
 
 /**
- * @brief Resets the PI-Controller
+ * @brief Resets the PI-Controller inside the uz_SpeedControl_t 
  *
  * @param self pointer to uz_SpeedControl_t object
  */
 void uz_SpeedControl_reset(uz_SpeedControl_t* self);
+
+/**
+ * @brief Enables or disables the field weakening
+ * 
+ * @param self pointer to uz_SpeedControl_t object
+ * @param field_weakening_status status flag if field_weakening should be enabled = true or disabled
+ */
+void uz_SpeedControl_set_field_weakening(uz_SpeedControl_t* self, bool field_weakening_status);
 #endif // UZ_SPEEDCONTROL_H

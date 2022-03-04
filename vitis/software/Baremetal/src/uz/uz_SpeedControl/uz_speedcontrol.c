@@ -31,7 +31,7 @@ typedef struct uz_SpeedControl_t {
 	struct uz_PI_Controller* Controller;
 }uz_SpeedControl_t;
 
-static size_t instance_speedcontrol_counter = 0U;
+static uint32_t instance_speedcontrol_counter = 0U;
 static uz_SpeedControl_t instances_speedcontrol[UZ_SPEEDCONTROL_MAX_INSTANCES] = { 0 };
 
 static uz_SpeedControl_t* uz_SpeedControl_allocation(void);
@@ -59,18 +59,18 @@ uz_SpeedControl_t* uz_SpeedControl_init(struct uz_SpeedControl_config config){
 
 uz_dq_t uz_SpeedControl_sample(uz_SpeedControl_t* self, float omega_el_rad_per_sec, float n_ref_rpm, float V_dc_volts, float id_ref_Ampere, uz_PMSM_t config_PMSM, bool ext_clamping){
     uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    uz_assert(config_PMSM.polePairs > 0.0f);
-	uz_assert(fmodf(config_PMSM.polePairs, 1.0f) == 0);
-    uz_assert(config_PMSM.R_ph_Ohm > 0.0f);
-    uz_assert(config_PMSM.I_max_Ampere > 0.0f);
-    uz_assert(config_PMSM.Ld_Henry > 0.0f);
-    uz_assert(config_PMSM.Lq_Henry > 0.0f);
-    uz_assert(config_PMSM.Psi_PM_Vs >= 0.0f);
-    uz_assert(V_dc_volts > 0.0f);
     uz_dq_t i_output_Ampere = {0};
 	float omega_el_ref_rad_per_sec = (n_ref_rpm * 2.0f * UZ_PIf * config_PMSM.polePairs) / 60.0f;
     if(self->enable_field_weakening) {
+        uz_assert(self->is_ready);
+        uz_assert(config_PMSM.polePairs > 0.0f);
+	    uz_assert(fmodf(config_PMSM.polePairs, 1.0f) == 0);
+        uz_assert(config_PMSM.R_ph_Ohm > 0.0f);
+        uz_assert(config_PMSM.I_max_Ampere > 0.0f);
+        uz_assert(config_PMSM.Ld_Henry > 0.0f);
+        uz_assert(config_PMSM.Lq_Henry > 0.0f);
+        uz_assert(config_PMSM.Psi_PM_Vs >= 0.0f);
+        uz_assert(V_dc_volts > 0.0f);
         uz_dq_t i_field_weakening_Ampere = uz_SpeedControl_field_weakening(config_PMSM, id_ref_Ampere, omega_el_rad_per_sec, V_dc_volts);
 	    i_output_Ampere.d = i_field_weakening_Ampere.d;
         uz_PI_Controller_update_limits(self->Controller, i_field_weakening_Ampere.q, -i_field_weakening_Ampere.q);
@@ -85,6 +85,12 @@ void uz_SpeedControl_reset(uz_SpeedControl_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 	uz_PI_Controller_reset(self->Controller);
+}
+
+void uz_SpeedControl_set_field_weakening(uz_SpeedControl_t* self, bool field_weakening_status) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+	self->enable_field_weakening = field_weakening_status;
 }
 
 static uz_dq_t uz_SpeedControl_field_weakening(uz_PMSM_t config_PMSM, float id_ref_Ampere, float omega_el_rad_per_sec, float V_dc_volts){

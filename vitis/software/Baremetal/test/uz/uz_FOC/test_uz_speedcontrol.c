@@ -267,4 +267,51 @@ void test_uz_SpeedControl_sample_field_weakening_manual_id_ref_limit_iq(void){
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out, output.q);
 }
+
+void test_uz_SpeedControl_sample_field_weakening_disabled(void){
+    //Values for comparision from simulation
+    //Tests, if the id_fw_current = 0, since fw is disabled
+    n_ref_rpm = 3600.0f;
+    id_ref_Ampere = 0.0f; 
+    config.enable_field_weakening = false;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    float id_out = 0.0f;
+    omega_el_rad_per_sec = 1466.1f;
+    uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
+}
+
+void test_uz_SpeedControl_set_field_weakening_NULL(void){
+    bool field_weakening_status = false;
+	TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_field_weakening(NULL, field_weakening_status));
+}
+
+void test_uz_SpeedControl_sample_field_weakening(void){
+    //Values for comparision from simulation
+    //Tests, if the enabling/disabling of the fw works
+    n_ref_rpm = 3600.0f;
+    id_ref_Ampere = 0.0f; 
+    config.enable_field_weakening = true;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    float id_out = -0.613f;
+    omega_el_rad_per_sec = 1466.1f;
+    uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
+    //Tests, if the disabling works
+    uz_SpeedControl_set_field_weakening(instance, false);
+    output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.0f, output.d);
+    //Tests, if the enabling works
+    uz_SpeedControl_set_field_weakening(instance, true);
+    output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
+}
+
+void test_uz_SpeedControl_assert_Rph_negative_when_fw_disabled(void){
+    config_PMSM.R_ph_Ohm = -0.08f;
+    config.enable_field_weakening = false;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    TEST_ASSERT_PASS_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping));
+}
+
 #endif // TEST

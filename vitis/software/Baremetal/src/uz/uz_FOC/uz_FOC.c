@@ -27,7 +27,7 @@ typedef struct uz_FOC {
 
 static uz_3ph_dq_t uz_FOC_CurrentControl(uz_FOC* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere);
 static uz_3ph_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, uz_PMSM_t pmsm, uz_3ph_dq_t actual_Ampere, float omega_el_rad_per_sec);
-static size_t instances_counter_FOC = 0;
+static uint32_t instances_counter_FOC = 0;
 
 static uz_FOC instances_FOC[UZ_FOC_MAX_INSTANCES] = {0};
 

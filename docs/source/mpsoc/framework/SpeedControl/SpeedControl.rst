@@ -23,7 +23,7 @@ Configuration
   :members:
 
 In order to configure the SpeedControl check the :ref:`configuration section of the PI-Controller <uz_piController_config>` for further information.
-Some values of the :ref:`uz_PMSM_t struct <uz_PMSM_config>` have to be initialized as well.
+If field_weakening is to be used, some values of the :ref:`uz_PMSM_t struct <uz_PMSM_config>` have to be initialized as well. Otherwise they can be left zero.
 
 Example
 ^^^^^^^
@@ -34,20 +34,21 @@ Example
   
   #include "uz/uz_SpeedControl/uz_speedcontrol.h"
   int main(void) {
-     struct uz_PI_Controller_config config = {
-      .Kp = 10.0f,
-      .Ki = 10.0f,
-      .samplingTime_sec = 0.00005f,
-      .upper_limit = 10.0f,
-      .lower_limit = -10.0f
-     }; 
+     struct uz_SpeedControl_config config = {
+        .config_controller.Kp = 10.0f,
+        .config_controller.Ki = 10.0f,
+        .config_controller.samplingTime_sec = 0.00005f,
+        .config_controller.upper_limit = 10.0f,
+        .config_controller.lower_limit = -10.0f,
+        .enable_field_weakening = false
+     };
      struct uz_PMSM_t config_PMSM = {
-      .R_ph_Ohm = 0.08f,
-      .Ld_Henry = 0.00027f,
-      .Lq_Henry = 0.00027f,
-      .Psi_PM_Vs = 0.0082f,
-      .polePairs = 4.0f,
-      .I_max_Ampere = 10.0f
+        .R_ph_Ohm = 0.08f,
+        .Ld_Henry = 0.00027f,
+        .Lq_Henry = 0.00027f,
+        .Psi_PM_Vs = 0.0082f,
+        .polePairs = 4.0f,
+        .I_max_Ampere = 10.0f
      };
   }
 
@@ -67,13 +68,13 @@ Example
   
   #include "uz/uz_SpeedControl/uz_speedcontrol.h"
   int main(void) {
-     uz_PI_Controller* instance = uz_SpeedControl_init(config);
+     uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
   }
 
 Description
 ^^^^^^^^^^^
 
-Allocates the memory for the PI-Controller instance. 
+Allocates the memory for the SpeedControl instance. 
 Furthermore the input values of the configuration struct are asserted. 
 
 .. _uz_SpeedControl_reset:

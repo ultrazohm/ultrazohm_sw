@@ -286,7 +286,7 @@ void test_uz_SpeedControl_set_field_weakening_NULL(void){
 	TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_field_weakening(NULL, field_weakening_status));
 }
 
-void test_uz_SpeedControl_sample_field_weakening(void){
+void test_uz_SpeedControl_set_field_weakening_change(void){
     //Values for comparision from simulation
     //Tests, if the enabling/disabling of the fw works
     n_ref_rpm = 3600.0f;

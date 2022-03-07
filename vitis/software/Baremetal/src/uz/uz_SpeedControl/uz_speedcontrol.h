@@ -20,7 +20,7 @@ struct uz_SpeedControl_config {
 };
 
 /**
- * @brief Initialization of the PI-Controller object
+ * @brief Initialization of the SpeedController object
  *
  * @param config uz_SpeedControl_config configuration struct
  * @return Pointer to uz_SpeedControl_t object

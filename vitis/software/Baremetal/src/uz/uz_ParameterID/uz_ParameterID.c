@@ -214,7 +214,7 @@ uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_insta
 			uz_FOC_reset(FOC_instance);
 			uz_SpeedControl_reset(Speed_instance);
 		}
-	if (Data->ControlFlags->transNr == 1U) {
+	if (Data->ControlFlags->transNr == 1U || Data->ControlFlags->transNr == 2U) {
 		if (Data->Controller_Parameters.activeState == 144U) {
 			uz_FOC_set_decoupling_method(FOC_instance, no_decoupling);
 		} else if (Data->Controller_Parameters.activeState == 170U) {
@@ -228,11 +228,6 @@ uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_insta
 		uz_PI_Controller_set_Ki(Speed_instance, Data->Controller_Parameters.Ki_n_out);
 		uz_PI_Controller_set_Kp(Speed_instance, Data->Controller_Parameters.Kp_n_out);
 		}
-	if ((Data->GlobalConfig.TwoMassID == true && (Data->Controller_Parameters.activeState == 220 || Data->Controller_Parameters.activeState == 230))
-	                || (Data->GlobalConfig.ElectricalID == true && (Data->Controller_Parameters.activeState == 160 || Data->Controller_Parameters.activeState == 161))) {
-		uz_PI_Controller_set_Ki(Speed_instance, Data->Controller_Parameters.Ki_n_out);
-		uz_PI_Controller_set_Kp(Speed_instance, Data->Controller_Parameters.Kp_n_out);
-	}
 
 	if (Data->ControlFlags->finished_all_Offline_states == true) {
 		uz_dq_t Online_current_ref = Data->GlobalConfig.i_dq_ref;

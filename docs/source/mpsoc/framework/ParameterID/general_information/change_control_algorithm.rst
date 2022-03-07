@@ -100,26 +100,26 @@ The function ``uz_ParameterID_generate_DutyCycle``, can be adjusted as well. It 
   :caption: template code to generate DutyCycles
 
   struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_3ph_dq_t v_dq_Volts, uz_PWM_SS_2L_t* PWM_Module) {
-	struct uz_DutyCycle_t output_DutyCycle = { 0 };
-	if (Data->Controller_Parameters.activeState >= 110 && Data->Controller_Parameters.activeState <= 143) {
+  struct uz_DutyCycle_t output_DutyCycle = { 0 };
+  if (Data->Controller_Parameters.activeState >= 110 && Data->Controller_Parameters.activeState <= 143) {
 		uz_PWM_SS_2L_set_tristate(PWM_Module, Data->ElectricalID_Output->enable_TriState[0], Data->ElectricalID_Output->enable_TriState[1], Data->ElectricalID_Output->enable_TriState[2]);
 		output_DutyCycle.DutyCycle_U = Data->ElectricalID_Output->PWM_Switch_0;
 		output_DutyCycle.DutyCycle_V = Data->ElectricalID_Output->PWM_Switch_2;
 		output_DutyCycle.DutyCycle_W = Data->ElectricalID_Output->PWM_Switch_4;
-	} else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
+  } else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
 	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control))) {
 		uz_3ph_abc_t V_UVW_Volts = uz_dq_inverse_transformation(v_dq_Volts, Data->ActualValues.theta_el);
         //Use your own function to generate DutyCycles here, if the control-algorithms are used
 		output_DutyCycle = ....
-	} else {
+  } else {
 		output_DutyCycle.DutyCycle_U = 0.0f;
 		output_DutyCycle.DutyCycle_V = 0.0f;
 		output_DutyCycle.DutyCycle_W = 0.0f;
-	}
-	if (Data->Controller_Parameters.resetIntegrator == true) {
+  }
+  if (Data->Controller_Parameters.resetIntegrator == true) {
 		output_DutyCycle.DutyCycle_U = 0.0f;
 		output_DutyCycle.DutyCycle_V = 0.0f;
 		output_DutyCycle.DutyCycle_W = 0.0f;
-	}
-	return (output_DutyCycle);
-}
+  }
+  return (output_DutyCycle);
+  }

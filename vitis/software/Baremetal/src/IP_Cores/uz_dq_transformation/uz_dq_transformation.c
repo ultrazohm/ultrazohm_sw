@@ -33,9 +33,9 @@ uz_dqIPcore_t* uz_dqIPcore_init(struct uz_dqIPcore_config_t config){
     return (self);
 }
 
-uz_dq_t uz_dqIPcore_get_id_iq(uz_dqIPcore_t* self) {
+uz_3ph_dq_t uz_dqIPcore_get_id_iq(uz_dqIPcore_t* self) {
 
-    uz_dq_t currents = { 0 };
+    uz_3ph_dq_t currents = { 0 };
 
     currents.d = uz_dqTransformation_hw_get_id(self->config.base_address);
     currents.q = uz_dqTransformation_hw_get_iq(self->config.base_address);
@@ -43,14 +43,14 @@ uz_dq_t uz_dqIPcore_get_id_iq(uz_dqIPcore_t* self) {
     return currents;
 }
 
-uz_UVW_t uz_dqIPcore_get_i_uvw(uz_dqIPcore_t* self) {
+uz_3ph_abc_t uz_dqIPcore_get_i_uvw(uz_dqIPcore_t* self) {
 
     uz_assert_not_NULL(self);
-	uz_UVW_t currents = { 0 };
+	uz_3ph_abc_t currents = { 0 };
 
-    currents.U = uz_dqTransformation_hw_get_i1(self->config.base_address);
-    currents.V = uz_dqTransformation_hw_get_i2(self->config.base_address);
-    currents.W = uz_dqTransformation_hw_get_i3(self->config.base_address);
+    currents.a = uz_dqTransformation_hw_get_i1(self->config.base_address);
+    currents.b = uz_dqTransformation_hw_get_i2(self->config.base_address);
+    currents.c = uz_dqTransformation_hw_get_i3(self->config.base_address);
 
     return currents;
 }

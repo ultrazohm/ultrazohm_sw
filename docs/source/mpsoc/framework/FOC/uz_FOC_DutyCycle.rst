@@ -18,7 +18,7 @@ Example
 
   int main(void) {
      float V_dc_volts = 24.0f;
-     struct uz_UVW_t UVW = {.U = 0.0f, .V = -0.866f, .W = 0.866f};
+     struct uz_3ph_abc_t UVW = {.a = 0.0f, .b = -0.866f, .c = 0.866f};
      struct uz_DutyCycle_t output = uz_FOC_generate_DutyCycles(UVW, V_dc_volts);
   }
 

@@ -134,7 +134,7 @@ void test_uz_SpeedControl_sample_output(void){
     float iq_out[5]={3.6191f, 3.6195f, 3.6198f, 3.62f, 3.62f}; 
     for(int i=0;i<5;i++){
         omega_el_rad_per_sec = values_omega[i];
-        uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+        uz_3ph_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
 		TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out[i], output.q);
     }
@@ -150,7 +150,7 @@ void test_uz_SpeedControl_sample_output_negative_speed(void){
     n_ref_rpm = -1000.0f;
     for(int i=0;i<5;i++){
         omega_el_rad_per_sec = values_omega[i];
-        uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+        uz_3ph_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
 		TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out[i], output.q);
     }
@@ -164,7 +164,7 @@ void test_uz_SpeedControl_sample_output_limit(void){
     float id_out = 1.0f;
     float iq_out = 9.9499f;
     omega_el_rad_per_sec = 0.0f;
-    uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+    uz_3ph_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out, output.q);
 }
@@ -179,7 +179,7 @@ void test_uz_SpeedControl_sample_ext_clamping(void){
     float iq_out[5]={3.6191f, 3.6191f, 3.6191f, 3.6190f, 3.6189f}; 
     for(int i=0;i<5;i++){
         omega_el_rad_per_sec = values_omega[i];
-        uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+        uz_3ph_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
 		TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out[i], output.q);
     }
@@ -194,7 +194,7 @@ void test_uz_SpeedControl_sample_field_weakening_active(void){
     float id_out = -4.332f;
     float iq_out = 8.582f;
     omega_el_rad_per_sec = 1675.5f;
-    uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+    uz_3ph_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out, output.q);
 }
@@ -208,7 +208,7 @@ void test_uz_SpeedControl_sample_field_weakening_active_negative_speed(void){
     float id_out = -4.332f;
     float iq_out = -8.582f;
     omega_el_rad_per_sec = -1675.5f;
-    uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+    uz_3ph_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out, output.q);
 }
@@ -222,7 +222,7 @@ void test_uz_SpeedControl_sample_field_weakening_manual_id_ref(void){
     float id_out = -5.0f;
     float iq_out = 8.582f;
     omega_el_rad_per_sec = 1675.5f;
-    uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+    uz_3ph_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out, output.q);
 }
@@ -236,7 +236,7 @@ void test_uz_SpeedControl_sample_field_weakening_manual_id_ref_too_low(void){
     float id_out = -4.332f;
     float iq_out = 8.582f;
     omega_el_rad_per_sec = 1675.5f;
-    uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+    uz_3ph_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out, output.q);
 }
@@ -249,7 +249,7 @@ void test_uz_SpeedControl_sample_field_weakening_manual_id_positive(void){
     uz_PI_Controller* instance = uz_SpeedControl_init(config);
     float id_out = 5.0f;
     omega_el_rad_per_sec = 837.75f;
-    uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+    uz_3ph_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
 }
 
@@ -262,7 +262,7 @@ void test_uz_SpeedControl_sample_field_weakening_manual_id_ref_limit_iq(void){
     float id_out = 5.0f;
     float iq_out = 8.66f;
     omega_el_rad_per_sec = 209.44f;
-    uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+    uz_3ph_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, iq_out, output.q);
 }

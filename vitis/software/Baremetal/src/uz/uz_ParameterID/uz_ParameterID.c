@@ -73,32 +73,28 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	if (self->ControlState->output.ControlFlags.finished_all_Offline_states == false) {
 
 		//ElectricalID
-		if (self->ControlState->output.GlobalConfig_out.ElectricalID == true && self->ControlState->output.GlobalConfig_out.Reset == false
-		                && self->ControlState->output.ControlFlags.transNr == 1U) {
+		if (self->ControlState->output.ControlFlags.transNr == 1U|| self->ControlState->output.GlobalConfig_out.Reset == true) {
 			uz_PID_ElectricalID_step(self, Data);
 		} else if (self->ControlState->output.GlobalConfig_out.ElectricalID == false && self->ElectricalID->output.enteredElectricalID == true) {
 			uz_PID_ElectricalID_step(self, Data);
 		}
 
 		//TwoMassID
-		if (self->ControlState->output.GlobalConfig_out.TwoMassID == true && self->ControlState->output.GlobalConfig_out.Reset == false
-		                && self->ControlState->output.ControlFlags.transNr == 2U) {
+		if (self->ControlState->output.ControlFlags.transNr == 2U || self->ControlState->output.GlobalConfig_out.Reset == true) {
 			uz_PID_TwoMassID_step(self, Data);
 		} else if (self->ControlState->output.GlobalConfig_out.TwoMassID == false && self->TwoMassID->output.enteredTwoMassID == true) {
 			uz_PID_TwoMassID_step(self, Data);
 		}
 
 		//FrictionID
-		if (self->ControlState->output.GlobalConfig_out.FrictionID == true && self->ControlState->output.GlobalConfig_out.Reset == false
-		                && self->ControlState->output.ControlFlags.transNr == 3U) {
+		if (self->ControlState->output.ControlFlags.transNr == 3U || self->ControlState->output.GlobalConfig_out.Reset == true) {
 			uz_PID_FrictionID_step(self, Data);
 		} else if (self->ControlState->output.GlobalConfig_out.FrictionID == false && self->FrictionID->output.enteredFrictionID == true) {
 			uz_PID_FrictionID_step(self, Data);
 		}
 
 		//FluxMapID
-		if (self->ControlState->output.GlobalConfig_out.FluxMapID == true && self->ControlState->output.GlobalConfig_out.Reset == false
-		                && self->ControlState->output.ControlFlags.transNr == 4U) {
+		if (self->ControlState->output.ControlFlags.transNr == 4U || self->ControlState->output.GlobalConfig_out.Reset == true) {
 			uz_PID_FluxMapID_step(self, Data);
 		} else if (self->ControlState->output.GlobalConfig_out.FluxMapID == false && self->FluxMapID->output.enteredFluxMapID == true) {
 			uz_PID_FluxMapID_step(self, Data);
@@ -107,7 +103,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	//OnlineID
 	if (self->ControlState->output.ControlFlags.enableOnlineID == true || self->ControlState->output.GlobalConfig_out.Reset == true || Data->OnlineID_Config.OnlineID_Reset == true) {
 		uz_PID_OnlineID_step(self, Data);
-		if (Data->AutoRefCurrents_Config.enableCRS == true) {
+		if (Data->AutoRefCurrents_Config.enableCRS == true || self->ControlState->output.GlobalConfig_out.Reset == true) {
 			uz_PID_AutoRefCurrents_step(self, Data);
 		}
 		if (Data->FluxMap_counter < 400 && (Data->FluxMap_counter == Data->FluxMap_Control_counter)) {
@@ -144,13 +140,6 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 
 	//RESET
 	if (Data->GlobalConfig.Reset == true) {
-		uz_PID_ControlState_step(self, Data);
-		uz_PID_ElectricalID_step(self, Data);
-		uz_PID_TwoMassID_step(self, Data);
-		uz_PID_FrictionID_step(self, Data);
-		uz_PID_FluxMapID_step(self, Data);
-		uz_PID_OnlineID_step(self, Data);
-		uz_PID_AutoRefCurrents_step(self, Data);
 
 		//reset the Reset-button
 		self->ControlState->output.GlobalConfig_out.Reset = false;
@@ -225,7 +214,7 @@ uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_insta
 			uz_FOC_reset(FOC_instance);
 			uz_SpeedControl_reset(Speed_instance);
 		}
-	if (Data->ControlFlags->transNr == 1U) {
+	if (Data->ControlFlags->transNr == 1U || Data->ControlFlags->transNr == 2U) {
 		if (Data->Controller_Parameters.activeState == 144U) {
 			uz_FOC_set_decoupling_method(FOC_instance, no_decoupling);
 		} else if (Data->Controller_Parameters.activeState == 170U) {
@@ -239,11 +228,6 @@ uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_insta
 		uz_PI_Controller_set_Ki(Speed_instance, Data->Controller_Parameters.Ki_n_out);
 		uz_PI_Controller_set_Kp(Speed_instance, Data->Controller_Parameters.Kp_n_out);
 		}
-	if ((Data->GlobalConfig.TwoMassID == true && (Data->Controller_Parameters.activeState == 220 || Data->Controller_Parameters.activeState == 230))
-	                || (Data->GlobalConfig.ElectricalID == true && (Data->Controller_Parameters.activeState == 160 || Data->Controller_Parameters.activeState == 161))) {
-		uz_PI_Controller_set_Ki(Speed_instance, Data->Controller_Parameters.Ki_n_out);
-		uz_PI_Controller_set_Kp(Speed_instance, Data->Controller_Parameters.Kp_n_out);
-	}
 
 	if (Data->ControlFlags->finished_all_Offline_states == true) {
 		uz_dq_t Online_current_ref = Data->GlobalConfig.i_dq_ref;

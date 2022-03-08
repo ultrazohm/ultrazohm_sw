@@ -5,7 +5,7 @@ ParameterID
 ===========
 
 Toolbox for different code-generated stateflows to identify common parameters of a permanent magnet synchronous motor. This page deals with the setup in the UltraZohm workspace. 
-For a more in depth explanation of the ParameterID please visit :ref:`uz_PID_general_information`, :ref:`uz_ParameterID_Data_structs` and :ref:`uz_PID_new_ID_state`.
+For a more in depth explanation of the ParameterID please visit :ref:`uz_PID_general_information`, :ref:`uz_ParameterID_Data_structs`, :ref:`uz_PID_new_control_algorithm` and :ref:`uz_PID_new_ID_state`.
 
 Setup
 =====
@@ -62,7 +62,7 @@ Especially the configuration of the motor-related parameters is important. If th
 The ID-state specific configuration values can later be configured via the uz_GUI. 
 
 .. literalinclude:: ../../../../../vitis/software/Baremetal/src/uz/uz_ParameterID/uz_ParameterID.c
-    :lines: 443-535
+    :lines: 429-521
     :linenos:
     :language: c
 
@@ -171,6 +171,7 @@ Further documentation which explains the structure of the ParameterID in detail.
     
     general_information/general_information
     general_information/ParameterID_structs
+    general_information/change_control_algorithm
     general_information/create_new_id_state
   
 .. _uz_PID_ID_states:

@@ -42,3 +42,4 @@ vitis/Sandbox/uz_MyIp/uz_MyIp_testbench
 .vscode/settings.json
 control_algorithms/uz_FOC.slxc
 
+/vivado/project/

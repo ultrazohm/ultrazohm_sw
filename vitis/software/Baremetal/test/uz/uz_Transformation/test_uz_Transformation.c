@@ -126,7 +126,7 @@ void test_uz_9ph_clarke_transformation_output(void){
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.2361f, output.y1);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.2017f, output.x2);
     TEST_ASSERT_FLOAT_WITHIN(1e-03,  0.0356f, output.y2);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,  5.0000f, output.z3);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  1.6667f, output.z3);
 }
 
 // test inverse vsd output

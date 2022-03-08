@@ -193,7 +193,7 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
 	}
 	return (output_DutyCycle);
 }
-struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance) {
+uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance) {
 	uz_dq_t v_dq_Volts = { 0 };
 	uz_dq_t i_SpeedControl_reference_Ampere = { 0 };
 	bool ext_clamping = false;

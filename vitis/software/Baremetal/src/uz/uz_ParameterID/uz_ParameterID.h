@@ -113,7 +113,7 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
  * @param Speed_instance pointer to uz_PI_Controller object
  * @return struct uz_dq_t reference voltages of controller
  */
-struct uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
+uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
 
 /**
  * @brief This function is cleaning the array storing the measurement values, which always consits of a d-q-current combination a winding temperature and a speed value such as a d-q-flux combination

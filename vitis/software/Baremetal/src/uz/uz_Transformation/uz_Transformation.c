@@ -84,7 +84,7 @@ uz_3ph_alphabeta_t uz_transformation_3ph_dq_to_alphabeta(uz_3ph_dq_t input, floa
 uz_9ph_alphabeta_t uz_transformation_9ph_abc_to_alphabeta(uz_9ph_abc_t input)
 {
     uz_9ph_alphabeta_t output = {0};
-    float val[9] = {0.0f};
+    float val[9] = {0};
 
     // VSD matrix from Matlab script, see Docs
     float const vsd_mat[9][9] =
@@ -126,7 +126,7 @@ uz_9ph_alphabeta_t uz_transformation_9ph_abc_to_alphabeta(uz_9ph_abc_t input)
 uz_9ph_abc_t uz_transformation_9ph_alphabeta_to_abc(uz_9ph_alphabeta_t input)
 {
     uz_9ph_abc_t output = {0};
-    float val[9] = {0.0f};
+    float val[9] = {0};
 
     // VSD matrix from Matlab script, see Docs
     float const vsd_mat[9][9] =
@@ -169,7 +169,8 @@ uz_9ph_abc_t uz_transformation_9ph_alphabeta_to_abc(uz_9ph_alphabeta_t input)
 float uz_9ph_arraymul(int line, float const matrixval[9][9], float const val[9])
 {
     float output = 0.0f;
-    for (int i = 0; i < 9; i++)
-        output = output + matrixval[line][i] * val[i];
+    for (int i = 0; i < 9; i++){
+        output = output + (matrixval[line][i] * val[i]);
+    }
     return output;
 }

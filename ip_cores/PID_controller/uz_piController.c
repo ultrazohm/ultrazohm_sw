@@ -41,16 +41,11 @@ static uz_PI_Controller* uz_PI_Controller_allocation(void);  // Function declara
 
 static uz_PI_Controller* uz_PI_Controller_allocation(void) {  // Function Definition    // Memory allocation
 	//uz_assert(instances_counter_PI_Controller < UZ_PI_CONTROLLER_MAX_INSTANCES);
-	//do{
-		//if(instances_counter_PI_Controller < UZ_PI_CONTROLLER_MAX_INSTANCES)
-		//	{
 			uz_PI_Controller* self = &instances_PI_Controller[instances_counter_PI_Controller];
 			//uz_assert(self->is_ready == false);
 			if(self->is_ready == false)
 			instances_counter_PI_Controller++;
 			self->is_ready = true;
-		//	}
-	  // }while(0)
 	return (self);
 }
 
@@ -63,10 +58,7 @@ uz_PI_Controller* uz_PI_Controller_init(struct uz_PI_Controller_config config) {
     uz_assert(config.upper_limit > config.lower_limit);
 	uz_assert(config.lower_limit < config.upper_limit);
 	*/
-	if(config.Ki >= 0.0f && config.Kp >= 0.0f && config.samplingTime_sec > 0.0f && config.upper_limit > config.lower_limit )
-		self->config = config;
-	else
-		self-> config = 0;
+	self->config = config;
 	return (self);
 
 }
@@ -89,6 +81,7 @@ float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, floa
 	#pragma HLS INTERFACE s_axilite port=referenceValue    bundle = param
 	#pragma HLS INTERFACE s_axilite port=actualValue       bundle = param
 	#pragma HLS INTERFACE s_axilite port=ext_clamping      bundle = param
+	#pragma HLS INTERFACE s_axilite port=return            bundle = param
 
 
 	//uz_assert_not_NULL(self);

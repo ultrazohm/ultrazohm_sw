@@ -277,7 +277,7 @@ void test_uz_SpeedControl_sample_field_weakening_disabled(void){
     uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
     float id_out = 0.0f;
     omega_el_rad_per_sec = 1466.1f;
-    uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+    uz_3ph_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
 }
 
@@ -295,7 +295,7 @@ void test_uz_SpeedControl_set_field_weakening_change(void){
     uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
     float id_out = -0.613f;
     omega_el_rad_per_sec = 1466.1f;
-    uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+    uz_3ph_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-03, id_out, output.d);
     //Tests, if the disabling works
     uz_SpeedControl_set_field_weakening(instance, false);

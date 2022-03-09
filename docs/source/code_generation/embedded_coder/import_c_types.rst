@@ -24,7 +24,7 @@ Theses buses can then be used in your Simulink object as normal data type.
 
 .. warning:: For this to properly work all ``structs`` and ``enums``, which are used in the Simulink model, have to be ``typedef``. 
              Otherwise, Simulink generates bus objects with incompatible names, which, if code generated, are not compatible with the initially included header-file
-             (i.e. using ``struct uz_dq_t`` in the header-file leads with code-generation to ``struct_uz_dq_t name`` instead of ``struct uz_dq_t name``. Using ``typedef`` fixes this).
+             (i.e. using ``struct uz_3ph_dq_t`` in the header-file leads with code-generation to ``struct_uz_3ph_dq_t name`` instead of ``struct uz_3ph_dq_t name``. Using ``typedef`` fixes this).
 
 Example
 -------
@@ -43,14 +43,14 @@ These buses can be used, e.g., as an output for dq-reference currents.
 
 .. image:: property_inspector.png
 
-This output can be directly assigned to other ``uz_dq_t`` structs or functions, which use this type.
+This output can be directly assigned to other ``uz_3ph_dq_t`` structs or functions, which use this type.
 
 .. code-block:: C
     :caption: Example for the usage of the generated code from imported C-types
 
     float theta_el_rad = 23.4f;
-    uz_dq_t dq_currents = codegenInstance.output.i_dq_ref;
-    uz_UVW_t UVW_currents = uz_dq_inverse_transformation(codegenInstance.output.i_dq_ref, theta_el_rad);
+    uz_3ph_dq_t dq_currents = codegenInstance.output.i_dq_ref;
+    uz_3ph_abc_t abc_currents = uz_transformation_3ph_dq_to_abc(codegenInstance.output.i_dq_ref, theta_el_rad);
 
 More Information
 ----------------

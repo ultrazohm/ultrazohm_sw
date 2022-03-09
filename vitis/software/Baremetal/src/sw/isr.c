@@ -48,7 +48,7 @@ extern uz_FOC* FOC_instance;
 extern uz_PI_Controller* SpeedControl_instance;
 struct uz_dq_t PID_v_dq = { 0 };
 struct uz_DutyCycle_t PID_DutyCycle = { 0 };
-float theta_offset = 0.03f;
+float theta_offset = 0.0f;
 //C=484nF R_series=5.6kOhm R_parallel=1.3kOhm
 float RC = (5600.0f * 1300.0f * 0.000000484f) / (5600.0f + 1300.0f);
 //==============================================================================================================================================================
@@ -68,8 +68,8 @@ void ISR_Control(void *data)
 	PID_Data.ActualValues.I_UVW.U = (Global_Data.aa.A2.me.ADC_A2 - 2.5f) * (20.0f / 2.084f) / 2.0f;
 	PID_Data.ActualValues.I_UVW.V = (Global_Data.aa.A2.me.ADC_A4 - 2.5f) * (20.0f / 2.084f) / 2.0f;
 	PID_Data.ActualValues.I_UVW.W = (Global_Data.aa.A2.me.ADC_A3 - 2.5f) * (20.0f / 2.084f) / 2.0f;
-	PID_Data.ActualValues.V_DC = ((Global_Data.aa.A2.me.ADC_B5) * 20.05f) - 0.18f;
-	//PID_Data.ActualValues.V_DC = 24.0f;
+	//PID_Data.ActualValues.V_DC = ((Global_Data.aa.A2.me.ADC_B5) * 20.05f) - 0.18f;
+	PID_Data.ActualValues.V_DC = 24.0f;
 	PID_Data.ActualValues.V_UVW.U = Global_Data.aa.A2.me.ADC_B6 * 5.307692f - 0.01f;
 	PID_Data.ActualValues.V_UVW.V = Global_Data.aa.A2.me.ADC_B8 * 5.307692f - 0.01f;
 	PID_Data.ActualValues.V_UVW.W = Global_Data.aa.A2.me.ADC_B7 * 5.307692f - 0.01f;

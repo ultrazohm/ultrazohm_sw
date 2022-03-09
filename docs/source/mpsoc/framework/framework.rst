@@ -11,7 +11,7 @@ Software Framework
     software_development_guidlines/software_development_guidlines
     hardwareAbstractionLayer/hardwareAbstractionLayer
     array/array
-    dq_transformation/dq_transformation
+    uz_Transformation/uz_Transformation
     FOC/FOC
     ParameterID/ParameterID
     linear_decoupling/linear_decoupling

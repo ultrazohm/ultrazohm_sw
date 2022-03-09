@@ -16,7 +16,7 @@ Step-by-step
 
 #. Create a new branch in the repository, e.g. ``feature/project_name``. 
 
-#. Inside the CPLD repository, create a copy of an exisiting project folder, e.g. ``optical_14tx_4rx``.
+#. Inside the CPLD repository, create a copy of an existing project folder, e.g. ``optical_14tx_4rx``.
 
 #. Rename the folder to your project name, try to use a meaningful name.
 
@@ -31,7 +31,7 @@ Step-by-step
   - ``fpga_00`` .. ``fpga_29`` pins are connected to the FPGA/Zynq UltraScale+
   - ``d_00`` .. ``d_29`` pins are connected to the digital adapter 
 
-  The numbering is zero-based and equvialent to the one in Vivado and in the Altium schematics of the Carrier Board and the Digital Adapter Cards. **Do not change this part. It is the same in all projects.**
+  The numbering is zero-based and equivalent to the one in Vivado and in the Altium schematics of the Carrier Board and the Digital Adapter Cards. **Do not change this part. It is the same in all projects.**
 
     .. code-block::  
 
@@ -56,7 +56,7 @@ Step-by-step
         fpga_29 = d_29; 
 
 
-#. Is it also possible to create combinational logic of multiple inputs. The word ``node`` is an ABEL keyword and creates a signal. This can simplify the logic. The compiler will usally resolve those signals to a combination of inputs only. In the example below, the output is enabled, if ``fpga_26`` and ``fpga_27`` are 0, while ``fpga_28`` and ``fpga_29`` are 1. 
+#. Is it also possible to create combinational logic of multiple inputs. The word ``node`` is an ABEL keyword and creates a signal. This can simplify the logic. The compiler will usually resolve those signals to a combination of inputs only. In the example below, the output is enabled, if ``fpga_26`` and ``fpga_27`` are 0, while ``fpga_28`` and ``fpga_29`` are 1. 
 
     .. code-block:: 
 
@@ -101,7 +101,7 @@ Step-by-step
     .. image:: create_cpld_program/folder_structure_after_compile.jpg
       :height: 700
 
-14. The file ``uz_cpld_project_name.html`` is the documententaiton of the crated CPLD program and contains a summary of all settings, e.g. which pin in an input or an output.
+14. The file ``uz_cpld_project_name.html`` is the documentation of the crated CPLD program and contains a summary of all settings, e.g. which pin in an input or an output.
 
     .. image:: create_cpld_program/isplever_input_output_signal_list.jpg
       :height: 800      

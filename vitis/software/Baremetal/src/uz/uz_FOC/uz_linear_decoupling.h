@@ -12,6 +12,6 @@
  * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
  * @return uz_dq_t outputs latest values
  */
-uz_dq_t uz_FOC_linear_decoupling(uz_PMSM_t config, uz_dq_t i_actual_Ampere, float omega_el_rad_per_sec);
+uz_3ph_dq_t uz_FOC_linear_decoupling(uz_PMSM_t config, uz_3ph_dq_t i_actual_Ampere, float omega_el_rad_per_sec);
 
 #endif // UZ_LINEAR_DECOUPPLING_H

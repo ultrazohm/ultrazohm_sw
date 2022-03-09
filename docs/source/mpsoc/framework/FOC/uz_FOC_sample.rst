@@ -23,7 +23,7 @@ Example
      struct uz_dq_t i_reference_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
      struct uz_dq_t v_dq_Volts = uz_FOC_sample(FOC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
      //Alternatively the sample function can output the UVW-values
-     struct uz_UVW_t v_UVW_Volts = uz_FOC_sample_UVW(FOC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
+     struct uz_3ph_abc_t v_UVW_Volts = uz_FOC_sample_UVW(FOC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
   }
 
 Description

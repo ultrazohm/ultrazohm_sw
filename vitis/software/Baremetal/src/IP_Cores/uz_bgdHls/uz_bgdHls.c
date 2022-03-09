@@ -305,8 +305,7 @@ u32 uz_bgdHls_getBatchSize(uz_bgdHls_t *instance)
 float uz_bgdHls_getLearningRate(uz_bgdHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
-	u32 learningRate = XBgd_Get_learningRate(&instance->xilInstance);
-	return *((float*) &learningRate);
+	return instance->config.learningRate;
 }
 
 u32 uz_bgdHls_getLayerBufferSize(uz_bgdHls_t *instance)

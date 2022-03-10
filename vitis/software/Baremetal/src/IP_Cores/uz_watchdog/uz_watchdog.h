@@ -1,76 +1,13 @@
 #pragma once
-#ifndef UZ_XWDTTB_H
-#define UZ_XWDTTB_H
-
-/*****************************************************************************/
-/**
-*
-* @file uz_watchdog.h
-*
-* This file contains the functions to initialize the TimeBase Watchdog Timer Device
-* (WdtTb) driver and hardware device and a design example using the using interrupt
-* mode (for the WDT interrupt).
-*
-* @note
-*
-* This library has been developed based in the Xilinx driver examples.
-*
-* MODIFICATION HISTORY:
-*
-* <pre>
-* Ver   Who  Date     Changes
-* ----- ---- -------- ---------------------------------------------------------
-* 1.0   David Ken  03/11/21 First draft
-* 1.0   David Ken  09/02/22 First version
-* </pre>
-*
-******************************************************************************/
-
-/***************************** Include Files *********************************/
-
-#include "xparameters.h"
 #include <stdint.h>
 
+#define WDTTB_SECURITY_MARGIN_US 1 // Security Margin in micro seconds. Tested, only one is needed (adds 100 to the wdt counter, with the AXI frec at 100MHz)
 
-/************************** Enabling Module  *****************************/
-// Go to "../../uz/uz_global_configuration.h" and set UZ_WDTTB_MAX_INSTANCES to 0U (0 instances)
-
-/************************** Constant Definitions *****************************/
-
-/*
- * The following constants map to the XPAR parameters created in the
- * xparameters.h file. They are only defined here such that a user can easily
- * change all the needed parameters in one place.
- */
-#define WDTTB_DEVICE_ID         XPAR_WDTTB_0_DEVICE_ID
-// Constants for the GIC driver management
-#define INTC_DEVICE_ID         XPAR_SCUGIC_SINGLE_DEVICE_ID
-#define WDTTB_IRPT_INTR       XPAR_FABRIC_WDTTB_0_VEC_ID
-
-
+#define WIN_WDT_SBC_COUNT 0xFF /**< Selected byte count */
+#define WIN_WDT_BSS_COUNT 1	   /**< Byte segment selected */
 // We take as reference the Timer_up_time included in the UZ. (100000000U HZ)
-#define WDTTB_AXI_CLOCK_FREQ_HZ		XPAR_TIMER_UPTIME_64BIT_CLOCK_FREQ_HZ
+#define WDTTB_AXI_CLOCK_FREQ_HZ		100000000
 
-// Security Margin in micro seconds. Tested, only one is needed (adds 100 to the wdt counter, with the AXI frec at 100MHz)
-#define WDTTB_SECURITY_MARGIN_US		1
-
-
-/* How to set the second Window Size and the Interruption Point.
- * ------------------------------------------------------------
- * WIN_WDT_SW_COUNT		Second Window Size (Initial counter value)
- * WIN_WDT_BSS_COUNT	Byte selected of the counter. Possible values: 0,1,2,3
- * WIN_WDT_SBC_COUNT	Value to the selected byte. When selected byte of the counter equals this value and the rest of bits are 0, the INT is activated.
- *
- * With the next values we have:
- * 0x2710 = 10.000 clock ticks => 100 microsec to launch the Interruption
- * We establish the interruption point in the value of the counter: 0x0000FF00
- * to have enough time execute the handler function (and restart the WD timer inside the Second Win if we wan to resume normal execution)
- *
- * so we add the clocks needed to the int point: 0x0000FF00 + 0x2710 =  0x00012610 Total Second Window Size
- * */
-#define WIN_WDT_SW_COUNT	0x00012610	/**< INITIAL COUNTER VALUE*/
-#define WIN_WDT_SBC_COUNT	0xFF		/**< Selected byte count */
-#define WIN_WDT_BSS_COUNT	1		/**< Byte segment selected */
 
 #define WIN_WDT_SBC_COUNT_SHIFTED	0x0000FF00
 
@@ -92,7 +29,6 @@
 
 typedef struct uz_watchdog_ip_t uz_watchdog_ip_t;
 
-
 /** @struct uz_watchdog_ip_config_t
  *  @brief This structure is used to initialize the WatchDog Timer IP driver
  *  @var uz_watchdog_ip_config_t::CounterValue
@@ -105,11 +41,9 @@ typedef struct uz_watchdog_ip_t uz_watchdog_ip_t;
  */
 struct uz_watchdog_ip_config_t {
   uint32_t CounterValue;
-  uint16_t WdtTbDeviceId;
+  uint16_t device_id;
 };
 
-
-/************************** Function Prototypes ******************************/
 
 /**
 * @brief This function STARTs the System WatchDog Timer to the initial
@@ -161,5 +95,3 @@ uz_watchdog_ip_t* uz_watchdog_ip_init(struct uz_watchdog_ip_config_t watchdog_co
 */
 void uz_watchdog_IntrHandler(void *CallBackRef);
 
-
-#endif // UZ_XWDTTB_H

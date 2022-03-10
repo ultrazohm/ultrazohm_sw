@@ -3,13 +3,33 @@
 #include "unity.h"
 
 #include "uz_watchdog.h"
-
-// Driver level to be mocked (from XILINX)
 #include "mock_xwdttb.h"
-//#include "mock_xscugic.h"
-//#include "mock_xil_exception.h"
 
 #include "test_assert_with_exception.h"
+
+/* How to set the second Window Size and the Interruption Point.
+ * ------------------------------------------------------------
+ * WIN_WDT_SW_COUNT		Second Window Size (Initial counter value)
+ * WIN_WDT_BSS_COUNT	Byte selected of the counter. Possible values: 0,1,2,3
+ * WIN_WDT_SBC_COUNT	Value to the selected byte. When selected byte of the counter equals this value and the rest of bits are 0, the INT is activated.
+ *
+ * With the next values we have:
+ * 0x2710 = 10.000 clock ticks => 100 microsec to launch the Interruption
+ * We establish the interruption point in the value of the counter: 0x0000FF00
+ * to have enough time execute the handler function (and restart the WD timer inside the Second Win if we wan to resume normal execution)
+ *
+ * so we add the clocks needed to the int point: 0x0000FF00 + 0x2710 =  0x00012610 Total Second Window Size
+ * */
+#define WIN_WDT_SW_COUNT	0x00012610	/**< INITIAL COUNTER VALUE*/
+/* FROM FILE xparameters.h*/
+#define WDTTB_DEVICE_ID 0U
+#define XPAR_WDTTB_0_DEVICE_ID 0U
+#define XPAR_WDTTB_0_BASEADDR 0x80110000U
+#define XPAR_WDTTB_0_HIGHADDR 0x8011FFFFU
+#define XPAR_WDTTB_0_ENABLE_WINDOW_WDT 1U
+#define XPAR_WDTTB_0_MAX_COUNT_WIDTH 32U
+#define XPAR_WDTTB_0_SST_COUNT_WIDTH 30U
+#define XPAR_WDTTB_0_IS_PL 1U
 
 /************************** Variable Definitions *****************************/
 XWdtTb_Config conf =
@@ -51,24 +71,6 @@ void setUp(void)
 void tearDown(void)
 {
 }
-
-// // Private function declaration
-// void expected_init_functions(void);
-// // Private function definition
-// inline void expected_init_functions(void)
-// {  
-//     XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
-//     XWdtTb_CfgInitialize_IgnoreAndReturn(XST_SUCCESS);
-//     XWdtTb_ConfigureWDTMode_IgnoreAndReturn(XST_SUCCESS);
-//     XWdtTb_SelfTest_IgnoreAndReturn(XST_SUCCESS);
-//     XWdtTb_SetRegSpaceAccessMode_Ignore();
-//     XWdtTb_SetWindowCount_Ignore();
-//     XWdtTb_SetByteCount_Ignore();
-//     XWdtTb_SetByteSegment_Ignore();
-//     XWdtTb_DisableSst_Ignore();
-//     XWdtTb_DisablePsm_Ignore();
-//     XWdtTb_DisableFailCounter_Ignore(); 
-// }
 
 void test_uz_watchdog_initialization(void)
 {  

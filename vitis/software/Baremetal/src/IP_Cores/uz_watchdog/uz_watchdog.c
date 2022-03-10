@@ -147,29 +147,9 @@ static uz_watchdog_ip_t *uz_watchdog_allocation(uint32_t CounterValue, uint16_t 
 	uz_assert(&(self->xilinxWdtIP) != NULL);
     uz_assert(self != NULL);
 
-#ifdef TEST
-    /**< For testing purposes we define a fake component  */
-	XWdtTb_Config conf =
-	{
-		XPAR_WDTTB_0_DEVICE_ID,
-		XPAR_WDTTB_0_BASEADDR,
-		XPAR_WDTTB_0_ENABLE_WINDOW_WDT,
-		XPAR_WDTTB_0_MAX_COUNT_WIDTH,
-		XPAR_WDTTB_0_SST_COUNT_WIDTH,
-		XPAR_WDTTB_0_IS_PL
-	};
-
-	XWdtTb testWdtTb = {
-    .Config = conf,        /**< Hardware Configuration */
-    .IsReady = XIL_COMPONENT_IS_READY,          /**< Device is initialized and ready */
-   };
-   self->xilinxWdtIP = testWdtTb;
-#endif
-#ifndef TEST
 // The real initialization and readyness is done by xilinx driver.
 // Not done if we are mocking the driver under TEST.
     uz_assert(self->xilinxWdtIP.IsReady == XIL_COMPONENT_IS_READY);
-#endif
     instance_counter++;
     self->is_ready = true;
     return (self);

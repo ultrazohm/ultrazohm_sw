@@ -74,7 +74,11 @@ void test_uz_watchdog_initialization(void)
 {  
     // expected_init_functions();
     XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
-    XWdtTb_CfgInitialize_IgnoreAndReturn(XST_SUCCESS);
+
+    XWdtTb_CfgInitialize_ExpectAndReturn(&testWdtTb,&conf,conf.BaseAddr,0);
+    XWdtTb_CfgInitialize_IgnoreArg_InstancePtr();
+    XWdtTb_CfgInitialize_ReturnThruPtr_InstancePtr(&testWdtTb);
+
     XWdtTb_ConfigureWDTMode_IgnoreAndReturn(XST_SUCCESS);
     XWdtTb_SelfTest_IgnoreAndReturn(XST_SUCCESS);
     XWdtTb_SetRegSpaceAccessMode_Ignore();
@@ -100,7 +104,11 @@ void test_uz_watchdog_start(void)
 {
 //    expected_init_functions();
     XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
-    XWdtTb_CfgInitialize_IgnoreAndReturn(XST_SUCCESS);
+
+    XWdtTb_CfgInitialize_ExpectAndReturn(&testWdtTb,&conf,conf.BaseAddr,0);
+    XWdtTb_CfgInitialize_IgnoreArg_InstancePtr();
+    XWdtTb_CfgInitialize_ReturnThruPtr_InstancePtr(&testWdtTb);
+
     XWdtTb_ConfigureWDTMode_IgnoreAndReturn(XST_SUCCESS);
     XWdtTb_SelfTest_IgnoreAndReturn(XST_SUCCESS);
     XWdtTb_SetRegSpaceAccessMode_Ignore();
@@ -134,7 +142,11 @@ void test_uz_watchdog_restart(void)
 {
     // expected_init_functions();
     XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
-    XWdtTb_CfgInitialize_IgnoreAndReturn(XST_SUCCESS);
+
+    XWdtTb_CfgInitialize_ExpectAndReturn(&testWdtTb,&conf,conf.BaseAddr,0);
+    XWdtTb_CfgInitialize_IgnoreArg_InstancePtr();
+    XWdtTb_CfgInitialize_ReturnThruPtr_InstancePtr(&testWdtTb);
+
     XWdtTb_ConfigureWDTMode_IgnoreAndReturn(XST_SUCCESS);
     XWdtTb_SelfTest_IgnoreAndReturn(XST_SUCCESS);
     XWdtTb_SetRegSpaceAccessMode_Ignore();
@@ -162,7 +174,11 @@ void test_uz_watchdog_WdtTbIntrHandler_goodevent(void)
 {
     // expected_init_functions();
     XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
-    XWdtTb_CfgInitialize_IgnoreAndReturn(XST_SUCCESS);
+
+    XWdtTb_CfgInitialize_ExpectAndReturn(&testWdtTb,&conf,conf.BaseAddr,0);
+    XWdtTb_CfgInitialize_IgnoreArg_InstancePtr();
+    XWdtTb_CfgInitialize_ReturnThruPtr_InstancePtr(&testWdtTb);
+
     XWdtTb_ConfigureWDTMode_IgnoreAndReturn(XST_SUCCESS);
     XWdtTb_SelfTest_IgnoreAndReturn(XST_SUCCESS);
     XWdtTb_SetRegSpaceAccessMode_Ignore();
@@ -186,7 +202,11 @@ void test_uz_watchdog_WdtTbIntrHandler_badevent(void)
 {
     // expected_init_functions();
     XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
-    XWdtTb_CfgInitialize_IgnoreAndReturn(XST_SUCCESS);
+    
+    XWdtTb_CfgInitialize_ExpectAndReturn(&testWdtTb,&conf,conf.BaseAddr,0);
+    XWdtTb_CfgInitialize_IgnoreArg_InstancePtr();
+    XWdtTb_CfgInitialize_ReturnThruPtr_InstancePtr(&testWdtTb);
+
     XWdtTb_ConfigureWDTMode_IgnoreAndReturn(XST_SUCCESS);
     XWdtTb_SelfTest_IgnoreAndReturn(XST_SUCCESS);
     XWdtTb_SetRegSpaceAccessMode_Ignore();

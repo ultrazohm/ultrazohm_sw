@@ -130,7 +130,7 @@ void uz_watchdog_ip_start(uz_watchdog_ip_t *WdtTbInstancePtr) ;
 * @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents
 *							the WDTTB driver. Initialized and ready
 */
-void uz_watchdog_ip_restart(uz_watchdog_ip_t *WdtTbInstancePtr) ;
+void uz_watchdog_ip_restart(uz_watchdog_ip_t *self) ;
 
 /**
 * @brief This function initializes the WatchDog Timer IP driver and sets the inital value to the counter.

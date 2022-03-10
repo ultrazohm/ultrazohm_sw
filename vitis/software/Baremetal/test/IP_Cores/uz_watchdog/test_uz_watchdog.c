@@ -170,39 +170,12 @@ void test_uz_watchdog_restart_fail_assert_if_null(void)
     TEST_ASSERT_FAIL_ASSERT(uz_watchdog_ip_restart(NULL));
 }
 
-void test_uz_watchdog_WdtTbIntrHandler_goodevent(void)
-{
-    // expected_init_functions();
-    XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
-
-    XWdtTb_CfgInitialize_ExpectAndReturn(&testWdtTb,&conf,conf.BaseAddr,0);
-    XWdtTb_CfgInitialize_IgnoreArg_InstancePtr();
-    XWdtTb_CfgInitialize_ReturnThruPtr_InstancePtr(&testWdtTb);
-
-    XWdtTb_ConfigureWDTMode_IgnoreAndReturn(XST_SUCCESS);
-    XWdtTb_SelfTest_IgnoreAndReturn(XST_SUCCESS);
-    XWdtTb_SetRegSpaceAccessMode_Ignore();
-    XWdtTb_SetWindowCount_Ignore();
-    XWdtTb_SetByteCount_Ignore();
-    XWdtTb_SetByteSegment_Ignore();
-    XWdtTb_DisableSst_Ignore();
-    XWdtTb_DisablePsm_Ignore();
-    XWdtTb_DisableFailCounter_Ignore();
-    WdtTbInstancePtr = uz_watchdog_ip_init(config);
-  
-    XWdtTb_RestartWdt_Expect(&testWdtTb);
-    XWdtTb_IntrClear_Expect(&testWdtTb);
-    XWdtTb_GetLastEvent_ExpectAndReturn(&testWdtTb, XWDTTB_NO_BAD_EVENT); 
-
-    // Invoke the function to test if it does whats Expected                                     
-    uz_watchdog_IntrHandler(WdtTbInstancePtr);
-}
 
 void test_uz_watchdog_WdtTbIntrHandler_badevent(void)
 {
     // expected_init_functions();
     XWdtTb_LookupConfig_ExpectAndReturn(WDTTB_DEVICE_ID,&conf);
-    
+
     XWdtTb_CfgInitialize_ExpectAndReturn(&testWdtTb,&conf,conf.BaseAddr,0);
     XWdtTb_CfgInitialize_IgnoreArg_InstancePtr();
     XWdtTb_CfgInitialize_ReturnThruPtr_InstancePtr(&testWdtTb);
@@ -218,13 +191,8 @@ void test_uz_watchdog_WdtTbIntrHandler_badevent(void)
     XWdtTb_DisableFailCounter_Ignore();
     WdtTbInstancePtr = uz_watchdog_ip_init(config);
   
-    XWdtTb_RestartWdt_Expect(&testWdtTb);
-    XWdtTb_IntrClear_Expect(&testWdtTb);
-    XWdtTb_GetLastEvent_ExpectAndReturn(&testWdtTb, XWDTTB_SEC_WIN_EVENT); // BAD EVENT
-    XWdtTb_Stop_ExpectAndReturn(&testWdtTb, XST_SUCCESS);
-
     // Invoke the function to test if it does whats Expected                                     
-    uz_watchdog_IntrHandler(WdtTbInstancePtr);
+    TEST_ASSERT_FAIL_ASSERT(uz_watchdog_IntrHandler(WdtTbInstancePtr));
 }
 
 void test_uz_watchdog_WdtTbIntrHandler_fail_assert_if_null(void)

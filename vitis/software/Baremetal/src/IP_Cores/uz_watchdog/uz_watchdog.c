@@ -1,28 +1,19 @@
-/*****************************************************************************/
-/**
-*
-* @file uz_watchdog.c
-*
-* This file contains the functions to initialize the TimeBase Watchdog Timer Device
-* (WdtTb) driver and hardware device and a design example using the using interrupt
-* mode (for the WDT interrupt).
-*
-* @note
-*
-* This library has been developed based in the Xilinx driver examples.
-*
-* MODIFICATION HISTORY:
-*
-* <pre>
-* Ver   Who  Date     Changes
-* ----- ---- -------- ---------------------------------------------------------
-* 1.0   David Ken  03/11/21 First release
-* </pre>
-*
-******************************************************************************/
+/******************************************************************************
+ * Copyright Contributors to the UltraZohm project.
+ * Copyright 2021 David Ken, Eyke Liegmann, Tobias Schindler
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations under the License.
+ ******************************************************************************/
 
-
-/***************************** Include Files *********************************/
 #include "uz_watchdog.h"
 #include "xwdttb.h"
 #include "../../uz/uz_global_configuration.h"
@@ -30,10 +21,11 @@
 
 /************************** IP structure definition *****************************/
 
-struct uz_watchdog_ip_t {
-    bool is_ready;
-    XWdtTb xilinxWdtIP;
-    struct uz_watchdog_ip_config_t watchdog_config;
+struct uz_watchdog_ip_t
+{
+	bool is_ready;
+	XWdtTb xilinxWdtIP;
+	struct uz_watchdog_ip_config_t watchdog_config;
 };
 
 /************************** Variable Definitions *****************************/
@@ -41,35 +33,34 @@ struct uz_watchdog_ip_t {
 static size_t instance_counter = 0U;
 static uz_watchdog_ip_t instances[UZ_WDTTB_MAX_INSTANCES] = {0};
 
-volatile u32 HandlerCalled;	/* flag is set when timeout interrupt occurs */
-
 // Used for testing, to access INT priority, and check preemtion
-//XScuGic_Config *TempConfig;
+// XScuGic_Config *TempConfig;
 
 /************************** Function Definitions ******************************/
 
 /************************** Private Functions ******************************/
 
 /**
-* This function initializes and tests the functioning of the System WatchDog Timer driver and
-* sets the inital value to the counter. This is the total size for The Second Window (Open).
-* The closed Window is not used (0 value for its counter).
-* The rest of the optional functions: FC, SST and SIGNATURE are disabled.
-*
-* @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents the WDTTB driver.
-* @param	CounterValue - Initial value for the counter in number of tics.
-* 					Watchdog timeout is therefore CounterValue * Tcycle,
-* 					and Tcycle = 10 ns with a 100MH processor.
-* @param	WdtTbDeviceId is the Device ID of the WdtTb Device and is
-*		typically XPAR_<WDTTB_instance>_DEVICE_ID value from
-*		xparameters.h.
-*
-* @return	XST_SUCCESS if successful, otherwise XST_FAILURE.
-*
-* @note		None.
-*
-******************************************************************************/
-static int uz_watchdog_XilinxInit(XWdtTb *WdtTbInstancePtr, uint32_t CounterValue, uint16_t WdtTbDeviceId) {
+ * This function initializes and tests the functioning of the System WatchDog Timer driver and
+ * sets the inital value to the counter. This is the total size for The Second Window (Open).
+ * The closed Window is not used (0 value for its counter).
+ * The rest of the optional functions: FC, SST and SIGNATURE are disabled.
+ *
+ * @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents the WDTTB driver.
+ * @param	CounterValue - Initial value for the counter in number of tics.
+ * 					Watchdog timeout is therefore CounterValue * Tcycle,
+ * 					and Tcycle = 10 ns with a 100MH processor.
+ * @param	WdtTbDeviceId is the Device ID of the WdtTb Device and is
+ *		typically XPAR_<WDTTB_instance>_DEVICE_ID value from
+ *		xparameters.h.
+ *
+ * @return	XST_SUCCESS if successful, otherwise XST_FAILURE.
+ *
+ * @note		None.
+ *
+ ******************************************************************************/
+static int uz_watchdog_XilinxInit(XWdtTb *WdtTbInstancePtr, uint32_t CounterValue, uint16_t WdtTbDeviceId)
+{
 	int Status;
 	XWdtTb_Config *Config;
 
@@ -78,7 +69,8 @@ static int uz_watchdog_XilinxInit(XWdtTb *WdtTbInstancePtr, uint32_t CounterValu
 	 * configuration in the config table, then initialize it.
 	 */
 	Config = XWdtTb_LookupConfig(WdtTbDeviceId); // WDTTB_DEVICE_ID by default
-	if (NULL == Config) {
+	if (NULL == Config)
+	{
 		return XST_FAILURE;
 	}
 
@@ -87,12 +79,14 @@ static int uz_watchdog_XilinxInit(XWdtTb *WdtTbInstancePtr, uint32_t CounterValu
 	 * it is ready to use.
 	 */
 	Status = XWdtTb_CfgInitialize(WdtTbInstancePtr, Config,
-					  Config->BaseAddr);
-	if (Status != XST_SUCCESS) {
+								  Config->BaseAddr);
+	if (Status != XST_SUCCESS)
+	{
 		return XST_FAILURE;
 	}
 
-	if(!WdtTbInstancePtr->Config.IsPl) {
+	if (!WdtTbInstancePtr->Config.IsPl)
+	{
 		/*Enable Window Watchdog Feature in WWDT */
 		XWdtTb_ConfigureWDTMode(WdtTbInstancePtr, XWT_WWDT);
 	}
@@ -101,7 +95,8 @@ static int uz_watchdog_XilinxInit(XWdtTb *WdtTbInstancePtr, uint32_t CounterValu
 	 * Perform a self-test to ensure that the hardware was built correctly
 	 */
 	Status = XWdtTb_SelfTest(WdtTbInstancePtr);
-	if (Status != XST_SUCCESS) {
+	if (Status != XST_SUCCESS)
+	{
 		return XST_FAILURE;
 	}
 
@@ -130,51 +125,52 @@ static int uz_watchdog_XilinxInit(XWdtTb *WdtTbInstancePtr, uint32_t CounterValu
 static uz_watchdog_ip_t *uz_watchdog_allocation(uint32_t CounterValue, uint16_t WdtTbDeviceId)
 {
 	uz_assert(instance_counter < UZ_WDTTB_MAX_INSTANCES);
-    uz_watchdog_ip_t *self = &instances[instance_counter];
-    uz_assert_false(self->is_ready);
+	uz_watchdog_ip_t *self = &instances[instance_counter];
+	uz_assert_false(self->is_ready);
 
-    /*
+	/*
 	 * Call the WDT init to initialize and set timer to the given timeout.
 	 */
 	int Status = uz_watchdog_XilinxInit(&(self->xilinxWdtIP), CounterValue, WdtTbDeviceId); // XPFW_WDT_EXPIRE_TIME for WDT PS
 
-	if (Status != XST_SUCCESS) {
-		//DEBUG
-		//xil_printf("WDT initialization failed\r\n");
+	if (Status != XST_SUCCESS)
+	{
+		// DEBUG
+		// xil_printf("WDT initialization failed\r\n");
 		return NULL;
 	}
 
 	uz_assert(&(self->xilinxWdtIP) != NULL);
-    uz_assert(self != NULL);
+	uz_assert(self != NULL);
 
-// The real initialization and readyness is done by xilinx driver.
-// Not done if we are mocking the driver under TEST.
-    uz_assert(self->xilinxWdtIP.IsReady == XIL_COMPONENT_IS_READY);
-    instance_counter++;
-    self->is_ready = true;
-    return (self);
+	// The real initialization and readyness is done by xilinx driver.
+	// Not done if we are mocking the driver under TEST.
+	uz_assert(self->xilinxWdtIP.IsReady == XIL_COMPONENT_IS_READY);
+	instance_counter++;
+	self->is_ready = true;
+	return (self);
 }
 
 /************************** Public Functions ******************************/
 
-uz_watchdog_ip_t* uz_watchdog_ip_init(struct uz_watchdog_ip_config_t watchdog_config)
+uz_watchdog_ip_t *uz_watchdog_ip_init(struct uz_watchdog_ip_config_t watchdog_config)
 {
 	uz_assert_not_zero(watchdog_config.CounterValue);
-//	xil_printf("WDT: CounterValue is %d\r\n",watchdog_config.CounterValue);
+	//	xil_printf("WDT: CounterValue is %d\r\n",watchdog_config.CounterValue);
 	uz_watchdog_ip_t *self = uz_watchdog_allocation(watchdog_config.CounterValue, watchdog_config.WdtTbDeviceId);
-	self->watchdog_config=watchdog_config;
-    return (self);
+	self->watchdog_config = watchdog_config;
+	return (self);
 }
 
 /*****************************************************************************/
 
-void uz_watchdog_ip_start(uz_watchdog_ip_t *WdtTbInstancePtr) {
+void uz_watchdog_ip_start(uz_watchdog_ip_t *WdtTbInstancePtr)
+{
 
 	/* Verify arguments. */
 	uz_assert(WdtTbInstancePtr != NULL);
 	uz_assert(WdtTbInstancePtr->is_ready);
 	uz_assert(WdtTbInstancePtr->xilinxWdtIP.IsReady == XIL_COMPONENT_IS_READY);
-
 
 	/* Write a 1 to Set register space to writable */
 	XWdtTb_SetRegSpaceAccessMode(&(WdtTbInstancePtr->xilinxWdtIP), 1);
@@ -190,140 +186,16 @@ void uz_watchdog_ip_start(uz_watchdog_ip_t *WdtTbInstancePtr) {
 
 /*****************************************************************************/
 
-void uz_watchdog_ip_restart(uz_watchdog_ip_t *WdtTbInstancePtr) {
-	/* Verify arguments. */
-	uz_assert(WdtTbInstancePtr != NULL);
-	uz_assert(WdtTbInstancePtr->is_ready);
-	uz_assert(WdtTbInstancePtr->xilinxWdtIP.IsReady == XIL_COMPONENT_IS_READY);
-
-	XWdtTb_RestartWdt(&(WdtTbInstancePtr->xilinxWdtIP));
-}
-
-
-/*****************************************************************************/
-
-/**
-* @brief This function tests the functioning of the Window Watchdog
-*        Timer in the interrupt mode.
-*
-*        This function waits for interrupt programmed point in
-*        second window. If the interrupt has occurred, interrupt
-*        handler sets a flag and restarts the timer. This function
-*        then clears the interrupt, flag and waits for second
-*        interrupt to occur and continue waiting for second
-*        interrupt as mentioned above.
-*
-*        This function assumes that the reset output of the Window
-*        Watchdog Timer is not connected to the reset of the processor.
-*        The function allows the Window Watchdog Timer to timeout such
-*        that a reset will occur if it is connected.
-*
-*        The Driver has to be properly initialized and the GIC interrupt system ALSO!
-*
-* @param	WdtTbInstancePtr is a pointer to the instance of WdtTb driver.
-*
-* @return
-*		- XST_SUCCESS if interrupt example run successfully.
-*		- XST_FAILURE, if reset has occurred.
-*/
-int uz_watchdog_WinIntrExample(uz_watchdog_ip_t *WdtTbInstancePtr)
+void uz_watchdog_ip_restart(uz_watchdog_ip_t *self)
 {
-	/*
-	 * The Driver has to be properly initialized and the GIC interrupt system ALSO!
-	 */
-	uz_assert(WdtTbInstancePtr != NULL);
-	uz_assert(WdtTbInstancePtr->is_ready);
-	uz_assert(WdtTbInstancePtr->xilinxWdtIP.IsReady == XIL_COMPONENT_IS_READY);
+	/* Verify arguments. */
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
 
-	XWdtTb_Start(&(WdtTbInstancePtr->xilinxWdtIP));
-	//	WdtExpired = FALSE;
-
-	/* After enabled, write enabled auto clears, so we have to write a 1 to Set register space to writable */
-	XWdtTb_SetRegSpaceAccessMode(&(WdtTbInstancePtr->xilinxWdtIP), 1);
-
-	HandlerCalled = 0;
-
-	/*
-	 * Wait for the first occurrence of interrupt programmed point.
-	 */
-	while ((HandlerCalled == 0)) ;
-
-
-	/* Clear interrupt point */
-	XWdtTb_IntrClear(&(WdtTbInstancePtr->xilinxWdtIP));
-//	WdtExpired = FALSE;
-	HandlerCalled = 0;
-
-	/* Wait for the second occurrence of interrupt programmed point */
-	while ((HandlerCalled == 0)) ;
-
-	/* Clear interrupt point */
-	XWdtTb_IntrClear(&(WdtTbInstancePtr->xilinxWdtIP));
-	HandlerCalled = 0;
-
-	/* Check for last event */
-	if (XWdtTb_GetLastEvent(&(WdtTbInstancePtr->xilinxWdtIP)) != XWDTTB_NO_BAD_EVENT) {
-		/* Disable and disconnect the interrupt system */
-//		WdtTbDisableIntrSystem(IntcInstancePtr);
-
-		/* Stop the timer */
-		XWdtTb_Stop(&(WdtTbInstancePtr->xilinxWdtIP));
-		return XST_FAILURE;
-	}
-
-//	/* Disable and disconnect the interrupt system */
-//	WdtTbDisableIntrSystem(IntcInstancePtr);
-//
-	/* Stop the timer */
-//	XWdtTb_Stop(&WdtTbInstance);
-
-	return XST_SUCCESS;
+	XWdtTb_RestartWdt(&(self->xilinxWdtIP));
 }
-
-/*****************************************************************************/
 
 void uz_watchdog_IntrHandler(void *CallBackRef)
 {
-
-	uz_watchdog_ip_t *WdtTbInstancePtr = (uz_watchdog_ip_t *)CallBackRef;
-
-	uz_assert(WdtTbInstancePtr != NULL);
-	uz_assert(WdtTbInstancePtr->is_ready);
-	uz_assert(WdtTbInstancePtr->xilinxWdtIP.IsReady == XIL_COMPONENT_IS_READY);
-
-	//	DEBUG INFO
-	// u32 reg;
-	// reg = XScuGic_ReadReg(TempConfig->CpuBaseAddress, XSCUGIC_RUN_PRIOR_OFFSET);
-	//	xil_printf("WdtTbIntrHandler AND RESTART AND CLEAR: Running priority in WDT handler is %d\r\n",reg >> 3);
-
-	/*
-	 * Restart the watchdog timer as a normal application would.
-	 * The WDT Retart is to continue the execution
-	 * */
-	XWdtTb_RestartWdt(&(WdtTbInstancePtr->xilinxWdtIP));
-
-	/* Clear interrupt point. To allow a new INT to be triggered again (see documentation)*/
-	XWdtTb_IntrClear(&(WdtTbInstancePtr->xilinxWdtIP));
-
-
-	/* Increment the number of failures handled or received invocations.*/
-	HandlerCalled++;
-
-	/* Check for last event: After Restart inside the second Window it should be always a GOOD_EVENT.
-	 * If it is not, Disable and Stop().
-	 * */
-	if (XWdtTb_GetLastEvent(&(WdtTbInstancePtr->xilinxWdtIP)) != XWDTTB_NO_BAD_EVENT) {
-		/* Disable and disconnect the interrupt system
-		 * FROM the isr.c main interrupt manager inside
-		 * this Baremetal project with
-		 * WdtTbDisableIntrSystem(&IntcInstance);*/
-
-		/* Stop the timer */
-		XWdtTb_Stop(&(WdtTbInstancePtr->xilinxWdtIP));
-
-	}
-//	OR / AND TO STOP PS EXECUTION!!
-//  Xil_Assert(__FILE__, __LINE__);
-
-
+	uz_assert(0); // Fire assertion since watchdog interrupt occured --> Watchdog was not padded within the specified time frame
 }

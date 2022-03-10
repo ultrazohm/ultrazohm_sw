@@ -87,6 +87,24 @@ void uz_SpeedControl_reset(uz_SpeedControl_t* self){
 	uz_PI_Controller_reset(self->Controller);
 }
 
+void uz_SpeedControl_set_Ki(uz_SpeedControl_t* self, float new_Ki){
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+    uz_PI_Controller_set_Ki(self->Controller, new_Ki);
+}
+
+void uz_SpeedControl_set_Kp(uz_SpeedControl_t* self, float new_Kp){
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+    uz_PI_Controller_set_Kp(self->Controller, new_Kp);
+}
+
+void uz_SpeedControl_update_limits(uz_SpeedControl_t* self, float upper_limit, float lower_limit){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_PI_Controller_update_limits(self->Controller, upper_limit, lower_limit);
+}
+
 void uz_SpeedControl_set_field_weakening(uz_SpeedControl_t* self, bool field_weakening_status) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);

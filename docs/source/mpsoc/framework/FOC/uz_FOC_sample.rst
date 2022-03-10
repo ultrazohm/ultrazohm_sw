@@ -6,7 +6,7 @@ Sample function
 
 .. doxygenfunction:: uz_FOC_sample
 
-.. doxygenfunction:: uz_FOC_sample_UVW
+.. doxygenfunction:: uz_FOC_sample_abc
 
 Example
 =======

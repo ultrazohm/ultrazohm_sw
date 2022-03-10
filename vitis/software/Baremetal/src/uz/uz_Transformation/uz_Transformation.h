@@ -69,7 +69,7 @@ typedef struct uz_9ph_abc_t{
  */
 
 /**
- * @brief Calculates the dq0-components from the UVW-Phases
+ * @brief Calculates the dq0-components from the abc-Phases
  * 
  * @param input uz_3ph_abc_t struct
  * @param theta_el_rad electrical rotor angle in rad

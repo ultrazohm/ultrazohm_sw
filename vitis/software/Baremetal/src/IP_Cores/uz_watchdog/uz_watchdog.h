@@ -122,7 +122,7 @@ struct uz_watchdog_ip_config_t {
 * @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents
 *							the WDTTB driver. Initialized and ready
 */
-void uz_watchdog_ip_start(uz_watchdog_ip_t *WdtTbInstancePtr) ;
+void uz_watchdog_ip_start(uz_watchdog_ip_t *self) ;
 
 /**
 * @brief This function Restart the AXI IP watch dog timer: kick forward.

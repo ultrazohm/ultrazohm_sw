@@ -43,7 +43,7 @@ uz_3ph_dq_t uz_dqIPcore_get_id_iq(uz_dqIPcore_t* self) {
     return currents;
 }
 
-uz_3ph_abc_t uz_dqIPcore_get_i_uvw(uz_dqIPcore_t* self) {
+uz_3ph_abc_t uz_dqIPcore_get_i_abc(uz_dqIPcore_t* self) {
 
     uz_assert_not_NULL(self);
 	uz_3ph_abc_t currents = { 0 };

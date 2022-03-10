@@ -68,7 +68,7 @@ uz_3ph_dq_t uz_FOC_sample(uz_FOC* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_d
 	return (v_output_Volts);
 }
 
-uz_3ph_abc_t uz_FOC_sample_UVW(uz_FOC* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad) {
+uz_3ph_abc_t uz_FOC_sample_abc(uz_FOC* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_3ph_dq_t v_dq_Volts = uz_FOC_sample(self, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);

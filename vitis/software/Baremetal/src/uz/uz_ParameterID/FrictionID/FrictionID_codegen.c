@@ -79,43 +79,34 @@ static void reset_FOC_output(ExtU_FrictionID_t *rtFrictionID_U,
   /* '<S1>:618:10' FrictionID_FOC_output.enableFOC_current     = boolean(0); */
   rtFrictionID_Y->FrictionID_FOC_output.enableFOC_current = false;
 
-  /* '<S1>:618:11' FrictionID_FOC_output.VibOn_out             = boolean(0); */
-  rtFrictionID_Y->FrictionID_FOC_output.VibOn_out = false;
-
-  /* '<S1>:618:12' FrictionID_FOC_output.VibFreq_out           = uint16(0); */
-  rtFrictionID_Y->FrictionID_FOC_output.VibFreq_out = 0U;
-
-  /* '<S1>:618:13' FrictionID_FOC_output.VibAmp_out            = single(0.0); */
-  rtFrictionID_Y->FrictionID_FOC_output.VibAmp_out = 0.0F;
-
-  /* '<S1>:618:14' FrictionID_FOC_output.resetIntegrator       = boolean(1); */
+  /* '<S1>:618:11' FrictionID_FOC_output.resetIntegrator       = boolean(1); */
   rtFrictionID_Y->FrictionID_FOC_output.resetIntegrator = true;
 
-  /* '<S1>:618:15' FrictionID_FOC_output.Kp_id_out             = single(GlobalConfig.Kp_id); */
+  /* '<S1>:618:12' FrictionID_FOC_output.Kp_id_out             = single(GlobalConfig.Kp_id); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_id_out =
     rtFrictionID_U->GlobalConfig_out.Kp_id;
 
-  /* '<S1>:618:16' FrictionID_FOC_output.Kp_iq_out             = single(GlobalConfig.Kp_iq); */
+  /* '<S1>:618:13' FrictionID_FOC_output.Kp_iq_out             = single(GlobalConfig.Kp_iq); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_iq_out =
     rtFrictionID_U->GlobalConfig_out.Kp_iq;
 
-  /* '<S1>:618:17' FrictionID_FOC_output.Kp_n_out              = single(GlobalConfig.Kp_n); */
+  /* '<S1>:618:14' FrictionID_FOC_output.Kp_n_out              = single(GlobalConfig.Kp_n); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_n_out =
     rtFrictionID_U->GlobalConfig_out.Kp_n;
 
-  /* '<S1>:618:18' FrictionID_FOC_output.Ki_id_out             = single(GlobalConfig.Ki_id); */
+  /* '<S1>:618:15' FrictionID_FOC_output.Ki_id_out             = single(GlobalConfig.Ki_id); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_id_out =
     rtFrictionID_U->GlobalConfig_out.Ki_id;
 
-  /* '<S1>:618:19' FrictionID_FOC_output.Ki_iq_out             = single(GlobalConfig.Ki_iq); */
+  /* '<S1>:618:16' FrictionID_FOC_output.Ki_iq_out             = single(GlobalConfig.Ki_iq); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_iq_out =
     rtFrictionID_U->GlobalConfig_out.Ki_iq;
 
-  /* '<S1>:618:20' FrictionID_FOC_output.Ki_n_out              = single(GlobalConfig.Ki_n); */
+  /* '<S1>:618:17' FrictionID_FOC_output.Ki_n_out              = single(GlobalConfig.Ki_n); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_n_out =
     rtFrictionID_U->GlobalConfig_out.Ki_n;
 
-  /* '<S1>:618:21' FrictionID_FOC_output.activeState               = uint16(0); */
+  /* '<S1>:618:18' FrictionID_FOC_output.activeState               = uint16(0); */
   rtFrictionID_Y->FrictionID_FOC_output.activeState = 0U;
 }
 
@@ -243,143 +234,163 @@ static void gerade(real32_T u[2], DW_FrictionID_t *rtFrictionID_DW)
 /*
  * Function for Chart: '<Root>/FrictionID'
  * function initParams
- *  initialize variables
+ * This is used instead of "after(1.0,sec) to ensure the same transition time
+ * independelty of the sampletime in the c-code
  */
 static void initParams(ExtU_FrictionID_t *rtFrictionID_U, ExtY_FrictionID_t
   *rtFrictionID_Y, DW_FrictionID_t *rtFrictionID_DW)
 {
+  real32_T tmp;
+
+  /* Inport: '<Root>/GlobalConfig' */
   /* MATLAB Function 'initParams': '<S1>:546' */
-  /* '<S1>:546:4' measArray1			= single(zeros(1024,1)); */
+  /* '<S1>:546:5' one_sec_transition_counter = uint32(1/GlobalConfig.sampleTimeISR); */
+  tmp = roundf(1.0F / rtFrictionID_U->GlobalConfig_out.sampleTimeISR);
+  if (tmp < 4.2949673E+9F) {
+    if (tmp >= 0.0F) {
+      rtFrictionID_DW->one_sec_transition_counter = (uint32_T)tmp;
+    } else {
+      rtFrictionID_DW->one_sec_transition_counter = 0U;
+    }
+  } else {
+    rtFrictionID_DW->one_sec_transition_counter = MAX_uint32_T;
+  }
+
+  /* Inport: '<Root>/GlobalConfig' */
+  /* '<S1>:546:6' delay_transition_counter = uint32(single(5*(GlobalConfig.Kp_iq / GlobalConfig.Ki_iq))/GlobalConfig.sampleTimeISR); */
+  tmp = roundf(rtFrictionID_U->GlobalConfig_out.Kp_iq /
+               rtFrictionID_U->GlobalConfig_out.Ki_iq * 5.0F /
+               rtFrictionID_U->GlobalConfig_out.sampleTimeISR);
+  if (tmp < 4.2949673E+9F) {
+    if (tmp >= 0.0F) {
+      rtFrictionID_DW->delay_transition_counter = (uint32_T)tmp;
+    } else {
+      rtFrictionID_DW->delay_transition_counter = 0U;
+    }
+  } else {
+    rtFrictionID_DW->delay_transition_counter = MAX_uint32_T;
+  }
+
+  /*  initialize variables */
+  /* '<S1>:546:8' measArray1			= single(zeros(1024,1)); */
   memset(&rtFrictionID_DW->measArray1[0], 0, sizeof(real32_T) << 10U);
 
-  /* '<S1>:546:5' meas_sum            = single(zeros(2,1)); */
+  /* '<S1>:546:9' meas_sum            = single(zeros(2,1)); */
   rtFrictionID_DW->meas_sum[0] = 0.0F;
   rtFrictionID_DW->meas_sum[1] = 0.0F;
 
   /* used for Friction Id */
-  /* '<S1>:546:6' i_est 				= single(zeros(2048,1)); */
+  /* '<S1>:546:10' i_est 				= single(zeros(2048,1)); */
   memset(&rtFrictionID_DW->i_est[0], 0, sizeof(real32_T) << 11U);
 
-  /* '<S1>:546:7' measArray2 					= single(zeros(2048,2)); */
+  /* '<S1>:546:11' measArray2 					= single(zeros(2048,2)); */
   memset(&rtFrictionID_DW->measArray2[0], 0, sizeof(real32_T) << 12U);
 
-  /* '<S1>:546:8' counter             = uint32(1); */
+  /* '<S1>:546:12' counter             = uint32(1); */
   rtFrictionID_DW->counter = 1U;
 
-  /* '<S1>:546:9' Ustep               = single(zeros(103,1)); */
+  /* '<S1>:546:13' Ustep               = single(zeros(103,1)); */
   memset(&rtFrictionID_DW->Ustep[0], 0, 103U * sizeof(real32_T));
 
-  /* '<S1>:546:10' nextstate           = uint16(0); */
+  /* '<S1>:546:14' nextstate           = uint16(0); */
   rtFrictionID_DW->nextstate = 0U;
 
-  /* '<S1>:546:11' i_eva               = single(0); */
+  /* '<S1>:546:15' i_eva               = single(0); */
   rtFrictionID_DW->i_eva = 0.0F;
 
   /* Inport: '<Root>/FrictionConfigID' */
-  /* '<S1>:546:12' n_eva               = single(FrictionConfigID.n_eva_max); */
+  /* '<S1>:546:16' n_eva               = single(FrictionConfigID.n_eva_max); */
   rtFrictionID_DW->n_eva = rtFrictionID_U->FrictionConfigID.n_eva_max;
 
-  /* '<S1>:546:13' n_eva_step          = single(n_eva/FrictionConfigID.N_Visco); */
+  /* '<S1>:546:17' n_eva_step          = single(n_eva/FrictionConfigID.N_Visco); */
   rtFrictionID_DW->n_eva_step = rtFrictionID_DW->n_eva /
     rtFrictionID_U->FrictionConfigID.N_Visco;
 
-  /* '<S1>:546:14' i_Brk               = single(0); */
+  /* '<S1>:546:18' i_Brk               = single(0); */
   rtFrictionID_DW->i_Brk = 0.0F;
 
-  /* '<S1>:546:15' mean_count          = single(0); */
+  /* '<S1>:546:19' mean_count          = single(0); */
   rtFrictionID_DW->mean_count = 0.0F;
 
-  /* '<S1>:546:16' omega_Brk           = single(1); */
+  /* '<S1>:546:20' omega_Brk           = single(1); */
   rtFrictionID_DW->omega_Brk = 1.0F;
 
   /* Inport: '<Root>/GlobalConfig' incorporates:
    *  Inport: '<Root>/FrictionConfigID'
    */
-  /* '<S1>:546:17' delay               = single(5*(GlobalConfig.Kp_iq / GlobalConfig.Ki_iq)); */
-  rtFrictionID_DW->delay = rtFrictionID_U->GlobalConfig_out.Kp_iq /
-    rtFrictionID_U->GlobalConfig_out.Ki_iq * 5.0F;
-
-  /* '<S1>:546:18' i_eva_step          = single(GlobalConfig.ratCurrent*FrictionConfigID.StepScale); */
+  /* '<S1>:546:21' delay               = single(5*(GlobalConfig.Kp_iq / GlobalConfig.Ki_iq)); */
+  /* '<S1>:546:22' i_eva_step          = single(GlobalConfig.ratCurrent*FrictionConfigID.StepScale); */
   rtFrictionID_DW->i_eva_step = rtFrictionID_U->GlobalConfig_out.ratCurrent *
     rtFrictionID_U->FrictionConfigID.StepScale;
 
   /* Outport: '<Root>/FrictionID_FOC_output' */
   /* Outputs */
-  /* '<S1>:546:21' FrictionID_FOC_output.n_ref_FOC             = single(0.0); */
+  /* '<S1>:546:25' FrictionID_FOC_output.n_ref_FOC             = single(0.0); */
   rtFrictionID_Y->FrictionID_FOC_output.n_ref_FOC = 0.0F;
 
-  /* '<S1>:546:22' FrictionID_FOC_output.PRBS_out              = single(0.0); */
+  /* '<S1>:546:26' FrictionID_FOC_output.PRBS_out              = single(0.0); */
   rtFrictionID_Y->FrictionID_FOC_output.PRBS_out = 0.0F;
 
-  /* '<S1>:546:23' FrictionID_FOC_output.i_dq_ref.d            = single(0.0); */
+  /* '<S1>:546:27' FrictionID_FOC_output.i_dq_ref.d            = single(0.0); */
   rtFrictionID_Y->FrictionID_FOC_output.i_dq_ref.d = 0.0F;
 
-  /* '<S1>:546:24' FrictionID_FOC_output.i_dq_ref.q            = single(i_eva); */
+  /* '<S1>:546:28' FrictionID_FOC_output.i_dq_ref.q            = single(i_eva); */
   rtFrictionID_Y->FrictionID_FOC_output.i_dq_ref.q = rtFrictionID_DW->i_eva;
 
-  /* '<S1>:546:25' FrictionID_FOC_output.i_dq_ref.zero         = single(0.0); */
+  /* '<S1>:546:29' FrictionID_FOC_output.i_dq_ref.zero         = single(0.0); */
   rtFrictionID_Y->FrictionID_FOC_output.i_dq_ref.zero = 0.0F;
 
-  /* '<S1>:546:26' FrictionID_FOC_output.enableFOC_speed       = boolean(0); */
+  /* '<S1>:546:30' FrictionID_FOC_output.enableFOC_speed       = boolean(0); */
   rtFrictionID_Y->FrictionID_FOC_output.enableFOC_speed = false;
 
-  /* '<S1>:546:27' FrictionID_FOC_output.enableFOC_current     = boolean(0); */
+  /* '<S1>:546:31' FrictionID_FOC_output.enableFOC_current     = boolean(0); */
   rtFrictionID_Y->FrictionID_FOC_output.enableFOC_current = false;
 
-  /* '<S1>:546:28' FrictionID_FOC_output.VibOn_out             = boolean(0); */
-  rtFrictionID_Y->FrictionID_FOC_output.VibOn_out = false;
-
-  /* '<S1>:546:29' FrictionID_FOC_output.VibFreq_out           = uint16(0); */
-  rtFrictionID_Y->FrictionID_FOC_output.VibFreq_out = 0U;
-
-  /* '<S1>:546:30' FrictionID_FOC_output.VibAmp_out            = single(0.0); */
-  rtFrictionID_Y->FrictionID_FOC_output.VibAmp_out = 0.0F;
-
-  /* '<S1>:546:31' FrictionID_FOC_output.resetIntegrator       = boolean(1); */
+  /* '<S1>:546:32' FrictionID_FOC_output.resetIntegrator       = boolean(1); */
   rtFrictionID_Y->FrictionID_FOC_output.resetIntegrator = true;
 
   /* Outport: '<Root>/finishedFrictionID' */
-  /* '<S1>:546:32' finishedFrictionID                          = boolean(0); */
+  /* '<S1>:546:33' finishedFrictionID                          = boolean(0); */
   rtFrictionID_Y->finishedFrictionID = false;
 
   /* Outport: '<Root>/FrictionID_FOC_output' incorporates:
    *  Inport: '<Root>/GlobalConfig'
    */
-  /* '<S1>:546:33' FrictionID_FOC_output.Kp_id_out             = single(GlobalConfig.Kp_id); */
+  /* '<S1>:546:34' FrictionID_FOC_output.Kp_id_out             = single(GlobalConfig.Kp_id); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_id_out =
     rtFrictionID_U->GlobalConfig_out.Kp_id;
 
-  /* '<S1>:546:34' FrictionID_FOC_output.Kp_iq_out             = single(GlobalConfig.Kp_iq); */
+  /* '<S1>:546:35' FrictionID_FOC_output.Kp_iq_out             = single(GlobalConfig.Kp_iq); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_iq_out =
     rtFrictionID_U->GlobalConfig_out.Kp_iq;
 
-  /* '<S1>:546:35' FrictionID_FOC_output.Kp_n_out              = single(GlobalConfig.Kp_n); */
+  /* '<S1>:546:36' FrictionID_FOC_output.Kp_n_out              = single(GlobalConfig.Kp_n); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_n_out =
     rtFrictionID_U->GlobalConfig_out.Kp_n;
 
-  /* '<S1>:546:36' FrictionID_FOC_output.Ki_id_out             = single(GlobalConfig.Ki_id); */
+  /* '<S1>:546:37' FrictionID_FOC_output.Ki_id_out             = single(GlobalConfig.Ki_id); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_id_out =
     rtFrictionID_U->GlobalConfig_out.Ki_id;
 
-  /* '<S1>:546:37' FrictionID_FOC_output.Ki_iq_out             = single(GlobalConfig.Ki_iq); */
+  /* '<S1>:546:38' FrictionID_FOC_output.Ki_iq_out             = single(GlobalConfig.Ki_iq); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_iq_out =
     rtFrictionID_U->GlobalConfig_out.Ki_iq;
 
-  /* '<S1>:546:38' FrictionID_FOC_output.Ki_n_out              = single(GlobalConfig.Ki_n); */
+  /* '<S1>:546:39' FrictionID_FOC_output.Ki_n_out              = single(GlobalConfig.Ki_n); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_n_out =
     rtFrictionID_U->GlobalConfig_out.Ki_n;
 
-  /* '<S1>:546:39' FrictionID_FOC_output.activeState           = uint16(0); */
+  /* '<S1>:546:40' FrictionID_FOC_output.activeState           = uint16(0); */
   rtFrictionID_Y->FrictionID_FOC_output.activeState = 0U;
 
   /* Outport: '<Root>/FrictionID_output' */
-  /* '<S1>:546:41' FrictionID_output.BrkTorque                 = single(0.0); */
+  /* '<S1>:546:42' FrictionID_output.BrkTorque                 = single(0.0); */
   rtFrictionID_Y->FrictionID_output.BrkTorque = 0.0F;
 
-  /* '<S1>:546:42' FrictionID_output.CoulTorque                = single(0.0); */
+  /* '<S1>:546:43' FrictionID_output.CoulTorque                = single(0.0); */
   rtFrictionID_Y->FrictionID_output.CoulTorque = 0.0F;
 
-  /* '<S1>:546:43' FrictionID_output.ViscoTorque               = single(0.0); */
+  /* '<S1>:546:44' FrictionID_output.ViscoTorque               = single(0.0); */
   rtFrictionID_Y->FrictionID_output.ViscoTorque = 0.0F;
 }
 
@@ -405,10 +416,6 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
    *  Outport: '<Root>/FrictionID_FOC_output'
    *  Outport: '<Root>/FrictionID_output'
    */
-  if (rtFrictionID_DW->temporalCounter_i1 < MAX_uint32_T) {
-    rtFrictionID_DW->temporalCounter_i1++;
-  }
-
   /* Gateway: FrictionID */
   /* During: FrictionID */
   if (rtFrictionID_DW->is_active_c7_FrictionID == 0U) {
@@ -456,10 +463,12 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
       /* Entry Internal 'BreakawayTorqueEstimation': '<S1>:492' */
       /* Transition: '<S1>:494' */
       rtFrictionID_DW->is_BreakawayTorqueEstimation = IN_waitstate;
-      rtFrictionID_DW->temporalCounter_i1 = 0U;
 
       /* Entry 'waitstate': '<S1>:489' */
-      /* '<S1>:489:4' FrictionID_FOC_output.activeState=uint16(311); */
+      /* '<S1>:489:4' counter2 = uint32(1); */
+      rtFrictionID_DW->counter2 = 1U;
+
+      /* '<S1>:489:5' FrictionID_FOC_output.activeState=uint16(311); */
       rtFrictionID_Y->FrictionID_FOC_output.activeState = 311U;
 
       /* '<S1>:612:1' sf_internal_predicateOutput = GlobalConfig.Reset==1; */
@@ -510,7 +519,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
       if (rtFrictionID_DW->is_CoulombFrictionTorqueEstimat == IN_DecreaseSpeed)
       {
         /* Exit 'DecreaseSpeed': '<S1>:488' */
-        /* '<S1>:488:11' mean_count=1; */
+        /* '<S1>:488:15' mean_count=1; */
         rtFrictionID_DW->mean_count = 1.0F;
         rtFrictionID_DW->is_CoulombFrictionTorqueEstimat = IN_NO_ACTIVE_CHILD;
       } else {
@@ -534,10 +543,10 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
 
      case IN_ResetIntegrator1:
       /* Exit 'ResetIntegrator1': '<S1>:604' */
-      /* '<S1>:604:7' FrictionID_FOC_output.enableFOC_current=boolean(0); */
+      /* '<S1>:604:9' FrictionID_FOC_output.enableFOC_current=boolean(0); */
       rtFrictionID_Y->FrictionID_FOC_output.enableFOC_current = false;
 
-      /* '<S1>:604:8' FrictionID_FOC_output.resetIntegrator=boolean(0); */
+      /* '<S1>:604:10' FrictionID_FOC_output.resetIntegrator=boolean(0); */
       rtFrictionID_Y->FrictionID_FOC_output.resetIntegrator = false;
       rtFrictionID_DW->is_frictionID = IN_NO_ACTIVE_CHILD;
       break;
@@ -545,14 +554,14 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
      case IN_ResetIntegrator2:
       /* Outport: '<Root>/finishedFrictionID' */
       /* Exit 'ResetIntegrator2': '<S1>:599' */
-      /* '<S1>:599:7' finishedFrictionID=boolean(1); */
+      /* '<S1>:599:9' finishedFrictionID=boolean(1); */
       rtFrictionID_Y->finishedFrictionID = true;
 
       /* Outport: '<Root>/enteredFrictionID' */
-      /* '<S1>:599:8' enteredFrictionID=boolean(0); */
+      /* '<S1>:599:10' enteredFrictionID=boolean(0); */
       rtFrictionID_Y->enteredFrictionID = false;
 
-      /* '<S1>:599:9' reset_FOC_output; */
+      /* '<S1>:599:11' reset_FOC_output; */
       reset_FOC_output(rtFrictionID_U, rtFrictionID_Y, rtFrictionID_DW);
       rtFrictionID_DW->is_frictionID = IN_NO_ACTIVE_CHILD;
       break;
@@ -577,10 +586,12 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
         exit_atomic_BreakawayTorqueEsti(rtFrictionID_U, rtFrictionID_Y,
           rtFrictionID_DW);
         rtFrictionID_DW->is_frictionID = IN_ResetIntegrator1;
-        rtFrictionID_DW->temporalCounter_i1 = 0U;
 
         /* Entry 'ResetIntegrator1': '<S1>:604' */
-        /* '<S1>:604:3' FrictionID_FOC_output.activeState=uint16(320); */
+        /* '<S1>:604:3' counter=uint32(1); */
+        rtFrictionID_DW->counter = 1U;
+
+        /* '<S1>:604:4' FrictionID_FOC_output.activeState=uint16(320); */
         rtFrictionID_Y->FrictionID_FOC_output.activeState = 320U;
       } else {
         /* '<S1>:492:7' FrictionID_FOC_output.i_dq_ref.q=i_eva; */
@@ -618,16 +629,18 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
           /* During 'increaseCurrent': '<S1>:495' */
           /* Transition: '<S1>:491' */
           rtFrictionID_DW->is_BreakawayTorqueEstimation = IN_waitstate;
-          rtFrictionID_DW->temporalCounter_i1 = 0U;
 
           /* Entry 'waitstate': '<S1>:489' */
-          /* '<S1>:489:4' FrictionID_FOC_output.activeState=uint16(311); */
+          /* '<S1>:489:4' counter2 = uint32(1); */
+          rtFrictionID_DW->counter2 = 1U;
+
+          /* '<S1>:489:5' FrictionID_FOC_output.activeState=uint16(311); */
           rtFrictionID_Y->FrictionID_FOC_output.activeState = 311U;
 
           /* During 'waitstate': '<S1>:489' */
-          /* '<S1>:490:1' sf_internal_predicateOutput = after(delay,sec); */
-        } else if (rtFrictionID_DW->temporalCounter_i1 >= (uint32_T)ceil
-                   (rtFrictionID_DW->delay / 5.0E-5 - 5.0E-13)) {
+          /* '<S1>:490:1' sf_internal_predicateOutput = delay_transition_counter == counter2; */
+        } else if (rtFrictionID_DW->delay_transition_counter ==
+                   rtFrictionID_DW->counter2) {
           /* Transition: '<S1>:490' */
           rtFrictionID_DW->is_BreakawayTorqueEstimation = IN_increaseCurrent;
 
@@ -659,6 +672,14 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
             /* '<S1>:495:12' nextstate=uint16(0); */
             rtFrictionID_DW->nextstate = 0U;
           }
+        } else {
+          /* '<S1>:489:7' counter2 = counter2 + 1; */
+          qY = rtFrictionID_DW->counter2 + /*MW:OvSatOk*/ 1U;
+          if (rtFrictionID_DW->counter2 + 1U < rtFrictionID_DW->counter2) {
+            qY = MAX_uint32_T;
+          }
+
+          rtFrictionID_DW->counter2 = qY;
         }
       }
       break;
@@ -672,7 +693,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
         if (rtFrictionID_DW->is_CoulombFrictionTorqueEstimat == IN_DecreaseSpeed)
         {
           /* Exit 'DecreaseSpeed': '<S1>:488' */
-          /* '<S1>:488:11' mean_count=1; */
+          /* '<S1>:488:15' mean_count=1; */
           rtFrictionID_DW->mean_count = 1.0F;
           rtFrictionID_DW->is_CoulombFrictionTorqueEstimat = IN_NO_ACTIVE_CHILD;
         } else {
@@ -692,10 +713,12 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
         /* '<S1>:487:22' FrictionID_FOC_output.n_ref_FOC=single(0); */
         rtFrictionID_Y->FrictionID_FOC_output.n_ref_FOC = 0.0F;
         rtFrictionID_DW->is_frictionID = IN_ResetIntegrator2;
-        rtFrictionID_DW->temporalCounter_i1 = 0U;
 
         /* Entry 'ResetIntegrator2': '<S1>:599' */
-        /* '<S1>:599:3' FrictionID_FOC_output.activeState=uint16(340); */
+        /* '<S1>:599:3' counter=uint32(1); */
+        rtFrictionID_DW->counter = 1U;
+
+        /* '<S1>:599:4' FrictionID_FOC_output.activeState=uint16(340); */
         rtFrictionID_Y->FrictionID_FOC_output.activeState = 340U;
       } else {
         /* '<S1>:487:17' FrictionID_FOC_output.n_ref_FOC=n_eva; */
@@ -703,12 +726,12 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
         if (rtFrictionID_DW->is_CoulombFrictionTorqueEstimat == IN_DecreaseSpeed)
         {
           /* During 'DecreaseSpeed': '<S1>:488' */
-          /* '<S1>:483:1' sf_internal_predicateOutput = after(delay,sec); */
-          if (rtFrictionID_DW->temporalCounter_i1 >= (uint32_T)ceil
-              (rtFrictionID_DW->delay / 5.0E-5 - 5.0E-13)) {
+          /* '<S1>:483:1' sf_internal_predicateOutput = delay_transition_counter == counter; */
+          if (rtFrictionID_DW->delay_transition_counter ==
+              rtFrictionID_DW->counter) {
             /* Transition: '<S1>:483' */
             /* Exit 'DecreaseSpeed': '<S1>:488' */
-            /* '<S1>:488:11' mean_count=1; */
+            /* '<S1>:488:15' mean_count=1; */
             rtFrictionID_DW->mean_count = 1.0F;
             rtFrictionID_DW->is_CoulombFrictionTorqueEstimat =
               IN_SmoothingCurrentAndOmega;
@@ -722,6 +745,14 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
 
             /* '<S1>:486:4' switcher=boolean(1); */
             rtFrictionID_DW->switcher = true;
+          } else {
+            /* '<S1>:488:13' counter = counter +1; */
+            qY = rtFrictionID_DW->counter + /*MW:OvSatOk*/ 1U;
+            if (rtFrictionID_DW->counter + 1U < rtFrictionID_DW->counter) {
+              qY = MAX_uint32_T;
+            }
+
+            rtFrictionID_DW->counter = qY;
           }
 
           /* During 'SmoothingCurrentAndOmega': '<S1>:486' */
@@ -729,15 +760,17 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
         } else if (rtFrictionID_DW->mean_count == 256.0F) {
           /* Transition: '<S1>:493' */
           rtFrictionID_DW->is_CoulombFrictionTorqueEstimat = IN_DecreaseSpeed;
-          rtFrictionID_DW->temporalCounter_i1 = 0U;
 
           /* Entry 'DecreaseSpeed': '<S1>:488' */
-          /* '<S1>:488:3' FrictionID_FOC_output.activeState = uint16(332) */
+          /* '<S1>:488:3' counter = uint32(1); */
+          rtFrictionID_DW->counter = 1U;
+
+          /* '<S1>:488:4' FrictionID_FOC_output.activeState = uint16(332) */
           rtFrictionID_Y->FrictionID_FOC_output.activeState = 332U;
 
-          /* '<S1>:488:4' if(n_eva>0&&switcher==boolean(1)) */
+          /* '<S1>:488:5' if(n_eva>0&&switcher==boolean(1)) */
           if ((rtFrictionID_DW->n_eva > 0.0F) && rtFrictionID_DW->switcher) {
-            /* '<S1>:488:5' measArray1(counter)=mean(measArray2(1:256,1)); */
+            /* '<S1>:488:6' measArray1(counter)=mean(measArray2(1:256,1)); */
             x = rtFrictionID_DW->measArray2[0];
             for (i = 0; i < 255; i++) {
               x += rtFrictionID_DW->measArray2[i + 1];
@@ -746,7 +779,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
             rtFrictionID_DW->measArray1[(int32_T)rtFrictionID_DW->counter - 1] =
               x / 256.0F;
 
-            /* '<S1>:488:6' i_est(counter)=1.5*GlobalConfig.PMSM_config.polePairs*GlobalConfig.PMSM_config.Psi_PM_Vs*mean(measArray2(1:256,2)); */
+            /* '<S1>:488:7' i_est(counter)=1.5*GlobalConfig.PMSM_config.polePairs*GlobalConfig.PMSM_config.Psi_PM_Vs*mean(measArray2(1:256,2)); */
             x = rtFrictionID_DW->measArray2[2048];
             for (i = 0; i < 255; i++) {
               x += rtFrictionID_DW->measArray2[i + 2049];
@@ -757,7 +790,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
               rtFrictionID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs * (x /
               256.0F);
 
-            /* '<S1>:488:7' counter=counter+1; */
+            /* '<S1>:488:8' counter=counter+1; */
             qY = rtFrictionID_DW->counter + /*MW:OvSatOk*/ 1U;
             if (rtFrictionID_DW->counter + 1U < rtFrictionID_DW->counter) {
               qY = MAX_uint32_T;
@@ -765,7 +798,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
 
             rtFrictionID_DW->counter = qY;
 
-            /* '<S1>:488:8' n_eva=n_eva-(n_eva_step); */
+            /* '<S1>:488:9' n_eva=n_eva-(n_eva_step); */
             rtFrictionID_DW->n_eva -= rtFrictionID_DW->n_eva_step;
           }
         } else {
@@ -836,14 +869,15 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
 
      case IN_ResetIntegrator1:
       /* During 'ResetIntegrator1': '<S1>:604' */
-      /* '<S1>:607:1' sf_internal_predicateOutput = after(0.1,sec); */
-      if (rtFrictionID_DW->temporalCounter_i1 >= 2000U) {
+      /* '<S1>:607:1' sf_internal_predicateOutput = one_sec_transition_counter == counter; */
+      if (rtFrictionID_DW->one_sec_transition_counter ==
+          rtFrictionID_DW->counter) {
         /* Transition: '<S1>:607' */
         /* Exit 'ResetIntegrator1': '<S1>:604' */
-        /* '<S1>:604:7' FrictionID_FOC_output.enableFOC_current=boolean(0); */
+        /* '<S1>:604:9' FrictionID_FOC_output.enableFOC_current=boolean(0); */
         rtFrictionID_Y->FrictionID_FOC_output.enableFOC_current = false;
 
-        /* '<S1>:604:8' FrictionID_FOC_output.resetIntegrator=boolean(0); */
+        /* '<S1>:604:10' FrictionID_FOC_output.resetIntegrator=boolean(0); */
         rtFrictionID_Y->FrictionID_FOC_output.resetIntegrator = false;
         rtFrictionID_DW->is_frictionID = IN_CoulombFrictionTorqueEstimat;
 
@@ -856,8 +890,6 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
         rtFrictionID_Y->FrictionID_FOC_output.n_ref_FOC = 0.0F;
 
         /* '<S1>:487:6' delay=single(0.1); */
-        rtFrictionID_DW->delay = 0.1F;
-
         /* '<S1>:487:7' measArray1(1:128)=zeros(128,1); */
         memset(&rtFrictionID_DW->measArray1[0], 0, sizeof(real32_T) << 7U);
 
@@ -900,26 +932,35 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
         /* '<S1>:486:4' switcher=boolean(1); */
         rtFrictionID_DW->switcher = true;
       } else {
-        /* '<S1>:604:5' FrictionID_FOC_output.resetIntegrator=boolean(1); */
+        /* '<S1>:604:6' FrictionID_FOC_output.resetIntegrator=boolean(1); */
         rtFrictionID_Y->FrictionID_FOC_output.resetIntegrator = true;
+
+        /* '<S1>:604:7' counter = counter + 1; */
+        qY = rtFrictionID_DW->counter + /*MW:OvSatOk*/ 1U;
+        if (rtFrictionID_DW->counter + 1U < rtFrictionID_DW->counter) {
+          qY = MAX_uint32_T;
+        }
+
+        rtFrictionID_DW->counter = qY;
       }
       break;
 
      default:
       /* During 'ResetIntegrator2': '<S1>:599' */
-      /* '<S1>:600:1' sf_internal_predicateOutput = after(1.0,sec); */
-      if (rtFrictionID_DW->temporalCounter_i1 >= 20000U) {
+      /* '<S1>:600:1' sf_internal_predicateOutput = one_sec_transition_counter == counter; */
+      if (rtFrictionID_DW->one_sec_transition_counter ==
+          rtFrictionID_DW->counter) {
         /* Outport: '<Root>/finishedFrictionID' */
         /* Transition: '<S1>:600' */
         /* Exit 'ResetIntegrator2': '<S1>:599' */
-        /* '<S1>:599:7' finishedFrictionID=boolean(1); */
+        /* '<S1>:599:9' finishedFrictionID=boolean(1); */
         rtFrictionID_Y->finishedFrictionID = true;
 
         /* Outport: '<Root>/enteredFrictionID' */
-        /* '<S1>:599:8' enteredFrictionID=boolean(0); */
+        /* '<S1>:599:10' enteredFrictionID=boolean(0); */
         rtFrictionID_Y->enteredFrictionID = false;
 
-        /* '<S1>:599:9' reset_FOC_output; */
+        /* '<S1>:599:11' reset_FOC_output; */
         reset_FOC_output(rtFrictionID_U, rtFrictionID_Y, rtFrictionID_DW);
         rtFrictionID_DW->is_frictionID = IN_NO_ACTIVE_CHILD;
         rtFrictionID_DW->is_c7_FrictionID = IN_Waiting;
@@ -929,7 +970,15 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
         /* FrictionID */
         /* donothing */
       } else {
-        /* '<S1>:599:5' FrictionID_FOC_output.resetIntegrator=boolean(1); */
+        /* '<S1>:599:6' counter = counter +1; */
+        qY = rtFrictionID_DW->counter + /*MW:OvSatOk*/ 1U;
+        if (rtFrictionID_DW->counter + 1U < rtFrictionID_DW->counter) {
+          qY = MAX_uint32_T;
+        }
+
+        rtFrictionID_DW->counter = qY;
+
+        /* '<S1>:599:7' FrictionID_FOC_output.resetIntegrator=boolean(1); */
         rtFrictionID_Y->FrictionID_FOC_output.resetIntegrator = true;
       }
       break;
@@ -956,9 +1005,6 @@ void FrictionID_initialize(RT_MODEL_FrictionID_t *const rtFrictionID_M)
   rtFrictionID_Y->FrictionID_FOC_output.n_ref_FOC = 0.0F;
   rtFrictionID_Y->FrictionID_FOC_output.enableFOC_speed = false;
   rtFrictionID_Y->FrictionID_FOC_output.enableFOC_current = false;
-  rtFrictionID_Y->FrictionID_FOC_output.VibOn_out = false;
-  rtFrictionID_Y->FrictionID_FOC_output.VibAmp_out = 0.0F;
-  rtFrictionID_Y->FrictionID_FOC_output.VibFreq_out = 0U;
   rtFrictionID_Y->FrictionID_FOC_output.resetIntegrator = false;
   rtFrictionID_Y->FrictionID_FOC_output.PRBS_out = 0.0F;
   rtFrictionID_Y->FrictionID_FOC_output.Kp_id_out = 0.0F;

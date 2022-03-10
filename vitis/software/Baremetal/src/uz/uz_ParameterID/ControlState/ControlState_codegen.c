@@ -392,39 +392,27 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
       rtControlState_Y->GlobalConfig_out.enableParameterID =
         rtControlState_U->GlobalConfig_in.enableParameterID;
 
-      /* '<S1>:39:7' GlobalConfig_out.VibOn = GlobalConfig_in.VibOn; */
-      rtControlState_Y->GlobalConfig_out.VibOn =
-        rtControlState_U->GlobalConfig_in.VibOn;
-
-      /* '<S1>:39:8' GlobalConfig_out.VibAmp = GlobalConfig_in.VibAmp; */
-      rtControlState_Y->GlobalConfig_out.VibAmp =
-        rtControlState_U->GlobalConfig_in.VibAmp;
-
-      /* '<S1>:39:9' GlobalConfig_out.VibFreq = GlobalConfig_in.VibFreq; */
-      rtControlState_Y->GlobalConfig_out.VibFreq =
-        rtControlState_U->GlobalConfig_in.VibFreq;
-
-      /* '<S1>:39:10' GlobalConfig_out.ElectricalID = GlobalConfig_in.ElectricalID; */
+      /* '<S1>:39:7' GlobalConfig_out.ElectricalID = GlobalConfig_in.ElectricalID; */
       rtControlState_Y->GlobalConfig_out.ElectricalID =
         rtControlState_U->GlobalConfig_in.ElectricalID;
 
-      /* '<S1>:39:11' GlobalConfig_out.FrictionID = GlobalConfig_in.FrictionID */
+      /* '<S1>:39:8' GlobalConfig_out.FrictionID = GlobalConfig_in.FrictionID */
       rtControlState_Y->GlobalConfig_out.FrictionID =
         rtControlState_U->GlobalConfig_in.FrictionID;
 
-      /* '<S1>:39:12' GlobalConfig_out.TwoMassID = GlobalConfig_in.TwoMassID; */
+      /* '<S1>:39:9' GlobalConfig_out.TwoMassID = GlobalConfig_in.TwoMassID; */
       rtControlState_Y->GlobalConfig_out.TwoMassID =
         rtControlState_U->GlobalConfig_in.TwoMassID;
 
-      /* '<S1>:39:13' GlobalConfig_out.FluxMapID = GlobalConfig_in.FluxMapID; */
+      /* '<S1>:39:10' GlobalConfig_out.FluxMapID = GlobalConfig_in.FluxMapID; */
       rtControlState_Y->GlobalConfig_out.FluxMapID =
         rtControlState_U->GlobalConfig_in.FluxMapID;
 
-      /* '<S1>:39:14' GlobalConfig_out.OnlineID = GlobalConfig_in.OnlineID; */
+      /* '<S1>:39:11' GlobalConfig_out.OnlineID = GlobalConfig_in.OnlineID; */
       rtControlState_Y->GlobalConfig_out.OnlineID =
         rtControlState_U->GlobalConfig_in.OnlineID;
 
-      /* '<S1>:39:15' GlobalConfig_out.sampleTimeISR = GlobalConfig_in.sampleTimeISR; */
+      /* '<S1>:39:12' GlobalConfig_out.sampleTimeISR = GlobalConfig_in.sampleTimeISR; */
       rtControlState_Y->GlobalConfig_out.sampleTimeISR =
         rtControlState_U->GlobalConfig_in.sampleTimeISR;
       switch (rtControlState_DW->is_ControlState) {
@@ -859,9 +847,6 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
   rtControlState_Y->GlobalConfig_out.sampleTimeISR = 0.0F;
   rtControlState_Y->GlobalConfig_out.ratCurrent = 0.0F;
   rtControlState_Y->GlobalConfig_out.ratSpeed = 0.0F;
-  rtControlState_Y->GlobalConfig_out.VibAmp = 0.0F;
-  rtControlState_Y->GlobalConfig_out.VibOn = false;
-  rtControlState_Y->GlobalConfig_out.VibFreq = 0U;
   rtControlState_Y->GlobalConfig_out.i_dq_ref.d = 0.0F;
   rtControlState_Y->GlobalConfig_out.i_dq_ref.q = 0.0F;
   rtControlState_Y->GlobalConfig_out.i_dq_ref.zero = 0.0F;

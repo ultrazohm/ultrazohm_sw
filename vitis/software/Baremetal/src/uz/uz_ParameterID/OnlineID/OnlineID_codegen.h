@@ -94,10 +94,10 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
 
 typedef struct {
-  uz_UVW_t V_UVW;
-  uz_UVW_t I_UVW;
-  uz_dq_t i_dq;
-  uz_dq_t v_dq;
+  uz_3ph_abc_t V_abc;
+  uz_3ph_abc_t I_abc;
+  uz_3ph_dq_t i_dq;
+  uz_3ph_dq_t v_dq;
   real32_T omega_m;
   real32_T omega_el;
   real32_T theta_m;
@@ -129,10 +129,7 @@ typedef struct {
   real32_T sampleTimeISR;
   real32_T ratCurrent;
   real32_T ratSpeed;
-  real32_T VibAmp;
-  boolean_T VibOn;
-  uint16_T VibFreq;
-  uz_dq_t i_dq_ref;
+  uz_3ph_dq_t i_dq_ref;
   real32_T n_ref;
 } uz_PID_GlobalConfig_t;
 
@@ -245,7 +242,7 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-	real32_T cleaned_psi_array[600]; /* '<Root>/cleaned_psi_array' */
+  real32_T cleaned_psi_array[600];     /* '<Root>/cleaned_psi_array' */
   uz_PID_OnlineIDConfig_t OnlineIDConfig;/* '<Root>/OnlineIDConfig' */
   uz_PID_ActualValues_t ActualValues;  /* '<Root>/ActualValues' */
   uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */

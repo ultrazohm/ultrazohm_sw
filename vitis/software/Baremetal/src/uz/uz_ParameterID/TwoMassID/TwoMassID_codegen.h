@@ -88,10 +88,10 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
 
 typedef struct {
-  uz_UVW_t V_UVW;
-  uz_UVW_t I_UVW;
-  uz_dq_t i_dq;
-  uz_dq_t v_dq;
+  uz_3ph_abc_t V_abc;
+  uz_3ph_abc_t I_abc;
+  uz_3ph_dq_t i_dq;
+  uz_3ph_dq_t v_dq;
   real32_T omega_m;
   real32_T omega_el;
   real32_T theta_m;
@@ -123,10 +123,7 @@ typedef struct {
   real32_T sampleTimeISR;
   real32_T ratCurrent;
   real32_T ratSpeed;
-  real32_T VibAmp;
-  boolean_T VibOn;
-  uint16_T VibFreq;
-  uz_dq_t i_dq_ref;
+  uz_3ph_dq_t i_dq_ref;
   real32_T n_ref;
 } uz_PID_GlobalConfig_t;
 
@@ -151,14 +148,11 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_Controller_Parameters_output_t_
 
 typedef struct {
-  uz_dq_t i_dq_ref;
+  uz_3ph_dq_t i_dq_ref;
   uint16_T activeState;
   real32_T n_ref_FOC;
   boolean_T enableFOC_speed;
   boolean_T enableFOC_current;
-  boolean_T VibOn_out;
-  real32_T VibAmp_out;
-  uint16_T VibFreq_out;
   boolean_T resetIntegrator;
   real32_T PRBS_out;
   real32_T Kp_id_out;
@@ -344,9 +338,9 @@ typedef struct {
   uint32_T mean_count;                 /* '<Root>/TwoMassID' */
   uint32_T nextstate;                  /* '<Root>/TwoMassID' */
   uint32_T prbs_count;                 /* '<Root>/TwoMassID' */
+  uint32_T one_sec_transition_counter; /* '<Root>/TwoMassID' */
   uint32_T qY;
   uint32_T qY_c;
-  uint16_T temporalCounter_i1;         /* '<Root>/TwoMassID' */
   uint16_T index_min;
   uint16_T index_max;
   uint8_T is_active_c17_TwoMassID;     /* '<Root>/TwoMassID' */

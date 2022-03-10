@@ -159,7 +159,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	}
 }
 
-struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_dq_t v_dq_Volts, uz_PWM_SS_2L_t* PWM_Module) {
+struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_3ph_dq_t v_dq_Volts, uz_PWM_SS_2L_t* PWM_Module) {
 	struct uz_DutyCycle_t output_DutyCycle = { 0 };
 	if (Data->Controller_Parameters.activeState >= 110 && Data->Controller_Parameters.activeState <= 143) {
 		uz_PWM_SS_2L_set_tristate(PWM_Module, Data->ElectricalID_Output->enable_TriState[0], Data->ElectricalID_Output->enable_TriState[1], Data->ElectricalID_Output->enable_TriState[2]);
@@ -168,8 +168,8 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
 		output_DutyCycle.DutyCycle_W = Data->ElectricalID_Output->PWM_Switch_4;
 	} else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
 	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control))) {
-		uz_UVW_t V_UVW_Volts = uz_dq_inverse_transformation(v_dq_Volts, Data->ActualValues.theta_el);
-		output_DutyCycle = uz_FOC_generate_DutyCycles(V_UVW_Volts, Data->ActualValues.V_DC);
+		uz_3ph_abc_t V_abc_Volts = uz_transformation_3ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
+		output_DutyCycle = uz_FOC_generate_DutyCycles(V_abc_Volts, Data->ActualValues.V_DC);
 	} else {
 		output_DutyCycle.DutyCycle_U = 0.0f;
 		output_DutyCycle.DutyCycle_V = 0.0f;
@@ -182,9 +182,9 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
 	}
 	return (output_DutyCycle);
 }
-uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance) {
-	uz_dq_t v_dq_Volts = { 0 };
-	uz_dq_t i_SpeedControl_reference_Ampere = { 0 };
+uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_SpeedControl_t* Speed_instance) {
+	uz_3ph_dq_t v_dq_Volts = { 0 };
+	uz_3ph_dq_t i_SpeedControl_reference_Ampere = { 0 };
 	bool ext_clamping = false;
 
 	if (Data->Controller_Parameters.enableFOC_speed == true) {
@@ -192,13 +192,7 @@ uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_insta
 		ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
 		i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->Controller_Parameters.n_ref_FOC, Data->ActualValues.V_DC,
 		                Data->Controller_Parameters.i_dq_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping);
-		//Create sine excitation for J-Identification
-		if (Data->Controller_Parameters.VibOn_out == true) {
-			float sine_excitation = uz_wavegen_sine(Data->Controller_Parameters.VibAmp_out, Data->Controller_Parameters.VibFreq_out);
-			i_SpeedControl_reference_Ampere.q += sine_excitation;
-		} else {
-			i_SpeedControl_reference_Ampere.q += Data->Controller_Parameters.PRBS_out;
-		}
+		i_SpeedControl_reference_Ampere.q += Data->Controller_Parameters.PRBS_out;
 	}
 	if (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true) {
 		//Change, if desired, the current controller here
@@ -230,7 +224,7 @@ uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_insta
 		}
 
 	if (Data->ControlFlags->finished_all_Offline_states == true) {
-		uz_dq_t Online_current_ref = Data->GlobalConfig.i_dq_ref;
+		uz_3ph_dq_t Online_current_ref = Data->GlobalConfig.i_dq_ref;
 		if (Data->OnlineID_Output->IdControlFlag == true) {
 
 			if (Data->AutoRefCurrents_Config.enableCRS == true) {
@@ -397,9 +391,6 @@ static void uz_PID_FOC_output_set_zero(uz_ParameterID_Data_t* Data) {
 	Data->Controller_Parameters.Kp_iq_out = 0.0f;
 	Data->Controller_Parameters.Kp_n_out = 0.0f;
 	Data->Controller_Parameters.PRBS_out = 0.0f;
-	Data->Controller_Parameters.VibAmp_out = 0.0f;
-	Data->Controller_Parameters.VibFreq_out = 0U;
-	Data->Controller_Parameters.VibOn_out = false;
 	Data->Controller_Parameters.enableFOC_current = false;
 	Data->Controller_Parameters.enableFOC_speed = false;
 	Data->Controller_Parameters.i_dq_ref.d = 0.0f;
@@ -411,9 +402,9 @@ static void uz_PID_FOC_output_set_zero(uz_ParameterID_Data_t* Data) {
 
 float uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {
 	float factor = sqrtf(1.0f + powf((Data->ActualValues.omega_el * RC), 2.0f));
-	Data->ActualValues.V_UVW.U = Data->ActualValues.V_UVW.U * factor;
-	Data->ActualValues.V_UVW.V = Data->ActualValues.V_UVW.V * factor;
-	Data->ActualValues.V_UVW.W = Data->ActualValues.V_UVW.W * factor;
+	Data->ActualValues.V_abc.a = Data->ActualValues.V_abc.a * factor;
+	Data->ActualValues.V_abc.b = Data->ActualValues.V_abc.b * factor;
+	Data->ActualValues.V_abc.c = Data->ActualValues.V_abc.c * factor;
 	float theta_el_corr =Data->ActualValues.theta_el - atanf(Data->ActualValues.omega_el * RC);
 	return(theta_el_corr);
 }
@@ -437,9 +428,6 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->GlobalConfig.FrictionID = false;
 	Data->GlobalConfig.TwoMassID = false;
 	Data->GlobalConfig.OnlineID = false;
-	Data->GlobalConfig.VibAmp = 0.0f;
-	Data->GlobalConfig.VibFreq = 0U;
-	Data->GlobalConfig.VibOn = false;
 	Data->GlobalConfig.sampleTimeISR = 50.0e-06f;
 
 	//Initialize motor-related parameters inside Global-Config
@@ -461,6 +449,7 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->GlobalConfig.ratSpeed = 4000.0f;
 
 	//Initialize ElectricalID-Config
+	Data->ElectricalID_Config.goertzlFreq = 0.0f;
 	Data->ElectricalID_Config.dutyCyc = 0.0f;
 	Data->ElectricalID_Config.goertzlAmp = 0.0f;
 	Data->ElectricalID_Config.identLq = false;

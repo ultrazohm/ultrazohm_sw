@@ -35,7 +35,7 @@ DS_Data Global_Data = {
 uz_ParameterID_t* ParameterID = NULL;
 uz_ParameterID_Data_t PID_Data = { 0 };
 uz_FOC* FOC_instance = NULL;
-uz_PI_Controller* SpeedControl_instance = NULL;
+uz_SpeedControl_t* SpeedControl_instance = NULL;
 
 enum init_chain
 {
@@ -73,8 +73,8 @@ int main(void)
 			                .lower_limit = -15.0f };
 			struct uz_PI_Controller_config config_iq = { .Kp = PID_Data.GlobalConfig.Kp_iq, .Ki = PID_Data.GlobalConfig.Ki_iq, .samplingTime_sec = 0.00005f, .upper_limit = 15.0f,
 			                .lower_limit = -15.0f };
-			struct uz_PI_Controller_config config_n = { .Kp = PID_Data.GlobalConfig.Kp_n, .Ki = PID_Data.GlobalConfig.Ki_n, .samplingTime_sec = 0.00005f, .upper_limit = 10.0f,
-			                .lower_limit = -10.0f };
+            struct uz_SpeedControl_config config_n = { .config_controller.Kp = PID_Data.GlobalConfig.Kp_n, .config_controller.Ki = PID_Data.GlobalConfig.Ki_n,
+                            .config_controller.samplingTime_sec = 0.00005f, .config_controller.upper_limit = 10.0f, .config_controller.lower_limit = -10.0f, .enable_field_weakening = false };
 			struct uz_FOC_config config_FOC = { .config_PMSM = PID_Data.GlobalConfig.PMSM_config, .config_id = config_id, .config_iq = config_iq };
 			FOC_instance = uz_FOC_init(config_FOC);
 			SpeedControl_instance = uz_SpeedControl_init(config_n);

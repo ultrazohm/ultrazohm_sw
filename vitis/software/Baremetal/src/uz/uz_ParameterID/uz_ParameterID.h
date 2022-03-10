@@ -63,7 +63,7 @@ typedef struct uz_ParameterID_Data_t {
 	uz_PID_FluxMapID_output_t *FluxMapID_Output; /**<Output: Pointer to output struct of FluxMapID */
 	uz_PID_OnlineID_output_t* OnlineID_Output; /**<Output: Pointer to output struct of OnlineID */
 	uz_PID_Controller_Parameters_output_t Controller_Parameters;/**<Output: output struct for control algorithm (i_dq_ref / n_ref etc.) */
-	uz_dq_t AutoRefCurrents_Output; /**<Output: output struct for reference currents of the AutoReference current generator*/
+	uz_3ph_dq_t AutoRefCurrents_Output; /**<Output: output struct for reference currents of the AutoReference current generator*/
 	uz_PID_FluxMapsData_t* FluxMap_Data; /**<Storage for calculated OnlineID FluxMaps*/
 	bool calculate_flux_maps; /**<status bool to signal, that the OnlineID FluxMaps should be calculated */
 	int FluxMap_counter; /**<counter to transmit FluxMaps 1by1 to the uz_GUI */
@@ -102,7 +102,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
  * @param PWM_Module pointer to uz_PWM_SS_2L_t object
  * @return struct uz_DutyCycle_t DutyCycles for the inverter
  */
-struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_dq_t v_dq_Volts, uz_PWM_SS_2L_t* PWM_Module);
+struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_3ph_dq_t v_dq_Volts, uz_PWM_SS_2L_t* PWM_Module);
 
 /**
  * @brief Exemplary control algorithm (FOC) for the use of the ParamterID.  
@@ -111,9 +111,9 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
  * @param Data pointer to uz_ParameterID_Data_t struct
  * @param FOC_instance pointer to uz_FOC object
  * @param Speed_instance pointer to uz_PI_Controller object
- * @return struct uz_dq_t reference voltages of controller
+ * @return struct uz_3ph_dq_t reference voltages of controller
  */
-uz_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance);
+uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_SpeedControl_t* Speed_instance);
 
 /**
  * @brief This function is cleaning the array storing the measurement values, which always consits of a d-q-current combination a winding temperature and a speed value such as a d-q-flux combination

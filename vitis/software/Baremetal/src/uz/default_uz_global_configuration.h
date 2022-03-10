@@ -37,6 +37,7 @@
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
+#define UZ_PARAMETERID_ACTIVE                           1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -57,4 +58,5 @@
     #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      11U
     #define UZ_MUX_AXI_MAX_INSTANCES                        10U
     #define UZ_SPEEDCONTROL_MAX_INSTANCES                   30U
+    #define UZ_PARAMETERID_ACTIVE                           1U
 #endif

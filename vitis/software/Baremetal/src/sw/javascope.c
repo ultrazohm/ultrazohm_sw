@@ -63,12 +63,12 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_ia] = &PID_Data.ActualValues.I_UVW.U;
-	js_ch_observable[JSO_ib] = &PID_Data.ActualValues.I_UVW.V;
-	js_ch_observable[JSO_ic] = &PID_Data.ActualValues.I_UVW.W;
-	js_ch_observable[JSO_ua] = &PID_Data.ActualValues.V_UVW.U;
-	js_ch_observable[JSO_ub] = &PID_Data.ActualValues.V_UVW.V;
-	js_ch_observable[JSO_uc] = &PID_Data.ActualValues.V_UVW.W;
+	js_ch_observable[JSO_ia] = &PID_Data.ActualValues.I_abc.a;
+	js_ch_observable[JSO_ib] = &PID_Data.ActualValues.I_abc.b;
+	js_ch_observable[JSO_ic] = &PID_Data.ActualValues.I_abc.c;
+	js_ch_observable[JSO_ua] = &PID_Data.ActualValues.V_abc.a;
+	js_ch_observable[JSO_ub] = &PID_Data.ActualValues.V_abc.b;
+	js_ch_observable[JSO_uc] = &PID_Data.ActualValues.V_abc.c;
 	js_ch_observable[JSO_iq] = &PID_Data.ActualValues.i_dq.q;
 	js_ch_observable[JSO_id] = &PID_Data.ActualValues.i_dq.d;
 	js_ch_observable[JSO_Theta_el] = &PID_Data.ActualValues.theta_el;

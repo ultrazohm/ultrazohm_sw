@@ -83,14 +83,11 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_Controller_Parameters_output_t_
 
 typedef struct {
-  uz_dq_t i_dq_ref;
+  uz_3ph_dq_t i_dq_ref;
   uint16_T activeState;
   real32_T n_ref_FOC;
   boolean_T enableFOC_speed;
   boolean_T enableFOC_current;
-  boolean_T VibOn_out;
-  real32_T VibAmp_out;
-  uint16_T VibFreq_out;
   boolean_T resetIntegrator;
   real32_T PRBS_out;
   real32_T Kp_id_out;
@@ -125,10 +122,7 @@ typedef struct {
   real32_T sampleTimeISR;
   real32_T ratCurrent;
   real32_T ratSpeed;
-  real32_T VibAmp;
-  boolean_T VibOn;
-  uint16_T VibFreq;
-  uz_dq_t i_dq_ref;
+  uz_3ph_dq_t i_dq_ref;
   real32_T n_ref;
 } uz_PID_GlobalConfig_t;
 

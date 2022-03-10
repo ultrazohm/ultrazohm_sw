@@ -69,10 +69,10 @@ typedef struct tag_RTM_AutoRefCurrents_t RT_MODEL_AutoRefCurrents_t;
 #define DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
 
 typedef struct {
-  uz_UVW_t V_UVW;
-  uz_UVW_t I_UVW;
-  uz_dq_t i_dq;
-  uz_dq_t v_dq;
+  uz_3ph_abc_t V_abc;
+  uz_3ph_abc_t I_abc;
+  uz_3ph_dq_t i_dq;
+  uz_3ph_dq_t v_dq;
   real32_T omega_m;
   real32_T omega_el;
   real32_T theta_m;
@@ -104,10 +104,7 @@ typedef struct {
   real32_T sampleTimeISR;
   real32_T ratCurrent;
   real32_T ratSpeed;
-  real32_T VibAmp;
-  boolean_T VibOn;
-  uint16_T VibFreq;
-  uz_dq_t i_dq_ref;
+  uz_3ph_dq_t i_dq_ref;
   real32_T n_ref;
 } uz_PID_GlobalConfig_t;
 
@@ -134,26 +131,26 @@ typedef struct {
 #define DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
 
 typedef struct {
-	boolean_T startFrictionID;
-	boolean_T startElectricalID;
-	boolean_T startTwoMassID;
-	boolean_T startFluxMapID;
-	uint16_T transNr;
-	boolean_T enableOnlineID;
-	boolean_T finished_all_Offline_states;
+  boolean_T startFrictionID;
+  boolean_T startElectricalID;
+  boolean_T startTwoMassID;
+  boolean_T startFluxMapID;
+  uint16_T transNr;
+  boolean_T enableOnlineID;
+  boolean_T finished_all_Offline_states;
 } uz_PID_ControlFlags_t;
 
 #endif
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-	real32_T iqcount; /* '<Root>/AutoRefCurrents' */
-	real32_T idcount; /* '<Root>/AutoRefCurrents' */
-	real32_T counter; /* '<Root>/AutoRefCurrents' */
-	real32_T imax; /* '<Root>/AutoRefCurrents' */
-	uint8_T is_active_c10_AutoRefCurrents;/* '<Root>/AutoRefCurrents' */
-	uint8_T is_c10_AutoRefCurrents; /* '<Root>/AutoRefCurrents' */
-	uint8_T is_superstate; /* '<Root>/AutoRefCurrents' */
+  real32_T iqcount;                    /* '<Root>/AutoRefCurrents' */
+  real32_T idcount;                    /* '<Root>/AutoRefCurrents' */
+  real32_T counter;                    /* '<Root>/AutoRefCurrents' */
+  real32_T imax;                       /* '<Root>/AutoRefCurrents' */
+  uint8_T is_active_c10_AutoRefCurrents;/* '<Root>/AutoRefCurrents' */
+  uint8_T is_c10_AutoRefCurrents;      /* '<Root>/AutoRefCurrents' */
+  uint8_T is_superstate;               /* '<Root>/AutoRefCurrents' */
 } DW_AutoRefCurrents_t;
 
 /* External inputs (root inport signals with default storage) */
@@ -161,24 +158,26 @@ typedef struct {
   uz_PID_ActualValues_t ActualValues;  /* '<Root>/ActualValues' */
   uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
   uz_PID_AutoRefCurrentsConfig_t AutoRefCurrentsConfig;/* '<Root>/AutoRefCurrentsConfig' */
-	uz_PID_ControlFlags_t ControlFlags; /* '<Root>/ControlFlags' */
+  uz_PID_ControlFlags_t ControlFlags;  /* '<Root>/ControlFlags' */
 } ExtU_AutoRefCurrents_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  uz_dq_t i_dq_ref;                    /* '<Root>/i_dq_ref' */
+  uz_3ph_dq_t i_dq_ref;                /* '<Root>/i_dq_ref' */
 } ExtY_AutoRefCurrents_t;
 
 /* Real-time Model Data Structure */
 struct tag_RTM_AutoRefCurrents_t {
-	ExtU_AutoRefCurrents_t *inputs;
-	ExtY_AutoRefCurrents_t *outputs;
-	DW_AutoRefCurrents_t *dwork;
+  ExtU_AutoRefCurrents_t *inputs;
+  ExtY_AutoRefCurrents_t *outputs;
+  DW_AutoRefCurrents_t *dwork;
 };
 
 /* Model entry point functions */
-extern void AutoRefCurrents_initialize(RT_MODEL_AutoRefCurrents_t * const rtAutoRefCurrents_M);
-extern void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t * const rtAutoRefCurrents_M);
+extern void AutoRefCurrents_initialize(RT_MODEL_AutoRefCurrents_t *const
+  rtAutoRefCurrents_M);
+extern void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const
+  rtAutoRefCurrents_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly

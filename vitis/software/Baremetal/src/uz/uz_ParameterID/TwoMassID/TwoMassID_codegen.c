@@ -7297,57 +7297,65 @@ static void TwoMassIDWelch(const real32_T rtu_In2[2046],
 /*
  * Function for Chart: '<Root>/TwoMassID'
  * function initParams
- *  initialize variables
+ * This is used instead of "after(1.0,sec) to ensure the same transition time
+ * independelty of the sampletime in the c-code
  */
 static void initParams(ExtU_TwoMassID_t *rtTwoMassID_U, ExtY_TwoMassID_t
   *rtTwoMassID_Y, DW_TwoMassID_t *rtTwoMassID_DW)
 {
+  real32_T tmp;
+
+  /* Inport: '<Root>/GlobalConfig' */
   /* MATLAB Function 'initParams': '<S1>:686' */
-  /* '<S1>:686:4' measArray1			= single(zeros(1024,1)); */
-  /* '<S1>:686:5' J 					= single(zeros(2048,2)); */
+  /* '<S1>:686:5' one_sec_transition_counter = uint32(1/GlobalConfig.sampleTimeISR); */
+  tmp = roundf(1.0F / rtTwoMassID_U->GlobalConfig_out.sampleTimeISR);
+  if (tmp < 4.2949673E+9F) {
+    if (tmp >= 0.0F) {
+      rtTwoMassID_DW->one_sec_transition_counter = (uint32_T)tmp;
+    } else {
+      rtTwoMassID_DW->one_sec_transition_counter = 0U;
+    }
+  } else {
+    rtTwoMassID_DW->one_sec_transition_counter = MAX_uint32_T;
+  }
+
+  /*  initialize variables */
+  /* '<S1>:686:7' measArray1			= single(zeros(1024,1)); */
+  /* '<S1>:686:8' J 					= single(zeros(2048,2)); */
   memset(&rtTwoMassID_DW->J[0], 0, sizeof(real32_T) << 12U);
 
-  /* '<S1>:686:6' prbs_array        	= single(zeros(2048,1)); */
-  /* '<S1>:686:7' measArray2 			= single(zeros(2048,1)); */
+  /* '<S1>:686:9' prbs_array        	= single(zeros(2048,1)); */
+  /* '<S1>:686:10' measArray2 			= single(zeros(2048,1)); */
   memset(&rtTwoMassID_DW->prbs_array[0], 0, sizeof(real32_T) << 11U);
   memset(&rtTwoMassID_DW->measArray2[0], 0, sizeof(real32_T) << 11U);
 
-  /* '<S1>:686:8' iq_array            = single(zeros(1024,1)); */
-  /* '<S1>:686:9' omega_array         = single(zeros(1024,1)); */
+  /* '<S1>:686:11' iq_array            = single(zeros(1024,1)); */
+  /* '<S1>:686:12' omega_array         = single(zeros(1024,1)); */
   memset(&rtTwoMassID_DW->iq_array[0], 0, sizeof(real32_T) << 10U);
   memset(&rtTwoMassID_DW->omega_array[0], 0, sizeof(real32_T) << 10U);
 
   /* Outport: '<Root>/TwoMassID_FOC_output' */
   /* Outputs */
-  /* '<S1>:686:11' TwoMassID_FOC_output.n_ref_FOC      	= single(0.0); */
+  /* '<S1>:686:14' TwoMassID_FOC_output.n_ref_FOC      	= single(0.0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.n_ref_FOC = 0.0F;
 
-  /* '<S1>:686:12' TwoMassID_FOC_output.PRBS_out           = single(0.0); */
+  /* '<S1>:686:15' TwoMassID_FOC_output.PRBS_out           = single(0.0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.PRBS_out = 0.0F;
 
-  /* '<S1>:686:13' TwoMassID_FOC_output.i_dq_ref.d         = single(0.0); */
+  /* '<S1>:686:16' TwoMassID_FOC_output.i_dq_ref.d         = single(0.0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.i_dq_ref.d = 0.0F;
 
-  /* '<S1>:686:14' TwoMassID_FOC_output.i_dq_ref.q         = single(0.0); */
+  /* '<S1>:686:17' TwoMassID_FOC_output.i_dq_ref.q         = single(0.0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.i_dq_ref.q = 0.0F;
 
-  /* '<S1>:686:15' TwoMassID_FOC_output.i_dq_ref.zero      = single(0.0); */
+  /* '<S1>:686:18' TwoMassID_FOC_output.i_dq_ref.zero      = single(0.0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.i_dq_ref.zero = 0.0F;
 
-  /* '<S1>:686:16' TwoMassID_FOC_output.enableFOC_speed	= boolean(0); */
+  /* '<S1>:686:19' TwoMassID_FOC_output.enableFOC_speed	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_speed = false;
 
-  /* '<S1>:686:17' TwoMassID_FOC_output.enableFOC_current	= boolean(0); */
+  /* '<S1>:686:20' TwoMassID_FOC_output.enableFOC_current	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_current = false;
-
-  /* '<S1>:686:18' TwoMassID_FOC_output.VibOn_out          = boolean(0); */
-  rtTwoMassID_Y->TwoMassID_FOC_output.VibOn_out = false;
-
-  /* '<S1>:686:19' TwoMassID_FOC_output.VibFreq_out    	= uint16(0); */
-  rtTwoMassID_Y->TwoMassID_FOC_output.VibFreq_out = 0U;
-
-  /* '<S1>:686:20' TwoMassID_FOC_output.VibAmp_out         = single(0.0); */
-  rtTwoMassID_Y->TwoMassID_FOC_output.VibAmp_out = 0.0F;
 
   /* '<S1>:686:21' TwoMassID_FOC_output.resetIntegrator 	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.resetIntegrator = false;
@@ -7494,43 +7502,34 @@ static void reset_FOC_output(ExtU_TwoMassID_t *rtTwoMassID_U, ExtY_TwoMassID_t
   /* '<S1>:699:10' TwoMassID_FOC_output.enableFOC_current	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_current = false;
 
-  /* '<S1>:699:11' TwoMassID_FOC_output.VibOn_out          = boolean(0); */
-  rtTwoMassID_Y->TwoMassID_FOC_output.VibOn_out = false;
-
-  /* '<S1>:699:12' TwoMassID_FOC_output.VibFreq_out    	= uint16(0); */
-  rtTwoMassID_Y->TwoMassID_FOC_output.VibFreq_out = 0U;
-
-  /* '<S1>:699:13' TwoMassID_FOC_output.VibAmp_out         = single(0.0); */
-  rtTwoMassID_Y->TwoMassID_FOC_output.VibAmp_out = 0.0F;
-
-  /* '<S1>:699:14' TwoMassID_FOC_output.resetIntegrator 	= boolean(0); */
+  /* '<S1>:699:11' TwoMassID_FOC_output.resetIntegrator 	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.resetIntegrator = false;
 
-  /* '<S1>:699:15' TwoMassID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
+  /* '<S1>:699:12' TwoMassID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_id_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_id;
 
-  /* '<S1>:699:16' TwoMassID_FOC_output.Kp_iq_out          = single(GlobalConfig.Kp_iq); */
+  /* '<S1>:699:13' TwoMassID_FOC_output.Kp_iq_out          = single(GlobalConfig.Kp_iq); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_iq_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_iq;
 
-  /* '<S1>:699:17' TwoMassID_FOC_output.Kp_n_out           = single(GlobalConfig.Kp_n); */
+  /* '<S1>:699:14' TwoMassID_FOC_output.Kp_n_out           = single(GlobalConfig.Kp_n); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_n_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_n;
 
-  /* '<S1>:699:18' TwoMassID_FOC_output.Ki_id_out          = single(GlobalConfig.Ki_id); */
+  /* '<S1>:699:15' TwoMassID_FOC_output.Ki_id_out          = single(GlobalConfig.Ki_id); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_id_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_id;
 
-  /* '<S1>:699:19' TwoMassID_FOC_output.Ki_iq_out      	= single(GlobalConfig.Ki_iq); */
+  /* '<S1>:699:16' TwoMassID_FOC_output.Ki_iq_out      	= single(GlobalConfig.Ki_iq); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_iq_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_iq;
 
-  /* '<S1>:699:20' TwoMassID_FOC_output.Ki_n_out           = single(GlobalConfig.Ki_n); */
+  /* '<S1>:699:17' TwoMassID_FOC_output.Ki_n_out           = single(GlobalConfig.Ki_n); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_n_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_n;
 
-  /* '<S1>:699:21' TwoMassID_FOC_output.activeState        = uint16(0); */
+  /* '<S1>:699:18' TwoMassID_FOC_output.activeState        = uint16(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.activeState = 0U;
 }
 
@@ -8783,8 +8782,8 @@ static void enter_atomic_TMS_calculate_stat(ExtU_TwoMassID_t *rtTwoMassID_U,
     rtTwoMassID_Y->TwoMassID_output.LoadInertia;
 
   /* '<S1>:648:22' c_max=single(TwoMassID_output.TrainInertia*4*3.14*3.14*500*500); */
-  /* '<S1>:648:23' counter=0; */
-  rtTwoMassID_DW->counter = 0U;
+  /* '<S1>:648:23' counter=uint32(1); */
+  rtTwoMassID_DW->counter = 1U;
 }
 
 /* Model step function */
@@ -8801,10 +8800,6 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
    *  Inport: '<Root>/TwoMassIDConfig'
    *  Outport: '<Root>/TwoMassID_FOC_output'
    */
-  if (rtTwoMassID_DW->temporalCounter_i1 < 32767U) {
-    rtTwoMassID_DW->temporalCounter_i1++;
-  }
-
   /* Gateway: TwoMassID */
   /* During: TwoMassID */
   if (rtTwoMassID_DW->is_active_c17_TwoMassID == 0U) {
@@ -8863,14 +8858,14 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
        case IN_TMS_calculate_state:
         /* Outport: '<Root>/finishedTwoMassID' */
         /* Exit 'TMS_calculate_state': '<S1>:648' */
-        /* '<S1>:648:27' finishedTwoMassID = boolean(1); */
+        /* '<S1>:648:28' finishedTwoMassID = boolean(1); */
         rtTwoMassID_Y->finishedTwoMassID = true;
 
         /* Outport: '<Root>/enteredTwoMassID' */
-        /* '<S1>:648:28' enteredTwoMassID = boolean(0); */
+        /* '<S1>:648:29' enteredTwoMassID = boolean(0); */
         rtTwoMassID_Y->enteredTwoMassID = false;
 
-        /* '<S1>:648:29' reset_FOC_output; */
+        /* '<S1>:648:30' reset_FOC_output; */
         reset_FOC_output(rtTwoMassID_U, rtTwoMassID_Y);
         rtTwoMassID_DW->is_TwoMassID = IN_NO_ACTIVE_CHILD;
         break;
@@ -8905,7 +8900,6 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
           rtTwoMassID_Y->TwoMassID_FOC_output.Ki_n_out =
             rtTwoMassID_U->GlobalConfig_out.Ki_n;
           rtTwoMassID_DW->is_TwoMassID = IN_TMS_calculate_state;
-          rtTwoMassID_DW->temporalCounter_i1 = 0U;
           enter_atomic_TMS_calculate_stat(rtTwoMassID_U, rtTwoMassID_Y,
             rtTwoMassID_DW);
         } else {
@@ -9040,8 +9034,9 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
 
        case IN_TMS_Speed_State:
         /* During 'TMS_Speed_State': '<S1>:636' */
-        /* '<S1>:657:1' sf_internal_predicateOutput = after(0.5,sec); */
-        if (rtTwoMassID_DW->temporalCounter_i1 >= 10000U) {
+        /* '<S1>:657:1' sf_internal_predicateOutput = one_sec_transition_counter == counter; */
+        if (rtTwoMassID_DW->one_sec_transition_counter ==
+            rtTwoMassID_DW->counter) {
           /* Transition: '<S1>:657' */
           /* Exit 'TMS_Speed_State': '<S1>:636' */
           rtTwoMassID_DW->is_TwoMassID = IN_TMS_Noise_State;
@@ -9067,24 +9062,33 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
           /* '<S1>:636:13' TwoMassID_FOC_output.n_ref_FOC=TwoMassIDConfig.n_ref_measurement; */
           rtTwoMassID_Y->TwoMassID_FOC_output.n_ref_FOC =
             rtTwoMassID_U->TwoMassIDConfig.n_ref_measurement;
+
+          /* '<S1>:636:14' counter = counter +1; */
+          rtTwoMassID_DW->qY = rtTwoMassID_DW->counter + /*MW:OvSatOk*/ 1U;
+          if (rtTwoMassID_DW->counter + 1U < rtTwoMassID_DW->counter) {
+            rtTwoMassID_DW->qY = MAX_uint32_T;
+          }
+
+          rtTwoMassID_DW->counter = rtTwoMassID_DW->qY;
         }
         break;
 
        default:
         /* During 'TMS_calculate_state': '<S1>:648' */
-        /* '<S1>:658:1' sf_internal_predicateOutput = after(1.0,sec); */
-        if (rtTwoMassID_DW->temporalCounter_i1 >= 20000U) {
+        /* '<S1>:658:1' sf_internal_predicateOutput = one_sec_transition_counter == counter; */
+        if (rtTwoMassID_DW->one_sec_transition_counter ==
+            rtTwoMassID_DW->counter) {
           /* Outport: '<Root>/finishedTwoMassID' */
           /* Transition: '<S1>:658' */
           /* Exit 'TMS_calculate_state': '<S1>:648' */
-          /* '<S1>:648:27' finishedTwoMassID = boolean(1); */
+          /* '<S1>:648:28' finishedTwoMassID = boolean(1); */
           rtTwoMassID_Y->finishedTwoMassID = true;
 
           /* Outport: '<Root>/enteredTwoMassID' */
-          /* '<S1>:648:28' enteredTwoMassID = boolean(0); */
+          /* '<S1>:648:29' enteredTwoMassID = boolean(0); */
           rtTwoMassID_Y->enteredTwoMassID = false;
 
-          /* '<S1>:648:29' reset_FOC_output; */
+          /* '<S1>:648:30' reset_FOC_output; */
           reset_FOC_output(rtTwoMassID_U, rtTwoMassID_Y);
           rtTwoMassID_DW->is_TwoMassID = IN_NO_ACTIVE_CHILD;
 
@@ -9098,6 +9102,14 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
         } else {
           /* '<S1>:648:25' TwoMassID_FOC_output.resetIntegrator=boolean(1); */
           rtTwoMassID_Y->TwoMassID_FOC_output.resetIntegrator = true;
+
+          /* '<S1>:648:26' counter = counter +1; */
+          rtTwoMassID_DW->qY = rtTwoMassID_DW->counter + /*MW:OvSatOk*/ 1U;
+          if (rtTwoMassID_DW->counter + 1U < rtTwoMassID_DW->counter) {
+            rtTwoMassID_DW->qY = MAX_uint32_T;
+          }
+
+          rtTwoMassID_DW->counter = rtTwoMassID_DW->qY;
         }
         break;
       }
@@ -9129,7 +9141,6 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
     /* Entry Internal 'TwoMassID': '<S1>:39' */
     /* Transition: '<S1>:664' */
     rtTwoMassID_DW->is_TwoMassID = IN_TMS_Speed_State;
-    rtTwoMassID_DW->temporalCounter_i1 = 0U;
 
     /* Entry 'TMS_Speed_State': '<S1>:636' */
     /* '<S1>:636:3' TwoMassID_FOC_output.activeState = uint16(210); */
@@ -9203,9 +9214,6 @@ void TwoMassID_initialize(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
   rtTwoMassID_Y->TwoMassID_FOC_output.n_ref_FOC = 0.0F;
   rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_speed = false;
   rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_current = false;
-  rtTwoMassID_Y->TwoMassID_FOC_output.VibOn_out = false;
-  rtTwoMassID_Y->TwoMassID_FOC_output.VibAmp_out = 0.0F;
-  rtTwoMassID_Y->TwoMassID_FOC_output.VibFreq_out = 0U;
   rtTwoMassID_Y->TwoMassID_FOC_output.resetIntegrator = false;
   rtTwoMassID_Y->TwoMassID_FOC_output.PRBS_out = 0.0F;
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_id_out = 0.0F;

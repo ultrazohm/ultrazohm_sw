@@ -37,7 +37,7 @@ uz_SpeedControl_t* uz_SpeedControl_init(struct uz_SpeedControl_config config);
  * @param id_ref_Ampere reference d-axis current
  * @param config_PMSM uz_PMSM_t config struct
  * @param ext_clamping external clamping signal
- * @return uz_dq_t reference currents in Ampere
+ * @return uz_3ph_dq_t reference currents in Ampere
  */
 uz_3ph_dq_t uz_SpeedControl_sample(uz_SpeedControl_t* self, float omega_el_rad_per_sec, float n_ref_rpm, float V_dc_volts, float id_ref_Ampere, uz_PMSM_t config_PMSM, bool ext_clamping);
 

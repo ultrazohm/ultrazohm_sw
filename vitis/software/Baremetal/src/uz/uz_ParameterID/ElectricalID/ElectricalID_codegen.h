@@ -74,10 +74,11 @@ typedef struct tag_RTM_ElectricalID_t RT_MODEL_ElectricalID_t;
  * 
  */
 typedef struct {
+  real32_T goertzlFreq; /**< frequency of sine wave for vibration to identify J */
   real32_T dutyCyc; /**< manual input for DutyCycle during identification of thetaOffset, Ld and Lq. If the value is left at 0.0f, the DutyCycle will be identified automatically. */
   real32_T n_ref_measurement; /**< reference speed for identification of Psi_PM */
   boolean_T identLq; /**< flag to enable identification of Lq. If false, Lq=Ld */
-  real32_T goertzlAmp; /**< amplitude for vibration to identify J */
+  real32_T goertzlAmp; /**< amplitude of sine wave for vibration to identify J */
   real32_T min_n_ratio; /**< minimal ratio of rated speed for automatic DutyCycle identification. i.e. 0.025f @3000rpm rated speed -> 75rpm. If this value is reached, the algorithm assumes the DutyCycle is strong enough to properly turn the rotor. */
 } uz_PID_ElectricalIDConfig_t;
 
@@ -91,10 +92,10 @@ typedef struct {
  * 
  */
 typedef struct {
-  uz_UVW_t V_UVW; /**< measured three-phase voltages */ 
-  uz_UVW_t I_UVW; /**< measured three-phase currents */ 
-  uz_dq_t i_dq; /**< measured dq voltages */ 
-  uz_dq_t v_dq; /**< measured dq currents */ 
+  uz_3ph_abc_t V_abc; /**< measured three-phase voltages */ 
+  uz_3ph_abc_t I_abc; /**< measured three-phase currents */ 
+  uz_3ph_dq_t i_dq; /**< measured dq voltages */ 
+  uz_3ph_dq_t v_dq; /**< measured dq currents */ 
   real32_T omega_m; /**< measured mechanical omega */ 
   real32_T omega_el; /**< measured electrical omega */ 
   real32_T theta_m; /**< measured mechanical theta */ 
@@ -130,10 +131,7 @@ typedef struct {
   real32_T sampleTimeISR; /**< sampleTime of the ISR. i.e. sampleTime of the function call uz_ParameterID_step. Very important parameter */
   real32_T ratCurrent; /**< rated current of the motor */
   real32_T ratSpeed; /**< rated speed of the motor */
-  real32_T VibAmp; /**< max current amplitude for vibration */
-  boolean_T VibOn; /**< flag to activate the vibration */
-  uint16_T VibFreq; /**< frequency of the vibration */ 
-  uz_dq_t i_dq_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
+  uz_3ph_dq_t i_dq_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
   real32_T n_ref; /**< Not needed for ID-states. Can be used to transmit reference speed to a control algorithm. */
 } uz_PID_GlobalConfig_t;
 
@@ -166,14 +164,11 @@ typedef struct {
  * 
  */
 typedef struct {
-  uz_dq_t i_dq_ref; /**< reference currents for current controller */
+  uz_3ph_dq_t i_dq_ref; /**< reference currents for current controller */
   uint16_T activeState; /**< activeState of the ID-states */
   real32_T n_ref_FOC; /**< reference speed for the speed controller */
   boolean_T enableFOC_speed; /**<flag to enable speed controller */
   boolean_T enableFOC_current; /**<flag to enable current controller */
-  boolean_T VibOn_out; /**<flag to enable vibration */
-  real32_T VibAmp_out; /**<amplitude of sine vibration */
-  uint16_T VibFreq_out; /**<frequency of sine vibration */
   boolean_T resetIntegrator; /**<flag to reset the integrators used in the control algorithm */
   real32_T PRBS_out; /**<excitation for TwoMassID */ 
   real32_T Kp_id_out; /**<Kp_id for FOC control. Can be ignored, if another control algorithm is used */
@@ -205,7 +200,10 @@ typedef struct {
 #endif
 
 /* Block signals and states (default storage) for system '<Root>' */
+
+/* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
+  real_T sineCounter;                  /* '<Root>/ElectricalID' */
   real_T d_m;
   real32_T H[4];                       /* '<Root>/ElectricalID' */
   real32_T omega_register[5];          /* '<Root>/ElectricalID' */
@@ -227,8 +225,6 @@ typedef struct {
   real32_T bandwidthCurrentControl;    /* '<Root>/ElectricalID' */
   real32_T dampingFactor;              /* '<Root>/ElectricalID' */
   real32_T psiOverJ;                   /* '<Root>/ElectricalID' */
-  real32_T Kp_n_loc;                   /* '<Root>/ElectricalID' */
-  real32_T Ki_n_loc;                   /* '<Root>/ElectricalID' */
   real32_T Kp_iq_loc;                  /* '<Root>/ElectricalID' */
   real32_T omega_sum;                  /* '<Root>/ElectricalID' */
   real32_T ia_sum;                     /* '<Root>/ElectricalID' */
@@ -236,9 +232,9 @@ typedef struct {
   int32_T i;
   uint32_T counter;                    /* '<Root>/ElectricalID' */
   uint32_T wait_count;                 /* '<Root>/ElectricalID' */
+  uint32_T one_sec_transition_counter; /* '<Root>/ElectricalID' */
   uint16_T n_iters;                    /* '<Root>/ElectricalID' */
   uint16_T z;                          /* '<Root>/ElectricalID' */
-  uint16_T temporalCounter_i1;         /* '<Root>/ElectricalID' */
   uint8_T is_active_c3_ElectricalID;   /* '<Root>/ElectricalID' */
   uint8_T is_c3_ElectricalID;          /* '<Root>/ElectricalID' */
   uint8_T is_ElectricalID;             /* '<Root>/ElectricalID' */

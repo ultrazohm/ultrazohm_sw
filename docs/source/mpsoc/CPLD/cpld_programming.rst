@@ -75,5 +75,4 @@ See also
 
 * `Lattice Diamond Programmer download <http://www.latticesemi.com/programmer>`_
 * `CPLD software git <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/>`_
-* `Carrier Board schematic git <https://bitbucket.org/ultrazohm/ultrazohm_carrierboard_2v00_openaccess/src/master/>`_
 * `Trenz Programmer Wiki <https://wiki.trenz-electronic.de/display/PD/TE0790+TRM>`_

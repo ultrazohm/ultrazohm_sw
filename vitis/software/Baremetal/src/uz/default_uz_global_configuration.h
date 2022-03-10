@@ -25,7 +25,6 @@
 
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
-#define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES            2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U
 #define UZ_ADCLTC2311_MAX_INSTANCES                     3U
 #define UZ_PI_CONTROLLER_MAX_INSTANCES                  3U
@@ -37,13 +36,12 @@
 #define UZ_PMSMMODEL_MAX_INSTANCES                      0U
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
-#define UZ_FILTER_1ST_ORDER_INSTANCES                   0U
+#define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
 #ifdef TEST
     #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  13U
-    #define UZ_WAVEGEN_THREE_PHASE_MAX_INSTANCES            5U
     #define UZ_MYIP2_MAX_INSTANCES                          5U
     #define UZ_MYIP_MAX_INSTANCES                           5U
     #define UZ_ADCLTC2311_MAX_INSTANCES                     50U
@@ -59,4 +57,5 @@
     #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      11U
     #define UZ_FILTER_1ST_ORDER_INSTANCES                   20U
     #define UZ_MUX_AXI_MAX_INSTANCES                        10U
+    #define UZ_SPEEDCONTROL_MAX_INSTANCES                   30U
 #endif

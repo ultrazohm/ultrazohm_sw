@@ -11,7 +11,7 @@ Example
 
 .. code-block:: c
   :linenos:
-  :caption: Example function call to calculate the SpeedControl output. PI-Instance via :ref:`init-function <uz_SpeedControl_init>`
+  :caption: Example function call to calculate the SpeedControl output. SpeedControl-Instance via :ref:`init-function <uz_SpeedControl_init>`
 
   int main(void) {
      float omega_el_rad_per_sec = 1.5f;
@@ -31,7 +31,9 @@ Description
 
 Calculates the reference speed into angular frequency and calculates the latest sample of the n-PI-Controller.
 Furthermore, it has an input port for an external clamping signal.
-This function includes a field weakening calculator. The ``id_ref`` current therefore will be calculated according to the following formulas.
+This function includes a field weakening calculator, which can be turned on or off. 
+If the field weakening is turned off, the input ``id_ref_Ampere`` will be given out. 
+The ``id_ref`` current therefore will be calculated according to the following formulas.
 
 .. math::
 
@@ -52,17 +54,17 @@ The limits of the saturation inside the include PI-Controller will be adjusted w
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows,  patterns
 
   \begin{scope}[shift={(0,0)}]
-  \node[draw, rectangle, minimum height=6.8cm, minimum width = 15cm,  fill=white, draw opacity = 0.0] (FOC_speed) at (0,0) {};
-  \node[draw, rectangle, minimum height=6.8cm, minimum width = 15cm,  fill=red, fill opacity=0.2] (white1) at (0,0) {};
-  \node[font=\footnotesize] (CC_dq_output) at ($(FOC_speed.east)+(-0.6,-1.75)$) {uz\_dq\_t};
-  \node[font=\footnotesize] (SC_ref) at ($(FOC_speed.west)+(0.9,-0.85)$) {n\_ref\_rpm};
-  \node[font=\footnotesize] (SC_pole) at ($(FOC_speed.west)+(1.1,-0)$) {config\_PMSM};
-  \node[font=\footnotesize] (CC_uz_PI) at ($(FOC_speed.west)+(1.5,-1.45)$) {uz\_PI\_Controller*};
-  \node[font=\footnotesize] (CC_ext) at ($(FOC_speed.west)+(1.13,-2.65)$) {ext\_clamping};
-  \node[font=\footnotesize] (SC_actual) at ($(FOC_speed.west)+(1.8,-2.05)$) {omega\_el\_rad\_per\_sec};
-  \node[font=\footnotesize] (SC_id) at ($(FOC_speed.west)+(1.3,1.8)$) {id\_ref\_Ampere};
-  \node[font=\footnotesize] (SC_Uzk) at ($(FOC_speed.west)+(1.06,2.4)$) {V\_DC\_Volts};
-  \node[] at ($(FOC_speed.south)+(0.0,-0.3)$) {uz\_SpeedControl\_sample};
+  \node[ rectangle, minimum height=6.8cm, minimum width = 15cm] (FOC_speed) at (0,0) {};
+  \node[font=\footnotesize] (CC_dq_output) at ($(FOC_speed.east)+(-0,-1.75)$) {uz\_dq\_t};
+  \node[font=\footnotesize] (SC_ref) at ($(FOC_speed.west)+(1.06,-0.85)$) {n\_ref\_rpm};
+  \node[font=\footnotesize] (SC_pole) at ($(FOC_speed.west)+(1.06,-0)$) {config\_PMSM};
+  \node[font=\footnotesize] (CC_uz_PI) at ($(FOC_speed.west)+(1.06,-1.45)$) {uz\_PI\_Controller*};
+  \node[font=\footnotesize] (CC_ext) at ($(FOC_speed.west)+(1.06,-2.65)$) {ext\_clamping};
+  \node[font=\footnotesize] (SC_actual) at ($(FOC_speed.west)+(1.06,-2.05)$) {omega\_el\_rad\_per\_sec};
+  \node[font=\footnotesize] (SC_id) at ($(FOC_speed.west)+(1.06,1.8)$) {id\_ref\_Ampere};
+  \node[font=\footnotesize] (SC_Uzk) at ($(FOC_speed.west)+(1.06,2.4)$) {U\_zk\_Volts};
+  \node[font=\footnotesize] (SC_EnableFW) at ($(FOC_speed.west)+(1.3,3.4)$) {enable\_field\_weakening};
+  \node[](sample_label) at ($(FOC_speed.south)+(0.0,-0.2)$) {uz\_SpeedControl\_sample};
   \begin{scope}[shift={(4,-1.75)}]
   \node[draw, rectangle, minimum height=2.3cm, minimum width = 4cm, fill=lightgray] (n_PIController) at (0,0) {};
   \node[font=\footnotesize] at ($(n_PIController.west)+(1.35,0.3)$) {uz\_PI\_Controller*};
@@ -76,7 +78,7 @@ The limits of the saturation inside the include PI-Controller will be adjusted w
   \node[draw, rectangle, minimum height=2.3cm, minimum width = 4cm, fill=lightgray] (FW) at (0,0) {};
   \node[font=\footnotesize] at ($(FW.west)+(1.1,-0.3)$) {config\_PMSM};
   \node[font=\footnotesize] at ($(FW.west)+(1.7,-0.9)$) {omega\_el\_rad\_per\_sec};
-  \node[font=\footnotesize] at ($(FW.west)+(1.08,0.9)$) {V\_DC\_Volts};
+  \node[font=\footnotesize] at ($(FW.west)+(1.08,0.9)$) {U\_zk\_Volts};
   \node[font=\footnotesize] at ($(FW.west)+(1.2,0.3)$) {id\_ref\_Ampere};
   \node[font=\footnotesize] at ($(FW.east)+(-0.6,0.3)$) {id\_fw};
   \node[font=\footnotesize] at ($(FW.east)+(-0.6,-0.3)$) {iq\_limit};
@@ -86,6 +88,20 @@ The limits of the saturation inside the include PI-Controller will be adjusted w
   \node[draw, rectangle, minimum height=0.8cm, minimum width =2.3cm, fill=lightgray] (limits) {};
   \node[font=\tiny,align=center] at (0,0) {change saturation \\ limits};
   \end{scope}
+  \begin{scope}[shift={(7.5,0)},rotate=-90]
+  \node[draw, rectangle, minimum height=1.3cm, minimum width = 2cm,transform shape] (Switch1) at (0,0) {\footnotesize{$>0$}};
+  \draw(-1,0.4) to (0,0.4); 
+  \draw(-1,-0.4) to (0,-0.4); 
+  \draw(-1,0) to (-0.5,0);
+  \draw(-0.5,0.1) to (-0.5,-0.1);
+  \draw (0.05,0.45) rectangle (-0.05,0.35){};
+  \draw (0.05,-0.45) rectangle (-0.05,-0.35){};
+  \draw(0,-0.4) to (0.7,0);
+  \draw(0.7,0) to (1,0);
+  \end{scope}
+  \node[font=\footnotesize,rotate=90] (SC_id2) at ($(FW.east)+(1.9,1.8)$) {id\_ref\_Ampere};
+  \draw[-latex](SC_id2.west) -- ($(Switch1.west)+(0.4,0)$);
+  \draw[-latex](Switch1.east) -- (CC_dq_output.north);
   \node[isosceles triangle, isosceles triangle apex angle=18,draw,minimum size =0.5cm,font=\tiny] (gain) at ($(FOC_speed.west)+(4,-0.85)$) {$(2\cdot\pi\cdot p)/60$};
   \draw[-latex](CC_uz_PI.east) -- (limits.west);
   \draw[-latex](limits.east) -- ($(n_PIController.west)+(0,0.3)$);
@@ -101,23 +117,29 @@ The limits of the saturation inside the include PI-Controller will be adjusted w
   \node [circle,fill,inner sep=1pt] at ($(n_PIController.west)+(-3,-0.3)$){};
   \draw[-latex](SC_pole.north) |- ($(FW.west)+(0,-0.3)$);
   \node[font=\scriptsize] at ($(SC_pole.east)+(1,0.15)$) {.polePairs};
-  \draw[-latex]($(FW.east)+(0,0.3)$) -| (CC_dq_output.north);
+  \draw[-latex]($(FW.east)+(0,0.3)$) -| ($(Switch1.west)+(-0.4,0)$) ;
   \draw($(FW.east)+(0,-0.3)$) -| ($(FW.east)+(0.5,-1.75)$);
   \draw[-latex]($(FW.east)+(0.5,-1.75)$) -| (limits.north);
   \end{scope}
-  \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm] at ($(FOC_speed.east)+(2,-1.75)$) (output){output}; 
-  \draw[-latex]($(FOC_speed.east)+(0,-1.75)$) -- (output.west);
+  \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm] at ($(FOC_speed.east)+(2.5,-1.75)$) (output){output}; 
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.4cm,font=\footnotesize] at ($(CC_uz_PI.west)+(-3,0)$) (input_PI){PI-Controller* instance};
-  \draw[-latex](input_PI.east) -- ($(CC_uz_PI.west)+(-0.15,0)$);
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.4cm,font=\footnotesize] at ($(CC_ext.west)+(-3,0)$) (input_ext){ext\_clamping};
-  \draw[-latex](input_ext.east) -- ($(CC_ext.west)+(-0.15,0)$);
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.4cm,font=\footnotesize] at ($(SC_ref.west)+(-3,0)$) (input_ref){n\_ref\_rpm};
-  \draw[-latex](input_ref.east) -- ($(SC_ref.west)+(-0.15,0)$);
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.4cm,font=\footnotesize] at ($(SC_pole.west)+(-3,0)$) (input_pole){uz\_PMSM\_t config};
-  \draw[-latex](input_pole.east) -- ($(SC_pole.west)+(-0.15,0)$);
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.4cm,font=\footnotesize] at ($(SC_actual.west)+(-3,0)$) (input_actual){omega\_el\_rad\_per\_sec};
-  \draw[-latex](input_actual.east) -- ($(SC_actual.west)+(-0.15,0)$);
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.4cm,font=\footnotesize] at ($(SC_id.west)+(-3,0)$) (input_id){id\_ref\_Ampere};
-  \draw[-latex](input_id.east) -- ($(SC_id.west)+(-0.15,0)$);
-  \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.4cm,font=\footnotesize] at ($(SC_Uzk.west)+(-3,0)$) (input_Uzk){V\_DC\_Volts};
-  \draw[-latex](input_Uzk.east) -- ($(SC_Uzk.west)+(-0.15,0)$);
+  \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.4cm,font=\footnotesize] at ($(SC_Uzk.west)+(-3,0)$) (input_Uzk){U\_zk\_Volts};
+  \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.4cm,font=\footnotesize] at ($(SC_EnableFW.west)+(-3,0)$) (input_EnableFW){enable\_field\_weakening};
+  \begin{scope}[on background layer]
+  \node[draw, rectangle, minimum width=16.5cm, fit=(SC_EnableFW) (SC_id2)(Switch1)(sample_label) (n_PIController),fill=red, fill opacity=0.2] (Block) at (0,0) {};
+  \end{scope}
+  \draw[-latex]($(FOC_speed.east)+(0.5,-1.75)$) -- (output.west);
+  \draw[-latex](input_PI.east) -- ($(Block.west)+(0,-1.45)$);
+  \draw[-latex](input_ext.east) --  ($(Block.west)+(0,-2.65)$);
+  \draw[-latex](input_ref.east) --  ($(Block.west)+(0,-0.85)$);
+  \draw[-latex](input_pole.east) -- ($(Block.west)+(0,0)$);
+  \draw[-latex](input_actual.east) --  ($(Block.west)+(0,-2.05)$);
+  \draw[-latex](input_id.east) --  ($(Block.west)+(0,1.8)$);
+  \draw[-latex](input_Uzk.east) --  ($(Block.west)+(0,2.4)$);
+  \draw[-latex](input_EnableFW.east) --  ($(Block.west)+(0,3.4)$);
+  \draw[-latex](SC_EnableFW.east)  -| (Switch1.west) ;

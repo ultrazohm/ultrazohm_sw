@@ -219,8 +219,8 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_i
 		uz_FOC_set_Kp_iq(FOC_instance, Data->Controller_Parameters.Kp_iq_out);
 		uz_FOC_set_Ki_id(FOC_instance, Data->Controller_Parameters.Ki_id_out);
 		uz_FOC_set_Ki_iq(FOC_instance, Data->Controller_Parameters.Ki_iq_out);
-		uz_PI_Controller_set_Ki(Speed_instance, Data->Controller_Parameters.Ki_n_out);
-		uz_PI_Controller_set_Kp(Speed_instance, Data->Controller_Parameters.Kp_n_out);
+		uz_SpeedControl_set_Ki(Speed_instance, Data->Controller_Parameters.Ki_n_out);
+		uz_SpeedControl_set_Kp(Speed_instance, Data->Controller_Parameters.Kp_n_out);
 		}
 
 	if (Data->ControlFlags->finished_all_Offline_states == true) {

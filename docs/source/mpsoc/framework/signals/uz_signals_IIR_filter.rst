@@ -1,19 +1,19 @@
-================
-1st order filter
-================
+==========
+IIR filter
+==========
 
-.. doxygentypedef:: uz_Filter_1st_t
+.. doxygentypedef:: uz_IIR_Filter_t
 
 .. doxygenenum:: Filter_selection 
 
-.. doxygenstruct:: uz_Filter_1st_config
+.. doxygenstruct:: uz_IIR_Filter_config
   :members:
 
-.. doxygenfunction:: uz_Filter_1st_init
+.. doxygenfunction:: uz_signals_IIR_Filter_init
   
-.. doxygenfunction:: uz_signals_Filter_1st_sample
+.. doxygenfunction:: uz_signals_IIR_Filter_sample
 
-.. doxygenfunction:: uz_signals_Filter_1st_reverse_sample
+.. doxygenfunction:: uz_signals_IIR_Filter_reverse_sample
 
 Example
 =======
@@ -24,12 +24,12 @@ Example
 
   #include "uz_signals.h"
   int main(void) {
-     struct uz_Filter_1st_config config = {.selection = LowPass, cutoff_frequency_Hz = 200.0f, sample_frequency_Hz = 20000.0f};
-     uz_Filter_1st_t* test_instance = uz_Filter_1st_init(config);
+     struct uz_IIR_Filter_config config = {.selection = LowPass, cutoff_frequency_Hz = 200.0f, sample_frequency_Hz = 20000.0f};
+     uz_IIR_Filter_t* test_instance = uz_signals_IIR_Filter_init(config);
      float unfiltered_signal = 20.0f;
      float filtered_signal = 10.0f;
-     filtered_signal = uz_signals_Filter_1st_sample(test_instance, unfiltered_signal);
-     unfiltered_signal = uz_signals_Filter_1st_reverse_sample(test_instance, filtered_signal);
+     filtered_signal = uz_signals_IIR_Filter_sample(test_instance, unfiltered_signal);
+     unfiltered_signal = uz_signals_IIR_Filter_reverse_sample(test_instance, filtered_signal);
   }
 
 Description

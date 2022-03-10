@@ -20,35 +20,35 @@
 #include "../uz_HAL.h"
 #include "../uz_math_constants.h"
 
-typedef struct uz_Filter_1st_t {
+typedef struct uz_IIR_Filter_t {
 	bool is_ready;
-	struct uz_Filter_1st_config config;
+	struct uz_IIR_Filter_config config;
 	float dt;
 	float alpha;
 	float RC;
 	float old_output;
 	float old_input;
 	bool first_step;
-} uz_Filter_1st_t;
+} uz_IIR_Filter_t;
 
-static size_t uz_Filter_1st_instance_counter = 0U;
+static size_t uz_IIR_Filter_instance_counter = 0U;
 
-static uz_Filter_1st_t instances[UZ_FILTER_1ST_ORDER_INSTANCES] = { 0 };
+static uz_IIR_Filter_t IIR_Filter_instances[UZ_IIR_FILTER_MAX_INSTANCES] = { 0 };
 
 
-static uz_Filter_1st_t* uz_Filter_1st_allocation(void);
+static uz_IIR_Filter_t* uz_IIR_Filter_allocation(void);
 
-static uz_Filter_1st_t* uz_Filter_1st_allocation(void) {
- 	uz_assert(uz_Filter_1st_instance_counter < UZ_FILTER_1ST_ORDER_INSTANCES);
-	uz_Filter_1st_t* self = &instances[uz_Filter_1st_instance_counter];
+static uz_IIR_Filter_t* uz_IIR_Filter_allocation(void) {
+ 	uz_assert(uz_IIR_Filter_instance_counter < UZ_IIR_FILTER_MAX_INSTANCES);
+	uz_IIR_Filter_t* self = &IIR_Filter_instances[uz_IIR_Filter_instance_counter];
  	uz_assert_false(self->is_ready);
-	uz_Filter_1st_instance_counter++;
+	uz_IIR_Filter_instance_counter++;
  	self->is_ready = true;
  	return (self);
 }
 
-uz_Filter_1st_t* uz_Filter_1st_init(struct uz_Filter_1st_config config) {
-	uz_Filter_1st_t* self = uz_Filter_1st_allocation();
+uz_IIR_Filter_t* uz_signals_IIR_Filter_init(struct uz_IIR_Filter_config config) {
+	uz_IIR_Filter_t* self = uz_IIR_Filter_allocation();
 	uz_assert(config.sample_frequency_Hz > 0.0f);
 	uz_assert(config.cutoff_frequency_Hz > 0.0f);
 	uz_assert(config.sample_frequency_Hz > (2.0f * config.cutoff_frequency_Hz));
@@ -102,7 +102,7 @@ float uz_signals_saturation(float input, float upper_limit, float lower_limit) {
 	return (output);
 }
 
-float uz_signals_Filter_1st_sample(uz_Filter_1st_t* self, float input) {
+float uz_signals_IIR_Filter_sample(uz_IIR_Filter_t* self, float input) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	float output = 0.0f;
@@ -124,7 +124,7 @@ float uz_signals_Filter_1st_sample(uz_Filter_1st_t* self, float input) {
 	return (output);
 }
 
-float uz_signals_Filter_1st_reverse_sample(uz_Filter_1st_t* self, float input) {
+float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t* self, float input) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	float output = 0.0f;

@@ -181,6 +181,179 @@ typedef struct {
 
 #endif
 
+/*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
+ * File: FrictionID.h
+ *
+ * Code generated for Simulink model 'FrictionID'.
+ *
+ * Model version                  : 2.523
+ * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
+ * C/C++ source code generated on : Thu Mar 10 16:53:14 2022
+ *
+ * Target selection: ert.tlc
+ * Embedded hardware selection: ARM Compatible->ARM Cortex-R
+ * Code generation objectives:
+ *    1. Execution efficiency
+ *    2. Traceability
+ * Validation result: Passed (11), Warning (1), Error (0)
+ */
+
+#ifndef RTW_HEADER_FrictionID_h_
+#define RTW_HEADER_FrictionID_h_
+#include "rtwtypes.h"
+#include <math.h>
+#include <string.h>
+#include "uz_Transformation.h"
+#include "uz_PMSM_config.h"
+#include <stddef.h>
+#ifndef FrictionID_COMMON_INCLUDES_
+#define FrictionID_COMMON_INCLUDES_
+#include "rtwtypes.h"
+#endif                                 /* FrictionID_COMMON_INCLUDES_ */
+
+/* Model Code Variants */
+
+/* Macros for accessing real-time model data structure */
+#ifndef rtmGetRootDWork
+#define rtmGetRootDWork(rtm)           ((rtm)->dwork)
+#endif
+
+#ifndef rtmSetRootDWork
+#define rtmSetRootDWork(rtm, val)      ((rtm)->dwork = (val))
+#endif
+
+#ifndef rtmGetU
+#define rtmGetU(rtm)                   ((rtm)->inputs)
+#endif
+
+#ifndef rtmSetU
+#define rtmSetU(rtm, val)              ((rtm)->inputs = (val))
+#endif
+
+#ifndef rtmGetY
+#define rtmGetY(rtm)                   ((rtm)->outputs)
+#endif
+
+#ifndef rtmSetY
+#define rtmSetY(rtm, val)              ((rtm)->outputs = (val))
+#endif
+
+#define FrictionID_M                   (rtFrictionID_M)
+
+/* Forward declaration for rtModel */
+typedef struct tag_RTM_FrictionID_t RT_MODEL_FrictionID_t;
+
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_FrictionIDConfig_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_FrictionIDConfig_t_
+
+typedef struct {
+  real32_T BrkCount;
+  real32_T N_Brk;
+  real32_T N_Visco;
+  real32_T StepScale;
+  real32_T n_eva_max;
+  real32_T eta;
+  real32_T maxCurrent;
+} uz_PID_FrictionIDConfig_t;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
+
+typedef struct {
+  uz_3ph_abc_t V_abc;
+  uz_3ph_abc_t I_abc;
+  uz_3ph_dq_t i_dq;
+  uz_3ph_dq_t v_dq;
+  real32_T omega_m;
+  real32_T omega_el;
+  real32_T theta_m;
+  real32_T theta_el;
+  real32_T V_DC;
+} uz_PID_ActualValues_t;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
+
+typedef struct {
+  uz_PMSM_t PMSM_config;
+  boolean_T enableParameterID;
+  boolean_T Reset;
+  real32_T Kp_id;
+  real32_T Kp_iq;
+  real32_T Kp_n;
+  real32_T Ki_id;
+  real32_T Ki_iq;
+  real32_T Ki_n;
+  boolean_T ElectricalID;
+  boolean_T FrictionID;
+  boolean_T TwoMassID;
+  boolean_T FluxMapID;
+  boolean_T OnlineID;
+  boolean_T ACCEPT;
+  real32_T sampleTimeISR;
+  real32_T ratCurrent;
+  real32_T ratSpeed;
+  uz_3ph_dq_t i_dq_ref;
+  real32_T n_ref;
+} uz_PID_GlobalConfig_t;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
+
+typedef struct {
+  boolean_T startFrictionID;
+  boolean_T startElectricalID;
+  boolean_T startTwoMassID;
+  boolean_T startFluxMapID;
+  uint16_T transNr;
+  boolean_T enableOnlineID;
+  boolean_T finished_all_Offline_states;
+} uz_PID_ControlFlags_t;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_Controller_Parameters_output_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_Controller_Parameters_output_t_
+
+typedef struct {
+  uz_3ph_dq_t i_dq_ref;
+  uint16_T activeState;
+  real32_T n_ref_FOC;
+  boolean_T enableFOC_speed;
+  boolean_T enableFOC_current;
+  boolean_T resetIntegrator;
+  real32_T PRBS_out;
+  real32_T Kp_id_out;
+  real32_T Kp_iq_out;
+  real32_T Kp_n_out;
+  real32_T Ki_id_out;
+  real32_T Ki_iq_out;
+  real32_T Ki_n_out;
+} uz_PID_Controller_Parameters_output_t;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_uz_PID_FrictionID_output_t_
+#define DEFINED_TYPEDEF_FOR_uz_PID_FrictionID_output_t_
+
+typedef struct {
+  real32_T BrkTorque;
+  real32_T CoulTorque;
+  real32_T ViscoTorque;
+} uz_PID_FrictionID_output_t;
+
+#endif
+
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
   real32_T measArray2[4096];           /* '<Root>/FrictionID' */

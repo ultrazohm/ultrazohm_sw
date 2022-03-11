@@ -40,6 +40,8 @@ set_property PACKAGE_PIN F15 [get_ports Dig_10_Ch5]
 #Digital_09_Ch5 = B47_L5_P
 set_property PACKAGE_PIN D15 [get_ports Dig_09_Ch5]
 
+set_property IOSTANDARD LVCMOS18 [get_ports Dig_*]
+
 #######################################################################################################################################
 
 ##Set voltage level

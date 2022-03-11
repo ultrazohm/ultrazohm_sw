@@ -47,9 +47,6 @@ set_property PACKAGE_PIN T11 [get_ports {D2_OUT_30[0]}]
 
 
 
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_*]
-set_property PULLDOWN true [get_ports {Dig_Ch2}]
-
 set_property IOSTANDARD LVCMOS18 [get_ports D2_*]
 set_property PULLDOWN true [get_ports {D2_OUT[11]}]
 set_property PULLDOWN true [get_ports {D2_OUT[10]}]

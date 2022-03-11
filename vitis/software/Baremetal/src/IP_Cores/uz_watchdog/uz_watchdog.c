@@ -20,7 +20,11 @@
 #include "xwdttb.h"
 #include "../../uz/uz_HAL.h"
 
+#define WDTTB_SECURITY_MARGIN_US 1 // Security Margin in micro seconds. Tested, only one is needed (adds 100 to the wdt counter, with the AXI frec at 100MHz)
 
+#define WIN_WDT_SBC_COUNT 0xFF /**< Selected byte count */
+#define WIN_WDT_BSS_COUNT 1	   /**< Byte segment selected */
+#define WIN_WDT_SBC_COUNT_SHIFTED	0x0000FF00
 
 struct uz_watchdog_ip_t
 {
@@ -79,7 +83,7 @@ void uz_watchdog_ip_restart(uz_watchdog_ip_t *self)
 
 void uz_watchdog_IntrHandler(void *CallBackRef)
 {
-	uz_assert(0); // Fire assertion since watchdog interrupt occured --> Watchdog was not padded within the specified time frame
+	uz_assert(0); // Fire assertion since watchdog interrupt occurred --> Watchdog was not padded within the specified time frame
 }
 
 static int uz_watchdog_write_init_values_to_registers(XWdtTb *watchdog_instance_ptr, uint32_t window_counter_value, uint16_t watchdog_device_id)

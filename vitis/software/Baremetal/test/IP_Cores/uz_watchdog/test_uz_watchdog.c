@@ -54,7 +54,7 @@ XWdtTb testWdtTb = {
 
 struct uz_watchdog_ip_config_t config={
     .CounterValue=WIN_WDT_SW_COUNT,
-    .WdtTbDeviceId=WDTTB_DEVICE_ID
+    .device_id=WDTTB_DEVICE_ID
 };
 
 //Initialize the WDTTB structure
@@ -97,7 +97,7 @@ void test_uz_watchdog_initialization(void)
 void test_uz_watchdog_fail_assert_if_window_size_is_zero(void)
 {
     struct uz_watchdog_ip_config_t bad_config={
-        .WdtTbDeviceId=WDTTB_DEVICE_ID
+        .device_id=WDTTB_DEVICE_ID
     };
     TEST_ASSERT_FAIL_ASSERT(uz_watchdog_ip_init(bad_config) );
 }

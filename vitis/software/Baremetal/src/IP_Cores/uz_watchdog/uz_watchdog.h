@@ -1,31 +1,6 @@
 #pragma once
 #include <stdint.h>
 
-#define WDTTB_SECURITY_MARGIN_US 1 // Security Margin in micro seconds. Tested, only one is needed (adds 100 to the wdt counter, with the AXI frec at 100MHz)
-
-#define WIN_WDT_SBC_COUNT 0xFF /**< Selected byte count */
-#define WIN_WDT_BSS_COUNT 1	   /**< Byte segment selected */
-// We take as reference the Timer_up_time included in the UZ. (100000000U HZ)
-#define WDTTB_AXI_CLOCK_FREQ_HZ		100000000
-
-
-#define WIN_WDT_SBC_COUNT_SHIFTED	0x0000FF00
-
-// calculate the period in microseconds adding a security margin
-#define WDTTB_PERIOD_US    ((1.0f/(UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor)*1e6f) + WDTTB_SECURITY_MARGIN_US)
-
-// cycles_per_us = WDTTB_AXI_CLOCK_FREQ_HZ * 1e-6   // for 100 MHz->10ns; 10ns * 100 = 1us
-// cycles_per_period times cycles_per_us   and  we add the base or shift as it is requested by the specification
-#define WDTTB_CYCLES_PER_PERIOD ((((uint32_t) WDTTB_PERIOD_US) * (WDTTB_AXI_CLOCK_FREQ_HZ * 1e-6)) + WIN_WDT_SBC_COUNT_SHIFTED)
-
-// ORIGINAL VALUES FOR THE EXAMPLE
-//#define WIN_WDT_SW_COUNT	0xF00000	/**< Number of clock cycles for
-//						  *  second window */
-//#define WIN_WDT_SBC_COUNT	16		/**< Selected byte count */
-//#define WIN_WDT_BSS_COUNT	2		/**< Byte segment selected */
-
-
-/**************************** Type Definitions *******************************/
 
 typedef struct uz_watchdog_ip_t uz_watchdog_ip_t;
 

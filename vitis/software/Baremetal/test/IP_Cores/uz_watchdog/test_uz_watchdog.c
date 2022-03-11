@@ -53,16 +53,13 @@ XWdtTb testWdtTb = {
 };
 
 struct uz_watchdog_ip_config_t config={
-    .CounterValue=WIN_WDT_SW_COUNT,
+    .reset_timer_in_us=100.0f,
+    .ip_clk_frequency_Hz=100000000U,
     .device_id=WDTTB_DEVICE_ID
 };
 
 //Initialize the WDTTB structure
 uz_watchdog_ip_t *WdtTbInstancePtr;
-
-
-
-/*****************************************************************************/
 
 void setUp(void)
 {

@@ -15,8 +15,9 @@ typedef struct uz_watchdog_ip_t uz_watchdog_ip_t;
  *		xparameters.h.
  */
 struct uz_watchdog_ip_config_t {
-  uint32_t CounterValue;
   uint16_t device_id;
+  uint32_t ip_clk_frequency_Hz;
+  float reset_timer_in_us;
 };
 
 

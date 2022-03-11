@@ -23,7 +23,7 @@
 #define WDTTB_SECURITY_MARGIN_US 1.0f // Security Margin in micro seconds. Tested, only one is needed (adds 100 to the wdt counter, with the AXI frec at 100MHz)
 
 #define WIN_WDT_SBC_COUNT 0xFF /**< Selected byte count */
-#define WIN_WDT_BSS_COUNT 1U    /**< Byte segment selected */
+#define WIN_WDT_BSS_COUNT 1U   /**< Byte segment selected */
 #define WIN_WDT_SBC_COUNT_SHIFTED 0x0000FF00
 
 struct uz_watchdog_ip_t
@@ -31,6 +31,7 @@ struct uz_watchdog_ip_t
     bool is_ready;
     XWdtTb xilinxWdtIP;
     uint32_t reset_counter_start_value;
+    uint32_t fail_counter;
     struct uz_watchdog_ip_config_t watchdog_config;
 };
 
@@ -88,7 +89,25 @@ void uz_watchdog_ip_restart(uz_watchdog_ip_t *self)
 
 void uz_watchdog_IntrHandler(void *CallBackRef)
 {
-    uz_assert(0); // Fire assertion since watchdog interrupt occurred --> Watchdog was not padded within the specified time frame
+    uz_watchdog_ip_t *self = (uz_watchdog_ip_t *)CallBackRef;
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+
+    switch (self->watchdog_config.fail_mode)
+    {
+    case watchdog_assertion:
+        uz_printf("\n watchdog interrupt triggered \n");
+        uz_assert(0); // Fire assertion since watchdog interrupt occurred --> Watchdog was not padded within the specified time frame
+        break;
+    case watchdog_debug_mode:
+        self->fail_counter++;
+        XWdtTb_RestartWdt(&(self->xilinxWdtIP));
+        XWdtTb_IntrClear(&(self->xilinxWdtIP));  /* Clear interrupt point. To allow a new INT to be triggered again (see documentation)*/
+        break;
+    default:
+        uz_assert(0);
+        break;
+    }
 }
 
 static int uz_watchdog_write_init_values_to_registers(XWdtTb *watchdog_instance_ptr, uint32_t window_counter_value, uint16_t watchdog_device_id)

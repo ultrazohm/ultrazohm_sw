@@ -4,6 +4,11 @@
 
 typedef struct uz_watchdog_ip_t uz_watchdog_ip_t;
 
+enum uz_watchdog_fail_mode{
+    watchdog_assertion=0,
+    watchdog_debug_mode
+};
+
 /** @struct uz_watchdog_ip_config_t
  *  @brief This structure is used to initialize the WatchDog Timer IP driver
  *  @var uz_watchdog_ip_config_t::CounterValue
@@ -18,7 +23,9 @@ struct uz_watchdog_ip_config_t {
   uint16_t device_id;
   uint32_t ip_clk_frequency_Hz;
   float reset_timer_in_us;
+  enum uz_watchdog_fail_mode fail_mode;
 };
+
 
 
 /**

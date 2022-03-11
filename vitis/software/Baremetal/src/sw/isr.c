@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "xparameters.h"
 
 //Inclusion of Watch Dog Timer code
 #include "../IP_Cores/uz_watchdog/uz_watchdog.h"
@@ -57,9 +58,16 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
+static bool is_first_isr_call=true;
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+
+    if(is_first_isr_call){
+    	uz_watchdog_ip_start(WdtTbInstancePtr);
+    	is_first_isr_call=false;
+    }
 
 	//  Ensure that the source of the current interrupt is cleared: TESTED, AND NOT NECESARY
 	//	and enable Nested Interrupts: TESTED, NECESARY
@@ -114,9 +122,12 @@ int Initialize_ISR()
 	 * Call Init  the WDT setting timer to the default timeout and default configuration.
 	 * Obtain a WDT pointer initialized to use with the WDTTB API
 	 */
+    float isr_maximum_sample_time_us=Global_Data.av.isr_samplerate_s*1e6f; // convert second to microsecond
 	struct uz_watchdog_ip_config_t config={
-		.CounterValue=WDTTB_CYCLES_PER_PERIOD,
-		.WdtTbDeviceId=WDTTB_DEVICE_ID
+		.reset_timer_in_us=isr_maximum_sample_time_us,
+		.device_id=XPAR_AXI_TIMEBASE_WDT_0_DEVICE_ID,
+		.ip_clk_frequency_Hz=100000000,
+		.fail_mode=watchdog_assertion
 	};
 	WdtTbInstancePtr = uz_watchdog_ip_init(config);
 
@@ -184,8 +195,8 @@ void WdtTbDisableIntrSystem(XScuGic *IntcInstancePtr)
 	*  XPAR_<INTC_instance>_<WDTTB_instance>_WDT_INTERRUPT_VEC_ID
 	*  value from xparameters.h.
 	*/
-	XScuGic_Disable(IntcInstancePtr, WDTTB_IRPT_INTR);
-	XScuGic_Disconnect(IntcInstancePtr, WDTTB_IRPT_INTR);
+	XScuGic_Disable(IntcInstancePtr, XPAR_FABRIC_WDTTB_0_VEC_ID);
+	XScuGic_Disconnect(IntcInstancePtr, XPAR_FABRIC_WDTTB_0_VEC_ID);
 }
 
 /**
@@ -213,12 +224,12 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 	int Status;
 	u8 Priority, Trigger;
 
-	XScuGic_GetPriorityTriggerType(IntcInstancePtr, WDTTB_IRPT_INTR,
+	XScuGic_GetPriorityTriggerType(IntcInstancePtr, XPAR_FABRIC_WDTTB_0_VEC_ID,
 		                                            &Priority, &Trigger);
 	// Highest priority for the WDT
 	Priority = 0x0;
 	Trigger = 3;
-	XScuGic_SetPriorityTriggerType(IntcInstancePtr, WDTTB_IRPT_INTR,
+	XScuGic_SetPriorityTriggerType(IntcInstancePtr, XPAR_FABRIC_WDTTB_0_VEC_ID,
 			Priority, Trigger);
 
 	//	DEBUG INFO
@@ -229,7 +240,7 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 	 * Connect the interrupt handler that will be called when an
 	 * interrupt occurs for the device.
 	 */
-	Status = XScuGic_Connect(IntcInstancePtr, WDTTB_IRPT_INTR,
+	Status = XScuGic_Connect(IntcInstancePtr, XPAR_FABRIC_WDTTB_0_VEC_ID,
 				(Xil_ExceptionHandler)uz_watchdog_IntrHandler,
 				WdtTbInstancePtr);
 	if (Status != XST_SUCCESS) {
@@ -237,7 +248,7 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 	}
 
 	/* Enable the interrupt for the Timer device */
-	XScuGic_Enable(IntcInstancePtr, WDTTB_IRPT_INTR);
+	XScuGic_Enable(IntcInstancePtr, XPAR_FABRIC_WDTTB_0_VEC_ID);
 
 	/* Initialize the exception table */
 	Xil_ExceptionInit();
@@ -320,9 +331,8 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
     XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
 
     //	Enable the WDT and launch first kick
-	uz_watchdog_ip_start(WdtTbInstancePtr);
-
     xil_printf("RPU: Rpu_GicInit: Done\r\n");
+
     return XST_SUCCESS;
 }
 

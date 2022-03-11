@@ -43,3 +43,4 @@ vitis/Sandbox/uz_MyIp/uz_MyIp_testbench
 control_algorithms/uz_FOC.slxc
 
 /vivado/project/
+/vivado/constraints/new/

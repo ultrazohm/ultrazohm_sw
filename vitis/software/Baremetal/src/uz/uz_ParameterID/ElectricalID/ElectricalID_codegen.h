@@ -170,7 +170,6 @@ typedef struct {
   boolean_T enableFOC_speed; /**<flag to enable speed controller */
   boolean_T enableFOC_current; /**<flag to enable current controller */
   boolean_T resetIntegrator; /**<flag to reset the integrators used in the control algorithm */
-  real32_T PRBS_out; /**<excitation for TwoMassID */ 
   real32_T Kp_id_out; /**<Kp_id for FOC control. Can be ignored, if another control algorithm is used */
   real32_T Kp_iq_out; /**<Kp_iq for FOC control. Can be ignored, if another control algorithm is used */
   real32_T Kp_n_out; /**<Kp_n for FOC control. Can be ignored, if another control algorithm is used */
@@ -198,8 +197,6 @@ typedef struct {
 } uz_PID_ElectricalID_output_t;
 
 #endif
-
-/* Block signals and states (default storage) for system '<Root>' */
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {

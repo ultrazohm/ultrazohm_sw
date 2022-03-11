@@ -155,7 +155,6 @@ typedef struct {
   boolean_T enableFOC_speed;
   boolean_T enableFOC_current;
   boolean_T resetIntegrator;
-  real32_T PRBS_out;
   real32_T Kp_id_out;
   real32_T Kp_iq_out;
   real32_T Kp_n_out;

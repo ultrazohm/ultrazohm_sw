@@ -154,7 +154,6 @@ typedef struct {
   boolean_T enableFOC_speed;
   boolean_T enableFOC_current;
   boolean_T resetIntegrator;
-  real32_T PRBS_out;
   real32_T Kp_id_out;
   real32_T Kp_iq_out;
   real32_T Kp_n_out;
@@ -173,6 +172,7 @@ typedef struct {
  * 
  */
 typedef struct {
+  real32_T PRBS_out; /**< output of excitation signal. Has to added on top of the speedcontrol q_reference_current */
   real32_T c_est_out; /**< identified TMS stiffness in Nm/rad */
   real32_T d_est_out; /**< identified TMS damping in Nms/rad */
   real32_T LoadInertia; /**< identified inertia of the load in kgm² */

@@ -22,9 +22,7 @@
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_ACTIVE > 0U
 
-#include "FrictionID_codegen.h"
-
-/* Named constants for Chart: '<Root>/FrictionID' */
+#include "FrictionID_codegen.h"/* Named constants for Chart: '<Root>/FrictionID' */
 #define IN_BreakawayTorqueEstimation   ((uint8_T)1U)
 #define IN_CoulombFrictionTorqueEstimat ((uint8_T)2U)
 #define IN_DecreaseSpeed               ((uint8_T)1U)
@@ -61,52 +59,49 @@ static void reset_FOC_output(ExtU_FrictionID_t *rtFrictionID_U,
   /* '<S1>:618:4' FrictionID_FOC_output.n_ref_FOC             = single(0.0); */
   rtFrictionID_Y->FrictionID_FOC_output.n_ref_FOC = 0.0F;
 
-  /* '<S1>:618:5' FrictionID_FOC_output.PRBS_out              = single(0.0); */
-  rtFrictionID_Y->FrictionID_FOC_output.PRBS_out = 0.0F;
-
-  /* '<S1>:618:6' FrictionID_FOC_output.i_dq_ref.d            = single(0.0); */
+  /* '<S1>:618:5' FrictionID_FOC_output.i_dq_ref.d            = single(0.0); */
   rtFrictionID_Y->FrictionID_FOC_output.i_dq_ref.d = 0.0F;
 
-  /* '<S1>:618:7' FrictionID_FOC_output.i_dq_ref.q            = single(i_eva); */
+  /* '<S1>:618:6' FrictionID_FOC_output.i_dq_ref.q            = single(i_eva); */
   rtFrictionID_Y->FrictionID_FOC_output.i_dq_ref.q = rtFrictionID_DW->i_eva;
 
-  /* '<S1>:618:8' FrictionID_FOC_output.i_dq_ref.zero         = single(0.0); */
+  /* '<S1>:618:7' FrictionID_FOC_output.i_dq_ref.zero         = single(0.0); */
   rtFrictionID_Y->FrictionID_FOC_output.i_dq_ref.zero = 0.0F;
 
-  /* '<S1>:618:9' FrictionID_FOC_output.enableFOC_speed       = boolean(0); */
+  /* '<S1>:618:8' FrictionID_FOC_output.enableFOC_speed       = boolean(0); */
   rtFrictionID_Y->FrictionID_FOC_output.enableFOC_speed = false;
 
-  /* '<S1>:618:10' FrictionID_FOC_output.enableFOC_current     = boolean(0); */
+  /* '<S1>:618:9' FrictionID_FOC_output.enableFOC_current     = boolean(0); */
   rtFrictionID_Y->FrictionID_FOC_output.enableFOC_current = false;
 
-  /* '<S1>:618:11' FrictionID_FOC_output.resetIntegrator       = boolean(1); */
+  /* '<S1>:618:10' FrictionID_FOC_output.resetIntegrator       = boolean(1); */
   rtFrictionID_Y->FrictionID_FOC_output.resetIntegrator = true;
 
-  /* '<S1>:618:12' FrictionID_FOC_output.Kp_id_out             = single(GlobalConfig.Kp_id); */
+  /* '<S1>:618:11' FrictionID_FOC_output.Kp_id_out             = single(GlobalConfig.Kp_id); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_id_out =
     rtFrictionID_U->GlobalConfig_out.Kp_id;
 
-  /* '<S1>:618:13' FrictionID_FOC_output.Kp_iq_out             = single(GlobalConfig.Kp_iq); */
+  /* '<S1>:618:12' FrictionID_FOC_output.Kp_iq_out             = single(GlobalConfig.Kp_iq); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_iq_out =
     rtFrictionID_U->GlobalConfig_out.Kp_iq;
 
-  /* '<S1>:618:14' FrictionID_FOC_output.Kp_n_out              = single(GlobalConfig.Kp_n); */
+  /* '<S1>:618:13' FrictionID_FOC_output.Kp_n_out              = single(GlobalConfig.Kp_n); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_n_out =
     rtFrictionID_U->GlobalConfig_out.Kp_n;
 
-  /* '<S1>:618:15' FrictionID_FOC_output.Ki_id_out             = single(GlobalConfig.Ki_id); */
+  /* '<S1>:618:14' FrictionID_FOC_output.Ki_id_out             = single(GlobalConfig.Ki_id); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_id_out =
     rtFrictionID_U->GlobalConfig_out.Ki_id;
 
-  /* '<S1>:618:16' FrictionID_FOC_output.Ki_iq_out             = single(GlobalConfig.Ki_iq); */
+  /* '<S1>:618:15' FrictionID_FOC_output.Ki_iq_out             = single(GlobalConfig.Ki_iq); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_iq_out =
     rtFrictionID_U->GlobalConfig_out.Ki_iq;
 
-  /* '<S1>:618:17' FrictionID_FOC_output.Ki_n_out              = single(GlobalConfig.Ki_n); */
+  /* '<S1>:618:16' FrictionID_FOC_output.Ki_n_out              = single(GlobalConfig.Ki_n); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_n_out =
     rtFrictionID_U->GlobalConfig_out.Ki_n;
 
-  /* '<S1>:618:18' FrictionID_FOC_output.activeState               = uint16(0); */
+  /* '<S1>:618:17' FrictionID_FOC_output.activeState               = uint16(0); */
   rtFrictionID_Y->FrictionID_FOC_output.activeState = 0U;
 }
 
@@ -328,69 +323,66 @@ static void initParams(ExtU_FrictionID_t *rtFrictionID_U, ExtY_FrictionID_t
   /* '<S1>:546:25' FrictionID_FOC_output.n_ref_FOC             = single(0.0); */
   rtFrictionID_Y->FrictionID_FOC_output.n_ref_FOC = 0.0F;
 
-  /* '<S1>:546:26' FrictionID_FOC_output.PRBS_out              = single(0.0); */
-  rtFrictionID_Y->FrictionID_FOC_output.PRBS_out = 0.0F;
-
-  /* '<S1>:546:27' FrictionID_FOC_output.i_dq_ref.d            = single(0.0); */
+  /* '<S1>:546:26' FrictionID_FOC_output.i_dq_ref.d            = single(0.0); */
   rtFrictionID_Y->FrictionID_FOC_output.i_dq_ref.d = 0.0F;
 
-  /* '<S1>:546:28' FrictionID_FOC_output.i_dq_ref.q            = single(i_eva); */
+  /* '<S1>:546:27' FrictionID_FOC_output.i_dq_ref.q            = single(i_eva); */
   rtFrictionID_Y->FrictionID_FOC_output.i_dq_ref.q = rtFrictionID_DW->i_eva;
 
-  /* '<S1>:546:29' FrictionID_FOC_output.i_dq_ref.zero         = single(0.0); */
+  /* '<S1>:546:28' FrictionID_FOC_output.i_dq_ref.zero         = single(0.0); */
   rtFrictionID_Y->FrictionID_FOC_output.i_dq_ref.zero = 0.0F;
 
-  /* '<S1>:546:30' FrictionID_FOC_output.enableFOC_speed       = boolean(0); */
+  /* '<S1>:546:29' FrictionID_FOC_output.enableFOC_speed       = boolean(0); */
   rtFrictionID_Y->FrictionID_FOC_output.enableFOC_speed = false;
 
-  /* '<S1>:546:31' FrictionID_FOC_output.enableFOC_current     = boolean(0); */
+  /* '<S1>:546:30' FrictionID_FOC_output.enableFOC_current     = boolean(0); */
   rtFrictionID_Y->FrictionID_FOC_output.enableFOC_current = false;
 
-  /* '<S1>:546:32' FrictionID_FOC_output.resetIntegrator       = boolean(1); */
+  /* '<S1>:546:31' FrictionID_FOC_output.resetIntegrator       = boolean(1); */
   rtFrictionID_Y->FrictionID_FOC_output.resetIntegrator = true;
 
   /* Outport: '<Root>/finishedFrictionID' */
-  /* '<S1>:546:33' finishedFrictionID                          = boolean(0); */
+  /* '<S1>:546:32' finishedFrictionID                          = boolean(0); */
   rtFrictionID_Y->finishedFrictionID = false;
 
   /* Outport: '<Root>/FrictionID_FOC_output' incorporates:
    *  Inport: '<Root>/GlobalConfig'
    */
-  /* '<S1>:546:34' FrictionID_FOC_output.Kp_id_out             = single(GlobalConfig.Kp_id); */
+  /* '<S1>:546:33' FrictionID_FOC_output.Kp_id_out             = single(GlobalConfig.Kp_id); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_id_out =
     rtFrictionID_U->GlobalConfig_out.Kp_id;
 
-  /* '<S1>:546:35' FrictionID_FOC_output.Kp_iq_out             = single(GlobalConfig.Kp_iq); */
+  /* '<S1>:546:34' FrictionID_FOC_output.Kp_iq_out             = single(GlobalConfig.Kp_iq); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_iq_out =
     rtFrictionID_U->GlobalConfig_out.Kp_iq;
 
-  /* '<S1>:546:36' FrictionID_FOC_output.Kp_n_out              = single(GlobalConfig.Kp_n); */
+  /* '<S1>:546:35' FrictionID_FOC_output.Kp_n_out              = single(GlobalConfig.Kp_n); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_n_out =
     rtFrictionID_U->GlobalConfig_out.Kp_n;
 
-  /* '<S1>:546:37' FrictionID_FOC_output.Ki_id_out             = single(GlobalConfig.Ki_id); */
+  /* '<S1>:546:36' FrictionID_FOC_output.Ki_id_out             = single(GlobalConfig.Ki_id); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_id_out =
     rtFrictionID_U->GlobalConfig_out.Ki_id;
 
-  /* '<S1>:546:38' FrictionID_FOC_output.Ki_iq_out             = single(GlobalConfig.Ki_iq); */
+  /* '<S1>:546:37' FrictionID_FOC_output.Ki_iq_out             = single(GlobalConfig.Ki_iq); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_iq_out =
     rtFrictionID_U->GlobalConfig_out.Ki_iq;
 
-  /* '<S1>:546:39' FrictionID_FOC_output.Ki_n_out              = single(GlobalConfig.Ki_n); */
+  /* '<S1>:546:38' FrictionID_FOC_output.Ki_n_out              = single(GlobalConfig.Ki_n); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_n_out =
     rtFrictionID_U->GlobalConfig_out.Ki_n;
 
-  /* '<S1>:546:40' FrictionID_FOC_output.activeState           = uint16(0); */
+  /* '<S1>:546:39' FrictionID_FOC_output.activeState           = uint16(0); */
   rtFrictionID_Y->FrictionID_FOC_output.activeState = 0U;
 
   /* Outport: '<Root>/FrictionID_output' */
-  /* '<S1>:546:42' FrictionID_output.BrkTorque                 = single(0.0); */
+  /* '<S1>:546:41' FrictionID_output.BrkTorque                 = single(0.0); */
   rtFrictionID_Y->FrictionID_output.BrkTorque = 0.0F;
 
-  /* '<S1>:546:43' FrictionID_output.CoulTorque                = single(0.0); */
+  /* '<S1>:546:42' FrictionID_output.CoulTorque                = single(0.0); */
   rtFrictionID_Y->FrictionID_output.CoulTorque = 0.0F;
 
-  /* '<S1>:546:44' FrictionID_output.ViscoTorque               = single(0.0); */
+  /* '<S1>:546:43' FrictionID_output.ViscoTorque               = single(0.0); */
   rtFrictionID_Y->FrictionID_output.ViscoTorque = 0.0F;
 }
 
@@ -1006,7 +998,6 @@ void FrictionID_initialize(RT_MODEL_FrictionID_t *const rtFrictionID_M)
   rtFrictionID_Y->FrictionID_FOC_output.enableFOC_speed = false;
   rtFrictionID_Y->FrictionID_FOC_output.enableFOC_current = false;
   rtFrictionID_Y->FrictionID_FOC_output.resetIntegrator = false;
-  rtFrictionID_Y->FrictionID_FOC_output.PRBS_out = 0.0F;
   rtFrictionID_Y->FrictionID_FOC_output.Kp_id_out = 0.0F;
   rtFrictionID_Y->FrictionID_FOC_output.Kp_iq_out = 0.0F;
   rtFrictionID_Y->FrictionID_FOC_output.Kp_n_out = 0.0F;

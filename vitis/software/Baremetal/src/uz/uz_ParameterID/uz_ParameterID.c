@@ -192,7 +192,7 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_i
 		ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
 		i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->Controller_Parameters.n_ref_FOC, Data->ActualValues.V_DC,
 		                Data->Controller_Parameters.i_dq_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping);
-		i_SpeedControl_reference_Ampere.q += Data->Controller_Parameters.PRBS_out;
+		i_SpeedControl_reference_Ampere.q += Data->TwoMassID_Output->PRBS_out;
 	}
 	if (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true) {
 		//Change, if desired, the current controller here
@@ -391,7 +391,6 @@ static void uz_PID_FOC_output_set_zero(uz_ParameterID_Data_t* Data) {
 	Data->Controller_Parameters.Kp_id_out = 0.0f;
 	Data->Controller_Parameters.Kp_iq_out = 0.0f;
 	Data->Controller_Parameters.Kp_n_out = 0.0f;
-	Data->Controller_Parameters.PRBS_out = 0.0f;
 	Data->Controller_Parameters.enableFOC_current = false;
 	Data->Controller_Parameters.enableFOC_speed = false;
 	Data->Controller_Parameters.i_dq_ref.d = 0.0f;

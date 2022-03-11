@@ -158,67 +158,66 @@ static void initParams(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t
   /* '<S1>:651:28' FluxMapID_FOC_output.n_ref_FOC         	= single(0.0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.n_ref_FOC = 0.0F;
 
-  /* '<S1>:651:29' FluxMapID_FOC_output.PRBS_out         	= single(0.0); */
-  rtFluxMapID_Y->FluxMapID_FOC_output.PRBS_out = 0.0F;
-
-  /* '<S1>:651:30' FluxMapID_FOC_output.i_dq_ref.d      	= single(0.0); */
+  /* '<S1>:651:29' FluxMapID_FOC_output.i_dq_ref.d      	= single(0.0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.i_dq_ref.d = 0.0F;
 
-  /* '<S1>:651:31' FluxMapID_FOC_output.i_dq_ref.q       	= single(0.0); */
+  /* '<S1>:651:30' FluxMapID_FOC_output.i_dq_ref.q       	= single(0.0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.i_dq_ref.q = 0.0F;
 
-  /* '<S1>:651:32' FluxMapID_FOC_output.i_dq_ref.zero      = single(0.0); */
+  /* '<S1>:651:31' FluxMapID_FOC_output.i_dq_ref.zero      = single(0.0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.i_dq_ref.zero = 0.0F;
 
-  /* '<S1>:651:33' FluxMapID_FOC_output.enableFOC_speed   	= boolean(0); */
+  /* '<S1>:651:32' FluxMapID_FOC_output.enableFOC_speed   	= boolean(0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.enableFOC_speed = false;
 
-  /* '<S1>:651:34' FluxMapID_FOC_output.enableFOC_current  = boolean(0); */
+  /* '<S1>:651:33' FluxMapID_FOC_output.enableFOC_current  = boolean(0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.enableFOC_current = false;
 
-  /* '<S1>:651:35' FluxMapID_FOC_output.resetIntegrator 	= boolean(0); */
+  /* '<S1>:651:34' FluxMapID_FOC_output.resetIntegrator 	= boolean(0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.resetIntegrator = false;
 
-  /* '<S1>:651:36' FluxMapID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
+  /* '<S1>:651:35' FluxMapID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
   rtFluxMapID_Y->FluxMapID_FOC_output.Kp_id_out =
     rtFluxMapID_U->GlobalConfig_out.Kp_id;
 
-  /* '<S1>:651:37' FluxMapID_FOC_output.Kp_iq_out         	= single(GlobalConfig.Kp_iq); */
+  /* '<S1>:651:36' FluxMapID_FOC_output.Kp_iq_out         	= single(GlobalConfig.Kp_iq); */
   rtFluxMapID_Y->FluxMapID_FOC_output.Kp_iq_out =
     rtFluxMapID_U->GlobalConfig_out.Kp_iq;
 
-  /* '<S1>:651:38' FluxMapID_FOC_output.Kp_n_out         	= single(0.0); */
-  rtFluxMapID_Y->FluxMapID_FOC_output.Kp_n_out = 0.0F;
+  /* '<S1>:651:37' FluxMapID_FOC_output.Kp_n_out         	= single(GlobalConfig.Kp_n); */
+  rtFluxMapID_Y->FluxMapID_FOC_output.Kp_n_out =
+    rtFluxMapID_U->GlobalConfig_out.Kp_n;
 
-  /* '<S1>:651:39' FluxMapID_FOC_output.Ki_id_out         	= single(GlobalConfig.Ki_id); */
+  /* '<S1>:651:38' FluxMapID_FOC_output.Ki_id_out         	= single(GlobalConfig.Ki_id); */
   rtFluxMapID_Y->FluxMapID_FOC_output.Ki_id_out =
     rtFluxMapID_U->GlobalConfig_out.Ki_id;
 
-  /* '<S1>:651:40' FluxMapID_FOC_output.Ki_iq_out        	= single(GlobalConfig.Ki_iq); */
+  /* '<S1>:651:39' FluxMapID_FOC_output.Ki_iq_out        	= single(GlobalConfig.Ki_iq); */
   rtFluxMapID_Y->FluxMapID_FOC_output.Ki_iq_out =
     rtFluxMapID_U->GlobalConfig_out.Ki_iq;
 
-  /* '<S1>:651:41' FluxMapID_FOC_output.Ki_n_out          	= single(0.0); */
-  rtFluxMapID_Y->FluxMapID_FOC_output.Ki_n_out = 0.0F;
+  /* '<S1>:651:40' FluxMapID_FOC_output.Ki_n_out          	= single(GlobalConfig.Ki_n); */
+  rtFluxMapID_Y->FluxMapID_FOC_output.Ki_n_out =
+    rtFluxMapID_U->GlobalConfig_out.Ki_n;
 
-  /* '<S1>:651:42' FluxMapID_FOC_output.activeState        = uint16(0); */
+  /* '<S1>:651:41' FluxMapID_FOC_output.activeState        = uint16(0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.activeState = 0U;
 
   /* Outport: '<Root>/finishedFluxMapID' */
-  /* '<S1>:651:43' finishedFluxMapID                       = boolean(0); */
+  /* '<S1>:651:42' finishedFluxMapID                       = boolean(0); */
   rtFluxMapID_Y->finishedFluxMapID = false;
 
   /* Outport: '<Root>/FluxMapID_output' incorporates:
    *  Inport: '<Root>/FluxMapIDConfig'
    */
-  /* '<S1>:651:45' FluxMapID_output.R_s                    = single(FluxMapIDConfig.R_s_ref); */
+  /* '<S1>:651:44' FluxMapID_output.R_s                    = single(FluxMapIDConfig.R_s_ref); */
   rtFluxMapID_Y->FluxMapID_output.R_s = rtFluxMapID_U->FluxMapIDConfig.R_s_ref;
 
-  /* '<S1>:651:46' FluxMapID_output.WindingTemp            = single(FluxMapIDConfig.Temp_ref); */
+  /* '<S1>:651:45' FluxMapID_output.WindingTemp            = single(FluxMapIDConfig.Temp_ref); */
   rtFluxMapID_Y->FluxMapID_output.WindingTemp =
     rtFluxMapID_U->FluxMapIDConfig.Temp_ref;
 
-  /* '<S1>:651:47' FluxMapID_output.external_Measurement_Flag = boolean(0); */
+  /* '<S1>:651:46' FluxMapID_output.external_Measurement_Flag = boolean(0); */
   rtFluxMapID_Y->FluxMapID_output.external_Measurement_Flag = false;
 }
 
@@ -536,50 +535,49 @@ static void reset_FOC_output(ExtU_FluxMapID_t *rtFluxMapID_U, ExtY_FluxMapID_t
   /* '<S1>:696:3' FluxMapID_FOC_output.n_ref_FOC         	= single(0.0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.n_ref_FOC = 0.0F;
 
-  /* '<S1>:696:4' FluxMapID_FOC_output.PRBS_out         	= single(0.0); */
-  rtFluxMapID_Y->FluxMapID_FOC_output.PRBS_out = 0.0F;
-
-  /* '<S1>:696:5' FluxMapID_FOC_output.i_dq_ref.d      	= single(0.0); */
+  /* '<S1>:696:4' FluxMapID_FOC_output.i_dq_ref.d      	= single(0.0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.i_dq_ref.d = 0.0F;
 
-  /* '<S1>:696:6' FluxMapID_FOC_output.i_dq_ref.q       	= single(0.0); */
+  /* '<S1>:696:5' FluxMapID_FOC_output.i_dq_ref.q       	= single(0.0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.i_dq_ref.q = 0.0F;
 
-  /* '<S1>:696:7' FluxMapID_FOC_output.i_dq_ref.zero      = single(0.0); */
+  /* '<S1>:696:6' FluxMapID_FOC_output.i_dq_ref.zero      = single(0.0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.i_dq_ref.zero = 0.0F;
 
-  /* '<S1>:696:8' FluxMapID_FOC_output.enableFOC_speed   	= boolean(0); */
+  /* '<S1>:696:7' FluxMapID_FOC_output.enableFOC_speed   	= boolean(0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.enableFOC_speed = false;
 
-  /* '<S1>:696:9' FluxMapID_FOC_output.enableFOC_current  = boolean(0); */
+  /* '<S1>:696:8' FluxMapID_FOC_output.enableFOC_current  = boolean(0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.enableFOC_current = false;
 
-  /* '<S1>:696:10' FluxMapID_FOC_output.resetIntegrator 	= boolean(0); */
+  /* '<S1>:696:9' FluxMapID_FOC_output.resetIntegrator 	= boolean(0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.resetIntegrator = false;
 
-  /* '<S1>:696:11' FluxMapID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
+  /* '<S1>:696:10' FluxMapID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
   rtFluxMapID_Y->FluxMapID_FOC_output.Kp_id_out =
     rtFluxMapID_U->GlobalConfig_out.Kp_id;
 
-  /* '<S1>:696:12' FluxMapID_FOC_output.Kp_iq_out         	= single(GlobalConfig.Kp_iq); */
+  /* '<S1>:696:11' FluxMapID_FOC_output.Kp_iq_out         	= single(GlobalConfig.Kp_iq); */
   rtFluxMapID_Y->FluxMapID_FOC_output.Kp_iq_out =
     rtFluxMapID_U->GlobalConfig_out.Kp_iq;
 
-  /* '<S1>:696:13' FluxMapID_FOC_output.Kp_n_out         	= single(0.0); */
-  rtFluxMapID_Y->FluxMapID_FOC_output.Kp_n_out = 0.0F;
+  /* '<S1>:696:12' FluxMapID_FOC_output.Kp_n_out         	= single(GlobalConfig.Kp_n); */
+  rtFluxMapID_Y->FluxMapID_FOC_output.Kp_n_out =
+    rtFluxMapID_U->GlobalConfig_out.Kp_n;
 
-  /* '<S1>:696:14' FluxMapID_FOC_output.Ki_id_out         	= single(GlobalConfig.Ki_id); */
+  /* '<S1>:696:13' FluxMapID_FOC_output.Ki_id_out         	= single(GlobalConfig.Ki_id); */
   rtFluxMapID_Y->FluxMapID_FOC_output.Ki_id_out =
     rtFluxMapID_U->GlobalConfig_out.Ki_id;
 
-  /* '<S1>:696:15' FluxMapID_FOC_output.Ki_iq_out        	= single(GlobalConfig.Ki_iq); */
+  /* '<S1>:696:14' FluxMapID_FOC_output.Ki_iq_out        	= single(GlobalConfig.Ki_iq); */
   rtFluxMapID_Y->FluxMapID_FOC_output.Ki_iq_out =
     rtFluxMapID_U->GlobalConfig_out.Ki_iq;
 
-  /* '<S1>:696:16' FluxMapID_FOC_output.Ki_n_out          	= single(0.0); */
-  rtFluxMapID_Y->FluxMapID_FOC_output.Ki_n_out = 0.0F;
+  /* '<S1>:696:15' FluxMapID_FOC_output.Ki_n_out          	= single(GlobalConfig.Ki_n); */
+  rtFluxMapID_Y->FluxMapID_FOC_output.Ki_n_out =
+    rtFluxMapID_U->GlobalConfig_out.Ki_n;
 
-  /* '<S1>:696:17' FluxMapID_FOC_output.activeState        = uint16(0); */
+  /* '<S1>:696:16' FluxMapID_FOC_output.activeState        = uint16(0); */
   rtFluxMapID_Y->FluxMapID_FOC_output.activeState = 0U;
 }
 
@@ -1157,7 +1155,6 @@ void FluxMapID_initialize(RT_MODEL_FluxMapID_t *const rtFluxMapID_M)
   rtFluxMapID_Y->FluxMapID_FOC_output.enableFOC_speed = false;
   rtFluxMapID_Y->FluxMapID_FOC_output.enableFOC_current = false;
   rtFluxMapID_Y->FluxMapID_FOC_output.resetIntegrator = false;
-  rtFluxMapID_Y->FluxMapID_FOC_output.PRBS_out = 0.0F;
   rtFluxMapID_Y->FluxMapID_FOC_output.Kp_id_out = 0.0F;
   rtFluxMapID_Y->FluxMapID_FOC_output.Kp_iq_out = 0.0F;
   rtFluxMapID_Y->FluxMapID_FOC_output.Kp_n_out = 0.0F;

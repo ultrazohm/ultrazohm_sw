@@ -45,8 +45,7 @@ def extract_port(sp, dict):
     # if the port definition use star (*), find all ports that match
     if "*" in port:
         search_string = port.replace('*','')
-        port = [item for item in dict.keys() if search_string in item]
-        print(port)   
+        port = [item for item in dict.keys() if search_string in item] 
     else: # otherwise, make port a list, so we can iterate in anycase
         port = [port]
     return port
@@ -111,19 +110,28 @@ for xdc_input in xdc_files:
     xdc_dict = extract_info_from_xdc(xdc_input)
 
     for port in xdc_dict.items():
-
+        p = port[1]
         # find dict on the origin list that has the same package pin
-        origin_info = [item for item in dict_origin if item["FPGA Pin Name"] == port[1].package_pin][0]
-        port[1].connector_name = origin_info["C-Name"]
-        port[1].connector_number = origin_info["C-Pin"]       
+        origin_info = [item for item in dict_origin if item["FPGA Pin Name"] == p.package_pin][0]
+        p.connector_name = origin_info["C-Name"]
+        p.connector_number = origin_info["C-Pin"]       
         # find dict on the target list that is connected to the same B2B connector pin
         target_info = [item for item in dict_target if item["C-Name"] == origin_info["C-Name"] and item["C-Pin"] == origin_info["C-Pin"]][0]
         # replace package_pin with the information of the target board
-        port[1].package_pin = target_info["FPGA Pin Name"]
-        port[1].module_net_name = target_info["Module Net Name"]
+        p.package_pin = target_info["FPGA Pin Name"]
+        p.module_net_name = target_info["Module Net Name"]
+        # invert _P and _N pins if there is a mismatch (even = _P and odd = _N)
+        if p.iostandard == "LVDS":
+            if "[" in p.port and "]" in p.port:
+                number = int(p.port[p.port.find("[")+1:p.port.find("]")])
+                if number % 2 == 0 and p.module_net_name.endswith("_N"):
+                    # number is even, but ends with _N 
+                    p.port = p.port.replace(str(number),str(number+1))
+                if number % 2 != 0 and p.module_net_name.endswith("_P"):
+                    # number is odd, but ends with _P -> switch 
+                    p.port = p.port.replace(str(number),str(number-1))
 
-      
-        f.writelines(port[1].write())
+        f.writelines(p.write())
         f.write("\n")
 
     f.close()

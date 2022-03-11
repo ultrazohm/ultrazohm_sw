@@ -64,7 +64,11 @@ On top of that the ``ID-states`` inside the ParameterID are separated into two d
     This means, they use all existing measurement during normal operation and identify their parameters this way. 
     They therefore don't have to actively control the machine. Thus they can operate parallel to the general operation of the motor. 
 
+.. note::
 
+      All states have been configured in such a way, that they are independent of the sampleTime. 
+      This works, if the ``sampleTimeISR`` member of the :ref:`uz_Global_config_struct` is equal to the sampleTime of the function call. 
+      This has been confirmed for an ISR-frequency of 10kHz and 20kHz.
 
 .. _PID_signalflow:
 

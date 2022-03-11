@@ -20,10 +20,10 @@
 #include "xwdttb.h"
 #include "../../uz/uz_HAL.h"
 
-#define WDTTB_SECURITY_MARGIN_US 1 // Security Margin in micro seconds. Tested, only one is needed (adds 100 to the wdt counter, with the AXI frec at 100MHz)
+#define WDTTB_SECURITY_MARGIN_US 1.0f // Security Margin in micro seconds. Tested, only one is needed (adds 100 to the wdt counter, with the AXI frec at 100MHz)
 
 #define WIN_WDT_SBC_COUNT 0xFF /**< Selected byte count */
-#define WIN_WDT_BSS_COUNT 1    /**< Byte segment selected */
+#define WIN_WDT_BSS_COUNT 1U    /**< Byte segment selected */
 #define WIN_WDT_SBC_COUNT_SHIFTED 0x0000FF00
 
 struct uz_watchdog_ip_t

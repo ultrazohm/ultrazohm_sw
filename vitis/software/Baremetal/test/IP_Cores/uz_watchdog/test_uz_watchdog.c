@@ -81,9 +81,12 @@ void test_uz_watchdog_initialization(void)
     XWdtTb_ConfigureWDTMode_IgnoreAndReturn(XST_SUCCESS);
     XWdtTb_SelfTest_IgnoreAndReturn(XST_SUCCESS);
     XWdtTb_SetRegSpaceAccessMode_Ignore();
-    XWdtTb_SetWindowCount_Ignore();
-    XWdtTb_SetByteCount_Ignore();
-    XWdtTb_SetByteSegment_Ignore();
+    // Driver adds a "security margin" of 1 us.
+    // Using 100 MHz clk, this is an additional 100 cycles
+    uint32_t expected_count_cycles=WIN_WDT_SW_COUNT+100U;
+    XWdtTb_SetWindowCount_Expect(&testWdtTb,0U, expected_count_cycles);
+    XWdtTb_SetByteCount_Expect(&testWdtTb,0xFF);
+    XWdtTb_SetByteSegment_Expect(&testWdtTb,1);
     XWdtTb_DisableSst_Ignore();
     XWdtTb_DisablePsm_Ignore();
     XWdtTb_DisableFailCounter_Ignore();

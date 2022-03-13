@@ -122,15 +122,20 @@ for xdc_input in xdc_files:
         p.module_net_name = target_info["Module Net Name"]
         # invert _P and _N pins if there is a mismatch (even = _P and odd = _N)
         if p.iostandard == "LVDS":
-            if "[" in p.port and "]" in p.port:
+            if "[" in p.port and "]" in p.port:    
                 number = int(p.port[p.port.find("[")+1:p.port.find("]")])
                 if number % 2 == 0 and p.module_net_name.endswith("_N"):
                     # number is even, but ends with _N 
-                    p.port = p.port.replace(str(number),str(number+1))
+                    # uses aux, because only number within [] must be changed
+                    aux = p.port.split("[")
+                    aux[1] = aux[1].replace(str(number),str(number+1))
+                    p.port = "[".join(aux)
                 if number % 2 != 0 and p.module_net_name.endswith("_P"):
                     # number is odd, but ends with _P -> switch 
-                    p.port = p.port.replace(str(number),str(number-1))
-
+                    # uses aux, because only number within [] must be changed
+                    aux = p.port.split("[")
+                    aux[1] = aux[1].replace(str(number),str(number-1))
+                    p.port = "[".join(aux)
         f.writelines(p.write())
         f.write("\n")
 

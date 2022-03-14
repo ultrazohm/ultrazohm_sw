@@ -18,6 +18,9 @@
 
 #include "APU_RPU_shared.h"
 
+// To prevent include-errors when building the APU-Software
+#include "../globalData.h"
+
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
 	JSO_ZEROVALUE=0,

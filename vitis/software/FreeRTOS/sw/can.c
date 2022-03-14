@@ -90,6 +90,10 @@ int hal_can_is_rx_empty(void)
 	return XCanPs_IsRxEmpty(&can_inst);
 }
 
+int hal_can_is_tx_empty(void)
+{
+	return XCanPs_IsTxFifoFull(&can_inst);
+}
 
 int hal_can_is_tx_done(void)
 {
@@ -100,7 +104,7 @@ int hal_can_is_tx_done(void)
 int hal_can_send_frame_blocking(can_frame_t* can_frame_tx_p)
 {
 	uint32_t tx_frame[4];
-	int status = XST_SUCCESS;
+	int status = XST_FAILURE;
 
 	// set identifier
 	tx_frame[0] = XCanPs_CreateIdValue(can_frame_tx_p->std_id, 0, 0, 0, 0);
@@ -136,7 +140,7 @@ int hal_can_send_frame_blocking(can_frame_t* can_frame_tx_p)
 
 int hal_can_send_frame_blocking_wrapper(uint16_t std_id, uint8_t dlc, uint8_t* data)
 {
-	int status = XST_SUCCESS;
+	int status = XST_FAILURE;
 	can_frame_t can_frame_tx;
 
 	can_frame_tx.std_id = std_id;
@@ -155,7 +159,7 @@ int hal_can_send_frame_blocking_wrapper(uint16_t std_id, uint8_t dlc, uint8_t* d
 
 int hal_can_receive_frame_blocking(can_frame_t *can_frame_rx_p)
 {
-	int status = XST_SUCCESS;
+	int status = XST_FAILURE;
 
 	// poll until a frame is received
 	while (XCanPs_IsRxEmpty(&can_inst) == TRUE);

@@ -26,12 +26,18 @@
 
 #include "../main.h"
 
+// include for the Java-SlowData
+#include "../../Baremetal/src/include/javascope.h"
+
 extern QueueHandle_t js_queue;
 extern struct APU_to_RPU_t ControlData;
 
 int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
 
+// Structs for Data-Exchange between Ethernet and CAN-Thread
+extern struct APU_to_RPU_t ControlData_CAN;
+extern float js_slowDataArray[JSSD_ENDMARKER];
 
 //==============================================================================================================================================================
 void print_echo_app_header()
@@ -95,6 +101,10 @@ void process_request_thread(void *p)
 			nwsend.val_20[i] 	= javascope_data_sending.scope_ch[19];
 			nwsend.slowDataContent[i] 	= javascope_data_sending.slowDataContent;
 			nwsend.slowDataID[i] 		= javascope_data_sending.slowDataID;
+
+			// Sort the Value of the SlowData in the right place of the Array to give the parameter to the CAN-Thread
+			js_slowDataArray[javascope_data_sending.slowDataID] = javascope_data_sending.slowDataContent;
+
 		}
 		nwsend.status = javascope_data_sending.status;
 

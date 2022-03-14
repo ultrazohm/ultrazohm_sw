@@ -24,8 +24,9 @@
 #endif
 
 //Includes for CAN
-#define CAN_ACTIVE 0 // (1 = CAN is active)  and (0 = CAN is inactive)
+#define CAN_ACTIVE 1 // (1 = CAN is active)  and (0 = CAN is inactive)
 #include "include/can.h"
+#include "include/can_thread.h"
 
 //Includes from own files
 #include "main.h"
@@ -153,14 +154,6 @@ void network_thread(void *p)
             THREAD_STACKSIZE,
             DEFAULT_THREAD_PRIO);
 
-#if CAN_ACTIVE==1
-	xil_printf(" Init CAN \n\r"); //CAN interface
-	//hal_can_init(XPAR_PSU_CAN_0_BASEADDR, XPAR_PSU_CAN_0_DEVICE_ID); //CAN 0 interface
-	hal_can_init(XPAR_PSU_CAN_1_BASEADDR, XPAR_PSU_CAN_1_DEVICE_ID); //CAN 1 interface
-
-	can_frame_t can_frame_rx; //CAN interface
-#endif
-
 #if LWIP_DHCP==1
     dhcp_start(netif);
     while (1) {
@@ -168,29 +161,6 @@ void network_thread(void *p)
       	if(lifeCheck_networkThread > 2500){
       		lifeCheck_networkThread =0;
       	}
-
-		#if CAN_ACTIVE==1
-			if( ! hal_can_is_rx_empty() ){
-				hal_can_receive_frame_blocking(&can_frame_rx);
-				if(can_frame_rx.std_id == 0x22) {
-				//	XcpCommand( (uint32_t *) can_frame_rx.data );
-					can_send_2();
-				} else {
-
-					//hal_can_debug_print_frame(&can_frame_rx);
-					//xil_printf("received a not XCP related CAN frame \n\r");
-				}
-				//usleep(1000 * 500);
-			}else{
-				can_send_1();
-				//usleep(1000 * 500);
-			}
-
-			// no tx message pending
-			if( hal_can_is_tx_done()) {
-				//XcpSendCallBack();
-			}
-		#endif
 
 		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
 		dhcp_fine_tmr();
@@ -250,6 +220,15 @@ int main_thread()
 		THREAD_STACKSIZE,
             DEFAULT_THREAD_PRIO);
 
+    //Starting the CAN-Communication-Thread
+    #if CAN_ACTIVE==1
+    	xil_printf(" Starting CAN-Thread1 \n\r");
+
+        sys_thread_new("CAN_Thread_CAN1", CAN_Thread_CAN1, NULL,
+        	THREAD_STACKSIZE,
+        	DEFAULT_THREAD_PRIO);
+        xil_printf("CAN-Thread1 started\n\r");
+    #endif
 
 #if LWIP_DHCP==1
     while (1) {

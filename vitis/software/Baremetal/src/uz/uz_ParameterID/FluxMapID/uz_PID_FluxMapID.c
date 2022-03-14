@@ -14,17 +14,17 @@
  * limitations under the License.
  ******************************************************************************/
 #include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID_ACTIVE > 0U
+#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include "uz_PID_FluxMapID.h"
 
 static uint32_t instances_counter_PID_FluxMapID = 0;
 
-static uz_PID_FluxMapID_t instances_PID_FluxMapID[UZ_PARAMETERID_ACTIVE] = { 0 };
+static uz_PID_FluxMapID_t instances_PID_FluxMapID[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
 
 static uz_PID_FluxMapID_t* uz_PID_FluxMapID_allocation(void);
 
 static uz_PID_FluxMapID_t* uz_PID_FluxMapID_allocation(void) {
-	uz_assert(instances_counter_PID_FluxMapID < UZ_PARAMETERID_ACTIVE);
+	uz_assert(instances_counter_PID_FluxMapID < UZ_PARAMETERID_MAX_INSTANCES);
 	uz_PID_FluxMapID_t* self = &instances_PID_FluxMapID[instances_counter_PID_FluxMapID];
 	instances_counter_PID_FluxMapID++;
 	return (self);

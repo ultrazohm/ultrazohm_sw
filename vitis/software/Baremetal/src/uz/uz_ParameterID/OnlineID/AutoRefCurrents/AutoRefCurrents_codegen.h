@@ -20,7 +20,7 @@
  */
 
 #include "../../../uz_global_configuration.h"
-#if UZ_PARAMETERID_ACTIVE > 0U
+#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 #include "../../../uz_Transformation/uz_Transformation.h"
 #include "../../../uz_PMSM_config/uz_PMSM_config.h"

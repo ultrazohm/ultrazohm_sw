@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 #include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID_ACTIVE > 0U
+#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include "../../uz_HAL.h"
 #include <stdbool.h>
 #include "ControlState_codegen.h"

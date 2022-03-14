@@ -14,17 +14,17 @@
  * limitations under the License.
  ******************************************************************************/
 #include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID_ACTIVE > 0U
+#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include "uz_PID_TwoMassID.h"
 
 static uint32_t instances_counter_PID_TwoMassID = 0;
 
-static uz_PID_TwoMassID_t instances_PID_TwoMassID[UZ_PARAMETERID_ACTIVE] = { 0 };
+static uz_PID_TwoMassID_t instances_PID_TwoMassID[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
 
 static uz_PID_TwoMassID_t* uz_PID_TwoMassID_allocation(void);
 
 static uz_PID_TwoMassID_t* uz_PID_TwoMassID_allocation(void) {
-	uz_assert(instances_counter_PID_TwoMassID < UZ_PARAMETERID_ACTIVE);
+	uz_assert(instances_counter_PID_TwoMassID < UZ_PARAMETERID_MAX_INSTANCES);
 	uz_PID_TwoMassID_t* self = &instances_PID_TwoMassID[instances_counter_PID_TwoMassID];
 	instances_counter_PID_TwoMassID++;
 	return (self);

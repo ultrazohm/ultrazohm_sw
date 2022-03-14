@@ -18,7 +18,7 @@
 #include "../uz_wavegen/uz_wavegen.h"
 
 
-#if UZ_PARAMETERID_ACTIVE > 0U
+#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 typedef struct uz_ParameterID_t {
 	bool is_ready;
@@ -31,7 +31,7 @@ typedef struct uz_ParameterID_t {
 
 } uz_ParameterID_t;
 static uint32_t instances_counter_ParameterID = 0;
-static uz_ParameterID_t instances_ParameterID[UZ_PARAMETERID_ACTIVE] = { 0 };
+static uz_ParameterID_t instances_ParameterID[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
 
 static void uz_PID_ControlState_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 static void uz_PID_ElectricalID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
@@ -46,7 +46,7 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 static uz_ParameterID_t* uz_ParameterID_allocation(void);
 
 static uz_ParameterID_t* uz_ParameterID_allocation(void) {
-	uz_assert(instances_counter_ParameterID < UZ_PARAMETERID_ACTIVE);
+	uz_assert(instances_counter_ParameterID < UZ_PARAMETERID_MAX_INSTANCES);
 	uz_ParameterID_t* self = &instances_ParameterID[instances_counter_ParameterID];
 	uz_assert(self->is_ready == false);
 	instances_counter_ParameterID++;
@@ -431,7 +431,6 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->GlobalConfig.sampleTimeISR = 50.0e-06f;
 
 	//Initialize motor-related parameters inside Global-Config
-	//Motor Buehler 1.25.058.201
 	Data->GlobalConfig.Ki_id = 100.8f;
 	Data->GlobalConfig.Ki_iq = 100.8f;
 	Data->GlobalConfig.Ki_n = 0.6f;

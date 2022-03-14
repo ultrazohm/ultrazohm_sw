@@ -20,7 +20,7 @@
  */
 
 #include "../../../uz_global_configuration.h"
-#if UZ_PARAMETERID_ACTIVE > 0U
+#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 #ifndef RTW_HEADER_InterpMeshGrid_h_
 #define RTW_HEADER_InterpMeshGrid_h_

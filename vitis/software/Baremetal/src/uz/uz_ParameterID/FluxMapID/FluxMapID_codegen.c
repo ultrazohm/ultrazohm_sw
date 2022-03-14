@@ -20,7 +20,7 @@
  */
 
 #include "FluxMapID_codegen.h"
-#if UZ_PARAMETERID_ACTIVE > 0U
+#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 /* Named constants for Chart: '<Root>/FluxMapID' */
 #define IN_AMMcollectData              ((uint8_T)1U)

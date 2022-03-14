@@ -280,6 +280,18 @@ typedef struct {
 } uz_PID_OnlineID_output_t;
 
 /**
+ * @brief configuration struct for AutoRefCurrents config specific settings
+ * 
+ */
+typedef struct {
+  boolean_T enableCRS; /**< flag to enable the state */ 
+  boolean_T Reset; /**< flag to reset the state */
+  real32_T iq_points; /**< amount of iq-points that will be cycled through */
+  real32_T id_points; /**< amount of id-points that will be cycled through */
+  real32_T max_current; /**< max combined current for the generator */
+} uz_PID_AutoRefCurrentsConfig_t;
+
+/**
  * @brief struct which contains the calculated fluxmaps of the OnlineID state
  *
  */

@@ -82,6 +82,19 @@ def extract_info_from_xdc(filename):
                         xdc_dict[p].iostandard = sl[2]
     return xdc_dict
 
+def print_header(origin, target):
+    output = ["# This file was auto-generated using the python script process_xdc.py\n"]
+    output.append("# The script has as input the original constraints. Pinout info is extracted from\n")
+    output.append("# Trenz pinout sheet (obtained from https://shop.trenz-electronic.de/Download/?path=Trenz_Electronic/Pinout) \n")
+    output.append("# into csv files with the C-PIN, C-NAME, FPGA Pin Name, and Module Net Name columns.\n")
+    output.append("# Obs.: Column order is not important, but names need to be strictly followed.\n#\n")
+    output.append("# Constraints ported from {} to {}.\n".format(origin, target))
+    output.append("#\n")
+    output.append("# Script author: Tomas P. Correa\n")
+    output.append("# Date: check GIT repo\n\n\n")
+    return output
+
+
 # it reads the pinout from the csv file extracted from Trenz pinout sheet                
 def read_pinout(filename):
     with open(filename) as f:
@@ -108,44 +121,45 @@ dict_target = read_pinout(target_filename)
 
 # process one xdc at a time, extracting the relevant info and re-writing to a new .xdc
 for xdc_input in xdc_files:
-    f = open("new/"+xdc_input,'w')
-    
-    print(xdc_input)
-    xdc_dict = extract_info_from_xdc(xdc_input)
+    with open("new/"+xdc_input,'w') as f: 
+  
+        print(xdc_input)
+        xdc_dict = extract_info_from_xdc(xdc_input)
 
-    for port in xdc_dict.items():
-        p = port[1]
-        # find dict on the origin list that has the same package pin
-        origin_info = [item for item in dict_origin if item["FPGA Pin Name"] == p.package_pin][0]
-        p.connector_name = origin_info["C-Name"]
-        p.connector_number = origin_info["C-Pin"]       
-        # find dict on the target list that is connected to the same B2B connector pin
-        target_info = [item for item in dict_target if item["C-Name"] == origin_info["C-Name"] and item["C-Pin"] == origin_info["C-Pin"]][0]
-        # replace package_pin with the information of the target board
-        p.package_pin = target_info["FPGA Pin Name"]
-        p.module_net_name = target_info["Module Net Name"]
-        # invert _P and _N pins if there is a mismatch (even = _P and odd = _N)
-        if p.iostandard == "LVDS":
-            if "[" in p.port and "]" in p.port:    
-                number = int(p.port[p.port.find("[")+1:p.port.find("]")])
-                if number % 2 == 0 and p.module_net_name.endswith("_N"):
-                    # number is even, but ends with _N 
-                    # uses aux, because only number within [] must be changed
-                    aux = p.port.split("[")
-                    aux[1] = aux[1].replace(str(number),str(number+1))
-                    p.port = "[".join(aux)
-                    p.diff_inverted = True
-                if number % 2 != 0 and p.module_net_name.endswith("_P"):
-                    # number is odd, but ends with _P -> switch 
-                    # uses aux, because only number within [] must be changed
-                    aux = p.port.split("[")
-                    aux[1] = aux[1].replace(str(number),str(number-1))
-                    p.port = "[".join(aux)
-                    p.diff_inverted = True
-        f.writelines(p.write())
-        f.write("\n")
+        f.writelines(print_header(origin_filename, target_filename))
 
-    f.close()
+        for port in xdc_dict.items():
+            p = port[1]
+            # find dict on the origin list that has the same package pin
+            origin_info = [item for item in dict_origin if item["FPGA Pin Name"] == p.package_pin][0]
+            p.connector_name = origin_info["C-Name"]
+            p.connector_number = origin_info["C-Pin"]       
+            # find dict on the target list that is connected to the same B2B connector pin
+            target_info = [item for item in dict_target if item["C-Name"] == origin_info["C-Name"] and item["C-Pin"] == origin_info["C-Pin"]][0]
+            # replace package_pin with the information of the target board
+            p.package_pin = target_info["FPGA Pin Name"]
+            p.module_net_name = target_info["Module Net Name"]
+            # invert _P and _N pins if there is a mismatch (even = _P and odd = _N)
+            if p.iostandard == "LVDS":
+                if "[" in p.port and "]" in p.port:    
+                    number = int(p.port[p.port.find("[")+1:p.port.find("]")])
+                    if number % 2 == 0 and p.module_net_name.endswith("_N"):
+                        # number is even, but ends with _N 
+                        # uses aux, because only number within [] must be changed
+                        aux = p.port.split("[")
+                        aux[1] = aux[1].replace(str(number),str(number+1))
+                        p.port = "[".join(aux)
+                        p.diff_inverted = True
+                    if number % 2 != 0 and p.module_net_name.endswith("_P"):
+                        # number is odd, but ends with _P -> switch 
+                        # uses aux, because only number within [] must be changed
+                        aux = p.port.split("[")
+                        aux[1] = aux[1].replace(str(number),str(number-1))
+                        p.port = "[".join(aux)
+                        p.diff_inverted = True
+            f.writelines(p.write())
+            f.write("\n")
+
 
     
            

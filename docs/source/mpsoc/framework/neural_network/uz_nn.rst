@@ -126,6 +126,14 @@ The following shows an example initialization of a ``uz_nn`` that implements the
         TEST_ASSERT_EQUAL_FLOAT(expected_result,result);
     }
 
+The network takes approximately 
+The same network with different activation functions in the hidden layers:
+
+- ReLU: :math:`3.5 \mu s`
+- activation_sigmoid: :math:`5.5 \mu s`
+- activation_sigmoid2: :math:`6.5 \mu s`
+- activation_tanh: :math:`5.0 \mu s`
+
 
 Initialization of pretrained network
 ************************************

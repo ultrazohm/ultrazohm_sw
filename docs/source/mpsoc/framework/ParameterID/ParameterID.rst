@@ -62,8 +62,9 @@ Especially the configuration of the motor-related parameters is important. If th
 The ID-state specific configuration values can later be configured via the uz_GUI. 
 
 .. literalinclude:: ../../../../../vitis/software/Baremetal/src/uz/uz_ParameterID/uz_ParameterID.c
-    :lines: 420-510
+    :lines: 426-515
     :linenos:
+    :emphasize-lines: 12,15-29
     :language: c
 
 If the FluxMaps identification of the :ref:`uz_OnlineID` state will be used, the following code has to be implemented inside the ``while(1) loop`` of the ``main.c``:

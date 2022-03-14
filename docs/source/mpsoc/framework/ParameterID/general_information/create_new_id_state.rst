@@ -6,7 +6,7 @@ Guide to create a new ID-state
 
 The current ``ID-states`` carry a wide range of identification methods. 
 However, if a new identification method is supposed to be implemented, this guide will assist in creating a new ``ID-state``.
-Before starting the procedure of creating a new state, it is advised to read up about the general concept and layout of the ParmeterID in :ref:`uz_PID_general_information`, :ref:`uz_ParameterID_Data_structs` and :ref:`uz_PID_new_control_algorithm`.
+Before starting the procedure of creating a new state, it is advised to read up about the general concept and layout of the ParmeterID in :ref:`uz_ParameterID`, :ref:`uz_PID_setup`, :ref:`uz_ParameterID_Data_structs` and :ref:`uz_PID_new_control_algorithm`.
 
 General information
 ===================

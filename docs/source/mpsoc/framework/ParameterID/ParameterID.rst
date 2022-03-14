@@ -4,160 +4,135 @@
 ParameterID
 ===========
 
-Toolbox for different code-generated stateflows to identify common parameters of a permanent magnet synchronous motor. This page deals with the setup in the UltraZohm workspace. 
-For a more in depth explanation of the ParameterID please visit :ref:`uz_PID_general_information`, :ref:`uz_ParameterID_Data_structs`, :ref:`uz_PID_new_control_algorithm` and :ref:`uz_PID_new_ID_state`.
+Toolbox for different code-generated stateflows to identify common parameters of a permanent magnet synchronous motor. This page explains the general structure of the ParameterID. 
+To set the ParameterID up in the UltraZohm software check out :ref:`uz_PID_setup`.
+For further information visit, :ref:`uz_ParameterID_Data_structs`, :ref:`uz_PID_new_control_algorithm` and :ref:`uz_PID_new_ID_state`.
 
-Setup
-=====
+Overwiew
+========
+.. _PID_overview_schematic:
 
+.. tikz:: Schematic overview of the ParameterID signalflow
+  :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
 
+  \begin{tikzpicture}[auto, node distance=2.5cm,>=latex']
+  \tikzstyle{block} = [draw, fill=black!10, rectangle, rounded corners, minimum height=3em, minimum width=3em]
+  \node(PID) {ParameterID};
+  \node[block,fill=green!10,name=ControlS, below left= 0.2cm and -1cm of PID,drop shadow,minimum height=4cm] {ControlState};
+  \node[block,fill=yellow!20,name=state1, above right = -1.25cm and 1cm of ControlS,drop shadow,align=center] {Identification\\state 1};
+  \node[block,fill=yellow!20,name=state2, right =1cm of ControlS,drop shadow,align=center] {Identification\\state 2};
+  \node[block,fill=yellow!20,name=state3, below right =-1.25cm and 1cm of ControlS,drop shadow,align=center] {Identification\\state \textbf{X}};
+  \begin{scope}[on background layer]
+  \node[draw,fill=blue!10,name=ParameterID,rounded corners,fit=(PID) (ControlS) (state3),inner sep=5pt,minimum width=7cm] {};
+  \end{scope}
+  \node[block,name=input, left= 0.75cm of ControlS,drop shadow,minimum width=2cm, align=center] {input\\ \tiny{uz\_ParameterID\_Data\_t}};
+  \node[block,name=output, right= 0.75cm of state2,drop shadow,minimum width=2cm, align=center] {output\\ \tiny{uz\_ParameterID\_Data\_t}};
+  \node[block,fill=orange!10,name=Controller, right=0.5 cm of output,drop shadow,minimum height=4cm,align=center] {independent\\external\\Controller\\(i.e. FOC)};
+  \draw[->] ([yshift=-0.3cm]state1.west) -- ([yshift=1.081cm]ControlS.east);
+  \draw[<-] ([yshift=0.3cm]state1.west) -- ([yshift=1.681cm]ControlS.east);
+  \draw[->] ([yshift=-0.3cm]state2.west) -- ([yshift=-0.3cm]ControlS.east);
+  \draw[<-] ([yshift=0.3cm]state2.west) -- ([yshift=0.3cm]ControlS.east);
+  \draw[->] ([yshift=-1.681cm]ControlS.east) -- ([yshift=-0.3cm]state3.west);
+  \draw[<-] ([yshift=-1.081cm]ControlS.east) -- ([yshift=0.3cm]state3.west);
+  \draw[->](input.east) -- (ControlS.west);
+  \draw[-](state1.east) -| ([xshift=0.2cm]state2.east);
+  \draw[-](state3.east) -| ([xshift=0.2cm]state2.east);
+  \draw[->](state2.east) -- (output.west);
+  \draw[->](output.east) -- (Controller.west);
+  \node [circle,fill,inner sep=1pt] at ($(state2.east)+(0.2cm,0)$){};
+  \end{tikzpicture}
 
-.. code-block:: c
-  :linenos:
-  :emphasize-lines: 6,12
-  :caption: Example to initialize the ParameterID
-    
-  #include "uz/uz_ParameterID/uz_ParameterID.h"
+The ParameterID encapsules a ``ControlState`` and all subsequent ``Identification-states`` (short ``ID-states``). 
+The ``ControlState`` is the brain of the ParameterID and controls the system, by determining which ``ID-state`` is entered next, based on the user-request and the acknowledgement flags of other states.
+The individual ``ID-states`` are completely independent of each other. They only directly communicate with the ``ControlState``. 
+The :ref:`uz_ParameterID_Data_t struct<uz_ParameterID_Data_struct>` is used to communicate with the ParameterID. It includes all necessary in- and outputs.  
+The ParameterID operates independently of a underlying control algorithm and therefore is indifferent to what specific type the controller is.
+This means, that the ParameterID outputs reference values which the controller then can use to control the hardware.
+On top of that the ``ID-states`` inside the ParameterID are separated into two different groups:
 
-  //ParameterID Code
-  uz_ParameterID_t* ParameterID = NULL;
-  uz_ParameterID_Data_t PID_Data = { 0 };
-  //Objects below are only needed, if the uz_FOC is used as the controller
-  uz_FOC* FOC_instance = NULL;
-  uz_PI_Controller* SpeedControl_instance = NULL;
-
-  int main(void) {
-      ParameterID = uz_ParameterID_init(&PID_Data);
-   //Code below is only needed, if the uz_FOC is used as the controller 
-     struct uz_PI_Controller_config config_id = { 
-          .Kp = PID_Data.GlobalConfig.Kp_id,
-          .Ki = PID_Data.GlobalConfig.Ki_id, 
-          .samplingTime_sec = 0.00005f, 
-          .upper_limit = 15.0f,
-			    .lower_limit = -15.0f };
-     struct uz_PI_Controller_config config_iq = { 
-          .Kp = PID_Data.GlobalConfig.Kp_iq, 
-          .Ki = PID_Data.GlobalConfig.Ki_iq, 
-          .samplingTime_sec = 0.00005f, 
-          .upper_limit = 15.0f,
-			    .lower_limit = -15.0f };
-     struct uz_PI_Controller_config config_n = {
-          .Kp = PID_Data.GlobalConfig.Kp_n, 
-          .Ki = PID_Data.GlobalConfig.Ki_n, 
-          .samplingTime_sec = 0.00005f, 
-          .upper_limit = 10.0f,
-          .lower_limit = -10.0f };
-     struct uz_FOC_config config_FOC = {
-          .config_PMSM = PID_Data.GlobalConfig.PMSM_config,
-          .config_id = config_id, 
-          .config_iq = config_iq };
-     FOC_instance = uz_FOC_init(config_FOC);
-     SpeedControl_instance = uz_SpeedControl_init(config_n);
-  }
-
-During this step, the struct of the type ``uz_ParameterID_Data_t`` is initialized as well. This struct carries, among other things, the configuration values of the ParameterID.
-To ease the setup of the ParameterID, this struct is initialized with default values. 
-To configure the ParameterID to your needs, change the values inside the ``uz_ParameterID_initialize_data_structs`` function. 
-Especially the configuration of the motor-related parameters is important. If they are not known, they can be left at 0.0f. In this case however, these parameters have to be identified first by using the :ref:`uz_ElectricalID` state. 
-The ID-state specific configuration values can later be configured via the uz_GUI. 
-
-.. literalinclude:: ../../../../../vitis/software/Baremetal/src/uz/uz_ParameterID/uz_ParameterID.c
-    :lines: 426-515
-    :linenos:
-    :emphasize-lines: 12,15-29
-    :language: c
-
-If the FluxMaps identification of the :ref:`uz_OnlineID` state will be used, the following code has to be implemented inside the ``while(1) loop`` of the ``main.c``:
-
-.. code-block:: c
-  :linenos:
-  :caption: Code to calculate FluxMaps inside main.c while(1)-loop
-    
-  if (PID_Data.OnlineID_Output->clean_array == true) {
-	uz_ParameterID_CleanPsiArray(ParameterID, &PID_Data);
-  }
-  if (PID_Data.calculate_flux_maps == true) {
-	uz_ParameterID_CalcFluxMaps(ParameterID, &PID_Data);
-	PID_Data.calculate_flux_maps = false;
-  }
-
-
-In the ``isr.c``  the members of the :ref:`uz_Actual_values_struct` struct inside the :ref:`uz_ParameterID_Data_struct` have to be assigned with the measurement values needed for the identification. 
-Furthermore, the ``uz_ParameterID_step`` function needs to be called as well. Two functions ``uz_ParameterID_Controller`` and ``uz_ParameterID_generate_DutyCycle`` are used in the code below as well.
-These exemplary functions are included in the ParameterID-library, to ease the use of it. They include the uz_FOC and a function to generate the DutyCycles for the halfbridges.
-They are technically not required for the ParameterID and can be replaced by your own control algorithm, if desired.
-
-.. code-block:: c
-  :linenos:
-  :emphasize-lines: 3,29
-  :caption: Changes in the isr.c
-
-  extern uz_ParameterID_Data_t PID_Data;
-  extern uz_ParameterID_t* ParameterID;
-  //Next lines only needed, if the uz_FOC is used as the controller
-  extern uz_FOC* FOC_instance;
-  extern uz_PI_Controller* SpeedControl_instance;
-  struct uz_dq_t PID_v_dq = { 0 };
-  struct uz_DutyCycle_t PID_DutyCycle = { 0 };
-
-  void ISR_Control(void *data) {  
-     PID_Data.ActualValues.I_UVW.U = ....;
-	PID_Data.ActualValues.I_UVW.V = ....;
-	PID_Data.ActualValues.I_UVW.W = ....;
-	PID_Data.ActualValues.V_DC = ....;
-	PID_Data.ActualValues.V_UVW.U = ....;
-	PID_Data.ActualValues.V_UVW.V = ....;
-	PID_Data.ActualValues.V_UVW.W = ....;
-
-	PID_Data.ActualValues.omega_m = ....;
-	PID_Data.ActualValues.omega_el = ....;
-	PID_Data.ActualValues.theta_el = ....;
-
-	//Calculate missing ActualValues
-	PID_Data.ActualValues.i_dq = uz_dq_transformation(PID_Data.ActualValues.I_UVW, PID_Data.ActualValues.theta_el);
-	PID_Data.ActualValues.v_dq = uz_dq_transformation(PID_Data.ActualValues.V_UVW, PID_Data.ActualValues.theta_el);
-	PID_Data.ActualValues.theta_m = ....;
-
-	if (ultrazohm_state_machine_get_state() == control_state) {
-          uz_ParameterID_step(ParameterID, &PID_Data);
-		//Next lines only needed, if the uz_FOC is used as the controller
-          PID_v_dq = uz_ParameterID_Controller(&PID_Data, FOC_instance, SpeedControl_instance);
-		PID_DutyCycle = uz_ParameterID_generate_DutyCycle(&PID_Data, PID_v_dq, Global_Data.objects.pwm_d1);
-		Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;
-		Global_Data.rasv.halfBridge2DutyCycle = PID_DutyCycle.DutyCycle_V;
-		Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;
-	} else {
-		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
-     }
-    }
-
-In the ``javascope.c`` the measurement values from ``ActualValues`` struct should be assigned to the ``js_ch_observable`` array.
-
-.. code-block:: c
-  :linenos:
-  :caption: changes to javascope.c
-
-  extern uz_ParameterID_Data_t PID_Data;  
+* OfflineID states
   
-  int JavaScope_initalize(DS_Data* data) {
-     ....
-     js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_ia] = &PID_Data.ActualValues.I_UVW.U;
-	js_ch_observable[JSO_ib] = &PID_Data.ActualValues.I_UVW.V;
-	js_ch_observable[JSO_ic] = &PID_Data.ActualValues.I_UVW.W;
-	js_ch_observable[JSO_ua] = &PID_Data.ActualValues.V_UVW.U;
-	js_ch_observable[JSO_ub] = &PID_Data.ActualValues.V_UVW.V;
-	js_ch_observable[JSO_uc] = &PID_Data.ActualValues.V_UVW.W;
-	js_ch_observable[JSO_iq] = &PID_Data.ActualValues.i_dq.q;
-	js_ch_observable[JSO_id] = &PID_Data.ActualValues.i_dq.d;
-	js_ch_observable[JSO_Theta_el] = &PID_Data.ActualValues.theta_el;
-	js_ch_observable[JSO_theta_mech] = &PID_Data.ActualValues.theta_m;
-	js_ch_observable[JSO_ud] = &PID_Data.ActualValues.v_dq.d;
-	js_ch_observable[JSO_uq] = &PID_Data.ActualValues.v_dq.q;
-     ....
-     }
+    OfflineID states represents identification stateflows, which are to be used before the general operation of the motor is started. 
+    They can not be executed in parallel to the general motor operation, because they take active control of the machine. 
+    They, for example, tell the external control-algorithm which reference currents or speeds it is supposed to target. 
+    Thus only one OfflineID-state can be active at the same time.
+  
+* OnlineID states
+
+    OnlineID states represents identification stateflows, which are used during the general operation of the motor. 
+    They are designed as an observer of some sorts of the machine. 
+    This means, they use all existing measurement during normal operation and identify their parameters this way. 
+    They therefore don't have to actively control the machine. Thus they can operate parallel to the general operation of the motor. 
+
+.. note::
+
+      All states have been configured in such a way, that they are independent of the sampleTime. 
+      This works, if the ``sampleTimeISR`` member of the :ref:`uz_Global_config_struct` is equal to the sampleTime of the function call. 
+      This has been confirmed for an ISR-frequency of 10kHz and 20kHz.
+
+.. _PID_signalflow:
+
+Signalflow in the ParameterID
+=============================
+
+.. tikz:: Schematic overview of the ParameterID
+  :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
+
+  \begin{tikzpicture}[auto, node distance=2.5cm,>=latex']
+  \tikzstyle{block} = [draw, fill=black!10, rectangle, rounded corners, minimum height=3em, minimum width=3em]
+  \node[block,fill=green!10,name=ControlS,drop shadow,minimum height=6.5cm] {ControlState};
+  \node[block,fill=yellow!20,name=state1, right = 6cm of ControlS,drop shadow,align=center,minimum height=6.5cm,minimum width=4cm] {Identification\\state \textbf{X}};
+  \node[block,name=GlobalCin, left= 0.5cm of ControlS,drop shadow,minimum width=2cm, align=center] {GlobalConfig\_in\\ \tiny{uz\_GlobalConfig\_t}};
+  \node[block,name=GlobalCout, above right= -1.25cm and 1.5cm of ControlS,drop shadow,minimum width=3.5cm, align=center] {GlobalConfig\_out\\ \tiny{uz\_GlobalConfig\_t}};
+  \node[block,name=ControlFlags, above right= -3cm and 1.5cm of ControlS,drop shadow,minimum width=3.5cm, align=center] {ControlFlags\\ \tiny{uz\_ControlFlags\_t}};
+  \node[block,name=ElecConfig, above right= -4.75cm and 1.5cm of ControlS,drop shadow,minimum width=3.5cm, align=center] {Individual Config\\ \tiny{uz\_StateIDConfig\_t}};
+  \node[block,name=ActValues, above right= -6.5cm and 1.5cm of ControlS,drop shadow,minimum width=3.5cm, align=center] {ActualValues\\ \tiny{uz\_ActualValues\_t}};
+  \node[block,name=input, left= 2cm of GlobalCin,drop shadow,minimum width=2cm, align=center] {input\\ \tiny{uz\_ParameterID\_Data\_t}};
+  \begin{scope}[on background layer]
+  \node[draw,fill=blue!10,name=ParameterID,rounded corners,fit=(ControlS)(GlobalCin) (state1),inner sep=5pt,minimum width=18cm,minimum height=10.5cm] {};
+  \end{scope}
+  \node[block,name=output, right= 1cm of ParameterID,drop shadow,minimum width=2cm, align=center] {output\\ \tiny{uz\_ParameterID\_Data\_t}};
+  \node[block,name=stateoutput, below= -5.5cm of state1,drop shadow,minimum width=2cm, align=center] {individual output\\ \tiny{uz\_StateID\_output\_t}};
+  \node[block,name=FOCoutput, below= -2.5cm of state1,drop shadow,minimum width=2cm, align=center] {Controller output\\ \tiny{uz\_PID\_Controller}\\ \tiny{   \_Parameters\_output\_t}};
+  \node[above  =1.2cm of GlobalCout](entered){enteredStateID};
+  \node[above  =0.2cm of GlobalCout](finished){finishedStateID};
+  \node[above  =0.2cm of ParameterID](finished){\large{\textbf{ParameterID}}};
+  \draw[->](input.east) -- (GlobalCin.west);
+  \draw[->](GlobalCin.east) -- (ControlS.west);
+  \node [circle,fill,inner sep=1pt] at ([xshift=-0.5cm]GlobalCin.west){};
+  \node [circle,fill,inner sep=1pt] at ([xshift=-1cm]ActValues.west) {};
+  \draw[->](GlobalCout.east) |- ([yshift=2.64cm]state1.west);
+  \draw[->](ControlFlags.east) |- ([yshift=0.89cm]state1.west);
+  \draw[->](ElecConfig.east) |- ([yshift=-0.86cm]state1.west);
+  \draw[->](ActValues.east) |- ([yshift=-2.61cm]state1.west);
+  \draw[->]([yshift=2.64cm]ControlS.east) |- (GlobalCout.west);
+  \draw[->]([yshift=0.89cm]ControlS.east) |- (ControlFlags.west);
+  \draw[->]([xshift=-1cm]ActValues.west) |- (ElecConfig.west);
+  \draw[->]([xshift=-1cm]ActValues.west) |- (ActValues.west);
+  \draw[-]([xshift=-0.5cm]GlobalCin.west) |- ([xshift=-0.5cm,yshift=-4cm]GlobalCin.west) -| ([xshift=-1cm]ActValues.west);
+  \draw[-](stateoutput.east) -| ([xshift=-1.5cm]output.west);
+  \draw[-](FOCoutput.east) -| ([xshift=-1.5cm]output.west);
+  \draw[->]([xshift=-1.5cm]output.west) -- (output.west);
+  \draw[->]([xshift=-0.3cm]state1.north) |- ([xshift = -0.5cm, yshift = 3.5cm]ControlS.west) |- ([yshift = 2.5cm]ControlS.west);
+  \draw[->]([xshift=0.3cm]state1.north) |- ([xshift = -1cm, yshift = 4.5cm]ControlS.west) |- ([yshift = 2cm]ControlS.west);
+  \node [circle,fill,inner sep=1pt] at ([xshift=-1.5cm]output.west) {};
+  \end{tikzpicture}
+
+The ParameterID has three global structs, which are shared inputs for all identification states. For detailed information about these structs, click on the appropriate hyperlink. 
+These are the following:
+
+  * :ref:`ActualValues struct<uz_Actual_values_struct>`, which carries all the measurement values
+  * :ref:`GlobalConfig struct<uz_Global_config_struct>`, which carries general configuration variables, which affect multiple or all states 
+  * :ref:`ControlFlags struct<uz_Control_flags_struct>`, which carries all flags to enable and disable the individual states
+   
+On top of that, each unique ``ID-state`` has its own individual structs and signals:
+  * ``uz_StateIDConfig_t`` (i.e. for ElectricalID :ref:`uz_ElectricalIDConfig_t<uz_PID_ElectricalIDConfig>`), which is meant for all configuration values, which are unique to this specific ``ID-state``.
+  * ``uz_StateID_output_t`` (i.e. for ElectricalID :ref:`uz_ElectricalID_output_t<uz_PID_ElectricalIDoutput>`), which is meant for the identified output variables and supporting variables
+  * ``enteredStateID`` flag for OfflineID- and OnlineID-states, which signals that the state has been entered
+  * ``finishedStateID`` flag for OfflineID-states, which signals that the ``ID-state`` is finished and another can be started
+  
+OnlineID-states do not necessarily have a ``finishedStateID`` flag, since they can be designed as an infinite loop.  
+
 
 Further information
 ===================
@@ -170,7 +145,8 @@ Further documentation which explains the structure of the ParameterID in detail.
 ..  toctree::
     :maxdepth: 2
     
-    general_information/general_information
+    general_information/setup
+    general_information/setup_GUI
     general_information/ParameterID_structs
     general_information/change_control_algorithm
     general_information/create_new_id_state
@@ -184,6 +160,7 @@ Listed are the individual states which are part of the ParameterID.
 
 ..  toctree::
     :maxdepth: 1
+    :glob:
     
     stateflows/uz_ControlState
     stateflows/uz_ElectricalID

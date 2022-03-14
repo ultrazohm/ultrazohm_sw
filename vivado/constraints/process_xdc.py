@@ -19,6 +19,7 @@ class XdcInfo:
         self.module_net_name = ""
         self.connector_name = ""
         self.connector_number = ""
+        self.diff_inverted = False
         self.port = port
     
     def write(self):
@@ -34,6 +35,9 @@ class XdcInfo:
             output.append("set_property DIFF_TERM_ADV " + self.diff_term_adv + " [get_ports " + self.port + "]\n") 
         if self.iostandard: 
             output.append("set_property IOSTANDARD " + self.iostandard + " [get_ports " + self.port + "]\n") 
+        if self.diff_inverted: 
+            output.append("# WARNING: Differential signals are inverted in respect to TE0808 9EG device. \n") 
+            output.append("# Take care to invert the signal inside the PL! \n") 
         return output
 
         
@@ -130,12 +134,14 @@ for xdc_input in xdc_files:
                     aux = p.port.split("[")
                     aux[1] = aux[1].replace(str(number),str(number+1))
                     p.port = "[".join(aux)
+                    p.diff_inverted = True
                 if number % 2 != 0 and p.module_net_name.endswith("_P"):
                     # number is odd, but ends with _P -> switch 
                     # uses aux, because only number within [] must be changed
                     aux = p.port.split("[")
                     aux[1] = aux[1].replace(str(number),str(number-1))
                     p.port = "[".join(aux)
+                    p.diff_inverted = True
         f.writelines(p.write())
         f.write("\n")
 

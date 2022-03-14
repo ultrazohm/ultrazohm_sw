@@ -20,6 +20,7 @@
  */
 
 #include "../../uz_global_configuration.h"
+#include "../uz_ParameterID_data.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include "../../uz_PMSM_config/uz_PMSM_config.h"
 #include "../../uz_Transformation/uz_Transformation.h"
@@ -64,83 +65,6 @@
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ControlState_t RT_MODEL_ControlState_t;
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_PID_ElectricalID_output_t_
-#define DEFINED_TYPEDEF_FOR_uz_PID_ElectricalID_output_t_
-
-typedef struct {
-  real32_T PWM_Switch_0;
-  real32_T PWM_Switch_2;
-  real32_T PWM_Switch_4;
-  boolean_T enable_TriState[3];
-  real32_T thetaOffset;
-  uz_PMSM_t PMSM_parameters;
-} uz_PID_ElectricalID_output_t;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_PID_Controller_Parameters_output_t_
-#define DEFINED_TYPEDEF_FOR_uz_PID_Controller_Parameters_output_t_
-
-typedef struct {
-  uz_3ph_dq_t i_dq_ref;
-  uint16_T activeState;
-  real32_T n_ref_FOC;
-  boolean_T enableFOC_speed;
-  boolean_T enableFOC_current;
-  boolean_T resetIntegrator;
-  real32_T Kp_id_out;
-  real32_T Kp_iq_out;
-  real32_T Kp_n_out;
-  real32_T Ki_id_out;
-  real32_T Ki_iq_out;
-  real32_T Ki_n_out;
-} uz_PID_Controller_Parameters_output_t;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
-#define DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
-
-typedef struct {
-  uz_PMSM_t PMSM_config;
-  boolean_T enableParameterID;
-  boolean_T Reset;
-  real32_T Kp_id;
-  real32_T Kp_iq;
-  real32_T Kp_n;
-  real32_T Ki_id;
-  real32_T Ki_iq;
-  real32_T Ki_n;
-  boolean_T ElectricalID;
-  boolean_T FrictionID;
-  boolean_T TwoMassID;
-  boolean_T FluxMapID;
-  boolean_T OnlineID;
-  boolean_T ACCEPT;
-  real32_T sampleTimeISR;
-  real32_T ratCurrent;
-  real32_T ratSpeed;
-  uz_3ph_dq_t i_dq_ref;
-  real32_T n_ref;
-} uz_PID_GlobalConfig_t;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
-#define DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
-
-typedef struct {
-  boolean_T startFrictionID;
-  boolean_T startElectricalID;
-  boolean_T startTwoMassID;
-  boolean_T startFluxMapID;
-  uint16_T transNr;
-  boolean_T enableOnlineID;
-  boolean_T finished_all_Offline_states;
-} uz_PID_ControlFlags_t;
-
-#endif
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {

@@ -21,7 +21,7 @@
 
 #include "../../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
-
+#include "../../uz_ParameterID_data.h"
 #include "../../../uz_Transformation/uz_Transformation.h"
 #include "../../../uz_PMSM_config/uz_PMSM_config.h"
 #ifndef RTW_HEADER_AutoRefCurrents_h_
@@ -65,50 +65,6 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_AutoRefCurrents_t RT_MODEL_AutoRefCurrents_t;
 
-#ifndef DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
-#define DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
-
-typedef struct {
-  uz_3ph_abc_t V_abc;
-  uz_3ph_abc_t I_abc;
-  uz_3ph_dq_t i_dq;
-  uz_3ph_dq_t v_dq;
-  real32_T omega_m;
-  real32_T omega_el;
-  real32_T theta_m;
-  real32_T theta_el;
-  real32_T V_DC;
-} uz_PID_ActualValues_t;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
-#define DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
-
-typedef struct {
-  uz_PMSM_t PMSM_config;
-  boolean_T enableParameterID;
-  boolean_T Reset;
-  real32_T Kp_id;
-  real32_T Kp_iq;
-  real32_T Kp_n;
-  real32_T Ki_id;
-  real32_T Ki_iq;
-  real32_T Ki_n;
-  boolean_T ElectricalID;
-  boolean_T FrictionID;
-  boolean_T TwoMassID;
-  boolean_T FluxMapID;
-  boolean_T OnlineID;
-  boolean_T ACCEPT;
-  real32_T sampleTimeISR;
-  real32_T ratCurrent;
-  real32_T ratSpeed;
-  uz_3ph_dq_t i_dq_ref;
-  real32_T n_ref;
-} uz_PID_GlobalConfig_t;
-
-#endif
 
 #ifndef DEFINED_TYPEDEF_FOR_uz_PID_AutoRefCurrentsConfig_t_
 #define DEFINED_TYPEDEF_FOR_uz_PID_AutoRefCurrentsConfig_t_
@@ -124,21 +80,6 @@ typedef struct {
   real32_T id_points; /**< amount of id-points that will be cycled through */
   real32_T max_current; /**< max combined current for the generator */
 } uz_PID_AutoRefCurrentsConfig_t;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
-#define DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
-
-typedef struct {
-  boolean_T startFrictionID;
-  boolean_T startElectricalID;
-  boolean_T startTwoMassID;
-  boolean_T startFluxMapID;
-  uint16_T transNr;
-  boolean_T enableOnlineID;
-  boolean_T finished_all_Offline_states;
-} uz_PID_ControlFlags_t;
 
 #endif
 

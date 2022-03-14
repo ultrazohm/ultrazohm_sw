@@ -19,6 +19,7 @@
  * Validation result: All passed
  */
 #include "../../../uz_global_configuration.h"
+#include "../../uz_ParameterID_data.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 #ifndef RTW_HEADER_CleanPsiArray_h_
@@ -62,25 +63,6 @@
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_CleanPsiArray_t RT_MODEL_CleanPsiArray_t;
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_PID_OnlineID_output_t_
-#define DEFINED_TYPEDEF_FOR_uz_PID_OnlineID_output_t_
-
-typedef struct {
-  real32_T id_out;
-  real32_T Rph_out;
-  real32_T Wtemp;
-  real32_T psi_array[600];
-  boolean_T IdControlFlag;
-  real32_T delta_psi[200];
-  uint16_T activeState;
-  real32_T psi_pm_out;
-  real32_T Ld_out;
-  real32_T Lq_out;
-  boolean_T clean_array;
-} uz_PID_OnlineID_output_t;
-
-#endif
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {

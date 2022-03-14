@@ -20,6 +20,7 @@
  */
 
 #include "../../uz_global_configuration.h"
+#include "../uz_ParameterID_data.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include "../../uz_PMSM_config/uz_PMSM_config.h"
 #include "../../uz_Transformation/uz_Transformation.h"
@@ -63,115 +64,6 @@
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_OnlineID_t RT_MODEL_OnlineID_t;
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_PID_OnlineIDConfig_t_
-#define DEFINED_TYPEDEF_FOR_uz_PID_OnlineIDConfig_t_
-
-
-/**
- * @brief configuration struct for TwoMassID specific settings
- * 
- */
-typedef struct {
-  boolean_T OnlineID_Reset; /**< flag to reset the OnlineID state*/
-  real32_T Temp_ref; /**< reference temperature for identification of the winding temperature of the motor */
-  real32_T dev_omega; /**< scale factor to determine the tolerance band for the speed during steady-state detection. Default value is 0.05.*/
-  real32_T dev_curr; /**< scale factor to determine the tolerance band for the dq-currents during steady-state detection. Default value is 0.05.*/
-  real32_T identRAmp; /**< amplitude for d-current injection signal for identification of linear parameters */
-  boolean_T AverageTransParams; /**< flag to enable the averaging of identified linear parameters */
-  real32_T nom_factor; /**< eactor for rated current,to determine in which interval the linear Parameters will be identified. i.e. 0.5*I_n */
-  real32_T Rs_time; /**< enter value in seconds. Determines, after which time the linear Parameters have to be identified again, even if the currents are outside the interval determined by nom_factor. */
-  boolean_T allowPsiCalcOutside; /**< false: Flux maps will only be calculated, if linear parameters have been identified inside the valid range. Flux maps will only be calculated again, if the machine is in the valid range. \n
-               true:Flux maps will always be calculated, even if the linear parameters were identified outside of range. */
-  real32_T min_n_ratio; /**< factor for rated speed to determine the lower end in which interval the linear Parameters will be identified. i.e. 0.1*n_n. */
-  real32_T max_n_ratio; /**< factor for rated speed to determine the upper end in which interval the linear Parameters will be identified. i.e. 0.9*n_n. */
-	boolean_T array_cleaned; /**< flag to signal, that the flux map array has been cleaned */
-} uz_PID_OnlineIDConfig_t;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
-#define DEFINED_TYPEDEF_FOR_uz_PID_ActualValues_t_
-
-typedef struct {
-  uz_3ph_abc_t V_abc;
-  uz_3ph_abc_t I_abc;
-  uz_3ph_dq_t i_dq;
-  uz_3ph_dq_t v_dq;
-  real32_T omega_m;
-  real32_T omega_el;
-  real32_T theta_m;
-  real32_T theta_el;
-  real32_T V_DC;
-} uz_PID_ActualValues_t;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
-#define DEFINED_TYPEDEF_FOR_uz_PID_GlobalConfig_t_
-
-typedef struct {
-  uz_PMSM_t PMSM_config;
-  boolean_T enableParameterID;
-  boolean_T Reset;
-  real32_T Kp_id;
-  real32_T Kp_iq;
-  real32_T Kp_n;
-  real32_T Ki_id;
-  real32_T Ki_iq;
-  real32_T Ki_n;
-  boolean_T ElectricalID;
-  boolean_T FrictionID;
-  boolean_T TwoMassID;
-  boolean_T FluxMapID;
-  boolean_T OnlineID;
-  boolean_T ACCEPT;
-  real32_T sampleTimeISR;
-  real32_T ratCurrent;
-  real32_T ratSpeed;
-  uz_3ph_dq_t i_dq_ref;
-  real32_T n_ref;
-} uz_PID_GlobalConfig_t;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
-#define DEFINED_TYPEDEF_FOR_uz_PID_ControlFlags_t_
-
-typedef struct {
-  boolean_T startFrictionID;
-  boolean_T startElectricalID;
-  boolean_T startTwoMassID;
-  boolean_T startFluxMapID;
-  uint16_T transNr;
-  boolean_T enableOnlineID;
-  boolean_T finished_all_Offline_states;
-} uz_PID_ControlFlags_t;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_PID_OnlineID_output_t_
-#define DEFINED_TYPEDEF_FOR_uz_PID_OnlineID_output_t_
-
-/**
- * @brief output struct for OnlineID
- * 
- */
-typedef struct {
-  real32_T id_out; /**< output for the d-current injection signal */
-  real32_T Rph_out; /**< identified online resistance */
-  real32_T Wtemp; /**< identified online winding temperature */
-  real32_T psi_array[600]; /**< array storing all the measured flux map for each unique operating point of the motor */
-  boolean_T IdControlFlag; /**< flag to signal, if the injection d-current is active */
-  real32_T delta_psi[200]; /**< array storing the temperature dependent psi_pm values for all the operating points */
-  uint16_T activeState; /**< activeState output of the OnlineID state */
-  real32_T psi_pm_out; /**< identified Psi_PM */
-  real32_T Ld_out; /**< identified Lq */
-  real32_T Lq_out; /**< identified Ld */
-	boolean_T clean_array; /**< flag to signal, that a new flux measurement point got saved in the array and it needs to be cleaned */
-} uz_PID_OnlineID_output_t;
-
-#endif
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {

@@ -77,7 +77,7 @@ The following shows an example initialization of a ``uz_nn`` that implements the
 
     struct uz_nn_layer_config config[3] = {
     [0] = {
-        .activation_function = ReLU,
+        .activation_function = activation_ReLU,
         .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
         .number_of_inputs = NUMBER_OF_INPUTS,
         .length_of_weights = UZ_MATRIX_SIZE(w_1),
@@ -86,7 +86,7 @@ The following shows an example initialization of a ``uz_nn`` that implements the
         .weights = w_1,
         .bias = b_1,
         .output = y_1},
-    [1] = {.activation_function = ReLU,
+    [1] = {.activation_function = activation_ReLU,
             .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
             .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
             .length_of_weights = UZ_MATRIX_SIZE(w_2),
@@ -95,7 +95,7 @@ The following shows an example initialization of a ``uz_nn`` that implements the
             .weights = w_2,
             .bias = b_2,
             .output = y_2},
-    [2] = {.activation_function = linear,
+    [2] = {.activation_function = activation_linear,
            .number_of_neurons = NUMBER_OF_OUTPUTS,
            .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
            .length_of_weights = UZ_MATRIX_SIZE(w_3),

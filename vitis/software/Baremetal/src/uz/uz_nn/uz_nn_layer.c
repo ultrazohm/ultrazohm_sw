@@ -64,11 +64,11 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
 
     switch (layer_config.activation_function)
     {
-    case linear:
+    case activation_linear:
         self->activation_function = &uz_nn_activation_function_linear;
         self->activation_function_derivative = &uz_nn_activation_function_linear_derivative;
         break;
-    case ReLU:
+    case activation_ReLU:
         self->activation_function = &uz_nn_activation_function_relu;
         self->activation_function_derivative = &uz_nn_activation_function_relu_derivative;
         break;

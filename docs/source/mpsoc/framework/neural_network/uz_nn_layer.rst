@@ -124,7 +124,7 @@ The following shows an example initialization and feedforward calculation of one
         uz_matrix_t *input = uz_matrix_init(&input_matrix,x, UZ_MATRIX_SIZE(x), 1, NUMBER_OF_INPUTS);
         float b0[4] = {1, -2, 3, -4};
         struct uz_nn_layer_config config = {
-            .activation_function = ReLU,
+            .activation_function = activation_ReLU,
             .number_of_neurons = NUMBER_OF_NEURONS_IN_LAYER,
             .number_of_inputs = NUMBER_OF_INPUTS,
             .length_of_weights = UZ_MATRIX_SIZE(w),

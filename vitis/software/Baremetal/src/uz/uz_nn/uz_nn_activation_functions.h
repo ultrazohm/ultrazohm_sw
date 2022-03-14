@@ -53,21 +53,51 @@ float uz_nn_activation_function_leaky_relu(float x, float alpha);
 float uz_nn_activation_function_leaky_relu_derivative(float x, float alpha);
 
 /**
- * @brief 
+ * @brief Calculates the sigmoid logistic function. Calculation based on e-function.
  * 
  * @param x 
  * @return float 
  */
 float uz_nn_activation_function_sigmoid_logistic(float x);
 
+/**
+ * @brief Calculates the derivative of the sigmoid logistic function. Calculation based on e-function.
+ * 
+ * @param x 
+ * @return float 
+ */
 float uz_nn_activation_function_sigmoid_logistic_derivative(float x);
 
+/**
+ * @brief Calculates the sigmoid logistic function. Calculation based on tanh.
+ * 
+ * @param x 
+ * @return float 
+ */
 float uz_nn_activation_function_sigmoid2_logistic(float x);
 
+/**
+ * @brief Calculates the derivative of the sigmoid logistic function. Calculation based on tanh.
+ * 
+ * @param x 
+ * @return float 
+ */
 float uz_nn_activation_function_sigmoid2_logistic_derivative(float x);
 
+/**
+ * @brief Calculates tanh activation function.
+ * 
+ * @param x 
+ * @return float 
+ */
 float uz_nn_activation_function_tanh(float x);
 
+/**
+ * @brief Calculates the derivative of tanh
+ * 
+ * @param x 
+ * @return float 
+ */
 float uz_nn_activation_function_tanh_derivative(float x);
 
 

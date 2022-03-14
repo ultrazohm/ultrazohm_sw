@@ -115,3 +115,57 @@ Derivative:
 .. doxygenfunction:: uz_nn_activation_function_leaky_relu
 
 .. doxygenfunction:: uz_nn_activation_function_leaky_relu_derivative
+
+Sigmoid logistic based on e-function
+====================================
+
+Calculates the logistic function (which is a special case of the sigmoid function).
+Calculation is based on the e-function.
+
+.. math::
+
+    f(x)=\frac{1}{1+e^{-x}}
+
+
+.. doxygenfunction:: uz_nn_activation_function_sigmoid_logistic
+
+.. math::
+
+    f'(x)=1-f(x)^2
+
+.. doxygenfunction:: uz_nn_activation_function_sigmoid_logistic_derivative
+
+Sigmoid logistic based on tanh
+==============================
+
+Calculates the logistic function (which is a special case of the sigmoid function).
+Calculation is based on the tanh-function.
+
+.. math::
+
+    f(x)=0.5+0.5 \tanh(\frac{x}{2})
+
+.. doxygenfunction:: uz_nn_activation_function_sigmoid2_logistic
+
+.. math::
+
+    f'(x)=1-f(x)^2
+
+.. doxygenfunction:: uz_nn_activation_function_sigmoid2_logistic_derivative
+
+tanh
+====
+
+Calculates tanh activation function.
+
+.. math::
+
+    f(x)=tanh(x)
+
+.. doxygenfunction:: uz_nn_activation_function_tanh
+
+.. math::
+
+    f'(x)=1-tanh^2(x)
+
+.. doxygenfunction:: uz_nn_activation_function_tanh_derivative

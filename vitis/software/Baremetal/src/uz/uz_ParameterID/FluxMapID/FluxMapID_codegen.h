@@ -22,8 +22,6 @@
 #include "../../uz_global_configuration.h"
 #include "../uz_ParameterID_data.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
-#include "../../uz_Transformation/uz_Transformation.h"
-#include "../../uz_PMSM_config/uz_PMSM_config.h"
 
 #ifndef RTW_HEADER_FluxMapID_h_
 #define RTW_HEADER_FluxMapID_h_

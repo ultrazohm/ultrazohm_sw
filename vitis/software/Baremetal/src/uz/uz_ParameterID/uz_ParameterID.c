@@ -67,6 +67,8 @@ uz_ParameterID_t* uz_ParameterID_init(uz_ParameterID_Data_t *Data) {
 }
 
 void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
 	uz_PID_ControlState_step(self, Data);
 
 	//All Offline states
@@ -264,6 +266,8 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_i
 }
 
 void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t* Data) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
 	self->OnlineID->CleanPsiArray->input.OnlineID_output = self->OnlineID->output.OnlineID_output;
 	self->OnlineID->CleanPsiArray->input.eta_c = 0.01f * Data->GlobalConfig.ratCurrent;
 	uz_OnlineID_CleanPsiArray(self->OnlineID);
@@ -278,6 +282,8 @@ void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t*
 }
 
 void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
 	memcpy(self->OnlineID->InterpMeshGrid->input.psi_array_in, self->OnlineID->CleanPsiArray->output.psi_array_out, sizeof(self->OnlineID->CleanPsiArray->output.psi_array_out));
 	self->OnlineID->InterpMeshGrid->input.i_rat = Data->GlobalConfig.ratCurrent;
 	self->OnlineID->InterpMeshGrid->input.OnlineID_input = self->OnlineID->output.OnlineID_output;

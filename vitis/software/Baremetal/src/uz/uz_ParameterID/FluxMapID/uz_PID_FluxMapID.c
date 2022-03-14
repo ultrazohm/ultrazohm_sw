@@ -40,6 +40,7 @@ uz_PID_FluxMapID_t* uz_FluxMapID_init(void) {
 }
 
 void uz_FluxMapID_step(uz_PID_FluxMapID_t *self) {
+	uz_assert_not_NULL(self);
 	FluxMapID_step(self->PtrToModelData);
 }
 

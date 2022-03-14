@@ -43,18 +43,22 @@ uz_PID_OnlineID_t* uz_OnlineID_init(void) {
 }
 
 void uz_OnlineID_step(uz_PID_OnlineID_t *self) {
+	uz_assert_not_NULL(self);
 	OnlineID_step(self->PtrToModelData);
 }
 
 void uz_OnlineID_CleanPsiArray(uz_PID_OnlineID_t* self) {
+	uz_assert_not_NULL(self);
 	uz_CleanPsiArray(self->CleanPsiArray);
 }
 
 void uz_OnlineID_CalcFluxMaps(uz_PID_OnlineID_t* self) {
+	uz_assert_not_NULL(self);
 	uz_InterpMeshGrid(self->InterpMeshGrid);
 }
 
 void uz_OnlineID_AutoRefCurrents_step(uz_PID_OnlineID_t* self) {
+	uz_assert_not_NULL(self);
 	uz_AutoRefCurrents_step(self->AutoRefCurrents);
 }
 

@@ -40,6 +40,7 @@ uz_PID_FrictionID_t* uz_FrictionID_init(void) {
 }
 
 void uz_FrictionID_step(uz_PID_FrictionID_t *self) {
+	uz_assert_not_NULL(self);
 	FrictionID_step(self->PtrToModelData);
 }
 

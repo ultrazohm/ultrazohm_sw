@@ -40,6 +40,7 @@ uz_PID_CleanPsiArray_t* uz_CleanPsiArray_init(void) {
 }
 
 void uz_CleanPsiArray(uz_PID_CleanPsiArray_t *self) {
+	uz_assert_not_NULL(self);
 	CleanPsiArray_step(self->PtrToModelData);
 }
 

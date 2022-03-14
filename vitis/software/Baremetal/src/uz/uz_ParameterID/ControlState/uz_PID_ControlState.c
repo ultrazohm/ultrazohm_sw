@@ -41,6 +41,7 @@ uz_PID_ControlState_t* uz_ControlState_init(void) {
 }
 
 void uz_ControlState_step(uz_PID_ControlState_t *self) {
+	uz_assert_not_NULL(self);
 	ControlState_step(self->PtrToModelData);
 }
 #endif

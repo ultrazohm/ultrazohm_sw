@@ -40,6 +40,7 @@ uz_PID_InterpMeshGrid_t* uz_InterpMeshGrid_init(void) {
 }
 
 void uz_InterpMeshGrid(uz_PID_InterpMeshGrid_t *self) {
+	uz_assert_not_NULL(self);
 	InterpMeshGrid_step(self->PtrToModelData);
 }
 

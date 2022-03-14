@@ -40,6 +40,7 @@ uz_PID_AutoRefCurrents_t* uz_AutoRefCurrents_init(void) {
 }
 
 void uz_AutoRefCurrents_step(uz_PID_AutoRefCurrents_t *self) {
+	uz_assert_not_NULL(self);
 	AutoRefCurrents_step(self->PtrToModelData);
 }
 

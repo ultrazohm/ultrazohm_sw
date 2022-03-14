@@ -40,6 +40,7 @@ uz_PID_ElectricalID_t* uz_ElectricalID_init(void) {
 }
 
 void uz_ElectricalID_step(uz_PID_ElectricalID_t *self) {
+	uz_assert_not_NULL(self);
 	ElectricalID_step(self->PtrToModelData);
 }
 

@@ -52,4 +52,23 @@ float uz_nn_activation_function_leaky_relu(float x, float alpha);
  */
 float uz_nn_activation_function_leaky_relu_derivative(float x, float alpha);
 
+/**
+ * @brief 
+ * 
+ * @param x 
+ * @return float 
+ */
+float uz_nn_activation_function_sigmoid_logistic(float x);
+
+float uz_nn_activation_function_sigmoid_logistic_derivative(float x);
+
+float uz_nn_activation_function_sigmoid2_logistic(float x);
+
+float uz_nn_activation_function_sigmoid2_logistic_derivative(float x);
+
+float uz_nn_activation_function_tanh(float x);
+
+float uz_nn_activation_function_tanh_derivative(float x);
+
+
 #endif // UZ_NN_ACTIVATION_FUNCTIONS_H

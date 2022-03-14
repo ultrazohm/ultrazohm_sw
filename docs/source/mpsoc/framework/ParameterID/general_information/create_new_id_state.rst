@@ -140,34 +140,37 @@ After code generating the stateflow the following changes have to made in the Ul
 
    .. code-block:: c
          :linenos:
-         :caption: Changes made to the .h file
+         :caption: Changes made to the codegenerated header file
 
          #include "../../uz_global_configuration.h"
+         #include "../uz_ParameterID_data.h"
          #if UZ_PARAMETERID_MAX_INSTANCES > 0U
-         #include "../../uz_Transformation/uz_Transformation.h"
-         #include "../../uz_PMSM_config/uz_PMSM_config.h"
          #include "../rtwtypes.h"
 
          //generated code
 
          #endif
 
+#. Copy the individual structs (``uz_PID_StateIDConfig_t`` and ``uz_PID_StateID_output_t``) from the codegenerated header file ``StateID_codegen.h``. 
+#. Paste them into the ``uz_ParameterID_data.h`` file, add doxygen comments and remove them from ``StateID_codegen.h``.
+#. Compare the global structs (:ref:`uz_Actual_values_struct` , :ref:`uz_Global_config_struct` , :ref:`uz_Control_flags_struct` , :ref:`uz_Controller_parameters_struct`) in the codegenerated header file with the ones in the ``uz_ParameterID_data.h`` file and add the missing struct members to ``uz_ParameterID_data.h``. 
+#. Remove the declaration of these global structs in the ``StateID_codegen.h`` file.
 #. Add the following changes to the .c file
 
    .. code-block:: c
          :linenos:
-         :caption: Changes made to the .c file
+         :caption: Changes made to the codegenerated source file
 
-         #include "ElectricalID_codegen.h"
+         #include "StateID_codegen.h"
          #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
          //generated code
 
          #endif
 
-#. Add a new .h and .c file with the names ``uz_PID_StateID.c/h``
-#. Add the license header to the files
-#. Add the following code to the .h and .c file and adjust the names of the structs and functions accordingly
+#. Add a new .h and .c file with the names ``uz_PID_StateID.c/h``.
+#. Add the license header to the files.
+#. Add the following code to the .h and .c file and adjust the names of the structs and functions accordingly.
 
    .. code-block:: c
          :linenos:
@@ -243,3 +246,69 @@ After code generating the stateflow the following changes have to made in the Ul
 	         StateID_step(self->PtrToModelData);
          }
          #endif
+
+
+#. Include the ``uz_PID_StateID.h`` file to the ``uz_ParameterID.h`` file.
+#. Add the new ``uz_PID_StateIDConfig_t`` and ``uz_PID_StateID_output_t`` to the :ref:`uz_ParameterID_Data_struct`. Add the output struct as a pointer, similarly to the other output structs. 
+#. Add default values for the config struct to the ``uz_ParameterID_initialize_data_structs`` function (like for the other states). Assign the address of the output struct here as well. 
+#. Add the new state to the ``uz_ParameterID_t`` declaration and ``uz_ParameterID_init`` function.
+#. Add a new static step function to the ``uz_ParameterID.c`` file, which wraps the assignment of inputs & outputs and step-function call.
+
+   .. code-block:: c
+         :linenos:
+         :caption: Template code for static step function
+
+         static void uz_PID_StateID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+            //Update State-Inputs
+            self->StateID->input.ActualValues = Data->ActualValues;
+            self->StateID->input.StateIDConfig = Data->StateID_Config;
+            self->StateID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
+            self->StateID->input.ControlFlags = self->ControlState->output.ControlFlags;
+
+            //Step the function
+            uz_TwoMassID_step(self->StateID);
+
+            //Update Control-State-inputs
+            self->ControlState->input.enteredStateID = self->StateID->output.enteredStateID;
+            self->ControlState->input.finishedStateID = self->StateID->output.finishedStateID;
+         }
+
+#. Add the step function to the ``uz_ParameterID_step`` function and change the names accordingly.
+
+   * If it is designed as an Offline-state, use the following template. Adjust the transition number ``x`` accordingly. Add the new transition number to the switch-case accordingly.
+
+      .. code-block:: c
+         :linenos:
+         :caption: Code for ``uz_ParameterID_step`` function for Offline-state. 
+
+         //StateID
+         if (self->ControlState->output.ControlFlags.transNr == xU || self->ControlState->output.GlobalConfig_out.Reset == true) {
+            uz_PID_StateID_step(self, Data);
+         } else if (self->ControlState->output.GlobalConfig_out.StateID == false && self->StateID->output.enteredStateID == true) {
+            uz_PID_StateID_step(self, Data);
+         }
+
+         //
+         switch (self->ControlState->output.ControlFlags.transNr) {
+
+         ....
+         //other cases
+         ....
+         case xU:
+         Data->Controller_Parameters = self->StateID->output.StateID_FOC_output;
+         break;
+         .... 
+         //Rest of code
+
+   * If it is designed as an Online-state, use the following template:
+
+      .. code-block:: c
+         :linenos:
+         :caption: Code for ``uz_ParameterID_step`` function for Online-state. 
+
+         //StateID
+         if (self->ControlState->output.ControlFlags.enableStateID == true || self->ControlState->output.GlobalConfig_out.Reset == true) {
+            uz_PID_StateID_step(self, Data);
+         }
+
+#. All necessary changes are now done. Depending on your setup, respectively the purpose of the new ``ID-state``, it may be feasible to adjust the ``uz_ParameterID_Controller`` and ``uz_ParameterID_generate_DutyCycle`` functions. Otherwise write new functions for this.

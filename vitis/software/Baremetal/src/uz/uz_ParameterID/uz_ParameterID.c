@@ -484,7 +484,7 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->FrictionID_Config.maxCurrent = 10.0f;
 	Data->FrictionID_Config.n_eva_max = 0.0f;
 
-	//Inintialize OnlineID-Config
+	//Initialize OnlineID-Config
 	Data->OnlineID_Config.AverageTransParams = true;
 	Data->OnlineID_Config.OnlineID_Reset = false;
 	Data->OnlineID_Config.Rs_time = 0.0f;
@@ -498,7 +498,7 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->OnlineID_Config.nom_factor = 0.0f;
 	Data->OnlineID_Config.array_cleaned = false;
 
-	//Inintialize Output data structs
+	//Initialize Output data structs
 	Data->ElectricalID_Output = &self->ElectricalID->output.ElectricalID_output;
 	Data->FrictionID_Output = &self->FrictionID->output.FrictionID_output;
 	Data->FluxMapID_Output = &self->FluxMapID->output.FluxMapID_output;

@@ -4,7 +4,9 @@
 Structs for ParameterID_Data
 ============================
 
-Explains the global structs, which are not specific to one individual
+Every used struct, which is unique to the ParameterID, is declared in a separate header ``uz_ParameterID_data.h``. This includes the global structs and individual structs of each ``ID-state``. 
+They are all declared in the common header, to ensure data integrity over each separate ``ID-state``.
+Listed below are the global structs, which are not specific to one individual state.
 
 .. doxygenenum:: uz_PID_Control_selection
 

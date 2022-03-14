@@ -98,17 +98,17 @@ void test_uz_FOC_sample_output(void){
     }
 }
 
-void test_uz_FOC_sample_UVW_output(void) {
+void test_uz_FOC_sample_abc_output(void) {
     //Values for comparision from simulation
     uz_FOC* instance = uz_FOC_init(config);
     float theta_el_rad = (float)M_PI;
-    uz_3ph_abc_t output = uz_FOC_sample_UVW(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
+    uz_3ph_abc_t output = uz_FOC_sample_abc(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f,-6.75f,output.a);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f,-2.4707f,output.b);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f,9.2207f,output.c);
     theta_el_rad = (float)M_PI * 1.5f;
     uz_FOC_reset(instance);
-    output = uz_FOC_sample_UVW(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
+    output = uz_FOC_sample_abc(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
     TEST_ASSERT_FLOAT_WITHIN(1e-02,6.75f,output.a);
     TEST_ASSERT_FLOAT_WITHIN(1e-02,-9.2207f,output.b);
     TEST_ASSERT_FLOAT_WITHIN(1e-02,2.4707f,output.c);

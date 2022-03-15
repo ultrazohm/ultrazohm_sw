@@ -35,9 +35,10 @@ Example
 Description
 ===========
 
-Implemented is either a simple IIR-lowpass or highpass filter of the first order.
+Implemented is either a simple IIR-lowpass or highpass filter of the first order. 
+The reverse functions are intended, for when a filter has been previously applied to a signal and should be removed again.
 
-For the lowpass filter:
+For the lowpass filter [[#lowpass]_][[#lowpass2]_]:
 
 .. math:: 
 
@@ -53,7 +54,7 @@ And for the lowpass-reverse filter:
 
     y[i] = \frac{x[i] -x[i-1]}{\alpha} + x[i-1]
 
-For the highpass filter:
+For the highpass filter [[#highpass]_]:
 
 .. math:: 
 
@@ -69,3 +70,9 @@ And for the highpass-reverse filter:
 
     y[i] = \frac{x[i]}{\alpha} + y[i-1] - x[i-1]
 
+Sources
+=======
+
+.. [#lowpass] `Weimich, "Simple Low Pass IIR Filter Implementation Using the C Language", 2020, <https://www.dsp-weimich.com/digital-signal-processing/iir-first-order-digital-filter/>`_
+.. [#lowpass2] `Wikipedia, "Low-pass filter", <https://en.wikipedia.org/wiki/Low-pass_filter>`_
+.. [#highpass] `Wikipedia, "High-pass filter", <https://en.wikipedia.org/wiki/High-pass_filter>`_

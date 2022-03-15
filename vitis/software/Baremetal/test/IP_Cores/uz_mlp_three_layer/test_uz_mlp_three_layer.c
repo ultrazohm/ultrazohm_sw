@@ -171,7 +171,7 @@ void test_uz_mlp_three_layer_write_bias_to_layer(void)
     uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 4);
     uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 0);
 
-    uz_mlp_three_layer_write_bias(test_instance, 4U, bias_matrix, 1);
+    uz_mlp_three_layer_set_bias(test_instance, 4U, bias_matrix, 1);
 }
 
 void test_uz_mlp_three_layer_write_bias_to_layer_long(void)
@@ -578,7 +578,7 @@ void test_uz_mlp_three_layer_write_bias_to_layer_long(void)
     uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 8);
     uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 0);
 
-    uz_mlp_three_layer_write_bias(test_instance, 8U, bias_matrix, 3);
+    uz_mlp_three_layer_set_bias(test_instance, 8U, bias_matrix, 3);
 }
 
 void test_uz_mlp_three_layer_write_weights_to_layer(void)
@@ -688,7 +688,7 @@ void test_uz_mlp_three_layer_write_weights_to_layer(void)
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 4U);
     uz_mlp_three_layer_hw_write_enable_bias_Expect(BASE_ADDRESS, 0);
 
-    uz_mlp_three_layer_write_weights(test_instance, 4U, weight_matrix, 1U);
+    uz_mlp_three_layer_set_weights(test_instance, 4U, weight_matrix, 1U);
 }
 
 void test_uz_mlp_three_layer_set_parameters()
@@ -732,7 +732,7 @@ void test_uz_mlp_three_layer_calculate_forward_pass()
     struct uz_matrix_t input_data = {0};
     struct uz_matrix_t output_data = {0};
     uz_matrix_t* p_input_data= uz_matrix_init(&input_data,x,UZ_MATRIX_SIZE(x),1,UZ_MATRIX_SIZE(x));
-    uz_matrix_t* p_output_data= uz_matrix_init(&output_data,x,UZ_MATRIX_SIZE(x),1,UZ_MATRIX_SIZE(x));
+    uz_matrix_t* p_output_data= uz_matrix_init(&output_data,y_4,UZ_MATRIX_SIZE(y_4),1,UZ_MATRIX_SIZE(y_4));
 
     uz_mlp_three_layer_hw_write_input_Expect(BASE_ADDRESS, p_input_data);
     uz_mlp_three_layer_hw_write_enable_nn_Expect(BASE_ADDRESS, true);
@@ -754,11 +754,40 @@ void test_uz_mlp_three_layer_calculate_forward_pass()
     uz_mlp_three_layer_calculate_forward_pass(test_instance, p_input_data, p_output_data);
 }
 
+void test_uz_mlp_three_layer_calculate_forward_pass_unsafe()
+{
+
+    uz_mlp_three_layer_ip_t *test_instance = successful_init();
+    struct uz_matrix_t input_data = {0};
+    struct uz_matrix_t output_data = {0};
+    uz_matrix_t* p_input_data= uz_matrix_init(&input_data,x,UZ_MATRIX_SIZE(x),1,UZ_MATRIX_SIZE(x));
+    uz_matrix_t* p_output_data= uz_matrix_init(&output_data,y_4,UZ_MATRIX_SIZE(y_4),1,UZ_MATRIX_SIZE(y_4));
+
+    uz_mlp_three_layer_hw_write_input_unsafe_Expect(BASE_ADDRESS, p_input_data);
+    uz_mlp_three_layer_hw_write_enable_nn_Expect(BASE_ADDRESS, true);
+    uz_mlp_three_layer_hw_write_enable_nn_Expect(BASE_ADDRESS, false);
+    uz_mlp_three_layer_hw_read_valid_output_ExpectAndReturn(BASE_ADDRESS, false); // Expects that the function is called multiple times and returns true at the 3. call
+    uz_mlp_three_layer_hw_read_valid_output_ExpectAndReturn(BASE_ADDRESS, false);
+    uz_mlp_three_layer_hw_read_valid_output_ExpectAndReturn(BASE_ADDRESS, true);
+
+    // Return by pointer using ReturnThruPtr, see https://github.com/ThrowTheSwitch/CMock/issues/105
+    // int qux = 4, baz = 5;
+    //
+    // foo_ExpectAndReturn(qux, &baz);
+    // foo_IgnoreArg_b();
+    // foo_ReturnThruPtr_b(&baz);
+    //
+    // bar()
+    uz_mlp_three_layer_hw_read_output_unsafe_Expect(BASE_ADDRESS, p_output_data);
+
+    uz_mlp_three_layer_calculate_forward_pass_unsafe(test_instance, p_input_data, p_output_data);
+}
+
 void test_uz_mlp_three_layer_set_axi_input_true()
 {
     uz_mlp_three_layer_ip_t *test_instance = successful_init();
     uz_mlp_three_layer_hw_write_use_axi_input_Expect(BASE_ADDRESS, true);
-    uz_mlp_three_layer_use_axi_input(test_instance, true);
+    uz_mlp_three_layer_set_use_axi_input(test_instance, true);
 }
 
 #endif // TEST111150

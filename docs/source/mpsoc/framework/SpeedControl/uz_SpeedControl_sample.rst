@@ -19,7 +19,7 @@ Example
      float V_dc_volts = 24.0f;
      bool ext_clamping = false;
      float id_ref_Ampere = 2.0f;
-     struct uz_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
+     struct uz_3ph_dq_t output = uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping);
   }
 
 Description

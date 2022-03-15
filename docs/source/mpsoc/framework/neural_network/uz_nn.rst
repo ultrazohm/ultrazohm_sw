@@ -77,7 +77,7 @@ The following shows an example initialization of a ``uz_nn`` that implements the
 
     struct uz_nn_layer_config config[3] = {
     [0] = {
-        .activation_function = ReLU,
+        .activation_function = activation_ReLU,
         .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
         .number_of_inputs = NUMBER_OF_INPUTS,
         .length_of_weights = UZ_MATRIX_SIZE(w_1),
@@ -86,7 +86,7 @@ The following shows an example initialization of a ``uz_nn`` that implements the
         .weights = w_1,
         .bias = b_1,
         .output = y_1},
-    [1] = {.activation_function = ReLU,
+    [1] = {.activation_function = activation_ReLU,
             .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
             .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
             .length_of_weights = UZ_MATRIX_SIZE(w_2),
@@ -95,7 +95,7 @@ The following shows an example initialization of a ``uz_nn`` that implements the
             .weights = w_2,
             .bias = b_2,
             .output = y_2},
-    [2] = {.activation_function = linear,
+    [2] = {.activation_function = activation_linear,
            .number_of_neurons = NUMBER_OF_OUTPUTS,
            .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
            .length_of_weights = UZ_MATRIX_SIZE(w_3),
@@ -125,6 +125,14 @@ The following shows an example initialization of a ``uz_nn`` that implements the
         float result=uz_matrix_get_element_zero_based(output,0,0);
         TEST_ASSERT_EQUAL_FLOAT(expected_result,result);
     }
+
+The network takes approximately 
+The same network with different activation functions in the hidden layers:
+
+- ReLU: :math:`3.5 \mu s`
+- activation_sigmoid: :math:`5.5 \mu s`
+- activation_sigmoid2: :math:`6.5 \mu s`
+- activation_tanh: :math:`5.0 \mu s`
 
 
 Initialization of pretrained network

@@ -115,3 +115,117 @@ Derivative:
 .. doxygenfunction:: uz_nn_activation_function_leaky_relu
 
 .. doxygenfunction:: uz_nn_activation_function_leaky_relu_derivative
+
+Sigmoid logistic based on e-function
+====================================
+
+.. tikz::
+    
+    \begin{axis}[
+        xmin=-5.5, xmax=5.5,
+        ymin=-0.5, ymax=1.0,
+        axis lines=center,
+        axis on top=true,
+        domain=-5.5:5.5,
+        ylabel=$y$,
+        xlabel=$x$,
+        ]
+        \addplot [mark=none,draw=red,thick] {1/(1+e^-x)};
+    \end{axis}
+
+Calculates the logistic function (which is a special case of the sigmoid function).
+Calculation is based on the e-function.
+
+Activation function ([#intelligente_verfahren]_ page 76.):
+
+.. math::
+
+    f(x)=\frac{1}{1+e^{-x}}
+
+Derivative ([#intelligente_verfahren]_ page 76.):
+
+.. math::
+
+    f'(x)=f(x)(1-f(x))
+
+.. doxygenfunction:: uz_nn_activation_function_sigmoid_logistic
+
+.. doxygenfunction:: uz_nn_activation_function_sigmoid_logistic_derivative
+
+Sigmoid logistic based on tanh
+==============================
+
+.. tikz::
+    
+    \begin{axis}[
+        xmin=-5.5, xmax=5.5,
+        ymin=-0.5, ymax=1.0,
+        axis lines=center,
+        axis on top=true,
+        domain=-5.5:5.5,
+        ylabel=$y$,
+        xlabel=$x$,
+        ]
+        \addplot [mark=none,draw=red,thick] {0.5+0.5*tanh(0.5*x)};
+    \end{axis}
+
+Calculates the logistic function (which is a special case of the sigmoid function).
+Calculation is based on the tanh-function.
+
+.. note:: This function is slower than the version based on the e-function!
+
+Activation function ([#intelligente_verfahren]_ page 76.):
+
+.. math::
+
+    f(x)=0.5+0.5 \tanh(\frac{x}{2})
+
+Derivative([#intelligente_verfahren]_ page 76.):
+
+.. math::
+
+    f'(x)=f(x)(1-f(x))
+
+.. doxygenfunction:: uz_nn_activation_function_sigmoid2_logistic
+
+.. doxygenfunction:: uz_nn_activation_function_sigmoid2_logistic_derivative
+
+tanh
+====
+
+.. tikz::
+    
+    \begin{axis}[
+        xmin=-2.5, xmax=2.5,
+        ymin=-1.5, ymax=1.5,
+        axis lines=center,
+        axis on top=true,
+        domain=-2.5:2.5,
+        ylabel=$y$,
+        xlabel=$x$,
+        ]
+        \addplot [mark=none,draw=red,thick] {tanh(\x)};
+    \end{axis}
+
+Calculates tanh activation function.
+
+Activation ([#intelligente_verfahren]_ page 76.):
+
+.. math::
+
+    f(x)=tanh(x)
+
+Derivative ([#intelligente_verfahren]_ page 76.):
+
+.. math::
+
+    f'(x)=1-f(x)^2
+
+.. doxygenfunction:: uz_nn_activation_function_tanh
+
+.. doxygenfunction:: uz_nn_activation_function_tanh_derivative
+
+Sources
+=======
+
+.. [#intelligente_verfahren] Schröder, Dierk, "Intelligente Verfahren", Springer, 2010.

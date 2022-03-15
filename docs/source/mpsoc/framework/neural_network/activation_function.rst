@@ -136,13 +136,13 @@ Sigmoid logistic based on e-function
 Calculates the logistic function (which is a special case of the sigmoid function).
 Calculation is based on the e-function.
 
-Activation function:
+Activation function ([#intelligente_verfahren]_ page 76.):
 
 .. math::
 
     f(x)=\frac{1}{1+e^{-x}}
 
-Derivative:
+Derivative ([#intelligente_verfahren]_ page 76.):
 
 .. math::
 
@@ -174,13 +174,13 @@ Calculation is based on the tanh-function.
 
 .. note:: This function is slower than the version based on the e-function!
 
-Activation function:
+Activation function ([#intelligente_verfahren]_ page 76.):
 
 .. math::
 
     f(x)=0.5+0.5 \tanh(\frac{x}{2})
 
-Derivative:
+Derivative([#intelligente_verfahren]_ page 76.):
 
 .. math::
 
@@ -209,14 +209,23 @@ tanh
 
 Calculates tanh activation function.
 
+Activation ([#intelligente_verfahren]_ page 76.):
+
 .. math::
 
     f(x)=tanh(x)
 
-.. doxygenfunction:: uz_nn_activation_function_tanh
+Derivative ([#intelligente_verfahren]_ page 76.):
 
 .. math::
 
     f'(x)=1-f(x)^2
 
+.. doxygenfunction:: uz_nn_activation_function_tanh
+
 .. doxygenfunction:: uz_nn_activation_function_tanh_derivative
+
+Sources
+=======
+
+.. [#intelligente_verfahren] Schröder, Dierk, "Intelligente Verfahren", Springer, 2010.

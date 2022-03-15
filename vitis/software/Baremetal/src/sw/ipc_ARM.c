@@ -253,7 +253,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			break;
 
-			//ParameterID
+		//ParameterID
 
 		case (PID_Enable_System):
 			ultrazohm_state_machine_set_enable_system(true);
@@ -609,10 +609,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		ultrazohm_state_machine_set_userLED(false);
 	}
 
-	/* Bit 10 - My_Button_7 */
+	/* Bit 11 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);
 
-	/* Bit 11 - My_Button_8 */
+	/* Bit 12 - My_Button_8 */
 	// js_status_BareToRTOS &= ~(1 << 11);
 
 

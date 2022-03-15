@@ -11,10 +11,15 @@ Setup
 
 .. code-block:: c
   :linenos:
-  :emphasize-lines: 6,12
+  :emphasize-lines: 3,11,17
   :caption: Example to initialize the ParameterID
     
   #include "uz/uz_ParameterID/uz_ParameterID.h"
+  #include "uz/uz_math_constants.h"
+  //includes below are only needed, if the uz_FOC is used as the controller
+  #include "uz/uz_FOC/uz_FOC.h"
+  #include "uz/uz_SpeedControl/uz_speedcontrol.h"
+
 
   //ParameterID Code
   uz_ParameterID_t* ParameterID = NULL;

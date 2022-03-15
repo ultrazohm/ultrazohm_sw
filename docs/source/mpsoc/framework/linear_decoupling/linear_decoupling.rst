@@ -21,8 +21,8 @@ Example
         .Psi_PM_Vs = 0.008f
      }; //only these parameters are needed
      float omega_el_rad_per_sec = 100.0f;
-     struct uz_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-     struct uz_dq_t output = uz_FOC_linear_decoupling(config_pmsm, i_actual_Ampere, omega_el_rad_per_sec);
+     struct uz_3ph_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
+     struct uz_3ph_dq_t output = uz_FOC_linear_decoupling(config_pmsm, i_actual_Ampere, omega_el_rad_per_sec);
   }
 
 Description

@@ -314,4 +314,19 @@ void test_uz_SpeedControl_assert_Rph_negative_when_fw_disabled(void){
     TEST_ASSERT_PASS_ASSERT(uz_SpeedControl_sample(instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_PMSM, ext_clamping));
 }
 
+void test_uz_SpeedControl_set_Ki_assert_NULL(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_Ki(NULL, 10.0f));
+}
+
+
+void test_uz_SpeedControl_set_Kp_assert_NULL(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_Ki(NULL, 10.0f));
+}
+
+void test_uz_SpeedControl_update_limits_NULL(void){
+    float upper_limit = 10.0f;
+    float lower_limit = -10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_update_limits(NULL, upper_limit, lower_limit));
+}
+
 #endif // TEST

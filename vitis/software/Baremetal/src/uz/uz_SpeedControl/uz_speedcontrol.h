@@ -55,4 +55,29 @@ void uz_SpeedControl_reset(uz_SpeedControl_t* self);
  * @param field_weakening_status status flag if field_weakening should be enabled = true or disabled
  */
 void uz_SpeedControl_set_field_weakening(uz_SpeedControl_t* self, bool field_weakening_status);
+
+/**
+ * @brief  Function to change the Ki-value of the PI-Controller during runtime
+ * 
+ * @param self pointer to uz_SpeedControl_t object
+ * @param new_Ki value for Ki. Must be greater or equal than 0.0f
+ */
+void uz_SpeedControl_set_Ki(uz_SpeedControl_t* self, float new_Ki);
+
+/**
+ * @brief  Function to change the Kp-value of the PI-Controller during runtime
+ * 
+ * @param self pointer to uz_SpeedControl_t object
+ * @param new_Kp value for Ki. Must be greater or equal than 0.0f
+ */
+void uz_SpeedControl_set_Kp(uz_SpeedControl_t* self, float new_Kp);
+
+/**
+ * @brief Function to change the saturation limits of the PI-Controller during runtime 
+ * 
+ * @param self pointer to uz_SpeedControl_t object
+ * @param upper_limit new value for upper limit. Must be greater than lower limit
+ * @param lower_limit new value for lower limit
+ */
+void uz_SpeedControl_update_limits(uz_SpeedControl_t* self, float upper_limit, float lower_limit);
 #endif // UZ_SPEEDCONTROL_H

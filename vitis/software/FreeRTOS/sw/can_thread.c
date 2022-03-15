@@ -24,6 +24,7 @@
 #include "../include/can.h"
 #include "../include/can_thread.h"
 #include "../main.h"
+#include <math.h>
 
 // include for the Java-SlowData
 #include "../../Baremetal/src/include/javascope.h"
@@ -185,7 +186,25 @@ void CAN_Thread_CAN1(void *p){
 		//Send Heartbeat of the CAN-Thread1
 		hal_can_send_frame_blocking(&can_framebuffer_tx);
 
-		// Send the SlowData-Array-------------------------------------------------------------------------------------------------------------------
+		// Send the whole SlowData-Array-------------------------------------------------------------------------------------------------------------
+		// itterate through the Slow-Data-Array. This loop detects even/odd-numbers of Values in the Array and
+		for(int i = 0 ; i < ceil((JSSD_ENDMARKER-2)/2);i++){
+			CAN_Thread_SendSlowData(i+1, CAN_Msg_DecimalPlaces, CAN_Msg_DecimalPlaces, js_slowDataArray[1+(i*2)], js_slowDataArray[2+(i*2)]);
+			if ((JSSD_ENDMARKER%2) == 0) {
+				// Case for odd Number of Slow-Data-Values
+				if( i==(int)(ceil((JSSD_ENDMARKER-2)/2)-1) ){
+					CAN_Thread_SendSlowData(i+2, CAN_Msg_DecimalPlaces, CAN_Msg_DecimalPlaces, js_slowDataArray[3+(i*2)], 1.0f);
+				}
+			}else{
+				// Case for even Number of Slow-Data-Values
+				if( i==(int)(ceil((JSSD_ENDMARKER-2)/2)-1) ){
+					CAN_Thread_SendSlowData(i+2, CAN_Msg_DecimalPlaces, CAN_Msg_DecimalPlaces, js_slowDataArray[3+(i*2)], js_slowDataArray[4+(i*2)]);
+				}
+			}
+		}
+
+		// Use this style to send specific Values over CAN-------------------------------------------------------------------------------------------
+		/*
 		// Build Can-Message 1
 		CAN_Thread_SendSlowData(1, CAN_Msg_DecimalPlaces, CAN_Msg_DecimalPlaces, js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart], js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us]);
 		// Build Can-Message 2
@@ -200,10 +219,7 @@ void CAN_Thread_CAN1(void *p){
 		CAN_Thread_SendSlowData(6, CAN_Msg_DecimalPlaces, CAN_Msg_DecimalPlaces, js_slowDataArray[JSSD_FLOAT_J], js_slowDataArray[JSSD_FLOAT_polePairs]);
 		// Build Can-Message 7
 		CAN_Thread_SendSlowData(7, CAN_Msg_DecimalPlaces, CAN_Msg_DecimalPlaces, 0.0f, 0.0f);
-		// creating a small cut since every upcoming value is float, creating Message 8 -> 28
-		for (int i = 0 ; i<= 20 ; i++){
-			CAN_Thread_SendSlowData((i+8), CAN_Msg_DecimalPlaces, CAN_Msg_DecimalPlaces, js_slowDataArray[(2*i)+14], js_slowDataArray[(2*i)+13]);
-		}
+		 */
 
 		// Debug-Wait--------------------------------------------------------------------------------------------------------------------------------
 		if(DEBUG_ThreadAlive_CAN_Thread1 == 1){

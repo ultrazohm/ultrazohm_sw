@@ -1,0 +1,139 @@
+VERSION ""
+
+
+BS_:
+
+BU_:
+
+
+BO_ 66 uz_Control_Message: 8 Vector__XXX
+ SG_ DigInputs : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ Value : 16|16@1- (1,0) [-32768|32767] "" Vector__XXX
+ SG_ Msg_ID : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 105 MSG_0: 1 Vector__XXX
+ SG_ Lifecheck : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 106 MSG_1: 8 Vector__XXX
+ SG_ ISR_ExecTime_us : 32|32@1+ (0.001,0) [0|4.29497e+006] "us" Vector__XXX
+ SG_ SecondsSinceStart : 0|32@1+ (0.001,0) [0|4.29497e+006] "s" Vector__XXX
+
+BO_ 107 MSG_2: 8 Vector__XXX
+ SG_ FreqReadback : 32|32@1+ (0.001,0) [0|4.29497e+006] "Hz" Vector__XXX
+ SG_ ISR_Period_us : 0|32@1+ (0.001,0) [0|4.29497e+006] "us" Vector__XXX
+
+BO_ 108 MSG_3: 8 Vector__XXX
+ SG_ ADCConv_Factor : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+ SG_ Milliseconds : 0|32@1+ (0.001,0) [0|4.29497e+006] "ms" Vector__XXX
+
+BO_ 109 MSG_4: 8 Vector__XXX
+ SG_ Rs_offline : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "Ohm" Vector__XXX
+ SG_ Error_Code : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+
+BO_ 110 MSG_5: 8 Vector__XXX
+ SG_ Lq_offline : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "H" Vector__XXX
+ SG_ Ld_offline : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "H" Vector__XXX
+
+BO_ 111 MSG_6: 8 Vector__XXX
+ SG_ J : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "kg/m^2" Vector__XXX
+ SG_ PsiPM_offline : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "Vs" Vector__XXX
+
+BO_ 112 MSG_7: 8 Vector__XXX
+ SG_ activeState : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+ SG_ polePairs : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+
+BO_ 113 MSG_8: 8 Vector__XXX
+ SG_ U_q : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "V" Vector__XXX
+ SG_ U_d : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "V" Vector__XXX
+
+BO_ 114 MSG_9: 8 Vector__XXX
+ SG_ I_q : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "A" Vector__XXX
+ SG_ I_d : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "A" Vector__XXX
+
+BO_ 115 MSG_10: 8 Vector__XXX
+ SG_ torque : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "Nm" Vector__XXX
+ SG_ speed : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "rpm" Vector__XXX
+
+BO_ 116 MSG_11: 8 Vector__XXX
+ SG_ U_d_ref : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "V" Vector__XXX
+ SG_ encoder_offset : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+
+BO_ 117 MSG_12: 8 Vector__XXX
+ SG_ Array_Counter : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+ SG_ U_q_ref : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "V" Vector__XXX
+
+BO_ 118 MSG_13: 8 Vector__XXX
+ SG_ I_est : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "A" Vector__XXX
+ SG_ measArray : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+
+BO_ 119 MSG_14: 8 Vector__XXX
+ SG_ Stribtorque : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "Nm" Vector__XXX
+ SG_ ArrayControl : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+
+BO_ 120 MSG_15: 8 Vector__XXX
+ SG_ Viscotorque : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "Nm" Vector__XXX
+ SG_ Coulombtorque : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "Nm" Vector__XXX
+
+BO_ 121 MSG_16: 8 Vector__XXX
+ SG_ PsiPM : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "Vs" Vector__XXX
+ SG_ Rs : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "Ohm" Vector__XXX
+
+BO_ 122 MSG_17: 8 Vector__XXX
+ SG_ LoadInertia : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "Nm" Vector__XXX
+ SG_ TrainInertia : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "Nm" Vector__XXX
+
+BO_ 123 MSG_18: 8 Vector__XXX
+ SG_ d_est : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+ SG_ c_est : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+
+BO_ 124 MSG_19: 8 Vector__XXX
+ SG_ MapCounter : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+ SG_ c_0 : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+
+BO_ 125 MSG_20: 8 Vector__XXX
+ SG_ PsiqMap : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+ SG_ PsidMap : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+
+BO_ 126 MSG_21: 8 Vector__XXX
+ SG_ IqMap : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+ SG_ IdMap : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+
+BO_ 127 MSG_22: 8 Vector__XXX
+ SG_ Flux_Temp : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+ SG_ psi_array : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+
+BO_ 128 MSG_23: 8 Vector__XXX
+ SG_ I_Rated : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "A" Vector__XXX
+ SG_ MapControl : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+
+BO_ 129 MSG_24: 8 Vector__XXX
+ SG_ FluxTempConst : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+ SG_ WTemp : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "C" Vector__XXX
+
+BO_ 130 MSG_25: 8 Vector__XXX
+ SG_ Ld_Online : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "H" Vector__XXX
+ SG_ FluxTempError : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+
+BO_ 131 MSG_26: 8 Vector__XXX
+ SG_ PsiPM_Online : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "Vs" Vector__XXX
+ SG_ Lq_Online : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "H" Vector__XXX
+
+BO_ 132 MSG_27: 8 Vector__XXX
+ SG_ n_Fluxpoints : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+ SG_ Rs_Online : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "Ohm" Vector__XXX
+
+BO_ 133 MSG_28: 8 Vector__XXX
+ SG_ Lq : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "H" Vector__XXX
+ SG_ Ld : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "H" Vector__XXX
+
+BO_ 134 MSG_29: 8 Vector__XXX
+ SG_ EMPTY : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+ SG_ totalRotorInertia : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "Nm" Vector__XXX
+
+BO_ 135 MSG_30: 8 Vector__XXX
+ SG_ EMTPY : 32|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+ SG_ EMPTY : 0|32@1- (0.001,0) [-2.14748e+006|2.14748e+006] "" Vector__XXX
+
+
+
+

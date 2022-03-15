@@ -57,7 +57,7 @@ float b_4[NUMBER_OF_OUTPUTS] = {
 #include "layer4_bias.csv"
 };
 float y_4[NUMBER_OF_OUTPUTS] = {0};
-
+float mlp_ip_output[NUMBER_OF_OUTPUTS] = {0};
 struct uz_nn_layer_config software_nn_config[4] = {
     [0] = {
         .activation_function = ReLU,
@@ -97,7 +97,24 @@ uz_mlp_three_layer_ip_t *successful_init(void)
     uz_mlp_three_layer_hw_write_number_of_inputs_Expect(BASE_ADDRESS, NUMBER_OF_INPUTS);
     uz_mlp_three_layer_hw_write_number_of_outputs_Expect(BASE_ADDRESS, NUMBER_OF_OUTPUTS);
     uz_mlp_three_layer_hw_write_use_axi_input_Expect(BASE_ADDRESS, config.use_axi_input);
+
+    // Ignored since the init function should call set_parameter
+    uz_mlp_three_layer_hw_write_enable_bias_Ignore();
+    uz_mlp_three_layer_hw_write_bias_data_Ignore();
+    uz_mlp_three_layer_hw_write_bias_address_Ignore();
+    uz_mlp_three_layer_hw_write_enable_weights_Ignore();
+    uz_mlp_three_layer_hw_write_weight_data_Ignore();
+    uz_mlp_three_layer_hw_write_weight_address_Ignore();
+    uz_mlp_three_layer_hw_write_layerNr_Ignore();
+
     uz_mlp_three_layer_ip_t *test = uz_mlp_three_layer_ip_init(config);
+    uz_mlp_three_layer_hw_write_enable_bias_StopIgnore();
+    uz_mlp_three_layer_hw_write_bias_data_StopIgnore();
+    uz_mlp_three_layer_hw_write_bias_address_StopIgnore();
+    uz_mlp_three_layer_hw_write_enable_weights_StopIgnore();
+    uz_mlp_three_layer_hw_write_weight_data_StopIgnore();
+    uz_mlp_three_layer_hw_write_weight_address_StopIgnore();
+    uz_mlp_three_layer_hw_write_layerNr_StopIgnore();
     return (test);
 }
 
@@ -588,8 +605,8 @@ void test_uz_mlp_three_layer_write_weights_to_layer(void)
     //
     // w= [1  2  3  4  5  6  7  8]
     //    [9 10 11 12 13 14 15 16]
-        struct uz_matrix_t w_struct={0};
-    uz_matrix_t *weight_matrix = uz_matrix_init(&w_struct,w_data_short, UZ_MATRIX_SIZE(w_data_short), 2U, 8U);
+    struct uz_matrix_t w_struct = {0};
+    uz_matrix_t *weight_matrix = uz_matrix_init(&w_struct, w_data_short, UZ_MATRIX_SIZE(w_data_short), 2U, 8U);
     uz_mlp_three_layer_hw_write_layerNr_Expect(BASE_ADDRESS, 1U);
 
     uz_mlp_three_layer_hw_write_enable_weights_Expect(BASE_ADDRESS, 0U);
@@ -731,8 +748,8 @@ void test_uz_mlp_three_layer_calculate_forward_pass()
     uz_mlp_three_layer_ip_t *test_instance = successful_init();
     struct uz_matrix_t input_data = {0};
     struct uz_matrix_t output_data = {0};
-    uz_matrix_t* p_input_data= uz_matrix_init(&input_data,x,UZ_MATRIX_SIZE(x),1,UZ_MATRIX_SIZE(x));
-    uz_matrix_t* p_output_data= uz_matrix_init(&output_data,y_4,UZ_MATRIX_SIZE(y_4),1,UZ_MATRIX_SIZE(y_4));
+    uz_matrix_t *p_input_data = uz_matrix_init(&input_data, x, UZ_MATRIX_SIZE(x), 1, UZ_MATRIX_SIZE(x));
+    uz_matrix_t *p_output_data = uz_matrix_init(&output_data, mlp_ip_output, UZ_MATRIX_SIZE(mlp_ip_output), 1, UZ_MATRIX_SIZE(mlp_ip_output));
 
     uz_mlp_three_layer_hw_write_input_Expect(BASE_ADDRESS, p_input_data);
     uz_mlp_three_layer_hw_write_enable_nn_Expect(BASE_ADDRESS, true);
@@ -741,17 +758,9 @@ void test_uz_mlp_three_layer_calculate_forward_pass()
     uz_mlp_three_layer_hw_read_valid_output_ExpectAndReturn(BASE_ADDRESS, false);
     uz_mlp_three_layer_hw_read_valid_output_ExpectAndReturn(BASE_ADDRESS, true);
 
-    // Return by pointer using ReturnThruPtr, see https://github.com/ThrowTheSwitch/CMock/issues/105
-    // int qux = 4, baz = 5;
-    //
-    // foo_ExpectAndReturn(qux, &baz);
-    // foo_IgnoreArg_b();
-    // foo_ReturnThruPtr_b(&baz);
-    //
-    // bar()
     uz_mlp_three_layer_hw_read_output_Expect(BASE_ADDRESS, p_output_data);
 
-    uz_mlp_three_layer_calculate_forward_pass(test_instance, p_input_data, p_output_data);
+    uz_mlp_three_layer_ff_blocking(test_instance, p_input_data, p_output_data);
 }
 
 void test_uz_mlp_three_layer_calculate_forward_pass_unsafe()
@@ -760,8 +769,8 @@ void test_uz_mlp_three_layer_calculate_forward_pass_unsafe()
     uz_mlp_three_layer_ip_t *test_instance = successful_init();
     struct uz_matrix_t input_data = {0};
     struct uz_matrix_t output_data = {0};
-    uz_matrix_t* p_input_data= uz_matrix_init(&input_data,x,UZ_MATRIX_SIZE(x),1,UZ_MATRIX_SIZE(x));
-    uz_matrix_t* p_output_data= uz_matrix_init(&output_data,y_4,UZ_MATRIX_SIZE(y_4),1,UZ_MATRIX_SIZE(y_4));
+    uz_matrix_t *p_input_data = uz_matrix_init(&input_data, x, UZ_MATRIX_SIZE(x), 1, UZ_MATRIX_SIZE(x));
+    uz_matrix_t *p_output_data = uz_matrix_init(&output_data, mlp_ip_output, UZ_MATRIX_SIZE(mlp_ip_output), 1, UZ_MATRIX_SIZE(mlp_ip_output));
 
     uz_mlp_three_layer_hw_write_input_unsafe_Expect(BASE_ADDRESS, p_input_data);
     uz_mlp_three_layer_hw_write_enable_nn_Expect(BASE_ADDRESS, true);
@@ -770,24 +779,44 @@ void test_uz_mlp_three_layer_calculate_forward_pass_unsafe()
     uz_mlp_three_layer_hw_read_valid_output_ExpectAndReturn(BASE_ADDRESS, false);
     uz_mlp_three_layer_hw_read_valid_output_ExpectAndReturn(BASE_ADDRESS, true);
 
-    // Return by pointer using ReturnThruPtr, see https://github.com/ThrowTheSwitch/CMock/issues/105
-    // int qux = 4, baz = 5;
-    //
-    // foo_ExpectAndReturn(qux, &baz);
-    // foo_IgnoreArg_b();
-    // foo_ReturnThruPtr_b(&baz);
-    //
-    // bar()
     uz_mlp_three_layer_hw_read_output_unsafe_Expect(BASE_ADDRESS, p_output_data);
 
-    uz_mlp_three_layer_calculate_forward_pass_unsafe(test_instance, p_input_data, p_output_data);
+    uz_mlp_three_layer_ff_blocking_unsafe(test_instance, p_input_data, p_output_data);
 }
 
-void test_uz_mlp_three_layer_set_axi_input_true()
+void test_uz_mlp_three_layer_set_axi_input_true(void)
 {
     uz_mlp_three_layer_ip_t *test_instance = successful_init();
     uz_mlp_three_layer_hw_write_use_axi_input_Expect(BASE_ADDRESS, true);
     uz_mlp_three_layer_set_use_axi_input(test_instance, true);
+}
+
+void test_uz_mlp_trigger_forward_pass(void)
+{
+    uz_mlp_three_layer_ip_t *test_instance = successful_init();
+    struct uz_matrix_t input_data = {0};
+    uz_matrix_t *p_input_data = uz_matrix_init(&input_data, x, UZ_MATRIX_SIZE(x), 1, UZ_MATRIX_SIZE(x));
+
+    uz_mlp_three_layer_hw_write_input_Expect(BASE_ADDRESS, p_input_data);
+    uz_mlp_three_layer_hw_write_enable_nn_Expect(BASE_ADDRESS, true);
+    uz_mlp_three_layer_hw_write_enable_nn_Expect(BASE_ADDRESS, false);
+
+    uz_mlp_three_layer_ff_trigger(test_instance, p_input_data);
+}
+
+void test_uz_mlp_get_result_blocking(void)
+{
+    uz_mlp_three_layer_ip_t *test_instance = successful_init();
+    struct uz_matrix_t output_data = {0};
+    uz_matrix_t *p_output_data = uz_matrix_init(&output_data, mlp_ip_output, UZ_MATRIX_SIZE(mlp_ip_output), 1, UZ_MATRIX_SIZE(mlp_ip_output));
+
+    uz_mlp_three_layer_hw_read_valid_output_ExpectAndReturn(BASE_ADDRESS, false); // Expects that the function is called multiple times and returns true at the 3. call
+    uz_mlp_three_layer_hw_read_valid_output_ExpectAndReturn(BASE_ADDRESS, false);
+    uz_mlp_three_layer_hw_read_valid_output_ExpectAndReturn(BASE_ADDRESS, true);
+
+    uz_mlp_three_layer_hw_read_output_Expect(BASE_ADDRESS, p_output_data);
+
+    uz_mlp_three_layer_ff_get_result_blocking(test_instance, p_output_data);
 }
 
 #endif // TEST111150

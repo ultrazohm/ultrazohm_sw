@@ -33,11 +33,12 @@ uz_mlp_three_layer_ip_t *uz_mlp_three_layer_ip_init(struct uz_mlp_three_layer_ip
     uz_assert_not_zero_uint32(config.base_address);
     uz_assert_not_NULL(config.software_network);
     self->config = config;
-    uint32_t number_of_inputs=(uint32_t)uz_nn_get_number_of_inputs(self->config.software_network);
-    uint32_t number_of_outputs=(uint32_t)uz_nn_get_number_of_outputs(self->config.software_network);
+    uint32_t number_of_inputs = (uint32_t)uz_nn_get_number_of_inputs(self->config.software_network);
+    uint32_t number_of_outputs = (uint32_t)uz_nn_get_number_of_outputs(self->config.software_network);
     uz_mlp_three_layer_hw_write_number_of_inputs(self->config.base_address, number_of_inputs);
     uz_mlp_three_layer_hw_write_number_of_outputs(self->config.base_address, number_of_outputs);
-    uz_mlp_three_layer_set_use_axi_input(self,self->config.use_axi_input);
+    uz_mlp_three_layer_set_use_axi_input(self, self->config.use_axi_input);
+    uz_mlp_three_layer_set_parameters(self);
     return (self);
 }
 
@@ -98,6 +99,8 @@ void uz_mlp_three_layer_set_weights(uz_mlp_three_layer_ip_t *self, uint32_t para
 
 void uz_mlp_three_layer_set_parameters(uz_mlp_three_layer_ip_t *self)
 {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     uz_matrix_t *bias_1 = uz_nn_get_bias_matrix(self->config.software_network, 1);
     uz_matrix_t *weight_1 = uz_nn_get_weight_matrix(self->config.software_network, 1);
 
@@ -121,11 +124,31 @@ void uz_mlp_three_layer_set_parameters(uz_mlp_three_layer_ip_t *self)
     uz_mlp_three_layer_set_weights(self, 2U, weight_4, 4U);
 }
 
-void uz_mlp_three_layer_calculate_forward_pass(uz_mlp_three_layer_ip_t *self, uz_matrix_t* input_data, uz_matrix_t* output_data)
-{   
+void uz_mlp_three_layer_ff_blocking(uz_mlp_three_layer_ip_t *self, uz_matrix_t *input_data, uz_matrix_t *output_data)
+{
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(input_data);
+    uz_assert_not_NULL(output_data);
+    uz_assert(self->is_ready);
+    uz_mlp_three_layer_ff_trigger(self, input_data);
+    uz_mlp_three_layer_ff_get_result_blocking(self, output_data);
+}
+
+void uz_mlp_three_layer_ff_trigger(uz_mlp_three_layer_ip_t *self, uz_matrix_t *input_data)
+{
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(input_data);
+    uz_assert(self->is_ready);
     uz_mlp_three_layer_hw_write_input(self->config.base_address, input_data);
     uz_mlp_three_layer_hw_write_enable_nn(self->config.base_address, true);
     uz_mlp_three_layer_hw_write_enable_nn(self->config.base_address, false);
+}
+
+void uz_mlp_three_layer_ff_get_result_blocking(uz_mlp_three_layer_ip_t *self, uz_matrix_t *output_data)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert_not_NULL(output_data);
     while (!(uz_mlp_three_layer_hw_read_valid_output(self->config.base_address)))
     {
         // do nothing while output is not valid
@@ -133,11 +156,31 @@ void uz_mlp_three_layer_calculate_forward_pass(uz_mlp_three_layer_ip_t *self, uz
     uz_mlp_three_layer_hw_read_output(self->config.base_address, output_data);
 }
 
-void uz_mlp_three_layer_calculate_forward_pass_unsafe(uz_mlp_three_layer_ip_t *self, uz_matrix_t* input_data, uz_matrix_t* output_data)
-{   
+void uz_mlp_three_layer_ff_blocking_unsafe(uz_mlp_three_layer_ip_t *self, uz_matrix_t *input_data, uz_matrix_t *output_data)
+{
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(input_data);
+    uz_assert_not_NULL(output_data);
+    uz_assert(self->is_ready);
+    uz_mlp_three_layer_ff_trigger_unsafe(self, input_data);
+    uz_mlp_three_layer_ff_get_result_blocking_unsafe(self, output_data);
+}
+
+void uz_mlp_three_layer_ff_trigger_unsafe(uz_mlp_three_layer_ip_t *self, uz_matrix_t *input_data)
+{
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(input_data);
+    uz_assert(self->is_ready);
     uz_mlp_three_layer_hw_write_input_unsafe(self->config.base_address, input_data);
     uz_mlp_three_layer_hw_write_enable_nn(self->config.base_address, true);
     uz_mlp_three_layer_hw_write_enable_nn(self->config.base_address, false);
+}
+
+void uz_mlp_three_layer_ff_get_result_blocking_unsafe(uz_mlp_three_layer_ip_t *self, uz_matrix_t *output_data)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert_not_NULL(output_data);
     while (!(uz_mlp_three_layer_hw_read_valid_output(self->config.base_address)))
     {
         // do nothing while output is not valid
@@ -146,10 +189,11 @@ void uz_mlp_three_layer_calculate_forward_pass_unsafe(uz_mlp_three_layer_ip_t *s
 }
 
 
-void uz_mlp_three_layer_set_use_axi_input(uz_mlp_three_layer_ip_t *self,bool use_axi_input){
+void uz_mlp_three_layer_set_use_axi_input(uz_mlp_three_layer_ip_t *self, bool use_axi_input)
+{
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    self->config.use_axi_input=use_axi_input;
+    self->config.use_axi_input = use_axi_input;
     uz_mlp_three_layer_hw_write_use_axi_input(self->config.base_address, self->config.use_axi_input);
 }
 

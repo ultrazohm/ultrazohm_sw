@@ -342,8 +342,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			PID_Data.ElectricalID_Config.goertzlAmp = value;
 			break;
 
-		case (PID_EID_polePairs):
-			PID_Data.GlobalConfig.PMSM_config.polePairs = value;
+		case (PID_EID_goertzl_Freq):
+			PID_Data.ElectricalID_Config.goertzlFreq = value;
 			break;
 
 		case (PID_EID_DutyCyc):

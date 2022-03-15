@@ -123,7 +123,7 @@ Setup
             PID_EID_sampleTimeISR,
             PID_EID_n_ref_meas,
             PID_EID_goertzl_Amp,
-            PID_EID_polePairs,
+            PID_EID_goertzl_Freq,
             PID_EID_DutyCyc,
             PID_EID_MaxContinousCurrent,
             PID_EID_Enable_IdentLQ,
@@ -384,8 +384,8 @@ Setup
                     PID_Data.ElectricalID_Config.goertzlAmp = value;
                     break;
 
-                case (PID_EID_polePairs):
-                    PID_Data.GlobalConfig.PMSM_config.polePairs = value;
+                case (PID_EID_goertzl_Freq):
+                    PID_Data.ElectricalID_Config.goertzlFreq = value;
                     break;
 
                 case (PID_EID_DutyCyc):

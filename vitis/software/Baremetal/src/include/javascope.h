@@ -157,7 +157,7 @@ enum gui_button_mapping {
 	PID_EID_sampleTimeISR,
 	PID_EID_n_ref_meas,
 	PID_EID_goertzl_Amp,
-	PID_EID_polePairs,
+	PID_EID_goertzl_Freq,
 	PID_EID_DutyCyc,
 	PID_EID_MaxContinousCurrent,
 	PID_EID_Enable_IdentLQ,

@@ -27,7 +27,7 @@ void tearDown(void)
 void test_uz_nn_layer_init(void)
 {
     struct uz_nn_layer_config config = {
-        .activation_function = ReLU,
+        .activation_function = activation_ReLU,
         .number_of_neurons = NUMBER_OF_NEURONS_IN_LAYER,
         .number_of_inputs = NUMBER_OF_INPUTS,
         .length_of_weights = UZ_MATRIX_SIZE(w),
@@ -44,7 +44,7 @@ void test_uz_nn_layer_matrix_multiply_zero_bias(void)
     float b0[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 
     struct uz_nn_layer_config config = {
-        .activation_function = linear,
+        .activation_function = activation_linear,
         .number_of_neurons = NUMBER_OF_NEURONS_IN_LAYER,
         .number_of_inputs = NUMBER_OF_INPUTS,
         .length_of_weights = UZ_MATRIX_SIZE(w),
@@ -71,7 +71,7 @@ void test_uz_nn_layer_matrix_multiply_with_bias(void)
 {
     float b0[4] = {1.0f, -2.0f, 3.0f, -4.0f};
     struct uz_nn_layer_config config = {
-        .activation_function = linear,
+        .activation_function = activation_linear,
         .number_of_neurons = NUMBER_OF_NEURONS_IN_LAYER,
         .number_of_inputs = NUMBER_OF_INPUTS,
         .length_of_weights = UZ_MATRIX_SIZE(w),
@@ -97,7 +97,7 @@ void test_uz_nn_layer_ff_relu(void)
 {
     float b0[4] = {1.0f, -2.0f, 3.0f, -4.0f};
     struct uz_nn_layer_config config = {
-        .activation_function = ReLU,
+        .activation_function = activation_ReLU,
         .number_of_neurons = NUMBER_OF_NEURONS_IN_LAYER,
         .number_of_inputs = NUMBER_OF_INPUTS,
         .length_of_weights = UZ_MATRIX_SIZE(w),

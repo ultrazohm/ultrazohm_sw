@@ -40,7 +40,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 
 # The design that will be created by this Tcl script contains the following 
 # module references:
-# top_npc_state_machine, delay_trigger
+# iobufds_inst, iobufds_inst, iobufds_inst, top_npc_state_machine, delay_trigger
 
 # Please add the sources of those modules before sourcing this Tcl script.
 
@@ -175,6 +175,9 @@ xilinx.com:ip:mux_axi_ip:1.2\
 set bCheckModules 1
 if { $bCheckModules == 1 } {
    set list_check_mods "\ 
+iobufds_inst\
+iobufds_inst\
+iobufds_inst\
 top_npc_state_machine\
 delay_trigger\
 "
@@ -427,6 +430,7 @@ proc create_hier_cell_Interrupt { parentCell nameHier } {
   # Create instance: adc_delay, and set properties
   set adc_delay [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 adc_delay ]
   set_property -dict [ list \
+   CONFIG.C_EN_PROBE_IN_ACTIVITY {0} \
    CONFIG.C_NUM_PROBE_IN {0} \
    CONFIG.C_PROBE_OUT0_WIDTH {11} \
  ] $adc_delay
@@ -457,6 +461,7 @@ proc create_hier_cell_Interrupt { parentCell nameHier } {
   # Create instance: vio_interrupt, and set properties
   set vio_interrupt [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 vio_interrupt ]
   set_property -dict [ list \
+   CONFIG.C_EN_PROBE_IN_ACTIVITY {0} \
    CONFIG.C_NUM_PROBE_IN {0} \
  ] $vio_interrupt
 
@@ -544,6 +549,7 @@ proc create_hier_cell_Gates_3L { parentCell nameHier } {
   set_property -dict [ list \
    CONFIG.C_OPERATION {or} \
    CONFIG.C_SIZE {1} \
+   CONFIG.LOGO_FILE {data/sym_orgate.png} \
  ] $Interrupt_Start_Center
 
   # Create instance: PWM_SS_3L_ip_0, and set properties
@@ -552,6 +558,7 @@ proc create_hier_cell_Gates_3L { parentCell nameHier } {
   # Create instance: Set_Deadtime_3L, and set properties
   set Set_Deadtime_3L [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 Set_Deadtime_3L ]
   set_property -dict [ list \
+   CONFIG.C_EN_PROBE_IN_ACTIVITY {0} \
    CONFIG.C_NUM_PROBE_IN {0} \
    CONFIG.C_PROBE_OUT0_INIT_VAL {0x0C8} \
    CONFIG.C_PROBE_OUT0_WIDTH {10} \
@@ -580,6 +587,7 @@ proc create_hier_cell_Gates_3L { parentCell nameHier } {
   # Create instance: vio_Gates_3L, and set properties
   set vio_Gates_3L [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 vio_Gates_3L ]
   set_property -dict [ list \
+   CONFIG.C_EN_PROBE_IN_ACTIVITY {0} \
    CONFIG.C_NUM_PROBE_IN {0} \
    CONFIG.C_NUM_PROBE_OUT {9} \
    CONFIG.C_PROBE_OUT0_WIDTH {14} \
@@ -722,6 +730,7 @@ proc create_hier_cell_Gates { parentCell nameHier } {
   set_property -dict [ list \
    CONFIG.C_OPERATION {or} \
    CONFIG.C_SIZE {1} \
+   CONFIG.LOGO_FILE {data/sym_orgate.png} \
  ] $util_vector_logic_0
 
   # Create instance: uz_interlockDeadtime_0, and set properties
@@ -730,6 +739,7 @@ proc create_hier_cell_Gates { parentCell nameHier } {
   # Create instance: vio_Gates_2L, and set properties
   set vio_Gates_2L [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 vio_Gates_2L ]
   set_property -dict [ list \
+   CONFIG.C_EN_PROBE_IN_ACTIVITY {0} \
    CONFIG.C_NUM_PROBE_IN {0} \
    CONFIG.C_NUM_PROBE_OUT {6} \
  ] $vio_Gates_2L
@@ -967,24 +977,70 @@ proc create_root_design { parentCell } {
   # Create instance: A1_ADC_LTC2311, and set properties
   set A1_ADC_LTC2311 [ create_bd_cell -type ip -vlnv UltraZohm:user:ADC_LTC2311:3.0 A1_ADC_LTC2311 ]
   set_property -dict [ list \
+   CONFIG.DIFFERENTIAL {false} \
    CONFIG.RES_LSB {0} \
    CONFIG.RES_MSB {34} \
    CONFIG.SPI_MASTER {1} \
  ] $A1_ADC_LTC2311
 
+  # Create instance: A1_inv_input, and set properties
+  set A1_inv_input [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 A1_inv_input ]
+  set_property -dict [ list \
+   CONFIG.CONST_VAL {0x00} \
+   CONFIG.CONST_WIDTH {8} \
+ ] $A1_inv_input
+
+  # Create instance: A1_iobufds_inst, and set properties
+  set block_name iobufds_inst
+  set block_cell_name A1_iobufds_inst
+  if { [catch {set A1_iobufds_inst [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $A1_iobufds_inst eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
   # Create instance: A2_ADC_LTC2311, and set properties
   set A2_ADC_LTC2311 [ create_bd_cell -type ip -vlnv UltraZohm:user:ADC_LTC2311:3.0 A2_ADC_LTC2311 ]
   set_property -dict [ list \
+   CONFIG.DIFFERENTIAL {false} \
    CONFIG.RES_LSB {0} \
    CONFIG.RES_MSB {34} \
  ] $A2_ADC_LTC2311
 
+  # Create instance: A2_inv_input, and set properties
+  set A2_inv_input [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 A2_inv_input ]
+  set_property -dict [ list \
+   CONFIG.CONST_VAL {0x00} \
+   CONFIG.CONST_WIDTH {8} \
+ ] $A2_inv_input
+
+  # Create instance: A2_iobufds_inst, and set properties
+  set block_name iobufds_inst
+  set block_cell_name A2_iobufds_inst
+  if { [catch {set A2_iobufds_inst [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $A2_iobufds_inst eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
   # Create instance: A3_ADC_LTC2311, and set properties
   set A3_ADC_LTC2311 [ create_bd_cell -type ip -vlnv UltraZohm:user:ADC_LTC2311:3.0 A3_ADC_LTC2311 ]
   set_property -dict [ list \
+   CONFIG.DIFFERENTIAL {false} \
    CONFIG.RES_LSB {0} \
    CONFIG.RES_MSB {34} \
  ] $A3_ADC_LTC2311
+
+  # Create instance: A3_inv_input, and set properties
+  set A3_inv_input [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 A3_inv_input ]
+  set_property -dict [ list \
+   CONFIG.CONST_VAL {0x00} \
+   CONFIG.CONST_WIDTH {8} \
+ ] $A3_inv_input
 
   # Create instance: DataMover
   create_hier_cell_DataMover [current_bd_instance .] DataMover
@@ -1076,6 +1132,17 @@ proc create_root_design { parentCell } {
    CONFIG.C_PROBE4_WIDTH {24} \
  ] $ila_Encoder
 
+  # Create instance: iobufds_inst_2, and set properties
+  set block_name iobufds_inst
+  set block_cell_name iobufds_inst_2
+  if { [catch {set iobufds_inst_2 [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $iobufds_inst_2 eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
   # Create instance: proc_sys_reset_100MHz, and set properties
   set proc_sys_reset_100MHz [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 proc_sys_reset_100MHz ]
 
@@ -2434,7 +2501,7 @@ proc create_root_design { parentCell } {
    } \
    CONFIG.PSU__PROTECTION__DEBUG {0} \
    CONFIG.PSU__PROTECTION__ENABLE {0} \
-   CONFIG.PSU__PROTECTION__FPD_SEGMENTS {SA:0xFD1A0000; SIZE:1280; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware  |   SA:0xFD000000; SIZE:64; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware  |   SA:0xFD010000; SIZE:64; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware  |   SA:0xFD020000; SIZE:64; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware  |   SA:0xFD030000; SIZE:64; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware  |   SA:0xFD040000; SIZE:64; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware  |   SA:0xFD050000; SIZE:64; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware  |   SA:0xFD610000; SIZE:512; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware  |   SA:0xFD5D0000; SIZE:64; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware  |  SA:0xFD3D0000 ;SIZE:64;UNIT:KB ;RegionTZ:NonSecure ;WrAllowed:Read/Write;subsystemId:APU  |  SA:0xFD3D0000 ;SIZE:64;UNIT:KB ;RegionTZ:NonSecure ;WrAllowed:Read/Write;subsystemId:RPU} \
+   CONFIG.PSU__PROTECTION__FPD_SEGMENTS {SA:0xFD1A0000; SIZE:1280; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware   |    SA:0xFD000000; SIZE:64; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware   |    SA:0xFD010000; SIZE:64; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware   |    SA:0xFD020000; SIZE:64; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware   |    SA:0xFD030000; SIZE:64; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware   |    SA:0xFD040000; SIZE:64; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware   |    SA:0xFD050000; SIZE:64; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware   |    SA:0xFD610000; SIZE:512; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware   |    SA:0xFD5D0000; SIZE:64; UNIT:KB; RegionTZ:Secure; WrAllowed:Read/Write; subsystemId:PMU Firmware   |   SA:0xFD3D0000 ;SIZE:64;UNIT:KB ;RegionTZ:NonSecure ;WrAllowed:Read/Write;subsystemId:APU   |   SA:0xFD3D0000 ;SIZE:64;UNIT:KB ;RegionTZ:NonSecure ;WrAllowed:Read/Write;subsystemId:RPU} \
    CONFIG.PSU__PROTECTION__LOCK_UNUSED_SEGMENTS {0} \
    CONFIG.PSU__PROTECTION__LPD_SEGMENTS { \
      ;RegionTZ:NonSecure ;WrAllowed:Read/Write;subsystemId:APU \
@@ -2705,19 +2772,21 @@ proc create_root_design { parentCell } {
 
   # Create port connections
   connect_bd_net -net A1_ADC_LTC2311_SAMPLE_COUNTER [get_bd_pins A1_ADC_LTC2311/SAMPLE_COUNTER] [get_bd_pins adc_debug/probe6]
-  connect_bd_net -net A1_ADC_LTC2311_SCLK_DIFF [get_bd_ports A1_OUT_CLK] [get_bd_pins A1_ADC_LTC2311/SCLK_DIFF]
+  connect_bd_net -net A1_ADC_LTC2311_SCLK [get_bd_pins A1_ADC_LTC2311/SCLK] [get_bd_pins A1_iobufds_inst/SCLK_IN]
   connect_bd_net -net A1_ADC_LTC2311_SI_VALID [get_bd_pins A1_ADC_LTC2311/SI_VALID] [get_bd_pins adc_debug/probe7]
   connect_bd_net -net A1_ADC_LTC2311_SI_VALUE [get_bd_pins A1_ADC_LTC2311/SI_VALUE] [get_bd_pins adc_debug/Din1]
-  connect_bd_net -net A1_IN_1 [get_bd_ports A1_IN] [get_bd_pins A1_ADC_LTC2311/MISO_DIFF]
-  connect_bd_net -net A2_IN_1 [get_bd_ports A2_IN] [get_bd_pins A2_ADC_LTC2311/MISO_DIFF]
-  connect_bd_net -net A3_IN_1 [get_bd_ports A3_IN] [get_bd_pins A3_ADC_LTC2311/MISO_DIFF]
+  connect_bd_net -net A1_IN_1 [get_bd_ports A1_IN] [get_bd_pins A1_iobufds_inst/MISO_IN]
+  connect_bd_net -net A2_ADC_LTC2311_SCLK [get_bd_pins A2_ADC_LTC2311/SCLK] [get_bd_pins A2_iobufds_inst/SCLK_IN]
+  connect_bd_net -net A2_IN_1 [get_bd_ports A2_IN] [get_bd_pins A2_iobufds_inst/MISO_IN]
+  connect_bd_net -net A2_inv_input1_dout [get_bd_pins A3_inv_input/dout] [get_bd_pins iobufds_inst_2/INVERT_OUTPUT]
+  connect_bd_net -net A2_inv_input_dout [get_bd_pins A2_inv_input/dout] [get_bd_pins A2_iobufds_inst/INVERT_OUTPUT]
+  connect_bd_net -net A3_ADC_LTC2311_SCLK [get_bd_pins A3_ADC_LTC2311/SCLK] [get_bd_pins iobufds_inst_2/SCLK_IN]
+  connect_bd_net -net A3_IN_1 [get_bd_ports A3_IN] [get_bd_pins iobufds_inst_2/MISO_IN]
   connect_bd_net -net ADC_LTC2311_0_RAW_VALUE [get_bd_pins A2_ADC_LTC2311/RAW_VALUE] [get_bd_pins DataMover/ADC_A2]
-  connect_bd_net -net ADC_LTC2311_0_SCLK_DIFF [get_bd_ports A2_OUT_CLK] [get_bd_pins A2_ADC_LTC2311/SCLK_DIFF]
   connect_bd_net -net ADC_LTC2311_0_SS_N [get_bd_ports A2_OUT_CNV_0] [get_bd_ports A2_OUT_CNV_1] [get_bd_pins A2_ADC_LTC2311/SS_N]
   connect_bd_net -net ADC_LTC2311_1_RAW_VALUE [get_bd_pins A1_ADC_LTC2311/RAW_VALUE] [get_bd_pins DataMover/ADC_A1] [get_bd_pins adc_debug/Din]
   connect_bd_net -net ADC_LTC2311_1_SS_N [get_bd_ports A1_OUT_CNV_0] [get_bd_ports A1_OUT_CNV_1] [get_bd_pins A1_ADC_LTC2311/SS_N]
   connect_bd_net -net ADC_LTC2311_2_RAW_VALUE [get_bd_pins A3_ADC_LTC2311/RAW_VALUE] [get_bd_pins DataMover/ADC_A3]
-  connect_bd_net -net ADC_LTC2311_2_SCLK_DIFF [get_bd_ports A3_OUT_CLK] [get_bd_pins A3_ADC_LTC2311/SCLK_DIFF]
   connect_bd_net -net ADC_LTC2311_2_SS_N [get_bd_ports A3_OUT_CNV_0] [get_bd_ports A3_OUT_CNV_1] [get_bd_pins A3_ADC_LTC2311/SS_N]
   connect_bd_net -net A_1 [get_bd_ports Dig_13_Ch5] [get_bd_pins IncreEncoder_V24_ip_0/A] [get_bd_pins ila_Encoder/probe0]
   connect_bd_net -net B_1 [get_bd_ports Dig_14_Ch5] [get_bd_pins IncreEncoder_V24_ip_0/B] [get_bd_pins ila_Encoder/probe1]
@@ -2740,11 +2809,18 @@ proc create_root_design { parentCell } {
   connect_bd_net -net Interrupt_muxed [get_bd_pins A1_ADC_LTC2311/TRIGGER_CNV] [get_bd_pins A2_ADC_LTC2311/TRIGGER_CNV] [get_bd_pins A3_ADC_LTC2311/TRIGGER_CNV] [get_bd_pins IncreEncoder_V24_ip_0/PeriodEnd] [get_bd_pins Interrupt/trigger_converesions] [get_bd_pins adc_debug/probe5] [get_bd_pins ila_Encoder/probe5]
   connect_bd_net -net axi_gpio_2_gpio_io_o [get_bd_pins axi_gpio_2/gpio_io_o] [get_bd_pins xlslice_Enable_AXI2TCM_Bit4/Din] [get_bd_pins xlslice_Enable_Gate_Bit1/Din] [get_bd_pins xlslice_Enable_Inverter_Bit0/Din]
   connect_bd_net -net clk_wiz_0_clk_25MHz [get_bd_pins clk_wiz_0/clk_25MHz] [get_bd_pins proc_sys_reset_25MHz/slowest_sync_clk]
+  connect_bd_net -net iobufds_inst_0_MISO_OUT [get_bd_pins A1_ADC_LTC2311/MISO] [get_bd_pins A1_iobufds_inst/MISO_OUT]
+  connect_bd_net -net iobufds_inst_0_SCLK_OUT [get_bd_ports A1_OUT_CLK] [get_bd_pins A1_iobufds_inst/SCLK_OUT]
+  connect_bd_net -net iobufds_inst_1_MISO_OUT [get_bd_pins A2_ADC_LTC2311/MISO] [get_bd_pins A2_iobufds_inst/MISO_OUT]
+  connect_bd_net -net iobufds_inst_1_SCLK_OUT [get_bd_ports A2_OUT_CLK] [get_bd_pins A2_iobufds_inst/SCLK_OUT]
+  connect_bd_net -net iobufds_inst_2_MISO_OUT [get_bd_pins A3_ADC_LTC2311/MISO] [get_bd_pins iobufds_inst_2/MISO_OUT]
+  connect_bd_net -net iobufds_inst_2_SCLK_OUT [get_bd_ports A3_OUT_CLK] [get_bd_pins iobufds_inst_2/SCLK_OUT]
   connect_bd_net -net proc_sys_reset_10MHz_peripheral_aresetn [get_bd_pins Gates/s00_axi_aresetn] [get_bd_pins proc_sys_reset_10MHz/peripheral_aresetn]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins A1_ADC_LTC2311/s00_axi_aresetn] [get_bd_pins A2_ADC_LTC2311/s00_axi_aresetn] [get_bd_pins A3_ADC_LTC2311/s00_axi_aresetn] [get_bd_pins DataMover/m00_axi_aresetn] [get_bd_pins Gates/AXI4_Lite_ARESETN] [get_bd_pins Gates_3L/AXI4_Lite_ARESETN] [get_bd_pins Interrupt/IPCORE_RESETN] [get_bd_pins axi_gpio_2/s_axi_aresetn] [get_bd_pins proc_sys_reset_100MHz/peripheral_aresetn] [get_bd_pins smartconnect_0/aresetn] [get_bd_pins smartconnect_1/aresetn] [get_bd_pins timer_uptime_64bit/s_axi_aresetn] [get_bd_pins uz_axi_testIP_0/AXI4_ARESETN] [get_bd_pins uz_axi_testIP_0/IPCORE_RESETN]
   connect_bd_net -net proc_sys_reset_50MHz_peripheral_aresetn [get_bd_pins IncreEncoder_V24_ip_0/AXI4_Lite_ARESETN] [get_bd_pins IncreEncoder_V24_ip_0/IPCORE_RESETN] [get_bd_pins proc_sys_reset_50MHz/peripheral_aresetn]
   connect_bd_net -net vio_D2_test_probe_out0 [get_bd_ports D3_OUT] [get_bd_pins vio_D34_test/probe_out0]
   connect_bd_net -net xlconcat_0_dout [get_bd_ports D4_OUT] [get_bd_pins Interrupt/Interrupt_vector] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq0]
+  connect_bd_net -net xlconstant_0_dout [get_bd_pins A1_inv_input/dout] [get_bd_pins A1_iobufds_inst/INVERT_OUTPUT]
   connect_bd_net -net xlslice_Enable_AXI2TCM_Bit4_Dout [get_bd_pins DataMover/Enable_AXI2TCM] [get_bd_pins xlslice_Enable_AXI2TCM_Bit4/Dout]
   connect_bd_net -net xlslice_Enable_Gate_Dout [get_bd_ports D1_OUT_30] [get_bd_ports D2_OUT_30] [get_bd_ports D3_OUT_30] [get_bd_ports D4_OUT_30] [get_bd_pins xlslice_Enable_Gate_Bit1/Dout]
   connect_bd_net -net xlslice_Enable_Inverter_Dout [get_bd_pins Gates/Enable_Gate] [get_bd_pins Gates_3L/Enable_Gates] [get_bd_pins xlslice_Enable_Inverter_Bit0/Dout]
@@ -2770,9 +2846,6 @@ proc create_root_design { parentCell } {
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces DataMover/AXI2TCM_0/M00_AXI] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP6/LPD_DDR_LOW] -force
   assign_bd_address -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces DataMover/AXI2TCM_0/M00_AXI] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP6/LPD_LPS_OCM] -force
   assign_bd_address -offset 0xC0000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces DataMover/AXI2TCM_0/M00_AXI] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP6/LPD_QSPI] -force
-
-  # Exclude Address Segments
-  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces DataMover/AXI2TCM_0/M00_AXI] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP6/LPD_DDR_HIGH]
 
 
   # Restore current instance

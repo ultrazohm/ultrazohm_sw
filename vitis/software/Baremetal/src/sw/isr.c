@@ -58,16 +58,9 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
-static bool is_first_isr_call=true;
-
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
-
-    if(is_first_isr_call){
-    	uz_watchdog_ip_start(WdtTbInstancePtr);
-    	is_first_isr_call=false;
-    }
 
 	//  Ensure that the source of the current interrupt is cleared: TESTED, AND NOT NECESARY
 	//	and enable Nested Interrupts: TESTED, NECESARY
@@ -90,7 +83,15 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
 
+
+    // // TODO: DELETE AFTER TEST: to trigger the time violation of ISR or system hang and the reset
+	// // Launch the test every 1000 invocations
+	if (((uz_SystemTime_GetInterruptCounter()%1000) == 0)) {
+		uz_sleep_useconds(100);
+	}
+
     JavaScope_update(&Global_Data);
+
 
 	// Before exiting the Interrupt handler, the Nested Interrupts must be disabled
 	Xil_DisableNestedInterrupts();
@@ -98,6 +99,7 @@ void ISR_Control(void *data)
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();
+
 }
 
 //==============================================================================================================================================================
@@ -122,12 +124,16 @@ int Initialize_ISR()
 	 * Call Init  the WDT setting timer to the default timeout and default configuration.
 	 * Obtain a WDT pointer initialized to use with the WDTTB API
 	 */
-    float isr_maximum_sample_time_us=Global_Data.av.isr_samplerate_s*1e6f; // convert second to microsecond
+//    float isr_maximum_sample_time_us=Global_Data.av.isr_samplerate_s*1e6f; // convert second to microsecond
+    float isr_maximum_sample_time_us=(1.0f/(UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor)*1e6f);
+
+    xil_printf("ISR: Initialize_ISR: watchdog_debug_mode, (uint32_t)(isr_maximum_sample_time_us): %d\r\n",(uint32_t)isr_maximum_sample_time_us);
+
 	struct uz_watchdog_ip_config_t config={
 		.reset_timer_in_us=isr_maximum_sample_time_us,
 		.device_id=XPAR_AXI_TIMEBASE_WDT_0_DEVICE_ID,
 		.ip_clk_frequency_Hz=100000000,
-		.fail_mode=watchdog_assertion
+		.fail_mode=watchdog_debug_mode
 	};
 	WdtTbInstancePtr = uz_watchdog_ip_init(config);
 
@@ -331,6 +337,8 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
     XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
 
     //	Enable the WDT and launch first kick
+    uz_watchdog_ip_start(WdtTbInstancePtr);
+
     xil_printf("RPU: Rpu_GicInit: Done\r\n");
 
     return XST_SUCCESS;

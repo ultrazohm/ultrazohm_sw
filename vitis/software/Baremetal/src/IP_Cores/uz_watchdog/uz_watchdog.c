@@ -36,12 +36,12 @@ struct uz_watchdog_ip_t
 };
 
 static size_t instance_counter = 0U;
-static uz_watchdog_ip_t instances[UZ_WDTTB_MAX_INSTANCES] = {0};
+static uz_watchdog_ip_t instances_wdt[UZ_WDTTB_MAX_INSTANCES] = {0};
 
 static uz_watchdog_ip_t *uz_watchdog_allocation()
 {
     uz_assert(instance_counter < UZ_WDTTB_MAX_INSTANCES);
-    uz_watchdog_ip_t *self = &instances[instance_counter];
+    uz_watchdog_ip_t *self = &instances_wdt[instance_counter];
     uz_assert_false(self->is_ready);
     instance_counter++;
     self->is_ready = true;
@@ -158,6 +158,8 @@ static uint32_t uz_watchdog_calculate_counter_from_time(uint32_t ip_clk_frequenc
     reset_timer_in_us = roundf(reset_timer_in_us);                                             // Round since casting will turncate
     uint32_t counter_value = ((uint32_t)reset_timer_in_us) * (ip_clk_frequency_Hz / 1000000U); // Scaling ip_clk_frequency to MHz for easy calculation
     counter_value += WIN_WDT_SBC_COUNT_SHIFTED;                                                // Adds shifted offset for interrupt time
+
+    xil_printf("WDT: uz_watchdog_calculate_counter_from_time: counter_value: %d\r\n",counter_value);
     return counter_value;
 }
 

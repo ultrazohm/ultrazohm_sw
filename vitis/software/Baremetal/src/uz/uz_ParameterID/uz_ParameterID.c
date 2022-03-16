@@ -210,7 +210,7 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_i
 			uz_FOC_reset(FOC_instance);
 			uz_SpeedControl_reset(Speed_instance);
 		}
-	if (Data->ControlFlags->transNr <= 4U) {
+	if (Data->ControlFlags->transNr > 0U && Data->ControlFlags->transNr <= 4U) {
 		if (Data->Controller_Parameters.activeState == 144U) {
 			uz_FOC_set_decoupling_method(FOC_instance, no_decoupling);
 		} else if (Data->Controller_Parameters.activeState == 170U) {
@@ -449,7 +449,7 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->GlobalConfig.PMSM_config.Psi_PM_Vs = 0.0057f;
 	Data->GlobalConfig.PMSM_config.polePairs = 4.0f;
 	Data->GlobalConfig.PMSM_config.J_kg_m_squared = 1.9e-05f;
-	Data->GlobalConfig.PMSM_config.I_max_Ampere = 15.0f;
+	Data->GlobalConfig.PMSM_config.I_max_Ampere = 20.0f;
 	Data->GlobalConfig.ratCurrent = 8.5f;
 	Data->GlobalConfig.ratSpeed = 4000.0f;
 

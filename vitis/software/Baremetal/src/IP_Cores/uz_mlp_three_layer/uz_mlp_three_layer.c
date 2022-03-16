@@ -6,6 +6,14 @@
 #include <stdbool.h>
 #include "../../uz/uz_HAL.h"
 #include "../../uz/uz_array/uz_array.h"
+
+// Number of parallel pcu in each layer is hard-coded into the IP-Core hardware
+#define NUMBER_OF_PARALLEL_PCU_LAYER_1 4U
+#define NUMBER_OF_PARALLEL_PCU_LAYER_2 8U
+#define NUMBER_OF_PARALLEL_PCU_LAYER_3 8U
+#define NUMBER_OF_PARALLEL_PCU_LAYER_4 2U
+
+
 struct uz_mlp_three_layer_ip_t
 {
     bool is_ready;
@@ -101,27 +109,27 @@ void uz_mlp_three_layer_set_parameters(uz_mlp_three_layer_ip_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_matrix_t *bias_1 = uz_nn_get_bias_matrix(self->config.software_network, 1);
-    uz_matrix_t *weight_1 = uz_nn_get_weight_matrix(self->config.software_network, 1);
+    uz_matrix_t *bias_1 = uz_nn_get_bias_matrix(self->config.software_network, 1U);
+    uz_matrix_t *weight_1 = uz_nn_get_weight_matrix(self->config.software_network, 1U);
 
-    uz_matrix_t *bias_2 = uz_nn_get_bias_matrix(self->config.software_network, 2);
-    uz_matrix_t *weight_2 = uz_nn_get_weight_matrix(self->config.software_network, 2);
+    uz_matrix_t *bias_2 = uz_nn_get_bias_matrix(self->config.software_network, 2U);
+    uz_matrix_t *weight_2 = uz_nn_get_weight_matrix(self->config.software_network, 2U);
 
-    uz_matrix_t *bias_3 = uz_nn_get_bias_matrix(self->config.software_network, 3);
-    uz_matrix_t *weight_3 = uz_nn_get_weight_matrix(self->config.software_network, 3);
+    uz_matrix_t *bias_3 = uz_nn_get_bias_matrix(self->config.software_network, 3U);
+    uz_matrix_t *weight_3 = uz_nn_get_weight_matrix(self->config.software_network, 3U);
 
-    uz_matrix_t *bias_4 = uz_nn_get_bias_matrix(self->config.software_network, 4);
-    uz_matrix_t *weight_4 = uz_nn_get_weight_matrix(self->config.software_network, 4);
+    uz_matrix_t *bias_4 = uz_nn_get_bias_matrix(self->config.software_network, 4U);
+    uz_matrix_t *weight_4 = uz_nn_get_weight_matrix(self->config.software_network, 4U);
 
-    uz_mlp_three_layer_set_bias(self, 4U, bias_1, 1);
-    uz_mlp_three_layer_set_bias(self, 8U, bias_2, 2);
-    uz_mlp_three_layer_set_bias(self, 8U, bias_3, 3);
-    uz_mlp_three_layer_set_bias(self, 2U, bias_4, 4);
+    uz_mlp_three_layer_set_bias(self, NUMBER_OF_PARALLEL_PCU_LAYER_1, bias_1, 1U);
+    uz_mlp_three_layer_set_bias(self, NUMBER_OF_PARALLEL_PCU_LAYER_2, bias_2, 2U);
+    uz_mlp_three_layer_set_bias(self, NUMBER_OF_PARALLEL_PCU_LAYER_3, bias_3, 3U);
+    uz_mlp_three_layer_set_bias(self, NUMBER_OF_PARALLEL_PCU_LAYER_4, bias_4, 4U);
 
-    uz_mlp_three_layer_set_weights(self, 4U, weight_1, 1U);
-    uz_mlp_three_layer_set_weights(self, 8U, weight_2, 2U);
-    uz_mlp_three_layer_set_weights(self, 8U, weight_3, 3U);
-    uz_mlp_three_layer_set_weights(self, 2U, weight_4, 4U);
+    uz_mlp_three_layer_set_weights(self, NUMBER_OF_PARALLEL_PCU_LAYER_1, weight_1, 1U);
+    uz_mlp_three_layer_set_weights(self, NUMBER_OF_PARALLEL_PCU_LAYER_2, weight_2, 2U);
+    uz_mlp_three_layer_set_weights(self, NUMBER_OF_PARALLEL_PCU_LAYER_3, weight_3, 3U);
+    uz_mlp_three_layer_set_weights(self, NUMBER_OF_PARALLEL_PCU_LAYER_4, weight_4, 4U);
 }
 
 void uz_mlp_three_layer_ff_blocking(uz_mlp_three_layer_ip_t *self, uz_matrix_t *input_data, uz_matrix_t *output_data)

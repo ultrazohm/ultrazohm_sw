@@ -36,6 +36,13 @@ Features:
 - Fully compatible with :ref:`uz_nn` to use IP-Core as an accelerator
 - Uses :ref:`uz_matrix` as input and outputs
 
+The IP-Core is always configured by the processing system.
+The configuration (e.g., number of inputs) is valid for using the inputs from AXI and from the PL (depending on ``use_axi_input``).
+The calculation of one forward pass is triggered by a rising edge either from AXI or by the PL (``enable_nn`` port).
+The calculation trigger is a OR between the AXI and PL ports, thus no priority is used. 
+The output valid is low during calculation and high if a valid result is available on the output ports.
+If a calculation is triggered before the calculation is finished, the trigger is ignored.
+
 Usage
 =====
 
@@ -212,7 +219,9 @@ The IP-Core has the following configuration possibilities.
 
 enable_nn
 
-  Calculates one feedforward pass of the network with the current inputs. Calculation start on a rising edge of ``enable_nn``.
+  Calculates one feedforward pass of the network with the current inputs.
+  Calculation start on a rising edge of ``enable_nn``.
+  Can be triggered either by software (AXI) or by external port from PL.
 
 use_axi_input
 
@@ -235,6 +244,8 @@ Output scheme
 
 The output is always a vector with 8 elements, independent of the number of used outputs of the network that are configured by AXI.
 Due to the parallel calculation of the result, the following output mapping applies.
+Note that this is handled by the software driver if the output is read by software.
+For using the output on the external ports in the PL, the mapping has to be taken into account by the user.
 
 For 8 outputs:
 
@@ -329,8 +340,7 @@ Due to the parallelization, the matrix is split, e.g., into four parts for four 
     w_3 &= \begin{bmatrix} 5 & 13 & 21 & 29 & 6 &14 & 22 &30 \end{bmatrix} \\
     w_4 &= \begin{bmatrix} 7 & 15 & 23 &31 & 8 & 16 & 24 & 32\end{bmatrix} 
 
-.. note:: This ordering is the transposed definition compared to what is used in :ref:`uz_matrix` to match the hardware setup of the IP-Core. Thus, a matrix of type ``uz_matrix_t`` has to be transposed.
-
+.. note:: This ordering is the transposed definition compared to what is used in :ref:`uz_matrix` to match the hardware setup of the IP-Core. Thus, a matrix of type ``uz_matrix_t`` has to be transposed. The init function of the driver handles this by calling ``uz_mlp_three_layer_set_weights``, which handles writing the correct parameters into the BRAM of the IP-Core!
 
 Write parameters to network
 ***************************

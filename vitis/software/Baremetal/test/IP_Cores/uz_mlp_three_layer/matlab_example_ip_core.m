@@ -8,7 +8,7 @@ rand(0); % Fix random number generator to ensure reproducable results
 [x,t] = bodyfat_dataset;
 t=[t;t;t;t]; % Dublicates the target values to have a network with two outputs
 
-%  Explizitly use mapminmax to have the same input/output processing in the matlab toolbox as in the hand-coded implementation
+%  Explicitly use mapminmax to have the same input/output processing in the matlab toolbox as in the hand-coded implementation
 % See: https://de.mathworks.com/help/deeplearning/ref/mapminmax.html
 [xn,ps] = mapminmax(x);
 [tn,ts] = mapminmax(t);

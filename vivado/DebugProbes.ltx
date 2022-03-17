@@ -5244,7 +5244,7 @@
                                 "portIndex": 1,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_mlp_three_layer_0_biasWriteEnable",
+                                        "name": "zusys_i/uz_mlp_three_layer_0_valid_output",
                                         "isBus": false
                                     }
                                 ]
@@ -5254,10 +5254,74 @@
                                 "id": 138,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 2,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_mlp_three_layer_0_biasWriteEnable",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 139,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 9,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[9]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[8]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 140,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
                                 "isVector": true,
                                 "leftIndex": 0,
                                 "rightIndex": 31,
-                                "portIndex": 2,
+                                "portIndex": 4,
                                 "nets": [
                                     {
                                         "name": "zusys_i/uz_mlp_three_layer_0_out_rsvd",
@@ -5364,19 +5428,85 @@
                                 ]
                             },
                             {
-                                "name": "probe3",
-                                "id": 139,
+                                "name": "probe5",
+                                "id": 141,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
                                 "leftIndex": 0,
-                                "rightIndex": 9,
-                                "portIndex": 3,
+                                "rightIndex": 31,
+                                "portIndex": 5,
                                 "nets": [
                                     {
                                         "name": "zusys_i/uz_mlp_three_layer_0_out1",
                                         "isBus": true,
                                         "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[31]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[30]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[29]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[28]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[27]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[26]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[25]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[24]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[23]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[22]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[21]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[20]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[19]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[18]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[17]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[16]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[15]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[14]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[13]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[12]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[11]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_mlp_three_layer_0_out1[10]"
+                                            },
                                             {
                                                 "name": "zusys_i/uz_mlp_three_layer_0_out1[9]"
                                             },
@@ -5410,295 +5540,6 @@
                                         ]
                                     }
                                 ]
-                            },
-                            {
-                                "name": "probe4",
-                                "id": 140,
-                                "type": "DATA_TRIGGER",
-                                "direction": "IN",
-                                "isVector": true,
-                                "leftIndex": 0,
-                                "rightIndex": 31,
-                                "portIndex": 4,
-                                "nets": [
-                                    {
-                                        "name": "zusys_i/uz_mlp_three_layer_0_out5",
-                                        "isBus": true,
-                                        "subnets": [
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[31]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[30]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[29]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[28]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[27]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[26]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[25]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[24]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[23]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[22]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[21]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[20]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[19]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[18]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[17]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[16]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[15]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[14]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[13]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[12]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[11]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[10]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[9]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[8]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[7]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[6]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[5]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[4]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[3]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[2]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[1]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out5[0]"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "name": "probe5",
-                                "id": 141,
-                                "type": "DATA_TRIGGER",
-                                "direction": "IN",
-                                "isVector": true,
-                                "leftIndex": 0,
-                                "rightIndex": 31,
-                                "portIndex": 5,
-                                "nets": [
-                                    {
-                                        "name": "zusys_i/uz_mlp_three_layer_0_out6",
-                                        "isBus": true,
-                                        "subnets": [
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[31]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[30]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[29]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[28]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[27]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[26]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[25]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[24]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[23]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[22]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[21]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[20]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[19]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[18]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[17]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[16]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[15]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[14]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[13]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[12]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[11]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[10]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[9]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[8]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[7]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[6]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[5]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[4]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[3]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[2]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[1]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_out6[0]"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "name": "probe6",
-                                "id": 142,
-                                "type": "DATA_TRIGGER",
-                                "direction": "IN",
-                                "isVector": true,
-                                "leftIndex": 0,
-                                "rightIndex": 8,
-                                "portIndex": 6,
-                                "nets": [
-                                    {
-                                        "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr",
-                                        "isBus": true,
-                                        "subnets": [
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[8]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[7]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[6]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[5]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[4]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[3]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[2]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[1]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_mlp_three_layer_0_biasWriteAddr[0]"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "name": "probe7",
-                                "id": 143,
-                                "type": "DATA_TRIGGER",
-                                "direction": "IN",
-                                "isVector": false,
-                                "leftIndex": 0,
-                                "rightIndex": 0,
-                                "portIndex": 7,
-                                "nets": [
-                                    {
-                                        "name": "zusys_i/uz_mlp_three_layer_0_valid_output",
-                                        "isBus": false
-                                    }
-                                ]
                             }
                         ]
                     },
@@ -5716,7 +5557,7 @@
                         "pins": [
                             {
                                 "name": "probe0",
-                                "id": 144,
+                                "id": 142,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -5732,7 +5573,7 @@
                             },
                             {
                                 "name": "probe1",
-                                "id": 145,
+                                "id": 143,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -5748,7 +5589,7 @@
                             },
                             {
                                 "name": "probe2",
-                                "id": 146,
+                                "id": 144,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -5764,7 +5605,7 @@
                             },
                             {
                                 "name": "probe3",
-                                "id": 147,
+                                "id": 145,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -5854,7 +5695,7 @@
                             },
                             {
                                 "name": "probe4",
-                                "id": 148,
+                                "id": 146,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -5944,7 +5785,7 @@
                             },
                             {
                                 "name": "probe5",
-                                "id": 149,
+                                "id": 147,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -5960,7 +5801,7 @@
                             },
                             {
                                 "name": "probe6",
-                                "id": 150,
+                                "id": 148,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -6026,7 +5867,7 @@
                             },
                             {
                                 "name": "probe7",
-                                "id": 151,
+                                "id": 149,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -6106,7 +5947,7 @@
                         "pins": [
                             {
                                 "name": "probe_out0",
-                                "id": 152,
+                                "id": 150,
                                 "type": "DATA",
                                 "direction": "OUT",
                                 "isVector": true,
@@ -6220,7 +6061,7 @@
                             },
                             {
                                 "name": "probe_out1",
-                                "id": 153,
+                                "id": 151,
                                 "type": "DATA",
                                 "direction": "OUT",
                                 "isVector": true,
@@ -6334,7 +6175,7 @@
                             },
                             {
                                 "name": "probe_out2",
-                                "id": 154,
+                                "id": 152,
                                 "type": "DATA",
                                 "direction": "OUT",
                                 "isVector": true,
@@ -6448,7 +6289,7 @@
                             },
                             {
                                 "name": "probe_out3",
-                                "id": 155,
+                                "id": 153,
                                 "type": "DATA",
                                 "direction": "OUT",
                                 "isVector": true,
@@ -6576,7 +6417,7 @@
                         "pins": [
                             {
                                 "name": "probe_out0",
-                                "id": 156,
+                                "id": 154,
                                 "type": "DATA",
                                 "direction": "OUT",
                                 "isVector": true,

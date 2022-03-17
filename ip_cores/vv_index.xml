@@ -281,7 +281,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4.jpg">
 		</ProductGuide>
-		<CoreRevision value="2102150955">
+		<CoreRevision value="2103171647">
 		</CoreRevision>
 		<ComponentPath value="uz_mlp_three_layer/simulation/hdl_prj/ipcore/uz_mlp_three_layer_v3_0/component.xml">
 		</ComponentPath>
@@ -625,6 +625,58 @@
 				</Part>
 			</Family>
 			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:mux_axi_ip:1.2">
+		</VLNV>
+		<DisplayName value="mux_axi_ip">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2110211105">
+		</CoreRevision>
+		<ComponentPath value="uz_mux_axi/hdl_prj/ipcore/mux_axi_ip_v1_2/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="azynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qzynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
 				<Part status="Production" name="ALL">
 				</Part>
 			</Family>

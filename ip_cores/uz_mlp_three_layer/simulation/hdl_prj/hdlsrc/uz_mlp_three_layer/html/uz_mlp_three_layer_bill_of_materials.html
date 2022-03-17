@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-302
+303
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-1717
+1718
 </td>
 
 </tr>
@@ -270,15 +270,39 @@ Delay1
 1-bit Register 							: 1
 </span>
 <br /><h5>
-Multiplexers (6)
+Multiplexers (7)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-32-bit 16-to-1 Multiplexer 							: 2
+1-bit 2-to-1 Multiplexer 							: 4
 </span>
 <span name="Multiplexer_1_1" id="Multiplexer_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9535')" name="code2model" class="code2model">
+Switch2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9490')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 16-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_1_2" id="Multiplexer_1_2">
 <ul>
 <li>
 <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9479')" name="code2model" class="code2model">
@@ -296,13 +320,13 @@ Multiport Switch
 </ul>
 
 </span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_3')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
 32-bit 2-to-1 Multiplexer 							: 1
 </span>
-<span name="Multiplexer_1_2" id="Multiplexer_1_2">
+<span name="Multiplexer_1_3" id="Multiplexer_1_3">
 <ul>
 <li>
 <a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9480')" name="code2model" class="code2model">
@@ -314,35 +338,17 @@ Switch
 </ul>
 
 </span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_3')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 3
-</span>
-<span name="Multiplexer_1_3" id="Multiplexer_1_3">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9490')" name="code2model" class="code2model">
-Switch1
-</a>
-
-</li>
-
-</ul>
-
-</span>
 <br /><h5>
-Number of I/O Bits (1717)
+Number of I/O Bits (1718)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 1158
+Number of Input Bits: 1159
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="1682c596-3dd0-4962-9361-13e56c98d7c3" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="a8640f07-d3ee-4fd5-8a3c-7651b205e414" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -568,9 +574,15 @@ axi_output_number_configuration
 </a>
 : 10 bits
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mlp_three_layer:9536')" name="code2model" class="code2model">
+disable_pl_trigger
+</a>
+: 1 bit
+</li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '1682c596-3dd0-4962-9361-13e56c98d7c3')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'a8640f07-d3ee-4fd5-8a3c-7651b205e414')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -582,7 +594,7 @@ axi_output_number_configuration
 Number of Output Bits: 559
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="f991b6ba-678a-4ffd-a535-b558a5b80fb2" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="a671bfc5-1c76-42bb-8a0f-64ea8cbab8d6" dataCollapse="off">
 <li>
 ce_out: 1 bit
 </li>
@@ -693,7 +705,7 @@ axi_valid_output
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'f991b6ba-678a-4ffd-a535-b558a5b80fb2')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'a671bfc5-1c76-42bb-8a0f-64ea8cbab8d6')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />

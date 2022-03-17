@@ -2,8 +2,8 @@
 # Vivado v2020.1 (64-bit)
 # SW Build 2902540 on Wed May 27 19:54:35 MDT 2020
 # IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
-# Start of session at: Mon Feb 15 09:55:38 2021
-# Process ID: 8233
+# Start of session at: Wed Mar 17 16:47:20 2021
+# Process ID: 2835686
 # Current directory: /home/ts/Documents/uz_develop/ultrazohm_sw/ip_cores/uz_mlp_three_layer/simulation/hdl_prj/ipcore/uz_mlp_three_layer_v3_0/prj_ip
 # Command line: vivado -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: /home/ts/Documents/uz_develop/ultrazohm_sw/ip_cores/uz_mlp_three_layer/simulation/hdl_prj/ipcore/uz_mlp_three_layer_v3_0/prj_ip/vivado.log
@@ -130,4 +130,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_mlp_three_layer_src_SimpleDua
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_mlp_three_layer_src_MAC1_block.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_mlp_three_layer_src_MAC1_block.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 INFO: [Common 17-14] Message 'IP_Flow 19-1971' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
-INFO: [Common 17-206] Exiting Vivado at Mon Feb 15 09:55:54 2021...
+INFO: [Common 17-206] Exiting Vivado at Wed Mar 17 16:47:36 2021...

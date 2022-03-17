@@ -2,43 +2,47 @@ function RTW_Sid2UrlHash() {
 	this.urlHashMap = new Array();
 	/* <S1>/Bus
 Creator */
-	this.urlHashMap["uz_mlp_three_layer:7757"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:430";
+	this.urlHashMap["uz_mlp_three_layer:7757"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:433";
 	/* <S1>/Constant */
-	this.urlHashMap["uz_mlp_three_layer:9493"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:558";
+	this.urlHashMap["uz_mlp_three_layer:9493"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:567";
+	/* <S1>/Constant1 */
+	this.urlHashMap["uz_mlp_three_layer:9537"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:437";
 	/* <S1>/Delay */
-	this.urlHashMap["uz_mlp_three_layer:9491"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:564,565,566,567,568,569,570,571,572,573";
+	this.urlHashMap["uz_mlp_three_layer:9491"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:573,574,575,576,577,578,579,580,581,582";
 	/* <S1>/Delay1 */
-	this.urlHashMap["uz_mlp_three_layer:10"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:544,545,546,547,548,549,550,551,552,553";
+	this.urlHashMap["uz_mlp_three_layer:10"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:553,554,555,556,557,558,559,560,561,562";
 	/* <S1>/Demux */
-	this.urlHashMap["uz_mlp_three_layer:9478"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:468";
+	this.urlHashMap["uz_mlp_three_layer:9478"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:477";
 	/* <S1>/Detect Rise
 Positive */
-	this.urlHashMap["uz_mlp_three_layer:9461"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:422,423,424,425,426,427,428";
+	this.urlHashMap["uz_mlp_three_layer:9461"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:425,426,427,428,429,430,431";
 	/* <S1>/LastLayer */
-	this.urlHashMap["uz_mlp_three_layer:7239"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420";
+	this.urlHashMap["uz_mlp_three_layer:7239"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423";
 	/* <S1>/Logical
 Operator */
-	this.urlHashMap["uz_mlp_three_layer:9512"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:434";
+	this.urlHashMap["uz_mlp_three_layer:9512"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:443";
 	/* <S1>/Multiport
 Switch */
-	this.urlHashMap["uz_mlp_three_layer:25"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:523,524,525,526,527,528,529,530,531,532,533,534,535,536,537,538";
+	this.urlHashMap["uz_mlp_three_layer:25"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:532,533,534,535,536,537,538,539,540,541,542,543,544,545,546,547";
 	/* <S1>/Multiport
 Switch1 */
-	this.urlHashMap["uz_mlp_three_layer:9479"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518";
+	this.urlHashMap["uz_mlp_three_layer:9479"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:512,513,514,515,516,517,518,519,520,521,522,523,524,525,526,527";
 	/* <S1>/Mux */
-	this.urlHashMap["uz_mlp_three_layer:9485"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420";
+	this.urlHashMap["uz_mlp_three_layer:9485"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423";
 	/* <S1>/Scope */
 	this.urlHashMap["uz_mlp_three_layer:1132"] = "msg=rtwMsg_notTraceable&block=uz_mlp_three_layer:1132";
 	/* <S1>/Switch */
-	this.urlHashMap["uz_mlp_three_layer:9480"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:541,542";
+	this.urlHashMap["uz_mlp_three_layer:9480"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:550,551";
 	/* <S1>/Switch1 */
-	this.urlHashMap["uz_mlp_three_layer:9490"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:581,582";
+	this.urlHashMap["uz_mlp_three_layer:9490"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:590,591";
+	/* <S1>/Switch2 */
+	this.urlHashMap["uz_mlp_three_layer:9535"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:440,441";
 	/* <S1>/reluLayer_4Parallel */
-	this.urlHashMap["uz_mlp_three_layer:8964"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356";
+	this.urlHashMap["uz_mlp_three_layer:8964"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359";
 	/* <S1>/reluLayer_8Parallel */
-	this.urlHashMap["uz_mlp_three_layer:8981"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375";
+	this.urlHashMap["uz_mlp_three_layer:8981"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378";
 	/* <S1>/reluLayer_8Parallel1 */
-	this.urlHashMap["uz_mlp_three_layer:9404"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:377,378,379,380,381,382,383,384,385,386,387,388,389,390,391,392,393,394";
+	this.urlHashMap["uz_mlp_three_layer:9404"] = "uz_mlp_three_layer_src_uz_mlp_three_layer.vhd:380,381,382,383,384,385,386,387,388,389,390,391,392,393,394,395,396,397";
 	/* <S2>/Delay Input1 */
 	this.urlHashMap["uz_mlp_three_layer:9461:2"] = "uz_mlp_three_layer_src_Detect_Rise_Positive.vhd:49,50,51,52,53,54,55,56,57,58";
 	/* <S2>/FixPt
@@ -2959,10 +2963,14 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["uz_mlp_three_layer:9500"] = {rtwname: "<S1>/axi_number_of_inputs"};
 	this.rtwnameHashMap["<S1>/axi_output_number_configuration"] = {sid: "uz_mlp_three_layer:9507"};
 	this.sidHashMap["uz_mlp_three_layer:9507"] = {rtwname: "<S1>/axi_output_number_configuration"};
+	this.rtwnameHashMap["<S1>/disable_pl_trigger"] = {sid: "uz_mlp_three_layer:9536"};
+	this.sidHashMap["uz_mlp_three_layer:9536"] = {rtwname: "<S1>/disable_pl_trigger"};
 	this.rtwnameHashMap["<S1>/Bus Creator"] = {sid: "uz_mlp_three_layer:7757"};
 	this.sidHashMap["uz_mlp_three_layer:7757"] = {rtwname: "<S1>/Bus Creator"};
 	this.rtwnameHashMap["<S1>/Constant"] = {sid: "uz_mlp_three_layer:9493"};
 	this.sidHashMap["uz_mlp_three_layer:9493"] = {rtwname: "<S1>/Constant"};
+	this.rtwnameHashMap["<S1>/Constant1"] = {sid: "uz_mlp_three_layer:9537"};
+	this.sidHashMap["uz_mlp_three_layer:9537"] = {rtwname: "<S1>/Constant1"};
 	this.rtwnameHashMap["<S1>/Delay"] = {sid: "uz_mlp_three_layer:9491"};
 	this.sidHashMap["uz_mlp_three_layer:9491"] = {rtwname: "<S1>/Delay"};
 	this.rtwnameHashMap["<S1>/Delay1"] = {sid: "uz_mlp_three_layer:10"};
@@ -2987,6 +2995,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["uz_mlp_three_layer:9480"] = {rtwname: "<S1>/Switch"};
 	this.rtwnameHashMap["<S1>/Switch1"] = {sid: "uz_mlp_three_layer:9490"};
 	this.sidHashMap["uz_mlp_three_layer:9490"] = {rtwname: "<S1>/Switch1"};
+	this.rtwnameHashMap["<S1>/Switch2"] = {sid: "uz_mlp_three_layer:9535"};
+	this.sidHashMap["uz_mlp_three_layer:9535"] = {rtwname: "<S1>/Switch2"};
 	this.rtwnameHashMap["<S1>/Terminator"] = {sid: "uz_mlp_three_layer:9357"};
 	this.sidHashMap["uz_mlp_three_layer:9357"] = {rtwname: "<S1>/Terminator"};
 	this.rtwnameHashMap["<S1>/Terminator1"] = {sid: "uz_mlp_three_layer:9358"};

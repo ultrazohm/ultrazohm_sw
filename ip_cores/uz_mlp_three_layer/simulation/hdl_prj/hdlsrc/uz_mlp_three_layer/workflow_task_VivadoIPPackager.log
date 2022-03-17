@@ -127,6 +127,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_mlp_three_layer_src_SimpleDua
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_mlp_three_layer_src_MAC1_block.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_mlp_three_layer_src_MAC1_block.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 INFO: [Common 17-14] Message 'IP_Flow 19-1971' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
-INFO: [Common 17-206] Exiting Vivado at Mon Feb 15 09:55:54 2021...
+INFO: [Common 17-206] Exiting Vivado at Wed Mar 17 16:47:36 2021...
 
-Elapsed time is 17.026 seconds.
+Elapsed time is 16.1109 seconds.

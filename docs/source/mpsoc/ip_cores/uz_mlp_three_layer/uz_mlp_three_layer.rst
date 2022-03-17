@@ -39,6 +39,84 @@ Features:
 Usage
 =====
 
+The usage of the IP-Core driver depends heavily on :ref:`uz_nn`.
+First, an instance of the software network has to be initialized, e.g., by loading parameters from a header.
+Additionally, an array for the output data of the IP-Core has to be declared (see :ref:`uz_matrix`).
+The ``uz_mlp_three_layer_ip_init`` function writes all parameters of the network into the IP-Core.
+Thus, the network exist twice: one copy in the processor and one copy in the IP-Core (parameters are stored in BRAM).
+During execution, only the input and output values are written. 
+
+.. code-block::
+
+ #include "uz_nn/uz_nn.h"
+ #include "uz_mlp_three_layer/uz_mlp_three_layer"
+ #define NUMBER_OF_INPUTS 13U
+ #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 64U
+ #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 64U
+ #define NUMBER_OF_NEURONS_IN_THIRD_LAYER 64U
+ #define NUMBER_OF_OUTPUTS 4
+ #define NUMBER_OF_HIDDEN_LAYER 3
+ 
+ float x[NUMBER_OF_INPUTS] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f};
+ float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+ #include "layer1_weights.csv"
+ };
+ float b_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+ #include "layer1_bias.csv"
+ };
+ float y_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
+ 
+ float w_2[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+ #include "layer2_weights.csv"
+ };
+ float b_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+ #include "layer2_bias.csv"
+ };
+ float y_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
+ 
+ float w_3[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+ #include "layer2_weights.csv"
+ };
+ float b_3[NUMBER_OF_NEURONS_IN_THIRD_LAYER] = {
+ #include "layer3_bias.csv"
+ };
+ float y_3[NUMBER_OF_NEURONS_IN_THIRD_LAYER] = {0};
+ 
+ float w_4[NUMBER_OF_NEURONS_IN_THIRD_LAYER * NUMBER_OF_OUTPUTS] = {
+ #include "layer4_weights.csv"
+ };
+ float b_4[NUMBER_OF_OUTPUTS] = {
+ #include "layer4_bias.csv"
+ };
+ float y_4[NUMBER_OF_OUTPUTS] = {0};
+ float mlp_ip_output[NUMBER_OF_OUTPUTS] = {0};
+ struct uz_nn_layer_config software_nn_config[4] = {
+     [0] = {
+         .activation_function = ReLU,
+         .number_of_neurons = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
+         .number_of_inputs = NUMBER_OF_INPUTS,
+         .length_of_weights = UZ_MATRIX_SIZE(w_1),
+         .length_of_bias = UZ_MATRIX_SIZE(b_1),
+         .length_of_output = UZ_MATRIX_SIZE(y_1),
+         .weights = w_1,
+         .bias = b_1,
+         .output = y_1},
+     [1] = {.activation_function = ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .weights = w_2, .bias = b_2, .output = y_2},
+     [2] = {.activation_function = ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3},
+     [3] = {.activation_function = linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_4), .length_of_bias = UZ_MATRIX_SIZE(b_4), .length_of_output = UZ_MATRIX_SIZE(y_4), .weights = w_4, .bias = b_4, .output = y_4}};
+
+  float mlp_ip_output[NUMBER_OF_OUTPUTS] = {0}; // Data storage of network output for uz_matrix
+
+  void init_network(void){
+     uz_nn_t software_network = uz_nn_init(software_nn_config, 4);
+     struct uz_mlp_three_layer_ip_config_t config = {
+       .base_address = BASE_ADDRESS,
+       .use_axi_input = true,
+       .software_network = software_network};
+     uz_mlp_three_layer_ip_t *mlp_ip_instance = uz_mlp_three_layer_ip_init(config);
+     uz_mlp_three_layer_ff_blocking(test_instance, p_input_data, p_output_data);
+  }
+
 Concurrent execution
 ********************
 
@@ -99,6 +177,13 @@ Note that this means the actual calculation time of network without the communic
        Driver->>Processor: Return output values
 
 
+Unsafe version
+**************
+
+In addition to the regular function to calculate a feedforward pass, *unsafe* versions of the driver exist (``_unsafe``).
+These functions are considerably faster than their safe counterparts (up to :math:`30~\mu s`) but violate the software rules outlined in :ref:`software_development_guidelines`.
+It is strongly advised to manually test by comparing the safe and unsafe versions before using *_unsafe*!
+
 Driver reference
 ****************
 
@@ -116,8 +201,6 @@ Driver reference
 .. doxygenfunction:: uz_mlp_three_layer_ff_get_result_blocking
 
 .. doxygenfunction:: uz_mlp_three_layer_ff_blocking_unsafe
-
-
 
 Implementation details
 ======================

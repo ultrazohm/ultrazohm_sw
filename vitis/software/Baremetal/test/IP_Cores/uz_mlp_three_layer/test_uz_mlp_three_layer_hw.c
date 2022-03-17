@@ -44,7 +44,7 @@ void tearDown(void)
 void test_uz_mlp_three_layer_hw_write_enable_nn(void)
 {
     bool enable_signal = true;
-    uz_axi_write_bool_Expect(BASE_ADDRESS + enable_nn_Data_uz_mlp_three_layer, enable_signal);
+    uz_axi_write_bool_Expect(BASE_ADDRESS + axi_enable_nn_Data_uz_mlp_three_layer, enable_signal);
     uz_mlp_three_layer_hw_write_enable_nn(BASE_ADDRESS, enable_signal);
 }
 
@@ -291,6 +291,12 @@ void test_uz_mlp_three_layer_read_output_eight(void)
 
     uz_mlp_three_layer_hw_read_output(BASE_ADDRESS, output_data);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected_output, data, UZ_MATRIX_SIZE(expected_output));
+}
+
+void test_uz_mlp_three_layer_hw_disable_pl_trigger(void){
+
+    uz_axi_write_bool_Expect(BASE_ADDRESS+disable_pl_trigger_Data_uz_mlp_three_layer,true);
+    uz_mlp_three_layer_hw_disable_pl_trigger(BASE_ADDRESS,true);
 }
 
 #endif // TEST

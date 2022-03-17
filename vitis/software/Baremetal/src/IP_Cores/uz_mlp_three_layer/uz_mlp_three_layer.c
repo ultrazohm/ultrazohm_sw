@@ -205,4 +205,10 @@ void uz_mlp_three_layer_set_use_axi_input(uz_mlp_three_layer_ip_t *self, bool us
     uz_mlp_three_layer_hw_write_use_axi_input(self->config.base_address, self->config.use_axi_input);
 }
 
+void uz_mlp_three_layer_disable_pl_trigger(uz_mlp_three_layer_ip_t *self, bool disable_pl_trigger){
+    uz_assert_not_NULL(self);
+    uz_mlp_three_layer_hw_disable_pl_trigger(self->config.base_address,disable_pl_trigger);
+}
+
+
 #endif

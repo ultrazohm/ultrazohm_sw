@@ -223,6 +223,12 @@ enable_nn
   Calculation start on a rising edge of ``enable_nn``.
   Can be triggered either by software (AXI) or by external port from PL.
 
+disable_pl_trigger
+
+  If set, the trigger from the PL is disabled.
+  Thus, a rising edge on enable_nn from the PL does not trigger a calculation and the calculation can only triggered from the PS. 
+  Intended to be used for debugging purposes if the PL trigger is connected to a reoccurring trigger such as the PWM or ADC IP-Core.
+
 use_axi_input
 
   Network uses the FPGA inputs for the feedforward pass if ``use_axi_input`` is FALSE. If ``use_axi_input`` is true, the inputs from the AXI signals are used.

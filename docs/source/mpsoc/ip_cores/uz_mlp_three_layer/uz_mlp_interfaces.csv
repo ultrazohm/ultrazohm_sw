@@ -43,3 +43,4 @@ biasWriteEnable,Output,bool,External,Enable to write bias value (debug)
 valid_output,Output,bool,External,TRUE after a calculation is finished and a new has not started yet
 axi_nn_output,Output,sfix32_En14 (8),AXI,Output vector of network with 8 elements
 axi_valid_output,Output,bool,AXI,TRUE after a calculation is finished and a new has not started yet
+disable_pl_trigger,Input,bool,AXI,enable_nn does not trigger calculation if set to TRUE

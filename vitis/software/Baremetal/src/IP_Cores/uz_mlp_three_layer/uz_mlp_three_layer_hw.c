@@ -14,7 +14,7 @@
 void uz_mlp_three_layer_hw_write_enable_nn(uint32_t base_address, bool trigger_conversion)
 {
     uz_assert_not_zero_uint32(base_address);
-    uz_axi_write_bool(base_address + enable_nn_Data_uz_mlp_three_layer, trigger_conversion);
+    uz_axi_write_bool(base_address + axi_enable_nn_Data_uz_mlp_three_layer, trigger_conversion);
 }
 
 void uz_mlp_three_layer_hw_write_bias_data(uint32_t base_address, float value)
@@ -218,4 +218,9 @@ void uz_mlp_three_layer_hw_read_output_unsafe(uint32_t base_address, uz_matrix_t
     default:
         break;
     }
+}
+
+void uz_mlp_three_layer_hw_disable_pl_trigger(uint32_t base_address, bool disable_pl_trigger){
+    uz_assert_not_zero_uint32(base_address);
+    uz_axi_write_bool(base_address+disable_pl_trigger_Data_uz_mlp_three_layer,disable_pl_trigger);
 }

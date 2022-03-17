@@ -82,5 +82,5 @@ void uz_mlp_three_layer_set_parameters(uz_mlp_three_layer_ip_t *self);
 void uz_mlp_three_layer_set_bias(uz_mlp_three_layer_ip_t *self, uint32_t parallel_pcu, uz_matrix_t *bias, uint32_t layer);
 void uz_mlp_three_layer_set_weights(uz_mlp_three_layer_ip_t *self, uint32_t parallel_pcu, uz_matrix_t *weights, uint32_t layer);
 void uz_mlp_three_layer_set_use_axi_input(uz_mlp_three_layer_ip_t *self, bool use_axi_input);
-
+void uz_mlp_three_layer_disable_pl_trigger(uz_mlp_three_layer_ip_t *self, bool disable_pl_trigger);
 #endif // UZ_MLP_THREE_LAYER_H

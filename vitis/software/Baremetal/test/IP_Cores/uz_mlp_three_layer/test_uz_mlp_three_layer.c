@@ -847,4 +847,11 @@ void test_uz_mlp_get_result_blocking_unsafe(void)
     uz_mlp_three_layer_ff_get_result_blocking_unsafe(test_instance, p_output_data);
 }
 
+void test_uz_mlp_disable_pl_trigger(void){
+    uz_mlp_three_layer_ip_t *test_instance = successful_init();
+    bool disable_pl=true;
+    uz_mlp_three_layer_hw_disable_pl_trigger_Expect(BASE_ADDRESS,disable_pl);
+    uz_mlp_three_layer_disable_pl_trigger(test_instance,disable_pl);
+}
+
 #endif // TEST111150

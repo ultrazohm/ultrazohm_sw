@@ -18,6 +18,7 @@ void uz_mlp_three_layer_hw_write_use_axi_input(uint32_t base_address, bool use_a
 bool uz_mlp_three_layer_hw_read_valid_output(uint32_t base_address);
 void uz_mlp_three_layer_hw_write_number_of_inputs(uint32_t base_address, uint32_t number_of_inputs);
 void uz_mlp_three_layer_hw_write_number_of_outputs(uint32_t base_address, uint32_t number_of_outputs);
+void uz_mlp_three_layer_hw_disable_pl_trigger(uint32_t base_address, bool disable_pl_trigger);
 
 /**
  * @brief This function writes the input values to the neural network and triggers the strobe register

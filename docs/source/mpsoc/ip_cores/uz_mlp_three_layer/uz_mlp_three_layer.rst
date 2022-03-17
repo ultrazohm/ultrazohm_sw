@@ -4,16 +4,30 @@
 uz_mlp_three_layer
 ==================
 
-IP-Core for a MLP network.
-Follows the principles outlined in :ref:`uz_nn`.
+IP-Core for a three layer MLP network based on [#realTimeInference]_.
+The implementation follows the principles outlined in :ref:`uz_nn`.
+The MLP is hard coded to have three hidden layer with :ref:`activation_function_relu` activation function for all of them.
+The output uses :ref:`activation_function_linear` activation.
 
-.. warning: This IP-Core can not be simulated with Simulink at the moment since it depends on an internal library. However, the IP-Core can be used as-is. If you want to contribute to improve the IP-Core, please get in touch. 
+
+.. figure:: mlp_three_layer.svg
+   :align: center
+
+   Implemented MLP network of the IP-Core
+
+
+
+
+.. warning: This IP-Core can not be simulated with Simulink at the moment since it depends on an internal library.
+            However, the IP-Core can be used as-is.
+            If you want to contribute to improve the IP-Core, please get in touch. 
 
 Features:
 
-- Feedforward calculation in fixed point (32 bit, 14 fractional bits)
+- Feedforward calculation in fixed point (32 bit, 14 fractional bits, signed)
 - Precision: 6.1e-5
 - Max values: +/- 131072
+- No overflow detection regarding the fixed point data type! User has to make sure that min/max is not violated
 - Variable number of inputs which can be configured by software from 2 to 16
 - Variable number of outputs which can be configured by software (2,4,6,8).
 - Number of hidden layer is fixed to 3!
@@ -21,6 +35,7 @@ Features:
 - Activation function is ReLU for all hidden layer
 - Activation function is linear for output layer
 - Bias and weights can be written to the network at runtime
+- Fully compatible with :ref:`uz_nn` to accelerate calculation
 
 Configuration
 =============
@@ -181,3 +196,7 @@ Interfaces
    :widths: 50 50 50 50 200
    :header-rows: 1
 
+Sources
+=======
+
+.. [#realTimeInference] T. Schindler and A. Dietz, "Real-Time Inference of Neural Networks on FPGAs for Motor Control Applications," 2020 10th International Electric Drives Production Conference (EDPC), 2020, pp. 1-6, doi: 10.1109/EDPC51184.2020.9388185.

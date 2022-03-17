@@ -4,19 +4,17 @@
 uz_mlp_three_layer
 ==================
 
-IP-Core for a three layer MLP network based on [#realTimeInference]_.
-The implementation follows the principles outlined in :ref:`uz_nn`.
-The MLP is hard coded to have three hidden layer with :ref:`activation_function_relu` activation function for all of them.
+This IP-Core implements a three layer MLP network based on [#realTimeInference]_.
+The implementation and nomenclature follows the principles outlined in :ref:`uz_nn`.
+The MLP is hard coded to have three hidden layer with :ref:`activation_function_relu` activation function for hidden layers.
 The output uses :ref:`activation_function_linear` activation.
 
 
 .. figure:: mlp_three_layer.svg
    :align: center
+   :width: 300px
 
    Implemented MLP network of the IP-Core
-
-
-
 
 .. warning: This IP-Core can not be simulated with Simulink at the moment since it depends on an internal library.
             However, the IP-Core can be used as-is.
@@ -30,15 +28,104 @@ Features:
 - No overflow detection regarding the fixed point data type! User has to make sure that min/max is not violated
 - Variable number of inputs which can be configured by software from 2 to 16
 - Variable number of outputs which can be configured by software (2,4,6,8).
-- Number of hidden layer is fixed to 3!
+- Number of hidden layers is fixed to 3!
 - Number of neurons in each hidden layer is fixed to 64!
-- Activation function is ReLU for all hidden layer
-- Activation function is linear for output layer
+- Activation function is :ref:`activation_function_relu` for all hidden layer (with a saturation at max value!)
+- Activation function is :ref:`activation_function_linear` for output layer
 - Bias and weights can be written to the network at runtime
-- Fully compatible with :ref:`uz_nn` to accelerate calculation
+- Fully compatible with :ref:`uz_nn` to use IP-Core as an accelerator
+- Uses :ref:`uz_matrix` as input and outputs
+
+Usage
+=====
+
+Concurrent execution
+********************
+
+The regular calculation with the IP-Core using the software driver and writing the inputs by AXI (``use_axi_inputs`` is true) is a blocking operation.
+The driver triggers the calculation and waits until it is finished.
+The processor can not do any other tasks.
+
+.. code-block::
+
+    uz_mlp_three_layer_ff_blocking(instance, input, output); // Takes 30us (example)
+    uz_sleep_useconds(10);                                   // Takes 10us
+                                                             // Takes 40us total
+
+.. mermaid::
+
+   sequenceDiagram
+       participant Processor
+       participant Driver
+       Processor->>Driver: uz_mlp_three_layer_ff_blocking
+       Driver->>IP-Core: Write input
+       Driver->>IP-Core: Trigger calculation
+       loop
+           Driver->>IP-Core: Read valid output
+           Driver->>Driver: Valid output true?
+       end
+       Driver->>IP-Core: Read output
+       Driver->>Processor: Return output values
+
+An alternative to the blocking calculation is a concurrent approach.
+In this, the IP-Core calculation is triggered, the processor is free to do other tasks, and the data is fetched after the calculation is finished.
+This way the calculation between trigger and get result does not add to the total required time if the task in between takes less time than the IP-Core calculation.
+Note that this means the actual calculation time of network without the communication overhead of the read/write operations. 
+
+.. code-block::
+
+    uz_mlp_three_layer_ff_trigger(instance, input);                 // Takes 30us (example)
+    uz_sleep_useconds(10);                                          // Takes 10us 
+    uz_mlp_three_layer_ff_get_result_blocking(instance, output);
+                                                                    // Takes 30us total
+
+.. mermaid::
+
+   sequenceDiagram
+       participant Processor
+       participant Driver
+       Processor->>Driver: uz_mlp_three_layer_ff_trigger
+       Driver->>IP-Core: Write input
+       Driver->>IP-Core: Trigger calculation
+       Driver->>Processor: return
+       Processor->>Software: Do something else
+       Software->>Processor: return
+       Processor->>Driver: uz_mlp_three_layer_ff_get_result_blocking
+       loop
+           Driver->>IP-Core: Read valid output
+           Driver->>Driver: Valid output true?
+       end
+       Driver->>IP-Core: Read output
+       Driver->>Processor: Return output values
+
+
+Driver reference
+****************
+
+.. doxygentypedef:: uz_mlp_three_layer_ip_t
+
+.. doxygenstruct:: uz_mlp_three_layer_ip_config_t
+    :members:
+
+.. doxygenfunction:: uz_mlp_three_layer_ip_init
+
+.. doxygenfunction:: uz_mlp_three_layer_ff_blocking
+
+.. doxygenfunction:: uz_mlp_three_layer_ff_trigger
+
+.. doxygenfunction:: uz_mlp_three_layer_ff_get_result_blocking
+
+.. doxygenfunction:: uz_mlp_three_layer_ff_blocking_unsafe
+
+
+
+Implementation details
+======================
 
 Configuration
-=============
+*************
+
+The IP-Core has the following configuration possibilities.
 
 enable_nn
 
@@ -61,10 +148,10 @@ axi_output_number_configuration
   The value in this config register has to be set to :math:`(number\_of\_outputs/2)-1`.
 
 Output scheme
-=============
+*************
 
-The output is always a vector with 8 elements, independent of the actual number of outputs of the network.
-Due to the parallel calculation of the result, the following output mapping is used.
+The output is always a vector with 8 elements, independent of the number of used outputs of the network that are configured by AXI.
+Due to the parallel calculation of the result, the following output mapping applies.
 
 For 8 outputs:
 
@@ -93,7 +180,7 @@ For 2 outputs:
 
 
 Parallel calculation
-====================
+********************
 
 The calculation of the network is split up and done in parallel to speed it up.
 The split up is done on a neuron basis in each layer, i.e., with a parallelization of 4, four DSP slices are used and each DSP calculates 1/4 of the output vector independent of each other.
@@ -159,11 +246,11 @@ Due to the parallelization, the matrix is split, e.g., into four parts for four 
     w_3 &= \begin{bmatrix} 5 & 13 & 21 & 29 & 6 &14 & 22 &30 \end{bmatrix} \\
     w_4 &= \begin{bmatrix} 7 & 15 & 23 &31 & 8 & 16 & 24 & 32\end{bmatrix} 
 
-.. note:: This ordering is the transposed definition compared to what is used in :ref:`matrix_math` to match the hardware setup of the IP-Core. Thus, a matrix of type ``uz_matrix_t`` has to be transposed.
+.. note:: This ordering is the transposed definition compared to what is used in :ref:`uz_matrix` to match the hardware setup of the IP-Core. Thus, a matrix of type ``uz_matrix_t`` has to be transposed.
 
 
 Write parameters to network
-===========================
+***************************
 
 To write parameters to the BRAM of the IP-Core the following mechanism is used:
 
@@ -182,10 +269,6 @@ For bias:
 For weights:
 
 - Address is one-based!
-
-
-Usage
-=====
 
 
 Interfaces

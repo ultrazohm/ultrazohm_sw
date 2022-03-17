@@ -4,7 +4,7 @@
 uz_nn_layer
 ===========
 
-The uz_nn_layer is used by the neural network software module (:ref:`uz_nn`) and is based on :ref:`matrix_math` as well as :ref:`nn_activation_function`.
+The uz_nn_layer is used by the neural network software module (:ref:`uz_nn`) and is based on :ref:`uz_matrix` as well as :ref:`nn_activation_function`.
 A layer in a neural network consists of a configurable number of neurons and an activation function.
 A layer multiplies the input :math:`\boldsymbol{x}` of the layer with the weight matrix :math:`\boldsymbol{w}` of the layer and adds the bias :math:`\boldsymbol{b}` to calculate :math:`\boldsymbol{s}`.
 The output of the layer :math:`\boldsymbol{y}` is the result of feeding the sum :math:`\boldsymbol{s}` into the activation function of the layer.
@@ -92,10 +92,10 @@ With :ref:`activation_function_relu` activation function:
 Software and Example
 ====================
 
-One ``uz_nn_layer_t`` instance uses three ``uz_matrix_t`` (:ref:`matrix_math`) instances!
+One ``uz_nn_layer_t`` instance uses three ``uz_matrix_t`` (:ref:`uz_matrix`) instances!
 Take this into account in the :ref:`global_configuration`.
 The usage of a layer requires the user to pass pointer to arrays for the weights, bias, and output of the layer to the init function.
-The init function initializes the required matrices and passes the pointer to the arrays to the initialization function of :ref:`matrix_math` (``uz_matrix_init``).
+The init function initializes the required matrices and passes the pointer to the arrays to the initialization function of :ref:`uz_matrix` (``uz_matrix_init``).
 
 The following shows an example initialization and feedforward calculation of one layer.
 

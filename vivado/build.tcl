@@ -129,6 +129,9 @@ proc checkRequiredFiles { origin_dir} {
 # Set the reference directory for source file relative paths (by default the value is script directory path)
 set origin_dir "."
 
+# Set default board part
+set board_part "trenz.biz:te0808_9eg_1e:part0:3.0"
+
 # Use origin directory path location variable, if specified in the tcl shell
 if { [info exists ::origin_dir_loc] } {
   set origin_dir $::origin_dir_loc
@@ -177,6 +180,7 @@ if { $::argc > 0 } {
   for {set i 0} {$i < $::argc} {incr i} {
     set option [string trim [lindex $::argv $i]]
     switch -regexp -- $option {
+      "--board_part"   { incr i; set board_part [lindex $::argv $i] }
       "--origin_dir"   { incr i; set origin_dir [lindex $::argv $i] }
       "--project_name" { incr i; set _xil_proj_name_ [lindex $::argv $i] }
       "--help"         { print_help }
@@ -205,7 +209,8 @@ if { $validate_required } {
 }
 
 # Create project
-create_project ${_xil_proj_name_} ./project -part xczu9eg-ffvc900-1-e
+create_project ${_xil_proj_name_} ./project
+
 
 # Set the directory path for the new project
 set proj_dir [get_property directory [current_project]]
@@ -213,13 +218,12 @@ set proj_dir [get_property directory [current_project]]
 # Set project properties
 set obj [current_project]
 set_property -name "board_part_repo_paths" -value "[file normalize "$origin_dir/board_files"]" -objects $obj
-set_property -name "board_part" -value "trenz.biz:te0808_9eg_1e:part0:3.0" -objects $obj
+set_property -name "board_part" -value $board_part -objects $obj
 set_property -name "default_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "enable_vhdl_2008" -value "1" -objects $obj
 set_property -name "ip_cache_permissions" -value "read write" -objects $obj
 set_property -name "ip_output_repo" -value "$proj_dir/${_xil_proj_name_}.cache/ip" -objects $obj
 set_property -name "mem.enable_memory_map_generation" -value "1" -objects $obj
-set_property -name "platform.board_id" -value "te0808_9eg_1e_tebf0808" -objects $obj
 set_property -name "platform.num_compute_units" -value "16" -objects $obj
 set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_user_files" -objects $obj
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj

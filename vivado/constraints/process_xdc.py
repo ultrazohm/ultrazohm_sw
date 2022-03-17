@@ -106,8 +106,6 @@ def read_pinout(filename):
     return output
     
 ## ------------------- script begins here -------------------
-# get all xdc files in folder
-xdc_files = [f for f in listdir(getcwd()) if isfile(join(getcwd(), f)) and f.endswith((".xdc",".XDC"))]
 
 # Package pins and B2B connector matching extracted from Trenz pinout sheet
 # https://shop.trenz-electronic.de/Download/?path=Trenz_Electronic/Pinout
@@ -115,16 +113,21 @@ xdc_files = [f for f in listdir(getcwd()) if isfile(join(getcwd(), f)) and f.end
 # just make target_filename = origin_filename
 origin_filename = "TE0808_REV02.csv"
 target_filename = "TE0803_REV01.csv"
+xdc_relative_path = "te0808"
 
 dict_origin = read_pinout(origin_filename)
 dict_target = read_pinout(target_filename)
+
+# get all xdc files in folder
+xdc_path = getcwd() + "/" + xdc_relative_path
+xdc_files = [f for f in listdir(xdc_path) if isfile(join(xdc_path,f)) and f.endswith((".xdc",".XDC"))]
 
 # process one xdc at a time, extracting the relevant info and re-writing to a new .xdc
 for xdc_input in xdc_files:
     with open("new/"+xdc_input,'w') as f: 
   
         print(xdc_input)
-        xdc_dict = extract_info_from_xdc(xdc_input)
+        xdc_dict = extract_info_from_xdc(xdc_relative_path +"/" + xdc_input)
 
         f.writelines(print_header(origin_filename, target_filename))
 

@@ -20,7 +20,7 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2020.1
+set scripts_vivado_version 2020.2
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
@@ -986,7 +986,7 @@ proc create_root_design { parentCell } {
   # Create instance: A1_inv_input, and set properties
   set A1_inv_input [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 A1_inv_input ]
   set_property -dict [ list \
-   CONFIG.CONST_VAL {0x00} \
+   CONFIG.CONST_VAL {0x60} \
    CONFIG.CONST_WIDTH {8} \
  ] $A1_inv_input
 
@@ -1012,7 +1012,7 @@ proc create_root_design { parentCell } {
   # Create instance: A2_inv_input, and set properties
   set A2_inv_input [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 A2_inv_input ]
   set_property -dict [ list \
-   CONFIG.CONST_VAL {0x00} \
+   CONFIG.CONST_VAL {0x07} \
    CONFIG.CONST_WIDTH {8} \
  ] $A2_inv_input
 
@@ -1038,7 +1038,7 @@ proc create_root_design { parentCell } {
   # Create instance: A3_inv_input, and set properties
   set A3_inv_input [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 A3_inv_input ]
   set_property -dict [ list \
-   CONFIG.CONST_VAL {0x00} \
+   CONFIG.CONST_VAL {0x0D} \
    CONFIG.CONST_WIDTH {8} \
  ] $A3_inv_input
 
@@ -2160,9 +2160,11 @@ proc create_root_design { parentCell } {
    CONFIG.PSU__DDR_QOS_FIX_HP3_RDQOS {} \
    CONFIG.PSU__DDR_QOS_FIX_HP3_WRQOS {} \
    CONFIG.PSU__DDR_QOS_HP0_RDQOS {} \
+   CONFIG.PSU__DDR_QOS_HP0_WRQOS {} \
    CONFIG.PSU__DDR_QOS_HP1_RDQOS {} \
    CONFIG.PSU__DDR_QOS_HP1_WRQOS {} \
    CONFIG.PSU__DDR_QOS_HP2_RDQOS {} \
+   CONFIG.PSU__DDR_QOS_HP3_RDQOS {} \
    CONFIG.PSU__DDR_QOS_HP3_WRQOS {} \
    CONFIG.PSU__DDR_QOS_RD_HPR_THRSHLD {} \
    CONFIG.PSU__DDR_QOS_RD_LPR_THRSHLD {} \
@@ -2206,8 +2208,8 @@ proc create_root_design { parentCell } {
    CONFIG.PSU__EXPAND__GIC {0} \
    CONFIG.PSU__EXPAND__LOWER_LPS_SLAVES {0} \
    CONFIG.PSU__EXPAND__UPPER_LPS_SLAVES {0} \
-   CONFIG.PSU__FPD_SLCR__WDT1__ACT_FREQMHZ {100} \
-   CONFIG.PSU__FPD_SLCR__WDT1__FREQMHZ {100} \
+   CONFIG.PSU__FPD_SLCR__WDT1__ACT_FREQMHZ {99.999985} \
+   CONFIG.PSU__FPD_SLCR__WDT1__FREQMHZ {99.999985} \
    CONFIG.PSU__FPD_SLCR__WDT_CLK_SEL__SELECT {APB} \
    CONFIG.PSU__FPGA_PL0_ENABLE {1} \
    CONFIG.PSU__FPGA_PL1_ENABLE {0} \
@@ -2277,14 +2279,14 @@ proc create_root_design { parentCell } {
    CONFIG.PSU__IOU_SLCR__IOU_TTC_APB_CLK__TTC3_SEL {APB} \
    CONFIG.PSU__IOU_SLCR__TTC0__ACT_FREQMHZ {100.000000} \
    CONFIG.PSU__IOU_SLCR__TTC0__FREQMHZ {100.000000} \
-   CONFIG.PSU__IOU_SLCR__TTC1__ACT_FREQMHZ {100} \
-   CONFIG.PSU__IOU_SLCR__TTC1__FREQMHZ {100} \
-   CONFIG.PSU__IOU_SLCR__TTC2__ACT_FREQMHZ {100} \
-   CONFIG.PSU__IOU_SLCR__TTC2__FREQMHZ {100} \
+   CONFIG.PSU__IOU_SLCR__TTC1__ACT_FREQMHZ {100.000000} \
+   CONFIG.PSU__IOU_SLCR__TTC1__FREQMHZ {100.000000} \
+   CONFIG.PSU__IOU_SLCR__TTC2__ACT_FREQMHZ {100.000000} \
+   CONFIG.PSU__IOU_SLCR__TTC2__FREQMHZ {100.000000} \
    CONFIG.PSU__IOU_SLCR__TTC3__ACT_FREQMHZ {100.000000} \
    CONFIG.PSU__IOU_SLCR__TTC3__FREQMHZ {100.000000} \
-   CONFIG.PSU__IOU_SLCR__WDT0__ACT_FREQMHZ {100} \
-   CONFIG.PSU__IOU_SLCR__WDT0__FREQMHZ {100} \
+   CONFIG.PSU__IOU_SLCR__WDT0__ACT_FREQMHZ {99.999985} \
+   CONFIG.PSU__IOU_SLCR__WDT0__FREQMHZ {99.999985} \
    CONFIG.PSU__IOU_SLCR__WDT_CLK_SEL__SELECT {APB} \
    CONFIG.PSU__IRQ_P2F_ADMA_CHAN__INT {0} \
    CONFIG.PSU__IRQ_P2F_AIB_AXI__INT {0} \

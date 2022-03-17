@@ -1,12 +1,14 @@
-.. _uz_PID_GUI_setup:
+.. _uz_PID_GUI:
 
-===================
-Setup of the uz_GUI
-===================
+=============================
+Custom uz_GUI for ParameterID
+=============================
 
 Since controlling the ParameterID only via the debugger windows is cumbersome and not very practical, a custom made uz_GUI is shipped as well. 
 To use this however, additional setup steps have to be taken.
-This page details these additional steps needed.
+This page details these additional steps needed and how to use the uz_GUI.
+
+.. _uz_PID_GUI_setup:
 
 Setup
 =====
@@ -248,7 +250,7 @@ Setup
 
    .. code-block:: C
         :linenos:
-        :emphasize-lines: 13,26,43,309,365
+        :emphasize-lines: 12,25,43,309,361
         :caption: Changes to the ``ipc_ARM.c`` file
     
         // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
@@ -424,12 +426,7 @@ Setup
                     break;
 
                 case (PID_FID_Brk_Count):
-                    PID_Data.FrictionID_Config.BrkCount = value;
-                    break;
-
-                case (PID_FID_eta_speed):
-                    PID_Data.FrictionID_Config.eta = value * 0.01f;
-                    break;
+                    PID_Data.FrictionID_Config.BrkCount = value;setup_GUI
 
                 case (PID_TMID_Scale_PRBS):
                     PID_Data.TwoMassID_Config.ScaleTorquePRBS = value;
@@ -691,4 +688,28 @@ Setup
             ....
             uz_ParameterID_update_transmit_values(&PID_Data, &activeState, &FluxMapCounter);
             .... 
-        }
+        }.. _uz_PID_GUI_setup:
+
+.. _uz_PID_GUI_usage:
+
+Usage
+=====
+
+This section gives an overview on how to use the ParameterID tab in the uz_GUI.
+
+   .. image:: ../images/GUI_overview.png
+
+
+#. Visible on the right side are the GlobalControls for the entire ParameterID. The ``Enable System``, ``Enable Control`` and ``STOP`` buttons are mirrored to the ones in the UltraZohm-Gui ``Control`` tab. 
+#. The button ``ParameterID`` enables or disables the ParameterID. The status indicator to the right signals the current state of the ParameterID (on/off).
+#. Here all individual ``ID-states`` can be turned on or off. The current state of the ``ID-state`` is signaled via the status indicators next to the buttons. The possible states are:
+
+   * ``Disabled``, for when the state is disabled and not requested for future use.
+   * ``Requested``, for when a ``ID-state`` is supposed to be executed, but hasn't started yet.
+   * ``Active``. for when this state is currently executing.
+   * ``Finished``, for when the state is finished and another ``ID-state`` can be started.
+
+#. The ``ACCEPT`` button is used to transition the ParameterID into a different state. This is mostly used, to enable the ``ID-states`` after requesting them. Other uses can be, to continue one ``ID-state``, after some operations have to be done i.e. start up the load machine. 
+#. The ``RESET`` button resets the entire ParameterID.
+#. Each ``ID-state`` has an unique ``activeState`` variable for each substate. This is displayed here to give further information to the user, that the state is running.
+#. Each ``ID-state`` has its own individual panel, where the individual config values can be configured and the identified values can be displayed. They have to be configured before entering the ``ID-state``. Standard values for the config values are displayed, which proved appropriate in the past. They can be used as an introductory baseline. 

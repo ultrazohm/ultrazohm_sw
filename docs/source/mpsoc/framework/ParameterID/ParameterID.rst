@@ -146,7 +146,7 @@ Further documentation which explains the structure of the ParameterID in detail.
     :maxdepth: 2
     
     general_information/setup
-    general_information/setup_GUI
+    general_information/custom_GUI
     general_information/ParameterID_structs
     general_information/change_control_algorithm
     general_information/create_new_id_state

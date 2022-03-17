@@ -9,9 +9,6 @@ from os import getcwd
 
 # Get script dir and repo dir
 cwd = getcwd().replace("\\","/")
-# Vivado uses lower case for drive letter
-if cwd[0] != "/":
-    cwd = cwd.replace(cwd[:2],cwd[:2].lower())
 repo_dir = "/".join(cwd.split("/")[:-1])
 
 
@@ -21,10 +18,16 @@ with open("_build.tcl",'r') as f_in:
     with open("build.tcl",'w') as f_out:
         for line in f_in:
             # replace absolute paths with relative ones
-            if cwd in line:
-                line = line.replace(cwd,"${origin_dir}")
-            if repo_dir in line:
-                line = line.replace(repo_dir,"${origin_dir}/..")
+            # Vivado sometimes may use upper or lower case for drive letter, so it got a bit more complicated 
+            if cwd.lower() in line.lower():
+                idx = line.lower().find(cwd.lower()) 
+                print(idx)
+                line = line[:idx] + "${origin_dir}" + line[idx+len(cwd):]
+                print(line)
+            elif repo_dir.lower() in line.lower():
+                idx = line.lower().find(repo_dir.lower())
+                line = line[:idx] + "${origin_dir}/.." + line[idx+len(repo_dir):]
+                print(line)
 
             # process the lines, adapting what is necessary
             # skips an entire region when skip_till_next_comment 

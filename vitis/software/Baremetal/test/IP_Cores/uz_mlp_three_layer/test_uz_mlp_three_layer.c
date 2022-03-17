@@ -819,4 +819,32 @@ void test_uz_mlp_get_result_blocking(void)
     uz_mlp_three_layer_ff_get_result_blocking(test_instance, p_output_data);
 }
 
+void test_uz_mlp_trigger_forward_pass_unsafe(void)
+{
+    uz_mlp_three_layer_ip_t *test_instance = successful_init();
+    struct uz_matrix_t input_data = {0};
+    uz_matrix_t *p_input_data = uz_matrix_init(&input_data, x, UZ_MATRIX_SIZE(x), 1, UZ_MATRIX_SIZE(x));
+
+    uz_mlp_three_layer_hw_write_input_unsafe_Expect(BASE_ADDRESS, p_input_data);
+    uz_mlp_three_layer_hw_write_enable_nn_Expect(BASE_ADDRESS, true);
+    uz_mlp_three_layer_hw_write_enable_nn_Expect(BASE_ADDRESS, false);
+
+    uz_mlp_three_layer_ff_trigger_unsafe(test_instance, p_input_data);
+}
+
+void test_uz_mlp_get_result_blocking_unsafe(void)
+{
+    uz_mlp_three_layer_ip_t *test_instance = successful_init();
+    struct uz_matrix_t output_data = {0};
+    uz_matrix_t *p_output_data = uz_matrix_init(&output_data, mlp_ip_output, UZ_MATRIX_SIZE(mlp_ip_output), 1, UZ_MATRIX_SIZE(mlp_ip_output));
+
+    uz_mlp_three_layer_hw_read_valid_output_ExpectAndReturn(BASE_ADDRESS, false); // Expects that the function is called multiple times and returns true at the 3. call
+    uz_mlp_three_layer_hw_read_valid_output_ExpectAndReturn(BASE_ADDRESS, false);
+    uz_mlp_three_layer_hw_read_valid_output_ExpectAndReturn(BASE_ADDRESS, true);
+
+    uz_mlp_three_layer_hw_read_output_unsafe_Expect(BASE_ADDRESS, p_output_data);
+
+    uz_mlp_three_layer_ff_get_result_blocking_unsafe(test_instance, p_output_data);
+}
+
 #endif // TEST111150

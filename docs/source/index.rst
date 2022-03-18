@@ -97,6 +97,7 @@ Syllabus
 
    hardware/carrier_board/carrier_board
    hardware/adapter_cards/adapter_cards
+   hardware/interface_powerelectronics/interface_powerelectronics
    hardware/altium/altium
 
 Indices and tables

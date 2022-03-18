@@ -430,7 +430,6 @@ proc create_hier_cell_Interrupt { parentCell nameHier } {
   # Create instance: adc_delay, and set properties
   set adc_delay [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 adc_delay ]
   set_property -dict [ list \
-   CONFIG.C_EN_PROBE_IN_ACTIVITY {0} \
    CONFIG.C_NUM_PROBE_IN {0} \
    CONFIG.C_PROBE_OUT0_WIDTH {11} \
  ] $adc_delay
@@ -461,7 +460,6 @@ proc create_hier_cell_Interrupt { parentCell nameHier } {
   # Create instance: vio_interrupt, and set properties
   set vio_interrupt [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 vio_interrupt ]
   set_property -dict [ list \
-   CONFIG.C_EN_PROBE_IN_ACTIVITY {0} \
    CONFIG.C_NUM_PROBE_IN {0} \
  ] $vio_interrupt
 
@@ -549,7 +547,6 @@ proc create_hier_cell_Gates_3L { parentCell nameHier } {
   set_property -dict [ list \
    CONFIG.C_OPERATION {or} \
    CONFIG.C_SIZE {1} \
-   CONFIG.LOGO_FILE {data/sym_orgate.png} \
  ] $Interrupt_Start_Center
 
   # Create instance: PWM_SS_3L_ip_0, and set properties
@@ -558,7 +555,6 @@ proc create_hier_cell_Gates_3L { parentCell nameHier } {
   # Create instance: Set_Deadtime_3L, and set properties
   set Set_Deadtime_3L [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 Set_Deadtime_3L ]
   set_property -dict [ list \
-   CONFIG.C_EN_PROBE_IN_ACTIVITY {0} \
    CONFIG.C_NUM_PROBE_IN {0} \
    CONFIG.C_PROBE_OUT0_INIT_VAL {0x0C8} \
    CONFIG.C_PROBE_OUT0_WIDTH {10} \
@@ -587,7 +583,6 @@ proc create_hier_cell_Gates_3L { parentCell nameHier } {
   # Create instance: vio_Gates_3L, and set properties
   set vio_Gates_3L [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 vio_Gates_3L ]
   set_property -dict [ list \
-   CONFIG.C_EN_PROBE_IN_ACTIVITY {0} \
    CONFIG.C_NUM_PROBE_IN {0} \
    CONFIG.C_NUM_PROBE_OUT {9} \
    CONFIG.C_PROBE_OUT0_WIDTH {14} \
@@ -730,7 +725,6 @@ proc create_hier_cell_Gates { parentCell nameHier } {
   set_property -dict [ list \
    CONFIG.C_OPERATION {or} \
    CONFIG.C_SIZE {1} \
-   CONFIG.LOGO_FILE {data/sym_orgate.png} \
  ] $util_vector_logic_0
 
   # Create instance: uz_interlockDeadtime_0, and set properties
@@ -739,7 +733,6 @@ proc create_hier_cell_Gates { parentCell nameHier } {
   # Create instance: vio_Gates_2L, and set properties
   set vio_Gates_2L [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 vio_Gates_2L ]
   set_property -dict [ list \
-   CONFIG.C_EN_PROBE_IN_ACTIVITY {0} \
    CONFIG.C_NUM_PROBE_IN {0} \
    CONFIG.C_NUM_PROBE_OUT {6} \
  ] $vio_Gates_2L
@@ -2116,6 +2109,7 @@ proc create_root_design { parentCell } {
    CONFIG.PSU__DDR_QOS_HP1_RDQOS {} \
    CONFIG.PSU__DDR_QOS_HP1_WRQOS {} \
    CONFIG.PSU__DDR_QOS_HP2_RDQOS {} \
+   CONFIG.PSU__DDR_QOS_HP2_WRQOS {} \
    CONFIG.PSU__DDR_QOS_HP3_RDQOS {} \
    CONFIG.PSU__DDR_QOS_HP3_WRQOS {} \
    CONFIG.PSU__DDR_QOS_RD_HPR_THRSHLD {} \

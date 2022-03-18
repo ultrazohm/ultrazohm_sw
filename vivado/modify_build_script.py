@@ -46,7 +46,7 @@ with open("_build.tcl",'r') as f_in:
                 f_out.write("set board_part \"trenz.biz:te0808_9eg_1e:part0:3.0\"\n")
             # change project dir to "/project" instead of "ultrazohm"
             elif "create_project" in line:
-                f_out.write("create_project ${_xil_proj_name_} ./project\n\n")
+                f_out.write("create_project ${_xil_proj_name_} ./project -force\n\n")
                 f_out.write("# set board_family variable, so the right constraints are loaded\n")
                 f_out.write("if {[string first \"te0808\" $board_part] != -1} {\n")
                 f_out.write("  set board_family \"te0808\"\n")

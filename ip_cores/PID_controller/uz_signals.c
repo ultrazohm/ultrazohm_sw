@@ -44,7 +44,6 @@ float uz_signals_get_sign_of_value(float input) {
 	return (sign);
 }
 float uz_signals_saturation(float input, float upper_limit, float lower_limit) {
-	//uz_assert(upper_limit > lower_limit);
 	float output=0.0f;
 	if (input > upper_limit) {
 		output = upper_limit;

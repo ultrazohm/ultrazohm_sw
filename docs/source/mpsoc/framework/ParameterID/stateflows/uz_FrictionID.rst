@@ -8,7 +8,7 @@ It is based on [[#Gebhardt_ProjectReport1]_] and has been modified to fit into t
 The breakaway torque :math:`M_{break}`, coloumb torque :math:`M_{coul}` and viscous friction torque :math:`d_{fric}` will be identified. 
 This state requires some sort of speed control. 
 
-.. tikz:: Schematic overview of the ElectricalID
+.. tikz:: Schematic overview of the FrictionID
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
 
   \begin{tikzpicture}[auto, node distance=2.5cm,>=latex']
@@ -33,7 +33,7 @@ This state requires some sort of speed control.
 .. _uz_PID_FrictionID_object:
 
 FrictionID object
-==================
+=================
 
 .. doxygentypedef:: uz_PID_FrictionID_t
 
@@ -56,7 +56,7 @@ FrictionID output
 .. _uz_PID_FrictionID_functions:
 
 FrictionID functions
-===================
+====================
 
 .. doxygenfunction:: uz_FrictionID_init
 .. doxygenfunction:: uz_FrictionID_step

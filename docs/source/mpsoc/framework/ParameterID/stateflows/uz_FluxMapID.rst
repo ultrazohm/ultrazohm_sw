@@ -15,7 +15,7 @@ It only controls the triggering of the operating points.
 The necessary measurement vales can either be captured via the :ref:`JavaScope` or an external measurement device.
 For this purpose a trigger (when ``activeState = 403``) signals the point of time, at which the measurement of this operating point can take place. 
 
-.. tikz:: Schematic overview of the ElectricalID
+.. tikz:: Schematic overview of the FluxMapID
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
 
   \begin{tikzpicture}[auto, node distance=2.5cm,>=latex']
@@ -51,14 +51,14 @@ For this purpose a trigger (when ``activeState = 403``) signals the point of tim
 .. _uz_PID_FluxMapID_object:
 
 FluxMapID object
-====================
+================
 
 .. doxygentypedef:: uz_PID_FluxMapID_t
 
 .. _uz_PID_FluxMapIDConfig:
 
 FluxMapID config
-===================
+================
 
 .. doxygenstruct:: uz_PID_FluxMapIDConfig_t
   :members: 
@@ -66,7 +66,7 @@ FluxMapID config
 .. _uz_PID_FluxMapIDoutput:
 
 FluxMapID output
-===================
+================
 
 .. doxygenstruct:: uz_PID_FluxMapID_output_t
   :members: 
@@ -74,7 +74,7 @@ FluxMapID output
 .. _uz_PID_FluxMapID_functions:
 
 FluxMapID functions
-======================
+===================
 
 .. doxygenfunction:: uz_FluxMapID_init
 .. doxygenfunction:: uz_FluxMapID_step

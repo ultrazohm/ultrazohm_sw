@@ -51,11 +51,12 @@ Additionally, an array for the output data of the IP-Core has to be declared (se
 The ``uz_mlp_three_layer_ip_init`` function writes all parameters of the network into the IP-Core.
 Thus, the network exist twice: one copy in the processor and one copy in the IP-Core (parameters are stored in BRAM).
 During execution, only the input and output values are written. 
+Note that the :ref:`global_configuration` has to be adjusted to include at least one MLP IP-Core driver instance, one software network and four layers. 
 
 .. code-block::
 
- #include "uz_nn/uz_nn.h"
- #include "uz_mlp_three_layer/uz_mlp_three_layer"
+ #include "../uz/uz_nn/uz_nn.h"
+ #include "../IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer.h"
  #define NUMBER_OF_INPUTS 13U
  #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 64U
  #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 64U
@@ -113,20 +114,20 @@ During execution, only the input and output values are written.
   float mlp_ip_output[NUMBER_OF_OUTPUTS] = {0}; // Data storage of network output for uz_matrix
 
   void init_network(void){
-     uz_nn_t software_network = uz_nn_init(software_nn_config, 4);
+     uz_nn_t* software_network = uz_nn_init(software_nn_config, 4);
 
      struct uz_mlp_three_layer_ip_config_t config = {
        .base_address = BASE_ADDRESS,
        .use_axi_input = true,
        .software_network = software_network};
-     uz_mlp_three_layer_ip_t *mlp_ip_instance = uz_mlp_three_layer_ip_init(config);
+     uz_mlp_three_layer_ip_t*vmlp_ip_instance = uz_mlp_three_layer_ip_init(config);
 
     struct uz_matrix_t input_data = {0};
     struct uz_matrix_t output_data = {0};
     uz_matrix_t* p_input_data= uz_matrix_init(&input_data,x,UZ_MATRIX_SIZE(x),1,UZ_MATRIX_SIZE(x));
     uz_matrix_t* p_output_data= uz_matrix_init(&output_data,mlp_ip_output,UZ_MATRIX_SIZE(mlp_ip_output),1,UZ_MATRIX_SIZE(mlp_ip_output));
-    uz_mlp_three_layer_ff_blocking(test_instance, p_input_data, p_output_data);
-    uz_nn_ff(software_nn, p_input_data);
+    uz_mlp_three_layer_ff_blocking(mlp_ip_instance, p_input_data, p_output_data);
+    uz_nn_ff(software_network, p_input_data);
     // y_4 (calculated by software network) is now "equal" (minus rounding error due to fixed point)
     // to mlp_ip_output (calculated by IP-Core)
     // Use uz_nn_get_output_data to get software nn data for further processing

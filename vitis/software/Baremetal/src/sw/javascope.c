@@ -101,6 +101,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_encoderOffset] 			= &(PID_Data.ElectricalID_Output->thetaOffset);
 	js_slowDataArray[JSSD_FLOAT_Stribtorque] = &(PID_Data.FrictionID_Output->BrkTorque);
 	js_slowDataArray[JSSD_FLOAT_Coulombtorque] = &(PID_Data.FrictionID_Output->CoulTorque);
 	js_slowDataArray[JSSD_FLOAT_Viscotorque] = &(PID_Data.FrictionID_Output->ViscoTorque);

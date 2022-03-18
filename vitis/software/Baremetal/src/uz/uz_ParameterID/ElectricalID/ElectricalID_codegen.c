@@ -2393,7 +2393,7 @@ static void ElectricalID_p(ExtU_ElectricalID_t *rtElectricalID_U,
         /* '<S1>:412:6' ElectricalID_output.PMSM_parameters.polePairs = single(round((pi/2.0) /.... */
         /* '<S1>:412:7'     (abs(ActualValues.theta_m)))); */
         rtElectricalID_Y->ElectricalID_output.PMSM_parameters.polePairs = roundf
-          (1.57079637F / fabsf(rtElectricalID_U->ActualValues.theta_m));
+          (1.57079637F / fabsf(rtElectricalID_U->ActualValues.theta_m - rtElectricalID_Y->ElectricalID_output.thetaOffset));
 
         /* . */
       } else {

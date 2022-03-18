@@ -246,12 +246,12 @@ Setup
         SLOWDAT_DISPLAY_ENDMARKER
         */
 
-#. Add the following code to the ``ipc_ARM.c`` file. (Breaks in the code are marked with ``....``)
+#. Add the following code to the ``ipc_ARM.c`` file.
 
    .. code-block:: C
         :linenos:
-        :emphasize-lines: 12,25,43,309,361
-        :caption: Changes to the ``ipc_ARM.c`` file
+        :emphasize-lines: 13,26,43,308,360
+        :caption: Changes to the ``ipc_ARM.c`` file. (Breaks in the code are marked with ``....``).
     
         // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
         // Do not change the first (zero) and last (end) entries.
@@ -615,12 +615,12 @@ Setup
             ....
         }
 
-#. Change the code of ``js_slowDataArray`` in the ``javascope.c`` file. (Breaks in the code are marked with ``....``)
+#. Change the code of ``js_slowDataArray`` in the ``javascope.c`` file. 
 
    .. code-block:: C
         :linenos:
-        :emphasize-lines: 7
-        :caption: Changes to the ``javascope.c`` file
+        :emphasize-lines: 8
+        :caption: Changes to the ``javascope.c`` file. (Breaks in the code are marked with ``....``).
 
         //ParameterID
         extern uz_ParameterID_Data_t PID_Data;
@@ -651,6 +651,7 @@ Setup
             js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us]        = &ISR_execution_time_us;
             js_slowDataArray[JSSD_FLOAT_ISR_Period_us]          = &ISR_period_us;
             js_slowDataArray[JSSD_FLOAT_Milliseconds]           = &System_UpTime_ms;
+            js_slowDataArray[JSSD_FLOAT_encoderOffset] 			= &(PID_Data.ElectricalID_Output->thetaOffset);
             js_slowDataArray[JSSD_FLOAT_Stribtorque]            = &(PID_Data.FrictionID_Output->BrkTorque);
             js_slowDataArray[JSSD_FLOAT_Coulombtorque]          = &(PID_Data.FrictionID_Output->CoulTorque);
             js_slowDataArray[JSSD_FLOAT_Viscotorque]            = &(PID_Data.FrictionID_Output->ViscoTorque);
@@ -681,7 +682,8 @@ Setup
 
    .. code-block:: C
         :linenos:
-        :caption: Changes to the ``javascope.c`` file
+        :emphasize-lines: 3,5
+        :caption: Changes to the ``javascope.c`` file. (Breaks in the code are marked with ``....``).
 
         void JavaScope_update(DS_Data* data)
         {
@@ -699,17 +701,20 @@ This section gives an overview on how to use the ParameterID tab in the uz_GUI.
 
    .. image:: ../images/GUI_overview.png
 
-
+#. Each individual ``ID-state`` is organized in its own tabbed panel which and can be selected in the top left corner. 
 #. Visible on the right side are the GlobalControls for the entire ParameterID. The ``Enable System``, ``Enable Control`` and ``STOP`` buttons are mirrored to the ones in the UltraZohm-Gui ``Control`` tab. 
 #. The button ``ParameterID`` enables or disables the ParameterID. The status indicator to the right signals the current state of the ParameterID (on/off).
 #. Here all individual ``ID-states`` can be turned on or off. The current state of the ``ID-state`` is signaled via the status indicators next to the buttons. The possible states are:
 
-   * ``Disabled``, for when the state is disabled and not requested for future use.
-   * ``Requested``, for when a ``ID-state`` is supposed to be executed, but hasn't started yet.
+   * ``Disabled``, for when the state is disabled and not requested for future use. As long as this status is active, the controls for this ``ID-state`` are locked.
+   * ``Requested``, for when a ``ID-state`` is supposed to be executed, but hasn't started yet. In this state, the config values should be changed. 
    * ``Active``. for when this state is currently executing.
    * ``Finished``, for when the state is finished and another ``ID-state`` can be started.
 
-#. The ``ACCEPT`` button is used to transition the ParameterID into a different state. This is mostly used, to enable the ``ID-states`` after requesting them. Other uses can be, to continue one ``ID-state``, after some operations have to be done i.e. start up the load machine. 
-#. The ``RESET`` button resets the entire ParameterID.
+#. The ``State Control`` buttons are used for general control of the ParameterID.
+
+   * The ``ACCEPT`` button is used to transition the ParameterID into a different state. This is mostly used, to enable the ``ID-states`` after requesting them. Other uses can be, to continue one ``ID-state``, after some operations have to be done i.e. start up the load machine. 
+   * The ``RESET`` button resets the entire ParameterID.
+  
 #. Each ``ID-state`` has an unique ``activeState`` variable for each substate. This is displayed here to give further information to the user, that the state is running.
 #. Each ``ID-state`` has its own individual panel, where the individual config values can be configured and the identified values can be displayed. They have to be configured before entering the ``ID-state``. Standard values for the config values are displayed, which proved appropriate in the past. They can be used as an introductory baseline. 

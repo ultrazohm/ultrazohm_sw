@@ -18,8 +18,11 @@ typedef struct uz_nn_layer_t uz_nn_layer_t;
  * 
  */
 enum activation_function{
-    ReLU,
-    linear
+    activation_ReLU,
+    activation_linear,
+    activation_sigmoid,
+    activation_sigmoid2,
+    activation_tanh
 };
 
 /**

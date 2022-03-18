@@ -26,9 +26,9 @@ If the User Authentication in the installer results in an error, eventhough the 
 
 .. image:: ./images_installation/vitis_website4_2020.png
 
-7. Install what you want and what you need. It is recommended to install as shown below. Uncheck `System Generator for DSP` and do not install it because this is not used and can lead to errors in MATLAB since this is a MATLAB-Toolbox.
+7. Install what you want and what you need. It is recommended to install as shown below. Uncheck `System Generator for DSP` and do not install it because this is not used and can lead to errors in MATLAB since this is a MATLAB-Toolbox. To reduce the required disk space, it is sufficient to only install the **Zynq UltraScale+ MPSoC** Devices. Other devices can be added later, but cannot be removed. 
 
-.. image:: ./images_installation/vitis_website5_2020.png
+.. image:: ./images_installation/vitis_website5_2020.jpg
 
 8. Specify where to install
 

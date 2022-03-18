@@ -6,7 +6,7 @@ ElectricalID
 
 This state includes an automated identification process for typical parameters of a PMSM. 
 It is based on [[#Hoerner_ProjectReport2]_] and has been modified to fit into the ParameterID library of the UltraZohm.
-This includes the identification of the polepairs, theta_offset of an incremental encoder, Rs, Ld, Lq, Psi_PM and J. 
+This includes the identification of the polepairs :math:`p`, theta_offset :math:`\theta_{offset}` of an incremental encoder, stator resistance :math:`R_s`, direct inductance :math:`L_d`, quadrature inductance :math:`L_q`, permanent magnet flux :math:`\psi_{PM}` and the inertia :math:`J`. 
 The control parameters of a FOC will be calculated with the identified parameters and are therefore tuned for the used machine. 
 This state requires some sort of speed control.
 
@@ -65,6 +65,8 @@ This state does require multiple ACCEPT flags to continue, since for the identif
   \draw[->](state14.south) -- (exit.north);
   \end{tikzpicture}
 
+.. _uz_PID_ElectricalID_object:
+
 ElectricalID object
 ====================
 
@@ -85,6 +87,11 @@ ElectricalID output
 
 .. doxygenstruct:: uz_PID_ElectricalID_output_t
   :members: 
+
+.. _uz_PID_ElectricalID_functions:
+
+ElectricalID functions
+======================
 
 .. doxygenfunction:: uz_ElectricalID_init
 .. doxygenfunction:: uz_ElectricalID_step

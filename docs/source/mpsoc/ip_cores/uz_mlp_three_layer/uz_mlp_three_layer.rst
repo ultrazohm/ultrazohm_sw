@@ -9,7 +9,6 @@ The implementation and nomenclature follows the principles outlined in :ref:`uz_
 The MLP is hard coded to have three hidden layer with :ref:`activation_function_relu` activation function for hidden layers.
 The output uses :ref:`activation_function_linear` activation.
 
-
 .. figure:: mlp_three_layer.svg
    :align: center
    :width: 300px
@@ -96,7 +95,6 @@ During execution, only the input and output values are written.
  #include "layer4_bias.csv"
  };
  float y_4[NUMBER_OF_OUTPUTS] = {0};
- float mlp_ip_output[NUMBER_OF_OUTPUTS] = {0};
  struct uz_nn_layer_config software_nn_config[4] = {
      [0] = {
          .activation_function = ReLU,
@@ -116,6 +114,7 @@ During execution, only the input and output values are written.
 
   void init_network(void){
      uz_nn_t software_network = uz_nn_init(software_nn_config, 4);
+
      struct uz_mlp_three_layer_ip_config_t config = {
        .base_address = BASE_ADDRESS,
        .use_axi_input = true,
@@ -126,10 +125,11 @@ During execution, only the input and output values are written.
     struct uz_matrix_t output_data = {0};
     uz_matrix_t* p_input_data= uz_matrix_init(&input_data,x,UZ_MATRIX_SIZE(x),1,UZ_MATRIX_SIZE(x));
     uz_matrix_t* p_output_data= uz_matrix_init(&output_data,mlp_ip_output,UZ_MATRIX_SIZE(mlp_ip_output),1,UZ_MATRIX_SIZE(mlp_ip_output));
-
-
-
-     uz_mlp_three_layer_ff_blocking(test_instance, p_input_data, p_output_data);
+    uz_mlp_three_layer_ff_blocking(test_instance, p_input_data, p_output_data);
+    uz_nn_ff(software_nn, p_input_data);
+    // y_4 (calculated by software network) is now "equal" (minus rounding error due to fixed point)
+    // to mlp_ip_output (calculated by IP-Core)
+    // Use uz_nn_get_output_data to get software nn data for further processing
   }
 
 Concurrent execution

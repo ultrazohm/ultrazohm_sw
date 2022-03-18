@@ -103,7 +103,7 @@ The following shows an example initialization and feedforward calculation of one
 - three pointer to three arrays have to be provided in the config struct
 - ``number_of_neurons`` and ``number_of_inputs`` are freely configurable but have to be consistent with the dimensions of the provided arrays
 - ``activation_function`` determines the activation function of the layer
-- Note that ``uz_nn_layer`` operates directly on the data that the arrays hold. Therefore, never access or change the data in the array directly (as is the case with :ref:`matrix_math`)!
+- Note that ``uz_nn_layer`` operates directly on the data that the arrays hold. Therefore, never access or change the data in the array directly (as is the case with :ref:`uz_matrix`)!
 
 .. code-block:: c
     :caption: Initialization and feedforward calculation of one layer

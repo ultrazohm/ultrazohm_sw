@@ -28,7 +28,7 @@ Software
 - Compared to other modules (see :ref:`software_development_guidelines`), the initialization function (``uz_nn_init``) takes an array of pointers to the config struct of each layer instead of one config structure
 - This allows for individual configuration of each layer with a variable amount of layers
 - The number of outputs is automatically determined based on the number of neurons in the last layer
-- The arrays that hold the actual data (weights, bias, outputs of each layer) have to be allocated manually (see :ref:`matrix_math`)
+- The arrays that hold the actual data (weights, bias, outputs of each layer) have to be allocated manually (see :ref:`uz_matrix`)
 
 Initialization of config struct
 *******************************

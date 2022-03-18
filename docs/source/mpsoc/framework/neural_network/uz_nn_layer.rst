@@ -4,7 +4,7 @@
 uz_nn_layer
 ===========
 
-The uz_nn_layer is used by the neural network software module (:ref:`uz_nn`) and is based on :ref:`matrix_math` as well as :ref:`nn_activation_function`.
+The uz_nn_layer is used by the neural network software module (:ref:`uz_nn`) and is based on :ref:`uz_matrix` as well as :ref:`nn_activation_function`.
 A layer in a neural network consists of a configurable number of neurons and an activation function.
 A layer multiplies the input :math:`\boldsymbol{x}` of the layer with the weight matrix :math:`\boldsymbol{w}` of the layer and adds the bias :math:`\boldsymbol{b}` to calculate :math:`\boldsymbol{s}`.
 The output of the layer :math:`\boldsymbol{y}` is the result of feeding the sum :math:`\boldsymbol{s}` into the activation function of the layer.
@@ -92,10 +92,10 @@ With :ref:`activation_function_relu` activation function:
 Software and Example
 ====================
 
-One ``uz_nn_layer_t`` instance uses three ``uz_matrix_t`` (:ref:`matrix_math`) instances!
+One ``uz_nn_layer_t`` instance uses three ``uz_matrix_t`` (:ref:`uz_matrix`) instances!
 Take this into account in the :ref:`global_configuration`.
 The usage of a layer requires the user to pass pointer to arrays for the weights, bias, and output of the layer to the init function.
-The init function initializes the required matrices and passes the pointer to the arrays to the initialization function of :ref:`matrix_math` (``uz_matrix_init``).
+The init function initializes the required matrices and passes the pointer to the arrays to the initialization function of :ref:`uz_matrix` (``uz_matrix_init``).
 
 The following shows an example initialization and feedforward calculation of one layer.
 
@@ -103,7 +103,7 @@ The following shows an example initialization and feedforward calculation of one
 - three pointer to three arrays have to be provided in the config struct
 - ``number_of_neurons`` and ``number_of_inputs`` are freely configurable but have to be consistent with the dimensions of the provided arrays
 - ``activation_function`` determines the activation function of the layer
-- Note that ``uz_nn_layer`` operates directly on the data that the arrays hold. Therefore, never access or change the data in the array directly (as is the case with :ref:`matrix_math`)!
+- Note that ``uz_nn_layer`` operates directly on the data that the arrays hold. Therefore, never access or change the data in the array directly (as is the case with :ref:`uz_matrix`)!
 
 .. code-block:: c
     :caption: Initialization and feedforward calculation of one layer

@@ -5,7 +5,7 @@ uz_nn
 =====
 
 The neural network software implementation follows the definitions outlined in :ref:`neural_network`.
-The module is based on the :ref:`uz_nn_layer` and the :ref:`matrix_math` module.
+The module is based on the :ref:`uz_nn_layer` and the :ref:`uz_matrix` module.
 
 Features and limitations:
 
@@ -28,7 +28,7 @@ Software
 - Compared to other modules (see :ref:`software_development_guidelines`), the initialization function (``uz_nn_init``) takes an array of pointers to the config struct of each layer instead of one config structure
 - This allows for individual configuration of each layer with a variable amount of layers
 - The number of outputs is automatically determined based on the number of neurons in the last layer
-- The arrays that hold the actual data (weights, bias, outputs of each layer) have to be allocated manually (see :ref:`matrix_math`)
+- The arrays that hold the actual data (weights, bias, outputs of each layer) have to be allocated manually (see :ref:`uz_matrix`)
 
 Initialization of config struct
 *******************************
@@ -150,7 +150,7 @@ To ease the declaration of weight and bias arrays, initialization based on ``.cs
 The weights have to be a ``.csv`` with the separator set to ``comma``.
 Furthermore, for the weights, the first :math:`n` elements correspond to the first row of weights with :math:`n` representing the number of neurons in the layer.
 Effectively, each row is attached to the columns one by one.
-See :ref:`matrix_math` for details regarding the transformation of matrix to vector dimensions and :ref:`neural_network` regarding the dimension definition of the network.
+See :ref:`uz_matrix` for details regarding the transformation of matrix to vector dimensions and :ref:`neural_network` regarding the dimension definition of the network.
 
 .. tip:: Use the declaration and defines shown in the examples and unit tests and adjust them to specific networks.
 

@@ -6,6 +6,8 @@ Activation function
 
 The following activation functions are implemented.
 
+.. _activation_function_linear:
+
 Linear
 ======
 

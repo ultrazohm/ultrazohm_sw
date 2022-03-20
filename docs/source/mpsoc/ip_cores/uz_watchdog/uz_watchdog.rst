@@ -12,6 +12,26 @@ In this case an interrupt is thrown that can be handled in the PS and PL. Compon
 - Additional features for better controllability such as Second Sequence Timer and Fail Counter
 
 
+.. tikz::
+
+    \draw [-] (0,0) -- (6,0) node [above left]  {};
+    \draw [-] (0,0) -- (0,4) node [left] {0xFFFFFFFF};
+    \draw (2,-3pt) -- (2,3pt)   node [below left] {First window};
+    \draw (-3pt,1.5) -- (3pt,1.5)   node [left] {};
+    \fill[orange, opacity=0.2] (0,0) rectangle (2,4);
+    \draw[dotted] (0,1.5) -- (6,1.5)node[above]{\tiny{First window register (FWR)} };
+    \draw[-,blue,thick] (0,1.5) -- (2,0);
+
+    \draw (6,-3pt) -- (6,3pt)   node [below left] {Second window};
+    \draw (-3pt,3) -- (3pt,3)   node [left] {};
+    \draw[-,red,thick] (2,3) -- (6,0);
+    
+    \draw (-3pt,2.5) -- (3pt,2.5)   node [left] {};
+    \draw[dotted] (0,2.5) -- (6,2.5) node[above]{\tiny{Interrupt} };
+
+    \draw[dotted] (0,3) -- (6,3) node[above]{\tiny{Second window register (SWR)} };
+
+
 Introduction
 ============
 

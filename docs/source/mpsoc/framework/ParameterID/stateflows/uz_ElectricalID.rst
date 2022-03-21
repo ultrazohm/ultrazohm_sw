@@ -4,6 +4,9 @@
 ElectricalID
 ============
 
+Description
+===========
+
 This state includes an automated identification process for typical parameters of a PMSM. 
 It is based on [[#Hoerner_ProjectReport2]_] and has been modified to fit into the ParameterID library of the UltraZohm.
 This includes the identification of the polepairs :math:`p`, theta_offset :math:`\theta_{offset}` of an incremental encoder, stator resistance :math:`R_s`, direct inductance :math:`L_d`, quadrature inductance :math:`L_q`, permanent magnet flux :math:`\psi_{PM}` and the inertia :math:`J`. 
@@ -64,6 +67,17 @@ This state does require multiple ACCEPT flags to continue, since for the identif
   \draw[->](state13.south) -- (state14.north);
   \draw[->](state14.south) -- (exit.north);
   \end{tikzpicture}
+
+Necessary measurement values
+============================
+
+* V_abc
+* I_abc
+* i_dq
+* v_dq
+* omega_m
+* omega_el
+* theta_m
 
 .. _uz_PID_ElectricalID_object:
 

@@ -249,7 +249,7 @@ After code generating the stateflow the following changes have to made in the Ul
 
 
 #. Include the ``uz_PID_StateID.h`` file to the ``uz_ParameterID.h`` file.
-#. Add the new ``uz_PID_StateIDConfig_t`` and ``uz_PID_StateID_output_t`` to the :ref:`uz_ParameterID_Data_struct`. Add the output struct as a pointer, similarly to the other output structs. 
+#. Add the new ``uz_PID_StateIDConfig_t`` and ``uz_PID_StateID_output_t`` to the :ref:`uz_ParameterID_Data_struct` in the ``uz_ParameterID_data.h`` file. Add the output struct as a pointer, similarly to the other output structs. 
 #. Add default values for the config struct to the ``uz_ParameterID_initialize_data_structs`` function (like for the other states). Assign the address of the output struct here as well. 
 #. Add the new state to the ``uz_ParameterID_t`` declaration and ``uz_ParameterID_init`` function.
 #. Add a new static step function to the ``uz_ParameterID.c`` file, which wraps the assignment of inputs & outputs and step-function call.

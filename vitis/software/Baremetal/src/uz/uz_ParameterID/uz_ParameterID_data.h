@@ -297,7 +297,7 @@ typedef struct {
  *
  */
 typedef struct {
-  uz_3ph_dq_t i_dq_ref;
+  uz_3ph_dq_t i_dq_ref; /**<reference dq-currents */
 } uz_PID_AutoRefCurrents_output_t;
 
 /**

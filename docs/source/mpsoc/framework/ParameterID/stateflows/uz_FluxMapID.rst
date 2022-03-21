@@ -4,6 +4,9 @@
 FluxMapID
 =========
 
+Description
+===========
+
 This state includes an process for FluxMap identification. 
 It is based on [[#Hoerner_Masterthesis]_] and has been modified to fit into the ParameterID library of the UltraZohm.
 The desired range of the identified flux maps can be set in the d- and q-axis, with an input for the stepsize as well. 
@@ -14,6 +17,9 @@ It does NOT measure the needed signals to calculate the flux maps in each point.
 It only controls the triggering of the operating points. 
 The necessary measurement vales can either be captured via the :ref:`JavaScope` or an external measurement device.
 For this purpose a trigger (when ``activeState = 403``) signals the point of time, at which the measurement of this operating point can take place. 
+
+During operation, it is possible to automatically determine the current winding temperature, via identifying the current stator resistance and comparing it to a reference value at a set temperature.
+This guarantees that the measurements are only recorded when the motor has the same winding temperature. This can be turned off. The ``ID-state`` simply assumes then, that the winding temperature is constant. 
 
 .. tikz:: Schematic overview of the FluxMapID
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
@@ -47,6 +53,12 @@ For this purpose a trigger (when ``activeState = 403``) signals the point of tim
   \node[name=identR1,below right = -1.35cm and 0.25cm of state4, align=center]{identR == 1}; 
   \node[name=identR0,above left = 0.5cm and -0.5cm of state4, align=center]{identR \\== 0}; 
   \end{tikzpicture}
+
+Necessary measurement values
+============================
+
+* i_dq
+* v_dq
 
 .. _uz_PID_FluxMapID_object:
 

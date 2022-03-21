@@ -4,6 +4,9 @@
 ControlState
 ============
 
+Description
+===========
+
 This state controls all the other states. 
 It decides, based on user input, which state is executed and in which order. 
 This is done via ControlFlags and finished/entered Flags of the individual states. 

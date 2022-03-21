@@ -82,11 +82,11 @@ Signalflow in the ParameterID
   \tikzstyle{block} = [draw, fill=black!10, rectangle, rounded corners, minimum height=3em, minimum width=3em]
   \node[block,fill=green!10,name=ControlS,drop shadow,minimum height=6.5cm] {ControlState};
   \node[block,fill=yellow!20,name=state1, right = 6cm of ControlS,drop shadow,align=center,minimum height=6.5cm,minimum width=4cm] {Identification\\state \textbf{X}};
-  \node[block,name=GlobalCin, left= 0.5cm of ControlS,drop shadow,minimum width=2cm, align=center] {GlobalConfig\_in\\ \tiny{uz\_GlobalConfig\_t}};
-  \node[block,name=GlobalCout, above right= -1.25cm and 1.5cm of ControlS,drop shadow,minimum width=3.5cm, align=center] {GlobalConfig\_out\\ \tiny{uz\_GlobalConfig\_t}};
-  \node[block,name=ControlFlags, above right= -3cm and 1.5cm of ControlS,drop shadow,minimum width=3.5cm, align=center] {ControlFlags\\ \tiny{uz\_ControlFlags\_t}};
+  \node[block,fill=orange!20,name=GlobalCin, left= 0.5cm of ControlS,drop shadow,minimum width=2cm, align=center] {GlobalConfig\_in\\ \tiny{uz\_GlobalConfig\_t}};
+  \node[block,fill=orange!20,name=GlobalCout, above right= -1.25cm and 1.5cm of ControlS,drop shadow,minimum width=3.5cm, align=center] {GlobalConfig\_out\\ \tiny{uz\_GlobalConfig\_t}};
+  \node[block,fill=orange!20,name=ControlFlags, above right= -3cm and 1.5cm of ControlS,drop shadow,minimum width=3.5cm, align=center] {ControlFlags\\ \tiny{uz\_ControlFlags\_t}};
   \node[block,name=ElecConfig, above right= -4.75cm and 1.5cm of ControlS,drop shadow,minimum width=3.5cm, align=center] {Individual Config\\ \tiny{uz\_StateIDConfig\_t}};
-  \node[block,name=ActValues, above right= -6.5cm and 1.5cm of ControlS,drop shadow,minimum width=3.5cm, align=center] {ActualValues\\ \tiny{uz\_ActualValues\_t}};
+  \node[block,fill=orange!20,name=ActValues, above right= -6.5cm and 1.5cm of ControlS,drop shadow,minimum width=3.5cm, align=center] {ActualValues\\ \tiny{uz\_ActualValues\_t}};
   \node[block,name=input, left= 2cm of GlobalCin,drop shadow,minimum width=2cm, align=center] {input\\ \tiny{uz\_ParameterID\_Data\_t}};
   \begin{scope}[on background layer]
   \node[draw,fill=blue!10,name=ParameterID,rounded corners,fit=(ControlS)(GlobalCin) (state1),inner sep=5pt,minimum width=18cm,minimum height=10.5cm] {};
@@ -118,7 +118,7 @@ Signalflow in the ParameterID
   \node [circle,fill,inner sep=1pt] at ([xshift=-1.5cm]output.west) {};
   \end{tikzpicture}
 
-The ParameterID has three global structs, which are shared inputs for all identification states. For detailed information about these structs, click on the appropriate hyperlink. 
+The ParameterID has three global structs (highlighted in orange), which are shared inputs for all identification states. For detailed information about these structs, click on the appropriate hyperlink. 
 These are the following:
 
   * :ref:`ActualValues struct<uz_Actual_values_struct>`, which carries all the measurement values

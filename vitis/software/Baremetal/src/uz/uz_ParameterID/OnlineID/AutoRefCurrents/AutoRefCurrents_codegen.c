@@ -47,7 +47,7 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const rtAutoRefCurrents_M)
    *  Inport: '<Root>/AutoRefCurrentsConfig'
    *  Inport: '<Root>/ControlFlags'
    *  Inport: '<Root>/GlobalConfig'
-   *  Outport: '<Root>/i_dq_ref'
+   *  Outport: '<Root>/AutoRefCurrents_output'
    */
   /* Gateway: AutoRefCurrents */
   /* During: AutoRefCurrents */
@@ -73,11 +73,11 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const rtAutoRefCurrents_M)
         rtAutoRefCurrents_U->AutoRefCurrentsConfig.Reset ||
         rtAutoRefCurrents_U->GlobalConfig_out.Reset) {
       /* Transition: '<S1>:32' */
-      /* '<S1>:32:4' i_dq_ref.d=single(0); */
-      rtAutoRefCurrents_Y->i_dq_ref.d = 0.0F;
+      /* '<S1>:32:4' AutoRefCurrents_output.i_dq_ref.d=single(0); */
+      rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.d = 0.0F;
 
-      /* '<S1>:32:4' i_dq_ref.q=single(0) */
-      rtAutoRefCurrents_Y->i_dq_ref.q = 0.0F;
+      /* '<S1>:32:5' AutoRefCurrents_output.i_dq_ref.q=single(0) */
+      rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.q = 0.0F;
 
       /* Exit Internal 'superstate': '<S1>:20' */
       rtAutoRefCurrents_DW->is_superstate = IN_NO_ACTIVE_CHILD;
@@ -109,44 +109,46 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const rtAutoRefCurrents_M)
             (rtAutoRefCurrents_U->AutoRefCurrentsConfig.max_current);
         }
 
-        /* '<S1>:26:9' if((i_dq_ref.d*i_dq_ref.d+(imax*iqcount/AutoRefCurrentsConfig.iq_points)^2)^0.5<abs(imax)) */
+        /* '<S1>:26:9' if((AutoRefCurrents_output.i_dq_ref.d*AutoRefCurrents_output.i_dq_ref.d+(imax*iqcount/AutoRefCurrentsConfig.iq_points)^2)^0.5<abs(imax)) */
         idcount_tmp = rtAutoRefCurrents_DW->imax * rtAutoRefCurrents_DW->iqcount
           / rtAutoRefCurrents_U->AutoRefCurrentsConfig.iq_points;
-        if (sqrtf(rtAutoRefCurrents_Y->i_dq_ref.d *
-                  rtAutoRefCurrents_Y->i_dq_ref.d + idcount_tmp * idcount_tmp) <
-            fabsf(rtAutoRefCurrents_DW->imax)) {
-          /* '<S1>:26:10' i_dq_ref.q=imax*iqcount/AutoRefCurrentsConfig.iq_points; */
-          rtAutoRefCurrents_Y->i_dq_ref.q = idcount_tmp;
+        if (sqrtf(rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.d *
+                  rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.d +
+                  idcount_tmp * idcount_tmp) < fabsf(rtAutoRefCurrents_DW->imax))
+        {
+          /* '<S1>:26:10' AutoRefCurrents_output.i_dq_ref.q=imax*iqcount/AutoRefCurrentsConfig.iq_points; */
+          rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.q = idcount_tmp;
         } else {
           /* '<S1>:26:11' else */
           /* '<S1>:26:12' iqcount=single(1); */
           rtAutoRefCurrents_DW->iqcount = 1.0F;
 
-          /* '<S1>:26:13' i_dq_ref.q=imax*iqcount/AutoRefCurrentsConfig.iq_points; */
-          rtAutoRefCurrents_Y->i_dq_ref.q = rtAutoRefCurrents_DW->imax *
-            rtAutoRefCurrents_DW->iqcount /
+          /* '<S1>:26:13' AutoRefCurrents_output.i_dq_ref.q=imax*iqcount/AutoRefCurrentsConfig.iq_points; */
+          rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.q =
+            rtAutoRefCurrents_DW->imax * rtAutoRefCurrents_DW->iqcount /
             rtAutoRefCurrents_U->AutoRefCurrentsConfig.iq_points;
         }
 
-        /* '<S1>:26:15' if((i_dq_ref.q*i_dq_ref.q+(imax*idcount/AutoRefCurrentsConfig.id_points)^2)^0.5<abs(imax)) */
+        /* '<S1>:26:15' if((AutoRefCurrents_output.i_dq_ref.q*AutoRefCurrents_output.i_dq_ref.q+(imax*idcount/AutoRefCurrentsConfig.id_points)^2)^0.5<abs(imax)) */
         idcount_tmp = rtAutoRefCurrents_DW->imax * rtAutoRefCurrents_DW->idcount
           / rtAutoRefCurrents_U->AutoRefCurrentsConfig.id_points;
         tmp = fabsf(rtAutoRefCurrents_DW->imax);
-        if (sqrtf(rtAutoRefCurrents_Y->i_dq_ref.q *
-                  rtAutoRefCurrents_Y->i_dq_ref.q + idcount_tmp * idcount_tmp) <
-            tmp) {
-          /* '<S1>:26:16' i_dq_ref.d=-1*abs(imax)*idcount/AutoRefCurrentsConfig.id_points; */
-          rtAutoRefCurrents_Y->i_dq_ref.d = -tmp * rtAutoRefCurrents_DW->idcount
-            / rtAutoRefCurrents_U->AutoRefCurrentsConfig.id_points;
+        if (sqrtf(rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.q *
+                  rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.q +
+                  idcount_tmp * idcount_tmp) < tmp) {
+          /* '<S1>:26:16' AutoRefCurrents_output.i_dq_ref.d=-1*abs(imax)*idcount/AutoRefCurrentsConfig.id_points; */
+          rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.d = -tmp *
+            rtAutoRefCurrents_DW->idcount /
+            rtAutoRefCurrents_U->AutoRefCurrentsConfig.id_points;
         } else {
           /* '<S1>:26:17' else */
           /* '<S1>:26:18' idcount=single(-AutoRefCurrentsConfig.id_points/3); */
           rtAutoRefCurrents_DW->idcount =
             -rtAutoRefCurrents_U->AutoRefCurrentsConfig.id_points / 3.0F;
 
-          /* '<S1>:26:19' i_dq_ref.d=-1*abs(imax)*idcount/AutoRefCurrentsConfig.id_points; */
-          rtAutoRefCurrents_Y->i_dq_ref.d = -fabsf(rtAutoRefCurrents_DW->imax) *
-            rtAutoRefCurrents_DW->idcount /
+          /* '<S1>:26:19' AutoRefCurrents_output.i_dq_ref.d=-1*abs(imax)*idcount/AutoRefCurrentsConfig.id_points; */
+          rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.d = -fabsf
+            (rtAutoRefCurrents_DW->imax) * rtAutoRefCurrents_DW->idcount /
             rtAutoRefCurrents_U->AutoRefCurrentsConfig.id_points;
         }
 
@@ -216,11 +218,11 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const rtAutoRefCurrents_M)
     idcount_tmp = -rtAutoRefCurrents_U->AutoRefCurrentsConfig.id_points / 3.0F;
     rtAutoRefCurrents_DW->idcount = idcount_tmp;
 
-    /* '<S1>:20:7' i_dq_ref.d=single(0); */
-    rtAutoRefCurrents_Y->i_dq_ref.d = 0.0F;
+    /* '<S1>:20:7' AutoRefCurrents_output.i_dq_ref.d=single(0); */
+    rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.d = 0.0F;
 
-    /* '<S1>:20:8' i_dq_ref.q=single(0); */
-    rtAutoRefCurrents_Y->i_dq_ref.q = 0.0F;
+    /* '<S1>:20:8' AutoRefCurrents_output.i_dq_ref.q=single(0); */
+    rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.q = 0.0F;
 
     /* '<S1>:20:9' imax=single(0); */
     rtAutoRefCurrents_DW->imax = 0.0F;
@@ -264,11 +266,11 @@ void AutoRefCurrents_initialize(RT_MODEL_AutoRefCurrents_t *const
     rtAutoRefCurrents_M->outputs;
 
   /* SystemInitialize for Chart: '<Root>/AutoRefCurrents' incorporates:
-   *  Outport: '<Root>/i_dq_ref'
+   *  Outport: '<Root>/AutoRefCurrents_output'
    */
-  rtAutoRefCurrents_Y->i_dq_ref.d = 0.0F;
-  rtAutoRefCurrents_Y->i_dq_ref.q = 0.0F;
-  rtAutoRefCurrents_Y->i_dq_ref.zero = 0.0F;
+  rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.d = 0.0F;
+  rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.q = 0.0F;
+  rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.zero = 0.0F;
 }
 
 /*

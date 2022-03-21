@@ -231,15 +231,15 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_i
 		if (Data->OnlineID_Output->IdControlFlag == true) {
 
 			if (Data->AutoRefCurrents_Config.enableCRS == true) {
-				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out + Data->AutoRefCurrents_Output.d;
-				Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
+				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out + Data->AutoRefCurrents_Output.i_dq_ref.d;
+				Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.i_dq_ref.q;
 			} else {
 				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out;
 			}
 		} else {
 			if (Data->AutoRefCurrents_Config.enableCRS == true) {
-				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->AutoRefCurrents_Output.d;
-				Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
+				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->AutoRefCurrents_Output.i_dq_ref.d;
+				Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.i_dq_ref.q;
 			}
 		}
 		if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
@@ -387,7 +387,7 @@ static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_D
 	uz_OnlineID_AutoRefCurrents_step(self->OnlineID);
 
 	//Update Data struct with new output values
-	Data->AutoRefCurrents_Output = self->OnlineID->AutoRefCurrents->output.i_dq_ref;
+	Data->AutoRefCurrents_Output = self->OnlineID->AutoRefCurrents->output.AutoRefCurrents_output;
 }
 
 static void uz_PID_FOC_output_set_zero(uz_ParameterID_Data_t* Data) {

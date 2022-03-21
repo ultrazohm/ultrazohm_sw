@@ -84,7 +84,7 @@ typedef struct {
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  uz_3ph_dq_t i_dq_ref;                /* '<Root>/i_dq_ref' */
+  uz_PID_AutoRefCurrents_output_t AutoRefCurrents_output;/* '<Root>/AutoRefCurrents_output' */
 } ExtY_AutoRefCurrents_t;
 
 /* Real-time Model Data Structure */

@@ -20,6 +20,7 @@
 #include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_PMSM_config/uz_PMSM_config.h"
 #include "rtwtypes.h"
+#include <stdbool.h>
 
 //----------------------------------------//
 //----------------------------------------//
@@ -292,6 +293,14 @@ typedef struct {
 } uz_PID_AutoRefCurrentsConfig_t;
 
 /**
+ * @brief output struct for AutoRefCurrents
+ *
+ */
+typedef struct {
+  uz_3ph_dq_t i_dq_ref;
+} uz_PID_AutoRefCurrents_output_t;
+
+/**
  * @brief struct which contains the calculated fluxmaps of the OnlineID state
  *
  */
@@ -311,5 +320,50 @@ typedef struct {
 	real32_T psi_temp_const; /**< estimated temperature constant of psi_pm*/
 	real32_T psi_temp_error; /**< estimated error of psi_pm because of heat losses of the magnets */
 } uz_PID_FluxMapsData_t;
+
+//----------------------------------------//
+//----------------------------------------//
+//--------ParameterID_Data struct---------//
+//----------------------------------------//
+//----------------------------------------//
+
+/*! enum for selection of control algorithm if all OfflineID states are finished */
+enum uz_PID_Control_selection {
+	No_Control = 0, Current_Control, Speed_Control
+};
+
+/**
+ * @brief Data struct to share inputs and outputs to the encapsuled uz_ParameterID_t object
+ *
+ */
+typedef struct uz_ParameterID_Data_t {
+	uz_PID_ActualValues_t ActualValues; /**<Input: measured values needed for the ParameterID */
+	uz_PID_ControlFlags_t* ControlFlags; /**<Output: current values of the ControlFlags struct */
+	uz_PID_GlobalConfig_t GlobalConfig; /**<Input: Global configuration struct for general settings of the ParameterID */
+	uz_PID_ElectricalIDConfig_t ElectricalID_Config; /**<Input: Configuration struct for ElectricalID */
+	uz_PID_TwoMassIDConfig_t TwoMassID_Config; /**<Input: Configuration struct for TwoMassID */
+	uz_PID_FrictionIDConfig_t FrictionID_Config; /**<Input: Configuration struct for FrictionID */
+	uz_PID_FluxMapIDConfig_t FluxMapID_Config; /**< Input:Configuration struct for FluxMapID */
+	uz_PID_OnlineIDConfig_t OnlineID_Config; /**<Input: Configuration struct for  OnlineID */
+	uz_PID_AutoRefCurrentsConfig_t AutoRefCurrents_Config; /**<Input: Configuration struct for AutoReference current generator */
+	uz_PID_ElectricalID_output_t *ElectricalID_Output; /**<Output: Pointer to output struct of ElectricalID */
+	uz_PID_TwoMassID_output_t *TwoMassID_Output; /**<Output: Pointer to output struct of TwoMassID */
+	uz_PID_FrictionID_output_t *FrictionID_Output; /**<Output: Pointer to output struct of FrictionID */
+	uz_PID_FluxMapID_output_t *FluxMapID_Output; /**<Output: Pointer to output struct of FluxMapID */
+	uz_PID_OnlineID_output_t* OnlineID_Output; /**<Output: Pointer to output struct of OnlineID */
+	uz_PID_Controller_Parameters_output_t Controller_Parameters;/**<Output: output struct for control algorithm (i_dq_ref / n_ref etc.) */
+	uz_PID_AutoRefCurrents_output_t AutoRefCurrents_Output; /**<Output: output struct for reference currents of the AutoReference current generator*/
+	uz_PID_FluxMapsData_t* FluxMap_Data; /**<Storage for calculated OnlineID FluxMaps*/
+	bool calculate_flux_maps; /**<status bool to signal, that the OnlineID FluxMaps should be calculated */
+	int FluxMap_counter; /**<counter to transmit FluxMaps 1by1 to the uz_GUI */
+	int FluxMap_Control_counter; /**<control counter from the GUI to sync the FluxMaps counter */
+	float Psi_D_pointer; /**<current value of the FluxMap array corresponding to the value of the FluxMap_counter*/
+	float Psi_Q_pointer; /**<current value of the FluxMap array corresponding to the value of the FluxMap_counter*/
+	float FluxMap_MeasuringPoints; /**<amount of unique measuring points for the FluxMaps */
+	enum uz_PID_Control_selection PID_Control_Selection;/**< PID_Control_Selection \n
+													0 = No_Control \n
+													1 = Current_Control \n
+													2 = Speed_Control*/
+} uz_ParameterID_Data_t;
 
 #endif

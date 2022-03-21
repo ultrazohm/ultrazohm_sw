@@ -11,13 +11,21 @@ enum uz_watchdog_fail_mode{
 
 /** @struct uz_watchdog_ip_config_t
  *  @brief This structure is used to initialize the WatchDog Timer IP driver
- *  @var uz_watchdog_ip_config_t::CounterValue
- *  Member 'CounterValue' contains the initial value for the counter in number of tics.
- * 					Watchdog timeout is therefore CounterValue * Tcycle
- *  @var uz_watchdog_ip_config_t::WdtTbDeviceId
- *  Member 'WdtTbDeviceId' contains is the Device ID of the WdtTb Device and is
- *		typically XPAR_<WDTTB_instance>_DEVICE_ID value from
- *		xparameters.h.
+ *  @var uz_watchdog_ip_config_t::device_id
+ *  Member 'device_id' contains is the Device ID of the WdtTb Device and is
+ *		               typically XPAR_<WDTTB_instance>_DEVICE_ID value from
+ *		               xparameters.h.
+ *  @var uz_watchdog_ip_config_t::ip_clk_frequency_Hz
+ *  Member 'ip_clk_frequency_Hz' contains the frequency in Hz of the AXI CLK
+ *                     to witch the IP is connected.
+ *  @var uz_watchdog_ip_config_t::reset_timer_in_us
+ *  Member 'reset_timer_in_us' contains the length of the timing interval to
+ * 					   watch in micro seconds. For example 100us, 50us, etc.
+*  @var uz_watchdog_ip_config_t::fail_mode
+ *  Member 'fail_mode' defines the way the timing violation is handled:
+ *                    - watchdog_assertion: execution is halted
+ *                    - watchdog_debug_mode: Interrupt increments the fail
+ *                      counter and Watchdog returns to normal operation.
  */
 struct uz_watchdog_ip_config_t {
   uint16_t device_id;

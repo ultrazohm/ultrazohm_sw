@@ -140,8 +140,8 @@ Any good or bad event ends the second window. Absence of a good or bad event all
 
 So we split the second window in two parts (as can be seen in the next picture):
 
-- A: 0x2710 = 10,000 clock ticks => 100 microsec.
-- B: 0xFF00 = 65,280 clock ticks more than 650 microsec. to execute the handler function (enough time to resume execution or to save working state).
+- A: INTERVAL TO WATCH: (EXAMPLE) 0x2710 = 10,000 clock ticks => 100 microsec. This is an example, the final interval is set by code from CONFIG parameters. See las picture.
+- B: OFFSET: 0xFF00 = 65,280 clock ticks more than 650 microsec. to execute the handler function (enough time to resume execution or to save working state).
 
 .. _XWDTTB_SecondWindowTimingDiagram:
 
@@ -151,7 +151,7 @@ So we split the second window in two parts (as can be seen in the next picture):
 
    Second Window Timing Diagram.
 
-Instead of using a fixed amount of clock ticks for the second window (as can be seen with the previous constant). We have added in the last version two more constants that define the window size as a function of the UZ_PWM_FREQUENCY and Interrupt_ISR_freq_factor).
+Instead of using a fixed amount of clock ticks for the second window (as can be seen with the previous constant). We have added in the last version two more fields in the config structure to define the window size as a function of the IP frequency (AXI frequency) and the interval to watch in microseconds.
 
 .. _XWDTTB_SecondWindowConstants_v2:
 
@@ -165,6 +165,8 @@ Driver function reference
 =========================
 
 .. doxygentypedef:: uz_watchdog_ip_t
+
+.. doxygenenum:: uz_watchdog_fail_mode
 
 .. doxygenstruct:: uz_watchdog_ip_config_t
   :members:

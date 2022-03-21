@@ -159,7 +159,6 @@ static uint32_t uz_watchdog_calculate_counter_from_time(uint32_t ip_clk_frequenc
     uint32_t counter_value = ((uint32_t)reset_timer_in_us) * (ip_clk_frequency_Hz / 1000000U); // Scaling ip_clk_frequency to MHz for easy calculation
     counter_value += WIN_WDT_SBC_COUNT_SHIFTED;                                                // Adds shifted offset for interrupt time
 
-    xil_printf("WDT: uz_watchdog_calculate_counter_from_time: counter_value: %d\r\n",counter_value);
     return counter_value;
 }
 

@@ -80,5 +80,4 @@ void test_uz_signals_saturation_output(void){
     input = -0.7f;
     TEST_ASSERT_EQUAL_FLOAT(lower_limit, uz_signals_saturation(input, upper_limit, lower_limit)); 
 }
-
 #endif // TEST

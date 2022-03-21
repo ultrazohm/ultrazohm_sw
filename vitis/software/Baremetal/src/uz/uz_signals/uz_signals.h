@@ -2,9 +2,9 @@
 #define UZ_SIGNALS_H
 
 /*! enum for readable configuring for type of 1st order filter */
-enum Filter_selection {
-	LowPass = 0,
-    HighPass
+enum uz_IIR_Filter_selection {
+	LowPass_first_order = 0,
+    HighPass_first_order
 };
 
 /**
@@ -12,10 +12,7 @@ enum Filter_selection {
  *
  */
 struct uz_IIR_Filter_config {
-	enum Filter_selection selection; /**< Filter selection \n
-                                        0 = LowPass \n
-                                        1 = HighPass*/
-
+	enum uz_IIR_Filter_selection selection; /**< Filter selection \n */
     float cutoff_frequency_Hz; /**< cutoff frequency in Hz of the filter */
 	float sample_frequency_Hz; /**< sample frequency in Hz of the signal */
 };

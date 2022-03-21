@@ -9,7 +9,7 @@ TEST_FILE("uz_signals_iir_filter.c")
 struct uz_IIR_Filter_config config = { 0 };
 void setUp(void)
 {
-    config.selection = LowPass;
+    config.selection = LowPass_first_order;
     config.cutoff_frequency_Hz = 200.0f;
     config.sample_frequency_Hz = 20000.0f;
 }
@@ -53,12 +53,15 @@ void test_uz_signals_IIR_Filter_reverse_sample_NULL_pointer(void) {
 }
 
 void test_uz_signals_IIR_Filter_lowpass_output(void) {
-    float input_array[20] = {0.0379f,2.2678f, 0.6551f, -1.3192f, 0.7978f, 
-    2.9265f, 1.1755f, -1.0237f, 0.6599f, 2.2902f, -0.0473f, -2.3340f, -0.5630f, 1.3410f,
-    -0.8848f, -2.8566f, -1.0677f, 0.9698f, -0.6236f, -2.4335f};
+    float input_array[20] = {0.0379f, 2.2678f, 0.6551f,-1.3192f, 0.7978f, 
+                             2.9265f, 1.1755f,-1.0237f, 0.6599f, 2.2902f,
+                            -0.0473f,-2.3340f,-0.5630f, 1.3410f,-0.8848f,
+                            -2.8566f,-1.0677f, 0.9698f,-0.6236f,-2.4335f};
+
     float expected_filtered_array[20] = {0.0379f,1.1198f,0.8943f,-0.1797f,0.2946f,1.5716f,
-    1.3794f,0.2134f,0.4301f,1.3326f,0.6631f,-0.7911f,-0.6804f,0.3004f,-0.2747f,
-    -1.5274f,-1.3044f,-0.2010f,-0.4060f,-1.3897f};
+                                         1.3794f,0.2134f,0.4301f,1.3326f,0.6631f,-0.7911f,
+                                        -0.6804f,0.3004f,-0.2747f,-1.5274f,-1.3044f,-0.2010f,
+                                        -0.4060f,-1.3897f};
     float filtered_array[20] = {0};
     config.cutoff_frequency_Hz = 150.0f;
     config.sample_frequency_Hz = 1000.0f;
@@ -79,7 +82,7 @@ void test_uz_signals_IIR_Filter_highpass_output(void) {
     float filtered_array[20] = {0};
     config.cutoff_frequency_Hz = 150.0f;
     config.sample_frequency_Hz = 1000.0f;
-    config.selection = HighPass;
+    config.selection = HighPass_first_order;
     uz_IIR_Filter_t* test_instance = uz_signals_IIR_Filter_init(config);
     for(int i=0;i< (int)(sizeof(input_array) / sizeof(float));i++) {
         filtered_array[i] = uz_signals_IIR_Filter_sample(test_instance, input_array[i]);
@@ -114,7 +117,7 @@ void test_uz_signals_Filter_1st_highpass_reverse_output(void) {
     float filtered_array[20] = {0};
     config.cutoff_frequency_Hz = 150.0f;
     config.sample_frequency_Hz = 1000.0f;
-    config.selection = HighPass;
+    config.selection = HighPass_first_order;
     uz_IIR_Filter_t* test_instance = uz_signals_IIR_Filter_init(config);
     for(int i=0;i< (int)(sizeof(input_array) / sizeof(float));i++) {
         filtered_array[i] = uz_signals_IIR_Filter_reverse_sample(test_instance, input_array[i]);

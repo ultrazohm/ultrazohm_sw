@@ -84,12 +84,6 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge3DutyCycle);
 
 
-    // // TODO: DELETE AFTER TEST: to trigger the time violation of ISR or system hang and the reset
-	// // Launch the test every 1000 invocations
-	if (((uz_SystemTime_GetInterruptCounter()%1000) == 0)) {
-		uz_sleep_useconds(100);
-	}
-
     JavaScope_update(&Global_Data);
 
 
@@ -120,14 +114,11 @@ int Initialize_ISR()
         return XST_FAILURE;
     }
 
-	/*
-	 * Call Init  the WDT setting timer to the default timeout and default configuration.
+    /*
+	 * Call uz_watchdog_ip_init with AXI BUS FREQUENCY, the timeout to watch and default configuration.
 	 * Obtain a WDT pointer initialized to use with the WDTTB API
 	 */
-//    float isr_maximum_sample_time_us=Global_Data.av.isr_samplerate_s*1e6f; // convert second to microsecond
     float isr_maximum_sample_time_us=(1.0f/(UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor)*1e6f);
-
-    xil_printf("ISR: Initialize_ISR: watchdog_debug_mode, (uint32_t)(isr_maximum_sample_time_us): %d\r\n",(uint32_t)isr_maximum_sample_time_us);
 
 	struct uz_watchdog_ip_config_t config={
 		.reset_timer_in_us=isr_maximum_sample_time_us,

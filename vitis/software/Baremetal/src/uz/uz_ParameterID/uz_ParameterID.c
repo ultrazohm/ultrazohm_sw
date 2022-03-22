@@ -373,6 +373,7 @@ static void uz_PID_OnlineID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* 
 
 	//Update Data struct with new output values
 	Data->Controller_Parameters.activeState = self->OnlineID->output.OnlineID_output.activeState;
+	self->ControlState->input.enteredOnlineID = self->OnlineID->output.enteredOnlineID;
 }
 
 static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {

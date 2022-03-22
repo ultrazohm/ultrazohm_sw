@@ -1,4 +1,4 @@
-.. _matrix_math:
+.. _uz_matrix:
 
 ===========
 Matrix math
@@ -12,13 +12,19 @@ Matrix math
     *
 
 The matrix math software module provides an easy way to use matrices.
-It uses an opaque data type ``uz_matrix_t`` that boxes important information about the matrix (e.g., number of rows and colums) together with the data.
+It uses an opaque data type ``uz_matrix_t`` that boxes important information about the matrix (e.g., number of rows and column) together with the data.
 The module provides common functions, e.g., matrix multiplication, which are called with matrices of the data type ``uz_matrix_t``, allowing error checking regarding dimensions.
-The module does not hold the data of the matrix internally but uses an pointer to the data instead.
-Therefore, the variable holding the data has to be initialized outside of the module.
-The number of matrix instances has to be configured in :ref:`global_configuration`.
+The module does not hold the data of the matrix internally but uses an pointer to the data instead to allow variable length of arrays with one data type without using flexible array member.
+The variable holding the data as well as the ``struct uz_matrix_t`` has to be initialized outside of the module since this module is not configured by the :ref:`global_configuration`.
 
-.. warning:: Take the `storage duration of variables <https://iso-9899.info/wiki/Storage_Duration>`_ into account that are pointed to in the the init function! Most of the time, use ``static`` storage duration.
+.. code-block:: c
+   :caption: initialization of uz_matrix
+
+   float data[5]={0};
+   struct uz_matrix_t input_matrix = {0};
+   uz_matrix_t *input = uz_matrix_init(&input_matrix, data, UZ_MATRIX_SIZE(data), 1, 5);
+
+.. warning:: Take the `storage duration of variables <https://iso-9899.info/wiki/Storage_Duration>`_ into account for the array as well as the uz_matrix_t struct! Most of the time, use ``static`` storage duration.
 
 .. warning:: The data can be accessed directly in the array. Do not do this after a ``uz_matrix_t`` instance is coupled with the array by initialization.
 
@@ -42,12 +48,12 @@ The following matrix definition with the number of columns :math:`n` and number 
     \end{bmatrix}
     \end{array}
     
-.. note:: Keep in mind that in C everything is 0-indexed while the matrix definitions still use 1-based indexing to be consistent with common math convetions! Thus, :math:`a_{11}` is the element with index :math:`[0,0]` in c-code!
+.. note:: Keep in mind that in C everything is 0-indexed while the matrix definitions still use 1-based indexing to be consistent with common math conventions! Thus, :math:`a_{11}` is the element with index :math:`[0,0]` in c-code!
 
 Dimensions
 ==========
 
-A pointer to the actual data array has to be supplied as the first argument to ``uz_matrix_init``.
+A pointer to the actual data array has to be supplied ``uz_matrix_init``.
 The array has to be of length :math:`m \times n`.
 The dimension :math:`n` (``columns``) can be one to generate a column vector :math:`m \times 1`.
 
@@ -119,11 +125,12 @@ To initialize the following :math:`3 \times 3` matrix:
 
     // declare data array static outside of a function to ensure static storage duration and file scope. 
     static float mat[9]={1,2,3,4,5,6,7,8,9};
+    struct uz_matrix_t input_matrix = {0};
 
     void uz_matrix_init_3_times_3_matrix(void){
         int rows=3; // Row and columns can be automatic storage duration since they are not required after initialization (stored in the module)
         int columns=3;
-        uz_matrix_t* my_matrix=uz_matrix_init(mat,UZ_MATRIX_SIZE(mat),rows,columns);
+        uz_matrix_t* my_matrix=uz_matrix_init(input_matrix,mat,UZ_MATRIX_SIZE(mat),rows,columns);
     }
 
 Reference
@@ -166,7 +173,7 @@ The following performance is measured when the functions are called in the, expe
     void ISR_Control(void *data)
     {
     	uz_SystemTime_ISR_Tic();
-    	for(size_t i=0U;i<10;i++){
+    	for(uint32_t i=0U;i<10;i++){
     		function_under_test(A,B,C ); //
     	}
     	uz_SystemTime_ISR_Toc();

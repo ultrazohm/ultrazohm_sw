@@ -358,7 +358,7 @@ We implement the actual function of the driver in the following.
        bool is_ready;
    };
    
-   static size_t instance_counter = 0U;
+   static uint32_t instance_counter = 0U;
    static uz_myIP_t instances[UZ_MYIP_MAX_INSTANCES] = { 0 };
    
    static uz_myIP_t* uz_myIP_allocation(void);

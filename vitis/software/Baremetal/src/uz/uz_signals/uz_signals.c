@@ -1,22 +1,25 @@
 /******************************************************************************
 * Copyright Contributors to the UltraZohm project.
 * Copyright 2021 Dennis Hufnagel, Tobias Schindler
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
-
+#ifndef UZ_SIGNALS_H
+#define UZ_SIGNALS_H
 
 #include "uz_signals.h"
+#include "../uz_global_configuration.h"
 #include "../uz_HAL.h"
+#include "../uz_math_constants.h"
 
 float uz_signals_dead_zone(float input, float upper_threshold, float lower_threshold) {
 	uz_assert(upper_threshold > lower_threshold);
@@ -55,3 +58,5 @@ float uz_signals_saturation(float input, float upper_limit, float lower_limit) {
 	}
 	return (output);
 }
+
+#endif

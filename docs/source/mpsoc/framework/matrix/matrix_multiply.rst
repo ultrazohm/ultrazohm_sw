@@ -62,13 +62,16 @@ Example
        float A_data[6]={1,2,3,4,5,6};
        float B_data[4]={2,1,8,5};
        float C_data[6]={5};
-       uz_matrix_t* A=uz_matrix_init(A_data,UZ_MATRIX_SIZE(A_data),3, 2 );
+       struct uz_matrix_t A_matrix = {0};
+       struct uz_matrix_t B_matrix = {0};
+       struct uz_matrix_t C_matrix = {0};
+       uz_matrix_t* A=uz_matrix_init(&A_matrix,A_data,UZ_MATRIX_SIZE(A_data),3, 2 );
        TEST_ASSERT_EQUAL_FLOAT(1,get_matrix_element_zero_based(A,0,0));
        TEST_ASSERT_EQUAL_FLOAT(2,get_matrix_element_zero_based(A,0,1));
        TEST_ASSERT_EQUAL_FLOAT(3,get_matrix_element_zero_based(A,1,0));
    
-       uz_matrix_t* B=uz_matrix_init(B_data,UZ_MATRIX_SIZE(B_data),2, 2 );
-       uz_matrix_t* C=uz_matrix_init(C_data,UZ_MATRIX_SIZE(C_data),3, 2 );
+       uz_matrix_t* B=uz_matrix_init(&B_matrix,B_data,UZ_MATRIX_SIZE(B_data),2, 2 );
+       uz_matrix_t* C=uz_matrix_init(&C_matrix,C_data,UZ_MATRIX_SIZE(C_data),3, 2 );
        // C=A * B
        matrix_multiply(A,B, C);
        TEST_ASSERT_EQUAL_FLOAT(18,get_matrix_element_zero_based(C,0,0) );

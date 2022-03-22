@@ -36,7 +36,7 @@ struct uz_incrementalEncoder_t {
     bool use_theta_el;
 };
 
-static size_t instance_counter = 0U;
+static uint32_t instance_counter = 0U;
 static uz_incrementalEncoder_t instances[UZ_INCREMENTALENCODER_MAX_INSTANCES] = { 0 };
 
 static uz_incrementalEncoder_t* uz_incrementalEncoder_allocation(void);

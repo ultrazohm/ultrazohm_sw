@@ -1,6 +1,6 @@
 #pragma once
 #include <stdbool.h>
-
+#include "../uz_Transformation/uz_Transformation.h"
 /**
  * @brief Object definition for generating a chirp signal
  * 
@@ -23,15 +23,6 @@ struct uz_wavegen_chirp_config {
 	float duration_sec;         /**< Duration of the transition from start to end frequency in seconds. Only positive values are permitted */
 	float initial_delay_sec;    /**< Delay after first function call until transition starts in seconds. No negative values are permitted */
 	float offset;               /**< Offset of the chirp wave */
-};
-
-/**
- * @brief Configuration struct for three phase sine, pass to init function. Accessible by the user
- */
-struct uz_wavegen_three_phase_config {
-	float amplitude;    /**< Amplitude of the three sine waves */
-	float frequency_Hz; /**< Frequency of the three sine waves. Only positive values are permitted */
-	float offset;       /**< Offset of the three sine waves */
 };
 
 /**
@@ -143,40 +134,11 @@ float uz_wavegen_chirp_sample(uz_wavegen_chirp* self);
 void uz_wavegen_chirp_reset(uz_wavegen_chirp* self);
 
 /**
- * @brief Initialization of a wavegenerator for a three phase sine
+ * @brief Samples the global timer and returns a three phase sine wave
  * 
- * @param config Configuration struct
- * @return Pointer to wavegen_three_phase instance
+ * @param amplitude Amplitude of all three signals
+ * @param frequency_Hz Frequency in Hertz
+ * @param offset Offset
+ * @return uz_3ph_abc_t 
  */
-uz_wavegen_three_phase* uz_wavegen_three_phase_init(struct uz_wavegen_three_phase_config config);
-
-/**
- * @brief Calculates one sample for each phase for current system time
- * 
- * @param self wavegen_three_phase instance
- */
-void uz_wavegen_three_phase_sample(uz_wavegen_three_phase* self);
-
-/**
- * @brief Returns the last calculated sample for the Phase U
- * 
- * @param self wavegen_three_phase instance
- * @return Returns last sample for Phase U 
- */
-float uz_wavegen_three_phase_get_phaseU(uz_wavegen_three_phase* self);
-
-/**
- * @brief Returns the last calculated sample for the Phase V
- * 
- * @param self wavegen_three_phase instance
- * @return Returns last sample for Phase V 
- */
-float uz_wavegen_three_phase_get_phaseV(uz_wavegen_three_phase* self);
-
-/**
- * @brief Returns the last calculated sample for the Phase W
- * 
- * @param self wavegen_three_phase instance
- * @return Returns last sample for Phase W 
- */
-float uz_wavegen_three_phase_get_phaseW(uz_wavegen_three_phase* self);
+uz_3ph_abc_t uz_wavegen_three_phase_sample(float amplitude, float frequency_Hz, float offset);

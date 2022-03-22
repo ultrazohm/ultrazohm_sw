@@ -11,6 +11,7 @@ IP Cores
     
     pwm_and_ss_control
     uz_PWM_SS_2L/uz_pwm_ss_2l
+    uz_mux_axi/uz_mux_axi
     adc_LTC2311
     adc_ltc2311_v3/adc_ltc2311_v3
     uz_incrementalEncoder/uz_incrementalEncoder
@@ -21,3 +22,4 @@ IP Cores
     uz_pmsmModel/uz_pmsmModel
     uz_dataMover/uz_dataMover
     uz_dq_transformation/uz_dq_transformation
+    uz_mlp_three_layer/uz_mlp_three_layer

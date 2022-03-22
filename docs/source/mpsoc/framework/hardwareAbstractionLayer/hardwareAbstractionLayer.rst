@@ -13,9 +13,9 @@ Furthermore, the HAL defines functions to read and write values from and to the 
 * Include the header in your software and use it.
 * Use the standard libs such as ``<stdint>`` or ``<limits.h>`` instead of platform specific libraries.
 * Use ``int`` or ``float`` for variables
-* Do not use ``unsinged int`` to prevent negative values
+* Do not use ``unsigned int`` to prevent negative values
 * Use ``assert >0`` to make sure a variable is positive instead
-* Do use fixed length unsigned variables for hardware adresses (e.g. base adresses of IP-cores)
+* Do use fixed length unsigned variables for hardware addresses (e.g. base addresses of IP-cores)
 * Only use fixed length variables (e.g., ``int32_t``) for function that write to hardware registers
 * Do not use platform specific data types
 

@@ -250,12 +250,14 @@ Setup
 
    .. code-block:: C
         :linenos:
-        :emphasize-lines: 13,26,43,308,360
+        :emphasize-lines: 15,28,45,308,312,364
         :caption: Changes to the ``ipc_ARM.c`` file. (Breaks in the code are marked with ``....``).
     
         // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
         // Do not change the first (zero) and last (end) entries.
         extern uz_ParameterID_Data_t PID_Data;
+        //If FOC is used
+        extern uz_FOC* FOC_instance;
 
         void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
         {       
@@ -407,6 +409,8 @@ Setup
                     break;
 
                 case (PID_EID_Admit_Params):
+                    //If FOC is used
+                    uz_FOC_set_PMSM_parameters(FOC_instance, PID_Data.ElectricalID_Output->PMSM_parameters);
                     break;
 
                 case (PID_FID_max_speed):

@@ -26,7 +26,7 @@ Setup
   uz_ParameterID_Data_t PID_Data = { 0 };
   //Objects below are only needed, if the uz_FOC is used as the controller
   uz_FOC* FOC_instance = NULL;
-  uz_PI_Controller* SpeedControl_instance = NULL;
+  uz_SpeedControl_t* SpeedControl_instance = NULL;
 
   int main(void) {
       ParameterID = uz_ParameterID_init(&PID_Data);
@@ -43,12 +43,13 @@ Setup
           .samplingTime_sec = 0.00005f, 
           .upper_limit = 15.0f,
 			    .lower_limit = -15.0f };
-     struct uz_PI_Controller_config config_n = {
+     struct uz_SpeedControl_config config_n = {
           .Kp = PID_Data.GlobalConfig.Kp_n, 
           .Ki = PID_Data.GlobalConfig.Ki_n, 
           .samplingTime_sec = 0.00005f, 
           .upper_limit = 10.0f,
-          .lower_limit = -10.0f };
+          .lower_limit = -10.0f 
+          .enable_field_weakening = false };
      struct uz_FOC_config config_FOC = {
           .config_PMSM = PID_Data.GlobalConfig.PMSM_config,
           .config_id = config_id, 
@@ -99,7 +100,7 @@ They are technically not required for the ParameterID and can be replaced by you
   extern uz_ParameterID_t* ParameterID;
   //Next lines only needed, if the uz_FOC is used as the controller
   extern uz_FOC* FOC_instance;
-  extern uz_PI_Controller* SpeedControl_instance;
+  extern uz_SpeedControl_t* SpeedControl_instance;
   struct uz_dq_t PID_v_dq = { 0 };
   struct uz_DutyCycle_t PID_DutyCycle = { 0 };
 
@@ -162,7 +163,9 @@ In the ``javascope.c`` the measurement values from ``ActualValues`` struct shoul
      ....
      }  
 
-The ParameterID is now setup and can be controlled via the debugger window. Since this is not a practical task, a modified uz_GUI is distributed. The additional setup steps are detailed in :ref:`uz_PID_GUI_setup`
+The ParameterID is now setup and can be controlled via the debugger window. Since this is not a practical task, a modified uz_GUI is distributed. 
+The additional setup steps are detailed in :ref:`uz_PID_GUI_setup`.
+
 Functions
 =========
 
@@ -191,4 +194,3 @@ References
 .. doxygentypedef:: real32_T
 .. doxygentypedef:: boolean_T
 .. doxygentypedef:: uint16_T
-.. doxygentypedef:: uint8_T

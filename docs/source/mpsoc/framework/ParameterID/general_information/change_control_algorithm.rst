@@ -16,81 +16,81 @@ This can be used as an template to include your new controller.
   :caption: template code to include your own controller
     
   uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_PI_Controller* Speed_instance) {
-  uz_3ph_dq_t v_dq_Volts = { 0 };
-  uz_3ph_dq_t i_SpeedControl_reference_Ampere = { 0 };
-  bool ext_clamping = false;
+    uz_3ph_dq_t v_dq_Volts = { 0 };
+    uz_3ph_dq_t i_SpeedControl_reference_Ampere = { 0 };
+    bool ext_clamping = false;
 
-  if (Data->Controller_Parameters.enableFOC_speed == true) {
-	//Add your speedcontroller here. Should output dq-currents in the uz_3ph_dq_t system
-	i_SpeedControl_reference_Ampere = ....
-	//Create sine excitation for J-Identification
-	if (Data->Controller_Parameters.VibOn_out == true) {
-        float sine_excitation = uz_wavegen_sine(Data->Controller_Parameters.VibAmp_out, Data->Controller_Parameters.VibFreq_out);
-        i_SpeedControl_reference_Ampere.q += sine_excitation;}
-    else {
-        i_SpeedControl_reference_Ampere.q += Data->Controller_Parameters.PRBS_out;}}
-  if (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true) {
-    //Add your currentcontroller here. Should output dq-currents in the uz_3ph_dq_t system
-    if (Data->Controller_Parameters.enableFOC_current == true) {
-        //If CurrentControl is active, use Data->Controller_Parameters.i_dq_ref as input reference currents
-        v_dq_Volts = ....
-    } else if (Data->Controller_Parameters.enableFOC_speed == true) {
-        //If SpeedControl is active, use i_SpeedControl_reference_Ampere as input reference currents
-        v_dq_Volts = ....
+    if (Data->Controller_Parameters.enableFOC_speed == true) {
+	  //Add your speedcontroller here. Should output dq-currents in the uz_3ph_dq_t system
+	  i_SpeedControl_reference_Ampere = ....
+	  //Create sine excitation for J-Identification
+	  if (Data->Controller_Parameters.VibOn_out == true) {
+          float sine_excitation = uz_wavegen_sine(Data->Controller_Parameters.VibAmp_out, Data->Controller_Parameters.VibFreq_out);
+          i_SpeedControl_reference_Ampere.q += sine_excitation;}
+      else {
+          i_SpeedControl_reference_Ampere.q += Data->Controller_Parameters.PRBS_out;}}
+    if (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true) {
+      //Add your currentcontroller here. Should output dq-currents in the uz_3ph_dq_t system
+      if (Data->Controller_Parameters.enableFOC_current == true) {
+          //If CurrentControl is active, use Data->Controller_Parameters.i_dq_ref as input reference currents
+          v_dq_Volts = ....
+      } else if (Data->Controller_Parameters.enableFOC_speed == true) {
+          //If SpeedControl is active, use i_SpeedControl_reference_Ampere as input reference currents
+          v_dq_Volts = ....
+      }
     }
-  }
-  if (Data->Controller_Parameters.resetIntegrator == true) {
-    //Reset integrators, if necessary
-    ....
-  }
-  if (Data->ControlFlags->transNr == 1U || Data->ControlFlags->transNr == 2U) {
-    if (Data->Controller_Parameters.activeState == 144U) {
-        //Change decoupling method, if needed
-        ....
-    } else if (Data->Controller_Parameters.activeState == 170U) {
-        //Change decoupling method and update the used motor parameters with the identified ones, if needed
-        ....
+    if (Data->Controller_Parameters.resetIntegrator == true) {
+      //Reset integrators, if necessary
+      ....
     }
-    //During identification, if an FOC is used, update the controll-parameters (Kp,Ki) here
-    ....
-  }
+    if (Data->ControlFlags->transNr > 0U && Data->ControlFlags->transNr <= 4U) {
+      if (Data->Controller_Parameters.activeState == 144U) {
+          //Change decoupling method, if needed
+          ....
+      } else if (Data->Controller_Parameters.activeState == 170U) {
+          //Change decoupling method, if needed
+          ....
+      }
+      //During identification, if an FOC is used, update the control-parameters (Kp,Ki) here
+      ....
+    }
 
-  if (Data->ControlFlags->finished_all_Offline_states == true) {
-	uz_3ph_dq_t Online_current_ref = Data->GlobalConfig.i_dq_ref;
-	if (Data->OnlineID_Output->IdControlFlag == true) {
-		if (Data->AutoRefCurrents_Config.enableCRS == true) {
-			Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out + Data->AutoRefCurrents_Output.d;
-			Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
-		} else {
-			Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out;
-		}
-	} else {
-		if (Data->AutoRefCurrents_Config.enableCRS == true) {
-			Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->AutoRefCurrents_Output.d;
-			Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
-		}
-	}
-	if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
-		if (Data->PID_Control_Selection == Speed_Control) {
-			//Add your speedcontroller here. Should output dq-currents in the uz_3ph_dq_t system. If OnlineID is used, the i_d-injection signal has to be written onto the d-axis reference current
-            i_SpeedControl_reference_Ampere = ....
-		}
-		if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
-			if (Data->PID_Control_Selection == Current_Control) {
-                //If CurrentControl is active, use Online_current_ref as input reference currents
-			    v_dq_Volts = ....			
-			} else {
-                //If SpeedControl is active, use i_SpeedControl_reference_Ampere as input reference currents
-			    v_dq_Volts = ....
-			}
-		}
-	} else {
+    if (Data->ControlFlags->finished_all_Offline_states == true) {
+	  uz_3ph_dq_t Online_current_ref = Data->GlobalConfig.i_dq_ref;
+	  if (Data->OnlineID_Output->IdControlFlag == true) {
+		  if (Data->AutoRefCurrents_Config.enableCRS == true) {
+		  	Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out + Data->AutoRefCurrents_Output.d;
+		  	Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
+		  } else {
+		  	Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out;
+		  }
+	  } else {
+		  if (Data->AutoRefCurrents_Config.enableCRS == true) {
+		  	Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->AutoRefCurrents_Output.d;
+		  	Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
+		  }
+	  }
+	  if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
+		  if (Data->PID_Control_Selection == Speed_Control) {
+		  	//Add your speedcontroller here. Should output dq-currents in the uz_3ph_dq_t system. If OnlineID is used, the i_d-injection signal has to be written onto the d-axis reference current
+              i_SpeedControl_reference_Ampere = ....
+		  }
+		  if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
+			  if (Data->PID_Control_Selection == Current_Control) {
+                 //If CurrentControl is active, use Online_current_ref as input reference currents
+			      v_dq_Volts = ....			
+			  } else {
+                  //If SpeedControl is active, use i_SpeedControl_reference_Ampere as input reference currents
+			      v_dq_Volts = ....
+			  }
+		  }
+	  } else {
 	    v_dq_Volts.d = 0.0f;
-		v_dq_Volts.q = 0.0f;
-		v_dq_Volts.zero = 0.0f;
-	}
-  }
-  return (v_dq_Volts);
+		  v_dq_Volts.q = 0.0f;
+		  v_dq_Volts.zero = 0.0f;
+	    }
+    }
+    return (v_dq_Volts);
   }
 
 The function ``uz_ParameterID_generate_DutyCycle``, can be adjusted as well. It uses a continuous sinusoidal PWM (SPWM) modulation from :ref:`uz_FOC_DutyCycle` to generate the DutyCycles.

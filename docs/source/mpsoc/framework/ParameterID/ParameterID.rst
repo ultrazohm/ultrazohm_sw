@@ -126,6 +126,7 @@ These are the following:
   * :ref:`ControlFlags struct<uz_Control_flags_struct>`, which carries all flags to enable and disable the individual states
    
 On top of that, each unique ``ID-state`` has its own individual structs and signals:
+
   * ``uz_StateIDConfig_t`` (i.e. for ElectricalID :ref:`uz_ElectricalIDConfig_t<uz_PID_ElectricalIDConfig>`), which is meant for all configuration values, which are unique to this specific ``ID-state``.
   * ``uz_StateID_output_t`` (i.e. for ElectricalID :ref:`uz_ElectricalID_output_t<uz_PID_ElectricalIDoutput>`), which is meant for the identified output variables and supporting variables
   * ``enteredStateID`` flag for OfflineID- and OnlineID-states, which signals that the state has been entered

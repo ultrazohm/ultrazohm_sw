@@ -77,7 +77,6 @@ Changes in the Simulation model
    * For OfflineID states
    
       * copy the three substates from another ``ID-state`` and adjust the variables.
-      * If its an OnlineID state, just add another if-else statement to the decideMotorID state, similar to the OnlineID 
    
          .. image:: ../images/ControlState_changes2.png
 
@@ -132,7 +131,7 @@ Changes in the Simulation model
 Changes in the UltraZohm software
 =================================
 
-After code generating the stateflow the following changes have to made in the UltraZohm software repository. 
+After code generating the stateflow the following changes have to be made in the UltraZohm software repository. 
 
 #. Create a new subfolder in the ``Baremetal/src/uz/uz_ParameterID`` folder with the appropriate name.
 #. Copy the code generated .h and .c file into this folder and rename them to ``StateID_codegen.c/h``.
@@ -266,7 +265,7 @@ After code generating the stateflow the following changes have to made in the Ul
             self->StateID->input.ControlFlags = self->ControlState->output.ControlFlags;
 
             //Step the function
-            uz_TwoMassID_step(self->StateID);
+            uz_StateID_step(self->StateID);
 
             //Update Control-State-inputs
             self->ControlState->input.enteredStateID = self->StateID->output.enteredStateID;
@@ -295,8 +294,8 @@ After code generating the stateflow the following changes have to made in the Ul
          //other cases
          ....
          case xU:
-         Data->Controller_Parameters = self->StateID->output.StateID_FOC_output;
-         break;
+            Data->Controller_Parameters = self->StateID->output.StateID_FOC_output;
+            break;
          .... 
          //Rest of code
 

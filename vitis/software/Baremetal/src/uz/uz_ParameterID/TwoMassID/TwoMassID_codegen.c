@@ -86,8 +86,9 @@ static void eye(real_T b_I[4]);
 static void inv(const real32_T x[4], real32_T y[4], DW_TwoMassID_t
                 *rtTwoMassID_DW);
 static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
-                     real32_T d_start, uint16_T b_fmin, uint16_T b_fmax, uint8_T
-                     UseLevMar, real32_T uu[5], DW_TwoMassID_t *rtTwoMassID_DW);
+                     real32_T d_start, uint16_T b_fmin, uint16_T b_fmax,
+                     boolean_T UseLevMar, real32_T uu[5], DW_TwoMassID_t
+                     *rtTwoMassID_DW);
 static void enter_atomic_TMS_calculate_stat(ExtU_TwoMassID_t *rtTwoMassID_U,
   ExtY_TwoMassID_t *rtTwoMassID_Y, DW_TwoMassID_t *rtTwoMassID_DW);
 static real_T rtGetInf(void);
@@ -7640,8 +7641,9 @@ static void inv(const real32_T x[4], real32_T y[4], DW_TwoMassID_t
  * function uu=Min_LbMq(Mag_G,f_G,d_start,fmin,fmax,UseLevMar)
  */
 static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
-                     real32_T d_start, uint16_T b_fmin, uint16_T b_fmax, uint8_T
-                     UseLevMar, real32_T uu[5], DW_TwoMassID_t *rtTwoMassID_DW)
+                     real32_T d_start, uint16_T b_fmin, uint16_T b_fmax,
+                     boolean_T UseLevMar, real32_T uu[5], DW_TwoMassID_t
+                     *rtTwoMassID_DW)
 {
   boolean_T exitg1;
   boolean_T guard1 = false;
@@ -7863,7 +7865,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
   uu[0] = rtTwoMassID_DW->c_est;
 
   /* '<S1>:647:95' if(UseLevMar==1) */
-  if (UseLevMar == 1) {
+  if (UseLevMar) {
     /* Levenberg Marquardt Algorithm         */
     /* '<S1>:647:97' c_lm=single(c_est); */
     /* '<S1>:647:98' d_lm=single(d_est); */
@@ -8524,7 +8526,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
   }
 
   /* '<S1>:647:286' if(UseLevMar==0) */
-  if (UseLevMar == 0) {
+  if (!UseLevMar) {
     /* Schaetze Daempfung ueber Amplitudengangwerte an f_res und f_Til */
     /* '<S1>:647:289' d_til =  abs((JL*(Tilgerfrequenz*2*pi)^2 - c_est+(c_est*(JM+JL)-JM*JL*(Tilgerfrequenz*2*pi)^2)*Tilgerfrequenz*2*pi*10^(Tilgerwert/20)*i)    /   ((10^(Tilgerwert/20))*(Tilgerfrequenz*2*pi)^2 *(JM+JL)  + Tilgerfrequenz*2*pi*i     )) */
     rtTwoMassID_DW->ar = rtTwoMassID_DW->c_est_start_idx_0_tmp -
@@ -8952,21 +8954,14 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
           rtTwoMassID_Y->TwoMassID_output.PRBS_out = rtTwoMassID_DW->prbs_array
             [(int32_T)rtTwoMassID_DW->prbs_count - 1];
 
-          /* '<S1>:652:15' if(mean_count<511) */
-          if (rtTwoMassID_DW->mean_count < 511U) {
+          /* '<S1>:652:15' if(mean_count<1023) */
+          if (rtTwoMassID_DW->mean_count < 1023U) {
             /* '<S1>:652:16' omega_array(mean_count)=ActualValues.omega_m; */
             rtTwoMassID_DW->omega_array[(int32_T)rtTwoMassID_DW->mean_count - 1]
               = rtTwoMassID_U->ActualValues.omega_m;
 
-            /* '<S1>:652:17' iq_array(mean_count+512)=ActualValues.i_dq.q; */
-            rtTwoMassID_DW->qY = rtTwoMassID_DW->mean_count + /*MW:OvSatOk*/
-              512U;
-            if (rtTwoMassID_DW->mean_count + 512U < rtTwoMassID_DW->mean_count)
-            {
-              rtTwoMassID_DW->qY = MAX_uint32_T;
-            }
-
-            rtTwoMassID_DW->iq_array[(int32_T)rtTwoMassID_DW->qY - 1] =
+            /* '<S1>:652:17' iq_array(mean_count)=ActualValues.i_dq.q; */
+            rtTwoMassID_DW->iq_array[(int32_T)rtTwoMassID_DW->mean_count - 1] =
               rtTwoMassID_U->ActualValues.i_dq.q;
           }
 
@@ -9145,8 +9140,8 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
     rtTwoMassID_Y->TwoMassID_FOC_output.activeState = 210U;
 
     /* '<S1>:636:4' prbs_array(1:2047,1)=single(zeros(2047,1)); */
-    /* '<S1>:636:5' counter=uint32(1); */
-    rtTwoMassID_DW->counter = 1U;
+    /* '<S1>:636:5' counter=uint32(0); */
+    rtTwoMassID_DW->counter = 0U;
 
     /* '<S1>:636:6' nextstate=uint32(0); */
     rtTwoMassID_DW->nextstate = 0U;

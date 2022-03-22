@@ -214,7 +214,6 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_i
 		if (Data->Controller_Parameters.activeState == 144U) {
 			uz_FOC_set_decoupling_method(FOC_instance, no_decoupling);
 		} else if (Data->Controller_Parameters.activeState == 170U) {
-//                      uz_FOC_set_PMSM_parameters(FOC_instance, Data->PID_ElectricalID_Output->PMSM_parameters);
 			uz_FOC_set_decoupling_method(FOC_instance, linear_decoupling);
 		}
 		uz_FOC_set_Kp_id(FOC_instance, Data->Controller_Parameters.Kp_id_out);

@@ -219,7 +219,7 @@ typedef struct {
   real32_T n_ref_measurement; /** reference speed for identification */
   uint16_T f_max; /**< maximum evaluation frequency */
   uint16_T f_min; /**< minimum evaluation frequency */
-  uint8_T UseLbMq; /**< flag to use Levenberg Marquardt Algorithm */
+  boolean_T UseLbMq; /**< flag to use Levenberg Marquardt Algorithm */
   real32_T d_TMS_start; /**< inital damping value for LM-algorithm */
 } uz_PID_TwoMassIDConfig_t;
 

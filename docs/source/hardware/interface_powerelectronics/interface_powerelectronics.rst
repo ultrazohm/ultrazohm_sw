@@ -57,3 +57,7 @@ The adapter card is equipped with two RJ45-Sockets. See :ref:`analogAdapters` fo
     - Differential signal
 - Current signals
     - Using internal shunt resistor on adapter card
+
+
+.. note:: 
+   Usually an external voltage/current sensor or transducer is needed to add isolation from the high voltage side.

@@ -20,7 +20,7 @@ void test_uz_resolverIP_hw_write_to_RESCON(void)
 {
     int a=10;
     // Test passes if uz_axi_write_int32 is called once with these arguments
-    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+RESCON_Data_uz_axi_testIP,a);
+    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+RESCON_Data_uz_resolverIP,a);
     uz_resolverIP_hw_write_RESCON(TEST_BASE_ADDRESS,a);
 }
 
@@ -28,7 +28,7 @@ void test_uz_resolverIP_hw_write_to_RESDAT(void)
 {
     int a=10;
     // Test passes if uz_axi_write_int32 is called once with these arguments
-    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+RESDAT_Data_uz_axi_testIP,a);
+    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+RESDAT_Data_uz_resolverIP,a);
     uz_resolverIP_hw_write_RESDAT(TEST_BASE_ADDRESS,a);
 }
 
@@ -36,14 +36,14 @@ void test_uz_resolverIP_hw_write_to_RESADR(void)
 {
     int a=10;
     // Test passes if uz_axi_write_int32 is called once with these arguments
-    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+RESADR_Data_uz_axi_testIP,a);
+    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+RESADR_Data_uz_resolverIP,a);
     uz_resolverIP_hw_write_RESADR(TEST_BASE_ADDRESS,a);
 }
 
 void test_uz_resolverIP_hw_read_from_RESCON(void)
 {
     int c=0;
-    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+RESCON_Data_uz_axi_testIP,c);
+    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+RESCON_Data_uz_resolverIP,c);
     int c_readback=uz_resolverIP_hw_read_RESCON(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c,c_readback);
 }
@@ -51,7 +51,7 @@ void test_uz_resolverIP_hw_read_from_RESCON(void)
 void test_uz_resolverIP_hw_read_from_RESDAT(void)
 {
     int c=0;
-    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+RESDAT_Data_uz_axi_testIP,c);
+    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+RESDAT_Data_uz_resolverIP,c);
     int c_readback=uz_resolverIP_hw_read_RESDAT(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c,c_readback);
 }
@@ -59,7 +59,7 @@ void test_uz_resolverIP_hw_read_from_RESDAT(void)
 void test_uz_resolverIP_hw_read_from_RESADR(void)
 {
     int c=0;
-    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+RESADR_Data_uz_axi_testIP,c);
+    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+RESADR_Data_uz_resolverIP,c);
     int c_readback=uz_resolverIP_hw_read_RESADR(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c,c_readback);
 }
@@ -67,7 +67,7 @@ void test_uz_resolverIP_hw_read_from_RESADR(void)
 void test_uz_resolverIP_hw_read_from_RESRDA(void)
 {
     int c=0;
-    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+RESRDA_Data_uz_axi_testIP,c);
+    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+RESRDA_Data_uz_resolverIP,c);
     int c_readback=uz_resolverIP_hw_read_RESRDA(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c,c_readback);
 }

@@ -20,17 +20,19 @@
  */
 typedef struct uz_resolverIP_t uz_resolverIP_t;
 
-
 /**
  * @brief Configuration struct for resolverIP
  *
  */
 struct uz_resolverIP_config_t{
     uint32_t base_address; /**< Base address of the IP-Core */
-    uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
-    uint32_t resolution; /**< Resolution setting of AD2S1210. Determined by RES pins */
-    float freq_clockin; /**< External Clock of AD2S1210. Determined by Crystall Freqency */
+    uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core, tested for 100MHz*/
+    uint32_t resolution; /**< Resolution setting of AD2S1210. Determined by RES pins, tested for 16bit */
+    float freq_clockin; /**< External Clock of AD2S1210. Determined by Crystal Frequency, tested for 8.192MHz */
 };
+
+
+
 
 /**
  * @brief Mode enum for resolverIP
@@ -40,8 +42,10 @@ typedef enum
 {
     POSITION_MODE,/**< Position Mode of AD2S1210 */
 	VELOCITY_MODE,/**< Velocity Mode of AD2S1210 */
-	CONFIG_MODE/**< Config Mode of AD2S1210 */
+	CONFIG_MODE,/**< Config Mode of AD2S1210 */
+	POSITION_VELOCITY_MODE/**< Costum Mode for readout of both position and velocity with one trigger*/
 } uz_resolverIP_mode;
+
 
 
 /*********************
@@ -51,7 +55,7 @@ typedef enum
  *********************/
 
 /**
- * @brief Initializes an instance of the resolverIP driver
+ * @brief Initializes an instance of the resolverIP driver and sets it into Config Mode
  *
  * @param config Configuration values for the IP-Core
  * @return Pointer to initialized instance
@@ -59,40 +63,121 @@ typedef enum
 uz_resolverIP_t* uz_resolverIP_init(struct uz_resolverIP_config_t config);
 
 /**
- * @brief Sets Resolver in Config Mode for Register Read/Write Operations
+ * @brief Sets ResolverIP in Config Mode for Register Read/Write Operations
  *
  * @param self instance of uz_resolverIP_t
  */
 void uz_resolverIP_setConfigMode(uz_resolverIP_t* self);
 
+
 /**
- * @brief Sets Resolver in Velocity Mode for Velocity reading via readData function
+ * @brief Sets ResolverIP in Velocity Mode
  *
  * @param self instance of uz_resolverIP_t
  */
 void uz_resolverIP_setDataModeVelocity(uz_resolverIP_t* self);
 
 /**
- * @brief Sets Resolver in Position Mode for Position reading via readData function
+ * @brief Sets ResolverIP in Position Mode
  *
  * @param self instance of uz_resolverIP_t
  */
 void uz_resolverIP_setDataModePosition(uz_resolverIP_t* self);
 
 /**
- * @brief Reads Resolver Data: First reading is triggered, then data is read out via SPI
+ * @brief Sets ResolverIP in Position and Velocity Mode
+ *
+ * @param self instance of uz_resolverIP_t
+ */
+void uz_resolverIP_setDataModePositionVelocity(uz_resolverIP_t* self);
+
+
+/**
+ * @brief Sets Zero Position, mechanical and electrical position values are offset by this value
+ *
+ * @param self instance of uz_resolverIP_t
+ * @param zero_pos zero position, mechanical position between 0 and 2, this value is subtracted from original value in readMechanicalPosition
+ */
+void uz_resolverIP_setZeroPosition(uz_resolverIP_t* self, float zero_pos);
+
+/**
+ * @brief Returns number of pole pairs
+ *
+ * @param self instance of uz_resolverIP_t
+ * @return pole_Pairs, number of pole pairs
+ */
+float uz_resolverIP_getPolePairs(uz_resolverIP_t* self);
+
+/**
+ * @brief Sets number of pole pairs
+ *
+ * @param self instance of uz_resolverIP_t
+ * @param pole_Pairs number of pole pairs
+ */
+void uz_resolverIP_setPolePairs(uz_resolverIP_t* self, float pole_Pairs);
+
+/**
+ * @brief Reads Resolver Electrical Velocity, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
  *
  * @param self instance of uz_resolverIP_t
  *
- *  @return int32_t Read Data
+ *  @return Float Electrical Velocity Data in revs per second
  */
-int32_t uz_resolverIP_readData(uz_resolverIP_t* self);
+float uz_resolverIP_readElectricalVelocity(uz_resolverIP_t* self);
+
+/**
+ * @brief  Reads Resolver Mechanical Velocity, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
+ *
+ * @param self instance of uz_resolverIP_t
+ *
+ * @return Float Mechanical Velocity Data in revs per second
+ */
+float uz_resolverIP_readMechanicalVelocity(uz_resolverIP_t* self);
+
+/**
+ * @brief Reads Resolver Electrical Position, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
+ *
+ *
+ * @param self instance of uz_resolverIP_t
+ *
+ * @return Float Electrical Position Data in range 0 .. 2
+ */
+float uz_resolverIP_readElectricalPosition(uz_resolverIP_t* self);
+
+/**
+ * @brief Reads Resolver Mechanical Position, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
+ *
+ *
+ * @param self instance of uz_resolverIP_t
+ *
+ * @return Float Mechanial Position Data in range 0 .. 2
+ */
+float uz_resolverIP_readMechanicalPosition(uz_resolverIP_t* self);
+
+
+/**
+  * @brief Reads Resolver Mechanical Position and Velocity, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
+ *
+ * @param self instance of uz_resolverIP_t
+ * @param position_f pointer to float mechanical position value in range 0..2
+ * @param velocity_f pointer to float mechanical velocity value in revs per second
+ */
+void uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self, float* position_f, float* velocity_f);
+
+/**
+  * @brief Reads Resolver Electrical Position and Velocity, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
+ *
+ * @param self instance of uz_resolverIP_t
+ * @param position_f pointer to float electrical position value in range 0..2
+ * @param velocity_f pointer to float electrical velocity value in revs per second
+ */
+void uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self, float* position_f, float* velocity_f);
 
 /**
  * @brief Reads Resolver Register
  *
  * @param self instance of uz_resolverIP_t
- * @param addr Register address
+ * @param addr Register address (see Datasheet)
  *
  *  @return int32_t Read Register Data
  */
@@ -110,7 +195,7 @@ void uz_resolverIP_writeRegister(uz_resolverIP_t* self, int32_t addr, int32_t va
 
 /*********************
  *
- * High Level Functions
+ * High Level Register Read/Write Functions
  *
  *********************/
 

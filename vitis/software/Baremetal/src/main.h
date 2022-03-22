@@ -37,6 +37,7 @@
 #include "defines.h"
 #include "include/isr.h"
 #include "include/encoder.h"
+#include "include/uz_resolverIP_init.h"
 #include "include/gpio_axi.h"
 #include "include/javascope.h"
 #include "include/mux_axi.h"

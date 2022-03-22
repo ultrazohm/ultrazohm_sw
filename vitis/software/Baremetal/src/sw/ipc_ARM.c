@@ -329,6 +329,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			PID_Data.GlobalConfig.FrictionID = false;
 			PID_Data.GlobalConfig.FluxMapID = false;
 			PID_Data.GlobalConfig.OnlineID = false;
+			PID_Data.AutoRefCurrents_Config.enableCRS = false;
 			break;
 
 		case (PID_EID_sampleTimeISR):
@@ -470,6 +471,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (PID_OID_Reset_OnlineID):
 			PID_Data.OnlineID_Config.OnlineID_Reset = true;
 			PID_Data.AutoRefCurrents_Config.Reset = true;
+			PID_Data.AutoRefCurrents_Config.enableCRS = false;
 			break;
 
 		case (PID_OID_Enable_AutoCurrentControl):

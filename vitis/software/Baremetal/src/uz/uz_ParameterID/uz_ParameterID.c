@@ -105,7 +105,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	//OnlineID
 	if (self->ControlState->output.ControlFlags.enableOnlineID == true || self->ControlState->output.GlobalConfig_out.Reset == true || Data->OnlineID_Config.OnlineID_Reset == true) {
 		uz_PID_OnlineID_step(self, Data);
-		if (Data->AutoRefCurrents_Config.enableCRS == true || self->ControlState->output.GlobalConfig_out.Reset == true) {
+		if (Data->AutoRefCurrents_Config.enableCRS == true || self->ControlState->output.GlobalConfig_out.Reset == true || Data->OnlineID_Config.OnlineID_Reset == true) {
 			uz_PID_AutoRefCurrents_step(self, Data);
 		}
 		if (Data->FluxMap_counter < 400 && (Data->FluxMap_counter == Data->FluxMap_Control_counter)) {

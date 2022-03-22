@@ -109,7 +109,7 @@ int main(void)
             break;
         }
 
-		if (PID_Data.OnlineID_Output->clean_array == true || PID_Data.OnlineID_Config.OnlineID_Reset == true) {
+		if (PID_Data.OnlineID_Output->clean_array == true) {
 			uz_ParameterID_CleanPsiArray(ParameterID, &PID_Data);
 		}
 		if (PID_Data.calculate_flux_maps == true) {

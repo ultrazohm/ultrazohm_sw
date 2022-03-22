@@ -64,6 +64,7 @@ Especially the configuration of the motor-related parameters is important. If th
 The ID-state specific configuration values can later be configured via the uz_GUI. 
 
 .. literalinclude:: ../../../../../../vitis/software/Baremetal/src/uz/uz_ParameterID/uz_ParameterID.c
+    :caption: Code to initialize ``uz_ParameterID_Data_t``. Important parts are highlighted.
     :lines: 426-515
     :linenos:
     :emphasize-lines: 12,15-29

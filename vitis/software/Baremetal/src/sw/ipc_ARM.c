@@ -27,6 +27,7 @@ extern uint32_t js_status_BareToRTOS;
 
 //ParameterID
 extern uz_ParameterID_Data_t PID_Data;
+extern uz_FOC* FOC_instance;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -363,6 +364,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (PID_EID_Admit_Params):
+			uz_FOC_set_PMSM_parameters(FOC_instance, PID_Data.ElectricalID_Output->PMSM_parameters);
 			break;
 
 		case (PID_FID_max_speed):

@@ -1,11 +1,14 @@
-.. interface_powerelectronics:
+.. _interface_powerelectronics:
 
 ==============================
-Interface of power electronics
+Interface to power electronics
 ==============================
 
 
-To control an inverter with the UltraZohm the power electronic should be controlled directly by the gate signals. In order to get your inverter compatible with the UltraZohm platform, follow the instructions below. The signals to handle with might be gate signals, error-flags and current or voltage measurements. The following shematic shows the three different types of signals.
+To control an inverter with the UltraZohm, the power electronic should be controlled directly by the gate signals. 
+In order to get your inverter compatible with the UltraZohm platform, follow the instructions below. 
+The signals of concern include the gate signals, error-flags and current and/or voltage measurements. 
+The following schematic shows the three different types of signals.
 
 .. tikz:: Signals between UltraZohm and inverter
     :align: left
@@ -41,7 +44,12 @@ Multiple options are available to handle input or output signals of your inverte
 Analog Signals
 ==============
 
-For measurement of phase currents or voltages an analog adapter card is available. It is equipped with an 16 bit ADC of +-5 V and an OPV to adjust the incoming signal. To use the basic configuration without setting up the OPV on the adapter card, scale your voltage signals to +-5 V. An overview of possible signal types is listed below. Pleas refer to the documentation of the latest analog adapter card for more technical details. The adapter card is equipped with two RJ45-Sockets. See :ref:`analogAdapters` for pinout configuration.
+For measurement of phase currents and voltages an analog adapter card is available. 
+It is equipped with an 16 bit ADC of +-5 V and an OPV to adjust the incoming signal. 
+To use the basic configuration without setting up the OPV on the adapter card, scale your voltage signals to +-5 V. 
+An overview of possible signal types is listed below. 
+Please refer to the documentation of the latest analog adapter card for more technical details. 
+The adapter card is equipped with two RJ45-Sockets. See :ref:`analogAdapters` for pinout configuration.
 
 - Voltage signals
     - Single ended with offset voltage

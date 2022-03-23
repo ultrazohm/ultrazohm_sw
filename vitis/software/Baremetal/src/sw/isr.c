@@ -44,6 +44,7 @@ XTmrCtr Timer_Interrupt;
 
 //Initialize the Watchdog structure
 uz_watchdog_ip_t *WdtTbInstancePtr;
+static bool is_first_isr_call=true;
 
 //float sin1amp=1.0;
 
@@ -66,8 +67,14 @@ void ISR_Control(void *data)
 	//	and enable Nested Interrupts: TESTED, NECESARY
 	Xil_EnableNestedInterrupts();
 
-	/* Restart the AXI IP watch dog timer: kick forward */
-	uz_watchdog_ip_restart(WdtTbInstancePtr);
+	if (is_first_isr_call) {
+		//	Enable the WDT and launch first kick
+		uz_watchdog_ip_start(WdtTbInstancePtr);
+		is_first_isr_call = false;
+	} else {
+		/* Restart the AXI IP watch dog timer: kick forward */
+		uz_watchdog_ip_restart(WdtTbInstancePtr);
+	}
 
 	ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
@@ -120,7 +127,7 @@ int Initialize_ISR()
 	 */
     float isr_maximum_sample_time_us=(1.0f/(UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor)*1e6f);
 
-	struct uz_watchdog_ip_config_t config={
+    struct uz_watchdog_ip_config_t config={
 		.reset_timer_in_us=isr_maximum_sample_time_us,
 		.device_id=XPAR_AXI_TIMEBASE_WDT_0_DEVICE_ID,
 		.ip_clk_frequency_Hz=100000000,
@@ -326,9 +333,6 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
     // Enable GPIO and timer interrupts in the controller
     XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
     XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
-
-    //	Enable the WDT and launch first kick
-    uz_watchdog_ip_start(WdtTbInstancePtr);
 
     xil_printf("RPU: Rpu_GicInit: Done\r\n");
 

@@ -48,7 +48,7 @@ static uz_watchdog_ip_t *uz_watchdog_allocation()
     return (self);
 }
 
-static int uz_watchdog_write_init_values_to_registers(XWdtTb *watchdog_instance_ptr, uint32_t window_counter_value, uint16_t watchdog_device_id);
+static int uz_watchdog_write_init_values_to_registers(XWdtTb *watchdog_instance_ptr, uint32_t window_counter_value, uint16_t watchdog_device_id, enum uz_watchdog_fail_mode fail_mode);
 
 static uint32_t uz_watchdog_calculate_counter_from_time(uint32_t ip_clk_frequency_Hz, float reset_timer_in_us);
 
@@ -61,7 +61,7 @@ uz_watchdog_ip_t *uz_watchdog_ip_init(struct uz_watchdog_ip_config_t watchdog_co
     self->watchdog_config = watchdog_config;
     self->reset_counter_start_value = uz_watchdog_calculate_counter_from_time(watchdog_config.ip_clk_frequency_Hz, watchdog_config.reset_timer_in_us);
 
-    uz_watchdog_write_init_values_to_registers(&(self->xilinxWdtIP), self->reset_counter_start_value, self->watchdog_config.device_id); // XPFW_WDT_EXPIRE_TIME for WDT PS
+    uz_watchdog_write_init_values_to_registers(&(self->xilinxWdtIP), self->reset_counter_start_value, self->watchdog_config.device_id, self->watchdog_config.fail_mode); // XPFW_WDT_EXPIRE_TIME for WDT PS
     uz_assert(&(self->xilinxWdtIP) != NULL);
     uz_assert(self->xilinxWdtIP.IsReady == XIL_COMPONENT_IS_READY);
     return (self);
@@ -93,6 +93,9 @@ void uz_watchdog_IntrHandler(void *CallBackRef)
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
+    uint32_t fail_counter_register = 0;
+    int last_event = 0;
+
     switch (self->watchdog_config.fail_mode)
     {
     case watchdog_assertion:
@@ -100,9 +103,24 @@ void uz_watchdog_IntrHandler(void *CallBackRef)
         uz_assert(0); // Fire assertion since watchdog interrupt occurred --> Watchdog was not padded within the specified time frame
         break;
     case watchdog_debug_mode:
-        self->fail_counter++;
-        XWdtTb_RestartWdt(&(self->xilinxWdtIP));
-        XWdtTb_IntrClear(&(self->xilinxWdtIP));  /* Clear interrupt point. To allow a new INT to be triggered again (see documentation)*/
+		self->fail_counter++;
+		XWdtTb_RestartWdt(&(self->xilinxWdtIP));
+		XWdtTb_IntrClear(&(self->xilinxWdtIP));  /* Clear interrupt point. To allow a new INT to be triggered again (see documentation)*/
+
+		last_event = XWdtTb_GetLastEvent(&(self->xilinxWdtIP));
+
+		if (last_event == XWDTTB_SEC_WIN_EVENT) {
+			fail_counter_register = (uint32_t)XWdtTb_GetFailCounter(&(self->xilinxWdtIP));
+			if (fail_counter_register > 5) {
+				uz_printf("\n fail_counter_register over 5. Maximum is 7. Restarting the timer will decrement fail_counter_register again \n");
+			}
+		}else if (last_event != XWDTTB_NO_BAD_EVENT) {
+			/* Stop the timer */
+			XWdtTb_Stop(&(self->xilinxWdtIP));
+			uz_printf("\n watchdog stopped. wrong behavior \n");
+			uz_assert(0); //
+		}
+
         break;
     default:
         uz_assert(0);
@@ -110,7 +128,7 @@ void uz_watchdog_IntrHandler(void *CallBackRef)
     }
 }
 
-static int uz_watchdog_write_init_values_to_registers(XWdtTb *watchdog_instance_ptr, uint32_t window_counter_value, uint16_t watchdog_device_id)
+static int uz_watchdog_write_init_values_to_registers(XWdtTb *watchdog_instance_ptr, uint32_t window_counter_value, uint16_t watchdog_device_id, enum uz_watchdog_fail_mode fail_mode)
 {
     XWdtTb_Config *Config = XWdtTb_LookupConfig(watchdog_device_id); // WDTTB_DEVICE_ID by default
     uz_assert_not_NULL(Config);
@@ -144,8 +162,13 @@ static int uz_watchdog_write_init_values_to_registers(XWdtTb *watchdog_instance_
     /* Disable Program Sequence Monitor (PSM) */
     XWdtTb_DisablePsm(watchdog_instance_ptr);
 
-    /* Disable Fail Counter */
-    XWdtTb_DisableFailCounter(watchdog_instance_ptr);
+//    /* Enable / Disable Fail Counter */
+	if (fail_mode == watchdog_debug_mode) {
+		XWdtTb_EnableFailCounter(watchdog_instance_ptr);
+	} else {
+		XWdtTb_DisableFailCounter(watchdog_instance_ptr);
+	}
+
 
     return XST_SUCCESS;
 }

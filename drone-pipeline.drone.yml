@@ -60,6 +60,14 @@ steps:
    - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
    - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_validate_bd_design.tcl
 
+# Open vivado project, open the board design and validate the board design (F6 in Vivado GUI)
+ - name: Vivado build xpr for 9EG
+   image: vivado:2020.1
+   commands:
+   - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
+   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -nolog -nojournal -source vivado/build.tcl
+   - git status
+
 # Runs report_environment from vivado to check if the license is valid for debug reasons (only on main and develop branch)
  - name: Vivado check license
    image: vivado:2020.1

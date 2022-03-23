@@ -20,7 +20,13 @@
  *
  * so we add the clocks needed to the int point: 0x0000FF00 + 0x2710 =  0x00012610 Total Second Window Size
  * */
-#define WIN_WDT_SW_COUNT	0x00012610	/**< INITIAL COUNTER VALUE*/
+
+// These constants should be changed in case the implementation (uz_watchdog.c) changes
+#define WDTTB_SECURITY_MARGIN_US 1.0f // Security Margin in micro seconds. Tested, only one is needed (adds 100 to the wdt counter, with the AXI frec at 100MHz)
+#define WIN_WDT_SBC_COUNT 0xFF /**< Selected byte count */
+#define WIN_WDT_BSS_COUNT 3U   /**< Byte segment selected */
+#define WIN_WDT_SBC_COUNT_SHIFTED 0xFF000000
+
 /* FROM FILE xparameters.h*/
 #define WDTTB_DEVICE_ID 0U
 #define XPAR_WDTTB_0_DEVICE_ID 0U
@@ -83,10 +89,13 @@ void test_uz_watchdog_initialization(void)
     XWdtTb_SetRegSpaceAccessMode_Ignore();
     // Driver adds a "security margin" of 1 us.
     // Using 100 MHz clk, this is an additional 100 cycles
-    uint32_t expected_count_cycles=WIN_WDT_SW_COUNT+100U;
-    XWdtTb_SetWindowCount_Expect(&testWdtTb,0U, expected_count_cycles);
-    XWdtTb_SetByteCount_Expect(&testWdtTb,0xFF);
-    XWdtTb_SetByteSegment_Expect(&testWdtTb,1);
+
+    uint32_t counter_value = ((uint32_t)roundf(config.reset_timer_in_us + WDTTB_SECURITY_MARGIN_US)) * (config.ip_clk_frequency_Hz / 1000000U); // Scaling ip_clk_frequency to MHz for easy calculation
+    counter_value += WIN_WDT_SBC_COUNT_SHIFTED;
+
+    XWdtTb_SetWindowCount_Expect(&testWdtTb,0U, counter_value);
+    XWdtTb_SetByteCount_Expect(&testWdtTb,WIN_WDT_SBC_COUNT);
+    XWdtTb_SetByteSegment_Expect(&testWdtTb,WIN_WDT_BSS_COUNT);
     XWdtTb_DisableSst_Ignore();
     XWdtTb_DisablePsm_Ignore();
     XWdtTb_DisableFailCounter_Ignore();

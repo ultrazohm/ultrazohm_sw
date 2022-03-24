@@ -83,7 +83,8 @@
       "xlslice_Enable_AXI2TCM_Bit4": "",
       "xlslice_Enable_Gate_Bit1": "",
       "xlslice_Enable_Inverter_Bit0": "",
-      "zynq_ultra_ps_e_0": ""
+      "zynq_ultra_ps_e_0": "",
+      "uz_pmsm_model_0": ""
     },
     "ports": {
       "A1_IN": {
@@ -2954,7 +2955,7 @@
         "inst_hier_path": "smartconnect_1",
         "parameters": {
           "NUM_MI": {
-            "value": "1"
+            "value": "2"
           },
           "NUM_SI": {
             "value": "1"
@@ -2974,10 +2975,42 @@
               }
             },
             "bridges": [
-              "M00_AXI"
+              "M00_AXI",
+              "M01_AXI"
             ]
           },
           "M00_AXI": {
+            "mode": "Master",
+            "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "parameters": {
+              "MAX_BURST_LENGTH": {
+                "value": "256"
+              },
+              "NUM_READ_OUTSTANDING": {
+                "value": "8"
+              },
+              "NUM_READ_THREADS": {
+                "value": "1"
+              },
+              "NUM_WRITE_OUTSTANDING": {
+                "value": "8"
+              },
+              "NUM_WRITE_THREADS": {
+                "value": "1"
+              },
+              "RUSER_BITS_PER_BYTE": {
+                "value": "0"
+              },
+              "SUPPORTS_NARROW_BURST": {
+                "value": "0"
+              },
+              "WUSER_BITS_PER_BYTE": {
+                "value": "0"
+              }
+            }
+          },
+          "M01_AXI": {
             "mode": "Master",
             "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
@@ -6080,6 +6113,12 @@
             }
           }
         }
+      },
+      "uz_pmsm_model_0": {
+        "vlnv": "user.org:ip:uz_pmsm_model:1.0",
+        "xci_name": "zusys_uz_pmsm_model_0_0",
+        "xci_path": "ip/zusys_uz_pmsm_model_0_0/zusys_uz_pmsm_model_0_0.xci",
+        "inst_hier_path": "uz_pmsm_model_0"
       }
     },
     "interface_nets": {
@@ -6171,6 +6210,12 @@
         "interface_ports": [
           "smartconnect_1/M00_AXI",
           "uz_axi_testIP_0/AXI4"
+        ]
+      },
+      "smartconnect_1_M01_AXI": {
+        "interface_ports": [
+          "uz_pmsm_model_0/AXI4",
+          "smartconnect_1/M01_AXI"
         ]
       },
       "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
@@ -6491,7 +6536,9 @@
           "smartconnect_1/aresetn",
           "timer_uptime_64bit/s_axi_aresetn",
           "uz_axi_testIP_0/AXI4_ARESETN",
-          "uz_axi_testIP_0/IPCORE_RESETN"
+          "uz_axi_testIP_0/IPCORE_RESETN",
+          "uz_pmsm_model_0/IPCORE_RESETN",
+          "uz_pmsm_model_0/AXI4_ARESETN"
         ]
       },
       "proc_sys_reset_50MHz_peripheral_aresetn": {
@@ -6564,7 +6611,9 @@
           "uz_axi_testIP_0/IPCORE_CLK",
           "vio_D34_test/clk",
           "zynq_ultra_ps_e_0/maxihpm0_lpd_aclk",
-          "zynq_ultra_ps_e_0/saxi_lpd_aclk"
+          "zynq_ultra_ps_e_0/saxi_lpd_aclk",
+          "uz_pmsm_model_0/IPCORE_CLK",
+          "uz_pmsm_model_0/AXI4_ACLK"
         ]
       },
       "zynq_ultra_ps_e_0_pl_clk2": {
@@ -6698,6 +6747,11 @@
               "SEG_uz_interlockDeadtime_0_reg0": {
                 "address_block": "/Gates/uz_interlockDeadtime_0/AXI4/reg0",
                 "offset": "0x0080050000",
+                "range": "64K"
+              },
+              "SEG_uz_pmsm_model_0_reg0": {
+                "address_block": "/uz_pmsm_model_0/AXI4/reg0",
+                "offset": "0x00800D0000",
                 "range": "64K"
               }
             }

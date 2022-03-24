@@ -112,7 +112,7 @@ def read_pinout(filename):
 # if you want just to reprocess the existing xdc files to the same board, 
 # just make target_filename = origin_filename
 origin_filename = "TE0808_REV02.csv"
-target_filename = "TE0803_REV01.csv"
+target_filename = "TE0803_REV02.csv"
 xdc_relative_path = "te0808"
 
 dict_origin = read_pinout(origin_filename)

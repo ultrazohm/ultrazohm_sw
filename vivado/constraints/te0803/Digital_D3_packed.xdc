@@ -4,7 +4,7 @@
 # into csv files with the C-PIN, C-NAME, FPGA Pin Name, and Module Net Name columns.
 # Obs.: Column order is not important, but names need to be strictly followed.
 #
-# Constraints ported from TE0808_REV02.csv to TE0803_REV01.csv.
+# Constraints ported from TE0808_REV02.csv to TE0803_REV02.csv.
 #
 # Script author: Tomas P. Correa
 # Date: check GIT repo
@@ -140,19 +140,19 @@ set_property PACKAGE_PIN D10 [get_ports D3_OUT[25]]
 set_property PULLDOWN true [get_ports D3_OUT[25]]
 set_property IOSTANDARD LVCMOS18 [get_ports D3_OUT[25]]
 
-# Port D3_OUT_27[0] = B66_L24_N (J1:74)
-set_property PACKAGE_PIN B9 [get_ports D3_OUT_27[0]]
+# Port D3_OUT_26[0] = B66_L24_N (J1:74)
+set_property PACKAGE_PIN B9 [get_ports D3_OUT_26[0]]
+set_property IOSTANDARD LVCMOS18 [get_ports D3_OUT_26[0]]
+
+# Port D3_OUT_27[0] = B66_L1_P (J1:75)
+set_property PACKAGE_PIN G1 [get_ports D3_OUT_27[0]]
 set_property IOSTANDARD LVCMOS18 [get_ports D3_OUT_27[0]]
 
-# Port D3_OUT_28[0] = B66_L1_P (J1:75)
-set_property PACKAGE_PIN G1 [get_ports D3_OUT_28[0]]
+# Port D3_OUT_28[0] = B66_L24_P (J1:76)
+set_property PACKAGE_PIN C9 [get_ports D3_OUT_28[0]]
 set_property IOSTANDARD LVCMOS18 [get_ports D3_OUT_28[0]]
 
-# Port D3_OUT_29[0] = B66_L24_P (J1:76)
-set_property PACKAGE_PIN C9 [get_ports D3_OUT_29[0]]
+# Port D3_OUT_29[0] = B66_L1_N (J1:77)
+set_property PACKAGE_PIN F1 [get_ports D3_OUT_29[0]]
 set_property IOSTANDARD LVCMOS18 [get_ports D3_OUT_29[0]]
-
-# Port D3_OUT_30[0] = B66_L1_N (J1:77)
-set_property PACKAGE_PIN F1 [get_ports D3_OUT_30[0]]
-set_property IOSTANDARD LVCMOS18 [get_ports D3_OUT_30[0]]
 

@@ -4,17 +4,17 @@
 # into csv files with the C-PIN, C-NAME, FPGA Pin Name, and Module Net Name columns.
 # Obs.: Column order is not important, but names need to be strictly followed.
 #
-# Constraints ported from TE0808_REV02.csv to TE0803_REV01.csv.
+# Constraints ported from TE0808_REV02.csv to TE0803_REV02.csv.
 #
 # Script author: Tomas P. Correa
 # Date: check GIT repo
 
 
-# Port ANL_10_N_Ch3 = B64_L15_P (J4:12)
-set_property PACKAGE_PIN AB4 [get_ports ANL_10_N_Ch3]
+# Port ANL_10_N_Ch3 = B65_L11_N (J4:77)
+set_property PACKAGE_PIN K3 [get_ports ANL_10_N_Ch3]
 
-# Port ANL_10_P_Ch3 = B64_L15_N (J4:14)
-set_property PACKAGE_PIN AB3 [get_ports ANL_10_P_Ch3]
+# Port ANL_10_P_Ch3 = B65_L11_P (J4:79)
+set_property PACKAGE_PIN K4 [get_ports ANL_10_P_Ch3]
 set_property IOSTANDARD LVDS [get_ports ANL_10_P_Ch3]
 
 # Port ANL_09_P_Ch3 = B65_L20_N (J4:19)
@@ -73,10 +73,10 @@ set_property PACKAGE_PIN AF2 [get_ports ANL_02_N_Ch3]
 set_property PACKAGE_PIN AE2 [get_ports ANL_02_P_Ch3]
 set_property IOSTANDARD LVDS [get_ports ANL_02_P_Ch3]
 
-# Port ANL_01_N_Ch3 = B65_L6_N (J4:49)
-set_property PACKAGE_PIN T6 [get_ports ANL_01_N_Ch3]
+# Port ANL_01_N_Ch3 = B65_L12_N (J4:65)
+set_property PACKAGE_PIN L2 [get_ports ANL_01_N_Ch3]
 
-# Port ANL_01_P_Ch3 = B65_L6_P (J4:47)
-set_property PACKAGE_PIN R6 [get_ports ANL_01_P_Ch3]
+# Port ANL_01_P_Ch3 = B65_L12_P (J4:67)
+set_property PACKAGE_PIN L3 [get_ports ANL_01_P_Ch3]
 set_property IOSTANDARD LVDS [get_ports ANL_01_P_Ch3]
 

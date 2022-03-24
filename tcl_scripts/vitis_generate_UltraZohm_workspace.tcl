@@ -165,7 +165,7 @@ platform generate
 #####################################################
 puts "Info:(UltraZohm) create Baremetal Application"
 # create application 
-app create -name Baremetal -template {Empty Application} -platform $PLATFORM_NAME -domain Baremetal_domain
+app create -name Baremetal -template {Empty Application(C)} -platform $PLATFORM_NAME -domain Baremetal_domain
 
 puts "Info:(UltraZohm) import Baremetal Application sources"
 # import sources to baremetal project
@@ -184,7 +184,7 @@ app config -name Baremetal -add  libraries m
 ####################################################
 puts "Info:(UltraZohm) create FreeRTOS Application"
 #create application 
-app create -name FreeRTOS -template {Empty Application} -platform $PLATFORM_NAME -domain FreeRTOS_domain
+app create -name FreeRTOS -template {Empty Application(C)} -platform $PLATFORM_NAME -domain FreeRTOS_domain
 
 puts "Info:(UltraZohm) import FreeRTOS Application sources"
 #import sources to freertos project
@@ -233,13 +233,16 @@ platform write
 ####################################################
 puts "Info:(UltraZohm) clean platform and all application projects"
 platform clean
-app_clean
+app clean Baremetal
+app clean FreeRTOS
 puts "Info:(UltraZohm) build platform and all application projects"
 platform generate 
-app_build
+app build Baremetal
+app build FreeRTOS
 
 
 puts "========================================"
+puts "Copy debug files"
 # copy debug files
 set filename_meta [file join $WS_PATH .metadata]
 set filename_plugins [file join $filename_meta .plugins]

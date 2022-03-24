@@ -36,14 +36,15 @@ set_property PACKAGE_PIN D10 [get_ports {D3_OUT[25]}]
 #set_property PACKAGE_PIN M12 	[get_ports Dig_17_Ch3]
 #set_property PACKAGE_PIN U9 	[get_ports Dig_18_Ch3]
 
+# changed to zero-based numbering, starting from 00 to 29 on 24.03.2022
 #Digital_27_Ch3 = B66_L9_P
-set_property PACKAGE_PIN U5 [get_ports {D3_OUT_27[0]}]
+set_property PACKAGE_PIN U5 [get_ports {D3_OUT_26[0]}]
 #Digital_28_Ch3 = B66_L6_P
-set_property PACKAGE_PIN T1 [get_ports {D3_OUT_28[0]}]
+set_property PACKAGE_PIN T1 [get_ports {D3_OUT_27[0]}]
 #Digital_29_Ch3 = B66_L9_N
-set_property PACKAGE_PIN U4 [get_ports {D3_OUT_29[0]}]
+set_property PACKAGE_PIN U4 [get_ports {D3_OUT_28[0]}]
 #Digital_30_Ch3 = B66_L6_N
-set_property PACKAGE_PIN U1 [get_ports {D3_OUT_30[0]}]
+set_property PACKAGE_PIN U1 [get_ports {D3_OUT_29[0]}]
 
 
 

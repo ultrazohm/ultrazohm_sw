@@ -36,16 +36,20 @@ set_property PACKAGE_PIN T10 	[get_ports D2_OUT[25]]
 #set_property PACKAGE_PIN AC12 [get_ports Dig_18_Ch2]
 
 
+# changed to zero-based numbering, starting from 00 to 29 on 24.03.2022
 #Digital_27_Ch2 = B66_L16_P
-set_property PACKAGE_PIN W11 [get_ports {D2_OUT_27[0]}]
+set_property PACKAGE_PIN W11 [get_ports {D2_OUT_26[0]}]
 #Digital_28_Ch2 = B66_L19_P
-set_property PACKAGE_PIN R10 [get_ports {D2_OUT_28[0]}]
+set_property PACKAGE_PIN R10 [get_ports {D2_OUT_27[0]}]
 #Digital_29_Ch2 = B66_L8_P
-set_property PACKAGE_PIN V4 [get_ports {D2_OUT_29[0]}]
+set_property PACKAGE_PIN V4 [get_ports {D2_OUT_28[0]}]
 #Digital_30_Ch2 = B66_L18_P
-set_property PACKAGE_PIN T11 [get_ports {D2_OUT_30[0]}]
+set_property PACKAGE_PIN T11 [get_ports {D2_OUT_29[0]}]
 
 
+
+set_property IOSTANDARD LVCMOS18 [get_ports Dig_*]
+set_property PULLDOWN true [get_ports {Dig_Ch2}]
 
 set_property IOSTANDARD LVCMOS18 [get_ports D2_*]
 set_property PULLDOWN true [get_ports {D2_OUT[11]}]

@@ -18,9 +18,10 @@ catch {unset ::env(PYTHONPATH)}
 catch {unset ::env(PYTHONHOME)}
 
 # run python script to modify the generated output and generate the build.tcl script
-exec python modify_build_script.py
-
+catch {exec python modify_build_script.py}
+catch {exec python3 modify_build_script.py}
 # run python script to modify the generated output and generate the zusys.tcl script
 # inside this files is defined the board files path (later we should pass it as argument)
-exec python modify_bd_script.py
+catch {exec python modify_bd_script.py}
+catch {exec python3 modify_bd_script.py}
 

@@ -401,6 +401,24 @@ set obj [get_filesets utils_1]
 # Set 'utils_1' fileset properties
 set obj [get_filesets utils_1]
 
+# Check if block design already exists
+set bd_path {./project/zusys/zusys.bd} 
+set bd_path_backup {./project/zusys/zusys_backup.bd} 
+set bd_exists [file isfile $bd_path] 
+
+# Create backup of existing block design file 
+if {$bd_exists == 1} { 
+  puts "UZ: Block design file already exists at $bd_path \r " 
+  file rename -force $bd_path $bd_path_backup 
+  puts "UZ: Created backup copy at $bd_path_backup \r " 
+}
+
 # Create block design
 source $origin_dir/bd/zusys.tcl
 regenerate_bd_layout
+
+# Warn user again at the end about backup block design  
+if {$bd_exists == 1} { 
+  puts " \n UZ: The current block design was overwritten, a temporary backup exists at $bd_path_backup \n " 
+}
+

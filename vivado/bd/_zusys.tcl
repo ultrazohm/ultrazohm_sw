@@ -139,7 +139,6 @@ xilinx.com:ip:proc_sys_reset:5.0\
 xilinx.com:ip:smartconnect:1.0\
 xilinx.com:ip:axi_timer:2.0\
 user.org:ip:uz_axi_testIP:1.0\
-user.org:ip:uz_pmsm_model:1.0\
 xilinx.com:ip:vio:3.0\
 xilinx.com:ip:xlslice:1.0\
 xilinx.com:ip:zynq_ultra_ps_e:3.3\
@@ -1160,7 +1159,7 @@ proc create_root_design { parentCell } {
   # Create instance: smartconnect_1, and set properties
   set smartconnect_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 smartconnect_1 ]
   set_property -dict [ list \
-   CONFIG.NUM_MI {2} \
+   CONFIG.NUM_MI {1} \
    CONFIG.NUM_SI {1} \
  ] $smartconnect_1
 
@@ -1172,9 +1171,6 @@ proc create_root_design { parentCell } {
 
   # Create instance: uz_axi_testIP_0, and set properties
   set uz_axi_testIP_0 [ create_bd_cell -type ip -vlnv user.org:ip:uz_axi_testIP:1.0 uz_axi_testIP_0 ]
-
-  # Create instance: uz_pmsm_model_0, and set properties
-  set uz_pmsm_model_0 [ create_bd_cell -type ip -vlnv user.org:ip:uz_pmsm_model:1.0 uz_pmsm_model_0 ]
 
   # Create instance: vio_D34_test, and set properties
   set vio_D34_test [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 vio_D34_test ]
@@ -2156,6 +2152,14 @@ proc create_root_design { parentCell } {
    CONFIG.PSU__DDR_QOS_FIX_HP2_WRQOS {} \
    CONFIG.PSU__DDR_QOS_FIX_HP3_RDQOS {} \
    CONFIG.PSU__DDR_QOS_FIX_HP3_WRQOS {} \
+   CONFIG.PSU__DDR_QOS_HP0_RDQOS {} \
+   CONFIG.PSU__DDR_QOS_HP0_WRQOS {} \
+   CONFIG.PSU__DDR_QOS_HP1_RDQOS {} \
+   CONFIG.PSU__DDR_QOS_HP1_WRQOS {} \
+   CONFIG.PSU__DDR_QOS_HP2_RDQOS {} \
+   CONFIG.PSU__DDR_QOS_HP2_WRQOS {} \
+   CONFIG.PSU__DDR_QOS_HP3_RDQOS {} \
+   CONFIG.PSU__DDR_QOS_HP3_WRQOS {} \
    CONFIG.PSU__DDR_QOS_RD_HPR_THRSHLD {} \
    CONFIG.PSU__DDR_QOS_RD_LPR_THRSHLD {} \
    CONFIG.PSU__DDR_QOS_WR_THRSHLD {} \
@@ -2671,7 +2675,6 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net smartconnect_0_M11_AXI [get_bd_intf_pins Interrupt/S_AXI] [get_bd_intf_pins smartconnect_0/M11_AXI]
   connect_bd_intf_net -intf_net smartconnect_0_M12_AXI [get_bd_intf_pins Gates_3L/AXI4_Lite] [get_bd_intf_pins smartconnect_0/M12_AXI]
   connect_bd_intf_net -intf_net smartconnect_1_M00_AXI [get_bd_intf_pins smartconnect_1/M00_AXI] [get_bd_intf_pins uz_axi_testIP_0/AXI4]
-  connect_bd_intf_net -intf_net smartconnect_1_M01_AXI [get_bd_intf_pins smartconnect_1/M01_AXI] [get_bd_intf_pins uz_pmsm_model_0/AXI4]
   connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_LPD [get_bd_intf_pins smartconnect_0/S00_AXI] [get_bd_intf_pins zynq_ultra_ps_e_0/M_AXI_HPM0_LPD]
 
   # Create port connections
@@ -2720,7 +2723,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net iobufds_inst_2_MISO_OUT [get_bd_pins A3_ADC_LTC2311/MISO] [get_bd_pins iobufds_inst_2/MISO_OUT]
   connect_bd_net -net iobufds_inst_2_SCLK_OUT [get_bd_ports A3_OUT_CLK] [get_bd_pins iobufds_inst_2/SCLK_OUT]
   connect_bd_net -net proc_sys_reset_10MHz_peripheral_aresetn [get_bd_pins Gates/s00_axi_aresetn] [get_bd_pins proc_sys_reset_10MHz/peripheral_aresetn]
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins A1_ADC_LTC2311/s00_axi_aresetn] [get_bd_pins A2_ADC_LTC2311/s00_axi_aresetn] [get_bd_pins A3_ADC_LTC2311/s00_axi_aresetn] [get_bd_pins DataMover/m00_axi_aresetn] [get_bd_pins Gates/AXI4_Lite_ARESETN] [get_bd_pins Gates_3L/AXI4_Lite_ARESETN] [get_bd_pins Interrupt/IPCORE_RESETN] [get_bd_pins axi_gpio_2/s_axi_aresetn] [get_bd_pins proc_sys_reset_100MHz/peripheral_aresetn] [get_bd_pins smartconnect_0/aresetn] [get_bd_pins smartconnect_1/aresetn] [get_bd_pins timer_uptime_64bit/s_axi_aresetn] [get_bd_pins uz_axi_testIP_0/AXI4_ARESETN] [get_bd_pins uz_axi_testIP_0/IPCORE_RESETN] [get_bd_pins uz_pmsm_model_0/AXI4_ARESETN] [get_bd_pins uz_pmsm_model_0/IPCORE_RESETN]
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins A1_ADC_LTC2311/s00_axi_aresetn] [get_bd_pins A2_ADC_LTC2311/s00_axi_aresetn] [get_bd_pins A3_ADC_LTC2311/s00_axi_aresetn] [get_bd_pins DataMover/m00_axi_aresetn] [get_bd_pins Gates/AXI4_Lite_ARESETN] [get_bd_pins Gates_3L/AXI4_Lite_ARESETN] [get_bd_pins Interrupt/IPCORE_RESETN] [get_bd_pins axi_gpio_2/s_axi_aresetn] [get_bd_pins proc_sys_reset_100MHz/peripheral_aresetn] [get_bd_pins smartconnect_0/aresetn] [get_bd_pins smartconnect_1/aresetn] [get_bd_pins timer_uptime_64bit/s_axi_aresetn] [get_bd_pins uz_axi_testIP_0/AXI4_ARESETN] [get_bd_pins uz_axi_testIP_0/IPCORE_RESETN]
   connect_bd_net -net proc_sys_reset_50MHz_peripheral_aresetn [get_bd_pins IncreEncoder_V24_ip_0/AXI4_Lite_ARESETN] [get_bd_pins IncreEncoder_V24_ip_0/IPCORE_RESETN] [get_bd_pins proc_sys_reset_50MHz/peripheral_aresetn]
   connect_bd_net -net vio_D2_test_probe_out0 [get_bd_ports D3_OUT] [get_bd_pins vio_D34_test/probe_out0]
   connect_bd_net -net xlconcat_0_dout [get_bd_ports D4_OUT] [get_bd_pins Interrupt/Interrupt_vector] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq0]
@@ -2728,7 +2731,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net xlslice_Enable_AXI2TCM_Bit4_Dout [get_bd_pins DataMover/Enable_AXI2TCM] [get_bd_pins xlslice_Enable_AXI2TCM_Bit4/Dout]
   connect_bd_net -net xlslice_Enable_Gate_Dout [get_bd_ports D1_OUT_30] [get_bd_ports D2_OUT_30] [get_bd_ports D3_OUT_30] [get_bd_ports D4_OUT_30] [get_bd_pins xlslice_Enable_Gate_Bit1/Dout]
   connect_bd_net -net xlslice_Enable_Inverter_Dout [get_bd_pins Gates/Enable_Gate] [get_bd_pins Gates_3L/Enable_Gates] [get_bd_pins xlslice_Enable_Inverter_Bit0/Dout]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins A1_ADC_LTC2311/s00_axi_aclk] [get_bd_pins A2_ADC_LTC2311/s00_axi_aclk] [get_bd_pins A3_ADC_LTC2311/s00_axi_aclk] [get_bd_pins DataMover/m00_axi_aclk] [get_bd_pins Gates/AXI4_Lite_ACLK] [get_bd_pins Gates_3L/AXI4_Lite_ACLK] [get_bd_pins Interrupt/clk] [get_bd_pins adc_debug/clk] [get_bd_pins axi_gpio_2/s_axi_aclk] [get_bd_pins clk_wiz_0/clk_in1] [get_bd_pins ila_Encoder/clk] [get_bd_pins proc_sys_reset_100MHz/slowest_sync_clk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins smartconnect_1/aclk] [get_bd_pins timer_uptime_64bit/s_axi_aclk] [get_bd_pins uz_axi_testIP_0/AXI4_ACLK] [get_bd_pins uz_axi_testIP_0/IPCORE_CLK] [get_bd_pins uz_pmsm_model_0/AXI4_ACLK] [get_bd_pins uz_pmsm_model_0/IPCORE_CLK] [get_bd_pins vio_D34_test/clk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_lpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0] [get_bd_pins zynq_ultra_ps_e_0/saxi_lpd_aclk]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins A1_ADC_LTC2311/s00_axi_aclk] [get_bd_pins A2_ADC_LTC2311/s00_axi_aclk] [get_bd_pins A3_ADC_LTC2311/s00_axi_aclk] [get_bd_pins DataMover/m00_axi_aclk] [get_bd_pins Gates/AXI4_Lite_ACLK] [get_bd_pins Gates_3L/AXI4_Lite_ACLK] [get_bd_pins Interrupt/clk] [get_bd_pins adc_debug/clk] [get_bd_pins axi_gpio_2/s_axi_aclk] [get_bd_pins clk_wiz_0/clk_in1] [get_bd_pins ila_Encoder/clk] [get_bd_pins proc_sys_reset_100MHz/slowest_sync_clk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins smartconnect_1/aclk] [get_bd_pins timer_uptime_64bit/s_axi_aclk] [get_bd_pins uz_axi_testIP_0/AXI4_ACLK] [get_bd_pins uz_axi_testIP_0/IPCORE_CLK] [get_bd_pins vio_D34_test/clk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_lpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0] [get_bd_pins zynq_ultra_ps_e_0/saxi_lpd_aclk]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk2 [get_bd_pins Gates/s00_axi_aclk] [get_bd_pins clk_wiz_0/clk_10MHz] [get_bd_pins proc_sys_reset_10MHz/slowest_sync_clk] [get_bd_pins smartconnect_0/aclk1]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk3 [get_bd_pins IncreEncoder_V24_ip_0/AXI4_Lite_ACLK] [get_bd_pins IncreEncoder_V24_ip_0/IPCORE_CLK] [get_bd_pins clk_wiz_0/clk_50MHz] [get_bd_pins proc_sys_reset_50MHz/slowest_sync_clk] [get_bd_pins smartconnect_0/aclk2]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins clk_wiz_0/resetn] [get_bd_pins proc_sys_reset_100MHz/ext_reset_in] [get_bd_pins proc_sys_reset_10MHz/ext_reset_in] [get_bd_pins proc_sys_reset_25MHz/ext_reset_in] [get_bd_pins proc_sys_reset_50MHz/ext_reset_in] [get_bd_pins zynq_ultra_ps_e_0/pl_resetn0]
@@ -2747,7 +2750,6 @@ proc create_root_design { parentCell } {
   assign_bd_address -offset 0x800B0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs timer_uptime_64bit/S_AXI/Reg] -force
   assign_bd_address -offset 0x800C0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_axi_testIP_0/AXI4/reg0] -force
   assign_bd_address -offset 0x80050000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs Gates/uz_interlockDeadtime_0/AXI4/reg0] -force
-  assign_bd_address -offset 0x800D0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_pmsm_model_0/AXI4/reg0] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces DataMover/AXI2TCM_0/M00_AXI] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP6/LPD_DDR_LOW] -force
   assign_bd_address -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces DataMover/AXI2TCM_0/M00_AXI] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP6/LPD_LPS_OCM] -force
   assign_bd_address -offset 0xC0000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces DataMover/AXI2TCM_0/M00_AXI] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP6/LPD_QSPI] -force

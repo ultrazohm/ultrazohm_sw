@@ -12,6 +12,11 @@ write_project_tcl -no_copy_sources -use_bd_files -force _build.tcl
 open_bd_design {./project/zusys/zusys.bd}
 write_bd_tcl -force ./bd/_zusys.tcl
 
+# fix python error 
+# https://support.xilinx.com/s/article/72570?language=en_US
+unset ::env(PYTHONPATH)
+unset ::env(PYTHONHOME)
+
 # run python script to modify the generated output and generate the build.tcl script
 exec python modify_build_script.py
 

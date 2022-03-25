@@ -214,20 +214,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			break;
 
-		case (Enable_Current_Control):
-			if (ultrazohm_state_machine_get_state() != control_state) {
-				PID_Data.PID_Control_Selection = Current_Control;
-			}
+		case (My_Button_1):
 			break;
 
-		case (Enable_Speed_Control):
-			if (ultrazohm_state_machine_get_state() != control_state) {
-				PID_Data.PID_Control_Selection = Speed_Control;
-			}
+		case (My_Button_2):
 			break;
 
-		case (Disable_FOC_Control):
-			PID_Data.PID_Control_Selection = No_Control;
+		case (My_Button_3):
 			break;
 
 		case (My_Button_4):
@@ -267,6 +260,22 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (PID_Enable_ParameterID):
 			PID_Data.GlobalConfig.enableParameterID = true;
 			break;
+
+		case (PID_Enable_Current_Control):
+			if (ultrazohm_state_machine_get_state() != control_state) {
+					PID_Data.PID_Control_Selection = Current_Control;
+			}
+			break;
+
+		case (PID_Enable_Speed_Control):
+				if (ultrazohm_state_machine_get_state() != control_state) {
+						PID_Data.PID_Control_Selection = Speed_Control;
+				}
+			break;
+
+		case (PID_Disable_FOC_Control):
+				PID_Data.PID_Control_Selection = No_Control;
+				break;
 
 		case (PID_Disable_ParameterID):
 			PID_Data.GlobalConfig.enableParameterID = false;
@@ -330,6 +339,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			PID_Data.GlobalConfig.FluxMapID = false;
 			PID_Data.GlobalConfig.OnlineID = false;
 			PID_Data.AutoRefCurrents_Config.enableCRS = false;
+			PID_Data.PID_Control_Selection = No_Control;
 			break;
 
 		case (PID_EID_sampleTimeISR):
@@ -355,6 +365,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (PID_EID_MaxContinousCurrent):
 			PID_Data.GlobalConfig.PMSM_config.I_max_Ampere = value;
 			break;
+
 
 		case (PID_EID_Enable_IdentLQ):
 			PID_Data.ElectricalID_Config.identLq = true;

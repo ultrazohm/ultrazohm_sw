@@ -170,3 +170,4 @@ zusys_i: component zusys
       Dig_24_Ch5 => Dig_24_Ch5
     );
 end STRUCTURE;
+

@@ -82,7 +82,11 @@ with open("_build.tcl",'r') as f_in:
                 f_out.write("  file rename -force $bd_path $bd_path_backup \n")
                 f_out.write("  puts \"UZ: Created backup copy at $bd_path_backup \\r \" \n}\n\n"  )
                 
-                f_out.write("# Create block design\nsource $origin_dir/bd/zusys.tcl\nregenerate_bd_layout\n")
+                f_out.write("# Create block design\nsource $origin_dir/bd/zusys.tcl\nregenerate_bd_layout\n\n")
+
+                f_out.write("# Warn user again at the end about backup block design  \n")
+                f_out.write("if {$bd_exists == 1} { \n")                
+                f_out.write("  puts \" \\n UZ: The current block design was overwritten, a temporary backup exists at $bd_path_backup \\n \" \n}\n\n"  )
                 break
             else:
                 f_out.write(line)

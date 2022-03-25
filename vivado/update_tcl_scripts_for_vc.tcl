@@ -14,8 +14,8 @@ write_bd_tcl -force ./bd/_zusys.tcl
 
 # fix python error 
 # https://support.xilinx.com/s/article/72570?language=en_US
-unset ::env(PYTHONPATH)
-unset ::env(PYTHONHOME)
+catch {unset ::env(PYTHONPATH)}
+catch {unset ::env(PYTHONHOME)}
 
 # run python script to modify the generated output and generate the build.tcl script
 exec python modify_build_script.py

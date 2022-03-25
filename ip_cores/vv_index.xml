@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Index Version="1" Minor="0">
-	<Repository value="/home/ts/Documents/uz2/ultrazohm_sw/ip_cores">
+	<Repository value="/home/ts/Documents/uz_pr_review/ultrazohm_sw/ip_cores">
 	</Repository>
 	<IP>
 		<VLNV value="user.org:ip:uz_simscapeExample:1.0">

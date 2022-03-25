@@ -71,6 +71,17 @@ with open("_build.tcl",'r') as f_in:
                 f_out.write(line)
             # after this point, we don't need to add content, because vivado will auto-generate it anyway
             elif "# Create 'synth_1' run (if not found)" in line:
+                f_out.write("# Check if block design already exists\n")
+                f_out.write("set bd_path {./project/zusys/zusys.bd} \n")
+                f_out.write("set bd_path_backup {./project/zusys/zusys_backup.bd} \n")
+                f_out.write("set bd_exists [file isfile $bd_path] \n\n")
+                
+                f_out.write("# Create backup of existing block design file \n")
+                f_out.write("if {$bd_exists == 1} { \n")
+                f_out.write("  puts \"UZ: Block design file already exists at $bd_path \\r \" \n")
+                f_out.write("  file rename -force $bd_path $bd_path_backup \n")
+                f_out.write("  puts \"UZ: Created backup copy at $bd_path_backup \\r \" \n}\n\n"  )
+                
                 f_out.write("# Create block design\nsource $origin_dir/bd/zusys.tcl\nregenerate_bd_layout\n")
                 break
             else:

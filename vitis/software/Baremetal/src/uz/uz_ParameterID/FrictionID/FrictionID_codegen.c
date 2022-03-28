@@ -22,7 +22,9 @@
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
-#include "FrictionID_codegen.h"/* Named constants for Chart: '<Root>/FrictionID' */
+#include "FrictionID_codegen.h"
+
+/* Named constants for Chart: '<Root>/FrictionID' */
 #define IN_BreakawayTorqueEstimation   ((uint8_T)1U)
 #define IN_CoulombFrictionTorqueEstimat ((uint8_T)2U)
 #define IN_DecreaseSpeed               ((uint8_T)1U)
@@ -40,7 +42,7 @@ static void reset_FOC_output(ExtU_FrictionID_t *rtFrictionID_U,
   ExtY_FrictionID_t *rtFrictionID_Y, DW_FrictionID_t *rtFrictionID_DW);
 static void exit_atomic_BreakawayTorqueEsti(ExtU_FrictionID_t *rtFrictionID_U,
   ExtY_FrictionID_t *rtFrictionID_Y, DW_FrictionID_t *rtFrictionID_DW);
-static void gerade(real32_T u[2], DW_FrictionID_t *rtFrictionID_DW);
+static void gerade(real32_T u[2], ExtY_FrictionID_t *rtFrictionID_Y);
 static void initParams(ExtU_FrictionID_t *rtFrictionID_U, ExtY_FrictionID_t
   *rtFrictionID_Y, DW_FrictionID_t *rtFrictionID_DW);
 
@@ -141,7 +143,7 @@ static void exit_atomic_BreakawayTorqueEsti(ExtU_FrictionID_t *rtFrictionID_U,
  * Evaluation of Coulomb and viscous torque
  * using a linear regression line
  */
-static void gerade(real32_T u[2], DW_FrictionID_t *rtFrictionID_DW)
+static void gerade(real32_T u[2], ExtY_FrictionID_t *rtFrictionID_Y)
 {
   int32_T k;
   real32_T Xx;
@@ -153,77 +155,90 @@ static void gerade(real32_T u[2], DW_FrictionID_t *rtFrictionID_DW)
   real32_T tmp_1;
   real32_T zaehler;
 
-  /* MATLAB Function 'gerade': '<S1>:485' */
+  /* MATLAB Function 'gerade': '<S1>:625' */
   /* --------initalizing--------------------------------------- */
-  /* '<S1>:485:6' gerade=zeros(2,1); */
-  /* '<S1>:485:7' zaehler=single(0); */
+  /* '<S1>:625:7' gerade=single(zeros(2,1)); */
+  /* '<S1>:625:8' zaehler=single(0); */
   zaehler = 0.0F;
 
-  /* '<S1>:485:8' measSum=single(0); */
+  /* '<S1>:625:9' measSum=single(0); */
   measSum = 0.0F;
 
-  /* '<S1>:485:9' iestSum=single(0); */
+  /* '<S1>:625:10' iestSum=single(0); */
   iestSum = 0.0F;
 
-  /* '<S1>:485:10' Xy=single(0); */
+  /* '<S1>:625:11' Xy=single(0); */
   Xy = 0.0F;
 
-  /* '<S1>:485:11' Xx=single(0); */
+  /* '<S1>:625:12' Xx=single(0); */
   Xx = 0.0F;
 
-  /* '<S1>:485:12' meanMeas=single(0); */
-  /* '<S1>:485:13' meanIest=single(0); */
-  /* '<S1>:485:14' SS_xy=single(0); */
-  /* '<S1>:485:15' SS_xx=single(0); */
+  /* '<S1>:625:13' meanMeas=single(0); */
+  /* '<S1>:625:14' meanIest=single(0); */
+  /* '<S1>:625:15' SS_xy=single(0); */
+  /* '<S1>:625:16' SS_xx=single(0); */
   /* --------summing up---------------------------------- */
-  /* '<S1>:485:18' for k=single(2):single(127) */
-  for (k = 0; k < 126; k++) {
+  /* '<S1>:625:19' for k=single(2):single(1023) */
+  for (k = 0; k < 1022; k++) {
+    /* Outport: '<Root>/FrictionID_output' */
     /* ----------reject outliers--------------------------- */
-    /* '<S1>:485:21' if (measArray1(k) >5 && ( i_est(k)<1.3*i_est(k+1) || i_est(k)<1.3*i_est(k-1) ) && ( i_est(k)>i_est(k+1)*0.7  || i_est(k)>i_est(k-1)*0.7 )  ) */
-    tmp_1 = rtFrictionID_DW->measArray1[k + 1];
+    /* '<S1>:625:22' if (FrictionID_output.measArraySpeed(k) >5 && ( FrictionID_output.measArrayTorque(k)<1.3*FrictionID_output.measArrayTorque(k+1).... */
+    /* '<S1>:625:23'             || FrictionID_output.measArrayTorque(k)<1.3*FrictionID_output.measArrayTorque(k-1) ) &&.... */
+    /* '<S1>:625:24'             ( FrictionID_output.measArrayTorque(k)>FrictionID_output.measArrayTorque(k+1)*0.7  ||.... */
+    /* '<S1>:625:25'             FrictionID_output.measArrayTorque(k)>FrictionID_output.measArrayTorque(k-1)*0.7 )  ) */
+    tmp_1 = rtFrictionID_Y->FrictionID_output.measArraySpeed[k + 1];
     if (tmp_1 > 5.0F) {
-      tmp = rtFrictionID_DW->i_est[k + 1];
-      tmp_0 = rtFrictionID_DW->i_est[k + 2];
-      if (((tmp < tmp_0 * 1.3F) || (tmp < 1.3F * rtFrictionID_DW->i_est[k])) &&
-          ((tmp > tmp_0 * 0.7F) || (tmp > rtFrictionID_DW->i_est[k] * 0.7F))) {
-        /* '<S1>:485:22' zaehler=zaehler+1; */
+      /* Outport: '<Root>/FrictionID_output' */
+      tmp = rtFrictionID_Y->FrictionID_output.measArrayTorque[k + 1];
+      tmp_0 = rtFrictionID_Y->FrictionID_output.measArrayTorque[k + 2];
+      if (((tmp < tmp_0 * 1.3F) || (tmp < 1.3F *
+            rtFrictionID_Y->FrictionID_output.measArrayTorque[k])) && ((tmp >
+            tmp_0 * 0.7F) || (tmp >
+                              rtFrictionID_Y->
+                              FrictionID_output.measArrayTorque[k] * 0.7F))) {
+        /* . */
+        /* . */
+        /* . */
+        /* '<S1>:625:26' zaehler=zaehler+1; */
         zaehler++;
 
-        /* '<S1>:485:23' measSum=measSum+measArray1(k); */
+        /* '<S1>:625:27' measSum=measSum+FrictionID_output.measArraySpeed(k); */
         measSum += tmp_1;
 
-        /* '<S1>:485:24' iestSum=iestSum+i_est(k); */
+        /* '<S1>:625:28' iestSum=iestSum+FrictionID_output.measArrayTorque(k); */
         iestSum += tmp;
 
-        /* '<S1>:485:25' Xy=measArray1(k)*i_est(k)+Xy; */
+        /* '<S1>:625:29' Xy=FrictionID_output.measArraySpeed(k)*FrictionID_output.measArrayTorque(k)+Xy; */
         Xy += tmp_1 * tmp;
 
-        /* '<S1>:485:26' Xx=measArray1(k)*measArray1(k)+Xx; */
+        /* '<S1>:625:30' Xx=FrictionID_output.measArraySpeed(k)*FrictionID_output.measArraySpeed(k)+Xx; */
         Xx += tmp_1 * tmp_1;
       }
     }
   }
 
   /* -------calculate mean------------------------------- */
-  /* '<S1>:485:32' meanMeas=measSum/zaehler; */
+  /* '<S1>:625:36' meanMeas=measSum/zaehler; */
   measSum /= zaehler;
 
-  /* '<S1>:485:33' meanIest=iestSum/zaehler; */
+  /* '<S1>:625:37' meanIest=iestSum/zaehler; */
   iestSum /= zaehler;
 
   /* ----------calculate varianz-------------------------- */
-  /* '<S1>:485:36' SS_xy = Xy-zaehler*meanMeas*meanIest; */
+  /* '<S1>:625:40' SS_xy = Xy-zaehler*meanMeas*meanIest; */
   zaehler *= measSum;
 
-  /* '<S1>:485:37' SS_xx = Xx- zaehler*meanMeas*meanMeas; */
+  /* '<S1>:625:41' SS_xx = Xx- zaehler*meanMeas*meanMeas; */
   /* -------viscous friction-------------------------------     */
-  /* '<S1>:485:40' gerade(1)=single(SS_xy/SS_xx); */
+  /* '<S1>:625:44' gerade(1)=single(SS_xy/SS_xx); */
+  zaehler = (Xy - zaehler * iestSum) / (Xx - zaehler * measSum);
+  u[0] = zaehler;
+
   /* -------Coulomb friction----------------------------- */
-  /* '<S1>:485:43' gerade(2)=single(meanIest-(SS_xy/SS_xx)*meanMeas); */
-  /* '<S1>:485:45' u=single(gerade); */
-  Xy = (Xy - zaehler * iestSum) / (Xx - zaehler * measSum);
-  u[0] = Xy;
-  u[1] = iestSum - Xy * measSum;
+  /* '<S1>:625:47' gerade(2)=single(meanIest-(SS_xy/SS_xx)*meanMeas); */
+  u[1] = iestSum - zaehler * measSum;
+
+  /* '<S1>:625:49' u=gerade; */
 }
 
 /*
@@ -267,123 +282,124 @@ static void initParams(ExtU_FrictionID_t *rtFrictionID_U, ExtY_FrictionID_t
   }
 
   /*  initialize variables */
-  /* '<S1>:546:8' measArray1			= single(zeros(1024,1)); */
-  memset(&rtFrictionID_DW->measArray1[0], 0, sizeof(real32_T) << 10U);
-
-  /* '<S1>:546:9' meas_sum            = single(zeros(2,1)); */
+  /* '<S1>:546:8' meas_sum            = single(zeros(2,1)); */
   rtFrictionID_DW->meas_sum[0] = 0.0F;
   rtFrictionID_DW->meas_sum[1] = 0.0F;
 
-  /* used for Friction Id */
-  /* '<S1>:546:10' i_est 				= single(zeros(2048,1)); */
-  memset(&rtFrictionID_DW->i_est[0], 0, sizeof(real32_T) << 11U);
-
-  /* '<S1>:546:11' measArray2 					= single(zeros(2048,2)); */
+  /* '<S1>:546:9' measArray2 			= single(zeros(2048,2)); */
   memset(&rtFrictionID_DW->measArray2[0], 0, sizeof(real32_T) << 12U);
 
-  /* '<S1>:546:12' counter             = uint32(1); */
+  /* '<S1>:546:10' counter             = uint32(1); */
   rtFrictionID_DW->counter = 1U;
 
-  /* '<S1>:546:13' Ustep               = single(zeros(103,1)); */
+  /* '<S1>:546:11' Ustep               = single(zeros(103,1)); */
   memset(&rtFrictionID_DW->Ustep[0], 0, 103U * sizeof(real32_T));
 
-  /* '<S1>:546:14' nextstate           = uint16(0); */
+  /* '<S1>:546:12' nextstate           = uint16(0); */
   rtFrictionID_DW->nextstate = 0U;
 
-  /* '<S1>:546:15' i_eva               = single(0); */
+  /* '<S1>:546:13' i_eva               = single(0); */
   rtFrictionID_DW->i_eva = 0.0F;
 
   /* Inport: '<Root>/FrictionConfigID' */
-  /* '<S1>:546:16' n_eva               = single(FrictionConfigID.n_eva_max); */
+  /* '<S1>:546:14' n_eva               = single(FrictionConfigID.n_eva_max); */
   rtFrictionID_DW->n_eva = rtFrictionID_U->FrictionConfigID.n_eva_max;
 
-  /* '<S1>:546:17' n_eva_step          = single(n_eva/FrictionConfigID.N_Visco); */
+  /* '<S1>:546:15' n_eva_step          = single(n_eva/FrictionConfigID.N_Visco); */
   rtFrictionID_DW->n_eva_step = rtFrictionID_DW->n_eva /
     rtFrictionID_U->FrictionConfigID.N_Visco;
 
-  /* '<S1>:546:18' i_Brk               = single(0); */
+  /* '<S1>:546:16' i_Brk               = single(0); */
   rtFrictionID_DW->i_Brk = 0.0F;
 
-  /* '<S1>:546:19' mean_count          = single(0); */
+  /* '<S1>:546:17' mean_count          = single(0); */
   rtFrictionID_DW->mean_count = 0.0F;
 
-  /* '<S1>:546:20' omega_Brk           = single(1); */
+  /* '<S1>:546:18' omega_Brk           = single(1); */
   rtFrictionID_DW->omega_Brk = 1.0F;
 
   /* Inport: '<Root>/GlobalConfig' incorporates:
    *  Inport: '<Root>/FrictionConfigID'
    */
-  /* '<S1>:546:21' delay               = single(5*(GlobalConfig.Kp_iq / GlobalConfig.Ki_iq)); */
-  /* '<S1>:546:22' i_eva_step          = single(GlobalConfig.ratCurrent*FrictionConfigID.StepScale); */
+  /* '<S1>:546:19' delay               = single(5*(GlobalConfig.Kp_iq / GlobalConfig.Ki_iq)); */
+  /* '<S1>:546:20' i_eva_step          = single(GlobalConfig.ratCurrent*FrictionConfigID.StepScale); */
   rtFrictionID_DW->i_eva_step = rtFrictionID_U->GlobalConfig_out.ratCurrent *
     rtFrictionID_U->FrictionConfigID.StepScale;
 
   /* Outport: '<Root>/FrictionID_FOC_output' */
+  /* '<S1>:546:21' line                = single(zeros(2,1)); */
   /* Outputs */
-  /* '<S1>:546:25' FrictionID_FOC_output.n_ref_FOC             = single(0.0); */
+  /* '<S1>:546:24' FrictionID_FOC_output.n_ref_FOC             = single(0.0); */
   rtFrictionID_Y->FrictionID_FOC_output.n_ref_FOC = 0.0F;
 
-  /* '<S1>:546:26' FrictionID_FOC_output.i_dq_ref.d            = single(0.0); */
+  /* '<S1>:546:25' FrictionID_FOC_output.i_dq_ref.d            = single(0.0); */
   rtFrictionID_Y->FrictionID_FOC_output.i_dq_ref.d = 0.0F;
 
-  /* '<S1>:546:27' FrictionID_FOC_output.i_dq_ref.q            = single(i_eva); */
+  /* '<S1>:546:26' FrictionID_FOC_output.i_dq_ref.q            = single(i_eva); */
   rtFrictionID_Y->FrictionID_FOC_output.i_dq_ref.q = rtFrictionID_DW->i_eva;
 
-  /* '<S1>:546:28' FrictionID_FOC_output.i_dq_ref.zero         = single(0.0); */
+  /* '<S1>:546:27' FrictionID_FOC_output.i_dq_ref.zero         = single(0.0); */
   rtFrictionID_Y->FrictionID_FOC_output.i_dq_ref.zero = 0.0F;
 
-  /* '<S1>:546:29' FrictionID_FOC_output.enableFOC_speed       = boolean(0); */
+  /* '<S1>:546:28' FrictionID_FOC_output.enableFOC_speed       = boolean(0); */
   rtFrictionID_Y->FrictionID_FOC_output.enableFOC_speed = false;
 
-  /* '<S1>:546:30' FrictionID_FOC_output.enableFOC_current     = boolean(0); */
+  /* '<S1>:546:29' FrictionID_FOC_output.enableFOC_current     = boolean(0); */
   rtFrictionID_Y->FrictionID_FOC_output.enableFOC_current = false;
 
-  /* '<S1>:546:31' FrictionID_FOC_output.resetIntegrator       = boolean(1); */
+  /* '<S1>:546:30' FrictionID_FOC_output.resetIntegrator       = boolean(1); */
   rtFrictionID_Y->FrictionID_FOC_output.resetIntegrator = true;
 
   /* Outport: '<Root>/finishedFrictionID' */
-  /* '<S1>:546:32' finishedFrictionID                          = boolean(0); */
+  /* '<S1>:546:31' finishedFrictionID                          = boolean(0); */
   rtFrictionID_Y->finishedFrictionID = false;
 
   /* Outport: '<Root>/FrictionID_FOC_output' incorporates:
    *  Inport: '<Root>/GlobalConfig'
    */
-  /* '<S1>:546:33' FrictionID_FOC_output.Kp_id_out             = single(GlobalConfig.Kp_id); */
+  /* '<S1>:546:32' FrictionID_FOC_output.Kp_id_out             = single(GlobalConfig.Kp_id); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_id_out =
     rtFrictionID_U->GlobalConfig_out.Kp_id;
 
-  /* '<S1>:546:34' FrictionID_FOC_output.Kp_iq_out             = single(GlobalConfig.Kp_iq); */
+  /* '<S1>:546:33' FrictionID_FOC_output.Kp_iq_out             = single(GlobalConfig.Kp_iq); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_iq_out =
     rtFrictionID_U->GlobalConfig_out.Kp_iq;
 
-  /* '<S1>:546:35' FrictionID_FOC_output.Kp_n_out              = single(GlobalConfig.Kp_n); */
+  /* '<S1>:546:34' FrictionID_FOC_output.Kp_n_out              = single(GlobalConfig.Kp_n); */
   rtFrictionID_Y->FrictionID_FOC_output.Kp_n_out =
     rtFrictionID_U->GlobalConfig_out.Kp_n;
 
-  /* '<S1>:546:36' FrictionID_FOC_output.Ki_id_out             = single(GlobalConfig.Ki_id); */
+  /* '<S1>:546:35' FrictionID_FOC_output.Ki_id_out             = single(GlobalConfig.Ki_id); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_id_out =
     rtFrictionID_U->GlobalConfig_out.Ki_id;
 
-  /* '<S1>:546:37' FrictionID_FOC_output.Ki_iq_out             = single(GlobalConfig.Ki_iq); */
+  /* '<S1>:546:36' FrictionID_FOC_output.Ki_iq_out             = single(GlobalConfig.Ki_iq); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_iq_out =
     rtFrictionID_U->GlobalConfig_out.Ki_iq;
 
-  /* '<S1>:546:38' FrictionID_FOC_output.Ki_n_out              = single(GlobalConfig.Ki_n); */
+  /* '<S1>:546:37' FrictionID_FOC_output.Ki_n_out              = single(GlobalConfig.Ki_n); */
   rtFrictionID_Y->FrictionID_FOC_output.Ki_n_out =
     rtFrictionID_U->GlobalConfig_out.Ki_n;
 
-  /* '<S1>:546:39' FrictionID_FOC_output.activeState           = uint16(0); */
+  /* '<S1>:546:38' FrictionID_FOC_output.activeState           = uint16(0); */
   rtFrictionID_Y->FrictionID_FOC_output.activeState = 0U;
 
   /* Outport: '<Root>/FrictionID_output' */
-  /* '<S1>:546:41' FrictionID_output.BrkTorque                 = single(0.0); */
+  /* '<S1>:546:40' FrictionID_output.BrkTorque                 = single(0.0); */
   rtFrictionID_Y->FrictionID_output.BrkTorque = 0.0F;
 
-  /* '<S1>:546:42' FrictionID_output.CoulTorque                = single(0.0); */
+  /* '<S1>:546:41' FrictionID_output.CoulTorque                = single(0.0); */
   rtFrictionID_Y->FrictionID_output.CoulTorque = 0.0F;
 
-  /* '<S1>:546:43' FrictionID_output.ViscoTorque               = single(0.0); */
+  /* '<S1>:546:42' FrictionID_output.ViscoTorque               = single(0.0); */
   rtFrictionID_Y->FrictionID_output.ViscoTorque = 0.0F;
+
+  /* '<S1>:546:43' FrictionID_output.measArraySpeed			= single(zeros(1024,1)); */
+  /* '<S1>:546:44' FrictionID_output.measArrayTorque           = single(zeros(1024,1)); */
+  memset(&rtFrictionID_Y->FrictionID_output.measArraySpeed[0], 0, sizeof
+         (real32_T) << 10U);
+  memset(&rtFrictionID_Y->FrictionID_output.measArrayTorque[0], 0, sizeof
+         (real32_T) << 10U);
 }
 
 /* Model step function */
@@ -519,16 +535,16 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
       }
 
       /* Exit 'CoulombFrictionTorqueEstimation': '<S1>:487' */
-      /* '<S1>:487:19' line=gerade; */
-      gerade(line, rtFrictionID_DW);
+      /* '<S1>:487:17' line=gerade; */
+      gerade(line, rtFrictionID_Y);
 
-      /* '<S1>:487:20' FrictionID_output.CoulTorque=single(line(2)); */
+      /* '<S1>:487:18' FrictionID_output.CoulTorque=single(line(2)); */
       rtFrictionID_Y->FrictionID_output.CoulTorque = line[1];
 
-      /* '<S1>:487:21' FrictionID_output.ViscoTorque=single(line(1)); */
+      /* '<S1>:487:19' FrictionID_output.ViscoTorque=single(line(1)); */
       rtFrictionID_Y->FrictionID_output.ViscoTorque = line[0];
 
-      /* '<S1>:487:22' FrictionID_FOC_output.n_ref_FOC=single(0); */
+      /* '<S1>:487:20' FrictionID_FOC_output.n_ref_FOC=single(0); */
       rtFrictionID_Y->FrictionID_FOC_output.n_ref_FOC = 0.0F;
       rtFrictionID_DW->is_frictionID = IN_NO_ACTIVE_CHILD;
       break;
@@ -693,16 +709,16 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
         }
 
         /* Exit 'CoulombFrictionTorqueEstimation': '<S1>:487' */
-        /* '<S1>:487:19' line=gerade; */
-        gerade(line, rtFrictionID_DW);
+        /* '<S1>:487:17' line=gerade; */
+        gerade(line, rtFrictionID_Y);
 
-        /* '<S1>:487:20' FrictionID_output.CoulTorque=single(line(2)); */
+        /* '<S1>:487:18' FrictionID_output.CoulTorque=single(line(2)); */
         rtFrictionID_Y->FrictionID_output.CoulTorque = line[1];
 
-        /* '<S1>:487:21' FrictionID_output.ViscoTorque=single(line(1)); */
+        /* '<S1>:487:19' FrictionID_output.ViscoTorque=single(line(1)); */
         rtFrictionID_Y->FrictionID_output.ViscoTorque = line[0];
 
-        /* '<S1>:487:22' FrictionID_FOC_output.n_ref_FOC=single(0); */
+        /* '<S1>:487:20' FrictionID_FOC_output.n_ref_FOC=single(0); */
         rtFrictionID_Y->FrictionID_FOC_output.n_ref_FOC = 0.0F;
         rtFrictionID_DW->is_frictionID = IN_ResetIntegrator2;
 
@@ -713,7 +729,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
         /* '<S1>:599:4' FrictionID_FOC_output.activeState=uint16(340); */
         rtFrictionID_Y->FrictionID_FOC_output.activeState = 340U;
       } else {
-        /* '<S1>:487:17' FrictionID_FOC_output.n_ref_FOC=n_eva; */
+        /* '<S1>:487:15' FrictionID_FOC_output.n_ref_FOC=n_eva; */
         rtFrictionID_Y->FrictionID_FOC_output.n_ref_FOC = rtFrictionID_DW->n_eva;
         if (rtFrictionID_DW->is_CoulombFrictionTorqueEstimat == IN_DecreaseSpeed)
         {
@@ -762,23 +778,24 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
 
           /* '<S1>:488:5' if(n_eva>0&&switcher==boolean(1)) */
           if ((rtFrictionID_DW->n_eva > 0.0F) && rtFrictionID_DW->switcher) {
-            /* '<S1>:488:6' measArray1(counter)=mean(measArray2(1:256,1)); */
+            /* '<S1>:488:6' FrictionID_output.measArraySpeed(counter)=mean(measArray2(1:256,1)); */
             x = rtFrictionID_DW->measArray2[0];
             for (i = 0; i < 255; i++) {
               x += rtFrictionID_DW->measArray2[i + 1];
             }
 
-            rtFrictionID_DW->measArray1[(int32_T)rtFrictionID_DW->counter - 1] =
-              x / 256.0F;
+            rtFrictionID_Y->FrictionID_output.measArraySpeed[(int32_T)
+              rtFrictionID_DW->counter - 1] = x / 256.0F;
 
-            /* '<S1>:488:7' i_est(counter)=1.5*GlobalConfig.PMSM_config.polePairs*GlobalConfig.PMSM_config.Psi_PM_Vs*mean(measArray2(1:256,2)); */
+            /* '<S1>:488:7' FrictionID_output.measArrayTorque(counter)=1.5*GlobalConfig.PMSM_config.polePairs*GlobalConfig.PMSM_config.Psi_PM_Vs*mean(measArray2(1:256,2)); */
             x = rtFrictionID_DW->measArray2[2048];
             for (i = 0; i < 255; i++) {
               x += rtFrictionID_DW->measArray2[i + 2049];
             }
 
-            rtFrictionID_DW->i_est[(int32_T)rtFrictionID_DW->counter - 1] = 1.5F
-              * rtFrictionID_U->GlobalConfig_out.PMSM_config.polePairs *
+            rtFrictionID_Y->FrictionID_output.measArrayTorque[(int32_T)
+              rtFrictionID_DW->counter - 1] = 1.5F *
+              rtFrictionID_U->GlobalConfig_out.PMSM_config.polePairs *
               rtFrictionID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs * (x /
               256.0F);
 
@@ -882,33 +899,27 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
         rtFrictionID_Y->FrictionID_FOC_output.n_ref_FOC = 0.0F;
 
         /* '<S1>:487:6' delay=single(0.1); */
-        /* '<S1>:487:7' measArray1(1:128)=zeros(128,1); */
-        memset(&rtFrictionID_DW->measArray1[0], 0, sizeof(real32_T) << 7U);
-
-        /* '<S1>:487:8' i_est(1:1024)=zeros(1024,1); */
-        memset(&rtFrictionID_DW->i_est[0], 0, sizeof(real32_T) << 10U);
-
-        /* '<S1>:487:9' meas_sum=single(zeros(2,1)); */
-        /* '<S1>:487:10' measArray2(1:1024,1:2)=zeros(1024,2); */
+        /* '<S1>:487:7' meas_sum=single(zeros(2,1)); */
+        /* '<S1>:487:8' measArray2(1:1024,1:2)=zeros(1024,2); */
         for (i = 0; i < 2; i++) {
           rtFrictionID_DW->meas_sum[i] = 0.0F;
           memset(&rtFrictionID_DW->measArray2[i << 11], 0, sizeof(real32_T) <<
                  10U);
         }
 
-        /* '<S1>:487:11' omega_Brk=single(5.0); */
+        /* '<S1>:487:9' omega_Brk=single(5.0); */
         rtFrictionID_DW->omega_Brk = 5.0F;
 
-        /* '<S1>:487:12' nextstate=uint16(0); */
+        /* '<S1>:487:10' nextstate=uint16(0); */
         rtFrictionID_DW->nextstate = 0U;
 
-        /* '<S1>:487:13' counter=uint32(1); */
+        /* '<S1>:487:11' counter=uint32(1); */
         rtFrictionID_DW->counter = 1U;
 
-        /* '<S1>:487:14' mean_count=single(256); */
+        /* '<S1>:487:12' mean_count=single(256); */
         rtFrictionID_DW->mean_count = 256.0F;
 
-        /* '<S1>:487:15' meas_count=uint16(0); */
+        /* '<S1>:487:13' meas_count=uint16(0); */
         /* Entry Internal 'CoulombFrictionTorqueEstimation': '<S1>:487' */
         /* Transition: '<S1>:496' */
         rtFrictionID_DW->is_CoulombFrictionTorqueEstimat =
@@ -1004,6 +1015,10 @@ void FrictionID_initialize(RT_MODEL_FrictionID_t *const rtFrictionID_M)
   rtFrictionID_Y->FrictionID_FOC_output.Ki_id_out = 0.0F;
   rtFrictionID_Y->FrictionID_FOC_output.Ki_iq_out = 0.0F;
   rtFrictionID_Y->FrictionID_FOC_output.Ki_n_out = 0.0F;
+  memset(&rtFrictionID_Y->FrictionID_output.measArrayTorque[0], 0, sizeof
+         (real32_T) << 10U);
+  memset(&rtFrictionID_Y->FrictionID_output.measArraySpeed[0], 0, sizeof
+         (real32_T) << 10U);
   rtFrictionID_Y->FrictionID_output.BrkTorque = 0.0F;
   rtFrictionID_Y->FrictionID_output.CoulTorque = 0.0F;
   rtFrictionID_Y->FrictionID_output.ViscoTorque = 0.0F;

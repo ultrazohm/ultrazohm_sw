@@ -70,8 +70,6 @@ typedef struct {
   real32_T measArray2[4096];           /* '<Root>/FrictionID' */
   real32_T Ustep[103];                 /* '<Root>/FrictionID' */
   real32_T meas_sum[2];                /* '<Root>/FrictionID' */
-  real32_T i_est[2048];                /* '<Root>/FrictionID' */
-  real32_T measArray1[1024];           /* '<Root>/FrictionID' */
   real32_T i_Brk;                      /* '<Root>/FrictionID' */
   real32_T i_eva;                      /* '<Root>/FrictionID' */
   real32_T i_eva_step;                 /* '<Root>/FrictionID' */
@@ -151,6 +149,5 @@ extern void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M);
  *
  * [EOF]
  */
-
 
 #endif

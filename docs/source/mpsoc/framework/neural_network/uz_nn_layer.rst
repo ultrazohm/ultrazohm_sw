@@ -4,7 +4,7 @@
 uz_nn_layer
 ===========
 
-The uz_nn_layer is used by the neural network software module (:ref:`uz_nn`) and is based on :ref:`matrix_math` as well as :ref:`nn_activation_function`.
+The uz_nn_layer is used by the neural network software module (:ref:`uz_nn`) and is based on :ref:`uz_matrix` as well as :ref:`nn_activation_function`.
 A layer in a neural network consists of a configurable number of neurons and an activation function.
 A layer multiplies the input :math:`\boldsymbol{x}` of the layer with the weight matrix :math:`\boldsymbol{w}` of the layer and adds the bias :math:`\boldsymbol{b}` to calculate :math:`\boldsymbol{s}`.
 The output of the layer :math:`\boldsymbol{y}` is the result of feeding the sum :math:`\boldsymbol{s}` into the activation function of the layer.
@@ -92,10 +92,10 @@ With :ref:`activation_function_relu` activation function:
 Software and Example
 ====================
 
-One ``uz_nn_layer_t`` instance uses three ``uz_matrix_t`` (:ref:`matrix_math`) instances!
+One ``uz_nn_layer_t`` instance uses three ``uz_matrix_t`` (:ref:`uz_matrix`) instances!
 Take this into account in the :ref:`global_configuration`.
 The usage of a layer requires the user to pass pointer to arrays for the weights, bias, and output of the layer to the init function.
-The init function initializes the required matrices and passes the pointer to the arrays to the initialization function of :ref:`matrix_math` (``uz_matrix_init``).
+The init function initializes the required matrices and passes the pointer to the arrays to the initialization function of :ref:`uz_matrix` (``uz_matrix_init``).
 
 The following shows an example initialization and feedforward calculation of one layer.
 
@@ -103,7 +103,7 @@ The following shows an example initialization and feedforward calculation of one
 - three pointer to three arrays have to be provided in the config struct
 - ``number_of_neurons`` and ``number_of_inputs`` are freely configurable but have to be consistent with the dimensions of the provided arrays
 - ``activation_function`` determines the activation function of the layer
-- Note that ``uz_nn_layer`` operates directly on the data that the arrays hold. Therefore, never access or change the data in the array directly (as is the case with :ref:`matrix_math`)!
+- Note that ``uz_nn_layer`` operates directly on the data that the arrays hold. Therefore, never access or change the data in the array directly (as is the case with :ref:`uz_matrix`)!
 
 .. code-block:: c
     :caption: Initialization and feedforward calculation of one layer
@@ -120,10 +120,11 @@ The following shows an example initialization and feedforward calculation of one
 
     void test_uz_nn_layer_ff_relu(void)
     {
-        uz_matrix_t *input = uz_matrix_init(x, UZ_MATRIX_SIZE(x), 1, NUMBER_OF_INPUTS);
+        struct uz_matrix_t input_matrix={0};
+        uz_matrix_t *input = uz_matrix_init(&input_matrix,x, UZ_MATRIX_SIZE(x), 1, NUMBER_OF_INPUTS);
         float b0[4] = {1, -2, 3, -4};
         struct uz_nn_layer_config config = {
-            .activation_function = ReLU,
+            .activation_function = activation_ReLU,
             .number_of_neurons = NUMBER_OF_NEURONS_IN_LAYER,
             .number_of_inputs = NUMBER_OF_INPUTS,
             .length_of_weights = UZ_MATRIX_SIZE(w),
@@ -138,7 +139,7 @@ The following shows an example initialization and feedforward calculation of one
         float expected[4] = {12.9105, 5.5267 , 0.0 , 6.6521};
         uz_nn_layer_ff(layer, input);
         uz_matrix_t *result = uz_nn_layer_get_output_data(layer);
-        for (size_t i = 0; i < 4; i++)
+        for (uint32_t i = 0; i < 4; i++)
         {
         TEST_ASSERT_EQUAL_FLOAT(expected[i], uz_matrix_get_element_zero_based(result, 0, i));
         }

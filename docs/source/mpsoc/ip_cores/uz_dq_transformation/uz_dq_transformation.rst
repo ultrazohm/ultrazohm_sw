@@ -51,7 +51,7 @@ Driver reference
 
 .. doxygenfunction:: uz_dqIPcore_get_id_iq
 
-.. doxygenfunction:: uz_dqIPcore_get_i_uvw
+.. doxygenfunction:: uz_dqIPcore_get_i_abc
 
 
 

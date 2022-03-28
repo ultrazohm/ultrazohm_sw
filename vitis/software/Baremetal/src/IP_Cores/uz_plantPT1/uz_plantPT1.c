@@ -12,7 +12,7 @@ struct uz_plantPT1_t
     struct uz_plantPT1_config_t config;
 };
 
-static size_t instance_counter = 0U;
+static uint32_t instance_counter = 0U;
 static uz_plantPT1_t instances[UZ_PLANTPT1_MAX_INSTANCES] = {0};
 
 static uz_plantPT1_t *uz_plantPT1_allocation(void);

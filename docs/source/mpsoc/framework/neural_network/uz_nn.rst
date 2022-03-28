@@ -5,7 +5,7 @@ uz_nn
 =====
 
 The neural network software implementation follows the definitions outlined in :ref:`neural_network`.
-The module is based on the :ref:`uz_nn_layer` and the :ref:`matrix_math` module.
+The module is based on the :ref:`uz_nn_layer` and the :ref:`uz_matrix` module.
 
 Features and limitations:
 
@@ -28,7 +28,7 @@ Software
 - Compared to other modules (see :ref:`software_development_guidelines`), the initialization function (``uz_nn_init``) takes an array of pointers to the config struct of each layer instead of one config structure
 - This allows for individual configuration of each layer with a variable amount of layers
 - The number of outputs is automatically determined based on the number of neurons in the last layer
-- The arrays that hold the actual data (weights, bias, outputs of each layer) have to be allocated manually (see :ref:`matrix_math`)
+- The arrays that hold the actual data (weights, bias, outputs of each layer) have to be allocated manually (see :ref:`uz_matrix`)
 
 Initialization of config struct
 *******************************
@@ -77,7 +77,7 @@ The following shows an example initialization of a ``uz_nn`` that implements the
 
     struct uz_nn_layer_config config[3] = {
     [0] = {
-        .activation_function = ReLU,
+        .activation_function = activation_ReLU,
         .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
         .number_of_inputs = NUMBER_OF_INPUTS,
         .length_of_weights = UZ_MATRIX_SIZE(w_1),
@@ -86,7 +86,7 @@ The following shows an example initialization of a ``uz_nn`` that implements the
         .weights = w_1,
         .bias = b_1,
         .output = y_1},
-    [1] = {.activation_function = ReLU,
+    [1] = {.activation_function = activation_ReLU,
             .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
             .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
             .length_of_weights = UZ_MATRIX_SIZE(w_2),
@@ -95,7 +95,7 @@ The following shows an example initialization of a ``uz_nn`` that implements the
             .weights = w_2,
             .bias = b_2,
             .output = y_2},
-    [2] = {.activation_function = linear,
+    [2] = {.activation_function = activation_linear,
            .number_of_neurons = NUMBER_OF_OUTPUTS,
            .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
            .length_of_weights = UZ_MATRIX_SIZE(w_3),
@@ -108,7 +108,8 @@ The following shows an example initialization of a ``uz_nn`` that implements the
 
     void test_uz_nn_ff(void)
     {
-        uz_matrix_t* input=uz_matrix_init(x,UZ_MATRIX_SIZE(x),1,2);
+        struct uz_matrix_t input_matrix={0};
+        uz_matrix_t* input=uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1,2);
         uz_nn_t *test = uz_nn_init(config, 3);
         uz_nn_ff(test,input);
         float expected_result_first_layer[3]={10, 14, 18};
@@ -124,6 +125,14 @@ The following shows an example initialization of a ``uz_nn`` that implements the
         float result=uz_matrix_get_element_zero_based(output,0,0);
         TEST_ASSERT_EQUAL_FLOAT(expected_result,result);
     }
+
+The network takes approximately 
+The same network with different activation functions in the hidden layers:
+
+- ReLU: :math:`3.5 \mu s`
+- activation_sigmoid: :math:`5.5 \mu s`
+- activation_sigmoid2: :math:`6.5 \mu s`
+- activation_tanh: :math:`5.0 \mu s`
 
 
 Initialization of pretrained network
@@ -141,7 +150,7 @@ To ease the declaration of weight and bias arrays, initialization based on ``.cs
 The weights have to be a ``.csv`` with the separator set to ``comma``.
 Furthermore, for the weights, the first :math:`n` elements correspond to the first row of weights with :math:`n` representing the number of neurons in the layer.
 Effectively, each row is attached to the columns one by one.
-See :ref:`matrix_math` for details regarding the transformation of matrix to vector dimensions and :ref:`neural_network` regarding the dimension definition of the network.
+See :ref:`uz_matrix` for details regarding the transformation of matrix to vector dimensions and :ref:`neural_network` regarding the dimension definition of the network.
 
 .. tip:: Use the declaration and defines shown in the examples and unit tests and adjust them to specific networks.
 

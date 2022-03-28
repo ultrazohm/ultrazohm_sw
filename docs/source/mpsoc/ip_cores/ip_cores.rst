@@ -23,3 +23,4 @@ IP Cores
     uz_dataMover/uz_dataMover
     uz_dq_transformation/uz_dq_transformation
     uz_watchdog/uz_watchdog
+    uz_mlp_three_layer/uz_mlp_three_layer

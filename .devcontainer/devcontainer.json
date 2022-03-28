@@ -35,7 +35,9 @@
 		"atlassian.atlascode",
 		"cschlosser.doxdocgen",
 		"mhutchie.git-graph",
-        "mechatroner.rainbow-csv"
+        "mechatroner.rainbow-csv",
+        "trond-snekvik.simple-rst",
+        "ms-vscode.test-adapter-converter"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

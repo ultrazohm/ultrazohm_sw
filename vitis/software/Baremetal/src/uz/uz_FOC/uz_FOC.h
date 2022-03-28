@@ -66,10 +66,10 @@ uz_FOC* uz_FOC_init(struct uz_FOC_config config);
  * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
  * @return uz_dq_t Output dq-reference voltage struct
  */
-uz_dq_t uz_FOC_sample(uz_FOC* self, uz_dq_t i_reference_Ampere, uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec);
+uz_3ph_dq_t uz_FOC_sample(uz_FOC* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec);
 
 /**
- * @brief calculates last sample and transforms the dq-output voltage into the UVW-system
+ * @brief calculates last sample and transforms the dq-output voltage into the abc-system
  * 
  * @param self uz_FOC instance
  * @param i_reference_Ampere uz_dq_t struct for reference dq-currents in Ampere
@@ -77,9 +77,9 @@ uz_dq_t uz_FOC_sample(uz_FOC* self, uz_dq_t i_reference_Ampere, uz_dq_t i_actual
  * @param V_dc_volts DC link voltage. Must be greater than 0.0f
  * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
  * @param theta_el_rad electrical theta in rad
- * @return uz_UVW_t Output UVW-voltage struct
+ * @return uz_3ph_abc_t Output abc-voltage struct
  */
-uz_UVW_t uz_FOC_sample_UVW(uz_FOC* self, uz_dq_t i_reference_Ampere, uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad);
+uz_3ph_abc_t uz_FOC_sample_abc(uz_FOC* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad);
 /**
  * @brief Resets the FOC and the integrators of the PI-Controllers
  *
@@ -148,9 +148,9 @@ bool uz_FOC_get_ext_clamping(uz_FOC* self);
 /**
  * @brief Generates one sample for a continuous sinusoidal PWM (SPWM)  
  * 
- * @param input uz_UVW_t struct 
+ * @param input uz_3ph_abc_t struct 
  * @param V_dc_volts DC link voltage. Must be greater than 0.0f
  * @return struct uz_DutyCycle_t outputs the corresponding DutyCycle for each phase
  */
-struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(uz_UVW_t input, float V_dc_volts);
+struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(uz_3ph_abc_t input, float V_dc_volts);
 #endif // UZ_FOC_H

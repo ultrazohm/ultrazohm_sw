@@ -1,0 +1,668 @@
+\documentclass[crop,tikz,convert={outext=.svg,command=\unexpanded{pdf2svg \infile\space\outfile}},multi=false]{standalone}[2012/04/13]
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{bm}
+ \usepackage[utf8]{inputenc}
+\usetikzlibrary{arrows,shapes,positioning,calc}
+
+\definecolor{ELSYS_dark}{RGB}{33,64,154}
+\definecolor{ELSYS_light}{RGB}{0,174,239}
+
+\definecolor{Masch_dark}{RGB}{0,125,189}
+\definecolor{Masch_light}{RGB}{149,197,224}
+
+\definecolor{Mech_dark}{RGB}{0,147,173}
+\definecolor{Mech_light}{RGB}{175,223,228}
+
+\definecolor{Mod_dark}{RGB}{50,188,173}
+\definecolor{Mod_light}{RGB}{177,222,211}
+
+\definecolor{LE_dark}{RGB}{0,160,143}
+\definecolor{LE_light}{RGB}{130,198,191}
+
+\definecolor{ES_dark}{RGB}{0,133,121}
+\definecolor{ES_light}{RGB}{100,181,182}
+
+\definecolor{gray_dark}{RGB}{167,169,172}
+\definecolor{gray_light}{RGB}{209,211,212}
+
+\definecolor{orange_dark}{cmyk}{0,0.50,100,0}
+\definecolor{orange_light}{cmyk}{0,0.10,1.00,0.05}
+
+\definecolor{red_dark}{cmyk}{0,1,1,0}
+\definecolor{red_light}{cmyk}{0,0.4,0.65,0}
+
+\definecolor{green_dark}{cmyk}{1,0,1,0}
+\definecolor{green_light}{cmyk}{0.3,0,0.8,0}
+
+
+\begin{document}
+
+            \begin{tikzpicture}[->,>=latex',shorten >=0pt,auto,node distance=0.25cm,thick]
+            \tikzstyle{komp}=[rectangle,thick,draw=black!75,fill=black!0,minimum size=5mm]
+            \tikzstyle{sum_punkt}=[circle,thick,draw=black!75,fill=black!0,minimum size=3mm]
+            \tikzstyle{black_point}=[circle,thick,inner sep=0pt,draw=black!75,fill=black!100,minimum size=1mm]
+            \tikzstyle{get}=[circle,thick,draw=black!75,fill=black!0,minimum size=5mm]
+            \tikzstyle{agt}=[rectangle,thick,draw=black!75,fill=blue!25,minimum size=10mm]
+            \tikzstyle{komp2}=[rectangle,thick,draw=black,minimum size=10mm]
+            \tikzstyle{mot2}=[circle,thick,draw=black!75,fill=Masch_light,minimum size=9mm]
+    
+            \node[] (black_point_vor_regler) {};
+
+    %
+    \node[mot2, align=center] (input1)[right=1cm of black_point_vor_regler]{};
+    \node[mot2, align=center] (input2)[below=of input1] {};
+    \node[mot2, align=center] (input3)[below=of input2] {};
+    \node[mot2, align=center] (input4)[below=of input3] {};
+    \node[mot2, align=center] (input5)[below=of input4] {};
+    \node[mot2, align=center] (input6)[below=of input5] {};
+    \node[mot2, align=center] (input7)[below=of input6] {};
+    \node[mot2, align=center] (input8)[below=of input7] {};
+    \node[mot2, align=center] (input9)[below=of input8] {};
+    \node[mot2, align=center] (input10)[below=of input9] {};
+    \node[mot2, align=center] (input11)[below=of input10] {};
+    \node[mot2, align=center] (input12)[below=of input11] {};
+    \node[mot2, align=center] (input13)[below=of input12] {};
+    \node[mot2, align=center] (input14)[below=of input13] {};
+    \node[mot2, align=center] (input15)[below=of input14] {};
+    \node[mot2, align=center] (input16)[below=of input15] {};
+    %
+    \node[] (black_point_vor_regler1) [left=1cm of input2] {};
+    \node[] (black_point_vor_regler2) [left=1cm of input3] {};
+    \node[] (black_point_vor_regler3) [left=1cm of input4] {};
+    \node[] (black_point_vor_regler4) [left=1cm of input5] {};
+    \node[] (black_point_vor_regler5) [left=1cm of input6] {};
+    \node[] (black_point_vor_regler6) [left=1cm of input7] {};
+    \node[] (black_point_vor_regler7) [left=1cm of input8] {};
+    \node[] (black_point_vor_regler8) [left=1cm of input9] {};
+    \node[] (black_point_vor_regler9) [left=1cm of input10] {};
+    \node[] (black_point_vor_regler10) [left=1cm of input11] {};
+    \node[] (black_point_vor_regler11) [left=1cm of input12] {};
+    \node[] (black_point_vor_regler12) [left=1cm of input13] {};
+    \node[] (black_point_vor_regler13) [left=1cm of input14] {};
+    \node[] (black_point_vor_regler14) [left=1cm of input15] {};
+    \node[] (black_point_vor_regler15) [left=1cm of input16] {};
+
+    \node[mot2, align=center] (hidden2)[right=1.5cm of input6] {3};
+    \node[mot2, align=center] (hidden1)[above=of hidden2] {2};
+    \node[mot2, align=center] (hidden0)[above=of hidden1]{1};
+    %\node[mot2, align=center] (hidden2)[below=of hidden1] {};
+    \node[mot2, align=center] (hidden3)[below=of hidden2] {4};
+    \node[mot2, align=center] (hidden4)[below=of hidden3] {5};
+    \node[mot2, align=center] (hidden5)[below=of hidden4] {6};
+    \node[mot2, align=center] (hidden6)[below=of hidden5] {7};
+    \node[mot2, align=center] (hidden7)[below=of hidden6] {8};
+    \node[mot2, align=center] (hidden8)[below=of hidden7] {9};
+    \node[align=center] (hidden9)[below=of hidden8] {$\bm{\vdots}$};
+    \node[mot2, align=center] (hidden10)[below=of hidden9] {64};
+    %
+    \node[mot2, align=center] (hidden20)[right=1.5cm of hidden0] {1};
+    \node[mot2, align=center] (hidden21)[below=of hidden20] {2};
+    \node[mot2, align=center] (hidden22)[below=of hidden21]{3};
+    \node[mot2, align=center] (hidden23)[below=of hidden22] {4};
+    \node[mot2, align=center] (hidden24)[below=of hidden23] {5};
+    \node[mot2, align=center] (hidden25)[below=of hidden24] {6};
+    \node[mot2, align=center] (hidden26)[below=of hidden25] {7};
+    \node[mot2, align=center] (hidden27)[below=of hidden26] {8};
+    \node[mot2, align=center] (hidden28)[below=of hidden27] {9};
+    \node[align=center] (hidden29)[below=of hidden28] {$\bm{\vdots}$};
+    \node[mot2, align=center] (hidden210)[below=of hidden29] {64};
+    %
+    \node[mot2, align=center] (hidden30)[right=1.5cm of hidden20] {1};
+    \node[mot2, align=center] (hidden31)[below=of hidden30] {2};
+    \node[mot2, align=center] (hidden32)[below=of hidden31]{3};
+    \node[mot2, align=center] (hidden33)[below=of hidden32] {4};
+    \node[mot2, align=center] (hidden34)[below=of hidden33] {5};
+    \node[mot2, align=center] (hidden35)[below=of hidden34] {6};
+    \node[mot2, align=center] (hidden36)[below=of hidden35] {7};
+    \node[mot2, align=center] (hidden37)[below=of hidden36] {8};
+    \node[mot2, align=center] (hidden38)[below=of hidden37] {9};
+    \node[align=center] (hidden39)[below=of hidden38] {$\bm{\vdots}$};
+    \node[mot2, align=center] (hidden310)[below=of hidden39] {64};
+    % output
+    \node[mot2,align=center] (out1) [right=1.5cm of hidden31] {};
+    \node[mot2,align=center] (out2) [below=of out1] {};
+    \node[mot2,align=center] (out3) [below=of out2] {};
+    \node[mot2,align=center] (out4) [below=of out3] {};
+    \node[mot2,align=center] (out5) [below=of out4] {};
+    \node[mot2,align=center] (out6) [below=of out5] {};
+    \node[mot2,align=center] (out7) [below=of out6] {};
+    \node[mot2,align=center] (out8) [below=of out7] {};
+
+    %\node[align=center] (l1)[above=0.3cm of hidden3] {$l=1$};
+    %\node[align=center] (output)[right=0.3cm of l2] {Output};
+    %\node[mot2, align=center] (output)[above right=0.25cm and 1.0cm of hidden23] {};
+    %\node[] (ghostoutput) [right=0.5cm of output] {};
+    
+
+\draw[->] (black_point_vor_regler) -- node {$x_1$} (input1);
+\draw[->] (black_point_vor_regler1) -- node {$x_2$} (input2);
+\draw[->] (black_point_vor_regler2) -- node {$x_3$} (input3);
+\draw[->] (black_point_vor_regler3) -- node {$x_4$} (input4);
+\draw[->] (black_point_vor_regler4) -- node {$x_5$} (input5);
+\draw[->] (black_point_vor_regler5) -- node {$x_6$} (input6);
+\draw[->] (black_point_vor_regler6) -- node {$x_7$} (input7);
+\draw[->] (black_point_vor_regler7) -- node {$x_8$} (input8);
+\draw[->] (black_point_vor_regler8) -- node {$x_9$} (input9);
+\draw[->] (black_point_vor_regler9) -- node {$x_{10}$} (input10);
+\draw[->] (black_point_vor_regler10) -- node {$x_{11}$} (input11);
+\draw[->] (black_point_vor_regler11) -- node {$x_{12}$} (input12);
+\draw[->] (black_point_vor_regler12) -- node {$x_{13}$} (input13);
+\draw[->] (black_point_vor_regler13) -- node {$x_{14}$} (input14);
+\draw[->] (black_point_vor_regler14) -- node {$x_{15}$} (input15);
+\draw[->] (black_point_vor_regler15) -- node {$x_{16}$} (input16);
+
+    %\draw[->](input1)-- node[midway,above left] {$w^{(1)}_{11}$} (hidden3);
+    \draw[->](input1.east)--(hidden0.west);
+    \draw[->](input1.east)--(hidden1.west);
+    \draw[->](input1.east)--(hidden2.west);
+    \draw[->](input1.east)--(hidden3.west);
+    \draw[->](input1.east)--(hidden4.west);
+    \draw[->](input1.east)--(hidden5.west);
+    \draw[->](input1.east)--(hidden6.west);
+    \draw[->](input1.east)--(hidden7.west);
+    \draw[->](input1.east)--(hidden8.west);
+    %\draw[->](input1.east)--(hidden9.west);
+    \draw[->](input1.east)--(hidden10.west);
+%
+\draw[->](input2.east)--(hidden0.west);
+\draw[->](input2.east)--(hidden1.west);
+\draw[->](input2.east)--(hidden2.west);
+\draw[->](input2.east)--(hidden3.west);
+\draw[->](input2.east)--(hidden4.west);
+\draw[->](input2.east)--(hidden5.west);
+\draw[->](input2.east)--(hidden6.west);
+\draw[->](input2.east)--(hidden7.west);
+\draw[->](input2.east)--(hidden8.west);
+%\draw[->](input1.east)--(hidden9.west);
+\draw[->](input2.east)--(hidden10.west);
+%
+\draw[->](input3.east)--(hidden0.west);
+\draw[->](input3.east)--(hidden1.west);
+\draw[->](input3.east)--(hidden2.west);
+\draw[->](input3.east)--(hidden3.west);
+\draw[->](input3.east)--(hidden4.west);
+\draw[->](input3.east)--(hidden5.west);
+\draw[->](input3.east)--(hidden6.west);
+\draw[->](input3.east)--(hidden7.west);
+\draw[->](input3.east)--(hidden8.west);
+%\draw[->](input1.east)--(hidden9.west);
+\draw[->](input3.east)--(hidden10.west);
+%
+\draw[->](input4.east)--(hidden0.west);
+\draw[->](input4.east)--(hidden1.west);
+\draw[->](input4.east)--(hidden2.west);
+\draw[->](input4.east)--(hidden3.west);
+\draw[->](input4.east)--(hidden4.west);
+\draw[->](input4.east)--(hidden5.west);
+\draw[->](input4.east)--(hidden6.west);
+\draw[->](input4.east)--(hidden7.west);
+\draw[->](input4.east)--(hidden8.west);
+%\draw[->](input1.east)--(hidden9.west);
+\draw[->](input4.east)--(hidden10.west);
+%
+\draw[->](input5.east)--(hidden0.west);
+\draw[->](input5.east)--(hidden1.west);
+\draw[->](input5.east)--(hidden2.west);
+\draw[->](input5.east)--(hidden3.west);
+\draw[->](input5.east)--(hidden4.west);
+\draw[->](input5.east)--(hidden5.west);
+\draw[->](input5.east)--(hidden6.west);
+\draw[->](input5.east)--(hidden7.west);
+\draw[->](input5.east)--(hidden8.west);
+%\draw[->](input1.east)--(hidden9.west);
+\draw[->](input5.east)--(hidden10.west);
+
+\draw[->](input6.east)--(hidden0.west);
+\draw[->](input6.east)--(hidden1.west);
+\draw[->](input6.east)--(hidden2.west);
+\draw[->](input6.east)--(hidden3.west);
+\draw[->](input6.east)--(hidden4.west);
+\draw[->](input6.east)--(hidden5.west);
+\draw[->](input6.east)--(hidden6.west);
+\draw[->](input6.east)--(hidden7.west);
+\draw[->](input6.east)--(hidden8.west);
+\draw[->](input6.east)--(hidden10.west);     
+
+\draw[->](input7.east)--(hidden0.west);
+\draw[->](input7.east)--(hidden1.west);
+\draw[->](input7.east)--(hidden2.west);
+\draw[->](input7.east)--(hidden3.west);
+\draw[->](input7.east)--(hidden4.west);
+\draw[->](input7.east)--(hidden5.west);
+\draw[->](input7.east)--(hidden6.west);
+\draw[->](input7.east)--(hidden7.west);
+\draw[->](input7.east)--(hidden8.west);
+\draw[->](input7.east)--(hidden10.west); 
+
+\draw[->](input8.east)--(hidden0.west);
+\draw[->](input8.east)--(hidden1.west);
+\draw[->](input8.east)--(hidden2.west);
+\draw[->](input8.east)--(hidden3.west);
+\draw[->](input8.east)--(hidden4.west);
+\draw[->](input8.east)--(hidden5.west);
+\draw[->](input8.east)--(hidden6.west);
+\draw[->](input8.east)--(hidden7.west);
+\draw[->](input8.east)--(hidden8.west);
+\draw[->](input8.east)--(hidden10.west); 
+
+\draw[->](input9.east)--(hidden0.west);
+\draw[->](input9.east)--(hidden1.west);
+\draw[->](input9.east)--(hidden2.west);
+\draw[->](input9.east)--(hidden3.west);
+\draw[->](input9.east)--(hidden4.west);
+\draw[->](input9.east)--(hidden5.west);
+\draw[->](input9.east)--(hidden6.west);
+\draw[->](input9.east)--(hidden7.west);
+\draw[->](input9.east)--(hidden8.west);
+\draw[->](input9.east)--(hidden10.west); 
+
+\draw[->](input10.east)--(hidden0.west);
+\draw[->](input10.east)--(hidden1.west);
+\draw[->](input10.east)--(hidden2.west);
+\draw[->](input10.east)--(hidden3.west);
+\draw[->](input10.east)--(hidden4.west);
+\draw[->](input10.east)--(hidden5.west);
+\draw[->](input10.east)--(hidden6.west);
+\draw[->](input10.east)--(hidden7.west);
+\draw[->](input10.east)--(hidden8.west);
+\draw[->](input10.east)--(hidden10.west); 
+
+\draw[->](input11.east)--(hidden0.west);
+\draw[->](input11.east)--(hidden1.west);
+\draw[->](input11.east)--(hidden2.west);
+\draw[->](input11.east)--(hidden3.west);
+\draw[->](input11.east)--(hidden4.west);
+\draw[->](input11.east)--(hidden5.west);
+\draw[->](input11.east)--(hidden6.west);
+\draw[->](input11.east)--(hidden7.west);
+\draw[->](input11.east)--(hidden8.west);
+\draw[->](input11.east)--(hidden10.west); 
+
+\draw[->](input12.east)--(hidden0.west);
+\draw[->](input12.east)--(hidden1.west);
+\draw[->](input12.east)--(hidden2.west);
+\draw[->](input12.east)--(hidden3.west);
+\draw[->](input12.east)--(hidden4.west);
+\draw[->](input12.east)--(hidden5.west);
+\draw[->](input12.east)--(hidden6.west);
+\draw[->](input12.east)--(hidden7.west);
+\draw[->](input12.east)--(hidden8.west);
+\draw[->](input12.east)--(hidden10.west); 
+
+\draw[->](input13.east)--(hidden0.west);
+\draw[->](input13.east)--(hidden1.west);
+\draw[->](input13.east)--(hidden2.west);
+\draw[->](input13.east)--(hidden3.west);
+\draw[->](input13.east)--(hidden4.west);
+\draw[->](input13.east)--(hidden5.west);
+\draw[->](input13.east)--(hidden6.west);
+\draw[->](input13.east)--(hidden7.west);
+\draw[->](input13.east)--(hidden8.west);
+\draw[->](input13.east)--(hidden10.west); 
+
+\draw[->](input14.east)--(hidden0.west);
+\draw[->](input14.east)--(hidden1.west);
+\draw[->](input14.east)--(hidden2.west);
+\draw[->](input14.east)--(hidden3.west);
+\draw[->](input14.east)--(hidden4.west);
+\draw[->](input14.east)--(hidden5.west);
+\draw[->](input14.east)--(hidden6.west);
+\draw[->](input14.east)--(hidden7.west);
+\draw[->](input14.east)--(hidden8.west);
+\draw[->](input14.east)--(hidden10.west); 
+
+\draw[->](input15.east)--(hidden0.west);
+\draw[->](input15.east)--(hidden1.west);
+\draw[->](input15.east)--(hidden2.west);
+\draw[->](input15.east)--(hidden3.west);
+\draw[->](input15.east)--(hidden4.west);
+\draw[->](input15.east)--(hidden5.west);
+\draw[->](input15.east)--(hidden6.west);
+\draw[->](input15.east)--(hidden7.west);
+\draw[->](input15.east)--(hidden8.west);
+\draw[->](input15.east)--(hidden10.west); 
+
+\draw[->](input16.east)--(hidden0.west);
+\draw[->](input16.east)--(hidden1.west);
+\draw[->](input16.east)--(hidden2.west);
+\draw[->](input16.east)--(hidden3.west);
+\draw[->](input16.east)--(hidden4.west);
+\draw[->](input16.east)--(hidden5.west);
+\draw[->](input16.east)--(hidden6.west);
+\draw[->](input16.east)--(hidden7.west);
+\draw[->](input16.east)--(hidden8.west);
+\draw[->](input16.east)--(hidden10.west); 
+%
+\draw[->](hidden30.east) -- (out1.west);
+\draw[->](hidden30.east) -- (out2.west);
+\draw[->](hidden30.east) -- (out3.west);
+\draw[->](hidden30.east) -- (out4.west);
+\draw[->](hidden30.east) -- (out5.west);
+\draw[->](hidden30.east) -- (out6.west);
+\draw[->](hidden30.east) -- (out7.west);
+\draw[->](hidden30.east) -- (out8.west);
+%
+\draw[->](hidden31.east) -- (out1.west);
+\draw[->](hidden31.east) -- (out2.west);
+\draw[->](hidden31.east) -- (out3.west);
+\draw[->](hidden31.east) -- (out4.west);
+\draw[->](hidden31.east) -- (out5.west);
+\draw[->](hidden31.east) -- (out6.west);
+\draw[->](hidden31.east) -- (out7.west);
+\draw[->](hidden31.east) -- (out8.west);
+%
+\draw[->](hidden32.east) -- (out1.west);
+\draw[->](hidden32.east) -- (out2.west);
+\draw[->](hidden32.east) -- (out3.west);
+\draw[->](hidden32.east) -- (out4.west);
+\draw[->](hidden32.east) -- (out5.west);
+\draw[->](hidden32.east) -- (out6.west);
+\draw[->](hidden32.east) -- (out7.west);
+\draw[->](hidden32.east) -- (out8.west);
+%
+\draw[->](hidden33.east) -- (out1.west);
+\draw[->](hidden33.east) -- (out2.west);
+\draw[->](hidden33.east) -- (out3.west);
+\draw[->](hidden33.east) -- (out4.west);
+\draw[->](hidden33.east) -- (out5.west);
+\draw[->](hidden33.east) -- (out6.west);
+\draw[->](hidden33.east) -- (out7.west);
+\draw[->](hidden33.east) -- (out8.west);
+%
+\draw[->](hidden34.east) -- (out1.west);
+\draw[->](hidden34.east) -- (out2.west);
+\draw[->](hidden34.east) -- (out3.west);
+\draw[->](hidden34.east) -- (out4.west);
+\draw[->](hidden34.east) -- (out5.west);
+\draw[->](hidden34.east) -- (out6.west);
+\draw[->](hidden34.east) -- (out7.west);
+\draw[->](hidden34.east) -- (out8.west);
+%
+\draw[->](hidden35.east) -- (out1.west);
+\draw[->](hidden35.east) -- (out2.west);
+\draw[->](hidden35.east) -- (out3.west);
+\draw[->](hidden35.east) -- (out4.west);
+\draw[->](hidden35.east) -- (out5.west);
+\draw[->](hidden35.east) -- (out6.west);
+\draw[->](hidden35.east) -- (out7.west);
+\draw[->](hidden35.east) -- (out8.west);
+%
+\draw[->](hidden36.east) -- (out1.west);
+\draw[->](hidden36.east) -- (out2.west);
+\draw[->](hidden36.east) -- (out3.west);
+\draw[->](hidden36.east) -- (out4.west);
+\draw[->](hidden36.east) -- (out5.west);
+\draw[->](hidden36.east) -- (out6.west);
+\draw[->](hidden36.east) -- (out7.west);
+\draw[->](hidden36.east) -- (out8.west);
+%
+\draw[->](hidden37.east) -- (out1.west);
+\draw[->](hidden37.east) -- (out2.west);
+\draw[->](hidden37.east) -- (out3.west);
+\draw[->](hidden37.east) -- (out4.west);
+\draw[->](hidden37.east) -- (out5.west);
+\draw[->](hidden37.east) -- (out6.west);
+\draw[->](hidden37.east) -- (out7.west);
+\draw[->](hidden37.east) -- (out8.west);
+%
+\draw[->](hidden38.east) -- (out1.west);
+\draw[->](hidden38.east) -- (out2.west);
+\draw[->](hidden38.east) -- (out3.west);
+\draw[->](hidden38.east) -- (out4.west);
+\draw[->](hidden38.east) -- (out5.west);
+\draw[->](hidden38.east) -- (out6.west);
+\draw[->](hidden38.east) -- (out7.west);
+\draw[->](hidden38.east) -- (out8.west);
+%
+\draw[->](hidden310.east) -- (out1.west);
+\draw[->](hidden310.east) -- (out2.west);
+\draw[->](hidden310.east) -- (out3.west);
+\draw[->](hidden310.east) -- (out4.west);
+\draw[->](hidden310.east) -- (out5.west);
+\draw[->](hidden310.east) -- (out6.west);
+\draw[->](hidden310.east) -- (out7.west);
+\draw[->](hidden310.east) -- (out8.west);
+%
+\draw[->](hidden0.east)--(hidden20.west);
+\draw[->](hidden0.east)--(hidden21.west);
+\draw[->](hidden0.east)--(hidden22.west);
+\draw[->](hidden0.east)--(hidden23.west);
+\draw[->](hidden0.east)--(hidden24.west);
+\draw[->](hidden0.east)--(hidden25.west);
+\draw[->](hidden0.east)--(hidden26.west);
+\draw[->](hidden0.east)--(hidden27.west);
+\draw[->](hidden0.east)--(hidden28.west);
+\draw[->](hidden0.east)--(hidden210.west);
+%
+\draw[->](hidden1.east)--(hidden20.west);
+\draw[->](hidden1.east)--(hidden21.west);
+\draw[->](hidden1.east)--(hidden22.west);
+\draw[->](hidden1.east)--(hidden23.west);
+\draw[->](hidden1.east)--(hidden24.west);
+\draw[->](hidden1.east)--(hidden25.west);
+\draw[->](hidden1.east)--(hidden26.west);
+\draw[->](hidden1.east)--(hidden27.west);
+\draw[->](hidden1.east)--(hidden28.west);
+\draw[->](hidden1.east)--(hidden210.west);
+%
+\draw[->](hidden2.east)--(hidden20.west);
+\draw[->](hidden2.east)--(hidden21.west);
+\draw[->](hidden2.east)--(hidden22.west);
+\draw[->](hidden2.east)--(hidden23.west);
+\draw[->](hidden2.east)--(hidden24.west);
+\draw[->](hidden2.east)--(hidden25.west);
+\draw[->](hidden2.east)--(hidden26.west);
+\draw[->](hidden2.east)--(hidden27.west);
+\draw[->](hidden2.east)--(hidden28.west);
+\draw[->](hidden2.east)--(hidden210.west);
+%
+\draw[->](hidden3.east)--(hidden20.west);
+\draw[->](hidden3.east)--(hidden21.west);
+\draw[->](hidden3.east)--(hidden22.west);
+\draw[->](hidden3.east)--(hidden23.west);
+\draw[->](hidden3.east)--(hidden24.west);
+\draw[->](hidden3.east)--(hidden25.west);
+\draw[->](hidden3.east)--(hidden26.west);
+\draw[->](hidden3.east)--(hidden27.west);
+\draw[->](hidden3.east)--(hidden28.west);
+\draw[->](hidden3.east)--(hidden210.west);
+%
+\draw[->](hidden4.east)--(hidden20.west);
+\draw[->](hidden4.east)--(hidden21.west);
+\draw[->](hidden4.east)--(hidden22.west);
+\draw[->](hidden4.east)--(hidden23.west);
+\draw[->](hidden4.east)--(hidden24.west);
+\draw[->](hidden4.east)--(hidden25.west);
+\draw[->](hidden4.east)--(hidden26.west);
+\draw[->](hidden4.east)--(hidden27.west);
+\draw[->](hidden4.east)--(hidden28.west);
+\draw[->](hidden4.east)--(hidden210.west);
+%
+\draw[->](hidden5.east)--(hidden20.west);
+\draw[->](hidden5.east)--(hidden21.west);
+\draw[->](hidden5.east)--(hidden22.west);
+\draw[->](hidden5.east)--(hidden23.west);
+\draw[->](hidden5.east)--(hidden24.west);
+\draw[->](hidden5.east)--(hidden25.west);
+\draw[->](hidden5.east)--(hidden26.west);
+\draw[->](hidden5.east)--(hidden27.west);
+\draw[->](hidden5.east)--(hidden28.west);
+\draw[->](hidden5.east)--(hidden210.west);
+%
+\draw[->](hidden6.east)--(hidden20.west);
+\draw[->](hidden6.east)--(hidden21.west);
+\draw[->](hidden6.east)--(hidden22.west);
+\draw[->](hidden6.east)--(hidden23.west);
+\draw[->](hidden6.east)--(hidden24.west);
+\draw[->](hidden6.east)--(hidden25.west);
+\draw[->](hidden6.east)--(hidden26.west);
+\draw[->](hidden6.east)--(hidden27.west);
+\draw[->](hidden6.east)--(hidden28.west);
+\draw[->](hidden6.east)--(hidden210.west);
+%
+\draw[->](hidden7.east)--(hidden20.west);
+\draw[->](hidden7.east)--(hidden21.west);
+\draw[->](hidden7.east)--(hidden22.west);
+\draw[->](hidden7.east)--(hidden23.west);
+\draw[->](hidden7.east)--(hidden24.west);
+\draw[->](hidden7.east)--(hidden25.west);
+\draw[->](hidden7.east)--(hidden26.west);
+\draw[->](hidden7.east)--(hidden27.west);
+\draw[->](hidden7.east)--(hidden28.west);
+\draw[->](hidden7.east)--(hidden210.west);
+%
+\draw[->](hidden8.east)--(hidden20.west);
+\draw[->](hidden8.east)--(hidden21.west);
+\draw[->](hidden8.east)--(hidden22.west);
+\draw[->](hidden8.east)--(hidden23.west);
+\draw[->](hidden8.east)--(hidden24.west);
+\draw[->](hidden8.east)--(hidden25.west);
+\draw[->](hidden8.east)--(hidden26.west);
+\draw[->](hidden8.east)--(hidden27.west);
+\draw[->](hidden8.east)--(hidden28.west);
+\draw[->](hidden8.east)--(hidden210.west);
+%
+\draw[->](hidden10.east)--(hidden20.west);
+\draw[->](hidden10.east)--(hidden21.west);
+\draw[->](hidden10.east)--(hidden22.west);
+\draw[->](hidden10.east)--(hidden23.west);
+\draw[->](hidden10.east)--(hidden24.west);
+\draw[->](hidden10.east)--(hidden25.west);
+\draw[->](hidden10.east)--(hidden26.west);
+\draw[->](hidden10.east)--(hidden27.west);
+\draw[->](hidden10.east)--(hidden28.west);
+\draw[->](hidden10.east)--(hidden210.west);
+
+%%
+\draw[->](hidden20.east)--(hidden30.west);
+\draw[->](hidden20.east)--(hidden31.west);
+\draw[->](hidden20.east)--(hidden32.west);
+\draw[->](hidden20.east)--(hidden33.west);
+\draw[->](hidden20.east)--(hidden34.west);
+\draw[->](hidden20.east)--(hidden35.west);
+\draw[->](hidden20.east)--(hidden36.west);
+\draw[->](hidden20.east)--(hidden37.west);
+\draw[->](hidden20.east)--(hidden38.west);
+\draw[->](hidden20.east)--(hidden310.west);
+%
+\draw[->](hidden21.east)--(hidden30.west);
+\draw[->](hidden21.east)--(hidden31.west);
+\draw[->](hidden21.east)--(hidden32.west);
+\draw[->](hidden21.east)--(hidden33.west);
+\draw[->](hidden21.east)--(hidden34.west);
+\draw[->](hidden21.east)--(hidden35.west);
+\draw[->](hidden21.east)--(hidden36.west);
+\draw[->](hidden21.east)--(hidden37.west);
+\draw[->](hidden21.east)--(hidden38.west);
+\draw[->](hidden21.east)--(hidden310.west);
+%
+\draw[->](hidden22.east)--(hidden30.west);
+\draw[->](hidden22.east)--(hidden31.west);
+\draw[->](hidden22.east)--(hidden32.west);
+\draw[->](hidden22.east)--(hidden33.west);
+\draw[->](hidden22.east)--(hidden34.west);
+\draw[->](hidden22.east)--(hidden35.west);
+\draw[->](hidden22.east)--(hidden36.west);
+\draw[->](hidden22.east)--(hidden37.west);
+\draw[->](hidden22.east)--(hidden38.west);
+\draw[->](hidden22.east)--(hidden310.west);
+%
+\draw[->](hidden23.east)--(hidden30.west);
+\draw[->](hidden23.east)--(hidden31.west);
+\draw[->](hidden23.east)--(hidden32.west);
+\draw[->](hidden23.east)--(hidden33.west);
+\draw[->](hidden23.east)--(hidden34.west);
+\draw[->](hidden23.east)--(hidden35.west);
+\draw[->](hidden23.east)--(hidden36.west);
+\draw[->](hidden23.east)--(hidden37.west);
+\draw[->](hidden23.east)--(hidden38.west);
+\draw[->](hidden23.east)--(hidden310.west);
+%
+\draw[->](hidden24.east)--(hidden30.west);
+\draw[->](hidden24.east)--(hidden31.west);
+\draw[->](hidden24.east)--(hidden32.west);
+\draw[->](hidden24.east)--(hidden33.west);
+\draw[->](hidden24.east)--(hidden34.west);
+\draw[->](hidden24.east)--(hidden35.west);
+\draw[->](hidden24.east)--(hidden36.west);
+\draw[->](hidden24.east)--(hidden37.west);
+\draw[->](hidden24.east)--(hidden38.west);
+\draw[->](hidden24.east)--(hidden310.west);
+%
+\draw[->](hidden25.east)--(hidden30.west);
+\draw[->](hidden25.east)--(hidden31.west);
+\draw[->](hidden25.east)--(hidden32.west);
+\draw[->](hidden25.east)--(hidden33.west);
+\draw[->](hidden25.east)--(hidden34.west);
+\draw[->](hidden25.east)--(hidden35.west);
+\draw[->](hidden25.east)--(hidden36.west);
+\draw[->](hidden25.east)--(hidden37.west);
+\draw[->](hidden25.east)--(hidden38.west);
+\draw[->](hidden25.east)--(hidden310.west);
+%
+\draw[->](hidden26.east)--(hidden30.west);
+\draw[->](hidden26.east)--(hidden31.west);
+\draw[->](hidden26.east)--(hidden32.west);
+\draw[->](hidden26.east)--(hidden33.west);
+\draw[->](hidden26.east)--(hidden34.west);
+\draw[->](hidden26.east)--(hidden35.west);
+\draw[->](hidden26.east)--(hidden36.west);
+\draw[->](hidden26.east)--(hidden37.west);
+\draw[->](hidden26.east)--(hidden38.west);
+\draw[->](hidden26.east)--(hidden310.west);
+%
+\draw[->](hidden27.east)--(hidden30.west);
+\draw[->](hidden27.east)--(hidden31.west);
+\draw[->](hidden27.east)--(hidden32.west);
+\draw[->](hidden27.east)--(hidden33.west);
+\draw[->](hidden27.east)--(hidden34.west);
+\draw[->](hidden27.east)--(hidden35.west);
+\draw[->](hidden27.east)--(hidden36.west);
+\draw[->](hidden27.east)--(hidden37.west);
+\draw[->](hidden27.east)--(hidden38.west);
+\draw[->](hidden27.east)--(hidden310.west);
+%
+\draw[->](hidden28.east)--(hidden30.west);
+\draw[->](hidden28.east)--(hidden31.west);
+\draw[->](hidden28.east)--(hidden32.west);
+\draw[->](hidden28.east)--(hidden33.west);
+\draw[->](hidden28.east)--(hidden34.west);
+\draw[->](hidden28.east)--(hidden35.west);
+\draw[->](hidden28.east)--(hidden36.west);
+\draw[->](hidden28.east)--(hidden37.west);
+\draw[->](hidden28.east)--(hidden38.west);
+\draw[->](hidden28.east)--(hidden310.west);
+%
+\draw[->](hidden210.east)--(hidden30.west);
+\draw[->](hidden210.east)--(hidden31.west);
+\draw[->](hidden210.east)--(hidden32.west);
+\draw[->](hidden210.east)--(hidden33.west);
+\draw[->](hidden210.east)--(hidden34.west);
+\draw[->](hidden210.east)--(hidden35.west);
+\draw[->](hidden210.east)--(hidden36.west);
+\draw[->](hidden210.east)--(hidden37.west);
+\draw[->](hidden210.east)--(hidden38.west);
+\draw[->](hidden210.east)--(hidden310.west);
+
+
+    % ghostnode after output
+    \node[] (outghost1)[right=1cm of out1] {};
+    \node[] (outghost2)[right=1cm of out2] {};
+    \node[] (outghost3)[right=1cm of out3] {};
+    \node[] (outghost4)[right=1cm of out4] {};
+    \node[] (outghost5)[right=1cm of out5] {};
+    \node[] (outghost6)[right=1cm of out6] {};
+    \node[] (outghost7)[right=1cm of out7] {};
+    \node[] (outghost8)[right=1cm of out8] {};
+    \draw[->] (out1) -- node {$y^4_1$} (outghost1);
+    \draw[->] (out2) -- node {$y^4_2$} (outghost2);
+    \draw[->] (out3) -- node {$y^4_3$} (outghost3);
+    \draw[->] (out4) -- node {$y^4_4$} (outghost4);
+    \draw[->] (out5) -- node {$y^4_5$} (outghost5);
+    \draw[->] (out6) -- node {$y^4_6$} (outghost6);
+    \draw[->] (out7) -- node {$y^4_7$} (outghost7);
+    \draw[->] (out8) -- node {$y^4_8$} (outghost8);
+
+\end{tikzpicture}
+\end{document}

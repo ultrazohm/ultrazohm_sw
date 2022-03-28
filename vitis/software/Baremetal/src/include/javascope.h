@@ -172,7 +172,7 @@ enum gui_button_mapping {
 	PID_FID_s_step,
 	PID_FID_Brk_Count,
 	PID_FID_eta_speed,
-	PID_FID_Admit_Parames,
+	PID_FID_Array_Control_counter,
 	PID_TMID_Scale_PRBS,
 	PID_TMID_d_TMS_start,
 	PID_TMID_n_ref,

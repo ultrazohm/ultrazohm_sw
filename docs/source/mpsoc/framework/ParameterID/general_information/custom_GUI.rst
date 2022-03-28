@@ -47,9 +47,9 @@ Setup
             JSSD_FLOAT_u_d_ref,
             JSSD_FLOAT_u_q_ref,
             JSSD_FLOAT_ArrayCounter,
-            JSSD_FLOAT_measArray,
-            JSSD_FLOAT_i_est,
-            JSSD_FLOAT_ArrayControl,
+            JSSD_FLOAT_measArraySpeed,
+            JSSD_FLOAT_measArrayTorque,
+            JSSD_FLOAT_ArrayControlCounter,
             JSSD_FLOAT_Stribtorque,
             JSSD_FLOAT_Coulombtorque,
             JSSD_FLOAT_Viscotorque,
@@ -97,9 +97,9 @@ Setup
             Set_Send_Field_4,
             Set_Send_Field_5,
             Set_Send_Field_6,
-            Enable_Current_Control,
-            Enable_Speed_Control,
-            Disable_FOC_Control,
+            My_Button_1,
+            My_Button_2,
+            My_Button_3,
             My_Button_4,
             My_Button_5,
             My_Button_6,
@@ -120,6 +120,9 @@ Setup
             PID_Disable_FluxMapID,
             PID_Enable_OnlineID,
             PID_Disable_OnlineID,
+            PID_Enable_Current_Control,
+            PID_Enable_Speed_Control,
+            PID_Disable_FOC_Control,
             PID_ACCEPT,
             PID_RESET,
             PID_EID_sampleTimeISR,
@@ -137,7 +140,7 @@ Setup
             PID_FID_s_step,
             PID_FID_Brk_Count,
             PID_FID_eta_speed,
-            PID_FID_Admit_Parames,
+            PID_FID_Array_Control_counter,
             PID_TMID_Scale_PRBS,
             PID_TMID_d_TMS_start,
             PID_TMID_n_ref,
@@ -250,7 +253,7 @@ Setup
 
    .. code-block:: C
         :linenos:
-        :emphasize-lines: 15,28,45,308,312,364
+        :emphasize-lines: 15,28,319,375
         :caption: Changes to the ``ipc_ARM.c`` file. (Breaks in the code are marked with ``....``).
     
         // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
@@ -281,23 +284,6 @@ Setup
                     PID_Data.GlobalConfig.i_dq_ref.q = value;
                     break; 
                 ....
-                //Replace My_Button 1-3 cases with the following
-                case (Enable_Current_Control):
-                    if (ultrazohm_state_machine_get_state() != control_state) {
-                        PID_Data.PID_Control_Selection = Current_Control;
-                    }
-                    break;
-
-                case (Enable_Speed_Control):
-                    if (ultrazohm_state_machine_get_state() != control_state) {
-                        PID_Data.PID_Control_Selection = Speed_Control;
-                    }
-                    break;
-
-                case (Disable_FOC_Control):
-                        PID_Data.PID_Control_Selection = No_Control;
-                    break;
-                ....
                 //After all My_Button cases add the following
                 //ParameterID
 
@@ -322,17 +308,33 @@ Setup
                     PID_Data.GlobalConfig.OnlineID = false;
                 break;
 
+                case (PID_Enable_Current_Control):
+                    if (ultrazohm_state_machine_get_state() != control_state) {
+                        PID_Data.PID_Control_Selection = Current_Control;
+                    }
+                    break;
+
+                case (PID_Enable_Speed_Control):
+                    if (ultrazohm_state_machine_get_state() != control_state) {
+                        PID_Data.PID_Control_Selection = Speed_Control;
+                    }
+                    break;
+
+                case (PID_Disable_FOC_Control):
+                    PID_Data.PID_Control_Selection = No_Control;
+                    break;
+
                 case (PID_Enable_ElectricalID):
                     PID_Data.GlobalConfig.ElectricalID = true;
-                break;
+                    break;
 
                 case (PID_Disable_ElectricalID):
                     PID_Data.GlobalConfig.ElectricalID = false;
-                break;
+                    break;
 
                 case (PID_Enable_FrictionID):
                     PID_Data.GlobalConfig.FrictionID = true;
-                break;
+                    break;
 
                 case (PID_Disable_FrictionID):
                     PID_Data.GlobalConfig.FrictionID = false;
@@ -374,6 +376,8 @@ Setup
                     PID_Data.GlobalConfig.FrictionID = false;
                     PID_Data.GlobalConfig.FluxMapID = false;
                     PID_Data.GlobalConfig.OnlineID = false;
+                    PID_Data.AutoRefCurrents_Config.enableCRS = false;
+                    PID_Data.PID_Control_Selection = No_Control;
                     break;
 
                 case (PID_EID_sampleTimeISR):
@@ -430,7 +434,12 @@ Setup
                     break;
 
                 case (PID_FID_Brk_Count):
-                    PID_Data.FrictionID_Config.BrkCount = value;setup_GUI
+                    PID_Data.FrictionID_Config.BrkCount = value;
+                    break;
+
+                case (PID_FID_eta_speed):
+                    PID_Data.FrictionID_Config.eta = value;
+                    break;
 
                 case (PID_TMID_Scale_PRBS):
                     PID_Data.TwoMassID_Config.ScaleTorquePRBS = value;
@@ -511,6 +520,7 @@ Setup
                 case (PID_OID_Reset_OnlineID):
                     PID_Data.OnlineID_Config.OnlineID_Reset = true;
                     PID_Data.AutoRefCurrents_Config.Reset = true;
+                    PID_Data.AutoRefCurrents_Config.enableCRS = false;
                     break;
 
                 case (PID_OID_Enable_AutoCurrentControl):
@@ -559,6 +569,10 @@ Setup
 
                 case (PID_OID_Fluxmap_Control_counter):
                     PID_Data.FluxMap_Control_counter = value;
+                    break;
+
+                case (PID_FID_Array_Control_counter):
+                    PID_Data.Array_Control_counter = value;
                     break;
                 ....
                 }
@@ -623,13 +637,14 @@ Setup
 
    .. code-block:: C
         :linenos:
-        :emphasize-lines: 8
+        :emphasize-lines: 9
         :caption: Changes to the ``javascope.c`` file. (Breaks in the code are marked with ``....``).
 
         //ParameterID
         extern uz_ParameterID_Data_t PID_Data;
-        float activeState = 0;
-        float FluxMapCounter = 0;
+        float activeState = 0.0f;
+        float FluxMapCounter = 0.0f;
+        float ArrayCounter = 0.0f;
 
         int JavaScope_initalize(DS_Data* data)
         {   
@@ -656,6 +671,10 @@ Setup
             js_slowDataArray[JSSD_FLOAT_ISR_Period_us]          = &ISR_period_us;
             js_slowDataArray[JSSD_FLOAT_Milliseconds]           = &System_UpTime_ms;
             js_slowDataArray[JSSD_FLOAT_encoderOffset] 			= &(PID_Data.ElectricalID_Output->thetaOffset);
+            js_slowDataArray[JSSD_FLOAT_ArrayCounter] 			= &(ArrayCounter);
+            js_slowDataArray[JSSD_FLOAT_measArraySpeed] 		= &(PID_Data.MeasArraySpeed_pointer);
+            js_slowDataArray[JSSD_FLOAT_measArrayTorque]		= &(PID_Data.MeasArrayTorque_pointer);
+            js_slowDataArray[JSSD_FLOAT_ArrayControlCounter]	= &(ArrayCounter);
             js_slowDataArray[JSSD_FLOAT_Stribtorque]            = &(PID_Data.FrictionID_Output->BrkTorque);
             js_slowDataArray[JSSD_FLOAT_Coulombtorque]          = &(PID_Data.FrictionID_Output->CoulTorque);
             js_slowDataArray[JSSD_FLOAT_Viscotorque]            = &(PID_Data.FrictionID_Output->ViscoTorque);
@@ -692,7 +711,7 @@ Setup
         void JavaScope_update(DS_Data* data)
         {
             ....
-            uz_ParameterID_update_transmit_values(&PID_Data, &activeState, &FluxMapCounter);
+            uz_ParameterID_update_transmit_values(&PID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
             .... 
         }.. _uz_PID_GUI_setup:
 

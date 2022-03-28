@@ -32,6 +32,7 @@ struct uz_watchdog_ip_t
     XWdtTb xilinxWdtIP;
     uint32_t reset_counter_start_value;
     uint32_t fail_counter;
+    bool is_first_isr_call;
     struct uz_watchdog_ip_config_t watchdog_config;
 };
 
@@ -60,6 +61,7 @@ uz_watchdog_ip_t *uz_watchdog_ip_init(struct uz_watchdog_ip_config_t watchdog_co
     uz_watchdog_ip_t *self = uz_watchdog_allocation();
     self->watchdog_config = watchdog_config;
     self->reset_counter_start_value = uz_watchdog_calculate_counter_from_time(watchdog_config.ip_clk_frequency_Hz, watchdog_config.reset_timer_in_us);
+    self->is_first_isr_call=true;
 
     uz_watchdog_write_init_values_to_registers(&(self->xilinxWdtIP), self->reset_counter_start_value, self->watchdog_config.device_id, self->watchdog_config.fail_mode); // XPFW_WDT_EXPIRE_TIME for WDT PS
     uz_assert(&(self->xilinxWdtIP) != NULL);
@@ -67,24 +69,24 @@ uz_watchdog_ip_t *uz_watchdog_ip_init(struct uz_watchdog_ip_config_t watchdog_co
     return (self);
 }
 
-void uz_watchdog_ip_start(uz_watchdog_ip_t *self)
-{
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-
-    /* Write a 1 to Set register space to writable */
-    // Start the watchdog timer as a normal application would (WEN bit = 1)
-    /* After enabled, write enabled auto clears, so we have to write a 1 to Set register space to writable */
-    XWdtTb_SetRegSpaceAccessMode(&(self->xilinxWdtIP), 1U);
-    XWdtTb_Start(&(self->xilinxWdtIP));
-    XWdtTb_SetRegSpaceAccessMode(&(self->xilinxWdtIP), 1U);
-}
-
 void uz_watchdog_ip_restart(uz_watchdog_ip_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    XWdtTb_RestartWdt(&(self->xilinxWdtIP));
+
+    if (self->is_first_isr_call) {
+    	/* Write a 1 to Set register space to writable */
+		// Start the watchdog timer as a normal application would (WEN bit = 1)
+		/* After enabled, write enabled auto clears, so we have to write a 1 to Set register space to writable */
+		XWdtTb_SetRegSpaceAccessMode(&(self->xilinxWdtIP), 1U);
+		XWdtTb_Start(&(self->xilinxWdtIP));
+		XWdtTb_SetRegSpaceAccessMode(&(self->xilinxWdtIP), 1U);
+
+		self->is_first_isr_call = false;
+	} else {
+		/* Restart the AXI IP watch dog timer: kick forward */
+		XWdtTb_RestartWdt(&(self->xilinxWdtIP));
+	}
 }
 
 void uz_watchdog_IntrHandler(void *CallBackRef)
@@ -94,7 +96,7 @@ void uz_watchdog_IntrHandler(void *CallBackRef)
     uz_assert(self->is_ready);
 
     uint32_t fail_counter_register = 0;
-    int last_event = 0;
+    uint32_t last_event = 0;
 
     switch (self->watchdog_config.fail_mode)
     {
@@ -107,7 +109,7 @@ void uz_watchdog_IntrHandler(void *CallBackRef)
 		XWdtTb_RestartWdt(&(self->xilinxWdtIP));
 		XWdtTb_IntrClear(&(self->xilinxWdtIP));  /* Clear interrupt point. To allow a new INT to be triggered again (see documentation)*/
 
-		last_event = XWdtTb_GetLastEvent(&(self->xilinxWdtIP));
+		last_event = (uint32_t)XWdtTb_GetLastEvent(&(self->xilinxWdtIP));
 
 		if (last_event == XWDTTB_SEC_WIN_EVENT) {
 			fail_counter_register = (uint32_t)XWdtTb_GetFailCounter(&(self->xilinxWdtIP));

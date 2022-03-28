@@ -171,8 +171,6 @@ Driver function reference
 .. doxygenstruct:: uz_watchdog_ip_config_t
   :members:
 
-.. doxygenfunction:: uz_watchdog_ip_start
-
 .. doxygenfunction:: uz_watchdog_ip_restart
 
 .. doxygenfunction:: uz_watchdog_ip_init

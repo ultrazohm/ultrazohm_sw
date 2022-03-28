@@ -35,22 +35,14 @@ struct uz_watchdog_ip_config_t {
 };
 
 
-
 /**
-* @brief This function STARTs the System WatchDog Timer to the initial
-*        value to the counter. Generates a good event if executed inside
-*        the Second Window, or OPEN Window.
+* @brief If it is the first time this function is called, it STARTs the System
+*        WatchDog Timer to the initial value to the counter. Generates a
+*        good event if executed inside the Second Window, or OPEN Window.
 *        The WDT Start is accomplished by enabling the IP Core
 *        writing WEN bit =1. And granting write access to the IP
 *        Registers.
-*
-* @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents
-*							the WDTTB driver. Initialized and ready
-*/
-void uz_watchdog_ip_start(uz_watchdog_ip_t *self) ;
-
-/**
-* @brief This function Restart the AXI IP watch dog timer: kick forward.
+*        Otherwise, This function only restarts the AXI IP watch dog timer: kick forward.
 *
 * @param	WdtTbInstancePtr - NOT NULL Pointer to the struct that represents
 *							the WDTTB driver. Initialized and ready

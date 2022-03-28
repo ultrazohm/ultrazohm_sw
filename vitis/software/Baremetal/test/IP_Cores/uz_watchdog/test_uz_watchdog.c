@@ -64,6 +64,16 @@ struct uz_watchdog_ip_config_t config={
     .device_id=WDTTB_DEVICE_ID
 };
 
+struct uz_watchdog_ip_t
+{
+    bool is_ready;
+    XWdtTb xilinxWdtIP;
+    uint32_t reset_counter_start_value;
+    uint32_t fail_counter;
+    bool is_first_isr_call;
+    struct uz_watchdog_ip_config_t watchdog_config;
+};
+
 //Initialize the WDTTB structure
 uz_watchdog_ip_t *WdtTbInstancePtr;
 
@@ -140,13 +150,7 @@ void test_uz_watchdog_start(void)
 
     XWdtTb_SetRegSpaceAccessMode_Expect(&testWdtTb, 1);                     
     // Invoke the function to test if it does whats Expected                                     
-    uz_watchdog_ip_start(WdtTbInstancePtr);
-}
-
-void test_uz_watchdog_start_fail_assert_if_null(void)
-{
-    // Invoke the function to test if it does whats Expected                                     
-    TEST_ASSERT_FAIL_ASSERT(uz_watchdog_ip_start(NULL));
+    uz_watchdog_ip_restart(WdtTbInstancePtr);
 }
 
 void test_uz_watchdog_restart(void)
@@ -169,6 +173,7 @@ void test_uz_watchdog_restart(void)
     XWdtTb_DisableFailCounter_Ignore();
     WdtTbInstancePtr = uz_watchdog_ip_init(config);
   
+    WdtTbInstancePtr->is_first_isr_call=false;
     XWdtTb_RestartWdt_Expect(&testWdtTb);
                                             
     // Invoke the function to test if it does whats Expected                                     

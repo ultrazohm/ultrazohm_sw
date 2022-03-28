@@ -44,7 +44,6 @@ XTmrCtr Timer_Interrupt;
 
 //Initialize the Watchdog structure
 uz_watchdog_ip_t *WdtTbInstancePtr;
-static bool is_first_isr_call=true;
 
 //float sin1amp=1.0;
 
@@ -67,14 +66,8 @@ void ISR_Control(void *data)
 	//	and enable Nested Interrupts: TESTED, NECESARY
 	Xil_EnableNestedInterrupts();
 
-	if (is_first_isr_call) {
-		//	Enable the WDT and launch first kick
-		uz_watchdog_ip_start(WdtTbInstancePtr);
-		is_first_isr_call = false;
-	} else {
-		/* Restart the AXI IP watch dog timer: kick forward */
-		uz_watchdog_ip_restart(WdtTbInstancePtr);
-	}
+	/* Restart the AXI IP watch dog timer: kick forward */
+	uz_watchdog_ip_restart(WdtTbInstancePtr);
 
 	ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
@@ -89,7 +82,6 @@ void ISR_Control(void *data)
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
-
 
     JavaScope_update(&Global_Data);
 
@@ -131,7 +123,7 @@ int Initialize_ISR()
 		.reset_timer_in_us=isr_maximum_sample_time_us,
 		.device_id=XPAR_AXI_TIMEBASE_WDT_0_DEVICE_ID,
 		.ip_clk_frequency_Hz=100000000,
-		.fail_mode=watchdog_debug_mode
+		.fail_mode=watchdog_debug_mode  // watchdog_assertion
 	};
 	WdtTbInstancePtr = uz_watchdog_ip_init(config);
 

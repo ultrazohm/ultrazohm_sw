@@ -1,7 +1,7 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
---Date        : Mon Mar 28 11:27:36 2022
+--Date        : Mon Mar 28 11:36:09 2022
 --Host        : ts-ThinkPad-T14s-Gen-1 running 64-bit Ubuntu 21.10
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper

@@ -3,10 +3,10 @@
 <!--                                                         -->
 <!-- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="49" Path="/home/ts/Documents/uz_develop/ultrazohm_sw/vivado/project/ultrazohm.xpr">
+<Project Version="7" Minor="49" Path="/home/ts/Documents/uz_pr_review/ultrazohm_sw/vivado/project/ultrazohm.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="da2141e9eda14998a968569168effc78"/>
+    <Option Name="Id" Val="7a1d8f1ead274b2597672c17c4afb19e"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -106,7 +106,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../bd/zusys_wrapper.vhd">
+      <File Path="$PPRDIR/zusys/hdl/zusys_wrapper.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

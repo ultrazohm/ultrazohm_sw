@@ -26,6 +26,20 @@ with open("_build.tcl",'r') as f_in:
                 idx = line.lower().find(repo_dir.lower())
                 line = line[:idx] + "${origin_dir}/.." + line[idx+len(repo_dir):]
 
+            # process the lines, adapting what is necessary
+            # skips an entire region when skip_till_next_comment 
+            if skip_till_next_comment:
+                if "registered_with_manager" in line:
+                    #f_out.write(line)
+                    skip_till_next_comment = False
+            # related to .bd file (that is not added, because we use the zusys.tcl instead)
+            elif "Set 'sources_1' fileset file properties for local files" in line:
+                f_out.write("# Set 'sources_1' fileset file properties for local files")
+                skip_till_next_comment = True
+            elif "zusys.bd" in line:
+                pass
+            # set default board variable
+
             # set default board variable
             elif "set origin_dir \".\"" in line:
                 f_out.write(line + "\n")

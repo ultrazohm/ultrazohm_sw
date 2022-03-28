@@ -199,8 +199,8 @@ typedef struct {
  *
  */
 typedef struct {
-  real32_T measArrayTorque[1024]; /**< measured torque values for friction curve */
-  real32_T measArraySpeed[1024]; //*< measured speed values for friction curve */
+  real32_T measArrayTorque[256]; /**< measured torque values for friction curve */
+  real32_T measArraySpeed[256]; //*< measured speed values for friction curve */
   real32_T BrkTorque; /**< identified breakaway torque in Nm */
   real32_T CoulTorque; /**< identified coloumb torque in Nm */
   real32_T ViscoTorque; /**< identified viscous friction in Nms/rad */

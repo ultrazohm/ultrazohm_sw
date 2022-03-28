@@ -178,8 +178,8 @@ static void gerade(real32_T u[2], ExtY_FrictionID_t *rtFrictionID_Y)
   /* '<S1>:625:15' SS_xy=single(0); */
   /* '<S1>:625:16' SS_xx=single(0); */
   /* --------summing up---------------------------------- */
-  /* '<S1>:625:19' for k=single(2):single(1023) */
-  for (k = 0; k < 1022; k++) {
+  /* '<S1>:625:19' for k=single(2):single(255) */
+  for (k = 0; k < 254; k++) {
     /* Outport: '<Root>/FrictionID_output' */
     /* ----------reject outliers--------------------------- */
     /* '<S1>:625:22' if (FrictionID_output.measArraySpeed(k) >5 && ( FrictionID_output.measArrayTorque(k)<1.3*FrictionID_output.measArrayTorque(k+1).... */
@@ -394,12 +394,12 @@ static void initParams(ExtU_FrictionID_t *rtFrictionID_U, ExtY_FrictionID_t
   /* '<S1>:546:42' FrictionID_output.ViscoTorque               = single(0.0); */
   rtFrictionID_Y->FrictionID_output.ViscoTorque = 0.0F;
 
-  /* '<S1>:546:43' FrictionID_output.measArraySpeed			= single(zeros(1024,1)); */
-  /* '<S1>:546:44' FrictionID_output.measArrayTorque           = single(zeros(1024,1)); */
+  /* '<S1>:546:43' FrictionID_output.measArraySpeed			= single(zeros(256,1)); */
+  /* '<S1>:546:44' FrictionID_output.measArrayTorque           = single(zeros(256,1)); */
   memset(&rtFrictionID_Y->FrictionID_output.measArraySpeed[0], 0, sizeof
-         (real32_T) << 10U);
+         (real32_T) << 8U);
   memset(&rtFrictionID_Y->FrictionID_output.measArrayTorque[0], 0, sizeof
-         (real32_T) << 10U);
+         (real32_T) << 8U);
 }
 
 /* Model step function */
@@ -1016,9 +1016,9 @@ void FrictionID_initialize(RT_MODEL_FrictionID_t *const rtFrictionID_M)
   rtFrictionID_Y->FrictionID_FOC_output.Ki_iq_out = 0.0F;
   rtFrictionID_Y->FrictionID_FOC_output.Ki_n_out = 0.0F;
   memset(&rtFrictionID_Y->FrictionID_output.measArrayTorque[0], 0, sizeof
-         (real32_T) << 10U);
+         (real32_T) << 8U);
   memset(&rtFrictionID_Y->FrictionID_output.measArraySpeed[0], 0, sizeof
-         (real32_T) << 10U);
+         (real32_T) << 8U);
   rtFrictionID_Y->FrictionID_output.BrkTorque = 0.0F;
   rtFrictionID_Y->FrictionID_output.CoulTorque = 0.0F;
   rtFrictionID_Y->FrictionID_output.ViscoTorque = 0.0F;

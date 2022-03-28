@@ -91,6 +91,11 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 		//FrictionID
 		if (self->ControlState->output.ControlFlags.transNr == 3U || self->ControlState->output.GlobalConfig_out.Reset == true) {
 			uz_PID_FrictionID_step(self, Data);
+			if (Data->Array_counter < 256 && (Data->Array_counter == Data->Array_Control_counter)) {
+				Data->Array_counter += 1;
+			} else if (Data->Array_counter == 256){
+				Data->Array_counter = 0;
+			}
 		} else if (self->ControlState->output.GlobalConfig_out.FrictionID == false && self->FrictionID->output.enteredFrictionID == true) {
 			uz_PID_FrictionID_step(self, Data);
 		}
@@ -415,11 +420,14 @@ float uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {
 	return(theta_el_corr);
 }
 
-void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter){
+void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter){
 	*activeState = (float) Data->Controller_Parameters.activeState;
 	*FluxMapCounter = (float) Data->FluxMap_counter;
+	*ArrayCounter = (float) Data->Array_counter;
     Data->Psi_D_pointer = Data->FluxMap_Data->psid_grid[Data->FluxMap_counter];
 	Data->Psi_Q_pointer =  Data->FluxMap_Data->psiq_grid[Data->FluxMap_counter];
+	Data->MeasArraySpeed_pointer = Data->FrictionID_Output->measArraySpeed[Data->Array_counter];
+	Data->MeasArrayTorque_pointer = Data->FrictionID_Output->measArrayTorque[Data->Array_counter];
 
 }
 

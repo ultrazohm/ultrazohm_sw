@@ -39,8 +39,9 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 
 //ParameterID
 extern uz_ParameterID_Data_t PID_Data;
-float activeState = 0;
-float FluxMapCounter = 0;
+float activeState = 0.0f;
+float FluxMapCounter = 0.0f;
+float ArrayCounter = 0.0f;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -102,6 +103,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 	js_slowDataArray[JSSD_FLOAT_encoderOffset] 			= &(PID_Data.ElectricalID_Output->thetaOffset);
+	js_slowDataArray[JSSD_FLOAT_ArrayCounter] 			= &(ArrayCounter);
+	js_slowDataArray[JSSD_FLOAT_measArraySpeed] 		= &(PID_Data.MeasArraySpeed_pointer);
+	js_slowDataArray[JSSD_FLOAT_measArrayTorque]		= &(PID_Data.MeasArrayTorque_pointer);
+	js_slowDataArray[JSSD_FLOAT_ArrayControlCounter]	= &(ArrayCounter);
 	js_slowDataArray[JSSD_FLOAT_Stribtorque] = &(PID_Data.FrictionID_Output->BrkTorque);
 	js_slowDataArray[JSSD_FLOAT_Coulombtorque] = &(PID_Data.FrictionID_Output->CoulTorque);
 	js_slowDataArray[JSSD_FLOAT_Viscotorque] = &(PID_Data.FrictionID_Output->ViscoTorque);
@@ -153,7 +158,7 @@ void JavaScope_update(DS_Data* data){
 	javascope_data->slowDataID 		= js_cnt_slowData;
 	javascope_data->slowDataContent = *js_slowDataArray[js_cnt_slowData];
 	javascope_data->status 			= js_status_BareToRTOS;
-	uz_ParameterID_update_transmit_values(&PID_Data, &activeState, &FluxMapCounter);
+	uz_ParameterID_update_transmit_values(&PID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
 
 	// flush data cache of shared memory region to make sure shared memory is updated
 	Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);

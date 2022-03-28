@@ -361,6 +361,10 @@ typedef struct uz_ParameterID_Data_t {
 	int FluxMap_Control_counter; /**<control counter from the GUI to sync the FluxMaps counter */
 	float Psi_D_pointer; /**<current value of the FluxMap array corresponding to the value of the FluxMap_counter*/
 	float Psi_Q_pointer; /**<current value of the FluxMap array corresponding to the value of the FluxMap_counter*/
+	int Array_counter; /**<counter to transmit meas arrays of FrictionID 1by1 to the uz_GUI */
+	int Array_Control_counter; /**<control counter from the GUI to sync the array_counter */
+	float MeasArraySpeed_pointer; /**< current value of the MeasSpeedArray corresponding to the value of the array_counter*/
+	float MeasArrayTorque_pointer; /**< current value of the MeasTorqueArray corresponding to the value of the array_counter*/
 	float FluxMap_MeasuringPoints; /**<amount of unique measuring points for the FluxMaps */
 	enum uz_PID_Control_selection PID_Control_Selection;/**< PID_Control_Selection \n
 													0 = No_Control \n

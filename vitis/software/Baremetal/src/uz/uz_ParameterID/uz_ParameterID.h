@@ -97,7 +97,7 @@ void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* 
 //only for testing, delete for merge
 float uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC);
 
-void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter);
+void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter);
 
 #endif // UZ_PARAMETERID_H
 

@@ -94,10 +94,18 @@ void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t*
  */
 void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 
+/**
+ * @brief updates transmit values/Converts some int-values from the ParameterID to float and helps to sync the array transmittion
+ * 
+ * @param Data pointer to uz_ParameterID_Data_t struct
+ * @param activeState pointer to float variable of activeState
+ * @param FluxMapCounter pointer to float variable of FluxMapCounter
+ * @param ArrayCounter pointer to float variable of ArrayCounter
+ */
+void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter);
+
 //only for testing, delete for merge
 float uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC);
-
-void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter);
 
 #endif // UZ_PARAMETERID_H
 

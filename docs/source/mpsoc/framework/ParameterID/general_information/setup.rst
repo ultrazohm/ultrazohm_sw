@@ -186,6 +186,7 @@ Every other ``ID-state`` is guarded behind if-statements. Furthermore it determi
 .. doxygenfunction:: uz_ParameterID_Controller
 .. doxygenfunction:: uz_ParameterID_CleanPsiArray
 .. doxygenfunction:: uz_ParameterID_CalcFluxMaps
+.. doxygenfunction:: uz_ParameterID_update_transmit_values
 
 References
 ==========

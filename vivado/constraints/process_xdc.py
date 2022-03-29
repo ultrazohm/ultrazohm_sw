@@ -6,6 +6,7 @@
 # Date: check in git ;-)
 
 import csv
+import os 
 from os import listdir, getcwd
 from os.path import isfile, join
 
@@ -112,7 +113,7 @@ def read_pinout(filename):
 # if you want just to reprocess the existing xdc files to the same board, 
 # just make target_filename = origin_filename
 origin_filename = "TE0808_REV02.csv"
-target_filename = "TE0803_REV01.csv"
+target_filename = "TE0803_REV02.csv"
 xdc_relative_path = "te0808"
 
 dict_origin = read_pinout(origin_filename)
@@ -121,6 +122,11 @@ dict_target = read_pinout(target_filename)
 # get all xdc files in folder
 xdc_path = getcwd() + "/" + xdc_relative_path
 xdc_files = [f for f in listdir(xdc_path) if isfile(join(xdc_path,f)) and f.endswith((".xdc",".XDC"))]
+
+# create new folder 
+newpath = r'new' 
+if not os.path.exists(newpath):
+    os.makedirs(newpath)
 
 # process one xdc at a time, extracting the relevant info and re-writing to a new .xdc
 for xdc_input in xdc_files:
@@ -163,6 +169,5 @@ for xdc_input in xdc_files:
             f.writelines(p.write())
             f.write("\n")
 
-
-    
-           
+print("\nscript passed successfully\n")
+print("please manually rename the \"new\" folder to match the board name\n")

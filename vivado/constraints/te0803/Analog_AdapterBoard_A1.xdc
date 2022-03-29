@@ -4,18 +4,18 @@
 # into csv files with the C-PIN, C-NAME, FPGA Pin Name, and Module Net Name columns.
 # Obs.: Column order is not important, but names need to be strictly followed.
 #
-# Constraints ported from TE0808_REV02.csv to TE0803_REV01.csv.
+# Constraints ported from TE0808_REV02.csv to TE0803_REV02.csv.
 #
 # Script author: Tomas P. Correa
 # Date: check GIT repo
 
 
-# Port ANL_10_P_Ch1 = B64_L5_P (J4:102)
-set_property PACKAGE_PIN AB7 [get_ports ANL_10_P_Ch1]
+# Port ANL_10_P_Ch1 = B65_L13_P (J4:89)
+set_property PACKAGE_PIN L7 [get_ports ANL_10_P_Ch1]
 set_property IOSTANDARD LVDS [get_ports ANL_10_P_Ch1]
 
-# Port ANL_10_N_Ch1 = B64_L5_N (J4:104)
-set_property PACKAGE_PIN AC7 [get_ports ANL_10_N_Ch1]
+# Port ANL_10_N_Ch1 = B65_L13_N (J4:91)
+set_property PACKAGE_PIN L6 [get_ports ANL_10_N_Ch1]
 
 # Port ANL_09_N_Ch1 = B64_L9_N (J4:108)
 set_property PACKAGE_PIN AH7 [get_ports ANL_09_N_Ch1]
@@ -38,12 +38,12 @@ set_property PACKAGE_PIN AH9 [get_ports ANL_07_N_Ch1]
 set_property PACKAGE_PIN AG9 [get_ports ANL_07_P_Ch1]
 set_property IOSTANDARD LVDS [get_ports ANL_07_P_Ch1]
 
-# Port ANL_06_N_Ch1 = B64_L11_N (J4:126)
-set_property PACKAGE_PIN AF6 [get_ports ANL_06_N_Ch1]
-
-# Port ANL_06_P_Ch1 = B64_L11_P (J4:128)
-set_property PACKAGE_PIN AF7 [get_ports ANL_06_P_Ch1]
+# Port ANL_06_P_Ch1 = B64_L3_N (J4:150)
+set_property PACKAGE_PIN AC8 [get_ports ANL_06_P_Ch1]
 set_property IOSTANDARD LVDS [get_ports ANL_06_P_Ch1]
+
+# Port ANL_06_N_Ch1 = B64_L3_P (J4:152)
+set_property PACKAGE_PIN AB8 [get_ports ANL_06_N_Ch1]
 
 # Port ANL_05_P_Ch1 = B65_L10_P (J4:131)
 set_property PACKAGE_PIN H4 [get_ports ANL_05_P_Ch1]
@@ -73,10 +73,10 @@ set_property PACKAGE_PIN AD9 [get_ports ANL_02_N_Ch1]
 set_property PACKAGE_PIN AC9 [get_ports ANL_02_P_Ch1]
 set_property IOSTANDARD LVDS [get_ports ANL_02_P_Ch1]
 
-# Port ANL_01_P_Ch1 = B64_L3_N (J4:150)
-set_property PACKAGE_PIN AC8 [get_ports ANL_01_P_Ch1]
-set_property IOSTANDARD LVDS [get_ports ANL_01_P_Ch1]
+# Port ANL_01_N_Ch1 = B64_L11_N (J4:126)
+set_property PACKAGE_PIN AF6 [get_ports ANL_01_N_Ch1]
 
-# Port ANL_01_N_Ch1 = B64_L3_P (J4:152)
-set_property PACKAGE_PIN AB8 [get_ports ANL_01_N_Ch1]
+# Port ANL_01_P_Ch1 = B64_L11_P (J4:128)
+set_property PACKAGE_PIN AF7 [get_ports ANL_01_P_Ch1]
+set_property IOSTANDARD LVDS [get_ports ANL_01_P_Ch1]
 

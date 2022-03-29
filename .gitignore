@@ -41,5 +41,3 @@ vitis/Sandbox/uz_LED/build/
 vitis/Sandbox/uz_MyIp/uz_MyIp_testbench
 .vscode/settings.json
 control_algorithms/uz_FOC.slxc
-
-/vivado/constraints/new/

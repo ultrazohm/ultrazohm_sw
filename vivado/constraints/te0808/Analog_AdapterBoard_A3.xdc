@@ -1,16 +1,16 @@
-###Analog Adapter Board A3
+###Analog Adapter Board A3 for version 2v00 since there was a PIN swap
 # Author: Sebastian Wendel
-# Date: 15.07.2019
+# Date: 07.11.2019
 # All ADC-Pins are 1,8 Volt on Bank64 and Bank65
 # Bank64 and Bank65 are High-Performance Banks (HP), only HP pins have the internal 100R termination resistors and support therefore LVDS
 
 # differential FPGA pins with 1.8V signal level
 
 #Analog_10
-#ANL_10_N_Ch3 = B64_L24_N
-set_property PACKAGE_PIN AF1 [get_ports ANL_10_N_Ch3]
-#ANL_10_P_Ch3 = B64_L24_P
-set_property PACKAGE_PIN AF2 [get_ports ANL_10_P_Ch3]
+#ANL_10_N_Ch3 = B65_L11_N
+set_property PACKAGE_PIN AD7 [get_ports ANL_10_N_Ch3]
+#ANL_10_P_Ch3 = B65_L11_P
+set_property PACKAGE_PIN AC7 [get_ports ANL_10_P_Ch3]
 
 #Analog_09
 #ANL_09_P_Ch3 = B65_L17_P 
@@ -61,11 +61,10 @@ set_property PACKAGE_PIN AK2 [get_ports ANL_02_N_Ch3]
 set_property PACKAGE_PIN AJ2 [get_ports ANL_02_P_Ch3]
 
 #Analog_01
-#ANL_01_N_Ch3 = B65_L19_N
-set_property PACKAGE_PIN AC3 [get_ports ANL_01_N_Ch3]
-#ANL_01_P_Ch3 = B65_L19_P
-set_property PACKAGE_PIN AB3 [get_ports ANL_01_P_Ch3]
-
+#ANL_01_N_Ch3 = B65_L12_N
+set_property PACKAGE_PIN AC8 [get_ports ANL_01_N_Ch3]
+#ANL_01_P_Ch3 = B65_L12_P
+set_property PACKAGE_PIN AB8 [get_ports ANL_01_P_Ch3]
 
 #######################################################################################################################################
 #Set voltage level (IOSTANDARD LVDS_18 = IOSTANDARD LVDS at UltraScale)

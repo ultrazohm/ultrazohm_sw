@@ -29,15 +29,15 @@ set_property PACKAGE_PIN AF1  	[get_ports D1_OUT[24]]
 set_property PACKAGE_PIN AF2  	[get_ports D1_OUT[25]]
 
 
-
+# changed to zero-based numbering, starting from 00 to 29 on 24.03.2022
 #Digital_27_Ch1 = B65_L19_N
-set_property PACKAGE_PIN AC3 [get_ports {D1_OUT_27[0]}]
+set_property PACKAGE_PIN AC3 [get_ports {D1_OUT_26[0]}]
 #Digital_28_Ch1= B65_L19_P
-set_property PACKAGE_PIN AB3 [get_ports {D1_OUT_28[0]}]
+set_property PACKAGE_PIN AB3 [get_ports {D1_OUT_27[0]}]
 #Digital_29_Ch1 = B65_L15_N
-set_property PACKAGE_PIN AA5 [get_ports {D1_OUT_29[0]}]
+set_property PACKAGE_PIN AA5 [get_ports {D1_OUT_28[0]}]
 #Digital_30_Ch1 = B65_L15_P
-set_property PACKAGE_PIN AA6 [get_ports {D1_OUT_30[0]}]
+set_property PACKAGE_PIN AA6 [get_ports {D1_OUT_29[0]}]
 
 
 set_property IOSTANDARD LVCMOS18 [get_ports D1_*]

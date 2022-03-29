@@ -103,7 +103,9 @@ void process_request_thread(void *p)
 			nwsend.slowDataID[i] 		= javascope_data_sending.slowDataID;
 
 			// Sort the Value of the SlowData in the right place of the Array to give the parameter to the CAN-Thread
-			js_slowDataArray[javascope_data_sending.slowDataID] = javascope_data_sending.slowDataContent;
+			if(javascope_data_sending.slowDataID < JSSD_ENDMARKER){
+				js_slowDataArray[javascope_data_sending.slowDataID] = javascope_data_sending.slowDataContent;
+			}
 
 		}
 		nwsend.status = javascope_data_sending.status;

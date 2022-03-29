@@ -73,7 +73,8 @@ Syllabus
     mpsoc/platform_architecture/platform_architecture
     mpsoc/rpu_software/rpu_software
     mpsoc/apu_software/apu_software
-    mpsoc/framework/framework
+    mpsoc/software_framework/software_framework
+    mpsoc/vivado_framework/vivado_framework
     mpsoc/ip_cores/ip_cores
     mpsoc/CPLD/index
 

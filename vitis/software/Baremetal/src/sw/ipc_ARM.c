@@ -400,7 +400,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (PID_FID_eta_speed):
-			PID_Data.FrictionID_Config.eta = value;
+			PID_Data.FrictionID_Config.eta = value * 0.01f;
 			break;
 
 		case (PID_TMID_Scale_PRBS):

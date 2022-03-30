@@ -4,7 +4,44 @@
 Vivado build tcl scripts
 ========================
 
-Since these scripts are coupled with the paths in the ``ultrazohm_sw/vivado`` folder, they are not included in ``tcl_scripts`` (see :ref:`tcl_scripts`).
+The default Vivado project (see :ref:`default_vivado_project`) can be generated using the ``build.tcl`` script.
+Additionally, there are some helper scripts to facilitate the update of the ``build.tcl`` script after changes to the Vivado project are done.
+Since these scripts are coupled with the paths in the ``ultrazohm_sw/vivado`` folder, they are not included in ``tcl_scripts`` (see :ref:`tcl_scripts`) but located in ``ultrazohm_sw/vivado``.
+
+build.tcl
+---------
+
+Generates the UltraZohm Vivado project (``ultrazohm.xpr``).
+Usage:
+
+#. Open Vivado
+#. Click on ``Window`` -> ``Tcl Console``
+#. A window on the bottom of Vivado appears (*Tcl Console*)
+#. Navigate to the location of the ``ultrazohm_sw`` repository on your local file system using ``cd`` in the tcl console
+#. Navigate to ``ultrazohm_sw/vivado`` in the tcl console
+#. Call build.tcl with:
+
+.. code-block::
+
+    source build.tcl
+
+Calling the script leads to Vivado generating the project.
+
+.. figure:: vivado_build_tcl.gif
+
+  Call build.tcl to build the Vivado project
+
+.. note:: The ``build.tcl`` script assumes that the UltraZohm is equipped with for the TE0808 SoM with an UltraScale 9EG.
+          This is true for all standard UltraZohm systems, i.e., only special development systems at TH Nürnberg and TU München use other SoMs.
+
+update_tcl_scripts_for_vc.tcl
+-----------------------------
+
+This script has to be called to incorporate changes to the default Vivado project into the ``build.tcl`` script.
+
+.. warning:: Only call ``update_tcl_scripts_for_vc.tcl`` if the project use changed was build using ``build.tcl``.
+             Do not use it if you used another project or a project that was generated using ``build_selected_target.tcl``!
+
 
 .. _vivado_build_tcl_compatibility:
 
@@ -23,13 +60,6 @@ Depending on the board version, some of the signals are inverted using a magic c
 
   External IOBUF for ADC IP-Core and constant to invert signals depending on SoM (TE0808 or TE0803).
 
-Implementation details
-======================
-
-build.tcl
----------
-
-Generates the UltraZohm Vivado project (``ultrazohm.xpr``) for the TE0808 SoM with an UltraScale 9EG.
 
 build_selected_target.tcl
 -------------------------
@@ -37,18 +67,14 @@ build_selected_target.tcl
 Generates the UltraZohm Vivado project (``ultrazohm.xpr``) for a specified System-on-a-Module.
 Tested are TE0803 with 2EG (``"trenz.biz:te0803_2eg_1e:part0:1.0"``) and 3EG (``"trenz.biz:te0803_3eg_1e:part0:1.0"``).
 build_selected_target.tcl
-Before calling ``, the ``board_part`` has to be changed to the desired SoM:
+Before calling ``build_selected_target.tcl``, the ``board_part`` has to be changed to the desired SoM:
 
 .. code-block::
 
     set board_part "trenz.biz:te0803_2eg_1e:part0:1.0"
 
-
-update_tcl_scripts_for_vc.tcl
------------------------------
-
-This script has to be called to incorporate changes to the default Vivado project into the ``build.tcl`` script.
-
+Implementation details
+======================
 
 process_xdc.py
 --------------

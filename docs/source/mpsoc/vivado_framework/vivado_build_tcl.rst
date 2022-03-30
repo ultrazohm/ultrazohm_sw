@@ -6,7 +6,7 @@ Vivado build tcl scripts
 
 Since these scripts are coupled with the paths in the ``ultrazohm_sw/vivado`` folder, they are not included in ``tcl_scripts`` (see :ref:`tcl_scripts`).
 
-
+.. _vivado_build_tcl_compatibility:
 
 Compatibility with TE0803
 =========================

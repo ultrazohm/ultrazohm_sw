@@ -1,3 +1,5 @@
+.. _getting_started_vio:
+
 ==========================
 Virtual Input Output (VIO) 
 ==========================

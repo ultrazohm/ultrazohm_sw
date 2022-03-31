@@ -81,6 +81,8 @@ typedef struct {
   uint32_T one_sec_transition_counter; /* '<Root>/FrictionID' */
   uint32_T delay_transition_counter;   /* '<Root>/FrictionID' */
   uint32_T counter2;                   /* '<Root>/FrictionID' */
+  uint32_T ten_sec_transition_counter; /* '<Root>/FrictionID' */
+  uint32_T switch_count;               /* '<Root>/FrictionID' */
   uint16_T meas_count;                 /* '<Root>/FrictionID' */
   uint16_T nextstate;                  /* '<Root>/FrictionID' */
   uint8_T is_active_c7_FrictionID;     /* '<Root>/FrictionID' */

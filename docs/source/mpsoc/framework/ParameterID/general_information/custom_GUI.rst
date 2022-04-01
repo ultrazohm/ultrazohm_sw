@@ -8,6 +8,39 @@ Since controlling the ParameterID only via the debugger windows is cumbersome an
 To use this however, additional setup steps have to be taken.
 This page details these additional steps needed and how to use the uz_GUI.
 
+.. _uz_PID_GUI_usage:
+
+Usage
+=====
+
+This section gives an overview on how to use the ParameterID tab in the uz_GUI.
+
+   .. image:: ../images/GUI_overview.png
+
+#. The ParameterID is organized in its own panel, which can be selected via the ParameterID button. Each individual ``ID-state`` is further organized in its own subpanel and can be selected in the top left corner. 
+#. Visible on the right side are the GlobalControls for the UltraZohm. The ``Enable System``, ``Enable Control`` and ``STOP`` buttons are mirrored to the ones in the UltraZohm-Gui ``Control`` tab. 
+#. The button ``ParameterID`` enables or disables the ParameterID. The status indicator to the right signals the current state of the ParameterID (on/off).
+#. Here all individual ``ID-states`` can be turned on or off. The current state of the ``ID-state`` is signaled via the status indicators next to the buttons. The possible states are:
+
+   * ``Disabled``, for when the state is disabled and not requested for future use. As long as this status is active, the controls for this ``ID-state`` are locked.
+   * ``Requested``, for when a ``ID-state`` is supposed to be executed, but hasn't started yet. In this state, the config values should be changed. 
+   * ``Active``. for when this state is currently executing.
+   * ``Finished``, for when the state is finished and another ``ID-state`` can be started.
+
+#. The ``State Control`` buttons are used for general control of the ParameterID.
+
+   * The ``ACCEPT`` button is used to transition the ParameterID into a different state. This is mostly used, to enable the ``ID-states`` after requesting them. Other uses can be, to continue one ``ID-state``, after some operations have to be done i.e. start up the load machine. 
+   * The ``RESET`` button resets the entire ParameterID.
+  
+#. Each ``ID-state`` has an unique ``activeState`` variable for each substate. This is displayed here to give further information to the user, that the state is running and what it's doing.
+#. Selection for control method, after every Offline-state is finished. The selection can only be changed, if the ``Control`` state of the UltraZohm is disabled.
+
+   * If ``CurrentControl`` is selected, :math:`i_d` and :math:`i_q` reference values can be entered in the appropriate field in the JavaScope panel.
+   * If ``SpeedControl`` is selected, a :math:`n_{ref}` reference value can be entered in the appropriate field in the JavaScope panel.
+   * If ``Disable Control`` is selected, every previous control method selection is disabled and nothing happens.
+  
+#. Each ``ID-state`` has its own individual panel, where the individual config values can be configured and the identified values can be displayed. They have to be configured before entering the ``ID-state``. Standard values for the config values are displayed, which proved appropriate in the past. They can be used as an introductory baseline. 
+  
 .. _uz_PID_GUI_setup:
 
 Setup
@@ -713,31 +746,4 @@ Setup
             ....
             uz_ParameterID_update_transmit_values(&PID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
             .... 
-        }.. _uz_PID_GUI_setup:
-
-.. _uz_PID_GUI_usage:
-
-Usage
-=====
-
-This section gives an overview on how to use the ParameterID tab in the uz_GUI.
-
-   .. image:: ../images/GUI_overview.png
-
-#. Each individual ``ID-state`` is organized in its own tabbed panel which and can be selected in the top left corner. 
-#. Visible on the right side are the GlobalControls for the entire ParameterID. The ``Enable System``, ``Enable Control`` and ``STOP`` buttons are mirrored to the ones in the UltraZohm-Gui ``Control`` tab. 
-#. The button ``ParameterID`` enables or disables the ParameterID. The status indicator to the right signals the current state of the ParameterID (on/off).
-#. Here all individual ``ID-states`` can be turned on or off. The current state of the ``ID-state`` is signaled via the status indicators next to the buttons. The possible states are:
-
-   * ``Disabled``, for when the state is disabled and not requested for future use. As long as this status is active, the controls for this ``ID-state`` are locked.
-   * ``Requested``, for when a ``ID-state`` is supposed to be executed, but hasn't started yet. In this state, the config values should be changed. 
-   * ``Active``. for when this state is currently executing.
-   * ``Finished``, for when the state is finished and another ``ID-state`` can be started.
-
-#. The ``State Control`` buttons are used for general control of the ParameterID.
-
-   * The ``ACCEPT`` button is used to transition the ParameterID into a different state. This is mostly used, to enable the ``ID-states`` after requesting them. Other uses can be, to continue one ``ID-state``, after some operations have to be done i.e. start up the load machine. 
-   * The ``RESET`` button resets the entire ParameterID.
-  
-#. Each ``ID-state`` has an unique ``activeState`` variable for each substate. This is displayed here to give further information to the user, that the state is running.
-#. Each ``ID-state`` has its own individual panel, where the individual config values can be configured and the identified values can be displayed. They have to be configured before entering the ``ID-state``. Standard values for the config values are displayed, which proved appropriate in the past. They can be used as an introductory baseline. 
+        }

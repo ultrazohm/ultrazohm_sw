@@ -56,8 +56,6 @@
 
 //ParameterID-Code
 #include "uz/uz_ParameterID/uz_ParameterID.h"
-#include "uz/uz_FOC/uz_FOC.h"
-#include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "uz/uz_math_constants.h"
 
 

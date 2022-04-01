@@ -6,7 +6,7 @@ ParameterID
 
 Toolbox for different code-generated stateflows to identify common parameters of a permanent magnet synchronous motor. This page explains the general structure of the ParameterID. 
 To set the ParameterID up in the UltraZohm software check out :ref:`uz_PID_setup`.
-For further information visit, :ref:`uz_ParameterID_Data_structs`, :ref:`uz_PID_new_control_algorithm` and :ref:`uz_PID_new_ID_state`.
+For further information visit, :ref:`uz_ParameterID_Data_structs`, :ref:`uz_PID_new_control_algorithm`, :ref:`uz_PID_GUI` and :ref:`uz_PID_new_ID_state`.
 
 Overwiew
 ========

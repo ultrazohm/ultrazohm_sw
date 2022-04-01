@@ -48,7 +48,7 @@ static uz_ParameterID_t* uz_ParameterID_allocation(void);
 static uz_ParameterID_t* uz_ParameterID_allocation(void) {
 	uz_assert(instances_counter_ParameterID < UZ_PARAMETERID_MAX_INSTANCES);
 	uz_ParameterID_t* self = &instances_ParameterID[instances_counter_ParameterID];
-	uz_assert(self->is_ready == false);
+	uz_assert(!self->is_ready);
 	instances_counter_ParameterID++;
 	self->is_ready = true;
 	return (self);
@@ -72,45 +72,45 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	uz_PID_ControlState_step(self, Data);
 
 	//All Offline states
-	if (self->ControlState->output.ControlFlags.finished_all_Offline_states == false) {
+	if (!self->ControlState->output.ControlFlags.finished_all_Offline_states) {
 
 		//ElectricalID
-		if (self->ControlState->output.ControlFlags.transNr == 1U || self->ControlState->output.GlobalConfig_out.Reset == true) {
+		if (self->ControlState->output.ControlFlags.transNr == 1U || self->ControlState->output.GlobalConfig_out.Reset) {
 			uz_PID_ElectricalID_step(self, Data);
-		} else if (self->ControlState->output.GlobalConfig_out.ElectricalID == false && self->ElectricalID->output.enteredElectricalID == true) {
+		} else if (!self->ControlState->output.GlobalConfig_out.ElectricalID && self->ElectricalID->output.enteredElectricalID) {
 			uz_PID_ElectricalID_step(self, Data);
 		}
 
 		//TwoMassID
-		if (self->ControlState->output.ControlFlags.transNr == 2U || self->ControlState->output.GlobalConfig_out.Reset == true) {
+		if (self->ControlState->output.ControlFlags.transNr == 2U || self->ControlState->output.GlobalConfig_out.Reset) {
 			uz_PID_TwoMassID_step(self, Data);
-		} else if (self->ControlState->output.GlobalConfig_out.TwoMassID == false && self->TwoMassID->output.enteredTwoMassID == true) {
+		} else if (!self->ControlState->output.GlobalConfig_out.TwoMassID && self->TwoMassID->output.enteredTwoMassID) {
 			uz_PID_TwoMassID_step(self, Data);
 		}
 
 		//FrictionID
-		if (self->ControlState->output.ControlFlags.transNr == 3U || self->ControlState->output.GlobalConfig_out.Reset == true) {
+		if (self->ControlState->output.ControlFlags.transNr == 3U || self->ControlState->output.GlobalConfig_out.Reset) {
 			uz_PID_FrictionID_step(self, Data);
 			if (Data->Array_counter < 256 && (Data->Array_counter == Data->Array_Control_counter)) {
 				Data->Array_counter += 1;
 			} else if (Data->Array_counter == 256){
 				Data->Array_counter = 0;
 			}
-		} else if (self->ControlState->output.GlobalConfig_out.FrictionID == false && self->FrictionID->output.enteredFrictionID == true) {
+		} else if (!self->ControlState->output.GlobalConfig_out.FrictionID && self->FrictionID->output.enteredFrictionID) {
 			uz_PID_FrictionID_step(self, Data);
 		}
 
 		//FluxMapID
-		if (self->ControlState->output.ControlFlags.transNr == 4U || self->ControlState->output.GlobalConfig_out.Reset == true) {
+		if (self->ControlState->output.ControlFlags.transNr == 4U || self->ControlState->output.GlobalConfig_out.Reset) {
 			uz_PID_FluxMapID_step(self, Data);
-		} else if (self->ControlState->output.GlobalConfig_out.FluxMapID == false && self->FluxMapID->output.enteredFluxMapID == true) {
+		} else if (!self->ControlState->output.GlobalConfig_out.FluxMapID && self->FluxMapID->output.enteredFluxMapID) {
 			uz_PID_FluxMapID_step(self, Data);
 		}
 	}
 	//OnlineID
-	if (self->ControlState->output.ControlFlags.enableOnlineID == true || self->ControlState->output.GlobalConfig_out.Reset == true || Data->OnlineID_Config.OnlineID_Reset == true) {
+	if (self->ControlState->output.ControlFlags.enableOnlineID || self->ControlState->output.GlobalConfig_out.Reset || Data->OnlineID_Config.OnlineID_Reset) {
 		uz_PID_OnlineID_step(self, Data);
-		if (Data->AutoRefCurrents_Config.enableCRS == true || self->ControlState->output.GlobalConfig_out.Reset == true || Data->OnlineID_Config.OnlineID_Reset == true) {
+		if (Data->AutoRefCurrents_Config.enableCRS || self->ControlState->output.GlobalConfig_out.Reset || Data->OnlineID_Config.OnlineID_Reset) {
 			uz_PID_AutoRefCurrents_step(self, Data);
 		}
 		if (Data->FluxMap_counter < 400 && (Data->FluxMap_counter == Data->FluxMap_Control_counter)) {
@@ -146,7 +146,7 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 
 
 	//RESET
-	if (Data->GlobalConfig.Reset == true) {
+	if (Data->GlobalConfig.Reset) {
 
 		//reset the Reset-button
 		self->ControlState->output.GlobalConfig_out.Reset = false;
@@ -173,8 +173,8 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
 		output_DutyCycle.DutyCycle_U = Data->ElectricalID_Output->PWM_Switch_0;
 		output_DutyCycle.DutyCycle_V = Data->ElectricalID_Output->PWM_Switch_2;
 		output_DutyCycle.DutyCycle_W = Data->ElectricalID_Output->PWM_Switch_4;
-	} else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
-	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control))) {
+	} else if ((Data->Controller_Parameters.enableFOC_current || Data->Controller_Parameters.enableFOC_speed)
+	                || (Data->ControlFlags->finished_all_Offline_states && (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control))) {
 		uz_3ph_abc_t V_abc_Volts = uz_transformation_3ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
 		output_DutyCycle = uz_FOC_generate_DutyCycles(V_abc_Volts, Data->ActualValues.V_DC);
 	} else {
@@ -182,7 +182,7 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
 		output_DutyCycle.DutyCycle_V = 0.0f;
 		output_DutyCycle.DutyCycle_W = 0.0f;
 	}
-	if (Data->Controller_Parameters.resetIntegrator == true) {
+	if (Data->Controller_Parameters.resetIntegrator) {
 		output_DutyCycle.DutyCycle_U = 0.0f;
 		output_DutyCycle.DutyCycle_V = 0.0f;
 		output_DutyCycle.DutyCycle_W = 0.0f;
@@ -194,24 +194,24 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_i
 	uz_3ph_dq_t i_SpeedControl_reference_Ampere = { 0 };
 	bool ext_clamping = false;
 
-	if (Data->Controller_Parameters.enableFOC_speed == true) {
+	if (Data->Controller_Parameters.enableFOC_speed) {
 		//Change, if desired, the speed controller here
 		ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
 		i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->Controller_Parameters.n_ref_FOC, Data->ActualValues.V_DC,
 		                Data->Controller_Parameters.i_dq_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping);
 		i_SpeedControl_reference_Ampere.q += Data->TwoMassID_Output->PRBS_out;
 	}
-	if (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true) {
+	if (Data->Controller_Parameters.enableFOC_current || Data->Controller_Parameters.enableFOC_speed) {
 		//Change, if desired, the current controller here
-		if (Data->Controller_Parameters.enableFOC_current == true) {
+		if (Data->Controller_Parameters.enableFOC_current) {
 			//If CurrentControl is active, use input reference currents
 			v_dq_Volts = uz_FOC_sample(FOC_instance, Data->Controller_Parameters.i_dq_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-		} else if (Data->Controller_Parameters.enableFOC_speed == true) {
+		} else if (Data->Controller_Parameters.enableFOC_speed) {
 			//If SpeedControl is active, use reference currents from SpeedControl
 			v_dq_Volts = uz_FOC_sample(FOC_instance, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}
 	}
-	if (Data->Controller_Parameters.resetIntegrator == true) {
+	if (Data->Controller_Parameters.resetIntegrator) {
 			uz_FOC_reset(FOC_instance);
 			uz_SpeedControl_reset(Speed_instance);
 		}
@@ -230,18 +230,18 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_i
 		}
 	
 	//This is the setup for the Controller for Online-ID-states
-	if (Data->ControlFlags->finished_all_Offline_states == true) {
+	if (Data->ControlFlags->finished_all_Offline_states) {
 		uz_3ph_dq_t Online_current_ref = Data->GlobalConfig.i_dq_ref;
 		if (Data->OnlineID_Output->IdControlFlag == true) {
 
-			if (Data->AutoRefCurrents_Config.enableCRS == true) {
+			if (Data->AutoRefCurrents_Config.enableCRS) {
 				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out + Data->AutoRefCurrents_Output.i_dq_ref.d;
 				Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.i_dq_ref.q;
 			} else {
 				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out;
 			}
 		} else {
-			if (Data->AutoRefCurrents_Config.enableCRS == true) {
+			if (Data->AutoRefCurrents_Config.enableCRS) {
 				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->AutoRefCurrents_Output.i_dq_ref.d;
 				Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.i_dq_ref.q;
 			}
@@ -275,7 +275,7 @@ void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t*
 	self->OnlineID->CleanPsiArray->input.OnlineID_output = self->OnlineID->output.OnlineID_output;
 	self->OnlineID->CleanPsiArray->input.eta_c = 0.01f * Data->GlobalConfig.ratCurrent;
 	uz_OnlineID_CleanPsiArray(self->OnlineID);
-	if (Data->OnlineID_Config.OnlineID_Reset == false) {
+	if (!Data->OnlineID_Config.OnlineID_Reset) {
 		memcpy(self->OnlineID->input.cleaned_psi_array, self->OnlineID->CleanPsiArray->output.psi_array_out, sizeof(self->OnlineID->input.cleaned_psi_array));
 	} else {
 		memcpy(self->OnlineID->input.cleaned_psi_array, self->OnlineID->output.OnlineID_output.psi_array, sizeof(self->OnlineID->input.cleaned_psi_array));

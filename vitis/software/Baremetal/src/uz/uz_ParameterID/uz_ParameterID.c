@@ -55,6 +55,7 @@ static uz_ParameterID_t* uz_ParameterID_allocation(void) {
 }
 
 uz_ParameterID_t* uz_ParameterID_init(uz_ParameterID_Data_t *Data) {
+	uz_assert_not_NULL(Data);
 	uz_ParameterID_t* self = uz_ParameterID_allocation();
 	self->ControlState = uz_ControlState_init();
 	self->ElectricalID = uz_ElectricalID_init();
@@ -68,6 +69,7 @@ uz_ParameterID_t* uz_ParameterID_init(uz_ParameterID_Data_t *Data) {
 
 void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(Data);
 	uz_assert(self->is_ready);
 	uz_PID_ControlState_step(self, Data);
 
@@ -167,6 +169,8 @@ void uz_ParameterID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 }
 
 struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_3ph_dq_t v_dq_Volts, uz_PWM_SS_2L_t* PWM_Module) {
+	uz_assert_not_NULL(Data);
+	uz_assert_not_NULL(PWM_Module);
 	struct uz_DutyCycle_t output_DutyCycle = { 0 };
 	if (Data->Controller_Parameters.activeState >= 110 && Data->Controller_Parameters.activeState <= 143) {
 		uz_PWM_SS_2L_set_tristate(PWM_Module, Data->ElectricalID_Output->enable_TriState[0], Data->ElectricalID_Output->enable_TriState[1], Data->ElectricalID_Output->enable_TriState[2]);
@@ -190,6 +194,9 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
 	return (output_DutyCycle);
 }
 uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_SpeedControl_t* Speed_instance) {
+	uz_assert_not_NULL(Data);
+	uz_assert_not_NULL(FOC_instance);
+	uz_assert_not_NULL(Speed_instance);
 	uz_3ph_dq_t v_dq_Volts = { 0 };
 	uz_3ph_dq_t i_SpeedControl_reference_Ampere = { 0 };
 	bool ext_clamping = false;
@@ -271,6 +278,7 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_i
 
 void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(Data);
 	uz_assert(self->is_ready);
 	self->OnlineID->CleanPsiArray->input.OnlineID_output = self->OnlineID->output.OnlineID_output;
 	self->OnlineID->CleanPsiArray->input.eta_c = 0.01f * Data->GlobalConfig.ratCurrent;
@@ -287,6 +295,7 @@ void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t*
 
 void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(Data);
 	uz_assert(self->is_ready);
 	memcpy(self->OnlineID->InterpMeshGrid->input.psi_array_in, self->OnlineID->CleanPsiArray->output.psi_array_out, sizeof(self->OnlineID->CleanPsiArray->output.psi_array_out));
 	self->OnlineID->InterpMeshGrid->input.i_rat = Data->GlobalConfig.ratCurrent;
@@ -296,6 +305,8 @@ void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* 
 
 
 static void uz_PID_ElectricalID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(Data);
 	//Update State-Inputs
 	self->ElectricalID->input.ActualValues = Data->ActualValues;
 	self->ElectricalID->input.ElectricalIDConfig = Data->ElectricalID_Config;
@@ -314,6 +325,8 @@ static void uz_PID_ElectricalID_step(uz_ParameterID_t* self, uz_ParameterID_Data
 }
 
 static void uz_PID_ControlState_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(Data);
 	//Update Control-State inputs, which are not depended on other states
 	self->ControlState->input.GlobalConfig_in = Data->GlobalConfig;
 
@@ -322,6 +335,8 @@ static void uz_PID_ControlState_step(uz_ParameterID_t* self, uz_ParameterID_Data
 }
 
 static void uz_PID_FrictionID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(Data);
 	//Update State-Inputs
 	self->FrictionID->input.ActualValues = Data->ActualValues;
 	self->FrictionID->input.FrictionConfigID = Data->FrictionID_Config;
@@ -337,6 +352,8 @@ static void uz_PID_FrictionID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t
 }
 
 static void uz_PID_TwoMassID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(Data);
 	//Update State-Inputs
 	self->TwoMassID->input.ActualValues = Data->ActualValues;
 	self->TwoMassID->input.TwoMassIDConfig = Data->TwoMassID_Config;
@@ -352,6 +369,8 @@ static void uz_PID_TwoMassID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t*
 }
 
 static void uz_PID_FluxMapID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(Data);
 	//Update State-Inputs
 	self->FluxMapID->input.ActualValues = Data->ActualValues;
 	self->FluxMapID->input.FluxMapIDConfig = Data->FluxMapID_Config;
@@ -367,6 +386,8 @@ static void uz_PID_FluxMapID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t*
 }
 
 static void uz_PID_OnlineID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(Data);
 	//Update State-Inputs
 	self->OnlineID->input.ActualValues = Data->ActualValues;
 	self->OnlineID->input.ControlFlags = self->ControlState->output.ControlFlags;
@@ -382,6 +403,8 @@ static void uz_PID_OnlineID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* 
 }
 
 static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(Data);
 	//Update State-Inputs
 	self->OnlineID->AutoRefCurrents->input.ActualValues = Data->ActualValues;
 	self->OnlineID->AutoRefCurrents->input.AutoRefCurrentsConfig = Data->AutoRefCurrents_Config;
@@ -396,6 +419,7 @@ static void uz_PID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_D
 }
 
 static void uz_PID_FOC_output_set_zero(uz_ParameterID_Data_t* Data) {
+	uz_assert_not_NULL(Data);
 	Data->Controller_Parameters.Ki_id_out = 0.0f;
 	Data->Controller_Parameters.Ki_iq_out = 0.0f;
 	Data->Controller_Parameters.Ki_n_out = 0.0f;
@@ -412,6 +436,7 @@ static void uz_PID_FOC_output_set_zero(uz_ParameterID_Data_t* Data) {
 }
 
 float uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {
+	uz_assert_not_NULL(Data);
 	float factor = sqrtf(1.0f + powf((Data->ActualValues.omega_el * RC), 2.0f));
 	Data->ActualValues.V_abc.a = Data->ActualValues.V_abc.a * factor;
 	Data->ActualValues.V_abc.b = Data->ActualValues.V_abc.b * factor;
@@ -421,6 +446,10 @@ float uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {
 }
 
 void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter){
+	uz_assert_not_NULL(Data);
+	uz_assert_not_NULL(activeState);
+	uz_assert_not_NULL(FluxMapCounter);
+	uz_assert_not_NULL(ArrayCounter);
 	*activeState = (float) Data->Controller_Parameters.activeState;
 	*FluxMapCounter = (float) Data->FluxMap_counter;
 	*ArrayCounter = (float) Data->Array_counter;
@@ -432,7 +461,8 @@ void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *a
 }
 
 static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_ParameterID_Data_t *Data) {
-
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(Data);
 	//Initialize Global-Config
 	Data->GlobalConfig.ACCEPT = false;
 	Data->GlobalConfig.Reset = false;

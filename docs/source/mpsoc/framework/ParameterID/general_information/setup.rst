@@ -62,9 +62,9 @@ The ID-state specific configuration values can later be configured via the uz_GU
 
 .. literalinclude:: ../../../../../../vitis/software/Baremetal/src/uz/uz_ParameterID/uz_ParameterID.c
     :caption: Code to initialize ``uz_ParameterID_Data_t``. Important parts are highlighted.
-    :lines: 434-523
+    :lines: 463-553
     :linenos:
-    :emphasize-lines: 12,15-29
+    :emphasize-lines: 13,16-30
     :language: c
 
 If the FluxMaps identification of the :ref:`uz_OnlineID` state will be used, the following code has to be implemented inside the ``while(1) loop`` of the ``main.c``:

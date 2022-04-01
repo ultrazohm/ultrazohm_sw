@@ -281,9 +281,9 @@ After code generating the stateflow the following changes have to be made in the
          :caption: Code for ``uz_ParameterID_step`` function for Offline-state. 
 
          //StateID
-         if (self->ControlState->output.ControlFlags.transNr == xU || self->ControlState->output.GlobalConfig_out.Reset) {
+         if (self->ControlState->output.ControlFlags.transNr == xU || self->ControlState->output.GlobalConfig_out.Reset == true) {
             uz_PID_StateID_step(self, Data);
-         } else if (!self->ControlState->output.GlobalConfig_out.StateID && self->StateID->output.enteredStateID) {
+         } else if (self->ControlState->output.GlobalConfig_out.StateID == false && self->StateID->output.enteredStateID == true) {
             uz_PID_StateID_step(self, Data);
          }
 
@@ -306,7 +306,7 @@ After code generating the stateflow the following changes have to be made in the
          :caption: Code for ``uz_ParameterID_step`` function for Online-state. 
 
          //StateID
-         if (self->ControlState->output.ControlFlags.enableStateID || self->ControlState->output.GlobalConfig_out.Reset) {
+         if (self->ControlState->output.ControlFlags.enableStateID == true || self->ControlState->output.GlobalConfig_out.Reset == true) {
             uz_PID_StateID_step(self, Data);
          }
 

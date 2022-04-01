@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+#ifndef UZ_PID_CLEANPSIARRAY_H
+#define UZ_PID_CLEANPSIARRAY_H
+
 #include "../../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
@@ -30,4 +33,5 @@ typedef struct {
 uz_PID_CleanPsiArray_t* uz_CleanPsiArray_init(void);
 void uz_CleanPsiArray(uz_PID_CleanPsiArray_t *self);
 
+#endif
 #endif

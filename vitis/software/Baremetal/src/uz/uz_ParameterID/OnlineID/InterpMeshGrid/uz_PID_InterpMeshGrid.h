@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+#ifndef UZ_PID_INTERPMESHGRID_H
+#define UZ_PID_INTERPMESHGRID_H
+
 #include "../../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
@@ -30,4 +33,5 @@ typedef struct {
 uz_PID_InterpMeshGrid_t* uz_InterpMeshGrid_init(void);
 void uz_InterpMeshGrid(uz_PID_InterpMeshGrid_t *self);
 
+#endif
 #endif

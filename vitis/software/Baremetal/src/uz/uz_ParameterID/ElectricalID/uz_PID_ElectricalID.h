@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+#ifndef UZ_PID_ELECTRICALID_H
+#define UZ_PID_ELECTRICALID_H
+
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
@@ -45,4 +48,5 @@ uz_PID_ElectricalID_t* uz_ElectricalID_init(void);
  */
 void uz_ElectricalID_step(uz_PID_ElectricalID_t *self);
 
+#endif
 #endif

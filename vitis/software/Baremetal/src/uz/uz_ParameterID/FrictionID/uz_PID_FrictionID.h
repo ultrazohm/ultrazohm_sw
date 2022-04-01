@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+#ifndef UZ_PID_FRICTIONID_H
+#define UZ_PID_FRICTIONID_H
+
+
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
@@ -44,4 +48,6 @@ uz_PID_FrictionID_t* uz_FrictionID_init(void);
  * @param self pointer to uz_PID_FrictionID_t object
  */
 void uz_FrictionID_step(uz_PID_FrictionID_t *self);
+
+#endif
 #endif

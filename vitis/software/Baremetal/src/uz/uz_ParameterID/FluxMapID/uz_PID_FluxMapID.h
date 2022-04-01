@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+#ifndef UZ_PID_FLUXMAPID_H
+#define UZ_PID_FLUXMAPID_H
+
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
@@ -45,4 +48,5 @@ uz_PID_FluxMapID_t* uz_FluxMapID_init(void);
  */
 void uz_FluxMapID_step(uz_PID_FluxMapID_t *self);
 
+#endif
 #endif

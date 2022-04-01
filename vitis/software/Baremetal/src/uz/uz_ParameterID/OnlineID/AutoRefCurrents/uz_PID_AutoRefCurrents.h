@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+#ifndef UZ_PID_AUTOREFCURRENTS_H
+#define UZ_PID_AUTOREFCURRENTS_H
+
 #include "../../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
@@ -44,4 +47,5 @@ uz_PID_AutoRefCurrents_t* uz_AutoRefCurrents_init(void);
  */
 void uz_AutoRefCurrents_step(uz_PID_AutoRefCurrents_t *self);
 
+#endif
 #endif

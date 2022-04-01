@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+#ifndef UZ_PID_ONLINEID_H
+#define UZ_PID_ONLINEID_H
+
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
@@ -73,4 +76,5 @@ void uz_OnlineID_CalcFluxMaps(uz_PID_OnlineID_t* self);
  */
 void uz_OnlineID_AutoRefCurrents_step(uz_PID_OnlineID_t* self);
 
+#endif
 #endif

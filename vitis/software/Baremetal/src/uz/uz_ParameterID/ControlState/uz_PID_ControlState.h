@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+#ifndef UZ_PID_CONTROLSTATE_H
+#define UZ_PID_CONTROLSTATE_H
+
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include "../../uz_HAL.h"
@@ -45,4 +48,5 @@ uz_PID_ControlState_t* uz_ControlState_init(void);
  */
 void uz_ControlState_step(uz_PID_ControlState_t *self);
 
+#endif
 #endif

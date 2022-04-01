@@ -73,10 +73,10 @@ If the FluxMaps identification of the :ref:`uz_OnlineID` state will be used, the
   :linenos:
   :caption: Code to calculate FluxMaps inside main.c while(1)-loop
     
-  if (PID_Data.OnlineID_Output->clean_array == true) {
+  if (PID_Data.OnlineID_Output->clean_array) {
 	uz_ParameterID_CleanPsiArray(ParameterID, &PID_Data);
   }
-  if (PID_Data.calculate_flux_maps == true) {
+  if (PID_Data.calculate_flux_maps) {
 	uz_ParameterID_CalcFluxMaps(ParameterID, &PID_Data);
 	PID_Data.calculate_flux_maps = false;
   }

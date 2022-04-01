@@ -9,11 +9,12 @@ Description
 
 This state includes an automated identification process for typical parameters of a PMSM. 
 It is based on [[#Hoerner_ProjectReport2]_] and has been modified to fit into the ParameterID library of the UltraZohm.
-This includes the identification of the polepairs :math:`p`, theta_offset :math:`\theta_{offset}` of an incremental encoder, stator resistance :math:`R_s`, direct inductance :math:`L_d`, quadrature inductance :math:`L_q`, permanent magnet flux :math:`\psi_{PM}` and the inertia :math:`J`. 
+This includes the identification of the polepairs :math:`p`, theta_offset :math:`\theta_{offset}` of an incremental encoder, stator resistance :math:`R_s`, 
+direct inductance :math:`L_d`, quadrature inductance :math:`L_q`, permanent magnet flux :math:`\psi_{PM}` and the inertia :math:`J`. 
 The control parameters of a FOC will be calculated with the identified parameters and are therefore tuned for the used machine. 
 This state requires some sort of speed control.
 
-This state does require multiple ACCEPT flags to continue, since for the identification of Lq a manual operation on the motor has to be done.
+This state does require multiple ACCEPT flags to continue, since for the identification of :math:`L_q` a manual operation on the motor has to be done.
 
 .. tikz:: Schematic overview of the ElectricalID
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
@@ -21,7 +22,7 @@ This state does require multiple ACCEPT flags to continue, since for the identif
   \begin{tikzpicture}[auto, node distance=2.5cm,>=latex']
   \tikzstyle{block} = [draw, fill=black!10, rectangle, rounded corners, minimum height=3em, minimum width=3em]
   \node(PID) {\Large{\textbf{ElectricalID}}};
-  \node[block,fill=green!20,name=entry, below = 0.5cm of PID,drop shadow,align=center] {Entry of state};
+  \node[block,fill=green!20,name=entry, below = 0.5cm of PID,drop shadow,align=center] {Entry of state\\\textbf{ACCEPT}};
   \node[block,fill=yellow!20,name=state1, below right = 0.5cm and 1cm of entry,drop shadow,align=center] {Automatic DutyCycle \\determination\\ \textbf{110}};
   \node[block,fill=yellow!20,name=state2, below = 2.5cm of entry,drop shadow,align=center] {Align rotor to d-axis \\Identify thetaOffset\\ \textbf{120/121}};
   \node[block,fill=yellow!20,name=state3, below = 0.5cm of state2,drop shadow,align=center] {Align rotor to q-axis \\Identify polepairs\\ \textbf{123/124}};
@@ -55,13 +56,13 @@ This state does require multiple ACCEPT flags to continue, since for the identif
   \draw[->](state6.south) -- (state10.north);
   \draw[->]($(state6.east)+(0cm,-0.35cm)$) -| (state7.north);
   \node[name=LQ1,above right = -1.2cm and 0.0cm of state6, align=center]{IdentLq == 1}; 
-  \node[name=LQ0,below left = 0.6cm and -1.5cm of state6, align=center]{IdentLq \\== 0\\ACCEPT}; 
+  \node[name=LQ0,below left = 0.6cm and -1.5cm of state6, align=center]{IdentLq \\== 0\\\textbf{ACCEPT}}; 
   \draw[->](state7.south) -- (state8.north);
-  \node[name=ACPT1,below right = 0.25cm and -0.75cm of state7, align=center]{ACCEPT}; 
+  \node[name=ACPT1,below right = 0.25cm and -0.75cm of state7, align=center]{\textbf{ACCEPT}}; 
   \draw[->](state8.south) -- (state9.north);
   \draw[->](state10.south) -- (state11.north);
   \draw[->](state9.south) |- (state11.east);
-  \node[name=ACPT1,below right = 0.25cm and -0.75cm of state9, align=center]{ACCEPT}; 
+  \node[name=ACPT1,below right = 0.25cm and -0.75cm of state9, align=center]{\textbf{ACCEPT}}; 
   \draw[->](state11.south) -- (state12.north);
   \draw[->](state12.south) -- (state13.north);
   \draw[->](state13.south) -- (state14.north);

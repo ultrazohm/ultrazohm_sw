@@ -27,8 +27,9 @@ This guarantees that the measurements are only recorded when the motor has the s
   \begin{tikzpicture}[auto, node distance=2.5cm,>=latex']
   \tikzstyle{block} = [draw, fill=black!10, rectangle, rounded corners, minimum height=3em, minimum width=3em]
   \node(PID) {\Large{\textbf{FluxMapID}}};
-  \node[block,fill=green!20,name=entry, below = 0.5cm of PID,drop shadow,align=center] {Entry of state};
-  \node[block,fill=yellow!20,name=state1, below = 0.5cm of entry,drop shadow,align=center] {Calculate all\\different operating\\points \\\textbf{401}};
+  \node[block,fill=green!20,name=entry, below = 0.5cm of PID,drop shadow,align=center] {Entry of state\\\textbf{ACCEPT}};
+  \node[block,fill=red!20,name=state8, below = 0.5cm of entry,drop shadow,align=center] {Set load machine\\ to fixed speed };
+  \node[block,fill=yellow!20,name=state1, below = 0.5cm of state8,drop shadow,align=center] {Calculate all\\different operating\\points \\\textbf{401}};
   \node[block,fill=yellow!20,name=state2, below = 0.5cm of state1,drop shadow,align=center] {Set new \\reference point\\ \textbf{402}};
   \node[block,fill=yellow!20,name=state3, below = 0.5cm of state2,drop shadow,align=center] {Collect data\\ \textbf{403}};
   \node[block,fill=yellow!20,name=state4, below = 0.5cm of state3,drop shadow,align=center] {Wait for collection \\to finish\\\textbf{404}};
@@ -40,7 +41,9 @@ This guarantees that the measurements are only recorded when the motor has the s
   \node[draw,fill=blue!10,name=ParameterID,rounded corners,fit=(PID) (exit)(state3)(state7),inner sep=5pt,minimum width=12cm] {};
   \end{scope}
   \draw[->](state1.south) -- (state2.north);
-  \draw[->](entry.south) -- (state1.north);
+  \draw[->](entry.south) -- (state8.north);
+  \draw[->](state8.south) -- (state1.north);
+  \node[name=ACPT,above right = -0.0cm and -1.5cm of state1, align=center]{start\_FM\_ID == true \&\& \textbf{ACCEPT}}; 
   \draw[->](state2.south) -- (state3.north);
   \draw[->](state3.south) -- (state4.north);
   \draw[->](state5.south) -- (exit.north);

@@ -17,8 +17,8 @@ This state requires some sort of speed control.
 
   \begin{tikzpicture}[auto, node distance=2.5cm,>=latex']
   \tikzstyle{block} = [draw, fill=black!10, rectangle, rounded corners, minimum height=3em, minimum width=3em]
-  \node(PID) {\Large{\textbf{FluxMapID}}};
-  \node[block,fill=green!20,name=entry, below = 0.5cm of PID,drop shadow,align=center] {Entry of state};
+  \node(PID) {\Large{\textbf{TwoMassID}}};
+  \node[block,fill=green!20,name=entry, below = 0.5cm of PID,drop shadow,align=center] {Entry of state\\\textbf{ACCEPT}};
   \node[block,fill=yellow!20,name=state1, below = 0.5cm of entry,drop shadow,align=center] {Setting \\reference speed \\\textbf{210}};
   \node[block,fill=yellow!20,name=state2, below = 0.5cm of state1,drop shadow,align=center] {Excitation via a \\PRBS sequence\\ \textbf{220}};
   \node[block,fill=yellow!20,name=state3, below = 0.5cm of state2,drop shadow,align=center] {Calculating results\\Reseting the integrator\\ \textbf{230}};

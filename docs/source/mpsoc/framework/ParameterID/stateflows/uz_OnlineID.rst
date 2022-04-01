@@ -30,6 +30,7 @@ It gives out reference currents of a circular determined current map to quickly 
   \node[below,align=center]at(Online.north){\textbf{\LARGE{OnlineID}}};
   \node[block,below right=8em and 0.5em of Online.north west,minimum height= 3.4in, minimum width=1.5in](steady){};
   \node[below,align=center]at(steady.north)(eval){Evaluation of\\ steady states};
+  \node[block,above=5em of eval,align=center, name=entry,anchor=north, minimum height=1em, text width=1.25in,fill=green!20] {Entry of state\\\textbf{ACCEPT}};
   \node[above,align=center]at(steady.south){\textbf{501}};
   \node[block,below left=9em and 0em of eval.north, align=center, anchor=north, minimum height=1em, text width=1.25in,fill=green!20](buffer){Save actual   values of\\ $i_q$, $i_d$, $u_d$, $u_q$ \& $\omega_{el}$ in shift registers};
   \node[block,above=1em of buffer.north, align=center, minimum height=5.3em, text width=1.25in,fill=green!20](Drehzahl){Evaluation, if \\ $ n \geq n_{lim}$};
@@ -60,6 +61,7 @@ It gives out reference currents of a circular determined current map to quickly 
   \node[block,left=3em of Diff, anchor=east, ](Entf){Delete shift-\\register\\values};
   \draw[->](Diff.west)to node[below,align=left]{ }(Entf.east);
   \draw[<-](steady.east|-Entf)to node[below,align=left]{}(Entf.west);
+  \draw[->](entry.south) -- (eval.north);
   \end{tikzpicture}
 
 Necessary measurement values

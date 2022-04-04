@@ -5,8 +5,9 @@ Watch Dog Timer
 ===============
 
 The main goal of the Watch Dog Timer (WDT) is to detect real-time violations, e.g. if the control routine on the R5 takes longer than the available control period. 
-In this case an interrupt is thrown that can be handled in the PS and PL. Component based on the Xilinx AXI Watchdog Timer (WDT) IP-core [#PG128]_:
+In this case an interrupt is thrown that can be handled in the PS and PL. 
 
+- based on the Xilinx AXI Watchdog Timer (WDT) IP-core [#PG128]_
 - 32-bit slave device on a AXI4-Lite interface
 - Window watchdog feature with programmable open and close windows
 - Additional features for better controllability such as Second Sequence Timer and Fail Counter
@@ -63,28 +64,27 @@ If the WWDT is restarted outside of the open window time period, it generates a 
 Integration in Baremetal project
 ================================
 
-- **Inside the int Initialize_ISR()** function we have to invoke the initialization of the IP XWdtTb \*uz_watchdog_init() setting the timer to the default timeout and default configuration as it is explained in the API section (see below).
-- **Inside the int Rpu_GicInit()**  function we have to make the following changes to integrate the device:
-    1.	We have to change the priority of the system timer. In order to allow the interrupt preemption, meaning that the ISR_Control() function than handles the timing interruption can be interrupted itself, we have to modify these lines:
+- Inside ``Initialize_ISR()``, we have to initialize the watchbog by calling ``*uz_watchdog_init()``. This sets the timer to the default timeout and default configuration as it is explained in the API section (see below).
+- Inside ``Rpu_GicInit()``, the following changes are necessary to integrate the device:
+  
+  1. We have to change the priority of the system timer. In order to allow the **interrupt preemption**, meaning that ``ISR_Control()`` than handles the timing interruption can be interrupted itself, we have to modify these lines:
 	
-    -     XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
-    -     prio = 15;
-    -     trigger = 0b11;
-    -     XScuGic_SetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,prio,trigger);
+  .. code-block:: c
+    
+    XScuGic_GetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,&prio,&trigger);
+    prio = 15;
+    trigger = 0b11;
+    XScuGic_SetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,prio,trigger);
 
 
 
-    2.	We have to initialize the interruption of the watchdog using a new private function added to the isr.c file: 
+  2. We have to initialize the interruption of the watchdog using a new private function added to the ``isr.c`` file: 
 	
-    - int WdtTbSetupIntrSystem(XScuGic_Config \*IntcConfig, XScuGic \*IntcInstancePtr). This function sets the INT Output signal through the GIC System. The GIC has to be previously set, using its functions (XScuGic_LookupConfig(), XScuGic_CfgInitialize() and Xil_Exception*() functions to initialize, register and enable the Interruption system. It is already done in the Initialize_ISR() and Rpu_GicInit() functions. A default handler is provided in our driver uz_watchdog.h. It counts the error and resumes normal execution. It should use the future uz_error_handler module to set the error and handle it properly
+    - ``WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)``. This function sets the INT Output signal through the GIC System. The GIC has to be previously set, using its functions (XScuGic_LookupConfig(), XScuGic_CfgInitialize() and Xil_Exception*() functions to initialize, register and enable the Interruption system. It is already done in the Initialize_ISR() and Rpu_GicInit() functions. A default handler is provided in our driver uz_watchdog.h. It counts the error and resumes normal execution. It should use the future uz_error_handler module to set the error and handle it properly
 
-
-
-    3.	We have to enable the WDT and launch first kick with:
-
-    - uz_watchdog_Start(WdtTbInstancePtr);
+  3. We have to enable the WDT and launch first kick with: ``uz_watchdog_Start(WdtTbInstancePtr);``
 	
-- And finally, **inside the ISR_Control()** function, we have to:
+- And finally, inside the ``ISR_Control()`` function, we have to:
     1.	Enable the preemption or the interruption nesting invoking
 
     - Xil_EnableNestedInterrupts(); 

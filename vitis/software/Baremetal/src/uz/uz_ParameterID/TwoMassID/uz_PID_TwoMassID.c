@@ -40,6 +40,7 @@ uz_PID_TwoMassID_t* uz_TwoMassID_init(void) {
 }
 
 void uz_TwoMassID_step(uz_PID_TwoMassID_t *self) {
+	uz_assert_not_NULL(self);
 	TwoMassID_step(self->PtrToModelData);
 }
 

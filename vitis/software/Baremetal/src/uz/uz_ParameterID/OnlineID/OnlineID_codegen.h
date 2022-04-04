@@ -33,6 +33,8 @@
 #include "../rtwtypes.h"
 #endif                                 /* OnlineID_COMMON_INCLUDES_ */
 
+/* Model Code Variants */
+
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
 #define rtmGetRootDWork(rtm)           ((rtm)->dwork)
@@ -114,6 +116,7 @@ typedef struct {
   real32_T Ld_old_outside;             /* '<Root>/OnlineID' */
   real32_T Lq_old_outside;             /* '<Root>/OnlineID' */
   real32_T PsiPm_old_outside;          /* '<Root>/OnlineID' */
+  int32_T k;
   uint32_T counter;                    /* '<Root>/OnlineID' */
   uint32_T counter_time;               /* '<Root>/OnlineID' */
   uint16_T counter_ausserhalb;         /* '<Root>/OnlineID' */

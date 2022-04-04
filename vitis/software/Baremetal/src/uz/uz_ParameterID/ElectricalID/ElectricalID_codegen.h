@@ -67,8 +67,6 @@ typedef struct tag_RTM_ElectricalID_t RT_MODEL_ElectricalID_t;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  real_T sineCounter;                  /* '<Root>/ElectricalID' */
-  real_T d_m;
   real32_T H[4];                       /* '<Root>/ElectricalID' */
   real32_T omega_register[5];          /* '<Root>/ElectricalID' */
   real32_T d[2048];                    /* '<Root>/ElectricalID' */
@@ -97,6 +95,7 @@ typedef struct {
   uint32_T counter;                    /* '<Root>/ElectricalID' */
   uint32_T wait_count;                 /* '<Root>/ElectricalID' */
   uint32_T one_sec_transition_counter; /* '<Root>/ElectricalID' */
+  uint32_T sineCounter;                /* '<Root>/ElectricalID' */
   uint16_T n_iters;                    /* '<Root>/ElectricalID' */
   uint16_T z;                          /* '<Root>/ElectricalID' */
   uint8_T is_active_c3_ElectricalID;   /* '<Root>/ElectricalID' */

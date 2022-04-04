@@ -1466,7 +1466,8 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
   real32_T mean_iq_reg;
   real32_T mean_iq_reg_tmp;
   real32_T mean_om_reg;
-  real32_T tmp;
+  real32_T tmp_0;
+  uint32_T tmp;
 
   /* MATLAB Function 'CheckSteadyState': '<S1>:182' */
   /* '<S1>:182:3' mean_om_reg=mean(om_reg_in); */
@@ -1502,18 +1503,18 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
   if (mean_iq_reg_tmp + mean_iq_reg >= ex) {
     ex = iq_reg_in[0];
     for (k = 0; k < 49; k++) {
-      tmp = iq_reg_in[k + 1];
-      if (ex > tmp) {
-        ex = tmp;
+      tmp_0 = iq_reg_in[k + 1];
+      if (ex > tmp_0) {
+        ex = tmp_0;
       }
     }
 
     if (mean_iq_reg - mean_iq_reg_tmp <= ex) {
       ex = iq_reg_in[0];
       for (k = 0; k < 49; k++) {
-        tmp = iq_reg_in[k + 1];
-        if (ex > tmp) {
-          ex = tmp;
+        tmp_0 = iq_reg_in[k + 1];
+        if (ex > tmp_0) {
+          ex = tmp_0;
         }
       }
 
@@ -1540,18 +1541,18 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
   /* '<S1>:182:15'         &&(mean_id_reg-(OnlineIDConfig.dev_curr*GlobalConfig.ratCurrent))<=min(id_reg_in)&&min(id_reg_in)~=0) */
   ex = id_reg_in[0];
   for (k = 0; k < 49; k++) {
-    tmp = id_reg_in[k + 1];
-    if (ex < tmp) {
-      ex = tmp;
+    tmp_0 = id_reg_in[k + 1];
+    if (ex < tmp_0) {
+      ex = tmp_0;
     }
   }
 
   if (mean_iq_reg_tmp + mean_id_reg >= ex) {
     ex = id_reg_in[0];
     for (k = 0; k < 49; k++) {
-      tmp = id_reg_in[k + 1];
-      if (ex > tmp) {
-        ex = tmp;
+      tmp_0 = id_reg_in[k + 1];
+      if (ex > tmp_0) {
+        ex = tmp_0;
       }
     }
 
@@ -1704,9 +1705,20 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
   /* nominal current or 0.5*nominal current */
   /* If currents are inside this limit, the  */
   /* linear parameters will be measured */
-  /* '<S1>:182:40' if(timer>=OnlineIDConfig.Rs_time*(1/GlobalConfig.sampleTimeISR) && i_val==0) */
-  if (((real_T)timer >= 1.0F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR *
-       rtOnlineID_U->OnlineIDConfig.Rs_time) && (!*i_val)) {
+  /* '<S1>:182:40' if((timer>=uint32(OnlineIDConfig.Rs_time*(1/GlobalConfig.sampleTimeISR))) && i_val==0) */
+  mean_iq_reg_tmp = roundf(1.0F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR *
+    rtOnlineID_U->OnlineIDConfig.Rs_time);
+  if (mean_iq_reg_tmp < 4.2949673E+9F) {
+    if (mean_iq_reg_tmp >= 0.0F) {
+      tmp = (uint32_T)mean_iq_reg_tmp;
+    } else {
+      tmp = 0U;
+    }
+  } else {
+    tmp = MAX_uint32_T;
+  }
+
+  if ((timer >= tmp) && (!*i_val)) {
     /* Rs_time in seconds  */
     /* '<S1>:182:41' allow_measurement = boolean(1); */
     *allow_measurement = true;
@@ -1797,21 +1809,31 @@ static void RefreshDataRegister(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
     /* Inport: '<Root>/OnlineIDConfig' incorporates:
      *  Inport: '<Root>/GlobalConfig'
      */
-    /* '<S1>:106:19' if(counter_time>=(OnlineIDConfig.Rs_time/GlobalConfig.sampleTimeISR) && i_valid==0) */
-    if ((real_T)rtOnlineID_DW->counter_time >=
-        rtOnlineID_U->OnlineIDConfig.Rs_time /
-        rtOnlineID_U->GlobalConfig_out.sampleTimeISR) {
-      if (!rtOnlineID_DW->i_valid) {
-        /* Sets variable to 1, if Rs will be identified */
-        /* '<S1>:106:20' LinPara_ident_outside=boolean(1); */
-        rtOnlineID_DW->LinPara_ident_outside = true;
-
-        /*  outside the valid range */
+    /* '<S1>:106:19' if(counter_time>=(uint32(OnlineIDConfig.Rs_time/GlobalConfig.sampleTimeISR) && i_valid==0)) */
+    tmp_1 = roundf(rtOnlineID_U->OnlineIDConfig.Rs_time /
+                   rtOnlineID_U->GlobalConfig_out.sampleTimeISR);
+    if (tmp_1 < 4.2949673E+9F) {
+      if (tmp_1 >= 0.0F) {
+        qY = (uint32_T)tmp_1;
       } else {
-        /* '<S1>:106:21' else */
-        /* '<S1>:106:22' LinPara_ident_outside=boolean(0); */
-        rtOnlineID_DW->LinPara_ident_outside = false;
+        qY = 0U;
       }
+    } else {
+      qY = MAX_uint32_T;
+    }
+
+    if (qY != 0U) {
+      tmp_0 = !rtOnlineID_DW->i_valid;
+    } else {
+      tmp_0 = false;
+    }
+
+    if (rtOnlineID_DW->counter_time >= (uint32_T)tmp_0) {
+      /* Sets variable to 1, if Rs will be identified */
+      /* '<S1>:106:20' LinPara_ident_outside=boolean(1); */
+      rtOnlineID_DW->LinPara_ident_outside = true;
+
+      /*  outside the valid range */
     } else {
       /* '<S1>:106:21' else */
       /* '<S1>:106:22' LinPara_ident_outside=boolean(0); */
@@ -2006,7 +2028,6 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
   DW_OnlineID_t *rtOnlineID_DW = rtOnlineID_M->dwork;
   ExtU_OnlineID_t *rtOnlineID_U = (ExtU_OnlineID_t *) rtOnlineID_M->inputs;
   ExtY_OnlineID_t *rtOnlineID_Y = (ExtY_OnlineID_t *) rtOnlineID_M->outputs;
-  int32_T k;
   real32_T temp_diff;
   real32_T tmp;
   uint32_T qY;
@@ -2046,8 +2067,12 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
         rtOnlineID_U->OnlineIDConfig.OnlineID_Reset ||
         (!rtOnlineID_U->GlobalConfig_out.enableParameterID)) {
       /* Transition: '<S1>:453' */
-      /* '<S1>:453:3' InitParams */
+      /* '<S1>:453:3' InitParams; */
       InitParams(rtOnlineID_U, rtOnlineID_Y, rtOnlineID_DW);
+
+      /* Outport: '<Root>/enteredOnlineID' */
+      /* '<S1>:453:3' enteredOnlineID=boolean(0) */
+      rtOnlineID_Y->enteredOnlineID = false;
 
       /* Exit Internal 'OnlineIDSuperState': '<S1>:39' */
       if (rtOnlineID_DW->is_OnlineIDSuperState == IN_CalcLinearParamsState) {
@@ -2189,11 +2214,11 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
           /* '<S1>:201:7' if(temp_diff>0&&temp_diff<99) */
           if ((temp_diff > 0.0F) && (temp_diff < 99.0F)) {
             /* '<S1>:201:8' OnlineID_output.delta_psi(1+floor(temp_diff),2)= OnlineID_output.delta_psi(1+floor(temp_diff),2)+1; */
-            k = (int32_T)floorf(temp_diff);
-            rtOnlineID_Y->OnlineID_output.delta_psi[k + 100]++;
+            rtOnlineID_DW->k = (int32_T)floorf(temp_diff);
+            rtOnlineID_Y->OnlineID_output.delta_psi[rtOnlineID_DW->k + 100]++;
 
             /* '<S1>:201:9' OnlineID_output.delta_psi(1+floor(temp_diff),1)= OnlineID_output.delta_psi(1+floor(temp_diff),1)+delta_psi; */
-            rtOnlineID_Y->OnlineID_output.delta_psi[k] += fabsf
+            rtOnlineID_Y->OnlineID_output.delta_psi[rtOnlineID_DW->k] += fabsf
               (rtOnlineID_Y->OnlineID_output.psi_pm_out -
                rtOnlineID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs);
           }
@@ -2338,22 +2363,32 @@ void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M)
           if (qY == 0U) {
             /* checks every 0.1s if current omega and iq is too different from the old one */
             /* '<S1>:106:51' [stop_ident] = Break(abs(iq_register_alt),abs(id_register_alt),abs(omega_register_alt),abs(iq_register_neu),abs(id_register_neu),abs(omega_register_neu)); */
-            for (k = 0; k < 50; k++) {
-              rtOnlineID_DW->d_y[k] = fabsf(rtOnlineID_DW->iq_register_alt[k]);
-              rtOnlineID_DW->e_y[k] = fabsf(rtOnlineID_DW->id_register_alt[k]);
+            for (rtOnlineID_DW->k = 0; rtOnlineID_DW->k < 50; rtOnlineID_DW->k++)
+            {
+              rtOnlineID_DW->d_y[rtOnlineID_DW->k] = fabsf
+                (rtOnlineID_DW->iq_register_alt[rtOnlineID_DW->k]);
+              rtOnlineID_DW->e_y[rtOnlineID_DW->k] = fabsf
+                (rtOnlineID_DW->id_register_alt[rtOnlineID_DW->k]);
             }
 
-            for (k = 0; k < 5; k++) {
-              rtOnlineID_DW->f_y[k] = fabsf(rtOnlineID_DW->omega_register_alt[k]);
+            for (rtOnlineID_DW->k = 0; rtOnlineID_DW->k < 5; rtOnlineID_DW->k++)
+            {
+              rtOnlineID_DW->f_y[rtOnlineID_DW->k] = fabsf
+                (rtOnlineID_DW->omega_register_alt[rtOnlineID_DW->k]);
             }
 
-            for (k = 0; k < 10; k++) {
-              rtOnlineID_DW->g_y[k] = fabsf(rtOnlineID_DW->iq_register_neu[k]);
-              rtOnlineID_DW->h_y[k] = fabsf(rtOnlineID_DW->id_register_neu[k]);
+            for (rtOnlineID_DW->k = 0; rtOnlineID_DW->k < 10; rtOnlineID_DW->k++)
+            {
+              rtOnlineID_DW->g_y[rtOnlineID_DW->k] = fabsf
+                (rtOnlineID_DW->iq_register_neu[rtOnlineID_DW->k]);
+              rtOnlineID_DW->h_y[rtOnlineID_DW->k] = fabsf
+                (rtOnlineID_DW->id_register_neu[rtOnlineID_DW->k]);
             }
 
-            for (k = 0; k < 5; k++) {
-              rtOnlineID_DW->i_y[k] = fabsf(rtOnlineID_DW->omega_register_neu[k]);
+            for (rtOnlineID_DW->k = 0; rtOnlineID_DW->k < 5; rtOnlineID_DW->k++)
+            {
+              rtOnlineID_DW->i_y[rtOnlineID_DW->k] = fabsf
+                (rtOnlineID_DW->omega_register_neu[rtOnlineID_DW->k]);
             }
 
             rtOnlineID_DW->stop_ident = Break(rtOnlineID_DW->d_y,

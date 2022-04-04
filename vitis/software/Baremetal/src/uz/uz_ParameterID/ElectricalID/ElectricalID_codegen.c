@@ -956,7 +956,9 @@ static void measure_psiPM(ExtU_ElectricalID_t *rtElectricalID_U,
 static real32_T SinusGenerator(real32_T Amp, real32_T Freq, real32_T sampleTime,
   DW_ElectricalID_t *rtElectricalID_DW)
 {
+  real32_T tmp;
   real32_T x;
+  uint32_T qY;
 
   /* MATLAB Function 'SinusGenerator': '<S1>:922' */
   /* '<S1>:922:6' if isempty(sineCounter) */
@@ -964,15 +966,31 @@ static real32_T SinusGenerator(real32_T Amp, real32_T Freq, real32_T sampleTime,
   x = 6.28318548F * Freq * (real32_T)rtElectricalID_DW->sineCounter * sampleTime;
 
   /* '<S1>:922:11' sineCounter = sineCounter + 1; */
-  rtElectricalID_DW->sineCounter++;
-
-  /* '<S1>:922:12' if(sineCounter == (1/(single(Freq)*sampleTime))) */
-  if (1.0F / (Freq * sampleTime) == rtElectricalID_DW->sineCounter) {
-    /* '<S1>:922:13' sineCounter = 0; */
-    rtElectricalID_DW->sineCounter = 0.0;
+  qY = rtElectricalID_DW->sineCounter + /*MW:OvSatOk*/ 1U;
+  if (rtElectricalID_DW->sineCounter + 1U < rtElectricalID_DW->sineCounter) {
+    qY = MAX_uint32_T;
   }
 
-  /* '<S1>:922:17' y = u; */
+  rtElectricalID_DW->sineCounter = qY;
+
+  /* '<S1>:922:12' if(sineCounter == uint32(1/(single(Freq)*sampleTime))) */
+  tmp = roundf(1.0F / (Freq * sampleTime));
+  if (tmp < 4.2949673E+9F) {
+    if (tmp >= 0.0F) {
+      qY = (uint32_T)tmp;
+    } else {
+      qY = 0U;
+    }
+  } else {
+    qY = MAX_uint32_T;
+  }
+
+  if (rtElectricalID_DW->sineCounter == qY) {
+    /* '<S1>:922:13' sineCounter = uint32(0); */
+    rtElectricalID_DW->sineCounter = 0U;
+  }
+
+  /* '<S1>:922:17' y = single(u); */
   return Amp * sinf(x);
 }
 
@@ -2044,6 +2062,7 @@ static void ElectricalID_p(ExtU_ElectricalID_t *rtElectricalID_U,
 {
   real32_T DutyCycle_filt;
   uint32_T qY;
+  boolean_T guard1 = false;
 
   /* Inport: '<Root>/GlobalConfig' */
   /* During 'ElectricalID': '<S1>:761' */
@@ -2066,6 +2085,7 @@ static void ElectricalID_p(ExtU_ElectricalID_t *rtElectricalID_U,
     /* ElectricalID */
     /* donothing */
   } else {
+    guard1 = false;
     switch (rtElectricalID_DW->is_ElectricalID) {
      case IN_Levenberg_Marquardt:
       /* Inport: '<Root>/ElectricalIDConfig' */
@@ -2391,9 +2411,10 @@ static void ElectricalID_p(ExtU_ElectricalID_t *rtElectricalID_U,
         rtElectricalID_Y->ElectricalID_output.enable_TriState[2] = false;
 
         /* '<S1>:412:6' ElectricalID_output.PMSM_parameters.polePairs = single(round((pi/2.0) /.... */
-        /* '<S1>:412:7'     (abs(ActualValues.theta_m)))); */
+        /* '<S1>:412:7'     (abs(ActualValues.theta_m - ElectricalID_output.thetaOffset)))); */
         rtElectricalID_Y->ElectricalID_output.PMSM_parameters.polePairs = roundf
-          (1.57079637F / fabsf(rtElectricalID_U->ActualValues.theta_m - rtElectricalID_Y->ElectricalID_output.thetaOffset));
+          (1.57079637F / fabsf(rtElectricalID_U->ActualValues.theta_m -
+            rtElectricalID_Y->ElectricalID_output.thetaOffset));
 
         /* . */
       } else {
@@ -2555,10 +2576,20 @@ static void ElectricalID_p(ExtU_ElectricalID_t *rtElectricalID_U,
         rtElectricalID_Y->ElectricalID_output.PWM_Switch_0 =
           rtElectricalID_DW->DutyCycle;
 
-        /* '<S1>:789:16' if(counter < (0.4/GlobalConfig.sampleTimeISR)) */
-        rtElectricalID_DW->d_m = 0.4F /
-          rtElectricalID_U->GlobalConfig_out.sampleTimeISR;
-        if (rtElectricalID_DW->counter < rtElectricalID_DW->d_m) {
+        /* '<S1>:789:16' if(counter < uint32(0.4/GlobalConfig.sampleTimeISR)) */
+        DutyCycle_filt = roundf(0.4F /
+          rtElectricalID_U->GlobalConfig_out.sampleTimeISR);
+        if (DutyCycle_filt < 4.2949673E+9F) {
+          if (DutyCycle_filt >= 0.0F) {
+            qY = (uint32_T)DutyCycle_filt;
+          } else {
+            qY = 0U;
+          }
+        } else {
+          qY = MAX_uint32_T;
+        }
+
+        if (rtElectricalID_DW->counter < qY) {
           /* '<S1>:789:17' counter = counter +1; */
           qY = rtElectricalID_DW->counter + /*MW:OvSatOk*/ 1U;
           if (rtElectricalID_DW->counter + 1U < rtElectricalID_DW->counter) {
@@ -2566,26 +2597,7 @@ static void ElectricalID_p(ExtU_ElectricalID_t *rtElectricalID_U,
           }
 
           rtElectricalID_DW->counter = qY;
-        } else if ((rtElectricalID_DW->counter >= rtElectricalID_DW->d_m) &&
-                   ((real_T)rtElectricalID_DW->counter < 0.5F /
-                    rtElectricalID_U->GlobalConfig_out.sampleTimeISR)) {
-          /* '<S1>:789:18' elseif(counter >= (0.4/GlobalConfig.sampleTimeISR) &&.... */
-          /* '<S1>:789:19'             counter < (0.5/GlobalConfig.sampleTimeISR)) */
-          /* . */
-          /* '<S1>:789:20' counter = counter +1; */
-          qY = rtElectricalID_DW->counter + /*MW:OvSatOk*/ 1U;
-          if (rtElectricalID_DW->counter + 1U < rtElectricalID_DW->counter) {
-            qY = MAX_uint32_T;
-          }
-
-          rtElectricalID_DW->counter = qY;
-
-          /* Inport: '<Root>/ActualValues' */
-          /* '<S1>:789:21' ia_sum=ia_sum+single(ActualValues.I_abc.a); */
-          rtElectricalID_DW->ia_sum += rtElectricalID_U->ActualValues.I_abc.a;
         } else {
-          DutyCycle_filt = roundf(0.5F /
-            rtElectricalID_U->GlobalConfig_out.sampleTimeISR);
           if (DutyCycle_filt < 4.2949673E+9F) {
             if (DutyCycle_filt >= 0.0F) {
               qY = (uint32_T)DutyCycle_filt;
@@ -2596,18 +2608,41 @@ static void ElectricalID_p(ExtU_ElectricalID_t *rtElectricalID_U,
             qY = MAX_uint32_T;
           }
 
-          if (rtElectricalID_DW->counter == qY) {
-            /* '<S1>:789:22' elseif(counter == uint32(0.5/GlobalConfig.sampleTimeISR)) */
-            /* '<S1>:789:23' DutyCycle_mod(abs(ia_sum*(GlobalConfig.sampleTimeISR/0.1))); */
-            DutyCycle_mod_a(fabsf(rtElectricalID_DW->ia_sum *
-                                  (rtElectricalID_U->GlobalConfig_out.sampleTimeISR
-              / 0.1F)), rtElectricalID_U, rtElectricalID_DW);
+          if (rtElectricalID_DW->counter >= qY) {
+            DutyCycle_filt = roundf(0.5F /
+              rtElectricalID_U->GlobalConfig_out.sampleTimeISR);
+            if (DutyCycle_filt < 4.2949673E+9F) {
+              if (DutyCycle_filt >= 0.0F) {
+                qY = (uint32_T)DutyCycle_filt;
+              } else {
+                qY = 0U;
+              }
+            } else {
+              qY = MAX_uint32_T;
+            }
 
-            /* '<S1>:789:24' counter  = uint32(1); */
-            rtElectricalID_DW->counter = 1U;
+            if (rtElectricalID_DW->counter < qY) {
+              /* '<S1>:789:18' elseif(counter >= uint32(0.4/GlobalConfig.sampleTimeISR) &&.... */
+              /* '<S1>:789:19'             counter < uint32(0.5/GlobalConfig.sampleTimeISR)) */
+              /* . */
+              /* '<S1>:789:20' counter = counter +1; */
+              qY = rtElectricalID_DW->counter + /*MW:OvSatOk*/ 1U;
+              if (rtElectricalID_DW->counter + 1U < rtElectricalID_DW->counter)
+              {
+                qY = MAX_uint32_T;
+              }
 
-            /* '<S1>:789:25' ia_sum = single(0.0); */
-            rtElectricalID_DW->ia_sum = 0.0F;
+              rtElectricalID_DW->counter = qY;
+
+              /* Inport: '<Root>/ActualValues' */
+              /* '<S1>:789:21' ia_sum=ia_sum+single(ActualValues.I_abc.a); */
+              rtElectricalID_DW->ia_sum +=
+                rtElectricalID_U->ActualValues.I_abc.a;
+            } else {
+              guard1 = true;
+            }
+          } else {
+            guard1 = true;
           }
         }
       }
@@ -2789,6 +2824,34 @@ static void ElectricalID_p(ExtU_ElectricalID_t *rtElectricalID_U,
       }
       break;
     }
+
+    if (guard1) {
+      DutyCycle_filt = roundf(0.5F /
+        rtElectricalID_U->GlobalConfig_out.sampleTimeISR);
+      if (DutyCycle_filt < 4.2949673E+9F) {
+        if (DutyCycle_filt >= 0.0F) {
+          qY = (uint32_T)DutyCycle_filt;
+        } else {
+          qY = 0U;
+        }
+      } else {
+        qY = MAX_uint32_T;
+      }
+
+      if (rtElectricalID_DW->counter == qY) {
+        /* '<S1>:789:22' elseif(counter == uint32(0.5/GlobalConfig.sampleTimeISR)) */
+        /* '<S1>:789:23' DutyCycle_mod(abs(ia_sum*(GlobalConfig.sampleTimeISR/0.1))); */
+        DutyCycle_mod_a(fabsf(rtElectricalID_DW->ia_sum *
+                              (rtElectricalID_U->GlobalConfig_out.sampleTimeISR /
+          0.1F)), rtElectricalID_U, rtElectricalID_DW);
+
+        /* '<S1>:789:24' counter  = uint32(1); */
+        rtElectricalID_DW->counter = 1U;
+
+        /* '<S1>:789:25' ia_sum = single(0.0); */
+        rtElectricalID_DW->ia_sum = 0.0F;
+      }
+    }
   }
 
   /* End of Inport: '<Root>/GlobalConfig' */
@@ -2934,9 +2997,9 @@ void ElectricalID_initialize(RT_MODEL_ElectricalID_t *const rtElectricalID_M)
   rtElectricalID_Y->ElectricalID_output.PMSM_parameters.J_kg_m_squared = 0.0F;
   rtElectricalID_Y->ElectricalID_output.PMSM_parameters.I_max_Ampere = 0.0F;
 
-  /* '<S1>:922:7' sineCounter = 0; */
+  /* '<S1>:922:7' sineCounter = uint32(0); */
   /* initialize */
-  /* '<S1>:922:8' u = single(0.0); */
+  /* '<S1>:922:8' u = single(0); */
 }
 
 /*

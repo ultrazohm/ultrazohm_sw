@@ -185,9 +185,9 @@ typedef struct {
  *
  */
 typedef struct {
-  real32_T BrkCount; /**< amount of unique breakaway attempts */
-  real32_T N_Brk; /**< amount of breakaway identification values */
-  real32_T N_Visco; /**< amount of viscous friction identification values */
+  uint32_T BrkCount; /**< amount of unique breakaway attempts */
+  uint32_T N_Brk; /**< amount of breakaway identification values */
+  uint32_T N_Visco; /**< amount of viscous friction identification values */
   real32_T StepScale; /**< scales the steps for breakaway torque. Factor in % of rated current of the motor. Should be chosen as small as possible */
   real32_T n_eva_max; /**< maximum measuring speed in rpm*/
   real32_T eta; /**< steady state speed threshold in percent */

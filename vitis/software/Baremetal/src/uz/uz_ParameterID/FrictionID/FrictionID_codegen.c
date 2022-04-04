@@ -324,8 +324,8 @@ static void initParams(ExtU_FrictionID_t *rtFrictionID_U, ExtY_FrictionID_t
   /* '<S1>:546:16' n_eva               = single(FrictionConfigID.n_eva_max); */
   rtFrictionID_DW->n_eva = rtFrictionID_U->FrictionConfigID.n_eva_max;
 
-  /* '<S1>:546:17' n_eva_step          = single(n_eva/FrictionConfigID.N_Visco); */
-  rtFrictionID_DW->n_eva_step = rtFrictionID_DW->n_eva /
+  /* '<S1>:546:17' n_eva_step          = single(n_eva/single(FrictionConfigID.N_Visco)); */
+  rtFrictionID_DW->n_eva_step = rtFrictionID_DW->n_eva / (real32_T)
     rtFrictionID_U->FrictionConfigID.N_Visco;
 
   /* '<S1>:546:18' i_Brk               = single(0); */
@@ -516,6 +516,10 @@ static void frictionID(ExtU_FrictionID_t *rtFrictionID_U, ExtY_FrictionID_t
       rtFrictionID_Y->FrictionID_FOC_output.resetIntegrator = false;
       rtFrictionID_DW->is_frictionID = IN_NO_ACTIVE_CHILD;
       break;
+
+     default:
+      rtFrictionID_DW->is_frictionID = IN_NO_ACTIVE_CHILD;
+      break;
     }
 
     rtFrictionID_DW->is_c7_FrictionID = IN_Waiting;
@@ -530,8 +534,7 @@ static void frictionID(ExtU_FrictionID_t *rtFrictionID_U, ExtY_FrictionID_t
       /* Inport: '<Root>/FrictionConfigID' */
       /* During 'BreakawayTorqueEstimation': '<S1>:492' */
       /* '<S1>:497:1' sf_internal_predicateOutput = counter>FrictionConfigID.N_Brk; */
-      if ((real_T)rtFrictionID_DW->counter >
-          rtFrictionID_U->FrictionConfigID.N_Brk) {
+      if (rtFrictionID_DW->counter > rtFrictionID_U->FrictionConfigID.N_Brk) {
         /* Transition: '<S1>:497' */
         /* Exit Internal 'BreakawayTorqueEstimation': '<S1>:492' */
         rtFrictionID_DW->is_BreakawayTorqueEstimation = IN_NO_ACTIVE_CHILD;
@@ -559,8 +562,8 @@ static void frictionID(ExtU_FrictionID_t *rtFrictionID_U, ExtY_FrictionID_t
           rtFrictionID_DW->i_eva = 0.0F;
 
           /* '<S1>:492:10' if(counter<=FrictionConfigID.N_Brk) */
-          if ((real_T)rtFrictionID_DW->counter <=
-              rtFrictionID_U->FrictionConfigID.N_Brk) {
+          if (rtFrictionID_DW->counter <= rtFrictionID_U->FrictionConfigID.N_Brk)
+          {
             /* '<S1>:492:11' Ustep(counter)=i_Brk; */
             rtFrictionID_DW->Ustep[(int32_T)rtFrictionID_DW->counter - 1] =
               rtFrictionID_DW->i_Brk;

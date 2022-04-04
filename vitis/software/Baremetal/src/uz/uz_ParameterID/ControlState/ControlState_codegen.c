@@ -368,6 +368,10 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
         rtControlState_Y->ControlFlags.transNr = 0U;
         rtControlState_DW->is_ControlState = IN_NO_ACTIVE_CHILD;
         break;
+
+       default:
+        rtControlState_DW->is_ControlState = IN_NO_ACTIVE_CHILD;
+        break;
       }
 
       rtControlState_DW->is_c8_ControlState = IN_Waiting;
@@ -865,6 +869,5 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
  *
  * [EOF]
  */
-
 
 #endif

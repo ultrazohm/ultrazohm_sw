@@ -73,8 +73,6 @@ typedef struct {
   real32_T i_d_ref_AMM_loc;            /* '<Root>/FluxMapID' */
   real32_T i_q_ref_AMM;                /* '<Root>/FluxMapID' */
   real32_T i_q_ref_AMM_loc;            /* '<Root>/FluxMapID' */
-  real32_T NumberOfIDpoints;           /* '<Root>/FluxMapID' */
-  real32_T NumberOfPoints;             /* '<Root>/FluxMapID' */
   real32_T i_d_R_online;               /* '<Root>/FluxMapID' */
   real32_T id2_counter;                /* '<Root>/FluxMapID' */
   real32_T vd1_counter;                /* '<Root>/FluxMapID' */
@@ -84,6 +82,8 @@ typedef struct {
   uint32_T counter;                    /* '<Root>/FluxMapID' */
   uint32_T AMMj;                       /* '<Root>/FluxMapID' */
   uint32_T AMMn;                       /* '<Root>/FluxMapID' */
+  uint32_T NumberOfIDpoints;           /* '<Root>/FluxMapID' */
+  uint32_T NumberOfPoints;             /* '<Root>/FluxMapID' */
   uint32_T repetitionCounter;          /* '<Root>/FluxMapID' */
   uint32_T three_sec_transition_counter;/* '<Root>/FluxMapID' */
   uint32_T one_sec_transition_counter; /* '<Root>/FluxMapID' */

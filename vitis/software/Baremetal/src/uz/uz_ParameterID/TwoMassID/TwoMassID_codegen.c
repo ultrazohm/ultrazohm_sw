@@ -104,9 +104,7 @@ extern real32_T rtInfF;
 extern real32_T rtMinusInfF;
 extern real32_T rtNaNF;
 static void rt_InitInfAndNaN(size_t realSize);
-static boolean_T rtIsInf(real_T value);
 static boolean_T rtIsInfF(real32_T value);
-static boolean_T rtIsNaN(real_T value);
 static boolean_T rtIsNaNF(real32_T value);
 typedef struct {
   struct {
@@ -257,38 +255,10 @@ static void rt_InitInfAndNaN(size_t realSize)
   rtMinusInfF = rtGetMinusInfF();
 }
 
-/* Test if value is infinite */
-static boolean_T rtIsInf(real_T value)
-{
-  return (boolean_T)((value==rtInf || value==rtMinusInf) ? 1U : 0U);
-}
-
 /* Test if single-precision value is infinite */
 static boolean_T rtIsInfF(real32_T value)
 {
   return (boolean_T)(((value)==rtInfF || (value)==rtMinusInfF) ? 1U : 0U);
-}
-
-/* Test if value is not a number */
-static boolean_T rtIsNaN(real_T value)
-{
-  boolean_T result = (boolean_T) 0;
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  if (bitsPerReal == 32U) {
-    result = rtIsNaNF((real32_T)value);
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.fltVal = value;
-    result = (boolean_T)((tmpVal.bitVal.words.wordH & 0x7FF00000) == 0x7FF00000 &&
-                         ( (tmpVal.bitVal.words.wordH & 0x000FFFFF) != 0 ||
-                          (tmpVal.bitVal.words.wordL != 0) ));
-  }
-
-  return result;
 }
 
 /* Test if single-precision value is not a number */
@@ -8440,8 +8410,8 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
           }
         }
 
-        /* '<S1>:647:236' if(d2<(1*10^38)) */
-        if (rtTwoMassID_DW->d2 < 1.0E+38) {
+        /* '<S1>:647:236' if(d2<single(1*10^38)) */
+        if (rtTwoMassID_DW->d2 < 1.0E+38F) {
           /* '<S1>:647:237' d2 = d2 +abs(Mag_G(1,k) - G_est2)^2; */
           rtTwoMassID_DW->ar = fabsf(Mag_G[rtTwoMassID_DW->i_k] - 20.0F * log10f
             (rt_hypotf_snf_m(rtTwoMassID_DW->ee_lm_tmp_tmp,
@@ -8490,9 +8460,9 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
         /* '<S1>:647:260' updateJac = uint8(1); */
         rtTwoMassID_DW->updateJac = 1U;
 
-        /* '<S1>:647:261' if(abs(dp(1))<0.0001 && abs(dp(2))<0.0000001) */
-        if ((fabsf(rtTwoMassID_DW->c_est_start_idx_0) < 0.0001) && (fabsf
-             (rtTwoMassID_DW->c_est_start_idx_1) < 1.0E-7)) {
+        /* '<S1>:647:261' if(abs(dp(1))< single(0.0001) && abs(dp(2))< single(0.0000001)) */
+        if ((fabsf(rtTwoMassID_DW->c_est_start_idx_0) < 0.0001F) && (fabsf
+             (rtTwoMassID_DW->c_est_start_idx_1) < 1.0E-7F)) {
           /* '<S1>:647:262' dp(1) */
           /* '<S1>:647:263' dp(2) */
           exitg1 = true;
@@ -8867,6 +8837,10 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
 
         /* '<S1>:648:30' reset_FOC_output; */
         reset_FOC_output(rtTwoMassID_U, rtTwoMassID_Y);
+        rtTwoMassID_DW->is_TwoMassID = IN_NO_ACTIVE_CHILD;
+        break;
+
+       default:
         rtTwoMassID_DW->is_TwoMassID = IN_NO_ACTIVE_CHILD;
         break;
       }

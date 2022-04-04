@@ -587,6 +587,8 @@ void FluxMapID_step(RT_MODEL_FluxMapID_t *const rtFluxMapID_M)
   DW_FluxMapID_t *rtFluxMapID_DW = rtFluxMapID_M->dwork;
   ExtU_FluxMapID_t *rtFluxMapID_U = (ExtU_FluxMapID_t *) rtFluxMapID_M->inputs;
   ExtY_FluxMapID_t *rtFluxMapID_Y = (ExtY_FluxMapID_t *) rtFluxMapID_M->outputs;
+  uint64_T tmp;
+  real32_T tmp_0;
   uint32_T qY;
 
   /* Chart: '<Root>/FluxMapID' incorporates:
@@ -887,8 +889,13 @@ void FluxMapID_step(RT_MODEL_FluxMapID_t *const rtFluxMapID_M)
           rtFluxMapID_DW->i_d_R_online = 0.0F;
 
           /* '<S1>:607:7' if(AMMn >= (NumberOfIDpoints-1)) */
-          if ((real_T)rtFluxMapID_DW->AMMn >= rtFluxMapID_DW->NumberOfIDpoints -
-              1.0F) {
+          qY = rtFluxMapID_DW->NumberOfIDpoints - /*MW:OvSatOk*/ 1U;
+          if (rtFluxMapID_DW->NumberOfIDpoints - 1U >
+              rtFluxMapID_DW->NumberOfIDpoints) {
+            qY = 0U;
+          }
+
+          if (rtFluxMapID_DW->AMMn >= qY) {
             /* '<S1>:607:8' AMMn = uint32(0); */
             rtFluxMapID_DW->AMMn = 0U;
           } else {
@@ -987,8 +994,8 @@ void FluxMapID_step(RT_MODEL_FluxMapID_t *const rtFluxMapID_M)
        default:
         /* During 'whatsNext': '<S1>:602' */
         /* '<S1>:599:1' sf_internal_predicateOutput = repetitionCounter >= NumberOfPoints; */
-        if ((real_T)rtFluxMapID_DW->repetitionCounter >=
-            rtFluxMapID_DW->NumberOfPoints) {
+        if (rtFluxMapID_DW->repetitionCounter >= rtFluxMapID_DW->NumberOfPoints)
+        {
           /* Transition: '<S1>:599' */
           rtFluxMapID_DW->is_AMMstate = IN_AMMcompleted;
 
@@ -1104,18 +1111,41 @@ void FluxMapID_step(RT_MODEL_FluxMapID_t *const rtFluxMapID_M)
     /* '<S1>:600:5' repetitionCounter = uint32(0); */
     rtFluxMapID_DW->repetitionCounter = 0U;
 
-    /* '<S1>:600:6' NumberOfIDpoints = abs(FluxMapIDConfig.IDstop-FluxMapIDConfig.IDstart)/IDstepsize_loc+1; */
-    rtFluxMapID_DW->NumberOfIDpoints = fabsf
-      (rtFluxMapID_U->FluxMapIDConfig.IDstop -
-       rtFluxMapID_U->FluxMapIDConfig.IDstart) / rtFluxMapID_DW->IDstepsize_loc
-      + 1.0F;
+    /* '<S1>:600:6' NumberOfIDpoints = uint32(abs(FluxMapIDConfig.IDstop-FluxMapIDConfig.IDstart)/IDstepsize_loc+1); */
+    tmp_0 = roundf(fabsf(rtFluxMapID_U->FluxMapIDConfig.IDstop -
+                         rtFluxMapID_U->FluxMapIDConfig.IDstart) /
+                   rtFluxMapID_DW->IDstepsize_loc + 1.0F);
+    if (tmp_0 < 4.2949673E+9F) {
+      if (tmp_0 >= 0.0F) {
+        rtFluxMapID_DW->NumberOfIDpoints = (uint32_T)tmp_0;
+      } else {
+        rtFluxMapID_DW->NumberOfIDpoints = 0U;
+      }
+    } else {
+      rtFluxMapID_DW->NumberOfIDpoints = MAX_uint32_T;
+    }
 
-    /* '<S1>:600:7' NumberOfIQpoints = abs(FluxMapIDConfig.IQstop-FluxMapIDConfig.IQstart)/IQstepsize_loc+1; */
-    /* '<S1>:600:8' NumberOfPoints = NumberOfIDpoints*NumberOfIQpoints; */
-    rtFluxMapID_DW->NumberOfPoints = (fabsf
-      (rtFluxMapID_U->FluxMapIDConfig.IQstop -
-       rtFluxMapID_U->FluxMapIDConfig.IQstart) / rtFluxMapID_DW->IQstepsize_loc
-      + 1.0F) * rtFluxMapID_DW->NumberOfIDpoints;
+    /* '<S1>:600:7' NumberOfIQpoints = uint32(abs(FluxMapIDConfig.IQstop-FluxMapIDConfig.IQstart)/IQstepsize_loc+1); */
+    /* '<S1>:600:8' NumberOfPoints = uint32(NumberOfIDpoints*NumberOfIQpoints); */
+    tmp_0 = roundf(fabsf(rtFluxMapID_U->FluxMapIDConfig.IQstop -
+                         rtFluxMapID_U->FluxMapIDConfig.IQstart) /
+                   rtFluxMapID_DW->IQstepsize_loc + 1.0F);
+    if (tmp_0 < 4.2949673E+9F) {
+      if (tmp_0 >= 0.0F) {
+        qY = (uint32_T)tmp_0;
+      } else {
+        qY = 0U;
+      }
+    } else {
+      qY = MAX_uint32_T;
+    }
+
+    tmp = (uint64_T)rtFluxMapID_DW->NumberOfIDpoints * qY;
+    if (tmp > 4294967295ULL) {
+      tmp = 4294967295ULL;
+    }
+
+    rtFluxMapID_DW->NumberOfPoints = (uint32_T)tmp;
 
     /* '<S1>:680:1' sf_internal_predicateOutput = GlobalConfig.Reset==1; */
   } else if (rtFluxMapID_U->GlobalConfig_out.Reset) {

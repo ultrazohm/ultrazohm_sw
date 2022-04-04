@@ -529,6 +529,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			PID_Data.OnlineID_Config.Rs_time = value;
 			break;
 
+		case (PID_OID_identR_Amp):
+			PID_Data.OnlineID_Config.identRAmp = value;
+			break;
+
 		case (PID_OID_Fluxmap_Control_counter):
 			PID_Data.FluxMap_Control_counter = value;
 			break;

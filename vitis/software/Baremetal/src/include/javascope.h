@@ -205,6 +205,7 @@ enum gui_button_mapping {
 	PID_OID_min_speed,
 	PID_OID_Ident_range_factor,
 	PID_OID_max_ident_pause,
+	PID_OID_identR_Amp,
 	PID_OID_Fluxmap_Control_counter,
 	GUI_BTN_ENDMARKER
 };

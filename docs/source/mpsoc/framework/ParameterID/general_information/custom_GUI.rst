@@ -206,6 +206,7 @@ Setup
             PID_OID_min_speed,
             PID_OID_Ident_range_factor,
             PID_OID_max_ident_pause,
+            PID_OID_identR_Amp,
             PID_OID_Fluxmap_Control_counter,
             GUI_BTN_ENDMARKER
         };
@@ -599,7 +600,10 @@ Setup
                 case (PID_OID_max_ident_pause):
                     PID_Data.OnlineID_Config.Rs_time = value;
                     break;
-
+                case (PID_OID_identR_Amp):
+                    PID_Data.OnlineID_Config.identRAmp = value;
+                    break;
+                    
                 case (PID_OID_Fluxmap_Control_counter):
                     PID_Data.FluxMap_Control_counter = value;
                     break;

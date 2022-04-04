@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_FOC/uz_FOC.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -40,6 +41,31 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
+extern uz_FOC* FOC_instance;
+
+float V_dc_volts = 24.0f;
+float omega_el_rad_per_sec = 125.1f;
+//float theta_el_rad = 1.2f;
+float theta_offset = -0.467f; // zum Bestimmen eine Phase bestromen, dadurch Ausrichtung d-Achse auf bestromte, theta_elec muss 0 oder 2pi sein mit offset
+
+float Kp_id = 10.0f;
+float Kp_iq = 10.0f;
+float Ki_id = 0.0f;
+float Ki_iq = 0.0f;
+float adc_scaling = (20.0f/2.084f)/3.0f;
+//actual pole pairs
+float poles = 3.0f;
+
+// struct for Sample function
+struct uz_3ph_abc_t i_actual_Ampere_abc = {0};
+struct uz_3ph_dq_t i_actual_Ampere = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t i_reference_Ampere = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t v_dq_Volts = {0};
+// struct for transformation
+struct uz_3ph_abc_t v_abc_Volts = {0};
+// struct for DutyCycle
+//struct uz_3ph_abc_t UVW = {.a = 0.0f, .b = -0.866f, .c = 0.866f};
+struct uz_DutyCycle_t output = {0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -55,16 +81,35 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    Global_Data.av.theta_elec = Global_Data.av.theta_elec*poles-theta_offset; // da bei PMSM config nur 1 Pol angegeben
+    i_actual_Ampere_abc.a = (Global_Data.aa.A1.me.ADC_A2-2.5f)*adc_scaling; // zeigt 2.5 bei 0 an
+    i_actual_Ampere_abc.b = (Global_Data.aa.A1.me.ADC_A4-2.5f)*adc_scaling;
+    i_actual_Ampere_abc.c = (Global_Data.aa.A1.me.ADC_A3-2.5f)*adc_scaling;
+    i_actual_Ampere = uz_transformation_3ph_abc_to_dq(i_actual_Ampere_abc, Global_Data.av.theta_elec);
+    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*poles*2.0f*M_PI/60.0f;
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	v_dq_Volts = uz_FOC_sample(FOC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+    	v_abc_Volts = uz_transformation_3ph_dq_to_abc(v_dq_Volts, Global_Data.av.theta_elec);
+    	output = uz_FOC_generate_DutyCycles(v_abc_Volts, V_dc_volts);
+    	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
+
+    	// Change parameters during runtime
+    	uz_FOC_set_Kp_id(FOC_instance, Kp_id);
+    	uz_FOC_set_Kp_iq(FOC_instance, Kp_iq);
+    	uz_FOC_set_Ki_id(FOC_instance, Ki_id);
+    	uz_FOC_set_Ki_iq(FOC_instance, Ki_iq);
     }
+    else{
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+    }
     // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+    //PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+    //                    Global_Data.rasv.halfBridge2DutyCycle,
+    //                    Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

@@ -25,6 +25,13 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 
+// Variables for Send fields
+extern struct uz_3ph_dq_t i_reference_Ampere;
+extern float Kp_id;
+extern float Kp_iq;
+extern float Ki_id;
+extern float Ki_iq;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -187,27 +194,29 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+			i_reference_Ampere.d =  value;
 			break;
 
 		case (Set_Send_Field_2):
-
+			i_reference_Ampere.q =  value;
 			break;
 
 		case (Set_Send_Field_3):
+			Kp_id = value;
 
 			break;
 
 		case (Set_Send_Field_4):
+			Kp_iq = value;
 
 			break;
 
 		case (Set_Send_Field_5):
-
+			Ki_id = value;
 			break;
 
 		case (Set_Send_Field_6):
-
+			Ki_iq = value;
 			break;
 
 		case (My_Button_1):

@@ -31,12 +31,15 @@ DS_Data Global_Data = {
     }
 };
 
+uz_FOC* FOC_instance;
+
 enum init_chain
 {
     init_assertions = 0,
     init_gpios,
     init_software,
     init_ip_cores,
+	init_foc, // FOC initialisieren
     print_msg,
     init_interrupts,
     infinite_loop
@@ -46,6 +49,37 @@ enum init_chain initialization_chain = init_assertions;
 int main(void)
 {
     int status = UZ_SUCCESS;
+
+    //config structs für PI-Regler, PMSM, FOC
+    struct uz_PMSM_t config_PMSM = {
+       .R_ph_Ohm = 0.54304f,
+       .Ld_Henry = 0.00113f,
+       .Lq_Henry = 0.00142f,
+       .Psi_PM_Vs = 0.0169f,
+       .polePairs = 3.0f, // in uz_global_configuration.h auf 1 setzen
+       .J_kg_m_squared = 0.0000148f,
+       .I_max_Ampere = 10.0f
+     };//these parameters are only needed if linear decoupling is selected
+     struct uz_PI_Controller_config config_id = {
+       .Kp = 10.0f,
+       .Ki = 0.0f,
+       .samplingTime_sec = 0.00005f,
+       .upper_limit = 10.0f,
+       .lower_limit = -10.0f
+    };
+    struct uz_PI_Controller_config config_iq = {
+       .Kp = 10.0f,
+       .Ki = 0.0f,
+       .samplingTime_sec = 0.00005f,
+       .upper_limit = 10.0f,
+       .lower_limit = -10.0f
+    };
+    struct uz_FOC_config config_FOC = {
+       .decoupling_select = no_decoupling,
+       .config_PMSM = config_PMSM,
+       .config_id = config_id,
+       .config_iq = config_iq
+    };
     while (1)
     {
         switch (initialization_chain)
@@ -73,6 +107,11 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            initialization_chain = init_foc;
+            break;
+        case init_foc:
+            FOC_instance = uz_FOC_init(config_FOC);
+            //uz_FOC_reset(FOC_instance);
             initialization_chain = print_msg;
             break;
         case print_msg:

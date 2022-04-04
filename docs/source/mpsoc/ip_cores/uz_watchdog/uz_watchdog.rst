@@ -61,11 +61,31 @@ If the WWDT is restarted outside of the open window time period, it generates a 
    :width: 510
    :align: center
 
+.. _uz_watchdog_integration:
+
 Integration in Baremetal project
 ================================
 
-- Inside ``Initialize_ISR()``, we have to initialize the watchbog by calling ``*uz_watchdog_init()``. This sets the timer to the default timeout and default configuration as it is explained in the API section (see below).
-- Inside ``Rpu_GicInit()``, the following changes are necessary to integrate the device:
+- Choose the desired IP fail mode. We have two working modes as can be seen in the ``uz_watchdog_ip_config_t`` structure:
+    - watchdog_assertion: execution is halted when the first time violation occurs. 
+    - watchdog_debug_mode: Interrupt increments the fail counter and Watchdog returns to normal operation. At most seven failures may happen before the IP resets and stop working. This mode allows to pause execution while debugging the application.
+- Set the rest of the configuration fields inside ``uz_watchdog_ip_config_t`` structure (see the API details below) with
+    - the size of the interval to be watched in microseconds. For example 100 or 50.
+    - and the IP clock frequency. Normally the same as the AXI bus. 
+
+- **Inside** ``Initialize_ISR()`` **,finish the watchdog initialization by calling** ``*uz_watchdog_ip_init(uz_watchdog_ip_config_t)``.
+
+.. _XWDTTB_SecondWindowConstants_v2:
+
+.. figure:: ./uz_watchdog_SecondWindowConstants2.png
+   :width: 586
+   :align: center
+
+   Example of initialization with ``uz_watchdog_ip_config_t`` structure in ``isr.c``.
+
+In the example the size of the interval to watch has been set as a function of the global constants ``UZ_PWM_FREQUENCY`` and the ``Interrupt_ISR_freq_factor``. Both defined indirectly by ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` constant inside :ref:`global_configuration` file.
+
+- **Inside** ``Rpu_GicInit()`` **,the following changes are necessary to integrate the device:**
   
   1. We have to change the priority of the system timer. In order to allow the **interrupt preemption**, meaning that ``ISR_Control()`` than handles the timing interruption can be interrupted itself, we have to modify these lines:
 	
@@ -77,23 +97,17 @@ Integration in Baremetal project
     XScuGic_SetPriorityTriggerType(IntcInstPtr,Interrupt_ISR_ID,prio,trigger);
 
 
-
   2. We have to initialize the interruption of the watchdog using a new private function added to the ``isr.c`` file: 
 	
-    - ``WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)``. This function sets the INT Output signal through the GIC System. The GIC has to be previously set, using its functions (XScuGic_LookupConfig(), XScuGic_CfgInitialize() and Xil_Exception*() functions to initialize, register and enable the Interruption system. It is already done in the Initialize_ISR() and Rpu_GicInit() functions. A default handler is provided in our driver uz_watchdog.h. It counts the error and resumes normal execution. It should use the future uz_error_handler module to set the error and handle it properly
+    ``WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)``. This function sets the INT Output signal through the GIC System. The GIC has to be previously initialize and set. It is already done in the Initialize_ISR() and Rpu_GicInit() functions.
 
-  3. We have to enable the WDT and launch first kick with: ``uz_watchdog_Start(WdtTbInstancePtr);``
 	
 - And finally, inside the ``ISR_Control()`` function, we have to:
-    1.	Enable the preemption or the interruption nesting invoking
+    1.  Enable the preemption or the interruption nesting invoking with ``Xil_EnableNestedInterrupts();`` 
 
-    - Xil_EnableNestedInterrupts(); 
+    2.  Restart the WD Timer, to assure the time violation does not happen. It is done by calling the function: ``uz_watchdog_ip_restart(WdtTbInstancePtr);``
 
-
-    2.	Restart the WD Timer, to assure the time violation does not happen. It is done by calling the function:
-
-
-    - uz_watchdog_Restart(WdtTbInstancePtr);
+    3.  Before exiting the Interrupt handler, the Nested Interrupts must be disabled calling ``Xil_DisableNestedInterrupts();``. It must be done before calling ``uz_SystemTime_ISR_Toc()``, that always must be the last called function.
 
 
 Register Description
@@ -132,16 +146,18 @@ Any good or bad event ends the second window. Absence of a good or bad event all
 
 .. _XWDTTB_SecondWindowConstants:
 
-.. figure:: ./uz_watchdog_SecondWindowConstants.png
-   :width: 586
-   :align: center
+  .. code-block:: c
+    
+    #define WIN_WDT_SBC_COUNT 0xFF /**< Selected byte count */
+    #define WIN_WDT_BSS_COUNT 3U   /**< Byte segment selected */
+    #define WIN_WDT_SBC_COUNT_SHIFTED 0xFF000000
 
-   Second Window Constants in uz_watchdog.h file to set INT point.
+Second Window Constants in ``uz_watchdog.c`` file to set INT point.
 
 So we split the second window in two parts (as can be seen in the next picture):
 
-- A: INTERVAL TO WATCH: (EXAMPLE) 0x2710 = 10,000 clock ticks => 100 microsec. This is an example, the final interval is set by code from CONFIG parameters. See las picture.
-- B: OFFSET: 0xFF00 = 65,280 clock ticks more than 650 microsec. to execute the handler function (enough time to resume execution or to save working state).
+- A: Interval to watch: (Example) 0x2710 = 10,000 clock ticks => 100 microseconds. This is an example, the interval is set by code as explained in :ref:`uz_watchdog_integration`. 
+- B: Offset: 0xFF000000 clock ticks = more than 40 seconds to execute the handler function (enough time to resume execution or to save working state).
 
 .. _XWDTTB_SecondWindowTimingDiagram:
 
@@ -151,15 +167,7 @@ So we split the second window in two parts (as can be seen in the next picture):
 
    Second Window Timing Diagram.
 
-Instead of using a fixed amount of clock ticks for the second window (as can be seen with the previous constant). We have added in the last version two more fields in the config structure to define the window size as a function of the IP frequency (AXI frequency) and the interval to watch in microseconds.
 
-.. _XWDTTB_SecondWindowConstants_v2:
-
-.. figure:: ./uz_watchdog_SecondWindowConstants2.png
-   :width: 586
-   :align: center
-
-   Second Window Constants upgraded in uz_watchdog.h file to set INT point.
 
 Driver function reference
 =========================

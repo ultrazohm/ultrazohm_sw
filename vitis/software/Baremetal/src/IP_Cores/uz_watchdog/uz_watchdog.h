@@ -52,8 +52,8 @@ void uz_watchdog_ip_restart(uz_watchdog_ip_t *self) ;
 /**
 * @brief This function initializes the WatchDog Timer IP driver and sets the inital value to the counter.
 *        This is the total size for The Second Window (Open). The closed
-*        Window is not used (0 value for its counter). The rest of the
-*        optional functions: FC, SST and SIGNATURE are disabled.
+*        Window is not used (0 value for its counter). Fail Counter is enabled if watchdog_debug_mode is used.
+*        The rest of the optional functions: SST and SIGNATURE are disabled.
 *
 * @param	watchdog_config - Config structure with DeviceID and second window size.
 *
@@ -66,11 +66,8 @@ uz_watchdog_ip_t* uz_watchdog_ip_init(struct uz_watchdog_ip_config_t watchdog_co
 *        WdtTb device. It is called when reached to the interrupt programmed point
 *        and is called from an interrupt context.
 *
-*        The handler of the timing violation. The default behavior is to resume
-*        the execution, by restarting the WDT. The execution time of this
-*        function is also limited, as is has to restart the WDT inside the
-*        second window, otherwise a Reset from the IP core is activated,
-*        and the IP stops running
+*        It behaves as it is established in the fail_mode field inside the config 
+*        structure used during initialization.
 *
 * @param	CallBackRef is a pointer to the callback reference.
 *

@@ -19,8 +19,8 @@ Installation
 
 .. tip:: Use the :ref:`vscode_remote_container` to handle all installations for you instead of installing all dependencies on your machine and keeping them up to date! Using the :ref:`vscode_remote_container` is strongly recommended!
 
-To build and edit the documentation on your native system, you need to:
-
+.. warning:: Alternative the documentation can be build on your local system. This needs some tools and is more effortful than using the remote container.
+ For building docs without :ref:`vscode_remote_container` follow the instructions underneath, otherwise skip it.
 #. Install `Python <https://www.python.org/>`_ 
 #. Install pip (included in current python versions)
 #. Install everything in the ``requirements.txt`` in ``/docs`` by invoking ``pip install -r requirements.txt`` in a command shell inside ``/docs``

@@ -190,9 +190,13 @@ Additional information
 ======================
 
 The lack of precision of the System Watchdog Timer leads as to use the IP provided by Xilinx.  For more information about the System WDT (option discarded) see the Zynq UltraScale+: technical reference manual [#UG1085]_, chapter 14, page 361.
+For more information about the previous work and research take a look to the **Issue#43: Catch real-time violation** document [#DOC001]_.
+And finally, for more information about the merging and testing process take a look to the **Issue#43: Merging Develop and testing process** document [#DOC002]_.
 
 Sources
 =======
 
 .. [#UG1085] `Zynq UltraScale+ Device TRM, UG1085 (v2.2) December 4, 2020 <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf>`_
 .. [#PG128] `AXI Timebase Watchdog Timer v3.0, Vivado Design Suite, PG128 October 4, 2017 <https://www.xilinx.com/support/documentation/ip_documentation/axi_timebase_wdt/v3_0/pg128-axi-timebase-wdt.pdf>`_
+.. [#DOC001] `Issue#43: Catch real-time violation (v1.0) April 5, 2022 <https://docs.google.com/document/d/1P_YfGK0Fhu_0SoWBkyKxXKILr-8nINuJ/edit?usp=sharing&ouid=107327946568817956394&rtpof=true&sd=true>`_
+.. [#DOC002] `Issue#43: Merging Develop and testing process (v1.0) April 5, 2022 <https://docs.google.com/document/d/1KtPoWgM6i3qdP7ZrPXi1PdU62SbSaqD0/edit?usp=sharing&ouid=107327946568817956394&rtpof=true&sd=true>`_

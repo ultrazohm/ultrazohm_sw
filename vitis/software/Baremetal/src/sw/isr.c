@@ -43,7 +43,7 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 XTmrCtr Timer_Interrupt;
 
 //Initialize the Watchdog structure
-uz_watchdog_ip_t *WdtTbInstancePtr;
+uz_watchdog_ip_t *isr_pwm_frequency_watch_dog;
 
 //float sin1amp=1.0;
 
@@ -67,7 +67,7 @@ void ISR_Control(void *data)
 	Xil_EnableNestedInterrupts();
 
 //	Restart the AXI IP watch dog timer: kick forward
-	uz_watchdog_ip_restart(WdtTbInstancePtr);
+	uz_watchdog_ip_restart(isr_pwm_frequency_watch_dog);
 
 	ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
@@ -85,13 +85,12 @@ void ISR_Control(void *data)
 
     JavaScope_update(&Global_Data);
 
-
-	// Before exiting the Interrupt handler, the Nested Interrupts must be disabled
-	Xil_DisableNestedInterrupts();
-
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();
+
+    // Before exiting the Interrupt handler, the Nested Interrupts must be disabled
+	Xil_DisableNestedInterrupts();
 
 }
 
@@ -124,7 +123,7 @@ int Initialize_ISR()
 		.ip_clk_frequency_Hz=100000000,
 		.fail_mode=watchdog_debug_mode  // watchdog_assertion
 	};
-	WdtTbInstancePtr = uz_watchdog_ip_init(config);
+	isr_pwm_frequency_watch_dog = uz_watchdog_ip_init(config);
 
     // Initialize interrupt controller for the GIC
     Status = Rpu_GicInit(&INTCInst, INTERRUPT_ID_SCUG, &Timer_Interrupt);
@@ -235,7 +234,7 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 //	interrupt occurs for the device.
 	Status = XScuGic_Connect(IntcInstancePtr, XPAR_FABRIC_WDTTB_0_VEC_ID,
 				(Xil_ExceptionHandler)uz_watchdog_IntrHandler,
-				WdtTbInstancePtr);
+				isr_pwm_frequency_watch_dog);
 	if (Status != XST_SUCCESS) {
 		return Status;
 	}

@@ -22,8 +22,8 @@
 
 #define WDTTB_SECURITY_MARGIN_US 1.0f // Security Margin in micro seconds. Tested, only one is needed (adds 100 to the wdt counter, with the AXI frec at 100MHz)
 
-#define WIN_WDT_SBC_COUNT 0xFF /**< Selected byte count */
-#define WIN_WDT_BSS_COUNT 3U   /**< Byte segment selected */
+#define WIN_WDT_SBC_COUNT 0xFF //< Selected byte count
+#define WIN_WDT_BSS_COUNT 3U   //< Byte segment selected
 #define WIN_WDT_SBC_COUNT_SHIFTED 0xFF000000
 
 struct uz_watchdog_ip_t
@@ -75,16 +75,16 @@ void uz_watchdog_ip_restart(uz_watchdog_ip_t *self)
     uz_assert(self->is_ready);
 
     if (self->is_first_isr_call) {
-    	/* Write a 1 to Set register space to writable */
+    	// Write a 1 to Set register space to writable
 		// Start the watchdog timer as a normal application would (WEN bit = 1)
-		/* After enabled, write enabled auto clears, so we have to write a 1 to Set register space to writable */
+		// After enabled, write enabled auto clears, so we have to write a 1 to Set register space to writable
 		XWdtTb_SetRegSpaceAccessMode(&(self->xilinxWdtIP), 1U);
 		XWdtTb_Start(&(self->xilinxWdtIP));
 		XWdtTb_SetRegSpaceAccessMode(&(self->xilinxWdtIP), 1U);
 
 		self->is_first_isr_call = false;
 	} else {
-		/* Restart the AXI IP watch dog timer: kick forward */
+		// Restart the AXI IP watch dog timer: kick forward
 		XWdtTb_RestartWdt(&(self->xilinxWdtIP));
 	}
 }
@@ -107,7 +107,7 @@ void uz_watchdog_IntrHandler(void *CallBackRef)
     case watchdog_debug_mode:
 		self->fail_counter++;
 		XWdtTb_RestartWdt(&(self->xilinxWdtIP));
-		XWdtTb_IntrClear(&(self->xilinxWdtIP));  /* Clear interrupt point. To allow a new INT to be triggered again (see documentation)*/
+		XWdtTb_IntrClear(&(self->xilinxWdtIP));  // Clear interrupt point. To allow a new INT to be triggered again (see documentation)
 
 		last_event = (uint32_t)XWdtTb_GetLastEvent(&(self->xilinxWdtIP));
 
@@ -117,7 +117,7 @@ void uz_watchdog_IntrHandler(void *CallBackRef)
 				uz_printf("\n fail_counter_register over 5. Maximum is 7. Restarting the timer will decrement fail_counter_register again \n");
 			}
 		}else if (last_event != XWDTTB_NO_BAD_EVENT) {
-			/* Stop the timer */
+			// Stop the timer
 			XWdtTb_Stop(&(self->xilinxWdtIP));
 			uz_printf("\n watchdog stopped. wrong behavior \n");
 			uz_assert(0); //
@@ -138,7 +138,7 @@ static int uz_watchdog_write_init_values_to_registers(XWdtTb *watchdog_instance_
     int32_t Status = XWdtTb_CfgInitialize(watchdog_instance_ptr, Config, Config->BaseAddr);
     uz_assert(!Status);
 
-    /*Enable Window Watchdog Feature in WWDT */
+    //Enable Window Watchdog Feature in WWDT
     if (!watchdog_instance_ptr->Config.IsPl)
     {
         const uint32_t watchdog_window_mode = 1U; // writing 1 to XWdtTb_ConfigureWDTMode enables window mode, see xwdttb.h
@@ -148,23 +148,23 @@ static int uz_watchdog_write_init_values_to_registers(XWdtTb *watchdog_instance_
     Status = XWdtTb_SelfTest(watchdog_instance_ptr);
     uz_assert(!Status);
 
-    /* Set register space to writable */
+    // Set register space to writable
     XWdtTb_SetRegSpaceAccessMode(watchdog_instance_ptr, 1U);
 
-    /* Configure first window = 0 (NOT USED THE CLOSED WINDOW) and second window */
+    // Configure first window = 0 (NOT USED THE CLOSED WINDOW) and second window
     XWdtTb_SetWindowCount(watchdog_instance_ptr, 0U, window_counter_value);
 
-    /* Set interrupt position */
+    // Set interrupt position
     XWdtTb_SetByteCount(watchdog_instance_ptr, WIN_WDT_SBC_COUNT);
     XWdtTb_SetByteSegment(watchdog_instance_ptr, WIN_WDT_BSS_COUNT);
 
-    /* Disable Secondary Sequence Timer (SST) */
+    // Disable Secondary Sequence Timer (SST)
     XWdtTb_DisableSst(watchdog_instance_ptr);
 
-    /* Disable Program Sequence Monitor (PSM) */
+    // Disable Program Sequence Monitor (PSM)
     XWdtTb_DisablePsm(watchdog_instance_ptr);
 
-//    /* Enable / Disable Fail Counter */
+    // Enable / Disable Fail Counter
 	if (fail_mode == watchdog_debug_mode) {
 		XWdtTb_EnableFailCounter(watchdog_instance_ptr);
 	} else {

@@ -66,7 +66,7 @@ void ISR_Control(void *data)
 	//	and enable Nested Interrupts: TESTED, NECESARY
 	Xil_EnableNestedInterrupts();
 
-	/* Restart the AXI IP watch dog timer: kick forward */
+//	Restart the AXI IP watch dog timer: kick forward
 	uz_watchdog_ip_restart(WdtTbInstancePtr);
 
 	ReadAllADC();
@@ -113,10 +113,9 @@ int Initialize_ISR()
         return XST_FAILURE;
     }
 
-    /*
-	 * Call uz_watchdog_ip_init with AXI BUS FREQUENCY, the timeout to watch and default configuration.
-	 * Obtain a WDT pointer initialized to use with the WDTTB API
-	 */
+
+//	Call uz_watchdog_ip_init with AXI BUS FREQUENCY, the timeout to watch and default configuration.
+//	Obtain a WDT pointer initialized to use with the WDTTB API
     float isr_maximum_sample_time_us=(1.0f/(UZ_PWM_FREQUENCY * Interrupt_ISR_freq_factor)*1e6f);
 
     struct uz_watchdog_ip_config_t config={
@@ -186,11 +185,10 @@ int Initialize_Timer()
 ******************************************************************************/
 void WdtTbDisableIntrSystem(XScuGic *IntcInstancePtr)
 {
-	/* Disconnect and disable the interrupt for the WdtTb
-	*  WDTTB_IRPT_INTR is the WDT Interrupt Id and is typically
-	*  XPAR_<INTC_instance>_<WDTTB_instance>_WDT_INTERRUPT_VEC_ID
-	*  value from xparameters.h.
-	*/
+//	Disconnect and disable the interrupt for the WdtTb
+//	WDTTB_IRPT_INTR is the WDT Interrupt Id and is typically
+//	XPAR_<INTC_instance>_<WDTTB_instance>_WDT_INTERRUPT_VEC_ID
+//	value from xparameters.h.
 	XScuGic_Disable(IntcInstancePtr, XPAR_FABRIC_WDTTB_0_VEC_ID);
 	XScuGic_Disconnect(IntcInstancePtr, XPAR_FABRIC_WDTTB_0_VEC_ID);
 }
@@ -232,10 +230,9 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
     //  XScuGic_GetPriorityTriggerType(IntcInstancePtr, WDTTB_IRPT_INTR, &Priority, &Trigger);
 	//	xil_printf("WdtTbSetupIntrSystem: Wd Prio is %d, level is %d\r\n",Priority, Trigger);
 
-	/*
-	 * Connect the interrupt handler that will be called when an
-	 * interrupt occurs for the device.
-	 */
+
+//	Connect the interrupt handler that will be called when an
+//	interrupt occurs for the device.
 	Status = XScuGic_Connect(IntcInstancePtr, XPAR_FABRIC_WDTTB_0_VEC_ID,
 				(Xil_ExceptionHandler)uz_watchdog_IntrHandler,
 				WdtTbInstancePtr);
@@ -243,20 +240,19 @@ int WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)
 		return Status;
 	}
 
-	/* Enable the interrupt for the Timer device */
+//	Enable the interrupt for the Timer device
 	XScuGic_Enable(IntcInstancePtr, XPAR_FABRIC_WDTTB_0_VEC_ID);
 
-	/* Initialize the exception table */
+//	Initialize the exception table
 	Xil_ExceptionInit();
 
-	/*
-	 * Register the interrupt controller handler with the exception table
-	 */
+
+//	Register the interrupt controller handler with the exception table
 	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
 			(Xil_ExceptionHandler)XScuGic_InterruptHandler, // (Xil_ExceptionHandler)INTC_HANDLER,
 			IntcInstancePtr);
 
-	/* Enable non-critical exceptions */
+//	Enable non-critical exceptions
 	Xil_ExceptionEnable();
 
 	return XST_SUCCESS;
@@ -282,17 +278,15 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
     if (status != XST_SUCCESS)
         return XST_FAILURE;
 
-    /*
-	 * Program the priority mask of the CPU using the Priority mask register
-	 */
+
+//	Program the priority mask of the CPU using the Priority mask register
 	XScuGic_CPUWriteReg(IntcInstPtr, XSCUGIC_BIN_PT_OFFSET, 0x03);
 	Xil_ExceptionInit();
 
     // Connect the interrupt controller interrupt handler to the hardware interrupt handling logic in the processor
     Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, IntcInstPtr);
 
-    /* Enable interrupts in the processor */
-    Xil_ExceptionEnable(); // Enable interrupts in the ARM
+    Xil_ExceptionEnable(); // Enable interrupts in the processor
 
     // setting interrupt trigger sensitivity
     // b01	Active HIGH level sensitive
@@ -314,9 +308,8 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
     if (status != XST_SUCCESS)
         return XST_FAILURE;
 
-    /*
-	* Connect to the interrupt subsystem so that interrupts can occur and Enable the IRQ output.
-	*/
+
+//	Connect to the interrupt subsystem so that interrupts can occur and Enable the IRQ output.
 	status = WdtTbSetupIntrSystem(IntcConfig, IntcInstPtr);
 	if (status != XST_SUCCESS) {
 		 return XST_FAILURE;

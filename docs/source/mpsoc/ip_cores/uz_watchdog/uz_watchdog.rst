@@ -37,7 +37,7 @@ Introduction
 ============
 
 The Xilinx IP-core `AXI Timebase Watchdog Timer <https://www.xilinx.com/products/intellectual-property/axi_timebase_wdt.html>`_ [#PG128]_ forms the bases of this module.
-The IP offers two morking modes [#PG128]_:
+The IP offers two working modes:
 
 - The **Timebase WDT** working mode implements an incremental counter which after one expiration of the timeout interval, an interrupt is generated. However, it does not offer a resolution in the order of microseconds that is needed.
 - The **Window WDT** working mode is the chosen one. It offers extended functionality and the required resolution of the window length. 
@@ -67,13 +67,13 @@ Integration in Baremetal project
 ================================
 
 - Choose the desired IP fail mode. We have two working modes as can be seen in the ``uz_watchdog_ip_config_t`` structure:
-    - watchdog_assertion: execution is halted when the first time violation occurs. 
-    - watchdog_debug_mode: Interrupt increments the fail counter and Watchdog returns to normal operation. At most seven failures may happen before the IP resets and stop working. This mode allows to pause execution while debugging the application.
+    - ``watchdog_assertion``: execution is halted when the first time violation occurs. 
+    - ``watchdog_debug_mode``: Interrupt increments the fail counter and Watchdog returns to normal operation. At most seven failures may happen before the IP resets and stop working. This mode allows pausing the execution, e.g. when using breakpoints in Vitis.
 - Set the rest of the configuration fields inside ``uz_watchdog_ip_config_t`` structure (see the API details below) with
-    - the size of the interval to be watched in microseconds. For example 100 or 50.
+    - the size of the interval to be watched in microseconds, e.g. 100 microseconds.
     - and the IP clock frequency. Normally the same as the AXI bus. 
 
-- **Inside** ``Initialize_ISR()`` **,finish the watchdog initialization by calling** ``*uz_watchdog_ip_init(uz_watchdog_ip_config_t)``.
+- **Inside** ``Initialize_ISR()`` **, finish the watchdog initialization by calling** ``*uz_watchdog_ip_init(uz_watchdog_ip_config_t)``.
 
 .. _XWDTTB_SecondWindowConstants_v2:
 
@@ -83,9 +83,9 @@ Integration in Baremetal project
 
    Example of initialization with ``uz_watchdog_ip_config_t`` structure in ``isr.c``.
 
-In the example the size of the interval to watch has been set as a function of the global constants ``UZ_PWM_FREQUENCY`` and the ``Interrupt_ISR_freq_factor``. Both defined indirectly by ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` constant inside :ref:`global_configuration` file.
+In the example, the length of the interval is set as a function of the global constants ``UZ_PWM_FREQUENCY`` and the ``Interrupt_ISR_freq_factor``. Both defined indirectly by ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` constant inside :ref:`global_configuration` file.
 
-- **Inside** ``Rpu_GicInit()`` **,the following changes are necessary to integrate the device:**
+- **Inside** ``Rpu_GicInit()`` **, the following changes are necessary to integrate the device:**
   
   1. We have to change the priority of the system timer. In order to allow the **interrupt preemption**, meaning that ``ISR_Control()`` than handles the timing interruption can be interrupted itself, we have to modify these lines:
 	
@@ -99,7 +99,7 @@ In the example the size of the interval to watch has been set as a function of t
 
   2. We have to initialize the interruption of the watchdog using a new private function added to the ``isr.c`` file: 
 	
-    ``WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)``. This function sets the INT Output signal through the GIC System. The GIC has to be previously initialize and set. It is already done in the Initialize_ISR() and Rpu_GicInit() functions.
+    ``WdtTbSetupIntrSystem(XScuGic_Config *IntcConfig, XScuGic *IntcInstancePtr)``. This function sets the INT Output signal through the GIC System. The GIC has to be previously initialize and set. It is already done in the ``Initialize_ISR()`` and ``Rpu_GicInit()`` functions.
 
 	
 - And finally, inside the ``ISR_Control()`` function, we have to:
@@ -119,7 +119,7 @@ Function Control Register (FCR)
 *******************************
 
 The ``FCR`` (Function Control Register) defines the interruption assertion point in time in the second window, at which an interrupt is triggered. 
-This choice is made by a combination of  the ``SBC`` (Select Byte Count) and the ``BSS`` (Byte Segement Selection of Second Window Count).  
+This choice is made by a combination of the ``SBC`` (Select Byte Count) and the ``BSS`` (Byte Segement Selection of Second Window Count).  
 An illustrative example is given in the next section. 
 
 .. _XWDTTB_FunctionControlRegister:

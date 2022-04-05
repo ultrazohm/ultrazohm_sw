@@ -16,7 +16,6 @@
 #ifndef CAN_H
 #define CAN_H
 
-#include "inttypes.h"
 typedef struct
 {
 	uint16_t std_id;

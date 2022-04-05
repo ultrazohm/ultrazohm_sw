@@ -21,10 +21,11 @@
 //Includes for Ethernet
 #if LWIP_DHCP==1
 #include "lwip/dhcp.h"
+extern volatile int dhcp_timoutcntr;
+err_t dhcp_start(struct netif *netif);
 #endif
 
 //Includes for CAN
-#define CAN_ACTIVE 1 // (1 = CAN is active)  and (0 = CAN is inactive)
 #include "include/can.h"
 #include "include/can_thread.h"
 
@@ -35,12 +36,6 @@
 
 size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;
-
-#if LWIP_DHCP==1
-extern volatile int dhcp_timoutcntr;
-err_t dhcp_start(struct netif *netif);
-#endif
-
 static struct netif server_netif;
 
 A53_Data Global_Data_A53;

@@ -14,9 +14,6 @@
 ******************************************************************************/
 
 #pragma once
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // ========== Include Files =========================================================================
 #include "lwip/sockets.h"
@@ -30,6 +27,7 @@ extern "C" {
 #include "xtmrctr.h"									//Include of the Timer-Blocks
 #include "math.h"										//Include for math operations
 #include <stdio.h>
+#include "include/can.h"
 
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024
@@ -44,6 +42,8 @@ extern "C" {
 #define JS_QUEUE_SIZE_ELEMENTS  	1000000
 #define JS_QUEUE_RECEIVE_TICKS2WAIT 100  // 1 tick = 100ms, wait (almost) indefinitely
 
+// ========== CAN INTERFACE =========================================================================
+#define CAN_ACTIVE 1 // (1 = CAN is active)  and (0 = CAN is inactive)
 
 // ========== Definitions =========================================================================
 #define OUTPUT_PIN							1 								//This Pin is an Output

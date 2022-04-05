@@ -121,8 +121,6 @@ void CAN_Thread_CAN1(void *p){
 	can_frame_t can_framebuffer_rx;
 
 	can_frame_t can_framebuffer_tx;
-	int	CAN_SendBuffer = 0;
-
 
 	// Init the CAN-Interface
 	CAN_Thread_Init_CAN1();

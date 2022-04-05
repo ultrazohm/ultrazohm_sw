@@ -25,6 +25,11 @@
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
+// include for the Java-SlowData
+#include "../../Baremetal/src/include/javascope.h"
+// Structs for Data-Exchange between Ethernet and CAN-Thread
+extern float js_slowDataArray[JSSD_ENDMARKER];
+
 
 #define IPI_HEADER			0x1E0000 /* 1E - Target Module ID */
 
@@ -70,6 +75,12 @@ void Transfer_ipc_Intr_Handler(void *data)
 		{
 			js_queue_full++;
 			// xil_printf("OsziData_queue is full\r\n");
+		}
+	}
+	else if(CAN_ACTIVE == 1){ // if Ethernet is not active, but CAN is
+		// Sort the Value of the SlowData in the right place of the Array to give the parameter to the CAN-Thread
+		if(javascope_data->slowDataID < JSSD_ENDMARKER){
+			js_slowDataArray[javascope_data->slowDataID] = javascope_data->slowDataContent;
 		}
 	}
 

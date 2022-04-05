@@ -36,7 +36,6 @@ int js_connection_established = 0;
 int i_LifeCheck_process_Ethernet = 0;
 
 // Structs for Data-Exchange between Ethernet and CAN-Thread
-extern struct APU_to_RPU_t ControlData_CAN;
 extern float js_slowDataArray[JSSD_ENDMARKER];
 
 //==============================================================================================================================================================

@@ -174,16 +174,3 @@ int hal_can_receive_frame_blocking(can_frame_t *can_frame_rx_p)
 
 	return status;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

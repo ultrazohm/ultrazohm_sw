@@ -21,14 +21,11 @@ This can be used as an template to include your new controller.
     bool ext_clamping = false;
 
     if (Data->Controller_Parameters.enableFOC_speed == true) {
-	  //Add your speedcontroller here. Should output dq-currents in the uz_3ph_dq_t system
-	  i_SpeedControl_reference_Ampere = ....
-	  //Create sine excitation for J-Identification
-	  if (Data->Controller_Parameters.VibOn_out == true) {
-          float sine_excitation = uz_wavegen_sine(Data->Controller_Parameters.VibAmp_out, Data->Controller_Parameters.VibFreq_out);
-          i_SpeedControl_reference_Ampere.q += sine_excitation;}
-      else {
-          i_SpeedControl_reference_Ampere.q += Data->Controller_Parameters.PRBS_out;}}
+      //Add your speedcontroller here. Should output dq-currents in the uz_3ph_dq_t system
+      i_SpeedControl_reference_Ampere = ....
+      //ADD PRBS excitation for TwoMassID
+      i_SpeedControl_reference_Ampere.q += Data->TwoMassID_Output->PRBS_out;
+    }
     if (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true) {
       //Add your currentcontroller here. Should output dq-currents in the uz_3ph_dq_t system
       if (Data->Controller_Parameters.enableFOC_current == true) {
@@ -59,15 +56,15 @@ This can be used as an template to include your new controller.
 	  uz_3ph_dq_t Online_current_ref = Data->GlobalConfig.i_dq_ref;
 	  if (Data->OnlineID_Output->IdControlFlag == true) {
 		  if (Data->AutoRefCurrents_Config.enableCRS == true) {
-		  	Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out + Data->AutoRefCurrents_Output.d;
-		  	Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
+		  	Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out + Data->AutoRefCurrents_Output.i_dq_ref.d;
+		  	Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.i_dq_ref.q;
 		  } else {
 		  	Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out;
 		  }
 	  } else {
 		  if (Data->AutoRefCurrents_Config.enableCRS == true) {
-		  	Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->AutoRefCurrents_Output.d;
-		  	Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.q;
+		  	Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->AutoRefCurrents_Output.i_dq_ref.d;
+		  	Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.i_dq_ref.q;
 		  }
 	  }
 	  if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {

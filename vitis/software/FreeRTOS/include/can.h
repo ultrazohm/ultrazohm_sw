@@ -33,4 +33,8 @@ int hal_can_send_frame_blocking(can_frame_t* can_frame_tx_p);
 int hal_can_send_frame_blocking_wrapper(uint16_t std_id, uint8_t dlc, uint8_t* data);
 int hal_can_receive_frame_blocking(can_frame_t *data);
 
+void can_send_1(void); 		//CAN interface: Test function for CAN
+void can_send_2(void); 		//CAN interface: Test function for CAN
+void hal_can_debug_print_frame(can_frame_t *can_frame_p); //CAN interface: Test function for CAN
+
 #endif

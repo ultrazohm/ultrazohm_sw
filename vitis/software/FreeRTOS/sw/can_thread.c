@@ -14,8 +14,8 @@
 ******************************************************************************/
 
 #include <stdio.h>
-#include <string.h>
-
+#include <math.h>
+#include <stdint.h>
 #include "xil_printf.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -23,8 +23,7 @@
 
 #include "../include/can.h"
 #include "../include/can_thread.h"
-#include "../main.h"
-#include <math.h>
+
 
 // include for the Java-SlowData
 #include "../../Baremetal/src/include/javascope.h"
@@ -44,12 +43,14 @@ float js_slowDataArray[JSSD_ENDMARKER];
  *     Initialize the CAN-Interfaces for the CAN_Thread_CAN1
  *---------------------------------------------------------------------------*/
 
-void CAN_Thread_Init_CAN1(){
-	xil_printf(" Init CAN with 500kbaud/s \n\r"); //CAN interface
-
+void CAN_Thread_Init_CAN0(){
+	xil_printf(" Init CAN0 with 500kbaud/s \n\r");
 	hal_can_init(XPAR_PSU_CAN_0_BASEADDR, XPAR_PSU_CAN_0_DEVICE_ID); //CAN 0 interface
-	//hal_can_init(XPAR_PSU_CAN_1_BASEADDR, XPAR_PSU_CAN_1_DEVICE_ID); //CAN 1 interface
+}
 
+void CAN_Thread_Init_CAN1(){
+	xil_printf(" Init CAN1 with 500kbaud/s \n\r");
+	hal_can_init(XPAR_PSU_CAN_1_BASEADDR, XPAR_PSU_CAN_1_DEVICE_ID); //CAN 1 interface
 }
 
 /*---------------------------------------------------------------------------*
@@ -117,13 +118,14 @@ int CAN_Thread_SendSlowData(int Messagenumber, int32_t dezimalscaler_Value1, int
 void CAN_Thread_CAN1(void *p){
 
 	//Variables
-	u32_t i_LifeCheck_CAN_Thread1   = 0;
+	uint32_t i_LifeCheck_CAN_Thread1   = 0;
 	can_frame_t can_framebuffer_rx;
 
 	can_frame_t can_framebuffer_tx;
 
 	// Init the CAN-Interface
-	CAN_Thread_Init_CAN1();
+	CAN_Thread_Init_CAN0();
+	//CAN_Thread_Init_CAN1();
 
 	while(1){
 

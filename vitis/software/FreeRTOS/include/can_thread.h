@@ -51,7 +51,13 @@
 
 // ========== Functions and Threads ======================================================================
 /**
- * @brief   Initialize the CAN-Interfaces for the CAN_Thread_CAN1
+ * @brief   Initialize the CAN0-Interfaces
+ */
+void CAN_Thread_Init_CAN0();
+
+
+/**
+ * @brief   Initialize the CAN1-Interfaces
  */
 void CAN_Thread_Init_CAN1();
 

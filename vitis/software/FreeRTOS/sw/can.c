@@ -174,3 +174,73 @@ int hal_can_receive_frame_blocking(can_frame_t *can_frame_rx_p)
 
 	return status;
 }
+
+
+//=============================================================================
+/*---------------------------------------------------------------------------*
+ * Routine:  hal_can_debug_print_frame
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      CAN interface for testing
+ *---------------------------------------------------------------------------*/
+void hal_can_debug_print_frame(can_frame_t *can_frame_p)
+{
+	xil_printf("std_id: 0x%03X, dlc: %d, data[0]: 0x%02X \n\r",
+			can_frame_p->std_id, can_frame_p->dlc, can_frame_p->data[0]);
+}
+
+
+//=============================================================================
+/*---------------------------------------------------------------------------*
+ * Routine:  can_send_1
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      CAN interface for testing
+ *---------------------------------------------------------------------------*/
+void can_send_1(void)
+{
+	static uint8_t tick;
+	tick++;
+	if(tick > 250){
+		tick =0;
+	}
+
+	//xil_printf("tick: 0x%02X \n\r", tick);
+	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
+
+	can_frame_t can_frame_tx;
+	can_frame_tx.std_id = 0x123;
+	can_frame_tx.dlc = 2;
+	can_frame_tx.data[0] = 0x13;
+	can_frame_tx.data[1] = tick;
+
+	hal_can_send_frame_blocking(&can_frame_tx);
+}
+
+
+//==============================================================================
+/*---------------------------------------------------------------------------*
+ * Routine:  can_send_2
+ *---------------------------------------------------------------------------*
+ * Description:
+ *      CAN interface for testing
+ *---------------------------------------------------------------------------*/
+void can_send_2(void)
+{
+	static uint8_t tick;
+	tick=tick+10;
+	if(tick > 250){
+		tick =0;
+	}
+
+	//xil_printf("tick: 0x%02X \n\r", tick);
+	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
+
+	can_frame_t can_frame_tx;
+	can_frame_tx.std_id = 0x52;
+	can_frame_tx.dlc = 2;
+	can_frame_tx.data[0] = 0x12;
+	can_frame_tx.data[1] = tick;
+
+	hal_can_send_frame_blocking(&can_frame_tx);
+}

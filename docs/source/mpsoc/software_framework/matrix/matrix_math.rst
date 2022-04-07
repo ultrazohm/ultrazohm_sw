@@ -1,4 +1,4 @@
-.. _matrix_math:
+.. _uz_matrix:
 
 ===========
 Matrix math

@@ -39,6 +39,15 @@ steps:
     - cppcheck --addon=cert vitis/software/Baremetal/src 
     - cppcheck --addon=misra --inline-suppr vitis/software/Baremetal/src 
 
+ - name: Vivado build xpr for 9EG
+   image: vivado:2020.1
+   commands:
+   - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
+   - cd vivado
+   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -nolog -nojournal -source build.tcl
+   - cd ..
+   - git status
+
 # pipeline step just opens the vivado project
  - name: Vivado open project
    image: vivado:2020.1
@@ -59,16 +68,6 @@ steps:
    commands:
    - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
    - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_validate_bd_design.tcl
-
-# Open vivado project, open the board design and validate the board design (F6 in Vivado GUI)
- - name: Vivado build xpr for 9EG
-   image: vivado:2020.1
-   commands:
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
-   - cd vivado
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -nolog -nojournal -source build.tcl
-   - cd ..
-   - git status
 
 # Runs report_environment from vivado to check if the license is valid for debug reasons (only on main and develop branch)
  - name: Vivado check license
@@ -134,7 +133,12 @@ steps:
    commands:
    - apk add git-lfs
    - git status
-   - git commit -a -m "[skip ci] Commit Vivado binarys from DroneCI"
+   - git add vitis/vivado_exported_xsa/zusys_wrapper.xsa
+   - git add ip_cores/vv_index.xml
+   - git add vivado/project/*
+   - git add vivado/*.tcl
+   - git status
+   - git commit -m "[skip ci] Commit Vivado binarys from DroneCI"
    - git status
    - git push --tags --set-upstream https://$user:$pass@bitbucket.org/ultrazohm/ultrazohm_sw.git main 
    when:
@@ -191,7 +195,8 @@ steps:
    commands:
    - apk add git-lfs
    - git status
-   - git commit -a -m "[skip ci] Commit changelog and tag from DroneCI"
+   - git add CHANGELOG.md
+   - git commit -m "[skip ci] Commit changelog and tag from DroneCI"
    - git status
    - git push --tags --set-upstream https://$user:$pass@bitbucket.org/ultrazohm/ultrazohm_sw.git main 
    when:

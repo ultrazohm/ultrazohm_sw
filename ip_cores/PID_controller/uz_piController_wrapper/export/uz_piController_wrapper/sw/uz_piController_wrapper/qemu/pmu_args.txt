@@ -1,0 +1,8 @@
+-M
+microblaze-fdt
+-device
+loader,file=<uz_piController_wrapper/qemu/pmufw.elf>
+-machine-path
+.
+-display
+none

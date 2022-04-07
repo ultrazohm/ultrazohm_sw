@@ -35,22 +35,27 @@ bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float 
 	return (output);
 }
 void uz_PI_Controller_sample(uz_PI_Controller_config* self,  bool I_rst, float referenceValue, float actualValue, bool ext_clamping, float *output) {
-	#pragma HLS INTERFACE s_axilite port= self           bundle = Din
-	#pragma HLS INTERFACE s_axilite port=referenceValue  bundle = Din
-	#pragma HLS INTERFACE s_axilite port=actualValue     bundle = Din
-	#pragma HLS INTERFACE s_axilite port=ext_clamping    bundle = Din
-	#pragma HLS INTERFACE s_axilite port = I_rst         bundle = Din
-	#pragma HLS INTERFACE s_axilite port = output        bundle = Din
-	#pragma HLS INTERFACE s_axilite port=return          bundle = Din
+/*	#pragma HLS disaggregate variable = self
+	#pragma HLS INTERFACE s_axilite port= self->Kp                 bundle = Din
+	#pragma HLS INTERFACE s_axilite port= self->Ki                 bundle = Din
+	#pragma HLS INTERFACE s_axilite port= self->samplingTime_sec   bundle = Din
+	#pragma HLS INTERFACE s_axilite port= self->upper_limit        bundle = Din
+	#pragma HLS INTERFACE s_axilite port= self->lower_limit        bundle = Din*/
+	#pragma HLS INTERFACE s_axilite port=self                      bundle = Din
+	#pragma HLS INTERFACE s_axilite port=referenceValue            bundle = Din
+	#pragma HLS INTERFACE s_axilite port=actualValue               bundle = Din
+	#pragma HLS INTERFACE s_axilite port=ext_clamping              bundle = Din
+	#pragma HLS INTERFACE s_axilite port=I_rst                     bundle = Din
+	#pragma HLS INTERFACE s_axilite port=output                    bundle = Din
+	#pragma HLS INTERFACE s_axilite port=return                    bundle = Din
 	bool internal_clamping = false;
-	float I_sum;
+	static float I_sum;
 	float error = referenceValue - actualValue;
 	float old_I_sum = I_sum;
 	float preIntegrator = error * self->Ki;
 	float P_sum = error * self->Kp;
 	float output_before_saturation = old_I_sum + P_sum;
 	internal_clamping = uz_PI_Controller_Clamping_Circuit(preIntegrator, output_before_saturation, self->upper_limit, self->lower_limit);
-
 	bool clamping_active  = (ext_clamping == true) || (internal_clamping == true); // clamping is active if internal clamping or external clamping is true
 	if ( clamping_active ) {
 		I_sum += 0.0f;

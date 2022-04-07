@@ -19,7 +19,6 @@
 //#include "../uz_HAL.h"
 
 float uz_signals_dead_zone(float input, float upper_threshold, float lower_threshold) {
-	//uz_assert(upper_threshold > lower_threshold);
     float output=0.0f;
 	if ( (input >= lower_threshold) && (input <= upper_threshold) ) {
 		output = 0.0f;

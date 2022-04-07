@@ -1,0 +1,123 @@
+// ==============================================================
+// Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2020.1 (64-bit)
+// Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+// ==============================================================
+#ifndef XUZ_PI_CONTROLLER_SAMPLE_H
+#define XUZ_PI_CONTROLLER_SAMPLE_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/***************************** Include Files *********************************/
+#ifndef __linux__
+#include "xil_types.h"
+#include "xil_assert.h"
+#include "xstatus.h"
+#include "xil_io.h"
+#else
+#include <stdint.h>
+#include <assert.h>
+#include <dirent.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <unistd.h>
+#include <stddef.h>
+#endif
+#include "xuz_pi_controller_sample_hw.h"
+
+/**************************** Type Definitions ******************************/
+#ifdef __linux__
+typedef uint8_t u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64;
+#else
+typedef struct {
+    u16 DeviceId;
+    u32 Din_BaseAddress;
+} XUz_pi_controller_sample_Config;
+#endif
+
+typedef struct {
+    u32 Din_BaseAddress;
+    u32 IsReady;
+} XUz_pi_controller_sample;
+
+typedef u32 word_type;
+
+typedef struct {
+    u32 word_0;
+    u32 word_1;
+    u32 word_2;
+    u32 word_3;
+    u32 word_4;
+} XUz_pi_controller_sample_Self;
+
+/***************** Macros (Inline Functions) Definitions *********************/
+#ifndef __linux__
+#define XUz_pi_controller_sample_WriteReg(BaseAddress, RegOffset, Data) \
+    Xil_Out32((BaseAddress) + (RegOffset), (u32)(Data))
+#define XUz_pi_controller_sample_ReadReg(BaseAddress, RegOffset) \
+    Xil_In32((BaseAddress) + (RegOffset))
+#else
+#define XUz_pi_controller_sample_WriteReg(BaseAddress, RegOffset, Data) \
+    *(volatile u32*)((BaseAddress) + (RegOffset)) = (u32)(Data)
+#define XUz_pi_controller_sample_ReadReg(BaseAddress, RegOffset) \
+    *(volatile u32*)((BaseAddress) + (RegOffset))
+
+#define Xil_AssertVoid(expr)    assert(expr)
+#define Xil_AssertNonvoid(expr) assert(expr)
+
+#define XST_SUCCESS             0
+#define XST_DEVICE_NOT_FOUND    2
+#define XST_OPEN_DEVICE_FAILED  3
+#define XIL_COMPONENT_IS_READY  1
+#endif
+
+/************************** Function Prototypes *****************************/
+#ifndef __linux__
+int XUz_pi_controller_sample_Initialize(XUz_pi_controller_sample *InstancePtr, u16 DeviceId);
+XUz_pi_controller_sample_Config* XUz_pi_controller_sample_LookupConfig(u16 DeviceId);
+int XUz_pi_controller_sample_CfgInitialize(XUz_pi_controller_sample *InstancePtr, XUz_pi_controller_sample_Config *ConfigPtr);
+#else
+int XUz_pi_controller_sample_Initialize(XUz_pi_controller_sample *InstancePtr, const char* InstanceName);
+int XUz_pi_controller_sample_Release(XUz_pi_controller_sample *InstancePtr);
+#endif
+
+void XUz_pi_controller_sample_Start(XUz_pi_controller_sample *InstancePtr);
+u32 XUz_pi_controller_sample_IsDone(XUz_pi_controller_sample *InstancePtr);
+u32 XUz_pi_controller_sample_IsIdle(XUz_pi_controller_sample *InstancePtr);
+u32 XUz_pi_controller_sample_IsReady(XUz_pi_controller_sample *InstancePtr);
+void XUz_pi_controller_sample_EnableAutoRestart(XUz_pi_controller_sample *InstancePtr);
+void XUz_pi_controller_sample_DisableAutoRestart(XUz_pi_controller_sample *InstancePtr);
+
+void XUz_pi_controller_sample_Set_self(XUz_pi_controller_sample *InstancePtr, XUz_pi_controller_sample_Self Data);
+XUz_pi_controller_sample_Self XUz_pi_controller_sample_Get_self(XUz_pi_controller_sample *InstancePtr);
+void XUz_pi_controller_sample_Set_I_rst(XUz_pi_controller_sample *InstancePtr, u32 Data);
+u32 XUz_pi_controller_sample_Get_I_rst(XUz_pi_controller_sample *InstancePtr);
+void XUz_pi_controller_sample_Set_referenceValue(XUz_pi_controller_sample *InstancePtr, u32 Data);
+u32 XUz_pi_controller_sample_Get_referenceValue(XUz_pi_controller_sample *InstancePtr);
+void XUz_pi_controller_sample_Set_actualValue(XUz_pi_controller_sample *InstancePtr, u32 Data);
+u32 XUz_pi_controller_sample_Get_actualValue(XUz_pi_controller_sample *InstancePtr);
+void XUz_pi_controller_sample_Set_ext_clamping(XUz_pi_controller_sample *InstancePtr, u32 Data);
+u32 XUz_pi_controller_sample_Get_ext_clamping(XUz_pi_controller_sample *InstancePtr);
+u32 XUz_pi_controller_sample_Get_output_r(XUz_pi_controller_sample *InstancePtr);
+u32 XUz_pi_controller_sample_Get_output_r_vld(XUz_pi_controller_sample *InstancePtr);
+
+void XUz_pi_controller_sample_InterruptGlobalEnable(XUz_pi_controller_sample *InstancePtr);
+void XUz_pi_controller_sample_InterruptGlobalDisable(XUz_pi_controller_sample *InstancePtr);
+void XUz_pi_controller_sample_InterruptEnable(XUz_pi_controller_sample *InstancePtr, u32 Mask);
+void XUz_pi_controller_sample_InterruptDisable(XUz_pi_controller_sample *InstancePtr, u32 Mask);
+void XUz_pi_controller_sample_InterruptClear(XUz_pi_controller_sample *InstancePtr, u32 Mask);
+u32 XUz_pi_controller_sample_InterruptGetEnabled(XUz_pi_controller_sample *InstancePtr);
+u32 XUz_pi_controller_sample_InterruptGetStatus(XUz_pi_controller_sample *InstancePtr);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

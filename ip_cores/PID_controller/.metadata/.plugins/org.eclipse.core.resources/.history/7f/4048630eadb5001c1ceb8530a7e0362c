@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sdkproject:SdkProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sdkproject="http://www.xilinx.com/sdkproject" name="uz_piController_app" location="C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/uz_piController_app" platform="C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/uz_piController_platform/export/uz_piController_platform/uz_piController_platform.xpfm" platformUID="xilinx:::0.0(custom)" systemProject="uz_piController_app_system" sysConfig="uz_piController_platform" runtime="cpp" cpu="domain_psu_cortexa53_0" cpuInstance="psu_cortexa53_0" os="standalone" mssSignature="2c678b55e8576534cacdbd79c01b3301">
+  <configuration name="Debug" id="xilinx.gnu.arm.a53.exe.debug.785459586">
+    <configBuildOptions xsi:type="sdkproject:SdkOptions"/>
+    <lastBuildOptions xsi:type="sdkproject:SdkOptions"/>
+  </configuration>
+  <configuration name="Release" id="xilinx.gnu.arm.a53.exe.release.116186935" dirty="true">
+    <configBuildOptions xsi:type="sdkproject:SdkOptions"/>
+  </configuration>
+  <template appTemplateName="hello_world"/>
+</sdkproject:SdkProject>

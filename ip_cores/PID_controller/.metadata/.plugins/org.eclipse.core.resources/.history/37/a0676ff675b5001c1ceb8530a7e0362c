@@ -1,0 +1,170 @@
+/******************************************************************************
+*
+* Copyright (C) 2009 - 2014 Xilinx, Inc.  All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* Use of the Software is limited solely to applications:
+* (a) running on a Xilinx device, or
+* (b) that interact with a Xilinx device through a bus or interconnect.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+* XILINX  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+* OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+*
+* Except as contained in this notice, the name of the Xilinx shall not be used
+* in advertising or otherwise to promote the sale, use or other dealings in
+* this Software without prior written authorization from Xilinx.
+*
+******************************************************************************/
+
+
+#include "platform.h"
+#include "xbasic_types.h"
+#include "xparameters.h" // Contains definitions for all peripherals
+#include "xuz_pi_controller_sample.h" // Contains hls example (axilite) IP macros and functions
+#include "stdbool.h"
+#include "stdio.h"
+
+// Define global values for HLS example IP
+XUz_pi_controller_sample pi;
+XUz_pi_controller_sample_Config *pi_cfg;
+typedef struct uz_PI_Controller_config {
+	float Kp; /**< Proportional gain for PI-Controller. Must be greater or equal than 0.0f */
+	float Ki; /**< Integral gain for PI-Controller. Must be greater or equal than 0.0f */
+	float samplingTime_sec; /**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
+	float upper_limit; /**< Upper limit for the output limitation. Must be greater than lower limit */
+	float lower_limit; /**< Lower limit for the output limitation */
+}uz_PI_Controller_config;
+
+// Initialize the HLS example IP
+void init_pi_controller(){
+
+		int status;
+		// Create HLS example IP pointer
+		pi_cfg = XUz_pi_controller_sample_LookupConfig(
+		XPAR_UZ_PI_CONTROLLER_SAM_0_DEVICE_ID);
+
+		if (!pi_cfg) {
+			xil_printf(
+					"Error loading configuration for pi_cfg \n\r");
+		}
+
+
+		status = XUz_pi_controller_sample_CfgInitialize(&pi,
+				pi_cfg);
+		if (status != XST_SUCCESS) {
+			xil_printf("Error initializing for pi \n\r");
+		}
+
+		XUz_pi_controller_sample_Initialize(&pi,
+		XPAR_UZ_PI_CONTROLLER_SAM_0_DEVICE_ID);
+}
+// Function that adds using HLS example IP
+// The functions used here are defined in xexample.h
+void pi_controller_hls(uz_PI_Controller_config self,  bool I_rst, float referenceValue, float actualValue, bool ext_clamping) {
+	float output;
+	output = 0.0f; // result output from HLS IP
+
+	// Write inputs
+	XUz_pi_controller_sample_Set_self(&pi, self );
+	XUz_pi_controller_sample_Set_I_rst(&pi, I_rst );
+	XUz_pi_controller_sample_Set_referenceValue(&pi, referenceValue);
+	XUz_pi_controller_sample_Set_actualValue(&pi, actualValue);
+	XUz_pi_controller_sample_Set_ext_clamping(&pi, ext_clamping);
+	xil_printf("Write self: ox%x \n\r", self);
+	xil_printf("Write I_rst: %b \n\r", I_rst);
+	printf("Write referenceValue: %f \n\r", referenceValue);
+	printf("Write actualValue: %f \n\r", actualValue);
+	xil_printf("Write ext_clamping: %b \n\r", ext_clamping);
+
+	// Start HLS IP
+	XUz_pi_controller_sample_Start(&pi);
+	print("Started HLS pi controller IP \n\r");
+
+	// Wait until it is finished
+	while (!XUz_pi_controller_sample_IsDone(&pi))
+		;
+
+	// Get hls_multiplier returned value
+	output = XUz_pi_controller_sample_Get_output_r(&pi);
+
+	printf("HLS IP Return Value: %f\n\r", output);
+	print("End of test\n\n\r");
+}
+
+int main() {
+	// setup
+	init_platform();
+	init_pi_controller();
+	uz_PI_Controller_config self;
+	int I_rst_int;
+	bool I_rst;
+	float referenceValue;
+	float actualValue;
+	int ext_clamping_int;
+	bool ext_clamping;
+
+	while (1) {
+		// Enter the HLS IP inputs  (Defined in Vitis HLS)
+		xil_printf("Enter value for self kp: ");
+		scanf("%f", &self.Kp);//kp
+		xil_printf("%f\n\r", self.Kp);
+
+		xil_printf("Enter value for self ki: ");
+		scanf("%f", &self.Ki);//ki
+		xil_printf("%f\n\r", self.Ki);
+
+		xil_printf("Enter value for self samplingTime_sec: ");
+		scanf("%f", &self.samplingTime_sec);//samplingTime_sec
+		xil_printf("%f\n\r", self.samplingTime_sec);
+
+		xil_printf("Enter value for self upper_limit: ");
+		scanf("%f", &self.upper_limit);//upper_limit
+		xil_printf("ox%x\n\r", self.upper_limit);
+
+		xil_printf("Enter value for self lower_limit: ");
+		scanf("%f", &self.lower_limit);//lower_limit
+		xil_printf("%f\n\r", self.lower_limit);
+
+		xil_printf("Enter value for I_rst: ");
+		scanf("%d", &I_rst_int);
+		I_rst = I_rst_int;
+		xil_printf("%b\n\r", I_rst);
+
+		xil_printf("Enter value for referenceValue: ");
+		scanf("%f", &referenceValue);
+		printf("%f\n\r", referenceValue);
+
+		xil_printf("Enter value for actualValue: ");
+		scanf("%f", &actualValue);
+		printf("%f\n\r", actualValue);
+
+		xil_printf("Enter value for ext_clamping: ");
+		scanf("%d", &ext_clamping_int);
+		ext_clamping = ext_clamping_int;
+		xil_printf("%b\n\r", ext_clamping);
+
+		xil_printf("Performing HLS Addition... \n\r");
+
+		// perform pi controller in HLS IP
+		pi_controller_hls(self,I_rst,referenceValue,actualValue,ext_clamping);
+	}
+
+	cleanup_platform();
+	return 0;
+}
+
+

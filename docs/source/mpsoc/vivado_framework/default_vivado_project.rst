@@ -3,7 +3,7 @@
 Default Vivado project
 ======================
 
-The default Vivado project uses vendor IP-Cores as well as IP-Cores from the Ultrazohm repository (:ref:`ip_cores`) to provide a starting point for the users.
+The default Vivado project uses vendor IP-Cores as well as IP-Cores from the Ultrazohm repository (:ref:`ip_cores`) to provide a starting point for users.
 It is located in ``ultrazohm_sw/vivado/project/ultrazohm.xpr`` and can be generated using the ``build.tcl`` script (see :ref:`viavdo_build_tcl`).
 :numref:`default_vivado_project_picture` shows the default project.
 It is split into the following different parts:
@@ -20,14 +20,14 @@ It is split into the following different parts:
 
 .. figure:: vivado_default_project.png
 
-  Default Vivado project.
+  Default Vivado project of the UltraZohm. Add custom IP-Cores to **uz_user** sub-block.
 
 The sub-blocks (*Create hierarchy* in Vivado) provide the following functionality:
 
 uz_system
   - *smartconnect_0* to connect AXI signals to the PS
   - *uz_enable* handles enabling the output signals as well as the data mover
-  - *uz_clocks* generates 100 MHz, 50 MHz, 10 MHz clocks and reset signals
+  - *uz_clocks* generates 100 MHz, 50 MHz, 10 MHz clocks for IP-Cores and matching reset signals
   - *timer_update_64bit* is the counter used for :ref:`systemTimeR5`
   - :ref:`uz_dataMover` transfers data from PL to PS
   - *Interrupt* controls the interrupts of the R5 in the PL (:ref:`r5_interrupts`)

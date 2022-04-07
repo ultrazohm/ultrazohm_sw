@@ -42,6 +42,14 @@ This script has to be called to incorporate changes to the default Vivado projec
 .. warning:: Only call ``update_tcl_scripts_for_vc.tcl`` if the project use changed was build using ``build.tcl``.
              Do not use it if you used another project or a project that was generated using ``build_selected_target.tcl``!
 
+Workflow:
+
+#. Build Vivado project using ``build.tcl``
+#. Make changes to Vivado Project
+#. Save project
+#. call ``update_tcl_scripts_for_vc.tcl``
+#. Commit the changes
+
 
 .. _vivado_build_tcl_compatibility:
 

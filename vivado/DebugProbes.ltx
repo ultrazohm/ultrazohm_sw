@@ -2923,7 +2923,7 @@
                     },
                     {
                         "type": "ILA_V3",
-                        "name": "zusys_i/MLP/ila_mlp",
+                        "name": "zusys_i/MLP/mlp_bgd_debug/ila_mlp_bgd",
                         "spec": "labtools_ila_v6",
                         "ipName": "ila",
                         "core_location": {
@@ -2931,7 +2931,7 @@
                             "slave_index": 9,
                             "bscan_switch_index": 0
                         },
-                        "uuid": "E08DBA3AFDE754E0AA751F9450F983F1",
+                        "uuid": "AFD5C3D8E1C951B4A2E0875C5A7E5E88",
                         "pins": [
                             {
                                 "name": "probe0",
@@ -2944,7 +2944,7 @@
                                 "portIndex": 0,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/MLP/MLP_0_ap_done",
+                                        "name": "zusys_i/MLP/mlp_bgd_debug/^mlp_ap_start",
                                         "isBus": false
                                     }
                                 ]
@@ -2960,7 +2960,103 @@
                                 "portIndex": 1,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/MLP/BGD_interrupt",
+                                        "name": "zusys_i/MLP/mlp_bgd_debug/^mlp_ap_done",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe2",
+                                "id": 82,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 2,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/MLP/mlp_bgd_debug/^mlp_ap_idle",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 83,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/MLP/mlp_bgd_debug/^mlp_ap_ready",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 84,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/MLP/mlp_bgd_debug/^bgd_ap_start",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe5",
+                                "id": 85,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 5,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/MLP/mlp_bgd_debug/^bgd_ap_done",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe6",
+                                "id": 86,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 6,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/MLP/mlp_bgd_debug/^bgd_ap_idle",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe7",
+                                "id": 87,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 7,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/MLP/mlp_bgd_debug/^bgd_ap_ready",
                                         "isBus": false
                                     }
                                 ]
@@ -2981,7 +3077,7 @@
                         "pins": [
                             {
                                 "name": "probe0",
-                                "id": 82,
+                                "id": 88,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3047,7 +3143,7 @@
                             },
                             {
                                 "name": "probe1",
-                                "id": 83,
+                                "id": 89,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3113,7 +3209,7 @@
                             },
                             {
                                 "name": "probe2",
-                                "id": 84,
+                                "id": 90,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3179,7 +3275,7 @@
                             },
                             {
                                 "name": "probe3",
-                                "id": 85,
+                                "id": 91,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3245,7 +3341,7 @@
                             },
                             {
                                 "name": "probe4",
-                                "id": 86,
+                                "id": 92,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3261,7 +3357,7 @@
                             },
                             {
                                 "name": "probe5",
-                                "id": 87,
+                                "id": 93,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3277,7 +3373,7 @@
                             },
                             {
                                 "name": "probe6",
-                                "id": 88,
+                                "id": 94,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3391,7 +3487,7 @@
                             },
                             {
                                 "name": "probe7",
-                                "id": 89,
+                                "id": 95,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3407,7 +3503,7 @@
                             },
                             {
                                 "name": "probe8",
-                                "id": 90,
+                                "id": 96,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3530,7 +3626,7 @@
                             },
                             {
                                 "name": "probe9",
-                                "id": 91,
+                                "id": 97,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3653,7 +3749,7 @@
                             },
                             {
                                 "name": "probe10",
-                                "id": 92,
+                                "id": 98,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3776,7 +3872,7 @@
                             },
                             {
                                 "name": "probe11",
-                                "id": 93,
+                                "id": 99,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3913,7 +4009,7 @@
                         "pins": [
                             {
                                 "name": "probe0",
-                                "id": 94,
+                                "id": 100,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3929,7 +4025,7 @@
                             },
                             {
                                 "name": "probe1",
-                                "id": 95,
+                                "id": 101,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3945,7 +4041,7 @@
                             },
                             {
                                 "name": "probe2",
-                                "id": 96,
+                                "id": 102,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3961,7 +4057,7 @@
                             },
                             {
                                 "name": "probe3",
-                                "id": 97,
+                                "id": 103,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -4051,7 +4147,7 @@
                             },
                             {
                                 "name": "probe4",
-                                "id": 98,
+                                "id": 104,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -4141,7 +4237,7 @@
                             },
                             {
                                 "name": "probe5",
-                                "id": 99,
+                                "id": 105,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -4157,7 +4253,7 @@
                             },
                             {
                                 "name": "probe6",
-                                "id": 100,
+                                "id": 106,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -4223,7 +4319,7 @@
                             },
                             {
                                 "name": "probe7",
-                                "id": 101,
+                                "id": 107,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -4303,7 +4399,7 @@
                         "pins": [
                             {
                                 "name": "probe_out0",
-                                "id": 102,
+                                "id": 108,
                                 "type": "DATA",
                                 "direction": "OUT",
                                 "isVector": true,

@@ -18,7 +18,7 @@ static XGpioPs Gpio_inst;
 static uz_gpio MIO_PHY_Reset;
 
 
-int uz_phy_reset(void)
+void uz_phy_reset(void)
 {
 	uz_phy_reset_init();
 	int phy_reset_high_time_us = 20e3; //20ms = 20,000 us

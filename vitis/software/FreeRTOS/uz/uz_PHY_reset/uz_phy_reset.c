@@ -1,5 +1,5 @@
 #include "../uz_GPIO/uz_gpio.h"
-#include "../uz_hal.h"
+#include "../uz_HAL.h"
 #include "uz_phy_reset.h"
 
 

@@ -1,3 +1,3 @@
 #pragma once
 
-int uz_phy_reset(void);
+void uz_phy_reset(void);

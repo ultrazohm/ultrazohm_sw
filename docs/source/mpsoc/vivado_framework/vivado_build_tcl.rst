@@ -50,6 +50,21 @@ Workflow:
 #. call ``update_tcl_scripts_for_vc.tcl``
 #. Commit the changes
 
+.. code-block::
+   :caption: Changed files after ``update_tcl_scripts_for_vc.tcl`` is called.
+
+   modified:   ip_cores/vv_index.xml
+   modified:   vivado/_build.tcl
+   modified:   vivado/bd/_zusys.tcl
+   modified:   vivado/bd/zusys.tcl
+   modified:   vivado/build.tcl
+   modified:   vivado/project/ultrazohm.xpr
+   modified:   vivado/project/zusys/zusys.bd
+
+
+.. figure:: make_vivado_change_with_tcl_script.gif
+
+  Make a change in the Vivado default project and save it using **update_tcl_scripts_for_vc**. Note that this is just an example change.
 
 .. _vivado_build_tcl_compatibility:
 

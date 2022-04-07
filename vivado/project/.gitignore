@@ -1,18 +1,6 @@
 ### Xilinx Vivado ###
 # short gitignore for our project specific
 
-
-
-*/*.srcs/sources*/bd/zusys/hdl/*
-!*/*.srcs/sources*/bd/zusys/hdl/*_wrapper.vhd
-*/sources*/bd/*/hw_handoff/*
-*/sources*/bd/*/synth/*
-*.hw/*
-/*.srcs/sources*/bd/*/hdl/*
-!/*.srcs/sources*/bd/*/hdl/*_wrapper.vhd
-/*.srcs/sources*/bd/*/*
-!/*.srcs/sources*/bd/*/*.bd
-
 /*
 !zusys/zusys.bd
 !zusys/hdl/zusys_wrapper.vhd

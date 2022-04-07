@@ -1,43 +1,23 @@
 #ignore everything inside workspace folder except the txt file
 /vitis/workspace/*
 !/vitis/workspace/create_Vitis_workspace_here.txt
-vivado/zusys/zusys.bxml
 
-!/vitis/Sandbox/.vscode
-vivado/zusys/zusys_ooc.xdc
 ip_cores/*/simulation/slprj/*
+
 vitis/software/Baremetal/src/uz/uz_global_configuration.h
 
-vitis/Sandbox/uz_circularBuffer/build/
-
 vitis/software/Baremetal/src/slprj/
-
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/buildInfo.mat
-
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/codedescriptor.dmr
-
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/codeInfo.mat
-
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/compileInfo.mat
-
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/defines.txt
-
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/modelsources.txt
-
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/rtw_proj.tmw
-
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/rtwtypeschksum.mat
-
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/uz_codegen0.mk
-
 vitis/software/Baremetal/src/Codegen/slprj/
-
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/html/
 
-vitis/Sandbox/build/
-
-vitis/Sandbox/uz_LED/build/
-
-vitis/Sandbox/uz_MyIp/uz_MyIp_testbench
 .vscode/settings.json
 control_algorithms/uz_FOC.slxc

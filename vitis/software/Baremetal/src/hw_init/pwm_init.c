@@ -4,7 +4,7 @@
 #include "xparameters.h"
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1 = {
-        .base_address= XPAR_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR,
+        .base_address= XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR,
         .ip_clk_frequency_Hz=100000000,
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,

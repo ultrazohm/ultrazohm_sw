@@ -3442,8 +3442,8 @@ proc create_root_design { parentCell } {
    CONFIG.PSU__PCIE__TLP_PREFIX_BLOCKED {0} \
    CONFIG.PSU__PCIE__UNCORRECTABL_INT_ERR {0} \
    CONFIG.PSU__PCIE__VENDOR_ID {0x10EE} \
-   CONFIG.PSU__PJTAG__PERIPHERAL__ENABLE {1} \
-   CONFIG.PSU__PJTAG__PERIPHERAL__IO {MIO 26 .. 29} \
+   CONFIG.PSU__PJTAG__PERIPHERAL__ENABLE {0} \
+   CONFIG.PSU__PJTAG__PERIPHERAL__IO {<Select>} \
    CONFIG.PSU__PL_CLK0_BUF {TRUE} \
    CONFIG.PSU__PL_CLK1_BUF {FALSE} \
    CONFIG.PSU__PL_CLK2_BUF {FALSE} \
@@ -3725,7 +3725,6 @@ proc create_root_design { parentCell } {
   # Restore current instance
   current_bd_instance $oldCurInst
 
-  validate_bd_design
   save_bd_design
 }
 # End of create_root_design()
@@ -3737,4 +3736,6 @@ proc create_root_design { parentCell } {
 
 create_root_design ""
 
+
+common::send_gid_msg -ssname BD::TCL -id 2053 -severity "WARNING" "This Tcl script was generated from a block design that has not been validated. It is possible that design <$design_name> may result in errors during validation."
 

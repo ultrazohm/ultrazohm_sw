@@ -4,7 +4,7 @@ static XTmrCtr Timer_Uptime;
 
 void uz_AxiTimer64Bit_init(){
 	// SETUP THE TIMER for global uptime
-	XTmrCtr_Initialize(&Timer_Uptime, XPAR_TIMER_UPTIME_64BIT_DEVICE_ID);
+	XTmrCtr_Initialize(&Timer_Uptime, XPAR_UZ_SYSTEM_TIMER_UPTIME_64BIT_DEVICE_ID);
 	// stop timer
 	XTmrCtr_Stop(&Timer_Uptime, 0);
 	XTmrCtr_Stop(&Timer_Uptime, 1);

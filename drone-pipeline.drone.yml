@@ -135,8 +135,11 @@ steps:
    - git status
    - git add vitis/vivado_exported_xsa/zusys_wrapper.xsa
    - git add ip_cores/vv_index.xml
-   - git add vivado/project/*
+   - git add vivado/project/ultrazohm.xpr
+   - git add vivado/project/zusys/hdl/zusys_wrapper.vhd
+   - git add vivado/project/zusys/zusys.bd
    - git add vivado/*.tcl
+   - git add vivado/bd/*.tcl
    - git status
    - git commit -m "[skip ci] Commit Vivado binarys from DroneCI"
    - git status

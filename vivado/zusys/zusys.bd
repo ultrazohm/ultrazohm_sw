@@ -1776,44 +1776,20 @@
           "PSU_MIO_25_PULLUPDOWN": {
             "value": "pullup"
           },
-          "PSU_MIO_26_DRIVE_STRENGTH": {
-            "value": "12"
-          },
           "PSU_MIO_26_INPUT_TYPE": {
             "value": "schmitt"
-          },
-          "PSU_MIO_26_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_26_PULLUPDOWN": {
             "value": "pullup"
           },
-          "PSU_MIO_26_SLEW": {
-            "value": "fast"
-          },
-          "PSU_MIO_27_DRIVE_STRENGTH": {
-            "value": "12"
-          },
           "PSU_MIO_27_INPUT_TYPE": {
             "value": "schmitt"
-          },
-          "PSU_MIO_27_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_27_PULLUPDOWN": {
             "value": "pullup"
           },
-          "PSU_MIO_27_SLEW": {
-            "value": "fast"
-          },
           "PSU_MIO_28_DRIVE_STRENGTH": {
             "value": "12"
-          },
-          "PSU_MIO_28_INPUT_TYPE": {
-            "value": "cmos"
-          },
-          "PSU_MIO_28_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_28_PULLUPDOWN": {
             "value": "pullup"
@@ -1821,20 +1797,11 @@
           "PSU_MIO_28_SLEW": {
             "value": "slow"
           },
-          "PSU_MIO_29_DRIVE_STRENGTH": {
-            "value": "12"
-          },
           "PSU_MIO_29_INPUT_TYPE": {
             "value": "schmitt"
           },
-          "PSU_MIO_29_POLARITY": {
-            "value": "Default"
-          },
           "PSU_MIO_29_PULLUPDOWN": {
             "value": "pullup"
-          },
-          "PSU_MIO_29_SLEW": {
-            "value": "fast"
           },
           "PSU_MIO_2_DRIVE_STRENGTH": {
             "value": "12"
@@ -2157,14 +2124,14 @@
           "PSU_MIO_51_SLEW": {
             "value": "slow"
           },
+          "PSU_MIO_52_DIRECTION": {
+            "value": "in"
+          },
           "PSU_MIO_52_DRIVE_STRENGTH": {
             "value": "12"
           },
           "PSU_MIO_52_INPUT_TYPE": {
             "value": "schmitt"
-          },
-          "PSU_MIO_52_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_52_PULLUPDOWN": {
             "value": "pullup"
@@ -2172,14 +2139,14 @@
           "PSU_MIO_52_SLEW": {
             "value": "slow"
           },
+          "PSU_MIO_53_DIRECTION": {
+            "value": "in"
+          },
           "PSU_MIO_53_DRIVE_STRENGTH": {
             "value": "12"
           },
           "PSU_MIO_53_INPUT_TYPE": {
             "value": "schmitt"
-          },
-          "PSU_MIO_53_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_53_PULLUPDOWN": {
             "value": "pullup"
@@ -2187,14 +2154,14 @@
           "PSU_MIO_53_SLEW": {
             "value": "slow"
           },
+          "PSU_MIO_54_DIRECTION": {
+            "value": "inout"
+          },
           "PSU_MIO_54_DRIVE_STRENGTH": {
             "value": "12"
           },
           "PSU_MIO_54_INPUT_TYPE": {
             "value": "schmitt"
-          },
-          "PSU_MIO_54_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_54_PULLUPDOWN": {
             "value": "pullup"
@@ -2202,14 +2169,14 @@
           "PSU_MIO_54_SLEW": {
             "value": "slow"
           },
+          "PSU_MIO_55_DIRECTION": {
+            "value": "in"
+          },
           "PSU_MIO_55_DRIVE_STRENGTH": {
             "value": "12"
           },
           "PSU_MIO_55_INPUT_TYPE": {
             "value": "schmitt"
-          },
-          "PSU_MIO_55_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_55_PULLUPDOWN": {
             "value": "pullup"
@@ -2217,14 +2184,14 @@
           "PSU_MIO_55_SLEW": {
             "value": "slow"
           },
+          "PSU_MIO_56_DIRECTION": {
+            "value": "inout"
+          },
           "PSU_MIO_56_DRIVE_STRENGTH": {
             "value": "12"
           },
           "PSU_MIO_56_INPUT_TYPE": {
             "value": "schmitt"
-          },
-          "PSU_MIO_56_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_56_PULLUPDOWN": {
             "value": "pullup"
@@ -2232,14 +2199,14 @@
           "PSU_MIO_56_SLEW": {
             "value": "slow"
           },
+          "PSU_MIO_57_DIRECTION": {
+            "value": "inout"
+          },
           "PSU_MIO_57_DRIVE_STRENGTH": {
             "value": "12"
           },
           "PSU_MIO_57_INPUT_TYPE": {
             "value": "schmitt"
-          },
-          "PSU_MIO_57_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_57_PULLUPDOWN": {
             "value": "pullup"
@@ -2247,14 +2214,14 @@
           "PSU_MIO_57_SLEW": {
             "value": "slow"
           },
+          "PSU_MIO_58_DIRECTION": {
+            "value": "out"
+          },
           "PSU_MIO_58_DRIVE_STRENGTH": {
             "value": "12"
           },
           "PSU_MIO_58_INPUT_TYPE": {
             "value": "schmitt"
-          },
-          "PSU_MIO_58_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_58_PULLUPDOWN": {
             "value": "pullup"
@@ -2262,14 +2229,14 @@
           "PSU_MIO_58_SLEW": {
             "value": "slow"
           },
+          "PSU_MIO_59_DIRECTION": {
+            "value": "inout"
+          },
           "PSU_MIO_59_DRIVE_STRENGTH": {
             "value": "12"
           },
           "PSU_MIO_59_INPUT_TYPE": {
             "value": "schmitt"
-          },
-          "PSU_MIO_59_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_59_PULLUPDOWN": {
             "value": "pullup"
@@ -2286,14 +2253,14 @@
           "PSU_MIO_5_SLEW": {
             "value": "slow"
           },
+          "PSU_MIO_60_DIRECTION": {
+            "value": "inout"
+          },
           "PSU_MIO_60_DRIVE_STRENGTH": {
             "value": "12"
           },
           "PSU_MIO_60_INPUT_TYPE": {
             "value": "schmitt"
-          },
-          "PSU_MIO_60_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_60_PULLUPDOWN": {
             "value": "pullup"
@@ -2301,14 +2268,14 @@
           "PSU_MIO_60_SLEW": {
             "value": "slow"
           },
+          "PSU_MIO_61_DIRECTION": {
+            "value": "inout"
+          },
           "PSU_MIO_61_DRIVE_STRENGTH": {
             "value": "12"
           },
           "PSU_MIO_61_INPUT_TYPE": {
             "value": "schmitt"
-          },
-          "PSU_MIO_61_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_61_PULLUPDOWN": {
             "value": "pullup"
@@ -2316,14 +2283,14 @@
           "PSU_MIO_61_SLEW": {
             "value": "slow"
           },
+          "PSU_MIO_62_DIRECTION": {
+            "value": "inout"
+          },
           "PSU_MIO_62_DRIVE_STRENGTH": {
             "value": "12"
           },
           "PSU_MIO_62_INPUT_TYPE": {
             "value": "schmitt"
-          },
-          "PSU_MIO_62_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_62_PULLUPDOWN": {
             "value": "pullup"
@@ -2331,14 +2298,14 @@
           "PSU_MIO_62_SLEW": {
             "value": "slow"
           },
+          "PSU_MIO_63_DIRECTION": {
+            "value": "inout"
+          },
           "PSU_MIO_63_DRIVE_STRENGTH": {
             "value": "12"
           },
           "PSU_MIO_63_INPUT_TYPE": {
             "value": "schmitt"
-          },
-          "PSU_MIO_63_POLARITY": {
-            "value": "Default"
           },
           "PSU_MIO_63_PULLUPDOWN": {
             "value": "pullup"
@@ -2500,10 +2467,10 @@
             "value": "slow"
           },
           "PSU_MIO_TREE_PERIPHERALS": {
-            "value": "Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Feedback Clk#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#GPIO0 MIO#I2C 0#I2C 0#I2C 1#I2C 1#UART 0#UART 0#UART 1#UART 1#CAN 0#CAN 0#CAN 1#CAN 1#GPIO1 MIO#GPIO1 MIO#GPIO1 MIO#GPIO1 MIO#GPIO1 MIO#GPIO1 MIO#SPI 1#GPIO1 MIO#GPIO1 MIO#SPI 1#SPI 1#SPI 1#SPI 0#GPIO1 MIO#GPIO1 MIO#SPI 0#SPI 0#SPI 0#GPIO1 MIO#GPIO1 MIO#SD 1#SD 1#SD 1#SD 1#SD 1#SD 1#GPIO2 MIO#GPIO2 MIO#GPIO2 MIO#GPIO2 MIO#GPIO2 MIO#GPIO2 MIO#GPIO2 MIO#GPIO2 MIO#GPIO2 MIO#GPIO2 MIO#GPIO2 MIO#GPIO2 MIO#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#MDIO 3#MDIO 3"
+            "value": "Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Feedback Clk#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#GPIO0 MIO#I2C 0#I2C 0#I2C 1#I2C 1#UART 0#UART 0#UART 1#UART 1#CAN 0#CAN 0#CAN 1#CAN 1#PJTAG#PJTAG#PJTAG#PJTAG#GPIO1 MIO#GPIO1 MIO#SPI 1#GPIO1 MIO#GPIO1 MIO#SPI 1#SPI 1#SPI 1#SPI 0#GPIO1 MIO#GPIO1 MIO#SPI 0#SPI 0#SPI 0#GPIO1 MIO#GPIO1 MIO#SD 1#SD 1#SD 1#SD 1#SD 1#SD 1#############Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#Gem 3#MDIO 3#MDIO 3"
           },
           "PSU_MIO_TREE_SIGNALS": {
-            "value": "sclk_out#miso_mo1#mo2#mo3#mosi_mi0#n_ss_out#clk_for_lpbk#n_ss_out_upper#mo_upper[0]#mo_upper[1]#mo_upper[2]#mo_upper[3]#sclk_out_upper#gpio0[13]#scl_out#sda_out#scl_out#sda_out#rxd#txd#txd#rxd#phy_rx#phy_tx#phy_tx#phy_rx#gpio1[26]#gpio1[27]#gpio1[28]#gpio1[29]#gpio1[30]#gpio1[31]#sclk_out#gpio1[33]#gpio1[34]#n_ss_out[0]#miso#mosi#sclk_out#gpio1[39]#gpio1[40]#n_ss_out[0]#miso#mosi#gpio1[44]#gpio1[45]#sdio1_data_out[0]#sdio1_data_out[1]#sdio1_data_out[2]#sdio1_data_out[3]#sdio1_cmd_out#sdio1_clk_out#gpio2[52]#gpio2[53]#gpio2[54]#gpio2[55]#gpio2[56]#gpio2[57]#gpio2[58]#gpio2[59]#gpio2[60]#gpio2[61]#gpio2[62]#gpio2[63]#rgmii_tx_clk#rgmii_txd[0]#rgmii_txd[1]#rgmii_txd[2]#rgmii_txd[3]#rgmii_tx_ctl#rgmii_rx_clk#rgmii_rxd[0]#rgmii_rxd[1]#rgmii_rxd[2]#rgmii_rxd[3]#rgmii_rx_ctl#gem3_mdc#gem3_mdio_out"
+            "value": "sclk_out#miso_mo1#mo2#mo3#mosi_mi0#n_ss_out#clk_for_lpbk#n_ss_out_upper#mo_upper[0]#mo_upper[1]#mo_upper[2]#mo_upper[3]#sclk_out_upper#gpio0[13]#scl_out#sda_out#scl_out#sda_out#rxd#txd#txd#rxd#phy_rx#phy_tx#phy_tx#phy_rx#tck#tdi#tdo#tms#gpio1[30]#gpio1[31]#sclk_out#gpio1[33]#gpio1[34]#n_ss_out[0]#miso#mosi#sclk_out#gpio1[39]#gpio1[40]#n_ss_out[0]#miso#mosi#gpio1[44]#gpio1[45]#sdio1_data_out[0]#sdio1_data_out[1]#sdio1_data_out[2]#sdio1_data_out[3]#sdio1_cmd_out#sdio1_clk_out#############rgmii_tx_clk#rgmii_txd[0]#rgmii_txd[1]#rgmii_txd[2]#rgmii_txd[3]#rgmii_tx_ctl#rgmii_rx_clk#rgmii_rxd[0]#rgmii_rxd[1]#rgmii_rxd[2]#rgmii_rxd[3]#rgmii_rx_ctl#gem3_mdc#gem3_mdio_out"
           },
           "PSU_SD0_INTERNAL_BUS_WIDTH": {
             "value": "8"
@@ -3558,11 +3525,8 @@
           "PSU__GPIO1_MIO__PERIPHERAL__ENABLE": {
             "value": "1"
           },
-          "PSU__GPIO2_MIO__IO": {
-            "value": "MIO 52 .. 77"
-          },
           "PSU__GPIO2_MIO__PERIPHERAL__ENABLE": {
-            "value": "1"
+            "value": "0"
           },
           "PSU__GPIO_EMIO_WIDTH": {
             "value": "1"
@@ -3985,7 +3949,10 @@
             "value": "0x10EE"
           },
           "PSU__PJTAG__PERIPHERAL__ENABLE": {
-            "value": "0"
+            "value": "1"
+          },
+          "PSU__PJTAG__PERIPHERAL__IO": {
+            "value": "MIO 26 .. 29"
           },
           "PSU__PL_CLK0_BUF": {
             "value": "TRUE"
@@ -5129,16 +5096,16 @@
           }
         },
         "interface_nets": {
-          "AXI4_Lite_1": {
-            "interface_ports": [
-              "AXI4_Lite",
-              "mux_axi_ip_1/AXI4_Lite"
-            ]
-          },
           "smartconnect_0_M11_AXI": {
             "interface_ports": [
               "S_AXI",
               "Trigger_f_cc/S_AXI"
+            ]
+          },
+          "AXI4_Lite_1": {
+            "interface_ports": [
+              "AXI4_Lite",
+              "mux_axi_ip_1/AXI4_Lite"
             ]
           }
         },
@@ -5699,24 +5666,6 @@
       }
     },
     "interface_nets": {
-      "smartconnect_0_M08_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M08_AXI",
-          "Gates/AXI4_Lite"
-        ]
-      },
-      "smartconnect_0_M09_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M09_AXI",
-          "IncreEncoder_V24_ip_0/AXI4_Lite"
-        ]
-      },
-      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
-        "interface_ports": [
-          "smartconnect_0/S00_AXI",
-          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
-        ]
-      },
       "smartconnect_1_M00_AXI": {
         "interface_ports": [
           "smartconnect_1/M00_AXI",
@@ -5729,16 +5678,28 @@
           "smartconnect_0/M10_AXI"
         ]
       },
+      "smartconnect_0_M08_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M08_AXI",
+          "Gates/AXI4_Lite"
+        ]
+      },
+      "smartconnect_0_M09_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M09_AXI",
+          "IncreEncoder_V24_ip_0/AXI4_Lite"
+        ]
+      },
+      "AXI4_Lite1_1": {
+        "interface_ports": [
+          "Gates/AXI4_Lite1",
+          "smartconnect_0/M03_AXI"
+        ]
+      },
       "smartconnect_0_M01_AXI": {
         "interface_ports": [
           "A2_ADC_LTC2311/S00_AXI",
           "smartconnect_0/M01_AXI"
-        ]
-      },
-      "smartconnect_0_M06_AXI": {
-        "interface_ports": [
-          "smartconnect_0/M06_AXI",
-          "axi_gpio_2/S_AXI"
         ]
       },
       "AXI2TCM_0_M00_AXI": {
@@ -5747,16 +5708,22 @@
           "DataMover/M00_AXI"
         ]
       },
+      "smartconnect_0_M06_AXI": {
+        "interface_ports": [
+          "smartconnect_0/M06_AXI",
+          "axi_gpio_2/S_AXI"
+        ]
+      },
       "smartconnect_0_M05_AXI": {
         "interface_ports": [
           "timer_uptime_64bit/S_AXI",
           "smartconnect_0/M05_AXI"
         ]
       },
-      "AXI4_Lite1_1": {
+      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
         "interface_ports": [
-          "Gates/AXI4_Lite1",
-          "smartconnect_0/M03_AXI"
+          "smartconnect_0/S00_AXI",
+          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
         ]
       },
       "smartconnect_0_M07_AXI": {

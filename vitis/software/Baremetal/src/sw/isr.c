@@ -30,6 +30,9 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../uz/uz_FOC/uz_FOC.h"
+#include "../uz/uz_SpeedControl/uz_speedcontrol.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -40,6 +43,52 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
+// external
+extern uz_FOC* FOC_instance;
+extern uz_SpeedControl_t* Speed_instance;
+extern uz_IIR_Filter_t* LPF1_instance;
+
+// measurement and reference
+struct uz_3ph_abc_t measurement_current = {0};
+struct uz_3ph_dq_t dq_measurement_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t dq_reference_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t dq_ref_Volts ={0};
+struct uz_DutyCycle_t output = {0};
+struct uz_3ph_abc_t uvw_ref ={0};
+float theta_offset = -0.50f;
+float V_dc_volts = 24.0f;
+float omega_el_rad_per_sec = 125.1f;
+float Kp_id=0.4;
+float Kp_iq=2;
+float speed_Kp=0.4;
+float Ki_id=285;
+float Ki_iq=285;
+float speed_Ki=4.0;
+float adc_scaling=9.5f/3.0f; // Refactoring actual ADC Values
+
+// speed control
+float n_ref_rpm = 500.0f;
+bool ext_clamping = false;
+float id_ref_Ampere = 0.0f; // no field weakening
+
+struct uz_PMSM_t config_hoernermachine = {
+
+    .R_ph_Ohm = 0.285f,
+
+    .Ld_Henry = 0.0004f,
+
+    .Lq_Henry = 0.0018f,
+
+    .Psi_PM_Vs = 0.0194f,
+
+    .polePairs = 4.0f,
+
+    .J_kg_m_squared = 0.0f,
+
+    .I_max_Ampere = 10.8f
+
+   	};
+	//Alternatively the sample function can output the UVW-values
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -54,17 +103,32 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
-
+    Global_Data.av.theta_elec=Global_Data.av.theta_elec-theta_offset;
+    measurement_current.a = adc_scaling*(Global_Data.aa.A1.me.ADC_A2-2.5f); // -2.5  Hall Sensor
+    measurement_current.b = adc_scaling*(Global_Data.aa.A1.me.ADC_A4-2.5f);
+    measurement_current.c = adc_scaling*(Global_Data.aa.A1.me.ADC_A3-2.5f);
+    dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
+    Global_Data.av.mechanicalRotorSpeed_new_filter = uz_signals_IIR_Filter_sample(LPF1_instance, Global_Data.av.mechanicalRotorSpeed);
+    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_new_filter *(2.0f*M_PI) /60.0f;
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+    dq_reference_current = uz_SpeedControl_sample(Speed_instance, omega_el_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere, config_hoernermachine, ext_clamping);
+    dq_ref_Volts = uz_FOC_sample(FOC_instance, dq_reference_current, dq_measurement_current, V_dc_volts, omega_el_rad_per_sec);
+    uvw_ref = uz_transformation_3ph_dq_to_abc(dq_ref_Volts, Global_Data.av.theta_elec);
+    output = uz_FOC_generate_DutyCycles(uvw_ref, V_dc_volts);
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
+ // change control parameters during runtime
+    uz_FOC_set_Kp_id(FOC_instance, Kp_id);
+    uz_FOC_set_Kp_iq(FOC_instance, Kp_iq);
+    uz_FOC_set_Ki_id(FOC_instance, Ki_id);
+    uz_FOC_set_Ki_iq(FOC_instance, Ki_iq);
+    uz_SpeedControl_set_Kp(Speed_instance, speed_Kp);
+    uz_SpeedControl_set_Ki(Speed_instance, speed_Ki);   // Start: Control algorithm - only if ultrazohm is in control state
     }
+    else{
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+    }
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

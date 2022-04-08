@@ -147,13 +147,13 @@ steps:
    commands:
    - apk add git-lfs
    - git status
-   - git add vitis/vivado_exported_xsa/zusys_wrapper.xsa
-   - git add ip_cores/vv_index.xml
-   - git add vivado/project/ultrazohm.xpr
-   - git add vivado/project/zusys/hdl/zusys_wrapper.vhd
-   - git add -f  vivado/project/zusys/zusys.bd
-   - git add vivado/*.tcl
-   - git add vivado/bd/*.tcl
+   - git add -f vitis/vivado_exported_xsa/zusys_wrapper.xsa
+   - git add -f ip_cores/vv_index.xml
+   - git add -f vivado/project/ultrazohm.xpr
+   - git add -f vivado/project/zusys/hdl/zusys_wrapper.vhd
+   - git add -f vivado/project/zusys/zusys.bd
+   - git add -f vivado/*.tcl
+   - git add -f vivado/bd/*.tcl
    - git status
    - git commit -m "[skip ci] Commit Vivado binarys from DroneCI"
    - git status

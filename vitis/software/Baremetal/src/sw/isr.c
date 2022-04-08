@@ -160,7 +160,7 @@ int Initialize_Timer()
     int Status;
 
     // SETUP THE TIMER 1 for Interrupts
-    Status = XTmrCtr_Initialize(&Timer_Interrupt, XPAR_INTERRUPT_TRIGGER_F_CC_DEVICE_ID);
+    Status = XTmrCtr_Initialize(&Timer_Interrupt, XPAR_UZ_SYSTEM_INTERRUPT_TRIGGER_F_CC_DEVICE_ID);
     if (Status != XST_SUCCESS)
         return XST_FAILURE;
     // XTmrCtr_SetHandler(&Timer_Interrupt, ISR_Control, &Timer_Interrupt);

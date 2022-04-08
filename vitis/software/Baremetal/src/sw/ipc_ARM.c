@@ -340,6 +340,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			PID_Data.GlobalConfig.OnlineID = false;
 			PID_Data.AutoRefCurrents_Config.enableCRS = false;
 			PID_Data.PID_Control_Selection = No_Control;
+			PID_Data.FluxMapID_Config.start_FM_ID = false;
 			break;
 
 		case (PID_EID_sampleTimeISR):

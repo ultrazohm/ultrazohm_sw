@@ -20,12 +20,13 @@ This can be used as an template to include your new controller.
     uz_3ph_dq_t i_SpeedControl_reference_Ampere = { 0 };
     bool ext_clamping = false;
 
-    if (Data->Controller_Parameters.enableFOC_speed) {
-	  //Add your speedcontroller here. Should output dq-currents in the uz_3ph_dq_t system
-	  i_SpeedControl_reference_Ampere = ....
-	  //Add PRBS excitation for TwoMassID
-    i_SpeedControl_reference_Ampere.q += Data->TwoMassID_Output->PRBS_out;}}
-    if (Data->Controller_Parameters.enableFOC_current || Data->Controller_Parameters.enableFOC_speed) {
+    if (Data->Controller_Parameters.enableFOC_speed == true) {
+      //Add your speedcontroller here. Should output dq-currents in the uz_3ph_dq_t system
+      i_SpeedControl_reference_Ampere = ....
+      //ADD PRBS excitation for TwoMassID
+      i_SpeedControl_reference_Ampere.q += Data->TwoMassID_Output->PRBS_out;
+    }
+    if (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true) {
       //Add your currentcontroller here. Should output dq-currents in the uz_3ph_dq_t system
       if (Data->Controller_Parameters.enableFOC_current == true) {
           //If CurrentControl is active, use Data->Controller_Parameters.i_dq_ref as input reference currents
@@ -35,7 +36,7 @@ This can be used as an template to include your new controller.
           v_dq_Volts = ....
       }
     }
-    if (Data->Controller_Parameters.resetIntegrator) {
+    if (Data->Controller_Parameters.resetIntegrator == true) {
       //Reset integrators, if necessary
       ....
     }
@@ -51,17 +52,17 @@ This can be used as an template to include your new controller.
       ....
     }
 
-    if (Data->ControlFlags->finished_all_Offline_states) {
+    if (Data->ControlFlags->finished_all_Offline_states == true) {
 	  uz_3ph_dq_t Online_current_ref = Data->GlobalConfig.i_dq_ref;
 	  if (Data->OnlineID_Output->IdControlFlag == true) {
-		  if (Data->AutoRefCurrents_Config.enableCRS) {
+		  if (Data->AutoRefCurrents_Config.enableCRS == true) {
 		  	Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out + Data->AutoRefCurrents_Output.i_dq_ref.d;
 		  	Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.i_dq_ref.q;
 		  } else {
 		  	Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out;
 		  }
 	  } else {
-		  if (Data->AutoRefCurrents_Config.enableCRS) {
+		  if (Data->AutoRefCurrents_Config.enableCRS == true) {
 		  	Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->AutoRefCurrents_Output.i_dq_ref.d;
 		  	Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.i_dq_ref.q;
 		  }
@@ -102,8 +103,8 @@ The function ``uz_ParameterID_generate_DutyCycle``, can be adjusted as well. It 
 		output_DutyCycle.DutyCycle_U = Data->ElectricalID_Output->PWM_Switch_0;
 		output_DutyCycle.DutyCycle_V = Data->ElectricalID_Output->PWM_Switch_2;
 		output_DutyCycle.DutyCycle_W = Data->ElectricalID_Output->PWM_Switch_4;
-  } else if ((Data->Controller_Parameters.enableFOC_current || Data->Controller_Parameters.enableFOC_speed)
-	                || (Data->ControlFlags->finished_all_Offline_states && (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control))) {
+  } else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
+	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control))) {
 		uz_3ph_abc_t V_UVW_Volts = uz_dq_inverse_transformation(v_dq_Volts, Data->ActualValues.theta_el);
         //Use your own function to generate DutyCycles here, if the control-algorithms are used
 		output_DutyCycle = ....
@@ -112,7 +113,7 @@ The function ``uz_ParameterID_generate_DutyCycle``, can be adjusted as well. It 
 		output_DutyCycle.DutyCycle_V = 0.0f;
 		output_DutyCycle.DutyCycle_W = 0.0f;
   }
-  if (Data->Controller_Parameters.resetIntegrator) {
+  if (Data->Controller_Parameters.resetIntegrator == true) {
 		output_DutyCycle.DutyCycle_U = 0.0f;
 		output_DutyCycle.DutyCycle_V = 0.0f;
 		output_DutyCycle.DutyCycle_W = 0.0f;

@@ -1705,7 +1705,7 @@ static void CheckSteadyState(const real32_T iq_reg_in[50], const real32_T
   /* nominal current or 0.5*nominal current */
   /* If currents are inside this limit, the  */
   /* linear parameters will be measured */
-  /* '<S1>:182:40' if((timer>=uint32(OnlineIDConfig.Rs_time*(1/GlobalConfig.sampleTimeISR))) && i_val==0) */
+  /* '<S1>:182:40' if((timer >= uint32(OnlineIDConfig.Rs_time*(1/GlobalConfig.sampleTimeISR))) && i_val==0) */
   mean_iq_reg_tmp = roundf(1.0F / rtOnlineID_U->GlobalConfig_out.sampleTimeISR *
     rtOnlineID_U->OnlineIDConfig.Rs_time);
   if (mean_iq_reg_tmp < 4.2949673E+9F) {
@@ -1809,7 +1809,7 @@ static void RefreshDataRegister(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
     /* Inport: '<Root>/OnlineIDConfig' incorporates:
      *  Inport: '<Root>/GlobalConfig'
      */
-    /* '<S1>:106:19' if(counter_time>=(uint32(OnlineIDConfig.Rs_time/GlobalConfig.sampleTimeISR) && i_valid==0)) */
+    /* '<S1>:106:19' if((counter_time>=(uint32(OnlineIDConfig.Rs_time/GlobalConfig.sampleTimeISR))) && (i_valid==0)) */
     tmp_1 = roundf(rtOnlineID_U->OnlineIDConfig.Rs_time /
                    rtOnlineID_U->GlobalConfig_out.sampleTimeISR);
     if (tmp_1 < 4.2949673E+9F) {
@@ -1822,18 +1822,18 @@ static void RefreshDataRegister(ExtU_OnlineID_t *rtOnlineID_U, ExtY_OnlineID_t
       qY = MAX_uint32_T;
     }
 
-    if (qY != 0U) {
-      tmp_0 = !rtOnlineID_DW->i_valid;
-    } else {
-      tmp_0 = false;
-    }
+    if (rtOnlineID_DW->counter_time >= qY) {
+      if (!rtOnlineID_DW->i_valid) {
+        /* Sets variable to 1, if Rs will be identified */
+        /* '<S1>:106:20' LinPara_ident_outside=boolean(1); */
+        rtOnlineID_DW->LinPara_ident_outside = true;
 
-    if (rtOnlineID_DW->counter_time >= (uint32_T)tmp_0) {
-      /* Sets variable to 1, if Rs will be identified */
-      /* '<S1>:106:20' LinPara_ident_outside=boolean(1); */
-      rtOnlineID_DW->LinPara_ident_outside = true;
-
-      /*  outside the valid range */
+        /*  outside the valid range */
+      } else {
+        /* '<S1>:106:21' else */
+        /* '<S1>:106:22' LinPara_ident_outside=boolean(0); */
+        rtOnlineID_DW->LinPara_ident_outside = false;
+      }
     } else {
       /* '<S1>:106:21' else */
       /* '<S1>:106:22' LinPara_ident_outside=boolean(0); */

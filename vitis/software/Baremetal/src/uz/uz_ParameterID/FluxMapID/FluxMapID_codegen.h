@@ -88,6 +88,7 @@ typedef struct {
   uint32_T three_sec_transition_counter;/* '<Root>/FluxMapID' */
   uint32_T one_sec_transition_counter; /* '<Root>/FluxMapID' */
   uint32_T collection_transition_counter;/* '<Root>/FluxMapID' */
+  uint32_T counter_time;               /* '<Root>/FluxMapID' */
   uint8_T is_active_c16_FluxMapID;     /* '<Root>/FluxMapID' */
   uint8_T is_c16_FluxMapID;            /* '<Root>/FluxMapID' */
   uint8_T is_AMMstate;                 /* '<Root>/FluxMapID' */

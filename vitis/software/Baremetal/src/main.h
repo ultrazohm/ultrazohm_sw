@@ -54,10 +54,6 @@
 
 #include "include/pwm_init.h"
 
-//ParameterID-Code
-#include "uz/uz_ParameterID/uz_ParameterID.h"
-#include "uz/uz_math_constants.h"
-
 
 //----------------------------------------------------
 // FUNCTIONS

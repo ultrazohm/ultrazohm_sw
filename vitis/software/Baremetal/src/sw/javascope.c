@@ -1,12 +1,12 @@
 /******************************************************************************
 * Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Löhdefink
-*
+* 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-*
+* 
 *     http://www.apache.org/licenses/LICENSE-2.0
-*
+* 
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,11 +37,6 @@ uint32_t js_status_BareToRTOS=0;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
-//ParameterID
-extern uz_ParameterID_Data_t PID_Data;
-float activeState = 0.0f;
-float FluxMapCounter = 0.0f;
-float ArrayCounter = 0.0f;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -64,18 +59,18 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_ia] = &PID_Data.ActualValues.I_abc.a;
-	js_ch_observable[JSO_ib] = &PID_Data.ActualValues.I_abc.b;
-	js_ch_observable[JSO_ic] = &PID_Data.ActualValues.I_abc.c;
-	js_ch_observable[JSO_ua] = &PID_Data.ActualValues.V_abc.a;
-	js_ch_observable[JSO_ub] = &PID_Data.ActualValues.V_abc.b;
-	js_ch_observable[JSO_uc] = &PID_Data.ActualValues.V_abc.c;
-	js_ch_observable[JSO_iq] = &PID_Data.ActualValues.i_dq.q;
-	js_ch_observable[JSO_id] = &PID_Data.ActualValues.i_dq.d;
-	js_ch_observable[JSO_Theta_el] = &PID_Data.ActualValues.theta_el;
-	js_ch_observable[JSO_theta_mech] = &PID_Data.ActualValues.theta_m;
-	js_ch_observable[JSO_ud] = &PID_Data.ActualValues.v_dq.d;
-	js_ch_observable[JSO_uq] = &PID_Data.ActualValues.v_dq.q;
+	js_ch_observable[JSO_ia] 			= &data->av.I_U;
+	js_ch_observable[JSO_ib] 			= &data->av.I_V;
+	js_ch_observable[JSO_ic] 			= &data->av.I_W;
+	js_ch_observable[JSO_ua] 			= &data->av.U_U;
+	js_ch_observable[JSO_ub] 			= &data->av.U_V;
+	js_ch_observable[JSO_uc] 			= &data->av.U_W;
+	js_ch_observable[JSO_iq] 			= &data->av.I_q;
+	js_ch_observable[JSO_id] 			= &data->av.I_d;
+	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
+	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
+	js_ch_observable[JSO_ud]			= &data->av.U_d;
+	js_ch_observable[JSO_uq]			= &data->av.U_q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -85,51 +80,17 @@ int JavaScope_initalize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] = &(PID_Data.ActualValues.v_dq.d);
-	js_slowDataArray[JSSD_FLOAT_u_q] = &(PID_Data.ActualValues.v_dq.q);
-	js_slowDataArray[JSSD_FLOAT_i_d] = &(PID_Data.ActualValues.i_dq.d);
-	js_slowDataArray[JSSD_FLOAT_i_q] = &(PID_Data.ActualValues.i_dq.q);
+	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
+	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
+	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
+	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
-	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline] = &(PID_Data.ElectricalID_Output->PMSM_parameters.Psi_PM_Vs);
-	js_slowDataArray[JSSD_FLOAT_Lq_Offline] = &(PID_Data.ElectricalID_Output->PMSM_parameters.Lq_Henry);
-	js_slowDataArray[JSSD_FLOAT_Ld_Offline] = &(PID_Data.ElectricalID_Output->PMSM_parameters.Ld_Henry);
-	js_slowDataArray[JSSD_FLOAT_Rs_Offline] = &(PID_Data.ElectricalID_Output->PMSM_parameters.R_ph_Ohm);
-	js_slowDataArray[JSSD_FLOAT_polePairs] = &(PID_Data.ElectricalID_Output->PMSM_parameters.polePairs);
-	js_slowDataArray[JSSD_FLOAT_J] = &(PID_Data.ElectricalID_Output->PMSM_parameters.J_kg_m_squared);
-	js_slowDataArray[JSSD_FLOAT_activeState] = &(activeState);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-	js_slowDataArray[JSSD_FLOAT_encoderOffset] 			= &(PID_Data.ElectricalID_Output->thetaOffset);
-	js_slowDataArray[JSSD_FLOAT_ArrayCounter] 			= &(ArrayCounter);
-	js_slowDataArray[JSSD_FLOAT_measArraySpeed] 		= &(PID_Data.MeasArraySpeed_pointer);
-	js_slowDataArray[JSSD_FLOAT_measArrayTorque]		= &(PID_Data.MeasArrayTorque_pointer);
-	js_slowDataArray[JSSD_FLOAT_ArrayControlCounter]	= &(ArrayCounter);
-	js_slowDataArray[JSSD_FLOAT_Stribtorque] = &(PID_Data.FrictionID_Output->BrkTorque);
-	js_slowDataArray[JSSD_FLOAT_Coulombtorque] = &(PID_Data.FrictionID_Output->CoulTorque);
-	js_slowDataArray[JSSD_FLOAT_Viscotorque] = &(PID_Data.FrictionID_Output->ViscoTorque);
-	js_slowDataArray[JSSD_FLOAT_TrainInertia] = &(PID_Data.TwoMassID_Output->TrainInertia);
-	js_slowDataArray[JSSD_FLOAT_LoadInertia] = &(PID_Data.TwoMassID_Output->LoadInertia);
-	js_slowDataArray[JSSD_FLOAT_c_est] = &(PID_Data.TwoMassID_Output->c_est_out);
-	js_slowDataArray[JSSD_FLOAT_d_est] = &(PID_Data.TwoMassID_Output->d_est_out);
-	js_slowDataArray[JSSD_FLOAT_I_rated] = &(PID_Data.GlobalConfig.ratCurrent);
-	js_slowDataArray[JSSD_FLOAT_totalRotorInertia] = &(PID_Data.TwoMassID_Output->rotorInertia);
-	js_slowDataArray[JSSD_FLOAT_Wtemp] = &(PID_Data.OnlineID_Output->Wtemp);
-	js_slowDataArray[JSSD_FLOAT_FluxTempConst] = &(PID_Data.FluxMap_Data->psi_temp_const);
-	js_slowDataArray[JSSD_FLOAT_FluxTempError] = &(PID_Data.FluxMap_Data->psi_temp_error);
-	js_slowDataArray[JSSD_FLOAT_Ld_Online] = &(PID_Data.OnlineID_Output->Ld_out);
-	js_slowDataArray[JSSD_FLOAT_Lq_Online] = &(PID_Data.OnlineID_Output->Lq_out);
-	js_slowDataArray[JSSD_FLOAT_PsiPM_Online] = &(PID_Data.OnlineID_Output->psi_pm_out);
-	js_slowDataArray[JSSD_FLOAT_Rs_Online] = &(PID_Data.OnlineID_Output->Rph_out);
-	js_slowDataArray[JSSD_FLOAT_n_FluxPoints] = &(PID_Data.FluxMap_MeasuringPoints);
-	js_slowDataArray[JSSD_FLOAT_Rs_online_FMID] = &(PID_Data.FluxMapID_Output->R_s);
-	js_slowDataArray[JSSD_FLOAT_Wtemp_FMID] = &(PID_Data.FluxMapID_Output->WindingTemp);
-	js_slowDataArray[JSSD_FLOAT_MapCounter] = &(FluxMapCounter);
-	js_slowDataArray[JSSD_FLOAT_psidMap] = &(PID_Data.Psi_D_pointer);
-	js_slowDataArray[JSSD_FLOAT_psiqMap] = &(PID_Data.Psi_Q_pointer);
-	js_slowDataArray[JSSD_FLOAT_MapControlCounter] = &(FluxMapCounter);
+
 	return Status;
 }
 
@@ -158,7 +119,6 @@ void JavaScope_update(DS_Data* data){
 	javascope_data->slowDataID 		= js_cnt_slowData;
 	javascope_data->slowDataContent = *js_slowDataArray[js_cnt_slowData];
 	javascope_data->status 			= js_status_BareToRTOS;
-	uz_ParameterID_update_transmit_values(&PID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
 
 	// flush data cache of shared memory region to make sure shared memory is updated
 	Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);

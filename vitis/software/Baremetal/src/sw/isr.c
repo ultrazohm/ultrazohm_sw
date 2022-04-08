@@ -41,16 +41,6 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
-//ParameterID
-extern uz_ParameterID_Data_t PID_Data;
-extern uz_ParameterID_t* ParameterID;
-extern uz_FOC* FOC_instance;
-extern uz_SpeedControl_t* SpeedControl_instance;
-struct uz_3ph_dq_t PID_v_dq = { 0 };
-struct uz_DutyCycle_t PID_DutyCycle = { 0 };
-float theta_offset = 0.0f;
-//C=484nF R_series=5.6kOhm R_parallel=1.3kOhm
-float RC = (5600.0f * 1300.0f * 0.000000484f) / (5600.0f + 1300.0f);
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -64,38 +54,11 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
-	//Get values from ADCs
-	PID_Data.ActualValues.I_abc.a = (Global_Data.aa.A2.me.ADC_A2 - 2.5f) * (20.0f / 2.084f);
-	PID_Data.ActualValues.I_abc.b = (Global_Data.aa.A2.me.ADC_A4 - 2.5f) * (20.0f / 2.084f);
-	PID_Data.ActualValues.I_abc.c = (Global_Data.aa.A2.me.ADC_A3 - 2.5f) * (20.0f / 2.084f);
-	//PID_Data.ActualValues.V_DC = ((Global_Data.aa.A2.me.ADC_B5) * 20.05f) - 0.18f;
-	PID_Data.ActualValues.V_DC = 24.0f;
-	PID_Data.ActualValues.V_abc.a = Global_Data.aa.A2.me.ADC_B6 * 5.307692f - 0.01f;
-	PID_Data.ActualValues.V_abc.b = Global_Data.aa.A2.me.ADC_B8 * 5.307692f - 0.01f;
-	PID_Data.ActualValues.V_abc.c = Global_Data.aa.A2.me.ADC_B7 * 5.307692f - 0.01f;
 
-	PID_Data.ActualValues.omega_m = (Global_Data.av.mechanicalRotorSpeed * 2.0f * UZ_PIf ) / 60.0f;
-	PID_Data.ActualValues.omega_el = PID_Data.ActualValues.omega_m * PID_Data.GlobalConfig.PMSM_config.polePairs;
-	PID_Data.ActualValues.theta_el = Global_Data.av.theta_elec - theta_offset;
-
-	//Calculate missing ActualValues
-	float theta_el_corr = uz_ParameterID_correct_LP1_filter(&PID_Data, RC);
-	PID_Data.ActualValues.i_dq = uz_transformation_3ph_abc_to_dq(PID_Data.ActualValues.I_abc, PID_Data.ActualValues.theta_el);
-	PID_Data.ActualValues.v_dq = uz_transformation_3ph_abc_to_dq(PID_Data.ActualValues.V_abc, theta_el_corr);
-	PID_Data.ActualValues.theta_m = Global_Data.av.theta_elec / PID_Data.GlobalConfig.PMSM_config.polePairs;
-
-	uz_ParameterID_step(ParameterID, &PID_Data);
-
-	if (ultrazohm_state_machine_get_state() == control_state) {
-		PID_v_dq = uz_ParameterID_Controller(&PID_Data, FOC_instance, SpeedControl_instance);
-		PID_DutyCycle = uz_ParameterID_generate_DutyCycle(&PID_Data, PID_v_dq, Global_Data.objects.pwm_d1);
-		Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;
-		Global_Data.rasv.halfBridge2DutyCycle = PID_DutyCycle.DutyCycle_V;
-		Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;
-	} else {
-		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    platform_state_t current_state=ultrazohm_state_machine_get_state();
+    if (current_state==control_state)
+    {
+        // Start: Control algorithm - only if ultrazohm is in control state
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     // Set duty cycles for three-level modulator

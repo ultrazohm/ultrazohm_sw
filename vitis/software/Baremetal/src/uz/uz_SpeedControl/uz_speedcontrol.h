@@ -68,7 +68,7 @@ void uz_SpeedControl_set_Ki(uz_SpeedControl_t* self, float new_Ki);
  * @brief  Function to change the Kp-value of the PI-Controller during runtime
  * 
  * @param self pointer to uz_SpeedControl_t object
- * @param new_Kp value for Ki. Must be greater or equal than 0.0f
+ * @param new_Kp value for Kp. Must be greater or equal than 0.0f
  */
 void uz_SpeedControl_set_Kp(uz_SpeedControl_t* self, float new_Kp);
 

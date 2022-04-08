@@ -31,12 +31,6 @@ DS_Data Global_Data = {
     }
 };
 
-//ParameterID Code
-uz_ParameterID_t* ParameterID = NULL;
-uz_ParameterID_Data_t PID_Data = { 0 };
-uz_FOC* FOC_instance = NULL;
-uz_SpeedControl_t* SpeedControl_instance = NULL;
-
 enum init_chain
 {
     init_assertions = 0,
@@ -68,16 +62,6 @@ int main(void)
         case init_software:
             Initialize_Timer();
             uz_SystemTime_init();
-			ParameterID = uz_ParameterID_init(&PID_Data);
-			struct uz_PI_Controller_config config_id = { .Kp = PID_Data.GlobalConfig.Kp_id, .Ki = PID_Data.GlobalConfig.Ki_id, .samplingTime_sec = 0.00005f, .upper_limit = 20.0f,
-			                .lower_limit = -20.0f };
-			struct uz_PI_Controller_config config_iq = { .Kp = PID_Data.GlobalConfig.Kp_iq, .Ki = PID_Data.GlobalConfig.Ki_iq, .samplingTime_sec = 0.00005f, .upper_limit = 20.0f,
-			                .lower_limit = -20.0f };
-            struct uz_SpeedControl_config config_n = { .config_controller.Kp = PID_Data.GlobalConfig.Kp_n, .config_controller.Ki = PID_Data.GlobalConfig.Ki_n,
-                            .config_controller.samplingTime_sec = 0.00005f, .config_controller.upper_limit = 10.0f, .config_controller.lower_limit = -10.0f, .enable_field_weakening = false };
-			struct uz_FOC_config config_FOC = { .config_PMSM = PID_Data.GlobalConfig.PMSM_config, .config_id = config_id, .config_iq = config_iq , .decoupling_select = linear_decoupling};
-			FOC_instance = uz_FOC_init(config_FOC);
-			SpeedControl_instance = uz_SpeedControl_init(config_n);
             JavaScope_initalize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
@@ -108,14 +92,6 @@ int main(void)
         default:
             break;
         }
-
-		if (PID_Data.OnlineID_Output->clean_array == true) {
-			uz_ParameterID_CleanPsiArray(ParameterID, &PID_Data);
-		}
-		if (PID_Data.calculate_flux_maps == true) {
-			uz_ParameterID_CalcFluxMaps(ParameterID, &PID_Data);
-			PID_Data.calculate_flux_maps = false;
-		}
     }
     return (status);
 }

@@ -151,7 +151,7 @@ steps:
    - git add ip_cores/vv_index.xml
    - git add vivado/project/ultrazohm.xpr
    - git add vivado/project/zusys/hdl/zusys_wrapper.vhd
-   - git add vivado/project/zusys/zusys.bd
+   - git add -f  vivado/project/zusys/zusys.bd
    - git add vivado/*.tcl
    - git add vivado/bd/*.tcl
    - git status

@@ -43,7 +43,7 @@ This guarantees that the measurements are only recorded when the motor has the s
   \draw[->](state1.south) -- (state2.north);
   \draw[->](entry.south) -- (state8.north);
   \draw[->](state8.south) -- (state1.north);
-  \node[name=ACPT,above right = -0.0cm and -1.5cm of state1, align=center]{start\_FM\_ID == true \&\& \textbf{ACCEPT}}; 
+  \node[name=ACPT,above right = -0.0cm and -1.5cm of state1, align=center]{start\_FM\_ID == true}; 
   \draw[->](state2.south) -- (state3.north);
   \draw[->](state3.south) -- (state4.north);
   \draw[->](state5.south) -- (exit.north);

@@ -42,7 +42,7 @@ void PWM_3L_Calculate_DutyCycle_open_loop_sin(DS_Data* data);
 
 //==============================================================================================================================================================
 // registers of three-level PWM module
-#define PWM_3L_base_adr					XPAR_GATES_3L_PWM_SS_3L_IP_0_BASEADDR // PWM Module base addresses
+#define PWM_3L_base_adr					XPAR_UZ_DIGITAL_ADAPTER_D2_ADAPTER_GATES_3L_PWM_SS_3L_IP_0_BASEADDR // PWM Module base addresses
 #define PWM_3L_reg_reset				PWM_3L_base_adr + IPCore_Reset_PWM_SS_3L_ip
 #define PWM_3L_reg_enable				PWM_3L_base_adr + PWM_en_AXI_Data_PWM_SS_3L_ip
 #define PWM_3L_reg_mode					PWM_3L_base_adr + Mode_AXI_Data_PWM_SS_3L_ip

@@ -31,6 +31,8 @@
 #include "main.h"
 #include "defines.h"
 #include "include/isr.h"
+#include "uz/uz_PHY_reset/uz_phy_reset.h"
+
 
 size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;
@@ -237,9 +239,8 @@ int main_thread()
 	int mscnt = 0;
 #endif
 
-#ifdef XPS_BOARD_ZCU102
-	IicPhyReset();
-#endif
+	// reset phy
+	uz_phy_reset();
 
 	/* initialize lwIP before calling sys_thread_new */
     lwip_init();

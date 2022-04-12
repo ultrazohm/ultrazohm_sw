@@ -14,7 +14,7 @@
 void uz_adcLtc2311_ip_core_init(void)
 {
     struct uz_adcLtc2311_config_t default_configuration = {
-        .base_address = XPAR_A1_ADC_LTC2311_S00_AXI_BASEADDR,
+        .base_address = XPAR_UZ_ANALOG_ADAPTER_A1_ADAPTER_A1_ADC_LTC2311_S00_AXI_BASEADDR,
         .ip_clk_frequency_Hz = XPAR_A1_ADC_LTC2311_IP_CORE_FREQUENCY,
         .channel_config = {
             .conversion_factor = DEFAULT_CONVERSION_FACTOR,
@@ -38,8 +38,8 @@ void uz_adcLtc2311_ip_core_init(void)
 
     // Apply the same configurations to all instances
     uz_adcLtc2311_init(default_configuration);
-    default_configuration.base_address = XPAR_A2_ADC_LTC2311_S00_AXI_BASEADDR;
+    default_configuration.base_address = XPAR_UZ_ANALOG_ADAPTER_A2_ADAPTER_A2_ADC_LTC2311_S00_AXI_BASEADDR;
     uz_adcLtc2311_init(default_configuration);
-    default_configuration.base_address = XPAR_A3_ADC_LTC2311_S00_AXI_BASEADDR;
+    default_configuration.base_address = XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_LTC2311_S00_AXI_BASEADDR;
     uz_adcLtc2311_init(default_configuration);
 }

@@ -16,6 +16,7 @@ typedef struct uz_SpeedControl_t uz_SpeedControl_t;
  */
 struct uz_SpeedControl_config {
     bool enable_field_weakening; /**< flag to enable field_weaking */
+    uz_PMSM_t config_PMSM; /**< PMSM struct which carries necessary motor related parameters for field weakening */
 	struct uz_PI_Controller_config config_controller; /**< Configuration struct for speed-Controller */
 };
 

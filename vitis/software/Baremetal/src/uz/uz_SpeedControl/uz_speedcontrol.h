@@ -15,7 +15,7 @@ typedef struct uz_SpeedControl_t uz_SpeedControl_t;
  * @brief Configuration struct for SpeedControl. Accessible by the user
  */
 struct uz_SpeedControl_config {
-    bool enable_field_weakening; /**< flag to enable field_weaking */
+    bool is_field_weakening_active; /**< flag to enable field_weaking */
     uz_PMSM_t config_PMSM; /**< PMSM struct which carries necessary motor related parameters for field weakening */
 	struct uz_PI_Controller_config config_controller; /**< Configuration struct for speed-Controller */
 };
@@ -36,11 +36,9 @@ uz_SpeedControl_t* uz_SpeedControl_init(struct uz_SpeedControl_config config);
  * @param n_ref_rpm reference speed in 1/min
  * @param V_dc_volts DC-link voltage in volts
  * @param id_ref_Ampere reference d-axis current
- * @param config_PMSM uz_PMSM_t config struct
- * @param ext_clamping external clamping signal
  * @return uz_dq_t reference currents in Ampere
  */
-uz_3ph_dq_t uz_SpeedControl_sample(uz_SpeedControl_t* self, float omega_el_rad_per_sec, float n_ref_rpm, float V_dc_volts, float id_ref_Ampere, uz_PMSM_t config_PMSM, bool ext_clamping);
+uz_3ph_dq_t uz_SpeedControl_sample(uz_SpeedControl_t* self, float omega_el_rad_per_sec, float n_ref_rpm, float V_dc_volts, float id_ref_Ampere);
 
 /**
  * @brief Resets the PI-Controller inside the uz_SpeedControl_t 
@@ -48,6 +46,14 @@ uz_3ph_dq_t uz_SpeedControl_sample(uz_SpeedControl_t* self, float omega_el_rad_p
  * @param self pointer to uz_SpeedControl_t object
  */
 void uz_SpeedControl_reset(uz_SpeedControl_t* self);
+
+/**
+ * @brief Sets the ext_clamping signal true or false
+ * 
+ * @param self pointer to uz_SpeedControl_t object
+ * @param ext_clamping external clamping signal. True=clamping gets activated, false=clamping gets disabled
+ */
+void uz_SpeedControl_set_ext_clamping(uz_SpeedControl_t* self, bool ext_clamping);
 
 /**
  * @brief Enables or disables the field weakening
@@ -81,4 +87,13 @@ void uz_SpeedControl_set_Kp(uz_SpeedControl_t* self, float new_Kp);
  * @param lower_limit new value for lower limit
  */
 void uz_SpeedControl_update_limits(uz_SpeedControl_t* self, float upper_limit, float lower_limit);
+
+/**
+ * @brief Updates the motor related params in the uz_PMSM_t struct
+ * 
+ * @param self pointer to uz_SpeedControl_t object
+ * @param input uz_PMSM_t struct with new values
+ */
+void uz_SpeedControl_set_PMSM_config(uz_SpeedControl_t* self, uz_PMSM_t input);
+
 #endif // UZ_SPEEDCONTROL_H

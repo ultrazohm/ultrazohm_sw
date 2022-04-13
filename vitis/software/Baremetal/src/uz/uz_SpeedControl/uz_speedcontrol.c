@@ -27,6 +27,7 @@
 #if UZ_SPEEDCONTROL_MAX_INSTANCES > 0
 typedef struct uz_SpeedControl_t {
 	bool is_ready;
+    bool ext_clamping;
 	struct uz_SpeedControl_config config;
 	struct uz_PI_Controller* Controller;
 }uz_SpeedControl_t;
@@ -64,19 +65,20 @@ uz_SpeedControl_t* uz_SpeedControl_init(struct uz_SpeedControl_config config){
     return(self);
 }
 
-uz_3ph_dq_t uz_SpeedControl_sample(uz_SpeedControl_t* self, float omega_el_rad_per_sec, float n_ref_rpm, float V_dc_volts, float id_ref_Ampere, uz_PMSM_t config_PMSM, bool ext_clamping){
+uz_3ph_dq_t uz_SpeedControl_sample(uz_SpeedControl_t* self, float omega_m_rad_per_sec, float n_ref_rpm, float V_dc_volts, float id_ref_Ampere){
     uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     uz_3ph_dq_t i_output_Ampere = {0};
-	float omega_el_ref_rad_per_sec = (n_ref_rpm * 2.0f * UZ_PIf * config_PMSM.polePairs) / 60.0f;
-    if(self->config.enable_field_weakening) {
-        uz_assert(V_dc_volts > 0.0f);
-        uz_3ph_dq_t i_field_weakening_Ampere = uz_SpeedControl_field_weakening(config_PMSM, id_ref_Ampere, omega_el_rad_per_sec, V_dc_volts);
+	float omega_m_ref_rad_per_sec = (n_ref_rpm * 2.0f * UZ_PIf) / 60.0f;
+    float omega_el_rad_per_sec = omega_m_rad_per_sec * self->config.config_PMSM.polePairs;
+    if(self->config.is_field_weakening_active && V_dc_volts >= 0.0f) {
+        uz_3ph_dq_t i_field_weakening_Ampere = uz_SpeedControl_field_weakening(self->config.config_PMSM, id_ref_Ampere, omega_el_rad_per_sec, V_dc_volts);
 	    i_output_Ampere.d = i_field_weakening_Ampere.d;
         uz_PI_Controller_update_limits(self->Controller, i_field_weakening_Ampere.q, -i_field_weakening_Ampere.q);
     } else {
-        i_output_Ampere.d = uz_signals_saturation(id_ref_Ampere, config_PMSM.I_max_Ampere, -config_PMSM.I_max_Ampere);
+        i_output_Ampere.d = uz_signals_saturation(id_ref_Ampere, self->config.config_PMSM.I_max_Ampere, -self->config.config_PMSM.I_max_Ampere);
     }
-    i_output_Ampere.q = uz_PI_Controller_sample(self->Controller, omega_el_ref_rad_per_sec, omega_el_rad_per_sec, ext_clamping);
+    i_output_Ampere.q = uz_PI_Controller_sample(self->Controller, omega_m_ref_rad_per_sec, omega_m_rad_per_sec, self->ext_clamping);
     return(i_output_Ampere);
 }
 
@@ -107,7 +109,26 @@ void uz_SpeedControl_update_limits(uz_SpeedControl_t* self, float upper_limit, f
 void uz_SpeedControl_set_field_weakening(uz_SpeedControl_t* self, bool field_weakening_status) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-	self->config.enable_field_weakening = field_weakening_status;
+	self->config.is_field_weakening_active = field_weakening_status;
+}
+
+void uz_SpeedControl_set_ext_clamping(uz_SpeedControl_t* self, bool ext_clamping) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+	self->ext_clamping = ext_clamping;
+}
+
+void uz_SpeedControl_set_PMSM_config(uz_SpeedControl_t* self, uz_PMSM_t input) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(input.polePairs > 0.0f);
+	uz_assert(fmodf(input.polePairs, 1.0f) == 0);
+	uz_assert(input.R_ph_Ohm > 0.0f);
+	uz_assert(input.I_max_Ampere > 0.0f);
+	uz_assert(input.Ld_Henry > 0.0f);
+	uz_assert(input.Lq_Henry > 0.0f);
+	uz_assert(input.Psi_PM_Vs >= 0.0f);
+    self->config.config_PMSM = input;
 }
 
 static uz_3ph_dq_t uz_SpeedControl_field_weakening(uz_PMSM_t config_PMSM, float id_ref_Ampere, float omega_el_rad_per_sec, float V_dc_volts){

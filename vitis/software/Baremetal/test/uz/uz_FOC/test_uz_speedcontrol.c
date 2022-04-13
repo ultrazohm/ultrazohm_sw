@@ -382,4 +382,88 @@ void test_uz_SpeedControl_set_PMSM_config_assert_NULL(void) {
 void test_uz_SpeedControl_set_ext_clamping_assert_NULL(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_ext_clamping(NULL, true));
 }
+
+void test_uz_SpeedControl_set_field_weakening_assert_Rph_negative(void){
+    config.is_field_weakening_active = false;
+    config.config_PMSM.R_ph_Ohm = -0.08f;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_field_weakening(instance, true));
+}
+
+void test_uz_SpeedControl_set_field_weakening_assert_Rph_zero(void){
+    config.is_field_weakening_active = false;
+    config.config_PMSM.R_ph_Ohm = 0.0f;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_field_weakening(instance, true));
+}
+
+void test_uz_SpeedControl_set_field_weakening_assert_Ld_negative(void){
+    config.is_field_weakening_active = false;
+    config.config_PMSM.Ld_Henry = -0.08f;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_field_weakening(instance, true));
+}
+
+void test_uz_SpeedControl_set_field_weakening_assert_Ld_zero(void){
+    config.is_field_weakening_active = false;
+    config.config_PMSM.Ld_Henry = 0.0f;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_field_weakening(instance, true));
+}
+
+void test_uz_SpeedControl_set_field_weakening_assert_Lq_negative(void){
+    config.is_field_weakening_active = false;
+    config.config_PMSM.Lq_Henry = -0.08f;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_field_weakening(instance, true));
+}
+
+void test_uz_SpeedControl_set_field_weakening_assert_Lq_zero(void){
+    config.is_field_weakening_active = false;
+    config.config_PMSM.Lq_Henry = 0.0f;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_field_weakening(instance, true));
+}
+
+void test_uz_SpeedControl_set_field_weakening_assert_Psi_pm(void){
+    config.is_field_weakening_active = false;
+    config.config_PMSM.Psi_PM_Vs = -0.08f;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_field_weakening(instance, true));
+}
+
+void test_uz_SpeedControl_set_field_weakening_assert_polePairs_negative(void){
+    config.is_field_weakening_active = false;
+    config.config_PMSM.polePairs = -2.0f;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_field_weakening(instance, true));
+}
+
+void test_uz_SpeedControl_set_field_weakening_assert_polePairs_zero(void){
+    config.is_field_weakening_active = false;
+    config.config_PMSM.polePairs = 0.0f;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_field_weakening(instance, true));
+}
+
+void test_uz_SpeedControl_set_field_weakening_assert_polePairs_decimal_value(void){
+    config.is_field_weakening_active = false;
+    config.config_PMSM.polePairs = 0.5f;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_field_weakening(instance, true));
+}
+
+void test_uz_SpeedControl_set_field_weakening_assert_I_max_negative(void){
+    config.is_field_weakening_active = false;
+    config.config_PMSM.I_max_Ampere = -5.08f;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_field_weakening(instance, true));
+}
+
+void test_uz_SpeedControl_set_field_weakening_assert_I_max_zero(void){
+    config.is_field_weakening_active = false;
+    config.config_PMSM.I_max_Ampere = 0.0f;
+    uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_set_field_weakening(instance, true));
+}
 #endif // TEST

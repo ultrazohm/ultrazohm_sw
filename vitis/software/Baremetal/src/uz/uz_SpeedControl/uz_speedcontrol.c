@@ -107,10 +107,19 @@ void uz_SpeedControl_update_limits(uz_SpeedControl_t* self, float upper_limit, f
 	uz_PI_Controller_update_limits(self->Controller, upper_limit, lower_limit);
 }
 
-void uz_SpeedControl_set_field_weakening(uz_SpeedControl_t* self, bool field_weakening_status) {
+void uz_SpeedControl_set_field_weakening(uz_SpeedControl_t* self, bool is_field_weakening_active) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-	self->config.is_field_weakening_active = field_weakening_status;
+    if(is_field_weakening_active) {
+        uz_assert(self->config.config_PMSM.polePairs > 0.0f);
+	    uz_assert(fmodf(self->config.config_PMSM.polePairs, 1.0f) == 0);
+	    uz_assert(self->config.config_PMSM.R_ph_Ohm > 0.0f);
+	    uz_assert(self->config.config_PMSM.I_max_Ampere > 0.0f);
+	    uz_assert(self->config.config_PMSM.Ld_Henry > 0.0f);
+	    uz_assert(self->config.config_PMSM.Lq_Henry > 0.0f);
+	    uz_assert(self->config.config_PMSM.Psi_PM_Vs >= 0.0f);
+    }
+	self->config.is_field_weakening_active = is_field_weakening_active;
 }
 
 void uz_SpeedControl_set_ext_clamping(uz_SpeedControl_t* self, bool ext_clamping) {

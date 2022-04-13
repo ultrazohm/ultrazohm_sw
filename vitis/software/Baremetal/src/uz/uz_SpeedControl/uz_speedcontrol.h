@@ -59,9 +59,9 @@ void uz_SpeedControl_set_ext_clamping(uz_SpeedControl_t* self, bool ext_clamping
  * @brief Enables or disables the field weakening
  * 
  * @param self pointer to uz_SpeedControl_t object
- * @param field_weakening_status status flag if field_weakening should be enabled = true or disabled
+ * @param is_field_weakening_active status flag if field_weakening should be enabled = true or disabled
  */
-void uz_SpeedControl_set_field_weakening(uz_SpeedControl_t* self, bool field_weakening_status);
+void uz_SpeedControl_set_field_weakening(uz_SpeedControl_t* self, bool is_field_weakening_active);
 
 /**
  * @brief  Function to change the Ki-value of the PI-Controller during runtime

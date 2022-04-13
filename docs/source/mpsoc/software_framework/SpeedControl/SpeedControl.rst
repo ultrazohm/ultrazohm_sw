@@ -40,13 +40,13 @@ Example
         .config_controller.samplingTime_sec = 0.00005f,
         .config_controller.upper_limit = 10.0f,
         .config_controller.lower_limit = -10.0f,
-        .config.config_PMSM.R_ph_Ohm = 0.08f,
-        .config.config_PMSM.Ld_Henry = 0.00027f,
-        .config.config_PMSM.Lq_Henry = 0.00027f,
-        .config.config_PMSM.Psi_PM_Vs = 0.0082f,
-        .config.config_PMSM.polePairs = 4.0f,
-        .config.config_PMSM.I_max_Ampere = 10.0f,
-        .enable_field_weakening = false
+        .config_PMSM.R_ph_Ohm = 0.08f,
+        .config_PMSM.Ld_Henry = 0.00027f,
+        .config_PMSM.Lq_Henry = 0.00027f,
+        .config_PMSM.Psi_PM_Vs = 0.0082f,
+        .config_PMSM.polePairs = 4.0f,
+        .config_PMSM.I_max_Ampere = 10.0f,
+        .is_field_weakening_active = false
      };
   }
 

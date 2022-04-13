@@ -96,6 +96,12 @@ void test_uz_SpeedControl_init_assert_I_max_zero(void){
     TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_init(config));
 }
 
+void test_uz_SpeedControl_init_no_assert_if_fw_disabled(void){
+    config.config_PMSM.I_max_Ampere = 0.0f;
+    config.is_field_weakening_active = false;
+    TEST_ASSERT_PASS_ASSERT(uz_SpeedControl_init(config));
+}
+
 void test_uz_SpeedControl_reset_NULL(void){
     TEST_ASSERT_FAIL_ASSERT(uz_SpeedControl_reset(NULL));
 }

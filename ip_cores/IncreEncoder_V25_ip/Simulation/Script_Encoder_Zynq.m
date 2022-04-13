@@ -15,29 +15,18 @@ T_Generator = T_mech/100;
 f_ISR = 40e3; 
 % Used FPGA frequency
 f_fpga = 100e6; 
-f_T_fpga=1/f_fpga;
 T_fpga = 1/f_fpga;
-% Weitere Frequenzen
-% f_150MHz = 150e6;   % [Hz] FPGA-Grundfrequenz für 150 MHz
-% f_100MHz = 100e6;   % [Hz] FPGA-Grundfrequenz für 100 MHz
-f_50MHz  = 100e6     % [Hz] FPGA-Grundfrequenz für 50 MHz
-% f_25MHz  = 25e6;     % [Hz] FPGA-Grundfrequenz für 25 MHz
-% f_10MHz  = 10e6;    % [Hz] FPGA-Grundfrequenz für 10 MHz
-% T_150MHz  = 1/f_150MHz;
-% T_100MHz  = 1/f_100MHz;
-T_50MHz  = 1/f_50MHz;
-% T_25MHz  = 1/f_25MHz;
 
-
+%% HDL Coder Settings
 reciprocal_iterations = 3; % 1/u in speed calculation
-speed_timeout_in_s = 1e-4;
+speed_timeout_in_s = 0.05e-3;
 inital_zero_speed_timeout = speed_timeout_in_s*f_fpga;%after how many FPGA_Clocks ticks the speed calculation times out and jumps to zero
 
 %% Configuration
 
-TestDrehzahl_rpm = 1; %[rpm]
+TestDrehzahl_rpm = 3000; %[rpm]
 
-OmegaPerOverSampl = 500*((2*pi)/60); %Mit 500rpm Schritten wird der OversaplingFactor erhöht!
+OmegaPerOverSampl = 1500*((2*pi)/60); %in diesen Schritten wird der OversaplingFactor erhöht!
 n_max = 6000; %maximum speed - not used in IP Core
 IncPerTurn = 1024; % e.g. number of positive A edges
 PolePair = 1;
@@ -59,21 +48,19 @@ SamplesPulseWidth = (Periode/T_Generator)/2; %for 50% DutyCycle
 SamplesPhaseDelayA = (Phase_Delay_A/T_Generator);
 SamplesPhaseDelayB = (Phase_Delay_B/T_Generator);
 
-min_detectable_speed_rpm = 10;  %rpm - rotation per minute
-min_detectable_speed_s = 10/60; %rps - rotation per second
-dashes_per_ISR_at_min_speed = min_detectable_speed_s * IncPerTurn *QuadratureFactor/f_ISR;
-
 %% read ila data
-opts = detectImportOptions('iladata_encoder.csv');
-iladata = readmatrix('iladata_encoder.csv');
-iladata = readmatrix('iladata_sw2.csv');
-iladata = readmatrix('iladata_sw3.csv');
+% opts = detectImportOptions('iladata_encoder.csv');
+% iladata = readmatrix('iladata_encoder.csv');
+% iladata = readmatrix('iladata_sw2.csv');
+% iladata = readmatrix('iladata_sw3.csv');
 % iladata = readmatrix('iladata_el.csv');
 % iladata = readmatrix('iladata_el2.csv');
+iladata = readmatrix('iladata_el3.csv');
 
 A_ila = iladata(:,4);
 B_ila = iladata(:,5);
-I_ila = iladata(:,7);
+% I_ila = iladata(:,7); % for all < el3
+I_ila = iladata(:,6);
 
 % SimulationsDauer = size(A_ila,1)* T_mech;
 
@@ -143,3 +130,4 @@ interleaved_windows = interleaved_windows_trans(:);
 figure(22)
 plot(interleaved_windows);
 
+close all

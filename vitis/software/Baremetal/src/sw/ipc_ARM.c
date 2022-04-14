@@ -314,7 +314,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	/* Bit 11 - My_Button_8 */
 	// js_status_BareToRTOS &= ~(1 << 11);
 
-	/* Bit 4 - trigger ext. logging */
+	/* Bit 12 - trigger ext. logging */
 	// if (your condition == true) {
 	//	js_status_BareToRTOS |= (1 << 4);
 	// } else {

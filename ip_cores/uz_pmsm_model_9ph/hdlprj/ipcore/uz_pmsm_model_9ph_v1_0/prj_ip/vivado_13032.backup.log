@@ -1,11 +1,14 @@
-Task "Vivado IP Packager" successful.
-Generated logfile: 
-
-****** Vivado v2020.1 (64-bit)
-  **** SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
-  **** IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
-    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
-
+#-----------------------------------------------------------
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Fri Apr 15 14:11:34 2022
+# Process ID: 13032
+# Current directory: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_pmsm_model_9ph/hdlprj/ipcore/uz_pmsm_model_9ph_v1_0/prj_ip
+# Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
+# Log file: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_pmsm_model_9ph/hdlprj/ipcore/uz_pmsm_model_9ph_v1_0/prj_ip/vivado.log
+# Journal file: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_pmsm_model_9ph/hdlprj/ipcore/uz_pmsm_model_9ph_v1_0/prj_ip\vivado.jou
+#-----------------------------------------------------------
 source vivado_ip_package.tcl -notrace
 INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter.
 Current project path is 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_pmsm_model_9ph/hdlprj/ipcore/uz_pmsm_model_9ph_v1_0/prj_ip'
@@ -128,6 +131,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pmsm_model_9ph_axi4_module.vh
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pmsm_model_9ph_axi4.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pmsm_model_9ph_axi4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 INFO: [Common 17-14] Message 'IP_Flow 19-1971' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
-INFO: [Common 17-206] Exiting Vivado at Fri Apr 15 14:20:04 2022...
-
-Elapsed time is 13.4432 seconds.
+INFO: [Common 17-206] Exiting Vivado at Fri Apr 15 14:11:46 2022...

@@ -1,7 +1,7 @@
 /*
  * File Name:         C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_pmsm_model_9ph\hdlprj\ipcore\uz_pmsm_model_9ph_v1_0\include\uz_pmsm_model_9ph_addr.h
  * Description:       C Header File
- * Created:           2022-04-15 14:11:31
+ * Created:           2022-04-15 14:19:50
 */
 
 #ifndef UZ_PMSM_MODEL_9PH_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_uz_pmsm_model_9ph                              0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_pmsm_model_9ph                             0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_pmsm_model_9ph                          0x8  //contains unique IP timestamp (yymmddHHMM): 2204151411
+#define  IPCore_Timestamp_uz_pmsm_model_9ph                          0x8  //contains unique IP timestamp (yymmddHHMM): 2204151419
 #define  inputs_general_Data_uz_pmsm_model_9ph                       0x180  //data register for Inport inputs_general, vector with 2 elements, address ends at 0x184
 #define  inputs_general_Strobe_uz_pmsm_model_9ph                     0x188  //strobe register for port inputs_general
 #define  input_voltages_dq_Data_uz_pmsm_model_9ph                    0x1C0  //data register for Inport input_voltages_dq, vector with 9 elements, address ends at 0x1E0

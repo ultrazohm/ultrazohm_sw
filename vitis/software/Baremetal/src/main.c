@@ -110,9 +110,9 @@ int main(void)
 
         struct uz_SpeedControl_config  config_speed = {
 
-           .config_controller.Kp = 0.01f,
+           .config_controller.Kp = 0.4f,
 
-           .config_controller.Ki = 7.0f,
+           .config_controller.Ki = 4.0f,
 
            .config_controller.samplingTime_sec = 0.00005f,
 

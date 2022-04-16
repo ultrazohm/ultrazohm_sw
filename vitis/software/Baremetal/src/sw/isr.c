@@ -55,15 +55,15 @@ struct uz_3ph_dq_t dq_reference_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 struct uz_3ph_dq_t dq_ref_Volts ={0};
 struct uz_DutyCycle_t output = {0};
 struct uz_3ph_abc_t uvw_ref ={0};
-float theta_offset = -0.50f;
+float theta_offset = -0.827f;
 float V_dc_volts = 24.0f;
 float omega_el_rad_per_sec = 125.1f;
-float Kp_id=0.4;
-float Kp_iq=2;
-float speed_Kp=0.4;
-float Ki_id=285;
-float Ki_iq=285;
-float speed_Ki=4.0;
+float Kp_id=0.4f;
+float Kp_iq=2.0f;
+float speed_Kp=0.4f;
+float Ki_id=285.0f;
+float Ki_iq=285.0f;
+float speed_Ki=4.0f;
 float adc_scaling=9.5f/3.0f; // Refactoring actual ADC Values
 
 // speed control
@@ -104,12 +104,12 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
     Global_Data.av.theta_elec=Global_Data.av.theta_elec-theta_offset;
-    measurement_current.a = adc_scaling*(Global_Data.aa.A1.me.ADC_A2-2.5f); // -2.5  Hall Sensor
-    measurement_current.b = adc_scaling*(Global_Data.aa.A1.me.ADC_A4-2.5f);
-    measurement_current.c = adc_scaling*(Global_Data.aa.A1.me.ADC_A3-2.5f);
+    measurement_current.a = adc_scaling*(Global_Data.aa.A1.me.ADC_B6-2.5f); // -2.5  Hall Sensor
+    measurement_current.b = adc_scaling*(Global_Data.aa.A1.me.ADC_B8-2.5f);
+    measurement_current.c = adc_scaling*(Global_Data.aa.A1.me.ADC_B7-2.5f);
     dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
     Global_Data.av.mechanicalRotorSpeed_new_filter = uz_signals_IIR_Filter_sample(LPF1_instance, Global_Data.av.mechanicalRotorSpeed);
-    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_new_filter *(2.0f*M_PI) /60.0f;
+    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_new_filter *(2.0f*M_PI)/60.0f;
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {

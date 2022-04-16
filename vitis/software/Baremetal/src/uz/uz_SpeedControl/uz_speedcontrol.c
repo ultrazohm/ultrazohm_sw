@@ -60,7 +60,7 @@ uz_SpeedControl_t* uz_SpeedControl_init(struct uz_SpeedControl_config config){
 uz_3ph_dq_t uz_SpeedControl_sample(uz_SpeedControl_t* self, float omega_el_rad_per_sec, float n_ref_rpm, float V_dc_volts, float id_ref_Ampere, uz_PMSM_t config_PMSM, bool ext_clamping){
     uz_assert_not_NULL(self);
     uz_3ph_dq_t i_output_Ampere = {0};
-	float omega_el_ref_rad_per_sec = (n_ref_rpm * 2.0f * UZ_PIf * config_PMSM.polePairs) / 60.0f;
+	float omega_el_ref_rad_per_sec = (n_ref_rpm * 2.0f * UZ_PIf) / 60.0f;
     if(self->enable_field_weakening) {
         uz_assert(self->is_ready);
         uz_assert(config_PMSM.polePairs > 0.0f);

@@ -41,7 +41,7 @@ The GUI is shown in :numref:`javascope_gui`.
 #. You can switch between a **Lightmode** and **Darkmode** for the GUI on the fly.
 #. Go to the ``Setup Scope`` panel and press ``sendSelectData (all)`` to get the pre-selected values from the drop-down menus on the scope. For changing the entries of the drop-down menus, see :ref:`javascope_customizing`.
 #. In the time-based scope it is possible to debug up to 20 values by receiving data from the ISR (R5 processor).
-#. In the top-panel it is possible to configure the data logging.
+#. In the top-panel it is possible to configure the data logging and time scale.
 
 Description of the buttons and pages
 ------------------------------------
@@ -160,23 +160,26 @@ The logging panel is used to setup the data logger of the GUI.
 
     logging panel
 
-#. Here the time base of the Scope can be set. It scales the timebase of the scope by the selected value.
+#. The ``setTime`` button sets the timebase of the Scope. It simply scales the timebase of the scope by the selected value.
 #. After zooming in into one or both axis, the ``fixAxis`` button reverts the axis limits to the default value.
-#. Here the trigger level for a manual trigger can be set.
-#. Here the preTrigger can be configured. (e.g. how much time is visible before the trigger event happens).
-#. Here the selection for rising or falling edge for CH1->Ch4 can be made.
-#. Pressing the button triggers the scope once.
-#. Pressing this buttons saves the visible scope content in a xls file.
-#. Pressing this button activates the data logger. The text of the button is highlighted green, if the selection is true.
-#. Here the logging of the fast data (the selection in the :ref:`javascope_setup_scope` panel) can be enabled or disabled. 
+#. Here the trigger level for a manual trigger can be set (e.g. 1V).
+#. With this slider the preTrigger can be configured. (e.g. how much time is visible before the trigger event happens).
+#. The button ``setTrigger`` sets the selection for rising or falling edge for CH1->Ch4. Choose the desired setting in the dropdown menu above.
+#. The button ``SingleShot`` triggers the scope once.
+#. The button ``SaveScreen XLS`` saves the visible scope content in a xls file.
+#. The button ``Logging OFF`` respectively ``Logging ON`` toggles the data logger. 
+   If the button reads ``Logging OFF``, pressing it will turn on the logger. 
+   If the button reads ``Logging ON`` and is highlighted green, pressing the button again will turn off the logger.
+#. The button ``Log FastData`` enables or disables the logging of the fast data (the selection in the :ref:`javascope_setup_scope` panel). 
    If the selection is enabled, the text of the button is highlighted green. If the logging is active, this button is deactivated.
-#. Here the logging of the slow data can be enabled or disabled. The slow data values, which are logged, are the values displayed in the ``receive fields``. 
+#. The button ``Log SlowData`` enables or disables the logging of the slow data.
+   The slow data values, which are logged, are the values displayed in the ``receive fields``. 
    For customizing them see :ref:`javascope_customizing`.
    If the selection is enabled, the text of the button is highlighted green. If the logging is active, this button is deactivated.
-#. With this dropdown menu the logging rate can be configured. Only the ``x-th`` value will then be logged (e.g. Factor ``10``, only the values for every 10th timestamp will be logged). 
-   This logging rate counts for the fast and slow data.
-#. This button enables the start and stop of the logging via a status-bit of the R5.
-   If this function is enabled, the text of the button is highlighted and the button ``8`` is disabled/overwritten. 
+#. With the ``set n-th log value`` the logging rate can be configured. Only the ``x-th`` value will then be logged (e.g. Factor ``10``, only the values for every 10th timestamp will be logged). 
+   This logging rate counts for the fast and slow data. Choose the desired value from the dropdown menu above.
+#. The button ``allow ext. logging`` enables the start and stop of the logging via a status-bit of the R5.
+   If this functionality is enabled, the text of the button is highlighted and the button ``Logging ON/OFF`` is disabled/overwritten. 
    To activate this status bit, comment in the status-bit 12 in the ``ipc_ARM.c`` file and replace the variable for the condition with your own.
 
    .. code-block:: c
@@ -190,8 +193,9 @@ The logging panel is used to setup the data logger of the GUI.
 	   //	js_status_BareToRTOS &= ~(1 << 4);
 	   // }
 
-#. Status indicator, if the logging is active. 
-   It is highlighted green and displays ``Log ON`` if either the logging through the GUI-button press or via the external signal is active.
+#. Status indicator to display, if the logging is active. 
+   It is highlighted green and displays ``Log ON`` if either the logging through the GUI-button press or via the external signal is active. 
+   If no logging is active, the text states ``Log OFF``.
 
 ..  _javascope_customizing:
 
@@ -199,6 +203,27 @@ Customizing
 -----------
 
 The GUI itself and the variables that are visualized can be customized by the user.
+
+Adjusting the properties.ini file
+"""""""""""""""""""""""""""""""""
+
+Some settings can be configured before the start-up of the GUI in the ``properties.ini`` file.
+
+#. The ``smallestTimeStepUSEC`` variable sets the time, with which data is assumed to be transferred to Java. 
+   It's used to calculate the time-axis of the scope and logger. 
+   It should match the sample time of the ISR (e.q. ISR-frequency of 10kHz -> smallestTimeStepUSEC=100). 
+#. The ``initScaleChx`` variable sets the initial scaling factor for every of the 20 channels in the scope. 
+   Use delimiter (;) to separate the scaling values for the channels.
+#. The ``initOffsetCHx`` variable sets the initial offset for every of the 20 channels in the scope. 
+   Use delimiter (;) to separate the scaling values for the channels.
+#. The ``preSelectedChannelNumbers`` variable sets the pre-selected channel number for every of the 20 channels in the scope. 
+   The numbers correspond to the ``JS_OberservableData`` enum in the ``javascope.h`` file (E.g. selecting ``1`` for ``CH1`` will set CH1 to ISR_ExecTime_us).
+   Use delimiter (;) to separate the scaling values for the channels.
+#. The ``preSelectedChannelVisibility`` variable sets the initial visibility for every of the 20 channels in the scope. 
+   Using ``0`` disables the visibility of the specific channel, whilst ``1`` turns it on. 
+   The visibility of the channels can still be changed during runtime by clicking on the appropriate channel in the legend of the scope. 
+   Use delimiter (;) to separate the scaling values for the channels.
+
 
 Add variables to the scope drop-down menus
 """"""""""""""""""""""""""""""""""""""""""

@@ -31,13 +31,73 @@
 #define SOFTWARE_RST_REG_ADR            0xF0U
 #define FAULT_REG_ADR                   0xFFU
 
+
+/**
+ * @brief writes value in val to RESCON AXI register (bit map above)
+ *
+ * @param base_address base_address of IPCore
+ * @param val integer value to be written to RESCON register
+ */
 void uz_resolverIP_hw_write_RESCON(uint32_t base_address, int32_t val);
+
+/**
+ * @brief writes value in val to RESDAT AXI register
+ *
+ * @param base_address base_address of IPCore
+ * @param val integer value to be written to RESDAT register
+ */
 void uz_resolverIP_hw_write_RESDAT(uint32_t base_address, int32_t val);
+
+/**
+ * @brief writes value in val to RESADR AXI register
+ *
+ * @param base_address base_address of IPCore
+ * @param val integer value to be written to RESADR register
+ */
 void uz_resolverIP_hw_write_RESADR(uint32_t base_address, int32_t val);
 
+/**
+ * @brief reads value from RESCON AXI register(bit map above)
+ *
+ * @param base_address base_address of IPCore
+ *
+ * @return int32_t integer value read from RESCON register
+ */
 int32_t uz_resolverIP_hw_read_RESCON(uint32_t base_address);
+
+/**
+ * @brief reads value from RESDAT AXI register
+ *
+ * @param base_address base_address of IPCore
+ *
+ * @return int32_t integer value read from RESDAT register
+ */
 int32_t uz_resolverIP_hw_read_RESDAT(uint32_t base_address);
+
+/**
+ * @brief reads value from RESADR AXI register
+ *
+ * @param base_address base_address of IPCore
+ *
+ * @return int32_t integer value read from RESADR register
+ */
 int32_t uz_resolverIP_hw_read_RESADR(uint32_t base_address);
+
+/**
+ * @brief reads value from RESRDA AXI register
+ *
+ * @param base_address base_address of IPCore
+ *
+ * @return int32_t integer value read from RESRDA register
+ */
 int32_t uz_resolverIP_hw_read_RESRDA(uint32_t base_address);
+
+/**
+ * @brief reads value from RESPOS AXI register
+ *
+ * @param base_address base_address of IPCore
+ *
+ * @return int32_t integer value read from RESPOS register
+ */
 int32_t uz_resolverIP_hw_read_RESPOS(uint32_t base_address);
 #endif // UZ_RESOLVERIP_HW_H

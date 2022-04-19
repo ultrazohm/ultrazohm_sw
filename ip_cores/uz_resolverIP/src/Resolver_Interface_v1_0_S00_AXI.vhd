@@ -22,6 +22,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+
+
+
 entity Resolver_Interface_v1_0_S00_AXI is
 	generic (
 		-- Users to add parameters here
@@ -146,14 +149,15 @@ architecture arch_imp of Resolver_Interface_v1_0_S00_AXI is
 	------------------------------------------------
 	---- Signals for user logic register space example
 	--------------------------------------------------
-	---- Number of Slave Registers 4
-	
-	------------------- FOR SIMULATION DEACTIVATE THIS LINE
-	signal slv_reg0	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0); 
-	------------------- AND ACTIVATE THIS LINE
-	--signal slv_reg0	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0):= "00000000000000000000000011110001"; 
-	------------------- END SIMULATION CHANGE
-	
+constant in_simulation : boolean := false
+--pragma synthesis_off
+                                    or true
+--pragma synthesis_on
+;
+constant in_synthesis : boolean := not in_simulation;
+
+    signal slv_reg0	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0); 
+
 	signal slv_reg1	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 	signal slv_reg2	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 	signal slv_reg3	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
@@ -257,6 +261,11 @@ signal state_TopLevel_StateMachine : states_TopLevel_StateMachine;
 
 
 begin
+
+    g_SIM_REG_INIT : if in_simulation = true generate
+     slv_reg0 <= "00000000000000000000000011110001"; -- INIT for simulation
+    end generate g_SIM_REG_INIT;	
+
 	-- I/O Connections assignments
 
 	S_AXI_AWREADY	<= axi_awready;
@@ -346,15 +355,13 @@ begin
 	-- Slave register write enable is asserted when valid address and data are available
 	-- and the slave is ready to accept the write address and write data.
 	slv_reg_wren <= axi_wready and S_AXI_WVALID and axi_awready and S_AXI_AWVALID ;
-
+g_SYN_REG_RESET : if in_synthesis = true generate	
 	process (S_AXI_ACLK)
 	variable loc_addr :std_logic_vector(OPT_MEM_ADDR_BITS downto 0); 
 	begin
 	  if rising_edge(S_AXI_ACLK) then 
-	    if S_AXI_ARESETN = '0' then
-		------------------- FOR SIMULATION DEACTIVATE THIS LINE
+	   if S_AXI_ARESETN = '0' then 
 		slv_reg0 <= (others => '0');
-		------------------- END SIMULATION CHANGE
 	      slv_reg1 <= (others => '0');
 	      slv_reg2 <= (others => '0');
 	      slv_reg3 <= (others => '0');
@@ -409,7 +416,7 @@ begin
 	    end if;
 	  end if;                   
 	end process; 
-
+end generate g_SYN_REG_RESET;
 	-- Implement write response logic generation
 	-- The write response and response valid signals are asserted by the slave 
 	-- when axi_wready, S_AXI_WVALID, axi_wready and S_AXI_WVALID are asserted.  

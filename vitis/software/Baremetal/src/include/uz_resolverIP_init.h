@@ -19,9 +19,6 @@
 #include "../uz/controlToolbox/control_toolbox.h"
 #include "../globalData.h"
 
-//Defines for averaging the speed from the encoder
-#define SPEED_BUF_SIZE  					2 //3== erster CCS-Versuch
-#define SPEED_BUF_SIZE_INVERS 				1/SPEED_BUF_SIZE
 
 /**
  * @brief Initializes resolverIP

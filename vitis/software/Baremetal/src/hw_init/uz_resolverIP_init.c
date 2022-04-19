@@ -1,4 +1,4 @@
-/******************************************************************************
+	/******************************************************************************
 * Copyright Contributors to the UltraZohm project.
 * Copyright 2022 Felix Kaiser, Thomas Effenberger, Eyke Liegmann
 *
@@ -21,47 +21,45 @@
 #include "xparameters.h"
 #include "../IP_Cores/uz_resolverIP/uz_resolverIP_hw.h"
 #include "../uz/uz_HAL.h"
-
-// Declares pointer to instance on file scope. DO NOT DO THIS! Just done here to be compatible to the rest of the legacy code in this file!
-static uz_resolverIP_t* resolverIP_D5;
+#include "../uz/uz_math_constants.h"
 
 #define CRYSTAL_FREQUENCY 8192000U
 
-void initialize_resolverIP(void){
-	 struct uz_resolverIP_config_t resolver_D5_config={
-   	        .base_address=XPAR_RESOLVER_INTERFACE_V_0_BASEADDR,
-   	        .ip_clk_frequency_Hz=100000000U,
-			.resolution = 16,
-			.freq_clockin = CRYSTAL_FREQUENCY
-   	    };
+static struct uz_resolverIP_config_t resolver_D5_config={
+		.base_address=XPAR_RESOLVER_INTERFACE_V_0_BASEADDR,
+   	    .ip_clk_frequency_Hz=100000000U,
+		.resolution = 16,
+		.freq_clockin = CRYSTAL_FREQUENCY,
+		.zero_position_mech = 0,
+		.pole_pairs_mach = 1,
+		.pole_pairs_res = 2
+};
 
-	 resolverIP_D5 = uz_resolverIP_init(resolver_D5_config);
-	 uz_resolverIP_setDataModePosition(resolverIP_D5);
-	 uz_resolverIP_setZeroPosition(resolverIP_D5,0.F);
-	 uz_resolverIP_setPolePairs(resolverIP_D5,1.F);
+uz_resolverIP_t* initialize_resolverIP_on_D5(void){
+	return (uz_resolverIP_init(resolver_D5_config));
 }
 
 void update_position_of_resolverIP(DS_Data* const data){
-	data->av.theta_mech = uz_resolverIP_readMechanicalPosition(resolverIP_D5);
-	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getPolePairs(resolverIP_D5)) - 2 * floor(data->av.theta_mech * uz_resolverIP_getPolePairs(resolverIP_D5)  / 2);
+	data->av.theta_mech = uz_resolverIP_readMechanicalPosition(data->objects.resolver_IP);
+	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)) - 2 * UZ_PIf * floor(data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)  / (2* UZ_PIf));
 }
 
 void update_speed_of_resolverIP(DS_Data* const data){
-	data->av.mechanicalRotorSpeed = uz_resolverIP_readMechanicalVelocity(resolverIP_D5) * 60.f; //in rpm
+	data->av.mechanicalRotorSpeed = uz_resolverIP_readMechanicalVelocity(data->objects.resolver_IP) * 60.f; //in rpm
 }
 
 void update_position_and_speed_of_resolverIP(DS_Data* const data){
 	float *position = &data->av.theta_mech;
 	float *velocity = &data->av.mechanicalRotorSpeed;
-	uz_resolverIP_readMechanicalPositionAndVelocity(resolverIP_D5,position,velocity);
+	uz_resolverIP_readMechanicalPositionAndVelocity(data->objects.resolver_IP,position,velocity);
 	data->av.mechanicalRotorSpeed = data->av.mechanicalRotorSpeed * 60.F; //rpm
-	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getPolePairs(resolverIP_D5)) - 2 * floor(data->av.theta_mech * uz_resolverIP_getPolePairs(resolverIP_D5)  / 2);
+	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)) - 2 * UZ_PIf * floor(data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)  / (2* UZ_PIf));
 }
 
 // For DEBUGGING only
 void readRegister_of_resolverIP(DS_Data* const data){
-	uint32_t val = uz_resolverIP_readRegister(resolverIP_D5,CONTROL_REG_ADR);
+	uint32_t val = uz_resolverIP_readRegister(data->objects.resolver_IP,CONTROL_REG_ADR);
 	uz_printf("%d \n",val);
-	uint32_t val1 = uz_resolverIP_readRegister(resolverIP_D5,POS_REG_1_ADR);
+	uint32_t val1 = uz_resolverIP_readRegister(data->objects.resolver_IP,POS_REG_1_ADR);
 	uz_printf("%d \n",val1);
 }

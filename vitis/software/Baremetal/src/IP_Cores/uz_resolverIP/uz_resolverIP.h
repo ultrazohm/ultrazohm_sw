@@ -29,6 +29,9 @@ struct uz_resolverIP_config_t{
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core, tested for 100MHz*/
     uint32_t resolution; /**< Resolution setting of AD2S1210. Determined by RES pins, tested for 16bit */
     float freq_clockin; /**< External Clock of AD2S1210. Determined by Crystal Frequency, tested for 8.192MHz */
+    float zero_position_mech; /** Mechanical zero position*/
+    float pole_pairs_mach;/** Number of machine pole pairs (for conversion from mechanical to electrical position/velocity)*/
+    float pole_pairs_res;/** Number of resolver pole pairs (for conversion of measured to  mechanical velocity)*/
 };
 
 
@@ -96,25 +99,42 @@ void uz_resolverIP_setDataModePositionVelocity(uz_resolverIP_t* self);
  * @brief Sets Zero Position, mechanical and electrical position values are offset by this value
  *
  * @param self instance of uz_resolverIP_t
- * @param zero_pos zero position, mechanical position between 0 and 2, this value is subtracted from original value in readMechanicalPosition
+ * @param zero_pos zero position, mechanical position between 0 and 2 * PI, this value is subtracted from original value in readMechanicalPosition
  */
 void uz_resolverIP_setZeroPosition(uz_resolverIP_t* self, float zero_pos);
 
 /**
- * @brief Returns number of pole pairs
+ * @brief Returns number of machine pole pairs
  *
  * @param self instance of uz_resolverIP_t
- * @return pole_Pairs, number of pole pairs
+ * @return pole_Pairs, number of machine pole pairs
  */
-float uz_resolverIP_getPolePairs(uz_resolverIP_t* self);
+float uz_resolverIP_getMachinePolePairs(uz_resolverIP_t* self);
 
 /**
- * @brief Sets number of pole pairs
+ * @brief Sets number of machine pole pairs
  *
  * @param self instance of uz_resolverIP_t
- * @param pole_Pairs number of pole pairs
+ * @param pole_Pairs number of machine pole pairs
  */
-void uz_resolverIP_setPolePairs(uz_resolverIP_t* self, float pole_Pairs);
+void uz_resolverIP_setMachinePolePairs(uz_resolverIP_t* self, float pole_Pairs);
+
+/**
+ * @brief Returns number of resolver pole pairs in  config struct,  measured velocities will be divided by this factor
+ *
+ * @param self instance of uz_resolverIP_t
+ * @return pole_Pairs, number of resolver pole pairs
+ */
+float uz_resolverIP_getResolverPolePairs(uz_resolverIP_t* self);
+
+/**
+ * @brief Sets number of resolver pole pairs in config struct, measured velocities will be divided by this factor
+ *
+ * @param self instance of uz_resolverIP_t
+ * @param pole_Pairs number of resolver pole pairs
+ */
+void uz_resolverIP_setResolverPolePairs(uz_resolverIP_t* self, float pole_Pairs);
+
 
 /**
  * @brief Reads Resolver Electrical Velocity, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
@@ -140,7 +160,7 @@ float uz_resolverIP_readMechanicalVelocity(uz_resolverIP_t* self);
  *
  * @param self instance of uz_resolverIP_t
  *
- * @return Float Electrical Position Data in range 0 .. 2
+ * @return Float Electrical Position Data in range 0 .. 2*PI
  */
 float uz_resolverIP_readElectricalPosition(uz_resolverIP_t* self);
 
@@ -150,7 +170,7 @@ float uz_resolverIP_readElectricalPosition(uz_resolverIP_t* self);
  *
  * @param self instance of uz_resolverIP_t
  *
- * @return Float Mechanial Position Data in range 0 .. 2
+ * @return Float Mechanial Position Data in range 0 .. 2*PI
  */
 float uz_resolverIP_readMechanicalPosition(uz_resolverIP_t* self);
 
@@ -159,7 +179,7 @@ float uz_resolverIP_readMechanicalPosition(uz_resolverIP_t* self);
   * @brief Reads Resolver Mechanical Position and Velocity, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
  *
  * @param self instance of uz_resolverIP_t
- * @param position_f pointer to float mechanical position value in range 0..2
+ * @param position_f pointer to float mechanical position value in range 0..2*PI
  * @param velocity_f pointer to float mechanical velocity value in revs per second
  */
 void uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self, float* position_f, float* velocity_f);
@@ -168,7 +188,7 @@ void uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self, floa
   * @brief Reads Resolver Electrical Position and Velocity, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
  *
  * @param self instance of uz_resolverIP_t
- * @param position_f pointer to float electrical position value in range 0..2
+ * @param position_f pointer to float electrical position value in range 0..2*PI
  * @param velocity_f pointer to float electrical velocity value in revs per second
  */
 void uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self, float* position_f, float* velocity_f);

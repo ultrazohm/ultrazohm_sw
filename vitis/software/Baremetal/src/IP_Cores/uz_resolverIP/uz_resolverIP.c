@@ -20,7 +20,7 @@
 #include "../../uz/uz_HAL.h"
 #include "uz_resolverIP.h"
 #include "uz_resolverIP_hw.h"
-
+#include "../../uz/uz_math_constants.h"
 
 /**
  * @brief Data type for object resolverIP
@@ -30,8 +30,9 @@ struct uz_resolverIP_t {
     bool is_ready;/**< Boolean that indicates successful initialization */
     struct uz_resolverIP_config_t config;/**< Configuration struct with members seen below */
     uz_resolverIP_mode mode;/**< enum that indicates current mode of AD2S1210 between Configuration Mode, Position Mode, Velocity Mode or PositionAndVelocityMode */
-    float zero_Position; /** Mechanical zero position*/
-    float pole_Pairs;/** Number of pole pairs (for conversion from mechanical to electrical position)*/
+    float zero_position_mechanical; /** Mechanical zero position*/
+    float pole_pairs_machine;/** Number of machine pole pairs (for conversion from mechanical to electrical position)*/
+    float pole_pairs_resolver;/** Number of resolver pole pairs (for conversion from mechanical to electrical position)*/
 	union{
  		int32_t registerValue; /** RESDAT Value 32bit*/
   		uint16_t pos_Vel[2]; /** 16bit position value in pos_Vel[0], 16bit velocity value in pos_Vel[1]*/
@@ -47,10 +48,6 @@ static uz_resolverIP_t* uz_resolverIP_allocation(void){
     uz_resolverIP_t* self = &instances[instance_counter];
     uz_assert_false(self->is_ready);
     instance_counter++;
-    self->is_ready = true;
-    self->zero_Position = 0;
-    self->pole_Pairs = 1;
-	self->registerValue = 0;
     return (self);
 }
 
@@ -58,14 +55,21 @@ uz_resolverIP_t* uz_resolverIP_init(struct uz_resolverIP_config_t configNew) {
 	 uz_assert_not_zero_uint32(configNew.base_address);
 	 uz_assert_not_zero_uint32(configNew.ip_clk_frequency_Hz);
      uz_assert(configNew.resolution == 10 || configNew.resolution == 12 || configNew.resolution == 14 || configNew.resolution == 16);
-     uz_assert(configNew.freq_clockin > 6000000U && configNew.freq_clockin < 11000000U);
-
+     uz_assert(configNew.freq_clockin >= 6144000U && configNew.freq_clockin <= 10240000U);
+     uz_assert(configNew.zero_position_mech >= 0 && configNew.zero_position_mech < 2*UZ_PIf);
+     uz_assert(configNew.pole_pairs_mach > 0);
+     uz_assert(configNew.pole_pairs_res > 0);
 	uz_resolverIP_t* self = uz_resolverIP_allocation();
 	self->config =configNew;
+    self->is_ready = true;
+    self->zero_position_mechanical = configNew.zero_position_mech;
+    self->pole_pairs_machine = configNew.pole_pairs_mach;
+    self->pole_pairs_resolver = configNew.pole_pairs_res;
+	self->registerValue = 0;
 
     uz_resolverIP_hw_write_RESCON(self->config.base_address, RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
 
-    int32_t rescon;
+    int32_t rescon = 0;
     do{
         rescon = uz_resolverIP_hw_read_RESCON(self->config.base_address);
     } while (rescon & RESCON_Data_uz_axi_BUSY_bit);
@@ -89,23 +93,37 @@ void uz_resolverIP_setZeroPosition(uz_resolverIP_t* self, float zero_pos){
     uz_assert_not_NULL(self)
     uz_assert(self->is_ready);
     uz_assert(zero_pos >= 0.F);
-    uz_assert(zero_pos <= 2.F);
+    uz_assert(zero_pos <= 2.F * UZ_PIf);
 
-    self->zero_Position = zero_pos;
+    self->zero_position_mechanical = zero_pos;
 }
 
-void uz_resolverIP_setPolePairs(uz_resolverIP_t* self, float pole_Pairs){
+void uz_resolverIP_setMachinePolePairs(uz_resolverIP_t* self, float pole_pairs_machine){
     uz_assert_not_NULL(self)
     uz_assert(self->is_ready);
-    uz_assert(pole_Pairs > 0);
+    uz_assert(pole_pairs_machine > 0);
 
-    self->pole_Pairs = pole_Pairs;
+    self->pole_pairs_machine = pole_pairs_machine;
 }
 
-float uz_resolverIP_getPolePairs(uz_resolverIP_t* self){
+float uz_resolverIP_getMachinePolePairs(uz_resolverIP_t* self){
     uz_assert_not_NULL(self)
+	uz_assert(self->is_ready);
+    return self->pole_pairs_machine;
+}
 
-    return self->pole_Pairs;
+void uz_resolverIP_setResolverPolePairs(uz_resolverIP_t* self, float pole_pairs_resolver){
+    uz_assert_not_NULL(self)
+    uz_assert(self->is_ready);
+    uz_assert(pole_pairs_resolver > 0);
+
+    self->pole_pairs_resolver = pole_pairs_resolver;
+}
+
+float uz_resolverIP_getResolverPolePairs(uz_resolverIP_t* self){
+    uz_assert_not_NULL(self)
+	uz_assert(self->is_ready);
+    return self->pole_pairs_resolver;
 }
 
 void uz_resolverIP_setDataModeVelocity(uz_resolverIP_t* self){
@@ -141,7 +159,7 @@ float uz_resolverIP_readElectricalPosition(uz_resolverIP_t* self){
 	 uz_assert_not_NULL(self)
 	 uz_assert(self->is_ready);
 	 float position = uz_resolverIP_readMechanicalPosition(self);
-	 return (position * self->pole_Pairs) - (float)(2 * floor(position * self->pole_Pairs  / 2));
+	 return (position * self->pole_pairs_machine) - (float)(2 * UZ_PIf * floor(position * self->pole_pairs_machine  / (2*UZ_PIf)));
 }
 float uz_resolverIP_readMechanicalPosition(uz_resolverIP_t* self){
 	 uz_assert_not_NULL(self)
@@ -157,16 +175,16 @@ float uz_resolverIP_readMechanicalPosition(uz_resolverIP_t* self){
 
 	 	self->registerValue = uz_resolverIP_hw_read_RESDAT(self->config.base_address);
 
-	 	float position = uz_convert_sfixed_to_float(self->pos_Vel[0], (int)(self->config.resolution) - 1);
+	 	float position = uz_convert_sfixed_to_float(self->pos_Vel[0], (int)(self->config.resolution) - 1) * UZ_PIf;
 
 	 	uz_assert(position >= 0.F);
-	 	uz_assert(position <= 2.F);
+	 	uz_assert(position <= 2.F *UZ_PIf);
 
-	 	if (position - self->zero_Position < 0){
-	 		return 2 + (position - self->zero_Position);
+	 	if (position - self->zero_position_mechanical < 0){
+	 		return 2*UZ_PIf + (position - self->zero_position_mechanical);
 	 	}
 	 	else {
-	 		return position- self->zero_Position;
+	 		return position- self->zero_position_mechanical;
 	 	}
 
 
@@ -176,7 +194,7 @@ float uz_resolverIP_readElectricalVelocity(uz_resolverIP_t* self){
 	 uz_assert_not_NULL(self)
 	 uz_assert(self->is_ready);
 
-	 return uz_resolverIP_readMechanicalVelocity(self) * self->pole_Pairs;
+	 return uz_resolverIP_readMechanicalVelocity(self) * self->pole_pairs_machine;
 }
 
 float uz_resolverIP_readMechanicalVelocity(uz_resolverIP_t* self){
@@ -217,7 +235,7 @@ float uz_resolverIP_readMechanicalVelocity(uz_resolverIP_t* self){
 	 		 uz_assert(false);
 	 }
 
-	 return uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+bit_offset)),16+bit_offset)*bitToRpsFactor;
+	 return uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+bit_offset)),16+bit_offset)*bitToRpsFactor / self->config.pole_pairs_res;
 
 }
 void uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self, float* position_f, float* velocity_f){
@@ -229,8 +247,8 @@ void uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self, floa
 	 float* p_velocity_mech = &velocity_mech;
 	 uz_resolverIP_readMechanicalPositionAndVelocity(self,p_position_mech, p_velocity_mech);
 
-	 *position_f =  ((position_mech) * self->pole_Pairs) - (float)(2 * floor((position_mech) * self->pole_Pairs  / 2));
-	 *velocity_f = velocity_mech * self->pole_Pairs;
+	 *position_f =  ((position_mech) * self->pole_pairs_machine) - (float)(2 * UZ_PIf * floor((position_mech) * self->pole_pairs_machine  / (2*UZ_PIf)));
+	 *velocity_f = velocity_mech * self->pole_pairs_machine;
 }
 
 void uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self, float* position_f, float* velocity_f){
@@ -247,16 +265,16 @@ void uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self, floa
 
 	 self->registerValue = uz_resolverIP_hw_read_RESDAT(self->config.base_address);
 
-	 float position = uz_convert_sfixed_to_float(self->pos_Vel[0], (int)(self->config.resolution) - 1);
+	 float position = uz_convert_sfixed_to_float(self->pos_Vel[0], (int)(self->config.resolution) - 1)* UZ_PIf;
 
 	 uz_assert(position >= 0.F);
-	 uz_assert(position <= 2.F);
+	 uz_assert(position <= 2.F * UZ_PIf);
 
-	 if (position - self->zero_Position < 0){
-		 *position_f = 2 + (position - self->zero_Position);
+	 if (position - self->zero_position_mechanical < 0){
+		 *position_f = 2*UZ_PIf + (position - self->zero_position_mechanical);
 	}
 	 else {
-		 *position_f = position- self->zero_Position;
+		 *position_f = position- self->zero_position_mechanical;
 	 }
 
 	 float bitToRpsFactor = 0;
@@ -284,7 +302,7 @@ void uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self, floa
 	 		 uz_assert(false);
 	 }
 
-	 *velocity_f = uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+bit_offset)),16+bit_offset)*bitToRpsFactor;
+	 *velocity_f = uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+bit_offset)),16+bit_offset)*bitToRpsFactor / self->config.pole_pairs_res;
 
 	}
 
@@ -351,6 +369,7 @@ void uz_resolverIP_writeRegister(uz_resolverIP_t* self, int32_t addr, int32_t va
 
 void uz_resolverIP_setLOSThresh(uz_resolverIP_t* self, float thresh){
     uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     
     uz_assert(thresh <= 4.82f);
 	uz_assert(thresh >= 0.f);
@@ -366,7 +385,7 @@ void uz_resolverIP_setLOSThresh(uz_resolverIP_t* self, float thresh){
 
 float uz_resolverIP_getLOSThresh(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
-
+    uz_assert(self->is_ready);
 	int32_t addr = LOS_THRESHOLD_REG_ADR;
 	int32_t val = uz_resolverIP_readRegister(self, addr);
 
@@ -385,7 +404,7 @@ float uz_resolverIP_getLOSThresh(uz_resolverIP_t* self){
 
 void uz_resolverIP_setDOSOverrangeThresh(uz_resolverIP_t* self, float thresh){
     uz_assert_not_NULL(self);
-
+    uz_assert(self->is_ready);
 	uz_assert(thresh <= 4.82f);
 	uz_assert(thresh >= 0.f);
 
@@ -400,7 +419,7 @@ void uz_resolverIP_setDOSOverrangeThresh(uz_resolverIP_t* self, float thresh){
 
 float uz_resolverIP_getDOSOverrangeThresh(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
-    
+    uz_assert(self->is_ready);
 	int32_t addr = DOS_OVERRANGE_REG_ADR;
 	int32_t val = uz_resolverIP_readRegister(self, addr);
 
@@ -418,6 +437,7 @@ float uz_resolverIP_getDOSOverrangeThresh(uz_resolverIP_t* self){
 
 void uz_resolverIP_setDOSMismatchThresh(uz_resolverIP_t* self, float thresh){
     uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
 	uz_assert(thresh <= 4.82f);
 	uz_assert(thresh >= 0.f);
 
@@ -432,7 +452,7 @@ void uz_resolverIP_setDOSMismatchThresh(uz_resolverIP_t* self, float thresh){
 
 float uz_resolverIP_getDOSMismatchThresh(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
-    
+    uz_assert(self->is_ready);
 	int32_t addr = DOS_MISMATCH_REG_ADR;
 	int32_t val = uz_resolverIP_readRegister(self, addr);
 
@@ -451,7 +471,7 @@ float uz_resolverIP_getDOSMismatchThresh(uz_resolverIP_t* self){
 
 void uz_resolverIP_setDOSResetMin(uz_resolverIP_t* self, float min){
     uz_assert_not_NULL(self);
-    
+    uz_assert(self->is_ready);
 	uz_assert(min <= 4.82f);
 	uz_assert(min >= 0.f);
 
@@ -467,7 +487,7 @@ void uz_resolverIP_setDOSResetMin(uz_resolverIP_t* self, float min){
 
 float uz_resolverIP_getDOSResetMin(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
-    
+    uz_assert(self->is_ready);
 	int32_t addrMin = DOS_RESET_MIN_REG_ADR;
 
 	int32_t valMin = uz_resolverIP_readRegister(self, addrMin);
@@ -488,6 +508,7 @@ float uz_resolverIP_getDOSResetMin(uz_resolverIP_t* self){
 
 void uz_resolverIP_setDOSResetMax(uz_resolverIP_t* self, float max){
     uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
 	uz_assert(max <= 4.82f);
 	uz_assert(max >= 0.f);
 
@@ -504,7 +525,7 @@ void uz_resolverIP_setDOSResetMax(uz_resolverIP_t* self, float max){
 
 float uz_resolverIP_getDOSResetMax(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
-    
+    uz_assert(self->is_ready);
 	int32_t addrMax = DOS_RESET_MAX_REG_ADR;
 
 	int32_t valMax = uz_resolverIP_readRegister(self, addrMax);
@@ -524,7 +545,7 @@ float uz_resolverIP_getDOSResetMax(uz_resolverIP_t* self){
 
 void uz_resolverIP_setLOTHighThresh(uz_resolverIP_t* self, float thresh){
     uz_assert_not_NULL(self);    
-    
+    uz_assert(self->is_ready);
     float rangeMin = 0.f;
 	float rangeMax = 0.f;
 	float LSBsize = 0.f;
@@ -569,7 +590,7 @@ void uz_resolverIP_setLOTHighThresh(uz_resolverIP_t* self, float thresh){
 
 float uz_resolverIP_getLOTHighThresh(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
-    
+    uz_assert(self->is_ready);
 	float rangeMin = 0.f;
 	float rangeMax = 0.f;
 	float LSBsize = 0.f;
@@ -615,7 +636,7 @@ float uz_resolverIP_getLOTHighThresh(uz_resolverIP_t* self){
 
 void uz_resolverIP_setLOTLowThresh(uz_resolverIP_t* self, float thresh){
     uz_assert_not_NULL(self);
-    
+    uz_assert(self->is_ready);
     float rangeMin = 0.f;
 	float rangeMax = 0.f;
 	float LSBsize = 0.f;
@@ -660,7 +681,7 @@ void uz_resolverIP_setLOTLowThresh(uz_resolverIP_t* self, float thresh){
 
 float uz_resolverIP_getLOTLowThresh(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
-    
+    uz_assert(self->is_ready);
 	float rangeMin = 0.f;
 	float rangeMax = 0.f;
 	float LSBsize = 0.f;
@@ -706,7 +727,7 @@ float uz_resolverIP_getLOTLowThresh(uz_resolverIP_t* self){
 
 void uz_resolverIP_setExcitationFrequency(uz_resolverIP_t* self, float excFreq){
     uz_assert_not_NULL(self);
-    
+    uz_assert(self->is_ready);
 
 	uz_assert(excFreq <= 20000.f);
 	uz_assert(excFreq >= 2000.f);
@@ -722,7 +743,7 @@ void uz_resolverIP_setExcitationFrequency(uz_resolverIP_t* self, float excFreq){
 
 float uz_resolverIP_getExcitationFrequency(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
-    
+    uz_assert(self->is_ready);
 
 	int32_t addr = EXIT_FREQ_REG_ADR;
 	int32_t val = uz_resolverIP_readRegister(self, addr);
@@ -742,7 +763,7 @@ float uz_resolverIP_getExcitationFrequency(uz_resolverIP_t* self){
 
 void uz_resolverIP_setCTRLReg(uz_resolverIP_t* self, int32_t register_value){
     uz_assert_not_NULL(self);
-    
+    uz_assert(self->is_ready);
 	uz_assert(register_value <= 0xFF);
 	uz_assert(register_value >= 0x00);
 
@@ -753,7 +774,7 @@ void uz_resolverIP_setCTRLReg(uz_resolverIP_t* self, int32_t register_value){
 
 int32_t uz_resolverIP_getCTRLReg(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
-    
+    uz_assert(self->is_ready);
 	int32_t addr = CONTROL_REG_ADR;
 	int32_t register_value = uz_resolverIP_readRegister(self, addr);
 
@@ -766,7 +787,7 @@ int32_t uz_resolverIP_getCTRLReg(uz_resolverIP_t* self){
 
 void uz_resolverIP_resetSoftware(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
-    
+    uz_assert(self->is_ready);
 	int32_t addr = SOFTWARE_RST_REG_ADR;
 
 	uz_resolverIP_writeRegister(self, addr, 0x00);
@@ -776,7 +797,7 @@ void uz_resolverIP_resetSoftware(uz_resolverIP_t* self){
 
 int32_t uz_resolverIP_getFLTRegister(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
-    
+    uz_assert(self->is_ready);
 	int32_t addr = FAULT_REG_ADR;
 
 	int32_t register_value = uz_resolverIP_readRegister(self, addr);

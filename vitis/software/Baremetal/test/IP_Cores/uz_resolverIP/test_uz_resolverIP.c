@@ -17,7 +17,10 @@ struct uz_resolverIP_config_t testconfig={
     .base_address=TEST_BASE_ADDRESS,
 	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
 	.resolution = TEST_IP_CORE_RES,
-    .freq_clockin = TEST_IP_CORE_CLKIN
+    .freq_clockin = TEST_IP_CORE_CLKIN,
+    .zero_position_mech = 0,
+	.pole_pairs_mach = 1,
+	.pole_pairs_res = 1
 };
     
 void setUp(void)
@@ -52,7 +55,10 @@ void test_uz_resolverIP_fail_assert_if_base_address_is_zero(void)
     struct uz_resolverIP_config_t config={
     	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
 		.resolution = TEST_IP_CORE_RES,
-		.freq_clockin = TEST_IP_CORE_CLKIN
+		.freq_clockin = TEST_IP_CORE_CLKIN,
+        .zero_position_mech = 0,
+	    .pole_pairs_mach = 1,
+	    .pole_pairs_res = 1
     };
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config));
 }
@@ -62,7 +68,10 @@ void test_uz_resolverIP_fail_assert_if_ip_clk_freq_is_zero(void)
     struct uz_resolverIP_config_t config={
         .base_address=TEST_BASE_ADDRESS,
 		.resolution = TEST_IP_CORE_RES,
-		.freq_clockin = TEST_IP_CORE_CLKIN
+		.freq_clockin = TEST_IP_CORE_CLKIN,
+        .zero_position_mech = 0,
+	    .pole_pairs_mach = 1,
+	    .pole_pairs_res = 1
     };
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config));
 }
@@ -72,7 +81,10 @@ void test_uz_resolverIP_fail_assert_if_ip_resolution_is_zero(void)
     struct uz_resolverIP_config_t config={
         .base_address=TEST_BASE_ADDRESS,
     	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
-		.freq_clockin = TEST_IP_CORE_CLKIN
+		.freq_clockin = TEST_IP_CORE_CLKIN,
+        .zero_position_mech = 0,
+	    .pole_pairs_mach = 1,
+	    .pole_pairs_res = 1
     };
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config) );
 }
@@ -83,6 +95,35 @@ void test_uz_resolverIP_fail_assert_if_freq_clockin_is_zero(void)
         .base_address=TEST_BASE_ADDRESS,
     	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
 		.resolution = TEST_IP_CORE_RES,
+        .zero_position_mech = 0,
+	    .pole_pairs_mach = 1,
+	    .pole_pairs_res = 1
+    };
+    TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config) );
+}
+
+void test_uz_resolverIP_fail_assert_if_pole_pairs_mach_is_zero(void)
+{
+    struct uz_resolverIP_config_t config={
+        .base_address=TEST_BASE_ADDRESS,
+    	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
+		.resolution = TEST_IP_CORE_RES,
+        .zero_position_mech = 0,
+	    .pole_pairs_mach = 0,
+	    .pole_pairs_res = 1
+    };
+    TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config) );
+}
+
+void test_uz_resolverIP_fail_assert_if_pole_pairs_res_is_zero(void)
+{
+    struct uz_resolverIP_config_t config={
+        .base_address=TEST_BASE_ADDRESS,
+    	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
+		.resolution = TEST_IP_CORE_RES,
+        .zero_position_mech = 0,
+	    .pole_pairs_mach = 1,
+	    .pole_pairs_res = 0
     };
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config) );
 }
@@ -93,7 +134,10 @@ void test_uz_resolverIP_fail_assert_if_resolution_is_implausible(void)
         .base_address=TEST_BASE_ADDRESS,
     	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
 		.resolution = 11,
-        .freq_clockin = TEST_IP_CORE_CLKIN
+        .freq_clockin = TEST_IP_CORE_CLKIN,
+        .zero_position_mech = 0,
+	    .pole_pairs_mach = 1,
+	    .pole_pairs_res = 1
     };
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config) );
 }
@@ -104,7 +148,10 @@ void test_uz_resolverIP_fail_assert_if_freq_clockin_is_implausible(void)
         .base_address=TEST_BASE_ADDRESS,
     	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
 		.resolution = TEST_IP_CORE_RES,
-        .freq_clockin = 100U
+        .freq_clockin = 100U,
+        .zero_position_mech = 0,
+	    .pole_pairs_mach = 1,
+	    .pole_pairs_res = 1        
     };
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config) );
 }
@@ -120,14 +167,24 @@ void test_uz_resolverIP_fail_assert_if_setZeroPosition_is_called_with_NULL_point
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_setZeroPosition(NULL,0.F));
 }
 
-void test_uz_resolverIP_fail_assert_if_setPolePairs_is_called_with_NULL_pointer(void)
+void test_uz_resolverIP_fail_assert_if_setMachinePolePairs_is_called_with_NULL_pointer(void)
 {
-    TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_setPolePairs(NULL,0.F));
+    TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_setMachinePolePairs(NULL,0.F));
 }
 
-void test_uz_resolverIP_fail_assert_if_getPolePairs_is_called_with_NULL_pointer(void)
+void test_uz_resolverIP_fail_assert_if_getMachinePolePairs_is_called_with_NULL_pointer(void)
 {
-    TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_getPolePairs(NULL));
+    TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_getMachinePolePairs(NULL));
+}
+
+void test_uz_resolverIP_fail_assert_if_setResolverPolePairs_is_called_with_NULL_pointer(void)
+{
+    TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_setResolverPolePairs(NULL,0.F));
+}
+
+void test_uz_resolverIP_fail_assert_if_getResolverPolePairs_is_called_with_NULL_pointer(void)
+{
+    TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_getResolverPolePairs(NULL));
 }
 
 void test_uz_resolverIP_fail_assert_if_setDataModeVelocity_is_called_with_NULL_pointer(void)

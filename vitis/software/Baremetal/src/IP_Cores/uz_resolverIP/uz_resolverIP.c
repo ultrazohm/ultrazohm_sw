@@ -159,7 +159,7 @@ float uz_resolverIP_readElectricalPosition(uz_resolverIP_t* self){
 	 uz_assert_not_NULL(self)
 	 uz_assert(self->is_ready);
 	 float position = uz_resolverIP_readMechanicalPosition(self);
-	 return (position * self->pole_pairs_machine) - (float)(2 * UZ_PIf * floor(position * self->pole_pairs_machine  / (2*UZ_PIf)));
+	 return (position * self->pole_pairs_machine) - (float)(2 * UZ_PIf * (float)(floor(position * self->pole_pairs_machine  / (2*UZ_PIf))));
 }
 float uz_resolverIP_readMechanicalPosition(uz_resolverIP_t* self){
 	 uz_assert_not_NULL(self)
@@ -235,7 +235,7 @@ float uz_resolverIP_readMechanicalVelocity(uz_resolverIP_t* self){
 	 		 uz_assert(false);
 	 }
 
-	 return uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+bit_offset)),16+bit_offset)*bitToRpsFactor / self->config.pole_pairs_res;
+	 return uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+bit_offset)),16+bit_offset)*bitToRpsFactor / self->pole_pairs_resolver;
 
 }
 void uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self, float* position_f, float* velocity_f){
@@ -247,7 +247,7 @@ void uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self, floa
 	 float* p_velocity_mech = &velocity_mech;
 	 uz_resolverIP_readMechanicalPositionAndVelocity(self,p_position_mech, p_velocity_mech);
 
-	 *position_f =  ((position_mech) * self->pole_pairs_machine) - (float)(2 * UZ_PIf * floor((position_mech) * self->pole_pairs_machine  / (2*UZ_PIf)));
+	 *position_f =  ((position_mech) * self->pole_pairs_machine) - (float)(2 * UZ_PIf * (float)(floor((position_mech) * self->pole_pairs_machine  / (2*UZ_PIf))));
 	 *velocity_f = velocity_mech * self->pole_pairs_machine;
 }
 
@@ -302,7 +302,7 @@ void uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self, floa
 	 		 uz_assert(false);
 	 }
 
-	 *velocity_f = uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+bit_offset)),16+bit_offset)*bitToRpsFactor / self->config.pole_pairs_res;
+	 *velocity_f = uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+bit_offset)),16+bit_offset)*bitToRpsFactor / self->pole_pairs_resolver;
 
 	}
 

@@ -4,14 +4,14 @@
 Resolver Interface
 ==================
 
-The ResolverIP interface implements communication between the Ultrazohm PS and PL and the `AD2S1210 <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_ resolver-to-digital converter IC on the :ref:`dig_encoder_v1` Board.
+The ResolverIP interface implements communication between the Ultrazohm PS and PL and the `AD2S1210 <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_ resolver-to-digital converter IC on the Encoder Board.
 
 Introduction
 ============
 
 The Ultrazohm PL and the IC interact via a :math:`12.5MHz` SPI Bus. New position or velocity values can be obtained with a maximum frequency of :math:`400kHz`. The delay between triggering and a new value becoming valid is :math:`2.48 \mu s`.
 
-As illustrated by figure :numref:`structure`, the AD2S1210 continously outputs an excitation signal on Pins 5 and 6 of J1 of the :ref:`dig_encoder_v1` Board. A resolver connected to J1 will return two differential signals (Cos +/-, Sin +/-). Upon triggering via the N_SAMPLE signal, these analog signals are converted. Position and velocity values are stored in registers of the AD2S1210. Depending on the user's need, either position or velocity or both values can be read out by the PL via SPI. Raw values are made available in the PL as IPCore outputs. Also, raw values can be transfered to the PS via the AXI-Bus. Functions for post-processing of the raw values in the PS are implemented.
+As illustrated by figure :numref:`structure`, the AD2S1210 continously outputs an excitation signal on Pins 5 and 6 of J1 of the Encoder Board. A resolver connected to J1 will return two differential signals (Cos +/-, Sin +/-). Upon triggering via the N_SAMPLE signal, these analog signals are converted. Position and velocity values are stored in registers of the AD2S1210. Depending on the user's need, either position or velocity or both values can be read out by the PL via SPI. Raw values are made available in the PL as IPCore outputs. Also, raw values can be transfered to the PS via the AXI-Bus. Functions for post-processing of the raw values in the PS are implemented.
 
 .. _structure:
 
@@ -23,12 +23,13 @@ As illustrated by figure :numref:`structure`, the AD2S1210 continously outputs a
 
 
 
-The ResolverIP interface also allows for reading and writing register values of the AD2S1210. This fuctionality can be used to modify i.e. the resolver excitation frequency. For more details on register functionalities, refer to the `AD2S1210 Datasheet <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_ and the documentation :ref:`below <FunctionList>`.
+The ResolverIP interface also allows for reading and writing register values of the AD2S1210. This fuctionality can be used to modify i.e. the resolver excitation frequency. For more details on register functionalities, 
+er to the `AD2S1210 Datasheet <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_ and the documentation :ref:`below <FunctionList>`.
 
 
 Setup
 =====
-To use the ResolverIP interface, set up your hardware as described in :ref:`dig_encoder_v1`, set up your Vivado project as described below in :ref:`Vivado Setup <vivado_setup>` and use the Vitis functions as described further below in :ref:`Vitis Setup <vitis_setup>`.
+To use the ResolverIP interface, set up your hardware as described in Encoder Board documentation, set up your Vivado project as described below in :ref:`Vivado Setup <vivado_setup>` and use the Vitis functions as described further below in :ref:`Vitis Setup <vitis_setup>`.
 
 .. _vivado_setup:
 
@@ -177,7 +178,10 @@ Note that the member ``freq_clockin`` needs to be set to the frequency of the ex
            .base_address=XPAR_RESOLVER_INTERFACE_V_0_BASEADDR,
            .ip_clk_frequency_Hz=IP_CLK_FREQ,
            .resolution = 16,
-           .freq_clockin = CRYSTAL_FREQUENCY
+           .freq_clockin = CRYSTAL_FREQUENCY,
+           .zero_position_mech = 0,
+           .pole_pairs_mach = 1,
+           .pole_pairs_res = 2
         };
 
 With a parameter of type  ``uz_resolverIP_config_t``, the function ``uz_resolverIP_init`` in ``vitis\software\Baremetal\src\IP_Cores\uz_resolverIP\uz_resolverIP.c`` is called. It returns a pointer to an instance of the struct ``uz_resolverIP_t``.
@@ -194,36 +198,39 @@ Because doxygen can't display nested structs, here is the declaration of ``uz_re
     * @brief Data type for object resolverIP
     *
     */
-   struct uz_resolverIP_t {
+    struct uz_resolverIP_t {
     	bool is_ready;/**< Boolean that indicates successful initialization */
     	struct uz_resolverIP_config_t config;/**< Configuration struct with members seen below */
     	uz_resolverIP_mode mode;/**< enum that indicates current mode of AD2S1210 between Configuration Mode, Position Mode, Velocity Mode or PositionAndVelocityMode */
-    	float zero_Position; /** Mechanical zero position*/
-    	float pole_Pairs;/** Number of pole pairs (for conversion from mechanical to electrical position)*/
+    	float zero_position_mechanical; /** Mechanical zero position*/
+    	float pole_pairs_machine;/** Number of machine pole pairs (for conversion from mechanical to electrical position)*/
+    	float pole_pairs_resolver;/** Number of resolver pole pairs (for conversion from mechanical to electrical position)*/
     	union{
     		int32_t registerValue; /** RESDAT Value 32bit*/
     		uint16_t pos_Vel[2]; /** 16bit position value in pos_Vel[0], 16bit velocity value in pos_Vel[1]*/
     	}; 
-   };
+    };
 
 Note that the member ``mode`` coincides with the AD2S1210's modes (see `datasheet <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_), with the exception of the ``POSITION_VELOCITY_MODE``. Here the IPCore manages the timely transition between ``POSITION_MODE`` and ``VELOCITY_MODE`` for reading both position and velocity.
 
 Note that the member ``zero_Position`` allows for setting an initial position that corresponds to position = 0. All mechanical and electrical positions returned by the functions ``uz_resolverIP_readElectricalPosition`` and ``uz_resolverIP_readMechanicalPosition`` are with reference to ``zero_Position``. ``zero_Position`` can be set via the function ``uz_resolverIP_setZeroPosition``. Default value is 0.
 
-Note that the member ``pole_Pairs`` influences the conversion from mechanical to electrical position and velocity.  ``pole_Pairs`` can be set via the function ``uz_resolverIP_setPolePairs``. Default value is 1.
+Note that the member ``pole_pairs_machine`` influences the conversion from mechanical to electrical position and velocity.  ``pole_pairs_machine`` can be set via the function ``uz_resolverIP_setMachinePolePairs``. 
+
+Note that the member ``pole_pairs_resolver`` influences the conversion from measured to mechanical velocity.  ``pole_pairs_resolver`` can be set via the function ``uz_resolverIP_setResolverPolePairs``. 
 
 The member ``union`` is used for buffering the position and velocity values read in via AXI from the RESDAT register. Position values are written to bits 0 to 15, velocity values are written to bits 16 to 31.
 
-An example initialization of a struct of type ``uz_resolverIP_t`` is given here:
+A pointer to an  instance of type uz_resolverIP_t can be stored in ``GlobalData.objects.resolverIP``.
 
 .. code-block:: c
 
-   uz_resolverIP_t* resolverIP_D5;
-   resolverIP_D5 = uz_resolverIP_init(resolver_D5_config);
-   uz_resolverIP_setZeroPosition(resolverIP_D5,0.45F);
-   uz_resolverIP_setPolePairs(resolverIP_D5,2.F);
+   Global_Data.objects.resolver_IP = uz_resolverIP_init(resolver_config)
+   uz_resolverIP_setZeroPosition(Global_Data.objects.resolver_IP,0.45F);
+   uz_resolverIP_setMachinePolePairs(Global_Data.objects.resolver_IP,2.F);
+   uz_resolverIP_setResolverPolePairs(Global_Data.objects.resolver_IP,1.F);
 
-A ready-to-use intialization can be found in ``vitis\software\Baremetal\src\hw_init\uz_resolverIP_init.c``. The function ``initialize_resolverIP()`` should be put in the ``init_ip_cores`` case of the intialization state machine of ``vitis\software\Baremetal\src\main.c``.
+A ready-to-use intialization can be found in ``vitis\software\Baremetal\src\hw_init\uz_resolverIP_init.c``. The function ``initialize_resolverIP_on_D5()`` should be called in the ``init_ip_cores`` case of the intialization state machine of ``vitis\software\Baremetal\src\main.c``.
 
 Data Aquistition
 ^^^^^^^^^^^^^^^^
@@ -259,23 +266,23 @@ Exemplary implementations that write to the ``GlobalData`` struct are shown belo
 .. code-block:: c
 
    void update_position_of_resolverIP(DS_Data* const data){
-   	data->av.theta_mech = uz_resolverIP_readMechanicalPosition(resolverIP_D5);
-   	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getPolePairs(resolverIP_D5)) - 2 * floor(data->av.theta_mech * uz_resolverIP_getPolePairs(resolverIP_D5)  / 2);
+   	data->av.theta_mech = uz_resolverIP_readMechanicalPosition(data->objects.resolver_IP);
+   	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)) - 2 * UZ_PIf * floor(data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)  / (2* UZ_PIf));
    }
-
+   
    void update_speed_of_resolverIP(DS_Data* const data){
-   	data->av.mechanicalRotorSpeed = uz_resolverIP_readMechanicalVelocity(resolverIP_D5) * 60.f; //in rpm
+   	data->av.mechanicalRotorSpeed = uz_resolverIP_readMechanicalVelocity(data->objects.resolver_IP) * 60.f; //in rpm
    }
-
+   
    void update_position_and_speed_of_resolverIP(DS_Data* const data){
    	float *position = &data->av.theta_mech;
    	float *velocity = &data->av.mechanicalRotorSpeed;
-   	uz_resolverIP_readMechanicalPositionAndVelocity(resolverIP_D5,position,velocity);
+   	uz_resolverIP_readMechanicalPositionAndVelocity(data->objects.resolver_IP,position,velocity);
    	data->av.mechanicalRotorSpeed = data->av.mechanicalRotorSpeed * 60.F; //rpm
-   	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getPolePairs(resolverIP_D5)) - 2 * floor(data->av.theta_mech * uz_resolverIP_getPolePairs(resolverIP_D5)  / 2);
+   	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)) - 2 * UZ_PIf * floor(data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)  / (2* UZ_PIf));
    }
 
-For the recommended timing setup as seen in figure :numref:`pic_timing3`, put the functions calls of the update fucntions in the respective ISR function, i.e. ``vitis\software\Baremetal\src\sw\isr.c``.
+For the recommended timing setup as seen in figure :numref:`pic_timing3`, put the functions calls of the update functions in the respective ISR function, i.e. ``vitis\software\Baremetal\src\sw\isr.c``.
 	
 
 More functioniality

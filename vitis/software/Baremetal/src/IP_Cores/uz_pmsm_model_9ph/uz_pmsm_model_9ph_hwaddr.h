@@ -14,8 +14,8 @@
 
 // Inputs general
 #define  inputs_general_Data_uz_pmsm_model_9ph                        0x180  //data register for Inport inputs, vector with 2 elements, address ends at 0x184
-#define  load_torque_Data_uz_pmsm_model_9ph                           0x180+0x00
-#define  in_omega_mech_Data_uz_pmsm_model_9ph                         0x180+0x04
+#define  in_omega_mech_Data_uz_pmsm_model_9ph                         0x180+0x00
+#define  load_torque_Data_uz_pmsm_model_9ph                           0x180+0x04
 #define  inputs_general_Strobe_uz_pmsm_model_9ph                      0x188  //strobe register for port inputs
 
 // Inputs voltages dq

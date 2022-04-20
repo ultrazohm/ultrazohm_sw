@@ -1,0 +1,17 @@
+SLStudio.Utils.RemoveHighlighting(get_param('inc_enc_v25', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_inc_enc_v25', 'handle'));
+annotate_port('gm_inc_enc_v25/IncEnc_V25/speed', 0, 1, '');
+annotate_port('gm_inc_enc_v25/IncEnc_V25/speed/calc_omega_instance4', 0, 1, '');
+annotate_port('gm_inc_enc_v25/IncEnc_V25/speed/calc_omega_instance4/invt_mult', 0, 1, '');
+annotate_port('inc_enc_v25/IncEnc_V25/speed/calc_omega/32bit counter', 1, 1, '');
+annotate_port('gm_inc_enc_v25/IncEnc_V25/speed/calc_omega_instance4/32bit counter', 1, 1, '');
+annotate_port('inc_enc_v25/IncEnc_V25/speed/calc_omega/32bit counter', 1, 1, '');
+annotate_port('gm_inc_enc_v25/IncEnc_V25/speed/calc_omega_instance4/invt_mult/HDL Reciprocal', 0, 1, '');
+annotate_port('gm_inc_enc_v25/IncEnc_V25/speed/calc_omega_instance4/invt_mult/HDL Reciprocal', 0, 1, '');
+annotate_port('inc_enc_v25/IncEnc_V25/speed/calc_omega/invt_mult/HDL Reciprocal', 0, 1, '');
+annotate_port('gm_inc_enc_v25/IncEnc_V25/speed/OS_factor_logic/align_oversamples/align_oversamples', 1, 1, '');
+annotate_port('gm_inc_enc_v25/IncEnc_V25/speed/OS_factor_logic/align_oversamples/align_oversamples', 1, 1, '');
+annotate_port('inc_enc_v25/IncEnc_V25/speed/OS_factor_logic/align_oversamples', 1, 1, '');
+annotate_port('gm_inc_enc_v25/IncEnc_V25/speed/OS_factor_logic/oversample_factor/oversample_factor', 1, 1, '');
+annotate_port('gm_inc_enc_v25/IncEnc_V25/speed/OS_factor_logic/oversample_factor/oversample_factor', 1, 1, '');
+annotate_port('inc_enc_v25/IncEnc_V25/speed/OS_factor_logic/oversample_factor', 1, 1, '');

@@ -15,7 +15,7 @@ steps:
 
  - name: copy_global_config
    image: ultrazohm/ultrazohm_remote_container
-   depends_on: [ copy_global_config ]
+   depends_on: [ clone ]
    commands: 
    - cp -f vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
    

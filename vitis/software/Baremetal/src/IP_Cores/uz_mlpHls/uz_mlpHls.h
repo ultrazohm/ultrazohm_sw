@@ -4,6 +4,7 @@
 // includes
 #include "xil_types.h"
 #include <stdbool.h>
+#include "xgpio.h"
 
 // defines
 
@@ -32,7 +33,7 @@ struct uz_mlpHls_config_t
 typedef struct uz_mlpHls_t uz_mlpHls_t;
 
 // function declarations
-uz_mlpHls_t *uz_mlpHls_init(struct uz_mlpHls_config_t config);
+uz_mlpHls_t *uz_mlpHls_init(struct uz_mlpHls_config_t config, XGpio monitor, XGpio control);
 
 // set functions
 void uz_mlpHls_setWeightAddress(uz_mlpHls_t *instance, u64 address);

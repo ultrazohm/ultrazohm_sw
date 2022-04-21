@@ -14,19 +14,25 @@
 
 // Xilinx includes
 #include "xparameters.h"
+#include "xgpio.h"
 
 // defines
-#define BATCH_SIZE 16U
+#define BATCH_SIZE 2U
 #define LEARNING_RATE 0.5f
-#define NUMBER_OUTPUTS 4U
-#define NUMBER_INPUTS 4U
-#define NUMBER_HIDDEN 2U
-#define NUMBER_NEURONS 4U
+#define NUMBER_OUTPUTS 16U
+#define NUMBER_INPUTS 16U
+#define NUMBER_HIDDEN 3U
+#define NUMBER_NEURONS 64U
 #define PAR_ENTRIES 4U
 #define EPOCHS 1
 
+//#define TEST_XOR
+#ifndef TEST_XOR
+#define TRAINING_SAMPLES BATCH_SIZE
+#endif
+
 // reference implementation
-#define HIDDEN_ACTIVATION sigmoid
+#define HIDDEN_ACTIVATION relu
 #define OUTPUT_ACTIVATION linear
 
 // input data and classes for training
@@ -112,15 +118,17 @@ static void uz_mlpHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 	float *inputBuffer = (float *) ((u32) uz_mlpHls_getInputAddress(testInstance));
 	float *outputBuffer = (float *) ((u32) uz_mlpHls_getOutputAddress(testInstance));
 
-	bool repeat = false;
+	bool repeat = true;
 	bool exportLayers = true;
 	bool loadParameters = true;
+	float swExecutionTime = 0, hwExecutionTime = 0;
+	size_t repeatCounter = 0;
+	float error = 0;
 	while (repeat)
 	{
 		uz_mlpHls_setExportLayers(testInstance, exportLayers);
 		uz_mlpHls_setLoadParameters(testInstance, loadParameters);
 		float *resultReference;
-		float swExecutionTime, hwExecutionTime;
 		for (size_t i = 0; i < uz_mlpHls_getNumberInputs(testInstance); i++)
 		{
 			inputBuffer[i] = ((float) (rand() % 100)) / 100.0;
@@ -131,7 +139,8 @@ static void uz_mlpHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 		forwardPass(referenceImpl, inputCran);
 		uz_SystemTime_ISR_Toc();
 		uz_SystemTime_ISR_Tic();
-		swExecutionTime = uz_SystemTime_GetIsrExectionTimeInUs();
+		swExecutionTime += uz_SystemTime_GetIsrExectionTimeInUs();
+		swExecutionTime /= repeatCounter == 0 ? 1 : 2;
 		resultReference = getOuput(referenceImpl)->data;
 
 		uz_SystemTime_ISR_Tic();
@@ -145,14 +154,16 @@ static void uz_mlpHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 		hwExecutionTime = uz_SystemTime_GetIsrExectionTimeInUs();
 
 		// check results
-		const float precision = 1e-3;
+		// const float precision = 1e-3;
 		for (size_t i = 0; i < uz_mlpHls_getNumberOutputs(testInstance); i++)
 		{
-			float error = fabs(resultReference[i] - outputBuffer[i]);
-			if (error > precision)
-				uz_printf("Error at output entry %d", i);
-			uz_assert(error < precision);
+			error += fabs(resultReference[i] - outputBuffer[i]);
+//			if (error > precision)
+//				uz_printf("Error at output entry %d", i);
+			//uz_assert(error < precision);
 		}
+		error /= uz_mlpHls_getNumberOutputs(testInstance);
+		repeatCounter++;
 	}
 
 	destroyMatrix(inputCran);
@@ -243,6 +254,31 @@ static void createXorTrainingData(uz_bgdHls_t *testInstanceBgd)
 	}
 }
 
+void createRandomTrainingData(uz_bgdHls_t *testInstanceBgd)
+{
+    const u32 numberInputs = uz_bgdHls_getNumberInputs(testInstanceBgd);
+    const u32 numberOutputs = uz_bgdHls_getNumberOutputs(testInstanceBgd);
+    const u32 numberTrainingSamples = uz_bgdHls_getNumberTrainingSamples(testInstanceBgd);
+    assert((numberTrainingSamples % uz_bgdHls_getBatchSize(testInstanceBgd)) == 0);
+    float *trainingData = (float *) ((u32) uz_bgdHls_getTrainingDataAddress(testInstanceBgd));
+    float *classes = (float *) ((u32) uz_bgdHls_getClassesDataAddress(testInstanceBgd));
+
+    for (size_t i = 0; i < numberTrainingSamples; i++)
+    {
+        for (size_t j = 0; j < numberInputs; j++)
+        {
+        	trainingData[i * numberInputs + j] = ((float)(rand() % 100)) / 100.0;
+        }
+
+        for (size_t j = 0; j < numberOutputs; j++)
+        {
+        	classes[i * numberOutputs + j] = 0;
+        }
+        int index = rand() % numberOutputs;
+        classes[i * numberOutputs + index] = 1;
+    }
+}
+
 static u32 uz_mlpHls_predict(uz_mlpHls_t *testInstanceMlp)
 {
 	float *outputBuffer = (float*) ((u32) uz_mlpHls_getOutputAddress(testInstanceMlp));
@@ -293,7 +329,11 @@ static float uz_bgdHls_accuracy(uz_mlpHls_t *testInstanceMlp, uz_bgdHls_t *testI
 static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstanceMlp,
 		uz_bgdHls_t *testInstanceBgd)
 {
+#ifdef TEST_XOR
 	createXorTrainingData(testInstanceBgd);
+#else
+	createRandomTrainingData(testInstanceBgd);
+#endif
 	const u32 batchSize = uz_bgdHls_getBatchSize(testInstanceBgd);
 	const u32 numberInputs = uz_mlpHls_getNumberInputs(testInstanceMlp);
 	const u32 numberOutputs = uz_mlpHls_getNumberOutputs(testInstanceMlp);
@@ -343,7 +383,8 @@ static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 
 	bool repeat = true;
 	bool loadParameters = true;
-	float swExecutionTime, hwExecutionTime;
+	float swExecutionTime = 0, hwExecutionTime = 0;
+	size_t repeatCounter = 0;
 	while (repeat)
 	{
 		uz_bgdHls_setLoadParameters(testInstanceBgd, loadParameters);
@@ -351,7 +392,8 @@ static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 		optimize(params);
 		uz_SystemTime_ISR_Toc();
 		uz_SystemTime_ISR_Tic();
-		swExecutionTime = uz_SystemTime_GetIsrExectionTimeInUs();
+		swExecutionTime += uz_SystemTime_GetIsrExectionTimeInUs();
+		swExecutionTime /= repeatCounter == 0 ? 1 : 2;
 
 		float cranAccuracy = accuracy(referenceImpl, cranTrainingData, cranTrainingClasses);
 		uz_printf("Accuracy of Cranium optimization %f \n", cranAccuracy);
@@ -366,18 +408,9 @@ static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 				uz_mlpHls_setInputAddress(testInstanceMlp, inputValues);
 				uz_bgdHls_setClassesAddress(testInstanceBgd, classes);
 				mlpProcessBatch(testInstanceMlp, testInstanceBgd);
-				uz_SystemTime_ISR_Tic();
 				uz_bgdHls_start(testInstanceBgd);
 				while (uz_bgdHls_isIdle(testInstanceBgd) == false)
 					;
-				uz_SystemTime_ISR_Toc();
-				uz_SystemTime_ISR_Tic();
-				hwExecutionTime = uz_SystemTime_GetIsrExectionTimeInUs();
-//				if (iter == 0)
-//				{
-//					uz_bgdHls_setLoadParameters(testInstanceBgd, false);
-//				}
-
 				classes += batchSize * numberOutputs * sizeof(float);
 				inputValues += batchSize * numberInputs * sizeof(float);
 			}
@@ -386,10 +419,13 @@ static void uz_bgdHlsTestbench(Network *referenceImpl, uz_mlpHls_t *testInstance
 			uz_bgdHls_setClassesAddress(testInstanceBgd, classesBaseAddress);
 			uzBgdAccuracy = uz_bgdHls_accuracy(testInstanceMlp, testInstanceBgd);
 			uz_printf("Accuracy of UZ BGD optimization in epoch %d is %f \n", epoch, uzBgdAccuracy);
+			if(uzBgdAccuracy >= 1)
+				break;
 		}
 
 		uzBgdAccuracy = uz_bgdHls_accuracy(testInstanceMlp, testInstanceBgd);
 		uz_printf("Accuracy of UZ BGD optimization %f \n", uzBgdAccuracy);
+		repeatCounter++;
 	}
 
 	destroyDataSet(cranTrainingClasses);
@@ -419,6 +455,10 @@ int uz_mlpBgdHls_testbench()
 	const u64 inputOffset = NUMBER_INPUTS * sizeof(float);
 	const u64 outputOffset = NUMBER_OUTPUTS * sizeof(float);
 
+	XGpio control, monitor;
+	uz_assert(XGpio_Initialize(&control, XPAR_MLP_MLP_BGD_DEBUG_AXI_GPIO_CONTROL_DEVICE_ID) == XST_SUCCESS);
+	uz_assert(XGpio_Initialize(&monitor, XPAR_MLP_MLP_BGD_DEBUG_AXI_GPIO_MONITOR_DEVICE_ID) == XST_SUCCESS);
+
 	struct uz_mlpHls_config_t mlpConfig =
 	{
 			.weightMemoryAddress = (u64) MLP_HLS_PARAMETER_BASE_ADDRESS,
@@ -436,7 +476,7 @@ int uz_mlpBgdHls_testbench()
 			.numberOutputs = NUMBER_OUTPUTS,
 			.numberNeurons = NUMBER_NEURONS,
 			.parEntries = PAR_ENTRIES };
-	uz_mlpHls_t *testInstanceMlp = uz_mlpHls_init(mlpConfig);
+	uz_mlpHls_t *testInstanceMlp = uz_mlpHls_init(mlpConfig, monitor, control);
 
 	// init reference implementation
 	const u32 numberHiddenLayers = uz_mlpHls_getNumberHiddenLayers(testInstanceMlp);
@@ -475,9 +515,14 @@ int uz_mlpBgdHls_testbench()
 			.learningRate = LEARNING_RATE,
 			.parEntries = uz_mlpHls_getParEntries(testInstanceMlp),
 			.deviceId = XPAR_MLP_BGD_DEVICE_ID,
-			.numberTrainingSamples = (1 << uz_mlpHls_getNumberInputs(testInstanceMlp)) };
+#ifdef TEST_XOR
+			.numberTrainingSamples = (1 << uz_mlpHls_getNumberInputs(testInstanceMlp))
+#else
+			.numberTrainingSamples = TRAINING_SAMPLES
+#endif
+	};
 
-	uz_bgdHls_t *testInstanceBgd = uz_bgdHls_init(bgdConfig);
+	uz_bgdHls_t *testInstanceBgd = uz_bgdHls_init(bgdConfig, monitor, control);
 	u64 trainingData = uz_mlpHls_getLayerOutputAddress(testInstanceMlp)
 			+ uz_bgdHls_getBatchBufferSize(testInstanceBgd) * sizeof(float);
 	u64 classes = trainingData

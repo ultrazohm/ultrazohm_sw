@@ -24,7 +24,7 @@ port (
     p_m_dout : IN STD_LOGIC_VECTOR (31 downto 0);
     p_m_empty_n : IN STD_LOGIC;
     p_m_read : OUT STD_LOGIC;
-    p_in_address0 : OUT STD_LOGIC_VECTOR (5 downto 0);
+    p_in_address0 : OUT STD_LOGIC_VECTOR (6 downto 0);
     p_in_ce0 : OUT STD_LOGIC;
     p_in_q0 : IN STD_LOGIC_VECTOR (31 downto 0) );
 end;
@@ -336,7 +336,7 @@ begin
     icmp_ln87_fu_113_p2 <= "1" when (i_reg_81 = l_parBlocks_reg_142) else "0";
     mul_ln78_fu_96_p0 <= zext_ln78_fu_92_p1(32 - 1 downto 0);
     mul_ln78_fu_96_p1 <= zext_ln78_fu_92_p1(32 - 1 downto 0);
-    p_in_address0 <= zext_ln87_fu_126_p1(6 - 1 downto 0);
+    p_in_address0 <= zext_ln87_fu_126_p1(7 - 1 downto 0);
 
     p_in_ce0_assign_proc : process(ap_CS_fsm_pp0_stage0, ap_block_pp0_stage0_11001, ap_enable_reg_pp0_iter0)
     begin

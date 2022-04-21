@@ -27,7 +27,7 @@ port (
     p_n_dout : IN STD_LOGIC_VECTOR (31 downto 0);
     p_n_empty_n : IN STD_LOGIC;
     p_n_read : OUT STD_LOGIC;
-    p_in_address0 : OUT STD_LOGIC_VECTOR (5 downto 0);
+    p_in_address0 : OUT STD_LOGIC_VECTOR (6 downto 0);
     p_in_ce0 : OUT STD_LOGIC;
     p_in_q0 : IN STD_LOGIC_VECTOR (31 downto 0) );
 end;
@@ -343,7 +343,7 @@ begin
     mul_ln78_fu_108_p00 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(p_n_dout),64));
     mul_ln78_fu_108_p1 <= mul_ln78_fu_108_p10(32 - 1 downto 0);
     mul_ln78_fu_108_p10 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(p_m_dout),64));
-    p_in_address0 <= zext_ln87_fu_138_p1(6 - 1 downto 0);
+    p_in_address0 <= zext_ln87_fu_138_p1(7 - 1 downto 0);
 
     p_in_ce0_assign_proc : process(ap_CS_fsm_pp0_stage0, ap_block_pp0_stage0_11001, ap_enable_reg_pp0_iter0)
     begin

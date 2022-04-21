@@ -27,10 +27,10 @@ port (
     p_n_dout : IN STD_LOGIC_VECTOR (31 downto 0);
     p_n_empty_n : IN STD_LOGIC;
     p_n_read : OUT STD_LOGIC;
-    p_in_address1 : OUT STD_LOGIC_VECTOR (12 downto 0);
+    p_in_address1 : OUT STD_LOGIC_VECTOR (13 downto 0);
     p_in_ce1 : OUT STD_LOGIC;
     p_in_q1 : IN STD_LOGIC_VECTOR (31 downto 0);
-    p_in_offset_dout : IN STD_LOGIC_VECTOR (12 downto 0);
+    p_in_offset_dout : IN STD_LOGIC_VECTOR (13 downto 0);
     p_in_offset_empty_n : IN STD_LOGIC;
     p_in_offset_read : OUT STD_LOGIC );
 end;
@@ -72,7 +72,7 @@ attribute shreg_extract : string;
     signal i_reg_107 : STD_LOGIC_VECTOR (31 downto 0);
     signal l_parBlocks_reg_181 : STD_LOGIC_VECTOR (31 downto 0);
     signal ap_block_state1 : BOOLEAN;
-    signal p_in_offset_read_reg_186 : STD_LOGIC_VECTOR (12 downto 0);
+    signal p_in_offset_read_reg_186 : STD_LOGIC_VECTOR (13 downto 0);
     signal bound_fu_126_p2 : STD_LOGIC_VECTOR (63 downto 0);
     signal bound_reg_191 : STD_LOGIC_VECTOR (63 downto 0);
     signal icmp_ln86_fu_132_p2 : STD_LOGIC_VECTOR (0 downto 0);
@@ -90,8 +90,8 @@ attribute shreg_extract : string;
     signal bound_fu_126_p1 : STD_LOGIC_VECTOR (31 downto 0);
     signal icmp_ln87_fu_143_p2 : STD_LOGIC_VECTOR (0 downto 0);
     signal select_ln86_fu_148_p3 : STD_LOGIC_VECTOR (31 downto 0);
-    signal trunc_ln87_fu_156_p1 : STD_LOGIC_VECTOR (12 downto 0);
-    signal sum_i_fu_160_p2 : STD_LOGIC_VECTOR (12 downto 0);
+    signal trunc_ln87_fu_156_p1 : STD_LOGIC_VECTOR (13 downto 0);
+    signal sum_i_fu_160_p2 : STD_LOGIC_VECTOR (13 downto 0);
     signal ap_CS_fsm_state4 : STD_LOGIC;
     attribute fsm_encoding of ap_CS_fsm_state4 : signal is "none";
     signal ap_NS_fsm : STD_LOGIC_VECTOR (2 downto 0);
@@ -351,7 +351,7 @@ begin
     bound_fu_126_p10 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(p_m_dout),64));
     icmp_ln86_fu_132_p2 <= "1" when (indvar_flatten_reg_96 = bound_reg_191) else "0";
     icmp_ln87_fu_143_p2 <= "1" when (i_reg_107 = l_parBlocks_reg_181) else "0";
-    p_in_address1 <= sum_cast_i_fu_165_p1(13 - 1 downto 0);
+    p_in_address1 <= sum_cast_i_fu_165_p1(14 - 1 downto 0);
 
     p_in_ce1_assign_proc : process(ap_CS_fsm_pp0_stage0, ap_block_pp0_stage0_11001, ap_enable_reg_pp0_iter0)
     begin
@@ -448,5 +448,5 @@ begin
         i_reg_107;
     sum_cast_i_fu_165_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(sum_i_fu_160_p2),64));
     sum_i_fu_160_p2 <= std_logic_vector(unsigned(p_in_offset_read_reg_186) + unsigned(trunc_ln87_fu_156_p1));
-    trunc_ln87_fu_156_p1 <= select_ln86_fu_148_p3(13 - 1 downto 0);
+    trunc_ln87_fu_156_p1 <= select_ln86_fu_148_p3(14 - 1 downto 0);
 end behav;

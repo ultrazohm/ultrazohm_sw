@@ -52,10 +52,10 @@ output   p_m_read;
 input  [31:0] p_n_dout;
 input   p_n_empty_n;
 output   p_n_read;
-output  [12:0] p_in_address1;
+output  [13:0] p_in_address1;
 output   p_in_ce1;
 input  [31:0] p_in_q1;
-input  [12:0] p_in_offset_dout;
+input  [13:0] p_in_offset_dout;
 input   p_in_offset_empty_n;
 output   p_in_offset_read;
 
@@ -83,7 +83,7 @@ reg   [63:0] indvar_flatten_reg_96;
 reg   [31:0] i_reg_107;
 reg   [31:0] l_parBlocks_reg_181;
 reg    ap_block_state1;
-reg   [12:0] p_in_offset_read_reg_186;
+reg   [13:0] p_in_offset_read_reg_186;
 wire   [63:0] bound_fu_126_p2;
 reg   [63:0] bound_reg_191;
 wire   [0:0] icmp_ln86_fu_132_p2;
@@ -101,8 +101,8 @@ wire   [31:0] bound_fu_126_p0;
 wire   [31:0] bound_fu_126_p1;
 wire   [0:0] icmp_ln87_fu_143_p2;
 wire   [31:0] select_ln86_fu_148_p3;
-wire   [12:0] trunc_ln87_fu_156_p1;
-wire   [12:0] sum_i_fu_160_p2;
+wire   [13:0] trunc_ln87_fu_156_p1;
+wire   [13:0] sum_i_fu_160_p2;
 wire    ap_CS_fsm_state4;
 reg   [2:0] ap_NS_fsm;
 reg    ap_idle_pp0;
@@ -403,6 +403,6 @@ assign sum_cast_i_fu_165_p1 = sum_i_fu_160_p2;
 
 assign sum_i_fu_160_p2 = (p_in_offset_read_reg_186 + trunc_ln87_fu_156_p1);
 
-assign trunc_ln87_fu_156_p1 = select_ln86_fu_148_p3[12:0];
+assign trunc_ln87_fu_156_p1 = select_ln86_fu_148_p3[13:0];
 
 endmodule //BGD_vec2GemStream_float_1u_1

@@ -36,7 +36,7 @@ port (
     p_k_dout : IN STD_LOGIC_VECTOR (31 downto 0);
     p_k_empty_n : IN STD_LOGIC;
     p_k_read : OUT STD_LOGIC;
-    p_currentErrorOutput_address0 : OUT STD_LOGIC_VECTOR (5 downto 0);
+    p_currentErrorOutput_address0 : OUT STD_LOGIC_VECTOR (6 downto 0);
     p_currentErrorOutput_ce0 : OUT STD_LOGIC;
     p_currentErrorOutput_we0 : OUT STD_LOGIC;
     p_currentErrorOutput_d0 : OUT STD_LOGIC_VECTOR (31 downto 0);
@@ -519,7 +519,7 @@ begin
         end if; 
     end process;
 
-    p_currentErrorOutput_address0 <= zext_ln366_fu_153_p1(6 - 1 downto 0);
+    p_currentErrorOutput_address0 <= zext_ln366_fu_153_p1(7 - 1 downto 0);
 
     p_currentErrorOutput_ce0_assign_proc : process(p_currentErrorInput_empty_n, p_biasGradient_full_n, ap_CS_fsm_state2, icmp_ln366_fu_142_p2)
     begin

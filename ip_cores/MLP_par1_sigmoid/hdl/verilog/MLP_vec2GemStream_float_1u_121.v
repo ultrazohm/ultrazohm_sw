@@ -43,7 +43,7 @@ output   p_out_write;
 input  [31:0] p_m_dout;
 input   p_m_empty_n;
 output   p_m_read;
-output  [5:0] p_in_address0;
+output  [6:0] p_in_address0;
 output   p_in_ce0;
 input  [31:0] p_in_q0;
 

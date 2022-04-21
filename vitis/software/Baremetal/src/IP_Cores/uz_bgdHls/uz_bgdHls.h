@@ -3,6 +3,7 @@
 // includes
 #include "xil_types.h"
 #include <stdbool.h>
+#include "xgpio.h"
 
 // defines
 
@@ -12,11 +13,13 @@ struct uz_bgdHls_config_t
 	u16 deviceId;
 
 	u64 mlpResultsMemoryAddress;
+	// Address of the training data of the current batch
 	u64 classesMemoryAddress;
 	u64 weightInputMemoryAddress;
 	u64 biasInputMemoryAddress;
 	u64 weightOutputMemoryAddress;
 	u64 biasOutputMemoryAddress;
+	// Base addresses of the training data of all batches
 	u64 trainingDataAddress;
 	u64 classesDataAddress;
 
@@ -38,7 +41,7 @@ struct uz_bgdHls_config_t
 typedef struct uz_bgdHls_t uz_bgdHls_t;
 
 // function declarations
-uz_bgdHls_t *uz_bgdHls_init(struct uz_bgdHls_config_t config);
+uz_bgdHls_t *uz_bgdHls_init(struct uz_bgdHls_config_t config, XGpio monitor, XGpio control);
 
 // set functions
 void uz_bgdHls_setMlpResultsAddress(uz_bgdHls_t *instance, u64 address);

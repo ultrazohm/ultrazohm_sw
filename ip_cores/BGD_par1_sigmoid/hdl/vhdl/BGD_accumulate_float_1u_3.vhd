@@ -21,14 +21,14 @@ port (
     p_values_dout : IN STD_LOGIC_VECTOR (31 downto 0);
     p_values_empty_n : IN STD_LOGIC;
     p_values_read : OUT STD_LOGIC;
-    p_accumulator_address0 : OUT STD_LOGIC_VECTOR (13 downto 0);
+    p_accumulator_address0 : OUT STD_LOGIC_VECTOR (15 downto 0);
     p_accumulator_ce0 : OUT STD_LOGIC;
     p_accumulator_we0 : OUT STD_LOGIC;
     p_accumulator_d0 : OUT STD_LOGIC_VECTOR (31 downto 0);
-    p_accumulator_address1 : OUT STD_LOGIC_VECTOR (13 downto 0);
+    p_accumulator_address1 : OUT STD_LOGIC_VECTOR (15 downto 0);
     p_accumulator_ce1 : OUT STD_LOGIC;
     p_accumulator_q1 : IN STD_LOGIC_VECTOR (31 downto 0);
-    p_weightGradientAvg_offset_dout : IN STD_LOGIC_VECTOR (13 downto 0);
+    p_weightGradientAvg_offset_dout : IN STD_LOGIC_VECTOR (15 downto 0);
     p_weightGradientAvg_offset_empty_n : IN STD_LOGIC;
     p_weightGradientAvg_offset_read : OUT STD_LOGIC;
     mul_ln559_loc_dout : IN STD_LOGIC_VECTOR (31 downto 0);
@@ -71,7 +71,7 @@ attribute shreg_extract : string;
     signal mul_ln559_loc_blk_n : STD_LOGIC;
     signal p_initZero_blk_n : STD_LOGIC;
     signal i_reg_91 : STD_LOGIC_VECTOR (31 downto 0);
-    signal p_weightGradientAvg_offset_read_reg_142 : STD_LOGIC_VECTOR (13 downto 0);
+    signal p_weightGradientAvg_offset_read_reg_142 : STD_LOGIC_VECTOR (15 downto 0);
     signal ap_block_state1 : BOOLEAN;
     signal p_initZero_read_reg_147 : STD_LOGIC_VECTOR (0 downto 0);
     signal l_parBlocks_reg_152 : STD_LOGIC_VECTOR (31 downto 0);
@@ -93,13 +93,13 @@ attribute shreg_extract : string;
     signal icmp_ln409_reg_157_pp0_iter6_reg : STD_LOGIC_VECTOR (0 downto 0);
     signal add_ln409_fu_111_p2 : STD_LOGIC_VECTOR (31 downto 0);
     signal ap_enable_reg_pp0_iter0 : STD_LOGIC := '0';
-    signal p_accumulator_addr_reg_166 : STD_LOGIC_VECTOR (13 downto 0);
-    signal p_accumulator_addr_reg_166_pp0_iter1_reg : STD_LOGIC_VECTOR (13 downto 0);
-    signal p_accumulator_addr_reg_166_pp0_iter2_reg : STD_LOGIC_VECTOR (13 downto 0);
-    signal p_accumulator_addr_reg_166_pp0_iter3_reg : STD_LOGIC_VECTOR (13 downto 0);
-    signal p_accumulator_addr_reg_166_pp0_iter4_reg : STD_LOGIC_VECTOR (13 downto 0);
-    signal p_accumulator_addr_reg_166_pp0_iter5_reg : STD_LOGIC_VECTOR (13 downto 0);
-    signal p_accumulator_addr_reg_166_pp0_iter6_reg : STD_LOGIC_VECTOR (13 downto 0);
+    signal p_accumulator_addr_reg_166 : STD_LOGIC_VECTOR (15 downto 0);
+    signal p_accumulator_addr_reg_166_pp0_iter1_reg : STD_LOGIC_VECTOR (15 downto 0);
+    signal p_accumulator_addr_reg_166_pp0_iter2_reg : STD_LOGIC_VECTOR (15 downto 0);
+    signal p_accumulator_addr_reg_166_pp0_iter3_reg : STD_LOGIC_VECTOR (15 downto 0);
+    signal p_accumulator_addr_reg_166_pp0_iter4_reg : STD_LOGIC_VECTOR (15 downto 0);
+    signal p_accumulator_addr_reg_166_pp0_iter5_reg : STD_LOGIC_VECTOR (15 downto 0);
+    signal p_accumulator_addr_reg_166_pp0_iter6_reg : STD_LOGIC_VECTOR (15 downto 0);
     signal p_values_read_reg_172 : STD_LOGIC_VECTOR (31 downto 0);
     signal l_accumulator_fu_131_p3 : STD_LOGIC_VECTOR (31 downto 0);
     signal l_accumulator_reg_177 : STD_LOGIC_VECTOR (31 downto 0);
@@ -115,8 +115,8 @@ attribute shreg_extract : string;
     signal ap_enable_reg_pp0_iter7 : STD_LOGIC := '0';
     signal sum_cast_i_i_fu_126_p1 : STD_LOGIC_VECTOR (63 downto 0);
     signal grp_fu_102_p1 : STD_LOGIC_VECTOR (31 downto 0);
-    signal trunc_ln409_fu_117_p1 : STD_LOGIC_VECTOR (13 downto 0);
-    signal sum_i_i_fu_121_p2 : STD_LOGIC_VECTOR (13 downto 0);
+    signal trunc_ln409_fu_117_p1 : STD_LOGIC_VECTOR (15 downto 0);
+    signal sum_i_i_fu_121_p2 : STD_LOGIC_VECTOR (15 downto 0);
     signal grp_fu_102_ce : STD_LOGIC;
     signal ap_CS_fsm_state10 : STD_LOGIC;
     attribute fsm_encoding of ap_CS_fsm_state10 : signal is "none";
@@ -387,7 +387,7 @@ begin
     begin
         if (ap_clk'event and ap_clk = '1') then
             if (((icmp_ln409_fu_106_p2 = ap_const_lv1_0) and (ap_const_boolean_0 = ap_block_pp0_stage0_11001) and (ap_const_logic_1 = ap_CS_fsm_pp0_stage0))) then
-                p_accumulator_addr_reg_166 <= sum_cast_i_i_fu_126_p1(14 - 1 downto 0);
+                p_accumulator_addr_reg_166 <= sum_cast_i_i_fu_126_p1(16 - 1 downto 0);
             end if;
         end if;
     end process;
@@ -592,7 +592,7 @@ begin
     end process;
 
     p_accumulator_address0 <= p_accumulator_addr_reg_166_pp0_iter6_reg;
-    p_accumulator_address1 <= sum_cast_i_i_fu_126_p1(14 - 1 downto 0);
+    p_accumulator_address1 <= sum_cast_i_i_fu_126_p1(16 - 1 downto 0);
 
     p_accumulator_ce0_assign_proc : process(ap_block_pp0_stage0_11001, ap_enable_reg_pp0_iter7)
     begin
@@ -686,5 +686,5 @@ begin
 
     sum_cast_i_i_fu_126_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(sum_i_i_fu_121_p2),64));
     sum_i_i_fu_121_p2 <= std_logic_vector(unsigned(p_weightGradientAvg_offset_read_reg_142) + unsigned(trunc_ln409_fu_117_p1));
-    trunc_ln409_fu_117_p1 <= i_reg_91(14 - 1 downto 0);
+    trunc_ln409_fu_117_p1 <= i_reg_91(16 - 1 downto 0);
 end behav;

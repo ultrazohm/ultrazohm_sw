@@ -7,13 +7,22 @@
 // xilinx
 #include "xstatus.h"
 #include "xmlp.h"
+#include "xgpio.h"
 
 #define UZ_MLPHLS_PL_ADDRESS(R5_ADDRESS) ((R5_ADDRESS) + (UZ_MEMORY_OFFSET_PL))
 #define UZ_MLPHLS_R5_ADDRESS(PL_ADDRESS) ((PL_ADDRESS) - (UZ_MEMORY_OFFSET_PL))
 
+// pins at GPIO
+#define UZ_MLPHLS_GPIO_START (1<<0)
+#define UZ_MLPHLS_GPIO_DONE (1<<0)
+#define UZ_MLPHLS_GPIO_IDLE (1<<1)
+#define UZ_MLPHLS_GPIO_READY (1<<2)
+
 struct uz_mlpHls_t
 {
 	XMlp xilInstance;
+	XGpio xilGpioMonitor;
+	XGpio xilGpioControl;
 	struct uz_mlpHls_config_t config;
 };
 
@@ -38,7 +47,7 @@ static void uz_mlpHls_updateLayerBufferSize(struct uz_mlpHls_config_t *config)
 			+ config->numberHiddenLayers * config->numberNeurons + config->numberOutputs;
 }
 
-uz_mlpHls_t *uz_mlpHls_init(struct uz_mlpHls_config_t config)
+uz_mlpHls_t *uz_mlpHls_init(struct uz_mlpHls_config_t config, XGpio monitor, XGpio control)
 {
 	uz_assert_not_zero(config.parEntries);
 	XMlp xilInstance;
@@ -47,6 +56,8 @@ uz_mlpHls_t *uz_mlpHls_init(struct uz_mlpHls_config_t config)
 	uz_mlpHls_t *instance = uz_mlpHls_allocation();
 	instance->xilInstance = xilInstance;
 	instance->config = config;
+	instance->xilGpioMonitor = monitor;
+	instance->xilGpioControl = control;
 
 	uz_mlpHls_setWeightAddress(instance, config.weightMemoryAddress);
 	uz_mlpHls_setBiasAddress(instance, config.biasMemoryAddress);
@@ -254,14 +265,21 @@ u16 uz_mlpHls_getDeviceId(uz_mlpHls_t *instance)
 void uz_mlpHls_start(uz_mlpHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
-	XMlp_Start(&instance->xilInstance);
+	//XMlp_Start(&instance->xilInstance);
+	XGpio_DiscreteSet(&instance->xilGpioControl, 1, UZ_MLPHLS_GPIO_START);
+	XGpio_DiscreteClear(&instance->xilGpioControl, 1, UZ_MLPHLS_GPIO_START);
 }
 
 bool uz_mlpHls_isIdle(uz_mlpHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
 	bool return_value;
-	if(XMlp_IsIdle(&instance->xilInstance) != 0)
+//	if(XMlp_IsIdle(&instance->xilInstance) != 0)
+//		return_value = true;
+//	else
+//		return_value = false;
+
+	if(XGpio_DiscreteRead(&instance->xilGpioMonitor, 1) & UZ_MLPHLS_GPIO_IDLE)
 		return_value = true;
 	else
 		return_value = false;
@@ -273,7 +291,12 @@ bool uz_mlpHls_isReady(uz_mlpHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
 	bool return_value;
-	if(XMlp_IsReady(&instance->xilInstance) != 0)
+//	if(XMlp_IsReady(&instance->xilInstance) != 0)
+//		return_value = true;
+//	else
+//		return_value = false;
+
+	if(XGpio_DiscreteRead(&instance->xilGpioMonitor, 1) & UZ_MLPHLS_GPIO_READY)
 		return_value = true;
 	else
 		return_value = false;
@@ -285,7 +308,12 @@ bool uz_mlpHls_isDone(uz_mlpHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
 	bool return_value;
-	if(XMlp_IsDone(&instance->xilInstance) != 0)
+//	if(XMlp_IsDone(&instance->xilInstance) != 0)
+//		return_value = true;
+//	else
+//		return_value = false;
+
+	if(XGpio_DiscreteRead(&instance->xilGpioMonitor, 1) & UZ_MLPHLS_GPIO_DONE)
 		return_value = true;
 	else
 		return_value = false;

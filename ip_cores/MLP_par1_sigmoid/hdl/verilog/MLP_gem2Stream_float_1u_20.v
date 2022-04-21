@@ -55,10 +55,10 @@ output   p_out_write;
 input  [31:0] p_m_dout;
 input   p_m_empty_n;
 output   p_m_read;
-output  [13:0] p_in_address0;
+output  [15:0] p_in_address0;
 output   p_in_ce0;
 input  [31:0] p_in_q0;
-input  [13:0] p_in_offset_dout;
+input  [15:0] p_in_offset_dout;
 input   p_in_offset_empty_n;
 output   p_in_offset_read;
 output  [31:0] p_m_out_din;
@@ -89,7 +89,7 @@ reg    p_m_blk_n;
 reg    p_in_offset_blk_n;
 reg    p_m_out_blk_n;
 reg   [31:0] i_reg_88;
-reg   [13:0] p_in_offset_read_reg_135;
+reg   [15:0] p_in_offset_read_reg_135;
 reg    ap_block_state1;
 wire   [31:0] l_parBlocks_fu_99_p2;
 reg   [31:0] l_parBlocks_reg_140;
@@ -103,8 +103,8 @@ reg    ap_block_pp0_stage0_subdone;
 reg    ap_condition_pp0_exit_iter0_state2;
 wire   [63:0] sum_cast_i_fu_125_p1;
 reg    ap_block_pp0_stage0_01001;
-wire   [13:0] trunc_ln55_fu_116_p1;
-wire   [13:0] sum_i_fu_120_p2;
+wire   [15:0] trunc_ln55_fu_116_p1;
+wire   [15:0] sum_i_fu_120_p2;
 wire    ap_CS_fsm_state4;
 reg   [2:0] ap_NS_fsm;
 reg    ap_idle_pp0;
@@ -415,6 +415,6 @@ assign sum_cast_i_fu_125_p1 = sum_i_fu_120_p2;
 
 assign sum_i_fu_120_p2 = (p_in_offset_read_reg_135 + trunc_ln55_fu_116_p1);
 
-assign trunc_ln55_fu_116_p1 = i_reg_88[13:0];
+assign trunc_ln55_fu_116_p1 = i_reg_88[15:0];
 
 endmodule //MLP_gem2Stream_float_1u_20

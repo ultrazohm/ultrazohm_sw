@@ -21,11 +21,11 @@ port (
     p_values_dout : IN STD_LOGIC_VECTOR (31 downto 0);
     p_values_empty_n : IN STD_LOGIC;
     p_values_read : OUT STD_LOGIC;
-    p_accumulator_address0 : OUT STD_LOGIC_VECTOR (13 downto 0);
+    p_accumulator_address0 : OUT STD_LOGIC_VECTOR (15 downto 0);
     p_accumulator_ce0 : OUT STD_LOGIC;
     p_accumulator_we0 : OUT STD_LOGIC;
     p_accumulator_d0 : OUT STD_LOGIC_VECTOR (31 downto 0);
-    p_accumulator_address1 : OUT STD_LOGIC_VECTOR (13 downto 0);
+    p_accumulator_address1 : OUT STD_LOGIC_VECTOR (15 downto 0);
     p_accumulator_ce1 : OUT STD_LOGIC;
     p_accumulator_q1 : IN STD_LOGIC_VECTOR (31 downto 0);
     p_size_dout : IN STD_LOGIC_VECTOR (31 downto 0);
@@ -83,13 +83,13 @@ attribute shreg_extract : string;
     signal icmp_ln409_reg_109_pp0_iter6_reg : STD_LOGIC_VECTOR (0 downto 0);
     signal add_ln409_fu_89_p2 : STD_LOGIC_VECTOR (31 downto 0);
     signal ap_enable_reg_pp0_iter0 : STD_LOGIC := '0';
-    signal p_accumulator_addr_reg_118 : STD_LOGIC_VECTOR (13 downto 0);
-    signal p_accumulator_addr_reg_118_pp0_iter1_reg : STD_LOGIC_VECTOR (13 downto 0);
-    signal p_accumulator_addr_reg_118_pp0_iter2_reg : STD_LOGIC_VECTOR (13 downto 0);
-    signal p_accumulator_addr_reg_118_pp0_iter3_reg : STD_LOGIC_VECTOR (13 downto 0);
-    signal p_accumulator_addr_reg_118_pp0_iter4_reg : STD_LOGIC_VECTOR (13 downto 0);
-    signal p_accumulator_addr_reg_118_pp0_iter5_reg : STD_LOGIC_VECTOR (13 downto 0);
-    signal p_accumulator_addr_reg_118_pp0_iter6_reg : STD_LOGIC_VECTOR (13 downto 0);
+    signal p_accumulator_addr_reg_118 : STD_LOGIC_VECTOR (15 downto 0);
+    signal p_accumulator_addr_reg_118_pp0_iter1_reg : STD_LOGIC_VECTOR (15 downto 0);
+    signal p_accumulator_addr_reg_118_pp0_iter2_reg : STD_LOGIC_VECTOR (15 downto 0);
+    signal p_accumulator_addr_reg_118_pp0_iter3_reg : STD_LOGIC_VECTOR (15 downto 0);
+    signal p_accumulator_addr_reg_118_pp0_iter4_reg : STD_LOGIC_VECTOR (15 downto 0);
+    signal p_accumulator_addr_reg_118_pp0_iter5_reg : STD_LOGIC_VECTOR (15 downto 0);
+    signal p_accumulator_addr_reg_118_pp0_iter6_reg : STD_LOGIC_VECTOR (15 downto 0);
     signal p_values_read_reg_124 : STD_LOGIC_VECTOR (31 downto 0);
     signal l_accumulator_reg_129 : STD_LOGIC_VECTOR (31 downto 0);
     signal grp_fu_80_p2 : STD_LOGIC_VECTOR (31 downto 0);
@@ -362,7 +362,7 @@ begin
     begin
         if (ap_clk'event and ap_clk = '1') then
             if (((icmp_ln409_fu_84_p2 = ap_const_lv1_0) and (ap_const_boolean_0 = ap_block_pp0_stage0_11001) and (ap_const_logic_1 = ap_CS_fsm_pp0_stage0))) then
-                p_accumulator_addr_reg_118 <= zext_ln409_fu_95_p1(14 - 1 downto 0);
+                p_accumulator_addr_reg_118 <= zext_ln409_fu_95_p1(16 - 1 downto 0);
             end if;
         end if;
     end process;
@@ -498,7 +498,7 @@ begin
     grp_fu_80_p1 <= p_values_read_reg_124;
     icmp_ln409_fu_84_p2 <= "1" when (i_reg_69 = l_parBlocks_reg_104) else "0";
     p_accumulator_address0 <= p_accumulator_addr_reg_118_pp0_iter6_reg;
-    p_accumulator_address1 <= zext_ln409_fu_95_p1(14 - 1 downto 0);
+    p_accumulator_address1 <= zext_ln409_fu_95_p1(16 - 1 downto 0);
 
     p_accumulator_ce0_assign_proc : process(ap_block_pp0_stage0_11001, ap_enable_reg_pp0_iter7)
     begin

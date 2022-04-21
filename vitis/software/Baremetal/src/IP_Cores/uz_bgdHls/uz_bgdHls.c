@@ -7,13 +7,22 @@
 // xilinx
 #include "xstatus.h"
 #include "xbgd.h"
+#include "xgpio.h"
 
 #define UZ_BGDHLS_PL_ADDRESS(R5_ADDRESS) ((R5_ADDRESS) + (UZ_MEMORY_OFFSET_PL))
 #define UZ_BGDHLS_R5_ADDRESS(PL_ADDRESS) ((PL_ADDRESS) - (UZ_MEMORY_OFFSET_PL))
 
+// pins at GPIO
+#define UZ_BGDHLS_GPIO_START (1<<1)
+#define UZ_BGDHLS_GPIO_DONE (1<<3)
+#define UZ_BGDHLS_GPIO_IDLE (1<<4)
+#define UZ_BGDHLS_GPIO_READY (1<<5)
+
 struct uz_bgdHls_t
 {
 	XBgd xilInstance;
+	XGpio xilGpioMonitor;
+	XGpio xilGpioControl;
 	struct uz_bgdHls_config_t config;
 };
 
@@ -40,7 +49,7 @@ static void uz_bgdHls_updateBufferSizes(struct uz_bgdHls_config_t *config)
 	config->batchBufferSize = config->layerBufferSize * config->batchSize;
 }
 
-uz_bgdHls_t *uz_bgdHls_init(struct uz_bgdHls_config_t config)
+uz_bgdHls_t *uz_bgdHls_init(struct uz_bgdHls_config_t config, XGpio monitor, XGpio control)
 {
 	uz_assert_not_zero(config.parEntries);
 	XBgd xilInstance;
@@ -49,6 +58,8 @@ uz_bgdHls_t *uz_bgdHls_init(struct uz_bgdHls_config_t config)
 	uz_bgdHls_t *instance = uz_bgdHls_allocation();
 	instance->xilInstance = xilInstance;
 	instance->config = config;
+	instance->xilGpioMonitor = monitor;
+	instance->xilGpioControl = control;
 
 	uz_bgdHls_setMlpResultsAddress(instance, config.mlpResultsMemoryAddress);
 	uz_bgdHls_setClassesAddress(instance, config.classesMemoryAddress);
@@ -323,14 +334,20 @@ u32 uz_bgdHls_getBatchBufferSize(uz_bgdHls_t *instance)
 void uz_bgdHls_start(uz_bgdHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
-	XBgd_Start(&instance->xilInstance);
+	//XBgd_Start(&instance->xilInstance);
+	XGpio_DiscreteSet(&instance->xilGpioControl, 1, UZ_BGDHLS_GPIO_START);
+	XGpio_DiscreteClear(&instance->xilGpioControl, 1, UZ_BGDHLS_GPIO_START);
 }
 
 bool uz_bgdHls_isIdle(uz_bgdHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
 	bool return_value;
-	if (XBgd_IsIdle(&instance->xilInstance) != 0)
+//	if (XBgd_IsIdle(&instance->xilInstance) != 0)
+//		return_value = true;
+//	else
+//		return_value = false;
+	if(XGpio_DiscreteRead(&instance->xilGpioMonitor, 1) & UZ_BGDHLS_GPIO_IDLE)
 		return_value = true;
 	else
 		return_value = false;
@@ -342,7 +359,11 @@ bool uz_bgdHls_isReady(uz_bgdHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
 	bool return_value;
-	if (XBgd_IsReady(&instance->xilInstance) != 0)
+//	if (XBgd_IsReady(&instance->xilInstance) != 0)
+//		return_value = true;
+//	else
+//		return_value = false;
+	if(XGpio_DiscreteRead(&instance->xilGpioMonitor, 1) & UZ_BGDHLS_GPIO_READY)
 		return_value = true;
 	else
 		return_value = false;
@@ -354,7 +375,11 @@ bool uz_bgdHls_isDone(uz_bgdHls_t *instance)
 {
 	uz_assert_not_NULL(instance);
 	bool return_value;
-	if (XBgd_IsDone(&instance->xilInstance) != 0)
+//	if (XBgd_IsDone(&instance->xilInstance) != 0)
+//		return_value = true;
+//	else
+//		return_value = false;
+	if(XGpio_DiscreteRead(&instance->xilGpioMonitor, 1) & UZ_BGDHLS_GPIO_DONE)
 		return_value = true;
 	else
 		return_value = false;

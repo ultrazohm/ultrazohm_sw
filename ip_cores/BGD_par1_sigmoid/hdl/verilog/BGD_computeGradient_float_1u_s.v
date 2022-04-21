@@ -72,7 +72,7 @@ output   p_n_read;
 input  [31:0] p_k_dout;
 input   p_k_empty_n;
 output   p_k_read;
-output  [5:0] p_currentErrorOutput_address0;
+output  [6:0] p_currentErrorOutput_address0;
 output   p_currentErrorOutput_ce0;
 output   p_currentErrorOutput_we0;
 output  [31:0] p_currentErrorOutput_d0;

@@ -27,10 +27,10 @@ port (
     p_m_dout : IN STD_LOGIC_VECTOR (31 downto 0);
     p_m_empty_n : IN STD_LOGIC;
     p_m_read : OUT STD_LOGIC;
-    p_in_address0 : OUT STD_LOGIC_VECTOR (13 downto 0);
+    p_in_address0 : OUT STD_LOGIC_VECTOR (15 downto 0);
     p_in_ce0 : OUT STD_LOGIC;
     p_in_q0 : IN STD_LOGIC_VECTOR (31 downto 0);
-    p_in_offset_dout : IN STD_LOGIC_VECTOR (13 downto 0);
+    p_in_offset_dout : IN STD_LOGIC_VECTOR (15 downto 0);
     p_in_offset_empty_n : IN STD_LOGIC;
     p_in_offset_read : OUT STD_LOGIC;
     p_m_out_din : OUT STD_LOGIC_VECTOR (31 downto 0);
@@ -73,7 +73,7 @@ attribute shreg_extract : string;
     signal p_in_offset_blk_n : STD_LOGIC;
     signal p_m_out_blk_n : STD_LOGIC;
     signal i_reg_88 : STD_LOGIC_VECTOR (31 downto 0);
-    signal p_in_offset_read_reg_135 : STD_LOGIC_VECTOR (13 downto 0);
+    signal p_in_offset_read_reg_135 : STD_LOGIC_VECTOR (15 downto 0);
     signal ap_block_state1 : BOOLEAN;
     signal l_parBlocks_fu_99_p2 : STD_LOGIC_VECTOR (31 downto 0);
     signal l_parBlocks_reg_140 : STD_LOGIC_VECTOR (31 downto 0);
@@ -87,8 +87,8 @@ attribute shreg_extract : string;
     signal ap_condition_pp0_exit_iter0_state2 : STD_LOGIC;
     signal sum_cast_i_fu_125_p1 : STD_LOGIC_VECTOR (63 downto 0);
     signal ap_block_pp0_stage0_01001 : BOOLEAN;
-    signal trunc_ln55_fu_116_p1 : STD_LOGIC_VECTOR (13 downto 0);
-    signal sum_i_fu_120_p2 : STD_LOGIC_VECTOR (13 downto 0);
+    signal trunc_ln55_fu_116_p1 : STD_LOGIC_VECTOR (15 downto 0);
+    signal sum_i_fu_120_p2 : STD_LOGIC_VECTOR (15 downto 0);
     signal ap_CS_fsm_state4 : STD_LOGIC;
     attribute fsm_encoding of ap_CS_fsm_state4 : signal is "none";
     signal ap_NS_fsm : STD_LOGIC_VECTOR (2 downto 0);
@@ -345,7 +345,7 @@ begin
         end if; 
     end process;
 
-    p_in_address0 <= sum_cast_i_fu_125_p1(14 - 1 downto 0);
+    p_in_address0 <= sum_cast_i_fu_125_p1(16 - 1 downto 0);
 
     p_in_ce0_assign_proc : process(ap_CS_fsm_pp0_stage0, ap_block_pp0_stage0_11001, ap_enable_reg_pp0_iter0)
     begin
@@ -461,5 +461,5 @@ begin
 
     sum_cast_i_fu_125_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(sum_i_fu_120_p2),64));
     sum_i_fu_120_p2 <= std_logic_vector(unsigned(p_in_offset_read_reg_135) + unsigned(trunc_ln55_fu_116_p1));
-    trunc_ln55_fu_116_p1 <= i_reg_88(14 - 1 downto 0);
+    trunc_ln55_fu_116_p1 <= i_reg_88(16 - 1 downto 0);
 end behav;

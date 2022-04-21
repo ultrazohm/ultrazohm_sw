@@ -17,7 +17,7 @@ steps:
    image: ultrazohm/ultrazohm_remote_container
    depends_on: [ clone ]
    commands: # Modify the commands below to build your repository.
-   - cp vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
+   - cp -f vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
    - cd docs
    - pip install -r requirements.txt
    - pip list
@@ -29,7 +29,7 @@ steps:
    image: ultrazohm/ultrazohm_remote_container
    depends_on: [ clone ]
    commands:
-   - cp vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
+   - cp -f vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
    - cd vitis/software/Baremetal
    - ceedling test:all
 
@@ -37,7 +37,7 @@ steps:
    image: ultrazohm/ultrazohm_remote_container
    depends_on: [ clone ]
    commands:
-    - cp vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
+    - cp -f vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
     - cppcheck vitis/software/Baremetal/src 
     - cppcheck --addon=cert vitis/software/Baremetal/src 
     - cppcheck --addon=misra --inline-suppr vitis/software/Baremetal/src 
@@ -110,7 +110,7 @@ steps:
    image: vivado:2020.1
    depends_on: [ Vivado_generate_bitstream ]
    commands:
-   - cp vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
+   - cp -f vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
    - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
    - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_generate_workspace.tcl
  
@@ -147,13 +147,13 @@ steps:
    commands:
    - apk add git-lfs
    - git status
-   - git add vitis/vivado_exported_xsa/zusys_wrapper.xsa
-   - git add ip_cores/vv_index.xml
-   - git add vivado/project/ultrazohm.xpr
-   - git add vivado/project/zusys/hdl/zusys_wrapper.vhd
-   - git add vivado/project/zusys/zusys.bd
-   - git add vivado/*.tcl
-   - git add vivado/bd/*.tcl
+   - git add -f vitis/vivado_exported_xsa/zusys_wrapper.xsa
+   - git add -f ip_cores/vv_index.xml
+   - git add -f vivado/project/ultrazohm.xpr
+   - git add -f vivado/project/zusys/hdl/zusys_wrapper.vhd
+   - git add -f vivado/project/zusys/zusys.bd
+   - git add -f vivado/*.tcl
+   - git add -f vivado/bd/*.tcl
    - git status
    - git commit -m "[skip ci] Commit Vivado binarys from DroneCI"
    - git status

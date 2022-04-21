@@ -13,7 +13,7 @@ platform:
 
 steps:
 
-- name: copy_global_config
+ - name: copy_global_config
    image: ultrazohm/ultrazohm_remote_container
    depends_on: [ copy_global_config ]
    commands: 

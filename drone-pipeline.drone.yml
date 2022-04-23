@@ -13,11 +13,16 @@ platform:
 
 steps:
 
- - name: docs
+ - name: copy_global_config
    image: ultrazohm/ultrazohm_remote_container
    depends_on: [ clone ]
-   commands: # Modify the commands below to build your repository.
+   commands: 
    - cp -f vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
+   
+ - name: docs
+   image: ultrazohm/ultrazohm_remote_container
+   depends_on: [ copy_global_config ]
+   commands: # Modify the commands below to build your repository.
    - cd docs
    - pip install -r requirements.txt
    - pip list
@@ -27,24 +32,22 @@ steps:
   
  - name: Ceedling unit tests
    image: ultrazohm/ultrazohm_remote_container
-   depends_on: [ clone ]
+   depends_on: [ copy_global_config ]
    commands:
-   - cp -f vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
    - cd vitis/software/Baremetal
    - ceedling test:all
 
  - name: Cppcheck
    image: ultrazohm/ultrazohm_remote_container
-   depends_on: [ clone ]
+   depends_on: [ copy_global_config ]
    commands:
-    - cp -f vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
     - cppcheck vitis/software/Baremetal/src 
     - cppcheck --addon=cert vitis/software/Baremetal/src 
     - cppcheck --addon=misra --inline-suppr vitis/software/Baremetal/src 
 
  - name: Vivado_build_tcl
    image: vivado:2020.1
-   depends_on: [ clone ]
+   depends_on: [ copy_global_config ]
    commands:
    - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
    - cd vivado

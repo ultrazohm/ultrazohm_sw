@@ -37,7 +37,7 @@ The GUI is shown in :numref:`javascope_gui`.
 
 #. First, press the ``connect`` button (1) in order to connect your scope to the UltraZohm.
 #. You will see some moving signs at (2) if the connection was successful.
-#. At next, press the ``Run/Stop`` button (3) in order to run the scope.
+#. Next, press the ``Run/Stop`` button (3) in order to run the scope.
 #. You can switch between a **Lightmode** and **Darkmode** for the GUI on the fly.
 #. Go to the ``Setup Scope`` panel and press ``sendSelectData (all)`` to get the pre-selected values from the drop-down menus on the scope. For changing the entries of the drop-down menus, see :ref:`javascope_customizing`.
 #. In the time-based scope it is possible to debug up to 20 values by receiving data from the ISR (R5 processor).
@@ -102,19 +102,19 @@ The control page is used to step through the state-machine of the system and for
 
    a. It disables the control and system enable states. IOs and PWM are deactivated and the real-time application code in the ISR is no longer executed.
 
-   b. From returning to the slow blinking of the ``Ready`` LED and turning off of the ``Running`` LED it can be seen that the stop command was confirmed by the R5.
+   b. From returning to the slow blinking of the ``Ready`` LED and turning off the ``Running`` LED it can be seen that the stop command was confirmed by the R5.
 
-#. The four LEDs mirror the LEDs of the front panel and always show the same state as the real LEDs do. In the case of an ``assert`` event in the UltraZohm no data is transfered anymore to the GUI. In this case the ``Error`` LED will only be seen on the real hardware front panel.
+#. The four LEDs mirror the LEDs of the front panel and always show the same state as the real LEDs do. In the case of an ``assert`` event in the UltraZohm no data is transferred anymore to the GUI. In this case, the ``Error`` LED will only be seen on the real hardware front panel.
 
 #. The ``receive_fields``
 
    a. Here some user-defined slow data values can be visualized more prominently than in the slow data table.
 
-   b. For selection which values are shown here, see section :ref:`javascope_customizing`.
+   b. For the selection of which values are shown here, see section :ref:`javascope_customizing`.
 
 #. The ``send_fields``
 
-   a. Six values are available that can be used as references or set points for the user application.
+   a. Six values are available that can be used as references or setpoints for the user application.
 
    b. After typing in a value, press ``set`` for sending it to the R5. In ``ipc_ARM.c`` one can choose further usage of the value inside the application.
 
@@ -160,10 +160,10 @@ The logging panel is used to setup the data logger of the GUI.
 
     logging panel
 
-#. The ``setTime`` button sets the timebase of the Scope. It simply scales the timebase of the scope by the selected value.
-#. After zooming in into one or both axis, the ``fixAxis`` button reverts the axis limits to the default value.
+#. The ``setTime`` button sets the time base of the Scope. It simply scales the time base of the scope by the selected value.
+#. After zooming in on one or both axis, the ``fixAxis`` button reverts the axis limits to the default value.
 #. Here the trigger level for a manual trigger can be set (e.g. 1V).
-#. With this slider the preTrigger can be configured. (e.g. how much time is visible before the trigger event happens).
+#. With this slider, the preTrigger can be configured. (e.g. how much time is visible before the trigger event happens).
 #. The button ``setTrigger`` sets the selection for rising or falling edge for CH1->Ch4. Choose the desired setting in the dropdown menu above.
 #. The button ``SingleShot`` triggers the scope once.
 #. The button ``SaveScreen XLS`` saves the visible scope content in a xls file.
@@ -187,11 +187,11 @@ The logging panel is used to setup the data logger of the GUI.
      :caption: Status bit in ``ipc_ARM.c`` to transmit the external data logger signal from the R5 to the GUI. Has to be commented in
 
       /* Bit 12 - trigger ext. logging */
-	   // if (your condition == true) {
-	   //	js_status_BareToRTOS |= (1 << 4);
-	   // } else {
-	   //	js_status_BareToRTOS &= ~(1 << 4);
-	   // }
+       // if (your condition == true) {
+       //   js_status_BareToRTOS |= (1 << 4);
+       // } else {
+       //   js_status_BareToRTOS &= ~(1 << 4);
+       // }
 
 #. Status indicator to display, if the logging is active. 
    It is highlighted green and displays ``Log ON`` if either the logging through the GUI-button press or via the external signal is active. 
@@ -212,14 +212,14 @@ Some settings can be configured before the start-up of the GUI in the ``properti
 #. The ``smallestTimeStepUSEC`` variable sets the time, with which data is assumed to be transferred to Java. 
    It's used to calculate the time-axis of the scope and logger. 
    It should match the sample time of the ISR (e.q. ISR-frequency of 10kHz -> smallestTimeStepUSEC=100). 
-#. The ``initScaleChx`` variable sets the initial scaling factor for every of the 20 channels in the scope. 
+#. The ``initScaleChx`` variable sets the initial scaling factor for each of the 20 channels in the scope. 
    Use delimiter (;) to separate the scaling values for the channels.
-#. The ``initOffsetCHx`` variable sets the initial offset for every of the 20 channels in the scope. 
+#. The ``initOffsetCHx`` variable sets the initial offset for each of the 20 channels in the scope. 
    Use delimiter (;) to separate the scaling values for the channels.
-#. The ``preSelectedChannelNumbers`` variable sets the pre-selected channel number for every of the 20 channels in the scope. 
+#. The ``preSelectedChannelNumbers`` variable sets the pre-selected channel number for each of the 20 channels in the scope. 
    The numbers correspond to the ``JS_OberservableData`` enum in the ``javascope.h`` file (E.g. selecting ``1`` for ``CH1`` will set CH1 to ISR_ExecTime_us).
    Use delimiter (;) to separate the scaling values for the channels.
-#. The ``preSelectedChannelVisibility`` variable sets the initial visibility for every of the 20 channels in the scope. 
+#. The ``preSelectedChannelVisibility`` variable sets the initial visibility for each of the 20 channels in the scope. 
    Using ``0`` disables the visibility of the specific channel, whilst ``1`` turns it on. 
    The visibility of the channels can still be changed during runtime by clicking on the appropriate channel in the legend of the scope. 
    Use delimiter (;) to separate the scaling values for the channels.
@@ -274,7 +274,7 @@ and configures some text and the slow data to be displayed in the ``receive_fiel
 
       Correlation of ``javascope.h`` and text entries in the GUI
 
-The selection which slow data values are displayed in the ``receive_field`` section works the same way. Simply copy the proper entries from the ``JS_SlowData`` enum into 
+The selection of which slow data values are displayed in the ``receive_field`` section works the same way. Simply copy the proper entries from the ``JS_SlowData`` enum into 
 the commented out enum at the end of the file ``javascope.h`` as shown below. The slow data values of the six ``JSSD_FLOAT_x`` entries that are above the ``JSSD_FLOAT_Error_Code`` will be displayed in the receive_fields 1 to 6 from top to bottom.
 The ``JSSD_FLOAT_Error_Code`` value is always mapped to the error code text field of the GUI and should not be changed.
 

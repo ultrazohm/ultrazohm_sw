@@ -1,0 +1,10 @@
+open_system('uz_pmsm_model_9ph_working');
+open_system('gm_uz_pmsm_model_9ph_working');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_uz_pmsm_model_9ph_working/uz_pmsm_model_9ph/Delay', 'user2');
+annotate_port('gm_uz_pmsm_model_9ph_working/uz_pmsm_model_9ph/Delay', 1, 1, 'Obstacle to clock-rate pipelining');
+hilite_system('uz_pmsm_model_9ph_working/uz_pmsm_model_9ph/Delay', 'user2');
+annotate_port('uz_pmsm_model_9ph_working/uz_pmsm_model_9ph/Delay', 1, 1, 'Obstacle to clock-rate pipelining');

@@ -21,56 +21,58 @@ function RTW_Sid2UrlHash() {
 	/* <S8>/min_pulse_width_AXI */
 	this.urlHashMap["IP_Core_SS_Switch_and_PWM:375"] = "msg=rtwMsg_notTraceable&block=IP_Core_SS_Switch_and_PWM:375";
 	/* <S8>/Constant */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:379"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:677";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:379"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:690";
 	/* <S8>/Constant1 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:380"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:405,406";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:380"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:418,419";
 	/* <S8>/Constant10 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:381"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:264,265";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:381"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:265,266";
 	/* <S8>/Constant11 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:382"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:679";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:382"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:692";
 	/* <S8>/Constant2 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:383"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:408,409";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:383"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:421,422";
 	/* <S8>/Constant4 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:384"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:493,494";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:384"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:506,507";
 	/* <S8>/Constant5 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:385"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:496,497";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:385"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:509,510";
 	/* <S8>/Constant7 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:386"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:581,582";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:386"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:594,595";
 	/* <S8>/Constant8 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:387"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:584,585";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:387"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:597,598";
 	/* <S8>/Counter Ctrl */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:388"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:217,218,219,220,221,222,223,224,225,226,227,228";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:388"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:218,219,220,221,222,223,224,225,226,227,228,229";
 	/* <S8>/Delay */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:417"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:363,364,365,366,367,368,369,370,371,372";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:417"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:376,377,378,379,380,381,382,383,384,385";
 	/* <S8>/Delay1 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:418"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:465,466,467,468,469,470,471,472,473,474";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:418"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:478,479,480,481,482,483,484,485,486,487";
 	/* <S8>/Delay2 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:419"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:553,554,555,556,557,558,559,560,561,562";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:419"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:566,567,568,569,570,571,572,573,574,575";
+	/* <S8>/Delay3 */
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:611"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:342,343,344,345,346,347,348,349,350,351";
 	/* <S8>/Demux */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:420"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:419";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:420"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:432";
 	/* <S8>/Demux1 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:421"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:507";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:421"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:520";
 	/* <S8>/Demux2 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:422"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:595";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:422"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:608";
 	/* <S8>/HDL Counter2 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:425"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:324,325,326,327,328,329,330,331,332,333,335,337,338,339";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:425"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:325,326,327,328,329,330,331,332,333,334,336,338,339,340";
 	/* <S8>/LimitPulseWidth */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:426"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:230,231,232,233,234";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:426"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:231,232,233,234,235";
 	/* <S8>/LimitPulseWidth1 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:441"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:236,237,238,239,240";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:441"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:237,238,239,240,241";
 	/* <S8>/LimitPulseWidth2 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:456"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:242,243,244,245,246";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:456"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:243,244,245,246,247";
 	/* <S8>/MinOrMax */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:550"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:347";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:550"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:360";
 	/* <S8>/Relational
 Operator */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:471"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:395,396,398,399";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:471"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:408,409,411,412";
 	/* <S8>/Relational
 Operator1 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:472"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:483,484,486,487";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:472"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:496,497,499,500";
 	/* <S8>/Relational
 Operator2 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:473"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:571,572,574,575";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:473"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:584,585,587,588";
 	/* <S8>/Scope */
 	this.urlHashMap["IP_Core_SS_Switch_and_PWM:475"] = "msg=rtwMsg_notTraceable&block=IP_Core_SS_Switch_and_PWM:475";
 	/* <S8>/Scope1 */
@@ -82,27 +84,27 @@ Operator2 */
 	/* <S8>/Scope4 */
 	this.urlHashMap["IP_Core_SS_Switch_and_PWM:479"] = "msg=rtwMsg_notTraceable&block=IP_Core_SS_Switch_and_PWM:479";
 	/* <S8>/Switch */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:480"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:376,377";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:480"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:389,390";
 	/* <S8>/Switch1 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:481"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:478,479";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:481"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:491,492";
 	/* <S8>/Switch10 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:563"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:342,343";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:563"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:355,356";
 	/* <S8>/Switch2 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:482"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:566,567";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:482"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:579,580";
 	/* <S8>/Switch3 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:483"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:416,417";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:483"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:429,430";
 	/* <S8>/Switch4 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:484"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:504,505";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:484"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:517,518";
 	/* <S8>/Switch5 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:485"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:592,593";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:485"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:605,606";
 	/* <S8>/Switch6 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:486"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:682,683";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:486"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:695,696";
 	/* <S8>/Switch7 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:487"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:412,413";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:487"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:425,426";
 	/* <S8>/Switch8 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:488"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:500,501";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:488"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:513,514";
 	/* <S8>/Switch9 */
-	this.urlHashMap["IP_Core_SS_Switch_and_PWM:489"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:588,589";
+	this.urlHashMap["IP_Core_SS_Switch_and_PWM:489"] = "PWM_and_SS_control_V4_ip_src_GenPWM.vhd:601,602";
 	/* <S9>/Constant */
 	this.urlHashMap["IP_Core_SS_Switch_and_PWM:531"] = "PWM_and_SS_control_V4_ip_src_VSI_Control_Signal_Switch.vhd:155";
 	/* <S9>/Switch */
@@ -439,6 +441,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["IP_Core_SS_Switch_and_PWM:418"] = {rtwname: "<S8>/Delay1"};
 	this.rtwnameHashMap["<S8>/Delay2"] = {sid: "IP_Core_SS_Switch_and_PWM:419"};
 	this.sidHashMap["IP_Core_SS_Switch_and_PWM:419"] = {rtwname: "<S8>/Delay2"};
+	this.rtwnameHashMap["<S8>/Delay3"] = {sid: "IP_Core_SS_Switch_and_PWM:611"};
+	this.sidHashMap["IP_Core_SS_Switch_and_PWM:611"] = {rtwname: "<S8>/Delay3"};
 	this.rtwnameHashMap["<S8>/Demux"] = {sid: "IP_Core_SS_Switch_and_PWM:420"};
 	this.sidHashMap["IP_Core_SS_Switch_and_PWM:420"] = {rtwname: "<S8>/Demux"};
 	this.rtwnameHashMap["<S8>/Demux1"] = {sid: "IP_Core_SS_Switch_and_PWM:421"};

@@ -29,12 +29,12 @@ void test_uz_wavegen_three_phase_output(void)
     float amplitude = 2.0f;
     float frequency = 5.0f;
     float offset = 1.0f;
-    uz_SystemTime_GetGlobalTimeInSec_ExpectAndReturn(0.15f);
+    uz_SystemTime_GetGlobalTimeInSec_ExpectAndReturn(0.6f);
     uz_3ph_abc_t three_phase_sine = uz_wavegen_three_phase_sample(amplitude, frequency, offset);
 
-    TEST_ASSERT_EQUAL_FLOAT(-1.0f, three_phase_sine.a);
-    TEST_ASSERT_EQUAL_FLOAT(2.0f, three_phase_sine.b);
-    TEST_ASSERT_EQUAL_FLOAT(2.0f, three_phase_sine.c);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.0f, three_phase_sine.a);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.7321f, three_phase_sine.b);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.7321f, three_phase_sine.c);
 }
 
 #endif

@@ -19,8 +19,8 @@ Setup IP address
 Known issues
 ------------
 .. warning::
-   * Sometimes VPN connections make problems. 
-   * If no connection can be activated with the JavaScope, just close the VPN connection. You can open it after a first GUI connection again.
+   * Sometimes the VPN connections makes problems. 
+   * If no connection can be achieved with the JavaScope, close the VPN connection. You can open it again after a connection with the GUI has been established.
 
 See also
 """""""""""""""

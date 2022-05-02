@@ -23,13 +23,13 @@ struct uz_pmsm_model_9ph_config_t
     float r_1; /**< Stator resistance in ohm */
     float L_d; /**< Direct inductance in Henry */
     float L_q; /**< Quadrature inductance in Henry */
-    float L_o1; /**< Additional System's inductance in Henry */
-    float L_o2; /**< Additional System's inductance in Henry */
+    float L_z1; /**< Additional System's inductance in Henry */
+    float L_z2; /**< Additional System's inductance in Henry */
     float L_x1; /**< Additional System's inductance in Henry */
     float L_y1; /**< Additional System's inductance in Henry */
     float L_x2; /**< Additional System's inductance in Henry */
     float L_y2; /**< Additional System's inductance in Henry */
-    float L_zero; /**< Additional System's inductance in Henry */
+    float L_z3; /**< Additional System's inductance in Henry */
     float psi_pm; /**< Linked magnetic flux of PM magnets */
     float friction_coefficient; /**< Linear coefficient of friction */
     float coulomb_friction_constant; /**< Static friction constant */
@@ -45,7 +45,6 @@ struct uz_pmsm_model_9ph_config_t
  */
 struct uz_pmsm_model_9ph_outputs_general_t
 {
-    uz_3ph_dq_t i_dq;
     float torque_Nm; /**< Inner torque of PMSM in Nm*/
     float omega_mech_1_s; /**< Rotational speed of PMSM in 1/s*/
     float theta_el; /**< Angle of rotor*/
@@ -57,11 +56,6 @@ struct uz_pmsm_model_9ph_outputs_dq_t
     uz_9ph_alphabeta_t i_subspaces;
 };
 
-struct uz_pmsm_model_9ph_inputs_dq_t 
-{
-    uz_3ph_dq_t u_dq;
-    uz_9ph_alphabeta_t u_subspaces;
-};
 
 /**
  * @brief Struct to be used to pass inputs to the PMSM Model
@@ -91,20 +85,6 @@ uz_pmsm_model_9ph_t *uz_pmsm_model_9ph_init(struct uz_pmsm_model_9ph_config_t co
 void uz_pmsm_model_9ph_trigger_input_general_strobe(uz_pmsm_model_9ph_t *self);
 
 /**
- * @brief Takes the values of the AXI shadow register and pass them to the actual input.
- * 
- * @param self 
- */
-void uz_pmsm_model_9ph_trigger_input_voltages_dq_strobe(uz_pmsm_model_9ph_t *self);
-
-/**
- * @brief Takes the values of the AXI shadow register and pass them to the actual input.
- * 
- * @param self 
- */
-void uz_pmsm_model_9ph_trigger_input_voltages_abc_strobe(uz_pmsm_model_9ph_t *self);
-
-/**
  * @brief Takes the values of the shadow register and pass them to the actual AXI register.
  * 
  * @param self 
@@ -118,12 +98,6 @@ void uz_pmsm_model_9ph_trigger_output_general_strobe(uz_pmsm_model_9ph_t *self);
  */
 void uz_pmsm_model_9ph_trigger_output_currents_dq_strobe(uz_pmsm_model_9ph_t *self);
 
-/**
- * @brief Takes the values of the shadow register and pass them to the actual AXI register.
- * 
- * @param self 
- */
-void uz_pmsm_model_9ph_trigger_output_currents_abc_strobe(uz_pmsm_model_9ph_t *self);
 
 /**
  * @brief Set inputs of the model and write them to the PMSM model IP-Core
@@ -133,21 +107,6 @@ void uz_pmsm_model_9ph_trigger_output_currents_abc_strobe(uz_pmsm_model_9ph_t *s
  */
 void uz_pmsm_model_9ph_set_inputs_general(uz_pmsm_model_9ph_t *self, struct uz_pmsm_model_9ph_inputs_general_t inputs);
 
-/**
- * @brief Set inputs of the model and write them to the PMSM model IP-Core
- * 
- * @param self Pointer to driver instance
- * @param inputs Inputs to be written to IP-Core
- */
-void uz_pmsm_model_9ph_set_inputs_dq(uz_pmsm_model_9ph_t *self, struct uz_pmsm_model_9ph_inputs_dq_t inputs);
-
-/**
- * @brief Set inputs of the model and write them to the PMSM model IP-Core
- * 
- * @param self Pointer to driver instance
- * @param inputs Inputs to be written to IP-Core
- */
-void uz_pmsm_model_9ph_set_inputs_abc(uz_pmsm_model_9ph_t *self, uz_9ph_abc_t inputs);
 
 /**
  * @brief Returns current outputs of PMSM model IP-Core
@@ -164,14 +123,6 @@ struct uz_pmsm_model_9ph_outputs_general_t uz_pmsm_model_9ph_get_outputs_general
  * @return struct uz_pmsm_model_9ph_outputs_t Output values
  */
 struct uz_pmsm_model_9ph_outputs_dq_t uz_pmsm_model_9ph_get_outputs_dq(uz_pmsm_model_9ph_t *self);
-
-/**
- * @brief Returns current outputs of PMSM model IP-Core
- * 
- * @param self Pointer to driver instance
- * @return struct uz_pmsm_model_9ph_outputs_t Output values
- */
-uz_9ph_abc_t uz_pmsm_model_9ph_get_outputs_abc(uz_pmsm_model_9ph_t *self);
 
 /**
  * @brief Resets the PMSM model by writing zero to all inputs and sets integrators to zero

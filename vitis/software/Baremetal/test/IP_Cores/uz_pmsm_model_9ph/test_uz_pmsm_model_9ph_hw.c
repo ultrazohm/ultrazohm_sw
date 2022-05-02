@@ -17,21 +17,6 @@ void tearDown(void)
 }
 
 // Outputs general
-void test_uz_pmsm_model_9ph_hw_read_i_d(void){
-    float i_d_val=13.1f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_d_Data_uz_pmsm_model_9ph,i_d_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_d(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(i_d_val,readback);
-}
-
-void test_uz_pmsm_model_9ph_hw_read_i_q(void)
-{
-    float i_q_val=4.2f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_q_Data_uz_pmsm_model_9ph,i_q_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_q(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(i_q_val,readback);
-}
-
 void test_uz_pmsm_model_9ph_hw_read_torque(void)
 {
     float torque_expect=4.2f;
@@ -55,32 +40,32 @@ void test_uz_pmsm_model_9ph_hw_read_theta_el(void){
 }
 
 // Outputs currents dq
-void test_uz_pmsm_model_9ph_hw_read_i_d_outdq(void){
+void test_uz_pmsm_model_9ph_hw_read_i_d(void){
     float i_d_val=13.1f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_d_Data_uz_pmsm_model_9ph_outdq,i_d_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_d_outdq(BASE_ADDRESS);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_d_Data_uz_pmsm_model_9ph,i_d_val);
+    float readback=uz_pmsm_model_9ph_hw_read_i_d(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(i_d_val,readback);
 }
 
-void test_uz_pmsm_model_9ph_hw_read_i_q_outdq(void)
+void test_uz_pmsm_model_9ph_hw_read_i_q(void)
 {
     float i_q_val=4.2f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_q_Data_uz_pmsm_model_9ph_outdq,i_q_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_q_outdq(BASE_ADDRESS);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_q_Data_uz_pmsm_model_9ph,i_q_val);
+    float readback=uz_pmsm_model_9ph_hw_read_i_q(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(i_q_val,readback);
 }
 
-void test_uz_pmsm_model_9ph_hw_read_i_o1(void){
+void test_uz_pmsm_model_9ph_hw_read_i_z1(void){
     float test_val=12.3f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_o1_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_o1(BASE_ADDRESS);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_z1_Data_uz_pmsm_model_9ph,test_val);
+    float readback=uz_pmsm_model_9ph_hw_read_i_z1(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
 }
 
-void test_uz_pmsm_model_9ph_hw_read_i_o2(void){
+void test_uz_pmsm_model_9ph_hw_read_i_z2(void){
     float test_val=23.4f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_o2_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_o2(BASE_ADDRESS);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_z2_Data_uz_pmsm_model_9ph,test_val);
+    float readback=uz_pmsm_model_9ph_hw_read_i_z2(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
 }
 
@@ -112,74 +97,10 @@ void test_uz_pmsm_model_9ph_hw_read_i_y2(void){
     TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
 }
 
-void test_uz_pmsm_model_9ph_hw_read_i_zero(void){
+void test_uz_pmsm_model_9ph_hw_read_i_z3(void){
     float test_val=32.1f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_zero_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_zero(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
-}
-
-// Outputs currents abc
-void test_uz_pmsm_model_9ph_hw_read_i_a1(void){
-    float test_val=32.1f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_a1_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_a1(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
-}
-
-void test_uz_pmsm_model_9ph_hw_read_i_b1(void){
-    float test_val=33.1f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_b1_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_b1(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
-}
-
-void test_uz_pmsm_model_9ph_hw_read_i_c1(void){
-    float test_val=34.1f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_c1_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_c1(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
-}
-
-void test_uz_pmsm_model_9ph_hw_read_i_a2(void){
-    float test_val=32.2f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_a2_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_a2(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
-}
-
-void test_uz_pmsm_model_9ph_hw_read_i_b2(void){
-    float test_val=33.2f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_b2_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_b2(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
-}
-
-void test_uz_pmsm_model_9ph_hw_read_i_c2(void){
-    float test_val=34.2f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_c2_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_c2(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
-}
-
-void test_uz_pmsm_model_9ph_hw_read_i_a3(void){
-    float test_val=33.3f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_a3_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_a3(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
-}
-
-void test_uz_pmsm_model_9ph_hw_read_i_b3(void){
-    float test_val=33.3f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_b3_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_b3(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
-}
-
-void test_uz_pmsm_model_9ph_hw_read_i_c3(void){
-    float test_val=34.3f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_c3_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_c3(BASE_ADDRESS);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_z3_Data_uz_pmsm_model_9ph,test_val);
+    float readback=uz_pmsm_model_9ph_hw_read_i_z3(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
 }
 
@@ -194,115 +115,6 @@ void test_uz_pmsm_model_9ph_hw_write_omega_mech(void){
     float omega_mech=123.4f;
     uz_axi_write_float_Expect(BASE_ADDRESS+in_omega_mech_Data_uz_pmsm_model_9ph,omega_mech);
     uz_pmsm_model_9ph_hw_write_omega_mech(BASE_ADDRESS,omega_mech);
-}
-
-// Inputs voltages dq
-void test_uz_pmsm_model_9ph_hw_write_u_q(void){
-    float u_q_expect=123.1f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_q_Data_uz_pmsm_model_9ph,u_q_expect);
-    uz_pmsm_model_9ph_hw_write_u_q(BASE_ADDRESS,u_q_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_d(void){
-    float u_d_expect=-3.1f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_d_Data_uz_pmsm_model_9ph,u_d_expect);
-    uz_pmsm_model_9ph_hw_write_u_d(BASE_ADDRESS,u_d_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_o1(void){
-    float u_expect=11.2f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_o1_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_o1(BASE_ADDRESS,u_expect);
-}
-void test_uz_pmsm_model_9ph_hw_write_u_o2(void){
-    float u_expect=22.3f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_o2_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_o2(BASE_ADDRESS,u_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_x1(void){
-    float u_expect=33.4f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_x1_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_x1(BASE_ADDRESS,u_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_y1(void){
-    float u_expect=44.5f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_y1_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_y1(BASE_ADDRESS,u_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_x2(void){
-    float u_expect=55.6f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_x2_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_x2(BASE_ADDRESS,u_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_y2(void){
-    float u_expect=66.7f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_y2_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_y2(BASE_ADDRESS,u_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_zero(void){
-    float u_expect=77.8f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_zero_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_zero(BASE_ADDRESS,u_expect);
-}
-
-// Inputs voltages abc
-void test_uz_pmsm_model_9ph_hw_write_u_a1(void){
-    float u_expect=71.8f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_a1_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_a1(BASE_ADDRESS,u_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_b1(void){
-    float u_expect=71.5f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_b1_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_b1(BASE_ADDRESS,u_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_c1(void){
-    float u_expect=71.7f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_c1_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_c1(BASE_ADDRESS,u_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_a2(void){
-    float u_expect=72.8f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_a2_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_a2(BASE_ADDRESS,u_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_b2(void){
-    float u_expect=72.5f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_b2_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_b2(BASE_ADDRESS,u_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_c2(void){
-    float u_expect=72.7f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_c2_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_c2(BASE_ADDRESS,u_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_a3(void){
-    float u_expect=73.8f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_a3_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_a3(BASE_ADDRESS,u_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_b3(void){
-    float u_expect=73.5f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_b3_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_b3(BASE_ADDRESS,u_expect);
-}
-
-void test_uz_pmsm_model_9ph_hw_write_u_c3(void){
-    float u_expect=73.7f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_c3_Data_uz_pmsm_model_9ph,u_expect);
-    uz_pmsm_model_9ph_hw_write_u_c3(BASE_ADDRESS,u_expect);
 }
 
 // Model parameter
@@ -378,46 +190,46 @@ void test_uz_pmsm_model_9ph_hw_write_psi_pm(void){
     uz_pmsm_model_9ph_hw_write_psi_pm(BASE_ADDRESS,psi_pm);
 }
 
-void test_uz_pmsm_model_9ph_hw_write_L_o1(void){
+void test_uz_pmsm_model_9ph_hw_write_L_z1(void){
     float L_test=10.2f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+Physical_Parameter_L_o1_Data_uz_pmsm_model_9ph,L_test);
-    uz_pmsm_model_9ph_hw_write_L_o1(BASE_ADDRESS,L_test);
+    uz_axi_write_float_Expect(BASE_ADDRESS+Physical_Parameter_L_z1_Data_uz_pmsm_model_9ph,1.0f/L_test);
+    uz_pmsm_model_9ph_hw_write_L_z1(BASE_ADDRESS,L_test);
 }
 
-void test_uz_pmsm_model_9ph_hw_write_L_o2(void){
+void test_uz_pmsm_model_9ph_hw_write_L_z2(void){
     float L_test=10.3f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+Physical_Parameter_L_o2_Data_uz_pmsm_model_9ph,L_test);
-    uz_pmsm_model_9ph_hw_write_L_o2(BASE_ADDRESS,L_test);
+    uz_axi_write_float_Expect(BASE_ADDRESS+Physical_Parameter_L_z2_Data_uz_pmsm_model_9ph,1.0f/L_test);
+    uz_pmsm_model_9ph_hw_write_L_z2(BASE_ADDRESS,L_test);
 }
 
 void test_uz_pmsm_model_9ph_hw_write_L_x1(void){
     float L_test=10.4f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+Physical_Parameter_L_x1_Data_uz_pmsm_model_9ph,L_test);
+    uz_axi_write_float_Expect(BASE_ADDRESS+Physical_Parameter_L_x1_Data_uz_pmsm_model_9ph,1.0f/L_test);
     uz_pmsm_model_9ph_hw_write_L_x1(BASE_ADDRESS,L_test);
 }
 
 void test_uz_pmsm_model_9ph_hw_write_L_y1(void){
     float L_test=10.5f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+Physical_Parameter_L_y1_Data_uz_pmsm_model_9ph,L_test);
+    uz_axi_write_float_Expect(BASE_ADDRESS+Physical_Parameter_L_y1_Data_uz_pmsm_model_9ph,1.0f/L_test);
     uz_pmsm_model_9ph_hw_write_L_y1(BASE_ADDRESS,L_test);
 }
 
 void test_uz_pmsm_model_9ph_hw_write_L_x2(void){
     float L_test=10.6f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+Physical_Parameter_L_x2_Data_uz_pmsm_model_9ph,L_test);
+    uz_axi_write_float_Expect(BASE_ADDRESS+Physical_Parameter_L_x2_Data_uz_pmsm_model_9ph,1.0f/L_test);
     uz_pmsm_model_9ph_hw_write_L_x2(BASE_ADDRESS,L_test);
 }
 
 void test_uz_pmsm_model_9ph_hw_write_L_y2(void){
     float L_test=10.7f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+Physical_Parameter_L_y2_Data_uz_pmsm_model_9ph,L_test);
+    uz_axi_write_float_Expect(BASE_ADDRESS+Physical_Parameter_L_y2_Data_uz_pmsm_model_9ph,1.0f/L_test);
     uz_pmsm_model_9ph_hw_write_L_y2(BASE_ADDRESS,L_test);
 }
 
-void test_uz_pmsm_model_9ph_hw_write_L_zero(void){
+void test_uz_pmsm_model_9ph_hw_write_L_z3(void){
     float L_test=10.8f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+Physical_Parameter_L_zero_Data_uz_pmsm_model_9ph,L_test);
-    uz_pmsm_model_9ph_hw_write_L_zero(BASE_ADDRESS,L_test);
+    uz_axi_write_float_Expect(BASE_ADDRESS+Physical_Parameter_L_z3_Data_uz_pmsm_model_9ph,1.0f/L_test);
+    uz_pmsm_model_9ph_hw_write_L_z3(BASE_ADDRESS,L_test);
 }
 
 // Strobe
@@ -433,28 +245,10 @@ void test_uz_pmsm_model_9ph_hw_trigger_output_currents_dq_strobe(void){
     uz_pmsm_model_9ph_hw_trigger_output_currents_dq_strobe(BASE_ADDRESS);
 }
 
-void test_uz_pmsm_model_9ph_hw_trigger_output_currents_abc_strobe(void){
-    uz_axi_write_bool_Expect(BASE_ADDRESS+output_currents_abc_Strobe_uz_pmsm_model_9ph,true);
-    uz_axi_write_bool_Expect(BASE_ADDRESS+output_currents_abc_Strobe_uz_pmsm_model_9ph,false);
-    uz_pmsm_model_9ph_hw_trigger_output_currents_abc_strobe(BASE_ADDRESS);
-}
-
 void test_uz_pmsm_model_9ph_hw_trigger_input_general_strobe(void){
     uz_axi_write_bool_Expect(BASE_ADDRESS+inputs_general_Strobe_uz_pmsm_model_9ph,true);
     uz_axi_write_bool_Expect(BASE_ADDRESS+inputs_general_Strobe_uz_pmsm_model_9ph,false);
     uz_pmsm_model_9ph_hw_trigger_input_general_strobe(BASE_ADDRESS);
-}
-
-void test_uz_pmsm_model_9ph_hw_trigger_input_voltages_dq_strobe(void){
-    uz_axi_write_bool_Expect(BASE_ADDRESS+input_voltages_dq_Strobe_uz_pmsm_model_9ph,true);
-    uz_axi_write_bool_Expect(BASE_ADDRESS+input_voltages_dq_Strobe_uz_pmsm_model_9ph,false);
-    uz_pmsm_model_9ph_hw_trigger_input_voltages_dq_strobe(BASE_ADDRESS);
-}
-
-void test_uz_pmsm_model_9ph_hw_trigger_input_voltages_abc_strobe(void){
-    uz_axi_write_bool_Expect(BASE_ADDRESS+input_voltages_abc_Strobe_uz_pmsm_model_9ph,true);
-    uz_axi_write_bool_Expect(BASE_ADDRESS+input_voltages_abc_Strobe_uz_pmsm_model_9ph,false);
-    uz_pmsm_model_9ph_hw_trigger_input_voltages_abc_strobe(BASE_ADDRESS);
 }
 
 #endif // TEST

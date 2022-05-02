@@ -1,7 +1,7 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
---Date        : Mon May  2 11:16:30 2022
+--Date        : Mon May  2 15:38:55 2022
 --Host        : TS-WS running 64-bit Ubuntu 20.04.4 LTS
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -35,7 +35,7 @@ entity zusys_wrapper is
     D2_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT : out STD_LOGIC_VECTOR ( 25 downto 0 );
+    D3_OUT : out STD_LOGIC_VECTOR ( 2 downto 0 );
     D3_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -89,7 +89,7 @@ architecture STRUCTURE of zusys_wrapper is
     D2_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT : out STD_LOGIC_VECTOR ( 25 downto 0 );
+    D3_OUT : out STD_LOGIC_VECTOR ( 2 downto 0 );
     D3_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -142,7 +142,7 @@ zusys_i: component zusys
       D2_OUT_27(0) => D2_OUT_27(0),
       D2_OUT_28(0) => D2_OUT_28(0),
       D2_OUT_29(0) => D2_OUT_29(0),
-      D3_OUT(25 downto 0) => D3_OUT(25 downto 0),
+      D3_OUT(2 downto 0) => D3_OUT(2 downto 0),
       D3_OUT_26(0) => D3_OUT_26(0),
       D3_OUT_27(0) => D3_OUT_27(0),
       D3_OUT_28(0) => D3_OUT_28(0),

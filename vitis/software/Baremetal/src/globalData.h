@@ -6,6 +6,7 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "uz/uz_FOC/uz_FOC.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -87,12 +88,25 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge1DutyCycle;
 	float halfBridge2DutyCycle;
 	float halfBridge3DutyCycle;
+	float amplitude;
+	float frequency_Hz;
+	float offset;
 } referenceAndSetValues;
+
+typedef struct _sawtooth_Data_{
+	float amplitude_sawtooth;
+	float frequency_Hz_sawtooth;
+	float DC_voltage;
+	uz_3ph_abc_t cur_meas_abc;
+	uz_3ph_dq_t cur_ref_dq;
+}sawtooth_Data;
 
 typedef struct{
 	uz_PWM_SS_2L_t* pwm_d1;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1;
 	uz_mux_axi_t* mux_axi;
+	uz_FOC* foc_modvsi;
+	sawtooth_Data* sawtooth;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {
@@ -101,6 +115,8 @@ typedef struct _DS_Data_ {
 	AnalogAdapters aa;
 	object_pointers_t objects;
 } DS_Data;
+
+
 
 #endif
 

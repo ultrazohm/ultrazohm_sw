@@ -31,6 +31,28 @@ DS_Data Global_Data = {
     }
 };
 
+
+sawtooth_Data sawtooth = {
+		.amplitude_sawtooth = 6.2831, 	// 2*pi
+		.frequency_Hz_sawtooth = 50,	// 50 Hz
+		.DC_voltage = 150,				// DC_voltage in V
+		.cur_ref_dq = {.d = 1.0f, .q =0.0f},
+		.cur_meas_abc = {.a = 0.0f, .b = 0.0f, .c = 0.0f}
+};
+
+uz_3ph_abc_t cur_meas_abc ={
+		.a = 0,
+		.b = 0,
+		.c = 0
+};
+
+uz_3ph_dq_t cur_ref_dq ={
+		.d = 0,
+		.q = 0,
+		.zero = 0
+};
+
+
 enum init_chain
 {
     init_assertions = 0,
@@ -45,6 +67,36 @@ enum init_chain initialization_chain = init_assertions;
 
 int main(void)
 {
+		/* Config für FOC für modvsi*/
+		struct uz_PMSM_t config_PMSM = {
+		          .Ld_Henry = 0.0f,
+		          .Lq_Henry = 0.0f,
+		          .Psi_PM_Vs = 0.0f
+		};//these parameters are only needed if linear decoupling is selected
+
+		struct uz_PI_Controller_config config_id = {
+		          .Kp = 2.5f,
+		          .Ki = 4.0f,
+				  .samplingTime_sec = 0.00005f,
+		          .upper_limit = 160.0f,
+		          .lower_limit = -160.0f
+		};
+
+		struct uz_PI_Controller_config config_iq = {
+		          .Kp = 2.5f,
+		          .Ki = 4.0f,
+		          .samplingTime_sec = 0.00005f,
+		          .upper_limit = 160.0f,
+		          .lower_limit = -160.0f
+		};
+
+		struct uz_FOC_config config_FOC = {
+		          .decoupling_select = no_decoupling,
+		          .config_PMSM = config_PMSM,
+		          .config_id = config_id,
+		          .config_iq = config_iq
+		};
+
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -71,8 +123,12 @@ int main(void)
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1, true);
             Global_Data.objects.pwm_d1 = initialize_pwm_2l_on_D1();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
+            Global_Data.objects.foc_modvsi = uz_FOC_init(config_FOC);
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.rasv.amplitude = 0.1f;
+            Global_Data.rasv.frequency_Hz = 50.0f;
+            Global_Data.rasv.offset = 0.5;
             initialization_chain = print_msg;
             break;
         case print_msg:

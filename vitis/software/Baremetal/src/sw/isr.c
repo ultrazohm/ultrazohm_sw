@@ -31,6 +31,12 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
+#include "../uz/uz_wavegen/uz_wavegen.h"
+#include "../uz/uz_FOC/uz_FOC.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+
+#define SCALING_FACTOR 0.2953
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -40,6 +46,16 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
+extern sawtooth_Data sawtooth;
+// extern uz_3ph_abc_t cur_meas_abc;
+// extern uz_3ph_dq_t cur_ref_dq;
+
+uz_3ph_abc_t three_phase_abc = {0};
+uz_3ph_dq_t three_phase_dq ={0};
+struct uz_DutyCycle_t three_phase_sine ={0};
+
+// interne variable
+float output_sawtooth;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -59,13 +75,66 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-    }
+
+    /* Umwandlung des analogen Spannungssignals in ein Stromsignal*/
+    /* Vorsicht: an der Stommessplatine V2.0 sind die Bezeichnung vertauscht
+     * a --> I_OUT3 und FB3
+     * b --> I_OUT2 und FB2
+     * c --> I_OUT1 und FB1 */
+    sawtooth.cur_meas_abc.a = (((Global_Data.aa.A1.me.ADC_A1/2)/8.2)/0.018f)*-1; // I_OUT3 und FB3 *-1 weil auf dem Shunt Board die Messabgriffe vertauscht sind
+    sawtooth.cur_meas_abc.b = (((Global_Data.aa.A1.me.ADC_A4/2)/8.2)/0.018f)*-1; // I_OUT2 und FB2 *-1 weil auf dem Shunt Board die Messabgriffe vertauscht sind
+    sawtooth.cur_meas_abc.c = (((Global_Data.aa.A1.me.ADC_A3/2)/8.2)/0.018f)*-1; // I_OUT1 und FB1 *-1 weil auf dem Shunt Board die Messabgriffe vertauscht sind
+
+    Global_Data.av.I_U = sawtooth.cur_meas_abc.a;	// nur zum Javascope anschauen
+    Global_Data.av.I_V = sawtooth.cur_meas_abc.b;	// nur zum Javascope anschauen
+    Global_Data.av.I_W = sawtooth.cur_meas_abc.c;	// nur zum Javascope anschauen
+
+    /* Funktion um den modularen Umrichter Strom abhängig zu steuern */
+    output_sawtooth = uz_wavegen_sawtooth(sawtooth.amplitude_sawtooth, sawtooth.frequency_Hz_sawtooth);
+
+    Global_Data.av.theta_elec = output_sawtooth;
+
+    uz_3ph_dq_t cur_meas_dq = uz_transformation_3ph_abc_to_dq(sawtooth.cur_meas_abc, output_sawtooth);
+
+    Global_Data.av.I_q = cur_meas_dq.q; // nur zum Javascope anschauen
+    Global_Data.av.I_d = cur_meas_dq.d; // nur zum Javascope anschauen
+
+    sawtooth.cur_ref_dq.d = Global_Data.av.Res1;
+    sawtooth.cur_ref_dq.q = Global_Data.av.Res2;
+
+    Global_Data.av.U_q = sawtooth.cur_ref_dq.q; // nur zum Javascope anschauen
+    Global_Data.av.U_d = sawtooth.cur_ref_dq.d; // nur zum Javascope anschauen
+
+    three_phase_abc = uz_FOC_sample_abc(Global_Data.objects.foc_modvsi, sawtooth.cur_ref_dq, cur_meas_dq, sawtooth.DC_voltage, 2*3.1415*sawtooth.frequency_Hz_sawtooth, output_sawtooth);
+
+    Global_Data.av.U_U = three_phase_abc.a;	// nur zum Javascope anschauen
+    Global_Data.av.U_V = three_phase_abc.b;	// nur zum Javascope anschauen
+    Global_Data.av.U_W = three_phase_abc.c;	// nur zum Javascope anschauen
+
+    three_phase_sine = uz_FOC_generate_DutyCycles(three_phase_abc,sawtooth.DC_voltage);
+
+    Global_Data.rasv.halfBridge1DutyCycle = three_phase_sine.DutyCycle_U;
+    Global_Data.rasv.halfBridge2DutyCycle = three_phase_sine.DutyCycle_V;
+    Global_Data.rasv.halfBridge3DutyCycle = three_phase_sine.DutyCycle_W;
+
+//    Global_Data.av.U_U = Global_Data.rasv.halfBridge1DutyCycle;	// nur zum Javascope anschauen
+//    Global_Data.av.U_V = Global_Data.rasv.halfBridge2DutyCycle;	// nur zum Javascope anschauen
+//    Global_Data.av.U_W = Global_Data.rasv.halfBridge3DutyCycle;	// nur zum Javascope anschauen
+    /********************************************/
+
+    /* Funktion um den modularen Umrichter amplitudenabhängig zu steuern */
+//    uz_3ph_abc_t three_phase_sine = uz_wavegen_three_phase_sample(Global_Data.rasv.amplitude, Global_Data.rasv.frequency_Hz, Global_Data.rasv.offset);
+//
+//    Global_Data.rasv.halfBridge1DutyCycle = three_phase_sine.a;
+//    Global_Data.rasv.halfBridge2DutyCycle = three_phase_sine.b;
+//    Global_Data.rasv.halfBridge3DutyCycle = three_phase_sine.c;
+
+    /********************************************/
+}
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+
     JavaScope_update(&Global_Data);
+
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

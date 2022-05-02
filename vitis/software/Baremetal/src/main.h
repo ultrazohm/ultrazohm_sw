@@ -54,6 +54,9 @@
 
 #include "include/pwm_init.h"
 
+#include "uz/uz_FOC/uz_FOC.h"
+#include "uz/uz_Transformation/uz_Transformation.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

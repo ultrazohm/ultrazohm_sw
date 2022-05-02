@@ -43,6 +43,9 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+#include "include/test_spi.h"
+XSpi  SpiInstance;	 /* The instance of the SPI device */
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -66,6 +69,11 @@ int main(void)
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
+        	SpiPolledExample(&SpiInstance, 0);
+        	while(1){
+        		start_trans(&SpiInstance);
+        	}
+
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1, true);

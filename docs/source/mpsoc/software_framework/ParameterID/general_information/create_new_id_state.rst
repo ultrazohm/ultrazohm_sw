@@ -175,6 +175,9 @@ After code generating the stateflow the following changes have to be made in the
          :linenos:
          :caption: Code for the new .h file
 
+         #ifndef UZ_PID_STATEID_H
+         #define UZ_PID_STATEID_H
+
          #include "../../uz_global_configuration.h"
          #if UZ_PARAMETERID_MAX_INSTANCES > 0U
          #include <stdbool.h>
@@ -258,6 +261,8 @@ After code generating the stateflow the following changes have to be made in the
          :caption: Template code for static step function
 
          static void uz_PID_StateID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+            uz_assert_not_NULL(self);
+            uz_assert_not_NULL(Data);
             //Update State-Inputs
             self->StateID->input.ActualValues = Data->ActualValues;
             self->StateID->input.StateIDConfig = Data->StateID_Config;

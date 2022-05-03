@@ -225,7 +225,7 @@ Setup
 
    .. code-block:: C
         :linenos:
-        :emphasize-lines: 15,28,322,378
+        :emphasize-lines: 16,29,324,380
         :caption: Changes to the ``ipc_ARM.c`` file. (Breaks in the code are marked with ``....``).
     
         // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
@@ -556,50 +556,50 @@ Setup
             }
 
             ....
-            //Replace Bit 4-10 with the following
-            /* Bit 4 - Ident_Lq */
+            //Replace Bit 13-19 with the following
+            /* Bit 13 - Ident_Lq */
             if (PID_Data.ElectricalID_Config.identLq == true) {
                 js_status_BareToRTOS |= (1 << 13);
             } else {
                 js_status_BareToRTOS &= ~(1 << 13);
             }
 
-            /* Bit 5 - FluxMapID R-Online */
+            /* Bit 14 - FluxMapID R-Online */
             if (PID_Data.FluxMapID_Config.identR == true) {
                 js_status_BareToRTOS |= (1 << 14);
             } else {
                 js_status_BareToRTOS &= ~(1 << 14);
             }
 
-            /* Bit 6 - FluxMapID start */
+            /* Bit 15 - FluxMapID start */
             if (PID_Data.FluxMapID_Config.start_FM_ID == true) {
                 js_status_BareToRTOS |= (1 << 15);
             } else {
                 js_status_BareToRTOS &= ~(1 << 15);
             }
 
-            /* Bit 7 - PID_FOC_CC */
+            /* Bit 16 - PID_FOC_CC */
             if (PID_Data.PID_Control_Selection == Current_Control) {
                 js_status_BareToRTOS |= (1 << 16);
             } else {
                 js_status_BareToRTOS &= ~(1 << 16);
             }
 
-            /* Bit 8 - PID_FOC_SC */
+            /* Bit 17 - PID_FOC_SC */
             if (PID_Data.PID_Control_Selection == Speed_Control) {
                 js_status_BareToRTOS |= (1 << 17);
             } else {
                 js_status_BareToRTOS &= ~(1 << 17);
             }
 
-            /* Bit 9 -PID_FOC_no_control */
+            /* Bit 18 -PID_FOC_no_control */
             if (PID_Data.PID_Control_Selection == No_Control) {
                 js_status_BareToRTOS |= (1 << 18);
             } else {
                 js_status_BareToRTOS &= ~(1 << 18);
             }
 
-            /* Bit 10 -ParameterID active */
+            /* Bit 19 -ParameterID active */
             if (PID_Data.GlobalConfig.enableParameterID == true) {
                 ultrazohm_state_machine_set_userLED(true);
                 js_status_BareToRTOS |= (1 << 19);

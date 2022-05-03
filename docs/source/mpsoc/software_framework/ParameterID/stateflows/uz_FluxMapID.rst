@@ -13,7 +13,7 @@ The desired range of the identified flux maps can be set in the d- and q-axis, w
 From these input parameters, this state will create a rectangular grid. 
 Each point of this grid will be set and reference currents will be given to an external current controller. 
 This state needs some sort of current controller to work properly. 
-It does NOT measure the needed signals to calculate the flux maps in each point. 
+It does **not** measure the needed signals to calculate the flux maps in each point. 
 It only controls the triggering of the operating points. 
 The necessary measurement vales can either be captured via the :ref:`JavaScope` or an external measurement device.
 For this purpose a trigger (when ``activeState = 403``) signals the point of time, at which the measurement of this operating point can take place. 

@@ -1,0 +1,15 @@
+SLStudio.Utils.RemoveHighlighting(get_param('Transformation_V12', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_Transformation_V12', 'handle'));
+annotate_port('gm_Transformation_V12/Trans_123_dq_fix_V12/DelayValue4', 1, 1, '');
+annotate_port('gm_Transformation_V12/Trans_123_dq_fix_V12/Gain4', 0, 1, '');
+annotate_port('gm_Transformation_V12/Trans_123_dq_fix_V12/Gain7', 0, 1, '');
+annotate_port('gm_Transformation_V12/Trans_123_dq_fix_V12/AddAlpha_stage2', 0, 1, '');
+annotate_port('gm_Transformation_V12/Trans_123_dq_fix_V12/AddAlpha_stage3', 0, 1, '');
+annotate_port('gm_Transformation_V12/Trans_123_dq_fix_V12/dtc', 0, 1, '');
+annotate_port('gm_Transformation_V12/Trans_123_dq_fix_V12/Saturation', 0, 1, '');
+annotate_port('gm_Transformation_V12/Trans_123_dq_fix_V12/Detec_edge', 0, 1, '');
+annotate_port('gm_Transformation_V12/Trans_123_dq_fix_V12/reset_old2_controlled', 0, 1, '');
+annotate_port('gm_Transformation_V12/Trans_123_dq_fix_V12/Switch_on3', 0, 1, '');
+annotate_port('gm_Transformation_V12/Trans_123_dq_fix_V12/1 for one cycle if edge recognized', 0, 1, '');
+annotate_port('gm_Transformation_V12/Trans_123_dq_fix_V12/Switch_on3_out1', 0, 1, '');
+annotate_port('gm_Transformation_V12/Trans_123_dq_fix_V12/reset_old2_controlled/reset_old2', 0, 1, '');

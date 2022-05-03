@@ -9,7 +9,7 @@ Example
 
 .. code-block:: c
   :linenos:
-  :caption: Example function call.
+  :caption: Example function call. Init of instance via :ref:`init-function <uz_SpeedControl_init>`.
 
   int main(void) {
   float new_Kp = 14.5f;

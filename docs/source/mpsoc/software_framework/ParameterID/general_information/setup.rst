@@ -28,11 +28,12 @@ Setup
       ParameterID = uz_ParameterID_init(&PID_Data);
    //Code below is only needed, if the uz_FOC is used as the controller 
      struct uz_PI_Controller_config config_id = { 
-          .Kp = PID_Data.GlobalConfig.Kp_id,
-          .Ki = PID_Data.GlobalConfig.Ki_id, 
-          .samplingTime_sec = 0.00005f, 
-          .upper_limit = 15.0f,
-			    .lower_limit = -15.0f };
+          .config_controller.Kp = PID_Data.GlobalConfig.Kp_id,
+          .config_controller.Ki = PID_Data.GlobalConfig.Ki_id, 
+          .config_controller.samplingTime_sec = 0.00005f, 
+          .config_controller.upper_limit = 15.0f,
+          .config_controller.lower_limit = -15.0f,
+          .config_PMSM = PID_Data.GlobalConfig.PMSM_config };
      struct uz_PI_Controller_config config_iq = { 
           .Kp = PID_Data.GlobalConfig.Kp_iq, 
           .Ki = PID_Data.GlobalConfig.Ki_iq, 
@@ -62,7 +63,7 @@ The ID-state specific configuration values can later be configured via the uz_GU
 
 .. literalinclude:: ../../../../../../vitis/software/Baremetal/src/uz/uz_ParameterID/uz_ParameterID.c
     :caption: Code to initialize ``uz_ParameterID_Data_t``. Important parts are highlighted.
-    :lines: 463-553
+    :lines: 462-552
     :linenos:
     :emphasize-lines: 13,16-30
     :language: c

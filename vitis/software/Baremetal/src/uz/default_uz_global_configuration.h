@@ -60,7 +60,7 @@
     #define UZ_FILTER_1ST_ORDER_INSTANCES                   20U
     #define UZ_MUX_AXI_MAX_INSTANCES                        10U
     #define UZ_MLP_THREE_LAYER_IP_MAX_INSTANCES             20U
-    #define UZ_SPEEDCONTROL_MAX_INSTANCES                   30U
+    #define UZ_SPEEDCONTROL_MAX_INSTANCES                   50U
     #define UZ_IIR_FILTER_MAX_INSTANCES                     20U
 	#define UZ_PARAMETERID_MAX_INSTANCES					100U
 #endif

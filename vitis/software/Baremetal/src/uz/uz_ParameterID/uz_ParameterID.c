@@ -199,13 +199,12 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_i
 	uz_assert_not_NULL(Speed_instance);
 	uz_3ph_dq_t v_dq_Volts = { 0 };
 	uz_3ph_dq_t i_SpeedControl_reference_Ampere = { 0 };
-	bool ext_clamping = false;
 
 	if (Data->Controller_Parameters.enableFOC_speed == true) {
 		//Change, if desired, the speed controller here
-		ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
-		i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->Controller_Parameters.n_ref_FOC, Data->ActualValues.V_DC,
-		                Data->Controller_Parameters.i_dq_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping);
+		uz_SpeedControl_set_ext_clamping(Speed_instance, uz_FOC_get_ext_clamping(FOC_instance));
+		i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_m, Data->Controller_Parameters.n_ref_FOC, Data->ActualValues.V_DC,
+		                Data->Controller_Parameters.i_dq_ref.d);
 		i_SpeedControl_reference_Ampere.q += Data->TwoMassID_Output->PRBS_out;
 	}
 	if (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true) {
@@ -255,9 +254,9 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_i
 		}
 		if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
 			if (Data->PID_Control_Selection == Speed_Control) {
-				ext_clamping = uz_FOC_get_ext_clamping(FOC_instance);
+				uz_SpeedControl_set_ext_clamping(Speed_instance, uz_FOC_get_ext_clamping(FOC_instance));
 				i_SpeedControl_reference_Ampere = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->GlobalConfig.n_ref, Data->ActualValues.V_DC,
-				                Online_current_ref.d, Data->GlobalConfig.PMSM_config, ext_clamping);
+				                Online_current_ref.d);
 
 			}
 			if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {

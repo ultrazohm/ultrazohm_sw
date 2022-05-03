@@ -73,42 +73,42 @@ set_property PACKAGE_PIN AB8 [get_ports ANL_01_P_Ch3]
 #Analog_10
 set_property IOSTANDARD LVDS [get_ports ANL_10_P_Ch3]
 #set_property IOSTANDARD LVDS [get_ports ANL_10_N_Ch3]
-set_property DIFF_TERM TRUE  [get_ports ANL_10_P_Ch3]
+#set_property DIFF_TERM TRUE  [get_ports ANL_10_P_Ch3]
 
 #Analog_09
 set_property IOSTANDARD LVDS [get_ports ANL_09_P_Ch3]
 #set_property IOSTANDARD LVDS [get_ports ANL_09_N_Ch3]
-set_property DIFF_TERM TRUE  [get_ports ANL_09_P_Ch3]
+#set_property DIFF_TERM TRUE  [get_ports ANL_09_P_Ch3]
 
 #Analog_08
 set_property IOSTANDARD LVDS [get_ports ANL_08_P_Ch3]
 #set_property IOSTANDARD LVDS [get_ports ANL_08_N_Ch3]
-set_property DIFF_TERM TRUE  [get_ports ANL_08_P_Ch3]
+#set_property DIFF_TERM TRUE  [get_ports ANL_08_P_Ch3]
 
 #Analog_07
 set_property IOSTANDARD LVDS [get_ports ANL_07_P_Ch3]
 #set_property IOSTANDARD LVDS [get_ports ANL_07_N_Ch3]
-set_property DIFF_TERM TRUE  [get_ports ANL_07_P_Ch3]
+#set_property DIFF_TERM TRUE  [get_ports ANL_07_P_Ch3]
 
 #Analog_06
 set_property IOSTANDARD LVDS [get_ports ANL_06_P_Ch3]
 #set_property IOSTANDARD LVDS [get_ports ANL_06_N_Ch3]
-set_property DIFF_TERM TRUE  [get_ports ANL_06_P_Ch3]
+#set_property DIFF_TERM TRUE  [get_ports ANL_06_P_Ch3]
 
 #Analog_05
 set_property IOSTANDARD LVDS [get_ports ANL_05_P_Ch3]
 #set_property IOSTANDARD LVDS [get_ports ANL_05_N_Ch3]
-set_property DIFF_TERM TRUE  [get_ports ANL_05_P_Ch3]
+#set_property DIFF_TERM TRUE  [get_ports ANL_05_P_Ch3]
 
 #Analog_04
 set_property IOSTANDARD LVDS [get_ports ANL_04_P_Ch3]
 #set_property IOSTANDARD LVDS [get_ports ANL_04_N_Ch3]
-set_property DIFF_TERM TRUE  [get_ports ANL_04_P_Ch3]
+#set_property DIFF_TERM TRUE  [get_ports ANL_04_P_Ch3]
 
 #Analog_03
 set_property IOSTANDARD LVDS [get_ports ANL_03_P_Ch3]
 #set_property IOSTANDARD LVDS [get_ports ANL_03_N_Ch3
-set_property DIFF_TERM TRUE  [get_ports ANL_03_P_Ch3]
+#set_property DIFF_TERM TRUE  [get_ports ANL_03_P_Ch3]
 
 #Analog_02
 set_property IOSTANDARD LVDS [get_ports ANL_02_P_Ch3]

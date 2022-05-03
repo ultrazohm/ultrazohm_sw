@@ -1,7 +1,7 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
---Date        : Mon May  2 15:38:55 2022
+--Date        : Tue May  3 10:24:37 2022
 --Host        : TS-WS running 64-bit Ubuntu 20.04.4 LTS
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -21,10 +21,12 @@ entity zusys_wrapper is
     A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A2_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A2_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_01_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_01_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_02_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_02_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_09_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_09_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT : out STD_LOGIC_VECTOR ( 5 downto 0 );
     D1_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -75,10 +77,6 @@ architecture STRUCTURE of zusys_wrapper is
     A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A2_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A2_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT : out STD_LOGIC_VECTOR ( 5 downto 0 );
     D1_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -114,7 +112,13 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_21_Ch5 : in STD_LOGIC;
     Dig_22_Ch5 : in STD_LOGIC;
     Dig_23_Ch5 : in STD_LOGIC;
-    Dig_8_Ch5 : in STD_LOGIC
+    Dig_8_Ch5 : in STD_LOGIC;
+    ANL_01_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_01_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_02_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_02_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_09_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_09_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 )
   );
   end component zusys;
 begin
@@ -128,10 +132,12 @@ zusys_i: component zusys
       A2_OUT_CLK(1 downto 0) => A2_OUT_CLK(1 downto 0),
       A2_OUT_CNV_0(0) => A2_OUT_CNV_0(0),
       A2_OUT_CNV_1(0) => A2_OUT_CNV_1(0),
-      A3_IN(15 downto 0) => A3_IN(15 downto 0),
-      A3_OUT_CLK(1 downto 0) => A3_OUT_CLK(1 downto 0),
-      A3_OUT_CNV_0(0) => A3_OUT_CNV_0(0),
-      A3_OUT_CNV_1(0) => A3_OUT_CNV_1(0),
+      ANL_01_N_Ch3(0) => ANL_01_N_Ch3(0),
+      ANL_01_P_Ch3(0) => ANL_01_P_Ch3(0),
+      ANL_02_N_Ch3(0) => ANL_02_N_Ch3(0),
+      ANL_02_P_Ch3(0) => ANL_02_P_Ch3(0),
+      ANL_09_N_Ch3(0) => ANL_09_N_Ch3(0),
+      ANL_09_P_Ch3(0) => ANL_09_P_Ch3(0),
       D1_OUT(5 downto 0) => D1_OUT(5 downto 0),
       D1_OUT_26(0) => D1_OUT_26(0),
       D1_OUT_27(0) => D1_OUT_27(0),

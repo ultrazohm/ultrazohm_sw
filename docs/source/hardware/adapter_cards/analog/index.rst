@@ -1,3 +1,5 @@
+.. _analogAdapters:
+
 ===============
 Analog Adapters
 ===============

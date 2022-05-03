@@ -45,7 +45,7 @@ void setUp(void)
     config.config_iq.upper_limit = 10.0f;
     config.config_iq.lower_limit = -10.0f;
     config.decoupling_select = no_decoupling;
-    config_n.enable_field_weakening = false;
+    config_n.is_field_weakening_active = false;
     config_n.config_controller.samplingTime_sec = 0.00001f;
     config_n.config_controller.upper_limit = 10.0f;
     config_n.config_controller.lower_limit = -10.0f;

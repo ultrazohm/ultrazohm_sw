@@ -1,8 +1,8 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
---Date        : Tue May  3 10:24:37 2022
---Host        : TS-WS running 64-bit Ubuntu 20.04.4 LTS
+--Date        : Wed May  4 14:49:31 2022
+--Host        : ts-ThinkStation-P6203 running 64-bit Ubuntu 20.04.3 LTS
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
 --Purpose     : IP block netlist
@@ -25,8 +25,22 @@ entity zusys_wrapper is
     ANL_01_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
     ANL_02_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
     ANL_02_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_03_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_03_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_04_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_04_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_05_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_05_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_06_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_06_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_07_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_07_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_08_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_08_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
     ANL_09_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
     ANL_09_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_10_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_10_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT : out STD_LOGIC_VECTOR ( 5 downto 0 );
     D1_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -37,7 +51,6 @@ entity zusys_wrapper is
     D2_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT : out STD_LOGIC_VECTOR ( 2 downto 0 );
     D3_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -87,7 +100,6 @@ architecture STRUCTURE of zusys_wrapper is
     D2_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT : out STD_LOGIC_VECTOR ( 2 downto 0 );
     D3_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -118,7 +130,21 @@ architecture STRUCTURE of zusys_wrapper is
     ANL_02_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
     ANL_02_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
     ANL_09_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    ANL_09_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 )
+    ANL_09_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_04_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_04_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_07_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_07_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_05_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_05_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_03_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_03_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_10_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_10_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_08_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_08_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_06_P_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    ANL_06_N_Ch3 : out STD_LOGIC_VECTOR ( 0 to 0 )
   );
   end component zusys;
 begin
@@ -136,8 +162,22 @@ zusys_i: component zusys
       ANL_01_P_Ch3(0) => ANL_01_P_Ch3(0),
       ANL_02_N_Ch3(0) => ANL_02_N_Ch3(0),
       ANL_02_P_Ch3(0) => ANL_02_P_Ch3(0),
+      ANL_03_N_Ch3(0) => ANL_03_N_Ch3(0),
+      ANL_03_P_Ch3(0) => ANL_03_P_Ch3(0),
+      ANL_04_N_Ch3(0) => ANL_04_N_Ch3(0),
+      ANL_04_P_Ch3(0) => ANL_04_P_Ch3(0),
+      ANL_05_N_Ch3(0) => ANL_05_N_Ch3(0),
+      ANL_05_P_Ch3(0) => ANL_05_P_Ch3(0),
+      ANL_06_N_Ch3(0) => ANL_06_N_Ch3(0),
+      ANL_06_P_Ch3(0) => ANL_06_P_Ch3(0),
+      ANL_07_N_Ch3(0) => ANL_07_N_Ch3(0),
+      ANL_07_P_Ch3(0) => ANL_07_P_Ch3(0),
+      ANL_08_N_Ch3(0) => ANL_08_N_Ch3(0),
+      ANL_08_P_Ch3(0) => ANL_08_P_Ch3(0),
       ANL_09_N_Ch3(0) => ANL_09_N_Ch3(0),
       ANL_09_P_Ch3(0) => ANL_09_P_Ch3(0),
+      ANL_10_N_Ch3(0) => ANL_10_N_Ch3(0),
+      ANL_10_P_Ch3(0) => ANL_10_P_Ch3(0),
       D1_OUT(5 downto 0) => D1_OUT(5 downto 0),
       D1_OUT_26(0) => D1_OUT_26(0),
       D1_OUT_27(0) => D1_OUT_27(0),
@@ -148,7 +188,6 @@ zusys_i: component zusys
       D2_OUT_27(0) => D2_OUT_27(0),
       D2_OUT_28(0) => D2_OUT_28(0),
       D2_OUT_29(0) => D2_OUT_29(0),
-      D3_OUT(2 downto 0) => D3_OUT(2 downto 0),
       D3_OUT_26(0) => D3_OUT_26(0),
       D3_OUT_27(0) => D3_OUT_27(0),
       D3_OUT_28(0) => D3_OUT_28(0),

@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x58EA70091A68F98B",
+      "boundary_crc": "0x2EDD028E6FCB996C",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -111,10 +111,16 @@
         "ila_0": ""
       },
       "zynq_ultra_ps_e_0": "",
-      "xlconcat_0": "",
-      "util_ds_buf_0": "",
+      "dac1": "",
       "util_ds_buf_1": "",
-      "util_ds_buf_2": ""
+      "util_ds_buf_2": "",
+      "dac8": "",
+      "dac2": "",
+      "dac6": "",
+      "dac7": "",
+      "dac5": "",
+      "dac3": "",
+      "dac4": ""
     },
     "ports": {
       "A1_IN": {
@@ -218,17 +224,6 @@
         "direction": "O",
         "left": "0",
         "right": "0"
-      },
-      "D3_OUT": {
-        "direction": "O",
-        "left": "2",
-        "right": "0",
-        "parameters": {
-          "PortWidth": {
-            "value": "3",
-            "value_src": "ip_prop"
-          }
-        }
       },
       "D3_OUT_26": {
         "direction": "O",
@@ -335,7 +330,7 @@
         "right": "0",
         "parameters": {
           "CLK_DOMAIN": {
-            "value": "zusys_util_ds_buf_0_1_OBUF_DS_P",
+            "value": "zusys_util_ds_buf_1_0_OBUF_DS_P",
             "value_src": "default_prop"
           },
           "FREQ_HZ": {
@@ -354,7 +349,7 @@
         "right": "0",
         "parameters": {
           "CLK_DOMAIN": {
-            "value": "zusys_util_ds_buf_0_1_OBUF_DS_N",
+            "value": "zusys_util_ds_buf_1_0_OBUF_DS_N",
             "value_src": "default_prop"
           },
           "FREQ_HZ": {
@@ -373,7 +368,7 @@
         "right": "0",
         "parameters": {
           "CLK_DOMAIN": {
-            "value": "zusys_util_ds_buf_0_2_OBUF_DS_P",
+            "value": "zusys_util_ds_buf_2_0_OBUF_DS_P",
             "value_src": "default_prop"
           },
           "FREQ_HZ": {
@@ -392,7 +387,7 @@
         "right": "0",
         "parameters": {
           "CLK_DOMAIN": {
-            "value": "zusys_util_ds_buf_0_2_OBUF_DS_N",
+            "value": "zusys_util_ds_buf_2_0_OBUF_DS_N",
             "value_src": "default_prop"
           },
           "FREQ_HZ": {
@@ -431,6 +426,272 @@
         "parameters": {
           "CLK_DOMAIN": {
             "value": "zusys_util_ds_buf_0_0_OBUF_DS_N",
+            "value_src": "default_prop"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default_prop"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default_prop"
+          }
+        }
+      },
+      "ANL_04_P_Ch3": {
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "zusys_util_ds_buf_0_1_OBUF_DS_P",
+            "value_src": "default_prop"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default_prop"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default_prop"
+          }
+        }
+      },
+      "ANL_04_N_Ch3": {
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "zusys_util_ds_buf_0_1_OBUF_DS_N",
+            "value_src": "default_prop"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default_prop"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default_prop"
+          }
+        }
+      },
+      "ANL_07_P_Ch3": {
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "zusys_util_ds_buf_3_0_OBUF_DS_P",
+            "value_src": "default_prop"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default_prop"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default_prop"
+          }
+        }
+      },
+      "ANL_07_N_Ch3": {
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "zusys_util_ds_buf_3_0_OBUF_DS_N",
+            "value_src": "default_prop"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default_prop"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default_prop"
+          }
+        }
+      },
+      "ANL_05_P_Ch3": {
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "zusys_util_ds_buf_5_2_OBUF_DS_P",
+            "value_src": "default_prop"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default_prop"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default_prop"
+          }
+        }
+      },
+      "ANL_05_N_Ch3": {
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "zusys_util_ds_buf_5_2_OBUF_DS_N",
+            "value_src": "default_prop"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default_prop"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default_prop"
+          }
+        }
+      },
+      "ANL_03_P_Ch3": {
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "zusys_util_ds_buf_5_3_OBUF_DS_P",
+            "value_src": "default_prop"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default_prop"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default_prop"
+          }
+        }
+      },
+      "ANL_03_N_Ch3": {
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "zusys_util_ds_buf_5_3_OBUF_DS_N",
+            "value_src": "default_prop"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default_prop"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default_prop"
+          }
+        }
+      },
+      "ANL_10_P_Ch3": {
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "zusys_util_ds_buf_5_1_OBUF_DS_P",
+            "value_src": "default_prop"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default_prop"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default_prop"
+          }
+        }
+      },
+      "ANL_10_N_Ch3": {
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "zusys_util_ds_buf_5_1_OBUF_DS_N",
+            "value_src": "default_prop"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default_prop"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default_prop"
+          }
+        }
+      },
+      "ANL_08_P_Ch3": {
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "zusys_util_ds_buf_4_0_OBUF_DS_P",
+            "value_src": "default_prop"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default_prop"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default_prop"
+          }
+        }
+      },
+      "ANL_08_N_Ch3": {
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "zusys_util_ds_buf_4_0_OBUF_DS_N",
+            "value_src": "default_prop"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default_prop"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default_prop"
+          }
+        }
+      },
+      "ANL_06_P_Ch3": {
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "zusys_util_ds_buf_5_0_OBUF_DS_P",
+            "value_src": "default_prop"
+          },
+          "FREQ_HZ": {
+            "value": "100000000",
+            "value_src": "default_prop"
+          },
+          "PHASE": {
+            "value": "0.000",
+            "value_src": "default_prop"
+          }
+        }
+      },
+      "ANL_06_N_Ch3": {
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "CLK_DOMAIN": {
+            "value": "zusys_util_ds_buf_5_0_OBUF_DS_N",
             "value_src": "default_prop"
           },
           "FREQ_HZ": {
@@ -1333,10 +1594,10 @@
           }
         },
         "interface_nets": {
-          "S00_AXI_2": {
+          "S00_AXI_3": {
             "interface_ports": [
-              "S00_AXI1",
-              "A1_adapter/S00_AXI"
+              "S00_AXI",
+              "A3_adapter/S00_AXI"
             ]
           },
           "S00_AXI_4": {
@@ -1345,10 +1606,10 @@
               "A2_adapter/S00_AXI"
             ]
           },
-          "S00_AXI_3": {
+          "S00_AXI_2": {
             "interface_ports": [
-              "S00_AXI",
-              "A3_adapter/S00_AXI"
+              "S00_AXI1",
+              "A1_adapter/S00_AXI"
             ]
           }
         },
@@ -2025,16 +2286,16 @@
                   "Gates/AXI4_Lite1"
                 ]
               },
-              "smartconnect_0_M07_AXI": {
-                "interface_ports": [
-                  "S00_AXI",
-                  "Gates/S00_AXI"
-                ]
-              },
               "smartconnect_0_M08_AXI": {
                 "interface_ports": [
                   "AXI4_Lite",
                   "Gates/AXI4_Lite"
+                ]
+              },
+              "smartconnect_0_M07_AXI": {
+                "interface_ports": [
+                  "S00_AXI",
+                  "Gates/S00_AXI"
                 ]
               }
             },
@@ -2878,6 +3139,12 @@
           }
         },
         "interface_nets": {
+          "AXI4_Lite_2": {
+            "interface_ports": [
+              "AXI4_Lite3",
+              "D5_adapter/AXI4_Lite"
+            ]
+          },
           "S00_AXI_5": {
             "interface_ports": [
               "S00_AXI",
@@ -2900,12 +3167,6 @@
             "interface_ports": [
               "AXI4_Lite1",
               "D1_adapter/AXI4_Lite"
-            ]
-          },
-          "AXI4_Lite_2": {
-            "interface_ports": [
-              "AXI4_Lite3",
-              "D5_adapter/AXI4_Lite"
             ]
           }
         },
@@ -3547,16 +3808,16 @@
               }
             },
             "interface_nets": {
-              "AXI4_Lite_1": {
-                "interface_ports": [
-                  "AXI4_Lite",
-                  "mux_axi_ip_1/AXI4_Lite"
-                ]
-              },
               "smartconnect_0_M11_AXI": {
                 "interface_ports": [
                   "S_AXI",
                   "Trigger_f_cc/S_AXI"
+                ]
+              },
+              "AXI4_Lite_1": {
+                "interface_ports": [
+                  "AXI4_Lite",
+                  "mux_axi_ip_1/AXI4_Lite"
                 ]
               }
             },
@@ -4523,18 +4784,6 @@
           }
         },
         "interface_nets": {
-          "Conn11": {
-            "interface_ports": [
-              "M03_AXI",
-              "smartconnect_0/M03_AXI"
-            ]
-          },
-          "Conn1": {
-            "interface_ports": [
-              "M00_AXI",
-              "DataMover/M00_AXI"
-            ]
-          },
           "AXI4_Lite_1": {
             "interface_ports": [
               "Interrupt/AXI4_Lite",
@@ -4553,6 +4802,12 @@
               "smartconnect_0/M01_AXI"
             ]
           },
+          "Conn7": {
+            "interface_ports": [
+              "M08_AXI",
+              "smartconnect_0/M08_AXI"
+            ]
+          },
           "Conn10": {
             "interface_ports": [
               "M07_AXI",
@@ -4565,16 +4820,22 @@
               "smartconnect_0/S00_AXI"
             ]
           },
+          "Conn11": {
+            "interface_ports": [
+              "M03_AXI",
+              "smartconnect_0/M03_AXI"
+            ]
+          },
           "Conn2": {
             "interface_ports": [
               "M10_AXI",
               "smartconnect_0/M10_AXI"
             ]
           },
-          "Conn7": {
+          "Conn1": {
             "interface_ports": [
-              "M08_AXI",
-              "smartconnect_0/M08_AXI"
+              "M00_AXI",
+              "DataMover/M00_AXI"
             ]
           },
           "Conn5": {
@@ -4913,11 +5174,14 @@
             "vlnv": "xilinx.com:ip:axi_quad_spi:3.2",
             "xci_name": "zusys_axi_quad_spi_0_0",
             "parameters": {
+              "C_NUM_SS_BITS": {
+                "value": "1"
+              },
               "C_NUM_TRANSFER_BITS": {
                 "value": "16"
               },
               "C_SCK_RATIO": {
-                "value": "16"
+                "value": "2"
               },
               "C_SPI_MODE": {
                 "value": "0"
@@ -7963,16 +8227,7 @@
           }
         }
       },
-      "xlconcat_0": {
-        "vlnv": "xilinx.com:ip:xlconcat:2.1",
-        "xci_name": "zusys_xlconcat_0_3",
-        "parameters": {
-          "NUM_PORTS": {
-            "value": "3"
-          }
-        }
-      },
-      "util_ds_buf_0": {
+      "dac1": {
         "vlnv": "xilinx.com:ip:util_ds_buf:2.1",
         "xci_name": "zusys_util_ds_buf_0_0",
         "parameters": {
@@ -7983,7 +8238,7 @@
       },
       "util_ds_buf_1": {
         "vlnv": "xilinx.com:ip:util_ds_buf:2.1",
-        "xci_name": "zusys_util_ds_buf_0_1",
+        "xci_name": "zusys_util_ds_buf_1_0",
         "parameters": {
           "C_BUF_TYPE": {
             "value": "OBUFDS"
@@ -7992,7 +8247,70 @@
       },
       "util_ds_buf_2": {
         "vlnv": "xilinx.com:ip:util_ds_buf:2.1",
-        "xci_name": "zusys_util_ds_buf_0_2",
+        "xci_name": "zusys_util_ds_buf_2_0",
+        "parameters": {
+          "C_BUF_TYPE": {
+            "value": "OBUFDS"
+          }
+        }
+      },
+      "dac8": {
+        "vlnv": "xilinx.com:ip:util_ds_buf:2.1",
+        "xci_name": "zusys_util_ds_buf_0_1",
+        "parameters": {
+          "C_BUF_TYPE": {
+            "value": "OBUFDS"
+          }
+        }
+      },
+      "dac2": {
+        "vlnv": "xilinx.com:ip:util_ds_buf:2.1",
+        "xci_name": "zusys_util_ds_buf_3_0",
+        "parameters": {
+          "C_BUF_TYPE": {
+            "value": "OBUFDS"
+          }
+        }
+      },
+      "dac6": {
+        "vlnv": "xilinx.com:ip:util_ds_buf:2.1",
+        "xci_name": "zusys_util_ds_buf_4_0",
+        "parameters": {
+          "C_BUF_TYPE": {
+            "value": "OBUFDS"
+          }
+        }
+      },
+      "dac7": {
+        "vlnv": "xilinx.com:ip:util_ds_buf:2.1",
+        "xci_name": "zusys_util_ds_buf_5_0",
+        "parameters": {
+          "C_BUF_TYPE": {
+            "value": "OBUFDS"
+          }
+        }
+      },
+      "dac5": {
+        "vlnv": "xilinx.com:ip:util_ds_buf:2.1",
+        "xci_name": "zusys_util_ds_buf_5_1",
+        "parameters": {
+          "C_BUF_TYPE": {
+            "value": "OBUFDS"
+          }
+        }
+      },
+      "dac3": {
+        "vlnv": "xilinx.com:ip:util_ds_buf:2.1",
+        "xci_name": "zusys_util_ds_buf_5_2",
+        "parameters": {
+          "C_BUF_TYPE": {
+            "value": "OBUFDS"
+          }
+        }
+      },
+      "dac4": {
+        "vlnv": "xilinx.com:ip:util_ds_buf:2.1",
+        "xci_name": "zusys_util_ds_buf_5_3",
         "parameters": {
           "C_BUF_TYPE": {
             "value": "OBUFDS"
@@ -8001,24 +8319,6 @@
       }
     },
     "interface_nets": {
-      "S00_AXI_4": {
-        "interface_ports": [
-          "uz_analog_adapter/S00_AXI2",
-          "uz_system/M01_AXI"
-        ]
-      },
-      "S00_AXI_3": {
-        "interface_ports": [
-          "uz_analog_adapter/S00_AXI",
-          "uz_system/M02_AXI"
-        ]
-      },
-      "AXI4_Lite_2": {
-        "interface_ports": [
-          "uz_digital_adapter/AXI4_Lite3",
-          "uz_system/M09_AXI"
-        ]
-      },
       "AXI4_Lite_3": {
         "interface_ports": [
           "uz_digital_adapter/AXI4_Lite",
@@ -8065,6 +8365,24 @@
         "interface_ports": [
           "uz_system/M00_AXI",
           "zynq_ultra_ps_e_0/S_AXI_LPD"
+        ]
+      },
+      "S00_AXI_4": {
+        "interface_ports": [
+          "uz_analog_adapter/S00_AXI2",
+          "uz_system/M01_AXI"
+        ]
+      },
+      "S00_AXI_3": {
+        "interface_ports": [
+          "uz_analog_adapter/S00_AXI",
+          "uz_system/M02_AXI"
+        ]
+      },
+      "AXI4_Lite_2": {
+        "interface_ports": [
+          "uz_digital_adapter/AXI4_Lite3",
+          "uz_system/M09_AXI"
         ]
       }
     },
@@ -8303,12 +8621,6 @@
           "uz_system/resetn"
         ]
       },
-      "xlconcat_0_dout1": {
-        "ports": [
-          "xlconcat_0/dout",
-          "D3_OUT"
-        ]
-      },
       "uz_user_sck_o": {
         "ports": [
           "uz_user/sck_o",
@@ -8324,7 +8636,14 @@
       "uz_user_io0_o": {
         "ports": [
           "uz_user/io0_o",
-          "util_ds_buf_0/OBUF_IN"
+          "dac1/OBUF_IN",
+          "dac8/OBUF_IN",
+          "dac2/OBUF_IN",
+          "dac3/OBUF_IN",
+          "dac4/OBUF_IN",
+          "dac5/OBUF_IN",
+          "dac6/OBUF_IN",
+          "dac7/OBUF_IN"
         ]
       },
       "util_ds_buf_1_OBUF_DS_P": {
@@ -8353,14 +8672,98 @@
       },
       "util_ds_buf_0_OBUF_DS_P": {
         "ports": [
-          "util_ds_buf_0/OBUF_DS_P",
+          "dac1/OBUF_DS_P",
           "ANL_09_P_Ch3"
         ]
       },
       "util_ds_buf_0_OBUF_DS_N": {
         "ports": [
-          "util_ds_buf_0/OBUF_DS_N",
+          "dac1/OBUF_DS_N",
           "ANL_09_N_Ch3"
+        ]
+      },
+      "util_ds_buf_3_OBUF_DS_P": {
+        "ports": [
+          "dac8/OBUF_DS_P",
+          "ANL_04_P_Ch3"
+        ]
+      },
+      "util_ds_buf_3_OBUF_DS_N": {
+        "ports": [
+          "dac8/OBUF_DS_N",
+          "ANL_04_N_Ch3"
+        ]
+      },
+      "dac2_OBUF_DS_P": {
+        "ports": [
+          "dac2/OBUF_DS_P",
+          "ANL_07_P_Ch3"
+        ]
+      },
+      "dac2_OBUF_DS_N": {
+        "ports": [
+          "dac2/OBUF_DS_N",
+          "ANL_07_N_Ch3"
+        ]
+      },
+      "dac3_OBUF_DS_P": {
+        "ports": [
+          "dac3/OBUF_DS_P",
+          "ANL_05_P_Ch3"
+        ]
+      },
+      "dac3_OBUF_DS_N": {
+        "ports": [
+          "dac3/OBUF_DS_N",
+          "ANL_05_N_Ch3"
+        ]
+      },
+      "dac4_OBUF_DS_P": {
+        "ports": [
+          "dac4/OBUF_DS_P",
+          "ANL_03_P_Ch3"
+        ]
+      },
+      "dac4_OBUF_DS_N": {
+        "ports": [
+          "dac4/OBUF_DS_N",
+          "ANL_03_N_Ch3"
+        ]
+      },
+      "dac5_OBUF_DS_P": {
+        "ports": [
+          "dac5/OBUF_DS_P",
+          "ANL_10_P_Ch3"
+        ]
+      },
+      "dac5_OBUF_DS_N": {
+        "ports": [
+          "dac5/OBUF_DS_N",
+          "ANL_10_N_Ch3"
+        ]
+      },
+      "dac6_OBUF_DS_P": {
+        "ports": [
+          "dac6/OBUF_DS_P",
+          "ANL_08_P_Ch3"
+        ]
+      },
+      "dac6_OBUF_DS_N": {
+        "ports": [
+          "dac6/OBUF_DS_N",
+          "ANL_08_N_Ch3"
+        ]
+      },
+      "dac7_OBUF_DS_P": {
+        "ports": [
+          "dac7/OBUF_DS_P",
+          "ANL_06_P_Ch3"
+        ]
+      },
+      "dac7_OBUF_DS_N": {
+        "ports": [
+          "dac7/OBUF_DS_N",
+          "ANL_06_N_Ch3"
         ]
       }
     },

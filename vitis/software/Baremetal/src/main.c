@@ -43,6 +43,19 @@ struct uz_PI_Controller_config config_id;
 struct uz_PI_Controller_config config_iq;
 struct uz_FOC_config config_FOC;
 
+
+
+static struct uz_dqIPcore_config_t config={
+   .base_address= UZ_SYSTEM_TRANS_123_ALPHABETA_0_BASEADDR,
+   .ip_clk_frequency_Hz= 50000000,
+   .theta_offset = -1.5f // add your encoder offset here!
+};
+
+uz_dqIPcore_t* dq_Transformator;
+
+
+
+
 enum init_chain
 {
     init_assertions = 0,
@@ -137,6 +150,9 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+
+            dq_Transformator = uz_dqIPcore_init(config);
+
             initialization_chain = init_foc;
             break;
 

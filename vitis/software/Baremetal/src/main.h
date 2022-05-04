@@ -57,6 +57,8 @@
 
 #include "include/pwm_init.h"
 
+#include "IP_Cores/uz_dq_transformation/uz_dq_transformation.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

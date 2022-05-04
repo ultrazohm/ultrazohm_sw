@@ -39,6 +39,11 @@ extern uz_3ph_dq_t  ref_dq0_currents;
 //extern float kp_d, kp_q, ki_d, ki_q;
 //extern struct foc_control_param control_param_FOC_instance;
 
+extern uz_3ph_dq_t m_T_dq_currents;
+extern uz_3ph_abc_t m_T_abc_currents;
+extern uz_3ph_alphabeta_t m_T_alphabeta_currents;
+
+
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
@@ -85,6 +90,14 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_kp_q] 			= &data->cp.kp_q;
 	js_ch_observable[JSO_ki_d] 			= &data->cp.ki_d;
 	js_ch_observable[JSO_ki_q] 			= &data->cp.ki_q;
+
+	js_ch_observable[JSO_m_T_dq_currents_d] 		=	&m_T_dq_currents.d;
+	js_ch_observable[JSO_m_T_dq_currents_q] 		=	&m_T_dq_currents.q;
+	js_ch_observable[JSO_m_T_abc_currents_a] 		=	&m_T_abc_currents.a;
+	js_ch_observable[JSO_m_T_abc_currents_b] 		=	&m_T_abc_currents.b;
+	js_ch_observable[JSO_m_T_abc_currents_c] 		=	&m_T_abc_currents.c;
+	js_ch_observable[JSO_m_T_alphabeta_currents_alpha]=	&m_T_alphabeta_currents.alpha;
+	js_ch_observable[JSO_m_T_alphabeta_currents_beta]=	&m_T_alphabeta_currents.beta;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

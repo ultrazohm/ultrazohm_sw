@@ -34,6 +34,9 @@
 #include "../uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 
+#include "../IP_Cores/uz_dq_transformation/uz_dq_transformation.h"
+
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -77,6 +80,12 @@ bool ext_clamping = false;
 extern struct uz_FOC_config config_FOC;
 extern struct uz_PMSM_t config_PMSM;
 
+
+extern struct uz_dqIPcore_t* dq_Transformator;
+uz_3ph_dq_t m_T_dq_currents = {0};
+uz_3ph_abc_t m_T_abc_currents = {0};
+uz_3ph_alphabeta_t m_T_alphabeta_currents = {0};
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -111,13 +120,23 @@ void ISR_Control(void *data)
 
 	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*config_FOC.config_PMSM.polePairs*2.0f*M_PI/60;
 
+
+	m_T_dq_currents = uz_dqIPcore_get_id_iq(dq_Transformator);
+
+	m_T_abc_currents = uz_dqIPcore_get_i_abc(dq_Transformator);
+
+	m_T_alphabeta_currents = uz_dqIPcore_get_ialpha_ibeta(dq_Transformator);
+
+
+
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if Ultrazohm is in control state
 
     	//Speed-Controller:
-    	ref_dq0_currents = uz_SpeedControl_sample(speed_control_instance, omega_el_rad_per_sec, n_ref_rpm, Global_Data.av.U_ZK, speed_id_ref_Ampere, config_PMSM, ext_clamping);
+    	//ref_dq0_currents = uz_SpeedControl_sample(speed_control_instance, omega_el_rad_per_sec, n_ref_rpm, Global_Data.av.U_ZK, speed_id_ref_Ampere, config_PMSM, ext_clamping);
 
 
     		//Call FOC-algorithm

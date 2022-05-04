@@ -54,6 +54,14 @@ enum JS_OberservableData {
 	JSO_kp_q,
 	JSO_ki_d,
 	JSO_ki_q,
+	JSO_m_T_dq_currents_d,
+	JSO_m_T_dq_currents_q,
+	JSO_m_T_abc_currents_a,
+	JSO_m_T_abc_currents_b,
+	JSO_m_T_abc_currents_c,
+	JSO_m_T_alphabeta_currents_alpha,
+	JSO_m_T_alphabeta_currents_beta,
+
 	JSO_ENDMARKER
 };
 

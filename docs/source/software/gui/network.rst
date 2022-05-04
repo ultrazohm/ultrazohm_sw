@@ -1,3 +1,5 @@
+.. _GUI_network:
+
 =======
 Network
 =======

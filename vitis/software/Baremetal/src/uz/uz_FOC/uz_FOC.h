@@ -41,7 +41,6 @@ struct uz_DutyCycle_t {
 	float DutyCycle_W; /**< DutyCycle for Phase W */
 };
 
-
 /**
  * @brief Object definition for FOC
  *

@@ -25,6 +25,13 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 
+// Global variable structure
+extern DS_Data Global_Data;
+
+extern uz_3ph_dq_t  ref_dq0_currents;
+extern float n_ref_rpm;
+
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -187,27 +194,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+			ref_dq0_currents.d = value;		//d-current reference
 			break;
 
 		case (Set_Send_Field_2):
-
+		ref_dq0_currents.q = value;			//q-current reference
 			break;
 
 		case (Set_Send_Field_3):
-
+				Global_Data.cp.kp_d = value;					//kp_d parameter of FOC
 			break;
 
 		case (Set_Send_Field_4):
-
+				Global_Data.cp.ki_d = value;					//ki_d parameter of FOC
 			break;
 
 		case (Set_Send_Field_5):
-
+				Global_Data.cp.kp_q = value;					//kp_q parameter of FOC
 			break;
 
 		case (Set_Send_Field_6):
-
+				Global_Data.cp.ki_q = value;					//ki_q parameter of FOC
 			break;
 
 		case (My_Button_1):

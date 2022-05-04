@@ -30,6 +30,9 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_FOC/uz_FOC.h"
+#include "../uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -41,6 +44,39 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+//FOC instance
+extern uz_FOC* FOC_instance;
+//Speed Controller Instance:
+extern uz_SpeedControl_t* speed_control_instance;
+
+//other  FOC variables
+struct uz_3ph_abc_t m_abc_currents = {0};		//measured phase currents
+struct uz_3ph_dq_t  m_dq0_currents = {0};
+struct uz_3ph_dq_t  ref_dq0_currents = {0};	//reference currents for control
+
+struct uz_3ph_dq_t  ref_dq0_voltage = {0};		//reference voltage for pwm/ inverter dq
+struct uz_3ph_abc_t ref_abc_voltage = {0};											//abc
+
+struct uz_DutyCycle_t pwm_dutyCycle = {0};			//Duty-Cycle of the three phase pwm
+
+float omega_el_rad_per_sec = 0.0f;
+float theta_el_offset = 0.0f;		//additive offset of theta_el
+
+//statt diese Faktoren könnten diese auch bei der inizialisierung des ADCs in uz_adcLTc2311_ip_core_init.c eingefügt werden
+float adc_factor = 1.0f;		//scaling factor for ADC (ADC with maximum range -5 to +5V)
+float adc_offset = -5.0f;		//oder -2.5?	//additive offset to ADC value
+
+//Speed-Control:
+float n_ref_rpm = 100.0f;
+float speed_id_ref_Ampere = 0.0f;
+bool ext_clamping = false;
+
+//extern struct foc_control_param control_param_FOC_instance;
+//float test = control_param_FOC_instance.kp_q;
+
+extern struct uz_FOC_config config_FOC;
+extern struct uz_PMSM_t config_PMSM;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -51,20 +87,67 @@ static void ReadAllADC();
 
 void ISR_Control(void *data)
 {
+
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    	//hier noch die richtigen ADCs einstellen, offset und skalierungs-Faktor nicht vergessen
+
+	m_abc_currents.a = (Global_Data.aa.A2.me.ADC_A1 +adc_offset)*adc_factor;
+	m_abc_currents.b = (Global_Data.aa.A2.me.ADC_A2 +adc_offset)*adc_factor;
+	m_abc_currents.c = (Global_Data.aa.A2.me.ADC_A3 +adc_offset)*adc_factor;
+
+	//write currents into Global_Data
+	Global_Data.av.I_U = m_abc_currents.a;
+	Global_Data.av.I_V = m_abc_currents.b;
+	Global_Data.av.I_W = m_abc_currents.c;
+
+	//transform meassured currents to dq-System
+	m_dq0_currents = uz_transformation_3ph_abc_to_dq(m_abc_currents, Global_Data.av.theta_elec + theta_el_offset);
+
+	Global_Data.av.I_d = m_dq0_currents.d;
+	Global_Data.av.I_q = m_dq0_currents.q;
+
+	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*config_FOC.config_PMSM.polePairs*2.0f*M_PI/60;
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+        // Start: Control algorithm - only if Ultrazohm is in control state
+
+    	//Speed-Controller:
+    	ref_dq0_currents = uz_SpeedControl_sample(speed_control_instance, omega_el_rad_per_sec, n_ref_rpm, Global_Data.av.U_ZK, speed_id_ref_Ampere, config_PMSM, ext_clamping);
+
+
+    		//Call FOC-algorithm
+    	ref_dq0_voltage = uz_FOC_sample(FOC_instance, ref_dq0_currents, m_dq0_currents, Global_Data.av.U_ZK, omega_el_rad_per_sec);
+    		//Transform dq to abc-voltage
+    	ref_abc_voltage = uz_transformation_3ph_dq_to_abc(ref_dq0_voltage, Global_Data.av.theta_elec + theta_el_offset);
+    		//calculate pwm-dutyclcles for inverter
+    	pwm_dutyCycle = uz_FOC_generate_DutyCycles(ref_abc_voltage, Global_Data.av.U_ZK);
+
+    	Global_Data.rasv.halfBridge1DutyCycle = pwm_dutyCycle.DutyCycle_U;
+    	Global_Data.rasv.halfBridge2DutyCycle = pwm_dutyCycle.DutyCycle_V;
+    	Global_Data.rasv.halfBridge3DutyCycle = pwm_dutyCycle.DutyCycle_W;
+
+    	//Set new control parameter from javascope
+    	uz_FOC_set_Kp_id(FOC_instance, Global_Data.cp.kp_d);
+    	uz_FOC_set_Kp_iq(FOC_instance, Global_Data.cp.kp_q);
+    	uz_FOC_set_Ki_id(FOC_instance, Global_Data.cp.ki_d);
+    	uz_FOC_set_Ki_iq(FOC_instance, Global_Data.cp.ki_q);
+
+    	uz_SpeedControl_set_Ki(speed_control_instance, Global_Data.cp.ki_speed);
+		uz_SpeedControl_set_Kp(speed_control_instance, Global_Data.cp.kp_speed);
+
     }
+
+    // Set duty cycles for two-level modulator
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+    //PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+
+
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

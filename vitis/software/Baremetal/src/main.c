@@ -28,8 +28,20 @@ DS_Data Global_Data = {
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
-    }
+    },
+	.av.U_ZK = 24.0f
 };
+
+//FOC instance and config-parameters:
+struct uz_FOC* FOC_instance;
+
+// Speed controller instance
+struct uz_SpeedControl_t* speed_control_instance;
+
+struct uz_PMSM_t config_PMSM;
+struct uz_PI_Controller_config config_id;
+struct uz_PI_Controller_config config_iq;
+struct uz_FOC_config config_FOC;
 
 enum init_chain
 {
@@ -37,6 +49,7 @@ enum init_chain
     init_gpios,
     init_software,
     init_ip_cores,
+	init_foc,
     print_msg,
     init_interrupts,
     infinite_loop
@@ -45,6 +58,57 @@ enum init_chain initialization_chain = init_assertions;
 
 int main(void)
 {
+	//parameter for FOC
+	struct uz_PMSM_t config_PMSM = {
+		      .Ld_Henry = 0.0001f,			//Richtige Parameter für den Motor einfügen
+		      .Lq_Henry = 0.0002f,
+		      .Psi_PM_Vs = 0.008f,
+			  .R_ph_Ohm = 0.0f,
+			  .polePairs = 4.0f,
+			  .J_kg_m_squared = 0.0f,
+			  .I_max_Ampere = 10.0f
+	};
+
+	struct uz_PI_Controller_config config_id = {
+	  .Kp = 10.0f,
+	  .Ki = 10.0f,
+	  .samplingTime_sec = 0.00005f,
+	  .upper_limit = 10.0f,
+	  .lower_limit = -10.0f
+	};
+
+	struct uz_PI_Controller_config config_iq = {
+	   .Kp = 10.0f,
+	   .Ki = 10.0f,
+	   .samplingTime_sec = 0.00005f,
+	   .upper_limit = 10.0f,
+	   .lower_limit = -10.0f
+	};
+
+	struct uz_FOC_config config_FOC = {
+	   .decoupling_select = linear_decoupling,
+	   .config_PMSM = config_PMSM,
+	   .config_id = config_id,
+	   .config_iq = config_iq
+	};
+
+	Global_Data.cp.kp_d = config_FOC.config_id.Kp;
+	Global_Data.cp.kp_q = config_FOC.config_iq.Kp;
+	Global_Data.cp.ki_d = config_FOC.config_id.Ki;
+	Global_Data.cp.ki_q = config_FOC.config_iq.Ki;
+
+	struct uz_SpeedControl_config config_speed_controller ={
+	    .enable_field_weakening = false,
+		.config_controller.Kp = 0.0f,
+		.config_controller.Ki = 0.0f,
+		.config_controller.samplingTime_sec = 0.0f,
+		.config_controller.upper_limit = 5.0f,
+		.config_controller.lower_limit = -5.0f
+	};
+
+	Global_Data.cp.kp_speed = config_speed_controller.config_controller.Kp;
+	Global_Data.cp.ki_speed = config_speed_controller.config_controller.Ki;
+
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -73,8 +137,16 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            initialization_chain = print_msg;
+            initialization_chain = init_foc;
             break;
+
+        case init_foc:
+        	FOC_instance = uz_FOC_init(config_FOC);
+        	speed_control_instance = uz_SpeedControl_init(config_speed_controller);
+
+        	initialization_chain = print_msg;
+         	break;
+
         case print_msg:
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");

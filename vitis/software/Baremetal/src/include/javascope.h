@@ -48,6 +48,12 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_id_ref,
+	JSO_iq_ref,
+	JSO_kp_d,
+	JSO_kp_q,
+	JSO_ki_d,
+	JSO_ki_q,
 	JSO_ENDMARKER
 };
 
@@ -152,12 +158,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
-	send_field_2,
-	send_field_3,
-	send_field_4,
-	send_field_5,
-	send_field_6,
+	id_ref,
+	iq_ref,
+	kp_d,
+	ki_d,
+	kp_q,
+	ki_q,
 	SND_FLD_ENDMARKER
 
 
@@ -165,12 +171,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
 	A,
 	A,
-	A,
-	A,
+	,
+	,
+	,
+	,
 	SND_LABELS_ENDMARKER
 
 

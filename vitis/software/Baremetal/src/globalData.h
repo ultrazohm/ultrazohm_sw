@@ -95,12 +95,29 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 }object_pointers_t;
 
+/*
+ * @ Struct control_parameters (FOC and Spped-control)
+ *
+ */
+typedef struct  {
+	float kp_d;
+	float kp_q;
+	float ki_d;
+	float ki_q;
+	float kp_speed;
+	float ki_speed;
+} control_parameters;
+
 typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;
 	actualValues av;
 	AnalogAdapters aa;
 	object_pointers_t objects;
+	control_parameters cp;
 } DS_Data;
+
+
+
 
 #endif
 

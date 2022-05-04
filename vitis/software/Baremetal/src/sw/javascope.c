@@ -18,6 +18,7 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -33,6 +34,10 @@ static float System_UpTime_ms;
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
+
+extern uz_3ph_dq_t  ref_dq0_currents;
+//extern float kp_d, kp_q, ki_d, ki_q;
+//extern struct foc_control_param control_param_FOC_instance;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -74,7 +79,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-
+	js_ch_observable[JSO_id_ref]   		= &ref_dq0_currents.d;
+	js_ch_observable[JSO_iq_ref]		= &ref_dq0_currents.q;
+	js_ch_observable[JSO_kp_d] 			= &data->cp.kp_d;
+	js_ch_observable[JSO_kp_q] 			= &data->cp.kp_q;
+	js_ch_observable[JSO_ki_d] 			= &data->cp.ki_d;
+	js_ch_observable[JSO_ki_q] 			= &data->cp.ki_q;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

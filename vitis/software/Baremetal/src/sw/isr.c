@@ -30,7 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-
+#include "../uz/uz_wavegen/uz_wavegen.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -40,7 +40,7 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
-
+extern float voltage;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -48,7 +48,11 @@ extern DS_Data Global_Data;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
-
+#include "../include/test_spi.h"
+extern XSpi  SpiInstance;	 /* The instance of the SPI device */
+float test_frequency=50.0f;
+float voltage_times_two=0.0f;
+float amp=5.0f;
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -60,6 +64,14 @@ void ISR_Control(void *data)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     }
+	//while(1){
+    //voltage=uz_wavegen_sawtooth(5.0f,test_frequency)-2.5f;
+    //voltage=uz_wavegen_sine(2.2f, test_frequency);
+    voltage=uz_wavegen_triangle_with_offset(amp, test_frequency , (-1.0f*amp)/2.0f);
+    voltage_times_two=voltage*2.0f;
+
+		start_trans(&SpiInstance);
+	//}
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     // Set duty cycles for three-level modulator
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

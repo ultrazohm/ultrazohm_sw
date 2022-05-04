@@ -36,7 +36,8 @@ uint32_t js_status_BareToRTOS=0;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
+extern float voltage;
+extern float voltage_times_two;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -59,8 +60,15 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_ia] 			= &data->av.I_U;
-	js_ch_observable[JSO_ib] 			= &data->av.I_V;
+	js_ch_observable[JSO_dac_ref] 			= &voltage_times_two;
+	js_ch_observable[JSO_DAC8] 			= &data->aa.A2.me.ADC_B8;
+	js_ch_observable[JSO_DAC7] 			= &data->aa.A2.me.ADC_B7;
+	js_ch_observable[JSO_DAC6] 			= &data->aa.A2.me.ADC_B6;
+	js_ch_observable[JSO_DAC5] 			= &data->aa.A2.me.ADC_B5;
+	js_ch_observable[JSO_DAC4] 			= &data->aa.A2.me.ADC_A4;
+	js_ch_observable[JSO_DAC3] 			= &data->aa.A2.me.ADC_A3;
+	js_ch_observable[JSO_DAC2] 			= &data->aa.A2.me.ADC_A2;
+	js_ch_observable[JSO_DAC1] 			= &data->aa.A2.me.ADC_A1;
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;
 	js_ch_observable[JSO_ub] 			= &data->av.U_V;

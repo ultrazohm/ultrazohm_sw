@@ -45,6 +45,7 @@
 
 /************************** Constant Definitions *****************************/
 #include "../include/test_spi.h"
+#include <stdint.h>
 /*
  * The following constants map to the XPAR parameters created in the
  * xparameters.h file. They are defined here such that a user can easily
@@ -88,7 +89,7 @@ extern XSpi  SpiInstance;	 /* The instance of the SPI device */
  */
 u8 ReadBuffer[BUFFER_SIZE];
 u8 WriteBuffer[BUFFER_SIZE];
-
+uint16_t voltage_set_point=0;
 /*****************************************************************************/
 /**
 *
@@ -171,37 +172,51 @@ int SpiPolledExample(XSpi *SpiInstancePtr, u16 SpiDeviceId)
 	 * Test value that is added to the unique value allows the value to be
 	 * changed in a debug environment.
 	 */
-
+	WriteBuffer[0]=10;
+	WriteBuffer[1]=10;
 }
+
+float voltage=0.0f;
 
 void start_trans(XSpi *SpiInstancePtr){
 	u32 Count;
 	u8 Test;
 	Test = 0x01;
 
+	voltage_set_point=((voltage/2.5f)*32768)+32768;
+
+
+	u8 bytes[sizeof(uint16_t)]={
+			((uint16_t)voltage_set_point >> 0) & 0xFF,
+			((uint16_t)voltage_set_point >> 8) & 0xFF
+	};
+	WriteBuffer[0]=bytes[0];
+	WriteBuffer[1]=bytes[1];
+
 //	for (Count = 0; Count < BUFFER_SIZE; Count++) {
 //		WriteBuffer[Count] = (u8)(Count + Test);
 //		ReadBuffer[Count] = 0;
 //	}
 
-	WriteBuffer[0]=0x11;
-	WriteBuffer[1]=0x03;
+
 
 	/*
 	 * Transmit the data.
 	 */
 	XSpi_SetSlaveSelect(SpiInstancePtr, 0x01);
 
-	XSpi_Transfer(SpiInstancePtr, WriteBuffer, ReadBuffer, BUFFER_SIZE);
+	XSpi_Transfer(SpiInstancePtr, WriteBuffer, NULL, BUFFER_SIZE);
 
 	/*
 	 * Compare the data received with the data that was transmitted.
 	 */
-	for (Count = 0; Count < BUFFER_SIZE; Count++) {
-		if (WriteBuffer[Count] != ReadBuffer[Count]) {
-			return XST_FAILURE;
-		}
-	}
+//	for (Count = 0; Count < BUFFER_SIZE; Count++) {
+//		if (WriteBuffer[Count] != ReadBuffer[Count]) {
+//			return XST_FAILURE;
+//		}
+//	}
 
 	return XST_SUCCESS;
 }
+
+

@@ -70,9 +70,7 @@ int main(void)
             break;
         case init_ip_cores:
         	SpiPolledExample(&SpiInstance, 0);
-        	while(1){
-        		start_trans(&SpiInstance);
-        	}
+
 
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1 = uz_interlockDeadtime2L_staticAllocator_slotD1();

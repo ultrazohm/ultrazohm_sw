@@ -77,5 +77,21 @@ void test_uz_dq_transformation_read_i_uvw_pointer(void)
    TEST_ASSERT_FAIL_ASSERT(uz_dqIPcore_get_i_abc(testpointer));
 }
 
+void test_uz_dq_transformation_read_ialphabeta(void)
+{
+   uz_dqTransformation_hw_set_thetaOffset_Expect(config.base_address, config.theta_offset);
+   uz_dqIPcore_t* test_instance = uz_dqIPcore_init(config);
+
+   float ialpha_expected = -2.25f; 
+   uz_dqTransformation_hw_get_ialpha_ExpectAndReturn(config.base_address, ialpha_expected);
+
+   float ibeta_expected = 12.125f; 
+   uz_dqTransformation_hw_get_ibeta_ExpectAndReturn(config.base_address, ibeta_expected);
+
+   uz_3ph_alphabeta_t currents = uz_dqIPcore_get_ialpha_ibeta(test_instance);
+   
+   TEST_ASSERT_EQUAL_FLOAT(currents.alpha, ialpha_expected);
+   TEST_ASSERT_EQUAL_FLOAT(currents.beta, ibeta_expected);
+}
 
 #endif // TEST

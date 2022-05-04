@@ -55,4 +55,14 @@ uz_3ph_abc_t uz_dqIPcore_get_i_abc(uz_dqIPcore_t* self) {
     return currents;
 }
 
+uz_3ph_alphabeta_t uz_dqIPcore_get_ialpha_ibeta(uz_dqIPcore_t* self) {
+
+    uz_3ph_alphabeta_t currents = { 0 };
+
+    currents.alpha = uz_dqTransformation_hw_get_ialpha(self->config.base_address);
+    currents.beta = uz_dqTransformation_hw_get_ibeta(self->config.base_address);
+
+    return currents;
+}
+
 #endif

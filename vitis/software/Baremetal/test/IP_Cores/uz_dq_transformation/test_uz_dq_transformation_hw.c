@@ -24,7 +24,7 @@ void test_uz_dq_transformation_hw_set_thetaOffset(void){
         .integer_bits=4
     };
     float theta_offset = 1.35f;
-    uz_fixedpoint_axi_write_Expect(TEST_BASE_ADDRESS+theta_offset_AXI_Data_Trans_123_dq_V12_ip,theta_offset,def);
+    uz_fixedpoint_axi_write_Expect(TEST_BASE_ADDRESS + theta_offset_AXI_Data_Trans_123_alphabeta_dq_V12_ip, theta_offset,def);
     uz_dqTransformation_hw_set_thetaOffset(TEST_BASE_ADDRESS,theta_offset);
 }
 
@@ -39,7 +39,7 @@ void test_uz_dqTransformation_hw_get_id(void){
         .integer_bits = 7,
         .is_signed = true};
     float expected_return_value = -1.0;
-    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+id_AXI_Data_Trans_123_dq_V12_ip,fixedpoint_definition,expected_return_value);
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+ id_AXI_Data_Trans_123_alphabeta_dq_V12_ip, fixedpoint_definition,expected_return_value);
     float actual_return_value = uz_dqTransformation_hw_get_id(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
@@ -51,7 +51,7 @@ void test_uz_dqTransformation_hw_get_iq(void){
         .is_signed=true
     };
     float expected_return_value = -63.25;
-    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+iq_AXI_Data_Trans_123_dq_V12_ip, fixedpoint_definition, expected_return_value);
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+ iq_AXI_Data_Trans_123_alphabeta_dq_V12_ip, fixedpoint_definition, expected_return_value);
     float actual_return_value = uz_dqTransformation_hw_get_iq(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
@@ -69,7 +69,7 @@ void test_uz_dqTransformation_hw_get_i1(void){
     };
 
     float expected_return_value = -63.25;
-    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+i1_AXI_Data_Trans_123_dq_V12_ip,fixedpoint_definition,expected_return_value);
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS + i1_AXI_Data_Trans_123_alphabeta_dq_V12_ip, fixedpoint_definition,expected_return_value);
     float actual_return_value = uz_dqTransformation_hw_get_i1(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
@@ -83,7 +83,7 @@ void test_uz_dqTransformation_hw_get_i2(void){
     };
 
     float expected_return_value = -63.25;
-    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+i2_AXI_Data_Trans_123_dq_V12_ip,fixedpoint_definition,expected_return_value);
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS + i2_AXI_Data_Trans_123_alphabeta_dq_V12_ip, fixedpoint_definition,expected_return_value);
     float actual_return_value = uz_dqTransformation_hw_get_i2(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
@@ -97,8 +97,30 @@ void test_uz_dqTransformation_hw_get_i3(void){
     };
     
     float expected_return_value = -63.25;
-    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+i3_AXI_Data_Trans_123_dq_V12_ip,fixedpoint_definition,expected_return_value);
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS + i3_AXI_Data_Trans_123_alphabeta_dq_V12_ip, fixedpoint_definition,expected_return_value);
     float actual_return_value = uz_dqTransformation_hw_get_i3(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
+}
+
+void test_uz_dqTransformation_hw_get_ialpha(void){
+        struct uz_fixedpoint_definition_t fixedpoint_definition = {
+        .fractional_bits = 11,
+        .integer_bits = 7,
+        .is_signed = true};
+    float expected_return_value = -1.0;
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+ ialpha_AXI_Data_Trans_123_alphabeta_dq_V12_ip, fixedpoint_definition,expected_return_value);
+    float actual_return_value = uz_dqTransformation_hw_get_ialpha(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
+}
+
+void test_uz_dqTransformation_hw_get_ibeta(void){
+        struct uz_fixedpoint_definition_t fixedpoint_definition = {
+        .fractional_bits = 11,
+        .integer_bits = 7,
+        .is_signed = true};
+    float expected_return_value = -63.25;
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+ ibeta_AXI_Data_Trans_123_alphabeta_dq_V12_ip, fixedpoint_definition,expected_return_value);
+    float actual_return_value = uz_dqTransformation_hw_get_ibeta(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
 

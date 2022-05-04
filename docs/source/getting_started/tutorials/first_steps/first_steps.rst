@@ -1,3 +1,5 @@
+.. _first_steps:
+
 ==============================
 First steps with the UltraZohm
 ==============================

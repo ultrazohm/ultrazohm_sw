@@ -1,3 +1,5 @@
+.. _uz_wavegen_chirp:
+
 ==========
 Chirp wave
 ==========
@@ -12,6 +14,8 @@ Chirp wave
 .. doxygenfunction:: uz_wavegen_chirp_sample
 
 .. doxygenfunction:: uz_wavegen_chirp_reset
+
+.. _uz_wavegen_chirp_example:
 
 Example
 =======

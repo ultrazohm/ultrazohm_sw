@@ -194,8 +194,16 @@ Guideline
 
 #. To display the different chirp waves on the JavaScope, the ``javascope.c`` and ``javascope.h`` file will be modified. 
 #. Open the ``javascope.h`` file and add three new entrys to the ``JS_OberservableData`` enum. (e.g. JSO_Chirpwave1, etc.).
+
+   * Here the names for all observable data are stored in an enum.
+   * Observable data include all signals which can be displayed in the JavaScope.
+  
 #. In the ``javascope.c`` file with the ``extern`` keywords the three chirp_output float variables from the ``isr.c``.
 #. In the ``JavaScope_initalize`` add the three new entrys to the ``js_ch_observable`` array.
+
+   * Here the addresses of the variables are assigned to the specific elements in the ``js_ch_observable`` array corresponding to its enum.
+   * The value of the variable itself will be automatically updated in the ``JavaScope_update`` function (no changes have to be made). 
+  
 #. The ``javascope.c`` file should look like this now.
 
    .. code-block:: c
@@ -225,8 +233,10 @@ Guideline
 #. Open the JavaScope and connect it and select the three new signals in the *Setup Scope* page. Set every other channel to ``(0) ZeroValue`` . 
 #. Press the *Enable System* and the *Enable Control* buttons. Now the chirp waves should be visible in the scope.
 
-   ..  _GUI_connected:
+   ..  _GUI_chirp:
    ..  figure:: ./img/GUI_chirp.png
        :align: center
 
        Visible chirp signals
+
+#. This concludes the second tutorial.

@@ -120,7 +120,7 @@ void ISR_Control(void *data)
 
 	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*config_FOC.config_PMSM.polePairs*2.0f*M_PI/60;
 
-
+	//Testt new ip-core for dq-Transformation
 	m_T_dq_currents = uz_dqIPcore_get_id_iq(dq_Transformator);
 
 	m_T_abc_currents = uz_dqIPcore_get_i_abc(dq_Transformator);
@@ -128,6 +128,14 @@ void ISR_Control(void *data)
 	m_T_alphabeta_currents = uz_dqIPcore_get_ialpha_ibeta(dq_Transformator);
 
 
+	//Set new control parameter from javascope
+	uz_FOC_set_Kp_id(FOC_instance, Global_Data.cp.kp_d);
+	uz_FOC_set_Kp_iq(FOC_instance, Global_Data.cp.kp_q);
+	uz_FOC_set_Ki_id(FOC_instance, Global_Data.cp.ki_d);
+	uz_FOC_set_Ki_iq(FOC_instance, Global_Data.cp.ki_q);
+
+	uz_SpeedControl_set_Ki(speed_control_instance, Global_Data.cp.ki_speed);
+	uz_SpeedControl_set_Kp(speed_control_instance, Global_Data.cp.kp_speed);
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -150,14 +158,6 @@ void ISR_Control(void *data)
     	Global_Data.rasv.halfBridge2DutyCycle = pwm_dutyCycle.DutyCycle_V;
     	Global_Data.rasv.halfBridge3DutyCycle = pwm_dutyCycle.DutyCycle_W;
 
-    	//Set new control parameter from javascope
-    	uz_FOC_set_Kp_id(FOC_instance, Global_Data.cp.kp_d);
-    	uz_FOC_set_Kp_iq(FOC_instance, Global_Data.cp.kp_q);
-    	uz_FOC_set_Ki_id(FOC_instance, Global_Data.cp.ki_d);
-    	uz_FOC_set_Ki_iq(FOC_instance, Global_Data.cp.ki_q);
-
-    	uz_SpeedControl_set_Ki(speed_control_instance, Global_Data.cp.ki_speed);
-		uz_SpeedControl_set_Kp(speed_control_instance, Global_Data.cp.kp_speed);
 
     }
 

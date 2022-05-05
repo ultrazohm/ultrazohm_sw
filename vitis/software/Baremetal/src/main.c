@@ -46,7 +46,7 @@ struct uz_FOC_config config_FOC;
 
 
 static struct uz_dqIPcore_config_t config={
-   .base_address= UZ_SYSTEM_TRANS_123_ALPHABETA_0_BASEADDR,
+   .base_address = 0x800E0000,
    .ip_clk_frequency_Hz= 50000000,
    .theta_offset = -1.5f // add your encoder offset here!
 };

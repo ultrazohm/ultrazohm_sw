@@ -1,3 +1,5 @@
+.. _first_changes:
+
 =============================
 First changes to the codebase
 =============================

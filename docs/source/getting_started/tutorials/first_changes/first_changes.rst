@@ -44,7 +44,7 @@ Guideline
    .. code-block:: c
      :linenos:
      :emphasize-lines: 5,30,68
-     :caption: main.c code after changes. ``//....`` signals left out code. 
+     :caption: main.c code after changes. ``//....`` marks left out code. 
 
       // Includes from own files
       #include "main.h"
@@ -148,7 +148,7 @@ Guideline
    .. code-block:: c
      :linenos:
      :emphasize-lines: 1,43
-     :caption: isr.c code after changes. ``//....`` signals left out code.  
+     :caption: isr.c code after changes. ``//....`` marks left out code.  
 
       //....
       // Global variable structure
@@ -211,7 +211,7 @@ Guideline
    .. code-block:: c
      :linenos:
      :emphasize-lines: 1,8,15,17
-     :caption: javascope.c code after changes. ``//....`` signals left out code.  
+     :caption: javascope.c code after changes. ``//....`` marks left out code.  
 
       //....
       extern float chirp_output1;

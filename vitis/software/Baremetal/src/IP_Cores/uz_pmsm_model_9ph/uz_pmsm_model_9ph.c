@@ -88,7 +88,9 @@ void uz_pmsm_model_9ph_reset(uz_pmsm_model_9ph_t *self)
     // Then resets the integrators
     struct uz_pmsm_model_9ph_inputs_general_t inputs_general = {
         .load_torque=0.0f,
-        .omega_mech_1_s=0.0f};
+        .omega_mech_1_s=0.0f,
+        .u_d=0.0f,
+        .u_q=0.0f};
     uz_pmsm_model_9ph_set_inputs_general(self, inputs_general);
     uz_pmsm_model_9ph_trigger_input_general_strobe(self);
     uz_pmsm_model_9ph_hw_write_reset(self->config.base_address, false);
@@ -105,6 +107,8 @@ void uz_pmsm_model_9ph_set_inputs_general(uz_pmsm_model_9ph_t *self, struct uz_p
     //memcpy( (void *)(self->config.base_address+inputs_Data_uz_pmsm_model), &inputs,sizeof(struct uz_pmsm_model_9ph_inputs_t) );
     uz_pmsm_model_9ph_hw_write_omega_mech(self->config.base_address, inputs.omega_mech_1_s);
     uz_pmsm_model_9ph_hw_write_load_torque(self->config.base_address, inputs.load_torque);
+    uz_pmsm_model_9ph_hw_write_u_d(self->config.base_address, inputs.u_d);
+    uz_pmsm_model_9ph_hw_write_u_q(self->config.base_address, inputs.u_q);
 }
 struct uz_pmsm_model_9ph_outputs_general_t uz_pmsm_model_9ph_get_outputs_general(uz_pmsm_model_9ph_t *self)
 {
@@ -113,10 +117,14 @@ struct uz_pmsm_model_9ph_outputs_general_t uz_pmsm_model_9ph_get_outputs_general
     struct uz_pmsm_model_9ph_outputs_general_t outputs = {
         .torque_Nm = 0.0f,
         .omega_mech_1_s = 0.0f,
-    	.theta_el = 0.0f};
+    	.theta_el = 0.0f,
+        .u_d = 0.0f,
+        .u_q = 0.0f};
     outputs.torque_Nm = uz_pmsm_model_9ph_hw_read_torque(self->config.base_address);
     outputs.omega_mech_1_s = uz_pmsm_model_9ph_hw_read_omega_mech(self->config.base_address);
     outputs.theta_el = uz_pmsm_model_9ph_hw_read_theta_el(self->config.base_address);
+    outputs.u_d = uz_pmsm_model_9ph_hw_read_u_d(self->config.base_address);
+    outputs.u_q = uz_pmsm_model_9ph_hw_read_u_q(self->config.base_address);
     return outputs;
 }
 

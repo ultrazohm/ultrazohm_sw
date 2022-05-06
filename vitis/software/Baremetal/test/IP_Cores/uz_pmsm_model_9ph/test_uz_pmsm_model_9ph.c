@@ -87,6 +87,8 @@ void test_uz_pmsm_model_9ph_reset_model(void)
     // write zeros to the model
     uz_pmsm_model_9ph_hw_write_omega_mech_Expect(BASE_ADDRESS, 0.0f);
     uz_pmsm_model_9ph_hw_write_load_torque_Expect(BASE_ADDRESS, 0.0f);
+    uz_pmsm_model_9ph_hw_write_u_d_Expect(BASE_ADDRESS, 0.0f);
+    uz_pmsm_model_9ph_hw_write_u_q_Expect(BASE_ADDRESS, 0.0f);
 
     // force rising edge on inputs strobe
     uz_pmsm_model_9ph_hw_trigger_input_general_strobe_Expect(BASE_ADDRESS);
@@ -117,6 +119,8 @@ void test_uz_pmsm_model_9ph_normal_usage(void)
     float torque_expect = 4.1f;
     float omega_mech_expect=131.1f;
     float theta_el_expect = 1.9f;
+    float u_d_expect = 1.11f;
+    float u_q_expect = 1.21f;
 
     float i_d_expect = 2.4f;
     float i_q_expect = 2.1f;
@@ -133,6 +137,8 @@ void test_uz_pmsm_model_9ph_normal_usage(void)
     uz_pmsm_model_9ph_hw_read_torque_ExpectAndReturn(BASE_ADDRESS, torque_expect);
     uz_pmsm_model_9ph_hw_read_omega_mech_ExpectAndReturn(BASE_ADDRESS,omega_mech_expect);
     uz_pmsm_model_9ph_hw_read_theta_el_ExpectAndReturn(BASE_ADDRESS,theta_el_expect);
+    uz_pmsm_model_9ph_hw_read_u_d_ExpectAndReturn(BASE_ADDRESS,u_d_expect);
+    uz_pmsm_model_9ph_hw_read_u_q_ExpectAndReturn(BASE_ADDRESS,u_q_expect);
 
     uz_pmsm_model_9ph_hw_read_i_d_ExpectAndReturn(BASE_ADDRESS, i_d_expect);
     uz_pmsm_model_9ph_hw_read_i_q_ExpectAndReturn(BASE_ADDRESS, i_q_expect);
@@ -149,6 +155,8 @@ void test_uz_pmsm_model_9ph_normal_usage(void)
     TEST_ASSERT_EQUAL_FLOAT(torque_expect, out.torque_Nm);
     TEST_ASSERT_EQUAL_FLOAT(omega_mech_expect,out.omega_mech_1_s);
     TEST_ASSERT_EQUAL_FLOAT(theta_el_expect,out.theta_el);
+    TEST_ASSERT_EQUAL_FLOAT(u_d_expect,out.u_d);
+    TEST_ASSERT_EQUAL_FLOAT(u_q_expect,out.u_q);
 
     struct uz_pmsm_model_9ph_outputs_dq_t out_dq = uz_pmsm_model_9ph_get_outputs_dq(test_instance);
     TEST_ASSERT_EQUAL_FLOAT(i_d_expect, out_dq.i_dq.d);

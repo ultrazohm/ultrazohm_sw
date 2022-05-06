@@ -31,6 +31,130 @@ DS_Data Global_Data = {
     }
 };
 
+
+//upper code for PMSM
+#include "IP_Cores/uz_pmsm_model_9ph/uz_pmsm_model_9ph.h"
+#include "uz/uz_piController/uz_piController.h"
+#include "xparameters.h"
+uz_pmsm_model_9ph_t *pmsm=NULL;
+uz_PI_Controller *PI_d_current=NULL;
+uz_PI_Controller *PI_q_current=NULL;
+struct uz_pmsm_model_9ph_config_t pmsm_config={
+              .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_9PH_OP_0_BASEADDR,
+              .ip_core_frequency_Hz=100000000,
+              .simulate_mechanical_system = false,
+              .r_1 = 2.1f,
+              .L_d = 0.05f,
+              .L_q = 0.05f,
+              .L_z1 = 0.01f,
+              .L_z2 = 0.01f,
+              .L_x1 = 0.01f,
+              .L_y1 = 0.01f,
+              .L_x2 = 0.01f,
+              .L_y2 = 0.01f,
+              .L_z3 = 0.01f,
+              .psi_pm = 0.05f,
+              .polepairs = 5.0f,
+              .inertia = 0.001,
+              .coulomb_friction_constant = 0.001f,
+              .friction_coefficient = 0.001f,
+			  .control_dq_abc = false,
+			  .switch_pspl = false};
+
+struct uz_PI_Controller_config config = {
+              .Kp = 200.0f,
+              .Ki = 70.0f,
+              .samplingTime_sec = 0.00005f,
+              .upper_limit = 100.0f,
+              .lower_limit = -100.0f};
+//end
+
+// upper code for PWM
+#include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+struct uz_PWM_SS_2L_config_t pwm_config_1 = {
+        .base_address= XPAR_UZ_USER_PWM_AND_SS_CONTROL_V_0_BASEADDR,
+        .ip_clk_frequency_Hz=100000000,
+        .Tristate_HB1 = false,
+        .Tristate_HB2 = false,
+        .Tristate_HB3 = false,
+        .min_pulse_width = 0.01f,
+        .PWM_freq_Hz = 100e3f,
+        .PWM_mode = normalized_input_via_AXI,
+        .PWM_en = true,
+        .use_external_counter = false,
+        .init_dutyCyc_A = 0.0f,
+        .init_dutyCyc_B = 0.0f,
+        .init_dutyCyc_C = 0.0f
+};
+
+struct uz_PWM_SS_2L_config_t pwm_config_2 = {
+        .base_address= XPAR_UZ_USER_PWM_AND_SS_CONTROL_V_1_BASEADDR,
+        .ip_clk_frequency_Hz=100000000,
+        .Tristate_HB1 = false,
+        .Tristate_HB2 = false,
+        .Tristate_HB3 = false,
+        .min_pulse_width = 0.01f,
+        .PWM_freq_Hz = 100e3f,
+        .PWM_mode = normalized_input_via_AXI,
+        .PWM_en = true,
+        .use_external_counter = true,
+        .init_dutyCyc_A = 0.0f,
+        .init_dutyCyc_B = 0.0f,
+        .init_dutyCyc_C = 0.0f
+};
+
+struct uz_PWM_SS_2L_config_t pwm_config_3 = {
+        .base_address= XPAR_UZ_USER_PWM_AND_SS_CONTROL_V_2_BASEADDR,
+        .ip_clk_frequency_Hz=100000000,
+        .Tristate_HB1 = false,
+        .Tristate_HB2 = false,
+        .Tristate_HB3 = false,
+        .min_pulse_width = 0.01f,
+        .PWM_freq_Hz = 100e3f,
+        .PWM_mode = normalized_input_via_AXI,
+        .PWM_en = true,
+        .use_external_counter = true,
+        .init_dutyCyc_A = 0.0f,
+        .init_dutyCyc_B = 0.0f,
+        .init_dutyCyc_C = 0.0f
+};
+
+uz_PWM_SS_2L_t *pwm_instance_1=NULL;
+uz_PWM_SS_2L_t *pwm_instance_2=NULL;
+uz_PWM_SS_2L_t *pwm_instance_3=NULL;
+
+//end
+
+//upper code for inverter
+#include "IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
+
+struct uz_inverter_3ph_config_t inverter_1_config = {
+		.base_address= XPAR_UZ_USER_UZ_INVERTER_3PH_0_BASEADDR,
+		.ip_core_frequency_Hz= 100000000,
+		.switch_pspl_abc=true,
+		.switch_pspl_gate=false
+};
+
+struct uz_inverter_3ph_config_t inverter_2_config = {
+		.base_address= XPAR_UZ_USER_UZ_INVERTER_3PH_1_BASEADDR,
+		.ip_core_frequency_Hz= 100000000,
+		.switch_pspl_abc=false,
+		.switch_pspl_gate=true
+};
+
+struct uz_inverter_3ph_config_t inverter_3_config = {
+		.base_address= XPAR_UZ_USER_UZ_INVERTER_3PH_2_BASEADDR,
+		.ip_core_frequency_Hz= 100000000,
+		.switch_pspl_abc=false,
+		.switch_pspl_gate=true
+};
+
+struct uz_inverter_3ph_t *inverter_1=NULL;
+struct uz_inverter_3ph_t *inverter_2=NULL;
+struct uz_inverter_3ph_t *inverter_3=NULL;
+
+//end
+
 enum init_chain
 {
     init_assertions = 0,
@@ -72,6 +196,20 @@ int main(void)
             Global_Data.objects.pwm_d1 = initialize_pwm_2l_on_D1();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
+            //loop code for PMSM
+            pmsm = uz_pmsm_model_9ph_init(pmsm_config);
+            uz_pmsm_model_9ph_reset(pmsm);
+            PI_d_current = uz_PI_Controller_init(config);
+            PI_q_current = uz_PI_Controller_init(config);
+
+            pwm_instance_1 = uz_PWM_SS_2L_init(pwm_config_1);
+            pwm_instance_2 = uz_PWM_SS_2L_init(pwm_config_2);
+			pwm_instance_3 = uz_PWM_SS_2L_init(pwm_config_3);
+
+			inverter_1 = uz_inverter_3ph_init(inverter_1_config);
+			inverter_2 = uz_inverter_3ph_init(inverter_2_config);
+			inverter_3 = uz_inverter_3ph_init(inverter_3_config);
+            //end
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
             break;

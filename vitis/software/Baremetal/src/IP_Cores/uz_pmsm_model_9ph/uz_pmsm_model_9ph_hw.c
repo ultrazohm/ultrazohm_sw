@@ -36,6 +36,16 @@ float uz_pmsm_model_9ph_hw_read_theta_el(uint32_t base_address){
     return uz_axi_read_float(base_address+out_theta_el_Data_uz_pmsm_model_9ph);
 }
 
+float uz_pmsm_model_9ph_hw_read_u_d(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address+u_d_Data_uz_pmsm_model_9ph);
+}
+
+float uz_pmsm_model_9ph_hw_read_u_q(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address+u_q_Data_uz_pmsm_model_9ph);
+}
+
 // Outputs currents dq
 float uz_pmsm_model_9ph_hw_read_i_d(uint32_t base_address)
 {
@@ -94,6 +104,18 @@ void uz_pmsm_model_9ph_hw_write_omega_mech(uint32_t base_address, float omega_me
 {
     uz_assert_not_zero(base_address);
     uz_axi_write_float(base_address + in_omega_mech_Data_uz_pmsm_model_9ph, omega_mech);
+}
+
+void uz_pmsm_model_9ph_hw_write_u_d(uint32_t base_address, float u_d)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_float(base_address + u_d_uz_pmsm_model_9ph, u_d);
+}
+
+void uz_pmsm_model_9ph_hw_write_u_q(uint32_t base_address, float u_q)
+{
+    uz_assert_not_zero(base_address);
+    uz_axi_write_float(base_address + u_q_uz_pmsm_model_9ph, u_q);
 }
 
 // Model parameter
@@ -156,7 +178,7 @@ void uz_pmsm_model_9ph_hw_write_L_q(uint32_t base_address, float inductance)
 void uz_pmsm_model_9ph_hw_write_r_1(uint32_t base_address, float r_1)
 {
     uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address + Physical_Parameter_R1_Data_uz_pmsm_model_9ph, r_1);
+    uz_axi_write_float(base_address + Physical_Parameter_R1_Data_uz_pmsm_model_9ph, (r_1));
 }
 
 void uz_pmsm_model_9ph_hw_write_polepairs(uint32_t base_address, float polepairs)
@@ -176,7 +198,7 @@ void uz_pmsm_model_9ph_hw_write_L_z1(uint32_t base_address, float inductance)
     uz_assert_not_zero(base_address);
     uz_assert(inductance > 0.0f); // prevent division by zero & negative inductance makes no sense
     // Hardware expects reciprocal of L_q to not have to invert it in the IP-Core
-    uz_axi_write_float(base_address + Physical_Parameter_L_z1_Data_uz_pmsm_model_9ph, (1.0f / inductance));
+    uz_axi_write_float(base_address + Physical_Parameter_L_z1_Data_uz_pmsm_model_9ph, 0.0f);//(1.0f / inductance));
 }
 
 void uz_pmsm_model_9ph_hw_write_L_z2(uint32_t base_address, float inductance)
@@ -184,7 +206,7 @@ void uz_pmsm_model_9ph_hw_write_L_z2(uint32_t base_address, float inductance)
     uz_assert_not_zero(base_address);
     uz_assert(inductance > 0.0f); // prevent division by zero & negative inductance makes no sense
     // Hardware expects reciprocal of L_q to not have to invert it in the IP-Core
-    uz_axi_write_float(base_address + Physical_Parameter_L_z2_Data_uz_pmsm_model_9ph, (1.0f / inductance));
+    uz_axi_write_float(base_address + Physical_Parameter_L_z2_Data_uz_pmsm_model_9ph, 0.0f);//(1.0f / inductance));
 }
 
 void uz_pmsm_model_9ph_hw_write_L_x1(uint32_t base_address, float inductance)
@@ -192,7 +214,7 @@ void uz_pmsm_model_9ph_hw_write_L_x1(uint32_t base_address, float inductance)
     uz_assert_not_zero(base_address);
     uz_assert(inductance > 0.0f); // prevent division by zero & negative inductance makes no sense
     // Hardware expects reciprocal of L_q to not have to invert it in the IP-Core
-    uz_axi_write_float(base_address + Physical_Parameter_L_x1_Data_uz_pmsm_model_9ph, (1.0f / inductance));
+    uz_axi_write_float(base_address + Physical_Parameter_L_x1_Data_uz_pmsm_model_9ph, 0.0f);//(1.0f / inductance));
 }
 
 void uz_pmsm_model_9ph_hw_write_L_y1(uint32_t base_address, float inductance)
@@ -200,7 +222,7 @@ void uz_pmsm_model_9ph_hw_write_L_y1(uint32_t base_address, float inductance)
     uz_assert_not_zero(base_address);
     uz_assert(inductance > 0.0f); // prevent division by zero & negative inductance makes no sense
     // Hardware expects reciprocal of L_q to not have to invert it in the IP-Core
-    uz_axi_write_float(base_address + Physical_Parameter_L_y1_Data_uz_pmsm_model_9ph, (1.0f / inductance));
+    uz_axi_write_float(base_address + Physical_Parameter_L_y1_Data_uz_pmsm_model_9ph, 0.0f);//(1.0f / inductance));
 }
 
 void uz_pmsm_model_9ph_hw_write_L_x2(uint32_t base_address, float inductance)
@@ -208,7 +230,7 @@ void uz_pmsm_model_9ph_hw_write_L_x2(uint32_t base_address, float inductance)
     uz_assert_not_zero(base_address);
     uz_assert(inductance > 0.0f); // prevent division by zero & negative inductance makes no sense
     // Hardware expects reciprocal of L_q to not have to invert it in the IP-Core
-    uz_axi_write_float(base_address + Physical_Parameter_L_x2_Data_uz_pmsm_model_9ph, (1.0f / inductance));
+    uz_axi_write_float(base_address + Physical_Parameter_L_x2_Data_uz_pmsm_model_9ph, 0.0f);//(1.0f / inductance));
 }
 
 void uz_pmsm_model_9ph_hw_write_L_y2(uint32_t base_address, float inductance)
@@ -216,7 +238,7 @@ void uz_pmsm_model_9ph_hw_write_L_y2(uint32_t base_address, float inductance)
     uz_assert_not_zero(base_address);
     uz_assert(inductance > 0.0f); // prevent division by zero & negative inductance makes no sense
     // Hardware expects reciprocal of L_q to not have to invert it in the IP-Core
-    uz_axi_write_float(base_address + Physical_Parameter_L_y2_Data_uz_pmsm_model_9ph, (1.0f / inductance));
+    uz_axi_write_float(base_address + Physical_Parameter_L_y2_Data_uz_pmsm_model_9ph, 0.0f);//(1.0f / inductance));
 }
 
 void uz_pmsm_model_9ph_hw_write_L_z3(uint32_t base_address, float inductance)
@@ -224,7 +246,7 @@ void uz_pmsm_model_9ph_hw_write_L_z3(uint32_t base_address, float inductance)
     uz_assert_not_zero(base_address);
     uz_assert(inductance > 0.0f); // prevent division by zero & negative inductance makes no sense
     // Hardware expects reciprocal of L_q to not have to invert it in the IP-Core
-    uz_axi_write_float(base_address + Physical_Parameter_L_z3_Data_uz_pmsm_model_9ph, (1.0f / inductance));
+    uz_axi_write_float(base_address + Physical_Parameter_L_z3_Data_uz_pmsm_model_9ph, 0.0f);//(1.0f / inductance));
 }
 
 // Strobe

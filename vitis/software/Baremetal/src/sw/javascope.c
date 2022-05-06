@@ -19,6 +19,12 @@
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
 
+#include "../IP_Cores/uz_pmsm_model_9ph/uz_pmsm_model_9ph.h"
+#include "../IP_Cores/uz_pmsm_model_9ph/uz_pmsm_model_9ph_hw.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
+
+
 //Variables for JavaScope
 static float zerovalue = 0.0;
 static float *js_slowDataArray[JSSD_ENDMARKER];
@@ -30,6 +36,15 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
+
+extern struct uz_pmsm_model_9ph_outputs_dq_t pmsm_output_currents;
+extern uz_9ph_abc_t natural_currents;
+extern struct uz_pmsm_model_9ph_outputs_general_t pmsm_outputs;
+extern uz_9ph_abc_t setpoint_natural;
+
+extern struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_1;
+extern struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_2;
+extern struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_3;
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
@@ -58,19 +73,31 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_ia] 			= &data->av.I_U;
-	js_ch_observable[JSO_ib] 			= &data->av.I_V;
-	js_ch_observable[JSO_ic] 			= &data->av.I_W;
-	js_ch_observable[JSO_ua] 			= &data->av.U_U;
-	js_ch_observable[JSO_ub] 			= &data->av.U_V;
-	js_ch_observable[JSO_uc] 			= &data->av.U_W;
-	js_ch_observable[JSO_iq] 			= &data->av.I_q;
-	js_ch_observable[JSO_id] 			= &data->av.I_d;
-	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
-	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
-	js_ch_observable[JSO_ud]			= &data->av.U_d;
-	js_ch_observable[JSO_uq]			= &data->av.U_q;
+	js_ch_observable[JSO_Speed_rpm]		= &pmsm_outputs.omega_mech_1_s;
+	js_ch_observable[JSO_ia1] 			= &natural_currents.a1;
+	js_ch_observable[JSO_ib1] 			= &natural_currents.b1;
+	js_ch_observable[JSO_ic1] 			= &natural_currents.c1;
+	js_ch_observable[JSO_ia2] 			= &natural_currents.a2;
+	js_ch_observable[JSO_ib2] 			= &natural_currents.b2;
+	js_ch_observable[JSO_ic2] 			= &natural_currents.c2;
+	js_ch_observable[JSO_ia3] 			= &natural_currents.a3;
+	js_ch_observable[JSO_ib3] 			= &natural_currents.b3;
+	js_ch_observable[JSO_ic3] 			= &natural_currents.c3;
+	js_ch_observable[JSO_iq] 			= &pmsm_output_currents.i_dq.d;
+	js_ch_observable[JSO_id] 			= &pmsm_output_currents.i_dq.q;
+	js_ch_observable[JSO_Theta_el] 		= &pmsm_outputs.theta_el;
+	js_ch_observable[JSO_ua1] 			= &voltage_inverter_1.u_ab;
+	js_ch_observable[JSO_ub1] 			= &voltage_inverter_1.u_bc;
+	js_ch_observable[JSO_uc1] 			= &voltage_inverter_1.u_ca;
+	js_ch_observable[JSO_ua2] 			= &voltage_inverter_2.u_ab;
+	js_ch_observable[JSO_ub2] 			= &voltage_inverter_2.u_bc;
+	js_ch_observable[JSO_uc2] 			= &voltage_inverter_2.u_ca;
+	js_ch_observable[JSO_ua3] 			= &voltage_inverter_3.u_ab;
+	js_ch_observable[JSO_ub3] 			= &voltage_inverter_3.u_bc;
+	js_ch_observable[JSO_uc3] 			= &voltage_inverter_3.u_ca;
+	js_ch_observable[JSO_setp_ia1] 			= &setpoint_natural.a1;
+	js_ch_observable[JSO_setp_ib1] 			= &setpoint_natural.b1;
+	js_ch_observable[JSO_setp_ic1] 			= &setpoint_natural.c1;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;

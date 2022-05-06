@@ -39,6 +39,20 @@ void test_uz_pmsm_model_9ph_hw_read_theta_el(void){
     TEST_ASSERT_EQUAL_FLOAT(theta_el_expected,theta_el);
 }
 
+void test_uz_pmsm_model_9ph_hw_read_u_d(void){
+    float u_expected=10.6f;
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+u_d_Data_uz_pmsm_model_9ph,u_expected);
+    float u=uz_pmsm_model_9ph_hw_read_u_d(BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(u_expected,u);
+}
+
+void test_uz_pmsm_model_9ph_hw_read_u_q(void){
+    float u_expected=10.8f;
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+u_q_Data_uz_pmsm_model_9ph,u_expected);
+    float u=uz_pmsm_model_9ph_hw_read_u_q(BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(u_expected,u);
+}
+
 // Outputs currents dq
 void test_uz_pmsm_model_9ph_hw_read_i_d(void){
     float i_d_val=13.1f;
@@ -115,6 +129,18 @@ void test_uz_pmsm_model_9ph_hw_write_omega_mech(void){
     float omega_mech=123.4f;
     uz_axi_write_float_Expect(BASE_ADDRESS+in_omega_mech_Data_uz_pmsm_model_9ph,omega_mech);
     uz_pmsm_model_9ph_hw_write_omega_mech(BASE_ADDRESS,omega_mech);
+}
+
+void test_uz_pmsm_model_9ph_hw_write_u_d(void){
+    float u_d=1.4f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+u_d_uz_pmsm_model_9ph,u_d);
+    uz_pmsm_model_9ph_hw_write_u_d(BASE_ADDRESS,u_d);
+}
+
+void test_uz_pmsm_model_9ph_hw_write_u_q(void){
+    float u_q=2.4f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+u_q_uz_pmsm_model_9ph,u_q);
+    uz_pmsm_model_9ph_hw_write_u_q(BASE_ADDRESS,u_q);
 }
 
 // Model parameter

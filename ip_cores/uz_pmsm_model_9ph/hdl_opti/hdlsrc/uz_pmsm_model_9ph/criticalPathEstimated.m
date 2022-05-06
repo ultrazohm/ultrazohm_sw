@@ -1,0 +1,13 @@
+open_system('gm_uz_pmsm_model_9ph');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'lightblue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_uz_pmsm_model_9ph/uz_pmsm_model_9ph/Theta_el', 'user2');
+annotate_port('gm_uz_pmsm_model_9ph/uz_pmsm_model_9ph/Theta_el', 0, 1, 'cp : 5.196 ns');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'blue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_uz_pmsm_model_9ph/uz_pmsm_model_9ph/Theta_el/Gain', 'user1');
+annotate_port('gm_uz_pmsm_model_9ph/uz_pmsm_model_9ph/Theta_el/Gain', 0, 1, 'cp : 5.196 ns');

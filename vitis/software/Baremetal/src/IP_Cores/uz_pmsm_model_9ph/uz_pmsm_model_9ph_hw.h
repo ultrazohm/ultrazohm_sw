@@ -7,11 +7,15 @@
 // Inputs general
 void uz_pmsm_model_9ph_hw_write_load_torque(uint32_t base_address, float load_torque);
 void uz_pmsm_model_9ph_hw_write_omega_mech(uint32_t base_address, float omega_mech);
+void uz_pmsm_model_9ph_hw_write_u_d(uint32_t base_address, float u_d);
+void uz_pmsm_model_9ph_hw_write_u_q(uint32_t base_address, float u_q);
 
 // Outputs general
 float uz_pmsm_model_9ph_hw_read_torque(uint32_t base_address);
 float uz_pmsm_model_9ph_hw_read_omega_mech(uint32_t base_address);
 float uz_pmsm_model_9ph_hw_read_theta_el(uint32_t base_address);
+float uz_pmsm_model_9ph_hw_read_u_d(uint32_t base_address);
+float uz_pmsm_model_9ph_hw_read_u_q(uint32_t base_address);
 
 // Outputs currents dq
 float uz_pmsm_model_9ph_hw_read_i_d(uint32_t base_address);

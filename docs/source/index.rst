@@ -88,7 +88,7 @@ Syllabus
    :maxdepth: 2
    :caption: Codegeneration
 
-   code_generation/hdl_coder/index
+   code_generation/hdl_coder/hdl_coder
    code_generation/vivado_hls/index
    code_generation/embedded_coder/index
 

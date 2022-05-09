@@ -81,7 +81,6 @@ function RTW_SidParentMap() {
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:473"] = "IP_Core_SS_Switch_and_PWM:371";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:474"] = "IP_Core_SS_Switch_and_PWM:371";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:475"] = "IP_Core_SS_Switch_and_PWM:371";
-    this.sidParentMap["IP_Core_SS_Switch_and_PWM:599"] = "IP_Core_SS_Switch_and_PWM:371";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:476"] = "IP_Core_SS_Switch_and_PWM:371";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:477"] = "IP_Core_SS_Switch_and_PWM:371";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:479"] = "IP_Core_SS_Switch_and_PWM:371";

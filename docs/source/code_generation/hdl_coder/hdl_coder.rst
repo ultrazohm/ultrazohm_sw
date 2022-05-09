@@ -202,7 +202,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
 
 - Go to *3.1 Set HDL Options* and click on *HDL Code Generation Settings...*
 
-.. figure:: tutorial_img/18set_hdl_options.png
+.. figure:: tutorial_img/18_set_hdl_options.png
    :width: 800px
    :align: center
 
@@ -246,6 +246,16 @@ The result of this tutorial is the :ref:`AXI_testIP`.
 .. figure:: tutorial_img/23_critical_path.png
    :width: 800px
    :align: center
+
+- **TODO**
+- Before generating IP-Core, add input delay to break critical paths that are incoming to the IP-core
+- Add IP-Core to Vivado
+- Generate
+- On your own: Extend the IP-Core with unsigned int32
+- Steps for fixed point
+- Steps for floating point
+
+
 
 
 ..	toctree::

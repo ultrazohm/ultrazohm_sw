@@ -30,7 +30,7 @@ Guideline
 
        General purpose buttons in the Control panel of the GUI
 
-#. **Discard** any changes you made to the code basis in the :ref:`first tutorial <first_changes>`.
+#. **Discard** any changes you made to the code basis in the :ref:`previous tutorial <first_changes>`.
 #. Add the include statement ``#include "uz/uz_Transformation/uz_Transformation.h"`` and ``#include "uz/uz_wavegen/uz_wavegen.h"`` to the ``main.h`` file.
 
    * This ``uz_Transformation.h`` header file includes structs for common coordinate systems used in the motor control world (e.g. abc-, dq0-system, etc.).
@@ -39,12 +39,12 @@ Guideline
 #. Add a new global ``bool`` variable to the ``isr.c`` file which will be used to enable the three-phase wave.
 #. Add a new global ``uz_3ph_abc_t`` struct to the same file. This will store the calculated values of the ``uz_wavegen_three_phase_sample`` function.
 #. Add three new global ``float`` variables titled, *amplitude, frequency* and *offset* and initialize them with values. 
-#. Add if-statement with the new bool variable inside the ``if (current_state==control_state)`` statement.
+#. Add an if-statement with the new bool variable inside the ``if (current_state==control_state)`` statement.
 #. Add the ``uz_wavegen_three_phase_sample`` function inside your new if-statement.
 
    .. code-block:: c
      :linenos:
-     :emphasize-lines: 1,41
+     :emphasize-lines: 5-9,29
      :caption: isr.c code after changes. ``//....`` signals left out code.  
 
       //....
@@ -94,7 +94,7 @@ Guideline
 
    .. code-block:: c
      :linenos:
-     :emphasize-lines: 1,6,10,12
+     :emphasize-lines: 2,7-9
      :caption: javascope.c code after changes. ``//....`` marks left out code.  
 
       //....
@@ -120,17 +120,17 @@ Guideline
    * This sets the value of the bool variable to true, if the ``My_Button_4`` is pressed.
    * Keep in mind, that the corresponding button in the GUI is not a toggle button. Pressing this button will always set variable to true. It will not change the value depending on if the button is selected (pressed) or unselected.
 
-#. To be able to disable the three-phase-wave again, assign in the case ``case (My_Button_4):`` the variable ``is_three_phase_active`` the value *false*.
+#. To be able to disable the three-phase-wave again, assign in the case ``case (My_Button_5):`` the variable ``is_three_phase_active`` the value *false*.
 #. Set the ``ultrazohm_state_machine_set_userLED()`` to true, if ``My_Button_4`` is pressed and to false, if ``My_Button_5`` is pressed. This will turn the *userLED* on, when the three-phase wave is active.
 #. Comment in the code of ``Bit_7`` and ``Bit_8`` for ``My_Button_4`` and ``My_Button_5`` and change it to the following.
 
-   * These status-tic relay information from the R5 back to the GUI.
+   * These status-bit relay information from the R5 back to the GUI.
    * They are e.g. used to sync the *Ready LED*, *Running LED* etc.
-   * For this specific tutorial these two bits are used to relay the information to the GUI, that the button press was acknowledge by the R5.
+   * For this specific tutorial these two bits are used to relay the information to the GUI, that the button press was acknowledged by the R5.
 
    .. code-block:: c
      :linenos:
-     :emphasize-lines: 1,6,16,30
+     :emphasize-lines: 2,8,9,13,14,17-29
      :caption: ipc_ARM.c code after changes. ``//....`` marks left out code.  
 
       //....
@@ -165,10 +165,10 @@ Guideline
          //....
       }
 
-#. Open the uz_GUI and select the *ua, ub* and *uc* members in the channel selection. Set every other channel to *ZeroValue*.
+#. Open the uz_GUI and select the *ua, ub* and *uc* members in the channel selection. Set every other channel to ``(0) ZeroValue``.
 #. Change the UltraZohm to the *Control state* by pressing the respective buttons.
 #. Because of the additional if-statement in the ``isr.c`` file no three-phase wave should be visible in the Scope.
-#. Press the ``My_Button_4``. The *userLED* should turn on and the three-phase wave should be visible in the Scope and the field below the ``My_Button_5`` should turn green.
+#. Press the ``My_Button_4``. The *userLED* should turn on and the three-phase wave should be visible in the Scope and the field below the ``My_Button_4`` should turn green.
 
    ..  _GUI_three_phase:
    ..  figure:: ./img/GUI_three_phase.png
@@ -176,8 +176,8 @@ Guideline
 
        Visible three phase wave
 
-#. Disable and enable the three-phase wave the the respective buttons to see everything is working as intended. If it is successful, close the GUI.
-#. It is possible, to send values from the GUI to the R5 via the *send_fields*. These will be used to modify the three-phase wave during runtime.
+#. Disable and enable the three-phase wave with the respective buttons to see that everything is working as intended. If it is successful, close the GUI.
+#. It is possible to send values from the GUI to the R5 via the *send_fields*. These will be used to modify the three-phase wave during runtime.
 
    * Six values are available that can be used as references or setpoints for the user application.
    * For further information refer to :ref:`JavaScope`.
@@ -196,7 +196,7 @@ Guideline
    * They do not change anything in the code basis. They are therefore commented out as well.
   
 #. Go to the ``ipc_ARM.c`` file and add the three variables ``amplitude`` , ``frequency`` and ``offset`` from the ``isr.c`` with the extern keyword.
-#. In the cases ``Set_Send_Field_1`` to ``Set_Send_Field_3`` add the respective lines, according to the changes made to the description in the ``javascope.h``. 
+#. In the cases ``Set_Send_Field_1`` to ``Set_Send_Field_3`` give the corresponding variable the value ``value``. 
 
    * I.e. description says for ``send_field_1`` now ``amplitude``, ``amplitude`` has to be assigned in the ``Set_Send_Field_1`` case.
    * Do not change the name of the case itself. 
@@ -206,7 +206,7 @@ Guideline
 
    .. code-block:: c
      :linenos:
-     :emphasize-lines: 1,9,19,31,45
+     :emphasize-lines: 3-5,21,25,29
      :caption: ipc_ARM.c code after changes. ``//....`` marks left out code.  
 
       //....
@@ -264,3 +264,5 @@ Guideline
        :align: center
 
        Visible three phase wave with different config settings and the changes made to the GUI
+
+#. This concludes the third tutorial.

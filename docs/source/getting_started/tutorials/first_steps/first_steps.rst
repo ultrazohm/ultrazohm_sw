@@ -35,10 +35,16 @@ Initial steps
 #. Open the Git terminal inside the cloned UltraZohm repository, or alternatively do the following steps via your git-client (e.g. :ref:`Sourcetree`).
 #. Change your active branch from ``main`` to ``develop`` by using the **checkout** keyword (e.g. ``git checkout develop`` ).
 
-   * The ``develop`` is the development branch with the latest merged changes made to the UltraZohm repository. Every new feature branch will be created from this point.
+   * The ``develop`` is the current development branch with the latest merged changes made to the UltraZohm repository. Every new feature branch will be created from this point.
+   * The ``main`` branch is the latest stable version. 
    * For further information see :ref:`contribution`. 
 
 #. Create a new local branch with an appropriate name (e.g. *name_tutorial*) on which the changes made throughout the tutorial will be made.
+
+   .. warning:: 
+
+      This branch is only used locally for the tutorials. Do not push any changes to the remote repository,
+
 #. Start **Vitis** and open up the workspace folder ( ``ultrazohm_sw/vitis/workspace`` ) of the UltraZohm repository.
 
    * Vitis is used, when changes to the code-base on the Processor (PS) have to be made. E.g. if you want to run a control-algorithm on the ARM-Cortex processors of the UltraZohm, you have to make changes in Vitis.
@@ -46,8 +52,8 @@ Initial steps
   
 #. Build the project by clicking on the red highlighted hammer visible in :numref:`build_workspace`.
 
-   * This button has to always be pressed, whenever changes have been made to the code base. 
-   * If this button is not pressed after changes have been made, these changes can't not be flashed onto the UltraZohm.
+   * Whenever changes have been made to the code base This button has to always be pressed.
+   * If this button is not pressed after changes have been made, these changes can't be flashed onto the UltraZohm.
 
    ..  _build_workspace:
    ..  figure:: ./img/build_workspace.png
@@ -57,7 +63,7 @@ Initial steps
 
 #. If you haven't made any changes to the code-base after the :ref:`generation of the Vitis workspace <genvitis>`, the building will lead to errors depicted below.
 
-   * Whenever you made changes to the codebase and the building leads to errors, they have to be fixed, otherwise the UltraZohm can **not** be flashed properly. This is because the errors stop compiler from compiling the entire workspace.
+   * Whenever you made changes to the codebase and the building leads to errors, they have to be fixed, otherwise the UltraZohm can **not** be flashed properly. This is because the errors stop the compiler from compiling the entire workspace.
    * Whilst Warnings do not prohibit the UltraZohm from working, they should be fixed nonetheless.
 
    ..  _workspace_error:
@@ -72,14 +78,15 @@ Initial steps
    * For how to create this missing file see :ref:`global_configuration`.
    * After you copied the contents of ``default_uz_global_configuration.h`` into the new file, no changes except the ``UZ_HARDWARE_VERSION`` have to be made. Adjust this number to the version number of *your* UltraZohm.
 
-#. Build the workspace again. Nor error should pop up anymore.
+#. Build the workspace again. No error should pop up anymore.
 #. Flash the UltraZohm by either pressing the debug or the run icon in the green highlighted area in :numref:`build_workspace`.
 #. If the flashing was successful, the **Ready LED** will blink slowly.
-#. Make sure, that you have configured your Ethernet-to-USB adapter according to :ref:`this guide<GUI_network>`.#. Start the **uz_GUI** in the folder ``ultrazohm_sw/javascope`` by double clicking on the ``UZ_GUI.jar`` file or executing the ``javascope_run.bat`` file.
+#. Make sure, that you have configured your Ethernet-to-USB adapter according to :ref:`this guide<GUI_network>`.
+#. Start the **uz_GUI** in the folder ``ultrazohm_sw/javascope`` by double clicking on the ``UZ_GUI.jar`` file or executing the ``javascope_run.bat`` file.
 
 #. Press the **Connect** button in the GUI. Now the GUI should be up and running. 
 
-   * This is the case, if the field left of the IP-address is moving. 
+   * If the connection was successful, the field left of the IP-address is moving. 
    * If nothing happens, checkout the :ref:`known issues section <GUI_network>`.
 
 #. Five default channels are visible in the scope after pressing the *Run/Stop* button. 

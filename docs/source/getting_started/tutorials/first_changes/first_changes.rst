@@ -32,9 +32,9 @@ Guideline
 #. Follow the guideline for an :ref:`uz_wavegen_chirp_example` implementation. Do this procedure three time.
 
    * Include the header file ``#include "uz/uz_wavegen/uz_wavegen.h"`` in the ``main.h`` header.
-   * I.e. declare three different configuration structs with different values.
+   * Declare three different configuration structs with different values.
    * Initialize three different instances with three separate calls of the ``uz_wavegen_chirp_init`` function.
-   * Do this in a separate step of the ``initialization_chain`` switch case, after the ``init_software`` case.
+   * Create for the above steps a new case in the ``initialization_chain`` switch case and insert it after the ``init_software`` case.
   
 #. After this, your ``main.c`` file should look something like this. ``//....`` signals that code has been left out of.
 
@@ -43,7 +43,7 @@ Guideline
 
    .. code-block:: c
      :linenos:
-     :emphasize-lines: 5,30,68
+     :emphasize-lines: 10,18-20,36-65
      :caption: main.c code after changes. ``//....`` marks left out code. 
 
       // Includes from own files
@@ -82,35 +82,35 @@ Guideline
                   initialization_chain = init_chirp;
                   break;
                case init_chirp:;
-        	         struct uz_wavegen_chirp_config config_chirp1 = {
-        	            .amplitude = 2.0f,
-        	            .start_frequency_Hz = 1.0f,
-        	            .end_frequency_Hz = 10.0f,
-        	            .duration_sec = 5.0f,
-        	            .initial_delay_sec = 0.0f,
-        	            .offset = 0.0f
-        	         };
-        	         struct uz_wavegen_chirp_config config_chirp2 = {
-        	            .amplitude = 3.0f,
-        	            .start_frequency_Hz = 1.0f,
-        	            .end_frequency_Hz = 20.0f,
-        	            .duration_sec = 20.0f,
-        	            .initial_delay_sec = 5.0f,
-        	            .offset = 1.0f
-        	         };
-        	         struct uz_wavegen_chirp_config config_chirp3 = {
-        	            .amplitude = 4.0f,
-        	            .start_frequency_Hz = 1.0f,
-        	            .end_frequency_Hz = 50.0f,
-        	            .duration_sec = 30.0f,
-        	            .initial_delay_sec = 10.0f,
-        	            .offset = 2.0f
-        	         };
-        	         chirp_instance1 = uz_wavegen_chirp_init(config_chirp1);
-        	         chirp_instance2 = uz_wavegen_chirp_init(config_chirp2);
-        	         chirp_instance3 = uz_wavegen_chirp_init(config_chirp3);
-        	         initialization_chain = init_ip_cores;
-        	         break;
+                  struct uz_wavegen_chirp_config config_chirp1 = {
+                     .amplitude = 2.0f,
+                     .start_frequency_Hz = 1.0f,
+                     .end_frequency_Hz = 10.0f,
+                     .duration_sec = 5.0f,
+                     .initial_delay_sec = 0.0f,
+                     .offset = 0.0f
+                  };
+                  struct uz_wavegen_chirp_config config_chirp2 = {
+                     .amplitude = 3.0f,
+                     .start_frequency_Hz = 1.0f,
+                     .end_frequency_Hz = 20.0f,
+                     .duration_sec = 20.0f,
+                     .initial_delay_sec = 5.0f,
+                     .offset = 1.0f
+                  };
+                  struct uz_wavegen_chirp_config config_chirp3 = {
+                     .amplitude = 4.0f,
+                     .start_frequency_Hz = 1.0f,
+                     .end_frequency_Hz = 50.0f,
+                     .duration_sec = 30.0f,
+                     .initial_delay_sec = 10.0f,
+                     .offset = 2.0f
+                  };
+                  chirp_instance1 = uz_wavegen_chirp_init(config_chirp1);
+                  chirp_instance2 = uz_wavegen_chirp_init(config_chirp2);
+                  chirp_instance3 = uz_wavegen_chirp_init(config_chirp3);
+                  initialization_chain = init_ip_cores;
+                  break;
                case init_ip_cores:
                   //....;
                default:
@@ -120,9 +120,9 @@ Guideline
          return (status);
       }
 
-#. Open up the ``isr.c`` file and include .
+#. Open up the ``isr.c`` file.
 
-   * This file is used to call the the sample functions (i.e. functions which calculated values for this time step) of modules.
+   * This file is used to call the the sample functions (i.e. functions which calculate values for the current time step) of modules.
    * This is done in the ISR and not the main, since the ISR is called with a constant sample time (through an interrupt), which enables the use of discrete time models. 
    * The main however does not run with a constant sample time. 
 
@@ -147,7 +147,7 @@ Guideline
 
    .. code-block:: c
      :linenos:
-     :emphasize-lines: 1,43
+     :emphasize-lines: 5-10,29-31
      :caption: isr.c code after changes. ``//....`` marks left out code.  
 
       //....
@@ -200,8 +200,8 @@ Guideline
    * Here the names for all observable data are stored in an enum.
    * Observable data include all signals which can be displayed in the JavaScope.
   
-#. In the ``javascope.c`` file with the ``extern`` keywords the three chirp_output float variables from the ``isr.c``.
-#. In the ``JavaScope_initalize`` add the three new entrys to the ``js_ch_observable`` array.
+#. Add to the ``javascope.c`` file with the ``extern`` keyword the three chirp_output float variables from the ``isr.c``.
+#. In the ``JavaScope_initalize`` function add the three new entries to the ``js_ch_observable`` array.
 
    * Here the addresses of the variables are assigned to the specific elements in the ``js_ch_observable`` array corresponding to its enum.
    * The value of the variable itself will be automatically updated in the ``JavaScope_update`` function (no changes have to be made). 
@@ -210,7 +210,7 @@ Guideline
 
    .. code-block:: c
      :linenos:
-     :emphasize-lines: 1,8,15,17
+     :emphasize-lines: 2-4,12-14
      :caption: javascope.c code after changes. ``//....`` marks left out code.  
 
       //....

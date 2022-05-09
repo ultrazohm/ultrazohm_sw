@@ -33,11 +33,11 @@ Guideline
    * This is done to reset the DutyCycles and prevents those variables from still carrying a value unequal to zero after the *Control State* has been left.
    * This way, activating the *Running state* will not output the latest value from the ``three_phase_output`` struct, but instead it will output 0 to the gates.
 
-#. Set the initial value of the variables ``amplitude``, ``offset`` and ``frequency`` to ``1.0f``, ``1.0f`` and ``0.5f`` respectively.
+#. Set the initial value of the variables ``amplitude``, ``frequency`` and ``offset`` to ``1.0f``, ``1.0f`` and ``0.5f`` respectively.
 
    .. code-block:: c
      :linenos:
-     :emphasize-lines: 1,5,20
+     :emphasize-lines: 2-4,9-12,14-18
      :caption: isr.c code after changes. ``//....`` signals left out code.  
 
       //....
@@ -74,7 +74,7 @@ Guideline
        Vitis view to connect serial port.
 
 #. Connect the GUI and press the *Enable System* and *Enable Control* buttons.
-#. The UltraZohm should switch into its *Error State*, because an assertion triggered. 
+#. The UltraZohm should switch into its *Error State*, because an assertion triggered. The red *Error LED* should light up.
 
    * Assertions are used to guarantee that the conditions and limits of a function are met at runtime. 
    * The UltraZohm error handling follows the concept to fail loudly, i.e., all assertions stop the processor and require a power cycle. This means, that if an assertion fires, the UltraZohm is brought into a safe state.
@@ -89,7 +89,7 @@ Guideline
 #. To fix this, set the initial value of the ``amplitude`` variable to ``0.5f`` .
 #. Build the workspace, flash the UltraZohm and connect the GUI.
 #. Enable the System & Control and activate the three-phase wave by pressing the respective button in the GUI, as done in :ref:`the previous tutorial <modify_gui>`.
-#. Open up your oscilloscope and measure the output voltages at the gates of the Digital voltage card with a probe. A PWM signal with a constantly changing DutyCycle should be visible on the first 6 pins (Pin 1-6 in the :ref:`layout <digitalVoltage>`).
+#. Open up your oscilloscope and measure the output voltages at the pins of the Digital voltage card with a probe. A PWM signal with a constantly changing DutyCycle should be visible on the first 6 pins (Pin 1-6 in the :ref:`layout <digitalVoltage>`).
 
    ..  _Picoscope_dutycycles:
    ..  figure:: ./img/Picoscope.png
@@ -101,7 +101,7 @@ Guideline
 
    .. code-block:: c
      :linenos:
-     :emphasize-lines: 1,13
+     :emphasize-lines: 4-6,7-11
      :caption: isr.c code after changes. ``//....`` signals left out code.  
 
       //....
@@ -120,12 +120,12 @@ Guideline
 
 #. In the *Debug view* in *Vitis* go the the expressions tab and add the ``three_phase_output`` struct as a new expression.
 
-   * This lets you modify the value of the three_phase_output struct during runtime. 
-   * Therefore i.e. different values can be sent to the R5 or read-out.
+   * This lets you modify the value of the ``three_phase_output`` struct during runtime. 
+   * Therefore i.e. different values can be sent to or read out from the R5.
   
    .. note:: 
 
-      Refreshing the the value of the expression stops the processor for a couple of cycles, depending on the amount of expressions.
+      Refreshing the the value of the expression stops the processor, depending on the amount of expressions, for a couple of cycles.
 
 #. Build and flash the UltraZohm and connect the GUI.
 #. In *Vitis* select the R5 in the *debug* view on the left side. The value of the expression should now be visible. 
@@ -138,7 +138,7 @@ Guideline
 
 #. Try out different values for the three phases (which correlate to the DutyCycles of the gates) by changing the value in the expression tab and visualize them on the oscilloscope again.  
 
-   * Be wary, the value should not exceed 1.0f and be a positive value. 
+   * Be wary, the value should be positive and not exceed 1.0f. 
    * Otherwise an assertion will trigger again.
 
 #. This concludes the fourth tutorial.

@@ -13,6 +13,37 @@ Please refer to the official documentation for detailed descriptions:
 - https://de.mathworks.com/help/hdlcoder/gs/create-hdl-compatible-simulink-model.html
 - https://de.mathworks.com/help/hdlcoder/ug/constant-multiplier-optimization.html
 
+Timing
+======
+
+There are three different aspects regarding the timing when generating IP-Cores:
+
+- Timing of the FPGA logic (*Static timing*) (see, e.g., `this slide deck <http://www.ece.utep.edu/courses/web5375/Notes_files/ee5375_timing_fpga.pdf>`_)
+- Timing of the data 
+- Data throughput
+
+The static timing is required to make sure that the implemented algorithm is calculated correctly in the FPGA.
+It is related to the clock frequency of the IP-Core.
+Different operations in the FPGA logic take a specific time (path delay) to propagate through the logic (e.g., propagation delay).
+If the clock period is shorter than the required path delay, the timing is violated and the IP-Core does not function properly.
+This is indicated by having a negative total slack time in Vivado.
+The HDL-Coder estimates the path delay with the *critical path estimation*, which is the chain of logic with the highest path delay.
+A common approach to fixing timing violations is adding delay blocks in Simulink (*pipeline*).
+A delay block acts as a buffer since the value is hold for one clock cycle.
+See https://www.mathworks.com/help/hdlcoder/speed-optimization.html for more details.
+
+The timing of the data makes sure that in a chain of operations, the correct values from the previous step are used.
+This is critical if blocks in Simulink are used that require multiple clock cycles in the FPGA, e.g., trigonometric functions using CORDIC or math functions like square root.
+Since the calculation of the math function takes multiple clock cycles, it is necessary that all following calculations only use valid inputs.
+See the following Mathworks pages:
+
+- https://www.mathworks.com/help/hdlcoder/ug/Resolve-numerical-mismatch-with-delay-balancing.html
+- https://www.mathworks.com/help/hdlcoder/ug/delay-balancing-and-validation-model-workflow-in-hdl-coder.html
+- https://www.mathworks.com/help/hdlcoder/ug/delay-balancing.html
+
+The data throughput determines how long it takes to calculate the algorithm one time after new inputs are applied and the calculated result is available at the output of the IP-Core.
+This is the combination of calculation steps, number of clock cycles that these calculation steps and the achieved clock rate.
+
 
 Tutorial
 ========

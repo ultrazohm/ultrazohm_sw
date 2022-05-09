@@ -120,6 +120,7 @@ void ISR_Control(void *data)
 
 	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*config_FOC.config_PMSM.polePairs*2.0f*M_PI/60;
 
+
 	//Testt new ip-core for dq-Transformation
 	m_T_dq_currents = uz_dqIPcore_get_id_iq(dq_Transformator);
 

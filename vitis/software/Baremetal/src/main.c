@@ -45,8 +45,8 @@ struct uz_FOC_config config_FOC;
 
 
 
-static struct uz_dqIPcore_config_t config={
-   .base_address = 0x800E0000,
+static struct uz_dqIPcore_config_t dq_T_config={
+   .base_address = XPAR_UZ_SYSTEM_TRANS_123_ALPHABETA_0_BASEADDR,
    .ip_clk_frequency_Hz= 50000000,
    .theta_offset = -1.5f // add your encoder offset here!
 };
@@ -114,7 +114,7 @@ int main(void)
 	    .enable_field_weakening = false,
 		.config_controller.Kp = 0.0f,
 		.config_controller.Ki = 0.0f,
-		.config_controller.samplingTime_sec = 0.0f,
+		.config_controller.samplingTime_sec = 0.00005f,
 		.config_controller.upper_limit = 5.0f,
 		.config_controller.lower_limit = -5.0f
 	};
@@ -151,7 +151,7 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
 
-            dq_Transformator = uz_dqIPcore_init(config);
+            dq_Transformator = uz_dqIPcore_init(dq_T_config);
 
             initialization_chain = init_foc;
             break;

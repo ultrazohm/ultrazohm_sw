@@ -1,8 +1,8 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
---Tool Version: Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
---Date        : Fri Apr  8 11:58:04 2022
---Host        : c7d4655f276a running 64-bit unknown
+--Tool Version: Vivado v.2020.1.1 (win64) Build 2960000 Wed Aug  5 22:57:20 MDT 2020
+--Date        : Mon May  9 13:51:05 2022
+--Host        : LAPTOP-3F1M5NLE running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
 --Purpose     : IP block netlist

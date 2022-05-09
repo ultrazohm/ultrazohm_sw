@@ -20,8 +20,8 @@ void uz_adcLtc2311_ip_core_init(void)
             .conversion_factor = DEFAULT_CONVERSION_FACTOR,
             .conversion_factor_definition = {
                 .is_signed = true,
-                .integer_bits = DEFAULT_INTEGER_BITS,
-                .fractional_bits = DEFAULT_FRACTIONAL_BITS},
+                .integer_bits = 7,			//Default: DEFAULT_INTEGER_BITS
+                .fractional_bits = 11},		//Default: DEFAULT_FRACTIONAL_BITS
             .offset = DEFAULT_OFFSET,
         },
         .spi_master_config = {.samples = 1U, .sample_time = 6U, .trigger_mode=pl_trigger},

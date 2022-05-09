@@ -16,7 +16,7 @@ Please refer to the official documentation for detailed descriptions:
 Timing
 ======
 
-There are three different aspects regarding the timing when generating IP-Cores:
+There are three different aspects regarding the timing when dealing with IP-Cores:
 
 - Timing of the FPGA logic (*Static timing*) (see, e.g., `this slide deck <http://www.ece.utep.edu/courses/web5375/Notes_files/ee5375_timing_fpga.pdf>`_)
 - Timing of the data 
@@ -179,12 +179,74 @@ The result of this tutorial is the :ref:`AXI_testIP`.
 - Go to ``Check Model Settings`` and click ``HDL Code Advisor``
 - Run all checks
 - There are several warnings
-- Most warnings are related to namings
+- Most warnings are related to the names of the signals, fix the warnings at own will
 - Warning *global reset settings for Xilinx devices* has to be fixed!
 
 .. figure:: tutorial_img/15_check_model_settings.png
    :width: 800px
    :align: center
+
+- Go to *Check for global reset setting for Xililnx and Altera devices*
+- Click on *Modify Settings* and *Run this Check* again, test passes now
+- Close the HDL Code Advisor
+
+.. figure:: tutorial_img/16_fix_xilinx_global_reset.png
+   :width: 800px
+   :align: center
+
+- In the HDL Workflow Advisor, click on *Run This Task* in the set *2.1 Check Model Settings*
+
+.. figure:: tutorial_img/17_check_model_settings.png
+   :width: 800px
+   :align: center
+
+- Go to *3.1 Set HDL Options* and click on *HDL Code Generation Settings...*
+
+.. figure:: tutorial_img/18set_hdl_options.png
+   :width: 800px
+   :align: center
+
+- Go to *HDL Code Generation* -> *Report* and enalbe the Optimization and timing reports
+- Leave all other settings at default
+- Click *Apply* and then *Run This Task* in the HDL Workflow Advisor
+
+.. figure:: tutorial_img/19_enable_reports.png
+   :width: 800px
+   :align: center
+
+- Go to *3.2 Generate RTL Code and IP Core* and click *Run this Task*
+- After a short time, the Code Generation Report opens and the task completes with *Passed*
+
+
+.. figure:: tutorial_img/20_ip_core_generated.png
+   :width: 800px
+   :align: center
+
+- Check the reports that are generated
+- The resource reports gives an overview over the required resources
+- Note that this does not take into account the actual hardware that the FPGA features
+- In the IP core, one multiplier with 32x32 bits is required
+- However, the UltraScale of the UltraZohm has DSP48, which provides 27x18 bit multipliers
+- Thus, more than one DSP slice will be required to implement one 32x32 multiplier
+
+.. figure:: tutorial_img/21_resource_report.png
+   :width: 800px
+   :align: center
+
+- The critical path report is an estimation for the static timing
+- The estimated critical path has to be lower than the desired clock period, i.e., below 10ns for 100 MHz clock frequency
+
+.. figure:: tutorial_img/22_critical_path_report.png
+   :width: 800px
+   :align: center
+
+- Click on *Highlight critical path* to see which path has the highest path delay
+- Note that the path delay is shown in the validation model (*gm_*), which includes all pipeline delays and multi-clock operations
+
+.. figure:: tutorial_img/23_critical_path.png
+   :width: 800px
+   :align: center
+
 
 ..	toctree::
 		:maxdepth: 2

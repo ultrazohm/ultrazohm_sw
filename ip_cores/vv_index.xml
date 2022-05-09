@@ -1065,7 +1065,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112482989">
+		<CoreRevision value="2112497588">
 		</CoreRevision>
 		<ComponentPath value="PWM_and_SS_control_ip_v4_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_0/component.xml">
 		</ComponentPath>

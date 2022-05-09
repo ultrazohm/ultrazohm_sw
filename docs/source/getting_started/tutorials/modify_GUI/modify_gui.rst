@@ -1,3 +1,5 @@
+.. _modify_gui:
+
 =================
 Modifying the GUI
 =================
@@ -5,7 +7,7 @@ Modifying the GUI
 Aim of the tutorial
 *******************
 
-In this tutorial the :ref:`three-phase-wave <uz_wavegen_three_phase>` from the wavegen librrary will be used. 
+In this tutorial the :ref:`three-phase-wave <uz_wavegen_three_phase>` from the wavegen library will be used. 
 Configuration values of the three-phase wave will be modified during runtime via the GUI.
 
 Requirements

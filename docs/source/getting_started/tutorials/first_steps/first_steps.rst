@@ -82,7 +82,7 @@ Initial steps
    * This is the case, if the field left of the IP-address is moving. 
    * If nothing happens, checkout the :ref:`known issues section <GUI_network>`.
 
-#. Five default channels are now visible in the scope. 
+#. Five default channels are visible in the scope after pressing the *Run/Stop* button. 
 
    ..  _GUI_connected:
    ..  figure:: ./img/GUI_connected.png

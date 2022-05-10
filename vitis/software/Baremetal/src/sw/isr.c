@@ -39,9 +39,11 @@
 #include "../IP_Cores/uz_pmsm_model_9ph/uz_pmsm_model_9ph_hw.h"
 #include "../uz/uz_piController/uz_piController.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../uz/uz_Wavegen/uz_wavegen.h"
 extern uz_pmsm_model_9ph_t *pmsm;
 extern uz_PI_Controller *PI_d_current;
 extern uz_PI_Controller *PI_q_current;
+extern uz_PI_Controller *PI_rpm;
 int reset_on=1;                                               //can be triggered in the expressions to reset integrators
 float setp_d=0.0f;
 float setp_q=2.0f;
@@ -97,9 +99,9 @@ extern uz_PWM_SS_2L_t *pwm_instance_3;
 
 struct uz_inverter_3ph_gate_ps_t gate_signal={
 		.gate1=0.0f,
-		.gate2=0.0f,
-		.gate3=1.0f,
-		.gate4=0.0f,
+		.gate2=1.0f,
+		.gate3=0.0f,
+		.gate4=1.0f,
 		.gate5=0.0f,
 		.gate6=1.0f
 };
@@ -122,6 +124,11 @@ struct uz_inverter_3ph_i_abc_ps_t currents_inv1={
 float g1=0.0f;
 float g3=0.0f;
 float g5=0.0f;
+
+float amplitude = 0.05f;
+float frequency_Hz = 40.0f;
+float setp_factor=0.8f;
+float setp_torque=0.1f;
 //float g2=0.0f;
 //end
 
@@ -160,6 +167,7 @@ void ISR_Control(void *data)
     pmsm_output_currents = uz_pmsm_model_9ph_get_outputs_dq(pmsm);
 
     pmsm_inputs.omega_mech_1_s = setp_omega;
+    //pmsm_inputs.load_torque = setp_torque;
     uz_pmsm_model_9ph_set_inputs_general(pmsm, pmsm_inputs);
 
     // Transformation to natural currents for output
@@ -180,6 +188,7 @@ void ISR_Control(void *data)
     //++PWM++
 
     // Controller
+    //setp_q = uz_PI_Controller_sample(PI_rpm,setp_omega,pmsm_outputs.omega_mech_1_s,false);
     setpoint_dq.d = uz_PI_Controller_sample(PI_d_current, setp_d, pmsm_output_currents.i_dq.d, false);
     setpoint_dq.q = uz_PI_Controller_sample(PI_q_current, setp_q, pmsm_output_currents.i_dq.q, false);
 
@@ -200,9 +209,10 @@ void ISR_Control(void *data)
     setpoint_natural = uz_transformation_9ph_alphabeta_to_abc(setpoint_stationary);
 
     // Split Systems
-    setpoint_abc_sys1.a = setpoint_natural.a1;
-    setpoint_abc_sys1.b = setpoint_natural.b1;
-    setpoint_abc_sys1.c = setpoint_natural.c1;
+    setpoint_abc_sys1.a = setpoint_natural.a1*setp_factor;
+    setpoint_abc_sys1.b = setpoint_natural.b1*setp_factor;
+    setpoint_abc_sys1.c = setpoint_natural.c1*setp_factor;
+    //+uz_wavegen_sine(amplitude, frequency_Hz)
 
     setpoint_abc_sys2.a = setpoint_natural.a2;
 	setpoint_abc_sys2.b = setpoint_natural.b2;
@@ -220,7 +230,8 @@ void ISR_Control(void *data)
 	uz_PWM_SS_2L_set_duty_cycle(pwm_instance_1,duty_cycle_sys1.DutyCycle_U,duty_cycle_sys1.DutyCycle_V,duty_cycle_sys1.DutyCycle_W);
 	uz_PWM_SS_2L_set_duty_cycle(pwm_instance_2,duty_cycle_sys2.DutyCycle_U,duty_cycle_sys2.DutyCycle_V,duty_cycle_sys2.DutyCycle_W);
 	uz_PWM_SS_2L_set_duty_cycle(pwm_instance_3,duty_cycle_sys3.DutyCycle_U,duty_cycle_sys3.DutyCycle_V,duty_cycle_sys3.DutyCycle_W);
-
+	//uz_PWM_SS_2L_set_duty_cycle(pwm_instance_2,0.5,0.5,0.5);
+	//uz_PWM_SS_2L_set_duty_cycle(pwm_instance_3,0.5,0.5,0.5);
     //reset PMSM and PI controllers
     if(reset_on==1)
     {
@@ -249,12 +260,12 @@ void ISR_Control(void *data)
     uz_inverter_3ph_trigger_u_abc_ps_strobe(inverter_2);
     uz_inverter_3ph_trigger_u_abc_ps_strobe(inverter_3);
 
-//   uz_inverter_3ph_trigger_gate_ps_strobe(inverter_1);
-//	uz_inverter_3ph_trigger_gate_ps_strobe(inverter_2);
+//  uz_inverter_3ph_trigger_gate_ps_strobe(inverter_1);
+	uz_inverter_3ph_trigger_gate_ps_strobe(inverter_2);
 //	uz_inverter_3ph_trigger_gate_ps_strobe(inverter_3);
 
 //	uz_inverter_3ph_set_gate_ps(inverter_1,gate_signal);
-//	uz_inverter_3ph_set_gate_ps(inverter_2,gate_signal);
+	uz_inverter_3ph_set_gate_ps(inverter_2,gate_signal);
 //	uz_inverter_3ph_set_gate_ps(inverter_3,gate_signal);
 
     //voltage_inverter_1.u_ab = uz_inverter_3ph_hw_read_u_ab_ps(0x800E0000);

@@ -2,19 +2,32 @@
 % This is called by a callback when uz_pmsm_model is opened
 
 % Electrical parameters
-R_1=2.1;
-L_d=30e-3;
-L_q=50e-3;
-L_o1=0.01;     
-L_o2=0.01;
-L_x1=0.01;
-L_y1=0.01;
-L_x2=0.01;
-L_y2=0.01;
+R_1=0.01;
+L_d=0.0001;
+L_q=0.0001;
+L_o1=0.0001;     
+L_o2=0.0001;
+L_x1=0.0001;
+L_y1=0.0001;
+L_x2=0.0001;
+L_y2=0.0001;
 L_zero=0.01;
 psi_pm=0.05;
 polepair=5;
-ts=1/1e6;      
+ts=1/1e6;   
+
+R_1 = 0.066;          % phase resistance in Ohm
+psi_pm = 0.1028;      % flux linkage in Vs
+L_d = 0.0023;       % d-axis inductance in H
+L_q = 0.0046;       % q-axis inductance in H
+L_o1 = L_d/3;         %assuming from other papers
+L_o2 = L_d/3;
+L_x1 = L_d/3;
+L_y1 = L_d/3;
+L_x2 = L_d/3;
+L_y2 = L_d/3;
+L_zero = L_d/3;
+polepair = 3;             % number of pole pairs
 
 % Natural Sine Wave
 amplitude_sine = 1;
@@ -38,10 +51,10 @@ tau_d=L_d/R_1;
 tau_q=L_q/R_1;
 tau_sum=2*ts_regler;
 % Parallel PID
-k_p_d=200;%L_d/(2*tau_sum);
-k_p_q=200;%L_q/(2*tau_sum);
-k_i_d=70;%R_1/(2*tau_sum);
-k_i_q=70;%R_1/(2*tau_sum);
+k_p_d=0.5;%L_d/(2*tau_sum);
+k_p_q=0.5;%L_q/(2*tau_sum);
+k_i_d=50;%R_1/(2*tau_sum);
+k_i_q=50;%R_1/(2*tau_sum);
 
 % Mechanical parameters
 inertia=0.001;

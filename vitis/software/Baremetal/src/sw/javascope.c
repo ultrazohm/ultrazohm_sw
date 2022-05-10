@@ -83,8 +83,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ia3] 			= &natural_currents.a3;
 	js_ch_observable[JSO_ib3] 			= &natural_currents.b3;
 	js_ch_observable[JSO_ic3] 			= &natural_currents.c3;
-	js_ch_observable[JSO_iq] 			= &pmsm_output_currents.i_dq.d;
-	js_ch_observable[JSO_id] 			= &pmsm_output_currents.i_dq.q;
+	js_ch_observable[JSO_iq] 			= &pmsm_output_currents.i_dq.q;
+	js_ch_observable[JSO_id] 			= &pmsm_output_currents.i_dq.d;
 	js_ch_observable[JSO_Theta_el] 		= &pmsm_outputs.theta_el;
 	js_ch_observable[JSO_ua1] 			= &voltage_inverter_1.u_ab;
 	js_ch_observable[JSO_ub1] 			= &voltage_inverter_1.u_bc;

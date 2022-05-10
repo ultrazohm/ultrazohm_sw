@@ -2826,6 +2826,58 @@
 			</Interface>
 		</Interfaces>
 	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:uz_pmsm_model_9ph_opti:1.9">
+		</VLNV>
+		<DisplayName value="uz_pmsm_model_9ph_opti">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112498618">
+		</CoreRevision>
+		<ComponentPath value="uz_pmsm_model_9ph/hdl_opti/ipcore/uz_pmsm_model_9ph_opti_v1_9/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="azynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qzynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
 	<IPInst>
 		<VLNV value="xilinx.com:xci:unknown:1.0">
 		</VLNV>

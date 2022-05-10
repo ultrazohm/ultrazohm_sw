@@ -1333,6 +1333,12 @@
           }
         },
         "interface_nets": {
+          "S00_AXI_2": {
+            "interface_ports": [
+              "S00_AXI1",
+              "A1_adapter/S00_AXI"
+            ]
+          },
           "S00_AXI_3": {
             "interface_ports": [
               "S00_AXI",
@@ -1343,12 +1349,6 @@
             "interface_ports": [
               "S00_AXI2",
               "A2_adapter/S00_AXI"
-            ]
-          },
-          "S00_AXI_2": {
-            "interface_ports": [
-              "S00_AXI1",
-              "A1_adapter/S00_AXI"
             ]
           }
         },

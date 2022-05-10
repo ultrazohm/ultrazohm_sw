@@ -7,14 +7,14 @@ First changes to the codebase
 Aim of the tutorial
 *******************
 
-In this tutorial a multi-instances module from the :ref:`wave_generator` library of the UltraZohm project will be included and the output displayed in the GUI. 
+In this tutorial a multi-instances module from the :ref:`wave_generator` library of the UltraZohm project will be used and the output displayed in the GUI. 
 
 Requirements
 ************
 
 The following tutorial requires:
 
-- :ref:`Finishing the previous tutorial <first_steps>`.
+- Finished the tutorial :ref:`first_steps`.
 
 
 Guideline
@@ -24,14 +24,14 @@ Guideline
 #. Open the ``uz_global_configuration.h`` file and look at the ``#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES`` number. 
 
    * Currently *two* instances of this module are allowed. This means, that the ``uz_wavegen_chirp_init`` function can only be called twice, before an assertion stops the processor.
-   * This is done to ensure a proper static memory allocation for this module. Since allocation memory for 50 instances, when only e.g. three are needed, is wasteful, the max amount of possible instances is limited via this define.
+   * This is done to ensure a proper static memory allocation for this module. Since allocation memory for 50 instances, when only e.g. three are needed, is wasteful, the max amount of possible instances is limited by this define.
    * This procedure is the same for every multiple instance module (e.g. :ref:`IP-Core drivers<ip_cores>`, :ref:`uz_piController` etc.).
    * For further information see :ref:`static_memory_allocation`.
 
 #. In this tutorial three instances of the :ref:`uz_wavegen_chirp` will be used. Therefore adjust the number after the define to ``3U`` .
-#. Follow the guideline for an :ref:`uz_wavegen_chirp_example` implementation. Do this procedure three time.
+#. Follow the guideline for an :ref:`uz_wavegen_chirp_example` implementation. Do this procedure three times.
 
-   * Include the header file ``#include "uz/uz_wavegen/uz_wavegen.h"`` in the ``main.h`` header.
+   * Include the header file ``#include "uz/uz_wavegen/uz_wavegen.h"`` in the ``main.h`` header of the R5 processor (Baremetal).
    * Declare three different configuration structs with different values.
    * Initialize three different instances with three separate calls of the ``uz_wavegen_chirp_init`` function.
    * Create for the above steps a new case in the ``initialization_chain`` switch case and insert it after the ``init_software`` case.
@@ -39,7 +39,7 @@ Guideline
 #. After this, your ``main.c`` file should look something like this. ``//....`` signals that code has been left out of.
 
    * The declaration of the three instances outside of the main is necessary, so that they can be accessed by other c-files.
-   * Since the config-structs are not needed after initialization, they can be declared only local to the main function.
+   * Since the config-structs are not needed after initialization, they can be declared local to the main function.
 
    .. code-block:: c
      :linenos:
@@ -120,15 +120,15 @@ Guideline
          return (status);
       }
 
-#. Open up the ``isr.c`` file.
+#. Open up the ``isr.c`` file of the R5 processor (Baremetal).
 
-   * This file is used to call the the sample functions (i.e. functions which calculate values for the current time step) of modules.
+   * This file is used to call the the sample functions (i.e. functions which calculate values for the current time step) of the wavegen module.
    * This is done in the ISR and not the main, since the ISR is called with a constant sample time (through an interrupt), which enables the use of discrete time models. 
-   * The main however does not run with a constant sample time. 
+   * The ``while(1)`` loop in ``main.c`` does not run with a constant sample time. 
 
 #. Declare in the ``isr.c`` file the three instances again, but this time with the ``extern`` keyword in front.
 
-   * This keyword specifies, that the variable is defined in another file. This ``extern`` keyword must be applied in all files, in which the variable is used, except in which the variable is initially defined.
+   * This keyword specifies that the variable is defined in another file. The ``extern`` keyword must be applied in all files, in which the variable is used, except in which the variable is initially defined.
    * This only works, if the variable is global, i.e. declared outside the e.g. main-function.
    * It, in essence, allows the variable to be shared over multiple c-files.
 
@@ -136,7 +136,7 @@ Guideline
 #. Add the three function calls ``uz_wavegen_chirp_sample`` for the three instances in the if-statement.
 
    * This if-statement prevents the code from being executed, unless the UltraZohm is in the ``Control`` state.  
-   * The UZ has four different states:
+   * The UZ has four different states (see :ref:`r5_statemachine`):
   
       #. Idle state: *Ready LED* will blink slowly, all IO and PWM pins are disabled.
       #. Running state: *Ready LED* will blink fast and the IP and PWM pins are enabled.
@@ -199,6 +199,50 @@ Guideline
 
    * Here the names for all observable data are stored in an enum.
    * Observable data include all signals which can be displayed in the JavaScope.
+
+   .. code-block:: c
+     :linenos:
+     :emphasize-lines: 6-8
+     :caption: javascope.h code after changes
+
+        #include "APU_RPU_shared.h"
+        
+        // Do not change the first (zero) and last (end) entries.
+        enum JS_OberservableData {
+           JSO_ZEROVALUE=0,
+           JSO_Chirpwave1,
+           JSO_Chirpwave2,
+           JSO_Chirpwave3,
+           JSO_ISR_ExecTime_us,
+           JSO_ISR_Period_us,
+           JSO_lifecheck,
+           JSO_theta_mech,
+           JSO_ua,
+           JSO_ub,
+           JSO_uc,
+           JSO_ia,
+           JSO_ib,
+           JSO_ic,
+           JSO_id,
+           JSO_iq,
+           JSO_ud,
+           JSO_uq,
+           JSO_Speed_rpm,
+           JSO_LoadSpeed_rpm,
+           JSO_volt_temp,
+           JSO_SoC_init,
+           JSO_Theta_el,
+           JSO_Theta_mech,
+           JSO_LoadTheta_mech,
+           JSO_DeltaTheta_mech,
+           JSO_Wtemp,
+           JSO_Rs_mOhm,
+           JSO_Ld_mH,
+           JSO_Lq_mH,
+           JSO_PsiPM_mVs,
+           JSO_ENDMARKER
+        };
+
   
 #. Add to the ``javascope.c`` file with the ``extern`` keyword the three chirp_output float variables from the ``isr.c``.
 #. In the ``JavaScope_initalize`` function add the three new entries to the ``js_ch_observable`` array.

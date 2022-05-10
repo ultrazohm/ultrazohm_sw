@@ -1,3 +1,5 @@
+.. _gate_signals:
+
 ============
 Gate Signals
 ============

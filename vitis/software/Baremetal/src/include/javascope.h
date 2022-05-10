@@ -61,7 +61,6 @@ enum JS_OberservableData {
 	JSO_m_T_abc_currents_c,
 	JSO_m_T_alphabeta_currents_alpha,
 	JSO_m_T_alphabeta_currents_beta,
-
 	JSO_ENDMARKER
 };
 

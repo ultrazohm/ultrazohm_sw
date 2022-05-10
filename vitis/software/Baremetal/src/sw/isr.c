@@ -66,8 +66,8 @@ float omega_el_rad_per_sec = 0.0f;
 float theta_el_offset = 0.0f;		//additive offset of theta_el
 
 //statt diese Faktoren könnten diese auch bei der inizialisierung des ADCs in uz_adcLTc2311_ip_core_init.c eingefügt werden
-float adc_factor = 1.0f;		//scaling factor for ADC (ADC with maximum range -5 to +5V)
-float adc_offset = -5.0f;		//oder -2.5?	//additive offset to ADC value
+float adc_factor = (20.0f / 2.084f);		//scaling factor for ADC (ADC with maximum range -5 to +5V)
+float adc_offset = -2.43f;		//oder -2.5?	//additive offset to ADC value
 
 //Speed-Control:
 float n_ref_rpm = 100.0f;
@@ -103,9 +103,9 @@ void ISR_Control(void *data)
 
     	//hier noch die richtigen ADCs einstellen, offset und skalierungs-Faktor nicht vergessen
 
-	m_abc_currents.a = (Global_Data.aa.A2.me.ADC_A1 +adc_offset)*adc_factor;
-	m_abc_currents.b = (Global_Data.aa.A2.me.ADC_A2 +adc_offset)*adc_factor;
-	m_abc_currents.c = (Global_Data.aa.A2.me.ADC_A3 +adc_offset)*adc_factor;
+	m_abc_currents.a = (Global_Data.aa.A2.me.ADC_B6 +adc_offset)*adc_factor;
+	m_abc_currents.b = (Global_Data.aa.A2.me.ADC_B8 +adc_offset)*adc_factor;
+	m_abc_currents.c = (Global_Data.aa.A2.me.ADC_B7 +adc_offset)*adc_factor;
 
 	//write currents into Global_Data
 	Global_Data.av.I_U = m_abc_currents.a;

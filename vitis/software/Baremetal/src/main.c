@@ -73,27 +73,27 @@ int main(void)
 {
 	//parameter for FOC
 	struct uz_PMSM_t config_PMSM = {
-		      .Ld_Henry = 0.0001f,			//Richtige Parameter für den Motor einfügen
-		      .Lq_Henry = 0.0002f,
-		      .Psi_PM_Vs = 0.008f,
-			  .R_ph_Ohm = 0.0f,
+		      .Ld_Henry = 0.0003f,			//Richtige Parameter für den Motor einfügen
+		      .Lq_Henry = 0.0003f,
+		      .Psi_PM_Vs = 0.0075f,
+			  .R_ph_Ohm = 0.085f,
 			  .polePairs = 4.0f,
 			  .J_kg_m_squared = 0.0f,
 			  .I_max_Ampere = 10.0f
 	};
 
 	struct uz_PI_Controller_config config_id = {
-	  .Kp = 10.0f,
-	  .Ki = 10.0f,
-	  .samplingTime_sec = 0.00005f,
+	  .Kp = 0.25f,
+	  .Ki = 158.8f,
+	  .samplingTime_sec = 0.0001f,
 	  .upper_limit = 10.0f,
 	  .lower_limit = -10.0f
 	};
 
 	struct uz_PI_Controller_config config_iq = {
-	   .Kp = 10.0f,
-	   .Ki = 10.0f,
-	   .samplingTime_sec = 0.00005f,
+	   .Kp = 0.25f,
+	   .Ki = 158.8f,
+	   .samplingTime_sec = 0.0001f,
 	   .upper_limit = 10.0f,
 	   .lower_limit = -10.0f
 	};

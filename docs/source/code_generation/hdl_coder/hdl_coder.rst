@@ -247,14 +247,72 @@ The result of this tutorial is the :ref:`AXI_testIP`.
    :width: 800px
    :align: center
 
-- **TODO**
-- Before generating IP-Core, add input delay to break critical paths that are incoming to the IP-core
-- Add IP-Core to Vivado
-- Generate
-- On your own: Extend the IP-Core with unsigned int32
-- Steps for fixed point
-- Steps for floating point
+- The IP-Core is now ready. However, an delay block for inputs should be added
+- Add the multiplication of A*B outside of the IP-Core with the same data types and sample rates
+- Add a scope
+- Run the simulation and notice that both results are completely identical
 
+.. figure:: tutorial_img/24_scope_added.png
+   :width: 800px
+   :align: center
+
+- Add the input delay and run the simulation again
+- The calculation now takes one clock cycle but the timing for incoming signals from outside of the IP-Core is more robust
+- Having input/output registers is (almost) always a good strategy to make sure that incoming signals do not depend on the timing of external components and the IP-Core provides a stable signal after the output register for subsequent IP-Cores
+
+.. figure:: tutorial_img/25_delay_added.png
+   :width: 800px
+   :align: center
+
+- Add a multiplication for unsigned int to the IP-Core
+
+.. figure:: tutorial_img/26_uint_added.png
+   :width: 800px
+   :align: center
+
+- Lastly, add a multiplication of two fixed point values (see :ref:`uz_fixedpoint` for details of fixed point)
+- Use signed 16 bit with 5 bits for the fraction
+- Use the same output data type for the multiplication
+- Consider that this leads to the same overflow problems as discussed for `int32` and `uint32`
+- In a real IP-Core, the data types have to be carefully designed regarding possible data range overflows
+- Using full precision multiplication (output data type large enough to represent the result of the two largest possible input value) is not possible most of the time since this leads to extremely large data types that can not be implemented in the FPGA 
+
+.. figure:: tutorial_img/27_fixed_point.png
+   :width: 800px
+   :align: center
+
+- Run the HDL Workflow Advisor again, if there are warnings regarding the interface, run step *Set Target Interface* before step *1.1*
+- Run all checks in step *2.1*
+- Run all steps including *3.2 Generate RTL Code and IP Core*
+- Change the IP core name to ``uz_axi_mytestIP`` in *3.2* before running the step
+
+.. figure:: tutorial_img/31_generate_rtl.png
+   :width: 800px
+   :align: center
+
+- In the Workflow Advisor, go to *File*, and *Export to script*
+- Save the ``hdlworkflow.m`` in the folder of the model to replicate the build at a later stage. The ``hdlworkflow.m`` script runs the code generation again with the same settings that were used when saving the file.
+- Check the reports and the validation model (``gm_uz_axi_mytestIP``)
+- The IP Core is now generated
+- Add the IP-Core in Vivado
+- Open Vivado and the block design
+
+.. figure:: tutorial_img/28_vivado.png
+   :width: 800px
+   :align: center
+
+- Right click into the block design and select IP settings
+- Refresh the IP catalogue
+- Extend *uz_user* subblock
+- Extend the smartconnect by one master port to connect AXI ports to the processor
+- Add the new IP-Core and connect it to the system
+- Go to the *Address editor* and assign a base address to the new IP-Core
+
+.. figure:: tutorial_img/vivado_add_ip_core.gif
+   :align: center
+
+- Build the bitstream, export the XSA and update the Vitis workspace as done in :ref:`gen_bitstream`
+- Follow the :ref:`how_to_create_ipcore_driver` tutorial to create a software driver for the IP-Core
 
 
 

@@ -1,4 +1,5 @@
 #pragma once
 
 #include "uz_interlockDeadtime2L.h"
-uz_interlockDeadtime2L_handle uz_interlockDeadtime2L_staticAllocator_slotD1(void);
+uz_interlockDeadtime2L_handle uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5(void);
+uz_interlockDeadtime2L_handle uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11(void);

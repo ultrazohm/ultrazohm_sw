@@ -27,7 +27,7 @@ Guideline
 *********
 
 #. We will use the three-phase wave from the previous tutorial to give out gate signals on the digital voltage card.
-#. In your custom if-statement in the isr.c assign the three ``Global_Data.rasv.halfBridgeXDutyCycle`` variables from the ``three_phase_output`` struct. 
+#. In your custom if-statement in the isr.c assign the three ``Global_Data.rasv.halfBridgeXDutyCycle`` variables the values from the ``three_phase_output`` struct. 
 #. Add an else-if-statement to your if-statement which sets all three ``Global_Data.rasv.halfBridgeXDutyCycle`` to ``0.0f`` again. The else-if-statement should trigger, if either the ``current_state`` is not in the ``control_state`` or the ``is_three_phase_active`` value is ``false``.
 
    * This is done to reset the DutyCycles and prevents those variables from still carrying a value unequal to zero after the *Control State* has been left.
@@ -66,6 +66,7 @@ Guideline
 
     * This connects the Vitis serial port with the UltraZohm.
     * This way, messages from the UltraZohm can be read in the *Vitis-Serial-Terminal*.
+    * On Windows, the Port may be called *COM6*.
   
    ..  _Vitis_serial_port:
    ..  figure:: ./img/Vitis1.png
@@ -74,7 +75,7 @@ Guideline
        Vitis view to connect serial port.
 
 #. Connect the GUI and press the *Enable System* and *Enable Control* buttons.
-#. The UltraZohm should switch into its *Error State*, because an assertion triggered. The red *Error LED* should light up.
+#. After pressing the ``My_Button4``, the UltraZohm should switch into its *Error State*. This happens, because an assertion got triggered. The red *Error LED* should light up as well.
 
    * Assertions are used to guarantee that the conditions and limits of a function are met at runtime. 
    * The UltraZohm error handling follows the concept to fail loudly, i.e., all assertions stop the processor and require a power cycle. This means, that if an assertion fires, the UltraZohm is brought into a safe state.
@@ -89,7 +90,7 @@ Guideline
 #. To fix this, set the initial value of the ``amplitude`` variable to ``0.5f`` .
 #. Build the workspace, flash the UltraZohm and connect the GUI.
 #. Enable the System & Control and activate the three-phase wave by pressing the respective button in the GUI, as done in :ref:`the previous tutorial <modify_gui>`.
-#. Open up your oscilloscope and measure the output voltages at the pins of the Digital voltage card with a probe. A PWM signal with a constantly changing DutyCycle should be visible on the first 6 pins (Pin 1-6 in the :ref:`layout <digitalVoltage>`).
+#. Open up your oscilloscope and measure the output voltages at the pins of the Digital voltage card with a probe. A different PWM signal with a constantly changing DutyCycle should be visible on the first 6 pins (Pin 1-6 in the :ref:`layout <digitalVoltage>`).
 
    ..  _Picoscope_dutycycles:
    ..  figure:: ./img/Picoscope.png
@@ -125,7 +126,7 @@ Guideline
   
    .. note:: 
 
-      Refreshing the the value of the expression stops the processor, depending on the amount of expressions, for a couple of cycles.
+      Refreshing the the value of the expression stops the processor for a couple of cycles. The more expressions are logged, the longer the stoppage takes.
 
 #. Build and flash the UltraZohm and connect the GUI.
 #. In *Vitis* select the R5 in the *debug* view on the left side. The value of the expression should now be visible. 

@@ -43,7 +43,7 @@ Guideline
 
    .. code-block:: c
      :linenos:
-     :emphasize-lines: 10,18-20,36-65
+     :emphasize-lines: 10,18-20,34,36-65
      :caption: main.c code after changes. ``//....`` marks left out code. 
 
       // Includes from own files
@@ -233,6 +233,11 @@ Guideline
 
 #. Build the changes and if no errors exist flash the UZ.
 #. Open the JavaScope and connect it and select the three new signals in the *Setup Scope* page. Set every other channel to ``(0) ZeroValue`` . 
+
+   * You can hide the visible channels by clicking on the corresponding entry in the legend of the scope.
+   * Clicking on the entry of the legend in the scope again makes that specific channel visible again.
+   * Do this for ``CH4`` and ``CH5`` (``CH6`` to ``CH20`` are hidden by default). This way, no unnecessary lines with ZeroValue are visible.
+  
 #. Press the *Enable System* and the *Enable Control* buttons. Now the chirp waves should be visible in the scope.
 
    ..  _GUI_chirp:

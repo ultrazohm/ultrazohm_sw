@@ -151,21 +151,22 @@ Guideline
          //.... 
          /* Bit 7 - My_Button_4 */
          if (is_three_phase_active) {
-            js_status_BareToRTOS |= ~(1 << 7);
+            js_status_BareToRTOS |= 1 << 7;
          } else {
             js_status_BareToRTOS &= ~(1 << 7);
          }
 
          /* Bit 8 - My_Button_5 */
          if (!is_three_phase_active) {
-            js_status_BareToRTOS |= ~(1 << 8);
+            js_status_BareToRTOS |= 1 << 8;
          } else {
             js_status_BareToRTOS &= ~(1 << 8);
 	      }
          //....
       }
 
-#. Open the uz_GUI and select the *ua, ub* and *uc* members in the channel selection. Set every other channel to ``(0) ZeroValue``.
+#. Build the changes and flash the UltraZohm.
+#. Open the uz_GUI and select the *ua, ub* and *uc* members in the channel selection and hide ``CH4`` and ``CH5``.
 #. Change the UltraZohm to the *Control state* by pressing the respective buttons.
 #. Because of the additional if-statement in the ``isr.c`` file no three-phase wave should be visible in the Scope.
 #. Press the ``My_Button_4``. The *userLED* should turn on and the three-phase wave should be visible in the Scope and the field below the ``My_Button_4`` should turn green.
@@ -242,20 +243,21 @@ Guideline
          //....
          /* Bit 7 - My_Button_4 */
          if (is_three_phase_active) {
-            js_status_BareToRTOS |= ~(1 << 7);
+            js_status_BareToRTOS |= 1 << 7;
          } else {
             js_status_BareToRTOS &= ~(1 << 7);
          }
 
          /* Bit 8 - My_Button_5 */
          if (!is_three_phase_active) {
-            js_status_BareToRTOS |= ~(1 << 8);
+            js_status_BareToRTOS |= 1 << 8;
          } else {
             js_status_BareToRTOS &= ~(1 << 8);
 	      }
          //....
       }
 
+#. Build the changes and flash the UltraZohm.
 #. Start up the GUI, select the *ua, ub* and *uc* members in the channel selection and activate the three-phase wave. 
 #. Try different values for the *amplitude, offset* and *frequency* and see how the changes reflect in the scope.
 

@@ -43,15 +43,15 @@ struct uz_pmsm_model_9ph_config_t pmsm_config={
               .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_9PH_OP_0_BASEADDR,
               .ip_core_frequency_Hz=100000000,
               .simulate_mechanical_system = false,
-              .r_1 = 2.1f,
+              .r_1 = 1.1f,
               .L_d = 0.05f,
               .L_q = 0.05f,
-              .L_z1 = 0.01f,
-              .L_z2 = 0.01f,
-              .L_x1 = 0.01f,
-              .L_y1 = 0.01f,
-              .L_x2 = 0.01f,
-              .L_y2 = 0.01f,
+              .L_z1 = 0.1f,
+              .L_z2 = 0.1f,
+              .L_x1 = 1.0f,
+              .L_y1 = 1.0f,
+              .L_x2 = 0.1f,
+              .L_y2 = 0.1f,
               .L_z3 = 0.01f,
               .psi_pm = 0.05f,
               .polepairs = 5.0f,
@@ -65,8 +65,8 @@ struct uz_PI_Controller_config config = {
               .Kp = 200.0f,
               .Ki = 70.0f,
               .samplingTime_sec = 0.00005f,
-              .upper_limit = 100.0f,
-              .lower_limit = -100.0f};
+              .upper_limit = 12.0f,
+              .lower_limit = -12.0f};
 //end
 
 // upper code for PWM
@@ -130,23 +130,23 @@ uz_PWM_SS_2L_t *pwm_instance_3=NULL;
 
 struct uz_inverter_3ph_config_t inverter_1_config = {
 		.base_address= XPAR_UZ_USER_UZ_INVERTER_3PH_0_BASEADDR,
-		.ip_core_frequency_Hz= 100000000,
-		.switch_pspl_abc=true,
+		.ip_core_frequency_Hz= 200000000,
+		.switch_pspl_abc=false,
 		.switch_pspl_gate=false
 };
 
 struct uz_inverter_3ph_config_t inverter_2_config = {
 		.base_address= XPAR_UZ_USER_UZ_INVERTER_3PH_1_BASEADDR,
-		.ip_core_frequency_Hz= 100000000,
+		.ip_core_frequency_Hz= 200000000,
 		.switch_pspl_abc=false,
-		.switch_pspl_gate=true
+		.switch_pspl_gate=false
 };
 
 struct uz_inverter_3ph_config_t inverter_3_config = {
 		.base_address= XPAR_UZ_USER_UZ_INVERTER_3PH_2_BASEADDR,
 		.ip_core_frequency_Hz= 100000000,
 		.switch_pspl_abc=false,
-		.switch_pspl_gate=true
+		.switch_pspl_gate=false
 };
 
 struct uz_inverter_3ph_t *inverter_1=NULL;

@@ -8,10 +8,10 @@ Generated logfile:
 
 source vivado_ip_package.tcl -notrace
 INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter.
-Current project path is 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_inverter_3ph/hdl_prj/ipcore/uz_inverter_3ph_v1_1/prj_ip'
+Current project path is 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_inverter_3ph/hdl_prj/ipcore/uz_inverter_3ph_v1_3/prj_ip'
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_inverter_3ph/hdl_prj/ipcore'.
-WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_inverter_3ph/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_inverter_3ph/hdl_prj/ipcore/uz_inverter_3ph_v1_1/prj_ip'.)
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_inverter_3ph/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_inverter_3ph/hdl_prj/ipcore/uz_inverter_3ph_v1_3/prj_ip'.)
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
 INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
 INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_ARESETN' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
@@ -28,6 +28,24 @@ INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
 INFO: [IP_Flow 19-2187] The Product Guide file is missing.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_uz_inverter_3ph_pkg.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_uz_inverter_3ph_pkg.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1_block.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1_block.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1_block1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1_block1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1_block2.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1_block2.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1_block3.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1_block3.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1_block4.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1_block4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1_block5.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1_block5.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1_block6.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Subsystem1_block6.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Compare_To_Constant.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_Compare_To_Constant.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_nfp_mul_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_nfp_mul_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_dot_product_1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -44,6 +62,10 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_nfp_convert_
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_nfp_convert_double2single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_nfp_convert_sfix_25_En12_to_double.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_nfp_convert_sfix_25_En12_to_double.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_nfp_relop_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_nfp_relop_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_nfp_uminus_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_nfp_uminus_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_uz_inverter_3ph_tc.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_uz_inverter_3ph_tc.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_src_uz_inverter_3ph.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -72,6 +94,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_axi4.vhd" alread
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_axi4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Thu May  5 14:18:57 2022...
+INFO: [Common 17-206] Exiting Vivado at Mon May  9 15:53:16 2022...
 
-Elapsed time is 15.9086 seconds.
+Elapsed time is 14.3145 seconds.

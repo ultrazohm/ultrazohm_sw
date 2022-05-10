@@ -1,4 +1,13 @@
  --> uz_inverter_3ph_src_uz_inverter_3ph_pkg
+uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Selection/State Mode Vector To Index/Subsystem8 --> uz_inverter_3ph_src_Subsystem1
+uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Selection/State Mode Vector To Index/Subsystem7 --> uz_inverter_3ph_src_Subsystem1_block
+uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Selection/State Mode Vector To Index/Subsystem6 --> uz_inverter_3ph_src_Subsystem1_block1
+uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Selection/State Mode Vector To Index/Subsystem5 --> uz_inverter_3ph_src_Subsystem1_block2
+uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Selection/State Mode Vector To Index/Subsystem4 --> uz_inverter_3ph_src_Subsystem1_block3
+uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Selection/State Mode Vector To Index/Subsystem3 --> uz_inverter_3ph_src_Subsystem1_block4
+uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Selection/State Mode Vector To Index/Subsystem2 --> uz_inverter_3ph_src_Subsystem1_block5
+uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Selection/State Mode Vector To Index/Subsystem1 --> uz_inverter_3ph_src_Subsystem1_block6
+uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Iteration Manager/Compare To Constant --> uz_inverter_3ph_src_Compare_To_Constant
 dot_product_1/nfp_mul_single --> uz_inverter_3ph_src_nfp_mul_single
 dot_product_1 --> uz_inverter_3ph_src_dot_product_1
 uz_inverter_3phgm/uz_inverter_3ph/nfp_add_single --> uz_inverter_3ph_src_nfp_add_single
@@ -7,5 +16,7 @@ uz_inverter_3phgm/uz_inverter_3ph/nfp_convert_double_to_fixed_25_En12 --> uz_inv
 uz_inverter_3phgm/uz_inverter_3ph/nfp_convert_single2double --> uz_inverter_3ph_src_nfp_convert_single2double
 uz_inverter_3phgm/uz_inverter_3ph/nfp_convert_double2single --> uz_inverter_3ph_src_nfp_convert_double2single
 uz_inverter_3phgm/uz_inverter_3ph/nfp_convert_sfix_25_En12_to_double --> uz_inverter_3ph_src_nfp_convert_sfix_25_En12_to_double
+uz_inverter_3phgm/uz_inverter_3ph/nfp_relop_single --> uz_inverter_3ph_src_nfp_relop_single
+uz_inverter_3phgm/uz_inverter_3ph/nfp_uminus_single --> uz_inverter_3ph_src_nfp_uminus_single
 uz_inverter_3ph_tc --> uz_inverter_3ph_src_uz_inverter_3ph_tc
 uz_inverter_3phgm/uz_inverter_3ph --> uz_inverter_3ph_src_uz_inverter_3ph

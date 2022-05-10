@@ -48,39 +48,46 @@
  <div class="page_container"><div class="content_frame">
 <h1>HDL Code Generation Check Report for 'uz_inverter_3phgm/uz_inverter_3ph'
 <a href="matlab:open_system('uz_inverter_3phgm/uz_inverter_3ph');">open model 'uz_inverter_3phgm/uz_inverter_3ph'</a><BR>
-Generated on 2022-05-05 14:18:32</h1>
-<H2>HDL check for 'uz_inverter_3phgm' complete with 0 errors, 1 warnings, and 4 messages.</H2><BR>
+Generated on 2022-05-09 15:52:50</h1>
+<H2>HDL check for 'uz_inverter_3phgm' complete with 0 errors, 2 warnings, and 4 messages.</H2><BR>
 <H3>The following table describes blocks for which errors, warnings or messages were reported.</H3><BR>
 <TABLE>
 <TR><TD> <B>Simulink Blocks and resources</B> </TD><TD> <B>Level</B> </TD><TD> <B>Description</B> </TD></TR><TR bgcolor="#F0F0F0"><TD>
-<a alt="HDLShared:hdlshared:cpespeednotspecified" href="matlab:hilite(get_param(char([117 122 95 105 110 118 101 114 116 101 114 95 51 112 104 103 109]),'object'),'none');open_system(char([117 122 95 105 110 118 101 114 116 101 114 95 51 112 104 103 109]))">uz_inverter_3phgm</a>
+<a alt="hdlcoder:engine:unsupportedgenericblock" href="matlab:hilite(get_param(char([117 122 95 105 110 118 101 114 116 101 114 95 51 112 104 103 109]),'object'),'none');hilite_system(char([117 122 95 105 110 118 101 114 116 101 114 95 51 112 104 103 109 47 117 122 95 105 110 118 101 114 116 101 114 95 51 112 104 47 72 68 76 32 83 117 98 115 121 115 116 101 109 47 72 68 76 32 65 108 103 111 114 105 116 104 109 47 77 111 100 101 32 73 116 101 114 97 116 105 111 110 32 77 97 110 97 103 101 114 47 67 111 117 110 116 101 114 32 76 105 109 105 116 101 100 47 87 114 97 112 32 84 111 32 90 101 114 111]))">uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Iteration Manager/Counter Limited/Wrap To Zero</a>
 </TD>
 <TD>Warning</TD>
-<TD>SynthesisToolSpeedValue not specified. Using default values, SynthesisToolSpeedValue=-1, for critical path estimation.</TD>
+<TD>'Generate parameterized HDL code from masked subsystem' is not supported when the mask parameter 'uplimit' is used in this block. HDL code generation for a mask parameter can be generated only when it is used as a Gain, Constant or CompareToConst value in a subsystem. To avoid this warning, change the HDL parameter 'MaskParameterAsGeneric' to off.</TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
+<a alt="hdlcoder:engine:unsupportedgenericblock" href="matlab:hilite(get_param(char([117 122 95 105 110 118 101 114 116 101 114 95 51 112 104 103 109]),'object'),'none');hilite_system(char([117 122 95 105 110 118 101 114 116 101 114 95 51 112 104 103 109 47 117 122 95 105 110 118 101 114 116 101 114 95 51 112 104 47 72 68 76 32 83 117 98 115 121 115 116 101 109 47 72 68 76 32 65 108 103 111 114 105 116 104 109 47 77 111 100 101 32 73 116 101 114 97 116 105 111 110 32 77 97 110 97 103 101 114 47 67 111 117 110 116 101 114 32 76 105 109 105 116 101 100 47 87 114 97 112 32 84 111 32 90 101 114 111 47 70 105 120 80 116 10 83 119 105 116 99 104]))">uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Iteration Manager/Counter Limited/Wrap To Zero/FixPt
+Switch</a>
+</TD>
+<TD>Warning</TD>
+<TD>'Generate parameterized HDL code from masked subsystem' is not supported when the mask parameter 'Threshold' is used in this block. HDL code generation for a mask parameter can be generated only when it is used as a Gain, Constant or CompareToConst value in a subsystem. To avoid this warning, change the HDL parameter 'MaskParameterAsGeneric' to off.</TD>
+</TR>
+<TR bgcolor="#F0F0F0"><TD>
 <a alt="hdlcoder:workflow:AdaptivePipelineOffMessage" href="matlab:hilite(get_param(char([117 122 95 105 110 118 101 114 116 101 114 95 51 112 104 103 109]),'object'),'none');open_system(char([117 122 95 105 110 118 101 114 116 101 114 95 51 112 104 103 109]))">uz_inverter_3phgm</a>
 </TD>
 <TD>Message</TD>
 <TD><a href="matlab:configset.internal.open('uz_inverter_3phgm','AdaptivePipelining')">'AdaptivePipelining'</a> is set to 'Off' for the model. 'AdaptivePipelining' can improve the achievable clock frequency and reduce the area usage on FPGA boards. To enable adaptive pipelining, set the option to 'On'. When adaptive pipelining is enabled, it inserts pipeline registers to create patterns that efficiently map blocks to DSP units on the target FPGA device.</TD>
 </TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcoder:hdldisp:GeneratingCPEHiliteScript" href="matlab:run('hdl_prj\hdlsrc\uz_inverter_3phgm\criticalPathEstimated')">hdl_prj\hdlsrc\uz_inverter_3phgm\criticalPathEstimated.m</a>
+<TR bgcolor="#FFFFFF"><TD>
+<a alt="hdlcoder:workflow:LUTMapToRAMOffMessage" href="matlab:hilite(get_param(char([117 122 95 105 110 118 101 114 116 101 114 95 51 112 104 103 109]),'object'),'none');open_system(char([117 122 95 105 110 118 101 114 116 101 114 95 51 112 104 103 109]))">uz_inverter_3phgm</a>
 </TD>
 <TD>Message</TD>
-<TD>Estimated critical path for design: <a href="matlab:run('hdl_prj\hdlsrc\uz_inverter_3phgm\criticalPathEstimated')">hdl_prj\hdlsrc\uz_inverter_3phgm\criticalPathEstimated.m</a></TD>
+<TD><a href="matlab:configset.internal.open('uz_inverter_3phgm','LUTMapToRAM')">'LUTMapToRAM'</a> is set to 'On' for the model. This option is used to map lookup tables to a block RAM in hardware.  To disable pipeline insertion for mapping lookup tables to RAM, set the option to 'Off'.</TD>
+</TR>
+<TR bgcolor="#F0F0F0"><TD>
+<a alt="hdlcoder:hdldisp:GeneratingCRPHiliteScript" href="matlab:run('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_inverter_3ph\hdl_prj\hdlsrc\uz_inverter_3phgm\highlightClockRatePipelining')">C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_inverter_3ph\hdl_prj\hdlsrc\uz_inverter_3phgm\highlightClockRatePipelining.m</a>
+</TD>
+<TD>Message</TD>
+<TD>Clock-rate pipelining results can be diagnosed by running this script: <a href="matlab:run('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_inverter_3ph\hdl_prj\hdlsrc\uz_inverter_3phgm\highlightClockRatePipelining')">C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_inverter_3ph\hdl_prj\hdlsrc\uz_inverter_3phgm\highlightClockRatePipelining.m</a></TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcoder:hdldisp:GeneratingBlocksWithNoCharacterizationHighlightScript" href="matlab:run('hdl_prj\hdlsrc\uz_inverter_3phgm\highlightCriticalPathEstimationOffendingBlocks')">hdl_prj\hdlsrc\uz_inverter_3phgm\highlightCriticalPathEstimationOffendingBlocks.m</a>
-</TD>
-<TD>Message</TD>
-<TD>Blocks that are not characterized for Critical Path Estimation: <a href="matlab:run('hdl_prj\hdlsrc\uz_inverter_3phgm\highlightCriticalPathEstimationOffendingBlocks')">hdl_prj\hdlsrc\uz_inverter_3phgm\highlightCriticalPathEstimationOffendingBlocks.m</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
 <a alt="hdlcoder:hdldisp:OversampleMessage" href="matlab:hilite(get_param(char([117 122 95 105 110 118 101 114 116 101 114 95 51 112 104 103 109]),'object'),'none');open_system(char([117 122 95 105 110 118 101 114 116 101 114 95 51 112 104 103 109]))">uz_inverter_3phgm</a>
 </TD>
 <TD>Message</TD>
-<TD>MESSAGE: The design requires 50 times faster clock with respect to the base rate = 5e-07.</TD>
+<TD>MESSAGE: The design requires 25 times faster clock with respect to the base rate = 1e-07.</TD>
 </TR>
 </TABLE>
 <BR><BR> </div></div></div></div>

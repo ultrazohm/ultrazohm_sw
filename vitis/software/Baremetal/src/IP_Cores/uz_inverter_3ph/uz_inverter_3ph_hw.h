@@ -1,6 +1,5 @@
-
-#ifndef uz_inverter_3ph_H
-#define uz_inverter_3ph_H
+#ifndef UZ_INVERTER_3PH_H
+#define UZ_INVERTER_3PH_H
 
 #include <stdint.h>
 #include <stdbool.h>

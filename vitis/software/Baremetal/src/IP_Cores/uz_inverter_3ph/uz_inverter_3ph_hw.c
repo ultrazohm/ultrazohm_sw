@@ -64,32 +64,32 @@ void uz_inverter_3ph_hw_trigger_i_abc_ps_strobe(uint32_t base_address){
 
 void uz_inverter_3ph_hw_write_gate1(uint32_t base_address,  float gate1){
     uz_assert_not_zero(base_address);
-    return uz_fixedpoint_axi_write(base_address + gate1_ps_Data_uz_inverter_3ph, gate1, def);
+    return uz_axi_write_float(base_address + gate1_ps_Data_uz_inverter_3ph, gate1);
 }
 
 void uz_inverter_3ph_hw_write_gate2(uint32_t base_address,  float gate2){
     uz_assert_not_zero(base_address);
-    return uz_fixedpoint_axi_write(base_address + gate2_ps_Data_uz_inverter_3ph, gate2, def);
+    return uz_axi_write_float(base_address + gate2_ps_Data_uz_inverter_3ph, gate2);
 }
 
 void uz_inverter_3ph_hw_write_gate3(uint32_t base_address,  float gate3){
     uz_assert_not_zero(base_address);
-    return uz_fixedpoint_axi_write(base_address + gate3_ps_Data_uz_inverter_3ph, gate3, def);
+    return uz_axi_write_float(base_address + gate3_ps_Data_uz_inverter_3ph, gate3);
 }
 
 void uz_inverter_3ph_hw_write_gate4(uint32_t base_address,  float gate4){
     uz_assert_not_zero(base_address);
-    return uz_fixedpoint_axi_write(base_address + gate4_ps_Data_uz_inverter_3ph, gate4, def);
+    return uz_axi_write_float(base_address + gate4_ps_Data_uz_inverter_3ph, gate4);
 }
 
 void uz_inverter_3ph_hw_write_gate5(uint32_t base_address, float gate5){
     uz_assert_not_zero(base_address);
-    return uz_fixedpoint_axi_write(base_address + gate5_ps_Data_uz_inverter_3ph, gate5, def);
+    return uz_axi_write_float(base_address + gate5_ps_Data_uz_inverter_3ph, gate5);
 }
 
 void uz_inverter_3ph_hw_write_gate6(uint32_t base_address, float gate6){
     uz_assert_not_zero(base_address);
-    return uz_fixedpoint_axi_write(base_address + gate6_ps_Data_uz_inverter_3ph, gate6, def);
+    return uz_axi_write_float(base_address + gate6_ps_Data_uz_inverter_3ph, gate6);
 }
 
 void uz_inverter_3ph_hw_trigger_gate_ps_strobe(uint32_t base_address){

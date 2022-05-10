@@ -71,6 +71,9 @@ struct uz_pmsm_model_9ph_inputs_general_t pmsm_inputs={
 //pre-loop for PWM
 #include "../uz/uz_FOC/uz_FOC.h"
 #include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
+#include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph_hw.h"
+
+float uz_inverter_3ph_hw_read_u_ab_ps(uint32_t base_address);
 
 struct uz_DutyCycle_t duty_cycle_sys1 = {0};
 struct uz_DutyCycle_t duty_cycle_sys2 = {0};
@@ -94,9 +97,9 @@ extern uz_PWM_SS_2L_t *pwm_instance_3;
 
 struct uz_inverter_3ph_gate_ps_t gate_signal={
 		.gate1=0.0f,
-		.gate2=1.0f,
-		.gate3=0.0f,
-		.gate4=1.0f,
+		.gate2=0.0f,
+		.gate3=1.0f,
+		.gate4=0.0f,
 		.gate5=0.0f,
 		.gate6=1.0f
 };
@@ -110,13 +113,15 @@ struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_2 = {0};
 struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_3 = {0};
 
 struct uz_inverter_3ph_i_abc_ps_t currents_inv1={
-		.i_a = 10.0f,
-		.i_b = 5.0f,
-		.i_c = 5.0f
+		.i_a = 0.0f,
+		.i_b = 0.0f,
+		.i_c = 0.0f
 };
 
 
 float g1=0.0f;
+float g3=0.0f;
+float g5=0.0f;
 //float g2=0.0f;
 //end
 
@@ -175,8 +180,8 @@ void ISR_Control(void *data)
     //++PWM++
 
     // Controller
-    setpoint_dq.d = setp_d;//uz_PI_Controller_sample(PI_d_current, setp_d, pmsm_output_currents.i_dq.d, false);
-    setpoint_dq.q = setp_q;//uz_PI_Controller_sample(PI_q_current, setp_q, pmsm_output_currents.i_dq.q, false);
+    setpoint_dq.d = uz_PI_Controller_sample(PI_d_current, setp_d, pmsm_output_currents.i_dq.d, false);
+    setpoint_dq.q = uz_PI_Controller_sample(PI_q_current, setp_q, pmsm_output_currents.i_dq.q, false);
 
     //pmsm_inputs.u_d = setpoint_dq.d;
     //pmsm_inputs.u_q = setpoint_dq.q;
@@ -223,28 +228,37 @@ void ISR_Control(void *data)
           uz_PI_Controller_reset(PI_d_current);
           uz_pmsm_model_9ph_reset(pmsm);
     }
-
+/*
     gate_signal.gate1=g1;
     gate_signal.gate2=!g1;
 
+    gate_signal.gate3=g3;
+	gate_signal.gate4=!g3;
+
+	gate_signal.gate5=g5;
+	gate_signal.gate6=!g5;
+
 
     uz_inverter_3ph_trigger_i_abc_ps_strobe(inverter_1);
+    uz_inverter_3ph_trigger_i_abc_ps_strobe(inverter_2);
     uz_inverter_3ph_set_i_abc_ps(inverter_1,currents_inv1);
+    uz_inverter_3ph_set_i_abc_ps(inverter_2,currents_inv1);
 
-
+*/
     uz_inverter_3ph_trigger_u_abc_ps_strobe(inverter_1);
     uz_inverter_3ph_trigger_u_abc_ps_strobe(inverter_2);
     uz_inverter_3ph_trigger_u_abc_ps_strobe(inverter_3);
 
-    uz_inverter_3ph_trigger_gate_ps_strobe(inverter_1);
-	uz_inverter_3ph_trigger_gate_ps_strobe(inverter_2);
-	uz_inverter_3ph_trigger_gate_ps_strobe(inverter_3);
+//   uz_inverter_3ph_trigger_gate_ps_strobe(inverter_1);
+//	uz_inverter_3ph_trigger_gate_ps_strobe(inverter_2);
+//	uz_inverter_3ph_trigger_gate_ps_strobe(inverter_3);
 
-	uz_inverter_3ph_set_gate_ps(inverter_1,gate_signal);
-	uz_inverter_3ph_set_gate_ps(inverter_2,gate_signal);
-	uz_inverter_3ph_set_gate_ps(inverter_3,gate_signal);
+//	uz_inverter_3ph_set_gate_ps(inverter_1,gate_signal);
+//	uz_inverter_3ph_set_gate_ps(inverter_2,gate_signal);
+//	uz_inverter_3ph_set_gate_ps(inverter_3,gate_signal);
 
-    voltage_inverter_1 = uz_inverter_3ph_get_u_abc_ps(inverter_1);
+    //voltage_inverter_1.u_ab = uz_inverter_3ph_hw_read_u_ab_ps(0x800E0000);
+	voltage_inverter_1 = uz_inverter_3ph_get_u_abc_ps(inverter_1);
     voltage_inverter_2 = uz_inverter_3ph_get_u_abc_ps(inverter_2);
     voltage_inverter_3 = uz_inverter_3ph_get_u_abc_ps(inverter_3);
 

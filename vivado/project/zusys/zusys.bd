@@ -4559,42 +4559,6 @@
               "smartconnect_0/M08_AXI"
             ]
           },
-          "Conn5": {
-            "interface_ports": [
-              "M02_AXI",
-              "smartconnect_0/M02_AXI"
-            ]
-          },
-          "Conn6": {
-            "interface_ports": [
-              "M01_AXI",
-              "smartconnect_0/M01_AXI"
-            ]
-          },
-          "Conn8": {
-            "interface_ports": [
-              "M09_AXI",
-              "smartconnect_0/M09_AXI"
-            ]
-          },
-          "Conn10": {
-            "interface_ports": [
-              "M07_AXI",
-              "smartconnect_0/M07_AXI"
-            ]
-          },
-          "Conn3": {
-            "interface_ports": [
-              "S00_AXI",
-              "smartconnect_0/S00_AXI"
-            ]
-          },
-          "Conn2": {
-            "interface_ports": [
-              "M10_AXI",
-              "smartconnect_0/M10_AXI"
-            ]
-          },
           "Conn11": {
             "interface_ports": [
               "M03_AXI",
@@ -4629,6 +4593,42 @@
             "interface_ports": [
               "axi_timebase_wdt_0/S_AXI",
               "smartconnect_0/M13_AXI"
+            ]
+          },
+          "Conn5": {
+            "interface_ports": [
+              "M02_AXI",
+              "smartconnect_0/M02_AXI"
+            ]
+          },
+          "Conn6": {
+            "interface_ports": [
+              "M01_AXI",
+              "smartconnect_0/M01_AXI"
+            ]
+          },
+          "Conn8": {
+            "interface_ports": [
+              "M09_AXI",
+              "smartconnect_0/M09_AXI"
+            ]
+          },
+          "Conn10": {
+            "interface_ports": [
+              "M07_AXI",
+              "smartconnect_0/M07_AXI"
+            ]
+          },
+          "Conn3": {
+            "interface_ports": [
+              "S00_AXI",
+              "smartconnect_0/S00_AXI"
+            ]
+          },
+          "Conn2": {
+            "interface_ports": [
+              "M10_AXI",
+              "smartconnect_0/M10_AXI"
             ]
           }
         },

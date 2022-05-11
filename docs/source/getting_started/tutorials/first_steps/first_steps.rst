@@ -52,8 +52,8 @@ Initial steps
   
 #. Build the project by clicking on the red highlighted hammer visible in :numref:`build_workspace`.
 
-   * Whenever changes have been made to the code base This button has to always be pressed.
-   * If this button is not pressed after changes have been made, these changes can't be flashed onto the UltraZohm.
+   * Whenever changes have been made to the code base. This button has to always be pressed.
+   * If this button is not pressed after changes have been made, these changes can't be flashed onto the UltraZohm and the previousely build binary is programmed (without the changes!).
 
    ..  _build_workspace:
    ..  figure:: ./img/build_workspace.png
@@ -61,9 +61,9 @@ Initial steps
 
        Building the workspace
 
-#. If you haven't made any changes to the code-base after the :ref:`generation of the Vitis workspace <genvitis>`, the building will lead to errors depicted below.
+#. If you haven't made any changes to the code-base after the :ref:`generation of the Vitis workspace <genvitis>`, the build will lead to errors depicted below.
 
-   * Whenever you made changes to the codebase and the building leads to errors, they have to be fixed, otherwise the UltraZohm can **not** be flashed properly. This is because the errors stop the compiler from compiling the entire workspace.
+   * Whenever you made changes to the codebase and the build leads to errors, they have to be fixed, otherwise the UltraZohm can **not** be flashed properly. This is because the errors stop the compiler from compiling the entire workspace.
    * Whilst Warnings do not prohibit the UltraZohm from working, they should be fixed nonetheless.
 
    ..  _workspace_error:

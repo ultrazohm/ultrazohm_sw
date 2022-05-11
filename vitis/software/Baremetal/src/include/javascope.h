@@ -159,8 +159,8 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	Reference speed,
 	Position,
-	K_p_speed controller,
-	K_i_speed controller,
+	K_p_id controller,
+	K_i_id controller,
 	K_p_iq controller,
 	K_i_iq controller,
 	SND_FLD_ENDMARKER
@@ -171,7 +171,7 @@ enum gui_button_mapping {
 
 	SND_LABELS_ZEROVALUE=0,
 	RPM,
-	Nm,
+	m,
 	,
 	,
 	,

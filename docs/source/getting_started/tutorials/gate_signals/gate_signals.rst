@@ -45,7 +45,7 @@ Guideline
       //....
       float amplitude = 1.0f;
       float frequency = 1.0f;
-      float offset = 0.0f;
+      float offset = 0.5f;
       //....
       if (current_state==control_state)
       {
@@ -121,6 +121,8 @@ Guideline
       uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
       //....
 
+#. Build and flash the UltraZohm and connect the GUI.
+
 #. In the *Debug view* in *Vitis* go the the expressions tab and add the ``three_phase_output`` struct as a new expression.
 
    * This lets you modify the value of the ``three_phase_output`` struct during runtime. 
@@ -128,10 +130,10 @@ Guideline
   
    .. note:: 
 
-      Refreshing the the value of the expression stops the processor for a couple of cycles. The more expressions are logged, the longer the stoppage takes.
+      Refreshing the the values of the expressions (green box in :numref:`Vitis_expression`) stops the processor for a couple of cycles. 
+      The more expressions are logged, the longer the stoppage takes.
 
-#. Build and flash the UltraZohm and connect the GUI.
-#. In *Vitis* select the R5 in the *debug* view on the left side. The value of the expression should now be visible. 
+#. Select the R5 in the *debug* view on the left side. The value of the expression should now be visible. 
 
    ..  _Vitis_expression:
    ..  figure:: ./img/Vitis2.png

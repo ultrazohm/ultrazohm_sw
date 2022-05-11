@@ -38,10 +38,22 @@ Software design
 
   Software design of the R5 software. Each software layer ought to depend only on the layer directly below.
 
+IP-Core
+*******
+
+IP-Cores are used in Programmable Logic (PL) aka FPGA. 
+They are a reusable component of design logic with a defined interface and behavior that has been verified by its creator. 
+They are comparable to the use of a library for computer programming or a discrete integrated circuit component for printed circuit board design [#ug1228]_ .
+They can be used for cases, when the compute power of the RPU is not sufficient anymore and an acceleration via hardware is necessary. 
+E.g. deep-learning application are to resource intensive for the processor and can therefore be accelerated on the FPGA with an IP-Core.
+
+* For further information on the default Vivado project see :ref:`default_vivado_project`.
+* For further information on the existing IP-Cores of the UltraZohm project see :ref:`ip_cores`.
+
 IP-Core driver
 **************
 
-IP-Core drivers are a special and highly relevant case since the flexible usage of IP-cores is a main advantage of the MPSoC.
+IP-Core drivers include higher level functionality to communicate and control the corresponding IP-Core. They are a special and highly relevant case since the flexible usage of IP-cores is a main advantage of the MPSoC.
 Refer to :ref:`software_development_guidelines` for an example implementation.
 
 
@@ -84,3 +96,4 @@ Sources
 -------
 
 .. [#ug1228] `Software Guide UG1228 <https://www.xilinx.com/support/documentation/sw_manuals/ug1228-ultrafast-embedded-design-methodology-guide.pdf>`_
+.. [#wiki] `Semiconductor intellectual property core <https://en.wikipedia.org/wiki/Semiconductor_intellectual_property_core>`

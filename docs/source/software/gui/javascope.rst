@@ -188,9 +188,9 @@ The logging panel is used to setup the data logger of the GUI.
 
       /* Bit 12 - trigger ext. logging */
        // if (your condition == true) {
-       //   js_status_BareToRTOS |= (1 << 4);
+       //   js_status_BareToRTOS |= (1 << 12);
        // } else {
-       //   js_status_BareToRTOS &= ~(1 << 4);
+       //   js_status_BareToRTOS &= ~(1 << 12);
        // }
 
 #. Status indicator to display, if the logging is active. 

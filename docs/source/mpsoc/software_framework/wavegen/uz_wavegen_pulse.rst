@@ -1,3 +1,5 @@
+.. _uz_wavegen_pulse:
+
 ==========
 Pulse wave
 ==========

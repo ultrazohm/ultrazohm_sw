@@ -21,7 +21,7 @@ Please install all of them in the newest version, except for the Xilinx toolchai
 #. Install :ref:`Git`
 #. Install the :ref:`XilinxToolchain`
 #. Install :ref:`vscode_remote_container`
-#. :ref:`install_java`
+#. Install :ref:`Java <install_java>`
 
 Community & git
 ***************
@@ -49,8 +49,9 @@ UltraZohm Setup & tutorials
 The following steps set up your UltraZohm and provide tutorials to use different functions of the system.
 
 #. Refer to :ref:`SystemOverview` to get a high level idea what the UltraZohm is about.
-#. Follow the :ref:`UltraZohmSetup` guide to setup a local workspace
-#. Complete the UltraZohm :ref:`Tutorials`
+#. Refer to :ref:`platform_architecture` to get a better understanding of the UltraZohm platform.
+#. Follow the :ref:`UltraZohmSetup` guide to setup a local workspace.
+#. Complete the UltraZohm :ref:`Tutorials`.
 
 Your UltraZohm is now set up and ready to be used.
 Explore the documentation for more information.

@@ -1,3 +1,0 @@
-[submodule "vitis/software/Baremetal/src/Cranium"]
-	path = vitis/software/Baremetal/src/Cranium
-	url = https://github.com/100/Cranium.git

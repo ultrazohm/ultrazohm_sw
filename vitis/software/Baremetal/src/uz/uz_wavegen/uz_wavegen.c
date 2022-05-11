@@ -126,7 +126,7 @@ uz_3ph_abc_t uz_wavegen_three_phase_sample(float amplitude, float frequency_Hz, 
     float angle = 2.0f * UZ_PIf * t_Sec * frequency_Hz;
     uz_3ph_abc_t sine_output = {
         .a = amplitude * sinf(angle) + offset,
-        .b = amplitude * sinf(angle + (2.0f * UZ_PIf / 3.0f)) + offset,
-        .c = amplitude * sinf(angle + (4.0f * UZ_PIf / 3.0f)) + offset};
+        .b = amplitude * sinf(angle - (2.0f * UZ_PIf / 3.0f)) + offset,
+        .c = amplitude * sinf(angle - (4.0f * UZ_PIf / 3.0f)) + offset};
     return sine_output;
 }

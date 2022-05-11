@@ -32,7 +32,7 @@ Guideline
 #. Follow the guideline for an :ref:`uz_wavegen_chirp_example` implementation. Do this procedure three times.
 
    * Include the header file ``#include "uz/uz_wavegen/uz_wavegen.h"`` in the ``main.h`` header of the R5 processor (Baremetal).
-   * Declare three different configuration structs with different values.
+   * Declare three different configuration structs in the ``main.c`` with different values.
    * Initialize three different instances with three separate calls of the ``uz_wavegen_chirp_init`` function.
    * Create for the above steps a new case in the ``initialization_chain`` switch case and insert it after the ``init_software`` case.
   

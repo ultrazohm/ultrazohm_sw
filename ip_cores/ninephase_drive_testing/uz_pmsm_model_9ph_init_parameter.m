@@ -17,11 +17,11 @@ polepair=5;
 ts=1/1e6;
 
 
-R_1 = 0.066;          % phase resistance in Ohm
-psi_pm = 0.1028;      % flux linkage in Vs
-L_d = 0.0023;       % d-axis inductance in H
-L_q = 0.0046;       % q-axis inductance in H
-Lls = L_d/3;
+R_1 = 0.01;          % phase resistance in Ohm
+psi_pm = 0.005;      % flux linkage in Vs
+L_d = 0.0001;       % d-axis inductance in H
+L_q = 0.0001;       % q-axis inductance in H
+Lls = 0.02;
 %Lls = 1/Lls;
 L_o1 = Lls;         %assuming from other papers
 L_o2 = Lls; 
@@ -30,7 +30,7 @@ L_y1 = Lls;
 L_x2 = Lls; 
 L_y2 = Lls; 
 L_zero = Lls; 
-polepair = 3;             % number of pole pairs
+polepair = 5;             % number of pole pairs
 J = 0.094;      % rotor inertia 
 
 ts_inv=5e-7;
@@ -55,10 +55,10 @@ tau_d=L_d/R_1;
 tau_q=L_q/R_1;
 tau_sum=2*ts_regler;
 % Parallel PID
-k_p_d=200;%L_d/(2*tau_sum);
-k_p_q=200;%L_q/(2*tau_sum);
-k_i_d=70;%R_1/(2*tau_sum);
-k_i_q=70;%R_1/(2*tau_sum);
+k_p_d=0.5;%L_d/(2*tau_sum);
+k_p_q=0.5;%L_q/(2*tau_sum);
+k_i_d=50;%R_1/(2*tau_sum);
+k_i_q=50;%R_1/(2*tau_sum);
 lim_pi=12;
 
 % Mechanical parameters

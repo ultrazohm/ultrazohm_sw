@@ -11,7 +11,7 @@ Before starting the procedure of creating a new state, it is advised to read up 
 General information
 ===================
 
-* To ensure proper independence of the stateflows from the sampleTime, try to make if-statements with a counter value in relation to the sampleTime. (instead of ``==20000`` write ``==uint32(2/GlobalConfig.sampleTimeISR)`` @10kHz).
+* To ensure proper independence of the stateflows from the sampleTime, try to make if-statements with a counter value in relation to the sampleTime. (instead of ``==20000`` create a variable in the init-functions of the stateflow with ``two_seconds_counter==uint32(2/GlobalConfig.sampleTimeISR)`` @10kHz).
 * Avoid i.e. ``after(1.0,sec)`` state transition conditions. Create custom counter values for i.e. 1 second delays. Otherwise the transition won't scale with different sample times.
 * A three-phase testbench setup with a PMSM, inverter, load machine and physical couplings is included in the subsystem ``Hardware``. This can be used to test the new stateflow. 
 * To signal which state is currently active, each state in one ``ID-state`` has a unique ``activeState`` value. Each ``ID-state`` follows the naming scheme of ``Yxx``, where ``Y`` is the decimal for the state, and ``xx`` the decimals for the substates (i.e. 621). 
@@ -44,7 +44,7 @@ Changes in the Simulation model
 
    .. note::
 
-      Stick to the data types ``boolean``, ``single`` and if necessary ``uint32``. Do not use ``double``, since the UltraZohm has no dedicated hardware for FP64 calculations. 
+      Stick to the data types ``boolean``, ``single`` and if necessary ``uint32``. Do not use ``double``, since the UltraZohm PS has no dedicated hardware for FP64 calculations. 
   
    * Add a new bus for the state-specific configuration values ``uz_PID_StateIDConfig_t`` and add all config values to this bus.
    * Add a new bus for the state-specific output/identification-values ``uz_PID_StateID_output_t`` and add all necessary values.
@@ -61,7 +61,7 @@ Changes in the Simulation model
 
     .. image:: ../images/inputs_outputs2.png
 
-#. Add the config setup ,similar to the other states, for this state in the subsystem called ``config`` at the top of the ParameterID. Don't forget to add the new entry to the ``GlobalConfig`` as well.
+#. Add the config setup ,similar to the other states, for this state in the subsystem called ``config`` at the top of the ParameterID. Don't forget to add the new entry to the ``GlobalConfig`` Buscreator as well.
 
     .. image:: ../images/config_buscreator.png
 

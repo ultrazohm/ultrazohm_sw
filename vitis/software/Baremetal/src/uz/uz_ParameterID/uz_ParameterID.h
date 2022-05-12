@@ -95,7 +95,7 @@ void uz_ParameterID_CleanPsiArray(uz_ParameterID_t *self, uz_ParameterID_Data_t*
 void uz_ParameterID_CalcFluxMaps(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data);
 
 /**
- * @brief updates transmit values/Converts some int-values from the ParameterID to float and helps to sync the array transmittion
+ * @brief updates transmit values/Converts some int-values from the ParameterID to float and helps to sync the array transmission
  * 
  * @param Data pointer to uz_ParameterID_Data_t struct
  * @param activeState pointer to float variable of activeState

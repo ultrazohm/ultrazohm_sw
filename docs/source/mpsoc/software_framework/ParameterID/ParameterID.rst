@@ -121,16 +121,16 @@ Signalflow in the ParameterID
 The ParameterID has three global structs (highlighted in orange), which are shared inputs for all identification states. For detailed information about these structs, click on the appropriate hyperlink. 
 These are the following:
 
-  * :ref:`ActualValues struct<uz_Actual_values_struct>`, which carries all the measurement values
-  * :ref:`GlobalConfig struct<uz_Global_config_struct>`, which carries general configuration variables, which affect multiple or all states 
-  * :ref:`ControlFlags struct<uz_Control_flags_struct>`, which carries all flags to enable and disable the individual states
+  * :ref:`ActualValues struct<uz_Actual_values_struct>`, which carries all the measurement values.
+  * :ref:`GlobalConfig struct<uz_Global_config_struct>`, which carries general configuration variables, which affect multiple or all states. 
+  * :ref:`ControlFlags struct<uz_Control_flags_struct>`, which carries all flags to enable and disable the individual states.
    
 On top of that, each unique ``ID-state`` has its own individual structs and signals:
 
   * ``uz_StateIDConfig_t`` (i.e. for ElectricalID :ref:`uz_ElectricalIDConfig_t<uz_PID_ElectricalIDConfig>`), which is meant for all configuration values, which are unique to this specific ``ID-state``.
-  * ``uz_StateID_output_t`` (i.e. for ElectricalID :ref:`uz_ElectricalID_output_t<uz_PID_ElectricalIDoutput>`), which is meant for the identified output variables and supporting variables
-  * ``enteredStateID`` flag for OfflineID- and OnlineID-states, which signals that the state has been entered
-  * ``finishedStateID`` flag for OfflineID-states, which signals that the ``ID-state`` is finished and another can be started
+  * ``uz_StateID_output_t`` (i.e. for ElectricalID :ref:`uz_ElectricalID_output_t<uz_PID_ElectricalIDoutput>`), which is meant for the identified output variables and supporting variables.
+  * ``enteredStateID`` flag for OfflineID- and OnlineID-states, which signals that the state has been entered.
+  * ``finishedStateID`` flag for OfflineID-states, which signals that the ``ID-state`` is finished and another can be started.
   
 OnlineID-states do not necessarily have a ``finishedStateID`` flag, since they can be designed as an infinite loop.  
 

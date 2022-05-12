@@ -480,7 +480,7 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->GlobalConfig.Kp_id = 0.25;
 	Data->GlobalConfig.Kp_iq = 0.25f;
 	Data->GlobalConfig.Kp_n = 0.04f;
-    Data->GlobalConfig.PMSM_config.Ld_Henry = 2.90e-04f;
+	Data->GlobalConfig.PMSM_config.Ld_Henry = 2.90e-04f;
 	Data->GlobalConfig.PMSM_config.Lq_Henry = 3.00e-04f;
 	Data->GlobalConfig.PMSM_config.R_ph_Ohm = 0.105f;
 	Data->GlobalConfig.PMSM_config.Psi_PM_Vs = 0.0075f;

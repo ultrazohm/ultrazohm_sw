@@ -68,7 +68,8 @@ The ID-state specific configuration values can later be configured via the uz_GU
     :emphasize-lines: 13,16-30
     :language: c
 
-If the FluxMaps identification of the :ref:`uz_OnlineID` state will be used, the following code has to be implemented inside the ``while(1) loop`` of the ``main.c``:
+If the FluxMaps identification of the :ref:`uz_OnlineID` state will be used, the following code has to be implemented inside the ``while(1) loop`` of the ``main.c`` . 
+These functions are to compute heavy to be executed in the ISR.
 
 .. code-block:: c
   :linenos:
@@ -86,7 +87,7 @@ If the FluxMaps identification of the :ref:`uz_OnlineID` state will be used, the
 In the ``isr.c``  the members of the :ref:`uz_Actual_values_struct` struct inside the :ref:`uz_ParameterID_Data_struct` have to be assigned with the measurement values needed for the identification. 
 Furthermore, the ``uz_ParameterID_step`` function needs to be called as well. Two functions ``uz_ParameterID_Controller`` and ``uz_ParameterID_generate_DutyCycle`` are used in the code below as well.
 These exemplary functions are included in the ParameterID-library, to ease the use of it. They include the uz_FOC and a function to generate the DutyCycles for the halfbridges.
-They are technically not required for the ParameterID and can be replaced by your own control algorithm, if desired.
+They are technically not required for the ParameterID and can, if desired, be replaced by your own control algorithm.
 
 .. code-block:: c
   :linenos:
@@ -102,7 +103,7 @@ They are technically not required for the ParameterID and can be replaced by you
   struct uz_DutyCycle_t PID_DutyCycle = { 0 };
 
   void ISR_Control(void *data) {  
-  PID_Data.ActualValues.I_UVW.U = ....;
+     PID_Data.ActualValues.I_UVW.U = ....;
 	PID_Data.ActualValues.I_UVW.V = ....;
 	PID_Data.ActualValues.I_UVW.W = ....;
 	PID_Data.ActualValues.V_DC = ....;
@@ -160,7 +161,7 @@ In the ``javascope.c`` the measurement values from ``ActualValues`` struct shoul
      ....
      }  
 
-The ParameterID is now setup and can be controlled via the debugger window. Since this is not a practical task, a modified uz_GUI is distributed. 
+The ParameterID is now setup and can be controlled via the debugger window. Since this is not a practical task, the :ref:`Javascope` has a separate panel to control the ParmaeterID. 
 The additional setup steps are detailed in :ref:`uz_PID_GUI_setup`.
 
 Functions

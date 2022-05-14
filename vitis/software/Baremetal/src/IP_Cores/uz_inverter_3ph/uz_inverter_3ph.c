@@ -94,6 +94,7 @@ void uz_inverter_3ph_trigger_gate_ps_strobe(uz_inverter_3ph_t *self){
 static void write_config_to_pl(uz_inverter_3ph_t *self){
     uz_inverter_3ph_hw_write_switch_pspl_abc(self->config.base_address, self->config.switch_pspl_abc);
     uz_inverter_3ph_hw_write_switch_pspl_gate(self->config.base_address, self->config.switch_pspl_gate);
+    uz_inverter_3ph_hw_write_udc(self->config.base_address, self->config.udc);
 }
 
 #endif

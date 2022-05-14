@@ -24,5 +24,7 @@ annotate_port('gm_uz_inverter_3phgm/uz_inverter_3ph/Rate Transition18', 1, 1, ''
 annotate_port('uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/Rate Transition18', 1, 1, '');
 annotate_port('gm_uz_inverter_3phgm/uz_inverter_3ph/Rate Transition19', 1, 1, '');
 annotate_port('uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/Rate Transition19', 1, 1, '');
-annotate_port('gm_uz_inverter_3phgm/uz_inverter_3ph/Rate Transition9', 1, 1, '');
-annotate_port('uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/Rate Transition9', 1, 1, '');
+annotate_port('gm_uz_inverter_3phgm/uz_inverter_3ph/Rate Transition20', 1, 1, '');
+annotate_port('uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/Rate Transition20', 1, 1, '');
+annotate_port('gm_uz_inverter_3phgm/uz_inverter_3ph/Rate Transition21', 1, 1, '');
+annotate_port('uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/Rate Transition21', 1, 1, '');

@@ -4,9 +4,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-//Switches
+//general Inputs
 void uz_inverter_3ph_hw_write_switch_pspl_abc(uint32_t base_address, float switch_pspl_abc);
 void uz_inverter_3ph_hw_write_switch_pspl_gate(uint32_t base_address, float switch_pspl_gate);
+void uz_inverter_3ph_hw_write_udc(uint32_t base_address, float udc);
 
 // Model Outputs
 float uz_inverter_3ph_hw_read_u_ab_ps(uint32_t base_address);

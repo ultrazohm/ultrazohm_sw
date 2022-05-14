@@ -19,6 +19,11 @@ void uz_inverter_3ph_hw_write_switch_pspl_gate(uint32_t base_address,  float swi
     return uz_axi_write_float(base_address + switch_pspl_gate_Data_uz_inverter_3ph, switch_pspl_gate);
 }
 
+void uz_inverter_3ph_hw_write_udc(uint32_t base_address, float udc){
+    uz_assert_not_zero(base_address);
+    return uz_axi_write_float(base_address + u_dc_Data_uz_inverter_3ph, udc);
+}
+
 // Outport for phase voltages
 float uz_inverter_3ph_hw_read_u_ab_ps(uint32_t base_address){
     uz_assert_not_zero(base_address);

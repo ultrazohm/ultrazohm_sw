@@ -21,6 +21,7 @@ struct uz_inverter_3ph_config_t
 
     bool switch_pspl_abc; 
     bool switch_pspl_gate; 
+    float udc;
 };
 
 /**

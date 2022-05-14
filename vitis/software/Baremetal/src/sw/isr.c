@@ -90,7 +90,7 @@ uz_9ph_alphabeta_t setpoint_stationary = {0};
 uz_3ph_alphabeta_t setpoint_alpha_beta = {0};
 uz_3ph_dq_t setpoint_dq = {0};
 
-float V_dc_volts = 24.0f;
+float V_dc_volts = 560.0f;
 
 extern uz_PWM_SS_2L_t *pwm_instance_1;
 extern uz_PWM_SS_2L_t *pwm_instance_2;
@@ -127,7 +127,7 @@ float g5=0.0f;
 
 float amplitude = 0.05f;
 float frequency_Hz = 40.0f;
-float setp_factor=0.8f;
+float setp_factor=1.0;
 float setp_torque=0.1f;
 //float g2=0.0f;
 //end
@@ -230,8 +230,7 @@ void ISR_Control(void *data)
 	uz_PWM_SS_2L_set_duty_cycle(pwm_instance_1,duty_cycle_sys1.DutyCycle_U,duty_cycle_sys1.DutyCycle_V,duty_cycle_sys1.DutyCycle_W);
 	uz_PWM_SS_2L_set_duty_cycle(pwm_instance_2,duty_cycle_sys2.DutyCycle_U,duty_cycle_sys2.DutyCycle_V,duty_cycle_sys2.DutyCycle_W);
 	uz_PWM_SS_2L_set_duty_cycle(pwm_instance_3,duty_cycle_sys3.DutyCycle_U,duty_cycle_sys3.DutyCycle_V,duty_cycle_sys3.DutyCycle_W);
-	//uz_PWM_SS_2L_set_duty_cycle(pwm_instance_2,0.5,0.5,0.5);
-	//uz_PWM_SS_2L_set_duty_cycle(pwm_instance_3,0.5,0.5,0.5);
+
     //reset PMSM and PI controllers
     if(reset_on==1)
     {

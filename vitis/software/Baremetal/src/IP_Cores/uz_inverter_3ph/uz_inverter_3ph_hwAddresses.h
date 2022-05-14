@@ -13,6 +13,7 @@
 
 #define  switch_pspl_abc_Data_uz_inverter_3ph    0x100 //data register for Inport switch_pspl_abc
 #define  switch_pspl_gate_Data_uz_inverter_3ph   0x104  //data register for Inport switch_pspl_gate
+#define  u_dc_Data_uz_inverter_3ph               0x108  //data register for Inport u_dc
 
 #define  u_abc_ps_Data_uz_inverter_3ph           0x190  //data register for Outport u_abc_ps, vector with 3 elements, address ends at 0x118
 #define  u_ab_ps_Data_uz_inverter_3ph            0x190

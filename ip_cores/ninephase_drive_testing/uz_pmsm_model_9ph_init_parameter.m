@@ -17,11 +17,11 @@ polepair=5;
 ts=1/1e6;
 
 
-R_1 = 0.01;          % phase resistance in Ohm
-psi_pm = 0.005;      % flux linkage in Vs
-L_d = 0.0001;       % d-axis inductance in H
-L_q = 0.0001;       % q-axis inductance in H
-Lls = 0.02;
+R_1 = 31.3;%/1000;          % phase resistance in Ohm
+psi_pm = 0.6;%/1000;      % flux linkage in Vs
+L_d = 0.5;%/1000;       % d-axis inductance in H
+L_q = 0.5;%/1000;       % q-axis inductance in H
+Lls = 0.08;%/1000;
 %Lls = 1/Lls;
 L_o1 = Lls;         %assuming from other papers
 L_o2 = Lls; 
@@ -30,11 +30,12 @@ L_y1 = Lls;
 L_x2 = Lls; 
 L_y2 = Lls; 
 L_zero = Lls; 
-polepair = 5;             % number of pole pairs
+polepair = 2;             % number of pole pairs
 J = 0.094;      % rotor inertia 
 
 ts_inv=5e-7;
-
+ts_ps=50e-6;
+ts_inv_1=ts;
 
 gamma = pi/9;
 tl1 = [1  cos(6*gamma) cos(12*gamma)   cos(gamma)  cos(7*gamma) cos(13*gamma)  cos(2*gamma) cos(8*gamma) cos(14*gamma)];
@@ -50,16 +51,21 @@ c = 2/9*cat(1,tl1,tl2,tl3,tl4,tl5,tl6,tl7,tl8,tl9);
 
 
 % Controller parameter
-ts_regler=1/20e3;
+ts_regler=ts_ps;
 tau_d=L_d/R_1;
 tau_q=L_q/R_1;
-tau_sum=2*ts_regler;
+tau_sum=2*ts_ps;
 % Parallel PID
-k_p_d=0.5;%L_d/(2*tau_sum);
-k_p_q=0.5;%L_q/(2*tau_sum);
-k_i_d=50;%R_1/(2*tau_sum);
-k_i_q=50;%R_1/(2*tau_sum);
-lim_pi=12;
+k_p_d=0.50;
+k_p_d=L_d/(2*tau_sum);
+k_p_q=0.50;
+k_p_q=L_q/(2*tau_sum);
+k_i_d=50;
+k_i_d=R_1/(2*tau_sum);
+k_i_q=50;
+k_i_q=R_1/(2*tau_sum);
+udc=560;
+lim_pi=udc/2;
 
 % Mechanical parameters
 inertia=0.001;
@@ -71,4 +77,4 @@ simulate_mechanical=true;
 simulate_open_loop=true;
 setpoint_step=10.0;
 
-f_pwm = 2000;
+f_pwm = 50000;

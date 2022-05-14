@@ -46,6 +46,9 @@ extern struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_1;
 extern struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_2;
 extern struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_3;
 
+extern float setp_omega;
+extern float setp_q;
+
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
@@ -85,6 +88,13 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ic3] 			= &natural_currents.c3;
 	js_ch_observable[JSO_iq] 			= &pmsm_output_currents.i_dq.q;
 	js_ch_observable[JSO_id] 			= &pmsm_output_currents.i_dq.d;
+	js_ch_observable[JSO_ix1] 			= &pmsm_output_currents.i_subspaces.x1;
+	js_ch_observable[JSO_iy1] 			= &pmsm_output_currents.i_subspaces.y1;
+	js_ch_observable[JSO_ix2] 			= &pmsm_output_currents.i_subspaces.x2;
+	js_ch_observable[JSO_iy2] 			= &pmsm_output_currents.i_subspaces.y2;
+	js_ch_observable[JSO_iz1] 			= &pmsm_output_currents.i_subspaces.z1;
+	js_ch_observable[JSO_iz2] 			= &pmsm_output_currents.i_subspaces.z2;
+	js_ch_observable[JSO_iz3] 			= &pmsm_output_currents.i_subspaces.z3;
 	js_ch_observable[JSO_Theta_el] 		= &pmsm_outputs.theta_el;
 	js_ch_observable[JSO_ua1] 			= &voltage_inverter_1.u_ab;
 	js_ch_observable[JSO_ub1] 			= &voltage_inverter_1.u_bc;
@@ -95,12 +105,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ua3] 			= &voltage_inverter_3.u_ab;
 	js_ch_observable[JSO_ub3] 			= &voltage_inverter_3.u_bc;
 	js_ch_observable[JSO_uc3] 			= &voltage_inverter_3.u_ca;
-	js_ch_observable[JSO_setp_ia1] 			= &setpoint_natural.a1;
-	js_ch_observable[JSO_setp_ib1] 			= &setpoint_natural.b1;
-	js_ch_observable[JSO_setp_ic1] 			= &setpoint_natural.c1;
-	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
+	js_ch_observable[JSO_setp_ia1] 		= &setpoint_natural.a1;
+	js_ch_observable[JSO_setp_ib1] 		= &setpoint_natural.b1;
+	js_ch_observable[JSO_setp_ic1] 		= &setpoint_natural.c1;
+	js_ch_observable[JSO_setp_omega] 	=  &setp_omega;
+	js_ch_observable[JSO_setp_iq] 		=  &setp_q;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
-	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

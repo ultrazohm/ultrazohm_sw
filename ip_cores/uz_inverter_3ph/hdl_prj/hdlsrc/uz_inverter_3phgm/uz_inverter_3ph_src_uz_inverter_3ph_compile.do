@@ -14,10 +14,12 @@ vcom  uz_inverter_3ph_src_nfp_mul_single.vhd
 vcom  uz_inverter_3ph_src_dot_product_1.vhd
 vcom  uz_inverter_3ph_src_nfp_add_single.vhd
 vcom  uz_inverter_3ph_src_dot_product_2.vhd
+vcom  uz_inverter_3ph_src_dot_product_3.vhd
 vcom  uz_inverter_3ph_src_nfp_convert_double_to_fixed_25_En12.vhd
 vcom  uz_inverter_3ph_src_nfp_convert_single2double.vhd
 vcom  uz_inverter_3ph_src_nfp_convert_double2single.vhd
 vcom  uz_inverter_3ph_src_nfp_convert_sfix_25_En12_to_double.vhd
+vcom  uz_inverter_3ph_src_nfp_gain_pow2_double.vhd
 vcom  uz_inverter_3ph_src_nfp_relop_single.vhd
 vcom  uz_inverter_3ph_src_nfp_uminus_single.vhd
 vcom  uz_inverter_3ph_src_uz_inverter_3ph_tc.vhd

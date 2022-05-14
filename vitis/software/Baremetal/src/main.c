@@ -44,18 +44,18 @@ struct uz_pmsm_model_9ph_config_t pmsm_config={
               .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_9PH_OP_0_BASEADDR,
               .ip_core_frequency_Hz=100000000,
               .simulate_mechanical_system = false,
-              .r_1 = 0.01f,
-              .L_d = 0.0001f,
-              .L_q = 0.0001f,
-              .L_z1 = 0.02000f,
-              .L_z2 = 0.02000f,
-              .L_x1 = 0.02000f,
-              .L_y1 = 0.02000f,
-              .L_x2 = 0.02000f,
-              .L_y2 = 0.02000f,
-              .L_z3 = 0.02000f,
-              .psi_pm = 0.005f,
-              .polepairs = 5.0f,
+              .r_1 = 31.3f,
+              .L_d = 0.5f,
+              .L_q = 0.5f,
+              .L_z1 = 0.08f,
+              .L_z2 = 0.08f,
+              .L_x1 = 0.08f,
+              .L_y1 = 0.08f,
+              .L_x2 = 0.08f,
+              .L_y2 = 0.08f,
+              .L_z3 = 0.08f,
+              .psi_pm = 0.6f,
+              .polepairs = 2.0f,
               .inertia = 0.001,
               .coulomb_friction_constant = 0.001f,
               .friction_coefficient = 0.001f,
@@ -63,11 +63,11 @@ struct uz_pmsm_model_9ph_config_t pmsm_config={
 			  .switch_pspl = false};
 
 struct uz_PI_Controller_config config = {
-              .Kp = 0.5f,
-              .Ki = 50.0f,
+              .Kp = 2500.0f,
+              .Ki = 156500.0f,
               .samplingTime_sec = 0.00005f,
-              .upper_limit = 12.0f,
-              .lower_limit = -12.0f};
+              .upper_limit = 280.0f,
+              .lower_limit = -280.0f};
 //end
 
 // upper code for PWM
@@ -79,7 +79,7 @@ struct uz_PWM_SS_2L_config_t pwm_config_1 = {
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
         .min_pulse_width = 0.01f,
-        .PWM_freq_Hz = 20e3f,
+        .PWM_freq_Hz = 50e3f,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
         .use_external_counter = false,
@@ -95,7 +95,7 @@ struct uz_PWM_SS_2L_config_t pwm_config_2 = {
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
         .min_pulse_width = 0.01f,
-        .PWM_freq_Hz = 20e3f,
+        .PWM_freq_Hz = 50e3f,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
         .use_external_counter = true,
@@ -111,7 +111,7 @@ struct uz_PWM_SS_2L_config_t pwm_config_3 = {
         .Tristate_HB2 = false,
         .Tristate_HB3 = false,
         .min_pulse_width = 0.01f,
-        .PWM_freq_Hz = 20e3f,
+        .PWM_freq_Hz = 50e3f,
         .PWM_mode = normalized_input_via_AXI,
         .PWM_en = true,
         .use_external_counter = true,
@@ -133,21 +133,24 @@ struct uz_inverter_3ph_config_t inverter_1_config = {
 		.base_address= XPAR_UZ_USER_UZ_INVERTER_3PH_0_BASEADDR,
 		.ip_core_frequency_Hz= 200000000,
 		.switch_pspl_abc=false,
-		.switch_pspl_gate=false
+		.switch_pspl_gate=false,
+		.udc=560.0f
 };
 
 struct uz_inverter_3ph_config_t inverter_2_config = {
 		.base_address= XPAR_UZ_USER_UZ_INVERTER_3PH_1_BASEADDR,
 		.ip_core_frequency_Hz= 200000000,
 		.switch_pspl_abc=false,
-		.switch_pspl_gate=false
+		.switch_pspl_gate=false,
+		.udc=560.0f
 };
 
 struct uz_inverter_3ph_config_t inverter_3_config = {
 		.base_address= XPAR_UZ_USER_UZ_INVERTER_3PH_2_BASEADDR,
 		.ip_core_frequency_Hz= 100000000,
 		.switch_pspl_abc=false,
-		.switch_pspl_gate=false
+		.switch_pspl_gate=false,
+		.udc=560.0f
 };
 
 struct uz_inverter_3ph_t *inverter_1=NULL;

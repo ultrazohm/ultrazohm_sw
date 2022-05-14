@@ -9,7 +9,7 @@ g5= 0;
 g6= 0;
 
 %%Electrical parameters
-DC = 12;
+DC = 200;
 ts=5e-7;
 i_a= 10;
 i_b= 5;

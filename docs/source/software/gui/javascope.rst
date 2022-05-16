@@ -37,7 +37,7 @@ The GUI is shown in :numref:`javascope_gui`.
 
 #. First, press the ``connect`` button (1) in order to connect your scope to the UltraZohm.
 #. You will see some moving signs at (2) if the connection was successful.
-#. Next, press the ``Run/Stop`` button (3) in order to run the scope.
+#. The ``Stop`` (3) respectively ``Run`` button stops or restarts the scope. After the connection has been established, the Scope will be put into the ``Run`` mode automatically.
 #. You can switch between a **Lightmode** and **Darkmode** for the GUI on the fly.
 #. Go to the ``Setup Scope`` panel and press ``sendSelectData (all)`` to get the pre-selected values from the drop-down menus on the scope. For changing the entries of the drop-down menus, see :ref:`javascope_customizing`.
 #. In the time-based scope it is possible to debug up to 20 values by receiving data from the ISR (R5 processor).

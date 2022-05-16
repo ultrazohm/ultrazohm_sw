@@ -46,6 +46,7 @@ This section gives an overview on how to use the ParameterID tab in the uz_GUI.
 Setup
 =====
 
+#. In the ``properties.ini`` file change the value of the ``ParameterID`` variable to **1**.
 #. Replace the appropriate code in the ``javascope.h`` file with the following:
 
    .. code-block:: C

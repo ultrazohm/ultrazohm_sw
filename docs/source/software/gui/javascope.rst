@@ -223,6 +223,7 @@ Some settings can be configured before the start-up of the GUI in the ``properti
    Using ``0`` disables the visibility of the specific channel, whilst ``1`` turns it on. 
    The visibility of the channels can still be changed during runtime by clicking on the appropriate channel in the legend of the scope. 
    Use delimiter (;) to separate the scaling values for the channels.
+#. Panel extension selection. Setting the ``ParameterID`` variable to **1** enables this extension panel.
 
 
 Add variables to the scope drop-down menus

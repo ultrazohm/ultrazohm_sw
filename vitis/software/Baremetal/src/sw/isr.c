@@ -52,7 +52,29 @@ static void ReadAllADC();
 extern XSpi  SpiInstance;	 /* The instance of the SPI device */
 float test_frequency=50.0f;
 float voltage_times_two=0.0f;
-float amp=5.0f;
+float amp=2.3f;
+
+#include "xparameters.h"
+
+#define  IPCore_Reset_uz_dac         0x0  //write 0x1 to bit 0 to reset IP core
+#define  IPCore_Enable_uz_dac        0x4  //enabled (by default) when bit 0 is 0x1
+#define  IPCore_Timestamp_uz_dac     0x8  //contains unique IP timestamp (yymmddHHMM): 2205161445
+#define  dac_data_1_Data_uz_dac      0x100  //data register for Inport dac_data_1
+#define  trigger_write_Data_uz_dac   0x104  //data register for Inport trigger_write
+#define  dac_data_2_Data_uz_dac      0x108  //data register for Inport dac_data_2
+#define  dac_data_3_Data_uz_dac      0x10C  //data register for Inport dac_data_3
+#define  dac_data_4_Data_uz_dac      0x110  //data register for Inport dac_data_4
+#define  dac_data_5_Data_uz_dac      0x114  //data register for Inport dac_data_5
+#define  dac_data_6_Data_uz_dac      0x118  //data register for Inport dac_data_6
+#define  dac_data_7_Data_uz_dac      0x11C  //data register for Inport dac_data_7
+#define  dac_data_8_Data_uz_dac      0x120  //data register for Inport dac_data_8
+
+float dac_input[8]={-4, -3, -2, -1, 1, 2, 3, 4};
+
+static int32_t test(float input);
+
+
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -67,10 +89,33 @@ void ISR_Control(void *data)
 	//while(1){
     //voltage=uz_wavegen_sawtooth(5.0f,test_frequency)-2.5f;
     //voltage=uz_wavegen_sine(2.2f, test_frequency);
-    voltage=uz_wavegen_triangle_with_offset(amp, test_frequency , (-1.0f*amp)/2.0f);
+    dac_input[0]=uz_wavegen_triangle_with_offset(amp, test_frequency , (-1.0f*amp)/2.0f);
+    dac_input[1]=uz_wavegen_sine(amp,30.0f);
+    dac_input[2]=uz_wavegen_sawtooth(amp, 55.0f);
+    dac_input[3]=uz_wavegen_pulse(amp,35.0f,0.3f);
+
+    dac_input[4]=uz_wavegen_sine(0.3f,60.0f); //uz_wavegen_triangle_with_offset(0.5f*amp, 20.f*test_frequency , (-1.0f*amp)/2.0f);
+    dac_input[5]=uz_wavegen_sine(0.1f,60.0f);
+    dac_input[6]=uz_wavegen_sawtooth(0.5f*amp, 20.0f);
+    dac_input[7]=uz_wavegen_pulse(0.5f*amp,55.0f,0.6f);
+
+
     voltage_times_two=voltage*2.0f;
 
 		start_trans(&SpiInstance);
+
+    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_0_BASEADDR+dac_data_1_Data_uz_dac, test( dac_input[0]) );
+    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_0_BASEADDR+dac_data_2_Data_uz_dac, test( dac_input[1]) );
+    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_0_BASEADDR+dac_data_3_Data_uz_dac, test( dac_input[2]) );
+    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_0_BASEADDR+dac_data_4_Data_uz_dac, test( dac_input[3]) );
+    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_0_BASEADDR+dac_data_5_Data_uz_dac, test( dac_input[4]) );
+    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_0_BASEADDR+dac_data_6_Data_uz_dac, test( dac_input[5]) );
+    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_0_BASEADDR+dac_data_7_Data_uz_dac, test( dac_input[6]) );
+    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_0_BASEADDR+dac_data_8_Data_uz_dac, test( dac_input[7]) );
+    //	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_0_BASEADDR+dac_data_2_Data_uz_dac, calcualte_dac_voltage( dac_input[1]) );
+    	uz_axi_write_bool(XPAR_UZ_USER_UZ_DAC_0_BASEADDR+trigger_write_Data_uz_dac, true);
+    	uz_axi_write_bool(XPAR_UZ_USER_UZ_DAC_0_BASEADDR+trigger_write_Data_uz_dac, false);
+
 	//}
     //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     // Set duty cycles for three-level modulator
@@ -82,6 +127,13 @@ void ISR_Control(void *data)
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();
 }
+
+
+static int32_t test(float input){
+	int32_t voltage_set_point=((input/2.5f)*32768)+32768;
+	return voltage_set_point;
+}
+
 
 //==============================================================================================================================================================
 

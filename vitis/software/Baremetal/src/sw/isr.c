@@ -56,25 +56,13 @@ float amp=2.3f;
 
 #include "xparameters.h"
 #include "string.h"
+#include "../IP_Cores/uz_dac_interface/uz_dac_interface.h"
 
-
-#define  IPCore_Reset_uz_dac_spi_interface         0x0  //write 0x1 to bit 0 to reset IP core
-#define  IPCore_Enable_uz_dac_spi_interface        0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_dac_spi_interface     0x8  //contains unique IP timestamp (yymmddHHMM): 2205171000
-#define  trigger_write_Data_uz_dac_spi_interface   0x100  //data register for Inport trigger_write
-#define  dac_data_1_Data_uz_dac_spi_interface      0x104  //data register for Inport dac_data_1
-#define  dac_data_2_Data_uz_dac_spi_interface      0x108  //data register for Inport dac_data_2
-#define  dac_data_3_Data_uz_dac_spi_interface      0x10C  //data register for Inport dac_data_3
-#define  dac_data_4_Data_uz_dac_spi_interface      0x110  //data register for Inport dac_data_4
-#define  dac_data_5_Data_uz_dac_spi_interface      0x114  //data register for Inport dac_data_5
-#define  dac_data_6_Data_uz_dac_spi_interface      0x118  //data register for Inport dac_data_6
-#define  dac_data_7_Data_uz_dac_spi_interface      0x11C  //data register for Inport dac_data_7
-#define  dac_data_8_Data_uz_dac_spi_interface      0x120  //data register for Inport dac_data_8
 
 float dac_input[8]={-4, -3, -2, -1, 1, 2, 3, 4};
 
 static int32_t test(float input);
-
+uz_dac_interface_t* dac=NULL;
 
 
 void ISR_Control(void *data)
@@ -103,32 +91,14 @@ void ISR_Control(void *data)
 
 
     voltage_times_two=voltage*2.0f;
+    uz_array_float_t dac_input_array={
+    		.data=&dac_input[0],
+			.length=8
+    };
 
 		start_trans(&SpiInstance);
+ uz_dac_interface_set_ouput_values_unsafe(dac,&dac_input_array);
 
-		// Takes up to 47 us
-
-    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR+dac_data_1_Data_uz_dac_spi_interface, test( dac_input[0]) );
-    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR+dac_data_2_Data_uz_dac_spi_interface, test( dac_input[1]) );
-    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR+dac_data_3_Data_uz_dac_spi_interface, test( dac_input[2]) );
-    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR+dac_data_4_Data_uz_dac_spi_interface, test( dac_input[3]) );
-    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR+dac_data_5_Data_uz_dac_spi_interface, test( dac_input[4]) );
-    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR+dac_data_6_Data_uz_dac_spi_interface, test( dac_input[5]) );
-    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR+dac_data_7_Data_uz_dac_spi_interface, test( dac_input[6]) );
-    	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR+dac_data_8_Data_uz_dac_spi_interface, test( dac_input[7]) );
-
-//    	uint32_t dac_input_int[8]={0};
-//    	for(size_t i=0;i<8U;i++){
-//    		dac_input_int[i]=test(dac_input[i]);
-//    	}
-//    	// 43 us
-//    	memcpy( (void*)(XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR+dac_data_1_Data_uz_dac_spi_interface), &dac_input_int[0], sizeof(uint32_t)*8U );
-
-
-
-    //	uz_axi_write_int32(XPAR_UZ_USER_UZ_DAC_0_BASEADDR+dac_data_2_Data_uz_dac, calcualte_dac_voltage( dac_input[1]) );
-    	uz_axi_write_bool(XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR+trigger_write_Data_uz_dac_spi_interface, true);
-    	uz_axi_write_bool(XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR+trigger_write_Data_uz_dac_spi_interface, false);
 
 	//}
     //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
@@ -155,10 +125,18 @@ static int32_t test(float input){
 //----------------------------------------------------
 // INITIALIZE & SET THE INTERRUPTs and ISRs
 //----------------------------------------------------
+
+
 int Initialize_ISR()
 {
 
     int Status = 0;
+    struct uz_dac_interface_config_t dac_config={
+    		.base_address=XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR,
+			.ip_clk_frequency_Hz=100000000,
+			.conversion_factor={2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f}
+    };
+    dac=uz_dac_interface_init(dac_config);
 
     // Initialize interrupt controller for the IPI -> Initialize RPU IPI
     Status = Rpu_IpiInit(INTERRUPT_ID_IPI);

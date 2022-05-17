@@ -70,7 +70,7 @@ void uz_dac_interface_hw_write_dac8(uint32_t base_address, int32_t dac_value)
     uz_axi_write_int32(base_address + dac_data_8_Data_uz_dac_spi_interface, dac_value);
 }
 
-void uz_mlp_three_layer_hw_write_input_unsafe(uint32_t base_address, uz_array_int32_t* input_data)
+void uz_dac_interface_hw_write_all(uint32_t base_address, uz_array_int32_t* input_data)
 {
     uz_assert_not_zero_uint32(base_address);
     uz_assert(input_data->length==8U);
@@ -88,13 +88,13 @@ void uz_mlp_three_layer_hw_write_input_unsafe(uint32_t base_address, uz_array_in
 static int32_t saturate_to_int16(int32_t input)
 {
     int32_t output=input;
-    if (input > INT16_MAX)
+    if (input > UINT16_MAX)
     {
-        output = INT16_MAX;
+        output = UINT16_MAX;
     }
-    if (input < INT16_MIN)
+    if (input < 0U)
     {
-        output = INT16_MIN;
+        output = 0;
     }
     return output;
 }

@@ -16,6 +16,8 @@
 // Includes from own files
 #include "main.h"
 
+
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -45,6 +47,8 @@ enum init_chain initialization_chain = init_assertions;
 
 #include "include/test_spi.h"
 XSpi  SpiInstance;	 /* The instance of the SPI device */
+
+
 
 int main(void)
 {

@@ -15,7 +15,7 @@ void uz_dac_interface_hw_write_dac6(uint32_t base_address,int32_t dac_value);
 void uz_dac_interface_hw_write_dac7(uint32_t base_address,int32_t dac_value);
 void uz_dac_interface_hw_write_dac8(uint32_t base_address,int32_t dac_value);
 
-void uz_mlp_three_layer_hw_write_input_unsafe(uint32_t base_address, uz_array_int32_t* input_data);
+void uz_dac_interface_hw_write_all(uint32_t base_address, uz_array_int32_t* input_data);
 
 
 #endif // UZ_DAC_INTERFACE_HW_H

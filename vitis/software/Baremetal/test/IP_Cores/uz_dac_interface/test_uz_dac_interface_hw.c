@@ -41,16 +41,16 @@ void test_uz_dac_interface_hw_write_dac1_overflow(void)
     // In hardware, the DAC has 16 bits but the AXI register writes 32-bits.
     // If the function is called with a value greater than MAX(int16), the value should be just limited to MAX(int16)
     // This is done here compared to an assertion triggering since just limiting to the max value prevents bugs from float rounding
-    int32_t value=INT16_MAX+1; 
-    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+dac_data_1_Data_uz_dac_spi_interface,INT16_MAX);
+    int32_t value=UINT16_MAX+1; 
+    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+dac_data_1_Data_uz_dac_spi_interface,UINT16_MAX);
     uz_dac_interface_hw_write_dac1(TEST_BASE_ADDRESS,value);
 }
 
 void test_uz_dac_interface_hw_write_dac1_underflow(void)
 {
     // Same as int16 overflow but with negative values
-    int32_t value=INT16_MIN-10; 
-    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+dac_data_1_Data_uz_dac_spi_interface,INT16_MIN);
+    int32_t value=0-10; 
+    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+dac_data_1_Data_uz_dac_spi_interface,0);
     uz_dac_interface_hw_write_dac1(TEST_BASE_ADDRESS,value);
 }
 

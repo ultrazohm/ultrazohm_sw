@@ -77,7 +77,7 @@ static int32_t saturate_to_int16(int32_t input)
     {
         output = UINT16_MAX;
     }
-    if (input < 0U)
+    if (input < 0)
     {
         output = 0;
     }

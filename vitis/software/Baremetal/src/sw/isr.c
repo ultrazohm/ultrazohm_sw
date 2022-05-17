@@ -97,7 +97,7 @@ void ISR_Control(void *data)
     };
 
 		start_trans(&SpiInstance);
- uz_dac_interface_set_ouput_values_unsafe(dac,&dac_input_array);
+ uz_dac_interface_set_ouput_values(dac,&dac_input_array);
 
 
 	//}

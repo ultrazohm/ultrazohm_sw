@@ -74,6 +74,8 @@ typedef struct _actualValues_ {
 	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
 	float I_d;
 	float I_q;
+	float I_alpha;
+	float I_beta;
 	float U_d;
 	float U_q;
 	float theta_elec;

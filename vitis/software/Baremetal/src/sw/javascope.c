@@ -99,6 +99,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_m_T_alphabeta_currents_alpha]=	&m_T_alphabeta_currents.alpha;
 	js_ch_observable[JSO_m_T_alphabeta_currents_beta]=	&m_T_alphabeta_currents.beta;
 
+	js_ch_observable[JSO_ialpha]		=	&data->av.I_alpha;
+	js_ch_observable[JSO_ibeta]			=	&data->av.I_beta;
+
+
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.

@@ -86,6 +86,9 @@ uz_3ph_dq_t m_T_dq_currents = {0};
 uz_3ph_abc_t m_T_abc_currents = {0};
 uz_3ph_alphabeta_t m_T_alphabeta_currents = {0};
 
+
+uz_3ph_alphabeta_t m_alphabeta_currents = {0};
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -128,6 +131,10 @@ void ISR_Control(void *data)
 
 	m_T_alphabeta_currents = uz_dqIPcore_get_ialpha_ibeta(dq_Transformator);
 
+	//alpha_beta Ströme als Vergleich
+	m_alphabeta_currents = uz_transformation_3ph_abc_to_alphabeta(m_abc_currents);
+	Global_Data.av.I_alpha = m_alphabeta_currents.alpha;
+	Global_Data.av.I_beta = m_alphabeta_currents.beta;
 
 	//Set new control parameter from javascope
 	uz_FOC_set_Kp_id(FOC_instance, Global_Data.cp.kp_d);

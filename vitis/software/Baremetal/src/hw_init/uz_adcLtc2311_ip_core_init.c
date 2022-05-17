@@ -17,12 +17,12 @@ void uz_adcLtc2311_ip_core_init(void)
         .base_address = XPAR_UZ_ANALOG_ADAPTER_A1_ADAPTER_A1_ADC_LTC2311_S00_AXI_BASEADDR,
         .ip_clk_frequency_Hz = XPAR_A1_ADC_LTC2311_IP_CORE_FREQUENCY,
         .channel_config = {
-            .conversion_factor = 0.002, //DEFAULT_CONVERSION_FACTOR,
+            .conversion_factor = 0.001464, //DEFAULT_CONVERSION_FACTOR,  002   0.01
             .conversion_factor_definition = {
                 .is_signed = true,
                 .integer_bits = 7,			//Default: DEFAULT_INTEGER_BITS
                 .fractional_bits = 11},		//Default: DEFAULT_FRACTIONAL_BITS
-            .offset = -16384, //DEFAULT_OFFSET,
+            .offset = -15917, //-16384, 				//DEFAULT_OFFSET,
         },
         .spi_master_config = {.samples = 1U, .sample_time = 6U, .trigger_mode=pl_trigger},
         .cpol = 1U,

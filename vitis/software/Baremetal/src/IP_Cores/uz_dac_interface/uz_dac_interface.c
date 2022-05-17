@@ -61,25 +61,6 @@ void uz_dac_interface_set_ouput_values(uz_dac_interface_t *self, uz_array_float_
     uz_dac_interface_hw_write_trigger(self->config.base_address, false);
 }
 
-void uz_dac_interface_set_ouput_values_unsafe(uz_dac_interface_t *self, uz_array_float_t *output_values)
-{
-    uz_assert_not_NULL(self);
-    uz_assert_not_NULL(output_values);
-
-    int32_t out[8] = {0};
-    uz_array_int32_t out_array={
-        .length=8U,
-        .data=&out[0]
-    };
-    for (uint32_t i = 0; i < 8; i++)
-    {
-        out[i] = convert_voltage_to_int(output_values->data[i], self->config.conversion_factor[i]);
-    }
-    uz_dac_interface_hw_write_all(self->config.base_address, &out_array);
-    uz_dac_interface_hw_write_trigger(self->config.base_address, true);
-    uz_dac_interface_hw_write_trigger(self->config.base_address, false);
-}
-
 static int32_t convert_voltage_to_int(float input, float conversion_factor)
 {
     int32_t voltage_set_point = (int32_t)(((input * 0.4f * conversion_factor) * 32768) + 32768); // 1/2.5f=0.4f to prevent division at runtime

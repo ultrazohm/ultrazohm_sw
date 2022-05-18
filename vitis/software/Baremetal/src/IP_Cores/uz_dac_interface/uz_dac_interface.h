@@ -15,9 +15,7 @@ struct uz_dac_interface_config_t{
 };
 
 uz_dac_interface_t* uz_dac_interface_init(struct uz_dac_interface_config_t config);
-
 void uz_dac_interface_set_ouput_values(uz_dac_interface_t* self,uz_array_float_t* output_values);
-void uz_dac_interface_set_ouput_values_unsafe(uz_dac_interface_t* self,uz_array_float_t* output_values);
 
 
 #endif // UZ_DAC_INTERFACE_H

@@ -1,3 +1,5 @@
+.. _uz_wavegen_three_phase:
+
 =========================
 Three phase sine function
 =========================

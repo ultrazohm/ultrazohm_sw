@@ -363,7 +363,6 @@ Vitis
 Javascope
 ---------
 
-- Copy your ``javascope.h`` file (of the R5) into your Javascope folder
 - Make sure that in ``properties.ini``, ``smallestTimeStepUSEC = 50`` is set
 
 

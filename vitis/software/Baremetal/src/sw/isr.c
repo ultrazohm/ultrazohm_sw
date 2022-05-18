@@ -134,7 +134,7 @@ int Initialize_ISR()
     struct uz_dac_interface_config_t dac_config={
     		.base_address=XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR,
 			.ip_clk_frequency_Hz=100000000,
-			.conversion_factor={2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f}
+			.gain={2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f}
     };
     dac=uz_dac_interface_init(dac_config);
 

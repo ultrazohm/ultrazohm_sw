@@ -26,27 +26,27 @@ Setup
 
   int main(void) {
       ParameterID = uz_ParameterID_init(&PID_Data);
-   //Code below is only needed, if the uz_FOC is used as the controller 
+     //Code below is only needed, if the uz_FOC is used as the controller 
      struct uz_PI_Controller_config config_id = { 
-          .config_controller.Kp = PID_Data.GlobalConfig.Kp_id,
-          .config_controller.Ki = PID_Data.GlobalConfig.Ki_id, 
-          .config_controller.samplingTime_sec = 0.00005f, 
-          .config_controller.upper_limit = 15.0f,
-          .config_controller.lower_limit = -15.0f,
-          .config_PMSM = PID_Data.GlobalConfig.PMSM_config };
+          .Kp = PID_Data.GlobalConfig.Kp_id, 
+          .Ki = PID_Data.GlobalConfig.Ki_id, 
+          .samplingTime_sec = 0.00005f, 
+          .upper_limit = 15.0f,
+          .lower_limit = -15.0f };
      struct uz_PI_Controller_config config_iq = { 
           .Kp = PID_Data.GlobalConfig.Kp_iq, 
           .Ki = PID_Data.GlobalConfig.Ki_iq, 
           .samplingTime_sec = 0.00005f, 
           .upper_limit = 15.0f,
-			    .lower_limit = -15.0f };
+		.lower_limit = -15.0f };
      struct uz_SpeedControl_config config_n = {
-          .Kp = PID_Data.GlobalConfig.Kp_n, 
-          .Ki = PID_Data.GlobalConfig.Ki_n, 
-          .samplingTime_sec = 0.00005f, 
-          .upper_limit = 10.0f,
-          .lower_limit = -10.0f 
-          .enable_field_weakening = false };
+          .config_controller.Kp = PID_Data.GlobalConfig.Kp_n,
+          .config_controller.Ki = PID_Data.GlobalConfig.Ki_n, 
+          .config_controller.samplingTime_sec = 0.00005f, 
+          .config_controller.upper_limit = 10.0f,
+          .config_controller.lower_limit = -10.0f,
+          .config_PMSM = PID_Data.GlobalConfig.PMSM_config,
+          .is_field_weakening_active = false };
      struct uz_FOC_config config_FOC = {
           .config_PMSM = PID_Data.GlobalConfig.PMSM_config,
           .config_id = config_id, 

@@ -11,9 +11,6 @@
 
 #define TEST_BASE_ADDRESS 0x0F0F0000F
 
-
-
-
 void setUp(void)
 {
 }

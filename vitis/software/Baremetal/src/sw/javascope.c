@@ -38,6 +38,7 @@ uint32_t js_status_BareToRTOS=0;
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 extern float voltage;
 extern float voltage_times_two;
+extern float dac_input[8];
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -69,6 +70,14 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_DAC3] 			= &data->aa.A2.me.ADC_A3;
 	js_ch_observable[JSO_DAC2] 			= &data->aa.A2.me.ADC_A2;
 	js_ch_observable[JSO_DAC1] 			= &data->aa.A2.me.ADC_A1;
+	js_ch_observable[JSO_DAC1_input]	= &dac_input[0];
+	js_ch_observable[JSO_DAC2_input]	= &dac_input[1];
+	js_ch_observable[JSO_DAC3_input]	= &dac_input[2];
+	js_ch_observable[JSO_DAC4_input]	= &dac_input[3];
+	js_ch_observable[JSO_DAC5_input]	= &dac_input[4];
+	js_ch_observable[JSO_DAC6_input]	= &dac_input[5];
+	js_ch_observable[JSO_DAC7_input]	= &dac_input[6];
+	js_ch_observable[JSO_DAC8_input]	= &dac_input[7];
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;
 	js_ch_observable[JSO_ub] 			= &data->av.U_V;

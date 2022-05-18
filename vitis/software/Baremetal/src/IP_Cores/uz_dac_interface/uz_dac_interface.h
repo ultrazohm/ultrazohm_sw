@@ -6,10 +6,12 @@
 
 typedef struct uz_dac_interface_t uz_dac_interface_t; 
 
+#define UZ_DAC_INTERFACE_OUTPUT_CHANNELS 8U
+
 struct uz_dac_interface_config_t{
     uint32_t base_address;
     uint32_t ip_clk_frequency_Hz;
-    float conversion_factor[8];
+    float gain[UZ_DAC_INTERFACE_OUTPUT_CHANNELS];
 };
 
 uz_dac_interface_t* uz_dac_interface_init(struct uz_dac_interface_config_t config);

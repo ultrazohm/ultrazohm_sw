@@ -38,7 +38,7 @@ Setup
           .Ki = PID_Data.GlobalConfig.Ki_iq, 
           .samplingTime_sec = 0.00005f, 
           .upper_limit = 15.0f,
-		.lower_limit = -15.0f };
+          .lower_limit = -15.0f };
      struct uz_SpeedControl_config config_n = {
           .config_controller.Kp = PID_Data.GlobalConfig.Kp_n,
           .config_controller.Ki = PID_Data.GlobalConfig.Ki_n, 
@@ -99,7 +99,7 @@ They are technically not required for the ParameterID and can, if desired, be re
   //Next lines only needed, if the uz_FOC is used as the controller
   extern uz_FOC* FOC_instance;
   extern uz_SpeedControl_t* SpeedControl_instance;
-  struct uz_dq_t PID_v_dq = { 0 };
+  uz_3ph_dq_t PID_v_dq = { 0 };
   struct uz_DutyCycle_t PID_DutyCycle = { 0 };
 
   void ISR_Control(void *data) {  
@@ -116,8 +116,8 @@ They are technically not required for the ParameterID and can, if desired, be re
 	PID_Data.ActualValues.theta_el = ....;
 
 	//Calculate missing ActualValues
-	PID_Data.ActualValues.i_dq = uz_dq_transformation(PID_Data.ActualValues.I_UVW, PID_Data.ActualValues.theta_el);
-	PID_Data.ActualValues.v_dq = uz_dq_transformation(PID_Data.ActualValues.V_UVW, PID_Data.ActualValues.theta_el);
+	PID_Data.ActualValues.i_dq = uz_transformation_3ph_abc_to_dq(PID_Data.ActualValues.I_UVW, PID_Data.ActualValues.theta_el);
+	PID_Data.ActualValues.v_dq = uz_transformation_3ph_abc_to_dq(PID_Data.ActualValues.V_UVW, PID_Data.ActualValues.theta_el);
 	PID_Data.ActualValues.theta_m = ....;
 
 	if (ultrazohm_state_machine_get_state() == control_state) {

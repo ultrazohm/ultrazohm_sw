@@ -73,7 +73,8 @@ Syllabus
     mpsoc/platform_architecture/platform_architecture
     mpsoc/rpu_software/rpu_software
     mpsoc/apu_software/apu_software
-    mpsoc/framework/framework
+    mpsoc/software_framework/software_framework
+    mpsoc/vivado_framework/vivado_framework
     mpsoc/ip_cores/ip_cores
     mpsoc/CPLD/index
 
@@ -87,7 +88,7 @@ Syllabus
    :maxdepth: 2
    :caption: Codegeneration
 
-   code_generation/hdl_coder/index
+   code_generation/hdl_coder/hdl_coder
    code_generation/vivado_hls/index
    code_generation/embedded_coder/index
 
@@ -97,6 +98,7 @@ Syllabus
 
    hardware/carrier_board/carrier_board
    hardware/adapter_cards/adapter_cards
+   hardware/interface_powerelectronics/interface_powerelectronics
    hardware/altium/altium
 
 Indices and tables

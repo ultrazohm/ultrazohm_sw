@@ -4,6 +4,8 @@
 ADC LTC2311
 ===========
 
+.. warning:: This IP-Core is deprecated and should not be used! Use :ref:`ipCore_LTC2311_v3` instead.
+
 ..	image:: ./images_adc/adc2.png
 
 Idea

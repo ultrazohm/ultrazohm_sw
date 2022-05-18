@@ -6,9 +6,8 @@ GUI
 
 
 ..	toctree::
-	:maxdepth: 2
-	:caption: GUI
+	:maxdepth: 3
 	
-	
+	install
 	network
 	javascope

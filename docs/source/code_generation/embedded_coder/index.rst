@@ -1,3 +1,5 @@
+.. _embedded_coder:
+
 =======================
 Embedded-Coder (C-Code)
 =======================
@@ -120,4 +122,5 @@ More Information
     :hidden:
     :caption: Embedded-Coder (C-Code)
 
+    import_c_types
     definitions

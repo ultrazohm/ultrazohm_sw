@@ -1,0 +1,1533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <spirit:vendor>UltraZohm</spirit:vendor>
+  <spirit:library>user</spirit:library>
+  <spirit:name>ADC_LTC2311</spirit:name>
+  <spirit:version>3.0</spirit:version>
+  <spirit:busInterfaces>
+    <spirit:busInterface>
+      <spirit:name>S00_AXI</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="aximm" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="aximm_rtl" spirit:version="1.0"/>
+      <spirit:slave>
+        <spirit:memoryMapRef spirit:memoryMapRef="S00_AXI"/>
+      </spirit:slave>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>AWADDR</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_awaddr</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>AWPROT</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_awprot</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>AWVALID</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_awvalid</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>AWREADY</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_awready</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>WDATA</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_wdata</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>WSTRB</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_wstrb</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>WVALID</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_wvalid</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>WREADY</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_wready</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>BRESP</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_bresp</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>BVALID</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_bvalid</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>BREADY</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_bready</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>ARADDR</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_araddr</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>ARPROT</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_arprot</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>ARVALID</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_arvalid</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>ARREADY</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_arready</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RDATA</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_rdata</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RRESP</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_rresp</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RVALID</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_rvalid</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RREADY</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_rready</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>WIZ_DATA_WIDTH</spirit:name>
+          <spirit:value spirit:format="long" spirit:id="BUSIFPARAM_VALUE.S00_AXI.WIZ_DATA_WIDTH" spirit:choiceRef="choice_list_6fc15197">32</spirit:value>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>WIZ_NUM_REG</spirit:name>
+          <spirit:value spirit:format="long" spirit:id="BUSIFPARAM_VALUE.S00_AXI.WIZ_NUM_REG" spirit:minimum="4" spirit:maximum="512" spirit:rangeType="long">4</spirit:value>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>SUPPORTS_NARROW_BURST</spirit:name>
+          <spirit:value spirit:format="long" spirit:id="BUSIFPARAM_VALUE.S00_AXI.SUPPORTS_NARROW_BURST" spirit:choiceRef="choice_pairs_ce1226b1">0</spirit:value>
+        </spirit:parameter>
+      </spirit:parameters>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>S00_AXI_RST</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset_rtl" spirit:version="1.0"/>
+      <spirit:slave/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RST</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_aresetn</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>POLARITY</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.S00_AXI_RST.POLARITY">ACTIVE_LOW</spirit:value>
+        </spirit:parameter>
+      </spirit:parameters>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>S00_AXI_CLK</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock_rtl" spirit:version="1.0"/>
+      <spirit:slave/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>CLK</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>s00_axi_aclk</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>ASSOCIATED_BUSIF</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.S00_AXI_CLK.ASSOCIATED_BUSIF">S00_AXI</spirit:value>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>ASSOCIATED_RESET</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.S00_AXI_CLK.ASSOCIATED_RESET">s00_axi_aresetn</spirit:value>
+        </spirit:parameter>
+      </spirit:parameters>
+    </spirit:busInterface>
+  </spirit:busInterfaces>
+  <spirit:memoryMaps>
+    <spirit:memoryMap>
+      <spirit:name>S00_AXI</spirit:name>
+      <spirit:addressBlock>
+        <spirit:name>S00_AXI_reg</spirit:name>
+        <spirit:baseAddress spirit:format="long" spirit:resolve="user">0</spirit:baseAddress>
+        <spirit:range spirit:format="long">4096</spirit:range>
+        <spirit:width spirit:format="long">32</spirit:width>
+        <spirit:usage>register</spirit:usage>
+        <spirit:parameters>
+          <spirit:parameter>
+            <spirit:name>OFFSET_BASE_PARAM</spirit:name>
+            <spirit:value spirit:id="ADDRBLOCKPARAM_VALUE.S00_AXI.S00_AXI_REG.OFFSET_BASE_PARAM">C_S00_AXI_BASEADDR</spirit:value>
+          </spirit:parameter>
+          <spirit:parameter>
+            <spirit:name>OFFSET_HIGH_PARAM</spirit:name>
+            <spirit:value spirit:id="ADDRBLOCKPARAM_VALUE.S00_AXI.S00_AXI_REG.OFFSET_HIGH_PARAM">C_S00_AXI_HIGHADDR</spirit:value>
+          </spirit:parameter>
+        </spirit:parameters>
+      </spirit:addressBlock>
+    </spirit:memoryMap>
+  </spirit:memoryMaps>
+  <spirit:model>
+    <spirit:views>
+      <spirit:view>
+        <spirit:name>xilinx_vhdlsynthesis</spirit:name>
+        <spirit:displayName>VHDL Synthesis</spirit:displayName>
+        <spirit:envIdentifier>vhdlSource:vivado.xilinx.com:synthesis</spirit:envIdentifier>
+        <spirit:language>vhdl</spirit:language>
+        <spirit:modelName>ADC_LTC2311_v3_0</spirit:modelName>
+        <spirit:fileSetRef>
+          <spirit:localName>xilinx_vhdlsynthesis_view_fileset</spirit:localName>
+        </spirit:fileSetRef>
+        <spirit:parameters>
+          <spirit:parameter>
+            <spirit:name>viewChecksum</spirit:name>
+            <spirit:value>01de9a73</spirit:value>
+          </spirit:parameter>
+        </spirit:parameters>
+      </spirit:view>
+      <spirit:view>
+        <spirit:name>xilinx_vhdlbehavioralsimulation</spirit:name>
+        <spirit:displayName>VHDL Simulation</spirit:displayName>
+        <spirit:envIdentifier>vhdlSource:vivado.xilinx.com:simulation</spirit:envIdentifier>
+        <spirit:language>vhdl</spirit:language>
+        <spirit:modelName>ADC_LTC2311_v3_0</spirit:modelName>
+        <spirit:fileSetRef>
+          <spirit:localName>xilinx_vhdlbehavioralsimulation_view_fileset</spirit:localName>
+        </spirit:fileSetRef>
+        <spirit:parameters>
+          <spirit:parameter>
+            <spirit:name>viewChecksum</spirit:name>
+            <spirit:value>a7fb1168</spirit:value>
+          </spirit:parameter>
+        </spirit:parameters>
+      </spirit:view>
+      <spirit:view>
+        <spirit:name>xilinx_xpgui</spirit:name>
+        <spirit:displayName>UI Layout</spirit:displayName>
+        <spirit:envIdentifier>:vivado.xilinx.com:xgui.ui</spirit:envIdentifier>
+        <spirit:fileSetRef>
+          <spirit:localName>xilinx_xpgui_view_fileset</spirit:localName>
+        </spirit:fileSetRef>
+        <spirit:parameters>
+          <spirit:parameter>
+            <spirit:name>viewChecksum</spirit:name>
+            <spirit:value>4cbcb8c3</spirit:value>
+          </spirit:parameter>
+        </spirit:parameters>
+      </spirit:view>
+      <spirit:view>
+        <spirit:name>bd_tcl</spirit:name>
+        <spirit:displayName>Block Diagram</spirit:displayName>
+        <spirit:envIdentifier>:vivado.xilinx.com:block.diagram</spirit:envIdentifier>
+        <spirit:fileSetRef>
+          <spirit:localName>bd_tcl_view_fileset</spirit:localName>
+        </spirit:fileSetRef>
+        <spirit:parameters>
+          <spirit:parameter>
+            <spirit:name>viewChecksum</spirit:name>
+            <spirit:value>45a2f450</spirit:value>
+          </spirit:parameter>
+        </spirit:parameters>
+      </spirit:view>
+      <spirit:view>
+        <spirit:name>xilinx_testbench</spirit:name>
+        <spirit:displayName>Test Bench</spirit:displayName>
+        <spirit:envIdentifier>:vivado.xilinx.com:simulation.testbench</spirit:envIdentifier>
+        <spirit:fileSetRef>
+          <spirit:localName>xilinx_testbench_view_fileset</spirit:localName>
+        </spirit:fileSetRef>
+        <spirit:parameters>
+          <spirit:parameter>
+            <spirit:name>viewChecksum</spirit:name>
+            <spirit:value>c220375d</spirit:value>
+          </spirit:parameter>
+        </spirit:parameters>
+      </spirit:view>
+      <spirit:view>
+        <spirit:name>xilinx_productguide</spirit:name>
+        <spirit:displayName>Product Guide</spirit:displayName>
+        <spirit:envIdentifier>:vivado.xilinx.com:docs.productguide</spirit:envIdentifier>
+        <spirit:fileSetRef>
+          <spirit:localName>xilinx_productguide_view_fileset</spirit:localName>
+        </spirit:fileSetRef>
+      </spirit:view>
+    </spirit:views>
+    <spirit:ports>
+      <spirit:port>
+        <spirit:name>RAW_VALUE</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(((spirit:decode(id(&apos;MODELPARAM_VALUE.DATA_WIDTH&apos;)) * spirit:decode(id(&apos;MODELPARAM_VALUE.CHANNELS_PER_MASTER&apos;))) * spirit:decode(id(&apos;MODELPARAM_VALUE.SPI_MASTER&apos;))) - 1)">127</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>RAW_VALID</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.SPI_MASTER&apos;)) - 1)">0</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>SI_VALUE</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(((spirit:decode(id(&apos;MODELPARAM_VALUE.SPI_MASTER&apos;)) * spirit:decode(id(&apos;MODELPARAM_VALUE.CHANNELS_PER_MASTER&apos;))) * ((spirit:decode(id(&apos;MODELPARAM_VALUE.RES_MSB&apos;)) - spirit:decode(id(&apos;MODELPARAM_VALUE.RES_LSB&apos;))) + 1)) - 1)">143</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>SI_VALID</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.SPI_MASTER&apos;)) - 1)">0</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>TRIGGER_CNV</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.SPI_MASTER&apos;)) - 1)">0</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>SAMPLE_COUNTER</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="((spirit:decode(id(&apos;MODELPARAM_VALUE.SPI_MASTER&apos;)) * spirit:decode(id(&apos;MODELPARAM_VALUE.C_S00_AXI_DATA_WIDTH&apos;))) - 1)">31</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>SCLK</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.SPI_MASTER&apos;)) - 1)">0</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+        <spirit:vendorExtensions>
+          <xilinx:portInfo>
+            <xilinx:enablement>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.SCLK" xilinx:dependency="$DIFFERENTIAL = false">false</xilinx:isEnabled>
+            </xilinx:enablement>
+          </xilinx:portInfo>
+        </spirit:vendorExtensions>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>MISO</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="((spirit:decode(id(&apos;MODELPARAM_VALUE.CHANNELS_PER_MASTER&apos;)) * spirit:decode(id(&apos;MODELPARAM_VALUE.SPI_MASTER&apos;))) - 1)">7</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">0</spirit:defaultValue>
+          </spirit:driver>
+        </spirit:wire>
+        <spirit:vendorExtensions>
+          <xilinx:portInfo>
+            <xilinx:enablement>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.MISO" xilinx:dependency="$DIFFERENTIAL = false">false</xilinx:isEnabled>
+            </xilinx:enablement>
+          </xilinx:portInfo>
+        </spirit:vendorExtensions>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>SS_N</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.SPI_MASTER&apos;)) - 1)">0</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>SCLK_DIFF</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="((2 * spirit:decode(id(&apos;MODELPARAM_VALUE.SPI_MASTER&apos;))) - 1)">1</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+        <spirit:vendorExtensions>
+          <xilinx:portInfo>
+            <xilinx:enablement>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.SCLK_DIFF" xilinx:dependency="$DIFFERENTIAL = true">true</xilinx:isEnabled>
+            </xilinx:enablement>
+          </xilinx:portInfo>
+        </spirit:vendorExtensions>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>MISO_DIFF</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(((2 * spirit:decode(id(&apos;MODELPARAM_VALUE.CHANNELS_PER_MASTER&apos;))) * spirit:decode(id(&apos;MODELPARAM_VALUE.SPI_MASTER&apos;))) - 1)">15</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">0</spirit:defaultValue>
+          </spirit:driver>
+        </spirit:wire>
+        <spirit:vendorExtensions>
+          <xilinx:portInfo>
+            <xilinx:enablement>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.MISO_DIFF" xilinx:dependency="$DIFFERENTIAL = true">true</xilinx:isEnabled>
+            </xilinx:enablement>
+          </xilinx:portInfo>
+        </spirit:vendorExtensions>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_aclk</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_aresetn</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_awaddr</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S00_AXI_ADDR_WIDTH&apos;)) - 1)">5</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">0</spirit:defaultValue>
+          </spirit:driver>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_awprot</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">2</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">0</spirit:defaultValue>
+          </spirit:driver>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_awvalid</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">0</spirit:defaultValue>
+          </spirit:driver>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_awready</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_wdata</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S00_AXI_DATA_WIDTH&apos;)) - 1)">31</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">0</spirit:defaultValue>
+          </spirit:driver>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_wstrb</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="((spirit:decode(id(&apos;MODELPARAM_VALUE.C_S00_AXI_DATA_WIDTH&apos;)) / 8) - 1)">3</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">1</spirit:defaultValue>
+          </spirit:driver>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_wvalid</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">0</spirit:defaultValue>
+          </spirit:driver>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_wready</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_bresp</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">1</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_bvalid</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_bready</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">0</spirit:defaultValue>
+          </spirit:driver>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_araddr</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S00_AXI_ADDR_WIDTH&apos;)) - 1)">5</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">0</spirit:defaultValue>
+          </spirit:driver>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_arprot</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">2</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">0</spirit:defaultValue>
+          </spirit:driver>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_arvalid</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">0</spirit:defaultValue>
+          </spirit:driver>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_arready</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_rdata</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S00_AXI_DATA_WIDTH&apos;)) - 1)">31</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_rresp</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">1</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_rvalid</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>s00_axi_rready</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">0</spirit:defaultValue>
+          </spirit:driver>
+        </spirit:wire>
+      </spirit:port>
+    </spirit:ports>
+    <spirit:modelParameters>
+      <spirit:modelParameter xsi:type="spirit:nameValueTypeType" spirit:dataType="integer">
+        <spirit:name>DATA_WIDTH</spirit:name>
+        <spirit:displayName>Data Width</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.DATA_WIDTH" spirit:minimum="0" spirit:rangeType="long">16</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="integer">
+        <spirit:name>CHANNELS_PER_MASTER</spirit:name>
+        <spirit:displayName>Channels Per Master</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.CHANNELS_PER_MASTER" spirit:minimum="0" spirit:rangeType="long">8</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="integer">
+        <spirit:name>SPI_MASTER</spirit:name>
+        <spirit:displayName>Spi Master</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.SPI_MASTER" spirit:minimum="0" spirit:rangeType="long">1</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="integer">
+        <spirit:name>OFFSET_WIDTH</spirit:name>
+        <spirit:displayName>Offset Width</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.OFFSET_WIDTH" spirit:minimum="0" spirit:rangeType="long">16</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="integer">
+        <spirit:name>CONVERSION_WIDTH</spirit:name>
+        <spirit:displayName>Conversion Width</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.CONVERSION_WIDTH" spirit:minimum="0" spirit:rangeType="long">18</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="integer">
+        <spirit:name>RES_LSB</spirit:name>
+        <spirit:displayName>Res Lsb</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.RES_LSB" spirit:minimum="0" spirit:rangeType="long">6</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="integer">
+        <spirit:name>RES_MSB</spirit:name>
+        <spirit:displayName>Res Msb</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.RES_MSB" spirit:minimum="0" spirit:rangeType="long">23</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="boolean">
+        <spirit:name>DIFFERENTIAL</spirit:name>
+        <spirit:displayName>Differential</spirit:displayName>
+        <spirit:value spirit:format="bool" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.DIFFERENTIAL">true</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="integer">
+        <spirit:name>C_S00_AXI_DATA_WIDTH</spirit:name>
+        <spirit:displayName>C S00 Axi Data Width</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_S00_AXI_DATA_WIDTH">32</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="integer">
+        <spirit:name>C_S00_AXI_ADDR_WIDTH</spirit:name>
+        <spirit:displayName>C S00 Axi Addr Width</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_S00_AXI_ADDR_WIDTH">6</spirit:value>
+      </spirit:modelParameter>
+    </spirit:modelParameters>
+  </spirit:model>
+  <spirit:choices>
+    <spirit:choice>
+      <spirit:name>choice_list_6fc15197</spirit:name>
+      <spirit:enumeration>32</spirit:enumeration>
+    </spirit:choice>
+    <spirit:choice>
+      <spirit:name>choice_pairs_ce1226b1</spirit:name>
+      <spirit:enumeration spirit:text="true">1</spirit:enumeration>
+      <spirit:enumeration spirit:text="false">0</spirit:enumeration>
+    </spirit:choice>
+  </spirit:choices>
+  <spirit:fileSets>
+    <spirit:fileSet>
+      <spirit:name>xilinx_vhdlsynthesis_view_fileset</spirit:name>
+      <spirit:file>
+        <spirit:name>hdl/ADC_LTC2311_v3_0_S00_AXI.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/ADC_LTC2311_v3_0.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>CHECKSUM_8d9d0c3a</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/ADC_CONTROLLER.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/SPI_MASTER.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/MULT_ADD.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/ADC_LTC2311_PKG.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>CHECKSUM_830e40c2</spirit:userFileType>
+        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
+      </spirit:file>
+    </spirit:fileSet>
+    <spirit:fileSet>
+      <spirit:name>xilinx_vhdlbehavioralsimulation_view_fileset</spirit:name>
+      <spirit:file>
+        <spirit:name>hdl/ADC_LTC2311_v3_0_S00_AXI.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/ADC_LTC2311_v3_0.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/ADC_CONTROLLER_TB.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
+      </spirit:file>
+    </spirit:fileSet>
+    <spirit:fileSet>
+      <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
+      <spirit:file>
+        <spirit:name>xgui/ADC_LTC2311_v3_0.tcl</spirit:name>
+        <spirit:fileType>tclSource</spirit:fileType>
+        <spirit:userFileType>CHECKSUM_4cbcb8c3</spirit:userFileType>
+        <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
+      </spirit:file>
+    </spirit:fileSet>
+    <spirit:fileSet>
+      <spirit:name>bd_tcl_view_fileset</spirit:name>
+      <spirit:file>
+        <spirit:name>bd/bd.tcl</spirit:name>
+        <spirit:fileType>tclSource</spirit:fileType>
+      </spirit:file>
+    </spirit:fileSet>
+    <spirit:fileSet>
+      <spirit:name>xilinx_testbench_view_fileset</spirit:name>
+      <spirit:file>
+        <spirit:name>test_bench/jtag_to_axi.tcl</spirit:name>
+        <spirit:fileType>tclSource</spirit:fileType>
+      </spirit:file>
+    </spirit:fileSet>
+    <spirit:fileSet>
+      <spirit:name>xilinx_productguide_view_fileset</spirit:name>
+      <spirit:file>
+        <spirit:name>https://docs.ultrazohm.com/mpsoc/ip_cores/adc_LTC2311_v3.html</spirit:name>
+        <spirit:userFileType>html</spirit:userFileType>
+      </spirit:file>
+    </spirit:fileSet>
+  </spirit:fileSets>
+  <spirit:description>Read out and process data from the LTC2311 ADC</spirit:description>
+  <spirit:parameters>
+    <spirit:parameter>
+      <spirit:name>C_S00_AXI_BASEADDR</spirit:name>
+      <spirit:displayName>C S00 AXI BASEADDR</spirit:displayName>
+      <spirit:value spirit:format="bitString" spirit:resolve="user" spirit:id="PARAM_VALUE.C_S00_AXI_BASEADDR" spirit:order="5" spirit:bitStringLength="32">0xFFFFFFFF</spirit:value>
+      <spirit:vendorExtensions>
+        <xilinx:parameterInfo>
+          <xilinx:enablement>
+            <xilinx:isEnabled xilinx:id="PARAM_ENABLEMENT.C_S00_AXI_BASEADDR">false</xilinx:isEnabled>
+          </xilinx:enablement>
+        </xilinx:parameterInfo>
+      </spirit:vendorExtensions>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>C_S00_AXI_HIGHADDR</spirit:name>
+      <spirit:displayName>C S00 AXI HIGHADDR</spirit:displayName>
+      <spirit:value spirit:format="bitString" spirit:resolve="user" spirit:id="PARAM_VALUE.C_S00_AXI_HIGHADDR" spirit:order="6" spirit:bitStringLength="32">0x00000000</spirit:value>
+      <spirit:vendorExtensions>
+        <xilinx:parameterInfo>
+          <xilinx:enablement>
+            <xilinx:isEnabled xilinx:id="PARAM_ENABLEMENT.C_S00_AXI_HIGHADDR">false</xilinx:isEnabled>
+          </xilinx:enablement>
+        </xilinx:parameterInfo>
+      </spirit:vendorExtensions>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>Component_Name</spirit:name>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">ADC_LTC2311_v3_0</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>DATA_WIDTH</spirit:name>
+      <spirit:displayName>Data Width</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.DATA_WIDTH" spirit:minimum="1" spirit:maximum="24" spirit:rangeType="long">16</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>CHANNELS_PER_MASTER</spirit:name>
+      <spirit:displayName>Channels Per Master</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.CHANNELS_PER_MASTER" spirit:minimum="1" spirit:maximum="32" spirit:rangeType="long">8</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>SPI_MASTER</spirit:name>
+      <spirit:displayName>SPI Master</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.SPI_MASTER" spirit:minimum="1" spirit:maximum="32" spirit:rangeType="long">1</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>OFFSET_WIDTH</spirit:name>
+      <spirit:displayName>Offset Width</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.OFFSET_WIDTH" spirit:minimum="0" spirit:maximum="24" spirit:rangeType="long">16</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>CONVERSION_WIDTH</spirit:name>
+      <spirit:displayName>Conversion Width</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.CONVERSION_WIDTH" spirit:minimum="0" spirit:maximum="18" spirit:rangeType="long">18</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>RES_LSB</spirit:name>
+      <spirit:displayName>Result LSB</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.RES_LSB" spirit:minimum="0" spirit:maximum="43" spirit:rangeType="long">6</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>RES_MSB</spirit:name>
+      <spirit:displayName>Result MSB</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.RES_MSB" spirit:minimum="0" spirit:maximum="43" spirit:rangeType="long">23</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>DIFFERENTIAL</spirit:name>
+      <spirit:displayName>Differential</spirit:displayName>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.DIFFERENTIAL">true</spirit:value>
+    </spirit:parameter>
+  </spirit:parameters>
+  <spirit:vendorExtensions>
+    <xilinx:coreExtensions>
+      <xilinx:supportedFamilies>
+        <xilinx:family xilinx:lifeCycle="Production">zynquplus</xilinx:family>
+      </xilinx:supportedFamilies>
+      <xilinx:taxonomies>
+        <xilinx:taxonomy>AXI_Peripheral</xilinx:taxonomy>
+      </xilinx:taxonomies>
+      <xilinx:displayName>ADC_LTC2311_v3.0</xilinx:displayName>
+      <xilinx:vendorDisplayName>UltraZohm</xilinx:vendorDisplayName>
+      <xilinx:vendorURL>https://ultrazohm.com</xilinx:vendorURL>
+      <xilinx:coreRevision>49</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2021-11-29T13:28:03Z</xilinx:coreCreationDateTime>
+      <xilinx:tags>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6116b6a7_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ip_repo/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@762d635b_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ip_repo/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@52054262_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ip_repo/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@50cb5129_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ip_repo/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@25900446_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ip_repo/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@47f3ab61_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2daed243_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@19bdf5f6_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@67555a74_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1258520_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2a1f7486_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6575885_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6fefd385_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@69a100f4_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7875c9c9_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@10fd7db1_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@704d6042_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@734522ac_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@56fd2bb9_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@792f32e0_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@87f1965_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@609342ab_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7edd8baa_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@54568797_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6eb057a2_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@642a52da_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@23924e5_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@53c8f401_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@373eb3cd_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@287892a2_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@28e5833f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4b937f88_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2ff4a6ed_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7c13a71c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@52fc3b99_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d93b680_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@135d2567_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@307632fd_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@66fbc5ea_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4eb044bc_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6bf4e49e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@77a03a3d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@21a49df2_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@161dd17d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@e9df338_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5b581e78_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6293a0e1_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@37d49a9d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@15427bad_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@369387e2_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@eebbc4_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d91b924_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@50716bc_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@215a3240_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1b6a319d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@415f9d04_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5bb6a174_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@45e12ee5_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1cfadb3_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@57da5831_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@157f0250_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5df2f559_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6c1d8438_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@74f85feb_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6565dde5_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1a882535_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@32b69345_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@769e50ac_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@40e122eb_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3d372f91_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@13928ca1_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@32014681_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4a1d4c5d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@610ef168_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@c481734_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3865873_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5940a60d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@35fd5469_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@72ae7139_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@461249da_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@65d3adc_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7d15f82_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7904b49c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@20e7456e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@872708d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@353fa159_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4e72455b_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6aa5ad6c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@30365a13_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@99294e2_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@15aa6cc2_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@49ba7d3e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@63623d51_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7e3a0152_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4c64b675_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@c64cb92_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2f89a56a_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@780d3296_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@32989454_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@19365203_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6e9ef46_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3ff8f8f9_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@676de427_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4962138d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5c49a10f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4fb2738_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@26a878a8_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@22c1c6ca_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@23f66d0d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@22e64760_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@715a449a_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@19df8644_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@48fcb174_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1b2a78a6_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7f638ed9_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@36c5d638_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@71b2cb72_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@147d4aee_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@9a289f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3c90756a_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5bec7a13_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2380a216_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5b05d5d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3e9a010e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@16a531d9_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@35a08c4d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7889ced7_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@31a00d96_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@23c3a145_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@54c0347a_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@21b7635a_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@767a0bb0_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7d58ef0_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3dc276c3_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5c76d2f6_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4e74f8d7_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1aa6d1c4_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7903435e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4ca10c04_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@30e8eefc_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5cb856cb_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@38cf1d80_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1acb90ec_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2170da8_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3baa194e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3154a101_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5e9e03ec_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6b756f07_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@37e75fe_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@323f7316_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3ed2de4c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6a66786f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@685353ed_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6f54b3a5_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@70573c2a_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6f769e1b_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2d98f872_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@51c08e15_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@65e6b1bc_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@56ce6e96_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4fe39a04_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@58319bed_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1fc6c246_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@403e1e57_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@e13992a_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@359bb084_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@34e9d5b3_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@322e748c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6321ee47_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@a0eedd5_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@23681d3e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@76ba687f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2fb880f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7375fe61_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@20b6df52_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@71f1d768_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1ef8e865_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4a17ddb5_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5c0c7c6e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3f78fcbc_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7e2402e7_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3df937c1_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@415adc3c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ed1a183_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@300a3800_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4fd4c719_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d3c5ef8_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7a4ba2da_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@19663d2c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@33e08af7_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4c015c0c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6bca91a5_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1d2abe92_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@431ad131_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@50861d05_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@396a2bcb_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@555569e0_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@512c1a8e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1eddb196_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2ccf59d1_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@58a7a123_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3924670e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d23c0c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2dc5d0f4_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@775f30c3_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@38d47ae1_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5eac2dbf_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3795f282_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@66931d8e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@474faf18_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6deeb831_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d8c0b1b_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2a80c60b_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@36d175b1_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@12e80842_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6978c716_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@377626ec_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@38ed926d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@25f3bd8b_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@741ed711_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@614ada65_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@48e37607_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7108b387_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7a8c7dc0_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2e4bbb11_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@282bf85c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@78b21a6c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@179156b2_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ddb5f39_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@763a38_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@68817df5_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6f5822e6_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@ac7ec9d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6a05bd34_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4309f37_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@23e1e04f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5c11edb6_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6ffc52c5_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@58e87218_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@40282ee9_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1b6f0ba6_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@667467ad_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@29abd707_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@428278f2_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2fda5ff0_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3379bb3d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ba1f316_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@72c527d3_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@a4f5c1e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@595f541b_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1a254f56_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@39fe6f00_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@a627cef_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@250dcef1_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@41da54d1_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1196cd4d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3e7188df_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3a75ea60_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2a297dfd_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@329bf92d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4dbbc4bf_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@60959c9_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@756112cd_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1e33c54f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@81959e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1455090e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5085c0ba_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2f3d6ad3_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5b3fc861_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2480deb9_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6a1b419c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7934e0b4_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7ca57aea_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5f7bd862_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@58a2c7d0_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4c83ff59_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@12251f38_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@555248ea_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@20eb1ae5_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7f9221e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@764e4d21_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3399ddf9_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@35ddb1fe_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6306f466_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6b1c2f60_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@555f82_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@46ddc432_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4385e863_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3941a637_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@63d65002_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@65461f8_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7addaa45_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4f440fa3_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5120ef7c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7514d85e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4e1c49ed_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@283a2dbd_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@55090a87_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@ced2f42_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@34cd53c3_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1f0c7472_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6b941f2a_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@19160888_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6082f835_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@58df3757_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@78431db0_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@37440b28_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2b0450e9_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@14774adf_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5b7724_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@34e15c5f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@10c7c0c4_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2b4b82d1_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@33ced153_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@502a6188_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@76352dfb_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@fd829c3_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6aafc8c4_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5f9b724f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@78d4e45f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7af0467d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3063e559_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2c687c2_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1587fc8d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@18dea2ed_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@45f4ccd8_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6d28eb02_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@52907543_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@10d74ce8_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3c99b516_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@f9a1925_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@41d45c62_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@28ba129a_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@25b2909e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@166afa8e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@555637fe_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1e9a37d6_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4f44e868_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@dcf4308_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@41fc1e1d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@33d1259f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@294a8671_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4c09bb4d_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7b0b02ae_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@30b3e946_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7e2f60f7_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@379b5ebc_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@610dabe4_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@11965112_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4c65d449_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@728d047f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6a10dfec_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3511ddda_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1302d2b8_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1b770563_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@71f239fe_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@30e68a90_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6a42105a_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6e0e6a1e_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@57b85607_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@731ff938_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2d388549_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@55d9a66c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@70244c20_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3082801_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@686c1713_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@15feca68_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@731ea42a_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2e769ba1_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@152a3dd5_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3c5c0c39_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3615e6d1_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@79b9abac_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@717fb70c_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@562efae7_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7414ba8f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4d0f57dc_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1479f93f_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@13112f27_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7c7c0095_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@324f5466_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@483a9202_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6358cda2_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3bf4a376_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@69221cf8_ARCHIVE_LOCATION">/home/thilo/ultrazohm/ultrazohm_sw/ip_cores/ADC_LTC2311_3.0</xilinx:tag>
+      </xilinx:tags>
+    </xilinx:coreExtensions>
+    <xilinx:packagingInfo>
+      <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="b1c5cd83"/>
+      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="ed1368d5"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="3d5cfdc8"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="c24bbc21"/>
+      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="47c7bc92"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="fa57eb4d"/>
+    </xilinx:packagingInfo>
+  </spirit:vendorExtensions>
+</spirit:component>

@@ -1,0 +1,46 @@
+Port Name,    Port Type,Data Type,Target Platform Interfaces,Function
+enable_nn,Input,bool,AXI, Triggers one feedforward pass of the network
+x1,Input,sfix32_En14,External,Network input from FPGA
+x2,Input,sfix32_En14,External,Network input from FPGA
+x3,Input,sfix32_En14,External,Network input from FPGA
+x4,Input,sfix32_En14,External,Network input from FPGA
+x5,Input,sfix32_En14,External,Network input from FPGA
+x6,Input,sfix32_En14,External,Network input from FPGA
+x7,Input,sfix32_En14,External,Network input from FPGA
+x8,Input,sfix32_En14,External,Network input from FPGA
+x9,Input,sfix32_En14,External,Network input from FPGA
+x10,Input,sfix32_En14,External,Network input from FPGA
+x11,Input,sfix32_En14,External,Network input from FPGA
+x12,Input,sfix32_En14,External,Network input from FPGA
+x13,Input,sfix32_En14,External,Network input from FPGA
+x14,Input,sfix32_En14,External,Network input from FPGA
+x15,Input,sfix32_En14,External,Network input from FPGA
+x16,Input,sfix32_En14,External,Network input from FPGA
+axi_bias,Input,sfix32_En14,AXI,Bias data
+axi_weight,Input,sfix32_En14,AXI,Weight data
+axi_bias_addr,Input,ufix10,AXI,Address to which bias data is written
+axi_weight_addr,Input,ufix10,AXI,Address to which weight data is written
+axi_wrEnBias,Input,uint8,AXI,Enables write to Bias – number of parallel MAC (1 to 8)
+axi_wrEnWeights,Input,uint8,AXI,Enables write to Weights – number of parallel MAC (1 to 8)
+axi_layerNr,Input,uint8,AXI,Determines to which layer the parameters are written
+use_axi_input,Input,bool,AXI,Uses axi signals as inputs for the network if signal is TRUE
+axi_x_input,Input,sfix32_En14 (8),AXI,Input to network
+axi_number_of_inputs,Input,ufix10,AXI,Set the number of inputs of the network
+axi_output_number_configuration,Input,ufix10,AXI,Sets the number of outputs – set to num_outputs/2-1 – only 2-4-6-8 are supported
+layer2_rdy,Output,bool,External,Unused debug
+finished,Output,bool,External,Single TRUE pulse after calculation is finished
+out,Output,sfix32_En14,External, Output of neural network
+out1,Output,sfix32_En14,External, Output of neural network
+out2,Output,sfix32_En14,External, Output of neural network
+out3,Output,sfix32_En14,External, Output of neural network
+out4,Output,sfix32_En14,External, Output of neural network
+out5,Output,sfix32_En14,External, Output of neural network
+out6,Output,sfix32_En14,External, Output of neural network
+out7,Output,sfix32_En14,External, Output of neural network
+biasData,Output,sfix32_En14,External, Debug
+biasWriteAddr,Output,ufix10,External, Debug
+biasWriteEnable,Output,bool,External,Enable to write bias value (debug)
+valid_output,Output,bool,External,TRUE after a calculation is finished and a new has not started yet
+axi_nn_output,Output,sfix32_En14 (8),AXI,Output vector of network with 8 elements
+axi_valid_output,Output,bool,AXI,TRUE after a calculation is finished and a new has not started yet
+disable_pl_trigger,Input,bool,AXI,enable_nn does not trigger calculation if set to TRUE

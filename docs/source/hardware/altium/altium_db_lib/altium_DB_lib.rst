@@ -20,7 +20,7 @@ The library system splits up in three different locations:
 
 In the following, the individual tools and necessary installation steps are discussed.
 
-.. note :: All usernames and passwords can be optained from the UltraZohm core developer team. Please write an E-Mail to `info@ultrazohm.com <mailto:info@ultrazohm>`_
+.. note :: All usernames and passwords can be obtained from the UltraZohm core developer team. Please get in touch via the Slack channel!
 
 
 In order to use the database driven library for Altium, a few settings need to be made initially.
@@ -34,6 +34,8 @@ The following tools are required:
 
 Videos of the setup
 ===================
+
+.. note:: The login information and user name in the videos do not match the real login data. Please get in touch via Slack to obtain the login information.
 
 How to install Altium:
 
@@ -61,7 +63,7 @@ Bitbucket access setup
 
 2. Clone the repository on your local computer
 
-3. If you intent to add new compnents, create a new feature branch. Follow the naming convention feature/<meaningfull name>. If the git shell interface is used the command is ``git checkout -b feature/<branch_name>``
+3. If you intent to add new components, create a new feature branch. Follow the naming convention feature/<meaningful_name>. If the git shell interface is used the command is ``git checkout -b feature/<branch_name>``
 
 4. If a new component was added, commit and push the new component to Bitbucket
 
@@ -74,7 +76,14 @@ Server access setup
 
 Altium needs to get access to the database system on the UltraZohm server. The interface to the database is an ODBC database driver.
 
-1. If not done yet download and install the `MariaDB ODBC 3.1 Driver <https://downloads.mariadb.org/connector-odbc/>`_
+1. If not done yet download and install the `MariaDB ODBC 3.1 Driver <https://mariadb.com/kb/en/mariadb-connector-odbc/>`_
+
+.. _20_ODBC_sources_download_link:
+
+   .. figure:: img/19_ODBC_download_link.jpg
+      :width: 600px
+
+      OBDC - download link.
 
 2. ``Open`` the ODBC-Datasource App (64-Bit)
 
@@ -188,7 +197,7 @@ Integration in Altium
 
 3. Click on the three horizontal lines and select the point ``File-based library Preferences``
 
-4. Select the register Installed. While not necessary, it is strongly recommended to remove all not required libraries at this point (e.g. the standard "Miscellanious Devices" library from Altium)
+4. Select the register Installed. While not necessary, it is strongly recommended to remove all not required libraries at this point (e.g. the standard "Miscellaneous Devices" library from Altium)
 
 .. _31_File_based_lib:
 
@@ -289,7 +298,7 @@ Addition of a new component
 ===========================
 
 In the following chapter the procedure to add a new component is illustrated by adding an SMD capacitor. The following chapter only explains the addition
-of the component to the repository and the database. **Furthermore, the developer who adds the component has to make sure that the fooprint follows**
+of the component to the repository and the database. **Furthermore, the developer who adds the component has to make sure that the footprint follows**
 **the mapping of the mechanical layers.** See :ref:`mech_layers` for further information. If the component does not follow this mapping the pull request will
 not be accepted. 
 
@@ -469,7 +478,7 @@ In this file you can find the syntax for creating a new table.
 Edit only the name of the table (in this example: "Logic - Buffer and Driver") to the new one.
 Copy all rows without editing
 
-4. Add between the field "Type" and "Value" all categorie specific values like "power loss", "tolerance", "voltage rating" etc.
+4. Add between the field "Type" and "Value" all categories specific values like "power loss", "tolerance", "voltage rating" etc.
 
 .. _193_Table_Parameter_2:
 

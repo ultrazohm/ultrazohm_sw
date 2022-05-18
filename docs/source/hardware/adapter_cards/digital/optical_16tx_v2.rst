@@ -16,22 +16,17 @@ Functionality
 
 Before first use
 ----------------------------
-Solder in up to 16 transmitters and 3 receivers. 
-Solder the components on the **top site first**, shorten the pin length and afterwards solder the transceivers on the bottom side. 
+Solder in up to 
 
-* optical transmitters: **Broadcom HFBR-1521Z**
-* optical receiver: **Broadcom HFBR-2521Z**
+* 16 optical transmitters: **Broadcom HFBR-1521Z**
+* 3 optical receiver: **Broadcom HFBR-2521Z**
+
+Please refer to this page for detailed :ref:`dig_optical_soldering` of the receivers and transmitters.
+
 
 .. image:: optical_16tx_v2/optical_16tx_v2_transmitter.jpg
    :height: 500
             
-* Solder pull down resistors, 2kOhm to each gate signal
-  
-.. image:: optical_16tx_v2/optical_16tx_v2_pulldown.jpg
-   :height: 500
-
-.. image:: optical_16tx_v2/optical_16tx_v2_pulldown_schematic.jpg
-   :width: 500
            
 * Solder resistors (R14, R19) on the bottom side to connect optical receivers 
 * Program CPLDs with firmware, see :ref:`label_cpld_programming` for details
@@ -40,6 +35,14 @@ Known issues
 -----------------------
 .. warning:: 
    When turning off the UltraZohm, the optical transmitters turn on shortly, solder in the pull down resistors to avoid this.
+   
+* Solder pull down resistors, 2kOhm to each gate signal
+  
+.. image:: optical_16tx_v2/optical_16tx_v2_pulldown.jpg
+   :height: 500
+
+.. image:: optical_16tx_v2/optical_16tx_v2_pulldown_schematic.jpg
+   :width: 500
 
 Compatibility 
 ----------------------

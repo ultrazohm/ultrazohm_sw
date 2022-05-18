@@ -2,6 +2,10 @@
 Simscape HDL
 ============
 
+.. note:: 
+
+   This tutorial is optional and only useful for people who plan to use the HDL coder.
+
 The motivation for using Simscape Models on the UltraZohm is to use them as a virtual test bench that can be used with the complete signal chain of the UltraZohm from reading the current value of the Simscape model to the ADC input, transferring data to the PS, calculate the controller on the PS, transfer the duty cycle to the PWM-module and apply the output signal to the Simscape model.
 Additionally, Simscape Models on the UltraZohm be used to accelerate specific Simulations compared to using a desktop computer.
 This is especially useful for simulating a system with low time constants that you want to simulate for a long time.
@@ -52,75 +56,99 @@ Video
 Software
 ********
 
-1. Open Vitis
-2. Generate Workspace 
-3. The software driver for the IP-core is located in ``Vitis/software/Baremetal/src/IP_Cores/uz_simscapeExample/``
-4. Add the following code to ``main.c`` (of R5) before ``JavaScope_initalize`` is called, e.g., directly before ``uz_SystemTime_init``
+#. Open Vitis
+#. Generate Workspace 
+#. The software driver for the IP-core is located in ``Vitis/software/Baremetal/src/IP_Cores/uz_simscapeExample/``
+#. Add the following code to ``main.c`` (of R5) to the ``init_ip_cores`` section of the switch-case.
 
-.. code-block:: c
-   :lineno-start: 42
-   :emphasize-lines: 1,2,15
-   :caption: Snippet of ``main.c`` with initialization of the simscape IP-Core
+   .. code-block:: c
+      :linenos:
+      :emphasize-lines: 34
+      :caption: Snippet of ``main.c`` with initialization of the simscape IP-Core. ``//....`` marks left out code
+ 
+       #include "IP_Cores/uz_simscapeExample/uz_simscapeExample_staticAllocator.h"
+       uz_simscapeExample_handle sim_halfWaveRectifier;
+ 
+      //.... 
 
-   #include "IP_Cores/uz_simscapeExample/uz_simscapeExample_staticAllocator.h"
-   uz_simscapeExample_handle sim_halfWaveRectifier;
+       int main(void)
+       {
+         int status = UZ_SUCCESS;
+         while (1)
+         {
+           switch (initialization_chain)
+           {
+           case init_assertions:
+               uz_assert_configuration(); // This has to be the first line of code in main.c
+               initialization_chain = init_gpios;
+               break;
+           case init_gpios:
+               Initialize_AXI_GPIO();               // This has to be the second line of code in main.c since the assertion callback uses the AXI_GPIO to disable the system
+               uz_frontplane_button_and_led_init(); // This has to be the third line of code since the assertion callback uses the LEDs to indicate an error
+               initialization_chain = init_software;
+               break;
+           case init_software:
+               Initialize_Timer();
+               uz_SystemTime_init();
+               JavaScope_initalize(&Global_Data);
+               initialization_chain = init_ip_cores;
+               break;
+           case init_ip_cores:
+               uz_adcLtc2311_ip_core_init();
+               Global_Data.objects.deadtime_interlock_d1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
+               uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1, true);
+               Global_Data.objects.pwm_d1 = initialize_pwm_2l_on_D1();
+               Global_Data.objects.mux_axi = initialize_uz_mux_axi();
+               sim_halfWaveRectifier = uz_simscapeExample_staticAllocator();
+               PWM_3L_Initialize(&Global_Data); // three-level modulator
+               initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+               initialization_chain = print_msg;
+               break;
+           case print_msg:
+           //....
+         }
+       }  
 
-   int main(void) {
-       int status = UZ_SUCCESS;
-       Xil_AssertSetCallback((Xil_AssertCallback) uz_assertCallback);
-       uz_printf("\r\n\r\n");
-       uz_printf("Welcome to the UltraZohm\r\n");
-       uz_printf("----------------------------------------\r\n");
-       // Initialize the global "Global_Data" structure -> the values can be overwritten afterwards from the Java-GUI -> this must     be    he first INIT-function, because it is required subsequently!
-       InitializeDataStructure(&Global_Data);
-       Initialize_AXI_GPIO(); 	// Initialize the GPIOs which are connected over FPGA pins
-       uz_frontplane_button_and_led_init();
-       ADC_WriteConversionFactor(10); 	// Conversion Factor of 10, because the full input range of the ADC is +-5V = 10V range
-       sim_halfWaveRectifier = uz_simscapeExample_staticAllocator();
-       // Initialize Park-Transformation 123 to dq
-       DQTransformation_Initialize(&Global_Data);
+
+#. Add the following code to ``isr.c``
 
 
+   * Top of file include:
 
-5. Add the following code to ``isr.c``
+   .. code-block:: c
 
+       #include "../IP_Cores/uz_simscapeExample/uz_simscapeExample.h"
+       extern uz_simscapeExample_handle sim_halfWaveRectifier;
 
-Top of file include:
+   * In function ISR_Control before ``JavaScope_update()`` function call
 
-.. code-block:: c
+   .. code-block:: c
 
-    #include "../IP_Cores/uz_simscapeExample/uz_simscapeExample.h"
-    extern uz_simscapeExample_handle sim_halfWaveRectifier;
-
-In function ISR_Control before ``JavaScope_update()`` function call
-
-.. code-block:: c
-
-  uz_simscapeExample_step_model_once(sim_halfWaveRectifier);
+     uz_simscapeExample_step_model_once(sim_halfWaveRectifier);
 
 
-6. Add the following code to ``javascope.c``
+#. Add the following code to ``javascope.c``
 
-Top of file include & declaration:
+   * Top of file include & declaration:
 
-.. code-block:: c
+   .. code-block:: c
 
-  #include "../IP_Cores/uz_simscapeExample/uz_simscapeExample_private.h"
-  extern uz_simscapeExample_handle sim_halfWaveRectifier;
+     #include "../IP_Cores/uz_simscapeExample/uz_simscapeExample_private.h"
+     extern uz_simscapeExample_handle sim_halfWaveRectifier;
 
-Assign the GUI variables ``Sawtooth1``, ``SineWave1``, and ``SineWave2`` to the output variables of the IP-Core:
+   * Assign the GUI variables ``JSO_ISR_ExecTime_us``, ``JSO_lifecheck``, and ``JSO_ISR_Period_us`` to the output variables of the IP-Core:
 
-.. code-block:: c
+   .. code-block:: c
 
-    js_ptr_arr[JSO_Sawtooth1] = &sim_halfWaveRectifier->Vin;
-    js_ptr_arr[JSO_SineWave1] = &sim_halfWaveRectifier->IR;
-    js_ptr_arr[JSO_SineWave2] = &sim_halfWaveRectifier->Vdiode;
+       js_ch_observable[JSO_ISR_ExecTime_us] = &sim_halfWaveRectifier->Vin;
+       js_ch_observable[JSO_lifecheck] = &sim_halfWaveRectifier->IR;
+       js_ch_observable[JSO_ISR_Period_us] = &sim_halfWaveRectifier->Vdiode;
 
-7. Set ``#define UZ_SIMSCAPEEXAMPLE_USE_IP 1`` in ``IP_Cores/uz_simscapeExample/uz_simscapeExample_staticAllocator.h``
-8. Build the project
-9. Power on the UltraZohm, flash the program
-10. Add ``hardware_multiplication`` to expressions of R5
-11. Open Javascope, the output signals can be watched and logged to file
+#. Set ``#define UZ_SIMSCAPEEXAMPLE_USE_IP 1`` in ``IP_Cores/uz_simscapeExample/uz_simscapeExample_staticAllocator.h``
+#. Build the project
+#. Power on the UltraZohm, flash the program
+#. Add ``hardware_multiplication`` to expressions of R5
+#. Open Javascope, the output signals can be watched and logged to file
 
 Video
 ^^^^^

@@ -1,3 +1,4 @@
+#include "../uz_global_configuration.h"
 #define OUTPUT_PIN							1 								//This Pin is an Output
 #define INPUT_PIN							0 								//This Pin is an Input
 
@@ -17,8 +18,16 @@
 #define EXT_GPIO_3 		34
 #define EXT_GPIO_4 		39
 #define EXT_GPIO_5 		40
-#define EXT_GPIO_6 		52
-#define EXT_GPIO_7 		53
+
+#if UZ_HARDWARE_VERSION < 4U
+#define EXT_GPIO_6        52 // Rev. 2 and 3
+#define EXT_GPIO_7        53 // Rev. 2 and 3
+#endif
+#if UZ_HARDWARE_VERSION > 3U
+#define EXT_GPIO_6 44 //Rev.04
+#define EXT_GPIO_7 30 // Rev.04
+#endif
+
 #define EXT_GPIO_8 		55
 
 // LED on carrier board and frontpanel

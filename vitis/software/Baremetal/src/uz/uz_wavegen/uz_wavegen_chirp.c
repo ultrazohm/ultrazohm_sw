@@ -1,13 +1,27 @@
+/******************************************************************************
+* Copyright Contributors to the UltraZohm project.
+* Copyright 2021 Dennis Hufnagel, Tobias Schindler
+* 
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*     http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and limitations under the License.
+******************************************************************************/
+
+#include "../uz_global_configuration.h"
+#if UZ_WAVEGEN_CHIRP_MAX_INSTANCES > 0U
 #include "uz_wavegen.h"
 #include <math.h>
 #include "../uz_HAL.h"
+#include "../uz_math_constants.h"
 #include "../uz_SystemTime/uz_SystemTime.h"
-#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES 2
 
-#ifdef TEST
-	#undef UZ_WAVEGEN_CHIRP_MAX_INSTANCES
-	#define UZ_WAVEGEN_CHIRP_MAX_INSTANCES 13
-#endif
 struct uz_wavegen_chirp {
 	bool is_ready;
 	bool is_first_call_to_sample;
@@ -16,21 +30,28 @@ struct uz_wavegen_chirp {
 	float transition_angle;
 	struct uz_wavegen_chirp_config config;
 };
-static size_t counter_chirp = 0;
-static uz_wavegen_chirp instances_chirp[UZ_WAVEGEN_CHIRP_MAX_INSTANCES] = { 0 };
+static uint32_t instance_counter = 0U;
+static uz_wavegen_chirp instances[UZ_WAVEGEN_CHIRP_MAX_INSTANCES] = { 0 };
+
+static uz_wavegen_chirp* uz_wavegen_allocation(void);
+
+static uz_wavegen_chirp* uz_wavegen_allocation(void){
+	uz_assert(instance_counter < UZ_WAVEGEN_CHIRP_MAX_INSTANCES);
+	uz_wavegen_chirp* self = &instances[instance_counter];
+	uz_assert_false(self->is_ready);
+	instance_counter++;
+	self->is_ready = true;
+	return (self);
+}
 
 uz_wavegen_chirp* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config) {
-	uz_assert(counter_chirp < UZ_WAVEGEN_CHIRP_MAX_INSTANCES);
-	uz_wavegen_chirp* self = &instances_chirp[counter_chirp];
-	uz_assert_false(self->is_ready);
-	counter_chirp += 1;
-	self->is_ready = true;
+	uz_wavegen_chirp* self = uz_wavegen_allocation();
 	self->is_first_call_to_sample = true;
 	uz_assert(config.amplitude != 0.0f);
-	uz_assert(config.start_frequency_Hz > 0);
-	uz_assert(config.end_frequency_Hz > 0);
+	uz_assert(config.start_frequency_Hz > 0.0f);
+	uz_assert(config.end_frequency_Hz > 0.0f);
 	uz_assert(config.end_frequency_Hz > config.start_frequency_Hz);
-	uz_assert(config.initial_delay_sec >= 0);
+	uz_assert(config.initial_delay_sec >= 0.0f);
 	uz_assert(config.duration_sec > 0);
 	self->config = config;
 	return (self);
@@ -58,16 +79,17 @@ float uz_wavegen_chirp_sample(uz_wavegen_chirp* self) {
 	float t_Sec = self->elapsed_time_since_start - self->config.initial_delay_sec;
 	float chirp_rate = (self->config.end_frequency_Hz - self->config.start_frequency_Hz) / self->config.duration_sec;
 	float chirp_output = 0.0f;
-	if (remaining_delay_sec > 0) {
+	if (remaining_delay_sec > 0.0f) {
 		chirp_output =0.0f;
 	} else {
 		if (t_Sec <= self->config.duration_sec) {
-			self->transition_angle = 2.0 * M_PI * (((chirp_rate / 2) * t_Sec * t_Sec) + (t_Sec * self->config.start_frequency_Hz));
+			self->transition_angle = 2.0f * UZ_PIf * (((chirp_rate / 2.0f) * t_Sec * t_Sec) + (t_Sec * self->config.start_frequency_Hz));
 			chirp_output = self->config.amplitude * sinf(self->transition_angle) + self->config.offset;
 		} else {
-			chirp_output = self->config.amplitude * sinf(self->transition_angle + (2.0 * M_PI * t_Sec * self->config.end_frequency_Hz)) + self->config.offset;
+			chirp_output = self->config.amplitude * sinf(self->transition_angle + (2.0f * UZ_PIf * t_Sec * self->config.end_frequency_Hz)) + self->config.offset;
 		}
 	}
 	return (chirp_output);
 
 }
+#endif

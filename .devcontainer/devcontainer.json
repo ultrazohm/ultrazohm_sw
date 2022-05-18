@@ -14,6 +14,10 @@
 		"ceedlingExplorer.debugConfiguration": "Ceedling Test Explorer Debug",
 		"ceedlingExplorer.projectPath": "vitis/software/Baremetal/"
 	},
+	// Required to debug with gdb, see:
+	// https://code.visualstudio.com/docs/remote/devcontainerjson-reference
+	// https://stackoverflow.com/questions/42029834/gdb-in-docker-container-returns-ptrace-operation-not-permitted
+	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
@@ -30,7 +34,10 @@
 		"jeff-hykin.better-cpp-syntax",
 		"atlassian.atlascode",
 		"cschlosser.doxdocgen",
-		"mhutchie.git-graph"
+		"mhutchie.git-graph",
+        "mechatroner.rainbow-csv",
+        "trond-snekvik.simple-rst",
+        "ms-vscode.test-adapter-converter"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.

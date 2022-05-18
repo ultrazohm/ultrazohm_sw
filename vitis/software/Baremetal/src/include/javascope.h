@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Löhdefink
+* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Löhdefink, Michael Hoerner
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,18 +16,14 @@
 #ifndef INCLUDE_JAVASCOPE_H_
 #define INCLUDE_JAVASCOPE_H_
 
-
-#include "ipc_ARM.h"
-#include "../uz/uz_SystemTime/uz_SystemTime.h"
-
-extern float zerovalue;
+#include "APU_RPU_shared.h"
 
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
-    JSO_ZEROVALUE=0,
-	JSO_SineWave1,
-    JSO_Sawtooth1,
-    JSO_SineWave2,
+	JSO_ZEROVALUE=0,
+	JSO_ISR_ExecTime_us,
+	JSO_ISR_Period_us,
+	JSO_lifecheck,
 	JSO_theta_mech,
 	JSO_ua,
 	JSO_ub,
@@ -52,26 +48,27 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
-    JSO_ENDMARKER
+	JSO_ENDMARKER
 };
 
-// slowData Naming Convention: Use INT or FLOAT to automatically identify Data Type in Java.
+// slowData Naming Convention: Use JSSD_FLOAT_ as prefix
 // Do not change the first (zero) and last (end) entries.
 enum JS_SlowData {
 	JSSD_ZEROVALUE=0,
-	JSSD_INT_SecondsSinceSystemStart,
-	JSSD_FLOAT_uSecPerIsr,
-	JSSD_FLOAT_Sine,
+	JSSD_FLOAT_SecondsSinceSystemStart,
+	JSSD_FLOAT_ISR_ExecTime_us,
+	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_FreqReadback,
-	JSSD_INT_Milliseconds,
+	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_ADCconvFactorReadback,
+	JSSD_FLOAT_Error_Code,
 	JSSD_FLOAT_Rs_Offline,
 	JSSD_FLOAT_Ld_Offline,
 	JSSD_FLOAT_Lq_Offline,
 	JSSD_FLOAT_PsiPM_Offline,
 	JSSD_FLOAT_J,
-	JSSD_INT_polePairs,
-	JSSD_INT_activeState,
+	JSSD_FLOAT_polePairs,
+	JSSD_FLOAT_activeState,
 	JSSD_FLOAT_u_d,
 	JSSD_FLOAT_u_q,
 	JSSD_FLOAT_i_d,
@@ -118,24 +115,107 @@ enum JS_SlowData {
 	JSSD_ENDMARKER
 };
 
-
-union SlowData {
-   int i;
-   float f;
+// Determination of Button IDs via enum. When a button in the GUI is pressed,
+// the GUI sends an ID and a value. IDs of the buttons are the respective enum
+// numbers in the following enum.
+// Do not change the first (zero) and last (end) entries.
+// Do not change names! They are hard coupled within the GUI!
+enum gui_button_mapping {
+	GUI_BTN_ZEROVALUE=0,
+	Enable_System,
+	Enable_Control,
+	Stop,
+	Set_Send_Field_1,
+	Set_Send_Field_2,
+	Set_Send_Field_3,
+	Set_Send_Field_4,
+	Set_Send_Field_5,
+	Set_Send_Field_6,
+	My_Button_1,
+	My_Button_2,
+	My_Button_3,
+	My_Button_4,
+	My_Button_5,
+	My_Button_6,
+	My_Button_7,
+	My_Button_8,
+	Error_Reset,
+	GUI_BTN_ENDMARKER
 };
 
 
-extern float *js_ptr_arr[JSO_ENDMARKER];
-extern float *js_ptr[4];	// channel ptr
+/* Visualization Config for GUI*/
+// LEAVE IT COMMENTED OUT AS IT IS, the plain text below is parsed by the GUI!
+// Change entries according to your needs.
+/*
+// Description (printed text) for the send_fields top to bottom
+// Do not change the first (zero) and last (end) entries.
 
-extern union SlowData js_slowDataArray[JSSD_ENDMARKER];
+	SND_FLD_ZEROVALUE=0,
+	send_field_1,
+	send_field_2,
+	send_field_3,
+	send_field_4,
+	send_field_5,
+	send_field_6,
+	SND_FLD_ENDMARKER
 
+
+// Physical unit label (printed text) for the send_fields top to bottom
+// Do not change the first (zero) and last (end) entries.
+
+	SND_LABELS_ZEROVALUE=0,
+	RPM,
+	Nm,
+	A,
+	A,
+	A,
+	A,
+	SND_LABELS_ENDMARKER
+
+
+// Description (printed text) for the receive_fields top to bottom
+// Do not change the first (zero) and last (end) entries.
+
+	RCV_FLD_ZEROVALUE=0,
+	receive_field_1,
+	receive_field_2,
+	receive_field_3,
+	receive_field_4,
+	receive_field_5,
+	receive_field_6,
+	RCV_FLD_ENDMARKER
+
+
+// Physical unit label (printed text) for the receive_fields top to bottom
+// Do not change the first (zero) and last (end) entries.
+
+	RCV_LABELS_ZEROVALUE=0,
+	RPM,
+	Nm,
+	A,
+	A,
+	V,
+	V,
+	RCV_LABELS_ENDMARKER
+
+
+// Slow Data values that are displayed in the receive_fields top to bottom
+// Do not change the first (zero) and last (end) entries.
+// Make sure that the signal names below are also present in the JS_SlowData enum!
+
+	SLOWDAT_DISPLAY_ZEROVALUE=0,
+	JSSD_FLOAT_SecondsSinceSystemStart,
+	JSSD_FLOAT_ISR_ExecTime_us,
+	JSSD_FLOAT_ISR_Period_us,
+	JSSD_FLOAT_polePairs,
+	JSSD_FLOAT_Milliseconds,
+	JSSD_FLOAT_Ld,
+	JSSD_FLOAT_Error_Code,
+	SLOWDAT_DISPLAY_ENDMARKER
+*/
 
 int JavaScope_initalize(DS_Data* data);
 void JavaScope_update(DS_Data* data);
-
-void js_fetchData4CH();
-
-
 
 #endif /* INCLUDE_JAVASCOPE_H_ */

@@ -3,75 +3,33 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: python:3
+image: python:3.9.7
 clone:
   lfs: true
 
 pipelines:
-  #branches:
-  #  develop:
-   default:
-    - step:
-       name: docs
-       image: ultrazohm/ultrazohm_remote_container
-       script: # Modify the commands below to build your repository.
-        - cd docs
-        - python -m pip install -U pip
-        - pip install -r requirements.txt
-        - pip list
-        - make doxygen
-        - make html SPHINXOPTS="-W --keep-going -n"
-        - cd build
-        - ls
-    - step:
-       name: Ceedling unit tests
-       image: ultrazohm/ultrazohm_remote_container
-       script:
-        - cd vitis/software/Baremetal
-        - ceedling test:all
-    - step:
-       name: Cppcheck
-       image: ultrazohm/ultrazohm_remote_container
-       script:
-        - cppcheck vitis/software/Baremetal/src 
-        - cppcheck --addon=cert vitis/software/Baremetal/src 
-        - cppcheck --addon=misra vitis/software/Baremetal/src 
    branches:
-     develop:
-        - step:
-           name: docs
-           script: # Modify the commands below to build your repository.
-            - apt-get update && apt-get -y install --no-install-recommends texlive
-            - apt-get -y install --no-install-recommends texlive-latex-extra
-            - apt-get -y install --no-install-recommends texlive-pictures
-            - apt-get -y install --no-install-recommends texlive-science
-            - apt-get -y install --no-install-recommends ghostscript
-            - apt-get -y install --no-install-recommends doxygen
-            - cd docs
-            - python -m pip install -U pip
-            - pip install -r requirements.txt
-            - pip list
-            - make doxygen
-            - make html SPHINXOPTS="-W --keep-going -n"
-            - cd build
-            - ls
-        - step:
-           name: Ceedling unit tests
-           script:
-            - apt-get update
-            - apt-get -y install build-essential
-            - apt-get -y install gdb
-            - apt-get -y install ruby
-            - gem install ceedling
-            - cd vitis/software/Baremetal
-            - ceedling test:all
-        - step:
-           name: Github-Mirror
-           image: alpine/git
-           script:
-            - apk add git-lfs
-            - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
-            - git push --all mirrorOrigin
+   #   develop:
+      #   - step:
+      #      name: build and push docker
+      #      script:
+      #       - export BITBUCKET_COMMIT_SHORT="${BITBUCKET_COMMIT::7}" # https://community.atlassian.com/t5/Bitbucket-questions/BITBUCKET-COMMIT-variable-short-7digits-in-pipelines/qaq-p/752782
+      #       - echo $BITBUCKET_COMMIT_SHORT
+      #       - cd .devcontainer
+      #       - ls
+      #       - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
+      #       - docker build -t ultrazohm/ultrazohm_remote_container:$BITBUCKET_COMMIT_SHORT .
+      #       - docker push ultrazohm/ultrazohm_remote_container:$BITBUCKET_COMMIT_SHORT
+      #      services:
+      #       - docker
+      #   - step:
+      #      name: Github-Mirror
+      #      image: alpine/git
+      #      script:
+      #       - apk add git-lfs
+      #       - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
+      #       - git lfs fetch --all
+      #       - git push --all mirrorOrigin
      main:
       - step:
          name: Deploy to Contabo Server
@@ -84,6 +42,7 @@ pipelines:
           - apt-get -y install --no-install-recommends ghostscript
           - apt-get -y install --no-install-recommends doxygen
           - python -m pip install -U pip
+          - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
           - ls
           - cd docs
           - ls
@@ -111,4 +70,5 @@ pipelines:
          script:
           - apk add git-lfs
           - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
+          - git lfs fetch --all
           - git push --all mirrorOrigin

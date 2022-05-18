@@ -111,17 +111,17 @@ Analog Hall
 """""""""""""""""""""""""""
 
 .. image:: encoder_v1/3D_View_Connectors_Analog_Hall.png
-   :height: 300
+   :width: 1000
 
 The analog hall interface is based on the UltraZohm analog board. It is equipped with four independant channels. Each ADC has a serial interface for reading data.
 
 .. image:: encoder_v1/Analog_Graphic.png
-   :height: 300
+   :width: 500
 
 
 References
 """""""""""""""
-* :download:`Schematic 1v00 <incr_encoder_v1/SCH_UltraZohm_Digital_Incremental_Encoder_1v0.pdf>`
+* :download:`Schematic 1v00 <encoder_v1/SCH_UltraZohm_Digital_Sensor_Board_1v01.pdf>`
 * :ref:`label_cpld_programming`
 
 

@@ -1,4 +1,4 @@
-.. _uz_PID_new_ID_state:
+.. _uz_ParaID_new_ID_state:
 
 ==============================
 Guide to create a new ID-state
@@ -6,7 +6,7 @@ Guide to create a new ID-state
 
 The current ``ID-states`` carry a wide range of identification methods. 
 However, if a new identification method is supposed to be implemented, this guide will assist in creating a new ``ID-state``.
-Before starting the procedure of creating a new state, it is advised to read up about the general concept and layout of the ParmeterID in :ref:`uz_ParameterID`, :ref:`uz_PID_setup`, :ref:`uz_ParameterID_Data_structs` and :ref:`uz_PID_new_control_algorithm`.
+Before starting the procedure of creating a new state, it is advised to read up about the general concept and layout of the ParmeterID in :ref:`uz_ParameterID`, :ref:`uz_ParaID_setup`, :ref:`uz_ParameterID_Data_structs` and :ref:`uz_ParaID_new_control_algorithm`.
 
 General information
 ===================
@@ -46,16 +46,16 @@ Changes in the Simulation model
 
       Stick to the data types ``boolean``, ``single`` and if necessary ``uint32``. Do not use ``double``, since the UltraZohm PS has no dedicated hardware for FP64 calculations. 
   
-   * Add a new bus for the state-specific configuration values ``uz_PID_StateIDConfig_t`` and add all config values to this bus.
-   * Add a new bus for the state-specific output/identification-values ``uz_PID_StateID_output_t`` and add all necessary values.
-   * Open the ``uz_PID_GlobalConfig_t`` bus and add a new member with the name ``StateID``.
-   * Open the ``uz_PID_ControlFlags_t`` bus and add a new member with the name ``startStateID``. If its an Online-state, add ``enableStateID``.
+   * Add a new bus for the state-specific configuration values ``uz_ParaID_StateIDConfig_t`` and add all config values to this bus.
+   * Add a new bus for the state-specific output/identification-values ``uz_ParaID_StateID_output_t`` and add all necessary values.
+   * Open the ``uz_ParaID_GlobalConfig_t`` bus and add a new member with the name ``StateID``.
+   * Open the ``uz_ParaID_ControlFlags_t`` bus and add a new member with the name ``startStateID``. If its an Online-state, add ``enableStateID``.
 
       .. image:: ../images/Bus_editor.png
 
    * Save the file by overwriting the old one. 
 
-#. Add ``uz_PID_StateIDConfig_t`` as input and ``uz_PID_StateID_output_t`` as output to the new stateflow.
+#. Add ``uz_ParaID_StateIDConfig_t`` as input and ``uz_ParaID_StateID_output_t`` as output to the new stateflow.
 #. Select as type the newly created busses. 
 #. Add the ``From`` block for the individual config bus in the appropriate color.
 
@@ -150,7 +150,7 @@ After code generating the stateflow the following changes have to be made in the
 
          #endif
 
-#. Copy the individual structs (``uz_PID_StateIDConfig_t`` and ``uz_PID_StateID_output_t``) from the codegenerated header file ``StateID_codegen.h``. 
+#. Copy the individual structs (``uz_ParaID_StateIDConfig_t`` and ``uz_ParaID_StateID_output_t``) from the codegenerated header file ``StateID_codegen.h``. 
 #. Paste them into the ``uz_ParameterID_data.h`` file, add doxygen comments and remove them from ``StateID_codegen.h``.
 #. Compare the global structs (:ref:`uz_Actual_values_struct` , :ref:`uz_Global_config_struct` , :ref:`uz_Control_flags_struct` , :ref:`uz_Controller_parameters_struct`) in the codegenerated header file with the ones in the ``uz_ParameterID_data.h`` file and add the missing struct members to ``uz_ParameterID_data.h``. 
 #. Remove the declaration of these global structs in the ``StateID_codegen.h`` file.
@@ -167,7 +167,7 @@ After code generating the stateflow the following changes have to be made in the
 
          #endif
 
-#. Add a new .h and .c file with the names ``uz_PID_StateID.c/h``.
+#. Add a new .h and .c file with the names ``uz_ParaID_StateID.c/h``.
 #. Add the license header to the files.
 #. Add the following code to the .h and .c file and adjust the names of the structs and functions accordingly.
 
@@ -175,8 +175,8 @@ After code generating the stateflow the following changes have to be made in the
          :linenos:
          :caption: Code for the new .h file
 
-         #ifndef UZ_PID_STATEID_H
-         #define UZ_PID_STATEID_H
+         #ifndef UZ_PARAID_STATEID_H
+         #define UZ_PARAID_STATEID_H
 
          #include "../../uz_global_configuration.h"
          #if UZ_PARAMETERID_MAX_INSTANCES > 0U
@@ -185,30 +185,30 @@ After code generating the stateflow the following changes have to be made in the
          #include "StateID_codegen.h"
 
          /**
-         * @brief Object definition for uz_PID_StateID_t
+         * @brief Object definition for uz_ParaID_StateID_t
          * 
          */
-         typedef struct uz_PID_StateID_t{
+         typedef struct uz_ParaID_StateID_t{
 	         ExtY_StateID_t output;
 	         ExtU_StateID_t input;
 	         DW_StateID_t rtDW; /* Observable states */
 	         RT_MODEL_StateID_t modelData;
 	         RT_MODEL_StateID_t *PtrToModelData;
-         } uz_PID_StateID_t;
+         } uz_ParaID_StateID_t;
          
          /**
-         * @brief Initializes the uz_PID_StateID_t object
+         * @brief Initializes the uz_ParaID_StateID_t object
          * 
-         * @return uz_PID_StateID_t* pointer to object
+         * @return uz_ParaID_StateID_t* pointer to object
          */
-         uz_PID_StateID_t* uz_StateID_init(void);
+         uz_ParaID_StateID_t* uz_StateID_init(void);
 
          /**
          * @brief steps the StateID state once
          * 
-         * @param self pointer to uz_PID_StateID_t* object
+         * @param self pointer to uz_ParaID_StateID_t* object
          */
-         void uz_StateID_step(uz_PID_StateID_t *self);
+         void uz_StateID_step(uz_ParaID_StateID_t *self);
 
          #endif
 
@@ -218,23 +218,23 @@ After code generating the stateflow the following changes have to be made in the
 
          #include "../../uz_global_configuration.h"
          #if UZ_PARAMETERID_MAX_INSTANCES > 0U
-         #include "uz_PID_StateID.h"
+         #include "uz_ParaID_StateID.h"
 
-         static uint32_t instances_counter_PID_StateID = 0;
+         static uint32_t instances_counter_ParaID_StateID = 0;
 
-         static uz_PID_StateID_t instances_PID_StateID[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
+         static uz_ParaID_StateID_t instances_ParaID_StateID[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
 
-         static uz_PID_StateID_t* uz_PID_StateID_allocation(void);
+         static uz_ParaID_StateID_t* uz_ParaID_StateID_allocation(void);
 
-         static uz_PID_StateID_t* uz_PID_StateID_allocation(void) {
-	         uz_assert(instances_counter_PID_StateID < UZ_PARAMETERID_MAX_INSTANCES);
-	         uz_PID_ControlState_t* self = &instances_PID_StateID[instances_counter_PID_StateID];
-	         instances_counter_PID_StateID++;
+         static uz_ParaID_StateID_t* uz_ParaID_StateID_allocation(void) {
+	         uz_assert(instances_counter_ParaID_StateID < UZ_PARAMETERID_MAX_INSTANCES);
+	         uz_ParaID_ControlState_t* self = &instances_ParaID_StateID[instances_counter_ParaID_StateID];
+	         instances_counter_ParaID_StateID++;
 	         return (self);
          }
 
-         uz_PID_StateID_t* uz_StateID_init(void) {
-	         uz_PID_StateID_t* self = uz_PID_StateID_allocation();
+         uz_ParaID_StateID_t* uz_StateID_init(void) {
+	         uz_ParaID_StateID_t* self = uz_ParaID_StateID_allocation();
 	         self->PtrToModelData = &self->modelData;
 	         self->PtrToModelData->dwork = &self->rtDW;
 	         self->PtrToModelData->inputs = &self->input;
@@ -243,15 +243,15 @@ After code generating the stateflow the following changes have to be made in the
 	         return (self);
          }
 
-         void uz_StateID_step(uz_PID_StateID_t *self) {
+         void uz_StateID_step(uz_ParaID_StateID_t *self) {
 	         uz_assert_not_NULL(self);
 	         StateID_step(self->PtrToModelData);
          }
          #endif
 
 
-#. Include the ``uz_PID_StateID.h`` file to the ``uz_ParameterID.h`` file.
-#. Add the new ``uz_PID_StateIDConfig_t`` and ``uz_PID_StateID_output_t`` to the :ref:`uz_ParameterID_Data_struct` in the ``uz_ParameterID_data.h`` file. Add the output struct as a pointer, similarly to the other output structs. 
+#. Include the ``uz_ParaID_StateID.h`` file to the ``uz_ParameterID.h`` file.
+#. Add the new ``uz_ParaID_StateIDConfig_t`` and ``uz_ParaID_StateID_output_t`` to the :ref:`uz_ParameterID_Data_struct` in the ``uz_ParameterID_data.h`` file. Add the output struct as a pointer, similarly to the other output structs. 
 #. Add default values for the config struct to the ``uz_ParameterID_initialize_data_structs`` function (like for the other states). Assign the address of the output struct here as well. 
 #. Add the new state to the ``uz_ParameterID_t`` declaration and ``uz_ParameterID_init`` function.
 #. Add a new static step function to the ``uz_ParameterID.c`` file, which wraps the assignment of inputs & outputs and step-function call.
@@ -260,7 +260,7 @@ After code generating the stateflow the following changes have to be made in the
          :linenos:
          :caption: Template code for static step function
 
-         static void uz_PID_StateID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
+         static void uz_ParaID_StateID_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
             uz_assert_not_NULL(self);
             uz_assert_not_NULL(Data);
             //Update State-Inputs
@@ -287,9 +287,9 @@ After code generating the stateflow the following changes have to be made in the
 
          //StateID
          if (self->ControlState->output.ControlFlags.transNr == xU || self->ControlState->output.GlobalConfig_out.Reset == true) {
-            uz_PID_StateID_step(self, Data);
+            uz_ParaID_StateID_step(self, Data);
          } else if (self->ControlState->output.GlobalConfig_out.StateID == false && self->StateID->output.enteredStateID == true) {
-            uz_PID_StateID_step(self, Data);
+            uz_ParaID_StateID_step(self, Data);
          }
 
          //
@@ -312,7 +312,7 @@ After code generating the stateflow the following changes have to be made in the
 
          //StateID
          if (self->ControlState->output.ControlFlags.enableStateID == true || self->ControlState->output.GlobalConfig_out.Reset == true) {
-            uz_PID_StateID_step(self, Data);
+            uz_ParaID_StateID_step(self, Data);
          }
 
 #. All necessary changes are now done. Depending on your setup, respectively the purpose of the new ``ID-state``, it may be feasible to adjust the ``uz_ParameterID_Controller`` and ``uz_ParameterID_generate_DutyCycle`` functions. Otherwise write new functions for this.

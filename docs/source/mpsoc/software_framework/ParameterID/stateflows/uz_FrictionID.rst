@@ -43,30 +43,30 @@ Necessary measurement values
 * omega_m
 
 
-.. _uz_PID_FrictionID_object:
+.. _uz_ParaID_FrictionID_object:
 
 FrictionID object
 =================
 
-.. doxygentypedef:: uz_PID_FrictionID_t
+.. doxygentypedef:: uz_ParaID_FrictionID_t
 
-.. _uz_PID_FrictionIDConfig:
+.. _uz_ParaID_FrictionIDConfig:
 
 FrictionID config
 =================
 
-.. doxygenstruct:: uz_PID_FrictionIDConfig_t
+.. doxygenstruct:: uz_ParaID_FrictionIDConfig_t
   :members: 
 
-.. _uz_PID_FrictionIDoutput:
+.. _uz_ParaID_FrictionIDoutput:
 
 FrictionID output
 =================
 
-.. doxygenstruct:: uz_PID_FrictionID_output_t
+.. doxygenstruct:: uz_ParaID_FrictionID_output_t
   :members: 
 
-.. _uz_PID_FrictionID_functions:
+.. _uz_ParaID_FrictionID_functions:
 
 FrictionID functions
 ====================

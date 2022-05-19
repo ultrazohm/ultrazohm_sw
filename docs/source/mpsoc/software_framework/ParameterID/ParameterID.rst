@@ -5,12 +5,12 @@ ParameterID
 ===========
 
 Toolbox for different code-generated stateflows to identify common parameters of a permanent magnet synchronous motor. This page explains the general structure of the ParameterID. 
-To set the ParameterID up in the UltraZohm software check out :ref:`uz_PID_setup`.
-For further information visit, :ref:`uz_ParameterID_Data_structs`, :ref:`uz_PID_new_control_algorithm`, :ref:`uz_PID_GUI` and :ref:`uz_PID_new_ID_state`.
+To set the ParameterID up in the UltraZohm software check out :ref:`uz_ParaID_setup`.
+For further information visit, :ref:`uz_ParameterID_Data_structs`, :ref:`uz_ParaID_new_control_algorithm`, :ref:`uz_ParaID_GUI` and :ref:`uz_ParaID_new_ID_state`.
 
 Overwiew
 ========
-.. _PID_overview_schematic:
+.. _ParaID_overview_schematic:
 
 .. tikz:: Schematic overview of the ParameterID signalflow
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
@@ -70,7 +70,7 @@ On top of that the ``ID-states`` inside the ParameterID are separated into two d
       This works, if the ``sampleTimeISR`` member of the :ref:`uz_Global_config_struct` is equal to the sampleTime of the function call. 
       This has been confirmed for an ISR-frequency of 10kHz and 20kHz.
 
-.. _PID_signalflow:
+.. _ParaID_signalflow:
 
 Signalflow in the ParameterID
 =============================
@@ -127,8 +127,8 @@ These are the following:
    
 On top of that, each unique ``ID-state`` has its own individual structs and signals:
 
-  * ``uz_StateIDConfig_t`` (i.e. for ElectricalID :ref:`uz_ElectricalIDConfig_t<uz_PID_ElectricalIDConfig>`), which is meant for all configuration values, which are unique to this specific ``ID-state``.
-  * ``uz_StateID_output_t`` (i.e. for ElectricalID :ref:`uz_ElectricalID_output_t<uz_PID_ElectricalIDoutput>`), which is meant for the identified output variables and supporting variables.
+  * ``uz_StateIDConfig_t`` (i.e. for ElectricalID :ref:`uz_ElectricalIDConfig_t<uz_ParaID_ElectricalIDConfig>`), which is meant for all configuration values, which are unique to this specific ``ID-state``.
+  * ``uz_StateID_output_t`` (i.e. for ElectricalID :ref:`uz_ElectricalID_output_t<uz_ParaID_ElectricalIDoutput>`), which is meant for the identified output variables and supporting variables.
   * ``enteredStateID`` flag for OfflineID- and OnlineID-states, which signals that the state has been entered.
   * ``finishedStateID`` flag for OfflineID-states, which signals that the ``ID-state`` is finished and another can be started.
   
@@ -152,7 +152,7 @@ Further documentation which explains the structure of the ParameterID in detail.
     general_information/change_control_algorithm
     general_information/create_new_id_state
   
-.. _uz_PID_ID_states:
+.. _uz_ParaID_ID_states:
 
 Stateflows
 **********

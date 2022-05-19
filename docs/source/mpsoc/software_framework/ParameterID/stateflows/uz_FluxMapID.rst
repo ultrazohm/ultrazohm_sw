@@ -63,30 +63,30 @@ Necessary measurement values
 * i_dq
 * v_dq
 
-.. _uz_PID_FluxMapID_object:
+.. _uz_ParaID_FluxMapID_object:
 
 FluxMapID object
 ================
 
-.. doxygentypedef:: uz_PID_FluxMapID_t
+.. doxygentypedef:: uz_ParaID_FluxMapID_t
 
-.. _uz_PID_FluxMapIDConfig:
+.. _uz_ParaID_FluxMapIDConfig:
 
 FluxMapID config
 ================
 
-.. doxygenstruct:: uz_PID_FluxMapIDConfig_t
+.. doxygenstruct:: uz_ParaID_FluxMapIDConfig_t
   :members: 
 
-.. _uz_PID_FluxMapIDoutput:
+.. _uz_ParaID_FluxMapIDoutput:
 
 FluxMapID output
 ================
 
-.. doxygenstruct:: uz_PID_FluxMapID_output_t
+.. doxygenstruct:: uz_ParaID_FluxMapID_output_t
   :members: 
 
-.. _uz_PID_FluxMapID_functions:
+.. _uz_ParaID_FluxMapID_functions:
 
 FluxMapID functions
 ===================

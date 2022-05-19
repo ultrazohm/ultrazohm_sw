@@ -1,4 +1,4 @@
-.. _uz_PID_setup:
+.. _uz_ParaID_setup:
 
 ======================================
 Setup and functions of the ParameterID
@@ -19,36 +19,36 @@ Setup
 
   //ParameterID Code
   uz_ParameterID_t* ParameterID = NULL;
-  uz_ParameterID_Data_t PID_Data = { 0 };
+  uz_ParameterID_Data_t ParaID_Data = { 0 };
   //Objects below are only needed, if the uz_FOC is used as the controller
   uz_FOC* FOC_instance = NULL;
   uz_SpeedControl_t* SpeedControl_instance = NULL;
 
   int main(void) {
-      ParameterID = uz_ParameterID_init(&PID_Data);
+      ParameterID = uz_ParameterID_init(&ParaID_Data);
      //Code below is only needed, if the uz_FOC is used as the controller 
      struct uz_PI_Controller_config config_id = { 
-          .Kp = PID_Data.GlobalConfig.Kp_id, 
-          .Ki = PID_Data.GlobalConfig.Ki_id, 
+          .Kp = ParaID_Data.GlobalConfig.Kp_id, 
+          .Ki = ParaID_Data.GlobalConfig.Ki_id, 
           .samplingTime_sec = 0.00005f, 
           .upper_limit = 15.0f,
           .lower_limit = -15.0f };
      struct uz_PI_Controller_config config_iq = { 
-          .Kp = PID_Data.GlobalConfig.Kp_iq, 
-          .Ki = PID_Data.GlobalConfig.Ki_iq, 
+          .Kp = ParaID_Data.GlobalConfig.Kp_iq, 
+          .Ki = ParaID_Data.GlobalConfig.Ki_iq, 
           .samplingTime_sec = 0.00005f, 
           .upper_limit = 15.0f,
           .lower_limit = -15.0f };
      struct uz_SpeedControl_config config_n = {
-          .config_controller.Kp = PID_Data.GlobalConfig.Kp_n,
-          .config_controller.Ki = PID_Data.GlobalConfig.Ki_n, 
+          .config_controller.Kp = ParaID_Data.GlobalConfig.Kp_n,
+          .config_controller.Ki = ParaID_Data.GlobalConfig.Ki_n, 
           .config_controller.samplingTime_sec = 0.00005f, 
           .config_controller.upper_limit = 10.0f,
           .config_controller.lower_limit = -10.0f,
-          .config_PMSM = PID_Data.GlobalConfig.PMSM_config,
+          .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
           .is_field_weakening_active = false };
      struct uz_FOC_config config_FOC = {
-          .config_PMSM = PID_Data.GlobalConfig.PMSM_config,
+          .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
           .config_id = config_id, 
           .config_iq = config_iq };
      FOC_instance = uz_FOC_init(config_FOC);
@@ -75,12 +75,12 @@ These functions are to compute heavy to be executed in the ISR.
   :linenos:
   :caption: Code to calculate FluxMaps inside main.c while(1)-loop
     
-  if (PID_Data.OnlineID_Output->clean_array) {
-	uz_ParameterID_CleanPsiArray(ParameterID, &PID_Data);
+  if (ParaID_Data.OnlineID_Output->clean_array) {
+	uz_ParameterID_CleanPsiArray(ParameterID, &ParaID_Data);
   }
-  if (PID_Data.calculate_flux_maps) {
-	uz_ParameterID_CalcFluxMaps(ParameterID, &PID_Data);
-	PID_Data.calculate_flux_maps = false;
+  if (ParaID_Data.calculate_flux_maps) {
+	uz_ParameterID_CalcFluxMaps(ParameterID, &ParaID_Data);
+	ParaID_Data.calculate_flux_maps = false;
   }
 
 
@@ -94,44 +94,44 @@ They are technically not required for the ParameterID and can, if desired, be re
   :emphasize-lines: 3,29
   :caption: Changes in the isr.c
 
-  extern uz_ParameterID_Data_t PID_Data;
+  extern uz_ParameterID_Data_t ParaID_Data;
   extern uz_ParameterID_t* ParameterID;
   //Next lines only needed, if the uz_FOC is used as the controller
   extern uz_FOC* FOC_instance;
   extern uz_SpeedControl_t* SpeedControl_instance;
-  uz_3ph_dq_t PID_v_dq = { 0 };
-  struct uz_DutyCycle_t PID_DutyCycle = { 0 };
+  uz_3ph_dq_t ParaID_v_dq = { 0 };
+  struct uz_DutyCycle_t ParaID_DutyCycle = { 0 };
 
   void ISR_Control(void *data) {  
-     PID_Data.ActualValues.I_UVW.U = ....;
-	PID_Data.ActualValues.I_UVW.V = ....;
-	PID_Data.ActualValues.I_UVW.W = ....;
-	PID_Data.ActualValues.V_DC = ....;
-	PID_Data.ActualValues.V_UVW.U = ....;
-	PID_Data.ActualValues.V_UVW.V = ....;
-	PID_Data.ActualValues.V_UVW.W = ....;
+     ParaID_Data.ActualValues.I_UVW.U = ....;
+	ParaID_Data.ActualValues.I_UVW.V = ....;
+	ParaID_Data.ActualValues.I_UVW.W = ....;
+	ParaID_Data.ActualValues.V_DC = ....;
+	ParaID_Data.ActualValues.V_UVW.U = ....;
+	ParaID_Data.ActualValues.V_UVW.V = ....;
+	ParaID_Data.ActualValues.V_UVW.W = ....;
 
-	PID_Data.ActualValues.omega_m = ....;
-	PID_Data.ActualValues.omega_el = ....;
-	PID_Data.ActualValues.theta_el = ....;
+	ParaID_Data.ActualValues.omega_m = ....;
+	ParaID_Data.ActualValues.omega_el = ....;
+	ParaID_Data.ActualValues.theta_el = ....;
 
 	//Calculate missing ActualValues
-	PID_Data.ActualValues.i_dq = uz_transformation_3ph_abc_to_dq(PID_Data.ActualValues.I_UVW, PID_Data.ActualValues.theta_el);
-	PID_Data.ActualValues.v_dq = uz_transformation_3ph_abc_to_dq(PID_Data.ActualValues.V_UVW, PID_Data.ActualValues.theta_el);
-	PID_Data.ActualValues.theta_m = ....;
+	ParaID_Data.ActualValues.i_dq = uz_transformation_3ph_abc_to_dq(ParaID_Data.ActualValues.I_UVW, ParaID_Data.ActualValues.theta_el);
+	ParaID_Data.ActualValues.v_dq = uz_transformation_3ph_abc_to_dq(ParaID_Data.ActualValues.V_UVW, ParaID_Data.ActualValues.theta_el);
+	ParaID_Data.ActualValues.theta_m = ....;
 
-	if (ultrazohm_state_machine_get_state() == control_state) {
-          uz_ParameterID_step(ParameterID, &PID_Data);
-		//Next lines only needed, if the uz_FOC is used as the controller
-          PID_v_dq = uz_ParameterID_Controller(&PID_Data, FOC_instance, SpeedControl_instance);
-		PID_DutyCycle = uz_ParameterID_generate_DutyCycle(&PID_Data, PID_v_dq, Global_Data.objects.pwm_d1);
-		Global_Data.rasv.halfBridge1DutyCycle = PID_DutyCycle.DutyCycle_U;
-		Global_Data.rasv.halfBridge2DutyCycle = PID_DutyCycle.DutyCycle_V;
-		Global_Data.rasv.halfBridge3DutyCycle = PID_DutyCycle.DutyCycle_W;
+     if (ultrazohm_state_machine_get_state() == control_state) {
+          uz_ParameterID_step(ParameterID, &ParaID_Data);
+          //Next lines only needed, if the uz_FOC is used as the controller
+          ParaID_v_dq = uz_ParameterID_Controller(&ParaID_Data, FOC_instance, SpeedControl_instance);
+          ParaID_DutyCycle = uz_ParameterID_generate_DutyCycle(&ParaID_Data, ParaID_v_dq, Global_Data.objects.pwm_d1);
+          Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.DutyCycle_U;
+          Global_Data.rasv.halfBridge2DutyCycle = ParaID_DutyCycle.DutyCycle_V;
+          Global_Data.rasv.halfBridge3DutyCycle = ParaID_DutyCycle.DutyCycle_W;
 	} else {
-		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+          Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+          Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+          Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
      }
     }
 
@@ -141,28 +141,28 @@ In the ``javascope.c`` the measurement values from ``ActualValues`` struct shoul
   :linenos:
   :caption: changes to javascope.c
 
-  extern uz_ParameterID_Data_t PID_Data;  
+  extern uz_ParameterID_Data_t ParaID_Data;  
   
   int JavaScope_initalize(DS_Data* data) {
      ....
      js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_ia] = &PID_Data.ActualValues.I_UVW.U;
-	js_ch_observable[JSO_ib] = &PID_Data.ActualValues.I_UVW.V;
-	js_ch_observable[JSO_ic] = &PID_Data.ActualValues.I_UVW.W;
-	js_ch_observable[JSO_ua] = &PID_Data.ActualValues.V_UVW.U;
-	js_ch_observable[JSO_ub] = &PID_Data.ActualValues.V_UVW.V;
-	js_ch_observable[JSO_uc] = &PID_Data.ActualValues.V_UVW.W;
-	js_ch_observable[JSO_iq] = &PID_Data.ActualValues.i_dq.q;
-	js_ch_observable[JSO_id] = &PID_Data.ActualValues.i_dq.d;
-	js_ch_observable[JSO_Theta_el] = &PID_Data.ActualValues.theta_el;
-	js_ch_observable[JSO_theta_mech] = &PID_Data.ActualValues.theta_m;
-	js_ch_observable[JSO_ud] = &PID_Data.ActualValues.v_dq.d;
-	js_ch_observable[JSO_uq] = &PID_Data.ActualValues.v_dq.q;
+	js_ch_observable[JSO_ia] = &ParaID_Data.ActualValues.I_UVW.U;
+	js_ch_observable[JSO_ib] = &ParaID_Data.ActualValues.I_UVW.V;
+	js_ch_observable[JSO_ic] = &ParaID_Data.ActualValues.I_UVW.W;
+	js_ch_observable[JSO_ua] = &ParaID_Data.ActualValues.V_UVW.U;
+	js_ch_observable[JSO_ub] = &ParaID_Data.ActualValues.V_UVW.V;
+	js_ch_observable[JSO_uc] = &ParaID_Data.ActualValues.V_UVW.W;
+	js_ch_observable[JSO_iq] = &ParaID_Data.ActualValues.i_dq.q;
+	js_ch_observable[JSO_id] = &ParaID_Data.ActualValues.i_dq.d;
+	js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
+	js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
+	js_ch_observable[JSO_ud] = &ParaID_Data.ActualValues.v_dq.d;
+	js_ch_observable[JSO_uq] = &ParaID_Data.ActualValues.v_dq.q;
      ....
      }  
 
 The ParameterID is now setup and can be controlled via the debugger window. Since this is not a practical task, the :ref:`Javascope` has a separate panel to control the ParmaeterID. 
-The additional setup steps are detailed in :ref:`uz_PID_GUI_setup`.
+The additional setup steps are detailed in :ref:`uz_ParaID_GUI_setup`.
 
 Functions
 =========
@@ -176,7 +176,7 @@ Furthermore the :ref:`uz_ParameterID_Data_struct` itself is initialized here as 
 
 .. doxygenfunction:: uz_ParameterID_step
 
-This function steps the ParameterID once per cycle. It implements everything necessary shown in the blue block in :numref:`PID_overview_schematic`. 
+This function steps the ParameterID once per cycle. It implements everything necessary shown in the blue block in :numref:`ParaID_overview_schematic`. 
 To eliminate unnecessary function calls and improve the execution time of this function, only the :ref:`uz_ControlState` will always be stepped. 
 Every other ``ID-state`` is guarded behind if-statements. Furthermore it determines, which :ref:`uz_Controller_parameters_struct` will be written to the output. 
 

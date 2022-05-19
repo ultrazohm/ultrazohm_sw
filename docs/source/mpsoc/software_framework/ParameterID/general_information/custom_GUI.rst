@@ -1,4 +1,4 @@
-.. _uz_PID_GUI:
+.. _uz_ParaID_GUI:
 
 =============================
 Custom uz_GUI for ParameterID
@@ -8,7 +8,7 @@ Since controlling the ParameterID only via the debugger windows is cumbersome an
 To use this however, additional setup steps have to be taken.
 This page details these additional steps needed and how to use the uz_GUI.
 
-.. _uz_PID_GUI_usage:
+.. _uz_ParaID_GUI_usage:
 
 Usage
 =====
@@ -41,7 +41,7 @@ This section gives an overview on how to use the ParameterID tab in the uz_GUI.
   
 #. Each ``ID-state`` has its own individual panel, where the individual config values can be configured and the identified values can be displayed. They have to be configured before entering the ``ID-state``. Standard values for the config values are displayed, which proved appropriate in the past. They can be used as an introductory baseline. 
   
-.. _uz_PID_GUI_setup:
+.. _uz_ParaID_GUI_setup:
 
 Setup
 =====
@@ -78,75 +78,75 @@ Setup
             My_Button_7,
             My_Button_8,
             Error_Reset,
-            PID_Enable_System,
-            PID_Enable_Control,
-            PID_Enable_ParameterID,
-            PID_Disable_ParameterID,
-            PID_Enable_ElectricalID,
-            PID_Disable_ElectricalID,
-            PID_Enable_FrictionID,
-            PID_Disable_FrictionID,
-            PID_Enable_TwoMassID,
-            PID_Disable_TwoMassID,
-            PID_Enable_FluxMapID,
-            PID_Disable_FluxMapID,
-            PID_Enable_OnlineID,
-            PID_Disable_OnlineID,
-            PID_Enable_Current_Control,
-            PID_Enable_Speed_Control,
-            PID_Disable_FOC_Control,
-            PID_ACCEPT,
-            PID_RESET,
-            PID_EID_sampleTimeISR,
-            PID_EID_n_ref_meas,
-            PID_EID_goertzl_Amp,
-            PID_EID_goertzl_Freq,
-            PID_EID_DutyCyc,
-            PID_EID_MaxContinousCurrent,
-            PID_EID_Enable_IdentLQ,
-            PID_EID_Disable_IdentLQ,
-            PID_EID_Admit_Params,
-            PID_FID_max_speed,
-            PID_FID_N_Brk,
-            PID_FID_N_Visco,
-            PID_FID_s_step,
-            PID_FID_Brk_Count,
-            PID_FID_eta_speed,
-            PID_FID_Array_Control_counter,
-            PID_TMID_Scale_PRBS,
-            PID_TMID_d_TMS_start,
-            PID_TMID_n_ref,
-            PID_TMID_f_min,
-            PID_TMID_f_max,
-            PID_TMID_Admit_Params,
-            PID_FMID_i_d_start,
-            PID_FMID_i_d_stop,
-            PID_FMID_i_d_step,
-            PID_FMID_i_q_start,
-            PID_FMID_i_q_stop,
-            PID_FMID_i_q_step,
-            PID_FMID_Rs_ref,
-            PID_FMID_Temp_ref,
-            PID_FMID_identRAmp,
-            PID_FMID_enable_ident_R,
-            PID_FMID_disable_ident_R,
-            PID_FMID_enable_AMM,
-            PID_FMID_disable_AMM,
-            PID_OID_Refresh_Flux_Maps,
-            PID_OID_Reset_OnlineID,
-            PID_OID_Enable_AutoCurrentControl,
-            PID_OID_Disable_AutoCurrentControl,
-            PID_OID_d_current_steps,
-            PID_OID_q_current_steps,
-            PID_OID_max_current,
-            PID_OID_ref_temp,
-            PID_OID_ref_Rs,
-            PID_OID_max_speed,
-            PID_OID_min_speed,
-            PID_OID_Ident_range_factor,
-            PID_OID_max_ident_pause,
-            PID_OID_identR_Amp,
-            PID_OID_Fluxmap_Control_counter,
+            ParaID_Enable_System,
+            ParaID_Enable_Control,
+            ParaID_Enable_ParameterID,
+            ParaID_Disable_ParameterID,
+            ParaID_Enable_ElectricalID,
+            ParaID_Disable_ElectricalID,
+            ParaID_Enable_FrictionID,
+            ParaID_Disable_FrictionID,
+            ParaID_Enable_TwoMassID,
+            ParaID_Disable_TwoMassID,
+            ParaID_Enable_FluxMaParaID,
+            ParaID_Disable_FluxMaParaID,
+            ParaID_Enable_OnlineID,
+            ParaID_Disable_OnlineID,
+            ParaID_Enable_Current_Control,
+            ParaID_Enable_Speed_Control,
+            ParaID_Disable_FOC_Control,
+            ParaID_ACCEPT,
+            ParaID_RESET,
+            ParaID_EID_sampleTimeISR,
+            ParaID_EID_n_ref_meas,
+            ParaID_EID_goertzl_Amp,
+            ParaID_EID_goertzl_Freq,
+            ParaID_EID_DutyCyc,
+            ParaID_EID_MaxContinousCurrent,
+            ParaID_EID_Enable_IdentLQ,
+            ParaID_EID_Disable_IdentLQ,
+            ParaID_EID_Admit_Params,
+            ParaID_FID_max_speed,
+            ParaID_FID_N_Brk,
+            ParaID_FID_N_Visco,
+            ParaID_FID_s_step,
+            ParaID_FID_Brk_Count,
+            ParaID_FID_eta_speed,
+            ParaID_FID_Array_Control_counter,
+            ParaID_TMID_Scale_PRBS,
+            ParaID_TMID_d_TMS_start,
+            ParaID_TMID_n_ref,
+            ParaID_TMID_f_min,
+            ParaID_TMID_f_max,
+            ParaID_TMID_Admit_Params,
+            ParaID_FMID_i_d_start,
+            ParaID_FMID_i_d_stop,
+            ParaID_FMID_i_d_step,
+            ParaID_FMID_i_q_start,
+            ParaID_FMID_i_q_stop,
+            ParaID_FMID_i_q_step,
+            ParaID_FMID_Rs_ref,
+            ParaID_FMID_Temp_ref,
+            ParaID_FMID_identRAmp,
+            ParaID_FMID_enable_ident_R,
+            ParaID_FMID_disable_ident_R,
+            ParaID_FMID_enable_AMM,
+            ParaID_FMID_disable_AMM,
+            ParaID_OID_Refresh_Flux_Maps,
+            ParaID_OID_Reset_OnlineID,
+            ParaID_OID_Enable_AutoCurrentControl,
+            ParaID_OID_Disable_AutoCurrentControl,
+            ParaID_OID_d_current_steps,
+            ParaID_OID_q_current_steps,
+            ParaID_OID_max_current,
+            ParaID_OID_ref_temp,
+            ParaID_OID_ref_Rs,
+            ParaID_OID_max_speed,
+            ParaID_OID_min_speed,
+            ParaID_OID_Ident_range_factor,
+            ParaID_OID_max_ident_pause,
+            ParaID_OID_identR_Amp,
+            ParaID_OID_Fluxmap_Control_counter,
             GUI_BTN_ENDMARKER
         };
 
@@ -231,7 +231,7 @@ Setup
     
         // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
         // Do not change the first (zero) and last (end) entries.
-        extern uz_ParameterID_Data_t PID_Data;
+        extern uz_ParameterID_Data_t ParaID_Data;
         //If FOC is used
         extern uz_FOC* FOC_instance;
         extern uz_SpeedControl_t* SpeedControl_instance;
@@ -247,310 +247,310 @@ Setup
                 .... 
                 //Change Send_Filed 1-3
                 case (Set_Send_Field_1):
-                    PID_Data.GlobalConfig.n_ref = value;
+                    ParaID_Data.GlobalConfig.n_ref = value;
                     break;
 
                 case (Set_Send_Field_2):
-                    PID_Data.GlobalConfig.i_dq_ref.d = value;
+                    ParaID_Data.GlobalConfig.i_dq_ref.d = value;
                     break;
 
                 case (Set_Send_Field_3):
-                    PID_Data.GlobalConfig.i_dq_ref.q = value;
+                    ParaID_Data.GlobalConfig.i_dq_ref.q = value;
                     break; 
                 ....
                 //After all My_Button cases add the following
                 //ParameterID
 
-                case (PID_Enable_System):
+                case (ParaID_Enable_System):
                     ultrazohm_state_machine_set_enable_system(true);
                     break;
 
-                case (PID_Enable_Control):
+                case (ParaID_Enable_Control):
                     ultrazohm_state_machine_set_enable_control(true);
                     break;
 
-                case (PID_Enable_ParameterID):
-                    PID_Data.GlobalConfig.enableParameterID = true;
+                case (ParaID_Enable_ParameterID):
+                    ParaID_Data.GlobalConfig.enableParameterID = true;
                     break;
 
-                case (PID_Disable_ParameterID):
-                    PID_Data.GlobalConfig.enableParameterID = false;
-                    PID_Data.GlobalConfig.ElectricalID = false;
-                    PID_Data.GlobalConfig.TwoMassID = false;
-                    PID_Data.GlobalConfig.FrictionID = false;
-                    PID_Data.GlobalConfig.FluxMapID = false;
-                    PID_Data.GlobalConfig.OnlineID = false;
+                case (ParaID_Disable_ParameterID):
+                    ParaID_Data.GlobalConfig.enableParameterID = false;
+                    ParaID_Data.GlobalConfig.ElectricalID = false;
+                    ParaID_Data.GlobalConfig.TwoMassID = false;
+                    ParaID_Data.GlobalConfig.FrictionID = false;
+                    ParaID_Data.GlobalConfig.FluxMapID = false;
+                    ParaID_Data.GlobalConfig.OnlineID = false;
                 break;
 
-                case (PID_Enable_Current_Control):
+                case (ParaID_Enable_Current_Control):
                     if (ultrazohm_state_machine_get_state() != control_state) {
-                        PID_Data.PID_Control_Selection = Current_Control;
+                        ParaID_Data.ParaID_Control_Selection = Current_Control;
                     }
                     break;
 
-                case (PID_Enable_Speed_Control):
+                case (ParaID_Enable_Speed_Control):
                     if (ultrazohm_state_machine_get_state() != control_state) {
-                        PID_Data.PID_Control_Selection = Speed_Control;
+                        ParaID_Data.ParaID_Control_Selection = Speed_Control;
                     }
                     break;
 
-                case (PID_Disable_FOC_Control):
-                    PID_Data.PID_Control_Selection = No_Control;
+                case (ParaID_Disable_FOC_Control):
+                    ParaID_Data.ParaID_Control_Selection = No_Control;
                     break;
 
-                case (PID_Enable_ElectricalID):
-                    PID_Data.GlobalConfig.ElectricalID = true;
+                case (ParaID_Enable_ElectricalID):
+                    ParaID_Data.GlobalConfig.ElectricalID = true;
                     break;
 
-                case (PID_Disable_ElectricalID):
-                    PID_Data.GlobalConfig.ElectricalID = false;
+                case (ParaID_Disable_ElectricalID):
+                    ParaID_Data.GlobalConfig.ElectricalID = false;
                     break;
 
-                case (PID_Enable_FrictionID):
-                    PID_Data.GlobalConfig.FrictionID = true;
+                case (ParaID_Enable_FrictionID):
+                    ParaID_Data.GlobalConfig.FrictionID = true;
                     break;
 
-                case (PID_Disable_FrictionID):
-                    PID_Data.GlobalConfig.FrictionID = false;
+                case (ParaID_Disable_FrictionID):
+                    ParaID_Data.GlobalConfig.FrictionID = false;
                     break;
 
-                case (PID_Enable_TwoMassID):
-                    PID_Data.GlobalConfig.TwoMassID = true;
+                case (ParaID_Enable_TwoMassID):
+                    ParaID_Data.GlobalConfig.TwoMassID = true;
                     break;
 
-                case (PID_Disable_TwoMassID):
-                    PID_Data.GlobalConfig.TwoMassID = false;
+                case (ParaID_Disable_TwoMassID):
+                    ParaID_Data.GlobalConfig.TwoMassID = false;
                     break;
 
-                case (PID_Enable_FluxMapID):
-                    PID_Data.GlobalConfig.FluxMapID = true;
+                case (ParaID_Enable_FluxMapID):
+                    ParaID_Data.GlobalConfig.FluxMapID = true;
                     break;
 
-                case (PID_Disable_FluxMapID):
-                    PID_Data.GlobalConfig.FluxMapID = false;
+                case (ParaID_Disable_FluxMapID):
+                    ParaID_Data.GlobalConfig.FluxMapID = false;
                     break;
 
-                case (PID_Enable_OnlineID):
-                    PID_Data.GlobalConfig.OnlineID = true;
+                case (ParaID_Enable_OnlineID):
+                    ParaID_Data.GlobalConfig.OnlineID = true;
                     break;
 
-                case (PID_Disable_OnlineID):
-                    PID_Data.GlobalConfig.OnlineID = false;
-                    PID_Data.AutoRefCurrents_Config.enableCRS = false;
+                case (ParaID_Disable_OnlineID):
+                    ParaID_Data.GlobalConfig.OnlineID = false;
+                    ParaID_Data.AutoRefCurrents_Config.enableCRS = false;
                     break;
 
-                case (PID_ACCEPT):
-                    PID_Data.GlobalConfig.ACCEPT = true;
+                case (ParaID_ACCEPT):
+                    ParaID_Data.GlobalConfig.ACCEPT = true;
                     break;
 
-                case (PID_RESET):
-                    PID_Data.GlobalConfig.Reset = true;
-                    PID_Data.GlobalConfig.ElectricalID = false;
-                    PID_Data.GlobalConfig.TwoMassID = false;
-                    PID_Data.GlobalConfig.FrictionID = false;
-                    PID_Data.GlobalConfig.FluxMapID = false;
-                    PID_Data.GlobalConfig.OnlineID = false;
-                    PID_Data.AutoRefCurrents_Config.enableCRS = false;
-                    PID_Data.PID_Control_Selection = No_Control;
+                case (ParaID_RESET):
+                    ParaID_Data.GlobalConfig.Reset = true;
+                    ParaID_Data.GlobalConfig.ElectricalID = false;
+                    ParaID_Data.GlobalConfig.TwoMassID = false;
+                    ParaID_Data.GlobalConfig.FrictionID = false;
+                    ParaID_Data.GlobalConfig.FluxMapID = false;
+                    ParaID_Data.GlobalConfig.OnlineID = false;
+                    ParaID_Data.AutoRefCurrents_Config.enableCRS = false;
+                    ParaID_Data.ParaID_Control_Selection = No_Control;
                     break;
 
-                case (PID_EID_sampleTimeISR):
-                    PID_Data.GlobalConfig.sampleTimeISR = value * 0.000001f;
+                case (ParaID_EID_sampleTimeISR):
+                    ParaID_Data.GlobalConfig.sampleTimeISR = value * 0.000001f;
                     break;
 
-                case (PID_EID_n_ref_meas):
-                    PID_Data.ElectricalID_Config.n_ref_measurement = value;
+                case (ParaID_EID_n_ref_meas):
+                    ParaID_Data.ElectricalID_Config.n_ref_measurement = value;
                     break;
 
-                case (PID_EID_goertzl_Amp):
-                    PID_Data.ElectricalID_Config.goertzlAmp = value;
+                case (ParaID_EID_goertzl_Amp):
+                    ParaID_Data.ElectricalID_Config.goertzlAmp = value;
                     break;
 
-                case (PID_EID_goertzl_Freq):
-                    PID_Data.ElectricalID_Config.goertzlFreq = value;
+                case (ParaID_EID_goertzl_Freq):
+                    ParaID_Data.ElectricalID_Config.goertzlFreq = value;
                     break;
 
-                case (PID_EID_DutyCyc):
-                    PID_Data.ElectricalID_Config.dutyCyc = value;
+                case (ParaID_EID_DutyCyc):
+                    ParaID_Data.ElectricalID_Config.dutyCyc = value;
                     break;
 
-                case (PID_EID_MaxContinousCurrent):
-                    PID_Data.GlobalConfig.PMSM_config.I_max_Ampere = value;
+                case (ParaID_EID_MaxContinousCurrent):
+                    ParaID_Data.GlobalConfig.PMSM_config.I_max_Ampere = value;
                     break;
 
-                case (PID_EID_Enable_IdentLQ):
-                    PID_Data.ElectricalID_Config.identLq = true;
+                case (ParaID_EID_Enable_IdentLQ):
+                    ParaID_Data.ElectricalID_Config.identLq = true;
                     break;
 
-                case (PID_EID_Disable_IdentLQ):
-                    PID_Data.ElectricalID_Config.identLq = false;
+                case (ParaID_EID_Disable_IdentLQ):
+                    ParaID_Data.ElectricalID_Config.identLq = false;
                     break;
 
-                case (PID_EID_Admit_Params):
+                case (ParaID_EID_Admit_Params):
                     //If FOC is used
-                    uz_FOC_set_PMSM_parameters(FOC_instance, PID_Data.ElectricalID_Output->PMSM_parameters);
-                    uz_SpeedControl_set_PMSM_config(SpeedControl_instance, PID_Data.ElectricalID_Output->PMSM_parameters);
+                    uz_FOC_set_PMSM_parameters(FOC_instance, ParaID_Data.ElectricalID_Output->PMSM_parameters);
+                    uz_SpeedControl_set_PMSM_config(SpeedControl_instance, ParaID_Data.ElectricalID_Output->PMSM_parameters);
                     break;
 
-                case (PID_FID_max_speed):
-                    PID_Data.FrictionID_Config.n_eva_max = value;
+                case (ParaID_FID_max_speed):
+                    ParaID_Data.FrictionID_Config.n_eva_max = value;
                     break;
 
-                case (PID_FID_N_Brk):
-                    PID_Data.FrictionID_Config.N_Brk = value;
+                case (ParaID_FID_N_Brk):
+                    ParaID_Data.FrictionID_Config.N_Brk = value;
                     break;
 
-                case (PID_FID_N_Visco):
-                    PID_Data.FrictionID_Config.N_Visco = value;
+                case (ParaID_FID_N_Visco):
+                    ParaID_Data.FrictionID_Config.N_Visco = value;
                     break;
 
-                case (PID_FID_s_step):
-                    PID_Data.FrictionID_Config.StepScale = value;
+                case (ParaID_FID_s_step):
+                    ParaID_Data.FrictionID_Config.StepScale = value;
                     break;
 
-                case (PID_FID_Brk_Count):
-                    PID_Data.FrictionID_Config.BrkCount = value;
+                case (ParaID_FID_Brk_Count):
+                    ParaID_Data.FrictionID_Config.BrkCount = value;
                     break;
 
-                case (PID_FID_eta_speed):
-                    PID_Data.FrictionID_Config.eta = value;
+                case (ParaID_FID_eta_speed):
+                    ParaID_Data.FrictionID_Config.eta = value;
                     break;
 
-                case (PID_TMID_Scale_PRBS):
-                    PID_Data.TwoMassID_Config.ScaleTorquePRBS = value;
+                case (ParaID_TMID_Scale_PRBS):
+                    ParaID_Data.TwoMassID_Config.ScaleTorquePRBS = value;
                     break;
 
-                case (PID_TMID_d_TMS_start):
-                    PID_Data.TwoMassID_Config.d_TMS_start = value;
+                case (ParaID_TMID_d_TMS_start):
+                    ParaID_Data.TwoMassID_Config.d_TMS_start = value;
                     break;
 
-                case (PID_TMID_n_ref):
-                    PID_Data.TwoMassID_Config.n_ref_measurement = value;
+                case (ParaID_TMID_n_ref):
+                    ParaID_Data.TwoMassID_Config.n_ref_measurement = value;
                     break;
 
-                case (PID_TMID_f_min):
-                    PID_Data.TwoMassID_Config.f_min = value;
+                case (ParaID_TMID_f_min):
+                    ParaID_Data.TwoMassID_Config.f_min = value;
                     break;
 
-                case (PID_TMID_f_max):
-                    PID_Data.TwoMassID_Config.f_max = value;
+                case (ParaID_TMID_f_max):
+                    ParaID_Data.TwoMassID_Config.f_max = value;
                     break;
 
-                case (PID_FMID_i_d_start):
-                    PID_Data.FluxMapID_Config.IDstart = value;
+                case (ParaID_FMID_i_d_start):
+                    ParaID_Data.FluxMapID_Config.IDstart = value;
                     break;
 
-                case (PID_FMID_i_d_stop):
-                    PID_Data.FluxMapID_Config.IDstop = value;
+                case (ParaID_FMID_i_d_stop):
+                    ParaID_Data.FluxMapID_Config.IDstop = value;
                     break;
 
-                case (PID_FMID_i_d_step):
-                    PID_Data.FluxMapID_Config.IDstepsize = value;
+                case (ParaID_FMID_i_d_step):
+                    ParaID_Data.FluxMapID_Config.IDstepsize = value;
                     break;
 
-                case (PID_FMID_i_q_start):
-                    PID_Data.FluxMapID_Config.IQstart = value;
+                case (ParaID_FMID_i_q_start):
+                    ParaID_Data.FluxMapID_Config.IQstart = value;
                     break;
 
-                case (PID_FMID_i_q_stop):
-                    PID_Data.FluxMapID_Config.IQstop = value;
+                case (ParaID_FMID_i_q_stop):
+                    ParaID_Data.FluxMapID_Config.IQstop = value;
                     break;
 
-                case (PID_FMID_i_q_step):
-                    PID_Data.FluxMapID_Config.IQstepsize = value;
+                case (ParaID_FMID_i_q_step):
+                    ParaID_Data.FluxMapID_Config.IQstepsize = value;
                     break;
 
-                case (PID_FMID_Rs_ref):
-                    PID_Data.FluxMapID_Config.R_s_ref = value;
+                case (ParaID_FMID_Rs_ref):
+                    ParaID_Data.FluxMapID_Config.R_s_ref = value;
                     break;
 
-                case (PID_FMID_Temp_ref):
-                    PID_Data.FluxMapID_Config.Temp_ref = value;
+                case (ParaID_FMID_Temp_ref):
+                    ParaID_Data.FluxMapID_Config.Temp_ref = value;
                     break;
 
-                case (PID_FMID_identRAmp):
-                    PID_Data.FluxMapID_Config.identRAmp = value;
+                case (ParaID_FMID_identRAmp):
+                    ParaID_Data.FluxMapID_Config.identRAmp = value;
                     break;
 
-                case (PID_FMID_enable_ident_R):
-                    PID_Data.FluxMapID_Config.identR = true;
+                case (ParaID_FMID_enable_ident_R):
+                    ParaID_Data.FluxMapID_Config.identR = true;
                     break;
 
-                case (PID_FMID_disable_ident_R):
-                    PID_Data.FluxMapID_Config.identR = false;
+                case (ParaID_FMID_disable_ident_R):
+                    ParaID_Data.FluxMapID_Config.identR = false;
                     break;
 
-                case (PID_FMID_enable_AMM):
-                    PID_Data.FluxMapID_Config.start_FM_ID = true;
+                case (ParaID_FMID_enable_AMM):
+                    ParaID_Data.FluxMapID_Config.start_FM_ID = true;
                     break;
 
-                case (PID_FMID_disable_AMM):
-                    PID_Data.FluxMapID_Config.start_FM_ID = false;
+                case (ParaID_FMID_disable_AMM):
+                    ParaID_Data.FluxMapID_Config.start_FM_ID = false;
                     break;
 
-                case (PID_OID_Refresh_Flux_Maps):
-                    PID_Data.calculate_flux_maps = true;
+                case (ParaID_OID_Refresh_Flux_Maps):
+                    ParaID_Data.calculate_flux_maps = true;
                     break;
 
-                case (PID_OID_Reset_OnlineID):
-                    PID_Data.OnlineID_Config.OnlineID_Reset = true;
-                    PID_Data.AutoRefCurrents_Config.Reset = true;
-                    PID_Data.AutoRefCurrents_Config.enableCRS = false;
+                case (ParaID_OID_Reset_OnlineID):
+                    ParaID_Data.OnlineID_Config.OnlineID_Reset = true;
+                    ParaID_Data.AutoRefCurrents_Config.Reset = true;
+                    ParaID_Data.AutoRefCurrents_Config.enableCRS = false;
                     break;
 
-                case (PID_OID_Enable_AutoCurrentControl):
-                    PID_Data.AutoRefCurrents_Config.enableCRS = true;
+                case (ParaID_OID_Enable_AutoCurrentControl):
+                    ParaID_Data.AutoRefCurrents_Config.enableCRS = true;
                     break;
 
-                case (PID_OID_Disable_AutoCurrentControl):
-                    PID_Data.AutoRefCurrents_Config.enableCRS = false;
+                case (ParaID_OID_Disable_AutoCurrentControl):
+                    ParaID_Data.AutoRefCurrents_Config.enableCRS = false;
                     break;
 
-                case (PID_OID_d_current_steps):
-                    PID_Data.AutoRefCurrents_Config.id_points = value;
+                case (ParaID_OID_d_current_steps):
+                    ParaID_Data.AutoRefCurrents_Config.id_points = value;
                     break;
 
-                case (PID_OID_q_current_steps):
-                    PID_Data.AutoRefCurrents_Config.iq_points = value;
+                case (ParaID_OID_q_current_steps):
+                    ParaID_Data.AutoRefCurrents_Config.iq_points = value;
                     break;
 
-                case (PID_OID_max_current):
-                    PID_Data.AutoRefCurrents_Config.max_current = value;
+                case (ParaID_OID_max_current):
+                    ParaID_Data.AutoRefCurrents_Config.max_current = value;
                     break;
 
-                case (PID_OID_ref_temp):
-                    PID_Data.OnlineID_Config.Temp_ref = value;
+                case (ParaID_OID_ref_temp):
+                    ParaID_Data.OnlineID_Config.Temp_ref = value;
                     break;
 
-                case (PID_OID_ref_Rs):
-                    PID_Data.GlobalConfig.PMSM_config.R_ph_Ohm = value;
+                case (ParaID_OID_ref_Rs):
+                    ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm = value;
                     break;
 
-                case (PID_OID_max_speed):
-                    PID_Data.OnlineID_Config.max_n_ratio = value;
+                case (ParaID_OID_max_speed):
+                    ParaID_Data.OnlineID_Config.max_n_ratio = value;
                     break;
 
-                case (PID_OID_min_speed):
-                    PID_Data.OnlineID_Config.min_n_ratio = value;
+                case (ParaID_OID_min_speed):
+                    ParaID_Data.OnlineID_Config.min_n_ratio = value;
                     break;
 
-                case (PID_OID_Ident_range_factor):
-                    PID_Data.OnlineID_Config.nom_factor = value;
+                case (ParaID_OID_Ident_range_factor):
+                    ParaID_Data.OnlineID_Config.nom_factor = value;
                     break;
 
-                case (PID_OID_max_ident_pause):
-                    PID_Data.OnlineID_Config.Rs_time = value;
+                case (ParaID_OID_max_ident_pause):
+                    ParaID_Data.OnlineID_Config.Rs_time = value;
                     break;
-                case (PID_OID_identR_Amp):
-                    PID_Data.OnlineID_Config.identRAmp = value;
+                case (ParaID_OID_identR_Amp):
+                    ParaID_Data.OnlineID_Config.identRAmp = value;
                     break;
                     
-                case (PID_OID_Fluxmap_Control_counter):
-                    PID_Data.FluxMap_Control_counter = value;
+                case (ParaID_OID_Fluxmap_Control_counter):
+                    ParaID_Data.FluxMap_Control_counter = value;
                     break;
 
-                case (PID_FID_Array_Control_counter):
-                    PID_Data.Array_Control_counter = value;
+                case (ParaID_FID_Array_Control_counter):
+                    ParaID_Data.Array_Control_counter = value;
                     break;
                 ....
                 }
@@ -559,49 +559,49 @@ Setup
             ....
             //Replace Bit 13-19 with the following
             /* Bit 13 - Ident_Lq */
-            if (PID_Data.ElectricalID_Config.identLq == true) {
+            if (ParaID_Data.ElectricalID_Config.identLq == true) {
                 js_status_BareToRTOS |= (1 << 13);
             } else {
                 js_status_BareToRTOS &= ~(1 << 13);
             }
 
             /* Bit 14 - FluxMapID R-Online */
-            if (PID_Data.FluxMapID_Config.identR == true) {
+            if (ParaID_Data.FluxMapID_Config.identR == true) {
                 js_status_BareToRTOS |= (1 << 14);
             } else {
                 js_status_BareToRTOS &= ~(1 << 14);
             }
 
             /* Bit 15 - FluxMapID start */
-            if (PID_Data.FluxMapID_Config.start_FM_ID == true) {
+            if (ParaID_Data.FluxMapID_Config.start_FM_ID == true) {
                 js_status_BareToRTOS |= (1 << 15);
             } else {
                 js_status_BareToRTOS &= ~(1 << 15);
             }
 
-            /* Bit 16 - PID_FOC_CC */
-            if (PID_Data.PID_Control_Selection == Current_Control) {
+            /* Bit 16 - ParaID_FOC_CC */
+            if (ParaID_Data.ParaID_Control_Selection == Current_Control) {
                 js_status_BareToRTOS |= (1 << 16);
             } else {
                 js_status_BareToRTOS &= ~(1 << 16);
             }
 
-            /* Bit 17 - PID_FOC_SC */
-            if (PID_Data.PID_Control_Selection == Speed_Control) {
+            /* Bit 17 - ParaID_FOC_SC */
+            if (ParaID_Data.ParaID_Control_Selection == Speed_Control) {
                 js_status_BareToRTOS |= (1 << 17);
             } else {
                 js_status_BareToRTOS &= ~(1 << 17);
             }
 
-            /* Bit 18 -PID_FOC_no_control */
-            if (PID_Data.PID_Control_Selection == No_Control) {
+            /* Bit 18 -ParaID_FOC_no_control */
+            if (ParaID_Data.ParaID_Control_Selection == No_Control) {
                 js_status_BareToRTOS |= (1 << 18);
             } else {
                 js_status_BareToRTOS &= ~(1 << 18);
             }
 
             /* Bit 19 -ParameterID active */
-            if (PID_Data.GlobalConfig.enableParameterID == true) {
+            if (ParaID_Data.GlobalConfig.enableParameterID == true) {
                 ultrazohm_state_machine_set_userLED(true);
                 js_status_BareToRTOS |= (1 << 19);
             } else {
@@ -619,7 +619,7 @@ Setup
         :caption: Changes to the ``javascope.c`` file. (Breaks in the code are marked with ``....``).
 
         //ParameterID
-        extern uz_ParameterID_Data_t PID_Data;
+        extern uz_ParameterID_Data_t ParaID_Data;
         float activeState = 0.0f;
         float FluxMapCounter = 0.0f;
         float ArrayCounter = 0.0f;
@@ -631,50 +631,50 @@ Setup
             // Will be transferred one after another
             // The array may grow arbitrarily long, the refresh rate of the individual values decreases.
             // Only float is allowed!
-            js_slowDataArray[JSSD_FLOAT_u_d]                    = &(PID_Data.ActualValues.v_dq.d);
-            js_slowDataArray[JSSD_FLOAT_u_q]                    = &(PID_Data.ActualValues.v_dq.q);
-            js_slowDataArray[JSSD_FLOAT_i_d]                    = &(PID_Data.ActualValues.i_dq.d);
-            js_slowDataArray[JSSD_FLOAT_i_q]                    = &(PID_Data.ActualValues.i_dq.q);
+            js_slowDataArray[JSSD_FLOAT_u_d]                    = &(ParaID_Data.ActualValues.v_dq.d);
+            js_slowDataArray[JSSD_FLOAT_u_q]                    = &(ParaID_Data.ActualValues.v_dq.q);
+            js_slowDataArray[JSSD_FLOAT_i_d]                    = &(ParaID_Data.ActualValues.i_dq.d);
+            js_slowDataArray[JSSD_FLOAT_i_q]                    = &(ParaID_Data.ActualValues.i_dq.q);
             js_slowDataArray[JSSD_FLOAT_speed]                  = &(data->av.mechanicalRotorSpeed);
             js_slowDataArray[JSSD_FLOAT_torque]                 = &(data->av.mechanicalTorqueObserved);
-            js_slowDataArray[JSSD_FLOAT_PsiPM_Offline]          = &(PID_Data.ElectricalID_Output->PMSM_parameters.Psi_PM_Vs);
-            js_slowDataArray[JSSD_FLOAT_Lq_Offline]             = &(PID_Data.ElectricalID_Output->PMSM_parameters.Lq_Henry);
-            js_slowDataArray[JSSD_FLOAT_Ld_Offline]             = &(PID_Data.ElectricalID_Output->PMSM_parameters.Ld_Henry);
-            js_slowDataArray[JSSD_FLOAT_Rs_Offline]             = &(PID_Data.ElectricalID_Output->PMSM_parameters.R_ph_Ohm);
-            js_slowDataArray[JSSD_FLOAT_polePairs]              = &(PID_Data.ElectricalID_Output->PMSM_parameters.polePairs);
-            js_slowDataArray[JSSD_FLOAT_J]                      = &(PID_Data.ElectricalID_Output->PMSM_parameters.J_kg_m_squared);
+            js_slowDataArray[JSSD_FLOAT_PsiPM_Offline]          = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Psi_PM_Vs);
+            js_slowDataArray[JSSD_FLOAT_Lq_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Lq_Henry);
+            js_slowDataArray[JSSD_FLOAT_Ld_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Ld_Henry);
+            js_slowDataArray[JSSD_FLOAT_Rs_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.R_ph_Ohm);
+            js_slowDataArray[JSSD_FLOAT_polePairs]              = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.polePairs);
+            js_slowDataArray[JSSD_FLOAT_J]                      = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.J_kg_m_squared);
             js_slowDataArray[JSSD_FLOAT_activeState]            = &(activeState);
             js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
             js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us]        = &ISR_execution_time_us;
             js_slowDataArray[JSSD_FLOAT_ISR_Period_us]          = &ISR_period_us;
             js_slowDataArray[JSSD_FLOAT_Milliseconds]           = &System_UpTime_ms;
-            js_slowDataArray[JSSD_FLOAT_encoderOffset] 			= &(PID_Data.ElectricalID_Output->thetaOffset);
+            js_slowDataArray[JSSD_FLOAT_encoderOffset] 			= &(ParaID_Data.ElectricalID_Output->thetaOffset);
             js_slowDataArray[JSSD_FLOAT_ArrayCounter] 			= &(ArrayCounter);
-            js_slowDataArray[JSSD_FLOAT_measArraySpeed] 		= &(PID_Data.MeasArraySpeed_pointer);
-            js_slowDataArray[JSSD_FLOAT_measArrayTorque]		= &(PID_Data.MeasArrayTorque_pointer);
+            js_slowDataArray[JSSD_FLOAT_measArraySpeed] 		= &(ParaID_Data.MeasArraySpeed_pointer);
+            js_slowDataArray[JSSD_FLOAT_measArrayTorque]		= &(ParaID_Data.MeasArrayTorque_pointer);
             js_slowDataArray[JSSD_FLOAT_ArrayControlCounter]	= &(ArrayCounter);
-            js_slowDataArray[JSSD_FLOAT_Stribtorque]            = &(PID_Data.FrictionID_Output->BrkTorque);
-            js_slowDataArray[JSSD_FLOAT_Coulombtorque]          = &(PID_Data.FrictionID_Output->CoulTorque);
-            js_slowDataArray[JSSD_FLOAT_Viscotorque]            = &(PID_Data.FrictionID_Output->ViscoTorque);
-            js_slowDataArray[JSSD_FLOAT_TrainInertia]           = &(PID_Data.TwoMassID_Output->TrainInertia);
-            js_slowDataArray[JSSD_FLOAT_LoadInertia]            = &(PID_Data.TwoMassID_Output->LoadInertia);
-            js_slowDataArray[JSSD_FLOAT_c_est]                  = &(PID_Data.TwoMassID_Output->c_est_out);
-            js_slowDataArray[JSSD_FLOAT_d_est]                  = &(PID_Data.TwoMassID_Output->d_est_out);
-            js_slowDataArray[JSSD_FLOAT_I_rated]                = &(PID_Data.GlobalConfig.ratCurrent);
-            js_slowDataArray[JSSD_FLOAT_totalRotorInertia]      = &(PID_Data.TwoMassID_Output->rotorInertia);
-            js_slowDataArray[JSSD_FLOAT_Wtemp]                  = &(PID_Data.OnlineID_Output->Wtemp);
-            js_slowDataArray[JSSD_FLOAT_FluxTempConst]          = &(PID_Data.FluxMap_Data->psi_temp_const);
-            js_slowDataArray[JSSD_FLOAT_FluxTempError]          = &(PID_Data.FluxMap_Data->psi_temp_error);
-            js_slowDataArray[JSSD_FLOAT_Ld_Online]              = &(PID_Data.OnlineID_Output->Ld_out);
-            js_slowDataArray[JSSD_FLOAT_Lq_Online]              = &(PID_Data.OnlineID_Output->Lq_out);
-            js_slowDataArray[JSSD_FLOAT_PsiPM_Online]           = &(PID_Data.OnlineID_Output->psi_pm_out);
-            js_slowDataArray[JSSD_FLOAT_Rs_Online]              = &(PID_Data.OnlineID_Output->Rph_out);
-            js_slowDataArray[JSSD_FLOAT_n_FluxPoints]           = &(PID_Data.FluxMap_MeasuringPoints);
-            js_slowDataArray[JSSD_FLOAT_Rs_online_FMID]         = &(PID_Data.FluxMapID_Output->R_s);
-            js_slowDataArray[JSSD_FLOAT_Wtemp_FMID]             = &(PID_Data.FluxMapID_Output->WindingTemp);
+            js_slowDataArray[JSSD_FLOAT_Stribtorque]            = &(ParaID_Data.FrictionID_Output->BrkTorque);
+            js_slowDataArray[JSSD_FLOAT_Coulombtorque]          = &(ParaID_Data.FrictionID_Output->CoulTorque);
+            js_slowDataArray[JSSD_FLOAT_Viscotorque]            = &(ParaID_Data.FrictionID_Output->ViscoTorque);
+            js_slowDataArray[JSSD_FLOAT_TrainInertia]           = &(ParaID_Data.TwoMassID_Output->TrainInertia);
+            js_slowDataArray[JSSD_FLOAT_LoadInertia]            = &(ParaID_Data.TwoMassID_Output->LoadInertia);
+            js_slowDataArray[JSSD_FLOAT_c_est]                  = &(ParaID_Data.TwoMassID_Output->c_est_out);
+            js_slowDataArray[JSSD_FLOAT_d_est]                  = &(ParaID_Data.TwoMassID_Output->d_est_out);
+            js_slowDataArray[JSSD_FLOAT_I_rated]                = &(ParaID_Data.GlobalConfig.ratCurrent);
+            js_slowDataArray[JSSD_FLOAT_totalRotorInertia]      = &(ParaID_Data.TwoMassID_Output->rotorInertia);
+            js_slowDataArray[JSSD_FLOAT_Wtemp]                  = &(ParaID_Data.OnlineID_Output->Wtemp);
+            js_slowDataArray[JSSD_FLOAT_FluxTempConst]          = &(ParaID_Data.FluxMap_Data->psi_temp_const);
+            js_slowDataArray[JSSD_FLOAT_FluxTempError]          = &(ParaID_Data.FluxMap_Data->psi_temp_error);
+            js_slowDataArray[JSSD_FLOAT_Ld_Online]              = &(ParaID_Data.OnlineID_Output->Ld_out);
+            js_slowDataArray[JSSD_FLOAT_Lq_Online]              = &(ParaID_Data.OnlineID_Output->Lq_out);
+            js_slowDataArray[JSSD_FLOAT_PsiPM_Online]           = &(ParaID_Data.OnlineID_Output->psi_pm_out);
+            js_slowDataArray[JSSD_FLOAT_Rs_Online]              = &(ParaID_Data.OnlineID_Output->Rph_out);
+            js_slowDataArray[JSSD_FLOAT_n_FluxPoints]           = &(ParaID_Data.FluxMap_MeasuringPoints);
+            js_slowDataArray[JSSD_FLOAT_Rs_online_FMID]         = &(ParaID_Data.FluxMapID_Output->R_s);
+            js_slowDataArray[JSSD_FLOAT_Wtemp_FMID]             = &(ParaID_Data.FluxMapID_Output->WindingTemp);
             js_slowDataArray[JSSD_FLOAT_MapCounter]             = &(FluxMapCounter);
-            js_slowDataArray[JSSD_FLOAT_psidMap]                = &(PID_Data.Psi_D_pointer);
-            js_slowDataArray[JSSD_FLOAT_psiqMap]                = &(PID_Data.Psi_Q_pointer);
+            js_slowDataArray[JSSD_FLOAT_psidMap]                = &(ParaID_Data.Psi_D_pointer);
+            js_slowDataArray[JSSD_FLOAT_psiqMap]                = &(ParaID_Data.Psi_Q_pointer);
             js_slowDataArray[JSSD_FLOAT_MapControlCounter]      = &(FluxMapCounter);
             return Status;
         }
@@ -689,6 +689,6 @@ Setup
         void JavaScope_update(DS_Data* data)
         {
             ....
-            uz_ParameterID_update_transmit_values(&PID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
+            uz_ParameterID_update_transmit_values(&ParaID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
             .... 
         }

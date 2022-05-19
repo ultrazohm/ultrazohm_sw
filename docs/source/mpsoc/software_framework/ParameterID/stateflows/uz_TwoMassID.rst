@@ -38,30 +38,30 @@ Necessary measurement values
 * i_dq
 * omega_m
 
-.. _uz_PID_TwoMassID_object:
+.. _uz_ParaID_TwoMassID_object:
 
 TwoMassID object
 ================
 
-.. doxygentypedef:: uz_PID_TwoMassID_t
+.. doxygentypedef:: uz_ParaID_TwoMassID_t
 
-.. _uz_PID_TwoMassIDConfig:
+.. _uz_ParaID_TwoMassIDConfig:
 
 TwoMassID config
 ================
 
-.. doxygenstruct:: uz_PID_TwoMassIDConfig_t
+.. doxygenstruct:: uz_ParaID_TwoMassIDConfig_t
   :members: 
 
-.. _uz_PID_TwoMassIDoutput:
+.. _uz_ParaID_TwoMassIDoutput:
 
 TwoMassID output
 ================
 
-.. doxygenstruct:: uz_PID_TwoMassID_output_t
+.. doxygenstruct:: uz_ParaID_TwoMassID_output_t
   :members: 
 
-.. _uz_PID_TwoMassID_functions:
+.. _uz_ParaID_TwoMassID_functions:
 
 TwoMassID functions
 ===================

@@ -80,30 +80,30 @@ Necessary measurement values
 * omega_el
 * theta_m
 
-.. _uz_PID_ElectricalID_object:
+.. _uz_ParaID_ElectricalID_object:
 
 ElectricalID object
 ====================
 
-.. doxygentypedef:: uz_PID_ElectricalID_t
+.. doxygentypedef:: uz_ParaID_ElectricalID_t
 
-.. _uz_PID_ElectricalIDConfig:
+.. _uz_ParaID_ElectricalIDConfig:
 
 ElectricalID config
 ===================
 
-.. doxygenstruct:: uz_PID_ElectricalIDConfig_t
+.. doxygenstruct:: uz_ParaID_ElectricalIDConfig_t
   :members: 
 
-.. _uz_PID_ElectricalIDoutput:
+.. _uz_ParaID_ElectricalIDoutput:
 
 ElectricalID output
 ===================
 
-.. doxygenstruct:: uz_PID_ElectricalID_output_t
+.. doxygenstruct:: uz_ParaID_ElectricalID_output_t
   :members: 
 
-.. _uz_PID_ElectricalID_functions:
+.. _uz_ParaID_ElectricalID_functions:
 
 ElectricalID functions
 ======================

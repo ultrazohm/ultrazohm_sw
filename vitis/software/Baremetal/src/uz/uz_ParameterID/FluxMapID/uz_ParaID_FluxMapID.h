@@ -23,7 +23,7 @@
 #include "FluxMapID_codegen.h"
 
 /**
- * @brief Object definition for uz_PID_ElectricalID_t
+ * @brief Object definition for uz_ParaID_ElectricalID_t
  * 
  */
 typedef struct uz_ParaID_FluxMapID_t{

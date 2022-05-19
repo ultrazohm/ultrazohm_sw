@@ -1,10 +1,10 @@
-.. _uz_PID_new_control_algorithm:
+.. _uz_ParaID_new_control_algorithm:
 
 ========================================
 Change control algorithm for ParameterID
 ========================================
 
-The ParameterID does not have its own control algorithm. This is done externally, as shown in :numref:`PID_overview_schematic`.
+The ParameterID does not have its own control algorithm. This is done externally, as shown in :numref:`ParaID_overview_schematic`.
 In the ParameterID library standard functions with the :ref:`uz_FOC` and :ref:`uz_SpeedControl` are included. 
 If it is desired to change the used controller, these functions have to be adjusted.
 
@@ -68,13 +68,13 @@ This can be used as an template to include your new controller.
           Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.i_dq_ref.q;
         }
       }
-      if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
-        if (Data->PID_Control_Selection == Speed_Control) {
+      if (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control) {
+        if (Data->ParaID_Control_Selection == Speed_Control) {
           //Add your speedcontroller here. Should output dq-currents in the uz_3ph_dq_t system. If OnlineID is used, the i_d-injection signal has to be written onto the d-axis reference current
           i_SpeedControl_reference_Ampere = ....
         }
-        if (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control) {
-          if (Data->PID_Control_Selection == Current_Control) {
+        if (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control) {
+          if (Data->ParaID_Control_Selection == Current_Control) {
             //If CurrentControl is active, use Online_current_ref as input reference currents
             v_dq_Volts = ....			
           } else {
@@ -106,7 +106,7 @@ The function ``uz_ParameterID_generate_DutyCycle``, can be adjusted as well. It 
       output_DutyCycle.DutyCycle_V = Data->ElectricalID_Output->PWM_Switch_2;
       output_DutyCycle.DutyCycle_W = Data->ElectricalID_Output->PWM_Switch_4;
     } else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
-	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->PID_Control_Selection == Current_Control || Data->PID_Control_Selection == Speed_Control))) {
+	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control))) {
       uz_3ph_abc_t V_UVW_Volts = uz_dq_inverse_transformation(v_dq_Volts, Data->ActualValues.theta_el);
       //Use your own function to generate DutyCycles here, if the control-algorithms are used
       output_DutyCycle = ....

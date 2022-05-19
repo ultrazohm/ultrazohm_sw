@@ -72,30 +72,30 @@ Necessary measurement values
 * omega_m
 * omega_el
 
-.. _uz_PID_OnlineID_object:
+.. _uz_ParaID_OnlineID_object:
 
 OnlineID object
 ===============
 
-.. doxygentypedef:: uz_PID_OnlineID_t
+.. doxygentypedef:: uz_ParaID_OnlineID_t
 
-.. _uz_PID_OnlineIDConfig:
+.. _uz_ParaID_OnlineIDConfig:
 
 OnlineID config
 ===============
 
-.. doxygenstruct:: uz_PID_OnlineIDConfig_t
+.. doxygenstruct:: uz_ParaID_OnlineIDConfig_t
   :members: 
 
-.. _uz_PID_OnlineIDoutput:
+.. _uz_ParaID_OnlineIDoutput:
 
 OnlineID output
 ===============
 
-.. doxygenstruct:: uz_PID_OnlineID_output_t
+.. doxygenstruct:: uz_ParaID_OnlineID_output_t
   :members: 
 
-.. _uz_PID_OnlineID_functions:
+.. _uz_ParaID_OnlineID_functions:
 
 OnlineID functions
 ==================

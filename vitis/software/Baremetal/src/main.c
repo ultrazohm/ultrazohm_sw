@@ -120,7 +120,7 @@ int main(void)
 
            .config_controller.lower_limit = -3.0f,
 
-           .enable_field_weakening = false
+           .is_field_weakening_active = false
 
         };
         struct uz_IIR_Filter_config config = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 100.0f, .sample_frequency_Hz = 20000.0f};

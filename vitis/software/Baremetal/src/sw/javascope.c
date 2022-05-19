@@ -16,6 +16,9 @@
 #include "../main.h"
 #include "../defines.h"
 #include "../include/javascope.h"
+#include "../uz/uz_FOC/uz_FOC.h"
+#include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
 
@@ -39,6 +42,11 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 extern float voltage;
 extern float voltage_times_two;
 extern float dac_input[8];
+extern struct uz_pmsmModel_outputs_t pmsm_outputs;
+extern struct uz_pmsmModel_inputs_t pmsm_inputs;
+
+extern float hil_id;
+extern float hil_iq;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -78,6 +86,13 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_DAC6_input]	= &dac_input[5];
 	js_ch_observable[JSO_DAC7_input]	= &dac_input[6];
 	js_ch_observable[JSO_DAC8_input]	= &dac_input[7];
+	js_ch_observable[JSO_lb_i_d]		=&hil_id;
+	js_ch_observable[JSO_lb_i_q]		=&hil_iq;
+	js_ch_observable[JSO_hil_i_d]		= &pmsm_outputs.i_d_A;
+	js_ch_observable[JSO_hil_i_q]		= &pmsm_outputs.i_q_A;
+	js_ch_observable[JSO_hil_omega]		= &pmsm_outputs.omega_mech_1_s;
+	js_ch_observable[JSO_hil_v_d]		= &pmsm_inputs.v_d_V;
+	js_ch_observable[JSO_hil_v_q]		= &pmsm_inputs.v_q_V;
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;
 	js_ch_observable[JSO_ub] 			= &data->av.U_V;
@@ -97,12 +112,15 @@ int JavaScope_initalize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
-	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
-	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
+	   js_slowDataArray[JSSD_FLOAT_u_d]                                = &(pmsm_inputs.v_d_V);
+
+	   js_slowDataArray[JSSD_FLOAT_u_q]                                = &(pmsm_inputs.v_q_V);
+
+	   js_slowDataArray[JSSD_FLOAT_i_d]                                = &(pmsm_outputs.i_d_A);
+
+	   js_slowDataArray[JSSD_FLOAT_i_q]                                = &(pmsm_outputs.i_q_A);
+
+	   js_slowDataArray[JSSD_FLOAT_speed]                              = &(pmsm_outputs.omega_mech_1_s);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

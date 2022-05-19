@@ -31,6 +31,13 @@ enum JS_OberservableData {
 	JSO_DAC6,
 	JSO_DAC7,
 	JSO_DAC8,
+	   JSO_hil_i_q,
+	   JSO_hil_i_d,
+	   JSO_hil_omega,
+	   JSO_hil_v_d,
+	   JSO_hil_v_q,
+	   JSO_lb_i_d,
+	   JSO_lb_i_q,
 	JSO_DAC1_input,
 	JSO_DAC2_input,
 	JSO_DAC3_input,
@@ -170,8 +177,8 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
-	send_field_2,
+	i_q_ref,
+	i_d_ref,
 	send_field_3,
 	send_field_4,
 	send_field_5,
@@ -195,42 +202,43 @@ enum gui_button_mapping {
 // Description (printed text) for the receive_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
 
-	RCV_FLD_ZEROVALUE=0,
-	receive_field_1,
-	receive_field_2,
-	receive_field_3,
-	receive_field_4,
-	receive_field_5,
-	receive_field_6,
-	RCV_FLD_ENDMARKER
+ RCV_FLD_ZEROVALUE=0,
+ i_q,
+ i_d,
+ omega_m,
+ v_q,
+ v_d,
+ receive_field_6,
+ RCV_FLD_ENDMARKER
+
 
 
 // Physical unit label (printed text) for the receive_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
 
-	RCV_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
-	A,
-	A,
-	V,
-	V,
-	RCV_LABELS_ENDMARKER
+ RCV_LABELS_ZEROVALUE=0,
+ A,
+ A,
+ rad/s,
+ V,
+ V,
+ sec,
+ RCV_LABELS_ENDMARKER
 
 
 // Slow Data values that are displayed in the receive_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
 // Make sure that the signal names below are also present in the JS_SlowData enum!
 
-	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_polePairs,
-	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_Ld,
-	JSSD_FLOAT_Error_Code,
-	SLOWDAT_DISPLAY_ENDMARKER
+ SLOWDAT_DISPLAY_ZEROVALUE=0,
+     JSSD_FLOAT_i_q,
+     JSSD_FLOAT_i_d,
+     JSSD_FLOAT_speed,
+     JSSD_FLOAT_u_q,
+     JSSD_FLOAT_u_d,
+     JSSD_FLOAT_SecondsSinceSystemStart,
+     JSSD_FLOAT_Error_Code,
+     SLOWDAT_DISPLAY_ENDMARKER
 */
 
 int JavaScope_initalize(DS_Data* data);

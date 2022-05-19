@@ -19,6 +19,9 @@
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
 
+#include "../uz/uz_FOC/uz_FOC.h"
+ extern uz_3ph_dq_t reference_currents_Amp;
+
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
@@ -187,11 +190,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+    	       reference_currents_Amp.q = value;
 			break;
 
 		case (Set_Send_Field_2):
-
+    	       reference_currents_Amp.d = value;
 			break;
 
 		case (Set_Send_Field_3):

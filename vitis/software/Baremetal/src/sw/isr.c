@@ -57,7 +57,9 @@ float amp=2.3f;
 #include "xparameters.h"
 #include "string.h"
 #include "../IP_Cores/uz_dac_interface/uz_dac_interface.h"
-
+#include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
+#include "../uz/uz_FOC/uz_FOC.h"
 
 float dac_input[8]={-4, -3, -2, -1, 1, 2, 3, 4};
 
@@ -65,29 +67,76 @@ static int32_t test(float input);
 uz_dac_interface_t* dac=NULL;
 
 
+extern uz_pmsmModel_t *pmsm;
+extern uz_FOC* FOC_instance;
+
+uz_3ph_dq_t reference_currents_Amp = {0};
+uz_3ph_dq_t measured_currents_Amp = {0};
+uz_3ph_dq_t FOC_output_Volts = {0};
+float omega_el_rad_per_sec = 0.0f;
+
+struct uz_pmsmModel_inputs_t pmsm_inputs={
+  .omega_mech_1_s=0.0f,
+  .v_d_V=0.0f,
+  .v_q_V=0.0f,
+  .load_torque=0.0f
+};
+
+struct uz_pmsmModel_outputs_t pmsm_outputs={
+  .i_d_A=0.0f,
+  .i_q_A=0.0f,
+  .torque_Nm=0.0f,
+  .omega_mech_1_s=0.0f
+};
+
+float hil_id=0.0f;
+float hil_iq=0.0f;
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
    // update_speed_and_position_of_encoder_on_D5(&Global_Data);
-
+    hil_id=Global_Data.aa.A2.me.ADC_A1;
+    hil_iq=Global_Data.aa.A2.me.ADC_A2;
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+        uz_pmsmModel_trigger_input_strobe(pmsm);
+        uz_pmsmModel_trigger_output_strobe(pmsm);
+        pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+
+
+
+
+        //measured_currents_Amp.d = pmsm_outputs.i_d_A;
+        //measured_currents_Amp.q = pmsm_outputs.i_q_A;
+        measured_currents_Amp.d=hil_id;
+        measured_currents_Amp.q=hil_iq;
+
+
+        omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
+        FOC_output_Volts = uz_FOC_sample(FOC_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
+        pmsm_inputs.v_q_V=FOC_output_Volts.q;
+        pmsm_inputs.v_d_V=FOC_output_Volts.d;
+        uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
     }
 	//while(1){
     //voltage=uz_wavegen_sawtooth(5.0f,test_frequency)-2.5f;
     //voltage=uz_wavegen_sine(2.2f, test_frequency);
-    dac_input[0]=uz_wavegen_triangle_with_offset(amp, test_frequency , (-1.0f*amp)/2.0f);
-    dac_input[1]=uz_wavegen_sine(amp,30.0f);
-    dac_input[2]=uz_wavegen_sawtooth(amp, 55.0f);
-    dac_input[3]=uz_wavegen_pulse(amp,35.0f,0.3f);
 
-    dac_input[4]=uz_wavegen_sine(0.3f,60.0f); //uz_wavegen_triangle_with_offset(0.5f*amp, 20.f*test_frequency , (-1.0f*amp)/2.0f);
-    dac_input[5]=uz_wavegen_sine(0.1f,60.0f);
-    dac_input[6]=uz_wavegen_sawtooth(0.5f*amp, 20.0f);
-    dac_input[7]=uz_wavegen_pulse(0.5f*amp,55.0f,0.6f);
+//    dac_input[0]=uz_wavegen_triangle_with_offset(amp, test_frequency , (-1.0f*amp)/2.0f);
+//    dac_input[1]=uz_wavegen_sine(amp,30.0f);
+//    dac_input[2]=uz_wavegen_sawtooth(amp, 55.0f);
+//    dac_input[3]=uz_wavegen_pulse(amp,35.0f,0.3f);
+//
+//    dac_input[4]=uz_wavegen_sine(0.3f,60.0f); //uz_wavegen_triangle_with_offset(0.5f*amp, 20.f*test_frequency , (-1.0f*amp)/2.0f);
+//    dac_input[5]=uz_wavegen_sine(0.1f,60.0f);
+//    dac_input[6]=uz_wavegen_sawtooth(0.5f*amp, 20.0f);
+//    dac_input[7]=uz_wavegen_pulse(0.5f*amp,55.0f,0.6f);
+    dac_input[0]=pmsm_outputs.i_d_A;
+    dac_input[1]=pmsm_outputs.i_q_A;
 
 
     voltage_times_two=voltage*2.0f;
@@ -95,9 +144,7 @@ void ISR_Control(void *data)
     		.data=&dac_input[0],
 			.length=8
     };
-
-		start_trans(&SpiInstance);
- uz_dac_interface_set_ouput_values(dac,&dac_input_array);
+   uz_dac_interface_set_ouput_values(dac,&dac_input_array);
 
 
 	//}
@@ -111,13 +158,6 @@ void ISR_Control(void *data)
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();
 }
-
-
-static int32_t test(float input){
-	int32_t voltage_set_point=((input/2.5f)*32768)+32768;
-	return voltage_set_point;
-}
-
 
 //==============================================================================================================================================================
 

@@ -15,9 +15,9 @@
 
 // Includes from own files
 #include "main.h"
-
-
-
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
+#include "uz/uz_FOC/uz_FOC.h"
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -45,10 +45,10 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
-#include "include/test_spi.h"
-XSpi  SpiInstance;	 /* The instance of the SPI device */
 
+uz_pmsmModel_t *pmsm=NULL;
 
+uz_FOC* FOC_instance = NULL;
 
 int main(void)
 {
@@ -73,10 +73,48 @@ int main(void)
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
-        	SpiPolledExample(&SpiInstance, 0);
-
 
             uz_adcLtc2311_ip_core_init();
+            struct uz_PMSM_t config_PMSM = {
+	                                 .Ld_Henry = 3.00e-04f,
+	                                 .Lq_Henry = 3.00e-04f,
+	                                 .Psi_PM_Vs = 0.0075f};
+
+	                             struct uz_PI_Controller_config config_id = {
+	                                 .Kp = 0.25f,
+	                                 .Ki = 158.8f,
+	                                 .samplingTime_sec = 0.00005f,
+	                                 .upper_limit = 10.0f,
+	                                 .lower_limit = -10.0f};
+
+	                             struct uz_PI_Controller_config config_iq = {
+	                                 .Kp = 0.25f,
+	                                 .Ki = 158.8f,
+	                                 .samplingTime_sec = 0.00005f,
+	                                 .upper_limit = 10.0f,
+	                                 .lower_limit = -10.0f};
+
+	                             struct uz_FOC_config config_FOC = {
+	                                 .decoupling_select = linear_decoupling,
+	                                 .config_PMSM = config_PMSM,
+	                                 .config_id = config_id,
+	                                 .config_iq = config_iq};
+
+	               struct uz_pmsmModel_config_t pmsm_config={
+	                   .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+	                   .ip_core_frequency_Hz=100000000,
+	                   .simulate_mechanical_system = true,
+	                   .r_1 = 0.085f,
+	                   .L_d = 3.00e-04f,
+	                   .L_q = 3.00e-04f,
+	                   .psi_pm = 0.0075f,
+	                   .polepairs = 4.0f,
+	                   .inertia = 3.24e-05f,
+	                   .coulomb_friction_constant = 0.01f,
+	                   .friction_coefficient = 0.001f};
+	               pmsm=uz_pmsmModel_init(pmsm_config);
+	               FOC_instance = uz_FOC_init(config_FOC);
+
             Global_Data.objects.deadtime_interlock_d1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1, true);
             Global_Data.objects.pwm_d1 = initialize_pwm_2l_on_D1();

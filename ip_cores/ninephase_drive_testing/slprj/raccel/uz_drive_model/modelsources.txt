@@ -1,4 +1,0 @@
-    uz_drive_model.c
-rt_logging_mmi_simtarget.c
-rtw_modelmap_utils_simtarget.c
-

@@ -152,7 +152,7 @@ Summary of native floating-point operators
 Adders
 </td>
 <td align="center" valign="top" style="border-style: none">
-15
+55
 </td>
 
 </tr>
@@ -161,7 +161,7 @@ Adders
 Datatype Converters
 </td>
 <td align="center" valign="top" style="border-style: none">
-52
+66
 </td>
 
 </tr>
@@ -170,11 +170,20 @@ Datatype Converters
 Multipliers
 </td>
 <td align="center" valign="top" style="border-style: none">
-46
+121
 </td>
 
 </tr>
 <tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Relational Operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+2
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 SinCos
 </td>
@@ -183,12 +192,12 @@ SinCos
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-14
+18
 </td>
 
 </tr>
@@ -204,6 +213,84 @@ Detailed Report
 
 </a>
 <br /><br /><p><hr /></p><h5>
+Module <!-- uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_add_single--> uz_pmsm_model_9ph_opti_src_nfp_add_single
+</h5>
+(Latency = "Min")<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+8
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+48
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+450
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+109
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+2
+</td>
+
+</tr>
+
+</table>
+<p><hr /></p><h5>
 Module <!-- uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_add_double--> uz_pmsm_model_9ph_opti_src_nfp_add_double
 </h5>
 (Latency = "Min")<table width="100%" border="1">
@@ -282,7 +369,7 @@ Dynamic Shift operators
 
 </table>
 <p><hr /></p><h5>
-Module <!-- uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_add_single--> uz_pmsm_model_9ph_opti_src_nfp_add_single
+Module <!-- uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_sub_single--> uz_pmsm_model_9ph_opti_src_nfp_sub_single
 </h5>
 (Latency = "Min")<table width="100%" border="1">
 <tr style="background-color: #eeeeff">
@@ -336,6 +423,84 @@ Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
 109
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+2
+</td>
+
+</tr>
+
+</table>
+<p><hr /></p><h5>
+Module <!-- uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_sub_double--> uz_pmsm_model_9ph_opti_src_nfp_sub_double
+</h5>
+(Latency = "Min")<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+8
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+48
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+864
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+126
 </td>
 
 </tr>
@@ -516,6 +681,162 @@ Dynamic Shift operators
 
 </table>
 <p><hr /></p><h5>
+Module <!-- uz_pmsm_model_9ph/uz_pmsm_model_9ph/Wrapped State DTI/nfp_relop_single--> uz_pmsm_model_9ph_opti_src_nfp_relop_single
+</h5>
+(Latency = "Min")<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+8
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+68
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+17
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+
+</table>
+<p><hr /></p><h5>
+Module <!-- uz_pmsm_model_9ph/uz_pmsm_model_9ph/Wrapped State DTI/nfp_relop_single--> uz_pmsm_model_9ph_opti_src_nfp_relop_single_block
+</h5>
+(Latency = "Min")<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+8
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+68
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+17
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+
+</table>
+<p><hr /></p><h5>
 Module <!-- uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_convert_single2double--> uz_pmsm_model_9ph_opti_src_nfp_convert_single2double
 </h5>
 (Latency = "Min")<table width="100%" border="1">
@@ -657,162 +978,6 @@ Static Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
 8
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-Dynamic Shift operators
-</td>
-<td align="center" valign="top" style="border-style: none">
-2
-</td>
-
-</tr>
-
-</table>
-<p><hr /></p><h5>
-Module <!-- uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_convert_double2single--> uz_pmsm_model_9ph_opti_src_nfp_convert_double2single
-</h5>
-(Latency = "Min")<table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-Multipliers
-</td>
-<td align="center" valign="top" style="border-style: none">
-0
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-Adders/Subtractors
-</td>
-<td align="center" valign="top" style="border-style: none">
-8
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-Registers
-</td>
-<td align="center" valign="top" style="border-style: none">
-23
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-Total 1-Bit Registers
-</td>
-<td align="center" valign="top" style="border-style: none">
-231
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-RAMs
-</td>
-<td align="center" valign="top" style="border-style: none">
-0
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-Multiplexers
-</td>
-<td align="center" valign="top" style="border-style: none">
-93
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-Static Shift operators
-</td>
-<td align="center" valign="top" style="border-style: none">
-0
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-Dynamic Shift operators
-</td>
-<td align="center" valign="top" style="border-style: none">
-2
-</td>
-
-</tr>
-
-</table>
-<p><hr /></p><h5>
-Module <!-- uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_sub_single--> uz_pmsm_model_9ph_opti_src_nfp_sub_single
-</h5>
-(Latency = "Min")<table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-Multipliers
-</td>
-<td align="center" valign="top" style="border-style: none">
-0
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-Adders/Subtractors
-</td>
-<td align="center" valign="top" style="border-style: none">
-8
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-Registers
-</td>
-<td align="center" valign="top" style="border-style: none">
-48
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-Total 1-Bit Registers
-</td>
-<td align="center" valign="top" style="border-style: none">
-450
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-RAMs
-</td>
-<td align="center" valign="top" style="border-style: none">
-0
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-Multiplexers
-</td>
-<td align="center" valign="top" style="border-style: none">
-109
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-Static Shift operators
-</td>
-<td align="center" valign="top" style="border-style: none">
-0
 </td>
 
 </tr>
@@ -984,6 +1149,84 @@ Dynamic Shift operators
 
 </table>
 <p><hr /></p><h5>
+Module <!-- uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_convert_single2double--> uz_pmsm_model_9ph_opti_src_nfp_convert_single2double
+</h5>
+(Latency = "Min")<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+20
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+195
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+42
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+
+</table>
+<p><hr /></p><h5>
 Module <!-- uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_convert_sfix_25_En12_to_single--> uz_pmsm_model_9ph_opti_src_nfp_convert_sfix_25_En12_to_single
 </h5>
 (Latency = "Max")<table width="100%" border="1">
@@ -1056,84 +1299,6 @@ Dynamic Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
 1
-</td>
-
-</tr>
-
-</table>
-<p><hr /></p><h5>
-Module <!-- uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_sub_double--> uz_pmsm_model_9ph_opti_src_nfp_sub_double
-</h5>
-(Latency = "Min")<table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-Multipliers
-</td>
-<td align="center" valign="top" style="border-style: none">
-0
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-Adders/Subtractors
-</td>
-<td align="center" valign="top" style="border-style: none">
-8
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-Registers
-</td>
-<td align="center" valign="top" style="border-style: none">
-48
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-Total 1-Bit Registers
-</td>
-<td align="center" valign="top" style="border-style: none">
-864
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-RAMs
-</td>
-<td align="center" valign="top" style="border-style: none">
-0
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-Multiplexers
-</td>
-<td align="center" valign="top" style="border-style: none">
-126
-</td>
-
-</tr>
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-Static Shift operators
-</td>
-<td align="center" valign="top" style="border-style: none">
-0
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-Dynamic Shift operators
-</td>
-<td align="center" valign="top" style="border-style: none">
-2
 </td>
 
 </tr>

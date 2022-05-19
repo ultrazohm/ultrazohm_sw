@@ -1,10 +1,13 @@
 f1=figure();
+steptime = 2.64;
+limits = [steptime-0.3 steptime+0.3];
+%limits = [0 50];
+limitsy = [-15 15];
 %
-% tabledata = double(table2array(readtable('C:\Users\valen\Desktop\Log_2022-05-13_16-23-26.csv')));
-%sampletime=1/20000;
+tabledata = double(table2array(readtable('C:\Users\valen\Desktop\Log_2022-05-19_10-35-20.csv')));
 range = 1:size(tabledata);
-rpmstep = 91003;%min(find(tabledata(range,20))==50);
-range = (rpmstep-.5/sampletime):(rpmstep+.5/sampletime);
+rpmstep = 20400;%min(find(tabledata(range,20))==50);
+%range = (rpmstep-.5/sampletime):(rpmstep+.5/sampletime);
 uz_time = tabledata(range,1);
 uz_time=uz_time-min(uz_time);
 uz_a1 = tabledata(range,2);
@@ -27,75 +30,94 @@ uz_iz2 = tabledata(range,18);
 uz_iz3 = tabledata(range,19);
 uz_omega = tabledata(range,20);
 
-%Ströme
+%% currents
 hold off;
 
-subplot(4,2,1);
+subplot(3,2,1);
 hold on;
-grid on;
-plot(uz_time,uz_a1);
-plot(uz_time,uz_omega);
-hold off;
-
-subplot(4,2,3);
-hold on;
-grid on;
+title('Recording UZ');
 plot(uz_time,uz_a1);
 plot(uz_time,uz_b1);
 plot(uz_time,uz_c1);
+grid on;
+xlim(limits);
+ylim([-15 15]);
+xlabel('time (s)');
+ylabel('current (A)');
+legend('i-a1','i-b1','i-c1');
 hold off;
 
-subplot(4,2,5);
+subplot(3,2,3);
 hold on;
 grid on;
 plot(uz_time,uz_a2);
 plot(uz_time,uz_b2);
 plot(uz_time,uz_c2);
+xlim(limits);
+ylim(limitsy);
+xlabel('time (s)');
+ylabel('current (A)');
+legend('i-a2','i-b2','i-c2');
 hold off;
 
-subplot(4,2,7);
+subplot(3,2,5);
 hold on;
 grid on;
 plot(uz_time,uz_a3);
 plot(uz_time,uz_b3);
 plot(uz_time,uz_c3);
+xlim(limits);
+ylim(limitsy);
+xlabel('time (s)');
+ylabel('current (A)');
+legend('i-a3','i-b3','i-c3');
 hold off;
 
-subplot(4,2,2);
+subplot(3,2,2);
 hold on;
 grid on;
-plot(out.abc1.time,out.abc1.data(:,1));
-plot(out.omega.time,out.omega.data);
-hold off;
-
-subplot(4,2,4);
-hold on;
-grid on;
+title('Recording Simulink');
 plot(out.abc1.time,out.abc1.data);
+ylim([-15 15]);
+xlabel('time (s)');
+ylabel('current (A)');
+legend('i-a1','i-b1','i-c1');
 hold off;
 
-subplot(4,2,6);
+subplot(3,2,4);
 hold on;
 grid on;
 plot(out.abc2.time,out.abc2.data);
+ylim(limitsy);
+xlabel('time (s)');
+ylabel('current (A)');
+legend('i-a2','i-b2','i-c2');
 hold off;
 
-subplot(4,2,8);
+subplot(3,2,6);
 hold on;
 grid on;
 plot(out.abc3.time,out.abc3.data);
+ylim(limitsy);
+xlabel('time (s)');
+ylabel('current (A)');
+legend('i-a3','i-b3','i-c3');
 hold off;
 
-%Subsysteme
+%% Subsystems
 f2=figure();
 hold off;
 
 subplot(4,2,1);
 hold on;
 grid on;
+title('Recording UZ');
 plot(uz_time,uz_id);
 plot(uz_time,uz_iq);
-plot(uz_time,uz_omega);
+xlim(limits);
+xlabel('time (s)');
+ylabel('current (A)');
+legend('i-d','i-q');
 hold off;
 
 subplot(4,2,3);
@@ -103,6 +125,10 @@ hold on;
 grid on;
 plot(uz_time,uz_ix1);
 plot(uz_time,uz_iy1);
+xlim(limits);
+xlabel('time (s)');
+ylabel('current (A)');
+legend('i-x1','i-y1');
 hold off;
 
 subplot(4,2,5);
@@ -110,6 +136,10 @@ hold on;
 grid on;
 plot(uz_time,uz_ix2);
 plot(uz_time,uz_iy2);
+xlim(limits);
+xlabel('time (s)');
+ylabel('current (A)');
+legend('i-x2','i-y2');
 hold off;
 
 subplot(4,2,7);
@@ -118,21 +148,32 @@ grid on;
 plot(uz_time,uz_iz1);
 plot(uz_time,uz_iz2);
 plot(uz_time,uz_iz3);
+xlim(limits);
+xlabel('time (s)');
+ylabel('current (A)');
+legend('i-z1','i-z2','i-z3');
 hold off;
 
 subplot(4,2,2);
 hold on;
 grid on;
+title('Recording Simulink');
 plot(out.subspaces.time,out.subspaces.data(:,1));
 plot(out.subspaces.time,out.subspaces.data(:,2));
-plot(out.omega.time,out.omega.data);
+xlabel('time (s)');
+ylabel('current (A)');
+legend('i-d','i-q');
+%plot(out.omega.time,out.omega.data);
 hold off;
 
 subplot(4,2,4);
 hold on;
 grid on;
-plot(out.subspaces.time,out.subspaces.data(:,3));
-plot(out.subspaces.time,out.subspaces.data(:,4));
+plot(out.subspaces.time,out.subspaces.data(:,7));
+plot(out.subspaces.time,out.subspaces.data(:,8));
+xlabel('time (s)');
+ylabel('current (A)');
+legend('i-x1','i-y1');
 hold off;
 
 subplot(4,2,6);
@@ -140,12 +181,18 @@ hold on;
 grid on;
 plot(out.subspaces.time,out.subspaces.data(:,5));
 plot(out.subspaces.time,out.subspaces.data(:,6));
+xlabel('time (s)');
+ylabel('current (A)');
+legend('i-x2','i-y2');
 hold off;
 
 subplot(4,2,8);
 hold on;
 grid on;
-plot(out.subspaces.time,out.subspaces.data(:,7));
-plot(out.subspaces.time,out.subspaces.data(:,8));
+plot(out.subspaces.time,out.subspaces.data(:,3));
+plot(out.subspaces.time,out.subspaces.data(:,4));
 plot(out.subspaces.time,out.subspaces.data(:,9));
+xlabel('time (s)');
+ylabel('current (A)');
+legend('i-z1','i-z2','i-z3');
 hold off;

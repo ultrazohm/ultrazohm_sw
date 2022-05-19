@@ -16,9 +16,7 @@
 #define  inputs_general_Data_uz_pmsm_model_9ph                        0x180  //data register for Inport inputs, vector with 2 elements, address ends at 0x184
 #define  load_torque_Data_uz_pmsm_model_9ph                           0x180+0x00
 #define  in_omega_mech_Data_uz_pmsm_model_9ph                         0x180+0x04
-#define  u_d_uz_pmsm_model_9ph                                        0x180+0x08  
-#define  u_q_uz_pmsm_model_9ph                                        0x180+0x0C  
-#define  inputs_general_Strobe_uz_pmsm_model_9ph                      0x190  //strobe register for port inputs
+#define  inputs_general_Strobe_uz_pmsm_model_9ph                      0x188  //strobe register for port inputs
 /*
 // Inputs voltages dq
 #define  input_voltages_dq_Data_uz_pmsm_model_9ph                     0x1C0  //data register for Inport u_dq_ps, vector with 9 elements, address ends at 0x3E0
@@ -76,12 +74,12 @@
 #define  Model_Parameter_control_dq_abc_Data_uz_pmsm_model_9ph        0x10C  //data register for Inport Model_Parameter_control_dq_abc
 
 // Physical parameter
-#define  Physical_Parameter_1_J_Data_uz_pmsm_model_9ph			      0x124  //data register for Inport Physical_Parameter_reciprocal_J
 #define  Physical_Parameter_mu_Data_uz_pmsm_model_9ph                 0x110  //data register for Inport Physical_Parameter_mu
 #define  Physical_Parameter_M_R0_Data_uz_pmsm_model_9ph               0x114 //data register for Inport Physical_Parameter_M_n0
 #define  Physical_Parameter_reciprocal_L_d_Data_uz_pmsm_model_9ph     0x118  //data register for Inport Physical_Parameter_reciprocal_L_d
 #define  Physical_Parameter_reciprocal_L_q_Data_uz_pmsm_model_9ph     0x11C  //data register for Inport Physical_Parameter_reciprocal_L_q
 #define  Physical_Parameter_R1_Data_uz_pmsm_model_9ph                 0x120  //data register for Inport Physical_Parameter_R1
+#define  Physical_Parameter_1_J_Data_uz_pmsm_model_9ph			      0x124  //data register for Inport Physical_Parameter_reciprocal_J
 #define  Physical_Parameter_polepairs_Data_uz_pmsm_model_9ph          0x128  //data register for Inport Physical_Parameter_polepairs
 #define  Physical_Parameter_psi_pm_Data_uz_pmsm_model_9ph             0x12C  //data register for Inport Physical_Parameter_psi_pm
 #define  Physical_Parameter_L_z1_Data_uz_pmsm_model_9ph               0x130  //data register for Inport Physical_Parameter_L_o1

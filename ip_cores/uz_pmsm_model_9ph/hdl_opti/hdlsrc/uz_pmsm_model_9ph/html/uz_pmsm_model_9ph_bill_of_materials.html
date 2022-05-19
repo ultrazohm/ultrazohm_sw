@@ -5,7 +5,7 @@ High-level Resource Utilization Report for uz_pmsm_model_9ph
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Adder_1_23');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Multiplexer_1_15');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Adder_1_4');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Multiplexer_1_31');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiplexer_13_15');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -152,7 +152,7 @@ Summary
 Multipliers
 </td>
 <td align="center" valign="top" style="border-style: none">
-147
+222
 </td>
 
 </tr>
@@ -161,7 +161,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-1365
+2931
 </td>
 
 </tr>
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-5729
+14446
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-98820
+241026
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-12587
+23506
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-1564
+1500
 </td>
 
 </tr>
@@ -215,7 +215,7 @@ I/O Bits
 Static Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-32
+112
 </td>
 
 </tr>
@@ -224,7 +224,7 @@ Static Shift operators
 Dynamic Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-273
+608
 </td>
 
 </tr>
@@ -240,7 +240,7 @@ Detailed Report
 
 </a>
 <br /><br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:7')" name="code2model" class="code2model">
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2602')" name="code2model" class="code2model">
 uz_pmsm_model_9ph
 </a>
 
@@ -249,25 +249,43 @@ uz_pmsm_model_9ph
 Multipliers (47)
 </h5>
 <span style="font-family:monospace">
-18x24-bit Multiply 							: 26
+18x24-bit Multiply 							: 30
 </span>
 <br /><span style="font-family:monospace">
-53x53-bit Multiply 							: 21
+53x53-bit Multiply 							: 17
 </span>
 <br /><h5>
-Adders/Subtractors (977)
+Adders/Subtractors (1073)
 </h5>
 <span style="font-family:monospace">
-8x8-bit Adder 							: 32
+8x8-bit Adder 							: 59
 </span>
 <br /><span style="font-family:monospace">
-10x10-bit Adder 							: 1
+10x10-bit Adder 							: 10
 </span>
 <br /><span style="font-family:monospace">
-32x32-bit Adder 							: 189
+32x32-bit Adder 							: 228
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_1_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+25x1-bit Adder 							: 19
+</span>
+<span name="Adder_1_4" id="Adder_1_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2641')" name="code2model" class="code2model">
+Data Type Conversion34
+</a>
+
+</li>
+
+</ul>
+
 </span>
 <br /><span style="font-family:monospace">
-43x43-bit Adder 							: 26
+43x43-bit Adder 							: 30
 </span>
 <br /><span style="font-family:monospace">
 47x47-bit Adder 							: 7
@@ -279,7 +297,7 @@ Adders/Subtractors (977)
 105x105-bit Adder 							: 1
 </span>
 <br /><span style="font-family:monospace">
-46x46-bit Adder 							: 19
+46x46-bit Adder 							: 23
 </span>
 <br /><span style="font-family:monospace">
 50x50-bit Adder 							: 4
@@ -294,10 +312,10 @@ Adders/Subtractors (977)
 96x96-bit Adder 							: 2
 </span>
 <br /><span style="font-family:monospace">
-6x6-bit Adder 							: 30
+6x6-bit Adder 							: 28
 </span>
 <br /><span style="font-family:monospace">
-13x13-bit Adder 							: 18
+13x13-bit Adder 							: 16
 </span>
 <br /><span style="font-family:monospace">
 26x26-bit Adder 							: 12
@@ -306,49 +324,34 @@ Adders/Subtractors (977)
 9x9-bit Adder 							: 12
 </span>
 <br /><span style="font-family:monospace">
-14x14-bit Adder 							: 105
+14x14-bit Adder 							: 85
 </span>
 <br /><span style="font-family:monospace">
-53x53-bit Adder 							: 38
+53x53-bit Adder 							: 32
 </span>
 <br /><span style="font-family:monospace">
-11x11-bit Adder 							: 55
+11x11-bit Adder 							: 47
 </span>
 <br /><span style="font-family:monospace">
-58x58-bit Adder 							: 17
+58x58-bit Adder 							: 15
 </span>
 <br /><span style="font-family:monospace">
-24x24-bit Adder 							: 7
+24x24-bit Adder 							: 9
 </span>
 <br /><span style="font-family:monospace">
-16x16-bit Adder 							: 1
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_1_23')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-25x1-bit Adder 							: 10
-</span>
-<span name="Adder_1_23" id="Adder_1_23">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:1748')" name="code2model" class="code2model">
-Data Type Conversion34
-</a>
-
-</li>
-
-</ul>
-
+26-bit Subtractor 							: 10
 </span>
 <br /><span style="font-family:monospace">
-26-bit Subtractor 							: 1
+9x9-bit Subtractor 							: 36
 </span>
 <br /><span style="font-family:monospace">
-9x9-bit Subtractor 							: 20
+10-bit Subtractor 							: 10
 </span>
 <br /><span style="font-family:monospace">
-32x32-bit Subtractor 							: 53
+39-bit Subtractor 							: 10
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 67
 </span>
 <br /><span style="font-family:monospace">
 55x55-bit Subtractor 							: 1
@@ -357,58 +360,73 @@ Data Type Conversion34
 54x54-bit Subtractor 							: 4
 </span>
 <br /><span style="font-family:monospace">
-8x8-bit Subtractor 							: 9
+8x8-bit Subtractor 							: 11
 </span>
 <br /><span style="font-family:monospace">
-7x7-bit Subtractor 							: 72
+7x7-bit Subtractor 							: 62
 </span>
 <br /><span style="font-family:monospace">
-12x12-bit Subtractor 							: 71
+12x12-bit Subtractor 							: 67
 </span>
 <br /><span style="font-family:monospace">
-14x14-bit Subtractor 							: 33
+14x14-bit Subtractor 							: 29
 </span>
 <br /><span style="font-family:monospace">
-7-bit Subtractor 							: 30
+7-bit Subtractor 							: 38
 </span>
 <br /><span style="font-family:monospace">
-15-bit Subtractor 							: 21
+15-bit Subtractor 							: 17
 </span>
 <br /><span style="font-family:monospace">
-58-bit Subtractor 							: 17
+58-bit Subtractor 							: 15
 </span>
 <br /><span style="font-family:monospace">
-6x6-bit Subtractor 							: 17
+6x6-bit Subtractor 							: 15
 </span>
 <br /><span style="font-family:monospace">
-11x11-bit Subtractor 							: 17
+11x11-bit Subtractor 							: 15
 </span>
 <br /><span style="font-family:monospace">
-29-bit Subtractor 							: 7
+29-bit Subtractor 							: 9
 </span>
 <br /><span style="font-family:monospace">
-5x5-bit Subtractor 							: 7
-</span>
-<br /><span style="font-family:monospace">
-10-bit Subtractor 							: 1
-</span>
-<br /><span style="font-family:monospace">
-39-bit Subtractor 							: 1
+5x5-bit Subtractor 							: 9
 </span>
 <br /><h5>
-Registers (4518)
+Registers (4921)
 </h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+<span style="font-family:monospace">
+1-bit Register 							: 1974
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-25-bit Register 							: 65
+25-bit Register 							: 272
 </span>
-<span name="Register_1_1" id="Register_1_1">
+<span name="Register_1_2" id="Register_1_2">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:1823')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2651')" name="code2model" class="code2model">
 Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2654')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2655')" name="code2model" class="code2model">
+Delay5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2656')" name="code2model" class="code2model">
+Delay6
 </a>
 
 </li>
@@ -417,34 +435,34 @@ Delay1
 
 </span>
 <br /><span style="font-family:monospace">
-1-bit Register 							: 1776
+8-bit Register 							: 483
 </span>
 <br /><span style="font-family:monospace">
-8-bit Register 							: 256
+9-bit Register 							: 30
 </span>
 <br /><span style="font-family:monospace">
-9-bit Register 							: 3
+128-bit Register 							: 30
 </span>
 <br /><span style="font-family:monospace">
-128-bit Register 							: 3
+60-bit Register 							: 10
 </span>
 <br /><span style="font-family:monospace">
-60-bit Register 							: 1
+23-bit Register 							: 245
 </span>
 <br /><span style="font-family:monospace">
-23-bit Register 							: 201
+24-bit Register 							: 87
 </span>
 <br /><span style="font-family:monospace">
-16-bit Register 							: 3
+37-bit Register 							: 30
+</span>
+<br /><span style="font-family:monospace">
+16-bit Register 							: 1
 </span>
 <br /><span style="font-family:monospace">
 79-bit Register 							: 2
 </span>
 <br /><span style="font-family:monospace">
 18-bit Register 							: 27
-</span>
-<br /><span style="font-family:monospace">
-24-bit Register 							: 73
 </span>
 <br /><span style="font-family:monospace">
 42-bit Register 							: 11
@@ -456,10 +474,10 @@ Delay1
 26-bit Register 							: 22
 </span>
 <br /><span style="font-family:monospace">
-27-bit Register 							: 64
+27-bit Register 							: 68
 </span>
 <br /><span style="font-family:monospace">
-28-bit Register 							: 43
+28-bit Register 							: 51
 </span>
 <br /><span style="font-family:monospace">
 51-bit Register 							: 2
@@ -483,13 +501,13 @@ Delay1
 20-bit Register 							: 12
 </span>
 <br /><span style="font-family:monospace">
-29-bit Register 							: 31
+29-bit Register 							: 35
 </span>
 <br /><span style="font-family:monospace">
 30-bit Register 							: 12
 </span>
 <br /><span style="font-family:monospace">
-53-bit Register 							: 79
+53-bit Register 							: 67
 </span>
 <br /><span style="font-family:monospace">
 54-bit Register 							: 24
@@ -507,70 +525,73 @@ Delay1
 96-bit Register 							: 2
 </span>
 <br /><span style="font-family:monospace">
-6-bit Register 							: 149
+32-bit Register 							: 225
 </span>
 <br /><span style="font-family:monospace">
-11-bit Register 							: 360
+6-bit Register 							: 143
 </span>
 <br /><span style="font-family:monospace">
-52-bit Register 							: 296
+11-bit Register 							: 310
 </span>
 <br /><span style="font-family:monospace">
-64-bit Register 							: 32
+52-bit Register 							: 252
 </span>
 <br /><span style="font-family:monospace">
-32-bit Register 							: 524
+64-bit Register 							: 42
 </span>
 <br /><span style="font-family:monospace">
 12-bit Register 							: 12
 </span>
 <br /><span style="font-family:monospace">
-45-bit Register 							: 15
+45-bit Register 							: 19
 </span>
 <br /><span style="font-family:monospace">
-10-bit Register 							: 60
+10-bit Register 							: 76
 </span>
 <br /><span style="font-family:monospace">
-49-bit Register 							: 45
+49-bit Register 							: 57
 </span>
 <br /><span style="font-family:monospace">
-80-bit Register 							: 15
+80-bit Register 							: 19
 </span>
 <br /><span style="font-family:monospace">
-106-bit Register 							: 42
+106-bit Register 							: 34
 </span>
 <br /><span style="font-family:monospace">
-14-bit Register 							: 42
+14-bit Register 							: 34
 </span>
 <br /><span style="font-family:monospace">
-57-bit Register 							: 68
+57-bit Register 							: 60
 </span>
 <br /><span style="font-family:monospace">
-56-bit Register 							: 34
+56-bit Register 							: 30
 </span>
 <br /><span style="font-family:monospace">
-5-bit Register 							: 7
-</span>
-<br /><span style="font-family:monospace">
-37-bit Register 							: 3
+5-bit Register 							: 9
 </span>
 <br /><h5>
-Multiplexers (9446)
+Multiplexers (10594)
 </h5>
 <span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 2023
+1-bit 2-to-1 Multiplexer 							: 2239
 </span>
 <br /><span style="font-family:monospace">
-25-bit 2-to-1 Multiplexer 							: 13
+25-bit 2-to-1 Multiplexer 							: 22
 </span>
 <br /><span style="font-family:monospace">
-8-bit 2-to-1 Multiplexer 							: 485
+8-bit 2-to-1 Multiplexer 							: 1832
 </span>
 <br /><span style="font-family:monospace">
-9-bit 2-to-1 Multiplexer 							: 6
+9-bit 2-to-1 Multiplexer 							: 60
 </span>
 <br /><span style="font-family:monospace">
-23-bit 2-to-1 Multiplexer 							: 180
+23-bit 2-to-1 Multiplexer 							: 222
+</span>
+<br /><span style="font-family:monospace">
+37-bit 2-to-1 Multiplexer 							: 10
+</span>
+<br /><span style="font-family:monospace">
+38-bit 2-to-1 Multiplexer 							: 10
 </span>
 <br /><span style="font-family:monospace">
 79-bit 140-to-1 Multiplexer 							: 1
@@ -591,7 +612,7 @@ Multiplexers (9446)
 29-bit 8-to-1 Multiplexer 							: 12
 </span>
 <br /><span style="font-family:monospace">
-27-bit 2-to-1 Multiplexer 							: 18
+27-bit 2-to-1 Multiplexer 							: 22
 </span>
 <br /><span style="font-family:monospace">
 21-bit 8-to-1 Multiplexer 							: 4
@@ -599,22 +620,58 @@ Multiplexers (9446)
 <br /><span style="font-family:monospace">
 30-bit 8-to-1 Multiplexer 							: 12
 </span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_15')" onmouseover="this.style.cursor = 'pointer'">
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 82
+</span>
+<br /><span style="font-family:monospace">
+6-bit 2-to-1 Multiplexer 							: 4629
+</span>
+<br /><span style="font-family:monospace">
+11-bit 2-to-1 Multiplexer 							: 344
+</span>
+<br /><span style="font-family:monospace">
+52-bit 2-to-1 Multiplexer 							: 193
+</span>
+<br /><span style="font-family:monospace">
+53-bit 2-to-1 Multiplexer 							: 107
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 57
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 57
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 57
+</span>
+<br /><span style="font-family:monospace">
+7-bit 2-to-1 Multiplexer 							: 19
+</span>
+<br /><span style="font-family:monospace">
+80-bit 2-to-1 Multiplexer 							: 19
+</span>
+<br /><span style="font-family:monospace">
+14-bit 2-to-1 Multiplexer 							: 51
+</span>
+<br /><span style="font-family:monospace">
+54-bit 2-to-1 Multiplexer 							: 34
+</span>
+<br /><span style="font-family:monospace">
+57-bit 2-to-1 Multiplexer 							: 15
+</span>
+<br /><span style="font-family:monospace">
+56-bit 2-to-1 Multiplexer 							: 30
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_31')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-real 2-to-1 Multiplexer 							: 55
+real 2-to-1 Multiplexer 							: 46
 </span>
-<span name="Multiplexer_1_15" id="Multiplexer_1_15">
+<span name="Multiplexer_1_31" id="Multiplexer_1_31">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:1831')" name="code2model" class="code2model">
-Switch
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:361')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2763')" name="code2model" class="code2model">
 Switch1
 </a>
 
@@ -624,67 +681,16 @@ Switch1
 
 </span>
 <br /><span style="font-family:monospace">
-24-bit 2-to-1 Multiplexer 							: 70
+3-bit 2-to-1 Multiplexer 							: 18
 </span>
 <br /><span style="font-family:monospace">
-6-bit 2-to-1 Multiplexer 							: 5169
+28-bit 2-to-1 Multiplexer 							: 9
 </span>
 <br /><span style="font-family:monospace">
-11-bit 2-to-1 Multiplexer 							: 400
-</span>
-<br /><span style="font-family:monospace">
-52-bit 2-to-1 Multiplexer 							: 227
-</span>
-<br /><span style="font-family:monospace">
-53-bit 2-to-1 Multiplexer 							: 125
-</span>
-<br /><span style="font-family:monospace">
-26-bit 4-to-1 Multiplexer 							: 45
-</span>
-<br /><span style="font-family:monospace">
-10-bit 2-to-1 Multiplexer 							: 45
-</span>
-<br /><span style="font-family:monospace">
-49-bit 2-to-1 Multiplexer 							: 45
-</span>
-<br /><span style="font-family:monospace">
-7-bit 2-to-1 Multiplexer 							: 15
-</span>
-<br /><span style="font-family:monospace">
-80-bit 2-to-1 Multiplexer 							: 15
-</span>
-<br /><span style="font-family:monospace">
-14-bit 2-to-1 Multiplexer 							: 63
-</span>
-<br /><span style="font-family:monospace">
-54-bit 2-to-1 Multiplexer 							: 42
-</span>
-<br /><span style="font-family:monospace">
-57-bit 2-to-1 Multiplexer 							: 17
-</span>
-<br /><span style="font-family:monospace">
-56-bit 2-to-1 Multiplexer 							: 34
-</span>
-<br /><span style="font-family:monospace">
-3-bit 2-to-1 Multiplexer 							: 14
-</span>
-<br /><span style="font-family:monospace">
-28-bit 2-to-1 Multiplexer 							: 7
-</span>
-<br /><span style="font-family:monospace">
-5-bit 2-to-1 Multiplexer 							: 280
-</span>
-<br /><span style="font-family:monospace">
-16-bit 2-to-1 Multiplexer 							: 1
-</span>
-<br /><span style="font-family:monospace">
-37-bit 2-to-1 Multiplexer 							: 1
-</span>
-<br /><span style="font-family:monospace">
-38-bit 2-to-1 Multiplexer 							: 1
+5-bit 2-to-1 Multiplexer 							: 360
 </span>
 <br /><h5>
-Number of Shift operators (226)
+Number of Shift operators (255)
 </h5>
 <span style="font-family:monospace">
 Static Shift Left 							: 1
@@ -699,64 +705,64 @@ Static Shift Left 							: 4
 Static Shift Left 							: 2
 </span>
 <br /><span style="font-family:monospace">
-Static Shift Right 							: 15
+Static Shift Right 							: 19
 </span>
 <br /><span style="font-family:monospace">
-128-bit Dynamic Shift Left 							: 1
+128-bit Dynamic Shift Left 							: 10
+</span>
+<br /><span style="font-family:monospace">
+37-bit Dynamic Shift Left 							: 10
 </span>
 <br /><span style="font-family:monospace">
 55-bit Dynamic Shift Left 							: 2
 </span>
 <br /><span style="font-family:monospace">
-24-bit Dynamic Shift Left 							: 18
+24-bit Dynamic Shift Left 							: 16
 </span>
 <br /><span style="font-family:monospace">
-53-bit Dynamic Shift Left 							: 54
+53-bit Dynamic Shift Left 							: 46
 </span>
 <br /><span style="font-family:monospace">
-49-bit Dynamic Shift Left 							: 15
+49-bit Dynamic Shift Left 							: 19
 </span>
 <br /><span style="font-family:monospace">
-80-bit Dynamic Shift Left 							: 15
+80-bit Dynamic Shift Left 							: 19
 </span>
 <br /><span style="font-family:monospace">
-56-bit Dynamic Shift Left 							: 17
+56-bit Dynamic Shift Left 							: 15
 </span>
 <br /><span style="font-family:monospace">
-27-bit Dynamic Shift Left 							: 7
+27-bit Dynamic Shift Left 							: 9
 </span>
 <br /><span style="font-family:monospace">
-37-bit Dynamic Shift Left 							: 1
+37-bit Dynamic Shift Right 							: 10
 </span>
 <br /><span style="font-family:monospace">
 53-bit Dynamic Shift Right 							: 12
 </span>
 <br /><span style="font-family:monospace">
-80-bit Dynamic Shift Right 							: 15
+80-bit Dynamic Shift Right 							: 19
 </span>
 <br /><span style="font-family:monospace">
-54-bit Dynamic Shift Right 							: 21
+54-bit Dynamic Shift Right 							: 17
 </span>
 <br /><span style="font-family:monospace">
-57-bit Dynamic Shift Right 							: 17
+57-bit Dynamic Shift Right 							: 15
 </span>
 <br /><span style="font-family:monospace">
-28-bit Dynamic Shift Right 							: 7
-</span>
-<br /><span style="font-family:monospace">
-37-bit Dynamic Shift Right 							: 1
+28-bit Dynamic Shift Right 							: 9
 </span>
 <br /><h5>
-Number of I/O Bits (1564)
+Number of I/O Bits (1500)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 865
+Number of Input Bits: 801
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="3b51d19d-3514-4039-8794-c794b8fd2269" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="44d994ec-78ad-4a3a-8bee-4b541431b54a" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -830,12 +836,6 @@ input_0: 32 bits
 input_1: 32 bits
 </li>
 <li>
-input_2: 32 bits
-</li>
-<li>
-input_3: 32 bits
-</li>
-<li>
 u_abc1_pl_0: 25 bits
 </li>
 <li>
@@ -863,14 +863,14 @@ u_abc3_pl_1: 25 bits
 u_abc3_pl_2: 25 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:1761')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2609')" name="code2model" class="code2model">
 in_theta_el
 </a>
 : 25 bits
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '3b51d19d-3514-4039-8794-c794b8fd2269')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '44d994ec-78ad-4a3a-8bee-4b541431b54a')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -882,7 +882,7 @@ in_theta_el
 Number of Output Bits: 699
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="3919b33a-8a75-485a-bba0-72c3fdb629a1" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="baa3677a-4204-490a-a19a-41c53d40e797" dataCollapse="off">
 <li>
 ce_out: 1 bit
 </li>
@@ -956,20 +956,20 @@ i_abc3_pl_1: 25 bits
 i_abc3_pl_2: 25 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:1764')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:3054')" name="code2model" class="code2model">
 out_theta_el
 </a>
 : 25 bits
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '3919b33a-8a75-485a-bba0-72c3fdb629a1')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'baa3677a-4204-490a-a19a-41c53d40e797')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
 </span>
 <br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:1728')" name="code2model" class="code2model">
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2799')" name="code2model" class="code2model">
 Transformation1
 </a>
 
@@ -1182,7 +1182,7 @@ Static Shift Right 							: 4
 37-bit Dynamic Shift Right 							: 9
 </span>
 <br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:1654')" name="code2model" class="code2model">
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2779')" name="code2model" class="code2model">
 Transformation
 </a>
 
@@ -1200,7 +1200,7 @@ Multipliers (85)
 Adders/Subtractors (211)
 </h5>
 <span style="font-family:monospace">
-43x43-bit Adder 							: 85
+44x44-bit Adder 							: 81
 </span>
 <br /><span style="font-family:monospace">
 8x8-bit Adder 							: 26
@@ -1210,6 +1210,9 @@ Adders/Subtractors (211)
 </span>
 <br /><span style="font-family:monospace">
 32x32-bit Adder 							: 39
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 4
 </span>
 <br /><span style="font-family:monospace">
 46x46-bit Adder 							: 4
@@ -1239,10 +1242,22 @@ Adders/Subtractors (211)
 8x8-bit Subtractor 							: 2
 </span>
 <br /><h5>
-Registers (580)
+Registers (3226)
 </h5>
 <span style="font-family:monospace">
-43-bit Register 							: 9
+32-bit Register 							: 216
+</span>
+<br /><span style="font-family:monospace">
+43-bit Register 							: 252
+</span>
+<br /><span style="font-family:monospace">
+18-bit Register 							: 1053
+</span>
+<br /><span style="font-family:monospace">
+25-bit Register 							: 1053
+</span>
+<br /><span style="font-family:monospace">
+44-bit Register 							: 81
 </span>
 <br /><span style="font-family:monospace">
 1-bit Register 							: 205
@@ -1365,8 +1380,1385 @@ Static Shift Right 							: 4
 28-bit Dynamic Shift Right 							: 2
 </span>
 <br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:1517')" name="code2model" class="code2model">
-Theta_el
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2736')" name="code2model" class="code2model">
+Line-Line to Phase voltage2
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 4
+</span>
+<br /><h5>
+Adders/Subtractors (76)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 8
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 30
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 4
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 4
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 14
+</span>
+<br /><span style="font-family:monospace">
+7-bit Subtractor 							: 8
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 2
+</span>
+<br /><h5>
+Registers (304)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 124
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 40
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 30
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 16
+</span>
+<br /><span style="font-family:monospace">
+6-bit Register 							: 8
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+80-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 8
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 2
+</span>
+<br /><h5>
+Multiplexers (494)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 180
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 14
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+6-bit 2-to-1 Multiplexer 							: 108
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+7-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+80-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 34
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 24
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 80
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><h5>
+Number of Shift operators (20)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 4
+</span>
+<br /><span style="font-family:monospace">
+49-bit Dynamic Shift Left 							: 4
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Left 							: 4
+</span>
+<br /><span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 2
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Right 							: 4
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 2
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2751')" name="code2model" class="code2model">
+alpha_beta_0   to   abc
+</a>
+
+</h5>
+<h5>
+Multipliers (9)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 9
+</span>
+<br /><h5>
+Adders/Subtractors (183)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 21
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 69
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 9
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 9
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 6
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 33
+</span>
+<br /><span style="font-family:monospace">
+7-bit Subtractor 							: 18
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 6
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 6
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 6
+</span>
+<br /><h5>
+Registers (666)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 312
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 108
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 78
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 9
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 9
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+6-bit Register 							: 18
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 27
+</span>
+<br /><span style="font-family:monospace">
+80-bit Register 							: 9
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 24
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 6
+</span>
+<br /><span style="font-family:monospace">
+32-bit Register 							: 18
+</span>
+<br /><h5>
+Multiplexers (1275)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 477
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 33
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 27
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 27
+</span>
+<br /><span style="font-family:monospace">
+6-bit 2-to-1 Multiplexer 							: 243
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 27
+</span>
+<br /><span style="font-family:monospace">
+7-bit 2-to-1 Multiplexer 							: 9
+</span>
+<br /><span style="font-family:monospace">
+80-bit 2-to-1 Multiplexer 							: 9
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 93
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 60
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 6
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 240
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><h5>
+Number of Shift operators (48)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 9
+</span>
+<br /><span style="font-family:monospace">
+49-bit Dynamic Shift Left 							: 9
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Left 							: 9
+</span>
+<br /><span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 6
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Right 							: 9
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 6
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2746')" name="code2model" class="code2model">
+abc   to   alpha_beta_0
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (228)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 24
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 90
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 6
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 42
+</span>
+<br /><span style="font-family:monospace">
+7-bit Subtractor 							: 24
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 6
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 6
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 6
+</span>
+<br /><h5>
+Registers (840)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 372
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 120
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 90
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+6-bit Register 							: 24
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+80-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 24
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 6
+</span>
+<br /><span style="font-family:monospace">
+32-bit Register 							: 72
+</span>
+<br /><h5>
+Multiplexers (1482)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 540
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 42
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+6-bit 2-to-1 Multiplexer 							: 324
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+7-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+80-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 102
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 72
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 6
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 240
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><h5>
+Number of Shift operators (60)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Dynamic Shift Left 							: 12
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Left 							: 12
+</span>
+<br /><span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 6
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Right 							: 12
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 6
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2716')" name="code2model" class="code2model">
+Line-Line to Phase voltage1
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 4
+</span>
+<br /><h5>
+Adders/Subtractors (76)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 8
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 30
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 4
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 4
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 14
+</span>
+<br /><span style="font-family:monospace">
+7-bit Subtractor 							: 8
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 2
+</span>
+<br /><h5>
+Registers (304)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 124
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 40
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 30
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 16
+</span>
+<br /><span style="font-family:monospace">
+6-bit Register 							: 8
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+80-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 8
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 2
+</span>
+<br /><h5>
+Multiplexers (494)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 180
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 14
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+6-bit 2-to-1 Multiplexer 							: 108
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+7-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+80-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 34
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 24
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 80
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><h5>
+Number of Shift operators (20)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 4
+</span>
+<br /><span style="font-family:monospace">
+49-bit Dynamic Shift Left 							: 4
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Left 							: 4
+</span>
+<br /><span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 2
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Right 							: 4
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 2
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2731')" name="code2model" class="code2model">
+alpha_beta_0   to   abc
+</a>
+
+</h5>
+<h5>
+Multipliers (9)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 9
+</span>
+<br /><h5>
+Adders/Subtractors (183)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 21
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 69
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 9
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 9
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 6
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 33
+</span>
+<br /><span style="font-family:monospace">
+7-bit Subtractor 							: 18
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 6
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 6
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 6
+</span>
+<br /><h5>
+Registers (666)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 312
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 108
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 78
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 9
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 9
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+6-bit Register 							: 18
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 27
+</span>
+<br /><span style="font-family:monospace">
+80-bit Register 							: 9
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 24
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 6
+</span>
+<br /><span style="font-family:monospace">
+32-bit Register 							: 18
+</span>
+<br /><h5>
+Multiplexers (1275)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 477
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 33
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 27
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 27
+</span>
+<br /><span style="font-family:monospace">
+6-bit 2-to-1 Multiplexer 							: 243
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 27
+</span>
+<br /><span style="font-family:monospace">
+7-bit 2-to-1 Multiplexer 							: 9
+</span>
+<br /><span style="font-family:monospace">
+80-bit 2-to-1 Multiplexer 							: 9
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 93
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 60
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 6
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 240
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><h5>
+Number of Shift operators (48)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 9
+</span>
+<br /><span style="font-family:monospace">
+49-bit Dynamic Shift Left 							: 9
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Left 							: 9
+</span>
+<br /><span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 6
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Right 							: 9
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 6
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2726')" name="code2model" class="code2model">
+abc   to   alpha_beta_0
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (228)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 24
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 90
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 6
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 42
+</span>
+<br /><span style="font-family:monospace">
+7-bit Subtractor 							: 24
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 6
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 6
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 6
+</span>
+<br /><h5>
+Registers (840)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 372
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 120
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 90
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+6-bit Register 							: 24
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+80-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 24
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 6
+</span>
+<br /><span style="font-family:monospace">
+32-bit Register 							: 72
+</span>
+<br /><h5>
+Multiplexers (1482)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 540
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 42
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+6-bit 2-to-1 Multiplexer 							: 324
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+7-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+80-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 102
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 72
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 6
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 240
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><h5>
+Number of Shift operators (60)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Dynamic Shift Left 							: 12
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Left 							: 12
+</span>
+<br /><span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 6
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Right 							: 12
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 6
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2696')" name="code2model" class="code2model">
+Line-Line to Phase voltage
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 4
+</span>
+<br /><h5>
+Adders/Subtractors (76)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 8
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 30
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 4
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 4
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 14
+</span>
+<br /><span style="font-family:monospace">
+7-bit Subtractor 							: 8
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 2
+</span>
+<br /><h5>
+Registers (304)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 124
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 40
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 30
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 16
+</span>
+<br /><span style="font-family:monospace">
+6-bit Register 							: 8
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+80-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 8
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 2
+</span>
+<br /><h5>
+Multiplexers (494)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 180
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 14
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+6-bit 2-to-1 Multiplexer 							: 108
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+7-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+80-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 34
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 24
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 80
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><h5>
+Number of Shift operators (20)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 4
+</span>
+<br /><span style="font-family:monospace">
+49-bit Dynamic Shift Left 							: 4
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Left 							: 4
+</span>
+<br /><span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 2
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Right 							: 4
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 2
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2711')" name="code2model" class="code2model">
+alpha_beta_0   to   abc
+</a>
+
+</h5>
+<h5>
+Multipliers (9)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 9
+</span>
+<br /><h5>
+Adders/Subtractors (183)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 21
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 69
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 9
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 9
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 6
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 33
+</span>
+<br /><span style="font-family:monospace">
+7-bit Subtractor 							: 18
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 6
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 6
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 6
+</span>
+<br /><h5>
+Registers (666)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 312
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 108
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 78
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 9
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 9
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+6-bit Register 							: 18
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 27
+</span>
+<br /><span style="font-family:monospace">
+80-bit Register 							: 9
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 24
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 6
+</span>
+<br /><span style="font-family:monospace">
+32-bit Register 							: 18
+</span>
+<br /><h5>
+Multiplexers (1275)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 477
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 33
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 27
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 27
+</span>
+<br /><span style="font-family:monospace">
+6-bit 2-to-1 Multiplexer 							: 243
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 27
+</span>
+<br /><span style="font-family:monospace">
+7-bit 2-to-1 Multiplexer 							: 9
+</span>
+<br /><span style="font-family:monospace">
+80-bit 2-to-1 Multiplexer 							: 9
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 93
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 60
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 6
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 240
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><h5>
+Number of Shift operators (48)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 9
+</span>
+<br /><span style="font-family:monospace">
+49-bit Dynamic Shift Left 							: 9
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Left 							: 9
+</span>
+<br /><span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 6
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Right 							: 9
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 6
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2706')" name="code2model" class="code2model">
+abc   to   alpha_beta_0
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (228)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 24
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 90
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 6
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 42
+</span>
+<br /><span style="font-family:monospace">
+7-bit Subtractor 							: 24
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 6
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 6
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 6
+</span>
+<br /><h5>
+Registers (840)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 372
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 120
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 90
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+6-bit Register 							: 24
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+80-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 24
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 6
+</span>
+<br /><span style="font-family:monospace">
+32-bit Register 							: 72
+</span>
+<br /><h5>
+Multiplexers (1482)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 540
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 42
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+6-bit 2-to-1 Multiplexer 							: 324
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+7-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+80-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 102
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 72
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 6
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 240
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><h5>
+Number of Shift operators (60)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Dynamic Shift Left 							: 12
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Left 							: 12
+</span>
+<br /><span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 6
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Right 							: 12
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 6
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:3062')" name="code2model" class="code2model">
+Wrapped State DTI
 </a>
 
 </h5>
@@ -1374,235 +2766,178 @@ Theta_el
 Multipliers (2)
 </h5>
 <span style="font-family:monospace">
-18x24-bit Multiply 							: 1
-</span>
-<br /><span style="font-family:monospace">
-53x53-bit Multiply 							: 1
+18x24-bit Multiply 							: 2
 </span>
 <br /><h5>
-Adders/Subtractors (47)
+Adders/Subtractors (56)
 </h5>
 <span style="font-family:monospace">
-8x8-bit Adder 							: 1
+8x8-bit Adder 							: 8
 </span>
 <br /><span style="font-family:monospace">
-32x32-bit Adder 							: 7
+32x32-bit Adder 							: 17
 </span>
 <br /><span style="font-family:monospace">
-43x43-bit Adder 							: 1
+43x43-bit Adder 							: 2
 </span>
 <br /><span style="font-family:monospace">
-46x46-bit Adder 							: 1
+46x46-bit Adder 							: 2
 </span>
 <br /><span style="font-family:monospace">
-6x6-bit Adder 							: 2
+24x24-bit Adder 							: 3
 </span>
 <br /><span style="font-family:monospace">
-13x13-bit Adder 							: 1
+3x3-bit Adder 							: 2
 </span>
 <br /><span style="font-family:monospace">
-14x14-bit Adder 							: 5
+32x32-bit Subtractor 							: 9
 </span>
 <br /><span style="font-family:monospace">
-53x53-bit Adder 							: 2
+7-bit Subtractor 							: 4
 </span>
 <br /><span style="font-family:monospace">
-11x11-bit Adder 							: 3
+29-bit Subtractor 							: 3
 </span>
 <br /><span style="font-family:monospace">
-58x58-bit Adder 							: 1
+5x5-bit Subtractor 							: 3
 </span>
 <br /><span style="font-family:monospace">
-26x26-bit Adder 							: 1
-</span>
-<br /><span style="font-family:monospace">
-9x9-bit Adder 							: 1
-</span>
-<br /><span style="font-family:monospace">
-32x32-bit Subtractor 							: 3
-</span>
-<br /><span style="font-family:monospace">
-7-bit Subtractor 							: 2
-</span>
-<br /><span style="font-family:monospace">
-9x9-bit Subtractor 							: 1
-</span>
-<br /><span style="font-family:monospace">
-7x7-bit Subtractor 							: 4
-</span>
-<br /><span style="font-family:monospace">
-12x12-bit Subtractor 							: 5
-</span>
-<br /><span style="font-family:monospace">
-14x14-bit Subtractor 							: 2
-</span>
-<br /><span style="font-family:monospace">
-15-bit Subtractor 							: 1
-</span>
-<br /><span style="font-family:monospace">
-58-bit Subtractor 							: 1
-</span>
-<br /><span style="font-family:monospace">
-6x6-bit Subtractor 							: 1
-</span>
-<br /><span style="font-family:monospace">
-11x11-bit Subtractor 							: 1
+8x8-bit Subtractor 							: 3
 </span>
 <br /><h5>
-Registers (195)
+Registers (433)
 </h5>
 <span style="font-family:monospace">
-1-bit Register 							: 85
+1-bit Register 							: 112
 </span>
 <br /><span style="font-family:monospace">
-8-bit Register 							: 7
+8-bit Register 							: 48
 </span>
 <br /><span style="font-family:monospace">
-23-bit Register 							: 8
+23-bit Register 							: 33
 </span>
 <br /><span style="font-family:monospace">
-45-bit Register 							: 1
+45-bit Register 							: 2
 </span>
 <br /><span style="font-family:monospace">
-29-bit Register 							: 1
+29-bit Register 							: 2
 </span>
 <br /><span style="font-family:monospace">
-10-bit Register 							: 4
+10-bit Register 							: 8
 </span>
 <br /><span style="font-family:monospace">
-6-bit Register 							: 9
+6-bit Register 							: 4
 </span>
 <br /><span style="font-family:monospace">
-49-bit Register 							: 3
+49-bit Register 							: 6
 </span>
 <br /><span style="font-family:monospace">
-80-bit Register 							: 1
+80-bit Register 							: 2
 </span>
 <br /><span style="font-family:monospace">
-11-bit Register 							: 20
+28-bit Register 							: 12
 </span>
 <br /><span style="font-family:monospace">
-24-bit Register 							: 3
+27-bit Register 							: 6
 </span>
 <br /><span style="font-family:monospace">
-52-bit Register 							: 16
+5-bit Register 							: 3
 </span>
 <br /><span style="font-family:monospace">
-53-bit Register 							: 4
+3-bit Register 							: 2
 </span>
 <br /><span style="font-family:monospace">
-106-bit Register 							: 2
-</span>
-<br /><span style="font-family:monospace">
-14-bit Register 							: 2
-</span>
-<br /><span style="font-family:monospace">
-57-bit Register 							: 4
-</span>
-<br /><span style="font-family:monospace">
-56-bit Register 							: 2
-</span>
-<br /><span style="font-family:monospace">
-64-bit Register 							: 3
-</span>
-<br /><span style="font-family:monospace">
-12-bit Register 							: 1
-</span>
-<br /><span style="font-family:monospace">
-32-bit Register 							: 19
+32-bit Register 							: 193
 </span>
 <br /><h5>
-Multiplexers (486)
+Multiplexers (504)
 </h5>
 <span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 100
+1-bit 2-to-1 Multiplexer 							: 220
 </span>
 <br /><span style="font-family:monospace">
-24-bit 2-to-1 Multiplexer 							: 4
+24-bit 2-to-1 Multiplexer 							: 9
 </span>
 <br /><span style="font-family:monospace">
-26-bit 4-to-1 Multiplexer 							: 3
+26-bit 4-to-1 Multiplexer 							: 6
 </span>
 <br /><span style="font-family:monospace">
-10-bit 2-to-1 Multiplexer 							: 3
+10-bit 2-to-1 Multiplexer 							: 6
 </span>
 <br /><span style="font-family:monospace">
-6-bit 2-to-1 Multiplexer 							: 296
+6-bit 2-to-1 Multiplexer 							: 54
 </span>
 <br /><span style="font-family:monospace">
-49-bit 2-to-1 Multiplexer 							: 3
+49-bit 2-to-1 Multiplexer 							: 6
 </span>
 <br /><span style="font-family:monospace">
-7-bit 2-to-1 Multiplexer 							: 1
+7-bit 2-to-1 Multiplexer 							: 2
 </span>
 <br /><span style="font-family:monospace">
-80-bit 2-to-1 Multiplexer 							: 1
+80-bit 2-to-1 Multiplexer 							: 2
 </span>
 <br /><span style="font-family:monospace">
-8-bit 2-to-1 Multiplexer 							: 11
+8-bit 2-to-1 Multiplexer 							: 39
 </span>
 <br /><span style="font-family:monospace">
-23-bit 2-to-1 Multiplexer 							: 11
+23-bit 2-to-1 Multiplexer 							: 20
 </span>
 <br /><span style="font-family:monospace">
-11-bit 2-to-1 Multiplexer 							: 22
+3-bit 2-to-1 Multiplexer 							: 6
 </span>
 <br /><span style="font-family:monospace">
-52-bit 2-to-1 Multiplexer 							: 12
+28-bit 2-to-1 Multiplexer 							: 3
 </span>
 <br /><span style="font-family:monospace">
-53-bit 2-to-1 Multiplexer 							: 7
+5-bit 2-to-1 Multiplexer 							: 120
 </span>
 <br /><span style="font-family:monospace">
-14-bit 2-to-1 Multiplexer 							: 3
+27-bit 2-to-1 Multiplexer 							: 6
 </span>
-<br /><span style="font-family:monospace">
-54-bit 2-to-1 Multiplexer 							: 2
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_13_15')" onmouseover="this.style.cursor = 'pointer'">
+[+]
 </span>
-<br /><span style="font-family:monospace">
-57-bit 2-to-1 Multiplexer 							: 1
+<span style="font-family:monospace">
+real 2-to-1 Multiplexer 							: 5
 </span>
-<br /><span style="font-family:monospace">
-56-bit 2-to-1 Multiplexer 							: 2
-</span>
-<br /><span style="font-family:monospace">
-real 2-to-1 Multiplexer 							: 3
-</span>
-<br /><span style="font-family:monospace">
-25-bit 2-to-1 Multiplexer 							: 1
+<span name="Multiplexer_13_15" id="Multiplexer_13_15">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:3072')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:3073')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+
+</ul>
+
 </span>
 <br /><h5>
-Number of Shift operators (12)
+Number of Shift operators (14)
 </h5>
 <span style="font-family:monospace">
-Static Shift Right 							: 1
+Static Shift Right 							: 2
 </span>
 <br /><span style="font-family:monospace">
-49-bit Dynamic Shift Left 							: 1
+49-bit Dynamic Shift Left 							: 2
 </span>
 <br /><span style="font-family:monospace">
-80-bit Dynamic Shift Left 							: 1
+80-bit Dynamic Shift Left 							: 2
 </span>
 <br /><span style="font-family:monospace">
-24-bit Dynamic Shift Left 							: 1
+27-bit Dynamic Shift Left 							: 3
 </span>
 <br /><span style="font-family:monospace">
-53-bit Dynamic Shift Left 							: 3
+80-bit Dynamic Shift Right 							: 2
 </span>
 <br /><span style="font-family:monospace">
-56-bit Dynamic Shift Left 							: 1
-</span>
-<br /><span style="font-family:monospace">
-80-bit Dynamic Shift Right 							: 1
-</span>
-<br /><span style="font-family:monospace">
-54-bit Dynamic Shift Right 							: 1
-</span>
-<br /><span style="font-family:monospace">
-57-bit Dynamic Shift Right 							: 1
-</span>
-<br /><span style="font-family:monospace">
-53-bit Dynamic Shift Right 							: 1
+28-bit Dynamic Shift Right 							: 3
 </span>
 <br /><p><hr /></p>
 </body>

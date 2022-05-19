@@ -4,14 +4,14 @@
 <title>HDL Check Report for 'uz_pmsm_model_9ph/uz_pmsm_model_9ph'</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-<script type="text/javascript" src="file://C:/Program%20Files/MATLAB/R2021a/toolbox/hdlcoder/hdlcommon/js_css/jquery-1.7.1.js"></script>
-<script type="text/javascript" src="file://C:/Program%20Files/MATLAB/R2021a/toolbox/hdlcoder/hdlcommon/js_css/docscripts.js"></script>
+<script type="text/javascript" src="file://C:/Program%20Files/MATLAB/R2021b/toolbox/hdlcoder/hdlcommon/js_css/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="file://C:/Program%20Files/MATLAB/R2021b/toolbox/hdlcoder/hdlcommon/js_css/docscripts.js"></script>
         
-        <link href="file://C:/Program%20Files/MATLAB/R2021a/toolbox/hdlcoder/hdlcommon/js_css/ice_960.css" rel="stylesheet" type="text/css">
-        <link href="file://C:/Program%20Files/MATLAB/R2021a/toolbox/hdlcoder/hdlcommon/js_css/HDLsite5.css" rel="stylesheet" type="text/css">
-        <link href="file://C:/Program%20Files/MATLAB/R2021a/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center.css" rel="stylesheet" type="text/css">
-        <link href="file://C:/Program%20Files/MATLAB/R2021a/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center_installed.css" rel="stylesheet" type="text/css">
-        <link href="file://C:/Program%20Files/MATLAB/R2021a/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center_print.css" rel="stylesheet" type="text/css" media="print">
+        <link href="file://C:/Program%20Files/MATLAB/R2021b/toolbox/hdlcoder/hdlcommon/js_css/ice_960.css" rel="stylesheet" type="text/css">
+        <link href="file://C:/Program%20Files/MATLAB/R2021b/toolbox/hdlcoder/hdlcommon/js_css/HDLsite5.css" rel="stylesheet" type="text/css">
+        <link href="file://C:/Program%20Files/MATLAB/R2021b/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center.css" rel="stylesheet" type="text/css">
+        <link href="file://C:/Program%20Files/MATLAB/R2021b/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center_installed.css" rel="stylesheet" type="text/css">
+        <link href="file://C:/Program%20Files/MATLAB/R2021b/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center_print.css" rel="stylesheet" type="text/css" media="print">
         <script type="text/javascript">
             if (navigator.appName != "ICEbrowser") {
             var cssStyleSheets = $("link").filter(function(){
@@ -48,525 +48,64 @@
  <div class="page_container"><div class="content_frame">
 <h1>HDL Code Generation Check Report for 'uz_pmsm_model_9ph/uz_pmsm_model_9ph'
 <a href="matlab:open_system('uz_pmsm_model_9ph/uz_pmsm_model_9ph');">open model 'uz_pmsm_model_9ph/uz_pmsm_model_9ph'</a><BR>
-Generated on 2022-05-14 12:08:29</h1>
-<H2>HDL check for 'uz_pmsm_model_9ph' complete with 86 errors, 0 warnings, and 0 messages.</H2><BR>
+Generated on 2022-05-19 11:25:40</h1>
+<H2>HDL check for 'uz_pmsm_model_9ph' complete with 0 errors, 5 warnings, and 4 messages.</H2><BR>
 <H3>The following table describes blocks for which errors, warnings or messages were reported.</H3><BR>
 <TABLE>
 <TR><TD> <B>Simulink Blocks and resources</B> </TD><TD> <B>Level</B> </TD><TD> <B>Description</B> </TD></TR><TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 51 49]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion31</a>
+<a alt="hdlcoder:validate:UnsupportedAutoInsertRateTransition" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]))">uz_pmsm_model_9ph</a>
 </TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion31 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
+<TD>Warning</TD>
+<TD>HDL Code Generation is not supported with implicit rate transitions. Consider turning off Simulink Solver setting <a href="matlab:configset.internal.open('uz_pmsm_model_9ph','AutoInsertRateTranBlk')">"Automatically handle rate transition for data transfer"</a> and detect such implicit transitions and add explicit rate conversion blocks with valid sample times.</TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 50 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion23</a>
+<a alt="hdlcoder:GotoFromWiring:UnmatchedFromBlockForGotoBlock" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]))">uz_pmsm_model_9ph</a>
 </TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion23 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
+<TD>Warning</TD>
+<TD>Warning: Unable to find matching "From" block for "Goto" block '<a href="matlab:open_and_hilite_system('uz_pmsm_model_9ph/uz_pmsm_model_9ph/Goto8')">uz_pmsm_model_9ph/uz_pmsm_model_9ph/Goto8</a>' inside of the DUT. This "Goto" block will be ignored during HDL code generation.</TD>
 </TR>
 <TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 116 111 114 113 117 101 95 99 97 108 99 117 108 97 116 105 111 110 47 80 114 111 100 117 99 116 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/torque_calculation/Product3</a>
+<a alt="HDLShared:hdlshared:genericfamilynotcharacterized" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]))">uz_pmsm_model_9ph</a>
 </TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/torque_calculation/Product3 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
+<TD>Warning</TD>
+<TD>Family zynq ultrascale+ not characterized. Using default value, SynthesisToolChipFamily=virtex7 and SynthesisToolSpeedValue=-1, for adaptive pipelining.</TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 49 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion13</a>
+<a alt="hdlcoder:engine:MultirateSolver" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]))">uz_pmsm_model_9ph</a>
 </TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion13 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
+<TD>Warning</TD>
+<TD>HDL optimizations that result in overclocking, such as streaming, resource sharing, or clock-rate pipelining require a fixed step, discrete solver in single-tasking mode. The fixed-step size must be set to 'auto' and the treat each discrete rate as a separate task must be set to 'off'.
+You can set these options in Modeling -> Model Settings -> Solver -> Solver details -> Tasking and sample time options. Not setting these options may result in failure to update (Ctrl+D) the generated models (like the validation model) and inability to generate an HDL testbench.</TD>
 </TR>
 <TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 80 114 111 100 117 99 116 54]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Product6</a>
+<a alt="HDLShared:hdlshared:cpespeednotspecified" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]))">uz_pmsm_model_9ph</a>
 </TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Product6 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
+<TD>Warning</TD>
+<TD>SynthesisToolSpeedValue not specified. Using default values, SynthesisToolSpeedValue=-1, for critical path estimation.</TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 80 114 111 100 117 99 116 55]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Product7</a>
+<a alt="hdlcoder:hdldisp:GeneratingCPEHiliteScript" href="matlab:run('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_pmsm_model_9ph\hdl_opti\hdlsrc\uz_pmsm_model_9ph\criticalPathEstimated')">C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_pmsm_model_9ph\hdl_opti\hdlsrc\uz_pmsm_model_9ph\criticalPathEstimated.m</a>
 </TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Product7 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
+<TD>Message</TD>
+<TD>Estimated critical path for design: <a href="matlab:run('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_pmsm_model_9ph\hdl_opti\hdlsrc\uz_pmsm_model_9ph\criticalPathEstimated')">C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_pmsm_model_9ph\hdl_opti\hdlsrc\uz_pmsm_model_9ph\criticalPathEstimated.m</a></TD>
 </TR>
 <TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 50 50]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion22</a>
+<a alt="hdlcoder:hdldisp:GeneratingCRPHiliteScript" href="matlab:run('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_pmsm_model_9ph\hdl_opti\hdlsrc\uz_pmsm_model_9ph\highlightClockRatePipelining')">C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_pmsm_model_9ph\hdl_opti\hdlsrc\uz_pmsm_model_9ph\highlightClockRatePipelining.m</a>
 </TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion22 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
+<TD>Message</TD>
+<TD>Clock-rate pipelining results can be diagnosed by running this script: <a href="matlab:run('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_pmsm_model_9ph\hdl_opti\hdlsrc\uz_pmsm_model_9ph\highlightClockRatePipelining')">C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_pmsm_model_9ph\hdl_opti\hdlsrc\uz_pmsm_model_9ph\highlightClockRatePipelining.m</a></TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 80 114 111 100 117 99 116 49]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Product1</a>
+<a alt="hdlcoder:hdldisp:GeneratingBlocksWithNoCharacterizationHighlightScript" href="matlab:run('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_pmsm_model_9ph\hdl_opti\hdlsrc\uz_pmsm_model_9ph\highlightCriticalPathEstimationOffendingBlocks')">C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_pmsm_model_9ph\hdl_opti\hdlsrc\uz_pmsm_model_9ph\highlightCriticalPathEstimationOffendingBlocks.m</a>
 </TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Product1 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
+<TD>Message</TD>
+<TD>Blocks that are not characterized for Critical Path Estimation: <a href="matlab:run('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_pmsm_model_9ph\hdl_opti\hdlsrc\uz_pmsm_model_9ph\highlightCriticalPathEstimationOffendingBlocks')">C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_pmsm_model_9ph\hdl_opti\hdlsrc\uz_pmsm_model_9ph\highlightCriticalPathEstimationOffendingBlocks.m</a></TD>
 </TR>
 <TR bgcolor="#F0F0F0"><TD>
-<div alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2">uz_pmsm_model_9ph/uz_pmsm_model_9ph/Sum1_stage2</div>
+<a alt="hdlcoder:hdldisp:OversampleMessage" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]))">uz_pmsm_model_9ph</a>
 </TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/Sum1_stage2 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 83 117 109 49]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Sum1</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Sum1 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 49 47 83 117 109 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator1/Sum3</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator1/Sum3 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 51 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/Data Type Conversion33</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/Data Type Conversion33 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 80 114 111 100 117 99 116 49 48]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Product10</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Product10 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 80 114 111 100 117 99 116]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Product</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Product in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 109 101 99 104 97 110 105 99 97 108 95 115 121 115 116 101 109 47 83 117 109 49]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/mechanical_system/Sum1</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/mechanical_system/Sum1 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 109 101 99 104 97 110 105 99 97 108 95 115 121 115 116 101 109 47 80 114 111 100 117 99 116 49 49]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/mechanical_system/Product11</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/mechanical_system/Product11 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 109 101 99 104 97 110 105 99 97 108 95 115 121 115 116 101 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 49]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/mechanical_system/Data Type Conversion1</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/mechanical_system/Data Type Conversion1 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 109 101 99 104 97 110 105 99 97 108 95 115 121 115 116 101 109 47 105 110 116 101 103 114 97 116 111 114 47 83 117 109 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/mechanical_system/integrator/Sum3</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/mechanical_system/integrator/Sum3 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 109 101 99 104 97 110 105 99 97 108 95 115 121 115 116 101 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 56]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/mechanical_system/Data Type Conversion8</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/mechanical_system/Data Type Conversion8 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 51 55]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/Data Type Conversion37</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/Data Type Conversion37 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 50 49]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion21</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion21 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 80 114 111 100 117 99 116 56]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Product8</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Product8 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<div alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2">uz_pmsm_model_9ph/uz_pmsm_model_9ph/Sum_stage2</div>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/Sum_stage2 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 83 117 109]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Sum</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Sum in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 47 83 117 109 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator/Sum3</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator/Sum3 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 83 117 109 50]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Sum2</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Sum2 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 80 114 111 100 117 99 116 53]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Product5</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Product5 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 51 50]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion32</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion32 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 116 111 114 113 117 101 95 99 97 108 99 117 108 97 116 105 111 110 47 80 114 111 100 117 99 116 50]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/torque_calculation/Product2</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/torque_calculation/Product2 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 116 111 114 113 117 101 95 99 97 108 99 117 108 97 116 105 111 110 47 83 117 109 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/torque_calculation/Sum3</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/torque_calculation/Sum3 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 116 111 114 113 117 101 95 99 97 108 99 117 108 97 116 105 111 110 47 80 114 111 100 117 99 116 57]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/torque_calculation/Product9</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/torque_calculation/Product9 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 105 118 105 100 101]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 65 100 100]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Add</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Add in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 50 52]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion24</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion24 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 50 47 83 117 109 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator2/Sum3</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator2/Sum3 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 49 52]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion14</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion14 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 105 118 105 100 101 49]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide1</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide1 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 105 118 105 100 101 50]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide2</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide2 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 65 100 100 49]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Add1</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Add1 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 50 53]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion25</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion25 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 51 47 83 117 109 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator3/Sum3</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator3/Sum3 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 49 53]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion15</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion15 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 105 118 105 100 101 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide3</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide3 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 105 118 105 100 101 52]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide4</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide4 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 65 100 100 50]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Add2</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Add2 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 50 54]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion26</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion26 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 52 47 83 117 109 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator4/Sum3</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator4/Sum3 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 49 54]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion16</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion16 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 105 118 105 100 101 53]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide5</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide5 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 105 118 105 100 101 54]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide6</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide6 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 65 100 100 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Add3</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Add3 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 50 55]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion27</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion27 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 53 47 83 117 109 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator5/Sum3</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator5/Sum3 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 49 55]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion17</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion17 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 105 118 105 100 101 55]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide7</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide7 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 105 118 105 100 101 56]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide8</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide8 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 65 100 100 52]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Add4</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Add4 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 50 56]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion28</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion28 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 54 47 83 117 109 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator6/Sum3</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator6/Sum3 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 49 56]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion18</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion18 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 105 118 105 100 101 57]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide9</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide9 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 105 118 105 100 101 49 48]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide10</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide10 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 65 100 100 53]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Add5</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Add5 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 50 57]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion29</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion29 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 55 47 83 117 109 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator7/Sum3</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator7/Sum3 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 49 57]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion19</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion19 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 105 118 105 100 101 49 49]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide11</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide11 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 105 118 105 100 101 49 50]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide12</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide12 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 65 100 100 54]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Add6</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Add6 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 51 48]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion30</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion30 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 56 47 83 117 109 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator8/Sum3</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator8/Sum3 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 97 116 97 32 84 121 112 101 32 67 111 110 118 101 114 115 105 111 110 50 48]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion20</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 3 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Data Type Conversion20 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 68 105 118 105 100 101 49 51]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide13</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/Divide13 in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<div alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2">uz_pmsm_model_9ph/uz_pmsm_model_9ph/Sin1_to_sincos</div>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 27 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/Sin1_to_sincos in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 49 47 71 97 105 110]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator1/Gain</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator1/Gain in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 109 101 99 104 97 110 105 99 97 108 95 115 121 115 116 101 109 47 105 110 116 101 103 114 97 116 111 114 47 71 97 105 110]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/mechanical_system/integrator/Gain</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/mechanical_system/integrator/Gain in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 47 71 97 105 110]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator/Gain</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator/Gain in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 116 111 114 113 117 101 95 99 97 108 99 117 108 97 116 105 111 110 47 70 97 99 116 111 114]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/torque_calculation/Factor</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/torque_calculation/Factor in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 50 47 71 97 105 110]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator2/Gain</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator2/Gain in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 51 47 71 97 105 110]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator3/Gain</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator3/Gain in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 52 47 71 97 105 110]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator4/Gain</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator4/Gain in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 53 47 71 97 105 110]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator5/Gain</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator5/Gain in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 54 47 71 97 105 110]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator6/Gain</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator6/Gain in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 55 47 71 97 105 110]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator7/Gain</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator7/Gain in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure2" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104 47 112 109 115 109 47 105 110 116 101 103 114 97 116 111 114 56 47 71 97 105 110]))">uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator8/Gain</a>
-</TD>
-<TD>Error</TD>
-<TD>Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator8/Gain in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcommon:nativefloatingpoint:TargetCodeGenFailure" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 57 112 104]))">uz_pmsm_model_9ph</a>
-</TD>
-<TD>Error</TD>
-<TD>Native floating-point code generation cannot complete for the following reason(s): 'Unable to allocate delays to compensate for the 6 delays introduced by uz_pmsm_model_9ph/uz_pmsm_model_9ph/pmsm/integrator8/Gain in native floating-point mode. Consider either increasing the oversampling factor, setting the 'Latency Strategy' to 'Zero', or adding the necessary output pipelines via HDL block properties for other blocks in the model to accommodate for the latency introduced by this block. <a href="matlab:helpview(fullfile(docroot, 'hdlcoder', 'helptargets.map'),'troubleshoot_hdlcoder_NFP_DelayAllocation')">More information</a>'.</TD>
+<TD>Message</TD>
+<TD>MESSAGE: The design requires 200 times faster clock with respect to the base rate = 2e-06.</TD>
 </TR>
 </TABLE>
 <BR><BR> </div></div></div></div>
@@ -574,10 +113,10 @@ Generated on 2022-05-14 12:08:29</h1>
                         <div class="footer_container">
                             <div class="footer">
                                 <ul class="footernav">
-                                    <li class="footernav_trademarks"><a href="C:/Program Files/MATLAB/R2021a/help/acknowledgments.html">Acknowledgments</a></li>
-                                    <li class="footernav_trademarks"><a href="C:/Program%20Files/MATLAB/R2021a/trademarks.txt">Trademarks</a></li>
-                                    <li class="footernav_patents"><a href="C:/Program%20Files/MATLAB/R2021a/patents.txt">Patents</a></li>
-                                    <li class="footernav_help"><a href="C:/Program Files/MATLAB/R2021a/license_agreement.txt">Terms of Use</a></li>
+                                    <li class="footernav_trademarks"><a href="C:/Program Files/MATLAB/R2021b/help/acknowledgments.html">Acknowledgments</a></li>
+                                    <li class="footernav_trademarks"><a href="C:/Program%20Files/MATLAB/R2021b/trademarks.txt">Trademarks</a></li>
+                                    <li class="footernav_patents"><a href="C:/Program%20Files/MATLAB/R2021b/patents.txt">Patents</a></li>
+                                    <li class="footernav_help"><a href="C:/Program Files/MATLAB/R2021b/license_agreement.txt">Terms of Use</a></li>
                                 </ul>
                                 <div class="copyright">&copy; 1994-2022 The MathWorks, Inc.</div>
                             </div>

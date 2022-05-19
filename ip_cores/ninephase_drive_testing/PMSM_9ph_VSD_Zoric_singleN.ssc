@@ -1,0 +1,170 @@
+component PMSM_9ph_VSD_Zoric_singleN
+    % Models a 9 phase PMSM with transformation
+    % according to [1]: Rockhill_2 https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5208335
+    % and          [2]: Mathworks https://de.mathworks.com/help/physmod/sps/ref/pmsmsixphase.html
+    % and          [3]: Slunjski https://researchonline.ljmu.ac.uk/id/eprint/14732/1/2021MarkoPhD.pdf
+    % and          [4]: Zoric https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8171682
+    
+    nodes
+        a1 = foundation.electrical.electrical;              % a1:left
+        b1 = foundation.electrical.electrical;              % b1:left
+        c1 = foundation.electrical.electrical;              % c1:left
+        a2 = foundation.electrical.electrical;              % a2:left
+        b2 = foundation.electrical.electrical;              % b2:left
+        c2 = foundation.electrical.electrical;              % c2:left
+        a3 = foundation.electrical.electrical;              % a3:left
+        b3 = foundation.electrical.electrical;              % b3:left
+        c3 = foundation.electrical.electrical;              % c3:left
+        neutral = foundation.electrical.electrical;         % neutral:left
+        Rot = foundation.mechanical.rotational.rotational   % Rot:right
+        Case = foundation.mechanical.rotational.rotational; % Case:right
+    end
+    
+    parameters
+        psi_pm = { 1, 'Wb' };
+        L_d = { 1, 'H' };
+        L_q = { 1, 'H' };
+        L_0 = { 0.00016, 'H' };
+        Rs = { 1, 'Ohm' };
+        J = { 1, 'kg*m^2' };
+        p = { 1, '1' };
+        n = { 9, '1' };     %Number of phases
+    end
+    
+    variables
+        %Natural Currents
+        i_a1 = { 0, 'A' };
+        i_b1 = { 0, 'A' };
+        i_c1 = { 0, 'A' };
+        i_a2 = { 0, 'A' };
+        i_b2 = { 0, 'A' };
+        i_c2 = { 0, 'A' };
+        i_a3 = { 0, 'A' };
+        i_b3 = { 0, 'A' };
+        i_c3 = { 0, 'A' };
+        
+        %Transformed Currents
+        i_d = { 0, 'A' };
+        i_q = { 0, 'A' };
+        i_a = { 0, 'A' };
+        i_b = { 0, 'A' };
+        i_x1 = { 0, 'A' };
+        i_y1 = { 0, 'A' };
+        i_x2 = { 0, 'A' };
+        i_y2 = { 0, 'A' };
+        i_x3 = { 0, 'A' };
+        i_y3 = { 0, 'A' };
+        i_z  = { 0, 'A' };
+        
+        %Transformed Voltages
+        u_d = { 0, 'V' };
+        u_q = { 0, 'V' };
+        u_a = { 0, 'V' };
+        u_b = { 0, 'V' }
+        u_x1 = { 0, 'V' };
+        u_y1 = { 0, 'V' };
+        u_x2 = { 0, 'V' };
+        u_y2 = { 0, 'V' };
+        u_x3 = { 0, 'V' };
+        u_y3 = { 0, 'V' };
+        u_z  = { 0, 'V' };
+        
+        %Mechanik and others
+        m_m = { 0, 'N*m' };
+        theta = { 0, 'rad' };   %theta electric
+    end
+    
+    branches
+        i_a1: a1.i -> neutral.i;
+        i_b1: b1.i -> neutral.i;
+        i_c1: c1.i -> neutral.i;
+        
+        i_a2: a2.i -> neutral.i;
+        i_b2: b2.i -> neutral.i;
+        i_c2: c2.i -> neutral.i;
+        
+        i_a3: a3.i -> neutral.i;
+        i_b3: b3.i -> neutral.i;
+        i_c3: c3.i -> neutral.i;
+        
+        m_m: Case.t -> Rot.t;
+    end
+    
+    equations
+        let
+            %Reference Voltages to GND
+            u_a1 = a1.v-neutral.v;
+            u_b1 = b1.v-neutral.v;
+            u_c1 = c1.v-neutral.v;
+            u_a2 = a2.v-neutral.v;
+            u_b2 = b2.v-neutral.v;
+            u_c2 = c2.v-neutral.v;
+            u_a3 = a3.v-neutral.v;
+            u_b3 = b3.v-neutral.v;
+            u_c3 = c3.v-neutral.v;
+            
+            %Rotation and Torque
+            w_mech = Rot.w - Case.w;
+            w_el = p * w_mech;
+            
+            %Calculate flux (derived from [2])
+            psi_d  = L_d * i_d + psi_pm;
+            psi_q  = L_q * i_q;
+            psi_x1 = L_0 * i_x1;
+            psi_y1 = L_0 * i_y1;
+            psi_x2 = L_0 * i_x2;
+            psi_y2 = L_0 * i_y2;
+            psi_x3 = L_0 * i_x3;
+            psi_y3 = L_0 * i_y3;
+            psi_z  = L_0 * i_z;
+            
+            %Powerinvariant Transformation [4, eq. 5]
+            %sigma = sqrt(2/n);
+            %sigma_zs = 1/sqrt(2);
+            %sigma_ws = 1/sqrt(3);
+            
+            %Amplitudeinvariant Transformation [4, eq. 5]
+            sigma = 2/n;
+            sigma_zs = 1/2;
+            sigma_ws = 1/3;
+            
+            %Transformation Matrix [4, eq. 3.21]
+            gamma = pi/n;
+            cl1 = [1   cos(gamma)   cos(2*gamma)   cos(6*gamma)   cos(7*gamma)   cos(8*gamma)   cos(12*gamma)   cos(13*gamma)   cos(14*gamma)];
+            cl2 = [0   sin(gamma)   sin(2*gamma)   sin(6*gamma)   sin(7*gamma)   sin(8*gamma)   sin(12*gamma)   sin(13*gamma)   sin(14*gamma)];
+            cl3 = [1 cos(5*gamma) cos(5*2*gamma) cos(5*6*gamma) cos(5*7*gamma) cos(5*8*gamma) cos(5*12*gamma) cos(5*13*gamma) cos(5*14*gamma)];
+            cl4 = [0 sin(5*gamma) sin(5*2*gamma) sin(5*6*gamma) sin(5*7*gamma) sin(5*8*gamma) sin(5*12*gamma) sin(5*13*gamma) sin(5*14*gamma)];
+            cl5 = [1 cos(7*gamma) cos(7*2*gamma) cos(7*6*gamma) cos(7*7*gamma) cos(7*8*gamma) cos(7*12*gamma) cos(7*13*gamma) cos(7*14*gamma)];
+            cl6 = [0 sin(7*gamma) sin(7*2*gamma) sin(7*6*gamma) sin(7*7*gamma) sin(7*8*gamma) sin(7*12*gamma) sin(7*13*gamma) sin(7*14*gamma)];
+            %for single neutral [4, eq. 8]
+            cl7 = [1 cos(3*gamma) cos(3*2*gamma) cos(3*6*gamma) cos(3*7*gamma) cos(3*8*gamma) cos(3*12*gamma) cos(3*13*gamma) cos(3*14*gamma)];
+            cl8 = [0 sin(3*gamma) sin(3*2*gamma) sin(3*6*gamma) sin(3*7*gamma) sin(3*8*gamma) sin(3*12*gamma) sin(3*13*gamma) sin(3*14*gamma)];
+            cl9 = [sigma_zs -sigma_zs sigma_zs sigma_zs -sigma_zs sigma_zs sigma_zs -sigma_zs sigma_zs];
+            
+            c = sigma*cat(1,cl1,cl2,cl3,cl4,cl5,cl6,cl7,cl8,cl9);
+            
+        in
+            %Transformations [1, eq. 17]
+            [u_a; u_b; u_x1; u_y1; u_x2; u_y2; u_x3; u_y3; u_z] == c*[u_a1; u_a2; u_a3; u_b1; u_b2; u_b3; u_c1; u_c2; u_c3];
+            [i_a; i_b; i_x1; i_y1; i_x2; i_y2; i_x3; i_y3; i_z] == c*[i_a1; i_a2; i_a3; i_b1; i_b2; i_b3; i_c1; i_c2; i_c3];
+            [u_d; u_q] == [cos(theta) sin(theta);-sin(theta) cos(theta)]*[u_a;u_b];
+            [i_d; i_q] == [cos(theta) sin(theta);-sin(theta) cos(theta)]*[i_a;i_b];
+            
+            %Differential Equations (derived from [2])
+            u_d  == Rs*i_d  + psi_d.der - w_el*psi_q;
+            u_q  == Rs*i_q  + psi_q.der + w_el*psi_d;
+            u_x1 == Rs*i_x1 + psi_x1.der;
+            u_y1 == Rs*i_y1 + psi_y1.der;
+            u_x2 == Rs*i_x2 + psi_x2.der;
+            u_y2 == Rs*i_y2 + psi_y2.der;
+            u_x3 == Rs*i_x3 + psi_x3.der;
+            u_y3 == Rs*i_y3 + psi_y3.der;
+            u_z  == Rs*i_z  + psi_z.der;
+            
+            %Mechanik [3, eq. 3.38]
+            theta.der == w_el;
+            m_m == p*9/2*(psi_pm*i_q+(L_d-L_q)*i_d*i_q);    %vermutlich nur bei Amplitudeninvarianz gültig?:/
+        end
+    end
+    
+end

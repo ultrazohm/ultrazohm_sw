@@ -11,7 +11,6 @@ vcom  uz_inverter_3ph_src_Subsystem1_block5.vhd
 vcom  uz_inverter_3ph_src_Subsystem1_block6.vhd
 vcom  uz_inverter_3ph_src_Compare_To_Constant.vhd
 vcom  uz_inverter_3ph_src_nfp_mul_single.vhd
-vcom  uz_inverter_3ph_src_dot_product_1.vhd
 vcom  uz_inverter_3ph_src_nfp_add_single.vhd
 vcom  uz_inverter_3ph_src_dot_product_2.vhd
 vcom  uz_inverter_3ph_src_dot_product_3.vhd

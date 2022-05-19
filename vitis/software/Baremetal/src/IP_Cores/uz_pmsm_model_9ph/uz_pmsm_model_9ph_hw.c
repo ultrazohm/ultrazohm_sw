@@ -105,7 +105,7 @@ void uz_pmsm_model_9ph_hw_write_omega_mech(uint32_t base_address, float omega_me
     uz_assert_not_zero(base_address);
     uz_axi_write_float(base_address + in_omega_mech_Data_uz_pmsm_model_9ph, omega_mech);
 }
-
+/*
 void uz_pmsm_model_9ph_hw_write_u_d(uint32_t base_address, float u_d)
 {
     uz_assert_not_zero(base_address);
@@ -117,7 +117,7 @@ void uz_pmsm_model_9ph_hw_write_u_q(uint32_t base_address, float u_q)
     uz_assert_not_zero(base_address);
     uz_axi_write_float(base_address + u_q_uz_pmsm_model_9ph, u_q);
 }
-
+*/
 // Model parameter
 void uz_pmsm_model_9ph_hw_write_reset(uint32_t base_address, bool reset)
 {

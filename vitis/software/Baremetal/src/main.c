@@ -63,9 +63,9 @@ struct uz_pmsm_model_9ph_config_t pmsm_config={
 			  .switch_pspl = false};
 
 struct uz_PI_Controller_config config = {
-              .Kp = 2500.0f,
-              .Ki = 156500.0f,
-              .samplingTime_sec = 0.00005f,
+              .Kp = 1250.0f,
+              .Ki = 78250.0f,
+              .samplingTime_sec = 0.0001f,
               .upper_limit = 280.0f,
               .lower_limit = -280.0f};
 //end
@@ -131,7 +131,7 @@ uz_PWM_SS_2L_t *pwm_instance_3=NULL;
 
 struct uz_inverter_3ph_config_t inverter_1_config = {
 		.base_address= XPAR_UZ_USER_UZ_INVERTER_3PH_0_BASEADDR,
-		.ip_core_frequency_Hz= 200000000,
+		.ip_core_frequency_Hz= 100000000,
 		.switch_pspl_abc=false,
 		.switch_pspl_gate=false,
 		.udc=560.0f
@@ -139,7 +139,7 @@ struct uz_inverter_3ph_config_t inverter_1_config = {
 
 struct uz_inverter_3ph_config_t inverter_2_config = {
 		.base_address= XPAR_UZ_USER_UZ_INVERTER_3PH_1_BASEADDR,
-		.ip_core_frequency_Hz= 200000000,
+		.ip_core_frequency_Hz= 100000000,
 		.switch_pspl_abc=false,
 		.switch_pspl_gate=false,
 		.udc=560.0f

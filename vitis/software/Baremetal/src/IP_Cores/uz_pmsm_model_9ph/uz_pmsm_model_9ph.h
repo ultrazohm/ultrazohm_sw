@@ -67,8 +67,6 @@ struct uz_pmsm_model_9ph_inputs_general_t
 {
     float omega_mech_1_s; /**< Rotational speed of PMSM in 1/s */
     float load_torque; /**< Applied load torque in Nm */
-    float u_d;
-    float u_q;
 };
 
 

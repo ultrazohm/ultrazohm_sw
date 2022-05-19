@@ -42,6 +42,7 @@ extern uz_9ph_abc_t natural_currents;
 extern struct uz_pmsm_model_9ph_outputs_general_t pmsm_outputs;
 extern uz_9ph_abc_t setpoint_natural;
 
+
 extern struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_1;
 extern struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_2;
 extern struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_3;

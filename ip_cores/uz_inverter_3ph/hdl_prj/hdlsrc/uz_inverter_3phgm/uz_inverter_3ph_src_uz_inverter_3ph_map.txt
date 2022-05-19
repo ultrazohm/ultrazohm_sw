@@ -8,8 +8,7 @@ uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Selection/Sta
 uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Selection/State Mode Vector To Index/Subsystem2 --> uz_inverter_3ph_src_Subsystem1_block5
 uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Selection/State Mode Vector To Index/Subsystem1 --> uz_inverter_3ph_src_Subsystem1_block6
 uz_inverter_3phgm/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Iteration Manager/Compare To Constant --> uz_inverter_3ph_src_Compare_To_Constant
-dot_product_1/nfp_mul_single --> uz_inverter_3ph_src_nfp_mul_single
-dot_product_1 --> uz_inverter_3ph_src_dot_product_1
+dot_product_2/nfp_mul_single --> uz_inverter_3ph_src_nfp_mul_single
 uz_inverter_3phgm/uz_inverter_3ph/nfp_add_single --> uz_inverter_3ph_src_nfp_add_single
 dot_product_2 --> uz_inverter_3ph_src_dot_product_2
 dot_product_3 --> uz_inverter_3ph_src_dot_product_3

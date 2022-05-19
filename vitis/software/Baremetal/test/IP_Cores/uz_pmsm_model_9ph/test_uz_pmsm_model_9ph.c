@@ -87,8 +87,6 @@ void test_uz_pmsm_model_9ph_reset_model(void)
     // write zeros to the model
     uz_pmsm_model_9ph_hw_write_omega_mech_Expect(BASE_ADDRESS, 0.0f);
     uz_pmsm_model_9ph_hw_write_load_torque_Expect(BASE_ADDRESS, 0.0f);
-    uz_pmsm_model_9ph_hw_write_u_d_Expect(BASE_ADDRESS, 0.0f);
-    uz_pmsm_model_9ph_hw_write_u_q_Expect(BASE_ADDRESS, 0.0f);
 
     // force rising edge on inputs strobe
     uz_pmsm_model_9ph_hw_trigger_input_general_strobe_Expect(BASE_ADDRESS);

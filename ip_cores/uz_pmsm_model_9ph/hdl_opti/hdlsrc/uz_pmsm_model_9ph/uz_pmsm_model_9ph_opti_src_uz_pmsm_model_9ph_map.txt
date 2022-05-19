@@ -1,12 +1,19 @@
  --> uz_pmsm_model_9ph_opti_src_uz_pmsm_model_9ph_pkg
-uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_mul_single --> uz_pmsm_model_9ph_opti_src_nfp_mul_single
-uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_convert_single2double --> uz_pmsm_model_9ph_opti_src_nfp_convert_single2double
-uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_add_double --> uz_pmsm_model_9ph_opti_src_nfp_add_double
-uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_convert_double2single --> uz_pmsm_model_9ph_opti_src_nfp_convert_double2single
-uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_mul_double --> uz_pmsm_model_9ph_opti_src_nfp_mul_double
-uz_pmsm_model_9ph/uz_pmsm_model_9ph/Theta_el --> uz_pmsm_model_9ph_opti_src_Theta_el
-uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_add_single --> uz_pmsm_model_9ph_opti_src_nfp_add_single
 uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_sub_single --> uz_pmsm_model_9ph_opti_src_nfp_sub_single
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_mul_single --> uz_pmsm_model_9ph_opti_src_nfp_mul_single
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_add_single --> uz_pmsm_model_9ph_opti_src_nfp_add_single
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/Wrapped State DTI/nfp_relop_single --> uz_pmsm_model_9ph_opti_src_nfp_relop_single
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/Wrapped State DTI/nfp_relop_single --> uz_pmsm_model_9ph_opti_src_nfp_relop_single_block
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/Wrapped State DTI --> uz_pmsm_model_9ph_opti_src_Wrapped_State_DTI
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/Line-Line to Phase voltage/abc   to   alpha_beta_0 --> uz_pmsm_model_9ph_opti_src_abc_to_alpha_beta_0
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/Line-Line to Phase voltage/alpha_beta_0   to   abc --> uz_pmsm_model_9ph_opti_src_alpha_beta_0_to_abc
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/Line-Line to Phase voltage --> uz_pmsm_model_9ph_opti_src_Line_Line_to_Phase_voltage
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/Line-Line to Phase voltage1/abc   to   alpha_beta_0 --> uz_pmsm_model_9ph_opti_src_abc_to_alpha_beta_0_block
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/Line-Line to Phase voltage1/alpha_beta_0   to   abc --> uz_pmsm_model_9ph_opti_src_alpha_beta_0_to_abc_block
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/Line-Line to Phase voltage1 --> uz_pmsm_model_9ph_opti_src_Line_Line_to_Phase_voltage1
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/Line-Line to Phase voltage2/abc   to   alpha_beta_0 --> uz_pmsm_model_9ph_opti_src_abc_to_alpha_beta_0_block1
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/Line-Line to Phase voltage2/alpha_beta_0   to   abc --> uz_pmsm_model_9ph_opti_src_alpha_beta_0_to_abc_block1
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/Line-Line to Phase voltage2 --> uz_pmsm_model_9ph_opti_src_Line_Line_to_Phase_voltage2
 uz_pmsm_model_9ph/uz_pmsm_model_9ph/Transformation/nfp_convert_sfix_43_En31_to_single --> uz_pmsm_model_9ph_opti_src_nfp_convert_sfix_43_En31_to_single
 uz_pmsm_model_9ph/uz_pmsm_model_9ph/Transformation --> uz_pmsm_model_9ph_opti_src_Transformation
  --> uz_pmsm_model_9ph_opti_src_Transformation1_MAC
@@ -20,8 +27,12 @@ uz_pmsm_model_9ph/uz_pmsm_model_9ph/Transformation --> uz_pmsm_model_9ph_opti_sr
  --> uz_pmsm_model_9ph_opti_src_Transformation1_MAC_block7
 uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_convert_single_to_sfix_25_En12 --> uz_pmsm_model_9ph_opti_src_nfp_convert_single_to_sfix_25_En12
 uz_pmsm_model_9ph/uz_pmsm_model_9ph/Transformation1 --> uz_pmsm_model_9ph_opti_src_Transformation1
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_convert_single2double --> uz_pmsm_model_9ph_opti_src_nfp_convert_single2double
 uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_convert_sfix_25_En12_to_single --> uz_pmsm_model_9ph_opti_src_nfp_convert_sfix_25_En12_to_single
-uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_sub_double --> uz_pmsm_model_9ph_opti_src_nfp_sub_double
 uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_sincos_single --> uz_pmsm_model_9ph_opti_src_nfp_sincos_single
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_convert_double2single --> uz_pmsm_model_9ph_opti_src_nfp_convert_double2single
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_mul_double --> uz_pmsm_model_9ph_opti_src_nfp_mul_double
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_sub_double --> uz_pmsm_model_9ph_opti_src_nfp_sub_double
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_add_double --> uz_pmsm_model_9ph_opti_src_nfp_add_double
 uz_pmsm_model_9ph_tc --> uz_pmsm_model_9ph_opti_src_uz_pmsm_model_9ph_tc
 uz_pmsm_model_9ph/uz_pmsm_model_9ph --> uz_pmsm_model_9ph_opti_src_uz_pmsm_model_9ph

@@ -1,3 +1,5 @@
+.. _GUI_network:
+
 =======
 Network
 =======
@@ -6,6 +8,24 @@ Setup IP address
 ----------------
 
 1. Configure a network adapter with a static IP address.
+
+IP address:
+
+::
+
+   192.168.1.1
+
+Netmask:
+
+::
+
+   255.255.255.0
+
+Gateway:
+
+::
+
+    192.168.1.233
 
 2. Usually a USB to network adapter is used. However, keep in mind, that these adapters commonly have only 100MBit/s.
 

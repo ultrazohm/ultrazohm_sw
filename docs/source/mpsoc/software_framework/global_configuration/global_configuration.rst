@@ -5,7 +5,7 @@ Global configuration
 ====================
 
 The global configuration of the UltraZohm workspace regarding the R5 software is defined in the header file ``uz_global_configuration.h``.
-Since the configuration of the system is sepcific for all users, this file does not exist in the repository and is not **not** tracked by git (listed in .gitignore).
+Since the configuration of the system is specific for all users, this file does not exist in the repository and is not **not** tracked by git (listed in .gitignore).
 To simplify the setup, a default configuration``default_uz_global_configuration.h`` is provided (tracked by git).
 
 After cloning the repository, the user has to:

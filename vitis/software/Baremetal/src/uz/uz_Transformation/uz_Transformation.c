@@ -124,7 +124,7 @@ uz_6ph_abc_t uz_transformation_asym30deg_6ph_alphabeta_to_abc(uz_6ph_alphabeta_t
     float val[6] = {0};
 
     // VSD matrix from Matlab script, see Docs
-    float vsd_mat[6][6] = {
+    float const vsd_mat[6][6] = {
         { 1.0000000f, 0.0000000f, 1.0000000f, 0.0000000f, 1.0000000f, -0.0000000f },
         { -0.5000001f, 0.8660254f, -0.4999999f, -0.8660254f, 1.0000000f, -0.0000000f },
         { -0.4999999f, -0.8660254f, -0.5000001f, 0.8660254f, 1.0000000f, 0.0000000f },
@@ -132,7 +132,6 @@ uz_6ph_abc_t uz_transformation_asym30deg_6ph_alphabeta_to_abc(uz_6ph_alphabeta_t
         { -0.8660254f, 0.5000000f, 0.8660254f, 0.5000000f, 0.0000000f, 1.0000000f },
         { 0.0000000f, -1.0000000f, 0.0000000f, -1.0000000f, 0.0000000f, 1.0000000f }
     };
-
 
     
     // write values of abc struct to array for easier usage

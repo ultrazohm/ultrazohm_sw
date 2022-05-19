@@ -15,22 +15,22 @@
  ******************************************************************************/
 #include "../../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
-#include "uz_PID_InterpMeshGrid.h"
+#include "uz_ParaID_InterpMeshGrid.h"
 
-static uint32_t instances_counter_PID_InterpMeshGrid = 0;
+static uint32_t instances_counter_ParaID_InterpMeshGrid = 0;
 
-static uz_PID_InterpMeshGrid_t instances_PID_InterpMeshGrid[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
+static uz_ParaID_InterpMeshGrid_t instances_ParaID_InterpMeshGrid[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
 
-static uz_PID_InterpMeshGrid_t* uz_PID_InterpMeshGrid_allocation(void);
+static uz_ParaID_InterpMeshGrid_t* uz_ParaID_InterpMeshGrid_allocation(void);
 
-static uz_PID_InterpMeshGrid_t* uz_PID_InterpMeshGrid_allocation(void) {
-	uz_assert(instances_counter_PID_InterpMeshGrid < UZ_PARAMETERID_MAX_INSTANCES);
-	uz_PID_InterpMeshGrid_t* self = &instances_PID_InterpMeshGrid[instances_counter_PID_InterpMeshGrid];
-	instances_counter_PID_InterpMeshGrid++;
+static uz_ParaID_InterpMeshGrid_t* uz_ParaID_InterpMeshGrid_allocation(void) {
+	uz_assert(instances_counter_ParaID_InterpMeshGrid < UZ_PARAMETERID_MAX_INSTANCES);
+	uz_ParaID_InterpMeshGrid_t* self = &instances_ParaID_InterpMeshGrid[instances_counter_ParaID_InterpMeshGrid];
+	instances_counter_ParaID_InterpMeshGrid++;
 	return (self);
 }
-uz_PID_InterpMeshGrid_t* uz_InterpMeshGrid_init(void) {
-	uz_PID_InterpMeshGrid_t* self = uz_PID_InterpMeshGrid_allocation();
+uz_ParaID_InterpMeshGrid_t* uz_InterpMeshGrid_init(void) {
+	uz_ParaID_InterpMeshGrid_t* self = uz_ParaID_InterpMeshGrid_allocation();
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
@@ -39,7 +39,7 @@ uz_PID_InterpMeshGrid_t* uz_InterpMeshGrid_init(void) {
 	return (self);
 }
 
-void uz_InterpMeshGrid(uz_PID_InterpMeshGrid_t *self) {
+void uz_InterpMeshGrid(uz_ParaID_InterpMeshGrid_t *self) {
 	uz_assert_not_NULL(self);
 	InterpMeshGrid_step(self->PtrToModelData);
 }

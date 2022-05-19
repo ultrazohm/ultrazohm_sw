@@ -15,22 +15,22 @@
  ******************************************************************************/
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
-#include "uz_PID_OnlineID.h"
+#include "uz_ParaID_OnlineID.h"
 
-static uint32_t instances_counter_PID_OnlineID = 0;
+static uint32_t instances_counter_ParaID_OnlineID = 0;
 
-static uz_PID_OnlineID_t instances_PID_OnlineID[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
+static uz_ParaID_OnlineID_t instances_ParaID_OnlineID[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
 
-static uz_PID_OnlineID_t* uz_PID_OnlineID_allocation(void);
+static uz_ParaID_OnlineID_t* uz_ParaID_OnlineID_allocation(void);
 
-static uz_PID_OnlineID_t* uz_PID_OnlineID_allocation(void) {
-	uz_assert(instances_counter_PID_OnlineID < UZ_PARAMETERID_MAX_INSTANCES);
-	uz_PID_OnlineID_t* self = &instances_PID_OnlineID[instances_counter_PID_OnlineID];
-	instances_counter_PID_OnlineID++;
+static uz_ParaID_OnlineID_t* uz_ParaID_OnlineID_allocation(void) {
+	uz_assert(instances_counter_ParaID_OnlineID < UZ_PARAMETERID_MAX_INSTANCES);
+	uz_ParaID_OnlineID_t* self = &instances_ParaID_OnlineID[instances_counter_ParaID_OnlineID];
+	instances_counter_ParaID_OnlineID++;
 	return (self);
 }
-uz_PID_OnlineID_t* uz_OnlineID_init(void) {
-	uz_PID_OnlineID_t* self = uz_PID_OnlineID_allocation();
+uz_ParaID_OnlineID_t* uz_OnlineID_init(void) {
+	uz_ParaID_OnlineID_t* self = uz_ParaID_OnlineID_allocation();
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
@@ -42,22 +42,22 @@ uz_PID_OnlineID_t* uz_OnlineID_init(void) {
 	return (self);
 }
 
-void uz_OnlineID_step(uz_PID_OnlineID_t *self) {
+void uz_OnlineID_step(uz_ParaID_OnlineID_t *self) {
 	uz_assert_not_NULL(self);
 	OnlineID_step(self->PtrToModelData);
 }
 
-void uz_OnlineID_CleanPsiArray(uz_PID_OnlineID_t* self) {
+void uz_OnlineID_CleanPsiArray(uz_ParaID_OnlineID_t* self) {
 	uz_assert_not_NULL(self);
 	uz_CleanPsiArray(self->CleanPsiArray);
 }
 
-void uz_OnlineID_CalcFluxMaps(uz_PID_OnlineID_t* self) {
+void uz_OnlineID_CalcFluxMaps(uz_ParaID_OnlineID_t* self) {
 	uz_assert_not_NULL(self);
 	uz_InterpMeshGrid(self->InterpMeshGrid);
 }
 
-void uz_OnlineID_AutoRefCurrents_step(uz_PID_OnlineID_t* self) {
+void uz_OnlineID_AutoRefCurrents_step(uz_ParaID_OnlineID_t* self) {
 	uz_assert_not_NULL(self);
 	uz_AutoRefCurrents_step(self->AutoRefCurrents);
 }

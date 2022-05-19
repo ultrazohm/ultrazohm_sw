@@ -72,7 +72,7 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  uz_PID_OnlineID_output_t OnlineID_output;/* '<Root>/OnlineID_output' */
+  uz_ParaID_OnlineID_output_t OnlineID_output;/* '<Root>/OnlineID_output' */
   real32_T eta_c;                      /* '<Root>/eta_c' */
 } ExtU_CleanPsiArray_t;
 

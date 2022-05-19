@@ -234,18 +234,18 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  uz_PID_TwoMassIDConfig_t TwoMassIDConfig;/* '<Root>/TwoMassIDConfig' */
-  uz_PID_ActualValues_t ActualValues;  /* '<Root>/ActualValues' */
-  uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
-  uz_PID_ControlFlags_t ControlFlags;  /* '<Root>/ControlFlags' */
+  uz_ParaID_TwoMassIDConfig_t TwoMassIDConfig;/* '<Root>/TwoMassIDConfig' */
+  uz_ParaID_ActualValues_t ActualValues;/* '<Root>/ActualValues' */
+  uz_ParaID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
+  uz_ParaID_ControlFlags_t ControlFlags;/* '<Root>/ControlFlags' */
 } ExtU_TwoMassID_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
   boolean_T finishedTwoMassID;         /* '<Root>/finishedTwoMassID' */
   boolean_T enteredTwoMassID;          /* '<Root>/enteredTwoMassID' */
-  uz_PID_Controller_Parameters_output_t TwoMassID_FOC_output;/* '<Root>/TwoMassID_FOC_output' */
-  uz_PID_TwoMassID_output_t TwoMassID_output;/* '<Root>/TwoMassID_output' */
+  uz_ParaID_Controller_Parameters_output_t TwoMassID_FOC_output;/* '<Root>/TwoMassID_FOC_output' */
+  uz_ParaID_TwoMassID_output_t TwoMassID_output;/* '<Root>/TwoMassID_output' */
 } ExtY_TwoMassID_t;
 
 /* Real-time Model Data Structure */

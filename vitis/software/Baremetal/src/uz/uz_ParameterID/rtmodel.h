@@ -21,7 +21,6 @@
 
 #ifndef RTW_HEADER_rtmodel_h_
 #define RTW_HEADER_rtmodel_h_
-#include "uz_codegen0.h"
 
 /*
  * ROOT_IO_FORMAT: 0 (Individual arguments)

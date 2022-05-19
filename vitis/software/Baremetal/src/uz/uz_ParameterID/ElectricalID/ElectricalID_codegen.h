@@ -109,18 +109,18 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  uz_PID_ElectricalIDConfig_t ElectricalIDConfig;/* '<Root>/ElectricalIDConfig' */
-  uz_PID_ActualValues_t ActualValues;  /* '<Root>/ActualValues' */
-  uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
-  uz_PID_ControlFlags_t ControlFlags;  /* '<Root>/ControlFlags' */
+  uz_ParaID_ElectricalIDConfig_t ElectricalIDConfig;/* '<Root>/ElectricalIDConfig' */
+  uz_ParaID_ActualValues_t ActualValues;/* '<Root>/ActualValues' */
+  uz_ParaID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
+  uz_ParaID_ControlFlags_t ControlFlags;/* '<Root>/ControlFlags' */
 } ExtU_ElectricalID_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
   boolean_T enteredElectricalID;       /* '<Root>/enteredElectricalID' */
   boolean_T finishedElectricalID;      /* '<Root>/finishedElectricalID' */
-  uz_PID_Controller_Parameters_output_t ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
-  uz_PID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_output' */
+  uz_ParaID_Controller_Parameters_output_t ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
+  uz_ParaID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_output' */
 } ExtY_ElectricalID_t;
 
 /* Real-time Model Data Structure */

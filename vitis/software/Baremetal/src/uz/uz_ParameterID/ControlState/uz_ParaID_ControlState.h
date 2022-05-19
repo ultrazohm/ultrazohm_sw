@@ -13,40 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#ifndef UZ_PID_ELECTRICALID_H
-#define UZ_PID_ELECTRICALID_H
+#ifndef UZ_PARAID_CONTROLSTATE_H
+#define UZ_PARAID_CONTROLSTATE_H
 
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
-#include <stdbool.h>
 #include "../../uz_HAL.h"
-#include "ElectricalID_codegen.h"
+#include <stdbool.h>
+#include "ControlState_codegen.h"
 
 /**
- * @brief Object definition for uz_PID_ElectricalID_t
- * 
+ * @brief Object definition for uz_ParaID_ControlState_t
+ *
  */
-typedef struct uz_PID_ElectricalID_t{
-	ExtY_ElectricalID_t output;
-	ExtU_ElectricalID_t input;
-	DW_ElectricalID_t rtDW; /* Observable states */
-	RT_MODEL_ElectricalID_t modelData;
-	RT_MODEL_ElectricalID_t *PtrToModelData;
-} uz_PID_ElectricalID_t;
+typedef struct uz_ParaID_ControlState_t{
+	ExtY_ControlState_t output;
+	ExtU_ControlState_t input;
+	DW_ControlState_t rtDW; /* Observable states */
+	RT_MODEL_ControlState_t modelData;
+	RT_MODEL_ControlState_t *PtrToModelData;
+} uz_ParaID_ControlState_t;
 
 /**
- * @brief Initializes the uz_PID_ElectricalID_t object
- * 
- * @return uz_PID_ElectricalID_t* pointer to object
+ * @brief Initializes the uz_ParaID_ControlState_t object
+ *
+ * @return uz_ParaID_ControlState_t* pointer to object
  */
-uz_PID_ElectricalID_t* uz_ElectricalID_init(void);
+uz_ParaID_ControlState_t* uz_ControlState_init(void);
 
 /**
- * @brief steps the ElectricalID state once
- * 
- * @param self pointer to uz_PID_ElectricalID_t* object
+ * @brief steps the uz_ParaID_ControlState_t state once
+ *
+ * @param self pointer to uz_ParaID_ControlState_t* object
  */
-void uz_ElectricalID_step(uz_PID_ElectricalID_t *self);
+void uz_ControlState_step(uz_ParaID_ControlState_t *self);
 
 #endif
 #endif

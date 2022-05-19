@@ -26,12 +26,12 @@
 #include "uz_ParameterID_data.h"
 #include "../uz_FOC/uz_FOC.h"
 #include "../uz_SpeedControl/uz_speedcontrol.h"
-#include "ControlState/uz_PID_ControlState.h"
-#include "ElectricalID/uz_PID_ElectricalID.h"
-#include "FluxMapID/uz_PID_FluxMapID.h"
-#include "FrictionID/uz_PID_FrictionID.h"
-#include "OnlineID/uz_PID_OnlineID.h"
-#include "TwoMassID/uz_PID_TwoMassID.h"
+#include "ControlState/uz_ParaID_ControlState.h"
+#include "ElectricalID/uz_ParaID_ElectricalID.h"
+#include "FluxMapID/uz_ParaID_FluxMapID.h"
+#include "FrictionID/uz_ParaID_FrictionID.h"
+#include "OnlineID/uz_ParaID_OnlineID.h"
+#include "TwoMassID/uz_ParaID_TwoMassID.h"
 
 /**
  * @brief Object definition for uz_ParameterID_t

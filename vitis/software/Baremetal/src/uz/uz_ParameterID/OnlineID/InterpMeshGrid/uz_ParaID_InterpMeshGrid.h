@@ -13,25 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#ifndef UZ_PID_CLEANPSIARRAY_H
-#define UZ_PID_CLEANPSIARRAY_H
+#ifndef UZ_PARAID_INTERPMESHGRID_H
+#define UZ_PARAID_INTERPMESHGRID_H
 
 #include "../../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
 #include "../../../uz_HAL.h"
-#include "CleanPsiArray_codegen.h"
+#include "InterpMeshGrid_codegen.h"
 
+/**
+ * @brief object definition for uz_ParaID_InterpMeshGrid_t
+ * 
+ */
 typedef struct {
-	ExtY_CleanPsiArray_t output;
-	ExtU_CleanPsiArray_t input;
-	DW_CleanPsiArray_t rtDW; /* Observable states */
-	RT_MODEL_CleanPsiArray_t modelData;
-	RT_MODEL_CleanPsiArray_t *PtrToModelData;
-} uz_PID_CleanPsiArray_t;
+	ExtY_InterpMeshGrid_t output;
+	ExtU_InterpMeshGrid_t input;
+	DW_InterpMeshGrid_t rtDW; /* Observable states */
+	RT_MODEL_InterpMeshGrid_t modelData;
+	RT_MODEL_InterpMeshGrid_t *PtrToModelData;
+} uz_ParaID_InterpMeshGrid_t;
 
-uz_PID_CleanPsiArray_t* uz_CleanPsiArray_init(void);
-void uz_CleanPsiArray(uz_PID_CleanPsiArray_t *self);
+/**
+ * @brief Initializes the uz_ParaID_InterpMeshGrid_t object
+ * 
+ * @return uz_ParaID_InterpMeshGrid_t* pointer to object
+ */
+uz_ParaID_InterpMeshGrid_t* uz_InterpMeshGrid_init(void);
+
+/**
+ * @brief steps the InterpolateMeshGrid state once
+ * 
+ * @param self pointer to object
+ */
+void uz_InterpMeshGrid(uz_ParaID_InterpMeshGrid_t *self);
 
 #endif
 #endif

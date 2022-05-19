@@ -136,15 +136,15 @@ typedef struct {
 /* External inputs (root inport signals with default storage) */
 typedef struct {
   real32_T cleaned_psi_array[600];     /* '<Root>/cleaned_psi_array' */
-  uz_PID_OnlineIDConfig_t OnlineIDConfig;/* '<Root>/OnlineIDConfig' */
-  uz_PID_ActualValues_t ActualValues;  /* '<Root>/ActualValues' */
-  uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
-  uz_PID_ControlFlags_t ControlFlags;  /* '<Root>/ControlFlags' */
+  uz_ParaID_OnlineIDConfig_t OnlineIDConfig;/* '<Root>/OnlineIDConfig' */
+  uz_ParaID_ActualValues_t ActualValues;/* '<Root>/ActualValues' */
+  uz_ParaID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
+  uz_ParaID_ControlFlags_t ControlFlags;/* '<Root>/ControlFlags' */
 } ExtU_OnlineID_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  uz_PID_OnlineID_output_t OnlineID_output;/* '<Root>/OnlineID_output' */
+  uz_ParaID_OnlineID_output_t OnlineID_output;/* '<Root>/OnlineID_output' */
   boolean_T enteredOnlineID;           /* '<Root>/enteredOnlineID' */
 } ExtY_OnlineID_t;
 

@@ -13,40 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#ifndef UZ_PID_CONTROLSTATE_H
-#define UZ_PID_CONTROLSTATE_H
+#ifndef UZ_PARAID_CLEANPSIARRAY_H
+#define UZ_PARAID_CLEANPSIARRAY_H
 
-#include "../../uz_global_configuration.h"
+#include "../../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
-#include "../../uz_HAL.h"
 #include <stdbool.h>
-#include "ControlState_codegen.h"
+#include "../../../uz_HAL.h"
+#include "CleanPsiArray_codegen.h"
 
 /**
- * @brief Object definition for uz_PID_ControlState_t
- *
+ * @brief object definition for uz_ParaID_CleanPsiArray_t
+ * 
  */
-typedef struct uz_PID_ControlState_t{
-	ExtY_ControlState_t output;
-	ExtU_ControlState_t input;
-	DW_ControlState_t rtDW; /* Observable states */
-	RT_MODEL_ControlState_t modelData;
-	RT_MODEL_ControlState_t *PtrToModelData;
-} uz_PID_ControlState_t;
+typedef struct {
+	ExtY_CleanPsiArray_t output;
+	ExtU_CleanPsiArray_t input;
+	DW_CleanPsiArray_t rtDW; /* Observable states */
+	RT_MODEL_CleanPsiArray_t modelData;
+	RT_MODEL_CleanPsiArray_t *PtrToModelData;
+} uz_ParaID_CleanPsiArray_t;
 
 /**
- * @brief Initializes the uz_PID_ControlState_t object
- *
- * @return uz_PID_ControlState_t* pointer to object
+ * @brief Initializes the uz_ParaID_CleanPsiArray_t object
+ * 
+ * @return uz_ParaID_CleanPsiArray_t* pointer to object
  */
-uz_PID_ControlState_t* uz_ControlState_init(void);
+uz_ParaID_CleanPsiArray_t* uz_CleanPsiArray_init(void);
 
 /**
- * @brief steps the uz_PID_ControlState_t state once
- *
- * @param self pointer to uz_PID_ControlState_t* object
+ * @brief steps the CleanPsiArray state once
+ * 
+ * @param self pointer to object
  */
-void uz_ControlState_step(uz_PID_ControlState_t *self);
+void uz_CleanPsiArray(uz_ParaID_CleanPsiArray_t *self);
 
 #endif
 #endif

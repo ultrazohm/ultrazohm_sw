@@ -13,40 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#ifndef UZ_PID_TWOMASSID_H
-#define UZ_PID_TWOMASSID_H
+#ifndef UZ_PARAID_ELECTRICALID_H
+#define UZ_PARAID_ELECTRICALID_H
 
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
 #include "../../uz_HAL.h"
-#include "TwoMassID_codegen.h"
+#include "ElectricalID_codegen.h"
 
 /**
- * @brief Object definition for uz_PID_TwoMassID_t
+ * @brief Object definition for uz_ParaID_ElectricalID_t
  * 
  */
-typedef struct uz_PID_TwoMassID_t{
-	ExtY_TwoMassID_t output;
-	ExtU_TwoMassID_t input;
-	DW_TwoMassID_t rtDW; /* Observable states */
-	RT_MODEL_TwoMassID_t modelData;
-	RT_MODEL_TwoMassID_t *PtrToModelData;
-} uz_PID_TwoMassID_t;
+typedef struct uz_ParaID_ElectricalID_t{
+	ExtY_ElectricalID_t output;
+	ExtU_ElectricalID_t input;
+	DW_ElectricalID_t rtDW; /* Observable states */
+	RT_MODEL_ElectricalID_t modelData;
+	RT_MODEL_ElectricalID_t *PtrToModelData;
+} uz_ParaID_ElectricalID_t;
 
 /**
- * @brief Initializes the uz_PID_TwoMassID_t object
+ * @brief Initializes the uz_ParaID_ElectricalID_t object
  * 
- * @return uz_PID_TwoMassID_t* pointer to object
+ * @return uz_ParaID_ElectricalID_t* pointer to object
  */
-uz_PID_TwoMassID_t* uz_TwoMassID_init(void);
+uz_ParaID_ElectricalID_t* uz_ElectricalID_init(void);
 
 /**
- * @brief steps the TwoMassID state once
+ * @brief steps the ElectricalID state once
  * 
- * @param self pointer to uz_PID_TwoMassID_t object
+ * @param self pointer to uz_ParaID_ElectricalID_t* object
  */
-void uz_TwoMassID_step(uz_PID_TwoMassID_t *self);
+void uz_ElectricalID_step(uz_ParaID_ElectricalID_t *self);
 
 #endif
 #endif

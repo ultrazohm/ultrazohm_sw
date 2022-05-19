@@ -15,23 +15,23 @@
  ******************************************************************************/
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
-#include "uz_PID_ControlState.h"
+#include "uz_ParaID_ControlState.h"
 
-static uint32_t instances_counter_PID_ControlState = 0;
+static uint32_t instances_counter_ParaID_ControlState = 0;
 
-static uz_PID_ControlState_t instances_PID_ControlState[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
+static uz_ParaID_ControlState_t instances_ParaID_ControlState[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
 
-static uz_PID_ControlState_t* uz_PID_ControlState_allocation(void);
+static uz_ParaID_ControlState_t* uz_ParaID_ControlState_allocation(void);
 
-static uz_PID_ControlState_t* uz_PID_ControlState_allocation(void) {
-	uz_assert(instances_counter_PID_ControlState < UZ_PARAMETERID_MAX_INSTANCES);
-	uz_PID_ControlState_t* self = &instances_PID_ControlState[instances_counter_PID_ControlState];
-	instances_counter_PID_ControlState++;
+static uz_ParaID_ControlState_t* uz_ParaID_ControlState_allocation(void) {
+	uz_assert(instances_counter_ParaID_ControlState < UZ_PARAMETERID_MAX_INSTANCES);
+	uz_ParaID_ControlState_t* self = &instances_ParaID_ControlState[instances_counter_ParaID_ControlState];
+	instances_counter_ParaID_ControlState++;
 	return (self);
 }
 
-uz_PID_ControlState_t* uz_ControlState_init(void) {
-	uz_PID_ControlState_t* self = uz_PID_ControlState_allocation();
+uz_ParaID_ControlState_t* uz_ControlState_init(void) {
+	uz_ParaID_ControlState_t* self = uz_ParaID_ControlState_allocation();
 	self->PtrToModelData = &self->modelData;
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
@@ -40,7 +40,7 @@ uz_PID_ControlState_t* uz_ControlState_init(void) {
 	return (self);
 }
 
-void uz_ControlState_step(uz_PID_ControlState_t *self) {
+void uz_ControlState_step(uz_ParaID_ControlState_t *self) {
 	uz_assert_not_NULL(self);
 	ControlState_step(self->PtrToModelData);
 }

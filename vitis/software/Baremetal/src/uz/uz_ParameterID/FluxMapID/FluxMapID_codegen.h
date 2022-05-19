@@ -96,18 +96,18 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  uz_PID_FluxMapIDConfig_t FluxMapIDConfig;/* '<Root>/FluxMapIDConfig' */
-  uz_PID_ActualValues_t ActualValues;  /* '<Root>/ActualValues' */
-  uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
-  uz_PID_ControlFlags_t ControlFlags;  /* '<Root>/ControlFlags' */
+  uz_ParaID_FluxMapIDConfig_t FluxMapIDConfig;/* '<Root>/FluxMapIDConfig' */
+  uz_ParaID_ActualValues_t ActualValues;/* '<Root>/ActualValues' */
+  uz_ParaID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
+  uz_ParaID_ControlFlags_t ControlFlags;/* '<Root>/ControlFlags' */
 } ExtU_FluxMapID_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
   boolean_T finishedFluxMapID;         /* '<Root>/finishedFluxMapID' */
   boolean_T enteredFluxMapID;          /* '<Root>/enteredFluxMapID' */
-  uz_PID_Controller_Parameters_output_t FluxMapID_FOC_output;/* '<Root>/FluxMapID_FOC_output' */
-  uz_PID_FluxMapID_output_t FluxMapID_output;/* '<Root>/FluxMapID_output' */
+  uz_ParaID_Controller_Parameters_output_t FluxMapID_FOC_output;/* '<Root>/FluxMapID_FOC_output' */
+  uz_ParaID_FluxMapID_output_t FluxMapID_output;/* '<Root>/FluxMapID_output' */
 } ExtY_FluxMapID_t;
 
 /* Real-time Model Data Structure */

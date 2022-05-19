@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#ifndef UZ_PID_FRICTIONID_H
-#define UZ_PID_FRICTIONID_H
+#ifndef UZ_PARAID_FRICTIONID_H
+#define UZ_PARAID_FRICTIONID_H
 
 
 #include "../../uz_global_configuration.h"
@@ -24,30 +24,30 @@
 #include "FrictionID_codegen.h"
 
 /**
- * @brief Object definition for uz_PID_FrictionID_t
+ * @brief Object definition for uz_ParaID_FrictionID_t
  * 
  */
-typedef struct uz_PID_FrictionID_t{
+typedef struct uz_ParaID_FrictionID_t{
 	ExtY_FrictionID_t output;
 	ExtU_FrictionID_t input;
 	DW_FrictionID_t rtDW; /* Observable states */
 	RT_MODEL_FrictionID_t modelData;
 	RT_MODEL_FrictionID_t *PtrToModelData;
-} uz_PID_FrictionID_t;
+} uz_ParaID_FrictionID_t;
 
 /**
- * @brief Initializes the uz_PID_FrictionID_t object
+ * @brief Initializes the uz_ParaID_FrictionID_t object
  * 
- * @return uz_PID_FrictionID_t* pointer to object
+ * @return uz_ParaID_FrictionID_t* pointer to object
  */
-uz_PID_FrictionID_t* uz_FrictionID_init(void);
+uz_ParaID_FrictionID_t* uz_FrictionID_init(void);
 
 /**
  * @brief steps the FrictionID state once
  * 
- * @param self pointer to uz_PID_FrictionID_t object
+ * @param self pointer to uz_ParaID_FrictionID_t object
  */
-void uz_FrictionID_step(uz_PID_FrictionID_t *self);
+void uz_FrictionID_step(uz_ParaID_FrictionID_t *self);
 
 #endif
 #endif

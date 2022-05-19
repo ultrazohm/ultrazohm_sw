@@ -42,7 +42,7 @@ typedef struct {
   real32_T theta_m; /**< measured mechanical theta */
   real32_T theta_el; /**< measured electrical theta */
   real32_T V_DC; /**< measured DC-link voltage */
-} uz_PID_ActualValues_t;
+} uz_ParaID_ActualValues_t;
 
 /**
  * @brief Global configuration struct for general settings of the ParameterID
@@ -69,7 +69,7 @@ typedef struct {
   real32_T ratSpeed; /**< rated speed of the motor */
   uz_3ph_dq_t i_dq_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
   real32_T n_ref; /**< Not needed for ID-states. Can be used to transmit reference speed to a control algorithm. */
-} uz_PID_GlobalConfig_t;
+} uz_ParaID_GlobalConfig_t;
 
 
 /**
@@ -84,7 +84,7 @@ typedef struct {
   uint16_T transNr; /**< transistion number. 1 transistion number corresponds to one ID-state */
   boolean_T enableOnlineID; /**< flag to start OnlineID */
   boolean_T finished_all_Offline_states; /**< flag to signal, that all OfflineID-state are finished and OnlineID-state can be started*/
-} uz_PID_ControlFlags_t;
+} uz_ParaID_ControlFlags_t;
 
 
 /**
@@ -104,7 +104,7 @@ typedef struct {
   real32_T Ki_id_out; /**<Ki_id for FOC control. Can be ignored, if another control algorithm is used */
   real32_T Ki_iq_out; /**<Ki_iq for FOC control. Can be ignored, if another control algorithm is used */
   real32_T Ki_n_out; /**<Ki_n for FOC control. Can be ignored, if another control algorithm is used */
-} uz_PID_Controller_Parameters_output_t;
+} uz_ParaID_Controller_Parameters_output_t;
 
 //----------------------------------------//
 //----------------------------------------//
@@ -123,7 +123,7 @@ typedef struct {
   boolean_T identLq; /**< flag to enable identification of Lq. If false, Lq=Ld */
   real32_T goertzlAmp; /**< amplitude of sine wave for vibration to identify J */
   real32_T min_n_ratio; /**< minimal ratio of rated speed for automatic DutyCycle identification. i.e. 0.025f @3000rpm rated speed -> 75rpm. If this value is reached, the algorithm assumes the DutyCycle is strong enough to properly turn the rotor. */
-} uz_PID_ElectricalIDConfig_t;
+} uz_ParaID_ElectricalIDConfig_t;
 
 
 /**
@@ -137,7 +137,7 @@ typedef struct {
   boolean_T enable_TriState[3]; /**< array to signal which halfbridge of the inverter should be in tristate mode. true signals, that the halfbridge should be in tristate mode. (only needed from the start of ElectricalID, until Ld and Lq have been identified) */
   real32_T thetaOffset; /**< determined offset of theta in rad */
   uz_PMSM_t PMSM_parameters; /**< identified motor parameters */
-} uz_PID_ElectricalID_output_t;
+} uz_ParaID_ElectricalID_output_t;
 
 //----------------------------------------//
 //----------------------------------------//
@@ -162,7 +162,7 @@ typedef struct {
   boolean_T start_FM_ID; /**< flag to enable the automatic current control */
   boolean_T identR; /**< flag to enable online identification */
   real32_T identRAmp; /**< amplitude of the d-current injection signal for online identification of Rs in Amps */
-} uz_PID_FluxMapIDConfig_t;
+} uz_ParaID_FluxMapIDConfig_t;
 
 /**
  * @brief output struct of FluxMapID
@@ -172,7 +172,7 @@ typedef struct {
   boolean_T external_Measurement_Flag; /**< trigger to signal, when an external measurement equipment should measure */
   real32_T R_s; /**< identified online resistance in ohm */
   real32_T WindingTemp; /**< identified winding temperature of the stator */
-} uz_PID_FluxMapID_output_t;
+} uz_ParaID_FluxMapID_output_t;
 
 //----------------------------------------//
 //----------------------------------------//
@@ -192,7 +192,7 @@ typedef struct {
   real32_T n_eva_max; /**< maximum measuring speed in rpm*/
   real32_T eta; /**< steady state speed threshold in percent */
   real32_T maxCurrent; /**< max current for identification */
-} uz_PID_FrictionIDConfig_t;
+} uz_ParaID_FrictionIDConfig_t;
 
 /**
  * @brief output struct of FrictionID
@@ -204,7 +204,7 @@ typedef struct {
   real32_T BrkTorque; /**< identified breakaway torque in Nm */
   real32_T CoulTorque; /**< identified coloumb torque in Nm */
   real32_T ViscoTorque; /**< identified viscous friction in Nms/rad */
-} uz_PID_FrictionID_output_t;
+} uz_ParaID_FrictionID_output_t;
 
 //----------------------------------------//
 //----------------------------------------//
@@ -223,7 +223,7 @@ typedef struct {
   uint16_T f_min; /**< minimum evaluation frequency */
   boolean_T UseLbMq; /**< flag to use Levenberg Marquardt Algorithm */
   real32_T d_TMS_start; /**< inital damping value for LM-algorithm */
-} uz_PID_TwoMassIDConfig_t;
+} uz_ParaID_TwoMassIDConfig_t;
 
 /**
  * @brief output struct of TwoMassID
@@ -236,7 +236,7 @@ typedef struct {
   real32_T LoadInertia; /**< identified inertia of the load in kgm² */
   real32_T TrainInertia; /**< identified inertia of the total system in kgm² */
   real32_T rotorInertia; /**< identified inertia of the motor in kgm² */
-} uz_PID_TwoMassID_output_t;
+} uz_ParaID_TwoMassID_output_t;
 
 //----------------------------------------//
 //----------------------------------------//
@@ -262,7 +262,7 @@ typedef struct {
   real32_T min_n_ratio; /**< factor for rated speed to determine the lower end in which interval the linear Parameters will be identified. i.e. 0.1*n_n. */
   real32_T max_n_ratio; /**< factor for rated speed to determine the upper end in which interval the linear Parameters will be identified. i.e. 0.9*n_n. */
 	boolean_T array_cleaned; /**< flag to signal, that the flux map array has been cleaned */
-} uz_PID_OnlineIDConfig_t;
+} uz_ParaID_OnlineIDConfig_t;
 
 /**
  * @brief output struct for OnlineID
@@ -280,7 +280,7 @@ typedef struct {
   real32_T Ld_out; /**< identified Lq */
   real32_T Lq_out; /**< identified Ld */
 	boolean_T clean_array; /**< flag to signal, that a new flux measurement point got saved in the array and it needs to be cleaned */
-} uz_PID_OnlineID_output_t;
+} uz_ParaID_OnlineID_output_t;
 
 /**
  * @brief configuration struct for AutoRefCurrents config specific settings
@@ -292,7 +292,7 @@ typedef struct {
   real32_T iq_points; /**< amount of iq-points that will be cycled through */
   real32_T id_points; /**< amount of id-points that will be cycled through */
   real32_T max_current; /**< max combined current for the generator */
-} uz_PID_AutoRefCurrentsConfig_t;
+} uz_ParaID_AutoRefCurrentsConfig_t;
 
 /**
  * @brief output struct for AutoRefCurrents
@@ -300,7 +300,7 @@ typedef struct {
  */
 typedef struct {
   uz_3ph_dq_t i_dq_ref; /**<reference dq-currents */
-} uz_PID_AutoRefCurrents_output_t;
+} uz_ParaID_AutoRefCurrents_output_t;
 
 /**
  * @brief struct which contains the calculated fluxmaps of the OnlineID state
@@ -321,7 +321,7 @@ typedef struct {
 	real32_T range_id_X[20]; /**< x-values for i_d inverse fluxmap*/
 	real32_T psi_temp_const; /**< estimated temperature constant of psi_pm*/
 	real32_T psi_temp_error; /**< estimated error of psi_pm because of heat losses of the magnets */
-} uz_PID_FluxMapsData_t;
+} uz_ParaID_FluxMapsData_t;
 
 //----------------------------------------//
 //----------------------------------------//
@@ -330,7 +330,7 @@ typedef struct {
 //----------------------------------------//
 
 /*! enum for selection of control algorithm if all OfflineID states are finished */
-enum uz_PID_Control_selection {
+enum uz_ParaID_Control_selection {
 	No_Control = 0, Current_Control, Speed_Control
 };
 
@@ -339,23 +339,23 @@ enum uz_PID_Control_selection {
  *
  */
 typedef struct uz_ParameterID_Data_t {
-	uz_PID_ActualValues_t ActualValues; /**<Input: measured values needed for the ParameterID */
-	uz_PID_ControlFlags_t* ControlFlags; /**<Output: current values of the ControlFlags struct */
-	uz_PID_GlobalConfig_t GlobalConfig; /**<Input: Global configuration struct for general settings of the ParameterID */
-	uz_PID_ElectricalIDConfig_t ElectricalID_Config; /**<Input: Configuration struct for ElectricalID */
-	uz_PID_TwoMassIDConfig_t TwoMassID_Config; /**<Input: Configuration struct for TwoMassID */
-	uz_PID_FrictionIDConfig_t FrictionID_Config; /**<Input: Configuration struct for FrictionID */
-	uz_PID_FluxMapIDConfig_t FluxMapID_Config; /**< Input:Configuration struct for FluxMapID */
-	uz_PID_OnlineIDConfig_t OnlineID_Config; /**<Input: Configuration struct for  OnlineID */
-	uz_PID_AutoRefCurrentsConfig_t AutoRefCurrents_Config; /**<Input: Configuration struct for AutoReference current generator */
-	uz_PID_ElectricalID_output_t *ElectricalID_Output; /**<Output: Pointer to output struct of ElectricalID */
-	uz_PID_TwoMassID_output_t *TwoMassID_Output; /**<Output: Pointer to output struct of TwoMassID */
-	uz_PID_FrictionID_output_t *FrictionID_Output; /**<Output: Pointer to output struct of FrictionID */
-	uz_PID_FluxMapID_output_t *FluxMapID_Output; /**<Output: Pointer to output struct of FluxMapID */
-	uz_PID_OnlineID_output_t* OnlineID_Output; /**<Output: Pointer to output struct of OnlineID */
-	uz_PID_Controller_Parameters_output_t Controller_Parameters;/**<Output: output struct for control algorithm (i_dq_ref / n_ref etc.) */
-	uz_PID_AutoRefCurrents_output_t AutoRefCurrents_Output; /**<Output: output struct for reference currents of the AutoReference current generator*/
-	uz_PID_FluxMapsData_t* FluxMap_Data; /**<Storage for calculated OnlineID FluxMaps*/
+	uz_ParaID_ActualValues_t ActualValues; /**<Input: measured values needed for the ParameterID */
+	uz_ParaID_ControlFlags_t* ControlFlags; /**<Output: current values of the ControlFlags struct */
+	uz_ParaID_GlobalConfig_t GlobalConfig; /**<Input: Global configuration struct for general settings of the ParameterID */
+	uz_ParaID_ElectricalIDConfig_t ElectricalID_Config; /**<Input: Configuration struct for ElectricalID */
+	uz_ParaID_TwoMassIDConfig_t TwoMassID_Config; /**<Input: Configuration struct for TwoMassID */
+	uz_ParaID_FrictionIDConfig_t FrictionID_Config; /**<Input: Configuration struct for FrictionID */
+	uz_ParaID_FluxMapIDConfig_t FluxMapID_Config; /**< Input:Configuration struct for FluxMapID */
+	uz_ParaID_OnlineIDConfig_t OnlineID_Config; /**<Input: Configuration struct for  OnlineID */
+	uz_ParaID_AutoRefCurrentsConfig_t AutoRefCurrents_Config; /**<Input: Configuration struct for AutoReference current generator */
+	uz_ParaID_ElectricalID_output_t *ElectricalID_Output; /**<Output: Pointer to output struct of ElectricalID */
+	uz_ParaID_TwoMassID_output_t *TwoMassID_Output; /**<Output: Pointer to output struct of TwoMassID */
+	uz_ParaID_FrictionID_output_t *FrictionID_Output; /**<Output: Pointer to output struct of FrictionID */
+	uz_ParaID_FluxMapID_output_t *FluxMapID_Output; /**<Output: Pointer to output struct of FluxMapID */
+	uz_ParaID_OnlineID_output_t* OnlineID_Output; /**<Output: Pointer to output struct of OnlineID */
+	uz_ParaID_Controller_Parameters_output_t Controller_Parameters;/**<Output: output struct for control algorithm (i_dq_ref / n_ref etc.) */
+	uz_ParaID_AutoRefCurrents_output_t AutoRefCurrents_Output; /**<Output: output struct for reference currents of the AutoReference current generator*/
+	uz_ParaID_FluxMapsData_t* FluxMap_Data; /**<Storage for calculated OnlineID FluxMaps*/
 	bool calculate_flux_maps; /**<status bool to signal, that the OnlineID FluxMaps should be calculated */
 	int FluxMap_counter; /**<counter to transmit FluxMaps 1by1 to the uz_GUI */
 	int FluxMap_Control_counter; /**<control counter from the GUI to sync the FluxMaps counter */
@@ -366,7 +366,7 @@ typedef struct uz_ParameterID_Data_t {
 	float MeasArraySpeed_pointer; /**< current value of the MeasSpeedArray corresponding to the value of the array_counter*/
 	float MeasArrayTorque_pointer; /**< current value of the MeasTorqueArray corresponding to the value of the array_counter*/
 	float FluxMap_MeasuringPoints; /**<amount of unique measuring points for the FluxMaps */
-	enum uz_PID_Control_selection PID_Control_Selection;/**< PID_Control_Selection \n
+	enum uz_ParaID_Control_selection ParaID_Control_Selection;/**< ParaID_Control_Selection \n
 													0 = No_Control \n
 													1 = Current_Control \n
 													2 = Speed_Control*/

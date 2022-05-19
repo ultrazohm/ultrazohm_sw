@@ -13,25 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#ifndef UZ_PID_INTERPMESHGRID_H
-#define UZ_PID_INTERPMESHGRID_H
+#ifndef UZ_PARAID_FLUXMAPID_H
+#define UZ_PARAID_FLUXMAPID_H
 
-#include "../../../uz_global_configuration.h"
+#include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
-#include "../../../uz_HAL.h"
-#include "InterpMeshGrid_codegen.h"
+#include "../../uz_HAL.h"
+#include "FluxMapID_codegen.h"
 
-typedef struct {
-	ExtY_InterpMeshGrid_t output;
-	ExtU_InterpMeshGrid_t input;
-	DW_InterpMeshGrid_t rtDW; /* Observable states */
-	RT_MODEL_InterpMeshGrid_t modelData;
-	RT_MODEL_InterpMeshGrid_t *PtrToModelData;
-} uz_PID_InterpMeshGrid_t;
+/**
+ * @brief Object definition for uz_PID_ElectricalID_t
+ * 
+ */
+typedef struct uz_ParaID_FluxMapID_t{
+	ExtY_FluxMapID_t output;
+	ExtU_FluxMapID_t input;
+	DW_FluxMapID_t rtDW; /* Observable states */
+	RT_MODEL_FluxMapID_t modelData;
+	RT_MODEL_FluxMapID_t *PtrToModelData;
+} uz_ParaID_FluxMapID_t;
 
-uz_PID_InterpMeshGrid_t* uz_InterpMeshGrid_init(void);
-void uz_InterpMeshGrid(uz_PID_InterpMeshGrid_t *self);
+/**
+ * @brief Initializes the uz_ParaID_FluxMapID_t object
+ * 
+ * @return uz_ParaID_FluxMapID_t* pointer to object
+ */
+uz_ParaID_FluxMapID_t* uz_FluxMapID_init(void);
+
+/**
+ * @brief steps the FluxMapID state once
+ * 
+ * @param self pointer to uz_ParaID_FluxMapID_t object
+ */
+void uz_FluxMapID_step(uz_ParaID_FluxMapID_t *self);
 
 #endif
 #endif

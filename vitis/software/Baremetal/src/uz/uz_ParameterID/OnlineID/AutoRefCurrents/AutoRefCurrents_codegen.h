@@ -76,15 +76,15 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  uz_PID_ActualValues_t ActualValues;  /* '<Root>/ActualValues' */
-  uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
-  uz_PID_AutoRefCurrentsConfig_t AutoRefCurrentsConfig;/* '<Root>/AutoRefCurrentsConfig' */
-  uz_PID_ControlFlags_t ControlFlags;  /* '<Root>/ControlFlags' */
+  uz_ParaID_ActualValues_t ActualValues;/* '<Root>/ActualValues' */
+  uz_ParaID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
+  uz_ParaID_AutoRefCurrentsConfig_t AutoRefCurrentsConfig;/* '<Root>/AutoRefCurrentsConfig' */
+  uz_ParaID_ControlFlags_t ControlFlags;/* '<Root>/ControlFlags' */
 } ExtU_AutoRefCurrents_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  uz_PID_AutoRefCurrents_output_t AutoRefCurrents_output;/* '<Root>/AutoRefCurrents_output' */
+  uz_ParaID_AutoRefCurrents_output_t AutoRefCurrents_output;/* '<Root>/AutoRefCurrents_output' */
 } ExtY_AutoRefCurrents_t;
 
 /* Real-time Model Data Structure */

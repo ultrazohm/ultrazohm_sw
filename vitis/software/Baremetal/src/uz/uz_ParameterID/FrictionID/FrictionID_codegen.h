@@ -95,18 +95,18 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  uz_PID_FrictionIDConfig_t FrictionConfigID;/* '<Root>/FrictionConfigID' */
-  uz_PID_ActualValues_t ActualValues;  /* '<Root>/ActualValues' */
-  uz_PID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
-  uz_PID_ControlFlags_t ControlFlags;  /* '<Root>/ControlFlags' */
+  uz_ParaID_FrictionIDConfig_t FrictionConfigID;/* '<Root>/FrictionConfigID' */
+  uz_ParaID_ActualValues_t ActualValues;/* '<Root>/ActualValues' */
+  uz_ParaID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
+  uz_ParaID_ControlFlags_t ControlFlags;/* '<Root>/ControlFlags' */
 } ExtU_FrictionID_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
   boolean_T finishedFrictionID;        /* '<Root>/finishedFrictionID' */
   boolean_T enteredFrictionID;         /* '<Root>/enteredFrictionID' */
-  uz_PID_Controller_Parameters_output_t FrictionID_FOC_output;/* '<Root>/FrictionID_FOC_output' */
-  uz_PID_FrictionID_output_t FrictionID_output;/* '<Root>/FrictionID_output' */
+  uz_ParaID_Controller_Parameters_output_t FrictionID_FOC_output;/* '<Root>/FrictionID_FOC_output' */
+  uz_ParaID_FrictionID_output_t FrictionID_output;/* '<Root>/FrictionID_output' */
 } ExtY_FrictionID_t;
 
 /* Real-time Model Data Structure */

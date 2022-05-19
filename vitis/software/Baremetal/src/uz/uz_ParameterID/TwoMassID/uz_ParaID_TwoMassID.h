@@ -13,39 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#ifndef UZ_PID_AUTOREFCURRENTS_H
-#define UZ_PID_AUTOREFCURRENTS_H
+#ifndef UZ_PARAID_TWOMASSID_H
+#define UZ_PARAID_TWOMASSID_H
 
-#include "../../../uz_global_configuration.h"
+#include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
-#include "../../../uz_HAL.h"
-#include "AutoRefCurrents_codegen.h"
+#include "../../uz_HAL.h"
+#include "TwoMassID_codegen.h"
 
 /**
- * @brief object definition for uz_PID_AutoRefCurrents_t
+ * @brief Object definition for uz_ParaID_TwoMassID_t
  * 
  */
-typedef struct uz_PID_AutoRefCurrents_t{
-	ExtY_AutoRefCurrents_t output;
-	ExtU_AutoRefCurrents_t input;
-	DW_AutoRefCurrents_t rtDW; /* Observable states */
-	RT_MODEL_AutoRefCurrents_t modelData;
-	RT_MODEL_AutoRefCurrents_t *PtrToModelData;
-} uz_PID_AutoRefCurrents_t;
-/**
- * @brief Initializes the uz_PID_AutoRefCurrents_t object
- * 
- * @return uz_PID_AutoRefCurrents_t* pointer to object
- */
-uz_PID_AutoRefCurrents_t* uz_AutoRefCurrents_init(void);
+typedef struct uz_ParaID_TwoMassID_t{
+	ExtY_TwoMassID_t output;
+	ExtU_TwoMassID_t input;
+	DW_TwoMassID_t rtDW; /* Observable states */
+	RT_MODEL_TwoMassID_t modelData;
+	RT_MODEL_TwoMassID_t *PtrToModelData;
+} uz_ParaID_TwoMassID_t;
 
 /**
- * @brief steps the AutoRefCurrent state once
+ * @brief Initializes the uz_ParaID_TwoMassID_t object
  * 
- * @param self pointer to object
+ * @return uz_ParaID_TwoMassID_t* pointer to object
  */
-void uz_AutoRefCurrents_step(uz_PID_AutoRefCurrents_t *self);
+uz_ParaID_TwoMassID_t* uz_TwoMassID_init(void);
+
+/**
+ * @brief steps the TwoMassID state once
+ * 
+ * @param self pointer to uz_ParaID_TwoMassID_t object
+ */
+void uz_TwoMassID_step(uz_ParaID_TwoMassID_t *self);
 
 #endif
 #endif

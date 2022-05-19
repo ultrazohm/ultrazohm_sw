@@ -13,40 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-#ifndef UZ_PID_FLUXMAPID_H
-#define UZ_PID_FLUXMAPID_H
+#ifndef UZ_PARAID_AUTOREFCURRENTS_H
+#define UZ_PARAID_AUTOREFCURRENTS_H
 
-#include "../../uz_global_configuration.h"
+#include "../../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
-#include "../../uz_HAL.h"
-#include "FluxMapID_codegen.h"
+#include "../../../uz_HAL.h"
+#include "AutoRefCurrents_codegen.h"
 
 /**
- * @brief Object definition for uz_PID_ElectricalID_t
+ * @brief object definition for uz_ParaID_AutoRefCurrents_t
  * 
  */
-typedef struct uz_PID_FluxMapID_t{
-	ExtY_FluxMapID_t output;
-	ExtU_FluxMapID_t input;
-	DW_FluxMapID_t rtDW; /* Observable states */
-	RT_MODEL_FluxMapID_t modelData;
-	RT_MODEL_FluxMapID_t *PtrToModelData;
-} uz_PID_FluxMapID_t;
+typedef struct uz_ParaID_AutoRefCurrents_t{
+	ExtY_AutoRefCurrents_t output;
+	ExtU_AutoRefCurrents_t input;
+	DW_AutoRefCurrents_t rtDW; /* Observable states */
+	RT_MODEL_AutoRefCurrents_t modelData;
+	RT_MODEL_AutoRefCurrents_t *PtrToModelData;
+} uz_ParaID_AutoRefCurrents_t;
 
 /**
- * @brief Initializes the uz_PID_FluxMapID_t object
+ * @brief Initializes the uz_ParaID_AutoRefCurrents_t object
  * 
- * @return uz_PID_FluxMapID_t* pointer to object
+ * @return uz_ParaID_AutoRefCurrents_t* pointer to object
  */
-uz_PID_FluxMapID_t* uz_FluxMapID_init(void);
+uz_ParaID_AutoRefCurrents_t* uz_AutoRefCurrents_init(void);
 
 /**
- * @brief steps the FluxMapID state once
+ * @brief steps the AutoRefCurrent state once
  * 
- * @param self pointer to uz_PID_FluxMapID_t object
+ * @param self pointer to object
  */
-void uz_FluxMapID_step(uz_PID_FluxMapID_t *self);
+void uz_AutoRefCurrents_step(uz_ParaID_AutoRefCurrents_t *self);
 
 #endif
 #endif

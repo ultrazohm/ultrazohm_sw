@@ -70,20 +70,20 @@ typedef struct {
   real_T delta_psi[100];
   real32_T psi_array[10300];
   real32_T psi_array_m[600];
-	real32_T c[400];
-	real32_T rtb_FluxMapData_psid_grid[400];
+  real32_T c[400];
+  real32_T rtb_FluxMapData_psid_grid[400];
   real32_T grid_old[400];
   real32_T N[300];
-	real32_T range_psid_X_in[20];
-	real32_T range_psid_Y_in[20];
-	real32_T range_psiq_X_in[20];
-	real32_T range_psiq_Y_in[20];
-	real32_T range_id_X_in[20];
-	real32_T range_id_Y_in[20];
-	real32_T range_iq_X_in[20];
-	real32_T range_iq_Y_in[20];
-	real32_T range_psid_X_in_tmp[20];
-	real32_T range_psid_X_in_tmp_c[20];
+  real32_T range_psid_X_in[20];
+  real32_T range_psid_Y_in[20];
+  real32_T range_psiq_X_in[20];
+  real32_T range_psiq_Y_in[20];
+  real32_T range_id_X_in[20];
+  real32_T range_id_Y_in[20];
+  real32_T range_iq_X_in[20];
+  real32_T range_iq_Y_in[20];
+  real32_T range_psid_X_in_tmp[20];
+  real32_T range_psid_X_in_tmp_c[20];
   real32_T AC[3];
   real32_T N_sum[3];
   real32_T grid_old_k[400];
@@ -91,39 +91,41 @@ typedef struct {
   real32_T AC_b[3];
   real32_T N_sum_p[3];
   real32_T c_ex;
-	real32_T rtb_FluxMapData_psi_temp_const;
-	real32_T range_psid_X_in_c;
-	real32_T range_psid_X_in_tmp_f;
-	real32_T range_psid_Y_in_tmp;
-	int32_T t;
+  real32_T rtb_FluxMapData_psi_temp_const;
+  real32_T range_psid_X_in_c;
+  real32_T range_psid_X_in_tmp_f;
+  real32_T range_psid_Y_in_tmp;
+  int32_T t;
   int32_T i;
   int32_T psi_array_tmp;
   int32_T i2;
-	int32_T i2_g;
+  int32_T i2_g;
 } DW_InterpMeshGrid_t;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
   real32_T psi_array_in[600];          /* '<Root>/psi_array_in' */
   real32_T i_rat;                      /* '<Root>/i_rat' */
-  uz_PID_OnlineID_output_t OnlineID_input;/* '<Root>/OnlineID_input' */
+  uz_ParaID_OnlineID_output_t OnlineID_input;/* '<Root>/OnlineID_input' */
 } ExtU_InterpMeshGrid_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-	uz_PID_FluxMapsData_t FluxMapData; /* '<Root>/FluxMapData' */
+  uz_ParaID_FluxMapsData_t FluxMapData;/* '<Root>/FluxMapData' */
 } ExtY_InterpMeshGrid_t;
 
 /* Real-time Model Data Structure */
 struct tag_RTM_InterpMeshGrid_t {
-	ExtU_InterpMeshGrid_t *inputs;
-	ExtY_InterpMeshGrid_t *outputs;
-	DW_InterpMeshGrid_t *dwork;
+  ExtU_InterpMeshGrid_t *inputs;
+  ExtY_InterpMeshGrid_t *outputs;
+  DW_InterpMeshGrid_t *dwork;
 };
 
 /* Model entry point functions */
-extern void InterpMeshGrid_initialize(RT_MODEL_InterpMeshGrid_t * const rtInterpMeshGrid_M);
-extern void InterpMeshGrid_step(RT_MODEL_InterpMeshGrid_t * const rtInterpMeshGrid_M);
+extern void InterpMeshGrid_initialize(RT_MODEL_InterpMeshGrid_t *const
+  rtInterpMeshGrid_M);
+extern void InterpMeshGrid_step(RT_MODEL_InterpMeshGrid_t *const
+  rtInterpMeshGrid_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly

@@ -1,8 +1,8 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1.1 (win64) Build 2960000 Wed Aug  5 22:57:20 MDT 2020
---Date        : Wed May 18 22:26:19 2022
---Host        : eln177123 running 64-bit major release  (build 9200)
+--Date        : Fri May 20 14:36:19 2022
+--Host        : enc177112 running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
 --Purpose     : IP block netlist
@@ -30,7 +30,7 @@ entity zusys_wrapper is
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_OUT : out STD_LOGIC_VECTOR ( 11 downto 0 );
+    D2_OUT : out STD_LOGIC_VECTOR ( 13 downto 0 );
     D2_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -45,13 +45,15 @@ entity zusys_wrapper is
     D4_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D4_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D4_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_07_Ch5 : out STD_LOGIC;
+    Dig_08_Ch5 : out STD_LOGIC;
     Dig_09_Ch5 : in STD_LOGIC;
-    Dig_10_Ch5 : in STD_LOGIC;
-    Dig_11_Ch5 : in STD_LOGIC;
-    Dig_12_Ch5 : in STD_LOGIC;
-    Dig_13_Ch5 : in STD_LOGIC;
-    Dig_14_Ch5 : in STD_LOGIC;
-    Dig_15_Ch5 : in STD_LOGIC;
+    Dig_10_Ch5 : out STD_LOGIC;
+    Dig_11_Ch5 : out STD_LOGIC;
+    Dig_12_Ch5 : out STD_LOGIC;
+    Dig_13_Ch5 : out STD_LOGIC;
+    Dig_14_Ch5 : out STD_LOGIC;
+    Dig_15_Ch5 : out STD_LOGIC;
     Dig_16_Ch5 : in STD_LOGIC;
     Dig_17_Ch5 : in STD_LOGIC;
     Dig_18_Ch5 : in STD_LOGIC;
@@ -59,8 +61,7 @@ entity zusys_wrapper is
     Dig_20_Ch5 : in STD_LOGIC;
     Dig_21_Ch5 : in STD_LOGIC;
     Dig_22_Ch5 : in STD_LOGIC;
-    Dig_23_Ch5 : in STD_LOGIC;
-    Dig_8_Ch5 : in STD_LOGIC
+    Dig_23_Ch5 : in STD_LOGIC
   );
 end zusys_wrapper;
 
@@ -84,7 +85,7 @@ architecture STRUCTURE of zusys_wrapper is
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_OUT : out STD_LOGIC_VECTOR ( 11 downto 0 );
+    D2_OUT : out STD_LOGIC_VECTOR ( 13 downto 0 );
     D2_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -100,12 +101,6 @@ architecture STRUCTURE of zusys_wrapper is
     D4_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D4_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_09_Ch5 : in STD_LOGIC;
-    Dig_10_Ch5 : in STD_LOGIC;
-    Dig_11_Ch5 : in STD_LOGIC;
-    Dig_12_Ch5 : in STD_LOGIC;
-    Dig_13_Ch5 : in STD_LOGIC;
-    Dig_14_Ch5 : in STD_LOGIC;
-    Dig_15_Ch5 : in STD_LOGIC;
     Dig_16_Ch5 : in STD_LOGIC;
     Dig_17_Ch5 : in STD_LOGIC;
     Dig_18_Ch5 : in STD_LOGIC;
@@ -114,7 +109,14 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_21_Ch5 : in STD_LOGIC;
     Dig_22_Ch5 : in STD_LOGIC;
     Dig_23_Ch5 : in STD_LOGIC;
-    Dig_8_Ch5 : in STD_LOGIC
+    Dig_07_Ch5 : out STD_LOGIC;
+    Dig_08_Ch5 : out STD_LOGIC;
+    Dig_10_Ch5 : out STD_LOGIC;
+    Dig_11_Ch5 : out STD_LOGIC;
+    Dig_12_Ch5 : out STD_LOGIC;
+    Dig_13_Ch5 : out STD_LOGIC;
+    Dig_14_Ch5 : out STD_LOGIC;
+    Dig_15_Ch5 : out STD_LOGIC
   );
   end component zusys;
 begin
@@ -137,7 +139,7 @@ zusys_i: component zusys
       D1_OUT_27(0) => D1_OUT_27(0),
       D1_OUT_28(0) => D1_OUT_28(0),
       D1_OUT_29(0) => D1_OUT_29(0),
-      D2_OUT(11 downto 0) => D2_OUT(11 downto 0),
+      D2_OUT(13 downto 0) => D2_OUT(13 downto 0),
       D2_OUT_26(0) => D2_OUT_26(0),
       D2_OUT_27(0) => D2_OUT_27(0),
       D2_OUT_28(0) => D2_OUT_28(0),
@@ -152,6 +154,8 @@ zusys_i: component zusys
       D4_OUT_27(0) => D4_OUT_27(0),
       D4_OUT_28(0) => D4_OUT_28(0),
       D4_OUT_29(0) => D4_OUT_29(0),
+      Dig_07_Ch5 => Dig_07_Ch5,
+      Dig_08_Ch5 => Dig_08_Ch5,
       Dig_09_Ch5 => Dig_09_Ch5,
       Dig_10_Ch5 => Dig_10_Ch5,
       Dig_11_Ch5 => Dig_11_Ch5,
@@ -166,7 +170,6 @@ zusys_i: component zusys
       Dig_20_Ch5 => Dig_20_Ch5,
       Dig_21_Ch5 => Dig_21_Ch5,
       Dig_22_Ch5 => Dig_22_Ch5,
-      Dig_23_Ch5 => Dig_23_Ch5,
-      Dig_8_Ch5 => Dig_8_Ch5
+      Dig_23_Ch5 => Dig_23_Ch5
     );
 end STRUCTURE;

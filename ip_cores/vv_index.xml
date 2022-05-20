@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Index Version="1" Minor="0">
-	<Repository value="c:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores">
+	<Repository value="c:/GIT/UltraZohm/software/ultrazohm_sw/ip_cores">
 	</Repository>
 	<IP>
 		<VLNV value="UltraZohm:user:ADC_LTC2311:3.0">

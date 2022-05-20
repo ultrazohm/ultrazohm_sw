@@ -1959,7 +1959,7 @@
                     },
                     {
                         "type": "ILA_V3",
-                        "name": "zusys_i/uz_digital_adapter/D5_adapter/ila_Encoder",
+                        "name": "zusys_i/uz_digital_adapter/D5_adapter/ila_resolver",
                         "spec": "labtools_ila_v6",
                         "ipName": "ila",
                         "core_location": {
@@ -1967,7 +1967,7 @@
                             "slave_index": 6,
                             "bscan_switch_index": 0
                         },
-                        "uuid": "E0F3569AC8865902978AC938200F6E7B",
+                        "uuid": "8AEC419B95C55FDEAA0B378752689980",
                         "pins": [
                             {
                                 "name": "probe0",
@@ -1980,7 +1980,7 @@
                                 "portIndex": 0,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/A_1",
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_busy",
                                         "isBus": false
                                     }
                                 ]
@@ -1996,7 +1996,7 @@
                                 "portIndex": 1,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/B_1",
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_error",
                                         "isBus": false
                                     }
                                 ]
@@ -2012,7 +2012,7 @@
                                 "portIndex": 2,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/I_1",
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SCLK",
                                         "isBus": false
                                     }
                                 ]
@@ -2024,182 +2024,770 @@
                                 "direction": "IN",
                                 "isVector": true,
                                 "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_1",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 56,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 1,
+                                "rightIndex": 1,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_2",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 57,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 2,
+                                "rightIndex": 2,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_3",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 58,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 3,
+                                "rightIndex": 3,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_4",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 59,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 4,
+                                "rightIndex": 4,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_5",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 60,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 5,
+                                "rightIndex": 5,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_6",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 61,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 6,
+                                "rightIndex": 6,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_7",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 62,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 7,
+                                "rightIndex": 7,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_8",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 63,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 8,
+                                "rightIndex": 8,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_9",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 64,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 9,
+                                "rightIndex": 9,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_10",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 65,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 10,
+                                "rightIndex": 10,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_11",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 66,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 11,
+                                "rightIndex": 11,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_12",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 67,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 12,
+                                "rightIndex": 12,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_13",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 68,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 13,
+                                "rightIndex": 13,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_14",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 69,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 14,
+                                "rightIndex": 14,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_15",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 70,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 15,
+                                "rightIndex": 15,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_16",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 71,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 16,
+                                "rightIndex": 16,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_17",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 72,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 17,
+                                "rightIndex": 17,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_18",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 73,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 18,
+                                "rightIndex": 18,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_19",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 74,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 19,
+                                "rightIndex": 19,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_20",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 75,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 20,
+                                "rightIndex": 20,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_21",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 76,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 21,
+                                "rightIndex": 21,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_22",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 77,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 22,
+                                "rightIndex": 22,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS_23",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe3",
+                                "id": 78,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 23,
                                 "rightIndex": 23,
                                 "portIndex": 3,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega",
-                                        "isBus": true,
-                                        "subnets": [
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[23]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[22]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[21]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[20]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[19]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[18]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[17]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[16]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[15]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[14]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[13]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[12]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[11]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[10]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[9]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[8]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[7]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[6]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[5]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[4]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[3]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[2]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[1]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_omega[0]"
-                                            }
-                                        ]
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_SS",
+                                        "isBus": false
                                     }
                                 ]
                             },
                             {
                                 "name": "probe4",
-                                "id": 56,
+                                "id": 79,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
                                 "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_1",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 80,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 1,
+                                "rightIndex": 1,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_2",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 81,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 2,
+                                "rightIndex": 2,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_3",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 82,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 3,
+                                "rightIndex": 3,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_4",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 83,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 4,
+                                "rightIndex": 4,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_5",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 84,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 5,
+                                "rightIndex": 5,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_6",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 85,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 6,
+                                "rightIndex": 6,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_7",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 86,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 7,
+                                "rightIndex": 7,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_8",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 87,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 8,
+                                "rightIndex": 8,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_9",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 88,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 9,
+                                "rightIndex": 9,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_10",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 89,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 10,
+                                "rightIndex": 10,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_11",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 90,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 11,
+                                "rightIndex": 11,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_12",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 91,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 12,
+                                "rightIndex": 12,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_13",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 92,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 13,
+                                "rightIndex": 13,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_14",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 93,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 14,
+                                "rightIndex": 14,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_15",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 94,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 15,
+                                "rightIndex": 15,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_16",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 95,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 16,
+                                "rightIndex": 16,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_17",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 96,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 17,
+                                "rightIndex": 17,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_18",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 97,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 18,
+                                "rightIndex": 18,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_19",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 98,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 19,
+                                "rightIndex": 19,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_20",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 99,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 20,
+                                "rightIndex": 20,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_21",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 100,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 21,
+                                "rightIndex": 21,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_22",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 101,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 22,
+                                "rightIndex": 22,
+                                "portIndex": 4,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI_23",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 102,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 23,
                                 "rightIndex": 23,
                                 "portIndex": 4,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el",
-                                        "isBus": true,
-                                        "subnets": [
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[23]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[22]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[21]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[20]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[19]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[18]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[17]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[16]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[15]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[14]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[13]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[12]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[11]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[10]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[9]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[8]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[7]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[6]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[5]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[4]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[3]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[2]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[1]"
-                                            },
-                                            {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_ip_0_theta_el[0]"
-                                            }
-                                        ]
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_SPI_MOSI",
+                                        "isBus": false
                                     }
                                 ]
                             },
                             {
                                 "name": "probe5",
-                                "id": 57,
+                                "id": 103,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -2208,14 +2796,14 @@
                                 "portIndex": 5,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Interrupt_muxed",
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Dig_09_Ch5_1",
                                         "isBus": false
                                     }
                                 ]
                             },
                             {
                                 "name": "probe6",
-                                "id": 58,
+                                "id": 104,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -2224,56 +2812,56 @@
                                 "portIndex": 6,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position",
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m",
                                         "isBus": true,
                                         "subnets": [
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[15]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[15]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[14]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[14]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[13]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[13]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[12]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[12]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[11]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[11]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[10]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[10]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[9]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[9]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[8]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[8]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[7]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[7]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[6]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[6]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[5]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[5]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[4]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[4]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[3]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[3]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[2]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[2]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[1]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[1]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_position[0]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_position_out_m[0]"
                                             }
                                         ]
                                     }
@@ -2281,7 +2869,7 @@
                             },
                             {
                                 "name": "probe7",
-                                "id": 59,
+                                "id": 105,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -2290,56 +2878,56 @@
                                 "portIndex": 7,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor",
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m",
                                         "isBus": true,
                                         "subnets": [
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[15]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[15]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[14]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[14]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[13]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[13]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[12]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[12]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[11]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[11]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[10]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[10]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[9]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[9]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[8]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[8]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[7]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[7]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[6]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[6]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[5]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[5]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[4]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[4]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[3]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[3]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[2]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[2]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[1]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[1]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0_OverSamplFactor[0]"
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Resolver_Interface_v_0_velocity_out_m[0]"
                                             }
                                         ]
                                     }
@@ -2361,7 +2949,7 @@
                         "pins": [
                             {
                                 "name": "probe0",
-                                "id": 60,
+                                "id": 106,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3531,7 +4119,7 @@
                             },
                             {
                                 "name": "probe1",
-                                "id": 61,
+                                "id": 107,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3547,7 +4135,7 @@
                             },
                             {
                                 "name": "probe2",
-                                "id": 62,
+                                "id": 108,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3563,7 +4151,7 @@
                             },
                             {
                                 "name": "probe3",
-                                "id": 63,
+                                "id": 109,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3579,7 +4167,7 @@
                             },
                             {
                                 "name": "probe4",
-                                "id": 64,
+                                "id": 110,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3609,7 +4197,7 @@
                         "pins": [
                             {
                                 "name": "probe_out0",
-                                "id": 65,
+                                "id": 111,
                                 "type": "DATA",
                                 "direction": "OUT",
                                 "isVector": true,
@@ -3674,7 +4262,7 @@
                         "pins": [
                             {
                                 "name": "probe0",
-                                "id": 66,
+                                "id": 112,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3690,7 +4278,7 @@
                             },
                             {
                                 "name": "probe1",
-                                "id": 67,
+                                "id": 113,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3706,7 +4294,7 @@
                             },
                             {
                                 "name": "probe2",
-                                "id": 68,
+                                "id": 114,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3722,7 +4310,7 @@
                             },
                             {
                                 "name": "probe3",
-                                "id": 69,
+                                "id": 115,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3738,7 +4326,7 @@
                             },
                             {
                                 "name": "probe4",
-                                "id": 70,
+                                "id": 116,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3754,7 +4342,7 @@
                             },
                             {
                                 "name": "probe5",
-                                "id": 71,
+                                "id": 117,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3770,7 +4358,7 @@
                             },
                             {
                                 "name": "probe6",
-                                "id": 72,
+                                "id": 118,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3786,7 +4374,7 @@
                             },
                             {
                                 "name": "probe7",
-                                "id": 73,
+                                "id": 119,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3802,7 +4390,7 @@
                             },
                             {
                                 "name": "probe8",
-                                "id": 74,
+                                "id": 120,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3832,7 +4420,7 @@
                             },
                             {
                                 "name": "probe9",
-                                "id": 75,
+                                "id": 121,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3862,7 +4450,7 @@
                         "pins": [
                             {
                                 "name": "probe_out0",
-                                "id": 76,
+                                "id": 122,
                                 "type": "DATA",
                                 "direction": "OUT",
                                 "isVector": false,

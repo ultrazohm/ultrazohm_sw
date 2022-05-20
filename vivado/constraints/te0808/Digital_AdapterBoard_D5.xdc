@@ -41,7 +41,10 @@ set_property PACKAGE_PIN D14 [get_ports Dig_10_Ch5]
 set_property PACKAGE_PIN F15 [get_ports Dig_09_Ch5]
 #Digital_09_Ch5 = B47_L5_P
 set_property PACKAGE_PIN D15 [get_ports Dig_08_Ch5]
-
+#Digital_08_Ch5 = B66_L22_N
+set_property PACKAGE_PIN M10 [get_ports Dig_07_Ch5]
+#Digital_07_Ch5 = B66_L22_P
+set_property PACKAGE_PIN N10 [get_ports Dig_06_Ch5]
 #######################################################################################################################################
 
 ##Set voltage level

@@ -30,9 +30,10 @@ struct uz_wavegen_chirp_config {
  * 
  * @param amplitude Amplitude for the sine wave
  * @param frequency_Hz Frequency for the sine wave in Hz. Only positive values are permitted
+ * @param phase Phase angle of the sine in radiant
  * @return Returns one sample for current system time
  */
-float uz_wavegen_sine(float amplitude, float frequency_Hz);
+float uz_wavegen_sine(float amplitude, float frequency_Hz, float phase);
 
 /**
  * @brief Outputs one sample of a sine wave with the specified offset for the current global system time at each function call.

@@ -54,6 +54,8 @@
 
 #include "include/pwm_init.h"
 
+#include "Codegen/uz_vsd_fd_6ph.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

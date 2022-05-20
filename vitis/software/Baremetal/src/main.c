@@ -31,6 +31,8 @@ DS_Data Global_Data = {
     }
 };
 
+uz_vsd_fd_6ph vsd_fd;
+
 enum init_chain
 {
     init_assertions = 0,
@@ -63,6 +65,9 @@ int main(void)
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
+
+            uz_vsd_fd_6ph_init(&vsd_fd);
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

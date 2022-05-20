@@ -30,6 +30,10 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_wavegen/uz_wavegen.h"
+#include "../uz/uz_math_constants.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../Codegen/uz_vsd_fd_6ph.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -40,6 +44,24 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
+
+// variables for 6phase-vsd-test
+const float amplitude = 5.0f;
+const float frequency = 10.0f;	//Hz
+const float p1 = 0.0;
+const float p2 = 2*UZ_PIf/3;
+const float p3 = 4*UZ_PIf/3;
+const float p4 = UZ_PIf/6;
+const float p5 = 5*UZ_PIf/6;
+const float p6 = 9*UZ_PIf/6;
+
+uz_6ph_abc_t i_6phase = {0};
+uz_6ph_alphabeta_t i_abxyz1z2 = {0};
+
+float vsd_output[6] = {0};
+float vsd_output_filtered[6] = {0};
+
+extern uz_vsd_fd_6ph vsd_fd;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -54,6 +76,35 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+
+    //six-sine signals to emulate a 6-phase system
+    i_6phase.a1 = uz_wavegen_sine(amplitude, frequency, p1);
+    i_6phase.b1 = uz_wavegen_sine(amplitude, frequency, p2);
+    i_6phase.c1 = uz_wavegen_sine(amplitude, frequency, p3);
+    i_6phase.a2 = uz_wavegen_sine(amplitude, frequency, p4);
+    i_6phase.b2 = uz_wavegen_sine(amplitude, frequency, p5);
+    i_6phase.c2 = uz_wavegen_sine(amplitude, frequency, p6);
+
+    //Transform from abc to alpha-beta-x-y-z1-z2-System
+    i_abxyz1z2 = uz_transformation_asym30deg_6ph_abc_to_alphabeta(i_6phase);
+
+
+
+    //Using 6ph-VSD-Phase-Fault-Detection:
+
+    	//set inputs
+    vsd_fd.input.i_ab_xy_z1z2 = i_6phase;
+    vsd_fd.input.HB_u = 0.2;
+    vsd_fd.input.HB_o = 0.2;
+
+    	//run detection
+    uz_vsd_fd_6ph_V2_step(vsd_fd);
+
+    	//read outputs
+    vsd_output_filtered = vsd_fd.output.FD_filtered;
+    vsd_output = vsd_fd.FD;
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

@@ -18,6 +18,7 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -33,6 +34,12 @@ static float System_UpTime_ms;
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
+
+extern uz_6ph_abc_t i_6phase;
+extern uz_6ph_alphabeta_t i_abxyz1z2;
+
+extern float vsd_output[6];
+extern float vsd_output_filtered[6];
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -74,6 +81,33 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+
+	js_ch_observable[JSO_i_a1] = &i_6phase.a1;
+	js_ch_observable[JSO_i_b1] = &i_6phase.b1;
+	js_ch_observable[JSO_i_c1] = &i_6phase.c1;
+	js_ch_observable[JSO_i_a2] = &i_6phase.a2;
+	js_ch_observable[JSO_i_b2] = &i_6phase.b2;
+	js_ch_observable[JSO_i_c2] = &i_6phase.c2;
+	js_ch_observable[JSO_i_alpha] = &i_abxyz1z2.alpha;
+	js_ch_observable[JSO_i_beta] = &i_abxyz1z2.beta;
+	js_ch_observable[JSO_i_x] = &i_abxyz1z2.x;
+	js_ch_observable[JSO_i_y] = &i_abxyz1z2.y;
+	js_ch_observable[JSO_i_z1] = &i_abxyz1z2.z1;
+	js_ch_observable[JSO_i_z2] = &i_abxyz1z2.z2;
+
+	js_ch_observable[JSO_FD_a1] = &vsd_output[0];
+	js_ch_observable[JSO_FD_b1] = &vsd_output[1];
+	js_ch_observable[JSO_FD_c1] = &vsd_output[2];
+	js_ch_observable[JSO_FD_a2] = &vsd_output[3];
+	js_ch_observable[JSO_FD_b2] = &vsd_output[4];
+	js_ch_observable[JSO_FD_c2] = &vsd_output[5];
+	js_ch_observable[JSO_FD_Filtered_a1] = &vsd_output_filtered[0];
+	js_ch_observable[JSO_FD_Filtered_b1] = &vsd_output_filtered[1];
+	js_ch_observable[JSO_FD_Filtered_c1] = &vsd_output_filtered[2];
+	js_ch_observable[JSO_FD_Filtered_a2] = &vsd_output_filtered[3];
+	js_ch_observable[JSO_FD_Filtered_b2] = &vsd_output_filtered[4];
+	js_ch_observable[JSO_FD_Filtered_c2] = &vsd_output_filtered[5];
+
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

@@ -1,7 +1,7 @@
 /*
  * File Name:         hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\include\PWM_and_SS_control_V4_ip_addr.h
  * Description:       C Header File
- * Created:           2021-09-29 14:48:16
+ * Created:           2022-05-09 15:08:18
 */
 
 #ifndef PWM_AND_SS_CONTROL_V4_IP_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_PWM_and_SS_control_V4_ip                      0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_PWM_and_SS_control_V4_ip                     0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_PWM_and_SS_control_V4_ip                  0x8  //contains unique IP timestamp (yymmddHHMM): 2109291448
+#define  IPCore_Timestamp_PWM_and_SS_control_V4_ip                  0x8  //contains unique IP timestamp (yymmddHHMM): 2205091508
 #define  PWM_en_AXI_Data_PWM_and_SS_control_V4_ip                   0x100  //data register for Inport PWM_en_AXI
 #define  Mode_AXI_Data_PWM_and_SS_control_V4_ip                     0x104  //data register for Inport Mode_AXI
 #define  Scal_f_carrier_AXI_Data_PWM_and_SS_control_V4_ip           0x108  //data register for Inport Scal_f_carrier_AXI

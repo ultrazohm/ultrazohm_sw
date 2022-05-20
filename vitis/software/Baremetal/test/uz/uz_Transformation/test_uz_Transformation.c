@@ -10,6 +10,9 @@ uz_3ph_abc_t UVW_system = {0};
 uz_3ph_dq_t dq_system = {0};
 uz_3ph_alphabeta_t alphabeta_system = {0};
 
+uz_6ph_abc_t sixphase_abc = {0};
+uz_6ph_alphabeta_t sixphase_alphabeta = {0};
+
 uz_9ph_abc_t ninephase_abc = {0};
 uz_9ph_alphabeta_t ninephase_alphabeta = {0};
 uz_3ph_alphabeta_t alphabeta_multiphase_test = {0};
@@ -102,6 +105,47 @@ void test_uz_inverse_clarke_Transformation_output(void){
     TEST_ASSERT_EQUAL_FLOAT(0.f, output.b);
     TEST_ASSERT_EQUAL_FLOAT(-1.0f * (sqrtf(3.0f) / 2.0f), output.c);
 }
+
+// Testfunctions sixphase VSD:
+
+// test vsd output
+void test_uz_6ph_clarke_transformation_output(void){
+    
+    sixphase_abc.a1 = 1.0f;
+    sixphase_abc.b1 = 2.0f;
+    sixphase_abc.c1 = 3.0f;
+    sixphase_abc.a2 = 4.0f;
+    sixphase_abc.b2 = 5.0f;
+    sixphase_abc.c2 = 6.0f;
+
+    uz_6ph_alphabeta_t output = uz_transformation_asym30deg_6ph_abc_to_alphabeta(sixphase_abc);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.7877f, output.alpha);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.7887f, output.beta);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.2113f, output.x);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.2113f, output.y);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.0000f, output.z1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 5.0000f, output.z2);
+}
+
+// test inverse vsd output
+void test_uz_6ph_clarke_inverse_transformation_output(void){
+    sixphase_alphabeta.alpha = -1.0f;
+    sixphase_alphabeta.beta = -2.0f;
+    sixphase_alphabeta.x = -3.0f;
+    sixphase_alphabeta.y = -4.0f;
+    sixphase_alphabeta.z1 = -5.0f;
+    sixphase_alphabeta.z2 = -6.0f;
+  
+    uz_6ph_abc_t output = uz_transformation_asym30deg_6ph_alphabeta_to_abc(sixphase_alphabeta);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -9.0000, output.a1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -1.2679f, output.b1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -4.7321f, output.c1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -7.2679f, output.a2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -10.7321f, output.b2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.0000f, output.c2);
+}
+
+
 
 // Testfunctions ninephase
 

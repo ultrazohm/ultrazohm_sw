@@ -15,6 +15,8 @@ Transformations for multiphase systems do exist as well.
 * :ref:`inverse_clarke_transformation`
 * :ref:`alphabeta_dq_transformation`
 * :ref:`dq_alphabeta_transformation`
+* :ref:`6ph_abc_to_alphabeta`
+* :ref:`6ph_alphabeta_to_abc`
 * :ref:`9ph_abc_to_alphabeta`
 * :ref:`9ph_alphabeta_to_abc`
 
@@ -198,6 +200,61 @@ The d-Axis has to be aligned with the A-phase.
 Multiphase systems
 ==================
 
+structs for sixphase VSD transformation
+****************************************
+
+.. doxygenstruct:: uz_6ph_abc_t
+  :members:
+
+.. doxygenstruct:: uz_6ph_alphabeta_t
+  :members:
+
+Functions for sixphase VSD systems transformation
+**************************************************
+
+.. _6ph_abc_to_alphabeta:
+
+6ph-abc to 6ph-αβγ transformation 
+---------------------------------
+
+.. doxygenfunction:: uz_transformation_asym30deg_6ph_abc_to_alphabeta
+
+The sixphase VSD transformation works like the following equations show:
+
+.. math::
+  
+  \begin{bmatrix} C \end{bmatrix}=
+    \frac{1}{3}
+    \begin{bmatrix}
+      cos(1\cdot 0\cdot\frac{\pi}{6}) & cos(1\cdot 4\cdot\frac{\pi}{6}) & cos(1\cdot 8\cdot\frac{\pi}{6}) & cos(1\cdot 1\cdot\frac{\pi}{6}) & cos(1\cdot 5\cdot\frac{\pi}{6}) & cos(1\cdot 9\cdot\frac{\pi}{6}) \\
+      sin(1\cdot 0\cdot\frac{\pi}{6}) & sin(1\cdot 4\cdot\frac{\pi}{6}) & sin(1\cdot 8\cdot\frac{\pi}{6}) & sin(1\cdot 1\cdot\frac{\pi}{6}) & sin(1\cdot 5\cdot\frac{\pi}{6}) & sin(1\cdot 9\cdot\frac{\pi}{6}) \\
+      cos(5\cdot 0\cdot\frac{\pi}{6}) & cos(5\cdot 4\cdot\frac{\pi}{6}) & cos(5\cdot 8\cdot\frac{\pi}{6}) & cos(5\cdot 1\cdot\frac{\pi}{6}) & cos(5\cdot 5\cdot\frac{\pi}{6}) & cos(5\cdot 9\cdot\frac{\pi}{6}) \\
+      sin(5\cdot 0\cdot\frac{\pi}{6}) & sin(5\cdot 4\cdot\frac{\pi}{6}) & sin(5\cdot 8\cdot\frac{\pi}{6}) & sin(5\cdot 1\cdot\frac{\pi}{6}) & sin(5\cdot 5\cdot\frac{\pi}{6}) & sin(5\cdot 9\cdot\frac{\pi}{6}) \\
+      cos(3\cdot 0\cdot\frac{\pi}{6}) & cos(3\cdot 4\cdot\frac{\pi}{6}) & cos(3\cdot 8\cdot\frac{\pi}{6}) & cos(3\cdot 1\cdot\frac{\pi}{6}) & cos(3\cdot 5\cdot\frac{\pi}{6}) & cos(3\cdot 9\cdot\frac{\pi}{6}) \\
+      sin(3\cdot 0\cdot\frac{\pi}{6}) & sin(3\cdot 4\cdot\frac{\pi}{6}) & sin(3\cdot 8\cdot\frac{\pi}{6}) & sin(3\cdot 1\cdot\frac{\pi}{6}) & sin(3\cdot 5\cdot\frac{\pi}{6}) & sin(3\cdot 9\cdot\frac{\pi}{6}) \\
+    \end{bmatrix}
+
+.. math::
+
+  \begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{x} \\ X_{y} \\ X_{z_1} \\ X_{z_2}  \end{bmatrix} = 
+  \begin{bmatrix} C \end{bmatrix}\cdot\begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2}  \end{bmatrix}
+
+
+.. _6ph_alphabeta_to_abc:
+
+6ph-alpha-beta-gamma to 6ph-abc transformation 
+----------------------------------------------------
+
+.. doxygenfunction:: uz_transformation_asym30deg_6ph_alphabeta_to_abc
+
+The inverse transformation uses the inverse of the before shown matrix.
+
+.. math::
+
+  \begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2}  \end{bmatrix} = 
+  \begin{bmatrix} C \end{bmatrix}^{-1}\cdot\begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{x} \\ X_{y} \\ X_{z_1} \\ X_{z_2}   \end{bmatrix}
+
+
 structs for ninephase VSD transformation
 ****************************************
 
@@ -364,6 +421,8 @@ The creation of a transformation matrix with this method was presented in [[#Zor
   end
   fprintf('};\n');
   end
+
+
 
 Sources
 -------

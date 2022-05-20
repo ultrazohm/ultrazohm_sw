@@ -23,7 +23,7 @@ int axi_gpio_init_ok = 0U;
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
-        .halfBridge1DutyCycle = 0.0f,
+        .halfBridge1DutyCycle = 0.043f,
         .halfBridge2DutyCycle = 0.0f,
         .halfBridge3DutyCycle = 0.0f,
         .halfBridge4DutyCycle = 0.0f,
@@ -38,8 +38,8 @@ DS_Data Global_Data = {
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
-    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
-    	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
+    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = (10.0f*37.735f), .cf.ADC_B6 = (-10.0f*37.735f), .cf.ADC_B7 = (10.0f*37.735f), .cf.ADC_B8 = 10.0f},
+    	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = (10.0f*37.735f), .cf.ADC_B6 = (-10.0f*37.735f), .cf.ADC_B7 = (10.0f*37.735f), .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     }
 };

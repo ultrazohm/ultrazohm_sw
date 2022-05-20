@@ -36,7 +36,7 @@ uint32_t js_status_BareToRTOS=0;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
+extern float theta_mech_calc_from_resolver;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -58,6 +58,14 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
+	js_ch_observable[JSO_ADC_A1_B1]		= &data->aa.A1.me.ADC_B5;
+	js_ch_observable[JSO_ADC_A1_B2]		= &data->aa.A1.me.ADC_B6;
+	js_ch_observable[JSO_ADC_A1_B3]		= &data->aa.A1.me.ADC_B7;
+	js_ch_observable[JSO_ADC_A1_B4]		= &data->aa.A1.me.ADC_B8;
+	js_ch_observable[JSO_ADC_A2_B1]		= &data->aa.A2.me.ADC_B5;
+	js_ch_observable[JSO_ADC_A2_B2]		= &data->aa.A2.me.ADC_B6;
+	js_ch_observable[JSO_ADC_A2_B3]		= &data->aa.A2.me.ADC_B7;
+	js_ch_observable[JSO_ADC_A2_B4]		= &data->aa.A2.me.ADC_B8;
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_ia] 			= &data->av.I_U;
 	js_ch_observable[JSO_ib] 			= &data->av.I_V;
@@ -68,7 +76,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_iq] 			= &data->av.I_q;
 	js_ch_observable[JSO_id] 			= &data->av.I_d;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
-	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
+	js_ch_observable[JSO_theta_mech] 	= &theta_mech_calc_from_resolver;
 	js_ch_observable[JSO_ud]			= &data->av.U_d;
 	js_ch_observable[JSO_uq]			= &data->av.U_q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;

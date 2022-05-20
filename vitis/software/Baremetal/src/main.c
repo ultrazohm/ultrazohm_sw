@@ -16,6 +16,10 @@
 // Includes from own files
 #include "main.h"
 
+XGpio output;
+int axi_gpio_data = 0xFFFFFFFF;
+int axi_gpio_init_ok = 0U;
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -89,8 +93,11 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
+            Global_Data.objects.resolver_IP = initialize_resolverIP_on_D5();
+            axi_gpio_init_ok = XGpio_Initialize(&output, XPAR_UZ_USER_AXI_GPIO_0_DEVICE_ID);
+			XGpio_SetDataDirection(&output, 1, 0x00U);
+			XGpio_DiscreteWrite(&output, 1, axi_gpio_data);
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
             break;
         case print_msg:

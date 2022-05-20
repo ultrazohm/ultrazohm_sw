@@ -22,7 +22,6 @@
 #include "../include/javascope.h"
 #include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
-#include "../include/encoder.h"
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
@@ -41,6 +40,14 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+// Data for determination of mechanical resolver angle
+float theta_mech_old=0.0f;
+int32_t cnt = 0U;
+bool cnt_reset = 0;
+float cnt_float=0.0f;
+float cnt_reset_float=0.0f;
+float theta_mech_calc_from_resolver = 0.0f;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -53,7 +60,10 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    update_position_and_speed_of_resolverIP(&Global_Data);
+    //update_position_of_resolverIP(&Global_Data);
+    //update_speed_of_resolverIP(&Global_Data);
+    //readRegister_of_resolverIP(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -70,6 +80,38 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
+
+    // Determine mechanical angle of resolver
+    if(theta_mech_old-Global_Data.av.theta_mech > 4.0f) {
+    	cnt++;
+    	cnt_float=(float)cnt;
+    } else if (theta_mech_old-Global_Data.av.theta_mech < -4.0f) {
+    	cnt--;
+    	cnt_float=(float)cnt;
+    }
+
+    if(cnt > 1 || cnt < -1) {
+    	cnt = 0;
+    	cnt_float = 0.0f;
+    }
+
+    if(cnt_reset == 1) {
+    	cnt = 0;
+    	cnt_float = 0;
+    	cnt_reset = 0;
+    	cnt_reset_float=0;
+    }
+
+
+    if(cnt >= 0){
+    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/uz_resolverIP_getResolverPolePairs(Global_Data.objects.resolver_IP) + cnt*2*3.14159265358979323846/2.0f;
+    } else {
+    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/2.0f + (2+cnt)*2*3.14159265358979323846/2.0f;
+    }
+
+    theta_mech_old = Global_Data.av.theta_mech;
+
+
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

@@ -77,7 +77,7 @@ uz_3ph_dq_t uz_SpeedControl_sample(uz_SpeedControl_t* self, float omega_m_rad_pe
 	    i_output_Ampere.d = i_field_weakening_Ampere.d;
         uz_PI_Controller_update_limits(self->Controller, i_field_weakening_Ampere.q, -i_field_weakening_Ampere.q);
     } else {
-        i_output_Ampere.d = uz_signals_saturation(id_ref_Ampere, self->config.config_PMSM.I_max_Ampere, -self->config.config_PMSM.I_max_Ampere);
+        i_output_Ampere.d = id_ref_Ampere;
     }
     i_output_Ampere.q = uz_PI_Controller_sample(self->Controller, omega_m_ref_rad_per_sec, omega_m_rad_per_sec, self->ext_clamping);
     return(i_output_Ampere);

@@ -16,9 +16,6 @@
 #include "../main.h"
 #include "../defines.h"
 #include "../include/javascope.h"
-#include "../uz/uz_FOC/uz_FOC.h"
-#include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
-
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
 
@@ -39,14 +36,7 @@ uint32_t js_status_BareToRTOS=0;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-extern float voltage;
-extern float voltage_times_two;
-extern float dac_input[8];
-extern struct uz_pmsmModel_outputs_t pmsm_outputs;
-extern struct uz_pmsmModel_inputs_t pmsm_inputs;
 
-extern float hil_id;
-extern float hil_iq;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -69,30 +59,8 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_dac_ref] 			= &voltage_times_two;
-	js_ch_observable[JSO_DAC8] 			= &data->aa.A2.me.ADC_B8;
-	js_ch_observable[JSO_DAC7] 			= &data->aa.A2.me.ADC_B7;
-	js_ch_observable[JSO_DAC6] 			= &data->aa.A2.me.ADC_B6;
-	js_ch_observable[JSO_DAC5] 			= &data->aa.A2.me.ADC_B5;
-	js_ch_observable[JSO_DAC4] 			= &data->aa.A2.me.ADC_A4;
-	js_ch_observable[JSO_DAC3] 			= &data->aa.A2.me.ADC_A3;
-	js_ch_observable[JSO_DAC2] 			= &data->aa.A2.me.ADC_A2;
-	js_ch_observable[JSO_DAC1] 			= &data->aa.A2.me.ADC_A1;
-	js_ch_observable[JSO_DAC1_input]	= &dac_input[0];
-	js_ch_observable[JSO_DAC2_input]	= &dac_input[1];
-	js_ch_observable[JSO_DAC3_input]	= &dac_input[2];
-	js_ch_observable[JSO_DAC4_input]	= &dac_input[3];
-	js_ch_observable[JSO_DAC5_input]	= &dac_input[4];
-	js_ch_observable[JSO_DAC6_input]	= &dac_input[5];
-	js_ch_observable[JSO_DAC7_input]	= &dac_input[6];
-	js_ch_observable[JSO_DAC8_input]	= &dac_input[7];
-	js_ch_observable[JSO_lb_i_d]		=&hil_id;
-	js_ch_observable[JSO_lb_i_q]		=&hil_iq;
-	js_ch_observable[JSO_hil_i_d]		= &pmsm_outputs.i_d_A;
-	js_ch_observable[JSO_hil_i_q]		= &pmsm_outputs.i_q_A;
-	js_ch_observable[JSO_hil_omega]		= &pmsm_outputs.omega_mech_1_s;
-	js_ch_observable[JSO_hil_v_d]		= &pmsm_inputs.v_d_V;
-	js_ch_observable[JSO_hil_v_q]		= &pmsm_inputs.v_q_V;
+	js_ch_observable[JSO_ia] 			= &data->av.I_U;
+	js_ch_observable[JSO_ib] 			= &data->av.I_V;
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;
 	js_ch_observable[JSO_ub] 			= &data->av.U_V;
@@ -112,15 +80,12 @@ int JavaScope_initalize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	   js_slowDataArray[JSSD_FLOAT_u_d]                                = &(pmsm_inputs.v_d_V);
-
-	   js_slowDataArray[JSSD_FLOAT_u_q]                                = &(pmsm_inputs.v_q_V);
-
-	   js_slowDataArray[JSSD_FLOAT_i_d]                                = &(pmsm_outputs.i_d_A);
-
-	   js_slowDataArray[JSSD_FLOAT_i_q]                                = &(pmsm_outputs.i_q_A);
-
-	   js_slowDataArray[JSSD_FLOAT_speed]                              = &(pmsm_outputs.omega_mech_1_s);
+	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
+	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
+	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
+	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
+	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
+	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

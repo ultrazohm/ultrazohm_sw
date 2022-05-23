@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Product Version: Vivado v2020.1 (64-bit)              -->
+<!-- Product Version: Vivado v2020.1.1 (64-bit)              -->
 <!--                                                         -->
 <!-- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="49" Path="/home/ts/Dokumente/ultrazohm_testbench/fix_alloc/ultrazohm_sw/vivado/project/ultrazohm.xpr">
+<Project Version="7" Minor="49" Path="c:/GIT/UltraZohm/software/ultrazohm_sw_develop/vivado/project/ultrazohm.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="d231350d382546489f90887e37da6e5e"/>
+    <Option Name="Id" Val="8b1c40ea875d462bac0234ba82bcf095"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -105,173 +105,149 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_vio_Gates_3L_0/zusys_vio_Gates_3L_0.xci">
-          <Proxy FileSetName="zusys_vio_Gates_3L_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_interlockDeadtime_2_0/zusys_uz_interlockDeadtime_2_0.xci">
+          <Proxy FileSetName="zusys_uz_interlockDeadtime_2_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_Encoder_0/zusys_ila_Encoder_0.xci">
-          <Proxy FileSetName="zusys_ila_Encoder_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_interlockDeadtime_3_0/zusys_uz_interlockDeadtime_3_0.xci">
+          <Proxy FileSetName="zusys_uz_interlockDeadtime_3_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_vio_D3_test_0/zusys_vio_D3_test_0.xci">
-          <Proxy FileSetName="zusys_vio_D3_test_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_interlockDeadtime_1_0/zusys_uz_interlockDeadtime_1_0.xci">
+          <Proxy FileSetName="zusys_uz_interlockDeadtime_1_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_IncreEncoder_V24_ip_0_0/zusys_IncreEncoder_V24_ip_0_0.xci">
-          <Proxy FileSetName="zusys_IncreEncoder_V24_ip_0_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_smartconnect_1_1/zusys_smartconnect_1_1.xci">
+          <Proxy FileSetName="zusys_smartconnect_1_1"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_AXI2TCM_0_0/zusys_AXI2TCM_0_0.xci">
-          <Proxy FileSetName="zusys_AXI2TCM_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_util_vector_logic_0_1/zusys_util_vector_logic_0_1.xci">
-          <Proxy FileSetName="zusys_util_vector_logic_0_1"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_0_2/zusys_ila_0_2.xci">
-          <Proxy FileSetName="zusys_ila_0_2"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_A3_ADC_LTC2311_0/zusys_A3_ADC_LTC2311_0.xci">
-          <Proxy FileSetName="zusys_A3_ADC_LTC2311_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_Counter_f_sw_V2_ip_0_0/zusys_Counter_f_sw_V2_ip_0_0.xci">
-          <Proxy FileSetName="zusys_Counter_f_sw_V2_ip_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_interlockDeadtime_0_0/zusys_uz_interlockDeadtime_0_0.xci">
-          <Proxy FileSetName="zusys_uz_interlockDeadtime_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_0_0/zusys_PWM_and_SS_control_V_0_0.xci">
-          <Proxy FileSetName="zusys_PWM_and_SS_control_V_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_A2_ADC_LTC2311_0/zusys_A2_ADC_LTC2311_0.xci">
-          <Proxy FileSetName="zusys_A2_ADC_LTC2311_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_vio_Gates_2L_0/zusys_vio_Gates_2L_0.xci">
-          <Proxy FileSetName="zusys_vio_Gates_2L_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_GateSignal_0/zusys_ila_GateSignal_0.xci">
-          <Proxy FileSetName="zusys_ila_GateSignal_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_A2_iobufds_inst_0/zusys_A2_iobufds_inst_0.xci">
-          <Proxy FileSetName="zusys_A2_iobufds_inst_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_util_vector_logic_0_0/zusys_util_vector_logic_0_0.xci">
-          <Proxy FileSetName="zusys_util_vector_logic_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_Interrupt_Start_Center_0/zusys_Interrupt_Start_Center_0.xci">
-          <Proxy FileSetName="zusys_Interrupt_Start_Center_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_SS_3L_ip_0_0/zusys_PWM_SS_3L_ip_0_0.xci">
-          <Proxy FileSetName="zusys_PWM_SS_3L_ip_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_Set_Deadtime_3L_0/zusys_Set_Deadtime_3L_0.xci">
-          <Proxy FileSetName="zusys_Set_Deadtime_3L_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_0_1/zusys_ila_0_1.xci">
-          <Proxy FileSetName="zusys_ila_0_1"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_top_npc_state_machine_0_0/zusys_top_npc_state_machine_0_0.xci">
-          <Proxy FileSetName="zusys_top_npc_state_machine_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_A1_iobufds_inst_0/zusys_A1_iobufds_inst_0.xci">
-          <Proxy FileSetName="zusys_A1_iobufds_inst_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_0_0/zusys_ila_0_0.xci">
-          <Proxy FileSetName="zusys_ila_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_A1_ADC_LTC2311_0/zusys_A1_ADC_LTC2311_0.xci">
-          <Proxy FileSetName="zusys_A1_ADC_LTC2311_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_Trigger_f_cc_0/zusys_Trigger_f_cc_0.xci">
-          <Proxy FileSetName="zusys_Trigger_f_cc_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_adc_delay_0/zusys_adc_delay_0.xci">
-          <Proxy FileSetName="zusys_adc_delay_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_delay_trigger_0_0/zusys_delay_trigger_0_0.xci">
-          <Proxy FileSetName="zusys_delay_trigger_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_0_3/zusys_ila_0_3.xci">
-          <Proxy FileSetName="zusys_ila_0_3"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_mux_axi_ip_1_0/zusys_mux_axi_ip_1_0.xci">
-          <Proxy FileSetName="zusys_mux_axi_ip_1_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_vio_interrupt_0/zusys_vio_interrupt_0.xci">
-          <Proxy FileSetName="zusys_vio_interrupt_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_axi_timebase_wdt_0_0/zusys_axi_timebase_wdt_0_0.xci">
-          <Proxy FileSetName="zusys_axi_timebase_wdt_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_smartconnect_0_0/zusys_smartconnect_0_0.xci">
-          <Proxy FileSetName="zusys_smartconnect_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_timer_uptime_64bit_0/zusys_timer_uptime_64bit_0.xci">
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_timer_uptime_64bit_0_1/zusys_timer_uptime_64bit_0.xci">
           <Proxy FileSetName="zusys_timer_uptime_64bit_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_clk_wiz_0_0/zusys_clk_wiz_0_0.xci">
-          <Proxy FileSetName="zusys_clk_wiz_0_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_A1_iobufds_inst_0_1/zusys_A1_iobufds_inst_0.xci">
+          <Proxy FileSetName="zusys_A1_iobufds_inst_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_proc_sys_reset_100MHz_0/zusys_proc_sys_reset_100MHz_0.xci">
-          <Proxy FileSetName="zusys_proc_sys_reset_100MHz_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_A2_ADC_LTC2311_0_1/zusys_A2_ADC_LTC2311_0.xci">
+          <Proxy FileSetName="zusys_A2_ADC_LTC2311_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_proc_sys_reset_10MHz_0/zusys_proc_sys_reset_10MHz_0.xci">
-          <Proxy FileSetName="zusys_proc_sys_reset_10MHz_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_A3_ADC_LTC2311_0_1/zusys_A3_ADC_LTC2311_0.xci">
+          <Proxy FileSetName="zusys_A3_ADC_LTC2311_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_proc_sys_reset_25MHz_0/zusys_proc_sys_reset_25MHz_0.xci">
-          <Proxy FileSetName="zusys_proc_sys_reset_25MHz_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_iobufds_inst_2_0_1/zusys_iobufds_inst_2_0.xci">
+          <Proxy FileSetName="zusys_iobufds_inst_2_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_proc_sys_reset_50MHz_0/zusys_proc_sys_reset_50MHz_0.xci">
-          <Proxy FileSetName="zusys_proc_sys_reset_50MHz_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_A2_iobufds_inst_0_1/zusys_A2_iobufds_inst_0.xci">
+          <Proxy FileSetName="zusys_A2_iobufds_inst_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_axi_gpio_2_0/zusys_axi_gpio_2_0.xci">
-          <Proxy FileSetName="zusys_axi_gpio_2_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_A1_ADC_LTC2311_0_1/zusys_A1_ADC_LTC2311_0.xci">
+          <Proxy FileSetName="zusys_A1_ADC_LTC2311_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_smartconnect_1_0/zusys_smartconnect_1_0.xci">
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_0_0_1/zusys_ila_0_0.xci">
+          <Proxy FileSetName="zusys_ila_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_vio_Gates_3L_0_1/zusys_vio_Gates_3L_0.xci">
+          <Proxy FileSetName="zusys_vio_Gates_3L_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_axi_timebase_wdt_0_0_1/zusys_axi_timebase_wdt_0_0.xci">
+          <Proxy FileSetName="zusys_axi_timebase_wdt_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_smartconnect_0_0_1/zusys_smartconnect_0_0.xci">
+          <Proxy FileSetName="zusys_smartconnect_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_vio_interrupt_0_1/zusys_vio_interrupt_0.xci">
+          <Proxy FileSetName="zusys_vio_interrupt_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_Encoder_0_1/zusys_ila_Encoder_0.xci">
+          <Proxy FileSetName="zusys_ila_Encoder_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_0_3_1/zusys_ila_0_3.xci">
+          <Proxy FileSetName="zusys_ila_0_3"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_0_2_1/zusys_ila_0_2.xci">
+          <Proxy FileSetName="zusys_ila_0_2"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_vio_Gates_2L_0_1/zusys_vio_Gates_2L_0.xci">
+          <Proxy FileSetName="zusys_vio_Gates_2L_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_vio_D3_test_0_1/zusys_vio_D3_test_0.xci">
+          <Proxy FileSetName="zusys_vio_D3_test_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_util_vector_logic_0_0_1/zusys_util_vector_logic_0_0.xci">
+          <Proxy FileSetName="zusys_util_vector_logic_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_Interrupt_Start_Center_0_1/zusys_Interrupt_Start_Center_0.xci">
+          <Proxy FileSetName="zusys_Interrupt_Start_Center_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_AXI2TCM_0_0_1/zusys_AXI2TCM_0_0.xci">
+          <Proxy FileSetName="zusys_AXI2TCM_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_util_vector_logic_0_1_1/zusys_util_vector_logic_0_1.xci">
+          <Proxy FileSetName="zusys_util_vector_logic_0_1"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_IncreEncoder_V24_ip_0_0_1/zusys_IncreEncoder_V24_ip_0_0.xci">
+          <Proxy FileSetName="zusys_IncreEncoder_V24_ip_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_delay_trigger_0_0_1/zusys_delay_trigger_0_0.xci">
+          <Proxy FileSetName="zusys_delay_trigger_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_Set_Deadtime_3L_0_1/zusys_Set_Deadtime_3L_0.xci">
+          <Proxy FileSetName="zusys_Set_Deadtime_3L_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_0_1_1/zusys_ila_0_1.xci">
+          <Proxy FileSetName="zusys_ila_0_1"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_interlockDeadtime_0_0_1/zusys_uz_interlockDeadtime_0_0.xci">
+          <Proxy FileSetName="zusys_uz_interlockDeadtime_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_Trigger_f_cc_0_1/zusys_Trigger_f_cc_0.xci">
+          <Proxy FileSetName="zusys_Trigger_f_cc_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_adc_delay_0_1/zusys_adc_delay_0.xci">
+          <Proxy FileSetName="zusys_adc_delay_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_SS_3L_ip_0_0_1/zusys_PWM_SS_3L_ip_0_0.xci">
+          <Proxy FileSetName="zusys_PWM_SS_3L_ip_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_top_npc_state_machine_0_0_1/zusys_top_npc_state_machine_0_0.xci">
+          <Proxy FileSetName="zusys_top_npc_state_machine_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_mux_axi_ip_1_0_1/zusys_mux_axi_ip_1_0.xci">
+          <Proxy FileSetName="zusys_mux_axi_ip_1_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_smartconnect_1_0_1/zusys_smartconnect_1_0.xci">
           <Proxy FileSetName="zusys_smartconnect_1_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_axi_testIP_0_0/zusys_uz_axi_testIP_0_0.xci">
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_clk_wiz_0_0_1/zusys_clk_wiz_0_0.xci">
+          <Proxy FileSetName="zusys_clk_wiz_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_proc_sys_reset_50MHz_0_1/zusys_proc_sys_reset_50MHz_0.xci">
+          <Proxy FileSetName="zusys_proc_sys_reset_50MHz_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_axi_testIP_0_0_1/zusys_uz_axi_testIP_0_0.xci">
           <Proxy FileSetName="zusys_uz_axi_testIP_0_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_axi_quad_spi_0_0/zusys_axi_quad_spi_0_0.xci">
-          <Proxy FileSetName="zusys_axi_quad_spi_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_zynq_ultra_ps_e_0_0/zusys_zynq_ultra_ps_e_0_0.xci">
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_zynq_ultra_ps_e_0_0_1/zusys_zynq_ultra_ps_e_0_0.xci">
           <Proxy FileSetName="zusys_zynq_ultra_ps_e_0_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_dac1_0/zusys_dac1_0.xci">
-          <Proxy FileSetName="zusys_dac1_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_proc_sys_reset_100MHz_0_1/zusys_proc_sys_reset_100MHz_0.xci">
+          <Proxy FileSetName="zusys_proc_sys_reset_100MHz_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_util_ds_buf_1_0/zusys_util_ds_buf_1_0.xci">
-          <Proxy FileSetName="zusys_util_ds_buf_1_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_proc_sys_reset_10MHz_0_1/zusys_proc_sys_reset_10MHz_0.xci">
+          <Proxy FileSetName="zusys_proc_sys_reset_10MHz_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_util_ds_buf_2_0/zusys_util_ds_buf_2_0.xci">
-          <Proxy FileSetName="zusys_util_ds_buf_2_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_proc_sys_reset_25MHz_0_1/zusys_proc_sys_reset_25MHz_0.xci">
+          <Proxy FileSetName="zusys_proc_sys_reset_25MHz_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_dac8_0/zusys_dac8_0.xci">
-          <Proxy FileSetName="zusys_dac8_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_axi_gpio_2_0_1/zusys_axi_gpio_2_0.xci">
+          <Proxy FileSetName="zusys_axi_gpio_2_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_dac2_0/zusys_dac2_0.xci">
-          <Proxy FileSetName="zusys_dac2_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_2_0/zusys_PWM_and_SS_control_V_2_0.xci">
+          <Proxy FileSetName="zusys_PWM_and_SS_control_V_2_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_dac6_0/zusys_dac6_0.xci">
-          <Proxy FileSetName="zusys_dac6_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_1_0/zusys_PWM_and_SS_control_V_1_0.xci">
+          <Proxy FileSetName="zusys_PWM_and_SS_control_V_1_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_dac7_0/zusys_dac7_0.xci">
-          <Proxy FileSetName="zusys_dac7_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_3_0/zusys_PWM_and_SS_control_V_3_0.xci">
+          <Proxy FileSetName="zusys_PWM_and_SS_control_V_3_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_dac5_0/zusys_dac5_0.xci">
-          <Proxy FileSetName="zusys_dac5_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_dac3_0/zusys_dac3_0.xci">
-          <Proxy FileSetName="zusys_dac3_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_dac4_0/zusys_dac4_0.xci">
-          <Proxy FileSetName="zusys_dac4_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_ila_1_0/zusys_ila_1_0.xci">
-          <Proxy FileSetName="zusys_ila_1_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_dac_spi_interface_0_0/zusys_uz_dac_spi_interface_0_0.xci">
-          <Proxy FileSetName="zusys_uz_dac_spi_interface_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_pmsm_model_0_0/zusys_uz_pmsm_model_0_0.xci">
-          <Proxy FileSetName="zusys_uz_pmsm_model_0_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_0_1/zusys_PWM_and_SS_control_V_0_1.xci">
+          <Proxy FileSetName="zusys_PWM_and_SS_control_V_0_1"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PPRDIR/zusys/hdl/zusys_wrapper.vhd">
@@ -310,6 +286,7 @@
       </File>
       <File Path="$PPRDIR/../constraints/te0808/Analog_AdapterBoard_A3.xdc">
         <FileInfo>
+          <Attr Name="UserDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
@@ -392,7 +369,6 @@
       </File>
       <File Path="$PPRDIR/../constraints/te0808/Analog_A3_packed.xdc">
         <FileInfo>
-          <Attr Name="UserDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
@@ -409,7 +385,6 @@
       </Config>
     </FileSet>
     <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1">
-      <Filter Type="Srcs"/>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
         <Option Name="TopModule" Val="zusys_wrapper"/>
@@ -430,117 +405,27 @@
         <Option Name="TopAutoSet" Val="TRUE"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_ila_GateSignal_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_ila_GateSignal_0">
+    <FileSet Name="zusys_uz_interlockDeadtime_2_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_uz_interlockDeadtime_2_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_ila_GateSignal_0"/>
+        <Option Name="TopModule" Val="zusys_uz_interlockDeadtime_2_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_delay_trigger_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_delay_trigger_0_0">
+    <FileSet Name="zusys_uz_interlockDeadtime_3_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_uz_interlockDeadtime_3_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_delay_trigger_0_0"/>
+        <Option Name="TopModule" Val="zusys_uz_interlockDeadtime_3_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_A2_iobufds_inst_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_A2_iobufds_inst_0">
+    <FileSet Name="zusys_uz_interlockDeadtime_1_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_uz_interlockDeadtime_1_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_A2_iobufds_inst_0"/>
+        <Option Name="TopModule" Val="zusys_uz_interlockDeadtime_1_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_vio_Gates_2L_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_vio_Gates_2L_0">
+    <FileSet Name="zusys_smartconnect_1_1" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_smartconnect_1_1">
       <Config>
-        <Option Name="TopModule" Val="zusys_vio_Gates_2L_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_util_vector_logic_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_util_vector_logic_0_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_util_vector_logic_0_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_adc_delay_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_adc_delay_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_adc_delay_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_vio_interrupt_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_vio_interrupt_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_vio_interrupt_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_vio_Gates_3L_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_vio_Gates_3L_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_vio_Gates_3L_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_ila_Encoder_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_ila_Encoder_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_ila_Encoder_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_uz_interlockDeadtime_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_uz_interlockDeadtime_0_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_uz_interlockDeadtime_0_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_top_npc_state_machine_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_top_npc_state_machine_0_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_top_npc_state_machine_0_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_ila_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_ila_0_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_ila_0_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_axi_quad_spi_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_axi_quad_spi_0_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_axi_quad_spi_0_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_axi_gpio_2_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_axi_gpio_2_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_axi_gpio_2_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_util_vector_logic_0_1" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_util_vector_logic_0_1">
-      <Config>
-        <Option Name="TopModule" Val="zusys_util_vector_logic_0_1"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_A2_ADC_LTC2311_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_A2_ADC_LTC2311_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_A2_ADC_LTC2311_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_ila_0_2" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_ila_0_2">
-      <Config>
-        <Option Name="TopModule" Val="zusys_ila_0_2"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_ila_0_1" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_ila_0_1">
-      <Config>
-        <Option Name="TopModule" Val="zusys_ila_0_1"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_A1_ADC_LTC2311_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_A1_ADC_LTC2311_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_A1_ADC_LTC2311_0"/>
+        <Option Name="TopModule" Val="zusys_smartconnect_1_1"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
@@ -550,45 +435,15 @@
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_IncreEncoder_V24_ip_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_IncreEncoder_V24_ip_0_0">
+    <FileSet Name="zusys_A1_iobufds_inst_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_A1_iobufds_inst_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_IncreEncoder_V24_ip_0_0"/>
+        <Option Name="TopModule" Val="zusys_A1_iobufds_inst_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_AXI2TCM_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_AXI2TCM_0_0">
+    <FileSet Name="zusys_A2_ADC_LTC2311_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_A2_ADC_LTC2311_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_AXI2TCM_0_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_vio_D3_test_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_vio_D3_test_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_vio_D3_test_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_Set_Deadtime_3L_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_Set_Deadtime_3L_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_Set_Deadtime_3L_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_Trigger_f_cc_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_Trigger_f_cc_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_Trigger_f_cc_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_PWM_and_SS_control_V_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_PWM_and_SS_control_V_0_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_PWM_and_SS_control_V_0_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
-    <FileSet Name="zusys_Counter_f_sw_V2_ip_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_Counter_f_sw_V2_ip_0_0">
-      <Config>
-        <Option Name="TopModule" Val="zusys_Counter_f_sw_V2_ip_0_0"/>
+        <Option Name="TopModule" Val="zusys_A2_ADC_LTC2311_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
@@ -598,33 +453,33 @@
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_mux_axi_ip_1_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_mux_axi_ip_1_0">
+    <FileSet Name="zusys_iobufds_inst_2_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_iobufds_inst_2_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_mux_axi_ip_1_0"/>
+        <Option Name="TopModule" Val="zusys_iobufds_inst_2_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_ila_0_3" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_ila_0_3">
+    <FileSet Name="zusys_A2_iobufds_inst_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_A2_iobufds_inst_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_ila_0_3"/>
+        <Option Name="TopModule" Val="zusys_A2_iobufds_inst_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_A1_iobufds_inst_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_A1_iobufds_inst_0">
+    <FileSet Name="zusys_A1_ADC_LTC2311_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_A1_ADC_LTC2311_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_A1_iobufds_inst_0"/>
+        <Option Name="TopModule" Val="zusys_A1_ADC_LTC2311_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_PWM_SS_3L_ip_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_PWM_SS_3L_ip_0_0">
+    <FileSet Name="zusys_ila_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_ila_0_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_PWM_SS_3L_ip_0_0"/>
+        <Option Name="TopModule" Val="zusys_ila_0_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_Interrupt_Start_Center_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_Interrupt_Start_Center_0">
+    <FileSet Name="zusys_vio_Gates_3L_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_vio_Gates_3L_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_Interrupt_Start_Center_0"/>
+        <Option Name="TopModule" Val="zusys_vio_Gates_3L_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
@@ -634,117 +489,129 @@
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_uz_axi_testIP_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_uz_axi_testIP_0_0">
+    <FileSet Name="zusys_smartconnect_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_smartconnect_0_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_uz_axi_testIP_0_0"/>
+        <Option Name="TopModule" Val="zusys_smartconnect_0_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_proc_sys_reset_50MHz_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_proc_sys_reset_50MHz_0">
+    <FileSet Name="zusys_vio_interrupt_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_vio_interrupt_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_proc_sys_reset_50MHz_0"/>
+        <Option Name="TopModule" Val="zusys_vio_interrupt_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_proc_sys_reset_25MHz_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_proc_sys_reset_25MHz_0">
+    <FileSet Name="zusys_ila_Encoder_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_ila_Encoder_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_proc_sys_reset_25MHz_0"/>
+        <Option Name="TopModule" Val="zusys_ila_Encoder_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_proc_sys_reset_10MHz_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_proc_sys_reset_10MHz_0">
+    <FileSet Name="zusys_ila_0_3" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_ila_0_3">
       <Config>
-        <Option Name="TopModule" Val="zusys_proc_sys_reset_10MHz_0"/>
+        <Option Name="TopModule" Val="zusys_ila_0_3"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_proc_sys_reset_100MHz_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_proc_sys_reset_100MHz_0">
+    <FileSet Name="zusys_ila_0_2" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_ila_0_2">
       <Config>
-        <Option Name="TopModule" Val="zusys_proc_sys_reset_100MHz_0"/>
+        <Option Name="TopModule" Val="zusys_ila_0_2"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_clk_wiz_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_clk_wiz_0_0">
+    <FileSet Name="zusys_vio_Gates_2L_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_vio_Gates_2L_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_clk_wiz_0_0"/>
+        <Option Name="TopModule" Val="zusys_vio_Gates_2L_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_zynq_ultra_ps_e_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_zynq_ultra_ps_e_0_0">
+    <FileSet Name="zusys_vio_D3_test_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_vio_D3_test_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_zynq_ultra_ps_e_0_0"/>
+        <Option Name="TopModule" Val="zusys_vio_D3_test_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_dac1_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_dac1_0">
+    <FileSet Name="zusys_util_vector_logic_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_util_vector_logic_0_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_dac1_0"/>
+        <Option Name="TopModule" Val="zusys_util_vector_logic_0_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_util_ds_buf_1_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_util_ds_buf_1_0">
+    <FileSet Name="zusys_Interrupt_Start_Center_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_Interrupt_Start_Center_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_util_ds_buf_1_0"/>
+        <Option Name="TopModule" Val="zusys_Interrupt_Start_Center_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_util_ds_buf_2_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_util_ds_buf_2_0">
+    <FileSet Name="zusys_AXI2TCM_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_AXI2TCM_0_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_util_ds_buf_2_0"/>
+        <Option Name="TopModule" Val="zusys_AXI2TCM_0_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_dac8_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_dac8_0">
+    <FileSet Name="zusys_util_vector_logic_0_1" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_util_vector_logic_0_1">
       <Config>
-        <Option Name="TopModule" Val="zusys_dac8_0"/>
+        <Option Name="TopModule" Val="zusys_util_vector_logic_0_1"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_dac2_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_dac2_0">
+    <FileSet Name="zusys_IncreEncoder_V24_ip_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_IncreEncoder_V24_ip_0_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_dac2_0"/>
+        <Option Name="TopModule" Val="zusys_IncreEncoder_V24_ip_0_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_dac6_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_dac6_0">
+    <FileSet Name="zusys_delay_trigger_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_delay_trigger_0_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_dac6_0"/>
+        <Option Name="TopModule" Val="zusys_delay_trigger_0_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_dac7_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_dac7_0">
+    <FileSet Name="zusys_Set_Deadtime_3L_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_Set_Deadtime_3L_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_dac7_0"/>
+        <Option Name="TopModule" Val="zusys_Set_Deadtime_3L_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_dac5_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_dac5_0">
+    <FileSet Name="zusys_ila_0_1" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_ila_0_1">
       <Config>
-        <Option Name="TopModule" Val="zusys_dac5_0"/>
+        <Option Name="TopModule" Val="zusys_ila_0_1"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_dac3_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_dac3_0">
+    <FileSet Name="zusys_uz_interlockDeadtime_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_uz_interlockDeadtime_0_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_dac3_0"/>
+        <Option Name="TopModule" Val="zusys_uz_interlockDeadtime_0_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_dac4_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_dac4_0">
+    <FileSet Name="zusys_Trigger_f_cc_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_Trigger_f_cc_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_dac4_0"/>
+        <Option Name="TopModule" Val="zusys_Trigger_f_cc_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_ila_1_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_ila_1_0">
+    <FileSet Name="zusys_adc_delay_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_adc_delay_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_ila_1_0"/>
+        <Option Name="TopModule" Val="zusys_adc_delay_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_uz_dac_spi_interface_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_uz_dac_spi_interface_0_0">
+    <FileSet Name="zusys_PWM_SS_3L_ip_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_PWM_SS_3L_ip_0_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_uz_dac_spi_interface_0_0"/>
+        <Option Name="TopModule" Val="zusys_PWM_SS_3L_ip_0_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="zusys_top_npc_state_machine_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_top_npc_state_machine_0_0">
+      <Config>
+        <Option Name="TopModule" Val="zusys_top_npc_state_machine_0_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="zusys_mux_axi_ip_1_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_mux_axi_ip_1_0">
+      <Config>
+        <Option Name="TopModule" Val="zusys_mux_axi_ip_1_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
@@ -754,15 +621,75 @@
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_smartconnect_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_smartconnect_0_0">
+    <FileSet Name="zusys_clk_wiz_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_clk_wiz_0_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_smartconnect_0_0"/>
+        <Option Name="TopModule" Val="zusys_clk_wiz_0_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="zusys_uz_pmsm_model_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_uz_pmsm_model_0_0">
+    <FileSet Name="zusys_proc_sys_reset_50MHz_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_proc_sys_reset_50MHz_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_uz_pmsm_model_0_0"/>
+        <Option Name="TopModule" Val="zusys_proc_sys_reset_50MHz_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="zusys_uz_axi_testIP_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_uz_axi_testIP_0_0">
+      <Config>
+        <Option Name="TopModule" Val="zusys_uz_axi_testIP_0_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="zusys_zynq_ultra_ps_e_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_zynq_ultra_ps_e_0_0">
+      <Config>
+        <Option Name="TopModule" Val="zusys_zynq_ultra_ps_e_0_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="zusys_proc_sys_reset_100MHz_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_proc_sys_reset_100MHz_0">
+      <Config>
+        <Option Name="TopModule" Val="zusys_proc_sys_reset_100MHz_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="zusys_proc_sys_reset_10MHz_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_proc_sys_reset_10MHz_0">
+      <Config>
+        <Option Name="TopModule" Val="zusys_proc_sys_reset_10MHz_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="zusys_proc_sys_reset_25MHz_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_proc_sys_reset_25MHz_0">
+      <Config>
+        <Option Name="TopModule" Val="zusys_proc_sys_reset_25MHz_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="zusys_axi_gpio_2_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_axi_gpio_2_0">
+      <Config>
+        <Option Name="TopModule" Val="zusys_axi_gpio_2_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="zusys_PWM_and_SS_control_V_2_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_PWM_and_SS_control_V_2_0">
+      <Config>
+        <Option Name="TopModule" Val="zusys_PWM_and_SS_control_V_2_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="zusys_PWM_and_SS_control_V_1_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_PWM_and_SS_control_V_1_0">
+      <Config>
+        <Option Name="TopModule" Val="zusys_PWM_and_SS_control_V_1_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="zusys_PWM_and_SS_control_V_3_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_PWM_and_SS_control_V_3_0">
+      <Config>
+        <Option Name="TopModule" Val="zusys_PWM_and_SS_control_V_3_0"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="zusys_PWM_and_SS_control_V_0_1" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_PWM_and_SS_control_V_0_1">
+      <Config>
+        <Option Name="TopModule" Val="zusys_PWM_and_SS_control_V_0_1"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
@@ -778,21 +705,27 @@
     <Simulator Name="Questa">
       <Option Name="Description" Val="Questa Advanced Simulator"/>
     </Simulator>
-    <Simulator Name="IES">
-      <Option Name="Description" Val="Incisive Enterprise Simulator (IES)"/>
-    </Simulator>
-    <Simulator Name="Xcelium">
-      <Option Name="Description" Val="Xcelium Parallel Simulator"/>
-    </Simulator>
-    <Simulator Name="VCS">
-      <Option Name="Description" Val="Verilog Compiler Simulator (VCS)"/>
-    </Simulator>
     <Simulator Name="Riviera">
       <Option Name="Description" Val="Riviera-PRO Simulator"/>
     </Simulator>
+    <Simulator Name="ActiveHDL">
+      <Option Name="Description" Val="Active-HDL Simulator"/>
+    </Simulator>
   </Simulators>
   <Runs Version="1" Minor="11">
-    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="true" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true">
+    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_uz_interlockDeadtime_2_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_uz_interlockDeadtime_2_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_interlockDeadtime_2_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_uz_interlockDeadtime_2_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -802,7 +735,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_ila_GateSignal_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_ila_GateSignal_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_GateSignal_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_ila_GateSignal_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_uz_interlockDeadtime_3_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_uz_interlockDeadtime_3_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_interlockDeadtime_3_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_uz_interlockDeadtime_3_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -812,7 +745,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_delay_trigger_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_delay_trigger_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_delay_trigger_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_delay_trigger_0_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_uz_interlockDeadtime_1_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_uz_interlockDeadtime_1_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_interlockDeadtime_1_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_uz_interlockDeadtime_1_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -822,167 +755,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_A2_iobufds_inst_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_A2_iobufds_inst_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A2_iobufds_inst_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_A2_iobufds_inst_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_vio_Gates_2L_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_vio_Gates_2L_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_Gates_2L_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_vio_Gates_2L_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_util_vector_logic_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_util_vector_logic_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_util_vector_logic_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_util_vector_logic_0_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_adc_delay_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_adc_delay_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_adc_delay_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_adc_delay_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_vio_interrupt_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_vio_interrupt_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_interrupt_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_vio_interrupt_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_vio_Gates_3L_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_vio_Gates_3L_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_Gates_3L_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_vio_Gates_3L_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_ila_Encoder_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_ila_Encoder_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_Encoder_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_ila_Encoder_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_uz_interlockDeadtime_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_uz_interlockDeadtime_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_interlockDeadtime_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_uz_interlockDeadtime_0_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_top_npc_state_machine_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_top_npc_state_machine_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_top_npc_state_machine_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_top_npc_state_machine_0_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_ila_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_ila_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_ila_0_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_axi_quad_spi_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_axi_quad_spi_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_axi_quad_spi_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_axi_quad_spi_0_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_axi_gpio_2_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_axi_gpio_2_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_axi_gpio_2_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_axi_gpio_2_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_util_vector_logic_0_1_synth_1" Type="Ft3:Synth" SrcSet="zusys_util_vector_logic_0_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_util_vector_logic_0_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_util_vector_logic_0_1_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_A2_ADC_LTC2311_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_A2_ADC_LTC2311_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A2_ADC_LTC2311_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_A2_ADC_LTC2311_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_ila_0_2_synth_1" Type="Ft3:Synth" SrcSet="zusys_ila_0_2" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_2" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_ila_0_2_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_ila_0_1_synth_1" Type="Ft3:Synth" SrcSet="zusys_ila_0_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_ila_0_1_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_A1_ADC_LTC2311_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_A1_ADC_LTC2311_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A1_ADC_LTC2311_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_A1_ADC_LTC2311_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_smartconnect_1_1_synth_1" Type="Ft3:Synth" SrcSet="zusys_smartconnect_1_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_smartconnect_1_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_smartconnect_1_1_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1002,7 +775,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_IncreEncoder_V24_ip_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_IncreEncoder_V24_ip_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_IncreEncoder_V24_ip_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_IncreEncoder_V24_ip_0_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_A1_iobufds_inst_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_A1_iobufds_inst_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A1_iobufds_inst_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_A1_iobufds_inst_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1012,57 +785,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_AXI2TCM_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_AXI2TCM_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_AXI2TCM_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_AXI2TCM_0_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_vio_D3_test_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_vio_D3_test_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_D3_test_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_vio_D3_test_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_Set_Deadtime_3L_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_Set_Deadtime_3L_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_Set_Deadtime_3L_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_Set_Deadtime_3L_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_Trigger_f_cc_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_Trigger_f_cc_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_Trigger_f_cc_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_Trigger_f_cc_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_PWM_and_SS_control_V_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_PWM_and_SS_control_V_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_PWM_and_SS_control_V_0_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_Counter_f_sw_V2_ip_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_Counter_f_sw_V2_ip_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_Counter_f_sw_V2_ip_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_Counter_f_sw_V2_ip_0_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_A2_ADC_LTC2311_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_A2_ADC_LTC2311_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A2_ADC_LTC2311_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_A2_ADC_LTC2311_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1082,7 +805,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_mux_axi_ip_1_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_mux_axi_ip_1_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_mux_axi_ip_1_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_mux_axi_ip_1_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_iobufds_inst_2_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_iobufds_inst_2_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_iobufds_inst_2_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_iobufds_inst_2_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1092,7 +815,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_ila_0_3_synth_1" Type="Ft3:Synth" SrcSet="zusys_ila_0_3" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_3" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_ila_0_3_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_A2_iobufds_inst_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_A2_iobufds_inst_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A2_iobufds_inst_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_A2_iobufds_inst_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1102,7 +825,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_A1_iobufds_inst_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_A1_iobufds_inst_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A1_iobufds_inst_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_A1_iobufds_inst_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_A1_ADC_LTC2311_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_A1_ADC_LTC2311_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A1_ADC_LTC2311_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_A1_ADC_LTC2311_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1112,7 +835,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_PWM_SS_3L_ip_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_PWM_SS_3L_ip_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_SS_3L_ip_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_PWM_SS_3L_ip_0_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_ila_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_ila_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_ila_0_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1122,7 +845,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_Interrupt_Start_Center_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_Interrupt_Start_Center_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_Interrupt_Start_Center_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_Interrupt_Start_Center_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_vio_Gates_3L_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_vio_Gates_3L_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_Gates_3L_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_vio_Gates_3L_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1142,9 +865,235 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_uz_axi_testIP_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_uz_axi_testIP_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_axi_testIP_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_uz_axi_testIP_0_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_smartconnect_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_smartconnect_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_smartconnect_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_smartconnect_0_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_vio_interrupt_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_vio_interrupt_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_interrupt_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_vio_interrupt_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_ila_Encoder_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_ila_Encoder_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_Encoder_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_ila_Encoder_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_ila_0_3_synth_1" Type="Ft3:Synth" SrcSet="zusys_ila_0_3" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_3" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_ila_0_3_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_ila_0_2_synth_1" Type="Ft3:Synth" SrcSet="zusys_ila_0_2" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_2" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_ila_0_2_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_vio_Gates_2L_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_vio_Gates_2L_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_Gates_2L_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_vio_Gates_2L_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_vio_D3_test_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_vio_D3_test_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_D3_test_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_vio_D3_test_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_util_vector_logic_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_util_vector_logic_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_util_vector_logic_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_util_vector_logic_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_Interrupt_Start_Center_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_Interrupt_Start_Center_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_Interrupt_Start_Center_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_Interrupt_Start_Center_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_AXI2TCM_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_AXI2TCM_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_AXI2TCM_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_AXI2TCM_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_util_vector_logic_0_1_synth_1" Type="Ft3:Synth" SrcSet="zusys_util_vector_logic_0_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_util_vector_logic_0_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_util_vector_logic_0_1_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_IncreEncoder_V24_ip_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_IncreEncoder_V24_ip_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_IncreEncoder_V24_ip_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_IncreEncoder_V24_ip_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_delay_trigger_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_delay_trigger_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_delay_trigger_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_delay_trigger_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_Set_Deadtime_3L_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_Set_Deadtime_3L_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_Set_Deadtime_3L_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_Set_Deadtime_3L_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_ila_0_1_synth_1" Type="Ft3:Synth" SrcSet="zusys_ila_0_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_ila_0_1_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_uz_interlockDeadtime_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_uz_interlockDeadtime_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_interlockDeadtime_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_uz_interlockDeadtime_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_Trigger_f_cc_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_Trigger_f_cc_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_Trigger_f_cc_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_Trigger_f_cc_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_adc_delay_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_adc_delay_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_adc_delay_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_adc_delay_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_PWM_SS_3L_ip_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_PWM_SS_3L_ip_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_SS_3L_ip_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_PWM_SS_3L_ip_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_top_npc_state_machine_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_top_npc_state_machine_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_top_npc_state_machine_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_top_npc_state_machine_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_mux_axi_ip_1_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_mux_axi_ip_1_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_mux_axi_ip_1_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_mux_axi_ip_1_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_smartconnect_1_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_smartconnect_1_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_smartconnect_1_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_smartconnect_1_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_clk_wiz_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_clk_wiz_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_clk_wiz_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_clk_wiz_0_0_synth_1" IncludeInArchive="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -1154,7 +1103,9 @@
     </Run>
     <Run Id="zusys_proc_sys_reset_50MHz_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_proc_sys_reset_50MHz_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_proc_sys_reset_50MHz_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_proc_sys_reset_50MHz_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -1162,37 +1113,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_proc_sys_reset_25MHz_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_proc_sys_reset_25MHz_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_proc_sys_reset_25MHz_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_proc_sys_reset_25MHz_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_proc_sys_reset_10MHz_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_proc_sys_reset_10MHz_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_proc_sys_reset_10MHz_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_proc_sys_reset_10MHz_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_proc_sys_reset_100MHz_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_proc_sys_reset_100MHz_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_proc_sys_reset_100MHz_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_proc_sys_reset_100MHz_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_clk_wiz_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_clk_wiz_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_clk_wiz_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_clk_wiz_0_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_uz_axi_testIP_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_uz_axi_testIP_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_axi_testIP_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_uz_axi_testIP_0_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1212,7 +1133,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_dac1_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_dac1_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac1_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_dac1_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_proc_sys_reset_100MHz_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_proc_sys_reset_100MHz_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_proc_sys_reset_100MHz_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_proc_sys_reset_100MHz_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1222,7 +1143,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_util_ds_buf_1_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_util_ds_buf_1_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_util_ds_buf_1_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_util_ds_buf_1_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_proc_sys_reset_10MHz_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_proc_sys_reset_10MHz_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_proc_sys_reset_10MHz_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_proc_sys_reset_10MHz_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1232,7 +1153,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_util_ds_buf_2_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_util_ds_buf_2_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_util_ds_buf_2_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_util_ds_buf_2_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_proc_sys_reset_25MHz_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_proc_sys_reset_25MHz_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_proc_sys_reset_25MHz_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_proc_sys_reset_25MHz_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1242,7 +1163,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_dac8_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_dac8_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac8_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_dac8_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_axi_gpio_2_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_axi_gpio_2_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_axi_gpio_2_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_axi_gpio_2_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1252,7 +1173,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_dac2_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_dac2_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac2_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_dac2_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_PWM_and_SS_control_V_2_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_PWM_and_SS_control_V_2_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_2_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_PWM_and_SS_control_V_2_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1262,7 +1183,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_dac6_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_dac6_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac6_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_dac6_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_PWM_and_SS_control_V_1_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_PWM_and_SS_control_V_1_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_1_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_PWM_and_SS_control_V_1_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -1272,77 +1193,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_dac7_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_dac7_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac7_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_dac7_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_dac5_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_dac5_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac5_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_dac5_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_dac3_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_dac3_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac3_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_dac3_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_dac4_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_dac4_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac4_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_dac4_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_ila_1_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_ila_1_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_1_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_ila_1_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_uz_dac_spi_interface_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_uz_dac_spi_interface_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_dac_spi_interface_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_uz_dac_spi_interface_0_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_smartconnect_1_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_smartconnect_1_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_smartconnect_1_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_smartconnect_1_0_synth_1" IncludeInArchive="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_smartconnect_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_smartconnect_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_smartconnect_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_smartconnect_0_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_PWM_and_SS_control_V_3_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_PWM_and_SS_control_V_3_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_3_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_PWM_and_SS_control_V_3_0_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020">
           <Desc>Vivado Synthesis Defaults</Desc>
@@ -1354,7 +1205,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_uz_pmsm_model_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_uz_pmsm_model_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_pmsm_model_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_uz_pmsm_model_0_0_synth_1" IncludeInArchive="true">
+    <Run Id="zusys_PWM_and_SS_control_V_0_1_synth_1" Type="Ft3:Synth" SrcSet="zusys_PWM_and_SS_control_V_0_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_0_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_PWM_and_SS_control_V_0_1_synth_1" IncludeInArchive="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020">
           <Desc>Vivado Synthesis Defaults</Desc>
@@ -1368,7 +1219,9 @@
     </Run>
     <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="constrs_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/impl_1" SynthRun="synth_1" IncludeInArchive="true" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
@@ -1384,7 +1237,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_ila_GateSignal_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_GateSignal_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_ila_GateSignal_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_uz_interlockDeadtime_2_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_interlockDeadtime_2_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_uz_interlockDeadtime_2_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -1401,7 +1254,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_delay_trigger_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_delay_trigger_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_delay_trigger_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_uz_interlockDeadtime_3_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_interlockDeadtime_3_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_uz_interlockDeadtime_3_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -1418,7 +1271,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_A2_iobufds_inst_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A2_iobufds_inst_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_A2_iobufds_inst_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_uz_interlockDeadtime_1_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_interlockDeadtime_1_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_uz_interlockDeadtime_1_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -1435,262 +1288,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_vio_Gates_2L_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_Gates_2L_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_vio_Gates_2L_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_util_vector_logic_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_util_vector_logic_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_util_vector_logic_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_adc_delay_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_adc_delay_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_adc_delay_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_vio_interrupt_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_interrupt_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_vio_interrupt_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_vio_Gates_3L_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_Gates_3L_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_vio_Gates_3L_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_ila_Encoder_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_Encoder_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_ila_Encoder_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_uz_interlockDeadtime_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_interlockDeadtime_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_uz_interlockDeadtime_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_top_npc_state_machine_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_top_npc_state_machine_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_top_npc_state_machine_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_ila_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_ila_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_axi_quad_spi_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_axi_quad_spi_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_axi_quad_spi_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_axi_gpio_2_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_axi_gpio_2_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_axi_gpio_2_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_util_vector_logic_0_1_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_util_vector_logic_0_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_util_vector_logic_0_1_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_A2_ADC_LTC2311_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A2_ADC_LTC2311_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_A2_ADC_LTC2311_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_ila_0_2_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_2" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_ila_0_2_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_ila_0_1_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_ila_0_1_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_A1_ADC_LTC2311_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A1_ADC_LTC2311_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_A1_ADC_LTC2311_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_smartconnect_1_1_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_smartconnect_1_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_smartconnect_1_1_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -1724,7 +1322,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_IncreEncoder_V24_ip_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_IncreEncoder_V24_ip_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_IncreEncoder_V24_ip_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_A1_iobufds_inst_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A1_iobufds_inst_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_A1_iobufds_inst_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -1741,92 +1339,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_AXI2TCM_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_AXI2TCM_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_AXI2TCM_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_vio_D3_test_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_D3_test_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_vio_D3_test_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_Set_Deadtime_3L_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_Set_Deadtime_3L_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_Set_Deadtime_3L_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_Trigger_f_cc_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_Trigger_f_cc_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_Trigger_f_cc_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_PWM_and_SS_control_V_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_PWM_and_SS_control_V_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_Counter_f_sw_V2_ip_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_Counter_f_sw_V2_ip_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_Counter_f_sw_V2_ip_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_A2_ADC_LTC2311_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A2_ADC_LTC2311_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_A2_ADC_LTC2311_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -1860,7 +1373,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_mux_axi_ip_1_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_mux_axi_ip_1_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_mux_axi_ip_1_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_iobufds_inst_2_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_iobufds_inst_2_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_iobufds_inst_2_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -1877,7 +1390,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_ila_0_3_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_3" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_ila_0_3_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_A2_iobufds_inst_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A2_iobufds_inst_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_A2_iobufds_inst_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -1894,7 +1407,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_A1_iobufds_inst_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A1_iobufds_inst_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_A1_iobufds_inst_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_A1_ADC_LTC2311_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_A1_ADC_LTC2311_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_A1_ADC_LTC2311_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -1911,7 +1424,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_PWM_SS_3L_ip_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_SS_3L_ip_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_PWM_SS_3L_ip_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_ila_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_ila_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -1928,7 +1441,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_Interrupt_Start_Center_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_Interrupt_Start_Center_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_Interrupt_Start_Center_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_vio_Gates_3L_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_Gates_3L_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_vio_Gates_3L_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -1962,9 +1475,389 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_uz_axi_testIP_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_axi_testIP_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_uz_axi_testIP_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_smartconnect_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_smartconnect_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_smartconnect_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_vio_interrupt_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_interrupt_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_vio_interrupt_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_ila_Encoder_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_Encoder_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_ila_Encoder_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_ila_0_3_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_3" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_ila_0_3_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_ila_0_2_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_2" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_ila_0_2_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_vio_Gates_2L_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_Gates_2L_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_vio_Gates_2L_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_vio_D3_test_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_vio_D3_test_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_vio_D3_test_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_util_vector_logic_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_util_vector_logic_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_util_vector_logic_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_Interrupt_Start_Center_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_Interrupt_Start_Center_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_Interrupt_Start_Center_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_AXI2TCM_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_AXI2TCM_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_AXI2TCM_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_util_vector_logic_0_1_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_util_vector_logic_0_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_util_vector_logic_0_1_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_IncreEncoder_V24_ip_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_IncreEncoder_V24_ip_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_IncreEncoder_V24_ip_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_delay_trigger_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_delay_trigger_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_delay_trigger_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_Set_Deadtime_3L_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_Set_Deadtime_3L_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_Set_Deadtime_3L_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_ila_0_1_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_0_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_ila_0_1_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_uz_interlockDeadtime_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_interlockDeadtime_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_uz_interlockDeadtime_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_Trigger_f_cc_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_Trigger_f_cc_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_Trigger_f_cc_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_adc_delay_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_adc_delay_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_adc_delay_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_PWM_SS_3L_ip_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_SS_3L_ip_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_PWM_SS_3L_ip_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_top_npc_state_machine_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_top_npc_state_machine_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_top_npc_state_machine_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_mux_axi_ip_1_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_mux_axi_ip_1_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_mux_axi_ip_1_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_smartconnect_1_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_smartconnect_1_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_smartconnect_1_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_clk_wiz_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_clk_wiz_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_clk_wiz_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
@@ -1981,7 +1874,9 @@
     </Run>
     <Run Id="zusys_proc_sys_reset_50MHz_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_proc_sys_reset_50MHz_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_proc_sys_reset_50MHz_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
@@ -1996,58 +1891,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_proc_sys_reset_25MHz_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_proc_sys_reset_25MHz_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_proc_sys_reset_25MHz_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_proc_sys_reset_10MHz_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_proc_sys_reset_10MHz_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_proc_sys_reset_10MHz_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_proc_sys_reset_100MHz_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_proc_sys_reset_100MHz_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_proc_sys_reset_100MHz_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_clk_wiz_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_clk_wiz_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_clk_wiz_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_uz_axi_testIP_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_axi_testIP_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_uz_axi_testIP_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -2081,7 +1925,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_dac1_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac1_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_dac1_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_proc_sys_reset_100MHz_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_proc_sys_reset_100MHz_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_proc_sys_reset_100MHz_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -2098,7 +1942,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_util_ds_buf_1_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_util_ds_buf_1_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_util_ds_buf_1_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_proc_sys_reset_10MHz_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_proc_sys_reset_10MHz_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_proc_sys_reset_10MHz_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -2115,7 +1959,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_util_ds_buf_2_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_util_ds_buf_2_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_util_ds_buf_2_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_proc_sys_reset_25MHz_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_proc_sys_reset_25MHz_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_proc_sys_reset_25MHz_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -2132,7 +1976,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_dac8_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac8_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_dac8_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_axi_gpio_2_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_axi_gpio_2_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_axi_gpio_2_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -2149,7 +1993,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_dac2_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac2_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_dac2_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_PWM_and_SS_control_V_2_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_2_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_PWM_and_SS_control_V_2_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -2166,7 +2010,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_dac6_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac6_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_dac6_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_PWM_and_SS_control_V_1_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_1_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_PWM_and_SS_control_V_1_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -2183,126 +2027,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_dac7_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac7_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_dac7_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_dac5_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac5_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_dac5_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_dac3_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac3_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_dac3_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_dac4_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_dac4_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_dac4_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_ila_1_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_ila_1_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_ila_1_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_uz_dac_spi_interface_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_dac_spi_interface_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_uz_dac_spi_interface_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_smartconnect_1_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_smartconnect_1_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_smartconnect_1_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="zusys_smartconnect_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_smartconnect_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_smartconnect_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_PWM_and_SS_control_V_3_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_3_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_PWM_and_SS_control_V_3_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020">
           <Desc>Default settings for Implementation.</Desc>
@@ -2321,7 +2046,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_uz_pmsm_model_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_pmsm_model_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_uz_pmsm_model_0_0_synth_1" IncludeInArchive="false" GenFullBitstream="true">
+    <Run Id="zusys_PWM_and_SS_control_V_0_1_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_0_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_PWM_and_SS_control_V_0_1_synth_1" IncludeInArchive="false" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020">
           <Desc>Default settings for Implementation.</Desc>

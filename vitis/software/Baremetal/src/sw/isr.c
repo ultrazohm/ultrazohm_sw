@@ -30,6 +30,8 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_signals/uz_signals.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -51,11 +53,27 @@ float theta_mech_calc_from_resolver = 0.0f;
 float theta_m_max = 0.0f;
 float theta_m_min = 0.0f;
 
+uz_6ph_abc_t six_ph_currents = {0.0f};
+uz_6ph_alphabeta_t six_ph_alphabeta = {0.0f};
+uz_3ph_alphabeta_t three_ph_alphabeta = {0.0f};
+uz_3ph_dq_t rotating_dq = {0};
+
+uz_3ph_dq_t i_dq_ref = {0.0f};
+uz_3ph_dq_t i_dq_actual = {0.0f};
+uz_3ph_dq_t u_dq_ref = {0.0f};
+uz_3ph_alphabeta_t alphabeta_ref_volts = {0.0f};
+uz_6ph_alphabeta_t vsd_ref_volts = {0.0f};
+uz_6ph_abc_t phase_ref_volts = {0.0f};
+
+uz_3ph_abc_t input1 = {0.0f};
+uz_3ph_abc_t input2 = {0.0f};
+struct uz_DutyCycle_t output1 = {0};
+struct uz_DutyCycle_t output2 = {0};
+
 #define PHASE_CURRENT_CONV	37.735
 #define DC_VOLT_CONV		250
 #define DC_VOLT_OFF			250
 
-extern struct uz_IIR_Filter_config iir_config;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -92,13 +110,69 @@ void ISR_Control(void *data)
     Global_Data.av.i_a2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_a2, Global_Data.av.i_a2);
     Global_Data.av.i_b2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_b2, Global_Data.av.i_b2);
     Global_Data.av.i_c2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c2, Global_Data.av.i_c2);
-
     Global_Data.av.U_ZK_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_dc, Global_Data.av.U_ZK);
+
+    // theta offset and scaling to el. angle
+    Global_Data.av.theta_m_offset_comp = theta_mech_calc_from_resolver - Global_Data.av.theta_offset;
+    Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp * Global_Data.av.polepairs;
+
+    // transform phase currents
+    six_ph_currents.a1 = Global_Data.av.i_a1_filt;
+    six_ph_currents.b1 = Global_Data.av.i_b1_filt;
+    six_ph_currents.c1 = Global_Data.av.i_c1_filt;
+    six_ph_currents.a2 = Global_Data.av.i_a2_filt;
+    six_ph_currents.b2 = Global_Data.av.i_b2_filt;
+    six_ph_currents.c2 = Global_Data.av.i_c2_filt;
+    six_ph_alphabeta = uz_transformation_asym30deg_6ph_abc_to_alphabeta(six_ph_currents);
+
+
+    three_ph_alphabeta.alpha = six_ph_alphabeta.alpha;
+    three_ph_alphabeta.beta = six_ph_alphabeta.beta;
+    Global_Data.av.i_alpha = three_ph_alphabeta.alpha;
+    Global_Data.av.i_beta = three_ph_alphabeta.beta;
+    rotating_dq = uz_transformation_3ph_alphabeta_to_dq(three_ph_alphabeta, Global_Data.av.theta_elec);
+    Global_Data.av.i_d = rotating_dq.d;
+    Global_Data.av.i_q = rotating_dq.q;
+
+    i_dq_actual.d = Global_Data.av.i_d;
+    i_dq_actual.q = Global_Data.av.i_q;
+
+	i_dq_ref.d = Global_Data.av.i_d_ref;
+	i_dq_ref.q = Global_Data.av.i_q_ref;
+
+	if(fabs(six_ph_currents.a1) > 10.0f || fabs(six_ph_currents.b1) > 10.0f || fabs(six_ph_currents.c1) > 10.0f ||
+	   fabs(six_ph_currents.a2) > 10.0f || fabs(six_ph_currents.b2) > 10.0f || fabs(six_ph_currents.c2) > 10.0f) {
+		uz_assert(0);
+	}
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+
+    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, i_dq_ref, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
+    	alphabeta_ref_volts = uz_transformation_3ph_dq_to_alphabeta(u_dq_ref, Global_Data.av.theta_elec);
+    	vsd_ref_volts.alpha = alphabeta_ref_volts.alpha;
+    	vsd_ref_volts.beta = alphabeta_ref_volts.beta;
+    	phase_ref_volts = uz_transformation_asym30deg_6ph_alphabeta_to_abc(vsd_ref_volts);
+
+    	input1.a = phase_ref_volts.a1;
+    	input1.b = phase_ref_volts.b1;
+    	input1.c = phase_ref_volts.c1;
+    	input2.a = phase_ref_volts.a2;
+    	input2.b = phase_ref_volts.b2;
+    	input2.c = phase_ref_volts.c2;
+
+    	output1 = uz_FOC_generate_DutyCycles(input1, Global_Data.av.U_ZK_filt);
+    	output2 = uz_FOC_generate_DutyCycles(input2, Global_Data.av.U_ZK_filt);
+
+    	Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_U;
+    	Global_Data.rasv.halfBridge2DutyCycle = output1.DutyCycle_V;
+    	Global_Data.rasv.halfBridge3DutyCycle = output1.DutyCycle_W;
+    	Global_Data.rasv.halfBridge4DutyCycle = output2.DutyCycle_U;
+    	Global_Data.rasv.halfBridge5DutyCycle = output2.DutyCycle_V;
+    	Global_Data.rasv.halfBridge6DutyCycle = output2.DutyCycle_W;
+
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

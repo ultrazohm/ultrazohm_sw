@@ -76,6 +76,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_iq] 			= &data->av.i_q;
 	js_ch_observable[JSO_id] 			= &data->av.i_d;
+	js_ch_observable[JSO_i_alpha]		= &data->av.i_alpha;
+	js_ch_observable[JSO_i_beta]		= &data->av.i_beta;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &theta_mech_calc_from_resolver;
 	js_ch_observable[JSO_ud]			= &data->av.u_d;
@@ -100,6 +102,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 	js_slowDataArray[JSSD_FLOAT_u_dc1]					= &(data->av.U_ZK_filt);
 	js_slowDataArray[JSSD_FLOAT_u_dc2]					= &(data->av.U_ZK2);
+	js_slowDataArray[JSSD_FLOAT_speed]					= &data->av.mechanicalRotorSpeed;
 
 	return Status;
 }

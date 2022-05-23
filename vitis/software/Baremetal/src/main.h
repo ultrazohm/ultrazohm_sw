@@ -54,6 +54,8 @@
 
 #include "include/pwm_init.h"
 
+#include "uz/uz_FOC/uz_FOC.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

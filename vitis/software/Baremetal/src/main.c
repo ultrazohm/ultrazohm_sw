@@ -54,6 +54,32 @@ struct uz_IIR_Filter_config iir_config_currents = {
 		.cutoff_frequency_Hz = 500.0f,
 		.sample_frequency_Hz = 10000.0f};
 
+const struct uz_PMSM_t config_PMSM = {
+   .Ld_Henry = 0.0001f,
+   .Lq_Henry = 0.0002f,
+   .Psi_PM_Vs = 0.008f
+ };//these parameters are only needed if linear decoupling is selected
+const struct uz_PI_Controller_config config_id = {
+   .Kp = 2.5f,
+   .Ki = 200.0f,
+   .samplingTime_sec = 0.0001f,
+   .upper_limit = 50.0f,
+   .lower_limit = -50.0f
+};
+const struct uz_PI_Controller_config config_iq = {
+   .Kp = 2.5f,
+   .Ki = 200.0f,
+   .samplingTime_sec = 0.0001f,
+   .upper_limit = 50.0f,
+   .lower_limit = -50.0f
+};
+struct uz_FOC_config config_FOC = {
+   .decoupling_select = no_decoupling,
+   .config_PMSM = config_PMSM,
+   .config_id = config_id,
+   .config_iq = config_iq
+};
+
 enum init_chain
 {
     init_assertions = 0,
@@ -93,6 +119,9 @@ int main(void)
             Global_Data.objects.iir_i_a2 = uz_signals_IIR_Filter_init(iir_config_currents);
             Global_Data.objects.iir_i_b2 = uz_signals_IIR_Filter_init(iir_config_currents);
             Global_Data.objects.iir_i_c2 = uz_signals_IIR_Filter_init(iir_config_currents);
+            Global_Data.av.theta_offset = 1.120014f;
+            Global_Data.av.polepairs = 5.0f;
+            Global_Data.objects.foc_current = uz_FOC_init(config_FOC);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

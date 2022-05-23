@@ -8,6 +8,7 @@
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_FOC/uz_FOC.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -71,11 +72,20 @@ typedef struct _actualValues_ {
 	float mechanicalPosition; 		// in m
 	float i_d;
 	float i_q;
+	float i_d_ref;
+	float i_q_ref;
+	float rpm_ref;
+	float i_alpha;
+	float i_beta;
 	float u_d;
 	float u_q;
+	float u_d_ref;
+	float u_q_ref;
 	float theta_elec;
 	float theta_mech;
 	float theta_offset; //in rad/s
+	float theta_m_offset_comp;
+	float polepairs;
 	uint32_t  heartbeatframe_content;
 } actualValues;
 
@@ -112,6 +122,7 @@ typedef struct{
 	uz_IIR_Filter_t* iir_i_a2;
 	uz_IIR_Filter_t* iir_i_b2;
 	uz_IIR_Filter_t* iir_i_c2;
+	uz_FOC* foc_current;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

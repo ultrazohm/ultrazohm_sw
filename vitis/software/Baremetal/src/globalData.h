@@ -7,6 +7,7 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "uz/uz_signals/uz_signals.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -51,36 +52,30 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	float I_L1; 		// Grid side current in A
-	float I_L2; 		// Grid side current in A
-	float I_L3; 		// Grid side current in A
-	float U_L1; 		// Grid side voltage in V
-	float U_L2; 		// Grid side voltage in V
-	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
+	float i_a1;
+	float i_b1;
+	float i_c1;
+	float i_a2;
+	float i_b2;
+	float i_c2;
+	float i_a1_filt;
+	float i_b1_filt;
+	float i_c1_filt;
+	float i_a2_filt;
+	float i_b2_filt;
+	float i_c2_filt;
 	float U_ZK; 		// DC-Link voltage in V
-	float U_ZK2; 	// DC-Link voltage 2 in V
-	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
-	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
+	float U_ZK_filt;
+	float U_ZK2; 		// DC-Link voltage 2 in V
 	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
 	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float I_d;
-	float I_q;
-	float U_d;
-	float U_q;
+	float i_d;
+	float i_q;
+	float u_d;
+	float u_q;
 	float theta_elec;
 	float theta_mech;
 	float theta_offset; //in rad/s
-	float temperature;
 	uint32_t  heartbeatframe_content;
 } actualValues;
 
@@ -110,6 +105,13 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
 	uz_resolverIP_t* resolver_IP;
+	uz_IIR_Filter_t* iir_u_dc;
+	uz_IIR_Filter_t* iir_i_a1;
+	uz_IIR_Filter_t* iir_i_b1;
+	uz_IIR_Filter_t* iir_i_c1;
+	uz_IIR_Filter_t* iir_i_a2;
+	uz_IIR_Filter_t* iir_i_b2;
+	uz_IIR_Filter_t* iir_i_c2;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

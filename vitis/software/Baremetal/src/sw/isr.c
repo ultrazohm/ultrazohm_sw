@@ -29,6 +29,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_signals/uz_signals.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -47,6 +48,14 @@ bool cnt_reset = 0;
 float cnt_float=0.0f;
 float cnt_reset_float=0.0f;
 float theta_mech_calc_from_resolver = 0.0f;
+float theta_m_max = 0.0f;
+float theta_m_min = 0.0f;
+
+#define PHASE_CURRENT_CONV	37.735
+#define DC_VOLT_CONV		250
+#define DC_VOLT_OFF			250
+
+extern struct uz_IIR_Filter_config iir_config;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -64,6 +73,27 @@ void ISR_Control(void *data)
     //update_position_of_resolverIP(&Global_Data);
     //update_speed_of_resolverIP(&Global_Data);
     //readRegister_of_resolverIP(&Global_Data);
+
+    // convert ADC readings to currents in Amps
+    Global_Data.av.i_a1 = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_c1 = -1.0f * Global_Data.aa.A1.me.ADC_B6 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_a2 = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_b2 = Global_Data.aa.A2.me.ADC_B7 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_c2 = -1.0f * Global_Data.aa.A2.me.ADC_B6 * PHASE_CURRENT_CONV;
+    // convert ADC readings to dc link voltages
+    Global_Data.av.U_ZK = -1.0f * Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV - DC_VOLT_OFF;
+    Global_Data.av.U_ZK2 = -1.0f * Global_Data.aa.A2.me.ADC_B8 * DC_VOLT_CONV - DC_VOLT_OFF;
+
+    // filter values
+    Global_Data.av.i_a1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_a1, Global_Data.av.i_a1);
+    Global_Data.av.i_b1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_b1, Global_Data.av.i_b1);
+    Global_Data.av.i_c1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c1, Global_Data.av.i_c1);
+    Global_Data.av.i_a2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_a2, Global_Data.av.i_a2);
+    Global_Data.av.i_b2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_b2, Global_Data.av.i_b2);
+    Global_Data.av.i_c2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c2, Global_Data.av.i_c2);
+
+    Global_Data.av.U_ZK_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_dc, Global_Data.av.U_ZK);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -111,7 +141,13 @@ void ISR_Control(void *data)
 
     theta_mech_old = Global_Data.av.theta_mech;
 
+    if (Global_Data.av.theta_mech <= theta_m_min) {
+    	theta_m_min = Global_Data.av.theta_mech;
+    }
 
+    if (Global_Data.av.theta_mech >= theta_m_max) {
+    	theta_m_max = Global_Data.av.theta_mech;
+    }
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

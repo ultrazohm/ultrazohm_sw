@@ -58,27 +58,28 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_ADC_A1_B1]		= &data->aa.A1.me.ADC_B5;
-	js_ch_observable[JSO_ADC_A1_B2]		= &data->aa.A1.me.ADC_B6;
-	js_ch_observable[JSO_ADC_A1_B3]		= &data->aa.A1.me.ADC_B7;
-	js_ch_observable[JSO_ADC_A1_B4]		= &data->aa.A1.me.ADC_B8;
-	js_ch_observable[JSO_ADC_A2_B1]		= &data->aa.A2.me.ADC_B5;
-	js_ch_observable[JSO_ADC_A2_B2]		= &data->aa.A2.me.ADC_B6;
-	js_ch_observable[JSO_ADC_A2_B3]		= &data->aa.A2.me.ADC_B7;
-	js_ch_observable[JSO_ADC_A2_B4]		= &data->aa.A2.me.ADC_B8;
+	js_ch_observable[JSO_i_a1]		= &data->av.i_a1;
+	js_ch_observable[JSO_i_b1]		= &data->av.i_b1;
+	js_ch_observable[JSO_i_c1]		= &data->av.i_c1;
+	js_ch_observable[JSO_i_a1_filt]		= &data->av.i_a1_filt;
+	js_ch_observable[JSO_i_b1_filt]		= &data->av.i_b1_filt;
+	js_ch_observable[JSO_i_c1_filt]		= &data->av.i_c1_filt;
+	js_ch_observable[JSO_u_dc1]		= &data->av.U_ZK;
+	js_ch_observable[JSO_i_a2]		= &data->av.i_a2;
+	js_ch_observable[JSO_i_b2]		= &data->av.i_b2;
+	js_ch_observable[JSO_i_c2]		= &data->av.i_c2;
+	js_ch_observable[JSO_i_a2_filt]		= &data->av.i_a2_filt;
+	js_ch_observable[JSO_i_b2_filt]		= &data->av.i_b2_filt;
+	js_ch_observable[JSO_i_c2_filt]		= &data->av.i_c2_filt;
+	js_ch_observable[JSO_u_dc2]		= &data->av.U_ZK2;
+	js_ch_observable[JSO_u_dc1_filt]= &data->av.U_ZK_filt;
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_ia] 			= &data->av.I_U;
-	js_ch_observable[JSO_ib] 			= &data->av.I_V;
-	js_ch_observable[JSO_ic] 			= &data->av.I_W;
-	js_ch_observable[JSO_ua] 			= &data->av.U_U;
-	js_ch_observable[JSO_ub] 			= &data->av.U_V;
-	js_ch_observable[JSO_uc] 			= &data->av.U_W;
-	js_ch_observable[JSO_iq] 			= &data->av.I_q;
-	js_ch_observable[JSO_id] 			= &data->av.I_d;
+	js_ch_observable[JSO_iq] 			= &data->av.i_q;
+	js_ch_observable[JSO_id] 			= &data->av.i_d;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &theta_mech_calc_from_resolver;
-	js_ch_observable[JSO_ud]			= &data->av.U_d;
-	js_ch_observable[JSO_uq]			= &data->av.U_q;
+	js_ch_observable[JSO_ud]			= &data->av.u_d;
+	js_ch_observable[JSO_uq]			= &data->av.u_q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -88,16 +89,17 @@ int JavaScope_initalize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
+	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.u_d);
+	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.u_q);
+	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.i_d);
+	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.i_q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
-	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_u_dc1]					= &(data->av.U_ZK_filt);
+	js_slowDataArray[JSSD_FLOAT_u_dc2]					= &(data->av.U_ZK2);
 
 	return Status;
 }

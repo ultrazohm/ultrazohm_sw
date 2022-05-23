@@ -38,11 +38,21 @@ DS_Data Global_Data = {
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
-    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = (10.0f*37.735f), .cf.ADC_B6 = (-10.0f*37.735f), .cf.ADC_B7 = (10.0f*37.735f), .cf.ADC_B8 = 10.0f},
-    	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = (10.0f*37.735f), .cf.ADC_B6 = (-10.0f*37.735f), .cf.ADC_B7 = (10.0f*37.735f), .cf.ADC_B8 = 10.0f},
+    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
+    	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     }
 };
+
+struct uz_IIR_Filter_config iir_config_dc_volts = {
+		.selection = LowPass_first_order,
+		.cutoff_frequency_Hz = 1.0f,
+		.sample_frequency_Hz = 10000.0f};
+
+struct uz_IIR_Filter_config iir_config_currents = {
+		.selection = LowPass_first_order,
+		.cutoff_frequency_Hz = 500.0f,
+		.sample_frequency_Hz = 10000.0f};
 
 enum init_chain
 {
@@ -76,6 +86,13 @@ int main(void)
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
+            Global_Data.objects.iir_u_dc = uz_signals_IIR_Filter_init(iir_config_dc_volts);
+            Global_Data.objects.iir_i_a1 = uz_signals_IIR_Filter_init(iir_config_currents);
+            Global_Data.objects.iir_i_b1 = uz_signals_IIR_Filter_init(iir_config_currents);
+            Global_Data.objects.iir_i_c1 = uz_signals_IIR_Filter_init(iir_config_currents);
+            Global_Data.objects.iir_i_a2 = uz_signals_IIR_Filter_init(iir_config_currents);
+            Global_Data.objects.iir_i_b2 = uz_signals_IIR_Filter_init(iir_config_currents);
+            Global_Data.objects.iir_i_c2 = uz_signals_IIR_Filter_init(iir_config_currents);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

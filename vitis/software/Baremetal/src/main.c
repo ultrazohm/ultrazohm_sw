@@ -23,7 +23,7 @@ int axi_gpio_init_ok = 0U;
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
-        .halfBridge1DutyCycle = 0.043f,
+        .halfBridge1DutyCycle = 0.0f,
         .halfBridge2DutyCycle = 0.0f,
         .halfBridge3DutyCycle = 0.0f,
         .halfBridge4DutyCycle = 0.0f,

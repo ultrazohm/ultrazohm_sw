@@ -15,7 +15,7 @@ General information
 * Avoid i.e. ``after(1.0,sec)`` state transition conditions. Create custom counter values for i.e. 1 second delays. Otherwise the transition won't scale with different sample times.
 * A three-phase testbench setup with a PMSM, inverter, load machine and physical couplings is included in the subsystem ``Hardware``. This can be used to test the new stateflow. 
 * To signal which state is currently active, each state in one ``ID-state`` has a unique ``activeState`` value. Each ``ID-state`` follows the naming scheme of ``Yxx``, where ``Y`` is the decimal for the state, and ``xx`` the decimals for the substates (i.e. 621). 
-
+* The simulink model resides in the ParameterID docs folder ``docs/source/mpsoc/software_framework/ParameterID/simulink_model`` .
 
 Changes in the Simulation model
 ===============================

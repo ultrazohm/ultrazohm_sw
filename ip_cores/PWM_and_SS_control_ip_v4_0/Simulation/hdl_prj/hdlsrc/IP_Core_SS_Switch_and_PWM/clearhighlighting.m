@@ -3,6 +3,8 @@ SLStudio.Utils.RemoveHighlighting(get_param('gm_IP_Core_SS_Switch_and_PWM', 'han
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM', 0, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/delayMatch', 1, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/LimitPulseWidth', 0, 1, '');
+annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Delay4', 1, 1, '');
+annotate_port('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Delay4', 1, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/out_0_pipe', 1, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/out_0_pipe', 1, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/out_1_pipe', 1, 1, '');
@@ -34,7 +36,6 @@ annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/Gen
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Switch3', 0, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Switch7', 0, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/HDL Counter2', 0, 1, '');
-annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Switch10', 0, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Counter Ctrl', 0, 3, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Delay', 1, 1, '');
 annotate_port('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Delay', 1, 1, '');

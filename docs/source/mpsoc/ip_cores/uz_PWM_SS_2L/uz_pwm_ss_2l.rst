@@ -9,6 +9,8 @@ Interlock and dead-time functionalities are not part of this IP core and are han
 If less than three phase legs are used, unused phase legs can be set to a tristate mode, where neither the top nor the bottom switch of the phase leg are active.
 For higher phase numbers, multiple instances of this module can be used in the FPGA, each containing its own up-down counter.
 For synchronizing multiple instances, the counter can be fed to subsequent instances. This feature is the only difference between versions V3 and V4.
+In the standard block design of the ultrazohm_sw framework, 4 synchronized instances of this ip core are present with respective software driver instances for controlling up 
+to 12 half-bridge phase legs.
  
 The IP core provides two general modes of operation.
 
@@ -55,24 +57,19 @@ Vivado
 - One instance:
 
 .. figure:: vivado_example.png
-   :width: 800
+   :width: 500
    :align: center
 
    Example implementation in the block design
 
 For further instances, add the IP core to your design as many times as needed and connect them accordingly.
-For synchronization of instances, feed the count_out port of the first instance into the count_in port of one or several subsequent instances:
+For synchronization of instances, feed the triangle_out port of the first instance into the triangle_in port of one or several subsequent instances:
 
 .. figure:: vivado_2instances.png
-   :width: 400
+   :width: 600
    :align: center
 
    Example implementation in the block design with two synchronized instances
-
-
-.. warning::
-   * There will be a delay of about one FPGA clock cycle (measured 16 ns @ 100 MHz) in the counter for a subsequent instance.
-   * This means that switching actions are shifted by that delay time between two instances.
 
 A flag for 1 cycle is active at the counter maximum and minimum value for triggering subsequent blocks or interrupts.
 
@@ -80,7 +77,12 @@ Vitis
 *****
 
 - The software driver is called "uz_PWM_SS_2L"
-- Each instance has to be configured by a config struct:
+- Each instance has to be configured by a config struct
+
+
+.. note::
+   * If at least two synchronized ip cores are present, both have to be configured with ``use_external_counter = enable`` 
+     and connected the way shown above for correct synchronization.
 
 .. code-block:: c
 
@@ -91,10 +93,10 @@ Vitis
             .Tristate_HB2 = false,
             .Tristate_HB3 = false,
             .min_pulse_width = 0.01f,
-            .PWM_freq_Hz = 10e3f,
+            .PWM_freq_Hz = UZ_PWM_FREQUENCY,
             .PWM_mode = normalized_input_via_AXI,
             .PWM_en = true,
-            .use_external_counter = false,
+            .use_external_counter = true,
             .init_dutyCyc_A = 0.0f,
             .init_dutyCyc_B = 0.0f,
             .init_dutyCyc_C = 0.0f

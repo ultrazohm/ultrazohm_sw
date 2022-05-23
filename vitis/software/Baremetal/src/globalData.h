@@ -87,11 +87,26 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge1DutyCycle;
 	float halfBridge2DutyCycle;
 	float halfBridge3DutyCycle;
+	float halfBridge4DutyCycle;
+	float halfBridge5DutyCycle;
+	float halfBridge6DutyCycle;
+	float halfBridge7DutyCycle;
+	float halfBridge8DutyCycle;
+	float halfBridge9DutyCycle;
+	float halfBridge10DutyCycle;
+	float halfBridge11DutyCycle;
+	float halfBridge12DutyCycle;
 } referenceAndSetValues;
 
 typedef struct{
-	uz_PWM_SS_2L_t* pwm_d1;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1;
+	uz_PWM_SS_2L_t* pwm_d1_pin_0_to_5;
+	uz_PWM_SS_2L_t* pwm_d1_pin_6_to_11;
+	uz_PWM_SS_2L_t* pwm_d1_pin_12_to_17;
+	uz_PWM_SS_2L_t* pwm_d1_pin_18_to_23;
+	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_0_to_5;
+	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
+	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
+	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
 }object_pointers_t;
 

@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Robert Zipprich
+* Copyright 2022 Robert Zipprich
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -12,10 +12,8 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
-
-#pragma once
-#ifndef SRC_IP_CORES_TEMPCARD_IF_HWADDRESSES_H_
-#define SRC_IP_CORES_TEMPCARD_IF_HWADDRESSES_H_
+#ifndef UZ_TEMPERATURECARD_HWADDRESSES_H_
+#define UZ_TEMPERATURECARD_HWADDRESSES_H_
 
 // Control-register
 #define  TempCard_IF_Controlreg         0x000  	// controlregister for the temperature card interface IP | Bit 0 enable | Bit 1 reset (must be set to 1)
@@ -156,4 +154,4 @@
 #define  TempCard_IF_Config_C_18  		0x1F8  	// Measurement Config Channel C 18
 #define  TempCard_IF_Config_C_19   		0x1FC  	// Measurement Config Channel C 19
 
-#endif /* SRC_IP_CORES_TEMPCARD_INTERFACE_IP_ADDR_H_ */
+#endif /* UZ_TEMPERATURECARD_HWADDRESSES_H_ */

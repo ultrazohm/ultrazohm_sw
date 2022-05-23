@@ -70,10 +70,20 @@ uz_3ph_abc_t input2 = {0.0f};
 struct uz_DutyCycle_t output1 = {0};
 struct uz_DutyCycle_t output2 = {0};
 
+uz_3ph_dq_t speed_ctrl_ref_currents = {0.0f};
+
 #define PHASE_CURRENT_CONV	37.735
 #define DC_VOLT_CONV		250
 #define DC_VOLT_OFF			250
 
+const struct uz_PMSM_t config_PMSM1 = {
+	.R_ph_Ohm = 0.2f,
+   .Ld_Henry = 0.0001f,
+   .Lq_Henry = 0.0001f,
+   .Psi_PM_Vs = 0.008f,
+   .polePairs = 5.0f,
+   .I_max_Ampere = 10.0f
+ };//these parameters are only needed if linear decoupling is selected
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -111,7 +121,7 @@ void ISR_Control(void *data)
     Global_Data.av.i_b2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_b2, Global_Data.av.i_b2);
     Global_Data.av.i_c2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c2, Global_Data.av.i_c2);
     Global_Data.av.U_ZK_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_dc, Global_Data.av.U_ZK);
-
+    Global_Data.av.rpm_ref_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_rpm_ref, Global_Data.av.rpm_ref);
     // theta offset and scaling to el. angle
     Global_Data.av.theta_m_offset_comp = theta_mech_calc_from_resolver - Global_Data.av.theta_offset;
     Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp * Global_Data.av.polepairs;
@@ -149,8 +159,9 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	speed_ctrl_ref_currents = uz_SpeedControl_sample(Global_Data.objects.foc_speed, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs,Global_Data.av.rpm_ref_filt, Global_Data.av.U_ZK_filt, Global_Data.av.i_d_ref, config_PMSM1, false);
 
-    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, i_dq_ref, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
+    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, speed_ctrl_ref_currents, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
     	alphabeta_ref_volts = uz_transformation_3ph_dq_to_alphabeta(u_dq_ref, Global_Data.av.theta_elec);
     	vsd_ref_volts.alpha = alphabeta_ref_volts.alpha;
     	vsd_ref_volts.beta = alphabeta_ref_volts.beta;

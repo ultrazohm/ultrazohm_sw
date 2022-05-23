@@ -9,6 +9,7 @@
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "uz/uz_signals/uz_signals.h"
 #include "uz/uz_FOC/uz_FOC.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -75,6 +76,7 @@ typedef struct _actualValues_ {
 	float i_d_ref;
 	float i_q_ref;
 	float rpm_ref;
+	float rpm_ref_filt;
 	float i_alpha;
 	float i_beta;
 	float u_d;
@@ -122,7 +124,9 @@ typedef struct{
 	uz_IIR_Filter_t* iir_i_a2;
 	uz_IIR_Filter_t* iir_i_b2;
 	uz_IIR_Filter_t* iir_i_c2;
+	uz_IIR_Filter_t* iir_rpm_ref;
 	uz_FOC* foc_current;
+	uz_SpeedControl_t* foc_speed;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

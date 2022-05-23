@@ -68,21 +68,25 @@ The ID-state specific configuration values can later be configured via the uz_GU
     :emphasize-lines: 13,16-30
     :language: c
 
-If the FluxMaps identification of the :ref:`uz_OnlineID` state will be used, the following code has to be implemented inside the ``while(1) loop`` of the ``main.c`` . 
+If the FluxMaps identification of the :ref:`uz_OnlineID` state will be used, the following code has to be implemented inside the ``infinite_loop`` case of the switch case in the ``main.c`` . 
 These functions are to compute heavy to be executed in the ISR.
 
 .. code-block:: c
   :linenos:
-  :caption: Code to calculate FluxMaps inside main.c while(1)-loop
-    
-  if (ParaID_Data.OnlineID_Output->clean_array) {
-	uz_ParameterID_CleanPsiArray(ParameterID, &ParaID_Data);
-  }
-  if (ParaID_Data.calculate_flux_maps) {
-	uz_ParameterID_CalcFluxMaps(ParameterID, &ParaID_Data);
-	ParaID_Data.calculate_flux_maps = false;
-  }
+  :caption: Code to calculate FluxMaps inside the ``infinite_loop`` case of the switch case in the ``main.c`` .
 
+  //....
+  case infinite_loop:
+     ultrazohm_state_machine_step();  
+     if (ParaID_Data.OnlineID_Output->clean_array) {
+          uz_ParameterID_CleanPsiArray(ParameterID, &ParaID_Data);
+     }
+     if (ParaID_Data.calculate_flux_maps) {
+          uz_ParameterID_CalcFluxMaps(ParameterID, &ParaID_Data);
+          ParaID_Data.calculate_flux_maps = false;
+     }
+     break;
+  //....
 
 In the ``isr.c``  the members of the :ref:`uz_Actual_values_struct` struct inside the :ref:`uz_ParameterID_Data_struct` have to be assigned with the measurement values needed for the identification. 
 Furthermore, the ``uz_ParameterID_step`` function needs to be called as well. Two functions ``uz_ParameterID_Controller`` and ``uz_ParameterID_generate_DutyCycle`` are used in the code below as well.

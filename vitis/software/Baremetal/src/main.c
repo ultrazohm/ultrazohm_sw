@@ -15,15 +15,22 @@
 
 // Includes from own files
 #include "main.h"
-#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
-#include "xparameters.h"
-#include "uz/uz_FOC/uz_FOC.h"
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
         .halfBridge1DutyCycle = 0.0f,
         .halfBridge2DutyCycle = 0.0f,
-        .halfBridge3DutyCycle = 0.0f
+        .halfBridge3DutyCycle = 0.0f,
+        .halfBridge4DutyCycle = 0.0f,
+        .halfBridge5DutyCycle = 0.0f,
+        .halfBridge6DutyCycle = 0.0f,
+		.halfBridge7DutyCycle = 0.0f,
+		.halfBridge8DutyCycle = 0.0f,
+		.halfBridge9DutyCycle = 0.0f,
+		.halfBridge10DutyCycle = 0.0f,
+		.halfBridge11DutyCycle = 0.0f,
+		.halfBridge12DutyCycle = 0.0f
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
@@ -44,11 +51,6 @@ enum init_chain
     infinite_loop
 };
 enum init_chain initialization_chain = init_assertions;
-
-
-uz_pmsmModel_t *pmsm=NULL;
-
-uz_FOC* FOC_instance = NULL;
 
 int main(void)
 {
@@ -73,51 +75,19 @@ int main(void)
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
-
             uz_adcLtc2311_ip_core_init();
-            struct uz_PMSM_t config_PMSM = {
-	                                 .Ld_Henry = 3.00e-04f,
-	                                 .Lq_Henry = 3.00e-04f,
-	                                 .Psi_PM_Vs = 0.0075f};
-
-	                             struct uz_PI_Controller_config config_id = {
-	                                 .Kp = 0.25f,
-	                                 .Ki = 158.8f,
-	                                 .samplingTime_sec = 0.00005f,
-	                                 .upper_limit = 10.0f,
-	                                 .lower_limit = -10.0f};
-
-	                             struct uz_PI_Controller_config config_iq = {
-	                                 .Kp = 0.25f,
-	                                 .Ki = 158.8f,
-	                                 .samplingTime_sec = 0.00005f,
-	                                 .upper_limit = 10.0f,
-	                                 .lower_limit = -10.0f};
-
-	                             struct uz_FOC_config config_FOC = {
-	                                 .decoupling_select = linear_decoupling,
-	                                 .config_PMSM = config_PMSM,
-	                                 .config_id = config_id,
-	                                 .config_iq = config_iq};
-
-	               struct uz_pmsmModel_config_t pmsm_config={
-	                   .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
-	                   .ip_core_frequency_Hz=100000000,
-	                   .simulate_mechanical_system = true,
-	                   .r_1 = 0.085f,
-	                   .L_d = 3.00e-04f,
-	                   .L_q = 3.00e-04f,
-	                   .psi_pm = 0.0075f,
-	                   .polepairs = 4.0f,
-	                   .inertia = 3.24e-05f,
-	                   .coulomb_friction_constant = 0.01f,
-	                   .friction_coefficient = 0.001f};
-	               pmsm=uz_pmsmModel_init(pmsm_config);
-	               FOC_instance = uz_FOC_init(config_FOC);
-
-            Global_Data.objects.deadtime_interlock_d1 = uz_interlockDeadtime2L_staticAllocator_slotD1();
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1, true);
-            Global_Data.objects.pwm_d1 = initialize_pwm_2l_on_D1();
+            Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
+            Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
+            Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
+            Global_Data.objects.deadtime_interlock_d1_pin_18_to_23 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_18_to_23();
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
+            Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
+            Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
+            Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
+            Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);

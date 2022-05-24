@@ -1,0 +1,16 @@
+ --> Incremental_Encoder_src_IncEnc_V25_pac
+inc_enc_v25/IncEnc_V25/Counter --> Incremental_Encoder_src_Counter
+inc_enc_v25/IncEnc_V25/Counter_position --> Incremental_Encoder_src_Counter_position
+inc_enc_v25/IncEnc_V25/Counter_theta_ele --> Incremental_Encoder_src_Counter_theta_ele
+inc_enc_v25/IncEnc_V25/Direction --> Incremental_Encoder_src_Direction
+inc_enc_v25/IncEnc_V25/count_lines --> Incremental_Encoder_src_count_lines
+inc_enc_v25/IncEnc_V25/speed/OS_factor_logic/align_oversamples --> Incremental_Encoder_src_align_oversamples
+inc_enc_v25/IncEnc_V25/speed/OS_factor_logic/oversample_factor --> Incremental_Encoder_src_oversample_factor
+inc_enc_v25/IncEnc_V25/speed/OS_factor_logic --> Incremental_Encoder_src_OS_factor_logic
+inc_enc_v25/IncEnc_V25/speed/Average --> Incremental_Encoder_src_Average
+inc_enc_v25/IncEnc_V25/speed/calc_omega/invt_mult/HDL Reciprocal/HDL Reciprocal_core --> Incremental_Encoder_src_HDL_Reciprocal_core
+inc_enc_v25/IncEnc_V25/speed/calc_omega/invt_mult/HDL Reciprocal --> Incremental_Encoder_src_HDL_Reciprocal
+inc_enc_v25/IncEnc_V25/speed/calc_omega/invt_mult --> Incremental_Encoder_src_invt_mult
+inc_enc_v25/IncEnc_V25/speed/calc_omega --> Incremental_Encoder_src_calc_omega
+inc_enc_v25/IncEnc_V25/speed --> Incremental_Encoder_src_speed
+inc_enc_v25/IncEnc_V25 --> Incremental_Encoder_src_IncEnc_V25

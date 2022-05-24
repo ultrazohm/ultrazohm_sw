@@ -40,10 +40,13 @@ DS_Data Global_Data = {
     }
 };
 
-uz_vsd_fd_6ph vsd_fd;
-uz_vsd_opffd_asym6ph vsd_fd_V4;
+//fault detection:
 
+uz_vsd_opffd_asym6ph vsd_fd_V4;
 uz_FD uz_FD_V6;
+
+//single Index FD:
+uz_singleindex_faultdetection singleindex_FD;
 
 struct uz_movAverageFilter_config movAvF_config;
 uz_movAverageFilter_t* movAvFilter;
@@ -85,11 +88,11 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
 
-            uz_vsd_fd_6ph_init(&vsd_fd);
-            uz_vsd_opffd_asym6ph_init(&vsd_fd_V4);
 
+            uz_vsd_opffd_asym6ph_init(&vsd_fd_V4);
             uz_FD_init(&uz_FD_V6);
 
+            uz_singleindex_faultdetection_init(&singleindex_FD);
 
             movAvFilter = uz_movAverageFilter_init(movAvF_config);
 

@@ -33,10 +33,11 @@
 #include "../uz/uz_wavegen/uz_wavegen.h"
 #include "../uz/uz_math_constants.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
-#include "../Codegen/uz_vsd_fd_6ph.h"
+
 #include "../Codegen/uz_vsd_opffd_asym6ph.h"
 #include "../Codegen/uz_FD.h"
 #include "../Codegen/VSD_FD_6PH_V6_ert_rtw/VSD_FD_6PH_V6.h"
+#include "../Codegen/uz_singleindex_faultdetection.h"
 
 #include "../uz/uz_VSD_6ph_FD/uz_VSD6phFD.h"
 
@@ -84,15 +85,13 @@ uz_6phFD_indices R_FD = {0};
 uz_6phFD_indices R_FD_Filt = {0};
 uz_6phFD_indices R_FD_eval = {0};
 
-extern uz_vsd_fd_6ph vsd_fd;
 
 extern uz_vsd_opffd_asym6ph vsd_fd_V4;
-
 extern uz_FD uz_FD_V6;
 
-extern  RT_MODEL_VSD_FD_6PH_V6 uz_FD_V6_2;
+extern uz_singleindex_faultdetection singleindex_FD;
 
-extern RT_MODEL_VSD_FD_6PH_V6 uz_FD_V6_3;
+
 
 extern uz_movAverageFilter_t* movAvFilter;
 
@@ -160,32 +159,9 @@ void ISR_Control(void *data)
 
     //c-code-fault-detection
     R_FD = uz_vsd_opf_6ph_faultdetection(i_abxyz1z2);
-
     R_FD_Filt = uz_vsd_fd_hysteresis_filter(R_FD, 0.7, 1.3);
-
     R_FD_eval = uz_fsd_fd_evaluation(R_FD_Filt, 0.5);
 
-    //Using 6ph-VSD-Phase-Fault-Detection:
-
-    	//set inputs
-    vsd_fd.input.i_ab_xy_z1z2[0] = i_abxyz1z2.alpha;
-    vsd_fd.input.i_ab_xy_z1z2[1] = i_abxyz1z2.beta;
-    vsd_fd.input.i_ab_xy_z1z2[2] = i_abxyz1z2.x;
-    vsd_fd.input.i_ab_xy_z1z2[3] = i_abxyz1z2.y;
-    vsd_fd.input.i_ab_xy_z1z2[4] = i_abxyz1z2.z1;
-    vsd_fd.input.i_ab_xy_z1z2[5] = i_abxyz1z2.z2;
-    vsd_fd.input.HB_u = 0.2;
-    vsd_fd.input.HB_o = 0.2;
-
-
-    //run detection V3
-    uz_vsd_fd_6ph_step(&vsd_fd);
-
-    for(int i = 0; i<6; i++){
-    	vsd_output[i]=(float)vsd_fd.output.FD[i];
-    	vsd_output_filtered[i]=(float)vsd_fd.output.FD_filtered[i];
-
-    }
 
 //Version 4:
 
@@ -219,6 +195,17 @@ void ISR_Control(void *data)
     uz_FD_V6.input.HB_o = 0.2;
 
     uz_FD_step(&uz_FD_V6);
+
+//Single Index:
+
+
+    singleindex_FD.input.i_ab_xy_z1z2[0] = i_abxyz1z2.alpha;
+    singleindex_FD.input.i_ab_xy_z1z2[1] = i_abxyz1z2.beta;
+    singleindex_FD.input.i_ab_xy_z1z2[2] = i_abxyz1z2.x;
+    singleindex_FD.input.i_ab_xy_z1z2[3] = i_abxyz1z2.y;
+    singleindex_FD.input.HB_Wert = 2.0;
+
+    uz_singleindex_faultdetection_step(&singleindex_FD);
 
 
     //movAverageFilter:

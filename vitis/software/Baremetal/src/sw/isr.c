@@ -97,6 +97,9 @@ extern uz_movAverageFilter_t* movAvFilter;
 
 float filteredFDIndices[6] = {0};
 
+float testvalue = 0.0f;
+
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -196,8 +199,8 @@ void ISR_Control(void *data)
 
     uz_FD_step(&uz_FD_V6);
 
-//Single Index:
 
+//Single Index:
 
     singleindex_FD.input.i_ab_xy_z1z2[0] = i_abxyz1z2.alpha;
     singleindex_FD.input.i_ab_xy_z1z2[1] = i_abxyz1z2.beta;
@@ -211,7 +214,6 @@ void ISR_Control(void *data)
     //movAverageFilter:
 
     filteredFDIndices[0] = uz_movAverageFilter_sample(movAvFilter, vsd_output_hyst_V4[0]);
-
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();

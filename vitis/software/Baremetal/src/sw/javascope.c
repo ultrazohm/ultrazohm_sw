@@ -47,6 +47,8 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 
 extern float filteredFDIndices[6];
 
+extern float testvalue;
+
 int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
@@ -121,7 +123,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Testvalue_2] = &filteredFDIndices[1];
 	js_ch_observable[JSO_Testvalue_3] = &filteredFDIndices[2];
 	js_ch_observable[JSO_Testvalue_4] = &filteredFDIndices[3];
-	js_ch_observable[JSO_Testvalue_5] = &filteredFDIndices[4];
+	js_ch_observable[JSO_Testvalue_5] = &testvalue;
 
 
 

@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.4
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Tue May 24 13:16:51 2022
+ * C/C++ source code generated on : Tue May 24 14:21:41 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -83,8 +83,8 @@ void Single_Index_Fault_Detection_step(RT_MODEL_Single_Index_Fault_Det *const
    *  Sum: '<S5>/sum1'
    *  UnitDelay: '<S5>/Delay_x'
    */
-  rtY_Single_Index_Fault_Detectio->FD_filtered = 0.01961040665746687 * rtb_Ro +
-    0.00019607791866850665 * rtDW_Single_Index_Fault_Detecti->Delay_x_DSTATE;
+  rtY_Single_Index_Fault_Detectio->FD_filtered = 0.0099013168773229958 * rtb_Ro
+    + 9.900986831226771E-5 * rtDW_Single_Index_Fault_Detecti->Delay_x_DSTATE;
 
   /* Outport: '<Root>/FD_hyst' */
   rtY_Single_Index_Fault_Detectio->FD_hyst = rtb_Ro;
@@ -97,9 +97,8 @@ void Single_Index_Fault_Detection_step(RT_MODEL_Single_Index_Fault_Det *const
    *  Gain: '<S5>/B'
    *  Sum: '<S5>/A*x(k) + B*u(k)'
    */
-  rtDW_Single_Index_Fault_Detecti->Delay_x_DSTATE = 0.96077918668506634 *
-    rtDW_Single_Index_Fault_Detecti->Delay_x_DSTATE + 196.10406657466868 *
-    rtb_Ro;
+  rtDW_Single_Index_Fault_Detecti->Delay_x_DSTATE = 0.980197366245354 *
+    rtDW_Single_Index_Fault_Detecti->Delay_x_DSTATE + 198.0263375464599 * rtb_Ro;
 }
 
 /* Model initialize function */

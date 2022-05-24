@@ -22,7 +22,7 @@
 #include "../include/javascope.h"
 #include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
-#include "../include/encoder.h"
+#include "../include/encoder_v25.h"
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
@@ -30,7 +30,9 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-
+#include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../uz/uz_FOC/uz_FOC.h"
+#include "../uz/uz_SpeedControl/uz_speedcontrol.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -40,8 +42,80 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
+// external instances
+extern uz_FOC *FOC_instance;
+extern uz_SpeedControl_t *Speed_instance;
+extern uz_IIR_Filter_t *LPF1_instance;
+extern uz_IIR_Filter_t *LPF1_instance_2;
+extern uz_PI_Controller *PI_instance;
+extern uz_PI_Controller *PI_chart_instance;
+extern uz_PI_Controller *PI_angle_instance;
+extern uz_nn_t *uz_nn_instance;
+extern uz_matrix_t *input_instance;
+// measurement and reference
+struct uz_3ph_abc_t measurement_current = {0};
+struct uz_3ph_dq_t dq_measurement_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t dq_reference_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t pi_torque = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t dq_ref_Volts = {0};
+struct uz_DutyCycle_t output = {0};
+struct uz_3ph_abc_t uvw_ref = {0};
+float theta_offset = -0.50f;
+float V_dc_volts = 48.0f;
+float omega_el_rad_per_sec = 0.0f;
+float Kp_id = 4.11f;
+float Ki_id = 1500.0f;
+float Kp_iq = 4.11f;
+float Ki_iq = 1500.0f;
+float speed_Kp = 0.0207f; // 0.0207f
+float speed_Ki = 0.207f;
+float adc_scaling = 9.5f / 2.0f; // Refactoring actual ADC Values 19.05: durch 2, Ohmrichter umgelötet
 
-//==============================================================================================================================================================
+// speed control
+float n_ref_rpm = 50.0f;
+bool ext_clamping = false;
+float id_ref_Ampere = 0.0f; // no field weakening
+
+// position control
+float position_ref = 0.0f; // mm
+int pos_strich = 0;         // Striche 0-2000
+float pos_delta = 0;        // mm
+float position_abs = 0.0f;  // mm
+float omega_m_rad_per_sec = 0.0f;
+int globalposition = 0;
+int i_counter = 0; // software counter for reference signal
+struct uz_PMSM_t config_heidrive = {
+
+    .R_ph_Ohm = 0.543f,
+
+    .Ld_Henry = 0.00113f,
+
+    .Lq_Henry = 0.00142f,
+
+    .Psi_PM_Vs = 0.0169f,
+
+    .polePairs = 3.0f,
+
+    .J_kg_m_squared = 0.0000148f,
+
+    .I_max_Ampere = 10.8f
+
+};
+
+// nn testing
+float result[3];
+float expected_result[3] = {-211.8089f, -225.9524f, -241.1341f};
+float old_theta_pendulum=0.0f;
+float old_position=0.0f;
+float angle_derv=0.0f;
+float position_derv=0.0f;
+uint32_t action=0;
+
+bool use_pi_control = true;
+// Alternatively the sample function can output the UVW-values
+//  Function for calculating the Position
+
+//=============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
 // - triggered from PL
@@ -49,26 +123,142 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
+extern bool dqn_mutex;
+float sin_ref=0;
+uz_matrix_t *output_nn = NULL;
+
+enum dqn_chain
+{
+    dqn_active = 0,
+    limit_violation,
+	return_to_zero_position
+};
+enum dqn_chain chain = dqn_active;
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
+    // Read out all encoders
+    update_speed_and_position_of_encoder_on_D5_1_ip_v25(&Global_Data);
+    update_position_of_encoder_on_D5_2_ip_v25(&Global_Data);
+    update_angle_of_encoder_on_D5_3_ip_v25(&Global_Data);
+
+    // calculate position
+    globalposition = (int)Global_Data.av.position_pendulum;
+	// count reference signals
+	if (pos_strich - globalposition > 1500)
+	{
+		i_counter++;
+	}
+	else if (pos_strich - globalposition < -1500)
+	{
+		i_counter--;
+	}
+	position_abs = (i_counter + globalposition / (UZ_D5_POSINCREMENTAL_ENCODER_RESOLUTION * 4.0f)) * 5.0f;
+    pos_strich = (int)Global_Data.av.position_pendulum;
+    // calculate and transform observations for dqn
+    Global_Data.obs.dqn_chart_position=position_abs/1.0e3f;
+    // derivation angle and position with filtering and treshold
+    angle_derv=(Global_Data.av.theta_pendulum-old_theta_pendulum)/Global_Data.av.isr_samplerate_s; // rad/s
+    if (abs(angle_derv) > 1.0e2f)
+    {}
+    else
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+    	Global_Data.obs.dqn_angle_derv = uz_signals_IIR_Filter_sample(LPF1_instance, angle_derv);
     }
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+    old_theta_pendulum=Global_Data.av.theta_pendulum;
+    position_derv=((Global_Data.obs.dqn_chart_position-old_position)/Global_Data.av.isr_samplerate_s)/1.0e3f;
+    if (abs(position_derv) > 1.0e2f)
+    {}
+    else
+    {
+    	Global_Data.obs.dqn_chart_position_derv = uz_signals_IIR_Filter_sample(LPF1_instance, position_derv);
+    }
+
+    old_position=Global_Data.obs.dqn_chart_position;
+    Global_Data.obs.dqn_angle = Global_Data.av.theta_pendulum- M_PI;
+    Global_Data.obs.dqn_sin_angle=sin(Global_Data.obs.dqn_angle);
+    Global_Data.obs.dqn_cos_angle=cos(Global_Data.obs.dqn_angle);
+    // calculate data pmsm for foc
+    Global_Data.av.theta_elec = Global_Data.av.theta_elec * 3.0f - theta_offset;
+    Global_Data.av.theta_mech = Global_Data.av.theta_elec / 3.0f;
+    measurement_current.a = adc_scaling * (Global_Data.aa.A2.me.ADC_A2 - 2.5f); // -2.5  Hall Sensor
+    measurement_current.b = adc_scaling * (Global_Data.aa.A2.me.ADC_A4 - 2.5f);
+    measurement_current.c = adc_scaling * (Global_Data.aa.A2.me.ADC_A3 - 2.5f);
+    dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
+    omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;         // w_mech
+    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * 3.0f * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
+
+    platform_state_t current_state = ultrazohm_state_machine_get_state();
+    if (current_state == control_state)
+    {
+    	if (abs(position_abs) > 410){
+    		uz_assert(0);
+    	}
+    	// swtich case for switching between dqn, pos_control and error state
+    	switch (chain) {
+			case dqn_active:
+		        // get output from nn
+		    	if (abs(position_abs)> 350){
+		    		chain=limit_violation;
+		    	}
+		        if (dqn_mutex)
+		        {
+		            output_nn = uz_nn_get_output_data(uz_nn_instance);
+		            result[0] = uz_matrix_get_element_zero_based(output_nn, 0, 0);
+		            result[1] = uz_matrix_get_element_zero_based(output_nn, 0, 1);
+		            result[2] = uz_matrix_get_element_zero_based(output_nn, 0, 2);
+		            dqn_mutex = false;
+		            action = uz_matrix_get_max_index(output_nn);
+		            switch (action){
+		            case 0: dq_reference_current.q =4.8f;
+		            break;
+		            case 1:	dq_reference_current.q=0.0f;
+		            break;
+		            case 2: dq_reference_current.q=-4.8f;
+		            break;
+		            default: uz_assert(0);
+		            }
+		        }
+				break;
+			case limit_violation:
+				dq_reference_current.q=0.0f;
+				chain=return_to_zero_position;
+				break;
+			case return_to_zero_position:
+				n_ref_rpm = uz_PI_Controller_sample(PI_instance, position_ref, position_abs, ext_clamping);
+				dq_reference_current = uz_SpeedControl_sample(Speed_instance, omega_m_rad_per_sec, -n_ref_rpm, V_dc_volts, id_ref_Ampere);
+				if( abs(position_abs) < 5){
+					chain=dqn_active;
+				}
+				break;
+			default:
+				break;
+        }
+    	if (abs(position_abs) < 410)
+    	{
+        dq_ref_Volts = uz_FOC_sample(FOC_instance, dq_reference_current, dq_measurement_current, V_dc_volts, omega_el_rad_per_sec);
+        uvw_ref = uz_transformation_3ph_dq_to_abc(dq_ref_Volts, Global_Data.av.theta_elec);
+        output = uz_FOC_generate_DutyCycles(uvw_ref, V_dc_volts);
+        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
+        // change control parameters during runtime
+        uz_FOC_set_Kp_id(FOC_instance, Kp_id);
+        uz_FOC_set_Kp_iq(FOC_instance, Kp_iq);
+        uz_FOC_set_Ki_id(FOC_instance, Ki_id);
+        uz_FOC_set_Ki_iq(FOC_instance, Ki_iq);
+        uz_SpeedControl_set_Kp(Speed_instance, speed_Kp);
+        uz_SpeedControl_set_Ki(Speed_instance, speed_Ki);
+    	}
+    }
+    else
+    {
+        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+    }
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

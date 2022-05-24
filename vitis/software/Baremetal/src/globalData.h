@@ -67,7 +67,10 @@ typedef struct _actualValues_ {
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
+	float mechanicalRotorSpeed_filtered;// in rpm
+	float mechanicalRotorSpeed_filt1; // in rpm
+	float mechanicalRotorSpeed_filt2;  // in rpm
+	float mechanicalRotorSpeed_N8; // in rpm
 	float mechanicalPosition; 		// in m
 	float mechanicalTorque; 			// in Nm
 	float mechanicalTorqueSensitive; // in Nm
@@ -77,9 +80,12 @@ typedef struct _actualValues_ {
 	float U_d;
 	float U_q;
 	float theta_elec;
+	float theta_pendulum;
 	float theta_mech;
 	float theta_offset; //in rad/s
 	float temperature;
+	float position_motor;
+	float position_pendulum;
 	uint32_t  heartbeatframe_content;
 } actualValues;
 
@@ -110,11 +116,25 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 }object_pointers_t;
 
+typedef struct _motorrelatedparameters_ {
+	float incrementalEncoder_speed_timeout_in_ms;
+} motorrelatedparameters;
+
+typedef struct _dqn_observation_ {
+	float dqn_chart_position;
+    float dqn_angle_derv;
+    float dqn_angle;
+	float dqn_chart_position_derv;
+	float dqn_sin_angle;
+	float dqn_cos_angle;
+} dqn_observation;
 typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;
 	actualValues av;
 	AnalogAdapters aa;
 	object_pointers_t objects;
+	motorrelatedparameters mrp;
+	dqn_observation obs;
 } DS_Data;
 
 #endif

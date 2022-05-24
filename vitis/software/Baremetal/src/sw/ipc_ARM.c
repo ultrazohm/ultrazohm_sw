@@ -18,7 +18,16 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
+#include "../uz/uz_Transformation/uz_Transformation.h"
 
+extern float Kp_id;
+extern float Ki_id;
+extern float Kp_iq;
+extern float Ki_iq;
+extern float speed_Kp;
+extern float speed_Ki;
+extern float n_ref_rpm;
+extern float position_abs;
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
@@ -187,27 +196,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+				n_ref_rpm = value;
 			break;
 
 		case (Set_Send_Field_2):
-
+				position_abs = value*0.001;
 			break;
 
 		case (Set_Send_Field_3):
-
+				speed_Kp=value*0.001;
 			break;
 
 		case (Set_Send_Field_4):
-
+				speed_Ki=value*0.001;
 			break;
 
 		case (Set_Send_Field_5):
-
+				Kp_iq=value*0.001;
 			break;
 
 		case (Set_Send_Field_6):
-
+				Ki_iq=value*0.001;
 			break;
 
 		case (My_Button_1):
@@ -314,11 +323,5 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	/* Bit 11 - My_Button_8 */
 	// js_status_BareToRTOS &= ~(1 << 11);
 
-	/* Bit 12 - trigger ext. logging */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 12);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 12);
-	// }
 
 }

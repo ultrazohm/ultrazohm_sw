@@ -1,0 +1,5 @@
+V1: works in unstable resting position, can control disturbance forces
+V2: Not able to swing it up, drives into sw stop. Problem could be the friction/damping which is not implemented in the simulation model.
+V3: Trained agent with +-0.75 Nm, other behaviour for swing up pendulum, no friction implemented yet
+V3_5: 1.2Nm torque, damping in simulink model
+V4: 1.2Nm, damping, shorter distance for training

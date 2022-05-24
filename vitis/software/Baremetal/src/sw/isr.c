@@ -34,6 +34,12 @@
 #include "../uz/uz_math_constants.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 #include "../Codegen/uz_vsd_fd_6ph.h"
+#include "../Codegen/uz_vsd_opffd_asym6ph.h"
+#include "../Codegen/uz_FD.h"
+#include "../Codegen/VSD_FD_6PH_V6_ert_rtw/VSD_FD_6PH_V6.h"
+
+#include "../uz/uz_VSD_6ph_FD/uz_VSD6phFD.h"
+
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -49,19 +55,48 @@ extern DS_Data Global_Data;
 const float amplitude = 5.0f;
 const float frequency = 10.0f;	//Hz
 const float p1 = 0.0;
-const float p2 = 2*UZ_PIf/3;
-const float p3 = 4*UZ_PIf/3;
-const float p4 = UZ_PIf/6;
-const float p5 = 5*UZ_PIf/6;
-const float p6 = 9*UZ_PIf/6;
+const float p2 = -2*UZ_PIf/3;
+const float p3 = -4*UZ_PIf/3;
+const float p4 = -UZ_PIf/6;
+const float p5 = -5*UZ_PIf/6;
+const float p6 = -9*UZ_PIf/6;
 
 uz_6ph_abc_t i_6phase = {0};
 uz_6ph_alphabeta_t i_abxyz1z2 = {0};
 
+uz_6ph_abc_t i_6phase_2 = {0};
+
 float vsd_output[6] = {0};
 float vsd_output_filtered[6] = {0};
 
+float vsd_output_V4[6] = {0};
+float vsd_output_hyst_V4[6] = {0};
+float vsd_output_filtered_V4[6] = {0};
+
+float ph_a1 = 0.0f;
+float ph_b1 = 0.0f;
+float ph_c1 = 0.0f;
+float ph_a2 = 0.0f;
+float ph_b2 = 0.0f;
+float ph_c2 = 0.0f;
+
+uz_6phFD_indices R_FD = {0};
+uz_6phFD_indices R_FD_Filt = {0};
+uz_6phFD_indices R_FD_eval = {0};
+
 extern uz_vsd_fd_6ph vsd_fd;
+
+extern uz_vsd_opffd_asym6ph vsd_fd_V4;
+
+extern uz_FD uz_FD_V6;
+
+extern  RT_MODEL_VSD_FD_6PH_V6 uz_FD_V6_2;
+
+extern RT_MODEL_VSD_FD_6PH_V6 uz_FD_V6_3;
+
+extern uz_movAverageFilter_t* movAvFilter;
+
+float filteredFDIndices[6] = {0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -79,6 +114,7 @@ void ISR_Control(void *data)
 
 
     //six-sine signals to emulate a 6-phase system
+
     i_6phase.a1 = uz_wavegen_sine(amplitude, frequency, p1);
     i_6phase.b1 = uz_wavegen_sine(amplitude, frequency, p2);
     i_6phase.c1 = uz_wavegen_sine(amplitude, frequency, p3);
@@ -86,24 +122,109 @@ void ISR_Control(void *data)
     i_6phase.b2 = uz_wavegen_sine(amplitude, frequency, p5);
     i_6phase.c2 = uz_wavegen_sine(amplitude, frequency, p6);
 
+/*
+    i_6phase.a1 = 10.0f;
+    i_6phase.b1 = 0.0f;
+    i_6phase.c1 = 0.0f;
+    i_6phase.a2 = 0.0f;
+    i_6phase.b2 = 0.0f;
+    i_6phase.c2 = 0.0f;
+*/
+    //Open Phase Fault generation:
+
+    if (ph_a1 != 0){
+    	i_6phase.a1 = 0.0f;
+    }
+    if (ph_b1 != 0){
+    	i_6phase.b1 = 0.0f;
+    }
+    if (ph_c1 != 0){
+    	i_6phase.c1 = 0.0f;
+    }
+    if (ph_a2 != 0){
+    	i_6phase.a2 = 0.0f;
+    }
+    if (ph_b2 != 0){
+    	i_6phase.b2 = 0.0f;
+    }
+    if (ph_c2 != 0){
+    	i_6phase.c2 = 0.0f;
+    }
+
     //Transform from abc to alpha-beta-x-y-z1-z2-System
     i_abxyz1z2 = uz_transformation_asym30deg_6ph_abc_to_alphabeta(i_6phase);
 
+    //for test:
+    i_6phase_2 = uz_transformation_asym30deg_6ph_alphabeta_to_abc(i_abxyz1z2);
 
+
+    //c-code-fault-detection
+    R_FD = uz_vsd_opf_6ph_faultdetection(i_abxyz1z2);
+
+    R_FD_Filt = uz_vsd_fd_hysteresis_filter(R_FD, 0.7, 1.3);
+
+    R_FD_eval = uz_fsd_fd_evaluation(R_FD_Filt, 0.5);
 
     //Using 6ph-VSD-Phase-Fault-Detection:
 
     	//set inputs
-    vsd_fd.input.i_ab_xy_z1z2 = i_6phase;
+    vsd_fd.input.i_ab_xy_z1z2[0] = i_abxyz1z2.alpha;
+    vsd_fd.input.i_ab_xy_z1z2[1] = i_abxyz1z2.beta;
+    vsd_fd.input.i_ab_xy_z1z2[2] = i_abxyz1z2.x;
+    vsd_fd.input.i_ab_xy_z1z2[3] = i_abxyz1z2.y;
+    vsd_fd.input.i_ab_xy_z1z2[4] = i_abxyz1z2.z1;
+    vsd_fd.input.i_ab_xy_z1z2[5] = i_abxyz1z2.z2;
     vsd_fd.input.HB_u = 0.2;
     vsd_fd.input.HB_o = 0.2;
 
-    	//run detection
-    uz_vsd_fd_6ph_V2_step(vsd_fd);
 
-    	//read outputs
-    vsd_output_filtered = vsd_fd.output.FD_filtered;
-    vsd_output = vsd_fd.FD;
+    //run detection V3
+    uz_vsd_fd_6ph_step(&vsd_fd);
+
+    for(int i = 0; i<6; i++){
+    	vsd_output[i]=(float)vsd_fd.output.FD[i];
+    	vsd_output_filtered[i]=(float)vsd_fd.output.FD_filtered[i];
+
+    }
+
+//Version 4:
+
+	//set inputs
+    vsd_fd_V4.input.i_ab_xy_z1z2[0] = i_abxyz1z2.alpha;
+    vsd_fd_V4.input.i_ab_xy_z1z2[1] = i_abxyz1z2.beta;
+    vsd_fd_V4.input.i_ab_xy_z1z2[2] = i_abxyz1z2.x;
+    vsd_fd_V4.input.i_ab_xy_z1z2[3] = i_abxyz1z2.y;
+    vsd_fd_V4.input.i_ab_xy_z1z2[4] = i_abxyz1z2.z1;
+    vsd_fd_V4.input.i_ab_xy_z1z2[5] = i_abxyz1z2.z2;
+    vsd_fd_V4.input.HB_u = 0.2;
+    vsd_fd_V4.input.HB_o = 0.2;
+
+    //run detection V4
+    uz_vsd_opffd_asym6ph_step(&vsd_fd_V4);
+    for(int i = 0; i<6; i++){
+        vsd_output_V4[i] = (float)vsd_fd_V4.output.FD_raw[i];
+        vsd_output_hyst_V4[i] = (float)vsd_fd_V4.output.FD_hyst[i];
+        vsd_output_filtered_V4[i] = (float)vsd_fd_V4.output.FD_filtered[i];
+    }
+
+//Version 6:
+
+    uz_FD_V6.input.i_ab_xy_z1z2[0] = i_abxyz1z2.alpha;
+    uz_FD_V6.input.i_ab_xy_z1z2[1] = i_abxyz1z2.beta;
+    uz_FD_V6.input.i_ab_xy_z1z2[2] = i_abxyz1z2.x;
+    uz_FD_V6.input.i_ab_xy_z1z2[3] = i_abxyz1z2.y;
+    uz_FD_V6.input.i_ab_xy_z1z2[4] = i_abxyz1z2.z1;
+    uz_FD_V6.input.i_ab_xy_z1z2[5] = i_abxyz1z2.z2;
+    uz_FD_V6.input.HB_u = 0.2;
+    uz_FD_V6.input.HB_o = 0.2;
+
+    uz_FD_step(&uz_FD_V6);
+
+
+    //movAverageFilter:
+
+    filteredFDIndices[0] = uz_movAverageFilter_sample(movAvFilter, vsd_output_hyst_V4[0]);
+
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();

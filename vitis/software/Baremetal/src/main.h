@@ -55,6 +55,11 @@
 #include "include/pwm_init.h"
 
 #include "Codegen/uz_vsd_fd_6ph.h"
+#include "Codegen/uz_vsd_opffd_asym6ph.h"
+#include "Codegen/uz_FD.h"
+
+#include "uz/uz_movAverageFilter/uz_movAverageFilter.h"
+
 
 
 //----------------------------------------------------

@@ -22,6 +22,14 @@
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
+extern float ph_a1;
+extern float ph_b1;
+extern float ph_c1;
+extern float ph_a2;
+extern float ph_b2;
+extern float ph_c2;
+
+
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 
@@ -187,27 +195,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+			ph_a1 = value;
 			break;
 
 		case (Set_Send_Field_2):
-
+			ph_b1 = value;
 			break;
 
 		case (Set_Send_Field_3):
-
+			ph_c1 = value;
 			break;
 
 		case (Set_Send_Field_4):
-
+			ph_a2 = value;
 			break;
 
 		case (Set_Send_Field_5):
-
+			ph_b2 = value;
 			break;
 
 		case (Set_Send_Field_6):
-
+			ph_c2 = value;
 			break;
 
 		case (My_Button_1):

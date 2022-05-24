@@ -72,6 +72,17 @@ enum JS_OberservableData {
 	JSO_FD_Filtered_a2,
 	JSO_FD_Filtered_b2,
 	JSO_FD_Filtered_c2,
+	JSO_i2_a1,
+	JSO_i2_b1,
+	JSO_i2_c1,
+	JSO_i2_a2,
+	JSO_i2_b2,
+	JSO_i2_c2,
+	JSO_Testvalue_1,
+	JSO_Testvalue_2,
+	JSO_Testvalue_3,
+	JSO_Testvalue_4,
+	JSO_Testvalue_5,
 	JSO_ENDMARKER
 };
 

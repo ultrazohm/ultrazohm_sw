@@ -41,6 +41,12 @@ DS_Data Global_Data = {
 };
 
 uz_vsd_fd_6ph vsd_fd;
+uz_vsd_opffd_asym6ph vsd_fd_V4;
+
+uz_FD uz_FD_V6;
+
+struct uz_movAverageFilter_config movAvF_config;
+uz_movAverageFilter_t* movAvFilter;
 
 enum init_chain
 {
@@ -56,6 +62,10 @@ enum init_chain initialization_chain = init_assertions;
 
 int main(void)
 {
+
+	movAvF_config.filterLength = 100;
+
+
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -76,6 +86,12 @@ int main(void)
             JavaScope_initalize(&Global_Data);
 
             uz_vsd_fd_6ph_init(&vsd_fd);
+            uz_vsd_opffd_asym6ph_init(&vsd_fd_V4);
+
+            uz_FD_init(&uz_FD_V6);
+
+
+            movAvFilter = uz_movAverageFilter_init(movAvF_config);
 
             initialization_chain = init_ip_cores;
             break;

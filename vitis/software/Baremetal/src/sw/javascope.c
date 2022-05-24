@@ -37,6 +37,7 @@ uint32_t js_status_BareToRTOS=0;
 
 extern uz_6ph_abc_t i_6phase;
 extern uz_6ph_alphabeta_t i_abxyz1z2;
+extern uz_6ph_abc_t i_6phase_2;
 
 extern float vsd_output[6];
 extern float vsd_output_filtered[6];
@@ -44,6 +45,7 @@ extern float vsd_output_filtered[6];
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
+extern float filteredFDIndices[6];
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -107,6 +109,19 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_FD_Filtered_a2] = &vsd_output_filtered[3];
 	js_ch_observable[JSO_FD_Filtered_b2] = &vsd_output_filtered[4];
 	js_ch_observable[JSO_FD_Filtered_c2] = &vsd_output_filtered[5];
+
+	js_ch_observable[JSO_i2_a1] = &i_6phase_2.a1;
+	js_ch_observable[JSO_i2_b1] = &i_6phase_2.b1;
+	js_ch_observable[JSO_i2_c1] = &i_6phase_2.c1;
+	js_ch_observable[JSO_i2_a2] = &i_6phase_2.a2;
+	js_ch_observable[JSO_i2_b2] = &i_6phase_2.b2;
+	js_ch_observable[JSO_i2_c2] = &i_6phase_2.c2;
+
+	js_ch_observable[JSO_Testvalue_1] = &filteredFDIndices[0];
+	js_ch_observable[JSO_Testvalue_2] = &filteredFDIndices[1];
+	js_ch_observable[JSO_Testvalue_3] = &filteredFDIndices[2];
+	js_ch_observable[JSO_Testvalue_4] = &filteredFDIndices[3];
+	js_ch_observable[JSO_Testvalue_5] = &filteredFDIndices[4];
 
 
 

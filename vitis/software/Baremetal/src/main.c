@@ -51,11 +51,55 @@ uz_singleindex_faultdetection singleindex_FD;
 struct uz_movAverageFilter_config movAvF_config;
 uz_movAverageFilter_t* movAvFilter;
 
+
+//parameter for FOC
+
+struct uz_FOC* FOC_instance;
+
+const struct uz_PMSM_t config_PMSM = {
+   .Ld_Henry = 0.0001f,			//Richtige Parameter für den Motor einfügen
+   .Lq_Henry = 0.0002f,
+   .Psi_PM_Vs = 0.008f,
+   .R_ph_Ohm = 0.0f,
+   .polePairs = 4.0f,
+   .J_kg_m_squared = 0.0f,
+   .I_max_Ampere = 10.0f
+};
+
+
+
+const struct uz_PI_Controller_config config_id = {
+	.Kp = 10.0f,
+	.Ki = 10.0f,
+	.samplingTime_sec = 0.00005f,
+	.upper_limit = 10.0f,
+	.lower_limit = -10.0f
+};
+
+
+const struct uz_PI_Controller_config config_iq = {
+	.Kp = 10.0f,
+	.Ki = 10.0f,
+	.samplingTime_sec = 0.00005f,
+	.upper_limit = 10.0f,
+	.lower_limit = -10.0f
+};
+
+struct uz_FOC_config config_FOC = {
+   .decoupling_select = no_decoupling,
+   .config_PMSM = config_PMSM,
+   .config_id = config_id,
+   .config_iq = config_iq
+};
+
+
 enum init_chain
 {
     init_assertions = 0,
     init_gpios,
     init_software,
+	init_FD,
+	init_FOC,
     init_ip_cores,
     print_msg,
     init_interrupts,
@@ -87,14 +131,20 @@ int main(void)
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
-
+            initialization_chain = init_FD;
+            break;
+        case init_FD:
 
             uz_vsd_opffd_asym6ph_init(&vsd_fd_V4);
             uz_FD_init(&uz_FD_V6);
-
             uz_singleindex_faultdetection_init(&singleindex_FD);
-
             movAvFilter = uz_movAverageFilter_init(movAvF_config);
+
+            initialization_chain = init_FOC;
+            break;
+        case init_FOC:
+
+        	FOC_instance = uz_FOC_init(config_FOC);
 
             initialization_chain = init_ip_cores;
             break;

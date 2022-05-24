@@ -29,6 +29,8 @@ extern float ph_a2;
 extern float ph_b2;
 extern float ph_c2;
 
+extern DS_Data Global_Data;
+
 
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
@@ -195,11 +197,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-			ph_a1 = value;
+			Global_Data.av.I_d_ref = value;
 			break;
 
 		case (Set_Send_Field_2):
-			ph_b1 = value;
+			Global_Data.av.I_q_ref = value;
 			break;
 
 		case (Set_Send_Field_3):

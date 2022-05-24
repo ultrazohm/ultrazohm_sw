@@ -60,6 +60,8 @@
 
 #include "uz/uz_movAverageFilter/uz_movAverageFilter.h"
 
+#include "uz/uz_FOC/uz_FOC.h"
+
 
 
 

@@ -86,18 +86,31 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 
-	js_ch_observable[JSO_i_a1] = &i_6phase.a1;
-	js_ch_observable[JSO_i_b1] = &i_6phase.b1;
-	js_ch_observable[JSO_i_c1] = &i_6phase.c1;
-	js_ch_observable[JSO_i_a2] = &i_6phase.a2;
-	js_ch_observable[JSO_i_b2] = &i_6phase.b2;
-	js_ch_observable[JSO_i_c2] = &i_6phase.c2;
-	js_ch_observable[JSO_i_alpha] = &i_abxyz1z2.alpha;
-	js_ch_observable[JSO_i_beta] = &i_abxyz1z2.beta;
-	js_ch_observable[JSO_i_x] = &i_abxyz1z2.x;
-	js_ch_observable[JSO_i_y] = &i_abxyz1z2.y;
-	js_ch_observable[JSO_i_z1] = &i_abxyz1z2.z1;
-	js_ch_observable[JSO_i_z2] = &i_abxyz1z2.z2;
+	js_ch_observable[JSO_i_a1] = &data->av.I_U;
+	js_ch_observable[JSO_i_b1] = &data->av.I_V;
+	js_ch_observable[JSO_i_c1] = &data->av.I_W;
+	js_ch_observable[JSO_i_a2] = &data->av.I_X;
+	js_ch_observable[JSO_i_b2] = &data->av.I_Y;
+	js_ch_observable[JSO_i_c2] = &data->av.I_Z;
+	js_ch_observable[JSO_i_alpha] = &data->av.I_alpha;
+	js_ch_observable[JSO_i_beta] = &data->av.I_beta;
+	js_ch_observable[JSO_i_x] = &data->av.I_x;
+	js_ch_observable[JSO_i_y] = &data->av.I_y;
+	js_ch_observable[JSO_i_z1] = &data->av.I_z1;
+	js_ch_observable[JSO_i_z2] = &data->av.I_z2;
+
+	js_ch_observable[JSO_i_2_a1] = &i_6phase.a1;
+	js_ch_observable[JSO_i_2_b1] = &i_6phase.b1;
+	js_ch_observable[JSO_i_2_c1] = &i_6phase.c1;
+	js_ch_observable[JSO_i_2_a2] = &i_6phase.a2;
+	js_ch_observable[JSO_i_2_b2] = &i_6phase.b2;
+	js_ch_observable[JSO_i_2_c2] = &i_6phase.c2;
+	js_ch_observable[JSO_i_2_alpha] = &i_abxyz1z2.alpha;
+	js_ch_observable[JSO_i_2_beta] = &i_abxyz1z2.beta;
+	js_ch_observable[JSO_i_2_x] = &i_abxyz1z2.x;
+	js_ch_observable[JSO_i_2_y] = &i_abxyz1z2.y;
+	js_ch_observable[JSO_i_2_z1] = &i_abxyz1z2.z1;
+	js_ch_observable[JSO_i_2_z2] = &i_abxyz1z2.z2;
 
 	js_ch_observable[JSO_FD_a1] = &vsd_output[0];
 	js_ch_observable[JSO_FD_b1] = &vsd_output[1];
@@ -111,13 +124,6 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_FD_Filtered_a2] = &vsd_output_filtered[3];
 	js_ch_observable[JSO_FD_Filtered_b2] = &vsd_output_filtered[4];
 	js_ch_observable[JSO_FD_Filtered_c2] = &vsd_output_filtered[5];
-
-	js_ch_observable[JSO_i2_a1] = &i_6phase_2.a1;
-	js_ch_observable[JSO_i2_b1] = &i_6phase_2.b1;
-	js_ch_observable[JSO_i2_c1] = &i_6phase_2.c1;
-	js_ch_observable[JSO_i2_a2] = &i_6phase_2.a2;
-	js_ch_observable[JSO_i2_b2] = &i_6phase_2.b2;
-	js_ch_observable[JSO_i2_c2] = &i_6phase_2.c2;
 
 	js_ch_observable[JSO_Testvalue_1] = &filteredFDIndices[0];
 	js_ch_observable[JSO_Testvalue_2] = &filteredFDIndices[1];

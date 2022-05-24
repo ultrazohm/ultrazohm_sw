@@ -40,6 +40,7 @@
 #include "../Codegen/uz_singleindex_faultdetection.h"
 
 #include "../uz/uz_VSD_6ph_FD/uz_VSD6phFD.h"
+#include "../uz/uz_FOC/uz_FOC.h"
 
 
 // Initialize the Interrupt structure
@@ -99,6 +100,39 @@ float filteredFDIndices[6] = {0};
 
 float testvalue = 0.0f;
 
+
+//parameters for 6ph FOC:
+
+extern uz_FOC* FOC_instance;
+extern struct uz_FOC_config config_FOC;
+extern struct uz_PMSM_t config_PMSM;
+
+uz_6ph_abc_t m_6ph_abc_currents = {0};
+uz_6ph_alphabeta_t m_6ph_alphabeta_currents = {0};
+
+uz_3ph_alphabeta_t m_alphabeta_currents = {0};
+uz_3ph_dq_t m_dq_currents = {0};
+
+uz_3ph_alphabeta_t ref_alphabeta_voltage = {0};
+uz_3ph_dq_t ref_dq_voltage = {0};
+
+uz_6ph_abc_t ref_6ph_abc_voltage = {0};
+uz_6ph_alphabeta_t ref_6ph_alphabeta_voltage = {0};
+
+uz_3ph_abc_t ref_volage_phase_set1 = {0};
+uz_3ph_abc_t ref_volage_phase_set2 = {0};
+
+uz_3ph_dq_t ref_dq0_currents = {0};
+
+struct uz_DutyCycle_t dutyCycles_set1 = {0};
+struct uz_DutyCycle_t dutyCycles_set2 = {0};
+
+float adc_offset = 0.0f;
+float adc_factor = 1.0f;
+
+float theta_el_offset = 0.0f;
+
+float omega_el_rad_per_sec = 0.0f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -216,10 +250,93 @@ void ISR_Control(void *data)
     filteredFDIndices[0] = uz_movAverageFilter_sample(movAvFilter, vsd_output_hyst_V4[0]);
 
 
+    //for FOC:
+
+	//Read the phase-currents
+	m_6ph_abc_currents.a1 = (Global_Data.aa.A2.me.ADC_A1 + adc_offset) * adc_factor;
+	m_6ph_abc_currents.b1 = (Global_Data.aa.A2.me.ADC_A2 + adc_offset) * adc_factor;
+	m_6ph_abc_currents.c1 = (Global_Data.aa.A2.me.ADC_A3 + adc_offset) * adc_factor;
+	m_6ph_abc_currents.a2 = (Global_Data.aa.A2.me.ADC_A4 + adc_offset) * adc_factor;
+	m_6ph_abc_currents.b2 = (Global_Data.aa.A2.me.ADC_B5 + adc_offset) * adc_factor;
+	m_6ph_abc_currents.c2 = (Global_Data.aa.A2.me.ADC_B6 + adc_offset) * adc_factor;
+
+	//write phase currents into global_data-struct
+	Global_Data.av.I_U = m_6ph_abc_currents.a1;
+	Global_Data.av.I_V = m_6ph_abc_currents.b1;
+	Global_Data.av.I_W = m_6ph_abc_currents.c1;
+	Global_Data.av.I_X = m_6ph_abc_currents.a2;
+	Global_Data.av.I_Y = m_6ph_abc_currents.b2;
+	Global_Data.av.I_Z = m_6ph_abc_currents.c2;
+
+	//Transform phase-currents to alpha-beta-x-y-z1-z2
+	m_6ph_alphabeta_currents = uz_transformation_asym30deg_6ph_abc_to_alphabeta(m_6ph_abc_currents);
+
+	Global_Data.av.I_alpha = m_6ph_alphabeta_currents.alpha;
+	Global_Data.av.I_beta = m_6ph_alphabeta_currents.beta;
+	Global_Data.av.I_x = m_6ph_alphabeta_currents.x;
+	Global_Data.av.I_y = m_6ph_alphabeta_currents.y;
+	Global_Data.av.I_z1 = m_6ph_alphabeta_currents.z1;
+	Global_Data.av.I_z2 = m_6ph_alphabeta_currents.z2;
+
+	//calculate meassurec dq-currents
+	m_alphabeta_currents.alpha = m_6ph_alphabeta_currents.alpha;
+	m_alphabeta_currents.beta = m_6ph_alphabeta_currents.beta;
+	m_dq_currents = uz_transformation_3ph_alphabeta_to_dq(m_alphabeta_currents, Global_Data.av.theta_elec + theta_el_offset);
+
+	Global_Data.av.I_d = m_dq_currents.d;
+	Global_Data.av.I_q = m_dq_currents.q;
+
+	//
+	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*config_FOC.config_PMSM.polePairs*2.0f*M_PI/60;
+	ref_dq0_currents.d = Global_Data.av.I_d_ref;
+	ref_dq0_currents.q = Global_Data.av.I_q_ref;
+
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+
+
+    	//6-Phase-FOC:
+
+    	//Control
+    		//FOC_instance
+    	ref_dq_voltage = uz_FOC_sample(FOC_instance, ref_dq0_currents, m_dq_currents, Global_Data.av.U_ZK, omega_el_rad_per_sec);
+
+    	//Transform back to phase-values:
+    	ref_alphabeta_voltage = uz_transformation_3ph_dq_to_alphabeta(ref_dq_voltage, Global_Data.av.theta_elec + theta_el_offset);
+
+    	ref_6ph_alphabeta_voltage.alpha = ref_alphabeta_voltage.alpha;
+    	ref_6ph_alphabeta_voltage.beta = ref_alphabeta_voltage.beta;
+    	ref_6ph_alphabeta_voltage.x = 0.0f;
+    	ref_6ph_alphabeta_voltage.y = 0.0f;
+    	ref_6ph_alphabeta_voltage.z1 = 0.0f;
+    	ref_6ph_alphabeta_voltage.z2 = 0.0f;
+
+    	ref_6ph_abc_voltage = uz_transformation_asym30deg_6ph_alphabeta_to_abc(ref_6ph_alphabeta_voltage);
+
+    	//calculate duty-cycles:
+    	ref_volage_phase_set1.a = ref_6ph_abc_voltage.a1;
+		ref_volage_phase_set1.b = ref_6ph_abc_voltage.b1;
+		ref_volage_phase_set1.c = ref_6ph_abc_voltage.c1;
+		ref_volage_phase_set2.a = ref_6ph_abc_voltage.a2;
+		ref_volage_phase_set2.b = ref_6ph_abc_voltage.b2;
+		ref_volage_phase_set2.c = ref_6ph_abc_voltage.c2;
+
+		dutyCycles_set1 = uz_FOC_generate_DutyCycles(ref_volage_phase_set1, Global_Data.av.U_ZK);
+    	dutyCycles_set2 = uz_FOC_generate_DutyCycles(ref_volage_phase_set2, Global_Data.av.U_ZK);
+
+    	//write duty-cycles
+    	Global_Data.rasv.halfBridge1DutyCycle = dutyCycles_set1.DutyCycle_U;
+    	Global_Data.rasv.halfBridge2DutyCycle = dutyCycles_set1.DutyCycle_V;
+    	Global_Data.rasv.halfBridge3DutyCycle = dutyCycles_set1.DutyCycle_W;
+    	Global_Data.rasv.halfBridge4DutyCycle = dutyCycles_set2.DutyCycle_U;
+    	Global_Data.rasv.halfBridge5DutyCycle = dutyCycles_set2.DutyCycle_V;
+    	Global_Data.rasv.halfBridge6DutyCycle = dutyCycles_set2.DutyCycle_W;
+
+
+
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

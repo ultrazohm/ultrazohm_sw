@@ -150,12 +150,12 @@ In the ``javascope.c`` the measurement values from ``ActualValues`` struct shoul
   int JavaScope_initalize(DS_Data* data) {
      ....
      js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_ia] = &ParaID_Data.ActualValues.I_UVW.U;
-	js_ch_observable[JSO_ib] = &ParaID_Data.ActualValues.I_UVW.V;
-	js_ch_observable[JSO_ic] = &ParaID_Data.ActualValues.I_UVW.W;
-	js_ch_observable[JSO_ua] = &ParaID_Data.ActualValues.V_UVW.U;
-	js_ch_observable[JSO_ub] = &ParaID_Data.ActualValues.V_UVW.V;
-	js_ch_observable[JSO_uc] = &ParaID_Data.ActualValues.V_UVW.W;
+	js_ch_observable[JSO_ia] = &ParaID_Data.ActualValues.I_abc.a;
+	js_ch_observable[JSO_ib] = &ParaID_Data.ActualValues.I_abc.b;
+	js_ch_observable[JSO_ic] = &ParaID_Data.ActualValues.I_abc.c;
+	js_ch_observable[JSO_ua] = &ParaID_Data.ActualValues.V_abc.a;
+	js_ch_observable[JSO_ub] = &ParaID_Data.ActualValues.V_abc.b;
+	js_ch_observable[JSO_uc] = &ParaID_Data.ActualValues.V_abc.c;
 	js_ch_observable[JSO_iq] = &ParaID_Data.ActualValues.i_dq.q;
 	js_ch_observable[JSO_id] = &ParaID_Data.ActualValues.i_dq.d;
 	js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;

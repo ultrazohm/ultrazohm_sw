@@ -88,8 +88,8 @@ Setup
             ParaID_Disable_FrictionID,
             ParaID_Enable_TwoMassID,
             ParaID_Disable_TwoMassID,
-            ParaID_Enable_FluxMaParaID,
-            ParaID_Disable_FluxMaParaID,
+            ParaID_Enable_FluxMapID,
+            ParaID_Disable_FluxMapID,
             ParaID_Enable_OnlineID,
             ParaID_Disable_OnlineID,
             ParaID_Enable_Current_Control,
@@ -352,6 +352,7 @@ Setup
                     ParaID_Data.GlobalConfig.OnlineID = false;
                     ParaID_Data.AutoRefCurrents_Config.enableCRS = false;
                     ParaID_Data.ParaID_Control_Selection = No_Control;
+                    ParaID_Data.ElectricalID_Config.identLq = false;
                     break;
 
                 case (ParaID_EID_sampleTimeISR):

@@ -4,7 +4,12 @@
 uz_dac_spi_interface
 ====================
 
-The uz_dac_interface IP-Core takes input values for the :ref:`uz_dac8831_pcb` from the processor by AXI and writes them to the adapter card.
+The uz_dac_interface IP-Core takes input values for the :ref:`uz_dac8831_pcb` DAC adapter card from the processor by AXI and writes them to the adapter card.
+The IP-Core is designed for simplicity.
+One AXI register for each DAC and a trigger conversion register is present.
+On a rising edge on the trigger conversion register (only possible by AXI), all values are written to all DACs.
+The SPI clk frequency can not be changed during runtime and is hard-coded to :math:`f_{SPI}=0.5 \cdot f_{IP-Core}`.
+The software driver features a conversion factor for each of the DAC channels to account for different gains in the OpAMP circuit of the card.
 
 Software interface
 ==================
@@ -62,6 +67,7 @@ IP-Core interface (Vivado)
 
 The FPGA interface of the IP-Core is a single signal while the :ref:`uz_dac8831_pcb` PCB expects LVDS signals.
 Therefore, additional ``Utility Buffers`` (with ``C Buf Type`` set to ``OBUFDS``) have to be added to the Vivado block design between the output ports and the ``uz_dac_spi_interface`` IP-Core.
+Constraints for using the DAC card :ref:`uz_dac8831_pcb` in the slot A3 are supplied in the constraints folder (``uz_dac8831_A3.xdc``).
 The SPI clk frequency of the IP-Core output is always half of the ``IP_CORE_CLK``.
 The IP-Core is only tested with ``IPCORE_CLK`` and ``AXI_ACLK`` connected to 100 MHz clock!
 
@@ -89,3 +95,7 @@ The IP-Core is only tested with ``IPCORE_CLK`` and ``AXI_ACLK`` connected to 100
     :header-rows: 1
 
 
+References
+==========
+
+* Data sheet of DAC8831: https://www.ti.com/lit/ds/slas449d/slas449d.pdf?ts=1653291212982

@@ -33,6 +33,37 @@ This setup enables HIL testing including the whole signal chain of the ADC.
 
    Typical application of the DAC card in loopback operation with :ref:`Analog_LTC2311_16`.
 
+
+Measurements
+============
+
+The following measurements are conducted using the loopback configuration of :numref:`dac_adc_loopback` and the :ref:`uz_dac_ip_interface` IP-Core.
+The software writes the values for the DAC output from the :ref:`wave_generator` to the IP-Core in each ISR while the ADC reads the values.
+Therefore, a delay between write to the DAC and the measurement of the ADC of one interrupt sample time is present.
+Additionally, the ADC always measures the signal of the DAC after the settling time has passed due to the timing of the system.
+Thus, the overshoot and settling of the DAC output is not present in the measurement logs in loopback operation.
+
+Note that the DAC card features the possibility to have negative headroom for the differential OpAMP (THS) with a dedicated negative rail.
+This negative rail was measured with :math:`-180mV`, increasing the value of the negative rail would increase the negative headroom and increase the linear operation range.
+The positive :math:`5 V` rail was set to :math:`5 V`, increasing the positive rail would lead to improved linearity in the positive range.
+Both voltages were determined by available resistor values for the rails of the prototype.
+
+.. figure:: all_8_5._sin.png
+   :width: 700
+
+   All DAC output the same sine wave. Due to tolerances in resistor values in the opamp circuit, the amplitudes do not fully match. Additionally, the opamp does not have sufficient headroom and values above :math:`4.7 V` and below :math:`4.75 V` can not be achieved.
+
+.. figure:: all_8_5.png
+   :width: 700
+
+   All DAC output the same triangle wave. Due to tolerances in resistor values in the opamp circuit, the amplitudes do not fully match. Additionally, the opamp does not have sufficient headroom and values above :math:`4.7 V` and below :math:`4.75 V` can not be achieved.
+
+.. figure:: all8_different_signals.png
+   :width: 700
+
+   Different waveforms of :ref:`wave_generator` measured in DAC-ADC loopback configuration
+
+
 Pinout
 ======
 
@@ -49,6 +80,7 @@ References
 ==========
 
 * :download:`Schematic <SCH_UZ_A_DAC_THS_Rev01.pdf>`
+* `Repository with Altium project <https://bitbucket.org/ultrazohm/uz_a_dac8831/>`_
 * Data sheet of DAC8831: https://www.ti.com/lit/ds/slas449d/slas449d.pdf?ts=1653291212982
 
 Designed by 

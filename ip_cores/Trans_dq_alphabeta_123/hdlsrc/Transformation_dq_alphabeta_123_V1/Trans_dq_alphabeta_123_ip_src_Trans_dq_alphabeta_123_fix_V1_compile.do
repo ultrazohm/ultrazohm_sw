@@ -1,0 +1,4 @@
+vlib work
+vcom  Trans_dq_alphabeta_123_ip_src_Trans_dq_alphabeta_123_fix_V1_pkg.vhd
+vcom  Trans_dq_alphabeta_123_ip_src_Cosine.vhd
+vcom  Trans_dq_alphabeta_123_ip_src_Trans_dq_alphabeta_123_fix_V1.vhd

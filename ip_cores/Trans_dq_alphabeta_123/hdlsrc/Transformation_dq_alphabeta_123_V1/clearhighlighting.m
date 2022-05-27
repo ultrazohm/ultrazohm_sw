@@ -1,0 +1,13 @@
+SLStudio.Utils.RemoveHighlighting(get_param('Transformation_dq_alphabeta_123_V1', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_Transformation_dq_alphabeta_123_V1', 'handle'));
+annotate_port('gm_Transformation_dq_alphabeta_123_V1/Trans_dq_alphabeta_123_fix_V1/Gain2', 0, 1, '');
+annotate_port('gm_Transformation_dq_alphabeta_123_V1/Trans_dq_alphabeta_123_fix_V1/out_7_pipe', 1, 1, '');
+annotate_port('gm_Transformation_dq_alphabeta_123_V1/Trans_dq_alphabeta_123_fix_V1/Add_stage2', 0, 1, '');
+annotate_port('gm_Transformation_dq_alphabeta_123_V1/Trans_dq_alphabeta_123_fix_V1/Add_stage3', 0, 1, '');
+annotate_port('gm_Transformation_dq_alphabeta_123_V1/Trans_dq_alphabeta_123_fix_V1/t', 0, 1, '');
+annotate_port('gm_Transformation_dq_alphabeta_123_V1/Trans_dq_alphabeta_123_fix_V1/mux', 0, 1, '');
+annotate_port('gm_Transformation_dq_alphabeta_123_V1/Trans_dq_alphabeta_123_fix_V1/Product3', 0, 1, '');
+annotate_port('gm_Transformation_dq_alphabeta_123_V1/Trans_dq_alphabeta_123_fix_V1/Subtract1', 0, 1, '');
+annotate_port('gm_Transformation_dq_alphabeta_123_V1/Trans_dq_alphabeta_123_fix_V1/Switch_on4', 0, 1, '');
+annotate_port('gm_Transformation_dq_alphabeta_123_V1/Trans_dq_alphabeta_123_fix_V1/delayMatch7', 0, 1, '');
+annotate_port('gm_Transformation_dq_alphabeta_123_V1/Trans_dq_alphabeta_123_fix_V1/Switch_on4_out1', 0, 1, '');

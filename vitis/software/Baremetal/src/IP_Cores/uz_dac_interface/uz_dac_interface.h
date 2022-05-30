@@ -5,7 +5,7 @@
 #include "../../uz/uz_array/uz_array.h"
 
 /**
- * @brief Configuration struct for the DAC Interface IP-Core
+ * @brief Typedef for uz_dac_interface object definition
  * 
  */
 typedef struct uz_dac_interface_t uz_dac_interface_t; 
@@ -16,6 +16,10 @@ typedef struct uz_dac_interface_t uz_dac_interface_t;
  */
 #define UZ_DAC_INTERFACE_OUTPUT_CHANNELS 8U
 
+/**
+ * @brief Configuration struct for the DAC Interface IP-Core
+ * 
+ */
 struct uz_dac_interface_config_t{
     uint32_t base_address; /**< Base address of the IP-Core instance to which the driver is coupled */
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of IP-Core */

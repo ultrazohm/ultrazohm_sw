@@ -45,7 +45,7 @@
 // Configuration defines for the number of used instances for testing with ceedling
 #ifdef TEST
     #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  13U
-    #define UZ_DAC_INTERFACE_MAX_INSTANCES 10U
+    #define UZ_DAC_INTERFACE_MAX_INSTANCES                  10U
     #define UZ_MYIP2_MAX_INSTANCES                          5U
     #define UZ_MYIP_MAX_INSTANCES                           5U
     #define UZ_ADCLTC2311_MAX_INSTANCES                     50U

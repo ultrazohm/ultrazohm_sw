@@ -18,9 +18,9 @@ Therefore, all ADC channels change their set-point according to the data they re
 .. figure:: dac_pcb_colored.jpg
    :width: 700
 
-   Assembled DAC pcb with power supply and reference voltage (red and green), LVDS receiver (orange), DAC8831 (blue), output OpAMPs (pink) and ethernet connector (yellow).
+   Assembled DAC pcb with power supply and reference voltage (red and green), LVDS receiver (orange), DAC8831 (blue), output OpAMPs (pink), loopback connection (purple) and ethernet connector (yellow).
 
-The output of the DAC card is fully compatible to :ref:`Analog_LTC2311_16`, i.e., it can directly connected to the card with matching voltage levels and DAC1 corresponds to ADC1 on channel A.
+The output of the DAC card is fully compatible to :ref:`Analog_LTC2311_16`, i.e., it can directly connect to the card with matching voltage levels and DAC1 corresponds to ADC1 on channel A.
 :numref:`dac_adc_loopback` shows the typical application of the DAC card.
 The DAC card is used to loop values from the FPGA through the ADC card back to the FPGA.
 This setup enables HIL testing including the whole signal chain of the ADC.
@@ -61,7 +61,7 @@ Both voltages were determined by available resistor values for the rails of the 
 .. figure:: all8_different_signals.png
    :width: 700
 
-   Different waveforms of :ref:`wave_generator` measured in DAC-ADC loopback configuration
+   Different waveforms of :ref:`wave_generator` measured in DAC-ADC loopback configuration.
 
 
 Pinout

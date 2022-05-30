@@ -93,7 +93,6 @@ extern uz_FD uz_FD_V6;
 extern uz_singleindex_faultdetection singleindex_FD;
 
 
-
 extern uz_movAverageFilter_t* movAvFilter;
 
 float filteredFDIndices[6] = {0};
@@ -133,6 +132,10 @@ float adc_factor = 1.0f;
 float theta_el_offset = 0.0f;
 
 float omega_el_rad_per_sec = 0.0f;
+
+
+extern struct uz_d_gan_inverter_t* gan_inverter_D3;
+extern struct uz_d_gan_inverter_t* gan_inverter_D4;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -290,6 +293,16 @@ void ISR_Control(void *data)
 	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*config_FOC.config_PMSM.polePairs*2.0f*M_PI/60;
 	ref_dq0_currents.d = Global_Data.av.I_d_ref;
 	ref_dq0_currents.q = Global_Data.av.I_q_ref;
+
+
+
+	//gan inverter:
+
+	 uz_d_gan_inverter_update_states(gan_inverter_D3);
+	 uz_d_gan_inverter_update_states(gan_inverter_D4);
+
+	 Global_Data.objects.gan_inverter_outputs_D3 = uz_d_gan_inverter_get_outputs(gan_inverter_D3);
+	 Global_Data.objects.gan_inverter_outputs_D4 = uz_d_gan_inverter_get_outputs(gan_inverter_D4);
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();

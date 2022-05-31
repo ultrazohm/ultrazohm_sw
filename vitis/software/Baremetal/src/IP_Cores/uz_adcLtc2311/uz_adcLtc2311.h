@@ -371,7 +371,7 @@ uint32_t uz_adcLtc2311_enter_sleep_mode(uz_adcLtc2311_t* self);
  * in @ref uz_adcLtc2311_config_t. master_select determines, which channels leave sleep mode and
  * max_attempts determines the maximum number of attempts to enter the manual
  * control mode of the SPI. Adjust these settings before calling the function.
- * After the datasheet of the LTC2311, one must wait 10ms before operating the ADC again
+ * After the data sheet of the LTC2311, one must wait 10ms before operating the ADC again
  * after exiting the sleep mode. This is not performed by this function. The user needs
  * to take care about this.
  * 
@@ -417,7 +417,7 @@ void uz_adcLtc2311_set_sample_time(uz_adcLtc2311_t* self, uint32_t value);
 
 // SPI parameters
 /**
- * @brief Asserts that not to many MSBs are set and that the value fits in the config register.
+ * @brief Asserts that not too many MSBs are set and that the value fits in the config register.
  * 
  * @param self Pointer to driver instance
  * @param value Number of system clock cycles for the PRE_DELAY
@@ -425,7 +425,7 @@ void uz_adcLtc2311_set_sample_time(uz_adcLtc2311_t* self, uint32_t value);
 void uz_adcLtc2311_set_pre_delay(uz_adcLtc2311_t* self, uint32_t value);
 
 /**
- * @brief Asserts that not to many MSBs are set and that the value fits in the config register.
+ * @brief Asserts that not too many MSBs are set and that the value fits in the config register.
  * 
  * @param self Pointer to driver instance
  * @param value Number of system clock cycles for the POST_DELAY
@@ -433,10 +433,10 @@ void uz_adcLtc2311_set_pre_delay(uz_adcLtc2311_t* self, uint32_t value);
 void uz_adcLtc2311_set_post_delay(uz_adcLtc2311_t* self, uint32_t value);
 
 /**
- * @brief Asserts that not to many MSBs are set and that the value fits in the config register.
+ * @brief Asserts that not too many MSBs are set and that the value fits in the config register.
  * 
  * @param self Pointer to driver instance
- * @param value Clock devider to scale the SCLK signal
+ * @param value Clock divider to scale the SCLK signal
  */
 void uz_adcLtc2311_set_clk_div(uz_adcLtc2311_t* self, uint32_t value);
 

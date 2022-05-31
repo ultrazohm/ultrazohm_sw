@@ -38,7 +38,10 @@ DS_Data Global_Data = {
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     },
-	.av.U_ZK = 24.0f
+	.av.U_ZK = 36.0f,
+	.av.theta_offset =  -0.14608003,
+	.av.I_d_ref = 0,
+	.av.I_q_ref = 0
 };
 
 //fault detection:
@@ -62,26 +65,25 @@ const struct uz_PMSM_t config_PMSM = {
    .Lq_Henry = 0.0002f,
    .Psi_PM_Vs = 0.008f,
    .R_ph_Ohm = 0.0f,
-   .polePairs = 4.0f,
+   .polePairs = 5.0f,
    .J_kg_m_squared = 0.0f,
    .I_max_Ampere = 10.0f
 };
 
 
-
 const struct uz_PI_Controller_config config_id = {
-	.Kp = 10.0f,
-	.Ki = 10.0f,
-	.samplingTime_sec = 0.00005f,
+	.Kp = 1.1f,										//nach Betragsoptimum:  Kp = Tn/(2*Ks*T_sw) mit Tn = L/R, T_sw = 1/f_sw (10kHz), Ks = 1/R
+	.Ki = 1/0.0008f,															 // Ki = 1/Tn
+	.samplingTime_sec = 0.0001f,
 	.upper_limit = 10.0f,
 	.lower_limit = -10.0f
 };
 
 
 const struct uz_PI_Controller_config config_iq = {
-	.Kp = 10.0f,
-	.Ki = 10.0f,
-	.samplingTime_sec = 0.00005f,
+	.Kp = 1.1f,
+	.Ki = 1/0.0008f,
+	.samplingTime_sec = 0.0001f,
 	.upper_limit = 10.0f,
 	.lower_limit = -10.0f
 };
@@ -160,6 +162,11 @@ int main(void)
 
         	FOC_instance = uz_FOC_init(config_FOC);
 
+        	Global_Data.av.kp_d = config_FOC.config_id.Kp;
+        	Global_Data.av.ki_d = config_FOC.config_id.Ki;
+        	Global_Data.av.kp_q = config_FOC.config_iq.Kp;
+        	Global_Data.av.ki_q = config_FOC.config_iq.Ki;
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -183,6 +190,8 @@ int main(void)
 
             gan_inverter_D3 = uz_d_gan_inverter_init(config_gan_inverter_D3, Global_Data.objects.gan_inverter_outputs_D3);
             gan_inverter_D4 = uz_d_gan_inverter_init(config_gan_inverter_D4, Global_Data.objects.gan_inverter_outputs_D4);
+
+
 
 
             initialization_chain = print_msg;

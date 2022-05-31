@@ -205,19 +205,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-			ph_c1 = value;
+			Global_Data.av.kp_d = value;
 			break;
 
 		case (Set_Send_Field_4):
-			ph_a2 = value;
+			Global_Data.av.ki_d = value;
 			break;
 
 		case (Set_Send_Field_5):
-			ph_b2 = value;
+			Global_Data.av.kp_q = value;
 			break;
 
 		case (Set_Send_Field_6):
-			ph_c2 = value;
+			Global_Data.av.ki_q = value;
 			break;
 
 		case (My_Button_1):

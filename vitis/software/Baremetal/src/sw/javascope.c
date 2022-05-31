@@ -147,6 +147,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_GAN_Temp_D3_H1]			= &(data->objects.gan_inverter_outputs_D3.GaN_ChipTempDegreesCelsius_H1);
+	js_slowDataArray[JSSD_FLOAT_GAN_Temp_D3_H2]			= &(data->objects.gan_inverter_outputs_D3.GaN_ChipTempDegreesCelsius_H2);
+	js_slowDataArray[JSSD_FLOAT_GAN_Temp_D3_H3]			= &(data->objects.gan_inverter_outputs_D3.GaN_ChipTempDegreesCelsius_H3);
+	js_slowDataArray[JSSD_FLOAT_GAN_Temp_D4_H1]			= &(data->objects.gan_inverter_outputs_D4.GaN_ChipTempDegreesCelsius_H1);
+	js_slowDataArray[JSSD_FLOAT_GAN_Temp_D4_H2]			= &(data->objects.gan_inverter_outputs_D4.GaN_ChipTempDegreesCelsius_H2);
+	js_slowDataArray[JSSD_FLOAT_GAN_Temp_D4_H3]			= &(data->objects.gan_inverter_outputs_D4.GaN_ChipTempDegreesCelsius_H3);
 
 	return Status;
 }

@@ -236,7 +236,6 @@ void ISR_Control(void *data)
 
     uz_FD_step(&uz_FD_V6);
 
-
 //Single Index:
 
     singleindex_FD.input.i_ab_xy_z1z2[0] = i_abxyz1z2.alpha;
@@ -247,14 +246,12 @@ void ISR_Control(void *data)
 
     uz_singleindex_faultdetection_step(&singleindex_FD);
 
-
     //movAverageFilter:
 
     filteredFDIndices[0] = uz_movAverageFilter_sample(movAvFilter, vsd_output_hyst_V4[0]);
 
-
     //for FOC:
-
+/*
 	//Read the phase-currents
 	m_6ph_abc_currents.a1 = (Global_Data.aa.A2.me.ADC_A1 + adc_offset) * adc_factor;
 	m_6ph_abc_currents.b1 = (Global_Data.aa.A2.me.ADC_A2 + adc_offset) * adc_factor;
@@ -262,6 +259,21 @@ void ISR_Control(void *data)
 	m_6ph_abc_currents.a2 = (Global_Data.aa.A2.me.ADC_A4 + adc_offset) * adc_factor;
 	m_6ph_abc_currents.b2 = (Global_Data.aa.A2.me.ADC_B5 + adc_offset) * adc_factor;
 	m_6ph_abc_currents.c2 = (Global_Data.aa.A2.me.ADC_B6 + adc_offset) * adc_factor;
+*/
+
+	//assign ADC values to motor currents
+	m_6ph_abc_currents.a1 = -1.0*Global_Data.aa.A2.me.ADC_A4-0.0338*Global_Data.aa.A2.me.ADC_A4+0.0259;
+	m_6ph_abc_currents.b1 = -1.0*Global_Data.aa.A2.me.ADC_A3+0.0407*Global_Data.aa.A2.me.ADC_A3+0.0280;
+	m_6ph_abc_currents.c1 = -1.0*Global_Data.aa.A2.me.ADC_A2+0.0401*Global_Data.aa.A2.me.ADC_A2+0.0220;
+	m_6ph_abc_currents.a2 = -1.0*Global_Data.aa.A2.me.ADC_B8+0.0541*Global_Data.aa.A2.me.ADC_B8+0.0352;
+	m_6ph_abc_currents.b2 = -1.0*Global_Data.aa.A2.me.ADC_B7+0.0516*Global_Data.aa.A2.me.ADC_B7-0.0133;
+	m_6ph_abc_currents.c2 = -1.0*Global_Data.aa.A2.me.ADC_B6+0.0341*Global_Data.aa.A2.me.ADC_B6+0.0383;
+
+	//crude over current protection
+	if(fabs(m_6ph_abc_currents.a1) > 15.0f || fabs(m_6ph_abc_currents.b1) > 15.0f || fabs(m_6ph_abc_currents.c1) > 15.0f || fabs(m_6ph_abc_currents.a2) > 15.0f || fabs(m_6ph_abc_currents.b2) > 15.0f || fabs(m_6ph_abc_currents.c2) > 15.0f){
+		uz_assert(0);
+	}
+
 
 	//write phase currents into global_data-struct
 	Global_Data.av.I_U = m_6ph_abc_currents.a1;
@@ -281,10 +293,10 @@ void ISR_Control(void *data)
 	Global_Data.av.I_z1 = m_6ph_alphabeta_currents.z1;
 	Global_Data.av.I_z2 = m_6ph_alphabeta_currents.z2;
 
-	//calculate meassurec dq-currents
+	//calculate meassured dq-currents
 	m_alphabeta_currents.alpha = m_6ph_alphabeta_currents.alpha;
 	m_alphabeta_currents.beta = m_6ph_alphabeta_currents.beta;
-	m_dq_currents = uz_transformation_3ph_alphabeta_to_dq(m_alphabeta_currents, Global_Data.av.theta_elec + theta_el_offset);
+	m_dq_currents = uz_transformation_3ph_alphabeta_to_dq(m_alphabeta_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 
 	Global_Data.av.I_d = m_dq_currents.d;
 	Global_Data.av.I_q = m_dq_currents.q;
@@ -296,16 +308,29 @@ void ISR_Control(void *data)
 
 
 
-	//gan inverter:
+	// read data from gan inverters:
+	uz_d_gan_inverter_update_states(gan_inverter_D3);
+	uz_d_gan_inverter_update_states(gan_inverter_D4);
 
-	 uz_d_gan_inverter_update_states(gan_inverter_D3);
-	 uz_d_gan_inverter_update_states(gan_inverter_D4);
-
-	 Global_Data.objects.gan_inverter_outputs_D3 = uz_d_gan_inverter_get_outputs(gan_inverter_D3);
-	 Global_Data.objects.gan_inverter_outputs_D4 = uz_d_gan_inverter_get_outputs(gan_inverter_D4);
+	Global_Data.objects.gan_inverter_outputs_D3 = uz_d_gan_inverter_get_outputs(gan_inverter_D3);
+	Global_Data.objects.gan_inverter_outputs_D4 = uz_d_gan_inverter_get_outputs(gan_inverter_D4);
 
 
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
+	platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+	//enable gan inverters if system enable
+	if (current_state == idle_state || current_state == error_state) {
+		//Set Data To UZ_D_GaN_Inverter
+		uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_DIGITAL_ADAPTER_UZ_D_GAN_INVERTER_1_UZ_D_GAN_INVERTER_0_BASEADDR, false);
+		uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_DIGITAL_ADAPTER_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR, false);
+	} else if (current_state == running_state || current_state == control_state) { //Call this function only once. If there was an error, "enableSystem " must be reseted!
+		//Set Data To UZ_D_GaN_Inverter
+		uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_DIGITAL_ADAPTER_UZ_D_GAN_INVERTER_1_UZ_D_GAN_INVERTER_0_BASEADDR, true);
+		uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_DIGITAL_ADAPTER_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR, true);
+	}
+
+
+
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
@@ -317,8 +342,15 @@ void ISR_Control(void *data)
     		//FOC_instance
     	ref_dq_voltage = uz_FOC_sample(FOC_instance, ref_dq0_currents, m_dq_currents, Global_Data.av.U_ZK, omega_el_rad_per_sec);
 
+    	// new control-parameters:
+    	uz_FOC_set_Kp_id(FOC_instance, Global_Data.av.kp_d);
+    	uz_FOC_set_Ki_id(FOC_instance, Global_Data.av.ki_d);
+    	uz_FOC_set_Kp_iq(FOC_instance, Global_Data.av.kp_q);
+    	uz_FOC_set_Ki_iq(FOC_instance, Global_Data.av.ki_q);
+
+
     	//Transform back to phase-values:
-    	ref_alphabeta_voltage = uz_transformation_3ph_dq_to_alphabeta(ref_dq_voltage, Global_Data.av.theta_elec + theta_el_offset);
+    	ref_alphabeta_voltage = uz_transformation_3ph_dq_to_alphabeta(ref_dq_voltage, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 
     	ref_6ph_alphabeta_voltage.alpha = ref_alphabeta_voltage.alpha;
     	ref_6ph_alphabeta_voltage.beta = ref_alphabeta_voltage.beta;
@@ -341,19 +373,17 @@ void ISR_Control(void *data)
     	dutyCycles_set2 = uz_FOC_generate_DutyCycles(ref_volage_phase_set2, Global_Data.av.U_ZK);
 
     	//write duty-cycles
-    	Global_Data.rasv.halfBridge1DutyCycle = dutyCycles_set1.DutyCycle_U;
-    	Global_Data.rasv.halfBridge2DutyCycle = dutyCycles_set1.DutyCycle_V;
-    	Global_Data.rasv.halfBridge3DutyCycle = dutyCycles_set1.DutyCycle_W;
     	Global_Data.rasv.halfBridge4DutyCycle = dutyCycles_set2.DutyCycle_U;
     	Global_Data.rasv.halfBridge5DutyCycle = dutyCycles_set2.DutyCycle_V;
     	Global_Data.rasv.halfBridge6DutyCycle = dutyCycles_set2.DutyCycle_W;
-
-
+    	Global_Data.rasv.halfBridge7DutyCycle = dutyCycles_set1.DutyCycle_U;
+    	Global_Data.rasv.halfBridge8DutyCycle = dutyCycles_set1.DutyCycle_V;
+    	Global_Data.rasv.halfBridge9DutyCycle = dutyCycles_set1.DutyCycle_W;
 
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);	//D3 gan inv
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);	//D4 gan inv
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
     // Set duty cycles for three-level modulator

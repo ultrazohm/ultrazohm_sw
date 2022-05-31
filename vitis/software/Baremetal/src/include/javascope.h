@@ -96,6 +96,12 @@ enum JS_OberservableData {
 // Do not change the first (zero) and last (end) entries.
 enum JS_SlowData {
 	JSSD_ZEROVALUE=0,
+	JSSD_FLOAT_GAN_Temp_D3_H1,
+	JSSD_FLOAT_GAN_Temp_D3_H2,
+	JSSD_FLOAT_GAN_Temp_D3_H3,
+	JSSD_FLOAT_GAN_Temp_D4_H1,
+	JSSD_FLOAT_GAN_Temp_D4_H2,
+	JSSD_FLOAT_GAN_Temp_D4_H3,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
@@ -195,10 +201,10 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	I_d_ref,
 	I_q_ref,
-	send_field_3,
-	send_field_4,
-	send_field_5,
-	send_field_6,
+	kp_d,
+	Ki_d,
+	kp_q,
+	ki_q,
 	SND_FLD_ENDMARKER
 
 

@@ -61,12 +61,12 @@ G15              Dig_13_Ch5   Encoder_1_A
 B14              Dig_12_Ch5   Encoder_1_B
 ===============  ==========  ============
 
-* :download:`Example constraint file for te0808<incr_encoder_v2/Digital_AdapterBoard_D5.XDC>`
+* :download:`Example constraint file for te0808<incr_encoder_v2/Digital_AdapterBoard_D5.xdc>`
 
 
 Vivado block design with three IP-Cores on D5
 --------------------------------------------------
-.. image:: incr_encoder_v2/vivado_block.PNG
+.. image:: incr_encoder_v2/vivado_block.jpg
    :height: 500
 
 Compatibility 

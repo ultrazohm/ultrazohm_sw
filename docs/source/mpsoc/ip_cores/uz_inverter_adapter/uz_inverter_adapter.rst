@@ -113,7 +113,7 @@ Due to our interface using all 30 pins of one digital slot, make sure no other p
 Constraints
 -----------
 Third, the interface definition we connected in the step before uses specific names for the signals and pins. Those have to match the names of the respective constraint file of the respective digital slot. 
-In the subfolder ``constraint_files`` inside the ip-core sources (see REFERENCE) ready to use constraint files are prepared for this purpose:
+In the subfolder ``constraint_files`` inside the ip-core sources (see :numref:`folder_structure_picture`) ready to use constraint files are prepared for this purpose:
 
 1. Open the respective constraint file (in our example the one for D1: ``Digital_D1_packed.xdc``)
 2. Copy everything inside the file

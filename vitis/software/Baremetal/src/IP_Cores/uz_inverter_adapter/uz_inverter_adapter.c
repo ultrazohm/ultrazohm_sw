@@ -97,6 +97,7 @@ void uz_inverter_adapter_update_states(uz_inverter_adapter_t *self) {
 struct uz_inverter_adapter_outputs_t uz_inverter_adapter_get_outputs(uz_inverter_adapter_t *self) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_inverter_adapter_update_states(self);
     return(self->outputs);
 }
 

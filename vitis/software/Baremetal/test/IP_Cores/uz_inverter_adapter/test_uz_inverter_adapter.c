@@ -489,7 +489,76 @@ void test_uz_inverter_adapter_dutycyc_to_temperature_results(void)
         TEST_ASSERT_EQUAL_FLOAT(temp_ref_result[i],temperature_degrees_celsius_L2_result[i]);
         TEST_ASSERT_EQUAL_FLOAT(temp_ref_result[i],temperature_degrees_celsius_H3_result[i]);
         TEST_ASSERT_EQUAL_FLOAT(temp_ref_result[i],temperature_degrees_celsius_L3_result[i]);
-        resetTest(); //  resetTest() clears memory BUT also all information about the test so far.
     }
+}
+
+void test_uz_inverter_adapter_get_outputs(void) {
+    //create test instance
+    uz_inverter_adapter_t *test_instance = uz_inverter_adapter_init(test_config, test_outputs); 
+
+    static int i=0;
+
+        struct uz_inverter_adapter_outputs_t return_outputs = {
+        .PWMdutyCycNormalized_H1 = 0.0,
+        .PWMdutyCycNormalized_L1 = 0.0,
+        .PWMdutyCycNormalized_H2 = 0.0,
+        .PWMdutyCycNormalized_L2 = 0.0,
+        .PWMdutyCycNormalized_H3 = 0.0,
+        .PWMdutyCycNormalized_L3 = 0.0,
+        .ChipTempDegreesCelsius_H1 = 0.0,
+        .ChipTempDegreesCelsius_L1 = 0.0,
+        .ChipTempDegreesCelsius_H2 = 0.0,
+        .ChipTempDegreesCelsius_L2 = 0.0,
+        .ChipTempDegreesCelsius_H3 = 0.0,
+        .ChipTempDegreesCelsius_L3 = 0.0,
+        .OC = 0,
+        .OC_H1 = 0,
+        .OC_L1 = 0,
+        .OC_H2 = 0,
+        .OC_L2 = 0,
+        .OC_H3 = 0,
+        .OC_L3 = 0,
+        .FAULT = 0,
+        .FAULT_H1 = 0,
+        .FAULT_L1 = 0,
+        .FAULT_H2 = 0,
+        .FAULT_L2 = 0,
+        .FAULT_H3 = 0,
+        .FAULT_L3 = 0,
+        .I_DIAG = 0,
+        .I_DC_DIAG = 0,
+        .I1_DIAG = 0,
+        .I2_DIAG = 0,
+        .I3_DIAG = 0,
+    };
+
+    for (i=0;i<=10;i++) {
+        uz_inverter_adapter_hw_get_OC_IgnoreAndReturn(test_instance->outputs.OC);
+        uz_inverter_adapter_hw_get_I_DIAG_IgnoreAndReturn(test_instance->outputs.I_DIAG);
+        uz_inverter_adapter_hw_get_FAULT_IgnoreAndReturn(test_instance->outputs.FAULT);
+        test_instance->outputs.PWMdutyCycNormalized_H1 = dutycyc_test[i];
+        test_instance->outputs.PWMdutyCycNormalized_L1 = dutycyc_test[i];
+        test_instance->outputs.PWMdutyCycNormalized_H2 = dutycyc_test[i];
+        test_instance->outputs.PWMdutyCycNormalized_L2 = dutycyc_test[i];
+        test_instance->outputs.PWMdutyCycNormalized_H3 = dutycyc_test[i];
+        test_instance->outputs.PWMdutyCycNormalized_L3 = dutycyc_test[i];
+        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H1);
+        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L1_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L1);
+        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H2);
+        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L2_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L2);
+        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_H3);
+        uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
+        
+        return_outputs = uz_inverter_adapter_get_outputs(test_instance);
+
+        TEST_ASSERT_EQUAL_FLOAT(return_outputs.ChipTempDegreesCelsius_H1,test_instance->outputs.ChipTempDegreesCelsius_H1);
+        TEST_ASSERT_EQUAL_FLOAT(return_outputs.ChipTempDegreesCelsius_L1,test_instance->outputs.ChipTempDegreesCelsius_L1);
+        TEST_ASSERT_EQUAL_FLOAT(return_outputs.ChipTempDegreesCelsius_H2,test_instance->outputs.ChipTempDegreesCelsius_H2);
+        TEST_ASSERT_EQUAL_FLOAT(return_outputs.ChipTempDegreesCelsius_L2,test_instance->outputs.ChipTempDegreesCelsius_L2);
+        TEST_ASSERT_EQUAL_FLOAT(return_outputs.ChipTempDegreesCelsius_H3,test_instance->outputs.ChipTempDegreesCelsius_H3);
+        TEST_ASSERT_EQUAL_FLOAT(return_outputs.ChipTempDegreesCelsius_L3,test_instance->outputs.ChipTempDegreesCelsius_L3);
+    }
+
+
 }
 #endif // TEST

@@ -89,8 +89,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_Theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_dqn_angle] = &data->obs.dqn_angle;
-	js_ch_observable[JSO_Speed_filtered]= &data->av.mechanicalRotorSpeed_filtered;
-	js_ch_observable[JSO_Speed_testfiltered]=&data->av.mechanicalRotorSpeed_filt1;
+	js_ch_observable[JSO_Speed_N8]= &data->av.mechanicalRotorSpeed_V25_N8;
+	js_ch_observable[JSO_Speed_N8_filtered]=&data->av.mechanicalRotorSpeed_filtered_V25;
 	js_ch_observable[JSO_dqn_sin_angle]			= &data->obs.dqn_sin_angle;
 	js_ch_observable[JSO_dqn_cos_angle]			= &data->obs.dqn_cos_angle;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;

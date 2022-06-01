@@ -68,8 +68,8 @@ typedef struct _actualValues_ {
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	float mechanicalRotorSpeed; 		// in rpm
 	float mechanicalRotorSpeed_filtered;// in rpm
-	float mechanicalRotorSpeed_filt1; // in rpm
-	float mechanicalRotorSpeed_filt2;  // in rpm
+	float mechanicalRotorSpeed_V25_N8; // in rpm
+	float mechanicalRotorSpeed_filtered_V25;  // in rpm
 	float mechanicalRotorSpeed_N8; // in rpm
 	float mechanicalPosition; 		// in m
 	float mechanicalTorque; 			// in Nm

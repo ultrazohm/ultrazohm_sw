@@ -60,7 +60,8 @@ DS_Data Global_Data = {
     .mrp = {.incrementalEncoder_speed_timeout_in_ms = 10}};
 uz_FOC *FOC_instance;
 uz_SpeedControl_t *Speed_instance;
-uz_IIR_Filter_t *LPF1_instance;
+uz_IIR_Filter_t *LPF1_instance_position;
+uz_IIR_Filter_t *LPF1_instance_angle;
 uz_IIR_Filter_t *LPF1_instance_2;
 uz_PI_Controller *PI_instance;
 uz_PI_Controller *PI_chart_instance;
@@ -229,7 +230,7 @@ int main(void)
         [2] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3}};
 
     struct uz_matrix_t x_matrix = {0};
-    struct uz_IIR_Filter_config config1 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 500.0f, .sample_frequency_Hz = 20000.0f};
+    struct uz_IIR_Filter_config config1 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 200.0f, .sample_frequency_Hz = 20000.0f};
     struct uz_IIR_Filter_config config2 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 10.0f, .sample_frequency_Hz = 20000.0f};
     while (1)
     {
@@ -275,7 +276,8 @@ int main(void)
         case init_foc:
             FOC_instance = uz_FOC_init(config_FOC);
             Speed_instance = uz_SpeedControl_init(config_speed);
-            LPF1_instance = uz_signals_IIR_Filter_init(config1);
+            LPF1_instance_angle = uz_signals_IIR_Filter_init(config1);
+            LPF1_instance_position = uz_signals_IIR_Filter_init(config1);
             LPF1_instance_2 = uz_signals_IIR_Filter_init(config2);
             PI_instance = uz_PI_Controller_init(config_position);
             PI_chart_instance = uz_PI_Controller_init(config_chart);

@@ -31,10 +31,6 @@ static uz_incrementalEncoder_t* encoder_D5_3_v25;
 #define OMEGA_PER_OVER_SAMPLE_RPM 1000.0f
 #define IncEncoderLPF_freq 1000.0f
 
-
-
-
-
 // Incremental encoder from motor
 void initialize_incremental_encoder_ipcore_v25_on_D5_1(float incrementalEncoderResolution, float motorPolePairNumber, float speed_timeout){
 	struct uz_incrementalEncoder_config encoder_D5_1_config_v25={
@@ -79,7 +75,6 @@ float omegaA, omegaB,omegaANOT, omegaBNOT;
 void update_speed_and_position_of_encoder_on_D5_1_ip_v25(DS_Data* const data){
 	data->av.theta_elec	= uz_incrementalEncoder_get_theta_el(encoder_D5_1_v25);
 	data->av.mechanicalRotorSpeed = uz_incrementalEncoder_get_omega_mech_OS_N4(encoder_D5_1_v25) * 60.0f / (2.0f*M_PI);
-	data->av.mechanicalRotorSpeed_N8 = uz_incrementalEncoder_get_omega_mech_OS_N8(encoder_D5_1_v25) * 60.0f / (2.0f*M_PI);
 	data->av.position_motor = uz_incrementalEncoder_get_position(encoder_D5_1_v25);
 
 	omegaA 		= uz_incrementalEncoder_get_omegaA(encoder_D5_1_v25) * 60.0f / (2.0f*M_PI);
@@ -92,6 +87,9 @@ void update_speed_and_position_of_encoder_on_D5_1_ip_v25(DS_Data* const data){
 	static float speed_lpf_mem_out = 0.0f;
 	data->av.mechanicalRotorSpeed_filtered = LPF1(	data->av.mechanicalRotorSpeed, &speed_lpf_mem_in, &speed_lpf_mem_out,
 	data->av.isr_samplerate_s, IncEncoderLPF_freq);
+	data->av.mechanicalRotorSpeed_V25_N8 = uz_incrementalEncoder_get_omega_mech_OS_N8(encoder_D5_1_v25) * 60.0f / (2.0f*M_PI);
+	data->av.mechanicalRotorSpeed_filtered_V25 = LPF1(data->av.mechanicalRotorSpeed_V25_N8, &speed_lpf_mem_in, &speed_lpf_mem_out,
+			data->av.isr_samplerate_s, IncEncoderLPF_freq);
 }
 
 void update_position_of_encoder_on_D5_2_ip_v25(DS_Data* const data){

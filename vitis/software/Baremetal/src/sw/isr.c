@@ -45,7 +45,8 @@ extern DS_Data Global_Data;
 // external instances
 extern uz_FOC *FOC_instance;
 extern uz_SpeedControl_t *Speed_instance;
-extern uz_IIR_Filter_t *LPF1_instance;
+extern uz_IIR_Filter_t *LPF1_instance_position;
+extern uz_IIR_Filter_t *LPF1_instance_angle;
 extern uz_IIR_Filter_t *LPF1_instance_2;
 extern uz_PI_Controller *PI_instance;
 extern uz_PI_Controller *PI_chart_instance;
@@ -165,7 +166,7 @@ void ISR_Control(void *data)
     {}
     else
     {
-    	Global_Data.obs.dqn_angle_derv = uz_signals_IIR_Filter_sample(LPF1_instance, angle_derv);
+    	Global_Data.obs.dqn_angle_derv = uz_signals_IIR_Filter_sample(LPF1_instance_angle, angle_derv);
     }
 
     old_theta_pendulum=Global_Data.av.theta_pendulum;
@@ -174,7 +175,7 @@ void ISR_Control(void *data)
     {}
     else
     {
-    	Global_Data.obs.dqn_chart_position_derv = uz_signals_IIR_Filter_sample(LPF1_instance, position_derv);
+    	Global_Data.obs.dqn_chart_position_derv = uz_signals_IIR_Filter_sample(LPF1_instance_position, position_derv);
     }
 
     old_position=Global_Data.obs.dqn_chart_position;
@@ -194,14 +195,14 @@ void ISR_Control(void *data)
     platform_state_t current_state = ultrazohm_state_machine_get_state();
     if (current_state == control_state)
     {
-    	if (abs(position_abs) > 410){
+    	if (abs(position_abs) > 430){
     		uz_assert(0);
     	}
-    	// swtich case for switching between dqn, pos_control and error state
+    	// switch case for switching between dqn, pos_control and error state
     	switch (chain) {
 			case dqn_active:
 		        // get output from nn
-		    	if (abs(position_abs)> 350){
+		    	if (abs(position_abs)> 400){
 		    		chain=limit_violation;
 		    	}
 		        if (dqn_mutex)
@@ -213,11 +214,11 @@ void ISR_Control(void *data)
 		            dqn_mutex = false;
 		            action = uz_matrix_get_max_index(output_nn);
 		            switch (action){
-		            case 0: dq_reference_current.q =4.8f;
+		            case 0: dq_reference_current.q =4.5f;
 		            break;
 		            case 1:	dq_reference_current.q=0.0f;
 		            break;
-		            case 2: dq_reference_current.q=-4.8f;
+		            case 2: dq_reference_current.q=-4.5f;
 		            break;
 		            default: uz_assert(0);
 		            }
@@ -237,8 +238,9 @@ void ISR_Control(void *data)
 			default:
 				break;
         }
-    	if (abs(position_abs) < 410)
+    	if (abs(position_abs) < 430)
     	{
+//    	dq_reference_current = uz_SpeedControl_sample(Speed_instance, omega_m_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere);
         dq_ref_Volts = uz_FOC_sample(FOC_instance, dq_reference_current, dq_measurement_current, V_dc_volts, omega_el_rad_per_sec);
         uvw_ref = uz_transformation_3ph_dq_to_abc(dq_ref_Volts, Global_Data.av.theta_elec);
         output = uz_FOC_generate_DutyCycles(uvw_ref, V_dc_volts);

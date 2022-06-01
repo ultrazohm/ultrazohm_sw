@@ -48,6 +48,11 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_i_alpha_IP_CORE,
+	JSO_i_beta_IP_CORE,
+	JSO_i_a_IP_CORE,
+	JSO_i_b_IP_CORE,
+	JSO_i_c_IP_CORE,
 	JSO_ENDMARKER
 };
 

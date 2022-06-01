@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Index Version="1" Minor="0">
-	<Repository value="c:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores">
+	<Repository value="c:/ultrazohm_sw/ip_cores">
 	</Repository>
 	<IP>
 		<VLNV value="UltraZohm:user:ADC_LTC2311:3.0">
@@ -1622,6 +1622,34 @@
 				<Part status="Production" name="ALL">
 				</Part>
 			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:Trans_dq_alphabeta_123_ip:1.0">
+		</VLNV>
+		<DisplayName value="Trans_dq_alphabeta_123_ip">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112523532">
+		</CoreRevision>
+		<ComponentPath value="Trans_dq_alphabeta_123/ipcore/Trans_dq_alphabeta_123_ip_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
 			<Family name="zynquplus">
 				<Part status="Production" name="ALL">
 				</Part>

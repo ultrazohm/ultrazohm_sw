@@ -31,6 +31,31 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
+// Benötigte Einbindungen für den IP-Core trans_dq_alphabeta_123
+#include "../IP_Cores/uz_trans_dq_alphabeta_123/uz_trans_dq_alphabeta_123.h"
+extern uz_dq_alphabeta_123_IPcore_t* test_instance;
+struct uz_3ph_alphabeta_t currents;
+struct uz_3ph_abc_t currents_123;
+
+// float i_alpha_IP_CORE;
+ //float i_beta_IP_CORE;
+ //float i_a_IP_CORE;
+//float i_b_IP_CORE;
+//float i_c_IP_CORE;
+
+
+
+struct uz_dq_alphabeta_123_IPcore_update_t update={
+   				   .base_address= XPAR_UZ_SYSTEM_TRANS_DQ_ALPHABETA_1_0_BASEADDR,
+   				   .idref = 0,
+   				   .iqref = 30
+   				};
+
+
+
+//#include "../IP_Cores/uz_trans_dq_alphabeta_123/uz_trans_dq_alphabeta_123_hw.h"
+
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -51,6 +76,26 @@ static void ReadAllADC();
 
 void ISR_Control(void *data)
 {
+
+	// Read output ialpha ibeta von IP-Core trans_dq_alphabeta_123
+	 currents = uz_dq_alphabeta_123_IPcore_get_ialpha_ibeta(test_instance);
+
+	 Global_Data.av.i_alpha_IP_CORE=currents.alpha;
+	 Global_Data.av.i_beta_IP_CORE=currents.beta;
+
+	// Read output ia ib ic von IP-Core trans_dq_alphabeta_123
+	 currents_123 = uz_dq_alphabeta_123_IPcore_get_i_abc(test_instance);
+
+	 Global_Data.av.i_a_IP_CORE=currents_123.a;
+	 Global_Data.av.i_b_IP_CORE=currents_123.b;
+	 Global_Data.av.i_c_IP_CORE=currents_123.c;
+
+	// Update idref iqref
+	uz_dq_alphabeta_123_IPcore_idref_iqref_update(update);
+
+
+
+
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
@@ -73,6 +118,9 @@ void ISR_Control(void *data)
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();
+
+
+
 }
 
 //==============================================================================================================================================================

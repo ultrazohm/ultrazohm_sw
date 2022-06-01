@@ -16,6 +16,8 @@
 // Includes from own files
 #include "main.h"
 
+#include "IP_Cores/uz_trans_dq_alphabeta_123/uz_trans_dq_alphabeta_123.h"
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -52,6 +54,17 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+// Config Values of the IP-Core trans_dq_alpabeta_123
+struct uz_dq_alphabeta_123_IPcore_config_t config={
+   				   .base_address= XPAR_UZ_SYSTEM_TRANS_DQ_ALPHABETA_1_0_BASEADDR,
+   				   .ip_clk_frequency_Hz=50000000,
+   				   .theta_offset = 2.14f,
+   				   .id_ref = 0,
+   				   .iq_ref = 30
+   				};
+
+uz_dq_alphabeta_123_IPcore_t* test_instance;
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -76,6 +89,12 @@ int main(void)
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
+
+
+            test_instance = uz_dq_alphabeta_123_IPcore_init(config);
+
+
+
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();

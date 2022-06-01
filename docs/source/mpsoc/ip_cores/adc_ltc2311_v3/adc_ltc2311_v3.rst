@@ -559,6 +559,76 @@ One-Hot encoding means that every bit in a register controls a channel of the IP
 This channel can be either an SPI master instance with a DSP48 block or a channel (a.k.a. individual ADC) of that instance which is synchronously controlled with the other channels assigned to the SPI master instance.
 This distinction is done in the description of the individual register.
 
+.. _example:
+
+Example
+=======
+Example of using SI-Value output of ADC-IP-Core with sfix18_En11 output data type
+---------------------------------------------------------------------------------
+
+From the SI_VALUE output vector of the ADC-IP-Core three measurements are sliced and passed to another IP-Core that requires sfix18_En11 input datatypes.
+Therefore the conversion factor, offset and conversion factor definition (datatype) have to be adjusted in the initialization of the ADC-IP-Core.
+
+The parameter conversion_factor_definition has to be adjusted according to the needed datatype sfix18_En11 - 7 integer bits and 11 fractional bits.
+Offset and conversion-factor depend on the used ADC, its measurement range and resolution. The two parameters have in this example approximately the following values:
+
+.. math::
+    offset \approx \frac{-2^{16}}{4}\\
+    conversion factor \approx \frac{100}{2^{16}}
+
+The value 2^16 results from the 16-Bit-resolution of the ADC. The actually used values are slightly different, because of deviations of the used ADC.
+
+
+.. code-block:: c
+  :caption: Initialization of ADC-Core driver instances
+  
+  void uz_adcLtc2311_ip_core_init(void)
+  {
+    struct uz_adcLtc2311_config_t default_configuration = {
+        .base_address = XPAR_UZ_ANALOG_ADAPTER_A1_ADAPTER_A1_ADC_LTC2311_S00_AXI_BASEADDR,
+        .ip_clk_frequency_Hz = XPAR_A1_ADC_LTC2311_IP_CORE_FREQUENCY,
+        .channel_config = {
+            .conversion_factor = 0.001464, 		
+            .conversion_factor_definition = {
+                .is_signed = true,
+                .integer_bits = 7,				
+                .fractional_bits = 11},			
+            .offset = -15917, 					
+        },
+        .spi_master_config = {.samples = 1U, .sample_time = 6U, .trigger_mode=pl_trigger},
+        .cpol = 1U,
+        .cpha = 0U,
+        .napping_spi_masters = 0U,
+        .sleeping_spi_masters = 0U,
+        .master_select = UZ_ADCLTC2311_MASTER1,
+        .channel_select = UZ_ADCLTC2311_CH1 | UZ_ADCLTC2311_CH2 | UZ_ADCLTC2311_CH3 | UZ_ADCLTC2311_CH4 | UZ_ADCLTC2311_CH5 | UZ_ADCLTC2311_CH6 | UZ_ADCLTC2311_CH7 | UZ_ADCLTC2311_CH8,
+        .pre_delay = 0U,
+        .post_delay = 0U,
+        .clk_div = 0U,
+        .max_attempts = 10U};
+
+    // Apply the same configurations to all instances
+    uz_adcLtc2311_init(default_configuration);
+    default_configuration.base_address = XPAR_UZ_ANALOG_ADAPTER_A2_ADAPTER_A2_ADC_LTC2311_S00_AXI_BASEADDR;
+    uz_adcLtc2311_init(default_configuration);
+    default_configuration.base_address = XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_LTC2311_S00_AXI_BASEADDR;
+    uz_adcLtc2311_init(default_configuration);
+  }
+
+In the vivado block-design the SI-Value-Output of the ADC-IP-Core (marked orange in the figure) has to be connected to the IP-Core in which the values are used. The ADC-IP-Core joins the measurement values of all ADCs to one vector.
+Slice-Blocks are used to get the required part of the vector. In the next figure three slice-blocks can be seen. Each of them slices one value from the vector.
+
+The length of the sliced part is according to the used datatype. In this example the length of the datatype sfix18_En11 is 18 bit. To get the SI-Values of the first ADC you need to slice the first 18 bit of the vector, for the second ADC the next 18 etc.
+
+
+.. figure:: sliced_SI_Values_VIVADO.PNG
+   :width: 800px
+   :align: center
+
+   Slicing of the SI-Value output vector
+
+  
+
 
 .. _downloads:
 
@@ -568,6 +638,7 @@ Downloads
 :download:`Detailed project description <./adc_v3/report_2_wendt.pdf>` 
 
 :download:`Sample waveforms captured with Vivado ILA <./adc_v3/sample_waveform_from_vivado_ila.zip>` 
+
 
 
 Designed by

@@ -23,3 +23,4 @@ IP Cores
     uz_dataMover/uz_dataMover
     uz_dq_transformation/uz_dq_transformation
     uz_mlp_three_layer/uz_mlp_three_layer
+    uz_inverter_adapter/uz_inverter_adapter

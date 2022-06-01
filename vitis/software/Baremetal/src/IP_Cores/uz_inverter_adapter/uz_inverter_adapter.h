@@ -20,7 +20,6 @@ typedef struct linear_interpolation_params_t{
     float b;
 } linear_interpolation_params_t;
 
-
 /**
  * @brief Configuration struct for uz_inverter_adapter
  *
@@ -73,6 +72,8 @@ struct uz_inverter_adapter_outputs_t{
  * @brief Initializes an instance of the uz_inverter_adapter driver
  *
  * @param config Configuration values for the IP-Core
+ * @param outputs Output values of the IP-Core
+ *
  * @return Pointer to initialized instance
  */
 uz_inverter_adapter_t* uz_inverter_adapter_init(struct uz_inverter_adapter_config_t config, struct uz_inverter_adapter_outputs_t outputs);

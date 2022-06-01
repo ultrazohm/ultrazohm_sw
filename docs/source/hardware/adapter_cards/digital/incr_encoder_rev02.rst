@@ -35,7 +35,12 @@ GND     1                      white
 
 Known issues
 -----------------------
-* Rev 02: Twisted labels for Encoder signals. Constraint file Digital_AdapterBoard_D5 in vivado project has to be changed.
+* Rev 02: Twisted labels for Encoder signals. In the schematic definition the labels are incorrectly assigned.
+
+.. image:: incr_encoder_rev02/wrong_labeled_schematic.png
+   :height: 500
+
+To use the Rev02 encoder card, the Constraint file Digital_AdapterBoard_D5 in vivado project has to be changed.
 
 Pin configuration
 """""""""""""""""""""""""""
@@ -59,6 +64,8 @@ B14              Dig_12_Ch5   Encoder_1_B
 
 Vivado block design with three IP-Cores on D5
 --------------------------------------------------
+* Fo using all channels of the card, the user has to change the block design in vivado (three IP-Cores on D5 connected).
+
 .. image:: incr_encoder_rev02/vivado_block.jpg
    :height: 500
 

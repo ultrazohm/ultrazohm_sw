@@ -26,9 +26,9 @@ typedef struct linear_interpolation_params_t{
  *
  */
 struct uz_inverter_adapter_config_t{
-    uint32_t base_address; /**< Base address of the IP-Core instance to which the driver is coupled */
-    uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
-    linear_interpolation_params_t linear_interpolation_params; /**< Parameters for linear interpolation of temperature measurement */
+    uint32_t base_address;                                      /**< Base address of the IP-Core instance to which the driver is coupled */
+    uint32_t ip_clk_frequency_Hz;                               /**< Clock frequency of the IP-Core */
+    linear_interpolation_params_t linear_interpolation_params;  /**< Parameters for linear interpolation of temperature measurement */
 };
 
 /**

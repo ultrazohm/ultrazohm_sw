@@ -1,11 +1,11 @@
-.. _dig_incEncoder2vXX:
+.. _dig_incEncoderRev02:
 
 ==============================
-Digital IncrEncoder 2vXX Rev02
+Digital IncrEncoder Rev02
 ==============================
 
 
-.. image:: incr_encoder_v2/incr_encoder_v2_pcb.jpg
+.. image:: incr_encoder_rev02/incr_encoder_rev02_pcb.jpg
    :height: 500
 
 Functionality
@@ -54,12 +54,12 @@ G15              Dig_13_Ch5   Encoder_1_A
 B14              Dig_12_Ch5   Encoder_1_B
 ===============  ==========  ============
 
-* :download:`Example constraint file for te0808<incr_encoder_v2/Digital_AdapterBoard_D5.xdc>`
+* :download:`Example constraint file for te0808<incr_encoder_rev2/Digital_AdapterBoard_D5.xdc>`
 
 
 Vivado block design with three IP-Cores on D5
 --------------------------------------------------
-.. image:: incr_encoder_v2/vivado_block.jpg
+.. image:: incr_encoder_rev02/vivado_block.jpg
    :height: 500
 
 Compatibility 
@@ -70,7 +70,7 @@ Compatibility
 
 See also
 """""""""""""""
-* :download:`Schematic V02 <incr_encoder_v2/SCH_UZ_D_Incr_Encoder_Default_Rev02.pdf>`
+* :download:`Schematic V02 <incr_encoder_rev02/SCH_UZ_D_Incr_Encoder_Default_Rev02.pdf>`
 * :ref:`label_cpld_programming`
 
 

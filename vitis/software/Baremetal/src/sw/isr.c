@@ -170,7 +170,7 @@ void ISR_Control(void *data)
     }
 
     old_theta_pendulum=Global_Data.av.theta_pendulum;
-    position_derv=((Global_Data.obs.dqn_chart_position-old_position)/Global_Data.av.isr_samplerate_s)/1.0e3f;
+    position_derv=((Global_Data.obs.dqn_chart_position-old_position)/Global_Data.av.isr_samplerate_s);
     if (abs(position_derv) > 1.0e2f)
     {}
     else

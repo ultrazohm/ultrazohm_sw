@@ -7,8 +7,8 @@
   <spirit:busType spirit:vendor="th-nuernberg.de" spirit:library="user" spirit:name="uz_inverter_adapter" spirit:version="1.0"/>
   <spirit:ports>
     <spirit:port>
-      <spirit:logicalName>PWM_H1</spirit:logicalName>
-      <spirit:description>Gate H1</spirit:description>
+      <spirit:logicalName>pwm_h1</spirit:logicalName>
+      <spirit:description>gate h1</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -23,8 +23,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>PWM_L1</spirit:logicalName>
-      <spirit:description>Gate L1</spirit:description>
+      <spirit:logicalName>pwm_l1</spirit:logicalName>
+      <spirit:description>gate l1</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -39,8 +39,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>PWM_H2</spirit:logicalName>
-      <spirit:description>Gate H2</spirit:description>
+      <spirit:logicalName>pwm_h2</spirit:logicalName>
+      <spirit:description>gate h2</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -55,8 +55,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>PWM_L2</spirit:logicalName>
-      <spirit:description>Gate L2</spirit:description>
+      <spirit:logicalName>pwm_l2</spirit:logicalName>
+      <spirit:description>gate l2</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -71,8 +71,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>PWM_H3</spirit:logicalName>
-      <spirit:description>Gate H3</spirit:description>
+      <spirit:logicalName>pwm_h3</spirit:logicalName>
+      <spirit:description>gate h3</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -87,8 +87,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>PWM_L3</spirit:logicalName>
-      <spirit:description>Gate L3</spirit:description>
+      <spirit:logicalName>pwm_l3</spirit:logicalName>
+      <spirit:description>gate l3</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -103,8 +103,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>I1_DIAG</spirit:logicalName>
-      <spirit:description>I1_DIAG</spirit:description>
+      <spirit:logicalName>i1_diag</spirit:logicalName>
+      <spirit:description>i1_diag</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -119,8 +119,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>H1_Temp</spirit:logicalName>
-      <spirit:description>H1_Temp</spirit:description>
+      <spirit:logicalName>h1_temp</spirit:logicalName>
+      <spirit:description>h1_temp</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -135,8 +135,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>I2_DIAG</spirit:logicalName>
-      <spirit:description>I2_DIAG</spirit:description>
+      <spirit:logicalName>i2_diag</spirit:logicalName>
+      <spirit:description>i2_diag</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -151,8 +151,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>L1_Temp</spirit:logicalName>
-      <spirit:description>L1_Temp</spirit:description>
+      <spirit:logicalName>l1_temp</spirit:logicalName>
+      <spirit:description>l1_temp</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -167,8 +167,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>I3_DIAG</spirit:logicalName>
-      <spirit:description>I3_DIAG</spirit:description>
+      <spirit:logicalName>i3_diag</spirit:logicalName>
+      <spirit:description>i3_diag</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -183,8 +183,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>L1_OC</spirit:logicalName>
-      <spirit:description>L1_OC</spirit:description>
+      <spirit:logicalName>l1_oc</spirit:logicalName>
+      <spirit:description>l1_oc</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -199,8 +199,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>I_DIAG</spirit:logicalName>
-      <spirit:description>I_DIAG</spirit:description>
+      <spirit:logicalName>i_diag</spirit:logicalName>
+      <spirit:description>i_diag</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -215,8 +215,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>L1_FAULT</spirit:logicalName>
-      <spirit:description>L1_FAULT</spirit:description>
+      <spirit:logicalName>l1_fault</spirit:logicalName>
+      <spirit:description>l1_fault</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -231,8 +231,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>PWM_EN</spirit:logicalName>
-      <spirit:description>PWM_EN</spirit:description>
+      <spirit:logicalName>pwm_en</spirit:logicalName>
+      <spirit:description>pwm_en</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -247,8 +247,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>H1_OC</spirit:logicalName>
-      <spirit:description>H1_OC</spirit:description>
+      <spirit:logicalName>h1_oc</spirit:logicalName>
+      <spirit:description>h1_oc</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -279,8 +279,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>H1_FAULT</spirit:logicalName>
-      <spirit:description>H1_FAULT</spirit:description>
+      <spirit:logicalName>h1_fault</spirit:logicalName>
+      <spirit:description>h1_fault</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -295,8 +295,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>H3_Temp</spirit:logicalName>
-      <spirit:description>H3_Temp</spirit:description>
+      <spirit:logicalName>h3_temp</spirit:logicalName>
+      <spirit:description>h3_temp</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -311,8 +311,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>H2_Temp</spirit:logicalName>
-      <spirit:description>H2_Temp</spirit:description>
+      <spirit:logicalName>h2_temp</spirit:logicalName>
+      <spirit:description>h2_temp</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -327,8 +327,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>L3_Temp</spirit:logicalName>
-      <spirit:description>L3_Temp</spirit:description>
+      <spirit:logicalName>l3_temp</spirit:logicalName>
+      <spirit:description>l3_temp</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -343,8 +343,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>L2_Temp</spirit:logicalName>
-      <spirit:description>L2_Temp</spirit:description>
+      <spirit:logicalName>l2_temp</spirit:logicalName>
+      <spirit:description>l2_temp</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -359,8 +359,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>L3_OC</spirit:logicalName>
-      <spirit:description>L3_OC</spirit:description>
+      <spirit:logicalName>l3_oc</spirit:logicalName>
+      <spirit:description>l3_oc</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -375,8 +375,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>L2_OC</spirit:logicalName>
-      <spirit:description>L2_OC</spirit:description>
+      <spirit:logicalName>l2_oc</spirit:logicalName>
+      <spirit:description>l2_oc</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -391,8 +391,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>L3_FAULT</spirit:logicalName>
-      <spirit:description>L3_FAULT</spirit:description>
+      <spirit:logicalName>l3_fault</spirit:logicalName>
+      <spirit:description>l3_fault</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -407,8 +407,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>L2_FAULT</spirit:logicalName>
-      <spirit:description>L2_FAULT</spirit:description>
+      <spirit:logicalName>l2_fault</spirit:logicalName>
+      <spirit:description>l2_fault</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -423,8 +423,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>H3_OC</spirit:logicalName>
-      <spirit:description>H3_OC</spirit:description>
+      <spirit:logicalName>h3_oc</spirit:logicalName>
+      <spirit:description>h3_oc</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -439,8 +439,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>H2_OC</spirit:logicalName>
-      <spirit:description>H2_OC</spirit:description>
+      <spirit:logicalName>h2_oc</spirit:logicalName>
+      <spirit:description>h2_oc</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -455,8 +455,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>H3_FAULT</spirit:logicalName>
-      <spirit:description>H3_FAULT</spirit:description>
+      <spirit:logicalName>h3_fault</spirit:logicalName>
+      <spirit:description>h3_fault</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>
@@ -471,8 +471,8 @@
       </spirit:wire>
     </spirit:port>
     <spirit:port>
-      <spirit:logicalName>H2_FAULT</spirit:logicalName>
-      <spirit:description>H2_FAULT</spirit:description>
+      <spirit:logicalName>h2_fault</spirit:logicalName>
+      <spirit:description>h2_fault</spirit:description>
       <spirit:wire>
         <spirit:onMaster>
           <spirit:presence>required</spirit:presence>

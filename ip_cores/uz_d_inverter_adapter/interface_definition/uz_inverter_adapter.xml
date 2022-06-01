@@ -2,13 +2,12 @@
 <spirit:busDefinition xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <spirit:vendor>th-nuernberg.de</spirit:vendor>
   <spirit:library>user</spirit:library>
-  <spirit:name>uz_d_inverter_adapter</spirit:name>
+  <spirit:name>uz_inverter_adapter</spirit:name>
   <spirit:version>1.0</spirit:version>
   <spirit:directConnection>false</spirit:directConnection>
   <spirit:isAddressable>false</spirit:isAddressable>
   <spirit:maxMasters>1</spirit:maxMasters>
   <spirit:maxSlaves>1</spirit:maxSlaves>
-  <spirit:description>interface_for_uz_inverter_adapter</spirit:description>
   <spirit:vendorExtensions>
     <xilinx:busDefinitionInfo>
       <xilinx:displayName>uz_inverter_adapter</xilinx:displayName>

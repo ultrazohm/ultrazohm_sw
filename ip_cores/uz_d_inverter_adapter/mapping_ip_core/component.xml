@@ -2,37 +2,37 @@
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <spirit:vendor>xilinx.com</spirit:vendor>
   <spirit:library>user</spirit:library>
-  <spirit:name>uz_d_inverter_adapter_mapping</spirit:name>
+  <spirit:name>uz_inverter_adapter_mapping</spirit:name>
   <spirit:version>1.0</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
-      <spirit:name>uz_d_inverter_adapter_Interface</spirit:name>
-      <spirit:busType spirit:vendor="th-nuernberg.de" spirit:library="user" spirit:name="uz_d_inverter_adapter_mapping" spirit:version="1.0"/>
-      <spirit:abstractionType spirit:vendor="th-nuernberg.de" spirit:library="user" spirit:name="uz_d_inverter_adapter_mapping_rtl" spirit:version="1.0"/>
+      <spirit:name>uz_inverter_adapter</spirit:name>
+      <spirit:busType spirit:vendor="th-nuernberg.de" spirit:library="user" spirit:name="uz_inverter_adapter" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="th-nuernberg.de" spirit:library="user" spirit:name="uz_inverter_adapter_rtl" spirit:version="1.0"/>
       <spirit:master/>
       <spirit:portMaps>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_L1_FAULT</spirit:name>
+            <spirit:name>L1_FAULT</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_L1_FAULT</spirit:name>
+            <spirit:name>L1_FAULT</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_H2_OC</spirit:name>
+            <spirit:name>H2_OC</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_H2_OC</spirit:name>
+            <spirit:name>H2_OC</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_H3_FAULT</spirit:name>
+            <spirit:name>H3_FAULT</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_H3_FAULT</spirit:name>
+            <spirit:name>H3_FAULT</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -53,18 +53,18 @@
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_H3_Temp</spirit:name>
+            <spirit:name>H3_Temp</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_H3_Temp</spirit:name>
+            <spirit:name>H3_Temp</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_L3_FAULT</spirit:name>
+            <spirit:name>L3_FAULT</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_L3_FAULT</spirit:name>
+            <spirit:name>L3_FAULT</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -77,10 +77,10 @@
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_L3_Temp</spirit:name>
+            <spirit:name>L3_Temp</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_L3_Temp</spirit:name>
+            <spirit:name>L3_Temp</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -125,26 +125,26 @@
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_L1_OC</spirit:name>
+            <spirit:name>L1_OC</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_L1_OC</spirit:name>
+            <spirit:name>L1_OC</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_L3_OC</spirit:name>
+            <spirit:name>L3_OC</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_L3_OC</spirit:name>
+            <spirit:name>L3_OC</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_H1_FAULT</spirit:name>
+            <spirit:name>H1_FAULT</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_H1_FAULT</spirit:name>
+            <spirit:name>H1_FAULT</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -157,34 +157,34 @@
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_H2_Temp</spirit:name>
+            <spirit:name>H2_Temp</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_H2_Temp</spirit:name>
+            <spirit:name>H2_Temp</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_H1_OC</spirit:name>
+            <spirit:name>H1_OC</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_H1_OC</spirit:name>
+            <spirit:name>H1_OC</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_H3_OC</spirit:name>
+            <spirit:name>H3_OC</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_H3_OC</spirit:name>
+            <spirit:name>H3_OC</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_L1_Temp</spirit:name>
+            <spirit:name>L1_Temp</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_L1_Temp</spirit:name>
+            <spirit:name>L1_Temp</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -197,18 +197,18 @@
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_L2_FAULT</spirit:name>
+            <spirit:name>L2_FAULT</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_L2_FAULT</spirit:name>
+            <spirit:name>L2_FAULT</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_H2_FAULT</spirit:name>
+            <spirit:name>H2_FAULT</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_H2_FAULT</spirit:name>
+            <spirit:name>H2_FAULT</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -229,26 +229,26 @@
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_H1_Temp</spirit:name>
+            <spirit:name>H1_Temp</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_H1_Temp</spirit:name>
+            <spirit:name>H1_Temp</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_L2_OC</spirit:name>
+            <spirit:name>L2_OC</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_L2_OC</spirit:name>
+            <spirit:name>L2_OC</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
           <spirit:logicalPort>
-            <spirit:name>GaN_L2_Temp</spirit:name>
+            <spirit:name>L2_Temp</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>GaN_L2_Temp</spirit:name>
+            <spirit:name>L2_Temp</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
@@ -261,7 +261,7 @@
         <spirit:displayName>Synthesis</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:synthesis</spirit:envIdentifier>
         <spirit:language>Verilog</spirit:language>
-        <spirit:modelName>uz_d_inverter_adapter_mapping</spirit:modelName>
+        <spirit:modelName>uz_inverter_adapter_mapping</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagesynthesis_xilinx_com_ip_xlslice_1_0__ref_view_fileset</spirit:localName>
         </spirit:fileSetRef>
@@ -283,7 +283,7 @@
         <spirit:displayName>Simulation</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:simulation</spirit:envIdentifier>
         <spirit:language>Verilog</spirit:language>
-        <spirit:modelName>uz_d_inverter_adapter</spirit:modelName>
+        <spirit:modelName>uz_inverter_adapter</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagebehavioralsimulation_xilinx_com_ip_xlslice_1_0__ref_view_fileset</spirit:localName>
         </spirit:fileSetRef>
@@ -330,7 +330,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_FAULT</spirit:name>
+        <spirit:name>FAULT</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
@@ -347,7 +347,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_H1_FAULT</spirit:name>
+        <spirit:name>H1_FAULT</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -360,7 +360,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_H1_OC</spirit:name>
+        <spirit:name>H1_OC</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -373,7 +373,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_H1_Temp</spirit:name>
+        <spirit:name>H1_Temp</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -386,7 +386,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_H2_FAULT</spirit:name>
+        <spirit:name>H2_FAULT</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -399,7 +399,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_H2_OC</spirit:name>
+        <spirit:name>H2_OC</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -412,7 +412,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_H2_Temp</spirit:name>
+        <spirit:name>H2_Temp</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -425,7 +425,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_H3_FAULT</spirit:name>
+        <spirit:name>H3_FAULT</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -438,7 +438,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_H3_OC</spirit:name>
+        <spirit:name>H3_OC</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -451,7 +451,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_H3_Temp</spirit:name>
+        <spirit:name>H3_Temp</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -464,7 +464,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_L1_FAULT</spirit:name>
+        <spirit:name>L1_FAULT</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -477,7 +477,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_L1_OC</spirit:name>
+        <spirit:name>L1_OC</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -490,7 +490,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_L1_Temp</spirit:name>
+        <spirit:name>L1_Temp</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -503,7 +503,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_L2_FAULT</spirit:name>
+        <spirit:name>L2_FAULT</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -516,7 +516,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_L2_OC</spirit:name>
+        <spirit:name>L2_OC</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -529,7 +529,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_L2_Temp</spirit:name>
+        <spirit:name>L2_Temp</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -542,7 +542,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_L3_FAULT</spirit:name>
+        <spirit:name>L3_FAULT</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -555,7 +555,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_L3_OC</spirit:name>
+        <spirit:name>L3_OC</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -568,7 +568,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_L3_Temp</spirit:name>
+        <spirit:name>L3_Temp</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -581,7 +581,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_OC</spirit:name>
+        <spirit:name>OC</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
@@ -598,7 +598,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>GaN_Temp</spirit:name>
+        <spirit:name>Temp</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
@@ -834,74 +834,74 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlslice_0_0/uz_d_inverter_adapter_mapping_xlslice_0_0.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlslice_0_0/uz_inverter_adapter_mapping_xlslice_0_0.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlslice_0</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlslice_0_1/uz_d_inverter_adapter_mapping_xlslice_0_1.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlslice_0_1/uz_inverter_adapter_mapping_xlslice_0_1.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlslice_1</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlslice_1_0/uz_d_inverter_adapter_mapping_xlslice_1_0.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlslice_1_0/uz_inverter_adapter_mapping_xlslice_1_0.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlslice_2</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlslice_1_1/uz_d_inverter_adapter_mapping_xlslice_1_1.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlslice_1_1/uz_inverter_adapter_mapping_xlslice_1_1.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlslice_3</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlslice_1_2/uz_d_inverter_adapter_mapping_xlslice_1_2.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlslice_1_2/uz_inverter_adapter_mapping_xlslice_1_2.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlslice_4</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlslice_1_3/uz_d_inverter_adapter_mapping_xlslice_1_3.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlslice_1_3/uz_inverter_adapter_mapping_xlslice_1_3.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlslice_5</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlconcat_0_0/uz_d_inverter_adapter_mapping_xlconcat_0_0.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlconcat_0_0/uz_inverter_adapter_mapping_xlconcat_0_0.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlconcat_0</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlconcat_0_1/uz_d_inverter_adapter_mapping_xlconcat_0_1.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlconcat_0_1/uz_inverter_adapter_mapping_xlconcat_0_1.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlconcat_1</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlconcat_1_0/uz_d_inverter_adapter_mapping_xlconcat_1_0.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlconcat_1_0/uz_inverter_adapter_mapping_xlconcat_1_0.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlconcat_2</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlconcat_2_0/uz_d_inverter_adapter_mapping_xlconcat_2_0.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlconcat_2_0/uz_inverter_adapter_mapping_xlconcat_2_0.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlconcat_3</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_ooc.xdc</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_ooc.xdc</spirit:name>
         <spirit:userFileType>xdc</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
-        <spirit:userFileType>SCOPED_TO_REF_uz_d_inverter_adapter_mapping</spirit:userFileType>
+        <spirit:userFileType>SCOPED_TO_REF_uz_inverter_adapter_mapping</spirit:userFileType>
         <spirit:userFileType>USED_IN_out_of_context</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping.v</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>CHECKSUM_67894372</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
@@ -930,67 +930,67 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlslice_0_0/uz_d_inverter_adapter_mapping_xlslice_0_0.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlslice_0_0/uz_inverter_adapter_mapping_xlslice_0_0.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlslice_0</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlslice_0_1/uz_d_inverter_adapter_mapping_xlslice_0_1.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlslice_0_1/uz_inverter_adapter_mapping_xlslice_0_1.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlslice_1</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlslice_1_0/uz_d_inverter_adapter_mapping_xlslice_1_0.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlslice_1_0/uz_inverter_adapter_mapping_xlslice_1_0.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlslice_2</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlslice_1_1/uz_d_inverter_adapter_mapping_xlslice_1_1.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlslice_1_1/uz_inverter_adapter_mapping_xlslice_1_1.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlslice_3</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlslice_1_2/uz_d_inverter_adapter_mapping_xlslice_1_2.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlslice_1_2/uz_inverter_adapter_mapping_xlslice_1_2.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlslice_4</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlslice_1_3/uz_d_inverter_adapter_mapping_xlslice_1_3.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlslice_1_3/uz_inverter_adapter_mapping_xlslice_1_3.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlslice_5</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlconcat_0_0/uz_d_inverter_adapter_mapping_xlconcat_0_0.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlconcat_0_0/uz_inverter_adapter_mapping_xlconcat_0_0.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlconcat_0</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlconcat_0_1/uz_d_inverter_adapter_mapping_xlconcat_0_1.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlconcat_0_1/uz_inverter_adapter_mapping_xlconcat_0_1.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlconcat_1</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlconcat_1_0/uz_d_inverter_adapter_mapping_xlconcat_1_0.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlconcat_1_0/uz_inverter_adapter_mapping_xlconcat_1_0.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlconcat_2</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/uz_d_inverter_adapter_mapping_xlconcat_2_0/uz_d_inverter_adapter_mapping_xlconcat_2_0.xci</spirit:name>
+        <spirit:name>src/uz_inverter_adapter_mapping_xlconcat_2_0/uz_inverter_adapter_mapping_xlconcat_2_0.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
         <spirit:userFileType>CELL_NAME_xlconcat_3</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>sim/uz_d_inverter_adapter_mapping.v</spirit:name>
+        <spirit:name>sim/uz_inverter_adapter_mapping.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>IMPORTED_FILE</spirit:userFileType>
       </spirit:file>
@@ -1018,18 +1018,18 @@
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>xgui/uz_d_inverter_adapter_mapping_v1_0.tcl</spirit:name>
+        <spirit:name>xgui/uz_inverter_adapter_mapping_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
         <spirit:userFileType>CHECKSUM_f64a5dae</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
   </spirit:fileSets>
-  <spirit:description>uz_d_inverter_adapter_mapping_v1_0</spirit:description>
+  <spirit:description>uz_inverter_adapter_mapping_v1_0</spirit:description>
   <spirit:parameters>
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">uz_d_inverter_adapter_mapping_v1_0</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">uz_inverter_adapter_mapping_v1_0</spirit:value>
     </spirit:parameter>
   </spirit:parameters>
   <spirit:vendorExtensions>
@@ -1046,18 +1046,18 @@
       <xilinx:taxonomies>
         <xilinx:taxonomy>/UserIP</xilinx:taxonomy>
       </xilinx:taxonomies>
-      <xilinx:displayName>uz_d_inverter_adapter_mapping_v1_0</xilinx:displayName>
+      <xilinx:displayName>uz_inverter_adapter_mapping_v1_0</xilinx:displayName>
       <xilinx:definitionSource>IPI</xilinx:definitionSource>
       <xilinx:coreRevision>2</xilinx:coreRevision>
       <xilinx:coreCreationDateTime>2021-04-08T14:09:31Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@273dd2e1_ARCHIVE_LOCATION">c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/uz_d_inverter_adapter/IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@61aaf8d0_ARCHIVE_LOCATION">c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/uz_d_inverter_adapter/IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@35706997_ARCHIVE_LOCATION">c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/uz_d_inverter_adapter/IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5aa7f3fa_ARCHIVE_LOCATION">c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/uz_d_inverter_adapter/IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5adc6c6d_ARCHIVE_LOCATION">c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/uz_d_inverter_adapter/IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6534806_ARCHIVE_LOCATION">c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/uz_d_inverter_adapter/IP</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@692edeb9_ARCHIVE_LOCATION">c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/uz_d_inverter_adapter/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@273dd2e1_ARCHIVE_LOCATION">c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/uz_inverter_adapter/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@61aaf8d0_ARCHIVE_LOCATION">c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/uz_inverter_adapter/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@35706997_ARCHIVE_LOCATION">c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/uz_inverter_adapter/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5aa7f3fa_ARCHIVE_LOCATION">c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/uz_inverter_adapter/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5adc6c6d_ARCHIVE_LOCATION">c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/uz_inverter_adapter/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6534806_ARCHIVE_LOCATION">c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/uz_inverter_adapter/IP</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@692edeb9_ARCHIVE_LOCATION">c:/ZynqUltra/60_Software/ultrazohm_sw/ip_cores/uz_inverter_adapter/IP</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>

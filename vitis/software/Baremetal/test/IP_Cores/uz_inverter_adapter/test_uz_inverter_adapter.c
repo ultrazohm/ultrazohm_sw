@@ -12,9 +12,14 @@
 #define TEST_BASE_ADDRESS 0x0000000F
 #define TEST_IP_CORE_FRQ 100000000U
 
+// true = enables printf executions that output every result of the test vectors
+bool debug_output = false;
+
    struct uz_inverter_adapter_config_t test_config = {
         .base_address = TEST_BASE_ADDRESS,
         .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ,
+        .linear_interpolation_params.a = 162.35f,
+        .linear_interpolation_params.b = 20.107f      
     };
 
     struct uz_inverter_adapter_outputs_t test_outputs = {
@@ -73,9 +78,12 @@ void test_uz_inverter_adapter_successful_init(void)
 
 void test_uz_inverter_adapter_get_temperature_degrees_celsius(void)
 {
+    //create test instance
+    uz_inverter_adapter_t *test_instance = uz_inverter_adapter_init(test_config, test_outputs); 
+
     float dutycycle_Normalized = 0.065f;
     float temperature_degrees_celsius = 30.6597f;
-    float temperature_degrees_celsius_readback = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(dutycycle_Normalized);
+    float temperature_degrees_celsius_readback = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(test_instance, dutycycle_Normalized);
     TEST_ASSERT_EQUAL_FLOAT(temperature_degrees_celsius,temperature_degrees_celsius_readback);
 }
 
@@ -102,7 +110,9 @@ void test_uz_inverter_adapter_I_DC_DIAG_results(void)
         uz_inverter_adapter_get_I_DIAG_IgnoreAndReturn(test_instance->outputs.I_DIAG);
         uz_inverter_adapter_update_states(test_instance);
         I_DC_DIAG_result[i] = test_instance->outputs.I_DC_DIAG;
-        // printf("I_DC_DIAG_result: %i, expected: %i, error: %i\n", I_DC_DIAG_result[i],I_DC_DIAG_ref_result[i],I_DC_DIAG_ref_result[i]-I_DC_DIAG_result[i]);
+        if(debug_output == true) {
+        printf("I_DC_DIAG_result: %i, expected: %i, error: %i\n", I_DC_DIAG_result[i],I_DC_DIAG_ref_result[i],I_DC_DIAG_ref_result[i]-I_DC_DIAG_result[i]);
+        };
         TEST_ASSERT_EQUAL_INT(I_DC_DIAG_ref_result[i],I_DC_DIAG_result[i]);
     }
 }
@@ -130,7 +140,9 @@ void test_uz_inverter_adapter_I1_DIAG_results(void)
         uz_inverter_adapter_get_I_DIAG_IgnoreAndReturn(test_instance->outputs.I_DIAG);
         uz_inverter_adapter_update_states(test_instance);
         I1_DIAG_result[i] = test_instance->outputs.I1_DIAG;
-        // printf("I1_DIAG_result: %i, expected: %i, error: %i\n", I1_DIAG_result[i],I1_DIAG_ref_result[i],I1_DIAG_ref_result[i]-I1_DIAG_result[i]);
+        if(debug_output == true) {
+        printf("I1_DIAG_result: %i, expected: %i, error: %i\n", I1_DIAG_result[i],I1_DIAG_ref_result[i],I1_DIAG_ref_result[i]-I1_DIAG_result[i]);
+        };
         TEST_ASSERT_EQUAL_INT(I1_DIAG_ref_result[i],I1_DIAG_result[i]);
     }
 }
@@ -158,7 +170,9 @@ void test_uz_inverter_adapter_I2_DIAG_results(void)
         uz_inverter_adapter_get_I_DIAG_IgnoreAndReturn(test_instance->outputs.I_DIAG);
         uz_inverter_adapter_update_states(test_instance);
         I2_DIAG_result[i] = test_instance->outputs.I2_DIAG;
-        // printf("I2_DIAG_result: %i, expected: %i, error: %i\n", I2_DIAG_result[i],I2_DIAG_ref_result[i],I2_DIAG_ref_result[i]-I2_DIAG_result[i]);
+        if(debug_output == true) {
+        printf("I2_DIAG_result: %i, expected: %i, error: %i\n", I2_DIAG_result[i],I2_DIAG_ref_result[i],I2_DIAG_ref_result[i]-I2_DIAG_result[i]);
+        };
         TEST_ASSERT_EQUAL_INT(I2_DIAG_ref_result[i],I2_DIAG_result[i]);
     }
 }
@@ -186,7 +200,9 @@ void test_uz_inverter_adapter_I3_DIAG_results(void)
         uz_inverter_adapter_get_I_DIAG_IgnoreAndReturn(test_instance->outputs.I_DIAG);
         uz_inverter_adapter_update_states(test_instance);
         I3_DIAG_result[i] = test_instance->outputs.I3_DIAG;
-        // printf("I3_DIAG_result: %i, expected: %i, error: %i\n", I3_DIAG_result[i],I3_DIAG_ref_result[i],I3_DIAG_ref_result[i]-I3_DIAG_result[i]);
+        if(debug_output == true) {
+        printf("I3_DIAG_result: %i, expected: %i, error: %i\n", I3_DIAG_result[i],I3_DIAG_ref_result[i],I3_DIAG_ref_result[i]-I3_DIAG_result[i]);
+        };
         TEST_ASSERT_EQUAL_INT(I3_DIAG_ref_result[i],I3_DIAG_result[i]);
     }
 }
@@ -225,12 +241,14 @@ void test_uz_inverter_adapter_OC_results(void)
         OC_L2_result[i] = test_instance->outputs.OC_L2;
         OC_H3_result[i] = test_instance->outputs.OC_H3;
         OC_L3_result[i] = test_instance->outputs.OC_L3;
-        // printf("OC_H1_result: %i, expected: %i, error: %i\n", OC_H1_result[i],OC_H1_ref_result[i],OC_H1_ref_result[i]-OC_H1_result[i]);
-        // printf("OC_L1_result: %i, expected: %i, error: %i\n", OC_L1_result[i],OC_L1_ref_result[i],OC_L1_ref_result[i]-OC_L1_result[i]);
-        // printf("OC_H2_result: %i, expected: %i, error: %i\n", OC_H2_result[i],OC_H2_ref_result[i],OC_H2_ref_result[i]-OC_H2_result[i]);
-        // printf("OC_L2_result: %i, expected: %i, error: %i\n", OC_L2_result[i],OC_L2_ref_result[i],OC_L2_ref_result[i]-OC_L2_result[i]);
-        // printf("OC_H3_result: %i, expected: %i, error: %i\n", OC_H3_result[i],OC_H3_ref_result[i],OC_H3_ref_result[i]-OC_H3_result[i]);
-        // printf("OC_L3_result: %i, expected: %i, error: %i\n", OC_L3_result[i],OC_L3_ref_result[i],OC_L3_ref_result[i]-OC_L3_result[i]);
+        if(debug_output == true) {
+         printf("OC_H1_result: %i, expected: %i, error: %i\n", OC_H1_result[i],OC_H1_ref_result[i],OC_H1_ref_result[i]-OC_H1_result[i]);
+         printf("OC_L1_result: %i, expected: %i, error: %i\n", OC_L1_result[i],OC_L1_ref_result[i],OC_L1_ref_result[i]-OC_L1_result[i]);
+         printf("OC_H2_result: %i, expected: %i, error: %i\n", OC_H2_result[i],OC_H2_ref_result[i],OC_H2_ref_result[i]-OC_H2_result[i]);
+         printf("OC_L2_result: %i, expected: %i, error: %i\n", OC_L2_result[i],OC_L2_ref_result[i],OC_L2_ref_result[i]-OC_L2_result[i]);
+         printf("OC_H3_result: %i, expected: %i, error: %i\n", OC_H3_result[i],OC_H3_ref_result[i],OC_H3_ref_result[i]-OC_H3_result[i]);
+         printf("OC_L3_result: %i, expected: %i, error: %i\n", OC_L3_result[i],OC_L3_ref_result[i],OC_L3_ref_result[i]-OC_L3_result[i]);
+        };
         TEST_ASSERT_EQUAL_INT(OC_H1_ref_result[i],OC_H1_result[i]);
         TEST_ASSERT_EQUAL_INT(OC_L1_ref_result[i],OC_L1_result[i]);
         TEST_ASSERT_EQUAL_INT(OC_H2_ref_result[i],OC_H2_result[i]);
@@ -263,7 +281,9 @@ void test_uz_inverter_adapter_FAULT_H1_results(void)
         uz_inverter_adapter_get_FAULT_IgnoreAndReturn(test_instance->outputs.FAULT);
         uz_inverter_adapter_update_states(test_instance);
         FAULT_H1_result[i] = test_instance->outputs.FAULT_H1;
-        // printf("FAULT_H1_result: %i, expected: %i, error: %i\n", FAULT_H1_result[i],FAULT_H1_ref_result[i],FAULT_H1_ref_result[i]-FAULT_H1_result[i]);
+        if(debug_output == true) {
+         printf("FAULT_H1_result: %i, expected: %i, error: %i\n", FAULT_H1_result[i],FAULT_H1_ref_result[i],FAULT_H1_ref_result[i]-FAULT_H1_result[i]);
+        };
         TEST_ASSERT_EQUAL_INT(FAULT_H1_ref_result[i],FAULT_H1_result[i]);
     }
 }
@@ -291,7 +311,9 @@ void test_uz_inverter_adapter_FAULT_L1_results(void)
         uz_inverter_adapter_get_FAULT_IgnoreAndReturn(test_instance->outputs.FAULT);
         uz_inverter_adapter_update_states(test_instance);
         FAULT_L1_result[i] = test_instance->outputs.FAULT_L1;
-        // printf("FAULT_L1_result: %i, expected: %i, error: %i\n", FAULT_L1_result[i],FAULT_L1_ref_result[i],FAULT_L1_ref_result[i]-FAULT_L1_result[i]);
+        if(debug_output == true) {
+         printf("FAULT_L1_result: %i, expected: %i, error: %i\n", FAULT_L1_result[i],FAULT_L1_ref_result[i],FAULT_L1_ref_result[i]-FAULT_L1_result[i]);
+        };
         TEST_ASSERT_EQUAL_INT(FAULT_L1_ref_result[i],FAULT_L1_result[i]);
     }
 }
@@ -319,7 +341,9 @@ void test_uz_inverter_adapter_FAULT_H2_results(void)
         uz_inverter_adapter_get_FAULT_IgnoreAndReturn(test_instance->outputs.FAULT);
         uz_inverter_adapter_update_states(test_instance);
         FAULT_H2_result[i] = test_instance->outputs.FAULT_H2;
-        // printf("FAULT_H2_result: %i, expected: %i, error: %i\n", FAULT_H2_result[i],FAULT_H2_ref_result[i],FAULT_H2_ref_result[i]-FAULT_H2_result[i]);
+        if(debug_output == true) {
+         printf("FAULT_H2_result: %i, expected: %i, error: %i\n", FAULT_H2_result[i],FAULT_H2_ref_result[i],FAULT_H2_ref_result[i]-FAULT_H2_result[i]);
+        };
         TEST_ASSERT_EQUAL_INT(FAULT_H2_ref_result[i],FAULT_H2_result[i]);
     }
 }
@@ -347,7 +371,9 @@ void test_uz_inverter_adapter_FAULT_L2_results(void)
         uz_inverter_adapter_get_FAULT_IgnoreAndReturn(test_instance->outputs.FAULT);
         uz_inverter_adapter_update_states(test_instance);
         FAULT_L2_result[i] = test_instance->outputs.FAULT_L2;
-        // printf("FAULT_L2_result: %i, expected: %i, error: %i\n", FAULT_L2_result[i],FAULT_L2_ref_result[i],FAULT_L2_ref_result[i]-FAULT_L2_result[i]);
+        if(debug_output == true) {
+         printf("FAULT_L2_result: %i, expected: %i, error: %i\n", FAULT_L2_result[i],FAULT_L2_ref_result[i],FAULT_L2_ref_result[i]-FAULT_L2_result[i]);
+        };
         TEST_ASSERT_EQUAL_INT(FAULT_L2_ref_result[i],FAULT_L2_result[i]);
     }
 }
@@ -375,7 +401,9 @@ void test_uz_inverter_adapter_FAULT_H3_results(void)
         uz_inverter_adapter_get_FAULT_IgnoreAndReturn(test_instance->outputs.FAULT);
         uz_inverter_adapter_update_states(test_instance);
         FAULT_H3_result[i] = test_instance->outputs.FAULT_H3;
-        // printf("FAULT_H3_result: %i, expected: %i, error: %i\n", FAULT_H3_result[i],FAULT_H3_ref_result[i],FAULT_H3_ref_result[i]-FAULT_H3_result[i]);
+        if(debug_output == true) {
+         printf("FAULT_H3_result: %i, expected: %i, error: %i\n", FAULT_H3_result[i],FAULT_H3_ref_result[i],FAULT_H3_ref_result[i]-FAULT_H3_result[i]);
+        };
         TEST_ASSERT_EQUAL_INT(FAULT_H3_ref_result[i],FAULT_H3_result[i]);
     }
 }
@@ -403,7 +431,9 @@ void test_uz_inverter_adapter_FAULT_L3_results(void)
         uz_inverter_adapter_get_FAULT_IgnoreAndReturn(test_instance->outputs.FAULT);
         uz_inverter_adapter_update_states(test_instance);
         FAULT_L3_result[i] = test_instance->outputs.FAULT_L3;
-        // printf("FAULT_L3_result: %i, expected: %i, error: %i\n", FAULT_L3_result[i],FAULT_L3_ref_result[i],FAULT_L3_ref_result[i]-FAULT_L3_result[i]);
+        if(debug_output == true) {
+         printf("FAULT_L3_result: %i, expected: %i, error: %i\n", FAULT_L3_result[i],FAULT_L3_ref_result[i],FAULT_L3_ref_result[i]-FAULT_L3_result[i]);
+        };
         TEST_ASSERT_EQUAL_INT(FAULT_L3_ref_result[i],FAULT_L3_result[i]);
     }
 }
@@ -444,12 +474,15 @@ void test_uz_inverter_adapter_dutycyc_to_temperature_results(void)
         temperature_degrees_celsius_L2_result[i] = test_instance->outputs.ChipTempDegreesCelsius_L2;
         temperature_degrees_celsius_H3_result[i] = test_instance->outputs.ChipTempDegreesCelsius_H3;
         temperature_degrees_celsius_L3_result[i] = test_instance->outputs.ChipTempDegreesCelsius_L3;
-        // printf("ChipTempDegreesCelsius_H1_result: %f, expected: %f, error: %f\n", temperature_degrees_celsius_H1_result[i],temp_ref_result[i],temp_ref_result[i]-temperature_degrees_celsius_H1_result[i]);
-        // printf("GaN_ChipTempDegreesCelsius_L1_result: %f, expected: %f, error: %f\n", temperature_degrees_celsius_L1_result[i],temp_ref_result[i],temp_ref_result[i]-temperature_degrees_celsius_L1_result[i]);
-        // printf("GaN_ChipTempDegreesCelsius_H2_result: %f, expected: %f, error: %f\n", temperature_degrees_celsius_H2_result[i],temp_ref_result[i],temp_ref_result[i]-temperature_degrees_celsius_H2_result[i]);
-        // printf("GaN_ChipTempDegreesCelsius_L2_result: %f, expected: %f, error: %f\n", temperature_degrees_celsius_L2_result[i],temp_ref_result[i],temp_ref_result[i]-temperature_degrees_celsius_L2_result[i]);
-        // printf("GaN_ChipTempDegreesCelsius_H3_result: %f, expected: %f, error: %f\n", temperature_degrees_celsius_H3_result[i],temp_ref_result[i],temp_ref_result[i]-temperature_degrees_celsius_H3_result[i]);
-        // printf("GaN_ChipTempDegreesCelsius_L3_result: %f, expected: %f, error: %f\n", temperature_degrees_celsius_L3_result[i],temp_ref_result[i],temp_ref_result[i]-temperature_degrees_celsius_L3_result[i]);
+        if(debug_output == true) {
+         //casting to double to get rid of compiler warnings. printf doesn't support floats
+         printf("ChipTempDegreesCelsius_H1_result: %f, expected: %f, error: %f\n", (double)temperature_degrees_celsius_H1_result[i],(double)temp_ref_result[i],(double)temp_ref_result[i]-(double)temperature_degrees_celsius_H1_result[i]);
+         printf("ChipTempDegreesCelsius_L1_result: %f, expected: %f, error: %f\n", (double)temperature_degrees_celsius_L1_result[i],(double)temp_ref_result[i],(double)temp_ref_result[i]-(double)temperature_degrees_celsius_L1_result[i]);
+         printf("ChipTempDegreesCelsius_H2_result: %f, expected: %f, error: %f\n", (double)temperature_degrees_celsius_H2_result[i],(double)temp_ref_result[i],(double)temp_ref_result[i]-(double)temperature_degrees_celsius_H2_result[i]);
+         printf("ChipTempDegreesCelsius_L2_result: %f, expected: %f, error: %f\n", (double)temperature_degrees_celsius_L2_result[i],(double)temp_ref_result[i],(double)temp_ref_result[i]-(double)temperature_degrees_celsius_L2_result[i]);
+         printf("ChipTempDegreesCelsius_H3_result: %f, expected: %f, error: %f\n", (double)temperature_degrees_celsius_H3_result[i],(double)temp_ref_result[i],(double)temp_ref_result[i]-(double)temperature_degrees_celsius_H3_result[i]);
+         printf("ChipTempDegreesCelsius_L3_result: %f, expected: %f, error: %f\n\n", (double)temperature_degrees_celsius_L3_result[i],(double)temp_ref_result[i],(double)temp_ref_result[i]-(double)temperature_degrees_celsius_L3_result[i]);
+        };
         TEST_ASSERT_EQUAL_FLOAT(temp_ref_result[i],temperature_degrees_celsius_H1_result[i]);
         TEST_ASSERT_EQUAL_FLOAT(temp_ref_result[i],temperature_degrees_celsius_L1_result[i]);
         TEST_ASSERT_EQUAL_FLOAT(temp_ref_result[i],temperature_degrees_celsius_H2_result[i]);

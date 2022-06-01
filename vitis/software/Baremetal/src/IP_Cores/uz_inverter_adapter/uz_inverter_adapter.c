@@ -34,9 +34,13 @@ uz_inverter_adapter_t* uz_inverter_adapter_init(struct uz_inverter_adapter_confi
     return(self);
 }
 
-float uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(float dutyCycleNormalized) {
-    // linear regression of duty cycle to temperature function
-    return(100.0f*dutyCycleNormalized*1.6235f+20.107f);
+float uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(uz_inverter_adapter_t *self, float dutyCycleNormalized) {
+    // linear interpolation of duty cycle to temperature function
+    float a;
+    float b;
+    a = self->config.linear_interpolation_params.a;
+    b = self->config.linear_interpolation_params.b;
+    return(dutyCycleNormalized*a+b);
 }
 
 void uz_inverter_adapter_update_states(uz_inverter_adapter_t *self) {
@@ -77,12 +81,12 @@ void uz_inverter_adapter_update_states(uz_inverter_adapter_t *self) {
     self->outputs.PWMdutyCycNormalized_L3 = uz_inverter_adapter_get_PWMdutyCycNormalized_L3(self->config.base_address);
 
     //calculate chip temperatures in degrees celsius from the duty cycle information
-    self->outputs.ChipTempDegreesCelsius_H1 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self->outputs.PWMdutyCycNormalized_H1);
-    self->outputs.ChipTempDegreesCelsius_L1 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self->outputs.PWMdutyCycNormalized_L1);
-    self->outputs.ChipTempDegreesCelsius_H2 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self->outputs.PWMdutyCycNormalized_H2);
-    self->outputs.ChipTempDegreesCelsius_L2 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self->outputs.PWMdutyCycNormalized_L2);
-    self->outputs.ChipTempDegreesCelsius_H3 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self->outputs.PWMdutyCycNormalized_H3);
-    self->outputs.ChipTempDegreesCelsius_L3 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self->outputs.PWMdutyCycNormalized_L3);
+    self->outputs.ChipTempDegreesCelsius_H1 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_H1);
+    self->outputs.ChipTempDegreesCelsius_L1 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_L1);
+    self->outputs.ChipTempDegreesCelsius_H2 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_H2);
+    self->outputs.ChipTempDegreesCelsius_L2 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_L2);
+    self->outputs.ChipTempDegreesCelsius_H3 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_H3);
+    self->outputs.ChipTempDegreesCelsius_L3 = uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(self, self->outputs.PWMdutyCycNormalized_L3);
 }
 
 struct uz_inverter_adapter_outputs_t uz_inverter_adapter_get_outputs(uz_inverter_adapter_t *self) {

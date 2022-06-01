@@ -10,12 +10,25 @@
 typedef struct uz_inverter_adapter_t uz_inverter_adapter_t;
 
 /**
+ * @brief Struct for linear interpolation parameters
+ * using a function of the form y=ax+b
+ * @param a Gradient
+ * @param b Offset
+ */
+typedef struct linear_interpolation_params_t{
+    float a;
+    float b;
+} linear_interpolation_params_t;
+
+
+/**
  * @brief Configuration struct for uz_inverter_adapter
  *
  */
 struct uz_inverter_adapter_config_t{
     uint32_t base_address; /**< Base address of the IP-Core instance to which the driver is coupled */
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
+    linear_interpolation_params_t linear_interpolation_params; /**< Parameters for linear interpolation of temperature measurement */
 };
 
 /**
@@ -71,7 +84,7 @@ uz_inverter_adapter_t* uz_inverter_adapter_init(struct uz_inverter_adapter_confi
  *        PWM temperature signal
  * @return float value of chip temperature in degrees celsius
  */
- float uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(float dutyCycleNormalized);
+ float uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(uz_inverter_adapter_t *self, float dutyCycleNormalized);
 
  void uz_inverter_adapter_update_states(uz_inverter_adapter_t *self);
 

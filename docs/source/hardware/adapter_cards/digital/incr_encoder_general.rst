@@ -16,9 +16,9 @@ Before first use
 ----------------------------
 * Solder D-Sub 9 pin cable
   
-.. image:: incr_encoder_v1/incr_encoder_v1_dsub_top.jpg
+.. image:: incr_encoder_general/incr_encoder_dsub_top.jpg
    :width: 300
-.. image:: incr_encoder_v1/incr_encoder_v1_dsub_bot.jpg
+.. image:: incr_encoder_general/incr_encoder_dsub_bot.jpg
    :width: 300
 
 Pinout 

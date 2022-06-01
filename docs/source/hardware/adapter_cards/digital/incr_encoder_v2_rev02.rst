@@ -1,6 +1,6 @@
-==========================
-Digital IncrEncoder 2vXX
-==========================
+==============================
+Digital IncrEncoder 2vXX Rev02
+==============================
 
 
 .. image:: incr_encoder_v2/incr_encoder_v2_pcb.jpg
@@ -8,19 +8,10 @@ Digital IncrEncoder 2vXX
 
 Functionality
 -----------------------
-* Connects three incremental encoder to FPGA
+* Connects three incremental encoder FPGA
 * Provides isolated 5V supply to encoder
 * Reads differential signals from encoder
 
-
-Before first use
-----------------------------
-* Solder D-Sub 9 pin cable
-  
-.. image:: incr_encoder_v1/incr_encoder_v1_dsub_top.jpg
-   :width: 300
-.. image:: incr_encoder_v1/incr_encoder_v1_dsub_bot.jpg
-   :width: 300
 
 Pinout (exemplary for Encoder 1)
 """""""""""""""""""""""""""""""""

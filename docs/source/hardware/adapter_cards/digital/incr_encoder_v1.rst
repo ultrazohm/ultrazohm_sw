@@ -1,5 +1,3 @@
-.. _dig_incEncoder:
-
 ==========================
 Digital IncrEncoder 1vXX
 ==========================
@@ -10,19 +8,9 @@ Digital IncrEncoder 1vXX
 
 Functionality
 -----------------------
-* Connects incremental encoder to FPGA
+* Connects one incremental encoder to FPGA
 * Provides isolated 5V supply to encoder
 * Reads differential signals from encoder
-
-
-Before first use
-----------------------------
-* Solder D-Sub 9 pin cable
-  
-.. image:: incr_encoder_v1/incr_encoder_v1_dsub_top.jpg
-   :width: 300
-.. image:: incr_encoder_v1/incr_encoder_v1_dsub_bot.jpg
-   :width: 300
 
 * Program CPLDs with firmware, see :ref:`label_cpld_programming` for details
 

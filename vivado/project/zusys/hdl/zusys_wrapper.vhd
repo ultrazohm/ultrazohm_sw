@@ -1,8 +1,8 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1.1 (win64) Build 2960000 Wed Aug  5 22:57:20 MDT 2020
---Date        : Wed May 18 22:26:19 2022
---Host        : eln177123 running 64-bit major release  (build 9200)
+--Date        : Wed Jun  1 19:44:49 2022
+--Host        : enc177112 running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
 --Purpose     : IP block netlist
@@ -25,11 +25,36 @@ entity zusys_wrapper is
     A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT : out STD_LOGIC_VECTOR ( 23 downto 0 );
-    D1_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_dig_io_17 : in STD_LOGIC;
+    D1_h1_fault : in STD_LOGIC;
+    D1_h1_oc : in STD_LOGIC;
+    D1_h1_temp : in STD_LOGIC;
+    D1_h2_fault : in STD_LOGIC;
+    D1_h2_oc : in STD_LOGIC;
+    D1_h2_temp : in STD_LOGIC;
+    D1_h3_fault : in STD_LOGIC;
+    D1_h3_oc : in STD_LOGIC;
+    D1_h3_temp : in STD_LOGIC;
+    D1_i1_diag : in STD_LOGIC;
+    D1_i2_diag : in STD_LOGIC;
+    D1_i3_diag : in STD_LOGIC;
+    D1_i_diag : in STD_LOGIC;
+    D1_l1_fault : in STD_LOGIC;
+    D1_l1_oc : in STD_LOGIC;
+    D1_l1_temp : in STD_LOGIC;
+    D1_l2_fault : in STD_LOGIC;
+    D1_l2_oc : in STD_LOGIC;
+    D1_l2_temp : in STD_LOGIC;
+    D1_l3_fault : in STD_LOGIC;
+    D1_l3_oc : in STD_LOGIC;
+    D1_l3_temp : in STD_LOGIC;
+    D1_pwm_en : out STD_LOGIC;
+    D1_pwm_h1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_pwm_h2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_pwm_h3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_pwm_l1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_pwm_l2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_pwm_l3 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT : out STD_LOGIC_VECTOR ( 11 downto 0 );
     D2_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -79,11 +104,6 @@ architecture STRUCTURE of zusys_wrapper is
     A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT : out STD_LOGIC_VECTOR ( 23 downto 0 );
-    D1_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D1_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT : out STD_LOGIC_VECTOR ( 11 downto 0 );
     D2_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -114,7 +134,37 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_21_Ch5 : in STD_LOGIC;
     Dig_22_Ch5 : in STD_LOGIC;
     Dig_23_Ch5 : in STD_LOGIC;
-    Dig_8_Ch5 : in STD_LOGIC
+    Dig_8_Ch5 : in STD_LOGIC;
+    D1_l1_fault : in STD_LOGIC;
+    D1_h2_oc : in STD_LOGIC;
+    D1_h3_fault : in STD_LOGIC;
+    D1_dig_io_17 : in STD_LOGIC;
+    D1_i3_diag : in STD_LOGIC;
+    D1_h3_temp : in STD_LOGIC;
+    D1_l3_fault : in STD_LOGIC;
+    D1_i_diag : in STD_LOGIC;
+    D1_l3_temp : in STD_LOGIC;
+    D1_pwm_h1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_pwm_en : out STD_LOGIC;
+    D1_pwm_h2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_pwm_l3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_pwm_h3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_l1_oc : in STD_LOGIC;
+    D1_l3_oc : in STD_LOGIC;
+    D1_h1_fault : in STD_LOGIC;
+    D1_i1_diag : in STD_LOGIC;
+    D1_h2_temp : in STD_LOGIC;
+    D1_h1_oc : in STD_LOGIC;
+    D1_h3_oc : in STD_LOGIC;
+    D1_l1_temp : in STD_LOGIC;
+    D1_pwm_l1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_l2_fault : in STD_LOGIC;
+    D1_h2_fault : in STD_LOGIC;
+    D1_pwm_l2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D1_i2_diag : in STD_LOGIC;
+    D1_h1_temp : in STD_LOGIC;
+    D1_l2_oc : in STD_LOGIC;
+    D1_l2_temp : in STD_LOGIC
   );
   end component zusys;
 begin
@@ -132,11 +182,36 @@ zusys_i: component zusys
       A3_OUT_CLK(1 downto 0) => A3_OUT_CLK(1 downto 0),
       A3_OUT_CNV_0(0) => A3_OUT_CNV_0(0),
       A3_OUT_CNV_1(0) => A3_OUT_CNV_1(0),
-      D1_OUT(23 downto 0) => D1_OUT(23 downto 0),
-      D1_OUT_26(0) => D1_OUT_26(0),
-      D1_OUT_27(0) => D1_OUT_27(0),
-      D1_OUT_28(0) => D1_OUT_28(0),
-      D1_OUT_29(0) => D1_OUT_29(0),
+      D1_dig_io_17 => D1_dig_io_17,
+      D1_h1_fault => D1_h1_fault,
+      D1_h1_oc => D1_h1_oc,
+      D1_h1_temp => D1_h1_temp,
+      D1_h2_fault => D1_h2_fault,
+      D1_h2_oc => D1_h2_oc,
+      D1_h2_temp => D1_h2_temp,
+      D1_h3_fault => D1_h3_fault,
+      D1_h3_oc => D1_h3_oc,
+      D1_h3_temp => D1_h3_temp,
+      D1_i1_diag => D1_i1_diag,
+      D1_i2_diag => D1_i2_diag,
+      D1_i3_diag => D1_i3_diag,
+      D1_i_diag => D1_i_diag,
+      D1_l1_fault => D1_l1_fault,
+      D1_l1_oc => D1_l1_oc,
+      D1_l1_temp => D1_l1_temp,
+      D1_l2_fault => D1_l2_fault,
+      D1_l2_oc => D1_l2_oc,
+      D1_l2_temp => D1_l2_temp,
+      D1_l3_fault => D1_l3_fault,
+      D1_l3_oc => D1_l3_oc,
+      D1_l3_temp => D1_l3_temp,
+      D1_pwm_en => D1_pwm_en,
+      D1_pwm_h1(0) => D1_pwm_h1(0),
+      D1_pwm_h2(0) => D1_pwm_h2(0),
+      D1_pwm_h3(0) => D1_pwm_h3(0),
+      D1_pwm_l1(0) => D1_pwm_l1(0),
+      D1_pwm_l2(0) => D1_pwm_l2(0),
+      D1_pwm_l3(0) => D1_pwm_l3(0),
       D2_OUT(11 downto 0) => D2_OUT(11 downto 0),
       D2_OUT_26(0) => D2_OUT_26(0),
       D2_OUT_27(0) => D2_OUT_27(0),

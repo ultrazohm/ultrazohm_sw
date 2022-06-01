@@ -16,30 +16,30 @@ DIG_IO_03
 DIG_IO_04
 DIG_IO_05
 DIG_IO_06 */
-(* CORE_GENERATION_INFO = "uz_d_inverter_adapter_mapping,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=uz_d_inverter_adapter_mapping,x_ipVersion=1.00.a,x_ipLanguage=VERILOG,numBlks=10,numReposBlks=10,numNonXlnxBlks=0,numHierBlks=0,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=0,numPkgbdBlks=0,bdsource=USER,synth_mode=OOC_per_IP}" *) (* HW_HANDOFF = "uz_d_inverter_adapter_mapping.hwdef" *) 
-module uz_d_inverter_adapter_mapping
+(* CORE_GENERATION_INFO = "uz_inverter_adapter_mapping,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=uz_inverter_adapter_mapping,x_ipVersion=1.00.a,x_ipLanguage=VERILOG,numBlks=10,numReposBlks=10,numNonXlnxBlks=0,numHierBlks=0,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=0,numPkgbdBlks=0,bdsource=USER,synth_mode=OOC_per_IP}" *) (* HW_HANDOFF = "uz_inverter_adapter_mapping.hwdef" *) 
+module uz_inverter_adapter_mapping
    (DIG_IO_17,
-    GaN_FAULT,
-    GaN_H1_FAULT,
-    GaN_H1_OC,
-    GaN_H1_Temp,
-    GaN_H2_FAULT,
-    GaN_H2_OC,
-    GaN_H2_Temp,
-    GaN_H3_FAULT,
-    GaN_H3_OC,
-    GaN_H3_Temp,
-    GaN_L1_FAULT,
-    GaN_L1_OC,
-    GaN_L1_Temp,
-    GaN_L2_FAULT,
-    GaN_L2_OC,
-    GaN_L2_Temp,
-    GaN_L3_FAULT,
-    GaN_L3_OC,
-    GaN_L3_Temp,
-    GaN_OC,
-    GaN_Temp,
+    FAULT,
+    H1_FAULT,
+    H1_OC,
+    H1_Temp,
+    H2_FAULT,
+    H2_OC,
+    H2_Temp,
+    H3_FAULT,
+    H3_OC,
+    H3_Temp,
+    L1_FAULT,
+    L1_OC,
+    L1_Temp,
+    L2_FAULT,
+    L2_OC,
+    L2_Temp,
+    L3_FAULT,
+    L3_OC,
+    L3_Temp,
+    OC,
+    Temp,
     Gates,
     I0_DIAG,
     I1_DIAG,
@@ -55,27 +55,27 @@ module uz_d_inverter_adapter_mapping
     PWM_L2,
     PWM_L3);
   input DIG_IO_17;
-  output [5:0]GaN_FAULT;
-  input GaN_H1_FAULT;
-  input GaN_H1_OC;
-  input GaN_H1_Temp;
-  input GaN_H2_FAULT;
-  input GaN_H2_OC;
-  input GaN_H2_Temp;
-  input GaN_H3_FAULT;
-  input GaN_H3_OC;
-  input GaN_H3_Temp;
-  input GaN_L1_FAULT;
-  input GaN_L1_OC;
-  input GaN_L1_Temp;
-  input GaN_L2_FAULT;
-  input GaN_L2_OC;
-  input GaN_L2_Temp;
-  input GaN_L3_FAULT;
-  input GaN_L3_OC;
-  input GaN_L3_Temp;
-  output [5:0]GaN_OC;
-  output [5:0]GaN_Temp;
+  output [5:0]FAULT;
+  input H1_FAULT;
+  input H1_OC;
+  input H1_Temp;
+  input H2_FAULT;
+  input H2_OC;
+  input H2_Temp;
+  input H3_FAULT;
+  input H3_OC;
+  input H3_Temp;
+  input L1_FAULT;
+  input L1_OC;
+  input L1_Temp;
+  input L2_FAULT;
+  input L2_OC;
+  input L2_Temp;
+  input L3_FAULT;
+  input L3_OC;
+  input L3_Temp;
+  output [5:0]OC;
+  output [5:0]Temp;
   input [5:0]Gates;
   input I0_DIAG;
   input I1_DIAG;
@@ -91,24 +91,24 @@ module uz_d_inverter_adapter_mapping
   output [0:0]PWM_L2;
   output [0:0]PWM_L3;
 
-  wire GaN_H1_FAULT_1;
-  wire GaN_H1_OC_1;
-  wire GaN_H1_Temp_1;
-  wire GaN_H2_FAULT_1;
-  wire GaN_H2_OC_1;
-  wire GaN_H2_Temp_1;
-  wire GaN_H3_FAULT_1;
-  wire GaN_H3_OC_1;
-  wire GaN_H3_Temp_1;
-  wire GaN_L1_FAULT_1;
-  wire GaN_L1_OC_1;
-  wire GaN_L1_Temp_1;
-  wire GaN_L2_FAULT_1;
-  wire GaN_L2_OC_1;
-  wire GaN_L2_Temp_1;
-  wire GaN_L3_FAULT_1;
-  wire GaN_L3_OC_1;
-  wire GaN_L3_Temp_1;
+  wire H1_FAULT_1;
+  wire H1_OC_1;
+  wire H1_Temp_1;
+  wire H2_FAULT_1;
+  wire H2_OC_1;
+  wire H2_Temp_1;
+  wire H3_FAULT_1;
+  wire H3_OC_1;
+  wire H3_Temp_1;
+  wire L1_FAULT_1;
+  wire L1_OC_1;
+  wire L1_Temp_1;
+  wire L2_FAULT_1;
+  wire L2_OC_1;
+  wire L2_Temp_1;
+  wire L3_FAULT_1;
+  wire L3_OC_1;
+  wire L3_Temp_1;
   wire [5:0]Gates_1;
   wire I0_DIAG_1;
   wire I1_DIAG_1;
@@ -126,27 +126,27 @@ module uz_d_inverter_adapter_mapping
   wire [0:0]xlslice_4_Dout;
   wire [0:0]xlslice_5_Dout;
 
-  assign GaN_FAULT[5:0] = xlconcat_3_dout;
-  assign GaN_H1_FAULT_1 = GaN_H1_FAULT;
-  assign GaN_H1_OC_1 = GaN_H1_OC;
-  assign GaN_H1_Temp_1 = GaN_H1_Temp;
-  assign GaN_H2_FAULT_1 = GaN_H2_FAULT;
-  assign GaN_H2_OC_1 = GaN_H2_OC;
-  assign GaN_H2_Temp_1 = GaN_H2_Temp;
-  assign GaN_H3_FAULT_1 = GaN_H3_FAULT;
-  assign GaN_H3_OC_1 = GaN_H3_OC;
-  assign GaN_H3_Temp_1 = GaN_H3_Temp;
-  assign GaN_L1_FAULT_1 = GaN_L1_FAULT;
-  assign GaN_L1_OC_1 = GaN_L1_OC;
-  assign GaN_L1_Temp_1 = GaN_L1_Temp;
-  assign GaN_L2_FAULT_1 = GaN_L2_FAULT;
-  assign GaN_L2_OC_1 = GaN_L2_OC;
-  assign GaN_L2_Temp_1 = GaN_L2_Temp;
-  assign GaN_L3_FAULT_1 = GaN_L3_FAULT;
-  assign GaN_L3_OC_1 = GaN_L3_OC;
-  assign GaN_L3_Temp_1 = GaN_L3_Temp;
-  assign GaN_OC[5:0] = xlconcat_2_dout;
-  assign GaN_Temp[5:0] = xlconcat_1_dout;
+  assign FAULT[5:0] = xlconcat_3_dout;
+  assign H1_FAULT_1 = H1_FAULT;
+  assign H1_OC_1 = H1_OC;
+  assign H1_Temp_1 = H1_Temp;
+  assign H2_FAULT_1 = H2_FAULT;
+  assign H2_OC_1 = H2_OC;
+  assign H2_Temp_1 = H2_Temp;
+  assign H3_FAULT_1 = H3_FAULT;
+  assign H3_OC_1 = H3_OC;
+  assign H3_Temp_1 = H3_Temp;
+  assign L1_FAULT_1 = L1_FAULT;
+  assign L1_OC_1 = L1_OC;
+  assign L1_Temp_1 = L1_Temp;
+  assign L2_FAULT_1 = L2_FAULT;
+  assign L2_OC_1 = L2_OC;
+  assign L2_Temp_1 = L2_Temp;
+  assign L3_FAULT_1 = L3_FAULT;
+  assign L3_OC_1 = L3_OC;
+  assign L3_Temp_1 = L3_Temp;
+  assign OC[5:0] = xlconcat_2_dout;
+  assign Temp[5:0] = xlconcat_1_dout;
   assign Gates_1 = Gates[5:0];
   assign I0_DIAG_1 = I0_DIAG;
   assign I1_DIAG_1 = I1_DIAG;
@@ -161,52 +161,52 @@ module uz_d_inverter_adapter_mapping
   assign PWM_L1[0] = xlslice_1_Dout;
   assign PWM_L2[0] = xlslice_3_Dout;
   assign PWM_L3[0] = xlslice_5_Dout;
-  uz_d_inverter_adapter_mapping_xlconcat_0_0 xlconcat_0
+  uz_inverter_adapter_mapping_xlconcat_0_0 xlconcat_0
        (.In0(I0_DIAG_1),
         .In1(I1_DIAG_1),
         .In2(I2_DIAG_1),
         .In3(I3_DIAG_1),
         .dout(xlconcat_0_dout));
-  uz_d_inverter_adapter_mapping_xlconcat_0_1 xlconcat_1
-       (.In0(GaN_H1_Temp_1),
-        .In1(GaN_L1_Temp_1),
-        .In2(GaN_H2_Temp_1),
-        .In3(GaN_L2_Temp_1),
-        .In4(GaN_H3_Temp_1),
-        .In5(GaN_L3_Temp_1),
+  uz_inverter_adapter_mapping_xlconcat_0_1 xlconcat_1
+       (.In0(H1_Temp_1),
+        .In1(L1_Temp_1),
+        .In2(H2_Temp_1),
+        .In3(L2_Temp_1),
+        .In4(H3_Temp_1),
+        .In5(L3_Temp_1),
         .dout(xlconcat_1_dout));
-  uz_d_inverter_adapter_mapping_xlconcat_1_0 xlconcat_2
-       (.In0(GaN_H1_OC_1),
-        .In1(GaN_L1_OC_1),
-        .In2(GaN_H2_OC_1),
-        .In3(GaN_L2_OC_1),
-        .In4(GaN_H3_OC_1),
-        .In5(GaN_L3_OC_1),
+  uz_inverter_adapter_mapping_xlconcat_1_0 xlconcat_2
+       (.In0(H1_OC_1),
+        .In1(L1_OC_1),
+        .In2(H2_OC_1),
+        .In3(L2_OC_1),
+        .In4(H3_OC_1),
+        .In5(L3_OC_1),
         .dout(xlconcat_2_dout));
-  uz_d_inverter_adapter_mapping_xlconcat_2_0 xlconcat_3
-       (.In0(GaN_H1_FAULT_1),
-        .In1(GaN_L1_FAULT_1),
-        .In2(GaN_H2_FAULT_1),
-        .In3(GaN_L2_FAULT_1),
-        .In4(GaN_L3_FAULT_1),
-        .In5(GaN_H3_FAULT_1),
+  uz_inverter_adapter_mapping_xlconcat_2_0 xlconcat_3
+       (.In0(H1_FAULT_1),
+        .In1(L1_FAULT_1),
+        .In2(H2_FAULT_1),
+        .In3(L2_FAULT_1),
+        .In4(L3_FAULT_1),
+        .In5(H3_FAULT_1),
         .dout(xlconcat_3_dout));
-  uz_d_inverter_adapter_mapping_xlslice_0_0 xlslice_0
+  uz_inverter_adapter_mapping_xlslice_0_0 xlslice_0
        (.Din(Gates_1),
         .Dout(xlslice_0_Dout));
-  uz_d_inverter_adapter_mapping_xlslice_0_1 xlslice_1
+  uz_inverter_adapter_mapping_xlslice_0_1 xlslice_1
        (.Din(Gates_1),
         .Dout(xlslice_1_Dout));
-  uz_d_inverter_adapter_mapping_xlslice_1_0 xlslice_2
+  uz_inverter_adapter_mapping_xlslice_1_0 xlslice_2
        (.Din(Gates_1),
         .Dout(xlslice_2_Dout));
-  uz_d_inverter_adapter_mapping_xlslice_1_1 xlslice_3
+  uz_inverter_adapter_mapping_xlslice_1_1 xlslice_3
        (.Din(Gates_1),
         .Dout(xlslice_3_Dout));
-  uz_d_inverter_adapter_mapping_xlslice_1_2 xlslice_4
+  uz_inverter_adapter_mapping_xlslice_1_2 xlslice_4
        (.Din(Gates_1),
         .Dout(xlslice_4_Dout));
-  uz_d_inverter_adapter_mapping_xlslice_1_3 xlslice_5
+  uz_inverter_adapter_mapping_xlslice_1_3 xlslice_5
        (.Din(Gates_1),
         .Dout(xlslice_5_Dout));
 endmodule

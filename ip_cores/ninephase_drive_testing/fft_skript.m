@@ -18,7 +18,7 @@ legend('UZ','Simulink');
 hold off;
 
 function [f,fft_out]=generate_fft(data)
-Fs = 1/10000;
+Fs = 10000;
 dt = 1/Fs;
 N = length(data);
 t = dt*(0:N-1)';

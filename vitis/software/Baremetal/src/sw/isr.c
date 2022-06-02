@@ -152,7 +152,7 @@ void ISR_Control(void *data)
 
 
     //++PMSM++
-    // Set INputs and get Outputs
+    // Set Inputs and get Outputs
     uz_pmsm_model_9ph_trigger_input_general_strobe(pmsm);
     uz_pmsm_model_9ph_trigger_output_general_strobe(pmsm);
     uz_pmsm_model_9ph_trigger_output_currents_strobe(pmsm);
@@ -163,7 +163,7 @@ void ISR_Control(void *data)
     //pmsm_inputs.load_torque = setp_torque;
     uz_pmsm_model_9ph_set_inputs_general(pmsm, pmsm_inputs);
 
-    // Transformation to natural currents for output
+    // Transform output currents to dq system
     stationary_currents = uz_transformation_9ph_abc_to_alphabeta(pmsm_output_currents);
     outputs_alphabeta.alpha = stationary_currents.alpha;
     outputs_alphabeta.beta = stationary_currents.beta;
@@ -177,7 +177,7 @@ void ISR_Control(void *data)
     setpoint_dq.d = uz_PI_Controller_sample(PI_d_current,setp_d,outputs_dq.d,false);
     setpoint_dq.q = uz_PI_Controller_sample(PI_q_current,setp_q,outputs_dq.q,false);
 
-    // Transformation
+    // Transform setpoints to abc system
     setpoint_alpha_beta = uz_transformation_3ph_dq_to_alphabeta(setpoint_dq,pmsm_outputs.theta_el);
     setpoint_stationary.alpha = setpoint_alpha_beta.alpha;
     setpoint_stationary.beta = setpoint_alpha_beta.beta;

@@ -141,15 +141,15 @@ void test_uz_9ph_clarke_inverse_transformation_output(void){
     ninephase_alphabeta.y2 = -8.0f;
     ninephase_alphabeta.z3 = -9.0f;    
     uz_9ph_abc_t output = uz_transformation_9ph_alphabeta_to_abc(ninephase_alphabeta);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -33.0718f, output.a1);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -17.0359f, output.b1);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -10.1077f, output.c1);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,   5.6634f, output.a2);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,  18.0358f, output.b2);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,  12.6239f, output.c2);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,  -7.6740f, output.a3);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -36.0619f, output.b3);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -13.3717f, output.c3);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -25.0000f, output.a1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  -8.9641f, output.b1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  -2.0359f, output.c1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  -2.4084f, output.a2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,   9.9640f, output.b2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,   4.5521f, output.c2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,   0.3978f, output.a3);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -27.9901f, output.b3);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  -5.2999f, output.c3);
 }
 
 // test dq0 positive theta

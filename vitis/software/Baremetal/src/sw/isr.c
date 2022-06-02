@@ -70,7 +70,7 @@ float Kp_iq = 4.11f;
 float Ki_iq = 1500.0f;
 float speed_Kp = 0.0207f; // 0.0207f
 float speed_Ki = 0.207f;
-float adc_scaling = 9.5f / 2.0f; // Refactoring actual ADC Values 19.05: durch 2, Ohmrichter umgelötet
+float adc_scaling = 9.5f/2.0f; // Refactoring actual ADC Values 19.05: durch 2, Ohmrichter umgelötet
 
 // speed control
 float n_ref_rpm = 50.0f;
@@ -85,6 +85,7 @@ float position_abs = 0.0f;  // mm
 float omega_m_rad_per_sec = 0.0f;
 int globalposition = 0;
 int i_counter = 0; // software counter for reference signal
+int counter_timeout = 0; // counter for software timeout
 struct uz_PMSM_t config_heidrive = {
 
     .R_ph_Ohm = 0.543f,
@@ -132,7 +133,8 @@ enum dqn_chain
 {
     dqn_active = 0,
     limit_violation,
-	return_to_zero_position
+	return_to_zero_position,
+	reset_angle
 };
 enum dqn_chain chain = dqn_active;
 void ISR_Control(void *data)
@@ -232,7 +234,20 @@ void ISR_Control(void *data)
 				n_ref_rpm = uz_PI_Controller_sample(PI_instance, position_ref, position_abs, ext_clamping);
 				dq_reference_current = uz_SpeedControl_sample(Speed_instance, omega_m_rad_per_sec, -n_ref_rpm, V_dc_volts, id_ref_Ampere);
 				if( abs(position_abs) < 5){
-					chain=dqn_active;
+					chain=reset_angle;
+				}
+				break;
+			case reset_angle:
+				if (abs(Global_Data.obs.dqn_angle_derv)<0.02){
+					if (counter_timeout < 100000)
+					{
+						counter_timeout++;
+					}
+					else{
+						reset_ip_core_of_encoder_on_D5_3_ip_v25(&Global_Data);
+						counter_timeout = 0;
+					}
+				chain=dqn_active;
 				}
 				break;
 			default:

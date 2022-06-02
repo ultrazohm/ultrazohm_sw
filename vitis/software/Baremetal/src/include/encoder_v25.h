@@ -25,4 +25,5 @@ void update_position_of_encoder_on_D5_2_ip_v25(DS_Data* const data);
 void initialize_incremental_encoder_ipcore_v25_on_D5_2(float incrementalEncoderResolution, float motorPolePairNumber, float speed_timeout);
 void initialize_incremental_encoder_ipcore_v25_on_D5_3(float incrementalEncoderResolution, float motorPolePairNumber, float speed_timeout);
 void update_angle_of_encoder_on_D5_3_ip_v25(DS_Data* const data);
+void reset_ip_core_of_encoder_on_D5_3_ip_v25(DS_Data* const data);
 #endif /* ENCODER_V25_H_ */

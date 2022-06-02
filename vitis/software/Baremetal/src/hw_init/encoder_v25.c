@@ -99,3 +99,8 @@ void update_angle_of_encoder_on_D5_3_ip_v25(DS_Data* const data){
 	data->av.theta_pendulum	= uz_incrementalEncoder_get_theta_el(encoder_D5_3_v25);
 
 }
+
+void reset_ip_core_of_encoder_on_D5_3_ip_v25(DS_Data* const data){
+	uz_incrementalEncoder_reset_ip_core(encoder_D5_3_v25);
+	data->av.theta_pendulum=0.0f;
+}

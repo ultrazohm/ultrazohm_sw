@@ -126,6 +126,11 @@ float uz_incrementalEncoder_get_theta_el(uz_incrementalEncoder_t* self){
     return uz_incrementalEncoder_hw_get_theta_electric(self->config.base_address);
 }
 
+void uz_incrementalEncoder_reset_ip_core(uz_incrementalEncoder_t* self){
+    uz_assert(self->is_ready);
+    return uz_incrementalEncoder_hw_reset_ip_core(self->config.base_address);
+}
+
 uint32_t uz_incrementalEncoder_get_position(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
     return uz_incrementalEncoder_hw_get_position(self->config.base_address);

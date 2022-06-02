@@ -54,67 +54,67 @@ void test_uz_pmsm_model_9ph_hw_read_u_q(void){
 }
 
 // Outputs currents dq
-void test_uz_pmsm_model_9ph_hw_read_i_d(void){
+void test_uz_pmsm_model_9ph_hw_read_i_a1(void){
     float i_d_val=13.1f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_d_Data_uz_pmsm_model_9ph,i_d_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_d(BASE_ADDRESS);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_a1_Data_uz_pmsm_model_9ph,i_d_val);
+    float readback=uz_pmsm_model_9ph_hw_read_i_a1(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(i_d_val,readback);
 }
 
-void test_uz_pmsm_model_9ph_hw_read_i_q(void)
+void test_uz_pmsm_model_9ph_hw_read_i_b1(void)
 {
     float i_q_val=4.2f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_q_Data_uz_pmsm_model_9ph,i_q_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_q(BASE_ADDRESS);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_b1_Data_uz_pmsm_model_9ph,i_q_val);
+    float readback=uz_pmsm_model_9ph_hw_read_i_b1(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(i_q_val,readback);
 }
 
-void test_uz_pmsm_model_9ph_hw_read_i_z1(void){
+void test_uz_pmsm_model_9ph_hw_read_i_c1(void){
     float test_val=12.3f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_z1_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_z1(BASE_ADDRESS);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_c1_Data_uz_pmsm_model_9ph,test_val);
+    float readback=uz_pmsm_model_9ph_hw_read_i_c1(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
 }
 
-void test_uz_pmsm_model_9ph_hw_read_i_z2(void){
+void test_uz_pmsm_model_9ph_hw_read_i_a2(void){
     float test_val=23.4f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_z2_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_z2(BASE_ADDRESS);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_a2_Data_uz_pmsm_model_9ph,test_val);
+    float readback=uz_pmsm_model_9ph_hw_read_i_a2(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
 }
 
-void test_uz_pmsm_model_9ph_hw_read_i_x1(void){
+void test_uz_pmsm_model_9ph_hw_read_i_b2(void){
     float test_val=34.5f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_x1_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_x1(BASE_ADDRESS);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_b2_Data_uz_pmsm_model_9ph,test_val);
+    float readback=uz_pmsm_model_9ph_hw_read_i_b2(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
 }
 
-void test_uz_pmsm_model_9ph_hw_read_i_y1(void){
+void test_uz_pmsm_model_9ph_hw_read_i_c2(void){
     float test_val=45.6f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_y1_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_y1(BASE_ADDRESS);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_c2_Data_uz_pmsm_model_9ph,test_val);
+    float readback=uz_pmsm_model_9ph_hw_read_i_c2(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
 }
 
-void test_uz_pmsm_model_9ph_hw_read_i_x2(void){
+void test_uz_pmsm_model_9ph_hw_read_i_a3(void){
     float test_val=54.3f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_x2_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_x2(BASE_ADDRESS);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_a3_Data_uz_pmsm_model_9ph,test_val);
+    float readback=uz_pmsm_model_9ph_hw_read_i_a3(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
 }
 
-void test_uz_pmsm_model_9ph_hw_read_i_y2(void){
+void test_uz_pmsm_model_9ph_hw_read_i_b3(void){
     float test_val=43.2f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_y2_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_y2(BASE_ADDRESS);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_b3_Data_uz_pmsm_model_9ph,test_val);
+    float readback=uz_pmsm_model_9ph_hw_read_i_b3(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
 }
 
-void test_uz_pmsm_model_9ph_hw_read_i_z3(void){
+void test_uz_pmsm_model_9ph_hw_read_i_c3(void){
     float test_val=32.1f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_z3_Data_uz_pmsm_model_9ph,test_val);
-    float readback=uz_pmsm_model_9ph_hw_read_i_z3(BASE_ADDRESS);
+    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+i_c3_Data_uz_pmsm_model_9ph,test_val);
+    float readback=uz_pmsm_model_9ph_hw_read_i_c3(BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(test_val,readback);
 }
 
@@ -130,19 +130,7 @@ void test_uz_pmsm_model_9ph_hw_write_omega_mech(void){
     uz_axi_write_float_Expect(BASE_ADDRESS+in_omega_mech_Data_uz_pmsm_model_9ph,omega_mech);
     uz_pmsm_model_9ph_hw_write_omega_mech(BASE_ADDRESS,omega_mech);
 }
-/*
-void test_uz_pmsm_model_9ph_hw_write_u_d(void){
-    float u_d=1.4f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_d_uz_pmsm_model_9ph,u_d);
-    uz_pmsm_model_9ph_hw_write_u_d(BASE_ADDRESS,u_d);
-}
 
-void test_uz_pmsm_model_9ph_hw_write_u_q(void){
-    float u_q=2.4f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+u_q_uz_pmsm_model_9ph,u_q);
-    uz_pmsm_model_9ph_hw_write_u_q(BASE_ADDRESS,u_q);
-}
-*/
 // Model parameter
 void test_uz_pmsm_model_9ph_hw_write_reset(void){
     uz_axi_write_bool_Expect(BASE_ADDRESS+Model_Parameter_reset_integrators_Data_uz_pmsm_model_9ph,true);
@@ -265,10 +253,10 @@ void test_uz_pmsm_model_9ph_hw_trigger_output_general_strobe(void){
     uz_pmsm_model_9ph_hw_trigger_output_general_strobe(BASE_ADDRESS);
 }
 
-void test_uz_pmsm_model_9ph_hw_trigger_output_currents_dq_strobe(void){
-    uz_axi_write_bool_Expect(BASE_ADDRESS+output_currents_dq_Strobe_uz_pmsm_model_9ph,true);
-    uz_axi_write_bool_Expect(BASE_ADDRESS+output_currents_dq_Strobe_uz_pmsm_model_9ph,false);
-    uz_pmsm_model_9ph_hw_trigger_output_currents_dq_strobe(BASE_ADDRESS);
+void test_uz_pmsm_model_9ph_hw_trigger_output_currents_strobe(void){
+    uz_axi_write_bool_Expect(BASE_ADDRESS+output_currents_Strobe_uz_pmsm_model_9ph,true);
+    uz_axi_write_bool_Expect(BASE_ADDRESS+output_currents_Strobe_uz_pmsm_model_9ph,false);
+    uz_pmsm_model_9ph_hw_trigger_output_currents_strobe(BASE_ADDRESS);
 }
 
 void test_uz_pmsm_model_9ph_hw_trigger_input_general_strobe(void){

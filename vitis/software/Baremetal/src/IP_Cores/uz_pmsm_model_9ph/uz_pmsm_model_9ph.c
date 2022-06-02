@@ -124,29 +124,29 @@ struct uz_pmsm_model_9ph_outputs_general_t uz_pmsm_model_9ph_get_outputs_general
     return outputs;
 }
 
-struct uz_pmsm_model_9ph_outputs_dq_t uz_pmsm_model_9ph_get_outputs_dq(uz_pmsm_model_9ph_t *self)
+uz_9ph_abc_t uz_pmsm_model_9ph_get_output_currents(uz_pmsm_model_9ph_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    struct uz_pmsm_model_9ph_outputs_dq_t outputs = {
-        .i_dq.d = 0.0f,
-        .i_dq.q = 0.0f,
-        .i_subspaces.z1 = 0.0f,
-        .i_subspaces.z2 = 0.0f,
-        .i_subspaces.x1 = 0.0f,
-        .i_subspaces.y1 = 0.0f,
-        .i_subspaces.x2 = 0.0f,
-        .i_subspaces.y2 = 0.0f,
-        .i_subspaces.z3 = 0.0f};
-    outputs.i_dq.d = uz_pmsm_model_9ph_hw_read_i_d(self->config.base_address);
-    outputs.i_dq.q = uz_pmsm_model_9ph_hw_read_i_q(self->config.base_address);
-    outputs.i_subspaces.z1 = uz_pmsm_model_9ph_hw_read_i_z1(self->config.base_address);
-    outputs.i_subspaces.z2 = uz_pmsm_model_9ph_hw_read_i_z2(self->config.base_address);
-    outputs.i_subspaces.x1 = uz_pmsm_model_9ph_hw_read_i_x1(self->config.base_address);
-    outputs.i_subspaces.y1 = uz_pmsm_model_9ph_hw_read_i_y1(self->config.base_address);
-    outputs.i_subspaces.x2 = uz_pmsm_model_9ph_hw_read_i_x2(self->config.base_address);
-    outputs.i_subspaces.y2 = uz_pmsm_model_9ph_hw_read_i_y2(self->config.base_address);
-    outputs.i_subspaces.z3 = uz_pmsm_model_9ph_hw_read_i_z3(self->config.base_address);
+    uz_9ph_abc_t outputs = {
+        .a1 = 0.0f,
+        .b1 = 0.0f,
+        .c1 = 0.0f,
+        .a2 = 0.0f,
+        .b2 = 0.0f,
+        .c2 = 0.0f,
+        .a3 = 0.0f,
+        .b3 = 0.0f,
+        .c3 = 0.0f};
+    outputs.a1 = uz_pmsm_model_9ph_hw_read_i_a1(self->config.base_address);
+    outputs.b1 = uz_pmsm_model_9ph_hw_read_i_b1(self->config.base_address);
+    outputs.c1 = uz_pmsm_model_9ph_hw_read_i_c1(self->config.base_address);
+    outputs.a2 = uz_pmsm_model_9ph_hw_read_i_a2(self->config.base_address);
+    outputs.b2 = uz_pmsm_model_9ph_hw_read_i_b2(self->config.base_address);
+    outputs.c2 = uz_pmsm_model_9ph_hw_read_i_c2(self->config.base_address);
+    outputs.a3 = uz_pmsm_model_9ph_hw_read_i_a3(self->config.base_address);
+    outputs.b3 = uz_pmsm_model_9ph_hw_read_i_b3(self->config.base_address);
+    outputs.c3 = uz_pmsm_model_9ph_hw_read_i_c3(self->config.base_address);
     return outputs;
 }
 
@@ -163,10 +163,10 @@ void uz_pmsm_model_9ph_trigger_output_general_strobe(uz_pmsm_model_9ph_t *self){
     uz_pmsm_model_9ph_hw_trigger_output_general_strobe(self->config.base_address);
 }
 
-void uz_pmsm_model_9ph_trigger_output_currents_dq_strobe(uz_pmsm_model_9ph_t *self){
+void uz_pmsm_model_9ph_trigger_output_currents_strobe(uz_pmsm_model_9ph_t *self){
         uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_pmsm_model_9ph_hw_trigger_output_currents_dq_strobe(self->config.base_address);
+    uz_pmsm_model_9ph_hw_trigger_output_currents_strobe(self->config.base_address);
 }
 
 

@@ -18,15 +18,15 @@ float uz_pmsm_model_9ph_hw_read_u_d(uint32_t base_address);
 float uz_pmsm_model_9ph_hw_read_u_q(uint32_t base_address);
 
 // Outputs currents dq
-float uz_pmsm_model_9ph_hw_read_i_d(uint32_t base_address);
-float uz_pmsm_model_9ph_hw_read_i_q(uint32_t base_address);
-float uz_pmsm_model_9ph_hw_read_i_z1(uint32_t base_address);
-float uz_pmsm_model_9ph_hw_read_i_z2(uint32_t base_address);
-float uz_pmsm_model_9ph_hw_read_i_x1(uint32_t base_address);
-float uz_pmsm_model_9ph_hw_read_i_y1(uint32_t base_address);
-float uz_pmsm_model_9ph_hw_read_i_x2(uint32_t base_address);
-float uz_pmsm_model_9ph_hw_read_i_y2(uint32_t base_address);
-float uz_pmsm_model_9ph_hw_read_i_z3(uint32_t base_address);
+float uz_pmsm_model_9ph_hw_read_i_a1(uint32_t base_address);
+float uz_pmsm_model_9ph_hw_read_i_b1(uint32_t base_address);
+float uz_pmsm_model_9ph_hw_read_i_c1(uint32_t base_address);
+float uz_pmsm_model_9ph_hw_read_i_a2(uint32_t base_address);
+float uz_pmsm_model_9ph_hw_read_i_b2(uint32_t base_address);
+float uz_pmsm_model_9ph_hw_read_i_c2(uint32_t base_address);
+float uz_pmsm_model_9ph_hw_read_i_a3(uint32_t base_address);
+float uz_pmsm_model_9ph_hw_read_i_b3(uint32_t base_address);
+float uz_pmsm_model_9ph_hw_read_i_c3(uint32_t base_address);
 
 // Model parameter
 void uz_pmsm_model_9ph_hw_write_reset(uint32_t base_address, bool reset);
@@ -55,6 +55,6 @@ void uz_pmsm_model_9ph_hw_write_L_z3(uint32_t base_address, float inductance);
 
 // Strobe
 void uz_pmsm_model_9ph_hw_trigger_output_general_strobe(uint32_t base_address);
-void uz_pmsm_model_9ph_hw_trigger_output_currents_dq_strobe(uint32_t base_address);
+void uz_pmsm_model_9ph_hw_trigger_output_currents_strobe(uint32_t base_address);
 void uz_pmsm_model_9ph_hw_trigger_input_general_strobe(uint32_t base_address);
 #endif // uz_pmsm_model_9ph_HW_H

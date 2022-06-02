@@ -5,7 +5,7 @@ High-level Resource Utilization Report for uz_pmsm_model_9ph
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Adder_1_4');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Multiplexer_1_31');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiplexer_13_15');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Adder_1_4');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_31');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiplexer_13_15');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -161,7 +161,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-2931
+2985
 </td>
 
 </tr>
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-14446
+16544
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-241026
+283481
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-23506
+25046
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-1500
+1501
 </td>
 
 </tr>
@@ -224,7 +224,7 @@ Static Shift operators
 Dynamic Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-608
+617
 </td>
 
 </tr>
@@ -255,16 +255,16 @@ Multipliers (47)
 53x53-bit Multiply 							: 17
 </span>
 <br /><h5>
-Adders/Subtractors (1073)
+Adders/Subtractors (1127)
 </h5>
 <span style="font-family:monospace">
-8x8-bit Adder 							: 59
+8x8-bit Adder 							: 77
 </span>
 <br /><span style="font-family:monospace">
-10x10-bit Adder 							: 10
+10x10-bit Adder 							: 19
 </span>
 <br /><span style="font-family:monospace">
-32x32-bit Adder 							: 228
+32x32-bit Adder 							: 237
 </span>
 <br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_1_4')" onmouseover="this.style.cursor = 'pointer'">
 [+]
@@ -342,7 +342,7 @@ Data Type Conversion34
 26-bit Subtractor 							: 10
 </span>
 <br /><span style="font-family:monospace">
-9x9-bit Subtractor 							: 36
+9x9-bit Subtractor 							: 45
 </span>
 <br /><span style="font-family:monospace">
 10-bit Subtractor 							: 10
@@ -392,11 +392,14 @@ Data Type Conversion34
 <br /><span style="font-family:monospace">
 5x5-bit Subtractor 							: 9
 </span>
+<br /><span style="font-family:monospace">
+44-bit Subtractor 							: 9
+</span>
 <br /><h5>
-Registers (4921)
+Registers (5477)
 </h5>
 <span style="font-family:monospace">
-1-bit Register 							: 1974
+1-bit Register 							: 2058
 </span>
 <br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
 [+]
@@ -435,19 +438,19 @@ Delay6
 
 </span>
 <br /><span style="font-family:monospace">
-8-bit Register 							: 483
+8-bit Register 							: 663
 </span>
 <br /><span style="font-family:monospace">
-9-bit Register 							: 30
+9-bit Register 							: 39
 </span>
 <br /><span style="font-family:monospace">
-128-bit Register 							: 30
+128-bit Register 							: 57
 </span>
 <br /><span style="font-family:monospace">
-60-bit Register 							: 10
+60-bit Register 							: 19
 </span>
 <br /><span style="font-family:monospace">
-23-bit Register 							: 245
+23-bit Register 							: 254
 </span>
 <br /><span style="font-family:monospace">
 24-bit Register 							: 87
@@ -525,7 +528,7 @@ Delay6
 96-bit Register 							: 2
 </span>
 <br /><span style="font-family:monospace">
-32-bit Register 							: 225
+32-bit Register 							: 454
 </span>
 <br /><span style="font-family:monospace">
 6-bit Register 							: 143
@@ -569,23 +572,41 @@ Delay6
 <br /><span style="font-family:monospace">
 5-bit Register 							: 9
 </span>
+<br /><span style="font-family:monospace">
+43-bit Register 							: 9
+</span>
 <br /><h5>
-Multiplexers (10594)
+Multiplexers (12134)
 </h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
 <span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 2239
+1-bit 2-to-1 Multiplexer 							: 2411
+</span>
+<span name="Multiplexer_1_1" id="Multiplexer_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:3088')" name="code2model" class="code2model">
+Data Type Conversion8
+</a>
+
+</li>
+
+</ul>
+
 </span>
 <br /><span style="font-family:monospace">
 25-bit 2-to-1 Multiplexer 							: 22
 </span>
 <br /><span style="font-family:monospace">
-8-bit 2-to-1 Multiplexer 							: 1832
+8-bit 2-to-1 Multiplexer 							: 3137
 </span>
 <br /><span style="font-family:monospace">
-9-bit 2-to-1 Multiplexer 							: 60
+9-bit 2-to-1 Multiplexer 							: 78
 </span>
 <br /><span style="font-family:monospace">
-23-bit 2-to-1 Multiplexer 							: 222
+23-bit 2-to-1 Multiplexer 							: 240
 </span>
 <br /><span style="font-family:monospace">
 37-bit 2-to-1 Multiplexer 							: 10
@@ -666,13 +687,19 @@ Multiplexers (10594)
 [+]
 </span>
 <span style="font-family:monospace">
-real 2-to-1 Multiplexer 							: 46
+real 2-to-1 Multiplexer 							: 64
 </span>
 <span name="Multiplexer_1_31" id="Multiplexer_1_31">
 <ul>
 <li>
 <a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:2763')" name="code2model" class="code2model">
 Switch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:3095')" name="code2model" class="code2model">
+Switch
 </a>
 
 </li>
@@ -689,8 +716,11 @@ Switch1
 <br /><span style="font-family:monospace">
 5-bit 2-to-1 Multiplexer 							: 360
 </span>
+<br /><span style="font-family:monospace">
+43-bit 2-to-1 Multiplexer 							: 9
+</span>
 <br /><h5>
-Number of Shift operators (255)
+Number of Shift operators (264)
 </h5>
 <span style="font-family:monospace">
 Static Shift Left 							: 1
@@ -708,7 +738,7 @@ Static Shift Left 							: 2
 Static Shift Right 							: 19
 </span>
 <br /><span style="font-family:monospace">
-128-bit Dynamic Shift Left 							: 10
+128-bit Dynamic Shift Left 							: 19
 </span>
 <br /><span style="font-family:monospace">
 37-bit Dynamic Shift Left 							: 10
@@ -753,16 +783,16 @@ Static Shift Right 							: 19
 28-bit Dynamic Shift Right 							: 9
 </span>
 <br /><h5>
-Number of I/O Bits (1500)
+Number of I/O Bits (1501)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 801
+Number of Input Bits: 802
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="44d994ec-78ad-4a3a-8bee-4b541431b54a" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="e8c63cdc-a490-434a-997d-81e4810347f3" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -868,9 +898,15 @@ in_theta_el
 </a>
 : 25 bits
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_9ph:3086')" name="code2model" class="code2model">
+pwm_trig
+</a>
+: 1 bit
+</li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '44d994ec-78ad-4a3a-8bee-4b541431b54a')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'e8c63cdc-a490-434a-997d-81e4810347f3')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -882,7 +918,7 @@ in_theta_el
 Number of Output Bits: 699
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="baa3677a-4204-490a-a19a-41c53d40e797" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="fcb42b1c-ec45-4302-a041-0e07987a8060" dataCollapse="off">
 <li>
 ce_out: 1 bit
 </li>
@@ -902,31 +938,31 @@ outputs_3: 32 bits
 outputs_4: 32 bits
 </li>
 <li>
-i_dq_ps_0: 32 bits
+i_abc_ps_0: 32 bits
 </li>
 <li>
-i_dq_ps_1: 32 bits
+i_abc_ps_1: 32 bits
 </li>
 <li>
-i_dq_ps_2: 32 bits
+i_abc_ps_2: 32 bits
 </li>
 <li>
-i_dq_ps_3: 32 bits
+i_abc_ps_3: 32 bits
 </li>
 <li>
-i_dq_ps_4: 32 bits
+i_abc_ps_4: 32 bits
 </li>
 <li>
-i_dq_ps_5: 32 bits
+i_abc_ps_5: 32 bits
 </li>
 <li>
-i_dq_ps_6: 32 bits
+i_abc_ps_6: 32 bits
 </li>
 <li>
-i_dq_ps_7: 32 bits
+i_abc_ps_7: 32 bits
 </li>
 <li>
-i_dq_ps_8: 32 bits
+i_abc_ps_8: 32 bits
 </li>
 <li>
 i_abc1_pl_0: 25 bits
@@ -963,7 +999,7 @@ out_theta_el
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'baa3677a-4204-490a-a19a-41c53d40e797')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'fcb42b1c-ec45-4302-a041-0e07987a8060')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -1032,9 +1068,12 @@ Adders/Subtractors (130)
 39-bit Subtractor 							: 9
 </span>
 <br /><h5>
-Registers (436)
+Registers (1978)
 </h5>
 <span style="font-family:monospace">
+18-bit Register 							: 1458
+</span>
+<br /><span style="font-family:monospace">
 1-bit Register 							: 178
 </span>
 <br /><span style="font-family:monospace">
@@ -1081,6 +1120,9 @@ Registers (436)
 </span>
 <br /><span style="font-family:monospace">
 25-bit Register 							: 9
+</span>
+<br /><span style="font-family:monospace">
+32-bit Register 							: 84
 </span>
 <br /><span style="font-family:monospace">
 4-bit Register 							: 18

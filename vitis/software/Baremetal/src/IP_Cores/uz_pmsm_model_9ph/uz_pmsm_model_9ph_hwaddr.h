@@ -17,34 +17,7 @@
 #define  load_torque_Data_uz_pmsm_model_9ph                           0x180+0x00
 #define  in_omega_mech_Data_uz_pmsm_model_9ph                         0x180+0x04
 #define  inputs_general_Strobe_uz_pmsm_model_9ph                      0x188  //strobe register for port inputs
-/*
-// Inputs voltages dq
-#define  input_voltages_dq_Data_uz_pmsm_model_9ph                     0x1C0  //data register for Inport u_dq_ps, vector with 9 elements, address ends at 0x3E0
-#define  u_d_Data_uz_pmsm_model_9ph                                   0x1C0+0x00
-#define  u_q_Data_uz_pmsm_model_9ph                                   0x1C0+0x04
-#define  u_o1_Data_uz_pmsm_model_9ph                                  0x1C0+0x08
-#define  u_o2_Data_uz_pmsm_model_9ph                                  0x1C0+0x0C
-#define  u_x1_Data_uz_pmsm_model_9ph                                  0x1C0+0x10
-#define  u_y1_Data_uz_pmsm_model_9ph                                  0x1C0+0x14
-#define  u_x2_Data_uz_pmsm_model_9ph                                  0x1C0+0x18
-#define  u_y2_Data_uz_pmsm_model_9ph                                  0x1C0+0x1C
-#define  u_zero_Data_uz_pmsm_model_9ph                                0x1C0+0x20
-#define  input_voltages_dq_Strobe_uz_pmsm_model_9ph                   0x200  //strobe register for port u_dq_ps
 
-
-// Inputs voltages abc
-#define  input_voltages_abc_Data_uz_pmsm_model_9ph                    0x240  //data register for Inport u_abc_ps, vector with 9 elements, address ends at 0x460
-#define  u_a1_Data_uz_pmsm_model_9ph                                  0x240+0x00
-#define  u_b1_Data_uz_pmsm_model_9ph                                  0x240+0x04
-#define  u_c1_Data_uz_pmsm_model_9ph                                  0x240+0x08
-#define  u_a2_Data_uz_pmsm_model_9ph                                  0x240+0x0C
-#define  u_b2_Data_uz_pmsm_model_9ph                                  0x240+0x10 
-#define  u_c2_Data_uz_pmsm_model_9ph                                  0x240+0x14
-#define  u_a3_Data_uz_pmsm_model_9ph                                  0x240+0x18
-#define  u_b3_Data_uz_pmsm_model_9ph                                  0x240+0x1C
-#define  u_c3_Data_uz_pmsm_model_9ph                                  0x240+0x20
-#define  input_voltages_abc_Strobe_uz_pmsm_model_9ph                  0x280  //strobe register for port u_abc_ps
-*/
 // Outputs general
 #define  output_general_Data_uz_pmsm_model_9ph                        0x200  //data register for Outport outputs, vector with 5 elements, address ends at 0x210
 #define  torque_Data_uz_pmsm_model_9ph                                0x200+0x00 // torque data register, offset due to vector port
@@ -56,16 +29,16 @@
 
 // Outputs currents dq
 #define  output_currents_dq_Data_uz_pmsm_model_9ph                    0x400  //data register for Outport currents_dq, vector with 9 elements, address ends at 0x260
-#define  i_d_Data_uz_pmsm_model_9ph                                   0x400+0x00 
-#define  i_q_Data_uz_pmsm_model_9ph                                   0x400+0x04 
-#define  i_z1_Data_uz_pmsm_model_9ph                                  0x400+0x08 
-#define  i_z2_Data_uz_pmsm_model_9ph                                  0x400+0x0C 
-#define  i_x1_Data_uz_pmsm_model_9ph                                  0x400+0x10 
-#define  i_y1_Data_uz_pmsm_model_9ph                                  0x400+0x14
-#define  i_x2_Data_uz_pmsm_model_9ph                                  0x400+0x18 
-#define  i_y2_Data_uz_pmsm_model_9ph                                  0x400+0x1C
-#define  i_z3_Data_uz_pmsm_model_9ph                                  0x400+0x20
-#define  output_currents_dq_Strobe_uz_pmsm_model_9ph                  0x440  //strobe register for port currents_dq
+#define  i_a1_Data_uz_pmsm_model_9ph                                  0x400+0x00 
+#define  i_b1_Data_uz_pmsm_model_9ph                                  0x400+0x04 
+#define  i_c1_Data_uz_pmsm_model_9ph                                  0x400+0x08 
+#define  i_a2_Data_uz_pmsm_model_9ph                                  0x400+0x0C 
+#define  i_b2_Data_uz_pmsm_model_9ph                                  0x400+0x10 
+#define  i_c2_Data_uz_pmsm_model_9ph                                  0x400+0x14
+#define  i_a3_Data_uz_pmsm_model_9ph                                  0x400+0x18 
+#define  i_b3_Data_uz_pmsm_model_9ph                                  0x400+0x1C
+#define  i_c3_Data_uz_pmsm_model_9ph                                  0x400+0x20
+#define  output_currents_Strobe_uz_pmsm_model_9ph                  0x440  //strobe register for port currents_dq
 
 // Model parameter
 #define  Model_Parameter_reset_integrators_Data_uz_pmsm_model_9ph     0x100  //data register for Inport Model_Parameter_reset_integrators

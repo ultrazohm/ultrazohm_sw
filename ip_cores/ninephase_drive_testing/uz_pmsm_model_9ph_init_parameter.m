@@ -19,7 +19,9 @@ J = 0.094;      % rotor inertia
 ts=2/1e6;
 %ts=1/1e6;
 ts_inv=1/1e6;
-ts_scope=1/20000;
+ts_pwm=ts_inv;
+T_FPGA_clk=ts_pwm;
+ts_scope=1/10000;
 ts_ps=1/10000;
 
 
@@ -59,4 +61,4 @@ simulate_mechanical=true;
 simulate_open_loop=true;
 setpoint_step=10.0;
 
-f_pwm = 50000;
+f_pwm = 10000;

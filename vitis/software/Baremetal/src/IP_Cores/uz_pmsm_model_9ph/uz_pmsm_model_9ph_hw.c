@@ -47,51 +47,51 @@ float uz_pmsm_model_9ph_hw_read_u_q(uint32_t base_address){
 }
 
 // Outputs currents dq
-float uz_pmsm_model_9ph_hw_read_i_d(uint32_t base_address)
+float uz_pmsm_model_9ph_hw_read_i_a1(uint32_t base_address)
 {
     uz_assert_not_zero(base_address);
-    return (uz_axi_read_float(base_address + i_d_Data_uz_pmsm_model_9ph));
+    return (uz_axi_read_float(base_address + i_a1_Data_uz_pmsm_model_9ph));
 }
 
-float uz_pmsm_model_9ph_hw_read_i_q(uint32_t base_address)
+float uz_pmsm_model_9ph_hw_read_i_b1(uint32_t base_address)
 {
     uz_assert_not_zero(base_address);
-    return (uz_axi_read_float(base_address + i_q_Data_uz_pmsm_model_9ph));
+    return (uz_axi_read_float(base_address + i_b1_Data_uz_pmsm_model_9ph));
 }
 
-float uz_pmsm_model_9ph_hw_read_i_z1(uint32_t base_address){
+float uz_pmsm_model_9ph_hw_read_i_c1(uint32_t base_address){
     uz_assert_not_zero(base_address);
-    return uz_axi_read_float(base_address+i_z1_Data_uz_pmsm_model_9ph);
+    return uz_axi_read_float(base_address+i_c1_Data_uz_pmsm_model_9ph);
 }
 
-float uz_pmsm_model_9ph_hw_read_i_z2(uint32_t base_address){
+float uz_pmsm_model_9ph_hw_read_i_a2(uint32_t base_address){
     uz_assert_not_zero(base_address);
-    return uz_axi_read_float(base_address+i_z2_Data_uz_pmsm_model_9ph);
+    return uz_axi_read_float(base_address+i_a2_Data_uz_pmsm_model_9ph);
 }
 
-float uz_pmsm_model_9ph_hw_read_i_x1(uint32_t base_address){
+float uz_pmsm_model_9ph_hw_read_i_b2(uint32_t base_address){
     uz_assert_not_zero(base_address);
-    return uz_axi_read_float(base_address+i_x1_Data_uz_pmsm_model_9ph);
+    return uz_axi_read_float(base_address+i_b2_Data_uz_pmsm_model_9ph);
 }
 
-float uz_pmsm_model_9ph_hw_read_i_y1(uint32_t base_address){
+float uz_pmsm_model_9ph_hw_read_i_c2(uint32_t base_address){
     uz_assert_not_zero(base_address);
-    return uz_axi_read_float(base_address+i_y1_Data_uz_pmsm_model_9ph);
+    return uz_axi_read_float(base_address+i_c2_Data_uz_pmsm_model_9ph);
 }
 
-float uz_pmsm_model_9ph_hw_read_i_x2(uint32_t base_address){
+float uz_pmsm_model_9ph_hw_read_i_a3(uint32_t base_address){
     uz_assert_not_zero(base_address);
-    return uz_axi_read_float(base_address+i_x2_Data_uz_pmsm_model_9ph);
+    return uz_axi_read_float(base_address+i_a3_Data_uz_pmsm_model_9ph);
 }
 
-float uz_pmsm_model_9ph_hw_read_i_y2(uint32_t base_address){
+float uz_pmsm_model_9ph_hw_read_i_b3(uint32_t base_address){
     uz_assert_not_zero(base_address);
-    return uz_axi_read_float(base_address+i_y2_Data_uz_pmsm_model_9ph);
+    return uz_axi_read_float(base_address+i_b3_Data_uz_pmsm_model_9ph);
 }
 
-float uz_pmsm_model_9ph_hw_read_i_z3(uint32_t base_address){
+float uz_pmsm_model_9ph_hw_read_i_c3(uint32_t base_address){
     uz_assert_not_zero(base_address);
-    return uz_axi_read_float(base_address+i_z3_Data_uz_pmsm_model_9ph);
+    return uz_axi_read_float(base_address+i_c3_Data_uz_pmsm_model_9ph);
 }
 
 // Inputs general
@@ -105,19 +105,7 @@ void uz_pmsm_model_9ph_hw_write_omega_mech(uint32_t base_address, float omega_me
     uz_assert_not_zero(base_address);
     uz_axi_write_float(base_address + in_omega_mech_Data_uz_pmsm_model_9ph, omega_mech);
 }
-/*
-void uz_pmsm_model_9ph_hw_write_u_d(uint32_t base_address, float u_d)
-{
-    uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address + u_d_uz_pmsm_model_9ph, u_d);
-}
 
-void uz_pmsm_model_9ph_hw_write_u_q(uint32_t base_address, float u_q)
-{
-    uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address + u_q_uz_pmsm_model_9ph, u_q);
-}
-*/
 // Model parameter
 void uz_pmsm_model_9ph_hw_write_reset(uint32_t base_address, bool reset)
 {
@@ -256,10 +244,10 @@ void uz_pmsm_model_9ph_hw_trigger_output_general_strobe(uint32_t base_address){
     uz_axi_write_bool(base_address+output_general_Strobe_uz_pmsm_model_9ph,false);
 }
 
-void uz_pmsm_model_9ph_hw_trigger_output_currents_dq_strobe(uint32_t base_address){
+void uz_pmsm_model_9ph_hw_trigger_output_currents_strobe(uint32_t base_address){
     uz_assert_not_zero_uint32(base_address);
-    uz_axi_write_bool(base_address+output_currents_dq_Strobe_uz_pmsm_model_9ph,true);
-    uz_axi_write_bool(base_address+output_currents_dq_Strobe_uz_pmsm_model_9ph,false);
+    uz_axi_write_bool(base_address+output_currents_Strobe_uz_pmsm_model_9ph,true);
+    uz_axi_write_bool(base_address+output_currents_Strobe_uz_pmsm_model_9ph,false);
 }
 
 void uz_pmsm_model_9ph_hw_trigger_input_general_strobe(uint32_t base_address){

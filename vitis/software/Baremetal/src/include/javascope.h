@@ -54,7 +54,8 @@ enum JS_OberservableData {
 	JSO_setp_ic1,
 	JSO_Theta_el,
 	JSO_setp_omega,
-	JSO_setp_iq,
+	JSO_contr_ud,
+	JSO_contr_uq,
 	JSO_lifecheck,
 	JSO_ENDMARKER
 };

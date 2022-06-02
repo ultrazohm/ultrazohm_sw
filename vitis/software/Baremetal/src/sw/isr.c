@@ -63,7 +63,7 @@ struct uz_pmsm_model_9ph_outputs_general_t pmsm_outputs={
         .theta_el=0.0f
 };
 
-struct uz_pmsm_model_9ph_outputs_dq_t pmsm_output_currents={0};
+uz_9ph_abc_t pmsm_output_currents={0};
 
 struct uz_pmsm_model_9ph_inputs_general_t pmsm_inputs={
 		.load_torque=0.0f,
@@ -89,6 +89,8 @@ uz_3ph_abc_t setpoint_abc_sys3 = {0};
 uz_9ph_abc_t setpoint_natural = {0};
 uz_9ph_alphabeta_t setpoint_stationary = {0};
 uz_3ph_alphabeta_t setpoint_alpha_beta = {0};
+uz_3ph_alphabeta_t outputs_alphabeta = {0};
+uz_3ph_dq_t outputs_dq = {0};
 uz_3ph_dq_t setpoint_dq = {0};
 
 float V_dc_volts = 560.0f;
@@ -153,36 +155,27 @@ void ISR_Control(void *data)
     // Set INputs and get Outputs
     uz_pmsm_model_9ph_trigger_input_general_strobe(pmsm);
     uz_pmsm_model_9ph_trigger_output_general_strobe(pmsm);
-    uz_pmsm_model_9ph_trigger_output_currents_dq_strobe(pmsm);
+    uz_pmsm_model_9ph_trigger_output_currents_strobe(pmsm);
     pmsm_outputs = uz_pmsm_model_9ph_get_outputs_general(pmsm);
-    pmsm_output_currents = uz_pmsm_model_9ph_get_outputs_dq(pmsm);
+    pmsm_output_currents = uz_pmsm_model_9ph_get_output_currents(pmsm);
 
     pmsm_inputs.omega_mech_1_s = setp_omega;
     //pmsm_inputs.load_torque = setp_torque;
     uz_pmsm_model_9ph_set_inputs_general(pmsm, pmsm_inputs);
 
     // Transformation to natural currents for output
-    dq.d = pmsm_output_currents.i_dq.d;
-    dq.q = pmsm_output_currents.i_dq.q;
-    alpha_beta = uz_transformation_3ph_dq_to_alphabeta(dq,pmsm_outputs.theta_el);
-    stationary_currents.alpha = alpha_beta.alpha;
-    stationary_currents.beta = alpha_beta.beta;
-    stationary_currents.z1 = pmsm_output_currents.i_subspaces.z1;
-    stationary_currents.z2 = pmsm_output_currents.i_subspaces.z2;
-    stationary_currents.x1 = pmsm_output_currents.i_subspaces.x1;
-    stationary_currents.y1 = pmsm_output_currents.i_subspaces.y1;
-    stationary_currents.x2 = pmsm_output_currents.i_subspaces.x2;
-    stationary_currents.y2 = pmsm_output_currents.i_subspaces.y2;
-    stationary_currents.z3 = pmsm_output_currents.i_subspaces.z3;
-    natural_currents = uz_transformation_9ph_alphabeta_to_abc(stationary_currents);
+    stationary_currents = uz_transformation_9ph_abc_to_alphabeta(pmsm_output_currents);
+    outputs_alphabeta.alpha = stationary_currents.alpha;
+    outputs_alphabeta.beta = stationary_currents.beta;
+
+    outputs_dq = uz_transformation_3ph_alphabeta_to_dq(outputs_alphabeta,pmsm_outputs.theta_el);
 
     //++PWM++
 
     // Controller
     //setp_q = uz_PI_Controller_sample(PI_rpm,setp_omega,pmsm_outputs.omega_mech_1_s,false);
-    setpoint_dq.d = uz_PI_Controller_sample(PI_d_current, setp_d, pmsm_output_currents.i_dq.d, false);
-    setpoint_dq.q = uz_PI_Controller_sample(PI_q_current, setp_q, pmsm_output_currents.i_dq.q, false);
-
+    setpoint_dq.d = uz_PI_Controller_sample(PI_d_current,setp_d,outputs_dq.d,false);
+    setpoint_dq.q = uz_PI_Controller_sample(PI_q_current,setp_q,outputs_dq.q,false);
 
     // Transformation
     setpoint_alpha_beta = uz_transformation_3ph_dq_to_alphabeta(setpoint_dq,pmsm_outputs.theta_el);
@@ -219,9 +212,6 @@ void ISR_Control(void *data)
 	uz_PWM_SS_2L_set_duty_cycle(pwm_instance_2,duty_cycle_sys2.DutyCycle_U,duty_cycle_sys2.DutyCycle_V,duty_cycle_sys2.DutyCycle_W);
 	uz_PWM_SS_2L_set_duty_cycle(pwm_instance_3,duty_cycle_sys3.DutyCycle_U,duty_cycle_sys3.DutyCycle_V,duty_cycle_sys3.DutyCycle_W);
 
-	//uz_PWM_SS_2L_set_duty_cycle(pwm_instance_1,dut_1,0.0f,0.0f);
-	//uz_PWM_SS_2L_set_duty_cycle(pwm_instance_2,0.0f,0.0f,0.0f);
-	//uz_PWM_SS_2L_set_duty_cycle(pwm_instance_3,0.0f,0.0f,0.0f);
 
     //reset PMSM and PI controllers
     if(reset_on==1)
@@ -230,20 +220,6 @@ void ISR_Control(void *data)
           uz_PI_Controller_reset(PI_d_current);
           uz_pmsm_model_9ph_reset(pmsm);
     }
-
-
-    uz_inverter_3ph_trigger_u_abc_ps_strobe(inverter_1);
-    uz_inverter_3ph_trigger_u_abc_ps_strobe(inverter_2);
-    uz_inverter_3ph_trigger_u_abc_ps_strobe(inverter_3);
-
-
-	voltage_inverter_1 = uz_inverter_3ph_get_u_abc_ps(inverter_1);
-    voltage_inverter_2 = uz_inverter_3ph_get_u_abc_ps(inverter_2);
-    voltage_inverter_3 = uz_inverter_3ph_get_u_abc_ps(inverter_3);
-
-
-
-
     //end
 
 

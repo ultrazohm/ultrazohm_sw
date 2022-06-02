@@ -1,4 +1,5 @@
  --> uz_pmsm_model_9ph_opti_src_uz_pmsm_model_9ph_pkg
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/Detect Rise Positive --> uz_pmsm_model_9ph_opti_src_Detect_Rise_Positive
 uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_sub_single --> uz_pmsm_model_9ph_opti_src_nfp_sub_single
 uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_mul_single --> uz_pmsm_model_9ph_opti_src_nfp_mul_single
 uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_add_single --> uz_pmsm_model_9ph_opti_src_nfp_add_single
@@ -34,5 +35,6 @@ uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_convert_double2single --> uz_pmsm_model_
 uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_mul_double --> uz_pmsm_model_9ph_opti_src_nfp_mul_double
 uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_sub_double --> uz_pmsm_model_9ph_opti_src_nfp_sub_double
 uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_add_double --> uz_pmsm_model_9ph_opti_src_nfp_add_double
+uz_pmsm_model_9ph/uz_pmsm_model_9ph/nfp_convert_sfix_43_En28_to_single --> uz_pmsm_model_9ph_opti_src_nfp_convert_sfix_43_En28_to_single
 uz_pmsm_model_9ph_tc --> uz_pmsm_model_9ph_opti_src_uz_pmsm_model_9ph_tc
 uz_pmsm_model_9ph/uz_pmsm_model_9ph --> uz_pmsm_model_9ph_opti_src_uz_pmsm_model_9ph

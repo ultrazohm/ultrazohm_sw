@@ -109,10 +109,10 @@ void test_uz_pmsm_model_9ph_normal_usage(void)
     uz_pmsm_model_9ph_hw_trigger_output_general_strobe_Expect(BASE_ADDRESS);
     uz_pmsm_model_9ph_trigger_output_general_strobe(test_instance);
 
-    uz_pmsm_model_9ph_hw_trigger_output_currents_dq_strobe_Expect(BASE_ADDRESS);
-    uz_pmsm_model_9ph_trigger_output_currents_dq_strobe(test_instance);
-    uz_pmsm_model_9ph_hw_trigger_output_currents_dq_strobe_Expect(BASE_ADDRESS);
-    uz_pmsm_model_9ph_trigger_output_currents_dq_strobe(test_instance);
+    uz_pmsm_model_9ph_hw_trigger_output_currents_strobe_Expect(BASE_ADDRESS);
+    uz_pmsm_model_9ph_trigger_output_currents_strobe(test_instance);
+    uz_pmsm_model_9ph_hw_trigger_output_currents_strobe_Expect(BASE_ADDRESS);
+    uz_pmsm_model_9ph_trigger_output_currents_strobe(test_instance);
   
     float torque_expect = 4.1f;
     float omega_mech_expect=131.1f;
@@ -138,15 +138,15 @@ void test_uz_pmsm_model_9ph_normal_usage(void)
     uz_pmsm_model_9ph_hw_read_u_d_ExpectAndReturn(BASE_ADDRESS,u_d_expect);
     uz_pmsm_model_9ph_hw_read_u_q_ExpectAndReturn(BASE_ADDRESS,u_q_expect);
 
-    uz_pmsm_model_9ph_hw_read_i_d_ExpectAndReturn(BASE_ADDRESS, i_d_expect);
-    uz_pmsm_model_9ph_hw_read_i_q_ExpectAndReturn(BASE_ADDRESS, i_q_expect);
-    uz_pmsm_model_9ph_hw_read_i_z1_ExpectAndReturn(BASE_ADDRESS, i_z1_expect);
-    uz_pmsm_model_9ph_hw_read_i_z2_ExpectAndReturn(BASE_ADDRESS, i_z2_expect);
-    uz_pmsm_model_9ph_hw_read_i_x1_ExpectAndReturn(BASE_ADDRESS, i_x1_expect);
-    uz_pmsm_model_9ph_hw_read_i_y1_ExpectAndReturn(BASE_ADDRESS, i_y1_expect);
-    uz_pmsm_model_9ph_hw_read_i_x2_ExpectAndReturn(BASE_ADDRESS, i_x2_expect);
-    uz_pmsm_model_9ph_hw_read_i_y2_ExpectAndReturn(BASE_ADDRESS, i_y2_expect);
-    uz_pmsm_model_9ph_hw_read_i_z3_ExpectAndReturn(BASE_ADDRESS, i_z3_expect);
+    uz_pmsm_model_9ph_hw_read_i_a1_ExpectAndReturn(BASE_ADDRESS, i_d_expect);
+    uz_pmsm_model_9ph_hw_read_i_b1_ExpectAndReturn(BASE_ADDRESS, i_q_expect);
+    uz_pmsm_model_9ph_hw_read_i_c1_ExpectAndReturn(BASE_ADDRESS, i_z1_expect);
+    uz_pmsm_model_9ph_hw_read_i_a2_ExpectAndReturn(BASE_ADDRESS, i_z2_expect);
+    uz_pmsm_model_9ph_hw_read_i_b2_ExpectAndReturn(BASE_ADDRESS, i_x1_expect);
+    uz_pmsm_model_9ph_hw_read_i_c2_ExpectAndReturn(BASE_ADDRESS, i_y1_expect);
+    uz_pmsm_model_9ph_hw_read_i_a3_ExpectAndReturn(BASE_ADDRESS, i_x2_expect);
+    uz_pmsm_model_9ph_hw_read_i_b3_ExpectAndReturn(BASE_ADDRESS, i_y2_expect);
+    uz_pmsm_model_9ph_hw_read_i_c3_ExpectAndReturn(BASE_ADDRESS, i_z3_expect);
    
 
     struct uz_pmsm_model_9ph_outputs_general_t out = uz_pmsm_model_9ph_get_outputs_general(test_instance);
@@ -156,16 +156,16 @@ void test_uz_pmsm_model_9ph_normal_usage(void)
     TEST_ASSERT_EQUAL_FLOAT(u_d_expect,out.u_d);
     TEST_ASSERT_EQUAL_FLOAT(u_q_expect,out.u_q);
 
-    struct uz_pmsm_model_9ph_outputs_dq_t out_dq = uz_pmsm_model_9ph_get_outputs_dq(test_instance);
-    TEST_ASSERT_EQUAL_FLOAT(i_d_expect, out_dq.i_dq.d);
-    TEST_ASSERT_EQUAL_FLOAT(i_q_expect, out_dq.i_dq.q);
-    TEST_ASSERT_EQUAL_FLOAT(i_z1_expect, out_dq.i_subspaces.z1);
-    TEST_ASSERT_EQUAL_FLOAT(i_z2_expect, out_dq.i_subspaces.z2);
-    TEST_ASSERT_EQUAL_FLOAT(i_x1_expect, out_dq.i_subspaces.x1);
-    TEST_ASSERT_EQUAL_FLOAT(i_y1_expect, out_dq.i_subspaces.y1);
-    TEST_ASSERT_EQUAL_FLOAT(i_x2_expect, out_dq.i_subspaces.x2);
-    TEST_ASSERT_EQUAL_FLOAT(i_y2_expect, out_dq.i_subspaces.y2);
-    TEST_ASSERT_EQUAL_FLOAT(i_z3_expect, out_dq.i_subspaces.z3);
+    uz_9ph_abc_t out_currents = uz_pmsm_model_9ph_get_output_currents(test_instance);
+    TEST_ASSERT_EQUAL_FLOAT(i_d_expect, out_currents.a1);
+    TEST_ASSERT_EQUAL_FLOAT(i_q_expect, out_currents.b1);
+    TEST_ASSERT_EQUAL_FLOAT(i_z1_expect, out_currents.c1);
+    TEST_ASSERT_EQUAL_FLOAT(i_z2_expect, out_currents.a2);
+    TEST_ASSERT_EQUAL_FLOAT(i_x1_expect, out_currents.b2);
+    TEST_ASSERT_EQUAL_FLOAT(i_y1_expect, out_currents.c2);
+    TEST_ASSERT_EQUAL_FLOAT(i_x2_expect, out_currents.a3);
+    TEST_ASSERT_EQUAL_FLOAT(i_y2_expect, out_currents.b3);
+    TEST_ASSERT_EQUAL_FLOAT(i_z3_expect, out_currents.c3);
 
 /*
     // Based on the new values, something can be calculated, e.g., a controller

@@ -52,13 +52,6 @@ struct uz_pmsm_model_9ph_outputs_general_t
     float u_q;
 };
 
-struct uz_pmsm_model_9ph_outputs_dq_t
-{
-    uz_3ph_dq_t i_dq;
-    uz_9ph_alphabeta_t i_subspaces;
-};
-
-
 /**
  * @brief Struct to be used to pass inputs to the PMSM Model
  * 
@@ -98,7 +91,7 @@ void uz_pmsm_model_9ph_trigger_output_general_strobe(uz_pmsm_model_9ph_t *self);
  * 
  * @param self 
  */
-void uz_pmsm_model_9ph_trigger_output_currents_dq_strobe(uz_pmsm_model_9ph_t *self);
+void uz_pmsm_model_9ph_trigger_output_currents_strobe(uz_pmsm_model_9ph_t *self);
 
 
 /**
@@ -124,7 +117,7 @@ struct uz_pmsm_model_9ph_outputs_general_t uz_pmsm_model_9ph_get_outputs_general
  * @param self Pointer to driver instance
  * @return struct uz_pmsm_model_9ph_outputs_t Output values
  */
-struct uz_pmsm_model_9ph_outputs_dq_t uz_pmsm_model_9ph_get_outputs_dq(uz_pmsm_model_9ph_t *self);
+uz_9ph_abc_t uz_pmsm_model_9ph_get_output_currents(uz_pmsm_model_9ph_t *self);
 
 /**
  * @brief Resets the PMSM model by writing zero to all inputs and sets integrators to zero

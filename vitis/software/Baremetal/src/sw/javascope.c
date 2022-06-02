@@ -31,12 +31,6 @@ static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
 
-extern float i_alpha_IP_CORE;
-extern float i_beta_IP_CORE;
-extern float i_a_IP_CORE;
-extern float i_b_IP_CORE;
-extern float i_c_IP_CORE;
-
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 

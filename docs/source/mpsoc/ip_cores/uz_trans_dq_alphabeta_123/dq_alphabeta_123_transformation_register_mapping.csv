@@ -1,0 +1,19 @@
+Port Name,Port Type,Data Type,Target Platform Interfaces,Range,Unit,Function
+theta,Input,sfix24_En20,External Signal,+/-8,rad,electrical motor angle
+theta_offset_AXI,Input,sfix24_En20,AXI4-Lite,+/-8,rad,offset of angle sensor
+current_valid_in,Input,bool,External Signal,,,trigger ip core calculation
+id_ref_AXI,Input,sfix18_En11,AXI4-Lite,+/-64,A,phase current d
+iq_ref_AXI,Input,sfix18_En11,AXI4-Lite,+/-64,A,phase current q
+dq_done,Output,bool,External Signal,,,rising edge if ip core calculation finished
+sin,Output,sfix16_En14,External Signal,+/-2,,sine value of angle (+/- 1)
+cos,Output,sfix16_En14,External Signal,+/-2,,cosine value of angle (+/- 1)
+ialpha,Output,sfix18_En11,External Signal,+/-64,A,current in alpha-axis
+ialpha_AXI,Output,sfix18_En11,AXI4-Lite,+/-64,A,current in alpha-axis
+ibeta,Output,sfix18_En11,External Signal,+/-64,A,current in beta-axis
+ibeta_AXI,Output,sfix18_En11,AXI4-Lite,+/-64,A,current in beta-axis
+i1,Output,sfix18_En11,External Signal,+/-64,A,phase current 1
+i1_AXI,Output,sfix18_En11,AXI4-Lite,+/-64,A,phase current 1
+i2,Output,sfix18_En11,External Signal,+/-64,A,phase current 2
+i2_AXI,Output,sfix18_En11,AXI4-Lite,+/-64,A,phase current 2
+i3,Output,sfix18_En11,External Signal,+/-64,A,phase current 3
+i3_AXI,Output,sfix18_En11,AXI4-Lite,+/-64,A,phase current 3

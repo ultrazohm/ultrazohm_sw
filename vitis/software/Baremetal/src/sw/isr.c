@@ -31,17 +31,11 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
-// Benötigte Einbindungen für den IP-Core trans_dq_alphabeta_123
+// Includes for IP-Core trans_dq_alphabeta_123
 #include "../IP_Cores/uz_trans_dq_alphabeta_123/uz_trans_dq_alphabeta_123.h"
 extern uz_dq_alphabeta_123_IPcore_t* test_instance;
 struct uz_3ph_alphabeta_t currents;
 struct uz_3ph_abc_t currents_123;
-
-// float i_alpha_IP_CORE;
- //float i_beta_IP_CORE;
- //float i_a_IP_CORE;
-//float i_b_IP_CORE;
-//float i_c_IP_CORE;
 
 
 
@@ -51,9 +45,6 @@ struct uz_dq_alphabeta_123_IPcore_update_t update={
    				   .iqref = 30
    				};
 
-
-
-//#include "../IP_Cores/uz_trans_dq_alphabeta_123/uz_trans_dq_alphabeta_123_hw.h"
 
 
 // Initialize the Interrupt structure

@@ -81,9 +81,9 @@ typedef struct _actualValues_ {
 	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
-	 float i_alpha_IP_CORE;
-	 float i_beta_IP_CORE;
-	 float i_a_IP_CORE;
+	float i_alpha_IP_CORE;
+	float i_beta_IP_CORE;
+	float i_a_IP_CORE;
 	float i_b_IP_CORE;
 	float i_c_IP_CORE;
 } actualValues;

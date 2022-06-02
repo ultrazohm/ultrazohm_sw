@@ -4,7 +4,7 @@
 #include "../../uz/uz_Transformation/uz_Transformation.h"
 
 /**
- * @brief Object data type definition of the dq IP-Core driver
+ * @brief Object data type definition of the dq_alphabeta_123 IP-Core driver
  *
  */
 typedef struct uz_dq_alphabeta_123_IPcore_t uz_dq_alphabeta_123_IPcore_t;
@@ -13,22 +13,22 @@ struct uz_dq_alphabeta_123_IPcore_config_t{
     uint32_t base_address; /**< Base address of the IP-Core */
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
     float theta_offset; /**< Offset of encoder to alpha-axis */
-    float id_ref; 
-    float iq_ref;
-};
+    float id_ref; /**< initial id_ref current of the IP_Core */
+    float iq_ref; /**< initial iq_ref current of the IP_Core */
+};   
 
 /**
- * @brief Initialize an instance of the driver for the dq-IP-Core
+ * @brief Initialize an instance of the driver for the dq_alphabeta_123 IP-Core
  *
  * @param config Configuration struct for the instance
- * @return uz_dqIPcore_t* Pointer to an initialized instance of the driver
+ * @return uz_dq_alphabeta_123_IPcore_t* Pointer to an initialized instance of the driver
  */
 uz_dq_alphabeta_123_IPcore_t* uz_dq_alphabeta_123_IPcore_init(struct uz_dq_alphabeta_123_IPcore_config_t config);
 
 struct uz_dq_alphabeta_123_IPcore_update_t{
-    uint32_t base_address;
-    float idref;
-    float iqref;
+    uint32_t base_address; /**< Base address of the IP-Core */
+    float idref; /**< update for the idref current in the isr */
+    float iqref; /**< update for the iqref current in the isr */
 };
 
 /** 
@@ -44,7 +44,7 @@ uz_dq_alphabeta_123_IPcore_t* uz_dq_alphabeta_123_IPcore_idref_iqref_update(stru
  * @brief Read the output currents ia and ib and ic from the IP-Core and return them
  *
  * @param self Pointer to driver instance
- *
+ * @return uz_abc_t
  */
 
 uz_3ph_abc_t uz_dq_alphabeta_123_IPcore_get_i_abc(uz_dq_alphabeta_123_IPcore_t* self);

@@ -110,6 +110,7 @@ void uz_SpeedControl_update_limits(uz_SpeedControl_t* self, float upper_limit, f
 void uz_SpeedControl_set_field_weakening(uz_SpeedControl_t* self, bool is_field_weakening_active) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    //Since the object could've been initialized with the members of the uz_PMSM_t struct set to 0, all members of this struct have to be asserted again.
     if(is_field_weakening_active) {
         uz_assert(self->config.config_PMSM.polePairs > 0.0f);
 	    uz_assert(fmodf(self->config.config_PMSM.polePairs, 1.0f) == 0);

@@ -58,19 +58,19 @@ thead.reportTableHeader {
 <tr>
 <td>IP core version
 </td>
-<td class="summaryTableSndColEvenRow">4.0
+<td class="summaryTableSndColEvenRow">4.1
 </td>
 </tr>
 <tr>
 <td class="distinctCellColor">IP core folder
 </td>
-<td class="summaryTableSndColOddRow"><a href="matlab:uiopen('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\*.*')">hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0</a>
+<td class="summaryTableSndColOddRow"><a href="matlab:uiopen('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/*.*')">hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1</a>
 </td>
 </tr>
 <tr>
 <td>IP core zip file name
 </td>
-<td class="summaryTableSndColEvenRow">PWM_and_SS_control_V4_ip_v4_0.zip
+<td class="summaryTableSndColEvenRow">PWM_and_SS_control_V4_ip_v4_1.zip
 </td>
 </tr>
 <tr>
@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">7.10
+<td class="summaryTableSndColOddRow">7.38
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">09-May-2022 15:08:13
+<td class="summaryTableSndColOddRow">02-Jun-2022 16:38:20
 </td>
 </tr>
 <tr>
@@ -462,217 +462,21 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:209')">SS0_OUT</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:1781')">triangle_shift</a>
 </td>
-<td>Outport
-</td>
-<td>boolean
-</td>
-<td>External Port
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:210')">SS1_OUT</a>
-</td>
-<td class="distinctCellColor">Outport
-</td>
-<td class="distinctCellColor">boolean
-</td>
-<td class="distinctCellColor">External Port
-</td>
-<td class="distinctCellColor">
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:211')">SS2_OUT</a>
-</td>
-<td>Outport
-</td>
-<td>boolean
-</td>
-<td>External Port
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:212')">SS3_OUT</a>
-</td>
-<td class="distinctCellColor">Outport
-</td>
-<td class="distinctCellColor">boolean
-</td>
-<td class="distinctCellColor">External Port
-</td>
-<td class="distinctCellColor">
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:213')">SS4_OUT</a>
-</td>
-<td>Outport
-</td>
-<td>boolean
-</td>
-<td>External Port
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:214')">SS5_OUT</a>
-</td>
-<td class="distinctCellColor">Outport
-</td>
-<td class="distinctCellColor">boolean
-</td>
-<td class="distinctCellColor">External Port
-</td>
-<td class="distinctCellColor">
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:215')">PWM_en_rd_AXI</a>
-</td>
-<td>Outport
-</td>
-<td>boolean
-</td>
-<td>AXI4-Lite
-</td>
-<td>x"134"
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:216')">PWM_f_carrier_kHz_rd_AXI</a>
-</td>
-<td class="distinctCellColor">Outport
-</td>
-<td class="distinctCellColor">ufix25_En26
-</td>
-<td class="distinctCellColor">AXI4-Lite
-</td>
-<td class="distinctCellColor">x"138"
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:501')">PWM_T_carrier_us_rd_AXI</a>
-</td>
-<td>Outport
-</td>
-<td>ufix25
-</td>
-<td>AXI4-Lite
-</td>
-<td>x"13C"
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:217')">PWM_min_pulse_width_rd_AXI</a>
-</td>
-<td class="distinctCellColor">Outport
-</td>
-<td class="distinctCellColor">sfix18_En16
-</td>
-<td class="distinctCellColor">AXI4-Lite
-</td>
-<td class="distinctCellColor">x"140"
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:218')">PWM_enb_out</a>
-</td>
-<td>Outport
-</td>
-<td>boolean
-</td>
-<td>External Port
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:220')">Mode_rd_AXI</a>
-</td>
-<td class="distinctCellColor">Outport
-</td>
-<td class="distinctCellColor">ufix2
-</td>
-<td class="distinctCellColor">AXI4-Lite
-</td>
-<td class="distinctCellColor">x"144"
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:512')">Triangular_Max</a>
-</td>
-<td>Outport
-</td>
-<td>boolean
-</td>
-<td>External Port
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:538')">Triangular_Min</a>
-</td>
-<td class="distinctCellColor">Outport
-</td>
-<td class="distinctCellColor">boolean
-</td>
-<td class="distinctCellColor">External Port
-</td>
-<td class="distinctCellColor">
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:567')">triangle_out</a>
-</td>
-<td>Outport
+<td>Inport
 </td>
 <td>ufix18_En17
 </td>
-<td>External Port
+<td>AXI4-Lite
 </td>
-<td>
+<td>x"12C"
 </td>
 <td>
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:598')">dir_out</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:209')">SS0_OUT</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
@@ -683,6 +487,216 @@ Target platform interface table:
 <td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:210')">SS1_OUT</a>
+</td>
+<td>Outport
+</td>
+<td>boolean
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:211')">SS2_OUT</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:212')">SS3_OUT</a>
+</td>
+<td>Outport
+</td>
+<td>boolean
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:213')">SS4_OUT</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:214')">SS5_OUT</a>
+</td>
+<td>Outport
+</td>
+<td>boolean
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:215')">PWM_en_rd_AXI</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">AXI4-Lite
+</td>
+<td class="distinctCellColor">x"134"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:216')">PWM_f_carrier_kHz_rd_AXI</a>
+</td>
+<td>Outport
+</td>
+<td>ufix25_En26
+</td>
+<td>AXI4-Lite
+</td>
+<td>x"138"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:501')">PWM_T_carrier_us_rd_AXI</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">ufix25
+</td>
+<td class="distinctCellColor">AXI4-Lite
+</td>
+<td class="distinctCellColor">x"13C"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:217')">PWM_min_pulse_width_rd_AXI</a>
+</td>
+<td>Outport
+</td>
+<td>sfix18_En16
+</td>
+<td>AXI4-Lite
+</td>
+<td>x"140"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:218')">PWM_enb_out</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:220')">Mode_rd_AXI</a>
+</td>
+<td>Outport
+</td>
+<td>ufix2
+</td>
+<td>AXI4-Lite
+</td>
+<td>x"144"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:512')">Triangular_Max</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:538')">Triangular_Min</a>
+</td>
+<td>Outport
+</td>
+<td>boolean
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:567')">triangle_out</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">ufix18_En17
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:598')">dir_out</a>
+</td>
+<td>Outport
+</td>
+<td>boolean
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
 </td>
 </tr>
 </tbody>
@@ -725,7 +739,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2205091508
+<td>contains unique IP timestamp (yymmddHHMM): 2206021638
 </td>
 </tr>
 <tr>
@@ -817,51 +831,59 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 </tr>
 <tr>
-<td>count_src_ext_AXI_Data
+<td>triangle_shift_Data
 </td>
-<td>0x130
+<td>0x12C
 </td>
-<td>data register for Inport count_src_ext_AXI
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor">PWM_en_rd_AXI_Data
-</td>
-<td class="distinctCellColor">0x134
-</td>
-<td class="distinctCellColor">data register for Outport PWM_en_rd_AXI
+<td>data register for Inport triangle_shift
 </td>
 </tr>
 <tr>
-<td>PWM_f_carrier_kHz_rd_AXI_Data
+<td class="distinctCellColor">count_src_ext_AXI_Data
 </td>
-<td>0x138
+<td class="distinctCellColor">0x130
 </td>
-<td>data register for Outport PWM_f_carrier_kHz_rd_AXI
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor">PWM_T_carrier_us_rd_AXI_Data
-</td>
-<td class="distinctCellColor">0x13C
-</td>
-<td class="distinctCellColor">data register for Outport PWM_T_carrier_us_rd_AXI
+<td class="distinctCellColor">data register for Inport count_src_ext_AXI
 </td>
 </tr>
 <tr>
-<td>PWM_min_pulse_width_rd_AXI_Data
+<td>PWM_en_rd_AXI_Data
 </td>
-<td>0x140
+<td>0x134
 </td>
-<td>data register for Outport PWM_min_pulse_width_rd_AXI
+<td>data register for Outport PWM_en_rd_AXI
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">Mode_rd_AXI_Data
+<td class="distinctCellColor">PWM_f_carrier_kHz_rd_AXI_Data
 </td>
-<td class="distinctCellColor">0x144
+<td class="distinctCellColor">0x138
 </td>
-<td class="distinctCellColor">data register for Outport Mode_rd_AXI
+<td class="distinctCellColor">data register for Outport PWM_f_carrier_kHz_rd_AXI
+</td>
+</tr>
+<tr>
+<td>PWM_T_carrier_us_rd_AXI_Data
+</td>
+<td>0x13C
+</td>
+<td>data register for Outport PWM_T_carrier_us_rd_AXI
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">PWM_min_pulse_width_rd_AXI_Data
+</td>
+<td class="distinctCellColor">0x140
+</td>
+<td class="distinctCellColor">data register for Outport PWM_min_pulse_width_rd_AXI
+</td>
+</tr>
+<tr>
+<td>Mode_rd_AXI_Data
+</td>
+<td>0x144
+</td>
+<td>data register for Outport Mode_rd_AXI
 </td>
 </tr>
 </tbody>
@@ -871,7 +893,7 @@ The AXI4 slave write register readback is OFF for the IP core.
 <br/>
 The register address mapping is also in the following C header file for you to use when programming the processor:
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\include\PWM_and_SS_control_V4_ip_addr.h')">include\PWM_and_SS_control_V4_ip_addr.h</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/include/PWM_and_SS_control_V4_ip_addr.h')">include/PWM_and_SS_control_V4_ip_addr.h</a>
 <br/>
 The IP core name is appended to the register names to avoid name conflicts.
 </div>
@@ -931,52 +953,54 @@ If you are targeting Xilinx Zynq hardwares supported by HDL Coder Support Packag
 <h3 class="sectionHeading">IP Core File List</h3>
 The IP core folder is located at:
 <br/>
-<a href="matlab:uiopen('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\*.*')">hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0</a>
+<a href="matlab:uiopen('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/*.*')">hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1</a>
 <br/>
 Following files are generated under this folder:
 <br/><br/>
 <b>IP core zip file</b>
 <br/>
-<a href="matlab:uiopen('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\*.*')">PWM_and_SS_control_V4_ip_v4_0.zip</a>
+<a href="matlab:uiopen('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/*.*')">PWM_and_SS_control_V4_ip_v4_1.zip</a>
 <br/><br/>
 <b>IP core report</b>
 <br/>
-<a href="matlab:web('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\doc\IP_Core_SS_Switch_and_PWM_ip_core_report.html')">doc\IP_Core_SS_Switch_and_PWM_ip_core_report.html</a>
+<a href="matlab:web('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/doc/IP_Core_SS_Switch_and_PWM_ip_core_report.html')">doc/IP_Core_SS_Switch_and_PWM_ip_core_report.html</a>
 <br/><br/>
 <b>IP core HDL source files</b>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\hdl\vhdl\PWM_and_SS_control_V4_ip_src_PWM_and_Switching_Signal_Control_pkg.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_src_PWM_and_Switching_Signal_Control_pkg.vhd</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip_src_PWM_and_Switching_Signal_Control_pkg.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip_src_PWM_and_Switching_Signal_Control_pkg.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\hdl\vhdl\PWM_and_SS_control_V4_ip_src_LimitPulseWidth.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_src_LimitPulseWidth.vhd</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\hdl\vhdl\PWM_and_SS_control_V4_ip_src_LimitPulseWidth1.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_src_LimitPulseWidth1.vhd</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth1.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth1.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\hdl\vhdl\PWM_and_SS_control_V4_ip_src_LimitPulseWidth2.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_src_LimitPulseWidth2.vhd</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth2.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth2.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\hdl\vhdl\PWM_and_SS_control_V4_ip_src_Counter_Ctrl.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_src_Counter_Ctrl.vhd</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\hdl\vhdl\PWM_and_SS_control_V4_ip_src_GenPWM.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_src_GenPWM.vhd</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip_src_Counter_Ctrl.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip_src_Counter_Ctrl.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\hdl\vhdl\PWM_and_SS_control_V4_ip_src_VSI_Control_Signal_Switch.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_src_VSI_Control_Signal_Switch.vhd</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip_src_GenPWM.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip_src_GenPWM.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\hdl\vhdl\PWM_and_SS_control_V4_ip_src_PWM_and_Switching_Signal_Control.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_src_PWM_and_Switching_Signal_Control.vhd</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip_src_VSI_Control_Signal_Switch.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip_src_VSI_Control_Signal_Switch.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\hdl\vhdl\PWM_and_SS_control_V4_ip_reset_sync.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_reset_sync.vhd</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip_src_PWM_and_Switching_Signal_Control.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip_src_PWM_and_Switching_Signal_Control.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\hdl\vhdl\PWM_and_SS_control_V4_ip_dut.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_dut.vhd</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip_reset_sync.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip_reset_sync.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\hdl\vhdl\PWM_and_SS_control_V4_ip_addr_decoder.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_addr_decoder.vhd</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip_dut.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip_dut.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\hdl\vhdl\PWM_and_SS_control_V4_ip_axi_lite_module.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_axi_lite_module.vhd</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip_addr_decoder.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip_addr_decoder.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\hdl\vhdl\PWM_and_SS_control_V4_ip_axi_lite.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_axi_lite.vhd</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip_axi_lite_module.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip_axi_lite_module.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\hdl\vhdl\PWM_and_SS_control_V4_ip.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip.vhd</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip_axi_lite.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip_axi_lite.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/hdl/vhdl/PWM_and_SS_control_V4_ip.vhd')">hdl/vhdl/PWM_and_SS_control_V4_ip.vhd</a>
 <br/>
 <br/>
 <b>IP core C header file</b>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_0\include\PWM_and_SS_control_V4_ip_addr.h')">include\PWM_and_SS_control_V4_ip_addr.h</a>
+<a href="matlab:edit('hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/include/PWM_and_SS_control_V4_ip_addr.h')">include/PWM_and_SS_control_V4_ip_addr.h</a>
 </div>
 </body>
 </html>

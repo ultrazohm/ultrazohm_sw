@@ -567,7 +567,7 @@ Example of using SI-Value output of ADC-IP-Core with sfix18_En11 output data typ
 ---------------------------------------------------------------------------------
 
 From the SI_VALUE output vector of the ADC-IP-Core three measurements are sliced and passed to another IP-Core that requires sfix18_En11 input datatypes.
-Therefore the conversion factor, offset and conversion factor definition (datatype) have to be adjusted in the initialization of the ADC-IP-Core.
+Therefore the conversion factor, offset and conversion factor definition have to be adjusted in the initialization of the ADC-IP-Core.
 
 The parameter conversion_factor_definition has to be adjusted according to the needed datatype sfix18_En11 - 7 integer bits and 11 fractional bits.
 Offset and conversion-factor depend on the used ADC, its measurement range and resolution. The two parameters have in this example approximately the following values:
@@ -621,7 +621,7 @@ Slice-Blocks are used to get the required part of the vector. In the next figure
 The length of the sliced part is according to the used datatype. In this example the length of the datatype sfix18_En11 is 18 bit. To get the SI-Values of the first ADC you need to slice the first 18 bit of the vector, for the second ADC the next 18 etc.
 
 
-.. figure:: sliced_SI_Values_VIVADO.PNG
+.. figure:: sliced_SI_Values_VIVADO.png
    :width: 800px
    :align: center
 

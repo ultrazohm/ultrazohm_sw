@@ -38,6 +38,8 @@
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
 #define UZ_IIR_FILTER_MAX_INSTANCES                     1U
+#define UZ_PMSM_MODEL_9ph_MAX_INSTANCES                 1U
+#define UZ_INVERTER_3PH_MAX_INSTANCES					3U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -61,4 +63,5 @@
     #define UZ_MLP_THREE_LAYER_IP_MAX_INSTANCES             20U
     #define UZ_SPEEDCONTROL_MAX_INSTANCES                   30U
     #define UZ_IIR_FILTER_MAX_INSTANCES                     20U
+    #define UZ_PMSM_MODEL_9ph_MAX_INSTANCES                 10U
 #endif

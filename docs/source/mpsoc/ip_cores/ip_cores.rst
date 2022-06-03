@@ -24,8 +24,4 @@ IP Cores
     uz_dq_transformation/uz_dq_transformation
     uz_trans_dq_alphabeta_123/uz_trans_dq_alphabeta_123
     uz_mlp_three_layer/uz_mlp_three_layer
-<<<<<<< HEAD
-    
-=======
     uz_dac_interface/uz_dac_interface
->>>>>>> d81940aa9bf1a99a1f019d335e193691416f80ee

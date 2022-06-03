@@ -1,0 +1,1514 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for IP_Core_SS_Switch_and_PWM
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiplexer_2_1');hdlTableShrink(this, 'Adder_3_1');hdlTableShrink(this, 'Register_3_3');hdlTableShrink(this, 'Register_3_4');hdlTableShrink(this, 'Register_3_5');hdlTableShrink(this, 'Multiplexer_3_1');hdlTableShrink(this, 'Multiplexer_3_2');hdlTableShrink(this, 'Multiplexer_3_3');hdlTableShrink(this, 'Multiplexer_3_4');hdlTableShrink(this, 'Multiply_4_1');hdlTableShrink(this, 'Register_4_1');hdlTableShrink(this, 'Register_4_2');hdlTableShrink(this, 'Multiplexer_4_1');hdlTableShrink(this, 'Adder_5_1');hdlTableShrink(this, 'Adder_5_3');hdlTableShrink(this, 'Subtractor_5_1');hdlTableShrink(this, 'Subtractor_5_2');hdlTableShrink(this, 'Subtractor_5_3');hdlTableShrink(this, 'Subtractor_5_4');hdlTableShrink(this, 'Register_5_1');hdlTableShrink(this, 'Register_5_2');hdlTableShrink(this, 'Multiplexer_5_1');hdlTableShrink(this, 'Multiplexer_5_2');hdlTableShrink(this, 'Multiplexer_5_3');hdlTableShrink(this, 'Multiplexer_5_4');hdlTableShrink(this, 'Subtractor_6_1');hdlTableShrink(this, 'Multiplexer_6_2');hdlTableShrink(this, 'Multiplexer_6_3');hdlTableShrink(this, 'Subtractor_7_1');hdlTableShrink(this, 'Multiplexer_7_2');hdlTableShrink(this, 'Multiplexer_7_3');hdlTableShrink(this, 'Subtractor_8_1');hdlTableShrink(this, 'Multiplexer_8_2');hdlTableShrink(this, 'Multiplexer_8_3');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for IP_Core_SS_Switch_and_PWM
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+16
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+57
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+441
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+109
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+307
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:192')" name="code2model" class="code2model">
+PWM_and_Switching_Signal_Control
+</a>
+
+</h5>
+<h5>
+Registers (2)
+</h5>
+<span style="font-family:monospace">
+2-bit Register 							: 2
+</span>
+<br /><h5>
+Multiplexers (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+14-bit 2-to-1 Multiplexer 							: 3
+</span>
+<span name="Multiplexer_1_1" id="Multiplexer_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:221')" name="code2model" class="code2model">
+Switch7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:222')" name="code2model" class="code2model">
+Switch8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:223')" name="code2model" class="code2model">
+Switch9
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Number of I/O Bits (307)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 207
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul class="SystemdefinedCollapse" id="7ad9bf33-40d0-4c20-825b-ae7e72b7f3cf" dataCollapse="off">
+<li>
+clk: 1 bit
+</li>
+<li>
+reset: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:193')" name="code2model" class="code2model">
+PWM_en_AXI
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:194')" name="code2model" class="code2model">
+Mode_AXI
+</a>
+: 2 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:195')" name="code2model" class="code2model">
+Scal_f_carrier_AXI
+</a>
+: 25 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:502')" name="code2model" class="code2model">
+Scal_T_carrier_AXI
+</a>
+: 25 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:196')" name="code2model" class="code2model">
+PWM_min_pulse_width_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:197')" name="code2model" class="code2model">
+m_u1_norm
+</a>
+: 14 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:198')" name="code2model" class="code2model">
+m_u2_norm
+</a>
+: 14 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:199')" name="code2model" class="code2model">
+m_u3_norm
+</a>
+: 14 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:201')" name="code2model" class="code2model">
+m_u1_norm_AXI
+</a>
+: 14 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:203')" name="code2model" class="code2model">
+m_u2_norm_AXI
+</a>
+: 14 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:205')" name="code2model" class="code2model">
+m_u3_norm_AXI
+</a>
+: 14 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:200')" name="code2model" class="code2model">
+SS0_IN_External
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:202')" name="code2model" class="code2model">
+SS1_IN_External
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:204')" name="code2model" class="code2model">
+SS2_IN_External
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:206')" name="code2model" class="code2model">
+SS3_IN_External
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:207')" name="code2model" class="code2model">
+SS4_IN_External
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:208')" name="code2model" class="code2model">
+SS5_IN_External
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:514')" name="code2model" class="code2model">
+TriState_HB1_AXI
+</a>
+: 2 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:515')" name="code2model" class="code2model">
+TriState_HB2_AXI
+</a>
+: 2 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:516')" name="code2model" class="code2model">
+TriState_HB3_AXI
+</a>
+: 2 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:566')" name="code2model" class="code2model">
+triangle_in
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:605')" name="code2model" class="code2model">
+count_src_ext_AXI
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1781')" name="code2model" class="code2model">
+triangle_shift
+</a>
+: 18 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '7ad9bf33-40d0-4c20-825b-ae7e72b7f3cf')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 100
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul class="SystemdefinedCollapse" id="ca76553e-46e4-41a9-8897-8a4db3e8eeba" dataCollapse="off">
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:209')" name="code2model" class="code2model">
+SS0_OUT
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:210')" name="code2model" class="code2model">
+SS1_OUT
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:211')" name="code2model" class="code2model">
+SS2_OUT
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:212')" name="code2model" class="code2model">
+SS3_OUT
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:213')" name="code2model" class="code2model">
+SS4_OUT
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:214')" name="code2model" class="code2model">
+SS5_OUT
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:215')" name="code2model" class="code2model">
+PWM_en_rd_AXI
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:216')" name="code2model" class="code2model">
+PWM_f_carrier_kHz_rd_AXI
+</a>
+: 25 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:501')" name="code2model" class="code2model">
+PWM_T_carrier_us_rd_AXI
+</a>
+: 25 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:217')" name="code2model" class="code2model">
+PWM_min_pulse_width_rd_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:218')" name="code2model" class="code2model">
+PWM_enb_out
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:220')" name="code2model" class="code2model">
+Mode_rd_AXI
+</a>
+: 2 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:512')" name="code2model" class="code2model">
+Triangular_Max
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:538')" name="code2model" class="code2model">
+Triangular_Min
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:567')" name="code2model" class="code2model">
+triangle_out
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:598')" name="code2model" class="code2model">
+dir_out
+</a>
+: 1 bit
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'ca76553e-46e4-41a9-8897-8a4db3e8eeba')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:8')" name="code2model" class="code2model">
+VSI Control Signal Switch
+</a>
+
+</h5>
+<h5>
+Registers (20)
+</h5>
+<span style="font-family:monospace">
+2-bit Register 							: 8
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 12
+</span>
+<br /><h5>
+Multiplexers (18)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_2_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 18
+</span>
+<span name="Multiplexer_2_1" id="Multiplexer_2_1">
+<ul class="SystemdefinedCollapse" id="b8fabd1f-f4e5-428a-83df-a718666aba5b" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:525')" name="code2model" class="code2model">
+Switch6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:2')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:526')" name="code2model" class="code2model">
+Switch7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:3')" name="code2model" class="code2model">
+Switch2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:527')" name="code2model" class="code2model">
+Switch8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:4')" name="code2model" class="code2model">
+Switch3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:528')" name="code2model" class="code2model">
+Switch9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:5')" name="code2model" class="code2model">
+Switch4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:529')" name="code2model" class="code2model">
+Switch10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:6')" name="code2model" class="code2model">
+Switch5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:530')" name="code2model" class="code2model">
+Switch11
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'b8fabd1f-f4e5-428a-83df-a718666aba5b')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:371')" name="code2model" class="code2model">
+GenPWM
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Adder 							: 1
+</span>
+<span name="Adder_3_1" id="Adder_3_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:425')" name="code2model" class="code2model">
+HDL Counter2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (30)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 13
+</span>
+<br /><span style="font-family:monospace">
+25-bit Register 							: 4
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_3_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit Register 							: 1
+</span>
+<span name="Register_3_3" id="Register_3_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:425')" name="code2model" class="code2model">
+HDL Counter2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_3_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit Register 							: 6
+</span>
+<span name="Register_3_4" id="Register_3_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:612')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_3_5')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+14-bit Register 							: 6
+</span>
+<span name="Register_3_5" id="Register_3_5">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:417')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:418')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:419')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (27)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 22
+</span>
+<span name="Multiplexer_3_1" id="Multiplexer_3_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:487')" name="code2model" class="code2model">
+Switch7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:483')" name="code2model" class="code2model">
+Switch3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:488')" name="code2model" class="code2model">
+Switch8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:484')" name="code2model" class="code2model">
+Switch4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:489')" name="code2model" class="code2model">
+Switch9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:485')" name="code2model" class="code2model">
+Switch5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:486')" name="code2model" class="code2model">
+Switch6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_3_2" id="Multiplexer_3_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:425')" name="code2model" class="code2model">
+HDL Counter2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_3_3" id="Multiplexer_3_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:563')" name="code2model" class="code2model">
+Switch10
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+14-bit 2-to-1 Multiplexer 							: 3
+</span>
+<span name="Multiplexer_3_4" id="Multiplexer_3_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:480')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:481')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:482')" name="code2model" class="code2model">
+Switch2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:388')" name="code2model" class="code2model">
+Counter Ctrl
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x25-bit Multiply 							: 1
+</span>
+<span name="Multiply_4_1" id="Multiply_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:400')" name="code2model" class="code2model">
+Product
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (2)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<span name="Register_4_1" id="Register_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:396')" name="code2model" class="code2model">
+Delay6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_4_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+25-bit Register 							: 1
+</span>
+<span name="Register_4_2" id="Register_4_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:395')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (8)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 8
+</span>
+<span name="Multiplexer_4_1" id="Multiplexer_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:409')" name="code2model" class="code2model">
+Switch7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:408')" name="code2model" class="code2model">
+Switch6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1733')" name="code2model" class="code2model">
+Triangle shift
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (12)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+23x23-bit Adder 							: 1
+</span>
+<span name="Adder_5_1" id="Adder_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1759')" name="code2model" class="code2model">
+Sum6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_5_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<span name="Adder_5_3" id="Adder_5_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1757')" name="code2model" class="code2model">
+Sum4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_5_1" id="Subtractor_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1784')" name="code2model" class="code2model">
+Sum10
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_5_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+23x23-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_5_2" id="Subtractor_5_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1754')" name="code2model" class="code2model">
+Sum1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_5_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_5_3" id="Subtractor_5_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1764')" name="code2model" class="code2model">
+Unary Minus
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_5_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21x21-bit Subtractor 							: 3
+</span>
+<span name="Subtractor_5_4" id="Subtractor_5_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1756')" name="code2model" class="code2model">
+Sum3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1761')" name="code2model" class="code2model">
+Sum8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1755')" name="code2model" class="code2model">
+Sum2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Subtractor 							: 2
+</span>
+<br /><h5>
+Registers (3)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit Register 							: 2
+</span>
+<span name="Register_5_1" id="Register_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:2358')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_5_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit Register 							: 1
+</span>
+<span name="Register_5_2" id="Register_5_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1739')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (32)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 26
+</span>
+<span name="Multiplexer_5_1" id="Multiplexer_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:2370')" name="code2model" class="code2model">
+and1_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:2371')" name="code2model" class="code2model">
+and1_2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:2374')" name="code2model" class="code2model">
+and2_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:2375')" name="code2model" class="code2model">
+and2_2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:2376')" name="code2model" class="code2model">
+and
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:2360')" name="code2model" class="code2model">
+or
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_5_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_5_2" id="Multiplexer_5_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1785')" name="code2model" class="code2model">
+sw4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_5_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+21-bit 2-to-1 Multiplexer 							: 4
+</span>
+<span name="Multiplexer_5_3" id="Multiplexer_5_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1763')" name="code2model" class="code2model">
+Switch3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1768')" name="code2model" class="code2model">
+sw
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1771')" name="code2model" class="code2model">
+sw3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1770')" name="code2model" class="code2model">
+sw2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_5_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_5_4" id="Multiplexer_5_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:1769')" name="code2model" class="code2model">
+sw1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:456')" name="code2model" class="code2model">
+LimitPulseWidth2
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18x18-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_6_1" id="Subtractor_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:459')" name="code2model" class="code2model">
+Add
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (7)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_6_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 3-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_6_2" id="Multiplexer_6_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:466')" name="code2model" class="code2model">
+Saturation
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_6_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_6_3" id="Multiplexer_6_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:467')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:468')" name="code2model" class="code2model">
+Switch6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:441')" name="code2model" class="code2model">
+LimitPulseWidth1
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_7_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18x18-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_7_1" id="Subtractor_7_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:444')" name="code2model" class="code2model">
+Add
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (7)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_7_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 3-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_7_2" id="Multiplexer_7_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:451')" name="code2model" class="code2model">
+Saturation
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_7_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_7_3" id="Multiplexer_7_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:452')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:453')" name="code2model" class="code2model">
+Switch6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:426')" name="code2model" class="code2model">
+LimitPulseWidth
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18x18-bit Subtractor 							: 1
+</span>
+<span name="Subtractor_8_1" id="Subtractor_8_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:429')" name="code2model" class="code2model">
+Add
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (7)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_8_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 3-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_8_2" id="Multiplexer_8_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:436')" name="code2model" class="code2model">
+Saturation
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_8_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_8_3" id="Multiplexer_8_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:437')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('IP_Core_SS_Switch_and_PWM:438')" name="code2model" class="code2model">
+Switch6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

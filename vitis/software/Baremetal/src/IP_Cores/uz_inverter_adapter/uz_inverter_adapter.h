@@ -12,6 +12,7 @@ typedef struct uz_inverter_adapter_t uz_inverter_adapter_t;
 /**
  * @brief Struct for linear interpolation parameters
  * using a function of the form y=ax+b
+ *
  * @param a Gradient
  * @param b Offset
  */
@@ -87,10 +88,29 @@ uz_inverter_adapter_t* uz_inverter_adapter_init(struct uz_inverter_adapter_confi
  */
  float uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(uz_inverter_adapter_t *self, float dutyCycleNormalized);
 
+
+/**
+ * @brief updates the states and signals read from the ip-core
+ *        called by uz_inverter_adapter_get_outputs function
+ * 
+ * @param self Pointer to the instance
+ */
  void uz_inverter_adapter_update_states(uz_inverter_adapter_t *self);
 
+
+/** 
+ * @brief returns the state and signals of the output struct
+ *        
+ * @param self Pointer to the instance
+ */ 
  struct uz_inverter_adapter_outputs_t uz_inverter_adapter_get_outputs(uz_inverter_adapter_t *self);
 
-
+ /**
+  * @brief sets the enable pin for the gate drivers
+  *
+  * @param self Pointer to the instance
+  * @param pwm_en_onoff enables (true) or disables (false) the gates
+  */
+void uz_inverter_adapter_set_PWM_EN(uz_inverter_adapter_t *self, bool pwm_en_onoff);
 
 #endif // UZ_INVERTER_ADAPTER_H

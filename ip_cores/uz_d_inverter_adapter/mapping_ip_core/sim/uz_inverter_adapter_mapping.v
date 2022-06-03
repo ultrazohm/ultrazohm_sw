@@ -3,8 +3,8 @@
 //Tool Version: Vivado v.2020.1.1 (win64) Build 2960000 Wed Aug  5 22:57:20 MDT 2020
 //Date        : Thu Apr  8 15:57:57 2021
 //Host        : ELN176252 running 64-bit major release  (build 9200)
-//Command     : generate_target UZ_D_GaN_Inverter_Mapping.bd
-//Design      : UZ_D_GaN_Inverter_Mapping
+//Command     : generate_target uz_d_inverter_mapping.bd
+//Design      : uz_d_inverter_mapping
 //Purpose     : IP block netlist
 //--------------------------------------------------------------------------------
 `timescale 1 ps / 1 ps
@@ -16,8 +16,8 @@ DIG_IO_03
 DIG_IO_04
 DIG_IO_05
 DIG_IO_06 */
-(* CORE_GENERATION_INFO = "UZ_D_GaN_Inverter_Mapping,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=UZ_D_GaN_Inverter_Mapping,x_ipVersion=1.00.a,x_ipLanguage=VERILOG,numBlks=10,numReposBlks=10,numNonXlnxBlks=0,numHierBlks=0,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=0,numPkgbdBlks=0,bdsource=USER,synth_mode=OOC_per_IP}" *) (* HW_HANDOFF = "UZ_D_GaN_Inverter_Mapping.hwdef" *) 
-module UZ_D_GaN_Inverter_Mapping
+(* CORE_GENERATION_INFO = "uz_d_inverter_mapping,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=uz_d_inverter_mapping,x_ipVersion=1.00.a,x_ipLanguage=VERILOG,numBlks=10,numReposBlks=10,numNonXlnxBlks=0,numHierBlks=0,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=0,numPkgbdBlks=0,bdsource=USER,synth_mode=OOC_per_IP}" *) (* HW_HANDOFF = "uz_d_inverter_mapping.hwdef" *) 
+module uz_d_inverter_mapping
    (DIG_IO_17,
     GaN_FAULT,
     GaN_H1_FAULT,
@@ -161,13 +161,13 @@ module UZ_D_GaN_Inverter_Mapping
   assign PWM_L1[0] = xlslice_1_Dout;
   assign PWM_L2[0] = xlslice_3_Dout;
   assign PWM_L3[0] = xlslice_5_Dout;
-  UZ_D_GaN_Inverter_Mapping_xlconcat_0_0 xlconcat_0
+  uz_d_inverter_mapping_xlconcat_0_0 xlconcat_0
        (.In0(I0_DIAG_1),
         .In1(I1_DIAG_1),
         .In2(I2_DIAG_1),
         .In3(I3_DIAG_1),
         .dout(xlconcat_0_dout));
-  UZ_D_GaN_Inverter_Mapping_xlconcat_0_1 xlconcat_1
+  uz_d_inverter_mapping_xlconcat_0_1 xlconcat_1
        (.In0(GaN_H1_Temp_1),
         .In1(GaN_L1_Temp_1),
         .In2(GaN_H2_Temp_1),
@@ -175,7 +175,7 @@ module UZ_D_GaN_Inverter_Mapping
         .In4(GaN_H3_Temp_1),
         .In5(GaN_L3_Temp_1),
         .dout(xlconcat_1_dout));
-  UZ_D_GaN_Inverter_Mapping_xlconcat_1_0 xlconcat_2
+  uz_d_inverter_mapping_xlconcat_1_0 xlconcat_2
        (.In0(GaN_H1_OC_1),
         .In1(GaN_L1_OC_1),
         .In2(GaN_H2_OC_1),
@@ -183,7 +183,7 @@ module UZ_D_GaN_Inverter_Mapping
         .In4(GaN_H3_OC_1),
         .In5(GaN_L3_OC_1),
         .dout(xlconcat_2_dout));
-  UZ_D_GaN_Inverter_Mapping_xlconcat_2_0 xlconcat_3
+  uz_d_inverter_mapping_xlconcat_2_0 xlconcat_3
        (.In0(GaN_H1_FAULT_1),
         .In1(GaN_L1_FAULT_1),
         .In2(GaN_H2_FAULT_1),
@@ -191,22 +191,22 @@ module UZ_D_GaN_Inverter_Mapping
         .In4(GaN_L3_FAULT_1),
         .In5(GaN_H3_FAULT_1),
         .dout(xlconcat_3_dout));
-  UZ_D_GaN_Inverter_Mapping_xlslice_0_0 xlslice_0
+  uz_d_inverter_mapping_xlslice_0_0 xlslice_0
        (.Din(Gates_1),
         .Dout(xlslice_0_Dout));
-  UZ_D_GaN_Inverter_Mapping_xlslice_0_1 xlslice_1
+  uz_d_inverter_mapping_xlslice_0_1 xlslice_1
        (.Din(Gates_1),
         .Dout(xlslice_1_Dout));
-  UZ_D_GaN_Inverter_Mapping_xlslice_1_0 xlslice_2
+  uz_d_inverter_mapping_xlslice_1_0 xlslice_2
        (.Din(Gates_1),
         .Dout(xlslice_2_Dout));
-  UZ_D_GaN_Inverter_Mapping_xlslice_1_1 xlslice_3
+  uz_d_inverter_mapping_xlslice_1_1 xlslice_3
        (.Din(Gates_1),
         .Dout(xlslice_3_Dout));
-  UZ_D_GaN_Inverter_Mapping_xlslice_1_2 xlslice_4
+  uz_d_inverter_mapping_xlslice_1_2 xlslice_4
        (.Din(Gates_1),
         .Dout(xlslice_4_Dout));
-  UZ_D_GaN_Inverter_Mapping_xlslice_1_3 xlslice_5
+  uz_d_inverter_mapping_xlslice_1_3 xlslice_5
        (.Din(Gates_1),
         .Dout(xlslice_5_Dout));
 endmodule

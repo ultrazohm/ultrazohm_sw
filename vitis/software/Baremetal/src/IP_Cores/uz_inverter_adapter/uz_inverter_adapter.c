@@ -37,13 +37,11 @@ uz_inverter_adapter_t* uz_inverter_adapter_init(struct uz_inverter_adapter_confi
 float uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius(uz_inverter_adapter_t *self, float dutyCycleNormalized) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-
+    // local variables for readability in the return statement below
     float a;
     float b;
-
     a = self->config.linear_interpolation_params.a;
     b = self->config.linear_interpolation_params.b;
-
     // linear interpolation of duty cycle to temperature function
     return(dutyCycleNormalized*a+b);
 }
@@ -101,4 +99,9 @@ struct uz_inverter_adapter_outputs_t uz_inverter_adapter_get_outputs(uz_inverter
     return(self->outputs);
 }
 
+void uz_inverter_adapter_set_PWM_EN(uz_inverter_adapter_t *self, bool pwm_en_onoff) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_inverter_adapter_hw_set_PWM_EN(self->config.base_address, pwm_en_onoff);
+}
 #endif

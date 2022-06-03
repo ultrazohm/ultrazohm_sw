@@ -561,4 +561,14 @@ void test_uz_inverter_adapter_get_outputs(void) {
 
 
 }
+
+void test_uz_inverter_adapter_set_PWM_EN(void) {
+
+    //create test instance
+    uz_inverter_adapter_t *test_instance = uz_inverter_adapter_init(test_config, test_outputs); 
+
+    bool pwm_en = true;
+    uz_inverter_adapter_hw_set_PWM_EN_Expect(test_instance->config.base_address, pwm_en);
+    uz_inverter_adapter_set_PWM_EN(test_instance, pwm_en);
+}
 #endif // TEST

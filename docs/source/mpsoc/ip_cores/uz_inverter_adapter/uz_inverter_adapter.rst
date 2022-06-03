@@ -138,26 +138,159 @@ under ``uz_d_3ph_inverter``
 
 Software driver
 ---------------
+For interacting with the ip-core, the following step-by-step example shows a way of implementing one instace of the software driver.
 
-- Create hierarchy
-- The trigger source is ``Interrupt_2L_min``: the define ``INTERRUPT_ISR_SOURCE_USER_CHOICE`` is set to ``1U`` in ``uz_global_configuration.h``
-- The trigger ratio is set to 5 (100 kHz/20 kHz = 5): the define ``INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE`` is set to ``5U`` in ``uz_global_configuration.h``
+1. In Vitis, in the Baremetal project und er the folder ``hw_init`` create a new file ``uz_inverter_adapter_init.c`` 
+2. Include necessary files and create ``config`` and ``output`` structs as well as an init function for one or more instances:
 
 .. code-block:: c
-   :caption: Settings in uz_global_configuration.h for the example
+ :caption: Template for uz_inverter_adapter_init.c
 
-   #define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
-   #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE  5U
-   
-   #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
-   #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
-   #define UZ_PWM_FREQUENCY                        10.0e3f
+ #include "../include/uz_inverter_adapter_init.h"
+ #include "../uz/uz_HAL.h"
+ #include "../uz/uz_global_configuration.h"
+ #include "xparameters.h"
+ 
+ static struct uz_inverter_adapter_config_t uz_inverter_adapter_config_d1 = {
+		.base_address = XPAR_UZ_USER_UZ_INVERTER_ADAPTER_UZ_D_INVERTER_ADAPTER_0_BASEADDR,
+		.ip_clk_frequency_Hz = 100000000,
+		.linear_interpolation_params = {162.35f, 20.107f}
+ };
 
-These settings result in the behavior depicted in :numref:`example_trigger_picture` (ADC interrupt in the upper subplot, interrupt of R5 in the lower subplot):
+ static struct uz_inverter_adapter_outputs_t uz_inverter_adapter_outputs_d1 = {
+    .PWMdutyCycNormalized_H1 = 0.0f,
+    .PWMdutyCycNormalized_L1 = 0.0f,
+    .PWMdutyCycNormalized_H2 = 0.0f,
+    .PWMdutyCycNormalized_L2 = 0.0f,
+    .PWMdutyCycNormalized_H3 = 0.0f,
+    .PWMdutyCycNormalized_L3 = 0.0f,
+    .ChipTempDegreesCelsius_H1 = 0.0f, /**< Chip temperature of H1 in degrees celsius */
+    .ChipTempDegreesCelsius_L1 = 0.0f, /**< Chip temperature of L1 in degrees celsius */
+    .ChipTempDegreesCelsius_H2 = 0.0f, /**< Chip temperature of H2 in degrees celsius */
+    .ChipTempDegreesCelsius_L2 = 0.0f, /**< Chip temperature of L2 in degrees celsius */
+    .ChipTempDegreesCelsius_H3 = 0.0f, /**< Chip temperature of H3 in degrees celsius */
+    .ChipTempDegreesCelsius_L3 = 0.0f, /**< Chip temperature of L3 in degrees celsius */
+    .OC = 0U,
+    .OC_H1 = 0U, /**< Over current OC fault signal of H1 */
+    .OC_L1 = 0U, /**< Over current OC fault signal of L1 */
+    .OC_H2 = 0U, /**< Over current OC fault signal of H2 */
+    .OC_L2 = 0U, /**< Over current OC fault signal of L2 */
+    .OC_H3 = 0U, /**< Over current OC fault signal of H3 */
+    .OC_L3 = 0U, /**< Over current OC fault signal of L3 */
+    .FAULT = 0U,
+    .FAULT_H1 = 0U, /**< FAULT signal of H1 */
+    .FAULT_L1 = 0U, /**< FAULT signal of L1 */
+    .FAULT_H2 = 0U, /**< FAULT signal of H2 */
+    .FAULT_L2 = 0U, /**< FAULT signal of L2 */
+    .FAULT_H3 = 0U, /**< FAULT signal of H3 */
+    .FAULT_L3 = 0U, /**< FAULT signal of L3 */
+    .I_DIAG = 0U,
+    .I_DC_DIAG = 0U, /**< Diagnostic signal of current amplifier for DC current */
+    .I1_DIAG = 0U, /**< Diagnostic signal of current amplifier for phase a current */
+    .I2_DIAG = 0U, /**< Diagnostic signal of current amplifier for phase b current */
+    .I3_DIAG = 0U /**< Diagnostic signal of current amplifier for phase c current */
+ };
 
-.. warning::
-   * Trigger ratios other than ``1`` were only tested with trigger source ``Interrupt_2L_min``
-   * Especially when using trigger sources with two ADC trigger events (e.g. ``Interrupt_2L_max_min``), the user has to take care of the resulting ADC/ISR trigger ratio
+ uz_inverter_adapter_t* initialize_uz_inverter_adapter_on_D1(void) {
+	return(uz_inverter_adapter_init(uz_inverter_adapter_config_d1, uz_inverter_adapter_outputs_d1));
+ }
+
+
+3. When using the pwm measurement feature of the ip core (e.g. for measuring temperatures), set the values in the above ``linear_interpolation_params`` struct according to the linear interpolation function that calculates readable 
+SI-values from the duty cycle information. The example values above of ``162.35`` and ``20.107`` are valid for the uz_d_gan_inverter adapter board and the respective TI LMG3425 GaN switch. See also the folder ``temperature_calculation`` in the sources of this ip-core driver for details. 
+
+.. _linear_interpolation:
+
+.. figure:: img/linearinterpolation.png
+   :width: 600
+   :align: center
+
+   Determination of values for linear_interpolation_params struct
+
+
+4. In Vitis, in the Baremetal project under the folder ``include`` create a new file ``uz_inverter_adapter_init.h``. 
+
+
+
+5. Include necessary files and declare the init functions for one or more instances:
+
+.. code-block:: c
+ :caption: Template for uz_inverter_adapter_init.h
+
+ #pragma once
+ #include "../IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+
+ uz_inverter_adapter_t* initialize_uz_inverter_adapter_on_D1(void);
+
+
+6. In Vitis, in the Baremetal project in ``main.h`` include necessary header files:
+
+.. code-block:: c
+ :caption: Additions for main.h
+
+ #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+ #include "include/uz_inverter_adapter_init.h"
+
+
+
+7. In Vitis, in the Baremetal project in ``globalData.h`` include necessary header file:
+
+.. code-block:: c
+ :caption: Includes in globalData.h
+
+  #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+
+
+
+8. In the same file, add an object pointer variable in the ``object_pointers_t`` struct:
+
+.. code-block:: c
+ :caption: Additions in globalData.h
+
+  typedef struct {
+  ...
+  uz_inverter_adapter_t* inverter_d1;
+  }object_pointers_t;
+
+
+
+9. In Vitis, in the Baremetal project in ``main.c`` initialize an instance:
+
+.. code-block:: c
+ :caption: Initialize instance
+
+    case init_ip_cores:
+    ...
+    Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
+    break;
+
+
+
+10. For reading signals and states of the ip-core use the function ``uz_inverter_adapter_get_outputs`` which updates the states and returns them in the form of a ``uz_inverter_adapter_outputs_t`` struct. This 
+way you can get the states out of the driver e.g. for assigning them into the ``Global_Data`` struct. 
+
+.. code-block:: c
+ :caption: Example usage of uz_inverter_adapter_get_outputs function
+
+  void ISR_Control(void *data)
+  {
+    uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+    ReadAllADC();
+    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+    Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+  ..
+   }
+
+
+In order to enable the gates of the power electronics use the function ``uz_inverter_adapter_set_PWM_EN``. After power up, the gates are disabled by default.
+
+.. code-block:: c
+   :caption: Example usage of uz_inverter_adapter_PWM_EN function
+
+    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+
+
 
 Reference
 =========
@@ -167,15 +300,22 @@ Reference
 .. doxygenstruct:: linear_interpolation_params_t
   :members:
 
+
+
 .. doxygenstruct:: uz_inverter_adapter_config_t
   :members:
 
 .. doxygenstruct:: uz_inverter_adapter_outputs_t
   :members:
 
+.. doxygenfunction:: uz_inverter_adapter_update_states
+
+User interfaces
+---------------
+
 .. doxygenfunction:: uz_inverter_adapter_init
 
-.. doxygenfunction:: uz_inverter_adapter_update_states
+.. doxygenfunction:: uz_inverter_adapter_set_PWM_EN
 
 .. doxygenfunction:: uz_inverter_adapter_get_outputs
 

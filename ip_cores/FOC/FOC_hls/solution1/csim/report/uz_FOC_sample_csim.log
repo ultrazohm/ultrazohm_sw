@@ -1,0 +1,59 @@
+INFO: [SIM 2] *************** CSIM start ***************
+INFO: [SIM 4] CSIM will launch GCC as the compiler.
+   Compiling(apcc) ../../../../foc/tb_foc.c in debug mode
+INFO: Applying HLS Y2K22 patch v1.2 for IP revision
+INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe'
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Fri Jun 03 08:20:25 +0200 2022
+INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/csim/build'
+INFO: [APCC 202-3] Tmp directory is apcc_db
+INFO: [APCC 202-1] APCC is done.
+   Compiling(apcc) ../../../../foc/uz_FOC.c in debug mode
+INFO: Applying HLS Y2K22 patch v1.2 for IP revision
+INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe'
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Fri Jun 03 08:20:35 +0200 2022
+INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/csim/build'
+INFO: [APCC 202-3] Tmp directory is apcc_db
+INFO: [APCC 202-1] APCC is done.
+   Generating csim.exe
+
+ HW output
+ D-Parameter Q-Parameter
+ 6.770000	 6.750000
+ 5.124270	 5.109250
+ 3.888318	 3.877188
+ 2.956296	 2.948582
+ 2.262331	 2.258234
+ 1.740162	 1.747468
+ 1.350161	 1.364181
+ 1.052496	 1.083103
+ 0.827400	 0.885735
+ 0.661711	 0.746723
+ 0.535440	 0.654181
+
+ Comparison for D parameter 
+Test failed D -0.020000
+Test failed D -0.034270
+Test failed D -0.048318
+Test failed D -0.056296
+Test failed D -0.062331
+Test failed D -0.070163
+Test failed D -0.070161
+Test failed D -0.072496
+Test failed D -0.071400
+Test failed D -0.073711
+Test failed D -0.074440
+
+ Comparison for Q parameter 
+Test passed Q
+Test failed Q -0.019250
+Test failed Q -0.037188
+Test failed Q -0.038582
+Test failed Q -0.048234
+Test failed Q -0.067468
+Test failed Q -0.064181
+Test failed Q -0.073103
+Test failed Q -0.074735
+Test failed Q -0.075723
+Test failed Q -0.073181
+INFO: [SIM 1] CSim done with 0 errors.
+INFO: [SIM 3] *************** CSIM finish ***************

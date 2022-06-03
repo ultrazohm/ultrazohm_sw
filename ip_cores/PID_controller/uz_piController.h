@@ -1,10 +1,9 @@
 #ifndef UZ_PICONTROLLER_H
 #define UZ_PICONTROLLER_H
 #include <stdbool.h>
-/**
- * @brief signal to reset the integrator
- */
-bool I_rst;
+#include <math.h>
+#include <stdlib.h>
+
 /**
  * @brief Configuration struct for PI-Controller. Pass to init function. Accessible by the user
  */
@@ -36,6 +35,6 @@ bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float 
  * @param ext_clamping input port for an external clamping signal
  * @return float
  */
-void uz_PI_Controller_sample(uz_PI_Controller_config* self,bool I_rst,float referenceValue, float actualValue, bool ext_clamping, float* output);
+void uz_PI_Controller_sample(uz_PI_Controller_config* self, bool I_rst, float referenceValue, float actualValue, bool ext_clamping, float* output);
 
 #endif // UZ_PICONTROLLER_H

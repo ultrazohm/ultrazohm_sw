@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vivadoHLSLog:LogRoot xmlns:vivadoHLSLog="www.xilinx.com/vivadoHLSLog">
+  <errorLogs>
+    <logs>
+      <synLog/>
+      <simLog/>
+      <mgLog/>
+      <packageLog/>
+      <csimLog>
+        <logs message="ERROR: [SIM 211-100] 'csim_design' failed: compilation error(s)." projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:43:48.933+0530"/>
+        <logs message="ERROR: [APCC 202-1] APCC failed.&#xD;&#xA;   Compiling(apcc) ../../../../foc/uz_space_vector_limitation.c in debug mode" projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:43:48.871+0530"/>
+        <logs message="ERROR: [APCC 202-1] ProcessSources failed" projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:43:48.862+0530"/>
+        <logs message="ERROR: [APCC 202-10] clang compile failed: child process exited abnormally" projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:43:48.851+0530"/>
+      </csimLog>
+    </logs>
+  </errorLogs>
+  <warningLogs>
+    <logs>
+      <synLog>
+        <logs message="WARNING: [RTGEN 206-101] Register 'I_sum' is power-on initialization." projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:39:08.322+0530" type="Warning"/>
+        <logs message="WARNING: [RTGEN 206-101] Design contains AXI ports. Reset is fixed to synchronous and active low." projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:39:07.551+0530" type="Warning"/>
+        <logs message="WARNING: [SYN 201-506] An incorrect offset '128' is defined with AXILite port 'i_reference_Ampere', and it will be replaced with a new offset '176'." projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:38:57.100+0530" type="Warning"/>
+        <logs message="WARNING: [SYN 201-103] Legalizing function name 'uz_FOC_SpaceVector_Limitation_q.1' to 'uz_FOC_SpaceVector_Limitation_q_1'." projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:38:57.008+0530" type="Warning"/>
+        <logs message="WARNING: [SYN 201-103] Legalizing function name 'uz_FOC_SpaceVector_Limitation_d.1' to 'uz_FOC_SpaceVector_Limitation_d_1'." projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:38:56.925+0530" type="Warning"/>
+        <logs message="WARNING: [SYN 201-103] Legalizing function name 'pow_generic&lt;float>' to 'pow_generic_float_s'." projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:38:56.843+0530" type="Warning"/>
+        <logs message="WARNING: [XFORM 203-631] Renaming function 'pow_reduce::pow_generic&lt;float>' to 'pow_generic&lt;float>' (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:18:3)" projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:38:56.594+0530" type="Warning"/>
+        <logs message="WARNING: [XFORM 203-803] Dropped interface mode 'ap_auto' on 'Controller_iq' (foc/uz_FOC.c:23) as it is incompatible with its interface mode 's_axilite'." projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:38:53.747+0530" type="Warning"/>
+        <logs message="WARNING: [XFORM 203-803] Dropped interface mode 'ap_auto' on 'Controller_id' (foc/uz_FOC.c:23) as it is incompatible with its interface mode 's_axilite'." projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:38:53.419+0530" type="Warning"/>
+        <logs message="WARNING: [XFORM 203-803] Dropped interface mode 'ap_auto' on 'self' as it is incompatible with its interface mode 's_axilite'." projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:38:53.336+0530" type="Warning"/>
+      </synLog>
+      <simLog/>
+      <mgLog/>
+      <packageLog>
+        <logs message="WARNING: [IP_Flow 19-4832] The IP name 'uz_FOC_sample_ap_fsub_2_full_dsp_32' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.&#xD;" projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:39:43.566+0530" type="Warning"/>
+        <logs message="WARNING: [IP_Flow 19-4832] The IP name 'uz_FOC_sample_ap_fsqrt_6_no_dsp_32' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.&#xD;" projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:39:43.560+0530" type="Warning"/>
+        <logs message="WARNING: [IP_Flow 19-4832] The IP name 'uz_FOC_sample_ap_fmul_1_max_dsp_32' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.&#xD;" projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:39:43.542+0530" type="Warning"/>
+        <logs message="WARNING: [IP_Flow 19-4832] The IP name 'uz_FOC_sample_ap_fdiv_7_no_dsp_32' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.&#xD;" projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:39:43.532+0530" type="Warning"/>
+        <logs message="WARNING: [IP_Flow 19-4832] The IP name 'uz_FOC_sample_ap_fcmp_0_no_dsp_32' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.&#xD;" projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:39:41.544+0530" type="Warning"/>
+        <logs message="WARNING: [IP_Flow 19-4832] The IP name 'uz_FOC_sample_ap_faddfsub_2_full_dsp_32' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.&#xD;" projectName="FOC_hls" solutionName="solution1" date="2022-05-19T19:39:41.528+0530" type="Warning"/>
+      </packageLog>
+      <csimLog/>
+    </logs>
+  </warningLogs>
+</vivadoHLSLog:LogRoot>

@@ -1,0 +1,1 @@
+ {CheckOptions: [ {key: xilinx-tb-process.TopFunctionName, value: 'uz_FOC_sample'}, {key: xilinx-tb-process.KeepTopName, value: 1} ] } 

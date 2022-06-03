@@ -1,0 +1,16 @@
+<root versionMajor = "1" versionMinor = "5">
+  <kernel src_name="uz_FOC_sample" language="c" hwCtrl="ap_ctrl_hs" mem_layout="fpga64-xilinx-none">
+    <args>
+      <arg id="0" access_type="rw" src_name="self" src_type="uz_FOC*" src_isptr="1" src_bitwidth="288" src_size_or_depth="1" hw_interface="S_AXILite" hw_name="Din" hw_bitwidth="288" hw_size_or_depth="1"/>
+      <arg id="1" access_type="r" src_name="Controller_id" src_type="uz_PI_Controller_config*" src_isptr="1" src_bitwidth="160" src_size_or_depth="1" hw_interface="S_AXILite" hw_name="Din" hw_bitwidth="160" hw_size_or_depth="1"/>
+      <arg id="2" access_type="r" src_name="Controller_iq" src_type="uz_PI_Controller_config*" src_isptr="1" src_bitwidth="160" src_size_or_depth="1" hw_interface="S_AXILite" hw_name="Din" hw_bitwidth="160" hw_size_or_depth="1"/>
+      <arg id="3" access_type="r" src_name="i_reference_Ampere" src_type="uz_dq_t" src_isptr="0" src_bitwidth="96" src_size_or_depth="1" hw_interface="S_AXILite" hw_name="Din" hw_bitwidth="96" hw_size_or_depth="1"/>
+      <arg id="4" access_type="r" src_name="i_actual_Ampere" src_type="uz_dq_t" src_isptr="0" src_bitwidth="96" src_size_or_depth="1" hw_interface="S_AXILite" hw_name="Din" hw_bitwidth="96" hw_size_or_depth="1"/>
+      <arg id="5" access_type="r" src_name="V_dc_volts" src_type="float" src_isptr="0" src_bitwidth="32" src_size_or_depth="1" hw_interface="S_AXILite" hw_name="Din" hw_bitwidth="32" hw_size_or_depth="1"/>
+      <arg id="6" access_type="r" src_name="omega_el_rad_per_sec" src_type="float" src_isptr="0" src_bitwidth="32" src_size_or_depth="1" hw_interface="S_AXILite" hw_name="Din" hw_bitwidth="32" hw_size_or_depth="1"/>
+      <arg id="7" access_type="w" src_name="output_volts_d" src_type="float*" src_isptr="1" src_bitwidth="32" src_size_or_depth="50" hw_interface="MAXI" hw_name="Dout" hw_bitwidth="32" hw_size_or_depth="0" offset_bundle_interface="S_AXILite" offset_bundle_interface_name="control" offset="0x10"/>
+      <arg id="8" access_type="w" src_name="output_volts_q" src_type="float*" src_isptr="1" src_bitwidth="32" src_size_or_depth="50" hw_interface="MAXI" hw_name="Dout" hw_bitwidth="32" hw_size_or_depth="0" offset_bundle_interface="S_AXILite" offset_bundle_interface_name="control" offset="0x1C"/>
+    </args>
+    <return src_type="void" src_bitwidth="0" hw_interface="" hw_name="" hw_bitwidth="0" offset="0x0"/>
+  </kernel>
+</root>

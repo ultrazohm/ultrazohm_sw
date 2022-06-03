@@ -153,3 +153,200 @@ timestamp=[2022-04-07 11:04:53], mode=BUILD, duration=0:00:03.034, duration_ms=3
 timestamp=[2022-04-07 11:08:37], mode=BUILD, duration=0:00:01.607, duration_ms=1607, data={name=uz_piController_app, configuration=Debug, clean_build=false}
 timestamp=[2022-04-07 11:12:39], mode=BUILD, duration=0:00:01.181, duration_ms=1181, data={name=uz_piController_app, configuration=Debug, clean_build=false}
 timestamp=[2022-04-07 11:46:44], mode=BUILD, duration=0:00:01.576, duration_ms=1576, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-07 12:48:12], mode=BUILD, duration=0:00:01.216, duration_ms=1216, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-07 12:48:31], mode=BUILD, duration=0:00:00.684, duration_ms=684, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-07 12:50:35], mode=BUILD, duration=0:00:01.237, duration_ms=1237, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-07 12:54:11], mode=BUILD, duration=0:00:01.130, duration_ms=1130, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-07 12:55:27], mode=BUILD, duration=0:00:01.372, duration_ms=1372, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-07 12:56:41], mode=BUILD, duration=0:00:01.473, duration_ms=1473, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-07 12:58:17], mode=BUILD, duration=0:00:01.030, duration_ms=1030, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-07 12:59:39], mode=BUILD, duration=0:00:00.901, duration_ms=901, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-07 13:06:52], mode=BUILD, duration=0:00:01.180, duration_ms=1180, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-07 13:08:36], mode=BUILD, duration=0:00:00.985, duration_ms=985, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-07 13:10:08], mode=BUILD, duration=0:00:01.575, duration_ms=1575, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-07 13:11:05], mode=BUILD, duration=0:00:00.887, duration_ms=887, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-07 13:12:38], mode=BUILD, duration=0:00:00.799, duration_ms=799, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-08 13:58:03], mode=WORKBENCH_START, duration=0:00:26.783, duration_ms=26783, data={}
+timestamp=[2022-04-08 13:58:04], mode=WORKBENCH_UI_INIT, duration=0:00:01.324, duration_ms=1324, data={editors_count=4, platform_editors_count=1, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,uz_piController_app,uz_piController_app_system,uz_piController_wrapper}
+timestamp=[2022-04-08 13:58:05], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.159, duration_ms=159, data={}
+timestamp=[2022-04-09 00:08:01], mode=PLATFORM_GENERATION, duration=0:01:00.625, duration_ms=60625, data={name=uz_piController_wrapper}
+timestamp=[2022-04-09 00:08:03], mode=BUILD, duration=0:00:01.484, duration_ms=1484, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-09 00:08:29], mode=BUILD, duration=0:00:01.113, duration_ms=1113, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-09 00:08:42], mode=BUILD, duration=0:00:00.999, duration_ms=999, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-09 00:09:50], mode=BUILD, duration=0:00:00.905, duration_ms=905, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-09 00:31:16], mode=BUILD, duration=0:00:00.813, duration_ms=813, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-09 00:32:18], mode=BUILD, duration=0:00:00.856, duration_ms=856, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-04-09 00:33:13], mode=BUILD, duration=0:00:00.866, duration_ms=866, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-04 13:26:41], mode=WORKBENCH_START, duration=0:00:12.443, duration_ms=12443, data={}
+timestamp=[2022-05-04 13:26:42], mode=WORKBENCH_UI_INIT, duration=0:00:00.867, duration_ms=867, data={editors_count=5, platform_editors_count=1, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,uz_piController_app,uz_piController_app_system,uz_piController_wrapper}
+timestamp=[2022-05-04 13:26:42], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.157, duration_ms=157, data={}
+timestamp=[2022-05-04 13:39:29], mode=PLATFORM_GENERATION, duration=0:00:55.043, duration_ms=55043, data={name=uz_piController_wrapper}
+timestamp=[2022-05-04 13:39:31], mode=BUILD, duration=0:00:01.836, duration_ms=1836, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-04 13:39:39], mode=BUILD, duration=0:00:07.686, duration_ms=7686, data={name=uz_piController_app_system, configuration=Debug, clean_build=false}
+timestamp=[2022-05-05 11:25:30], mode=PLATFORM_GENERATION, duration=0:00:39.778, duration_ms=39778, data={name=uz_piController_wrapper}
+timestamp=[2022-05-05 11:28:26], mode=PLATFORM_GENERATION, duration=0:01:36.165, duration_ms=96165, data={name=uz_piController_wrapper}
+timestamp=[2022-05-05 11:28:27], mode=BUILD, duration=0:00:00.612, duration_ms=612, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-05 11:37:53], mode=PLATFORM_GENERATION, duration=0:02:03.606, duration_ms=123606, data={name=uz_piController_wrapper}
+timestamp=[2022-05-05 11:38:06], mode=BUILD, duration=0:00:00.992, duration_ms=992, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-05 12:11:11], mode=BUILD, duration=0:00:00.861, duration_ms=861, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-05 12:30:37], mode=BUILD, duration=0:00:01.017, duration_ms=1017, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-05 12:31:20], mode=BUILD, duration=0:00:01.085, duration_ms=1085, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-06 13:56:49], mode=WORKBENCH_START, duration=0:00:28.730, duration_ms=28730, data={}
+timestamp=[2022-05-06 13:56:52], mode=WORKBENCH_UI_INIT, duration=0:00:03.110, duration_ms=3110, data={editors_count=5, platform_editors_count=2, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,uz_piController_app,uz_piController_app_system,uz_piController_wrapper}
+timestamp=[2022-05-06 13:57:02], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.324, duration_ms=324, data={}
+timestamp=[2022-05-10 12:28:26], mode=WORKBENCH_START, duration=0:00:13.649, duration_ms=13649, data={}
+timestamp=[2022-05-10 12:28:28], mode=WORKBENCH_UI_INIT, duration=0:00:01.577, duration_ms=1577, data={editors_count=6, platform_editors_count=3, projects_count=4, platform_projects_count=1, active_platform_editor=true, projects=RemoteSystemsTempFiles,uz_piController_app,uz_piController_app_system,uz_piController_wrapper}
+timestamp=[2022-05-10 12:28:29], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.384, duration_ms=384, data={}
+timestamp=[2022-05-11 22:09:23], mode=WORKBENCH_START, duration=0:00:12.422, duration_ms=12422, data={}
+timestamp=[2022-05-11 22:09:24], mode=WORKBENCH_UI_INIT, duration=0:00:01.185, duration_ms=1185, data={editors_count=6, platform_editors_count=3, projects_count=4, platform_projects_count=1, active_platform_editor=true, projects=RemoteSystemsTempFiles,uz_piController_app,uz_piController_app_system,uz_piController_wrapper}
+timestamp=[2022-05-11 22:09:25], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.255, duration_ms=255, data={}
+timestamp=[2022-05-11 22:13:08], mode=PLATFORM_GENERATION, duration=0:01:31.626, duration_ms=91626, data={name=uz_piController_wrapper}
+timestamp=[2022-05-11 22:13:10], mode=BUILD, duration=0:00:01.471, duration_ms=1471, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-11 22:16:17], mode=PLATFORM_GENERATION, duration=0:01:21.016, duration_ms=81016, data={name=uz_piController_wrapper}
+timestamp=[2022-05-11 22:16:18], mode=BUILD, duration=0:00:01.142, duration_ms=1142, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-11 22:24:56], mode=PLATFORM_GENERATION, duration=0:01:24.359, duration_ms=84359, data={name=uz_piController_wrapper}
+timestamp=[2022-05-11 22:24:58], mode=BUILD, duration=0:00:01.587, duration_ms=1587, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-11 22:28:09], mode=PLATFORM_GENERATION, duration=0:01:29.765, duration_ms=89765, data={name=uz_piController_wrapper}
+timestamp=[2022-05-11 22:28:10], mode=BUILD, duration=0:00:01.823, duration_ms=1823, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-11 22:51:43], mode=PLATFORM_GENERATION, duration=0:01:24.498, duration_ms=84498, data={name=uz_piController_wrapper}
+timestamp=[2022-05-11 22:51:45], mode=BUILD, duration=0:00:01.895, duration_ms=1895, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-11 22:54:25], mode=PLATFORM_GENERATION, duration=0:01:32.950, duration_ms=92950, data={name=uz_piController_wrapper}
+timestamp=[2022-05-11 22:54:27], mode=BUILD, duration=0:00:01.248, duration_ms=1248, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-11 22:59:22], mode=PLATFORM_GENERATION, duration=0:01:23.462, duration_ms=83462, data={name=uz_piController_wrapper}
+timestamp=[2022-05-11 22:59:22], mode=BUILD, duration=0:00:00.186, duration_ms=186, data={name=uz_piController_app, configuration=Debug, clean_build=true}
+timestamp=[2022-05-11 22:59:24], mode=BUILD, duration=0:00:01.225, duration_ms=1225, data={name=uz_piController_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-11 23:01:29], mode=APP_CREATION, duration=0:00:33.786, duration_ms=33786, data={name=pi_controller_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=pi_controller_wrapper, application_type=application}
+timestamp=[2022-05-11 23:04:01], mode=PLATFORM_GENERATION, duration=0:01:35.293, duration_ms=95293, data={name=pi_controller_wrapper}
+timestamp=[2022-05-11 23:04:02], mode=BUILD, duration=0:00:00.919, duration_ms=919, data={name=pi_controller_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-11 23:05:54], mode=PLATFORM_GENERATION, duration=0:00:51.427, duration_ms=51427, data={name=pi_controller_wrapper}
+timestamp=[2022-05-11 23:05:54], mode=BUILD, duration=0:00:00.869, duration_ms=869, data={name=pi_controller_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-11 23:12:45], mode=PLATFORM_GENERATION, duration=0:01:23.370, duration_ms=83370, data={name=uz_piController_wrapper}
+timestamp=[2022-05-11 23:15:52], mode=APP_CREATION, duration=0:00:31.383, duration_ms=31383, data={name=pi_controller_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=pi_controller_wrapper, application_type=application}
+timestamp=[2022-05-11 23:19:58], mode=PLATFORM_GENERATION, duration=0:01:35.061, duration_ms=95061, data={name=pi_controller_wrapper}
+timestamp=[2022-05-11 23:19:59], mode=BUILD, duration=0:00:00.921, duration_ms=921, data={name=pi_controller_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-11 23:52:56], mode=PLATFORM_GENERATION, duration=0:01:55.403, duration_ms=115403, data={name=pi_controller_wrapper}
+timestamp=[2022-05-11 23:55:04], mode=PLATFORM_GENERATION, duration=0:00:41.234, duration_ms=41234, data={name=pi_controller_wrapper}
+timestamp=[2022-05-11 23:58:16], mode=PLATFORM_GENERATION, duration=0:00:40.685, duration_ms=40685, data={name=pi_controller_wrapper}
+timestamp=[2022-05-12 00:00:07], mode=APP_CREATION, duration=0:00:31.898, duration_ms=31898, data={name=uz_pi_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=uz_picontroller_wrapper, application_type=application}
+timestamp=[2022-05-12 00:03:16], mode=PLATFORM_GENERATION, duration=0:02:28.887, duration_ms=148887, data={name=uz_picontroller_wrapper}
+timestamp=[2022-05-12 00:03:17], mode=BUILD, duration=0:00:01.484, duration_ms=1484, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-13 11:47:41], mode=WORKBENCH_START, duration=0:00:17.818, duration_ms=17818, data={}
+timestamp=[2022-05-13 11:47:42], mode=WORKBENCH_UI_INIT, duration=0:00:01.303, duration_ms=1303, data={editors_count=3, platform_editors_count=0, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=RemoteSystemsTempFiles,uz_pi_app,uz_pi_app_system,uz_picontroller_wrapper}
+timestamp=[2022-05-13 11:47:42], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.204, duration_ms=204, data={}
+timestamp=[2022-05-13 11:59:05], mode=BUILD, duration=0:00:01.971, duration_ms=1971, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-13 12:07:00], mode=BUILD, duration=0:00:00.913, duration_ms=913, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-13 12:07:59], mode=BUILD, duration=0:00:00.423, duration_ms=423, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-13 12:09:18], mode=BUILD, duration=0:00:00.456, duration_ms=456, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-13 12:10:28], mode=BUILD, duration=0:00:00.368, duration_ms=368, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-13 12:10:42], mode=BUILD, duration=0:00:00.809, duration_ms=809, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-13 12:13:22], mode=BUILD, duration=0:00:00.799, duration_ms=799, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-13 12:16:00], mode=BUILD, duration=0:00:00.374, duration_ms=374, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-13 12:16:15], mode=BUILD, duration=0:00:00.818, duration_ms=818, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-13 12:18:02], mode=BUILD, duration=0:00:00.841, duration_ms=841, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-13 12:20:02], mode=BUILD, duration=0:00:00.860, duration_ms=860, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-14 09:45:09], mode=BUILD, duration=0:00:02.902, duration_ms=2902, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-14 09:45:53], mode=BUILD, duration=0:00:01.115, duration_ms=1115, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-14 18:56:47], mode=BUILD, duration=0:00:02.192, duration_ms=2192, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 14:03:27], mode=BUILD, duration=0:00:00.987, duration_ms=987, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 14:14:08], mode=BUILD, duration=0:00:02.882, duration_ms=2882, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 14:16:15], mode=BUILD, duration=0:00:00.216, duration_ms=216, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 14:24:30], mode=BUILD, duration=0:00:01.128, duration_ms=1128, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 14:34:03], mode=WORKBENCH_START, duration=0:00:12.489, duration_ms=12489, data={}
+timestamp=[2022-05-16 14:34:04], mode=WORKBENCH_UI_INIT, duration=0:00:01.076, duration_ms=1076, data={editors_count=8, platform_editors_count=4, projects_count=4, platform_projects_count=1, active_platform_editor=true, projects=RemoteSystemsTempFiles,uz_pi_app,uz_pi_app_system,uz_picontroller_wrapper}
+timestamp=[2022-05-16 14:34:05], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.148, duration_ms=148, data={}
+timestamp=[2022-05-16 14:36:41], mode=BUILD, duration=0:00:00.205, duration_ms=205, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 14:54:54], mode=BUILD, duration=0:00:01.146, duration_ms=1146, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 14:58:01], mode=BUILD, duration=0:00:01.054, duration_ms=1054, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:11:45], mode=BUILD, duration=0:00:00.313, duration_ms=313, data={name=uz_pi_app, configuration=Debug, clean_build=true}
+timestamp=[2022-05-16 15:11:46], mode=BUILD, duration=0:00:01.071, duration_ms=1071, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:14:17], mode=BUILD, duration=0:00:00.862, duration_ms=862, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:17:17], mode=BUILD, duration=0:00:00.890, duration_ms=890, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:18:34], mode=BUILD, duration=0:00:00.206, duration_ms=206, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:19:39], mode=BUILD, duration=0:00:00.797, duration_ms=797, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:33:18], mode=BUILD, duration=0:00:00.848, duration_ms=848, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:36:35], mode=BUILD, duration=0:00:00.864, duration_ms=864, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:39:59], mode=BUILD, duration=0:00:00.873, duration_ms=873, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:41:20], mode=BUILD, duration=0:00:00.872, duration_ms=872, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:46:34], mode=BUILD, duration=0:00:01.853, duration_ms=1853, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:48:18], mode=BUILD, duration=0:00:01.040, duration_ms=1040, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:49:46], mode=BUILD, duration=0:00:01.462, duration_ms=1462, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:50:29], mode=BUILD, duration=0:00:00.806, duration_ms=806, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:53:25], mode=BUILD, duration=0:00:00.431, duration_ms=431, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:53:49], mode=BUILD, duration=0:00:00.509, duration_ms=509, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:54:08], mode=BUILD, duration=0:00:00.867, duration_ms=867, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:57:10], mode=BUILD, duration=0:00:00.851, duration_ms=851, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:57:21], mode=BUILD, duration=0:00:10.274, duration_ms=10274, data={name=uz_pi_app_system, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 15:58:55], mode=BUILD, duration=0:00:00.837, duration_ms=837, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-16 16:10:41], mode=BUILD, duration=0:00:00.843, duration_ms=843, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-18 09:43:21], mode=APP_CREATION, duration=0:00:47.515, duration_ms=47515, data={name=uz_FOC_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=FOC_wrapper, application_type=application}
+timestamp=[2022-05-18 09:47:29], mode=PLATFORM_GENERATION, duration=0:02:55.322, duration_ms=175322, data={name=FOC_wrapper}
+timestamp=[2022-05-18 09:47:32], mode=BUILD, duration=0:00:02.005, duration_ms=2005, data={name=uz_FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-18 09:47:51], mode=BUILD, duration=0:00:17.441, duration_ms=17441, data={name=uz_FOC_app_system, configuration=Debug, clean_build=false}
+timestamp=[2022-05-19 18:58:24], mode=WORKBENCH_START, duration=0:00:14.607, duration_ms=14607, data={}
+timestamp=[2022-05-19 18:58:25], mode=WORKBENCH_UI_INIT, duration=0:00:01.216, duration_ms=1216, data={editors_count=5, platform_editors_count=3, projects_count=7, platform_projects_count=2, active_platform_editor=true, projects=FOC_wrapper,RemoteSystemsTempFiles,uz_FOC_app,uz_FOC_app_system,uz_pi_app,uz_pi_app_system,uz_picontroller_wrapper}
+timestamp=[2022-05-19 18:58:26], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.265, duration_ms=265, data={}
+timestamp=[2022-05-19 22:07:55], mode=PLATFORM_GENERATION, duration=0:01:34.455, duration_ms=94455, data={name=FOC_wrapper}
+timestamp=[2022-05-19 22:07:57], mode=BUILD, duration=0:00:01.463, duration_ms=1463, data={name=uz_FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-19 22:07:59], mode=BUILD, duration=0:00:01.584, duration_ms=1584, data={name=uz_FOC_app_system, configuration=Debug, clean_build=false}
+timestamp=[2022-05-19 22:18:48], mode=PLATFORM_GENERATION, duration=0:00:39.256, duration_ms=39256, data={name=FOC_wrapper}
+timestamp=[2022-05-19 22:18:49], mode=BUILD, duration=0:00:01.055, duration_ms=1055, data={name=uz_FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-19 22:22:34], mode=PLATFORM_GENERATION, duration=0:00:38.858, duration_ms=38858, data={name=FOC_wrapper}
+timestamp=[2022-05-19 22:22:35], mode=BUILD, duration=0:00:01.069, duration_ms=1069, data={name=uz_FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-19 22:30:15], mode=BUILD, duration=0:00:01.153, duration_ms=1153, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-19 23:36:09], mode=APP_CREATION, duration=0:00:59.122, duration_ms=59122, data={name=uz_foc_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=uz_FOC_wrapper, application_type=application}
+timestamp=[2022-05-19 23:38:55], mode=PLATFORM_GENERATION, duration=0:02:06.812, duration_ms=126812, data={name=uz_FOC_wrapper}
+timestamp=[2022-05-19 23:38:57], mode=BUILD, duration=0:00:01.775, duration_ms=1775, data={name=uz_foc_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-20 10:05:10], mode=BUILD, duration=0:00:01.040, duration_ms=1040, data={name=uz_foc_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-20 10:05:36], mode=BUILD, duration=0:00:00.984, duration_ms=984, data={name=uz_foc_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-20 10:24:00], mode=BUILD, duration=0:00:00.703, duration_ms=703, data={name=uz_foc_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-20 15:19:57], mode=PLATFORM_GENERATION, duration=0:00:44.238, duration_ms=44238, data={name=uz_picontroller_wrapper}
+timestamp=[2022-05-20 15:20:09], mode=BUILD, duration=0:00:01.458, duration_ms=1458, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-20 15:22:31], mode=APP_CREATION, duration=0:00:39.253, duration_ms=39253, data={name=uz_pi_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=uz_pi_wrapper, application_type=application}
+timestamp=[2022-05-20 15:25:37], mode=PLATFORM_GENERATION, duration=0:02:09.994, duration_ms=129994, data={name=uz_pi_wrapper}
+timestamp=[2022-05-20 15:25:38], mode=BUILD, duration=0:00:00.995, duration_ms=995, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-20 15:31:36], mode=BUILD, duration=0:00:00.751, duration_ms=751, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-20 15:35:43], mode=BUILD, duration=0:00:00.802, duration_ms=802, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-23 15:33:19], mode=BUILD, duration=0:00:02.748, duration_ms=2748, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-23 15:34:56], mode=BUILD, duration=0:00:01.082, duration_ms=1082, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-23 15:37:31], mode=BUILD, duration=0:00:01.117, duration_ms=1117, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-23 15:44:19], mode=BUILD, duration=0:00:01.090, duration_ms=1090, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-23 16:09:56], mode=WORKBENCH_START, duration=0:00:14.087, duration_ms=14087, data={}
+timestamp=[2022-05-23 16:09:57], mode=WORKBENCH_UI_INIT, duration=0:00:01.019, duration_ms=1019, data={editors_count=6, platform_editors_count=1, projects_count=7, platform_projects_count=2, active_platform_editor=false, projects=RemoteSystemsTempFiles,uz_FOC_wrapper,uz_foc_app,uz_foc_app_system,uz_pi_app,uz_pi_app_system,uz_pi_wrapper}
+timestamp=[2022-05-23 16:09:58], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.164, duration_ms=164, data={}
+timestamp=[2022-05-23 16:10:30], mode=BUILD, duration=0:00:00.237, duration_ms=237, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-23 16:25:37], mode=BUILD, duration=0:00:01.370, duration_ms=1370, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-23 16:31:57], mode=APP_CREATION, duration=0:00:33.636, duration_ms=33636, data={name=pi_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=uz_pi_wrapper_1, application_type=application}
+timestamp=[2022-05-23 16:36:07], mode=PLATFORM_GENERATION, duration=0:02:52.961, duration_ms=172961, data={name=uz_pi_wrapper_1}
+timestamp=[2022-05-23 16:36:09], mode=BUILD, duration=0:00:02.112, duration_ms=2112, data={name=pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-23 16:57:50], mode=BUILD, duration=0:00:01.165, duration_ms=1165, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-23 17:00:51], mode=BUILD, duration=0:00:00.853, duration_ms=853, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-23 17:03:04], mode=BUILD, duration=0:00:00.902, duration_ms=902, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-26 15:20:13], mode=BUILD, duration=0:00:02.741, duration_ms=2741, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-26 15:20:30], mode=BUILD, duration=0:00:01.055, duration_ms=1055, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-26 16:14:50], mode=BUILD, duration=0:00:01.134, duration_ms=1134, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-26 16:17:11], mode=BUILD, duration=0:00:01.069, duration_ms=1069, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-29 16:47:03], mode=PLATFORM_GENERATION, duration=0:00:54.589, duration_ms=54589, data={name=uz_pi_wrapper}
+timestamp=[2022-05-29 16:47:19], mode=BUILD, duration=0:00:02.431, duration_ms=2431, data={name=uz_pi_app, configuration=Debug, clean_build=false}
+timestamp=[2022-05-29 16:57:15], mode=APP_CREATION, duration=0:00:51.425, duration_ms=51425, data={name=pi_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=uz_pi_wrapper, application_type=application}
+timestamp=[2022-06-02 16:08:14], mode=WORKBENCH_START, duration=0:00:13.781, duration_ms=13781, data={}
+timestamp=[2022-06-02 16:08:15], mode=WORKBENCH_UI_INIT, duration=0:00:00.728, duration_ms=728, data={editors_count=0, platform_editors_count=0, projects_count=5, platform_projects_count=2, active_platform_editor=false, projects=RemoteSystemsTempFiles,uz_FOC_wrapper,uz_foc_app,uz_foc_app_system,uz_pi_may}
+timestamp=[2022-06-02 16:08:16], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.123, duration_ms=123, data={}
+timestamp=[2022-06-02 17:07:08], mode=APP_CREATION, duration=0:00:33.219, duration_ms=33219, data={name=pi_104_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=pi_104_wrapper, application_type=application}
+timestamp=[2022-06-02 17:11:20], mode=PLATFORM_GENERATION, duration=0:01:37.895, duration_ms=97895, data={name=pi_104_wrapper}
+timestamp=[2022-06-02 17:11:21], mode=BUILD, duration=0:00:00.992, duration_ms=992, data={name=pi_104_app, configuration=Debug, clean_build=false}
+timestamp=[2022-06-02 17:16:27], mode=PLATFORM_GENERATION, duration=0:00:47.956, duration_ms=47956, data={name=pi_104_wrapper}
+timestamp=[2022-06-02 17:16:28], mode=BUILD, duration=0:00:00.902, duration_ms=902, data={name=pi_104_app, configuration=Debug, clean_build=false}
+timestamp=[2022-06-02 17:34:21], mode=PLATFORM_GENERATION, duration=0:01:11.636, duration_ms=71636, data={name=pi_104_wrapper}
+timestamp=[2022-06-02 17:34:22], mode=BUILD, duration=0:00:01.024, duration_ms=1024, data={name=pi_104_app, configuration=Debug, clean_build=false}
+timestamp=[2022-06-02 17:38:59], mode=APP_CREATION, duration=0:00:27.327, duration_ms=27327, data={name=pi_104_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=pi_104_wrapper, application_type=application}
+timestamp=[2022-06-02 17:41:12], mode=PLATFORM_GENERATION, duration=0:01:56.211, duration_ms=116211, data={name=pi_104_wrapper}
+timestamp=[2022-06-02 17:41:14], mode=BUILD, duration=0:00:01.403, duration_ms=1403, data={name=pi_104_app, configuration=Debug, clean_build=false}
+timestamp=[2022-06-03 08:40:56], mode=BUILD, duration=0:00:01.850, duration_ms=1850, data={name=pi_104_app, configuration=Debug, clean_build=false}
+timestamp=[2022-06-03 08:44:19], mode=BUILD, duration=0:00:02.115, duration_ms=2115, data={name=pi_104_app, configuration=Debug, clean_build=false}
+timestamp=[2022-06-03 08:54:00], mode=PLATFORM_GENERATION, duration=0:00:03.565, duration_ms=3565, data={name=pi_104_wrapper}
+timestamp=[2022-06-03 08:56:47], mode=APP_CREATION, duration=0:00:35.641, duration_ms=35641, data={name=pi_acp_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=pi_acp_wrapper, application_type=application}
+timestamp=[2022-06-03 09:00:03], mode=PLATFORM_GENERATION, duration=0:02:34.386, duration_ms=154386, data={name=pi_acp_wrapper}
+timestamp=[2022-06-03 09:00:05], mode=BUILD, duration=0:00:01.559, duration_ms=1559, data={name=pi_acp_app, configuration=Debug, clean_build=false}
+timestamp=[2022-06-03 10:19:26], mode=BUILD, duration=0:00:01.535, duration_ms=1535, data={name=pi_acp_app, configuration=Debug, clean_build=false}
+timestamp=[2022-06-03 10:54:26], mode=BUILD, duration=0:00:01.812, duration_ms=1812, data={name=pi_acp_app, configuration=Debug, clean_build=false}
+timestamp=[2022-06-03 11:03:35], mode=BUILD, duration=0:00:02.026, duration_ms=2026, data={name=pi_acp_app, configuration=Debug, clean_build=false}

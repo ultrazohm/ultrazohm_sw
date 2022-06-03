@@ -2,12 +2,17 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="XUz_pi_controller_sample_Set_self" key="selection"/>
+		<item value="FOC" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="foc"/>
+			<item value="device"/>
+			<item value="pi"/>
+			<item value="pi_cfg"/>
+			<item value="bram"/>
 			<item value="XUz_pi_controller_sample_Set_self"/>
 			<item value="XUz_pi_controller_sample_Self"/>
 			<item value="pi_controller_hls"/>
@@ -17,14 +22,11 @@
 			<item value="float"/>
 			<item value="DEVICE_ID"/>
 			<item value="initialize"/>
-			<item value="device"/>
 			<item value="device_id"/>
-			<item value="lookup"/>
-			<item value="do_hls_example"/>
-			<item value="pi_cfg"/>
-			<item value="pi"/>
 		</list>
 		<list key="replacehistory">
+			<item value="foc"/>
+			<item value="foc_cfg"/>
 			<item value="%x"/>
 			<item value="%d"/>
 			<item value="u32"/>
@@ -37,7 +39,7 @@
 		<item value="336" key="DIALOG_WIDTH"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 		<item value="454" key="DIALOG_HEIGHT"/>
-		<item value="1331" key="DIALOG_X_ORIGIN"/>
-		<item value="477" key="DIALOG_Y_ORIGIN"/>
+		<item value="1341" key="DIALOG_X_ORIGIN"/>
+		<item value="371" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

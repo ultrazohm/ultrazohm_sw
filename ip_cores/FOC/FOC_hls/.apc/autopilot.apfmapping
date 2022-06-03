@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="uz_space_vector_limitation.h" path="C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\FOC\foc\uz_space_vector_limitation.h"/>
+    <originFiles name="uz_space_vector_limitation.c" path="C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\FOC\foc\uz_space_vector_limitation.c"/>
+    <originFiles name="uz_signals.h" path="C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\FOC\foc\uz_signals.h"/>
+    <originFiles name="uz_signals.c" path="C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\FOC\foc\uz_signals.c"/>
+    <originFiles name="uz_piController.h" path="C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\FOC\foc\uz_piController.h"/>
+    <originFiles name="uz_piController.c" path="C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\FOC\foc\uz_piController.c"/>
+    <originFiles name="uz_linear_decoupling.h" path="C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\FOC\foc\uz_linear_decoupling.h"/>
+    <originFiles name="uz_linear_decoupling.c" path="C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\FOC\foc\uz_linear_decoupling.c"/>
+    <originFiles name="uz_Transformation.h" path="C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\FOC\foc\uz_Transformation.h"/>
+    <originFiles name="uz_Transformation.c" path="C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\FOC\foc\uz_Transformation.c"/>
+    <originFiles name="uz_FOC.h" path="C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\FOC\foc\uz_FOC.h"/>
+    <originFiles name="uz_FOC.c" path="C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\FOC\foc\uz_FOC.c"/>
+  </source>
+  <testbench>
+    <originFiles name="tb_foc.c" path="C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\FOC\foc\tb_foc.c"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>

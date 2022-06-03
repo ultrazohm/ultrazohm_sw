@@ -1,0 +1,66 @@
+   Build using "C:/Xilinx/Vitis/2020.1/tps/win64/msys64/mingw64/bin/g++"
+   Compiling apatb_uz_FOC_sample.cpp
+   Compiling (apcc) uz_space_vector_limitation.c_pre.c.tb.c
+INFO: Applying HLS Y2K22 patch v1.2 for IP revision
+INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe'
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Tue May 10 15:54:45 +0530 2022
+INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/sim/wrapc'
+clang: warning: argument unused during compilation: '-fno-builtin-isinf'
+clang: warning: argument unused during compilation: '-fno-builtin-isnan'
+INFO: [APCC 202-3] Tmp directory is apcc_db
+INFO: [APCC 202-1] APCC is done.
+   Compiling (apcc) uz_piController.c_pre.c.tb.c
+INFO: Applying HLS Y2K22 patch v1.2 for IP revision
+INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe'
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Tue May 10 15:54:50 +0530 2022
+INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/sim/wrapc'
+clang: warning: argument unused during compilation: '-fno-builtin-isinf'
+clang: warning: argument unused during compilation: '-fno-builtin-isnan'
+INFO: [APCC 202-3] Tmp directory is apcc_db
+INFO: [APCC 202-1] APCC is done.
+   Compiling (apcc) uz_Transformation.c_pre.c.tb.c
+INFO: Applying HLS Y2K22 patch v1.2 for IP revision
+INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe'
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Tue May 10 15:54:55 +0530 2022
+INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/sim/wrapc'
+clang: warning: argument unused during compilation: '-fno-builtin-isinf'
+clang: warning: argument unused during compilation: '-fno-builtin-isnan'
+INFO: [APCC 202-3] Tmp directory is apcc_db
+INFO: [APCC 202-1] APCC is done.
+   Compiling (apcc) uz_linear_decoupling.c_pre.c.tb.c
+INFO: Applying HLS Y2K22 patch v1.2 for IP revision
+INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe'
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Tue May 10 15:55:00 +0530 2022
+INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/sim/wrapc'
+clang: warning: argument unused during compilation: '-fno-builtin-isinf'
+clang: warning: argument unused during compilation: '-fno-builtin-isnan'
+INFO: [APCC 202-3] Tmp directory is apcc_db
+INFO: [APCC 202-1] APCC is done.
+   Compiling (apcc) tb_foc.c_pre.c.tb.c
+INFO: Applying HLS Y2K22 patch v1.2 for IP revision
+INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe'
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Tue May 10 15:55:05 +0530 2022
+INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/sim/wrapc'
+clang: warning: argument unused during compilation: '-fno-builtin-isinf'
+clang: warning: argument unused during compilation: '-fno-builtin-isnan'
+INFO: [APCC 202-3] Tmp directory is apcc_db
+INFO: [APCC 202-1] APCC is done.
+   Compiling (apcc) uz_signals.c_pre.c.tb.c
+INFO: Applying HLS Y2K22 patch v1.2 for IP revision
+INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe'
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Tue May 10 15:55:09 +0530 2022
+INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/sim/wrapc'
+clang: warning: argument unused during compilation: '-fno-builtin-isinf'
+clang: warning: argument unused during compilation: '-fno-builtin-isnan'
+INFO: [APCC 202-3] Tmp directory is apcc_db
+INFO: [APCC 202-1] APCC is done.
+   Compiling (apcc) uz_FOC.c_pre.c.tb.c
+INFO: Applying HLS Y2K22 patch v1.2 for IP revision
+INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe'
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Tue May 10 15:55:13 +0530 2022
+INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/sim/wrapc'
+clang: warning: argument unused during compilation: '-fno-builtin-isinf'
+clang: warning: argument unused during compilation: '-fno-builtin-isnan'
+INFO: [APCC 202-3] Tmp directory is apcc_db
+INFO: [APCC 202-1] APCC is done.
+   Generating cosim.tv.exe

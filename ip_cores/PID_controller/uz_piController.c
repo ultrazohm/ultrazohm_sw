@@ -17,10 +17,7 @@
 * modified on : 18-03-2022
 ******************************************************************************/
 #include "uz_piController.h"
-#include "default_uz_global_configuration.h"
 #include "uz_signals.h"
-#include <math.h>
-#include <stdlib.h>
 
 bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float upper_limit, float lower_limit) {
 	bool output = false;
@@ -35,19 +32,14 @@ bool uz_PI_Controller_Clamping_Circuit(float preIntegrator, float preSat, float 
 	return (output);
 }
 void uz_PI_Controller_sample(uz_PI_Controller_config* self,  bool I_rst, float referenceValue, float actualValue, bool ext_clamping, float *output) {
-/*	#pragma HLS disaggregate variable = self
-	#pragma HLS INTERFACE s_axilite port= self->Kp                 bundle = Din
-	#pragma HLS INTERFACE s_axilite port= self->Ki                 bundle = Din
-	#pragma HLS INTERFACE s_axilite port= self->samplingTime_sec   bundle = Din
-	#pragma HLS INTERFACE s_axilite port= self->upper_limit        bundle = Din
-	#pragma HLS INTERFACE s_axilite port= self->lower_limit        bundle = Din*/
+	#pragma HLS INTERFACE m_axi port=output offset=slave           bundle=Dout depth=50
 	#pragma HLS INTERFACE s_axilite port=self                      bundle = Din
 	#pragma HLS INTERFACE s_axilite port=referenceValue            bundle = Din
 	#pragma HLS INTERFACE s_axilite port=actualValue               bundle = Din
 	#pragma HLS INTERFACE s_axilite port=ext_clamping              bundle = Din
 	#pragma HLS INTERFACE s_axilite port=I_rst                     bundle = Din
-	#pragma HLS INTERFACE s_axilite port=output                    bundle = Din
 	#pragma HLS INTERFACE s_axilite port=return                    bundle = Din
+
 	bool internal_clamping = false;
 	static float I_sum;
 	float error = referenceValue - actualValue;
@@ -62,7 +54,9 @@ void uz_PI_Controller_sample(uz_PI_Controller_config* self,  bool I_rst, float r
 	} else {
 		I_sum += preIntegrator * self->samplingTime_sec;
 	}
+
 	*output = uz_signals_saturation(output_before_saturation, self->upper_limit, self->lower_limit);
+
 	if(I_rst){
 		I_sum = 0.0f;
 	    internal_clamping = false;

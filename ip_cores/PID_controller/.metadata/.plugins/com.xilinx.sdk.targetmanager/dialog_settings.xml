@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
-	<item value="{&quot;cables&quot;:[{&quot;name&quot;:&quot;Digilent JTAG-SMT2NC 210308A7A62F&quot;,&quot;indexContextMap&quot;:{&quot;2&quot;:&quot;jsn-JTAG-SMT2NC-210308A7A62F-24738093-0&quot;,&quot;3&quot;:&quot;jsn-JTAG-SMT2NC-210308A7A62F-5ba00477-0&quot;}}]}" key="devices_info_Local"/>
+	<item value="{&quot;cables&quot;:[{&quot;name&quot;:&quot;Digilent JTAG-SMT2NC 210308AE62E5&quot;,&quot;indexContextMap&quot;:{&quot;2&quot;:&quot;jsn-JTAG-SMT2NC-210308AE62E5-24738093-0&quot;,&quot;3&quot;:&quot;jsn-JTAG-SMT2NC-210308AE62E5-5ba00477-0&quot;}}]}" key="devices_info_Local"/>
 </section>

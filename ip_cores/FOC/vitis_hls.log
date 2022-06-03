@@ -1,0 +1,53 @@
+INFO: Applying HLS Y2K22 patch v1.2 for IP revision
+INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/vitis_hls.exe'
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Fri Jun 03 08:20:18 +0200 2022
+INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC'
+Sourcing Tcl script 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/csim.tcl'
+INFO: [HLS 200-10] Opening project 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls'.
+INFO: [HLS 200-10] Adding design file 'foc/uz_space_vector_limitation.h' to the project
+INFO: [HLS 200-10] Adding design file 'foc/uz_space_vector_limitation.c' to the project
+INFO: [HLS 200-10] Adding design file 'foc/uz_signals.h' to the project
+INFO: [HLS 200-10] Adding design file 'foc/uz_signals.c' to the project
+INFO: [HLS 200-10] Adding design file 'foc/uz_piController.h' to the project
+INFO: [HLS 200-10] Adding design file 'foc/uz_piController.c' to the project
+INFO: [HLS 200-10] Adding design file 'foc/uz_linear_decoupling.h' to the project
+INFO: [HLS 200-10] Adding design file 'foc/uz_linear_decoupling.c' to the project
+INFO: [HLS 200-10] Adding design file 'foc/uz_Transformation.h' to the project
+INFO: [HLS 200-10] Adding design file 'foc/uz_Transformation.c' to the project
+INFO: [HLS 200-10] Adding design file 'foc/uz_FOC.h' to the project
+INFO: [HLS 200-10] Adding design file 'foc/uz_FOC.c' to the project
+INFO: [HLS 200-10] Adding test bench file 'foc/tb_foc.c' to the project
+INFO: [HLS 200-10] Opening solution 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1'.
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-10] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+Resolution: For help on HLS 200-1505 see www.xilinx.com/html_docs/xilinx2020_1/hls-guidance/200-1505.html
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_optimization_level=0
+INFO: [HLS 200-1464] Running solution command: config_export -display_name=uz_FOC
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -output=C:/Users/ponpr/Desktop/Intenship/uz_FOC/uz_FOC_sample.zip
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=verilog
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_phys_opt=none
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_report_level=0
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+   Compiling(apcc) ../../../../foc/tb_foc.c in debug mode
+INFO: Applying HLS Y2K22 patch v1.2 for IP revision
+INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe'
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Fri Jun 03 08:20:25 +0200 2022
+INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/csim/build'
+INFO: [APCC 202-3] Tmp directory is apcc_db
+INFO: [APCC 202-1] APCC is done.
+   Compiling(apcc) ../../../../foc/uz_FOC.c in debug mode
+INFO: Applying HLS Y2K22 patch v1.2 for IP revision
+INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe'
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Fri Jun 03 08:20:35 +0200 2022
+INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/csim/build'
+INFO: [APCC 202-3] Tmp directory is apcc_db
+INFO: [APCC 202-1] APCC is done.
+   Generating csim.exe
+
+ HW output D-Parameter Q-Parameter 6.770000	 6.750000 5.124270	 5.109250 3.888318	 3.877188 2.956296	 2.948582 2.262331	 2.258234 1.740162	 1.747468 1.350161	 1.364181 1.052496	 1.083103 0.827400	 0.885735 0.661711	 0.746723 0.535440	 0.654181
+ Comparison for D parameter Test failed D -0.020000Test failed D -0.034270Test failed D -0.048318Test failed D -0.056296Test failed D -0.062331Test failed D -0.070163Test failed D -0.070161Test failed D -0.072496Test failed D -0.071400Test failed D -0.073711Test failed D -0.074440
+ Comparison for Q parameter Test passed QTest failed Q -0.019250Test failed Q -0.037188Test failed Q -0.038582Test failed Q -0.048234Test failed Q -0.067468Test failed Q -0.064181Test failed Q -0.073103Test failed Q -0.074735Test failed Q -0.075723Test failed Q -0.073181INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************

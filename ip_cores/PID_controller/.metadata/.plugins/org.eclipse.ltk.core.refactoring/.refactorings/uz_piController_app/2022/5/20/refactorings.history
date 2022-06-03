@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;uz_piController_app/src/helloworld.c&apos; to &apos;pi_controller.c&apos;" description="Rename resource &apos;helloworld.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/helloworld.c" name="pi_controller.c" stamp="1652287279207" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;uz_piController_app/src/pi_controller.c&apos; to &apos;helloworld.c&apos;" description="Rename resource &apos;pi_controller.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/pi_controller.c" name="helloworld.c" stamp="1652290070724" updateReferences="true"/>
-</session>

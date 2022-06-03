@@ -1,8 +1,0 @@
--M
-microblaze-fdt
--device
-loader,file=<pi_acp_wrapper/domain_psu_cortexa53_0/qemu/pmufw.elf>
--machine-path
-.
--display
-none

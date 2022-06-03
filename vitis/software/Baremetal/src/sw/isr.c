@@ -39,7 +39,7 @@
 #include "../IP_Cores/uz_pmsm_model_9ph/uz_pmsm_model_9ph_hw.h"
 #include "../uz/uz_piController/uz_piController.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
-#include "../uz/uz_Wavegen/uz_wavegen.h"
+#include "../uz/uz_wavegen/uz_wavegen.h"
 extern uz_pmsm_model_9ph_t *pmsm;
 extern uz_PI_Controller *PI_d_current;
 extern uz_PI_Controller *PI_q_current;

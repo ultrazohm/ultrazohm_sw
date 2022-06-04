@@ -14,7 +14,7 @@ L_y2=0.0001;
 L_zero=0.01;
 psi_pm=0.05;
 polepair=5;
-ts=1/1e6;   
+ts=2/1e6;   
 
 R_1 = 0.066;          % phase resistance in Ohm
 psi_pm = 0.1028;      % flux linkage in Vs

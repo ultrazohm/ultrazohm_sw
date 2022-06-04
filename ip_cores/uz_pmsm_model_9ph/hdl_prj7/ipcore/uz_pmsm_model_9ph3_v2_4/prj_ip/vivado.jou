@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:35 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Sat Jun  4 17:39:18 2022
+# Process ID: 82901
+# Current directory: /home/ts/Documents/uz2/ultrazohm_sw/ip_cores/uz_pmsm_model_9ph/hdl_prj7/ipcore/uz_pmsm_model_9ph3_v2_4/prj_ip
+# Command line: vivado -mode batch -notrace -source vivado_ip_package.tcl
+# Log file: /home/ts/Documents/uz2/ultrazohm_sw/ip_cores/uz_pmsm_model_9ph/hdl_prj7/ipcore/uz_pmsm_model_9ph3_v2_4/prj_ip/vivado.log
+# Journal file: /home/ts/Documents/uz2/ultrazohm_sw/ip_cores/uz_pmsm_model_9ph/hdl_prj7/ipcore/uz_pmsm_model_9ph3_v2_4/prj_ip/vivado.jou
+#-----------------------------------------------------------
+source vivado_ip_package.tcl -notrace

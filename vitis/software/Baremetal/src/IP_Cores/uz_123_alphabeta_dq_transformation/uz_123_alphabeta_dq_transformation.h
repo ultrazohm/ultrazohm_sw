@@ -16,7 +16,7 @@ struct uz_dqIPcore_config_t{
 };
 
 /**
- * @brief Initialize an instance of the driver for the dq-IP-Core
+ * @brief Initialize an instance of the driver for the 123_alphabeta_dq-IP-Core
  *
  * @param config Configuration struct for the instance
  * @return uz_dqIPcore_t* Pointer to an initialized instance of the driver

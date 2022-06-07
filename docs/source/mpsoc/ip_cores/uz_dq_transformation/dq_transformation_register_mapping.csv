@@ -15,3 +15,7 @@ cos,Output,sfix16_En14,External Signal,+/-2,,cosine value of angle (+/- 1)
 i_1_AXI,Output,sfix18_En11,AXI4-Lite,+/-64,A,phase current 1
 i_2_AXI,Output,sfix18_En11,AXI4-Lite,+/-64,A,phase current 2
 i_3_AXI,Output,sfix18_En11,AXI4-Lite,+/-64,A,phase current 3
+ialpha,Output,sfix18_En11,External Signal,+/-64,A,current in alpha-axis
+ibeta,Output,sfix18_En11,External Signal,+/-64,A,current in beta-axis
+ialpha_AXI,Output,sfix18_En11,AXI4-Lite,+/-64,A,current in alpha-axis
+ibeta_AXI,Output,sfix18_En11,AXI4-Lite,+/-64,A,current in beta-axis

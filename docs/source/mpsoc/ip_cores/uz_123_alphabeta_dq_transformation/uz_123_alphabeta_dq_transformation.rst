@@ -1,4 +1,4 @@
-.. _ipCore_123_alphabeta_dq_transformation:
+.. _uz_123_alphabeta_dq_transformation:
 
 =======================================
 123_alphabeta_dq Transformation IP-Core

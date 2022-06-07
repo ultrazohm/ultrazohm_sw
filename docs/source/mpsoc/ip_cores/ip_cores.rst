@@ -21,6 +21,6 @@ IP Cores
     uz_plantModel_pt1/uz_plantModel_pt1
     uz_pmsmModel/uz_pmsmModel
     uz_dataMover/uz_dataMover
-    uz_dq_transformation/uz_dq_transformation
+    uz_123_alphabeta_dq_transformation/uz_123_alphabeta_dq_transformation
     uz_mlp_three_layer/uz_mlp_three_layer
     uz_dac_interface/uz_dac_interface

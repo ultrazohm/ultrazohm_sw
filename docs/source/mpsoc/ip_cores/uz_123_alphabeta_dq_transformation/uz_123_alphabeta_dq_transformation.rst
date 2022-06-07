@@ -60,7 +60,7 @@ Driver reference
 Vivado
 ======
 
-.. figure:: trans_123_alphabeta_dq_VIVADO.jpg
+.. figure:: trans_123_alphabeta_dq_vivado.png
 
 The only tested clock frequency for ``IPCORE_CLK`` and ``AXI4_Lie_ACLK`` is 50 Mhz.
 

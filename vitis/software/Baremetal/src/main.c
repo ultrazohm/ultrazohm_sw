@@ -33,15 +33,15 @@ DS_Data Global_Data = {
 
 
 //upper code for PMSM
-#include "IP_Cores/uz_pmsm_model_9ph/uz_pmsm_model_9ph.h"
+#include "IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
 #include "uz/uz_piController/uz_piController.h"
 #include "xparameters.h"
-uz_pmsm_model_9ph_t *pmsm=NULL;
+uz_pmsm_model9ph_dq_t *pmsm=NULL;
 uz_PI_Controller *PI_d_current=NULL;
 uz_PI_Controller *PI_q_current=NULL;
 uz_PI_Controller *PI_rpm=NULL;
-struct uz_pmsm_model_9ph_config_t pmsm_config={
-              .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_9PH_0_BASEADDR,
+struct uz_pmsm_model9ph_dq_config_t pmsm_config={
+              .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_9PH_ON_0_BASEADDR,
               .ip_core_frequency_Hz=100000000,
               .simulate_mechanical_system = false,
               .r_1 = 31.3f,
@@ -201,8 +201,8 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             //loop code for PMSM
-            pmsm = uz_pmsm_model_9ph_init(pmsm_config);
-            uz_pmsm_model_9ph_reset(pmsm);
+            pmsm = uz_pmsm_model9ph_dq_init(pmsm_config);
+            uz_pmsm_model9ph_dq_reset(pmsm);
             PI_d_current = uz_PI_Controller_init(config);
             PI_q_current = uz_PI_Controller_init(config);
             PI_rpm = uz_PI_Controller_init(config);

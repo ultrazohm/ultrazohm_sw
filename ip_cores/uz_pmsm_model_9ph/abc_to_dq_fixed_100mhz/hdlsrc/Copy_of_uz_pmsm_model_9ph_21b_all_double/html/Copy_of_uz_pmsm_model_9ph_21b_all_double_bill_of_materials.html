@@ -1,0 +1,798 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for Copy_of_uz_pmsm_model_9ph_21b_all_double
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiply_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_4');hdlTableShrink(this, 'Register_1_18');hdlTableShrink(this, 'Multiplexer_1_10');hdlTableShrink(this, 'Multiplexer_1_11');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for Copy_of_uz_pmsm_model_9ph_21b_all_double
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+174
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+267
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+970
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+31534
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+57
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+308
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+1166
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3197')" name="code2model" class="code2model">
+abc_to_dq
+</a>
+
+</h5>
+<h5>
+Multipliers (174)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18x18-bit Multiply 							: 1
+</span>
+<span name="Multiply_1_1" id="Multiply_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3214')" name="code2model" class="code2model">
+Gain
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+18x25-bit Multiply 							: 144
+</span>
+<br /><span style="font-family:monospace">
+25x18-bit Multiply 							: 21
+</span>
+<br /><span style="font-family:monospace">
+17x25-bit Multiply 							: 8
+</span>
+<br /><h5>
+Adders/Subtractors (259)
+</h5>
+<span style="font-family:monospace">
+6x6-bit Adder 							: 8
+</span>
+<br /><span style="font-family:monospace">
+4x4-bit Adder 							: 33
+</span>
+<br /><span style="font-family:monospace">
+3x3-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26x26-bit Adder 							: 36
+</span>
+<br /><span style="font-family:monospace">
+25x25-bit Adder 							: 5
+</span>
+<br /><span style="font-family:monospace">
+44x44-bit Adder 							: 90
+</span>
+<br /><span style="font-family:monospace">
+2x2-bit Adder 							: 30
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Adder 							: 40
+</span>
+<br /><span style="font-family:monospace">
+25x25-bit Subtractor 							: 5
+</span>
+<br /><h5>
+Registers (970)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit Register 							: 49
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3193')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3263')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+68-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+6-bit Register 							: 16
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+25-bit Register 							: 323
+</span>
+<span name="Register_1_4" id="Register_1_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3096')" name="code2model" class="code2model">
+Delay9
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+126-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+4-bit Register 							: 66
+</span>
+<br /><span style="font-family:monospace">
+3-bit Register 							: 24
+</span>
+<br /><span style="font-family:monospace">
+90-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+43-bit Register 							: 144
+</span>
+<br /><span style="font-family:monospace">
+118-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+44-bit Register 							: 81
+</span>
+<br /><span style="font-family:monospace">
+125-bit Register 							: 26
+</span>
+<br /><span style="font-family:monospace">
+2-bit Register 							: 60
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 80
+</span>
+<br /><span style="font-family:monospace">
+100-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+36-bit Register 							: 18
+</span>
+<br /><span style="font-family:monospace">
+115-bit Register 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_18')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 11
+</span>
+<span name="Register_1_18" id="Register_1_18">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3100')" name="code2model" class="code2model">
+Unit Delay
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+17-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+108-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+75-bit Register 							: 2
+</span>
+<br /><h5>
+RAMs (57)
+</h5>
+<span style="font-family:monospace">
+64x68-bit RAM 							: 1
+</span>
+<br /><span style="font-family:monospace">
+16x126-bit RAM 							: 3
+</span>
+<br /><span style="font-family:monospace">
+8x126-bit RAM 							: 3
+</span>
+<br /><span style="font-family:monospace">
+8x90-bit RAM 							: 1
+</span>
+<br /><span style="font-family:monospace">
+8x118-bit RAM 							: 1
+</span>
+<br /><span style="font-family:monospace">
+4x125-bit RAM 							: 3
+</span>
+<br /><span style="font-family:monospace">
+8x125-bit RAM 							: 1
+</span>
+<br /><span style="font-family:monospace">
+32x126-bit RAM 							: 5
+</span>
+<br /><span style="font-family:monospace">
+16x125-bit RAM 							: 3
+</span>
+<br /><span style="font-family:monospace">
+32x125-bit RAM 							: 6
+</span>
+<br /><span style="font-family:monospace">
+64x126-bit RAM 							: 1
+</span>
+<br /><span style="font-family:monospace">
+16x100-bit RAM 							: 3
+</span>
+<br /><span style="font-family:monospace">
+32x100-bit RAM 							: 3
+</span>
+<br /><span style="font-family:monospace">
+16x36-bit RAM 							: 3
+</span>
+<br /><span style="font-family:monospace">
+32x36-bit RAM 							: 5
+</span>
+<br /><span style="font-family:monospace">
+64x36-bit RAM 							: 1
+</span>
+<br /><span style="font-family:monospace">
+4x115-bit RAM 							: 1
+</span>
+<br /><span style="font-family:monospace">
+4x126-bit RAM 							: 10
+</span>
+<br /><span style="font-family:monospace">
+4x108-bit RAM 							: 1
+</span>
+<br /><span style="font-family:monospace">
+32x75-bit RAM 							: 1
+</span>
+<br /><span style="font-family:monospace">
+64x18-bit RAM 							: 1
+</span>
+<br /><h5>
+Multiplexers (286)
+</h5>
+<span style="font-family:monospace">
+6-bit 2-to-1 Multiplexer 							: 8
+</span>
+<br /><span style="font-family:monospace">
+4-bit 2-to-1 Multiplexer 							: 33
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+25-bit 3-to-1 Multiplexer 							: 99
+</span>
+<br /><span style="font-family:monospace">
+2-bit 2-to-1 Multiplexer 							: 30
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 40
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 9
+</span>
+<br /><span style="font-family:monospace">
+18-bit 9-to-1 Multiplexer 							: 9
+</span>
+<br /><span style="font-family:monospace">
+25-bit 9-to-1 Multiplexer 							: 9
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_10')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+25-bit 2-to-1 Multiplexer 							: 36
+</span>
+<span name="Multiplexer_1_10" id="Multiplexer_1_10">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3095')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_11')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_1_11" id="Multiplexer_1_11">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3264')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Number of I/O Bits (1166)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 472
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul class="SystemdefinedCollapse" id="866c064b-6156-4750-90a6-22947786cea7" dataCollapse="off">
+<li>
+clk: 1 bit
+</li>
+<li>
+reset: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+current_in_dq_0: 25 bits
+</li>
+<li>
+current_in_dq_1: 25 bits
+</li>
+<li>
+current_in_dq_2: 25 bits
+</li>
+<li>
+current_in_dq_3: 25 bits
+</li>
+<li>
+current_in_dq_4: 25 bits
+</li>
+<li>
+current_in_dq_5: 25 bits
+</li>
+<li>
+current_in_dq_6: 25 bits
+</li>
+<li>
+current_in_dq_7: 25 bits
+</li>
+<li>
+current_in_dq_8: 25 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3199')" name="code2model" class="code2model">
+theta_el1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3200')" name="code2model" class="code2model">
+trigger_new_values
+</a>
+: 1 bit
+</li>
+<li>
+u_abc1_pl_0: 25 bits
+</li>
+<li>
+u_abc1_pl_1: 25 bits
+</li>
+<li>
+u_abc1_pl_2: 25 bits
+</li>
+<li>
+u_abc2_pl_0: 25 bits
+</li>
+<li>
+u_abc2_pl_1: 25 bits
+</li>
+<li>
+u_abc2_pl_2: 25 bits
+</li>
+<li>
+u_abc3_pl_0: 25 bits
+</li>
+<li>
+u_abc3_pl_1: 25 bits
+</li>
+<li>
+u_abc3_pl_2: 25 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '866c064b-6156-4750-90a6-22947786cea7')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 694
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul class="SystemdefinedCollapse" id="192b8ddf-7086-4045-915b-88e63106a958" dataCollapse="off">
+<li>
+ce_out: 1 bit
+</li>
+<li>
+voltage_out_dq_1_0: 25 bits
+</li>
+<li>
+voltage_out_dq_1_1: 25 bits
+</li>
+<li>
+voltage_out_dq_1_2: 25 bits
+</li>
+<li>
+voltage_out_dq_2_0: 25 bits
+</li>
+<li>
+voltage_out_dq_2_1: 25 bits
+</li>
+<li>
+voltage_out_dq_2_2: 25 bits
+</li>
+<li>
+voltage_out_dq_3_0: 25 bits
+</li>
+<li>
+voltage_out_dq_3_1: 25 bits
+</li>
+<li>
+voltage_out_dq_3_2: 25 bits
+</li>
+<li>
+i_abc_out_axi_0: 25 bits
+</li>
+<li>
+i_abc_out_axi_1: 25 bits
+</li>
+<li>
+i_abc_out_axi_2: 25 bits
+</li>
+<li>
+i_abc_out_axi_3: 25 bits
+</li>
+<li>
+i_abc_out_axi_4: 25 bits
+</li>
+<li>
+i_abc_out_axi_5: 25 bits
+</li>
+<li>
+i_abc_out_axi_6: 25 bits
+</li>
+<li>
+i_abc_out_axi_7: 25 bits
+</li>
+<li>
+i_abc_out_axi_8: 25 bits
+</li>
+<li>
+I_abc_1_0: 25 bits
+</li>
+<li>
+I_abc_1_1: 25 bits
+</li>
+<li>
+I_abc_1_2: 25 bits
+</li>
+<li>
+I_abc_2_0: 25 bits
+</li>
+<li>
+I_abc_2_1: 25 bits
+</li>
+<li>
+I_abc_2_2: 25 bits
+</li>
+<li>
+I_abc_3_0: 25 bits
+</li>
+<li>
+I_abc_3_1: 25 bits
+</li>
+<li>
+I_abc_3_2: 25 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3265')" name="code2model" class="code2model">
+theta_el_axi
+</a>
+: 18 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '192b8ddf-7086-4045-915b-88e63106a958')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3213')" name="code2model" class="code2model">
+Sine
+HDL Optimized
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (8)
+</h5>
+<span style="font-family:monospace">
+18x18-bit Subtractor 							: 5
+</span>
+<br /><span style="font-family:monospace">
+19x19-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+18-bit Subtractor 							: 2
+</span>
+<br /><h5>
+Multiplexers (22)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 3
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 8
+</span>
+<br /><span style="font-family:monospace">
+6-bit 3-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+17-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+8-bit 3-to-1 Multiplexer 							: 2
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

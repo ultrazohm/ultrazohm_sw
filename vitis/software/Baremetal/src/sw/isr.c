@@ -35,12 +35,11 @@
 
 //pre-loop code for 9ph model
 #include "../uz/uz_wavegen/uz_wavegen.h"
-#include "../IP_Cores/uz_pmsm_model_9ph/uz_pmsm_model_9ph.h"
-#include "../IP_Cores/uz_pmsm_model_9ph/uz_pmsm_model_9ph_hw.h"
+#include "../IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
 #include "../uz/uz_piController/uz_piController.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 #include "../uz/uz_wavegen/uz_wavegen.h"
-extern uz_pmsm_model_9ph_t *pmsm;
+extern uz_pmsm_model9ph_dq_t *pmsm;
 extern uz_PI_Controller *PI_d_current;
 extern uz_PI_Controller *PI_q_current;
 extern uz_PI_Controller *PI_rpm;
@@ -57,7 +56,7 @@ uz_3ph_dq_t dq = {0};
 uz_9ph_alphabeta_t test_stat = {0};
 uz_9ph_abc_t test_nat = {0};
 
-struct uz_pmsm_model_9ph_outputs_general_t pmsm_outputs={
+struct uz_pmsm_model9ph_dq_outputs_general_t pmsm_outputs={
         .torque_Nm=10.0f,
         .omega_mech_1_s=0.0f,
         .theta_el=0.0f
@@ -65,7 +64,7 @@ struct uz_pmsm_model_9ph_outputs_general_t pmsm_outputs={
 
 uz_9ph_abc_t pmsm_output_currents={0};
 
-struct uz_pmsm_model_9ph_inputs_general_t pmsm_inputs={
+struct uz_pmsm_model9ph_dq_inputs_general_t pmsm_inputs={
 		.load_torque=0.0f,
 		.omega_mech_1_s=0.0f
 };
@@ -75,6 +74,11 @@ struct uz_pmsm_model_9ph_inputs_general_t pmsm_inputs={
 #include "../uz/uz_FOC/uz_FOC.h"
 #include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
 #include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph_hw.h"
+#include "xparameters.h"
+
+#define  theta_el_axi_Data_uz_pmsm9ph_trans_100mhz      0x100  //data register for Outport theta_el_axi
+#define  i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz     0x140  //data register for Outport i_abc_out_axi, vector with 9 elements, address ends at 0x160
+#define  i_abc_out_axi_Strobe_uz_pmsm9ph_trans_100mhz   0x180  //strobe register for port i_abc_out_axi
 
 float uz_inverter_3ph_hw_read_u_ab_ps(uint32_t base_address);
 
@@ -92,6 +96,7 @@ uz_3ph_alphabeta_t setpoint_alpha_beta = {0};
 uz_3ph_alphabeta_t outputs_alphabeta = {0};
 uz_3ph_dq_t outputs_dq = {0};
 uz_3ph_dq_t setpoint_dq = {0};
+uz_9ph_dq_t setpoint_dq9ph = {0};
 
 float V_dc_volts = 560.0f;
 
@@ -143,42 +148,88 @@ extern DS_Data Global_Data;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
+#include "../uz/uz_fixedpoint/uz_fixedpoint.h"
+struct uz_fixedpoint_definition_t fixed_out={
+		.is_signed=true,
+		.fractional_bits=12,
+		.integer_bits=(25-12)
+};
+
+uz_9ph_dq_t pmsm_output_currents_dq={0};
+
+float offset=0.0f;
 
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
-
+    platform_state_t current_state=ultrazohm_state_machine_get_state();
+    if (current_state==control_state)
+    {
+        // Start: Control algorithm - only if ultrazohm is in control state
+    }else{
+        uz_PI_Controller_reset(PI_q_current);
+        uz_PI_Controller_reset(PI_d_current);
+        uz_pmsm_model9ph_dq_reset(pmsm);
+    }
 
     //++PMSM++
-    // Set Inputs and get Outputs
-    uz_pmsm_model_9ph_trigger_input_general_strobe(pmsm);
-    uz_pmsm_model_9ph_trigger_output_general_strobe(pmsm);
-    uz_pmsm_model_9ph_trigger_output_currents_strobe(pmsm);
-    pmsm_outputs = uz_pmsm_model_9ph_get_outputs_general(pmsm);
-    pmsm_output_currents = uz_pmsm_model_9ph_get_output_currents(pmsm);
+    pmsm_outputs = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);
+    struct uz_fixedpoint_definition_t theta_def={
+    		.is_signed=true,
+			.fractional_bits=14,
+			.integer_bits=4
+    };
+   // pmsm_outputs.theta_el=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+theta_el_axi_Data_uz_pmsm9ph_trans_100mhz, theta_def);
+
+    // XPAR_UZ_USER_UZ_PMSM9PH_TRANSFORM_0_BASEADDR
+
+    uz_axi_write_bool(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Strobe_uz_pmsm9ph_trans_100mhz, false);
+    uz_axi_write_bool(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Strobe_uz_pmsm9ph_trans_100mhz, true);
+    uz_axi_write_bool(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Strobe_uz_pmsm9ph_trans_100mhz, false);
+    pmsm_output_currents.a1=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz, fixed_out);
+    pmsm_output_currents.b1=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0x4, fixed_out);
+    pmsm_output_currents.c1=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0x8, fixed_out);
+    pmsm_output_currents.a2=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0xC, fixed_out);
+    pmsm_output_currents.b2=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0x10, fixed_out);
+    pmsm_output_currents.c2=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0x14, fixed_out);
+    pmsm_output_currents.a3=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0x18, fixed_out);
+    pmsm_output_currents.b3=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0x1C, fixed_out);
+    pmsm_output_currents.c3=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0x20, fixed_out);
+
+
+    // pmsm_output_currents = uz_pmsm_model_9ph_get_output_currents(pmsm);
+
+    pmsm_output_currents_dq = uz_pmsm_model9ph_dq_get_output_currents(pmsm);
+
 
     pmsm_inputs.omega_mech_1_s = setp_omega;
     //pmsm_inputs.load_torque = setp_torque;
-    uz_pmsm_model_9ph_set_inputs_general(pmsm, pmsm_inputs);
+    uz_pmsm_model9ph_dq_set_inputs_general(pmsm, pmsm_inputs);
 
     // Transform output currents to dq system
     stationary_currents = uz_transformation_9ph_abc_to_alphabeta(pmsm_output_currents);
-    outputs_alphabeta.alpha = stationary_currents.alpha;
-    outputs_alphabeta.beta = stationary_currents.beta;
+    outputs_dq.d=pmsm_output_currents_dq.d;
+    outputs_dq.q=pmsm_output_currents_dq.q;
 
-    outputs_dq = uz_transformation_3ph_alphabeta_to_dq(outputs_alphabeta,pmsm_outputs.theta_el);
+
+
+    //outputs_alphabeta.alpha = stationary_currents.alpha;
+    //outputs_alphabeta.beta = stationary_currents.beta;
+    //outputs_dq = uz_transformation_3ph_alphabeta_to_dq(outputs_alphabeta,pmsm_outputs.theta_el);
 
     //++PWM++
 
     // Controller
     //setp_q = uz_PI_Controller_sample(PI_rpm,setp_omega,pmsm_outputs.omega_mech_1_s,false);
-    setpoint_dq.d = uz_PI_Controller_sample(PI_d_current,setp_d,outputs_dq.d,false);
-    setpoint_dq.q = uz_PI_Controller_sample(PI_q_current,setp_q,outputs_dq.q,false);
-
+    setpoint_dq9ph.d = uz_PI_Controller_sample(PI_d_current,setp_d,outputs_dq.d,false); // outputs_dq.d
+    setpoint_dq9ph.q = uz_PI_Controller_sample(PI_q_current,setp_q,outputs_dq.q,false); // outputs_dq.q
+    uz_pmsm_model9ph_dq_set_voltage(pmsm,setpoint_dq9ph);
+    setpoint_dq.d=setpoint_dq9ph.d;
+    setpoint_dq.q=setpoint_dq9ph.q;
     // Transform setpoints to abc system
-    setpoint_alpha_beta = uz_transformation_3ph_dq_to_alphabeta(setpoint_dq,pmsm_outputs.theta_el);
+    setpoint_alpha_beta = uz_transformation_3ph_dq_to_alphabeta(setpoint_dq,pmsm_outputs.theta_el+offset);
     setpoint_stationary.alpha = setpoint_alpha_beta.alpha;
     setpoint_stationary.beta = setpoint_alpha_beta.beta;
     setpoint_stationary.z1 = 0.0f;
@@ -188,6 +239,10 @@ void ISR_Control(void *data)
     setpoint_stationary.x2 = 0.0f;
     setpoint_stationary.y2 = 0.0f;
     setpoint_stationary.z3 = 0.0f;
+
+    // write voltage to model
+
+
     setpoint_natural = uz_transformation_9ph_alphabeta_to_abc(setpoint_stationary);
 
     // Split Systems
@@ -213,22 +268,7 @@ void ISR_Control(void *data)
 	uz_PWM_SS_2L_set_duty_cycle(pwm_instance_3,duty_cycle_sys3.DutyCycle_U,duty_cycle_sys3.DutyCycle_V,duty_cycle_sys3.DutyCycle_W);
 
 
-    //reset PMSM and PI controllers
-    if(reset_on==1)
-    {
-          uz_PI_Controller_reset(PI_q_current);
-          uz_PI_Controller_reset(PI_d_current);
-          uz_pmsm_model_9ph_reset(pmsm);
-    }
-    //end
 
-
-
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
-    {
-        // Start: Control algorithm - only if ultrazohm is in control state
-    }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     // Set duty cycles for three-level modulator
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

@@ -46,6 +46,18 @@ typedef struct uz_9ph_alphabeta_t{
     float z3;           /**< Amplitude of the z3 component */
 }uz_9ph_alphabeta_t;
 
+typedef struct uz_9ph_dq_t{
+    float d;
+    float q;
+    float o1;
+    float o2;
+    float x1;
+    float y1;
+    float x2;
+    float y2;
+    float zero;
+}uz_9ph_dq_t;
+
 
 /**
  * @brief Struct for the natural variables of a nine-phase system

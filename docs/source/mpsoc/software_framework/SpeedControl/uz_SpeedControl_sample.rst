@@ -31,8 +31,8 @@ Description
 Calculates the reference speed into angular frequency and calculates the latest sample of the n-PI-Controller.
 Furthermore, an external clamping signal can be set via a dedicated :ref:`set function <uz_SpeedControl_set_ext_clamping>`.
 This function includes a field weakening calculator, which can be turned on or off. 
-If the field weakening is turned off, the input ``id_ref_Ampere`` will be given out. 
-The ``id_ref`` current therefore will be calculated according to the following formulas.
+If the field weakening is turned off, the input ``id_ref_Ampere`` will simply be given out. 
+In the field weakening case, the ``id_ref`` current will be calculated according to the following formulas.
 
 .. math::
 

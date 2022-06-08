@@ -77,7 +77,7 @@ uz_3ph_dq_t uz_SpeedControl_sample(uz_SpeedControl_t* self, float omega_m_rad_pe
 	    i_output_Ampere.d = i_field_weakening_Ampere.d;
         uz_PI_Controller_update_limits(self->Controller, i_field_weakening_Ampere.q, -i_field_weakening_Ampere.q);
     } else {
-        i_output_Ampere.d = uz_signals_saturation(id_ref_Ampere, self->config.config_PMSM.I_max_Ampere, -self->config.config_PMSM.I_max_Ampere);
+        i_output_Ampere.d = id_ref_Ampere;
     }
     i_output_Ampere.q = uz_PI_Controller_sample(self->Controller, omega_m_ref_rad_per_sec, omega_m_rad_per_sec, self->ext_clamping);
     return(i_output_Ampere);
@@ -110,6 +110,7 @@ void uz_SpeedControl_update_limits(uz_SpeedControl_t* self, float upper_limit, f
 void uz_SpeedControl_set_field_weakening(uz_SpeedControl_t* self, bool is_field_weakening_active) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    //Since the object could've been initialized with the members of the uz_PMSM_t struct set to 0, all members of this struct have to be asserted again.
     if(is_field_weakening_active) {
         uz_assert(self->config.config_PMSM.polePairs > 0.0f);
 	    uz_assert(fmodf(self->config.config_PMSM.polePairs, 1.0f) == 0);

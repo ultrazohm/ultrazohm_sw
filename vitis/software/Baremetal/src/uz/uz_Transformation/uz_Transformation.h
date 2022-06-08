@@ -23,12 +23,39 @@ typedef struct uz_3ph_alphabeta_t{
 /**
  * @brief Struct for the variables of a three-phase-System
  * 
- */
+ */ 
 typedef struct uz_3ph_abc_t{
     float a;        /**< Amplitude of the a phase (U) */ 
     float b;        /**< Amplitude of the b phase (V) */ 
     float c;        /**< Amplitude of the c phase (W) */ 
 }uz_3ph_abc_t;
+
+/**
+ * @brief struct for variables of an alpha-beta-system six-phase-system
+ * 
+ */
+typedef struct uz_6ph_alphabeta_t{
+    float alpha;    /**< Amplitude of the alpha component */
+    float beta;     /**< Amplitude of the beta component */
+    float x;        /**< Amplitude of the x component */
+    float y;        /**< Amplitude of the y component */
+    float z1;       /**< Amplitude of the z1 component */
+    float z2;       /**< Amplitude of the z2 component */
+}uz_6ph_alphabeta_t;
+
+/**
+ * @brief struct for variables of an abc six-phase-system
+ * 
+ */
+typedef struct uz_6ph_abc_t{
+    float a1;   /**< Amplitude of the a1 phase */
+    float b1;   /**< Amplitude of the b1 phase */
+    float c1;   /**< Amplitude of the c1 phase */
+    float a2;   /**< Amplitude of the a2 phase */
+    float b2;   /**< Amplitude of the b2 phase */
+    float c2;   /**< Amplitude of the c2 phase */
+}uz_6ph_abc_t;
+
 
 /**
  * @brief Struct for the variables of an alpha-beta nine-phase system
@@ -119,6 +146,22 @@ uz_3ph_dq_t uz_transformation_3ph_alphabeta_to_dq(uz_3ph_alphabeta_t input, floa
  * @return uz_3ph_alphabeta_t outputs the calculated alpha-beta-gamma-components
  */
 uz_3ph_alphabeta_t uz_transformation_3ph_dq_to_alphabeta(uz_3ph_dq_t input, float theta_el_rad);
+
+/**
+ * @brief Calculates the 6-phase alpha-beta components from the phase-amplitudes of an asymmetric (30 degree) six phase system
+ * 
+ * @param input uz_6ph_abc_t input of the phase amplitudes
+ * @return uz_6ph_alphabeta_t outputs the calculated six-phase alpha-beta components
+ */
+uz_6ph_alphabeta_t uz_transformation_asym30deg_6ph_abc_to_alphabeta(uz_6ph_abc_t input);
+
+/**
+ * @brief Calculates the abc-phases from the alphabeta components of an asymmetric (30 degree) six phase system
+ * 
+ * @param input uz_6ph_alphabeta_t struct
+ * @return uz_6ph_abc_t outputs the calculated abc-phases
+ */
+uz_6ph_abc_t uz_transformation_asym30deg_6ph_alphabeta_to_abc(uz_6ph_alphabeta_t input);
 
 /**
  * @brief Calculates the alpha-beta-gamma-components from the nine phase abc-phases

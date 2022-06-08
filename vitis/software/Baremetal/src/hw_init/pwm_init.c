@@ -16,7 +16,8 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_0_to_5 = {
         .use_external_counter = true,
         .init_dutyCyc_A = 0.0f,
         .init_dutyCyc_B = 0.0f,
-        .init_dutyCyc_C = 0.0f
+        .init_dutyCyc_C = 0.0f,
+		.triangle_shift = 0.0f
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_6_to_11 = {
@@ -32,7 +33,8 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_6_to_11 = {
         .use_external_counter = true,
         .init_dutyCyc_A = 0.0f,
         .init_dutyCyc_B = 0.0f,
-        .init_dutyCyc_C = 0.0f
+        .init_dutyCyc_C = 0.0f,
+		.triangle_shift = 0.25f
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_12_to_17 = {
@@ -48,7 +50,8 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_12_to_17 = {
         .use_external_counter = true,
         .init_dutyCyc_A = 0.0f,
         .init_dutyCyc_B = 0.0f,
-        .init_dutyCyc_C = 0.0f
+        .init_dutyCyc_C = 0.0f,
+		.triangle_shift = 0.5f
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_18_to_23 = {
@@ -64,7 +67,8 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_18_to_23 = {
         .use_external_counter = true,
         .init_dutyCyc_A = 0.0f,
         .init_dutyCyc_B = 0.0f,
-        .init_dutyCyc_C = 0.0f
+        .init_dutyCyc_C = 0.0f,
+		.triangle_shift = 0.75f
 };
 
 uz_PWM_SS_2L_t* initialize_pwm_2l_on_D1_pin_0_to_5(void){

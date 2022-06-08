@@ -80,3 +80,11 @@ void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumbe
     }
     uz_axi_write_bool(base_address + halfBridgeAddress, TriState_true_false);
 }
+
+void uz_PWM_SS_2L_hw_SetTriangleShift(uint32_t base_address, float triangle_shift){
+    uz_assert_not_zero_uint32(base_address);
+    uz_assert(triangle_shift >= 0.0f);
+    uz_assert(triangle_shift <= 1.0f);
+    uint32_t triangle_shift_Q17 = uz_convert_float_to_unsigned_fixed(triangle_shift, 17);
+    uz_axi_write_uint32(base_address + triangle_shift_Data_PWM_and_SS_control_V4_ip, triangle_shift_Q17);
+}

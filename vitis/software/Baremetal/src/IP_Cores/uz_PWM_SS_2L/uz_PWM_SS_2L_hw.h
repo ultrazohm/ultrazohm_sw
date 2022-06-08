@@ -72,4 +72,12 @@ void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumbe
  */
 void uz_PWM_SS_2L_hw_SetMinimumPulseWidth(uint32_t base_address, float min_pulse_width_percent);
 
+/**
+ * @brief sets the shift of the carrier triangle signal to enable interleaved operation.
+ * 
+ * @param base_address              //base address of the instance
+ * @param triangle_shift            //shift fixed to 0-1, e.g. 0.25.  0 represents no shift and 1 represents a shift by an entire period.
+ */
+void uz_PWM_SS_2L_hw_SetTriangleShift(uint32_t base_address, float triangle_shift);
+
 #endif // UZ_PWM_SS_2L_HW_H

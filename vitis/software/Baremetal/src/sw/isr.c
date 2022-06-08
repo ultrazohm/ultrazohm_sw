@@ -49,8 +49,6 @@ extern uz_IIR_Filter_t *LPF1_instance_position;
 extern uz_IIR_Filter_t *LPF1_instance_angle;
 extern uz_IIR_Filter_t *LPF1_instance_2;
 extern uz_PI_Controller *PI_instance;
-extern uz_PI_Controller *PI_chart_instance;
-extern uz_PI_Controller *PI_angle_instance;
 extern uz_nn_t *uz_nn_instance;
 extern uz_matrix_t *input_instance;
 // measurement and reference
@@ -105,17 +103,11 @@ struct uz_PMSM_t config_heidrive = {
 };
 
 // nn testing
-float result[3];
-float expected_result[3] = {-211.8089f, -225.9524f, -241.1341f};
 float old_theta_pendulum=0.0f;
 float old_position=0.0f;
 float angle_derv=0.0f;
 float position_derv=0.0f;
 uint32_t action=0;
-
-bool use_pi_control = true;
-// Alternatively the sample function can output the UVW-values
-//  Function for calculating the Position
 
 //=============================================================================================================================================================
 //----------------------------------------------------
@@ -126,7 +118,6 @@ bool use_pi_control = true;
 static void ReadAllADC();
 
 extern bool dqn_mutex;
-float sin_ref=0;
 uz_matrix_t *output_nn = NULL;
 
 enum dqn_chain
@@ -210,9 +201,6 @@ void ISR_Control(void *data)
 		        if (dqn_mutex)
 		        {
 		            output_nn = uz_nn_get_output_data(uz_nn_instance);
-		            result[0] = uz_matrix_get_element_zero_based(output_nn, 0, 0);
-		            result[1] = uz_matrix_get_element_zero_based(output_nn, 0, 1);
-		            result[2] = uz_matrix_get_element_zero_based(output_nn, 0, 2);
 		            dqn_mutex = false;
 		            action = uz_matrix_get_max_index(output_nn);
 		            switch (action){
@@ -239,15 +227,15 @@ void ISR_Control(void *data)
 				break;
 			case reset_angle:
 				if (abs(Global_Data.obs.dqn_angle_derv)<0.02){
-					if (counter_timeout < 100000)
+					if (counter_timeout < 5000)
 					{
 						counter_timeout++;
 					}
 					else{
-						reset_ip_core_of_encoder_on_D5_3_ip_v25(&Global_Data);
+//						reset_ip_core_of_encoder_on_D5_3_ip_v25(&Global_Data);
 						counter_timeout = 0;
+						chain=dqn_active;
 					}
-				chain=dqn_active;
 				}
 				break;
 			default:

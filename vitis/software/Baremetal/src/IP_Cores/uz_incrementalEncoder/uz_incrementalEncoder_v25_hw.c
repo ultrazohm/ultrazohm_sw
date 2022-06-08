@@ -27,9 +27,11 @@ void uz_incrementalEncoder_hw_set_speed_timeout(uint32_t base_address,uint32_t s
 
 void uz_incrementalEncoder_hw_reset_ip_core(uint32_t base_address){
     uz_assert_not_zero_uint32(base_address);
+    uz_axi_write_bool(base_address+IPCore_Enable_IncEnc,false);
     uz_axi_write_bool(base_address+IPCore_Reset_IncEnc, false);
     uz_axi_write_bool(base_address+IPCore_Reset_IncEnc, true);
     uz_axi_write_bool(base_address+IPCore_Reset_IncEnc, false);
+    uz_axi_write_bool(base_address+IPCore_Enable_IncEnc,true);
 }
 
 float uz_incrementalEncoder_hw_get_omega_oversampled_N4(uint32_t base_address){

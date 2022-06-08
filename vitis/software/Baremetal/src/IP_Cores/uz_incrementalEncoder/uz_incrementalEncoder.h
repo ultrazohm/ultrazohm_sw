@@ -76,5 +76,5 @@ float uz_incrementalEncoder_get_theta_el(uz_incrementalEncoder_t* self);
  * @return uint32_t 
  */
 uint32_t uz_incrementalEncoder_get_position(uz_incrementalEncoder_t* self);
-
+void uz_incrementalEncoder_reset_ip_core(uz_incrementalEncoder_t* self);
 #endif // UZ_INCREMENTALENCODER_H

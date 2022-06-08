@@ -64,8 +64,6 @@ uz_IIR_Filter_t *LPF1_instance_position;
 uz_IIR_Filter_t *LPF1_instance_angle;
 uz_IIR_Filter_t *LPF1_instance_2;
 uz_PI_Controller *PI_instance;
-uz_PI_Controller *PI_chart_instance;
-uz_PI_Controller *PI_angle_instance;
 uz_nn_t *uz_nn_instance;
 uz_matrix_t *input_instance;
 enum init_chain
@@ -148,32 +146,6 @@ int main(void)
 
     };
 
-    struct uz_PI_Controller_config config_chart = {
-
-        .Kp = 30.0f,
-
-        .Ki = 100.0f,
-
-        .samplingTime_sec = 0.00005f,
-
-        .upper_limit = 7.0f,
-
-        .lower_limit = -7.0f
-
-    };
-    struct uz_PI_Controller_config config_angle = {
-
-        .Kp = 50.0f,
-
-        .Ki = 150.0f,
-
-        .samplingTime_sec = 0.00005f,
-
-        .upper_limit = 7.0f,
-
-        .lower_limit = -7.0f
-
-    };
     struct uz_FOC_config config_FOC = {
 
         .decoupling_select = linear_decoupling,
@@ -280,8 +252,6 @@ int main(void)
             LPF1_instance_position = uz_signals_IIR_Filter_init(config1);
             LPF1_instance_2 = uz_signals_IIR_Filter_init(config2);
             PI_instance = uz_PI_Controller_init(config_position);
-            PI_chart_instance = uz_PI_Controller_init(config_chart);
-            PI_angle_instance = uz_PI_Controller_init(config_angle);
             uz_nn_instance = uz_nn_init(config_nn, NUMBER_OF_HIDDEN_LAYER);
             input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, 5);
             initialization_chain = print_msg;

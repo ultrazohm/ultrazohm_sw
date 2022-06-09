@@ -6,7 +6,8 @@
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2020.1.1"
+      "tool_version": "2020.1.1",
+      "validated": "true"
     },
     "design_tree": {
       "uz_analog_adapter": {
@@ -180,7 +181,13 @@
       "D1_OUT": {
         "direction": "O",
         "left": "23",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "24",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "D1_OUT_26": {
         "direction": "O",
@@ -205,7 +212,13 @@
       "D2_OUT": {
         "direction": "O",
         "left": "11",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "12",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "D2_OUT_26": {
         "direction": "O",
@@ -255,7 +268,13 @@
       "D4_OUT": {
         "direction": "O",
         "left": "7",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          }
+        }
       },
       "D4_OUT_26": {
         "direction": "O",
@@ -1770,19 +1789,19 @@
                   },
                   "PWM_and_SS_control_V_0": {
                     "vlnv": "user.org:ip:PWM_and_SS_control_V4_ip:4.1",
-                    "xci_name": "zusys_PWM_and_SS_control_V_4_0"
+                    "xci_name": "zusys_PWM_and_SS_control_V_4_4"
                   },
                   "PWM_and_SS_control_V_3": {
                     "vlnv": "user.org:ip:PWM_and_SS_control_V4_ip:4.1",
-                    "xci_name": "zusys_PWM_and_SS_control_V_4_1"
+                    "xci_name": "zusys_PWM_and_SS_control_V_0_1"
                   },
                   "PWM_and_SS_control_V_2": {
                     "vlnv": "user.org:ip:PWM_and_SS_control_V4_ip:4.1",
-                    "xci_name": "zusys_PWM_and_SS_control_V_4_2"
+                    "xci_name": "zusys_PWM_and_SS_control_V_0_2"
                   },
                   "PWM_and_SS_control_V_1": {
                     "vlnv": "user.org:ip:PWM_and_SS_control_V4_ip:4.1",
-                    "xci_name": "zusys_PWM_and_SS_control_V_4_3"
+                    "xci_name": "zusys_PWM_and_SS_control_V_2_0"
                   }
                 },
                 "interface_nets": {
@@ -1790,12 +1809,6 @@
                     "interface_ports": [
                       "AXI4_Lite_PWM_1",
                       "PWM_and_SS_control_V_1/AXI4_Lite"
-                    ]
-                  },
-                  "AXI4_Lite_PWM_0_1": {
-                    "interface_ports": [
-                      "AXI4_Lite_PWM_0",
-                      "PWM_and_SS_control_V_0/AXI4_Lite"
                     ]
                   },
                   "AXI4_interlock_3_1": {
@@ -1826,6 +1839,12 @@
                     "interface_ports": [
                       "AXI4_Lite_PWM_2",
                       "PWM_and_SS_control_V_2/AXI4_Lite"
+                    ]
+                  },
+                  "AXI4_Lite_PWM_0_1": {
+                    "interface_ports": [
+                      "AXI4_Lite_PWM_0",
+                      "PWM_and_SS_control_V_0/AXI4_Lite"
                     ]
                   },
                   "AXI4_Lite_PWM_3_1": {
@@ -2120,6 +2139,15 @@
                       "xlconcat_0/In23"
                     ]
                   },
+                  "PWM_and_SS_control_V_4_triangle_out1": {
+                    "ports": [
+                      "PWM_and_SS_control_V_0/triangle_out",
+                      "PWM_and_SS_control_V_0/triangle_in",
+                      "PWM_and_SS_control_V_3/triangle_in",
+                      "PWM_and_SS_control_V_2/triangle_in",
+                      "PWM_and_SS_control_V_1/triangle_in"
+                    ]
+                  },
                   "PWM_and_SS_control_V_4_SS0_OUT3": {
                     "ports": [
                       "PWM_and_SS_control_V_0/SS0_OUT",
@@ -2156,118 +2184,109 @@
                       "uz_interlockDeadtime_0/S5"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_triangle_out": {
-                    "ports": [
-                      "PWM_and_SS_control_V_0/triangle_out",
-                      "PWM_and_SS_control_V_0/triangle_in",
-                      "PWM_and_SS_control_V_3/triangle_in",
-                      "PWM_and_SS_control_V_2/triangle_in",
-                      "PWM_and_SS_control_V_1/triangle_in"
-                    ]
-                  },
-                  "PWM_and_SS_control_V_4_SS0_OUT2": {
+                  "PWM_and_SS_control_V_0_SS0_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_3/SS0_OUT",
                       "uz_interlockDeadtime_3/S0"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS1_OUT2": {
+                  "PWM_and_SS_control_V_0_SS1_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_3/SS1_OUT",
                       "uz_interlockDeadtime_3/S1"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS2_OUT2": {
+                  "PWM_and_SS_control_V_0_SS2_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_3/SS2_OUT",
                       "uz_interlockDeadtime_3/S2"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS3_OUT2": {
+                  "PWM_and_SS_control_V_0_SS3_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_3/SS3_OUT",
                       "uz_interlockDeadtime_3/S3"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS4_OUT2": {
+                  "PWM_and_SS_control_V_0_SS4_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_3/SS4_OUT",
                       "uz_interlockDeadtime_3/S4"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS5_OUT2": {
+                  "PWM_and_SS_control_V_0_SS5_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_3/SS5_OUT",
                       "uz_interlockDeadtime_3/S5"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS0_OUT1": {
+                  "PWM_and_SS_control_V_0_SS0_OUT1": {
                     "ports": [
                       "PWM_and_SS_control_V_2/SS0_OUT",
                       "uz_interlockDeadtime_2/S0"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS1_OUT1": {
+                  "PWM_and_SS_control_V_0_SS1_OUT1": {
                     "ports": [
                       "PWM_and_SS_control_V_2/SS1_OUT",
                       "uz_interlockDeadtime_2/S1"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS2_OUT1": {
+                  "PWM_and_SS_control_V_0_SS2_OUT1": {
                     "ports": [
                       "PWM_and_SS_control_V_2/SS2_OUT",
                       "uz_interlockDeadtime_2/S2"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS3_OUT1": {
+                  "PWM_and_SS_control_V_0_SS3_OUT1": {
                     "ports": [
                       "PWM_and_SS_control_V_2/SS3_OUT",
                       "uz_interlockDeadtime_2/S3"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS4_OUT1": {
+                  "PWM_and_SS_control_V_0_SS4_OUT1": {
                     "ports": [
                       "PWM_and_SS_control_V_2/SS4_OUT",
                       "uz_interlockDeadtime_2/S4"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS5_OUT1": {
+                  "PWM_and_SS_control_V_0_SS5_OUT1": {
                     "ports": [
                       "PWM_and_SS_control_V_2/SS5_OUT",
                       "uz_interlockDeadtime_2/S5"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS0_OUT": {
+                  "PWM_and_SS_control_V_22_SS0_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_1/SS0_OUT",
                       "uz_interlockDeadtime_1/S0"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS1_OUT": {
+                  "PWM_and_SS_control_V_22_SS1_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_1/SS1_OUT",
                       "uz_interlockDeadtime_1/S1"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS2_OUT": {
+                  "PWM_and_SS_control_V_22_SS2_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_1/SS2_OUT",
                       "uz_interlockDeadtime_1/S2"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS3_OUT": {
+                  "PWM_and_SS_control_V_22_SS3_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_1/SS3_OUT",
                       "uz_interlockDeadtime_1/S3"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS4_OUT": {
+                  "PWM_and_SS_control_V_22_SS4_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_1/SS4_OUT",
                       "uz_interlockDeadtime_1/S4"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS5_OUT": {
+                  "PWM_and_SS_control_V_22_SS5_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_1/SS5_OUT",
                       "uz_interlockDeadtime_1/S5"
@@ -2518,7 +2537,17 @@
                     "ports": {
                       "clock": {
                         "type": "clk",
-                        "direction": "I"
+                        "direction": "I",
+                        "parameters": {
+                          "CLK_DOMAIN": {
+                            "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                            "value_src": "default_prop"
+                          },
+                          "FREQ_HZ": {
+                            "value": "99999985",
+                            "value_src": "user_prop"
+                          }
+                        }
                       },
                       "enable": {
                         "direction": "I"
@@ -2526,7 +2555,13 @@
                       "switching_signals": {
                         "direction": "I",
                         "left": "5",
-                        "right": "0"
+                        "right": "0",
+                        "parameters": {
+                          "PortWidth": {
+                            "value": "6",
+                            "value_src": "ip_prop"
+                          }
+                        }
                       },
                       "deadtime": {
                         "direction": "I",
@@ -3780,7 +3815,17 @@
                 "ports": {
                   "clk": {
                     "type": "clk",
-                    "direction": "I"
+                    "direction": "I",
+                    "parameters": {
+                      "CLK_DOMAIN": {
+                        "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                        "value_src": "default_prop"
+                      },
+                      "FREQ_HZ": {
+                        "value": "99999985",
+                        "value_src": "user_prop"
+                      }
+                    }
                   },
                   "delay_cycles": {
                     "direction": "I",
@@ -8776,8 +8821,8 @@
                 "offset": "0x0080060000",
                 "range": "64K"
               },
-              "SEG_PWM_and_SS_control_V_0_reg0": {
-                "address_block": "/uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_0/AXI4_Lite/reg0",
+              "SEG_PWM_and_SS_control_V_1_reg0": {
+                "address_block": "/uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_1/AXI4_Lite/reg0",
                 "offset": "0x0080030000",
                 "range": "64K"
               },
@@ -8792,7 +8837,7 @@
                 "range": "64K"
               },
               "SEG_PWM_and_SS_control_V_4_reg0": {
-                "address_block": "/uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_1/AXI4_Lite/reg0",
+                "address_block": "/uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_0/AXI4_Lite/reg0",
                 "offset": "0x00800F0000",
                 "range": "64K"
               },

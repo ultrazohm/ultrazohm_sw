@@ -15,25 +15,25 @@
 #define  switch_pspl_gate_Data_uz_inverter_3ph   0x104  //data register for Inport switch_pspl_gate
 #define  u_dc_Data_uz_inverter_3ph               0x108  //data register for Inport u_dc
 
-#define  u_abc_ps_Data_uz_inverter_3ph           0x190  //data register for Outport u_abc_ps, vector with 3 elements, address ends at 0x118
-#define  u_ab_ps_Data_uz_inverter_3ph            0x190
-#define  u_bc_ps_Data_uz_inverter_3ph            0x194
-#define  u_ca_ps_Data_uz_inverter_3ph            0x198
-#define  u_abc_ps_Strobe_uz_inverter_3ph         0x1A0  //strobe register for port u_abc_ps
+#define  u_abc_ps_Data_uz_inverter_3ph           0x170  //data register for Outport u_abc_ps, vector with 3 elements, address ends at 0x118
+#define  u_ab_ps_Data_uz_inverter_3ph            0x170
+#define  u_bc_ps_Data_uz_inverter_3ph            0x174
+#define  u_ca_ps_Data_uz_inverter_3ph            0x178
+#define  u_abc_ps_Strobe_uz_inverter_3ph         0x180  //strobe register for port u_abc_ps
 
-#define  i_abc_ps_Data_uz_inverter_3ph           0x140  //data register for Inport i_abc_ps, vector with 3 elements, address ends at 0x148
-#define  i_a_ps_Data_uz_inverter_3ph             0x140
-#define  i_b_ps_Data_uz_inverter_3ph             0x144
-#define  i_c_ps_Data_uz_inverter_3ph             0x148
-#define  i_abc_ps_Strobe_uz_inverter_3ph         0x150  //strobe register for port i_abc_ps
+#define  i_abc_ps_Data_uz_inverter_3ph           0x110  //data register for Inport i_abc_ps, vector with 3 elements, address ends at 0x148
+#define  i_a_ps_Data_uz_inverter_3ph             0x110
+#define  i_b_ps_Data_uz_inverter_3ph             0x114
+#define  i_c_ps_Data_uz_inverter_3ph             0x118
+#define  i_abc_ps_Strobe_uz_inverter_3ph         0x120  //strobe register for port i_abc_ps
 
-#define  gate_ps_Data_uz_inverter_3ph            0x160  //data register for Inport gate_ps, vector with 6 elements, address ends at 0x174
-#define  gate1_ps_Data_uz_inverter_3ph           0x160
-#define  gate2_ps_Data_uz_inverter_3ph           0x164
-#define  gate3_ps_Data_uz_inverter_3ph           0x168
-#define  gate4_ps_Data_uz_inverter_3ph           0x16C
-#define  gate5_ps_Data_uz_inverter_3ph           0x170
-#define  gate6_ps_Data_uz_inverter_3ph           0x174
-#define  gate_ps_Strobe_uz_inverter_3ph          0x180  //strobe register for port gate_ps
+#define  gate_ps_Data_uz_inverter_3ph            0x140  //data register for Inport gate_ps, vector with 6 elements, address ends at 0x174
+#define  gate1_ps_Data_uz_inverter_3ph           0x140
+#define  gate2_ps_Data_uz_inverter_3ph           0x144
+#define  gate3_ps_Data_uz_inverter_3ph           0x148
+#define  gate4_ps_Data_uz_inverter_3ph           0x14C
+#define  gate5_ps_Data_uz_inverter_3ph           0x150
+#define  gate6_ps_Data_uz_inverter_3ph           0x154
+#define  gate_ps_Strobe_uz_inverter_3ph          0x160  //strobe register for port gate_ps
 
 #endif /* UZ_INVERTER_3PH_H_ */

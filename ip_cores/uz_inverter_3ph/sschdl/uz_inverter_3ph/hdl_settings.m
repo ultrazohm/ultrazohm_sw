@@ -6,6 +6,15 @@ hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'FloatingPointTargetConfiguratio
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'HDLSubsystem', 'gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/HDL Subsystem');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'MaskParameterAsGeneric', 'on');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'Oversampling', 25);
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'SynthesisTool', 'Xilinx Vivado');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'SynthesisToolChipFamily', 'Zynq UltraScale+');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'SynthesisToolDeviceName', 'xazu11eg-ffvf1517-1-i');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'TargetDirectory', 'hdl_prj/hdlsrc');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'TargetPlatform', 'Generic Xilinx Platform');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'Workflow', 'IP Core Generation');
+
+% Set SubSystem HDL parameters
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/switch_pspl_abc', 'IOInterface', 'AXI4');

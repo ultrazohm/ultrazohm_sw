@@ -104,8 +104,8 @@ struct uz_inverter_3ph_i_abc_ps_t currents_inv1 = {
 
 extern uz_pmsm9ph_transformation_t *transformation_9ph;
 
-uz_9ph_abc_t transformation_ip_outputs = {0};
-uz_9ph_dq_t actual_currents = {0};
+uz_9ph_abc_t actual_currents_abc = {0};
+uz_9ph_dq_t actual_currents_dq = {0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -126,7 +126,7 @@ enum controller_state_t
     closed_loop_dgl_only
 };
 enum controller_state_t controller_state = closed_loop_inverter;
-
+uz_9ph_dq_t output_voltage_dq = {0};
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -140,16 +140,18 @@ void ISR_Control(void *data)
         switch (controller_state)
         {
         case closed_loop_inverter:
+            uz_pmsm_model9ph_dq_set_use_axi_input(pmsm,false);
+
             pmsm_outputs = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);
             pmsm_inputs.omega_mech_1_s = setp_omega;
             uz_pmsm_model9ph_dq_set_inputs_general(pmsm, pmsm_inputs);
 
-            transformation_ip_outputs = uz_pmsm9ph_transformation_get_currents(transformation_9ph);
+            actual_currents_abc = uz_pmsm9ph_transformation_get_currents(transformation_9ph);
 
-            actual_currents = uz_transformation_9ph_abc_to_dq(transformation_ip_outputs, pmsm_outputs.theta_el);
-            uz_9ph_dq_t output_voltage_dq = {0};
-            output_voltage_dq.d = uz_PI_Controller_sample(PI_d_current, current_set_point.d, actual_currents.d, false); // outputs_dq.d
-            output_voltage_dq.q = uz_PI_Controller_sample(PI_q_current, current_set_point.q, actual_currents.q, false); // outputs_dq.q
+            actual_currents_dq = uz_transformation_9ph_abc_to_dq(actual_currents_abc, pmsm_outputs.theta_el);
+
+            output_voltage_dq.d = uz_PI_Controller_sample(PI_d_current, current_set_point.d, actual_currents_dq.d, false); // outputs_dq.d
+            output_voltage_dq.q = uz_PI_Controller_sample(PI_q_current, current_set_point.q, actual_currents_dq.q, false); // outputs_dq.q
             uz_9ph_abc_t output_voltage_abc = uz_transformation_9ph_dq_to_abc(output_voltage_dq, pmsm_outputs.theta_el);
 
             setpoint_abc_sys1.a = output_voltage_abc.a1;
@@ -166,8 +168,18 @@ void ISR_Control(void *data)
             duty_cycle_sys3 = uz_FOC_generate_DutyCycles(setpoint_abc_sys3, V_dc_volts);
             break;
         case closed_loop_dgl_only:
-            // uz_pmsm_model9ph_dq_set_voltage(pmsm,setpoint_dq9ph);
+        	uz_pmsm_model9ph_dq_set_use_axi_input(pmsm,true);
+            pmsm_outputs = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);
+            pmsm_inputs.omega_mech_1_s = setp_omega;
+            uz_pmsm_model9ph_dq_set_inputs_general(pmsm, pmsm_inputs);
 
+
+            actual_currents_abc = uz_pmsm9ph_transformation_get_currents(transformation_9ph);
+            
+            actual_currents_dq=uz_pmsm_model9ph_dq_get_output_currents(pmsm);
+            output_voltage_dq.d = uz_PI_Controller_sample(PI_d_current, current_set_point.d, actual_currents_dq.d, false); // outputs_dq.d
+            output_voltage_dq.q = uz_PI_Controller_sample(PI_q_current, current_set_point.q, actual_currents_dq.q, false); // outputs_dq.q
+            uz_pmsm_model9ph_dq_set_voltage(pmsm,output_voltage_dq);
             break;
         default:
             break;

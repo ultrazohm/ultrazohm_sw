@@ -561,242 +561,6 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="user.org:ip:uz_pmsm_model_9ph3:2.4">
-		</VLNV>
-		<DisplayName value="uz_pmsm_model_9ph3">
-		</DisplayName>
-		<Description value="HDL Coder generated IP">
-		</Description>
-		<ProductGuide value="doc/InBitPacking.jpg">
-		</ProductGuide>
-		<CoreRevision value="2112535179">
-		</CoreRevision>
-		<ComponentPath value="uz_pmsm_model_9ph/hdl_prj7/ipcore/uz_pmsm_model_9ph3_v2_4/component.xml">
-		</ComponentPath>
-		<Families>
-			<Family name="aartix7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="akintex7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="artix7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="artix7l">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="aspartan7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="azynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="kintex7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="kintex7l">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="kintexu">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="kintexuplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="qartix7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="qkintex7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="qkintex7l">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="qvirtex7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="qzynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="spartan7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtex7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexu">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplus58g">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplushbm">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="zynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="zynquplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-		</Families>
-		<Taxonomies>
-			<Taxonomy value="/HDL Coder Generated IP">
-			</Taxonomy>
-		</Taxonomies>
-		<LockPrevVersions value="false">
-		</LockPrevVersions>
-		<Interfaces>
-			<Interface value="AXI4">
-			</Interface>
-		</Interfaces>
-	</IP>
-	<IP>
-		<VLNV value="user.org:ip:uz_pmsm9ph_transformations:1.0">
-		</VLNV>
-		<DisplayName value="uz_pmsm9ph_transformations">
-		</DisplayName>
-		<Description value="HDL Coder generated IP">
-		</Description>
-		<ProductGuide value="doc/InBitPacking.jpg">
-		</ProductGuide>
-		<CoreRevision value="2112536867">
-		</CoreRevision>
-		<ComponentPath value="uz_pmsm_model_9ph/hdl_prj2318655/ipcore/uz_pmsm9ph_transformations_v1_0/component.xml">
-		</ComponentPath>
-		<Families>
-			<Family name="aartix7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="akintex7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="artix7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="artix7l">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="aspartan7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="azynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="kintex7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="kintex7l">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="kintexu">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="kintexuplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="qartix7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="qkintex7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="qkintex7l">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="qvirtex7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="qzynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="spartan7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtex7">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexu">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplus58g">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplushbm">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="zynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="zynquplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-		</Families>
-		<Taxonomies>
-			<Taxonomy value="/HDL Coder Generated IP">
-			</Taxonomy>
-		</Taxonomies>
-		<LockPrevVersions value="false">
-		</LockPrevVersions>
-		<Interfaces>
-			<Interface value="AXI4">
-			</Interface>
-		</Interfaces>
-	</IP>
-	<IP>
 		<VLNV value="user.org:ip:uz_pmsm_model_9ph_only_dq2:1.0">
 		</VLNV>
 		<DisplayName value="uz_pmsm_model_9ph_only_dq2">
@@ -805,9 +569,9 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112536950">
+		<CoreRevision value="2112541906">
 		</CoreRevision>
-		<ComponentPath value="uz_pmsm_model_9ph/hdl_prj123/ipcore/uz_pmsm_model_9ph_only_dq2_v1_0/component.xml">
+		<ComponentPath value="uz_pmsm_model_9ph/9phase_dq/ipcore/uz_pmsm_model_9ph_only_dq2_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="aartix7">
@@ -923,9 +687,9 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112539311">
+		<CoreRevision value="2112541903">
 		</CoreRevision>
-		<ComponentPath value="uz_pmsm_model_9ph/abc_to_dq_fixed_100mhz/ipcore/uz_pmsm9ph_trans_100mhz_v1_0/component.xml">
+		<ComponentPath value="uz_pmsm_model_9ph/9phase_trans/ipcore/uz_pmsm9ph_trans_100mhz_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="aartix7">
@@ -3005,6 +2769,124 @@
 			<Taxonomy value="/HDL Coder Generated IP">
 			</Taxonomy>
 		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="user.org:ip:uz_invert_ip:1.0">
+		</VLNV>
+		<DisplayName value="uz_invert_ip">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112541887">
+		</CoreRevision>
+		<ComponentPath value="uz_inverter_3ph/hdl_prj/ipcore/uz_invert_ip_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="aartix7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="akintex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="artix7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="artix7l">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="aspartan7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="azynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintex7l">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qartix7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qkintex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qkintex7l">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qvirtex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qzynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="spartan7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus58g">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<LockPrevVersions value="false">
+		</LockPrevVersions>
 		<Interfaces>
 			<Interface value="AXI4">
 			</Interface>

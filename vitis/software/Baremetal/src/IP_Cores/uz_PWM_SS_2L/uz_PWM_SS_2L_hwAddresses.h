@@ -17,10 +17,10 @@
 #define  TriState_HB1_AXI_Data_PWM_and_SS_control_V4_ip             0x120U  //data register for Inport TriState_HB1_AXI
 #define  TriState_HB2_AXI_Data_PWM_and_SS_control_V4_ip             0x124U  //data register for Inport TriState_HB2_AXI
 #define  TriState_HB3_AXI_Data_PWM_and_SS_control_V4_ip             0x128U  //data register for Inport TriState_HB3_AXI
-#define  triangle_shift_HB1_Data_PWM_and_SS_control_V4_ip           0x12CU  //data register for Inport triangle_shift
+#define  triangle_shift_HB1_AXI_Data_PWM_and_SS_control_V4_ip       0x12CU  //data register for Inport triangle_shift
 #define  count_src_ext_AXI_Data_PWM_and_SS_control_V4_ip            0x130U  //data register for Inport count_src_ext_AXI
-#define  triangle_shift_HB2_Data_PWM_and_SS_control_V4_ip           0x134U  //data register for Inport triangle_shift_HB2
-#define  triangle_shift_HB3_Data_PWM_and_SS_control_V4_ip           0x138U  //data register for Inport triangle_shift_HB3
+#define  triangle_shift_HB2_AXI_Data_PWM_and_SS_control_V4_ip       0x134U  //data register for Inport triangle_shift_HB2
+#define  triangle_shift_HB3_AXI_Data_PWM_and_SS_control_V4_ip       0x138U  //data register for Inport triangle_shift_HB3
 #define  PWM_en_rd_AXI_Data_PWM_and_SS_control_V4_ip                0x13CU  //data register for Outport PWM_en_rd_AXI
 #define  PWM_f_carrier_kHz_rd_AXI_Data_PWM_and_SS_control_V4_ip     0x140U  //data register for Outport PWM_f_carrier_kHz_rd_AXI
 #define  PWM_T_carrier_us_rd_AXI_Data_PWM_and_SS_control_V4_ip      0x144U  //data register for Outport PWM_T_carrier_us_rd_AXI

@@ -42,7 +42,7 @@ uz_PWM_SS_2L_t* uz_PWM_SS_2L_init(struct uz_PWM_SS_2L_config_t config) {
     
     uz_PWM_SS_2L_hw_SetMinimumPulseWidth(self->config.base_address, self->config.min_pulse_width);
 
-    uz_PWM_SS_2L_hw_SetDutyCycle(self->config.base_address, self->config.init_dutyCyc_A, self->config.init_dutyCyc_B, self->config.init_dutyCyc_C);
+    uz_PWM_SS_2L_hw_SetDutyCycle(self->config.base_address, self->config.init_dutyCyc_HB1, self->config.init_dutyCyc_HB2, self->config.init_dutyCyc_HB3);
 
     uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 1U, self->config.Tristate_HB1);
     uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 2U, self->config.Tristate_HB2);
@@ -53,11 +53,11 @@ uz_PWM_SS_2L_t* uz_PWM_SS_2L_init(struct uz_PWM_SS_2L_config_t config) {
     return (self);
 }
 
-void uz_PWM_SS_2L_set_duty_cycle(struct uz_PWM_SS_2L_t *self, float dutyCyc_A, float dutyCyc_B, float dutyCyc_C) {
+void uz_PWM_SS_2L_set_duty_cycle(struct uz_PWM_SS_2L_t *self, float dutyCyc_HB1, float dutyCyc_HB2, float dutyCyc_HB3) {
     uz_assert_not_NULL(self);
     uz_assert_not_zero_uint32(self->config.base_address);
     uz_assert_not_zero(self->is_ready);
-    uz_PWM_SS_2L_hw_SetDutyCycle(self->config.base_address, dutyCyc_A, dutyCyc_B, dutyCyc_C);
+    uz_PWM_SS_2L_hw_SetDutyCycle(self->config.base_address, dutyCyc_HB1, dutyCyc_HB2, dutyCyc_HB3);
 }
 
 void uz_PWM_SS_2L_set_tristate(struct uz_PWM_SS_2L_t *self, bool Tristate_HB1, bool Tristate_HB2, bool Tristate_HB3) {

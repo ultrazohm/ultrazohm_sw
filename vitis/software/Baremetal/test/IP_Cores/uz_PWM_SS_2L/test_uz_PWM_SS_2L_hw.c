@@ -32,40 +32,40 @@ void test_uz_PWM_SS_2L_hw_SetExternalCounterSource_with_zero_base_address(void)
 
 void test_uz_PWM_SS_2L_hw_SetDutyCycle(void)
 {
-    float dutyCyc_A = 0.3f;
-    float dutyCyc_B = 0.5f;
-    float dutyCyc_C = 0.7f;
-    uint32_t dutyCyc_A_Q12 = 1228U;
-    uint32_t dutyCyc_B_Q12 = 2048U;
-    uint32_t dutyCyc_C_Q12 = 2867U;
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + m_u1_norm_AXI_Data_PWM_and_SS_control_V4_ip, dutyCyc_A_Q12);
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + m_u2_norm_AXI_Data_PWM_and_SS_control_V4_ip, dutyCyc_B_Q12);
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + m_u3_norm_AXI_Data_PWM_and_SS_control_V4_ip, dutyCyc_C_Q12);
-    uz_PWM_SS_2L_hw_SetDutyCycle(TEST_BASE_ADDRESS,dutyCyc_A,dutyCyc_B,dutyCyc_C);
+    float dutyCyc_HB1 = 0.3f;
+    float dutyCyc_HB2 = 0.5f;
+    float dutyCyc_HB3 = 0.7f;
+    uint32_t dutyCyc_HB1_Q12 = 1228U;
+    uint32_t dutyCyc_HB2_Q12 = 2048U;
+    uint32_t dutyCyc_HB3_Q12 = 2867U;
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + m_u1_norm_AXI_Data_PWM_and_SS_control_V4_ip, dutyCyc_HB1_Q12);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + m_u2_norm_AXI_Data_PWM_and_SS_control_V4_ip, dutyCyc_HB2_Q12);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + m_u3_norm_AXI_Data_PWM_and_SS_control_V4_ip, dutyCyc_HB3_Q12);
+    uz_PWM_SS_2L_hw_SetDutyCycle(TEST_BASE_ADDRESS,dutyCyc_HB1,dutyCyc_HB2,dutyCyc_HB3);
 }
 
 void test_uz_PWM_SS_2L_hw_SetDutyCycle_with_invalid_negative_dutyCyc(void)
 {
-    float dutyCyc_A = -0.01f;
-    float dutyCyc_B = -1.02f;
-    float dutyCyc_C = -1.03f;
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetDutyCycle(TEST_BASE_ADDRESS,dutyCyc_A,dutyCyc_B,dutyCyc_C));
+    float dutyCyc_HB1 = -0.01f;
+    float dutyCyc_HB2 = -1.02f;
+    float dutyCyc_HB3 = -1.03f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetDutyCycle(TEST_BASE_ADDRESS,dutyCyc_HB1,dutyCyc_HB2,dutyCyc_HB3));
 }
 
 void test_uz_PWM_SS_2L_hw_SetDutyCycle_with_invalid_positive_dutyCyc(void)
 {
-    float dutyCyc_A = 1.01f;
-    float dutyCyc_B = 1.02f;
-    float dutyCyc_C = 1.03f;
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetDutyCycle(TEST_BASE_ADDRESS,dutyCyc_A,dutyCyc_B,dutyCyc_C));
+    float dutyCyc_HB1 = 1.01f;
+    float dutyCyc_HB2 = 1.02f;
+    float dutyCyc_HB3 = 1.03f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetDutyCycle(TEST_BASE_ADDRESS,dutyCyc_HB1,dutyCyc_HB2,dutyCyc_HB3));
 }
 
 void test_uz_PWM_SS_2L_hw_SetDutyCycle_with_zero_base_address(void)
 {
-    float dutyCyc_A = 0.3f;
-    float dutyCyc_B = 0.5f;
-    float dutyCyc_C = 0.7f;
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetDutyCycle(0,dutyCyc_A,dutyCyc_B,dutyCyc_C));
+    float dutyCyc_HB1 = 0.3f;
+    float dutyCyc_HB2 = 0.5f;
+    float dutyCyc_HB3 = 0.7f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetDutyCycle(0,dutyCyc_HB1,dutyCyc_HB2,dutyCyc_HB3));
 }
 
 void test_uz_PWM_SS_2L_hw_SetStatus_on(void)
@@ -237,9 +237,9 @@ void test_uz_PWM_SS_2L_hw_SetTriangleShift(void)
     uint32_t triangle_shift_HB1_Q17 = uz_convert_float_to_unsigned_fixed(triangle_shift_HB1, 17);
     uint32_t triangle_shift_HB2_Q17 = uz_convert_float_to_unsigned_fixed(triangle_shift_HB2, 17);
     uint32_t triangle_shift_HB3_Q17 = uz_convert_float_to_unsigned_fixed(triangle_shift_HB3, 17);
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + triangle_shift_HB1_Data_PWM_and_SS_control_V4_ip, triangle_shift_HB1_Q17);
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + triangle_shift_HB2_Data_PWM_and_SS_control_V4_ip, triangle_shift_HB2_Q17);
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + triangle_shift_HB3_Data_PWM_and_SS_control_V4_ip, triangle_shift_HB3_Q17);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + triangle_shift_HB1_AXI_Data_PWM_and_SS_control_V4_ip, triangle_shift_HB1_Q17);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + triangle_shift_HB2_AXI_Data_PWM_and_SS_control_V4_ip, triangle_shift_HB2_Q17);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + triangle_shift_HB3_AXI_Data_PWM_and_SS_control_V4_ip, triangle_shift_HB3_Q17);
     uz_PWM_SS_2L_hw_SetTriangleShift(TEST_BASE_ADDRESS, triangle_shift_HB1, triangle_shift_HB2, triangle_shift_HB3);
 }
 

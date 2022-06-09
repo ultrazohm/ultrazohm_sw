@@ -18,11 +18,11 @@ void uz_PWM_SS_2L_hw_SetExternalCounterSource(uint32_t base_address, bool use_ex
  *        when PWM_mode is set to 0 (references set via AXI).
  * 
  * @param base_address  //base address of the instance
- * @param dutyCyc_A     //duty cycle of channel A
- * @param dutyCyc_B     //duty cycle of channel B
- * @param dutyCyc_C     //duty cycle of channel C
+ * @param dutyCyc_HB1   //duty cycle of half-bridge 1
+ * @param dutyCyc_HB2   //duty cycle of half-bridge 2
+ * @param dutyCyc_HB3   //duty cycle of half-bridge 3
  */
-void uz_PWM_SS_2L_hw_SetDutyCycle(uint32_t base_address, float dutyCyc_A, float dutyCyc_B, float dutyCyc_C);
+void uz_PWM_SS_2L_hw_SetDutyCycle(uint32_t base_address, float dutyCyc_HB1, float dutyCyc_HB2, float dutyCyc_HB3);
 
 /**
  * @brief turns the whole PWM_SS_2L module on or off

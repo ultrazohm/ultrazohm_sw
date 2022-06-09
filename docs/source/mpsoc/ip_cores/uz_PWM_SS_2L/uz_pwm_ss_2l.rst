@@ -8,7 +8,7 @@ The IP core implements a modulation and switching state control unit that genera
 Interlock and dead-time functionalities are not part of this IP core and are handled in a subsequent IP core.
 If less than three phase legs are used, unused phase legs can be set to a tristate mode, where neither the top nor the bottom switch of the phase leg are active.
 For higher phase numbers, multiple instances of this module can be used in the FPGA, each containing its own up-down counter.
-For synchronizing multiple instances, the counter can be fed to subsequent instances. This feature is the only difference between versions V3 and V4.
+For synchronizing multiple instances, the counter can be fed to subsequent instances. Furthermore an interleaved operation is possible. Every half-bridge can be shifted individually. These features are the only difference between versions V3 and V4.
 In the standard block design of the ultrazohm_sw framework, 4 synchronized instances of this ip core are present with respective software driver instances for controlling up 
 to 12 half-bridge phase legs.
  
@@ -32,6 +32,20 @@ The IP core uses asymmetrical regular sampling for generation of the pulses:
    :align: center
 
    Asymmetric regular sampling according to Grahame Holmes: Pulse Width Modulation For Power Converters
+
+The triangle signal respectively DutyCycle of each half-bridge can be individually shifted depending on the input. The following variables in the ``config`` -struct are used for this.
+
+* triangle_shift_HB1
+* triangle_shift_HB2
+* triangle_shift_HB3
+
+The input is fixed to ``0`` till ``1``. Whilst ``0`` represents no shift at all, ``1`` represents a shift by an entire period. 
+E.g. with a PWM-frequency of :math:`f=10kHz` and :math:`T=100µs` the input ``triangle_shift_HB2 = 0.1f`` would shift the second half-bridge by :math:`10µs`. 
+
+.. figure:: Shift_example.png
+   :align: center
+
+   Shift of HB2 by ``triangle_shift_HB2 = 0.1f`` @10kHz.
 
 IP-Core Hardware
 ================
@@ -97,9 +111,12 @@ Vitis
             .PWM_mode = normalized_input_via_AXI,
             .PWM_en = true,
             .use_external_counter = true,
-            .init_dutyCyc_A = 0.0f,
-            .init_dutyCyc_B = 0.0f,
-            .init_dutyCyc_C = 0.0f
+            .init_dutyCyc_HB1 = 0.0f,
+            .init_dutyCyc_HB2 = 0.0f,
+            .init_dutyCyc_HB3 = 0.0f,
+            .triangle_shift_HB1 = 0.0f,
+            .triangle_shift_HB2 = 0.0f,
+            .triangle_shift_HB3 = 0.0f
     };
 
 An instance has to be initialized first and then configured:
@@ -127,3 +144,5 @@ Driver reference
 .. doxygenfunction:: uz_PWM_SS_2L_set_tristate
 
 .. doxygenfunction:: uz_PWM_SS_2L_set_PWM_mode
+
+.. doxygenfunction:: uz_PWM_SS_2L_set_triangle_shift

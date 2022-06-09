@@ -1,0 +1,18 @@
+open_system('Copy_of_uz_pmsm_model_9ph_21b_all_double');
+open_system('gm_Copy_of_uz_pmsm_model_9ph_21b_all_double');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'cyan';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_Copy_of_uz_pmsm_model_9ph_21b_all_double/uz_pmsm_model_9ph/abc_to_dq/Sine HDL Optimized/Look-Up Table', 'user1');
+annotate_port('gm_Copy_of_uz_pmsm_model_9ph_21b_all_double/uz_pmsm_model_9ph/abc_to_dq/Sine HDL Optimized/Look-Up Table', 0, 1, 'Lookup Table mapped to RAM');
+hilite_system('Copy_of_uz_pmsm_model_9ph_21b_all_double/uz_pmsm_model_9ph/abc_to_dq/Sine HDL Optimized/sincos hdl/cos_hdl/Look-Up Table', 'user1');
+annotate_port('Copy_of_uz_pmsm_model_9ph_21b_all_double/uz_pmsm_model_9ph/abc_to_dq/Sine HDL Optimized/sincos hdl/cos_hdl/Look-Up Table', 0, 1, 'Lookup Table mapped to RAM');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'cyan';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_Copy_of_uz_pmsm_model_9ph_21b_all_double/uz_pmsm_model_9ph/abc_to_dq/Sine HDL Optimized/Look-Up Table1', 'user1');
+annotate_port('gm_Copy_of_uz_pmsm_model_9ph_21b_all_double/uz_pmsm_model_9ph/abc_to_dq/Sine HDL Optimized/Look-Up Table1', 0, 1, 'Lookup Table mapped to RAM');
+hilite_system('Copy_of_uz_pmsm_model_9ph_21b_all_double/uz_pmsm_model_9ph/abc_to_dq/Sine HDL Optimized/sincos hdl/sin_hdl/Look-Up Table', 'user1');
+annotate_port('Copy_of_uz_pmsm_model_9ph_21b_all_double/uz_pmsm_model_9ph/abc_to_dq/Sine HDL Optimized/sincos hdl/sin_hdl/Look-Up Table', 0, 1, 'Lookup Table mapped to RAM');

@@ -130,7 +130,7 @@ uz_PWM_SS_2L_t *pwm_instance_3=NULL;
 #include "IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
 
 struct uz_inverter_3ph_config_t inverter_1_config = {
-		.base_address= XPAR_UZ_USER_UZ_INVERTER_3PH_0_BASEADDR,
+		.base_address= XPAR_UZ_USER_UZ_INVERT_IP_0_BASEADDR,
 		.ip_core_frequency_Hz= 100000000,
 		.switch_pspl_abc=false,
 		.switch_pspl_gate=false,
@@ -138,7 +138,7 @@ struct uz_inverter_3ph_config_t inverter_1_config = {
 };
 
 struct uz_inverter_3ph_config_t inverter_2_config = {
-		.base_address= XPAR_UZ_USER_UZ_INVERTER_3PH_1_BASEADDR,
+		.base_address= XPAR_UZ_USER_UZ_INVERT_IP_1_BASEADDR,
 		.ip_core_frequency_Hz= 100000000,
 		.switch_pspl_abc=false,
 		.switch_pspl_gate=false,
@@ -146,7 +146,7 @@ struct uz_inverter_3ph_config_t inverter_2_config = {
 };
 
 struct uz_inverter_3ph_config_t inverter_3_config = {
-		.base_address= XPAR_UZ_USER_UZ_INVERTER_3PH_2_BASEADDR,
+		.base_address= XPAR_UZ_USER_UZ_INVERT_IP_2_BASEADDR,
 		.ip_core_frequency_Hz= 100000000,
 		.switch_pspl_abc=false,
 		.switch_pspl_gate=false,

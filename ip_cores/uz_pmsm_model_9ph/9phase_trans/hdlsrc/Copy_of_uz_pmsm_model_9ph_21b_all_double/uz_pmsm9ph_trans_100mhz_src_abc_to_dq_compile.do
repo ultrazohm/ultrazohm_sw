@@ -1,0 +1,7 @@
+vlib work
+vmap -c
+vcom  uz_pmsm9ph_trans_100mhz_src_abc_to_dq_pkg.vhd
+vcom  uz_pmsm9ph_trans_100mhz_src_Sine_HDL_Optimized.vhd
+vcom  uz_pmsm9ph_trans_100mhz_src_SimpleDualPortRAM_generic.vhd
+vcom  uz_pmsm9ph_trans_100mhz_src_abc_to_dq_tc.vhd
+vcom  uz_pmsm9ph_trans_100mhz_src_abc_to_dq.vhd

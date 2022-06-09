@@ -1,0 +1,1176 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+Code Generation Report for Copy_of_uz_pmsm_model_9ph_21b_all_double
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdSummaryPage'); else local_onload();}} catch(err) {};">
+<font SIZE="+2" COLOR="#000066">
+HDL Code Generation Report Summary for Copy_of_uz_pmsm_model_9ph_21b_all_double
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Model
+</td>
+<td align="right" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double')" name="code2model" class="code2model">
+Copy_of_uz_pmsm_model_9ph_21b_all_double
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Model version
+</td>
+<td align="right" valign="top" style="border-style: none">
+4.14
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+HDL Coder version
+</td>
+<td align="right" valign="top" style="border-style: none">
+3.19
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+HDL code generated on
+</td>
+<td align="right" valign="top" style="border-style: none">
+2022-06-09 09:46:01
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+HDL code generated for
+</td>
+<td align="right" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3144')" name="code2model" class="code2model">
+dq_model_9ph
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Target Language
+</td>
+<td align="right" valign="top" style="border-style: none">
+VHDL
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Target Directory
+</td>
+<td align="right" valign="top" style="border-style: none">
+9phase_dq/hdlsrc
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Non-default model properties">
+<font size="+1" color="#000066">
+<b class="midprod">
+Non-default model properties
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+AdaptivePipelining
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+CriticalPathEstimation
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FloatingPointTargetConfiguration
+</td>
+<td align="right" valign="top" style="border-style: none">
+hdlcoder.FloatingPointTargetConfig
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+GeneratedModelName
+</td>
+<td align="right" valign="top" style="border-style: none">
+gm_Copy_of_uz_pmsm_model_9ph_21b_all_double
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+HDLSubsystem
+</td>
+<td align="right" valign="top" style="border-style: none">
+Copy_of_uz_pmsm_model_9ph_21b_all_double/uz_pmsm_model_9ph/dq_model_9ph
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+MapPipelineDelaysToRAM
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+ModulePrefix
+</td>
+<td align="right" valign="top" style="border-style: none">
+uz_pmsm_model_9ph_only_dq2_src_
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+OptimizationReport
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Oversampling
+</td>
+<td align="right" valign="top" style="border-style: none">
+100
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+ResetType
+</td>
+<td align="right" valign="top" style="border-style: none">
+Synchronous
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+ResourceReport
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+ScalarizePorts
+</td>
+<td align="right" valign="top" style="border-style: none">
+DUTLevel
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+SynthesisTool
+</td>
+<td align="right" valign="top" style="border-style: none">
+Xilinx Vivado
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+SynthesisToolChipFamily
+</td>
+<td align="right" valign="top" style="border-style: none">
+Zynq UltraScale+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+SynthesisToolDeviceName
+</td>
+<td align="right" valign="top" style="border-style: none">
+xazu11eg-ffvf1517-1-i
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+TargetDirectory
+</td>
+<td align="right" valign="top" style="border-style: none">
+9phase_dq/hdlsrc
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+TargetFrequency
+</td>
+<td align="right" valign="top" style="border-style: none">
+100
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+TargetPlatform
+</td>
+<td align="right" valign="top" style="border-style: none">
+Generic Xilinx Platform
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Workflow
+</td>
+<td align="right" valign="top" style="border-style: none">
+IP Core Generation
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Non-default block properties">
+<font size="+1" color="#000066">
+<b class="midprod">
+Non-default block properties
+</b>
+
+</font>
+
+</a>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3144')" name="code2model" class="code2model">
+dq_model_9ph
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+AXI4SlaveIDWidth
+</td>
+<td align="right" valign="top" style="border-style: none">
+12
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IPCoreName
+</td>
+<td align="right" valign="top" style="border-style: none">
+uz_pmsm_model_9ph_only_dq2
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+ProcessorFPGASynchronization
+</td>
+<td align="right" valign="top" style="border-style: none">
+Free running
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3158')" name="code2model" class="code2model">
+load_torque
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"100"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3160')" name="code2model" class="code2model">
+<reset_integrators>
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"104"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3159')" name="code2model" class="code2model">
+simulate_mechanical
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"108"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3157')" name="code2model" class="code2model">
+omega_mech
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"10C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3145')" name="code2model" class="code2model">
+voltage_input_dq
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3146')" name="code2model" class="code2model">
+physical_parameters
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"110"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3240')" name="code2model" class="code2model">
+use_axi_input
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"154"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3241')" name="code2model" class="code2model">
+voltage_input_dq_axi
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1C0"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3062')" name="code2model" class="code2model">
+Wrapped State DTI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:2817')" name="code2model" class="code2model">
+mechanical_system
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:2820')" name="code2model" class="code2model">
+reciprocal_J
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"150"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:2827')" name="code2model" class="code2model">
+integrator
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:2837')" name="code2model" class="code2model">
+pmsm
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:2955')" name="code2model" class="code2model">
+integrator
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:2962')" name="code2model" class="code2model">
+integrator1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:2969')" name="code2model" class="code2model">
+integrator2
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:2976')" name="code2model" class="code2model">
+integrator3
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:2983')" name="code2model" class="code2model">
+integrator4
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:2990')" name="code2model" class="code2model">
+integrator5
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:2997')" name="code2model" class="code2model">
+integrator6
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3004')" name="code2model" class="code2model">
+integrator7
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3011')" name="code2model" class="code2model">
+integrator8
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3037')" name="code2model" class="code2model">
+torque_calculation
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+FlattenHierarchy
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3156')" name="code2model" class="code2model">
+currents_dq_output_axi
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"240"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3147')" name="code2model" class="code2model">
+theta_el_axi
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"190"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3164')" name="code2model" class="code2model">
+M_Mi_axi
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"14C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3165')" name="code2model" class="code2model">
+omega_out_axi
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"150"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3210')" name="code2model" class="code2model">
+currents_dq_output
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3215')" name="code2model" class="code2model">
+theta_el1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('Copy_of_uz_pmsm_model_9ph_21b_all_double:3247')" name="code2model" class="code2model">
+voltage_input_dq_axi_fb
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"340"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><br />
+</body>
+
+</html>

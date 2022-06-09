@@ -1,0 +1,5 @@
+ --> uz_pmsm9ph_trans_100mhz_src_abc_to_dq_pkg
+Copy_of_uz_pmsm_model_9ph_21b_all_double/uz_pmsm_model_9ph/abc_to_dq/Sine HDL Optimized --> uz_pmsm9ph_trans_100mhz_src_Sine_HDL_Optimized
+Copy_of_uz_pmsm_model_9ph_21b_all_double/uz_pmsm_model_9ph/abc_to_dq/SimpleDualPortRAM_generic --> uz_pmsm9ph_trans_100mhz_src_SimpleDualPortRAM_generic
+abc_to_dq_tc --> uz_pmsm9ph_trans_100mhz_src_abc_to_dq_tc
+Copy_of_uz_pmsm_model_9ph_21b_all_double/uz_pmsm_model_9ph/abc_to_dq --> uz_pmsm9ph_trans_100mhz_src_abc_to_dq

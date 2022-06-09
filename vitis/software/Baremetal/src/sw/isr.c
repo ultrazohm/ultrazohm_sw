@@ -151,8 +151,8 @@ static void ReadAllADC();
 #include "../uz/uz_fixedpoint/uz_fixedpoint.h"
 struct uz_fixedpoint_definition_t fixed_out={
 		.is_signed=true,
-		.fractional_bits=12,
-		.integer_bits=(25-12)
+		.fractional_bits=18,
+		.integer_bits=(27-18)
 };
 
 uz_9ph_dq_t pmsm_output_currents_dq={0};

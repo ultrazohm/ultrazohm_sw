@@ -109,6 +109,8 @@ float angle_derv=0.0f;
 float position_derv=0.0f;
 uint32_t action=0;
 
+// ip core reset
+extern float offset_theta_pendulum;
 //=============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -137,7 +139,7 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_1_ip_v25(&Global_Data);
     update_position_of_encoder_on_D5_2_ip_v25(&Global_Data);
     update_angle_of_encoder_on_D5_3_ip_v25(&Global_Data);
-
+    Global_Data.av.theta_pendulum= Global_Data.av.theta_pendulum-offset_theta_pendulum;
     // calculate position
     globalposition = (int)Global_Data.av.position_pendulum;
 	// count reference signals
@@ -154,7 +156,9 @@ void ISR_Control(void *data)
     // calculate and transform observations for dqn
     Global_Data.obs.dqn_chart_position=position_abs/1.0e3f;
     // derivation angle and position with filtering and treshold
-    angle_derv=(Global_Data.av.theta_pendulum-old_theta_pendulum)/Global_Data.av.isr_samplerate_s; // rad/s
+    angle_derv=(Global_Data.av.theta_pendulum-old_theta_pendulum)/Global_Data.av.isr_samplerate_s;// rad/s
+    Global_Data.obs.dqn_angle_raw = Global_Data.av.theta_pendulum;
+    Global_Data.obs.dqn_angle_derv_raw = angle_derv;
     if (abs(angle_derv) > 1.0e2f)
     {}
     else
@@ -164,6 +168,7 @@ void ISR_Control(void *data)
 
     old_theta_pendulum=Global_Data.av.theta_pendulum;
     position_derv=((Global_Data.obs.dqn_chart_position-old_position)/Global_Data.av.isr_samplerate_s);
+    Global_Data.obs.dqn_chart_position_derv_raw= position_derv;
     if (abs(position_derv) > 1.0e2f)
     {}
     else
@@ -184,7 +189,7 @@ void ISR_Control(void *data)
     dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
     omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;         // w_mech
     omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * 3.0f * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
-
+    Global_Data.av.mechanicalRotorSpeed_IIR_Filter = uz_signals_IIR_Filter_sample(LPF1_instance_2, Global_Data.av.mechanicalRotorSpeed);
     platform_state_t current_state = ultrazohm_state_machine_get_state();
     if (current_state == control_state)
     {
@@ -227,12 +232,12 @@ void ISR_Control(void *data)
 				break;
 			case reset_angle:
 				if (abs(Global_Data.obs.dqn_angle_derv)<0.02){
-					if (counter_timeout < 5000)
+					if (counter_timeout < 200000)
 					{
 						counter_timeout++;
 					}
 					else{
-//						reset_ip_core_of_encoder_on_D5_3_ip_v25(&Global_Data);
+						reset_ip_core_of_encoder_on_D5_3_ip_v25(&Global_Data);
 						counter_timeout = 0;
 						chain=dqn_active;
 					}

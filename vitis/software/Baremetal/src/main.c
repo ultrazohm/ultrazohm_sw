@@ -16,8 +16,9 @@
 // Includes from own files
 #include "main.h"
 
-#define DQN_FREQUENCY 400
+
 // defines for nn
+#define DQN__CONTROL_FREQUENCY 400
 #define NUMBER_OF_INPUTS 5
 #define NUMBER_OF_OUTPUTS 3
 #define NUMBER_OF_HIDDEN_LAYER 3
@@ -72,7 +73,7 @@ enum init_chain
     init_gpios,
     init_software,
     init_ip_cores,
-    init_foc,
+	init_foc_control_nn,
     print_msg,
     init_interrupts,
     infinite_loop
@@ -80,7 +81,7 @@ enum init_chain
 enum init_chain initialization_chain = init_assertions;
 
 static void dqn_step(void);
-static int dividingfactordqn=UZ_PWM_FREQUENCY/DQN_FREQUENCY;
+static int dividingfactordqn=UZ_PWM_FREQUENCY/DQN__CONTROL_FREQUENCY;
 bool dqn_mutex=false;
 float dqn_mutex_float =0.0f;
 float input_nn[5] = {-0.47f, -0.88f, -2.9f, 0.375f, -3.2f};
@@ -203,7 +204,7 @@ int main(void)
 
     struct uz_matrix_t x_matrix = {0};
     struct uz_IIR_Filter_config config1 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 200.0f, .sample_frequency_Hz = 20000.0f};
-    struct uz_IIR_Filter_config config2 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 10.0f, .sample_frequency_Hz = 20000.0f};
+    struct uz_IIR_Filter_config config2 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 100.0f, .sample_frequency_Hz = 20000.0f};
     while (1)
     {
         switch (initialization_chain)
@@ -243,9 +244,9 @@ int main(void)
             initialize_incremental_encoder_ipcore_v25_on_D5_2(UZ_D5_POSINCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER, Global_Data.mrp.incrementalEncoder_speed_timeout_in_ms);
             initialize_incremental_encoder_ipcore_v25_on_D5_3(UZ_D5_ANGINCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER, Global_Data.mrp.incrementalEncoder_speed_timeout_in_ms);
             initialization_chain = print_msg;
-            initialization_chain = init_foc;
+            initialization_chain = init_foc_control_nn;
             break;
-        case init_foc:
+        case init_foc_control_nn:
             FOC_instance = uz_FOC_init(config_FOC);
             Speed_instance = uz_SpeedControl_init(config_speed);
             LPF1_instance_angle = uz_signals_IIR_Filter_init(config1);

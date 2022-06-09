@@ -68,9 +68,7 @@ typedef struct _actualValues_ {
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	float mechanicalRotorSpeed; 		// in rpm
 	float mechanicalRotorSpeed_filtered;// in rpm
-	float mechanicalRotorSpeed_V25_N8; // in rpm
-	float mechanicalRotorSpeed_filtered_V25;  // in rpm
-	float mechanicalRotorSpeed_N8; // in rpm
+	float mechanicalRotorSpeed_IIR_Filter; // in rpm
 	float mechanicalPosition; 		// in m
 	float mechanicalTorque; 			// in Nm
 	float mechanicalTorqueSensitive; // in Nm
@@ -121,6 +119,9 @@ typedef struct _motorrelatedparameters_ {
 } motorrelatedparameters;
 
 typedef struct _dqn_observation_ {
+    float dqn_angle_raw;
+	float dqn_chart_position_derv_raw;
+    float dqn_angle_derv_raw;
 	float dqn_chart_position;
     float dqn_angle_derv;
     float dqn_angle;

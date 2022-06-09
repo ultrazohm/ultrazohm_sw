@@ -20,7 +20,7 @@
 #include "xparameters.h"
 
 // Declares pointer to instance on file scope. DO NOT DO THIS! Just done here to be compatible to the rest of the legacy code in this file!
-
+float offset_theta_pendulum=0.0f;
 static uz_incrementalEncoder_t* encoder_D5_1_v25;
 static uz_incrementalEncoder_t* encoder_D5_2_v25;
 static uz_incrementalEncoder_t* encoder_D5_3_v25;
@@ -28,8 +28,8 @@ static uz_incrementalEncoder_t* encoder_D5_3_v25;
 // INITIALIZE & SET THE ENCODER
 //----------------------------------------------------
 
-#define OMEGA_PER_OVER_SAMPLE_RPM 1000.0f
-#define IncEncoderLPF_freq 1000.0f
+#define OMEGA_PER_OVER_SAMPLE_RPM 5000.0f
+#define IncEncoderLPF_freq 100.0f
 
 // Incremental encoder from motor
 void initialize_incremental_encoder_ipcore_v25_on_D5_1(float incrementalEncoderResolution, float motorPolePairNumber, float speed_timeout){
@@ -69,28 +69,17 @@ void initialize_incremental_encoder_ipcore_v25_on_D5_3(float AngleEncoderResolut
 }
 
 
-
-float omegaA, omegaB,omegaANOT, omegaBNOT;
-
 void update_speed_and_position_of_encoder_on_D5_1_ip_v25(DS_Data* const data){
 	data->av.theta_elec	= uz_incrementalEncoder_get_theta_el(encoder_D5_1_v25);
 	data->av.mechanicalRotorSpeed = uz_incrementalEncoder_get_omega_mech_OS_N4(encoder_D5_1_v25) * 60.0f / (2.0f*M_PI);
 	data->av.position_motor = uz_incrementalEncoder_get_position(encoder_D5_1_v25);
 
-	omegaA 		= uz_incrementalEncoder_get_omegaA(encoder_D5_1_v25) * 60.0f / (2.0f*M_PI);
-	omegaB 		= uz_incrementalEncoder_get_omegaB(encoder_D5_1_v25) * 60.0f / (2.0f*M_PI);
-	omegaANOT 	= uz_incrementalEncoder_get_omegaNOTA(encoder_D5_1_v25) * 60.0f / (2.0f*M_PI);
-	omegaBNOT 	= uz_incrementalEncoder_get_omegaNOTB(encoder_D5_1_v25) * 60.0f / (2.0f*M_PI);
-
 	// low-pass filter of mechanical speed
 	static float speed_lpf_mem_in = 0.0f;
 	static float speed_lpf_mem_out = 0.0f;
-	data->av.mechanicalRotorSpeed_filtered = LPF1(	data->av.mechanicalRotorSpeed, &speed_lpf_mem_in, &speed_lpf_mem_out,
+	data->av.mechanicalRotorSpeed_filtered = LPF1(data->av.mechanicalRotorSpeed, &speed_lpf_mem_in, &speed_lpf_mem_out,
 	data->av.isr_samplerate_s, IncEncoderLPF_freq);
-	data->av.mechanicalRotorSpeed_V25_N8 = uz_incrementalEncoder_get_omega_mech_OS_N8(encoder_D5_1_v25) * 60.0f / (2.0f*M_PI);
-	data->av.mechanicalRotorSpeed_filtered_V25 = LPF1(data->av.mechanicalRotorSpeed_V25_N8, &speed_lpf_mem_in, &speed_lpf_mem_out,
-			data->av.isr_samplerate_s, IncEncoderLPF_freq);
-}
+	}
 
 void update_position_of_encoder_on_D5_2_ip_v25(DS_Data* const data){
 	data->av.position_pendulum = uz_incrementalEncoder_get_position(encoder_D5_2_v25);
@@ -101,6 +90,6 @@ void update_angle_of_encoder_on_D5_3_ip_v25(DS_Data* const data){
 }
 
 void reset_ip_core_of_encoder_on_D5_3_ip_v25(DS_Data* const data){
-	uz_incrementalEncoder_reset_ip_core(encoder_D5_3_v25);
-//	data->av.theta_pendulum=0.0f;
+//	uz_incrementalEncoder_reset_ip_core(encoder_D5_3_v25);
+	offset_theta_pendulum=data->av.theta_pendulum;
 }

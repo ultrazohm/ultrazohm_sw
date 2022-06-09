@@ -69,6 +69,7 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]	= &data->av.mechanicalRotorSpeed;
+	js_ch_observable[JSO_Speed_filtered]	= &data->av.mechanicalRotorSpeed_filtered;
 	js_ch_observable[JSO_d_ref]		= &dq_reference_current.d;
 	js_ch_observable[JSO_q_ref]		= &dq_reference_current.q;
 	js_ch_observable[JSO_n_ref]		= &n_ref_rpm;
@@ -82,15 +83,17 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_dqn_chart_position] 	= &data->obs.dqn_chart_position;
 	js_ch_observable[JSO_dqn_angle_derv] 		= &data->obs.dqn_angle_derv;
 	js_ch_observable[JSO_dqn_chart_position_derv]= &data->obs.dqn_chart_position_derv;
+	js_ch_observable[JSO_dqn_angle] = 				&data->obs.dqn_angle;
+	js_ch_observable[JSO_dqn_angle_derv_raw] 		= &data->obs.dqn_angle_derv_raw;
+	js_ch_observable[JSO_dqn_chart_position_derv_raw]= &data->obs.dqn_chart_position_derv_raw;
+	js_ch_observable[JSO_dqn_angle_raw] = 				&data->obs.dqn_angle_raw;
 	js_ch_observable[JSO_iq] 			= &dq_measurement_current.q;
 	js_ch_observable[JSO_id] 			= &dq_measurement_current.d;
 	js_ch_observable[JSO_ud]			=&dq_ref_Volts.d;
 	js_ch_observable[JSO_uq]			=&dq_ref_Volts.q;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_Theta_mech] 	= &data->av.theta_mech;
-	js_ch_observable[JSO_dqn_angle] = &data->obs.dqn_angle;
-	js_ch_observable[JSO_Speed_N8]= &data->av.mechanicalRotorSpeed_V25_N8;
-	js_ch_observable[JSO_Speed_N8_filtered]=&data->av.mechanicalRotorSpeed_filtered_V25;
+	js_ch_observable[JSO_Speed_IIR_Filter]= &data->av.mechanicalRotorSpeed_IIR_Filter;
 	js_ch_observable[JSO_dqn_sin_angle]			= &data->obs.dqn_sin_angle;
 	js_ch_observable[JSO_dqn_cos_angle]			= &data->obs.dqn_cos_angle;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;

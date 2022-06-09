@@ -31,106 +31,6 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
-
-
-//pre-loop code for 9ph model
-#include "../uz/uz_wavegen/uz_wavegen.h"
-#include "../IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
-#include "../uz/uz_piController/uz_piController.h"
-#include "../uz/uz_Transformation/uz_Transformation.h"
-#include "../uz/uz_wavegen/uz_wavegen.h"
-extern uz_pmsm_model9ph_dq_t *pmsm;
-extern uz_PI_Controller *PI_d_current;
-extern uz_PI_Controller *PI_q_current;
-extern uz_PI_Controller *PI_rpm;
-int reset_on=1;                                               //can be triggered in the expressions to reset integrators
-float setp_d=0.0f;
-float setp_q=2.0f;
-float setp_omega=10.0f;
-
-uz_9ph_alphabeta_t stationary_currents = {0};
-uz_9ph_abc_t natural_currents = {0};
-uz_3ph_alphabeta_t alpha_beta = {0};
-uz_3ph_dq_t dq = {0};
-
-uz_9ph_alphabeta_t test_stat = {0};
-uz_9ph_abc_t test_nat = {0};
-
-struct uz_pmsm_model9ph_dq_outputs_general_t pmsm_outputs={
-        .torque_Nm=10.0f,
-        .omega_mech_1_s=0.0f,
-        .theta_el=0.0f
-};
-
-uz_9ph_abc_t pmsm_output_currents={0};
-
-struct uz_pmsm_model9ph_dq_inputs_general_t pmsm_inputs={
-		.load_torque=0.0f,
-		.omega_mech_1_s=0.0f
-};
-//end
-
-//pre-loop for PWM
-#include "../uz/uz_FOC/uz_FOC.h"
-#include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
-#include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph_hw.h"
-#include "../IP_Cores/uz_pmsm_9ph_transformation/uz_pmsm9ph_transformation.h"
-#include "xparameters.h"
-
-#define  theta_el_axi_Data_uz_pmsm9ph_trans_100mhz      0x100  //data register for Outport theta_el_axi
-#define  i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz     0x140  //data register for Outport i_abc_out_axi, vector with 9 elements, address ends at 0x160
-#define  i_abc_out_axi_Strobe_uz_pmsm9ph_trans_100mhz   0x180  //strobe register for port i_abc_out_axi
-
-
-struct uz_DutyCycle_t duty_cycle_sys1 = {0};
-struct uz_DutyCycle_t duty_cycle_sys2 = {0};
-struct uz_DutyCycle_t duty_cycle_sys3 = {0};
-
-uz_3ph_abc_t setpoint_abc_sys1 = {0};
-uz_3ph_abc_t setpoint_abc_sys2 = {0};
-uz_3ph_abc_t setpoint_abc_sys3 = {0};
-
-uz_9ph_abc_t setpoint_natural = {0};
-uz_9ph_alphabeta_t setpoint_stationary = {0};
-uz_3ph_alphabeta_t setpoint_alpha_beta = {0};
-uz_3ph_alphabeta_t outputs_alphabeta = {0};
-uz_3ph_dq_t outputs_dq = {0};
-uz_3ph_dq_t setpoint_dq = {0};
-uz_9ph_dq_t setpoint_dq9ph = {0};
-
-float V_dc_volts = 560.0f;
-
-extern uz_PWM_SS_2L_t *pwm_instance_1;
-extern uz_PWM_SS_2L_t *pwm_instance_2;
-extern uz_PWM_SS_2L_t *pwm_instance_3;
-
-
-
-extern struct uz_inverter_3ph_t *inverter_1;
-extern struct uz_inverter_3ph_t *inverter_2;
-extern struct uz_inverter_3ph_t *inverter_3;
-
-struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_1 = {0};
-struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_2 = {0};
-struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_3 = {0};
-
-struct uz_inverter_3ph_i_abc_ps_t currents_inv1={
-		.i_a = 0.0f,
-		.i_b = 0.0f,
-		.i_c = 0.0f
-};
-
-
-extern uz_pmsm9ph_transformation_t* transformation_9ph;
-float amplitude = 0.05f;
-float frequency_Hz = 40.0f;
-float setp_factor=1.0;
-float setp_torque=0.1f;
-float dut_1=0.0f;
-//float g2=0.0f;
-//end
-
-
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -141,6 +41,72 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+// pre-loop code for 9ph model
+#include "../uz/uz_wavegen/uz_wavegen.h"
+#include "../IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
+#include "../uz/uz_piController/uz_piController.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../uz/uz_wavegen/uz_wavegen.h"
+extern uz_pmsm_model9ph_dq_t *pmsm;
+extern uz_PI_Controller *PI_d_current;
+extern uz_PI_Controller *PI_q_current;
+extern uz_PI_Controller *PI_rpm;
+
+float setp_omega = 10.0f;
+uz_3ph_dq_t current_set_point = {
+    .d = 0.0f,
+    .q = 2.0f,
+    .zero = 0.0f};
+
+struct uz_pmsm_model9ph_dq_outputs_general_t pmsm_outputs = {
+    .torque_Nm = 10.0f,
+    .omega_mech_1_s = 0.0f,
+    .theta_el = 0.0f};
+
+uz_9ph_abc_t pmsm_output_currents = {0};
+
+struct uz_pmsm_model9ph_dq_inputs_general_t pmsm_inputs = {
+    .load_torque = 0.0f,
+    .omega_mech_1_s = 0.0f};
+
+// pre-loop for PWM
+#include "../uz/uz_FOC/uz_FOC.h"
+#include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
+#include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph_hw.h"
+#include "../IP_Cores/uz_pmsm_9ph_transformation/uz_pmsm9ph_transformation.h"
+
+struct uz_DutyCycle_t duty_cycle_sys1 = {0};
+struct uz_DutyCycle_t duty_cycle_sys2 = {0};
+struct uz_DutyCycle_t duty_cycle_sys3 = {0};
+
+uz_3ph_abc_t setpoint_abc_sys1 = {0};
+uz_3ph_abc_t setpoint_abc_sys2 = {0};
+uz_3ph_abc_t setpoint_abc_sys3 = {0};
+
+float V_dc_volts = 560.0f;
+
+extern uz_PWM_SS_2L_t *pwm_instance_1;
+extern uz_PWM_SS_2L_t *pwm_instance_2;
+extern uz_PWM_SS_2L_t *pwm_instance_3;
+
+extern struct uz_inverter_3ph_t *inverter_1;
+extern struct uz_inverter_3ph_t *inverter_2;
+extern struct uz_inverter_3ph_t *inverter_3;
+
+struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_1 = {0};
+struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_2 = {0};
+struct uz_inverter_3ph_u_abc_ps_t voltage_inverter_3 = {0};
+
+struct uz_inverter_3ph_i_abc_ps_t currents_inv1 = {
+    .i_a = 0.0f,
+    .i_b = 0.0f,
+    .i_c = 0.0f};
+
+extern uz_pmsm9ph_transformation_t *transformation_9ph;
+
+uz_9ph_abc_t transformation_ip_outputs = {0};
+uz_9ph_dq_t actual_currents = {0};
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -149,105 +115,83 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 #include "../uz/uz_fixedpoint/uz_fixedpoint.h"
-struct uz_fixedpoint_definition_t fixed_out={
-		.is_signed=true,
-		.fractional_bits=18,
-		.integer_bits=(27-18)
+struct uz_fixedpoint_definition_t fixed_out = {
+    .is_signed = true,
+    .fractional_bits = 18,
+    .integer_bits = (27 - 18)};
+
+enum controller_state_t
+{
+    closed_loop_inverter = 0,
+    closed_loop_dgl_only
 };
-
-uz_9ph_dq_t pmsm_output_currents_dq={0};
-
-float offset=0.0f;
+enum controller_state_t controller_state = closed_loop_inverter;
 
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
+    platform_state_t current_state = ultrazohm_state_machine_get_state();
+    if (current_state == control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-    }else{
+
+        switch (controller_state)
+        {
+        case closed_loop_inverter:
+            pmsm_outputs = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);
+            pmsm_inputs.omega_mech_1_s = setp_omega;
+            uz_pmsm_model9ph_dq_set_inputs_general(pmsm, pmsm_inputs);
+
+            transformation_ip_outputs = uz_pmsm9ph_transformation_get_currents(transformation_9ph);
+
+            actual_currents = uz_transformation_9ph_abc_to_dq(transformation_ip_outputs, pmsm_outputs.theta_el);
+            uz_9ph_dq_t output_voltage_dq = {0};
+            output_voltage_dq.d = uz_PI_Controller_sample(PI_d_current, current_set_point.d, actual_currents.d, false); // outputs_dq.d
+            output_voltage_dq.q = uz_PI_Controller_sample(PI_q_current, current_set_point.q, actual_currents.q, false); // outputs_dq.q
+            uz_9ph_abc_t output_voltage_abc = uz_transformation_9ph_dq_to_abc(output_voltage_dq, pmsm_outputs.theta_el);
+
+            setpoint_abc_sys1.a = output_voltage_abc.a1;
+            setpoint_abc_sys1.b = output_voltage_abc.b1;
+            setpoint_abc_sys1.c = output_voltage_abc.c1;
+            setpoint_abc_sys2.a = output_voltage_abc.a2;
+            setpoint_abc_sys2.b = output_voltage_abc.b2;
+            setpoint_abc_sys2.c = output_voltage_abc.c2;
+            setpoint_abc_sys3.a = output_voltage_abc.a3;
+            setpoint_abc_sys3.b = output_voltage_abc.b3;
+            setpoint_abc_sys3.c = output_voltage_abc.c3;
+            duty_cycle_sys1 = uz_FOC_generate_DutyCycles(setpoint_abc_sys1, V_dc_volts);
+            duty_cycle_sys2 = uz_FOC_generate_DutyCycles(setpoint_abc_sys2, V_dc_volts);
+            duty_cycle_sys3 = uz_FOC_generate_DutyCycles(setpoint_abc_sys3, V_dc_volts);
+            break;
+        case closed_loop_dgl_only:
+            // uz_pmsm_model9ph_dq_set_voltage(pmsm,setpoint_dq9ph);
+
+            break;
+        default:
+            break;
+        }
+    }
+    else
+    {
         uz_PI_Controller_reset(PI_q_current);
         uz_PI_Controller_reset(PI_d_current);
         uz_pmsm_model9ph_dq_reset(pmsm);
+        duty_cycle_sys1.DutyCycle_U = 0.0f;
+        duty_cycle_sys1.DutyCycle_V = 0.0f;
+        duty_cycle_sys1.DutyCycle_W = 0.0f;
+        duty_cycle_sys2.DutyCycle_U = 0.0f;
+        duty_cycle_sys2.DutyCycle_V = 0.0f;
+        duty_cycle_sys2.DutyCycle_W = 0.0f;
+        duty_cycle_sys3.DutyCycle_U = 0.0f;
+        duty_cycle_sys3.DutyCycle_V = 0.0f;
+        duty_cycle_sys3.DutyCycle_W = 0.0f;
     }
-
-    //++PMSM++
-    pmsm_outputs = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);
-
-    pmsm_output_currents=uz_pmsm9ph_transformation_get_currents(transformation_9ph);
-
-    // pmsm_output_currents = uz_pmsm_model_9ph_get_output_currents(pmsm);
-
-    pmsm_output_currents_dq = uz_pmsm_model9ph_dq_get_output_currents(pmsm);
-
-
-    pmsm_inputs.omega_mech_1_s = setp_omega;
-    //pmsm_inputs.load_torque = setp_torque;
-    uz_pmsm_model9ph_dq_set_inputs_general(pmsm, pmsm_inputs);
-
-    // Transform output currents to dq system
-    stationary_currents = uz_transformation_9ph_abc_to_alphabeta(pmsm_output_currents);
-    outputs_dq.d=pmsm_output_currents_dq.d;
-    outputs_dq.q=pmsm_output_currents_dq.q;
-
-
-
-    //outputs_alphabeta.alpha = stationary_currents.alpha;
-    //outputs_alphabeta.beta = stationary_currents.beta;
-    //outputs_dq = uz_transformation_3ph_alphabeta_to_dq(outputs_alphabeta,pmsm_outputs.theta_el);
-
-    //++PWM++
-
-    // Controller
-    //setp_q = uz_PI_Controller_sample(PI_rpm,setp_omega,pmsm_outputs.omega_mech_1_s,false);
-    setpoint_dq9ph.d = uz_PI_Controller_sample(PI_d_current,setp_d,outputs_dq.d,false); // outputs_dq.d
-    setpoint_dq9ph.q = uz_PI_Controller_sample(PI_q_current,setp_q,outputs_dq.q,false); // outputs_dq.q
-    uz_pmsm_model9ph_dq_set_voltage(pmsm,setpoint_dq9ph);
-    setpoint_dq.d=setpoint_dq9ph.d;
-    setpoint_dq.q=setpoint_dq9ph.q;
-    // Transform setpoints to abc system
-    setpoint_alpha_beta = uz_transformation_3ph_dq_to_alphabeta(setpoint_dq,pmsm_outputs.theta_el+offset);
-    setpoint_stationary.alpha = setpoint_alpha_beta.alpha;
-    setpoint_stationary.beta = setpoint_alpha_beta.beta;
-    setpoint_stationary.z1 = 0.0f;
-    setpoint_stationary.z2 = 0.0f;
-    setpoint_stationary.x1 = 0.0f;
-    setpoint_stationary.y1 = 0.0f;
-    setpoint_stationary.x2 = 0.0f;
-    setpoint_stationary.y2 = 0.0f;
-    setpoint_stationary.z3 = 0.0f;
-
-    // write voltage to model
-
-
-    setpoint_natural = uz_transformation_9ph_alphabeta_to_abc(setpoint_stationary);
-
-    // Split Systems
-    setpoint_abc_sys1.a = setpoint_natural.a1*setp_factor;
-    setpoint_abc_sys1.b = setpoint_natural.b1*setp_factor;
-    setpoint_abc_sys1.c = setpoint_natural.c1*setp_factor;
-
-    setpoint_abc_sys2.a = setpoint_natural.a2;
-	setpoint_abc_sys2.b = setpoint_natural.b2;
-	setpoint_abc_sys2.c = setpoint_natural.c2;
-
-	setpoint_abc_sys3.a = setpoint_natural.a3;
-	setpoint_abc_sys3.b = setpoint_natural.b3;
-	setpoint_abc_sys3.c = setpoint_natural.c3;
-
-	// Duty Cycle
-	duty_cycle_sys1 = uz_FOC_generate_DutyCycles(setpoint_abc_sys1,V_dc_volts);
-	duty_cycle_sys2 = uz_FOC_generate_DutyCycles(setpoint_abc_sys2,V_dc_volts);
-	duty_cycle_sys3 = uz_FOC_generate_DutyCycles(setpoint_abc_sys3,V_dc_volts);
-
-	uz_PWM_SS_2L_set_duty_cycle(pwm_instance_1,duty_cycle_sys1.DutyCycle_U,duty_cycle_sys1.DutyCycle_V,duty_cycle_sys1.DutyCycle_W);
-	uz_PWM_SS_2L_set_duty_cycle(pwm_instance_2,duty_cycle_sys2.DutyCycle_U,duty_cycle_sys2.DutyCycle_V,duty_cycle_sys2.DutyCycle_W);
-	uz_PWM_SS_2L_set_duty_cycle(pwm_instance_3,duty_cycle_sys3.DutyCycle_U,duty_cycle_sys3.DutyCycle_V,duty_cycle_sys3.DutyCycle_W);
-
-
+    // Duty Cycle
+    uz_PWM_SS_2L_set_duty_cycle(pwm_instance_1, duty_cycle_sys1.DutyCycle_U, duty_cycle_sys1.DutyCycle_V, duty_cycle_sys1.DutyCycle_W);
+    uz_PWM_SS_2L_set_duty_cycle(pwm_instance_2, duty_cycle_sys2.DutyCycle_U, duty_cycle_sys2.DutyCycle_V, duty_cycle_sys2.DutyCycle_W);
+    uz_PWM_SS_2L_set_duty_cycle(pwm_instance_3, duty_cycle_sys3.DutyCycle_U, duty_cycle_sys3.DutyCycle_V, duty_cycle_sys3.DutyCycle_W);
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     // Set duty cycles for three-level modulator
@@ -288,10 +232,10 @@ int Initialize_ISR()
     }
 
     // Enable uz_mux_axi for triggering the ADCs and the ISR
-//    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
-//    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-//    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-    //uz_mux_axi_enable(Global_Data.objects.mux_axi);
+    //    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
+    //    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+    //    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+    // uz_mux_axi_enable(Global_Data.objects.mux_axi);
 
     return Status;
 }

@@ -157,4 +157,11 @@ static void write_config_to_pl(uz_pmsm_model9ph_dq_t *self)
     uz_pmsm_model9ph_hw_write_switch_pspl(self->config.base_address, self->config.switch_pspl);
 }
 
+void uz_pmsm_model9ph_dq_set_use_axi_input(uz_pmsm_model9ph_dq_t *self, bool use_axi){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->config.switch_pspl=use_axi;
+    uz_pmsm_model9ph_hw_write_switch_pspl(self->config.base_address, self->config.switch_pspl);
+}
+
 #endif

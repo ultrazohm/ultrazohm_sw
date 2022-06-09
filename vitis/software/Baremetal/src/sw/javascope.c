@@ -43,6 +43,8 @@ extern uz_9ph_abc_t pmsm_output_currents;
 extern uz_9ph_alphabeta_t stationary_currents;
 extern uz_3ph_dq_t outputs_dq;
 extern uz_3ph_dq_t setpoint_dq;
+extern uz_9ph_abc_t transformation_ip_outputs;
+extern uz_9ph_dq_t actual_currents;
 
 extern float setp_omega;
 extern float setp_q;
@@ -75,31 +77,26 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &pmsm_outputs.omega_mech_1_s;
-	js_ch_observable[JSO_ia1] 			= &pmsm_output_currents.a1;
-	js_ch_observable[JSO_ib1] 			= &pmsm_output_currents.b1;
-	js_ch_observable[JSO_ic1] 			= &pmsm_output_currents.c1;
-	js_ch_observable[JSO_ia2] 			= &pmsm_output_currents.a2;
-	js_ch_observable[JSO_ib2] 			= &pmsm_output_currents.b2;
-	js_ch_observable[JSO_ic2] 			= &pmsm_output_currents.c2;
-	js_ch_observable[JSO_ia3] 			= &pmsm_output_currents.a3;
-	js_ch_observable[JSO_ib3] 			= &pmsm_output_currents.b3;
-	js_ch_observable[JSO_ic3] 			= &pmsm_output_currents.c3;
-	js_ch_observable[JSO_iq] 			= &outputs_dq.q;
-	js_ch_observable[JSO_id] 			= &outputs_dq.d;
-	js_ch_observable[JSO_ix1] 			= &stationary_currents.x1;
-	js_ch_observable[JSO_iy1] 			= &stationary_currents.y1;
-	js_ch_observable[JSO_ix2] 			= &stationary_currents.x2;
-	js_ch_observable[JSO_iy2] 			= &stationary_currents.y2;
-	js_ch_observable[JSO_iz1] 			= &stationary_currents.z1;
-	js_ch_observable[JSO_iz2] 			= &stationary_currents.z2;
-	js_ch_observable[JSO_iz3] 			= &stationary_currents.z3;
+	js_ch_observable[JSO_ia1] 			= &transformation_ip_outputs.a1;
+	js_ch_observable[JSO_ib1] 			= &transformation_ip_outputs.b1;
+	js_ch_observable[JSO_ic1] 			= &transformation_ip_outputs.c1;
+	js_ch_observable[JSO_ia2] 			= &transformation_ip_outputs.a2;
+	js_ch_observable[JSO_ib2] 			= &transformation_ip_outputs.b2;
+	js_ch_observable[JSO_ic2] 			= &transformation_ip_outputs.c2;
+	js_ch_observable[JSO_ia3] 			= &transformation_ip_outputs.a3;
+	js_ch_observable[JSO_ib3] 			= &transformation_ip_outputs.b3;
+	js_ch_observable[JSO_ic3] 			= &transformation_ip_outputs.c3;
+	js_ch_observable[JSO_iq] 			= &actual_currents.q;
+	js_ch_observable[JSO_id] 			= &actual_currents.d;
+	js_ch_observable[JSO_ix1] 			= &actual_currents.x1;
+	js_ch_observable[JSO_iy1] 			= &actual_currents.y1;
+	js_ch_observable[JSO_ix2] 			= &actual_currents.x2;
+	js_ch_observable[JSO_iy2] 			= &actual_currents.y2;
+	js_ch_observable[JSO_iz1] 			= &actual_currents.z1;
+	js_ch_observable[JSO_iz2] 			= &actual_currents.z2;
+	js_ch_observable[JSO_iz3] 			= &actual_currents.z3;
 	js_ch_observable[JSO_Theta_el] 		= &pmsm_outputs.theta_el;
-	js_ch_observable[JSO_setp_ia1] 		= &setpoint_natural.a1;
-	js_ch_observable[JSO_setp_ib1] 		= &setpoint_natural.b1;
-	js_ch_observable[JSO_setp_ic1] 		= &setpoint_natural.c1;
 	js_ch_observable[JSO_setp_omega] 	= &setp_omega;
-	js_ch_observable[JSO_contr_ud] 		= &setpoint_dq.d;
-	js_ch_observable[JSO_contr_uq] 		= &setpoint_dq.q;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 
 

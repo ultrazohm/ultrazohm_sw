@@ -128,4 +128,7 @@ void uz_pmsm_model9ph_dq_reset(uz_pmsm_model9ph_dq_t *self);
 
 void uz_pmsm_model9ph_dq_set_voltage(uz_pmsm_model9ph_dq_t *self, uz_9ph_dq_t voltages);
 
+void uz_pmsm_model9ph_dq_set_use_axi_input(uz_pmsm_model9ph_dq_t *self, bool use_axi);
+
+
 #endif // uz_pmsm_model9ph_dq_H

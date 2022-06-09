@@ -41,11 +41,14 @@
 #define UZ_PMSM_MODEL_9ph_MAX_INSTANCES                 1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES					3U
 #define uz_pmsm_model9ph_dq_MAX_INSTANCES 1
+#define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES 1
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
 #ifdef TEST
 #define uz_pmsm_model9ph_dq_MAX_INSTANCES 10
+#define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES 1
+
     #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  13U
     #define UZ_MYIP2_MAX_INSTANCES                          5U
     #define UZ_MYIP_MAX_INSTANCES                           5U

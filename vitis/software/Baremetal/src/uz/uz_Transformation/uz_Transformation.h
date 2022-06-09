@@ -46,16 +46,20 @@ typedef struct uz_9ph_alphabeta_t{
     float z3;           /**< Amplitude of the z3 component */
 }uz_9ph_alphabeta_t;
 
+/**
+ * @brief Struct for the variable of an rotating dq-frame for nine-phase systems
+ * 
+ */
 typedef struct uz_9ph_dq_t{
-    float d;
-    float q;
-    float o1;
-    float o2;
-    float x1;
-    float y1;
-    float x2;
-    float y2;
-    float zero;
+    float d;    /**< Amplitude of the d component */
+    float q;    /**< Amplitude of the q component */
+    float z1;   /**< Amplitude of the o1 component */
+    float z2;   /**< Amplitude of the o2 component */
+    float x1;   /**< Amplitude of the x1 component */
+    float y1;   /**< Amplitude of the y1 component */
+    float x2;   /**< Amplitude of the x2 component */
+    float y2;   /**< Amplitude of the y2 component */
+    float z3; /**< Amplitude of the zero component */
 }uz_9ph_dq_t;
 
 
@@ -147,5 +151,12 @@ uz_9ph_alphabeta_t uz_transformation_9ph_abc_to_alphabeta(uz_9ph_abc_t input);
  * @return uz_9ph_abc_t Outputs the calculated abc-phases
  */
 uz_9ph_abc_t uz_transformation_9ph_alphabeta_to_abc(uz_9ph_alphabeta_t input);
+
+
+uz_9ph_dq_t uz_transformation_9ph_alphabeta_to_dq(uz_9ph_alphabeta_t input, float theta_el_rad);
+uz_9ph_alphabeta_t uz_transformation_9ph_dq_to_alphabeta(uz_9ph_dq_t input, float theta_el_rad);
+
+uz_9ph_dq_t uz_transformation_9ph_abc_to_dq(uz_9ph_abc_t input, float theta_el_rad);
+uz_9ph_abc_t uz_transformation_9ph_dq_to_abc(uz_9ph_dq_t input, float theta_el_rad);
 
 #endif // UZ_TRANSFORMATION_H

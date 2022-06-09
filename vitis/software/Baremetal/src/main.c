@@ -35,6 +35,7 @@ DS_Data Global_Data = {
 //upper code for PMSM
 #include "IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
 #include "uz/uz_piController/uz_piController.h"
+#include "IP_Cores/uz_pmsm_9ph_transformation/uz_pmsm9ph_transformation.h"
 #include "xparameters.h"
 uz_pmsm_model9ph_dq_t *pmsm=NULL;
 uz_PI_Controller *PI_d_current=NULL;
@@ -153,9 +154,16 @@ struct uz_inverter_3ph_config_t inverter_3_config = {
 		.udc=560.0f
 };
 
+struct uz_pmsm9ph_config_t pmsm_9ph_transformation_config={
+		.base_address=XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR,
+		.ip_core_frequency_Hz=100000000
+};
+
 struct uz_inverter_3ph_t *inverter_1=NULL;
 struct uz_inverter_3ph_t *inverter_2=NULL;
 struct uz_inverter_3ph_t *inverter_3=NULL;
+
+uz_pmsm9ph_transformation_t* transformation_9ph=NULL;
 
 //end
 
@@ -214,6 +222,7 @@ int main(void)
 			inverter_1 = uz_inverter_3ph_init(inverter_1_config);
 			inverter_2 = uz_inverter_3ph_init(inverter_2_config);
 			inverter_3 = uz_inverter_3ph_init(inverter_3_config);
+			transformation_9ph=uz_pmsm9ph_transformation_init(pmsm_9ph_transformation_config);
             //end
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;

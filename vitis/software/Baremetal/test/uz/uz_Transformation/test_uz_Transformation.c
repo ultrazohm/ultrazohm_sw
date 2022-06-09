@@ -200,4 +200,8 @@ void test_uz_dq_to_ab_inverse_transformation_negative_theta(void){
     TEST_ASSERT_EQUAL_FLOAT (4.0f, output.gamma);
 }
 
+void test_uz_dq_9ph_alphabeta_to_dq(void){
+        TEST_IGNORE_MESSAGE("Need to Implement test_uz_dq_9ph_alphabeta_to_dq");
+}
+
 #endif // TEST

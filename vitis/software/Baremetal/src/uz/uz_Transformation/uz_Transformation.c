@@ -175,3 +175,66 @@ float uz_9ph_arraymul(int line, float const matrixval[9][9], float const val[9])
     }
     return output;
 }
+
+uz_9ph_dq_t uz_transformation_9ph_alphabeta_to_dq(uz_9ph_alphabeta_t input, float theta_el_rad){
+    uz_3ph_alphabeta_t intermediate_three_phase_ab={
+        .alpha=input.alpha,
+        .beta=input.beta,
+        .gamma=0.0f
+    };
+    uz_3ph_dq_t intermediate_dq=uz_transformation_3ph_alphabeta_to_dq(intermediate_three_phase_ab,theta_el_rad);
+   
+    uz_9ph_dq_t dq_values={
+        .d=intermediate_dq.d,
+        .q=intermediate_dq.q,
+        .x1=input.x1,
+        .x2=input.x2,
+        .y1=input.y1,
+        .y2=input.y2,
+        .z1=input.z1,
+        .z2=input.z2,
+        .z3=input.z3,
+    };
+    return dq_values;
+}
+
+
+uz_9ph_alphabeta_t uz_transformation_9ph_dq_to_alphabeta(uz_9ph_dq_t input, float theta_el_rad){
+    
+    uz_3ph_dq_t dq_3phase={
+        .d=input.d,
+        .q=input.q,
+        .zero=0.0f
+    };    
+    uz_3ph_alphabeta_t intermediate=uz_transformation_3ph_dq_to_alphabeta(dq_3phase,theta_el_rad);
+    uz_9ph_alphabeta_t result={
+        .alpha=intermediate.alpha,
+        .beta=intermediate.beta,
+        .x1=input.x1,
+        .x2=input.x2,
+        .y1=input.y1,
+        .y2=input.y2,
+        .z1=input.z1,
+        .z2=input.z2,
+        .z3=input.z3,
+    };
+    return result;
+}
+
+uz_9ph_dq_t uz_transformation_9ph_abc_to_dq(uz_9ph_abc_t input, float theta_el_rad){
+    uz_9ph_alphabeta_t intermediate=uz_transformation_9ph_abc_to_alphabeta(input);
+    return uz_transformation_9ph_alphabeta_to_dq(intermediate,theta_el_rad);
+}
+
+uz_9ph_abc_t uz_transformation_9ph_dq_to_abc(uz_9ph_dq_t input, float theta_el_rad){
+    uz_9ph_alphabeta_t intermediate=uz_transformation_9ph_dq_to_alphabeta(input,theta_el_rad);
+    return uz_transformation_9ph_alphabeta_to_abc(intermediate);
+}
+
+
+
+
+
+
+
+

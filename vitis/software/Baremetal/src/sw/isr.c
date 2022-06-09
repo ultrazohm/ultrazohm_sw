@@ -74,13 +74,13 @@ struct uz_pmsm_model9ph_dq_inputs_general_t pmsm_inputs={
 #include "../uz/uz_FOC/uz_FOC.h"
 #include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
 #include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph_hw.h"
+#include "../IP_Cores/uz_pmsm_9ph_transformation/uz_pmsm9ph_transformation.h"
 #include "xparameters.h"
 
 #define  theta_el_axi_Data_uz_pmsm9ph_trans_100mhz      0x100  //data register for Outport theta_el_axi
 #define  i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz     0x140  //data register for Outport i_abc_out_axi, vector with 9 elements, address ends at 0x160
 #define  i_abc_out_axi_Strobe_uz_pmsm9ph_trans_100mhz   0x180  //strobe register for port i_abc_out_axi
 
-float uz_inverter_3ph_hw_read_u_ab_ps(uint32_t base_address);
 
 struct uz_DutyCycle_t duty_cycle_sys1 = {0};
 struct uz_DutyCycle_t duty_cycle_sys2 = {0};
@@ -121,7 +121,7 @@ struct uz_inverter_3ph_i_abc_ps_t currents_inv1={
 };
 
 
-
+extern uz_pmsm9ph_transformation_t* transformation_9ph;
 float amplitude = 0.05f;
 float frequency_Hz = 40.0f;
 float setp_factor=1.0;
@@ -176,28 +176,8 @@ void ISR_Control(void *data)
 
     //++PMSM++
     pmsm_outputs = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);
-    struct uz_fixedpoint_definition_t theta_def={
-    		.is_signed=true,
-			.fractional_bits=14,
-			.integer_bits=4
-    };
-   // pmsm_outputs.theta_el=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+theta_el_axi_Data_uz_pmsm9ph_trans_100mhz, theta_def);
 
-    // XPAR_UZ_USER_UZ_PMSM9PH_TRANSFORM_0_BASEADDR
-
-    uz_axi_write_bool(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Strobe_uz_pmsm9ph_trans_100mhz, false);
-    uz_axi_write_bool(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Strobe_uz_pmsm9ph_trans_100mhz, true);
-    uz_axi_write_bool(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Strobe_uz_pmsm9ph_trans_100mhz, false);
-    pmsm_output_currents.a1=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz, fixed_out);
-    pmsm_output_currents.b1=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0x4, fixed_out);
-    pmsm_output_currents.c1=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0x8, fixed_out);
-    pmsm_output_currents.a2=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0xC, fixed_out);
-    pmsm_output_currents.b2=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0x10, fixed_out);
-    pmsm_output_currents.c2=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0x14, fixed_out);
-    pmsm_output_currents.a3=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0x18, fixed_out);
-    pmsm_output_currents.b3=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0x1C, fixed_out);
-    pmsm_output_currents.c3=uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_PMSM9PH_TRANS_100_0_BASEADDR+i_abc_out_axi_Data_uz_pmsm9ph_trans_100mhz+0x20, fixed_out);
-
+    pmsm_output_currents=uz_pmsm9ph_transformation_get_currents(transformation_9ph);
 
     // pmsm_output_currents = uz_pmsm_model_9ph_get_output_currents(pmsm);
 

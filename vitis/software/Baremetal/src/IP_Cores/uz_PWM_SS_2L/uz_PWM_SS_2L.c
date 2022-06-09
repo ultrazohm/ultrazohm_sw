@@ -48,7 +48,7 @@ uz_PWM_SS_2L_t* uz_PWM_SS_2L_init(struct uz_PWM_SS_2L_config_t config) {
     uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 2U, self->config.Tristate_HB2);
     uz_PWM_SS_2L_hw_SetTristate(self->config.base_address, 3U, self->config.Tristate_HB3);
 
-    uz_PWM_SS_2L_hw_SetTriangleShift(self->config.base_address, self->config.triangle_shift);    
+    uz_PWM_SS_2L_hw_SetTriangleShift(self->config.base_address, self->config.triangle_shift_HB1, self->config.triangle_shift_HB2, self->config.triangle_shift_HB3);
 
     return (self);
 }
@@ -80,11 +80,13 @@ void uz_PWM_SS_2L_set_PWM_mode(struct uz_PWM_SS_2L_t *self, enum uz_PWM_SS_2L_PW
     uz_PWM_SS_2L_hw_SetMode(self->config.base_address, PWM_mode);    
 }
 
-void uz_PWM_SS_2L_set_triangle_shift(struct uz_PWM_SS_2L_t *self, float triangle_shift) {
+void uz_PWM_SS_2L_set_triangle_shift(struct uz_PWM_SS_2L_t *self, float triangle_shift_HB1, float triangle_shift_HB2, float triangle_shift_HB3) {
     uz_assert_not_NULL(self);
     uz_assert_not_zero_uint32(self->config.base_address);
     uz_assert_not_zero(self->is_ready);
-    self->config.triangle_shift = triangle_shift;
-    uz_PWM_SS_2L_hw_SetTriangleShift(self->config.base_address, triangle_shift);    
+    self->config.triangle_shift_HB1 = triangle_shift_HB1;
+    self->config.triangle_shift_HB2 = triangle_shift_HB2;
+    self->config.triangle_shift_HB3 = triangle_shift_HB3;
+    uz_PWM_SS_2L_hw_SetTriangleShift(self->config.base_address, triangle_shift_HB1, triangle_shift_HB2, triangle_shift_HB3);    
 }
 #endif

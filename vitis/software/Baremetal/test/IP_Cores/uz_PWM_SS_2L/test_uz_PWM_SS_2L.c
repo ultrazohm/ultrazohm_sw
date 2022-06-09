@@ -43,7 +43,9 @@ void test_uz_PWM_SS_2L_set_pwm_mode(void)
         .init_dutyCyc_A = 0.0f,
         .init_dutyCyc_B = 0.0f,
         .init_dutyCyc_C = 0.0f,
-        .triangle_shift = 0.5f
+        .triangle_shift_HB1 = 0.5f,
+        .triangle_shift_HB2 = 0.5f,
+        .triangle_shift_HB3 = 0.5f
     };
 
     uz_PWM_SS_2L_hw_SetStatus_Expect(config.base_address, config.PWM_en); 
@@ -55,7 +57,7 @@ void test_uz_PWM_SS_2L_set_pwm_mode(void)
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 1, config.Tristate_HB1);
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 2, config.Tristate_HB2);
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 3, config.Tristate_HB3);
-    uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift);
+    uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift_HB1, config.triangle_shift_HB2, config.triangle_shift_HB3);
 
     uz_PWM_SS_2L_t *self = uz_PWM_SS_2L_init(config);
 
@@ -81,7 +83,9 @@ void test_uz_PWM_SS_2L_set_tristate(void)
         .init_dutyCyc_A = 0.0f,
         .init_dutyCyc_B = 0.0f,
         .init_dutyCyc_C = 0.0f,
-        .triangle_shift = 0.5f
+        .triangle_shift_HB1 = 0.5f,
+        .triangle_shift_HB2 = 0.5f,
+        .triangle_shift_HB3 = 0.5f
     };
 
     uz_PWM_SS_2L_hw_SetStatus_Expect(config.base_address, config.PWM_en); 
@@ -93,7 +97,7 @@ void test_uz_PWM_SS_2L_set_tristate(void)
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 1, config.Tristate_HB1);
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 2, config.Tristate_HB2);
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 3, config.Tristate_HB3);
-    uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift);
+    uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift_HB1, config.triangle_shift_HB2, config.triangle_shift_HB3);
 
     uz_PWM_SS_2L_t *self = uz_PWM_SS_2L_init(config);
 
@@ -123,7 +127,9 @@ void test_uz_PWM_SS_2L_set_duty_cycle(void)
         .init_dutyCyc_A = 0.0f,
         .init_dutyCyc_B = 0.0f,
         .init_dutyCyc_C = 0.0f,
-        .triangle_shift = 0.5f
+        .triangle_shift_HB1 = 0.5f,
+        .triangle_shift_HB2 = 0.5f,
+        .triangle_shift_HB3 = 0.5f
     };
 
     uz_PWM_SS_2L_hw_SetStatus_Expect(config.base_address, config.PWM_en); 
@@ -135,7 +141,7 @@ void test_uz_PWM_SS_2L_set_duty_cycle(void)
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 1, config.Tristate_HB1);
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 2, config.Tristate_HB2);
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 3, config.Tristate_HB3);
-    uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift);
+    uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift_HB1, config.triangle_shift_HB2, config.triangle_shift_HB3);
 
     uz_PWM_SS_2L_t *self = uz_PWM_SS_2L_init(config);
 
@@ -162,7 +168,9 @@ void test_uz_PWM_SS_2L_init(void)
         .init_dutyCyc_A = 0.0f,
         .init_dutyCyc_B = 0.0f,
         .init_dutyCyc_C = 0.0f,
-        .triangle_shift = 0.5f
+        .triangle_shift_HB1 = 0.5f,
+        .triangle_shift_HB2 = 0.5f,
+        .triangle_shift_HB3 = 0.5f
     };
 
     uz_PWM_SS_2L_hw_SetStatus_Expect(config.base_address, config.PWM_en);
@@ -174,7 +182,7 @@ void test_uz_PWM_SS_2L_init(void)
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 1, config.Tristate_HB1);
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 2, config.Tristate_HB2);
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 3, config.Tristate_HB3);
-    uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift);
+    uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift_HB1, config.triangle_shift_HB2, config.triangle_shift_HB3);
 
     uz_PWM_SS_2L_init(config); //call without use of return value to avoid compiler warning of unused variable
 }
@@ -200,8 +208,10 @@ void test_uz_PWM_SS_2L_init_with_zero_ip_clk(void)
 }
 
 void test_uz_PWM_SS_2L_set_triangle_shift_assert_NULL(void) {
-    float triangle_shift = 0.5f;
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_set_triangle_shift(NULL,triangle_shift));
+    float triangle_shift_HB1 = 0.5f;
+    float triangle_shift_HB2 = 0.5f;
+    float triangle_shift_HB3 = 0.5f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_set_triangle_shift(NULL,triangle_shift_HB1,triangle_shift_HB2,triangle_shift_HB3));
 }
 
 void test_uz_PWM_SS_2L_set_triangle_shift(void) {
@@ -219,7 +229,9 @@ void test_uz_PWM_SS_2L_set_triangle_shift(void) {
         .init_dutyCyc_A = 0.0f,
         .init_dutyCyc_B = 0.0f,
         .init_dutyCyc_C = 0.0f,
-        .triangle_shift = 0.5f
+        .triangle_shift_HB1 = 0.5f,
+        .triangle_shift_HB2 = 0.5f,
+        .triangle_shift_HB3 = 0.5f
     };
 
     uz_PWM_SS_2L_hw_SetStatus_Expect(config.base_address, config.PWM_en); 
@@ -231,13 +243,15 @@ void test_uz_PWM_SS_2L_set_triangle_shift(void) {
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 1, config.Tristate_HB1);
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 2, config.Tristate_HB2);
     uz_PWM_SS_2L_hw_SetTristate_Expect(config.base_address, 3, config.Tristate_HB3);
-    uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift);
+    uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, config.triangle_shift_HB1, config.triangle_shift_HB2, config.triangle_shift_HB3);
 
     uz_PWM_SS_2L_t *self = uz_PWM_SS_2L_init(config);
 
-    float triangle_shift = 0.75f;
-    uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, triangle_shift);
-    uz_PWM_SS_2L_set_triangle_shift(self,triangle_shift);
+    float triangle_shift_HB1 = 0.75f;
+    float triangle_shift_HB2 = 0.15445f;
+    float triangle_shift_HB3 = 0.95f;
+    uz_PWM_SS_2L_hw_SetTriangleShift_Expect(config.base_address, triangle_shift_HB1, triangle_shift_HB2, triangle_shift_HB3);
+    uz_PWM_SS_2L_set_triangle_shift(self,triangle_shift_HB1,triangle_shift_HB2,triangle_shift_HB3);
 
 }
 

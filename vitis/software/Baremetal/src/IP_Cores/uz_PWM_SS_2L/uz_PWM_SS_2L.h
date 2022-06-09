@@ -43,10 +43,12 @@ struct uz_PWM_SS_2L_config_t{
     float init_dutyCyc_A;               /**< Initial PWM duty cycle of half-bridge 1, 0...1 */
     float init_dutyCyc_B;               /**< Initial PWM duty cycle of half-bridge 2, 0...1 */
     float init_dutyCyc_C;               /**< Initial PWM duty cycle of half-bridge 3, 0...1 */
-    float triangle_shift;               /**< Shift of the triangle signal to enable interleaved PWM operation. Input is fixed to 0-1. \n
-                                              0=no shift \n
-                                              0.5=shift by a half period \n
-                                              1=shift by an entire period */
+    float triangle_shift_HB1;           /**< Shift the triangle signal of HB1 to enable interleaved PWM operation. Input is fixed to 0-1. \n
+                                         0=no shift \n
+                                         0.5=shift by a half period \n
+                                        1=shift by an entire period */
+    float triangle_shift_HB2;           /**< Shift the triangle signal of HB2 to enable interleaved PWM operation. Input is fixed to 0-1. */
+    float triangle_shift_HB3;           /**< Shift the triangle signal of HB3 to enable interleaved PWM operation. Input is fixed to 0-1. */
 };
 
 /**
@@ -92,11 +94,13 @@ void uz_PWM_SS_2L_set_tristate(struct uz_PWM_SS_2L_t *self, bool Tristate_HB1, b
 void uz_PWM_SS_2L_set_PWM_mode(struct uz_PWM_SS_2L_t *self, enum uz_PWM_SS_2L_PWM_mode PWM_mode);
 
 /**
- * @brief sets the shift of the carrier triangle signal to enable interleaved operation.
+ * @brief sets the shift of the carrier triangle signal for each halfbridge to enable interleaved operation.
  * 
- * @param self              Instance of uz_PWM_SS_2L
- * @param triangle_shift    Shift fixed to 0-1, e.g. 0.25f.  0 represents no shift and 1 represents a shift by an entire period.
+ * @param self                  Instance of uz_PWM_SS_2L
+ * @param triangle_shift_HB1    Shift of HB1 fixed to 0-1, e.g. 0.25f.  0 represents no shift and 1 represents a shift by an entire period.
+ * @param triangle_shift_HB2    Shift of HB2 fixed to 0-1, e.g. 0.25f.  0 represents no shift and 1 represents a shift by an entire period.
+ * @param triangle_shift_HB3    Shift of HB3 fixed to 0-1, e.g. 0.25f.  0 represents no shift and 1 represents a shift by an entire period.
  */
-void uz_PWM_SS_2L_set_triangle_shift(struct uz_PWM_SS_2L_t *self, float triangle_shift);
+void uz_PWM_SS_2L_set_triangle_shift(struct uz_PWM_SS_2L_t *self, float triangle_shift_HB1, float triangle_shift_HB2, float triangle_shift_HB3);
 
 #endif // UZ_PWM_SS_2L_H

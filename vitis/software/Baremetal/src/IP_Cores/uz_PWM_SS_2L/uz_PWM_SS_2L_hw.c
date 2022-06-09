@@ -81,10 +81,18 @@ void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumbe
     uz_axi_write_bool(base_address + halfBridgeAddress, TriState_true_false);
 }
 
-void uz_PWM_SS_2L_hw_SetTriangleShift(uint32_t base_address, float triangle_shift){
+void uz_PWM_SS_2L_hw_SetTriangleShift(uint32_t base_address, float triangle_shift_HB1, float triangle_shift_HB2, float triangle_shift_HB3){
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(triangle_shift >= 0.0f);
-    uz_assert(triangle_shift <= 1.0f);
-    uint32_t triangle_shift_Q17 = uz_convert_float_to_unsigned_fixed(triangle_shift, 17);
-    uz_axi_write_uint32(base_address + triangle_shift_Data_PWM_and_SS_control_V4_ip, triangle_shift_Q17);
+    uz_assert(triangle_shift_HB1 >= 0.0f);
+    uz_assert(triangle_shift_HB1 <= 1.0f);
+    uz_assert(triangle_shift_HB2 >= 0.0f);
+    uz_assert(triangle_shift_HB2 <= 1.0f);
+    uz_assert(triangle_shift_HB3 >= 0.0f);
+    uz_assert(triangle_shift_HB3 <= 1.0f);
+    uint32_t triangle_shift_HB1_Q17 = uz_convert_float_to_unsigned_fixed(triangle_shift_HB1, 17);
+    uint32_t triangle_shift_HB2_Q17 = uz_convert_float_to_unsigned_fixed(triangle_shift_HB2, 17);
+    uint32_t triangle_shift_HB3_Q17 = uz_convert_float_to_unsigned_fixed(triangle_shift_HB3, 17);
+    uz_axi_write_uint32(base_address + triangle_shift_HB1_Data_PWM_and_SS_control_V4_ip, triangle_shift_HB1_Q17);
+    uz_axi_write_uint32(base_address + triangle_shift_HB2_Data_PWM_and_SS_control_V4_ip, triangle_shift_HB2_Q17);
+    uz_axi_write_uint32(base_address + triangle_shift_HB3_Data_PWM_and_SS_control_V4_ip, triangle_shift_HB3_Q17);
 }

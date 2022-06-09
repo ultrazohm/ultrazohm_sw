@@ -17,11 +17,13 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_0_to_5 = {
         .init_dutyCyc_A = 0.0f,
         .init_dutyCyc_B = 0.0f,
         .init_dutyCyc_C = 0.0f,
-		.triangle_shift = 0.0f
+		.triangle_shift_HB1 = 0.0f,
+		.triangle_shift_HB2 = 0.0f,
+		.triangle_shift_HB3 = 0.0f
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_6_to_11 = {
-        .base_address= XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR,
+        .base_address= XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_4_BASEADDR,
         .ip_clk_frequency_Hz=100000000,
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
@@ -34,7 +36,9 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_6_to_11 = {
         .init_dutyCyc_A = 0.0f,
         .init_dutyCyc_B = 0.0f,
         .init_dutyCyc_C = 0.0f,
-		.triangle_shift = 0.25f
+		.triangle_shift_HB1 = 0.0f,
+		.triangle_shift_HB2 = 0.0f,
+		.triangle_shift_HB3 = 0.0f
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_12_to_17 = {
@@ -51,7 +55,9 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_12_to_17 = {
         .init_dutyCyc_A = 0.0f,
         .init_dutyCyc_B = 0.0f,
         .init_dutyCyc_C = 0.0f,
-		.triangle_shift = 0.5f
+		.triangle_shift_HB1 = 0.0f,
+		.triangle_shift_HB2 = 0.0f,
+		.triangle_shift_HB3 = 0.0f
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_18_to_23 = {
@@ -68,7 +74,9 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_18_to_23 = {
         .init_dutyCyc_A = 0.0f,
         .init_dutyCyc_B = 0.0f,
         .init_dutyCyc_C = 0.0f,
-		.triangle_shift = 0.75f
+		.triangle_shift_HB1 = 0.0f,
+		.triangle_shift_HB2 = 0.0f,
+		.triangle_shift_HB3 = 0.0f
 };
 
 uz_PWM_SS_2L_t* initialize_pwm_2l_on_D1_pin_0_to_5(void){

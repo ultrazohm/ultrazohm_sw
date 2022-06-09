@@ -175,28 +175,72 @@ void test_uz_PWM_SS_2L_hw_SetTristate_with_zero_base_address(void)
 
 void test_uz_PWM_SS_2L_hw_SetTriangleShift_with_zero_base_address(void)
 {
-    float triangle_shift = 0.5f;
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTriangleShift(0, triangle_shift));
+    float triangle_shift_HB1 = 0.5f;
+    float triangle_shift_HB2 = 0.5f;
+    float triangle_shift_HB3 = 0.5f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTriangleShift(0, triangle_shift_HB1, triangle_shift_HB2, triangle_shift_HB3));
 }
 
-void test_uz_PWM_SS_2L_hw_SetTriangleShift_assert_upper_limit(void)
+void test_uz_PWM_SS_2L_hw_SetTriangleShift_assert_HB1_upper_limit(void)
 {
-    float triangle_shift = 1.5f;
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTriangleShift(TEST_BASE_ADDRESS, triangle_shift));
+    float triangle_shift_HB1 = 1.5f;
+    float triangle_shift_HB2 = 0.5f;
+    float triangle_shift_HB3 = 0.5f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTriangleShift(TEST_BASE_ADDRESS, triangle_shift_HB1, triangle_shift_HB2, triangle_shift_HB3));
 }
 
-void test_uz_PWM_SS_2L_hw_SetTriangleShift_assert_negative_value(void)
+void test_uz_PWM_SS_2L_hw_SetTriangleShift_assert_HB1_negative_value(void)
 {
-    float triangle_shift = -1.5f;
-    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTriangleShift(TEST_BASE_ADDRESS, triangle_shift));
+    float triangle_shift_HB1 = -1.5f;
+    float triangle_shift_HB2 = 0.5f;
+    float triangle_shift_HB3 = 0.5f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTriangleShift(TEST_BASE_ADDRESS, triangle_shift_HB1, triangle_shift_HB2, triangle_shift_HB3));
+}
+
+void test_uz_PWM_SS_2L_hw_SetTriangleShift_assert_HB2_upper_limit(void)
+{
+    float triangle_shift_HB2 = 1.5f;
+    float triangle_shift_HB1 = 0.5f;
+    float triangle_shift_HB3 = 0.5f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTriangleShift(TEST_BASE_ADDRESS, triangle_shift_HB1, triangle_shift_HB2, triangle_shift_HB3));
+}
+
+void test_uz_PWM_SS_2L_hw_SetTriangleShift_assert_HB2_negative_value(void)
+{
+    float triangle_shift_HB2 = -1.5f;
+    float triangle_shift_HB1 = 0.5f;
+    float triangle_shift_HB3 = 0.5f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTriangleShift(TEST_BASE_ADDRESS, triangle_shift_HB1, triangle_shift_HB2, triangle_shift_HB3));
+}
+
+void test_uz_PWM_SS_2L_hw_SetTriangleShift_assert_HB3_upper_limit(void)
+{
+    float triangle_shift_HB3 = 1.5f;
+    float triangle_shift_HB1 = 0.5f;
+    float triangle_shift_HB2 = 0.5f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTriangleShift(TEST_BASE_ADDRESS, triangle_shift_HB1, triangle_shift_HB2, triangle_shift_HB3));
+}
+
+void test_uz_PWM_SS_2L_hw_SetTriangleShift_assert_HB3_negative_value(void)
+{
+    float triangle_shift_HB3 = -1.5f;
+    float triangle_shift_HB1 = 0.5f;
+    float triangle_shift_HB2 = 0.5f;
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTriangleShift(TEST_BASE_ADDRESS, triangle_shift_HB1, triangle_shift_HB2, triangle_shift_HB3));
 }
 
 void test_uz_PWM_SS_2L_hw_SetTriangleShift(void)
 {
-    float triangle_shift = 0.685f;
-    uint32_t triangle_shift_Q17 = uz_convert_float_to_unsigned_fixed(triangle_shift, 17);
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + triangle_shift_Data_PWM_and_SS_control_V4_ip, triangle_shift_Q17);
-    uz_PWM_SS_2L_hw_SetTriangleShift(TEST_BASE_ADDRESS, triangle_shift);
+    float triangle_shift_HB1 = 0.685f;
+    float triangle_shift_HB2 = 0.1793f;
+    float triangle_shift_HB3 = 0.33458f;
+    uint32_t triangle_shift_HB1_Q17 = uz_convert_float_to_unsigned_fixed(triangle_shift_HB1, 17);
+    uint32_t triangle_shift_HB2_Q17 = uz_convert_float_to_unsigned_fixed(triangle_shift_HB2, 17);
+    uint32_t triangle_shift_HB3_Q17 = uz_convert_float_to_unsigned_fixed(triangle_shift_HB3, 17);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + triangle_shift_HB1_Data_PWM_and_SS_control_V4_ip, triangle_shift_HB1_Q17);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + triangle_shift_HB2_Data_PWM_and_SS_control_V4_ip, triangle_shift_HB2_Q17);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + triangle_shift_HB3_Data_PWM_and_SS_control_V4_ip, triangle_shift_HB3_Q17);
+    uz_PWM_SS_2L_hw_SetTriangleShift(TEST_BASE_ADDRESS, triangle_shift_HB1, triangle_shift_HB2, triangle_shift_HB3);
 }
 
 #endif // TEST

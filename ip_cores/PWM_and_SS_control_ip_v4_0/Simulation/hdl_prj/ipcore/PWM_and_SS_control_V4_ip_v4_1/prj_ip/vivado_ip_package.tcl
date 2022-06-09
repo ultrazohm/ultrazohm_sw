@@ -7,6 +7,8 @@ add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth.v
 add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth1.vhd}
 add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth2.vhd}
 add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift.vhd}
+add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift1.vhd}
+add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift2.vhd}
 add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Counter_Ctrl.vhd}
 add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_GenPWM.vhd}
 add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_VSI_Control_Signal_Switch.vhd}
@@ -36,7 +38,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112540459 [ipx::current_core]
+set_property core_revision 2112541867 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_PWM_and_Switching_Signal_Control_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -59,6 +61,14 @@ ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift.vhd} [ipx::g
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Counter_Ctrl.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Counter_Ctrl.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Counter_Ctrl.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

@@ -31,6 +31,8 @@ annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/Gen
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/in_7_pipe', 1, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/in_8_pipe', 1, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/in_9_pipe', 1, 1, '');
+annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/in_10_pipe', 1, 1, '');
+annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/in_11_pipe', 1, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/t', 0, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Relational Operator', 0, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Switch10', 0, 1, '');
@@ -62,6 +64,16 @@ annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/Gen
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Triangle shift/sw2', 0, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Triangle shift/sw3', 0, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Triangle shift/delayMatch', 1, 1, '');
+annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Triangle shift1/Delay1', 1, 1, '');
+annotate_port('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Triangle shift1/Delay1', 1, 1, '');
+annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Triangle shift1/Delay2', 1, 1, '');
+annotate_port('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Triangle shift1/Delay2', 1, 1, '');
+annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Triangle shift1/delayMatch', 1, 1, '');
+annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Triangle shift2/Delay1', 1, 1, '');
+annotate_port('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Triangle shift2/Delay1', 1, 1, '');
+annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Triangle shift2/Delay2', 1, 1, '');
+annotate_port('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Triangle shift2/Delay2', 1, 1, '');
+annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Triangle shift2/delayMatch', 1, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/VSI Control Signal Switch/delayMatch', 1, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/VSI Control Signal Switch/delayMatch1', 1, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/VSI Control Signal Switch/delayMatch2', 1, 1, '');

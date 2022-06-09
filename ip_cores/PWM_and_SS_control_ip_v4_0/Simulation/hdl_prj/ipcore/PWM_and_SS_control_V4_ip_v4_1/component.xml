@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>424516cd</spirit:value>
+            <spirit:value>6231892b</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>424516cd</spirit:value>
+            <spirit:value>6231892b</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1014,7 +1014,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/PWM_and_SS_control_V4_ip.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_845493c4</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_4df3a425</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1160,14 +1160,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>PWM_and_SS_control_V4_ip</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112541867</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-06-09T07:07:32Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112542022</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-06-09T09:42:45Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="af79b4b0"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="2bdff0cd"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="41db2647"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="f1bd2612"/>
     </xilinx:packagingInfo>

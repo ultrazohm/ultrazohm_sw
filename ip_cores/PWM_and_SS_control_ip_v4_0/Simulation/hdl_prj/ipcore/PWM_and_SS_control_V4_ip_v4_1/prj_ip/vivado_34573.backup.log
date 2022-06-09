@@ -1,11 +1,14 @@
-Task "Vivado IP Packager" successful.
-Generated logfile: 
-
-****** Vivado v2020.1.1 (64-bit)
-  **** SW Build 2960000 on Wed Aug  5 22:57:21 MDT 2020
-  **** IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
-    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
-
+#-----------------------------------------------------------
+# Vivado v2020.1.1 (64-bit)
+# SW Build 2960000 on Wed Aug  5 22:57:21 MDT 2020
+# IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+# Start of session at: Thu Jun  9 09:07:14 2022
+# Process ID: 34573
+# Current directory: /home/hufnagelde/ultrazohm_sw/ip_cores/PWM_and_SS_control_ip_v4_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/prj_ip
+# Command line: vivado -mode batch -notrace -source vivado_ip_package.tcl
+# Log file: /home/hufnagelde/ultrazohm_sw/ip_cores/PWM_and_SS_control_ip_v4_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/prj_ip/vivado.log
+# Journal file: /home/hufnagelde/ultrazohm_sw/ip_cores/PWM_and_SS_control_ip_v4_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/prj_ip/vivado.jou
+#-----------------------------------------------------------
 source vivado_ip_package.tcl -notrace
 WARNING: [IP_Flow 19-3899] Cannot get the environment domain name variable for the component vendor name. Setting the vendor name to 'user.org'.
 INFO: [IP_Flow 19-234] Refreshing IP repositories
@@ -59,6 +62,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/PWM_and_SS_control_V4_ip_axi_lit
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/PWM_and_SS_control_V4_ip_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/PWM_and_SS_control_V4_ip.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/PWM_and_SS_control_V4_ip.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Thu Jun  9 11:42:45 2022...
-
-Elapsed time is 16.8485 seconds.
+INFO: [Common 17-206] Exiting Vivado at Thu Jun  9 09:07:32 2022...

@@ -56,6 +56,8 @@ enum JS_OberservableData {
 	JSO_setp_omega,
 	JSO_contr_ud,
 	JSO_contr_uq,
+	JSO_iq_setpoint,
+	JSO_id_setpoint,
 	JSO_lifecheck,
 	JSO_ENDMARKER
 };
@@ -161,9 +163,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
-	send_field_2,
-	send_field_3,
+	omega,
+	id_set,
+	iq_set,
 	send_field_4,
 	send_field_5,
 	send_field_6,

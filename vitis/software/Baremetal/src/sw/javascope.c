@@ -48,7 +48,7 @@ extern uz_9ph_dq_t actual_currents_dq;
 
 extern float setp_omega;
 extern float setp_q;
-
+extern uz_3ph_dq_t current_set_point;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
@@ -95,6 +95,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_iz1] 			= &actual_currents_dq.z1;
 	js_ch_observable[JSO_iz2] 			= &actual_currents_dq.z2;
 	js_ch_observable[JSO_iz3] 			= &actual_currents_dq.z3;
+	js_ch_observable[JSO_id_setpoint]   = &current_set_point.d;
+	js_ch_observable[JSO_iq_setpoint]   = &current_set_point.q;
 	js_ch_observable[JSO_Theta_el] 		= &pmsm_outputs.theta_el;
 	js_ch_observable[JSO_setp_omega] 	= &setp_omega;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;

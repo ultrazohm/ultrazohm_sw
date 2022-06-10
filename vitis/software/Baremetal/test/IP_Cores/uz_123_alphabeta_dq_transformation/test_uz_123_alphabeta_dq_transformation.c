@@ -50,6 +50,12 @@ void test_123_alphabeta_uz_dq_transformation_read_idq(void)
    TEST_ASSERT_EQUAL_FLOAT(currents.q, iq_expected);
 }
 
+void test_123_alphabeta_uz_dq_transformation_read_idq_pointer(void)
+{
+   uz_dqIPcore_t* testpointer = NULL;
+   TEST_ASSERT_FAIL_ASSERT(uz_123_alphabeta_dqIPcore_get_id_iq(testpointer));
+}
+
 void test_uz_123_alphabeta_dq_transformation_read_i_uvw(void)
 {
    uz_123_alphabeta_dqTransformation_hw_set_thetaOffset_Expect(config.base_address, config.theta_offset);

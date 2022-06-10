@@ -4,7 +4,7 @@
 123_alphabeta_dq Transformation IP-Core
 =======================================
 
-- Transforms three input quantities from a three phase system to alpha_beta-coordinates to dq-coordinates
+- Transforms three input quantities from a three phase system to alpha_beta-coordinates and dq-coordinates
 - Input interface is PL-only
 - Transformation can only be triggered by a PL signal, but not by the software driver
 - Output is supplied to PL-ports as well as AXI4-Lite

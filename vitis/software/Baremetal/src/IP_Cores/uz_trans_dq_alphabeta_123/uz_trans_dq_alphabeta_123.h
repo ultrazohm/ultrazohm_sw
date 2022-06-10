@@ -25,20 +25,20 @@ struct uz_dq_alphabeta_123_IPcore_config_t{
  */
 uz_dq_alphabeta_123_IPcore_t* uz_dq_alphabeta_123_IPcore_init(struct uz_dq_alphabeta_123_IPcore_config_t config);
 
-struct uz_dq_alphabeta_123_IPcore_update_t{
-    uint32_t base_address; /**< Base address of the IP-Core */
-    float idref; /**< update for the idref current in the isr */
-    float iqref; /**< update for the iqref current in the isr */
-};
+//struct uz_dq_alphabeta_123_IPcore_update_t{
+//    uint32_t base_address; /**< Base address of the IP-Core */
+//    float idref; /**< update for the idref current in the isr */
+//    float iqref; /**< update for the iqref current in the isr */
+//};
 
 /** 
  * @brief Initialize update for idref and iqref
  * 
  * @param update Update struct for the instance 
- * @return 0
 */
 
-uz_dq_alphabeta_123_IPcore_t* uz_dq_alphabeta_123_IPcore_idref_iqref_update(struct uz_dq_alphabeta_123_IPcore_update_t update);
+//uz_dq_alphabeta_123_IPcore_t* uz_dq_alphabeta_123_IPcore_idref_iqref_update(struct uz_dq_alphabeta_123_IPcore_update_t update);
+void uz_dq_alphabeta_123_IPcore_idref_iqref_update(uz_dq_alphabeta_123_IPcore_t* self, uz_3ph_dq_t updated_values);
 
 /**
  * @brief Read the output currents ia and ib and ic from the IP-Core and return them

@@ -52,10 +52,10 @@ extern uz_PI_Controller *PI_d_current;
 extern uz_PI_Controller *PI_q_current;
 extern uz_PI_Controller *PI_rpm;
 
-float setp_omega = 10.0f;
+float setp_omega = 16.6f*2.0f*M_PI;
 uz_3ph_dq_t current_set_point = {
     .d = 0.0f,
-    .q = 2.0f,
+    .q = 0.0f,
     .zero = 0.0f};
 
 struct uz_pmsm_model9ph_dq_outputs_general_t pmsm_outputs = {

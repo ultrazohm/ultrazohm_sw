@@ -37,14 +37,10 @@ extern uz_dq_alphabeta_123_IPcore_t* test_instance;
 struct uz_3ph_alphabeta_t currents;
 struct uz_3ph_abc_t currents_123;
 
-
-
-struct uz_dq_alphabeta_123_IPcore_update_t update={
-   				   .base_address= XPAR_UZ_SYSTEM_TRANS_DQ_ALPHABETA_1_0_BASEADDR,
-   				   .idref = 0,
-   				   .iqref = 30
-   				};
-
+struct uz_3ph_dq_t updated_values={
+		.d = 15,
+		.q = 0
+};
 
 
 // Initialize the Interrupt structure
@@ -82,7 +78,7 @@ void ISR_Control(void *data)
 	 Global_Data.av.i_c_IP_CORE=currents_123.c;
 
 	// Update idref iqref
-	uz_dq_alphabeta_123_IPcore_idref_iqref_update(update);
+	uz_dq_alphabeta_123_IPcore_idref_iqref_update(test_instance,updated_values);
 
 
 

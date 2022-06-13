@@ -12,5 +12,4 @@ float uz_trans_dq_alphabeta_123_hw_get_i1(uint32_t base_address);
 float uz_trans_dq_alphabeta_123_hw_get_i2(uint32_t base_address);
 float uz_trans_dq_alphabeta_123_hw_get_i3(uint32_t base_address);
 
-
 #endif // UZ_TRANS_DQ_ALPHABETA_123_HW_H

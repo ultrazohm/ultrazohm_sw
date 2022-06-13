@@ -8,7 +8,6 @@
 struct uz_dq_alphabeta_123_IPcore_t {
     bool is_ready;
     struct uz_dq_alphabeta_123_IPcore_config_t config;
-    //struct uz_dq_alphabeta_123_IPcore_update_t update;
 };
 
 static uint32_t instance_counter = 0U;
@@ -36,17 +35,11 @@ uz_dq_alphabeta_123_IPcore_t* uz_dq_alphabeta_123_IPcore_init(struct uz_dq_alpha
     return (self);
 }
 
-//uz_dq_alphabeta_123_IPcore_t* uz_dq_alphabeta_123_IPcore_idref_iqref_update(struct uz_dq_alphabeta_123_IPcore_update_t update){
-//   uz_assert_not_zero_uint32(update.base_address);
-//   uz_trans_dq_alphabeta_123_hw_set_idref(update.base_address, update.idref);
-//   uz_trans_dq_alphabeta_123_hw_set_iqref(update.base_address, update.iqref);
-//   return (0);
-//}
-
 void uz_dq_alphabeta_123_IPcore_idref_iqref_update(uz_dq_alphabeta_123_IPcore_t* self, uz_3ph_dq_t updated_values){
  
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+
     uz_trans_dq_alphabeta_123_hw_set_idref(self->config.base_address, updated_values.d);
     uz_trans_dq_alphabeta_123_hw_set_iqref(self->config.base_address, updated_values.q);
 }

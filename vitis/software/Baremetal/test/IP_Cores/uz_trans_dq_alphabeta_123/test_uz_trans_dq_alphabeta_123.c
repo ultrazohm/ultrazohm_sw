@@ -21,12 +21,6 @@ static struct uz_dq_alphabeta_123_IPcore_config_t config={
    .iq_ref = 3.5f
 };
 
-//static struct uz_dq_alphabeta_123_IPcore_update_t update={
-//    .base_address= TEST_BASE_ADDRESS,
-//    .idref= 4.5f,
-//    .iqref=5.5f
-//};
-
 uz_3ph_dq_t updated_values={
    .d= 4.5f,
    .q=5.5f
@@ -39,10 +33,6 @@ void setUp(void)
    config.theta_offset = -1.5f;
    config.id_ref = 2.5f;
    config.iq_ref = 3.5;
-
-   //update.base_address = TEST_BASE_ADDRESS;
-   //update.idref = 4.5f;
-   //update.iqref =5.5f;
 
    updated_values.d=4.5f;
    updated_values.q=5.5f;
@@ -60,13 +50,6 @@ void test_uz_trans_dq_alphabeta_123_init_test(void)
    uz_dq_alphabeta_123_IPcore_init(config);
 }
 
-//void test_uz_trans_dq_alphabeta_123_idref_iqref_update_test(void)
-//{
-//   uz_trans_dq_alphabeta_123_hw_set_idref_Expect(update.base_address, update.idref);
-//   uz_trans_dq_alphabeta_123_hw_set_iqref_Expect(update.base_address, update.iqref);
-//   uz_dq_alphabeta_123_IPcore_idref_iqref_update(update);
-//   }
-
 void test_uz_trans_dq_alphabeta_123_idref_iqref_update_test(void)
 {
    uz_trans_dq_alphabeta_123_hw_set_thetaOffset_Expect(config.base_address, config.theta_offset);
@@ -75,11 +58,10 @@ void test_uz_trans_dq_alphabeta_123_idref_iqref_update_test(void)
 
    uz_dq_alphabeta_123_IPcore_t* test_instance = uz_dq_alphabeta_123_IPcore_init(config);
 
-   uz_dq_alphabeta_123_IPcore_idref_iqref_update(test_instance,updated_values);
+   uz_trans_dq_alphabeta_123_hw_set_idref_Expect(config.base_address, updated_values.d);
+   uz_trans_dq_alphabeta_123_hw_set_iqref_Expect(config.base_address, updated_values.q);
 
-   //uz_trans_dq_alphabeta_123_hw_set_thetaOffset_Expect(config.base_address, config.theta_offset);
-   //uz_trans_dq_alphabeta_123_hw_set_idref_Expect(config.base_address, updated_values.d);
-   //uz_trans_dq_alphabeta_123_hw_set_iqref_Expect(config.base_address, updated_values.q);
+   uz_dq_alphabeta_123_IPcore_idref_iqref_update(test_instance,updated_values);
    }
 
 void test_uz_trans_dq_alphabeta_123_read_i_uvw(void)

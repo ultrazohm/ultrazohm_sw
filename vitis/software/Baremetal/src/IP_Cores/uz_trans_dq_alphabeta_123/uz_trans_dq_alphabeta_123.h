@@ -33,11 +33,9 @@ uz_dq_alphabeta_123_IPcore_t* uz_dq_alphabeta_123_IPcore_init(struct uz_dq_alpha
 
 /** 
  * @brief Initialize update for idref and iqref
- * 
- * @param update Update struct for the instance 
+ * @param self Pointer to driver instance
+ * @param updated_values Update struct for the instance 
 */
-
-//uz_dq_alphabeta_123_IPcore_t* uz_dq_alphabeta_123_IPcore_idref_iqref_update(struct uz_dq_alphabeta_123_IPcore_update_t update);
 void uz_dq_alphabeta_123_IPcore_idref_iqref_update(uz_dq_alphabeta_123_IPcore_t* self, uz_3ph_dq_t updated_values);
 
 /**

@@ -63,9 +63,6 @@ Driver reference
 
 .. doxygenfunction:: uz_dq_alphabeta_123_IPcore_init
 
-.. doxygenstruct:: uz_dq_alphabeta_123_IPcore_update_t
-   :members:
-
 .. doxygenfunction:: uz_dq_alphabeta_123_IPcore_idref_iqref_update
 
 .. doxygenfunction:: uz_dq_alphabeta_123_IPcore_get_i_abc

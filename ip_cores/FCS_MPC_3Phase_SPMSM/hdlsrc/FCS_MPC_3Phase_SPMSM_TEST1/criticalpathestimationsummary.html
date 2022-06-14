@@ -1,0 +1,1223 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+Critical Path Summary Report
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Critical Path Report for FCS_MPC_3Phase_SPMSM_TEST1/Microcontroller Software/Subsystem1
+</font>
+<br /><br /><br /><a name="Summary Section">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary Section
+</b>
+
+</font>
+
+</a>
+<hr>Critical Path Delay : 131.110 ns<br>Critical Path Begin : <a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1888')" name="code2model" class="code2model">
+reset_old2
+</a>
+<br>Critical Path End : <a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1884')" name="code2model" class="code2model">
+DelayValue1
+</a>
+<br>Highlight Critical Path: <a href="matlab:run('C:\ultrazohm_sw\ip_cores\FCS_MPC_3Phase_SPMSM\hdlsrc\FCS_MPC_3Phase_SPMSM_TEST1\criticalPathEstimated')">C:\ultrazohm_sw\ip_cores\FCS_MPC_3Phase_SPMSM\hdlsrc\FCS_MPC_3Phase_SPMSM_TEST1\criticalPathEstimated.m</a><br>Highlight Uncharacterized blocks: <a href="matlab:run('C:\ultrazohm_sw\ip_cores\FCS_MPC_3Phase_SPMSM\hdlsrc\FCS_MPC_3Phase_SPMSM_TEST1\highlightCriticalPathEstimationOffendingBlocks')">C:\ultrazohm_sw\ip_cores\FCS_MPC_3Phase_SPMSM\hdlsrc\FCS_MPC_3Phase_SPMSM_TEST1\highlightCriticalPathEstimationOffendingBlocks.m</a><br><br /><br /><a name="Critical Path Details">
+<font size="+1" color="#000066">
+<b class="midprod">
+Critical Path Details
+</b>
+
+</font>
+
+</a>
+<hr><table width="100%" border="1">
+<tr style="background-color: #eeeeee">
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Id
+</b>
+
+</th>
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Propagation (ns)
+</b>
+
+</th>
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Delay (ns)
+</b>
+
+</th>
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Block Path
+</b>
+
+</th>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+1
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3300
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3300
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1888')" name="code2model" class="code2model">
+reset_old2
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+2
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.0630
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.7330
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1893')" name="code2model" class="code2model">
+Detec_edge
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+3
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.9510
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.8880
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1896')" name="code2model" class="code2model">
+dtc
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+4
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+2.2870
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3360
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1897')" name="code2model" class="code2model">
+Saturation
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+5
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+2.6150
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3280
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1912')" name="code2model" class="code2model">
+Switch_on7
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+6
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+38.1060
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+35.4910
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1310')" name="code2model" class="code2model">
+divider15
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+7
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+45.1890
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+7.0830
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1168')" name="code2model" class="code2model">
+multiplier32
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+8
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+55.2510
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+10.0620
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1031')" name="code2model" class="code2model">
+subtract18
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+9
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+62.3340
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+7.0830
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:895')" name="code2model" class="code2model">
+multiplier13
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+10
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+72.3960
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+10.0620
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:793')" name="code2model" class="code2model">
+adder10
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+11
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+72.3960
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:798')" name="code2model" class="code2model">
+adder_outbuff1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+12
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+79.4870
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+7.0910
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1612')" name="code2model" class="code2model">
+multiplier74
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+13
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+89.5490
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+10.0620
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1527')" name="code2model" class="code2model">
+adder32
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+14
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+99.6110
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+10.0620
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1426')" name="code2model" class="code2model">
+subtract33
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+15
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+99.6110
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1431')" name="code2model" class="code2model">
+subtract_outbuff15
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+16
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+106.7020
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+7.0910
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1295')" name="code2model" class="code2model">
+square15
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+17
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+116.7980
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+10.0960
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1153')" name="code2model" class="code2model">
+adder23
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+18
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+117.0320
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.2340
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:997')" name="code2model" class="code2model">
+dtc7
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+19
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+117.0320
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:560')" name="code2model" class="code2model">
+Assignment7
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+20
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+117.0320
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:559')" name="code2model" class="code2model">
+Assignment6
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+21
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+117.0320
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:558')" name="code2model" class="code2model">
+Assignment5
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+22
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+117.0320
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:557')" name="code2model" class="code2model">
+Assignment4
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+23
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+117.0320
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:556')" name="code2model" class="code2model">
+Assignment3
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+24
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+117.0320
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:555')" name="code2model" class="code2model">
+Assignment2
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+25
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+117.0320
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:553')" name="code2model" class="code2model">
+Assignment1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+26
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+117.0320
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:551')" name="code2model" class="code2model">
+Assignment
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+27
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+117.0320
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:550')" name="code2model" class="code2model">
+Reshape
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+28
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+117.3620
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3300
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1906')" name="code2model" class="code2model">
+Switch_on15
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+29
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+117.3620
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1784')" name="code2model" class="code2model">
+Reshape1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+30
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+117.3620
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1809')" name="code2model" class="code2model">
+Selector14
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+31
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+118.8990
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.5370
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1862')" name="code2model" class="code2model">
+relop6
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+32
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+118.8990
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1867')" name="code2model" class="code2model">
+relop_outbuff5
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+33
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+119.2510
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3520
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1805')" name="code2model" class="code2model">
+switch12
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+34
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+120.7540
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.5030
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1856')" name="code2model" class="code2model">
+relop5
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+35
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+120.7540
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1861')" name="code2model" class="code2model">
+relop_outbuff4
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+36
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+121.1060
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3520
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1800')" name="code2model" class="code2model">
+switch11
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+37
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+122.6090
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.5030
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1846')" name="code2model" class="code2model">
+relop4
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+38
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+122.6090
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1851')" name="code2model" class="code2model">
+relop_outbuff3
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+39
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+122.9610
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3520
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1795')" name="code2model" class="code2model">
+switch9
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+40
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+124.4640
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.5030
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1836')" name="code2model" class="code2model">
+relop3
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+41
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+124.4640
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1841')" name="code2model" class="code2model">
+relop_outbuff2
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+42
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+124.8160
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3520
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1789')" name="code2model" class="code2model">
+switch7
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+43
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+126.3190
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.5030
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1826')" name="code2model" class="code2model">
+relop2
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+44
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+126.3190
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1831')" name="code2model" class="code2model">
+relop_outbuff1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+45
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+126.6710
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3520
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1781')" name="code2model" class="code2model">
+switch5
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+46
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+128.1740
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.5030
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1816')" name="code2model" class="code2model">
+relop1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+47
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+128.1740
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1821')" name="code2model" class="code2model">
+relop_outbuff
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+48
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+128.5260
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3520
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1776')" name="code2model" class="code2model">
+switch3
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+49
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+130.0290
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.5030
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1811')" name="code2model" class="code2model">
+relop
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+50
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+130.3810
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3520
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1769')" name="code2model" class="code2model">
+switch
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+51
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+130.6150
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.2340
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1852')" name="code2model" class="code2model">
+Selector_dtc_comp_dtc_comp1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+52
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+130.6150
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1792')" name="code2model" class="code2model">
+Selector6
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+53
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+130.8490
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.2340
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1832')" name="code2model" class="code2model">
+dtc1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+54
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+130.8490
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1778')" name="code2model" class="code2model">
+Assignment1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+55
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+130.8490
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1773')" name="code2model" class="code2model">
+Assignment
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+56
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+130.8490
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1770')" name="code2model" class="code2model">
+Reshape
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+57
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+131.1100
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.2610
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_FCS_MPC_3Phase_SPMSM_TEST1:1884')" name="code2model" class="code2model">
+DelayValue1
+</a>
+
+</td>
+
+</tr>
+
+</table>
+<br /><br />
+</body>
+
+</html>

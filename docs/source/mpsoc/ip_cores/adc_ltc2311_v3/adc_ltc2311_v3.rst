@@ -98,7 +98,6 @@ The following settings are set on a per master basis within one IP-Core instance
 - samples
 - sample_time
 - Trigger mode (software, PL, continuous)
-- 
 
 The following settings are set on a per channel basis of one SPI master within an IP-Core instance:
 

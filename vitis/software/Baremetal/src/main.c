@@ -40,12 +40,100 @@ DS_Data Global_Data = {
     }
 };
 
+// Init structs
+const struct uz_PMSM_t config_PMSM = {
+
+	.R_ph_Ohm = 0.5f,
+
+   .Ld_Henry = 0.001f,
+
+   .Lq_Henry = 0.001f,
+
+   .Psi_PM_Vs = 0.008f,
+
+   .polePairs = 2.0f,
+
+   .I_max_Ampere = 10.0f
+
+};
+
+const struct uz_PI_Controller_config config_id = {
+
+   .Kp = 2.5f,
+
+   .Ki = 200.0f,
+
+   .samplingTime_sec = 0.00005f,
+
+   .upper_limit = 20.0f,
+
+   .lower_limit = -20.0f
+
+};
+
+const struct uz_PI_Controller_config config_iq = {
+
+   .Kp = 2.5f,
+
+   .Ki = 200.0f,
+
+   .samplingTime_sec = 0.00005f,
+
+   .upper_limit = 20.0f,
+
+   .lower_limit = -20.0f
+
+};
+
+struct uz_FOC_config config_FOC = {
+
+   .decoupling_select = no_decoupling,
+
+   .config_PMSM = config_PMSM,
+
+   .config_id = config_id,
+
+   .config_iq = config_iq
+
+};
+
+
+struct uz_SpeedControl_config config_speed = {
+
+    .config_controller.Kp = 0.01f,
+
+    .config_controller.Ki = 7.0f,
+
+    .config_controller.samplingTime_sec = 0.00005f,
+
+    .config_controller.upper_limit = 15.0f,
+
+    .config_controller.lower_limit = -15.0f,
+
+    .config_PMSM.R_ph_Ohm = 0.5f,
+
+    .config_PMSM.Ld_Henry = 0.001f,
+
+    .config_PMSM.Lq_Henry = 0.001f,
+
+    .config_PMSM.Psi_PM_Vs = 0.008f,
+
+    .config_PMSM.polePairs = 2.0f,
+
+    .config_PMSM.J_kg_m_squared = 1.0f,
+
+    .config_PMSM.I_max_Ampere = 10.0f,
+
+    .is_field_weakening_active = false
+
+};
 enum init_chain
 {
     init_assertions = 0,
     init_gpios,
     init_software,
     init_ip_cores,
+	init_foc,
     print_msg,
     init_interrupts,
     infinite_loop
@@ -89,8 +177,15 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
+            Global_Data.objects.resolver_IP = initialize_resolverIP_on_D4();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            initialization_chain = init_foc;
+            break;
+        case init_foc:
+        	Global_Data.objects.FOC_instance = uz_FOC_init(config_FOC);
+            Global_Data.objects.Speed_instance = uz_SpeedControl_init(config_speed);
+        	Global_Data.av.theta_offset = 1.120014f;
             initialization_chain = print_msg;
             break;
         case print_msg:

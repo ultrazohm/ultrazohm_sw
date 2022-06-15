@@ -37,6 +37,7 @@
 #include "defines.h"
 #include "include/isr.h"
 #include "include/encoder.h"
+#include "include/uz_resolverIP_init.h"
 #include "include/gpio_axi.h"
 #include "include/javascope.h"
 #include "include/mux_axi.h"
@@ -53,6 +54,8 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
+#include "uz/uz_FOC/uz_FOC.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
 
 
 //----------------------------------------------------

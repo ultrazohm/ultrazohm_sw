@@ -6,6 +6,11 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_FOC/uz_FOC.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -68,18 +73,23 @@ typedef struct _actualValues_ {
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	float mechanicalRotorSpeed; 		// in rpm
 	float mechanicalRotorSpeed_filtered; // in rpm
-	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float I_d;
-	float I_q;
-	float U_d;
-	float U_q;
+	float i_d;
+	float i_q;
+	float i_d_ref;
+	float i_q_ref;
+	float rpm_ref;
+	float rpm_ref_filt;
+	float i_alpha;
+	float i_beta;
+	float u_d;
+	float u_q;
+	float u_d_ref;
+	float u_q_ref;
 	float theta_elec;
 	float theta_mech;
 	float theta_offset; //in rad/s
-	float temperature;
+	float theta_m_offset_comp;
+	float polepairs;
 	uint32_t  heartbeatframe_content;
 } actualValues;
 
@@ -108,6 +118,9 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
+	uz_resolverIP_t* resolver_IP;
+	uz_FOC* FOC_instance;
+	uz_SpeedControl_t* Speed_instance;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

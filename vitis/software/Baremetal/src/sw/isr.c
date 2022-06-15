@@ -30,6 +30,8 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_signals/uz_signals.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -40,7 +42,33 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
+// Data for determination of mechanical resolver angle
 
+float theta_mech_old=0.0f;
+int32_t cnt = 0U;
+bool cnt_reset = 0;
+float cnt_float=0.0f;
+float cnt_reset_float=0.0f;
+float theta_mech_calc_from_resolver = 0.0f;
+float theta_m_max = 0.0f;
+float theta_m_min = 0.0f;
+
+// Structs for foc and speed control
+struct uz_3ph_abc_t measurement_current = {0};
+struct uz_3ph_dq_t dq_measurement_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t dq_reference_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t dq_ref_Volts = {0};
+struct uz_DutyCycle_t output = {0};
+struct uz_3ph_abc_t uvw_ref = {0};
+float theta_offset = -0.50f; // should be replaced offset is in Global data aswell
+float V_dc_volts = 48.0f; // measured or fixed value?
+float omega_el_rad_per_sec = 0.0f;
+float omega_m_rad_per_sec = 0.0f;
+float adc_scaling = 9.5f/2.0f; // Factor is necessary, have to be adjustet with clamp meter
+
+// speed control
+float n_ref_rpm = 50.0f;
+bool ext_clamping = false;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -55,10 +83,24 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    // convert ADC currents
+    measurement_current.a = adc_scaling * (Global_Data.aa.A1.me.ADC_A2 - 2.5f);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_current.b = adc_scaling * (Global_Data.aa.A1.me.ADC_A4 - 2.5f);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_current.c = adc_scaling * (Global_Data.aa.A1.me.ADC_A3 - 2.5f);// Values have to be adjusted to ADC Place and to Current sensors
+    dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
+
+    // calculating values needed for control
+    omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;         // w_mech
+    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * 3.0f * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+    	 dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, n_ref_rpm, V_dc_volts, dq_reference_current.d);
+    	 dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, V_dc_volts, omega_el_rad_per_sec);
+    	 uvw_ref = uz_transformation_3ph_dq_to_abc(dq_ref_Volts, Global_Data.av.theta_elec);
+    	 output = uz_FOC_generate_DutyCycles(uvw_ref, V_dc_volts);
+    	 uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -70,6 +112,41 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
+
+
+    // Determine mechanical angle of resolver
+
+    if(theta_mech_old-Global_Data.av.theta_mech > 4.0f) {
+    	cnt++;
+    	cnt_float=(float)cnt;
+    } else if (theta_mech_old-Global_Data.av.theta_mech < -4.0f) {
+    	cnt--;
+    	cnt_float=(float)cnt;
+    }
+    if(cnt > 1 || cnt < -1) {
+    	cnt = 0;
+    	cnt_float = 0.0f;
+    }
+    if(cnt_reset == 1) {
+    	cnt = 0;
+    	cnt_float = 0;
+    	cnt_reset = 0;
+    	cnt_reset_float=0;
+
+    }
+
+    if(cnt >= 0){
+    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/uz_resolverIP_getResolverPolePairs(Global_Data.objects.resolver_IP) + cnt*2*M_PI/2.0f;
+    } else {
+    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/2.0f + (2+cnt)*2*M_PI/2.0f;
+    }
+    theta_mech_old = Global_Data.av.theta_mech;
+    if (Global_Data.av.theta_mech <= theta_m_min) {
+    	theta_m_min = Global_Data.av.theta_mech;
+    }
+    if (Global_Data.av.theta_mech >= theta_m_max) {
+    	theta_m_max = Global_Data.av.theta_mech;
+    }
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

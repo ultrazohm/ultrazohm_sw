@@ -41,19 +41,19 @@ uz_resolverIP_t* initialize_resolverIP_on_D4(void){
 
 void update_position_of_resolverIP(DS_Data* const data){
 	data->av.theta_mech = uz_resolverIP_readMechanicalPosition(data->objects.resolver_IP);
-	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)) - 2 * UZ_PIf * floor(data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)  / (2* UZ_PIf));
+	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)) - 2 * UZ_PIf * floor(data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)  / (2* M_PI));
 }
 
 void update_speed_of_resolverIP(DS_Data* const data){
-	data->av.mechanicalRotorSpeed = uz_resolverIP_readMechanicalVelocity(data->objects.resolver_IP) * 60.f; //in rpm
+	data->av.mechanicalRotorSpeed = uz_resolverIP_readMechanicalVelocity(data->objects.resolver_IP) * 60.0f; //in rpm
 }
 
 void update_position_and_speed_of_resolverIP(DS_Data* const data){
 	float *position = &data->av.theta_mech;
 	float *velocity = &data->av.mechanicalRotorSpeed;
 	uz_resolverIP_readMechanicalPositionAndVelocity(data->objects.resolver_IP,position,velocity);
-	data->av.mechanicalRotorSpeed = data->av.mechanicalRotorSpeed * 60.F; //rpm
-	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)) - 2 * UZ_PIf * floor(data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)  / (2* UZ_PIf));
+	data->av.mechanicalRotorSpeed = data->av.mechanicalRotorSpeed * 60.0f; //rpm
+	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)) - 2 * M_PI * floor(data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)  / (2* M_PI));
 }
 
 // For DEBUGGING only

@@ -55,20 +55,23 @@ float theta_m_min = 0.0f;
 
 // Structs for foc and speed control
 struct uz_3ph_abc_t measurement_current = {0};
+struct uz_3ph_abc_t measurement_voltage = {0};
 struct uz_3ph_dq_t dq_measurement_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 struct uz_3ph_dq_t dq_reference_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 struct uz_3ph_dq_t dq_ref_Volts = {0};
 struct uz_DutyCycle_t output = {0};
 struct uz_3ph_abc_t uvw_ref = {0};
 float theta_offset = -0.50f; // should be replaced offset is in Global data aswell
-float V_dc_volts = 48.0f; // measured or fixed value?
 float omega_el_rad_per_sec = 0.0f;
 float omega_m_rad_per_sec = 0.0f;
-float adc_scaling = 9.5f/2.0f; // Factor is necessary, have to be adjustet with clamp meter
 
 // speed control
 bool ext_clamping = false;
 
+// Conversion factors for current and voltage
+#define ADC_CURRENT_SCALING	   		80.0f/2.0f
+#define ADC_CURRENT_OFFSET   		2.5f
+#define DC_VOLT_CONV		12.5f
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -82,24 +85,31 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
-
+    update_position_and_speed_of_resolverIP(&Global_Data);
     // convert ADC currents
-    measurement_current.a = adc_scaling * (Global_Data.aa.A1.me.ADC_A2 - 2.5f);// Values have to be adjusted to ADC Place and to Current sensors
-    measurement_current.b = adc_scaling * (Global_Data.aa.A1.me.ADC_A4 - 2.5f);// Values have to be adjusted to ADC Place and to Current sensors
-    measurement_current.c = adc_scaling * (Global_Data.aa.A1.me.ADC_A3 - 2.5f);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_current.a = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A1 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_current.b = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A2 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_current.c = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A3 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
     dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
 
+    // convert ADC voltages
+    measurement_voltage.a = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B5;// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_voltage.b = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B6;// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_voltage.c = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B7;// Values have to be adjusted to ADC Place and to Current sensors
+
+    // convert ADC readings to dc link voltages
+    Global_Data.av.U_ZK = Global_Data.aa.A1.me.ADC_A4 * DC_VOLT_CONV;
     // calculating values needed for control
-    omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;         // w_mech
-    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * 3.0f * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
+    omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;// w_mech
+    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * UZ_D5_MOTOR_POLE_PAIR_NUMBER * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	 dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm, V_dc_volts, dq_reference_current.d);
-    	 dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, V_dc_volts, omega_el_rad_per_sec);
+    	 dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm, Global_Data.av.U_ZK, dq_reference_current.d);
+    	 dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, omega_el_rad_per_sec);
     	 uvw_ref = uz_transformation_3ph_dq_to_abc(dq_ref_Volts, Global_Data.av.theta_elec);
-    	 output = uz_FOC_generate_DutyCycles(uvw_ref, V_dc_volts);
+    	 output = uz_FOC_generate_DutyCycles(uvw_ref, Global_Data.av.U_ZK);
     	 uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

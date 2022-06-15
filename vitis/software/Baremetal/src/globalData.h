@@ -106,6 +106,7 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	float n_ref_rpm;
 } referenceAndSetValues;
 
 typedef struct{

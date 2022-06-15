@@ -67,8 +67,8 @@ float omega_m_rad_per_sec = 0.0f;
 float adc_scaling = 9.5f/2.0f; // Factor is necessary, have to be adjustet with clamp meter
 
 // speed control
-float n_ref_rpm = 50.0f;
 bool ext_clamping = false;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -96,7 +96,7 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	 dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, n_ref_rpm, V_dc_volts, dq_reference_current.d);
+    	 dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm, V_dc_volts, dq_reference_current.d);
     	 dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, V_dc_volts, omega_el_rad_per_sec);
     	 uvw_ref = uz_transformation_3ph_dq_to_abc(dq_ref_Volts, Global_Data.av.theta_elec);
     	 output = uz_FOC_generate_DutyCycles(uvw_ref, V_dc_volts);

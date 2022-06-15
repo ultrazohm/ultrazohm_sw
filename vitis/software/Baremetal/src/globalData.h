@@ -92,6 +92,18 @@ typedef struct _actualValues_ {
 	float polepairs;
 	uint32_t  heartbeatframe_content;
 } actualValues;
+// extra struct for filtered values
+typedef struct _filteredValues_ {
+	float filt_I_U; 		// Machine side current in A
+	float filt_I_V; 		// Machine side current in A
+	float filt_I_W; 		// Machine side current in A
+	float filt_U_U; 		// Machine side voltage in V
+	float filt_U_V; 		// Machine side voltage in V
+	float filt_U_W; 		// Machine side voltage in V
+	float filt_U_ZK; 		// DC-Link voltage in V
+	float filt_i_d;
+	float filt_i_q;
+}  filteredValues;
 
 typedef struct _referenceAndSetValues_ {
 	float halfBridge1DutyCycle;
@@ -122,11 +134,19 @@ typedef struct{
 	uz_resolverIP_t* resolver_IP;
 	uz_FOC* FOC_instance;
 	uz_SpeedControl_t* Speed_instance;
+	uz_IIR_Filter_t* iir_u_dc;
+	uz_IIR_Filter_t* iir_i_u;
+	uz_IIR_Filter_t* iir_i_v;
+	uz_IIR_Filter_t* iir_i_w;
+	uz_IIR_Filter_t* iir_u_u;
+	uz_IIR_Filter_t* iir_u_v;
+	uz_IIR_Filter_t* iir_u_w;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;
 	actualValues av;
+	filteredValues fv;
 	AnalogAdapters aa;
 	object_pointers_t objects;
 } DS_Data;

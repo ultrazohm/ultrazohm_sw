@@ -53,7 +53,7 @@ float theta_mech_calc_from_resolver = 0.0f;
 float theta_m_max = 0.0f;
 float theta_m_min = 0.0f;
 
-// Structs for foc and speed control
+//FOC and speed control
 struct uz_3ph_abc_t measurement_current = {0};
 struct uz_3ph_abc_t measurement_voltage = {0};
 struct uz_3ph_dq_t dq_measurement_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
@@ -61,16 +61,14 @@ struct uz_3ph_dq_t dq_reference_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 struct uz_3ph_dq_t dq_ref_Volts = {0};
 struct uz_DutyCycle_t output = {0};
 struct uz_3ph_abc_t uvw_ref = {0};
-float theta_offset = -0.50f; // should be replaced offset is in Global data aswell
 float omega_el_rad_per_sec = 0.0f;
 float omega_m_rad_per_sec = 0.0f;
-
-// speed control
 bool ext_clamping = false;
 
 // Conversion factors for current and voltage
-#define ADC_CURRENT_SCALING	   		80.0f/2.0f
-#define ADC_CURRENT_OFFSET   		2.5f
+#define NUMBER_OF_TURNS_CURRENT_MEASURING 2.0f
+#define ADC_CURRENT_SCALING	  80.0f/NUMBER_OF_TURNS_CURRENT_MEASURING
+#define ADC_CURRENT_OFFSET   		2.5f //Offset for LEM Sensors
 #define DC_VOLT_CONV		12.5f
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -91,7 +89,15 @@ void ISR_Control(void *data)
     measurement_current.b = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A2 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
     measurement_current.c = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A3 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
     dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
-
+	//Old Conversion factors from Hacker Control
+//	codegenInstance.input.ia = (Global_Data.aa.A2.me.ADC_A1-2.5F) * (80.0F/2.0F)-0.25F;		//A
+//	codegenInstance.input.ib = (Global_Data.aa.A2.me.ADC_A2-2.5F) * (80.0F/2.0F)+0.35F;		//A
+//	codegenInstance.input.ic = (Global_Data.aa.A2.me.ADC_A3-2.5F) * (80.0F/2.0F)-0.43F;		//A
+//	codegenInstance.input.U_IC = Global_Data.aa.A2.me.ADC_A4 * 12.5F;		//V
+//	Not used in Simulink-Model:
+//	meas_Ua_Voltage = Global_Data.aa.A2.me.ADC_B5 * 12.5F;
+//	meas_Ub_Voltage = Global_Data.aa.A2.me.ADC_B6 * 12.5F;
+//	meas_Uc_Voltage = Global_Data.aa.A2.me.ADC_B7 * 12.5F;
     // convert ADC voltages
     measurement_voltage.a = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B5;// Values have to be adjusted to ADC Place and to Current sensors
     measurement_voltage.b = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B6;// Values have to be adjusted to ADC Place and to Current sensors
@@ -99,14 +105,19 @@ void ISR_Control(void *data)
 
     // convert ADC readings to dc link voltages
     Global_Data.av.U_ZK = Global_Data.aa.A1.me.ADC_A4 * DC_VOLT_CONV;
+
+    //theta offset and theta elec
+    Global_Data.av.theta_m_offset_comp = theta_mech_calc_from_resolver - Global_Data.av.theta_offset;
+    Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp * Global_Data.av.polepairs;
+
     // calculating values needed for control
     omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;// w_mech
-    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * UZ_D5_MOTOR_POLE_PAIR_NUMBER * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
+    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * Global_Data.av.polepairs * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	 dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm, Global_Data.av.U_ZK, dq_reference_current.d);
+    	 dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_el_rad_per_sec, Global_Data.rasv.n_ref_rpm, Global_Data.av.U_ZK, dq_reference_current.d);
     	 dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, omega_el_rad_per_sec);
     	 uvw_ref = uz_transformation_3ph_dq_to_abc(dq_ref_Volts, Global_Data.av.theta_elec);
     	 output = uz_FOC_generate_DutyCycles(uvw_ref, Global_Data.av.U_ZK);

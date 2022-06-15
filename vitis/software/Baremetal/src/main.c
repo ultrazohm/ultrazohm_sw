@@ -63,7 +63,7 @@ const struct uz_PI_Controller_config config_id = {
 
    .Ki = 200.0f,
 
-   .samplingTime_sec = 0.00005f,
+   .samplingTime_sec = SAMPLE_FREQUENCY,
 
    .upper_limit = 20.0f,
 
@@ -77,7 +77,7 @@ const struct uz_PI_Controller_config config_iq = {
 
    .Ki = 200.0f,
 
-   .samplingTime_sec = 0.00005f,
+   .samplingTime_sec = SAMPLE_FREQUENCY,
 
    .upper_limit = 20.0f,
 
@@ -104,7 +104,7 @@ struct uz_SpeedControl_config config_speed = {
 
     .config_controller.Ki = 7.0f,
 
-    .config_controller.samplingTime_sec = 0.00005f,
+    .config_controller.samplingTime_sec = SAMPLE_FREQUENCY,
 
     .config_controller.upper_limit = 15.0f,
 
@@ -127,6 +127,12 @@ struct uz_SpeedControl_config config_speed = {
     .is_field_weakening_active = false
 
 };
+
+struct uz_IIR_Filter_config iir_config_filt1 = {
+		.selection = LowPass_first_order,
+		.cutoff_frequency_Hz = 500.0f,
+		.sample_frequency_Hz = SAMPLE_FREQUENCY};
+
 enum init_chain
 {
     init_assertions = 0,
@@ -185,7 +191,15 @@ int main(void)
         case init_foc:
         	Global_Data.objects.FOC_instance = uz_FOC_init(config_FOC);
             Global_Data.objects.Speed_instance = uz_SpeedControl_init(config_speed);
-        	Global_Data.av.theta_offset = 1.120014f;
+        	Global_Data.av.theta_offset = 0.0f; // have to be set with duty cycle on first phase
+        	Global_Data.av.polepairs = 2.0f;
+            Global_Data.objects.iir_u_dc = uz_signals_IIR_Filter_init(iir_config_filt1);
+            Global_Data.objects.iir_i_u = uz_signals_IIR_Filter_init(iir_config_filt1);
+            Global_Data.objects.iir_i_v = uz_signals_IIR_Filter_init(iir_config_filt1);
+            Global_Data.objects.iir_i_w = uz_signals_IIR_Filter_init(iir_config_filt1);
+            Global_Data.objects.iir_u_u = uz_signals_IIR_Filter_init(iir_config_filt1);
+            Global_Data.objects.iir_u_v = uz_signals_IIR_Filter_init(iir_config_filt1);
+            Global_Data.objects.iir_u_w = uz_signals_IIR_Filter_init(iir_config_filt1);
             initialization_chain = print_msg;
             break;
         case print_msg:

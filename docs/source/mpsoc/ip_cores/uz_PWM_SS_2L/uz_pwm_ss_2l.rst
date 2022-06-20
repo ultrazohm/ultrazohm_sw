@@ -8,9 +8,11 @@ The IP core implements a modulation and switching state control unit that genera
 Interlock and dead-time functionalities are not part of this IP core and are handled in a subsequent IP core.
 If less than three phase legs are used, unused phase legs can be set to a tristate mode, where neither the top nor the bottom switch of the phase leg are active.
 For higher phase numbers, multiple instances of this module can be used in the FPGA, each containing its own up-down counter.
-For synchronizing multiple instances, the counter can be fed to subsequent instances. Furthermore an interleaved operation is possible. Every half-bridge can be shifted individually. These features are the only difference between versions V3 and V4.
-In the standard block design of the ultrazohm_sw framework, 4 synchronized instances of this ip core are present with respective software driver instances for controlling up 
-to 12 half-bridge phase legs.
+For synchronizing multiple instances, the counter can be fed to subsequent instances.
+Furthermore, an interleaved operation is possible.
+Every half-bridge can be shifted individually.
+These features are the only difference between versions V3 and V4.
+In the standard block design of the ultrazohm_sw framework, 4 synchronized instances of this ip core are present with respective software driver instances for controlling up to 12 half-bridge phase legs.
  
 The IP core provides two general modes of operation.
 

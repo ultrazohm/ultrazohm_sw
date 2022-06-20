@@ -7,7 +7,7 @@ Digital Adapter Boards
     :caption: Digital
 
     optical_general
-    incr_encoder_general
+    inc_encoder/incr_encoder_general
     digital_voltage_3u
     Digital_BreakoutBoard_v1
     encoder_v1

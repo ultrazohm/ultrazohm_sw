@@ -1,22 +1,24 @@
 .. _dig_incEncoderRev02:
 
-==============================
+=========================
 Digital IncrEncoder Rev02
-==============================
+=========================
 
 
 .. image:: incr_encoder_rev02/incr_encoder_rev02_pcb.jpg
    :height: 500
 
 Functionality
------------------------
+-------------
+
 * Connects three incremental encoder FPGA
 * Provides isolated 5V supply to encoder
 * Reads differential signals from encoder
 
 
 Pinout (exemplary for Encoder 1)
-"""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""
+
 =====  ========  ==========  =====================
 Pin    D-Sub 9     FPGA        Kubrich Encoder 
 =====  ========  ==========  =====================
@@ -34,7 +36,9 @@ GND     1                      white
 * Program CPLDs with firmware, see :ref:`label_cpld_programming` for details
 
 Known issues
------------------------
+------------
+
+
 * Rev 02: Twisted labels for Encoder signals. In the schematic definition the labels are incorrectly assigned.
 
 .. image:: incr_encoder_rev02/wrong_labeled_schematic.png
@@ -43,7 +47,7 @@ Known issues
 To use the Rev02 encoder card, the Constraint file Digital_AdapterBoard_D5 in vivado project has to be changed.
 
 Pin configuration
-"""""""""""""""""""""""""""
+"""""""""""""""""
 
 ===============  ==========  ============
 Package PIN D5   Port        Signal
@@ -63,24 +67,28 @@ B14              Dig_12_Ch5   Encoder_1_B
 
 
 Vivado block design with three IP-Cores on D5
---------------------------------------------------
+---------------------------------------------
+
 * Fo using all channels of the card, the user has to change the block design in vivado (three IP-Cores on D5 connected).
 
 .. image:: incr_encoder_rev02/vivado_block.jpg
    :height: 500
 
 Compatibility 
-----------------------
+-------------
+
 * Slots D1 to D5 can be used without limitations, D5 is suggested. 
 * Block design in vivado has to be adapted with three IP-Cores for reading out.
 
 
 See also
-"""""""""""""""
+""""""""
+
 * :download:`Schematic V02 <incr_encoder_rev02/SCH_UZ_D_Incr_Encoder_Default_Rev02.pdf>`
 * :ref:`label_cpld_programming`
 
 
 Designed by 
-"""""""""""""""
+"""""""""""
+
 Michaela Hlatky (THN) in 02/2022

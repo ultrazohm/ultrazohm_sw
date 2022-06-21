@@ -566,17 +566,28 @@ Example
 Example of using SI-Value output of ADC-IP-Core with sfix18_En11 output data type
 ---------------------------------------------------------------------------------
 
-From the SI_VALUE output vector of the ADC-IP-Core three measurements are sliced and passed to another IP-Core that requires sfix18_En11 input datatypes.
-Therefore the conversion factor, offset and conversion factor definition have to be adjusted in the initialization of the ADC-IP-Core.
+In this example the SI_VALUE output vector of the ADC-IP-Core is used. This vector contains the output values of all channels successively. The fixed point datatype (the number of integer and fractinal bits) of the SI-Values of each channel can be set in software on a per channel basis.
+To get the output values of a single channel the output-vector needs to be sliced. The length of the individual values is determined by the datatype with the length equaling the sum of integer and fractional bits. The LSBs (of each output value) are the fractional bits.
 
-The parameter conversion_factor_definition has to be adjusted according to the needed datatype sfix18_En11 - 7 integer bits and 11 fractional bits.
-Offset and conversion-factor depend on the used ADC, its measurement range and resolution. The two parameters have in this example approximately the following values:
+In this example the datatype sfix18_En11 is required for the SI-values. This datatype contains 7 integer bits and 11 fractional bits, so a total of 18 bits. These values have to be configured in the IP-Core driver initialization.
+
+
+The first value in the SI-Value-vector is contained in the bits 0 to 17. The second value is in the bits 18 to 24, and so on for the rest of the values. The number of bits per values depending on the configured datatype, in this case sfix18_En11 with a length of 18 bit.
+
+
+Besides the datatype the conversion factor and offset have to be configured. The SI-Value is calculated by adding an offset to the raw-value of the ADC and afterwards multiplying the result with the conversion factor.
+The conversion factor and offset are also configured in the initialization of the ADC-IP-Core.
+
+In this example following offset and conversion factor are used:
 
 .. math::
-    offset \approx \frac{-2^{16}}{4}\\
-    conversion factor \approx \frac{100}{2^{16}}
+    offset = \frac{-2^{16}}{4} = -16384\\
+    conversion factor = \frac{100}{2^{16}} = 0.001526
 
-The value 2^16 results from the 16-Bit-resolution of the ADC. The actually used values are slightly different, because of deviations of the used ADC.
+The Raw-value of the 16-Bit-ADC is between 0 and 65635. The measurement range of the ADC is from -5V to 5V. As only the positive range of the ADC is used in this example the raw-value has to be offsetted by a quarter of the measurement range, -2.5V or :math:`\frac{-2^{16}}{4} = -16384`.
+For scaling is a factor of 100 necessary, which hast to be divided by :math:`2^{16}` to get the correct conversion factor of :math:`\frac{100}{2^{16}}`.
+
+In the listing the configuration for the IP-Core initialization can be seen. The configuration contains the discussed values of the conversion factor, offset and datatype with integer and fractional bits. All channels are configured with the same parameters.
 
 
 .. code-block:: c
@@ -588,12 +599,12 @@ The value 2^16 results from the 16-Bit-resolution of the ADC. The actually used 
         .base_address = XPAR_UZ_ANALOG_ADAPTER_A1_ADAPTER_A1_ADC_LTC2311_S00_AXI_BASEADDR,
         .ip_clk_frequency_Hz = XPAR_A1_ADC_LTC2311_IP_CORE_FREQUENCY,
         .channel_config = {
-            .conversion_factor = 0.001464, 		
+            .conversion_factor = 0.001526, 		
             .conversion_factor_definition = {
                 .is_signed = true,
                 .integer_bits = 7,				
                 .fractional_bits = 11},			
-            .offset = -15917, 					
+            .offset = -16384, 					
         },
         .spi_master_config = {.samples = 1U, .sample_time = 6U, .trigger_mode=pl_trigger},
         .cpol = 1U,
@@ -615,13 +626,11 @@ The value 2^16 results from the 16-Bit-resolution of the ADC. The actually used 
     uz_adcLtc2311_init(default_configuration);
   }
 
-In the vivado block-design the SI-Value-Output of the ADC-IP-Core (marked orange in the figure) has to be connected to the IP-Core in which the values are used. The ADC-IP-Core joins the measurement values of all ADCs to one vector.
-Slice-Blocks are used to get the required part of the vector. In the next figure three slice-blocks can be seen. Each of them slices one value from the vector.
-
-The length of the sliced part is according to the used datatype. In this example the length of the datatype sfix18_En11 is 18 bit. To get the SI-Values of the first ADC you need to slice the first 18 bit of the vector, for the second ADC the next 18 etc.
+In the vivado block-design the SI-Value-Output can be sliced with Slice-IP-Cores to get access to the SI-Values of the ADC-channels. In the next figure the slice-blocks can be seen. Each of them slices one value from the vector.
+The length of the sliced part is according to the used datatype 18 bit. To get the first SI-Value the first 18 bit of the vector have to be slice, for the second value the next 18 etc.
 
 
-.. figure:: sliced_SI_Values_VIVADO.png
+.. figure:: Si_Slicing.png
    :width: 800px
    :align: center
 

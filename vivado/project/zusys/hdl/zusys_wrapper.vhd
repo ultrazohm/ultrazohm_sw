@@ -1,7 +1,7 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
---Date        : Tue Jun 21 10:18:24 2022
+--Date        : Tue Jun 21 14:48:40 2022
 --Host        : DESKTOP-3UPC3NR running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -60,8 +60,7 @@ entity zusys_wrapper is
     Dig_21_Ch5 : in STD_LOGIC;
     Dig_22_Ch5 : in STD_LOGIC;
     Dig_23_Ch5 : in STD_LOGIC;
-    Dig_8_Ch5 : in STD_LOGIC;
-    SI_VALUE_0 : out STD_LOGIC_VECTOR ( 279 downto 0 )
+    Dig_8_Ch5 : in STD_LOGIC
   );
 end zusys_wrapper;
 
@@ -115,8 +114,7 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_21_Ch5 : in STD_LOGIC;
     Dig_22_Ch5 : in STD_LOGIC;
     Dig_23_Ch5 : in STD_LOGIC;
-    Dig_8_Ch5 : in STD_LOGIC;
-    SI_VALUE_0 : out STD_LOGIC_VECTOR ( 279 downto 0 )
+    Dig_8_Ch5 : in STD_LOGIC
   );
   end component zusys;
 begin
@@ -169,7 +167,6 @@ zusys_i: component zusys
       Dig_21_Ch5 => Dig_21_Ch5,
       Dig_22_Ch5 => Dig_22_Ch5,
       Dig_23_Ch5 => Dig_23_Ch5,
-      Dig_8_Ch5 => Dig_8_Ch5,
-      SI_VALUE_0(279 downto 0) => SI_VALUE_0(279 downto 0)
+      Dig_8_Ch5 => Dig_8_Ch5
     );
 end STRUCTURE;

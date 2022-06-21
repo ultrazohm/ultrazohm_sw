@@ -24,6 +24,9 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
+extern float CurrentOn_Angle_deg;
+extern float CurrentOff_Angle_deg;
+extern float CurrentOn_Reference_A;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -187,32 +190,31 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.i_d_ref = value;
-
+			CurrentOn_Reference_A = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.i_q_ref = value;
+			CurrentOn_Angle_deg = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.rpm_ref = value;
+			CurrentOff_Angle_deg = value;
 			break;
 
 		case (Set_Send_Field_4):
-
+			data->av.theta_offset = value;
 			break;
 
 		case (Set_Send_Field_5):
-
+			uz_PI_Controller_set_Kp(data->objects.PI_cntr1, value);
 			break;
 
 		case (Set_Send_Field_6):
-
+			uz_PI_Controller_set_Ki(data->objects.PI_cntr1, value);
 			break;
 
 		case (My_Button_1):
-			data->rasv.halfBridge1DutyCycle = 0.043f;
+			data->rasv.halfBridge1DutyCycle = 0.0f;
 			data->rasv.halfBridge2DutyCycle = 0.0f;
 			data->rasv.halfBridge3DutyCycle = 0.0f;
 			data->rasv.halfBridge4DutyCycle = 0.0f;
@@ -222,7 +224,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_2):
 			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.043f;
+			data->rasv.halfBridge2DutyCycle = 0.0f;
 			data->rasv.halfBridge3DutyCycle = 0.0f;
 			data->rasv.halfBridge4DutyCycle = 0.0f;
 			data->rasv.halfBridge5DutyCycle = 0.0f;
@@ -230,48 +232,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_3):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.043f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
 			break;
 
 		case (My_Button_4):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
-			data->rasv.halfBridge4DutyCycle = 0.043f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
 			break;
 
 		case (My_Button_5):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
-			data->rasv.halfBridge5DutyCycle = 0.043f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
 			break;
 
 		case (My_Button_6):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
-			data->rasv.halfBridge6DutyCycle = 0.043f;
 			break;
 
 		case (My_Button_7):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
+
 			break;
 
 		case (My_Button_8):

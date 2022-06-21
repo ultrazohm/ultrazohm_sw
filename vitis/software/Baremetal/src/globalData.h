@@ -127,6 +127,8 @@ typedef struct{
 	uz_IIR_Filter_t* iir_rpm_ref;
 	uz_FOC* foc_current;
 	uz_SpeedControl_t* foc_speed;
+	uz_PI_Controller* PI_cntr1;
+	uz_PI_Controller* PI_cntr2;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

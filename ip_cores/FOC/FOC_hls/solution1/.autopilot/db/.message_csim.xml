@@ -3,12 +3,7 @@
 	<Message severity="INFO" prefix="[SIM 211-2]" key="SIM_2_1569" tag="" content="*************** CSIM start ***************" resolution=""/>
 	<Message severity="INFO" prefix="[SIM 211-4]" key="SIM_4_1577" tag="" content="CSIM will launch GCC as the compiler." resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1427" tag="" content="Running &apos;C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe&apos;" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1428" tag="" content="For user &apos;ponpr&apos; on host &apos;thinkbook&apos; (Windows NT_amd64 version 6.2) on Fri Jun 03 08:20:25 +0200 2022" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1430" tag="" content="In directory &apos;C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/csim/build&apos;" resolution=""/>
-	<Message severity="INFO" prefix="[APCC 202-3]" key="APCC_3_1610" tag="" content="Tmp directory is apcc_db" resolution=""/>
-	<Message severity="INFO" prefix="[APCC 202-1]" key="APCC_1_1611" tag="" content="APCC is done." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1427" tag="" content="Running &apos;C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe&apos;" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1428" tag="" content="For user &apos;ponpr&apos; on host &apos;thinkbook&apos; (Windows NT_amd64 version 6.2) on Fri Jun 03 08:20:35 +0200 2022" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1428" tag="" content="For user &apos;ponpr&apos; on host &apos;thinkbook&apos; (Windows NT_amd64 version 6.2) on Wed Jun 15 14:18:49 +0200 2022" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1430" tag="" content="In directory &apos;C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/csim/build&apos;" resolution=""/>
 	<Message severity="INFO" prefix="[APCC 202-3]" key="APCC_3_1610" tag="" content="Tmp directory is apcc_db" resolution=""/>
 	<Message severity="INFO" prefix="[APCC 202-1]" key="APCC_1_1611" tag="" content="APCC is done." resolution=""/>

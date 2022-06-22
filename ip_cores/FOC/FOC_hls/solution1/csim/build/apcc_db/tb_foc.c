@@ -186,18 +186,18 @@ static float aesl_internal_main_OC_values_iq[11] = { 0x0p0, 0x1.fdf3b6p-3, 0x1.b
 static float aesl_internal_main_OC_values_id[11] = { 0x0p0, 0x1.fdf3b6p-3, 0x1.be76c8p-2, 0x1.276c8cp-1, 0x1.5d2f1ap-1, 0x1.85a1cap-1, 0x1.a3d70ap-1, 0x1.bae148p-1, 0x1.cc49bap-1, 0x1.d91688p-1, 0x1.e2d0e6p-1 };
 static float aesl_internal_main_OC_values_omega[11] = { 0x0p0, 0x0p0, 0x1.23a29cp-6, 0x1.66cf42p-4, 0x1.0e5604p-2, 0x1.3e76c8p-1, 0x1.428f5cp0, 0x1.251eb8p1, 0x1.ecccccp1, 0x1.851eb8p2, 0x1.2428f6p3 };
 static  char aesl_internal__OC_str6[31] = "\n Comparison for D parameter \r";
-static float aesl_internal_main_OC_ud_out[11] = { 0x1.bp2, 0x1.45c29p2, 0x1.eb851ep1, 0x1.733334p1, 0x1.19999ap1, 0x1.ab851ep0, 0x1.47ae14p0, 0x1.f5c29p-1, 0x1.83126ep-1, 0x1.2d0e56p-1, 0x1.d81062p-2 };
-static float aesl_internal_main_OC_uq_out[11] = { 0x1.bp2, 0x1.45c29p2, 0x1.eb851ep1, 0x1.747ae2p1, 0x1.1ae148p1, 0x1.ae147ap0, 0x1.4cccccp0, 0x1.028f5cp0, 0x1.9f3b64p-1, 0x1.578d5p-1, 0x1.2978d4p-1 };
+static float aesl_internal_main_OC_ud_out[11] = { 0x1.bp2, 0x1.45b646p2, 0x1.ebc73ep1, 0x1.736588p1, 0x1.19c148p1, 0x1.ac9b2p0, 0x1.47d6c8p0, 0x1.f5deep-1, 0x1.818bd6p-1, 0x1.2be25p-1, 0x1.d52d24p-2 };
+static float aesl_internal_main_OC_uq_out[11] = { 0x1.bp2, 0x1.45b646p2, 0x1.ebcc2ap1, 0x1.737dfap1, 0x1.1a0b7p1, 0x1.afb48p0, 0x1.4c5c24p0, 0x1.037b7cp0, 0x1.a087a8p-1, 0x1.58525p-1, 0x1.28296cp-1 };
 static  char aesl_internal__OC_str3[13] = "\n HW output\r";
 static  char aesl_internal__OC_str4[26] = " D-Parameter Q-Parameter\r";
 static  char aesl_internal__OC_str5[9] = " %f\t %f\r";
 static  char aesl_internal__OC_str7[15] = "Test passed D\r";
 static  char aesl_internal__OC_str8[18] = "Test failed D %f\r";
 static  char aesl_internal__OC_str9[31] = "\n Comparison for Q parameter \r";
-static  char aesl_internal_str[36] = "Absolute error limit has been used.";
-static  char aesl_internal__OC_str10[15] = "Test passed Q\r";
-l_struct_OC_uz_PI_Controller_config config_iq __ATTRIBUTE_WEAK__;
 static  char aesl_internal__OC_str11[18] = "Test failed Q %f\r";
+static  char aesl_internal_str[36] = "Absolute error limit has been used.";
+l_struct_OC_uz_PI_Controller_config config_iq __ATTRIBUTE_WEAK__;
+static  char aesl_internal__OC_str10[15] = "Test passed Q\r";
 l_struct_OC_uz_PI_Controller_config config_id __ATTRIBUTE_WEAK__;
 
 

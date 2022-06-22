@@ -53,6 +53,8 @@
                                     									
                                     <listOptionValue builtIn="false" value="C:/Xilinx/Vitis/2020.1/include/ap_sysc"/>
                                     									
+                                    <listOptionValue builtIn="false" value="C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC"/>
+                                    									
                                     <listOptionValue builtIn="false" value="C:/Xilinx/Vitis/2020.1/include"/>
                                     									
                                     <listOptionValue builtIn="false" value="C:/Xilinx/Vitis/2020.1/win64/tools/systemc/include"/>
@@ -86,6 +88,8 @@
                                 <option id="gnu.c.compiler.option.include.paths.220930777" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
                                     									
                                     <listOptionValue builtIn="false" value="C:/Xilinx/Vitis/2020.1/include/ap_sysc"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC"/>
                                     									
                                     <listOptionValue builtIn="false" value="C:/Xilinx/Vitis/2020.1/include"/>
                                     									
@@ -251,6 +255,8 @@
                                     									
                                     <listOptionValue builtIn="false" value="C:/Xilinx/Vitis/2020.1/include/ap_sysc"/>
                                     									
+                                    <listOptionValue builtIn="false" value="C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC"/>
+                                    									
                                     <listOptionValue builtIn="false" value="C:/Xilinx/Vitis/2020.1/include"/>
                                     									
                                     <listOptionValue builtIn="false" value="C:/Xilinx/Vitis/2020.1/win64/tools/systemc/include"/>
@@ -274,6 +280,8 @@
                                 <option id="gnu.c.compiler.option.include.paths.674946400" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
                                     									
                                     <listOptionValue builtIn="false" value="C:/Xilinx/Vitis/2020.1/include/ap_sysc"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC"/>
                                     									
                                     <listOptionValue builtIn="false" value="C:/Xilinx/Vitis/2020.1/include"/>
                                     									

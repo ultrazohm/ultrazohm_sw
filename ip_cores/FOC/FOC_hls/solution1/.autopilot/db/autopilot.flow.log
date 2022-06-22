@@ -3897,3 +3897,517 @@ INFO: [SIM 211-3] *************** CSIM finish ***************
 Command   csim_design done; 20.035 sec.
 Command ap_source done; 22.675 sec.
 Execute cleanup_all 
+INFO-FLOW: Workspace C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1 opened at Fri Jun 10 10:26:41 +0200 2022
+Execute     ap_set_clock -name default -period 10 -default=false 
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+Execute     open_platform DefaultPlatform 
+Execute     import_lib C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/zynquplus 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx.lib 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/dsp48.lib 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx.hlp 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/xilinx_interface.hlp 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/maxi.hlp 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/saxilite.hlp 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/dsp48.hlp 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/dsp48e2.hlp 
+Execute     source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/zynquplus.gen 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/plb46.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/axi4.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/nativeAXI4.gen 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/saxilite.gen 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/maxi.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/scripts/xilinxcoregen.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/XilEDKCoreGen.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/ip/dds_compiler.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/ip/util.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/ip/xfft.gen 
+Command         ap_source done; 0.107 sec.
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/ip/xfir.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/dsp48.gen 
+Command       ap_source done; 0.236 sec.
+Command     ap_source done; 0.241 sec.
+Execute     open_platform DefaultPlatform 
+Execute     import_lib C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/zynquplus_fpv7 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx_fp.lib 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx_fp.hlp 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx.hlp 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/xilinx_interface.hlp 
+Execute             source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/maxi.hlp 
+Execute             source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/saxilite.hlp 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/dsp48.hlp 
+Execute     source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/zynquplus_fpv7.gen 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx_fp.gen 
+Execute     set_part xczu9eg-ffvb1156-2-e 
+INFO-FLOW: DBG:set_part: XILINX_VIVADO=C:/Xilinx/Vivado/2020.1
+INFO-FLOW: DBG:set_part: RDI_DATADIR=C:/Xilinx/Vivado/2020.1/data;C:/Xilinx/Vitis/2020.1/data
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data single -quiet 
+DBG:HLSDevice: Trying to load device library: C:/Xilinx/Vitis/2020.1\lib\win64.o\librdi_hlsvwrap.dll
+DBG:HLSDevice: first parts/arch.xml in RDI_DATADIR: C:/Xilinx/Vivado/2020.1/data/parts/arch.xml
+Command       ap_part_info done; 4.052 sec.
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute       ap_family_info -name zynquplus -data info 
+Execute       add_library xilinx/zynquplus/zynquplus:xczu9eg:-ffvb1156:-2-e 
+Execute         get_default_platform 
+Execute         ap_part_info -data single -name xczu9eg-ffvb1156-2-e 
+Execute         ap_part_info -name xczu9eg-ffvb1156-2-e -data resources 
+Execute         config_chip_info -resource {SLICE 34260} {LUT 274080} {FF 548160} {DSP 2520} {BRAM 1824} {URAM 0} 
+Execute         ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute         config_chip_info -speed medium 
+Execute       add_library xilinx/zynquplus/zynquplus_fpv7 
+Execute         get_default_platform 
+INFO: [HLS 200-10] Setting target device to 'xczu9eg-ffvb1156-2-e'
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute       get_default_platform 
+Command     set_part done; 4.29 sec.
+Execute     ap_part_info -data single -name xczu9eg-ffvb1156-2-e 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data resources 
+Execute     config_chip_info -resource {SLICE 34260} {LUT 274080} {FF 548160} {DSP 2520} {BRAM 1824} {URAM 0} 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute     config_chip_info -speed medium 
+Execute     send_msg_by_id INFO @200-1505@%s%s  vivado 
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+Execute     get_config_interface -m_axi_latency 
+Execute     get_config_interface -m_axi_alignment_byte_size 
+Execute     get_config_interface -m_axi_max_widen_bitwidth 
+Execute     get_config_interface -default_interface 
+Execute     get_config_interface -default_slave_interface 
+Execute     get_config_rtl -register_reset_num 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -vivado_optimization_level=0 
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_optimization_level=0
+Execute     config_export -vivado_optimization_level=0 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -display_name=uz_FOC 
+INFO: [HLS 200-1464] Running solution command: config_export -display_name=uz_FOC
+Execute     config_export -display_name=uz_FOC 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -format=ip_catalog 
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+Execute     config_export -format=ip_catalog 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -output=C:/Users/ponpr/Desktop/Intenship/uz_FOC/uz_FOC_sample.zip 
+INFO: [HLS 200-1464] Running solution command: config_export -output=C:/Users/ponpr/Desktop/Intenship/uz_FOC/uz_FOC_sample.zip
+Execute     config_export -output=C:/Users/ponpr/Desktop/Intenship/uz_FOC/uz_FOC_sample.zip 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -rtl=verilog 
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=verilog
+Execute     config_export -rtl=verilog 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -vivado_phys_opt=none 
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_phys_opt=none
+Execute     config_export -vivado_phys_opt=none 
+Execute       get_config_export -vivado_impl_strategy 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -vivado_report_level=0 
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_report_level=0
+Execute     config_export -vivado_report_level=0 
+Execute       get_config_export -vivado_impl_strategy 
+Command   open_solution done; 4.861 sec.
+Execute   set_part xczu9eg-ffvb1156-2-e 
+INFO-FLOW: DBG:set_part: XILINX_VIVADO=C:/Xilinx/Vivado/2020.1
+INFO-FLOW: DBG:set_part: RDI_DATADIR=C:/Xilinx/Vivado/2020.1/data;C:/Xilinx/Vitis/2020.1/data
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data single -quiet 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute     ap_family_info -name zynquplus -data info 
+Execute     add_library xilinx/zynquplus/zynquplus:xczu9eg:-ffvb1156:-2-e 
+Execute       get_default_platform 
+Execute       ap_part_info -data single -name xczu9eg-ffvb1156-2-e 
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data resources 
+Execute       config_chip_info -resource {SLICE 34260} {LUT 274080} {FF 548160} {DSP 2520} {BRAM 1824} {URAM 0} 
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute       config_chip_info -speed medium 
+Execute     add_library xilinx/zynquplus/zynquplus_fpv7 
+Execute       get_default_platform 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute     get_default_platform 
+Command   set_part done; 0.279 sec.
+Execute   create_clock -period 10 -name default 
+Execute   config_export -display_name uz_FOC -format ip_catalog -output C:/Users/ponpr/Desktop/Intenship/uz_FOC/uz_FOC_sample.zip -rtl verilog -vivado_optimization_level 0 -vivado_phys_opt none -vivado_report_level 0 
+Execute     get_config_export -vivado_impl_strategy 
+Execute   source ./FOC_hls/solution1/directives.tcl 
+Execute     set_directive_top -name uz_FOC_sample uz_FOC_sample 
+INFO-FLOW: Setting directive 'TOP' name=uz_FOC_sample 
+Execute   csim_design -quiet 
+Execute     source C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/.autopilot/db/global.setting.tcl 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+Execute     source csim/.lst_opt.tcl 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/tb_foc.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/tb_foc.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_space_vector_limitation.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_space_vector_limitation.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_space_vector_limitation.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_space_vector_limitation.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_signals.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_signals.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_signals.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_signals.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_piController.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_piController.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_piController.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_piController.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_linear_decoupling.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_linear_decoupling.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_linear_decoupling.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_linear_decoupling.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_Transformation.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_Transformation.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_Transformation.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_Transformation.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_FOC.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_FOC.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_FOC.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_FOC.c 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute     source run_sim.tcl 
+Command     ap_source done; 0.134 sec.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+Command   csim_design done; 17.8 sec.
+Command ap_source done; 23.202 sec.
+Execute cleanup_all 
+INFO-FLOW: Workspace C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1 opened at Wed Jun 15 14:18:12 +0200 2022
+Execute     ap_set_clock -name default -period 10 -default=false 
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+Execute     open_platform DefaultPlatform 
+Execute     import_lib C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/zynquplus 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx.lib 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/dsp48.lib 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx.hlp 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/xilinx_interface.hlp 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/maxi.hlp 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/saxilite.hlp 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/dsp48.hlp 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/dsp48e2.hlp 
+Execute     source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/zynquplus.gen 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/plb46.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/axi4.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/nativeAXI4.gen 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/saxilite.gen 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/maxi.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/scripts/xilinxcoregen.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/XilEDKCoreGen.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/ip/dds_compiler.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/ip/util.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/ip/xfft.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/ip/xfir.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/dsp48.gen 
+Command       ap_source done; 0.208 sec.
+Command     ap_source done; 0.211 sec.
+Execute     open_platform DefaultPlatform 
+Execute     import_lib C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/zynquplus_fpv7 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx_fp.lib 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx_fp.hlp 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx.hlp 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/xilinx_interface.hlp 
+Execute             source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/maxi.hlp 
+Execute             source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/saxilite.hlp 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/dsp48.hlp 
+Execute     source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/zynquplus_fpv7.gen 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx_fp.gen 
+Execute     set_part xczu9eg-ffvb1156-2-e 
+INFO-FLOW: DBG:set_part: XILINX_VIVADO=C:/Xilinx/Vivado/2020.1
+INFO-FLOW: DBG:set_part: RDI_DATADIR=C:/Xilinx/Vivado/2020.1/data;C:/Xilinx/Vitis/2020.1/data
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data single -quiet 
+DBG:HLSDevice: Trying to load device library: C:/Xilinx/Vitis/2020.1\lib\win64.o\librdi_hlsvwrap.dll
+DBG:HLSDevice: first parts/arch.xml in RDI_DATADIR: C:/Xilinx/Vivado/2020.1/data/parts/arch.xml
+Command       ap_part_info done; 1.72 sec.
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute       ap_family_info -name zynquplus -data info 
+Execute       add_library xilinx/zynquplus/zynquplus:xczu9eg:-ffvb1156:-2-e 
+Execute         get_default_platform 
+Execute         ap_part_info -data single -name xczu9eg-ffvb1156-2-e 
+Execute         ap_part_info -name xczu9eg-ffvb1156-2-e -data resources 
+Execute         config_chip_info -resource {SLICE 34260} {LUT 274080} {FF 548160} {DSP 2520} {BRAM 1824} {URAM 0} 
+Execute         ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute         config_chip_info -speed medium 
+Execute       add_library xilinx/zynquplus/zynquplus_fpv7 
+Execute         get_default_platform 
+INFO: [HLS 200-10] Setting target device to 'xczu9eg-ffvb1156-2-e'
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute       get_default_platform 
+Command     set_part done; 1.865 sec.
+Execute     ap_part_info -data single -name xczu9eg-ffvb1156-2-e 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data resources 
+Execute     config_chip_info -resource {SLICE 34260} {LUT 274080} {FF 548160} {DSP 2520} {BRAM 1824} {URAM 0} 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute     config_chip_info -speed medium 
+Execute     send_msg_by_id INFO @200-1505@%s%s  vivado 
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+Execute     get_config_interface -m_axi_latency 
+Execute     get_config_interface -m_axi_alignment_byte_size 
+Execute     get_config_interface -m_axi_max_widen_bitwidth 
+Execute     get_config_interface -default_interface 
+Execute     get_config_interface -default_slave_interface 
+Execute     get_config_rtl -register_reset_num 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -vivado_optimization_level=0 
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_optimization_level=0
+Execute     config_export -vivado_optimization_level=0 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -display_name=uz_FOC 
+INFO: [HLS 200-1464] Running solution command: config_export -display_name=uz_FOC
+Execute     config_export -display_name=uz_FOC 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -format=ip_catalog 
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+Execute     config_export -format=ip_catalog 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -output=C:/Users/ponpr/Desktop/Intenship/uz_FOC/uz_FOC_sample.zip 
+INFO: [HLS 200-1464] Running solution command: config_export -output=C:/Users/ponpr/Desktop/Intenship/uz_FOC/uz_FOC_sample.zip
+Execute     config_export -output=C:/Users/ponpr/Desktop/Intenship/uz_FOC/uz_FOC_sample.zip 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -rtl=verilog 
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=verilog
+Execute     config_export -rtl=verilog 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -vivado_phys_opt=none 
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_phys_opt=none
+Execute     config_export -vivado_phys_opt=none 
+Execute       get_config_export -vivado_impl_strategy 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -vivado_report_level=0 
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_report_level=0
+Execute     config_export -vivado_report_level=0 
+Execute       get_config_export -vivado_impl_strategy 
+Command   open_solution done; 2.314 sec.
+Execute   set_part xczu9eg-ffvb1156-2-e 
+INFO-FLOW: DBG:set_part: XILINX_VIVADO=C:/Xilinx/Vivado/2020.1
+INFO-FLOW: DBG:set_part: RDI_DATADIR=C:/Xilinx/Vivado/2020.1/data;C:/Xilinx/Vitis/2020.1/data
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data single -quiet 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute     ap_family_info -name zynquplus -data info 
+Execute     add_library xilinx/zynquplus/zynquplus:xczu9eg:-ffvb1156:-2-e 
+Execute       get_default_platform 
+Execute       ap_part_info -data single -name xczu9eg-ffvb1156-2-e 
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data resources 
+Execute       config_chip_info -resource {SLICE 34260} {LUT 274080} {FF 548160} {DSP 2520} {BRAM 1824} {URAM 0} 
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute       config_chip_info -speed medium 
+Execute     add_library xilinx/zynquplus/zynquplus_fpv7 
+Execute       get_default_platform 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute     get_default_platform 
+Command   set_part done; 0.179 sec.
+Execute   create_clock -period 10 -name default 
+Execute   config_export -display_name uz_FOC -format ip_catalog -output C:/Users/ponpr/Desktop/Intenship/uz_FOC/uz_FOC_sample.zip -rtl verilog -vivado_optimization_level 0 -vivado_phys_opt none -vivado_report_level 0 
+Execute     get_config_export -vivado_impl_strategy 
+Execute   source ./FOC_hls/solution1/directives.tcl 
+Execute     set_directive_top -name uz_FOC_sample uz_FOC_sample 
+INFO-FLOW: Setting directive 'TOP' name=uz_FOC_sample 
+Execute   csim_design -quiet 
+Execute     source C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/.autopilot/db/global.setting.tcl 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+Execute     source csim/.lst_opt.tcl 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/tb_foc.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/tb_foc.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_space_vector_limitation.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_space_vector_limitation.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_space_vector_limitation.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_space_vector_limitation.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_signals.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_signals.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_signals.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_signals.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_piController.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_piController.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_piController.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_piController.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_linear_decoupling.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_linear_decoupling.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_linear_decoupling.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_linear_decoupling.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_Transformation.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_Transformation.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_Transformation.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_Transformation.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_FOC.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_FOC.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_FOC.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_FOC.c 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+ERROR: [SIM 211-100] 'csim_design' failed: compilation error(s).
+INFO: [SIM 211-3] *************** CSIM finish ***************
+Command   csim_design done; error code: 2; 14.387 sec.
+Command ap_source done; error code: 1; 17.097 sec.
+Execute cleanup_all 
+INFO-FLOW: Workspace C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1 opened at Wed Jun 15 14:18:45 +0200 2022
+Execute     ap_set_clock -name default -period 10 -default=false 
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+Execute     open_platform DefaultPlatform 
+Execute     import_lib C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/zynquplus 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx.lib 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/dsp48.lib 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx.hlp 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/xilinx_interface.hlp 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/maxi.hlp 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/saxilite.hlp 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/dsp48.hlp 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/dsp48e2.hlp 
+Execute     source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/zynquplus.gen 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/plb46.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/axi4.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/nativeAXI4.gen 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/saxilite.gen 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/maxi.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/scripts/xilinxcoregen.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/XilEDKCoreGen.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/ip/dds_compiler.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/ip/util.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/ip/xfft.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/ip/xfir.gen 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/dsp48.gen 
+Command       ap_source done; 0.114 sec.
+Command     ap_source done; 0.114 sec.
+Execute     open_platform DefaultPlatform 
+Execute     import_lib C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/zynquplus_fpv7 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx_fp.lib 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx_fp.hlp 
+Execute         source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx.hlp 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/xilinx_interface.hlp 
+Execute             source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/maxi.hlp 
+Execute             source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/interface/saxilite.hlp 
+Execute           source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/dsp48.hlp 
+Execute     source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/zynquplus/zynquplus_fpv7.gen 
+Execute       source C:/Xilinx/Vitis/2020.1/common/technology/xilinx/common/xilinx_fp.gen 
+Execute     set_part xczu9eg-ffvb1156-2-e 
+INFO-FLOW: DBG:set_part: XILINX_VIVADO=C:/Xilinx/Vivado/2020.1
+INFO-FLOW: DBG:set_part: RDI_DATADIR=C:/Xilinx/Vivado/2020.1/data;C:/Xilinx/Vitis/2020.1/data
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data single -quiet 
+DBG:HLSDevice: Trying to load device library: C:/Xilinx/Vitis/2020.1\lib\win64.o\librdi_hlsvwrap.dll
+DBG:HLSDevice: first parts/arch.xml in RDI_DATADIR: C:/Xilinx/Vivado/2020.1/data/parts/arch.xml
+Command       ap_part_info done; 1.419 sec.
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute       ap_family_info -name zynquplus -data info 
+Execute       add_library xilinx/zynquplus/zynquplus:xczu9eg:-ffvb1156:-2-e 
+Execute         get_default_platform 
+Execute         ap_part_info -data single -name xczu9eg-ffvb1156-2-e 
+Execute         ap_part_info -name xczu9eg-ffvb1156-2-e -data resources 
+Execute         config_chip_info -resource {SLICE 34260} {LUT 274080} {FF 548160} {DSP 2520} {BRAM 1824} {URAM 0} 
+Execute         ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute         config_chip_info -speed medium 
+Execute       add_library xilinx/zynquplus/zynquplus_fpv7 
+Execute         get_default_platform 
+INFO: [HLS 200-10] Setting target device to 'xczu9eg-ffvb1156-2-e'
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute       get_default_platform 
+Command     set_part done; 1.546 sec.
+Execute     ap_part_info -data single -name xczu9eg-ffvb1156-2-e 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data resources 
+Execute     config_chip_info -resource {SLICE 34260} {LUT 274080} {FF 548160} {DSP 2520} {BRAM 1824} {URAM 0} 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute     config_chip_info -speed medium 
+Execute     send_msg_by_id INFO @200-1505@%s%s  vivado 
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+Execute     get_config_interface -m_axi_latency 
+Execute     get_config_interface -m_axi_alignment_byte_size 
+Execute     get_config_interface -m_axi_max_widen_bitwidth 
+Execute     get_config_interface -default_interface 
+Execute     get_config_interface -default_slave_interface 
+Execute     get_config_rtl -register_reset_num 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -vivado_optimization_level=0 
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_optimization_level=0
+Execute     config_export -vivado_optimization_level=0 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -display_name=uz_FOC 
+INFO: [HLS 200-1464] Running solution command: config_export -display_name=uz_FOC
+Execute     config_export -display_name=uz_FOC 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -format=ip_catalog 
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+Execute     config_export -format=ip_catalog 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -output=C:/Users/ponpr/Desktop/Intenship/uz_FOC/uz_FOC_sample.zip 
+INFO: [HLS 200-1464] Running solution command: config_export -output=C:/Users/ponpr/Desktop/Intenship/uz_FOC/uz_FOC_sample.zip
+Execute     config_export -output=C:/Users/ponpr/Desktop/Intenship/uz_FOC/uz_FOC_sample.zip 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -rtl=verilog 
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=verilog
+Execute     config_export -rtl=verilog 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -vivado_phys_opt=none 
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_phys_opt=none
+Execute     config_export -vivado_phys_opt=none 
+Execute       get_config_export -vivado_impl_strategy 
+Execute     send_msg_by_id INFO @200-1464@%s config_export -vivado_report_level=0 
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_report_level=0
+Execute     config_export -vivado_report_level=0 
+Execute       get_config_export -vivado_impl_strategy 
+Command   open_solution done; 1.778 sec.
+Execute   set_part xczu9eg-ffvb1156-2-e 
+INFO-FLOW: DBG:set_part: XILINX_VIVADO=C:/Xilinx/Vivado/2020.1
+INFO-FLOW: DBG:set_part: RDI_DATADIR=C:/Xilinx/Vivado/2020.1/data;C:/Xilinx/Vitis/2020.1/data
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data single -quiet 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute     ap_family_info -name zynquplus -data info 
+Execute     add_library xilinx/zynquplus/zynquplus:xczu9eg:-ffvb1156:-2-e 
+Execute       get_default_platform 
+Execute       ap_part_info -data single -name xczu9eg-ffvb1156-2-e 
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data resources 
+Execute       config_chip_info -resource {SLICE 34260} {LUT 274080} {FF 548160} {DSP 2520} {BRAM 1824} {URAM 0} 
+Execute       ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute       config_chip_info -speed medium 
+Execute     add_library xilinx/zynquplus/zynquplus_fpv7 
+Execute       get_default_platform 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute     get_default_platform 
+Command   set_part done; 0.135 sec.
+Execute   create_clock -period 10 -name default 
+Execute   config_export -display_name uz_FOC -format ip_catalog -output C:/Users/ponpr/Desktop/Intenship/uz_FOC/uz_FOC_sample.zip -rtl verilog -vivado_optimization_level 0 -vivado_phys_opt none -vivado_report_level 0 
+Execute     get_config_export -vivado_impl_strategy 
+Execute   source ./FOC_hls/solution1/directives.tcl 
+Execute     set_directive_top -name uz_FOC_sample uz_FOC_sample 
+INFO-FLOW: Setting directive 'TOP' name=uz_FOC_sample 
+Execute   csim_design -quiet 
+Execute     source C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/.autopilot/db/global.setting.tcl 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+Execute     source csim/.lst_opt.tcl 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/tb_foc.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/tb_foc.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_space_vector_limitation.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_space_vector_limitation.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_space_vector_limitation.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_space_vector_limitation.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_signals.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_signals.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_signals.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_signals.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_piController.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_piController.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_piController.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_piController.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_linear_decoupling.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_linear_decoupling.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_linear_decoupling.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_linear_decoupling.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_Transformation.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_Transformation.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_Transformation.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_Transformation.c 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_FOC.h 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_FOC.h 
+Execute     is_encrypted C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_FOC.c 
+Execute     is_xip C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/foc/uz_FOC.c 
+Execute     ap_part_info -name xczu9eg-ffvb1156-2-e -data info 
+Execute     source run_sim.tcl 
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+Command   csim_design done; 8.79 sec.
+Command ap_source done; 10.902 sec.
+Execute cleanup_all 

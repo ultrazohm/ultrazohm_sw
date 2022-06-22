@@ -11,7 +11,7 @@ L_table = [L_max L_max L_min L_min L_max L_max];
 %diff_L_table = diff(L_table, theta_mech, 1)
 
 n_speed = 3000;                 % rpm
-stop_time = 10 * 60/n_speed;
+stop_time = 2 * 60/n_speed;
 
 
 BW =800;
@@ -22,7 +22,7 @@ f_controller = 10000;
 T_controller = 1/f_controller;
 
 
-time_step = T_controller/100;
+time_step = T_controller/1000;
 %f_switchingInverter = 20000;            %Triangle signal frequency
 %T_sigma = 0.5/f_switchingInverter + T_controller;
 %Kp = (0.002/R)/(2*T_sigma*1/R);

@@ -40,16 +40,16 @@ DS_Data Global_Data = {
     }
 };
 
+
 // Init structs
 const struct uz_PMSM_t config_PMSM = {
-
 	.R_ph_Ohm = 0.5f,
 
    .Ld_Henry = 0.001f,
 
    .Lq_Henry = 0.001f,
 
-   .Psi_PM_Vs = 0.008f,
+   .Psi_PM_Vs = 0.0f,
 
    .polePairs = 2.0f,
 
@@ -59,11 +59,11 @@ const struct uz_PMSM_t config_PMSM = {
 
 const struct uz_PI_Controller_config config_id = {
 
-   .Kp = 2.5f,
+   .Kp = 1.0f,
 
-   .Ki = 200.0f,
+   .Ki = 0.0f,
 
-   .samplingTime_sec = SAMPLE_FREQUENCY,
+   .samplingTime_sec = 1/SAMPLE_FREQUENCY,
 
    .upper_limit = 20.0f,
 
@@ -73,11 +73,11 @@ const struct uz_PI_Controller_config config_id = {
 
 const struct uz_PI_Controller_config config_iq = {
 
-   .Kp = 2.5f,
+   .Kp = 1.0f,
 
-   .Ki = 200.0f,
+   .Ki = 0.0f,
 
-   .samplingTime_sec = SAMPLE_FREQUENCY,
+   .samplingTime_sec = 1/SAMPLE_FREQUENCY,
 
    .upper_limit = 20.0f,
 
@@ -97,18 +97,17 @@ struct uz_FOC_config config_FOC = {
 
 };
 
-
 struct uz_SpeedControl_config config_speed = {
 
     .config_controller.Kp = 0.01f,
 
     .config_controller.Ki = 7.0f,
 
-    .config_controller.samplingTime_sec = SAMPLE_FREQUENCY,
+    .config_controller.samplingTime_sec = 1/SAMPLE_FREQUENCY,
 
-    .config_controller.upper_limit = 15.0f,
+    .config_controller.upper_limit = 10.0f,
 
-    .config_controller.lower_limit = -15.0f,
+    .config_controller.lower_limit = -10.0f,
 
     .config_PMSM.R_ph_Ohm = 0.5f,
 
@@ -116,7 +115,7 @@ struct uz_SpeedControl_config config_speed = {
 
     .config_PMSM.Lq_Henry = 0.001f,
 
-    .config_PMSM.Psi_PM_Vs = 0.008f,
+    .config_PMSM.Psi_PM_Vs = 0.0f,
 
     .config_PMSM.polePairs = 2.0f,
 
@@ -183,6 +182,7 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
+            // Init Resolver --> Change settings of Resolver in uz_ResolverIp_init.c
             Global_Data.objects.resolver_IP = initialize_resolverIP_on_D4();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
@@ -193,13 +193,13 @@ int main(void)
             Global_Data.objects.Speed_instance = uz_SpeedControl_init(config_speed);
         	Global_Data.av.theta_offset = 0.0f; // have to be set with duty cycle on first phase
         	Global_Data.av.polepairs = 2.0f;
+        	Global_Data.av.flg_speed_control = 0U;	// Set 1U for active speed control, 0U for current control
+        	Global_Data.av.i_q_ref = 0.0f;
+        	Global_Data.av.i_d_ref = 0.0f;
             Global_Data.objects.iir_u_dc = uz_signals_IIR_Filter_init(iir_config_filt1);
             Global_Data.objects.iir_i_u = uz_signals_IIR_Filter_init(iir_config_filt1);
             Global_Data.objects.iir_i_v = uz_signals_IIR_Filter_init(iir_config_filt1);
             Global_Data.objects.iir_i_w = uz_signals_IIR_Filter_init(iir_config_filt1);
-            Global_Data.objects.iir_u_u = uz_signals_IIR_Filter_init(iir_config_filt1);
-            Global_Data.objects.iir_u_v = uz_signals_IIR_Filter_init(iir_config_filt1);
-            Global_Data.objects.iir_u_w = uz_signals_IIR_Filter_init(iir_config_filt1);
             initialization_chain = print_msg;
             break;
         case print_msg:

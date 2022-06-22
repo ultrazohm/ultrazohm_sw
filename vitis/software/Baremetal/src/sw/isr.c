@@ -68,8 +68,9 @@ bool ext_clamping = false;
 // Conversion factors for current and voltage
 #define NUMBER_OF_TURNS_CURRENT_MEASURING 2.0f
 #define ADC_CURRENT_SCALING	  80.0f/NUMBER_OF_TURNS_CURRENT_MEASURING
-#define ADC_CURRENT_OFFSET   		2.5f //Offset for LEM Sensors
-#define DC_VOLT_CONV		12.5f
+#define ADC_CURRENT_OFFSET    2.5f //Offset for LEM Sensors
+#define DC_VOLT_CONV		  12.5f
+#define USE_RESOLVER		  1U	// 0U: IncrementalEncoder on D5, 1U: Resolver on D4
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -82,42 +83,53 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
-    update_position_and_speed_of_resolverIP(&Global_Data);
+    // Read Encoder
+    if(USE_RESOLVER == 0U){
+    	// Use Encoder with following assignments
+    	// Global_Data.av.theta_el in rad --> Uses UZ_D5_MOTOR_POLE_PAIR_NUMBER of global_configuration
+    	// Global_Daata.av.mechanicalRotorSpeed and mechanicalRotorSpeed_filtered in rpm
+    	update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    } else{
+    	// Use Resolver on D4 with following assignments
+    	// Global_Data.av.mechanicalRotorSpeed in rpm
+    	// Global_Data.av.theta_mech in rad
+    	update_position_and_speed_of_resolverIP(&Global_Data);
+    }
     // convert ADC currents
     measurement_current.a = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A1 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
     measurement_current.b = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A2 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
     measurement_current.c = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A3 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
     dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
-	//Old Conversion factors from Hacker Control
-//	codegenInstance.input.ia = (Global_Data.aa.A2.me.ADC_A1-2.5F) * (80.0F/2.0F)-0.25F;		//A
-//	codegenInstance.input.ib = (Global_Data.aa.A2.me.ADC_A2-2.5F) * (80.0F/2.0F)+0.35F;		//A
-//	codegenInstance.input.ic = (Global_Data.aa.A2.me.ADC_A3-2.5F) * (80.0F/2.0F)-0.43F;		//A
-//	codegenInstance.input.U_IC = Global_Data.aa.A2.me.ADC_A4 * 12.5F;		//V
-//	Not used in Simulink-Model:
-//	meas_Ua_Voltage = Global_Data.aa.A2.me.ADC_B5 * 12.5F;
-//	meas_Ub_Voltage = Global_Data.aa.A2.me.ADC_B6 * 12.5F;
-//	meas_Uc_Voltage = Global_Data.aa.A2.me.ADC_B7 * 12.5F;
-    // convert ADC voltages
+
     measurement_voltage.a = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B5;// Values have to be adjusted to ADC Place and to Current sensors
     measurement_voltage.b = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B6;// Values have to be adjusted to ADC Place and to Current sensors
     measurement_voltage.c = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B7;// Values have to be adjusted to ADC Place and to Current sensors
 
-    // convert ADC readings to dc link voltages
-    Global_Data.av.U_ZK = Global_Data.aa.A1.me.ADC_A4 * DC_VOLT_CONV;
+    Global_Data.av.U_ZK = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_A4;
 
     //theta offset and theta elec
-    Global_Data.av.theta_m_offset_comp = theta_mech_calc_from_resolver - Global_Data.av.theta_offset;
-    Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp * Global_Data.av.polepairs;
+    if(USE_RESOLVER == 0){
+    	// Only theta_elec available from IPCore
+    	Global_Data.av.theta_elec = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
+    } else {
+        Global_Data.av.theta_m_offset_comp = theta_mech_calc_from_resolver - Global_Data.av.theta_offset;
+        Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp * Global_Data.av.polepairs;
+    }
 
     // calculating values needed for control
     omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;// w_mech
-    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * Global_Data.av.polepairs * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
+    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * Global_Data.av.polepairs * (2.0f * M_PI) / 60.0f;
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	 dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_el_rad_per_sec, Global_Data.rasv.n_ref_rpm, Global_Data.av.U_ZK, dq_reference_current.d);
+    	if (Global_Data.av.flg_speed_control){
+    		dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_el_rad_per_sec, Global_Data.rasv.n_ref_rpm, Global_Data.av.U_ZK, dq_reference_current.d);
+    	} else {
+    		dq_reference_current.d = Global_Data.av.i_d_ref;
+    		dq_reference_current.q = Global_Data.av.i_q_ref;
+    		dq_reference_current.zero = 0.0f;
+    	}
     	 dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, omega_el_rad_per_sec);
     	 uvw_ref = uz_transformation_3ph_dq_to_abc(dq_ref_Volts, Global_Data.av.theta_elec);
     	 output = uz_FOC_generate_DutyCycles(uvw_ref, Global_Data.av.U_ZK);
@@ -136,38 +148,40 @@ void ISR_Control(void *data)
 
 
     // Determine mechanical angle of resolver
+    if (USE_RESOLVER == 1){
+        if(theta_mech_old-Global_Data.av.theta_mech > 4.0f) {
+        	cnt++;
+        	cnt_float=(float)cnt;
+        } else if (theta_mech_old-Global_Data.av.theta_mech < -4.0f) {
+        	cnt--;
+        	cnt_float=(float)cnt;
+        }
+        if(cnt > 1 || cnt < -1) {
+        	cnt = 0;
+        	cnt_float = 0.0f;
+        }
+        if(cnt_reset == 1) {
+        	cnt = 0;
+        	cnt_float = 0;
+        	cnt_reset = 0;
+        	cnt_reset_float=0;
 
-    if(theta_mech_old-Global_Data.av.theta_mech > 4.0f) {
-    	cnt++;
-    	cnt_float=(float)cnt;
-    } else if (theta_mech_old-Global_Data.av.theta_mech < -4.0f) {
-    	cnt--;
-    	cnt_float=(float)cnt;
-    }
-    if(cnt > 1 || cnt < -1) {
-    	cnt = 0;
-    	cnt_float = 0.0f;
-    }
-    if(cnt_reset == 1) {
-    	cnt = 0;
-    	cnt_float = 0;
-    	cnt_reset = 0;
-    	cnt_reset_float=0;
+        }
 
+        if(cnt >= 0){
+        	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/uz_resolverIP_getResolverPolePairs(Global_Data.objects.resolver_IP) + cnt*2*M_PI/2.0f;
+        } else {
+        	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/2.0f + (2+cnt)*2*M_PI/2.0f;
+        }
+        theta_mech_old = Global_Data.av.theta_mech;
+        if (Global_Data.av.theta_mech <= theta_m_min) {
+        	theta_m_min = Global_Data.av.theta_mech;
+        }
+        if (Global_Data.av.theta_mech >= theta_m_max) {
+        	theta_m_max = Global_Data.av.theta_mech;
+        }
     }
 
-    if(cnt >= 0){
-    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/uz_resolverIP_getResolverPolePairs(Global_Data.objects.resolver_IP) + cnt*2*M_PI/2.0f;
-    } else {
-    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/2.0f + (2+cnt)*2*M_PI/2.0f;
-    }
-    theta_mech_old = Global_Data.av.theta_mech;
-    if (Global_Data.av.theta_mech <= theta_m_min) {
-    	theta_m_min = Global_Data.av.theta_mech;
-    }
-    if (Global_Data.av.theta_mech >= theta_m_max) {
-    	theta_m_max = Global_Data.av.theta_mech;
-    }
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

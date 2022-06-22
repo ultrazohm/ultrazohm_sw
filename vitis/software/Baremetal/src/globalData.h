@@ -90,6 +90,7 @@ typedef struct _actualValues_ {
 	float theta_offset; //in rad/s
 	float theta_m_offset_comp;
 	float polepairs;
+	float flg_speed_control;
 	uint32_t  heartbeatframe_content;
 } actualValues;
 // extra struct for filtered values

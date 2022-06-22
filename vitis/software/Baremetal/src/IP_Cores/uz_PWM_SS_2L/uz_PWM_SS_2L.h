@@ -13,8 +13,8 @@ typedef struct uz_PWM_SS_2L_t uz_PWM_SS_2L_t;
 /*! enum for readable configuring of the PWM mode in uz_PWM_SS_2L_hw_SetMode function */
 enum uz_PWM_SS_2L_PWM_mode {
   normalized_input_via_AXI=0,
-  normalized_input_via_FPGA,
-  direct_control_via_FPGA
+  normalized_input_via_FPGA=1,
+  direct_control_via_FPGA=2
 };
 
 /**

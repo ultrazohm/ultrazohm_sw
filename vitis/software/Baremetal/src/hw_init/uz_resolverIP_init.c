@@ -31,7 +31,7 @@ static struct uz_resolverIP_config_t resolver_D4_config={
 		.resolution = 16,
 		.freq_clockin = CRYSTAL_FREQUENCY,
 		.zero_position_mech = 0,
-		.pole_pairs_mach = 1,
+		.pole_pairs_mach = 2,
 		.pole_pairs_res = 2
 };
 

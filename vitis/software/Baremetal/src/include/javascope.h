@@ -53,6 +53,11 @@ enum JS_OberservableData {
 	JSO_i_a_IP_CORE,
 	JSO_i_b_IP_CORE,
 	JSO_i_c_IP_CORE,
+	JSO_i_alpha_123_alphabeta_dq,
+	JSO_i_beta_123_alphabeta_dq,
+	JSO_i_a_123_alphabeta_dq,
+	JSO_i_b_123_alphabeta_dq,
+	JSO_i_c_123_alphabeta_dq,
 	JSO_ENDMARKER
 };
 

@@ -31,16 +31,26 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
-// Includes for IP-Core trans_dq_alphabeta_123
+// For IP-Core trans_dq_alphabeta_123
 #include "../IP_Cores/uz_trans_dq_alphabeta_123/uz_trans_dq_alphabeta_123.h"
-extern uz_dq_alphabeta_123_IPcore_t* test_instance;
-struct uz_3ph_alphabeta_t currents;
-struct uz_3ph_abc_t currents_123;
-
+extern uz_dq_alphabeta_123_IPcore_t* test_instance_dq_alphabeta_123;
+struct uz_3ph_alphabeta_t alphabeta_currents_dq_alphabeta_123;
+struct uz_3ph_abc_t abc_currents_dq_alphabeta_123;
 struct uz_3ph_dq_t updated_values={
 		.d = 0,
 		.q = 0
 };
+
+// For IP-Core trans_123_alphabeta_dq
+#include "../IP_Cores/uz_123_alphabeta_dq_transformation/uz_123_alphabeta_dq_transformation.h"
+extern uz_dqIPcore_t* test_instance_123_alphabeta_dq;
+struct uz_3ph_alphabeta_t alphabeta_currents_123_alphabeta_dq;
+extern float i_alpha_123_alphabeta_dq;
+extern float i_beta_123_alphabeta_dq;
+struct uz_3ph_abc_t abc_currents_123_alphabeta_dq;
+extern float i_a_123_alphabeta_dq;
+extern float i_b_123_alphabeta_dq;
+extern float i_c_123_alphabeta_dq;
 
 
 // Initialize the Interrupt structure
@@ -63,26 +73,31 @@ static void ReadAllADC();
 
 void ISR_Control(void *data)
 {
-/*
-	// Read output ialpha ibeta von IP-Core trans_dq_alphabeta_123
-	 currents = uz_dq_alphabeta_123_IPcore_get_ialpha_ibeta(test_instance);
 
-	 Global_Data.av.i_alpha_IP_CORE=currents.alpha;
-	 Global_Data.av.i_beta_IP_CORE=currents.beta;
+	// Read output ialpha ibeta from IP-Core trans_dq_alphabeta_123
+	 alphabeta_currents_dq_alphabeta_123 = uz_dq_alphabeta_123_IPcore_get_ialpha_ibeta(test_instance_dq_alphabeta_123);
+	 Global_Data.av.i_alpha_IP_CORE=alphabeta_currents_dq_alphabeta_123.alpha;
+	 Global_Data.av.i_beta_IP_CORE=alphabeta_currents_dq_alphabeta_123.beta;
 
-	// Read output ia ib ic von IP-Core trans_dq_alphabeta_123
-	 currents_123 = uz_dq_alphabeta_123_IPcore_get_i_abc(test_instance);
+	// Read output ia ib ic from IP-Core trans_dq_alphabeta_123
+	 abc_currents_dq_alphabeta_123 = uz_dq_alphabeta_123_IPcore_get_i_abc(test_instance_dq_alphabeta_123);
+	 Global_Data.av.i_a_IP_CORE=abc_currents_dq_alphabeta_123.a;
+	 Global_Data.av.i_b_IP_CORE=abc_currents_dq_alphabeta_123.b;
+	 Global_Data.av.i_c_IP_CORE=abc_currents_dq_alphabeta_123.c;
 
-	 Global_Data.av.i_a_IP_CORE=currents_123.a;
-	 Global_Data.av.i_b_IP_CORE=currents_123.b;
-	 Global_Data.av.i_c_IP_CORE=currents_123.c;
-*/
+	// Update idref iqref from IP-Core trans_dq_alphabeta_123
+	uz_dq_alphabeta_123_IPcore_idref_iqref_update(test_instance_dq_alphabeta_123,updated_values);
 
-	// Update idref iqref
-	uz_dq_alphabeta_123_IPcore_idref_iqref_update(test_instance,updated_values);
+	// Read output ialpha ibeta from IP_Core trans_123_alphabeta_dq
+	alphabeta_currents_123_alphabeta_dq = uz_123_alphabeta_dqIPcore_get_i_alphabeta(test_instance_123_alphabeta_dq);
+	i_alpha_123_alphabeta_dq=alphabeta_currents_123_alphabeta_dq.alpha;
+	i_beta_123_alphabeta_dq=alphabeta_currents_123_alphabeta_dq.beta;
 
-
-
+	// Read output ia ib ic from IP-Core trans_123_alphabeta_dq
+	abc_currents_123_alphabeta_dq=uz_123_alphabeta_dqIPcore_get_i_abc(test_instance_123_alphabeta_dq);
+	i_a_123_alphabeta_dq=abc_currents_123_alphabeta_dq.a;
+	i_b_123_alphabeta_dq=abc_currents_123_alphabeta_dq.b;
+	i_c_123_alphabeta_dq=abc_currents_123_alphabeta_dq.c;
 
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();

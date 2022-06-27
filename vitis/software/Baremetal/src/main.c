@@ -17,6 +17,8 @@
 #include "main.h"
 
 #include "IP_Cores/uz_trans_dq_alphabeta_123/uz_trans_dq_alphabeta_123.h"
+#include "IP_Cores/uz_123_alphabeta_dq_transformation/uz_123_alphabeta_dq_transformation.h"
+#include "IP_Cores/uz_fcs_mpc_3phase_spmsm/uz_fcs_mpc_3phase_spmsm.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -55,16 +57,37 @@ enum init_chain
 enum init_chain initialization_chain = init_assertions;
 
 // Config Values of the IP-Core trans_dq_alpabeta_123
-struct uz_dq_alphabeta_123_IPcore_config_t config={
+struct uz_dq_alphabeta_123_IPcore_config_t config_dq_alphabeta_123={
    				   .base_address= XPAR_UZ_USER_TRANS_DQ_ALPHABETA_1_0_BASEADDR,
    				   .ip_clk_frequency_Hz=50000000,
-   				   .theta_offset = 2.14f,
+   				   .theta_offset = 0,
    				   .id_ref = 0,
    				   .iq_ref = 0
    				};
 
-uz_dq_alphabeta_123_IPcore_t* test_instance;
+uz_dq_alphabeta_123_IPcore_t* test_instance_dq_alphabeta_123;
 
+// Config Values of the IP-Core trans_123_alphabeta_dq
+static struct uz_dqIPcore_config_t config_123_alphabeta_dq={
+   .base_address= XPAR_UZ_USER_TRANS_123_ALPHABETA_0_BASEADDR,
+   .ip_clk_frequency_Hz=50000000,
+   .theta_offset = 0
+};
+
+uz_dqIPcore_t* test_instance_123_alphabeta_dq;
+
+// Config Values of the IP-Core fcs_mpc_3phase_spmsm
+static struct uz_fcs_mpc_3phase_spmsm_config_t config_fcs_mpc_3phase_spmsm={
+   .base_address= XPAR_UZ_USER_FCS_MPC_3PHASE_SPMSM_0_BASEADDR,
+   .ip_clk_frequency_Hz=100000000,
+   .u_dc_link = 1.5f,
+   .SampleTime=100000,
+   .Rs=0.4f,
+   .Ld=0.00003f,
+   .Lq=0.00005f,
+   .psiPM=0.007f
+};
+uz_fcs_mpc_3phase_spmsm_t* test_instance_fsc_mpc_3phase_spmsm;
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -91,9 +114,9 @@ int main(void)
             uz_adcLtc2311_ip_core_init();
 
 
-            test_instance = uz_dq_alphabeta_123_IPcore_init(config);
-
-
+            test_instance_dq_alphabeta_123 = uz_dq_alphabeta_123_IPcore_init(config_dq_alphabeta_123);
+            test_instance_123_alphabeta_dq = uz_123_alphabeta_dqIPcore_init(config_123_alphabeta_dq);
+            test_instance_fsc_mpc_3phase_spmsm = uz_fcs_mpc_3phase_spmsm_init(config_fcs_mpc_3phase_spmsm);
 
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
            // Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();

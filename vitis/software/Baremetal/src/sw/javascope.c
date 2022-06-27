@@ -31,6 +31,12 @@ static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
 
+float i_alpha_123_alphabeta_dq;
+float i_beta_123_alphabeta_dq;
+float i_a_123_alphabeta_dq;
+float i_b_123_alphabeta_dq;
+float i_c_123_alphabeta_dq;
+
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
@@ -79,7 +85,11 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_i_a_IP_CORE]	= &(data->av.i_a_IP_CORE);
 	js_ch_observable[JSO_i_b_IP_CORE]	= &(data->av.i_b_IP_CORE);
 	js_ch_observable[JSO_i_c_IP_CORE]	= &(data->av.i_c_IP_CORE);
-
+	js_ch_observable[JSO_i_alpha_123_alphabeta_dq] = &i_alpha_123_alphabeta_dq;
+	js_ch_observable[JSO_i_beta_123_alphabeta_dq] = &i_beta_123_alphabeta_dq;
+	js_ch_observable[JSO_i_a_123_alphabeta_dq] =&i_a_123_alphabeta_dq;
+	js_ch_observable[JSO_i_b_123_alphabeta_dq] =&i_b_123_alphabeta_dq;
+	js_ch_observable[JSO_i_c_123_alphabeta_dq] =&i_c_123_alphabeta_dq;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

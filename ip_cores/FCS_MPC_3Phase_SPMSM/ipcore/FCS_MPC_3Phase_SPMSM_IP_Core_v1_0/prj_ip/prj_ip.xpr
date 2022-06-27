@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/ultrazohm_sw/ip_cores/FCS_MPC_3Phase_SPMSM/ipcore/FCS_MPC_3Phase_SPMSM_IP_Core_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="65dda86037394acfaadf6591eab2d9c8"/>
+    <Option Name="Id" Val="ff7790420cb24f129790f182b97fa28b"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1L-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -103,7 +103,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_48_En31_to_single.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

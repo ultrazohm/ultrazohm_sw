@@ -16,7 +16,8 @@ static struct uz_fcs_mpc_3phase_spmsm_config_t config={
    .Rs=0.4f,
    .Ld=0.00003f,
    .Lq=0.00005f,
-   .psiPM=0.007f
+   .psiPM=0.007f,
+   .pole_pairs=4
 };
 
 void setUp(void)
@@ -29,6 +30,7 @@ void setUp(void)
     config.Ld=0.00003f;
     config.Lq=0.00005f;
     config.psiPM=0.007f;
+    config.pole_pairs=4;
 }
 
 void tearDown(void)
@@ -43,6 +45,7 @@ void test_uz_fcs_mpc_3phase_spmsm_init_test(void)
    uz_fcs_mpc_3phase_spmsm_hw_set_Ld_Expect(config.base_address, config.Ld);
    uz_fcs_mpc_3phase_spmsm_hw_set_Lq_Expect(config.base_address, config.Lq);
    uz_fcs_mpc_3phase_spmsm_hw_set_psiPM_Expect(config.base_address, config.psiPM);
+   uz_fcs_mpc_3phase_spmsm_hw_set_pole_pairs_Expect(config.base_address, config.pole_pairs);
    uz_fcs_mpc_3phase_spmsm_init(config);
 }
 

@@ -9,5 +9,6 @@ void uz_fcs_mpc_3phase_spmsm_hw_set_Rs(uint32_t base_address, float Rs);
 void uz_fcs_mpc_3phase_spmsm_hw_set_Ld(uint32_t base_address, float Ld);
 void uz_fcs_mpc_3phase_spmsm_hw_set_Lq(uint32_t base_address, float Lq);
 void uz_fcs_mpc_3phase_spmsm_hw_set_psiPM(uint32_t base_address, float psiPM);
+void uz_fcs_mpc_3phase_spmsm_hw_set_pole_pairs(uint32_t base_address, int32_t pole_pairs);
 
 #endif // UZ_FCS_MPC_3PHASE_SPMSM_HW_H

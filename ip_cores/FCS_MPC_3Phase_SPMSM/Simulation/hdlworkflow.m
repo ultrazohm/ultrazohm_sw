@@ -1,8 +1,8 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 10:26:01 on 09/06/2022
+% Generated with MATLAB 9.12 (R2022a) at 11:30:59 on 27/06/2022
 % This script was generated using the following parameter values:
-%     Filename  : 'C:\ultrazohm_sw\ip_cores\FCS_MPC_3Phase_SPMSM\hdlworkflow.m'
+%     Filename  : 'C:\ultrazohm_sw\ip_cores\FCS_MPC_3Phase_SPMSM\Simulation\hdlworkflow.m'
 %     Overwrite : true
 %     Comments  : true
 %     Headers   : true
@@ -92,6 +92,10 @@ hdlset_param('FCS_MPC_3Phase_SPMSM_TEST1/Microcontroller Software/Subsystem1/ial
 % Set Inport HDL parameters
 hdlset_param('FCS_MPC_3Phase_SPMSM_TEST1/Microcontroller Software/Subsystem1/ibeta_ref', 'IOInterface', 'External Port');
 hdlset_param('FCS_MPC_3Phase_SPMSM_TEST1/Microcontroller Software/Subsystem1/ibeta_ref', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('FCS_MPC_3Phase_SPMSM_TEST1/Microcontroller Software/Subsystem1/pole_pairs_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('FCS_MPC_3Phase_SPMSM_TEST1/Microcontroller Software/Subsystem1/pole_pairs_AXI', 'IOInterfaceMapping', 'x"118"');
 
 % Set Outport HDL parameters
 hdlset_param('FCS_MPC_3Phase_SPMSM_TEST1/Microcontroller Software/Subsystem1/Index', 'IOInterface', 'External Port');

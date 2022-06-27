@@ -43,6 +43,7 @@ The triangle signal respectively DutyCycle of each half-bridge can be individual
 
 The input is fixed to ``0`` till ``1``. Whilst ``0`` represents no shift at all, ``1`` represents a shift by an entire period. 
 E.g. with a PWM-frequency of :math:`f=10kHz` and :math:`T=100µs` the input ``triangle_shift_HB2 = 0.1f`` would shift the second half-bridge by :math:`10µs`. 
+This is done internally by shifting the carrier wave itself.
 
 .. figure:: Shift_example.png
    :align: center

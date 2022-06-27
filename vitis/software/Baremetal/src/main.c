@@ -82,10 +82,10 @@ static struct uz_fcs_mpc_3phase_spmsm_config_t config_fcs_mpc_3phase_spmsm={
    .ip_clk_frequency_Hz=100000000,
    .u_dc_link = 1.5f,
    .SampleTime=100000,
-   .Rs=0.4f,
-   .Ld=0.00003f,
-   .Lq=0.00005f,
-   .psiPM=0.007f
+   .Rs=0.085f,
+   .Ld=0.0003f,
+   .Lq=0.0003f,
+   .psiPM=0.0075f
 };
 uz_fcs_mpc_3phase_spmsm_t* test_instance_fsc_mpc_3phase_spmsm;
 int main(void)

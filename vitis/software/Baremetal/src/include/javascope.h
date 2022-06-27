@@ -33,6 +33,8 @@ enum JS_OberservableData {
 	JSO_ic,
 	JSO_id,
 	JSO_iq,
+	JSO_i_set,
+	JSO_i_angle,
 	JSO_U_Zk,
 	JSO_id_ref,
 	JSO_iq_ref,
@@ -172,8 +174,8 @@ enum gui_button_mapping {
 	[A],
 	[A],
 	[RPM],
-	A,
-	A,
+	[A],
+	[°],
 	A,
 	SND_LABELS_ENDMARKER
 

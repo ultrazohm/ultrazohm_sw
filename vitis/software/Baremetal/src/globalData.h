@@ -75,8 +75,6 @@ typedef struct _actualValues_ {
 	float mechanicalRotorSpeed_filtered; // in rpm
 	float i_d;
 	float i_q;
-	float i_d_ref;
-	float i_q_ref;
 	float rpm_ref;
 	float rpm_ref_filt;
 	float i_alpha;
@@ -120,6 +118,10 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
 	float n_ref_rpm;
+	float i_d_ref;
+	float i_q_ref;
+	float I_angle;
+	float I_set;
 } referenceAndSetValues;
 
 typedef struct{

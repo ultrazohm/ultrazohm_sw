@@ -194,8 +194,8 @@ int main(void)
         	Global_Data.av.theta_offset = 3.1f; // have to be set with duty cycle on first phase
         	Global_Data.av.polepairs = 2.0f;
         	Global_Data.av.flg_speed_control = 0U;	// Set 1U for active speed control, 0U for current control
-        	Global_Data.av.i_q_ref = 0.0f;
-        	Global_Data.av.i_d_ref = 0.0f;
+        	Global_Data.rasv.i_q_ref = 0.0f;
+        	Global_Data.rasv.i_d_ref = 0.0f;
             Global_Data.objects.iir_u_dc = uz_signals_IIR_Filter_init(iir_config_filt1);
             Global_Data.objects.iir_i_u = uz_signals_IIR_Filter_init(iir_config_filt1);
             Global_Data.objects.iir_i_v = uz_signals_IIR_Filter_init(iir_config_filt1);

@@ -53,6 +53,10 @@ float theta_mech_calc_from_resolver = 0.0f;
 float theta_m_max = 0.0f;
 float theta_m_min = 0.0f;
 
+//test
+float I_d_test = 0.0f;
+float I_q_test = 0.0f;
+
 //FOC and speed control
 struct uz_3ph_abc_t measurement_current = {0};
 struct uz_3ph_abc_t measurement_voltage = {0};
@@ -120,6 +124,9 @@ void ISR_Control(void *data)
 
     Global_Data.av.U_ZK = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_A4;
 
+    // Calculating I_d and I_q from I_set and angle
+    I_q_test = sinf(Global_Data.rasv.I_angle/180.0f*M_PI)*Global_Data.rasv.I_set;
+	I_d_test = cosf(Global_Data.rasv.I_angle/180.0f*M_PI)*Global_Data.rasv.I_set;
 
     // calculating values needed for control
     omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;// w_mech
@@ -131,8 +138,8 @@ void ISR_Control(void *data)
     	if (Global_Data.av.flg_speed_control){
     		dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_el_rad_per_sec, Global_Data.rasv.n_ref_rpm, Global_Data.av.U_ZK, dq_reference_current.d);
     	} else {
-    		dq_reference_current.d = Global_Data.av.i_d_ref;
-    		dq_reference_current.q = Global_Data.av.i_q_ref;
+    		dq_reference_current.d = Global_Data.rasv.i_d_ref;
+    		dq_reference_current.q = Global_Data.rasv.i_q_ref;
     		dq_reference_current.zero = 0.0f;
     	}
     	 dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, omega_el_rad_per_sec);

@@ -25,7 +25,6 @@ static float *js_slowDataArray[JSSD_ENDMARKER];
 float *js_ch_observable[JSO_ENDMARKER];
 float *js_ch_selected[JS_CHANNELS];
 extern struct uz_3ph_dq_t dq_reference_current;
-extern float theta_mech_calc_from_resolver;
 extern struct uz_3ph_abc_t measurement_current;
 extern struct uz_3ph_abc_t measurement_voltage;
 extern struct uz_3ph_dq_t dq_measurement_current;
@@ -75,6 +74,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_id] 			= &dq_measurement_current.d;
 	js_ch_observable[JSO_iq_ref] 		= &dq_reference_current.q;
 	js_ch_observable[JSO_id_ref] 		= &dq_reference_current.d;
+	js_ch_observable[JSO_i_set] 		= &data->rasv.I_set;
+	js_ch_observable[JSO_i_angle] 		= &data->rasv.I_angle;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_ud]			= &data->av.u_d;

@@ -6,8 +6,20 @@ add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_PWM_and_Switching
 add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth.vhd}
 add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth1.vhd}
 add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth2.vhd}
+add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem.vhd}
+add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1.vhd}
+add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2.vhd}
+add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3.vhd}
 add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift.vhd}
+add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem_block.vhd}
+add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1_block.vhd}
+add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2_block.vhd}
+add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3_block.vhd}
 add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift1.vhd}
+add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem_block1.vhd}
+add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1_block1.vhd}
+add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2_block1.vhd}
+add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3_block1.vhd}
 add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift2.vhd}
 add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_Counter_Ctrl.vhd}
 add_files -norecurse {../hdl/vhdl/PWM_and_SS_control_V4_ip_src_GenPWM.vhd}
@@ -38,7 +50,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112542022 [ipx::current_core]
+set_property core_revision 2112567927 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_PWM_and_Switching_Signal_Control_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -57,14 +69,62 @@ ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth2.vhd} [ipx:
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_LimitPulseWidth2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem_block1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1_block1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem1_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2_block1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem2_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3_block1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Subsystem3_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/PWM_and_SS_control_V4_ip_src_Triangle_shift2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

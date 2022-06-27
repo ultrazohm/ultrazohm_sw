@@ -53,7 +53,7 @@ void update_position_and_speed_of_resolverIP(DS_Data* const data){
 	float *velocity = &data->av.mechanicalRotorSpeed;
 	uz_resolverIP_readMechanicalPositionAndVelocity(data->objects.resolver_IP,position,velocity);
 	data->av.mechanicalRotorSpeed = data->av.mechanicalRotorSpeed * 60.0f; //rpm
-	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)) - 2 * M_PI * floor(data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)  / (2* M_PI));
+	data->av.theta_elec =data->av.theta_mech; // (data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)) - 2 * M_PI * floor(data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)  / (2* M_PI));
 }
 
 // For DEBUGGING only

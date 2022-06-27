@@ -95,6 +95,19 @@ void ISR_Control(void *data)
     	// Global_Data.av.theta_mech in rad
     	update_position_and_speed_of_resolverIP(&Global_Data);
     }
+    //theta offset and theta elec
+    if(USE_RESOLVER == 0){
+    	// Only theta_elec available from IPCore
+    	Global_Data.av.theta_elec = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
+    } else {
+    	// offset values for theta_mech 3.106790
+    	// 0.1255947
+    	// 6.221634
+    	// 3.473124
+    	// 3.102956
+      	Global_Data.av.theta_elec = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
+    }
+
     // convert ADC currents
     measurement_current.a = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A1 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
     measurement_current.b = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A2 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
@@ -107,14 +120,6 @@ void ISR_Control(void *data)
 
     Global_Data.av.U_ZK = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_A4;
 
-    //theta offset and theta elec
-    if(USE_RESOLVER == 0){
-    	// Only theta_elec available from IPCore
-    	Global_Data.av.theta_elec = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
-    } else {
-        Global_Data.av.theta_m_offset_comp = theta_mech_calc_from_resolver - Global_Data.av.theta_offset;
-        Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp * Global_Data.av.polepairs;
-    }
 
     // calculating values needed for control
     omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;// w_mech
@@ -132,10 +137,16 @@ void ISR_Control(void *data)
     	}
     	 dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, omega_el_rad_per_sec);
     	 uvw_ref = uz_transformation_3ph_dq_to_abc(dq_ref_Volts, Global_Data.av.theta_elec);
-    	 output = uz_FOC_generate_DutyCycles(uvw_ref, Global_Data.av.U_ZK);
+    	 output = uz_FOC_generate_DutyCycles(uvw_ref, 24.0f);
     	 uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
+    }else{
+    	output.DutyCycle_U=0.0f;
+    	output.DutyCycle_V=0.0f;
+    	output.DutyCycle_W=0.0f;
+   	 uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
+
     }
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+ //   uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
@@ -145,42 +156,6 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
-
-
-    // Determine mechanical angle of resolver
-    if (USE_RESOLVER == 1){
-        if(theta_mech_old-Global_Data.av.theta_mech > 4.0f) {
-        	cnt++;
-        	cnt_float=(float)cnt;
-        } else if (theta_mech_old-Global_Data.av.theta_mech < -4.0f) {
-        	cnt--;
-        	cnt_float=(float)cnt;
-        }
-        if(cnt > 1 || cnt < -1) {
-        	cnt = 0;
-        	cnt_float = 0.0f;
-        }
-        if(cnt_reset == 1) {
-        	cnt = 0;
-        	cnt_float = 0;
-        	cnt_reset = 0;
-        	cnt_reset_float=0;
-
-        }
-
-        if(cnt >= 0){
-        	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/uz_resolverIP_getResolverPolePairs(Global_Data.objects.resolver_IP) + cnt*2*M_PI/2.0f;
-        } else {
-        	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/2.0f + (2+cnt)*2*M_PI/2.0f;
-        }
-        theta_mech_old = Global_Data.av.theta_mech;
-        if (Global_Data.av.theta_mech <= theta_m_min) {
-        	theta_m_min = Global_Data.av.theta_mech;
-        }
-        if (Global_Data.av.theta_mech >= theta_m_max) {
-        	theta_m_max = Global_Data.av.theta_mech;
-        }
-    }
 
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

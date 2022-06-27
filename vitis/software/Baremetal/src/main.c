@@ -43,7 +43,7 @@ DS_Data Global_Data = {
 
 // Init structs
 const struct uz_PMSM_t config_PMSM = {
-	.R_ph_Ohm = 0.5f,
+	.R_ph_Ohm = 0.140f,
 
    .Ld_Henry = 0.001f,
 
@@ -61,7 +61,7 @@ const struct uz_PI_Controller_config config_id = {
 
    .Kp = 1.0f,
 
-   .Ki = 0.0f,
+   .Ki = 10.0f,
 
    .samplingTime_sec = 1/SAMPLE_FREQUENCY,
 
@@ -75,7 +75,7 @@ const struct uz_PI_Controller_config config_iq = {
 
    .Kp = 1.0f,
 
-   .Ki = 0.0f,
+   .Ki = 10.0f,
 
    .samplingTime_sec = 1/SAMPLE_FREQUENCY,
 
@@ -109,7 +109,7 @@ struct uz_SpeedControl_config config_speed = {
 
     .config_controller.lower_limit = -10.0f,
 
-    .config_PMSM.R_ph_Ohm = 0.5f,
+    .config_PMSM.R_ph_Ohm = 0.140f,
 
     .config_PMSM.Ld_Henry = 0.001f,
 
@@ -191,7 +191,7 @@ int main(void)
         case init_foc:
         	Global_Data.objects.FOC_instance = uz_FOC_init(config_FOC);
             Global_Data.objects.Speed_instance = uz_SpeedControl_init(config_speed);
-        	Global_Data.av.theta_offset = 0.0f; // have to be set with duty cycle on first phase
+        	Global_Data.av.theta_offset = 3.1f; // have to be set with duty cycle on first phase
         	Global_Data.av.polepairs = 2.0f;
         	Global_Data.av.flg_speed_control = 0U;	// Set 1U for active speed control, 0U for current control
         	Global_Data.av.i_q_ref = 0.0f;

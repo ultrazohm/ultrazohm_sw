@@ -35,6 +35,7 @@ uz_fcs_mpc_3phase_spmsm_t* uz_fcs_mpc_3phase_spmsm_init(struct uz_fcs_mpc_3phase
     uz_fcs_mpc_3phase_spmsm_hw_set_Ld(self->config.base_address, self->config.Ld);
     uz_fcs_mpc_3phase_spmsm_hw_set_Lq(self->config.base_address, self->config.Lq);
     uz_fcs_mpc_3phase_spmsm_hw_set_psiPM(self->config.base_address, self->config.psiPM);
+    uz_fcs_mpc_3phase_spmsm_hw_set_pole_pairs(self->config.base_address, self->config.pole_pairs);
     return (self);
 }
 #endif

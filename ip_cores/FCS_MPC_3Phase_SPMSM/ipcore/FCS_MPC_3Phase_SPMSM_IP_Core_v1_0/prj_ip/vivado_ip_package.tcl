@@ -16,7 +16,7 @@ add_files -norecurse {../hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Functi
 add_files -norecurse {../hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_18_En11_to_single.vhd}
 add_files -norecurse {../hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_double_to_fixed_32_En0.vhd}
 add_files -norecurse {../hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_24_En20_to_single.vhd}
-add_files -norecurse {../hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_48_En31_to_single.vhd}
+add_files -norecurse {../hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd}
 add_files -norecurse {../hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_double2single.vhd}
 add_files -norecurse {../hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_Subsystem1.vhd}
 add_files -norecurse {../hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_reset_sync.vhd}
@@ -44,7 +44,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112541943 [ipx::current_core]
+set_property core_revision 2112567929 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_Subsystem1_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -103,10 +103,10 @@ ipx::add_file {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_24_En2
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_24_En20_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_24_En20_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_24_En20_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_48_En31_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_48_En31_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_48_En31_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_48_En31_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_double2single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_double2single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_double2single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

@@ -69,4 +69,10 @@ void uz_fcs_mpc_3phase_spmsm_hw_set_psiPM(uint32_t base_address, float psiPM)
     uz_fixedpoint_axi_write(base_address + psiPM_AXI_Data_FCS_MPC_3Phase_SPMSM_IP_Core, psiPM, fixedpoint_definition);
 }
 
+void uz_fcs_mpc_3phase_spmsm_hw_set_pole_pairs(uint32_t base_address, int32_t pole_pairs)
+{
+    uz_assert_not_zero_uint32(base_address);
+    uz_axi_write_int32(base_address + pole_pairs_AXI_Data_FCS_MPC_3Phase_SPMSM_IP_Core, pole_pairs);
+}
+
 

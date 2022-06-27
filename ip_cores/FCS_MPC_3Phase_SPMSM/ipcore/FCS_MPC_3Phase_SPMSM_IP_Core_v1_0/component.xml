@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>6e63ecca</spirit:value>
+            <spirit:value>3d74f217</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>6e63ecca</spirit:value>
+            <spirit:value>3d74f217</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -824,7 +824,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_48_En31_to_single.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -890,7 +890,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_ef15d934</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_5598d9e5</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -926,7 +926,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_48_En31_to_single.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1060,14 +1060,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>FCS_MPC_3Phase_SPMSM_IP_Core</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112541943</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-06-09T08:24:23Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112567929</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-06-27T09:29:34Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="36d45b6f"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="04611feb"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="90b3ec7c"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="24e60f4d"/>
     </xilinx:packagingInfo>

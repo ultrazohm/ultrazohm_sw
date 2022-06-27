@@ -85,4 +85,9 @@ void test_uz_fcs_mpc_3phase_spmsm_hw_set_psiPM(void){
     uz_fcs_mpc_3phase_spmsm_hw_set_psiPM(TEST_BASE_ADDRESS,psiPM);
 }
 
+void test_uz_fcs_mpc_3phase_spmsm_hw_set_pole_pairs(void){
+    int32_t pole_pairs = 4;
+    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+pole_pairs_AXI_Data_FCS_MPC_3Phase_SPMSM_IP_Core,pole_pairs);
+    uz_fcs_mpc_3phase_spmsm_hw_set_pole_pairs(TEST_BASE_ADDRESS,pole_pairs);
+}
 #endif // TEST

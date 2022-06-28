@@ -359,7 +359,7 @@ The dq and values can then be read from the struct. The inverse transformation f
 
   alphabeta.alpha = stationary_values.alpha;
   alphabeta.beta = stationary_values.beta;
-  rotating_dq = uz_ab_to_dq_transformation(alphabeta,theta_el);
+  rotating_dq = uz_transformation_3ph_alphabeta_to_dq(alphabeta,theta_el);
   d_current = rotating_dq.d;
   q_current = rotating_dq.q;
 

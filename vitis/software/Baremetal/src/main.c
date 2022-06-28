@@ -39,13 +39,16 @@ DS_Data Global_Data = {
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     }
 };
-
+uz_FOC* FOC_instance;
+uz_SpeedControl_t* Speed_instance;
+uz_IIR_Filter_t* LPF1_instance;
 enum init_chain
 {
     init_assertions = 0,
     init_gpios,
     init_software,
     init_ip_cores,
+	init_foc,
     print_msg,
     init_interrupts,
     infinite_loop
@@ -55,6 +58,81 @@ enum init_chain initialization_chain = init_assertions;
 int main(void)
 {
     int status = UZ_SUCCESS;
+	struct uz_PMSM_t config_hoernermachine = {
+
+	    	.R_ph_Ohm = 0.285f,
+
+	    	.Ld_Henry = 0.0004f,
+
+	    	.Lq_Henry = 0.0018f,
+
+	    	.Psi_PM_Vs = 0.0194f,
+
+	    	.polePairs = 4.0f,
+
+	    	.J_kg_m_squared = 0.0f,
+
+	    	.I_max_Ampere = 10.8f
+
+	       };
+
+	         struct uz_PI_Controller_config config_id = {
+
+	           .Kp = 0.4f,
+
+	           .Ki = 285.0f,
+
+	           .samplingTime_sec = 0.00005f,
+
+	           .upper_limit = 10.0f,
+
+	           .lower_limit = -10.0f
+
+	        };
+
+	        struct uz_PI_Controller_config config_iq = {
+
+	           .Kp = 2.0f,
+
+	           .Ki = 285.0f,
+
+	           .samplingTime_sec = 0.00005f,
+
+	           .upper_limit = 10.0f,
+
+	           .lower_limit = -10.0f
+
+	        };
+
+	        struct uz_FOC_config config_FOC = {
+
+	           .decoupling_select = linear_decoupling,
+
+	           .config_PMSM = config_hoernermachine,
+
+	           .config_id = config_id,
+
+	           .config_iq = config_iq
+
+	        };
+
+	        struct uz_SpeedControl_config  config_speed = {
+
+	           .config_controller.Kp = 0.4f,
+
+	           .config_controller.Ki = 4.0f,
+
+	           .config_controller.samplingTime_sec = 0.00005f,
+
+	           .config_controller.upper_limit = 3.0f,
+
+	           .config_controller.lower_limit = -3.0f,
+
+			   .config_PMSM = config_hoernermachine,
+
+	        };
+	        struct uz_IIR_Filter_config config = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 100.0f, .sample_frequency_Hz = 20000.0f};
+
     while (1)
     {
         switch (initialization_chain)
@@ -81,9 +159,9 @@ int main(void)
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
             Global_Data.objects.deadtime_interlock_d1_pin_18_to_23 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_18_to_23();
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, false);
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, false);
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, false);
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
@@ -93,6 +171,12 @@ int main(void)
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
             break;
+        case init_foc:
+        	FOC_instance = uz_FOC_init(config_FOC);
+        	Speed_instance = uz_SpeedControl_init(config_speed);
+        	LPF1_instance = uz_signals_IIR_Filter_init(config);
+        	initialization_chain = print_msg;
+        	break;
         case print_msg:
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");

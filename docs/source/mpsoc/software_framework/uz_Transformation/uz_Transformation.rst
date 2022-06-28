@@ -404,7 +404,7 @@ The creation of a transformation matrix with this method was presented in [[#Zor
 
   %% function printcode function declare: print c code for matrix to 2D array
   function printcode(matrix,phases)
-    fprintf('float vsd_mat[%d][%d] = \n{\n',phases,phases);
+    fprintf('float const vsd_mat[%d][%d] = \n{\n',phases,phases);
     for y = (0:(phases-1))
       fprintf('    { ');
       for x = (0:(phases-1))

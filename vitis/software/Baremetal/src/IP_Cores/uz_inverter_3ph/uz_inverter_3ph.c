@@ -39,18 +39,37 @@ uz_inverter_3ph_t* uz_inverter_3ph_init(struct uz_inverter_3ph_config_t config){
     return (self);
 }
 
-struct uz_inverter_3ph_u_abc_ps_t uz_inverter_3ph_get_u_abc_ps(uz_inverter_3ph_t *self){
+uz_3ph_abc_t uz_inverter_3ph_get_u_abc_ps(uz_inverter_3ph_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    struct uz_inverter_3ph_u_abc_ps_t u_abc = {
-        .u_ab = 0.0f,
-        .u_bc = 0.0f,
-        .u_ca = 0.0f
+    uz_3ph_abc_t u_abc = {
+        .a = 0.0f,
+        .b = 0.0f,
+        .c = 0.0f
     };
-    u_abc.u_ab = uz_inverter_3ph_hw_read_u_ab_ps(self->config.base_address);
-    u_abc.u_bc =uz_inverter_3ph_hw_read_u_bc_ps(self->config.base_address);
-    u_abc.u_ca =uz_inverter_3ph_hw_read_u_ca_ps(self->config.base_address);
+    u_abc.a = uz_inverter_3ph_hw_read_u_ab_ps(self->config.base_address);
+    u_abc.b = uz_inverter_3ph_hw_read_u_bc_ps(self->config.base_address);
+    u_abc.c = uz_inverter_3ph_hw_read_u_ca_ps(self->config.base_address);
     return u_abc;
+}
+
+void uz_inverter_3ph_set_i_abc_ps(uz_inverter_3ph_t *self, uz_3ph_abc_t i_abc){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_inverter_3ph_hw_write_i_a_ps(self->config.base_address, i_abc.a);
+    uz_inverter_3ph_hw_write_i_b_ps(self->config.base_address, i_abc.b);
+    uz_inverter_3ph_hw_write_i_c_ps(self->config.base_address, i_abc.c);
+}
+
+void uz_inverter_3ph_set_gate_ps(uz_inverter_3ph_t *self, struct uz_inverter_3ph_gate_ps_t G){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_inverter_3ph_hw_write_gate1(self->config.base_address, G.gate1);
+    uz_inverter_3ph_hw_write_gate2(self->config.base_address, G.gate2);
+    uz_inverter_3ph_hw_write_gate3(self->config.base_address, G.gate3);
+    uz_inverter_3ph_hw_write_gate4(self->config.base_address, G.gate4);
+    uz_inverter_3ph_hw_write_gate5(self->config.base_address, G.gate5);
+    uz_inverter_3ph_hw_write_gate6(self->config.base_address, G.gate6);
 }
 
 void uz_inverter_3ph_trigger_u_abc_ps_strobe(uz_inverter_3ph_t *self){
@@ -59,30 +78,10 @@ void uz_inverter_3ph_trigger_u_abc_ps_strobe(uz_inverter_3ph_t *self){
     uz_inverter_3ph_hw_trigger_u_abc_ps_strobe(self->config.base_address);
 }
 
-void uz_inverter_3ph_set_i_abc_ps(uz_inverter_3ph_t *self, struct uz_inverter_3ph_i_abc_ps_t i_abc){
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    uz_inverter_3ph_hw_write_i_a_ps(self->config.base_address, i_abc.i_a);
-    uz_inverter_3ph_hw_write_i_b_ps(self->config.base_address, i_abc.i_b);
-    uz_inverter_3ph_hw_write_i_c_ps(self->config.base_address, i_abc.i_c);
-}
-
 void uz_inverter_3ph_trigger_i_abc_ps_strobe(uz_inverter_3ph_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_inverter_3ph_hw_trigger_i_abc_ps_strobe(self->config.base_address);
-}
-
-void uz_inverter_3ph_set_gate_ps(uz_inverter_3ph_t *self, struct uz_inverter_3ph_gate_ps_t G){
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    //memcpy( (void *)(self->config.base_address+G_Data_uz_inverter_3ph), &G,sizeof (struct uz_inverter_3ph_G_t) );
-    uz_inverter_3ph_hw_write_gate1(self->config.base_address, G.gate1);
-    uz_inverter_3ph_hw_write_gate2(self->config.base_address, G.gate2);
-    uz_inverter_3ph_hw_write_gate3(self->config.base_address, G.gate3);
-    uz_inverter_3ph_hw_write_gate4(self->config.base_address, G.gate4);
-    uz_inverter_3ph_hw_write_gate5(self->config.base_address, G.gate5);
-    uz_inverter_3ph_hw_write_gate6(self->config.base_address, G.gate6);
 }
 
 void uz_inverter_3ph_trigger_gate_ps_strobe(uz_inverter_3ph_t *self){

@@ -10,11 +10,7 @@ g6= 0;
 
 %%Electrical parameters
 udc = 200;
-%ts=5e-7;
 ts=1/1e6;
-i_a= 10;
-i_b= 5;
-i_c= 5;
 
 %%control   
 pslcontrol = 1;

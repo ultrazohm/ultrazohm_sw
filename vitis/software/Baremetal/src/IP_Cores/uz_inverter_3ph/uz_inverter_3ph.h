@@ -72,21 +72,21 @@ void uz_inverter_3ph_set_gate_ps(uz_inverter_3ph_t *self,struct uz_inverter_3ph_
 /**
  * @brief Takes the values of the AXI shadow register and pass them to the actual output.
  * 
- * @param self 
+ * @param self Pointer to driver instance
  */
 void uz_inverter_3ph_trigger_u_abc_ps_strobe(uz_inverter_3ph_t *self);
 
 /**
  * @brief Takes the values of the AXI shadow register and pass them to the actual input.
  * 
- * @param self 
+ * @param self Pointer to driver instance
  */
 void uz_inverter_3ph_trigger_i_abc_ps_strobe(uz_inverter_3ph_t *self);
 
 /**
  * @brief Takes the values of the AXI shadow register and pass them to the actual input.
  * 
- * @param self 
+ * @param self Pointer to driver instance
  */
 void uz_inverter_3ph_trigger_gate_ps_strobe(uz_inverter_3ph_t *self);
 

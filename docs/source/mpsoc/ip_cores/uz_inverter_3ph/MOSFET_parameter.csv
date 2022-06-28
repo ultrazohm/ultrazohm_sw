@@ -1,0 +1,7 @@
+Parameter,      	        Symbol,  	            Value
+on resistance MOSFET,       :math:`R_{on-MOSFET}`,  :math:`0.01 \Omega`
+off conductance MOSFET,     :math:`G_{off-MOSFET}`, :math:`1e-6 S`
+threshold voltage MOSFET,   :math:`V_{th-MOSFET}`,  :math:`0.5 V`
+on resistance diode,        :math:`R_{on-DIODE}`,   :math:`0.001 \Omega`
+off conductance diode,      :math:`G_{off-DIODE}`,  :math:`1e-5 S`
+threshold voltage diode,    :math:`V_{th-DIODE}`,   :math:`0.8 V`

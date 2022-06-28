@@ -1,0 +1,10 @@
+Port Name,      	    Port Type,	Data Type,	    Dimension
+switch_pspl_abc,	    Inport,	    boolean,	    1D		
+switch_pspl_gate,	    Inport,	    boolean,	    1D		
+i_abc_ps,	            Inport,	    single,	        2D Vector of 3		
+i_abc_pl,	            Inport,	    fixdt(1;27;18), 2D Vector of 3		
+gate_ps,	            Inport,	    boolean,	    2D Vector of 6		
+gate_pl,	            Inport,	    fixdt(0;1;0),	2D Vector of 6		
+u_dc,	                Inport,	    single,	        1D
+u_abc_ps,	            Outport,	single,	        2D Vector of 3
+u_abc_pl,	            Outport,	fixdt(1;27;16),	2D Vector of 3

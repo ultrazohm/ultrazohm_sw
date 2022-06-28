@@ -437,7 +437,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112541943">
+		<CoreRevision value="2112567929">
 		</CoreRevision>
 		<ComponentPath value="FCS_MPC_3Phase_SPMSM/ipcore/FCS_MPC_3Phase_SPMSM_IP_Core_v1_0/component.xml">
 		</ComponentPath>

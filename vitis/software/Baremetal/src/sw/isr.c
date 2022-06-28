@@ -74,6 +74,23 @@ static void ReadAllADC();
 void ISR_Control(void *data)
 {
 
+
+	// Read output ia ib ic from IP-Core trans_123_alphabeta_dq
+	abc_currents_123_alphabeta_dq=uz_123_alphabeta_dqIPcore_get_i_abc(test_instance_123_alphabeta_dq);
+		//crude over current protection
+		if(fabs(abc_currents_123_alphabeta_dq.a) > 35.0f || fabs(abc_currents_123_alphabeta_dq.b) > 35.0f || fabs(abc_currents_123_alphabeta_dq.c) > 35.0f){
+			uz_assert(0);
+		}
+		// Javascope
+		i_a_123_alphabeta_dq=abc_currents_123_alphabeta_dq.a;
+		i_b_123_alphabeta_dq=abc_currents_123_alphabeta_dq.b;
+		i_c_123_alphabeta_dq=abc_currents_123_alphabeta_dq.c;
+
+	// Read output ialpha ibeta from IP_Core trans_123_alphabeta_dq
+	alphabeta_currents_123_alphabeta_dq = uz_123_alphabeta_dqIPcore_get_i_alphabeta(test_instance_123_alphabeta_dq);
+	i_alpha_123_alphabeta_dq=alphabeta_currents_123_alphabeta_dq.alpha;
+	i_beta_123_alphabeta_dq=alphabeta_currents_123_alphabeta_dq.beta;
+
 	// Read output ialpha ibeta from IP-Core trans_dq_alphabeta_123
 	 alphabeta_currents_dq_alphabeta_123 = uz_dq_alphabeta_123_IPcore_get_ialpha_ibeta(test_instance_dq_alphabeta_123);
 	 Global_Data.av.i_alpha_IP_CORE=alphabeta_currents_dq_alphabeta_123.alpha;
@@ -88,16 +105,7 @@ void ISR_Control(void *data)
 	// Update idref iqref from IP-Core trans_dq_alphabeta_123
 	uz_dq_alphabeta_123_IPcore_idref_iqref_update(test_instance_dq_alphabeta_123,updated_values);
 
-	// Read output ialpha ibeta from IP_Core trans_123_alphabeta_dq
-	alphabeta_currents_123_alphabeta_dq = uz_123_alphabeta_dqIPcore_get_i_alphabeta(test_instance_123_alphabeta_dq);
-	i_alpha_123_alphabeta_dq=alphabeta_currents_123_alphabeta_dq.alpha;
-	i_beta_123_alphabeta_dq=alphabeta_currents_123_alphabeta_dq.beta;
 
-	// Read output ia ib ic from IP-Core trans_123_alphabeta_dq
-	abc_currents_123_alphabeta_dq=uz_123_alphabeta_dqIPcore_get_i_abc(test_instance_123_alphabeta_dq);
-	i_a_123_alphabeta_dq=abc_currents_123_alphabeta_dq.a;
-	i_b_123_alphabeta_dq=abc_currents_123_alphabeta_dq.b;
-	i_c_123_alphabeta_dq=abc_currents_123_alphabeta_dq.c;
 
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();

@@ -347,7 +347,45 @@ Unfortunately, the footprints that can be optained from the manufacturer usually
 		Typical layer stack in AD before editing
 
 
-In order to adapt those componennts to the required mapping the following steps are necessary:
+In order to adapt those components to the required layer mapping there are two ways of editing your new library part: 
+
+	a. Loading the stackup template file from the UltraZohm Altium Library
+	b. Editing the layers manually
+
+
+.. _loading_stackup_template_file:
+
+Loading Stackup Template File
+*****************************
+
+Clone the UltraZohm Altium Library Repository to your local drive (https://bitbucket.org/ultrazohm/altium_libraries/).
+
+#. Create a new PCB Library in Altium altium-designer
+
+   .. figure:: img/mech_layers/01_Create_new_PCB_Lib.png
+		:width: 500px
+
+#. Import the predefined machanical layer stackup file that is located in the Altium Library Repository under ``..\altium_libraries\templates\mechanical_layers_Pcblib``
+
+   .. figure:: img/mech_layers/02_Import_Mechanical_Layers.png
+		:width: 500px
+
+   .. figure:: img/mech_layers/03_Choose_Layer_Stackup_File.png
+		:width: 500px
+
+#. After successful loading of the mechanical layer stackup template file your layer set should look like following
+
+   .. figure:: img/mech_layers/04_Layer_Setting_Template.png
+		:width: 400px
+
+
+.. _edit_layers_manually:
+
+Editing Layers Manually
+***********************
+
+If you prefer to editing the layers manually, then following steps are necessary:
+
 
 #. Create all required mechanical layer pairs. You do not need to create all layer pairs defined in :numref:`table_mech_layer_pairs`
 	

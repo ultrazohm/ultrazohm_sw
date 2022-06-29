@@ -73,6 +73,21 @@ typedef struct uz_9ph_alphabeta_t{
     float zero;         /**< Amplitude of the zero component */
 }uz_9ph_alphabeta_t;
 
+/**
+ * @brief Struct for the variable of an rotating dq-frame for nine-phase systems
+ * 
+ */
+typedef struct uz_9ph_dq_t{
+    float d;    /**< Amplitude of the d component */
+    float q;    /**< Amplitude of the q component */
+    float x1;   /**< Amplitude of the o1 component */
+    float y1;   /**< Amplitude of the o2 component */
+    float x2;   /**< Amplitude of the x1 component */
+    float y2;   /**< Amplitude of the y1 component */
+    float x3;   /**< Amplitude of the x2 component */
+    float y3;   /**< Amplitude of the y2 component */
+    float zero; /**< Amplitude of the zero component */
+}uz_9ph_dq_t;
 
 /**
  * @brief Struct for the natural variables of a nine-phase system
@@ -178,5 +193,41 @@ uz_9ph_alphabeta_t uz_transformation_9ph_abc_to_alphabeta(uz_9ph_abc_t input);
  * @return uz_9ph_abc_t Outputs the calculated abc-phases
  */
 uz_9ph_abc_t uz_transformation_9ph_alphabeta_to_abc(uz_9ph_alphabeta_t input);
+
+/**
+ * @brief Calculates the dq components from alpha and beta and leaves the additional systems untouched
+ * 
+ * @param input uz_9ph_alphabeta_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @return uz_9ph_dq_t Outputs the calculated stationary and rotating reference frame values
+ */
+uz_9ph_dq_t uz_transformation_9ph_alphabeta_to_dq(uz_9ph_alphabeta_t input, float theta_el_rad);
+
+/**
+ * @brief Calculates the alpha and beta components from the dq values and leaves the additional systems untouched
+ * 
+ * @param input uz_9ph_dq_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @return uz_9ph_alphabeta_t Outputs the calculated stationary reference frame values
+ */
+uz_9ph_alphabeta_t uz_transformation_9ph_dq_to_alphabeta(uz_9ph_dq_t input, float theta_el_rad);
+
+/**
+ * @brief Calculates the dq components and additional stationary reference frame components from abc values
+ * 
+ * @param input uz_9ph_abc_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @return uz_9ph_dq_t Outputs the calculated stationary and rotating reference frame values
+ */
+uz_9ph_dq_t uz_transformation_9ph_abc_to_dq(uz_9ph_abc_t input, float theta_el_rad);
+
+/**
+ * @brief Calculates the abc values from the dq values and additional stationary reference frame components
+ * 
+ * @param input uz_9ph_dq_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @return uz_9ph_abc_t Outputs the calculated abc-phases
+ */
+uz_9ph_abc_t uz_transformation_9ph_dq_to_abc(uz_9ph_dq_t input, float theta_el_rad);
 
 #endif // UZ_TRANSFORMATION_H

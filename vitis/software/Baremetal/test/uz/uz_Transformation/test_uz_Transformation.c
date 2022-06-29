@@ -15,6 +15,8 @@ uz_6ph_alphabeta_t sixphase_alphabeta = {0};
 
 uz_9ph_abc_t ninephase_abc = {0};
 uz_9ph_alphabeta_t ninephase_alphabeta = {0};
+uz_9ph_dq_t ninephase_dq = {0};
+
 uz_3ph_alphabeta_t alphabeta_multiphase_test = {0};
 uz_3ph_dq_t dq_multiphase_test = {0};
 
@@ -151,7 +153,6 @@ void test_uz_6ph_clarke_inverse_transformation_output(void){
 
 // test vsd output
 void test_uz_9ph_clarke_transformation_output(void){
-    
     ninephase_abc.a1 = 1.0f;
     ninephase_abc.b1 = 2.0f;
     ninephase_abc.c1 = 3.0f;
@@ -242,6 +243,98 @@ void test_uz_dq_to_ab_inverse_transformation_negative_theta(void){
     TEST_ASSERT_FLOAT_WITHIN (1e-05, 6.915498f, output.alpha);
     TEST_ASSERT_FLOAT_WITHIN (1e-05, 3.62986f, output.beta);
     TEST_ASSERT_EQUAL_FLOAT (4.0f, output.gamma);
+}
+
+void test_uz_transformation_9ph_alphabeta_to_dq(void){
+    ninephase_alphabeta.alpha = 2.0f;
+    ninephase_alphabeta.beta = 3.0f;
+    ninephase_alphabeta.x1 = 4.3f;
+    ninephase_alphabeta.y1 = 4.4f;
+    ninephase_alphabeta.x2 = 4.5f;
+    ninephase_alphabeta.y2 = 4.6f;
+    ninephase_alphabeta.x3 = 4.7f;
+    ninephase_alphabeta.y3 = 4.8f;
+    ninephase_alphabeta.zero = 4.9f;
+    float theta_el_rad = UZ_PIf / 8.0f;
+    uz_9ph_dq_t output = uz_transformation_9ph_alphabeta_to_dq(ninephase_alphabeta, theta_el_rad);
+    TEST_ASSERT_FLOAT_WITHIN (1e-06, 2.995809f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN (1e-06, 2.006272f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(ninephase_alphabeta.x1,output.x1);
+    TEST_ASSERT_EQUAL_FLOAT(ninephase_alphabeta.y1,output.y1);
+    TEST_ASSERT_EQUAL_FLOAT(ninephase_alphabeta.x2,output.x2);
+    TEST_ASSERT_EQUAL_FLOAT(ninephase_alphabeta.y2,output.y2);
+    TEST_ASSERT_EQUAL_FLOAT(ninephase_alphabeta.x3,output.x3);
+    TEST_ASSERT_EQUAL_FLOAT(ninephase_alphabeta.y3,output.y3);
+    TEST_ASSERT_EQUAL_FLOAT(ninephase_alphabeta.zero,output.zero);
+}
+
+void test_uz_transformation_9ph_dq_to_alphabeta(void){
+    ninephase_dq.d = 5.0f;
+    ninephase_dq.q = 6.0f;
+    ninephase_dq.x1 = 1.1f;
+    ninephase_dq.y1 = 1.2f;
+    ninephase_dq.x2 = 1.3f;
+    ninephase_dq.y2 = 1.4f;
+    ninephase_dq.x3 = 1.5f;
+    ninephase_dq.y3 = 1.6f;
+    ninephase_dq.zero = 1.7f;
+    float theta_el_rad = UZ_PIf / 8.0f;
+    uz_9ph_alphabeta_t output = uz_transformation_9ph_dq_to_alphabeta(ninephase_dq, theta_el_rad);
+    TEST_ASSERT_FLOAT_WITHIN (1e-06, 2.323297f, output.alpha);
+    TEST_ASSERT_FLOAT_WITHIN (1e-06, 7.456694f, output.beta);
+    TEST_ASSERT_EQUAL_FLOAT(ninephase_dq.x1,output.x1);
+    TEST_ASSERT_EQUAL_FLOAT(ninephase_dq.y1,output.y1);
+    TEST_ASSERT_EQUAL_FLOAT(ninephase_dq.x2,output.x2);
+    TEST_ASSERT_EQUAL_FLOAT(ninephase_dq.y2,output.y2);
+    TEST_ASSERT_EQUAL_FLOAT(ninephase_dq.x3,output.x3);
+    TEST_ASSERT_EQUAL_FLOAT(ninephase_dq.y3,output.y3);
+    TEST_ASSERT_EQUAL_FLOAT(ninephase_dq.zero,output.zero);
+}
+
+void test_uz_transformation_9ph_abc_to_dq(void){
+    ninephase_abc.a1 = 1.0f;
+    ninephase_abc.b1 = 2.0f;
+    ninephase_abc.c1 = 3.0f;
+    ninephase_abc.a2 = 4.0f;
+    ninephase_abc.b2 = 5.0f;
+    ninephase_abc.c2 = 6.0f;
+    ninephase_abc.a3 = 7.0f;
+    ninephase_abc.b3 = 8.0f;
+    ninephase_abc.c3 = 9.0f;
+    float theta_el_rad = UZ_PIf / 8.0f;
+    uz_9ph_dq_t output = uz_transformation_9ph_abc_to_dq(ninephase_abc, theta_el_rad);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.9831f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.5118f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  0.3333f, output.x1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  7.5056f, output.y1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.0859f, output.x2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.2361f, output.y2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.2017f, output.x3);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  0.0356f, output.y3);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  1.6667f, output.zero);
+}
+
+void test_uz_transformation_9ph_dq_to_abc(void){
+    ninephase_dq.d = 5.0f;
+    ninephase_dq.q = 6.0f;
+    ninephase_dq.x1 = 1.1f;
+    ninephase_dq.y1 = 1.2f;
+    ninephase_dq.x2 = 1.3f;
+    ninephase_dq.y2 = 1.4f;
+    ninephase_dq.x3 = 1.5f;
+    ninephase_dq.y3 = 1.6f;
+    ninephase_dq.zero = 1.7f;  
+    float theta_el_rad = UZ_PIf / 8.0f;  
+    uz_9ph_abc_t output = uz_transformation_9ph_dq_to_abc(ninephase_dq, theta_el_rad);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  7.9233f, output.a1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  6.8692f, output.b1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -6.3925f, output.c1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  5.6551f, output.a2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  1.8092f, output.b2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -7.7966f, output.c2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  5.7464f, output.a3);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  6.3384f, output.b3);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -5.5171f, output.c3);
 }
 
 #endif // TEST

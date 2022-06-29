@@ -4,6 +4,7 @@
 #include "uz_pmsm9ph_transformation_hw.h"
 #include "../../uz/uz_fixedpoint/uz_fixedpoint.h"
 
+
 uz_9ph_abc_t uz_pmsm9ph_transformation_hw_read_currents(uint32_t base_address){
     uz_assert_not_zero_uint32(base_address);
     uz_9ph_abc_t output_values={0};
@@ -28,7 +29,13 @@ uz_9ph_abc_t uz_pmsm9ph_transformation_hw_read_currents(uint32_t base_address){
     return output_values;
 }
 
-float uz_pmsm9ph_transformatoin_hw_read_theta_el(uint32_t base_address){
+void uz_pmsm9ph_transformation_hw_trigger_output_strobe(uint32_t base_address){
+    uz_assert_not_zero_uint32(base_address);
+    uz_axi_write_bool(base_address+i_abc_out_axi_Strobe_uz_pmsm9ph_trans_100mhz,true);
+    uz_axi_write_bool(base_address+i_abc_out_axi_Strobe_uz_pmsm9ph_trans_100mhz,false);
+}
+
+float uz_pmsm9ph_transformation_hw_read_theta_el(uint32_t base_address){
     uz_assert_not_zero_uint32(base_address);
 
     struct uz_fixedpoint_definition_t theta_def={

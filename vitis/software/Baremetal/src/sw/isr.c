@@ -42,26 +42,16 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
-// external instances
-extern uz_FOC *FOC_instance;
-extern uz_SpeedControl_t *Speed_instance;
-extern uz_IIR_Filter_t *LPF1_instance_position;
-extern uz_IIR_Filter_t *LPF1_instance_angle;
-extern uz_IIR_Filter_t *LPF1_instance_2;
-extern uz_PI_Controller *PI_instance;
-extern uz_nn_t *uz_nn_instance;
-extern uz_matrix_t *input_instance;
-// measurement and reference
+
+// measurements
 struct uz_3ph_abc_t measurement_current = {0};
 struct uz_3ph_dq_t dq_measurement_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
-struct uz_3ph_dq_t dq_reference_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
-struct uz_3ph_dq_t pi_torque = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
-struct uz_3ph_dq_t dq_ref_Volts = {0};
+
 struct uz_DutyCycle_t output = {0};
-struct uz_3ph_abc_t uvw_ref = {0};
 float theta_offset = -0.50f;
 float V_dc_volts = 48.0f;
 float omega_el_rad_per_sec = 0.0f;
+float omega_m_rad_per_sec = 0.0f;
 float Kp_id = 4.11f;
 float Ki_id = 1500.0f;
 float Kp_iq = 4.11f;
@@ -71,7 +61,6 @@ float speed_Ki = 0.207f;
 float adc_scaling = 9.5f/2.0f; // Refactoring actual ADC Values 19.05: durch 2, Ohmrichter umgelötet
 
 // speed control
-float n_ref_rpm = 50.0f;
 bool ext_clamping = false;
 float id_ref_Ampere = 0.0f; // no field weakening
 
@@ -80,10 +69,11 @@ float position_ref = 0.0f; // mm
 int pos_strich = 0;         // Striche 0-2000
 float pos_delta = 0;        // mm
 float position_abs = 0.0f;  // mm
-float omega_m_rad_per_sec = 0.0f;
 int globalposition = 0;
 int i_counter = 0; // software counter for reference signal
 int counter_timeout = 0; // counter for software timeout
+int counter_for_reset = 0; // counter for occurence of software timeout
+
 struct uz_PMSM_t config_heidrive = {
 
     .R_ph_Ohm = 0.543f,
@@ -118,7 +108,6 @@ extern float offset_theta_pendulum;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
-
 extern bool dqn_mutex;
 uz_matrix_t *output_nn = NULL;
 
@@ -158,22 +147,24 @@ void ISR_Control(void *data)
     // derivation angle and position with filtering and treshold
     angle_derv=(Global_Data.av.theta_pendulum-old_theta_pendulum)/Global_Data.av.isr_samplerate_s;// rad/s
     Global_Data.obs.dqn_angle_raw = Global_Data.av.theta_pendulum;
-    Global_Data.obs.dqn_angle_derv_raw = angle_derv;
+
     if (abs(angle_derv) > 1.0e2f)
     {}
     else
     {
-    	Global_Data.obs.dqn_angle_derv = uz_signals_IIR_Filter_sample(LPF1_instance_angle, angle_derv);
+        Global_Data.obs.dqn_angle_derv_raw = angle_derv;
+    	Global_Data.obs.dqn_angle_derv = uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_instance_angle, angle_derv);
     }
 
     old_theta_pendulum=Global_Data.av.theta_pendulum;
     position_derv=((Global_Data.obs.dqn_chart_position-old_position)/Global_Data.av.isr_samplerate_s);
-    Global_Data.obs.dqn_chart_position_derv_raw= position_derv;
+
     if (abs(position_derv) > 1.0e2f)
     {}
     else
     {
-    	Global_Data.obs.dqn_chart_position_derv = uz_signals_IIR_Filter_sample(LPF1_instance_position, position_derv);
+        Global_Data.obs.dqn_chart_position_derv_raw= position_derv;
+    	Global_Data.obs.dqn_chart_position_derv = uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_instance_position, position_derv);
     }
 
     old_position=Global_Data.obs.dqn_chart_position;
@@ -189,7 +180,7 @@ void ISR_Control(void *data)
     dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
     omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;         // w_mech
     omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * 3.0f * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
-    Global_Data.av.mechanicalRotorSpeed_IIR_Filter = uz_signals_IIR_Filter_sample(LPF1_instance_2, Global_Data.av.mechanicalRotorSpeed);
+    Global_Data.av.mechanicalRotorSpeed_IIR_Filter = uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_instance_2, Global_Data.av.mechanicalRotorSpeed);
     platform_state_t current_state = ultrazohm_state_machine_get_state();
     if (current_state == control_state)
     {
@@ -199,39 +190,42 @@ void ISR_Control(void *data)
     	// switch case for switching between dqn, pos_control and error state
     	switch (chain) {
 			case dqn_active:
+				Global_Data.av.trigger_logging = 1.0f;
 		        // get output from nn
-		    	if (abs(position_abs)> 400){
+		    	if (abs(position_abs)> 390){
 		    		chain=limit_violation;
 		    	}
 		        if (dqn_mutex)
 		        {
-		            output_nn = uz_nn_get_output_data(uz_nn_instance);
+		            output_nn = uz_nn_get_output_data(Global_Data.objects.uz_nn_instance);
 		            dqn_mutex = false;
 		            action = uz_matrix_get_max_index(output_nn);
 		            switch (action){
-		            case 0: dq_reference_current.q =4.5f;
+		            case 0: Global_Data.rasv.dq_reference_current.q =4.5f;
 		            break;
-		            case 1:	dq_reference_current.q=0.0f;
+		            case 1:	Global_Data.rasv.dq_reference_current.q=0.0f;
 		            break;
-		            case 2: dq_reference_current.q=-4.5f;
+		            case 2: Global_Data.rasv.dq_reference_current.q=-4.5f;
 		            break;
 		            default: uz_assert(0);
 		            }
 		        }
+		        Global_Data.av.trigger_logging = 0.0f;
 				break;
 			case limit_violation:
-				dq_reference_current.q=0.0f;
+				Global_Data.rasv.dq_reference_current.q=0.0f;
 				chain=return_to_zero_position;
 				break;
 			case return_to_zero_position:
-				n_ref_rpm = uz_PI_Controller_sample(PI_instance, position_ref, position_abs, ext_clamping);
-				dq_reference_current = uz_SpeedControl_sample(Speed_instance, omega_m_rad_per_sec, -n_ref_rpm, V_dc_volts, id_ref_Ampere);
-				if( abs(position_abs) < 5){
+				Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_ref, position_abs, ext_clamping);
+				Global_Data.rasv.dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, - Global_Data.rasv.n_ref_rpm, V_dc_volts, id_ref_Ampere);
+				if( abs(position_abs) < 0.5){
 					chain=reset_angle;
 				}
 				break;
 			case reset_angle:
-				if (abs(Global_Data.obs.dqn_angle_derv)<0.02){
+				counter_for_reset++;
+				if (counter_for_reset>5){
 					if (counter_timeout < 200000)
 					{
 						counter_timeout++;
@@ -239,8 +233,12 @@ void ISR_Control(void *data)
 					else{
 						reset_ip_core_of_encoder_on_D5_3_ip_v25(&Global_Data);
 						counter_timeout = 0;
+						counter_for_reset = 0;
 						chain=dqn_active;
 					}
+				}
+				else{
+					chain = dqn_active;
 				}
 				break;
 			default:
@@ -248,18 +246,18 @@ void ISR_Control(void *data)
         }
     	if (abs(position_abs) < 430)
     	{
-//    	dq_reference_current = uz_SpeedControl_sample(Speed_instance, omega_m_rad_per_sec, n_ref_rpm, V_dc_volts, id_ref_Ampere);
-        dq_ref_Volts = uz_FOC_sample(FOC_instance, dq_reference_current, dq_measurement_current, V_dc_volts, omega_el_rad_per_sec);
-        uvw_ref = uz_transformation_3ph_dq_to_abc(dq_ref_Volts, Global_Data.av.theta_elec);
-        output = uz_FOC_generate_DutyCycles(uvw_ref, V_dc_volts);
+//    	dq_reference_current = uz_SpeedControl_sample(Speed_instance, omega_m_rad_per_sec,  Global_Data.rasv.n_ref_rpm, V_dc_volts, id_ref_Ampere);
+    	Global_Data.rasv.dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, Global_Data.rasv.dq_reference_current, dq_measurement_current, V_dc_volts, omega_el_rad_per_sec);
+        Global_Data.rasv.uvw_ref = uz_transformation_3ph_dq_to_abc(Global_Data.rasv.dq_ref_Volts, Global_Data.av.theta_elec);
+        output = uz_FOC_generate_DutyCycles(Global_Data.rasv.uvw_ref, V_dc_volts);
         uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
         // change control parameters during runtime
-        uz_FOC_set_Kp_id(FOC_instance, Kp_id);
-        uz_FOC_set_Kp_iq(FOC_instance, Kp_iq);
-        uz_FOC_set_Ki_id(FOC_instance, Ki_id);
-        uz_FOC_set_Ki_iq(FOC_instance, Ki_iq);
-        uz_SpeedControl_set_Kp(Speed_instance, speed_Kp);
-        uz_SpeedControl_set_Ki(Speed_instance, speed_Ki);
+        uz_FOC_set_Kp_id(Global_Data.objects.FOC_instance, Kp_id);
+        uz_FOC_set_Kp_iq(Global_Data.objects.FOC_instance, Kp_iq);
+        uz_FOC_set_Ki_id(Global_Data.objects.FOC_instance, Ki_id);
+        uz_FOC_set_Ki_iq(Global_Data.objects.FOC_instance, Ki_iq);
+        uz_SpeedControl_set_Kp(Global_Data.objects.Speed_instance, speed_Kp);
+        uz_SpeedControl_set_Ki(Global_Data.objects.Speed_instance, speed_Ki);
     	}
     }
     else

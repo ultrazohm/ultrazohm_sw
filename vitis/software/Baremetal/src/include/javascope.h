@@ -29,6 +29,7 @@ enum JS_OberservableData {
 	JSO_d_ref,
 	JSO_q_ref,
 	JSO_n_ref,
+	JSO_trigger,
 	JSO_position_motor,
 	JSO_thetapendulum,
 	JSO_position_abs,

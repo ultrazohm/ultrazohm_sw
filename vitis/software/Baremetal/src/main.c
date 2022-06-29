@@ -59,14 +59,6 @@ DS_Data Global_Data = {
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}},
     .mrp = {.incrementalEncoder_speed_timeout_in_ms = 10}};
-uz_FOC *FOC_instance;
-uz_SpeedControl_t *Speed_instance;
-uz_IIR_Filter_t *LPF1_instance_position;
-uz_IIR_Filter_t *LPF1_instance_angle;
-uz_IIR_Filter_t *LPF1_instance_2;
-uz_PI_Controller *PI_instance;
-uz_nn_t *uz_nn_instance;
-uz_matrix_t *input_instance;
 enum init_chain
 {
     init_assertions = 0,
@@ -247,14 +239,14 @@ int main(void)
             initialization_chain = init_foc_control_nn;
             break;
         case init_foc_control_nn:
-            FOC_instance = uz_FOC_init(config_FOC);
-            Speed_instance = uz_SpeedControl_init(config_speed);
-            LPF1_instance_angle = uz_signals_IIR_Filter_init(config1);
-            LPF1_instance_position = uz_signals_IIR_Filter_init(config1);
-            LPF1_instance_2 = uz_signals_IIR_Filter_init(config2);
-            PI_instance = uz_PI_Controller_init(config_position);
-            uz_nn_instance = uz_nn_init(config_nn, NUMBER_OF_HIDDEN_LAYER);
-            input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, 5);
+            Global_Data.objects.FOC_instance = uz_FOC_init(config_FOC);
+            Global_Data.objects.Speed_instance = uz_SpeedControl_init(config_speed);
+            Global_Data.objects.LPF1_instance_angle = uz_signals_IIR_Filter_init(config1);
+            Global_Data.objects.LPF1_instance_position = uz_signals_IIR_Filter_init(config1);
+            Global_Data.objects.LPF1_instance_2 = uz_signals_IIR_Filter_init(config2);
+            Global_Data.objects.PI_instance = uz_PI_Controller_init(config_position);
+            Global_Data.objects.uz_nn_instance = uz_nn_init(config_nn, NUMBER_OF_HIDDEN_LAYER);
+            Global_Data.objects.input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, 5);
             initialization_chain = print_msg;
             break;
         case print_msg:
@@ -295,5 +287,5 @@ static void dqn_step(void)
 	input_nn[2]=Global_Data.obs.dqn_chart_position_derv;
 	input_nn[3]=Global_Data.obs.dqn_chart_position;
 	input_nn[4]=Global_Data.obs.dqn_angle_derv;
-    uz_nn_ff(uz_nn_instance, input_instance);
+    uz_nn_ff(Global_Data.objects.uz_nn_instance, Global_Data.objects.input_instance);
 }

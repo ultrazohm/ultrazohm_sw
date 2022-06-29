@@ -25,16 +25,12 @@ static float zerovalue = 0.0;
 static float *js_slowDataArray[JSSD_ENDMARKER];
 float *js_ch_observable[JSO_ENDMARKER];
 float *js_ch_selected[JS_CHANNELS];
-extern float n_ref_rpm;
-extern struct uz_3ph_dq_t dq_reference_current;
 extern struct uz_3ph_dq_t dq_measurement_current;
 extern struct uz_3ph_abc_t measurement_current;
 extern float position_abs;
 extern float position_ref;
-extern float software_speed;
 extern float input_nn[5];
 extern float dqn_mutex_float;
-extern struct uz_3ph_dq_t dq_ref_Volts;
 static float lifecheck;
 static float ISR_execution_time_us;
 static float ISR_period_us;
@@ -69,10 +65,11 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]	= &data->av.mechanicalRotorSpeed;
+	js_ch_observable[JSO_trigger]	= &data->av.trigger_logging;
 	js_ch_observable[JSO_Speed_filtered]	= &data->av.mechanicalRotorSpeed_filtered;
-	js_ch_observable[JSO_d_ref]		= &dq_reference_current.d;
-	js_ch_observable[JSO_q_ref]		= &dq_reference_current.q;
-	js_ch_observable[JSO_n_ref]		= &n_ref_rpm;
+	js_ch_observable[JSO_d_ref]		= &data->rasv.dq_reference_current.d;
+	js_ch_observable[JSO_q_ref]		= &data->rasv.dq_reference_current.q;
+	js_ch_observable[JSO_n_ref]		= &data->rasv.n_ref_rpm;
 	js_ch_observable[JSO_position_motor]	= &data->av.position_motor;
 	js_ch_observable[JSO_thetapendulum]	= &data->av.theta_pendulum;
 	js_ch_observable[JSO_position_abs]		= &position_abs;
@@ -89,8 +86,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_dqn_angle_raw] = 				&data->obs.dqn_angle_raw;
 	js_ch_observable[JSO_iq] 			= &dq_measurement_current.q;
 	js_ch_observable[JSO_id] 			= &dq_measurement_current.d;
-	js_ch_observable[JSO_ud]			=&dq_ref_Volts.d;
-	js_ch_observable[JSO_uq]			=&dq_ref_Volts.q;
+	js_ch_observable[JSO_ud]			=&data->rasv.dq_ref_Volts.d;
+	js_ch_observable[JSO_uq]			=&data->rasv.dq_ref_Volts.q;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_Theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_Speed_IIR_Filter]= &data->av.mechanicalRotorSpeed_IIR_Filter;

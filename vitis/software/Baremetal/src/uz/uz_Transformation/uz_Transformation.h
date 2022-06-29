@@ -80,12 +80,12 @@ typedef struct uz_9ph_alphabeta_t{
 typedef struct uz_9ph_dq_t{
     float d;    /**< Amplitude of the d component */
     float q;    /**< Amplitude of the q component */
-    float x1;   /**< Amplitude of the o1 component */
-    float y1;   /**< Amplitude of the o2 component */
-    float x2;   /**< Amplitude of the x1 component */
-    float y2;   /**< Amplitude of the y1 component */
-    float x3;   /**< Amplitude of the x2 component */
-    float y3;   /**< Amplitude of the y2 component */
+    float x1;   /**< Amplitude of the x1 component */
+    float y1;   /**< Amplitude of the y1 component */
+    float x2;   /**< Amplitude of the x2 component */
+    float y2;   /**< Amplitude of the y2 component */
+    float x3;   /**< Amplitude of the x3 component */
+    float y3;   /**< Amplitude of the y3 component */
     float zero; /**< Amplitude of the zero component */
 }uz_9ph_dq_t;
 

@@ -19,6 +19,10 @@ Transformations for multiphase systems do exist as well.
 * :ref:`6ph_alphabeta_to_abc`
 * :ref:`9ph_abc_to_alphabeta`
 * :ref:`9ph_alphabeta_to_abc`
+* :ref:`9ph_alphabeta_to_dq`
+* :ref:`9ph_dq_to_alphabeta`
+* :ref:`9ph_abc_to_dq`
+* :ref:`9ph_dq_to_abc`
 
 Three phase systems
 ===================
@@ -264,6 +268,9 @@ structs for ninephase VSD transformation
 .. doxygenstruct:: uz_9ph_alphabeta_t
   :members:
 
+.. doxygenstruct:: uz_9ph_dq_t
+  :members:
+
 Naming of the subspaces according to [[#Zabaleta_diss]_].
 
 Functions for ninephase VSD systems transformation
@@ -276,7 +283,7 @@ Functions for ninephase VSD systems transformation
 
 .. doxygenfunction:: uz_transformation_9ph_abc_to_alphabeta
 
-The ninephase VSD transformation works like the following equations show:
+The amplitude invariant ninephase VSD transformation is defined by the following equations:
 
 .. math::
   
@@ -296,15 +303,15 @@ The ninephase VSD transformation works like the following equations show:
 
 .. math::
 
-  \begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{o_1} \\ X_{o_2} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{zero} \end{bmatrix} = 
+  \begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{x_3} \\ X_{y_3} \\ X_{zero} \end{bmatrix} = 
   \begin{bmatrix} C \end{bmatrix}\cdot\begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2} \\ X_{a_3} \\ X_{b_3} \\ X_{c_3} \end{bmatrix}
 
 Transformation matrix according to [[#Rockhill_gerneral]_][[#Rockhill_ninephase]_].
 
 .. _9ph_alphabeta_to_abc:
 
-9ph-alpha-beta-gamma to 9ph-abc transformation 
-----------------------------------------------------
+9ph-αβγ to 9ph-abc transformation 
+---------------------------------
 
 .. doxygenfunction:: uz_transformation_9ph_alphabeta_to_abc
 
@@ -313,7 +320,38 @@ The inverse transformation uses the inverse of the before shown matrix.
 .. math::
 
   \begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2} \\ X_{a_3} \\ X_{b_3} \\ X_{c_3} \end{bmatrix} = 
-  \begin{bmatrix} C \end{bmatrix}^{-1}\cdot\begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{o_1} \\ X_{o_2} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{zero} \end{bmatrix}
+  \begin{bmatrix} C \end{bmatrix}^{-1}\cdot\begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{x_3} \\ X_{y_3} \\ X_{zero} \end{bmatrix}
+
+.. _9ph_alphabeta_to_dq:
+
+9ph-αβγ to 9ph-dq transformation
+--------------------------------
+
+For applications where a combination of VSD transformation and Park transformation is needed, this and the following functions have been created.
+They consist only of the before mentioned functions and do not add new mathematic contents.
+
+.. doxygenfunction:: uz_transformation_9ph_alphabeta_to_dq
+
+.. _9ph_dq_to_alphabeta:
+
+9ph-dq to 9ph-αβγ transformation
+--------------------------------
+
+.. doxygenfunction:: uz_transformation_9ph_dq_to_alphabeta
+
+.. _9ph_abc_to_dq:
+
+9ph-abc to 9ph-dq transformation
+--------------------------------
+
+.. doxygenfunction:: uz_transformation_9ph_abc_to_dq
+
+.. _9ph_dq_to_abc:
+
+9ph-dq to 9ph-abc transformation
+--------------------------------
+
+.. doxygenfunction:: uz_transformation_9ph_dq_to_abc
 
 Example usage of the ninephase transformation
 *********************************************
@@ -322,6 +360,8 @@ The existing functions offer the possibility to convert ninephase asymmetrical s
 Afterward, the Park transformation can be applied to transform them into the rotating reference frame.
 The inverse transformations are also available.
 To use the ninephase transformation, one must create a struct for the natural phase domain values.
+Note that the shown workflow is obsolete for ninephase networks where the before mentioned additional functions can be applied.
+For transformations with other amounts of phases, where those functions have not been created, the workflow is still applicable.
 
 .. code-block:: c
   :caption: Declarations

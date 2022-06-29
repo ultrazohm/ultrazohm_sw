@@ -38,7 +38,7 @@ uz_SpeedControl_t* uz_SpeedControl_init(struct uz_SpeedControl_config config);
  * @param id_ref_Ampere reference d-axis current
  * @return uz_dq_t reference currents in Ampere
  */
-uz_3ph_dq_t uz_SpeedControl_sample(uz_SpeedControl_t* self, float omega_el_rad_per_sec, float n_ref_rpm, float V_dc_volts, float id_ref_Ampere);
+uz_3ph_dq_t uz_SpeedControl_sample(uz_SpeedControl_t* self, float omega_m_rad_per_sec, float n_ref_rpm, float V_dc_volts, float id_ref_Ampere);
 
 /**
  * @brief Resets the PI-Controller inside the uz_SpeedControl_t 

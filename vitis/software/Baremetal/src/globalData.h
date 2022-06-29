@@ -97,6 +97,13 @@ typedef struct _actualValues_ {
 	uint32_t  heartbeatframe_content;
 } actualValues;
 
+typedef struct measuredValues_ {
+	struct uz_3ph_abc_t measurement_current;
+	struct uz_3ph_dq_t dq_measurement_current;
+
+} measuredValues;
+
+
 typedef struct _referenceAndSetValues_ {
 	float halfBridge1DutyCycle;
 	float halfBridge2DutyCycle;
@@ -111,6 +118,7 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
 	float n_ref_rpm;
+	float V_dc_volts;
 	struct uz_3ph_dq_t dq_reference_current;
 	struct uz_3ph_dq_t dq_ref_Volts;
 	struct uz_3ph_abc_t uvw_ref;
@@ -155,6 +163,7 @@ typedef struct _dqn_observation_ {
 typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;
 	actualValues av;
+	measuredValues mv;
 	AnalogAdapters aa;
 	object_pointers_t objects;
 	motorrelatedparameters mrp;

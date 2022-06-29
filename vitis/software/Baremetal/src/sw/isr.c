@@ -43,13 +43,8 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
-// measurements
-struct uz_3ph_abc_t measurement_current = {0};
-struct uz_3ph_dq_t dq_measurement_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
-
 struct uz_DutyCycle_t output = {0};
 float theta_offset = -0.50f;
-float V_dc_volts = 48.0f;
 float omega_el_rad_per_sec = 0.0f;
 float omega_m_rad_per_sec = 0.0f;
 float Kp_id = 4.11f;
@@ -62,7 +57,6 @@ float adc_scaling = 9.5f/2.0f; // Refactoring actual ADC Values 19.05: durch 2, 
 
 // speed control
 bool ext_clamping = false;
-float id_ref_Ampere = 0.0f; // no field weakening
 
 // position control
 float position_ref = 0.0f; // mm
@@ -73,24 +67,6 @@ int globalposition = 0;
 int i_counter = 0; // software counter for reference signal
 int counter_timeout = 0; // counter for software timeout
 int counter_for_reset = 0; // counter for occurence of software timeout
-
-struct uz_PMSM_t config_heidrive = {
-
-    .R_ph_Ohm = 0.543f,
-
-    .Ld_Henry = 0.00113f,
-
-    .Lq_Henry = 0.00142f,
-
-    .Psi_PM_Vs = 0.0169f,
-
-    .polePairs = 3.0f,
-
-    .J_kg_m_squared = 0.0000148f,
-
-    .I_max_Ampere = 10.8f
-
-};
 
 // nn testing
 float old_theta_pendulum=0.0f;
@@ -123,7 +99,6 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-
     // Read out all encoders
     update_speed_and_position_of_encoder_on_D5_1_ip_v25(&Global_Data);
     update_position_of_encoder_on_D5_2_ip_v25(&Global_Data);
@@ -174,10 +149,10 @@ void ISR_Control(void *data)
     // calculate data pmsm for foc
     Global_Data.av.theta_elec = Global_Data.av.theta_elec * 3.0f - theta_offset;
     Global_Data.av.theta_mech = Global_Data.av.theta_elec / 3.0f;
-    measurement_current.a = adc_scaling * (Global_Data.aa.A2.me.ADC_A2 - 2.5f); // -2.5  Hall Sensor
-    measurement_current.b = adc_scaling * (Global_Data.aa.A2.me.ADC_A4 - 2.5f);
-    measurement_current.c = adc_scaling * (Global_Data.aa.A2.me.ADC_A3 - 2.5f);
-    dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
+    Global_Data.mv.measurement_current.a = adc_scaling * (Global_Data.aa.A2.me.ADC_A2 - 2.5f); // -2.5  Hall Sensor
+    Global_Data.mv.measurement_current.b = adc_scaling * (Global_Data.aa.A2.me.ADC_A4 - 2.5f);
+    Global_Data.mv.measurement_current.c = adc_scaling * (Global_Data.aa.A2.me.ADC_A3 - 2.5f);
+    Global_Data.mv.dq_measurement_current = uz_transformation_3ph_abc_to_dq(Global_Data.mv.measurement_current, Global_Data.av.theta_elec);
     omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;         // w_mech
     omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * 3.0f * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
     Global_Data.av.mechanicalRotorSpeed_IIR_Filter = uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_instance_2, Global_Data.av.mechanicalRotorSpeed);
@@ -218,7 +193,7 @@ void ISR_Control(void *data)
 				break;
 			case return_to_zero_position:
 				Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_ref, position_abs, ext_clamping);
-				Global_Data.rasv.dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, - Global_Data.rasv.n_ref_rpm, V_dc_volts, id_ref_Ampere);
+				Global_Data.rasv.dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, - Global_Data.rasv.n_ref_rpm, Global_Data.rasv.V_dc_volts, 0.0f);
 				if( abs(position_abs) < 0.5){
 					chain=reset_angle;
 				}
@@ -247,9 +222,9 @@ void ISR_Control(void *data)
     	if (abs(position_abs) < 430)
     	{
 //    	dq_reference_current = uz_SpeedControl_sample(Speed_instance, omega_m_rad_per_sec,  Global_Data.rasv.n_ref_rpm, V_dc_volts, id_ref_Ampere);
-    	Global_Data.rasv.dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, Global_Data.rasv.dq_reference_current, dq_measurement_current, V_dc_volts, omega_el_rad_per_sec);
+    	Global_Data.rasv.dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, Global_Data.rasv.dq_reference_current, Global_Data.mv.dq_measurement_current, Global_Data.rasv.V_dc_volts, omega_el_rad_per_sec);
         Global_Data.rasv.uvw_ref = uz_transformation_3ph_dq_to_abc(Global_Data.rasv.dq_ref_Volts, Global_Data.av.theta_elec);
-        output = uz_FOC_generate_DutyCycles(Global_Data.rasv.uvw_ref, V_dc_volts);
+        output = uz_FOC_generate_DutyCycles(Global_Data.rasv.uvw_ref, Global_Data.rasv.V_dc_volts);
         uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
         // change control parameters during runtime
         uz_FOC_set_Kp_id(Global_Data.objects.FOC_instance, Kp_id);

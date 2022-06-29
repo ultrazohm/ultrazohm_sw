@@ -81,105 +81,60 @@ int main(void)
 {
     int status = UZ_SUCCESS;
     struct uz_PMSM_t config_heidrive = {
-
         .R_ph_Ohm = 0.543f,
-
         .Ld_Henry = 0.00113f,
-
         .Lq_Henry = 0.00142f,
-
         .Psi_PM_Vs = 0.0169f,
-
         .polePairs = 3.0f,
-
         .J_kg_m_squared = 0.0000148f,
-
         .I_max_Ampere = 10.8f
-
     };
-
     struct uz_PI_Controller_config config_id = {
-
         .Kp = 3.0f,
-
         .Ki = 600.0f,
-
         .samplingTime_sec = 0.00005f,
-
         .upper_limit = 40.0f,
-
         .lower_limit = -40.0f
-
     };
 
     struct uz_PI_Controller_config config_iq = {
-
         .Kp = 3.5f,
-
         .Ki = 600.0f,
-
         .samplingTime_sec = 0.00005f,
-
         .upper_limit = 40.0f,
-
         .lower_limit = -40.0f
-
     };
     struct uz_PI_Controller_config config_position = {
-
         .Kp = 2.0f,
-
         .Ki = 0.0f,
-
         .samplingTime_sec = 0.00005f,
-
         .upper_limit = 500.0f,
-
         .lower_limit = -500.0f
-
     };
 
     struct uz_FOC_config config_FOC = {
-
         .decoupling_select = linear_decoupling,
-
         .config_PMSM = config_heidrive,
-
         .config_id = config_id,
-
         .config_iq = config_iq
-
     };
 
     struct uz_SpeedControl_config config_speed = {
-
         .config_controller.Kp = 0.01f,
-
         .config_controller.Ki = 7.0f,
-
         .config_controller.samplingTime_sec = 0.00005f,
-
         .config_controller.upper_limit = 15.0f,
-
         .config_controller.lower_limit = -15.0f,
-
         .config_PMSM.R_ph_Ohm = 0.543f,
-
         .config_PMSM.Ld_Henry = 0.00113f,
-
         .config_PMSM.Lq_Henry = 0.00142f,
-
         .config_PMSM.Psi_PM_Vs = 0.0169f,
-
         .config_PMSM.polePairs = 3.0f,
-
         .config_PMSM.J_kg_m_squared = 0.0000148f,
-
         .config_PMSM.I_max_Ampere = 10.8f,
-
         .is_field_weakening_active = false
-
     };
+
     struct uz_nn_layer_config config_nn[NUMBER_OF_HIDDEN_LAYER] = {
         [0] = {
             .activation_function = activation_ReLU,
@@ -247,6 +202,7 @@ int main(void)
             Global_Data.objects.PI_instance = uz_PI_Controller_init(config_position);
             Global_Data.objects.uz_nn_instance = uz_nn_init(config_nn, NUMBER_OF_HIDDEN_LAYER);
             Global_Data.objects.input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, 5);
+            Global_Data.rasv.V_dc_volts = 48.0f;
             initialization_chain = print_msg;
             break;
         case print_msg:

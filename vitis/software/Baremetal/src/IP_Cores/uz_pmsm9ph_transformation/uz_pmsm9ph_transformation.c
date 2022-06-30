@@ -34,13 +34,14 @@ uz_pmsm9ph_transformation_t* uz_pmsm9ph_transformation_init(struct uz_pmsm9ph_co
 uz_9ph_abc_t uz_pmsm9ph_transformation_get_currents(uz_pmsm9ph_transformation_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_pmsm9ph_transformation_hw_trigger_output_strobe(self->config.base_address);
     return uz_pmsm9ph_transformation_hw_read_currents(self->config.base_address);
 }
 
 float uz_pmsm9ph_transformation_get_theta_el(uz_pmsm9ph_transformation_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    return uz_pmsm9ph_transformatoin_hw_read_theta_el(self->config.base_address);
+    return uz_pmsm9ph_transformation_hw_read_theta_el(self->config.base_address);
 }
 
 

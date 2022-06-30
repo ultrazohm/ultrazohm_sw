@@ -83,7 +83,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-	js_ch_observable[JSO_U_Zk]	= &data->av.U_ZK;
+	js_ch_observable[JSO_U_Zk]			= &data->av.U_ZK;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 

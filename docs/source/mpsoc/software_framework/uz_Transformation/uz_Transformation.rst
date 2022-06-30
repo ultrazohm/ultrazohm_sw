@@ -327,9 +327,6 @@ The inverse transformation uses the inverse of the before shown matrix.
 9ph-αβγ to 9ph-dq transformation
 --------------------------------
 
-For applications where a combination of VSD transformation and Park transformation is needed, this and the following functions have been created.
-They consist only of the before mentioned functions and do not add new mathematic contents.
-
 .. doxygenfunction:: uz_transformation_9ph_alphabeta_to_dq
 
 .. _9ph_dq_to_alphabeta:

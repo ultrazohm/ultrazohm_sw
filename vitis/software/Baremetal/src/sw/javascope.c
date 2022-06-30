@@ -29,6 +29,12 @@ extern struct uz_3ph_abc_t measurement_current;
 extern struct uz_3ph_abc_t measurement_voltage;
 extern struct uz_3ph_dq_t dq_measurement_current;
 
+//Parameter ID
+extern uz_ParameterID_Data_t ParaID_Data;
+float activeState = 0;
+float FluxMapCounter = 0.0f;
+float ArrayCounter = 0.0f;
+
 static float lifecheck;
 static float ISR_execution_time_us;
 static float ISR_period_us;
@@ -90,18 +96,52 @@ int JavaScope_initalize(DS_Data* data)
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
-	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
-	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.u_d);
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.u_q);
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.i_d);
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.i_q);
-	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
-	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
-	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
-	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
-	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-
+	// The array may grow abitrarily long, the refresh rate of the individual values decreases.	// Only float is allowed
+    js_slowDataArray[JSSD_FLOAT_u_d]                    = &(ParaID_Data.ActualValues.v_dq.d);
+    js_slowDataArray[JSSD_FLOAT_u_q]                    = &(ParaID_Data.ActualValues.v_dq.q);
+    js_slowDataArray[JSSD_FLOAT_i_d]                    = &(ParaID_Data.ActualValues.i_dq.d);
+    js_slowDataArray[JSSD_FLOAT_i_q]                    = &(ParaID_Data.ActualValues.i_dq.q);
+    js_slowDataArray[JSSD_FLOAT_speed]                  = &(data->av.mechanicalRotorSpeed);
+    //js_slowDataArray[JSSD_FLOAT_torque]                 = &(data->av.mechanicalTorqueObserved);
+    js_slowDataArray[JSSD_FLOAT_PsiPM_Offline]          = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Psi_PM_Vs);
+    js_slowDataArray[JSSD_FLOAT_Lq_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Lq_Henry);
+    js_slowDataArray[JSSD_FLOAT_Ld_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Ld_Henry);
+    js_slowDataArray[JSSD_FLOAT_Rs_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.R_ph_Ohm);
+    js_slowDataArray[JSSD_FLOAT_polePairs]              = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.polePairs);
+    js_slowDataArray[JSSD_FLOAT_J]                      = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.J_kg_m_squared);
+    js_slowDataArray[JSSD_FLOAT_activeState]            = &(activeState);
+    js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
+    js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us]        = &ISR_execution_time_us;
+    js_slowDataArray[JSSD_FLOAT_ISR_Period_us]          = &ISR_period_us;
+    js_slowDataArray[JSSD_FLOAT_Milliseconds]           = &System_UpTime_ms;
+    js_slowDataArray[JSSD_FLOAT_encoderOffset] 			= &(ParaID_Data.ElectricalID_Output->thetaOffset);
+    js_slowDataArray[JSSD_FLOAT_ArrayCounter] 			= &(ArrayCounter);
+    js_slowDataArray[JSSD_FLOAT_measArraySpeed] 		= &(ParaID_Data.MeasArraySpeed_pointer);
+    js_slowDataArray[JSSD_FLOAT_measArrayTorque]		= &(ParaID_Data.MeasArrayTorque_pointer);
+    js_slowDataArray[JSSD_FLOAT_ArrayControlCounter]	= &(ArrayCounter);
+    js_slowDataArray[JSSD_FLOAT_Stribtorque]            = &(ParaID_Data.FrictionID_Output->BrkTorque);
+    js_slowDataArray[JSSD_FLOAT_Coulombtorque]          = &(ParaID_Data.FrictionID_Output->CoulTorque);
+    js_slowDataArray[JSSD_FLOAT_Viscotorque]            = &(ParaID_Data.FrictionID_Output->ViscoTorque);
+    js_slowDataArray[JSSD_FLOAT_TrainInertia]           = &(ParaID_Data.TwoMassID_Output->TrainInertia);
+    js_slowDataArray[JSSD_FLOAT_LoadInertia]            = &(ParaID_Data.TwoMassID_Output->LoadInertia);
+    js_slowDataArray[JSSD_FLOAT_c_est]                  = &(ParaID_Data.TwoMassID_Output->c_est_out);
+    js_slowDataArray[JSSD_FLOAT_d_est]                  = &(ParaID_Data.TwoMassID_Output->d_est_out);
+    js_slowDataArray[JSSD_FLOAT_I_rated]                = &(ParaID_Data.GlobalConfig.ratCurrent);
+    js_slowDataArray[JSSD_FLOAT_totalRotorInertia]      = &(ParaID_Data.TwoMassID_Output->rotorInertia);
+    js_slowDataArray[JSSD_FLOAT_Wtemp]                  = &(ParaID_Data.OnlineID_Output->Wtemp);
+    js_slowDataArray[JSSD_FLOAT_FluxTempConst]          = &(ParaID_Data.FluxMap_Data->psi_temp_const);
+    js_slowDataArray[JSSD_FLOAT_FluxTempError]          = &(ParaID_Data.FluxMap_Data->psi_temp_error);
+    js_slowDataArray[JSSD_FLOAT_Ld_Online]              = &(ParaID_Data.OnlineID_Output->Ld_out);
+    js_slowDataArray[JSSD_FLOAT_Lq_Online]              = &(ParaID_Data.OnlineID_Output->Lq_out);
+    js_slowDataArray[JSSD_FLOAT_PsiPM_Online]           = &(ParaID_Data.OnlineID_Output->psi_pm_out);
+    js_slowDataArray[JSSD_FLOAT_Rs_Online]              = &(ParaID_Data.OnlineID_Output->Rph_out);
+    js_slowDataArray[JSSD_FLOAT_n_FluxPoints]           = &(ParaID_Data.FluxMap_MeasuringPoints);
+    js_slowDataArray[JSSD_FLOAT_Rs_online_FMID]         = &(ParaID_Data.FluxMapID_Output->R_s);
+    js_slowDataArray[JSSD_FLOAT_Wtemp_FMID]             = &(ParaID_Data.FluxMapID_Output->WindingTemp);
+    js_slowDataArray[JSSD_FLOAT_MapCounter]             = &(FluxMapCounter);
+    js_slowDataArray[JSSD_FLOAT_psidMap]                = &(ParaID_Data.Psi_D_pointer);
+    js_slowDataArray[JSSD_FLOAT_psiqMap]                = &(ParaID_Data.Psi_Q_pointer);
+    js_slowDataArray[JSSD_FLOAT_MapControlCounter]      = &(FluxMapCounter);
 	return Status;
 }
 
@@ -159,6 +199,8 @@ void JavaScope_update(DS_Data* data){
 		i_fetchDataLifeCheck =0;
 	}
 
+	// ParameterID
+	uz_ParameterID_update_transmit_values(&ParaID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
 	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);
 
 }

@@ -30,6 +30,8 @@
 #include "include/uz_adcLtc2311_ip_core_init.h"
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "include/uz_assertion_configuration.h"
+#include "uz/uz_ParameterID/uz_ParameterID.h"
+#include "uz/uz_math_constants.h"
 
 
 // UltraZohm includes

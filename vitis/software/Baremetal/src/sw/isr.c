@@ -68,15 +68,23 @@ struct uz_3ph_abc_t uvw_ref = {0};
 float omega_el_rad_per_sec = 0.0f;
 float omega_m_rad_per_sec = 0.0f;
 bool ext_clamping = false;
+int flg_ParameterID = 0U;
+
+//Parameter ID
+extern uz_ParameterID_Data_t ParaID_Data;
+extern uz_ParameterID_t* ParameterID;
+struct uz_3ph_dq_t ParaID_v_dq = {0};
+struct uz_DutyCycle_t ParaID_DutyCycle = {0};
 
 // Conversion factors for current and voltage
 #define NUMBER_OF_TURNS_CURRENT_MEASURING 3.0f
 #define ADC_CURRENT_SCALING	  80.0f/NUMBER_OF_TURNS_CURRENT_MEASURING
 #define ADC_CURRENT_OFFSET    2.5f //Offset for LEM Sensors
 #define DC_VOLT_CONV		  12.5f
+#define ADC_PH_VOLT_OFFSET	  2.5f
 #define USE_RESOLVER		  1U	// 0U: IncrementalEncoder on D5, 1U: Resolver on D4
-#define MAX_CURRENT_ASSERTION	85.0f
-#define MAX_SPEED_ASSERTION		5000.0f
+#define MAX_CURRENT_ASSERTION	25.0f
+#define MAX_SPEED_ASSERTION		1000.0f
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -130,9 +138,9 @@ void ISR_Control(void *data)
     }
 
 
-    measurement_voltage.a = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B5;// Values have to be adjusted to ADC Place and to Current sensors
-    measurement_voltage.b = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B6;// Values have to be adjusted to ADC Place and to Current sensors
-    measurement_voltage.c = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B7;// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_voltage.a = DC_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B5 - ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_voltage.b = DC_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B6- ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_voltage.c = DC_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B7- ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
 
     Global_Data.av.U_ZK = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_A4;
 
@@ -144,21 +152,49 @@ void ISR_Control(void *data)
     omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;// w_mech
     omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * Global_Data.av.polepairs * (2.0f * M_PI) / 60.0f;
 
+    if (flg_ParameterID == 1U){
+    	// Actual Values
+	    ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
+	    ParaID_Data.ActualValues.omega_m = omega_m_rad_per_sec;
+	    ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
+	    ParaID_Data.ActualValues.theta_el = Global_Data.av.theta_elec;
+	    ParaID_Data.ActualValues.I_abc = measurement_current;
+	    ParaID_Data.ActualValues.V_abc = measurement_voltage;
+
+	    //Calculate missing ActualValues
+	    ParaID_Data.ActualValues.i_dq = dq_measurement_current;
+	    ParaID_Data.ActualValues.v_dq = uz_transformation_3ph_abc_to_dq(measurement_voltage, Global_Data.av.theta_elec);
+	    ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_mech;
+
+	    //Reference values
+	    ParaID_Data.GlobalConfig.n_ref = Global_Data.rasv.n_ref_rpm;
+	    ParaID_Data.GlobalConfig.i_dq_ref.d = Global_Data.rasv.i_d_ref;
+	    ParaID_Data.GlobalConfig.i_dq_ref.d = Global_Data.rasv.i_q_ref;
+    }
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	if (Global_Data.av.flg_speed_control){
-    		dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_el_rad_per_sec, Global_Data.rasv.n_ref_rpm, Global_Data.av.U_ZK, dq_reference_current.d);
-    	} else {
-    		dq_reference_current.d = Global_Data.rasv.i_d_ref;
-    		dq_reference_current.q = Global_Data.rasv.i_q_ref;
-    		dq_reference_current.zero = 0.0f;
+    	if (flg_ParameterID == 0U){
+			if (Global_Data.av.flg_speed_control){
+				dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_el_rad_per_sec, Global_Data.rasv.n_ref_rpm, Global_Data.av.U_ZK, dq_reference_current.d);
+			} else {
+				dq_reference_current.d = Global_Data.rasv.i_d_ref;
+				dq_reference_current.q = Global_Data.rasv.i_q_ref;
+				dq_reference_current.zero = 0.0f;
+			}
+			 dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, omega_el_rad_per_sec);
+			 uvw_ref = uz_transformation_3ph_dq_to_abc(dq_ref_Volts, Global_Data.av.theta_elec);
+			 output = uz_FOC_generate_DutyCycles(uvw_ref, 24.0f);
+			 uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
+    	} else{
+    		uz_ParameterID_step(ParameterID, &ParaID_Data);
+    		ParaID_v_dq = uz_ParameterID_Controller(&ParaID_Data, Global_Data.objects.FOC_instance, Global_Data.objects.Speed_instance);
+            ParaID_DutyCycle = uz_ParameterID_generate_DutyCycle(&ParaID_Data, ParaID_v_dq, Global_Data.objects.pwm_d1_pin_0_to_5);
+
+        	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, ParaID_DutyCycle.DutyCycle_U, ParaID_DutyCycle.DutyCycle_V, ParaID_DutyCycle.DutyCycle_W);
     	}
-    	 dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, omega_el_rad_per_sec);
-    	 uvw_ref = uz_transformation_3ph_dq_to_abc(dq_ref_Volts, Global_Data.av.theta_elec);
-    	 output = uz_FOC_generate_DutyCycles(uvw_ref, 24.0f);
-    	 uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
-    }else{
+	}else{
     	output.DutyCycle_U=0.0f;
     	output.DutyCycle_V=0.0f;
     	output.DutyCycle_W=0.0f;

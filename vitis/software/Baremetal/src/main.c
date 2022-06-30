@@ -42,90 +42,19 @@ DS_Data Global_Data = {
 
 
 // Init structs
+/* Not used with Parameter ID
 const struct uz_PMSM_t config_PMSM = {
 	.R_ph_Ohm = 0.140f,
-
    .Ld_Henry = 0.001f,
-
    .Lq_Henry = 0.001f,
-
    .Psi_PM_Vs = 0.0f,
-
    .polePairs = 2.0f,
-
    .I_max_Ampere = 10.0f
-
 };
+*/
 
-const struct uz_PI_Controller_config config_id = {
-
-   .Kp = 1.0f,
-
-   .Ki = 10.0f,
-
-   .samplingTime_sec = 1/SAMPLE_FREQUENCY,
-
-   .upper_limit = 20.0f,
-
-   .lower_limit = -20.0f
-
-};
-
-const struct uz_PI_Controller_config config_iq = {
-
-   .Kp = 1.0f,
-
-   .Ki = 10.0f,
-
-   .samplingTime_sec = 1/SAMPLE_FREQUENCY,
-
-   .upper_limit = 20.0f,
-
-   .lower_limit = -20.0f
-
-};
-
-struct uz_FOC_config config_FOC = {
-
-   .decoupling_select = no_decoupling,
-
-   .config_PMSM = config_PMSM,
-
-   .config_id = config_id,
-
-   .config_iq = config_iq
-
-};
-
-struct uz_SpeedControl_config config_speed = {
-
-    .config_controller.Kp = 0.01f,
-
-    .config_controller.Ki = 7.0f,
-
-    .config_controller.samplingTime_sec = 1/SAMPLE_FREQUENCY,
-
-    .config_controller.upper_limit = 10.0f,
-
-    .config_controller.lower_limit = -10.0f,
-
-    .config_PMSM.R_ph_Ohm = 0.140f,
-
-    .config_PMSM.Ld_Henry = 0.001f,
-
-    .config_PMSM.Lq_Henry = 0.001f,
-
-    .config_PMSM.Psi_PM_Vs = 0.0f,
-
-    .config_PMSM.polePairs = 2.0f,
-
-    .config_PMSM.J_kg_m_squared = 1.0f,
-
-    .config_PMSM.I_max_Ampere = 10.0f,
-
-    .is_field_weakening_active = false
-
-};
+uz_ParameterID_t* ParameterID = NULL;
+uz_ParameterID_Data_t ParaID_Data = { 0 };
 
 struct uz_IIR_Filter_config iir_config_filt1 = {
 		.selection = LowPass_first_order,
@@ -189,6 +118,36 @@ int main(void)
             initialization_chain = init_foc;
             break;
         case init_foc:
+        	ParameterID = uz_ParameterID_init(&ParaID_Data);
+        	// Structs for ParameterID
+        	const struct uz_PI_Controller_config config_id = {
+        	   .Kp = ParaID_Data.GlobalConfig.Kp_id,
+        	   .Ki = ParaID_Data.GlobalConfig.Ki_id,
+        	   .samplingTime_sec = 1/SAMPLE_FREQUENCY,
+        	   .upper_limit = 20.0f,
+        	   .lower_limit = -20.0f
+        	};
+
+        	const struct uz_PI_Controller_config config_iq = {
+        	   .Kp = ParaID_Data.GlobalConfig.Kp_iq,
+        	   .Ki = ParaID_Data.GlobalConfig.Ki_iq,
+        	   .samplingTime_sec = 1/SAMPLE_FREQUENCY,
+        	   .upper_limit = 20.0f,
+        	   .lower_limit = -20.0f
+        	};
+        	struct uz_SpeedControl_config config_speed = {
+        	    .config_controller.Kp = ParaID_Data.GlobalConfig.Kp_n,
+        	    .config_controller.Ki = ParaID_Data.GlobalConfig.Ki_n,
+        	    .config_controller.samplingTime_sec = 1/SAMPLE_FREQUENCY,
+        	    .config_controller.upper_limit = 10.0f,
+        	    .config_controller.lower_limit = -10.0f,
+        	};
+        	struct uz_FOC_config config_FOC = {
+        	   .decoupling_select = no_decoupling,
+        	   .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
+        	   .config_id = config_id,
+        	   .config_iq = config_iq
+        	};
         	Global_Data.objects.FOC_instance = uz_FOC_init(config_FOC);
             Global_Data.objects.Speed_instance = uz_SpeedControl_init(config_speed);
         	Global_Data.av.theta_offset = 3.1f; // have to be set with duty cycle on first phase
@@ -215,10 +174,19 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+            // Functions for Online ParameterID
+            if (ParaID_Data.OnlineID_Output->clean_array == true){
+            	uz_ParameterID_CleanPsiArray(ParameterID, &ParaID_Data);
+            }
+            if (ParaID_Data.calculate_flux_maps == true) {
+                uz_ParameterID_CalcFluxMaps(ParameterID, &ParaID_Data);
+                ParaID_Data.calculate_flux_maps = false;
+            }
             break;
         default:
             break;
         }
+
     }
     return (status);
 }

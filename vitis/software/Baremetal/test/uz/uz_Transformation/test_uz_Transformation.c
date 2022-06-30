@@ -337,4 +337,27 @@ void test_uz_transformation_9ph_dq_to_abc(void){
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -5.5171f, output.c3);
 }
 
+void test_vsd_transformation_and_inverse(void){
+    ninephase_abc.a1 = 1.0f;
+    ninephase_abc.b1 = 2.0f;
+    ninephase_abc.c1 = 3.0f;
+    ninephase_abc.a2 = 4.0f;
+    ninephase_abc.b2 = 5.0f;
+    ninephase_abc.c2 = 6.0f;
+    ninephase_abc.a3 = 7.0f;
+    ninephase_abc.b3 = 8.0f;
+    ninephase_abc.c3 = 9.0f;
+    uz_9ph_alphabeta_t output_alphabeta = uz_transformation_9ph_abc_to_alphabeta(ninephase_abc);
+    uz_9ph_abc_t output = uz_transformation_9ph_alphabeta_to_abc(output_alphabeta);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, ninephase_abc.a1, output.a1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, ninephase_abc.b1, output.b1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, ninephase_abc.c1, output.c1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, ninephase_abc.a2, output.a2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, ninephase_abc.b2, output.b2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, ninephase_abc.c2, output.c2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, ninephase_abc.a3, output.a3);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, ninephase_abc.b3, output.b3);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, ninephase_abc.c3, output.c3);
+}
+
 #endif // TEST

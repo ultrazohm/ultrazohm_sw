@@ -97,7 +97,7 @@ Initial steps
    * If the connection was successful, the field left of the IP-address is moving. 
    * If nothing happens, checkout the :ref:`known issues section <GUI_network>`.
 
-#. Five default channels are visible in the scope after pressing the *Run/Stop* and the *sendSelectData (all)* button. 
+#. Five default channels are visible in the scope after the *sendSelectData (all)* button. 
 
    * To get the signals into the scope view, adjust the scaling of the first 3 channels.
    * Adjust the time base of the Scope via the *setTime* button and the dropdown menu to ``x10`` .

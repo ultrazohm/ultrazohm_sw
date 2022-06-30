@@ -78,7 +78,7 @@ void ISR_Control(void *data)
 	// Read output ia ib ic from IP-Core trans_123_alphabeta_dq
 	abc_currents_123_alphabeta_dq=uz_123_alphabeta_dqIPcore_get_i_abc(test_instance_123_alphabeta_dq);
 		//crude over current protection
-		if(fabs(abc_currents_123_alphabeta_dq.a) > 35.0f || fabs(abc_currents_123_alphabeta_dq.b) > 35.0f || fabs(abc_currents_123_alphabeta_dq.c) > 35.0f){
+		if(fabs(abc_currents_123_alphabeta_dq.a) > 12.0f || fabs(abc_currents_123_alphabeta_dq.b) > 12.0f || fabs(abc_currents_123_alphabeta_dq.c) > 12.0f){
 			uz_assert(0);
 		}
 		// Javascope

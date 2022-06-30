@@ -65,7 +65,7 @@ struct uz_dq_alphabeta_123_IPcore_config_t config_dq_alphabeta_123={
    				   .iq_ref = 0
    				};
 
-uz_dq_alphabeta_123_IPcore_t* test_instance_dq_alphabeta_123;
+uz_dq_alphabeta_123_IPcore_t* test_instance_dq_alphabeta_123=NULL;
 
 // Config Values of the IP-Core trans_123_alphabeta_dq
 static struct uz_dqIPcore_config_t config_123_alphabeta_dq={
@@ -74,13 +74,13 @@ static struct uz_dqIPcore_config_t config_123_alphabeta_dq={
    .theta_offset = 0
 };
 
-uz_dqIPcore_t* test_instance_123_alphabeta_dq;
+uz_dqIPcore_t* test_instance_123_alphabeta_dq=NULL;
 
 // Config Values of the IP-Core fcs_mpc_3phase_spmsm
 static struct uz_fcs_mpc_3phase_spmsm_config_t config_fcs_mpc_3phase_spmsm={
    .base_address= XPAR_UZ_USER_FCS_MPC_3PHASE_SPMSM_1_BASEADDR,
    .ip_clk_frequency_Hz=100000000,
-   .u_dc_link = 1.5f, // Adjustment needed for first tryout
+   .u_dc_link = 24.0f, // Adjustment needed for first tryout
    .SampleTime=100000,
    .Rs=0.085f,
    .Ld=0.0003f,
@@ -88,7 +88,7 @@ static struct uz_fcs_mpc_3phase_spmsm_config_t config_fcs_mpc_3phase_spmsm={
    .psiPM=0.0075f,
    .pole_pairs=4
 };
-uz_fcs_mpc_3phase_spmsm_t* test_instance_fsc_mpc_3phase_spmsm;
+uz_fcs_mpc_3phase_spmsm_t* test_instance_fsc_mpc_3phase_spmsm=NULL;
 int main(void)
 {
     int status = UZ_SUCCESS;

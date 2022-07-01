@@ -91,7 +91,6 @@ enum JS_SlowData {
 	JSSD_FLOAT_LoadInertia,
 	JSSD_FLOAT_c_est,
 	JSSD_FLOAT_d_est,
-	JSSD_FLOAT_c_0,
 	JSSD_FLOAT_MapCounter,
 	JSSD_FLOAT_psidMap,
 	JSSD_FLOAT_psiqMap,

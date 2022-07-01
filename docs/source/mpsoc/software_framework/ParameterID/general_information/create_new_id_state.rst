@@ -140,15 +140,11 @@ After code generating the stateflow the following changes have to be made in the
    .. code-block:: c
          :linenos:
          :caption: Changes made to the codegenerated header file
-
-         #include "../../uz_global_configuration.h"
+ 
          #include "../uz_ParameterID_data.h"
-         #if UZ_PARAMETERID_MAX_INSTANCES > 0U
          #include "../rtwtypes.h"
 
          //generated code
-
-         #endif
 
 #. Copy the individual structs (``uz_ParaID_StateIDConfig_t`` and ``uz_ParaID_StateID_output_t``) from the codegenerated header file ``StateID_codegen.h``. 
 #. Paste them into the ``uz_ParameterID_data.h`` file, add doxygen comments and remove them from ``StateID_codegen.h``.
@@ -161,6 +157,7 @@ After code generating the stateflow the following changes have to be made in the
          :caption: Changes made to the codegenerated source file
 
          #include "StateID_codegen.h"
+         #include "../../uz_global_configuration.h"
          #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
          //generated code
@@ -169,7 +166,7 @@ After code generating the stateflow the following changes have to be made in the
 
 #. Add a new .h and .c file with the names ``uz_ParaID_StateID.c/h``.
 #. Add the license header to the files.
-#. Add the following code to the .h and .c file and adjust the names of the structs and functions accordingly.
+#. Add the following code to the .h and .c file and adjust the names accordingly.
 
    .. code-block:: c
          :linenos:
@@ -178,10 +175,6 @@ After code generating the stateflow the following changes have to be made in the
          #ifndef UZ_PARAID_STATEID_H
          #define UZ_PARAID_STATEID_H
 
-         #include "../../uz_global_configuration.h"
-         #if UZ_PARAMETERID_MAX_INSTANCES > 0U
-         #include <stdbool.h>
-         #include "../../uz_HAL.h"
          #include "StateID_codegen.h"
 
          /**
@@ -210,8 +203,6 @@ After code generating the stateflow the following changes have to be made in the
          */
          void uz_StateID_step(uz_ParaID_StateID_t *self);
 
-         #endif
-
    .. code-block:: c
          :linenos:
          :caption: Code for the new .c file
@@ -219,6 +210,7 @@ After code generating the stateflow the following changes have to be made in the
          #include "../../uz_global_configuration.h"
          #if UZ_PARAMETERID_MAX_INSTANCES > 0U
          #include "uz_ParaID_StateID.h"
+         #include "../../uz_HAL.h"
 
          static uint32_t instances_counter_ParaID_StateID = 0;
 

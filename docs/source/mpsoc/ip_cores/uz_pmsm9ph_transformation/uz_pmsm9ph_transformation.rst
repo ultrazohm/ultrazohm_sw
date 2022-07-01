@@ -82,7 +82,7 @@ Vivado
 
 The following setup is used to test the IP-cores's functionality:
 
-.. figure:: vivado_test_setup.jpg
+.. figure:: vivado_setup_testing.jpg
 
    Test setup for IP-core in Vivado
 

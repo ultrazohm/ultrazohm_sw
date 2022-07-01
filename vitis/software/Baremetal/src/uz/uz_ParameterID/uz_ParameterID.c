@@ -15,10 +15,11 @@
 ******************************************************************************/
 #include "uz_ParameterID.h"
 #include "../uz_global_configuration.h"
-#include "../uz_wavegen/uz_wavegen.h"
-
-
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
+
+#include <math.h>
+#include "../uz_HAL.h"
+#include <stdbool.h>
 
 typedef struct uz_ParameterID_t {
 	bool is_ready;

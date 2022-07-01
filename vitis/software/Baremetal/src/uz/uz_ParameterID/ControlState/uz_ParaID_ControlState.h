@@ -16,9 +16,6 @@
 #ifndef UZ_PARAID_CONTROLSTATE_H
 #define UZ_PARAID_CONTROLSTATE_H
 
-#include "../../uz_global_configuration.h"
-#include "../../uz_HAL.h"
-#include <stdbool.h>
 #include "ControlState_codegen.h"
 
 /**

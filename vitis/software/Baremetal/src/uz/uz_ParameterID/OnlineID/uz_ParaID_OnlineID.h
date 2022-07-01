@@ -16,7 +16,6 @@
 #ifndef UZ_PARAID_ONLINEID_H
 #define UZ_PARAID_ONLINEID_H
 
-#include "../../uz_HAL.h"
 #include "OnlineID_codegen.h"
 #include "CleanPsiArray/uz_ParaID_CleanPsiArray.h"
 #include "InterpMeshGrid/uz_ParaID_InterpMeshGrid.h"

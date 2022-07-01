@@ -16,8 +16,6 @@
 #ifndef UZ_PARAID_INTERPMESHGRID_H
 #define UZ_PARAID_INTERPMESHGRID_H
 
-#include <stdbool.h>
-#include "../../../uz_HAL.h"
 #include "InterpMeshGrid_codegen.h"
 
 /**

@@ -16,9 +16,6 @@
 #ifndef UZ_PARAID_ELECTRICALID_H
 #define UZ_PARAID_ELECTRICALID_H
 
-#include "../../uz_global_configuration.h"
-#include <stdbool.h>
-#include "../../uz_HAL.h"
 #include "ElectricalID_codegen.h"
 
 /**

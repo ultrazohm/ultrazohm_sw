@@ -16,11 +16,7 @@
 #ifndef UZ_PARAMETERID_H
 #define UZ_PARAMETERID_H
 
-#include "../uz_global_configuration.h"
 #include "../../globalData.h"
-#include <math.h>
-#include "../uz_HAL.h"
-#include <stdbool.h>
 #include "uz_ParameterID_data.h"
 #include "../uz_FOC/uz_FOC.h"
 #include "../uz_SpeedControl/uz_speedcontrol.h"

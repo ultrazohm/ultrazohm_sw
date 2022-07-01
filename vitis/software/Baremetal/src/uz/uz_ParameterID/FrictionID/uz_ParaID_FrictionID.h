@@ -16,10 +16,6 @@
 #ifndef UZ_PARAID_FRICTIONID_H
 #define UZ_PARAID_FRICTIONID_H
 
-
-#include "../../uz_global_configuration.h"
-#include <stdbool.h>
-#include "../../uz_HAL.h"
 #include "FrictionID_codegen.h"
 
 /**

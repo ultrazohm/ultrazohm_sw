@@ -16,6 +16,7 @@
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include "uz_ParaID_OnlineID.h"
+#include "../../uz_HAL.h"
 
 static uint32_t instances_counter_ParaID_OnlineID = 0;
 

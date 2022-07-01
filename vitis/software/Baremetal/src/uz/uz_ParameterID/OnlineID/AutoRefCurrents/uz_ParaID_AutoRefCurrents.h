@@ -16,9 +16,6 @@
 #ifndef UZ_PARAID_AUTOREFCURRENTS_H
 #define UZ_PARAID_AUTOREFCURRENTS_H
 
-#include "../../../uz_global_configuration.h"
-#include <stdbool.h>
-#include "../../../uz_HAL.h"
 #include "AutoRefCurrents_codegen.h"
 
 /**

@@ -353,52 +353,24 @@ The inverse transformation uses the inverse of the before shown matrix.
 Example usage of the ninephase transformation
 *********************************************
 
-The existing functions offer the possibility to convert ninephase asymmetrical systems into a stationary reference frame (αβ).
-Afterward, the Park transformation can be applied to transform them into the rotating reference frame.
-The inverse transformations are also available.
-To use the ninephase transformation, one must create a struct for the natural phase domain values.
-Note that the shown workflow is obsolete for ninephase networks where the before mentioned additional functions can be applied.
-For transformations with other amounts of phases, where those functions have not been created, the workflow is still applicable.
-
 .. code-block:: c
-  :caption: Declarations
+  :caption: Application example
   
   // declare necessary structs and variables
   uz_9ph_abc_t natural_values = {0};             // holds the natural values
   uz_9ph_alphabeta_t stationary_values = {0};    // holds the stationary reference frame values
-  uz_3ph_alphabeta_t alphabeta = {0};            // used to give only alpha and beta to the Park transformation
-  uz_3ph_dq_t rotating_dq = {0};                 // holds the results of the Park transformation
-  float d_current = 0.0f;                        // example variable, used to process the dq values in the following code
-  float q_current = 0.0f;                        // example variable, used to process the dq values in the following code
+  uz_9ph_dq_t rotating_values = {0};             // holds the rotating reference frame and additional system stationary reference frame values
   float theta_el = 0.0f;                         // electric rotor angle
 
-  ...
+  // common usage
+  rotating_values = uz_transformation_9ph_abc_to_dq(natural_values, theta_el);
+  natural_values = uz_transformation_9ph_dq_to_abc(rotating_values, theta_el);
 
-  // assert example values
-  natural_values.a1 =  1.0f;                     // example value for phase a1, store your real values here
-  natural_values.b1 = -0.5f;
-  //...
-  natural_values.c3 = -0.5f;
-    
-The struct can then be given to the transformation function which will return a struct containing the transformed values in the stationary reference frame.
-
-.. code-block:: c
-  :caption: VSD transformation
-
+  // accessing intermediate values
   stationary_values = uz_transformation_9ph_abc_to_alphabeta(natural_values);
-
-As it is common to transform only the :math:`\alpha\beta` components to the rotating reference frame, those two must be written into the threephase ``uz_3ph_alphabeta_t`` struct and be given to the dq transformation function.
-As commonly known, the electrical angle is also necessary. 
-The dq and values can then be read from the struct. The inverse transformation follows the same principle.
-
-.. code-block:: c
-  :caption: Park transformation
-
-  alphabeta.alpha = stationary_values.alpha;
-  alphabeta.beta = stationary_values.beta;
-  rotating_dq = uz_transformation_3ph_alphabeta_to_dq(alphabeta,theta_el);
-  d_current = rotating_dq.d;
-  q_current = rotating_dq.q;
+  rotating_values = uz_transformation_9ph_alphabeta_to_dq(stationary_values, theta_el);
+  stationary_values = uz_transformation_9ph_dq_to_alphabeta(rotating_values, theta_el);
+  natural_values = uz_transformation_9ph_alphabeta_to_abc(stationary_values);
 
 Adding transformations
 **********************

@@ -19,10 +19,9 @@
  * Validation result: All passed
  */
 
+#include "AutoRefCurrents_codegen.h"
 #include "../../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
-
-#include "AutoRefCurrents_codegen.h"
 
 /* Named constants for Chart: '<Root>/AutoRefCurrents' */
 #define IN_NO_ACTIVE_CHILD             ((uint8_T)0U)

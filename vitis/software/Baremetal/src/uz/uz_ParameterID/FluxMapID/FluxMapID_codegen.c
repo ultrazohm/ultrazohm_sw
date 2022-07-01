@@ -20,6 +20,7 @@
  */
 
 #include "FluxMapID_codegen.h"
+#include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 /* Named constants for Chart: '<Root>/FluxMapID' */

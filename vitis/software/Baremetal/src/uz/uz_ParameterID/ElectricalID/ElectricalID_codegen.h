@@ -19,9 +19,7 @@
  * Validation result: Passed (10), Warnings (2), Error (0)
  */
 
-#include "../../uz_global_configuration.h"
 #include "../uz_ParameterID_data.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 #ifndef RTW_HEADER_ElectricalID_h_
 #define RTW_HEADER_ElectricalID_h_
@@ -166,5 +164,3 @@ extern void ElectricalID_step(RT_MODEL_ElectricalID_t *const rtElectricalID_M);
  *
  * [EOF]
  */
-
-#endif

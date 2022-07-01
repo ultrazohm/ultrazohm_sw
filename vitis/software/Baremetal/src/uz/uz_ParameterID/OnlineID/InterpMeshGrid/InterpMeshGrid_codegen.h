@@ -19,9 +19,7 @@
  * Validation result: All passed
  */
 
-#include "../../../uz_global_configuration.h"
 #include "../../uz_ParameterID_data.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 #ifndef RTW_HEADER_InterpMeshGrid_h_
 #define RTW_HEADER_InterpMeshGrid_h_
@@ -158,5 +156,3 @@ extern void InterpMeshGrid_step(RT_MODEL_InterpMeshGrid_t *const
  *
  * [EOF]
  */
-
-#endif

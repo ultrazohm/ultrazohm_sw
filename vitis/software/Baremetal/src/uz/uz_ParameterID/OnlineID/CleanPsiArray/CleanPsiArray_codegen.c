@@ -18,10 +18,12 @@
  *    2. Traceability
  * Validation result: All passed
  */
+
+#include "CleanPsiArray_codegen.h"
 #include "../../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
-#include "CleanPsiArray_codegen.h"
+
 
 /*===========*
  * Constants *

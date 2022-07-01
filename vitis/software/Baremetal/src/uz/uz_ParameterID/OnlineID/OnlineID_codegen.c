@@ -19,10 +19,9 @@
  * Validation result: All passed
  */
 
+#include "OnlineID_codegen.h"
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
-
-#include "OnlineID_codegen.h"
 
 /* Named constants for Chart: '<Root>/OnlineID' */
 #define IN_CalcLinearParamsState       ((uint8_T)1U)

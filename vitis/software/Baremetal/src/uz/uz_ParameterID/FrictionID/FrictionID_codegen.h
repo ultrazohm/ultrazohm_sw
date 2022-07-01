@@ -19,9 +19,7 @@
  * Validation result: Passed (10), Warnings (2), Error (0)
  */
 
-#include "../../uz_global_configuration.h"
 #include "../uz_ParameterID_data.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 #ifndef RTW_HEADER_FrictionID_h_
 #define RTW_HEADER_FrictionID_h_
@@ -151,5 +149,3 @@ extern void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M);
  *
  * [EOF]
  */
-
-#endif

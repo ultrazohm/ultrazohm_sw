@@ -19,9 +19,7 @@
  * Validation result: Passed (11), Warning (1), Error (0)
  */
 
-#include "../../uz_global_configuration.h"
 #include "../uz_ParameterID_data.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 #ifndef RTW_HEADER_ControlState_h_
 #define RTW_HEADER_ControlState_h_
@@ -140,5 +138,3 @@ extern void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M);
  *
  * [EOF]
  */
-
-#endif

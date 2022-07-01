@@ -18,9 +18,7 @@
  *    2. Traceability
  * Validation result: Passed (9), Warnings (3), Error (0)
  */
-#include "../../uz_global_configuration.h"
 #include "../uz_ParameterID_data.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 #ifndef RTW_HEADER_TwoMassID_h_
 #define RTW_HEADER_TwoMassID_h_
@@ -292,5 +290,3 @@ extern void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M);
  *
  * [EOF]
  */
-
-#endif

@@ -16,8 +16,6 @@
 #ifndef UZ_PARAID_INTERPMESHGRID_H
 #define UZ_PARAID_INTERPMESHGRID_H
 
-#include "../../../uz_global_configuration.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
 #include "../../../uz_HAL.h"
 #include "InterpMeshGrid_codegen.h"
@@ -48,5 +46,4 @@ uz_ParaID_InterpMeshGrid_t* uz_InterpMeshGrid_init(void);
  */
 void uz_InterpMeshGrid(uz_ParaID_InterpMeshGrid_t *self);
 
-#endif
 #endif

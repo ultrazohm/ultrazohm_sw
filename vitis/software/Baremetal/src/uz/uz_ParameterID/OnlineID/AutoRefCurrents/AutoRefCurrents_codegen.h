@@ -19,8 +19,6 @@
  * Validation result: All passed
  */
 
-#include "../../../uz_global_configuration.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include "../../uz_ParameterID_data.h"
 #ifndef RTW_HEADER_AutoRefCurrents_h_
 #define RTW_HEADER_AutoRefCurrents_h_
@@ -131,5 +129,3 @@ extern void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const
  *
  * [EOF]
  */
-
-#endif

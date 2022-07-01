@@ -21,7 +21,6 @@
 
 #include "../../uz_global_configuration.h"
 #include "../uz_ParameterID_data.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 #ifndef RTW_HEADER_OnlineID_h_
 #define RTW_HEADER_OnlineID_h_
@@ -190,5 +189,3 @@ extern void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M);
  *
  * [EOF]
  */
-
-#endif

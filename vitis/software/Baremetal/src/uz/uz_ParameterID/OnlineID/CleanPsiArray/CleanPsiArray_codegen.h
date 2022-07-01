@@ -18,9 +18,8 @@
  *    2. Traceability
  * Validation result: All passed
  */
-#include "../../../uz_global_configuration.h"
+
 #include "../../uz_ParameterID_data.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 #ifndef RTW_HEADER_CleanPsiArray_h_
 #define RTW_HEADER_CleanPsiArray_h_
@@ -126,5 +125,3 @@ extern void CleanPsiArray_step(RT_MODEL_CleanPsiArray_t *const rtCleanPsiArray_M
  *
  * [EOF]
  */
-
-#endif

@@ -19,9 +19,7 @@
  * Validation result: Passed (9), Warnings (3), Error (0)
  */
 
-#include "../../uz_global_configuration.h"
 #include "../uz_ParameterID_data.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 #ifndef RTW_HEADER_FluxMapID_h_
 #define RTW_HEADER_FluxMapID_h_
@@ -152,5 +150,3 @@ extern void FluxMapID_step(RT_MODEL_FluxMapID_t *const rtFluxMapID_M);
  *
  * [EOF]
  */
-
-#endif

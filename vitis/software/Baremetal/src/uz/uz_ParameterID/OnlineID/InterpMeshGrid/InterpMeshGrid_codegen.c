@@ -19,10 +19,9 @@
  * Validation result: All passed
  */
 
+#include "InterpMeshGrid_codegen.h"
 #include "../../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
-
-#include "InterpMeshGrid_codegen.h"
 
 /* Forward declaration for local functions */
 static void regressionline(const real_T Array[100], real_T rejectOutliers,

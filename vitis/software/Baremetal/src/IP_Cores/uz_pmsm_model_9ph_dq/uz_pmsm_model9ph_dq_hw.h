@@ -34,8 +34,8 @@ void uz_pmsm_model9ph_hw_write_L_y3(uint32_t base_address, float inductance);
 void uz_pmsm_model9ph_hw_write_L_zero(uint32_t base_address, float inductance);
 
 // read and write voltage and currents
-void uz_pmsm_model9ph_hw_write_voltage_dq(uint32_t base_address, uz_9ph_dq_t phase_voltage);
-uz_9ph_dq_t uz_pmsm_model9ph_hw_read_voltage_dq(uint32_t base_address);
-uz_9ph_dq_t uz_pmsm_model9ph_hw_read_currentse_dq(uint32_t base_address);
+//void uz_pmsm_model9ph_hw_write_voltage_dq(uint32_t base_address, uz_9ph_dq_t phase_voltage);
+//uz_9ph_dq_t uz_pmsm_model9ph_hw_read_voltage_dq(uint32_t base_address);
+//uz_9ph_dq_t uz_pmsm_model9ph_hw_read_currents_dq(uint32_t base_address);
 
 #endif // uz_pmsm_model9ph_dq_H

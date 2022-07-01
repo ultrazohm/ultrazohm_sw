@@ -17,7 +17,6 @@
 #define UZ_PARAID_ONLINEID_H
 
 #include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
 #include "../../uz_HAL.h"
 #include "OnlineID_codegen.h"
@@ -76,5 +75,4 @@ void uz_OnlineID_CalcFluxMaps(uz_ParaID_OnlineID_t* self);
  */
 void uz_OnlineID_AutoRefCurrents_step(uz_ParaID_OnlineID_t* self);
 
-#endif
 #endif

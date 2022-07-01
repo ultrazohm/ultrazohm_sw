@@ -17,7 +17,6 @@
 #define UZ_PARAID_CLEANPSIARRAY_H
 
 #include "../../../uz_global_configuration.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
 #include "../../../uz_HAL.h"
 #include "CleanPsiArray_codegen.h"
@@ -48,5 +47,4 @@ uz_ParaID_CleanPsiArray_t* uz_CleanPsiArray_init(void);
  */
 void uz_CleanPsiArray(uz_ParaID_CleanPsiArray_t *self);
 
-#endif
 #endif

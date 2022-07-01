@@ -17,8 +17,6 @@
 #define UZ_PARAMETERID_H
 
 #include "../uz_global_configuration.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
-
 #include "../../globalData.h"
 #include <math.h>
 #include "../uz_HAL.h"
@@ -109,4 +107,3 @@ float uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC);
 
 #endif // UZ_PARAMETERID_H
 
-#endif

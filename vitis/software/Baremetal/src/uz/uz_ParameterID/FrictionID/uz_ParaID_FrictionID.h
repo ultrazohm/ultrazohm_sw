@@ -18,7 +18,6 @@
 
 
 #include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
 #include "../../uz_HAL.h"
 #include "FrictionID_codegen.h"
@@ -49,5 +48,4 @@ uz_ParaID_FrictionID_t* uz_FrictionID_init(void);
  */
 void uz_FrictionID_step(uz_ParaID_FrictionID_t *self);
 
-#endif
 #endif

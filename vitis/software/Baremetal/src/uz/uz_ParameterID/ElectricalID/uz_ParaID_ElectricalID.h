@@ -17,7 +17,6 @@
 #define UZ_PARAID_ELECTRICALID_H
 
 #include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
 #include "../../uz_HAL.h"
 #include "ElectricalID_codegen.h"
@@ -48,5 +47,4 @@ uz_ParaID_ElectricalID_t* uz_ElectricalID_init(void);
  */
 void uz_ElectricalID_step(uz_ParaID_ElectricalID_t *self);
 
-#endif
 #endif

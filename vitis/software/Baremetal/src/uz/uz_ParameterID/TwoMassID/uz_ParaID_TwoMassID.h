@@ -17,7 +17,6 @@
 #define UZ_PARAID_TWOMASSID_H
 
 #include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <stdbool.h>
 #include "../../uz_HAL.h"
 #include "TwoMassID_codegen.h"
@@ -48,5 +47,4 @@ uz_ParaID_TwoMassID_t* uz_TwoMassID_init(void);
  */
 void uz_TwoMassID_step(uz_ParaID_TwoMassID_t *self);
 
-#endif
 #endif

@@ -104,9 +104,7 @@ extern real32_T rtInfF;
 extern real32_T rtMinusInfF;
 extern real32_T rtNaNF;
 static void rt_InitInfAndNaN(size_t realSize);
-static boolean_T rtIsInf(real_T value);
 static boolean_T rtIsInfF(real32_T value);
-static boolean_T rtIsNaN(real_T value);
 static boolean_T rtIsNaNF(real32_T value);
 typedef struct {
   struct {

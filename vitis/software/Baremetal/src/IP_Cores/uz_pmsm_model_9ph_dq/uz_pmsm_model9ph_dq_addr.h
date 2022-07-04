@@ -26,15 +26,15 @@
 #define  M_Mi_out_axi_Data_uz_pmsm_model_9ph_dq                    0x174  //data register for Outport M_Mi_out_axi
 #define  omega_mech_out_axi_Data_uz_pmsm_model_9ph_dq              0x178  //data register for Outport omega_mech_out_axi
 
-// Voltage input
+// Voltage input and output
 #define  voltage_input_dq_axi_Data_uz_pmsm_model_9ph_dq            0x180  //data register for Inport voltage_input_dq_axi, vector with 9 elements, address ends at 0x1A0
 #define  voltage_input_dq_axi_Strobe_uz_pmsm_model_9ph_dq          0x1C0  //strobe register for port voltage_input_dq_axi
-
-// Current and voltage output
-#define  currents_dq_out_axi_Data_uz_pmsm_model_9ph_dq             0x200  //data register for Outport currents_dq_out_axi, vector with 9 elements, address ends at 0x220
-#define  currents_dq_out_axi_Strobe_uz_pmsm_model_9ph_dq           0x240  //strobe register for port currents_dq_out_axi
 #define  voltage_input_dq_out_axi_fb_Data_uz_pmsm_model_9ph_dq     0x280  //data register for Outport voltage_input_dq_out_axi_fb, vector with 9 elements, address ends at 0x2A0
 #define  voltage_input_dq_out_axi_fb_Strobe_uz_pmsm_model_9ph_dq   0x2C0  //strobe register for port voltage_input_dq_out_axi_fb
+
+// Current input
+#define  currents_dq_out_axi_Data_uz_pmsm_model_9ph_dq             0x200  //data register for Outport currents_dq_out_axi, vector with 9 elements, address ends at 0x220
+#define  currents_dq_out_axi_Strobe_uz_pmsm_model_9ph_dq           0x240  //strobe register for port currents_dq_out_axi
 
 // Parameters
 #define  physical_parameters_mu_Data_uz_pmsm_model_9ph_dq          0x114  //data register for Inport physical_parameters_mu
@@ -52,10 +52,5 @@
 #define  physical_parameters_L_y3_Data_uz_pmsm_model_9ph_dq        0x144  //data register for Inport physical_parameters_L_y3
 #define  physical_parameters_L_zero_Data_uz_pmsm_model_9ph_dq      0x148  //data register for Inport physical_parameters_L_zero
 #define  physical_parameters_1_J_Data_uz_pmsm_model_9ph_dq         0x170  //data register for Inport physical_parameters_1_J
-
-
-
-
-
 
 #endif /* uz_pmsm_model9ph_dq_H_ */

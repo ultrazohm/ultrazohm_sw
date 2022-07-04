@@ -81,7 +81,8 @@ struct uz_DutyCycle_t ParaID_DutyCycle = {0};
 #define ADC_CURRENT_SCALING	  80.0f/NUMBER_OF_TURNS_CURRENT_MEASURING
 #define ADC_CURRENT_OFFSET    2.5f //Offset for LEM Sensors
 #define DC_VOLT_CONV		  12.5f
-#define ADC_PH_VOLT_OFFSET	  2.5f
+#define PHASE_VOLT_CONV		  1.0f
+#define ADC_PH_VOLT_OFFSET	  0.0f
 #define USE_RESOLVER		  1U	// 0U: IncrementalEncoder on D5, 1U: Resolver on D4
 #define MAX_CURRENT_ASSERTION	25.0f
 #define MAX_SPEED_ASSERTION		1000.0f
@@ -138,9 +139,9 @@ void ISR_Control(void *data)
     }
 
 
-    measurement_voltage.a = DC_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B5 - ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
-    measurement_voltage.b = DC_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B6- ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
-    measurement_voltage.c = DC_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B7- ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_voltage.a = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B5 - ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_voltage.b = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B6- ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_voltage.c = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B7- ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
 
     Global_Data.av.U_ZK = DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_A4;
 

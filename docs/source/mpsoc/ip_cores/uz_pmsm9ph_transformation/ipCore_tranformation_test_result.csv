@@ -1,0 +1,5 @@
+﻿Port Name,Value Decimal
+theta_el_axi,0.3926392
+x_abc_out_axi(1;4;7),71.29803
+x_abc_out_axi(2;5;8),-26.78451
+x_abc_out_axi(3;6;9),-44.51395

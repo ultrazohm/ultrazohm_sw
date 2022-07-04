@@ -4,13 +4,13 @@
 Ninephase VSD and Park tranformation IP-Core
 ============================================
 
-- Applies ninephase VSD transformation to input and Park transformation to only alpha and beta values
-- Performs also respective inverse transformation
+- Applies nine-phase VSD transformation to input and Park transformation to only alpha and beta values
+- Performs respective inverse transformation
 - Input interface is PL-only
 - Transformation can only be triggered by a PL signal, but not by the software driver
 - Output is supplied to PL-ports as well as AXI
-- Inputs have to be fixed point
-- The outputs are refreshed at each rising edge of the input ``trigger_new_values``
+- Inputs and outputs are fixed point
+- The AXI values of ``theta_el_axi`` and ``x_abc_out_axi`` are updated to the current output values on every rising edge of the input ``trigger_new_values`` to allow synchronous sampling in combination with a PWM module
 
 .. csv-table:: Interface of Transformation IP-Core
    :file: ipCore_tranformation_interfaces.csv
@@ -20,9 +20,9 @@ Ninephase VSD and Park tranformation IP-Core
 VSD and Park tranformation
 ==========================
 
-For the tranformation the values will be put in via the ``x_abc1_ll_pl``, ``x_abc2_ll_pl`` and ``x_abc3_ll_pl``.
-The values must be put in as line-to-line values because a transformation towards star values is applied before applying the VSD transformation.
-The line-to-line to star value transformation is realized by applying the Clarke transformation to each threephase subset, deviding the amplitudes by :math:`\sqrt{3}` and rotating the pointers by -30° before applying the inverse Clarke tranformation.
+The IP-Core applies the transformations to the inputs ``x_abc1_ll_pl``, ``x_abc2_ll_pl``, and ``x_abc3_ll_pl``.
+The values must be supplied as line-to-line values because a transformation to star values is applied in the IP-Core before applying the VSD transformation.
+The line-to-line to star value transformation is realized by applying the Clarke transformation to each three-phase subset, dividing the amplitudes by :math:`\sqrt{3}` and rotating the pointers by -30° before applying the inverse Clarke transformation.
 Although the naming "x" suggests, any values can be used as input, the intention is to use line-to-line voltages as input.
 After the transformation to the stationary reference frame, the Park transformation is applied to the alpha and beta values only, yielding the following output vector:
 
@@ -31,7 +31,7 @@ After the transformation to the stationary reference frame, the Park transformat
   \begin{bmatrix} X_{d} \\ X_{q} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{x_3} \\ X_{y_3} \\ X_{zero} \end{bmatrix}
 
 Note that the min and max values of the output vector are significantly smaller than the ones of the input values and must be taken into account when using the IP-core.
-The IP-core uses the following VSD matrix to transform the phase variables to the stationary reference frame: 
+The IP-core uses the following VSD matrix according to [[#Rockhill_gerneral]_][[#Rockhill_ninephase]_] to transform the phase variables to the stationary reference frame: 
 
 .. math::
   
@@ -49,21 +49,17 @@ The IP-core uses the following VSD matrix to transform the phase variables to th
       \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & -\frac{1}{2} & -\frac{1}{2} & -\frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} \\
     \end{bmatrix}
 
-Transformation matrix according to [[#Rockhill_gerneral]_][[#Rockhill_ninephase]_].
 
-Inverse VSD and Park tranformation
-==================================
+Inverse VSD and Park transformation
+===================================
 
-The input ``x_in_dq`` is used for the inverse tranformation.
+The input ``x_in_dq`` is used for the inverse transformation.
 The d and q values are transformed to alpha and beta with the inverse Park transformation.
 Afterwards the inverse VSD transformation is applied which yields the phase variables.
 The phase variables are output as star values and not line-to-line values!
 
-Vitis
-=====
-
-The main usage of the IP-core is in the PL.
-Therefore the usage in the PS is only limited to reading out theta electric and the results from the inverse tranformation.
+Driver reference
+================
 
 .. doxygentypedef:: uz_pmsm9ph_transformation_t
 

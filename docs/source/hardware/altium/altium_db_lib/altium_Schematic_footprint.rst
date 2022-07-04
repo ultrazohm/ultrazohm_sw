@@ -31,8 +31,8 @@ Please be aware that you will have to adjust the mechanical layers in the footpr
 
 .. _IncludedInOtherSchematicFootprints:
 
-More than one symbol or fooprint in one file
-********************************************
+More than one symbol or footprint in one file
+*********************************************
 
 If a component is in a library file (``.SchLib`` or ``.PcbLib``) with several other components this component must be separated from the other components in the schematic symbol library as well as in the footprint library.
 Altium provides the ``Library Splitter Wizard`` for this purpose so no manual extraction is required.
@@ -168,9 +168,9 @@ Components are included in an integrated library
    .. figure:: img/120_Open_Integrated_Lib.png
       :width: 300px
 
-      Altium - Extract Souces.
+      Altium - Extract Sources.
 
-2. All included schematic and footprint libs will be listed in Alitum
+2. All included schematic and footprint libs will be listed in Altium
 
 .. _121_Open_Integrated_Lib:
 
@@ -206,12 +206,13 @@ Components are included in an integrated library
 
       Altium - Schematic and footprint lib are available.
 
-Now it can be continued with the instuction: :ref:`IncludedInOtherSchematicFootprints`.
+Now it can be continued with the instruction: :ref:`IncludedInOtherSchematicFootprints`.
 
 .. _ECADModel:
 
 Components are available as an ECAD MODEL
 *****************************************
+
 Sometimes, there are no symbols or footprints directly from the manufacturer available.
 Then you can use  the component search engine (https://componentsearchengine.com/logPartRequest.php), where you can access a large number of already existing components or request new models for Altium. 
 
@@ -313,7 +314,7 @@ When creating a component several layers types can be defined. Besides the stand
 These layers carry information for the generated documentation output. In order to be able to reuse a certain output job to generate the documentation and production output
 the mechanical layers must follow a uniform mapping. The mapping is distinguished in two different categories:
 
-1. `Component Layer Pairs <https://www.altium.com/documentation/altium-designer/working-with-mechanical-layers-ad?version=19.1#!component-layer-pairs>`_: These layers exist symetrically on top and bottom
+1. `Component Layer Pairs <https://www.altium.com/documentation/altium-designer/working-with-mechanical-layers-ad?version=19.1#!component-layer-pairs>`_: These layers exist symmetrically on top and bottom
 2. `Other mechanical layers <https://www.altium.com/documentation/altium-designer/working-with-mechanical-layers-ad?version=19.1#!mechanical-layers>`_: These layers only exist once
 
 
@@ -336,7 +337,7 @@ in the PCB design when putting certain meta information in the layout.
 	:header-rows: 1
 
 
-Unfortunately, the footprints that can be optained from the manufacturer usually do not follow the mapping from the table above.
+Unfortunately, the footprints that can be obtained from the manufacturer usually do not follow the mapping from the table above.
 :numref:`mech_layers_base_case` shows a typical mechanical layer stackup when a component is freshly downloaded from the manufacturer homepage.
 
 	.. _mech_layers_base_case:	
@@ -365,7 +366,7 @@ Clone the UltraZohm Altium Library Repository to your local drive (https://bitbu
    .. figure:: img/mech_layers/01_Create_new_PCB_Lib.png
 		:width: 500px
 
-#. Import the predefined machanical layer stackup file that is located in the Altium Library Repository under ``..\altium_libraries\templates\mechanical_layers_Pcblib``
+#. Import the predefined mechanical layer stackup file that is located in the Altium Library Repository under ``..\altium_libraries\templates\mechanical_layers_Pcblib``
 
    .. figure:: img/mech_layers/02_Import_Mechanical_Layers.png
 		:width: 500px
@@ -384,7 +385,7 @@ Clone the UltraZohm Altium Library Repository to your local drive (https://bitbu
 Editing Layers Manually
 ***********************
 
-If you prefer to editing the layers manually, then following steps are necessary:
+If you prefer to editing the layers manually, then the following steps are necessary:
 
 
 #. Create all required mechanical layer pairs. You do not need to create all layer pairs defined in :numref:`table_mech_layer_pairs`
@@ -408,7 +409,7 @@ If you prefer to editing the layers manually, then following steps are necessary
 		
 		Dialog to add a component layer pair
 	
-	Select everything on M1 (Ctrl-A) and move selected objects to M3 in the propertiers panel.
+	Select everything on M1 (Ctrl-A) and move selected objects to M3 in the properties panel.
 	
 	.. figure:: img/mech_layers/m1_move.png
 		:width: 500px

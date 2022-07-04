@@ -4,23 +4,30 @@
 #include <stdint.h>
 #include "../../uz/uz_Transformation/uz_Transformation.h"
 
-// Outputs general
+// Model settings
+void uz_pmsm_model9ph_hw_write_reset(uint32_t base_address, bool reset);
+void uz_pmsm_model9ph_hw_write_simulate_mechanical(uint32_t base_address, bool simulate_mechanical);
+void uz_pmsm_model9ph_hw_write_switch_pspl(uint32_t base_address, bool switch_pspl);
+
+// General inputs
+void uz_pmsm_model9ph_hw_write_load_torque(uint32_t base_address, float load_torque);
+void uz_pmsm_model9ph_hw_write_omega_mech(uint32_t base_address, float omega_mech);
+
+// General outputs
 float uz_pmsm_model9ph_hw_read_torque(uint32_t base_address);
 float uz_pmsm_model9ph_hw_read_omega_mech(uint32_t base_address);
 float uz_pmsm_model9ph_hw_read_theta_el(uint32_t base_address);
 
-// Inputs general
-void uz_pmsm_model9ph_hw_write_load_torque(uint32_t base_address, float load_torque);
-void uz_pmsm_model9ph_hw_write_omega_mech(uint32_t base_address, float omega_mech);
-void uz_pmsm_model9ph_hw_write_reset(uint32_t base_address, bool reset);
-void uz_pmsm_model9ph_hw_write_simulate_mechanical(uint32_t base_address, bool simulate_mechanical);
-void uz_pmsm_model9ph_hw_write_switch_pspl(uint32_t base_address, bool switch_pspl);
+// Voltage input
+
+// Current and voltage output
+
 
 // Physical parameter
 void uz_pmsm_model9ph_hw_write_inertia(uint32_t base_address, float intertia);
 void uz_pmsm_model9ph_hw_write_friction_coefficient(uint32_t base_address, float mu);
 void uz_pmsm_model9ph_hw_write_coulomb_friction_constant(uint32_t base_address, float m_c);
-void uz_pmsm_model9ph_hw_write_L_d(uint32_t base_address, float L_d);
+void uz_pmsm_model9ph_hw_write_L_d(uint32_t base_address, float inductance);
 void uz_pmsm_model9ph_hw_write_L_q(uint32_t base_address, float inductance);
 void uz_pmsm_model9ph_hw_write_r_1(uint32_t base_address, float r_1);
 void uz_pmsm_model9ph_hw_write_polepairs(uint32_t base_address, float polepairs);

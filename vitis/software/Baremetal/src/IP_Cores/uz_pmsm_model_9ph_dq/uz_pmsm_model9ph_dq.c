@@ -47,20 +47,19 @@ static uz_pmsm_model9ph_dq_t *uz_pmsm_model9ph_dq_allocation(void)
 static void write_config_to_pl(uz_pmsm_model9ph_dq_t *self);
 
 
-uz_pmsm_model9ph_dq_t *uz_pmsm_model9ph_dq_init(struct uz_pmsm_model9ph_dq_config_t config)
-{
+uz_pmsm_model9ph_dq_t *uz_pmsm_model9ph_dq_init(struct uz_pmsm_model9ph_dq_config_t config){
     uz_assert(0U != config.base_address);
     uz_assert(0U != config.ip_core_frequency_Hz);
     uz_assert(config.r_1 > 0.0f);
-    uz_assert(config.L_d > 0.0f);
-    uz_assert(config.L_q > 0.0f);
-    uz_assert(config.L_z1 > 0.0f);
-    uz_assert(config.L_z2 > 0.0f);
-    uz_assert(config.L_x1 > 0.0f);
-    uz_assert(config.L_y1 > 0.0f);
-    uz_assert(config.L_x2 > 0.0f);
-    uz_assert(config.L_y2 > 0.0f);
-    uz_assert(config.L_z3 > 0.0f);
+    uz_assert(config.inductance.d > 0.0f);
+    uz_assert(config.inductance.q > 0.0f);
+    uz_assert(config.inductance.x1 > 0.0f);
+    uz_assert(config.inductance.y1 > 0.0f);
+    uz_assert(config.inductance.x2 > 0.0f);
+    uz_assert(config.inductance.y2 > 0.0f);
+    uz_assert(config.inductance.x3 > 0.0f);
+    uz_assert(config.inductance.y3 > 0.0f);
+    uz_assert(config.inductance.zero > 0.0f);
     uz_assert(config.psi_pm >= 0.0f);
     uz_assert(config.polepairs > 0.0f);
     // If the mechanical system is not simulated, set default values
@@ -86,10 +85,13 @@ void uz_pmsm_model9ph_dq_reset(uz_pmsm_model9ph_dq_t *self)
     uz_assert(self->is_ready);
     // Resets the model by writing 0.0f to all input registers
     // Then resets the integrators
-    struct uz_pmsm_model9ph_dq_inputs_general_t inputs_general = {
-        .load_torque=0.0f,
-        .omega_mech_1_s=0.0f};
-    uz_pmsm_model9ph_dq_set_inputs_general(self, inputs_general);
+    uz_pmsm_model9ph_dq_set_inputs_general(self, 0.0f, 0.0f);
+    // if voltages are set from PS: also reset them
+    if(self->config.switch_pspl){
+        uz_9ph_dq_t zero_voltages = {0};
+        uz_pmsm_model9ph_dq_set_voltage(self, zero_voltages);
+        uz_pmsm_model9ph_trigger_voltage_input_strobe(self);
+    }
     uz_pmsm_model9ph_hw_write_reset(self->config.base_address, false);
     uz_sleep_useconds(1U);
     uz_pmsm_model9ph_hw_write_reset(self->config.base_address, true);
@@ -97,41 +99,89 @@ void uz_pmsm_model9ph_dq_reset(uz_pmsm_model9ph_dq_t *self)
     uz_pmsm_model9ph_hw_write_reset(self->config.base_address, false);
 }
 
-void uz_pmsm_model9ph_dq_set_inputs_general(uz_pmsm_model9ph_dq_t *self, struct uz_pmsm_model9ph_dq_inputs_general_t inputs)
-{
+void uz_pmsm_model9ph_dq_set_inputs_general(uz_pmsm_model9ph_dq_t *self, float omega_mech, float load_torque){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    //memcpy( (void *)(self->config.base_address+inputs_Data_uz_pmsm_model), &inputs,sizeof(struct uz_pmsm_model9ph_dq_inputs_t) );
-    uz_pmsm_model9ph_hw_write_omega_mech(self->config.base_address, inputs.omega_mech_1_s);
-    uz_pmsm_model9ph_hw_write_load_torque(self->config.base_address, inputs.load_torque);
+    uz_pmsm_model9ph_hw_write_omega_mech(self->config.base_address, omega_mech);
+    uz_pmsm_model9ph_hw_write_load_torque(self->config.base_address, load_torque);
 }
-struct uz_pmsm_model9ph_dq_outputs_general_t uz_pmsm_model9ph_dq_get_outputs_general(uz_pmsm_model9ph_dq_t *self)
-{
+
+struct uz_pmsm_model9ph_dq_outputs_general_t uz_pmsm_model9ph_dq_get_outputs_general(uz_pmsm_model9ph_dq_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     struct uz_pmsm_model9ph_dq_outputs_general_t outputs = {
-        .torque_Nm = 0.0f,
-        .omega_mech_1_s = 0.0f,
-    	.theta_el = 0.0f,
-        .u_d = 0.0f,
-        .u_q = 0.0f};
-    outputs.torque_Nm = uz_pmsm_model9ph_hw_read_torque(self->config.base_address);
-    outputs.omega_mech_1_s = uz_pmsm_model9ph_hw_read_omega_mech(self->config.base_address);
+        .torque = 0.0f,
+        .omega_mech = 0.0f,
+    	.theta_el = 0.0f};
+    outputs.torque = uz_pmsm_model9ph_hw_read_torque(self->config.base_address);
+    outputs.omega_mech = uz_pmsm_model9ph_hw_read_omega_mech(self->config.base_address);
     outputs.theta_el = uz_pmsm_model9ph_hw_read_theta_el(self->config.base_address);
     return outputs;
-}
-
-uz_9ph_dq_t uz_pmsm_model9ph_dq_get_output_currents(uz_pmsm_model9ph_dq_t *self)
-{
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    return uz_pmsm_model9ph_hw_read_currentse_dq(self->config.base_address);
 }
 
 void uz_pmsm_model9ph_dq_set_voltage(uz_pmsm_model9ph_dq_t *self, uz_9ph_dq_t voltages){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_pmsm_model9ph_hw_write_voltage_dq(self->config.base_address,voltages);
+    uz_pmsm_model9ph_hw_write_u_d(self->config.base_address, voltages.d);
+    uz_pmsm_model9ph_hw_write_u_q(self->config.base_address, voltages.q);
+    uz_pmsm_model9ph_hw_write_u_x1(self->config.base_address, voltages.x1);
+    uz_pmsm_model9ph_hw_write_u_y1(self->config.base_address, voltages.y1);
+    uz_pmsm_model9ph_hw_write_u_x2(self->config.base_address, voltages.x2);
+    uz_pmsm_model9ph_hw_write_u_y2(self->config.base_address, voltages.y2);
+    uz_pmsm_model9ph_hw_write_u_x3(self->config.base_address, voltages.x3);
+    uz_pmsm_model9ph_hw_write_u_y3(self->config.base_address, voltages.y3);
+    uz_pmsm_model9ph_hw_write_u_zero(self->config.base_address, voltages.zero);
+    uz_pmsm_model9ph_trigger_voltage_input_strobe(self);
+}
+
+void uz_pmsm_model9ph_dq_set_voltage_unsafe(uz_pmsm_model9ph_dq_t *self, uz_9ph_dq_t voltages){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_pmsm_model9ph_hw_write_voltage_dq_unsafe(self->config.base_address,voltages);
+}
+
+uz_9ph_dq_t uz_pmsm_model9ph_dq_get_input_voltages(uz_pmsm_model9ph_dq_t *self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_9ph_dq_t out = {0};
+    out.d = uz_pmsm_model9ph_hw_read_u_d(self->config.base_address);
+    out.q = uz_pmsm_model9ph_hw_read_u_q(self->config.base_address);
+    out.x1 = uz_pmsm_model9ph_hw_read_u_x1(self->config.base_address);
+    out.y1 = uz_pmsm_model9ph_hw_read_u_y1(self->config.base_address);
+    out.x2 = uz_pmsm_model9ph_hw_read_u_x2(self->config.base_address);
+    out.y2 = uz_pmsm_model9ph_hw_read_u_y2(self->config.base_address);
+    out.x3 = uz_pmsm_model9ph_hw_read_u_x3(self->config.base_address);
+    out.y3 = uz_pmsm_model9ph_hw_read_u_y3(self->config.base_address);
+    out.zero = uz_pmsm_model9ph_hw_read_u_zero(self->config.base_address);
+    return out;
+}
+
+uz_9ph_dq_t uz_pmsm_model9ph_dq_get_input_voltages_unsafe(uz_pmsm_model9ph_dq_t *self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_pmsm_model9ph_hw_read_voltage_dq_unsafe(self->config.base_address);
+}
+
+uz_9ph_dq_t uz_pmsm_model9ph_dq_get_output_currents(uz_pmsm_model9ph_dq_t *self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_9ph_dq_t out = {0};
+    out.d = uz_pmsm_model9ph_hw_read_i_d(self->config.base_address);
+    out.q =  uz_pmsm_model9ph_hw_read_i_q(self->config.base_address);
+    out.x1 = uz_pmsm_model9ph_hw_read_i_x1(self->config.base_address);
+    out.y1 = uz_pmsm_model9ph_hw_read_i_y1(self->config.base_address);
+    out.x2 = uz_pmsm_model9ph_hw_read_i_x2(self->config.base_address);
+    out.y2 = uz_pmsm_model9ph_hw_read_i_y2(self->config.base_address);
+    out.x3 = uz_pmsm_model9ph_hw_read_i_x3(self->config.base_address);
+    out.y3 = uz_pmsm_model9ph_hw_read_i_y3(self->config.base_address);
+    out.zero = uz_pmsm_model9ph_hw_read_i_zero(self->config.base_address);
+    return out;
+}
+
+uz_9ph_dq_t uz_pmsm_model9ph_dq_get_output_currents_unsafe(uz_pmsm_model9ph_dq_t *self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_pmsm_model9ph_hw_read_currents_dq_unsafe(self->config.base_address);
 }
 
 static void write_config_to_pl(uz_pmsm_model9ph_dq_t *self)
@@ -141,15 +191,15 @@ static void write_config_to_pl(uz_pmsm_model9ph_dq_t *self)
     uz_pmsm_model9ph_hw_write_polepairs(self->config.base_address, self->config.polepairs);
     uz_pmsm_model9ph_hw_write_r_1(self->config.base_address, self->config.r_1);
     uz_pmsm_model9ph_hw_write_psi_pm(self->config.base_address, self->config.psi_pm);
-    uz_pmsm_model9ph_hw_write_L_d(self->config.base_address, self->config.L_d);
-    uz_pmsm_model9ph_hw_write_L_q(self->config.base_address, self->config.L_q);
-    uz_pmsm_model9ph_hw_write_L_z1(self->config.base_address, self->config.L_z1);
-    uz_pmsm_model9ph_hw_write_L_z2(self->config.base_address, self->config.L_z2);
-    uz_pmsm_model9ph_hw_write_L_x1(self->config.base_address, self->config.L_x1);
-    uz_pmsm_model9ph_hw_write_L_y1(self->config.base_address, self->config.L_y1);
-    uz_pmsm_model9ph_hw_write_L_x2(self->config.base_address, self->config.L_x2);
-    uz_pmsm_model9ph_hw_write_L_y2(self->config.base_address, self->config.L_y2);
-    uz_pmsm_model9ph_hw_write_L_z3(self->config.base_address, self->config.L_z3);
+    uz_pmsm_model9ph_hw_write_L_d(self->config.base_address, self->config.inductance.d);
+    uz_pmsm_model9ph_hw_write_L_q(self->config.base_address, self->config.inductance.q);
+    uz_pmsm_model9ph_hw_write_L_x1(self->config.base_address, self->config.inductance.x1);
+    uz_pmsm_model9ph_hw_write_L_y1(self->config.base_address, self->config.inductance.y1);
+    uz_pmsm_model9ph_hw_write_L_x2(self->config.base_address, self->config.inductance.x2);
+    uz_pmsm_model9ph_hw_write_L_y2(self->config.base_address, self->config.inductance.y2);
+    uz_pmsm_model9ph_hw_write_L_x3(self->config.base_address, self->config.inductance.x3);
+    uz_pmsm_model9ph_hw_write_L_y3(self->config.base_address, self->config.inductance.y3);
+    uz_pmsm_model9ph_hw_write_L_zero(self->config.base_address, self->config.inductance.zero);
     uz_pmsm_model9ph_hw_write_friction_coefficient(self->config.base_address, self->config.friction_coefficient);
     uz_pmsm_model9ph_hw_write_coulomb_friction_constant(self->config.base_address, self->config.coulomb_friction_constant);
     uz_pmsm_model9ph_hw_write_inertia(self->config.base_address, self->config.inertia);

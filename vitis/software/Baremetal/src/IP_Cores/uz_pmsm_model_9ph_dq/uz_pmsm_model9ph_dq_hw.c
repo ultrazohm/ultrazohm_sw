@@ -296,17 +296,17 @@ void uz_pmsm_model9ph_hw_write_L_zero(uint32_t base_address, float inductance)
 }
 
 // Strobe
-void uz_pmsm_model9ph_trigger_voltage_input_strobe(uint32_t base_address){
+void uz_pmsm_model9ph_trigger_voltage_input_strobe_hw(uint32_t base_address){
     uz_assert_not_zero_uint32(base_address);
     uz_axi_write_bool(base_address+voltage_input_dq_axi_Strobe_uz_pmsm_model_9ph_dq,true);
     uz_axi_write_bool(base_address+voltage_input_dq_axi_Strobe_uz_pmsm_model_9ph_dq,false);
 }
-void uz_pmsm_model9ph_trigger_voltage_output_strobe(uint32_t base_address){
+void uz_pmsm_model9ph_trigger_voltage_output_strobe_hw(uint32_t base_address){
     uz_assert_not_zero_uint32(base_address);
     uz_axi_write_bool(base_address+voltage_input_dq_out_axi_fb_Strobe_uz_pmsm_model_9ph_dq,true);
     uz_axi_write_bool(base_address+voltage_input_dq_out_axi_fb_Strobe_uz_pmsm_model_9ph_dq,false);
 }
-void uz_pmsm_model9ph_trigger_current_output_strobe(uint32_t base_address){
+void uz_pmsm_model9ph_trigger_current_output_strobe_hw(uint32_t base_address){
     uz_assert_not_zero_uint32(base_address);
     uz_axi_write_bool(base_address+currents_dq_out_axi_Strobe_uz_pmsm_model_9ph_dq,true);
     uz_axi_write_bool(base_address+currents_dq_out_axi_Strobe_uz_pmsm_model_9ph_dq,false);

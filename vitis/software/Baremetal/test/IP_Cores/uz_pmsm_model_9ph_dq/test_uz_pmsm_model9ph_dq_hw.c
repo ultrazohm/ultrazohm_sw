@@ -306,20 +306,20 @@ void test_uz_pmsm_model9ph_hw_write_L_zero(void){
     uz_pmsm_model9ph_hw_write_L_zero(BASE_ADDRESS,L_test);
 }
 // Strobe
-void test_uz_pmsm_model9ph_trigger_voltage_input_strobe(void){
+void test_uz_pmsm_model9ph_trigger_voltage_input_strobe_hw(void){
     uz_axi_write_bool_Expect(BASE_ADDRESS+voltage_input_dq_axi_Strobe_uz_pmsm_model_9ph_dq,true);
     uz_axi_write_bool_Expect(BASE_ADDRESS+voltage_input_dq_axi_Strobe_uz_pmsm_model_9ph_dq,false);
-    uz_pmsm_model9ph_trigger_voltage_input_strobe(BASE_ADDRESS);
+    uz_pmsm_model9ph_trigger_voltage_input_strobe_hw(BASE_ADDRESS);
 }
-void test_uz_pmsm_model9ph_trigger_voltage_output_strobe(void){
+void test_uz_pmsm_model9ph_trigger_voltage_output_strobe_hw(void){
     uz_axi_write_bool_Expect(BASE_ADDRESS+voltage_input_dq_out_axi_fb_Strobe_uz_pmsm_model_9ph_dq,true);
     uz_axi_write_bool_Expect(BASE_ADDRESS+voltage_input_dq_out_axi_fb_Strobe_uz_pmsm_model_9ph_dq,false);
-    uz_pmsm_model9ph_trigger_voltage_output_strobe(BASE_ADDRESS);
+    uz_pmsm_model9ph_trigger_voltage_output_strobe_hw(BASE_ADDRESS);
 }
-void test_uz_pmsm_model9ph_trigger_current_output_strobe(void){
+void test_uz_pmsm_model9ph_trigger_current_output_strobe_hw(void){
     uz_axi_write_bool_Expect(BASE_ADDRESS+currents_dq_out_axi_Strobe_uz_pmsm_model_9ph_dq,true);
     uz_axi_write_bool_Expect(BASE_ADDRESS+currents_dq_out_axi_Strobe_uz_pmsm_model_9ph_dq,false);
-    uz_pmsm_model9ph_trigger_current_output_strobe(BASE_ADDRESS);
+    uz_pmsm_model9ph_trigger_current_output_strobe_hw(BASE_ADDRESS);
 }
 
 #endif // TEST

@@ -72,8 +72,8 @@ void uz_pmsm_model9ph_hw_write_L_y3(uint32_t base_address, float inductance);
 void uz_pmsm_model9ph_hw_write_L_zero(uint32_t base_address, float inductance);
 
 // Strobe
-void uz_pmsm_model9ph_trigger_voltage_input_strobe(uint32_t base_address);
-void uz_pmsm_model9ph_trigger_voltage_output_strobe(uint32_t base_address);
-void uz_pmsm_model9ph_trigger_current_output_strobe(uint32_t base_address);
+void uz_pmsm_model9ph_trigger_voltage_input_strobe_hw(uint32_t base_address);
+void uz_pmsm_model9ph_trigger_voltage_output_strobe_hw(uint32_t base_address);
+void uz_pmsm_model9ph_trigger_current_output_strobe_hw(uint32_t base_address);
 
 #endif // uz_pmsm_model9ph_dq_H

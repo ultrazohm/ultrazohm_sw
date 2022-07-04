@@ -486,9 +486,9 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->GlobalConfig.PMSM_config.Psi_PM_Vs = 0.0f;
 	Data->GlobalConfig.PMSM_config.polePairs = 2.0f;
 	Data->GlobalConfig.PMSM_config.J_kg_m_squared = 0.0f;
-	Data->GlobalConfig.PMSM_config.I_max_Ampere = 15.0f;
+	Data->GlobalConfig.PMSM_config.I_max_Ampere = 10.0f;
 	Data->GlobalConfig.ratCurrent = 5.0f;
-	Data->GlobalConfig.ratSpeed = 200.0f;
+	Data->GlobalConfig.ratSpeed = 1000.0f;
 
 	//Initialize ElectricalID-Config
 	Data->ElectricalID_Config.goertzlFreq = 0.0f;
@@ -527,12 +527,12 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->OnlineID_Config.Rs_time = 0.0f;
 	Data->OnlineID_Config.Temp_ref = 0.0f;
 	Data->OnlineID_Config.allowPsiCalcOutside = false;
-	Data->OnlineID_Config.dev_curr = 0.05f;
-	Data->OnlineID_Config.dev_omega = 0.05f;
+	Data->OnlineID_Config.dev_curr = 0.1f;
+	Data->OnlineID_Config.dev_omega = 0.1f;
 	Data->OnlineID_Config.identRAmp = 2.0f;
 	Data->OnlineID_Config.max_n_ratio = 0.0f;
 	Data->OnlineID_Config.min_n_ratio = 0.0f;
-	Data->OnlineID_Config.nom_factor = 0.0f;
+	Data->OnlineID_Config.nom_factor = 1.0f;
 	Data->OnlineID_Config.array_cleaned = false;
 
 	//Initialize Output data structs

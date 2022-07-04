@@ -68,7 +68,7 @@ struct uz_3ph_abc_t uvw_ref = {0};
 float omega_el_rad_per_sec = 0.0f;
 float omega_m_rad_per_sec = 0.0f;
 bool ext_clamping = false;
-int flg_ParameterID = 0U;
+int flg_ParameterID = 1U;
 
 //Parameter ID
 extern uz_ParameterID_Data_t ParaID_Data;
@@ -81,11 +81,11 @@ struct uz_DutyCycle_t ParaID_DutyCycle = {0};
 #define ADC_CURRENT_SCALING	  80.0f/NUMBER_OF_TURNS_CURRENT_MEASURING
 #define ADC_CURRENT_OFFSET    2.5f //Offset for LEM Sensors
 #define DC_VOLT_CONV		  12.5f
-#define PHASE_VOLT_CONV		  1.0f
+#define PHASE_VOLT_CONV		  12.5f
 #define ADC_PH_VOLT_OFFSET	  0.0f
 #define USE_RESOLVER		  1U	// 0U: IncrementalEncoder on D5, 1U: Resolver on D4
-#define MAX_CURRENT_ASSERTION	25.0f
-#define MAX_SPEED_ASSERTION		1000.0f
+#define MAX_CURRENT_ASSERTION	30.0f
+#define MAX_SPEED_ASSERTION		1500.0f
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -170,7 +170,7 @@ void ISR_Control(void *data)
 	    //Reference values
 	    ParaID_Data.GlobalConfig.n_ref = Global_Data.rasv.n_ref_rpm;
 	    ParaID_Data.GlobalConfig.i_dq_ref.d = Global_Data.rasv.i_d_ref;
-	    ParaID_Data.GlobalConfig.i_dq_ref.d = Global_Data.rasv.i_q_ref;
+	    ParaID_Data.GlobalConfig.i_dq_ref.q = Global_Data.rasv.i_q_ref;
     }
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();

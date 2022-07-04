@@ -93,6 +93,7 @@ int main(void)
         case init_software:
             Initialize_Timer();
             uz_SystemTime_init();
+            ParameterID = uz_ParameterID_init(&ParaID_Data);
             JavaScope_initalize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
@@ -117,8 +118,7 @@ int main(void)
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = init_foc;
             break;
-        case init_foc:
-        	ParameterID = uz_ParameterID_init(&ParaID_Data);
+        case init_foc:;
         	// Structs for ParameterID
         	const struct uz_PI_Controller_config config_id = {
         	   .Kp = ParaID_Data.GlobalConfig.Kp_id,

@@ -90,13 +90,19 @@ void uz_pmsm_model9ph_dq_reset(uz_pmsm_model9ph_dq_t *self)
     if(self->config.switch_pspl){
         uz_9ph_dq_t zero_voltages = {0};
         uz_pmsm_model9ph_dq_set_voltage(self, zero_voltages);
-        uz_pmsm_model9ph_trigger_voltage_input_strobe(self);
     }
     uz_pmsm_model9ph_hw_write_reset(self->config.base_address, false);
     uz_sleep_useconds(1U);
     uz_pmsm_model9ph_hw_write_reset(self->config.base_address, true);
     uz_sleep_useconds(1U);
     uz_pmsm_model9ph_hw_write_reset(self->config.base_address, false);
+}
+
+void uz_pmsm_model9ph_dq_set_use_axi_input(uz_pmsm_model9ph_dq_t *self, bool use_axi){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->config.switch_pspl=use_axi;
+    uz_pmsm_model9ph_hw_write_switch_pspl(self->config.base_address, self->config.switch_pspl);
 }
 
 void uz_pmsm_model9ph_dq_set_inputs_general(uz_pmsm_model9ph_dq_t *self, float omega_mech, float load_torque){
@@ -144,6 +150,7 @@ uz_9ph_dq_t uz_pmsm_model9ph_dq_get_input_voltages(uz_pmsm_model9ph_dq_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_9ph_dq_t out = {0};
+    uz_pmsm_model9ph_trigger_voltage_output_strobe(self);
     out.d = uz_pmsm_model9ph_hw_read_u_d(self->config.base_address);
     out.q = uz_pmsm_model9ph_hw_read_u_q(self->config.base_address);
     out.x1 = uz_pmsm_model9ph_hw_read_u_x1(self->config.base_address);
@@ -166,6 +173,7 @@ uz_9ph_dq_t uz_pmsm_model9ph_dq_get_output_currents(uz_pmsm_model9ph_dq_t *self)
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_9ph_dq_t out = {0};
+    uz_pmsm_model9ph_trigger_current_output_strobe(self);
     out.d = uz_pmsm_model9ph_hw_read_i_d(self->config.base_address);
     out.q =  uz_pmsm_model9ph_hw_read_i_q(self->config.base_address);
     out.x1 = uz_pmsm_model9ph_hw_read_i_x1(self->config.base_address);
@@ -207,11 +215,22 @@ static void write_config_to_pl(uz_pmsm_model9ph_dq_t *self)
     uz_pmsm_model9ph_hw_write_switch_pspl(self->config.base_address, self->config.switch_pspl);
 }
 
-void uz_pmsm_model9ph_dq_set_use_axi_input(uz_pmsm_model9ph_dq_t *self, bool use_axi){
-	uz_assert_not_NULL(self);
-	uz_assert(self->is_ready);
-	self->config.switch_pspl=use_axi;
-    uz_pmsm_model9ph_hw_write_switch_pspl(self->config.base_address, self->config.switch_pspl);
+void uz_pmsm_model9ph_trigger_voltage_input_strobe(uz_pmsm_model9ph_dq_t *self){
+        uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_pmsm_model9ph_trigger_voltage_input_strobe_hw(self->config.base_address);
+}
+
+void uz_pmsm_model9ph_trigger_voltage_output_strobe(uz_pmsm_model9ph_dq_t *self){
+        uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_pmsm_model9ph_trigger_voltage_output_strobe_hw(self->config.base_address);
+}
+
+void uz_pmsm_model9ph_trigger_current_output_strobe(uz_pmsm_model9ph_dq_t *self){
+        uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_pmsm_model9ph_trigger_current_output_strobe_hw(self->config.base_address);
 }
 
 #endif

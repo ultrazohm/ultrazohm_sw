@@ -20,6 +20,7 @@
 #include "IP_Cores/uz_123_alphabeta_dq_transformation/uz_123_alphabeta_dq_transformation.h"
 #include "IP_Cores/uz_fcs_mpc_3phase_spmsm/uz_fcs_mpc_3phase_spmsm.h"
 
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -41,8 +42,22 @@ DS_Data Global_Data = {
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
-    }
+    },
+    .av.U_ZK = 24.0f
 };
+
+
+//FOC instance and config-parameters
+struct uz_FOC* FOC_instance;
+
+// Speed controller instance
+struct uz_SpeedControl_t* speed_control_instance;
+
+struct uz_PMSM_t config_PMSM;
+struct uz_PI_Controller_config config_id;
+struct uz_PI_Controller_config config_iq;
+struct uz_FOC_config config_FOC;
+
 
 enum init_chain
 {
@@ -50,28 +65,31 @@ enum init_chain
     init_gpios,
     init_software,
     init_ip_cores,
+		init_foc,
     print_msg,
     init_interrupts,
     infinite_loop
 };
 enum init_chain initialization_chain = init_assertions;
 
+int i=0;
+
 // Config Values of the IP-Core trans_dq_alpabeta_123
 struct uz_dq_alphabeta_123_IPcore_config_t config_dq_alphabeta_123={
    				   .base_address= XPAR_UZ_USER_TRANS_DQ_ALPHABETA_1_0_BASEADDR,
    				   .ip_clk_frequency_Hz=50000000,
-   				   .theta_offset = 0,
-   				   .id_ref = 0,
-   				   .iq_ref = 0
+   				   .theta_offset = 0.0f,
+   				   .id_ref = 0.0f,
+   				   .iq_ref = 0.0f
    				};
 
 uz_dq_alphabeta_123_IPcore_t* test_instance_dq_alphabeta_123=NULL;
 
-// Config Values of the IP-Core trans_123_alphabeta_dq
+//Config Values of the IP-Core trans_123_alphabeta_dq
 static struct uz_dqIPcore_config_t config_123_alphabeta_dq={
    .base_address= XPAR_UZ_USER_TRANS_123_ALPHABETA_0_BASEADDR,
    .ip_clk_frequency_Hz=50000000,
-   .theta_offset = 0
+   .theta_offset = 0.0f
 };
 
 uz_dqIPcore_t* test_instance_123_alphabeta_dq=NULL;
@@ -81,16 +99,23 @@ static struct uz_fcs_mpc_3phase_spmsm_config_t config_fcs_mpc_3phase_spmsm={
    .base_address= XPAR_UZ_USER_FCS_MPC_3PHASE_SPMSM_1_BASEADDR,
    .ip_clk_frequency_Hz=100000000,
    .u_dc_link = 24.0f, // Adjustment needed for first tryout
-   .SampleTime=100000,
+   .SampleTime= 0.00001f,
    .Rs=0.085f,
    .Ld=0.0003f,
    .Lq=0.0003f,
    .psiPM=0.0075f,
    .pole_pairs=4
 };
+
 uz_fcs_mpc_3phase_spmsm_t* test_instance_fsc_mpc_3phase_spmsm=NULL;
+
+
+
+
 int main(void)
 {
+
+
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -114,10 +139,11 @@ int main(void)
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
 
-
+            if (i==1){
             test_instance_dq_alphabeta_123 = uz_dq_alphabeta_123_IPcore_init(config_dq_alphabeta_123);
             test_instance_123_alphabeta_dq = uz_123_alphabeta_dqIPcore_init(config_123_alphabeta_dq);
             test_instance_fsc_mpc_3phase_spmsm = uz_fcs_mpc_3phase_spmsm_init(config_fcs_mpc_3phase_spmsm);
+            }
 
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
            // Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();

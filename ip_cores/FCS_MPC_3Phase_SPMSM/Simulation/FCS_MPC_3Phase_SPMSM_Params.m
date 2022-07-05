@@ -1,11 +1,11 @@
 % Parameterfile for simulation
 
 % Brose Power Steering Motor 
-R = 0.023;          % phase resistance in Ohm
-psiPM = 0.007;      % flux linkage in Vs
-Ld = 0.00003;       % d-axis inductance in H
-Lq = 0.00005;       % q-axis inductance in H
-np = 5;             % number of pole pairs
+R = 0.085;          % phase resistance in Ohm
+psiPM = 0.0075;      % flux linkage in Vs
+Ld = 0.0003;       % d-axis inductance in H
+Lq = 0.0003;       % q-axis inductance in H
+np = 4;             % number of pole pairs
 J = 2.5581e-4;      % rotor inertia 
 
 % controller calculation according to TI instaspin user guide chp. 11
@@ -25,7 +25,7 @@ Kpn = Kpq/(Lq*d*K); % speed controller proportional gain
 Tnn = d^2*Lq/Kpq;   % speed controller integral reset time
 %resonant controller for dead time compensation (not used)
 Kr = 0;
-u_dc = 12;          % dc link voltage
+u_dc = 24;          % dc link voltage
 C_dc_link = 450e-6; % dc link capacity in F
 
 %simulation and MCU timing configuration

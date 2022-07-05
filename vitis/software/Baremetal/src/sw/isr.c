@@ -34,8 +34,8 @@
 // For IP-Core trans_dq_alphabeta_123
 #include "../IP_Cores/uz_trans_dq_alphabeta_123/uz_trans_dq_alphabeta_123.h"
 extern uz_dq_alphabeta_123_IPcore_t* test_instance_dq_alphabeta_123;
-struct uz_3ph_alphabeta_t alphabeta_currents_dq_alphabeta_123;
-struct uz_3ph_abc_t abc_currents_dq_alphabeta_123;
+struct uz_3ph_alphabeta_t alphabeta_currents_dq_alphabeta_123 = {0};
+//struct uz_3ph_abc_t abc_currents_dq_alphabeta_123 = {0};
 struct uz_3ph_dq_t updated_values={
 		.d = 0,
 		.q = 0
@@ -44,14 +44,21 @@ struct uz_3ph_dq_t updated_values={
 // For IP-Core trans_123_alphabeta_dq
 #include "../IP_Cores/uz_123_alphabeta_dq_transformation/uz_123_alphabeta_dq_transformation.h"
 extern uz_dqIPcore_t* test_instance_123_alphabeta_dq;
-struct uz_3ph_alphabeta_t alphabeta_currents_123_alphabeta_dq;
+struct uz_3ph_alphabeta_t alphabeta_currents_123_alphabeta_dq = {0};
 extern float i_alpha_123_alphabeta_dq;
 extern float i_beta_123_alphabeta_dq;
-struct uz_3ph_abc_t abc_currents_123_alphabeta_dq;
+struct uz_3ph_abc_t abc_currents_123_alphabeta_dq = {0};
 extern float i_a_123_alphabeta_dq;
 extern float i_b_123_alphabeta_dq;
 extern float i_c_123_alphabeta_dq;
 
+// Measured currents for crude over current protection
+struct uz_3ph_abc_t m_abc_currents = {0};
+float adc_factor = (20.0f / 2.084f);
+float adc_offset = -2.43f;
+
+
+extern int i;
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -73,15 +80,37 @@ static void ReadAllADC();
 
 void ISR_Control(void *data)
 {
+	if (i==1){
+	// Measured currents
+	m_abc_currents.a = (Global_Data.aa.A2.me.ADC_B6 +adc_offset)*adc_factor;
+	m_abc_currents.b = (Global_Data.aa.A2.me.ADC_B8 +adc_offset)*adc_factor;
+	m_abc_currents.c = (Global_Data.aa.A2.me.ADC_B7 +adc_offset)*adc_factor;
 
+	//crude over current protection
+	if((fabs(m_abc_currents.a) > 12.0f || fabs(m_abc_currents.b) > 12.0f || fabs(m_abc_currents.c) > 12.0f)&&(updated_values.d !=0 || updated_values.q !=0)) {
+		//i++;
+		uz_assert(0);
+	}
+	//else{
+	//	i=0;
+	//}
+	//if(i>=5){
+		//uz_assert(0);
+	//}
 
 	// Read output ia ib ic from IP-Core trans_123_alphabeta_dq
 	abc_currents_123_alphabeta_dq=uz_123_alphabeta_dqIPcore_get_i_abc(test_instance_123_alphabeta_dq);
+
 		//crude over current protection
-		if(fabs(abc_currents_123_alphabeta_dq.a) > 12.0f || fabs(abc_currents_123_alphabeta_dq.b) > 12.0f || fabs(abc_currents_123_alphabeta_dq.c) > 12.0f){
-			uz_assert(0);
-		}
-		// Javascope
+		//if((fabs(abc_currents_123_alphabeta_dq.a) > 12.0f || fabs(abc_currents_123_alphabeta_dq.b) > 12.0f || fabs(abc_currents_123_alphabeta_dq.c) > 12.0f)&&(updated_values.d !=0 || updated_values.q !=0)) {
+		//	i++;}
+		//else{
+		//	i=0;
+		//}
+		//if(i>=5){
+		//uz_assert(0);
+		//}
+
 		i_a_123_alphabeta_dq=abc_currents_123_alphabeta_dq.a;
 		i_b_123_alphabeta_dq=abc_currents_123_alphabeta_dq.b;
 		i_c_123_alphabeta_dq=abc_currents_123_alphabeta_dq.c;
@@ -97,14 +126,14 @@ void ISR_Control(void *data)
 	 Global_Data.av.i_beta_IP_CORE=alphabeta_currents_dq_alphabeta_123.beta;
 
 	// Read output ia ib ic from IP-Core trans_dq_alphabeta_123
-	 abc_currents_dq_alphabeta_123 = uz_dq_alphabeta_123_IPcore_get_i_abc(test_instance_dq_alphabeta_123);
-	 Global_Data.av.i_a_IP_CORE=abc_currents_dq_alphabeta_123.a;
-	 Global_Data.av.i_b_IP_CORE=abc_currents_dq_alphabeta_123.b;
-	 Global_Data.av.i_c_IP_CORE=abc_currents_dq_alphabeta_123.c;
+	// abc_currents_dq_alphabeta_123 = uz_dq_alphabeta_123_IPcore_get_i_abc(test_instance_dq_alphabeta_123);
+	// Global_Data.av.i_a_IP_CORE=abc_currents_dq_alphabeta_123.a;
+	// Global_Data.av.i_b_IP_CORE=abc_currents_dq_alphabeta_123.b;
+	// Global_Data.av.i_c_IP_CORE=abc_currents_dq_alphabeta_123.c;
 
-	// Update idref iqref from IP-Core trans_dq_alphabeta_123
-	uz_dq_alphabeta_123_IPcore_idref_iqref_update(test_instance_dq_alphabeta_123,updated_values);
-
+	 // Update idref iqref from IP-Core trans_dq_alphabeta_123
+	 uz_dq_alphabeta_123_IPcore_idref_iqref_update(test_instance_dq_alphabeta_123,updated_values);
+	}
 
 
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr

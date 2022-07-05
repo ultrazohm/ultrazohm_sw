@@ -15,7 +15,7 @@
 ******************************************************************************/
 
 #include "../../uz/uz_global_configuration.h"
-#if uz_pmsm_model9ph_dq_MAX_INSTANCES > 0U
+#if UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES > 0U 
 #include "uz_pmsm_model9ph_dq.h"
 #include "uz_pmsm_model9ph_dq_hw.h"
 #include <stdbool.h>
@@ -29,13 +29,13 @@ struct uz_pmsm_model9ph_dq_t
 };
 
 static size_t instance_counter = 0U;
-static uz_pmsm_model9ph_dq_t instances[uz_pmsm_model9ph_dq_MAX_INSTANCES ] = {0};
+static uz_pmsm_model9ph_dq_t instances[UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES ] = {0};
 
 static uz_pmsm_model9ph_dq_t *uz_pmsm_model9ph_dq_allocation(void);
 
 static uz_pmsm_model9ph_dq_t *uz_pmsm_model9ph_dq_allocation(void)
 {
-    uz_assert(instance_counter < uz_pmsm_model9ph_dq_MAX_INSTANCES);
+    uz_assert(instance_counter < UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES);
     uz_pmsm_model9ph_dq_t *self = &instances[instance_counter];
     uz_assert_false(self->is_ready);
     instance_counter++;

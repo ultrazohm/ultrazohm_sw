@@ -280,6 +280,7 @@ Setup
                     ParaID_Data.GlobalConfig.FrictionID = false;
                     ParaID_Data.GlobalConfig.FluxMapID = false;
                     ParaID_Data.GlobalConfig.OnlineID = false;
+                    ParaID_Data.FluxMapID_Config.start_FM_ID = false;
                 break;
 
                 case (ParaID_Enable_Current_Control):
@@ -328,6 +329,7 @@ Setup
 
                 case (ParaID_Disable_FluxMapID):
                     ParaID_Data.GlobalConfig.FluxMapID = false;
+                    ParaID_Data.FluxMapID_Config.start_FM_ID = false;
                     break;
 
                 case (ParaID_Enable_OnlineID):
@@ -353,6 +355,8 @@ Setup
                     ParaID_Data.AutoRefCurrents_Config.enableCRS = false;
                     ParaID_Data.ParaID_Control_Selection = No_Control;
                     ParaID_Data.ElectricalID_Config.identLq = false;
+                    ParaID_Data.FluxMapID_Config.start_FM_ID = false;
+
                     break;
 
                 case (ParaID_EID_sampleTimeISR):

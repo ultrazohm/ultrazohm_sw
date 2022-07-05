@@ -25,3 +25,4 @@ IP Cores
     uz_mlp_three_layer/uz_mlp_three_layer
     uz_dac_interface/uz_dac_interface
     uz_pmsm9ph_transformation/uz_pmsm9ph_transformation
+    uz_pmsm_model_9ph_dq/uz_pmsm_model_9ph_dq

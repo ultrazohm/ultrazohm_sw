@@ -117,9 +117,9 @@ void ISR_Control(void *data)
 {
 	if (i==1){
 	// Measured currents
-	m_abc_currents.a = (Global_Data.aa.A2.me.ADC_B6 +adc_offset)*adc_factor;
-	m_abc_currents.b = (Global_Data.aa.A2.me.ADC_B8 +adc_offset)*adc_factor;
-	m_abc_currents.c = (Global_Data.aa.A2.me.ADC_B7 +adc_offset)*adc_factor;
+	m_abc_currents.a = (Global_Data.aa.A2.me.ADC_B6);// +adc_offset)*adc_factor;
+	m_abc_currents.b = (Global_Data.aa.A2.me.ADC_B8);// +adc_offset)*adc_factor;
+	m_abc_currents.c = (Global_Data.aa.A2.me.ADC_B7);// +adc_offset)*adc_factor;
 
 	//crude over current protection
 	if((fabs(m_abc_currents.a) > 12.0f || fabs(m_abc_currents.b) > 12.0f || fabs(m_abc_currents.c) > 12.0f)&&(updated_values.d !=0 || updated_values.q !=0)) {
@@ -175,12 +175,11 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-	//select right offset and factors for ADC
-
-m_abc_currents.a = (Global_Data.aa.A2.me.ADC_B6 +adc_offset)*adc_factor;
-m_abc_currents.b = (Global_Data.aa.A2.me.ADC_B8 +adc_offset)*adc_factor;
-m_abc_currents.c = (Global_Data.aa.A2.me.ADC_B7 +adc_offset)*adc_factor;
-
+if (i==0){
+    //select right offset and factors for ADC
+	m_abc_currents.a = (Global_Data.aa.A2.me.ADC_B6 +adc_offset)*adc_factor;
+	m_abc_currents.b = (Global_Data.aa.A2.me.ADC_B8 +adc_offset)*adc_factor;
+	m_abc_currents.c = (Global_Data.aa.A2.me.ADC_B7 +adc_offset)*adc_factor;
 //write currents into Global_Data
 Global_Data.av.I_U = m_abc_currents.a;
 Global_Data.av.I_V = m_abc_currents.b;
@@ -208,13 +207,13 @@ uz_FOC_set_Ki_iq(FOC_instance, Global_Data.cp.ki_q);
 
 uz_SpeedControl_set_Ki(speed_control_instance, Global_Data.cp.ki_speed);
 uz_SpeedControl_set_Kp(speed_control_instance, Global_Data.cp.kp_speed);
-
+}
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-
+    	if (i==0){
 		//Call FOC-algorithm
 	ref_dq0_voltage = uz_FOC_sample(FOC_instance, ref_dq0_currents, m_dq0_currents, Global_Data.av.U_ZK, omega_el_rad_per_sec);
 		//Transform dq to abc-voltage
@@ -225,6 +224,7 @@ uz_SpeedControl_set_Kp(speed_control_instance, Global_Data.cp.kp_speed);
 	Global_Data.rasv.halfBridge1DutyCycle = pwm_dutyCycle.DutyCycle_U;
 	Global_Data.rasv.halfBridge2DutyCycle = pwm_dutyCycle.DutyCycle_V;
 	Global_Data.rasv.halfBridge3DutyCycle = pwm_dutyCycle.DutyCycle_W;
+    	}
 
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

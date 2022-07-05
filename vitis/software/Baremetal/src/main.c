@@ -49,7 +49,7 @@ DS_Data Global_Data = {
 
 //FOC instance and config-parameters
 struct uz_FOC* FOC_instance;
-
+int i=0;
 // Speed controller instance
 struct uz_SpeedControl_t* speed_control_instance;
 
@@ -72,7 +72,7 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
-int i=0;
+
 
 // Config Values of the IP-Core trans_dq_alpabeta_123
 struct uz_dq_alphabeta_123_IPcore_config_t config_dq_alphabeta_123={
@@ -148,10 +148,10 @@ int main(void)
 	   .config_iq = config_iq
 	};
 
-	//Global_Data.cp.kp_d = config_FOC.config_id.Kp;
-	//Global_Data.cp.kp_q = config_FOC.config_iq.Kp;
-	//Global_Data.cp.ki_d = config_FOC.config_id.Ki;
-	//Global_Data.cp.ki_q = config_FOC.config_iq.Ki;
+	Global_Data.cp.kp_d = config_FOC.config_id.Kp;
+	Global_Data.cp.kp_q = config_FOC.config_iq.Kp;
+	Global_Data.cp.ki_d = config_FOC.config_id.Ki;
+	Global_Data.cp.ki_q = config_FOC.config_iq.Ki;
 
 	   struct uz_SpeedControl_config config_speed_controller = {
 	      .config_controller.Kp = 0.0f,
@@ -162,8 +162,8 @@ int main(void)
 	      .is_field_weakening_active = false
 	   };
 
-		//Global_Data.cp.kp_speed = config_speed_controller.config_controller.Kp;
-		//Global_Data.cp.ki_speed = config_speed_controller.config_controller.Ki;
+		Global_Data.cp.kp_speed = config_speed_controller.config_controller.Kp;
+		Global_Data.cp.ki_speed = config_speed_controller.config_controller.Ki;
 
 
     int status = UZ_SUCCESS;

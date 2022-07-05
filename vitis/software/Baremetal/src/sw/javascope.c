@@ -106,7 +106,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_m_T_dq_currents_q] 		=	&m_T_dq_currents.q;
 	js_ch_observable[JSO_m_T_abc_currents_a] 		=	&m_T_abc_currents.a;
 	js_ch_observable[JSO_m_T_abc_currents_b] 		=	&m_T_abc_currents.b;
-	js_ch	js_ch_observable[JSO_ialpha]		=	&data->av.I_alpha;
+	js_ch_observable[JSO_ialpha]		=	&data->av.I_alpha;
 	js_ch_observable[JSO_ibeta]			=	&data->av.I_beta;
 
 

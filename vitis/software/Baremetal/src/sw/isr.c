@@ -31,6 +31,14 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
+// For FOC
+#include "../uz/uz_FOC/uz_FOC.h"
+#include "../uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+extern int i;
+
+uz_3ph_alphabeta_t m_alphabeta_currents = {0};
+
 // For IP-Core trans_dq_alphabeta_123
 #include "../IP_Cores/uz_trans_dq_alphabeta_123/uz_trans_dq_alphabeta_123.h"
 extern uz_dq_alphabeta_123_IPcore_t* test_instance_dq_alphabeta_123;
@@ -52,13 +60,6 @@ extern float i_a_123_alphabeta_dq;
 extern float i_b_123_alphabeta_dq;
 extern float i_c_123_alphabeta_dq;
 
-// Measured currents for crude over current protection
-struct uz_3ph_abc_t m_abc_currents = {0};
-float adc_factor = (20.0f / 2.084f);
-float adc_offset = -2.43f;
-
-
-extern int i;
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -69,6 +70,40 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
+
+//FOC instance
+extern uz_FOC* FOC_instance;
+//Speed Controller Instance:
+extern uz_SpeedControl_t* speed_control_instance;
+//other  FOC variables
+struct uz_3ph_dq_t  m_dq0_currents = {0};
+struct uz_3ph_dq_t  ref_dq0_currents = {0};	//reference currents for control
+
+struct uz_3ph_dq_t  ref_dq0_voltage = {0};		//reference voltage for pwm/ inverter dq
+struct uz_3ph_abc_t ref_abc_voltage = {0};											//abc
+
+struct uz_DutyCycle_t pwm_dutyCycle = {0};			//Duty-Cycle of the three phase pwm
+
+float omega_el_rad_per_sec = 0.0f;
+float theta_el_offset = 0.0f;		//additive offset of theta_el
+
+// Measured currents for crude over current protection
+struct uz_3ph_abc_t m_abc_currents = {0};
+float adc_factor = (20.0f / 2.084f);
+float adc_offset = -2.43f;
+
+//Speed-Control:
+float n_ref_rpm = 100.0f;
+float speed_id_ref_Ampere = 0.0f;
+bool ext_clamping = false;
+
+extern struct uz_FOC_config config_FOC;
+extern struct uz_PMSM_t config_PMSM;
+
+extern struct uz_dqIPcore_t* dq_Transformator;
+uz_3ph_dq_t m_T_dq_currents = {0};
+uz_3ph_abc_t m_T_abc_currents = {0};
+uz_3ph_alphabeta_t m_T_alphabeta_currents = {0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -140,10 +175,57 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+	//select right offset and factors for ADC
+
+m_abc_currents.a = (Global_Data.aa.A2.me.ADC_B6 +adc_offset)*adc_factor;
+m_abc_currents.b = (Global_Data.aa.A2.me.ADC_B8 +adc_offset)*adc_factor;
+m_abc_currents.c = (Global_Data.aa.A2.me.ADC_B7 +adc_offset)*adc_factor;
+
+//write currents into Global_Data
+Global_Data.av.I_U = m_abc_currents.a;
+Global_Data.av.I_V = m_abc_currents.b;
+Global_Data.av.I_W = m_abc_currents.c;
+
+//transform meassured currents to dq-System
+m_dq0_currents = uz_transformation_3ph_abc_to_dq(m_abc_currents, Global_Data.av.theta_elec + theta_el_offset);
+
+Global_Data.av.I_d = m_dq0_currents.d;
+Global_Data.av.I_q = m_dq0_currents.q;
+
+omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*config_FOC.config_PMSM.polePairs*2.0f*M_PI/60;
+
+
+//alpha_beta Ströme als Vergleich
+m_alphabeta_currents = uz_transformation_3ph_abc_to_alphabeta(m_abc_currents);
+Global_Data.av.I_alpha = m_alphabeta_currents.alpha;
+Global_Data.av.I_beta = m_alphabeta_currents.beta;
+
+//Set new control parameter from javascope
+uz_FOC_set_Kp_id(FOC_instance, Global_Data.cp.kp_d);
+uz_FOC_set_Kp_iq(FOC_instance, Global_Data.cp.kp_q);
+uz_FOC_set_Ki_id(FOC_instance, Global_Data.cp.ki_d);
+uz_FOC_set_Ki_iq(FOC_instance, Global_Data.cp.ki_q);
+
+uz_SpeedControl_set_Ki(speed_control_instance, Global_Data.cp.ki_speed);
+uz_SpeedControl_set_Kp(speed_control_instance, Global_Data.cp.kp_speed);
+
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+
+		//Call FOC-algorithm
+	ref_dq0_voltage = uz_FOC_sample(FOC_instance, ref_dq0_currents, m_dq0_currents, Global_Data.av.U_ZK, omega_el_rad_per_sec);
+		//Transform dq to abc-voltage
+	ref_abc_voltage = uz_transformation_3ph_dq_to_abc(ref_dq0_voltage, Global_Data.av.theta_elec + theta_el_offset);
+		//calculate pwm-dutyclcles for inverter
+	pwm_dutyCycle = uz_FOC_generate_DutyCycles(ref_abc_voltage, Global_Data.av.U_ZK);
+
+	Global_Data.rasv.halfBridge1DutyCycle = pwm_dutyCycle.DutyCycle_U;
+	Global_Data.rasv.halfBridge2DutyCycle = pwm_dutyCycle.DutyCycle_V;
+	Global_Data.rasv.halfBridge3DutyCycle = pwm_dutyCycle.DutyCycle_W;
+
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

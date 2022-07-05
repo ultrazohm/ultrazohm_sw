@@ -18,6 +18,7 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -39,6 +40,11 @@ float i_c_123_alphabeta_dq;
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
+
+extern uz_3ph_dq_t  ref_dq0_currents;
+extern uz_3ph_dq_t m_T_dq_currents;
+extern uz_3ph_abc_t m_T_abc_currents;
+extern uz_3ph_alphabeta_t m_T_alphabeta_currents;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -80,6 +86,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+	js_ch_observable[JSO_id_ref]   		= &ref_dq0_currents.d;
+	js_ch_observable[JSO_iq_ref]		= &ref_dq0_currents.q;
+	js_ch_observable[JSO_kp_d] 			= &data->cp.kp_d;
+	js_ch_observable[JSO_kp_q] 			= &data->cp.kp_q;
+	js_ch_observable[JSO_ki_d] 			= &data->cp.ki_d;
+	js_ch_observable[JSO_ki_q] 			= &data->cp.ki_q;
 	js_ch_observable[JSO_i_alpha_IP_CORE]	= &(data->av.i_alpha_IP_CORE);
 	js_ch_observable[JSO_i_beta_IP_CORE]	= &(data->av.i_beta_IP_CORE);
 	js_ch_observable[JSO_i_a_IP_CORE]	= &(data->av.i_a_IP_CORE);
@@ -90,6 +102,13 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_i_a_123_alphabeta_dq] =&i_a_123_alphabeta_dq;
 	js_ch_observable[JSO_i_b_123_alphabeta_dq] =&i_b_123_alphabeta_dq;
 	js_ch_observable[JSO_i_c_123_alphabeta_dq] =&i_c_123_alphabeta_dq;
+	js_ch_observable[JSO_m_T_dq_currents_d] 		=	&m_T_dq_currents.d;
+	js_ch_observable[JSO_m_T_dq_currents_q] 		=	&m_T_dq_currents.q;
+	js_ch_observable[JSO_m_T_abc_currents_a] 		=	&m_T_abc_currents.a;
+	js_ch_observable[JSO_m_T_abc_currents_b] 		=	&m_T_abc_currents.b;
+	js_ch	js_ch_observable[JSO_ialpha]		=	&data->av.I_alpha;
+	js_ch_observable[JSO_ibeta]			=	&data->av.I_beta;
+
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

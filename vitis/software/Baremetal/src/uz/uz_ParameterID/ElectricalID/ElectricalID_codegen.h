@@ -74,6 +74,7 @@ typedef struct {
   real32_T measArray1[1024];           /* '<Root>/ElectricalID' */
   real32_T fv[2048];
   real32_T fv1[2048];
+  real32_T c_y[5];
   real32_T fv2[4];
   real32_T fv3[2];
   real32_T fv4[4];
@@ -90,6 +91,7 @@ typedef struct {
   real32_T ia_sum;                     /* '<Root>/ElectricalID' */
   real32_T DutyCycle;                  /* '<Root>/ElectricalID' */
   int32_T i;
+  int32_T k;
   uint32_T counter;                    /* '<Root>/ElectricalID' */
   uint32_T wait_count;                 /* '<Root>/ElectricalID' */
   uint32_T one_sec_transition_counter; /* '<Root>/ElectricalID' */

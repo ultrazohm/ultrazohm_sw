@@ -4,7 +4,6 @@
 #include "test_assert_with_exception.h"
 #include "uz_pmsm_model9ph_dq.h"
 #include "mock_uz_pmsm_model9ph_dq_hw.h"
-#include "uz_pmsm_model9ph_dq_hw.h"
 
 #define BASE_ADDRESS 0x0000000FU
 #define IP_FRQ 100000000U

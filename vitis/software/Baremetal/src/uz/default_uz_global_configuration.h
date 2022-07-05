@@ -39,7 +39,7 @@
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
 #define UZ_IIR_FILTER_MAX_INSTANCES                     1U
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
-#define uz_pmsm_model9ph_dq_MAX_INSTANCES               1U
+#define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES         0U
 
 #endif
 
@@ -65,5 +65,5 @@
     #define UZ_MLP_THREE_LAYER_IP_MAX_INSTANCES             20U
     #define UZ_SPEEDCONTROL_MAX_INSTANCES                   50U
     #define UZ_IIR_FILTER_MAX_INSTANCES                     20U
-    #define uz_pmsm_model9ph_dq_MAX_INSTANCES               20U
+    #define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES         20U
 #endif

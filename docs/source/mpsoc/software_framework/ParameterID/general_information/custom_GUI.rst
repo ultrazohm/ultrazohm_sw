@@ -663,9 +663,6 @@ Setup
             js_slowDataArray[JSSD_FLOAT_d_est]                  = &(ParaID_Data.TwoMassID_Output->d_est_out);
             js_slowDataArray[JSSD_FLOAT_I_rated]                = &(ParaID_Data.GlobalConfig.ratCurrent);
             js_slowDataArray[JSSD_FLOAT_totalRotorInertia]      = &(ParaID_Data.TwoMassID_Output->rotorInertia);
-            js_slowDataArray[JSSD_FLOAT_Wtemp]                  = &(ParaID_Data.OnlineID_Output->Wtemp);
-            js_slowDataArray[JSSD_FLOAT_FluxTempConst]          = &(ParaID_Data.FluxMap_Data->psi_temp_const);
-            js_slowDataArray[JSSD_FLOAT_FluxTempError]          = &(ParaID_Data.FluxMap_Data->psi_temp_error);
             js_slowDataArray[JSSD_FLOAT_Ld_Online]              = &(ParaID_Data.OnlineID_Output->Ld_out);
             js_slowDataArray[JSSD_FLOAT_Lq_Online]              = &(ParaID_Data.OnlineID_Output->Lq_out);
             js_slowDataArray[JSSD_FLOAT_PsiPM_Online]           = &(ParaID_Data.OnlineID_Output->psi_pm_out);

@@ -67,7 +67,6 @@ enum JS_SlowData {
 	JSSD_FLOAT_Lq_Offline,
 	JSSD_FLOAT_PsiPM_Offline,
 	JSSD_FLOAT_J,
-	JSSD_FLOAT_polePairs,
 	JSSD_FLOAT_activeState,
 	JSSD_FLOAT_u_d,
 	JSSD_FLOAT_u_q,
@@ -97,18 +96,14 @@ enum JS_SlowData {
 	JSSD_FLOAT_FluxTemp,
 	JSSD_FLOAT_MapControl,
 	JSSD_FLOAT_I_rated,
-	JSSD_FLOAT_Wtemp,
-	JSSD_FLOAT_FluxTempConst,
-	JSSD_FLOAT_FluxTempError,
 	JSSD_FLOAT_Ld_Online,
 	JSSD_FLOAT_Lq_Online,
 	JSSD_FLOAT_PsiPM_Online,
 	JSSD_FLOAT_Rs_Online,
 	JSSD_FLOAT_n_FluxPoints,
-	JSSD_FLOAT_Ld,
-	JSSD_FLOAT_Lq,
 	JSSD_FLOAT_totalRotorInertia,
 	JSSD_FLOAT_MapControlCounter,
+	JSSD_FLOAT_polePairs,
 	JSSD_ENDMARKER
 };
 

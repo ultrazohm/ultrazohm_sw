@@ -11,8 +11,8 @@ Setup
 
 .. code-block:: c
   :linenos:
-  :emphasize-lines: 7,13
-  :caption: Example to initialize the ParameterID
+  :emphasize-lines: 7,13,40-41
+  :caption: Example to initialize the ParameterID. The ParameterID must be initialized before the Javascope is initialized. 
     
   #include "uz/uz_ParameterID/uz_ParameterID.h"
   #include "uz/uz_math_constants.h"
@@ -53,6 +53,8 @@ Setup
           .config_iq = config_iq };
      FOC_instance = uz_FOC_init(config_FOC);
      SpeedControl_instance = uz_SpeedControl_init(config_n);
+     //....
+     JavaScope_initalize(&Global_Data);
   }
 
 In the ``uz_ParameterID_init`` function, the struct of the type ``uz_ParameterID_Data_t`` is initialized as well. This struct carries, among other things, the configuration values of the ParameterID.
@@ -63,7 +65,7 @@ The ID-state specific configuration values can later be configured via the uz_GU
 
 .. literalinclude:: ../../../../../../vitis/software/Baremetal/src/uz/uz_ParameterID/uz_ParameterID.c
     :caption: Code to initialize ``uz_ParameterID_Data_t``. Important parts are highlighted.
-    :lines: 462-552
+    :lines: 463-553
     :linenos:
     :emphasize-lines: 13,16-30
     :language: c

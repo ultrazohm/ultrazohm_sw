@@ -40,6 +40,8 @@
 #define UZ_IIR_FILTER_MAX_INSTANCES                     1U
 #define UZ_PARAMETERID_MAX_INSTANCES					1U
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
+#define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES         0U
+
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -65,4 +67,5 @@
     #define UZ_SPEEDCONTROL_MAX_INSTANCES                   50U
     #define UZ_IIR_FILTER_MAX_INSTANCES                     20U
 	#define UZ_PARAMETERID_MAX_INSTANCES					100U
+    #define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES         20U
 #endif

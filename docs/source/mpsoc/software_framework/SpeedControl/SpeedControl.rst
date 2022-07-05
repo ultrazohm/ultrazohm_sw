@@ -40,15 +40,13 @@ Example
         .config_controller.samplingTime_sec = 0.00005f,
         .config_controller.upper_limit = 10.0f,
         .config_controller.lower_limit = -10.0f,
-        .enable_field_weakening = false
-     };
-     struct uz_PMSM_t config_PMSM = {
-        .R_ph_Ohm = 0.08f,
-        .Ld_Henry = 0.00027f,
-        .Lq_Henry = 0.00027f,
-        .Psi_PM_Vs = 0.0082f,
-        .polePairs = 4.0f,
-        .I_max_Ampere = 10.0f
+        .config_PMSM.R_ph_Ohm = 0.08f,
+        .config_PMSM.Ld_Henry = 0.00027f,
+        .config_PMSM.Lq_Henry = 0.00027f,
+        .config_PMSM.Psi_PM_Vs = 0.0082f,
+        .config_PMSM.polePairs = 4.0f,
+        .config_PMSM.I_max_Ampere = 10.0f,
+        .is_field_weakening_active = false
      };
   }
 
@@ -64,9 +62,8 @@ Example
 
 .. code-block:: c
   :linenos:
-  :caption: Example function call to init a PI-Controller for the SpeedControl. ``config`` according to :ref:`configuration section<uz_piController_config>`
+  :caption: Example function call to init the SpeedController for the SpeedControl. ``config`` according to :ref:`configuration section<uz_SpeedControl_config>`
   
-  #include "uz/uz_SpeedControl/uz_speedcontrol.h"
   int main(void) {
      uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
   }
@@ -89,7 +86,7 @@ Example
 
 .. code-block:: c
   :linenos:
-  :caption: Example function call to reset the SpeedControl. PI-Controller instance via :ref:`init-function <uz_SpeedControl_init>`
+  :caption: Example function call to reset the SpeedControl. SpeedControl instance via :ref:`init-function <uz_SpeedControl_init>`.
 
   int main(void) {
      uz_SpeedControl_reset(instance);

@@ -20,6 +20,7 @@
 #include <math.h>
 
 // not declared as static because tests showed better performance without static declaration
+float uz_6ph_arraymul(int line, float const matrixval[6][6], float const val[6]);
 float uz_9ph_arraymul(int line, float const matrixval[9][9], float const val[9]);
 
 // abc -> dq & reverse
@@ -80,6 +81,90 @@ uz_3ph_alphabeta_t uz_transformation_3ph_dq_to_alphabeta(uz_3ph_dq_t input, floa
 }
 
 
+
+
+// 6 phase
+uz_6ph_alphabeta_t uz_transformation_asym30deg_6ph_abc_to_alphabeta(uz_6ph_abc_t input){
+    uz_6ph_alphabeta_t output = {0};
+    float val[6] = {0};
+
+    // VSD matrix from Matlab script, see Docs
+    float const vsd_mat[6][6] = {
+        { 0.3333333f, -0.1666667f, -0.1666667f, 0.2886751f, -0.2886751f, 0.0000000f },
+        { 0.0000000f, 0.2886751f, -0.2886751f, 0.1666667f, 0.1666667f, -0.3333333f },
+        { 0.3333333f, -0.1666667f, -0.1666667f, -0.2886751f, 0.2886751f, 0.0000000f },
+        { 0.0000000f, -0.2886751f, 0.2886751f, 0.1666667f, 0.1666667f, -0.3333333f },
+        { 0.3333333f, 0.3333333f, 0.3333333f, 0.0000000f, 0.0000000f, 0.0000000f },
+        { 0.0000000f, 0.0000000f, 0.0000000f, 0.3333333f, 0.3333333f, 0.3333333f }
+    };
+
+    // write values of abc struct to array for easier usage
+    val[0] = input.a1;
+    val[1] = input.b1;
+    val[2] = input.c1;
+    val[3] = input.a2;
+    val[4] = input.b2;
+    val[5] = input.c2;
+
+
+    // apply transformation matrix
+    output.alpha = uz_6ph_arraymul(0, vsd_mat, val);
+    output.beta = uz_6ph_arraymul(1, vsd_mat, val);
+    output.x = uz_6ph_arraymul(2, vsd_mat, val);
+    output.y = uz_6ph_arraymul(3, vsd_mat, val);
+    output.z1 = uz_6ph_arraymul(4, vsd_mat, val);
+    output.z2 = uz_6ph_arraymul(5, vsd_mat, val);
+
+    return (output);
+
+}
+
+uz_6ph_abc_t uz_transformation_asym30deg_6ph_alphabeta_to_abc(uz_6ph_alphabeta_t input){
+    uz_6ph_abc_t output = {0};
+    float val[6] = {0};
+
+    // VSD matrix from Matlab script, see Docs
+    float const vsd_mat[6][6] = {
+        { 1.0000000f, 0.0000000f, 1.0000000f, 0.0000000f, 1.0000000f, -0.0000000f },
+        { -0.5000001f, 0.8660254f, -0.4999999f, -0.8660254f, 1.0000000f, -0.0000000f },
+        { -0.4999999f, -0.8660254f, -0.5000001f, 0.8660254f, 1.0000000f, 0.0000000f },
+        { 0.8660254f, 0.5000000f, -0.8660254f, 0.5000000f, 0.0000000f, 1.0000000f },
+        { -0.8660254f, 0.5000000f, 0.8660254f, 0.5000000f, 0.0000000f, 1.0000000f },
+        { 0.0000000f, -1.0000000f, 0.0000000f, -1.0000000f, 0.0000000f, 1.0000000f }
+    };
+
+    
+    // write values of abc struct to array for easier usage
+    val[0] = input.alpha;
+    val[1] = input.beta;
+    val[2] = input.x;
+    val[3] = input.y;
+    val[4] = input.z1;
+    val[5] = input.z2;
+
+    // apply transformation matrix
+    output.a1 = uz_6ph_arraymul(0, vsd_mat, val);
+    output.b1 = uz_6ph_arraymul(1, vsd_mat, val);
+    output.c1 = uz_6ph_arraymul(2, vsd_mat, val);
+    output.a2 = uz_6ph_arraymul(3, vsd_mat, val);
+    output.b2 = uz_6ph_arraymul(4, vsd_mat, val);
+    output.c2 = uz_6ph_arraymul(5, vsd_mat, val);
+    return (output);
+}
+
+
+// 1D array multiplication ([a, b, c] * [x; y; z] = [a*x + b*y + c*z])
+float uz_6ph_arraymul(int line, float const matrixval[6][6], float const val[6])
+{
+    float output = 0.0f;
+    for (int i = 0; i < 6; i++){
+        output = output + (matrixval[line][i] * val[i]);
+    }
+    return output;
+}
+
+
+
 // 9 phase
 uz_9ph_alphabeta_t uz_transformation_9ph_abc_to_alphabeta(uz_9ph_abc_t input)
 {
@@ -113,13 +198,13 @@ uz_9ph_alphabeta_t uz_transformation_9ph_abc_to_alphabeta(uz_9ph_abc_t input)
     // apply transformation matrix
     output.alpha = uz_9ph_arraymul(0, vsd_mat, val);
     output.beta = uz_9ph_arraymul(1, vsd_mat, val);
-    output.z1 = uz_9ph_arraymul(2, vsd_mat, val);
-    output.z2 = uz_9ph_arraymul(3, vsd_mat, val);
-    output.x1 = uz_9ph_arraymul(4, vsd_mat, val);
-    output.y1 = uz_9ph_arraymul(5, vsd_mat, val);
-    output.x2 = uz_9ph_arraymul(6, vsd_mat, val);
-    output.y2 = uz_9ph_arraymul(7, vsd_mat, val);
-    output.z3 = uz_9ph_arraymul(8, vsd_mat, val);
+    output.x1 = uz_9ph_arraymul(2, vsd_mat, val);
+    output.y1 = uz_9ph_arraymul(3, vsd_mat, val);
+    output.x2 = uz_9ph_arraymul(4, vsd_mat, val);
+    output.y2 = uz_9ph_arraymul(5, vsd_mat, val);
+    output.x3 = uz_9ph_arraymul(6, vsd_mat, val);
+    output.y3 = uz_9ph_arraymul(7, vsd_mat, val);
+    output.zero = uz_9ph_arraymul(8, vsd_mat, val);
     return (output);
 }
 
@@ -129,28 +214,28 @@ uz_9ph_abc_t uz_transformation_9ph_alphabeta_to_abc(uz_9ph_alphabeta_t input)
     float val[9] = {0};
 
     // VSD matrix from Matlab script, see Docs
-    float const vsd_mat[9][9] =
+    float const vsd_mat[9][9] = 
         {
-            {1.0000000f, 0.0000002f, -0.0000002f, -1.7320511f, 0.9999998f, 0.0000001f, 1.0000000f, -0.0000000f, 3.0000005f},
-            {-0.5000001f, 0.8660257f, 0.0000000f, -1.7320509f, -0.5000000f, -0.8660253f, -0.4999999f, 0.8660253f, 3.0000000f},
-            {-0.5000000f, -0.8660253f, 0.0000000f, -1.7320509f, -0.5000000f, 0.8660254f, -0.5000001f, -0.8660254f, 3.0000000f},
-            {0.9396926f, 0.3420202f, 1.5000002f, 2.5980763f, -0.1736481f, 0.9848076f, -0.7660445f, 0.6427875f, -3.0000005f},
-            {-0.7660444f, 0.6427875f, 1.4999998f, 2.5980761f, 0.9396926f, -0.3420202f, -0.1736481f, -0.9848077f, -2.9999995f},
-            {-0.1736481f, -0.9848077f, 1.5000002f, 2.5980763f, -0.7660444f, -0.6427878f, 0.9396926f, 0.3420201f, -3.0000005f},
-            {0.7660444f, 0.6427878f, -1.4999998f, -0.8660253f, -0.9396927f, -0.3420200f, 0.1736483f, -0.9848078f, 2.9999995f},
-            {-0.9396926f, 0.3420202f, -1.4999999f, -0.8660253f, 0.1736481f, 0.9848078f, 0.7660445f, 0.6427876f, 2.9999998f},
-            {0.1736481f, -0.9848076f, -1.5000000f, -0.8660254f, 0.7660444f, -0.6427876f, -0.9396925f, 0.3420201f, 3.0000000f}};
+            { 1.0000000f, -0.0000000f, 1.0000000f, 0.0000000f, 1.0000000f, -0.0000000f, 1.0000000f, -0.0000000f, 1.0000000f },
+            { -0.5000000f, 0.8660254f, 1.0000000f, -0.0000000f, -0.5000000f, -0.8660254f, -0.5000000f, 0.8660254f, 1.0000000f },
+            { -0.5000000f, -0.8660254f, 1.0000000f, 0.0000000f, -0.5000000f, 0.8660254f, -0.5000000f, -0.8660254f, 1.0000000f },
+            { 0.9396926f, 0.3420201f, 0.5000000f, 0.8660254f, -0.1736482f, 0.9848078f, -0.7660444f, 0.6427876f, -1.0000000f },
+            { -0.7660444f, 0.6427876f, 0.5000000f, 0.8660254f, 0.9396926f, -0.3420201f, -0.1736482f, -0.9848078f, -1.0000000f },
+            { -0.1736482f, -0.9848078f, 0.5000000f, 0.8660254f, -0.7660444f, -0.6427876f, 0.9396926f, 0.3420201f, -1.0000000f },
+            { 0.7660444f, 0.6427876f, -0.5000000f, 0.8660254f, -0.9396926f, -0.3420201f, 0.1736482f, -0.9848078f, 1.0000000f },
+            { -0.9396926f, 0.3420201f, -0.5000000f, 0.8660254f, 0.1736482f, 0.9848078f, 0.7660444f, 0.6427876f, 1.0000000f },
+            { 0.1736482f, -0.9848078f, -0.5000000f, 0.8660254f, 0.7660444f, -0.6427876f, -0.9396926f, 0.3420201f, 1.0000000f }};
 
     // write values of abc struct to array for easier usage
     val[0] = input.alpha;
     val[1] = input.beta;
-    val[2] = input.z1;
-    val[3] = input.z2;
-    val[4] = input.x1;
-    val[5] = input.y1;
-    val[6] = input.x2;
-    val[7] = input.y2;
-    val[8] = input.z3;
+    val[2] = input.x1;
+    val[3] = input.y1;
+    val[4] = input.x2;
+    val[5] = input.y2;
+    val[6] = input.x3;
+    val[7] = input.y3;
+    val[8] = input.zero;
 
     // apply transformation matrix
     output.a1 = uz_9ph_arraymul(0, vsd_mat, val);
@@ -173,4 +258,58 @@ float uz_9ph_arraymul(int line, float const matrixval[9][9], float const val[9])
         output = output + (matrixval[line][i] * val[i]);
     }
     return output;
+}
+
+uz_9ph_dq_t uz_transformation_9ph_alphabeta_to_dq(uz_9ph_alphabeta_t input, float theta_el_rad){
+    uz_3ph_alphabeta_t intermediate_three_phase_ab={
+        .alpha=input.alpha,
+        .beta=input.beta,
+        .gamma=0.0f
+    };
+    uz_3ph_dq_t intermediate_dq=uz_transformation_3ph_alphabeta_to_dq(intermediate_three_phase_ab,theta_el_rad);
+   
+    uz_9ph_dq_t result={
+        .d=intermediate_dq.d,
+        .q=intermediate_dq.q,
+        .x1=input.x1,
+        .y1=input.y1,
+        .x2=input.x2,
+        .y2=input.y2,
+        .x3=input.x3,
+        .y3=input.y3,
+        .zero=input.zero,
+    };
+    return result;
+}
+
+uz_9ph_alphabeta_t uz_transformation_9ph_dq_to_alphabeta(uz_9ph_dq_t input, float theta_el_rad){
+    
+    uz_3ph_dq_t dq_3phase={
+        .d=input.d,
+        .q=input.q,
+        .zero=0.0f
+    };    
+    uz_3ph_alphabeta_t intermediate=uz_transformation_3ph_dq_to_alphabeta(dq_3phase,theta_el_rad);
+    uz_9ph_alphabeta_t result={
+        .alpha=intermediate.alpha,
+        .beta=intermediate.beta,
+        .x1=input.x1,
+        .y1=input.y1,
+        .x2=input.x2,
+        .y2=input.y2,
+        .x3=input.x3,
+        .y3=input.y3,
+        .zero=input.zero,
+    };
+    return result;
+}
+
+uz_9ph_dq_t uz_transformation_9ph_abc_to_dq(uz_9ph_abc_t input, float theta_el_rad){
+    uz_9ph_alphabeta_t intermediate=uz_transformation_9ph_abc_to_alphabeta(input);
+    return uz_transformation_9ph_alphabeta_to_dq(intermediate,theta_el_rad);
+}
+
+uz_9ph_abc_t uz_transformation_9ph_dq_to_abc(uz_9ph_dq_t input, float theta_el_rad){
+    uz_9ph_alphabeta_t intermediate=uz_transformation_9ph_dq_to_alphabeta(input,theta_el_rad);
+    return uz_transformation_9ph_alphabeta_to_abc(intermediate);
 }

@@ -61,32 +61,162 @@ Mechanical equations
     \omega_{mech}(k+1) &=  T_s \big(\frac{M_M(k)-M_L(k)}{J})
   \end{align}
 
-Note that the integrator for :math:`\theta_{el}` is limited to :math:`+/-\pi` to avoid overflow of the integrator.
+Note that the integrator for :math:`\theta_{el}` is limited to :math:`+/-\pi` to avoid overflow.
 
 IP-core interfaces
 ==================
 
 .. csv-table:: Interface of ninephase PMSM Model IP-Core
    :file: uz_pmsm_model_9ph_dq_interfaces.csv
-   :widths: 50 40 60 60 60 210
+   :widths: 50 40 80 60 60 190
    :header-rows: 1
+
+Driver reference
+================
+
+The set and get functions for voltage and currents are implemented as normal and unsafe version.
+Citing from :ref:`uz_mlp_three_layer`:
+"In addition to the regular function to calculate a feedforward pass, *unsafe* versions of the driver exist (``_unsafe``).
+These functions are considerably faster than their safe counterparts (up to :math:`30~\mu s`) but violate the software rules outlined in :ref:`software_development_guidelines`.
+It is strongly advised to manually test by comparing the safe and unsafe versions before using *_unsafe*!""
+
+.. doxygentypedef:: uz_pmsm_model9ph_dq_t
+
+.. doxygenstruct:: uz_pmsm_model9ph_dq_config_t
+  :members:
+
+.. doxygenstruct:: uz_pmsm_model9ph_dq_outputs_general_t
+  :members:
+
+.. doxygenfunction:: uz_pmsm_model9ph_dq_init
+
+.. doxygenfunction:: uz_pmsm_model9ph_trigger_voltage_input_strobe
+
+.. doxygenfunction:: uz_pmsm_model9ph_trigger_voltage_output_strobe
+
+.. doxygenfunction:: uz_pmsm_model9ph_trigger_current_output_strobe
+
+.. doxygenfunction:: uz_pmsm_model9ph_dq_set_inputs_general
+
+.. doxygenfunction:: uz_pmsm_model9ph_dq_get_outputs_general
+
+.. doxygenfunction:: uz_pmsm_model9ph_dq_set_voltage
+
+.. doxygenfunction:: uz_pmsm_model9ph_dq_set_voltage_unsafe
+
+.. doxygenfunction:: uz_pmsm_model9ph_dq_get_input_voltages
+
+.. doxygenfunction:: uz_pmsm_model9ph_dq_get_input_voltages_unsafe
+
+.. doxygenfunction:: uz_pmsm_model9ph_dq_get_output_currents
+
+.. doxygenfunction:: uz_pmsm_model9ph_dq_get_output_currents_unsafe
+
+.. doxygenfunction:: uz_pmsm_model9ph_dq_reset
+
+.. doxygenfunction:: uz_pmsm_model9ph_dq_set_use_axi_input
 
 Example usage
 =============
 
 The IP-core has two intended use cases:
-The model can be used with in the dq domain only and the inputs are set from the PS.
+The model can be used in the dq domain only and the inputs are set from the PS.
 It is also possible to combine the model with the IP-cores :ref: "inverter", :ref:`uz_pmsm9ph_transformation` and :ref:`uz_pwm_ss_2l` to simulate a complete ninephase drive system.
 
 Usage in PS only
 ****************
 
-Using the model in PS only is similar to the use cases shown in :ref:`uz_pmsmModel`.
-Therefore only the open loop example is presented here.
+Using the model in PS only is similar to the use cases shown in :ref:`uz_pmsmModel` open loop example which is recreated here.
+The placement of the IP-core for the use from PS only is straight forward as only the default PL interfaces have to be connected.
+
+.. figure:: open_loop_ps.jpg
+
+   Test setup for IP-core PS test in Vivado
+
+The following code is used in ``main.c`` (initialization) and ``isr.c`` (application):
+
+.. code-block:: c
+  :caption: initialization in ``main.c`` (R5)
+
+  #include "IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
+  uz_pmsm_model9ph_dq_t *pmsm=NULL;
+  struct uz_pmsm_model9ph_dq_config_t pmsm_config = {   // example config values
+    .base_address=XPAR_UZ_PMSM_MODEL_0_BASEADDR,
+    .ip_core_frequency_Hz = 100000000.0f,
+    .polepairs = 3.0f,
+    .r_1 = 31.3f,
+    .inductance.d = 0.46f,
+    .inductance.q = 0.46f,
+    .inductance.x1 = 0.08f,
+    .inductance.y1 = 0.08f,
+    .inductance.x2 = 0.08f,
+    .inductance.y2 = 0.08f,
+    .inductance.x3 = 0.08f,
+    .inductance.y3 = 0.08f,
+    .inductance.zero = 0.08f,
+    .psi_pm = 0.072f,
+    .friction_coefficient = 0.001f,
+    .coulomb_friction_constant = 0.001f,
+    .inertia = 0.001f,
+    .simulate_mechanical_system = false,
+    .switch_pspl = true};
+
+  // .. rest of the code in main.c before loop
+  int main(void)
+  // ..
+    case init_ip_cores: // default line from main.c
+      pmsm = uz_pmsm_model9ph_dq_init(pmsm_config);
+
+.. code-block:: c
+  :caption: usage in ``isr.c``
+
+  #include "../IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
+  extern uz_pmsm_model9ph_dq_t *pmsm;                               // pointer to PMSM object
+  struct uz_pmsm_model9ph_dq_outputs_general_t out_general = {0};   // stores general outputs
+  uz_9ph_dq_t in_voltages = {                                       // stores input voltages (set random voltages for testing)
+		.d = 1.0f,
+		.q = 2.0f,
+		.x1 = 3.0f,
+		.y1 = 4.0f,
+		.x2 = 5.0f,
+		.y2 = 6.0f,
+		.x3 = 7.0f,
+		.y3 = 8.0f,
+		.zero = 9.0f};                                   
+  uz_9ph_dq_t out_currents = {0};                                   // stores output currents
+  float omega_mech = 10.0f;                                         // fixed speed can be set from Expressions with this variable
+  int reset = 0;                                                    // use reset variable to reset integrators from Expressions 
+
+  // .. rest of the code in isr.c before loop
+  void ISR_Control(void *data)
+  // ..
+    update_speed_and_position_of_encoder_on_D5(&Global_Data);       // default line from isr.c
+
+    if(reset)
+      uz_pmsm_model9ph_dq_reset(pmsm);                              // use reset variable to reset integrators from Expressions   
+
+    uz_pmsm_model9ph_dq_set_inputs_general(pmsm,omega_mech,0.0f);   // set fixed speed, because load simulation is disabled by pmsm_config.simulate_mechanical_system
+    uz_pmsm_model9ph_dq_set_voltage(pmsm,in_voltages);              // set input voltage
+    out_general = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);    // read out resulting general outputs
+    out_currents = uz_pmsm_model9ph_dq_get_output_currents(pmsm);   // read out actual currents
+
+To prove functionality, the output currents of the shown example are evaluated.
+The resulting machine torque is :math:`-0.01562337\,Nm` an the reulting currents are shown in the following equation.
+The results were recreated with the Simulink model.
+
+.. math::
+
+  \begin{align}
+    out-currents = 
+    \begin{bmatrix} i_{d} \\ i_{q} \\ i_{x_1} \\ i_{y_1} \\ i_{x_2} \\ i_{y_2} \\ i_{x_3} \\ i_{y_3} \\ i_{zero} \end{bmatrix} = 
+    \begin{bmatrix} 0.03166196\\ -0.006507777 \\ 0.09584665 \\ 0.1277955 \\ 0.1597444 \\ 0.1916933 \\ 0.2236422 \\ 0.2555911 \\ 0.2875399 \end{bmatrix}
+  \end{align}
 
 
 Ninephase drive system in PL (HIL)
 **********************************
+
+Describe HIL model here as soon as all necessary IP-cores are merged.
 
 Sources
 =======

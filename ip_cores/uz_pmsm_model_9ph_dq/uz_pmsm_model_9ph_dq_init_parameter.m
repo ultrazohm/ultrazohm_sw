@@ -5,17 +5,17 @@ ts_isr = 1/10000;
 ts_pmsm = 1e-6;
 
 %% Electric Parameters
-R_1 = 0.066;        % phase resistance in Ohm
-psi_pm = 0.1028;    % flux linkage in Vs
-L_d = 0.0023;       % d-axis inductance in H
-L_q = 0.0046;       % q-axis inductance in H
-L_x1 = L_d/3;       %assuming from other papers
-L_y1 = L_d/3;
-L_x2 = L_d/3;
-L_y2 = L_d/3;
-L_x3 = L_d/3;
-L_y3 = L_d/3;
-L_zero = L_d/3;
+R_1 = 31.3;        % phase resistance in Ohm
+psi_pm = 0.072;    % flux linkage in Vs
+L_d = 0.46;       % d-axis inductance in H
+L_q = 0.46;       % q-axis inductance in H
+L_x1 = 0.08;       %assuming from other papers
+L_y1 = 0.08;
+L_x2 = 0.08;
+L_y2 = 0.08;
+L_x3 = 0.08;
+L_y3 = 0.08;
+L_zero = 0.08;
 polepair = 3;       % number of pole pairs
 
 %% Transformation Matrix

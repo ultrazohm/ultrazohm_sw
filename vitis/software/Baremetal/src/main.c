@@ -30,13 +30,27 @@ DS_Data Global_Data = {
 		.halfBridge9DutyCycle = 0.0f,
 		.halfBridge10DutyCycle = 0.0f,
 		.halfBridge11DutyCycle = 0.0f,
-		.halfBridge12DutyCycle = 0.0f
+		.halfBridge12DutyCycle = 0.0f,
+		.ref_halfBridge1DutyCycle = 0.0f,
+		.ref_halfBridge2DutyCycle = 0.0f,
+		.ref_halfBridge3DutyCycle = 0.0f,
+		.ref_halfBridge4DutyCycle = 0.0f,
+		.ref_halfBridge5DutyCycle = 0.0f,
+		.ref_halfBridge6DutyCycle = 0.0f,
+		.ref_halfBridge7DutyCycle = 0.0f,
+		.ref_halfBridge8DutyCycle = 0.0f,
+		.ref_halfBridge9DutyCycle = 0.0f,
+		.ref_halfBridge10DutyCycle = 0.0f,
+		.ref_halfBridge11DutyCycle = 0.0f,
+		.ref_halfBridge12DutyCycle= 0.0f
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
-    	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
-		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
+    	   //.A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
+    		.A2 = {.cf.ADC_A1 = 150.875f, .cf.ADC_A2 = 33.8780*2, .cf.ADC_A3 = 33.8780*2, .cf.ADC_A4 = 33.8780*2, .cf.ADC_B5 = 150.875, .cf.ADC_B6 = 33.8780*2, .cf.ADC_B7 = 33.8780*2, .cf.ADC_B8 = 33.8780*2}, //@ 2*18mOhm shunts in parallel
+
+    		.A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     },
 	.av.U_ZK = 36.0f,
 	.av.theta_offset =  -0.14608003,
@@ -44,16 +58,126 @@ DS_Data Global_Data = {
 	.av.I_q_ref = 0
 };
 
+
 //fault detection:
 
 uz_vsd_opffd_asym6ph vsd_fd_V4;
 uz_FD uz_FD_V6;
+uz_vsd_opf_fd_v7 uz_FD_v7;
+
+
 
 //single Index FD:
 uz_singleindex_faultdetection singleindex_FD;
 
 struct uz_movAverageFilter_config movAvF_config;
 uz_movAverageFilter_t* movAvFilter;
+
+uz_movAverageFilter_t* movAvFilter_R1;
+uz_movAverageFilter_t* movAvFilter_R2;
+uz_movAverageFilter_t* movAvFilter_R3;
+uz_movAverageFilter_t* movAvFilter_R4;
+uz_movAverageFilter_t* movAvFilter_R5;
+uz_movAverageFilter_t* movAvFilter_R6;
+
+#define FILTER_LENGTH 11
+
+uz_filter_t* filter_a1;
+uz_filter_t* filter_b1;
+uz_filter_t* filter_c1;
+uz_filter_t* filter_a2;
+uz_filter_t* filter_b2;
+uz_filter_t* filter_c2;
+
+double ar_filterParameterA[FILTER_LENGTH] = {   1           ,
+		  -8.795170347593165516286717320326715707779,
+		  34.87498281940548139345992240123450756073 ,
+		 -82.095896845589493295847205445170402526855,
+		 127.042943858755734254373237490653991699219,
+		-135.035542883992434326501097530126571655273,
+		  99.835079040061941668682266026735305786133,
+		 -50.691818433648244024425366660580039024353,
+		  16.916722791727497821057113469578325748444,
+		  -3.350305445143596738688529512728564441204,
+		   0.299005477912280381858067812572699040174};
+double ar_filterParameterB[FILTER_LENGTH] = {0.000000000031148454939792163363898700541,
+		0.00000000031148454939792164656368407655    ,
+		0.000000001401680472290647254440213490781   ,
+		0.000000003737814592775059345173902642084   ,
+		0.000000006541175537356353440464023347133   ,
+		0.000000007849410644827625452045808101403   ,
+		0.00000000654117553735635426764463590016    ,
+		0.000000003737814592775059345173902642084   ,
+		0.000000001401680472290647461235366629038   ,
+		0.00000000031148454939792164656368407655    ,
+		0.000000000031148454939792163363898700541 };
+
+/*
+double ar_filterParameterA[FILTER_LENGTH] = {   1           ,0,0,0,0,0,0,0,0,0,0};
+double ar_filterParameterB[FILTER_LENGTH] = {1,1,1,1,1,1,1,1,1,1,1};
+*/
+
+
+double ar_circularBufferInput_a1[FILTER_LENGTH] = {0};
+double ar_circularBufferOutput_a1[FILTER_LENGTH] = {0};
+double ar_circularBufferInput_b1[FILTER_LENGTH] = {0};
+double ar_circularBufferOutput_b1[FILTER_LENGTH] = {0};
+double ar_circularBufferInput_c1[FILTER_LENGTH] = {0};
+double ar_circularBufferOutput_c1[FILTER_LENGTH] = {0};
+double ar_circularBufferInput_a2[FILTER_LENGTH] = {0};
+double ar_circularBufferOutput_a2[FILTER_LENGTH] = {0};
+double ar_circularBufferInput_b2[FILTER_LENGTH] = {0};
+double ar_circularBufferOutput_b2[FILTER_LENGTH] = {0};
+double ar_circularBufferInput_c2[FILTER_LENGTH] = {0};
+double ar_circularBufferOutput_c2[FILTER_LENGTH] = {0};
+
+struct uz_filter_config filter_config_a1 = {
+	.filterLength = FILTER_LENGTH,
+	.filterParameterA = ar_filterParameterA,
+	.filterParameterB = ar_filterParameterB,
+	.circularBufferInput = ar_circularBufferInput_a1,
+	.circularBufferOutput = ar_circularBufferOutput_a1
+};
+
+struct uz_filter_config filter_config_b1 = {
+	.filterLength = FILTER_LENGTH,
+	.filterParameterA = ar_filterParameterA,
+	.filterParameterB = ar_filterParameterB,
+	.circularBufferInput = ar_circularBufferInput_b1,
+	.circularBufferOutput = ar_circularBufferOutput_b1
+};
+
+struct uz_filter_config filter_config_c1 = {
+	.filterLength = FILTER_LENGTH,
+	.filterParameterA = ar_filterParameterA,
+	.filterParameterB = ar_filterParameterB,
+	.circularBufferInput = ar_circularBufferInput_c1,
+	.circularBufferOutput = ar_circularBufferOutput_c1
+};
+
+struct uz_filter_config filter_config_a2 = {
+	.filterLength = FILTER_LENGTH,
+	.filterParameterA = ar_filterParameterA,
+	.filterParameterB = ar_filterParameterB,
+	.circularBufferInput = ar_circularBufferInput_a2,
+	.circularBufferOutput = ar_circularBufferOutput_a2
+};
+
+struct uz_filter_config filter_config_b2 = {
+	.filterLength = FILTER_LENGTH,
+	.filterParameterA = ar_filterParameterA,
+	.filterParameterB = ar_filterParameterB,
+	.circularBufferInput = ar_circularBufferInput_b2,
+	.circularBufferOutput = ar_circularBufferOutput_b2
+};
+
+struct uz_filter_config filter_config_c2 = {
+	.filterLength = FILTER_LENGTH,
+	.filterParameterA = ar_filterParameterA,
+	.filterParameterB = ar_filterParameterB,
+	.circularBufferInput = ar_circularBufferInput_c2,
+	.circularBufferOutput = ar_circularBufferOutput_c2
+};
 
 
 //parameter for FOC
@@ -126,7 +250,7 @@ enum init_chain initialization_chain = init_assertions;
 int main(void)
 {
 
-	movAvF_config.filterLength = 100;
+	movAvF_config.filterLength = 150;
 
 
     int status = UZ_SUCCESS;
@@ -153,8 +277,27 @@ int main(void)
 
             uz_vsd_opffd_asym6ph_init(&vsd_fd_V4);
             uz_FD_init(&uz_FD_V6);
+
+            uz_vsd_opf_fd_v7_init(&uz_FD_v7);
+
             uz_singleindex_faultdetection_init(&singleindex_FD);
             movAvFilter = uz_movAverageFilter_init(movAvF_config);
+
+            movAvFilter_R1 =  uz_movAverageFilter_init(movAvF_config);
+            movAvFilter_R2 =  uz_movAverageFilter_init(movAvF_config);
+            movAvFilter_R3 =  uz_movAverageFilter_init(movAvF_config);
+            movAvFilter_R4 =  uz_movAverageFilter_init(movAvF_config);
+            movAvFilter_R5 =  uz_movAverageFilter_init(movAvF_config);
+            movAvFilter_R6 =  uz_movAverageFilter_init(movAvF_config);
+
+
+            filter_a1 = uz_filter_init(filter_config_a1);
+            filter_b1 = uz_filter_init(filter_config_b1);
+            filter_c1 = uz_filter_init(filter_config_c1);
+            filter_a2 = uz_filter_init(filter_config_a2);
+            filter_b2 = uz_filter_init(filter_config_b2);
+            filter_c2 = uz_filter_init(filter_config_c2);
+
 
             initialization_chain = init_FOC;
             break;

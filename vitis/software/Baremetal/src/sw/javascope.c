@@ -19,6 +19,7 @@
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../uz/uz_VSD_6ph_FD/uz_VSD6phFD.h"
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -35,17 +36,30 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
-extern uz_6ph_abc_t i_6phase;
-extern uz_6ph_alphabeta_t i_abxyz1z2;
-extern uz_6ph_abc_t i_6phase_2;
+
+extern uz_6ph_alphabeta_t i_abxyz1z2_filtered;
+
 
 extern float vsd_output[6];
 extern float vsd_output_filtered[6];
+extern float vsd_output_hyst[6];
+
+extern float vsd_output_V4[6];
+extern float vsd_output_hyst_V4[6];
+extern float vsd_output_filtered_V4[6];
+
+extern float Rb1[5];
+extern float Rb1_filtered[5];
+
+extern uz_6phFD_indices R_FD_Filt;
+extern uz_6phFD_indices R_FD;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 extern float filteredFDIndices[6];
+
+extern float singleIndex_FD_R;
 
 extern float testvalue;
 
@@ -99,18 +113,18 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_i_z1] = &data->av.I_z1;
 	js_ch_observable[JSO_i_z2] = &data->av.I_z2;
 
-	js_ch_observable[JSO_i_2_a1] = &i_6phase.a1;
-	js_ch_observable[JSO_i_2_b1] = &i_6phase.b1;
-	js_ch_observable[JSO_i_2_c1] = &i_6phase.c1;
-	js_ch_observable[JSO_i_2_a2] = &i_6phase.a2;
-	js_ch_observable[JSO_i_2_b2] = &i_6phase.b2;
-	js_ch_observable[JSO_i_2_c2] = &i_6phase.c2;
-	js_ch_observable[JSO_i_2_alpha] = &i_abxyz1z2.alpha;
-	js_ch_observable[JSO_i_2_beta] = &i_abxyz1z2.beta;
-	js_ch_observable[JSO_i_2_x] = &i_abxyz1z2.x;
-	js_ch_observable[JSO_i_2_y] = &i_abxyz1z2.y;
-	js_ch_observable[JSO_i_2_z1] = &i_abxyz1z2.z1;
-	js_ch_observable[JSO_i_2_z2] = &i_abxyz1z2.z2;
+	js_ch_observable[JSO_i_2_a1] = &(data->av.I_U_Filtered);
+	js_ch_observable[JSO_i_2_b1] = &(data->av.I_V_Filtered);
+	js_ch_observable[JSO_i_2_c1] = &(data->av.I_W_Filtered);
+	js_ch_observable[JSO_i_2_a2] = &(data->av.I_X_Filtered);
+	js_ch_observable[JSO_i_2_b2] = &(data->av.I_Y_Filtered);
+	js_ch_observable[JSO_i_2_c2] = &(data->av.I_Z_Filtered);
+	js_ch_observable[JSO_i_2_alpha] = &i_abxyz1z2_filtered.alpha;
+	js_ch_observable[JSO_i_2_beta] = &i_abxyz1z2_filtered.beta;
+	js_ch_observable[JSO_i_2_x] = &i_abxyz1z2_filtered.x;
+	js_ch_observable[JSO_i_2_y] = &i_abxyz1z2_filtered.y;
+	js_ch_observable[JSO_i_2_z1] = &i_abxyz1z2_filtered.z1;
+	js_ch_observable[JSO_i_2_z2] = &i_abxyz1z2_filtered.z2;
 
 	js_ch_observable[JSO_FD_a1] = &vsd_output[0];
 	js_ch_observable[JSO_FD_b1] = &vsd_output[1];
@@ -118,6 +132,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_FD_a2] = &vsd_output[3];
 	js_ch_observable[JSO_FD_b2] = &vsd_output[4];
 	js_ch_observable[JSO_FD_c2] = &vsd_output[5];
+	js_ch_observable[JSO_FD_Hyst_a1] = &vsd_output_hyst[0];
+	js_ch_observable[JSO_FD_Hyst_b1] = &vsd_output_hyst[1];
+	js_ch_observable[JSO_FD_Hyst_c1] = &vsd_output_hyst[2];
+	js_ch_observable[JSO_FD_Hyst_a2] = &vsd_output_hyst[3];
+	js_ch_observable[JSO_FD_Hyst_b2] = &vsd_output_hyst[4];
+	js_ch_observable[JSO_FD_Hyst_c2] = &vsd_output_hyst[5];
 	js_ch_observable[JSO_FD_Filtered_a1] = &vsd_output_filtered[0];
 	js_ch_observable[JSO_FD_Filtered_b1] = &vsd_output_filtered[1];
 	js_ch_observable[JSO_FD_Filtered_c1] = &vsd_output_filtered[2];
@@ -125,11 +145,26 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_FD_Filtered_b2] = &vsd_output_filtered[4];
 	js_ch_observable[JSO_FD_Filtered_c2] = &vsd_output_filtered[5];
 
-	js_ch_observable[JSO_Testvalue_1] = &filteredFDIndices[0];
-	js_ch_observable[JSO_Testvalue_2] = &filteredFDIndices[1];
-	js_ch_observable[JSO_Testvalue_3] = &filteredFDIndices[2];
-	js_ch_observable[JSO_Testvalue_4] = &filteredFDIndices[3];
-	js_ch_observable[JSO_Testvalue_5] = &testvalue;
+	js_ch_observable[JSO_FD_MOVAVG_a1] = &filteredFDIndices[0];
+	js_ch_observable[JSO_FD_MOVAVG_b1] = &filteredFDIndices[1];
+	js_ch_observable[JSO_FD_MOVAVG_c1] = &filteredFDIndices[2];
+	js_ch_observable[JSO_FD_MOVAVG_a2] = &filteredFDIndices[3];
+	js_ch_observable[JSO_FD_MOVAVG_b2] = &filteredFDIndices[4];
+	js_ch_observable[JSO_FD_MOVAVG_c2] = &filteredFDIndices[5];
+
+
+	js_ch_observable[JSO_Testvalue_1] = &Rb1[0];
+	js_ch_observable[JSO_Testvalue_2] = &Rb1[1];
+	js_ch_observable[JSO_Testvalue_3] = &Rb1[2];
+	js_ch_observable[JSO_Testvalue_4] = &Rb1[3];
+	js_ch_observable[JSO_Testvalue_5] = &Rb1[4];
+	js_ch_observable[JSO_Testvalue_6] = &Rb1_filtered[0];
+	js_ch_observable[JSO_Testvalue_7] = &Rb1_filtered[1];
+	js_ch_observable[JSO_Testvalue_8] = &Rb1_filtered[2];
+	js_ch_observable[JSO_Testvalue_9] = &Rb1_filtered[3];
+	js_ch_observable[JSO_Testvalue_10] = &Rb1_filtered[4];
+
+	js_ch_observable[JSO_SingleIndex_R] = &singleIndex_FD_R;
 
 
 
@@ -153,6 +188,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_GAN_Temp_D4_H1]			= &(data->objects.gan_inverter_outputs_D4.GaN_ChipTempDegreesCelsius_H1);
 	js_slowDataArray[JSSD_FLOAT_GAN_Temp_D4_H2]			= &(data->objects.gan_inverter_outputs_D4.GaN_ChipTempDegreesCelsius_H2);
 	js_slowDataArray[JSSD_FLOAT_GAN_Temp_D4_H3]			= &(data->objects.gan_inverter_outputs_D4.GaN_ChipTempDegreesCelsius_H3);
+	js_slowDataArray[JSSD_FLOAT_I_a1] = &(data->av.I_U_Filtered);
+	js_slowDataArray[JSSD_FLOAT_I_b1] = &(data->av.I_V_Filtered);
+	js_slowDataArray[JSSD_FLOAT_I_c1] = &(data->av.I_W_Filtered);
+	js_slowDataArray[JSSD_FLOAT_I_a2] = &(data->av.I_X_Filtered);
+	js_slowDataArray[JSSD_FLOAT_I_b2] = &(data->av.I_Y_Filtered);
+	js_slowDataArray[JSSD_FLOAT_I_c2] = &(data->av.I_Z_Filtered);
 
 	return Status;
 }

@@ -63,6 +63,12 @@ typedef struct _actualValues_ {
 	float I_X;		// Machine side current in A
 	float I_Y;		// Machine side current in A
 	float I_Z;		// Machine side current in A
+	float I_U_Filtered; 	// Machine side current in A
+	float I_V_Filtered; 	// Machine side current in A
+	float I_W_Filtered; 	// Machine side current in A
+	float I_X_Filtered;		// Machine side current in A
+	float I_Y_Filtered;		// Machine side current in A
+	float I_Z_Filtered;		// Machine side current in A
 	float U_U; 		// Machine side voltage in V
 	float U_V; 		// Machine side voltage in V
 	float U_W; 		// Machine side voltage in V
@@ -121,6 +127,19 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+
+	float ref_halfBridge1DutyCycle;
+	float ref_halfBridge2DutyCycle;
+	float ref_halfBridge3DutyCycle;
+	float ref_halfBridge4DutyCycle;
+	float ref_halfBridge5DutyCycle;
+	float ref_halfBridge6DutyCycle;
+	float ref_halfBridge7DutyCycle;
+	float ref_halfBridge8DutyCycle;
+	float ref_halfBridge9DutyCycle;
+	float ref_halfBridge10DutyCycle;
+	float ref_halfBridge11DutyCycle;
+	float ref_halfBridge12DutyCycle;
 } referenceAndSetValues;
 
 typedef struct{

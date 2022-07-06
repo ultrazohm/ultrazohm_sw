@@ -8,10 +8,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define BUFFERLENGTH_MOVAVERAGEFILTER 150
+
 typedef struct uz_movAverageFilter_t{
 	bool is_ready;
 	int bufferPointer;
-	float circularBuffer[100];
+	float circularBuffer[maxFilterLength];
 	int filterLength;
 }uz_movAverageFilter_t;
 
@@ -24,6 +26,7 @@ static uz_movAverageFilter_t* uz_movAverageFilter_allocation(void);
 static uz_movAverageFilter_t* uz_movAverageFilter_allocation(void){
  uz_assert(instance_movAverageFilter_counter < UZ_MOVAVERAGEFILTER_MAX_INSTANCES);
  uz_movAverageFilter_t* self = &instances_movAverageFilter[instance_movAverageFilter_counter];
+ instance_movAverageFilter_counter = instance_movAverageFilter_counter + 1;
  uz_assert_false(self->is_ready);
  self->is_ready = true;
  return (self);
@@ -32,6 +35,7 @@ static uz_movAverageFilter_t* uz_movAverageFilter_allocation(void){
 uz_movAverageFilter_t* uz_movAverageFilter_init(struct uz_movAverageFilter_config config){
 	uz_movAverageFilter_t* self = uz_movAverageFilter_allocation();
 	self->bufferPointer = 0;
+	uz_assert(config.filterLength <= maxFilterLength);
 	self->filterLength = config.filterLength;
     return(self);
 }
@@ -47,7 +51,7 @@ float uz_movAverageFilter_sample(uz_movAverageFilter_t* self, float sample){
 
 	//calculate filter output: sum of n samples in circular buffer, n = current length of the filter
 	for(int i = 0; i < self->filterLength; i++){
-		int index = (self->bufferPointer + i) % maxFilterLength;
+		int index = (self->bufferPointer - i + maxFilterLength) % maxFilterLength;
 		output = output + self->circularBuffer[index];
 	}
 
@@ -61,7 +65,7 @@ float uz_movAverageFilter_sample(uz_movAverageFilter_t* self, float sample){
 }
 
 
-void uz_uz_movAverageFilter_reset(uz_movAverageFilter_t* self){
+void uz_movAverageFilter_reset(uz_movAverageFilter_t* self){
 	uz_assert_not_NULL(self);
 	for(int i = 0; i < maxFilterLength; i++){
 		self->circularBuffer[i] = 0.0f;
@@ -70,11 +74,10 @@ void uz_uz_movAverageFilter_reset(uz_movAverageFilter_t* self){
 
 }
 
-void uz_uz_movAverageFilter_set_filterLength(uz_movAverageFilter_t* self, int new_filterLength){
+void uz_movAverageFilter_set_filterLength(uz_movAverageFilter_t* self, int new_filterLength){
 	uz_assert_not_NULL(self);
 	if(new_filterLength > maxFilterLength){
 		new_filterLength = maxFilterLength;
 	}
 	self->filterLength = new_filterLength;
-
 }

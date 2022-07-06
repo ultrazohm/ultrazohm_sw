@@ -1,8 +1,8 @@
 #ifndef UZ_MOVAVERAGE_H
 #define UZ_MOVAVERAGE_H
 
-#define UZ_MOVAVERAGEFILTER_MAX_INSTANCES 2
-#define maxFilterLength 100
+#define UZ_MOVAVERAGEFILTER_MAX_INSTANCES 7
+#define maxFilterLength 150
 
 
 
@@ -33,12 +33,12 @@ float uz_movAverageFilter_sample(uz_movAverageFilter_t* self, float sample);
 /*
  *
  */
-void uz_uz_movAverageFilter_reset(uz_movAverageFilter_t* self);
+void uz_movAverageFilter_reset(uz_movAverageFilter_t* self);
 
 /*
  *
  */
-void uz_uz_movAverageFilter_set_filterLength(uz_movAverageFilter_t* self, int new_filterLength);
+void uz_movAverageFilter_set_filterLength(uz_movAverageFilter_t* self, int new_filterLength);
 
 
 

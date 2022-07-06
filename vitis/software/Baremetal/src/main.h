@@ -57,8 +57,10 @@
 #include "Codegen/uz_vsd_opffd_asym6ph.h"
 #include "Codegen/uz_FD.h"
 #include "Codegen/uz_singleindex_faultdetection.h"
+#include "Codegen/uz_vsd_opf_fd_v7.h"
 
 #include "uz/uz_movAverageFilter/uz_movAverageFilter.h"
+#include "uz/uz_filter/uz_filter.h"
 
 #include "uz/uz_FOC/uz_FOC.h"
 

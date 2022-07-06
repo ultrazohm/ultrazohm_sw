@@ -19,6 +19,10 @@ Transformations for multiphase systems do exist as well.
 * :ref:`6ph_alphabeta_to_abc`
 * :ref:`9ph_abc_to_alphabeta`
 * :ref:`9ph_alphabeta_to_abc`
+* :ref:`9ph_alphabeta_to_dq`
+* :ref:`9ph_dq_to_alphabeta`
+* :ref:`9ph_abc_to_dq`
+* :ref:`9ph_dq_to_abc`
 
 Three phase systems
 ===================
@@ -264,6 +268,9 @@ structs for ninephase VSD transformation
 .. doxygenstruct:: uz_9ph_alphabeta_t
   :members:
 
+.. doxygenstruct:: uz_9ph_dq_t
+  :members:
+
 Naming of the subspaces according to [[#Zabaleta_diss]_].
 
 Functions for ninephase VSD systems transformation
@@ -276,7 +283,7 @@ Functions for ninephase VSD systems transformation
 
 .. doxygenfunction:: uz_transformation_9ph_abc_to_alphabeta
 
-The ninephase VSD transformation works like the following equations show:
+The amplitude invariant ninephase VSD transformation is defined by the following equations:
 
 .. math::
   
@@ -296,15 +303,15 @@ The ninephase VSD transformation works like the following equations show:
 
 .. math::
 
-  \begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{o_1} \\ X_{o_2} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{zero} \end{bmatrix} = 
+  \begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{x_3} \\ X_{y_3} \\ X_{zero} \end{bmatrix} = 
   \begin{bmatrix} C \end{bmatrix}\cdot\begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2} \\ X_{a_3} \\ X_{b_3} \\ X_{c_3} \end{bmatrix}
 
 Transformation matrix according to [[#Rockhill_gerneral]_][[#Rockhill_ninephase]_].
 
 .. _9ph_alphabeta_to_abc:
 
-9ph-alpha-beta-gamma to 9ph-abc transformation 
-----------------------------------------------------
+9ph-αβγ to 9ph-abc transformation 
+---------------------------------
 
 .. doxygenfunction:: uz_transformation_9ph_alphabeta_to_abc
 
@@ -313,55 +320,57 @@ The inverse transformation uses the inverse of the before shown matrix.
 .. math::
 
   \begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2} \\ X_{a_3} \\ X_{b_3} \\ X_{c_3} \end{bmatrix} = 
-  \begin{bmatrix} C \end{bmatrix}^{-1}\cdot\begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{o_1} \\ X_{o_2} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{zero} \end{bmatrix}
+  \begin{bmatrix} C \end{bmatrix}^{-1}\cdot\begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{x_1} \\ X_{y_1} \\ X_{x_2} \\ X_{y_2} \\ X_{x_3} \\ X_{y_3} \\ X_{zero} \end{bmatrix}
+
+.. _9ph_alphabeta_to_dq:
+
+9ph-αβγ to 9ph-dq transformation
+--------------------------------
+
+.. doxygenfunction:: uz_transformation_9ph_alphabeta_to_dq
+
+.. _9ph_dq_to_alphabeta:
+
+9ph-dq to 9ph-αβγ transformation
+--------------------------------
+
+.. doxygenfunction:: uz_transformation_9ph_dq_to_alphabeta
+
+.. _9ph_abc_to_dq:
+
+9ph-abc to 9ph-dq transformation
+--------------------------------
+
+.. doxygenfunction:: uz_transformation_9ph_abc_to_dq
+
+.. _9ph_dq_to_abc:
+
+9ph-dq to 9ph-abc transformation
+--------------------------------
+
+.. doxygenfunction:: uz_transformation_9ph_dq_to_abc
 
 Example usage of the ninephase transformation
 *********************************************
 
-The existing functions offer the possibility to convert ninephase asymmetrical systems into a stationary reference frame (αβ).
-Afterward, the Park transformation can be applied to transform them into the rotating reference frame.
-The inverse transformations are also available.
-To use the ninephase transformation, one must create a struct for the natural phase domain values.
-
 .. code-block:: c
-  :caption: Declarations
+  :caption: Application example
   
   // declare necessary structs and variables
   uz_9ph_abc_t natural_values = {0};             // holds the natural values
   uz_9ph_alphabeta_t stationary_values = {0};    // holds the stationary reference frame values
-  uz_3ph_alphabeta_t alphabeta = {0};            // used to give only alpha and beta to the Park transformation
-  uz_3ph_dq_t rotating_dq = {0};                 // holds the results of the Park transformation
-  float d_current = 0.0f;                        // example variable, used to process the dq values in the following code
-  float q_current = 0.0f;                        // example variable, used to process the dq values in the following code
+  uz_9ph_dq_t rotating_values = {0};             // holds the rotating reference frame and additional system stationary reference frame values
   float theta_el = 0.0f;                         // electric rotor angle
 
-  ...
+  // common usage
+  rotating_values = uz_transformation_9ph_abc_to_dq(natural_values, theta_el);
+  natural_values = uz_transformation_9ph_dq_to_abc(rotating_values, theta_el);
 
-  // assert example values
-  natural_values.a1 =  1.0f;                     // example value for phase a1, store your real values here
-  natural_values.b1 = -0.5f;
-  //...
-  natural_values.c3 = -0.5f;
-    
-The struct can then be given to the transformation function which will return a struct containing the transformed values in the stationary reference frame.
-
-.. code-block:: c
-  :caption: VSD transformation
-
+  // accessing intermediate values
   stationary_values = uz_transformation_9ph_abc_to_alphabeta(natural_values);
-
-As it is common to transform only the :math:`\alpha\beta` components to the rotating reference frame, those two must be written into the threephase ``uz_3ph_alphabeta_t`` struct and be given to the dq transformation function.
-As commonly known, the electrical angle is also necessary. 
-The dq and values can then be read from the struct. The inverse transformation follows the same principle.
-
-.. code-block:: c
-  :caption: Park transformation
-
-  alphabeta.alpha = stationary_values.alpha;
-  alphabeta.beta = stationary_values.beta;
-  rotating_dq = uz_ab_to_dq_transformation(alphabeta,theta_el);
-  d_current = rotating_dq.d;
-  q_current = rotating_dq.q;
+  rotating_values = uz_transformation_9ph_alphabeta_to_dq(stationary_values, theta_el);
+  stationary_values = uz_transformation_9ph_dq_to_alphabeta(rotating_values, theta_el);
+  natural_values = uz_transformation_9ph_alphabeta_to_abc(stationary_values);
 
 Adding transformations
 **********************
@@ -404,7 +413,7 @@ The creation of a transformation matrix with this method was presented in [[#Zor
 
   %% function printcode function declare: print c code for matrix to 2D array
   function printcode(matrix,phases)
-    fprintf('float vsd_mat[%d][%d] = \n{\n',phases,phases);
+    fprintf('float const vsd_mat[%d][%d] = \n{\n',phases,phases);
     for y = (0:(phases-1))
       fprintf('    { ');
       for x = (0:(phases-1))

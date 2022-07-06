@@ -92,7 +92,7 @@ In_P and In_N are fully differential signals, meaning they inverted signals with
 
 * For 0V input voltage, both In_P and In_N are 2.5V
 * For +1V input voltage, In_P is 3V and In_N is 2V
-* For -3V input voltage, In_P is 1V and In_N is 3V 
+* For -3V input voltage, In_P is 1V and In_N is 4V 
 
 .. figure:: LTC2311_16_v2/differential_signal.png
    :width: 500

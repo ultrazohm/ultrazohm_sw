@@ -45,8 +45,8 @@ extern uz_dq_alphabeta_123_IPcore_t* test_instance_dq_alphabeta_123;
 struct uz_3ph_alphabeta_t alphabeta_currents_dq_alphabeta_123 = {0};
 //struct uz_3ph_abc_t abc_currents_dq_alphabeta_123 = {0};
 struct uz_3ph_dq_t updated_values={
-		.d = 0,
-		.q = 0
+		.d = 0.0f,
+		.q = 0.0f
 };
 
 // For IP-Core trans_123_alphabeta_dq
@@ -115,11 +115,20 @@ static void ReadAllADC();
 
 void ISR_Control(void *data)
 {
+    uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+    ReadAllADC();
+    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
 	if (i==1){
-	// Measured currents
-	m_abc_currents.a = (Global_Data.aa.A2.me.ADC_B6);// +adc_offset)*adc_factor;
-	m_abc_currents.b = (Global_Data.aa.A2.me.ADC_B8);// +adc_offset)*adc_factor;
-	m_abc_currents.c = (Global_Data.aa.A2.me.ADC_B7);// +adc_offset)*adc_factor;
+		//select right offset and factors for ADC
+		m_abc_currents.a = (Global_Data.aa.A2.me.ADC_B6 +adc_offset)*adc_factor;
+		m_abc_currents.b = (Global_Data.aa.A2.me.ADC_B8 +adc_offset)*adc_factor;
+		m_abc_currents.c = (Global_Data.aa.A2.me.ADC_B7 +adc_offset)*adc_factor;
+	//write currents into Global_Data
+	Global_Data.av.I_U = m_abc_currents.a;
+	Global_Data.av.I_V = m_abc_currents.b;
+	Global_Data.av.I_W = m_abc_currents.c;
+
 
 	//crude over current protection
 	if((fabs(m_abc_currents.a) > 12.0f || fabs(m_abc_currents.b) > 12.0f || fabs(m_abc_currents.c) > 12.0f)&&(updated_values.d !=0 || updated_values.q !=0)) {
@@ -155,6 +164,8 @@ void ISR_Control(void *data)
 	i_alpha_123_alphabeta_dq=alphabeta_currents_123_alphabeta_dq.alpha;
 	i_beta_123_alphabeta_dq=alphabeta_currents_123_alphabeta_dq.beta;
 
+	// Read output id iq from IP-Core trans_123_alphabeta_dq
+
 	// Read output ialpha ibeta from IP-Core trans_dq_alphabeta_123
 	 alphabeta_currents_dq_alphabeta_123 = uz_dq_alphabeta_123_IPcore_get_ialpha_ibeta(test_instance_dq_alphabeta_123);
 	 Global_Data.av.i_alpha_IP_CORE=alphabeta_currents_dq_alphabeta_123.alpha;
@@ -171,12 +182,17 @@ void ISR_Control(void *data)
 	}
 
 
-    uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
-    ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
 if (i==0){
-    //select right offset and factors for ADC
+
+	// Read output ia ib ic from IP-Core trans_123_alphabeta_dq
+	abc_currents_123_alphabeta_dq=uz_123_alphabeta_dqIPcore_get_i_abc(test_instance_123_alphabeta_dq);
+
+	i_a_123_alphabeta_dq=abc_currents_123_alphabeta_dq.a;
+	i_b_123_alphabeta_dq=abc_currents_123_alphabeta_dq.b;
+	i_c_123_alphabeta_dq=abc_currents_123_alphabeta_dq.c;
+
+	//select right offset and factors for ADC
 	m_abc_currents.a = (Global_Data.aa.A2.me.ADC_B6 +adc_offset)*adc_factor;
 	m_abc_currents.b = (Global_Data.aa.A2.me.ADC_B8 +adc_offset)*adc_factor;
 	m_abc_currents.c = (Global_Data.aa.A2.me.ADC_B7 +adc_offset)*adc_factor;

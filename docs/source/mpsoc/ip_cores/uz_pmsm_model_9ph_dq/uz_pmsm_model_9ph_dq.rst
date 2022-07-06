@@ -1,22 +1,22 @@
 .. _uz_pmsm_model_9ph_dq:
 
-====================
-Ninephase PMSM Model
-====================
+=====================
+Nine-phase PMSM Model
+=====================
 Important: This IP-core is based on the :ref:`uz_pmsmModel` IP-core, where the basics (e.g. working principle of the integrations is explained).
 
-Differences to the threephase PMSM model IP-core:
+Differences to the three-phase PMSM model IP-core:
 
-- IP-Core of a ninephase PMSM model
+- IP-Core of a nine-phase PMSM model
 - Sample frequency of the integrator is :math:`T_s=\frac{1}{1\,MHz}`
 - IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
 - All calculations in the IP-Core are done in double precision
-- Interfaces to PL are realized in fixpoint, while interfaces to the PS use single precision float values
+- Interfaces to PL are realized in fixedpoint, while interfaces to the PS use single precision float values
 
 System description
 ==================
 
-The modelling of the ninephase maschine is based on [[#Slunjski_Diss]_].
+The modelling of the nine-phase machine is based on [[#Slunjski_Diss]_].
 The general idea in this work and also the common approach to model multiphase machines is to transform the phase variables with the VSD and Park transformations as shown and done in :ref:`uz_pmsm9ph_transformation` and :ref:`uz_transformation`.
 Transformed voltages are used as input for this IP-core and the outputs will also be in the rotary or stationary reference frame ant not phase variables.
 This IP-core contains the electric differential equations and the mechanical part where the torque is calculated.
@@ -42,10 +42,10 @@ Additional system equations
 .. math::
 
   \begin{align}
-    \psi_{xi}(k+1) &= T_s \big( v_{xi}(k) - R_{1} i_{xi}(k)); i=1,2,3\\
-    \psi_{xi}(k) &= L_{ls} i_{xi}(k) \\
-    \psi_{yi}(k+1) &= T_s \big( v_{yi}(k) - R_{1} i_{yi}(k)); i=1,2,3\\
-    \psi_{yi}(k) &= L_{ls} i_{yi}(k)\\
+    \psi_{x,i}(k+1) &= T_s \big( v_{x,i}(k) - R_{1} i_{x,i}(k)); i=1,2,3\\
+    \psi_{x,i}(k) &= L_{ls} i_{x,i}(k) \\
+    \psi_{y,i}(k+1) &= T_s \big( v_{y,i}(k) - R_{1} i_{y,i}(k)); i=1,2,3\\
+    \psi_{y,i}(k) &= L_{ls} i_{y,i}(k)\\
     \psi_{0}(k+1) &= T_s \big( v_{0}(k) - R_{1} i_{0}(k))\\
     \psi_{0}(k) &= L_{ls} i_{0}(k)
   \end{align}
@@ -58,10 +58,10 @@ Mechanical equations
   \begin{align}
     M_M &= \frac{9}{2}\cdot{p}\cdot{(\Psi_{PM}\cdot{i_q}+(L_d-L_q)\cdot{i_d}\cdot{i_q})}\\ 
     \theta_{el}(k+1) &= T_s \big(\omega_{mech}(k)\cdot{p})\\
-    \omega_{mech}(k+1) &=  T_s \big(\frac{M_M(k)-M_L(k)}{J})
+    \omega_{mech}(k+1) &=  T_s \bigg( \frac{M_M(k)-M_L(k)}{J} \bigg)
   \end{align}
 
-Note that the integrator for :math:`\theta_{el}` is limited to :math:`+/-\pi` to avoid overflow.
+Note that the integrator for :math:`\theta_{el}` is limited to :math:`\pm \pi` to avoid overflow (wrapping integrator).
 
 IP-core interfaces
 ==================
@@ -75,9 +75,8 @@ Driver reference
 ================
 
 The set and get functions for voltage and currents are implemented as normal and unsafe version.
-Citing from :ref:`uz_mlp_three_layer`:
-"In addition to the regular function to calculate a feedforward pass, *unsafe* versions of the driver exist (``_unsafe``).
-These functions are considerably faster than their safe counterparts (up to :math:`30~\mu s`) but violate the software rules outlined in :ref:`software_development_guidelines`.
+In addition to the regular functions, *unsafe* versions of the driver exist (``_unsafe``).
+These functions are considerably faster than their safe counterparts but violate the software rules outlined in :ref:`software_development_guidelines`.
 It is strongly advised to manually test by comparing the safe and unsafe versions before using *_unsafe*!""
 
 .. doxygentypedef:: uz_pmsm_model9ph_dq_t
@@ -121,7 +120,7 @@ Example usage
 
 The IP-core has two intended use cases:
 The model can be used in the dq domain only and the inputs are set from the PS.
-It is also possible to combine the model with the IP-cores :ref: "inverter", :ref:`uz_pmsm9ph_transformation` and :ref:`uz_pwm_ss_2l` to simulate a complete ninephase drive system.
+It is also possible to combine the model with the IP-cores :ref: "inverter", :ref:`uz_pmsm9ph_transformation` and :ref:`uz_pwm_ss_2l` to simulate a complete nine-phase drive system.
 
 Usage in PS only
 ****************
@@ -201,7 +200,7 @@ The following code is used in ``main.c`` (initialization) and ``isr.c`` (applica
     out_currents = uz_pmsm_model9ph_dq_get_output_currents(pmsm);   // read out actual currents
 
 To prove functionality, the output currents of the shown example are evaluated.
-The resulting machine torque is :math:`-0.01562337\,Nm` an the reulting currents are shown in the following equation.
+The resulting machine torque is :math:`-0.01562337\,Nm` an the resulting currents are shown in the following equation.
 The results were recreated with the Simulink model.
 
 .. math::
@@ -213,8 +212,8 @@ The results were recreated with the Simulink model.
   \end{align}
 
 
-Ninephase drive system in PL (HIL)
-**********************************
+Nine-phase drive system in PL (HIL)
+***********************************
 
 Describe HIL model here as soon as all necessary IP-cores are merged.
 

@@ -120,7 +120,7 @@ Example usage
 
 The IP-core has two intended use cases:
 The model can be used in the dq domain only and the inputs are set from the PS.
-It is also possible to combine the model with the IP-cores :ref: "inverter", :ref:`uz_pmsm9ph_transformation` and :ref:`uz_pwm_ss_2l` to simulate a complete nine-phase drive system.
+It is also possible to combine the model with the IP-cores :ref:`inverter`, :ref:`uz_pmsm9ph_transformation` and :ref:`uz_pwm_ss_2l` to simulate a complete nine-phase drive system.
 
 Usage in PS only
 ****************

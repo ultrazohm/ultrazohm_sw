@@ -206,11 +206,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_5):
-			uz_PI_Controller_set_Kp(data->objects.PI_cntr1, value);
+			uz_PI_Controller_set_Kp(data->objects.PI_cntr1_on, value);
 			break;
 
 		case (Set_Send_Field_6):
-			uz_PI_Controller_set_Ki(data->objects.PI_cntr1, value);
+			uz_PI_Controller_set_Ki(data->objects.PI_cntr1_off, value);
 			break;
 
 		case (My_Button_1):

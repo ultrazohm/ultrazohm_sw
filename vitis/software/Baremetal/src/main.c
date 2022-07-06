@@ -52,29 +52,31 @@ float CurrentOn_Reference_A = 10.0f;
 struct uz_IIR_Filter_config iir_config_dc_volts = {
 		.selection = LowPass_first_order,
 		.cutoff_frequency_Hz = 1.0f,
-		.sample_frequency_Hz = 10000.0f};
+		.sample_frequency_Hz = SAMPLE_FREQUENCY};
 
 struct uz_IIR_Filter_config iir_config_currents = {
 		.selection = LowPass_first_order,
 		.cutoff_frequency_Hz = 500.0f,
-		.sample_frequency_Hz = 10000.0f};
+		.sample_frequency_Hz = SAMPLE_FREQUENCY};
 
 struct uz_IIR_Filter_config iir_config_rpm_ref = {
 		.selection = LowPass_first_order,
 		.cutoff_frequency_Hz = 10.0f,
-		.sample_frequency_Hz = 10000.0f};
-const struct uz_PI_Controller_config config_PI1 = {
+		.sample_frequency_Hz = SAMPLE_FREQUENCY};
+
+// Active for both coils in series for rising current edge
+const struct uz_PI_Controller_config config_PI1_on = {
    .Kp = 1.0f,
    .Ki = 0.0f,
-   .samplingTime_sec = 0.0001f,
+   .samplingTime_sec = 1.0f/SAMPLE_FREQUENCY,
    .upper_limit = 10.0f,
    .lower_limit = -10.0f
 };
-// Not used
-const struct uz_PI_Controller_config config_PI2 = {
+// Active for both coils in series for falling current edge
+const struct uz_PI_Controller_config config_PI1_off = {
    .Kp = 1.0f,
    .Ki = 0.0f,
-   .samplingTime_sec = 0.0001f,
+   .samplingTime_sec = 1.0f/SAMPLE_FREQUENCY,
    .upper_limit = 10.0f,
    .lower_limit = -10.0f
 };
@@ -115,14 +117,11 @@ int main(void)
             Global_Data.objects.iir_i_a1 = uz_signals_IIR_Filter_init(iir_config_currents);
             Global_Data.objects.iir_i_b1 = uz_signals_IIR_Filter_init(iir_config_currents);
             Global_Data.objects.iir_i_c1 = uz_signals_IIR_Filter_init(iir_config_currents);
-            Global_Data.objects.iir_i_a2 = uz_signals_IIR_Filter_init(iir_config_currents);
-            Global_Data.objects.iir_i_b2 = uz_signals_IIR_Filter_init(iir_config_currents);
-            Global_Data.objects.iir_i_c2 = uz_signals_IIR_Filter_init(iir_config_currents);
             Global_Data.objects.iir_rpm_ref = uz_signals_IIR_Filter_init(iir_config_rpm_ref);
             Global_Data.av.theta_offset = 0.0f;
             Global_Data.av.polepairs = 1.0f;
-            Global_Data.objects.PI_cntr1 = uz_PI_Controller_init(config_PI1);
-            Global_Data.objects.PI_cntr2 = uz_PI_Controller_init(config_PI2);
+            Global_Data.objects.PI_cntr1_on = uz_PI_Controller_init(config_PI1_on);
+            Global_Data.objects.PI_cntr1_off = uz_PI_Controller_init(config_PI1_off);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

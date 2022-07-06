@@ -55,48 +55,19 @@ float cnt_reset_float=0.0f;
 float theta_mech_calc_from_resolver = 0.0f;
 float theta_m_max = 0.0f;
 float theta_m_min = 0.0f;
-float i_ref = 0.0f;
-float voltage_ref1 = 0.0f;
-float voltage_ref2 = 0.0f;
+
+float i_ref = 0.0f;					// local variable of reference value
+struct uz_3ph_abc_t ref_voltage = {0};
 float theta_m_deg = 0.0f;
+struct uz_DutyCycle_t output = {0};
+int flg_PI_on_active = 0U;			// local variable for activation of rising/falling current control
 
+#define PHASE_CURRENT_CONV	37.735f
+#define DC_VOLT_CONV		250.0f
+#define DC_VOLT_OFF			250.0f
+#define MAX_CURRENT_ASSERTION 10.0f
+#define MAX_SPEED_ASSERTION	  100.0f
 
-/*
-uz_6ph_abc_t six_ph_currents = {0.0f};
-uz_6ph_alphabeta_t six_ph_alphabeta = {0.0f};
-uz_3ph_alphabeta_t three_ph_alphabeta = {0.0f};
-uz_3ph_dq_t rotating_dq = {0};
-
-uz_3ph_dq_t i_dq_ref = {0.0f};
-uz_3ph_dq_t i_dq_actual = {0.0f};
-uz_3ph_dq_t u_dq_ref = {0.0f};
-uz_3ph_alphabeta_t alphabeta_ref_volts = {0.0f};
-uz_6ph_alphabeta_t vsd_ref_volts = {0.0f};
-uz_6ph_abc_t phase_ref_volts = {0.0f};
-
-uz_3ph_abc_t input1 = {0.0f};
-uz_3ph_abc_t input2 = {0.0f};
-*/
-struct uz_DutyCycle_t output1 = {0};
-uz_3ph_abc_t input1 = {0.0f};
-//struct uz_DutyCycle_t output2 = {0};
-
-//uz_3ph_dq_t speed_ctrl_ref_currents = {0.0f};
-
-#define PHASE_CURRENT_CONV	37.735
-#define DC_VOLT_CONV		250
-#define DC_VOLT_OFF			250
-#define MAX_CURRENT_ASSERTION 10.0
-/*
-const struct uz_PMSM_t config_PMSM1 = {
-	.R_ph_Ohm = 0.2f,
-   .Ld_Henry = 0.0001f,
-   .Lq_Henry = 0.0001f,
-   .Psi_PM_Vs = 0.008f,
-   .polePairs = 5.0f,
-   .I_max_Ampere = 10.0f
- };//these parameters are only needed if linear decoupling is selected
-*/
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -111,97 +82,78 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_position_and_speed_of_resolverIP(&Global_Data);
-    //update_position_of_resolverIP(&Global_Data);
-    //update_speed_of_resolverIP(&Global_Data);
-    //readRegister_of_resolverIP(&Global_Data);
 
     // convert ADC readings to currents in Amps
+    // Connect coil with phase a1 and b1
     Global_Data.av.i_a1 = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
     Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_CURRENT_CONV;
     Global_Data.av.i_c1 = -1.0f * Global_Data.aa.A1.me.ADC_B6 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_a2 = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_b2 = Global_Data.aa.A2.me.ADC_B7 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_c2 = -1.0f * Global_Data.aa.A2.me.ADC_B6 * PHASE_CURRENT_CONV;
     // convert ADC readings to dc link voltages
     Global_Data.av.U_ZK = -1.0f * Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV - DC_VOLT_OFF;
-    Global_Data.av.U_ZK2 = -1.0f * Global_Data.aa.A2.me.ADC_B8 * DC_VOLT_CONV - DC_VOLT_OFF;
 
     // filter values
     Global_Data.av.i_a1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_a1, Global_Data.av.i_a1);
     Global_Data.av.i_b1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_b1, Global_Data.av.i_b1);
     Global_Data.av.i_c1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c1, Global_Data.av.i_c1);
-    Global_Data.av.i_a2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_a2, Global_Data.av.i_a2);
-    Global_Data.av.i_b2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_b2, Global_Data.av.i_b2);
-    Global_Data.av.i_c2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c2, Global_Data.av.i_c2);
     Global_Data.av.U_ZK_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_dc, Global_Data.av.U_ZK);
-    Global_Data.av.rpm_ref_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_rpm_ref, Global_Data.av.rpm_ref);
+
+	if(fabs(Global_Data.av.i_a1_filt) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.i_b1_filt) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.i_c1_filt) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.mechanicalRotorSpeed) > MAX_SPEED_ASSERTION) {
+    	// Assertion
+    	output.DutyCycle_U=0.0f;
+    	output.DutyCycle_V=0.0f;
+    	output.DutyCycle_W=0.0f;
+    	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
+    	ultrazohm_state_machine_set_stop(true);
+	}
+
     // theta offset and scaling to el. angle
     Global_Data.av.theta_m_offset_comp = theta_mech_calc_from_resolver - Global_Data.av.theta_offset;
     Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp * Global_Data.av.polepairs;
-/*
-    // transform phase currents
-    six_ph_currents.a1 = Global_Data.av.i_a1_filt;
-    six_ph_currents.b1 = Global_Data.av.i_b1_filt;
-    six_ph_currents.c1 = Global_Data.av.i_c1_filt;
-    six_ph_currents.a2 = Global_Data.av.i_a2_filt;
-    six_ph_currents.b2 = Global_Data.av.i_b2_filt;
-    six_ph_currents.c2 = Global_Data.av.i_c2_filt;
-    six_ph_alphabeta = uz_transformation_asym30deg_6ph_abc_to_alphabeta(six_ph_currents);
 
-
-    three_ph_alphabeta.alpha = six_ph_alphabeta.alpha;
-    three_ph_alphabeta.beta = six_ph_alphabeta.beta;
-    Global_Data.av.i_alpha = three_ph_alphabeta.alpha;
-    Global_Data.av.i_beta = three_ph_alphabeta.beta;
-    rotating_dq = uz_transformation_3ph_alphabeta_to_dq(three_ph_alphabeta, Global_Data.av.theta_elec);
-    Global_Data.av.i_d = rotating_dq.d;
-    Global_Data.av.i_q = rotating_dq.q;
-
-    i_dq_actual.d = Global_Data.av.i_d;
-    i_dq_actual.q = Global_Data.av.i_q;
-
-	i_dq_ref.d = Global_Data.av.i_d_ref;
-	i_dq_ref.q = Global_Data.av.i_q_ref;
-
-	if(fabs(six_ph_currents.a1) > 10.0f || fabs(six_ph_currents.b1) > 10.0f || fabs(six_ph_currents.c1) > 10.0f ||
-	   fabs(six_ph_currents.a2) > 10.0f || fabs(six_ph_currents.b2) > 10.0f || fabs(six_ph_currents.c2) > 10.0f) {
-		uz_assert(0);
-	}
-*/
 
     // Set Current reference value
     theta_m_deg = Global_Data.av.theta_m_offset_comp * 180.0f/M_PI;
     if((theta_m_deg >= CurrentOn_Angle_deg && theta_m_deg <= CurrentOff_Angle_deg) || (theta_m_deg >= (CurrentOn_Angle_deg + 180.0f) && theta_m_deg <= (CurrentOff_Angle_deg + 180.0f))){
     	i_ref = CurrentOn_Reference_A;
+    	flg_PI_on_active = 1U;
+    	// Reset unused controller
+    	uz_PI_Controller_reset(Global_Data.objects.PI_cntr1_off);
     } else{
     	i_ref = 0.0f;
+    	flg_PI_on_active = 0U;
+    	// Reset unused controller
+    	uz_PI_Controller_reset(Global_Data.objects.PI_cntr1_on);
     }
-
-	if(fabs(Global_Data.av.i_a1_filt) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.i_b1_filt) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.i_c1_filt) > MAX_CURRENT_ASSERTION ||
-	   fabs(Global_Data.av.i_a2_filt) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.i_b2_filt) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.i_c2_filt) > MAX_CURRENT_ASSERTION) {
-		uz_assert(0);
-	}
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     	// One controller used for both coils in series
-    	voltage_ref1 = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1, i_ref, Global_Data.av.i_a1, false);
+    	if (flg_PI_on_active = 1U){
+    		ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_on, i_ref, Global_Data.av.i_a1, false);
+    	} else{
+    		ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_off, i_ref, Global_Data.av.i_a1, false);
+    	}
+    	ref_voltage.b = 0.0f;
+    	ref_voltage.c = 0.0f;
 
-    	input1.a = voltage_ref1;
-    	input1.b = 0.0f;
-    	input1.c = 0.0f;
+    	output = uz_FOC_generate_DutyCycles(ref_voltage, Global_Data.av.U_ZK_filt);
 
-    	output1 = uz_FOC_generate_DutyCycles(input1, Global_Data.av.U_ZK_filt);
-
-    	Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_U;
-    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge1DutyCycle = output.DutyCycle_U;
+    	Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_V;
     	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
 
+    } else{
+    	output.DutyCycle_U=0.0f;
+    	output.DutyCycle_V=0.0f;
+    	output.DutyCycle_W=0.0f;
+    	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
+    	uz_PI_Controller_reset(Global_Data.objects.PI_cntr1_on);
+    	uz_PI_Controller_reset(Global_Data.objects.PI_cntr1_off);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

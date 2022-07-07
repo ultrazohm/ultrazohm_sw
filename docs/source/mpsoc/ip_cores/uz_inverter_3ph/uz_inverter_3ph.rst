@@ -75,79 +75,62 @@ Example Usage
 The inverter IP-core can be used in several different ways because the inputs and outputs can be accessed from PS or PL individually.
 For this example only the access via PS is shown.
 Using the IP-core in PL mainly demands the usage of other IP-cores to provide the inputs and utilize the outputs which is shown in :ref:`uz_pmsm_model_9ph_dq`.
+To use the IP-core with the PS only, the PL inputs do not need to be connected, although the ``u_abc_pl`` in the figure below is connected to an ILA in the greyed area.
+This is not necessary and only done for verification purposes.
 
-.. figure:: open_loop_ps.jpg
+.. figure:: ps_example.jpg
 
    Placement of the IP-core in Vivado for PS only access
-
 
 The following code is used in ``main.c`` (initialization) and ``isr.c`` (application):
 
 .. code-block:: c
   :caption: initialization in ``main.c`` (R5)
 
-  #include "IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
-  uz_pmsm_model9ph_dq_t *pmsm=NULL;
-  struct uz_pmsm_model9ph_dq_config_t pmsm_config = {   // example config values
-    .base_address=XPAR_UZ_PMSM_MODEL_0_BASEADDR,
+  #include "IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
+  uz_inverter_3ph_t *inverter=NULL;
+  struct uz_inverter_3ph_config_t inverter_config = {   // example config values
+    .base_address=BASADDR,
     .ip_core_frequency_Hz = 100000000.0f,
-    .polepairs = 3.0f,
-    .r_1 = 31.3f,
-    .inductance.d = 0.46f,
-    .inductance.q = 0.46f,
-    .inductance.x1 = 0.08f,
-    .inductance.y1 = 0.08f,
-    .inductance.x2 = 0.08f,
-    .inductance.y2 = 0.08f,
-    .inductance.x3 = 0.08f,
-    .inductance.y3 = 0.08f,
-    .inductance.zero = 0.08f,
-    .psi_pm = 0.072f,
-    .friction_coefficient = 0.001f,
-    .coulomb_friction_constant = 0.001f,
-    .inertia = 0.001f,
-    .simulate_mechanical_system = false,
-    .switch_pspl = true};
+    .switch_pspl_abc = true,
+    .switch_pspl_gate = true,
+    .udc = 560.f};
 
   // .. rest of the code in main.c before loop
   int main(void)
   // ..
     case init_ip_cores: // default line from main.c
-      pmsm = uz_pmsm_model9ph_dq_init(pmsm_config);
+    inverter = uz_inverter_3ph_init(inverter_config);
 
 .. code-block:: c
   :caption: usage in ``isr.c``
 
-  #include "../IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
-  extern uz_pmsm_model9ph_dq_t *pmsm;                               // pointer to PMSM object
-  struct uz_pmsm_model9ph_dq_outputs_general_t out_general = {0};   // stores general outputs
-  uz_9ph_dq_t in_voltages = {                                       // stores input voltages (set random voltages for testing)
-		.d = 1.0f,
-		.q = 2.0f,
-		.x1 = 3.0f,
-		.y1 = 4.0f,
-		.x2 = 5.0f,
-		.y2 = 6.0f,
-		.x3 = 7.0f,
-		.y3 = 8.0f,
-		.zero = 9.0f};                                   
-  uz_9ph_dq_t out_currents = {0};                                   // stores output currents
-  float omega_mech = 10.0f;                                         // fixed speed can be set from Expressions with this variable
-  int reset = 0;                                                    // use reset variable to reset integrators from Expressions 
+  #include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
+  extern uz_inverter_3ph_t *inverter;                              // pointer to Inverter object
+  uz_3ph_abc_t out_voltages = {0};                                 // stores output voltages
+  uz_3ph_abc_t in_currents = {                                     // stores flowing currents (made up values for this example)
+    .a = 10,
+    .b = 10,
+    .c = 10};
+  struct uz_inverter_3ph_gate_ps_t gate_signals = {
+    .gate1 = true,
+    .gate2 = false,
+    .gate3 = false,
+    .gate4 = true,
+    .gate5 = false,
+    .gate6 = true};
 
   // .. rest of the code in isr.c before loop
   void ISR_Control(void *data)
   // ..
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);       // default line from isr.c
+    update_speed_and_position_of_encoder_on_D5(&Global_Data);      // default line from isr.c
 
-    if(reset)
-      uz_pmsm_model9ph_dq_reset(pmsm);                              // use reset variable to reset integrators from Expressions   
-
-    uz_pmsm_model9ph_dq_set_inputs_general(pmsm,omega_mech,0.0f);   // set fixed speed, because load simulation is disabled by pmsm_config.simulate_mechanical_system
-    uz_pmsm_model9ph_dq_set_voltage(pmsm,in_voltages);              // set input voltage
-    out_general = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);    // read out resulting general outputs
-    out_currents = uz_pmsm_model9ph_dq_get_output_currents(pmsm);   // read out actual currents
-
+    uz_inverter_3ph_set_gate_ps(inverter,gate_signals);            // set example gate values
+    uz_inverter_3ph_set_i_abc_ps(inverter,in_currents);            // set example currents
+    uz_inverter_3ph_trigger_gate_ps_strobe(inverter);              // write values to PL
+    uz_inverter_3ph_trigger_i_abc_ps_strobe(inverter);             // write values to PL
+    uz_inverter_3ph_trigger_u_abc_ps_strobe(inverter);             // read values from PL
+    out_voltages = uz_inverter_3ph_get_u_abc_ps(inverter);         // read output values to voltages struct
 
 Reference
 =========

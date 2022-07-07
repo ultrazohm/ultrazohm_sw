@@ -90,7 +90,7 @@ The following code is used in ``main.c`` (initialization) and ``isr.c`` (applica
   #include "IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
   uz_inverter_3ph_t *inverter=NULL;
   struct uz_inverter_3ph_config_t inverter_config = {   // example config values
-    .base_address=BASADDR,
+    .base_address=XPAR_UZ_USER_UZ_INVERTER_3PH_0_BASEADDR,
     .ip_core_frequency_Hz = 100000000.0f,
     .switch_pspl_abc = true,
     .switch_pspl_gate = true,
@@ -131,6 +131,17 @@ The following code is used in ``main.c`` (initialization) and ``isr.c`` (applica
     uz_inverter_3ph_trigger_i_abc_ps_strobe(inverter);             // write values to PL
     uz_inverter_3ph_trigger_u_abc_ps_strobe(inverter);             // read values from PL
     out_voltages = uz_inverter_3ph_get_u_abc_ps(inverter);         // read output values to voltages struct
+
+The values of the variable ``out_voltages`` from the example is shown below and matches the Simulink model.
+
+.. math::
+
+  \begin{align}
+    out-voltages = 
+    \begin{bmatrix} u_{ab} \\ u_{bc} \\ u_{ca} \end{bmatrix} = 
+    \begin{bmatrix} 559.9999 \\ -0.3000183 \\ -559.6998 \end{bmatrix}
+  \end{align}
+
 
 Reference
 =========

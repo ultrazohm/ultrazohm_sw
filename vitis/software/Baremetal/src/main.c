@@ -20,7 +20,7 @@
 // defines for nn
 #define DQN__CONTROL_FREQUENCY 400
 #define NUMBER_OF_INPUTS 5
-#define NUMBER_OF_OUTPUTS 3
+#define NUMBER_OF_OUTPUTS 5
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 128
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 128
@@ -226,7 +226,6 @@ int main(void)
                 dqn_mutex=true;
                 dqn_mutex_float=1.0f;
             }
-
             break;
         default:
             break;
@@ -234,7 +233,6 @@ int main(void)
     }
     return (status);
 }
-
 
 static void dqn_step(void)
 {

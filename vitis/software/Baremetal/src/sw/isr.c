@@ -54,7 +54,7 @@ float Ki_iq = 1500.0f;
 float speed_Kp = 0.0207f; // 0.0207f
 float speed_Ki = 0.207f;
 float adc_scaling = 9.5f/2.0f; // Refactoring actual ADC Values 19.05: durch 2, Ohmrichter umgelötet
-
+float action_current = 3.5f; // I_q für Agenten
 // speed control
 bool ext_clamping = false;
 
@@ -74,6 +74,8 @@ float old_position=0.0f;
 float angle_derv=0.0f;
 float position_derv=0.0f;
 uint32_t action=0;
+
+
 
 // ip core reset
 extern float offset_theta_pendulum;
@@ -141,7 +143,6 @@ void ISR_Control(void *data)
         Global_Data.obs.dqn_chart_position_derv_raw= position_derv;
     	Global_Data.obs.dqn_chart_position_derv = uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_instance_position, position_derv);
     }
-
     old_position=Global_Data.obs.dqn_chart_position;
     Global_Data.obs.dqn_angle = Global_Data.av.theta_pendulum- M_PI;
     Global_Data.obs.dqn_sin_angle=sin(Global_Data.obs.dqn_angle);
@@ -176,18 +177,22 @@ void ISR_Control(void *data)
 		            dqn_mutex = false;
 		            action = uz_matrix_get_max_index(output_nn);
 		            switch (action){
-		            case 0: Global_Data.rasv.dq_reference_current.q =4.5f;
+		            case 0: Global_Data.rasv.dq_reference_current.q =action_current;
 		            break;
-		            case 1:	Global_Data.rasv.dq_reference_current.q=0.0f;
+		            case 1:	Global_Data.rasv.dq_reference_current.q=action_current/2.0f;
 		            break;
-		            case 2: Global_Data.rasv.dq_reference_current.q=-4.5f;
+		            case 2: Global_Data.rasv.dq_reference_current.q=0.0f;
+		            break;
+		            case 3:	Global_Data.rasv.dq_reference_current.q=-action_current/2.0f;
+		            break;
+		            case 4: Global_Data.rasv.dq_reference_current.q=-action_current;
 		            break;
 		            default: uz_assert(0);
 		            }
 		        }
-		        Global_Data.av.trigger_logging = 0.0f;
 				break;
 			case limit_violation:
+				Global_Data.av.trigger_logging = 0.0f;
 				Global_Data.rasv.dq_reference_current.q=0.0f;
 				chain=return_to_zero_position;
 				break;
@@ -199,9 +204,9 @@ void ISR_Control(void *data)
 				}
 				break;
 			case reset_angle:
-				counter_for_reset++;
-				if (counter_for_reset>5){
-					if (counter_timeout < 200000)
+//				counter_for_reset++;
+//				if (counter_for_reset>3){
+					if (counter_timeout < 300000)
 					{
 						counter_timeout++;
 					}
@@ -211,10 +216,10 @@ void ISR_Control(void *data)
 						counter_for_reset = 0;
 						chain=dqn_active;
 					}
-				}
-				else{
-					chain = dqn_active;
-				}
+//				}
+//				else{
+//					chain = dqn_active;
+//				}
 				break;
 			default:
 				break;
@@ -399,3 +404,4 @@ static void ReadAllADC()
 {
     ADC_readCardALL(&Global_Data);
 };
+

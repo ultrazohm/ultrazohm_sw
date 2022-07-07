@@ -25,16 +25,16 @@ struct uz_inverter_3ph_config_t
 };
 
 /**
- * @brief Struct to be used to pass gate signals to the inverter Model
+ * @brief Struct to pass gate signals to the inverter Model
  * 
  */
 struct uz_inverter_3ph_gate_ps_t{
-    float gate1; /**< Gate 1 signal for inverter circuit */
-    float gate2; /**< Gate 2 signal for inverter circuit */
-    float gate3; /**< Gate 3 signal for inverter circuit */
-    float gate4; /**< Gate 4 signal for inverter circuit */
-    float gate5; /**< Gate 5 signal for inverter circuit */
-    float gate6; /**< Gate 6 signal for inverter circuit */
+    float gate1; /**< Gate 1 signal: HB1T */
+    float gate2; /**< Gate 2 signal: HB1B */
+    float gate3; /**< Gate 3 signal: HB2T */
+    float gate4; /**< Gate 4 signal: HB2B */
+    float gate5; /**< Gate 5 signal: HB3T */
+    float gate6; /**< Gate 6 signal: HB3B */
 };
 
 /**
@@ -49,7 +49,7 @@ uz_inverter_3ph_t *uz_inverter_3ph_init(struct uz_inverter_3ph_config_t config);
  * @brief Returns outputs 
  * 
  * @param self Pointer to driver instance
- * @return uz_inverter_3ph_Uabc_t Output values
+ * @return get output voltages as line-to-line in the struct uz_3ph_abc_t
  */
 uz_3ph_abc_t uz_inverter_3ph_get_u_abc_ps(uz_inverter_3ph_t *self);
 
@@ -57,17 +57,17 @@ uz_3ph_abc_t uz_inverter_3ph_get_u_abc_ps(uz_inverter_3ph_t *self);
  * @brief Set inputs of the model and write them to the Inverter model IP-Core
  * 
  * @param self Pointer to driver instance
- * @param Iabc Inputs to be written to IP-Core
+ * @param i_abc set flowing currents if switch_pspl_abc is true
  */
-void uz_inverter_3ph_set_i_abc_ps(uz_inverter_3ph_t *self, uz_3ph_abc_t Iabc);
+void uz_inverter_3ph_set_i_abc_ps(uz_inverter_3ph_t *self, uz_3ph_abc_t i_abc);
 
 /**
  * @brief Set inputs of the model and write them to the Inverter model IP-Core
  * 
  * @param self Pointer to driver instance
- * @param G Inputs to be written to IP-Core
+ * @param gate_signal set gate signals if switch_pspl_gate is true
  */
-void uz_inverter_3ph_set_gate_ps(uz_inverter_3ph_t *self,struct uz_inverter_3ph_gate_ps_t G);
+void uz_inverter_3ph_set_gate_ps(uz_inverter_3ph_t *self,struct uz_inverter_3ph_gate_ps_t gate_signal);
 
 /**
  * @brief Takes the values of the AXI shadow register and pass them to the actual output.

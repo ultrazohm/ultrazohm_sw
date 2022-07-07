@@ -40,7 +40,7 @@ IP-Core Interfaces
 
 .. csv-table:: IP-core Interfaces Switch
    :file: ./inverter_interfaces.csv
-   :widths: 50 50 50 50
+   :widths: 50 40 60 50 60 210
    :header-rows: 1
 
 

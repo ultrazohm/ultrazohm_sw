@@ -10,6 +10,7 @@ hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'SynthesisTool', 'Xilinx Vivado'
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'SynthesisToolChipFamily', 'Zynq UltraScale+');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'SynthesisToolDeviceName', 'xazu11eg-ffvf1517-1-i');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'TargetDirectory', 'hdl_prj/hdlsrc');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'TargetFrequency', 100);
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'TargetPlatform', 'Generic Xilinx Platform');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'Workflow', 'IP Core Generation');
 

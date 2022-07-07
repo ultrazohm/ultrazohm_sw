@@ -1,12 +1,12 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.10 (R2021b) at 14:22:40 on 10/03/2022
+% Generated with MATLAB 9.11 (R2021b) at 13:38:30 on 07/07/2022
 % This script was generated using the following parameter values:
-%     Filename  : '/ultrazohm_sw/ip_cores/uz_inverter_3ph/hdlworkflow.m'
+%     Filename  : 'C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_inverter_3ph\hdlworkflow.m'
 %     Overwrite : true
 %     Comments  : true
 %     Headers   : true
-%     DUT       : 'uz_inverter_3ph/uz_inverter_3ph'
+%     DUT       : 'gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph'
 % To view changes after modifying the workflow, run the following command:
 % >> hWC.export('DUT','gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph');
 %--------------------------------------------------------------------------
@@ -15,54 +15,74 @@
 load_system('gmStateSpaceHDL_uz_inverter_3ph');
 
 %% Restore the Model to default HDL parameters
-%%hdlrestoreparams('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph');
+%hdlrestoreparams('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph');
 
 %% Model HDL Parameters
-%% Set Model 'uz_pmsm_model' HDL parameters
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'CriticalPathEstimation', 'on');
+%% Set Model 'gmStateSpaceHDL_uz_inverter_3ph' HDL parameters
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'FPToleranceValue', 1.000000e-03);
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'FloatingPointTargetConfiguration', hdlcoder.createFloatingPointTargetConfig('NativeFloatingPoint' ...
-, 'LatencyStrategy', 'MIN',  'HandleDenormals', 'on') ...
+, 'LatencyStrategy', 'Min') ...
 );
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'GenerateValidationModel', 'on');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'HDLSubsystem', 'gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph');
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'HierarchicalDistPipelining', 'on');
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'LUTMapToRAM', 'off');
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'OptimizationReport', 'on');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'MaskParameterAsGeneric', 'on');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'Oversampling', 50);
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'ResetType', 'Synchronous');
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'ResourceReport', 'on');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'ScalarizePorts', 'DUTLevel');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'SynthesisTool', 'Xilinx Vivado');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'SynthesisToolChipFamily', 'Zynq UltraScale+');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'SynthesisToolDeviceName', 'xazu11eg-ffvf1517-1-i');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'SynthesisToolPackageName', '');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'SynthesisToolSpeedValue', '');
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'TargetDirectory', 'hdl_prj/hdlsrc');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'TargetDirectory', 'C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_inverter_3ph\hdl_prj\hdlsrc');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'TargetFrequency', 100);
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'TargetPlatform', 'Generic Xilinx Platform');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'Workflow', 'IP Core Generation');
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'MaskParameterAsGeneric', 'on');
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'FPToleranceValue', 1.000000e-03);
-
 
 % Set SubSystem HDL parameters
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph', 'AXI4SlaveIDWidth', '12');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph', 'IPCoreName', 'uz_inverter_3ph');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph', 'ProcessorFPGASynchronization', 'Free running');
 
-% Set Inport HDL parameters Gate Signals 6
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/gate_ps', 'IOInterface', 'AXI4');
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/gate_ps', 'IOInterfaceMapping', 'x"160"');
+% Set Inport HDL parameters
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/switch_pspl_abc', 'IOInterface', 'AXI4');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/switch_pspl_abc', 'IOInterfaceMapping', 'x"100"');
 
-% Set Inport HDL parameters Iabc 3
+% Set Inport HDL parameters
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/switch_pspl_gate', 'IOInterface', 'AXI4');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/switch_pspl_gate', 'IOInterfaceMapping', 'x"104"');
+
+% Set Inport HDL parameters
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/i_abc_ps', 'IOInterface', 'AXI4');
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/i_abc_ps', 'IOInterfaceMapping', 'x"140"');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/i_abc_ps', 'IOInterfaceMapping', 'x"110"');
+
+% Set Inport HDL parameters
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/i_abc_pl', 'IOInterface', 'External Port');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/i_abc_pl', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/gate_ps', 'IOInterface', 'AXI4');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/gate_ps', 'IOInterfaceMapping', 'x"140"');
+
+% Set Inport HDL parameters
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/gate_pl', 'IOInterface', 'External Port');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/gate_pl', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/u_dc', 'IOInterface', 'AXI4');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/u_dc', 'IOInterfaceMapping', 'x"108"');
 
 % Set SubSystem HDL parameters
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph', 'FlattenHierarchy', 'on');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/HDL Subsystem', 'FlattenHierarchy', 'on');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/HDL Subsystem', 'ProcessorFPGASynchronization', 'Free running');
 
-% Set Outport HDL parameters Uab_bc
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/HDL Subsystem/HDL Algorithm/Mode Selection/Generate Mode Vector', 'Architecture', 'MATLAB Datapath');
+
+% Set Outport HDL parameters
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/u_abc_ps', 'IOInterface', 'AXI4');
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/u_abc_ps', 'IOInterfaceMapping', 'x"110"');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/u_abc_ps', 'IOInterfaceMapping', 'x"170"');
+
+% Set Outport HDL parameters
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/u_abc_pl', 'IOInterface', 'External Port');
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/u_abc_pl', 'IOInterfaceMapping', '');
 
 
 %% Workflow Configuration Settings
@@ -70,7 +90,7 @@ hdlset_param('gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph/u_abc_ps', 'IOInte
 hWC = hdlcoder.WorkflowConfig('SynthesisTool','Xilinx Vivado','TargetWorkflow','IP Core Generation');
 
 % Specify the top level project directory
-hWC.ProjectFolder = 'hdl_prj';
+hWC.ProjectFolder = 'C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_inverter_3ph\hdl_prj';
 hWC.ReferenceDesignToolVersion = '';
 hWC.IgnoreToolVersionMismatch = false;
 

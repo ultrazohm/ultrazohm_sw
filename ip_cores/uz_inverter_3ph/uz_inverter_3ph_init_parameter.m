@@ -10,7 +10,7 @@ g6= 0;
 
 %%Electrical parameters
 udc = 200;
-ts_inverter=1/1e6;
+ts_inverter=0.5e-6;
 
 %%control   
 pslcontrol = 1;

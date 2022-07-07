@@ -41,6 +41,7 @@
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
 #define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES         0U
+#define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               1U
 
 #endif
 
@@ -68,4 +69,5 @@
     #define UZ_IIR_FILTER_MAX_INSTANCES                     20U
     #define UZ_INVERTER_3PH_MAX_INSTANCES                   20U
     #define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES         20U
+    #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               20U
 #endif

@@ -50,6 +50,7 @@ DS_Data Global_Data = {
 //FOC instance and config-parameters
 struct uz_FOC* FOC_instance;
 int i=1;
+
 // Speed controller instance
 struct uz_SpeedControl_t* speed_control_instance;
 
@@ -217,9 +218,9 @@ int main(void)
             break;
         case init_foc:
         	 if (i==0){
-        	FOC_instance = uz_FOC_init(config_FOC);
-        	speed_control_instance = uz_SpeedControl_init(config_speed_controller);
-        	test_instance_123_alphabeta_dq = uz_123_alphabeta_dqIPcore_init(config_123_alphabeta_dq);
+        	//FOC_instance = uz_FOC_init(config_FOC);
+        	//speed_control_instance = uz_SpeedControl_init(config_speed_controller);
+        	//test_instance_123_alphabeta_dq = uz_123_alphabeta_dqIPcore_init(config_123_alphabeta_dq);
         	 }
 
             initialization_chain = print_msg;

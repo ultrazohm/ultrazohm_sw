@@ -37,6 +37,8 @@ float i_beta_123_alphabeta_dq;
 float i_a_123_alphabeta_dq;
 float i_b_123_alphabeta_dq;
 float i_c_123_alphabeta_dq;
+float i_d_123_alphabeta_dq;
+float i_q_123_alphabeta_dq;
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
@@ -102,6 +104,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_i_a_123_alphabeta_dq] =&i_a_123_alphabeta_dq;
 	js_ch_observable[JSO_i_b_123_alphabeta_dq] =&i_b_123_alphabeta_dq;
 	js_ch_observable[JSO_i_c_123_alphabeta_dq] =&i_c_123_alphabeta_dq;
+	js_ch_observable[JSO_i_d_123_alphabeta_dq] =&i_d_123_alphabeta_dq;
+	js_ch_observable[JSO_i_q_123_alphabeta_dq] =&i_q_123_alphabeta_dq;
 	js_ch_observable[JSO_m_T_dq_currents_d] 		=	&m_T_dq_currents.d;
 	js_ch_observable[JSO_m_T_dq_currents_q] 		=	&m_T_dq_currents.q;
 	js_ch_observable[JSO_m_T_abc_currents_a] 		=	&m_T_abc_currents.a;

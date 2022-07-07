@@ -71,6 +71,8 @@ enum JS_OberservableData {
 	JSO_i_a_123_alphabeta_dq,
 	JSO_i_b_123_alphabeta_dq,
 	JSO_i_c_123_alphabeta_dq,
+	JSO_i_d_123_alphabeta_dq,
+	JSO_i_q_123_alphabeta_dq,
 	JSO_ENDMARKER
 };
 

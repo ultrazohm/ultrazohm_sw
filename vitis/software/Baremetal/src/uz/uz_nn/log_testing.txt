@@ -3,3 +3,7 @@ V2: Not able to swing it up, drives into sw stop. Problem could be the friction/
 V3: Trained agent with +-0.75 Nm, other behaviour for swing up pendulum, no friction implemented yet
 V3_5: 1.2Nm torque, damping in simulink model
 V4: 1.2Nm, damping, shorter distance for training
+
+20.06.2022:Agent_1.2NM_damping_92nms funktioniert, aber nicht von Mitte aus, fährt in die grenze
+29.06.2022:Agent_weg_035m funktioniert mit 3.5A Iq, fährt nicht in Grenze
+30.06.2022:Agent_weg_035_lower control wird jetzt getestet

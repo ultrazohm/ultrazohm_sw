@@ -3,16 +3,16 @@ set_property ip_repo_paths {../../} [current_fileset]
 
 # Add HDL source files to project
 add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_Subsystem1_pkg.vhd}
-add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_relop_single.vhd}
-add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function1.vhd}
 add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_add_single.vhd}
 add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_mul_single.vhd}
 add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_sub_single.vhd}
 add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_sincos_single.vhd}
 add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function.vhd}
+add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_relop_single.vhd}
+add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function1.vhd}
 add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_24_En20_to_single.vhd}
-add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd}
 add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_18_En11_to_single.vhd}
+add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd}
 add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_Subsystem1_tc.vhd}
 add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_Subsystem1.vhd}
 add_files -norecurse {../hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_reset_sync.vhd}
@@ -40,21 +40,13 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112583744 [ipx::current_core]
+set_property core_revision 2112583869 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_Subsystem1_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_Subsystem1_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_Subsystem1_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_Subsystem1_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_relop_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_relop_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_relop_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_relop_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_add_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_add_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_add_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -75,18 +67,26 @@ ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function.vh
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_relop_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_relop_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_relop_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_relop_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_MATLAB_Function1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_24_En20_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_24_En20_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_24_En20_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_24_En20_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_18_En11_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_18_En11_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_18_En11_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_18_En11_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_nfp_convert_sfix_56_En11_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_Subsystem1_tc.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_Subsystem1_tc.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Test_FCS_MPC_3Phase_SPMSM_IP_Core_src_Subsystem1_tc.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

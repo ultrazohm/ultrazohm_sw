@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 11:04:55 on 08/07/2022
+% Generated with MATLAB 9.12 (R2022a) at 13:10:05 on 08/07/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\FCS_MPC_3Phase_SPMSM\test_ipcore\test_hdlworkflow.m'
 %     Overwrite : true

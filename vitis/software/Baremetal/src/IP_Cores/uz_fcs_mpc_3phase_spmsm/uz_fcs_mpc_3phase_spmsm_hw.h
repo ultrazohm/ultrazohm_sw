@@ -6,8 +6,9 @@
 void uz_fcs_mpc_3phase_spmsm_hw_set_u_dc_link(uint32_t base_address, float u_dc_link);
 void uz_fcs_mpc_3phase_spmsm_hw_set_SampleTime(uint32_t base_address, float SampleTime);
 void uz_fcs_mpc_3phase_spmsm_hw_set_Rs(uint32_t base_address, float Rs);
-void uz_fcs_mpc_3phase_spmsm_hw_set_Ld(uint32_t base_address, float Ld);
-void uz_fcs_mpc_3phase_spmsm_hw_set_Lq(uint32_t base_address, float Lq);
+void uz_fcs_mpc_3phase_spmsm_hw_set_reciprocal_Ls(uint32_t base_address, float Ld, float Lq);
+//void uz_fcs_mpc_3phase_spmsm_hw_set_Ld(uint32_t base_address, float Ld);
+//void uz_fcs_mpc_3phase_spmsm_hw_set_Lq(uint32_t base_address, float Lq);
 void uz_fcs_mpc_3phase_spmsm_hw_set_psiPM(uint32_t base_address, float psiPM);
 void uz_fcs_mpc_3phase_spmsm_hw_set_pole_pairs(uint32_t base_address, int32_t pole_pairs);
 

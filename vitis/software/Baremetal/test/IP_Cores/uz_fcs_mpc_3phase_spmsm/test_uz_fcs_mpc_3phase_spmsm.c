@@ -42,8 +42,9 @@ void test_uz_fcs_mpc_3phase_spmsm_init_test(void)
    uz_fcs_mpc_3phase_spmsm_hw_set_u_dc_link_Expect(config.base_address, config.u_dc_link);
    uz_fcs_mpc_3phase_spmsm_hw_set_SampleTime_Expect(config.base_address, config.SampleTime);
    uz_fcs_mpc_3phase_spmsm_hw_set_Rs_Expect(config.base_address, config.Rs);
-   uz_fcs_mpc_3phase_spmsm_hw_set_Ld_Expect(config.base_address, config.Ld);
-   uz_fcs_mpc_3phase_spmsm_hw_set_Lq_Expect(config.base_address, config.Lq);
+   uz_fcs_mpc_3phase_spmsm_hw_set_reciprocal_Ls_Expect(config.base_address, config.Ld, config.Lq);
+   //uz_fcs_mpc_3phase_spmsm_hw_set_Ld_Expect(config.base_address, config.Ld);
+   //uz_fcs_mpc_3phase_spmsm_hw_set_Lq_Expect(config.base_address, config.Lq);
    uz_fcs_mpc_3phase_spmsm_hw_set_psiPM_Expect(config.base_address, config.psiPM);
    uz_fcs_mpc_3phase_spmsm_hw_set_pole_pairs_Expect(config.base_address, config.pole_pairs);
    uz_fcs_mpc_3phase_spmsm_init(config);

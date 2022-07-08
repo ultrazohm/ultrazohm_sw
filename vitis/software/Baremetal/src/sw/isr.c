@@ -107,7 +107,7 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_1_ip_v25(&Global_Data);
     update_position_of_encoder_on_D5_2_ip_v25(&Global_Data);
     update_angle_of_encoder_on_D5_3_ip_v25(&Global_Data);
-    Global_Data.av.theta_pendulum= Global_Data.av.theta_pendulum-offset_theta_pendulum;
+//    Global_Data.av.theta_pendulum= Global_Data.av.theta_pendulum-offset_theta_pendulum;
     // calculate position
     globalposition = (int)Global_Data.av.position_pendulum;
 	// count reference signals
@@ -205,7 +205,7 @@ void ISR_Control(void *data)
 			case return_to_zero_position:
 				Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_ref, position_abs, ext_clamping);
 				Global_Data.rasv.dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, - Global_Data.rasv.n_ref_rpm, Global_Data.rasv.V_dc_volts, 0.0f);
-				if( abs(position_abs) < 0.5){
+				if( abs(position_abs) < 1){
 					chain=reset_angle;
 				}
 				break;
@@ -221,18 +221,20 @@ void ISR_Control(void *data)
 						counter_wait_pos = 0;
 						chain=wait_at_zero_position;
 						}
+					break;
 			case wait_at_zero_position:
-				Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_ref, position_abs, ext_clamping);
-				Global_Data.rasv.dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, - Global_Data.rasv.n_ref_rpm, Global_Data.rasv.V_dc_volts, 0.0f);
-				if(abs(position_abs) < 0.5){
-					Global_Data.rasv.dq_reference_current.q=0.0f;
-				if (counter_wait_pos<30000){
+				if(abs(position_abs) < 1){
+				if (counter_wait_pos<5000){
 					counter_wait_pos++;
 					}
 				else{
 					Reset_obs_and_measurements();
 					chain=dqn_active;
 					}
+				}
+				else{
+				Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_ref, position_abs, ext_clamping);
+				Global_Data.rasv.dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, - Global_Data.rasv.n_ref_rpm, Global_Data.rasv.V_dc_volts, 0.0f);
 				}
 				break;
 			default:

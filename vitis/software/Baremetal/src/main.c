@@ -104,7 +104,7 @@ int main(void)
         .lower_limit = -40.0f
     };
     struct uz_PI_Controller_config config_position = {
-        .Kp = 2.0f,
+        .Kp = 5.0f,
         .Ki = 0.0f,
         .samplingTime_sec = 0.00005f,
         .upper_limit = 500.0f,

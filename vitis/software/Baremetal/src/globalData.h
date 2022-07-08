@@ -97,7 +97,7 @@ typedef struct _actualValues_ {
 	uint32_t  heartbeatframe_content;
 } actualValues;
 
-typedef struct measuredValues_ {
+typedef struct _measuredValues_ {
 	struct uz_3ph_abc_t measurement_current;
 	struct uz_3ph_dq_t dq_measurement_current;
 

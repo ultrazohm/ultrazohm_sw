@@ -65,9 +65,9 @@ float pos_delta = 0;        // mm
 float position_abs = 0.0f;  // mm
 int globalposition = 0;
 int i_counter = 0; // software counter for reference signal
-int counter_timeout = 0; // counter for software timeout
+int counter_ip_core_res = 0; // counter for software timeout
 int counter_for_reset = 0; // counter for occurence of software timeout
-
+int counter_wait_pos = 0;
 // nn testing
 float old_theta_pendulum=0.0f;
 float old_position=0.0f;
@@ -86,6 +86,7 @@ extern float offset_theta_pendulum;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
+static void Reset_obs_and_measurements();
 extern bool dqn_mutex;
 uz_matrix_t *output_nn = NULL;
 
@@ -94,7 +95,8 @@ enum dqn_chain
     dqn_active = 0,
     limit_violation,
 	return_to_zero_position,
-	reset_angle
+	reset_angle,
+	wait_at_zero_position
 };
 enum dqn_chain chain = dqn_active;
 void ISR_Control(void *data)
@@ -149,7 +151,7 @@ void ISR_Control(void *data)
     Global_Data.obs.dqn_cos_angle=cos(Global_Data.obs.dqn_angle);
     // calculate data pmsm for foc
     Global_Data.av.theta_elec = Global_Data.av.theta_elec * 3.0f - theta_offset;
-    Global_Data.av.theta_mech = Global_Data.av.theta_elec / 3.0f;
+    Global_Data.av.theta_mech = Global_Data.av.theta_elec * (1.0f/3.0f);
     Global_Data.mv.measurement_current.a = adc_scaling * (Global_Data.aa.A2.me.ADC_A2 - 2.5f); // -2.5  Hall Sensor
     Global_Data.mv.measurement_current.b = adc_scaling * (Global_Data.aa.A2.me.ADC_A4 - 2.5f);
     Global_Data.mv.measurement_current.c = adc_scaling * (Global_Data.aa.A2.me.ADC_A3 - 2.5f);
@@ -163,11 +165,12 @@ void ISR_Control(void *data)
     	if (abs(position_abs) > 430){
     		uz_assert(0);
     	}
-    	// switch case for switching between dqn, pos_control and error state
+    	// switch case for switching between dqn, pos_control and other states
     	switch (chain) {
 			case dqn_active:
 				Global_Data.av.trigger_logging = 1.0f;
-		        // get output from nn
+				counter_for_reset++;
+				// get output from nn
 		    	if (abs(position_abs)> 390){
 		    		chain=limit_violation;
 		    	}
@@ -190,6 +193,9 @@ void ISR_Control(void *data)
 		            default: uz_assert(0);
 		            }
 		        }
+		        if (counter_for_reset>600000){
+		        	chain=limit_violation;
+		        }
 				break;
 			case limit_violation:
 				Global_Data.av.trigger_logging = 0.0f;
@@ -204,26 +210,34 @@ void ISR_Control(void *data)
 				}
 				break;
 			case reset_angle:
-//				counter_for_reset++;
-//				if (counter_for_reset>3){
-					if (counter_timeout < 300000)
+					if (counter_ip_core_res < 300000)
 					{
-						counter_timeout++;
+						counter_ip_core_res++;
 					}
 					else{
 						reset_ip_core_of_encoder_on_D5_3_ip_v25(&Global_Data);
-						counter_timeout = 0;
+						counter_ip_core_res = 0;
 						counter_for_reset = 0;
-						chain=dqn_active;
+						counter_wait_pos = 0;
+						chain=wait_at_zero_position;
+						}
+			case wait_at_zero_position:
+				Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_ref, position_abs, ext_clamping);
+				Global_Data.rasv.dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, - Global_Data.rasv.n_ref_rpm, Global_Data.rasv.V_dc_volts, 0.0f);
+				if(abs(position_abs) < 0.5){
+					Global_Data.rasv.dq_reference_current.q=0.0f;
+				if (counter_wait_pos<30000){
+					counter_wait_pos++;
 					}
-//				}
-//				else{
-//					chain = dqn_active;
-//				}
+				else{
+					Reset_obs_and_measurements();
+					chain=dqn_active;
+					}
+				}
 				break;
 			default:
 				break;
-        }
+    	}
     	if (abs(position_abs) < 430)
     	{
 //    	dq_reference_current = uz_SpeedControl_sample(Speed_instance, omega_m_rad_per_sec,  Global_Data.rasv.n_ref_rpm, V_dc_volts, id_ref_Ampere);
@@ -259,6 +273,7 @@ void ISR_Control(void *data)
 //----------------------------------------------------
 // INITIALIZE & SET THE INTERRUPTs and ISRs
 //----------------------------------------------------
+
 int Initialize_ISR()
 {
 
@@ -404,4 +419,7 @@ static void ReadAllADC()
 {
     ADC_readCardALL(&Global_Data);
 };
-
+static void Reset_obs_and_measurements()
+{
+	Reset_global_Data(&Global_Data);
+}

@@ -16,7 +16,6 @@
 // Includes from own files
 #include "main.h"
 
-
 // defines for nn
 #define DQN__CONTROL_FREQUENCY 400
 #define NUMBER_OF_INPUTS 5
@@ -242,4 +241,22 @@ static void dqn_step(void)
 	input_nn[3]=Global_Data.obs.dqn_chart_position;
 	input_nn[4]=Global_Data.obs.dqn_angle_derv;
     uz_nn_ff(Global_Data.objects.uz_nn_instance, Global_Data.objects.input_instance);
+}
+void Reset_global_Data(DS_Data *data)
+{
+	data->obs.dqn_angle_raw=0.0f;
+	data->obs.dqn_chart_position_derv_raw=0.0f;
+	data->obs.dqn_angle_derv_raw=0.0f;
+	data->obs.dqn_chart_position=0.0f;
+	data->obs.dqn_angle_derv=0.0f;
+	data->obs.dqn_angle=0.0f;
+	data->obs.dqn_chart_position_derv=0.0f;
+	data->obs.dqn_sin_angle=0.0f;
+	data->obs.dqn_cos_angle=0.0f;
+//	data->mv.dq_measurement_current.d=0.0f;
+//	data->mv.dq_measurement_current.q=0.0f;
+//	data->mv.dq_measurement_current.zero=0.0f;
+//	data->mv.measurement_current.a=0.0f;
+//	data->mv.measurement_current.b=0.0f;
+//	data->mv.measurement_current.c=0.0f;
 }

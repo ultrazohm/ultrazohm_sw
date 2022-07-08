@@ -68,5 +68,6 @@
 //----------------------------------------------------
 
 void InitializeDataStructure(DS_Data* data);
+void Reset_global_Data();
 
 #endif /* main_H_ */

@@ -2,8 +2,8 @@
 # Vivado v2020.1 (64-bit)
 # SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
 # IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
-# Start of session at: Thu Jul  7 13:34:19 2022
-# Process ID: 13244
+# Start of session at: Fri Jul  8 12:55:44 2022
+# Process ID: 16124
 # Current directory: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw_working/ip_cores/uz_inverter_3ph/hdl_prj/ipcore/uz_inverter_3ph_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw_working/ip_cores/uz_inverter_3ph/hdl_prj/ipcore/uz_inverter_3ph_v1_0/prj_ip/vivado.log
@@ -97,4 +97,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_axi4.vhd" alread
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph_axi4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_inverter_3ph.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Thu Jul  7 13:34:31 2022...
+INFO: [Common 17-206] Exiting Vivado at Fri Jul  8 12:56:01 2022...

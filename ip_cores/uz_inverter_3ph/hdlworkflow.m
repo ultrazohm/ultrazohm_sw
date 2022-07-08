@@ -11,6 +11,7 @@
 % >> hWC.export('DUT','gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph');
 %--------------------------------------------------------------------------
 
+
 %% Load the Model
 load_system('gmStateSpaceHDL_uz_inverter_3ph');
 
@@ -25,7 +26,7 @@ hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'FloatingPointTargetConfiguratio
 );
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'HDLSubsystem', 'gmStateSpaceHDL_uz_inverter_3ph/uz_inverter_3ph');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'MaskParameterAsGeneric', 'on');
-hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'Oversampling', 50);
+hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'Oversampling', 25);
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'ScalarizePorts', 'DUTLevel');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'SynthesisTool', 'Xilinx Vivado');
 hdlset_param('gmStateSpaceHDL_uz_inverter_3ph', 'SynthesisToolChipFamily', 'Zynq UltraScale+');

@@ -457,6 +457,34 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:ip:Test_FCS_MPC_3Phase_SPMSM_IP_Core:1.0">
+		</VLNV>
+		<DisplayName value="Test_FCS_MPC_3Phase_SPMSM_IP_Core">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112583869">
+		</CoreRevision>
+		<ComponentPath value="FCS_MPC_3Phase_SPMSM/test_ipcore/ipcore/Test_FCS_MPC_3Phase_SPMSM_IP_Core_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="xilinx.com:ip:FCS_MPC_switching_states_2_level_inverter:1.0">
 		</VLNV>
 		<DisplayName value="FCS_MPC_switching_states_2_level_inverter">

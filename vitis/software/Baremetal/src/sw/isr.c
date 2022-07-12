@@ -190,7 +190,7 @@ void ISR_Control(void *data)
 
 
 if (i==0){
-/*
+
 	// Read output ia ib ic from IP-Core trans_123_alphabeta_dq
 	abc_currents_123_alphabeta_dq=uz_123_alphabeta_dqIPcore_get_i_abc(test_instance_123_alphabeta_dq);
 
@@ -229,7 +229,7 @@ uz_FOC_set_Ki_iq(FOC_instance, Global_Data.cp.ki_q);
 
 uz_SpeedControl_set_Ki(speed_control_instance, Global_Data.cp.ki_speed);
 uz_SpeedControl_set_Kp(speed_control_instance, Global_Data.cp.kp_speed);
-	*/
+
 }
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -237,7 +237,7 @@ uz_SpeedControl_set_Kp(speed_control_instance, Global_Data.cp.kp_speed);
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     	if (i==0){
-    		/*
+
 		//Call FOC-algorithm
 	ref_dq0_voltage = uz_FOC_sample(FOC_instance, ref_dq0_currents, m_dq0_currents, Global_Data.av.U_ZK, omega_el_rad_per_sec);
 		//Transform dq to abc-voltage
@@ -248,7 +248,7 @@ uz_SpeedControl_set_Kp(speed_control_instance, Global_Data.cp.kp_speed);
 	Global_Data.rasv.halfBridge1DutyCycle = pwm_dutyCycle.DutyCycle_U;
 	Global_Data.rasv.halfBridge2DutyCycle = pwm_dutyCycle.DutyCycle_V;
 	Global_Data.rasv.halfBridge3DutyCycle = pwm_dutyCycle.DutyCycle_W;
-    		*/
+
     	}
 
     }

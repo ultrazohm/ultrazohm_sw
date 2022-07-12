@@ -18,7 +18,7 @@ struct uz_fcs_mpc_3phase_spmsm_config_t{
     float Ld; /**< d-axis inductance in H */
     float Lq; /**< q-axis inductance in H */
     float psiPM; /**< flux linkage in Vs */
-    int32_t pole_pairs; /**< number of pole_pairs */
+    float pole_pairs; /**< number of pole_pairs */
 };
 
 /**

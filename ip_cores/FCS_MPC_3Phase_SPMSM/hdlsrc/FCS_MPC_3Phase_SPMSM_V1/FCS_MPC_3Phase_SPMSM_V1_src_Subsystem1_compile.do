@@ -1,0 +1,17 @@
+vlib work
+vmap -c
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_Subsystem1_pkg.vhd
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_Positive.vhd
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_Detect_Rise_Positive.vhd
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_nfp_relop_single.vhd
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_MATLAB_Function1.vhd
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_nfp_add_single.vhd
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_nfp_mul_single.vhd
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_nfp_sub_single.vhd
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_nfp_sincos_single.vhd
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_MATLAB_Function.vhd
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_nfp_convert_sfix_18_En11_to_single.vhd
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_nfp_convert_sfix_24_En20_to_single.vhd
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_nfp_convert_sfix_24_En11_to_single.vhd
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_Subsystem1_tc.vhd
+vcom  FCS_MPC_3Phase_SPMSM_V1_src_Subsystem1.vhd

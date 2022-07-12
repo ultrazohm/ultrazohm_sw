@@ -1,0 +1,14 @@
+open_system('gm_FCS_MPC_switching_states_2_level_inverter');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'blue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/Delay2', 'user1');
+annotate_port('gm_FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/Delay2', 0, 1, 'cp : 0.33 ns');
+annotate_port('gm_FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/Delay2', 1, 1, 'cp : 0.919 ns');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'lightblue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/Switch_on2', 'user2');
+annotate_port('gm_FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/Switch_on2', 0, 1, 'cp : 0.658 ns');

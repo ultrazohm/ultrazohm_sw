@@ -1,0 +1,12 @@
+SLStudio.Utils.RemoveHighlighting(get_param('FCS_MPC_switching_states_2_level_inverter', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_FCS_MPC_switching_states_2_level_inverter', 'handle'));
+annotate_port('gm_FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/Detect Rise Positive', 1, 1, '');
+annotate_port('FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/Detect Rise Positive', 1, 1, '');
+annotate_port('gm_FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/Delay2', 0, 1, '');
+annotate_port('gm_FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/Delay2', 1, 1, '');
+annotate_port('gm_FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/Switch_on2', 0, 1, '');
+annotate_port('gm_FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/Detect Rise Positive/Positive', 1, 1, '');
+annotate_port('FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/Detect Rise Positive/Positive', 1, 1, '');
+annotate_port('gm_FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/MATLAB Function1/MATLAB Function1', 1, 1, '');
+annotate_port('gm_FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/MATLAB Function1/MATLAB Function1', 1, 1, '');
+annotate_port('FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/MATLAB Function1', 1, 1, '');

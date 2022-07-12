@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 10:46:36 on 13/06/2022
+% Generated with MATLAB 9.12 (R2022a) at 15:05:02 on 12/07/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\FCS_MPC_switching_states_2_level_inverter\hdlworkflow.m'
 %     Overwrite : true
@@ -69,6 +69,10 @@ hdlset_param('FCS_MPC_switching_states_2_level_inverter/Microcontroller Software
 % Set Outport HDL parameters
 hdlset_param('FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/HB3B', 'IOInterface', 'External Port');
 hdlset_param('FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/HB3B', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/done', 'IOInterface', 'External Port');
+hdlset_param('FCS_MPC_switching_states_2_level_inverter/Microcontroller Software/Subsystem/done', 'IOInterfaceMapping', '');
 
 
 %% Workflow Configuration Settings

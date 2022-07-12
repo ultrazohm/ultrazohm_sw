@@ -3,6 +3,8 @@ set_property ip_repo_paths {../../} [current_fileset]
 
 # Add HDL source files to project
 add_files -norecurse {../hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Subsystem_pkg.vhd}
+add_files -norecurse {../hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Positive.vhd}
+add_files -norecurse {../hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Detect_Rise_Positive.vhd}
 add_files -norecurse {../hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_MATLAB_Function1.vhd}
 add_files -norecurse {../hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Subsystem.vhd}
 add_files -norecurse {../hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_reset_sync.vhd}
@@ -30,13 +32,21 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112547721 [ipx::current_core]
+set_property core_revision 2112589744 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Subsystem_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Subsystem_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Subsystem_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Subsystem_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_MATLAB_Function1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_MATLAB_Function1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_MATLAB_Function1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

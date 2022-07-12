@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/ultrazohm_sw/ip_cores/FCS_MPC_switching_states_2_level_inverter/ipcore/FCS_MPC_switching_states_2_level_inverter_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="302c26eeb32747f0b71b62ca78b3f31b"/>
+    <Option Name="Id" Val="edcda3a7d9234944888ffd16a008f83f"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1L-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -86,6 +86,18 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_axi_lite.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Positive.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/FCS_MPC_switching_states_2_level_inverter_src_Detect_Rise_Positive.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

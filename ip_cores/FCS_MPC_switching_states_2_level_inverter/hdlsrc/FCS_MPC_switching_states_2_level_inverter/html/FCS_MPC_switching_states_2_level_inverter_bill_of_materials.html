@@ -5,7 +5,7 @@ High-level Resource Utilization Report for FCS_MPC_switching_states_2_level_inve
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Subtractor_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -161,7 +161,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-1
+0
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-43
+44
 </td>
 
 </tr>
@@ -246,54 +246,15 @@ Subsystem
 
 </h5>
 <h5>
-Adders/Subtractors (1)
-</h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_1_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-8x8-bit Subtractor 							: 1
-</span>
-<span name="Subtractor_1_1" id="Subtractor_1_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('FCS_MPC_switching_states_2_level_inverter:4776')" name="code2model" class="code2model">
-Detec_edge
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><h5>
-Registers (2)
+Registers (1)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-1-bit Register 							: 1
-</span>
-<span name="Register_1_1" id="Register_1_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('FCS_MPC_switching_states_2_level_inverter:4778')" name="code2model" class="code2model">
-reset_old2
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
 32-bit Register 							: 1
 </span>
-<span name="Register_1_2" id="Register_1_2">
+<span name="Register_1_1" id="Register_1_1">
 <ul>
 <li>
 <a href="matlab:coder.internal.code2model('FCS_MPC_switching_states_2_level_inverter:4774')" name="code2model" class="code2model">
@@ -306,36 +267,18 @@ Delay2
 
 </span>
 <br /><h5>
-Multiplexers (4)
+Multiplexers (2)
 </h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
 <span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 2
+1-bit 2-to-1 Multiplexer 							: 1
 </span>
-<span name="Multiplexer_1_1" id="Multiplexer_1_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('FCS_MPC_switching_states_2_level_inverter:4779')" name="code2model" class="code2model">
-reset_old_switch1
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><span style="font-family:monospace">
-1-bit 3-to-1 Multiplexer 							: 1
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_3')" onmouseover="this.style.cursor = 'pointer'">
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
 32-bit 2-to-1 Multiplexer 							: 1
 </span>
-<span name="Multiplexer_1_3" id="Multiplexer_1_3">
+<span name="Multiplexer_1_2" id="Multiplexer_1_2">
 <ul>
 <li>
 <a href="matlab:coder.internal.code2model('FCS_MPC_switching_states_2_level_inverter:4775')" name="code2model" class="code2model">
@@ -348,7 +291,7 @@ Switch_on2
 
 </span>
 <br /><h5>
-Number of I/O Bits (43)
+Number of I/O Bits (44)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
@@ -387,7 +330,7 @@ done_min_J
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Output Bits: 7
+Number of Output Bits: 8
 </span>
 <span name="Output_Port" id="Output_Port">
 <ul>
@@ -430,6 +373,12 @@ HB3B
 </a>
 : 1 bit
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('FCS_MPC_switching_states_2_level_inverter:4868')" name="code2model" class="code2model">
+done
+</a>
+: 1 bit
+</li>
 
 </ul>
 
@@ -448,6 +397,37 @@ Multiplexers (7)
 </span>
 <br /><span style="font-family:monospace">
 1-bit 2-to-1 Multiplexer 							: 6
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('FCS_MPC_switching_states_2_level_inverter:4872')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('FCS_MPC_switching_states_2_level_inverter:4872:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
 </span>
 <br /><p><hr /></p>
 </body>

@@ -1,0 +1,16 @@
+open_system('FCS_MPC_3Phase_SPMSM_V1');
+open_system('gm_FCS_MPC_3Phase_SPMSM_V1');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_FCS_MPC_3Phase_SPMSM_V1/Microcontroller Software/Subsystem1/Detect Rise Positive', 'user2');
+annotate_port('gm_FCS_MPC_3Phase_SPMSM_V1/Microcontroller Software/Subsystem1/Detect Rise Positive', 1, 1, 'This subsystem is inhibiting clock-rate pipelining.');
+hilite_system('FCS_MPC_3Phase_SPMSM_V1/Microcontroller Software/Subsystem1/Detect Rise Positive', 'user2');
+annotate_port('FCS_MPC_3Phase_SPMSM_V1/Microcontroller Software/Subsystem1/Detect Rise Positive', 1, 1, 'This subsystem is inhibiting clock-rate pipelining.');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_FCS_MPC_3Phase_SPMSM_V1/Microcontroller Software/Subsystem1/Detect Rise Positive/t', 'user2');
+annotate_port('gm_FCS_MPC_3Phase_SPMSM_V1/Microcontroller Software/Subsystem1/Detect Rise Positive/t', 1, 1, 'Obstacle to clock-rate pipelining');

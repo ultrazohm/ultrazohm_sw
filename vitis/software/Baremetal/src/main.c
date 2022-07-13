@@ -97,7 +97,7 @@ uz_dqIPcore_t* test_instance_123_alphabeta_dq=NULL;
 
 // Config Values of the IP-Core fcs_mpc_3phase_spmsm
 static struct uz_fcs_mpc_3phase_spmsm_config_t config_fcs_mpc_3phase_spmsm={
-   .base_address= XPAR_UZ_USER_TEST_FCS_MPC_3PHASE_0_BASEADDR,
+   .base_address= XPAR_UZ_USER_FCS_MPC_3PHASE_SPMSM_0_BASEADDR,
    .ip_clk_frequency_Hz=100000000,
    .u_dc_link = 24.0f, // Adjustment needed for first tryout
    .SampleTime= 0.00001f,

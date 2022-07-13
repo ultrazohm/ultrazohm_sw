@@ -37,6 +37,8 @@ uint32_t js_status_BareToRTOS=0;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 extern float theta_mech_calc_from_resolver;
+extern float i_ref;
+extern uz_3ph_abc_t ref_voltage;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -69,10 +71,16 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_m_offset_comp;
 	js_ch_observable[JSO_theta_mech_offset]= &data->av.theta_offset;
-	js_ch_observable[JSO_theta_mech_raw]= &theta_mech_calc_from_resolver;
+	js_ch_observable[JSO_theta_el] = &data->av.theta_elec;
+	js_ch_observable[JSO_iamp_ref] = &i_ref;
+	js_ch_observable[JSO_theta_mech_raw]= &data->av.theta_mech;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+	js_ch_observable[JSO_u_a1_ref]		= &ref_voltage.a;
+	js_ch_observable[JSO_u_b1_ref]		= &ref_voltage.b;
+	js_ch_observable[JSO_u_c1_ref]		= &ref_voltage.c;
+
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -90,7 +98,6 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 	js_slowDataArray[JSSD_FLOAT_u_dc1]					= &(data->av.U_ZK_filt);
 	js_slowDataArray[JSSD_FLOAT_u_dc2]					= &(data->av.U_ZK2);
-	js_slowDataArray[JSSD_FLOAT_speed]					= &data->av.mechanicalRotorSpeed;
 
 	return Status;
 }

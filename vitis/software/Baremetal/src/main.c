@@ -48,6 +48,7 @@ DS_Data Global_Data = {
 float CurrentOn_Angle_deg = 120.0f;
 float CurrentOff_Angle_deg = 175.0f;
 float CurrentOn_Reference_A = 10.0f;
+float i_ref = 0.0f;		// Actual reference value
 
 struct uz_IIR_Filter_config iir_config_dc_volts = {
 		.selection = LowPass_first_order,

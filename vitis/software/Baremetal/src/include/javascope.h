@@ -36,8 +36,11 @@ enum JS_OberservableData {
 	JSO_theta_mech,
 	JSO_theta_mech_raw,
 	JSO_theta_mech_offset,
-	JSO_Kp,
-	JSO_Ki,
+	JSO_theta_el,
+	JSO_iamp_ref,
+	JSO_u_a1_ref,
+	JSO_u_b1_ref,
+	JSO_u_c1_ref,
 	JSO_ENDMARKER
 };
 

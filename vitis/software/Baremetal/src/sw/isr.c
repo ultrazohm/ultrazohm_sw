@@ -45,18 +45,8 @@ extern DS_Data Global_Data;
 extern float CurrentOn_Angle_deg;
 extern float CurrentOff_Angle_deg;
 extern float CurrentOn_Reference_A;
+extern float i_ref;
 
-// Data for determination of mechanical resolver angle
-float theta_mech_old=0.0f;
-int32_t cnt = 0U;
-bool cnt_reset = 0;
-float cnt_float=0.0f;
-float cnt_reset_float=0.0f;
-float theta_mech_calc_from_resolver = 0.0f;
-float theta_m_max = 0.0f;
-float theta_m_min = 0.0f;
-
-float i_ref = 0.0f;					// local variable of reference value
 struct uz_3ph_abc_t ref_voltage = {0};
 float theta_m_deg = 0.0f;
 struct uz_DutyCycle_t output = {0};
@@ -107,7 +97,7 @@ void ISR_Control(void *data)
 	}
 
     // theta offset and scaling to el. angle
-    Global_Data.av.theta_m_offset_comp = theta_mech_calc_from_resolver - Global_Data.av.theta_offset;
+    Global_Data.av.theta_m_offset_comp = Global_Data.av.theta_mech - Global_Data.av.theta_offset;
     Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp * Global_Data.av.polepairs;
 
 
@@ -130,7 +120,7 @@ void ISR_Control(void *data)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     	// One controller used for both coils in series
-    	if (flg_PI_on_active = 1U){
+    	if (flg_PI_on_active == 1U){
     		ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_on, i_ref, Global_Data.av.i_a1, false);
     	} else{
     		ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_off, i_ref, Global_Data.av.i_a1, false);
@@ -138,10 +128,13 @@ void ISR_Control(void *data)
     	ref_voltage.b = 0.0f;
     	ref_voltage.c = 0.0f;
 
+
     	output = uz_FOC_generate_DutyCycles(ref_voltage, Global_Data.av.U_ZK_filt);
 
-    	Global_Data.rasv.halfBridge1DutyCycle = output.DutyCycle_U;
-    	Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_V;
+    	//Global_Data.rasv.halfBridge1DutyCycle = output.DutyCycle_U;
+    	//Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_V;
+    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
@@ -166,43 +159,7 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
 
-    // Determine mechanical angle of resolver
-    if(theta_mech_old-Global_Data.av.theta_mech > 4.0f) {
-    	cnt++;
-    	cnt_float=(float)cnt;
-    } else if (theta_mech_old-Global_Data.av.theta_mech < -4.0f) {
-    	cnt--;
-    	cnt_float=(float)cnt;
-    }
 
-    if(cnt > 1 || cnt < -1) {
-    	cnt = 0;
-    	cnt_float = 0.0f;
-    }
-
-    if(cnt_reset == 1) {
-    	cnt = 0;
-    	cnt_float = 0;
-    	cnt_reset = 0;
-    	cnt_reset_float=0;
-    }
-
-
-    if(cnt >= 0){
-    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/uz_resolverIP_getResolverPolePairs(Global_Data.objects.resolver_IP) + cnt*2*3.14159265358979323846/2.0f;
-    } else {
-    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/2.0f + (2+cnt)*2*3.14159265358979323846/2.0f;
-    }
-
-    theta_mech_old = Global_Data.av.theta_mech;
-
-    if (Global_Data.av.theta_mech <= theta_m_min) {
-    	theta_m_min = Global_Data.av.theta_mech;
-    }
-
-    if (Global_Data.av.theta_mech >= theta_m_max) {
-    	theta_m_max = Global_Data.av.theta_mech;
-    }
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

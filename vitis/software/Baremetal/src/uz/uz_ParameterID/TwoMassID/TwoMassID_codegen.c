@@ -7310,77 +7310,80 @@ static void initParams(ExtU_TwoMassID_t *rtTwoMassID_U, ExtY_TwoMassID_t
   /* '<S1>:686:14' TwoMassID_FOC_output.n_ref_FOC      	= single(0.0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.n_ref_FOC = 0.0F;
 
-  /* '<S1>:686:15' TwoMassID_FOC_output.i_dq_ref.d         = single(0.0); */
+  /* '<S1>:686:15' TwoMassID_FOC_output.M_ref_FOC      	= single(0.0); */
+  rtTwoMassID_Y->TwoMassID_FOC_output.M_ref_FOC = 0.0F;
+
+  /* '<S1>:686:16' TwoMassID_FOC_output.i_dq_ref.d         = single(0.0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.i_dq_ref.d = 0.0F;
 
-  /* '<S1>:686:16' TwoMassID_FOC_output.i_dq_ref.q         = single(0.0); */
+  /* '<S1>:686:17' TwoMassID_FOC_output.i_dq_ref.q         = single(0.0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.i_dq_ref.q = 0.0F;
 
-  /* '<S1>:686:17' TwoMassID_FOC_output.i_dq_ref.zero      = single(0.0); */
+  /* '<S1>:686:18' TwoMassID_FOC_output.i_dq_ref.zero      = single(0.0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.i_dq_ref.zero = 0.0F;
 
-  /* '<S1>:686:18' TwoMassID_FOC_output.enableFOC_speed	= boolean(0); */
+  /* '<S1>:686:19' TwoMassID_FOC_output.enableFOC_speed	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_speed = false;
 
-  /* '<S1>:686:19' TwoMassID_FOC_output.enableFOC_current	= boolean(0); */
+  /* '<S1>:686:20' TwoMassID_FOC_output.enableFOC_current	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_current = false;
 
-  /* '<S1>:686:20' TwoMassID_FOC_output.resetIntegrator 	= boolean(0); */
+  /* '<S1>:686:21' TwoMassID_FOC_output.resetIntegrator 	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.resetIntegrator = false;
 
   /* Outport: '<Root>/finishedTwoMassID' */
-  /* '<S1>:686:21' finishedTwoMassID   = boolean(0); */
+  /* '<S1>:686:22' finishedTwoMassID   = boolean(0); */
   rtTwoMassID_Y->finishedTwoMassID = false;
 
   /* Outport: '<Root>/TwoMassID_FOC_output' incorporates:
    *  Inport: '<Root>/GlobalConfig'
    */
-  /* '<S1>:686:22' TwoMassID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
+  /* '<S1>:686:23' TwoMassID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_id_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_id;
 
-  /* '<S1>:686:23' TwoMassID_FOC_output.Kp_iq_out          = single(GlobalConfig.Kp_iq); */
+  /* '<S1>:686:24' TwoMassID_FOC_output.Kp_iq_out          = single(GlobalConfig.Kp_iq); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_iq_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_iq;
 
-  /* '<S1>:686:24' TwoMassID_FOC_output.Kp_n_out           = single(GlobalConfig.Kp_n); */
+  /* '<S1>:686:25' TwoMassID_FOC_output.Kp_n_out           = single(GlobalConfig.Kp_n); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_n_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_n;
 
-  /* '<S1>:686:25' TwoMassID_FOC_output.Ki_id_out          = single(GlobalConfig.Ki_id); */
+  /* '<S1>:686:26' TwoMassID_FOC_output.Ki_id_out          = single(GlobalConfig.Ki_id); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_id_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_id;
 
-  /* '<S1>:686:26' TwoMassID_FOC_output.Ki_iq_out      	= single(GlobalConfig.Ki_iq); */
+  /* '<S1>:686:27' TwoMassID_FOC_output.Ki_iq_out      	= single(GlobalConfig.Ki_iq); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_iq_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_iq;
 
-  /* '<S1>:686:27' TwoMassID_FOC_output.Ki_n_out           = single(GlobalConfig.Ki_n); */
+  /* '<S1>:686:28' TwoMassID_FOC_output.Ki_n_out           = single(GlobalConfig.Ki_n); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_n_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_n;
 
   /* Outport: '<Root>/TwoMassID_output' */
-  /* '<S1>:686:28' TwoMassID_output.c_est_out              = single(0.0); */
+  /* '<S1>:686:29' TwoMassID_output.c_est_out              = single(0.0); */
   rtTwoMassID_Y->TwoMassID_output.c_est_out = 0.0F;
 
-  /* '<S1>:686:29' TwoMassID_output.d_est_out              = single(0.0); */
+  /* '<S1>:686:30' TwoMassID_output.d_est_out              = single(0.0); */
   rtTwoMassID_Y->TwoMassID_output.d_est_out = 0.0F;
 
   /* Outport: '<Root>/TwoMassID_FOC_output' */
-  /* '<S1>:686:30' TwoMassID_FOC_output.activeState        = uint16(0); */
+  /* '<S1>:686:31' TwoMassID_FOC_output.activeState        = uint16(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.activeState = 0U;
 
   /* Outport: '<Root>/TwoMassID_output' */
-  /* '<S1>:686:31' TwoMassID_output.LoadInertia            = single(0.0); */
+  /* '<S1>:686:32' TwoMassID_output.LoadInertia            = single(0.0); */
   rtTwoMassID_Y->TwoMassID_output.LoadInertia = 0.0F;
 
-  /* '<S1>:686:32' TwoMassID_output.TrainInertia           = single(0.0); */
+  /* '<S1>:686:33' TwoMassID_output.TrainInertia           = single(0.0); */
   rtTwoMassID_Y->TwoMassID_output.TrainInertia = 0.0F;
 
-  /* '<S1>:686:33' TwoMassID_output.rotorInertia           = single(0.0); */
+  /* '<S1>:686:34' TwoMassID_output.rotorInertia           = single(0.0); */
   rtTwoMassID_Y->TwoMassID_output.rotorInertia = 0.0F;
 
-  /* '<S1>:686:34' TwoMassID_output.PRBS_out               = single(0.0); */
+  /* '<S1>:686:35' TwoMassID_output.PRBS_out               = single(0.0); */
   rtTwoMassID_Y->TwoMassID_output.PRBS_out = 0.0F;
 }
 
@@ -7455,49 +7458,52 @@ static void reset_FOC_output(ExtU_TwoMassID_t *rtTwoMassID_U, ExtY_TwoMassID_t
   /* '<S1>:699:4' TwoMassID_FOC_output.n_ref_FOC      	= single(0.0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.n_ref_FOC = 0.0F;
 
-  /* '<S1>:699:5' TwoMassID_FOC_output.i_dq_ref.d         = single(0.0); */
+  /* '<S1>:699:5' TwoMassID_FOC_output.M_ref_FOC      	= single(0.0); */
+  rtTwoMassID_Y->TwoMassID_FOC_output.M_ref_FOC = 0.0F;
+
+  /* '<S1>:699:6' TwoMassID_FOC_output.i_dq_ref.d         = single(0.0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.i_dq_ref.d = 0.0F;
 
-  /* '<S1>:699:6' TwoMassID_FOC_output.i_dq_ref.q         = single(0.0); */
+  /* '<S1>:699:7' TwoMassID_FOC_output.i_dq_ref.q         = single(0.0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.i_dq_ref.q = 0.0F;
 
-  /* '<S1>:699:7' TwoMassID_FOC_output.i_dq_ref.zero      = single(0.0); */
+  /* '<S1>:699:8' TwoMassID_FOC_output.i_dq_ref.zero      = single(0.0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.i_dq_ref.zero = 0.0F;
 
-  /* '<S1>:699:8' TwoMassID_FOC_output.enableFOC_speed	= boolean(0); */
+  /* '<S1>:699:9' TwoMassID_FOC_output.enableFOC_speed	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_speed = false;
 
-  /* '<S1>:699:9' TwoMassID_FOC_output.enableFOC_current	= boolean(0); */
+  /* '<S1>:699:10' TwoMassID_FOC_output.enableFOC_current	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_current = false;
 
-  /* '<S1>:699:10' TwoMassID_FOC_output.resetIntegrator 	= boolean(0); */
+  /* '<S1>:699:11' TwoMassID_FOC_output.resetIntegrator 	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.resetIntegrator = false;
 
-  /* '<S1>:699:11' TwoMassID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
+  /* '<S1>:699:12' TwoMassID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_id_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_id;
 
-  /* '<S1>:699:12' TwoMassID_FOC_output.Kp_iq_out          = single(GlobalConfig.Kp_iq); */
+  /* '<S1>:699:13' TwoMassID_FOC_output.Kp_iq_out          = single(GlobalConfig.Kp_iq); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_iq_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_iq;
 
-  /* '<S1>:699:13' TwoMassID_FOC_output.Kp_n_out           = single(GlobalConfig.Kp_n); */
+  /* '<S1>:699:14' TwoMassID_FOC_output.Kp_n_out           = single(GlobalConfig.Kp_n); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_n_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_n;
 
-  /* '<S1>:699:14' TwoMassID_FOC_output.Ki_id_out          = single(GlobalConfig.Ki_id); */
+  /* '<S1>:699:15' TwoMassID_FOC_output.Ki_id_out          = single(GlobalConfig.Ki_id); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_id_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_id;
 
-  /* '<S1>:699:15' TwoMassID_FOC_output.Ki_iq_out      	= single(GlobalConfig.Ki_iq); */
+  /* '<S1>:699:16' TwoMassID_FOC_output.Ki_iq_out      	= single(GlobalConfig.Ki_iq); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_iq_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_iq;
 
-  /* '<S1>:699:16' TwoMassID_FOC_output.Ki_n_out           = single(GlobalConfig.Ki_n); */
+  /* '<S1>:699:17' TwoMassID_FOC_output.Ki_n_out           = single(GlobalConfig.Ki_n); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_n_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_n;
 
-  /* '<S1>:699:17' TwoMassID_FOC_output.activeState        = uint16(0); */
+  /* '<S1>:699:18' TwoMassID_FOC_output.activeState        = uint16(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.activeState = 0U;
 }
 
@@ -9177,6 +9183,7 @@ void TwoMassID_initialize(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
   rtTwoMassID_Y->TwoMassID_FOC_output.i_dq_ref.d = 0.0F;
   rtTwoMassID_Y->TwoMassID_FOC_output.i_dq_ref.q = 0.0F;
   rtTwoMassID_Y->TwoMassID_FOC_output.i_dq_ref.zero = 0.0F;
+  rtTwoMassID_Y->TwoMassID_FOC_output.M_ref_FOC = 0.0F;
   rtTwoMassID_Y->TwoMassID_FOC_output.activeState = 0U;
   rtTwoMassID_Y->TwoMassID_FOC_output.n_ref_FOC = 0.0F;
   rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_speed = false;

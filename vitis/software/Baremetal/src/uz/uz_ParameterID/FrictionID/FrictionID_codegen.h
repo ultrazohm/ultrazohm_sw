@@ -65,22 +65,27 @@ typedef struct tag_RTM_FrictionID_t RT_MODEL_FrictionID_t;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  real32_T measArray2[4096];           /* '<Root>/FrictionID' */
+  real32_T measArray2[6144];           /* '<Root>/FrictionID' */
   real32_T Ustep[103];                 /* '<Root>/FrictionID' */
-  real32_T meas_sum[2];                /* '<Root>/FrictionID' */
-  real32_T i_Brk;                      /* '<Root>/FrictionID' */
-  real32_T i_eva;                      /* '<Root>/FrictionID' */
-  real32_T i_eva_step;                 /* '<Root>/FrictionID' */
+  real32_T meas_sum[3];                /* '<Root>/FrictionID' */
+  real32_T line[2];
+  real32_T line_m[2];
+  real32_T M_Brk;                      /* '<Root>/FrictionID' */
+  real32_T M_eva;                      /* '<Root>/FrictionID' */
+  real32_T M_eva_step;                 /* '<Root>/FrictionID' */
   real32_T mean_count;                 /* '<Root>/FrictionID' */
   real32_T omega_Brk;                  /* '<Root>/FrictionID' */
   real32_T n_eva_step;                 /* '<Root>/FrictionID' */
   real32_T n_eva;                      /* '<Root>/FrictionID' */
+  real32_T ex;
+  int32_T i;
   uint32_T counter;                    /* '<Root>/FrictionID' */
   uint32_T one_sec_transition_counter; /* '<Root>/FrictionID' */
   uint32_T delay_transition_counter;   /* '<Root>/FrictionID' */
   uint32_T counter2;                   /* '<Root>/FrictionID' */
   uint32_T ten_sec_transition_counter; /* '<Root>/FrictionID' */
   uint32_T switch_count;               /* '<Root>/FrictionID' */
+  uint32_T qY;
   uint16_T meas_count;                 /* '<Root>/FrictionID' */
   uint16_T nextstate;                  /* '<Root>/FrictionID' */
   uint8_T is_active_c7_FrictionID;     /* '<Root>/FrictionID' */

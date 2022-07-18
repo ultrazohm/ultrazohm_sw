@@ -495,7 +495,7 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	//Initialize ElectricalID-Config
 	Data->ElectricalID_Config.goertzlFreq = 0.0f;
 	Data->ElectricalID_Config.dutyCyc = 0.0f;
-	Data->ElectricalID_Config.goertzlAmp = 0.0f;
+	Data->ElectricalID_Config.goertzlTorque= 0.0f;
 	Data->ElectricalID_Config.identLq = false;
 	Data->ElectricalID_Config.min_n_ratio = 0.015f;
 	Data->ElectricalID_Config.n_ref_measurement = 0.0f;

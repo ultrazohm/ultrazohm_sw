@@ -94,6 +94,7 @@ typedef struct {
  */
 typedef struct {
   uz_3ph_dq_t i_dq_ref; /**< reference currents for current controller */
+  real32_T M_ref_FOC;  /**< reference torque for the setpoint function */
   uint16_T activeState; /**< activeState of the ID-states */
   real32_T n_ref_FOC; /**< reference speed for the speed controller */
   boolean_T enableFOC_speed; /**<flag to enable speed controller */

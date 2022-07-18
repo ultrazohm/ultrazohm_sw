@@ -848,6 +848,7 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
   rtControlState_Y->GlobalConfig_out.ACCEPT = false;
   rtControlState_Y->GlobalConfig_out.sampleTimeISR = 0.0F;
   rtControlState_Y->GlobalConfig_out.ratCurrent = 0.0F;
+  rtControlState_Y->GlobalConfig_out.ratTorque = 0.0F;
   rtControlState_Y->GlobalConfig_out.ratSpeed = 0.0F;
   rtControlState_Y->GlobalConfig_out.i_dq_ref.d = 0.0F;
   rtControlState_Y->GlobalConfig_out.i_dq_ref.q = 0.0F;

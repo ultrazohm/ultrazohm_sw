@@ -66,6 +66,7 @@ typedef struct {
   boolean_T ACCEPT; /**< flag for the ACCEPT button  */
   real32_T sampleTimeISR; /**< sampleTime of the ISR. i.e. sampleTime of the function call uz_ParameterID_step. Very important parameter */
   real32_T ratCurrent; /**< rated current of the motor */
+  real32_T ratTorque; /**< rated torque of the motor */
   real32_T ratSpeed; /**< rated speed of the motor */
   uz_3ph_dq_t i_dq_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
   real32_T n_ref; /**< Not needed for ID-states. Can be used to transmit reference speed to a control algorithm. */
@@ -121,7 +122,7 @@ typedef struct {
   real32_T dutyCyc; /**< manual input for DutyCycle during identification of thetaOffset, Ld and Lq. If the value is left at 0.0f, the DutyCycle will be identified automatically. */
   real32_T n_ref_measurement; /**< reference speed for identification of Psi_PM */
   boolean_T identLq; /**< flag to enable identification of Lq. If false, Lq=Ld */
-  real32_T goertzlAmp; /**< amplitude of sine wave for vibration to identify J */
+  real32_T goertzlTorque; /**< max torque of sine wave for vibration to identify J */
   real32_T min_n_ratio; /**< minimal ratio of rated speed for automatic DutyCycle identification. i.e. 0.025f @3000rpm rated speed -> 75rpm. If this value is reached, the algorithm assumes the DutyCycle is strong enough to properly turn the rotor. */
 } uz_ParaID_ElectricalIDConfig_t;
 

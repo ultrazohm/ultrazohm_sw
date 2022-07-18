@@ -226,7 +226,7 @@ Setup
 
    .. code-block:: C
         :linenos:
-        :emphasize-lines: 16,29,324,380
+        :emphasize-lines: 16,29,329,385
         :caption: Changes to the ``ipc_ARM.c`` file. (Breaks in the code are marked with ``....``).
     
         // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
@@ -367,8 +367,8 @@ Setup
                     ParaID_Data.ElectricalID_Config.n_ref_measurement = value;
                     break;
 
-                case (ParaID_EID_goertzl_Amp):
-                    ParaID_Data.ElectricalID_Config.goertzlAmp = value;
+                case (ParaID_EID_goertzl_Torque):
+                    ParaID_Data.ElectricalID_Config.goertzlTorque = value;
                     break;
 
                 case (ParaID_EID_goertzl_Freq):
@@ -653,10 +653,10 @@ Setup
             js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us]        = &ISR_execution_time_us;
             js_slowDataArray[JSSD_FLOAT_ISR_Period_us]          = &ISR_period_us;
             js_slowDataArray[JSSD_FLOAT_Milliseconds]           = &System_UpTime_ms;
-            js_slowDataArray[JSSD_FLOAT_encoderOffset] 			= &(ParaID_Data.ElectricalID_Output->thetaOffset);
-            js_slowDataArray[JSSD_FLOAT_ArrayCounter] 			= &(ArrayCounter);
-            js_slowDataArray[JSSD_FLOAT_measArraySpeed] 		= &(ParaID_Data.MeasArraySpeed_pointer);
-            js_slowDataArray[JSSD_FLOAT_measArrayTorque]		= &(ParaID_Data.MeasArrayTorque_pointer);
+            js_slowDataArray[JSSD_FLOAT_encoderOffset]          = &(ParaID_Data.ElectricalID_Output->thetaOffset);
+            js_slowDataArray[JSSD_FLOAT_ArrayCounter]           = &(ArrayCounter);
+            js_slowDataArray[JSSD_FLOAT_measArraySpeed]         = &(ParaID_Data.MeasArraySpeed_pointer);
+            js_slowDataArray[JSSD_FLOAT_measArrayTorque]        = &(ParaID_Data.MeasArrayTorque_pointer);
             js_slowDataArray[JSSD_FLOAT_ArrayControlCounter]	= &(ArrayCounter);
             js_slowDataArray[JSSD_FLOAT_Stribtorque]            = &(ParaID_Data.FrictionID_Output->BrkTorque);
             js_slowDataArray[JSSD_FLOAT_Coulombtorque]          = &(ParaID_Data.FrictionID_Output->CoulTorque);

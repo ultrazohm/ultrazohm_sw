@@ -517,7 +517,8 @@ Clock and Reset
 
 The IP core is globally clocked with the signal ``s00_axi_aclk``.
 The global reset signal apart from the software reset is ``s00_axi_aresetn``.
-The reset is synchronous and low activ. Keep this signal high for normal operation.
+The reset is synchronous and low active.
+Keep this signal high for normal operation.
 
 The IP core has been tested with a system clock frequency of up to 100MHz.
 The if the IP core is operated with a higher frequency, the PRE_DELAY and the POST_DELAY of the SPI must be adjusted according to `the datasheet of the LTC2311 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_.
@@ -566,16 +567,22 @@ Example
 Example of using SI-Value output of ADC-IP-Core with sfix18_En11 output data type
 ---------------------------------------------------------------------------------
 
-In this example the SI_VALUE output vector of the ADC-IP-Core is used. This vector contains the output values of all channels successively. The fixed point datatype (the number of integer and fractinal bits) of the SI-Values of each channel can be set in software on a per channel basis.
-To get the output values of a single channel the output-vector needs to be sliced. The length of the individual values is determined by the datatype with the length equaling the sum of integer and fractional bits. The LSBs (of each output value) are the fractional bits.
+In this example the ``SI_VALUE`` output vector of the ADC-IP-Core is used.
+This vector contains the output values of all channels successively.
+The fixed point datatype (the number of integer and fractional bits) of the SI-Values of each channel can be set in software on a per channel basis.
+To get the output values of a single channel the output-vector needs to be sliced.
+The length of the individual values is determined by the datatype with the length equaling the sum of integer and fractional bits.
+The LSBs (of each output value) are the fractional bits.
 
-In this example the datatype sfix18_En11 is required for the SI-values. This datatype contains 7 integer bits and 11 fractional bits, so a total of 18 bits. These values have to be configured in the IP-Core driver initialization.
+In this example the datatype ``sfix18_En11`` is required for the SI-values.
+This datatype contains 7 integer bits and 11 fractional bits, so a total of 18 bits.
+These values have to be configured in the IP-Core driver initialization.
+The first value in the SI-Value-vector is contained in the bits 0 to 17.
+The second value is in the bits 18 to 24, and so on for the rest of the values.
+The number of bits per values depending on the configured datatype, in this case ``sfix18_En11`` with a length of 18 bit.
 
-
-The first value in the SI-Value-vector is contained in the bits 0 to 17. The second value is in the bits 18 to 24, and so on for the rest of the values. The number of bits per values depending on the configured datatype, in this case sfix18_En11 with a length of 18 bit.
-
-
-Besides the datatype the conversion factor and offset have to be configured. The SI-Value is calculated by adding an offset to the raw-value of the ADC and afterwards multiplying the result with the conversion factor.
+Besides the datatype the conversion factor and offset have to be configured.
+The SI-Value is calculated by adding an offset to the raw-value of the ADC and afterwards multiplying the result with the conversion factor.
 The conversion factor and offset are also configured in the initialization of the ADC-IP-Core.
 
 In this example following offset and conversion factor are used:
@@ -584,10 +591,14 @@ In this example following offset and conversion factor are used:
     offset = \frac{-2^{16}}{4} = -16384\\
     conversion factor = \frac{100}{2^{16}} = 0.001526
 
-The Raw-value of the 16-Bit-ADC is between 0 and 65635. The measurement range of the ADC is from -5V to 5V. As only the positive range of the ADC is used in this example the raw-value has to be offsetted by a quarter of the measurement range, -2.5V or :math:`\frac{-2^{16}}{4} = -16384`.
+The Raw-value of the 16-Bit-ADC is between 0 and 65635.
+The measurement range of the ADC is from :math:`-5\,V`` to :math:`5\,V`.
+As only the positive range of the ADC is used in this example the raw-value has to be offsetted by a quarter of the measurement range, -2.5V or :math:`\frac{-2^{16}}{4} = -16384`.
 For scaling is a factor of 100 necessary, which hast to be divided by :math:`2^{16}` to get the correct conversion factor of :math:`\frac{100}{2^{16}}`.
 
-In the listing the configuration for the IP-Core initialization can be seen. The configuration contains the discussed values of the conversion factor, offset and datatype with integer and fractional bits. All channels are configured with the same parameters.
+In the listing the configuration for the IP-Core initialization can be seen.
+The configuration contains the discussed values of the conversion factor, offset and datatype with integer and fractional bits.
+All channels are configured with the same parameters.
 
 
 .. code-block:: c
@@ -626,17 +637,20 @@ In the listing the configuration for the IP-Core initialization can be seen. The
     uz_adcLtc2311_init(default_configuration);
   }
 
-In the vivado block-design the SI-Value-Output can be accessed and used. The structure of the vector depends on the ip-core configuration, that can be seen in the next figure. 
+
+In the vivado block-design the ``SI_VALUE`` output vector can be accessed and used. The structure of the vector depends on the ip-core configuration, that can be seen in the next figure. 
 
 .. figure:: adc_ip_core_config_vivado.png
    :width: 600px
    :align: center
 
-   Configuration of the IP-Core in Vivado
 
-The length of the vector depends on the number of channels and the length of the individual values of the channel (Result MSB - Result LSB +1). In this example the length of the values is 18 bit according to the used datatype. With 8 channels the length of the SI-Value-Vector is 144 bit. In the vector the individual values are arranged one after the other.
+The length of the vector depends on the number of channels and the length of the individual values of the channel (Result MSB - Result LSB +1).
+In this example the length of the values is 18 bit according to the used datatype. With 8 channels the length of the ``SI_VALUE`` vector is 144 bit.
+In the vector the individual values are arranged one after the other.
 
-The SI-Value-vector needs to be sliced, to access the individual values of the different ADC-channels. To get the first SI-Value the first 18 bit of the vector have to be slice, for the second value the next 18 etc.
+The SI-Value-vector needs to be sliced, to access the individual values of the different ADC-channels.
+To get the first SI-Value the first 18 bit of the vector have to be slice, for the second value the next 18 etc.
 
 
 .. figure:: slicing_graphic.png
@@ -645,13 +659,14 @@ The SI-Value-vector needs to be sliced, to access the individual values of the d
 
    Slicing of the SI-Value output vector
 
-In the vivado block-design the SI-Value-Output can be sliced with Slice-IP-Cores to get access to the SI-Values of the ADC-channels. In the next figure the slice-blocks can be seen. Each of them slices one value from the vector.
+In the Vivado block-design the ``SI_VALUE`` can be sliced with Slice-IP-Cores to get access to the SI-Values of the ADC-channels.
+In the next figure the slice-blocks can be seen. Each of them slices one value from the vector.
 
 .. figure:: Si_Slicing.png
    :width: 800px
    :align: center
 
-   Slicing of the SI-Value output vector in vivado
+   Slicing of the ``SI_VALUE`` output vector in vivado
 
   
 

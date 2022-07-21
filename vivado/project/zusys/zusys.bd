@@ -6,8 +6,7 @@
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2020.1.1",
-      "validated": "true"
+      "tool_version": "2020.1.1"
     },
     "design_tree": {
       "uz_analog_adapter": {
@@ -43,16 +42,16 @@
           "Gates": {
             "util_vector_logic_0": "",
             "uz_interlockDeadtime_0": "",
-            "vio_Gates_2L": "",
-            "xlconcat_0": "",
-            "xlconstant_0": "",
             "uz_interlockDeadtime_1": "",
             "uz_interlockDeadtime_2": "",
             "uz_interlockDeadtime_3": "",
-            "PWM_and_SS_control_V_0": "",
+            "vio_Gates_2L": "",
+            "xlconcat_0": "",
+            "xlconstant_0": "",
             "PWM_and_SS_control_V_1": "",
             "PWM_and_SS_control_V_2": "",
-            "PWM_and_SS_control_V_3": ""
+            "PWM_and_SS_control_V_3": "",
+            "PWM_and_SS_control_V_0": ""
           }
         },
         "D2_adapter": {
@@ -93,6 +92,7 @@
         },
         "axi_timebase_wdt_0": "",
         "smartconnect_0": "",
+        "smartconnect_1": "",
         "timer_uptime_64bit": "",
         "uz_clocks": {
           "clk_wiz_0": "",
@@ -108,8 +108,7 @@
           "xlslice_Enable_AXI2TCM_Bit4": "",
           "xlslice_Enable_Gate_Bit1": "",
           "xlslice_Enable_Inverter_Bit0": ""
-        },
-        "smartconnect_1": ""
+        }
       },
       "uz_user": {
         "smartconnect_1": "",
@@ -181,13 +180,7 @@
       "D1_OUT": {
         "direction": "O",
         "left": "23",
-        "right": "0",
-        "parameters": {
-          "PortWidth": {
-            "value": "24",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "D1_OUT_26": {
         "direction": "O",
@@ -212,13 +205,7 @@
       "D2_OUT": {
         "direction": "O",
         "left": "11",
-        "right": "0",
-        "parameters": {
-          "PortWidth": {
-            "value": "12",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "D2_OUT_26": {
         "direction": "O",
@@ -268,13 +255,7 @@
       "D4_OUT": {
         "direction": "O",
         "left": "7",
-        "right": "0",
-        "parameters": {
-          "PortWidth": {
-            "value": "1",
-            "value_src": "default_prop"
-          }
-        }
+        "right": "0"
       },
       "D4_OUT_26": {
         "direction": "O",
@@ -1468,6 +1449,10 @@
             "mode": "Slave",
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
           },
+          "AXI4_Lite3": {
+            "mode": "Slave",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+          },
           "AXI4_Lite_PWM_0": {
             "mode": "Slave",
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
@@ -1476,19 +1461,15 @@
             "mode": "Slave",
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
           },
-          "AXI4_Lite3": {
-            "mode": "Slave",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-          },
-          "AXI4_interlock_0": {
-            "mode": "Slave",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-          },
           "AXI4_Lite_PWM_2": {
             "mode": "Slave",
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
           },
           "AXI4_Lite_PWM_3": {
+            "mode": "Slave",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+          },
+          "AXI4_interlock_0": {
             "mode": "Slave",
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
           },
@@ -1508,10 +1489,6 @@
         "ports": {
           "AXI4_Lite_ACLK": {
             "type": "clk",
-            "direction": "I"
-          },
-          "RESETN": {
-            "type": "rst",
             "direction": "I"
           },
           "AXI4_Lite_ARESETN1": {
@@ -1583,6 +1560,10 @@
             "left": "0",
             "right": "0"
           },
+          "RESETN": {
+            "type": "rst",
+            "direction": "I"
+          },
           "clk": {
             "type": "clk",
             "direction": "I"
@@ -1604,6 +1585,14 @@
                 "mode": "Slave",
                 "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
               },
+              "AXI4_Lite_PWM_2": {
+                "mode": "Slave",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+              },
+              "AXI4_Lite_PWM_3": {
+                "mode": "Slave",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+              },
               "AXI4_interlock_0": {
                 "mode": "Slave",
                 "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
@@ -1619,23 +1608,11 @@
               "AXI4_interlock_3": {
                 "mode": "Slave",
                 "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-              },
-              "AXI4_Lite_PWM_2": {
-                "mode": "Slave",
-                "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-              },
-              "AXI4_Lite_PWM_3": {
-                "mode": "Slave",
-                "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
               }
             },
             "ports": {
               "CLK": {
                 "type": "clk",
-                "direction": "I"
-              },
-              "RESETN": {
-                "type": "rst",
                 "direction": "I"
               },
               "Carrier_triangular_max": {
@@ -1657,6 +1634,10 @@
                 "direction": "O",
                 "left": "23",
                 "right": "0"
+              },
+              "RESETN": {
+                "type": "rst",
+                "direction": "I"
               }
             },
             "components": {
@@ -1670,15 +1651,15 @@
                     "mode": "Slave",
                     "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
                   },
-                  "AXI4_interlock_0": {
-                    "mode": "Slave",
-                    "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-                  },
                   "AXI4_Lite_PWM_2": {
                     "mode": "Slave",
                     "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
                   },
                   "AXI4_Lite_PWM_3": {
+                    "mode": "Slave",
+                    "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+                  },
+                  "AXI4_interlock_0": {
                     "mode": "Slave",
                     "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
                   },
@@ -1700,10 +1681,6 @@
                     "type": "clk",
                     "direction": "I"
                   },
-                  "RESETN": {
-                    "type": "rst",
-                    "direction": "I"
-                  },
                   "Carrier_triangular_max": {
                     "direction": "O",
                     "left": "0",
@@ -1723,6 +1700,10 @@
                     "direction": "O",
                     "left": "23",
                     "right": "0"
+                  },
+                  "RESETN": {
+                    "type": "rst",
+                    "direction": "I"
                   }
                 },
                 "components": {
@@ -1741,6 +1722,18 @@
                   "uz_interlockDeadtime_0": {
                     "vlnv": "user.org:ip:uz_interlockDeadtime2L:1.0",
                     "xci_name": "zusys_uz_interlockDeadtime_0_0"
+                  },
+                  "uz_interlockDeadtime_1": {
+                    "vlnv": "user.org:ip:uz_interlockDeadtime2L:1.0",
+                    "xci_name": "zusys_uz_interlockDeadtime_1_0"
+                  },
+                  "uz_interlockDeadtime_2": {
+                    "vlnv": "user.org:ip:uz_interlockDeadtime2L:1.0",
+                    "xci_name": "zusys_uz_interlockDeadtime_2_0"
+                  },
+                  "uz_interlockDeadtime_3": {
+                    "vlnv": "user.org:ip:uz_interlockDeadtime2L:1.0",
+                    "xci_name": "zusys_uz_interlockDeadtime_3_0"
                   },
                   "vio_Gates_2L": {
                     "vlnv": "xilinx.com:ip:vio:3.0",
@@ -1775,52 +1768,34 @@
                       }
                     }
                   },
-                  "uz_interlockDeadtime_1": {
-                    "vlnv": "user.org:ip:uz_interlockDeadtime2L:1.0",
-                    "xci_name": "zusys_uz_interlockDeadtime_1_0"
-                  },
-                  "uz_interlockDeadtime_2": {
-                    "vlnv": "user.org:ip:uz_interlockDeadtime2L:1.0",
-                    "xci_name": "zusys_uz_interlockDeadtime_2_0"
-                  },
-                  "uz_interlockDeadtime_3": {
-                    "vlnv": "user.org:ip:uz_interlockDeadtime2L:1.0",
-                    "xci_name": "zusys_uz_interlockDeadtime_3_0"
-                  },
-                  "PWM_and_SS_control_V_0": {
-                    "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1",
-                    "xci_name": "zusys_PWM_and_SS_control_V_4_0"
-                  },
                   "PWM_and_SS_control_V_1": {
                     "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1",
-                    "xci_name": "zusys_PWM_and_SS_control_V_4_1"
+                    "xci_name": "zusys_PWM_and_SS_control_V_1_1"
                   },
                   "PWM_and_SS_control_V_2": {
                     "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1",
-                    "xci_name": "zusys_PWM_and_SS_control_V_2_2"
+                    "xci_name": "zusys_PWM_and_SS_control_V_2_1"
                   },
                   "PWM_and_SS_control_V_3": {
                     "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1",
-                    "xci_name": "zusys_PWM_and_SS_control_V_3_2"
+                    "xci_name": "zusys_PWM_and_SS_control_V_3_1"
+                  },
+                  "PWM_and_SS_control_V_0": {
+                    "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1",
+                    "xci_name": "zusys_PWM_and_SS_control_V_0_1"
                   }
                 },
                 "interface_nets": {
-                  "AXI4_Lite_PWM_1_1": {
-                    "interface_ports": [
-                      "AXI4_Lite_PWM_1",
-                      "PWM_and_SS_control_V_1/AXI4_Lite"
-                    ]
-                  },
-                  "AXI4_Lite_PWM_2_1": {
-                    "interface_ports": [
-                      "AXI4_Lite_PWM_2",
-                      "PWM_and_SS_control_V_2/AXI4_Lite"
-                    ]
-                  },
                   "AXI4_Lite_PWM_3_1": {
                     "interface_ports": [
                       "AXI4_Lite_PWM_3",
                       "PWM_and_SS_control_V_3/AXI4_Lite"
+                    ]
+                  },
+                  "AXI4_interlock_1_1": {
+                    "interface_ports": [
+                      "AXI4_interlock_1",
+                      "uz_interlockDeadtime_1/AXI4"
                     ]
                   },
                   "AXI4_interlock_2_1": {
@@ -1835,22 +1810,28 @@
                       "uz_interlockDeadtime_3/AXI4"
                     ]
                   },
-                  "AXI4_Lite_PWM_0_1": {
-                    "interface_ports": [
-                      "AXI4_Lite_PWM_0",
-                      "PWM_and_SS_control_V_0/AXI4_Lite"
-                    ]
-                  },
                   "S00_AXI_1": {
                     "interface_ports": [
                       "AXI4_interlock_0",
                       "uz_interlockDeadtime_0/AXI4"
                     ]
                   },
-                  "AXI4_interlock_1_1": {
+                  "AXI4_Lite_PWM_2_1": {
                     "interface_ports": [
-                      "AXI4_interlock_1",
-                      "uz_interlockDeadtime_1/AXI4"
+                      "AXI4_Lite_PWM_2",
+                      "PWM_and_SS_control_V_2/AXI4_Lite"
+                    ]
+                  },
+                  "AXI4_Lite_PWM_1_1": {
+                    "interface_ports": [
+                      "AXI4_Lite_PWM_1",
+                      "PWM_and_SS_control_V_1/AXI4_Lite"
+                    ]
+                  },
+                  "AXI4_Lite_PWM_0_1": {
+                    "interface_ports": [
+                      "AXI4_Lite_PWM_0",
+                      "PWM_and_SS_control_V_0/AXI4_Lite"
                     ]
                   }
                 },
@@ -1860,20 +1841,20 @@
                       "RESETN",
                       "uz_interlockDeadtime_0/AXI4_ARESETN",
                       "uz_interlockDeadtime_0/IPCORE_RESETN",
-                      "uz_interlockDeadtime_1/IPCORE_RESETN",
                       "uz_interlockDeadtime_1/AXI4_ARESETN",
-                      "uz_interlockDeadtime_2/IPCORE_RESETN",
+                      "uz_interlockDeadtime_1/IPCORE_RESETN",
                       "uz_interlockDeadtime_2/AXI4_ARESETN",
-                      "uz_interlockDeadtime_3/IPCORE_RESETN",
+                      "uz_interlockDeadtime_2/IPCORE_RESETN",
                       "uz_interlockDeadtime_3/AXI4_ARESETN",
-                      "PWM_and_SS_control_V_0/IPCORE_RESETN",
-                      "PWM_and_SS_control_V_0/AXI4_Lite_ARESETN",
+                      "uz_interlockDeadtime_3/IPCORE_RESETN",
                       "PWM_and_SS_control_V_1/IPCORE_RESETN",
                       "PWM_and_SS_control_V_1/AXI4_Lite_ARESETN",
                       "PWM_and_SS_control_V_2/IPCORE_RESETN",
                       "PWM_and_SS_control_V_2/AXI4_Lite_ARESETN",
                       "PWM_and_SS_control_V_3/IPCORE_RESETN",
-                      "PWM_and_SS_control_V_3/AXI4_Lite_ARESETN"
+                      "PWM_and_SS_control_V_3/AXI4_Lite_ARESETN",
+                      "PWM_and_SS_control_V_0/IPCORE_RESETN",
+                      "PWM_and_SS_control_V_0/AXI4_Lite_ARESETN"
                     ]
                   },
                   "InterLock_Module_0_S0_OUT": {
@@ -1930,105 +1911,6 @@
                     "ports": [
                       "util_vector_logic_0/Res",
                       "Carrier_triangular_max_min"
-                    ]
-                  },
-                  "xlconcat_0_dout": {
-                    "ports": [
-                      "xlconcat_0/dout",
-                      "Gate_Signals_2L"
-                    ]
-                  },
-                  "zynq_ultra_ps_e_0_pl_clk1": {
-                    "ports": [
-                      "CLK",
-                      "uz_interlockDeadtime_0/AXI4_ACLK",
-                      "uz_interlockDeadtime_0/IPCORE_CLK",
-                      "vio_Gates_2L/clk",
-                      "uz_interlockDeadtime_1/IPCORE_CLK",
-                      "uz_interlockDeadtime_1/AXI4_ACLK",
-                      "uz_interlockDeadtime_2/IPCORE_CLK",
-                      "uz_interlockDeadtime_2/AXI4_ACLK",
-                      "uz_interlockDeadtime_3/IPCORE_CLK",
-                      "uz_interlockDeadtime_3/AXI4_ACLK",
-                      "PWM_and_SS_control_V_0/IPCORE_CLK",
-                      "PWM_and_SS_control_V_0/AXI4_Lite_ACLK",
-                      "PWM_and_SS_control_V_1/IPCORE_CLK",
-                      "PWM_and_SS_control_V_1/AXI4_Lite_ACLK",
-                      "PWM_and_SS_control_V_2/IPCORE_CLK",
-                      "PWM_and_SS_control_V_2/AXI4_Lite_ACLK",
-                      "PWM_and_SS_control_V_3/IPCORE_CLK",
-                      "PWM_and_SS_control_V_3/AXI4_Lite_ACLK"
-                    ]
-                  },
-                  "xlconstant_0_dout": {
-                    "ports": [
-                      "xlconstant_0/dout",
-                      "PWM_and_SS_control_V_0/m_u1_norm",
-                      "PWM_and_SS_control_V_0/m_u2_norm",
-                      "PWM_and_SS_control_V_0/m_u3_norm",
-                      "PWM_and_SS_control_V_1/m_u1_norm",
-                      "PWM_and_SS_control_V_1/m_u2_norm",
-                      "PWM_and_SS_control_V_1/m_u3_norm",
-                      "PWM_and_SS_control_V_2/m_u1_norm",
-                      "PWM_and_SS_control_V_2/m_u2_norm",
-                      "PWM_and_SS_control_V_2/m_u3_norm",
-                      "PWM_and_SS_control_V_3/m_u1_norm",
-                      "PWM_and_SS_control_V_3/m_u2_norm",
-                      "PWM_and_SS_control_V_3/m_u3_norm"
-                    ]
-                  },
-                  "vio_Gates_2L_probe_out0": {
-                    "ports": [
-                      "vio_Gates_2L/probe_out0",
-                      "PWM_and_SS_control_V_0/SS0_IN_External",
-                      "PWM_and_SS_control_V_1/SS0_IN_External",
-                      "PWM_and_SS_control_V_2/SS0_IN_External",
-                      "PWM_and_SS_control_V_3/SS0_IN_External"
-                    ]
-                  },
-                  "vio_Gates_2L_probe_out1": {
-                    "ports": [
-                      "vio_Gates_2L/probe_out1",
-                      "PWM_and_SS_control_V_0/SS1_IN_External",
-                      "PWM_and_SS_control_V_1/SS1_IN_External",
-                      "PWM_and_SS_control_V_2/SS1_IN_External",
-                      "PWM_and_SS_control_V_3/SS1_IN_External"
-                    ]
-                  },
-                  "vio_Gates_2L_probe_out2": {
-                    "ports": [
-                      "vio_Gates_2L/probe_out2",
-                      "PWM_and_SS_control_V_0/SS2_IN_External",
-                      "PWM_and_SS_control_V_1/SS2_IN_External",
-                      "PWM_and_SS_control_V_2/SS2_IN_External",
-                      "PWM_and_SS_control_V_3/SS2_IN_External"
-                    ]
-                  },
-                  "vio_Gates_2L_probe_out3": {
-                    "ports": [
-                      "vio_Gates_2L/probe_out3",
-                      "PWM_and_SS_control_V_0/SS3_IN_External",
-                      "PWM_and_SS_control_V_1/SS3_IN_External",
-                      "PWM_and_SS_control_V_2/SS3_IN_External",
-                      "PWM_and_SS_control_V_3/SS3_IN_External"
-                    ]
-                  },
-                  "vio_Gates_2L_probe_out4": {
-                    "ports": [
-                      "vio_Gates_2L/probe_out4",
-                      "PWM_and_SS_control_V_0/SS4_IN_External",
-                      "PWM_and_SS_control_V_1/SS4_IN_External",
-                      "PWM_and_SS_control_V_2/SS4_IN_External",
-                      "PWM_and_SS_control_V_3/SS4_IN_External"
-                    ]
-                  },
-                  "vio_Gates_2L_probe_out5": {
-                    "ports": [
-                      "vio_Gates_2L/probe_out5",
-                      "PWM_and_SS_control_V_0/SS5_IN_External",
-                      "PWM_and_SS_control_V_1/SS5_IN_External",
-                      "PWM_and_SS_control_V_2/SS5_IN_External",
-                      "PWM_and_SS_control_V_3/SS5_IN_External"
                     ]
                   },
                   "uz_interlockDeadtime_1_s0_out": {
@@ -2139,82 +2021,136 @@
                       "xlconcat_0/In23"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_triangle_out1": {
+                  "vio_Gates_2L_probe_out0": {
                     "ports": [
-                      "PWM_and_SS_control_V_0/triangle_out",
-                      "PWM_and_SS_control_V_0/triangle_in",
-                      "PWM_and_SS_control_V_1/triangle_in",
-                      "PWM_and_SS_control_V_2/triangle_in",
-                      "PWM_and_SS_control_V_3/triangle_in"
+                      "vio_Gates_2L/probe_out0",
+                      "PWM_and_SS_control_V_1/SS0_IN_External",
+                      "PWM_and_SS_control_V_2/SS0_IN_External",
+                      "PWM_and_SS_control_V_3/SS0_IN_External",
+                      "PWM_and_SS_control_V_0/SS0_IN_External"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS0_OUT": {
+                  "vio_Gates_2L_probe_out1": {
                     "ports": [
-                      "PWM_and_SS_control_V_0/SS0_OUT",
-                      "uz_interlockDeadtime_0/S0"
+                      "vio_Gates_2L/probe_out1",
+                      "PWM_and_SS_control_V_1/SS1_IN_External",
+                      "PWM_and_SS_control_V_2/SS1_IN_External",
+                      "PWM_and_SS_control_V_3/SS1_IN_External",
+                      "PWM_and_SS_control_V_0/SS1_IN_External"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS1_OUT": {
+                  "vio_Gates_2L_probe_out2": {
                     "ports": [
-                      "PWM_and_SS_control_V_0/SS1_OUT",
-                      "uz_interlockDeadtime_0/S1"
+                      "vio_Gates_2L/probe_out2",
+                      "PWM_and_SS_control_V_1/SS2_IN_External",
+                      "PWM_and_SS_control_V_2/SS2_IN_External",
+                      "PWM_and_SS_control_V_3/SS2_IN_External",
+                      "PWM_and_SS_control_V_0/SS2_IN_External"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS2_OUT": {
+                  "vio_Gates_2L_probe_out3": {
                     "ports": [
-                      "PWM_and_SS_control_V_0/SS2_OUT",
-                      "uz_interlockDeadtime_0/S2"
+                      "vio_Gates_2L/probe_out3",
+                      "PWM_and_SS_control_V_1/SS3_IN_External",
+                      "PWM_and_SS_control_V_2/SS3_IN_External",
+                      "PWM_and_SS_control_V_3/SS3_IN_External",
+                      "PWM_and_SS_control_V_0/SS3_IN_External"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS3_OUT": {
+                  "vio_Gates_2L_probe_out4": {
                     "ports": [
-                      "PWM_and_SS_control_V_0/SS3_OUT",
-                      "uz_interlockDeadtime_0/S3"
+                      "vio_Gates_2L/probe_out4",
+                      "PWM_and_SS_control_V_1/SS4_IN_External",
+                      "PWM_and_SS_control_V_2/SS4_IN_External",
+                      "PWM_and_SS_control_V_3/SS4_IN_External",
+                      "PWM_and_SS_control_V_0/SS4_IN_External"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS4_OUT": {
+                  "vio_Gates_2L_probe_out5": {
                     "ports": [
-                      "PWM_and_SS_control_V_0/SS4_OUT",
-                      "uz_interlockDeadtime_0/S4"
+                      "vio_Gates_2L/probe_out5",
+                      "PWM_and_SS_control_V_1/SS5_IN_External",
+                      "PWM_and_SS_control_V_2/SS5_IN_External",
+                      "PWM_and_SS_control_V_3/SS5_IN_External",
+                      "PWM_and_SS_control_V_0/SS5_IN_External"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS5_OUT": {
+                  "xlconcat_0_dout": {
                     "ports": [
-                      "PWM_and_SS_control_V_0/SS5_OUT",
-                      "uz_interlockDeadtime_0/S5"
+                      "xlconcat_0/dout",
+                      "Gate_Signals_2L"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS0_OUT1": {
+                  "xlconstant_0_dout": {
+                    "ports": [
+                      "xlconstant_0/dout",
+                      "PWM_and_SS_control_V_1/m_u1_norm",
+                      "PWM_and_SS_control_V_1/m_u2_norm",
+                      "PWM_and_SS_control_V_1/m_u3_norm",
+                      "PWM_and_SS_control_V_2/m_u1_norm",
+                      "PWM_and_SS_control_V_2/m_u2_norm",
+                      "PWM_and_SS_control_V_2/m_u3_norm",
+                      "PWM_and_SS_control_V_3/m_u1_norm",
+                      "PWM_and_SS_control_V_3/m_u2_norm",
+                      "PWM_and_SS_control_V_3/m_u3_norm",
+                      "PWM_and_SS_control_V_0/m_u1_norm",
+                      "PWM_and_SS_control_V_0/m_u2_norm",
+                      "PWM_and_SS_control_V_0/m_u3_norm"
+                    ]
+                  },
+                  "zynq_ultra_ps_e_0_pl_clk1": {
+                    "ports": [
+                      "CLK",
+                      "uz_interlockDeadtime_0/AXI4_ACLK",
+                      "uz_interlockDeadtime_0/IPCORE_CLK",
+                      "uz_interlockDeadtime_1/AXI4_ACLK",
+                      "uz_interlockDeadtime_1/IPCORE_CLK",
+                      "uz_interlockDeadtime_2/AXI4_ACLK",
+                      "uz_interlockDeadtime_2/IPCORE_CLK",
+                      "uz_interlockDeadtime_3/AXI4_ACLK",
+                      "uz_interlockDeadtime_3/IPCORE_CLK",
+                      "vio_Gates_2L/clk",
+                      "PWM_and_SS_control_V_1/IPCORE_CLK",
+                      "PWM_and_SS_control_V_1/AXI4_Lite_ACLK",
+                      "PWM_and_SS_control_V_2/IPCORE_CLK",
+                      "PWM_and_SS_control_V_2/AXI4_Lite_ACLK",
+                      "PWM_and_SS_control_V_3/IPCORE_CLK",
+                      "PWM_and_SS_control_V_3/AXI4_Lite_ACLK",
+                      "PWM_and_SS_control_V_0/IPCORE_CLK",
+                      "PWM_and_SS_control_V_0/AXI4_Lite_ACLK"
+                    ]
+                  },
+                  "PWM_and_SS_control_V_1_SS0_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_1/SS0_OUT",
                       "uz_interlockDeadtime_1/S0"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS1_OUT1": {
+                  "PWM_and_SS_control_V_1_SS1_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_1/SS1_OUT",
                       "uz_interlockDeadtime_1/S1"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS2_OUT1": {
+                  "PWM_and_SS_control_V_1_SS2_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_1/SS2_OUT",
                       "uz_interlockDeadtime_1/S2"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS3_OUT1": {
+                  "PWM_and_SS_control_V_1_SS3_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_1/SS3_OUT",
                       "uz_interlockDeadtime_1/S3"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS4_OUT1": {
+                  "PWM_and_SS_control_V_1_SS4_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_1/SS4_OUT",
                       "uz_interlockDeadtime_1/S4"
                     ]
                   },
-                  "PWM_and_SS_control_V_4_SS5_OUT1": {
+                  "PWM_and_SS_control_V_1_SS5_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_1/SS5_OUT",
                       "uz_interlockDeadtime_1/S5"
@@ -2238,16 +2174,16 @@
                       "uz_interlockDeadtime_2/S2"
                     ]
                   },
-                  "PWM_and_SS_control_V_2_SS3_OUT": {
-                    "ports": [
-                      "PWM_and_SS_control_V_2/SS3_OUT",
-                      "uz_interlockDeadtime_2/S3"
-                    ]
-                  },
                   "PWM_and_SS_control_V_2_SS4_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_2/SS4_OUT",
                       "uz_interlockDeadtime_2/S4"
+                    ]
+                  },
+                  "PWM_and_SS_control_V_2_SS3_OUT": {
+                    "ports": [
+                      "PWM_and_SS_control_V_2/SS3_OUT",
+                      "uz_interlockDeadtime_2/S3"
                     ]
                   },
                   "PWM_and_SS_control_V_2_SS5_OUT": {
@@ -2291,6 +2227,51 @@
                       "PWM_and_SS_control_V_3/SS5_OUT",
                       "uz_interlockDeadtime_3/S5"
                     ]
+                  },
+                  "PWM_and_SS_control_V_0_SS0_OUT": {
+                    "ports": [
+                      "PWM_and_SS_control_V_0/SS0_OUT",
+                      "uz_interlockDeadtime_0/S0"
+                    ]
+                  },
+                  "PWM_and_SS_control_V_0_SS1_OUT": {
+                    "ports": [
+                      "PWM_and_SS_control_V_0/SS1_OUT",
+                      "uz_interlockDeadtime_0/S1"
+                    ]
+                  },
+                  "PWM_and_SS_control_V_0_SS2_OUT": {
+                    "ports": [
+                      "PWM_and_SS_control_V_0/SS2_OUT",
+                      "uz_interlockDeadtime_0/S2"
+                    ]
+                  },
+                  "PWM_and_SS_control_V_0_SS3_OUT": {
+                    "ports": [
+                      "PWM_and_SS_control_V_0/SS3_OUT",
+                      "uz_interlockDeadtime_0/S3"
+                    ]
+                  },
+                  "PWM_and_SS_control_V_0_SS4_OUT": {
+                    "ports": [
+                      "PWM_and_SS_control_V_0/SS4_OUT",
+                      "uz_interlockDeadtime_0/S4"
+                    ]
+                  },
+                  "PWM_and_SS_control_V_0_SS5_OUT": {
+                    "ports": [
+                      "PWM_and_SS_control_V_0/SS5_OUT",
+                      "uz_interlockDeadtime_0/S5"
+                    ]
+                  },
+                  "PWM_and_SS_control_V_0_triangle_out": {
+                    "ports": [
+                      "PWM_and_SS_control_V_0/triangle_out",
+                      "PWM_and_SS_control_V_1/triangle_in",
+                      "PWM_and_SS_control_V_2/triangle_in",
+                      "PWM_and_SS_control_V_3/triangle_in",
+                      "PWM_and_SS_control_V_0/triangle_in"
+                    ]
                   }
                 }
               }
@@ -2302,22 +2283,22 @@
                   "Gates/AXI4_Lite_PWM_0"
                 ]
               },
-              "AXI4_Lite_PWM_3_1": {
-                "interface_ports": [
-                  "AXI4_Lite_PWM_3",
-                  "Gates/AXI4_Lite_PWM_3"
-                ]
-              },
               "AXI4_Lite1_1": {
                 "interface_ports": [
                   "AXI4_Lite_PWM_1",
                   "Gates/AXI4_Lite_PWM_1"
                 ]
               },
-              "smartconnect_0_M07_AXI": {
+              "AXI4_Lite_PWM_2_1": {
                 "interface_ports": [
-                  "AXI4_interlock_0",
-                  "Gates/AXI4_interlock_0"
+                  "AXI4_Lite_PWM_2",
+                  "Gates/AXI4_Lite_PWM_2"
+                ]
+              },
+              "AXI4_Lite_PWM_3_1": {
+                "interface_ports": [
+                  "AXI4_Lite_PWM_3",
+                  "Gates/AXI4_Lite_PWM_3"
                 ]
               },
               "AXI_interlock_1_1": {
@@ -2338,10 +2319,10 @@
                   "Gates/AXI4_interlock_3"
                 ]
               },
-              "AXI4_Lite_PWM_2_1": {
+              "smartconnect_0_M07_AXI": {
                 "interface_ports": [
-                  "AXI4_Lite_PWM_2",
-                  "Gates/AXI4_Lite_PWM_2"
+                  "AXI4_interlock_0",
+                  "Gates/AXI4_interlock_0"
                 ]
               }
             },
@@ -2537,17 +2518,7 @@
                     "ports": {
                       "clock": {
                         "type": "clk",
-                        "direction": "I",
-                        "parameters": {
-                          "CLK_DOMAIN": {
-                            "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
-                            "value_src": "default_prop"
-                          },
-                          "FREQ_HZ": {
-                            "value": "99999985",
-                            "value_src": "user_prop"
-                          }
-                        }
+                        "direction": "I"
                       },
                       "enable": {
                         "direction": "I"
@@ -2555,13 +2526,7 @@
                       "switching_signals": {
                         "direction": "I",
                         "left": "5",
-                        "right": "0",
-                        "parameters": {
-                          "PortWidth": {
-                            "value": "6",
-                            "value_src": "ip_prop"
-                          }
-                        }
+                        "right": "0"
                       },
                       "deadtime": {
                         "direction": "I",
@@ -3167,10 +3132,10 @@
           }
         },
         "interface_nets": {
-          "AXI4_Lite1_1": {
+          "AXI4_Lite_3": {
             "interface_ports": [
-              "AXI4_Lite_PWM_1",
-              "D1_adapter/AXI4_Lite_PWM_1"
+              "AXI4_Lite",
+              "D2_adapter/AXI4_Lite"
             ]
           },
           "AXI4_Lite_PWM_2_1": {
@@ -3179,22 +3144,10 @@
               "D1_adapter/AXI4_Lite_PWM_2"
             ]
           },
-          "AXI4_Lite_2": {
-            "interface_ports": [
-              "AXI4_Lite3",
-              "D5_adapter/AXI4_Lite"
-            ]
-          },
           "AXI4_Lite_PWM_3_1": {
             "interface_ports": [
               "AXI4_Lite_PWM_3",
               "D1_adapter/AXI4_Lite_PWM_3"
-            ]
-          },
-          "AXI_interlock_3_1": {
-            "interface_ports": [
-              "AXI4_interlock_3",
-              "D1_adapter/AXI4_interlock_3"
             ]
           },
           "AXI_interlock_1_1": {
@@ -3203,16 +3156,28 @@
               "D1_adapter/AXI4_interlock_1"
             ]
           },
+          "AXI_interlock_2_1": {
+            "interface_ports": [
+              "AXI4_interlock_2",
+              "D1_adapter/AXI4_interlock_2"
+            ]
+          },
+          "AXI_interlock_3_1": {
+            "interface_ports": [
+              "AXI4_interlock_3",
+              "D1_adapter/AXI4_interlock_3"
+            ]
+          },
           "S00_AXI_5": {
             "interface_ports": [
               "AXI4_interlock_0",
               "D1_adapter/AXI4_interlock_0"
             ]
           },
-          "AXI_interlock_2_1": {
+          "AXI4_Lite_2": {
             "interface_ports": [
-              "AXI4_interlock_2",
-              "D1_adapter/AXI4_interlock_2"
+              "AXI4_Lite3",
+              "D5_adapter/AXI4_Lite"
             ]
           },
           "AXI4_Lite_1": {
@@ -3221,10 +3186,10 @@
               "D1_adapter/AXI4_Lite_PWM_0"
             ]
           },
-          "AXI4_Lite_3": {
+          "AXI4_Lite1_1": {
             "interface_ports": [
-              "AXI4_Lite",
-              "D2_adapter/AXI4_Lite"
+              "AXI4_Lite_PWM_1",
+              "D1_adapter/AXI4_Lite_PWM_1"
             ]
           }
         },
@@ -3345,6 +3310,38 @@
       },
       "uz_system": {
         "interface_ports": {
+          "AXI4_Lite_PWM_0": {
+            "mode": "Master",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+          },
+          "AXI4_Lite_PWM_1": {
+            "mode": "Master",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+          },
+          "AXI4_Lite_PWM_2": {
+            "mode": "Master",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+          },
+          "AXI4_Lite_PWM_3": {
+            "mode": "Master",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+          },
+          "AXI4_interlock_0": {
+            "mode": "Master",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+          },
+          "AXI4_interlock_1": {
+            "mode": "Master",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+          },
+          "AXI4_interlock_2": {
+            "mode": "Master",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+          },
+          "AXI4_interlock_3": {
+            "mode": "Master",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+          },
           "M00_AXI": {
             "mode": "Master",
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
@@ -3358,18 +3355,6 @@
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
           },
           "M02_AXI": {
-            "mode": "Master",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-          },
-          "AXI4_Lite_PWM_1": {
-            "mode": "Master",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-          },
-          "AXI4_interlock_0": {
-            "mode": "Master",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-          },
-          "AXI4_Lite_PWM_0": {
             "mode": "Master",
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
           },
@@ -3387,26 +3372,6 @@
           },
           "S00_AXI": {
             "mode": "Slave",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-          },
-          "AXI4_Lite_PWM_3": {
-            "mode": "Master",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-          },
-          "AXI4_Lite_PWM_2": {
-            "mode": "Master",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-          },
-          "AXI4_interlock_1": {
-            "mode": "Master",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-          },
-          "AXI4_interlock_2": {
-            "mode": "Master",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-          },
-          "AXI4_interlock_3": {
-            "mode": "Master",
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
           }
         },
@@ -3815,17 +3780,7 @@
                 "ports": {
                   "clk": {
                     "type": "clk",
-                    "direction": "I",
-                    "parameters": {
-                      "CLK_DOMAIN": {
-                        "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
-                        "value_src": "default_prop"
-                      },
-                      "FREQ_HZ": {
-                        "value": "99999985",
-                        "value_src": "user_prop"
-                      }
-                    }
+                    "direction": "I"
                   },
                   "delay_cycles": {
                     "direction": "I",
@@ -3873,16 +3828,16 @@
               }
             },
             "interface_nets": {
-              "AXI4_Lite_1": {
-                "interface_ports": [
-                  "AXI4_Lite",
-                  "mux_axi_ip_1/AXI4_Lite"
-                ]
-              },
               "smartconnect_0_M11_AXI": {
                 "interface_ports": [
                   "S_AXI",
                   "Trigger_f_cc/S_AXI"
+                ]
+              },
+              "AXI4_Lite_1": {
+                "interface_ports": [
+                  "AXI4_Lite",
+                  "mux_axi_ip_1/AXI4_Lite"
                 ]
               }
             },
@@ -4444,6 +4399,173 @@
               }
             }
           },
+          "smartconnect_1": {
+            "vlnv": "xilinx.com:ip:smartconnect:1.0",
+            "xci_name": "zusys_smartconnect_1_0",
+            "parameters": {
+              "NUM_MI": {
+                "value": "5"
+              },
+              "NUM_SI": {
+                "value": "1"
+              }
+            },
+            "interface_ports": {
+              "S00_AXI": {
+                "mode": "Slave",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "bridges": [
+                  "M00_AXI",
+                  "M01_AXI",
+                  "M02_AXI",
+                  "M03_AXI",
+                  "M04_AXI"
+                ],
+                "parameters": {
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  }
+                }
+              },
+              "M00_AXI": {
+                "mode": "Master",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
+              },
+              "M01_AXI": {
+                "mode": "Master",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
+              },
+              "M02_AXI": {
+                "mode": "Master",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "256"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
+              },
+              "M03_AXI": {
+                "mode": "Master",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "256"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
+              },
+              "M04_AXI": {
+                "mode": "Master",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "256"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
+              }
+            },
+            "addressing": {
+              "interface_ports": {
+                "S00_AXI": {
+                  "mode": "Slave",
+                  "bridges": [
+                    "M00_AXI",
+                    "M01_AXI",
+                    "M02_AXI",
+                    "M03_AXI",
+                    "M04_AXI"
+                  ]
+                }
+              }
+            }
+          },
           "timer_uptime_64bit": {
             "vlnv": "xilinx.com:ip:axi_timer:2.0",
             "xci_name": "zusys_timer_uptime_64bit_0",
@@ -4872,210 +4994,13 @@
                 ]
               }
             }
-          },
-          "smartconnect_1": {
-            "vlnv": "xilinx.com:ip:smartconnect:1.0",
-            "xci_name": "zusys_smartconnect_1_0",
-            "parameters": {
-              "NUM_MI": {
-                "value": "5"
-              },
-              "NUM_SI": {
-                "value": "1"
-              }
-            },
-            "interface_ports": {
-              "S00_AXI": {
-                "mode": "Slave",
-                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
-                "bridges": [
-                  "M00_AXI",
-                  "M01_AXI",
-                  "M02_AXI",
-                  "M03_AXI",
-                  "M04_AXI"
-                ],
-                "parameters": {
-                  "NUM_READ_OUTSTANDING": {
-                    "value": "8"
-                  },
-                  "NUM_WRITE_OUTSTANDING": {
-                    "value": "8"
-                  }
-                }
-              },
-              "M00_AXI": {
-                "mode": "Master",
-                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
-                "parameters": {
-                  "MAX_BURST_LENGTH": {
-                    "value": "1"
-                  },
-                  "NUM_READ_OUTSTANDING": {
-                    "value": "8"
-                  },
-                  "NUM_WRITE_OUTSTANDING": {
-                    "value": "8"
-                  },
-                  "RUSER_BITS_PER_BYTE": {
-                    "value": "0"
-                  },
-                  "SUPPORTS_NARROW_BURST": {
-                    "value": "0"
-                  },
-                  "WUSER_BITS_PER_BYTE": {
-                    "value": "0"
-                  }
-                }
-              },
-              "M01_AXI": {
-                "mode": "Master",
-                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
-                "parameters": {
-                  "MAX_BURST_LENGTH": {
-                    "value": "1"
-                  },
-                  "NUM_READ_OUTSTANDING": {
-                    "value": "8"
-                  },
-                  "NUM_WRITE_OUTSTANDING": {
-                    "value": "8"
-                  },
-                  "RUSER_BITS_PER_BYTE": {
-                    "value": "0"
-                  },
-                  "SUPPORTS_NARROW_BURST": {
-                    "value": "0"
-                  },
-                  "WUSER_BITS_PER_BYTE": {
-                    "value": "0"
-                  }
-                }
-              },
-              "M02_AXI": {
-                "mode": "Master",
-                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
-                "parameters": {
-                  "MAX_BURST_LENGTH": {
-                    "value": "256"
-                  },
-                  "NUM_READ_OUTSTANDING": {
-                    "value": "8"
-                  },
-                  "NUM_WRITE_OUTSTANDING": {
-                    "value": "8"
-                  },
-                  "RUSER_BITS_PER_BYTE": {
-                    "value": "0"
-                  },
-                  "SUPPORTS_NARROW_BURST": {
-                    "value": "0"
-                  },
-                  "WUSER_BITS_PER_BYTE": {
-                    "value": "0"
-                  }
-                }
-              },
-              "M03_AXI": {
-                "mode": "Master",
-                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
-                "parameters": {
-                  "MAX_BURST_LENGTH": {
-                    "value": "256"
-                  },
-                  "NUM_READ_OUTSTANDING": {
-                    "value": "8"
-                  },
-                  "NUM_WRITE_OUTSTANDING": {
-                    "value": "8"
-                  },
-                  "RUSER_BITS_PER_BYTE": {
-                    "value": "0"
-                  },
-                  "SUPPORTS_NARROW_BURST": {
-                    "value": "0"
-                  },
-                  "WUSER_BITS_PER_BYTE": {
-                    "value": "0"
-                  }
-                }
-              },
-              "M04_AXI": {
-                "mode": "Master",
-                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
-                "parameters": {
-                  "MAX_BURST_LENGTH": {
-                    "value": "256"
-                  },
-                  "NUM_READ_OUTSTANDING": {
-                    "value": "8"
-                  },
-                  "NUM_WRITE_OUTSTANDING": {
-                    "value": "8"
-                  },
-                  "RUSER_BITS_PER_BYTE": {
-                    "value": "0"
-                  },
-                  "SUPPORTS_NARROW_BURST": {
-                    "value": "0"
-                  },
-                  "WUSER_BITS_PER_BYTE": {
-                    "value": "0"
-                  }
-                }
-              }
-            },
-            "addressing": {
-              "interface_ports": {
-                "S00_AXI": {
-                  "mode": "Slave",
-                  "bridges": [
-                    "M00_AXI",
-                    "M01_AXI",
-                    "M02_AXI",
-                    "M03_AXI",
-                    "M04_AXI"
-                  ]
-                }
-              }
-            }
           }
         },
         "interface_nets": {
-          "smartconnect_1_M02_AXI": {
+          "Conn10": {
             "interface_ports": [
-              "AXI4_interlock_1",
-              "smartconnect_1/M02_AXI"
-            ]
-          },
-          "smartconnect_1_M01_AXI": {
-            "interface_ports": [
-              "AXI4_Lite_PWM_3",
-              "smartconnect_1/M01_AXI"
-            ]
-          },
-          "smartconnect_0_M14_AXI": {
-            "interface_ports": [
-              "smartconnect_1/S00_AXI",
-              "smartconnect_0/M14_AXI"
-            ]
-          },
-          "smartconnect_1_M04_AXI": {
-            "interface_ports": [
-              "AXI4_interlock_3",
-              "smartconnect_1/M04_AXI"
-            ]
-          },
-          "smartconnect_1_M00_AXI": {
-            "interface_ports": [
-              "AXI4_Lite_PWM_2",
-              "smartconnect_1/M00_AXI"
-            ]
-          },
-          "smartconnect_0_M06_AXI": {
-            "interface_ports": [
-              "smartconnect_0/M06_AXI",
-              "uz_enable/S_AXI"
+              "AXI4_interlock_0",
+              "smartconnect_0/M07_AXI"
             ]
           },
           "Conn11": {
@@ -5084,16 +5009,28 @@
               "smartconnect_0/M03_AXI"
             ]
           },
-          "smartconnect_0_M05_AXI": {
+          "smartconnect_0_M14_AXI": {
             "interface_ports": [
-              "smartconnect_0/M05_AXI",
-              "timer_uptime_64bit/S_AXI"
+              "smartconnect_0/M14_AXI",
+              "smartconnect_1/S00_AXI"
             ]
           },
-          "smartconnect_0_M13_AXI": {
+          "Conn3": {
             "interface_ports": [
-              "axi_timebase_wdt_0/S_AXI",
-              "smartconnect_0/M13_AXI"
+              "S00_AXI",
+              "smartconnect_0/S00_AXI"
+            ]
+          },
+          "smartconnect_1_M01_AXI": {
+            "interface_ports": [
+              "AXI4_Lite_PWM_3",
+              "smartconnect_1/M01_AXI"
+            ]
+          },
+          "smartconnect_1_M04_AXI": {
+            "interface_ports": [
+              "AXI4_interlock_3",
+              "smartconnect_1/M04_AXI"
             ]
           },
           "Conn12": {
@@ -5102,10 +5039,46 @@
               "smartconnect_0/M12_AXI"
             ]
           },
-          "S_AXI_1": {
+          "Conn7": {
             "interface_ports": [
-              "Interrupt/S_AXI",
-              "smartconnect_0/M11_AXI"
+              "AXI4_Lite_PWM_0",
+              "smartconnect_0/M08_AXI"
+            ]
+          },
+          "Conn8": {
+            "interface_ports": [
+              "M09_AXI",
+              "smartconnect_0/M09_AXI"
+            ]
+          },
+          "smartconnect_1_M02_AXI": {
+            "interface_ports": [
+              "AXI4_interlock_1",
+              "smartconnect_1/M02_AXI"
+            ]
+          },
+          "smartconnect_1_M03_AXI": {
+            "interface_ports": [
+              "AXI4_interlock_2",
+              "smartconnect_1/M03_AXI"
+            ]
+          },
+          "Conn5": {
+            "interface_ports": [
+              "M02_AXI",
+              "smartconnect_0/M02_AXI"
+            ]
+          },
+          "Conn6": {
+            "interface_ports": [
+              "M01_AXI",
+              "smartconnect_0/M01_AXI"
+            ]
+          },
+          "Conn2": {
+            "interface_ports": [
+              "M10_AXI",
+              "smartconnect_0/M10_AXI"
             ]
           },
           "Conn1": {
@@ -5120,58 +5093,40 @@
               "smartconnect_0/M04_AXI"
             ]
           },
-          "Conn5": {
-            "interface_ports": [
-              "M02_AXI",
-              "smartconnect_0/M02_AXI"
-            ]
-          },
-          "Conn3": {
-            "interface_ports": [
-              "S00_AXI",
-              "smartconnect_0/S00_AXI"
-            ]
-          },
-          "Conn6": {
-            "interface_ports": [
-              "M01_AXI",
-              "smartconnect_0/M01_AXI"
-            ]
-          },
-          "Conn7": {
-            "interface_ports": [
-              "AXI4_Lite_PWM_0",
-              "smartconnect_0/M08_AXI"
-            ]
-          },
           "Conn4": {
             "interface_ports": [
               "M00_AXI1",
               "smartconnect_0/M00_AXI"
             ]
           },
-          "Conn8": {
+          "smartconnect_1_M00_AXI": {
             "interface_ports": [
-              "M09_AXI",
-              "smartconnect_0/M09_AXI"
+              "AXI4_Lite_PWM_2",
+              "smartconnect_1/M00_AXI"
             ]
           },
-          "Conn10": {
+          "smartconnect_0_M06_AXI": {
             "interface_ports": [
-              "AXI4_interlock_0",
-              "smartconnect_0/M07_AXI"
+              "smartconnect_0/M06_AXI",
+              "uz_enable/S_AXI"
             ]
           },
-          "Conn2": {
+          "smartconnect_0_M13_AXI": {
             "interface_ports": [
-              "M10_AXI",
-              "smartconnect_0/M10_AXI"
+              "axi_timebase_wdt_0/S_AXI",
+              "smartconnect_0/M13_AXI"
             ]
           },
-          "smartconnect_1_M03_AXI": {
+          "smartconnect_0_M05_AXI": {
             "interface_ports": [
-              "AXI4_interlock_2",
-              "smartconnect_1/M03_AXI"
+              "smartconnect_0/M05_AXI",
+              "timer_uptime_64bit/S_AXI"
+            ]
+          },
+          "S_AXI_1": {
+            "interface_ports": [
+              "Interrupt/S_AXI",
+              "smartconnect_0/M11_AXI"
             ]
           }
         },
@@ -5262,9 +5217,9 @@
               "Interrupt/IPCORE_RESETN",
               "axi_timebase_wdt_0/s_axi_aresetn",
               "smartconnect_0/aresetn",
+              "smartconnect_1/aresetn",
               "timer_uptime_64bit/s_axi_aresetn",
-              "uz_enable/s_axi_aresetn",
-              "smartconnect_1/aresetn"
+              "uz_enable/s_axi_aresetn"
             ]
           },
           "resetn_1": {
@@ -5336,10 +5291,10 @@
               "Interrupt/clk",
               "axi_timebase_wdt_0/s_axi_aclk",
               "smartconnect_0/aclk",
+              "smartconnect_1/aclk",
               "timer_uptime_64bit/s_axi_aclk",
               "uz_clocks/clk_in1",
-              "uz_enable/s_axi_aclk",
-              "smartconnect_1/aclk"
+              "uz_enable/s_axi_aclk"
             ]
           }
         }
@@ -5431,16 +5386,16 @@
           }
         },
         "interface_nets": {
-          "smartconnect_1_M00_AXI": {
-            "interface_ports": [
-              "smartconnect_1/M00_AXI",
-              "uz_axi_testIP_0/AXI4"
-            ]
-          },
           "smartconnect_0_M10_AXI": {
             "interface_ports": [
               "S00_AXI",
               "smartconnect_1/S00_AXI"
+            ]
+          },
+          "smartconnect_1_M00_AXI": {
+            "interface_ports": [
+              "smartconnect_1/M00_AXI",
+              "uz_axi_testIP_0/AXI4"
             ]
           }
         },
@@ -8412,16 +8367,10 @@
       }
     },
     "interface_nets": {
-      "uz_system_AXI4_interlock_1": {
+      "AXI4_Lite_2": {
         "interface_ports": [
-          "uz_system/AXI4_interlock_1",
-          "uz_digital_adapter/AXI4_interlock_1"
-        ]
-      },
-      "AXI4_Lite_PWM_2_1": {
-        "interface_ports": [
-          "uz_digital_adapter/AXI4_Lite_PWM_2",
-          "uz_system/AXI4_Lite_PWM_2"
+          "uz_digital_adapter/AXI4_Lite3",
+          "uz_system/M09_AXI"
         ]
       },
       "AXI4_Lite_1": {
@@ -8430,58 +8379,16 @@
           "uz_system/AXI4_Lite_PWM_0"
         ]
       },
-      "uz_system_M00_AXI": {
+      "S00_AXI_2": {
         "interface_ports": [
-          "uz_system/M00_AXI",
-          "zynq_ultra_ps_e_0/S_AXI_LPD"
-        ]
-      },
-      "uz_system_AXI4_Lite_PWM_3": {
-        "interface_ports": [
-          "uz_system/AXI4_Lite_PWM_3",
-          "uz_digital_adapter/AXI4_Lite_PWM_3"
+          "uz_analog_adapter/S00_AXI1",
+          "uz_system/M00_AXI1"
         ]
       },
       "uz_system_AXI4_interlock_2": {
         "interface_ports": [
-          "uz_system/AXI4_interlock_2",
-          "uz_digital_adapter/AXI4_interlock_2"
-        ]
-      },
-      "S00_AXI_4": {
-        "interface_ports": [
-          "uz_analog_adapter/S00_AXI2",
-          "uz_system/M01_AXI"
-        ]
-      },
-      "AXI4_Lite_2": {
-        "interface_ports": [
-          "uz_digital_adapter/AXI4_Lite3",
-          "uz_system/M09_AXI"
-        ]
-      },
-      "AXI4_Lite1_1": {
-        "interface_ports": [
-          "uz_digital_adapter/AXI4_Lite_PWM_1",
-          "uz_system/AXI4_Lite_PWM_1"
-        ]
-      },
-      "S00_AXI_1": {
-        "interface_ports": [
-          "uz_system/M10_AXI",
-          "uz_user/S00_AXI"
-        ]
-      },
-      "S00_AXI_3": {
-        "interface_ports": [
-          "uz_analog_adapter/S00_AXI",
-          "uz_system/M02_AXI"
-        ]
-      },
-      "uz_system_AXI4_interlock_3": {
-        "interface_ports": [
-          "uz_system/AXI4_interlock_3",
-          "uz_digital_adapter/AXI4_interlock_3"
+          "uz_digital_adapter/AXI4_interlock_2",
+          "uz_system/AXI4_interlock_2"
         ]
       },
       "S00_AXI_5": {
@@ -8496,16 +8403,64 @@
           "uz_system/M12_AXI"
         ]
       },
+      "AXI4_Lite1_1": {
+        "interface_ports": [
+          "uz_digital_adapter/AXI4_Lite_PWM_1",
+          "uz_system/AXI4_Lite_PWM_1"
+        ]
+      },
+      "uz_system_AXI4_interlock_3": {
+        "interface_ports": [
+          "uz_digital_adapter/AXI4_interlock_3",
+          "uz_system/AXI4_interlock_3"
+        ]
+      },
+      "S00_AXI_3": {
+        "interface_ports": [
+          "uz_analog_adapter/S00_AXI",
+          "uz_system/M02_AXI"
+        ]
+      },
       "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
         "interface_ports": [
           "uz_system/S00_AXI",
           "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
         ]
       },
-      "S00_AXI_2": {
+      "S00_AXI_1": {
         "interface_ports": [
-          "uz_analog_adapter/S00_AXI1",
-          "uz_system/M00_AXI1"
+          "uz_system/M10_AXI",
+          "uz_user/S00_AXI"
+        ]
+      },
+      "uz_system_AXI4_interlock_1": {
+        "interface_ports": [
+          "uz_digital_adapter/AXI4_interlock_1",
+          "uz_system/AXI4_interlock_1"
+        ]
+      },
+      "S00_AXI_4": {
+        "interface_ports": [
+          "uz_analog_adapter/S00_AXI2",
+          "uz_system/M01_AXI"
+        ]
+      },
+      "uz_system_M00_AXI": {
+        "interface_ports": [
+          "uz_system/M00_AXI",
+          "zynq_ultra_ps_e_0/S_AXI_LPD"
+        ]
+      },
+      "uz_system_AXI4_Lite_PWM_3": {
+        "interface_ports": [
+          "uz_digital_adapter/AXI4_Lite_PWM_3",
+          "uz_system/AXI4_Lite_PWM_3"
+        ]
+      },
+      "AXI4_Lite_PWM_2_1": {
+        "interface_ports": [
+          "uz_digital_adapter/AXI4_Lite_PWM_2",
+          "uz_system/AXI4_Lite_PWM_2"
         ]
       }
     },
@@ -8819,26 +8774,6 @@
               "SEG_PWM_SS_3L_ip_0_reg0": {
                 "address_block": "/uz_digital_adapter/D2_adapter/Gates_3L/PWM_SS_3L_ip_0/AXI4_Lite/reg0",
                 "offset": "0x0080060000",
-                "range": "64K"
-              },
-              "SEG_PWM_and_SS_control_V_0_reg0": {
-                "address_block": "/uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_0/AXI4_Lite/reg0",
-                "offset": "0x0080030000",
-                "range": "64K"
-              },
-              "SEG_PWM_and_SS_control_V_1_reg0": {
-                "address_block": "/uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_1/AXI4_Lite/reg0",
-                "offset": "0x0080040000",
-                "range": "64K"
-              },
-              "SEG_PWM_and_SS_control_V_2_reg0": {
-                "address_block": "/uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_2/AXI4_Lite/reg0",
-                "offset": "0x00800E0000",
-                "range": "64K"
-              },
-              "SEG_PWM_and_SS_control_V_3_reg0": {
-                "address_block": "/uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_3/AXI4_Lite/reg0",
-                "offset": "0x00800F0000",
                 "range": "64K"
               },
               "SEG_Trigger_f_cc_Reg": {

@@ -626,15 +626,32 @@ In the listing the configuration for the IP-Core initialization can be seen. The
     uz_adcLtc2311_init(default_configuration);
   }
 
-In the vivado block-design the SI-Value-Output can be sliced with Slice-IP-Cores to get access to the SI-Values of the ADC-channels. In the next figure the slice-blocks can be seen. Each of them slices one value from the vector.
-The length of the sliced part is according to the used datatype 18 bit. To get the first SI-Value the first 18 bit of the vector have to be slice, for the second value the next 18 etc.
+In the vivado block-design the SI-Value-Output can be accessed and used. The structure of the vector depends on the ip-core configuration, that can be seen in the next figure. 
 
+.. figure:: adc_ip_core_config_vivado.png
+   :width: 600px
+   :align: center
+
+   Configuration of the IP-Core in Vivado
+
+The length of the vector depends on the number of channels and the length of the individual values of the channel (Result MSB - Result LSB +1). In this example the length of the values is 18 bit according to the used datatype. With 8 channels the length of the SI-Value-Vector is 144 bit. In the vector the individual values are arranged one after the other.
+
+The SI-Value-vector needs to be sliced, to access the individual values of the different ADC-channels. To get the first SI-Value the first 18 bit of the vector have to be slice, for the second value the next 18 etc.
+
+
+.. figure:: slicing_graphic.png
+   :width: 800px
+   :align: center
+
+   Slicing of the SI-Value output vector
+
+In the vivado block-design the SI-Value-Output can be sliced with Slice-IP-Cores to get access to the SI-Values of the ADC-channels. In the next figure the slice-blocks can be seen. Each of them slices one value from the vector.
 
 .. figure:: Si_Slicing.png
    :width: 800px
    :align: center
 
-   Slicing of the SI-Value output vector
+   Slicing of the SI-Value output vector in vivado
 
   
 
